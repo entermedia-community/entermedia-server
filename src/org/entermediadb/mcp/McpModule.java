@@ -141,6 +141,7 @@ public class McpModule extends BaseMediaModule
 			payload.put("id", 0);
 
 		}
+		
 		String cmd = (String) payload.get("method");
 		if(cmd == null) {
 			cmd = "initialize";
@@ -158,22 +159,89 @@ public class McpModule extends BaseMediaModule
 		inReq.putPageValue("render", getRender());
 
 		//This could be null if anonymous
-		inReq.putPageValue("user", currentconnnection.getUser());
+		User user = currentconnnection.getUser();
+		inReq.putPageValue("user", user);
+		inReq.putPageValue("userprofile", archive.getUserProfile(user.getId()));
+		
+		JSONObject params = (JSONObject) payload.get("params");
+		
+		String response = null;
+		
+		if(cmd.equals("tools/call"))
+		{
+			String functionname = (String) params.get("name");
+			
+			
+	//
+	//		{
+	//		  "jsonrpc": "2.0",
+	//		  "id": $payload.id,
+	//		  "result": {
+	//		    "content": [
+	//		      {
+	//		        "type": "text",
+	//		        "text": #jesc($raw)
+	//		      }
+	//		    ],
+	//		    "isError": false
+	//		  }
+	//		}
+			
+			String responsetext = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/functions/" + functionname + ".html");
+			
+			JSONObject jsonresponse = new JSONObject();
+			jsonresponse.put("jsonrpc", "2.0");
+			jsonresponse.put("id", payload.get("id"));
+			
+			JSONObject jsonresult = new JSONObject();
+			
+			JSONArray jsoncontentarray = new JSONArray();
+			
+			JSONObject jsoncontent = new JSONObject();
+			jsoncontent.put("type", "text");
+			jsoncontent.put("text", getJsonUtil().escape(responsetext));
+			
+			jsoncontentarray.add(jsoncontent);
+			
+			jsonresult.put("content", jsoncontentarray);
+			jsonresult.put("isError", false);
+			
+			jsonresponse.put("result", jsonresult);
+			
+			response = jsonresponse.toJSONString();
+			
+		}
+		else
+		{
+			response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html");
+		}
 		
 		
 		
-		String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html");
+		String res = response;
 		
 		inReq.getResponse().setStatus(202);		
 
 		new Thread(() -> {
 			try {
-				currentconnnection.sendMessage(response);
+				currentconnnection.sendMessage(res);
 			} catch (Exception e) {
 				log.error("Failed to send SSE message", e);
 			}
 		}).start();
 		
+	}
+	
+	protected JsonUtil fieldJsonUtil;
+	
+	
+	public JsonUtil getJsonUtil()
+	{
+		if (fieldJsonUtil == null)
+		{
+			fieldJsonUtil = (JsonUtil)getModuleManager().getBean("jsonUtil");
+		}
+		return fieldJsonUtil;
 	}
 
 }
