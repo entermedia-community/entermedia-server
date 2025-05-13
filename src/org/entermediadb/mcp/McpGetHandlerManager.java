@@ -30,7 +30,8 @@ public class McpGetHandlerManager
 		{
 			sessionid = UUID.randomUUID().toString();
 			connection = new McpGetHandler();
-			connection.setRandomSessionId(sessionid);
+			connection.setMcpSessionId(sessionid);
+			connection.setReq(inReq);
 			getGetHandlers().put(sessionid,connection);  //TODO: Make these expire? 
 		}
 		return connection;

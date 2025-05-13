@@ -2,11 +2,15 @@ package org.entermediadb.mcp;
 
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.llm.VelocityRenderUtil;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
@@ -67,8 +71,8 @@ public class McpModule extends BaseMediaModule
 			//TODO: Block on this one forever? Stream back events to the client? Not used?
 			
 //			String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html");
-			McpGetHandler gethandler = manager.loadGetHandler(inReq);
-			gethandler.listen(); //This will block forver
+			// McpGetHandler gethandler = manager.loadGetHandler(inReq);
+			// gethandler.listen(); //This will block forver
 //
 //			new Thread(() -> {
 //				try {
@@ -79,22 +83,25 @@ public class McpModule extends BaseMediaModule
 //			}).start();
 		}
 
+		
 		//Otherwise they are all POST requests and we stream back the reply
 		McpGetHandler gethandler = manager.loadGetHandler(inReq);
 		
-		inReq.getResponse().setStatus(202);		
-		inReq.getResponse().setHeader("mcp-session-id", gethandler.getRandomSessionId());
-		inReq.getResponse().setHeader("accept", "json/ , streaming");
-		inReq.getResponse().setHeader("content-type", "json/");
+
+		inReq.getResponse().setStatus(HttpServletResponse.SC_OK);
+		inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId()); 
+		inReq.getResponse().setHeader("accept", "application/json, text/event-stream");
+		inReq.getResponse().setHeader("content-type", "application/json");
 		
 		//Authenticate:
-		JSONObject payload = (JSONObject) inReq.getJsonRequest();
-		String cmd = (String) payload.get("method");
 //		if(cmd == null) {
 //			cmd = "initialize";
 //		}
 		String appid = inReq.findPathValue("applicationid");
 	
+		JSONObject payload = (JSONObject) inReq.getJsonRequest();
+		String cmd = (String) payload.get("method");
+		
 		inReq.putPageValue("payload", payload);
 		inReq.putPageValue("protocolVersion", "2025-03-26");
 		inReq.putPageValue("serverName", "EnterMedia MCP");
@@ -108,7 +115,8 @@ public class McpModule extends BaseMediaModule
 		
 		//TODO: Change this to be a stream of JSON in chunks. Support Streaming responses
 		//String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html"); //This is blocking
-		inReq.getPageStreamer().include( appid + "/mcp/method/" + cmd + ".html");
+		String fp = "/" + appid + "/mcp/method/" + cmd + ".html";
+		inReq.getPageStreamer().include(fp);
 		//Close?
 		
 	}

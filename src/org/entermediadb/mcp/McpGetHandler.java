@@ -39,17 +39,17 @@ public class McpGetHandler
 		fieldClientReader = inClientReader;
 	}
 
-	protected String fieldRandomSessionId;
+	protected String fieldMcpSessionId;
 	
-	public String getRandomSessionId()
+	public String getMcpSessionId()
 	{
-		return fieldRandomSessionId;
+		return fieldMcpSessionId;
 	}
 
 
-	public void setRandomSessionId(String inRandomSessionId)
+	public void setMcpSessionId(String inRandomSessionId)
 	{
-		fieldRandomSessionId = inRandomSessionId;
+		fieldMcpSessionId = inRandomSessionId;
 	}
 
 	protected Writer fieldClientWriter;
