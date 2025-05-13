@@ -1,16 +1,15 @@
-package org.entermediadb.llm;
+package org.entermediadb.mcp;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
-import org.openedit.Data;
+import org.entermediadb.llm.VelocityRenderUtil;
 import org.openedit.Generator;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
-import org.openedit.users.User;
 
 /**
  * Basic SSE-compatible generator that bypasses Velocity to stream live events.

@@ -1,4 +1,4 @@
-package org.entermediadb.llm;
+package org.entermediadb.mcp;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.llm.VelocityRenderUtil;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -21,6 +22,21 @@ public class McpManager implements CatalogEnabled {
     protected String fieldCatalogId;
     protected Map<String, McpConnection> connections = new ConcurrentHashMap<>();
    
+    protected McpGetHandlerManager fieldMcpGetHandlerManager;
+
+	public McpGetHandlerManager getMcpGetHandlerManager()
+	{
+		if (fieldMcpGetHandlerManager == null)
+		{
+			fieldMcpGetHandlerManager = new McpGetHandlerManager();
+		}
+		return fieldMcpGetHandlerManager;
+	}
+
+	public void setMcpGetHandlerManager(McpGetHandlerManager inMcpGetHandlerManager)
+	{
+		fieldMcpGetHandlerManager = inMcpGetHandlerManager;
+	}
 
 	public ModuleManager getModuleManager() {
         return fieldModuleManager;
@@ -100,9 +116,17 @@ public class McpManager implements CatalogEnabled {
     /**
      * Retrieves the existing connection for the session in inReq, or null if none.
      */
-    public McpConnection getConnection(WebPageRequest inReq) {
+    public McpConnection getConnection(WebPageRequest inReq) 
+    {
+    	
         String sessionId = inReq.findValue("sessionId");
         return connections.get(sessionId);
+    }
+
+    public McpGetHandler loadGetHandler(WebPageRequest inReq) 
+    {
+    	McpGetHandler handler = getMcpGetHandlerManager().loadGetHandler(inReq);
+    	return handler;
     }
 
     /**
