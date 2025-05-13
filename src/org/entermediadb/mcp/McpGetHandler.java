@@ -44,7 +44,7 @@ public class McpGetHandler
 	{
 		fieldClientReader = inClientReader;
 	}
-	protected boolean fieldActive;
+	protected boolean fieldActive = true;
 	
 	public boolean isActive()
 	{
@@ -96,9 +96,6 @@ public class McpGetHandler
 		res.setCharacterEncoding("UTF-8");
 		res.setHeader("Cache-Control", "no-cache");
 		res.setHeader("Connection", "keep-alive");
-
-		getReq().setCancelActions(true);
-		getReq().setHasRedirected(true);
 
 		try
 		{

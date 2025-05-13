@@ -66,6 +66,9 @@ public class McpModule extends BaseMediaModule
 		
 		String method = inReq.getRequest().getMethod();
 
+		inReq.setCancelActions(true);
+		inReq.setHasRedirected(true);
+
 		if ("GET".equals(method))
 		{
 			//TODO: Block on this one forever? Stream back events to the client? Not used?
@@ -73,6 +76,7 @@ public class McpModule extends BaseMediaModule
 //			String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html");
 			 McpGetHandler gethandler = manager.loadGetHandler(inReq);
 			 gethandler.listen(); //This will block forver
+			 return;
 //
 //			new Thread(() -> {
 //				try {
@@ -117,6 +121,7 @@ public class McpModule extends BaseMediaModule
 		//String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html"); //This is blocking
 		String fp = "/" + appid + "/mcp/method/" + cmd + ".html";
 		inReq.getPageStreamer().include(fp);
+		inReq.getPageStreamer().getOutput().getWriter().flush();
 		//Close?
 		
 	}
