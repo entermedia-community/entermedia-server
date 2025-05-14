@@ -68,7 +68,7 @@ $context.putPageValue("xmledithome",$xmledithome)
 								</label>				
 							</div>
 						#end
-						<div class="col-md-9 col-lg-9">
+						<div class="col-md-9 col-lg-10">
 							<div id="detail_$detail.id" class="emdatafieldvalue #if ($detail.isRequired()) requiredfield #end">
 							#if( $editrow )	
 								$pages.include("$xmledithome/detailedit.html", $context)

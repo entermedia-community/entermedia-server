@@ -924,18 +924,76 @@ public class ProjectModule extends BaseMediaModule
 	// manager.loadCategoriesOnCollections(inReq, archive, collections);
 	//
 	// }
+	
+	public void approveAssets(WebPageRequest inReq)
+	{
+		HitTracker hits = (HitTracker) inReq.getPageValue("hits");
+		if (hits != null)
+		{
+			approveSelection(inReq);
+		}
+		else 
+		{
+			approveAsset(inReq);
+		}
+	}
+	
+	public void approveAsset(WebPageRequest inReq)
+	{
+		ProjectManager manager = getProjectManager(inReq);
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String comment = inReq.getRequestParameter("comment");
+		Asset asset = archive.getAsset((String) inReq.getRequestParameter("assetid"));
+		if (asset != null)
+		{
+			manager.approveAsset(asset, inReq.getUser(), comment, null, false);
+			inReq.putPageValue("approved", 1);
+		}
+	}
 
 	public void approveSelection(WebPageRequest inReq)
 	{
-		HitTracker hits = (HitTracker) inReq.getPageValue("hits");
 		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
 		String comment = inReq.getRequestParameter("comment");
-		int count = manager.approveSelection(inReq, hits, collectionid, inReq.getUser(), comment);
-		inReq.putPageValue("approved", count);
-		Searcher searcher = getMediaArchive(inReq).getAssetSearcher();
-		inReq.setRequestParameter(searcher.getSearchType() + "clearselection", "true");
-		searcher.loadHits(inReq);
+		
+		HitTracker hits = (HitTracker) inReq.getPageValue("hits");
+		if (hits != null)
+		{
+			int count = manager.approveSelection(inReq, hits, collectionid, inReq.getUser(), comment);
+			inReq.putPageValue("approved", count);
+			Searcher searcher = getMediaArchive(inReq).getAssetSearcher();
+			inReq.setRequestParameter(searcher.getSearchType() + "clearselection", "true");
+			searcher.loadHits(inReq);
+		}
+	}
+	
+	public void rejectAssets(WebPageRequest inReq)
+	{
+		HitTracker hits = (HitTracker) inReq.getPageValue("hits");
+		if (hits != null)
+		{
+			rejectSelection(inReq);
+		}
+		else 
+		{
+			rejectAsset(inReq);
+		}
+	}
+	
+	public void rejectAsset(WebPageRequest inReq)
+	{
+		ProjectManager manager = getProjectManager(inReq);
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String comment = inReq.getRequestParameter("comment");
+		Asset asset = archive.getAsset((String) inReq.getRequestParameter("assetid"));
+		if (asset != null)
+		{
+			manager.rejectAsset(asset, inReq.getUser(), comment, null, false);
+			inReq.putPageValue("rejected", 1);
+		}
 	}
 
 	public void rejectSelection(WebPageRequest inReq)
@@ -944,11 +1002,14 @@ public class ProjectModule extends BaseMediaModule
 		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
 		String comment = inReq.getRequestParameter("comment");
-		int count = manager.rejectSelection(inReq, hits, collectionid, inReq.getUser(), comment);
-		inReq.putPageValue("rejected", count);
-		Searcher searcher = getMediaArchive(inReq).getAssetSearcher();
-		inReq.setRequestParameter(searcher.getSearchType() + "clearselection", "true");
-		searcher.loadHits(inReq);
+		if (hits != null)
+		{
+			int count = manager.rejectSelection(inReq, hits, collectionid, inReq.getUser(), comment);
+			inReq.putPageValue("rejected", count);
+			Searcher searcher = getMediaArchive(inReq).getAssetSearcher();
+			inReq.setRequestParameter(searcher.getSearchType() + "clearselection", "true");
+			searcher.loadHits(inReq);
+		}
 
 	}
 

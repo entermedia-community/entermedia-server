@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.elasticsearch.common.geo.GeoPoint;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
@@ -575,8 +576,8 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			lat.contains(".") &&
 			lng.contains(".") 
 		){
-			
-			inAsset.setProperty("geo_point", lat + " , " + lng);  //TODO makesure we dont have junk in here
+			GeoPoint point = new GeoPoint(lat + " , " + lng);
+			inAsset.setValue("geo_point", point);  //TODO makesure we dont have junk in here
 		}
 	}
 
