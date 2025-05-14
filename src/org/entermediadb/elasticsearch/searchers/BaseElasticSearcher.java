@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -77,6 +78,7 @@ import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.transport.RemoteTransportException;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.cluster.IdManager;
@@ -797,7 +799,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				{
 					continue;
 				}
-
+				
+				
+				
 				if (detail.isMultiLanguage())
 				{
 					jsonproperties = jsonproperties.startObject(detail.getId() + "_int");
@@ -2751,6 +2755,100 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 							inContent.field(key, date);
 						}
 					}
+				} 
+				else if (detail.isCategory())
+				{
+					//Lets assume this detail is the EXACT one, not the set.  the matching detail should have 
+					//TODO:  add this optimization
+//					if (isOptimizeReindex() && !(inData instanceof Asset)) //Low level performance fix
+//					{
+//						MultiValued values = (MultiValued) inData;
+//						saveArray(inContent, "category", values.getValues("category"));
+//						saveArray(inContent, "category-exact", values.getValues("category-exact"));
+//						String desc = values.get("description");
+//						inContent.field("description", desc);
+//						setFolderPath(inData, inContent);
+//						super.updateIndex(inContent, inData, inDetails, inUser);
+//
+//						return;
+//					}
+					
+					if (value != null)
+					{
+
+						String fullsetdetail = detail.get("categorypath");
+						List categories = null;
+						Set fulltree = null;
+						String searchtype = detail.getListId();
+						String catalog = detail.getListCatalogId();
+
+						CategorySearcher catsearcher = (CategorySearcher) getSearcherManager().getSearcher(catalog, searchtype);
+						if (value instanceof Collection)
+						{
+							categories = new ArrayList();
+							Collection vals = (Collection) value;
+							for (Iterator iterator2 = vals.iterator(); iterator2.hasNext();)
+							{
+								String catid = (String) iterator2.next();
+								Category cat = catsearcher.getCategory(catid);
+								if (cat != null)
+								{
+									categories.add(cat);
+								}
+							}
+						}
+						else
+						{
+							categories = new ArrayList();
+							Category cat = catsearcher.getCategory((String) value);
+							if (cat != null)
+							{
+								categories.add(cat);
+							}
+						}
+
+						fulltree = catsearcher.buildCategorySet(categories);
+
+						String[] catids = new String[categories.size()];
+						int i = 0;
+						for (Iterator iterator3 = categories.iterator(); iterator3.hasNext();)
+						{
+							Category cat = (Category) iterator3.next();
+							catids[i++] = cat.getId();
+						}
+						if (i > 0)
+						{
+							inContent.field(detail.getId(), catids);
+						}
+
+						List ids = new ArrayList(fulltree.size());
+						for (Iterator iterator2 = fulltree.iterator(); iterator2.hasNext();)
+						{
+							Object object = iterator2.next();
+							String id = null;
+							if (object instanceof Data)
+							{
+								id = ((Data) object).getId();
+							}
+							else
+							{
+								id = String.valueOf(object);
+							}
+							ids.add(id);
+						}
+						if (ids.size() > 0)
+						{
+							String[] array = new String[ids.size()];
+							Object oa = ids.toArray(array);
+							inContent.field(fullsetdetail, oa);
+						}
+					}
+					else
+					{
+						inContent.field(key, value);
+
+					}
+
 				}
 				else if (detail.isBoolean())
 				{
@@ -3535,6 +3633,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						}
 					}
 				}
+				
+				
+				
 				else
 				{
 					String val = inData.get(det.getId());
@@ -3563,7 +3664,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 				// putMappings(); //We can only try to put mapping. If this
 				// failes then they will
-
+				
+				//TODO:  This is really bad code - this should be a ElasticListSearcher if it needs this, or we need some kind of
+				//loadDefaults - I feel like if I specifically called my searcher a dataSearcher it would still potentially index old junk
+				
 				HitTracker allhits = (ElasticHitTracker) getAllHits();
 				if (allhits.isEmpty())
 				{
