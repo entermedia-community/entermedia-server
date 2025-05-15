@@ -10,6 +10,7 @@ import {
 	CloudServices,
 	CodeBlock,
 	Essentials,
+	FileRepository,
 	GeneralHtmlSupport,
 	Heading,
 	ImageBlock,
@@ -140,6 +141,176 @@ class ImagePicker extends Plugin {
 	}
 }
 
+class UploadFileButtonPlugin extends Plugin {
+    init() {
+        const editor = this.editor;
+        editor.ui.componentFactory.add('uploadFile', locale => {
+            const view = new ButtonView(locale);
+
+            view.set({
+                label: 'Upload File',
+                withText: true,
+                tooltip: true
+            });
+
+            view.on('execute', () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.multiple = false;
+                input.accept = '*/*';
+                input.style.display = 'none';
+
+                input.addEventListener('change', async () => {
+                    if (input.files.length > 0) {
+						const file = input.files[0];
+						const adapter = new EmUploadAdapter(file, editor, editor.sourceElement.dataset.uploadUrl);
+
+
+                        try {
+                            // Use uploadAndReturnModelFragment for custom HTML insertion
+                            const modelFragment = await adapter.uploadAndReturnModelFragment();
+                            editor.model.insertContent(modelFragment);
+                           
+                        } catch (e) {
+                            console.error('Upload failed', e);
+                        }
+                    }
+                });
+
+                document.body.appendChild(input);
+                input.click();
+                document.body.removeChild(input);
+            });
+
+            return view;
+        });
+    }
+}
+
+
+
+
+
+class EmUploadAdapter {
+	constructor(fileOrLoader, editor, uploadUrl) {
+		// Detect whether we are receiving a File or a Loader
+		if (fileOrLoader && typeof fileOrLoader.read === 'function') {
+			// It's a loader (drag and drop, paste)
+			this.loader = fileOrLoader;
+		} else {
+			// It's a raw file (manual upload button)
+			this.file = fileOrLoader;
+		}
+
+		this.editor = editor;
+		this.uploadUrl = uploadUrl;
+		this.xhr = null;
+	}
+	
+	async uploadAndReturnModelFragment() {
+		const file = this.file || (await this.loader.file);
+
+		return new Promise((resolve, reject) => {
+			const formData = new FormData();
+			formData.append('upload', file);
+
+			$.ajax({
+				url: this.uploadUrl,
+				type: 'POST',
+				data: formData,
+				dataType: 'json',
+				processData: false,
+				contentType: false,
+				success: response => {
+					if (!response || response.error || !response.html) {
+						return reject(response?.error?.message || 'Upload failed');
+					}
+
+					const viewFragment = this.editor.data.processor.toView(response.html);
+					const modelFragment = this.editor.data.toModel(viewFragment);
+					resolve(modelFragment);
+				},
+				error: (_, __, errorThrown) => reject(errorThrown || 'Upload failed'),
+			});
+		});
+	}
+
+
+	
+	
+
+	upload() {
+		return this.loader.file.then(file => new Promise((resolve, reject) => {
+			const formData = new FormData();
+			formData.append('upload', file);
+
+			$.ajax({
+				url: this.uploadUrl,
+				type: 'POST',
+				data: formData,
+				dataType: 'json',
+				processData: false,
+				contentType: false,
+				xhr: () => {
+					const xhr = new window.XMLHttpRequest();
+					this.xhr = xhr;
+					xhr.upload.addEventListener('progress', evt => {
+						if (evt.lengthComputable) {
+							this.loader.uploadTotal = evt.total;
+							this.loader.uploaded = evt.loaded;
+						}
+					});
+					return xhr;
+				},
+				success: response => {
+					if (!response || response.error) {
+						return reject(response?.error?.message || 'Upload failed');
+					}
+
+					//  Insert the raw HTML into the editor manually
+					const viewFragment = this.editor.data.processor.toView(response.html);
+					const modelFragment = this.editor.data.toModel(viewFragment);
+					this.editor.model.insertContent(modelFragment);
+
+					// Resolve without passing url
+					resolve({ default: '' });
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown || textStatus);
+				}
+			});
+		}));
+	}
+
+	abort() {
+		if (this.xhr) {
+			this.xhr.abort();
+		}
+	}
+}
+
+
+function EmUploadAdapterPlugin(editor) {
+	editor.plugins.get('FileRepository').createUploadAdapter = loader => {
+		const sourceElement = editor.sourceElement;
+		let uploadUrl = sourceElement?.dataset?.uploadUrl;
+
+		if (!uploadUrl) {
+		
+			const fallback = $(sourceElement).closest("[data-ckeditor-upload-url]");
+						if (fallback.length) {
+							uploadUrl = fallback.data("ckeditor-upload-url");
+						}
+			
+		}
+
+		return new EmUploadAdapter(loader, editor, uploadUrl);
+	};
+}
+
+
+
+
 const LICENSE_KEY = "GPL";
 
 const editorConfig = (options, isInline = false) => {
@@ -183,7 +354,11 @@ const editorConfig = (options, isInline = false) => {
 		Bold,
 		CloudServices,
 		Essentials,
+		FileRepository,
+		EmUploadAdapterPlugin,
+		UploadFileButtonPlugin, 
 		Heading,
+		GeneralHtmlSupport,
 		Indent,
 		IndentBlock,
 		Italic,
@@ -204,6 +379,16 @@ const editorConfig = (options, isInline = false) => {
 		plugins.push(CloseButtonPlugin, SaveButtonPlugin);
 	}
 
+	const sourceElement = options.sourceElement;
+	const uploadUrl = sourceElement?.dataset?.uploadUrl;
+
+	if (uploadUrl) {
+		// Only show upload button if upload URL is provided
+		items.splice(items.indexOf("uploadFile"), 0, "uploadFile");
+		plugins.push(UploadFileButtonPlugin);
+	}
+	
+	
 	if (options.hideImagePicker) {
 		const idx = items.indexOf("imagePicker");
 		items.splice(idx, 2);
@@ -237,21 +422,23 @@ const editorConfig = (options, isInline = false) => {
 	} else {
 		plugins.push(SourceEditing);
 	}
-
-	const htmlSupportConfig = {};
-	if (isInline) {
-		plugins.push(GeneralHtmlSupport);
-		htmlSupportConfig.htmlSupport = {
+	const htmlSupportConfig = {
+		htmlSupport: {
 			allowEmpty: ["i"],
 			allow: [
 				{
-					name: /.*/,
-					attributes: true,
-					classes: true,
-					styles: true,
+					name: /.*/,        // allow all elements
+					attributes: true,  // allow all attributes
+					classes: true,     // allow all classes
+					styles: true       // allow all styles
 				},
 			],
-		};
+		},
+	};
+
+	if (isInline) {
+		plugins.push(GeneralHtmlSupport);
+	
 	}
 
 	return {
@@ -388,6 +575,7 @@ $(window).on("edithtmlstart", function (_, targetDiv) {
 	const options = {
 		hideImagePicker,
 		hideSaving,
+		sourceElement: targetDiv[0],		
 	};
 	const uid = targetDiv[0].id;
 	if (uid && window.CK5Editor[uid]) {
@@ -426,48 +614,90 @@ function createInlineCK5(target, options = {}) {
 		target.id = uid;
 	}
 
-	InlineEditor.create(target, editorConfig(options, true))
-		.then((editor) => {
-			const targetContainer = $(target).data("targetcontainer");
-			if (targetContainer) {
-				editor.model.document.on("change", function () {
-					const editorData = editor.getData();
-					$(targetContainer).val(editorData);
-				});
-			}
+	if (window.CK5EditorInline[uid]) {
+		window.CK5EditorInline[uid].destroy()
+			.then(() => {
+				delete window.CK5EditorInline[uid];
+				doCreate();
+			})
+			.catch((error) => {
+				console.error(error);
+				doCreate();
+			});
+	} else {
+		doCreate();
+	}
 
-			window.CK5EditorInline[uid] = editor;
-			if (!options.hideImagePicker) {
-				$(window).on("assetpicked", function (_, input) {
-					const params = JSON.parse(input);
-					const imageUrl = params.assetpicked;
-					setTimeout(() => {
-						editor.execute("imageInsert", { source: imageUrl });
+	function doCreate() {
+		InlineEditor.create(target, editorConfig(options, true))
+			.then((editor) => {
+				const targetContainer = $(target).data("targetcontainer");
+				if (targetContainer) {
+					editor.model.document.on("change:data", function () {
+						const editorData = editor.getData();
+						$(targetContainer).val(editorData);
 					});
-				});
-			}
+				}
 
-			//If CKEditor is inside a modal, we need to remove the tabindex attribute from the modal to make the link popup focusable
-			const modal = $(target).closest(".modal");
-			if (modal.length > 0) {
-				modal.attr("tabindex", "");
-			}
-		})
-		.catch((error) => {
-			console.error(error);
-		});
+				window.CK5EditorInline[uid] = editor;
+				editor.editing.view.focus();
+
+				if (!options.hideImagePicker) {
+					$(window).on("assetpicked", function (_, input) {
+						const params = JSON.parse(input);
+						const imageUrl = params.assetpicked;
+						setTimeout(() => {
+							editor.execute("imageInsert", { source: imageUrl });
+						});
+					});
+				}
+
+				const modal = $(target).closest(".modal");
+				if (modal.length > 0) {
+					modal.attr("tabindex", "");
+				}
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+	}
 }
+
 
 $(window).on("inlinehtmlstart", function (_, targetDiv) {
 	if (targetDiv.length === 0) return;
+
+	if (targetDiv.data("ck5Initialized")) {
+		console.log("Already initialized, skipping setup.");
+		return;
+	}
+
 	const hideSaving = targetDiv.data("editonly");
 	const hideImagePicker = targetDiv.data("imagepickerhidden");
 	const options = {
 		hideImagePicker,
 		hideSaving,
+		sourceElement: targetDiv[0], 
+
 	};
-	createInlineCK5(targetDiv[0], options);
+
+	const uid = targetDiv[0].id;
+	
+	
+	targetDiv.data("ck5Initialized", true);
+
+	if (uid && window.CK5Editor[uid]) {
+		window.CK5Editor[uid]
+			.destroy()
+			.then(() => createInlineCK5(targetDiv[0], options)) 
+			.catch((error) => {
+				console.error(error);
+			});
+	} else {
+		createInlineCK5(targetDiv[0], options);
+	}
 });
+
 
 $(document).ready(function () {
 	lQuery("textarea.htmleditor-advanced").livequery(function () {
@@ -492,28 +722,4 @@ $(document).ready(function () {
 			createCK5($this, options);
 		}
 	});
-
-	window.onbeforeunload = function () {
-		let unsaved = Object.entries(window.CK5Editor).find(
-			([_, value]) => value.sourceElement !== null
-		);
-		if (!unsaved) {
-			unsaved = Object.entries(window.CK5EditorInline).find(
-				([_, value]) => value.sourceElement !== null
-			);
-		}
-		if (unsaved) {
-			var id = "#" + unsaved[0];
-			setTimeout(() => {
-				$(id).css("outline", "1px solid red");
-				$([document.documentElement, document.body]).animate(
-					{
-						scrollTop: $(id).offset().top - 100,
-					},
-					200
-				);
-			});
-			return "You have unsaved changes";
-		}
-	};
 });

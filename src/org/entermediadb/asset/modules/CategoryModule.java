@@ -76,7 +76,7 @@ public class CategoryModule extends BaseMediaModule
 		{
 			treeid = name + "_" + appid + "_" + archive.getCatalogId() + "_" + inReq.getUserName() + getCategorySearcher(inReq).getIndexId();
 		}
-		WebTree webTree = (WebTree) inReq.getPageValue(treeid);
+		WebTree webTree = (WebTree) archive.getCacheManager().get("category-tree", treeid);
 
 		if (root == null)
 		{
@@ -155,7 +155,7 @@ public class CategoryModule extends BaseMediaModule
 				if(renderebean == null) {
 					renderebean = "category";
 				}
-				renderer = (CatalogTreeRenderer) archive.getBean(renderebean + "TreeRenderer");				
+				renderer = (CatalogTreeRenderer)  getModuleManager().getBean(archive.getCatalogId(), renderebean + "TreeRenderer", false); //archive.getBean(renderebean + "TreeRenderer");				
 				renderer.setWebTree(webTree);
 				renderer.setFoldersLinked(true);
 				String prefix = inReq.findValue("url-prefix");
@@ -205,8 +205,10 @@ public class CategoryModule extends BaseMediaModule
 			{
 				expandChildren(webTree, main, Integer.parseInt(expandparents));
 			}
-
+			log.info("Putting session + " +treeid + webTree);
+			archive.getCacheManager().put("category-tree", treeid, webTree);
 			inReq.putSessionValue(treeid, webTree);
+			
 			inReq.putPageValue(webTree.getName(), webTree);
 			//	inRequest.putPageValue("selectednodes", webTree.getTreeRenderer().getSelectedNodes());
 		}
@@ -221,7 +223,7 @@ public class CategoryModule extends BaseMediaModule
 		{
 			webTree.getTreeRenderer().selectNodes(null);
 		}
-
+		
 		return webTree;
 	}
 
