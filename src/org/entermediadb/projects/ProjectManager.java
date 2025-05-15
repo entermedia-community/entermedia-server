@@ -437,7 +437,7 @@ public class ProjectManager implements CatalogEnabled
 	// }
 	// addAssetToCollection(archive, collectionid, assets);
 	// }
-
+/*
 	public void addAssetToCollection(MediaArchive archive, String librarycollection, HitTracker assets)
 	{
 		List tosave = new ArrayList();
@@ -510,7 +510,8 @@ public class ProjectManager implements CatalogEnabled
 			archive.getAssetSearcher().saveData(asset);
 		}
 	}
-
+*/
+	/*
 	private Category findSpecificRoot(MediaArchive archive, Category root, Asset asset)
 	{
 		String path = null;
@@ -529,7 +530,7 @@ public class ProjectManager implements CatalogEnabled
 		}
 		return root;
 	}
-
+*/
 	// public void addAssetToLibrary(MediaArchive archive, String libraryid,
 	// HitTracker assets)
 	// {
@@ -580,6 +581,7 @@ public class ProjectManager implements CatalogEnabled
 	// return hits;
 	// }
 	//
+	/*
 	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String collectionid)
 	{
 		if (collectionid == null)
@@ -776,6 +778,7 @@ public class ProjectManager implements CatalogEnabled
 	 * usercollections; }
 	 */
 
+	/*
 	public Data addCategoryToCollection(User inUser, MediaArchive inArchive, String inCollectionid, String inCategoryid)
 	{
 		if (inCategoryid != null)
@@ -832,6 +835,7 @@ public class ProjectManager implements CatalogEnabled
 	// When we snapshot we just increment the count and add existing to the new
 	// count as well
 
+	/*
 	public void importCollection(WebPageRequest inReq, User inUser, MediaArchive inArchive, String inCollectionid, String inImportPath, String inNote)
 	{
 		LibraryCollection collection = getLibraryCollection(inArchive, inCollectionid);
@@ -894,7 +898,9 @@ public class ProjectManager implements CatalogEnabled
 
 		inArchive.fireSharedMediaEvent("conversions/runconversions");
 	}
-
+*/
+	
+	/*
 	public Category createRevision(MediaArchive inArchive, LibraryCollection collection, User inUser, String inNote)
 	{
 		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
@@ -1009,6 +1015,8 @@ public class ProjectManager implements CatalogEnabled
 
 	}
 
+	
+	/*
 	public Category getRootCategory(MediaArchive inArchive, String inCollectionId)
 	{
 		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
@@ -1016,7 +1024,8 @@ public class ProjectManager implements CatalogEnabled
 		return getRootCategory(inArchive, collection);
 
 	}
-
+	
+	
 	public Category getRootCategory(MediaArchive inArchive, LibraryCollection inCollection)
 	{
 
@@ -1136,7 +1145,11 @@ public class ProjectManager implements CatalogEnabled
 		return root;
 
 	}
-
+*/
+	
+	
+	
+	
 	protected void copyAssets(ArrayList savelist, User inUser, MediaArchive inArchive, LibraryCollection inCollection, Category inParentSource, Category inDestinationCat, boolean skip)
 	{
 
@@ -1213,7 +1226,7 @@ public class ProjectManager implements CatalogEnabled
 	}
 
 
-
+/*
 	public void restoreSnapshot(WebPageRequest inReq, User inUser, MediaArchive inArchive, String inCollectionid, String inRevision, String inNote)
 	{
 		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
@@ -1239,7 +1252,7 @@ public class ProjectManager implements CatalogEnabled
 		assets.saveAllData(list, null);
 
 	}
-
+*/
 	protected Category getRevisionRoot(MediaArchive inArchive, String inCollectionid, String inRevision)
 	{
 		Searcher cats = inArchive.getSearcher("category");
@@ -1423,7 +1436,7 @@ public class ProjectManager implements CatalogEnabled
 		}
 		return true;
 	}
-
+/*
 	public boolean addUserToLibrary(MediaArchive inArchive, Data inSavedLibrary, User inUser)
 	{
 		Category librarycategory = createLibraryCategory(inArchive, inSavedLibrary);
@@ -1431,7 +1444,7 @@ public class ProjectManager implements CatalogEnabled
 		inArchive.getSearcher("category").saveData(librarycategory);
 		return true;
 	}
-
+*/
 	public int approveSelection(WebPageRequest inReq, HitTracker inHits, String inCollectionid, User inUser, String inNote)
 	{
 		Collection tosave = new ArrayList();
@@ -1600,33 +1613,6 @@ public class ProjectManager implements CatalogEnabled
 			collection.setValue("collectiontype", "1");
 			mediaArchive.getSearcher("librarycollection").saveData(collection);
 		}
-
-		//		String collectionroot = mediaArchive.getCatalogSettingValue("collection_root");
-		//		if (collectionroot == null) {
-		//			collectionroot = "Collections";
-		//		}
-
-		Category collectioncategory = getRootCategory(mediaArchive, collection);
-
-		// Make sure the name still matches
-		if (collectioncategory != null && !collectioncategory.getName().equals(collection.getName()))
-		{
-			collectioncategory.setName(collection.getName());
-		}
-
-		//ProjectManager manager = mediaArchive.getProjectManager();
-		((MultiValued) collectioncategory).addValue("viewusers", collection.get("owner"));
-
-		mediaArchive.getCategorySearcher().saveCategory(collectioncategory);
-
-		// Move the parents if needed
-		// if( !collectioncategory.hasParent(librarycategory.getId()))
-		// {
-		// //Move the child into the parent
-		// librarycategory.addChild(collectioncategory);
-		// mediaArchive.getCategorySearcher().saveData(collectioncategory);
-		// }
-
 	}
 
 

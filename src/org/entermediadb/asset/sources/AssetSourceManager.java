@@ -234,12 +234,13 @@ public class AssetSourceManager implements CatalogEnabled
 	protected void saveAssetData(MediaArchive archive, ListHitTracker tracker, String currentcollection, User inUser)
 	{
 		archive.saveAssets(tracker, inUser);
-
+		/*
 		if( currentcollection != null)
 		{
 			ProjectManager manager = (ProjectManager)getMediaArchive().getProjectManager();
 			manager.addAssetToCollection(archive,currentcollection,tracker);
 		}
+		*/
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			Asset asset = (Asset) iterator.next();

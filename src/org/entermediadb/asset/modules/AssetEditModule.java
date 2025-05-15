@@ -2302,7 +2302,7 @@ public class AssetEditModule extends BaseMediaModule
 			//archive.fireSharedMediaEvent("importing/importassets");  //Non blocking
 			
 
-			
+			/*
 			//--who is using this?
 			final String currentcollection = inReq.getRequestParameter("collectionid");
 
@@ -2312,7 +2312,7 @@ public class AssetEditModule extends BaseMediaModule
 				manager.addAssetToCollection(archive, currentcollection, current);
 			}
 			//--
-			
+			*/
 		}
 		inReq.putPageValue("savedassets", savedassets);
 		inReq.putPageValue("hits", savedassets);  //Some evets requires hits variable

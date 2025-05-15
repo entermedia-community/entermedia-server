@@ -242,6 +242,7 @@ public class ProjectModule extends BaseMediaModule
 	 * tracker); inReq.putPageValue("count" , String.valueOf( tracker.size() )
 	 * ); return; } } } }
 	 */
+	/*
 	public void addAssetToCollection(WebPageRequest inReq)
 	{
 		// TODO: Support multiple selections
@@ -418,7 +419,7 @@ public class ProjectModule extends BaseMediaModule
 		String sessionId = all.getSessionId();
 		inReq.putSessionValue(sessionId, all);
 	}
-
+*/
 	public void getFirstUserCollection(WebPageRequest inReq)
 	{
 		String collectionid = loadCollectionId(inReq);
@@ -743,7 +744,7 @@ public class ProjectModule extends BaseMediaModule
 		inReq.putPageValue("projectmanager", manager);
 		return manager;
 	}
-
+/*
 	public void addCategoryToCollection(WebPageRequest inReq)
 	{
 		String[] categoryid = inReq.getRequestParameters("categoryid");
@@ -768,7 +769,7 @@ public class ProjectModule extends BaseMediaModule
 			inReq.putPageValue("librarycol", collection);
 		}
 	}
-
+*/
 	// public void loadCategoriesOnCollection(WebPageRequest inReq)
 	// {
 	// MediaArchive archive = getMediaArchive(inReq);
@@ -811,7 +812,7 @@ public class ProjectModule extends BaseMediaModule
 	//		inReq.putPageValue("importstatus", "completed");
 	//
 	//	}
-
+/*
 	public void copyCollection(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -835,7 +836,8 @@ public class ProjectModule extends BaseMediaModule
 		inReq.putPageValue("newcollection", newcollection);
 
 	}
-
+*/
+	/*
 	public void createSnapshot(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -886,7 +888,7 @@ public class ProjectModule extends BaseMediaModule
 		}
 
 	}
-
+*/
 	public boolean checkViewCollection(WebPageRequest inReq)
 	{
 		ProjectManager manager = getProjectManager(inReq);
