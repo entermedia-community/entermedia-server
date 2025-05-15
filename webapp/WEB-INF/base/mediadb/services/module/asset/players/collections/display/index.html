@@ -1,0 +1,50 @@
+#set($category = $mediaarchive.getEntityManager().loadDefaultFolder($librarycol, $user))
+$context.putPageValue("category", $category)
+$context.putPageValue("rootcategory", $category)
+
+
+#set($urlbarprefix = "${edithome}/$!{rootcategory.id}/#dash($rootcategory).html")
+$context.putPageValue("urlbarprefix", $urlbarprefix)
+
+<div id="${edithomeid}" 
+	class="editdiv ${edithomeid} heightExcludingHeaderFooter dataeditedreload h-100" 
+	data-oemaxlevel="2"
+	data-edithome="${edithome}"
+	data-edithomeid="data-${edithomeid}"
+	data-targetdiv="resultsdiv"
+	data-setpagetitle="#text($asset)"
+	data-categoryid="$!rootcategory.getId()"
+	data-rootcategory="$!rootcategory.getId()"
+	data-url="${urlbarprefix}"
+>
+
+	#set($module = $mediaarchive.getCachedData("module","asset"))
+	$context.putPageValue("module", $module)
+	
+	
+	#set($searchhome = "${apphome}/services/module/asset/players/collections/display/results")
+	$context.putPageValue("searchhome", $searchhome)
+	
+	<div class="d-flex h-100" style="width: 100%;">
+	  	<div class="" style="position:inherit;border-right: 1px solid #e2eff4; width: 250px;">
+			#set($urlprefix = "${edithome}/category/${librarycol.getId()}.html")
+			$context.putPageValue("urlprefix", $urlprefix)
+	  		#set($treeurl = "${edithome}/tree.html")
+	  		#set($nodeID = $context.getRequestParameter("nodeID"))
+			
+	  		#if (!$nodeID)
+	  			#set($treeurl = "$treeurl?clearselection=true")
+	  		#end
+			$pages.include($treeurl, $context)		
+		</div>
+		<div class="flex-grow-1" style="border:2px;margin-left: -1px; border-left: 1px solid #e2eff4;" >
+	  		<div id="searchlayout" class="h-100"> 
+	  		$pages.include("${searchhome}/searchcategory.html",$context)
+	  		</div>
+		</div>
+	</div>
+</div>
+
+
+
+		

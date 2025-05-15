@@ -1,8 +1,3 @@
-#ifnull($urlprefix)
-#set($urlprefix = "$apphome/services/module/asset/players/collections/display/category/${librarycol.getId()}.html")
-#end
-
-#set($rootcategory = $mediaarchive.getProjectManager().getRootCategory($mediaarchive, $librarycol.getId()))
 
 <div class="assetdropcategory assetdropcategorymove" style="padding:0px;"> 
 #set( $link = "$apphome/components/emtree/tree.html")

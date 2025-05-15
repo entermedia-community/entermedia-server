@@ -1,5 +1,0 @@
-<page>
-
-	<inner-layout>/${applicationid}/services/module/asset/players/collections/brickgallery.html</inner-layout>
-	<property name="alwaysresetpage">false</property>
-</page>

@@ -349,7 +349,7 @@ curl -XDELETE 'http://localhost:9200/assets_catalog/entityproduct/AXhA-Anv63GqB4
 
 curl -XGET 'http://localhost:9200/system/searchtypes/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
-curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AXM1Gsk7XgDCG44Jhh6d' | python -mjson.tool
+curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AZa3Kr1PWmFP2mIf6UAG' | python3 -mjson.tool
 
 curl -XGET 'http://localhost:9200/system/user/_search?q=id:admin' | python -mjson.tool
 

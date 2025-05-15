@@ -1,0 +1,74 @@
+#set($isselected = $hits.isSelectedOnPage(${hit.id}) )
+$context.putPageValue("isselected", "isselected" )
+
+#if(!$rendertype || $type =="rendertype")
+	#set( $rendertype = "mime" )
+#elseif( $rendertype =="video")
+	#set( $rendertype = "image" )
+#end
+
+
+#set($assetwidth = $mediaarchive.getRealImageWidth($hit)) 
+$context.putPageValue("assetwidth",$assetwidth)	
+#set($assetheight = $mediaarchive.getRealImageHeight($hit)) 
+$context.putPageValue("assetheight",$assetheight)	
+
+#if($assetheight && $assetwidth)
+	#set($facemanager = $mediaarchive.getBean("faceProfileManager") )
+	#if($faceprofilegroups )
+		#set($imagebox = $facemanager.getImageBox( $faceprofilegroups, $hit, $assetwidth, $assetheight) )
+		#set($faceprofilegroupid = $imagebox.groupid)
+	#elseif($faceprofilegroupid)
+		#set($imagebox = $facemanager.getImageBoxById( $faceprofilegroupid, $hit, $assetwidth, $assetheight) )
+	#end
+	$context.putPageValue("imagebox", $imagebox)
+#end
+<div class="embrickcontent" 
+	data-rowname="#text($hit)"
+	data-dataid="$!{entityid}"
+	data-entityid="$!{entityid}"
+  	data-entitymoduleid="$!{moduleid}"
+  	##data-rendertype="entity"
+#if($assetwidth > 0)
+	data-imgwidth="$!assetwidth"
+	data-imgheight="$!assetheight"
+#elseif($rendertype == "audio")
+	data-imgwidth="250"
+	data-imgheight="110"
+#else 
+	data-imgwidth="250"  ##moduleicon
+	data-imgheight="110"
+#end
+>
+
+
+<div class="grid-thumbimage" data-assetid="$!{hit.id}" data-rendertype="$!rendertype">
+	
+	#if( $hit.previewstatus == "mime" || $alwaysmime)
+		#set( $rendertype = "mime" )
+	#end
+		
+	#if( ($hit.previewstatus != "2" && $hit.previewstatus != "mime" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
+	 	$pages.include("$!{searchhome}/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
+	#else
+	
+		#set($imagelink = $mediaarchive.asLinkToPreview($hit, $!librarycol.id, "image3000x3000", true))
+	
+		#set($convertpreset = $mediaarchive.getCachedData("convertpreset", "largeimage" ) )
+		#ifnull($convertpreset)
+			#set($convertpreset = $mediaarchive.getCachedData("convertpreset", "webplargeimage" ) )
+		#end
+		#set($downloadlink = $mediaarchive.asLinkToShare($context.getSiteRoot(), $hit, $convertpreset))
+		#ifnotnull($downloadlink)
+			#set($downloadlink = "${downloadlink}?download=true")
+		#end 
+		<a href="$!imagelink" class="lightbox" style="width:100%;" data-downloadlink="$!downloadlink">
+		$pages.include("$!{searchhome}/thumbnails/${rendertype}.html", $context)
+		</a>
+	#end
+</div>
+#ifnotnull($downloadlink)
+<div class="grid-cell-footer"><a class="downloadicon" href="${downloadlink}" title="[[Download]] $!hit.getName()"><span>[[Download]]</span></a></div>
+#end
+
+</div>

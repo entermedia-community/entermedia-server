@@ -1,3 +1,8 @@
+#set($module = $mediaarchive.getCachedData("module","asset"))
+$context.putPageValue("module", $module)
+
 <div id="searchlayout" class="h-100"> 
-	$pages.include("$apphome/services/module/asset/players/collections/display/brickviewassets.html", $context)
+	#set($searchhome = "${apphome}/services/module/asset/players/collections/display/results")
+	$context.putPageValue("searchhome", $searchhome)
+	$pages.include("${searchhome}/searchcategory.html", $context)
 </div>

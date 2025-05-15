@@ -1,22 +1,45 @@
 <page>
- 
-	<inner-layout>/${applicationid}/services/module/asset/players/collections/display/brickviewassets.html</inner-layout>
-	
-	<property name="hitsnameX">collectionhits</property>
-	
+
+
+	<property name="edithomename">displayentity</property>
+
+	<property name="edithome">/${applicationid}/services/module/asset/players/collections/display</property>
+	<property name="edithomeid">${module}${edithomename}</property>
+
+	<inner-layout>${edithome}/index.html</inner-layout>
+
+	<property name="fallbackdirectory">../default</property>
+
+	<property name="showselections">false</property>
+	<property name="showaddnew">false</property>
+		
 	<property name="virtual">true</property>
+	<property name="showentitiesheader">false</property>
+	<property name="sidebarcomponent">categories</property>
+	
+	<property name="assetresultview">brickvertical</property>
+	<property name="module">asset</property>
+	<property name="showresultssidebar">false</property>
+	
+	<path-action name="DataEditModule.loadEditHome" />
+	<path-action name="DataEditModule.loadSearchHome" />
 	
 	<property name="collectionidinfilename">true</property>
-
-	<property name="sortby">assetcreationdateDown</property>
-	
-	<property name="alwaysresetpage">true</property>
-	
 	<path-action name="ProjectModule.loadCollection" />
 	
-	<path-action name="ProjectModule.searchForAssetsOnCollection" />
+	<property name="assetskipfilter">true</property>
+	<path-action name="MediaSearchModule.loadCategory">
+		<property name="idlevel">1</property>
+	</path-action>	
+
+ 
 	
-	<page-action name="DataEditModule.loadPageOfSearch"/>
+		
+	
+
+	
+	
+	
 	
 	
 	

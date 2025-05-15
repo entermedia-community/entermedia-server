@@ -1,0 +1,41 @@
+#ifnull($hits)
+	#set($hits = $modulehits)
+#end
+#set($hitssessionid = $hits.getSessionId())
+#set($moduleid = $module.id)
+#if($canviewbreadcrumb)
+	#ifnull($category)
+		#set($categoryid = $context.getRequestParameter("categoryid"))
+		#set($category = $mediaarchive.getCachedData("category", $categoryid))
+	#end
+	#if( $category )
+		#set( $count = $hits.size())
+		#set($parentcategories = $category.getParentCategories())
+		#if(!$parentcategories.isEmpty())
+			<div class="filtered breadCrumbContainer autostickywidth #if(!$canviewentitiestopmenu) entityHidden #end" id="breadCrumbContainer">
+				<div class="filtered-breadcrumb">
+					#foreach( $parent in $parentcategories)
+						#if( ${foreach.count} > 1)&nbsp;/&nbsp;#end
+						#if($category.getId() != $parent.getId())
+							<a style="padding:0px 4px 0;" 
+								href="$siteroot$apphome/views/modules/asset/editors/viewfilescategory/$!{parent.id}/#dash($parent).html?assethitssessionid=$!hits.getSessionId()"
+								title="[[View Files]]: $parent"
+								class="ajax"
+								data-targetdiv="applicationcontent"
+								data-oemaxlevel="4"
+								data-scrolltocat="true"
+								data-updateurl="true"
+								data-sidebarcomponent="categories"
+								data-includeeditcontext="false">$parent</a>
+						#else
+							<span class="currentcategory">$parent</span>
+						#end		
+					#end
+					<span>($count)</span>
+				</div>
+			</div>
+		#end
+	#end		
+#end
+
+ 

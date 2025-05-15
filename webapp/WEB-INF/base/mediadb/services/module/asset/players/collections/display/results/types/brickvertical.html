@@ -1,0 +1,81 @@
+
+#set($loop = $hits)
+#set($isdraggable = false)
+	<div class="scrollview" style="overflow-x: hidden;">
+		<div class="brickvertical brickverticalsortable" 
+			data-maxheight="180" 
+			data-maxwidth="180"
+			data-targeth="180"
+			data-cellpadding="4"
+			data-stackedviewpath="${apphome}/views/modules/asset/results/default/types/brickvertical.html">
+		
+		#set($count = 0)
+		#set($viewerlink = $content.get("assetviewerlink") )
+		#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
+		
+		#foreach( $brick in $loop.getPageOfHits())
+		 
+		 	#ifnotnull( $hitassetlookup )
+			 	#set( $hit = $hitassetlookup.get($brick.getId()) )
+		 	#end
+		 	#ifnull( $hitassetlookup )
+				#set( $hit = $brick)
+		 	#end
+			$context.putPageValue("brick", $brick)
+			$context.putPageValue("hit", $hit)
+			$context.putPageValue("asset", $hit)
+
+			#set($type = $hit.getSearchHit().getType())
+			$context.putPageValue("type", $type)
+		
+			#set($rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+			$context.putPageValue("rendertype", $rendertype)
+		
+			#set($sourcepath = $hit.sourcepath)
+			$context.putPageValue("sourcepath", $hit.sourcepath )
+			
+			$context.putPageValue("assetid", $hit.id)
+			$context.putPageValue("count", $count )
+		
+			$context.putPageValue("thumbsize", "mediumplus" )
+			
+			#set($assetwidth = $mediaarchive.getRealImageWidth($hit))
+			$context.putPageValue("assetwidth", "assetwidth" )
+			
+			#set($assetheight = $mediaarchive.getRealImageHeight($hit))
+			$context.putPageValue("assetheight", "assetheight" )
+			
+			#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
+			$context.putPageValue("click", "click" )
+			
+
+			       
+			<div class="resultsdivdata masonry-grid-cell #if($isdraggable)assetdraggable#end"
+				 
+				id="gallerycell_$!{hit.id}"
+				data-assetid="$!{hit.id}"
+				data-dataid="$!{hit.id}"
+				data-assetlightboxid="$!{brick.id}"
+				data-ordering="$!{brick.ordering}"
+				
+				#if($rendertype == "audio")
+					data-width="250"
+					data-height="110"
+				#else
+					data-width="$assetwidth"
+					data-height="$assetheight"
+					$context.putPageValue("thumbheight", "180" ) 
+				#end
+				>
+				<div class="#if($isdraggable)assetdroppable sort-droppable #end" data-dataid="$hit.id">
+				$pages.include("${searchhome}/thumbnails/brick.html", $context)
+				</div>
+			</div>
+		    #set ( $count = $count + 1) 
+		    
+		#end
+		#if ( $loop.getPageOfHits().size() == 0 )
+			$pages.stream("$!{searchhome}/empty.html", $context)
+		#end
+	</div>
+	</div>
