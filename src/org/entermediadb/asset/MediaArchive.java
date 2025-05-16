@@ -2705,18 +2705,6 @@ public class MediaArchive implements CatalogEnabled
 		return null;
 	}	
 
-	public String asLinkToPreview(String inId, String inGeneratedoutputfile) {
-		Data asset = getAsset(inId);
-		if(asset != null) {
-			return asLinkToPreview(asset	, inGeneratedoutputfile);
-		}
-		return null;
-	}
-	public String asLinkToPreview(Data inAsset, String inGeneratedoutputfile) {
-		
-		return asLinkToPreview(inAsset, null, inGeneratedoutputfile);
-	}	
-
 	
 	public String asLinkToDownload(Data inAsset, String inCollectionId, Data inPreset) {
 		
@@ -2798,25 +2786,50 @@ public class MediaArchive implements CatalogEnabled
 		finalroot = URLUtilities.urlEscape(finalroot);
 		return finalroot;
 	}
+	
+	public String asLinkToPreview(String inassetId, String inGeneratedoutputfile) 
+	{
+		Data asset = getAsset(inassetId);
+		if(asset != null) {
+			return asLinkToPreview(asset, inGeneratedoutputfile, false);
+		}
+		return null;
+	}
+	public String asLinkToPreview(Data inAsset, String inGeneratedoutputfile) 
+	{
+		
+		return asLinkToPreview(inAsset, inGeneratedoutputfile, false);
+	}	
 
+	/*
+	 * @Deprecated - No collectionid required anymore
+	 * 
+	 */
 	public String asLinkToPreview(Data inAsset, String inCollectionId, String inGeneratedoutputfile)
 	{
-		return asLinkToPreview(inAsset,inCollectionId,inGeneratedoutputfile,false);
+		return asLinkToPreview(inAsset, inGeneratedoutputfile, false);
+	}
+	
+	/*
+	 * @Deprecated - No collectionid required anymore
+	 * 
+	 */
+	public String asLinkToPreview(Data inAsset, String inCollectionId, String inGeneratedoutputfile, boolean isExternalLink)
+	{
+		return asLinkToPreview(inAsset, inGeneratedoutputfile, isExternalLink);
 	}
 	
 	/**
 	 * This is create the path if needed
 	 */
-	public String asLinkToPreview(Data inAsset, String inCollectionId, String inGeneratedoutputfile, boolean isExternalLink)
+	public String asLinkToPreview(Data inAsset, String inGeneratedoutputfile, boolean isExternalLink)
 	{
 		if (inAsset == null)
 		{
 			return null;
 		}
 		
-		
 		String usefile = generatedOutputName(inAsset, inGeneratedoutputfile);
-		
 	
 		String finalroot = null;
 		
@@ -2826,12 +2839,6 @@ public class MediaArchive implements CatalogEnabled
 			cdnprefix = getCatalogSettingValue("cdn_prefix");
 			if (cdnprefix == null)
 			{
-				//RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
-				//cdnprefix = rutil.getSiteRoot();
-				//				if (cdnprefix.contains("localhost")) //Prefix no longer used for internal checks
-				//				{
-				//					cdnprefix = "";
-				//				}
 				cdnprefix = getCatalogSettingValue("siteroot");//
 				
 				if( cdnprefix == null)
@@ -2843,41 +2850,16 @@ public class MediaArchive implements CatalogEnabled
 		String sourcepath = inAsset.getSourcePath();
 
 		String downloadroot = null;
-//		if (inCollectionId != null)
-//		{
-//			downloadroot = "/services/module/librarycollection/downloads/";
-//		}
-//		else
-//		{
-			downloadroot = "/services/module/asset/downloads/";
-//		}
-
-//		if (usefile.contains("."))
-//		{
-//			if (inCollectionId != null)
-//			{
-//				finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + inCollectionId + "/" + sourcepath + "/" + usefile;
-//			}
-//			else
-//			{
-				if( inGeneratedoutputfile.endsWith("video.m3u8"))
-				{
-					//finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedoutputfile + "/360/" + usefile;
-					
-					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedoutputfile;
-				}
-				else
-				{
-					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + sourcepath + "/" + usefile;
-				}
-//			}
-//		}
-//		else
-//		{
-//			//Legacy?
-//			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preview/" + inGeneratedName + "/" + sourcepath + "/thumb.jpg";
-//
-//		}
+		downloadroot = "/services/module/asset/downloads/";
+		if( inGeneratedoutputfile.endsWith("video.m3u8"))
+		{
+			//finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedoutputfile + "/360/" + usefile;
+			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedoutputfile;
+		}
+		else
+		{
+			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + sourcepath + "/" + usefile;
+		}
 		finalroot = URLUtilities.urlEscape(finalroot);
 
 		return finalroot;
