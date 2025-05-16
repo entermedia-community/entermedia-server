@@ -192,6 +192,10 @@ public class EntityManager implements CatalogEnabled
 				if( cat != null)
 				{
 					String parentppath = cat.getCategoryPath();
+					if (existingsourcepath.endsWith("/"))
+					{
+						existingsourcepath = existingsourcepath.substring(0, existingsourcepath.length() - 1);
+					}
 					if( parentppath != null && !parentppath.equals( existingsourcepath ) )
 					{
 						throw new OpenEditException("Move Category to correct location: " + existingsourcepath);
