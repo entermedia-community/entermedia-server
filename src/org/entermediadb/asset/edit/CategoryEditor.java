@@ -155,9 +155,12 @@ public class CategoryEditor {
 	 }
 	 
 	 
-	 
-
 	 public void saveCategory(Category inCategory) throws OpenEditRuntimeException
+	 {
+		 saveCategory(inCategory, false);
+	 }
+
+	 public void saveCategory(Category inCategory, Boolean saveTree) throws OpenEditRuntimeException
 	 {
 		 if ( inCategory.getParentCategory() == null && getMediaArchive().getCategoryArchive().getRootCategory().getId() != inCategory.getId())
 		 {
@@ -178,7 +181,14 @@ public class CategoryEditor {
 //		 {
 //			 throw new OpenEditRuntimeException(ex);
 //		 }
-		 getCategorySearcher().saveCategory(inCategory);		
+		 if (saveTree) 
+		 {
+			 getCategorySearcher().saveCategoryTree(inCategory);
+		 }
+		 else
+		 {
+			 getCategorySearcher().saveCategory(inCategory);
+		 }
 	 }
 
 	 /**

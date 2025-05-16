@@ -145,7 +145,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			//getXmlCategoryArchive().clearCategories();
 			getCacheManager().clear(getCacheKey());
 			
-			HitTracker tracker = query().all().sort("categorypath").search();
+/*			HitTracker tracker = query().all().sort("categorypath").search();
 			tracker.enableBulkOperations();
 			
 			List tosave = new ArrayList();
@@ -167,6 +167,10 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 				}
 			}
 			updateIndex(tosave,null);
+	*/
+			
+
+			saveCategoryTree(getRootCategory());
 			
 			//Keep in mind that the index is about the clear so the cache will be invalid anyways since isDirty will be called
 			getCacheManager().clear(getCacheKey());
@@ -466,6 +470,53 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		String id = PathUtilities.extractId(inPath, true);
 		return id;
 	}
+	
+	@Override
+	public Category createCategoryPathFromParent(Category inParent, String inChildPath)
+	{
+		String categorypath = inParent.get("categorypath");
+		if (categorypath != null && inParent.hasLoadedParent())   //Data error check
+		{
+			String existingcategorypath = inParent.loadCategoryPath();
+			if (!categorypath.equals(existingcategorypath)) 
+			{
+				throw new OpenEditException("Parent category needs to be reindex"); 
+			}
+		}
+		//Clean up
+//		if (inChildPath.startsWith("/"))
+//		{
+//			inChildPath  = inChildPath.substring(1);
+//		}
+//		if (inChildPath.endsWith("/"))
+//		{
+//			inChildPath  = inChildPath.substring(0,inChildPath.length()-1);
+//		}
+		Category childcategory = null;
+		String[] children = inChildPath.split("\\/");
+		Category currentparent = inParent;
+		for (int i = 0; i < children.length; i++)
+		{
+			String catname = children[i];
+			childcategory = currentparent.getChildByName(catname); //speed up but children could be out of date if they renamed it
+			if( childcategory == null)
+			{
+				//Create it
+				childcategory = (Category)createNewData();
+				childcategory.setName(inChildPath);
+				//create parents and itself
+				childcategory.setParentCategory(currentparent);
+				currentparent.setIndexId("-1"); //reload sometime
+				saveData(childcategory);
+				getCacheManager().put(getCacheKey(), childcategory.getId(),childcategory);
+			}
+			currentparent = childcategory;
+			
+		}
+		
+		return childcategory;
+	}
+	
 	@Override
 	public synchronized Category createCategoryPath(String inPath)
 	{

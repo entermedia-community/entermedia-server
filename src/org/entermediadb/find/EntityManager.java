@@ -182,13 +182,21 @@ public class EntityManager implements CatalogEnabled
 			return null;
 		}
 		Category cat = null;
-		
-		if( entity.getValue("uploadsourcepath") != null ) //Dont use rootcategory if source is blank
+		String existingsourcepath = entity.get("uploadsourcepath");
+		if( existingsourcepath != null ) //Dont use rootcategory if source is blank
 		{
 			String categoryid = entity.get("rootcategory");
 			if( categoryid != null)
 			{
 				cat = getMediaArchive().getCategory(categoryid);
+				if( cat != null)
+				{
+					String parentppath = cat.getCategoryPath();
+					if( parentppath != null && !parentppath.equals( existingsourcepath ) )
+					{
+						throw new OpenEditException("Move Category to correct location: " + existingsourcepath);
+					}
+				}
 			}
 		}	
 		if( cat == null)
@@ -913,11 +921,7 @@ public class EntityManager implements CatalogEnabled
 				Data box = (Data) iterator.next();
 				LightBox lightbox = new LightBox();
 				lightbox.setData(box);
-				Category rootcategory = entityrootcategory.getChildByName(box.getName()); //speed up but children could be out of date if they renamed it
-				if( rootcategory == null)
-				{
-					rootcategory = (Category)getMediaArchive().getCategorySearcher().createCategoryPath(entityrootcategory.getCategoryPath() + "/" + box.getName());
-				}			
+				Category rootcategory = (Category)getMediaArchive().getCategorySearcher().createCategoryPathFromParent(entityrootcategory, box.getName());
 				lightbox.setRootCategory(rootcategory);
 				lighboxes.add(lightbox);
 			}
