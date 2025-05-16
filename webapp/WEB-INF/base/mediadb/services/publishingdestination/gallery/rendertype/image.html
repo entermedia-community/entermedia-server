@@ -42,7 +42,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 		#if($useoriginal)
 			#set($imagepath = "$!{siteroot}/${mediadbappid}/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
 		#else
-			#set($imagepath = $mediaarchive.asLinkToPreview($hit, $librarycol.id, $imagesize, true))
+			#set($imagepath = $mediaarchive.asLinkToPreview($hit, null, $imagesize, true))
 			
 		#end
 		

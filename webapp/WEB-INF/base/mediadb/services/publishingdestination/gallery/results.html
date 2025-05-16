@@ -30,9 +30,6 @@
 	data-totalpages="$!hits.getTotalPages()"
 	data-module="$!module"
 	data-section="$!content.section"
-	#set( $inputid = $context.getRequestParameter("inputid"))
-	data-inputid="$!inputid"
-	data-ismaingrid="true"
 	data-stackedviewpath="/$!mediadbappid/services/publishingdestination/gallery/results.html">
 
 
@@ -105,54 +102,26 @@
 				#end
 				
 				#set($convertpreset = $mediaarchive.getCachedData("convertpreset", "largeimage" ) )
+				#ifnull($convertpreset)
+					#set($convertpreset = $mediaarchive.getCachedData("convertpreset", "webplargeimage" ) )
+				#end
 				
 				#set($downloadlink = $mediaarchive.asLinkToShare($siteroot, $hit, $convertpreset))
-				#set($downloadlink = "${downloadlink}?download=true&ondemand=true")
-				
+				#ifnotnull($downloadlink)
+					#set($downloadlink = "${downloadlink}?download=true&ondemand=true")
+				#end
 				$context.putPageValue("downloadlink", $downloadlink)
 				<div class="grid-thumbimage " data-assetid="$!hit.id" data-rendertype="$!rendertype">
 					$pages.include("/$!mediadbappid/services/publishingdestination/gallery/rendertype/$!{rendertype}.html", $context)
 				</div>
 				
 				
-				
+				#ifnotnull($downloadlink)
 				<div class="grid-cell-footer"><a class="downloadicon" href="${downloadlink}" title="[[Download]] $!hit.getName()"><span>[[Download]]</span></a></div>
+			    #end
+				
+				
 			    
-			    ##Caption
-			    #if(false)
-				<div class="draggholder grid-caption grid-caption-${rendertype} #if($rendertype=="default") grid-caption-show #end">
-					#if($stackedfield)
-						#set($title = $hit.get($stackedfield))
-						#end
-						#if(!$title)		         	
-						#if( $hit.assettitle )
-							#set($title =  $hit.assettitle) 
-						#else 
-							#set($title = $hit.name) 
-						#end
-						#end
-						<a class="stackedplayer grid-caption-link" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="#esc($!title)">
-						$context.putPageValue("data",$hit)	
-						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
-						$context.putPageValue("view", "asset/stackedgallery")
-						##$pages.include("/$applicationid/components/xml/detailviewer-stackedgallery.html", $context)
-					</a>
-					
-					<div class="grid-gallery-footer d-flex align-items-center justify-content-between"> 
-						<span>
-							#if ($hit.assetaddeddate)
-								$!context.getDate($hit.assetaddeddate)
-							#end
-						</span>
-						<div class="d-flex align-items-center">
-							   	<a href="$dlink" 
-							   		class="emdialog" data-assetid="$hit.id" data-hidefooter="true" title="[[Download]] $!title">
-							       download
-							    </a>
-						</div>
-					</div>
-				</div>
-				#end
 				</div>
 			</div>
 		    #set ( $count = $count + 1) 
