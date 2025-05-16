@@ -3,8 +3,8 @@
 	#set ($hit = $asset) 
 #end 
 
-#set( $source = $mediaarchive.asLinkToPreview($hit,"video.m3u8"))
-#set( $sourcemp4 = $mediaarchive.asLinkToPreview($hit,"video.mp4"))
+#set( $source = $mediaarchive.asLinkToPreview($hit,"video.m3u8", true))
+#set( $sourcemp4 = $mediaarchive.asLinkToPreview($hit,"video.mp4", true))
 
 #set( $streams = $hit.getValues("hlsstreams")) 
 #set( $thumb = $mediaarchive.asLinkToPreview($hit,"image640x480")) 
