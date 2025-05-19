@@ -115,7 +115,7 @@ public class ContentManager implements CatalogEnabled
 
 	public HttpSharedConnection getSharedConnection()
 	{
-		String api = getMediaArchive().getCatalogSettingValue("apikeyoneliveweb");
+		String api = getMediaArchive().getCatalogSettingValue("apikeyoneliveweb"); 
 
 		if (fieldHttpSharedConnection == null || !fieldsavedapikey.equals(api))
 		{
@@ -762,6 +762,7 @@ public class ContentManager implements CatalogEnabled
 		MediaArchive archive = getMediaArchive();
 
 		String model = contentrequest.get("llmmodel");
+		
 		Data modelinfo = archive.getData("llmmodel", model);
 
 		String type = modelinfo != null ? modelinfo.get("llmtype") : null;
@@ -789,7 +790,9 @@ public class ContentManager implements CatalogEnabled
 		if(asset == null) {
 			return null;
 		}
+		
 		LLMResponse results = llm.createImage(inReq, model, 1, "1024x1024", imagestyle, contentrequest.get("createassetprompt"));
+		
 		Downloader downloader = new Downloader();
 
 		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
