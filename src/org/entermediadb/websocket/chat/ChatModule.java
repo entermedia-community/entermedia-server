@@ -597,21 +597,6 @@ public class ChatModule extends BaseMediaModule
 			archive.getUserManager().saveUser(agent);
 			archive.getUserProfileManager().setRoleOnUser(archive.getCatalogId(), agent, "guest");
 		}
-
-		GptManager manager = (GptManager) archive.getBean("gptManager");
-
-		ExecutorManager queue = (ExecutorManager) archive.getBean("executorManager");
-
-		String model = inReq.findValue("model");
-		if (model == null)
-		{
-			model = archive.getCatalogSettingValue("gpt-model");
-		}
-		if (model == null)
-		{
-			// model = "gpt-3.5-turbo-16k-0613";
-			model = "gpt-4o";
-		}
 		
 		Searcher channels = archive.getSearcher("channel");
 		
