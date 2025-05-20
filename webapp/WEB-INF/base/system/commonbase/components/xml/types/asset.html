@@ -54,7 +54,7 @@
 			<i class="bi bi-card-list mr-1"></i> [[Browse]]
 		</a>
 		
-		#if($canviewaiagent && $permissions.canEntity($module, $entity, "createassetswithai"))
+		#if($mediaarchive.isCatalogSettingTrue("ai_create_image_enabled") && $permissions.canEntity($module, $entity, "createassetswithai"))
 		<a href="$siteroot$apphome/views/modules/asset/editors/contentcreatorpickasset/index.html"
 			class="emdialog btn btn-accent"
 			data-dialogid="dialogpickerassetpicker"
