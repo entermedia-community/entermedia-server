@@ -932,7 +932,7 @@ public class ContentManager implements CatalogEnabled
 			inReq.putPageValue("targetmodule", targetmodule);
 
 			inReq.putPageValue("contentrequest", inContentrequest);
-			String template = inLlm.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/templates/createtoplevel.html");
+			String template = inLlm.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/systemmessage/createtoplevel.html");
 			log.info(template);
 			LLMResponse results = inLlm.callFunction(inReq, inModel, "create_entity", template, 0, 5000);
 
@@ -964,7 +964,7 @@ public class ContentManager implements CatalogEnabled
 
 			inReq.putPageValue("contentrequest", inContentrequest);
 
-			String template = inLlm.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/templates/create_child.html");
+			String template = inLlm.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/systemmessage/create_child.html");
 			LLMResponse results = inLlm.callFunction(inReq, inModel, "create_entity", template, 0, 5000);
 
 			child = targetsearcher.createNewData();
