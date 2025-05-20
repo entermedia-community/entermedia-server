@@ -268,14 +268,14 @@ function connect() {
 					return;
 				}
 				*/
-				const header = "New Message";
+				var header = "New Message";
 				if (message.name !== undefined) {
 					header = message.name;
 				}
 				if (message.topic != undefined) {
 					header += " in " + message.topic;
 				}
-				const notification = new Notification(header, {
+				var notification = new Notification(header, {
 					//TODO: URL?
 					body: message.message,
 					renotify: false,
