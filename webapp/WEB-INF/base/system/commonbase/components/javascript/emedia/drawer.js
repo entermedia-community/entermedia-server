@@ -20,11 +20,21 @@
     if (placement) {
       drawer.attr("class", "drawer drawer-" + placement);
     }
-    var title = button.data("title");
-    if (title && title.length > 0) {
-      drawer.find(".drawer-title").html(title);
+
+    var noHeader = button.data("noheader");
+    if (noHeader) {
+      drawer.find(".drawer-header").css("display", "none");
+    } else {
+      drawer.find(".drawer-header").css("display", "flex");
+      var title = button.data("title");
+      if (title && title.length > 0) {
+        drawer.find(".drawer-title").html(title);
+      }
     }
-    var content = sourceElement.html();
+    var content = sourceElement.prop("outerHTML");
+    sourceElement.replaceWith(
+      '<div id="drawerPlaceholder" class="d-none"></div>'
+    );
     if (content.length > 0) {
       drawer.find(".drawer-body").html(content);
     } else {
@@ -44,24 +54,26 @@
   };
 })(jQuery);
 
+window.closeDrawer = function (drawer = null) {
+  if (!drawer) drawer = $(".drawer");
+  drawer.removeClass("open");
+  setTimeout(function () {
+    drawer.css("visibility", "hidden");
+  }, 300);
+  drawer.find(".drawer-title").html("");
+  var drawerBody = drawer.find(".drawer-body");
+  $("#drawerPlaceholder").replaceWith(drawerBody.children());
+  drawerBody.html("");
+  $(".drawer-backdrop").fadeOut(200, function () {
+    $(this).remove();
+  });
+};
 $(document).ready(function () {
   lQuery(".emdrawer").livequery("click", function (e) {
     e.preventDefault();
     e.stopPropagation();
     $(this).drawer();
   });
-  function closeDrawer(drawer = null) {
-    if (!drawer) drawer = $(".drawer");
-    drawer.removeClass("open");
-    setTimeout(function () {
-      drawer.css("visibility", "hidden");
-    }, 300);
-    drawer.find(".drawer-title").html("");
-    drawer.find(".drawer-body").html("");
-    $(".drawer-backdrop").fadeOut(200, function () {
-      $(this).remove();
-    });
-  }
   lQuery("#drawerClose").livequery("click", function () {
     var drawer = $(this).closest(".drawer");
     closeDrawer(drawer);
@@ -71,7 +83,21 @@ $(document).ready(function () {
     closeDrawer();
   });
 
-  lQuery(".drawer a, .drawer button").livequery("click", function (e) {
+  lQuery(".drawer a").livequery("click", function (e) {
+    var target = $(this).data("targetdiv");
+    if (!target) target = $(this).attr("targetdivinner");
+    var drawer = $(this).closest(".drawer");
+    if (
+      drawer.find("." + target).length > 0 ||
+      drawer.find("#" + target).length > 0
+    ) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    closeDrawer();
+  });
+  lQuery(".drawer button").livequery("click", function (e) {
     closeDrawer($(this).closest(".drawer"));
   });
 });
