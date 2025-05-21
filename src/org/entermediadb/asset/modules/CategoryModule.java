@@ -18,6 +18,7 @@ import org.entermediadb.links.LinkTree;
 import org.entermediadb.webui.tree.WebTree;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -41,6 +42,43 @@ public class CategoryModule extends BaseMediaModule
 		fieldRequestUtils = inRequestUtils;
 	}
 
+	public void loadTreeParameters(WebPageRequest inReq)
+	{
+		PropertyDetail detail = (PropertyDetail) inReq.getPageValue("detail");
+		if (detail == null)
+		{
+			String detailid = inReq.findValue("detailid");
+			if (detailid != null)
+			{
+				//TODO: we'd need other info, searchtytpe etc... 
+			}
+		}
+		if (detail != null)
+		{
+			String field = detail.getId();
+			String searchtype = detail.getSearchType();
+			String listid = detail.getListId();
+
+			inReq.setRequestParameter("treesearchfield", field);
+			inReq.setRequestParameter("field", field);
+			String treename = field.replaceAll("[^a-zA-Z0-9_]", "_") + "_tree";
+	        inReq.setRequestParameter("tree-name", treename); // works for pageValue and findValue
+	        inReq.putPageValue("treename", treename);
+	        inReq.putPageValue("tree-name", treename);
+			if (listid != null)
+			{
+				inReq.setRequestParameter("categorysearchtype", listid); // correct
+			}
+			else if (searchtype != null)
+			{
+				inReq.setRequestParameter("categorysearchtype", searchtype); // fallback
+			}
+
+			inReq.setRequestParameter("detailid", field); // helpful for downstream
+		}
+
+	}
+
 	/**
 	 * Installs a {@link WebTree} that shows the catalog tree from a specified
 	 * root catalog on down.
@@ -60,6 +98,11 @@ public class CategoryModule extends BaseMediaModule
 		{
 			name = inReq.getCurrentAction().getChildValue("tree-name");
 		}
+		if (name == null)
+		{
+			name = (String) inReq.getPageValue("tree-name");
+		}
+
 		if (name == null)
 		{
 			name = inReq.findValue("tree-name");
@@ -152,10 +195,11 @@ public class CategoryModule extends BaseMediaModule
 			{
 
 				String renderebean = inReq.findPathValue("treerenderer");
-				if(renderebean == null) {
+				if (renderebean == null)
+				{
 					renderebean = "category";
 				}
-				renderer = (CatalogTreeRenderer)  getModuleManager().getBean(archive.getCatalogId(), renderebean + "TreeRenderer", false); //archive.getBean(renderebean + "TreeRenderer");				
+				renderer = (CatalogTreeRenderer) getModuleManager().getBean(archive.getCatalogId(), renderebean + "TreeRenderer", false); //archive.getBean(renderebean + "TreeRenderer");				
 				renderer.setWebTree(webTree);
 				renderer.setFoldersLinked(true);
 				String prefix = inReq.findValue("url-prefix");
@@ -205,10 +249,10 @@ public class CategoryModule extends BaseMediaModule
 			{
 				expandChildren(webTree, main, Integer.parseInt(expandparents));
 			}
-			log.info("Putting session + " +treeid + webTree);
+			log.info("Putting session + " + treeid + webTree);
 			archive.getCacheManager().put("category-tree", treeid, webTree);
 			inReq.putSessionValue(treeid, webTree);
-			
+
 			inReq.putPageValue(webTree.getName(), webTree);
 			//	inRequest.putPageValue("selectednodes", webTree.getTreeRenderer().getSelectedNodes());
 		}
@@ -223,14 +267,22 @@ public class CategoryModule extends BaseMediaModule
 		{
 			webTree.getTreeRenderer().selectNodes(null);
 		}
-		
+
 		return webTree;
 	}
 
 	public CategorySearcher getCategorySearcher(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
+		
+		PropertyDetail detail = (PropertyDetail) inReq.getPageValue("detail");
+		if(detail != null) {
+			String listid = detail.getListId();
+			return (CategorySearcher) archive.getSearcher(listid);
 
+		}
+		
+		
 		String categorysearchertype = inReq.findValue("categorysearchtype");
 		if (categorysearchertype == null)
 		{
@@ -558,7 +610,7 @@ public class CategoryModule extends BaseMediaModule
 			}
 		}
 	}
-	
+
 	public void loadCategoryByPath(WebPageRequest inContext) throws OpenEditException
 	{
 		String categorypath = inContext.getRequestParameter("categorypath");
@@ -573,7 +625,7 @@ public class CategoryModule extends BaseMediaModule
 			}
 		}
 	}
-	
+
 	//	public void reBuildTree(WebPageRequest inReq) throws OpenEditException
 	//	{
 	//		WebTree tree = getCatalogTree(inReq);
@@ -585,14 +637,15 @@ public class CategoryModule extends BaseMediaModule
 	public void copyCategoriesToCategory(WebPageRequest inReq) throws OpenEditException
 	{
 		String targetcategoryid = inReq.getRequestParameter("targetcategoryid");
-		if (targetcategoryid == null) {
+		if (targetcategoryid == null)
+		{
 			return;
 		}
-			
+
 		//Copy all the children and assets as well...
 		MediaArchive archive = getMediaArchive(inReq);
 		String[] catids = inReq.getRequestParameters("categoryid");
 
-		archive.getCategoryEditor().copyEverything(inReq.getUser(), catids,targetcategoryid);
+		archive.getCategoryEditor().copyEverything(inReq.getUser(), catids, targetcategoryid);
 	}
 }
