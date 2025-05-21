@@ -24,7 +24,6 @@ import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.FileUtils;
-import org.openedit.util.MathUtils;
 import org.openedit.util.Sizer;
 
 public class JavaScriptGenerator extends TempFileGenerator

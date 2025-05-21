@@ -1,7 +1,6 @@
 package org.entermediadb.llm;
 
 import org.json.simple.JSONObject;
-import org.openedit.data.BaseData;
 
 public abstract class BaseLLMResponse  implements LLMResponse{
     

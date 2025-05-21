@@ -6,7 +6,6 @@ package org.entermediadb.asset;
 import java.util.List;
 
 import org.openedit.CatalogEnabled;
-import org.openedit.OpenEditException;
 
 /**
  * @author cburkey

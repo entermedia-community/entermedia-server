@@ -1,6 +1,5 @@
 package org.entermediadb.projects;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -22,7 +21,6 @@ import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.websocket.chat.ChatServer;
 import org.entermediadb.webui.tree.CategoryCollectionCache;
-import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -35,7 +33,6 @@ import org.openedit.page.PageRequestKeys;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
-import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
 

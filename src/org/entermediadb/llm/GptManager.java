@@ -22,11 +22,6 @@ import org.openedit.WebPageRequest;
 import org.openedit.page.Page;
 import org.openedit.util.OutputFiller;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonReader;
-
 public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMManager
 {
 	private static Log log = LogFactory.getLog(GptManager.class);

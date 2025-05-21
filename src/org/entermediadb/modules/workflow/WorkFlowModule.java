@@ -12,7 +12,6 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.page.Page;
 import org.openedit.page.PageAction;
-import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 
 public class WorkFlowModule extends BaseMediaModule

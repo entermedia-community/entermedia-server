@@ -2,7 +2,6 @@ package org.entermediadb.authenticate;
 
 import java.util.Date;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
@@ -15,6 +14,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.util.StringEncryption;
+
 
 public abstract class BaseAutoLogin implements AutoLoginProvider
 {
@@ -76,7 +76,7 @@ public abstract class BaseAutoLogin implements AutoLoginProvider
 			try
 			{
 				String value = getCookieEncryption().getEnterMediaKey(inUser);  ///TODO Change expiration to be 30 days for keys?
-				Cookie cookie = new Cookie(name, value);
+				javax.servlet.http.Cookie cookie = new javax.servlet.http.Cookie(name, value);
 				
 				Data age  = null;
 				String catalogid = inReq.findPathValue("catalogid");

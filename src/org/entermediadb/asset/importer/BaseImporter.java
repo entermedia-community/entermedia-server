@@ -5,18 +5,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import org.entermediadb.asset.util.CSVReader;
-import org.entermediadb.asset.util.Header;
 import org.entermediadb.asset.util.ImportFile;
 import org.entermediadb.asset.util.Row;
 import org.entermediadb.scripts.EnterMediaObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
-import org.openedit.OpenEditException;
 import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
