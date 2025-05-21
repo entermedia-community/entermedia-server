@@ -1,12 +1,8 @@
 package org.entermediadb.asset.generators;
 
-import java.util.HashMap;
-
-import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
-import org.entermediadb.asset.xmp.XmpWriter;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;

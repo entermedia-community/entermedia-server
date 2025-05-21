@@ -16,7 +16,7 @@ public interface CategorySearcher extends Searcher
 	//CategoryArchive getCategoryArchive(); //TODO: Remove this API, legacy support
 
 	Category createCategoryPath(String inPath);
-
+	Category createCategoryPathFromParent(Category parent,String inChildPath);
 	void deleteCategoryTree(Category inChild);
 
 	List findChildren(Category inElasticCategory);

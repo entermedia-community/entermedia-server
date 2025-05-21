@@ -115,7 +115,7 @@ public class ContentManager implements CatalogEnabled
 
 	public HttpSharedConnection getSharedConnection()
 	{
-		String api = getMediaArchive().getCatalogSettingValue("apikeyoneliveweb");
+		String api = getMediaArchive().getCatalogSettingValue("apikeyoneliveweb"); 
 
 		if (fieldHttpSharedConnection == null || !fieldsavedapikey.equals(api))
 		{
@@ -762,6 +762,7 @@ public class ContentManager implements CatalogEnabled
 		MediaArchive archive = getMediaArchive();
 
 		String model = contentrequest.get("llmmodel");
+		
 		Data modelinfo = archive.getData("llmmodel", model);
 
 		String type = modelinfo != null ? modelinfo.get("llmtype") : null;
@@ -789,7 +790,9 @@ public class ContentManager implements CatalogEnabled
 		if(asset == null) {
 			return null;
 		}
+		
 		LLMResponse results = llm.createImage(inReq, model, 1, "1024x1024", imagestyle, contentrequest.get("createassetprompt"));
+		
 		Downloader downloader = new Downloader();
 
 		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
@@ -929,7 +932,7 @@ public class ContentManager implements CatalogEnabled
 			inReq.putPageValue("targetmodule", targetmodule);
 
 			inReq.putPageValue("contentrequest", inContentrequest);
-			String template = inLlm.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/templates/createtoplevel.html");
+			String template = inLlm.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/systemmessage/createtoplevel.html");
 			log.info(template);
 			LLMResponse results = inLlm.callFunction(inReq, inModel, "create_entity", template, 0, 5000);
 
@@ -961,7 +964,7 @@ public class ContentManager implements CatalogEnabled
 
 			inReq.putPageValue("contentrequest", inContentrequest);
 
-			String template = inLlm.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/templates/create_child.html");
+			String template = inLlm.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/systemmessage/create_child.html");
 			LLMResponse results = inLlm.callFunction(inReq, inModel, "create_entity", template, 0, 5000);
 
 			child = targetsearcher.createNewData();

@@ -23,10 +23,6 @@ import org.openedit.util.OutputFiller;
 import org.openedit.util.RequestUtils;
 import org.openedit.util.URLUtilities;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 public abstract class BaseLLMManager implements LLMManager {
 	private static Log log = LogFactory.getLog(LLMManager.class);
 

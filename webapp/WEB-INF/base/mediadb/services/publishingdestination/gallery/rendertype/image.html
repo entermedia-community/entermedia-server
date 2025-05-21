@@ -42,7 +42,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 		#if($useoriginal)
 			#set($imagepath = "$!{siteroot}/${mediadbappid}/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
 		#else
-			#set($imagepath = $mediaarchive.asLinkToPreview($hit, $librarycol.id, $imagesize, true))
+			#set($imagepath = $mediaarchive.asLinkToPreview($hit, null, $imagesize, true))
 			
 		#end
 		
@@ -53,7 +53,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 		#if($type=="video")
 			#set( $imagelink = "$!{siteroot}/${mediadbappid}/services/module/asset/players/play/${hit.id}.html")
 		#else
-			#set($imagelink = $mediaarchive.asLinkToPreview($hit, "image3000x3000")) 
+			#set($imagelink = $mediaarchive.asLinkToPreview($hit, "image3000x3000", true)) 
 		#end
 
 		

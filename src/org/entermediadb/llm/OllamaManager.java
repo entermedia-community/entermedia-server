@@ -1,6 +1,5 @@
 package org.entermediadb.llm;
 
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.logging.Log;
@@ -8,7 +7,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.util.EntityUtils;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.llm.ollama.OllamaResponse;
 import org.entermediadb.net.HttpSharedConnection;

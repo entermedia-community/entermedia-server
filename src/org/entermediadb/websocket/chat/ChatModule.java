@@ -38,9 +38,7 @@ import org.entermediadb.llm.GptManager;
 import org.entermediadb.llm.LLMManager;
 import org.entermediadb.llm.LLMResponse;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
-import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
@@ -596,21 +594,6 @@ public class ChatModule extends BaseMediaModule
 			agent.setValue("screenname", "eMediaFinder AI Helper");
 			archive.getUserManager().saveUser(agent);
 			archive.getUserProfileManager().setRoleOnUser(archive.getCatalogId(), agent, "guest");
-		}
-
-		GptManager manager = (GptManager) archive.getBean("gptManager");
-
-		ExecutorManager queue = (ExecutorManager) archive.getBean("executorManager");
-
-		String model = inReq.findValue("model");
-		if (model == null)
-		{
-			model = archive.getCatalogSettingValue("gpt-model");
-		}
-		if (model == null)
-		{
-			// model = "gpt-3.5-turbo-16k-0613";
-			model = "gpt-4o";
 		}
 		
 		Searcher channels = archive.getSearcher("channel");

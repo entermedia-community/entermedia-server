@@ -8,8 +8,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.OpenEditException;
 
-import com.fasterxml.jackson.core.JsonParser;
-
 public class OllamaResponse extends BaseLLMResponse
 {
 

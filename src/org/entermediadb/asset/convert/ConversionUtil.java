@@ -309,7 +309,13 @@ public class ConversionUtil {
 		
 		for (Iterator iterator = all.iterator(); iterator.hasNext();) {
 			Data preset = (Data) iterator.next();
-			Data croppable = (Data) inArchive.query("presetparameter").exact("parameterdata", preset.get("guid")).exact("name", "crop").searchOne();
+			String presetid = preset.get("guid");
+			if (presetid == null)
+			{
+				log.error("Convert Preset missing guid: " + preset.getId());
+				continue;
+			}
+			Data croppable = (Data) inArchive.query("presetparameter").exact("parameterdata", presetid).exact("name", "crop").searchOne();
 			
 			if(croppable != null)
 			{

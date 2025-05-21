@@ -2733,10 +2733,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 					inContent.field(key, value); //This seems to map Long data types to Integer when they are read again
 				}
-				else if ("categorytree".equals(detail.getViewType()))
-				{
-
-				}
+				
 				else if (detail.isDate())
 				{
 					if (value != null)

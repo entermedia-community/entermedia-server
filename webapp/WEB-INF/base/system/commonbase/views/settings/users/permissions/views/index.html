@@ -24,9 +24,7 @@
 	$context.putPageValue("data", $data)	
 
 	#set($permissionsearcher = $searcherManager.getSearcher($catalogid, "permissionsapp"))
-	##<div class="list-adder w-85" id="permission-role">
-	##$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
-	##</div>
+
     
 	<input type="hidden" name="field" value="profilesearchfilters" />
 	<input type="hidden" name="profilesearchfilters.value" value="hideassettype" />
@@ -37,13 +35,16 @@
         #end
         
 	    #set( $hits = $permissionsearcher.query().match("permissiontype",$permissiontype).sort("permissiontype").sort("ordering").search() )
+		#set( $section = "none")
+		#set($values = $data.getValues("permissions"))
+		
     	<table class="table table-striped table-hover emdata settings-table">	
 	    
-	    #set( $section = "none")
+	    
     	#foreach($item in $hits )
         		#set($val = false )
         		
-        		#set($val = $data.getValues("permissions").contains($item.id))
+        		#set($val = $values.contains($item.id))
         		#if( $section != $item.permissiontype )
         		<thead>
         			<tr class="sectionlevel section$item.permissiontype togglesection">

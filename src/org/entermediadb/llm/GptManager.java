@@ -22,11 +22,6 @@ import org.openedit.WebPageRequest;
 import org.openedit.page.Page;
 import org.openedit.util.OutputFiller;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonReader;
-
 public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMManager
 {
 	private static Log log = LogFactory.getLog(GptManager.class);
@@ -105,6 +100,11 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 	public LLMResponse createImage(WebPageRequest inReq, String inModel, int imagecount, String inSize, String style, String inPrompt)
 	{
 		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
+		if (apikey == null)
+		{
+			log.error("No gpt-key defined");
+			return null;
+		}
 		inReq.putPageValue("prompt", inPrompt);
 
 		// Use JSON Simple's JSONObject
@@ -119,7 +119,7 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 			inPrompt = "Surprise ME";
 		}
 
-		log.info("prompt was " + inPrompt);
+		log.info("Image creation prompt: " + inPrompt);
 
 		obj.put("model", inModel);
 		obj.put("prompt", inPrompt);

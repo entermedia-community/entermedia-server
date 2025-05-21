@@ -99,24 +99,6 @@ public class ContentModule extends BaseMediaModule
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			MultiValued contentrequest = (MultiValued) iterator.next();
-
-			String model = contentrequest.get("llmmodel");
-			if(model == null) {
-			    model = "dall-e-3";
-			}
-			Data modelinfo = archive.getData("llmmodel", model);
-			
-			String type = modelinfo != null ? modelinfo.get("llmtype") : null;
-
-			if (type == null)
-			{
-				type = "gptManager";
-			}
-			else
-			{
-				type = type + "Manager";
-			}
-			LLMManager llm = (LLMManager) archive.getBean(type);
 			Data newdata = manager.createAssetFromLLM(inReq,  contentrequest);
 		}
 

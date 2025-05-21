@@ -90,8 +90,9 @@ public class CategoryEditModule extends BaseMediaModule {
 				category1.setParentCategory(category2);
 				category2.addChild(category1);
 
-				categoryeditor.saveCategory(category1);
-				categoryeditor.saveCategory(category2);
+				categoryeditor.saveCategory(category1, true);
+				//categoryeditor.saveCategory(category2);
+				
 			}
 		}
 	}

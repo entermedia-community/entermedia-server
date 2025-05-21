@@ -249,7 +249,6 @@ public class CategoryModule extends BaseMediaModule
 			{
 				expandChildren(webTree, main, Integer.parseInt(expandparents));
 			}
-			log.info("Putting session + " + treeid + webTree);
 			archive.getCacheManager().put("category-tree", treeid, webTree);
 			inReq.putSessionValue(treeid, webTree);
 

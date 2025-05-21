@@ -1,5 +1,6 @@
 package org.entermediadb.mcp;
 
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
@@ -64,18 +65,26 @@ public class McpModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		McpManager manager = (McpManager) archive.getBean("mcpManager");
 		
+
 		String method = inReq.getRequest().getMethod();
 
-		inReq.setCancelActions(true);
-		inReq.setHasRedirected(true);
+		 McpGetHandler gethandler = manager.loadGetHandler(inReq);
 
 		if ("GET".equals(method))
 		{
+			inReq.setCancelActions(true);
+			inReq.setHasRedirected(true); //Dont render anything else after this
+
 			//TODO: Block on this one forever? Stream back events to the client? Not used?
-			
+			inReq.getResponse().setContentType("text/event-stream");
 //			String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html");
-			 McpGetHandler gethandler = manager.loadGetHandler(inReq);
-			 gethandler.listen(); //This will block forver
+			// gethandler.listen(); //This will block forver
+			inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId());
+			inReq.getResponse().flushBuffer();
+			//Only use Event-streams here
+			
+			//inReq.getResponse().setContentLength(100); //Without this we will use chunk encoding			
+			Thread.sleep(60000);
 			 return;
 //
 //			new Thread(() -> {
@@ -89,13 +98,8 @@ public class McpModule extends BaseMediaModule
 
 		
 		//Otherwise they are all POST requests and we stream back the reply
-		McpGetHandler gethandler = manager.loadGetHandler(inReq);
 		
 
-		inReq.getResponse().setStatus(HttpServletResponse.SC_OK);
-		inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId()); 
-		inReq.getResponse().setHeader("accept", "application/json, text/event-stream");
-		inReq.getResponse().setHeader("content-type", "application/json");
 		
 		//Authenticate:
 //		if(cmd == null) {
@@ -105,6 +109,24 @@ public class McpModule extends BaseMediaModule
 	
 		JSONObject payload = (JSONObject) inReq.getJsonRequest();
 		String cmd = (String) payload.get("method");
+
+		inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId()); 
+
+		inReq.setCancelActions(true);
+		//inReq.setHasRedirected(true);
+
+		if( cmd.equals("notifications/initialized") )
+		{
+			inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId());
+			inReq.getResponse().setStatus(HttpServletResponse.SC_ACCEPTED); //A blank response
+			inReq.setCancelActions(true);
+			inReq.setHasRedirected(true);
+			inReq.getResponse().flushBuffer();
+			return;
+		}
+		
+		inReq.getResponse().setStatus(HttpServletResponse.SC_OK);
+		inReq.getResponse().setHeader("content-type", "application/json");
 		
 		inReq.putPageValue("payload", payload);
 		inReq.putPageValue("protocolVersion", "2025-03-26");
@@ -116,12 +138,16 @@ public class McpModule extends BaseMediaModule
 
 		//This could be null if anonymous
 		//inReq.putPageValue("user", currentconnnection.getUser());
-		
 		//TODO: Change this to be a stream of JSON in chunks. Support Streaming responses
-		//String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html"); //This is blocking
 		String fp = "/" + appid + "/mcp/method/" + cmd + ".html";
-		inReq.getPageStreamer().include(fp);
-		inReq.getPageStreamer().getOutput().getWriter().flush();
+		String response = getRender().loadInputFromTemplate(inReq,  fp); //We need this to get the content length
+		//inReq.getPageStreamer().include(fp);
+		//inReq.getResponse().setContentLength(response.length());
+		inReq.getResponse().getOutputStream().write(response.getBytes());  //This should chunk it up
+		//inReq.getPageStreamer().getOutput().getWriter().write(response);
+		inReq.getResponse().flushBuffer();
+		inReq.setHasRedirected(true); //Dont render anything more now
+
 		//Close?
 		
 	}

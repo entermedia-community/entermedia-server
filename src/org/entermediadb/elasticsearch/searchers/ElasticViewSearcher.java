@@ -11,7 +11,6 @@ import java.util.Map;
 import org.entermediadb.data.ViewData;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
-import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;

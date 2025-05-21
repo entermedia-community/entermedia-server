@@ -13,7 +13,6 @@ import org.jsoup.Jsoup;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
-import org.openedit.util.FileUtils;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 

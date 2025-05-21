@@ -312,5 +312,12 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public Category createCategoryPathFromParent(Category inParent, String inChildPath)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
