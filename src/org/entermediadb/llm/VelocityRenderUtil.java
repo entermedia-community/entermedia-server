@@ -16,7 +16,6 @@ import org.openedit.page.PageStreamer;
 import org.openedit.page.manage.PageManager;
 import org.openedit.servlet.OpenEditEngine;
 import org.openedit.users.User;
-import org.openedit.util.OutputFiller;
 import org.openedit.util.RequestUtils;
 import org.openedit.util.URLUtilities;
 

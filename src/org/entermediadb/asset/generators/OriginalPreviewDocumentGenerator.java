@@ -12,7 +12,6 @@ import org.openedit.generators.FileGenerator;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.PageRequestKeys;
-import org.openedit.util.PathUtilities;
 
 public class OriginalPreviewDocumentGenerator extends FileGenerator
 {

@@ -38,8 +38,11 @@ public class McpGetHandlerManager
 			sessionid = UUID.randomUUID().toString();
 			connection = new McpGetHandler();
 			connection.setMcpSessionId(sessionid);
-			connection.setReq(inReq);
 			getGetHandlers().put(sessionid,connection);  //TODO: Make these expire? 
+		}
+		else
+		{
+			connection.setReq(inReq);
 		}
 		return connection;
 	}

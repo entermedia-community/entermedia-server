@@ -10,7 +10,6 @@ import java.util.TimeZone;
 
 import org.openedit.WebPageRequest;
 import org.openedit.modules.BaseModule;
-import org.openedit.page.PageAction;
 import org.openedit.util.DateStorageUtil;
 
 /**
