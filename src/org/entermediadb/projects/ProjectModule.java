@@ -1670,7 +1670,7 @@ public class ProjectModule extends BaseMediaModule
 		}
 		else
 		{
-			HitTracker workspaces = mediaArchive.query("librarycollectionusers").exact("ontheteam", "true").hitsPerPage(1000).exact("followeruser", userid).search(inReq);
+			HitTracker workspaces = mediaArchive.query("librarycollectionusers").exact("ontheteam", "true").hitsPerPage(100).exact("followeruser", userid).search(inReq);
 			librarycollections = workspaces.collectValues("collectionid");
 		}
 
@@ -1680,7 +1680,7 @@ public class ProjectModule extends BaseMediaModule
 			return;
 		}
 
-		HitTracker moddifiedcol = mediaArchive.query("chattopiclastmodified").orgroup("collectionid", librarycollections).hitsPerPage(1000).search(inReq);
+		HitTracker moddifiedcol = mediaArchive.query("chattopiclastmodified").orgroup("collectionid", librarycollections).hitsPerPage(100).search(inReq);
 		if (moddifiedcol.isEmpty())
 		{
 			inReq.putPageValue("error", "No messages modifield");
@@ -1689,7 +1689,7 @@ public class ProjectModule extends BaseMediaModule
 		Collection messages = moddifiedcol.collectValues("messageid");
 
 		Searcher chats = mediaArchive.getSearcher("chatterbox");
-		HitTracker recent = chats.query().orgroup("id", messages).named("hits").sort("dateDown").hitsPerPage(100).search(inReq);
+		HitTracker recent = chats.query().orgroup("id", messages).named("hits").sort("dateDown").hitsPerPage(50).search(inReq);
 		inReq.putPageValue("messages", recent);
 
 		List messageids = new ArrayList(recent.size());
