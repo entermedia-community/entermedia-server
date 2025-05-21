@@ -341,7 +341,7 @@ function hideSpinner() {
 function loadMoreChats() {
 	//already loading
 	if (loadingmore) {
-		console.log("already loading");
+		//console.log("already loading");
 		//skip
 		return;
 	}
