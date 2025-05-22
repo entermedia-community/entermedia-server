@@ -379,6 +379,15 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 	}
 
+	public void reloadLists(WebPageRequest inReq) throws Exception
+	{
+		String catalogid = inReq.findPathValue("catalogid");
+		
+		Collection tables = getSearcherManager().reloadLists(catalogid);
+		
+		inReq.putPageValue("tables", tables);
+
+	}
 	
 	public void reloadSettings(WebPageRequest inReq) throws Exception
 	{
