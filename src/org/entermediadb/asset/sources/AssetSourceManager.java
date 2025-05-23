@@ -428,7 +428,7 @@ public class AssetSourceManager implements CatalogEnabled
 				inLog.info("Hot folder is already in lock table: " + name);
 				continue;
 			}
-			inLog.info("Hot folder import started: " + name);
+			inLog.info(getMediaArchive().getCatalogId() +" - Hot folder import started: " + name);
 
 			try
 			{

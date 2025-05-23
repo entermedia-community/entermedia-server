@@ -145,8 +145,9 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 
 			getXmlSearcher().reIndexAll();
 			HitTracker settings = getXmlSearcher().getAllHits();
-			Collection toindex = new ArrayList();
+			
 			log.info("settings " + settings.size() + " " + getSearchType());
+			Collection toindex = new ArrayList();
 			for (Iterator iterator = settings.iterator(); iterator.hasNext();) 
 			{
 				ElementData data = (ElementData)iterator.next();	
