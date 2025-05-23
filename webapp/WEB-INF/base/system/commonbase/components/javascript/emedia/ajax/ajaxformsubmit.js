@@ -1,253 +1,256 @@
 (function ($) {
-	$.fn.ajaxFormSubmit = function () {
-		// $(window).trigger("ajaxsubmitting");
-		var form = $(this);
+  $.fn.ajaxFormSubmit = function () {
+    // $(window).trigger("ajaxsubmitting");
+    var form = $(this);
 
-		if (form.data("submitting")) {
-			console.log(form.data("submitting"));
-			console.warn("Already submitting this form");
-			// return this;
-		}
+    if (form.data("submitting")) {
+      console.log(form.data("submitting"));
+      console.warn("Already submitting this form");
+      // return this;
+    }
 
-		var warning = form.data("warning");
-		if (warning && !confirm(warning)) {
-			return this;
-		}
+    var warning = form.data("warning");
+    if (warning && !confirm(warning)) {
+      return this;
+    }
 
-		if ("updateAllCK5" in window) updateAllCK5();
+    if ("updateAllCK5" in window) updateAllCK5();
 
-		if (!form.hasClass("novalidate")) {
-			if (form.validate) {
-				try {
-					form.validate({
-						ignore: ".ignore",
-					});
-					var isvalidate = form.valid();
-					if (!isvalidate) {
-						//e.preventDefault();
-						return this;
-					}
-				} catch (_e) {
-					console.log(_e);
-				}
-			}
-		}
-		var targetdivS = form.data("targetdiv");
-		var targetdiv;
-		var edithomeid = form.data("edithomeid");
+    if (!form.hasClass("novalidate")) {
+      if (form.validate) {
+        try {
+          form.validate({
+            ignore: ".ignore",
+          });
+          var isvalidate = form.valid();
+          if (!isvalidate) {
+            //e.preventDefault();
+            return this;
+          }
+        } catch (_e) {
+          console.log(_e);
+        }
+      }
+    }
+    var targetdivS = form.data("targetdiv");
+    var targetdiv;
+    var edithomeid = form.data("edithomeid");
 
-		//TODO: Move all this to a jQuery plugin form.findTargetDiv()
-		if (edithomeid !== undefined && edithomeid != "") {
-			targetdiv = $("#" + edithomeid + " ." + targetdivS);
-		} else {
-			targetdiv = form.closest("." + $.escapeSelector(targetdivS));
-		}
-		if (!targetdiv.length) {
-			targetdiv = $("#" + $.escapeSelector(targetdivS));
-		}
-		if (!targetdiv.length) {
-			targetdiv = $("." + $.escapeSelector(targetdivS));
-		}
-		if (targetdiv.length > 1) {
-			console.error("Should not have more than one target ", targetdiv);
-		}
-		if (form.attr("action") == undefined) {
-			var action = targetdiv.data("saveaction");
-			if (action == undefined) {
-				action = form.data("defaultaction");
-			}
-			form.attr("action", action);
-		}
+    //TODO: Move all this to a jQuery plugin form.findTargetDiv()
+    if (edithomeid !== undefined && edithomeid != "") {
+      targetdiv = $("#" + edithomeid + " ." + targetdivS);
+    } else {
+      targetdiv = form.closest("." + $.escapeSelector(targetdivS));
+    }
+    if (!targetdiv.length) {
+      targetdiv = $("#" + $.escapeSelector(targetdivS));
+    }
+    if (!targetdiv.length) {
+      targetdiv = $("." + $.escapeSelector(targetdivS));
+    }
+    if (targetdiv.length > 1) {
+      console.error("Should not have more than one target ", targetdiv);
+    }
+    if (form.attr("action") == undefined) {
+      var action = targetdiv.data("saveaction");
+      if (action == undefined) {
+        action = form.data("defaultaction");
+      }
+      form.attr("action", action);
+    }
 
-		if (form.hasClass("showwaiting")) {
-			var apphome = app.data("siteroot") + app.data("apphome");
-			var showwaitingtarget = targetdiv;
-			if (form.data("showwaitingtarget")) {
-				showwaitingtarget = form.data("showwaitingtarget");
-				showwaitingtarget = $("#" + $.escapeSelector(showwaitingtarget));
-			}
-			showwaitingtarget.html(
-				'<img src="' + apphome + '/theme/images/ajax-loader.gif">'
-			);
-			showwaitingtarget.show();
-		}
+    if (form.hasClass("showwaiting")) {
+      var apphome = app.data("siteroot") + app.data("apphome");
+      var showwaitingtarget = targetdiv;
+      if (form.data("showwaitingtarget")) {
+        showwaitingtarget = form.data("showwaitingtarget");
+        showwaitingtarget = $("#" + $.escapeSelector(showwaitingtarget));
+      }
+      showwaitingtarget.html(
+        '<img src="' + apphome + '/theme/images/ajax-loader.gif">'
+      );
+      showwaitingtarget.show();
+    }
 
-		var oemaxlevel = targetdiv.data("oemaxlevel");
-		if (oemaxlevel == undefined) {
-			oemaxlevel = form.data("oemaxlevel");
-		}
-		if (oemaxlevel == undefined) {
-			oemaxlevel = 1;
-		}
-		//targetdiv.data("oemaxlevel", oemaxlevel);
-		var data = form.cleandata();
-		if (form.data("includeeditcontext") == true) {
-			if (edithomeid !== undefined) {
-				var editdiv = $("#" + edithomeid);
-				if (editdiv.length > 0) {
-					var otherdata = editdiv.cleandata();
-					data = {
-						...otherdata,
-						...data,
-					};
-				} else {
-					console.warn("No editdiv found for includeeditcontext");
-				}
-			}
-		}
-		if (form.data("includesearchcontext") == true) {
-			var editdiv = targetdiv.closest(".editdiv"); //This is used for lightbox tree opening
-			var resultsdiv = editdiv.find(".resultsdiv");
+    var oemaxlevel = targetdiv.data("oemaxlevel");
+    if (oemaxlevel == undefined) {
+      oemaxlevel = form.data("oemaxlevel");
+    }
+    if (oemaxlevel == undefined) {
+      oemaxlevel = form.find("input[name=oemaxlevel]").val();
+    }
+    if (oemaxlevel == undefined) {
+      oemaxlevel = 1;
+    }
+    //targetdiv.data("oemaxlevel", oemaxlevel);
+    var data = form.cleandata();
+    if (form.data("includeeditcontext") == true) {
+      if (edithomeid !== undefined) {
+        var editdiv = $("#" + edithomeid);
+        if (editdiv.length > 0) {
+          var otherdata = editdiv.cleandata();
+          data = {
+            ...otherdata,
+            ...data,
+          };
+        } else {
+          console.warn("No editdiv found for includeeditcontext");
+        }
+      }
+    }
+    if (form.data("includesearchcontext") == true) {
+      var editdiv = targetdiv.closest(".editdiv"); //This is used for lightbox tree opening
+      var resultsdiv = editdiv.find(".resultsdiv");
 
-			if (resultsdiv.length > 0) {
-				var otherdata = resultsdiv.cleandata();
-				data = {
-					...otherdata,
-					...data,
-				};
-			} else {
-				console.warn("No resultsdiv found for icludesearchcontext");
-			}
-		}
+      if (resultsdiv.length > 0) {
+        var otherdata = resultsdiv.cleandata();
+        data = {
+          ...otherdata,
+          ...data,
+        };
+      } else {
+        console.warn("No resultsdiv found for icludesearchcontext");
+      }
+    }
 
-		data.oemaxlevel = oemaxlevel;
+    data.oemaxlevel = oemaxlevel;
 
-		var formmodal = form.closest(".modal");
+    var formmodal = form.closest(".modal");
 
-		var submitButton = form.find('button[type="submit"]');
-		if (submitButton.length == 0) {
-			submitButton = form.find('input[type="submit"]');
-		}
-		submitButton.attr("disabled", "disabled");
-		submitButton.append("<i class='fa fa-spinner fa-spin ml-2'></i>");
+    var submitButton = form.find('button[type="submit"]');
+    if (submitButton.length == 0) {
+      submitButton = form.find('input[type="submit"]');
+    }
+    submitButton.attr("disabled", "disabled");
+    submitButton.append("<i class='fa fa-spinner fa-spin ml-2'></i>");
 
-		$(window).trigger("showToast", [form]);
-		var toastUid = $(form).data("uid");
+    $(window).trigger("showToast", [form]);
+    var toastUid = $(form).data("uid");
 
-		form.data("submitting", true);
+    form.data("submitting", true);
 
-		form.ajaxSubmit({
-			data: data,
-			xhrFields: {
-				withCredentials: true,
-			},
-			crossDomain: true,
-			success: function (result) {
-				$(window).trigger("successToast", toastUid);
-				$(window).trigger("checkautoreload", [form]);
-				if (showwaitingtarget !== undefined) {
-					showwaitingtarget.hide();
-				}
+    form.ajaxSubmit({
+      data: data,
+      xhrFields: {
+        withCredentials: true,
+      },
+      crossDomain: true,
+      success: function (result) {
+        $(window).trigger("successToast", toastUid);
+        $(window).trigger("checkautoreload", [form]);
+        if (showwaitingtarget !== undefined) {
+          showwaitingtarget.hide();
+        }
 
-				var pickertarget = form.data("pickertarget");
-				var targettype = form.data("targettype");
-				if (pickertarget !== undefined && targettype == "entitypickerfield") {
-					var parsed = $(result);
-					var dataid = parsed.data("dataid");
-					var dataname = parsed.data("dataname");
+        var pickertarget = form.data("pickertarget");
+        var targettype = form.data("targettype");
+        if (pickertarget !== undefined && targettype == "entitypickerfield") {
+          var parsed = $(result);
+          var dataid = parsed.data("dataid");
+          var dataname = parsed.data("dataname");
 
-					$(window).trigger("updatepickertarget", [
-						//Is this still used? Delete?
-						pickertarget,
-						dataid,
-						dataname,
-					]);
-				}
+          $(window).trigger("updatepickertarget", [
+            //Is this still used? Delete?
+            pickertarget,
+            dataid,
+            dataname,
+          ]);
+        }
 
-				var targetdivinner = form.data("targetdivinner");
-				if (targetdivinner) {
-					$("#" + $.escapeSelector(targetdivinner)).html(result);
-				} else {
-					if (targetdiv) {
-						targetdiv.replaceWith(result);
-					}
-				}
-				let closedialogid = form.data("closedialogid");
-				if (closedialogid !== undefined) {
-					let closedialog = $("#" + closedialogid);
-					if (closedialog.length > 0) {
-						closeemdialog(closedialog.closest(".modal"));
-					}
-				}
-				if (formmodal.length > 0 && form.hasClass("autocloseform")) {
-					if (formmodal.modal) {
-						closeemdialog(formmodal);
-					}
-				}
+        var targetdivinner = form.data("targetdivinner");
+        if (targetdivinner) {
+          $("#" + $.escapeSelector(targetdivinner)).html(result);
+        } else {
+          if (targetdiv) {
+            targetdiv.replaceWith(result);
+          }
+        }
+        let closedialogid = form.data("closedialogid");
+        if (closedialogid !== undefined) {
+          let closedialog = $("#" + closedialogid);
+          if (closedialog.length > 0) {
+            closeemdialog(closedialog.closest(".modal"));
+          }
+        }
+        if (formmodal.length > 0 && form.hasClass("autocloseform")) {
+          if (formmodal.modal) {
+            closeemdialog(formmodal);
+          }
+        }
 
-				$("#resultsdiv").data("reloadresults", true);
+        $("#resultsdiv").data("reloadresults", true);
 
-				//TODO: Move this to results.js
-				//if (form.hasClass("autohideOverlay")) {
-				//	hideOverlayDiv(getOverlay());
-				//}
+        //TODO: Move this to results.js
+        //if (form.hasClass("autohideOverlay")) {
+        //	hideOverlayDiv(getOverlay());
+        //}
 
-				if (form.hasClass("autoreloadsource")) {
-					//TODO: Use ajaxreloadtargets
-					var link = form.data("openedfrom");
-					if (link) {
-						window.location.replace(link);
-					}
-				}
-				$(window).trigger("resize");
+        if (form.hasClass("autoreloadsource")) {
+          //TODO: Use ajaxreloadtargets
+          var link = form.data("openedfrom");
+          if (link) {
+            window.location.replace(link);
+          }
+        }
+        $(window).trigger("resize");
 
-				//on success execute extra JS
-				if (form.data("onsuccess")) {
-					var onsuccess = form.data("onsuccess");
-					var fnc = window[onsuccess];
-					if (fnc && typeof fnc === "function") {
-						//make sure it exists and it is a function
-						fnc(form); //execute it
-					}
-				}
+        //on success execute extra JS
+        if (form.data("onsuccess")) {
+          var onsuccess = form.data("onsuccess");
+          var fnc = window[onsuccess];
+          if (fnc && typeof fnc === "function") {
+            //make sure it exists and it is a function
+            fnc(form); //execute it
+          }
+        }
 
-				//experimental
-				if (form.data("onsuccessreload")) {
-					document.location.reload(true);
-				}
-			},
-			error: function (data) {
-				$(window).trigger("errorToast", toastUid);
-				if (targetdiv) {
-					$("#" + $.escapeSelector(targetdiv)).html(data);
-				}
-				form.append(data);
-			},
-			complete: function () {
-				submitButton.removeAttr("disabled");
-				submitButton.find(".fa-spinner").remove();
-				form.data("submitting", false);
-			},
-		});
+        //experimental
+        if (form.data("onsuccessreload")) {
+          document.location.reload(true);
+        }
+      },
+      error: function (data) {
+        $(window).trigger("errorToast", toastUid);
+        if (targetdiv) {
+          $("#" + $.escapeSelector(targetdiv)).html(data);
+        }
+        form.append(data);
+      },
+      complete: function () {
+        submitButton.removeAttr("disabled");
+        submitButton.find(".fa-spinner").remove();
+        form.data("submitting", false);
+      },
+    });
 
-		var reset = form.data("reset");
-		if (reset == true) {
-			form.get(0).reset();
-		}
+    var reset = form.data("reset");
+    if (reset == true) {
+      form.get(0).reset();
+    }
 
-		if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
-			//globaly disabled updateurl
-		} else {
-			//Update Address Bar
-			var updateurl = form.data("updateurl");
-			if (updateurl) {
-				//serialize and attach
-				var params = form.serialize();
-				var url = form.attr("action");
-				url += (url.indexOf("?") >= 0 ? "&" : "?") + params;
-				history.pushState($("#application").html(), null, url);
-				window.scrollTo(0, 0);
-			}
-		}
-		return this;
-	};
+    if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
+      //globaly disabled updateurl
+    } else {
+      //Update Address Bar
+      var updateurl = form.data("updateurl");
+      if (updateurl) {
+        //serialize and attach
+        var params = form.serialize();
+        var url = form.attr("action");
+        url += (url.indexOf("?") >= 0 ? "&" : "?") + params;
+        history.pushState($("#application").html(), null, url);
+        window.scrollTo(0, 0);
+      }
+    }
+    return this;
+  };
 })(jQuery);
 
 $(document).ready(function () {
-	lQuery("form.ajaxform").livequery("submit", function (e) {
-		e.preventDefault();
-		e.stopImmediatePropagation();
-		e.stopPropagation();
-		$(this).ajaxFormSubmit();
-	});
+  lQuery("form.ajaxform").livequery("submit", function (e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    e.stopPropagation();
+    $(this).ajaxFormSubmit();
+  });
 });

@@ -46,12 +46,12 @@ findClosest = function (link, inid) {
       }
     }
 
-    var nextpage = anchor.attr("href");
-    if (!nextpage) {
-      nextpage = anchor.data("nextpage");
+    var href = anchor.attr("href");
+    if (!href) {
+      href = anchor.data("nextpage");
     }
-    if (!nextpage && anchor.data("url")) {
-      nextpage = anchor.data("url");
+    if (!href) {
+      href = anchor.data("url");
     }
 
     var options = anchor.cleandata();
@@ -174,16 +174,35 @@ findClosest = function (link, inid) {
     }
     var toastUid = $(anchor).data("uid");
 
-    //console.log("Run Ajax",nextpage, options);
+    // console.log("Run Ajax", href, options);
 
     var anchorData = anchor.cleandata(); //anchor.data looses dynamically set data after ajax call, so we need to use this instead of anchor.data()
     if (!anchorData) anchorData = {};
-    if (options.targetdiv && options.oemaxlevel === undefined) {
-      options.oemaxlevel = 1; // default oemaxlevel to 1
+
+    if (options.targetdiv) {
+      if (
+        options.oemaxlevel === undefined &&
+        options.oemaxlayout === undefined
+      ) {
+        var searchStart = href.indexOf("?");
+        if (searchStart > -1) {
+          var search = href.substr(searchStart + 1);
+          var searchParams = new URLSearchParams(search);
+          options.oemaxlevel = searchParams.get("oemaxlevel");
+          options.oemaxlayout = searchParams.get("oemaxlayout");
+        }
+      }
+      if (
+        options.oemaxlevel === undefined &&
+        options.oemaxlayout === undefined
+      ) {
+        options.oemaxlevel = 1;
+      }
     }
+
     jQuery
       .ajax({
-        url: nextpage,
+        url: href,
         data: options,
         success: function (data) {
           $(window).trigger("successToast", toastUid);
@@ -300,7 +319,7 @@ findClosest = function (link, inid) {
           console.warn("Global updateurl is disabled.");
         } else {
           if (updateurl) {
-            var url = anchorData["urlbar"] || nextpage;
+            var url = anchorData["urlbar"] || href;
             history.pushState($("#application").html(), null, url);
           }
         }
