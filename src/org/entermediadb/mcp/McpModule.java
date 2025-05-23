@@ -129,12 +129,32 @@ public class McpModule extends BaseMediaModule
 		inReq.getResponse().setHeader("content-type", "application/json");
 		
 		inReq.putPageValue("payload", payload);
+		
+		JSONObject params = (JSONObject) payload.get("params");
+		
+		if(params != null)
+		{			
+			String functionname = (String) params.get("name");
+			inReq.putPageValue("functionname", functionname);
+			
+			JSONObject arguments = (JSONObject) params.get("arguments");
+			inReq.putPageValue("arguments", arguments);
+		}
+		
 		inReq.putPageValue("protocolVersion", "2025-03-26");
 		inReq.putPageValue("serverName", "EnterMedia MCP");
 		inReq.putPageValue("serverVersion", "1.0.0");
 
 		inReq.putPageValue("responsetext", "accepted");
 		inReq.putPageValue("render", getRender());
+		
+		if(cmd.equals("tools/call"))
+		{
+			//This could be null if anonymous
+			User user = inReq.getUser();
+			inReq.putPageValue("user", user);
+			inReq.putPageValue("userprofile", archive.getUserProfile(user.getId()));
+		}
 
 		//This could be null if anonymous
 		//inReq.putPageValue("user", currentconnnection.getUser());
