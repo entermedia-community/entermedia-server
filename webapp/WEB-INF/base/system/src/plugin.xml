@@ -292,7 +292,10 @@
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="textLabelManager"><ref bean="textLabelManager" /></property>
 		<property name="pageManager"><ref bean="pageManager" /></property>
-				<property name="searcherManager"><ref bean="searcherManager" /></property>
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
 		
 	</bean>
 	<bean id="listSearcher" class="org.openedit.xml.XmlSearcher" scope="prototype">
