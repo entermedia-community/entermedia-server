@@ -19,6 +19,7 @@ import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.projects.LibraryCollection;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
@@ -203,6 +204,18 @@ public class EntityManager implements CatalogEnabled
 				}
 			}
 		}	
+		else if(entity instanceof LibraryCollection)
+		{
+			LibraryCollection collection = (LibraryCollection) entity;
+			cat = collection.getCategory();
+			if( cat != null)
+			{
+				existingsourcepath = cat.getCategoryPath();
+				entity.setValue("uploadsourcepath",existingsourcepath);
+				getMediaArchive().saveData(module.getId(), entity);
+			}
+			
+		}
 		if( cat == null)
 		{
 			String sourcepath = loadUploadSourcepath(module,entity,inUser,true);
