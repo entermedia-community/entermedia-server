@@ -157,6 +157,35 @@ public class DataEditModule extends BaseMediaModule
 		inReq.putPageValue("searcher", searcher);
 		return hits;
 	}
+	
+	public HitTracker searchAll(WebPageRequest inReq) throws Exception
+	{
+		Searcher searcher = loadSearcher(inReq);
+		HitTracker hits = null;
+		if (searcher != null)
+		{
+			hits = searcher.fieldSearch(inReq);
+			
+			if (hits == null) //Only default to all if there was nothing passed at all.
+			{
+				SearchQuery query = searcher.query().terms(inReq).getQuery();
+				if(query == null || query.getTerms().size() == 0) {
+					hits = searcher.getAllHits(inReq);
+				}
+			}
+			//log.info("Report ran " +  hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:" + hits.size() );
+			if (hits != null)
+			{
+				String name = inReq.findValue("hitsname");
+				inReq.putPageValue(name, hits);
+				inReq.putSessionValue(hits.getSessionId(), hits);
+			}
+		}
+		inReq.putPageValue("searcher", searcher);
+		return hits;
+	}
+	
+	
 
 	public void addDefaultValue(WebPageRequest inReq) throws Exception
 	{
