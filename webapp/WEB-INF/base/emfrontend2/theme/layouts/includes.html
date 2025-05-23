@@ -8,17 +8,17 @@ $pages.include("/${applicationid}/components/captureclick/init.html")
 <script type="text/javascript" src="/${applicationid}/components/javascript/jquery-ui/1.12/jquery-ui.min.js" ></script>
 <script type="text/javascript" src="/${applicationid}/components/javascript/jquery-ui/i18n/jquery-ui-i18n.js" ></script> 
 
-<script type="text/javascript" src="$siteroot$applink/components/javascript/index.js" ></script>
+<script type="text/javascript" src="$applink/components/javascript/index.js" ></script>
 
 $pages.include("/${applicationid}/components/captureclick/end.html")
 
 #foreach( $script in $pageManager.getScriptPathsWithoutApp($content))
-	<script type="text/javascript" src="#if(!$script.startsWith("http"))$siteroot#end$script">  </script>	
+	<script type="text/javascript" src="#if(!$script.startsWith("http"))#end$script">  </script>	
 #end
 
 
 #foreach( $style in $pageManager.getStylePathsFor($content) )
-	<link rel="stylesheet" type="text/css" href="#if(!$style.startsWith("http"))$siteroot#end$style" />
+	<link rel="stylesheet" type="text/css" href="#if(!$style.startsWith("http"))#end$style" />
 #end
 
 
