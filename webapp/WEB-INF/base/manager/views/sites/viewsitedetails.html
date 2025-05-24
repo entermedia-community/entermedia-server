@@ -52,7 +52,6 @@
 	
 		<form class="ajaxform autosubmitform" data-targetdiv="snapshotdetails" action="$home$apphome/views/sites/snapshotdetails.html">
 			<input type="hidden" id="list-sitevalue" name="siteid" value="$site.id" />  
-			<input type="hidden" name="oemaxlevel" value="1" />
 			#set( $detail = $searcher.getDetail("name"))
 			<select name="selectedsitesnapshot" style="min-width:250px;" class="form-control-sm listautocomplete autosubmited select2" data-listcatalogid="system" data-searchtype="sitesnapshot" data-foreignkeyid="site"  
 				 data-placeholder="$detail.getText($context)" data-sortby="nameDown" data-searchfield="name">

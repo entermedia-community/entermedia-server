@@ -34,9 +34,8 @@
 			#if($allowloginbyemail == "true")
 				<div class="mb-4 text-center text-contrast"><strong>$placeholder</strong></div>
 				
-				<form class="ajaxform " 
-					data-targetdiv="ajaxloginformdiv" 
-					data-oemaxlevel="1" 
+				<form class="ajaxform" 
+					data-targetdiv="ajaxloginformdiv"
 					action="$!{home}${content.loginroot}/ajaxsendmagiclinkfinish.html" 
 					id="password-reminder" name="passwordReminder"  method="post">
 					#ifnotnull( $userCategory)

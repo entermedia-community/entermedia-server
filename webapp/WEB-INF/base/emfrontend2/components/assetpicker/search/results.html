@@ -15,7 +15,7 @@ $context.putPageValue("clickpath","$apphome/views/assets/")
 $context.putPageValue("viewpostfix",".html")
 
 
-#set($resultsLink = "$componenthome/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1&viewid=$!viewid")
+#set($resultsLink = "$componenthome/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&viewid=$!viewid")
 #set($targetdiv = "dialogsearchresults")
 
 #set( $edit = $context.getRequestParameter("editheader"))
@@ -92,7 +92,7 @@ $context.putPageValue("viewpostfix",".html")
 					#if( $edit)
 						<a class="baseemenableonhover ajax edit-table-header" 
 							data-targetdivinner="$targetdiv" 
-							href="$componenthome/addremovecolumns.html?oemaxlevel=1&searchtype=$hits.searchType&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id&viewid=$!viewid"
+							href="$componenthome/addremovecolumns.html?searchtype=$hits.searchType&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id&viewid=$!viewid"
 							title="[[Remove Column]]">
 							<i class="fas fa-times"></i></a>
 					

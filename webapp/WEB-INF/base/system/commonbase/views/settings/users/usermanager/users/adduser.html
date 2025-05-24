@@ -11,8 +11,7 @@
  	method="post" 
 	id="adduser"
 	class="ajaxform"
-	data-targetdivinner="settingssubtab"
-	data-oemaxlevel="1">
+	data-targetdivinner="settingssubtab">
 	<input type="hidden" name="method" value="adduser"/>
 
 	#set( $userSearcher = $searcherManager.getSearcher($catalogid,"user"))
@@ -31,7 +30,6 @@
 <a href="$siteroot$usermanagerhome/users/index.html" 
 	class="btn btn-secondary btn-sm ajax"
 	data-targetdivinner="settingssubtab"
-	data-oemaxlevel="1"
 	data-updateurl="true" 
 	style="margin-left:10px;">[[Cancel]]</a>
 </form>

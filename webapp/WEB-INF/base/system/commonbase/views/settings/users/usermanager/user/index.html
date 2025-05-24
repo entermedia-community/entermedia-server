@@ -29,7 +29,7 @@
 	 #if( $selectedUser.password && $selectedUser.email )
        	<a class="btn btn-sm btn-secondary ajax" 
        	data-targetdivinner="passwordsent" 
-       	href="$siteroot$usermanagerhome/user/sendresetpassword.html?username=$selectedUser.id&oemaxlevel=1">[[Send Magick Link]]</a>
+       	href="$siteroot$usermanagerhome/user/sendresetpassword.html?username=$selectedUser.id">[[Send Magick Link]]</a>
 
 	#end
 		
@@ -39,7 +39,7 @@
 	
 	#if($mediaarchive.isCatalogSettingTrue("twofactorauthentication") && $canviewsettings)
 		<div style="margin:8px 0;">
-		<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="passwordsent" href="$siteroot$usermanagerhome/user/reset2factorkey.html?username=$selectedUser.id&oemaxlevel=1">[[Reset 2 Factor Authentication Key]]</a>
+		<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="passwordsent" href="$siteroot$usermanagerhome/user/reset2factorkey.html?username=$selectedUser.id">[[Reset 2 Factor Authentication Key]]</a>
 		</div>
 	#end
 	

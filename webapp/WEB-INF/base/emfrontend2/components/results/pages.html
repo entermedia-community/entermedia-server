@@ -16,7 +16,7 @@
 	#end
 	
 	#set($resultsPage = "$resultsPage?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage")
-	#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid&oemaxlevel=1&resultstype=$!resultstype")
+	#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid&resultstype=$!resultstype")
 	#if($module)
 		#set($resultsPage = "$resultsPage&module=$module")
 	#end

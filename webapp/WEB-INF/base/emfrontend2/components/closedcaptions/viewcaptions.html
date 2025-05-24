@@ -1,7 +1,7 @@
 #set( $clientroot = "$siteroot/${applicationid}/components/closedcaptions" )
 <div id="captionview"	
 	#if( $track.transcribestatus == "needstranscribe" || $track.transcribestatus == "inprogress")  
-	 class="ajaxstatus" data-ajaxpath="$clientroot/viewcaptions.html?oemaxlevel=1&assetid=$asset.id" 
+	 class="ajaxstatus" data-ajaxpath="$clientroot/viewcaptions.html?assetid=$asset.id" 
 	#end
 > 
 

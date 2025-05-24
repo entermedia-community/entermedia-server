@@ -1,6 +1,6 @@
 #set( $moduleid = $context.findValue("module") )
 #if( $hits && $hits.totalPages > 1 )
-#set($resultsPage = "$home$apphome/components/moduleresults/results.html?hitssessionid=$hits.sessionId&searchtype=$searcher.searchType&hitsperpage=$!hits.hitsPerPage&categoryid=$!category.id&oemaxlevel=1&resultstype=$!resultstype&view=$view")
+#set($resultsPage = "$home$apphome/components/moduleresults/results.html?hitssessionid=$hits.sessionId&searchtype=$searcher.searchType&hitsperpage=$!hits.hitsPerPage&categoryid=$!category.id&resultstype=$!resultstype&view=$view")
 #set($resultsPage = "$resultsPage&page")
 #set($thispage = $hits.getPage())
 

@@ -9,7 +9,6 @@
 	
 <form class="ajaxform autosubmit" data-targetdiv="sharingcontainerdialog" id="sharingcontainerform" method="post" 
 		action="$home$apphome/views/modules/asset/activity/shareassetsupdate.html">
-<input type="hidden" name="oemaxlevel" value="1"/>
 #set($searcher = $searcherManager.getSearcher($catalogid, "order"))
 $context.putPageValue("searcher", $searcher)	 
 $context.putPageValue("data", $order)	 

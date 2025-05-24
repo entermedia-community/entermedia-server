@@ -9,7 +9,7 @@
 #set( $details = $searcher.getDetailsForView("assetpreviewlog/historypreviews",$user) )
 #set( $hitssessionsid = $context.findValue("hitssessionid") ) 
 $context.putPageValue("details",$details)
-$context.putPageValue("resultsPage","$page.path?oemaxlevel=1&assetid=$asset.id")
+$context.putPageValue("resultsPage","$page.path?assetid=$asset.id")
 $context.putPageValue("targetdiv","historypreviews")
 $context.putPageValue("hitssessionid", $hitssessionsid)
 $context.putPageValue("subtab","viewassetpreviewhistory")

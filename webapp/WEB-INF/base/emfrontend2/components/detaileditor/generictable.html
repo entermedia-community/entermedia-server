@@ -54,7 +54,7 @@
 		
 		#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
 			<div class="addnew-generic mt-2 mr-2">
-				<a class="btn btn-primary ajax" href="$home$editpath?$argsnoid&edit=true&oemaxlevel=1" targetdiv="#makeid(${viewid})editor">
+				<a class="btn btn-primary ajax" href="$home$editpath?$argsnoid&edit=true" targetdiv="#makeid(${viewid})editor">
 					<i class="bi bi-plus-lg mr-1"></i> [[Add New]]
 				</a>
 			</div>
@@ -81,15 +81,15 @@
 			#end
 			<div style="margin: 20px 20px 0 0;">
 				<input class="btn btn-sm btn-primary "  type="submit" value="[[Save Values]]"/>
-				<a class="btn btn-sm btn-secondary ajax" style="margin-left: 5px;" targetdiv='#makeid(${viewid})editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
-				<a class="btn btn-sm btn-danger ajax" data-confirm="[[Are you sure?]]" style="color: #fff;" targetdiv='#makeid(${viewid})editor' href="$home$componenthome/detaileditor/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
+				<a class="btn btn-sm btn-secondary ajax" style="margin-left: 5px;" targetdiv='#makeid(${viewid})editor' href="$home$editpath?$args&edit=false">[[Cancel]]</a>
+				<a class="btn btn-sm btn-danger ajax" data-confirm="[[Are you sure?]]" style="color: #fff;" targetdiv='#makeid(${viewid})editor' href="$home$componenthome/detaileditor/table-deleterow.html?delete=true&$args&edit=false&id=$id">[[Delete]]</a>
 			</div>
 	
 			<input name="field" type="hidden" value="$fieldexternalid" />
 			<input name="${fieldexternalid}.value" type="hidden" value="$parentid" />
 			<input name="parentid" type="hidden" value="$parentid" />
 	
-			<input name="oemaxlevel" type="hidden" value="1" />
+			
 			<input name="viewpath" type="hidden" value="$viewpath" />
 			<input name="viewid" type="hidden" value="$viewid" />
 	

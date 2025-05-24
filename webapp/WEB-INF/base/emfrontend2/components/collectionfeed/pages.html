@@ -5,7 +5,7 @@
 		#set($categoryid = "")
 	#end
 	
-	#set($resultsPage = "$home$apphome/views/search/index.html?hitssessionid=$hits.sessionId&searchtype=asset&hitsperpage=$!hits.hitsPerPage&categoryid=$!categoryid&oemaxlevel=1&resultstype=$!resultstype")
+	#set($resultsPage = "$home$apphome/views/search/index.html?hitssessionid=$hits.sessionId&searchtype=asset&hitsperpage=$!hits.hitsPerPage&categoryid=$!categoryid&resultstype=$!resultstype")
 	#set($resultsPage = "$resultsPage&page")
 	#set($thispage = $hits.getPage())
 	

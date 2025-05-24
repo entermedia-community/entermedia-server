@@ -9,7 +9,7 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 
 <form class="chatter-edit-form ajaxform"  method="post"	 
 	action="${chatterboxhome}/editsave.html"
-	data-targetdiv="chatter-message-$chat.id" data-oemaxlevel="1">
+	data-targetdiv="chatter-message-$chat.id">
 	<input type="hidden" name="searchtype" value="chatterbox" />
 	<input type="hidden" name="chatid" value="$chat.id" />
 	<input type="hidden" name="channel" value="$!currentchannel.id" />
@@ -25,5 +25,3 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 
 </form>
 </div>
-
-

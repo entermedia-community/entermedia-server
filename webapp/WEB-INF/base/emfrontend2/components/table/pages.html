@@ -3,7 +3,7 @@
 	#end
 	#ifnull($resultsLink)
 	#set( $searchhome = "$home$apphome/components/table")
-	#set($resultsLink = "${searchhome}/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
+	#set($resultsLink = "${searchhome}/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage")
 	#end
 	#set($resultsPage = "$resultsLink&page")
 	#set($thispage = $hits.getPage())

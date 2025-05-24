@@ -12,7 +12,7 @@
 				<span class="widget-header-title">[[Search]] #if($librarycol)[[Collection]]#elseif($selectedlibrary)[[Library]]#else [[Assets]]#end</span> 
 				#if( $caneditadvancedsearch )
 					<span class="widget-header-setup">
-					<a class="ajax " targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">
+					<a class="ajax" targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">
 						<i class="fas fa-cog"></i>
 					</a>
 					</span>

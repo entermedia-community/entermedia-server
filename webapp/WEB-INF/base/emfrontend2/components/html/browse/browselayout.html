@@ -45,15 +45,11 @@
 						targetdiv="resultsarea" role="search"
 						action="$home$apphome/components/html/${content.pickermode}/quicksearch.html">
 						<div class="form-group">
-							<input type="hidden" name="field" value="description" /> <input
-								type="hidden" name="operation" value="contains" /> <input
-								type="hidden" name="oemaxlevel" value="1" /> <input
-								type="hidden" name="targetdiv"
-								value="$!context.getRequestParameter('targetdiv')" /> <input
-								type="hidden" name="detailid"
-								value="$!context.getRequestParameter('detailid')" /> <input
-								type="text" class="form-control" placeholder="Search"
-								name="description.value">
+							<input type="hidden" name="field" value="description" />
+							<input type="hidden" name="operation" value="contains" />
+								<input type="hidden" name="targetdiv" value="$!context.getRequestParameter('targetdiv')" />
+								<input type="hidden" name="detailid" alue="$!context.getRequestParameter('detailid')" />
+								<input type="text" class="form-control" placeholder="Search" name="description.value">
 						</div>
 						<button type="submit" class="btn btn-default"
 							style="margin-left: 26px">[[Submit]]</button>

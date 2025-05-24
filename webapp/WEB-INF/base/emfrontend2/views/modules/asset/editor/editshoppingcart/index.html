@@ -20,7 +20,6 @@
 		<input type="hidden" name="save" value="true"/>	
 		<input type="hidden" name="id" value="$!asset.id"/>
 		<input type="hidden" name="assetid" value="$!asset.id" />
-		<input type="hidden" name="oemaxlevel" value="1"/>
 		<input type="hidden" name="searchtype" value="asset" />
 		$context.putPageValue("searcher", $searcher)  
 		$context.putPageValue("view", "asset/shoppingcart") 
@@ -56,7 +55,7 @@ function refreshbutton(){
 	${D}.ajax({
 		url : action,
 		type: "GET",
-		data: "assetid=${asset.id}&oemaxlevel=1",
+		data: "assetid=${asset.id}",
 		success:function(data, textStatus, jqXHR){
 			//console.log(data);
 			$(".shoppingcartlink").html(data);

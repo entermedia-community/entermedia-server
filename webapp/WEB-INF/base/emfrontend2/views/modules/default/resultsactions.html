@@ -37,11 +37,11 @@
 		#if( !$edit )
 			<li>	
 				 
-				<a class="ajax edit-icon" id="table-editor" targetdiv="resultsdiv" href="$searchhome/results.html?searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=true&oemaxlevel=1&moduleid=$!moduleid"> <i class="fas fa-edit"></i></a>
+				<a class="ajax edit-icon" id="table-editor" targetdiv="resultsdiv" href="$searchhome/results.html?searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid"> <i class="fas fa-edit"></i></a>
 			</li>
 		#else
 			<li> 
-					<a class="ajax table-edit-close" targetdiv="resultsdiv" href="$searchhome/results.html?searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=false&oemaxlevel=1&moduleid=$!moduleid"><i class="fas fa-times"></i></a>
+					<a class="ajax table-edit-close" targetdiv="resultsdiv" href="$searchhome/results.html?searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=false&moduleid=$!moduleid"><i class="fas fa-times"></i></a>
 			</li>
 			<li class="resultsnavtitem">
 					<div id="column-editor">
@@ -89,9 +89,3 @@
 </div>
 </div>
 
-##<script type="text/javascript">
-##	//This should be moved out of here
-##	function refreshSelections() {
-##		jQuery('#moduleselections').load("$searchhome/selections/selected.html?oemaxlevel=1&searchtype=${module.id}&hitssessionid=$hits.getSessionId()");
-##	}
-##</script>

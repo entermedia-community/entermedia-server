@@ -86,7 +86,7 @@ $context.putPageValue("data", $data)
 	  ##$pages.include("/$applicationid/components/detaileditor/generic.html?$args&targetdiv=${viewid}editor&view=$viewpath&module=$themodule",$context)
 	
 	#if($id && ($caneditdata || $candelete))	
-		<a class="btn btn-sm btn-danger float-right ajax" data-confirm="[[Are you sure?]]"  targetdiv='${viewid}editor' href="$home${page.directory}/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
+		<a class="btn btn-sm btn-danger float-right ajax" data-confirm="[[Are you sure?]]"  targetdiv='${viewid}editor' href="$home${page.directory}/table-deleterow.html?delete=true&$args&edit=false&id=$id">[[Delete]]</a>
 	#end
 	</form>
 </div>

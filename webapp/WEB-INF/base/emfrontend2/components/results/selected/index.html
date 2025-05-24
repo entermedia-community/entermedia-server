@@ -9,8 +9,8 @@
 #end
 </a>
 	<div class="dropdown-menu" aria-labelledby="navbarSelectionsDropdown">
-	  	<a class="dropdown-item ajax selectpage" targetdiv="resultsheader" href="$home$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page&collectionid=$!librarycol.getId()">[[Select This Page]]</a>
-    	<a class="dropdown-item ajax  selectpage" targetdiv="resultsheader" href="$home$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all&collectionid=$!librarycol.getId()">[[Select All Results]]</a>
+	  	<a class="dropdown-item ajax selectpage" targetdiv="resultsheader" href="$home$componenthome/results/togglepage.html?hitssessionid=$hits.getSessionId()&action=page&collectionid=$!librarycol.getId()">[[Select This Page]]</a>
+    	<a class="dropdown-item ajax selectpage" targetdiv="resultsheader" href="$home$componenthome/results/togglepage.html?hitssessionid=$hits.getSessionId()&action=all&collectionid=$!librarycol.getId()">[[Select All Results]]</a>
 		 #if( !$hits.isShowOnlySelected() )
 				<a class="dropdown-item" 
 					title="[[View Selections]]"
@@ -23,7 +23,7 @@
 						[[Show All Results]]</a>
 		#end		
 		#if( $hits.getSelectionSize() && $hits.getSelectionSize() > 0)
-		    	<a class="dropdown-item ajax deselectpage" targetdiv="resultsheader" href="$home$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none&collectionid=$!librarycol.getId()">[[Deselect All]]</a>
+		    	<a class="dropdown-item ajax deselectpage" targetdiv="resultsheader" href="$home$componenthome/results/togglepage.html?hitssessionid=$hits.getSessionId()&action=none&collectionid=$!librarycol.getId()">[[Deselect All]]</a>
 		#end
 	</div>
 </li>

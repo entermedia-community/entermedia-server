@@ -6,7 +6,7 @@
 	#if(!$resultpage)
 		#set($resultpage="allcollections.html")
 	#end
-	#set($resultsPage = "$home$apphome/views/collections/$resultpage?hitssessionid=$hits.sessionId&searchtype=${module}&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1&resultpage=$resultpage")
+	#set($resultsPage = "$home$apphome/views/collections/$resultpage?hitssessionid=$hits.sessionId&searchtype=${module}&hitsperpage=$!hits.hitsPerPage&resultpage=$resultpage")
 	#if($selectedlibrary)
 		#set($resultsPage = "$resultsPage&libraryid=$selectedlibrary")
 	#end

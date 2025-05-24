@@ -25,7 +25,7 @@
        	
 		#if($canshowadmintoolbar)
 			<a class="btn btn-sm btn-secondary previewcrop-btn" 
-				data-oemaxlevel="1"  
+				data-oemaxlevel="1"
 				target="_new"
 				href="$siteroot/openedit/views/filemanager/tab.html?path=/WEB-INF/data/$catalogid/generated/$asset.getSourcePath()"
 				title="[[File Manager]]"><i class="fas fa-upload"></i></a> 
@@ -45,7 +45,7 @@ $context.putPageValue("results", $results)
 	
 	
 ##	#if($caneditasset)
-##	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
+##	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" 
 ##	   href="$siteroot$apphome/views/modules/asset/editor/media/croppreview.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[New Crop]]</a>
 ##
 ##	#end
@@ -117,7 +117,7 @@ $context.putPageValue("results", $results)
 					 #if($caneditasset && $cancrop) 
 						<a class="btn btn-xs btn-secondary previewcrop-btn ajax" 
 							targetdivinner="asset-editor-container"  
-							data-oemaxlevel="1"  
+							 
 							href="$siteroot$apphome/views/modules/asset/editor/media/croppreview.html?assetid=${asset.id}&presetid=${presetdata.id}"
 							title="[[Crop]] $!presetdata.name"><i class="fas fa-crop"></i></a> 
 					 #end

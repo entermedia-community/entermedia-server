@@ -2,10 +2,10 @@
 #set($size = $voteshits.size() )
 
 #if($alreadyvoted)
-	<a class="ajax star full" title="[[Remove From Favorites]]" data-targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/removeVote.html?assetid=$asset.id&oemaxlevel=1&collectionid=$user.getId()-favorites"><i class="fas fa-star"></i> [[Favorite]]</a>
+	<a class="ajax star full" title="[[Remove From Favorites]]" data-targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/removeVote.html?assetid=$asset.id&collectionid=$user.getId()-favorites"><i class="fas fa-star"></i> [[Favorite]]</a>
 	
 #else
-	<a class="ajax star empty"  title="[[Add to Favorites]]" data-targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/addVote.html?assetid=$asset.id&oemaxlevel=1&collectionid=$user.getId()-favorites"><i class="fas fa-star"></i> [[Add to Favorites]]</a>
+	<a class="ajax star empty"  title="[[Add to Favorites]]" data-targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/addVote.html?assetid=$asset.id&collectionid=$user.getId()-favorites"><i class="fas fa-star"></i> [[Add to Favorites]]</a>
 	
 #end
 

@@ -119,7 +119,7 @@ $pages.include("$apphome/views/modules/${moduleid}/datapermissions/xml/edit.html
 </div>
 
 
-<a class="btn btn-sm btn-primary ajax" style="margin-right:5px"  data-targetdiv="allpermissions" data-oemaxlevel="1" href="$home$apphome/views/modules/$moduleid/datapermissions/index.html?collectionid=${data.id}&id=${data.id}">[[Back]]</a>
+<a class="btn btn-sm btn-primary ajax" style="margin-right:5px"  data-targetdiv="allpermissions" href="$home$apphome/views/modules/$moduleid/datapermissions/index.html?collectionid=${data.id}&id=${data.id}">[[Back]]</a>
 #if( $permission)
 <a class="ajax btn btn-sm btn-secondary"  targetdiv="permissionedit" 
 href="$home$apphome/views/modules/${moduleid}/datapermissions/reset.html?&currentpermission=$permission.id&permissionid=$permdata.id&parentfolderid.value=${data.id}&dataid=${data.id}">[[Reset to defaults]]</a>

@@ -23,7 +23,7 @@
 											#set($target = "right-panel")
 										#end										
 										<li  class="col-md-2" id="slide${cue.id}" data-assetid="$cue.assetid" data-dataid="$cue.assetid" data-target="$target" data-timecode="$cue.timecode" data-link="$home$clientroot/details/cuepointdetails.html?oemaxlevel=1&id=$cue.id&assetid=$!cue.assetid&dataid=$!cue.assetid" >
-											<a class="ajax thumbnail" data-cueid="$cue.id" data-dataid="$cue.assetid" id="aslide-${cue.id}" targetdivinner="$target" href="$home$clientroot/details/cuepointdetails.html?oemaxlevel=1&id=$cue.id&assetid=$!cue.assetid&dataid=$!cue.assetid">
+											<a class="ajax thumbnail" data-cueid="$cue.id" data-dataid="$cue.assetid" id="aslide-${cue.id}" targetdivinner="$target" href="$home$clientroot/details/cuepointdetails.html?id=$cue.id&assetid=$!cue.assetid&dataid=$!cue.assetid">
 												<img  title="$!cue.name $cue.timecode seconds" src="$smallthumb"/></a>
 										</li>
 										#if(${foreach.count} % 6 == 0) <!--  Could use pages instead. -->

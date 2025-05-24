@@ -16,18 +16,18 @@
 <div class="conversionsheader">
 
 #if($caneditasset)
-##	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
+##	<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="asset-editor-container" 
 ##	   href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[Crop]]</a>
 
-	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
+	<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="asset-editor-container" 
 	   href="$home$apphome/views/modules/asset/editor/conversions/rotate.html?rotate=90&assetid=$asset.id">[[Rotate +90]]</a>
 
 
-	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
+	<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="asset-editor-container" 
    	   href="$home$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id">[[Reload Original Thumbnails]]</a>
 	<hr>
 
-	<form id="uploadform" class="ajaxform" targetdiv="asset-editor-container" name="wizard" method="post" enctype="multipart/form-data" action="$home${apphome}/views/modules/asset/editor/conversions/customthumb.html">
+	<form id="uploadform" class="ajaxform" data-targetdiv="asset-editor-container" name="wizard" method="post" enctype="multipart/form-data" action="$home${apphome}/views/modules/asset/editor/conversions/customthumb.html">
 		<span class="btn btn-sm btn-secondary btn-default btn-file">
 		    [[Replace Image]] <input type="file" name="file.0" id="file0-file" onchange='$("#file0-file-info").html($(this).val());'>
 		</span>
@@ -187,7 +187,7 @@ $(document).ready(function(){
 	#if ($notready)
 
 		var reloadingconversionspage = setTimeout(function(){
-		//reloadpageajax("$home$apphome/views/modules/asset/editor/conversions/index.html?assetid=$asset.id&oemaxlevel=1", "asset-editor-container")
+		//reloadpageajax("$home$apphome/views/modules/asset/editor/conversions/index.html?assetid=$asset.id", "asset-editor-container")
 		var nextpage = "$home$apphome/views/modules/asset/editor/conversions/index.html?assetid=$asset.id&oemaxlevel=1";
 		var targetDiv = "asset-editor-container";
 		if ($("#conversionstable").length) {

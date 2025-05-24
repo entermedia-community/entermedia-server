@@ -6,7 +6,7 @@
 		$context.putPageValue("view", $view)
 		
 		<form id="dataeditor" name="dataeditor" method="post" 
-				action="$home$content.dataroot/edit/save.html?oemaxlevel=1" 
+				action="$home$content.dataroot/edit/save.html" 
 				enctype="multipart/form-data"
 				class="ajaxform"
 				data-targetdivinner="datamanager-workarea">
@@ -24,11 +24,11 @@
 		<a class="btn btn-sm btn-secondary ajax"
 			data-targetdivinner="datamanager-workarea" 
 			style="margin-left: 10px;" 
-			href="$home$content.dataroot/list/index.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&oemaxlevel=1">[[Cancel]]</a>
+			href="$home$content.dataroot/list/index.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId">[[Cancel]]</a>
 		<a class="btn btn-sm btn-danger ajax"
 			data-targetdivinner="datamanager-workarea" 
 			style="margin-left: 10px;" 
-			href="$home$content.dataroot/edit/delete.html?searchtype=$searcher.searchType&id=$data.id&oemaxlevel=1">[[Delete]]</a>
+			href="$home$content.dataroot/edit/delete.html?searchtype=$searcher.searchType&id=$data.id">[[Delete]]</a>
 		<div id="messagearea">$!message</div>
 		</div>
 		

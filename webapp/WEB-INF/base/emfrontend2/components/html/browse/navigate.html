@@ -2,7 +2,7 @@
 
 #set( $moduleid = $context.findValue("module") )
 #if( $hits && $hits.totalPages > 1 )
-#set($resultsPage = "$home$apphome/components/html/browse/searchresults.html?hitssessionid=$hits.sessionId&searchtype=asset&oemaxlevel=1&hitsperpage=$!hits.hitsPerPage&categoryid=$!category.id&resultstype=$!resultstype")
+#set($resultsPage = "$home$apphome/components/html/browse/searchresults.html?hitssessionid=$hits.sessionId&searchtype=asset&hitsperpage=$!hits.hitsPerPage&categoryid=$!category.id&resultstype=$!resultstype")
 #set($resultsPage = "$resultsPage&page")
 #set($thispage = $hits.getPage())
 

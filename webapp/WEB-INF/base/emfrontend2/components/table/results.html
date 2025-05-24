@@ -36,7 +36,7 @@
 
 
 #set($searchhome = "$home$apphome/components/table")
-#set($resultsLink = "${searchhome}/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1&viewid=$!viewid")
+#set($resultsLink = "${searchhome}/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&viewid=$!viewid")
 #set($targetdiv = "resultsdiv")
 
 #set( $edit = $context.getRequestParameter("editheader"))
@@ -70,7 +70,7 @@
 									#end
 								</select>
 								
-								<a class="ajax table-edit-close" targetdiv="$targetdiv" href="$searchhome/results.html?searchtype=${hits.searchType}&hitssessionid=$hits.getSessionId()&editheader=false&oemaxlevel=1&viewid=$!viewid">
+								<a class="ajax table-edit-close" targetdiv="$targetdiv" href="$searchhome/results.html?searchtype=${hits.searchType}&hitssessionid=$hits.getSessionId()&editheader=false&viewid=$!viewid">
 									<i class="fas fa-times"></i>
 								</a>
 							</div>
@@ -106,7 +106,7 @@
 					#text( $detail.name )
 					#if( $edit)
 						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" 
-							href="$home$apphome/components/table/addremovecolumns.html?oemaxlevel=1&searchtype=$hits.searchType&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id&viewid=$!viewid"><i class="fas fa-times"></i></a>
+							href="$home$apphome/components/table/addremovecolumns.html?searchtype=$hits.searchType&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id&viewid=$!viewid"><i class="fas fa-times"></i></a>
 					
 					#elseif ($sortby.startsWith($detail.getId()))
 			 				#if($sortby.endsWith("Up"))

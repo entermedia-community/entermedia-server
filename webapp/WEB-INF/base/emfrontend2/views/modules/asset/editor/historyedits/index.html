@@ -8,7 +8,7 @@
 #set( $details = $searcher.getDetailsForView("asseteditLog/historyedits",$user) )
  
 $context.putPageValue("details",$details)
-$context.putPageValue("resultsPage","$page.path?oemaxlevel=1&assetid=$asset.id")
+$context.putPageValue("resultsPage","$page.path?assetid=$asset.id")
 $context.putPageValue("targetdiv","historyedits")
 $pages.include("./results.html?foldername=${catalogid}/asseteditLog&field=sourcepath&sourcepath.value=$asset.sourcepath&operation=exact", $context)
 </div>

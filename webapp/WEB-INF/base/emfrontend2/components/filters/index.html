@@ -25,7 +25,7 @@
 	<div class="filters-edit-icon">
 		<a class="ajax" 
 			data-targetdiv="advfilterpanel" 
-			href="$apphome/components/filters/index.html?editfilters=true&oemaxlevel=1&collectionid=$!collectionid"
+			href="$apphome/components/filters/index.html?editfilters=true&collectionid=$!collectionid"
 			title="[[Edit Filters]]"><i class="fas fa-cog"></i></a>
 	</div>
 #end
@@ -48,10 +48,8 @@
 		data-targetdiv="searchlayout" 
 		method="POST"  
 	#if( $librarycol)
-		data-oemaxlevel="1" 
 		action="$home$apphome/views/modules/librarycollection/columnsort.html" 
 	#else
-		data-oemaxlevel="1" 
 		action="$home$apphome/views/search/columnsort.html" 
 	#end 
 	>
@@ -112,7 +110,6 @@
 		data-oemaxlevel="2" 
 		action="$home$apphome/views/modules/librarycollection/search.html" 
 	#else
-		data-oemaxlevel="1" 
 		action="$home$apphome/views/search/search.html" 
 	#end 
 	>
@@ -213,8 +210,6 @@
 		<div class="advancedsearcheditform">
 		<strong style="margin-bottom:10px;display:block">[[Edit Fiters]]:</strong>
 		<form id="searchaddfield" class="ajaxform" targetdiv="advfilterpanel" action="$home$apphome/components/filters/addfield.html" method="post">
-		
-			<input type="hidden" name="oemaxlevel" value="1"/>
 			<input type="hidden" name="editadvsearch" value="true"/>
 			<input type="hidden" name="view" value="$view"/>
 			<input type="hidden" name="catalogid" value="$searcher.getCatalogId()"/>

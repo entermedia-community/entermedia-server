@@ -10,7 +10,7 @@
 ##this wont work due to lack of hits in session
 $context.putPageValue("targetdiv","orderhistory")
 $context.putPageValue("hits",$hits)
-$context.putPageValue("resultsPage","$content.path?assetid=$asset.id&oemaxlevel=1")
+$context.putPageValue("resultsPage","$content.path?assetid=$asset.id")
 $pages.include("$apphome/components/results/pages.html",$context)
 
 <div id="emselectable">T

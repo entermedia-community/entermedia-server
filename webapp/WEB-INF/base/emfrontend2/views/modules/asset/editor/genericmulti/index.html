@@ -93,7 +93,7 @@ $pages.include("/$applicationid/components/xml/multiselect.html?catalogid=$catal
 <script type="text/javascript">
 ${searchtype}save = function()
 {
-	new Ajax.Updater('${searchtype}editor', '$home$savepath?oemaxlevel=1&$context.rewriteParams()', 
+	new Ajax.Updater('${searchtype}editor', '$home$savepath?$context.rewriteParams()', 
 			{ method: 'post',parameters: $('${view}editorform').serialize(true), evalScripts: true,
 				onSuccess: function()
 				{

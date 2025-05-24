@@ -3,7 +3,7 @@
 		#if( $term.getDetail().getId() == "description" )
 			##the $term.getDetail().getName() 
 			[[All assets that include]] 
-			<a  href="$home$apphome/views/search/edit/editparam.html?termid=$term.id&queryid=$query.id&oemaxlevel=1">$query.getFriendlyValue($term.getValue(),$term.getDetail())</a>
+			<a href="$home$apphome/views/search/edit/editparam.html?termid=$term.id&queryid=$query.id&oemaxlevel=1">$query.getFriendlyValue($term.getValue(),$term.getDetail())</a>
 		#else
 			#if( ${foreach.count} > 1)		
 				#if( $inquery.isAndTogether() )
@@ -14,7 +14,7 @@
 			#end
 			[[the]]
 			 $term.getDetail().getName() of
-			<a  href="$home$apphome/views/search/edit/editparam.html?termid=$term.id&queryid=$query.id&oemaxlevel=1">$query.getFriendlyValue($term.getValue(),$term.getDetail())</a>
+			<a href="$home$apphome/views/search/edit/editparam.html?termid=$term.id&queryid=$query.id&oemaxlevel=1">$query.getFriendlyValue($term.getValue(),$term.getDetail())</a>
 		#end
 	#end
 	#if( $inquery.hasChildren() )
@@ -50,7 +50,7 @@
 		</p>
 		<div id="searcheditor">
 			<center><h6 style="margin-top: 20px;" class="helper-text">[[Click on a term above to edit that term]].</h6>
-			<a id="addterm" class="btn ajax" targetdivinner="searcheditor" href="$home$apphome/views/search/edit/addterm.html?queryid=$query.id&oemaxlevel=1">[[Add Search Term]]</a></center>
+			<a id="addterm" class="btn ajax" targetdivinner="searcheditor" href="$home$apphome/views/search/edit/addterm.html?queryid=$query.id">[[Add Search Term]]</a></center>
 		</div>
 	</div>
 </div>

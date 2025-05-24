@@ -63,7 +63,6 @@ $context.putPageValue("idprefix","search")
 <div class="advancedsearcheditform">
 		<strong>[[Edit Advanced Search Form]]:</strong>
 <form id="searchaddfield" class="ajaxform" targetdiv="advsearchpanel" action="$searchhome/advancedsearch/addfield.html" method="post">
-	<input type="hidden" name="oemaxlevel" value="1"/>
 	<input type="hidden" name="editadvsearch" value="true"/>
 	<input type="hidden" name="view" value="$view"/>
 	<input type="hidden" name="catalogid" value="$searcher.getCatalogId()"/>
@@ -83,7 +82,7 @@ $context.putPageValue("idprefix","search")
 		#end	
 
 	</select>
-	<a class="ajax btn btn-xs btn-secondary" style="margin:5px 0;" targetdiv="advsearchpanel" href="$searchhome/advancedsearch/index.html?oemaxlevel=1&editadvsearch=false&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">[[Done]]</a>
+	<a class="ajax btn btn-xs btn-secondary" style="margin:5px 0;" targetdiv="advsearchpanel" href="$searchhome/advancedsearch/index.html?editadvsearch=false&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">[[Done]]</a>
 	
 </form>
 </div>

@@ -47,8 +47,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 						
 						<form class="ajaxform d-flex flex-column my-4" 
 								 style="text-align: left;" 
-								 data-targetdiv="loginformdiv" 
-								 data-oemaxlevel="1" 
+								 data-targetdiv="loginformdiv"
 								 action="$home$content.loginroot/sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
 							#ifnotnull( $userCategory)
 								<input type="hidden" name="categoryid" value="$userCategory.id" />

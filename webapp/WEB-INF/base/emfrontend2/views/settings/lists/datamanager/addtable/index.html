@@ -4,14 +4,14 @@
 
 <div class="fields">
         
-    <form class="ajaxform" name="Add" action="$home$apphome/views/settings/lists/datamanager/addtable/addfinish.html?oemaxlevel=2"
-    		data-targetdiv="datamanagerpage">
+    <form class="ajaxform" name="Add" action="$home$apphome/views/settings/lists/datamanager/addtable/addfinish.html" data-targetdiv="datamanagerpage">
+    <input type="hidden" name="oemaxlevel" value="2"/>
     <div style="width:300px">
 	    <div style="margin-bottom:30px">
 	    <label>[[Table Name]]</label>
 	    <input class="form-control" name="tablename" />
 	    <div class="note">[[Singular, spaces are not valid.]]</div> 
-	    </div>
+    </div>
     
     <label>[[Storage Folder]]</label>
     <input class="form-control" name="prefix" />

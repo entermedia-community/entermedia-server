@@ -55,7 +55,7 @@ $context.putPageValue("searchtype", $searchtype)
    href="$home$apphome/views/settings/modules/${module}/metadata/views/index.html?viewid=${viewid}&viewpath=${view}&assettype=$!type"
    title="[[Configure View]]"><i class="fas fa-cog"></i></a>
    
-##<a href="$componenthome/detaileditor/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&columns=1" 
+##<a href="$componenthome/detaileditor/generalinformation/editform.html?viewpath=$viewpath&edit=$!caneditasset&assetid=${asset.id}&columns=1" 
 ##	class="detail-edit-icon float-right ajax btn btn-xs"
 ##	data-targetdiv="edit-$viewid"
 ##	title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-bars"></i></a>
@@ -77,7 +77,6 @@ $context.putPageValue("searchtype", $searchtype)
 			data-includesearchcontext="false">
 	
 		<input type="hidden" name="saveasnew" value="false" />
-		<input name="oemaxlevel" type="hidden" value="1" />
 		<input type="hidden" name="save" value="true" />
 		<input type="hidden" name="catalogid" value="$!catalogid" />
 		<input type="hidden" name="searchtype" value="$searcher.getSearchType()" />
@@ -129,12 +128,10 @@ $context.putPageValue("searchtype", $searchtype)
 		<div class="btns">
 			<input class="btn btn-sm btn-primary submitform" type="button"	value="[[Save values]]"/>
 			#if ($targetdiv == "tabsummarypanel")
-			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" targetdiv="$targetdiv" 
-				href="/$applicationid/components/detaileditor/generalinformation/index.html?oemaxlevel=1&assetid=$asset.id&hitssessionid=$!hitssessionid">[[Cancel]]</a>
+			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" targetdiv="$targetdiv" href="/$applicationid/components/detaileditor/generalinformation/index.html?assetid=$asset.id&hitssessionid=$!hitssessionid">[[Cancel]]</a>
 			#else
 			#set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&jumptomodule=$!jumptomodule&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$view&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
-			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" targetdiv="$targetdiv" 
-				href="$home$editpath?oemaxlevel=1&${args}">[[Cancel]]</a>
+			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" targetdiv="$targetdiv" href="$home$editpath?${args}">[[Cancel]]</a>
 			#end
 			#if( $caneditmetadatasetup  )
 				#if ( $view.contains("$asset.assettype") )
@@ -221,7 +218,7 @@ $context.putPageValue("searchtype", $searchtype)
 		<div class="col">
 			<div class="btns">
 			<a class="ajax btn btn-sm btn-primary" targetdiv="${view}editor" 
-			href="$home$componenthome/detaileditor/generic.html?catalogid=$catalogid&searchtype=$searcher.searchType&id=$!data.id&view=$view&assetid=$!asset.id&edit=1&oemaxlevel=1" >[[Edit ]]</a>
+			href="$home$componenthome/detaileditor/generic.html?catalogid=$catalogid&searchtype=$searcher.searchType&id=$!data.id&view=$view&assetid=$!asset.id&edit=1" >[[Edit ]]</a>
 			#if( $caneditmetadatasetup  )
 				#if ( $view.contains("$asset.assettype") )
 					#set ( $type = $asset.assettype )

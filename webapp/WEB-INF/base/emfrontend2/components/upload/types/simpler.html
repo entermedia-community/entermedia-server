@@ -1,7 +1,8 @@
 #set( $catalog = $context.getRequestParameter('uploadcatalog') )
 #set( $sourcepath = $formatteddate )
 <form id="uploadform" name="wizard" method="post" enctype="multipart/form-data"
-	action="$home/${applicationid}/components/upload/types/simple/finish.html?sourcepath=$sourcepath&oemaxlevel=2">
+	action="$home/${applicationid}/components/upload/types/simple/finish.html?oemaxlevel=1&sourcepath=$sourcepath">
+	<input type="hidden" name="oemaxlevel" value="2"/>
 	<input type="hidden" name="categoryid" value="index"/>
 	
 <div id="eml-tab-green-container" style="width: 400px; margin: 0 auto;" class="clearfix">

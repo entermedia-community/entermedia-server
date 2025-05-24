@@ -7,7 +7,7 @@
 			#set( $moduleid = $context.findValue("module") )
 			#set( $view = "${moduleid}/${moduleid}advancedsearch") 
 			<span class="widget-header-edit">
-			<a class="ajax" targetdiv="advsearchpanel" href="$searchhome/advancedsearch/index.html?oemaxlevel=1&editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view"><i class="fas fa-edit"></i></a>
+			<a class="ajax" targetdiv="advsearchpanel" href="$searchhome/advancedsearch/index.html?editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view"><i class="fas fa-edit"></i></a>
 			</span>
 		#end
 	</div>

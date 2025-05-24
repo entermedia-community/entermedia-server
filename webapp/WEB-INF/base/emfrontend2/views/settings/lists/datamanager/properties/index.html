@@ -4,7 +4,7 @@
 	<div class="tab-actions">
 		#if( $catalogid && $searchtype)
 			##<div style="float:right;">$!searcher.getPropertyDetails().getBeanName()</div>
-			<form action="$home$dataroot/properties/addnew.html?oemaxlevel=1" 
+			<form action="$home$dataroot/properties/addnew.html" 
 				  name="addnewprop" 
 				  class="inlineform ajaxform"
 				  data-targetdivinner="datamanager-workarea">
@@ -43,7 +43,7 @@
 	#end
 	</table>
 	##this will auto submit when they click
-	<form name="editlink" action="$home$dataroot/properties/edit.html?oemaxlevel=1" class="ajaxform" data-targetdiv="datamanager-workarea">
+	<form name="editlink" action="$home$dataroot/properties/edit.html" class="ajaxform" data-targetdiv="datamanager-workarea">
 		<input type="hidden" name="id" id="emselectedrow" value="" />
 		<input type="hidden" name="catalogid" value="$catalogid" />
 		<input type="hidden" name="searchtype" value="$searcher.getSearchType()" />
