@@ -179,7 +179,7 @@ findClosest = function (link, inid) {
     var anchorData = anchor.cleandata(); //anchor.data looses dynamically set data after ajax call, so we need to use this instead of anchor.data()
     if (!anchorData) anchorData = {};
 
-    if (options.targetdiv) {
+    if (options.targetdiv || options.targetdivinner) {
       if (
         options.oemaxlevel === undefined &&
         options.oemaxlayout === undefined

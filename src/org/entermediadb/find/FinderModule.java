@@ -691,17 +691,22 @@ public class FinderModule extends BaseMediaModule
 	{
 
 		MediaArchive archive = getMediaArchive(inReq);
-
-		Data data = (Data) inReq.getPageValue("data");
 		
-		if (data == null) {
-			log.error("Should not have run aiSearchModule without data");
-			return;
+		String arguments = (String) inReq.getPageValue("arguments");
+		
+		if(arguments == null)
+		{			
+			Data data = (Data) inReq.getPageValue("data");
+			
+			if (data == null) {
+				log.error("Should not have run aiSearchModule without data");
+				return;
+			}
+			
+			arguments = data.get("arguments");
+			log.error(arguments);
 		}
 
-		//String function = data.get("function");
-		String arguments = data.get("arguments");
-		log.error(arguments);
 		JSONObject d = (JSONObject) new JSONParser().parse(arguments);
 		
 		Object keywords_object = d.get("keywords");
@@ -754,15 +759,19 @@ public class FinderModule extends BaseMediaModule
 			modules.add((String) modules_json.get(i));
 		}
 		
-		UserProfile chatprofile = (UserProfile) inReq.getPageValue("chatprofile");
+		UserProfile userprofile = (UserProfile) inReq.getPageValue("chatprofile");
+		if(userprofile == null)
+		{
+			userprofile = (UserProfile) inReq.getPageValue("userprofile");
+		}
 		
 		if(modules.contains("all"))
 		{
-			modules = chatprofile.getEntitiesIds();
+			modules = userprofile.getEntitiesIds();
 		}
 		else if(!modules.isEmpty())
 		{
-			Collection<Data> modulesdata = chatprofile.getEntitiesByIdOrName(modules);
+			Collection<Data> modulesdata = userprofile.getEntitiesByIdOrName(modules);
 			Collection<String> moduleNames = new ArrayList();
 			
 			for (Iterator iterator = modulesdata.iterator(); iterator.hasNext();)
