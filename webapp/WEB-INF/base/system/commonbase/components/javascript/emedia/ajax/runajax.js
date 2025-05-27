@@ -180,10 +180,7 @@ findClosest = function (link, inid) {
     if (!anchorData) anchorData = {};
 
     if (options.targetdiv || options.targetdivinner) {
-      if (
-        options.oemaxlevel === undefined &&
-        options.oemaxlayout === undefined
-      ) {
+      if (!options.oemaxlevel && !options.oemaxlayout) {
         var searchStart = href.indexOf("?");
         if (searchStart > -1) {
           var search = href.substr(searchStart + 1);
@@ -192,18 +189,18 @@ findClosest = function (link, inid) {
           options.oemaxlayout = searchParams.get("oemaxlayout");
         }
       }
-      if (
-        options.oemaxlevel === undefined &&
-        options.oemaxlayout === undefined
-      ) {
+      if (!options.oemaxlevel && !options.oemaxlayout) {
         options.oemaxlevel = 1;
+        delete options.oemaxlayout;
       }
     }
 
     jQuery
       .ajax({
         url: href,
-        data: options,
+        data: {
+          ...options,
+        },
         success: function (data) {
           $(window).trigger("successToast", toastUid);
           /*
@@ -412,10 +409,17 @@ $(document).ready(function () {
           entermediakey = app.data("entermediakey");
         }
         var data = cell.cleandata();
+        if (data.targetdiv || data.targetdivinner) {
+          if (!data.oemaxlevel && !data.oemaxlayout) {
+            data.oemaxlevel = 1;
+          }
+        }
         jQuery.ajax({
           url: path,
           async: false,
-          data: data,
+          data: {
+            ...data,
+          },
           success: function (data) {
             cell.replaceWith(data);
             //$(window).trigger("checkautoreload", [cell]);

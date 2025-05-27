@@ -98,10 +98,10 @@ $.ajaxSetup({
     var targetdiv = form.data("targetdiv") || form.data("targetdivinner");
     if (targetdiv) {
       var oemaxlevel = form.data("oemaxlevel");
-      if (oemaxlevel === undefined) {
+      if (!oemaxlevel) {
         oemaxlevel = $("#" + targetdiv).data("oemaxlevel");
       }
-      if (oemaxlevel === undefined) {
+      if (!oemaxlevel) {
         oemaxlevel = 1;
       }
 
