@@ -56,7 +56,7 @@ public class McpModule extends BaseMediaModule
 		
 	}
 	
-	public void handleMpcHttpRequest(WebPageRequest inReq) throws Exception
+	public void handleMcpHttpRequest(WebPageRequest inReq) throws Exception
 	{
 		//This request is from some random client like copilot - we told it what endpoint to use:
 		//client/key
