@@ -33,6 +33,10 @@ public class MetadataPdfExtractor extends MetadataExtractor
 
 	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset)
 	{
+		if( ! inArchive.isCatalogSettingTrue("extractfulltext") )
+		{
+			return false;
+		}	
 		
 		String type = PathUtilities.extractPageType(inFile.getPath());
 		if (type == null || "data".equals(type.toLowerCase()))
@@ -45,7 +49,7 @@ public class MetadataPdfExtractor extends MetadataExtractor
 			type = type.toLowerCase();
 			if( inAsset.get("fileformat") == null)
 			{
-				inAsset.setProperty("fileformat", type);
+				inAsset.setProperty("fileformat", type); //Should not happen
 			}
 			if (type.equals("pdf"))
 			{
@@ -79,7 +83,7 @@ public class MetadataPdfExtractor extends MetadataExtractor
 					
 					Parse results = parser.parse(in); //Do we deal with encoding?
 					//We need to limit this size
-					if(inFile.getLength() > maxsize && !inArchive.isCatalogSettingTrue("extractfulltext")){
+					if(inFile.getLength() > maxsize ){
 						log.info("PDF was too large to extract metadata. Consider increasing max size: " + sizeval);
 						//Lets still get page numbers, this is fast enough.
 						//PDFParser np = new PDFParser(new RandomAccessFile(new File(inFile.getAbsolutePath()), "r"));
