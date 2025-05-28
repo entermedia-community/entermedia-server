@@ -1,198 +1,213 @@
 $.ajaxSetup({
-	xhrFields: {
-		withCredentials: true,
-	},
-	crossDomain: true,
-	beforeSend: function (xhr) {
-		xhr.setRequestHeader(
-			"X-TimeZone",
-			Intl.DateTimeFormat().resolvedOptions().timeZone
-		);
-	},
+  xhrFields: {
+    withCredentials: true,
+  },
+  crossDomain: true,
+  beforeSend: function (xhr) {
+    xhr.setRequestHeader(
+      "X-TimeZone",
+      Intl.DateTimeFormat().resolvedOptions().timeZone
+    );
+  },
 });
 
 (function ($) {
-	$.fn.cleandata = function () {
-		var element = $(this);
-		var params = element.data();
+  $.fn.cleandata = function () {
+    var element = $(this);
+    var params = element.data();
 
-		if (params === undefined) {
-			console.log("Element not found", element);
-			return;
-		}
+    if (params === undefined) {
+      console.log("Element not found", element);
+      return;
+    }
 
-		var cleaned = {};
-		var obj = Object.keys(params);
+    var cleaned = {};
+    var obj = Object.keys(params);
 
-		obj.forEach(function (key) {
-			var param = params[key];
-			if (param !== undefined) {
-				var thetype = typeof param;
-				if (
-					thetype === "string" ||
-					thetype === "number" ||
-					thetype === "boolean"
-				) {
-					cleaned[key] = param;
-				}
-			}
-		});
-		return cleaned;
-	};
+    obj.forEach(function (key) {
+      var param = params[key];
+      if (param !== undefined) {
+        var thetype = typeof param;
+        if (
+          thetype === "string" ||
+          thetype === "number" ||
+          thetype === "boolean"
+        ) {
+          cleaned[key] = param;
+        }
+      }
+    });
+    return cleaned;
+  };
 
-	var oldLoad = $.fn.load;
-	$.fn.load = function (inArg, maybeData, inComplete) {
-		var oldscope = this;
-		if (typeof maybeData != "object") {
-			inComplete = maybeData;
-			maybeData = {};
-		}
-		var returned = oldLoad.call(oldscope, inArg, maybeData, function () {
-			if (typeof inComplete == "function") {
-				// They passed in parameters
-				inComplete.call(this);
-			}
-			//console.log("html complete");
-			$(document).trigger("domchanged", $(oldscope).parent()); //Child got replaced
-		});
-		return returned;
-	};
+  var oldLoad = $.fn.load;
+  $.fn.load = function (inArg, maybeData, inComplete) {
+    var oldscope = this;
+    if (typeof maybeData != "object") {
+      inComplete = maybeData;
+      maybeData = {};
+    }
+    var returned = oldLoad.call(oldscope, inArg, maybeData, function () {
+      if (typeof inComplete == "function") {
+        // They passed in parameters
+        inComplete.call(this);
+      }
+      //console.log("html complete");
+      $(document).trigger("domchanged", $(oldscope).parent()); //Child got replaced
+    });
+    return returned;
+  };
 
-	var oldhtml = $.fn.html;
-	$.fn.html = function (arg) {
-		if (arguments.length == 0) {
-			var returned = oldhtml.call($(this));
-			return returned;
-		}
+  var oldhtml = $.fn.html;
+  $.fn.html = function (arg) {
+    if (arguments.length == 0) {
+      var returned = oldhtml.call($(this));
+      return returned;
+    }
 
-		var returned = oldhtml.call($(this), arg);
-		$(document).trigger("domchanged", $(this)); //a component may be adding html that will call this
-		return returned;
-	};
+    var returned = oldhtml.call($(this), arg);
+    $(document).trigger("domchanged", $(this)); //a component may be adding html that will call this
+    return returned;
+  };
 
-	var oldreplaceWith = $.fn.replaceWith;
-	$.fn.replaceWith = function (arg) {
-		var parent = $(this).parent();
+  var oldreplaceWith = $.fn.replaceWith;
+  $.fn.replaceWith = function (arg) {
+    var parent = $(this).parent();
 
-		var returned = oldreplaceWith.call($(this), arg);
-		//console.log("Called replacewith on " +	$(this).selector, arg.length );
-		//$(document).trigger("domchanged");
-		$(document).trigger("domchanged", parent); //Child got replaced
+    var returned = oldreplaceWith.call($(this), arg);
+    //console.log("Called replacewith on " +	$(this).selector, arg.length );
+    //$(document).trigger("domchanged");
+    $(document).trigger("domchanged", parent); //Child got replaced
 
-		return returned;
-	};
+    return returned;
+  };
 
-	var oldappend = $.fn.append;
-	$.fn.append = function (arg) {
-		var returned = oldappend.call($(this), arg);
-		//console.log("Called replacewith on " +	$(this).selector, arg.length );
-		$(document).trigger("domchanged", $(this));
+  var oldappend = $.fn.append;
+  $.fn.append = function (arg) {
+    var returned = oldappend.call($(this), arg);
+    //console.log("Called replacewith on " +	$(this).selector, arg.length );
+    $(document).trigger("domchanged", $(this));
 
-		return returned;
-	};
+    return returned;
+  };
 
-	var oldajaxSubmit = $.fn.ajaxSubmit;
-	$.fn.ajaxSubmit = function () {
-		var form = $(this);
-		var params = arguments[0];
-		var oldsucess = params.success;
-		params.success = function (arg1, arg2, arg3, arg4) {
-			var targetdiv = form.data("targetdiv");
-			//var oldcontent = $(targetdiv);
-			//oldcontent.html("");
+  var oldajaxSubmit = $.fn.ajaxSubmit;
+  $.fn.ajaxSubmit = function () {
+    var form = $(this);
 
-			if (oldsucess != null) {
-				oldsucess.call(form, arg1, arg2, arg3, arg4);
-			}
-			//Grab target div? 		$(document).trigger("domchanged",null,$(this));
-			if (targetdiv) {
-				$(document).trigger("domchanged", $("#" + targetdiv));
-			} else {
-				$(document).trigger("domchanged");
-			}
-		};
-		var returned = oldajaxSubmit.call(form, params);
-		params.success = oldsucess;
-		return returned;
-	};
+    var targetdiv = form.data("targetdiv") || form.data("targetdivinner");
+    if (targetdiv) {
+      var oemaxlevel = form.data("oemaxlevel");
+      if (!oemaxlevel) {
+        oemaxlevel = $("#" + targetdiv).data("oemaxlevel");
+      }
+      if (!oemaxlevel) {
+        oemaxlevel = 1;
+      }
+
+      form.append(
+        $(`<input type='hidden' name='oemaxlevel' value='${oemaxlevel}'>`)
+      );
+    }
+
+    var params = arguments[0];
+    var oldsucess = params.success;
+    params.success = function (arg1, arg2, arg3, arg4) {
+      //var oldcontent = $(targetdiv);
+      //oldcontent.html("");
+
+      if (oldsucess != null) {
+        oldsucess.call(form, arg1, arg2, arg3, arg4);
+      }
+      //Grab target div? 		$(document).trigger("domchanged",null,$(this));
+      if (targetdiv) {
+        $(document).trigger("domchanged", $("#" + targetdiv));
+      } else {
+        $(document).trigger("domchanged");
+      }
+    };
+    var returned = oldajaxSubmit.call(form, params);
+    params.success = oldsucess;
+    return returned;
+  };
 })(jQuery);
 
 (function ($) {
-	var regelements = new Array();
-	var eventregistry = new Array();
-	//Listener
+  var regelements = new Array();
+  var eventregistry = new Array();
+  //Listener
 
-	$(document).on("domchanged", function (event, args) {
-		// 		if( livequeryrunning && args == null )
-		// 		{
-		//console.log("Skipping reload" , args);
-		//return;
-		// 		}
-		var element;
-		if (typeof args == Array) {
-			if (args.length > 1) {
-				element = $(args[0], args[1]);
-			}
-		} else if (args != null) {
-			element = args;
-		}
+  $(document).on("domchanged", function (event, args) {
+    // 		if( livequeryrunning && args == null )
+    // 		{
+    //console.log("Skipping reload" , args);
+    //return;
+    // 		}
+    var element;
+    if (typeof args == Array) {
+      if (args.length > 1) {
+        element = $(args[0], args[1]);
+      }
+    } else if (args != null) {
+      element = args;
+    }
 
-		if (element == null) {
-			element = document;
-		}
-		//console.log("domchanged reload on ",element);
-		$.each(regelements, function () //Everyone
-		{
-			var item = this;
-			var funct = item.function;
-			$(item.selector, element).each(function () {
-				try {
-					var node = $(this);
-					if (node.data("livequeryinit" + item.selector) == null) {
-						//console.log("Not enabled: " + item.selector );
-						node.data("livequeryinit" + item.selector, true);
-						funct.call(node);
-					}
-				} catch (error) {
-					console.log("Could not process: " + item.selector, error);
-				}
-			});
-		});
-		//TODO: Loop over events ones and register them
-		$.each(eventregistry, function () {
-			var listener = this;
-			$(listener.selector, document).each(function () {
-				var node = $(this);
-				if (node.data("livequery") == null) {
-					//console.log("Registering " + listener.selector );
-					node.on(listener.event, listener.function);
-				} else {
-					//console.log("already Registered " + listener.selector );
-				}
-			});
-		});
-		//We need to do this as the end in case there are more than one click handlers on the same node
-		$.each(eventregistry, function () {
-			var listener = this;
-			$(listener.selector, document).each(function () {
-				var node = $(this);
-				if (node.data("livequery") == null) {
-					node.data("livequery", true);
-				}
-			});
-		});
-	}); //document.on
+    if (element == null) {
+      element = document;
+    }
+    //console.log("domchanged reload on ",element);
+    $.each(regelements, function () //Everyone
+    {
+      var item = this;
+      var funct = item.function;
+      $(item.selector, element).each(function () {
+        try {
+          var node = $(this);
+          if (node.data("livequeryinit" + item.selector) == null) {
+            //console.log("Not enabled: " + item.selector );
+            node.data("livequeryinit" + item.selector, true);
+            funct.call(node);
+          }
+        } catch (error) {
+          console.log("Could not process: " + item.selector, error);
+        }
+      });
+    });
+    //TODO: Loop over events ones and register them
+    $.each(eventregistry, function () {
+      var listener = this;
+      $(listener.selector, document).each(function () {
+        var node = $(this);
+        if (node.data("livequery") == null) {
+          //console.log("Registering " + listener.selector );
+          node.on(listener.event, listener.function);
+        } else {
+          //console.log("already Registered " + listener.selector );
+        }
+      });
+    });
+    //We need to do this as the end in case there are more than one click handlers on the same node
+    $.each(eventregistry, function () {
+      var listener = this;
+      $(listener.selector, document).each(function () {
+        var node = $(this);
+        if (node.data("livequery") == null) {
+          node.data("livequery", true);
+        }
+      });
+    });
+  }); //document.on
 
-	lQuery = function (
-		selector //https://api.jquery.com/selector/
-	) {
-		var runner = {};
-		runner.livequery = function () {
-			var nodes = jQuery(selector);
-			if (arguments.length == 1) {
-				var func = arguments[0];
-				var item = { selector: selector, function: func };
-				/*
+  lQuery = function (
+    selector //https://api.jquery.com/selector/
+  ) {
+    var runner = {};
+    runner.livequery = function () {
+      var nodes = jQuery(selector);
+      if (arguments.length == 1) {
+        var func = arguments[0];
+        var item = { selector: selector, function: func };
+        /*
         if( selector.startsWith("#"))
         {
 			regelements = $.grep(regelements, function (el, index) {
@@ -205,46 +220,46 @@ $.ajaxSetup({
 			});
 		}
 		*/
-				regelements.push(item);
-				try {
-					nodes.each(
-						function () //We need to make sure each row is initially handled
-						{
-							var onerow = $(this);
-							onerow.data("livequeryinit" + selector, true);
-							func.call(onerow);
-						}
-					);
-				} catch (error) {
-					console.log("Could not process: " + selector, error);
-				}
-			} //Note: on does not support scope of selectors
-			else {
-				var eventtype = arguments[0]; //click
-				var eventlistener = { selector: selector, event: eventtype };
+        regelements.push(item);
+        try {
+          nodes.each(
+            function () //We need to make sure each row is initially handled
+            {
+              var onerow = $(this);
+              onerow.data("livequeryinit" + selector, true);
+              func.call(onerow);
+            }
+          );
+        } catch (error) {
+          console.log("Could not process: " + selector, error);
+        }
+      } //Note: on does not support scope of selectors
+      else {
+        var eventtype = arguments[0]; //click
+        var eventlistener = { selector: selector, event: eventtype };
 
-				if (arguments.length == 2) {
-					eventlistener["function"] = arguments[1];
-					eventlistener["scope"] = document;
-				} else {
-					eventlistener["scope"] = arguments[1];
-					eventlistener["function"] = arguments[2];
-				}
-				eventregistry.push(eventlistener);
-				//console.log("Initial Registering  event" + eventlistener.selector );
+        if (arguments.length == 2) {
+          eventlistener["function"] = arguments[1];
+          eventlistener["scope"] = document;
+        } else {
+          eventlistener["scope"] = arguments[1];
+          eventlistener["function"] = arguments[2];
+        }
+        eventregistry.push(eventlistener);
+        //console.log("Initial Registering  event" + eventlistener.selector );
 
-				nodes.each(
-					function () //We need to make sure each row is initially handled
-					{
-						var node = $(this);
-						node.data("livequery", true);
-						node.on(eventlistener.event, eventlistener.function);
-						//$(document).on(eventlistener.event,eventlistener.selector,eventlistener.function);
-					}
-				);
-			}
-			return this;
-		};
-		return runner;
-	};
+        nodes.each(
+          function () //We need to make sure each row is initially handled
+          {
+            var node = $(this);
+            node.data("livequery", true);
+            node.on(eventlistener.event, eventlistener.function);
+            //$(document).on(eventlistener.event,eventlistener.selector,eventlistener.function);
+          }
+        );
+      }
+      return this;
+    };
+    return runner;
+  };
 })(jQuery);

@@ -56,7 +56,7 @@ public class McpModule extends BaseMediaModule
 		
 	}
 	
-	public void handleMpcHttpRequest(WebPageRequest inReq) throws Exception
+	public void handleMcpHttpRequest(WebPageRequest inReq) throws Exception
 	{
 		//This request is from some random client like copilot - we told it what endpoint to use:
 		//client/key
@@ -111,8 +111,7 @@ public class McpModule extends BaseMediaModule
 		String cmd = (String) payload.get("method");
 
 		inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId()); 
-
-		inReq.setCancelActions(true);
+		
 		//inReq.setHasRedirected(true);
 
 		if( cmd.equals("notifications/initialized") )
@@ -132,15 +131,22 @@ public class McpModule extends BaseMediaModule
 		
 		JSONObject params = (JSONObject) payload.get("params");
 		
+		String functionname = null;
+		String arguments = null;
+		
 		if(params != null)
 		{			
-			String functionname = (String) params.get("name");
+			functionname = (String) params.get("name");
 			inReq.putPageValue("functionname", functionname);
 			
-			JSONObject arguments = (JSONObject) params.get("arguments");
-			inReq.putPageValue("arguments", arguments);
+			JSONObject args = (JSONObject) params.get("arguments");
+			if(args != null) {
+				arguments = args.toJSONString();
+				inReq.putPageValue("arguments", arguments);
+			}
 		}
 		
+		inReq.putPageValue("id", payload.get("id"));
 		inReq.putPageValue("protocolVersion", "2025-03-26");
 		inReq.putPageValue("serverName", "EnterMedia MCP");
 		inReq.putPageValue("serverVersion", "1.0.0");
@@ -154,20 +160,26 @@ public class McpModule extends BaseMediaModule
 			User user = inReq.getUser();
 			inReq.putPageValue("user", user);
 			inReq.putPageValue("userprofile", archive.getUserProfile(user.getId()));
-		}
 
-		//This could be null if anonymous
-		//inReq.putPageValue("user", currentconnnection.getUser());
-		//TODO: Change this to be a stream of JSON in chunks. Support Streaming responses
+			String siteid = inReq.findValue("siteid");
+			inReq.putPageValue("mcpapplicationid", siteid + "/find"); 
+		}
+		
+		
 		String fp = "/" + appid + "/mcp/method/" + cmd + ".html";
-		String response = getRender().loadInputFromTemplate(inReq,  fp); //We need this to get the content length
+		String response = getRender().loadInputFromTemplate(inReq,  fp);
+
+		
 		//inReq.getPageStreamer().include(fp);
 		//inReq.getResponse().setContentLength(response.length());
+		
 		inReq.getResponse().getOutputStream().write(response.getBytes());  //This should chunk it up
+		
 		//inReq.getPageStreamer().getOutput().getWriter().write(response);
 		inReq.getResponse().flushBuffer();
 		inReq.setHasRedirected(true); //Dont render anything more now
 
+		inReq.setCancelActions(true);
 		//Close?
 		
 	}
