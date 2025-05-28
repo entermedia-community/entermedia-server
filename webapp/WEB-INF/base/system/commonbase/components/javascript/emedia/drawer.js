@@ -47,7 +47,7 @@
     drawer.css("visibility", "visible");
     drawer.focus();
     if (drawer.width() < 420) {
-      drawer.css("width", $(window).width() - 20);
+      drawer.css("width", Math.min(400, $(window).width() - 20));
     } else {
       drawer.css("width", 400);
     }
@@ -83,7 +83,7 @@ $(document).ready(function () {
     closeDrawer();
   });
 
-  lQuery(".drawer a").livequery("click", function (e) {
+  lQuery(".drawer a").livequery("click", function () {
     var target = $(this).data("targetdiv");
     if (!target) target = $(this).attr("targetdivinner");
     var drawer = $(this).closest(".drawer");
@@ -97,7 +97,7 @@ $(document).ready(function () {
     }
     closeDrawer();
   });
-  lQuery(".drawer button").livequery("click", function (e) {
+  lQuery(".drawer button").livequery("click", function () {
     closeDrawer($(this).closest(".drawer"));
   });
 });

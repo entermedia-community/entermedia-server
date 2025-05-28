@@ -130,7 +130,7 @@
     form.data("submitting", true);
 
     form.ajaxSubmit({
-      data: data,
+      data: { ...data },
       xhrFields: {
         withCredentials: true,
       },
