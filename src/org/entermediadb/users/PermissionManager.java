@@ -621,10 +621,14 @@ public class PermissionManager implements CatalogEnabled
 		    for (String field : fieldsToCompare) {
 		    	
 		    	Collection combined = module.getValues("viewer" + field);
-		    	
-		    	if (module.getValues("editor" + field) != null)
+		    	Collection editors = module.getValues("editor" + field);
+		    	if (editors != null)
 			    {
-			    	combined.addAll(module.getValues("editor" + field));
+		    		if( combined == null)
+		    		{
+		    			combined = new ArrayList();
+		    		}
+			    	combined.addAll(editors);
 			    }
 		    	if (combined != null)
 		    	{
