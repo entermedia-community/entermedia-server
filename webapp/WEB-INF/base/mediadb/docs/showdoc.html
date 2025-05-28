@@ -16,7 +16,12 @@ $data.samplerequest
 #set($displayreq = true)
 #end
 <h2 class="mt-4">Request</h2>
-<textarea name="jsonrequest" #if(!$displayreq) style="display: none;" #end id="request" data-urlOLD="${data.url}" class="form-control" data-method="${data.httpmethod}" rows="6">
+<textarea name="jsonrequest" 
+	#if(!$displayreq) style="display: none;" #end 
+	id="request" 
+	##data-urlOLD="${data.url}" 
+	class="form-control" data-method="${data.httpmethod}" 
+	rows="6">
 </textarea>
 
 #foreach( $toupload in $data.getValues("filefieldstoupload"))
@@ -75,7 +80,7 @@ jQuery("#process").on("click", function(){
         });
     #else
 	    jQuery.ajax({
-	        contentType: 'text/plain',
+	        contentType: 'application/json',
 	    	type: method,
 			url: url,
 			data: req,
