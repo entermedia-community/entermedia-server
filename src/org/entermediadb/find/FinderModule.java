@@ -1,5 +1,6 @@
 package org.entermediadb.find;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,6 +18,8 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.search.SecurityEnabledSearchSecurity;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.entermediadb.llm.LLMManager;
+import org.entermediadb.llm.LLMResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -35,6 +38,7 @@ import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
 import org.openedit.profile.ModuleData;
 import org.openedit.profile.UserProfile;
+import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 
@@ -686,61 +690,66 @@ public class FinderModule extends BaseMediaModule
 
 	}
 	
+	protected Collection<String> parseKeywords(Object keywords_object) throws Exception
+	{
+		Collection<String> keywords = new ArrayList();
+		
+		JSONArray keywords_json = new JSONArray();
+		
+				
+		try {
+			if(keywords_object instanceof JSONArray)
+			{
+				keywords_json = (JSONArray) keywords_object;
+			}
+			else if(keywords_object instanceof String)
+			{
+				keywords_json.add((String) keywords_object);
+			}
+			
+			if(keywords_json == null || keywords_json.size() == 0)
+			{
+				log.error("No keywords provided");
+				return keywords;
+			}
+			
+			for (Iterator iterator = keywords_json.iterator(); iterator.hasNext();) {
+				String k = (String) iterator.next();
+				keywords.add(k);
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		return keywords;
+	}
 	
 	public void aiSearchModule(WebPageRequest inReq) throws Exception
 	{
 
 		MediaArchive archive = getMediaArchive(inReq);
 		
-		String arguments = (String) inReq.getPageValue("arguments");
+		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
 		
 		if(arguments == null)
 		{			
-			Data data = (Data) inReq.getPageValue("data");
-			
-			if (data == null) {
-				log.error("Should not have run aiSearchModule without data");
-				return;
-			}
-			
-			arguments = data.get("arguments");
-			log.error(arguments);
-		}
-
-		JSONObject d = (JSONObject) new JSONParser().parse(arguments);
-		
-		Object keywords_object = d.get("keywords");
-		
-		JSONArray keywords_json = new JSONArray();
-		if(keywords_object instanceof JSONArray)
-		{			
-			keywords_json = (JSONArray) keywords_object;
-		}
-		else if(keywords_object instanceof String)
-		{
-			keywords_json.add((String) keywords_object);
-		}
-		
-		if(keywords_json == null || keywords_json.size() == 0)
-		{
-			log.error("No keywords provided");
 			return;
+		} 
+		else {	
+			log.info(arguments.toJSONString());
 		}
 		
-		Collection<String> keywords = new ArrayList();
-		for (int i = 0; i < keywords_json.size(); i++)
-		{
-			keywords.add((String) keywords_json.get(i));
-		}
+		Collection<String> keywords = parseKeywords(arguments.get("keywords"));
 		
 		inReq.putPageValue("keywords", String.join(", ", keywords));
 		
-		String conjunction = (String) d.get("conjunction");
+		String conjunction = (String) arguments.get("conjunction");
 		if(conjunction == null || !conjunction.equals("inclusive")) {
 			conjunction = "exclusive";
 		}
 		
-		Object modules_object = d.get("modules");
+		Object modules_object = arguments.get("modules");
 
 		JSONArray modules_json = new JSONArray();
 		if(modules_object instanceof JSONArray)
@@ -796,6 +805,10 @@ public class FinderModule extends BaseMediaModule
 		if(!conjunction.equals("inclusive"))
 		{
 			plainquery = String.join(" OR ", keywords); // This does not work
+		}
+		else
+		{
+			plainquery = String.join(" ", keywords);
 		}
 		
 		
@@ -902,6 +915,71 @@ public class FinderModule extends BaseMediaModule
 
 		inReq.putPageValue("airesultshits", hits);
 
+	}
+	
+
+	
+	public void aiTakeaways(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		
+		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
+		
+		Collection<String> keywords = parseKeywords(arguments.get("keywords"));
+		
+		HitTracker pdfs = archive.query("asset").freeform("description", String.join(" ", keywords)).search();
+		
+		Collection pdfTexts = new ArrayList<String>();
+		
+		for (Iterator iterator = pdfs.iterator(); iterator.hasNext();) {
+			Data pdf = (Data) iterator.next();
+			ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + archive.getCatalogId() +"/assets/" + pdf.getSourcePath() + "/fulltext.txt");
+			
+			try(InputStream inputStream = item.getInputStream())
+			{				
+				String text = new String(inputStream.readAllBytes());
+				if(text.length() > 0)
+				{
+					pdfTexts.add(text); 					
+				}
+				log.info(text);
+			}
+		}
+
+		String fullText = String.join("\n\n", pdfTexts);
+		
+		if(fullText.replaceAll("\s|\n", "").length() == 0)
+		{
+			//TODO: Handle No text found;
+			return;
+		}
+		
+		
+		String model = inReq.findPathValue("model");
+
+		if (model == null)
+		{
+			model = archive.getCatalogSettingValue("gpt-model");
+		}
+		if (model == null)
+		{
+			model = "gpt-4o"; // Default fallback
+		}
+
+		inReq.putPageValue("model", model);
+		inReq.putPageValue("fulltext", fullText);
+		
+		LLMManager manager = (LLMManager) archive.getBean("gptManager");
+		
+		String chattemplate = "/" + archive.getMediaDbId() + "/gpt/prompts/build_takeaways.html";
+		LLMResponse response = manager.runPageAsInput(inReq, model, chattemplate);
+		
+		String takeaways = response.getMessage();
+		
+		inReq.putPageValue("takeaways", takeaways);
+		
+		
 	}
 
 	

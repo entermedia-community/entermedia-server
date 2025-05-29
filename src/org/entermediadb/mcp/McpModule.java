@@ -132,16 +132,15 @@ public class McpModule extends BaseMediaModule
 		JSONObject params = (JSONObject) payload.get("params");
 		
 		String functionname = null;
-		String arguments = null;
+		JSONObject arguments = null;
 		
 		if(params != null)
 		{			
 			functionname = (String) params.get("name");
 			inReq.putPageValue("functionname", functionname);
 			
-			JSONObject args = (JSONObject) params.get("arguments");
-			if(args != null) {
-				arguments = args.toJSONString();
+			arguments = (JSONObject) params.get("arguments");
+			if(arguments != null) {
 				inReq.putPageValue("arguments", arguments);
 			}
 		}
