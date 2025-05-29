@@ -30,37 +30,10 @@
 		},
 	"results":[
 		#foreach($hit in $hits.getPageOfHits())#if( $foreach.count != 1 ), #end
-		{
-			#jsonpartial($hit $searcher.getPropertyDetails())
-			,"mediarendertype":"$!mediaarchive.getMediaRenderType($hit)"
-			 
-			##set( $origUrl = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$hit.getMediaName()")
-			
-			#set($origUrl = $mediaarchive.asLinkToOriginal($hit))
-			,"originalurl" : "$!origUrl"
-			
-			
-			#set($presets = $mediaarchive.asListOfPreviewLinks($hit) )
-			
-			,"downloads":[
-		#foreach( $preset in $presets )#if( ${foreach.count} != 1 ), #end
-		{	
-			"name":#jesc($preset.name),	
-			"id":#jesc($preset.id),	
-			#if( $preset.getId() == "0")
-				###set( $url = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$hit.getMediaName()")
-				##"url":"#urlencode($url)"
-			#else
-				#set( $url = $mediaarchive.asLinkToPreview($hit, $preset.get("generatedoutputfile") ) )
-				"url":"$url"
-			#end	
-		}
+			$context.putPageValue("hit",$hit)
+			$pages.include(	"${apphome}/services/module/${searcher.getSearchType()}/hit.json",$context)
 		#end
-		]
-
-		}
-		#end
-		]		
+	]		
  #if( $hits.getSearchQuery().hasFilters() )
  , "filters":[
 	#foreach( $selectedfilter in $hits.getSearchQuery().getFilters() )#if( $foreach.count != 1 ), #end #set( $detail = $searcher.getDetail($selectedfilter.getId() ) )
