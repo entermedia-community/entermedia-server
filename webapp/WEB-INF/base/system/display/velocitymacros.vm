@@ -145,3 +145,44 @@ $text
 $text.substring(0, $charsPerSide)...$text.substring($text.length() - $charsPerSide)
 #end
 #end
+
+#macro(mdTag $tag $content)
+#set($H = "#") 
+#if($tag == "h1")
+$H $content
+#elseif($tag == "h2")
+$H$H $content
+#elseif($tag == "h3")
+$H$H$H $content
+#elseif($tag == "h4")
+$H$H$H$H $content
+#elseif($tag == "b")
+**${content}**
+#elseif($tag == "i")
+*${content}*
+#elseif($tag == "ol")
+#foreach($c in $content)
+${foreach.count}. $c
+#end
+#elseif($tag == "ul")
+#foreach($c in $content)
+- $c
+#end
+#elseif($tag == "code")
+`${content}`
+#elseif($tag == "codeblock")
+```
+$content
+```
+#else
+$content
+#end
+#end
+
+#macro(mdLink $title $link)
+[$title]($link)
+#end
+
+#macro(mdImg $alt $imgLink)
+![$alt]($imgLink)
+#end
