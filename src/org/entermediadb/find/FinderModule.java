@@ -725,6 +725,22 @@ public class FinderModule extends BaseMediaModule
 		return keywords;
 	}
 	
+	public void mdTestSearch(WebPageRequest inReq) throws Exception
+	{
+		Collection modules = new ArrayList();
+		modules.add("Activity");
+		modules.add("entityactivity");
+		modules.add("asset");
+		
+		
+		Collection keywords = new ArrayList();
+		keywords.add("ac");
+		
+		User u = inReq.getUser();
+		
+		searchByKeywords(inReq, modules, keywords, "exclusive");
+	}
+	
 	public void aiSearchModule(WebPageRequest inReq) throws Exception
 	{
 
@@ -833,7 +849,6 @@ public class FinderModule extends BaseMediaModule
 		if( searchmodules.contains("asset"))
 		{
 			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
-			assetdq.getQuery().setIncludeDescription(true);
 			HitTracker assetunsorted = assetdq.search(inReq);
 			collectMatches(keywordsLower, plainquery, assetunsorted);
 			inReq.putPageValue("assethits", assetunsorted);

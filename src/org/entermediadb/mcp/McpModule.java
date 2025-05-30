@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.util.JsonUtil;
+import org.entermediadb.jsonrpc.JsonRpcResponseBuilder;
 import org.entermediadb.llm.VelocityRenderUtil;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -145,29 +146,43 @@ public class McpModule extends BaseMediaModule
 			}
 		}
 		
-		inReq.putPageValue("id", payload.get("id"));
-		inReq.putPageValue("protocolVersion", "2025-03-26");
-		inReq.putPageValue("serverName", "EnterMedia MCP");
-		inReq.putPageValue("serverVersion", "1.0.0");
-
-		inReq.putPageValue("responsetext", "accepted");
-		inReq.putPageValue("render", getRender());
+		Object id = payload.get("id");
 		
-		if(cmd.equals("tools/call"))
+		inReq.putPageValue("id", id);
+		
+		String response = "";
+		
+		if(cmd.equals("initialize"))
 		{
-			//This could be null if anonymous
+			response = new JsonRpcResponseBuilder(id)
+					.withServer("eMedia Live")
+					.build();
+		}
+		else if(cmd.equals("tools/call"))
+		{
+			// This could be null if anonymous
 			User user = inReq.getUser();
 			inReq.putPageValue("user", user);
 			inReq.putPageValue("userprofile", archive.getUserProfile(user.getId()));
 
 			String siteid = inReq.findValue("siteid");
-			inReq.putPageValue("mcpapplicationid", siteid + "/find"); 
+			inReq.putPageValue("mcpapplicationid", siteid + "/find");
+			
+			String fp = "/" + appid + "/mcp/functions/" + functionname + ".md";
+			
+			String text = getRender().loadInputFromTemplate(inReq, fp); 
+			text = text.replaceAll("\s+$\n", "");
+			text = text.replaceAll("\n+", "\n");
+			response = new JsonRpcResponseBuilder(id)
+					.withToolResponse(text, false)
+					.build();
+		}
+		else 
+		{
+			String fp = "/" + appid + "/mcp/method/" + cmd + ".html";
+			response = getRender().loadInputFromTemplate(inReq, fp);
 		}
 		
-		
-		String fp = "/" + appid + "/mcp/method/" + cmd + ".html";
-		String response = getRender().loadInputFromTemplate(inReq,  fp);
-
 		
 		//inReq.getPageStreamer().include(fp);
 		//inReq.getResponse().setContentLength(response.length());
