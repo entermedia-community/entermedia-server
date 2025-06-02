@@ -841,6 +841,8 @@ public class FinderModule extends BaseMediaModule
 		security.attachSecurity(inReq, archive.getSearcher("modulesearch"), dq.getQuery());
 		
 		HitTracker unsorted = dq.search();
+		
+		log.info(unsorted);
 
 		Map<String,String> keywordsLower = new HashMap();
 		
@@ -852,6 +854,8 @@ public class FinderModule extends BaseMediaModule
 			HitTracker assetunsorted = assetdq.search(inReq);
 			collectMatches(keywordsLower, plainquery, assetunsorted);
 			inReq.putPageValue("assethits", assetunsorted);
+			
+			log.info(assetunsorted);
 		}
 		
 		List finallist = new ArrayList();
@@ -872,6 +876,8 @@ public class FinderModule extends BaseMediaModule
 		
 		Collection pageOfHits = unsorted.getPageOfHits();
 		pageOfHits = new ArrayList(pageOfHits);
+		
+		
 		
 		organizeHits(inReq, unsorted, pageOfHits);
 		
