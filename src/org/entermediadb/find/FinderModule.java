@@ -741,6 +741,24 @@ public class FinderModule extends BaseMediaModule
 		searchByKeywords(inReq, modules, keywords, "exclusive");
 	}
 	
+	public static String joinWithAnd(ArrayList<String> items) {
+		if (items == null || items.size() == 0) {
+			return "";
+		} else if (items.size() == 1) {
+			return items.get(0);
+		} else if (items.size() == 2) {
+			return items.get(0) + " and " + items.get(0);
+		}
+
+		StringBuilder result = new StringBuilder();
+		for (int i = 0; i < items.size() - 1; i++) {
+			result.append(items.get(i)).append(", ");
+		}
+
+		result.append("and ").append(items.get(items.size() - 1));
+		return result.toString();
+	}
+	
 	public void aiSearchModule(WebPageRequest inReq) throws Exception
 	{
 
@@ -756,9 +774,9 @@ public class FinderModule extends BaseMediaModule
 			log.info(arguments.toJSONString());
 		}
 		
-		Collection<String> keywords = parseKeywords(arguments.get("keywords"));
+		Collection<String> keywords = parseKeywords(arguments.get("keywords")); 
 		
-		inReq.putPageValue("keywords", String.join(", ", keywords));
+		inReq.putPageValue("keywordsstring", new ArrayList(keywords));
 		
 		String conjunction = (String) arguments.get("conjunction");
 		if(conjunction == null || !conjunction.equals("inclusive")) {
@@ -793,6 +811,7 @@ public class FinderModule extends BaseMediaModule
 		if(modules.contains("all"))
 		{
 			modules = userprofile.getEntitiesIds();
+			inReq.putPageValue("modulenamestext", "all modules");
 		}
 		else if(!modules.isEmpty())
 		{
@@ -806,8 +825,7 @@ public class FinderModule extends BaseMediaModule
 				moduleNames.add(module.getName());
 			}
 			
-			String modulenames = String.join(", ", moduleNames);
-			inReq.putPageValue("modulenames", modulenames);
+			inReq.putPageValue("modulenamestext", new ArrayList(moduleNames));
 		}
 		
 		searchByKeywords(inReq, modules, keywords, conjunction);
@@ -882,62 +900,6 @@ public class FinderModule extends BaseMediaModule
 		organizeHits(inReq, unsorted, pageOfHits);
 		
 	}
-	
-	public void aiSearchAll(WebPageRequest inReq) throws Exception
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		
-		Data data = (Data) inReq.getPageValue("data");
-
-		//String function = data.get("function");
-		String arguments = data.get("arguments");
-		JSONObject d = (JSONObject) new JSONParser().parse(arguments); 
-		String keywords = (String) d.get("keywords");
-		
-		if( keywords == null)
-		{
-			return;
-		}		
-
-		keywords = keywords.replace(" ", " OR ");
-		
-		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",keywords).hitsPerPage(30);
-		dq.getQuery().setIncludeDescription(true);
-		
-		Collection searchmodules = new ArrayList();
-		String mainsearchmodule = inReq.getRequestParameter("mainsearchmodule");
-		if(mainsearchmodule != null) {
-			searchmodules.add(mainsearchmodule);
-			dq.getQuery().setValue("searchtypes", searchmodules);
-		}
-		else 
-		{
-			searchmodules = loadUserSearchTypes(inReq);
-			Collection searchmodulescopy = new ArrayList(searchmodules);
-			searchmodulescopy.remove("asset");
-			dq.getQuery().setValue("searchtypes", searchmodulescopy);
-		}
-		
-		
-		SecurityEnabledSearchSecurity security = new SecurityEnabledSearchSecurity();
-		security.attachSecurity(inReq, archive.getSearcher("modulesearch"), dq.getQuery());
-		
-		HitTracker unsorted = dq.search(); //With permissions?
-		ListHitTracker hits = new ListHitTracker(unsorted.getPageOfHits());
-		
-		if( searchmodules.contains("asset"))
-		{
-			QueryBuilder assetdq = archive.query("asset").freeform("description",keywords).hitsPerPage(15);
-			assetdq.getQuery().setIncludeDescription(true);
-			HitTracker assetunsorted = assetdq.search(inReq);
-			hits.addAll(assetunsorted.getPageOfHits());
-		
-		}		
-
-		inReq.putPageValue("airesultshits", hits);
-
-	}
-	
 
 	
 	public void aiTakeaways(WebPageRequest inReq) throws Exception

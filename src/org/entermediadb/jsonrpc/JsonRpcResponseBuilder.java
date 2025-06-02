@@ -1,19 +1,12 @@
 package org.entermediadb.jsonrpc;
 
-import java.util.Collection; 
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
-enum Capability {
-	tools, prompts, resources
-}
 
 public class JsonRpcResponseBuilder {
 	final private String version = "2.0";
 	private Object id;
     private JSONObject result;
-    private Object params;
     
     final private String[] capabilities = {"tools", "prompts", "resources"};
 
@@ -75,7 +68,10 @@ public class JsonRpcResponseBuilder {
         tools.add(getTool("show_hint", "Show hints on how to properly use the search function and provide examples."
         		+ " Use this function when people ask questions like: 'What can you do?', 'How can I search using this"
         		+ " tool?', 'Give me example of some search queries'."));
-
+        
+        result.put("tools", tools);
+				//TODO: add rest
+        this.result = result;
         return this;
 
     }
