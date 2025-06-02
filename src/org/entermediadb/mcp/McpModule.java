@@ -171,8 +171,8 @@ public class McpModule extends BaseMediaModule
 			String fp = "/" + appid + "/mcp/functions/" + functionname + ".md";
 			
 			String text = getRender().loadInputFromTemplate(inReq, fp); 
-			text = text.replaceAll("\s+$\n", "");
-			text = text.replaceAll("\n+", "\n");
+			text = text.replaceAll("\\s+$\\n", "");
+			text = text.replaceAll("\\n+", "\\n");
 			response = new JsonRpcResponseBuilder(id)
 					.withToolResponse(text, false)
 					.build();
