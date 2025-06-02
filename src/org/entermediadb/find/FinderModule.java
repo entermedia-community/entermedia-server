@@ -964,7 +964,7 @@ public class FinderModule extends BaseMediaModule
 
 		String fullText = String.join("\n\n", pdfTexts);
 		
-		if(fullText.replaceAll("\s|\n", "").length() == 0)
+		if(fullText.replaceAll("\\s|\\n", "").length() == 0)
 		{
 			//TODO: Handle No text found;
 			return;
