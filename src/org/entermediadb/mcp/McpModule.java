@@ -11,12 +11,14 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.jsonrpc.JsonRpcResponseBuilder;
+import org.entermediadb.jsonrpc.ToolsSchemaGenerator;
 import org.entermediadb.llm.VelocityRenderUtil;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 
 public class McpModule extends BaseMediaModule
@@ -158,32 +160,36 @@ public class McpModule extends BaseMediaModule
 					.withServer("eMedia Live")
 					.build();
 		}
-		else if(cmd.equals("tools/call"))
+		else if(cmd.startsWith("tools/"))
 		{
 			// This could be null if anonymous
 			User user = inReq.getUser();
 			inReq.putPageValue("user", user);
-			inReq.putPageValue("userprofile", archive.getUserProfile(user.getId()));
+			UserProfile profile = archive.getUserProfile(user.getId());
+			inReq.putPageValue("userprofile", profile);
 
-			String siteid = inReq.findValue("siteid");
-			inReq.putPageValue("mcpapplicationid", siteid + "/find");
+			if(cmd.equals("tools/list"))
+			{
+				response = new ToolsSchemaGenerator(id, profile.getEntities())
+						.generate();
+			}
 			
-			String fp = "/" + appid + "/mcp/functions/" + functionname + ".md";
-			
-			String text = getRender().loadInputFromTemplate(inReq, fp); 
-			text = text.replaceAll("(?m)^\\s*$\\n?", "");
-			text = text.replaceAll("(\\r?\\n){2,}", "\n");
+			if(cmd.equals("tools/call"))
+			{
+				String siteid = inReq.findValue("siteid");
+				inReq.putPageValue("mcpapplicationid", siteid + "/find");
+				
+				String fp = "/" + appid + "/mcp/functions/" + functionname + ".md";
+				
+				String text = getRender().loadInputFromTemplate(inReq, fp); 
+				text = text.replaceAll("(?m)^\\s*$\\n?", "");
+				text = text.replaceAll("(\\r?\\n){2,}", "\n");
+				
+				response = new JsonRpcResponseBuilder(id)
+						.withToolResponse(text, false)
+						.build();
+			}
 
-			response = new JsonRpcResponseBuilder(id)
-					.withToolResponse(text, false)
-					.build();
-		}
-		//TEST:
-		else if(cmd.equals("tools/test"))
-		{
-			response = new JsonRpcResponseBuilder(id)
-					.withToolsList()
-					.build();
 		}
 		else 
 		{

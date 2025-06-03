@@ -58,23 +58,6 @@ public class JsonRpcResponseBuilder {
     	
     	return tool;
     }
-    
-    public JsonRpcResponseBuilder withToolsList()
-    {
-        JSONObject result = new JSONObject();
-
-        JSONArray tools = new JSONArray();
-        
-        tools.add(getTool("show_hint", "Show hints on how to properly use the search function and provide examples."
-        		+ " Use this function when people ask questions like: 'What can you do?', 'How can I search using this"
-        		+ " tool?', 'Give me example of some search queries'."));
-        
-        result.put("tools", tools);
-				//TODO: add rest
-        this.result = result;
-        return this;
-
-    }
 
     public JsonRpcResponseBuilder withToolResponse(String text, Boolean isError)
     {
