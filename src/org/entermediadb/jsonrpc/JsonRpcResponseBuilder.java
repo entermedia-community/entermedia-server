@@ -2,6 +2,7 @@ package org.entermediadb.jsonrpc;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 public class JsonRpcResponseBuilder {
 	final private String version = "2.0";
@@ -9,6 +10,8 @@ public class JsonRpcResponseBuilder {
     private JSONObject result;
     
     final private String[] capabilities = {"tools", "prompts", "resources"};
+    
+    final JSONParser parser = new JSONParser();
 
     public JsonRpcResponseBuilder(Object id) {
         this.id = id;
@@ -43,23 +46,23 @@ public class JsonRpcResponseBuilder {
         return this;
     }
     
-    private JSONObject getTool(String name, String description) {
-    	return getTool(name, description, null);
-    }
-    
-    private JSONObject getTool(String name, String description, JSONObject inputSchema) {
-    	JSONObject tool = new JSONObject();
-    	tool.put("name", name);
-    	tool.put("description", description);
-    	if(inputSchema != null)
-    	{
-    		tool.put("inputSchema", inputSchema);
-    	}
+    public JsonRpcResponseBuilder withToolsList(String toolsStr) throws Exception  {
+    	JSONObject result = new JSONObject();
     	
-    	return tool;
+    	try {
+    		JSONArray toolsArray = (JSONArray) parser.parse(toolsStr);
+    		result.put("tools", toolsArray);
+		} catch (Exception e) {
+			result.put("text", "Invalid JSON Array in tools/list.html");
+			result.put("isError", true);
+		}
+    	
+    	this.result = result;
+    	
+    	return this;
     }
 
-    public JsonRpcResponseBuilder withToolResponse(String text, Boolean isError)
+    public JsonRpcResponseBuilder withResponse(String text, Boolean isError)
     {
     	JSONObject result = new JSONObject();
     	

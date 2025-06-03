@@ -1,6 +1,5 @@
 package org.entermediadb.mcp;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +10,6 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.jsonrpc.JsonRpcResponseBuilder;
-import org.entermediadb.jsonrpc.ToolsSchemaGenerator;
 import org.entermediadb.llm.VelocityRenderUtil;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -61,10 +59,6 @@ public class McpModule extends BaseMediaModule
 	
 	public void handleMcpHttpRequest(WebPageRequest inReq) throws Exception
 	{
-		//This request is from some random client like copilot - we told it what endpoint to use:
-		//client/key
-		
-		///http://172.17.0.1:8080/oneliveweb/mcp/test.html
 		MediaArchive archive = getMediaArchive(inReq);
 		McpManager manager = (McpManager) archive.getBean("mcpManager");
 		
@@ -80,42 +74,22 @@ public class McpModule extends BaseMediaModule
 
 			//TODO: Block on this one forever? Stream back events to the client? Not used?
 			inReq.getResponse().setContentType("text/event-stream");
-//			String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html");
-			// gethandler.listen(); //This will block forver
+
 			inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId());
 			inReq.getResponse().flushBuffer();
 			//Only use Event-streams here
 			
 			//inReq.getResponse().setContentLength(100); //Without this we will use chunk encoding			
 			Thread.sleep(60000);
-			 return;
-//
-//			new Thread(() -> {
-//				try {
-//					currentconnnection.sendMessage(response);
-//				} catch (Exception e) {
-//					log.error("Failed to send SSE message", e);
-//				}
-//			}).start();
+			return;
 		}
 
-		
-		//Otherwise they are all POST requests and we stream back the reply
-		
-
-		
-		//Authenticate:
-//		if(cmd == null) {
-//			cmd = "initialize";
-//		}
 		String appid = inReq.findPathValue("applicationid");
 	
 		JSONObject payload = (JSONObject) inReq.getJsonRequest();
 		String cmd = (String) payload.get("method");
 
-		inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId()); 
-		
-		//inReq.setHasRedirected(true);
+		inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId());
 
 		if( cmd.equals("notifications/initialized") )
 		{
@@ -167,27 +141,42 @@ public class McpModule extends BaseMediaModule
 			inReq.putPageValue("user", user);
 			UserProfile profile = archive.getUserProfile(user.getId());
 			inReq.putPageValue("userprofile", profile);
-
-			if(cmd.equals("tools/list"))
-			{
-				response = new ToolsSchemaGenerator(id, profile.getEntities())
-						.generate();
-			}
 			
-			if(cmd.equals("tools/call"))
+			if(user == null || profile == null)
 			{
-				String siteid = inReq.findValue("siteid");
-				inReq.putPageValue("mcpapplicationid", siteid + "/find");
-				
-				String fp = "/" + appid + "/mcp/functions/" + functionname + ".md";
-				
-				String text = getRender().loadInputFromTemplate(inReq, fp); 
-				text = text.replaceAll("(?m)^\\s*$\\n?", "");
-				text = text.replaceAll("(\\r?\\n){2,}", "\n");
-				
 				response = new JsonRpcResponseBuilder(id)
-						.withToolResponse(text, false)
+						.withResponse("Authentication failed!", true)
 						.build();
+			}
+			else
+			{				
+				if(cmd.equals("tools/list"))
+				{
+					String fp = "/" + appid + "/mcp/method/tools/list.html";
+					inReq.putPageValue("modules", profile.getEntities());
+					
+					String toolsArrString = getRender().loadInputFromTemplate(inReq, fp);
+					
+					response = new JsonRpcResponseBuilder(id)
+							.withToolsList(toolsArrString)
+							.build();
+				}
+				
+				if(cmd.equals("tools/call"))
+				{
+					String siteid = inReq.findValue("siteid");
+					inReq.putPageValue("mcpapplicationid", siteid + "/find");
+					
+					String fp = "/" + appid + "/mcp/functions/" + functionname + ".md";
+					
+					String text = getRender().loadInputFromTemplate(inReq, fp); 
+					text = text.replaceAll("(?m)^\\s*$\\n?", "");
+					text = text.replaceAll("(\\r?\\n){2,}", "\n");
+					
+					response = new JsonRpcResponseBuilder(id)
+							.withResponse(text, false)
+							.build();
+				}
 			}
 
 		}
