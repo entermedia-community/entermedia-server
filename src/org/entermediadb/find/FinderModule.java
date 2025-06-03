@@ -811,6 +811,10 @@ public class FinderModule extends BaseMediaModule
 		{
 			userprofile = (UserProfile) inReq.getPageValue("userprofile");
 		}
+		else
+		{
+			inReq.putPageValue("userprofile", userprofile);
+		}
 		
 		if(modules.contains("all") || modules.size() == 0)
 		{
@@ -867,10 +871,8 @@ public class FinderModule extends BaseMediaModule
 		searchmodulescopy.remove("asset");
 		dq.getQuery().setValue("searchtypes", searchmodulescopy);
 		
-		SecurityEnabledSearchSecurity security = new SecurityEnabledSearchSecurity();
-		security.attachSecurity(inReq, archive.getSearcher("modulesearch"), dq.getQuery());
 		
-		HitTracker unsorted = dq.search();
+		HitTracker unsorted = dq.search(inReq);
 		
 		log.info(unsorted);
 
@@ -904,7 +906,8 @@ public class FinderModule extends BaseMediaModule
 			collectMatches(keywordsLower, plainquery, assetunsorted);
 			inReq.putPageValue("assethits", assetunsorted);
 			
-			log.info(assetunsorted);
+			User user = inReq.getUser();
+			log.info(user);
 			
 			if(searchmodules.size() == 1)
 			{
