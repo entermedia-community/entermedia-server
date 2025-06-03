@@ -849,6 +849,8 @@ public class FinderModule extends BaseMediaModule
 	
 	public void searchByKeywords(WebPageRequest inReq, Collection<String> moduleIds, Collection<String> keywords, String conjunction)
 	{
+		
+		log.info("Searching as:" + inReq.getUser().getName());
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		String plainquery = "";

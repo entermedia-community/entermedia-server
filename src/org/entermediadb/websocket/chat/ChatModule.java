@@ -709,9 +709,9 @@ public class ChatModule extends BaseMediaModule
 			String functionName = response.getFunctionName();
 			JSONObject arguments = response.getArguments();
 			
-			if(arguments.get("type") == null)
+			if(arguments.get("types") == null)
 			{
-				arguments.put("type", new JSONArray());
+				arguments.put("types", new JSONArray());
 			}
 
 			String json = arguments.toJSONString();
