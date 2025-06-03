@@ -37,6 +37,7 @@ import org.entermediadb.llm.BaseLLMManager;
 import org.entermediadb.llm.GptManager;
 import org.entermediadb.llm.LLMManager;
 import org.entermediadb.llm.LLMResponse;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
@@ -707,6 +708,11 @@ public class ChatModule extends BaseMediaModule
 			// Function call detected
 			String functionName = response.getFunctionName();
 			JSONObject arguments = response.getArguments();
+			
+			if(arguments.get("type") == null)
+			{
+				arguments.put("type", new JSONArray());
+			}
 
 			String json = arguments.toJSONString();
 			// Create and save function call message
@@ -776,14 +782,7 @@ public class ChatModule extends BaseMediaModule
 		try
 		{
 			String filename = functionName;
-			if( functionName.equals("searchall") ) {
-				filename = "search-all";
-			}
-			else if( functionName.equals("searchByModule") )
-			{
-				filename = "search-module";
-			}
-			else if( functionName.equals("showHintOrHelpInfo") )
+			if( functionName.equals("showHintOrHelpInfo") )
 			{
 				filename = "show-hints";
 			}

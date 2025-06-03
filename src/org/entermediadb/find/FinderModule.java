@@ -747,7 +747,7 @@ public class FinderModule extends BaseMediaModule
 		} else if (items.size() == 1) {
 			return items.get(0);
 		} else if (items.size() == 2) {
-			return items.get(0) + " and " + items.get(0);
+			return items.get(0) + " and " + items.get(1);
 		}
 
 		StringBuilder result = new StringBuilder();
@@ -794,6 +794,10 @@ public class FinderModule extends BaseMediaModule
 		{
 			modules_json.add((String) modules_object); 
 		}
+		else
+		{
+			modules_json.add("all");
+		}
 		
 		Collection<String> modules = new ArrayList();
 		
@@ -808,7 +812,7 @@ public class FinderModule extends BaseMediaModule
 			userprofile = (UserProfile) inReq.getPageValue("userprofile");
 		}
 		
-		if(modules.contains("all"))
+		if(modules.contains("all") || modules.size() == 0)
 		{
 			modules = userprofile.getEntitiesIds();
 			inReq.putPageValue("modulenamestext", "all modules");
@@ -895,6 +899,7 @@ public class FinderModule extends BaseMediaModule
 		if( searchmodules.contains("asset"))
 		{
 			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
+			log.info(assetdq.toString());
 			HitTracker assetunsorted = assetdq.search(inReq);
 			collectMatches(keywordsLower, plainquery, assetunsorted);
 			inReq.putPageValue("assethits", assetunsorted);

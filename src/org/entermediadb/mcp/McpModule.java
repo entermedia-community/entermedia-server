@@ -161,8 +161,7 @@ public class McpModule extends BaseMediaModule
 							.withToolsList(toolsArrString)
 							.build();
 				}
-				
-				if(cmd.equals("tools/call"))
+				else if(cmd.equals("tools/call"))
 				{
 					String siteid = inReq.findValue("siteid");
 					inReq.putPageValue("mcpapplicationid", siteid + "/find");
