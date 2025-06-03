@@ -771,12 +771,12 @@ public class FinderModule extends BaseMediaModule
 			return;
 		} 
 		else {	
-			log.info(arguments.toJSONString());
+			log.info("Args: " + arguments.toJSONString());
 		}
 		
 		Collection<String> keywords = parseKeywords(arguments.get("keywords")); 
 		
-		inReq.putPageValue("keywordsstring", new ArrayList(keywords));
+		inReq.putPageValue("keywordsstring", joinWithAnd(new ArrayList(keywords)));
 		
 		String conjunction = (String) arguments.get("conjunction");
 		if(conjunction == null || !conjunction.equals("inclusive")) {
@@ -824,12 +824,17 @@ public class FinderModule extends BaseMediaModule
 				if(!modules.contains(module.getId()))
 				{					
 					modules.add(module.getId());
-					moduleNames.add(module.getName());
 				}
+				moduleNames.add(module.getName());
 			}
 			
-			inReq.putPageValue("modulenamestext", new ArrayList(moduleNames));
+			inReq.putPageValue("modulenamestext", joinWithAnd(new ArrayList(moduleNames)));
 		}
+		
+		log.info("Keywords:");
+		log.info(keywords);
+		log.info("Modules:");
+		log.info(modules);
 		
 		searchByKeywords(inReq, modules, keywords, conjunction);
 	}
@@ -898,6 +903,7 @@ public class FinderModule extends BaseMediaModule
 			
 			if(searchmodules.size() == 1)
 			{
+				log.info("Searching for assets only");
 				return;
 			}
 		}

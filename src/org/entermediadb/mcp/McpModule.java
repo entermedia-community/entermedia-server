@@ -186,6 +186,18 @@ public class McpModule extends BaseMediaModule
 			response = getRender().loadInputFromTemplate(inReq, fp);
 		}
 		
+		if(response.length() == 0)
+		{
+			response = new JsonRpcResponseBuilder(id)
+					.withResponse("Server responded with nothing!", true)
+					.build();
+		}
+		else if(response.startsWith("404:"))
+		{
+			response = new JsonRpcResponseBuilder(id)
+					.withResponse("MCP Server error, function undefined (404)!", true)
+					.build();
+		}
 		
 		//inReq.getPageStreamer().include(fp);
 		//inReq.getResponse().setContentLength(response.length());
