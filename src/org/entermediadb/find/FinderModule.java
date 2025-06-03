@@ -1,5 +1,6 @@
 package org.entermediadb.find;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,6 +18,8 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.search.SecurityEnabledSearchSecurity;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.entermediadb.llm.LLMManager;
+import org.entermediadb.llm.LLMResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -35,6 +38,7 @@ import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
 import org.openedit.profile.ModuleData;
 import org.openedit.profile.UserProfile;
+import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 
@@ -686,56 +690,100 @@ public class FinderModule extends BaseMediaModule
 
 	}
 	
+	protected Collection<String> parseKeywords(Object keywords_object) throws Exception
+	{
+		Collection<String> keywords = new ArrayList();
+		
+		JSONArray keywords_json = new JSONArray();
+		
+				
+		try {
+			if(keywords_object instanceof JSONArray)
+			{
+				keywords_json = (JSONArray) keywords_object;
+			}
+			else if(keywords_object instanceof String)
+			{
+				keywords_json.add((String) keywords_object);
+			}
+			
+			if(keywords_json == null || keywords_json.size() == 0)
+			{
+				log.error("No keywords provided");
+				return keywords;
+			}
+			
+			for (Iterator iterator = keywords_json.iterator(); iterator.hasNext();) {
+				String k = (String) iterator.next();
+				keywords.add(k);
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		return keywords;
+	}
+	
+	public void mdTestSearch(WebPageRequest inReq) throws Exception
+	{
+		Collection modules = new ArrayList();
+		modules.add("Activity");
+		modules.add("entityactivity");
+		modules.add("asset");
+		
+		
+		Collection keywords = new ArrayList();
+		keywords.add("ac");
+		
+		User u = inReq.getUser();
+		
+		searchByKeywords(inReq, modules, keywords, "exclusive");
+	}
+	
+	public static String joinWithAnd(ArrayList<String> items) {
+		if (items == null || items.size() == 0) {
+			return "";
+		} else if (items.size() == 1) {
+			return items.get(0);
+		} else if (items.size() == 2) {
+			return items.get(0) + " and " + items.get(0);
+		}
+
+		StringBuilder result = new StringBuilder();
+		for (int i = 0; i < items.size() - 1; i++) {
+			result.append(items.get(i)).append(", ");
+		}
+
+		result.append("and ").append(items.get(items.size() - 1));
+		return result.toString();
+	}
 	
 	public void aiSearchModule(WebPageRequest inReq) throws Exception
 	{
 
 		MediaArchive archive = getMediaArchive(inReq);
-
-		Data data = (Data) inReq.getPageValue("data");
 		
-		if (data == null) {
-			log.error("Should not have run aiSearchModule without data");
-			return;
-		}
-
-		//String function = data.get("function");
-		String arguments = data.get("arguments");
-		log.error(arguments);
-		JSONObject d = (JSONObject) new JSONParser().parse(arguments);
+		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
 		
-		Object keywords_object = d.get("keywords");
-		
-		JSONArray keywords_json = new JSONArray();
-		if(keywords_object instanceof JSONArray)
+		if(arguments == null)
 		{			
-			keywords_json = (JSONArray) keywords_object;
-		}
-		else if(keywords_object instanceof String)
-		{
-			keywords_json.add((String) keywords_object);
-		}
-		
-		if(keywords_json == null || keywords_json.size() == 0)
-		{
-			log.error("No keywords provided");
 			return;
+		} 
+		else {	
+			log.info("Args: " + arguments.toJSONString());
 		}
 		
-		Collection<String> keywords = new ArrayList();
-		for (int i = 0; i < keywords_json.size(); i++)
-		{
-			keywords.add((String) keywords_json.get(i));
-		}
+		Collection<String> keywords = parseKeywords(arguments.get("keywords")); 
 		
-		inReq.putPageValue("keywords", String.join(", ", keywords));
+		inReq.putPageValue("keywordsstring", joinWithAnd(new ArrayList(keywords)));
 		
-		String conjunction = (String) d.get("conjunction");
+		String conjunction = (String) arguments.get("conjunction");
 		if(conjunction == null || !conjunction.equals("inclusive")) {
 			conjunction = "exclusive";
 		}
 		
-		Object modules_object = d.get("modules");
+		Object modules_object = arguments.get("types");
 
 		JSONArray modules_json = new JSONArray();
 		if(modules_object instanceof JSONArray)
@@ -754,27 +802,39 @@ public class FinderModule extends BaseMediaModule
 			modules.add((String) modules_json.get(i));
 		}
 		
-		UserProfile chatprofile = (UserProfile) inReq.getPageValue("chatprofile");
+		UserProfile userprofile = (UserProfile) inReq.getPageValue("chatprofile");
+		if(userprofile == null)
+		{
+			userprofile = (UserProfile) inReq.getPageValue("userprofile");
+		}
 		
 		if(modules.contains("all"))
 		{
-			modules = chatprofile.getEntitiesIds();
+			modules = userprofile.getEntitiesIds();
+			inReq.putPageValue("modulenamestext", "all modules");
 		}
 		else if(!modules.isEmpty())
 		{
-			Collection<Data> modulesdata = chatprofile.getEntitiesByIdOrName(modules);
+			Collection<Data> modulesdata = userprofile.getEntitiesByIdOrName(modules);
 			Collection<String> moduleNames = new ArrayList();
 			
 			for (Iterator iterator = modulesdata.iterator(); iterator.hasNext();)
 			{
 				Data module = (Data) iterator.next();
-				modules.add(module.getId());
+				if(!modules.contains(module.getId()))
+				{					
+					modules.add(module.getId());
+				}
 				moduleNames.add(module.getName());
 			}
 			
-			String modulenames = String.join(", ", moduleNames);
-			inReq.putPageValue("modulenames", modulenames);
+			inReq.putPageValue("modulenamestext", joinWithAnd(new ArrayList(moduleNames)));
 		}
+		
+		log.info("Keywords:");
+		log.info(keywords);
+		log.info("Modules:");
+		log.info(modules);
 		
 		searchByKeywords(inReq, modules, keywords, conjunction);
 	}
@@ -787,6 +847,10 @@ public class FinderModule extends BaseMediaModule
 		if(!conjunction.equals("inclusive"))
 		{
 			plainquery = String.join(" OR ", keywords); // This does not work
+		}
+		else
+		{
+			plainquery = String.join(" ", keywords);
 		}
 		
 		
@@ -803,19 +867,15 @@ public class FinderModule extends BaseMediaModule
 		security.attachSecurity(inReq, archive.getSearcher("modulesearch"), dq.getQuery());
 		
 		HitTracker unsorted = dq.search();
+		
+		log.info(unsorted);
 
 		Map<String,String> keywordsLower = new HashMap();
 		
 		collectMatches(keywordsLower, plainquery, unsorted);
 		
-		if( searchmodules.contains("asset"))
-		{
-			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
-			assetdq.getQuery().setIncludeDescription(true);
-			HitTracker assetunsorted = assetdq.search(inReq);
-			collectMatches(keywordsLower, plainquery, assetunsorted);
-			inReq.putPageValue("assethits", assetunsorted);
-		}
+		inReq.putPageValue("modulehits", unsorted);
+		inReq.putPageValue("livesearchfor", plainquery);
 		
 		List finallist = new ArrayList();
 		
@@ -828,71 +888,97 @@ public class FinderModule extends BaseMediaModule
 
 		Collections.sort(finallist);
 		
-		inReq.putPageValue("modulehits", unsorted);
-		inReq.putPageValue("livesearchfor", plainquery);
+		
 		inReq.putPageValue("livesuggestions", finallist);
 		inReq.putPageValue("highlighter", new Highlighter());
+		
+		if( searchmodules.contains("asset"))
+		{
+			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
+			HitTracker assetunsorted = assetdq.search(inReq);
+			collectMatches(keywordsLower, plainquery, assetunsorted);
+			inReq.putPageValue("assethits", assetunsorted);
+			
+			log.info(assetunsorted);
+			
+			if(searchmodules.size() == 1)
+			{
+				log.info("Searching for assets only");
+				return;
+			}
+		}
 		
 		Collection pageOfHits = unsorted.getPageOfHits();
 		pageOfHits = new ArrayList(pageOfHits);
 		
+		
+		
 		organizeHits(inReq, unsorted, pageOfHits);
 		
 	}
+
 	
-	public void aiSearchAll(WebPageRequest inReq) throws Exception
+	public void aiTakeaways(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		
-		Data data = (Data) inReq.getPageValue("data");
-
-		//String function = data.get("function");
-		String arguments = data.get("arguments");
-		JSONObject d = (JSONObject) new JSONParser().parse(arguments); 
-		String keywords = (String) d.get("keywords");
 		
-		if( keywords == null)
+		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
+		
+		Collection<String> keywords = parseKeywords(arguments.get("keywords"));
+		
+		HitTracker pdfs = archive.query("asset").freeform("description", String.join(" ", keywords)).search();
+		
+		Collection pdfTexts = new ArrayList<String>();
+		
+		for (Iterator iterator = pdfs.iterator(); iterator.hasNext();) {
+			Data pdf = (Data) iterator.next();
+			ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + archive.getCatalogId() +"/assets/" + pdf.getSourcePath() + "/fulltext.txt");
+			
+			try(InputStream inputStream = item.getInputStream())
+			{				
+				String text = new String(inputStream.readAllBytes());
+				if(text.length() > 0)
+				{
+					pdfTexts.add(text); 					
+				}
+				log.info(text);
+			}
+		}
+
+		String fullText = String.join("\n\n", pdfTexts);
+		
+		if(fullText.replaceAll("\\s|\\n", "").length() == 0)
 		{
+			//TODO: Handle No text found;
 			return;
-		}		
-
-		keywords = keywords.replace(" ", " OR ");
-		
-		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",keywords).hitsPerPage(30);
-		dq.getQuery().setIncludeDescription(true);
-		
-		Collection searchmodules = new ArrayList();
-		String mainsearchmodule = inReq.getRequestParameter("mainsearchmodule");
-		if(mainsearchmodule != null) {
-			searchmodules.add(mainsearchmodule);
-			dq.getQuery().setValue("searchtypes", searchmodules);
-		}
-		else 
-		{
-			searchmodules = loadUserSearchTypes(inReq);
-			Collection searchmodulescopy = new ArrayList(searchmodules);
-			searchmodulescopy.remove("asset");
-			dq.getQuery().setValue("searchtypes", searchmodulescopy);
 		}
 		
 		
-		SecurityEnabledSearchSecurity security = new SecurityEnabledSearchSecurity();
-		security.attachSecurity(inReq, archive.getSearcher("modulesearch"), dq.getQuery());
-		
-		HitTracker unsorted = dq.search(); //With permissions?
-		ListHitTracker hits = new ListHitTracker(unsorted.getPageOfHits());
-		
-		if( searchmodules.contains("asset"))
+		String model = inReq.findPathValue("model");
+
+		if (model == null)
 		{
-			QueryBuilder assetdq = archive.query("asset").freeform("description",keywords).hitsPerPage(15);
-			assetdq.getQuery().setIncludeDescription(true);
-			HitTracker assetunsorted = assetdq.search(inReq);
-			hits.addAll(assetunsorted.getPageOfHits());
+			model = archive.getCatalogSettingValue("gpt-model");
+		}
+		if (model == null)
+		{
+			model = "gpt-4o"; // Default fallback
+		}
+
+		inReq.putPageValue("model", model);
+		inReq.putPageValue("fulltext", fullText);
 		
-		}		
-
-		inReq.putPageValue("airesultshits", hits);
-
+		LLMManager manager = (LLMManager) archive.getBean("gptManager");
+		
+		String chattemplate = "/" + archive.getMediaDbId() + "/gpt/prompts/build_takeaways.html";
+		LLMResponse response = manager.runPageAsInput(inReq, model, chattemplate);
+		
+		String takeaways = response.getMessage();
+		
+		inReq.putPageValue("takeaways", takeaways);
+		
+		
 	}
 
 	

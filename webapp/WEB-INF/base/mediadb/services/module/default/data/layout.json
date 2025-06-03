@@ -8,7 +8,8 @@
   "response":
       {
         "status":"$status",
-        "deleted":"true"
+        "deleted":"true",
+		"id":"$data.id"
       }
 }
 #elseif($method == "PUT")## for updating assets

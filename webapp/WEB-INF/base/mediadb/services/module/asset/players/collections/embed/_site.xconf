@@ -24,7 +24,7 @@
 	 <page-action name="DataEditModule.loadPageOfSearch"/>
 
     <style id="bootstrap" href="/${applicationid}/components/javascript/bootstrap/css/bootstrap.min.css" />
-   	<script id="jquery-liveajax" src="/${applicationid}/components/javascript/liveajax/liveajax.js"/>
+   	<script id="jquery-liveajax" src="/${applicationid}/components/javascript/emedia/liveajax.js"/>
   	<script id="entermedia" src="/${applicationid}/components/javascript/entermedia.js"/>
   	<script id="emtree" src="/${applicationid}/components/javascript/emtree/emtree.js"/>
   	<script id="theme-js" src="/${applicationid}/components/javascript/ui-components.js"/>

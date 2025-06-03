@@ -35,12 +35,13 @@
 {
   "response":
       {
-        "status":"$status",
-        "id":"$data.id"
+        "status":"$status"
+        #ifnotnull($data),"id":"$data.id"#end
       }
-  ,
-  
-  "data":#json($data $searcher.getPropertyDetails())
+  #ifnotnull($data),
+	$context.putPageValue("hit",$data)
+	"data": $pages.include(	"${apphome}/services/module/${searcher.getSearchType()}/hit.json",$context)
+  #end
 }
 #else
   {

@@ -1,6 +1,5 @@
 package org.entermediadb.mcp;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
@@ -10,12 +9,14 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.util.JsonUtil;
+import org.entermediadb.jsonrpc.JsonRpcResponseBuilder;
 import org.entermediadb.llm.VelocityRenderUtil;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 
 public class McpModule extends BaseMediaModule
@@ -56,12 +57,8 @@ public class McpModule extends BaseMediaModule
 		
 	}
 	
-	public void handleMpcHttpRequest(WebPageRequest inReq) throws Exception
+	public void handleMcpHttpRequest(WebPageRequest inReq) throws Exception
 	{
-		//This request is from some random client like copilot - we told it what endpoint to use:
-		//client/key
-		
-		///http://172.17.0.1:8080/oneliveweb/mcp/test.html
 		MediaArchive archive = getMediaArchive(inReq);
 		McpManager manager = (McpManager) archive.getBean("mcpManager");
 		
@@ -77,43 +74,22 @@ public class McpModule extends BaseMediaModule
 
 			//TODO: Block on this one forever? Stream back events to the client? Not used?
 			inReq.getResponse().setContentType("text/event-stream");
-//			String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html");
-			// gethandler.listen(); //This will block forver
+
 			inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId());
 			inReq.getResponse().flushBuffer();
 			//Only use Event-streams here
 			
 			//inReq.getResponse().setContentLength(100); //Without this we will use chunk encoding			
 			Thread.sleep(60000);
-			 return;
-//
-//			new Thread(() -> {
-//				try {
-//					currentconnnection.sendMessage(response);
-//				} catch (Exception e) {
-//					log.error("Failed to send SSE message", e);
-//				}
-//			}).start();
+			return;
 		}
 
-		
-		//Otherwise they are all POST requests and we stream back the reply
-		
-
-		
-		//Authenticate:
-//		if(cmd == null) {
-//			cmd = "initialize";
-//		}
 		String appid = inReq.findPathValue("applicationid");
 	
 		JSONObject payload = (JSONObject) inReq.getJsonRequest();
 		String cmd = (String) payload.get("method");
 
-		inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId()); 
-
-		inReq.setCancelActions(true);
-		//inReq.setHasRedirected(true);
+		inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId());
 
 		if( cmd.equals("notifications/initialized") )
 		{
@@ -132,42 +108,107 @@ public class McpModule extends BaseMediaModule
 		
 		JSONObject params = (JSONObject) payload.get("params");
 		
+		String functionname = null;
+		JSONObject arguments = null;
+		
 		if(params != null)
 		{			
-			String functionname = (String) params.get("name");
+			functionname = (String) params.get("name");
 			inReq.putPageValue("functionname", functionname);
 			
-			JSONObject arguments = (JSONObject) params.get("arguments");
-			inReq.putPageValue("arguments", arguments);
+			arguments = (JSONObject) params.get("arguments");
+			if(arguments != null) {
+				inReq.putPageValue("arguments", arguments);
+			}
 		}
 		
-		inReq.putPageValue("protocolVersion", "2025-03-26");
-		inReq.putPageValue("serverName", "EnterMedia MCP");
-		inReq.putPageValue("serverVersion", "1.0.0");
-
-		inReq.putPageValue("responsetext", "accepted");
-		inReq.putPageValue("render", getRender());
+		Object id = payload.get("id");
 		
-		if(cmd.equals("tools/call"))
+		inReq.putPageValue("id", id);
+		
+		String response = "";
+		
+		if(cmd.equals("initialize"))
 		{
-			//This could be null if anonymous
+			response = new JsonRpcResponseBuilder(id)
+					.withServer("eMedia Live")
+					.build();
+		}
+		else if(cmd.startsWith("tools/"))
+		{
+			// This could be null if anonymous
 			User user = inReq.getUser();
 			inReq.putPageValue("user", user);
-			inReq.putPageValue("userprofile", archive.getUserProfile(user.getId()));
-		}
+			UserProfile profile = archive.getUserProfile(user.getId());
+			inReq.putPageValue("userprofile", profile);
+			
+			if(user == null || profile == null)
+			{
+				response = new JsonRpcResponseBuilder(id)
+						.withResponse("Authentication failed!", true)
+						.build();
+			}
+			else
+			{				
+				if(cmd.equals("tools/list"))
+				{
+					String fp = "/" + appid + "/mcp/method/tools/list.html";
+					inReq.putPageValue("modules", profile.getEntities());
+					
+					String toolsArrString = getRender().loadInputFromTemplate(inReq, fp);
+					
+					response = new JsonRpcResponseBuilder(id)
+							.withToolsList(toolsArrString)
+							.build();
+				}
+				
+				if(cmd.equals("tools/call"))
+				{
+					String siteid = inReq.findValue("siteid");
+					inReq.putPageValue("mcpapplicationid", siteid + "/find");
+					
+					String fp = "/" + appid + "/mcp/functions/" + functionname + ".md";
+					
+					String text = getRender().loadInputFromTemplate(inReq, fp); 
+					text = text.replaceAll("(?m)^\\s*$\\n?", "");
+					text = text.replaceAll("(\\r?\\n){2,}", "\n");
+					
+					response = new JsonRpcResponseBuilder(id)
+							.withResponse(text, false)
+							.build();
+				}
+			}
 
-		//This could be null if anonymous
-		//inReq.putPageValue("user", currentconnnection.getUser());
-		//TODO: Change this to be a stream of JSON in chunks. Support Streaming responses
-		String fp = "/" + appid + "/mcp/method/" + cmd + ".html";
-		String response = getRender().loadInputFromTemplate(inReq,  fp); //We need this to get the content length
+		}
+		else 
+		{
+			String fp = "/" + appid + "/mcp/method/" + cmd + ".html";
+			response = getRender().loadInputFromTemplate(inReq, fp);
+		}
+		
+		if(response.length() == 0)
+		{
+			response = new JsonRpcResponseBuilder(id)
+					.withResponse("Server responded with nothing!", true)
+					.build();
+		}
+		else if(response.startsWith("404:"))
+		{
+			response = new JsonRpcResponseBuilder(id)
+					.withResponse("MCP Server error, function undefined (404)!", true)
+					.build();
+		}
+		
 		//inReq.getPageStreamer().include(fp);
 		//inReq.getResponse().setContentLength(response.length());
+		
 		inReq.getResponse().getOutputStream().write(response.getBytes());  //This should chunk it up
+		
 		//inReq.getPageStreamer().getOutput().getWriter().write(response);
 		inReq.getResponse().flushBuffer();
 		inReq.setHasRedirected(true); //Dont render anything more now
 
+		inReq.setCancelActions(true);
 		//Close?
 		
 	}

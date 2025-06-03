@@ -38,6 +38,7 @@ import org.entermediadb.llm.GptManager;
 import org.entermediadb.llm.LLMManager;
 import org.entermediadb.llm.LLMResponse;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
@@ -769,8 +770,6 @@ public class ChatModule extends BaseMediaModule
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 
 		//String function = messageToUpdate.get("function");
-		String arguments = messageToUpdate.get("arguments");
-			//JSONObject args = (JSONObject) new JSONParser().parse(arguments);
 			//inReq.putPageValue("args", args);
 		String response;
 		
@@ -790,6 +789,10 @@ public class ChatModule extends BaseMediaModule
 			}
 			
 			inReq.putPageValue("data", messageToUpdate);
+
+			String args = (String) messageToUpdate.get("arguments");
+			JSONObject arguments = (JSONObject) new JSONParser().parse(args);
+			inReq.putPageValue("arguments", arguments);
 			
 			response = manager.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/functions/" + filename + ".html");
 			//log.info("Function " + functionName + " returned : " + response);
@@ -803,8 +806,6 @@ public class ChatModule extends BaseMediaModule
 			JSONObject functionMessageUpdate = new JSONObject();
 			functionMessageUpdate.put("messagetype", "airesponse");
 			functionMessageUpdate.put("catalogid", archive.getCatalogId());
-			//functionMessageUpdate.put("function", functionName);
-			//functionMessageUpdate.put("arguments", arguments);
 			functionMessageUpdate.put("user", "agent");
 			functionMessageUpdate.put("channel", messageToUpdate.get("channel"));
 			functionMessageUpdate.put("messageid", messageToUpdate.getId());

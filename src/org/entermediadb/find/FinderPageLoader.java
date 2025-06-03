@@ -48,7 +48,7 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
 	}
 	
-	public RightPage getRightPage( URLUtilities util, org.openedit.servlet.Site site, Page inPage, String requestedPath)
+	public RightPage getRightPage( URLUtilities util, org.openedit.servlet.Site site, Page inPage)
 	{
 		String appid = inPage.getProperty("applicationid");
 

@@ -44,7 +44,7 @@
 	<script id="jquery-form" src="/${applicationid}/components/javascript/jquery.form.js"/>
 	<script id="ajaxformsubmit" src="/${applicationid}/components/javascript/emedia/ajax/ajaxformsubmit.js" />
 	
-	<script id="jquery-liveajax" src="/${applicationid}/components/javascript/liveajax/liveajax.js"/>
+	<script id="jquery-liveajax" src="/${applicationid}/components/javascript/emedia/liveajax.js"/>
 	<script id="jquery-validate" src="/${applicationid}/components/javascript/jquery.validation/jquery.validate.js"/>
 	<script id="validateandedit" src="/${applicationid}/components/javascript/validateandedit.js"/>
 	  
