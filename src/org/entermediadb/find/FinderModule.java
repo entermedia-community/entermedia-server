@@ -783,7 +783,7 @@ public class FinderModule extends BaseMediaModule
 			conjunction = "exclusive";
 		}
 		
-		Object modules_object = arguments.get("modules");
+		Object modules_object = arguments.get("types");
 
 		JSONArray modules_json = new JSONArray();
 		if(modules_object instanceof JSONArray)
@@ -821,8 +821,11 @@ public class FinderModule extends BaseMediaModule
 			for (Iterator iterator = modulesdata.iterator(); iterator.hasNext();)
 			{
 				Data module = (Data) iterator.next();
-				modules.add(module.getId());
-				moduleNames.add(module.getName());
+				if(!modules.contains(module.getId()))
+				{					
+					modules.add(module.getId());
+					moduleNames.add(module.getName());
+				}
 			}
 			
 			inReq.putPageValue("modulenamestext", new ArrayList(moduleNames));
@@ -866,15 +869,8 @@ public class FinderModule extends BaseMediaModule
 		
 		collectMatches(keywordsLower, plainquery, unsorted);
 		
-		if( searchmodules.contains("asset"))
-		{
-			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
-			HitTracker assetunsorted = assetdq.search(inReq);
-			collectMatches(keywordsLower, plainquery, assetunsorted);
-			inReq.putPageValue("assethits", assetunsorted);
-			
-			log.info(assetunsorted);
-		}
+		inReq.putPageValue("modulehits", unsorted);
+		inReq.putPageValue("livesearchfor", plainquery);
 		
 		List finallist = new ArrayList();
 		
@@ -887,10 +883,24 @@ public class FinderModule extends BaseMediaModule
 
 		Collections.sort(finallist);
 		
-		inReq.putPageValue("modulehits", unsorted);
-		inReq.putPageValue("livesearchfor", plainquery);
+		
 		inReq.putPageValue("livesuggestions", finallist);
 		inReq.putPageValue("highlighter", new Highlighter());
+		
+		if( searchmodules.contains("asset"))
+		{
+			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
+			HitTracker assetunsorted = assetdq.search(inReq);
+			collectMatches(keywordsLower, plainquery, assetunsorted);
+			inReq.putPageValue("assethits", assetunsorted);
+			
+			log.info(assetunsorted);
+			
+			if(searchmodules.size() == 1)
+			{
+				return;
+			}
+		}
 		
 		Collection pageOfHits = unsorted.getPageOfHits();
 		pageOfHits = new ArrayList(pageOfHits);
