@@ -819,6 +819,7 @@ public class FinderModule extends BaseMediaModule
 		if(modules.contains("all") || modules.size() == 0)
 		{
 			modules = userprofile.getEntitiesIds();
+			log.info("user modules:"+modules);
 			inReq.putPageValue("modulenamestext", "all modules");
 		}
 		else if(!modules.isEmpty())
