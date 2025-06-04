@@ -10,7 +10,7 @@
 		#set($thumb = $entity.get("primaryimage"))
 	#end
 	#ifnotnull( $thumb )
-		#set( $link = $mediaarchive.asLinkToPreview($thumb,"image3000x3000.jpg"))
+		#set( $link = $mediaarchive.asLinkToPreview($thumb,"image3000x3000"))
 		"thumbnail_url":"$!siteroot$link",
 		"thumbnail_width":3000,
 		"thumbnail_height":3000,
