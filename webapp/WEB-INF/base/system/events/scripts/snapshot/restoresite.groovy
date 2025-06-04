@@ -584,7 +584,7 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 	ElasticNodeManager manager = (ElasticNodeManager)mediaarchive.getNodeManager();
 	
 	BulkProcessor processor = manager.getBulkProcessor();
-	
+	int count = 0;
 	try{
 
 
@@ -603,7 +603,7 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 			System.out.println("Error: root should be object: quiting.");
 			return;
 		}
-
+		
 		while (jp.nextToken() != JsonToken.END_OBJECT) {
 			String fieldName = jp.getCurrentName();
 			// move from field name to field value
@@ -638,6 +638,7 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 							req.id(id.asText());
 						}	
 						processor.add(req);
+						count++;
 
 					}
 				} else {
@@ -653,7 +654,7 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 	finally{
 
 		manager.flushBulk();
-
+		log.info("imported: " + searchtype + " "+count + " records");
 			//This is in memory only flush
 			//RefreshResponse actionGet = getClient().admin().indices().prepareRefresh(catid).execute().actionGet();
 
