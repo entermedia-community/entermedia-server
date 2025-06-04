@@ -184,7 +184,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		params.put("webroot", webroot);
 		params.put("nodeid", getLocalNodeId());
 
-		getLocalNode().setValue("path.plugins", webroot + "/WEB-INF/base/entermedia/elasticplugins");
+		getLocalNode().setValue("path.plugins", webroot + "/WEB-INF/base/system/elasticplugins");
 
 		Replacer replace = new Replacer();
 
