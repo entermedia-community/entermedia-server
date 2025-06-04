@@ -1,4 +1,4 @@
-#set($details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/restassetdetails", $user))
+#set($details = $mediaarchive.getAssetSearcher().getDetailsForView("assetrestassetdetails", $user))
 {
   "response":
       {
@@ -38,12 +38,13 @@
 		#end
 	#else
 		#if( $type == "image" || $type == "document")
-			#set( $preview = "$!prefix$!home$cataloghome/downloads/preview/large/$asset.sourcePath/image.jpg")
+			###set( $preview = "$!prefix$!home$cataloghome/downloads/preview/large/$asset.sourcePath/image.jpg")
+			#set($preview = $mediaarchive.asLinkToPreview($asset, null, "image3000x3000", true))
 		#elseif( $type == "audio" )
 			##set( $preview = "$!prefix$!home/$catalogid/downloads/mp3/${asset.sourcePath}/audio.mp3")
 			#set( $preview = "$!prefix$!home/${mediadbappid}/services/module/asset/downloads/preset/${asset.sourcePath}/audio.mp3")
 		#end
-		"preview":"#urlencode($preview)",
+		"preview":"$preview",
 	#end
 	#set( $downloadlink = "$!prefix$!home/${mediadbappid}/services/module/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
 	"original":"#urlencode($downloadlink)"
