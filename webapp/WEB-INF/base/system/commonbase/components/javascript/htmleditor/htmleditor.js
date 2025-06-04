@@ -14,6 +14,7 @@ import {
 	GeneralHtmlSupport,
 	Heading,
 	ImageBlock,
+	ImageUpload,
 	ImageInline,
 	ImageInsert,
 	ImageInsertViaUrl,
@@ -32,6 +33,13 @@ import {
 	SourceEditing,
 	Strikethrough,
 	Underline,
+	Clipboard,
+	Image,
+	DragDrop,
+	Table,
+	 TableToolbar,
+
+
 } from "ckeditor5";
 
 import prettifyHTML from "prettyhtml";
@@ -342,6 +350,8 @@ const editorConfig = (options, isInline = false) => {
 		"undo",
 		"redo",
 		"|",
+		"insertTable",       
+
 		"sourceEditing",
 	];
 
@@ -369,6 +379,9 @@ const editorConfig = (options, isInline = false) => {
 		Strikethrough,
 		Underline,
 		CodeBlock,
+		ImageUpload,
+		Table,
+		  TableToolbar,     
 	];
 
 	let image = undefined;
@@ -386,6 +399,34 @@ const editorConfig = (options, isInline = false) => {
 		// Only show upload button if upload URL is provided
 		items.splice(items.indexOf("uploadFile"), 0, "uploadFile");
 		plugins.push(UploadFileButtonPlugin);
+		plugins.push(ImageUpload);
+		plugins.push(Clipboard);
+		plugins.push(Image);
+		plugins.push(DragDrop);
+		plugins.push(
+					ImagePicker,
+					ImageBlock,
+					ImageInline,
+					ImageInsert,
+					ImageInsertViaUrl,
+					ImageResize,
+					ImageStyle,
+					ImageToolbar,
+					ImageUpload ,
+
+				);
+				image = {
+							toolbar: [
+								"imageTextAlternative",
+								"|",
+								"imageStyle:inline",
+								"imageStyle:wrapText",
+								"imageStyle:breakText",
+								"|",
+								"resizeImage",
+							],
+						};
+						
 	}
 	
 	
@@ -401,7 +442,9 @@ const editorConfig = (options, isInline = false) => {
 			ImageInsertViaUrl,
 			ImageResize,
 			ImageStyle,
-			ImageToolbar
+			ImageToolbar,
+			ImageUpload ,
+
 		);
 
 		image = {

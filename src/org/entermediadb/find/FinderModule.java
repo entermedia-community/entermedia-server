@@ -747,7 +747,7 @@ public class FinderModule extends BaseMediaModule
 		} else if (items.size() == 1) {
 			return items.get(0);
 		} else if (items.size() == 2) {
-			return items.get(0) + " and " + items.get(0);
+			return items.get(0) + " and " + items.get(1);
 		}
 
 		StringBuilder result = new StringBuilder();
@@ -771,19 +771,19 @@ public class FinderModule extends BaseMediaModule
 			return;
 		} 
 		else {	
-			log.info(arguments.toJSONString());
+			log.info("Args: " + arguments.toJSONString());
 		}
 		
 		Collection<String> keywords = parseKeywords(arguments.get("keywords")); 
 		
-		inReq.putPageValue("keywordsstring", new ArrayList(keywords));
+		inReq.putPageValue("keywordsstring", joinWithAnd(new ArrayList(keywords)));
 		
 		String conjunction = (String) arguments.get("conjunction");
 		if(conjunction == null || !conjunction.equals("inclusive")) {
 			conjunction = "exclusive";
 		}
 		
-		Object modules_object = arguments.get("modules");
+		Object modules_object = arguments.get("types");
 
 		JSONArray modules_json = new JSONArray();
 		if(modules_object instanceof JSONArray)
@@ -793,6 +793,10 @@ public class FinderModule extends BaseMediaModule
 		else if(modules_object instanceof String)
 		{
 			modules_json.add((String) modules_object); 
+		}
+		else
+		{
+			modules_json.add("all");
 		}
 		
 		Collection<String> modules = new ArrayList();
@@ -807,8 +811,12 @@ public class FinderModule extends BaseMediaModule
 		{
 			userprofile = (UserProfile) inReq.getPageValue("userprofile");
 		}
+		else
+		{
+			inReq.putPageValue("userprofile", userprofile);
+		}
 		
-		if(modules.contains("all"))
+		if(modules.contains("all") || modules.size() == 0)
 		{
 			modules = userprofile.getEntitiesIds();
 			inReq.putPageValue("modulenamestext", "all modules");
@@ -821,18 +829,28 @@ public class FinderModule extends BaseMediaModule
 			for (Iterator iterator = modulesdata.iterator(); iterator.hasNext();)
 			{
 				Data module = (Data) iterator.next();
-				modules.add(module.getId());
+				if(!modules.contains(module.getId()))
+				{					
+					modules.add(module.getId());
+				}
 				moduleNames.add(module.getName());
 			}
 			
-			inReq.putPageValue("modulenamestext", new ArrayList(moduleNames));
+			inReq.putPageValue("modulenamestext", joinWithAnd(new ArrayList(moduleNames)));
 		}
+		
+		log.info("Keywords:");
+		log.info(keywords);
+		log.info("Modules:");
+		log.info(modules);
 		
 		searchByKeywords(inReq, modules, keywords, conjunction);
 	}
 	
 	public void searchByKeywords(WebPageRequest inReq, Collection<String> moduleIds, Collection<String> keywords, String conjunction)
 	{
+		
+		log.info("Searching as:" + inReq.getUser().getName());
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		String plainquery = "";
@@ -855,10 +873,8 @@ public class FinderModule extends BaseMediaModule
 		searchmodulescopy.remove("asset");
 		dq.getQuery().setValue("searchtypes", searchmodulescopy);
 		
-		SecurityEnabledSearchSecurity security = new SecurityEnabledSearchSecurity();
-		security.attachSecurity(inReq, archive.getSearcher("modulesearch"), dq.getQuery());
 		
-		HitTracker unsorted = dq.search();
+		HitTracker unsorted = dq.search(inReq);
 		
 		log.info(unsorted);
 
@@ -866,15 +882,8 @@ public class FinderModule extends BaseMediaModule
 		
 		collectMatches(keywordsLower, plainquery, unsorted);
 		
-		if( searchmodules.contains("asset"))
-		{
-			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
-			HitTracker assetunsorted = assetdq.search(inReq);
-			collectMatches(keywordsLower, plainquery, assetunsorted);
-			inReq.putPageValue("assethits", assetunsorted);
-			
-			log.info(assetunsorted);
-		}
+		inReq.putPageValue("modulehits", unsorted);
+		inReq.putPageValue("livesearchfor", plainquery);
 		
 		List finallist = new ArrayList();
 		
@@ -887,10 +896,27 @@ public class FinderModule extends BaseMediaModule
 
 		Collections.sort(finallist);
 		
-		inReq.putPageValue("modulehits", unsorted);
-		inReq.putPageValue("livesearchfor", plainquery);
+		
 		inReq.putPageValue("livesuggestions", finallist);
 		inReq.putPageValue("highlighter", new Highlighter());
+		
+		if( searchmodules.contains("asset"))
+		{
+			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
+			log.info(assetdq.toString());
+			HitTracker assetunsorted = assetdq.search(inReq);
+			collectMatches(keywordsLower, plainquery, assetunsorted);
+			inReq.putPageValue("assethits", assetunsorted);
+			
+			User user = inReq.getUser();
+			log.info(user);
+			
+			if(searchmodules.size() == 1)
+			{
+				log.info("Searching for assets only");
+				return;
+			}
+		}
 		
 		Collection pageOfHits = unsorted.getPageOfHits();
 		pageOfHits = new ArrayList(pageOfHits);
