@@ -1448,7 +1448,7 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 
 	@Override
 	public void saveOrder(MediaArchive inArchive, Order inOrder) {
-		inArchive.saveData("orde", inOrder);
+		inArchive.saveData("order", inOrder); 
 		
 	}
 
