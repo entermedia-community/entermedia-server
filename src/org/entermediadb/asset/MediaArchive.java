@@ -2205,12 +2205,23 @@ public class MediaArchive implements CatalogEnabled
 
 	public void clearCaches()
 	{
-		getCacheManager().clearAll();
+		getCacheManager().clearAll(); //Bean based one
 		getPresetManager().clearCaches();
-		CacheManager shared = (CacheManager) getModuleManager().getBean("cacheManager");
-		if( shared != null)
+		CacheManager shared = (CacheManager) getModuleManager().getBean("cacheManager"); //Not used anymore
+		if( shared != null) //Universal one? 
 		{
 			shared.clearAll();
+		}
+		CacheManager manager = (CacheManager)getModuleManager().getBean("systemCacheManager");
+		if( manager != null)
+		{
+			manager.clearAll();
+		}
+		
+		CacheManager manager3 = (CacheManager)getModuleManager().getBean("systemExpireCacheManager");
+		if( manager3 != null )
+		{
+			manager3.clearAll();
 		}
 	}
 
@@ -2305,22 +2316,16 @@ public class MediaArchive implements CatalogEnabled
 
 	public void clearAll()
 	{
-		getCacheManager().clearAll();
+		clearCaches();
 		getPageManager().clearCache();
 		getPageManager().getPageSettingsManager().clearCache();
 		getSearcherManager().getPropertyDetailsArchive(getCatalogId()).clearCache();
 		getSearcherManager().clear();
 		getNodeManager().clear();
-		getPresetManager().clearCaches();
 		getPropertyDetailsArchive().clearCache();
 		getCategorySearcher().clearIndex();
 		getCategoryArchive().clearCategories();
 
-		CacheManager manager = (CacheManager)getModuleManager().getBean("systemCacheManager");
-		manager.clearAll();		
-		
-		CacheManager manager3 = (CacheManager)getModuleManager().getBean("systemExpireCacheManager");
-		manager3.clearAll();		
 
 	}
 

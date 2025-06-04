@@ -26,6 +26,8 @@
  	<property id="cluster.routing.allocation.disk.watermark.high">1gb</property>
 	<property id="cluster.routing.allocation.disk.watermark.low">5gb</property>
  
+ <property id="script.inline">true</property>
+<property id="script.indexed">true</property>
  
 </node>
 
