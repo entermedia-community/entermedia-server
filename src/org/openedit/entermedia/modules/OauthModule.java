@@ -125,12 +125,12 @@ public class OauthModule extends BaseMediaModule
 						throw new OpenEditException("Need to get clientid from Google Admin as accesskey");
 					}
 					
-					
+					/*
 					if( folderinfo.get("secretkey") == null)
 					{
 						throw new OpenEditException("Need to get clientsecret from Google Admin as secretkey");
 					}
-					
+					*/
 				}
 				else
 				{
