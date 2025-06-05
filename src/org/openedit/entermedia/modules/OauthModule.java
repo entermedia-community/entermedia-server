@@ -114,11 +114,17 @@ public class OauthModule extends BaseMediaModule
 					*/
 					requestedpermissions = "https://www.googleapis.com/auth/drive";
 					Data folderinfo = archive.getData("hotfolder", id);
-					clientid = folderinfo.get("accesskey");
+					
+					clientid = 	authinfo.get("clientid");
+					if( clientid == null)
+					{
+						clientid = folderinfo.get("accesskey");
+					}
 					if( clientid == null)
 					{
 						throw new OpenEditException("Need to get clientid from Google Admin as accesskey");
 					}
+					
 					
 					if( folderinfo.get("secretkey") == null)
 					{
