@@ -285,10 +285,10 @@ public class OauthModule extends BaseMediaModule
 			if( state.startsWith("hotfolder"))
 			{
 				String id = state.substring(9);
-				  
-				/*https://www.googleapis.com/auth/admin.directory.user 
-				https://www.googleapis.com/auth/admin.directory.domain https://apps-apis.google.com/a/feeds/domain/ https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid  https://www.google.com/m8/feeds/
-				*/
+				/*  
+				//https://www.googleapis.com/auth/admin.directory.user 
+				//https://www.googleapis.com/auth/admin.directory.domain https://apps-apis.google.com/a/feeds/domain/ https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid  https://www.google.com/m8/feeds/
+				
 				Data folderinfo = archive.getData("hotfolder", id);
 				clientid = folderinfo.get("accesskey");
 				if( clientid == null)
@@ -300,7 +300,7 @@ public class OauthModule extends BaseMediaModule
 				{
 					throw new OpenEditException("Need to get clientsecret from Google Admin as secretkey");
 				}
-				
+				*/
 			}
 			
 			
