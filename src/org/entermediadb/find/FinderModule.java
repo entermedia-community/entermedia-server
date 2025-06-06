@@ -747,7 +747,7 @@ public class FinderModule extends BaseMediaModule
 		} else if (items.size() == 1) {
 			return items.get(0);
 		} else if (items.size() == 2) {
-			return items.get(0) + " and " + items.get(0);
+			return items.get(0) + " and " + items.get(1);
 		}
 
 		StringBuilder result = new StringBuilder();
@@ -794,6 +794,10 @@ public class FinderModule extends BaseMediaModule
 		{
 			modules_json.add((String) modules_object); 
 		}
+		else
+		{
+			modules_json.add("all");
+		}
 		
 		Collection<String> modules = new ArrayList();
 		
@@ -807,10 +811,15 @@ public class FinderModule extends BaseMediaModule
 		{
 			userprofile = (UserProfile) inReq.getPageValue("userprofile");
 		}
+		else
+		{
+			inReq.putPageValue("userprofile", userprofile);
+		}
 		
-		if(modules.contains("all"))
+		if(modules.contains("all") || modules.size() == 0)
 		{
 			modules = userprofile.getEntitiesIds();
+			log.info("user modules:"+modules);
 			inReq.putPageValue("modulenamestext", "all modules");
 		}
 		else if(!modules.isEmpty())
@@ -841,6 +850,8 @@ public class FinderModule extends BaseMediaModule
 	
 	public void searchByKeywords(WebPageRequest inReq, Collection<String> moduleIds, Collection<String> keywords, String conjunction)
 	{
+		
+		log.info("Searching as:" + inReq.getUser().getName());
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		String plainquery = "";
@@ -863,10 +874,8 @@ public class FinderModule extends BaseMediaModule
 		searchmodulescopy.remove("asset");
 		dq.getQuery().setValue("searchtypes", searchmodulescopy);
 		
-		SecurityEnabledSearchSecurity security = new SecurityEnabledSearchSecurity();
-		security.attachSecurity(inReq, archive.getSearcher("modulesearch"), dq.getQuery());
 		
-		HitTracker unsorted = dq.search();
+		HitTracker unsorted = dq.search(inReq);
 		
 		log.info(unsorted);
 
@@ -895,11 +904,13 @@ public class FinderModule extends BaseMediaModule
 		if( searchmodules.contains("asset"))
 		{
 			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
+			log.info(assetdq.toString());
 			HitTracker assetunsorted = assetdq.search(inReq);
 			collectMatches(keywordsLower, plainquery, assetunsorted);
 			inReq.putPageValue("assethits", assetunsorted);
 			
-			log.info(assetunsorted);
+			User user = inReq.getUser();
+			log.info(user);
 			
 			if(searchmodules.size() == 1)
 			{

@@ -111,7 +111,7 @@ public class ZohoManager implements CatalogEnabled
 		}
 		catch (Exception ex)
 		{
-			log.info("Access Token: " + inAccessToken);
+			log.error("Access Token: " + inAccessToken);
 			throw new OpenEditException(ex);
 		}
 		return assetcount;

@@ -19,7 +19,10 @@
 #if(!$existingrecords)
 	##set ($existingrecords = $joinsearcher.fieldSearch($fieldexternalid,$fieldexternalvalue))
 	#set($query = $joinsearcher.createSearchQuery().append($fieldexternalid, $fieldexternalvalue) )
-	#set($sortby = $context.findValue("sortby"))
+	#set($sortby = $context.findValue("${searchtype}sortby"))
+	#ifnull($sortby)
+		#set($sortby = $context.findValue("sortby"))
+	#end
 	$!query.addSortBy($sortby)
 	#set($existingrecords = $joinsearcher.search($query) )
 	
