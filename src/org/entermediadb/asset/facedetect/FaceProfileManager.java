@@ -1,14 +1,16 @@
 package org.entermediadb.asset.facedetect;
 
 import java.awt.Dimension;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -33,18 +35,20 @@ import org.entermediadb.video.Block;
 import org.entermediadb.video.Timeline;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
+import org.openedit.hittracker.SearchQuery;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.MathUtils;
 import org.openedit.util.OutputFiller;
-import org.openedit.util.PathUtilities;
 
 
 public class FaceProfileManager implements CatalogEnabled
@@ -129,12 +133,12 @@ public class FaceProfileManager implements CatalogEnabled
 		
 			//If its a video then generate all the images and scan them
 			
-			List<Map> faceprofiles = new ArrayList();
-			
+			List<Data> tosave = new ArrayList();
+			Searcher faceembeddingsearcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
+
 			if( "image".equalsIgnoreCase(type) && inAsset.getFileFormat()!= null)
 			{
-				ContentItem input = null;
-				long filesize = inAsset.getLong("filesize");
+				//long filesize = inAsset.getLong("filesize");
 				
 				long imagew = inAsset.getLong("width");
 				long imageh = inAsset.getLong("height");
@@ -144,53 +148,54 @@ public class FaceProfileManager implements CatalogEnabled
 					return false;
 				}
 				
-				Boolean useoriginal = true;
-				if (filesize > 6000000)
+//				Boolean useoriginal = true;
+//				if (filesize > 6000000)
+//				{
+//					useoriginal = false;
+//				}
+//				else if (!inAsset.getFileFormat().equals("jpg") && !inAsset.getFileFormat().equals("jpeg")) 
+//				{
+//					useoriginal = false;
+//				}
+//				else if ( imagesize > 36000000) {   //4x 3000x0000 MAX: 178956970
+//					//Default Copreface imagesize limit
+//					useoriginal = false;
+//				}
+//				else {
+//					String colorpsace = inAsset.get("colorspace");
+//					if("4".equals(colorpsace) || "5".equals(colorpsace)) {
+//						useoriginal = false;
+//					}
+//				}
+				
+//				ContentItem input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.webp");
+//				if( !input.exists() )
+//				{
+//					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.jpg");
+//				}
+//				if( !input.exists() )
+//				{
+//					log.error("No such image"); //TODO: Search within videos
+//					return false;
+//				}
+				ContentItem input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.jpg");
+				if( !input.exists() )
 				{
-					useoriginal = false;
-				}
-				else if (!inAsset.getFileFormat().equals("jpg") && !inAsset.getFileFormat().equals("jpeg")) 
-				{
-					useoriginal = false;
-				}
-				else if ( imagesize > 36000000) {   //4x 3000x0000 MAX: 178956970
-					//Default Copreface imagesize limit
-					useoriginal = false;
-				}
-				else {
-					String colorpsace = inAsset.get("colorspace");
-					if("4".equals(colorpsace) || "5".equals(colorpsace)) {
-						useoriginal = false;
+					if( "jpeg".equals( inAsset.getFileFormat() ) )
+					{
+						input = getMediaArchive().getOriginalContent(inAsset);
 					}
-				}
-				if (useoriginal)
-				{
-					input = getMediaArchive().getOriginalContent(inAsset);
-				}
-				else 
-				{
-					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.webp");
-				}
-				if( !input.exists() )
-				{
-					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.jpg");
-				}
-				if( !input.exists() )
-				{
-					//problem
-					log.info("Faceprofile scan, no thumbnail found for assetid: " +inAsset.getId() + " "+ inAsset.getSourcePath());
-					//inAsset.setValue("facescancomplete","true");
-					//getMediaArchive().saveAsset(inAsset);
-					//may not be ready?
-					return false;
+					else
+					{
+						throw new OpenEditException("No JPG thumbnail found");
+					}
 				}
 				List<Map> json = findFaces(inAsset, input);
 				if(json == null) {
 					return false;
 				}
-				List<Map> moreprofiles = makeProfilesForEachFace(inAsset,0L,input,json);
-	
-				faceprofiles.addAll(moreprofiles);
+				Collection<Data> moreprofiles = makeDataForEachFace(faceembeddingsearcher,inAsset,0L,input,json);
+				tosave.addAll(moreprofiles);
 			}
 			else if( "video".equalsIgnoreCase(type) )
 			{
@@ -210,7 +215,6 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 				
 				Collection<Block> ticks = timeline.getTicks();
-				faceprofiles = new ArrayList<Map>();
 				
 				List<Map> continuelooking = null;
 				
@@ -224,6 +228,10 @@ public class FaceProfileManager implements CatalogEnabled
 					//ContentItem input = inArchive.getContent("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1500x1500.jpg");
 					//Convert quickly
 					ContentItem item = generateInputFile(inAsset,block);
+					
+					//String imageurl = getMediaArchive().asLinkToGenerated(inAsset, item.getName());  //Offset in name?
+
+					
 					if (item == null) {
 						continue;
 					}
@@ -235,12 +243,12 @@ public class FaceProfileManager implements CatalogEnabled
 					else
 					{
 						List<Map> json = findFaces(inAsset, item);	
-						List<Map> moreprofiles = makeProfilesForEachFace(inAsset,block.getStartOffset(),item,json);
-						faceprofiles.addAll(moreprofiles);
+						Collection<Data> moreprofiles = makeDataForEachFace(faceembeddingsearcher,inAsset,block.getStartOffset(),item,json);
+						tosave.addAll(moreprofiles);
 						
 					}
 				}
-				faceprofiles = combineVideoMatches(faceprofiles,mili);
+				//faceprofiles = combineVideoMatches(faceprofiles,mili);
 //				updateEndTimes(continuelooking,block.getStartOffset()); //Brings them up to date
 //				try
 //				{
@@ -251,50 +259,74 @@ public class FaceProfileManager implements CatalogEnabled
 //					log.info("Issue happened again on " + block.getSeconds());
 //					//ignoring...
 //				}
-
-				
 			}
-			boolean detected = false;
-			inAsset.setValue("faceprofiles",faceprofiles);  //box  and subjects
-			if(faceprofiles != null &&  !faceprofiles.isEmpty())
-			{
-				inAsset.setValue("facehasprofile",true);
-				detected = true;
-			}
-			log.info("Faceprofile found: "+faceprofiles.size());
-			
-			return detected;
+			boolean hasfaces = !tosave.isEmpty();
+			inAsset.setValue("facehasprofile",hasfaces);
+			log.info("Faceprofile found: "+tosave.size());
+			faceembeddingsearcher.saveAllData(tosave,null);
+			return hasfaces;
 		}
 		catch( Throwable ex)
 		{
 			
 			inAsset.setValue("facescancomplete","true");
 			inAsset.setValue("facescanerror","true");
-			log.error("Error on: " + inAsset.getId() + " " + inAsset.getSourcePath());
+			log.error("Error on: " + inAsset.getId() + " " + inAsset.getSourcePath(), ex);
 			return false;
 			//throw new OpenEditException("Error on: " + inAsset.getId() + " " + inAsset.getSourcePath(),ex);
 		}
 		
 	}
-
-	protected List<Map> makeProfilesForEachFace(Asset inAsset,long timecodestart, ContentItem inInput, List<Map> inJsonOfFaces) throws Exception
+	
+	/**
+	 * 
+	 * { 
+    "results": [
+        {
+            "embedding": [
+                -0.8517391681671143,
+                1.6998907327651978,
+                           0.8266710042953491,/...
+                -0.03634177893400192
+            ],
+            "face_confidence": 0.9,
+            "facial_area": {
+                "h": 836,
+                "left_eye": [
+                    1684,
+                    801
+                ],
+                "right_eye": [
+                    1363,
+                    801
+                ],
+                "w": 836,
+                "x": 1103,
+                "y": 475
+            }
+        }
+    ]
+	 * */
+	protected List<Data> makeDataForEachFace(Searcher facedb, Asset inAsset,long timecodestart, ContentItem inInput, List<Map> inJsonOfFaces) throws Exception
 	{
-		List<Map> faceprofiles = new ArrayList();
 		if( inJsonOfFaces.isEmpty())
 		{
-			return faceprofiles;
+			return null;
 		}
-		
+		double facedetect_detect_confidence = .999D;
+		String detectvalue = getMediaArchive().getCatalogSettingValue("facedetect_detect_confidence");
+		if( detectvalue != null)
+		{
+			facedetect_detect_confidence = Double.parseDouble(detectvalue);
+		}
+
 		double similaritycheck = .99D;
-		double boxprobability = .99D; 
+//		double boxprobability = .99D; 
 		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
 		if( value != null)
 		{
 			similaritycheck = Double.parseDouble(value);
 		}
-
-		//
-		//extract
 		
 		int inputw = 0;
 		int inputh = 0;
@@ -305,7 +337,7 @@ public class FaceProfileManager implements CatalogEnabled
 			if(size == null) 
 			{
 				log.info("Can't get image size from Webp: " + inInput.getPath());
-				return faceprofiles;
+				return null;
 			}
 				inputw = (int)Math.round( size.getWidth() );
 				inputh = (int)Math.round( size.getHeight() );
@@ -317,7 +349,7 @@ public class FaceProfileManager implements CatalogEnabled
 			inputw = (int)Math.round( size.getWidth() );
 			inputh = (int)Math.round( size.getHeight() );
 		}       
-        int minfacesize = 450;
+        int minfacesize = 200; //was 450
 		
 		String minumfaceimagesize = getMediaArchive().getCatalogSettingValue("facedetect_minimum_face_size");
 		if(minumfaceimagesize != null) {
@@ -327,195 +359,273 @@ public class FaceProfileManager implements CatalogEnabled
 			minfacesize = minfacesize - 100;
 		}
 		
-		
+//		double boxp = facejson.getDouble("face_confidence");
+//		if( boxp < facedetect_detect_confidence)
+//		{
+//			log.info("Low probability of found face (" + boxp  + "<"+ facedetect_detect_confidence+"): " + inInput.getPath());
+//			continue;
+//		}
+		List<Data> tosave = new ArrayList();
+
 		for (Iterator iterator = inJsonOfFaces.iterator(); iterator.hasNext();)
 		{
-			Map map = (Map) iterator.next();
-			//faceprofile.put("facedata", map);
-			//faceprofilegroup
+			Map facejson = (Map) iterator.next();  //Each person in the picrture
+
+			ValuesMap box = new ValuesMap((Map)facejson.get("facial_area"));
+		
+			//TODO: Make sure we dont already have this exact same ebedding. If we do then, skip?
 			
-//			Map mask = (Map)map.get("box");
-//			if( mask != null)
+//			if( similarembedding != null)
 //			{
-//				Double probability = (Double)mask.get("probability");
-//				if( probability < facedetect_detect_confidence)
-//				{
-//					continue;
-//				}
+//				//TODO: copy the profile field
 //			}
-			
-			List subjects = (List)map.get("subjects");
-			Map found = null;
-			
-			if( subjects != null && !subjects.isEmpty())
-			{
-				/*
-				List sorted = new ArrayList(subjects);
-				Collections.sort(sorted,new Comparator<Map>()
-				{
-					public int compare(Map arg0, Map arg1) 
-					{
-						double similrity0 = (Double)arg0.get("similarity");
-						double similrity1 = (Double)arg1.get("similarity");
-						if( similrity0 > similrity1)
-						{
-							return 1;
-						}
-						if( similrity0 < similrity1)
-						{
-							return -1;
-						}
-						return 0;
-						
-					};
-				});
-				for (Iterator iterator2 = sorted.iterator(); iterator2.hasNext();)
-				{
-					Map subject = (Map) iterator2.next();
-					double similrity = (Double)subject.get("similarity");
-					if( similrity > .80D)
-					{
-						found = subject;
-						break;
-					}
-				}
-				*/
-				found  = (Map)subjects.get(0); //We only get up to one result
-				//log.info(found);
-				double similrity = (Double)found.get("similarity");
-				if( similrity < similaritycheck)
-				{
-					found = null;//
-				}
-			}
-			//Upload as another subject so we have plenty similar ones
-//			curl -X POST "http://localhost:8000/api/v1/recognition/faces?subject=<subject>&det_prob_threshold=<det_prob_threshold>" \
-//			-H "Content-Type: multipart/form-data" \
-//			-H "x-api-key: <service_api_key>" \
-			
-			//tosendparams.put("det_prob_threshold",".6");
-			ValuesMap box = new ValuesMap((Map)map.get("box"));
-			
-			//verify probability that a found face is actually a face
-			double boxp = box.getDouble("probability");
-			if( boxp < boxprobability)
-			{
-				log.info("Low probability of found face (" + boxp  + "<"+ boxprobability+"): " + inInput.getPath());
-				continue;
-			}
-			
-			int x = box.getInteger("x_min");
-			int y = box.getInteger("y_min");
-			int x2 = box.getInteger("x_max");
-			int y2 = box.getInteger("y_max");
-			int w = x2 - x;
-			int h = y2 - y;
-			
-			
-			h = Math.min(h,inputh - y);
-			w = Math.min(w,inputw - x);
-			
-			
-			
+			//Save to DB
+			int h = box.getInteger("h");
+			int w  = box.getInteger("w");
 			if( h < minfacesize)
 			{
 				log.info("Not enough data, small face detected assetid:" + inAsset.getId()+ " w:" + w + " h:" + h + " Min face size: " + minfacesize);
 				continue;
 			}
-			Map faceprofile = new HashMap();
-			faceprofile.put("timecodestart",timecodestart);
+			Data addedface = facedb.createNewData();
+			double[] vector = collectDoubles((Collection)facejson.get("embedding"));
+			String encoded = encodeDoubles(vector);
 
-			boolean morethan20 = false;
-			String groupid = null;
-			if( found != null)
+			addedface.setValue("facedata",encoded);
+			addedface.setValue("assetid",inAsset);
+
+			addedface.setValue("locationx",box.getInteger("x"));
+			addedface.setValue("locationy",box.getInteger("y"));
+			addedface.setValue("locationw",w);
+			addedface.setValue("locationh",h);
+			addedface.setValue("face_confidence", box.getDouble("face_confidence"));
+			addedface.setValue("timecodestart",timecodestart);
+			addedface.setValue("inputwidth",inputw);
+			addedface.setValue("inputheight",inputh);
+
+			//TODO: Make sure this is not already in there. For debug purposes
+			
+			double[] embedding = collectDoubles((Collection)facejson.get("embedding"));
+			SearchQuery query = facedb.createSearchQuery();
+			query.setValue("vector",embedding); //TODO: Pass in a better cluet JSON"
+			HitTracker results = facedb.search(query);
+			//if I find myself then dont save again
+			
+			//TODO: Decode the numbers and see if this is already in there so we dont make duplicates?
+			
+			if( !results.isEmpty() )
 			{
-				groupid = (String)found.get("subject");
-				
-				if( inAsset.containsValue("removedfaceprofilegroups",groupid))
+				String assetid = ((Data)results.first()).get("assetid");
+				if( assetid != null && assetid.equals(inAsset.getId()) )
 				{
-					log.info("Skipping group for asset: " + inAsset.getId());
+					//already saved
+					log.info("Same assetid has been found with this face. Skipping "  + inAsset.getName() );
 					continue;
 				}
-				//TODO: Count how many times I have used this group. 
-				MultiValued oldgroup = (MultiValued)getMediaArchive().getData("faceprofilegroup",groupid);
-				if( oldgroup == null)
-				{
-					//is a new group
-					oldgroup = (MultiValued)getMediaArchive().getSearcher("faceprofilegroup").createNewData();
-					oldgroup.setValue("id", groupid);
-					oldgroup.setValue("primaryimage", inAsset.getId());
-					oldgroup.setValue("samplecount", 1);
-				}
-				else 
-				{
-					int count = oldgroup.getInt("samplecount");
-					count++;
-					if( count > 20)
-					{
-						morethan20 = true;
-					}
-					oldgroup.setValue("samplecount", count);
-				}
-				
-				oldgroup.setValue("entity_date", new Date());
-				
-				getMediaArchive().getSearcher("faceprofilegroup").saveData(oldgroup);
-				
-				faceprofile.put("faceprofilegroup", groupid);
-			}
-			else
-			{
-				//Create new profilegroupid
-				Data newgroup = getMediaArchive().getSearcher("faceprofilegroup").createNewData();		
-				newgroup.setValue("primaryimage", inAsset.getId());
-				newgroup.setValue("automatictagging", true);
-				newgroup.setValue("creationdate", new Date());
-				newgroup.setValue("samplecount",1);
-				newgroup.setValue("entity_date", new Date());
-				getMediaArchive().saveData("faceprofilegroup", newgroup);
-				groupid = newgroup.getId();
-				faceprofile.put("faceprofilegroup", groupid );
-				
-			}
 			
-			faceprofile.put("locationx",x);
-			faceprofile.put("locationy",y);
-			faceprofile.put("locationw",w);
-			faceprofile.put("locationh",h);
-				
-	        faceprofile.put("inputwidth",inputw);
-	        faceprofile.put("inputheight",inputh);
-			
-			if( !morethan20)
-			{
-				
-				//Image Magic convert
-				ConvertInstructions instructions =  getMediaArchive().createInstructions(inAsset, inInput);
-				instructions.setCrop(true);
-				instructions.setProperty("x1", Integer.toString(x) );
-				instructions.setProperty("y1", Integer.toString(y));
-				instructions.setProperty("cropwidth", Integer.toString(w));
-				instructions.setProperty("cropheight", Integer.toString(h));
-				instructions.setProperty("forcerendertype", "image");
-				instructions.setProperty("inputextension", PathUtilities.extractPageType(inInput.getName()));
-				
-				
-
-				ContentItem smallitem = getMediaArchive().getContent( "/WEB-INF/trash/" + getMediaArchive().getCatalogId()	+ "/small/" + inAsset.getSourcePath() + ".webp" );
-				
-				getMediaArchive().convertFile(instructions, smallitem);
-
-				
-				uploadAProfile(faceprofile, timecodestart, smallitem, inAsset, groupid);
+				Data similarembedding = findSimilar(facedb,inAsset,results,similaritycheck); //Pass in how similar
+				if( similarembedding  != null)
+				{
+					addedface.setValue("parentembeddingid",similarembedding.getId());
+					String parentassetid = similarembedding.get("assetid");
+					addedface.setValue("parentassetid",parentassetid);
+					Asset parentasset = getMediaArchive().getAsset(parentassetid);
+					log.info("Conected between child " + inAsset.getName() + " and parent " + parentasset.getName() );
+				}
 			}
-			else
-			{
-				log.error("Already have 10 profiles from same subject: " + groupid);
-			}
-			//TODO: Make sure this is not already in there. For debug purposes
-			faceprofiles.add(faceprofile);
+			tosave.add(addedface);
 		}
-		return faceprofiles;
+		return tosave;
+	}
+
+	protected Data findSimilar(Searcher facedb,Asset inAsset, HitTracker inResults, double similaritycheck)
+	{
+		for (Iterator iterator = inResults.iterator(); iterator.hasNext();)
+		{
+			MultiValued hit = (MultiValued) iterator.next();
+			String assetid = hit.get("assetid");
+			if( assetid == null || !assetid.equals(inAsset.getId()) )
+			{
+				//save this as the parent
+				Float score = hit.getFloat("_score");
+				if( score != null && score >  100d)
+				{
+					return hit;
+				}
+				return null;
+			}
+		}
+		//These are scored only if they have the right number and type. doubles
+		//exclude myself
+		
+		//log.info(results);
+		//Search the DB for most similar match
+//		"query": {
+//		       "function_score": {
+//		         "boost_mode": "replace",
+//		         "script_score": {
+//		           "lang": "knn",
+//		           "params": {
+//		             "cosine": false,
+//		             "field": "embedding_vector",
+//		             "vector": [
+//		               -0.09217305481433868, 0.010635560378432274, -0.02878434956073761, 0.06988169997930527, 0.1273992955684662, -0.023723633959889412, 0.
+		
+		return null;
+	}
+	public float[] collectFloats(Collection vector) 
+	{
+		float[] floats = new float[vector.size()];
+		int i = 0;
+		for (Iterator iterator = vector.iterator(); iterator.hasNext();)
+		{
+			Object floatobj = iterator.next();
+			float f;
+			if( floatobj instanceof Float)
+			{
+				f = (Float)floatobj;
+			}
+			else
+			{
+				f = Float.parseFloat(floatobj.toString());
+			}
+			floats[i++] = f;
+		}
+		return floats;
+	}
+	 //Used for saving data
+	public static String encodeFloats(float[] vector)
+	{
+		final int capacity = Float.BYTES * vector.length;
+	    final ByteBuffer bb = ByteBuffer.allocate(capacity);
+	    for (float v : vector) {
+	        bb.putFloat(v);
+	    }
+	    bb.rewind();
+	    final ByteBuffer encodedBB = Base64.getEncoder().encode(bb);
+
+	    return new String(encodedBB.array());
+	}
+
+	public double[] collectDoubles(Collection vector) 
+	{
+		double[] floats = new double[vector.size()];
+		int i = 0;
+		for (Iterator iterator = vector.iterator(); iterator.hasNext();)
+		{
+			Object floatobj = iterator.next();
+			double f;
+			if( floatobj instanceof Double)
+			{
+				f = (Double)floatobj;
+			}
+			else
+			{
+				f = Double.parseDouble(floatobj.toString());
+			}
+			floats[i++] = f;
+		}
+		return floats;
+	}
+	 //Used for saving data
+	public static String encodeDoubles(double[] vector)
+	{
+		final int capacity = Double.BYTES * vector.length;
+	    final ByteBuffer bb = ByteBuffer.allocate(capacity);
+	    for (double v : vector) {
+	        bb.putDouble(v);
+	    }
+	    bb.rewind();
+	    final ByteBuffer encodedBB = Base64.getEncoder().encode(bb);
+
+	    return new String(encodedBB.array());
+	}
+
+//	    public static void main(String[] args) {
+//	        float[] vector = new float[] {
+//	            -0.09217305481433868f, 0.010635560378432274f, -0.02878434956073761f, 0.06988169997930527f
+//	        };
+//	        String base64 = encode(vector);
+//	        System.out.println(base64);
+//	    }
+	public Collection collectFaceBoxesAllPeople(Data inAsset, int inAssetWidth)
+	{
+		//TODO Add Search type for finder
+		HitTracker allthepeopleinasset = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().exact("assetid",inAsset).search();
+//		Collection relatedfaceids = allthepeopleinasset.collectValues("id");
+//		HitTracker personlookup = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().or().ids(relatedfaceids).orgroup("parentembeddingid",relatedfaceids).search();
+
+		Collection boxes = new ArrayList();
+		
+		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
+		{
+			MultiValued embedding = (MultiValued) iterator.next(); //One person
+			
+			String personid = embedding.get("entityperson");
+			if( personid == null)
+			{
+				//Search for any related faces that have a person on them
+				HitTracker personlookup = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().or().exact("id",embedding.getId()).exact("parentembeddingid",embedding).search();
+				for (Iterator iterator2 = personlookup.iterator(); iterator2.hasNext();)
+				{
+					Data singlings = (Data) iterator2.next();
+					personid = singlings.get("entityperson");
+					if( personid != null)
+					{
+						break;
+					}
+				}
+			}			
+			FaceBox box = makeBox(embedding,personid,inAssetWidth);
+			boxes.add(box);
+		}
+		return boxes;	
+	}
+	public Collection findAssetsForPerson(WebPageRequest inReq, Data inPerson)
+	{
+		HitTracker taggedboxes = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().exact("entityperson",inPerson).search();
+		Collection relatedfaceids = taggedboxes.collectValues("id");
+		HitTracker completelistoffaces = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().or().ids(relatedfaceids).orgroup("parentembeddingid",relatedfaceids).search();
+		
+		Collection allassets = completelistoffaces.collectValues("assetid");
+		Collection hits = getMediaArchive().query("asset").ids(allassets).search(inReq); //Security?
+		return hits;
+	}
+	
+	
+	protected FaceBox makeBox(MultiValued inEmbedding, String inPersonid,int inAssetWidth)
+	{
+		FaceBox box = new FaceBox();
+		box.setEmbeddedData(inEmbedding);
+		
+		if( inPersonid != null)
+		{
+			Data person = getMediaArchive().getCachedData("entityperson", inPersonid);
+			box.setPerson(person);
+		}
+		Double x = inEmbedding.getDouble("locationx");
+		Double y = inEmbedding.getDouble("locationy");
+		Double w = inEmbedding.getDouble("locationw");
+		Double h = inEmbedding.getDouble("locationh");
+		Double inputwidth = inEmbedding.getDouble("inputwidth");
+		
+		double scale = MathUtils.divide(inAssetWidth , inputwidth);//Scale up to orginal image sizes
+		
+		x = x * scale;
+		y = y * scale;
+		w = w * scale;
+		h = h * scale;
+		
+		Double[] scaledxy = new Double[] { x, y, w , h};
+		List<Double> points = Arrays.asList(scaledxy);
+		box.setBoxArea(points);
+
+		if( inEmbedding.get("timecodestart") != null )
+		{
+			double seconds = MathUtils.divide( inEmbedding.get("timecodestart").toString(),"1000");
+			box.setTimecodeStartSeconds(seconds);
+		}
+		return box;
 	}
 
 	private void uploadAProfile(Map faceprofile, long timecodestart,ContentItem originalImgage, Asset inAsset, String groupId ) throws Exception
@@ -541,7 +651,7 @@ public class FaceProfileManager implements CatalogEnabled
 		String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
 		if( url == null)
 		{
-			url = "http://localhost:8000/";
+			throw new OpenEditException("No server set " );
 		}
 		resp = getSharedConnection().sharedMimePost(url + "/api/v1/recognition/faces",tosendparams);
 		if (resp.getStatusLine().getStatusCode() == 400)
@@ -601,32 +711,30 @@ public class FaceProfileManager implements CatalogEnabled
 		return result.getOutput();
 	}
 
-	protected List<Map> findFaces(Asset inAsset, ContentItem input) throws ParseException
+	protected List<Map> findFaces(Asset inAsset, ContentItem inItem) throws Exception
 	{
 		//Scan via REST and get faces
 		//1. Take image and scan it for faces https://github.com/exadel-inc/CompreFace/blob/master/docs/Rest-API-description.md#recognize-faces-from-a-given-image
 				
-		Map tosendparams = new HashMap();
-		Integer limit = 20;
-		Integer assetwidth = inAsset.getInt("width"); 
-		if(assetwidth > 0) {
-			limit = assetwidth/ 600;
-		}
-		tosendparams.put("limit", limit.toString());
-		tosendparams.put("prediction_count","1"); //Return only most likely subject
+		JSONObject tosendparams = new JSONObject();
 		//tosendparams.put("face_plugins","detector");
 		
-		double facedetect_detect_confidence = .999D;
-		String detectvalue = getMediaArchive().getCatalogSettingValue("facedetect_detect_confidence");
-		if( detectvalue != null)
+		tosendparams.put("model_name","Facenet512");
+		//tosendparams.put("img","http://localhost:8080" + inUrl);
+		
+		
+		String base64 = inputStreamToBase64(inItem.getInputStream());
+		
+		String mime = "image/webp";
+		if( inItem.getName().endsWith("jpg"))
 		{
-			facedetect_detect_confidence = Double.parseDouble(detectvalue);
+			mime = "image/jpeg";
 		}
-
-
-		tosendparams.put("det_prob_threshold",facedetect_detect_confidence);
-
-		tosendparams.put("file", new File(input.getAbsolutePath()));
+		String tosend = "data:" + mime + ";charset=utf-8;base64, " + base64;
+		tosendparams.put("img",tosend);
+		
+		//tosendparams.put("img","https://cinecraft.entermediadb.org/cinecraft/mediadb/services/module/asset/generate/Projects/Pure%20Dental%20Group/Published/christopher-campbell-rDEOVtE7vOs-unsplash.jpg/image3000x3000.jpg/christopher-campbell-rDEOVtE7vOs-unsplashL.webp");
+		//tosendparams.put("img","https://cinecraft.entermediadb.org/cinecraft/mediadb/services/module/asset/generate/Projects/A%20Dream%20of%20Waves/pexels-alohaphotostudio-8836645.jpg/image3000x3000.webp/pexels-alohaphotostudio-8836645L.webp");
 		CloseableHttpResponse resp = null;
 		String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
 		if( url == null)
@@ -636,8 +744,8 @@ public class FaceProfileManager implements CatalogEnabled
 			//url = "http://localhost:8000";
 		}
 		long start = System.currentTimeMillis();
-		log.debug("Facial Profile Detection sending " + input.getPath() );
-		resp = getSharedConnection().sharedMimePost(url + "/api/v1/recognition/recognize",tosendparams);
+		log.debug("Facial Profile Detection sending " + inAsset.getName() );
+		resp = getSharedConnection().sharedPostWithJson(url + "/represent",tosendparams);
 		if (resp.getStatusLine().getStatusCode() == 400)
 		{
 			//No faces found error
@@ -660,14 +768,27 @@ public class FaceProfileManager implements CatalogEnabled
 		JSONObject json = getSharedConnection().parseJson(resp);
 		//log.info(json.toString());
 		
-		JSONArray results = (JSONArray)json.get("result");
+		JSONArray results = (JSONArray)json.get("results");
 		
-		log.info((System.currentTimeMillis() - start) + "ms face detection for asset: "+ inAsset.getId() + " " + input.getName() + " Found: " + results.size());
+		log.info((System.currentTimeMillis() - start) + "ms face detection for asset: "+ inAsset.getId() + " " + inAsset.getName() + " Found: " + results.size());
 		
 		return results;
 	}
 	
-
+	public static String inputStreamToBase64(InputStream is) throws Exception {
+	    ByteArrayOutputStream os = new ByteArrayOutputStream();
+	    byte[] buffer = new byte[8192];
+	    int bytesRead;
+	    while ((bytesRead = is.read(buffer)) != -1) {
+	        os.write(buffer, 0, bytesRead);
+	    }
+	    is.close();
+	    byte[] imageBytes = os.toByteArray();
+	    //= new String(imageBytes);
+	    //String text = Base64.getEncoder().encodeToString(imageBytes);
+	    String text = Base64.getEncoder().encodeToString(imageBytes);
+	    return text;
+	}
 /*
 	public List<Map> combineVideoMatches(List<Map> firstprofiles, List<Map> secondprofiles)
 	{
@@ -706,6 +827,8 @@ public class FaceProfileManager implements CatalogEnabled
 		return tocontinuelooking;
 	}
 */
+	
+	/**
 	public Map getImageAndLocationForGroup(Data asset,Collection<Data> faceprofilegroups, Double thumbwidth, Double thumbheight)
 	{
 		
@@ -1085,7 +1208,7 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 		return result;
 	}
-	
+	*/
 
 	/**
 	 * Gets image dimensions for given file 
@@ -1131,6 +1254,7 @@ public class FaceProfileManager implements CatalogEnabled
     private static int get24bit(byte[] data, int index) {
         return data[index] & 0xFF | (data[index + 1] & 0xFF) << 8 | (data[index + 2] & 0xFF) << 16;
     }
-	
+
+
 	
 }

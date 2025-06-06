@@ -4,6 +4,7 @@
 package org.entermediadb.elasticsearch;
 
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
+import org.openedit.data.PropertyDetail;
 import org.openedit.hittracker.SearchQuery;
 
 public class ElasticSearchQuery extends SearchQuery
@@ -36,6 +37,13 @@ public class ElasticSearchQuery extends SearchQuery
 	public ElasticSearchQuery()
 	{
 		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	public void addFunction(PropertyDetail inDetail, Object inValues)
+	{
+		// TODO Auto-generated method stub
+		super.addFunction(inDetail, inValues);
 	}
 
 }

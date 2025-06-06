@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,7 +46,9 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.ClearScrollRequest;
+import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.AdminClient;
 import org.elasticsearch.client.Client;
@@ -69,6 +72,10 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
+import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
+import org.elasticsearch.index.query.functionscore.script.ScriptScoreFunctionBuilder;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
@@ -78,7 +85,6 @@ import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.transport.RemoteTransportException;
-import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.cluster.IdManager;
@@ -89,6 +95,7 @@ import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.ElasticSearchQuery;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.location.Position;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -102,6 +109,7 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.ChildFilter;
 import org.openedit.hittracker.GeoFilter;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
 import org.openedit.modules.translations.LanguageMap;
@@ -337,6 +345,14 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			{
 				throw new OpenEditException("Elastic search requires elastic query");
 			}
+			
+			HitTracker lowlevel = checkForJson(inQuery);
+			if( lowlevel != null)
+			{
+				return lowlevel;
+			}
+				
+			
 			long start = System.currentTimeMillis();
 			boolean showSearchLogs = getSearcherManager().getShowSearchLogs(getCatalogId());
 
@@ -348,8 +364,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				search.setRequestCache(false);
 
 			}
-
-			search.setExplain(true);
+			//search.setExplain(true); //Really?
 
 			if (getPropertyDetails().getSearchTypes() != null)
 			{
@@ -367,6 +382,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 			BoolQueryBuilder terms = buildTerms(inQuery);
 
+			//function_score
+			
+			
 			if (!inQuery.isIncludeDeleted())
 			{
 				TermQueryBuilder deleted = QueryBuilders.termQuery("emrecordstatus.recorddeleted", true);
@@ -374,7 +392,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 
 			search.setQuery(terms);
-			// search.
 			addSorts(inQuery, search);
 			addFacets(inQuery, search);
 
@@ -386,7 +403,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			{
 				search.setFetchSource(null, "description");
 			}
-			search.setExplain(true);
+			search.setExplain(true);  //Reemove this
+
 			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, inQuery.getHitsPerPage());
 			hits.setSearcherManager(getSearcherManager());
 			hits.setIndexId(getIndexId());
@@ -414,6 +432,197 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			throw new OpenEditException(ex);
 		}
+	}
+
+	private HitTracker checkForJson(SearchQuery inQuery)
+	{
+		double[] d = (double[])inQuery.getValue("vector");
+		if( d != null)
+		{
+			JSONObject query = new JSONObject();
+			
+			JSONObject function_score = new JSONObject();
+			function_score.put("boost_mode", "replace");
+			query.put("function_score",function_score);
+			
+			JSONObject script_score = new JSONObject();
+			script_score.put("lang", "knn");
+			script_score.put("script", "binary_vector_score");
+			function_score.put("script_score", script_score);
+			
+			JSONObject params = new JSONObject();
+			params.put("cosine", false);
+			params.put("field", "facedata");
+			//double[] d = { -0.09217305481433868d, 0.010635560378432274d, -0.02878434956073761d, 0.06988169997930527d};
+			List<Double> list = Arrays.stream(d).boxed().collect(Collectors.toList());
+			JSONArray vector = new JSONArray();
+			vector.addAll(list);
+			params.put("vector",vector);
+			script_score.put("params",params);
+			//log.info("req: " + response);
+			JSONObject root = new JSONObject();
+			root.put("query",query);
+			String source =  root.toJSONString();
+			
+			//log.info(source);
+			
+			SearchResponse searchResponse = getClient().prepareSearch(toId(getCatalogId())).setTypes(getSearchType()).setSource(source).get();
+			//log.info("req: " + searchResponse);
+			
+			SearchHit[] hits = searchResponse.getHits().getHits();
+			ListHitTracker tracker = new ListHitTracker();
+			tracker.setSearchQuery(inQuery);
+			for (int i = 0; i < hits.length; i++)
+			{
+				SearchHit hit = hits[i];
+				SearchHitData data = new SearchHitData(hit, this);
+				tracker.add(data);
+			}
+			
+			return tracker;
+			
+//			SearchRequest searchRequest = new SearchRequest(toId(getCatalogId()) );
+//
+//			//String testquery = "{'bool': {'must': [{'match_phrase': {'countryName': 'Spain'}}], 'must_not': [], 'should': []}}".replace("'","\"");
+//			//QueryBuilder qb = QueryBuilders.wrapperQuery(testquery);
+//
+//			// Create your base query
+//			QueryBuilder baseQuery = QueryBuilders.matchQuery("field", "value");
+//
+//			// Create a function score query
+//			
+//			ScriptScoreFunctionBuilder scriptbuilder = ScoreFunctionBuilders.scriptFunction("binary_vector_score");
+//			scriptbuilder.
+//			FunctionScoreQueryBuilder functionScoreQuery = QueryBuilders.functionScoreQuery(
+//			    baseQuery,
+//			    scriptbuilder // Example: multiply score by 2
+//			).boostMode( "replace");
+//			
+//			
+//			// Use the functionScoreQuery in your search request
+//			SearchResponse response = getClient().prepareSearch(toId(getCatalogId()))
+//				.setTypes(getSearchType())
+//			    .setQuery(functionScoreQuery)
+//			    .get();
+//			log.info("req: " + response);
+//			FunctionScoreQueryBuilder(matchQuery("party_id", "12"))
+//			.add(termsFilter("course_cd",
+//			
+//			SearchSourceBuilder searchSourceBuilder1 = SearchSourceBuilder.searchSource();
+//			searchSourceBuilder1.query(source);
+//			
+//			.source(SearchSourceBuilder.searchSsearcherource()
+//                    .query(new QueryStringQueryBuilder("foo").field("query")));
+//			
+//			searchRequest.source(searchSourceBuilder1);
+//			searchRequest.types(getSearchType());
+//			//SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
+//			ActionFuture<SearchResponse> res = getClient().search(searchRequest);
+//			SearchResponse scrollResp1 = res.actionGet();
+
+	//		log.info("req: " + scrollResp1);
+			//String query = "{"bool": {"must": [{"match_phrase": {"countryName": "Spain"}}], "must_not": [], "should": []}}";
+//			QueryBuilder qb = QueryBuilders.wrapperQuery(source);
+//			SearchSourceBuilder searchSourceBuilder1 = new SearchSourceBuilder();
+//			searchSourceBuilder1.query(qb);
+//			SearchRequest searchRequest = new SearchRequest("index_name");
+//			searchRequest.source(searchSourceBuilder1);
+//			SearchResponse scrollResp1 = client.search(searchRequest, RequestOptions.DEFAULT);
+//			System.out.println(scrollResp1);
+			
+//			MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("nationality", "italian");
+//			  SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+//			  searchSourceBuilder.query(matchQueryBuilder);
+//
+//			  search.setSource(searchSourceBuilder);
+//			  
+			
+//			SearchModule searchModule= new SearchModule(Settings.EMPTY, false, Collections.emptyList());
+//			try (XContentParser parser = XContentFactory.xContent(XContentType.JSON).createParser(new NamedXContentRegistry(searchModule
+//			            .getNamedXContents()), source)) {
+//			    searchSourceBuilder.parseXContent(parser);
+//			}
+//			
+//			log.info("searchby: " + search.toString());
+			
+		}
+		/**
+
+
+"function_score": {
+      "boost_mode": "replace",
+      "script_score": {
+        "lang": "knn",
+        "params": {
+          "cosine": false,
+          "field": "facedata",
+          "vector": [
+               -0.09217305481433868, 0.010635560378432274, -0.02878434956073761, 0.06988169997930527
+             ]
+        },
+        "script": "binary_vector_score"
+      }
+    }
+
+		 
+		//https://stackoverflow.com/questions/36589645/how-to-use-elasticsearch-functionscore-query-using-java-api
+		 final FunctionScoreQueryBuilder queryBuilder = new FunctionScoreQueryBuilder(inTerms);
+		 
+		 Script script = new Script();
+		 
+		 
+	        final ScoreFunctionBuilder scoreFunctionBuilder = new ScriptScoreFunctionBuilder(script);
+	        queryBuilder.add(scoreFunctionBuilder);
+	        return queryBuilder;
+	        
+		ScriptScoreFunctionBuilder scoreFunction = ScoreFunctionBuilders
+			    .scriptFunction("_score * doc['calc_feild'].value");
+		
+		scoreFunction.setWeight(fieldFullTextCap);
+		//new FunctionScoreQueryBuilder(search).add(scoreFunction).boostMode("replace")
+
+		FunctionScoreQueryBuilder fqBuilder = new FunctionScoreQueryBuilder.FilterFunctionBuilder(
+                ScoreFunctionBuilders.scriptFunction(format("doc['%s'].value", FIELD_COUNT))
+        );
+
+//		 QueryBuilders.functionScoreQuery(inTerms);
+//		    fqBuilder.boostMode("replace");
+//		    fqBuilder.scoreMode("script_score");
+		    
+		    
+		    ScriptScoreFunctionBuilder scoreFunction = ScoreFunctionBuilders
+		    	    .scriptFunction("binary_vector_score");
+		    
+		    new FunctionScoreQueryBuilder.FilterFunctionBuilder(
+                    inTerms,
+                    ScoreFunctionBuilders.weightFactorFunction(3)
+            );
+		    /*
+		    FunctionScoreQueryBuilder fqBuilder = new FunctionScoreQueryBuilder(inTerms, scoreFunction).boostMode("replace"));
+		    
+		    QueryBuilders.functionScoreQuery(
+		    		inTerms,
+                    new FunctionScoreQueryBuilder.FilterFunctionBuilder[]{
+                            new FunctionScoreQueryBuilder.FilterFunctionBuilder(
+                                    QueryBuilders.matchQuery(FIELD_TYPE, fieldType),
+                                    ScoreFunctionBuilders.weightFactorFunction(3.0F)
+                            )
+                    }), ScoreMode.None));
+		    
+		    FunctionScoreQueryBuilder.FilterFunctionBuilder[] filterFunctionBuilders = new FunctionScoreQueryBuilder.FilterFunctionBuilder[]{
+	                new FunctionScoreQueryBuilder.FilterFunctionBuilder(
+	                        QueryBuilders.matchQuery(FIELD_TYPE, fieldType),
+	                        ScoreFunctionBuilders.weightFactorFunction(3)
+	                ),
+	                new FunctionScoreQueryBuilder.FilterFunctionBuilder(
+	                        ScoreFunctionBuilders.scriptFunction(format("doc['%s'].value", FIELD_COUNT))
+	                )
+	        };
+		    fqBuilder.add(sfb2);
+		
+		return inTerms;
+		*/
+		return null;
 	}
 
 	public void addHighlights(SearchQuery inQuery, SearchRequestBuilder search)
@@ -942,6 +1151,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			return;
 
 		}
+		else if (detail.isDataType("stringvector"))
+		{
+			// "index" : "not_analyzed"
+			jsonproperties = jsonproperties.field("type", "binary");
+			jsonproperties = jsonproperties.field("doc_values", true);
+			return;
+		}
 
 		// First determine type
 		if (detail.isDate())
@@ -1073,7 +1289,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// QueryBuilder find = buildTerm(term.getDetail(), term, value);
 		// return find;
 		// }
-
 		BoolQueryBuilder bool = QueryBuilders.boolQuery();
 
 		buildBoolTerm(inQuery, bool, inQuery.isAndTogether());
@@ -2872,13 +3087,17 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					{
 						val = Double.valueOf((int) value);
 					}
+					else if (value instanceof Long)
+					{
+						val = Double.valueOf((long) value);
+					}
 					else if (value != null)
 					{
 						try
 						{
 							val = Double.valueOf((String) value);
 						}
-						catch (NumberFormatException ef)
+						catch (Exception ef)
 						{
 							log.error("Cant format " + getSearchType() + " " + detail.getId() + " " + value, ef);
 							continue;

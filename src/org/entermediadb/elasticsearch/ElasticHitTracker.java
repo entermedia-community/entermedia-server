@@ -129,7 +129,6 @@ public class ElasticHitTracker extends HitTracker
 	public void setSearcheRequestBuilder(SearchRequestBuilder inSearcheRequestBuilder)
 	{
 		fieldSearcheRequestBuilder = inSearcheRequestBuilder;
-		inSearcheRequestBuilder.setExplain(true);
 	}
 
 	public void setShowOnlySelected(boolean inShowOnlySelected)
@@ -200,7 +199,7 @@ public class ElasticHitTracker extends HitTracker
 					}
 					if (!isUseServerCursor() || fieldLastScrollId == null || chunk == 0) //todo: Allow scrolling for iterators
 					{
-						getSearcheRequestBuilder().setFrom(start).setSize(size).setExplain(false);
+						getSearcheRequestBuilder().setFrom(start).setSize(size);
 						
 						if (isUseServerCursor())
 						{

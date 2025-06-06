@@ -276,7 +276,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	//called from the lock manager
 	public void shutdown()
 	{
-
 		try
 		{
 			synchronized (this)

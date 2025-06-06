@@ -124,8 +124,8 @@ public class HttpSharedConnection
 	{
 		HttpPost post = new HttpPost(inUrl);
 		
-		post.setEntity(new StringEntity(inBody.toString(), "UTF-8"));
 		post.addHeader("Content-Type", "application/json");
+		post.setEntity(new StringEntity(inBody.toString(), "UTF-8"));
 		post.setProtocolVersion(HttpVersion.HTTP_1_1);
 		
 		return sharedPost(post);
