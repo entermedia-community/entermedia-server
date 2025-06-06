@@ -220,6 +220,12 @@ public class AssetSourceManager implements CatalogEnabled
 				asset.setSourcePath(sourcepath);
 			}
 			
+			if( asset == null)
+			{
+				log.error("Couldn't save Asset.");
+				continue;
+			}
+			
 			AssetSource source = findAssetSource(asset);
 			asset = source.createAsset(asset,upload,metadata,sourcepath,createCategories,user);
 			

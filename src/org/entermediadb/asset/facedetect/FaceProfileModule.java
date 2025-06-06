@@ -16,6 +16,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
+import org.openedit.data.Searcher;
 import org.openedit.util.MathUtils;
 
 public class FaceProfileModule extends BaseMediaModule
@@ -92,7 +93,28 @@ public class FaceProfileModule extends BaseMediaModule
 	}
 	
 	
+	public void addPersonToFaceProfile(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String assetid = inReq.getRequestParameter("assetid");
+		String personid = inReq.getRequestParameter("dataid");
+		String faceid =inReq.getRequestParameter("faceid");
+		
+		if (faceid != null && personid != null)
+		{
+			Searcher faceembeddingsearcher = archive.getSearcherManager().getSearcher("system/facedb","faceembedding");
+			MultiValued face = (MultiValued)faceembeddingsearcher.searchById(faceid);
+			if (face != null)
+			{
+				face.setValue("entityperson", personid);
+				faceembeddingsearcher.saveData(face);
+			}
+		}
+		Asset asset = archive.getAsset(assetid);
+		inReq.putPageValue("asset", asset);
+	}
 	
+	/*
 	public void addPersonToProfileGroup(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -112,7 +134,7 @@ public class FaceProfileModule extends BaseMediaModule
 		Asset asset = archive.getAsset(assetid);
 		inReq.putPageValue("asset", asset);
 	}
-	
+	*/
 	
 	public void addManualFaceProfile (WebPageRequest inReq)
 	{

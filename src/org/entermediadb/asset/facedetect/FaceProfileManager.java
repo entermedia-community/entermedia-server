@@ -407,7 +407,7 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			double[] embedding = collectDoubles((Collection)facejson.get("embedding"));
 			SearchQuery query = facedb.createSearchQuery();
-			query.setValue("vector",embedding); //TODO: Pass in a better cluet JSON"
+			query.setValue("vector", embedding); //TODO: Pass in a better cluet JSON"
 			HitTracker results = facedb.search(query);
 			//if I find myself then dont save again
 			
@@ -423,7 +423,7 @@ public class FaceProfileManager implements CatalogEnabled
 					continue;
 				}
 			
-				Data similarembedding = findSimilar(facedb,inAsset,results,similaritycheck); //Pass in how similar
+				Data similarembedding = findSimilar(facedb, addedface, inAsset, results, similaritycheck); //Pass in how similar
 				if( similarembedding  != null)
 				{
 					addedface.setValue("parentembeddingid",similarembedding.getId());
@@ -438,7 +438,7 @@ public class FaceProfileManager implements CatalogEnabled
 		return tosave;
 	}
 
-	protected Data findSimilar(Searcher facedb,Asset inAsset, HitTracker inResults, double similaritycheck)
+	protected Data findSimilar(Searcher facedb, Data inChild, Asset inAsset, HitTracker inResults, double similaritycheck)
 	{
 		for (Iterator iterator = inResults.iterator(); iterator.hasNext();)
 		{
@@ -447,9 +447,10 @@ public class FaceProfileManager implements CatalogEnabled
 			if( assetid == null || !assetid.equals(inAsset.getId()) )
 			{
 				//save this as the parent
-				Float score = hit.getFloat("_score");
-				if( score != null && score >  100d)
+				Double score = hit.getDouble("_score");
+				if( score != null && score >  210d)
 				{
+					inChild.setValue("parentscore", score);
 					return hit;
 				}
 				return null;
@@ -473,6 +474,8 @@ public class FaceProfileManager implements CatalogEnabled
 		
 		return null;
 	}
+	
+	
 	public float[] collectFloats(Collection vector) 
 	{
 		float[] floats = new float[vector.size()];
@@ -576,7 +579,7 @@ public class FaceProfileManager implements CatalogEnabled
 					}
 				}
 			}			
-			FaceBox box = makeBox(embedding,personid,inAssetWidth);
+			FaceBox box = makeBox(embedding, personid, inAssetWidth);
 			boxes.add(box);
 		}
 		return boxes;	

@@ -424,15 +424,10 @@ public class MediaSearchModule extends BaseMediaModule
 			return;
 		}
 		
-		SearchQuery aquery = archive.getAssetSearcher().addStandardSearchTerms(inPageRequest);
-		
-		if(aquery == null) {
-			aquery = archive.getAssetSearcher().createSearchQuery();
-		}
-		
-		Collection faceprofilegroups = new ArrayList();
-		
 
+
+		/*
+		Collection faceprofilegroups = new ArrayList();
 		Collection<Data> profiles = archive.query("faceprofilegroup").exact("entityperson", entityid).search();
 		if (!profiles.isEmpty()) {
 			//assets = archive.query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).search();
@@ -442,21 +437,36 @@ public class MediaSearchModule extends BaseMediaModule
 
 		aquery.setValue("faceprofilegroups", faceprofilegroups);
 		aquery.setValue("showfacebox", true);
+		*/
 		
-		String hitsname = inPageRequest.getRequestParameter("hitsname");
-		if(hitsname == null)
+		
+		Searcher faceembeddingsearcher = archive.getSearcherManager().getSearcher("system/facedb","faceembedding");
+		HitTracker faces = faceembeddingsearcher.query().exact("entityperson", entityid).search();
+		if (!faces.isEmpty())
 		{
-			hitsname = inPageRequest.findValue("hitsname");
-		}
-		if(hitsname == null)
-		{
-			hitsname = "faceassets";
-		}
-		archive.getAssetSearcher().cachedSearch(inPageRequest, aquery);
-		//inPageRequest.putPageValue(hitsname, assets);
-		
-		
+			SearchQuery aquery = archive.getAssetSearcher().addStandardSearchTerms(inPageRequest);
 			
+			if(aquery == null) {
+				aquery = archive.getAssetSearcher().createSearchQuery();
+			}
+			Collection allassets = faces.collectValues("assetid");
+			aquery.addOrsGroup("id", allassets);
+			
+			
+			
+			
+			String hitsname = inPageRequest.getRequestParameter("hitsname");
+			if(hitsname == null)
+			{
+				hitsname = inPageRequest.findValue("hitsname");
+			}
+			if(hitsname == null)
+			{
+				hitsname = "faceassets";
+			}
+			archive.getAssetSearcher().cachedSearch(inPageRequest, aquery);
+		}
+		//inPageRequest.putPageValue(hitsname, assets);
 	}
 	
 	

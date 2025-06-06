@@ -13,7 +13,7 @@
     </name> 
   </property>  
   
-  <property id="assetid" index="true" type="list" stored="true" keyword="false" filter="false" editable="false" sortable="true">Asset Id 
+  <property id="assetid" index="true" type="list" listid="asset" stored="true" keyword="false" filter="false" editable="false" sortable="true"  viewtype="asset">Asset Id 
     <name> 
       <language id="de"><![CDATA[Asset-ID]]></language>  
       <language id="en"><![CDATA[Asset Id]]></language>  
@@ -28,11 +28,17 @@
     </name> 
   </property>  
   
-  <property id="parentassetid" index="true" type="list" stored="true" keyword="false" filter="false" editable="false" sortable="true"> 
+  <property id="parentassetid" index="true" type="list" listid="asset" stored="true" keyword="false" filter="false" editable="false" sortable="true"  viewtype="asset"> 
     <name> 
       <language id="en"><![CDATA[Parent Asset Id]]></language>  
     </name> 
   </property>  
+  
+  <property id="parentscore" datatype="double" index="true" stored="true" > 
+	    <name> 
+	      <language id="en"><![CDATA[Parent Score]]></language>  
+	    </name> 
+  </property>
   
   <property id="facedata" index="true" datatype="stringvector" indextype="not_analyzed" viewtype="text" stored="true">
     <name>
@@ -94,10 +100,12 @@
 	  </property>  
 		 
 		 
-		  <property id="face_confidence" datatype="double" index="true" stored="true" > 
+	  <property id="face_confidence" datatype="double" index="true" stored="true" > 
 	    <name> 
 	      <language id="en"><![CDATA[Face Confidence]]></language>  
 	    </name> 
-	  </property>  
+	  </property>
+	  
+	      
   
 </properties>
