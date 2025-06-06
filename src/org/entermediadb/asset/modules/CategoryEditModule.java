@@ -63,6 +63,62 @@ public class CategoryEditModule extends BaseMediaModule {
 		searcher.saveData(cat);
 	}
 
+	
+	
+	public void handlePaste(WebPageRequest inContext) throws OpenEditException {
+		CategoryEditor editor = getCategoryEditor(inContext);
+		MediaArchive archive = editor.getMediaArchive();
+		CategorySearcher searcher = (CategorySearcher) archive.getSearcher(editor.getSearchType());
+
+		String mode = inContext.getRequestParameter("mode"); // "copy" or "cut"
+		String sourceId = inContext.getRequestParameter("fromid");
+		String targetId = inContext.getRequestParameter("targetid");
+
+		if (sourceId == null || targetId == null || mode == null) {
+			log.warn("Missing required parameters for paste. mode=" + mode + " source=" + sourceId + " target=" + targetId);
+			return;
+		}
+
+		Category source = searcher.getCategory(sourceId);
+		Category target = searcher.getCategory(targetId);
+
+		if (source == null || target == null) {
+			log.warn("Source or target category not found. source=" + sourceId + ", target=" + targetId);
+			return;
+		}
+
+		if ("cut".equals(mode)) {
+			inContext.setRequestParameter("categoryid", sourceId);
+			inContext.setRequestParameter("categoryid2", targetId);
+			moveCategory(inContext);
+			log.info("Moved category " + source.getId() + " under " + target.getId());
+
+		} else if ("copy".equals(mode)) {
+			List descendants = source.getChildren();
+			String sourceroot = source.getCategoryPath();
+			String destroot = target.getCategoryPath();
+			for (Iterator iterator = descendants.iterator(); iterator.hasNext();)
+			{
+				Category copyitem = (Category) iterator.next();
+				String currentPath = copyitem.getCategoryPath();
+				if (currentPath.startsWith(sourceroot)) {
+					String relative = currentPath.substring(sourceroot.length());
+					if (relative.startsWith("/")) {
+						relative = relative.substring(1); // trim leading slash
+					}
+					String targetPath = destroot + "/" + source.getName() + (relative.isEmpty() ? "" : "/" + relative);
+					searcher.createCategoryPath(targetPath);
+				}
+			}
+
+		} else {
+			log.warn("Unknown paste mode: " + mode);
+		}
+	}
+
+
+	
+	
 	public void moveCategory(WebPageRequest inContext) throws OpenEditException 
 	{
 		CategoryEditor categoryeditor = getCategoryEditor(inContext);
