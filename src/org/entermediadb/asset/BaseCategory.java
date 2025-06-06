@@ -962,4 +962,23 @@ public class BaseCategory extends BaseData implements Category
 		}
 		return counted.size();
 	}
+	
+	@Override
+	public List<Category> getDescendants()
+	{
+		List<Category> all = new ArrayList<>();
+		for (Iterator iterator = getChildren().iterator(); iterator.hasNext();)
+		{
+			Category child = (Category) iterator.next();
+			all.add(child);
+			if (child.hasChildren())
+			{
+				all.addAll(child.getDescendants());
+			}
+		}
+		return all;
+	}
+
+	
+	
 }
