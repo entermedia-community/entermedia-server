@@ -96,25 +96,21 @@ public class FaceProfileModule extends BaseMediaModule
 	}
 	
 	
-	public void addPersonToFaceProfile(WebPageRequest inReq)
+	public void addPersonToEmbedding(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String assetid = inReq.getRequestParameter("assetid");
-		String personid = inReq.getRequestParameter("dataid");
-		String faceid =inReq.getRequestParameter("faceid");
+		String personid = inReq.getRequestParameter("dataid"); //person
+		String faceembeddingid =inReq.getRequestParameter("faceembeddingid");
 		
-		if (faceid != null && personid != null)
+		if (faceembeddingid != null && personid != null)
 		{
-			Searcher faceembeddingsearcher = archive.getSearcherManager().getSearcher("system/facedb","faceembedding");
-			MultiValued face = (MultiValued)faceembeddingsearcher.searchById(faceid);
+			MultiValued face = (MultiValued)archive.getData("faceembedding",faceembeddingid);
 			if (face != null)
 			{
 				face.setValue("entityperson", personid);
-				faceembeddingsearcher.saveData(face);
+				archive.saveData("faceembedding",face);
 			}
 		}
-		Asset asset = archive.getAsset(assetid);
-		inReq.putPageValue("asset", asset);
 	}
 	
 	/*
@@ -216,7 +212,8 @@ public class FaceProfileModule extends BaseMediaModule
 	public void viewAllRelatedFaces(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String faceembeddedid = inReq.getRequestParameter("faceembeddedid");
+
+		String faceembeddedid = inReq.getRequestParameter("faceembeddingid");
 		FaceProfileManager manager = archive.getFaceProfileManager();
 		
 		Collection<FaceBox> boxes = manager.searchForSameFace(faceembeddedid);
@@ -235,7 +232,7 @@ public class FaceProfileModule extends BaseMediaModule
 			assetids.add(box.getAssetId());
 			if (entityperson == null)
 			{
-			entityperson = box.getPerson();
+				entityperson = box.getPerson();
 			}
 		}
 		inReq.putPageValue("faceboxes",boxes); //Used in Javascript? read in the DOM <face assetid="" location="{x,y,h,w}" />
