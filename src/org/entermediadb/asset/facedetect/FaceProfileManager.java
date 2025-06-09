@@ -380,8 +380,8 @@ public class FaceProfileManager implements CatalogEnabled
 //				//TODO: copy the profile field
 //			}
 			//Save to DB
-			int h = box.getInteger("h");
-			int w  = box.getInteger("w");
+			double h = box.getInteger("h");
+			double w  = box.getInteger("w");
 			if( h < minfacesize)
 			{
 				log.info("Not enough data, small face detected assetid:" + inAsset.getId()+ " w:" + w + " h:" + h + " Min face size: " + minfacesize);
@@ -394,14 +394,24 @@ public class FaceProfileManager implements CatalogEnabled
 			addedface.setValue("facedata",encoded);
 			addedface.setValue("assetid",inAsset);
 
-			addedface.setValue("locationx",box.getInteger("x"));
-			addedface.setValue("locationy",box.getInteger("y"));
+			int assetwidth = getMediaArchive().getRealImageWidth(inAsset); 
+			int assetheight = getMediaArchive().getRealImageWidth(inAsset); 
+			addedface.setValue("originalwidth",assetwidth);
+			addedface.setValue("originalheight",assetheight);
+			
+			double scale = MathUtils.divide(assetwidth , inputw);//Scale up to orginal image sizes
+			double x = box.getInteger("x");
+			double y = box.getInteger("y");
+			x = x * scale;
+			y = y * scale;
+			w = w * scale;
+			h = h * scale;
+			addedface.setValue("locationx",x);
+			addedface.setValue("locationy",y);
 			addedface.setValue("locationw",w);
 			addedface.setValue("locationh",h);
 			addedface.setValue("face_confidence", box.getDouble("face_confidence"));
 			addedface.setValue("timecodestart",timecodestart);
-			addedface.setValue("inputwidth",inputw);
-			addedface.setValue("inputheight",inputh);
 
 			//TODO: Make sure this is not already in there. For debug purposes
 			
@@ -551,7 +561,7 @@ public class FaceProfileManager implements CatalogEnabled
 //	        String base64 = encode(vector);
 //	        System.out.println(base64);
 //	    }
-	public Collection collectFaceBoxesAllPeople(Data inAsset, int inAssetWidth)
+	public Collection collectFaceBoxesAllPeople(Data inAsset)
 	{
 		//TODO Add Search type for finder
 		HitTracker allthepeopleinasset = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().exact("assetid",inAsset).search();
@@ -564,22 +574,18 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			MultiValued embedding = (MultiValued) iterator.next(); //One person
 			
-			String personid = embedding.get("entityperson");
-			if( personid == null)
+			String entityperson = embedding.get("entityperson");
+			if( entityperson == null)
 			{
 				//Search for any related faces that have a person on them
 				HitTracker personlookup = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().or().exact("id",embedding.getId()).exact("parentembeddingid",embedding).search();
-				for (Iterator iterator2 = personlookup.iterator(); iterator2.hasNext();)
+				Collection<String> person = allthepeopleinasset.collectValues("entityperson");
+				if( !person.isEmpty() )
 				{
-					Data singlings = (Data) iterator2.next();
-					personid = singlings.get("entityperson");
-					if( personid != null)
-					{
-						break;
-					}
+					entityperson = person.iterator().next();
 				}
 			}			
-			FaceBox box = makeBox(embedding, personid, inAssetWidth);
+			FaceBox box = makeBox(embedding, entityperson);
 			boxes.add(box);
 		}
 		return boxes;	
@@ -595,42 +601,6 @@ public class FaceProfileManager implements CatalogEnabled
 		return hits;
 	}
 	
-	
-	protected FaceBox makeBox(MultiValued inEmbedding, String inPersonid,int inAssetWidth)
-	{
-		FaceBox box = new FaceBox();
-		box.setEmbeddedData(inEmbedding);
-		
-		if( inPersonid != null)
-		{
-			Data person = getMediaArchive().getCachedData("entityperson", inPersonid);
-			box.setPerson(person);
-		}
-		Double x = inEmbedding.getDouble("locationx");
-		Double y = inEmbedding.getDouble("locationy");
-		Double w = inEmbedding.getDouble("locationw");
-		Double h = inEmbedding.getDouble("locationh");
-		Double inputwidth = inEmbedding.getDouble("inputwidth");
-		
-		double scale = MathUtils.divide(inAssetWidth , inputwidth);//Scale up to orginal image sizes
-		
-		x = x * scale;
-		y = y * scale;
-		w = w * scale;
-		h = h * scale;
-		
-		Double[] scaledxy = new Double[] { x, y, w , h};
-		List<Double> points = Arrays.asList(scaledxy);
-		box.setBoxArea(points);
-
-		if( inEmbedding.get("timecodestart") != null )
-		{
-			double seconds = MathUtils.divide( inEmbedding.get("timecodestart").toString(),"1000");
-			box.setTimecodeStartSeconds(seconds);
-		}
-		return box;
-	}
-
 	private void uploadAProfile(Map faceprofile, long timecodestart,ContentItem originalImgage, Asset inAsset, String groupId ) throws Exception
 	{
 			int x = (Integer) faceprofile.get("locationx");
@@ -1258,6 +1228,72 @@ public class FaceProfileManager implements CatalogEnabled
         return data[index] & 0xFF | (data[index + 1] & 0xFF) << 8 | (data[index + 2] & 0xFF) << 16;
     }
 
+	public Collection<FaceBox> searchForSameFace(String inFaceembeddedid)
+	{
+		Data startdata = getMediaArchive().getCachedData("faceembedding", inFaceembeddedid);
+		
+		//Get all parents 
+		Collection parentids = new ArrayList();
+		while( startdata != null)
+		{
+			parentids.add(startdata.getId());
+			String parent = startdata.get("parentembeddingid");
+			startdata = getMediaArchive().getCachedData("faceembedding", parent);
+		}
+		if( parentids.isEmpty() )
+		{
+			return null;
+		}
+		//Search all children
+		HitTracker allthepeopleinasset = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().or().ids(parentids).orgroup("parentembeddingid", parentids).search();
+		
+		//Look for a personid anyplace
+		String entityperson  = null;
+		Collection<String> person = allthepeopleinasset.collectValues("entityperson");
+		if( !person.isEmpty() )
+		{
+			entityperson = person.iterator().next();
+		}
+		
+		//What happens is another person is matched? We should have never allowed that in the UI
+		
+		//Make boxes?
+		Collection<FaceBox> boxes = new ArrayList();
+		
+		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
+		{
+			MultiValued embedding = (MultiValued) iterator.next(); //One person
+			FaceBox box = makeBox(embedding, entityperson);
+			boxes.add(box);
+		}
+		return boxes;		
+	}
+
+	protected FaceBox makeBox(MultiValued inEmbedding, String inPersonid)
+	{
+		FaceBox box = new FaceBox();
+		box.setEmbeddedData(inEmbedding);
+		
+		if( inPersonid != null)
+		{
+			Data person = getMediaArchive().getCachedData("entityperson", inPersonid);
+			box.setPerson(person);
+		}
+		Double x = inEmbedding.getDouble("locationx");
+		Double y = inEmbedding.getDouble("locationy");
+		Double w = inEmbedding.getDouble("locationw");
+		Double h = inEmbedding.getDouble("locationh");
+		Double[] scaledxy = new Double[] { x, y, w , h};
+		List<Double> points = Arrays.asList(scaledxy);
+		box.setBoxArea(points);
+
+		if( inEmbedding.get("timecodestart") != null )
+		{
+			double seconds = MathUtils.divide( inEmbedding.get("timecodestart").toString(),"1000");
+			box.setTimecodeStartSeconds(seconds);
+		}
+		return box;
+	}
 
 	
 }

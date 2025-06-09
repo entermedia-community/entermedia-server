@@ -12,7 +12,14 @@ public class FaceBox
 		String json = JSONArray.toJSONString( getBoxArea());
 		return json;
 	}
-	
+	public String getId()
+	{
+		return getEmbeddedData().getId();
+	}
+	public String getAssetId()
+	{
+		return getEmbeddedData().get("assetid");
+	}
 	protected Data fieldEmbeddedData;
 	public Data getEmbeddedData()
 	{

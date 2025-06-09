@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -14,9 +15,11 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.util.MathUtils;
 
 public class FaceProfileModule extends BaseMediaModule
@@ -210,4 +213,34 @@ public class FaceProfileModule extends BaseMediaModule
 		
 	}
 	
+	public void viewAllRelatedFaces(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String faceembeddedid = inReq.getRequestParameter("faceembeddedid");
+		FaceProfileManager manager = archive.getFaceProfileManager();
+		
+		Collection<FaceBox> boxes = manager.searchForSameFace(faceembeddedid);
+		
+		if( boxes == null)
+		{
+			return;
+		}
+		//Do some searching
+		Data entityperson = null;
+		
+		Collection assetids = new ArrayList();
+		for (Iterator iterator = boxes.iterator(); iterator.hasNext();)
+		{
+			FaceBox box = (FaceBox) iterator.next();
+			assetids.add(box.getAssetId());
+			entityperson = box.getPerson();
+		}
+		inReq.putPageValue("faceboxes",boxes); //Used in Javascript? read in the DOM <face assetid="" location="{x,y,h,w}" />
+		inReq.putPageValue("entityperson",entityperson);
+		
+		HitTracker assets = archive.query("asset").ids(assetids).named("faceassets").search(inReq);
+		inReq.putPageValue(assets.getHitsName(),assets);
+		inReq.putSessionValue(assets.getSessionId(),assets);
+		
+	}
 }

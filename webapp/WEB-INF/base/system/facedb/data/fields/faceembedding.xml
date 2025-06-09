@@ -92,10 +92,20 @@
 	    </name> 
 	  </property>  
 		 
-		 
 	  <property id="inputwidth" datatype="number" index="true" stored="true" > 
 	    <name> 
 	      <language id="en"><![CDATA[Input Width]]></language>  
+	    </name> 
+	  </property>  
+
+	  <property id="originalwidth" datatype="number" index="true" stored="true" > 
+	    <name> 
+	      <language id="en"><![CDATA[Original Width]]></language>  
+	    </name> 
+	  </property>  
+	  <property id="originalheight" datatype="number" index="true" stored="true" > 
+	    <name> 
+	      <language id="en"><![CDATA[Original Height]]></language>  
 	    </name> 
 	  </property>  
 		 

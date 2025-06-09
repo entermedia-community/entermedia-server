@@ -31,6 +31,7 @@ import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.asset.edit.AssetEditor;
 import org.entermediadb.asset.edit.CategoryEditor;
+import org.entermediadb.asset.facedetect.FaceProfileManager;
 import org.entermediadb.asset.orders.OrderManager;
 import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.scanner.MetaDataReader;
@@ -3181,6 +3182,12 @@ public class MediaArchive implements CatalogEnabled
 	public UserProfileManager getProfileManager()
 	{
 		UserProfileManager manager = (UserProfileManager)getBean("userProfileManager");
+		return manager;
+	}
+
+	public FaceProfileManager getFaceProfileManager()
+	{
+		FaceProfileManager manager = (FaceProfileManager)getBean("faceProfileManager");
 		return manager;
 	}
 
