@@ -798,3 +798,12 @@ curl -XGET localhost:9200/finder_catalog/faceembedding/_search -d '{
  	}
 }' | python3 -mjson.tool
 
+
+curl -XDELETE 'http://localhost:9200/system_facedb'
+curl -XDELETE 'http://localhost:9200/system_facedb-0'
+
+curl -XGET 'http://localhost:9200/system_facedb/faceembedding/_search' -d '{ "query" : {	"match_all" : {} } }' | python3 -mjson.tool
+curl -XGET 'http://localhost:9200/system_facedb/faceembedding/_search?q=_id:AZdW0E9ML2KMPDng-Ti_' | python3 -mjson.tool
+curl -XGET 'http://localhost:9200/system_facedb/faceembedding/_search?q=_id:AZdW0HA9L2KMPDng-TjD' | python3 -mjson.tool
+
+	
