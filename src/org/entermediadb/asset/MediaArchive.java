@@ -2709,9 +2709,14 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return null;
 	}	
-
 	
-	public String asLinkToDownload(Data inAsset, String inCollectionId, Data inPreset) {
+	
+
+	/*
+	 * @deprecated - Start usung asLinkToShare
+	 */
+	
+	public String asLinkToDownload(Data inAsset, Data inPreset) {
 		
 		
 		if (inAsset == null || inPreset == null)
@@ -2736,29 +2741,33 @@ public class MediaArchive implements CatalogEnabled
 			//			getCacheManager().clear("catalogsettings");
 		}
 		
+		/*
 		String downloadroot = null;
+		
 		if(inCollectionId != null) {
 			downloadroot = "/services/module/librarycollection/downloads/createpreset";
 		} else {
 			downloadroot = "/services/module/asset/downloads/generated";
 
 		}
+		*/
 		
-		
+		String downloadroot = "/services/module/asset/downloads/generated";
 		
 		String sourcepath = inAsset.getSourcePath();
 		
 		String name = asExportFileName(inAsset, inPreset);
 		String generatedfilename = inPreset.get("generatedoutputfile") + "/" + name;
+		
+		finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "/" + sourcepath + "/" + generatedfilename;
+		
+		/*
 		if(inCollectionId != null) 
 		{
 			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot +"/" + inCollectionId +"/" + sourcepath + "/" + generatedfilename;
 		}
-		else
-		{
-			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "/" + sourcepath + "/" + generatedfilename;
-
-		}
+		*/
+		
 		finalroot = URLUtilities.urlEscape(finalroot);
 		return finalroot;
 	}
@@ -2895,40 +2904,6 @@ public class MediaArchive implements CatalogEnabled
 		return finalroot;
 	}
 
-	
-	//@deprecated use 
-	public String asLinkToDownload(Data inAsset, Data inPreset)
-	{
-		if (inAsset == null)
-		{
-			return null;
-		}
-		String cdnprefix = getCatalogSettingValue("cdn_prefix");
-		String finalroot = null;
-		if (cdnprefix == null)
-		{
-			cdnprefix = "";
-		}
-
-		if( "0".equals(inPreset.getId()) )
-		{
-			String original =  asLinkToOriginal(inAsset);
-			String url = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/originals/" + original;
-			return url;
-		}
-		
-		String sourcepath = inAsset.getSourcePath();
-		String inGeneratedoutputfile = inPreset.get("generatedoutputfile") + "/" + inAsset.getName() + "-" + inPreset.get("generatedoutputfile");
-
-		finalroot = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/createpreset/" + sourcepath + "/" + inGeneratedoutputfile;
-		finalroot = URLUtilities.urlEscape(finalroot);
-		return finalroot;
-
-	}
-	
-	
-	
-	
 	
 
 	public boolean isCatalogSettingTrue(String string)
