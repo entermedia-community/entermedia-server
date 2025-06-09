@@ -233,7 +233,10 @@ public class FaceProfileModule extends BaseMediaModule
 		{
 			FaceBox box = (FaceBox) iterator.next();
 			assetids.add(box.getAssetId());
+			if (entityperson == null)
+			{
 			entityperson = box.getPerson();
+			}
 		}
 		inReq.putPageValue("faceboxes",boxes); //Used in Javascript? read in the DOM <face assetid="" location="{x,y,h,w}" />
 		inReq.putPageValue("entityperson",entityperson);
