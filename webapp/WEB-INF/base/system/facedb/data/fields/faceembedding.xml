@@ -21,6 +21,12 @@
       <language id="fr"><![CDATA[ID Item]]></language> 
     </name> 
   </property>  
+
+    <property id="parentids" index="true" type="list" stored="true" listid="faceembedding" multivalue="true"> 
+    <name> 
+      <language id="en"><![CDATA[Parents Faces]]></language>  
+    </name> 
+  </property>  
   
     <property id="parentembeddingid" index="true" type="list" stored="true" listid="faceembedding" > 
     <name> 

@@ -263,7 +263,7 @@ public class FaceProfileManager implements CatalogEnabled
 			boolean hasfaces = !tosave.isEmpty();
 			inAsset.setValue("facehasprofile",hasfaces);
 			log.info("Faceprofile found: "+tosave.size());
-			faceembeddingsearcher.saveAllData(tosave,null);
+			//faceembeddingsearcher.saveAllData(tosave,null);
 			return hasfaces;
 		}
 		catch( Throwable ex)
@@ -387,7 +387,9 @@ public class FaceProfileManager implements CatalogEnabled
 				log.info("Not enough data, small face detected assetid:" + inAsset.getId()+ " w:" + w + " h:" + h + " Min face size: " + minfacesize);
 				continue;
 			}
-			Data addedface = facedb.createNewData();
+			
+			Data addedface = facedb.createNewData(); //TODIO: Search by Vector first so we dont lose assignments
+			
 			double[] vector = collectDoubles((Collection)facejson.get("embedding"));
 			String encoded = encodeDoubles(vector);
 
@@ -443,6 +445,18 @@ public class FaceProfileManager implements CatalogEnabled
 					log.info("Conected between child " + inAsset.getName() + " and parent " + parentasset.getName() );
 				}
 			}
+			Collection parentids = new ArrayList();
+			Data startdata = addedface; 
+			getMediaArchive().saveData("faceembedding", addedface);
+			while( startdata != null)
+			{
+				parentids.add(startdata.getId());
+				String parent = startdata.get("parentembeddingid");
+				startdata = getMediaArchive().getCachedData("faceembedding", parent);
+			}
+			addedface.setValue("parentids",parentids);
+			
+			getMediaArchive().saveData("faceembedding", addedface);
 			tosave.add(addedface);
 		}
 		return tosave;
@@ -570,37 +584,51 @@ public class FaceProfileManager implements CatalogEnabled
 
 		Collection boxes = new ArrayList();
 		
+		Data entityperson = null;
+		
 		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
 		{
 			MultiValued embedding = (MultiValued) iterator.next(); //One person
 			
-			String entityperson = embedding.get("entityperson");
 			if( entityperson == null)
 			{
-				//Search for any related faces that have a person on them
-				HitTracker personlookup = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().or().exact("id",embedding.getId()).exact("parentembeddingid",embedding).search();
-				Collection<String> person = allthepeopleinasset.collectValues("entityperson");
-				if( !person.isEmpty() )
+				String entitypersonid = embedding.get("entityperson");
+				if( entitypersonid == null)
 				{
-					entityperson = person.iterator().next();
+					//Search for any related faces that have a person on them
+					Collection parentids = embedding.getValues("parentids");
+					if( parentids != null && !parentids.isEmpty() )
+					{
+						HitTracker personlookup = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().orgroup("parentids",parentids).search();
+						Collection<String> peopleids = personlookup.collectValues("entityperson");
+						if( !peopleids.isEmpty() )
+						{
+							entitypersonid = peopleids.iterator().next();
+						}
+					}
 				}
-			}			
+				if( entitypersonid != null)
+				{
+					entityperson = getMediaArchive().getCachedData("entityperson", entitypersonid);
+				}
+			}
 			FaceBox box = makeBox(embedding, entityperson);
 			boxes.add(box);
 		}
 		return boxes;	
 	}
+	/*
 	public Collection findAssetsForPerson(WebPageRequest inReq, Data inPerson)
 	{
 		HitTracker taggedboxes = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().exact("entityperson",inPerson).search();
 		Collection relatedfaceids = taggedboxes.collectValues("id");
-		HitTracker completelistoffaces = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().or().ids(relatedfaceids).orgroup("parentembeddingid",relatedfaceids).search();
+		HitTracker completelistoffaces = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().or().orgroup("_id",relatedfaceids).orgroup("parentembeddingid",relatedfaceids).search();
 		
 		Collection allassets = completelistoffaces.collectValues("assetid");
 		Collection hits = getMediaArchive().query("asset").ids(allassets).search(inReq); //Security?
 		return hits;
 	}
-	
+	*/
 	private void uploadAProfile(Map faceprofile, long timecodestart,ContentItem originalImgage, Asset inAsset, String groupId ) throws Exception
 	{
 			int x = (Integer) faceprofile.get("locationx");
@@ -1230,29 +1258,35 @@ public class FaceProfileManager implements CatalogEnabled
 
 	public Collection<FaceBox> searchForSameFace(String inFaceembeddedid)
 	{
-		Data startdata = getMediaArchive().getCachedData("faceembedding", inFaceembeddedid);
+		MultiValued startdata = (MultiValued)getMediaArchive().getCachedData("faceembedding", inFaceembeddedid);
 		
 		//Get all parents 
-		Collection parentids = new ArrayList();
-		while( startdata != null)
-		{
-			parentids.add(startdata.getId());
-			String parent = startdata.get("parentembeddingid");
-			startdata = getMediaArchive().getCachedData("faceembedding", parent);
-		}
-		if( parentids.isEmpty() )
-		{
-			return null;
-		}
+//		Collection parentids = new ArrayList();
+//		while( startdata != null)
+//		{
+//			parentids.add(startdata.getId());
+//			String parent = startdata.get("parentembeddingid");
+//			startdata = getMediaArchive().getCachedData("faceembedding", parent);
+//		}
+//		if( parentids.isEmpty() )
+//		{
+//			return null;
+//		}
+		Collection parentids = startdata.getValues("parentids");
 		//Search all children
-		HitTracker allthepeopleinasset = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().or().ids(parentids).orgroup("parentembeddingid", parentids).search();
+		HitTracker allthepeopleinasset = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().orgroup("parentids", parentids).search();
 		
 		//Look for a personid anyplace
-		String entityperson  = null;
 		Collection<String> person = allthepeopleinasset.collectValues("entityperson");
+		Data entityperson = null;
 		if( !person.isEmpty() )
 		{
-			entityperson = person.iterator().next();
+			String entitypersonid  = null;
+			entitypersonid = person.iterator().next();
+			if( entitypersonid != null)
+			{
+				entityperson = getMediaArchive().getCachedData("entityperson", entitypersonid);
+			}
 		}
 		
 		//What happens is another person is matched? We should have never allowed that in the UI
@@ -1260,6 +1294,7 @@ public class FaceProfileManager implements CatalogEnabled
 		//Make boxes?
 		Collection<FaceBox> boxes = new ArrayList();
 		
+
 		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
 		{
 			MultiValued embedding = (MultiValued) iterator.next(); //One person
@@ -1269,16 +1304,11 @@ public class FaceProfileManager implements CatalogEnabled
 		return boxes;		
 	}
 
-	protected FaceBox makeBox(MultiValued inEmbedding, String inPersonid)
+	protected FaceBox makeBox(MultiValued inEmbedding, Data inPerson)
 	{
 		FaceBox box = new FaceBox();
 		box.setEmbeddedData(inEmbedding);
-		
-		if( inPersonid != null)
-		{
-			Data person = getMediaArchive().getCachedData("entityperson", inPersonid);
-			box.setPerson(person);
-		}
+		box.setPerson(inPerson);
 		Double x = inEmbedding.getDouble("locationx");
 		Double y = inEmbedding.getDouble("locationy");
 		Double w = inEmbedding.getDouble("locationw");

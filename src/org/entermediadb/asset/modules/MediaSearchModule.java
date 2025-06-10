@@ -358,7 +358,7 @@ public class MediaSearchModule extends BaseMediaModule
 		archive.getAssetSearcher().cachedSearch(inReq, aquery);
 	}
 	
-	
+	//Delete
 	public HitTracker showFaceProfileGroupAssets(WebPageRequest inReq){
 		String faceprofilegroupid = inReq.findValue("faceprofilegroupid");
 		
@@ -379,6 +379,7 @@ public class MediaSearchModule extends BaseMediaModule
 
 	}
 
+	/*
 	public void searchProfiles(WebPageRequest inPageRequest) throws Exception
 	{
 		Data person = (Data)inPageRequest.getPageValue("entity");
@@ -393,6 +394,7 @@ public class MediaSearchModule extends BaseMediaModule
 		inPageRequest.putPageValue("faceassets", assets);
 
 	}
+	*/
 /*	
 	public void searchProfileAssets(WebPageRequest inPageRequest) throws Exception
 	{
