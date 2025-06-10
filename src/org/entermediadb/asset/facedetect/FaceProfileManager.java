@@ -584,26 +584,40 @@ public class FaceProfileManager implements CatalogEnabled
 
 		Collection boxes = new ArrayList();
 		
+		Data entityperson = null;
+		
 		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
 		{
 			MultiValued embedding = (MultiValued) iterator.next(); //One person
 			
-			String entityperson = embedding.get("entityperson");
 			if( entityperson == null)
 			{
-				//Search for any related faces that have a person on them
-				HitTracker personlookup = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().or().exact("_id",embedding.getId()).exact("parentembeddingid",embedding).search();
-				Collection<String> person = allthepeopleinasset.collectValues("entityperson");
-				if( !person.isEmpty() )
+				String entitypersonid = embedding.get("entityperson");
+				if( entitypersonid == null)
 				{
-					entityperson = person.iterator().next();
+					//Search for any related faces that have a person on them
+					Collection parentids = embedding.getValues("parentids");
+					if( parentids != null && !parentids.isEmpty() )
+					{
+						HitTracker personlookup = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().orgroup("parentids",parentids).search();
+						Collection<String> peopleids = personlookup.collectValues("entityperson");
+						if( !peopleids.isEmpty() )
+						{
+							entitypersonid = peopleids.iterator().next();
+						}
+					}
 				}
-			}			
+				if( entitypersonid != null)
+				{
+					entityperson = getMediaArchive().getCachedData("entityperson", entitypersonid);
+				}
+			}
 			FaceBox box = makeBox(embedding, entityperson);
 			boxes.add(box);
 		}
 		return boxes;	
 	}
+	/*
 	public Collection findAssetsForPerson(WebPageRequest inReq, Data inPerson)
 	{
 		HitTracker taggedboxes = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().exact("entityperson",inPerson).search();
@@ -614,7 +628,7 @@ public class FaceProfileManager implements CatalogEnabled
 		Collection hits = getMediaArchive().query("asset").ids(allassets).search(inReq); //Security?
 		return hits;
 	}
-	
+	*/
 	private void uploadAProfile(Map faceprofile, long timecodestart,ContentItem originalImgage, Asset inAsset, String groupId ) throws Exception
 	{
 			int x = (Integer) faceprofile.get("locationx");
@@ -1263,11 +1277,16 @@ public class FaceProfileManager implements CatalogEnabled
 		HitTracker allthepeopleinasset = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().orgroup("parentids", parentids).search();
 		
 		//Look for a personid anyplace
-		String entityperson  = null;
 		Collection<String> person = allthepeopleinasset.collectValues("entityperson");
+		Data entityperson = null;
 		if( !person.isEmpty() )
 		{
-			entityperson = person.iterator().next();
+			String entitypersonid  = null;
+			entitypersonid = person.iterator().next();
+			if( entitypersonid != null)
+			{
+				entityperson = getMediaArchive().getCachedData("entityperson", entitypersonid);
+			}
 		}
 		
 		//What happens is another person is matched? We should have never allowed that in the UI
@@ -1275,6 +1294,7 @@ public class FaceProfileManager implements CatalogEnabled
 		//Make boxes?
 		Collection<FaceBox> boxes = new ArrayList();
 		
+
 		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
 		{
 			MultiValued embedding = (MultiValued) iterator.next(); //One person
@@ -1284,16 +1304,11 @@ public class FaceProfileManager implements CatalogEnabled
 		return boxes;		
 	}
 
-	protected FaceBox makeBox(MultiValued inEmbedding, String inPersonid)
+	protected FaceBox makeBox(MultiValued inEmbedding, Data inPerson)
 	{
 		FaceBox box = new FaceBox();
 		box.setEmbeddedData(inEmbedding);
-		
-		if( inPersonid != null)
-		{
-			Data person = getMediaArchive().getCachedData("entityperson", inPersonid);
-			box.setPerson(person);
-		}
+		box.setPerson(inPerson);
 		Double x = inEmbedding.getDouble("locationx");
 		Double y = inEmbedding.getDouble("locationy");
 		Double w = inEmbedding.getDouble("locationw");

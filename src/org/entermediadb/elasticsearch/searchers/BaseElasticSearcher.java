@@ -403,8 +403,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			{
 				search.setFetchSource(null, "description");
 			}
-			search.setExplain(true);  //Reemove this
-
 			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, inQuery.getHitsPerPage());
 			hits.setSearcherManager(getSearcherManager());
 			hits.setIndexId(getIndexId());
