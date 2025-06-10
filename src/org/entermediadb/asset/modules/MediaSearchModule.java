@@ -94,6 +94,7 @@ public class MediaSearchModule extends BaseMediaModule
 		hits.getSearchQuery().setProperty("selectedcategory", category.getId());
 	}
 	
+	
 	public void loadHitsCategory(WebPageRequest inReq) throws Exception
 	{
 		//Look for a hitsessionid and make sure this category is in there
@@ -109,6 +110,50 @@ public class MediaSearchModule extends BaseMediaModule
 		
 		inReq.setRequestParameter("nodeID", catid);
 
+	}
+	
+	
+	public void searchCategoryTree(WebPageRequest inPageRequest) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		Category category = archive.getCategory(inPageRequest);
+
+		HitTracker all = null;
+		SearchQuery search = archive.getCategorySearcher().addStandardSearchTerms(inPageRequest);
+		if(search == null) {
+			search = archive.getCategorySearcher().createSearchQuery();
+		}
+		
+		if (category != null)
+		{
+			search.addExact("parents", category.getId());
+		}
+		
+		String	sort = inPageRequest.getRequestParameter("categorysortby");
+		if (sort == null)
+		{
+			sort = "categorypathUp";
+		}
+		search.addSortBy(sort);
+		
+		if( search.getHitsName() == null)
+		{
+			String hitsname = inPageRequest.getRequestParameter("hitsname");
+			if(hitsname == null)
+			{
+				hitsname = inPageRequest.findValue("hitsname");
+			}
+			if (hitsname != null )
+			{
+				search.setHitsName(hitsname);
+			}
+		}
+		
+		all = archive.getCategorySearcher().cachedSearch(inPageRequest, search);
+
+		inPageRequest.putPageValue("hits",all);
+		inPageRequest.putPageValue("category",category);
+		inPageRequest.putPageValue("selectedcategory",category);
 	}
 	
 	
@@ -199,6 +244,9 @@ public class MediaSearchModule extends BaseMediaModule
 		}
 
 	}
+	
+	
+	
 	/**
 	 * not used
 	 * @param inPageRequest
