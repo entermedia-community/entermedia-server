@@ -138,7 +138,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 			if( "image".equalsIgnoreCase(type) && inAsset.getFileFormat()!= null)
 			{
-				//long filesize = inAsset.getLong("filesize");
+				long filesize = inAsset.getLong("filesize");
 				
 				long imagew = inAsset.getLong("width");
 				long imageh = inAsset.getLong("height");
@@ -148,25 +148,25 @@ public class FaceProfileManager implements CatalogEnabled
 					return false;
 				}
 				
-//				Boolean useoriginal = true;
-//				if (filesize > 6000000)
-//				{
-//					useoriginal = false;
-//				}
-//				else if (!inAsset.getFileFormat().equals("jpg") && !inAsset.getFileFormat().equals("jpeg")) 
-//				{
-//					useoriginal = false;
-//				}
-//				else if ( imagesize > 36000000) {   //4x 3000x0000 MAX: 178956970
-//					//Default Copreface imagesize limit
-//					useoriginal = false;
-//				}
-//				else {
-//					String colorpsace = inAsset.get("colorspace");
-//					if("4".equals(colorpsace) || "5".equals(colorpsace)) {
-//						useoriginal = false;
-//					}
-//				}
+				Boolean useoriginal = true;
+				if (filesize > 6000000)
+				{
+					useoriginal = false;
+				}
+				else if (!inAsset.getFileFormat().equals("jpg") && !inAsset.getFileFormat().equals("jpeg")) 
+				{
+					useoriginal = false;
+				}
+				else if ( imagesize > 36000000) {   //4x 3000x0000 MAX: 178956970
+					//Default Copreface imagesize limit
+					useoriginal = false;
+				}
+				else {
+					String colorpsace = inAsset.get("colorspace");
+					if("4".equals(colorpsace) || "5".equals(colorpsace)) {
+						useoriginal = false;
+					}
+				}
 				
 //				ContentItem input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.webp");
 //				if( !input.exists() )
@@ -178,17 +178,21 @@ public class FaceProfileManager implements CatalogEnabled
 //					log.error("No such image"); //TODO: Search within videos
 //					return false;
 //				}
-				ContentItem input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.jpg");
+				
+				//Send orginal JPEG directly if they are small?
+				ContentItem input = null;
+				if( useoriginal )
+				{
+					input = getMediaArchive().getOriginalContent(inAsset);
+				}
+				else
+				{
+					String filename = getMediaArchive().generatedOutputName(inAsset,"image3000x3000");
+					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/" + filename);
+				}
 				if( !input.exists() )
 				{
-					if( "jpeg".equals( inAsset.getFileFormat() ) )
-					{
-						input = getMediaArchive().getOriginalContent(inAsset);
-					}
-					else
-					{
-						throw new OpenEditException("No JPG thumbnail found");
-					}
+					throw new OpenEditException("Input not available " + input.getPath());
 				}
 				List<Map> json = findFaces(inAsset, input);
 				if(json == null) {
