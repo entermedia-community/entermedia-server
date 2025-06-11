@@ -163,8 +163,13 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 				else {
 					String colorpsace = inAsset.get("colorspace");
-					if("4".equals(colorpsace) || "5".equals(colorpsace)) {
+					if("4".equals(colorpsace) || "5".equals(colorpsace)) 
+					{
 						useoriginal = false;
+					}
+					else if( inAsset.isPropertyTrue("hasthumbnail") )
+					{
+						useoriginal = false;  //deepface has a bug that it uses the image thumbnail for sizing
 					}
 				}
 				
@@ -401,7 +406,7 @@ public class FaceProfileManager implements CatalogEnabled
 			addedface.setValue("assetid",inAsset);
 
 			int assetwidth = getMediaArchive().getRealImageWidth(inAsset); 
-			int assetheight = getMediaArchive().getRealImageWidth(inAsset); 
+			int assetheight = getMediaArchive().getRealImageHeight(inAsset); 
 			addedface.setValue("originalwidth",assetwidth);
 			addedface.setValue("originalheight",assetheight);
 			
