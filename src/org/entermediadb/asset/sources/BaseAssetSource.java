@@ -158,6 +158,10 @@ public abstract class BaseAssetSource implements AssetSource
 			return false;
 		}
 		String name = getFolderPath();
+		if (name == null)
+		{
+			return false;
+		}
 		if(inAsset.getSourcePath() == null) {
 			return false;
 		}
