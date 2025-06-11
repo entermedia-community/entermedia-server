@@ -2788,18 +2788,28 @@ public class MediaArchive implements CatalogEnabled
 			{
 				cdnprefix = "";
 			}
-		}		
+		}
 		
-		//This is the most useful option. It allows smart creation of any size and optional downloading
-		String downloadroot = "/services/module/asset/generate";
+		String downloadroot = getMediaDbId() + "/services/module/asset";
+		
+		
+		if (inPreset.getId().equals("0"))
+		{
+			String finalink = cdnprefix + "/" + downloadroot + "/downloads/originals/" + asLinkToOriginal(inAsset);
+			finalink = URLUtilities.urlEscape(finalink);
+			return finalink;
+		}
+		
+
+		
 		
 		String sourcepath = inAsset.getSourcePath();
 		
 		String exportedname = asExportFileName(inAsset, inPreset);
 		String generatedfilename = inPreset.get("generatedoutputfile");
-		String finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "/" + sourcepath + "/" + generatedfilename + "/" + exportedname;
-		finalroot = URLUtilities.urlEscape(finalroot);
-		return finalroot;
+		String finalink = cdnprefix + "/" + downloadroot + "/generate/" + sourcepath + "/" + generatedfilename + "/" + exportedname;
+		finalink = URLUtilities.urlEscape(finalink);
+		return finalink;
 	}
 	
 	public String asLinkToPreview(String inassetId, String inGeneratedoutputfile) 
