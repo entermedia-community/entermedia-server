@@ -48,7 +48,13 @@
   
   <property id="facedata" index="true" datatype="stringvector" indextype="not_analyzed" viewtype="text" stored="true">
     <name>
-      <language id="en"><![CDATA[Vector]]></language>
+      <language id="en"><![CDATA[Face Data]]></language>
+    </name>
+  </property>
+
+  <property id="facedatajson" index="true" indextype="not_analyzed" stored="true">
+    <name>
+      <language id="en"><![CDATA[Face Data JSON]]></language>
     </name>
   </property>
   

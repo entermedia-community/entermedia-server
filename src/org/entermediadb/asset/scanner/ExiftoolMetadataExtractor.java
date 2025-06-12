@@ -445,6 +445,10 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						inAsset.addKeyword(kword.trim());
 					}
 				}
+				else if ("ThumbnailImage".equals(key))
+				{
+					inAsset.setProperty("hasthumbnail", "true");
+				}
 				else if ("VideoFrameRate".equals(key))
 				{
 					inAsset.setProperty("framerate", roundFrameRate(value));

@@ -2,8 +2,6 @@
   $.fn.emDialog = function (onsuccess = null, always = null) {
     var initiator = $(this);
 
-    var width = initiator.data("width");
-    var maxwidth = initiator.data("maxwidth");
     var id = initiator.data("dialogid");
     if (!id) {
       id = "modals";
@@ -108,10 +106,34 @@
           onsuccessFunc();
         }
 
-        if (width) {
-          width = Math.min(width, $(window).width() - 16);
-          $(".modal-dialog", modaldialog).css("min-width", width + "px");
+        var width = initiator.data("dialogwidth");
+        if (!width) {
+          width = initiator.data("width");
         }
+
+        if (width) {
+          if (typeof width === "string") {
+            if (width.endsWith("%")) {
+              width = $(window).width() * (parseInt(width) / 100);
+            } else if (width.endsWith("px")) {
+              width = parseInt(width);
+            } else if (["sm", "md", "lg", "xl"].includes(width)) {
+              var sizes = {
+                sm: 300,
+                md: 500,
+                lg: 800,
+                xl: 1200,
+              };
+              width = sizes[width];
+            }
+          }
+          if (typeof width === "number") {
+            width = Math.min(width, $(window).width() - 16);
+            $(".modal-dialog", modaldialog).css("min-width", width + "px");
+          }
+        }
+
+        var maxwidth = initiator.data("maxwidth");
         if (maxwidth) {
           $(".modal-dialog", modaldialog).css("max-width", maxwidth + "px");
         }

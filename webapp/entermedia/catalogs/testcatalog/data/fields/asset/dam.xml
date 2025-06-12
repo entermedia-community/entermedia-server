@@ -912,5 +912,11 @@
     </name> 
   </property> 
 
+  <property id="hasthumbnail" datatype="boolean" index="true" stored="true" type="boolean" externalid="ThumbnailImage">
+    <name> 
+      <language id="en"><![CDATA[Has Thumbnail]]></language>  
+    </name> 
+  </property>  
+  
   
 </page>
