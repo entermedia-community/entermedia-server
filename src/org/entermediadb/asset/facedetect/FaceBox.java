@@ -47,13 +47,13 @@ public class FaceBox
 		fieldTimecodeStartSeconds = inTimecodeStartSeconds;
 	}
 	protected Data fieldPerson;
-	protected List<Double> fieldBoxArea;
+	protected List<Integer> fieldBoxArea;
 	
-	public List<Double> getBoxArea()
+	public List<Integer> getBoxArea()
 	{
 		return fieldBoxArea;
 	}
-	public void setBoxArea(List<Double> inBoxArea)
+	public void setBoxArea(List<Integer> inBoxArea)
 	{
 		fieldBoxArea = inBoxArea;
 	}
