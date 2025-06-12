@@ -1,11 +1,14 @@
 package org.entermediadb.asset.facedetect;
 
 import java.awt.Dimension;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -1342,21 +1345,38 @@ public class FaceProfileManager implements CatalogEnabled
     	
     	try
     	{
-	        byte[] data = is.readNBytes(30);
-	        String header = new String(Arrays.copyOfRange(data, 0, 4));
+    		DataInputStream dis = new DataInputStream(new BufferedInputStream(is));
+    		
+    		byte[] header = new byte[12];
+            dis.readFully(header);
 	        
-	        if (header.equals("RIFF")) {
-	        	//if( data[15] == 'X' )
-	        	{
-		            int width = 1 + get24bit(data, 24);
-		            int height = 1 + get24bit(data, 27);
-		
-		            if ((long) width * height <= 4294967296L)
-		            {
-		            	return new Dimension(width, height);
-		            }
-	        	}
+	        if (!new String(header, 0, 4).equals("RIFF") || !new String(header, 8, 4).equals("WEBP")) 
+	        {
+	        	return null;
+	        }	        	
+	        
+	        
+	        while (true) {
+	            byte[] chunkHeader = new byte[8];
+	            int read = dis.read(chunkHeader);
+	            if (read < 8) break;
+
+	            String chunkType = new String(chunkHeader, 0, 4);
+	            int chunkSize = ByteBuffer.wrap(chunkHeader, 4, 4).order(ByteOrder.LITTLE_ENDIAN).getInt();
+
+	            byte[] chunkData = new byte[chunkSize + (chunkSize % 2)]; // padding if odd
+	            dis.readFully(chunkData);
+
+	            switch (chunkType) {
+	                case "VP8X":
+	                    return parseVP8X(chunkData);
+	                case "VP8 ":
+	                    return parseVP8(chunkData);
+	                case "VP8L":
+	                    return parseVP8L(chunkData);
+	            }
 	        }
+	        
 	        return null;
     	}
     	finally
@@ -1364,9 +1384,29 @@ public class FaceProfileManager implements CatalogEnabled
     		FileUtils.safeClose(is);
     	}
     }
+    
+    private static java.awt.Dimension parseVP8X(byte[] data) {
+        ByteBuffer buffer = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
+        buffer.position(4);
+        int width = ((buffer.get() & 0xFF) | ((buffer.get() & 0xFF) << 8) | ((buffer.get() & 0xFF) << 16)) + 1;
+        int height = ((buffer.get() & 0xFF) | ((buffer.get() & 0xFF) << 8) | ((buffer.get() & 0xFF) << 16)) + 1;
+        return new Dimension(width, height);
+    }
 
-    private static int get24bit(byte[] data, int index) {
-        return data[index] & 0xFF | (data[index + 1] & 0xFF) << 8 | (data[index + 2] & 0xFF) << 16;
+    private static java.awt.Dimension parseVP8(byte[] data) { 
+        int width = ((data[6] & 0xFF) | ((data[7] & 0xFF) << 8)) & 0x3FFF;
+        int height = ((data[8] & 0xFF) | ((data[9] & 0xFF) << 8)) & 0x3FFF;
+        return new Dimension(width, height);
+    }
+
+    private static java.awt.Dimension parseVP8L(byte[] data) { 
+        int b0 = data[1] & 0xFF;
+        int b1 = data[2] & 0xFF;
+        int b2 = data[3] & 0xFF;
+        int b3 = data[4] & 0xFF;
+        int width = ((b1 & 0x3F) << 8 | b0) + 1;
+        int height = (((b3 & 0x0F) << 10) | (b2 << 2) | ((b1 & 0xC0) >> 6)) + 1;
+        return new Dimension(width, height);
     }
 
 	public Collection<FaceBox> viewAllRelatedFaces(String inFaceembeddedid)
