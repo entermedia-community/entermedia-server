@@ -216,7 +216,7 @@ public class FaceProfileModule extends BaseMediaModule
 		String faceembeddedid = inReq.getRequestParameter("faceembeddingid");
 		FaceProfileManager manager = archive.getFaceProfileManager();
 		
-		Collection<FaceBox> boxes = manager.searchForSameFace(faceembeddedid);
+		Collection<FaceBox> boxes = manager.viewAllRelatedFaces(faceembeddedid);
 		
 		if( boxes == null)
 		{

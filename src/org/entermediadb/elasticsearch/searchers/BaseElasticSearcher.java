@@ -446,7 +446,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					
 					JSONObject function_score = new JSONObject();
 					function_score.put("boost_mode", "replace");
-					function_score.put("min_score", .6D);
+					Double min = (Double)term.getParameters().getValue("min_score");
+					function_score.put("min_score", min);  
 					
 					query.put("function_score",function_score);
 					
@@ -459,7 +460,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					
 					JSONObject params = new JSONObject();
 					params.put("cosine", true);
-					params.put("field", "facedata");
+					params.put("field",  term.getDetail().getId() );
 					//double[] d = { -0.09217305481433868d, 0.010635560378432274d, -0.02878434956073761d, 0.06988169997930527d};
 					List<Double> list = Arrays.stream(d).boxed().collect(Collectors.toList());
 					JSONArray vector = new JSONArray();
