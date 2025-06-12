@@ -423,7 +423,7 @@ public class FaceProfileManager implements CatalogEnabled
 			{
 				Data existing = (Data) iterator2.next();
 				String otherencoded = existing.get("facedatajson"); //Manually done because Search did not work
-				if( otherencoded.equals(jsontext) )
+				if(otherencoded != null && otherencoded.equals(jsontext) )
 				{
 					addedface = existing;
 					break;
