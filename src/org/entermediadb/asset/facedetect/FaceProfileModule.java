@@ -186,10 +186,10 @@ public class FaceProfileModule extends BaseMediaModule
 			Number height = (Number)locationarray.get("height");
 			Double h = height.doubleValue() * scale;
 			
-			newfacedata.put("locationx",x);
-			newfacedata.put("locationy",y);
-			newfacedata.put("locationw",w);
-			newfacedata.put("locationh",h);
+			newfacedata.put("locationx",Math.round( x));
+			newfacedata.put("locationy",Math.round( y));
+			newfacedata.put("locationw",Math.round( w));
+			newfacedata.put("locationh",Math.round( h));
 				
 			newfacedata.put("inputwidth",inputw);
 			newfacedata.put("inputheight",inputh);

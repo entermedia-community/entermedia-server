@@ -75,11 +75,6 @@
 	        <language id="en"><![CDATA[Face Data Time Code]]></language>  
 	      </name> 
 		</property>  
-        <property id="timecodelength" index="true" viewtype="timelength" stored="true" datatype="double" searchcomponent="numbersearch"   editable="false" type="double"> 
-	      <name> 
-	        <language id="en"><![CDATA[Face Data Length]]></language>  
-	      </name> 
-		</property>  
 
 		  <property id="locationx" datatype="number" index="true" stored="true" > 
 	    <name> 

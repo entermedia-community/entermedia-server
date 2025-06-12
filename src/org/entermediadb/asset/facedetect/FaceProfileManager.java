@@ -292,7 +292,7 @@ public class FaceProfileManager implements CatalogEnabled
 			else
 			{
 				List<Map> json = findFaces(inAsset, item);	
-				Collection<Data> moreprofiles = makeDataForEachFace(faceembeddingsearcher,inAsset,block.getStartOffset(),item,json);
+				Collection<Data> moreprofiles = makeDataForEachFace(faceembeddingsearcher,inAsset,block.getSeconds(),item,json);
 				if( moreprofiles != null)
 				{
 					allfacesinvideo.addAll(moreprofiles);
@@ -435,7 +435,7 @@ public class FaceProfileManager implements CatalogEnabled
         }
     ]
 	 * */
-	protected List<Data> makeDataForEachFace(Searcher facedb, Asset inAsset,long timecodestart, ContentItem inInput, List<Map> inJsonOfFaces) throws Exception
+	protected List<Data> makeDataForEachFace(Searcher facedb, Asset inAsset,double timecodestart, ContentItem inInput, List<Map> inJsonOfFaces) throws Exception
 	{
 		if( inJsonOfFaces.isEmpty())
 		{
@@ -457,13 +457,7 @@ public class FaceProfileManager implements CatalogEnabled
 			if(size == null) 
 			{
 				//This is a bug... That is not the real image size
-				inputw = getMediaArchive().getRealImageWidth(inAsset); 
-				inputh = getMediaArchive().getRealImageHeight(inAsset); 
-//
-//				if(size == null) 
-//				{
-//					throw new OpenEditException("Can't get image size from Webp: " + inInput.getPath());
-//				}
+				throw new OpenEditException("Can't get image size from Webp: " + inInput.getPath());
 			}
 			else
 			{
@@ -481,7 +475,8 @@ public class FaceProfileManager implements CatalogEnabled
         int minfacesize = 200; //was 450
 		
 		String minumfaceimagesize = getMediaArchive().getCatalogSettingValue("facedetect_minimum_face_size");
-		if(minumfaceimagesize != null) {
+		if(minumfaceimagesize != null) 
+		{
 			minfacesize = Integer.parseInt(minumfaceimagesize);
 		}
 		if (inJsonOfFaces.size() == 1) {
@@ -501,16 +496,15 @@ public class FaceProfileManager implements CatalogEnabled
 			Map facejson = (Map) iterator.next();  //Each person in the picrture
 
 			ValuesMap box = new ValuesMap((Map)facejson.get("facial_area"));
-		
 //			
-//			Object left = box.get("left_eye");
-//			Object right = box.get("right_eye");
-//			
-//			if( left == null && right == null)
-//			{
-//				log.info("Skipping, Eyes are required  " + inAsset.getName() );
-//				continue;
-//			}
+			Object left = box.get("left_eye");
+			Object right = box.get("right_eye");
+			
+			if( left == null || right == null)
+			{
+				log.info("Skipping, Eyes are required  " + inAsset.getName() );
+				continue;
+			}
 			Double confidence = (Double)facejson.get("face_confidence");  //This is useless
 			if( confidence < .94D)
 			{
@@ -536,12 +530,12 @@ public class FaceProfileManager implements CatalogEnabled
 
 			String jsontext = collection.toJSONString();
 			
-			Data addedface = null;
+			MultiValued addedface = null;
 			
 			Collection others = facedb.query().exact("assetid",inAsset).search();
 			for (Iterator iterator2 = others.iterator(); iterator2.hasNext();)
 			{
-				Data existing = (Data) iterator2.next();
+				MultiValued existing = (MultiValued) iterator2.next();
 				String otherencoded = existing.get("facedatajson"); //Manually done because Search did not work
 				if(otherencoded != null && otherencoded.equals(jsontext) )
 				{
@@ -551,7 +545,7 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 			if( addedface == null)
 			{
-				addedface = facedb.createNewData(); //TODIO: Search by Vector first so we dont lose assignments
+				addedface = (MultiValued)facedb.createNewData(); //TODIO: Search by Vector first so we dont lose assignments
 			}
 			addedface.setValue("face_confidence", confidence );
 			addedface.setValue("facedata",encoded);
@@ -603,8 +597,13 @@ public class FaceProfileManager implements CatalogEnabled
 		return tosave;
 	}
 
-	protected Data findSimilar(Searcher facedb, Data inChild, Asset inAsset, HitTracker inResults)
+	protected Data findSimilar(Searcher facedb, MultiValued inFaceEmbbed, Asset inAsset, HitTracker inResults)
 	{
+		Integer sourceh = inFaceEmbbed.getInt("locationh");
+		if( sourceh > 300 )  //Dont link to small image no matter what
+		{
+			return null;
+		}
 		for (Iterator iterator = inResults.iterator(); iterator.hasNext();)
 		{
 			MultiValued hit = (MultiValued) iterator.next();
@@ -612,13 +611,13 @@ public class FaceProfileManager implements CatalogEnabled
 			if( assetid == null || !assetid.equals(inAsset.getId()) )
 			{
 				//save this as the parent
-				Double score = hit.getDouble("_score");
-//				if( score != null && score >  210d)
-//				{
-					inChild.setValue("parentscore", score);
+				Integer h = hit.getInt("locationh");
+				if( h > 300 )  //Dont link to small image no matter what
+				{
+					Double score = hit.getDouble("_score");
+					inFaceEmbbed.setValue("parentscore", score);
 					return hit;
-//				}
-//				return null;
+				}
 			}
 		}
 		//These are scored only if they have the right number and type. doubles

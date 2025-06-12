@@ -1978,15 +1978,25 @@ public class MediaArchive implements CatalogEnabled
 		return length.toString();
 	}
 
-	public String formatMinutesAndSeconds(String inSeconds)
+	public String formatMinutesAndSeconds(Object inSeconds)
 	{
-		if (inSeconds == null || inSeconds.trim().length() == 0)
+		String text = null;
+		if( inSeconds instanceof Double )
+		{
+			text = inSeconds.toString();
+		}
+		else
+		{
+			text = (String)inSeconds;
+		}
+		
+		if (text == null || text.trim().length() == 0)
 			return ":00";
 		StringBuilder sb = new StringBuilder();
 		int allSeconds = 0;
 		try
 		{
-			float secs = Float.parseFloat(inSeconds);
+			float secs = Float.parseFloat(text);
 			allSeconds = new Float(secs).intValue();
 		}
 		catch (NumberFormatException e)
@@ -2008,7 +2018,12 @@ public class MediaArchive implements CatalogEnabled
 		return sb.toString();
 	}
 	
-	public String formatMilliseconds(String inMilliseconds) {
+	public String formatMilliseconds(String inMilliseconds) 
+	{
+		if( inMilliseconds == null)
+		{
+			return null;
+		}
 		Double seconds = org.openedit.util.MathUtils.divide(Long.parseLong(inMilliseconds), 1000);
 		return formatMinutesAndSeconds(seconds.toString());
 	}
@@ -2915,6 +2930,26 @@ public class MediaArchive implements CatalogEnabled
 		return finalroot;
 	}
 
+	public String asLinkToGeneratedOffset(Data inAsset, String inGeneratedoutputfile, double offset)
+	{
+		if (inAsset == null)
+		{
+			return null;
+		}
+		
+		String usefile = generatedOutputName(inAsset, inGeneratedoutputfile);
+
+		String filename = PathUtilities.extractPageName(usefile);
+		String ext = PathUtilities.extractPageType(usefile);
+		filename = filename + "offset" + offset + "." + ext;
+		
+		//String cdnprefix = getCatalogSettingValue("cdn_prefix");
+		String sourcepath = inAsset.getSourcePath();
+		String downloadroot = "/services/module/asset/generated/";  //Will not create anything and is fast
+		String	finalroot =  "/" + getMediaDbId() + downloadroot + sourcepath + "/" + filename;
+		finalroot = URLUtilities.urlEscape(finalroot);
+		return finalroot;
+	}
 	
 
 	public boolean isCatalogSettingTrue(String string)
