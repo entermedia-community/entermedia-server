@@ -57,6 +57,12 @@
       <language id="en"><![CDATA[Face Data JSON]]></language>
     </name>
   </property>
+
+  <property id="facedatadoubles" index="false" indextype="not_analyzed" stored="false">
+    <name>
+      <language id="en"><![CDATA[Face Data Doubles]]></language>
+    </name>
+  </property>
   
   <property id="entityperson" index="true" stored="true" editable="true" keyword="true" datatype="list" rendertype="entity">
 	  <name>

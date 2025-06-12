@@ -47,6 +47,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.repository.ContentItem;
+import org.openedit.util.FileUtils;
 import org.openedit.util.MathUtils;
 import org.openedit.util.OutputFiller;
 
@@ -133,7 +134,7 @@ public class FaceProfileManager implements CatalogEnabled
 		
 			//If its a video then generate all the images and scan them
 			
-			List<Data> tosave = new ArrayList();
+			List<Data> foundfaces = new ArrayList();
 			Searcher faceembeddingsearcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
 
 			if( "image".equalsIgnoreCase(type) && inAsset.getFileFormat()!= null)
@@ -204,60 +205,20 @@ public class FaceProfileManager implements CatalogEnabled
 					return 0;
 				}
 				Collection<Data> moreprofiles = makeDataForEachFace(faceembeddingsearcher,inAsset,0L,input,json);
-				tosave.addAll(moreprofiles);
+				if( moreprofiles != null)
+				{
+					saveNewFacesWithParents(moreprofiles);
+				}
+				
+				foundfaces.addAll(moreprofiles);
 			}
 			else if( "video".equalsIgnoreCase(type) )
 			{
 				//Look over them and save the timecode with it
-				Double videolength = (Double)inAsset.getDouble("length");
-				if( videolength == null)
-				{
-					return 0;
-				}
-				Timeline timeline = new Timeline();
-				long mili = Math.round( videolength*1000d );
-				timeline.setLength(mili);
-				timeline.setPxWidth(1200); //This divides in 10 or 20
-				
-				if(videolength < 20) {
-					timeline.setTotalTickCount(10);
-				}
-				
-				Collection<Block> ticks = timeline.getTicks();
-				
-				List<Map> continuelooking = null;
-				
-				for (Iterator iterator = ticks.iterator(); iterator.hasNext();)
-				{
-					Block block = (Block) iterator.next();
-					if( block.getSeconds() >= videolength)
-					{
-						break;
-					}
-					//ContentItem input = inArchive.getContent("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1500x1500.jpg");
-					//Convert quickly
-					ContentItem item = generateInputFile(inAsset,block);
-					
-					//String imageurl = getMediaArchive().asLinkToGenerated(inAsset, item.getName());  //Offset in name?
-
-					
-					if (item == null) {
-						continue;
-					}
-					if( !item.exists() )
-					{
-						//probblem
-						log.info("Faceprofile scan, no thumbnail found for assetid: " +inAsset.getId() + " "+ inAsset.getSourcePath());
-					}
-					else
-					{
-						List<Map> json = findFaces(inAsset, item);	
-						Collection<Data> moreprofiles = makeDataForEachFace(faceembeddingsearcher,inAsset,block.getStartOffset(),item,json);
-						tosave.addAll(moreprofiles);
-						
-					}
-				}
-				//faceprofiles = combineVideoMatches(faceprofiles,mili);
+				Collection<Data> allfacesinvideo = findAllFacesInVideo(inAsset);
+				Collection<Data> moreprofiles = combineVideoMatches(allfacesinvideo);
+				saveNewFacesWithParents(moreprofiles);
+				foundfaces.addAll(moreprofiles);
 //				updateEndTimes(continuelooking,block.getStartOffset()); //Brings them up to date
 //				try
 //				{
@@ -269,11 +230,11 @@ public class FaceProfileManager implements CatalogEnabled
 //					//ignoring...
 //				}
 			}
-			boolean hasfaces = !tosave.isEmpty();
+			boolean hasfaces = !foundfaces.isEmpty();
 			inAsset.setValue("facehasprofile",hasfaces);
-			log.info("Faceprofile found: "+tosave.size());
+			log.info("Faceprofile found: "+foundfaces.size());
 			//faceembeddingsearcher.saveAllData(tosave,null);
-			return tosave.size();
+			return foundfaces.size();
 		}
 		catch( Throwable ex)
 		{
@@ -286,7 +247,164 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 		
 	}
+
+	protected Collection<Data> findAllFacesInVideo(Asset inAsset) throws Exception
+	{
+		Searcher faceembeddingsearcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
+
+		Double videolength = (Double)inAsset.getDouble("length");
+		if( videolength == null)
+		{
+			//Log it
+			throw new OpenEditException("Invalid Video: " + inAsset.getName());
+		}
+		Timeline timeline = new Timeline();
+		long mili = Math.round( videolength*1000d );
+		timeline.setLength(mili);
+		timeline.setPxWidth(1200); //This divides in 10 or 20
+		
+		if(videolength < 20) {
+			timeline.setTotalTickCount(10);
+		}
+		Collection<Block> ticks = timeline.getTicks();
+		List<Map> continuelooking = null;
+		
+		Collection<Data> allfacesinvideo = new ArrayList();
+		for (Iterator iterator = ticks.iterator(); iterator.hasNext();)
+		{
+			Block block = (Block) iterator.next();
+			if( block.getSeconds() >= videolength)
+			{
+				break;
+			}
+			//ContentItem input = inArchive.getContent("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1500x1500.jpg");
+			//Convert quickly
+			ContentItem item = generateInputFile(inAsset,block);
+			if (item == null) {
+				continue;
+			}
+			if( !item.exists() )
+			{
+				//probblem
+				log.info("Faceprofile scan, no thumbnail found for assetid: " +inAsset.getId() + " "+ inAsset.getSourcePath());
+			}
+			else
+			{
+				List<Map> json = findFaces(inAsset, item);	
+				Collection<Data> moreprofiles = makeDataForEachFace(faceembeddingsearcher,inAsset,block.getStartOffset(),item,json);
+				if( moreprofiles != null)
+				{
+					allfacesinvideo.addAll(moreprofiles);
+				}
+			}
+		}
+		return allfacesinvideo;
+	}
+
+	private Collection<Data> combineVideoMatches(Collection<Data> inAllfacesinvideo)
+	{
+		Collection<Data> uniquefaces = new ArrayList();
+
+		Collection<Data> remainingfaces = new ArrayList(inAllfacesinvideo);
+		
+		for (Iterator iterator = inAllfacesinvideo.iterator(); iterator.hasNext();)
+		{
+			Data embedded = (Data) iterator.next();
+			
+			if( !remainingfaces.contains(embedded) ) //Might already got dropped
+			{
+				continue;
+			}
+			else
+			{
+				remainingfaces.remove(embedded);
+				uniquefaces.add(embedded);
+			}
+			//Add it back after removing all the duplicated
+			double[] facedoubles = (double[])embedded.getValue("facedatadoubles");
+			
+			Collection<Data> remainingfacestmp = new ArrayList(remainingfaces);
+			for (Iterator iterator2 = remainingfacestmp.iterator(); iterator2.hasNext();)
+			{
+				Data otherface = (Data) iterator2.next();
+				double[] othervalues = (double[])otherface.getValue("facedatadoubles");
+				boolean same = compareVectors(facedoubles, othervalues, getVectorScoreLimit() );
+				if( same )
+				{
+					remainingfaces.remove(otherface);
+				}
+			}			
+		}
+		return uniquefaces;
+	}
+
+	private double getVectorScoreLimit()
+	{
+		double similaritycheck = .6D;
+		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
+		if( value != null)
+		{
+			similaritycheck = Double.parseDouble(value);
+		}
+		return similaritycheck;
+	}
+
+	protected void saveNewFacesWithParents(Collection<Data> moreprofiles)
+	{
+		for (Iterator iterator = moreprofiles.iterator(); iterator.hasNext();)
+		{
+			Data addedface = (Data) iterator.next();
+			Collection parentids = new ArrayList();
+			Data startdata = addedface; 
+			getMediaArchive().saveData("faceembedding", addedface);
+			while( startdata != null)
+			{
+				parentids.add(startdata.getId());
+				String parent = startdata.get("parentembeddingid");
+				startdata = getMediaArchive().getCachedData("faceembedding", parent);
+			}
+			addedface.setValue("parentids",parentids);
+			
+			getMediaArchive().saveData("faceembedding", addedface);
+		}
+	}
 	
+	public boolean compareVectors(double[] inputVector, double[] inCompareVector, double cutoff)
+	{
+		//Magnitude
+		double queryVectorNorm = 0.0;
+        // compute query inputVector norm once
+        for (double v : inputVector) {
+            queryVectorNorm += v * v;
+        }
+        double magnitude =  Math.sqrt(queryVectorNorm);
+		
+        double finalscore = 0d;
+        //Compare
+        double docVectorNorm = 0.0f;
+        double score = 0;
+        for (int i = 0; i < inputVector.length; i++) 
+        {
+            // doc inputVector norm
+            docVectorNorm += inCompareVector[i]*inCompareVector[i];  //This is cosine stuff
+            // dot product
+            score += inCompareVector[i] * inputVector[i];
+        }
+        // cosine similarity score
+        if (docVectorNorm == 0 || magnitude == 0)
+        {
+        	finalscore = 0f;
+        }
+        else 
+        {
+        	finalscore = score / (Math.sqrt(docVectorNorm) * magnitude);
+        }
+        if( finalscore < cutoff )
+        {
+        	return false;
+        }
+        return true;
+	}
 	/**
 	 * 
 	 * { 
@@ -329,14 +447,6 @@ public class FaceProfileManager implements CatalogEnabled
 			facedetect_detect_confidence = Double.parseDouble(detectvalue);
 		}
 
-		double similaritycheck = .99D;
-//		double boxprobability = .99D; 
-		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
-		if( value != null)
-		{
-			similaritycheck = Double.parseDouble(value);
-		}
-		
 		int inputw = 0;
 		int inputh = 0;
 		
@@ -345,11 +455,20 @@ public class FaceProfileManager implements CatalogEnabled
 			Dimension size = getImageDimensionWebP(inInput.getInputStream());
 			if(size == null) 
 			{
-				log.info("Can't get image size from Webp: " + inInput.getPath());
-				return null;
+				//This is a bug... That is not the real image size
+				inputw = getMediaArchive().getRealImageWidth(inAsset); 
+				inputh = getMediaArchive().getRealImageHeight(inAsset); 
+//
+//				if(size == null) 
+//				{
+//					throw new OpenEditException("Can't get image size from Webp: " + inInput.getPath());
+//				}
 			}
+			else
+			{
 				inputw = (int)Math.round( size.getWidth() );
 				inputh = (int)Math.round( size.getHeight() );
+			}
 		}	
 		else
 		{
@@ -435,7 +554,8 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 			addedface.setValue("face_confidence", confidence );
 			addedface.setValue("facedata",encoded);
-			addedface.setValue("facedatajson",jsontext);
+			addedface.setValue("facedatajson",jsontext); 
+			addedface.setValue("facedatadoubles",vector); //Not saved to index
 			addedface.setValue("assetid",inAsset);
 
 			int assetwidth = getMediaArchive().getRealImageWidth(inAsset); 
@@ -459,7 +579,7 @@ public class FaceProfileManager implements CatalogEnabled
 			//TODO: Make sure this is not already in there. For debug purposes
 			double[] embedding = collectDoubles((Collection)facejson.get("embedding"));
 			SearchQuery query = facedb.createSearchQuery();
-			query.addVector("facedata", embedding, .6D );
+			query.addVector("facedata", embedding, getVectorScoreLimit() );
 			HitTracker results = facedb.search(query); //Only search Limited list
 			//if I find myself then dont save again
 			
@@ -467,7 +587,7 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			if( !results.isEmpty() )
 			{
-				Data similarembedding = findSimilar(facedb, addedface, inAsset, results, similaritycheck); //Pass in how similar
+				Data similarembedding = findSimilar(facedb, addedface, inAsset, results); //Pass in how similar
 				if( similarembedding  != null)
 				{
 					addedface.setValue("parentembeddingid",similarembedding.getId());
@@ -477,24 +597,12 @@ public class FaceProfileManager implements CatalogEnabled
 					log.info("Conected between child " + inAsset.getName() + " and parent " + parentasset.getName() );
 				}
 			}
-			Collection parentids = new ArrayList();
-			Data startdata = addedface; 
-			getMediaArchive().saveData("faceembedding", addedface);
-			while( startdata != null)
-			{
-				parentids.add(startdata.getId());
-				String parent = startdata.get("parentembeddingid");
-				startdata = getMediaArchive().getCachedData("faceembedding", parent);
-			}
-			addedface.setValue("parentids",parentids);
-			
-			getMediaArchive().saveData("faceembedding", addedface);
 			tosave.add(addedface);
 		}
 		return tosave;
 	}
 
-	protected Data findSimilar(Searcher facedb, Data inChild, Asset inAsset, HitTracker inResults, double similaritycheck)
+	protected Data findSimilar(Searcher facedb, Data inChild, Asset inAsset, HitTracker inResults)
 	{
 		for (Iterator iterator = inResults.iterator(); iterator.hasNext();)
 		{
@@ -620,14 +728,14 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			MultiValued embedding = (MultiValued) iterator.next(); //One person
 			
-			Data entityperson = loadPersonForEmbedding(embedding);
+			Data entityperson = loadPersonOfEmbedding(embedding);
 			FaceBox box = makeBox(embedding, entityperson);
 			boxes.add(box);
 		}
 		return boxes;	
 	}
 
-	public Data loadPersonForEmbedding(MultiValued embedding)
+	public Data loadPersonOfEmbedding(MultiValued embedding)
 	{
 		Searcher searcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
 
@@ -656,35 +764,20 @@ public class FaceProfileManager implements CatalogEnabled
 		Data entityperson = getMediaArchive().getCachedData("entityperson", entitypersonid); //Might be null
 		return entityperson;
 	}
-	/*
-	public Collection findAssetsForPerson(WebPageRequest inReq, Data inPerson)
-	{
-		HitTracker taggedboxes = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().exact("entityperson",inPerson).search();
-		Collection relatedfaceids = taggedboxes.collectValues("id");
-		HitTracker completelistoffaces = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().or().orgroup("_id",relatedfaceids).orgroup("parentembeddingid",relatedfaceids).search();
-		
-		Collection allassets = completelistoffaces.collectValues("assetid");
-		Collection hits = getMediaArchive().query("asset").ids(allassets).search(inReq); //Security?
-		return hits;
-	}
-	*/
+	
 	private void uploadAProfile(Map faceprofile, long timecodestart,ContentItem originalImgage, Asset inAsset, String groupId ) throws Exception
 	{
-			int x = (Integer) faceprofile.get("locationx");
-			int y = (Integer) faceprofile.get("locationy");
-			int w = (Integer) faceprofile.get("locationw");
-			int h = (Integer) faceprofile.get("locationh");
-//			
-//	        BufferedImage subImgage = originalImgage.getSubimage(x, y, w, h);
-//	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//	        ImageIO.write(subImgage, "jpg", baos);
-//	        byte[] bytes = baos.toByteArray();
+		int x = (Integer) faceprofile.get("locationx");
+		int y = (Integer) faceprofile.get("locationy");
+		int w = (Integer) faceprofile.get("locationw");
+		int h = (Integer) faceprofile.get("locationh");
+ 
 			byte[] bytes =	new OutputFiller().readAll(originalImgage.getInputStream());
 	        ByteArrayBody body = new ByteArrayBody(bytes,inAsset.getName() + "_" + timecodestart + "_" + "x"+ x + "y" + y + "w" + w + "h" + h + ".webp");
-			
-			Map tosendparams = new HashMap();
-	        tosendparams.put("file", body);
-			tosendparams.put("subject",groupId );
+		
+		Map tosendparams = new HashMap();
+        tosendparams.put("file", body);
+		tosendparams.put("subject",groupId );
 
 		//tosendparams.put("file", new File(inInput.getAbsolutePath()));
 		CloseableHttpResponse resp = null;
@@ -734,7 +827,8 @@ public class FaceProfileManager implements CatalogEnabled
 	private ContentItem generateInputFile(Asset inAsset, Block inBlock)
 	{
 		ConversionManager manager = getMediaArchive().getTranscodeTools().getManagerByRenderType("video");
-		ConvertInstructions instructions = manager.createInstructions(inAsset, "image1900x1080.jpg");
+		String filename = getMediaArchive().generatedOutputName(inAsset,"image1900x1080");
+		ConvertInstructions instructions = manager.createInstructions(inAsset, filename);
 		ContentItem item = manager.findInput(instructions);
 		//needed?
 		//		if (item == null) {
@@ -830,44 +924,7 @@ public class FaceProfileManager implements CatalogEnabled
 	    String text = Base64.getEncoder().encodeToString(imageBytes);
 	    return text;
 	}
-/*
-	public List<Map> combineVideoMatches(List<Map> firstprofiles, List<Map> secondprofiles)
-	{
-		
-		List<Map> tocontinuelooking = new ArrayList();
 
-		for (Iterator iterator = rowsofresults.iterator(); iterator.hasNext();)
-		{
-			JSONArray rowsofresultsdone = (JSONArray)iterator.next();
-
-			Map onepicture = (Map)firstprofiles.get(index);
-			index++;
-			for (int i = 0; i < rowsofresultsdone.size(); i++)
-			{
-				long istrue = (long) rowsofresultsdone.get(i); //Only this array level had a match
-				if( istrue == 1)
-				{
-					Map otherprofile = (Map)secondprofiles.get(i);
-					//We have a match!!
-					//Remove this one and give the time to the one before it onepicture
-					//Long start = (Long)otherprofile.get("facedatastarttime");
-					//onepicture.put("facedataendtime",start);
-					toremove.add(otherprofile);
-					tocontinuelooking.remove(otherprofile);
-					tocontinuelooking.add(onepicture); //put this one back
-					break;
-				}
-			}
-		}
-			
-		for (Iterator iterator = toremove.iterator(); iterator.hasNext();)
-		{
-			Map redundantprofile = (Map) iterator.next();
-			secondprofiles.remove(redundantprofile);
-		}
-		return tocontinuelooking;
-	}
-*/
 	
 	/**
 	public Map getImageAndLocationForGroup(Data asset,Collection<Data> faceprofilegroups, Double thumbwidth, Double thumbheight)
@@ -1282,14 +1339,30 @@ public class FaceProfileManager implements CatalogEnabled
 	}
 	
     public java.awt.Dimension getImageDimensionWebP(InputStream is) throws IOException {
-        byte[] data = is.readNBytes(30);
-        if (new String(Arrays.copyOfRange(data, 0, 4)).equals("RIFF") && data[15] == 'X') {
-            int width = 1 + get24bit(data, 24);
-            int height = 1 + get24bit(data, 27);
-
-            if ((long) width * height <= 4294967296L) return new Dimension(width, height);
-        }
-        return null;
+    	
+    	try
+    	{
+	        byte[] data = is.readNBytes(30);
+	        String header = new String(Arrays.copyOfRange(data, 0, 4));
+	        
+	        if (header.equals("RIFF")) {
+	        	//if( data[15] == 'X' )
+	        	{
+		            int width = 1 + get24bit(data, 24);
+		            int height = 1 + get24bit(data, 27);
+		
+		            if ((long) width * height <= 4294967296L)
+		            {
+		            	return new Dimension(width, height);
+		            }
+	        	}
+	        }
+	        return null;
+    	}
+    	finally
+    	{
+    		FileUtils.safeClose(is);
+    	}
     }
 
     private static int get24bit(byte[] data, int index) {

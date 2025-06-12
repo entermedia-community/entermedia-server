@@ -149,7 +149,15 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		com.add("-vframes");
 		com.add("1");
 		com.add("-f");
-		com.add("mjpeg");
+		
+		if( inStructions.getOutputExtension().equals("webp") )
+		{
+			com.add("webp");
+		}
+		else
+		{
+			com.add("mjpeg");
+		}
 
 		if( seconds > framewindow)
 		{
