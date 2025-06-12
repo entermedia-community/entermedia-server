@@ -434,116 +434,131 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 	private HitTracker checkForJson(SearchQuery inQuery)
 	{
-		double[] d = (double[])inQuery.getValue("vector");
-		if( d != null)
+		for (Iterator iterator = inQuery.getTerms().iterator(); iterator.hasNext();)
 		{
-			JSONObject query = new JSONObject();
-			
-			JSONObject function_score = new JSONObject();
-			function_score.put("boost_mode", "replace");
-			query.put("function_score",function_score);
-			
-			JSONObject script_score = new JSONObject();
-			script_score.put("lang", "knn");
-			script_score.put("script", "binary_vector_score");
-			function_score.put("script_score", script_score);
-			
-			JSONObject params = new JSONObject();
-			params.put("cosine", false);
-			params.put("field", "facedata");
-			//double[] d = { -0.09217305481433868d, 0.010635560378432274d, -0.02878434956073761d, 0.06988169997930527d};
-			List<Double> list = Arrays.stream(d).boxed().collect(Collectors.toList());
-			JSONArray vector = new JSONArray();
-			vector.addAll(list);
-			params.put("vector",vector);
-			script_score.put("params",params);
-			//log.info("req: " + response);
-			JSONObject root = new JSONObject();
-			root.put("query",query);
-			String source =  root.toJSONString();
-			
-			//log.info(source);
-			
-			SearchResponse searchResponse = getClient().prepareSearch(toId(getCatalogId())).setTypes(getSearchType()).setSource(source).get();
-			//log.info("req: " + searchResponse);
-			
-			SearchHit[] hits = searchResponse.getHits().getHits();
-			ListHitTracker tracker = new ListHitTracker();
-			tracker.setSearchQuery(inQuery);
-			for (int i = 0; i < hits.length; i++)
+			Term term = (Term) iterator.next();
+			if( term.getDetail() != null && term.getDetail().isDataType("stringvector") )
 			{
-				SearchHit hit = hits[i];
-				SearchHitData data = new SearchHitData(hit, this);
-				tracker.add(data);
-			}
-			
-			return tracker;
-			
-//			SearchRequest searchRequest = new SearchRequest(toId(getCatalogId()) );
-//
-//			//String testquery = "{'bool': {'must': [{'match_phrase': {'countryName': 'Spain'}}], 'must_not': [], 'should': []}}".replace("'","\"");
-//			//QueryBuilder qb = QueryBuilders.wrapperQuery(testquery);
-//
-//			// Create your base query
-//			QueryBuilder baseQuery = QueryBuilders.matchQuery("field", "value");
-//
-//			// Create a function score query
-//			
-//			ScriptScoreFunctionBuilder scriptbuilder = ScoreFunctionBuilders.scriptFunction("binary_vector_score");
-//			scriptbuilder.
-//			FunctionScoreQueryBuilder functionScoreQuery = QueryBuilders.functionScoreQuery(
-//			    baseQuery,
-//			    scriptbuilder // Example: multiply score by 2
-//			).boostMode( "replace");
-//			
-//			
-//			// Use the functionScoreQuery in your search request
-//			SearchResponse response = getClient().prepareSearch(toId(getCatalogId()))
-//				.setTypes(getSearchType())
-//			    .setQuery(functionScoreQuery)
-//			    .get();
-//			log.info("req: " + response);
-//			FunctionScoreQueryBuilder(matchQuery("party_id", "12"))
-//			.add(termsFilter("course_cd",
-//			
-//			SearchSourceBuilder searchSourceBuilder1 = SearchSourceBuilder.searchSource();
-//			searchSourceBuilder1.query(source);
-//			
-//			.source(SearchSourceBuilder.searchSsearcherource()
-//                    .query(new QueryStringQueryBuilder("foo").field("query")));
-//			
-//			searchRequest.source(searchSourceBuilder1);
-//			searchRequest.types(getSearchType());
-//			//SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
-//			ActionFuture<SearchResponse> res = getClient().search(searchRequest);
-//			SearchResponse scrollResp1 = res.actionGet();
+				double[] d = (double[])term.getParameters().getValue("value");
+				if( d != null)
+				{
+					JSONObject query = new JSONObject();
+					
+					JSONObject function_score = new JSONObject();
+					function_score.put("boost_mode", "replace");
+					function_score.put("min_score", .6D);
+					
+					query.put("function_score",function_score);
+					
+					//.setMinScore(minScore)
+					
+					JSONObject script_score = new JSONObject();
+					script_score.put("lang", "knn");
+					script_score.put("script", "binary_vector_score");
+					function_score.put("script_score", script_score);
+					
+					JSONObject params = new JSONObject();
+					params.put("cosine", true);
+					params.put("field", "facedata");
+					//double[] d = { -0.09217305481433868d, 0.010635560378432274d, -0.02878434956073761d, 0.06988169997930527d};
+					List<Double> list = Arrays.stream(d).boxed().collect(Collectors.toList());
+					JSONArray vector = new JSONArray();
+					vector.addAll(list);
+					params.put("vector",vector);
+					script_score.put("params",params);
+					//log.info("req: " + response);
+					JSONObject root = new JSONObject();
+					root.put("query",query);
+					String source =  root.toJSONString();
+					
+					//log.info(source);
+					
+					//SearchResponse searchResponse = getClient().prepareSearch(toId(getCatalogId())).setSize(3).setTypes(getSearchType()).setSource(source).get();
+					SearchResponse searchResponse = getClient().prepareSearch(toId(getCatalogId())).setTypes(getSearchType()).setSource(source).get();
+					//log.info("req: " + searchResponse);
+					
+					SearchHit[] hits = searchResponse.getHits().getHits();
+					ListHitTracker tracker = new ListHitTracker();
+					tracker.setSearchQuery(inQuery);
+					for (int i = 0; i < hits.length; i++)
+					{
+						SearchHit hit = hits[i];
+						SearchHitData data = new SearchHitData(hit, this);
+						tracker.add(data);
+					}
+					
+					return tracker;
+					
+//					SearchRequest searchRequest = new SearchRequest(toId(getCatalogId()) );
+		//
+//					//String testquery = "{'bool': {'must': [{'match_phrase': {'countryName': 'Spain'}}], 'must_not': [], 'should': []}}".replace("'","\"");
+//					//QueryBuilder qb = QueryBuilders.wrapperQuery(testquery);
+		//
+//					// Create your base query
+//					QueryBuilder baseQuery = QueryBuilders.matchQuery("field", "value");
+		//
+//					// Create a function score query
+//					
+//					ScriptScoreFunctionBuilder scriptbuilder = ScoreFunctionBuilders.scriptFunction("binary_vector_score");
+//					scriptbuilder.
+//					FunctionScoreQueryBuilder functionScoreQuery = QueryBuilders.functionScoreQuery(
+//					    baseQuery,
+//					    scriptbuilder // Example: multiply score by 2
+//					).boostMode( "replace");
+//					
+//					
+//					// Use the functionScoreQuery in your search request
+//					SearchResponse response = getClient().prepareSearch(toId(getCatalogId()))
+//						.setTypes(getSearchType())
+//					    .setQuery(functionScoreQuery)
+//					    .get();
+//					log.info("req: " + response);
+//					FunctionScoreQueryBuilder(matchQuery("party_id", "12"))
+//					.add(termsFilter("course_cd",
+//					
+//					SearchSourceBuilder searchSourceBuilder1 = SearchSourceBuilder.searchSource();
+//					searchSourceBuilder1.query(source);
+//					
+//					.source(SearchSourceBuilder.searchSsearcherource()
+//		                    .query(new QueryStringQueryBuilder("foo").field("query")));
+//					
+//					searchRequest.source(searchSourceBuilder1);
+//					searchRequest.types(getSearchType());
+//					//SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
+//					ActionFuture<SearchResponse> res = getClient().search(searchRequest);
+//					SearchResponse scrollResp1 = res.actionGet();
 
-	//		log.info("req: " + scrollResp1);
-			//String query = "{"bool": {"must": [{"match_phrase": {"countryName": "Spain"}}], "must_not": [], "should": []}}";
-//			QueryBuilder qb = QueryBuilders.wrapperQuery(source);
-//			SearchSourceBuilder searchSourceBuilder1 = new SearchSourceBuilder();
-//			searchSourceBuilder1.query(qb);
-//			SearchRequest searchRequest = new SearchRequest("index_name");
-//			searchRequest.source(searchSourceBuilder1);
-//			SearchResponse scrollResp1 = client.search(searchRequest, RequestOptions.DEFAULT);
-//			System.out.println(scrollResp1);
-			
-//			MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("nationality", "italian");
-//			  SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-//			  searchSourceBuilder.query(matchQueryBuilder);
-//
-//			  search.setSource(searchSourceBuilder);
-//			  
-			
-//			SearchModule searchModule= new SearchModule(Settings.EMPTY, false, Collections.emptyList());
-//			try (XContentParser parser = XContentFactory.xContent(XContentType.JSON).createParser(new NamedXContentRegistry(searchModule
-//			            .getNamedXContents()), source)) {
-//			    searchSourceBuilder.parseXContent(parser);
-//			}
-//			
-//			log.info("searchby: " + search.toString());
-			
+			//		log.info("req: " + scrollResp1);
+					//String query = "{"bool": {"must": [{"match_phrase": {"countryName": "Spain"}}], "must_not": [], "should": []}}";
+//					QueryBuilder qb = QueryBuilders.wrapperQuery(source);
+//					SearchSourceBuilder searchSourceBuilder1 = new SearchSourceBuilder();
+//					searchSourceBuilder1.query(qb);
+//					SearchRequest searchRequest = new SearchRequest("index_name");
+//					searchRequest.source(searchSourceBuilder1);
+//					SearchResponse scrollResp1 = client.search(searchRequest, RequestOptions.DEFAULT);
+//					System.out.println(scrollResp1);
+					
+//					MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("nationality", "italian");
+//					  SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+//					  searchSourceBuilder.query(matchQueryBuilder);
+		//
+//					  search.setSource(searchSourceBuilder);
+//					  
+					
+//					SearchModule searchModule= new SearchModule(Settings.EMPTY, false, Collections.emptyList());
+//					try (XContentParser parser = XContentFactory.xContent(XContentType.JSON).createParser(new NamedXContentRegistry(searchModule
+//					            .getNamedXContents()), source)) {
+//					    searchSourceBuilder.parseXContent(parser);
+//					}
+//					
+//					log.info("searchby: " + search.toString());
+					
+				}
+			}
 		}
+		
+		
+
 		/**
 
 

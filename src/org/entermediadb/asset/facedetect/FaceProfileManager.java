@@ -105,7 +105,7 @@ public class FaceProfileManager implements CatalogEnabled
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
 	}
 	
-	public boolean extractFaces(Asset inAsset)
+	public int extractFaces(Asset inAsset)
 	{
 		try
 		{
@@ -113,7 +113,7 @@ public class FaceProfileManager implements CatalogEnabled
 			if( url == null)
 			{
 				log.error("No face server configured");
-				return false;
+				return 0;
 			}
 			String type = getMediaArchive().getMediaRenderType(inAsset);
 			
@@ -121,14 +121,14 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			if (!"image".equalsIgnoreCase(type) && !"video".equalsIgnoreCase(type)  )
 			{
-				return false;
+				return 0;
 			}
 			
 			String api = getMediaArchive().getCatalogSettingValue("faceapikey");
 			if(api == null)
 			{
 				log.info("faceapikey not set");
-				return false;
+				return 0;
 			}
 		
 			//If its a video then generate all the images and scan them
@@ -145,7 +145,7 @@ public class FaceProfileManager implements CatalogEnabled
 				long imagesize = imagew * imageh;
 				
 				if(imagesize < 90000) {
-					return false;
+					return 0;
 				}
 				
 				Boolean useoriginal = true;
@@ -201,7 +201,7 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 				List<Map> json = findFaces(inAsset, input);
 				if(json == null) {
-					return false;
+					return 0;
 				}
 				Collection<Data> moreprofiles = makeDataForEachFace(faceembeddingsearcher,inAsset,0L,input,json);
 				tosave.addAll(moreprofiles);
@@ -212,7 +212,7 @@ public class FaceProfileManager implements CatalogEnabled
 				Double videolength = (Double)inAsset.getDouble("length");
 				if( videolength == null)
 				{
-					return true;
+					return 0;
 				}
 				Timeline timeline = new Timeline();
 				long mili = Math.round( videolength*1000d );
@@ -273,7 +273,7 @@ public class FaceProfileManager implements CatalogEnabled
 			inAsset.setValue("facehasprofile",hasfaces);
 			log.info("Faceprofile found: "+tosave.size());
 			//faceembeddingsearcher.saveAllData(tosave,null);
-			return hasfaces;
+			return tosave.size();
 		}
 		catch( Throwable ex)
 		{
@@ -281,7 +281,7 @@ public class FaceProfileManager implements CatalogEnabled
 			inAsset.setValue("facescancomplete","true");
 			inAsset.setValue("facescanerror","true");
 			log.error("Error on: " + inAsset.getId() + " " + inAsset.getSourcePath(), ex);
-			return false;
+			return 0;
 			//throw new OpenEditException("Error on: " + inAsset.getId() + " " + inAsset.getSourcePath(),ex);
 		}
 		
@@ -382,8 +382,21 @@ public class FaceProfileManager implements CatalogEnabled
 
 			ValuesMap box = new ValuesMap((Map)facejson.get("facial_area"));
 		
-			//TODO: Make sure we dont already have this exact same ebedding. If we do then, skip?
-			
+//			
+//			Object left = box.get("left_eye");
+//			Object right = box.get("right_eye");
+//			
+//			if( left == null && right == null)
+//			{
+//				log.info("Skipping, Eyes are required  " + inAsset.getName() );
+//				continue;
+//			}
+			Double confidence = (Double)facejson.get("face_confidence");  //This is useless
+			if( confidence < .94D)
+			{
+				log.info("Invalid face  " + inAsset.getName() + " and confidence " + inAsset.getName() );
+				continue;
+			}
 //			if( similarembedding != null)
 //			{
 //				//TODO: copy the profile field
@@ -396,13 +409,33 @@ public class FaceProfileManager implements CatalogEnabled
 				log.info("Not enough data, small face detected assetid:" + inAsset.getId()+ " w:" + w + " h:" + h + " Min face size: " + minfacesize);
 				continue;
 			}
+			JSONArray collection = (JSONArray)facejson.get("embedding");
 			
-			Data addedface = facedb.createNewData(); //TODIO: Search by Vector first so we dont lose assignments
-			
-			double[] vector = collectDoubles((Collection)facejson.get("embedding"));
+			double[] vector = collectDoubles(collection);
 			String encoded = encodeDoubles(vector);
 
+			String jsontext = collection.toJSONString();
+			
+			Data addedface = null;
+			
+			Collection others = facedb.query().exact("assetid",inAsset).search();
+			for (Iterator iterator2 = others.iterator(); iterator2.hasNext();)
+			{
+				Data existing = (Data) iterator2.next();
+				String otherencoded = existing.get("facedatajson"); //Manually done because Search did not work
+				if( otherencoded.equals(jsontext) )
+				{
+					addedface = existing;
+					break;
+				}
+			}
+			if( addedface == null)
+			{
+				addedface = facedb.createNewData(); //TODIO: Search by Vector first so we dont lose assignments
+			}
+			addedface.setValue("face_confidence", confidence );
 			addedface.setValue("facedata",encoded);
+			addedface.setValue("facedatajson",jsontext);
 			addedface.setValue("assetid",inAsset);
 
 			int assetwidth = getMediaArchive().getRealImageWidth(inAsset); 
@@ -421,28 +454,27 @@ public class FaceProfileManager implements CatalogEnabled
 			addedface.setValue("locationy",y);
 			addedface.setValue("locationw",w);
 			addedface.setValue("locationh",h);
-			addedface.setValue("face_confidence", box.getDouble("face_confidence"));
 			addedface.setValue("timecodestart",timecodestart);
 
 			//TODO: Make sure this is not already in there. For debug purposes
 			
 			double[] embedding = collectDoubles((Collection)facejson.get("embedding"));
 			SearchQuery query = facedb.createSearchQuery();
-			query.setValue("vector", embedding); //TODO: Pass in a better cluet JSON"
-			HitTracker results = facedb.search(query);
+			query.addExact("facedata", embedding); //TODO: Pass in a better cluet JSON"
+			HitTracker results = facedb.search(query); //Only search top two
 			//if I find myself then dont save again
 			
 			//TODO: Decode the numbers and see if this is already in there so we dont make duplicates?
 			
 			if( !results.isEmpty() )
 			{
-				String assetid = ((Data)results.first()).get("assetid");
-				if( assetid != null && assetid.equals(inAsset.getId()) )
-				{
-					//already saved
-					log.info("Same assetid has been found with this face. Skipping "  + inAsset.getName() );
-					continue;
-				}
+//				String assetid = ((Data)results.first()).get("assetid");
+//				if( assetid != null && assetid.equals(inAsset.getId()) )
+//				{
+//					//already saved
+//					log.info("Same assetid has been found with this face. Skipping "  + inAsset.getName() );
+//					continue;
+//				}
 			
 				Data similarembedding = findSimilar(facedb, addedface, inAsset, results, similaritycheck); //Pass in how similar
 				if( similarembedding  != null)
@@ -481,12 +513,12 @@ public class FaceProfileManager implements CatalogEnabled
 			{
 				//save this as the parent
 				Double score = hit.getDouble("_score");
-				if( score != null && score >  210d)
-				{
+//				if( score != null && score >  210d)
+//				{
 					inChild.setValue("parentscore", score);
 					return hit;
-				}
-				return null;
+//				}
+//				return null;
 			}
 		}
 		//These are scored only if they have the right number and type. doubles
@@ -730,6 +762,7 @@ public class FaceProfileManager implements CatalogEnabled
 		//tosendparams.put("face_plugins","detector");
 		
 		tosendparams.put("model_name","Facenet512");
+		tosendparams.put("detector_backend","retinaface");
 		//tosendparams.put("img","http://localhost:8080" + inUrl);
 		
 		
