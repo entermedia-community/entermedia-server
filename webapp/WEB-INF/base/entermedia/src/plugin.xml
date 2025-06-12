@@ -2148,6 +2148,13 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
+	
+	<bean id="DrupalManager" class="org.entermediadb.drupal.DrupalManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+	
 
 	<bean id="googleContactSearcher" class="org.entermediadb.google.GoogleContactSearcher" scope="prototype">
 
