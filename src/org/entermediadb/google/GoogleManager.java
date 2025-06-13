@@ -197,7 +197,7 @@ public class GoogleManager implements CatalogEnabled
 			keepgoing = populateMoreResults(url, results, false);
 		}
 		while (keepgoing);
-		log.info("Finish listing.");
+		
 		return results;
 	}
 	
@@ -225,7 +225,7 @@ public class GoogleManager implements CatalogEnabled
 			results.setResultToken(pagekey);
 		}
 		JSONArray files = (JSONArray)json.get("files");
-		log.info("Google Drive, found: "+files.size()+" items.");
+		log.info("Google Drive found: "+files.size()+" items.");
 		for (Iterator iterator = files.iterator(); iterator.hasNext();)
 		{
 			JSONObject object = (JSONObject) iterator.next();
@@ -234,7 +234,7 @@ public class GoogleManager implements CatalogEnabled
 
 			String mt = (String)object.get("mimeType");
 			
-			log.info(mt + " -- " + name);
+			log.info(name + " - File type: " + mt);
 			
 			if (mt.equals("application/vnd.google-apps.folder"))
 			{

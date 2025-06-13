@@ -33,6 +33,8 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 	
 	protected GoogleManager fieldGoogleManager;
 	
+	protected int importCount;
+	
 	public GoogleManager getGoogleManager()
 	{
 		
@@ -59,6 +61,20 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 	public boolean isHotFolder()
 	{
 		return true;
+	}
+	
+	public void resetImportCount()
+	{
+		importCount = 0;
+	}
+	
+	public void addImportCount()
+	{
+		importCount = importCount +1; 
+	}
+	
+	public int getImportCount() {
+		return importCount;
 	}
 
 	@Override
@@ -190,16 +206,14 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 	public int importAssets(String inBasepath)
 	{
 		refresh();
+		resetImportCount();
+		
 		String subfolder = getConfig().get("syncroot");
 		if(subfolder == null) {
 			subfolder = getName();
 		}
 		Results r= syncAssets(subfolder);
-		if (r.getFiles() != null)
-		{
-			return r.getFiles().size();
-		}
-		return 0;
+		return getImportCount();
 	}
 	
 	public Results syncAssets(String inRoot)
@@ -208,7 +222,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 		{
 			//Load assets from Root
 			Results results = getGoogleManager().listDriveFiles(inRoot);
-			if (results.getFiles() != null)
+			if (results.getFiles() != null || results.getFolders() != null)
 			{
 				String folderroot = getConfig().get("subfolder");
 				
@@ -341,7 +355,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 	{
 		if (inOnepage.isEmpty())
 		{
-			log.info("empty map");
+			log.error("Empty map");
 			return;
 		}
 		Collection tosave = new ArrayList();
@@ -350,16 +364,21 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 		for (Iterator iterator = existingassets.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
-			//Asset existing = (Asset) getMediaArchive().getAssetSearcher().loadData(data);
-			// Remove existing assets
+
+			// Remove existing item from the list to avoid create new asset later
 			inOnepage.remove(data.get("embeddedid"));
+			
+			//Re-assign Categories
+			Asset existing = (Asset) getMediaArchive().getAssetSearcher().loadData(data);
 			// existing.clearCategories();
-			/*
+			
 			if (!existing.isInCategory(category))
 			{
 				
-				//Clear old Drive categorties
-				Category root = getMediaArchive().createCategoryPath("Drive");
+				//Clear old Drive categories from same Hot Folder
+				//Category root = getMediaArchive().createCategoryPath("Drive");
+				String rootcategorypath = getConfig().get("subfolder");
+				Category root = getMediaArchive().getCategorySearcher().loadCategoryByPath(rootcategorypath);
 				Collection existingcategories = new ArrayList(existing.getCategories());
 				for (Iterator iterator2 = existingcategories.iterator(); iterator2.hasNext();)
 				{
@@ -375,7 +394,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 				
 			}
 			
-			*/
+			
 		}
 
 		// Only new Assets
@@ -491,6 +510,8 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 			newasset.addCategory(category);
 
 			tosave.add(newasset);
+			
+			addImportCount();
 		}
 		if (!tosave.isEmpty())
 		{
