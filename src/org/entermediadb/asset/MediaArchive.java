@@ -2035,6 +2035,25 @@ public class MediaArchive implements CatalogEnabled
 		Double seconds = org.openedit.util.MathUtils.divide(Long.parseLong(inMilliseconds), 1000);
 		return formatMinutesAndSeconds(seconds.toString());
 	}
+	
+	public static String formatTime(String inSeconds) {
+		if( inSeconds == null)
+		{
+			return null;
+		}
+
+		int totalSeconds = (int) Math.round(Double.parseDouble(inSeconds));
+
+	    int hours = totalSeconds / 3600;
+	    int minutes = (totalSeconds % 3600) / 60;
+	    int seconds = totalSeconds % 60;
+
+	    if (hours > 0) {
+	        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+	    } else {
+	        return String.format("%02d:%02d", minutes, seconds);
+	    }
+	}
 
 	public String formatSeconds(String inSeconds, String inMask)
 	{
