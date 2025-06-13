@@ -640,6 +640,14 @@ public class MediaArchive implements CatalogEnabled
 		String embeddedtype = inAsset.get("embeddedtype");
 		if (embeddedtype != null)
 		{
+			//Default google images to large2
+			if (embeddedtype.startsWith("google")) 
+			{
+				String rendertype = getMediaRenderType(inAsset);
+				if (rendertype.equals("image") || rendertype.equals("video")) {
+					return "large2";
+				}
+			}
 			return embeddedtype;
 
 		}
