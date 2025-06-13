@@ -99,6 +99,7 @@ public class FaceProfileModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String personid = inReq.getRequestParameter("dataid"); //person
+		String assetid = inReq.getRequestParameter("assetid"); 
 		String faceembeddingid =inReq.getRequestParameter("faceembeddingid");
 		
 		if (faceembeddingid != null && personid != null)
@@ -108,6 +109,15 @@ public class FaceProfileModule extends BaseMediaModule
 			{
 				face.setValue("entityperson", personid);
 				archive.saveData("faceembedding",face);
+				
+				//save person
+				Data person = archive.getData("entityperson", personid);
+				if (person.get("primaryimage") == null)
+				{
+					person.setValue("primaryimage", assetid);
+					archive.saveData("entityperson", person);
+				}
+				
 			}
 		}
 	}
@@ -217,7 +227,7 @@ public class FaceProfileModule extends BaseMediaModule
 		
 		Collection<FaceBox> boxes = manager.viewAllRelatedFaces(faceembeddedid);
 		
-		if( boxes == null)
+		if( boxes == null || boxes.isEmpty())
 		{
 			return;
 		}

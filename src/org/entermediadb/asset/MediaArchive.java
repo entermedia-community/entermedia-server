@@ -637,10 +637,10 @@ public class MediaArchive implements CatalogEnabled
 		{
 			return null;
 		}
-		String embededdtype = inAsset.get("embeddedtype");
-		if (embededdtype != null)
+		String embeddedtype = inAsset.get("embeddedtype");
+		if (embeddedtype != null)
 		{
-			return embededdtype;
+			return embeddedtype;
 
 		}
 		
