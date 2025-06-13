@@ -82,7 +82,7 @@
 	    </name> 
 	  </property>  
 
-		  <property id="locationy" datatype="number" index="true" stored="true" > 
+	  <property id="locationy" datatype="number" index="true" stored="true" > 
 	    <name> 
 	      <language id="en"><![CDATA[Y Location]]></language>  
 	    </name> 
@@ -99,18 +99,19 @@
 	    </name> 
 	  </property>  
 		 
-	  <property id="inputheight" datatype="number" index="true" stored="true" > 
+	  <property id="left_eye" datatype="number" index="true" stored="true" > 
 	    <name> 
-	      <language id="en"><![CDATA[Input Height]]></language>  
+	      <language id="en"><![CDATA[Left Eye]]></language>  
 	    </name> 
 	  </property>  
-		 
-	  <property id="inputwidth" datatype="number" index="true" stored="true" > 
+	  
+	  <property id="right_eye" datatype="number" index="true" stored="true" > 
 	    <name> 
-	      <language id="en"><![CDATA[Input Width]]></language>  
+	      <language id="en"><![CDATA[Right Eye]]></language>  
 	    </name> 
 	  </property>  
-
+	
+	
 	  <property id="originalwidth" datatype="number" index="true" stored="true" > 
 	    <name> 
 	      <language id="en"><![CDATA[Original Width]]></language>  

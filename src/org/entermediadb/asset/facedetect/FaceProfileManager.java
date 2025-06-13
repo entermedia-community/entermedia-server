@@ -497,8 +497,8 @@ public class FaceProfileManager implements CatalogEnabled
 
 			ValuesMap box = new ValuesMap((Map)facejson.get("facial_area"));
 //			
-			Object left = box.get("left_eye");
-			Object right = box.get("right_eye");
+			Collection left = box.getValues("left_eye");
+			Collection right = box.getValues("right_eye");
 			
 			if( left == null || right == null)
 			{
@@ -552,6 +552,8 @@ public class FaceProfileManager implements CatalogEnabled
 			addedface.setValue("facedatajson",jsontext); 
 			addedface.setValue("facedatadoubles",vector); //Not saved to index
 			addedface.setValue("assetid",inAsset);
+			addedface.setValue("left_eye", left );
+			addedface.setValue("right_eye", right);
 
 			int assetwidth = getMediaArchive().getRealImageWidth(inAsset); 
 			int assetheight = getMediaArchive().getRealImageHeight(inAsset); 

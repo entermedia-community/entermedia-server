@@ -3144,9 +3144,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				}
 				else if (detail.isDataType("number"))
 				{
-					Number val = 0;
+					Object val = 0;
 
-					if (value instanceof Number)
+					if (value instanceof Collection)
+					{
+						val = value;
+					}
+					else if (value instanceof Number)
 					{
 						val = (Number) value;
 					}
