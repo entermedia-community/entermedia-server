@@ -252,4 +252,16 @@ public class FaceProfileModule extends BaseMediaModule
 		inReq.putSessionValue(assets.getSessionId(),assets);
 		
 	}
+	
+	public void rescanAsset(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+
+		Asset asset = getAsset(inReq);
+		
+		FaceProfileManager manager = archive.getFaceProfileManager();
+		manager.rescanAsset(asset);
+	
+		
+	}
 }

@@ -218,8 +218,11 @@ public class FaceProfileManager implements CatalogEnabled
 				//Look over them and save the timecode with it
 				Collection<Data> allfacesinvideo = findAllFacesInVideo(inAsset);
 				Collection<Data> moreprofiles = combineVideoMatches(allfacesinvideo);
-				saveNewFacesWithParents(moreprofiles);
-				foundfaces.addAll(moreprofiles);
+				if(moreprofiles != null)
+				{
+					saveNewFacesWithParents(moreprofiles);
+					foundfaces.addAll(moreprofiles);
+				}
 //				updateEndTimes(continuelooking,block.getStartOffset()); //Brings them up to date
 //				try
 //				{
@@ -1491,6 +1494,21 @@ public class FaceProfileManager implements CatalogEnabled
 			box.setTimecodeStartSeconds(seconds);
 		}
 		return box;
+	}
+
+	public void rescanAsset(Asset inAsset)
+	{
+		Searcher faceembeddingsearcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
+		Collection others = faceembeddingsearcher.query().exact("assetid",inAsset).search();
+		
+		faceembeddingsearcher.deleteAll(others, null);
+		inAsset.setValue("facescancomplete","false");
+		inAsset.setValue("facescanerror","false");
+		getMediaArchive().saveAsset(inAsset);
+		
+		getMediaArchive().fireSharedMediaEvent("asset/facescan");
+		//extractFaces(inAsset);
+		
 	}
 
 	
