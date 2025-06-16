@@ -1,0 +1,15 @@
+#set( $pagenum = $context.getRequestParameter("documentpagenum") )
+
+#if( !$pagenum)
+ #set( $pagenum = 1 )
+#end 
+
+#set( $name = $context.getRequestParameter("name") )
+#set ( $urlenc = $url_util.encode($asset.sourcepath))
+#set($totalpages = $numberutils.toInt($asset.pages))
+
+###set($tpath = $mediaarchive.asLinkToPreview($asset, $size))
+
+#set( $link = "$siteroot/$mediadbappid/services/module/asset/downloads/vieworiginal/${asset.getSourcePath()}")
+
+<iframe src="$link" style="height:100%;"></iframe>
