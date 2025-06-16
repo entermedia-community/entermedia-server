@@ -198,7 +198,8 @@
         }
         var hidefooter = initiatorData["hidefooter"];
         if (hidefooter != null) {
-          $(".modal-footer", modaldialog).hide();
+          $(".modal-footer", modaldialog).remove();
+          $(".modal-body").css("padding-bottom", "6px");
         }
 
         //backup url
