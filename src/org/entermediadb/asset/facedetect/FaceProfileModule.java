@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -231,23 +232,26 @@ public class FaceProfileModule extends BaseMediaModule
 		{
 			return;
 		}
+		
+		Map boxlookup = new HashMap(boxes.size());
+		
 		//Do some searching
 		Data entityperson = null;
 		
-		Collection assetids = new ArrayList();
 		for (Iterator iterator = boxes.iterator(); iterator.hasNext();)
 		{
 			FaceBox box = (FaceBox) iterator.next();
-			assetids.add(box.getAssetId());
+			boxlookup.put(box.getAssetId(),box);
 			if (entityperson == null)
 			{
 				entityperson = box.getPerson();
 			}
 		}
+		inReq.putPageValue("boxlookup",boxlookup);
 		inReq.putPageValue("faceboxes",boxes); //Used in Javascript? read in the DOM <face assetid="" location="{x,y,h,w}" />
 		inReq.putPageValue("entityperson",entityperson);
 		
-		HitTracker assets = archive.query("asset").ids(assetids).named("faceassets").search(inReq);
+		HitTracker assets = archive.query("asset").ids(boxlookup.keySet()).named("faceassets").search(inReq);
 		inReq.putPageValue(assets.getHitsName(),assets);
 		inReq.putSessionValue(assets.getSessionId(),assets);
 		
