@@ -2834,16 +2834,12 @@ public class MediaArchive implements CatalogEnabled
 		
 		String downloadroot = getMediaDbId() + "/services/module/asset";
 		
-		
 		if (inPreset.getId().equals("0"))
 		{
 			String finalink = cdnprefix + "/" + downloadroot + "/downloads/originals/" + asLinkToOriginal(inAsset);
 //			finalink = URLUtilities.urlEscape(finalink);
 			return finalink;
 		}
-		
-
-		
 		
 		String sourcepath = inAsset.getSourcePath();
 		

@@ -1,0 +1,16 @@
+
+#set($tpath = $mediaarchive.asLinkToShare($context.getSiteRoot(), $asset, $preset))
+
+#set($assetwidth = $mediaarchive.getRealImageWidth($asset))
+#set($assetheight = $mediaarchive.getRealImageHeight($asset))
+<div id="mainimageholder">
+<img id="main-media" class="emdropshadow  assetdragdrop"
+	draggable="true" 
+	data-sourcepath="$urlenc" 
+	data-assetid="$asset.id"
+	data-name="$asset.name" 
+	data-width="$!assetwidth"
+	data-height="$!assetheight"
+	src="${tpath}" 
+	alt="$!asset.name" />
+</div>
