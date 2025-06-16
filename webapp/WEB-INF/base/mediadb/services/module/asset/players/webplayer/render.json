@@ -1,0 +1,12 @@
+{
+  "response":
+      {
+        "status":"$status"
+        #ifnotnull($asset),"id":"$asset.id"#end
+      }
+  #ifnotnull($asset),
+	$context.putPageValue("hit",$asset)
+	"data": $pages.include(	"${apphome}/services/module/${searcher.getSearchType()}/hit.json",$context)
+	,"html": #jesc($!{renderedhtml})
+  #end
+}
