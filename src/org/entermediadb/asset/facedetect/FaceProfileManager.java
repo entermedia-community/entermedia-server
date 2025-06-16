@@ -209,9 +209,9 @@ public class FaceProfileManager implements CatalogEnabled
 				if( moreprofiles != null)
 				{
 					saveNewFacesWithParents(moreprofiles);
+					foundfaces.addAll(moreprofiles);
 				}
 				
-				foundfaces.addAll(moreprofiles);
 			}
 			else if( "video".equalsIgnoreCase(type) )
 			{
