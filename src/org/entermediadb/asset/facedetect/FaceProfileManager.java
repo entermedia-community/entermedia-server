@@ -1505,15 +1505,15 @@ public class FaceProfileManager implements CatalogEnabled
 	public void rescanAsset(Asset inAsset)
 	{
 		Searcher faceembeddingsearcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
-		Collection others = faceembeddingsearcher.query().exact("assetid",inAsset).search();
+//		Collection others = faceembeddingsearcher.query().exact("assetid",inAsset).search();
+//		
+//		faceembeddingsearcher.deleteAll(others, null);
+//		inAsset.setValue("facescancomplete","false");
+//		inAsset.setValue("facescanerror","false");
+//		getMediaArchive().saveAsset(inAsset);
 		
-		faceembeddingsearcher.deleteAll(others, null);
-		inAsset.setValue("facescancomplete","false");
-		inAsset.setValue("facescanerror","false");
-		getMediaArchive().saveAsset(inAsset);
-		
-		getMediaArchive().fireSharedMediaEvent("asset/facescan");
-		//extractFaces(inAsset);
+		//getMediaArchive().fireSharedMediaEvent("asset/facescan");
+		extractFaces(inAsset);
 		
 	}
 
