@@ -150,12 +150,10 @@ public class FaceProfileManager implements CatalogEnabled
 					return 0;
 				}
 				
+				String fileformat = inAsset.getFileFormat();
+				
 				Boolean useoriginal = true;
 				if (filesize > 6000000)
-				{
-					useoriginal = false;
-				}
-				else if (!inAsset.getFileFormat().equals("jpg") && !inAsset.getFileFormat().equals("jpeg")) 
 				{
 					useoriginal = false;
 				}
@@ -172,6 +170,14 @@ public class FaceProfileManager implements CatalogEnabled
 					else if( inAsset.isPropertyTrue("hasthumbnail") )
 					{
 						useoriginal = false;  //deepface has a bug that it uses the image thumbnail for sizing
+					}
+					if( fileformat.equals("jpg") || fileformat.equals("jpeg") || fileformat.equals("webp")) 
+					{
+						//Its ok
+					}
+					else
+					{
+						useoriginal = false;
 					}
 				}
 				
