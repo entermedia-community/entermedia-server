@@ -2838,7 +2838,7 @@ public class MediaArchive implements CatalogEnabled
 		if (inPreset.getId().equals("0"))
 		{
 			String finalink = cdnprefix + "/" + downloadroot + "/downloads/originals/" + asLinkToOriginal(inAsset);
-			finalink = URLUtilities.urlEscape(finalink);
+//			finalink = URLUtilities.urlEscape(finalink);
 			return finalink;
 		}
 		
