@@ -490,26 +490,41 @@ public class PermissionManager implements CatalogEnabled
 	    for (String field : fieldsToCompare) {
 	        // Get values from both the root category and the module
 	        Collection<String> rootValues = rootcat.getValues( "viewer" + field);
-	        Collection<String> moduleValues = inEntity.getValues("viewer" + field);
+	        Collection<String> combinedViewers = inEntity.getValues("viewer" + field);
 	        // Normalize null values to empty collections
 	        if (rootValues == null) {
 	            rootValues = Collections.emptyList();
 	        }
-	        if (moduleValues == null) {
-	            moduleValues = Collections.emptyList();
+	        if (combinedViewers == null) {
+	            combinedViewers = Collections.emptyList();
 	        }
 	        Collection editorValues = inEntity.getValues("editor" + field);
+	        if( field.equals("users") )
+	        {
+		        String owner = inEntity.get("owner");
+				if(owner != null)
+				{
+					if( !editorValues.contains(owner) )
+					{
+						editorValues.add(owner);
+						inEntity.setValue("editor" + field, editorValues);
+					}
+				}
+	        }
+
 	        if( editorValues != null)
 	        {
-	        	moduleValues.addAll(editorValues);
+	        	combinedViewers.addAll(editorValues);
 	        }
+	        //Add in the owner
+	        
 	        // Compare values
-	        if (!rootValues.containsAll(moduleValues) || !moduleValues.containsAll(rootValues)) {
+	        if (!rootValues.containsAll(combinedViewers) || !combinedViewers.containsAll(rootValues)) {
 	            log.info("Mismatch found for field '" + field + "' in module " + inModule.getId());
-	            log.info("Root Category Values: " + rootValues + ", Module Values: " + moduleValues);
+	            log.info("Root Category Values: " + rootValues + ", Module Values: " + combinedViewers);
 	            
 	            needsupdate = true;
-	        	rootcat.setValue("viewer" + field, moduleValues);
+	        	rootcat.setValue("viewer" + field, combinedViewers);
 	        }
 	    }
 	    if(needsupdate) {
