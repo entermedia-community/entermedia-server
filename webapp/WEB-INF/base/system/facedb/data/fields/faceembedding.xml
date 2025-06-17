@@ -135,6 +135,16 @@
       <language id="en"><![CDATA[Skip Face]]></language>  
     </name> 
   </property>  
+
+<property id="owner" index="true" viewtype="user" type="list" listcatalogid="system" listid="user" filter="true"  keyword="true" stored="true" editable="true" >Owner 
+    <name> 
+      <language id="de"><![CDATA[Owner]]></language>  
+      <language id="en"><![CDATA[Owner]]></language>  
+      <language id="es"><![CDATA[Propietario]]></language>  
+      <language id="fr"><![CDATA[Propriétaire]]></language> 
+    </name> 
+  </property>
+  
 	      
   
 </properties>

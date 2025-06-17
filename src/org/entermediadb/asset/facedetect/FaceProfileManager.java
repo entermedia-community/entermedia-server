@@ -48,6 +48,7 @@ import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.repository.ContentItem;
+import org.openedit.users.User;
 import org.openedit.util.FileUtils;
 import org.openedit.util.MathUtils;
 import org.openedit.util.OutputFiller;
@@ -609,6 +610,29 @@ public class FaceProfileManager implements CatalogEnabled
 		return tosave;
 	}
 
+	public Data addFaceEmbedded(User inUser, Asset inAsset, List<Integer> inBox )
+	{
+		Searcher faceembeddingsearcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
+		Data addedface = faceembeddingsearcher.createNewData();
+		
+		addedface.setValue("assetid",inAsset);
+
+		int assetwidth = getMediaArchive().getRealImageWidth(inAsset); 
+		int assetheight = getMediaArchive().getRealImageHeight(inAsset); 
+		addedface.setValue("originalwidth",assetwidth);
+		addedface.setValue("originalheight",assetheight);
+		
+		addedface.setValue("locationx",inBox.get(0));
+		addedface.setValue("locationy",inBox.get(1));
+		addedface.setValue("locationw",inBox.get(2));
+		addedface.setValue("locationh",inBox.get(3));
+
+		addedface.setValue("owner",inUser.getId());
+
+		faceembeddingsearcher.saveData(addedface, inUser);
+		return addedface;
+	}
+	
 	protected Data findSimilar(Searcher facedb, MultiValued inFaceEmbbed, Asset inAsset, HitTracker inResults)
 	{
 		Integer sourceh = inFaceEmbbed.getInt("locationh");
@@ -1434,33 +1458,42 @@ public class FaceProfileManager implements CatalogEnabled
 //		{
 //			return null;
 //		}
-		Collection parentids = startdata.getValues("parentids");
-		//Search all children
-		HitTracker allthepeopleinasset = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().orgroup("parentids", parentids).search();
-		
-		//Look for a personid anyplace
-		Collection<String> person = allthepeopleinasset.collectValues("entityperson");
-		Collection allids = allthepeopleinasset.collectValues("id");
-		Data entityperson = null;
-		if( !person.isEmpty() )
-		{
-			String entitypersonid  = null;
-			entitypersonid = person.iterator().next();
-			if( entitypersonid != null)
-			{
-				entityperson = getMediaArchive().getCachedData("entityperson", entitypersonid);
-			}
-		}
-		//What happens is another person is matched? We should have never allowed that in the UI
-		
-		//Make boxes?
 		Collection<FaceBox> boxes = new ArrayList();
 
-		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
+		Data entityperson = null;
+		Collection loadedids = new ArrayList();
+		Collection parentids = startdata.getValues("parentids");
+		if( parentids != null && !parentids.isEmpty() )
 		{
-			MultiValued embedding = (MultiValued) iterator.next(); //One person
-			FaceBox box = makeBox(embedding, entityperson);
+			//Search all children
+			HitTracker allthepeopleinasset = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().orgroup("parentids", parentids).search();
+			
+			//Look for a personid anyplace
+			Collection<String> person = allthepeopleinasset.collectValues("entityperson");
+			loadedids = allthepeopleinasset.collectValues("id");
+			if( !person.isEmpty() )
+			{
+				String entitypersonid  = null;
+				entitypersonid = person.iterator().next();
+				if( entitypersonid != null)
+				{
+					entityperson = getMediaArchive().getCachedData("entityperson", entitypersonid);
+				}
+			}
+			//What happens is another person is matched? We should have never allowed that in the UI
+			
+			for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
+			{
+				MultiValued embedding = (MultiValued) iterator.next(); //One person
+				FaceBox box = makeBox(embedding, entityperson);
+				boxes.add(box);
+			}
+		}
+		else
+		{
+			FaceBox box = makeBox(startdata, entityperson);
 			boxes.add(box);
+			loadedids.add(startdata.getId());
 		}
 		
 		if( entityperson != null)
@@ -1469,7 +1502,7 @@ public class FaceProfileManager implements CatalogEnabled
 			for (Iterator iterator = morepeople.iterator(); iterator.hasNext();)
 			{
 				MultiValued embedding = (MultiValued) iterator.next(); //One person
-				if( !allids.contains(embedding.getId() ) )
+				if( !loadedids.contains(embedding.getId() ) )
 				{
 					FaceBox box = makeBox(embedding, entityperson);
 					boxes.add(box);

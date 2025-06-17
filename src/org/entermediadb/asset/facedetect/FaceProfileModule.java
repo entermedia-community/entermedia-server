@@ -145,7 +145,7 @@ public class FaceProfileModule extends BaseMediaModule
 	}
 	*/
 	
-	public void addManualFaceProfile (WebPageRequest inReq)
+	public void addManualFaceProfile (WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String assetid = inReq.getRequestParameter("assetid");
@@ -158,73 +158,43 @@ public class FaceProfileModule extends BaseMediaModule
 			return;
 		}
 		
-		MultiValued newgroup = (MultiValued) archive.getSearcher("faceprofilegroup").createNewData();
-		newgroup.setValue("creationdate", new Date());
-		newgroup.setValue("entity_date", new Date());
-		newgroup.setValue("automatictagging", false);
-		newgroup.setValue("taggedby",inReq.getUser());
-		newgroup.setValue("samplecount",1);
-		newgroup.setValue("primaryimage", asset.getId());
-		
-		archive.getSearcher("faceprofilegroup").saveData(newgroup);
-		Map newfacedata = new HashMap();
-		newfacedata.put("faceprofilegroup", newgroup.getId() );
-		
+		JSONParser parser = new JSONParser();
+		JSONObject locationarray = (JSONObject) parser.parse(boxlocation);
 		
 		String inputw = inReq.getRequestParameter("assetwidth");
-		String inputh = inReq.getRequestParameter("assethight");
 		String thumbwidth = inReq.getRequestParameter("thumbwidth");
+
+		Double scale = MathUtils.divide(inputw, thumbwidth);
 		
+		Number left = (Number)locationarray.get("left");
+		Double x = left.doubleValue() * scale;
 		
+		Number top = (Number)locationarray.get("top");
+		Double y = top.doubleValue() * scale;
 		
-		try
-		{
-			JSONObject locationarray = new JSONObject();
-			JSONParser parser = new JSONParser();
-			locationarray = (JSONObject) parser.parse(boxlocation);
+		Number width = (Number)locationarray.get("width");
+		Double w = width.doubleValue() * scale;
+		
+		Number height = (Number)locationarray.get("height");
+		Double h = height.doubleValue() * scale;
+		
+		List<Integer> values = new ArrayList();
+		values.add( (int)Math.round(x));
+		values.add( (int)Math.round(y));
+		values.add( (int)Math.round(w));
+		values.add( (int)Math.round(h));	
 			
-			Double scale = MathUtils.divide(inputw, thumbwidth);
-			
-			Number left = (Number)locationarray.get("left");
-			Double x = left.doubleValue() * scale;
-			
-			Number top = (Number)locationarray.get("top");
-			Double y = top.doubleValue() * scale;
-			
-			Number width = (Number)locationarray.get("width");
-			Double w = width.doubleValue() * scale;
-			
-			Number height = (Number)locationarray.get("height");
-			Double h = height.doubleValue() * scale;
-			
-			newfacedata.put("locationx",Math.round( x));
-			newfacedata.put("locationy",Math.round( y));
-			newfacedata.put("locationw",Math.round( w));
-			newfacedata.put("locationh",Math.round( h));
-				
-			newfacedata.put("inputwidth",inputw);
-			newfacedata.put("inputheight",inputh);
-			
-			Collection<Map> faceprofiles = (Collection)asset.getValue("faceprofiles");
-			faceprofiles.add(newfacedata);
-			
-			asset.setValue("faceprofiles",faceprofiles);
-			archive.saveAsset(asset);
-			inReq.putPageValue("asset", asset);
-		}
-		catch ( Throwable ex)
-		{
-			log.error("Could not read profile location", ex );
-		}
+		FaceProfileManager manager = archive.getFaceProfileManager();
+		manager.addFaceEmbedded(inReq.getUser(), asset, values);
 		
 	}
 	
 	public void viewAllRelatedFaces(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-
-		String faceembeddedid = inReq.getRequestParameter("faceembeddingid");
 		FaceProfileManager manager = archive.getFaceProfileManager();
+		
+		String faceembeddedid = inReq.getRequestParameter("faceembeddingid");
 		
 		Collection<FaceBox> boxes = manager.viewAllRelatedFaces(faceembeddedid);
 		
