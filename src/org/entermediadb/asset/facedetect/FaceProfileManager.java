@@ -1495,6 +1495,15 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 		else
 		{
+			//Just one person
+			if( entityperson == null)
+			{
+				String entitypersonid = startdata.get("entityperson");
+				if( entitypersonid != null)
+				{
+					entityperson = getMediaArchive().getCachedData("entityperson", entitypersonid);
+				}
+			}
 			FaceBox box = makeBox(startdata, entityperson);
 			boxes.add(box);
 			loadedids.add(startdata.getId());
