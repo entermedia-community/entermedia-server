@@ -1496,7 +1496,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 		if( inEmbedding.get("timecodestart") != null )
 		{
-			double seconds = MathUtils.divide( inEmbedding.get("timecodestart").toString(),"1000");
+			double seconds = inEmbedding.getDouble("timecodestart");
 			box.setTimecodeStartSeconds(seconds);
 		}
 		return box;
