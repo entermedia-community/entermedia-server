@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 
 public class FaceBox
 {
@@ -20,12 +21,12 @@ public class FaceBox
 	{
 		return getEmbeddedData().get("assetid");
 	}
-	protected Data fieldEmbeddedData;
-	public Data getEmbeddedData()
+	protected MultiValued fieldEmbeddedData;
+	public MultiValued getEmbeddedData()
 	{
 		return fieldEmbeddedData;
 	}
-	public void setEmbeddedData(Data inEmbeddedData)
+	public void setEmbeddedData(MultiValued inEmbeddedData)
 	{
 		fieldEmbeddedData = inEmbeddedData;
 	}
@@ -59,4 +60,15 @@ public class FaceBox
 	}
 
 	protected double fieldTimecodeStartSeconds;
+	
+	public Integer getOriginalWidth()
+	{
+		Integer w = getEmbeddedData().getInt("originalwidth");
+		return w;
+	}
+	public Integer getOriginalHeight()
+	{
+		Integer w = getEmbeddedData().getInt("originalheight");
+		return w;
+	}
 }
