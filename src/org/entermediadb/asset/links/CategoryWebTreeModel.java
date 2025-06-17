@@ -133,7 +133,7 @@ public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnable
 			return true;
 		}
 			boolean hassecurity = false; 
-	    	Collection users = inCat.getValues("viewuser");
+	    	Collection users = inCat.collectValues("viewuser");
 	    	if (users != null && !users.isEmpty())
 	    	{
 	    		hassecurity = true;
@@ -143,7 +143,7 @@ public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnable
 	    		}
 	    	}
 	    
-	    	Collection roles = inCat.getValues("viewroles");
+	    	Collection roles = inCat.collectValues("viewroles");
 	    	
 	    	if (roles != null&& !roles.isEmpty())
 	    	{
@@ -154,7 +154,7 @@ public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnable
 	    		}
 	    	}
 
-	    	Collection viewgroups = inCat.getValues("viewgroups");
+	    	Collection viewgroups = inCat.collectValues("viewgroups");
 	    	
 	    	if (viewgroups != null&& !viewgroups.isEmpty())
 	    	{

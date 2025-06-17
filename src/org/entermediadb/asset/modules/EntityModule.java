@@ -1302,7 +1302,7 @@ public class EntityModule extends BaseMediaModule
 		Data module = archive.getCachedData("module", moduleid);
 		if (module != null && entity != null)
 		{
-			archive.getPermissionManager().checkEntityCategoryPermission(module, entity);
+			archive.getPermissionManager().checkEntityCategoryPermission(module, (MultiValued)entity);
 		}
 	}
 	
