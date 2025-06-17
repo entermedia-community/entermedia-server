@@ -1,6 +1,7 @@
 package modules;
 
 import org.openedit.Data
+import org.openedit.MultiValued
 import org.openedit.data.*
 import org.entermediadb.asset.*
 import org.openedit.hittracker.SearchQuery
@@ -23,11 +24,8 @@ public void init(){
 	Asset asset = archive.getAsset(assetid);
 	context.putPageValue("asset", asset);
 	
-	String rendertype = archive.getMediaRenderType(asset);
-	String previewpath = "/"+ applicationid + "/services/module/asset/players/webplayer/type";
-	previewpath = previewpath + "/" + rendertype + ".html";
-	
-	Data preset = archive.getCachedData("convertpreset", presetid);
+
+	MultiValued preset = archive.getCachedData("convertpreset", presetid);
 	context.putPageValue("preset", preset);
 	
 	if (asset == null || preset == null)
@@ -36,6 +34,22 @@ public void init(){
 		context.putPageValue("status", "error");
 		return;
 	}
+	
+	String rendertype = null;
+	
+	
+	if(preset.containsValue("inputtype", "image")) {
+		rendertype = "image";
+	}	
+	else if (preset.containsValue("inputtype", "video")) {
+		rendertype = "video";
+	}	
+	else if (preset.containsValue("inputtype", "audio")) {
+		rendertype = "audio";
+	}
+	
+	String previewpath = "/"+ applicationid + "/services/module/asset/players/webplayer/type";
+	previewpath = previewpath + "/" + rendertype + ".html";
 	
 	context.putPageValue("searcher", archive.getAssetSearcher());
 	
