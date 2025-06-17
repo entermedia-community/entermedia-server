@@ -477,7 +477,7 @@ public class PermissionManager implements CatalogEnabled
 //	}
 
 	
-	public void checkEntityCategoryPermission(Data inModule, Data inEntity)
+	public void checkEntityCategoryPermission(Data inModule, MultiValued inEntity)
 	{
 	    MediaArchive archive = getMediaArchive();
 	    Category rootcat = archive.getEntityManager().loadDefaultFolder(inModule, inEntity, null);
@@ -496,7 +496,7 @@ public class PermissionManager implements CatalogEnabled
 	            rootValues = Collections.emptyList();
 	        }
 	        if (combinedViewers == null) {
-	            combinedViewers = Collections.emptyList();
+	            combinedViewers = new ArrayList();
 	        }
 	        Collection editorValues = inEntity.getValues("editor" + field);
 	        if( field.equals("users") )
@@ -504,10 +504,10 @@ public class PermissionManager implements CatalogEnabled
 		        String owner = inEntity.get("owner");
 				if(owner != null)
 				{
-					if( !editorValues.contains(owner) )
+					if( !inEntity.containsValue("editor" + field, owner) )
 					{
-						editorValues.add(owner);
-						inEntity.setValue("editor" + field, editorValues);
+						inEntity.addValue("editor" + field, owner);
+						editorValues = inEntity.getValues("editor" + field);
 					}
 				}
 	        }
@@ -520,8 +520,7 @@ public class PermissionManager implements CatalogEnabled
 	        
 	        // Compare values
 	        if (!rootValues.containsAll(combinedViewers) || !combinedViewers.containsAll(rootValues)) {
-	            log.info("Mismatch found for field '" + field + "' in module " + inModule.getId());
-	            log.info("Root Category Values: " + rootValues + ", Module Values: " + combinedViewers);
+	            log.info("Custom values found: " + rootValues + ", Module values: " + combinedViewers);
 	            
 	            needsupdate = true;
 	        	rootcat.setValue("viewer" + field, combinedViewers);
