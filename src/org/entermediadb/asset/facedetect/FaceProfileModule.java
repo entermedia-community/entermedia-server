@@ -100,6 +100,14 @@ public class FaceProfileModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String personid = inReq.getRequestParameter("dataid"); //person
+		if (personid == null)
+		{
+			Data person= (Data)inReq.getPageValue("data"); //new person?
+			if (person != null)
+			{
+				personid = person.getId();
+			}
+		}
 		String assetid = inReq.getRequestParameter("assetid"); 
 		String faceembeddingid =inReq.getRequestParameter("faceembeddingid");
 		

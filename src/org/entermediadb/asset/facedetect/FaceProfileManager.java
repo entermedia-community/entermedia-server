@@ -754,11 +754,15 @@ public class FaceProfileManager implements CatalogEnabled
 	public Collection collectFaceBoxesAllPeople(Data inAsset)
 	{
 		//TODO Add Search type for finder
+		Collection boxes = new ArrayList();
+		
+		if (inAsset == null)
+		{
+			return boxes;
+		}
 		
 		Searcher searcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
 		HitTracker allthepeopleinasset = searcher.query().exact("assetid",inAsset).search();
-
-		Collection boxes = new ArrayList();
 		
 		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
 		{
