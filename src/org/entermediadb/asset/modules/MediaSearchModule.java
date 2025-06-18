@@ -460,7 +460,7 @@ public class MediaSearchModule extends BaseMediaModule
 		archive.getAssetSearcher().cachedSearch(inPageRequest, aquery);
 	}
 	
-	
+	//Delete this
 	public void searchPersonAssets(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);

@@ -19,7 +19,9 @@ import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
+import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
 import org.openedit.util.MathUtils;
 
 public class FaceProfileModule extends BaseMediaModule
@@ -121,13 +123,10 @@ public class FaceProfileModule extends BaseMediaModule
 				face.setValue("entityperson", personid);
 				archive.saveData("faceembedding",face);
 				
-				//save person
+				//always reset image
 				Data person = archive.getData("entityperson", personid);
-				if (person.get("primaryimage") == null)
-				{
-					person.setValue("primaryimage", assetid);
-					archive.saveData("entityperson", person);
-				}
+				person.setValue("primaryimage", assetid);
+				archive.saveData("entityperson", person);
 				
 			}
 		}
@@ -231,7 +230,10 @@ public class FaceProfileModule extends BaseMediaModule
 		inReq.putPageValue("faceboxes",boxes); //Used in Javascript? read in the DOM <face assetid="" location="{x,y,h,w}" />
 		inReq.putPageValue("entityperson",entityperson);
 		
-		HitTracker assets = archive.query("asset").ids(boxlookup.keySet()).named("faceassets").search(inReq);
+		String hitsname = inReq.findValue("hitsname");
+		
+		//"faceassets"
+		HitTracker assets = archive.query("asset").ids(boxlookup.keySet()).named(hitsname).search(inReq);
 		inReq.putPageValue(assets.getHitsName(),assets);
 		inReq.putSessionValue(assets.getSessionId(),assets);
 		
@@ -248,4 +250,28 @@ public class FaceProfileModule extends BaseMediaModule
 	
 		
 	}
+	
+	public void searchPersonAssets(WebPageRequest inPageRequest) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		String entityid = (String)inPageRequest.getPageValue("entityid");
+		if( entityid == null)
+		{
+			entityid = (String)inPageRequest.findValue("entityid");
+		}
+		if( entityid == null)
+		{
+			return;
+		}
+		Searcher faceembeddingsearcher = archive.getSearcherManager().getSearcher("system/facedb","faceembedding");
+		Data found = faceembeddingsearcher.query().exact("entityperson", entityid).searchOne();
+		
+		if( found != null)
+		{
+			inPageRequest.setRequestParameter("faceembeddingid",found.getId());
+			viewAllRelatedFaces(inPageRequest);
+		}
+	}
+	
+	
 }
