@@ -113,6 +113,8 @@ public class FaceProfileModule extends BaseMediaModule
 		
 		if (faceembeddingid != null && personid != null)
 		{
+			//Should we go disconnect the previous face? 
+			
 			MultiValued face = (MultiValued)archive.getData("faceembedding",faceembeddingid);
 			if (face != null)
 			{

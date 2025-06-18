@@ -84,7 +84,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 	protected ModuleManager fieldModuleManager;
 	
-	public HttpSharedConnection getSharedConnection()
+	protected HttpSharedConnection getSharedConnection()
 	{
 		String api = getMediaArchive().getCatalogSettingValue("faceapikey");
 		
@@ -312,7 +312,7 @@ public class FaceProfileManager implements CatalogEnabled
 		return allfacesinvideo;
 	}
 
-	private Collection<Data> combineVideoMatches(Collection<Data> inAllfacesinvideo)
+	protected Collection<Data> combineVideoMatches(Collection<Data> inAllfacesinvideo)
 	{
 		Collection<Data> uniquefaces = new ArrayList();
 
@@ -343,6 +343,7 @@ public class FaceProfileManager implements CatalogEnabled
 				if( same )
 				{
 					//TODO: Keep larger facebox
+					//TODO: Assign the endtime for the last time we saw the person
 					remainingfaces.remove(otherface);
 				}
 			}			
@@ -381,7 +382,7 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 	}
 	
-	public boolean compareVectors(double[] inputVector, double[] inCompareVector, double cutoff)
+	protected boolean compareVectors(double[] inputVector, double[] inCompareVector, double cutoff)
 	{
 		//Magnitude
 		double queryVectorNorm = 0.0;
@@ -417,35 +418,7 @@ public class FaceProfileManager implements CatalogEnabled
         }
         return true;
 	}
-	/**
-	 * 
-	 * { 
-    "results": [
-        {
-            "embedding": [
-                -0.8517391681671143,
-                1.6998907327651978,
-                           0.8266710042953491,/...
-                -0.03634177893400192
-            ],
-            "face_confidence": 0.9,
-            "facial_area": {
-                "h": 836,
-                "left_eye": [
-                    1684,
-                    801
-                ],
-                "right_eye": [
-                    1363,
-                    801
-                ],
-                "w": 836,
-                "x": 1103,
-                "y": 475
-            }
-        }
-    ]
-	 * */
+	
 	protected List<Data> makeDataForEachFace(Searcher facedb, Asset inAsset,double timecodestart, ContentItem inInput, List<Map> inJsonOfFaces) throws Exception
 	{
 		if( inJsonOfFaces.isEmpty())
@@ -676,7 +649,7 @@ public class FaceProfileManager implements CatalogEnabled
 	}
 	
 	
-	public float[] collectFloats(Collection vector) 
+	protected float[] collectFloats(Collection vector) 
 	{
 		float[] floats = new float[vector.size()];
 		int i = 0;
@@ -697,7 +670,7 @@ public class FaceProfileManager implements CatalogEnabled
 		return floats;
 	}
 	 //Used for saving data
-	public static String encodeFloats(float[] vector)
+	protected static String encodeFloats(float[] vector)
 	{
 		final int capacity = Float.BYTES * vector.length;
 	    final ByteBuffer bb = ByteBuffer.allocate(capacity);
@@ -710,7 +683,7 @@ public class FaceProfileManager implements CatalogEnabled
 	    return new String(encodedBB.array());
 	}
 
-	public double[] collectDoubles(Collection vector) 
+	protected double[] collectDoubles(Collection vector) 
 	{
 		double[] floats = new double[vector.size()];
 		int i = 0;
@@ -731,7 +704,7 @@ public class FaceProfileManager implements CatalogEnabled
 		return floats;
 	}
 	 //Used for saving data
-	public static String encodeDoubles(double[] vector)
+	protected static String encodeDoubles(double[] vector)
 	{
 		final int capacity = Double.BYTES * vector.length;
 	    final ByteBuffer bb = ByteBuffer.allocate(capacity);
@@ -751,6 +724,10 @@ public class FaceProfileManager implements CatalogEnabled
 //	        String base64 = encode(vector);
 //	        System.out.println(base64);
 //	    }
+	
+	/**
+	 * This is used in the asset UI to show the face a name
+	 */
 	public Collection collectFaceBoxesAllPeople(Data inAsset)
 	{
 		//TODO Add Search type for finder
@@ -775,6 +752,9 @@ public class FaceProfileManager implements CatalogEnabled
 		return boxes;	
 	}
 
+	/**
+	 * Used to cache the right person assigned to one embedding from the  method above 
+	 */
 	public Data loadPersonOfEmbedding(MultiValued embedding)
 	{
 		Searcher searcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
@@ -805,66 +785,7 @@ public class FaceProfileManager implements CatalogEnabled
 		return entityperson;
 	}
 	
-	private void uploadAProfile(Map faceprofile, long timecodestart,ContentItem originalImgage, Asset inAsset, String groupId ) throws Exception
-	{
-		int x = (Integer) faceprofile.get("locationx");
-		int y = (Integer) faceprofile.get("locationy");
-		int w = (Integer) faceprofile.get("locationw");
-		int h = (Integer) faceprofile.get("locationh");
- 
-			byte[] bytes =	new OutputFiller().readAll(originalImgage.getInputStream());
-	        ByteArrayBody body = new ByteArrayBody(bytes,inAsset.getName() + "_" + timecodestart + "_" + "x"+ x + "y" + y + "w" + w + "h" + h + ".webp");
-		
-		Map tosendparams = new HashMap();
-        tosendparams.put("file", body);
-		tosendparams.put("subject",groupId );
-
-		//tosendparams.put("file", new File(inInput.getAbsolutePath()));
-		CloseableHttpResponse resp = null;
-		String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
-		if( url == null)
-		{
-			throw new OpenEditException("No server set " );
-		}
-		resp = getSharedConnection().sharedMimePost(url + "/api/v1/recognition/faces",tosendparams);
-		if (resp.getStatusLine().getStatusCode() == 400)
-		{
-			//No faces found error
-			getSharedConnection().release(resp);
-			return;
-		}
-		JSONObject json = getSharedConnection().parseJson(resp);
-		if( json.get("image_id") != null)
-		{
-			//OK
-			//log.info("Profile: "+groupId+" created at server. Image id" + json.get("image_id"));
-		}
-		else 
-		{
-			log.info("Could'nt upload image, response:" + json.toString());
-		}
-		/*
-		{
-			  "image_id": "6b135f5b-a365-4522-b1f1-4c9ac2dd0728",
-			  "subject": "subject1"
-			}
-		*/
-	}
-
-	protected void updateEndTimes(List<Map> pendingprofiles, long cutofftime)
-	{
-		if (pendingprofiles != null) {
-			for (Iterator iterator = pendingprofiles.iterator(); iterator.hasNext();)
-			{
-				Map runningprofile = (Map) iterator.next(); //Put ends times because they got this far
-				
-				long length = cutofftime-(long)runningprofile.get("timecodestart");
-				runningprofile.put("timecodelength",length);
-			}
-		}
-	}
-	
-	private ContentItem generateInputFile(Asset inAsset, Block inBlock)
+	protected ContentItem generateInputFile(Asset inAsset, Block inBlock)
 	{
 		ConversionManager manager = getMediaArchive().getTranscodeTools().getManagerByRenderType("video");
 		String filename = getMediaArchive().generatedOutputName(inAsset,"image1900x1080");
@@ -950,7 +871,7 @@ public class FaceProfileManager implements CatalogEnabled
 		return results;
 	}
 	
-	public static String inputStreamToBase64(InputStream is) throws Exception {
+	protected static String inputStreamToBase64(InputStream is) throws Exception {
 	    ByteArrayOutputStream os = new ByteArrayOutputStream();
 	    byte[] buffer = new byte[8192];
 	    int bytesRead;
@@ -965,396 +886,13 @@ public class FaceProfileManager implements CatalogEnabled
 	    return text;
 	}
 
-	
-	/**
-	public Map getImageAndLocationForGroup(Data asset,Collection<Data> faceprofilegroups, Double thumbwidth, Double thumbheight)
-	{
-		
-		for(Data group : faceprofilegroups)
-		{
-			Map found = getImageAndLocationForGroup(asset, group, thumbwidth, thumbheight);
-			if( found != null)
-			{
-				return found;
-			}
-		}
-		return null;
-	}
-
-	public Map getImageAndLocationForGroup(Data asset,Data infaceprofilegroup, Double thumbwidth, Double thumbheight)
-	{
-		return getImageAndLocationForGroup(asset,infaceprofilegroup.getId(),thumbwidth,thumbheight);
-	}	
-	public Map getImageAndLocationForGroup(Data asset,String infaceprofilegroupid, String thumbwidth, String thumbheight)
-	{
-		return getImageAndLocationForGroup(asset,infaceprofilegroupid, Double.valueOf(thumbwidth) , Double.valueOf(thumbheight));
-	}
-
-	public Map getImageAndLocationForGroup(Data asset,String infaceprofilegroupid, Double thumbwidth, Double thumbheight)
-	{
-		Collection profiles = (Collection)asset.getValue("faceprofiles");
-		
-		
-		for (Iterator iterator = profiles.iterator(); iterator.hasNext();)
-		{
-			Map profile = (Map) iterator.next();
-			ValuesMap values = new ValuesMap(profile);
-			String groupid = (String)profile.get("faceprofilegroup");
-			
-			if( profile != null && infaceprofilegroupid.equals(groupid))
-			{
-				
-				Double x = values.getDouble("locationx");
-				Double y = values.getDouble("locationy");
-				Double w = values.getDouble("locationw");
-				Double h = values.getDouble("locationh");
-				Double inputwidth = values.getDouble("inputwidth");
-				
-				if (x == null || y == null || w == null || h == null)
-				{
-					continue;
-				}
-				
-				double scale = MathUtils.divide(thumbwidth , inputwidth);
-				
-				x = x * scale;
-				y = y * scale;
-				w = w * scale;
-				h = h * scale;
-				
-				Double[] scaledxy = new Double[] { x, y, w , h};
-				
-				//Calculate the dimentions scaled to this image
-				String json = JSONArray.toJSONString( Arrays.asList(scaledxy));
-				Map result = new HashMap();
-				result.put("groupid", groupid);
-				result.put("locationxy",json);
-				if( profile.get("timecodestart") != null )
-				{
-					double seconds = MathUtils.divide( profile.get("timecodestart").toString(),"1000");
-					result.put("timecodestartseconds",seconds);
-				}
-				return result;
-			}
-		}
-		
-		return null;
-	}
-	
-	public Map getImageAndLocationForGroup(MultiValued asset, Collection<Data>  infaceprofilegroup, Double thumbheight) { 
-		//Todo
-		
-		for (Iterator iterator = infaceprofilegroup.iterator(); iterator.hasNext();)
-		{
-			Data group = (Data)  iterator.next();
-			if(group != null) {
-				Map found = getImageAndLocationForGroup(asset, group.getId(), thumbheight);
-				if( found != null)
-				{
-					return found;
-				}
-			}
-		}
-	
-		return null;
-	}
-	
-	
-	public Map getImageAndLocationForGroup(MultiValued asset,String infaceprofilegroupid, Double thumbheight)
-	{
-		if(asset == null) {
-			return null;
-		}
-		
-		Collection profiles = (Collection)asset.getValue("faceprofiles");
-		
-		if (profiles != null) {
-			for (Iterator iterator = profiles.iterator(); iterator.hasNext();)
-			{
-				Map profile = (Map) iterator.next();
-				ValuesMap values = new ValuesMap(profile);
-				String groupid = (String)profile.get("faceprofilegroup");
-				
-				if( profile != null && infaceprofilegroupid.equals(groupid))
-				{
-					
-					double x = values.getInteger("locationx");
-					double y = values.getInteger("locationy");
-					double w = values.getInteger("locationw");
-					double h = values.getInteger("locationh");
-					double inputheight = values.getInteger("inputheight");
-					
-					if (inputheight == 0) {
-						double inputwidth = values.getInteger("inputwidth");
-						double assetscale = MathUtils.divide(asset.getDouble("height") , asset.getDouble("width"));
-						inputheight = inputwidth * assetscale;
-					}
-					double scale = MathUtils.divide(thumbheight , inputheight);
-					
-					x = x * scale;
-					y = y * scale;
-					w = w * scale;
-					h = h * scale;
-					
-					Double[] scaledxy = new Double[] { x, y, w , h};
-					
-					//Calculate the dimentions scaled to this image
-					String json = JSONArray.toJSONString( Arrays.asList(scaledxy));
-					Map result = new HashMap();
-					result.put("locationxy",json);
-					if( profile.get("timecodestart") != null )
-					{
-						double seconds = MathUtils.divide( profile.get("timecodestart").toString(),"1000");
-						result.put("timecodestartseconds",seconds);
-					}
-					return result;
-				}
-			}
-		}
-		return null;
-	}
-	
-	public List<Map> combineVideoMatches(List<Map> faceprofles, long inVideoLength)
-	{
-		long defaultlength = -1;
-		if( inVideoLength < 60000)
-		{
-			defaultlength = (long)MathUtils.divide(inVideoLength, 10);
-		}
-		else
-		{
-			defaultlength = (long)MathUtils.divide(inVideoLength, 20);
-		}
-		Map previousprofile = null;
-		List<Map> copy = new ArrayList();
-		for (Iterator iterator = faceprofles.iterator(); iterator.hasNext();)
-		{
-			Map profile = (Map)iterator.next();
-			profile.put("timecodelength",defaultlength);
-
-			if( previousprofile == null)
-			{
-				copy.add(profile);
-				previousprofile = profile;
-			}
-			else
-			{
-				String previousfaceprofilegroup = (String)previousprofile.get("faceprofilegroup");
-				String faceprofilegroup = (String)profile.get("faceprofilegroup");
-
-				long start1 = (Long)previousprofile.get("timecodestart");
-				long start2 = (Long)profile.get("timecodestart");
-				if( faceprofilegroup.equals(previousfaceprofilegroup))
-				{
-					long total = start2 - start1 + defaultlength;
-					//TODO: Beyond the end?
-					previousprofile.put("timecodelength",total);
-				}
-				else
-				{
-					long total = start2 - start1;
-					previousprofile.put("timecodelength",total);
-					copy.add(profile);
-					previousprofile = profile;
-				}
-			}
-		}
-		return copy;
-	}
-
-	public Collection<FaceAsset> findAssetsForPerson(Data inPersonEntity, int maxnumber)
-	{
-		Collection<Data> profiles = getMediaArchive().query("faceprofilegroup").exact("entityperson", inPersonEntity.getId()).search();
-		if (profiles.isEmpty()) {
-			return null;
-		}
-		
-		Collection<Data> assets = getMediaArchive().query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).hitsPerPage(maxnumber).search();
-
-		Map allprofiles = new HashMap();
-		for(Data profile : profiles)
-		{
-			allprofiles.put(profile.getId(), profile);
-		}
-		
-//
-//		Collection profiles = archive.query("faceprofilegroup").exact("entityperson", person.getId()).search();
-//		inPageRequest.putPageValue("faceprofiles", profiles);
-//		
-//		Collection assets = archive.query("asset").named("faceassets").orgroup("faceprofiles.faceprofilegroup", profiles).search();
-//		
-//		inPageRequest.putPageValue("entityassethits", assets);
-
-		Collection<FaceAsset> faceassets = new ListHitTracker<FaceAsset>();
-
-		Searcher searcher = getMediaArchive().getSearcher( "asset");
-		for(Data data: assets)
-		{
-			Asset asset = (Asset)searcher.loadData(data);
-			Collection<Map> faceprofiles = (Collection)asset.getValue("faceprofiles");
-			if (faceprofiles != null) {
-				for( Map facedata : faceprofiles)
-				{
-					String faceprofilegroupid = (String)facedata.get("faceprofilegroup");
-					Data group = (Data)allprofiles.get(faceprofilegroupid);
-					if( group != null)
-					{
-						FaceAsset faceasset = new FaceAsset();
-						faceasset.setAsset(asset);
-						faceasset.setFaceProfileGroup(group);
-						faceasset.setFaceLocationData(new ValuesMap(facedata));
-						faceassets.add(faceasset);
-					}
-				}
-			}
-		}
-		
-		
-		return faceassets;
-		
-	}
-	
-	
-	public Map getImageBox(Collection<Data> faceprofilegroups, Data asset, String imagew, String imageh)
-	{
-		if(faceprofilegroups == null || faceprofilegroups.size() < 1)
-		{
-			return null;
-		}
-		for(Data group : faceprofilegroups)
-		{
-			Map found = getImageAndLocationForGroup(asset, group, Double.valueOf(imagew), Double.valueOf(imageh));
-			if (found != null)
-			{
-				return found;
-			}
-		}
-		return null;
-	}
-	
-	public Map getImageBoxById(String faceprofilegroupid, Data asset, String imagew, String imageh)
-	{
-		Map found = getImageAndLocationForGroup(asset, faceprofilegroupid, Double.valueOf(imagew), Double.valueOf(imageh));
-		if (found != null)
-		{
-			return found;
-		}
-		return null;
-	}
-	
-	
-	public Collection<FaceAsset> findAssetsForProfile(String inFaceProfileId, int maxnumber)
-	{
-		Collection<Data> profiles = getMediaArchive().query("faceprofilegroup").exact("id", inFaceProfileId).search();
-		Collection<Data> assets = getMediaArchive().query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).hitsPerPage(maxnumber).search();
-
-		Map allprofiles = new HashMap();
-		for(Data profile : profiles)
-		{
-			allprofiles.put(profile.getId(), profile);
-		}
-
-		log.info(assets.size() +" assets found for profile id: " + inFaceProfileId);
-//
-//		Collection profiles = archive.query("faceprofilegroup").exact("entityperson", person.getId()).search();
-//		inPageRequest.putPageValue("faceprofiles", profiles);
-//		
-//		Collection assets = archive.query("asset").named("faceassets").orgroup("faceprofiles.faceprofilegroup", profiles).search();
-//		
-//		inPageRequest.putPageValue("entityassethits", assets);
-
-		Collection<FaceAsset> faceassets = new ListHitTracker<FaceAsset>();
-
-		Searcher searcher = getMediaArchive().getSearcher("asset");
-		for(Data data: assets)
-		{
-			Asset asset = (Asset)searcher.loadData(data);
-			Collection<Map> faceprofiles = (Collection)asset.getValue("faceprofiles");
-			for( Map facedata : faceprofiles)
-			{
-				String faceprofilegroupid = (String)facedata.get("faceprofilegroup");
-				Data group = (Data)allprofiles.get(faceprofilegroupid);
-				if( group != null)
-				{
-					FaceAsset faceasset = new FaceAsset();
-					faceasset.setAsset(asset);
-					faceasset.setFaceProfileGroup(group);
-					faceasset.setFaceLocationData(new ValuesMap(facedata));
-					faceassets.add(faceasset);
-				}
-			}
-		}
-		
-		
-		return faceassets;
-		
-	}
-
-	public FaceAsset loadFaceData(Data faceprofilegroup,Data inData)
-	{
-		Searcher searcher = getMediaArchive().getSearcher("asset");
-		
-		Asset asset = (Asset)searcher.loadData(inData);
-		Collection<Map> faceprofiles = (Collection)asset.getValue("faceprofiles");
-		for( Map facedata : faceprofiles)
-		{
-			String groupid = (String)facedata.get("faceprofilegroup");
-			if( faceprofilegroup.getId().equals( groupid ))
-			{
-				FaceAsset faceasset = new FaceAsset();
-				faceasset.setAsset(asset);
-				faceasset.setFaceProfileGroup(faceprofilegroup);
-				faceasset.setFaceLocationData(new ValuesMap(facedata));
-				return faceasset;
-			}
-		}
-		return null;
-	}
-	
-	public Map getImageAndLocationForFaceAsset(FaceAsset faceasset, int thumbheight)
-	{
-		ValuesMap profiledata = faceasset.getFaceLocationData();
-			
-		double x = profiledata.getInteger("locationx");
-		double y = profiledata.getInteger("locationy");
-		double w = profiledata.getInteger("locationw");
-		double h = profiledata.getInteger("locationh");
-		double inputheight = profiledata.getInteger("inputheight");
-		
-		if (inputheight == 0) {
-			double inputwidth = profiledata.getInteger("inputwidth");
-			double assetscale = MathUtils.divide(faceasset.getAsset().getDouble("height") , faceasset.getAsset().getDouble("width"));
-			inputheight = inputwidth * assetscale;
-		}
-		double scale = MathUtils.divide(thumbheight , inputheight);
-				
-		x = x * scale;
-		y = y * scale;
-		w = w * scale;
-		h = h * scale;
-		
-		Double[] scaledxy = new Double[] { x, y, w , h};
-		
-		//Calculate the dimentions scaled to this image
-		String json = JSONArray.toJSONString( Arrays.asList(scaledxy));
-		Map result = new HashMap();
-		result.put("locationxy",json);
-		if( profiledata.get("timecodestart") != null )
-		{
-			double seconds = MathUtils.divide( profiledata.get("timecodestart").toString(),"1000");
-			result.put("timecodestartseconds",seconds);
-		}
-		return result;
-	}
-	*/
-
 	/**
 	 * Gets image dimensions for given file 
 	 * @param imgFile image file
 	 * @return dimensions of image
 	 * @throws IOException if the file is not a known image
 	 */
-	public  Dimension getImageDimensionImageIO(File imgFile) throws IOException {
+	protected  Dimension getImageDimensionImageIO(File imgFile) throws IOException {
 	  int pos = imgFile.getName().lastIndexOf(".");
 	  if (pos == -1)
 	    throw new IOException("No extension for file: " + imgFile.getAbsolutePath());
@@ -1362,8 +900,9 @@ public class FaceProfileManager implements CatalogEnabled
 	  Iterator<ImageReader> iter = ImageIO.getImageReadersBySuffix(suffix);
 	  while(iter.hasNext()) {
 	    ImageReader reader = iter.next();
+	    ImageInputStream stream = null;
 	    try {
-	      ImageInputStream stream = new FileImageInputStream(imgFile);
+	      stream = new FileImageInputStream(imgFile);
 	      reader.setInput(stream);
 	      int width = reader.getWidth(reader.getMinIndex());
 	      int height = reader.getHeight(reader.getMinIndex());
@@ -1372,13 +911,14 @@ public class FaceProfileManager implements CatalogEnabled
 	      log.warn("Error reading: " + imgFile.getAbsolutePath(), e);
 	    } finally {
 	      reader.dispose();
+	      FileUtils.safeClose(stream);
 	    }
 	  }
 
 	  throw new IOException("Not a known image file: " + imgFile.getAbsolutePath());
 	}
 	
-    public java.awt.Dimension getImageDimensionWebP(InputStream is) throws IOException {
+    protected java.awt.Dimension getImageDimensionWebP(InputStream is) throws IOException {
     	
     	try
     	{
@@ -1446,6 +986,9 @@ public class FaceProfileManager implements CatalogEnabled
         return new Dimension(width, height);
     }
 
+    /**
+     * Used by UI to find all related people in the dialog
+     */
 	public Collection<FaceBox> viewAllRelatedFaces(String inFaceembeddedid)
 	{
 		MultiValued startdata = (MultiValued)getMediaArchive().getCachedData("faceembedding", inFaceembeddedid);
@@ -1550,7 +1093,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 	public void rescanAsset(Asset inAsset)
 	{
-		Searcher faceembeddingsearcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
+//		Searcher faceembeddingsearcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
 //		Collection others = faceembeddingsearcher.query().exact("assetid",inAsset).search();
 //		
 //		faceembeddingsearcher.deleteAll(others, null);
