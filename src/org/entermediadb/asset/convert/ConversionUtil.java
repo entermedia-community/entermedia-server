@@ -5,18 +5,21 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.DataHitTracker;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.repository.ContentItem;
+import org.openedit.util.MathUtils;
 
 public class ConversionUtil {
 	
@@ -385,5 +388,52 @@ public class ConversionUtil {
 		return output.getLength() > 0;
 	}
 
+	public List<Integer> loadCropBox(MediaArchive inArchive, Asset inAsset, Data preset)
+	{
+		Searcher assetcrops = inArchive.getSearcher("assetcrop");
+		MultiValued assetcrop = (MultiValued)assetcrops.query().exact("presetid", preset.getId()).exact("assetid", inAsset.getId()).searchOne();
+	
+		List<Integer> box = new ArrayList();
+
+		int cropx = 0;
+		int cropy = 0;
+		int cropwidth = 0;
+		int cropheight = 0;
+
+		if( assetcrop == null)
+		{
+			//Take a guess
+			cropwidth = inAsset.getInt("width");
+			
+			String ext = preset.get("outputextension");
+			ConversionManager manager = inArchive.getTranscodeTools().getManagerByFileFormat(ext);
+			ConvertInstructions instructions = manager.createInstructions(inAsset, preset);
+			
+			int aspectwidth = instructions.intValue("prefwidth",-1);
+			int aspectheight= instructions.intValue("prefheight",-1);
+			double aspect = MathUtils.divide(aspectwidth , aspectheight );
+			cropheight = Math.round( (float)aspect * (float)cropwidth);
+			
+			int height = inAsset.getInt("height");
+			float halfh = (float)MathUtils.divide( height,2 );
+			float halfcrop = (float)MathUtils.divide( cropheight,2 );
+			cropy = 0;
+			cropy =  Math.round( halfh - halfcrop);
+		}
+		else
+		{
+			cropx = assetcrop.getInt("x1");
+			cropy = assetcrop.getInt("y1");
+			cropwidth = assetcrop.getInt("cropwidth");
+			cropheight = assetcrop.getInt("cropheight");
+		}
+		
+		box.add(cropx);
+		box.add(cropy);
+		box.add(cropwidth);
+		box.add(cropheight);
+		
+		return box;
+	}
 	
 }
