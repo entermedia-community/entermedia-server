@@ -388,22 +388,17 @@ public class ConversionUtil {
 		return output.getLength() > 0;
 	}
 
-	public List<Integer> loadCropBox(MediaArchive inArchive, Asset inAsset, Data preset)
+	public MultiValued loadCropBox(MediaArchive inArchive, Asset inAsset, Data preset)
 	{
 		Searcher assetcrops = inArchive.getSearcher("assetcrop");
 		MultiValued assetcrop = (MultiValued)assetcrops.query().exact("presetid", preset.getId()).exact("assetid", inAsset.getId()).searchOne();
 	
 		List<Integer> box = new ArrayList();
 
-		int cropx = 0;
-		int cropy = 0;
-		int cropwidth = 0;
-		int cropheight = 0;
-
 		if( assetcrop == null)
 		{
 			//Take a guess
-			cropwidth = inAsset.getInt("width");
+			int cropwidth = inAsset.getInt("width");
 			
 			String ext = preset.get("outputextension");
 			ConversionManager manager = inArchive.getTranscodeTools().getManagerByFileFormat(ext);
@@ -413,28 +408,20 @@ public class ConversionUtil {
 			int aspectheight= instructions.intValue("prefheight",-1);
 			double aspect = MathUtils.divide(aspectwidth , aspectheight );
 			float ch = (float)  MathUtils.divide(cropwidth , aspect);
-			cropheight = Math.round(ch);
+			int cropheight = Math.round(ch);
 			
 			int height = inAsset.getInt("height");
 			float halfh = (float)MathUtils.divide( height, 2 );
 			float halfcrop = (float)MathUtils.divide( cropheight,2 );
-			cropy = 0;
+			int cropy = 0;
 			cropy =  Math.round(halfh - halfcrop);
-		}
-		else
-		{
-			cropx = assetcrop.getInt("cropx");
-			cropy = assetcrop.getInt("cropy");
-			cropwidth = assetcrop.getInt("cropwidth");
-			cropheight = assetcrop.getInt("cropheight");
+			assetcrop.setValue("cropx",0);
+			assetcrop.setValue("cropy",cropy);
+			assetcrop.setValue("cropheight",cropheight);
+			assetcrop.setValue("cropwidth",cropwidth);
 		}
 		
-		box.add(cropx);
-		box.add(cropy);
-		box.add(cropwidth);
-		box.add(cropheight);
-		
-		return box;
+		return assetcrop;
 	}
 	
 }
