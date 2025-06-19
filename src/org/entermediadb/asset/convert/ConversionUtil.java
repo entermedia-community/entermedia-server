@@ -412,13 +412,14 @@ public class ConversionUtil {
 			int aspectwidth = instructions.intValue("prefwidth",-1);
 			int aspectheight= instructions.intValue("prefheight",-1);
 			double aspect = MathUtils.divide(aspectwidth , aspectheight );
-			cropheight = Math.round( (float)aspect * (float)cropwidth);
+			float ch = (float)  MathUtils.divide(cropwidth , aspect);
+			cropheight = Math.round(ch);
 			
 			int height = inAsset.getInt("height");
-			float halfh = (float)MathUtils.divide( height,2 );
+			float halfh = (float)MathUtils.divide( height, 2 );
 			float halfcrop = (float)MathUtils.divide( cropheight,2 );
 			cropy = 0;
-			cropy =  Math.round( halfh - halfcrop);
+			cropy =  Math.round(halfh - halfcrop);
 		}
 		else
 		{
