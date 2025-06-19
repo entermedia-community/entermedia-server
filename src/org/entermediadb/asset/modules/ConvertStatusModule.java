@@ -93,8 +93,6 @@ public class ConvertStatusModule extends BaseMediaModule
 				settings.setValue(field, val);
 			}		
 		}
-		
-		
 		settings.setProperty("presetdataid", preset.get("guid"));
 		settings.setProperty("croplast", "true");
 		settings.setProperty("force", "true");
@@ -146,32 +144,6 @@ public class ConvertStatusModule extends BaseMediaModule
 			Double x1 = Double.parseDouble(x);
 			Double y1 = Double.parseDouble(y);
 
-			
-			
-			Double croppreviewwidth = 1024d;
-			if (instructions.get("cropprevieww") != null) {
-				croppreviewwidth = Double.parseDouble(instructions.get("cropprevieww"));
-			}
-			Double croppreviewheight = 768d;
-			if (instructions.get("croppreviewh") != null) {
-				Double.parseDouble(instructions.get("croppreviewh"));
-			}
-			//Scale down to deal with big images
-//			if(originalwidth > croppreviewwidth && wide) 
-//			{
-//				//scalefactor = 1024d/originalwidth;
-//				scalefactor = croppreviewwidth/originalwidth;
-//			}
-//			else if( originalheight > croppreviewheight)
-//			{
-//				scalefactor = croppreviewheight/originalheight;
-//			}
-//
-//			cropheight = cropheight/scalefactor;
-//			cropwidth = cropwidth/scalefactor;
-//			x1 = x1/scalefactor;
-//			y1 = y1/scalefactor;
-			
 			instructions.setProperty("cropheight", Integer.toString(cropheight.intValue()));
 			instructions.setProperty("cropwidth", Integer.toString(cropwidth.intValue()));
 			instructions.setProperty("x1", Integer.toString(x1.intValue()));
@@ -179,15 +151,11 @@ public class ConvertStatusModule extends BaseMediaModule
 			instructions.setOutputFile(outputpage);
 			
 		}
-		
-		
-		
-		
-		if("image1024x768.jpg".equals(preset.get("generatedoutputfile"))){
-			Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getPath() + "/image1024x768.jpg");
-			instructions.setInputFile(s1024.getContentItem());//So it doesn't go back to the original when cropping 
-		}
-	
+//		
+//		if("image1024x768.jpg".equals(preset.get("generatedoutputfile"))){
+//			Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getPath() + "/image1024x768.jpg");
+//			instructions.setInputFile(s1024.getContentItem());//So it doesn't go back to the original when cropping 
+//		}
 	
 		manager.createOutput(instructions); //This will go back to the original if needed
 	
@@ -213,22 +181,18 @@ public class ConvertStatusModule extends BaseMediaModule
 			assetcrop = assetcrops.createNewData();
 			assetcrop.setProperty("presetid", preset.getId());
 			assetcrop.setProperty("assetid", asset.getId());
-			String userid = inReq.getUser().getId();
-			assetcrop.setProperty("userid", userid);
 		}
-		int cropx = (int) Double.parseDouble(settings.get("x1"));
-		int cropy = (int) Double.parseDouble(settings.get("y1"));
-		int cropwidth = (int) Double.parseDouble(settings.get("cropwidth"));
-		int cropheight = (int) Double.parseDouble(settings.get("cropheight"));
-		int croppreviewwidth = (int) Double.parseDouble(settings.get("cropprevieww"));
-		int croppreviewheight = (int) Double.parseDouble(settings.get("croppreviewh"));
+		String userid = inReq.getUser().getId();
+		assetcrop.setProperty("userid", userid);
+		int cropx = (int) Double.parseDouble(instructions.get("x1"));
+		int cropy = (int) Double.parseDouble(instructions.get("y1"));
+		int cropwidth = (int) Double.parseDouble(instructions.get("cropwidth"));
+		int cropheight = (int) Double.parseDouble(instructions.get("cropheight"));
 		
 		assetcrop.setValue("cropx", cropx);
 		assetcrop.setValue("cropy", cropy);
 		assetcrop.setValue("cropwidth", cropwidth);
-		assetcrop.setValue("cropheight", cropheight); 
-		assetcrop.setValue("croppreviewwidth", croppreviewwidth);
-		assetcrop.setValue("croppreviewheight", croppreviewheight);
+		assetcrop.setValue("cropheight", cropheight);  //Relative to original
 		assetcrops.saveData(assetcrop);
 		
 		archive.fireMediaEvent("usercrop", inReq.getUser(), asset );

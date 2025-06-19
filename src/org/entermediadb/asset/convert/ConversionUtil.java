@@ -423,8 +423,8 @@ public class ConversionUtil {
 		}
 		else
 		{
-			cropx = assetcrop.getInt("x1");
-			cropy = assetcrop.getInt("y1");
+			cropx = assetcrop.getInt("cropx");
+			cropy = assetcrop.getInt("cropy");
 			cropwidth = assetcrop.getInt("cropwidth");
 			cropheight = assetcrop.getInt("cropheight");
 		}
