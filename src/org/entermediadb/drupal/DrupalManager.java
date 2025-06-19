@@ -5,13 +5,17 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
+import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
@@ -19,9 +23,10 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
-import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.util.ExecutorManager;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.XmlUtil;
@@ -38,6 +43,9 @@ public class DrupalManager implements CatalogEnabled
 	protected XmlUtil fieldXmlUtil;
 	protected Date fieldTokenTime;
 	protected HttpSharedConnection connection;
+	
+	protected HitTracker sourcesConfig;
+	
 	protected MultiValued fieldConfig;
 
 	public Date getTokenTime()
@@ -60,7 +68,18 @@ public class DrupalManager implements CatalogEnabled
 		fieldCatalogId = inCatalogId;
 	}
 	
-	public MultiValued getConfig()
+	public HitTracker getSources()
+	{
+		if (sourcesConfig == null)
+		{
+			sourcesConfig = getMediaArchive().getSearcher("drupalsource").query().exact("enabled", "true").search();
+		}
+		return sourcesConfig;
+	}
+	
+	
+	
+	public MultiValued getAuthConfig()
 	{
 		if (fieldConfig == null)
 		{
@@ -98,34 +117,45 @@ public class DrupalManager implements CatalogEnabled
 	
 	
 	
-	public void syncContent()
+	public void syncContent(WebPageRequest inReq)
 	{
-		Integer datacount = 0;
+		ScriptLogger inLog = (ScriptLogger)inReq.getPageValue("log");
 		
-		Collection<JSONObject> content = listContent();
-		if (content != null) {
-			
-			for (Iterator iterator = content.iterator(); iterator.hasNext();)
+		for (Iterator iterator1= getSources().iterator(); iterator1.hasNext();)
+		{
+			Integer datacount = 0;
+			MultiValued source = (MultiValued) iterator1.next();
+			Collection<JSONObject> content = listContent(source);
+			if (content != null) {
+				
+				for (Iterator iterator = content.iterator(); iterator.hasNext();)
+				{
+					JSONObject object = (JSONObject) iterator.next();
+					
+					if (createContent(source, object)) 
+						{
+						datacount++;
+						};
+					
+				}
+			}
+			if (datacount > 0)
 			{
-				JSONObject object = (JSONObject) iterator.next();
-				
-				if (createContent(object)) 
-					{
-					datacount++;
-					};
-				
+				log.info("Imported " + datacount  + " items from Drupal source: " + source.getName());
+				inLog.info("Imported " + datacount  + " items from Drupal source: " + source.getName());
 			}
 		}
-		if (datacount > 0)
-		{
-			log.info("Imported " + datacount  + " from Drupal.");
-		}
+		
+		
 	}
 	
-	public Collection listContent() {
+	public Collection listContent(MultiValued inSource) {
 		Collection results = new ArrayList();
 		
-		String url = getConfig().get("remoteroot") + "/jsonapi/node/" + getConfig().get("contenttype"); 
+		String url = inSource.get("remoteroot") + "/jsonapi/"+ inSource.get("structure")+"/" + inSource.get("contenttype"); 
+		// Filters:
+		// inSource.get(startfrom)
+		
 		if (getAccessToken() != null)
 		{
 			getConnection().putSharedHeader("Authorization", "Bearer " + getAccessToken());
@@ -156,9 +186,10 @@ public class DrupalManager implements CatalogEnabled
 	
 	
 	
-	public Boolean createContent(JSONObject inContent)
+	public Boolean createContent(MultiValued inSource, JSONObject inContent)
 	{
-		Searcher contentSearcher = getMediaArchive().getSearcher("drupalcontent"); //entity
+		String contentSearchtype = inSource.get("moduleid");
+		Searcher contentSearcher = getMediaArchive().getSearcher(contentSearchtype); //entity
 		//search if exists
 		String id = inContent.get("id").toString();
 		MultiValued contentData = (MultiValued) contentSearcher.searchById(id);
@@ -169,7 +200,10 @@ public class DrupalManager implements CatalogEnabled
 		
 		contentData = (MultiValued) contentSearcher.createNewData();
 		
+		contentData.setValue("entitysourcetype", contentSearchtype);
+		
 		contentData.setValue("id", id );
+		
 		
 		JSONObject links = (JSONObject) inContent.get("links");
 		if (links != null)
@@ -182,20 +216,34 @@ public class DrupalManager implements CatalogEnabled
 		}
 		
 		JSONObject attributes = (JSONObject) inContent.get("attributes");
+
 		
-		contentData.setValue("name", attributes.get("title") );
+		//drupal_internal__nid for node drupal_internal__id for entities
+		Long drupalinternalid = (Long)attributes.get("drupal_internal__id");
+		if (drupalinternalid == null)
+		{
+			drupalinternalid = (Long)attributes.get("drupal_internal__nid");
+		}
+		contentData.setValue("drupalinternalid",  drupalinternalid);
 		
+		String title = (String)attributes.get("title");
+		if (title == null)
+		{
+			title = inSource.get("contenttype") + " " + drupalinternalid.toString();
+		}
+		
+		contentData.setValue("name", title);
+		contentData.setValue("contentdate", attributes.get("created"));  //created || changed
+
 		JSONObject body = (JSONObject) attributes.get("body");
 		if (body != null)
 		{
 			contentData.setValue("longcaption", body.get("value"));
 		}
 		
-		contentData.setValue("contentdate", attributes.get("changed"));  //created || changed
 		
-		
+		/*
 		//search asset fields
-		
 		for (Iterator iterator = contentSearcher.getPropertyDetails().iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
@@ -211,14 +259,81 @@ public class DrupalManager implements CatalogEnabled
 			}
 			
 		}
+		*/
+		
+		List entityassets = new ArrayList();
+		
+		//Dynamic create fields when asset_id exists
+		for (Iterator iterator = attributes.keySet().iterator(); iterator.hasNext();)
+		{
+			String attributekey = (String)iterator.next();
+			if (attributes.get(attributekey) instanceof JSONObject)
+			{
+				JSONObject attribute = (JSONObject) attributes.get(attributekey);
+				String assetid = (String)attribute.get("asset_id");
+				if (assetid != null)
+				{
+					entityassets.add(assetid);
+					contentData.setValue(attributekey, assetid);
+					
+					if (attributekey.endsWith("primary_media"))
+					{
+						contentData.setValue("primarymedia", assetid);
+					}
+					
+				}
+			}
+		}
+				
+		
+		//1 to many
+		String parenttype = (String)attributes.get("parent_type");
+		String parentid = (String)attributes.get("parent_id");
+		if (parenttype != null && parentid != null)
+		{
+			for (Iterator iterator1= getSources().iterator(); iterator1.hasNext();)
+			{
+				MultiValued source = (MultiValued) iterator1.next();
+				if (source.get("structure").equals(parenttype))
+				{
+					//It is a entity?
+					String moduleid = source.get("moduleid");
+					if (moduleid != null)
+					{				
+						Data parent = getMediaArchive().getSearcher(moduleid).query().exact("drupalinternalid", parentid).searchOne() ;
+						if (parent != null)
+						{
+							contentData.setValue(moduleid, parent.get("id"));
+						}
+					}
+				}
+			}
+			
+		}
 		
 			
 		contentSearcher.saveData(contentData);
 		
+		if (entityassets.size()> 0)
+		{
+			//get entity Category
+			Category contentcategory = getMediaArchive().getEntityManager().createDefaultFolder(contentData, null);
+			for (Iterator iterator = entityassets.iterator(); iterator.hasNext();)
+			{
+				String assetid = (String) iterator.next();
+				Asset asset = getMediaArchive().getAsset(assetid);
+				if (asset != null)
+				{
+					asset.addCategory(contentcategory);
+					getMediaArchive().saveAsset(asset);
+				}
+			}
+		}
+		
 		//get more data
 		//contentData.setValue("name", attributes.get("title") );
 		
-		return false;
+		return true;
 	}
 	
 	
@@ -227,7 +342,7 @@ public class DrupalManager implements CatalogEnabled
 	//TODO: Validate this token before running any API. Cache results
 	public String getAccessToken() throws OpenEditException
 	{
-		String accesstoken = getConfig().get("httprequesttoken");
+		String accesstoken = getAuthConfig().get("httprequesttoken");
 		return accesstoken;
 	}
 	
@@ -236,7 +351,7 @@ public class DrupalManager implements CatalogEnabled
 	public void refreshToken() throws OpenEditException
 	{
 		
-		Data authinfo = getConfig();
+		Data authinfo = getAuthConfig();
 		String accesstoken = authinfo.get("httprequesttoken");
 		String clientid = null;
 		String clientsecret = null;
