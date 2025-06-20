@@ -183,7 +183,7 @@ public class ConvertStatusModule extends BaseMediaModule
 			assetcrop.setProperty("assetid", asset.getId());
 		}
 		String userid = inReq.getUser().getId();
-		assetcrop.setProperty("userid", userid);
+		assetcrop.setValue("userid", userid);
 		int cropx = (int) Double.parseDouble(instructions.get("x1"));
 		int cropy = (int) Double.parseDouble(instructions.get("y1"));
 		int cropwidth = (int) Double.parseDouble(instructions.get("cropwidth"));

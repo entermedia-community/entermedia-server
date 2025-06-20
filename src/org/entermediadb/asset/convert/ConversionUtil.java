@@ -13,6 +13,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.DataHitTracker;
@@ -397,6 +398,7 @@ public class ConversionUtil {
 
 		if( assetcrop == null)
 		{
+			assetcrop = new BaseData();
 			//Take a guess
 			int cropwidth = inAsset.getInt("width");
 			
