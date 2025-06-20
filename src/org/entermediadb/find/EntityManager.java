@@ -1209,4 +1209,9 @@ public class EntityManager implements CatalogEnabled
 		searcher.saveJson(entityid, sourceObj);	
 	}
 	
+	public Data findEntityByPath(String inModuleId, String sourcepath)
+	{
+		Data found = getMediaArchive().query(inModuleId).exact("entitysourcetype",sourcepath).searchOne();
+		return found;
+	}
 }
