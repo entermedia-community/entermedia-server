@@ -587,7 +587,12 @@ public class CategoryModule extends BaseMediaModule
 				text = text.trim();
 			}
 			tosave.setName(text);
+			String[] fields = inReq.getRequestParameters("field");
+			if(fields != null) {
+				getCategorySearcher(inReq).updateData(inReq, fields, tosave);
+			}
 			getCategorySearcher(inReq).saveCategory(tosave);
+			inReq.putPageValue("cat", tosave);
 		}
 		//getCatalogTree(inReq);
 	}
