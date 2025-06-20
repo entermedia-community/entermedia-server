@@ -58,8 +58,8 @@ public class ConvertStatusModule extends BaseMediaModule
 	public void addConvertRequest(WebPageRequest inReq)
 	{
 		//sourcepath=" + asset.getSourcePath() + "preset=" + preset.getId());
-		String sourcePath = inReq.getRequestParameter("sourcepath");
-		if( sourcePath == null)
+		String assetid = inReq.getRequestParameter("assetid");
+		if( assetid == null)
 		{
 			return;
 		}
@@ -70,7 +70,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		}
 		MediaArchive archive = getMediaArchive(inReq);
 
-		Asset asset = archive.getAssetBySourcePath(sourcePath);
+		Asset asset = archive.getAsset(assetid);
 		if(presetId == null){
 			return;
 		}
@@ -97,7 +97,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		settings.setProperty("croplast", "true");
 		settings.setProperty("force", "true");
 		settings.setProperty("gravity", "NorthWest");
-        //archive.getTranscodeTools().createOutputIfNeeded(settings, sourcePath, "jpg");
+
 		ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat(asset.getFileFormat());
 		
 		Map prop = settings.getProperties();
