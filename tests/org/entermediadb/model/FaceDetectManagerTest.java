@@ -3,12 +3,15 @@
  */
 package org.entermediadb.model;
 
-import java.util.Map;
+import java.util.Collection;
 
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.facedetect.FaceProfileManager;
+import org.openedit.Data;
 import org.openedit.util.FileUtils;
+
+import com.google.gson.JsonParser;
 
 /**
  * @author cburkey
@@ -56,12 +59,23 @@ public class FaceDetectManagerTest extends BaseEnterMediaTest
 		
 	}
 	*/
-	public void testDetectProfile() throws Exception
+	public void testCompareValues() throws Exception
 	{
 		FaceProfileManager manager = (FaceProfileManager)getMediaArchive().getBean("faceProfileManager");
-		manager.extractFaces(testimage);
+		Data parent = getMediaArchive().getCachedData("faceembedding", "123");
+		Data child = getMediaArchive().getCachedData("faceembedding", "432");
 		
-		Map profiles = (Map)testimage.getValue("faceprofiles");
-		assertNotNull(profiles);
+		Collection parentvalues =  (Collection)JsonParser.parseString(parent.get("facedatajson"));
+		double[] parentd = manager.collectDoubles(parentvalues); 
+
+		Collection childvalues =  (Collection)JsonParser.parseString(parent.get("facedatajson"));
+		double[] childd = manager.collectDoubles(childvalues); 
+		
+		assertFalse( manager.compareVectors(parentd, childd, .6D) );
+
+//		manager.extractFaces(testimage);
+//		
+//		Map profiles = (Map)testimage.getValue("faceprofiles");
+//		assertNotNull(profiles);
 	}
 }

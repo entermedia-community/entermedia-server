@@ -382,7 +382,7 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 	}
 	
-	protected boolean compareVectors(double[] inputVector, double[] inCompareVector, double cutoff)
+	public boolean compareVectors(double[] inputVector, double[] inCompareVector, double cutoff)
 	{
 		//Magnitude
 		double queryVectorNorm = 0.0;
@@ -623,6 +623,13 @@ public class FaceProfileManager implements CatalogEnabled
 				Integer h = hit.getInt("locationh");
 				if( h > 300 )  //Dont link to small image no matter what
 				{
+//					String parentid = hit.get("parentembeddingid");
+//					if( parentid != null)
+//					{
+//						//Double check
+//						Data parent = getMediaArchive().getCachedData("faceembedding", parentid);
+//						if( 
+//					}
 					Double score = hit.getDouble("_score");
 					inFaceEmbbed.setValue("parentscore", score);
 					return hit;
@@ -683,7 +690,7 @@ public class FaceProfileManager implements CatalogEnabled
 	    return new String(encodedBB.array());
 	}
 
-	protected double[] collectDoubles(Collection vector) 
+	public double[] collectDoubles(Collection vector) 
 	{
 		double[] floats = new double[vector.size()];
 		int i = 0;
