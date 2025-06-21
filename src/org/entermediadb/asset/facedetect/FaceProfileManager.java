@@ -384,39 +384,33 @@ public class FaceProfileManager implements CatalogEnabled
 	
 	public boolean compareVectors(double[] inputVector, double[] inCompareVector, double cutoff)
 	{
-		//Magnitude
-		double queryVectorNorm = 0.0;
-        // compute query inputVector norm once
-        for (double v : inputVector) {
-            queryVectorNorm += v * v;
-        }
-        double magnitude =  Math.sqrt(queryVectorNorm);
-		
-        double finalscore = 0d;
-        //Compare
-        double docVectorNorm = 0.0f;
-        double score = 0;
-        for (int i = 0; i < inputVector.length; i++) 
-        {
-            // doc inputVector norm
-            docVectorNorm += inCompareVector[i]*inCompareVector[i];  //This is cosine stuff
-            // dot product
-            score += inCompareVector[i] * inputVector[i];
-        }
-        // cosine similarity score
-        if (docVectorNorm == 0 || magnitude == 0)
-        {
-        	finalscore = 0f;
-        }
-        else 
-        {
-        	finalscore = score / (Math.sqrt(docVectorNorm) * magnitude);
-        }
-        if( finalscore < cutoff )
-        {
-        	return false;
-        }
-        return true;
+		double finalscore = findCosineDistance(inputVector, inCompareVector);
+		if( finalscore < cutoff )
+		{
+			return false;
+		}
+		return true;
+	}
+
+	public double findCosineDistance(double[] vecA, double[] vecB) 
+	{
+		if (vecA.length != vecB.length) 
+		{
+				throw new OpenEditException("Vectors must be the same length.");
+		}
+
+		double dotProduct = 0.0;
+		double normA = 0.0;
+		double normB = 0.0;
+
+		for (int i = 0; i < vecA.length; i++) 
+		{
+			dotProduct += vecA[i] * vecB[i];
+			normA += vecA[i] * vecA[i];
+			normB += vecB[i] * vecB[i];
+		}
+
+		return 1.0 - (dotProduct / (Math.sqrt(normA) * Math.sqrt(normB))); // It is that simple ¯\_(ツ)_/¯
 	}
 	
 	protected List<Data> makeDataForEachFace(Searcher facedb, Asset inAsset,double timecodestart, ContentItem inInput, List<Map> inJsonOfFaces) throws Exception
