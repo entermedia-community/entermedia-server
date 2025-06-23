@@ -340,7 +340,7 @@ public class FaceProfileManager implements CatalogEnabled
 			{
 				Data otherface = (Data) iterator2.next();
 				List<Double> othervalues = (List<Double>)otherface.getValue("facedatadoubles");
-				boolean same = compareVectors(facedoubles, othervalues, getVectorScoreLimit() - 0.3D );
+				boolean same = compareVectors(facedoubles, othervalues, getVectorScoreLimit() + 0.05D );
 				if( same )
 				{
 					//TODO: Keep larger facebox
@@ -354,7 +354,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 	private double getVectorScoreLimit()
 	{
-		double similaritycheck = .3D;
+		double similaritycheck = .4D;
 		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
 		if( value != null)
 		{
@@ -383,10 +383,10 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 	}
 	
-	public boolean compareVectors(List<Double> inputVector, List<Double> inCompareVector, double cutoff)
+	public boolean compareVectors(List<Double> inputVector, List<Double> inCompareVector, double maxdistance)
 	{
-		double finalscore = findCosineDistance(inputVector, inCompareVector);
-		if( finalscore < cutoff )
+		double distance = findCosineDistance(inputVector, inCompareVector);
+		if( distance > maxdistance )
 		{
 			return false;
 		}
