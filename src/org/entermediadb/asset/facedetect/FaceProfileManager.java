@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -27,7 +28,6 @@ import javax.imageio.stream.ImageInputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
@@ -51,7 +51,6 @@ import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.FileUtils;
 import org.openedit.util.MathUtils;
-import org.openedit.util.OutputFiller;
 
 import com.google.gson.JsonParser;
 
@@ -139,7 +138,7 @@ public class FaceProfileManager implements CatalogEnabled
 			//If its a video then generate all the images and scan them
 			
 			List<Data> foundfaces = new ArrayList();
-			Searcher faceembeddingsearcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
+			Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
 
 			if( "image".equalsIgnoreCase(type) && inAsset.getFileFormat()!= null)
 			{
@@ -263,7 +262,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 	protected Collection<Data> findAllFacesInVideo(Asset inAsset) throws Exception
 	{
-		Searcher faceembeddingsearcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
+		Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
 
 		Double videolength = (Double)inAsset.getDouble("length");
 		if( videolength == null)
@@ -334,13 +333,13 @@ public class FaceProfileManager implements CatalogEnabled
 				uniquefaces.add(embedded);
 			}
 			//Add it back after removing all the duplicated
-			double[] facedoubles = (double[])embedded.getValue("facedatadoubles");
+			List<Double> facedoubles = (List<Double>)embedded.getValue("facedatadoubles");
 			
 			Collection<Data> remainingfacestmp = new ArrayList(remainingfaces);
 			for (Iterator iterator2 = remainingfacestmp.iterator(); iterator2.hasNext();)
 			{
 				Data otherface = (Data) iterator2.next();
-				double[] othervalues = (double[])otherface.getValue("facedatadoubles");
+				List<Double> othervalues = (List<Double>)otherface.getValue("facedatadoubles");
 				boolean same = compareVectors(facedoubles, othervalues, getVectorScoreLimit() - 0.3D );
 				if( same )
 				{
@@ -355,7 +354,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 	private double getVectorScoreLimit()
 	{
-		double similaritycheck = .6D;
+		double similaritycheck = .3D;
 		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
 		if( value != null)
 		{
@@ -384,7 +383,7 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 	}
 	
-	public boolean compareVectors(double[] inputVector, double[] inCompareVector, double cutoff)
+	public boolean compareVectors(List<Double> inputVector, List<Double> inCompareVector, double cutoff)
 	{
 		double finalscore = findCosineDistance(inputVector, inCompareVector);
 		if( finalscore < cutoff )
@@ -394,9 +393,9 @@ public class FaceProfileManager implements CatalogEnabled
 		return true;
 	}
 
-	public double findCosineDistance(double[] inputVector, double[] compreToV) 
+	public double findCosineDistance(List<Double> inputVector, List<Double> compreToV) 
 	{
-		if (inputVector.length != compreToV.length) 
+		if (inputVector.size() != compreToV.size()) 
 		{
 				throw new OpenEditException("Vectors must be the same length.");
 		}
@@ -405,11 +404,14 @@ public class FaceProfileManager implements CatalogEnabled
 		double normA = 0.0;
 		double normB = 0.0;
 
-		for (int i = 0; i < inputVector.length; i++) 
+		for (int i = 0; i < inputVector.size(); i++) 
 		{
-			dotProduct += inputVector[i] * compreToV[i];
-			normA += inputVector[i] * inputVector[i];
-			normB += compreToV[i] * compreToV[i];
+			Double iv = inputVector.get(i);
+			Double cv = compreToV.get(i);
+			
+			dotProduct += iv * cv;
+			normA += iv * iv;
+			normB += cv * cv;
 		}
 
 		return 1.0 - (dotProduct / (Math.sqrt(normA) * Math.sqrt(normB))); // It is that simple ¯\_(ツ)_/¯
@@ -505,10 +507,10 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 			JSONArray collection = (JSONArray)facejson.get("embedding");
 			
-			double[] vector = collectDoubles(collection);
-			String encoded = encodeDoubles(vector);
+			List<Double> vector = collectDoubles(collection);
+			//String encoded = encodeDoubles(vector);
 
-			String jsontext = collection.toJSONString();
+//			String jsontext = collection.toJSONString();
 			
 			MultiValued addedface = null;
 			
@@ -516,10 +518,13 @@ public class FaceProfileManager implements CatalogEnabled
 			for (Iterator iterator2 = others.iterator(); iterator2.hasNext();)
 			{
 				MultiValued existing = (MultiValued) iterator2.next();
-				String otherencoded = existing.get("facedatajson"); //Manually done because Search did not work
-				if(otherencoded != null && otherencoded.equals(jsontext) )
+				List<Double> othervalues = (List<Double>)existing.getValue("facedatadoubles"); //Manually done because Search did not work
+				if(othervalues.equals(vector) )
 				{
 					addedface = existing;
+					addedface.setValue("parentembeddingid",null);
+					addedface.setValue("parentassetid",null);
+					addedface.setValue("parentdistance", null);
 					break;
 				}
 			}
@@ -528,8 +533,8 @@ public class FaceProfileManager implements CatalogEnabled
 				addedface = (MultiValued)facedb.createNewData(); //TODIO: Search by Vector first so we dont lose assignments
 			}
 			addedface.setValue("face_confidence", confidence );
-			addedface.setValue("facedata",encoded);
-			addedface.setValue("facedatajson",jsontext); 
+			//addedface.setValue("facedata",encoded);
+			//addedface.setValue("facedatajson",jsontext); 
 			addedface.setValue("facedatadoubles",vector); //Not saved to index
 			addedface.setValue("assetid",inAsset);
 			addedface.setValue("left_eye", left );
@@ -554,13 +559,7 @@ public class FaceProfileManager implements CatalogEnabled
 			addedface.setValue("timecodestart",timecodestart);
 
 			//TODO: Make sure this is not already in there. For debug purposes
-			SearchQuery query = facedb.createSearchQuery();
-			query.addVector("facedata", vector, getVectorScoreLimit() );
-			HitTracker results = facedb.search(query); //Only search Limited list
-			//if I find myself then dont save again
-			
-			//TODO: Decode the numbers and see if this is already in there so we dont make duplicates?
-			
+			HitTracker results = facedb.query().between("locationh",300L,(long)Integer.MAX_VALUE).search(); //Cache this?
 			if( !results.isEmpty() )
 			{
 				Data similarembedding = findSimilar(facedb, addedface, inAsset.getId(), results); //Pass in how similar
@@ -583,7 +582,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 	public Data addFaceEmbedded(User inUser, Asset inAsset, List<Integer> inBox )
 	{
-		Searcher faceembeddingsearcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
+		Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
 		Data addedface = faceembeddingsearcher.createNewData();
 		
 		addedface.setValue("assetid",inAsset);
@@ -607,63 +606,50 @@ public class FaceProfileManager implements CatalogEnabled
 	public Data findSimilar(MultiValued inFace)
 	{
 		Searcher fsearcher = getMediaArchive().getSearcher("faceembedding");
-		SearchQuery query = fsearcher.createSearchQuery();
-		
-		Collection parentvalues = (Collection)JsonParser.parseString(inFace.get("facedatajson"));
-		double[] parentv = collectDoubles(parentvalues); 
-		query.addVector("facedata", parentv, getVectorScoreLimit() );
-		HitTracker results = fsearcher.search(query); //Only search Limited list
-		
+		HitTracker results = fsearcher.query().between("locationh",300L,(long)Integer.MAX_VALUE).search(); //Cache this?
 		Data found = findSimilar(fsearcher,inFace,inFace.get("assetid"),results);
 		return found;
 	}
 	
-	protected Data findSimilar(Searcher facedb, MultiValued myFace, String myassetid, HitTracker inResults)
+	protected Data findSimilar(Searcher facedb, MultiValued myFace, String myassetid, HitTracker inAllFaces)
 	{
-		Integer sourceh = myFace.getInt("locationh");
-		if( sourceh < 300 )  //Dont link to small image no matter what
-		{
-			return null;
-		}
-		for (Iterator iterator = inResults.iterator(); iterator.hasNext();)
+//		Integer sourceh = myFace.getInt("locationh");
+//		if( sourceh < 300 )  //Dont link to small image no matter what
+//		{
+//			return null;
+//		}
+		
+		Map<Double,Data> matches = new HashMap(); 
+		
+		List<Double> inputv = (List<Double>)myFace.getValue("facedatadoubles");
+		for (Iterator iterator = inAllFaces.iterator(); iterator.hasNext();)
 		{
 			MultiValued hit = (MultiValued) iterator.next();
-			String assetid = hit.get("assetid");
-			if( assetid == null || !assetid.equals(myassetid) )
+			//save this as the parent
+			String compareassetid = hit.get("assetid");
+			if( compareassetid.equals(myassetid) )
 			{
-				//save this as the parent
-				Integer h = hit.getInt("locationh");
-				if( h > 300 )  //Dont link to small image no matter what
-				{
-//					String parentid = hit.get("parentembeddingid");
-//					if( parentid != null)
-//					{
-//						//Double check
-//						Data parent = getMediaArchive().getCachedData("faceembedding", parentid);
-//						if( 
-//					}
-					Double score = hit.getDouble("_score");
-					myFace.setValue("parentscore", score);
-					return hit;
-				}
+				continue;
+			}
+			List<Double> comparetolist = (List<Double>)hit.getValue("facedatadoubles");
+			//Double[] comparetov = (Double[])comparetolist.toArray(new Double[comparetolist.size()]);
+			double distance = findCosineDistance(inputv, comparetolist);
+			if( distance < getVectorScoreLimit())
+			{
+				//myFace.setValue("parentscore", score);
+				matches.put(distance, hit);
 			}
 		}
-		//These are scored only if they have the right number and type. doubles
-		//exclude myself
-		
-		//log.info(results);
-		//Search the DB for most similar match
-//		"query": {
-//		       "function_score": {
-//		         "boost_mode": "replace",
-//		         "script_score": {
-//		           "lang": "knn",
-//		           "params": {
-//		             "cosine": false,
-//		             "field": "embedding_vector",
-//		             "vector": [
-//		               -0.09217305481433868, 0.010635560378432274, -0.02878434956073761, 0.06988169997930527, 0.1273992955684662, -0.023723633959889412, 0.
-		
+		if( !matches.isEmpty() )
+		{
+			Set<Double> keys = matches.keySet();
+			Double[] toarray = keys.toArray(new Double[keys.size()]);
+			Arrays.sort(toarray);
+			double smallestdistance = toarray[0];
+			Data parent = matches.get(smallestdistance);
+			parent.setValue("parentdistance", smallestdistance);
+			return parent;
+		}		
 		return null;
 	}
 	
@@ -702,10 +688,9 @@ public class FaceProfileManager implements CatalogEnabled
 	    return new String(encodedBB.array());
 	}
 
-	public double[] collectDoubles(Collection vector) 
+	public List<Double> collectDoubles(Collection vector) 
 	{
-		double[] floats = new double[vector.size()];
-		int i = 0;
+		List<Double> floats = new ArrayList(vector.size());
 		for (Iterator iterator = vector.iterator(); iterator.hasNext();)
 		{
 			Object floatobj = iterator.next();
@@ -718,7 +703,7 @@ public class FaceProfileManager implements CatalogEnabled
 			{
 				f = Double.parseDouble(floatobj.toString());
 			}
-			floats[i++] = f;
+			floats.add(f);
 		}
 		return floats;
 	}
@@ -757,7 +742,7 @@ public class FaceProfileManager implements CatalogEnabled
 			return boxes;
 		}
 		
-		Searcher searcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
+		Searcher searcher = getMediaArchive().getSearcher("faceembedding");
 		HitTracker allthepeopleinasset = searcher.query().exact("assetid",inAsset).search();
 		
 		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
@@ -776,7 +761,7 @@ public class FaceProfileManager implements CatalogEnabled
 	 */
 	public Data loadPersonOfEmbedding(MultiValued embedding)
 	{
-		Searcher searcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
+		Searcher searcher = getMediaArchive().getSearcher("faceembedding");
 
 		String entitypersonid = embedding.get("entityperson");
 		if( entitypersonid == null)
@@ -1032,7 +1017,7 @@ public class FaceProfileManager implements CatalogEnabled
 		if( parentids != null && !parentids.isEmpty() )
 		{
 			//Search all children
-			HitTracker allthepeopleinasset = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().orgroup("parentids", parentids).search();
+			HitTracker allthepeopleinasset = getMediaArchive().getSearcher("faceembedding").query().orgroup("parentids", parentids).search();
 			
 			//Look for a personid anyplace
 			Collection<String> person = allthepeopleinasset.collectValues("entityperson");
@@ -1073,7 +1058,7 @@ public class FaceProfileManager implements CatalogEnabled
 		
 		if( entityperson != null)
 		{
-			HitTracker morepeople = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding").query().exact("entityperson", entityperson).search();
+			HitTracker morepeople = getMediaArchive().getSearcher("faceembedding").query().exact("entityperson", entityperson).search();
 			for (Iterator iterator = morepeople.iterator(); iterator.hasNext();)
 			{
 				MultiValued embedding = (MultiValued) iterator.next(); //One person

@@ -3091,6 +3091,15 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				}
 				else if (detail.isDataType("double"))
 				{
+					if( detail.isMultiValue() )
+					{
+						if (value instanceof double[] )
+						{
+							double[] values = (double[]) value;
+							inContent.field(key, values);
+							continue;
+						}
+					}
 					Double val = null;
 
 					if (value instanceof Double)

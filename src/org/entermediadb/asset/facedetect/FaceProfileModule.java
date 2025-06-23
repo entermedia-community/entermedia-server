@@ -36,7 +36,7 @@ public class FaceProfileModule extends BaseMediaModule
 	}
 	
 	
-	
+	//OLD!
 	public void removeAsset(WebPageRequest inReq) {
 		
 		MediaArchive archive = getMediaArchive(inReq);
@@ -264,7 +264,7 @@ public class FaceProfileModule extends BaseMediaModule
 			return;
 		}
 		Searcher faceembeddingsearcher = archive.getSearcherManager().getSearcher("system/facedb","faceembedding");
-		Data found = faceembeddingsearcher.query().exact("entityperson", entityid).searchOne();
+		Data found = faceembeddingsearcher.query().exact("catalogid",archive.getCatalogId()).exact("entityperson", entityid).searchOne();
 		
 		if( found != null)
 		{
