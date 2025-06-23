@@ -414,7 +414,7 @@ public class FaceProfileManager implements CatalogEnabled
 			normB += cv * cv;
 		}
 
-		return 1.0 - (dotProduct / (Math.sqrt(normA) * Math.sqrt(normB))); // It is that simple ¯\_(ツ)_/¯
+		return 1.0 - (dotProduct / (Math.sqrt(normA) * Math.sqrt(normB)));
 	}
 	
 	protected List<Data> makeDataForEachFace(Searcher facedb, Asset inAsset,double timecodestart, ContentItem inInput, List<Map> inJsonOfFaces) throws Exception
