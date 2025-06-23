@@ -392,9 +392,9 @@ public class FaceProfileManager implements CatalogEnabled
 		return true;
 	}
 
-	public double findCosineDistance(double[] vecA, double[] vecB) 
+	public double findCosineDistance(double[] inputVector, double[] compreToV) 
 	{
-		if (vecA.length != vecB.length) 
+		if (inputVector.length != compreToV.length) 
 		{
 				throw new OpenEditException("Vectors must be the same length.");
 		}
@@ -403,11 +403,11 @@ public class FaceProfileManager implements CatalogEnabled
 		double normA = 0.0;
 		double normB = 0.0;
 
-		for (int i = 0; i < vecA.length; i++) 
+		for (int i = 0; i < inputVector.length; i++) 
 		{
-			dotProduct += vecA[i] * vecB[i];
-			normA += vecA[i] * vecA[i];
-			normB += vecB[i] * vecB[i];
+			dotProduct += inputVector[i] * compreToV[i];
+			normA += inputVector[i] * inputVector[i];
+			normB += compreToV[i] * compreToV[i];
 		}
 
 		return 1.0 - (dotProduct / (Math.sqrt(normA) * Math.sqrt(normB))); // It is that simple ¯\_(ツ)_/¯
