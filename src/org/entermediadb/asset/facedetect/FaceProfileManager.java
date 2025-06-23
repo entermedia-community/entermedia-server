@@ -565,11 +565,14 @@ public class FaceProfileManager implements CatalogEnabled
 				Data similarembedding = findSimilar(facedb, addedface, inAsset, results); //Pass in how similar
 				if( similarembedding  != null)
 				{
-					addedface.setValue("parentembeddingid",similarembedding.getId());
 					String parentassetid = similarembedding.get("assetid");
-					addedface.setValue("parentassetid",parentassetid);
 					Asset parentasset = getMediaArchive().getAsset(parentassetid);
-					log.info("Conected between child " + inAsset.getName() + " and parent " + parentasset.getName() );
+					if(parentasset != null)
+					{						
+						addedface.setValue("parentembeddingid",similarembedding.getId());
+						addedface.setValue("parentassetid",parentassetid);
+						log.info("Conected between child " + inAsset.getName() + " and parent " + parentasset.getName() );
+					}
 				}
 			}
 			tosave.add(addedface);
