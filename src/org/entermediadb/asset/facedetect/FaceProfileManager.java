@@ -53,6 +53,8 @@ import org.openedit.util.FileUtils;
 import org.openedit.util.MathUtils;
 import org.openedit.util.OutputFiller;
 
+import com.google.gson.JsonParser;
+
 
 public class FaceProfileManager implements CatalogEnabled
 {
@@ -552,9 +554,8 @@ public class FaceProfileManager implements CatalogEnabled
 			addedface.setValue("timecodestart",timecodestart);
 
 			//TODO: Make sure this is not already in there. For debug purposes
-			double[] embedding = collectDoubles((Collection)facejson.get("embedding"));
 			SearchQuery query = facedb.createSearchQuery();
-			query.addVector("facedata", embedding, getVectorScoreLimit() );
+			query.addVector("facedata", vector, getVectorScoreLimit() );
 			HitTracker results = facedb.search(query); //Only search Limited list
 			//if I find myself then dont save again
 			
@@ -562,7 +563,7 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			if( !results.isEmpty() )
 			{
-				Data similarembedding = findSimilar(facedb, addedface, inAsset, results); //Pass in how similar
+				Data similarembedding = findSimilar(facedb, addedface, inAsset.getId(), results); //Pass in how similar
 				if( similarembedding  != null)
 				{
 					String parentassetid = similarembedding.get("assetid");
@@ -603,9 +604,23 @@ public class FaceProfileManager implements CatalogEnabled
 		return addedface;
 	}
 	
-	protected Data findSimilar(Searcher facedb, MultiValued inFaceEmbbed, Asset inAsset, HitTracker inResults)
+	public Data findSimilar(MultiValued inFace)
 	{
-		Integer sourceh = inFaceEmbbed.getInt("locationh");
+		Searcher fsearcher = getMediaArchive().getSearcher("faceembedding");
+		SearchQuery query = fsearcher.createSearchQuery();
+		
+		Collection parentvalues = (Collection)JsonParser.parseString(inFace.get("facedatajson"));
+		double[] parentv = collectDoubles(parentvalues); 
+		query.addVector("facedata", parentv, getVectorScoreLimit() );
+		HitTracker results = fsearcher.search(query); //Only search Limited list
+		
+		Data found = findSimilar(fsearcher,inFace,inFace.get("assetid"),results);
+		return found;
+	}
+	
+	protected Data findSimilar(Searcher facedb, MultiValued myFace, String myassetid, HitTracker inResults)
+	{
+		Integer sourceh = myFace.getInt("locationh");
 		if( sourceh < 300 )  //Dont link to small image no matter what
 		{
 			return null;
@@ -614,7 +629,7 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			MultiValued hit = (MultiValued) iterator.next();
 			String assetid = hit.get("assetid");
-			if( assetid == null || !assetid.equals(inAsset.getId()) )
+			if( assetid == null || !assetid.equals(myassetid) )
 			{
 				//save this as the parent
 				Integer h = hit.getInt("locationh");
@@ -628,7 +643,7 @@ public class FaceProfileManager implements CatalogEnabled
 //						if( 
 //					}
 					Double score = hit.getDouble("_score");
-					inFaceEmbbed.setValue("parentscore", score);
+					myFace.setValue("parentscore", score);
 					return hit;
 				}
 			}
