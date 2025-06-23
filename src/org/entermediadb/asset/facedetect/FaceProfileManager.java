@@ -340,7 +340,7 @@ public class FaceProfileManager implements CatalogEnabled
 			{
 				Data otherface = (Data) iterator2.next();
 				List<Double> othervalues = (List<Double>)otherface.getValue("facedatadoubles");
-				boolean same = compareVectors(facedoubles, othervalues, getVectorScoreLimit() + 0.05D );
+				boolean same = compareVectors(facedoubles, othervalues, getVectorScoreLimit() + 0.05D ); //Be more flexible
 				if( same )
 				{
 					//TODO: Keep larger facebox
@@ -354,7 +354,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 	private double getVectorScoreLimit()
 	{
-		double similaritycheck = .4D;
+		double similaritycheck = .30D;
 		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
 		if( value != null)
 		{
@@ -413,8 +413,9 @@ public class FaceProfileManager implements CatalogEnabled
 			normA += iv * iv;
 			normB += cv * cv;
 		}
-
-		return 1.0 - (dotProduct / (Math.sqrt(normA) * Math.sqrt(normB))); // It is that simple ¯\_(ツ)_/¯
+		double diff = (dotProduct / (Math.sqrt(normA) * Math.sqrt(normB)));
+		double finalval = 1d - diff;
+		return finalval;
 	}
 	
 	protected List<Data> makeDataForEachFace(Searcher facedb, Asset inAsset,double timecodestart, ContentItem inInput, List<Map> inJsonOfFaces) throws Exception
