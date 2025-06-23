@@ -32,9 +32,10 @@ public class AutoLoginByToken extends BaseAutoLogin implements AutoLoginProvider
 			return null;
 		}
 		String accesskey = request.getHeader("X-token");
-		if( accesskey != null)
+		String type = request.getHeader("X-tokentype");
+		if( accesskey != null && type != null)
 		{
-			String type = request.getHeader("X-tokentype");
+			
 			User user = null;
 			if(type.equals("google") )
 			{
@@ -66,6 +67,7 @@ public class AutoLoginByToken extends BaseAutoLogin implements AutoLoginProvider
 			{
 				user = autoLoginFromMd5Value(inReq, accesskey);
 			}
+			
 			if( user != null)
 			{
 				saveCookieForUser(inReq,user); //For next time
