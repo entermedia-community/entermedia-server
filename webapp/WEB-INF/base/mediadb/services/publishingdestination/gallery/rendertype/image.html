@@ -19,9 +19,9 @@ $context.putPageValue("hit", $hit)
 
 #set ($thumbsize = $context.getPageValue("thumbsize"))
 #if( $type == "video" )
-	#set($imagesize = "image640x480.jpg")
+	#set($imagesize = "image640x480")
 #else
-	#set($imagesize = "image550x350.jpg")
+	#set($imagesize = "image550x350")
 #end
 
 $context.putPageValue("thumbsize", $thumbsize)
