@@ -119,23 +119,27 @@ public class FaceProfileManager implements CatalogEnabled
 
 			List<Data> tosave = new ArrayList();
 
-			for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
+			try
 			{
-				MultiValued inAsset = (MultiValued) iterator.next();
-				Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(inAsset);
-				try
+				for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 				{
+					MultiValued inAsset = (MultiValued) iterator.next();
+					Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(inAsset);
 					extractFaces(asset,foundfaces);
 					tosave.add(asset);
-				}
-				catch( Throwable ex)
-				{
-					log.error("Error on: " + inAsset.getId() + " " + inAsset.getSourcePath(), ex);
-					throw new OpenEditException("Error on: " + inAsset.getId() + " " + inAsset.getSourcePath(),ex);
-				}
-			}  
-			fixSomeParents(foundfaces);
-			getMediaArchive().getAssetSearcher().saveAllData(tosave, null);
+				}  
+			}
+			catch( Throwable ex)
+			{
+				log.error("Error on: " + inAssets.size(), ex);
+				throw new OpenEditException("Error on: " + inAssets.size(),ex);
+			}
+			finally
+			{
+				fixSomeParents(foundfaces); //This saves
+				getMediaArchive().getAssetSearcher().saveAllData(tosave, null);
+				log.info(" Saved Assets " + tosave.size());
+			}
 			return foundfaces.size();
 	}
 
@@ -490,9 +494,10 @@ public class FaceProfileManager implements CatalogEnabled
 //				}
 			}
 			face.setValue("parentids",parentids);
-			log.info(face.get("assetid") + " Saved parents" + parentids);
+			//log.info(face.get("assetid") + " Saved parents" + parentids);
 		}
 		getMediaArchive().saveData("faceembedding",inResetFaces);
+		log.info(" Saved faces" + inResetFaces.size());
 	}
 	
 	public boolean compareVectors(List<Double> inputVector, List<Double> inCompareVector, double maxdistance)
@@ -1003,7 +1008,7 @@ public class FaceProfileManager implements CatalogEnabled
 		
 		JSONArray results = (JSONArray)json.get("results");
 		
-		log.info((System.currentTimeMillis() - start) + "ms face detection for asset: "+ inAsset.getId() + " " + inAsset.getName() + " Found: " + results.size());
+		//log.info((System.currentTimeMillis() - start) + "ms face detection for asset: "+ inAsset.getId() + " " + inAsset.getName() + " Found: " + results.size());
 		
 		return results;
 	}

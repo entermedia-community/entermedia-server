@@ -1,15 +1,17 @@
-#if( $value.size() > 0)
-	$value
-#else
+#ifnotnull($value)
 
-#set( $foundrow = $searcherManager.getCachedData($detail.getListCatalogId(),$detail.getListId(),$value) )
-#set($label = $foundrow.getName($context.getLanguage()))
-#ifnotnull($label)
-#esc($label)
-#end
-
-#ifnull($label)
-#esc($value)
-#end
-
-#end
+	#if( $value.size() > 0)
+		$value
+	#else
+	
+	#set( $foundrow = $searcherManager.getCachedData($detail.getListCatalogId(),$detail.getListId(),$value) )
+	#set($label = $foundrow.getName($context.getLanguage()))
+	#ifnotnull($label)
+		#esc($label)
+	#end
+	#ifnull($label)
+		#esc($value)
+	#end
+	
+	#end
+#end	
