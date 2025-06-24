@@ -1,4 +1,15 @@
-#set( $foundrow = $searcherManager.getCachedData($detail.getListCatalogId(),$detail.getListId(),$value) )  
+#if( $value.size() > 0)
+	$value
+#else
+
+#set( $foundrow = $searcherManager.getCachedData($detail.getListCatalogId(),$detail.getListId(),$value) )
 #set($label = $foundrow.getName($context.getLanguage()))
-#esc($!label)
-#debug("ListID: $detail.listId")
+#ifnotnull($label)
+#esc($label)
+#end
+
+#ifnull($label)
+#esc($value)
+#end
+
+#end

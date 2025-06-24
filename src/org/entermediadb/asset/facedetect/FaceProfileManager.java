@@ -606,23 +606,25 @@ public class FaceProfileManager implements CatalogEnabled
 	
 	public Data findSimilar(MultiValued inFace)
 	{
+		//log.info("Checking for parents for " + inFace.get("locationh") );
 		Searcher fsearcher = getMediaArchive().getSearcher("faceembedding");
 		HitTracker results = fsearcher.query().between("locationh",300L,(long)Integer.MAX_VALUE).search(); //Cache this?
 		Data found = findSimilar(fsearcher,inFace,inFace.get("assetid"),results);
 		return found;
 	}
 	
-	protected Data findSimilar(Searcher facedb, MultiValued myFace, String myassetid, HitTracker inAllFaces)
+	protected Data findSimilar(Searcher facedb, MultiValued inChild, String myassetid, HitTracker inAllFaces)
 	{
 //		Integer sourceh = myFace.getInt("locationh");
 //		if( sourceh < 300 )  //Dont link to small image no matter what
 //		{
 //			return null;
 //		}
+		log.info(inAllFaces.toString());
 		
 		Map<Double,Data> matches = new HashMap(); 
 		
-		List<Double> inputv = (List<Double>)myFace.getValue("facedatadoubles");
+		List<Double> inputv = (List<Double>)inChild.getValue("facedatadoubles");
 		for (Iterator iterator = inAllFaces.iterator(); iterator.hasNext();)
 		{
 			MultiValued hit = (MultiValued) iterator.next();
@@ -632,6 +634,14 @@ public class FaceProfileManager implements CatalogEnabled
 			{
 				continue;
 			}
+			
+			//Dont find children who already have me as a parent
+			String imediateparent = hit.get("parentembeddingid");
+			if( imediateparent != null && imediateparent.equals(inChild.getId()) )
+			{
+				continue;
+			}
+			
 			List<Double> comparetolist = (List<Double>)hit.getValue("facedatadoubles");
 			//Double[] comparetov = (Double[])comparetolist.toArray(new Double[comparetolist.size()]);
 			double distance = findCosineDistance(inputv, comparetolist);
@@ -647,8 +657,16 @@ public class FaceProfileManager implements CatalogEnabled
 			Double[] toarray = keys.toArray(new Double[keys.size()]);
 			Arrays.sort(toarray);
 			double smallestdistance = toarray[0];
+//			if( toarray.length > 1)
+//			{
+//				//check the height diff? locationh
+//			}
+//			else
+//			{
+//				
+//			}
 			Data parent = matches.get(smallestdistance);
-			parent.setValue("parentdistance", smallestdistance);
+			inChild.setValue("parentdistance", smallestdistance);
 			return parent;
 		}		
 		return null;
