@@ -739,7 +739,7 @@ public class FaceProfileManager implements CatalogEnabled
 //		{
 //			return null;
 //		}
-		log.info(inAllFaces.toString());
+		//log.info(inAllFaces.toString());
 		
 		Map<Double,Data> matches = new HashMap(); 
 		
