@@ -587,7 +587,7 @@ public class FaceProfileManager implements CatalogEnabled
 			inputw = (int)Math.round( size.getWidth() );
 			inputh = (int)Math.round( size.getHeight() );
 		}       
-        int minfacesize = 200; //was 450
+        int minfacesize = 400; //was 450
 		
 		String minumfaceimagesize = getMediaArchive().getCatalogSettingValue("facedetect_minimum_face_size");
 		if(minumfaceimagesize != null) 
