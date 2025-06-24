@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -46,13 +47,10 @@ import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.SearchQuery;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.FileUtils;
 import org.openedit.util.MathUtils;
-
-import com.google.gson.JsonParser;
 
 
 public class FaceProfileManager implements CatalogEnabled
@@ -109,158 +107,163 @@ public class FaceProfileManager implements CatalogEnabled
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
 	}
 	
-	public int extractFaces(Asset inAsset)
+	public int extractFaces(Collection<Data> inAssets)  //Page of assets
 	{
-		try
-		{
 			String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
 			if( url == null)
 			{
 				log.error("No face server configured");
 				return 0;
 			}
-			String type = getMediaArchive().getMediaRenderType(inAsset);
-			
-			inAsset.setValue("facescancomplete","true");
-			
-			if (!"image".equalsIgnoreCase(type) && !"video".equalsIgnoreCase(type)  )
-			{
-				return 0;
-			}
-			
-			String api = getMediaArchive().getCatalogSettingValue("faceapikey");
-			if(api == null)
-			{
-				log.info("faceapikey not set");
-				return 0;
-			}
-		
-			//If its a video then generate all the images and scan them
-			
-			List<Data> foundfaces = new ArrayList();
-			Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
+			List<MultiValued> foundfaces = new ArrayList();
 
-			if( "image".equalsIgnoreCase(type) && inAsset.getFileFormat()!= null)
+			for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 			{
-				long filesize = inAsset.getLong("filesize");
-				
-				long imagew = inAsset.getLong("width");
-				long imageh = inAsset.getLong("height");
-				long imagesize = imagew * imageh;
-				
-				if(imagesize < 90000) {
-					return 0;
+				MultiValued inAsset = (MultiValued) iterator.next();
+				Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(inAsset);
+				try
+				{
+					extractFaces(asset,foundfaces);
 				}
-				
-				String fileformat = inAsset.getFileFormat();
-				
-				Boolean useoriginal = true;
-				if (filesize > 6000000)
+				catch( Throwable ex)
+				{
+					log.error("Error on: " + inAsset.getId() + " " + inAsset.getSourcePath(), ex);
+					throw new OpenEditException("Error on: " + inAsset.getId() + " " + inAsset.getSourcePath(),ex);
+				}
+			}  
+			fixSomeParents(foundfaces);
+			return foundfaces.size();
+	}
+
+	private void extractFaces(Asset inAsset, List<MultiValued> inFoundfaces) throws Exception
+	{
+		
+		String type = getMediaArchive().getMediaRenderType(inAsset);
+		
+		inAsset.setValue("facescancomplete","true");
+		
+		if (!"image".equalsIgnoreCase(type) && !"video".equalsIgnoreCase(type)  )
+		{
+			return;
+		}
+		
+		String api = getMediaArchive().getCatalogSettingValue("faceapikey");
+		if(api == null)
+		{
+			log.info("faceapikey not set");
+			return;
+		}
+	
+		//If its a video then generate all the images and scan them
+		
+		Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
+
+		if( "image".equalsIgnoreCase(type) && inAsset.getFileFormat()!= null)
+		{
+			long filesize = inAsset.getLong("filesize");
+			
+			long imagew = inAsset.getLong("width");
+			long imageh = inAsset.getLong("height");
+			long imagesize = imagew * imageh;
+			
+			if(imagesize < 90000) {
+				return;
+			}
+			
+			String fileformat = inAsset.getFileFormat();
+			
+			Boolean useoriginal = true;
+			if (filesize > 6000000)
+			{
+				useoriginal = false;
+			}
+			else if ( imagesize > 36000000) {   //4x 3000x0000 MAX: 178956970
+				//Default Copreface imagesize limit
+				useoriginal = false;
+			}
+			else {
+				String colorpsace = inAsset.get("colorspace");
+				if("4".equals(colorpsace) || "5".equals(colorpsace)) 
 				{
 					useoriginal = false;
 				}
-				else if ( imagesize > 36000000) {   //4x 3000x0000 MAX: 178956970
-					//Default Copreface imagesize limit
-					useoriginal = false;
-				}
-				else {
-					String colorpsace = inAsset.get("colorspace");
-					if("4".equals(colorpsace) || "5".equals(colorpsace)) 
-					{
-						useoriginal = false;
-					}
-					else if( inAsset.isPropertyTrue("hasthumbnail") )
-					{
-						useoriginal = false;  //deepface has a bug that it uses the image thumbnail for sizing
-					}
-					if( fileformat.equals("jpg") || fileformat.equals("jpeg") || fileformat.equals("webp")) 
-					{
-						//Its ok
-					}
-					else
-					{
-						useoriginal = false;
-					}
-				}
-				
-//				ContentItem input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.webp");
-//				if( !input.exists() )
-//				{
-//					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.jpg");
-//				}
-//				if( !input.exists() )
-//				{
-//					log.error("No such image"); //TODO: Search within videos
-//					return false;
-//				}
-				
-				//Send orginal JPEG directly if they are small?
-				ContentItem input = null;
-				if( useoriginal )
+				else if( inAsset.isPropertyTrue("hasthumbnail") )
 				{
-					input = getMediaArchive().getOriginalContent(inAsset);
+					useoriginal = false;  //deepface has a bug that it uses the image thumbnail for sizing
+				}
+				if( fileformat.equals("jpg") || fileformat.equals("jpeg") || fileformat.equals("webp")) 
+				{
+					//Its ok
 				}
 				else
 				{
-					String filename = getMediaArchive().generatedOutputName(inAsset,"image3000x3000");
-					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/" + filename);
+					useoriginal = false;
 				}
-				if( !input.exists() )
-				{
-					throw new OpenEditException("Input not available " + input.getPath());
-				}
-				List<Map> json = findFaces(inAsset, input);
-				if(json == null) {
-					return 0;
-				}
-				Collection<Data> moreprofiles = makeDataForEachFace(faceembeddingsearcher,inAsset,0L,input,json);
-				if( moreprofiles != null)
-				{
-					saveNewFacesWithParents(moreprofiles);
-					foundfaces.addAll(moreprofiles);
-				}
-				
 			}
-			else if( "video".equalsIgnoreCase(type) )
-			{
-				//Look over them and save the timecode with it
-				Collection<Data> allfacesinvideo = findAllFacesInVideo(inAsset);
-				Collection<Data> moreprofiles = combineVideoMatches(allfacesinvideo);
-				if(moreprofiles != null)
-				{
-					saveNewFacesWithParents(moreprofiles);
-					foundfaces.addAll(moreprofiles);
-				}
-//				updateEndTimes(continuelooking,block.getStartOffset()); //Brings them up to date
-//				try
-//				{
-//					continuelooking = combineVideoMatches(continuelooking,more);
-//				}
-//				catch(IndexOutOfBoundsException ex)
-//				{
-//					log.info("Issue happened again on " + block.getSeconds());
-//					//ignoring...
-//				}
-			}
-			boolean hasfaces = !foundfaces.isEmpty();
-			inAsset.setValue("facehasprofile",hasfaces);
-			log.info("Faceprofile found: "+foundfaces.size());
-			//faceembeddingsearcher.saveAllData(tosave,null);
-			return foundfaces.size();
-		}
-		catch( Throwable ex)
-		{
 			
-			inAsset.setValue("facescancomplete","true");
-			inAsset.setValue("facescanerror","true");
-			log.error("Error on: " + inAsset.getId() + " " + inAsset.getSourcePath(), ex);
-			return 0;
-			//throw new OpenEditException("Error on: " + inAsset.getId() + " " + inAsset.getSourcePath(),ex);
+//			ContentItem input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.webp");
+//			if( !input.exists() )
+//			{
+//				input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.jpg");
+//			}
+//			if( !input.exists() )
+//			{
+//				log.error("No such image"); //TODO: Search within videos
+//				return false;
+//			}
+			
+			//Send orginal JPEG directly if they are small?
+			ContentItem input = null;
+			if( useoriginal )
+			{
+				input = getMediaArchive().getOriginalContent(inAsset);
+			}
+			else
+			{
+				String filename = getMediaArchive().generatedOutputName(inAsset,"image3000x3000");
+				input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/" + filename);
+			}
+			if( !input.exists() )
+			{
+				throw new OpenEditException("Input not available " + input.getPath());
+			}
+			List<Map> json = findFaces(inAsset, input);
+			if(json == null) {
+				return;
+			}
+			Collection<MultiValued> moreprofiles = makeDataForEachFace(faceembeddingsearcher,inAsset,0L,input,json);
+			if( moreprofiles != null)
+			{
+				//saveNewFacesWithParents(moreprofiles);
+				inFoundfaces.addAll(moreprofiles);
+			}
+			
 		}
-		
+		else if( "video".equalsIgnoreCase(type) )
+		{
+			//Look over them and save the timecode with it
+			Collection<MultiValued> allfacesinvideo = findAllFacesInVideo(inAsset);
+			Collection<MultiValued> moreprofiles = combineVideoMatches(allfacesinvideo);
+			if(moreprofiles != null)
+			{
+				//saveNewFacesWithParents(moreprofiles);
+				inFoundfaces.addAll(moreprofiles);
+			}
+//			updateEndTimes(continuelooking,block.getStartOffset()); //Brings them up to date
+//			try
+//			{
+//				continuelooking = combineVideoMatches(continuelooking,more);
+//			}
+//			catch(IndexOutOfBoundsException ex)
+//			{
+//				log.info("Issue happened again on " + block.getSeconds());
+//				//ignoring...
+//			}
+		}
+		//faceembeddingsearcher.saveAllData(tosave,null);
 	}
 
-	protected Collection<Data> findAllFacesInVideo(Asset inAsset) throws Exception
+	protected Collection<MultiValued> findAllFacesInVideo(Asset inAsset) throws Exception
 	{
 		Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
 
@@ -281,7 +284,7 @@ public class FaceProfileManager implements CatalogEnabled
 		Collection<Block> ticks = timeline.getTicks();
 		List<Map> continuelooking = null;
 		
-		Collection<Data> allfacesinvideo = new ArrayList();
+		Collection<MultiValued> allfacesinvideo = new ArrayList();
 		for (Iterator iterator = ticks.iterator(); iterator.hasNext();)
 		{
 			Block block = (Block) iterator.next();
@@ -303,7 +306,7 @@ public class FaceProfileManager implements CatalogEnabled
 			else
 			{
 				List<Map> json = findFaces(inAsset, item);	
-				Collection<Data> moreprofiles = makeDataForEachFace(faceembeddingsearcher,inAsset,block.getSeconds(),item,json);
+				Collection<MultiValued> moreprofiles = makeDataForEachFace(faceembeddingsearcher,inAsset,block.getSeconds(),item,json);
 				if( moreprofiles != null)
 				{
 					allfacesinvideo.addAll(moreprofiles);
@@ -313,15 +316,15 @@ public class FaceProfileManager implements CatalogEnabled
 		return allfacesinvideo;
 	}
 
-	protected Collection<Data> combineVideoMatches(Collection<Data> inAllfacesinvideo)
+	protected Collection<MultiValued> combineVideoMatches(Collection<MultiValued> inAllfacesinvideo)
 	{
-		Collection<Data> uniquefaces = new ArrayList();
+		Collection<MultiValued> uniquefaces = new ArrayList();
 
-		Collection<Data> remainingfaces = new ArrayList(inAllfacesinvideo);
+		Collection<MultiValued> remainingfaces = new ArrayList(inAllfacesinvideo);
 		
 		for (Iterator iterator = inAllfacesinvideo.iterator(); iterator.hasNext();)
 		{
-			Data embedded = (Data) iterator.next();
+			MultiValued embedded = (MultiValued) iterator.next();
 			
 			if( !remainingfaces.contains(embedded) ) //Might already got dropped
 			{
@@ -363,24 +366,129 @@ public class FaceProfileManager implements CatalogEnabled
 		return similaritycheck;
 	}
 
-	protected void saveNewFacesWithParents(Collection<Data> moreprofiles)
+//	protected void saveNewFacesWithParents(Collection<Data> moreprofiles)
+//	{
+//		for (Iterator iterator = moreprofiles.iterator(); iterator.hasNext();)
+//		{
+//			Data addedface = (Data) iterator.next();
+//			Collection parentids = new ArrayList();
+//			Data startdata = addedface; 
+//			getMediaArchive().saveData("faceembedding", addedface);
+//			while( startdata != null)
+//			{
+//				parentids.add(startdata.getId());
+//				String parent = startdata.get("parentembeddingid");
+//				startdata = getMediaArchive().getCachedData("faceembedding", parent);
+//			}
+//			addedface.setValue("parentids",parentids);
+//			
+//			getMediaArchive().saveData("faceembedding", addedface);
+//		}
+//	}
+
+	public void fixAllParents()
 	{
-		for (Iterator iterator = moreprofiles.iterator(); iterator.hasNext();)
+		HitTracker faces = getMediaArchive().query("faceembedding").all().sort("locationhUp").search();
+		faces.enableBulkOperations();
+		List<MultiValued> allrecords = new ArrayList(faces);
+		fixParents(allrecords,allrecords);
+	}
+	public void fixSomeParents(List<MultiValued> somefaces)
+	{
+		HitTracker allfaces = getMediaArchive().query("faceembedding").all().sort("locationhUp").search();
+		allfaces.enableBulkOperations();
+		List<MultiValued> allrecords = new ArrayList(allfaces);  //This is huge
+		
+		Collections.sort(somefaces, new Comparator<MultiValued>()
 		{
-			Data addedface = (Data) iterator.next();
+			@Override
+			public int compare(MultiValued inO1, MultiValued inO2) //So small first
+			{
+				Double height = inO1.getDouble("locationh");
+				Double height2 = inO2.getDouble("locationh");
+				if( height == null || height2 == null)
+				{
+					//Problems
+					return -1;
+				}
+				if( height2 == null)
+				{
+					//Problems
+					return 1;
+				}
+				return height.compareTo(height2);
+			}
+		});
+		fixParents(somefaces,allrecords);
+	}
+	public void fixParents(Collection inResetFaces, List<MultiValued> allrecords)
+	{
+		Searcher fsearcher = getMediaArchive().getSearcher("faceembedding");
+		List<MultiValued> tosave = new ArrayList();
+		Map<String,MultiValued> lookup = new HashMap();
+		for (Iterator iterator = inResetFaces.iterator(); iterator.hasNext();)
+		{
+			MultiValued face = (MultiValued) iterator.next();
+			face.setValue("parentembeddingid",null);
+			face.setValue("parentids",null);
+			face.setValue("parentassetid",null);
+			face.setValue("parentdistance",null);
+			if( face.getId() == null)
+			{
+				allrecords.add(face);
+				tosave.add(face);
+			}
+		}			
+		getMediaArchive().saveData("faceembedding",tosave);
+		for (Iterator iterator = allrecords.iterator(); iterator.hasNext();)
+		{
+			MultiValued face = (MultiValued) iterator.next();
+			lookup.put(face.getId(),face);
+		}			
+		
+		for (Iterator iterator = inResetFaces.iterator(); iterator.hasNext();)
+		{
+			MultiValued face = (MultiValued) iterator.next();
+			Data found = findSimilar(fsearcher,face,face.get("assetid"),allrecords);
+
+//			Data parent = findSimilar(face);
+			if( found != null)
+			{
+				face.setValue("parentembeddingid",found.getId());
+				face.setValue("parentassetid",found.get("assetid"));
+			}
+		}
+		
+		for (Iterator iterator = inResetFaces.iterator(); iterator.hasNext();)
+		{
+			MultiValued face = (MultiValued) iterator.next();
 			Collection parentids = new ArrayList();
-			Data startdata = addedface; 
-			getMediaArchive().saveData("faceembedding", addedface);
+			Data startdata = face;
 			while( startdata != null)
 			{
-				parentids.add(startdata.getId());
-				String parent = startdata.get("parentembeddingid");
-				startdata = getMediaArchive().getCachedData("faceembedding", parent);
+				String currentid = startdata.getId();
+				parentids.add(currentid);
+				String parentid = startdata.get("parentembeddingid");
+				if( parentid == null || parentids.contains(parentid) )
+				{
+					//log.info("Stop" + startdata.getId());
+					break;
+				}
+				startdata = lookup.get(parentid);
+//				if( startdata != null)
+//				{
+//					Collection setparents = startdata.getValues("parentids"); //Make sure no parent ever has a parent already included
+//					if(setparents != null && setparents.contains(currentid) )
+//					{
+//						//Dont keep looking, circular loop
+//						break;
+//					}
+//				}
 			}
-			addedface.setValue("parentids",parentids);
-			
-			getMediaArchive().saveData("faceembedding", addedface);
+			face.setValue("parentids",parentids);
+			log.info(face.get("assetid") + " Saved parents" + parentids);
 		}
+		getMediaArchive().saveData("faceembedding",inResetFaces);
 	}
 	
 	public boolean compareVectors(List<Double> inputVector, List<Double> inCompareVector, double maxdistance)
@@ -418,7 +526,7 @@ public class FaceProfileManager implements CatalogEnabled
 		return finalval;
 	}
 	
-	protected List<Data> makeDataForEachFace(Searcher facedb, Asset inAsset,double timecodestart, ContentItem inInput, List<Map> inJsonOfFaces) throws Exception
+	protected List<MultiValued> makeDataForEachFace(Searcher facedb, Asset inAsset,double timecodestart, ContentItem inInput, List<Map> inJsonOfFaces) throws Exception
 	{
 		if( inJsonOfFaces.isEmpty())
 		{
@@ -472,7 +580,7 @@ public class FaceProfileManager implements CatalogEnabled
 //			log.info("Low probability of found face (" + boxp  + "<"+ facedetect_detect_confidence+"): " + inInput.getPath());
 //			continue;
 //		}
-		List<Data> tosave = new ArrayList();
+		List<MultiValued> tosave = new ArrayList();
 
 		for (Iterator iterator = inJsonOfFaces.iterator(); iterator.hasNext();)
 		{
@@ -559,7 +667,8 @@ public class FaceProfileManager implements CatalogEnabled
 			addedface.setValue("locationh",Math.round(h));
 			addedface.setValue("timecodestart",timecodestart);
 
-			//TODO: Make sure this is not already in there. For debug purposes
+			//TODO: Make sure this is not already in there. For debug purposes. lets do this at the end?
+			/*
 			HitTracker results = facedb.query().between("locationh",300L,(long)Integer.MAX_VALUE).search(); //Cache this?
 			if( !results.isEmpty() )
 			{
@@ -576,6 +685,7 @@ public class FaceProfileManager implements CatalogEnabled
 					}
 				}
 			}
+			*/
 			tosave.add(addedface);
 		}
 		return tosave;
@@ -613,7 +723,7 @@ public class FaceProfileManager implements CatalogEnabled
 		return found;
 	}
 	
-	protected Data findSimilar(Searcher facedb, MultiValued inChild, String myassetid, HitTracker inAllFaces)
+	protected Data findSimilar(Searcher facedb, MultiValued inChild, String myassetid, Collection inAllFaces)
 	{
 //		Integer sourceh = myFace.getInt("locationh");
 //		if( sourceh < 300 )  //Dont link to small image no matter what
@@ -1125,7 +1235,9 @@ public class FaceProfileManager implements CatalogEnabled
 //		getMediaArchive().saveAsset(inAsset);
 		
 		//getMediaArchive().fireSharedMediaEvent("asset/facescan");
-		extractFaces(inAsset);
+		List one = new ArrayList();
+		one.add(inAsset);
+		extractFaces(one);
 		
 	}
 
