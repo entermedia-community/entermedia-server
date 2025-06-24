@@ -199,7 +199,7 @@ public class FaceProfileManager implements CatalogEnabled
 			String fileformat = inAsset.getFileFormat();
 			
 			Boolean useoriginal = true;
-			if (filesize > 6000000)
+			if (filesize > 600000)
 			{
 				useoriginal = false;
 			}
@@ -556,7 +556,7 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			return null;
 		}
-		double facedetect_detect_confidence = .999D;
+		double facedetect_detect_confidence = .90D;
 		String detectvalue = getMediaArchive().getCatalogSettingValue("facedetect_detect_confidence");
 		if( detectvalue != null)
 		{
@@ -597,13 +597,7 @@ public class FaceProfileManager implements CatalogEnabled
 		if (inJsonOfFaces.size() == 1) {
 			minfacesize = minfacesize - 100;
 		}
-		
-//		double boxp = facejson.getDouble("face_confidence");
-//		if( boxp < facedetect_detect_confidence)
-//		{
-//			log.info("Low probability of found face (" + boxp  + "<"+ facedetect_detect_confidence+"): " + inInput.getPath());
-//			continue;
-//		}
+	
 		List<MultiValued> tosave = new ArrayList();
 
 		for (Iterator iterator = inJsonOfFaces.iterator(); iterator.hasNext();)
@@ -621,7 +615,7 @@ public class FaceProfileManager implements CatalogEnabled
 				continue;
 			}
 			Double confidence = (Double)facejson.get("face_confidence");  //This is useless
-			if( confidence < .94D)
+			if( confidence < facedetect_detect_confidence)
 			{
 				log.info("Invalid face  " + inAsset.getName() + " and confidence " + inAsset.getName() );
 				continue;
@@ -960,8 +954,11 @@ public class FaceProfileManager implements CatalogEnabled
 		JSONObject tosendparams = new JSONObject();
 		//tosendparams.put("face_plugins","detector");
 		
+		//tosendparams.put("model_name","Facenet");
 		tosendparams.put("model_name","Facenet512");
+		//tosendparams.put("model_name","ArchFace");
 		tosendparams.put("detector_backend","centerface");
+		//tosendparams.put("detector_backend","retinaface");
 		//tosendparams.put("img","http://localhost:8080" + inUrl);
 		
 		
@@ -986,12 +983,13 @@ public class FaceProfileManager implements CatalogEnabled
 			//url = "http://localhost:8000";
 		}
 		long start = System.currentTimeMillis();
-		log.debug("Facial Profile Detection sending " + inAsset.getName() );
+		//log.debug("Facial Profile Detection sending " + inAsset.getName() );
 		resp = getSharedConnection().sharedPostWithJson(url + "/represent",tosendparams);
 		if (resp.getStatusLine().getStatusCode() == 400)
 		{
 			//No faces found error
 			getSharedConnection().release(resp);
+			log.info("Face detection Remote Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
 			return Collections.EMPTY_LIST;
 		}
 		else if (resp.getStatusLine().getStatusCode() == 413)
