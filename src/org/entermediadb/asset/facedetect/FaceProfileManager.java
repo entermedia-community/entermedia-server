@@ -383,7 +383,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 	private double getVectorScoreLimit()
 	{
-		double similaritycheck = .31D;
+		double similaritycheck = .30D;
 		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
 		if( value != null)
 		{
