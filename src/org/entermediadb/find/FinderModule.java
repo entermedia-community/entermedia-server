@@ -18,11 +18,11 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.search.SecurityEnabledSearchSecurity;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.entermediadb.find.picker.Picker;
 import org.entermediadb.llm.LLMManager;
 import org.entermediadb.llm.LLMResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -1758,9 +1758,17 @@ public class FinderModule extends BaseMediaModule
 		
 		inReq.putPageValue(hitsname,tracker);
 	}
-	
-}
-	
 
-	
-	
+	public void startPicker(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Picker picker = new Picker();
+		
+		String moduleid = inReq.getRequestParameter("targetmoduleid");
+		picker.setTargetModuleId(moduleid);
+		
+		inReq.putSessionValue("picking",picker);
+		inReq.putPageValue("picking",picker);
+		
+	}
+}
