@@ -567,7 +567,7 @@ public class FaceProfileManager implements CatalogEnabled
 		else
 		{
 			File inputfile = new File( inInput.getAbsolutePath() );
-			Dimension size = getImageDimensionImageIO(inputfile);
+			Dimension size = getImageDimensionImageIO(inputfile);  //This needed for originals?
 			inputw = (int)Math.round( size.getWidth() );
 			inputh = (int)Math.round( size.getHeight() );
 		}       
