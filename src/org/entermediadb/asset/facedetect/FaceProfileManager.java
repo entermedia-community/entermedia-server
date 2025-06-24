@@ -340,7 +340,7 @@ public class FaceProfileManager implements CatalogEnabled
 			{
 				Data otherface = (Data) iterator2.next();
 				List<Double> othervalues = (List<Double>)otherface.getValue("facedatadoubles");
-				boolean same = compareVectors(facedoubles, othervalues, getVectorScoreLimit() + 0.05D ); //Be more flexible
+				boolean same = compareVectors(facedoubles, othervalues, getVectorScoreLimit() + 0.3D ); //Be more flexible
 				if( same )
 				{
 					//TODO: Keep larger facebox
