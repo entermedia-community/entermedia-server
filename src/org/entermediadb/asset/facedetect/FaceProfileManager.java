@@ -115,17 +115,36 @@ public class FaceProfileManager implements CatalogEnabled
 				log.error("No face server configured");
 				return 0;
 			}
-			List<MultiValued> foundfaces = new ArrayList();
+			HitTracker allfaces = getMediaArchive().query("faceembedding").all().sort("locationhUp").search();
+			allfaces.enableBulkOperations();
+			List<MultiValued> allrecords = new ArrayList(allfaces);  //This is huge
 
+			List assetids = new ArrayList();
+			for (Iterator iterator = allrecords.iterator(); iterator.hasNext();)
+			{
+				MultiValued existingface = (MultiValued) iterator.next();
+				String assetid = existingface.get("assetid");
+				if( assetid != null)
+				{
+					assetids.add(assetid);
+				}
+			}
+			
+			
+			List<MultiValued> foundfacestosave = new ArrayList();
 			List<Data> tosave = new ArrayList();
 
 			for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 			{
 				MultiValued inAsset = (MultiValued) iterator.next();
+				if( assetids.contains(inAsset.getId() ) )
+				{
+					continue;
+				}		
 				Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(inAsset);
 				try
 				{
-					extractFaces(asset,foundfaces);
+					extractFaces(asset,foundfacestosave);
 				}
 				catch( Throwable ex)
 				{
@@ -136,10 +155,10 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 				tosave.add(asset);
 			}  
-			fixSomeParents(foundfaces); //This saves
+			fixSomeNewParents(allrecords, foundfacestosave); //This saves
 			getMediaArchive().getAssetSearcher().saveAllData(tosave, null);
 			log.info(" Saved Assets " + tosave.size());
-			return foundfaces.size();
+			return foundfacestosave.size();
 	}
 
 	private void extractFaces(Asset inAsset, List<MultiValued> inFoundfaces) throws Exception
@@ -400,13 +419,9 @@ public class FaceProfileManager implements CatalogEnabled
 		List<MultiValued> allrecords = new ArrayList(faces);
 		fixParents(allrecords,allrecords);
 	}
-	public void fixSomeParents(List<MultiValued> somefaces)
+	public void fixSomeNewParents( List<MultiValued> allrecords, List<MultiValued> somefacestosave)
 	{
-		HitTracker allfaces = getMediaArchive().query("faceembedding").all().sort("locationhUp").search();
-		allfaces.enableBulkOperations();
-		List<MultiValued> allrecords = new ArrayList(allfaces);  //This is huge
-		
-		Collections.sort(somefaces, new Comparator<MultiValued>()
+		Collections.sort(somefacestosave, new Comparator<MultiValued>()
 		{
 			@Override
 			public int compare(MultiValued inO1, MultiValued inO2) //So small first
@@ -426,9 +441,10 @@ public class FaceProfileManager implements CatalogEnabled
 				return height.compareTo(height2);
 			}
 		});
-		fixParents(somefaces,allrecords);
+		fixParents(allrecords, somefacestosave);
+		allrecords.addAll(somefacestosave);
 	}
-	public void fixParents(Collection inResetFaces, List<MultiValued> allrecords)
+	public void fixParents(List<MultiValued> allrecords, Collection inResetFaces)
 	{
 		Searcher fsearcher = getMediaArchive().getSearcher("faceembedding");
 		List<MultiValued> tosave = new ArrayList();
@@ -631,20 +647,20 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			MultiValued addedface = null;
 			
-			Collection others = facedb.query().exact("assetid",inAsset).search();
-			for (Iterator iterator2 = others.iterator(); iterator2.hasNext();)
-			{
-				MultiValued existing = (MultiValued) iterator2.next();
-				List<Double> othervalues = (List<Double>)existing.getValue("facedatadoubles"); //Manually done because Search did not work
-				if(othervalues.equals(vector) )
-				{
-					addedface = existing;
-					addedface.setValue("parentembeddingid",null);
-					addedface.setValue("parentassetid",null);
-					addedface.setValue("parentdistance", null);
-					break;
-				}
-			}
+//			Collection others = facedb.query().exact("assetid",inAsset).search();
+//			for (Iterator iterator2 = others.iterator(); iterator2.hasNext();)
+//			{
+//				MultiValued existing = (MultiValued) iterator2.next();
+//				List<Double> othervalues = (List<Double>)existing.getValue("facedatadoubles"); //Manually done because Search did not work
+//				if(othervalues.equals(vector) )
+//				{
+//					addedface = existing;
+//					addedface.setValue("parentembeddingid",null);
+//					addedface.setValue("parentassetid",null);
+//					addedface.setValue("parentdistance", null);
+//					break;
+//				}
+//			}
 			if( addedface == null)
 			{
 				addedface = (MultiValued)facedb.createNewData(); //TODIO: Search by Vector first so we dont lose assignments
