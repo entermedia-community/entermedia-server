@@ -119,27 +119,26 @@ public class FaceProfileManager implements CatalogEnabled
 
 			List<Data> tosave = new ArrayList();
 
-			try
+			for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 			{
-				for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
+				MultiValued inAsset = (MultiValued) iterator.next();
+				Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(inAsset);
+				try
 				{
-					MultiValued inAsset = (MultiValued) iterator.next();
-					Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(inAsset);
 					extractFaces(asset,foundfaces);
-					tosave.add(asset);
-				}  
-			}
-			catch( Throwable ex)
-			{
-				log.error("Error on: " + inAssets.size(), ex);
-				throw new OpenEditException("Error on: " + inAssets.size(),ex);
-			}
-			finally
-			{
-				fixSomeParents(foundfaces); //This saves
-				getMediaArchive().getAssetSearcher().saveAllData(tosave, null);
-				log.info(" Saved Assets " + tosave.size());
-			}
+				}
+				catch( Throwable ex)
+				{
+					log.error("Error on: " + inAsset, ex);
+					inAsset.setValue("facescancomplete","true");
+					inAsset.setValue("facescanerror","true");
+					//throw new OpenEditException("Error on: " + inAssets.size(),ex);
+				}
+				tosave.add(asset);
+			}  
+			fixSomeParents(foundfaces); //This saves
+			getMediaArchive().getAssetSearcher().saveAllData(tosave, null);
+			log.info(" Saved Assets " + tosave.size());
 			return foundfaces.size();
 	}
 
