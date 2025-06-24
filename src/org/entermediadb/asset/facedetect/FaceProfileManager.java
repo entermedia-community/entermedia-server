@@ -441,8 +441,8 @@ public class FaceProfileManager implements CatalogEnabled
 				return height.compareTo(height2);
 			}
 		});
-		fixParents(allrecords, somefacestosave);
-		allrecords.addAll(somefacestosave);
+		fixParents(allrecords, somefacestosave); //Adds them to allrecords
+		//allrecords.addAll(somefacestosave);
 	}
 	public void fixParents(List<MultiValued> allrecords, Collection inResetFaces)
 	{
