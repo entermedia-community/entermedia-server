@@ -961,7 +961,7 @@ public class FaceProfileManager implements CatalogEnabled
 		//tosendparams.put("face_plugins","detector");
 		
 		tosendparams.put("model_name","Facenet512");
-		tosendparams.put("detector_backend","retinaface");
+		tosendparams.put("detector_backend","centerface");
 		//tosendparams.put("img","http://localhost:8080" + inUrl);
 		
 		
@@ -1239,10 +1239,10 @@ public class FaceProfileManager implements CatalogEnabled
 
 	public void rescanAsset(Asset inAsset)
 	{
-//		Searcher faceembeddingsearcher = getMediaArchive().getSearcherManager().getSearcher("system/facedb","faceembedding");
-//		Collection others = faceembeddingsearcher.query().exact("assetid",inAsset).search();
-//		
-//		faceembeddingsearcher.deleteAll(others, null);
+		Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
+		Collection others = faceembeddingsearcher.query().exact("assetid",inAsset).search();
+
+		faceembeddingsearcher.deleteAll(others, null);
 //		inAsset.setValue("facescancomplete","false");
 //		inAsset.setValue("facescanerror","false");
 //		getMediaArchive().saveAsset(inAsset);
