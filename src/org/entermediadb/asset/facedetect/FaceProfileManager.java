@@ -737,16 +737,16 @@ public class FaceProfileManager implements CatalogEnabled
 		faceembeddingsearcher.saveData(addedface, inUser);
 		return addedface;
 	}
-	
-	public Data findSimilar(MultiValued inFace)
-	{
-		//log.info("Checking for parents for " + inFace.get("locationh") );
-		Searcher fsearcher = getMediaArchive().getSearcher("faceembedding");
-		HitTracker results = fsearcher.query().between("locationh",300L,(long)Integer.MAX_VALUE).search(); //Cache this?
-		Data found = findSimilar(fsearcher,inFace,inFace.get("assetid"),results);
-		return found;
-	}
-	
+//	
+//	public Data findSimilar(MultiValued inFace)
+//	{
+//		//log.info("Checking for parents for " + inFace.get("locationh") );
+//		Searcher fsearcher = getMediaArchive().getSearcher("faceembedding");
+//		HitTracker results = fsearcher.query().between("locationh",299L,(long)Integer.MAX_VALUE).search(); //Cache this?
+//		Data found = findSimilar(fsearcher,inFace,inFace.get("assetid"),results);
+//		return found;
+//	}
+//	
 	protected Data findSimilar(Searcher facedb, MultiValued inChild, String myassetid, Collection inAllFaces)
 	{
 //		Integer sourceh = myFace.getInt("locationh");
@@ -755,9 +755,8 @@ public class FaceProfileManager implements CatalogEnabled
 //			return null;
 //		}
 		//log.info(inAllFaces.toString());
-		
-		Map<Double,Data> matches = new HashMap(); 
-		
+		Double smallestdistance = null; 
+		Data parent = null;
 		List<Double> inputv = (List<Double>)inChild.getValue("facedatadoubles");
 		for (Iterator iterator = inAllFaces.iterator(); iterator.hasNext();)
 		{
@@ -781,25 +780,15 @@ public class FaceProfileManager implements CatalogEnabled
 			double distance = findCosineDistance(inputv, comparetolist);
 			if( distance < getVectorScoreLimit())
 			{
-				//myFace.setValue("parentscore", score);
-				matches.put(distance, hit);
+				if( smallestdistance == null || smallestdistance < distance )
+				{
+					smallestdistance = distance;
+					parent = hit;
+				}
 			}
 		}
-		if( !matches.isEmpty() )
+		if( parent  != null)
 		{
-			Set<Double> keys = matches.keySet();
-			Double[] toarray = keys.toArray(new Double[keys.size()]);
-			Arrays.sort(toarray);
-			double smallestdistance = toarray[0];
-//			if( toarray.length > 1)
-//			{
-//				//check the height diff? locationh
-//			}
-//			else
-//			{
-//				
-//			}
-			Data parent = matches.get(smallestdistance);
 			inChild.setValue("parentdistance", smallestdistance);
 			return parent;
 		}		
