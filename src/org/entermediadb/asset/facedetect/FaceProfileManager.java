@@ -117,6 +117,7 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 			List<MultiValued> foundfaces = new ArrayList();
 
+			List<Data> tosave = new ArrayList();
 
 			for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 			{
@@ -125,6 +126,7 @@ public class FaceProfileManager implements CatalogEnabled
 				try
 				{
 					extractFaces(asset,foundfaces);
+					tosave.add(asset);
 				}
 				catch( Throwable ex)
 				{
@@ -133,7 +135,7 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 			}  
 			fixSomeParents(foundfaces);
-			getMediaArchive().getAssetSearcher().saveAllData(inAssets, null);
+			getMediaArchive().getAssetSearcher().saveAllData(tosave, null);
 			return foundfaces.size();
 	}
 
