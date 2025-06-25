@@ -556,7 +556,7 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			return null;
 		}
-		double facedetect_detect_confidence = .90D;
+		double facedetect_detect_confidence = .8D;
 		String detectvalue = getMediaArchive().getCatalogSettingValue("facedetect_detect_confidence");
 		if( detectvalue != null)
 		{
@@ -594,9 +594,9 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			minfacesize = Integer.parseInt(minumfaceimagesize);
 		}
-		if (inJsonOfFaces.size() == 1) {
-			minfacesize = minfacesize - 100;
-		}
+//		if (inJsonOfFaces.size() == 1) {
+//			minfacesize = minfacesize - 100;
+//		}
 	
 		List<MultiValued> tosave = new ArrayList();
 
@@ -617,7 +617,7 @@ public class FaceProfileManager implements CatalogEnabled
 			Double confidence = (Double)facejson.get("face_confidence");  //This is useless
 			if( confidence < facedetect_detect_confidence)
 			{
-				log.info("Invalid face  " + inAsset.getName() + " and confidence " + inAsset.getName() );
+				log.info("Invalid face  " + inAsset.getName() + " and confidence " + confidence );
 				continue;
 			}
 //			if( similarembedding != null)
@@ -954,11 +954,11 @@ public class FaceProfileManager implements CatalogEnabled
 		JSONObject tosendparams = new JSONObject();
 		//tosendparams.put("face_plugins","detector");
 		
-		//tosendparams.put("model_name","Facenet");
-		tosendparams.put("model_name","Facenet512");
-		//tosendparams.put("model_name","ArchFace");
-		tosendparams.put("detector_backend","centerface");
-		//tosendparams.put("detector_backend","retinaface");
+		tosendparams.put("model_name","Facenet512"); 
+//		tosendparams.put("model_name","ArcFace");
+//		tosendparams.put("detector_backend","centerface");
+		tosendparams.put("detector_backend","dlib");
+		tosendparams.put("enforce_detection", false);
 		//tosendparams.put("img","http://localhost:8080" + inUrl);
 		
 		
