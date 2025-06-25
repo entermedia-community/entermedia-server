@@ -88,25 +88,10 @@ public class JavaScriptGenerator extends TempFileGenerator
 				}
 			}
 
-			String since = req.getHeader("If-Modified-Since");
-			if( since != null && since.endsWith("GMT"))
+			boolean cached = checkCache(inContext, inPage, req, res);
+			if( cached )
 			{
-				//304 Not Modified
-				try
-				{
-					Date old = getLastModFormat().parse(since);
-					if( mostrecentmod <= old.getTime())
-					{
-						//log.info("if since"  + since);
-						res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-						//res.setHeader("ETag",length + "_" + mostrecentmod);
-						return;
-					}
-				}
-				catch( Exception ex)
-				{
-					log.error(since);
-				}
+				return;
 			}
 
 		//Something modified. Save file again
