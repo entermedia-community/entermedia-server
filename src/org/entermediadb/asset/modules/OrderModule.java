@@ -401,6 +401,7 @@ public class OrderModule extends BaseMediaModule
 		}
 		HitTracker orders = getOrderManager(inReq).findOrdersForUser(catalogid, owner);
 		inReq.putPageValue("orders", orders);
+		inReq.putSessionValue(orders.getSessionId(), orders);
 		inReq.putPageValue("searcher", getSearcherManager().getSearcher(catalogid, "order"));
 		
 		return orders;

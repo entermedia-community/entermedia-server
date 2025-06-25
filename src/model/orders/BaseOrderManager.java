@@ -412,6 +412,7 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 
 
 		order.setProperty("userid", inUsername);
+		order.addValue("viewusers", inUsername);
 		order.setProperty("applicationid",inAppId);
 		return order;
 	}
