@@ -155,8 +155,8 @@ public class JavaScriptGenerator extends TempFileGenerator
 		{
 			res.setContentLength((int)length);
 		}
-		res.setDateHeader("Last-Modified",mostrecentmod);
-		//res.setHeader("ETag",length + "_" + mostrecentmod); //Too strong of a cache
+		
+		setHeaders(res, inPage);
 
 		InputStreamReader reader = null;
 		try
