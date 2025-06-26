@@ -188,16 +188,23 @@
           var id = $("form", modaldialog).attr("id");
           $("#submitbutton", modaldialog).attr("form", id);
         }
+
         var hidetitle = initiatorData["hideheader"];
-        if (hidetitle == null) {
-          var title = initiator.attr("title");
-          if (title == null) {
+        if (!hidetitle) {
+          var title = initiator.data("dialogtitle");
+          if (!title) {
+            title = initiator.attr("title");
+          }
+          if (!title) {
             title = initiator.text();
           }
-          $(".modal-title", modaldialog).text(title);
+          if (title) {
+            $(".modal-title", modaldialog).text(title);
+          }
         }
+
         var hidefooter = initiatorData["hidefooter"];
-        if (hidefooter != null) {
+        if (hidefooter) {
           $(".modal-footer", modaldialog).remove();
           $(".modal-body").css("padding-bottom", "6px");
         }
