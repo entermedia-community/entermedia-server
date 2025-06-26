@@ -1,6 +1,7 @@
+
 #ifnotnull($value)
-	#if( !$detail.isMultiValue())
-		$value
+	#if( $detail.isMultiValue())
+		$value 
 	#else
 	
 	#set( $foundrow = $searcherManager.getCachedData($detail.getListCatalogId(),$detail.getListId(),$value) )
