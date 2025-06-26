@@ -121,6 +121,7 @@ public class FaceProfileModule extends BaseMediaModule
 			if (face != null)
 			{
 				face.setValue("entityperson", personid);
+				face.setValue("assignedby",inReq.getUser().getId() );
 				archive.saveData("faceembedding",face);
 				
 				//always reset image
@@ -281,7 +282,7 @@ public class FaceProfileModule extends BaseMediaModule
 		
 		String faceembeddedid = inReq.getRequestParameter("faceembeddingid");
 		MultiValued data = (MultiValued)archive.getData("faceembedded",faceembeddedid);
-		manager.disableFaceBox(data);
+		manager.disableFaceBox(inReq.getUser(),data);
 		
 	}
 	

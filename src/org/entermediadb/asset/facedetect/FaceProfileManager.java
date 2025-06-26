@@ -516,9 +516,10 @@ public class FaceProfileManager implements CatalogEnabled
 	}
 	
 	
-	public void disableFaceBox(MultiValued inEmbedding)
+	public void disableFaceBox(User inUser, MultiValued inEmbedding)
 	{
 		inEmbedding.setValue("isremoved", true);
+		inEmbedding.setValue("removedby", inUser.getId());
 		getMediaArchive().saveData("faceembedding",inEmbedding);
 		
 		//reconnect parents and children and other faces
