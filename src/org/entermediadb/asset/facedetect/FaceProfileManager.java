@@ -157,7 +157,7 @@ public class FaceProfileManager implements CatalogEnabled
 			}  
 			fixSomeNewParents(allrecords, foundfacestosave); //This saves
 			getMediaArchive().getAssetSearcher().saveAllData(tosave, null);
-			log.info(" Saved Assets " + tosave.size());
+			log.info(" Saved Assets " + tosave.size() + " added faces:  " + foundfacestosave.size());
 			return foundfacestosave.size();
 	}
 
@@ -609,12 +609,12 @@ public class FaceProfileManager implements CatalogEnabled
 			Collection left = box.getValues("left_eye");
 			Collection right = box.getValues("right_eye");
 			
+			Double confidence = (Double)facejson.get("face_confidence");  //This is useless
 			if( left == null || right == null)
 			{
-				log.info("Skipping, Eyes are required  " + inAsset.getName() );
+				log.info("Eyes are required, confidence = " + confidence  + " file: " + inAsset.getName());
 				continue;
 			}
-			Double confidence = (Double)facejson.get("face_confidence");  //This is useless
 			if( confidence < facedetect_detect_confidence)
 			{
 				log.info("Invalid face  " + inAsset.getName() + " and confidence " + confidence );
