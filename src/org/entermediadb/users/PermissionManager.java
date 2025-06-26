@@ -546,6 +546,13 @@ public class PermissionManager implements CatalogEnabled
 	    log.info("Checkiog permissions on " + inModule);
 	    
 	    Category rootcat = archive.getEntityManager().loadDefaultFolderForModule(inModule, null);
+	    
+	    rootcat.setValue("customusers", inModule.getValue("viewusers"));
+	    rootcat.setValue("customgroups", inModule.getValue("viewgroups"));
+	    rootcat.setValue("customroles", inModule.getValue("viewroles"));
+	    
+	    archive.saveData("category", rootcat);
+	    
 	    boolean needsupdate = false;
 	    String[] fieldsToCompare = {"users", "groups", "roles"};
 	    for (String field : fieldsToCompare) {
