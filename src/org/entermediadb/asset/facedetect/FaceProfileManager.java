@@ -910,7 +910,7 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 		
 		Searcher searcher = getMediaArchive().getSearcher("faceembedding");
-		HitTracker allthepeopleinasset = searcher.query().exact("assetid",inAsset).search();
+		HitTracker allthepeopleinasset = searcher.query().exact("assetid",inAsset).exact("isremoved", false).search();
 		
 		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
 		{

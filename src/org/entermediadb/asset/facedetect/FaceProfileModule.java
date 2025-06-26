@@ -281,7 +281,7 @@ public class FaceProfileModule extends BaseMediaModule
 		FaceProfileManager manager = archive.getFaceProfileManager();
 		
 		String faceembeddedid = inReq.getRequestParameter("faceembeddingid");
-		MultiValued data = (MultiValued)archive.getData("faceembedded",faceembeddedid);
+		MultiValued data = (MultiValued)archive.getData("faceembedding",faceembeddedid);
 		manager.disableFaceBox(inReq.getUser(),data);
 		
 	}
