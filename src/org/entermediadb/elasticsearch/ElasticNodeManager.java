@@ -1057,7 +1057,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		reindexhistory.setValue("date", new Date());
 		reindexhistory.setValue("operation", "completed");
 		reindexhistory.setValue("catalogid", inCatalogId);
-
+		log.info("Elastic Reindex Nodes Complete");
 		return true;
 
 	}
