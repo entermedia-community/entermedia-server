@@ -121,6 +121,8 @@ public class FaceProfileModule extends BaseMediaModule
 			if (face != null)
 			{
 				face.setValue("entityperson", personid);
+				face.setValue("assignedby",inReq.getUser().getId() );
+				face.setValue("hasotherfaces",true);
 				archive.saveData("faceembedding",face);
 				
 				//always reset image
@@ -154,7 +156,7 @@ public class FaceProfileModule extends BaseMediaModule
 	}
 	*/
 	
-	public void addManualFaceProfile (WebPageRequest inReq) throws Exception
+	public void addManualFaceProfile(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String assetid = inReq.getRequestParameter("assetid");
@@ -272,6 +274,17 @@ public class FaceProfileModule extends BaseMediaModule
 			viewAllRelatedFaces(inPageRequest);
 		}
 	}
-	
+
+	public void disableFace(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+
+		FaceProfileManager manager = archive.getFaceProfileManager();
+		
+		String faceembeddedid = inReq.getRequestParameter("faceembeddingid");
+		MultiValued data = (MultiValued)archive.getData("faceembedding",faceembeddedid);
+		manager.disableFaceBox(inReq.getUser(),data);
+		
+	}
 	
 }
