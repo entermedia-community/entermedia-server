@@ -154,7 +154,7 @@ public class FaceProfileModule extends BaseMediaModule
 	}
 	*/
 	
-	public void addManualFaceProfile (WebPageRequest inReq) throws Exception
+	public void addManualFaceProfile(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String assetid = inReq.getRequestParameter("assetid");
@@ -272,6 +272,17 @@ public class FaceProfileModule extends BaseMediaModule
 			viewAllRelatedFaces(inPageRequest);
 		}
 	}
-	
+
+	public void disableFace(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+
+		FaceProfileManager manager = archive.getFaceProfileManager();
+		
+		String faceembeddedid = inReq.getRequestParameter("faceembeddingid");
+		MultiValued data = (MultiValued)archive.getData("faceembedded",faceembeddedid);
+		manager.disableFaceBox(data);
+		
+	}
 	
 }
