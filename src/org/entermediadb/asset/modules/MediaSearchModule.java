@@ -118,40 +118,47 @@ public class MediaSearchModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		Category category = archive.getCategory(inPageRequest);
 
-		HitTracker all = null;
-		SearchQuery search = archive.getCategorySearcher().addStandardSearchTerms(inPageRequest);
-		if(search == null) {
-			search = archive.getCategorySearcher().createSearchQuery();
-		}
-		
-		if (category != null)
+		HitTracker all = archive.getCategorySearcher().loadPageOfSearch(inPageRequest);;
+		if (all == null)
 		{
-			search.addExact("parents", category.getId());
-		}
 		
-		String	sort = inPageRequest.getRequestParameter("categorysortby");
-		if (sort == null)
-		{
-			sort = "categorypathUp";
-		}
-		search.addSortBy(sort);
-		
-		if( search.getHitsName() == null)
-		{
-			String hitsname = inPageRequest.getRequestParameter("hitsname");
-			if(hitsname == null)
-			{
-				hitsname = inPageRequest.findValue("hitsname");
+			SearchQuery search = archive.getCategorySearcher().addStandardSearchTerms(inPageRequest);
+			if(search == null) {
+				search = archive.getCategorySearcher().createSearchQuery();
 			}
-			if (hitsname != null )
+			
+			if (category != null)
 			{
-				search.setHitsName(hitsname);
+				search.addExact("parents", category.getId());
 			}
+			
+			String	sort = inPageRequest.getRequestParameter("categorysortby");
+			if (sort == null)
+			{
+				sort = "categorypathUp";
+			}
+			search.addSortBy(sort);
+			
+			if( search.getHitsName() == null)
+			{
+				String hitsname = inPageRequest.getRequestParameter("hitsname");
+				if(hitsname == null)
+				{
+					hitsname = inPageRequest.findValue("hitsname");
+				}
+				if (hitsname != null )
+				{
+					search.setHitsName(hitsname);
+				}
+			}
+			
+			all = archive.getCategorySearcher().cachedSearch(inPageRequest, search);
 		}
-		
-		all = archive.getCategorySearcher().cachedSearch(inPageRequest, search);
-
 		inPageRequest.putPageValue("hits",all);
+		if (all != null) 
+		{
+			inPageRequest.putSessionValue(all.getSessionId(), all);
+		}
 		inPageRequest.putPageValue("category",category);
 		inPageRequest.putPageValue("selectedcategory",category);
 	}
