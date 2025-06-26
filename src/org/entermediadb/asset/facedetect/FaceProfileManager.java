@@ -456,13 +456,15 @@ public class FaceProfileManager implements CatalogEnabled
 			face.setValue("parentids",null);
 			face.setValue("parentassetid",null);
 			face.setValue("parentdistance",null);
+			face.setValue("hasotherfaces",false);
+			
 			if( face.getId() == null)
 			{
 				allrecords.add(face);
 				tosave.add(face);
 			}
 		}			
-		getMediaArchive().saveData("faceembedding",tosave);
+		getMediaArchive().saveData("faceembedding",tosave); //All Saved
 		for (Iterator iterator = allrecords.iterator(); iterator.hasNext();)
 		{
 			MultiValued face = (MultiValued) iterator.next();
@@ -479,6 +481,8 @@ public class FaceProfileManager implements CatalogEnabled
 			{
 				face.setValue("parentembeddingid",found.getId());
 				face.setValue("parentassetid",found.get("assetid"));
+				face.setValue("hasotherfaces",true);
+				found.setValue("hasotherfaces",true);
 			}
 		}
 		

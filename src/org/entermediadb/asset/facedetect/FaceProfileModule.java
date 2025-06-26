@@ -122,6 +122,7 @@ public class FaceProfileModule extends BaseMediaModule
 			{
 				face.setValue("entityperson", personid);
 				face.setValue("assignedby",inReq.getUser().getId() );
+				face.setValue("hasotherfaces",true);
 				archive.saveData("faceembedding",face);
 				
 				//always reset image
