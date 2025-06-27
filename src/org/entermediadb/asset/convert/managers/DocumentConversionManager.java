@@ -193,25 +193,16 @@ public class DocumentConversionManager extends BaseConversionManager
 		
 		//Step 2 make PNG
 		//Now make the input image needed using the document as the input
-		
-		String customExtension = inStructions.getMediaArchive().getCatalogSettingValue("default_thumbnail_extension");
-		if (customExtension == null || !customExtension.equals("webp"))
+		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image3000x3000.webp");
+		if( preset == null) //Legacy check
 		{
-			customExtension = "png";
-		}
-		
-		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image3000x3000." + customExtension);
+			preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image3000x3000.png");
+		}	
 		if( preset == null) //Legacy check
 		{
 			preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image1500x1500.png");
 		}	
-		if(preset == null) {
-			 preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image1024x768.jpg");
-		
-		}
 	
-		
-		
 
 		ConvertInstructions instructions2 = inStructions.copy(preset);
 		instructions2.setPageNumber(inStructions.getPageNumber());

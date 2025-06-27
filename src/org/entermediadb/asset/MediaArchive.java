@@ -2913,15 +2913,19 @@ public class MediaArchive implements CatalogEnabled
 		String sourcepath = inAsset.getSourcePath();
 
 		String downloadroot = null;
-		downloadroot = "/services/module/asset/downloads/";
+		
 		if( inGeneratedoutputfile.endsWith("video.m3u8"))
 		{
+			downloadroot = "/services/module/asset/downloads/";
 			//finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedoutputfile + "/360/" + usefile;
 			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedoutputfile;
 		}
 		else
 		{
-			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + sourcepath + "/" + usefile;
+			downloadroot = "/services/module/asset/";
+			String finalname = PathUtilities.extractPageName(inAsset.getName());
+			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generated/" + sourcepath + "/" + usefile; //+ "/" +  finalname + usefile;
+			
 		}
 		finalroot = URLUtilities.urlEscape(finalroot);
 

@@ -66,11 +66,7 @@ public class GeneratedMediaGenerator extends FileGenerator
 			String fileext = PathUtilities.extractPageType(endingpath);
 			String basepath = PathUtilities.extractDirectoryPath(endingpath);
 			
-			
-			
 			endingpath = basepath + "/" + filename + "wm." + fileext;
-			
-			
 			
 			ondemand = "true";
 			
