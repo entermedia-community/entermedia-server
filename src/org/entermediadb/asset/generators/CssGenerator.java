@@ -62,19 +62,11 @@ public class CssGenerator extends TempFileGenerator {
             }
         }
 
-        // Check for Conditional Request (304 Not Modified)
-        String ifModifiedSince = req.getHeader("If-Modified-Since");
-        if (ifModifiedSince != null) {
-            try {
-                Date old = getLastModFormat().parse(ifModifiedSince);
-                if (mostRecentMod <= old.getTime()) {
-                    res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                    return;
-                }
-            } catch (Exception e) {
-                log.error("Invalid If-Modified-Since header: " + ifModifiedSince, e);
-            }
-        }
+    	boolean cached = checkCache(inContext, mostRecentMod, req, res);
+		if( cached )
+		{
+			return;
+		}
 
         // Check if we need to regenerate
         Long cachedTotal = cachedSizeCounts.get(inPage.getPath());
@@ -131,7 +123,8 @@ public class CssGenerator extends TempFileGenerator {
 
     protected void serveCss(Page inPage, long mostRecentMod, Output inOut, HttpServletResponse res) throws IOException {
         res.setContentType("text/css");
-        res.setDateHeader("Last-Modified", mostRecentMod);
+        //res.setDateHeader("Last-Modified", mostRecentMod);
+        setHeaders(res, mostRecentMod);
 
         try (Reader reader = new InputStreamReader(inPage.getInputStream(), inPage.getCharacterEncoding())) {
             getOutputFiller().fill(reader, inOut.getWriter());

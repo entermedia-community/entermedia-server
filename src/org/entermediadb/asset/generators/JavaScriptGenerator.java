@@ -88,7 +88,7 @@ public class JavaScriptGenerator extends TempFileGenerator
 				}
 			}
 
-			boolean cached = checkCache(inContext, inPage, req, res);
+			boolean cached = checkCache(inContext, mostrecentmod, req, res);
 			if( cached )
 			{
 				return;
@@ -141,7 +141,7 @@ public class JavaScriptGenerator extends TempFileGenerator
 			res.setContentLength((int)length);
 		}
 		
-		setHeaders(res, inPage);
+		setHeaders(res, mostrecentmod);
 
 		InputStreamReader reader = null;
 		try
