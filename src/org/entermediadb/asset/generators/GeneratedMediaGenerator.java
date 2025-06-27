@@ -60,7 +60,7 @@ public class GeneratedMediaGenerator extends FileGenerator
 		String ondemand = inReq.findValue("ondemand");
 		
 		Boolean forcewatermark = inReq.hasPermission("forcewatermarkasset");
-		if (forcewatermark && endingpath.contains("3000x3000")) 
+		if (forcewatermark && endingpath.contains("image3000x3000.")) 
 		{
 			String filename = PathUtilities.extractPageName(endingpath);
 			String fileext = PathUtilities.extractPageType(endingpath);

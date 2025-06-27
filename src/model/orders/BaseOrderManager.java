@@ -672,6 +672,7 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 			if( preset != null)
 			{
 				String path = archive.asLinkToShare(inReq.getSiteRoot(), asset, preset);
+				path = path + "?download=true";
 				orderItem.setProperty("itemdownloadurl", path);
 			}			
 
