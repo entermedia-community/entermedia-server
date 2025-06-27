@@ -57,6 +57,25 @@ public class GeneratedMediaGenerator extends FileGenerator
 			endingpath = PathUtilities.extractDirectoryPath(endingpath);
 		}
 		
+		String ondemand = inReq.findValue("ondemand");
+		
+		Boolean forcewatermark = inReq.hasPermission("forcewatermarkasset");
+		if (forcewatermark && endingpath.contains("3000x3000")) 
+		{
+			String filename = PathUtilities.extractPageName(endingpath);
+			String fileext = PathUtilities.extractPageType(endingpath);
+			String basepath = PathUtilities.extractDirectoryPath(endingpath);
+			
+			
+			
+			endingpath = basepath + "/" + filename + "wm." + fileext;
+			
+			
+			
+			ondemand = "true";
+			
+		}
+		
 		// Try the contentitem first. If misssing try a fake page
 
 		//String sourcepath = archive.getSourcePathForPage(inPage);
@@ -67,8 +86,8 @@ public class GeneratedMediaGenerator extends FileGenerator
 		
 		if( !existed )
 		{
-			String download = inReq.findValue("ondemand");
-			if( Boolean.parseBoolean(download))
+			
+			if( Boolean.parseBoolean(ondemand))
 			{
 				TranscodeTools transcodetools = archive.getTranscodeTools();
 				String sourcepath = archive.getSourcePathForPage(inPage);
@@ -121,11 +140,13 @@ public class GeneratedMediaGenerator extends FileGenerator
 		{
 			WebPageRequest copy = inReq.copy(output);
 			copy.putProtectedPageValue("content", output);
+			
+			/*
 			if(existed && inReq.getResponse() != null )
 			{
 				inReq.getResponse().setHeader("ETag", String.valueOf( output.lastModified() ));
 			}
-
+			*/
 			
 			super.generate(copy, output, inOut);
 			// archive.logDownload(sourcePath, "success", inReq.getUser());
