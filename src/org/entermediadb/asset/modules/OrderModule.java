@@ -743,7 +743,15 @@ public class OrderModule extends BaseMediaModule
 			order = (Order) searcher.createNewData();
 		}
 		String[] fields = inReq.getRequestParameters("field");
+		
 		searcher.updateData(inReq, fields, order);
+		
+		String ordertype = inReq.findValue("ordertype.value");
+		if (ordertype == null)
+		{
+			ordertype = "download";
+		}
+		order.setProperty("ordertype", ordertype);  //Will be saved on manager
 
 		MediaArchive archive = getMediaArchive(inReq);
 		Map params = inReq.getParameterMap();
@@ -758,6 +766,7 @@ public class OrderModule extends BaseMediaModule
 			}
 		}
 		List assetids = manager.addConversionAndPublishRequest(inReq, order, archive, params, inReq.getUser());
+		
 		// OrderHistory history =
 		// getOrderManager(inReq).createNewHistory(archive.getCatalogId(), order,
 		// inReq.getUser(), "pending");
@@ -769,6 +778,9 @@ public class OrderModule extends BaseMediaModule
 //			order.setProperty("orderstatus", "ordered"); //what is pendig
 //		}
 //		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
+		
+
+		
 		log.info("Added conversion and publish requests for order id:" + order.getId());
 	}
 	/**

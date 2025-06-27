@@ -32,9 +32,8 @@
 	
 	<permission name="view">
 	<or>
-			<pagevalue name="candownload" equals="true"/>
-	
-		   <userprofile property="download" equals="true" />
+		<pagevalue name="candownload" equals="true"/>
+		<userprofile property="download" equals="true" />
 		<action name="OrderModule.canViewAsset" />
 	</or>
 	</permission>

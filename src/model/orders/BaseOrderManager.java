@@ -398,7 +398,10 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		Order order  = (Order)searcher.createNewData();
 		//order.setElement(DocumentHelper.createElement(searcher.getSearchType()));
 		//order.setId(searcher.nextId());
-		order.setProperty("orderstatus", "preorder");
+		
+		order.setProperty("orderstatus", "preorder");  //ToDO:  
+		order.setProperty("ordertype", "basket");   
+		
 		order.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		
 		if( order.getId() == null) {
