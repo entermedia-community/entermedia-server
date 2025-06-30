@@ -7,6 +7,7 @@ public class Picker
 	protected String fieldTargetModuleId;
 	protected String fieldTargetFieldId;
 
+	
 	public String getTargetModuleId()
 	{
 		return fieldTargetModuleId;
@@ -17,21 +18,23 @@ public class Picker
 		fieldTargetModuleId = inTargetModuleId;
 	}
 
+	
+	public String getTargetFieldId() {
+		return fieldTargetFieldId;
+	}
+
 	public void setTargetFieldId(String inTargetFieldId)
 	{
 		fieldTargetFieldId = inTargetFieldId;
 	}
 	
-	public String getTargetFieldId() {
-		return fieldTargetFieldId;
+	
+	public String getTargetType() {
+		return fieldTargetType;
 	}
 	
 	public void setTargetType(String inTargetType) {
 		fieldTargetType = inTargetType;
-	}
-	
-	public String getTargetType() {
-		return fieldTargetType;
 	}
 	
 	
