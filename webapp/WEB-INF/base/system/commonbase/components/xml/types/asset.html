@@ -40,7 +40,7 @@
 		##?targetdiv=${detail.id}-value&detailid=${detail.id}&categoryid=$!{defaultfolder.getId()}
 
 		#ifnull($pickerurl)
-			set($pickerurl = "${siteroot}${finderhome}/views/modules/asset/editors/pickerpickasset/index.html")
+			#set($pickerurl = "${siteroot}${finderhome}/views/modules/asset/editors/pickerpickasset/index.html")
 		#end
 		
 		<a href="$pickerurl" 
