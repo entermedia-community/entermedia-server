@@ -1764,11 +1764,14 @@ public class FinderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		Picker picker = new Picker();
 		
+		String targetfieldid = inReq.getRequestParameter("targetfieldid");
+		picker.setTargetFieldId(targetfieldid);
+		
 		String moduleid = inReq.getRequestParameter("pickingmoduleid");
 		picker.setTargetModuleId(moduleid);
 		
-		inReq.putSessionValue("picking",picker);
-		inReq.putPageValue("picking",picker);
+		inReq.putSessionValue("picker",picker);
+		inReq.putPageValue("picker",picker);
 		
 	}
 }

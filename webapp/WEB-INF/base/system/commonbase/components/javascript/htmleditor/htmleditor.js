@@ -135,7 +135,8 @@ class ImagePicker extends Plugin {
         //TODO: Open image picker dialog
         const findRoot = $("#application").data("findroot");
         const anchor = document.createElement("a");
-        anchor.href = findRoot + "/blockiframe.html";
+        anchor.id = "dialogpickerassetpicker";
+        anchor.href = findRoot + "/blockiframe.html?targetfieldid=htmleditor";
         anchor.classList.add("emdialog");
         document.body.appendChild(anchor);
         $(anchor).emDialog();
@@ -623,10 +624,15 @@ window.addEventListener("message", function (event) {
   if (event.origin !== window.location.origin) return;
   if (
     typeof event.data === "object" &&
-    event.data.name === "eMediaAssetPicked"
+    event.data.name === "eMediaAssetPicked" &&
+    event.data.target === "htmleditor"
   ) {
     $(window).trigger("assetpicked", [event.data]);
-    closeallemdialogs();
+    var pickermodal = $("#dialogpickerassetpicker");
+    if (!pickermodal.length) {
+      pickermodal = $("#blockfindpicker").closest(".modal");
+    }
+    closeemdialog(pickermodal);
   }
 });
 
