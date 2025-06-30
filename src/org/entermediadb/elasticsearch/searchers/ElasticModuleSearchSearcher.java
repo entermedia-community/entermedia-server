@@ -147,6 +147,11 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		Collection searchmodules = inQuery.getValues("searchtypes");
 		Map<String,PropertyDetail> details = new HashMap();
 		
+		if (searchmodules == null)
+		{
+			return null;
+		}
+		
 		for (Iterator iterator = searchmodules.iterator(); iterator.hasNext();)
 		{
 			String moduleid = (String) iterator.next();
