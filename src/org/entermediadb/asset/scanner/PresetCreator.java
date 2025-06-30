@@ -94,7 +94,7 @@ public class PresetCreator
 		return hits;
 	}
 	
-	public Data getCachedPresetByExternalName(MediaArchive inArchive, String renderType, String inName)
+	public Data getPresetByOutputNameCached(MediaArchive inArchive, String renderType, String inName)
 	{
 		Data preset = (Data)getCacheManager().get("preset_names",inName);
 		Data found = null;

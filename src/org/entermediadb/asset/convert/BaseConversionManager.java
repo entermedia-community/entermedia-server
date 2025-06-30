@@ -186,7 +186,7 @@ public abstract class BaseConversionManager implements ConversionManager
 	@Override
 	public ConvertInstructions createInstructions(Asset inAsset, String inExportName)
 	{
-		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(), getRenderType(), inExportName);
+		Data preset = getMediaArchive().getPresetManager().getPresetByOutputNameCached(getMediaArchive(), getRenderType(), inExportName);
 		ConvertInstructions instructions = createNewInstructions();
 		instructions.setAsset(inAsset);
 		instructions.loadPreset(preset);
@@ -233,7 +233,7 @@ public abstract class BaseConversionManager implements ConversionManager
 	public ConvertInstructions createInstructions(Asset inAsset, String inSourcePath, String inExportName, Map inSettings)
 	{ 
 		ConvertInstructions instructions = createNewInstructions();
-		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(), getRenderType(), inExportName);
+		Data preset = getMediaArchive().getPresetManager().getPresetByOutputNameCached(getMediaArchive(), getRenderType(), inExportName);
 		if( preset == null)
 		{
 			throw new OpenEditException("Preset not defined " +  getRenderType() + " "  + inExportName);

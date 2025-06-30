@@ -159,7 +159,7 @@ public class DocumentConversionManager extends BaseConversionManager
 		{
 			
 			//Lets always have a PDF version of all document formats?
-			Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","document.pdf");
+			Data preset = getMediaArchive().getPresetManager().getPresetByOutputNameCached(inStructions.getMediaArchive(),"document","document.pdf");
 			ConvertInstructions instructions2 = inStructions.copy(preset);
 
 			MediaTranscoder findTranscoder = findTranscoder(instructions2);
@@ -193,14 +193,14 @@ public class DocumentConversionManager extends BaseConversionManager
 		
 		//Step 2 make PNG
 		//Now make the input image needed using the document as the input
-		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image3000x3000.webp");
+		Data preset = getMediaArchive().getPresetManager().getPresetByOutputNameCached(inStructions.getMediaArchive(),"document","image3000x3000.webp");
 		if( preset == null) //Legacy check
 		{
-			preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image3000x3000.png");
+			preset = getMediaArchive().getPresetManager().getPresetByOutputNameCached(inStructions.getMediaArchive(),"document","image3000x3000.png");
 		}	
 		if( preset == null) //Legacy check
 		{
-			preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image1500x1500.png");
+			preset = getMediaArchive().getPresetManager().getPresetByOutputNameCached(inStructions.getMediaArchive(),"document","image1500x1500.png");
 		}	
 	
 
