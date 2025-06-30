@@ -1767,6 +1767,9 @@ public class FinderModule extends BaseMediaModule
 		String targetfieldid = inReq.getRequestParameter("targetfieldid");
 		picker.setTargetFieldId(targetfieldid);
 		
+		String targettype = inReq.getRequestParameter("targettype");
+		picker.setTargetFieldId(targettype);
+		
 		String moduleid = inReq.getRequestParameter("pickingmoduleid");
 		picker.setTargetModuleId(moduleid);
 		
