@@ -192,14 +192,14 @@ public class EntityManager implements CatalogEnabled
 				cat = getMediaArchive().getCategory(categoryid);
 				if( cat != null)
 				{
-					String parentppath = cat.getCategoryPath();
+					String categorypath = cat.getCategoryPath();
 					if (existingsourcepath.endsWith("/"))
 					{
 						existingsourcepath = existingsourcepath.substring(0, existingsourcepath.length() - 1);
 					}
-					if( parentppath != null && !parentppath.equals( existingsourcepath ) )
+					if( categorypath != null && !categorypath.equals( existingsourcepath ) )
 					{
-						throw new OpenEditException("Move Category to correct location: " + existingsourcepath);
+						throw new OpenEditException("Move Category to correct location: " + categorypath + "  " + existingsourcepath);
 					}
 				}
 			}

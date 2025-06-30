@@ -1,0 +1,130 @@
+#set($hits = $publishingentityassethits)
+#if(!$ismodulesearch)
+	#set ( $ismodulesearch = $content.get("ismodulesearch") )
+#end
+#if(!$ismodulesearch)
+	#set ( $ismodulesearch = $context.getRequestParameter("ismodulesearch") )
+#end
+#if(!$publishingid)
+	#set ( $publishingid = $context.getRequestParameter("publishingid") )
+#end
+
+#set($loop = $hits)
+#ifnotnull($lightboxassets)
+	#set($loop = $lightboxassets)
+	#set( $hits = $assethits )
+	$context.putPageValue("hits",$hits)
+#end
+
+<div id="resultsdiv" class="resultsdiv scroll-resultsdiv"
+	data-hitssessionid="$!hits.getSessionId()" ##it breaks drag&drop
+	data-hitsname="$!hits.getHitsName()"
+	data-componenthome="$!componenthome"
+	data-searchhome="$!home$!{componenthome}/results"
+	data-category="$!category.getId()"
+	data-collectionid="$!librarycol.getId()" 
+	data-rendertype="$!rendertype"
+	data-searchtype="asset" 
+	data-pagenum="$!hits.getPage()" 
+	data-totalpages="$!hits.getTotalPages()"
+	data-module="$!module"
+	data-section="$!content.section"
+	data-stackedviewpath="/$!mediadbappid/services/module/${module.getId()}/players/gallery/results.html">
+
+
+
+	<div class="scrollview">
+		<div class="masonry-grid2 masonry-grid-cells brickvertical" 
+			data-maxheight="180" 
+			data-maxwidth="180"
+			data-targeth="180"
+			data-cellpadding="4">
+		
+		#set($count = 0)
+		#set($viewerlink = $content.get("assetviewerlink") )
+		#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
+		
+		#foreach( $brick in $loop.getPageOfHits())
+		 
+		 	#ifnotnull( $hitassetlookup )
+			 	#set( $hit = $hitassetlookup.get($brick.getId()) )
+		 	#end
+		 	#ifnull( $hitassetlookup )
+				#set( $hit = $brick)
+		 	#end
+			$context.putPageValue("brick", $brick)
+			$context.putPageValue("hit", $hit)
+			$context.putPageValue("asset", $hit)
+			
+			#set($type = $hit.getSearchHit().getType())
+			#set($rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+			$context.putPageValue("type", $rendertype)
+			
+			$context.putPageValue("assetid", $hit.id)
+			$context.putPageValue("count", $count )
+			$context.putPageValue("sourcepath", $hit.sourcepath )
+			$context.putPageValue("thumbsize", "mediumplus" )
+			
+			#set($sourcepath = $hit.sourcepath)
+			#set($assetwidth = $mediaarchive.getRealImageWidth($hit))
+			#set($assetheight = $mediaarchive.getRealImageHeight($hit))
+			#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=$!{hit.id}")
+			#set($isselected = $!hits.isSelectedOnPage($!{hit.id}) )
+		       
+			<div class="masonry-grid-cell" 
+				id="gallerycell_$!{hit.id}"
+				data-assetid="$!{hit.id}"
+				data-width="$assetwidth"
+				data-height="$assetheight"
+				>
+				<div class="grid-cell-hover"></div>
+				
+				<div class="embrickcontent" 
+					data-rowname="#text($hit)"
+				#if($assetwidth > 0)
+					data-imgwidth="$!assetwidth"
+					data-imgheight="$!assetheight"
+				#elseif($rendertype == "audio")
+					data-imgwidth="250"
+					data-imgheight="110"
+				#else 
+					data-imgwidth="250"  ##moduleicon
+					data-imgheight="110"
+				#end
+				>
+				##<div class="grid-gallery-checked"></div>
+				#if(!$rendertype || $type =="rendertype")
+					#set( $rendertype = "mime" )
+				#elseif( $rendertype =="video" || $rendertype =="document")
+					#set( $rendertype = "image" )
+				#end
+				
+				#set($convertpreset = $mediaarchive.getCachedData("convertpreset", "largeimage" ) )
+				#ifnull($convertpreset)
+					#set($convertpreset = $mediaarchive.getCachedData("convertpreset", "webplargeimage" ) )
+				#end
+				
+				#set($downloadlink = $mediaarchive.asLinkToShare($siteroot, $hit, $convertpreset))
+				#ifnotnull($downloadlink)
+					#set($downloadlink = "${downloadlink}?download=true&ondemand=true")
+				#end
+				$context.putPageValue("downloadlink", $downloadlink)
+				<div class="grid-thumbimage " data-assetid="$!hit.id" data-rendertype="$!rendertype">
+					$pages.include("/$!mediadbappid/services/module/${module.getId()}/players/gallery/rendertype/$!{rendertype}.html", $context)
+				</div>
+				
+				
+				#ifnotnull($downloadlink)
+				<div class="grid-cell-footer"><a class="downloadicon" href="${downloadlink}" title="[[Download]] $!hit.getName()"><span>[[Download]]</span></a></div>
+			    #end
+				
+				
+			    
+				</div>
+			</div>
+		    #set ( $count = $count + 1) 
+		#end
+		
+	</div>
+	</div>
+</div>

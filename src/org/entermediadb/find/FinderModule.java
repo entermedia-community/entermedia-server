@@ -1677,8 +1677,18 @@ public class FinderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		
+		String entityid = inReq.getRequestParameter("entityid");
 		String publishingid =  inReq.getRequestParameter("publishingid");
-		if(publishingid == null)
+		Data publishing = null;
+		if (publishingid != null)
+		{
+			publishing = (Data) archive.getCachedData("distributiongallery", publishingid);
+		}
+		if(publishing == null && entityid != null)
+		{
+			publishing = archive.getSearcher("distributiongallery").query().exact("entityid", entityid).searchOne();
+		}
+		if(publishing == null)
 		{
 			String publishingurl =  inReq.getRequestParameter("url");
 			
@@ -1687,25 +1697,27 @@ public class FinderModule extends BaseMediaModule
 				publishingurl = inReq.getPath();
 			}
 			publishingid = PathUtilities.extractPageName(publishingurl);
-			
+			publishing = (Data) archive.getCachedData("distributiongallery", publishingid);
 		}
 		
-		if(publishingid == null) {	
+		if(publishing == null) {	
 			log.info("Publishing id not found " +publishingid);
 			return;
 		}
+
+		HitTracker tracker = getPublishingAssets(inReq, publishing);
+	
+	}
+	
+	
+	public HitTracker getPublishingAssets(WebPageRequest inReq, Data inPublishing) 
+	{
+		inReq.putPageValue("publishing", inPublishing);
+		inReq.putPageValue("distributiontype", inPublishing.get("distributiontype"));
 		
-		Data publishing = (Data) archive.getData("distributiongallery", publishingid);
-		if(publishing == null) {
-			log.info("Publishing id " + publishingid+ " not found ");
-			return;
-		}	
+		MediaArchive archive = getMediaArchive(inReq);
 		
-		inReq.putPageValue("publishing", publishing);
-		inReq.putPageValue("distributiontype", publishing.get("distributiontype"));
-		
-		
-		String publishingSortby = publishing.get("sortby");
+		String publishingSortby = inPublishing.get("sortby");
 		if(publishingSortby == null) {
 			publishingSortby = "ordering";
 		}
@@ -1713,19 +1725,19 @@ public class FinderModule extends BaseMediaModule
 		Data entity = null;
 		entity = (Data) inReq.getPageValue("entity");
 		if (entity == null) {
-			entity = archive.getData(publishing.get("moduleid"), publishing.get("entityid"));
+			entity = archive.getCachedData(inPublishing.get("moduleid"), inPublishing.get("entityid"));
 			inReq.putPageValue("entity",entity);
 		}
 		
-		String hitsname = "publishingentityassethits";
 		
-		String categoryid = publishing.get("categoryid");
+		
+		String categoryid = inPublishing.get("categoryid");
 		
 		//Old way to load lightboxes
 		if(categoryid == null) 
 		{
-			String lightboxid = publishing.get("lightboxid");
-			Data module = archive.getCachedData("module", publishing.get("moduleid"));
+			String lightboxid = inPublishing.get("lightboxid");
+			Data module = archive.getCachedData("module", inPublishing.get("moduleid"));
 			Data lightbox = archive.getCachedData("emedialightbox", lightboxid);
 			Category cat = archive.getEntityManager().loadLightboxCategory(module, entity, "emedialightbox",lightbox, inReq.getUser());
 			categoryid = cat.getId();
@@ -1735,7 +1747,7 @@ public class FinderModule extends BaseMediaModule
 		{
 			throw new OpenEditException("Set categoryid on gallery");
 		}
-		
+		String hitsname = "publishingentityassethits";
 		HitTracker tracker = archive.query("asset").exact("category",categoryid).sort(publishingSortby).named(hitsname).search();
 		tracker.enableBulkOperations();
 		//Pagination
@@ -1755,9 +1767,12 @@ public class FinderModule extends BaseMediaModule
 			}
 			
 		}
+		inReq.putPageValue(hitsname, tracker);
+		return tracker;
 		
-		inReq.putPageValue(hitsname,tracker);
+		
 	}
+	
 
 	public void startPicker(WebPageRequest inReq)
 	{

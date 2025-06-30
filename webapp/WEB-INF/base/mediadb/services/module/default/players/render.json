@@ -1,0 +1,20 @@
+{
+	"version": "1.0",
+	"provider_name": "EnterMedia",
+	"provider_url": "$!context.getSiteRoot()",
+	"name": "$!entity.getName()",
+
+	#set($thumb = $entity.get("primarymedia"))
+	#ifnull( $thumb )
+		#set($thumb = $entity.get("primaryimage"))
+	#end
+	#ifnotnull( $thumb )
+		#set( $link = $mediaarchive.asLinkToPreview($thumb,"image3000x3000"))
+		"thumbnail_url":"$!siteroot$link",
+		"thumbnail_width":3000,
+		"thumbnail_height":3000,
+	#end
+	"cache_age": "60",
+	"html": #jesc($output)
+		
+}

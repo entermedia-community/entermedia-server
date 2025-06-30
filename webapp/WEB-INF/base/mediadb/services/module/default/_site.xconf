@@ -1,3 +1,4 @@
 <page>
 	<property name="searchtype">${module}</property>
+	<path-action name="MediaArchiveModule.loadModule" />
 </page>
