@@ -81,21 +81,33 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 			log.info("No top menu");
 			return null;
 		}
+		String moduleid = util.getRequestParameter("entitymoduleid");
+		if( moduleid != null)
+		{
+			String path  = String.format("/%s/views/modules/%s/index.html", appid, moduleid);  //Permission check?
+			Page page = getPageManager().getPage(path);
+			if( page.exists())
+			{
+				RightPage right = new RightPage();
+				right.setRightPage(page);
+				return right;
+			}
+		}
 
-		String path =  topmenu.get("custompath");
-		if( path != null)
+		String firstmenupath =  topmenu.get("custompath");
+		if( firstmenupath != null)
 		{
-			path = inPage.replaceProperty(path);
+			firstmenupath = inPage.replaceProperty(firstmenupath);
 		}
-		if( path == null && topmenu.get("toplevelentity") != null)
+		if( firstmenupath == null && topmenu.get("toplevelentity") != null)
 		{
-			path = String.format("/%s/views/modules/%s/index.html", appid, topmenu.get("toplevelentity")); 
+			firstmenupath = String.format("/%s/views/modules/%s/index.html", appid, topmenu.get("toplevelentity")); 
 		}
-		if( path != null)
+		if( firstmenupath != null)
 		{
 			RightPage right = new RightPage();
 	//		right.putParam("communitytagcategory" ,  first.getId());
-			String[] parts = path.split("[?]");
+			String[] parts = firstmenupath.split("[?]");
 			if( parts.length > 1)
 			{
 				Map arguments = PathUtilities.extractArguments(parts[1]);
@@ -107,8 +119,6 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 				//log.info("page missing "+ parts[0]);
 				return null; //?
 			}
-
-			
 			right.setRightPage(page);
 			return right;
 		}
