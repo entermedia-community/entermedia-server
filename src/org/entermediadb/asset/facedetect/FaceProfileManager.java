@@ -383,7 +383,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 	private double getVectorScoreLimit()
 	{
-		double similaritycheck = .30D;
+		double similaritycheck = .5D;
 		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
 		if( value != null)
 		{
@@ -591,7 +591,7 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			return null;
 		}
-		double facedetect_detect_confidence = .8D;
+		double facedetect_detect_confidence = .7D;
 		String detectvalue = getMediaArchive().getCatalogSettingValue("facedetect_detect_confidence");
 		if( detectvalue != null)
 		{
@@ -622,7 +622,7 @@ public class FaceProfileManager implements CatalogEnabled
 			inputw = (int)Math.round( size.getWidth() );
 			inputh = (int)Math.round( size.getHeight() );
 		}       
-        int minfacesize = 300; //was 450
+        int minfacesize = 250; //was 450
 		
 		String minumfaceimagesize = getMediaArchive().getCatalogSettingValue("facedetect_minimum_face_size");
 		if(minumfaceimagesize != null) 
@@ -645,14 +645,14 @@ public class FaceProfileManager implements CatalogEnabled
 			Collection right = box.getValues("right_eye");
 			
 			Double confidence = (Double)facejson.get("face_confidence");  //This is useless
-			if( left == null || right == null)
-			{
-				log.info("Eyes are required, confidence = " + confidence  + " file: " + inAsset.getName());
-				continue;
-			}
+			// if( left == null || right == null)
+			// {
+			// 	log.info("Eyes are required, confidence = " + confidence  + " file: " + inAsset.getName());
+			// 	continue;
+			// }
 			if( confidence < facedetect_detect_confidence)
 			{
-				log.info("Invalid face  " + inAsset.getName() + " and confidence " + confidence );
+				log.info("Not enough confidence for " + inAsset.getName() + " -> " + confidence );
 				continue;
 			}
 //			if( similarembedding != null)
@@ -660,8 +660,8 @@ public class FaceProfileManager implements CatalogEnabled
 //				//TODO: copy the profile field
 //			}
 			//Save to DB
-			double h = box.getInteger("h");
-			double w  = box.getInteger("w");
+			double h = box.getDouble("h");
+			double w  = box.getDouble("w");
 			if( h < minfacesize)
 			{
 				log.info("small face w:" + w + " h:" + h + " Min face size: " + minfacesize + " " + inAsset.getName());
@@ -708,8 +708,8 @@ public class FaceProfileManager implements CatalogEnabled
 			addedface.setValue("originalheight",assetheight);
 			
 			double scale = MathUtils.divide(assetwidth , inputw);//Scale up to orginal image sizes
-			double x = box.getInteger("x");
-			double y = box.getInteger("y");
+			double x = box.getDouble("x");
+			double y = box.getDouble("y");
 			x = x * scale;
 			y = y * scale;
 			w = w * scale;
@@ -816,11 +816,13 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 			}
 		}
+		
 		if( parent  != null)
 		{
 			inChild.setValue("parentdistance", smallestdistance);
 			return parent;
-		}		
+		}
+		
 		return null;
 	}
 	
