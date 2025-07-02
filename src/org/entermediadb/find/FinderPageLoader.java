@@ -51,7 +51,19 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 	public RightPage getRightPage( URLUtilities util, org.openedit.servlet.Site site, Page inPage)
 	{
 		String appid = inPage.getProperty("applicationid");
-
+		String moduleid = util.getRequestParameter("entitymoduleid");
+		if( moduleid != null)
+		{
+			String path  = String.format("/%s/views/modules/%s/index.html", appid, moduleid);  //Permission check?
+			Page page = getPageManager().getPage(path);
+			if( page.exists())
+			{
+				RightPage right = new RightPage();
+				right.setRightPage(page);
+				return right;
+			}
+		}
+		
 		boolean loadmodule = false;
 		String homepage = String.format("/%s/index.html", appid); 
 		if( homepage.equals(inPage.getPath()))
@@ -81,18 +93,8 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 			log.info("No top menu");
 			return null;
 		}
-		String moduleid = util.getRequestParameter("entitymoduleid");
-		if( moduleid != null)
-		{
-			String path  = String.format("/%s/views/modules/%s/index.html", appid, moduleid);  //Permission check?
-			Page page = getPageManager().getPage(path);
-			if( page.exists())
-			{
-				RightPage right = new RightPage();
-				right.setRightPage(page);
-				return right;
-			}
-		}
+		
+
 
 		String firstmenupath =  topmenu.get("custompath");
 		if( firstmenupath != null)
