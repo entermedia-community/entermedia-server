@@ -246,13 +246,20 @@ public class FileUpload
 			// parameters must all be parsed from the POST body, not
 			// gotten directly off the HttpServletRequest.
 
+			String type = inContext.getRequest().getContentType();
+			boolean uploadingfile = false;
+			if (type != null && type.startsWith("multipart"))
+			{
+				uploadingfile = true;
+			}
+			
 			for (int i = 0; i < fileItems.size(); i++)
 			{
 				org.apache.commons.fileupload.FileItem tmp = (org.apache.commons.fileupload.FileItem) fileItems.get(i);
 				int count = 0;
 				if (!tmp.isFormField())
 				{
-					if (tmp.getContentType() != null && tmp.getContentType().toLowerCase().contains("json"))
+					if (!uploadingfile && tmp.getContentType() != null && tmp.getContentType().toLowerCase().contains("json"))
 					{
 						try {
 							JsonSlurper slurper = new JsonSlurper();

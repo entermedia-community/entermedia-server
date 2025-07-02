@@ -1499,8 +1499,32 @@ public class EntityModule extends BaseMediaModule
 	
 	
 	
-	
-	
-	
+	public void subModuleDelete(WebPageRequest inPageRequest) throws Exception 
+	{
+		String moduleid = inPageRequest.findPathValue("module"); //Parent module
+		
+		MediaArchive archive = getMediaArchive(inPageRequest);
+			
+		String entitymoduleviewid = inPageRequest.findValue("entitymoduleviewid");
+		if(entitymoduleviewid != null)
+		{
+			Data entitymoduleviewdata = getMediaArchive(inPageRequest).getCachedData("view", entitymoduleviewid);
+			if( entitymoduleviewdata != null)
+			{
+				String submodule = entitymoduleviewdata.get("rendertable"); //SubModule
+				Searcher searcher = getMediaArchive(inPageRequest).getSearcher(submodule);
+				String id = inPageRequest.getRequestParameter("hitssessionid");
+				HitTracker hits = (HitTracker) inPageRequest.getSessionValue(id);
+				Collection todelete = new ArrayList(hits.getSelectedHitracker());
+				
+				for (Iterator iterator = todelete.iterator(); iterator.hasNext();)
+				{
+					Data hit = (Data) iterator.next();
+					hits.removeSelection(hit.getId());
+				}
+				searcher.deleteAll(todelete, inPageRequest.getUser());
+			}
+		}
+	}	
 	
 }
