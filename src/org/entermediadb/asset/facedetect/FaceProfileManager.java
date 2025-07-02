@@ -989,10 +989,8 @@ public class FaceProfileManager implements CatalogEnabled
 		JSONObject tosendparams = new JSONObject();
 		//tosendparams.put("face_plugins","detector");
 		
-		tosendparams.put("model_name","Facenet512"); 
-//		tosendparams.put("model_name","ArcFace");
-//		tosendparams.put("detector_backend","centerface");
-		tosendparams.put("detector_backend","dlib");
+		tosendparams.put("model_name","Buffalo_L"); 
+		tosendparams.put("detector_backend","skip");
 		tosendparams.put("enforce_detection", false);
 		//tosendparams.put("img","http://localhost:8080" + inUrl);
 		
