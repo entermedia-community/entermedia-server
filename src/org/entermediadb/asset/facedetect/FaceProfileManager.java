@@ -474,6 +474,8 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 		}			
 		getMediaArchive().saveData("faceembedding",tosave); //All Saved
+		tosave.clear();
+		count = 0;
 		for (Iterator iterator = allrecords.iterator(); iterator.hasNext();)
 		{
 			MultiValued face = (MultiValued) iterator.next();
@@ -494,7 +496,6 @@ public class FaceProfileManager implements CatalogEnabled
 				found.setValue("hasotherfaces",true);
 			}
 		}
-		
 		for (Iterator iterator = inResetFaces.iterator(); iterator.hasNext();)
 		{
 			MultiValued face = (MultiValued) iterator.next();
@@ -522,10 +523,19 @@ public class FaceProfileManager implements CatalogEnabled
 //				}
 			}
 			face.setValue("parentids",parentids);
+			tosave.add(face);
+			count++;
+			if(tosave.size() > 1000)
+			{
+				getMediaArchive().saveData("faceembedding",tosave); //All Saved
+				tosave.clear();
+				log.info("Saving finaly parents list for a group of " + tosave.size() + " of total: " + count );
+			}
 			//log.info(face.get("assetid") + " Saved parents" + parentids);
 		}
-		getMediaArchive().saveData("faceembedding",inResetFaces);
-		log.info(" Saved faces" + inResetFaces.size());
+		getMediaArchive().saveData("faceembedding",tosave);
+		tosave.clear();
+		log.info(" Finished Saved faces" + count);
 	}
 	
 	
