@@ -233,10 +233,21 @@ public abstract class BaseConversionManager implements ConversionManager
 	public ConvertInstructions createInstructions(Asset inAsset, String inSourcePath, String inExportName, Map inSettings)
 	{ 
 		ConvertInstructions instructions = createNewInstructions();
-		Data preset = getMediaArchive().getPresetManager().getPresetByOutputNameCached(getMediaArchive(), getRenderType(), inExportName);
+		String generateName = inExportName;
+		if (inExportName.contains("offset"))
+		{
+			int offsetstart = inExportName.indexOf("offset");
+			String offset = inExportName.substring(offsetstart + 6, inExportName.lastIndexOf(".") );
+			instructions.setProperty("timeoffset", offset);
+			//instructions.setProperty("outputname",);
+			String type = PathUtilities.extractPageType(inExportName);
+			generateName = inExportName.substring(0, offsetstart) + "." + type;
+		}
+		
+		Data preset = getMediaArchive().getPresetManager().getPresetByOutputNameCached(getMediaArchive(), getRenderType(), generateName);
 		if( preset == null)
 		{
-			throw new OpenEditException("Preset not defined " +  getRenderType() + " "  + inExportName);
+			throw new OpenEditException("Preset not defined " +  getRenderType() + " "  + generateName);
 		}
 		instructions.loadPreset(preset);
 		if( inAsset != null)
@@ -244,7 +255,7 @@ public abstract class BaseConversionManager implements ConversionManager
 			instructions.setAsset(inAsset);
 		}
 		//log.error("No preset defined for export file name" + inExportName);
-		instructions.setOutputExtension(PathUtilities.extractPageType(inExportName)); //For cases where the output is not configured
+		instructions.setOutputExtension(PathUtilities.extractPageType(generateName)); //For cases where the output is not configured
 		instructions.loadSettings(inSettings);
 		instructions.setAssetSourcePath(inSourcePath);
 		return instructions;
