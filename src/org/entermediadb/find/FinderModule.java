@@ -1786,7 +1786,7 @@ public class FinderModule extends BaseMediaModule
 		{
 			String targetfieldid = inReq.getRequestParameter("targetfieldid");
 
-			if( picker != null)
+			if( picker == null)
 			{
 				picker = new Picker();
 			}
