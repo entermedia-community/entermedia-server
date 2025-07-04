@@ -39,6 +39,7 @@ import org.entermediadb.video.Block;
 import org.entermediadb.video.Timeline;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -414,7 +415,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 	public void fixAllParents()
 	{
-		HitTracker faces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").search();
+		HitTracker faces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").search();  //Smallest faces connect to the largest one
 		faces.enableBulkOperations();
 		List<MultiValued> allrecords = new ArrayList(faces);
 		fixParents(allrecords,allrecords);
@@ -449,6 +450,7 @@ public class FaceProfileManager implements CatalogEnabled
 		Searcher fsearcher = getMediaArchive().getSearcher("faceembedding");
 		List<MultiValued> tosave = new ArrayList();
 		Map<String,MultiValued> lookup = new HashMap();
+		int count = 0;
 		for (Iterator iterator = inResetFaces.iterator(); iterator.hasNext();)
 		{
 			MultiValued face = (MultiValued) iterator.next();
@@ -462,9 +464,18 @@ public class FaceProfileManager implements CatalogEnabled
 			{
 				allrecords.add(face);
 				tosave.add(face);
+				count++;
+				if(tosave.size() > 1000)
+				{
+					getMediaArchive().saveData("faceembedding",tosave); //All Saved
+					tosave.clear();
+					log.info("Saving another group of " + tosave.size() + " of total: " + count );
+				}
 			}
 		}			
 		getMediaArchive().saveData("faceembedding",tosave); //All Saved
+		tosave.clear();
+		count = 0;
 		for (Iterator iterator = allrecords.iterator(); iterator.hasNext();)
 		{
 			MultiValued face = (MultiValued) iterator.next();
@@ -485,7 +496,6 @@ public class FaceProfileManager implements CatalogEnabled
 				found.setValue("hasotherfaces",true);
 			}
 		}
-		
 		for (Iterator iterator = inResetFaces.iterator(); iterator.hasNext();)
 		{
 			MultiValued face = (MultiValued) iterator.next();
@@ -513,10 +523,19 @@ public class FaceProfileManager implements CatalogEnabled
 //				}
 			}
 			face.setValue("parentids",parentids);
+			tosave.add(face);
+			count++;
+			if(tosave.size() > 1000)
+			{
+				getMediaArchive().saveData("faceembedding",tosave); //All Saved
+				tosave.clear();
+				log.info("Saving finaly parents list for a group of " + tosave.size() + " of total: " + count );
+			}
 			//log.info(face.get("assetid") + " Saved parents" + parentids);
 		}
-		getMediaArchive().saveData("faceembedding",inResetFaces);
-		log.info(" Saved faces" + inResetFaces.size());
+		getMediaArchive().saveData("faceembedding",tosave);
+		tosave.clear();
+		log.info(" Finished Saved faces" + count);
 	}
 	
 	
@@ -985,17 +1004,6 @@ public class FaceProfileManager implements CatalogEnabled
 
 	protected List<Map> findFaces(Asset inAsset, ContentItem inItem) throws Exception
 	{
-		//Scan via REST and get faces
-		//1. Take image and scan it for faces https://github.com/exadel-inc/CompreFace/blob/master/docs/Rest-API-description.md#recognize-faces-from-a-given-image
-				
-		JSONObject tosendparams = new JSONObject();
-		//tosendparams.put("face_plugins","detector");
-		
-		tosendparams.put("model_name","Buffalo_L"); 
-		tosendparams.put("detector_backend","skip");
-		tosendparams.put("enforce_detection", false);
-		//tosendparams.put("img","http://localhost:8080" + inUrl);
-		
 		
 		String base64 = inputStreamToBase64(inItem.getInputStream());
 		
@@ -1005,10 +1013,15 @@ public class FaceProfileManager implements CatalogEnabled
 			mime = "image/jpeg";
 		}
 		String tosend = "data:" + mime + ";charset=utf-8;base64, " + base64;
+
+		JSONObject tosendparams = new JSONObject();
+		// tosendparams.put("face_plugins","detector");
+		// tosendparams.put("model_name","Buffalo_L"); 
+		// tosendparams.put("detector_backend","skip");
+		// tosendparams.put("enforce_detection", false);
+		// tosendparams.put("img","http://localhost:8080" + inUrl);
 		tosendparams.put("img",tosend);
-		
-		//tosendparams.put("img","https://cinecraft.entermediadb.org/cinecraft/mediadb/services/module/asset/generate/Projects/Pure%20Dental%20Group/Published/christopher-campbell-rDEOVtE7vOs-unsplash.jpg/image3000x3000.jpg/christopher-campbell-rDEOVtE7vOs-unsplashL.webp");
-		//tosendparams.put("img","https://cinecraft.entermediadb.org/cinecraft/mediadb/services/module/asset/generate/Projects/A%20Dream%20of%20Waves/pexels-alohaphotostudio-8836645.jpg/image3000x3000.webp/pexels-alohaphotostudio-8836645L.webp");
+
 		CloseableHttpResponse resp = null;
 		String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
 		if( url == null)
@@ -1039,11 +1052,12 @@ public class FaceProfileManager implements CatalogEnabled
 			log.info("Face detection Remote Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
 			return null;
 		}
-
-		JSONObject json = getSharedConnection().parseJson(resp);
-		//log.info(json.toString());
 		
-		JSONArray results = (JSONArray)json.get("results");
+		
+		String responseStr = getSharedConnection().parseText(resp);
+		
+		JSONParser parser = new JSONParser();
+		JSONArray results = (JSONArray) parser.parse(responseStr);
 		
 		//log.info((System.currentTimeMillis() - start) + "ms face detection for asset: "+ inAsset.getId() + " " + inAsset.getName() + " Found: " + results.size());
 		
