@@ -414,7 +414,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 	public void fixAllParents()
 	{
-		HitTracker faces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").search();
+		HitTracker faces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").search();  //Smallest faces connect to the largest one
 		faces.enableBulkOperations();
 		List<MultiValued> allrecords = new ArrayList(faces);
 		fixParents(allrecords,allrecords);
@@ -449,6 +449,7 @@ public class FaceProfileManager implements CatalogEnabled
 		Searcher fsearcher = getMediaArchive().getSearcher("faceembedding");
 		List<MultiValued> tosave = new ArrayList();
 		Map<String,MultiValued> lookup = new HashMap();
+		int count = 0;
 		for (Iterator iterator = inResetFaces.iterator(); iterator.hasNext();)
 		{
 			MultiValued face = (MultiValued) iterator.next();
@@ -462,6 +463,13 @@ public class FaceProfileManager implements CatalogEnabled
 			{
 				allrecords.add(face);
 				tosave.add(face);
+				count++;
+				if(tosave.size() > 1000)
+				{
+					getMediaArchive().saveData("faceembedding",tosave); //All Saved
+					tosave.clear();
+					log.info("Saving another group of " + tosave.size() + " of total: " + count );
+				}
 			}
 		}			
 		getMediaArchive().saveData("faceembedding",tosave); //All Saved
