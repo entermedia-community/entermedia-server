@@ -1,8 +1,3 @@
 #ifnotnull($value)
-#if( $value.size() > 80)
-	<span class="trim-text" data-max="50" style="white-space: pre-wrap; ">$value</span>
-	<button class="see-more-btn see-more" data-seemore="(...[[see more]])" data-seeless="(...[[see less]])"></button>
-#else
-	$value	
-#end
+$value
 #end
