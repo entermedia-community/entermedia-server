@@ -44,6 +44,9 @@
   }
 
   function isDuplicateIdentifier(identifier, identifiers) {
+    if (!Array.isArray(identifiers) || identifiers.length === 0) {
+      return false;
+    }
     for (let i = 0; i < identifiers.length; i++) {
       const identifier2 = identifiers[i];
       if (identifier === identifier2) return true;
