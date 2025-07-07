@@ -214,10 +214,11 @@ findClosest = function (link, inid) {
           var newcell;
           if (replaceHtml) {
             //Call replacer to pull $scope variables
+            debugger;
             onpage = targetdiv.parent();
             var targetdivid = "";
             if (targetdiv.attr("id") !== undefined) {
-              targetfivid = "#" + targetdiv.attr("id");
+              targetdivid = "#" + targetdiv.attr("id");
             }
             targetdiv.replaceWith(data); //Cant get a valid dom element
             newcell = findClosest(onpage, targetdivid);
