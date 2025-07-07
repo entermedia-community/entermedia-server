@@ -535,7 +535,7 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 		getMediaArchive().saveData("faceembedding",tosave);
 		tosave.clear();
-		log.info(" Finished Saved faces" + count);
+		log.info("Saved Total Faces:" + count);
 	}
 	
 	
