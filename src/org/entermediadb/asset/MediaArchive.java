@@ -2985,10 +2985,15 @@ public class MediaArchive implements CatalogEnabled
 		return Boolean.parseBoolean(catalogSettingValue);
 	}
 
-	public void saveData(String inSearcher, Data inSelectedgoal)
+	public void saveData(String inSearcher, Data inData)
 	{
-		//getCacheManager().clear("searcher" + inSearcher);
-		getSearcher(inSearcher).saveData(inSelectedgoal);
+		Data existing = (Data)getCacheManager().get("data" + inSearcher,inData.getId());
+		//getCacheManager().clear("searcher" + inSearcher); //Why?
+		getSearcher(inSearcher).saveData(inData);
+		if( existing != null)
+		{
+			getCacheManager().put("data" + inSearcher,inData.getId(),inData);
+		}
 	}
 
 	public void updateAndSave(String searchtype, String dataid, String key, String value)
