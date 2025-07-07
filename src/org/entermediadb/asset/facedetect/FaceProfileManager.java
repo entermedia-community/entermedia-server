@@ -753,7 +753,7 @@ public class FaceProfileManager implements CatalogEnabled
 			//addedface.setValue("facedata",encoded);
 			//addedface.setValue("facedatajson",jsontext); 
 			addedface.setValue("facedatadoubles",vector); //Not saved to index
-			addedface.setValue("assetid",inAsset);
+			addedface.setValue("assetid",inAsset.getId() );
 			addedface.setValue("left_eye", left );
 			addedface.setValue("right_eye", right);
 
@@ -804,7 +804,7 @@ public class FaceProfileManager implements CatalogEnabled
 		Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
 		Data addedface = faceembeddingsearcher.createNewData();
 		
-		addedface.setValue("assetid",inAsset);
+		addedface.setValue("assetid",inAsset.getId());
 
 		int assetwidth = getMediaArchive().getRealImageWidth(inAsset); 
 		int assetheight = getMediaArchive().getRealImageHeight(inAsset); 
