@@ -563,7 +563,7 @@
             const btn = $(this);
             const identifier = btn.data("categorypath");
             const isDownload = btn.hasClass("download");
-            const both = btn.data("both") || false;
+            const both = btn.data("both");
             ipcRenderer.send("cancelSync", {
               identifier,
               isDownload,
@@ -665,6 +665,7 @@
 
                 const formData = new FormData();
                 formData.append("categorypath", identifier);
+                formData.append("failedfiles", remaining.length);
                 formData.append("desktopimportstatus", "sync-cancelled");
                 if (isD) formData.append("isdownload", "true");
                 if (filesCompleted >= 0)
@@ -737,34 +738,43 @@
             if ($(this).hasClass("upload-started")) return;
             if ($(this).hasClass("download-started")) return;
             if ($(this).hasClass("sync-completed")) return;
+            if ($(this).hasClass("sync-cancelled")) return;
+
+            $(this).removeClass("processing");
+            $(this).addClass("sync-cancelled");
+
             const uploadsourcepath = $(this).data("categorypath");
-
-            let categorypath = uploadsourcepath;
-            categorypath = categorypath.replace(/\\/g, "/");
-            categorypath = categorypath.replace(/\/+/g, "/");
-            categorypath = categorypath.replace(/\/$/g, "");
-
+            // let categorypath = uploadsourcepath;
+            // categorypath = categorypath.replace(/\\/g, "/");
+            // categorypath = categorypath.replace(/\/+/g, "/");
+            // categorypath = categorypath.replace(/\/$/g, "");
             const isDownload = $(this).hasClass("download");
-
-            ipcRenderer
-              .invoke("continueSync", {
-                categoryPath: uploadsourcepath,
-                isDownload,
-              })
-              .then((downloadStatus) => {
-                if (downloadStatus === "OK") {
-                  customToast(
-                    "Started " +
-                      (isDownload ? "download" : "upload") +
-                      " task for " +
-                      elideCat(categorypath),
-                    { id: categorypath }
-                  );
-                }
-              })
-              .catch((err) => {
-                console.error("continueSync", err);
-              });
+            // ipcRenderer
+            //   .invoke("continueSync", {
+            //     categoryPath: uploadsourcepath,
+            //     isDownload,
+            //   })
+            //   .then((downloadStatus) => {
+            //     if (downloadStatus === "OK") {
+            //       customToast(
+            //         "Started " +
+            //           (isDownload ? "download" : "upload") +
+            //           " task for " +
+            //           elideCat(categorypath),
+            //         { id: categorypath }
+            //       );
+            //     }
+            //   })
+            //   .catch((err) => {
+            //     console.error("continueSync", err);
+            //   });
+            const formData = new FormData();
+            formData.set("categorypath", uploadsourcepath);
+            formData.set("desktopimportstatus", "sync-cancelled");
+            formData.set("isdownload", isDownload ? "true" : "false");
+            formData.set("moduleid", $(this).data("moduleid"));
+            formData.set("entityid", $(this).data("entityid"));
+            desktopImportStatusUpdater(formData);
           });
 
           lQuery(".desktopdirectdownload").livequery("click", function (e) {
