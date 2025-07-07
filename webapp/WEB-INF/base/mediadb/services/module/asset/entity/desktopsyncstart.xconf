@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<page>
+  <inner-layout />
+  <path-action name="Page.parseMultiPart" />
+  <path-action name="EntityModule.startDesktopSync" />
+</page>

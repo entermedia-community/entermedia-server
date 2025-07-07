@@ -245,6 +245,9 @@ public class FolderManager implements CatalogEnabled
 
 		HitTracker assets = inArchive.query("asset").exact("category-exact", inCat.getId()).search();
 		assets.enableBulkOperations();
+		
+		Long totalsize = 0l; 
+		
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 		{
 			MultiValued asset = (MultiValued) iterator.next();
@@ -263,8 +266,12 @@ public class FolderManager implements CatalogEnabled
 			}
 			//String savepath = inCat.getCategoryPath() + "/" + primaryImageName;
 			map.put("path", primaryImageName);
+			
+			Long size = asset.getLong("filesize");
+			
+			totalsize += size;
 
-			map.put("size", asset.getLong("filesize"));
+			map.put("size", size);
 			Date assetmodificationdate = asset.getDate("assetmodificationdate");
 			if(assetmodificationdate != null) {
 			long time = assetmodificationdate.getTime();
@@ -290,6 +297,8 @@ public class FolderManager implements CatalogEnabled
 		response.put("categorypath", inCat.getCategoryPath());
 		response.put("folders", subfolders);
 		response.put("files", tosend);
+		response.put("totalsize", totalsize);
+		response.put("totalcount", assets.size());
 		return response;
 		//		getDesktopListener().downloadFiles(foldername,subfolders,tosend);
 		//		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
@@ -513,6 +522,34 @@ public class FolderManager implements CatalogEnabled
 			response.put("files",mixedcopy);
 		}
 		return response;
+	}
+
+	public void startCurrentFolder(String inSyncfolderid, String inCategorypath, Long inFolderTotalsize, Integer inFolderTotalcount) {
+		// TODO Auto-generated method stub
+		MediaArchive archive = getMediaArchive();
+		MultiValued syncfolder = (MultiValued) archive.getCachedData("desktopsyncfolder", inSyncfolderid);
+		
+		
+
+		Long totalcompletedcount = syncfolder.getLong("totalcompletedcount");
+		Long totalcompletedsize = syncfolder.getLong("totalcompletedsize");
+		
+		Long currentfoldertotalcount = syncfolder.getLong("currentfoldertotalcount");
+		Long currentfoldertotalsize = syncfolder.getLong("currentfoldertotalsize");
+
+		syncfolder.setValue("totalcompletedcount", totalcompletedcount + currentfoldertotalcount);
+		syncfolder.setValue("totalcompletedsize", totalcompletedsize + currentfoldertotalsize);
+		 
+		syncfolder.setValue("currentfoldertotalsize", inFolderTotalsize);
+		syncfolder.setValue("currentfoldertotalcount", inFolderTotalcount);
+
+		syncfolder.setValue("desktopimportstatus", "sync-started"); 
+		
+		syncfolder.setValue("currentcategorypath", inCategorypath);
+		
+		archive.saveData("desktopsyncfolder", syncfolder);
+		
+		
 	}
 	
 	

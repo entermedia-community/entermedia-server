@@ -687,6 +687,111 @@ public class EntityModule extends BaseMediaModule
 //		inReq.putPageValue("syncfolders",tosave);
 //	}
 	
+	public void startDesktopSync(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher searcher = archive.getSearcher("desktopsyncfolder");
+		
+		String desktop = inReq.getRequestParameter("desktop");
+		String categorypath = inReq.getRequestParameter("categorypath");
+		
+		Boolean isdownload = Boolean.parseBoolean(inReq.getRequestParameter("isdownload"));
+		
+		QueryBuilder query = searcher.query().exact("desktop", desktop).exact("categorypath", categorypath).exact("isdownload", isdownload);
+		
+		Data syncfolder = (Data) query.searchOne();
+		
+		if(syncfolder == null)
+		{
+			syncfolder = archive.getSearcher("desktopsyncfolder").createNewData();
+		}
+		
+		String entityid = inReq.getRequestParameter("entityid");
+		syncfolder.setValue("entityid", entityid);
+		
+		String entitymoduleid = inReq.getRequestParameter("entitymoduleid");
+		syncfolder.setValue("entitymoduleid", entitymoduleid);
+		
+		syncfolder.setValue("currentcategorypath", categorypath);
+		
+		syncfolder.setValue("currentfolderpendingsize", 0);
+		syncfolder.setValue("currentfoldertotalsize", 0);
+
+		syncfolder.setValue("currentfolderpendingcount", 0);
+		syncfolder.setValue("currentfoldertotalcount", 0);
+
+		syncfolder.setValue("totalcompletedcount", 0);
+		syncfolder.setValue("totalcompletedsize", 0);
+
+		syncfolder.setValue("failedfiles", 0);
+		
+		syncfolder.setValue("desktopimportstatus", "scan-started"); 
+		
+		syncfolder.setValue("categorypath", categorypath);
+		
+		syncfolder.setValue("isdownload", isdownload);
+		
+		String namebreadcrumb = categorypath.replace("/", " &rsaquo; ");
+		syncfolder.setName(namebreadcrumb);
+
+		syncfolder.setValue("desktop",desktop); 
+		
+		syncfolder.setValue("completeddate", null);
+		syncfolder.setValue("createddate", new Date());
+		
+		archive.saveData("desktopsyncfolder", syncfolder);
+
+		inReq.putPageValue("syncfolder", syncfolder);
+		inReq.putPageValue("searcher", searcher);
+	}
+
+	public void completeDesktopSync(WebPageRequest inReq) throws Exception
+	{
+		Map params = inReq.getJsonRequest();
+		
+		String syncfolderid = (String)params.get("syncfolderid");
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		MultiValued syncfolder = (MultiValued) archive.getCachedData("desktopsyncfolder", syncfolderid);
+
+		Long totalcompletedcount = syncfolder.getLong("totalcompletedcount");
+		Long totalcompletedsize = syncfolder.getLong("totalcompletedsize");
+		
+		Long currentfoldertotalcount = syncfolder.getLong("currentfoldertotalcount");
+		Long currentfoldertotalsize = syncfolder.getLong("currentfoldertotalsize");
+
+		syncfolder.setValue("totalcompletedcount", totalcompletedcount + currentfoldertotalcount);
+		syncfolder.setValue("totalcompletedsize", totalcompletedsize + currentfoldertotalsize);
+
+		syncfolder.setValue("desktopimportstatus", "sync-completed");
+		
+		syncfolder.setValue("completeddate", new Date());
+		
+		archive.saveData("desktopsyncfolder", syncfolder);
+		
+		inReq.putPageValue("syncfolder", syncfolder); 
+	}
+	
+	public void cancelDesktopSync(WebPageRequest inReq) throws Exception
+	{
+		Map params = inReq.getJsonRequest();
+		
+		String syncfolderid = (String)params.get("syncfolderid");
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		MultiValued syncfolder = (MultiValued) archive.getCachedData("desktopsyncfolder", syncfolderid);
+
+		syncfolder.setValue("desktopimportstatus", "sync-cancelled");
+		
+		syncfolder.setValue("completeddate", new Date());
+		
+		archive.saveData("desktopsyncfolder", syncfolder);
+		
+		inReq.putPageValue("syncfolder", syncfolder);
+	}
+	
 	public synchronized void updateScanStatus(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -752,14 +857,14 @@ public class EntityModule extends BaseMediaModule
 					folder.setValue("desktopimportstatus", desktopimportstatus);
 					if(desktopimportstatus.equals("scan-started"))
 					{
-						folder.setValue("lastscandate", new Date());
+						folder.setValue("completeddate", new Date());
 					}
 					
 					searcher.saveData(folder, null);
 				}
 			}
 		}
-		Collection syncfolders = searcher.query().exact("desktop", desktop).sort("lastscandateDown").search();
+		Collection syncfolders = searcher.query().exact("desktop", desktop).sort("completeddateDown").search();
 		inReq.putPageValue("syncfolders", syncfolders);
 	}
 	
@@ -921,7 +1026,7 @@ public class EntityModule extends BaseMediaModule
 			folder.setValue("localsubfoldercount",localsubfoldercounts[i]);
 			folder.setValue("localitemcount",localitemcounts[i]);
 			folder.setValue("localtotalsize",localtotalsizes[i]);
-			folder.setValue("lastscandate", new Date());
+			folder.setValue("completeddate", new Date());
 			folder.setName(names[i]);
 			
 			Data tmpentity = archive.getSearcher(moduleid).createNewData(); //tmp
@@ -980,7 +1085,7 @@ public class EntityModule extends BaseMediaModule
 		//Optional
 		String localpath = inReq.getRequestParameter("localpath");
 		folder.setValue("localpath", localpath);
-		folder.setValue("lastscandate", new Date());
+		folder.setValue("completeddate", new Date());
 		folder.setValue("categorypath", categorypath);
 		folder.setValue("entityid", entity.getId());
 		archive.saveData("desktopsyncfolder", folder);

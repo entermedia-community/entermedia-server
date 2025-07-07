@@ -258,6 +258,7 @@ public class AssetImportModule  extends BaseMediaModule
 			return;
 		}
 		MediaArchive archive = getMediaArchive(inReq);
+		
 		String categorypath = (String)params.get("categorypath");
 		inReq.putPageValue("categorypath", categorypath);
 		
@@ -267,10 +268,17 @@ public class AssetImportModule  extends BaseMediaModule
 			Map pendingdownloads = new HashMap();
 			inReq.putPageValue("pendingpull", new JSONObject(pendingdownloads));
 			inReq.putPageValue("pendingpush", new JSONObject(params));
+			inReq.putPageValue("totalsize", 0);
 		} else {
 
 			FolderManager manager = getFolderManager(inReq);
 			Map allserverfiles = manager.listAssetMap(archive, category);
+			
+			Long totalsize = (Long) allserverfiles.get("totalsize");
+			int totalcount = (int) allserverfiles.get("totalcount");
+			
+
+			inReq.putPageValue("totalsize", totalsize);
 			
 			//Missing Files on Local
 			Map pendingdownloads = manager.removeDuplicateAssetsFrom(allserverfiles,params);
@@ -279,6 +287,10 @@ public class AssetImportModule  extends BaseMediaModule
 			//Missing Files on Server
 			Map pendingupload = manager.findMissingAssetsToUpload(allserverfiles,params);
 			inReq.putPageValue("pendingpush", new JSONObject(pendingupload));
+			
+			String syncfolderid = (String)params.get("syncfolderid");
+			
+			manager.startCurrentFolder(syncfolderid, categorypath, totalsize, totalcount);
 			
 		}
 	}

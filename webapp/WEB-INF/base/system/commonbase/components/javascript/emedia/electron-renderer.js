@@ -9,8 +9,8 @@
     SYNC_STARTED = "sync-started",
     SYNC_COMPLETED = "sync-completed",
     FILE_PROGRESS_UPDATE = "file-progress-update",
-    FILE_STATUS_UPDATE = "file-status-update",
-    CHECK_SYNC = "check-sync";
+    FILE_STATUS_UPDATE = "file-status-update";
+  // CHECK_SYNC = "check-sync";
 
   function humanFileSize(bytes, htm = false) {
     if (typeof bytes === "string") bytes = parseInt(bytes);
@@ -146,15 +146,37 @@
             });
           });
 
+          function desktopImportStarter(formData, callback = null) {
+            formData.set("desktop", computerName);
+            jQuery.ajax({
+              url:
+                "/" +
+                mediadb +
+                "/services/module/asset/entity/desktopsyncstart.json",
+              type: "POST",
+              data: formData,
+              processData: false,
+              contentType: false,
+              "Content-Type": "multipart/form-data",
+              success: function (res) {
+                var json = res.data;
+                $("#desktoppendingpopover").runAjax();
+                if (callback) callback(json);
+              },
+              error: function (_xhr, _status, error) {
+                console.log("desktopImportStatusUpdater", error);
+              },
+            });
+          }
           function desktopImportStatusUpdater(formData, callback = null) {
-            let moduleid = formData.get("moduleid");
-            if (!moduleid) moduleid = "asset";
+            let entitymoduleid = formData.get("entitymoduleid");
+            if (!entitymoduleid) entitymoduleid = "asset";
             formData.set("desktop", computerName);
             jQuery.ajax({
               url:
                 apphome +
                 "/views/modules/" +
-                moduleid +
+                entitymoduleid +
                 "/components/sidebars/localdrives/updatefolderstatus.html",
               type: "POST",
               data: formData,
@@ -248,11 +270,11 @@
             (_, { delId, isDownload, remaining, success = true }) => {
               if (success) {
                 $("#wf-" + delId).remove();
-                if (isDownload) {
-                  shouldDisableDownloadSyncBtn(remaining);
-                } else {
-                  shouldDisableUploadSyncBtn(remaining);
-                }
+                // if (isDownload) {
+                //   shouldDisableDownloadSyncBtn(remaining);
+                // } else {
+                //   shouldDisableUploadSyncBtn(remaining);
+                // }
 
                 customToast("Sync task deleted successfully!");
               } else {
@@ -290,7 +312,7 @@
             $(window).trigger("resize");
 
             const entityid = $(this).data("entityid");
-            const moduleid = $(this).data("moduleid");
+            const entitymoduleid = $(this).data("entitymoduleid");
             const uploadsourcepath = $(this).data("path");
 
             let categorypath = uploadsourcepath;
@@ -301,10 +323,10 @@
             const formData = new FormData();
             formData.set("categorypath", categorypath);
             formData.set("entityid", entityid);
-            formData.set("moduleid", moduleid);
+            formData.set("entitymoduleid", entitymoduleid);
             formData.set("desktopimportstatus", "scan-started");
             formData.set("isdownload", "true");
-
+            debugger;
             ipcRenderer
               .invoke("lightboxDownload", uploadsourcepath)
               .then((downloadStatus) => {
@@ -342,7 +364,7 @@
 
             var folder = $(this).closest(".work-folder");
             var uploadsourcepath = folder.data("categorypath");
-            var moduleid = folder.data("moduleid");
+            var entitymoduleid = folder.data("entitymoduleid");
             var entityid = folder.data("entityid");
 
             let categorypath = uploadsourcepath;
@@ -351,7 +373,7 @@
             categorypath = categorypath.replace(/\/$/g, "");
 
             const formData = new FormData();
-            formData.set("moduleid", moduleid);
+            formData.set("entitymoduleid", entitymoduleid);
             formData.set("entityid", entityid);
             formData.set("categorypath", categorypath);
 
@@ -394,13 +416,13 @@
           });
 
           lQuery(".lightbox-header-btns").livequery(function () {
-            ipcRenderer.send(CHECK_SYNC);
+            // ipcRenderer.send(CHECK_SYNC);
 
             const headerBtns = $(this);
 
             const uploadsourcepath = headerBtns.data("path");
             const entityid = headerBtns.data("entityid");
-            const moduleid = headerBtns.data("moduleid");
+            const entitymoduleid = headerBtns.data("entitymoduleid");
 
             let categorypath = uploadsourcepath;
             categorypath = categorypath.replace(/\\/g, "/");
@@ -408,7 +430,7 @@
             categorypath = categorypath.replace(/\/$/g, "");
 
             const formData = new FormData();
-            formData.set("moduleid", moduleid);
+            formData.set("entitymoduleid", entitymoduleid);
             formData.set("entityid", entityid);
             formData.set("categorypath", categorypath);
 
@@ -425,36 +447,39 @@
 
               formData.set("desktopimportstatus", "scan-started");
               formData.set("isdownload", "true");
-
-              ipcRenderer
-                .invoke("lightboxDownload", uploadsourcepath)
-                .then((downloadStatus) => {
-                  if (downloadStatus === "OK") {
-                    desktopImportStatusUpdater(formData);
-                    headerBtns
-                      .closest(".desktopSyncPreview")
-                      .addClass("processing");
-                  } else if (downloadStatus === "DUPLICATE_DOWNLOAD") {
-                    customToast(
-                      "Already running a download task in this folder, wait until it finishes",
-                      {
-                        positive: false,
-                        autohideDelay: 5000,
-                      }
-                    );
-                  } else if (downloadStatus === "TOO_MANY_DOWNLOADS") {
-                    customToast(
-                      "Wait for at least one other download task to finish",
-                      {
-                        positive: false,
-                        autohideDelay: 5000,
-                      }
-                    );
-                  }
-                })
-                .catch((error) => {
-                  console.log("lightboxDownload", error);
-                });
+              desktopImportStarter(formData, function (synfolder) {
+                ipcRenderer
+                  .invoke("lightboxDownload", {
+                    categoryPath: uploadsourcepath,
+                    syncFolderId: synfolder.id,
+                  })
+                  .then((downloadStatus) => {
+                    if (downloadStatus === "OK") {
+                      headerBtns
+                        .closest(".desktopSyncPreview")
+                        .addClass("processing");
+                    } else if (downloadStatus === "DUPLICATE_DOWNLOAD") {
+                      customToast(
+                        "Already running a download task in this folder, wait until it finishes",
+                        {
+                          positive: false,
+                          autohideDelay: 5000,
+                        }
+                      );
+                    } else if (downloadStatus === "TOO_MANY_DOWNLOADS") {
+                      customToast(
+                        "Wait for at least one other download task to finish",
+                        {
+                          positive: false,
+                          autohideDelay: 5000,
+                        }
+                      );
+                    }
+                  })
+                  .catch((error) => {
+                    console.log("lightboxDownload", error);
+                  });
+              });
             });
 
             headerBtns.on("click", ".upload-lightbox", function () {
@@ -470,92 +495,96 @@
 
               formData.set("desktopimportstatus", "scan-started");
 
-              ipcRenderer
-                .invoke("lightboxUpload", uploadsourcepath)
-                .then((uploadStatus) => {
-                  if (uploadStatus === "OK") {
-                    desktopImportStatusUpdater(formData);
-                    headerBtns
-                      .closest(".desktopSyncPreview")
-                      .addClass("processing");
-                  } else if (uploadStatus === "DUPLICATE_UPLOAD") {
-                    customToast(
-                      "Already running an upload task in this folder, wait until it finishes",
-                      {
-                        positive: false,
-                        autohideDelay: 5000,
-                      }
-                    );
-                  } else if (uploadStatus === "TOO_MANY_UPLOADS") {
-                    customToast(
-                      "Wait for at least one other upload task to finish",
-                      {
-                        positive: false,
-                        autohideDelay: 5000,
-                      }
-                    );
-                  }
-                })
-                .catch((error) => {
-                  console.log("lightboxUpload", error);
-                });
+              desktopImportStarter(formData, function (synfolder) {
+                ipcRenderer
+                  .invoke("lightboxUpload", {
+                    categoryPath: uploadsourcepath,
+                    syncFolderId: synfolder.id,
+                  })
+                  .then((uploadStatus) => {
+                    if (uploadStatus === "OK") {
+                      headerBtns
+                        .closest(".desktopSyncPreview")
+                        .addClass("processing");
+                    } else if (uploadStatus === "DUPLICATE_UPLOAD") {
+                      customToast(
+                        "Already running an upload task in this folder, wait until it finishes",
+                        {
+                          positive: false,
+                          autohideDelay: 5000,
+                        }
+                      );
+                    } else if (uploadStatus === "TOO_MANY_UPLOADS") {
+                      customToast(
+                        "Wait for at least one other upload task to finish",
+                        {
+                          positive: false,
+                          autohideDelay: 5000,
+                        }
+                      );
+                    }
+                  })
+                  .catch((error) => {
+                    console.log("lightboxUpload", error);
+                  });
+              });
             });
           });
 
-          function shouldDisableUploadSyncBtn(data) {
-            $(".lightbox-header-btns").each(function () {
-              const identifier = $(this).data("path");
-              if (!identifier) {
-                return;
-              }
-              const btn = $(this).find(".upload-lightbox");
-              const taskProg = $(this).closest(".desktopSyncPreview");
+          // function shouldDisableUploadSyncBtn(data) {
+          //   $(".lightbox-header-btns").each(function () {
+          //     const identifier = $(this).data("path");
+          //     if (!identifier) {
+          //       return;
+          //     }
+          //     const btn = $(this).find(".upload-lightbox");
+          //     const taskProg = $(this).closest(".desktopSyncPreview");
 
-              if (isDuplicateIdentifier(identifier, data)) {
-                btn.prop("disabled", true);
-                btn.find("span").text("Uploading...");
-                taskProg.addClass("processing");
-              } else {
-                btn.prop("disabled", false);
-                btn.find("span").text("Upload");
-                taskProg.removeClass("processing");
-              }
-            });
-          }
+          //     if (isDuplicateIdentifier(identifier, data)) {
+          //       btn.prop("disabled", true);
+          //       btn.find("span").text("Uploading...");
+          //       taskProg.addClass("processing");
+          //     } else {
+          //       btn.prop("disabled", false);
+          //       btn.find("span").text("Upload");
+          //       taskProg.removeClass("processing");
+          //     }
+          //   });
+          // }
 
-          ipcRenderer.on(
-            CHECK_SYNC,
-            (_, { up_identifiers, dn_identifiers }) => {
-              if (up_identifiers && up_identifiers.length > 0) {
-                shouldDisableUploadSyncBtn(up_identifiers);
-              }
-              if (dn_identifiers && dn_identifiers.length > 0) {
-                shouldDisableDownloadSyncBtn(dn_identifiers);
-              }
-            }
-          );
+          // ipcRenderer.on(
+          //   CHECK_SYNC,
+          //   (_, { up_identifiers, dn_identifiers }) => {
+          //     if (up_identifiers && up_identifiers.length > 0) {
+          //       shouldDisableUploadSyncBtn(up_identifiers);
+          //     }
+          //     if (dn_identifiers && dn_identifiers.length > 0) {
+          //       shouldDisableDownloadSyncBtn(dn_identifiers);
+          //     }
+          //   }
+          // );
 
-          function shouldDisableDownloadSyncBtn(data) {
-            $(".lightbox-header-btns").each(function () {
-              const identifier = $(this).data("path");
-              if (!identifier) {
-                return;
-              }
+          // function shouldDisableDownloadSyncBtn(data) {
+          //   $(".lightbox-header-btns").each(function () {
+          //     const identifier = $(this).data("path");
+          //     if (!identifier) {
+          //       return;
+          //     }
 
-              const btn = $(this).find(".download-lightbox");
-              const taskProg = $(this).closest(".desktopSyncPreview");
+          //     const btn = $(this).find(".download-lightbox");
+          //     const taskProg = $(this).closest(".desktopSyncPreview");
 
-              if (isDuplicateIdentifier(identifier, data)) {
-                btn.prop("disabled", true);
-                btn.find("span").text("Downloading...");
-                taskProg.addClass("processing");
-              } else {
-                btn.prop("disabled", false);
-                btn.find("span").text("Download");
-                taskProg.removeClass("processing");
-              }
-            });
-          }
+          //     if (isDuplicateIdentifier(identifier, data)) {
+          //       btn.prop("disabled", true);
+          //       btn.find("span").text("Downloading...");
+          //       taskProg.addClass("processing");
+          //     } else {
+          //       btn.prop("disabled", false);
+          //       btn.find("span").text("Download");
+          //       taskProg.removeClass("processing");
+          //     }
+          //   });
+          // }
 
           lQuery(".cancelSync").livequery("click", function (e) {
             e.preventDefault();
@@ -628,11 +657,11 @@
             formData.append("desktopimportstatus", "sync-completed");
             if (data.isDownload) formData.append("isdownload", "true");
             desktopImportStatusUpdater(formData, () => {
-              if (data.isDownload) {
-                shouldDisableDownloadSyncBtn(data.remaining);
-              } else {
-                shouldDisableUploadSyncBtn(data.remaining);
-              }
+              // if (data.isDownload) {
+              //   shouldDisableDownloadSyncBtn(data.remaining);
+              // } else {
+              //   shouldDisableUploadSyncBtn(data.remaining);
+              // }
               customToast(
                 `${
                   data.isDownload ? "Downloaded" : "Uploaded"
@@ -640,7 +669,7 @@
                 { id: data.identifier }
               );
             });
-            ipcRenderer.send(CHECK_SYNC);
+            // ipcRenderer.send(CHECK_SYNC);
             const dataeditedreload = $(".dataeditedreload");
             dataeditedreload.each(function () {
               $(window).trigger("autoreload", [
@@ -671,11 +700,11 @@
                 if (filesCompleted >= 0)
                   formData.append("completedfiles", filesCompleted);
                 desktopImportStatusUpdater(formData, () => {
-                  if (isDownload) {
-                    shouldDisableDownloadSyncBtn(remaining);
-                  } else {
-                    shouldDisableUploadSyncBtn(remaining);
-                  }
+                  // if (isDownload) {
+                  //   shouldDisableDownloadSyncBtn(remaining);
+                  // } else {
+                  //   shouldDisableUploadSyncBtn(remaining);
+                  // }
                 });
               }
               if (both) {
@@ -684,7 +713,7 @@
               } else {
                 cancelSync(isDownload);
               }
-              ipcRenderer.send(CHECK_SYNC);
+              // ipcRenderer.send(CHECK_SYNC);
             }
           );
 
@@ -772,7 +801,7 @@
             formData.set("categorypath", uploadsourcepath);
             formData.set("desktopimportstatus", "sync-cancelled");
             formData.set("isdownload", isDownload ? "true" : "false");
-            formData.set("moduleid", $(this).data("moduleid"));
+            formData.set("entitymoduleid", $(this).data("entitymoduleid"));
             formData.set("entityid", $(this).data("entityid"));
             desktopImportStatusUpdater(formData);
           });
