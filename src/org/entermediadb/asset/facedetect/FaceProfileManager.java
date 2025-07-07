@@ -108,7 +108,34 @@ public class FaceProfileManager implements CatalogEnabled
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
 	}
 	
+	public FaceScanInstructions createInstructions()
+	{
+		FaceScanInstructions instructions = new FaceScanInstructions();
+		
+		double facedetect_detect_confidence = .7D;
+		String detectvalue = getMediaArchive().getCatalogSettingValue("facedetect_detect_confidence");
+		if( detectvalue != null)
+		{
+			facedetect_detect_confidence = Double.parseDouble(detectvalue);
+		}
+		instructions.setConfidenceLimit(facedetect_detect_confidence);
+
+		int minfacesize = 250; //was 450
+		
+		String minumfaceimagesize = getMediaArchive().getCatalogSettingValue("facedetect_minimum_face_size");
+		if(minumfaceimagesize != null) 
+		{
+			minfacesize = Integer.parseInt(minumfaceimagesize);
+		}
+		instructions.setMinimumFaceSize(minfacesize);
+		return instructions;
+	}
 	public int extractFaces(Collection<Data> inAssets)  //Page of assets
+	{
+		FaceScanInstructions instructions = createInstructions();
+		return extractFaces(instructions,inAssets);
+	}
+	public int extractFaces(FaceScanInstructions instructions , Collection<Data> inAssets)  //Page of assets
 	{
 			String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
 			if( url == null)
@@ -131,7 +158,6 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 			}
 			
-			
 			List<MultiValued> foundfacestosave = new ArrayList();
 			List<Data> tosave = new ArrayList();
 
@@ -145,7 +171,7 @@ public class FaceProfileManager implements CatalogEnabled
 				Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(inAsset);
 				try
 				{
-					extractFaces(asset,foundfacestosave);
+					extractFaces(instructions, asset,foundfacestosave);
 				}
 				catch( Throwable ex)
 				{
@@ -161,8 +187,8 @@ public class FaceProfileManager implements CatalogEnabled
 			log.info(" Saved Assets " + tosave.size() + " added faces:  " + foundfacestosave.size());
 			return foundfacestosave.size();
 	}
-
-	private void extractFaces(Asset inAsset, List<MultiValued> inFoundfaces) throws Exception
+	
+	private void extractFaces(FaceScanInstructions instructions, Asset inAsset, List<MultiValued> inFoundfaces) throws Exception
 	{
 		
 		String type = getMediaArchive().getMediaRenderType(inAsset);
@@ -258,7 +284,7 @@ public class FaceProfileManager implements CatalogEnabled
 			if(json == null) {
 				return;
 			}
-			Collection<MultiValued> moreprofiles = makeDataForEachFace(faceembeddingsearcher,inAsset,0L,input,json);
+			Collection<MultiValued> moreprofiles = makeDataForEachFace(instructions,faceembeddingsearcher,inAsset,0L,input,json);
 			if( moreprofiles != null)
 			{
 				//saveNewFacesWithParents(moreprofiles);
@@ -269,7 +295,7 @@ public class FaceProfileManager implements CatalogEnabled
 		else if( "video".equalsIgnoreCase(type) )
 		{
 			//Look over them and save the timecode with it
-			Collection<MultiValued> allfacesinvideo = findAllFacesInVideo(inAsset);
+			Collection<MultiValued> allfacesinvideo = findAllFacesInVideo(instructions, inAsset);
 			Collection<MultiValued> moreprofiles = combineVideoMatches(allfacesinvideo);
 			if(moreprofiles != null)
 			{
@@ -290,7 +316,7 @@ public class FaceProfileManager implements CatalogEnabled
 		//faceembeddingsearcher.saveAllData(tosave,null);
 	}
 
-	protected Collection<MultiValued> findAllFacesInVideo(Asset inAsset) throws Exception
+	protected Collection<MultiValued> findAllFacesInVideo(FaceScanInstructions instructions, Asset inAsset) throws Exception
 	{
 		Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
 
@@ -333,7 +359,7 @@ public class FaceProfileManager implements CatalogEnabled
 			else
 			{
 				List<Map> json = findFaces(inAsset, item);	
-				Collection<MultiValued> moreprofiles = makeDataForEachFace(faceembeddingsearcher,inAsset,block.getSeconds(),item,json);
+				Collection<MultiValued> moreprofiles = makeDataForEachFace(instructions,faceembeddingsearcher,inAsset,block.getSeconds(),item,json);
 				if( moreprofiles != null)
 				{
 					allfacesinvideo.addAll(moreprofiles);
@@ -604,17 +630,11 @@ public class FaceProfileManager implements CatalogEnabled
 		return finalval;
 	}
 	
-	protected List<MultiValued> makeDataForEachFace(Searcher facedb, Asset inAsset,double timecodestart, ContentItem inInput, List<Map> inJsonOfFaces) throws Exception
+	protected List<MultiValued> makeDataForEachFace(FaceScanInstructions instructions, Searcher facedb, Asset inAsset,double timecodestart, ContentItem inInput, List<Map> inJsonOfFaces) throws Exception
 	{
 		if( inJsonOfFaces.isEmpty())
 		{
 			return null;
-		}
-		double facedetect_detect_confidence = .7D;
-		String detectvalue = getMediaArchive().getCatalogSettingValue("facedetect_detect_confidence");
-		if( detectvalue != null)
-		{
-			facedetect_detect_confidence = Double.parseDouble(detectvalue);
 		}
 
 		int inputw = 0;
@@ -641,14 +661,7 @@ public class FaceProfileManager implements CatalogEnabled
 			inputw = (int)Math.round( size.getWidth() );
 			inputh = (int)Math.round( size.getHeight() );
 		}       
-        int minfacesize = 250; //was 450
-		
-		String minumfaceimagesize = getMediaArchive().getCatalogSettingValue("facedetect_minimum_face_size");
-		if(minumfaceimagesize != null) 
-		{
-			minfacesize = Integer.parseInt(minumfaceimagesize);
-		}
-//		if (inJsonOfFaces.size() == 1) {
+ //		if (inJsonOfFaces.size() == 1) {
 //			minfacesize = minfacesize - 100;
 //		}
 	
@@ -669,7 +682,7 @@ public class FaceProfileManager implements CatalogEnabled
 			// 	log.info("Eyes are required, confidence = " + confidence  + " file: " + inAsset.getName());
 			// 	continue;
 			// }
-			if( confidence < facedetect_detect_confidence)
+			if( confidence < instructions.getConfidenceLimit())
 			{
 				log.info("Not enough confidence for " + inAsset.getName() + " -> " + confidence );
 				continue;
@@ -681,9 +694,9 @@ public class FaceProfileManager implements CatalogEnabled
 			//Save to DB
 			double h = box.getDouble("h");
 			double w  = box.getDouble("w");
-			if( h < minfacesize)
+			if( h < instructions.getMinimumFaceSize())
 			{
-				log.info("small face w:" + w + " h:" + h + " Min face size: " + minfacesize + " " + inAsset.getName());
+				log.info("small face w:" + w + " h:" + h + " Min face size: " + instructions.getMinimumFaceSize() + " " + inAsset.getName());
 				continue;
 			}
 			JSONArray collection = (JSONArray)facejson.get("embedding");
@@ -1300,7 +1313,13 @@ public class FaceProfileManager implements CatalogEnabled
 		//getMediaArchive().fireSharedMediaEvent("asset/facescan");
 		List one = new ArrayList();
 		one.add(inAsset);
-		extractFaces(one);
+		
+		FaceScanInstructions instructions = createInstructions();
+
+		instructions.setConfidenceLimit(instructions.getConfidenceLimit() * .75D);
+		instructions.setMinimumFaceSize(instructions.getMinimumFaceSize() * .50D);
+		
+		extractFaces(instructions, one);
 		
 	}
 
