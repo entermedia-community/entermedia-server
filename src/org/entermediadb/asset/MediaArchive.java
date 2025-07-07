@@ -2957,7 +2957,7 @@ public class MediaArchive implements CatalogEnabled
 		return finalroot;
 	}
 
-	public String asLinkToGeneratedOffset(Data inAsset, String inGeneratedoutputfile, double offset)
+	public String asLinkToGenerateOffset(Data inAsset, String inGeneratedoutputfile, double offset)
 	{
 		if (inAsset == null)
 		{
@@ -2972,8 +2972,8 @@ public class MediaArchive implements CatalogEnabled
 		
 		//String cdnprefix = getCatalogSettingValue("cdn_prefix");
 		String sourcepath = inAsset.getSourcePath();
-		String downloadroot = "/services/module/asset/generated/";  //Will not create anything and is fast
-		String	finalroot =  "/" + getMediaDbId() + downloadroot + sourcepath + "/" + filename;
+		String downloadroot = "/services/module/asset/generate/";  //Will not create anything and is fast
+		String	finalroot =  "/" + getMediaDbId() + downloadroot + sourcepath + "/" + filename + "/" + filename;
 		finalroot = URLUtilities.urlEscape(finalroot);
 		return finalroot;
 	}

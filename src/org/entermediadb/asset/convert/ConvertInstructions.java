@@ -185,11 +185,6 @@ public class ConvertInstructions
 					path.append(getPageNumber());
 				}
 			}
-			if(getProperty("timeoffset") != null)
-			{
-				path.append("offset");
-				path.append(getProperty("timeoffset"));
-			}
 			if(isWatermark())
 			{				
 				if( rendertype.equals("image") || rendertype.equals("document"))
@@ -209,6 +204,11 @@ public class ConvertInstructions
 			if(isCrop() || Boolean.parseBoolean( getProperty("extent") ) )
 			{
 				path.append("cropped");
+			}
+			if(getProperty("timeoffset") != null)
+			{
+				path.append("offset");
+				path.append(getProperty("timeoffset"));
 			}
 			if (getOutputExtension() != null)
 			{

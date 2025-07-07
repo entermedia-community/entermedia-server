@@ -4,7 +4,7 @@
 <property name="prompt">login consent</property>
 
 <property name="requestedpermissions">
-https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid https://www.googleapis.com/auth/contacts.readonly  https://www.google.com/m8/feeds/
+openid https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile
 </property>
 
 </page>

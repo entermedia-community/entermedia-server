@@ -1,5 +1,6 @@
 package org.entermediadb.asset.generators;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
@@ -88,6 +89,7 @@ public class GeneratedMediaGenerator extends FileGenerator
 				TranscodeTools transcodetools = archive.getTranscodeTools();
 				String sourcepath = archive.getSourcePathForPage(inPage);
 				String outputfile = PathUtilities.extractFileName(endingpath); //image1200x1200.jpg
+				
 				ConvertResult result = transcodetools.createOutputIfNeeded(null,null,sourcepath, outputfile ); //String inSourcePath, Data inPreset, String inOutputType);
 			}
 		}
