@@ -160,7 +160,8 @@
               "Content-Type": "multipart/form-data",
               success: function (res) {
                 var json = res.data;
-                $("#desktoppendingpopover").runAjax();
+                $("#desktoppendingpopover").addClass("ajaxstatus");
+                $(document).trigger("domchanged");
                 if (callback) callback(json);
               },
               error: function (_xhr, _status, error) {
