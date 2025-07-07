@@ -265,8 +265,7 @@ public class FaceProfileModule extends BaseMediaModule
 		{
 			return;
 		}
-		Searcher faceembeddingsearcher = archive.getSearcherManager().getSearcher("system/facedb","faceembedding");
-		Data found = faceembeddingsearcher.query().exact("catalogid",archive.getCatalogId()).exact("entityperson", entityid).searchOne();
+		Data found = archive.query("faceembedding").exact("entityperson", entityid).searchOne();
 		
 		if( found != null)
 		{
