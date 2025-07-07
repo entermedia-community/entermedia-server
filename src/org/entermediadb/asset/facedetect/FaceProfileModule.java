@@ -120,6 +120,18 @@ public class FaceProfileModule extends BaseMediaModule
 			MultiValued face = (MultiValued)archive.getData("faceembedding",faceembeddingid);
 			if (face != null)
 			{
+				String oldpersonid = face.get("entityperson");
+				
+				if (oldpersonid != null)
+				{
+					Data oldperson = archive.getData("entityperson", oldpersonid);
+					String previousassetid = oldperson.get("primaryimage");
+					if (previousassetid != null && previousassetid.equals(assetid)) 
+					{
+						oldperson.setValue("primaryimage", null);
+						archive.saveData("entityperson", oldperson);
+					}
+				}
 				face.setValue("entityperson", personid);
 				face.setValue("assignedby",inReq.getUser().getId() );
 				face.setValue("hasotherfaces",true);
