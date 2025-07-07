@@ -7,7 +7,6 @@ import org.openedit.MultiValued;
 
 public class FaceScanInstructions
 {
-	
 	Collection<MultiValued> fieldAllRecords;
 	public Collection<MultiValued> getAllRecords()
 	{
