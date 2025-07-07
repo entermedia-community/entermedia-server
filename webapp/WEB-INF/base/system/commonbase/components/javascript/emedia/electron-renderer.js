@@ -448,6 +448,8 @@
               formData.set("desktopimportstatus", "scan-started");
               formData.set("isdownload", "true");
               desktopImportStarter(formData, function (synfolder) {
+                console.log("download", synfolder);
+                return;
                 ipcRenderer
                   .invoke("lightboxDownload", {
                     categoryPath: uploadsourcepath,
@@ -634,41 +636,41 @@
 
           ipcRenderer.on(SYNC_PROGRESS_UPDATE, (_, data) => {
             console.log(SYNC_PROGRESS_UPDATE, data);
-            const idEl = progItem(data.identifier, data.isDownload);
-            if (idEl) {
-              idEl.find(".filesCompleted").text(data.completed);
-              idEl.find(".filesFailed").text(data.failed);
-              idEl.find(".filesTotal").text(data.total);
-            }
+            // const idEl = progItem(data.identifier, data.isDownload);
+            // if (idEl) {
+            //   idEl.find(".filesCompleted").text(data.completed);
+            //   idEl.find(".filesFailed").text(data.failed);
+            //   idEl.find(".filesTotal").text(data.total);
+            // }
           });
 
           ipcRenderer.on(SYNC_COMPLETED, (_, data) => {
             console.log(SYNC_COMPLETED, data);
-            const idEl = progItem(data.identifier, data.isDownload);
-            if (idEl) {
-              idEl.removeClass("processing");
-              idEl.data("index", undefined);
-            }
+            // const idEl = progItem(data.identifier, data.isDownload);
+            // if (idEl) {
+            //   idEl.removeClass("processing");
+            //   idEl.data("index", undefined);
+            // }
 
-            const formData = new FormData();
-            formData.append("completedfiles", data.completed || 0);
-            formData.append("failedfiles", data.failed || 0);
-            formData.append("categorypath", data.identifier);
-            formData.append("desktopimportstatus", "sync-completed");
-            if (data.isDownload) formData.append("isdownload", "true");
-            desktopImportStatusUpdater(formData, () => {
-              // if (data.isDownload) {
-              //   shouldDisableDownloadSyncBtn(data.remaining);
-              // } else {
-              //   shouldDisableUploadSyncBtn(data.remaining);
-              // }
-              customToast(
-                `${
-                  data.isDownload ? "Downloaded" : "Uploaded"
-                } all files from ${elideCat(data.identifier)}!`,
-                { id: data.identifier }
-              );
-            });
+            // const formData = new FormData();
+            // formData.append("completedfiles", data.completed || 0);
+            // formData.append("failedfiles", data.failed || 0);
+            // formData.append("categorypath", data.identifier);
+            // formData.append("desktopimportstatus", "sync-completed");
+            // if (data.isDownload) formData.append("isdownload", "true");
+            // desktopImportStatusUpdater(formData, () => {
+            // if (data.isDownload) {
+            //   shouldDisableDownloadSyncBtn(data.remaining);
+            // } else {
+            //   shouldDisableUploadSyncBtn(data.remaining);
+            // }
+            customToast(
+              `${
+                data.isDownload ? "Downloaded" : "Uploaded"
+              } all files from ${elideCat(data.identifier)}!`,
+              { id: data.identifier }
+            );
+            // });
             // ipcRenderer.send(CHECK_SYNC);
             const dataeditedreload = $(".dataeditedreload");
             dataeditedreload.each(function () {
@@ -719,37 +721,37 @@
 
           ipcRenderer.on(FILE_STATUS_UPDATE, (_, data) => {
             console.log(FILE_STATUS_UPDATE, data);
-            const idEl = progItem(data.identifier, data.isDownload);
-            if (!idEl) return;
-            idEl.data("index", data.index);
-            if (data.status === "uploading" || data.status === "downloading") {
-              idEl.addClass("processing");
-              idEl.find(".fileName").text(data.name);
-              idEl.find(".fileProgress").css("width", "0%");
-              idEl.find(".fileProgressLoaded").text(0);
-              idEl.find(".fileProgressTotal").text(humanFileSize(data.size));
-            } else if (data.status === "completed") {
-              idEl.find(".fileProgress").css("width", "100%");
-              idEl.find(".fileProgressLoaded").text(humanFileSize(data.size));
-              idEl.find(".fileProgressTotal").text(humanFileSize(data.size));
-            }
+            // const idEl = progItem(data.identifier, data.isDownload);
+            // if (!idEl) return;
+            // idEl.data("index", data.index);
+            // if (data.status === "uploading" || data.status === "downloading") {
+            //   idEl.addClass("processing");
+            //   idEl.find(".fileName").text(data.name);
+            //   idEl.find(".fileProgress").css("width", "0%");
+            //   idEl.find(".fileProgressLoaded").text(0);
+            //   idEl.find(".fileProgressTotal").text(humanFileSize(data.size));
+            // } else if (data.status === "completed") {
+            //   idEl.find(".fileProgress").css("width", "100%");
+            //   idEl.find(".fileProgressLoaded").text(humanFileSize(data.size));
+            //   idEl.find(".fileProgressTotal").text(humanFileSize(data.size));
+            // }
           });
 
           ipcRenderer.on(FILE_PROGRESS_UPDATE, (_, data) => {
             console.log(FILE_PROGRESS_UPDATE, data);
-            const idEl = progItem(data.identifier, data.isDownload);
-            if (!idEl) return;
-            // const index = idEl.data("index");
-            // if (index === undefined) return;
+            // const idEl = progItem(data.identifier, data.isDownload);
+            // if (!idEl) return;
+            // // const index = idEl.data("index");
+            // // if (index === undefined) return;
 
-            const progressEl = idEl.find(".fileProgress");
-            progressEl.css("width", Math.min(data.percent * 100, 100) + "%");
+            // const progressEl = idEl.find(".fileProgress");
+            // progressEl.css("width", Math.min(data.percent * 100, 100) + "%");
 
-            const loadedEl = idEl.find(".fileProgressLoaded");
-            loadedEl.text(humanFileSize(data.loaded));
+            // const loadedEl = idEl.find(".fileProgressLoaded");
+            // loadedEl.text(humanFileSize(data.loaded));
 
-            const totalEl = idEl.find(".fileProgressTotal");
-            totalEl.text(humanFileSize(data.total));
+            // const totalEl = idEl.find(".fileProgressTotal");
+            // totalEl.text(humanFileSize(data.total));
           });
           // </all sync events>
 
