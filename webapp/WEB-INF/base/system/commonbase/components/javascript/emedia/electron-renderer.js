@@ -326,7 +326,6 @@
             formData.set("entitymoduleid", entitymoduleid);
             formData.set("desktopimportstatus", "scan-started");
             formData.set("isdownload", "true");
-            debugger;
             ipcRenderer
               .invoke("lightboxDownload", uploadsourcepath)
               .then((downloadStatus) => {

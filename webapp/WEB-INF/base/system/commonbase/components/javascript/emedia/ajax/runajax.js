@@ -214,7 +214,6 @@ findClosest = function (link, inid) {
           var newcell;
           if (replaceHtml) {
             //Call replacer to pull $scope variables
-            debugger;
             onpage = targetdiv.parent();
             var targetdivid = "";
             if (targetdiv.attr("id") !== undefined) {
