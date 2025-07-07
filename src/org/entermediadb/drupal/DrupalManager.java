@@ -85,7 +85,7 @@ public class DrupalManager implements CatalogEnabled
 		{
 			fieldConfig = new BaseData();
 			fieldConfig.setValue("remoteroot", getMediaArchive().getCatalogSettingValue("drupal_remoteroot"));
-			fieldConfig.setValue("contenttype", getMediaArchive().getCatalogSettingValue("drupal_contenttype"));
+			fieldConfig.setValue("drupalcontenttype", getMediaArchive().getCatalogSettingValue("drupal_contenttype"));
 			fieldConfig.setValue("filter_created_startfrom", getMediaArchive().getCatalogSettingValue("drupal_startfrom"));
 		}
 		return fieldConfig;
@@ -152,7 +152,7 @@ public class DrupalManager implements CatalogEnabled
 	public Collection listContent(MultiValued inSource) {
 		Collection results = new ArrayList();
 		
-		String url = inSource.get("remoteroot") + "/jsonapi/"+ inSource.get("structure")+"/" + inSource.get("contenttype"); 
+		String url = inSource.get("remoteroot") + "/jsonapi/"+ inSource.get("structure")+"/" + inSource.get("drupalcontenttype"); 
 		// Filters:
 		// inSource.get(startfrom)
 		
@@ -229,7 +229,7 @@ public class DrupalManager implements CatalogEnabled
 		String title = (String)attributes.get("title");
 		if (title == null)
 		{
-			title = inSource.get("contenttype") + " " + drupalinternalid.toString();
+			title = inSource.get("drupalcontenttype") + " " + drupalinternalid.toString();
 		}
 		
 		contentData.setValue("name", title);
