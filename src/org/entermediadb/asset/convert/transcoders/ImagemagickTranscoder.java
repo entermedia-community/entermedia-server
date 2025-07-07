@@ -291,7 +291,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			com.add(dpi);
 		}
 		
-		setValue("quality", "89", inStructions, com);
+		setValue("quality", "85", inStructions, com);
 		//add sampling-factor if specified
 		if (inStructions.get("sampling-factor") != null)
 		{
