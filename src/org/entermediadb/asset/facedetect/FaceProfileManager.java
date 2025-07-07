@@ -174,6 +174,7 @@ public class FaceProfileManager implements CatalogEnabled
 				Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(inAsset);
 				try
 				{
+					asset.setValue("facehasprofile",false);
 					extractFaces(instructions, asset,foundfacestosave);
 				}
 				catch( Throwable ex)
@@ -292,6 +293,11 @@ public class FaceProfileManager implements CatalogEnabled
 			{
 				//saveNewFacesWithParents(moreprofiles);
 				inFoundfaces.addAll(moreprofiles);
+				
+				if( !moreprofiles.isEmpty() )
+				{
+					inAsset.setValue("facehasprofile",true);
+				}
 			}
 			
 		}
@@ -447,7 +453,15 @@ public class FaceProfileManager implements CatalogEnabled
 		HitTracker faces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").search();  //Smallest faces connect to the largest one
 		faces.enableBulkOperations();
 		List<MultiValued> allrecords = new ArrayList(faces);
-		fixParents(allrecords,allrecords);
+		fixSortedParents(allrecords,allrecords);
+	}
+
+	public void fixSomeNewParents( List<MultiValued> somefacestosave)
+	{
+		HitTracker faces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").search();  //Smallest faces connect to the largest one
+		faces.enableBulkOperations();
+		List<MultiValued> allrecords = new ArrayList(faces);
+		fixSomeNewParents(allrecords,somefacestosave);
 	}
 	public void fixSomeNewParents( List<MultiValued> allrecords, List<MultiValued> somefacestosave)
 	{
@@ -471,10 +485,10 @@ public class FaceProfileManager implements CatalogEnabled
 				return height.compareTo(height2);
 			}
 		});
-		fixParents(allrecords, somefacestosave); //Adds them to allrecords
+		fixSortedParents(allrecords, somefacestosave); //Adds them to allrecords
 		//allrecords.addAll(somefacestosave);
 	}
-	public void fixParents(List<MultiValued> allrecords, Collection<MultiValued> inResetFaces)
+	protected void fixSortedParents(List<MultiValued> allrecords, Collection<MultiValued> inResetFaces)
 	{
 		Searcher fsearcher = getMediaArchive().getSearcher("faceembedding");
 		List<MultiValued> tosave = new ArrayList();
