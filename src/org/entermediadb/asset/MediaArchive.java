@@ -2987,7 +2987,7 @@ public class MediaArchive implements CatalogEnabled
 
 	public void saveData(String inSearcher, Data inSelectedgoal)
 	{
-		getCacheManager().clear("searcher" + inSearcher);
+		//getCacheManager().clear("searcher" + inSearcher);
 		getSearcher(inSearcher).saveData(inSelectedgoal);
 	}
 

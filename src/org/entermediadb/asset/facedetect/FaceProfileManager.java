@@ -147,7 +147,7 @@ public class FaceProfileManager implements CatalogEnabled
 			allfaces.enableBulkOperations();
 			List<MultiValued> allrecords = new ArrayList(allfaces);  //This is huge
 
-			List assetids = new ArrayList();
+			List<String> assetids = new ArrayList();
 			for (Iterator iterator = allrecords.iterator(); iterator.hasNext();)
 			{
 				MultiValued existingface = (MultiValued) iterator.next();
@@ -158,16 +158,19 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 			}
 			
+			instructions.setAllRecords(allrecords);
+			instructions.setAllAssetIds(assetids);
+			
 			List<MultiValued> foundfacestosave = new ArrayList();
 			List<Data> tosave = new ArrayList();
 
 			for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 			{
 				MultiValued inAsset = (MultiValued) iterator.next();
-				if( assetids.contains(inAsset.getId() ) )
-				{
-					continue;
-				}		
+//				if( assetids.contains(inAsset.getId() ) )
+//				{
+//					continue;
+//				}		
 				Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(inAsset);
 				try
 				{
@@ -708,20 +711,26 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			MultiValued addedface = null;
 			
-//			Collection others = facedb.query().exact("assetid",inAsset).search();
-//			for (Iterator iterator2 = others.iterator(); iterator2.hasNext();)
-//			{
-//				MultiValued existing = (MultiValued) iterator2.next();
-//				List<Double> othervalues = (List<Double>)existing.getValue("facedatadoubles"); //Manually done because Search did not work
-//				if(othervalues.equals(vector) )
-//				{
-//					addedface = existing;
-//					addedface.setValue("parentembeddingid",null);
-//					addedface.setValue("parentassetid",null);
-//					addedface.setValue("parentdistance", null);
-//					break;
-//				}
-//			}
+			String assetid = inAsset.getId();
+			if( instructions.getAllAssetIds().contains(assetid ) )
+			{
+				for (Iterator iterator2 = instructions.getAllRecords().iterator(); iterator2.hasNext();)
+				{
+					MultiValued existing = (MultiValued) iterator2.next();
+					if( assetid.equals(existing.get("assetid") ) )
+					{
+						List<Double> othervalues = (List<Double>)existing.getValue("facedatadoubles"); //Manually done because Search did not work
+						if(othervalues.equals(vector) )
+						{
+							addedface = existing;
+							addedface.setValue("parentembeddingid",null);
+							addedface.setValue("parentassetid",null);
+							addedface.setValue("parentdistance", null);
+							break;
+						}
+					}	
+				}
+			}
 			if( addedface == null)
 			{
 				addedface = (MultiValued)facedb.createNewData(); //TODIO: Search by Vector first so we dont lose assignments
