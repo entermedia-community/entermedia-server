@@ -286,6 +286,7 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 			List<Map> json = findFaces(inAsset, input);
 			if(json == null) {
+				
 				return;
 			}
 			Collection<MultiValued> moreprofiles = makeDataForEachFace(instructions,faceembeddingsearcher,inAsset,0L,input,json);
@@ -1071,14 +1072,17 @@ public class FaceProfileManager implements CatalogEnabled
 		resp = getSharedConnection().sharedPostWithJson(url + "/represent",tosendparams);
 		if (resp.getStatusLine().getStatusCode() == 400)
 		{
-			//No faces found error
 			getSharedConnection().release(resp);
 			log.info("Face detection Remote Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
+			inAsset.setValue("facescanerror", true);
 			return Collections.EMPTY_LIST;
 		}
 		else if (resp.getStatusLine().getStatusCode() == 413)
 		{
+			//remote error body size
 			getSharedConnection().release(resp);
+			log.info("Face detection Remote Body Size Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
+			inAsset.setValue("facescanerror", true);
 			return null;
 		}
 		else if (resp.getStatusLine().getStatusCode() == 500)
@@ -1086,6 +1090,7 @@ public class FaceProfileManager implements CatalogEnabled
 			//remote server error, may be a broken image
 			getSharedConnection().release(resp);
 			log.info("Face detection Remote Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
+			inAsset.setValue("facescanerror", true);
 			return null;
 		}
 		
@@ -1344,6 +1349,62 @@ public class FaceProfileManager implements CatalogEnabled
 		
 		extractFaces(instructions, one);
 		
+	}
+	
+	
+	protected void assignPerson(String faceembeddingid, String assetid, String personid, String inUserId)
+	{
+		if (faceembeddingid != null && personid != null)
+		{
+			//Should we go disconnect the previous face? 
+			
+			MultiValued face = (MultiValued) getMediaArchive().getData("faceembedding",faceembeddingid);
+			if (face != null)
+			{
+				if (face.get("entityparent") == null )
+				{
+					Collection parentids = face.getValues("parentids");
+					if( parentids != null && !parentids.isEmpty() )
+					{
+						HitTracker personlookup = getMediaArchive().query("faceembedding").orgroup("parentids",parentids).search();
+								
+						for (Iterator iterator = personlookup.iterator(); iterator.hasNext();)
+						{
+							MultiValued otherface = (MultiValued) iterator.next();
+							if (otherface.get("entityparent") != null)
+							{
+								face = otherface;
+								break;
+							}
+							
+						}
+					}
+				}
+				
+				String oldpersonid = face.get("entityperson");
+				
+				if (oldpersonid != null)
+				{
+					Data oldperson = getMediaArchive().getData("entityperson", oldpersonid);
+					String previousassetid = oldperson.get("primaryimage");
+					if (previousassetid != null && previousassetid.equals(assetid)) 
+					{
+						oldperson.setValue("primaryimage", null);
+						getMediaArchive().saveData("entityperson", oldperson);
+					}
+				}
+				face.setValue("entityperson", personid);
+				face.setValue("assignedby",inUserId );
+				face.setValue("hasotherfaces",true);
+				getMediaArchive().saveData("faceembedding",face);
+				
+				//always reset image
+				Data person = getMediaArchive().getData("entityperson", personid);
+				person.setValue("primaryimage", assetid);
+				getMediaArchive().saveData("entityperson", person);
+				
+			}
+		}
 	}
 
 	

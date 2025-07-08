@@ -28,7 +28,7 @@ public class FaceProfileModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(FaceProfileModule.class);
 
-	public FaceProfileManager getProjectManager(WebPageRequest inReq) {
+	public FaceProfileManager getFaceProfileManager(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		FaceProfileManager manager = (FaceProfileManager) getModuleManager().getBean(archive.getCatalogId(), "faceProfileManager");
 		inReq.putPageValue("faceprofilemanager", manager);
@@ -113,38 +113,11 @@ public class FaceProfileModule extends BaseMediaModule
 		String assetid = inReq.getRequestParameter("assetid"); 
 		String faceembeddingid =inReq.getRequestParameter("faceembeddingid");
 		
-		if (faceembeddingid != null && personid != null)
-		{
-			//Should we go disconnect the previous face? 
-			
-			MultiValued face = (MultiValued)archive.getData("faceembedding",faceembeddingid);
-			if (face != null)
-			{
-				String oldpersonid = face.get("entityperson");
-				
-				if (oldpersonid != null)
-				{
-					Data oldperson = archive.getData("entityperson", oldpersonid);
-					String previousassetid = oldperson.get("primaryimage");
-					if (previousassetid != null && previousassetid.equals(assetid)) 
-					{
-						oldperson.setValue("primaryimage", null);
-						archive.saveData("entityperson", oldperson);
-					}
-				}
-				face.setValue("entityperson", personid);
-				face.setValue("assignedby",inReq.getUser().getId() );
-				face.setValue("hasotherfaces",true);
-				archive.saveData("faceembedding",face);
-				
-				//always reset image
-				Data person = archive.getData("entityperson", personid);
-				person.setValue("primaryimage", assetid);
-				archive.saveData("entityperson", person);
-				
-			}
-		}
+		getFaceProfileManager(inReq).assignPerson(faceembeddingid, assetid, personid, inReq.getUser().getId());
 	}
+
+
+
 	
 	/*
 	public void addPersonToProfileGroup(WebPageRequest inReq)
