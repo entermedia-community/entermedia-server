@@ -364,7 +364,8 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		//			return fullDesc.substring(0, getFullTextCap());
 		//		}
 
-		String result = fullDesc.toString();// fixInvalidCharacters(fullDesc.toString());
+		//String result = fullDesc.toString();// fixInvalidCharacters(fullDesc.toString());
+		String result = fixSpecialCharacters(fullDesc);
 		return result;
 	}
 

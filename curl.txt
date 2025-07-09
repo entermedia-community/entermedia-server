@@ -259,7 +259,7 @@ curl -XGET http://localhost:9200/assets_catalog/category/_search -d '{
       "categorypath" : "*sia*"
     }
   },
-  "explain" : true
+  "explain" : truephrase
 }'| python -mjson.tool
 
 

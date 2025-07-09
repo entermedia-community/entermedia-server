@@ -133,8 +133,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	protected static final Pattern andoperators = Pattern.compile("(\\sAND\\s)");
 	public static final Pattern TOKENS = Pattern.compile("[^a-zA-Z\\d\\s]");
 
-	protected static final Pattern specialchars = Pattern.compile("([0-9a-zA-Z0-9_]+)");
-	protected static final Pattern orpattern = Pattern.compile("(.*?)\\s+(OR?|AND?|NOT?)+");
+	protected static final Pattern separatorchars = Pattern.compile("([0-9a-zA-Z]+)");
+	protected static final Pattern orpattern = Pattern.compile("(.*?)\\b(AND|OR|NOT)\\b\\s+", Pattern.CASE_INSENSITIVE);
+	protected static final Pattern spacepattern = Pattern.compile("([\\s]+)");
 
 	protected ElasticNodeManager fieldElasticNodeManager;
 	// protected IntCounter fieldIntCounter;
@@ -1634,7 +1635,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			else
 			{
-				String uppercase = valueof.replace(" and ", " AND ").replace(" And ", " AND ").replace(" Or ", " OR ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO ");//.replace(", ", " AND "); //Babson uses lots of commas
+				//String uppercase = valueof.replace(" and ", " AND ").replace(" And ", " AND ").replace(" Or ", " OR ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO ");//.replace(", ", " AND "); //Babson uses lots of commas
 				//We no longer allow + or - notation
 				// Parse by Operator
 				// Add wildcards
@@ -1653,9 +1654,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				// "Big Deal" => "Big Deal"
 				//valueof = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO "); // Why do this again?
 
-				//String orregex = "((.*?)\\s+(AND|OR)\\s+)+";
-				//String orregex = "((.*?)\\s+(OR|AND|NOT)?\\s+)+";
-				Matcher andors = orpattern.matcher(uppercase);
+				
+				//..protected static final Pattern orpattern = Pattern.compile("(.*?)\\s+(OR?|AND?|NOT?)+");
+				
+				
+				Matcher andors = orpattern.matcher(valueof);
 
 				Collection searchpairs = new ArrayList();
 
@@ -1667,12 +1670,12 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					// Get the matched character
 					Map pair = new HashMap();
 					pair.put("word", andors.group(1));
-					pair.put("opertator", andors.group(2));
+					pair.put("operator", andors.group(2));
 					searchpairs.add(pair);
 					lastterm = andors.end();
 				}
 				Map lastpair = new HashMap();
-				lastpair.put("word", uppercase.substring(lastterm));
+				lastpair.put("word", valueof.substring(lastterm));
 				searchpairs.add(lastpair);
 
 				String currentoperator = null;
@@ -1680,25 +1683,22 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				for (Iterator iterator = searchpairs.iterator(); iterator.hasNext();)
 				{
 					Map<String, String> pair = (Map) iterator.next();
-					String word = pair.get("word");
-					StringBuffer out = new StringBuffer();
-					out.append("+(");
+					String orword = pair.get("word");
 					//If there are tokens then treat a one word with quotes
 					//Check for quotes..
-					//String regex = "(?<=[a-zA-Z\\d])(.*?)(?=[a-zA-Z\\d])";
-					//String regex = "(?<=\\W)(\\w+)(?=\\W)";
-
 					// Create a Matcher object
-					Matcher matcher = specialchars.matcher(word);
+					Matcher matcher = separatorchars.matcher(orword);
 					currentoperator = pair.get("operator");
 					String previousoperator = null;
 
-					while (matcher.find())
+					//Bill_Clinton_official.jpg  break it down =  Bill_Clinton_official AND jpg
+					while (matcher.find()) //sEPARATE ON spaces and weird characters
 					{
 						// Get the matched character
-						String match = matcher.group();
+						String partialword = matcher.group();
 						previousoperator = currentoperator;
-						String nextoperator = addSearchTerms(inTerm, word, match, previousoperator, currentoperator, booleans);
+						boolean lastword = orword.endsWith(partialword);
+						String nextoperator = addSearchTerms(inTerm, lastword, partialword, previousoperator, currentoperator, booleans);
 						currentoperator = nextoperator;
 					}
 				}
@@ -1996,57 +1996,53 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		return find;
 	}
 
-	protected String addSearchTerms(Term inTerm, String word, String match, String previousoperator, String currentoperator, BoolQueryBuilder booleans)
+	/**
+	 * This searches for partial words in the description and other text
+	 * But for other keyword fields it searches for exact matches
+	 * 
+	 */
+	protected String addSearchTerms(Term inDescriptionTerm, boolean lastword, String partofword, String previousoperator, String currentoperator, BoolQueryBuilder booleans)
 	{
-		boolean onlastone = word.endsWith(match);
-
-		String escaped = QueryParser.escape(match);	
 		//For freeform we want to have pairs of words. lowersnoball does not work well with prefix phrase queries
 
-		BoolQueryBuilder either  = QueryBuilders.boolQuery();
-		
+		//Bill_Clinton_official.jpg
+		//So MYFILE.JPG will search for MYFILE and JPG and AND toghether the results?
+		String escaped = QueryParser.escape(partofword);	
+	
 		MatchQueryBuilder oneword = null; //Desription always included
-		if (onlastone)
-		{
-			oneword = QueryBuilders.matchPhrasePrefixQuery(inTerm.getDetail().getId(), escaped);
-		}
-		else
-		{
-			oneword = QueryBuilders.matchPhraseQuery(inTerm.getDetail().getId(), escaped);
-		}
+		oneword = QueryBuilders.matchPhrasePrefixQuery(inDescriptionTerm.getDetail().getId(), escaped);
 		oneword.analyzer("lowersnowball");
-		either.should(oneword);
+		//booleans.must(oneword);
 
-//		MatchQueryBuilder simple = QueryBuilders.matchPhrasePrefixQuery("name.sort", escaped);
-//		either.should(simple);
-//		booleans.must(either);
-
-		//The other text fields can be searched directly
-		for (Iterator iterator = getKeywordProperties().iterator(); iterator.hasNext();)
-		{
-			PropertyDetail detail = (PropertyDetail) iterator.next();
-			if( detail.isList() || detail.isDate() || detail.isMultiLanguage() || detail.isDataType("objectarray") || detail.isDataType("nested") || detail.getId().equals("description") )   //				else if (det.isDataType("objectarray") || det.isDataType("nested"))
-			{
-				continue;
-			}
-			String altid = detail.getId();
-			if (detail.isAnalyzed())
-			{
-				altid = altid + ".sort";
-			}
-			
-			if (onlastone)
-			{
-				oneword = QueryBuilders.matchPhrasePrefixQuery(altid, escaped);
-			}
-			else
-			{
-				oneword = QueryBuilders.matchPhraseQuery(altid, escaped);
-			}
-			either.should(oneword);
-		}
-
+		//CB: I removed this because instead I just collected all the special characters and put them at the end of description field so they will be ANDed in
 		
+		//This does not apply for description that should be handled above
+		//The other text fields can be searched directly
+		
+//		for (Iterator iterator = getKeywordProperties().iterator(); iterator.hasNext();)
+//		{
+//			PropertyDetail detail = (PropertyDetail) iterator.next();
+//			if( detail.isList() || detail.isDate() || detail.isMultiLanguage() || detail.isDataType("objectarray") || detail.isDataType("nested") || detail.getId().equals("description") )   //				else if (det.isDataType("objectarray") || det.isDataType("nested"))
+//			{
+//				continue;
+//			}
+//			String altid = detail.getId();
+//			if (detail.isAnalyzed())
+//			{
+//				altid = altid + ".sort";
+//			}
+//			
+//			if (lastword)
+//			{
+//				oneword = QueryBuilders.matchPhraseQuery(altid, escaped);
+//			}
+//			else
+//			{
+//				oneword = QueryBuilders.matchPhrasePrefixQuery(altid, escaped);
+//			}
+//			either.should(oneword);
+//		}
+//		
 		if (currentoperator == null && (previousoperator != null && previousoperator.equals("OR")))  //Start using OR operator
 		{
 			currentoperator = "OR";
@@ -2058,15 +2054,15 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 		if (currentoperator.equals("NOT"))
 		{
-			booleans.mustNot(either);
+			booleans.mustNot(oneword);
 		}
 		else if (currentoperator.equals("OR"))
 		{
-			booleans.should(either);
+			booleans.should(oneword);
 		}
 		else
 		{
-			booleans.must(either);
+			booleans.must(oneword);
 		}
 		return currentoperator;
 	}
@@ -2872,7 +2868,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 						if (desc.length() > 0)
 						{
-							value = desc.toString();
+							value = fixSpecialCharacters(desc);
+							//value = desc.toString();
 						}
 					}
 					//?inData.setValue("description",value);
@@ -3348,6 +3345,55 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 	}
 
+	protected String fixSpecialCharacters(StringBuffer inDesc)
+	{
+		String[] vals = MultiValued.VALUEDELMITER.split(inDesc.toString());
+		StringBuffer out = new StringBuffer();
+		String pipe = "|";
+		Set allwords = new HashSet();
+		
+		Set extras = new HashSet();
+		
+		for (int i = 0; i < vals.length; i++)
+		{
+			String chunk = vals[i].trim();
+			out.append(chunk);
+			if( i < vals.length)
+			{
+				out.append(pipe);
+			}
+			String[] spaces = spacepattern.split(chunk);
+			for (int j = 0; j < spaces.length; j++)
+			{
+				String word = spaces[j];
+				allwords.add(word);
+				Matcher matcher = separatorchars.matcher(word);
+				//Matcher matcher = Pattern.compile("([a-zA-Z0-9]+)").matcher(spaces[j]);
+				//matcher.find(); //Skip first one, this is ok in the main text
+				while (matcher.find())
+				{
+					// Get the matched character
+					String partialword = matcher.group();
+					if(!allwords.contains(partialword) && partialword.length() > 1)
+					{
+						extras.add(partialword);
+					}
+				}
+			}
+		}
+
+		StringBuffer special = new StringBuffer();
+		for (Iterator iterator = extras.iterator(); iterator.hasNext();)
+		{
+			String word = (String) iterator.next();
+			special.append(word);
+			special.append(pipe);
+		}
+		String finalout = out.toString() + special;
+		
+		return finalout;
+	}
+
 	protected void addSecurity(XContentBuilder inContent, Data inData) throws Exception
 	{
 		//Check for security
@@ -3746,7 +3792,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 							{
 								inFullDesc.append(String.valueOf(object));
 							}
-							inFullDesc.append('|');
+							inFullDesc.append("|");
 						}
 					}
 					else if (prop instanceof String)
@@ -3755,7 +3801,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						if (data != null && data.getName() != null)
 						{
 							inFullDesc.append(data.getName());
-							inFullDesc.append('|');
+							inFullDesc.append("|");
 						}
 					}
 				}
@@ -3792,7 +3838,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 							{
 
 								inFullDesc.append(localeval);
-								inFullDesc.append('|');
+								inFullDesc.append("|");
 							}
 
 						}
@@ -3805,7 +3851,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					{
 						//Spreadsheet import
 						inFullDesc.append(values);
-						inFullDesc.append('|');
+						inFullDesc.append("|");
 						return;
 					}
 
@@ -3877,20 +3923,19 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						{
 							String oneval = (String) iterator.next();
 							inFullDesc.append(oneval);
-							inFullDesc.append('|');
+							inFullDesc.append("|");
 						}
 					}
 				}
-				
-				
-				
 				else
 				{
+					//Skip dates and lists? if( detail.isList() || detail.isDate() || detail.isMultiLanguage() || detail.isDataType("objectarray") || detail.isDataType("nested") || detail.getId().equals("description") )   //				else if (det.isDataType("objectarray") || det.isDataType("nested"))
+					
 					String val = inData.get(det.getId());
 					if (val != null)
 					{
 						inFullDesc.append(val);
-						inFullDesc.append('|');
+						inFullDesc.append("|");
 					}
 				}
 			}
