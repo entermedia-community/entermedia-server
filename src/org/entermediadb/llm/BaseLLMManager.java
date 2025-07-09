@@ -121,12 +121,9 @@ public abstract class BaseLLMManager implements LLMManager {
 		for (Iterator iterator = metadata.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
 			Object value = metadata.get(key);
-			
-			if (key.equals("googlekeywords") ||  data.getValue(key) == null )
-			{
-				data.setValue(key, value);
-				i ++;
-			}
+
+			data.setValue(key, value);
+			i ++;
 		}
 		return i;
 	}
