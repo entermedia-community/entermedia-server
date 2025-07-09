@@ -1,0 +1,74 @@
+#if ($asset)
+	#set ($hit = $asset)
+#end
+#if (!$hit)
+	#set ($hit = $asset)
+#end
+$context.putPageValue("hit", $hit)
+
+#if(!$title)
+	#if(!$asset)
+		#set( $asset = $mediaarchive.getAsset($hit.getId()) )
+	#end		         	
+	#if( $asset.assettitle )
+		#set($title =  $asset.getText("assettitle",$context)) 
+	#else 
+		#set($title = $asset.getText("name",$context) )
+	#end
+#end
+
+#set ($thumbsize = $context.getPageValue("thumbsize"))
+#if( $type == "video" )
+	#set($imagesize = "image640x480")
+#else
+	#set($imagesize = "image550x350")
+#end
+
+$context.putPageValue("thumbsize", $thumbsize)
+
+#set($urlparams = $context.getPageValue("urlparams"))
+
+<div class="emthumbholder draggholder"> 
+	
+	#if( !$hit.importstatus || $hit.importstatus != "complete" || $hit.importstatus == "uploading")
+		$pages.include("$componenthome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
+	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
+		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+		
+		<div class="mimethumbcontainer">
+       		<i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
+       </div>
+	#else	
+		#if($useoriginal)
+			#set($imagepath = "$!{siteroot}/${mediadbappid}/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
+		#else
+			#set($imagepath = $mediaarchive.asLinkToPreview($hit, null, $imagesize, true))
+			
+		#end
+		
+		#if($tstamp)
+			#set($imagepath = "${imagepath}?_=$tstamp")
+		#end
+
+		#if($type=="video")
+			#set( $imagelink = "$!{siteroot}/${mediadbappid}/services/module/asset/players/play/${hit.id}.html")
+		#else
+			#set($imagelink = $mediaarchive.asLinkToPreview($hit, "image3000x3000", true)) 
+		#end
+
+		
+		
+		<a href="${imagelink}" class="lightbox" data-downloadlink="$!{downloadlink}">
+		<img class="imagethumb img-fluid  img$!thumbsize "
+				catalogid="$catalogid" 
+				assetid="$!{hit.id}" 
+				alt="#if($title)#esc($title)#else$!{hit.name}#end"
+				draggable="true"  
+				data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
+				data-imagesrc="$imagepath$!urlparams"	/>
+		#if($type =="video")<button class="videoplay-button"><span class="videoplay-icon"></span></button>#end
+		</a>
+	#end
+</div>
+
+
