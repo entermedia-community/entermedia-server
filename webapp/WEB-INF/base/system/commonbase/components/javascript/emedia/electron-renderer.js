@@ -293,15 +293,17 @@
 
           ipcRenderer.on(
             SYNC_FOLDER_DELETED,
-            (_, { delId, isDownload, remaining, success = true }) => {
-              if (success) {
-                $("#wf-" + delId).remove();
-                customToast("Sync task deleted successfully!");
-              } else {
-                customToast("Error deleting sync task!", {
-                  positive: false,
-                });
-              }
+            (_, { delId, success = true }) => {
+              updateSyncUI(() => {
+                if (success) {
+                  $("#wf-" + delId).remove();
+                  customToast("Sync task deleted successfully!");
+                } else {
+                  customToast("Error deleting sync task!", {
+                    positive: false,
+                  });
+                }
+              });
             }
           );
 
