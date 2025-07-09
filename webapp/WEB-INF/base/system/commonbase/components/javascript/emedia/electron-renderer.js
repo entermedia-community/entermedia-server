@@ -44,19 +44,6 @@
     return leftSide + "..." + rightSide;
   }
 
-  function isDuplicateIdentifier(identifier, identifiers) {
-    if (!Array.isArray(identifiers) || identifiers.length === 0) {
-      return false;
-    }
-    for (let i = 0; i < identifiers.length; i++) {
-      const identifier2 = identifiers[i];
-      if (identifier === identifier2) return true;
-      else if (identifier.startsWith(identifier2)) return true;
-      else if (identifier2.startsWith(identifier)) return true;
-    }
-    return false;
-  }
-
   jQuery(document).ready(function () {
     if (typeof require !== "function") {
       $("#desktopLoading").remove();
@@ -195,30 +182,6 @@
               },
             });
           }
-          // function desktopImport/StatusUpdater(formData, callback = null) {
-          //   let entitymoduleid = formData.get("entitymoduleid");
-          //   if (!entitymoduleid) entitymoduleid = "asset";
-          //   formData.set("desktop", computerName);
-          //   jQuery.ajax({
-          //     url:
-          //       apphome +
-          //       "/views/modules/" +
-          //       entitymoduleid +
-          //       "/components/sidebars/localdrives/updatefolderstatus.html",
-          //     type: "POST",
-          //     data: formData,
-          //     processData: false,
-          //     contentType: false,
-          //     "Content-Type": "multipart/form-data",
-          //     success: function (res) {
-          //       $("#syncFolderList").html(res);
-          //       if (callback) callback();
-          //     },
-          //     error: function (_xhr, _status, error) {
-          //       console.log("desktopImport/StatusUpdater", error);
-          //     },
-          //   });
-          // }
 
           lQuery(".open-file-default").livequery("click", function () {
             const categorypath = $(this).data("categorypath");
@@ -553,49 +516,6 @@
             });
           });
 
-          // function shouldDisableUploadSyncBtn(data) {
-          //   $(".lightbox-header-btns").each(function () {
-          //     const identifier = $(this).data("path");
-          //     if (!identifier) {
-          //       return;
-          //     }
-          //     const btn = $(this).find(".upload-lightbox");
-          //     const taskProg = $(this).closest(".desktopSyncPreview");
-
-          //     if (isDuplicateIdentifier(identifier, data)) {
-          //       btn.prop("disabled", true);
-          //       btn.find("span").text("Uploading...");
-          //       taskProg.addClass("processing");
-          //     } else {
-          //       btn.prop("disabled", false);
-          //       btn.find("span").text("Upload");
-          //       taskProg.removeClass("processing");
-          //     }
-          //   });
-          // }
-
-          // function shouldDisableDownloadSyncBtn(data) {
-          //   $(".lightbox-header-btns").each(function () {
-          //     const identifier = $(this).data("path");
-          //     if (!identifier) {
-          //       return;
-          //     }
-
-          //     const btn = $(this).find(".download-lightbox");
-          //     const taskProg = $(this).closest(".desktopSyncPreview");
-
-          //     if (isDuplicateIdentifier(identifier, data)) {
-          //       btn.prop("disabled", true);
-          //       btn.find("span").text("Downloading...");
-          //       taskProg.addClass("processing");
-          //     } else {
-          //       btn.prop("disabled", false);
-          //       btn.find("span").text("Download");
-          //       taskProg.removeClass("processing");
-          //     }
-          //   });
-          // }
-
           lQuery(".cancelSync").livequery("click", function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -623,27 +543,13 @@
           // <all sync events>
           ipcRenderer.on(SYNC_STARTED, (_, data) => {
             console.log(SYNC_STARTED, data);
-            //   const idEl = progItem(data.identifier, data.isDownload);
-            //   if (idEl) {
-            //     idEl.addClass("processing");
-            //     if (data.isDownload) {
-            //       idEl.addClass("download");
-            //     } else {
-            //       idEl.addClass("upload");
-            //     }
-            //     idEl.find(".filesCompleted").text(0);
-            //     idEl.find(".filesTotal").text(data.total);
-            //     idEl.find(".filesFailed").text(0);
-            //     idEl.find(".fileProgress").css("width", "0%");
-            //     idEl.find(".fileProgressLoaded").text(0);
-            //     idEl.find(".fileProgressTotal").text(0);
-            //   }
             customToast(
               `${
                 data.isDownload ? "Downloading" : "Uploading"
               } files from ${elideCat(data.currentFolder)}!`,
               { id: data.identifier }
             );
+            updateSyncUI();
           });
 
           ipcRenderer.on(SYNC_PROGRESS_UPDATE, (_, data) => {
@@ -653,17 +559,16 @@
               if (!idEl) return;
               if (data.completed > 0) {
                 idEl.find(".fileCompletedCount").text(`${data.completed} of `);
+                if (data.total > 0 && data.completed <= data.total) {
+                  idEl
+                    .find(".fileProgress")
+                    .css("width", (data.completed / data.total) * 100 + "%");
+                }
               }
               if (data.completedSize > 0) {
                 idEl
                   .find(".fileCompletedSize")
                   .text(`${humanFileSize(data.completedSize)} / `);
-                const total = idEl.find(".fileTotalSize").data("total");
-                if (total > 0 && data.completedSize <= total) {
-                  idEl
-                    .find(".fileProgress")
-                    .css("width", (data.completedSize / total) * 100 + "%");
-                }
               }
             }
             updateSyncUI(() => update());
@@ -732,49 +637,6 @@
               });
             }
           });
-
-          // lQuery(".work-folder.processing").livequery(function () {
-          //   if ($(this).hasClass("upload-started")) return;
-          //   if ($(this).hasClass("download-started")) return;
-          //   if ($(this).hasClass("sync-completed")) return;
-          //   if ($(this).hasClass("sync-cancelled")) return;
-
-          //   $(this).removeClass("processing");
-          //   $(this).addClass("sync-cancelled");
-
-          // const uploadsourcepath = $(this).data("categorypath");
-          // let categorypath = uploadsourcepath;
-          // categorypath = categorypath.replace(/\\/g, "/");
-          // categorypath = categorypath.replace(/\/+/g, "/");
-          // categorypath = categorypath.replace(/\/$/g, "");
-          // const isDownload = $(this).hasClass("download");
-          // ipcRenderer
-          //   .invoke("continueSync", {
-          //     categoryPath: uploadsourcepath,
-          //     isDownload,
-          //   })
-          //   .then((downloadStatus) => {
-          //     if (downloadStatus === "OK") {
-          //       customToast(
-          //         "Started " +
-          //           (isDownload ? "download" : "upload") +
-          //           " task for " +
-          //           elideCat(categorypath),
-          //         { id: categorypath }
-          //       );
-          //     }
-          //   })
-          //   .catch((err) => {
-          //     console.error("continueSync", err);
-          //   });
-          //   const formData = new FormData();
-          //   formData.set("categorypath", uploadsourcepath);
-          //   formData.set("desktopimportstatus", "sync-cancelled");
-          //   formData.set("isdownload", isDownload ? "true" : "false");
-          //   formData.set("entitymoduleid", $(this).data("entitymoduleid"));
-          //   formData.set("entityid", $(this).data("entityid"));
-          //   // TODO:
-          // });
 
           lQuery(".desktopdirectdownload").livequery("click", function (e) {
             e.preventDefault();
