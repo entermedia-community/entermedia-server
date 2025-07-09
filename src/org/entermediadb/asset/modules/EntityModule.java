@@ -722,8 +722,6 @@ public class EntityModule extends BaseMediaModule
 
 		syncfolder.setValue("totalcompletedcount", 0);
 		syncfolder.setValue("totalcompletedsize", 0);
-
-		syncfolder.setValue("failedfiles", 0);
 		
 		syncfolder.setValue("desktopimportstatus", "scan-started"); 
 		
@@ -758,7 +756,19 @@ public class EntityModule extends BaseMediaModule
 		String desktop = (String) inReq.getRequestParameter("desktop");
 		syncfolder.setValue("desktop", desktop);
 		
-		syncfolder.setValue("desktopimportstatus", "sync-started");
+		syncfolder.setValue("desktopimportstatus", "scan-started");
+		
+		String categorypath = syncfolder.get("categorypath");
+		syncfolder.setValue("currentcategorypath", categorypath);
+		
+		syncfolder.setValue("currentfolderpendingsize", 0);
+		syncfolder.setValue("currentfoldertotalsize", 0);
+
+		syncfolder.setValue("currentfolderpendingcount", 0);
+		syncfolder.setValue("currentfoldertotalcount", 0);
+
+		syncfolder.setValue("totalcompletedcount", 0);
+		syncfolder.setValue("totalcompletedsize", 0);
 		
 		searcher.saveData(syncfolder);
 		
@@ -811,6 +821,15 @@ public class EntityModule extends BaseMediaModule
 		{
 			syncfolder.setValue("desktopimportstatus", "sync-cancelled");
 		}
+		
+		syncfolder.setValue("currentfolderpendingsize", 0);
+		syncfolder.setValue("currentfoldertotalsize", 0);
+
+		syncfolder.setValue("currentfolderpendingcount", 0);
+		syncfolder.setValue("currentfoldertotalcount", 0);
+
+		syncfolder.setValue("totalcompletedcount", 0);
+		syncfolder.setValue("totalcompletedsize", 0);
 		
 		syncfolder.setValue("completeddate", new Date());
 		

@@ -557,18 +557,27 @@
             function update() {
               const idEl = progItem(data.identifier, data.isDownload);
               if (!idEl) return;
-              if (data.completed > 0) {
-                idEl.find(".fileCompletedCount").text(`${data.completed} of `);
-                if (data.total > 0 && data.completed <= data.total) {
-                  idEl
-                    .find(".fileProgress")
-                    .css("width", (data.completed / data.total) * 100 + "%");
-                }
-              }
               if (data.completedSize > 0) {
                 idEl
                   .find(".fileCompletedSize")
                   .text(`${humanFileSize(data.completedSize)} / `);
+              }
+              if (data.completed > 0) {
+                idEl.find(".fileCompletedCount").text(`${data.completed} of `);
+                var totalCount = parseInt(idEl.find(".fileTotalCount").text());
+                if (isNaN(totalCount) || totalCount <= 0) {
+                  return;
+                }
+                if (totalCount !== data.total) {
+                  console.warn(
+                    `Total count mismatch: ${totalCount} vs ${data.total}`
+                  );
+                }
+                if (totalCount > 0 && data.completed <= totalCount) {
+                  idEl
+                    .find(".fileProgress")
+                    .css("width", (data.completed / totalCount) * 100 + "%");
+                }
               }
             }
             updateSyncUI(() => update());
