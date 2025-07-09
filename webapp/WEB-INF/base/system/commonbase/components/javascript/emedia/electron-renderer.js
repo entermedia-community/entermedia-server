@@ -7,7 +7,8 @@
     SYNC_FOLDER_DELETED = "sync-folder-deleted",
     SYNC_CANCELLED = "sync-cancelled",
     SYNC_STARTED = "sync-started",
-    SYNC_COMPLETED = "sync-completed",
+    SYNC_FOLDER_COMPLETED = "sync-folder-completed",
+    SYNC_FULLY_COMPLETED = "sync-fully-completed",
     FILE_PROGRESS_UPDATE = "file-progress-update",
     FILE_STATUS_UPDATE = "file-status-update",
     CHECK_SYNC = "check-sync";
@@ -146,6 +147,11 @@
             });
           });
 
+          function updateSyncUI(callback = null) {
+            $("#desktoppendingpopover").runAjax(() => callback && callback());
+            $("#desktopsynchistory").runAjax(() => callback && callback());
+          }
+
           function desktopSyncStarter(formData, callback = null) {
             formData.set("desktop", computerName);
             jQuery.ajax({
@@ -160,7 +166,7 @@
               "Content-Type": "multipart/form-data",
               success: function (res) {
                 var json = res.data;
-                $("#desktoppendingpopover").runAjax();
+                updateSyncUI();
                 $(document).trigger("domchanged");
                 if (callback) callback(json);
               },
@@ -594,11 +600,9 @@
             const btn = $(this);
             const identifier = btn.data("syncfolderid");
             const isDownload = btn.hasClass("download");
-            const both = btn.data("both");
             ipcRenderer.send("cancelSync", {
               identifier,
               isDownload,
-              both,
             });
           });
 
@@ -642,52 +646,29 @@
 
           ipcRenderer.on(SYNC_PROGRESS_UPDATE, (_, data) => {
             console.log(SYNC_PROGRESS_UPDATE, data);
-            const idEl = progItem(data.identifier, data.isDownload);
-            if (!idEl) return;
-            if (data.completed > 0) {
-              idEl.find(".fileCompletedCount").text(`${data.completed} of `);
-            }
-            if (data.completedSize > 0) {
-              idEl
-                .find(".fileCompletedSize")
-                .text(`${humanFileSize(data.completedSize)} / `);
-              const total = idEl.find(".fileTotalSize").data("total");
-              if (total > 0 && data.completedSize <= total) {
+            function update() {
+              const idEl = progItem(data.identifier, data.isDownload);
+              if (!idEl) return;
+              if (data.completed > 0) {
+                idEl.find(".fileCompletedCount").text(`${data.completed} of `);
+              }
+              if (data.completedSize > 0) {
                 idEl
-                  .find(".fileProgress")
-                  .css("width", (data.completedSize / total) * 100 + "%");
+                  .find(".fileCompletedSize")
+                  .text(`${humanFileSize(data.completedSize)} / `);
+                const total = idEl.find(".fileTotalSize").data("total");
+                if (total > 0 && data.completedSize <= total) {
+                  idEl
+                    .find(".fileProgress")
+                    .css("width", (data.completedSize / total) * 100 + "%");
+                }
               }
             }
+            updateSyncUI(() => update());
           });
 
-          ipcRenderer.on(SYNC_COMPLETED, (_, data) => {
-            console.log(SYNC_COMPLETED, data);
-            // const idEl = progItem(data.identifier, data.isDownload);
-            // if (idEl) {
-            //   idEl.removeClass("processing");
-            //   idEl.data("index", undefined);
-            // }
-
-            // const formData = new FormData();
-            // formData.append("completedfiles", data.completed || 0);
-            // formData.append("failedfiles", data.failed || 0);
-            // formData.append("categorypath", data.identifier);
-            // formData.append("desktopimportstatus", "sync-completed");
-            // if (data.isDownload) formData.append("isdownload", "true");
-            // desktopImport/StatusUpdater(formData, () => {
-            // if (data.isDownload) {
-            //   shouldDisableDownloadSyncBtn(data.remaining);
-            // } else {
-            //   shouldDisableUploadSyncBtn(data.remaining);
-            // }
-            if (data.remaining && data.remaining.length === 0) {
-              customToast(
-                `${
-                  data.isDownload ? "Downloaded" : "Uploaded"
-                } all files from ${elideCat(data.currentFolder)}!`,
-                { id: data.identifier }
-              );
-            }
+          ipcRenderer.on(SYNC_FULLY_COMPLETED, () => {
+            updateSyncUI();
             const dataeditedreload = $(".dataeditedreload");
             dataeditedreload.each(function () {
               $(window).trigger("autoreload", [
@@ -698,58 +679,46 @@
             });
           });
 
+          ipcRenderer.on(SYNC_FOLDER_COMPLETED, (_, data) => {
+            console.log(SYNC_FOLDER_COMPLETED, data);
+
+            if (data.remaining && data.remaining.length === 0) {
+              customToast(
+                `${
+                  data.isDownload ? "Downloaded" : "Uploaded"
+                } all files from ${elideCat(data.currentFolder)}!`,
+                { id: data.identifier }
+              );
+            }
+            updateSyncUI();
+          });
+
           ipcRenderer.on(SYNC_CANCELLED, (_, { identifier, isDownload }) => {
             const idEl = progItem(identifier, isDownload);
             if (idEl) {
               idEl.removeClass("processing");
               idEl.find(".currentSync").remove();
             }
+            updateSyncUI();
           });
 
           ipcRenderer.on(FILE_STATUS_UPDATE, (_, data) => {
             console.log(FILE_STATUS_UPDATE, data);
-            // const idEl = progItem(data.identifier, data.isDownload);
-            // if (!idEl) return;
-            // idEl.data("index", data.index);
-            // if (data.status === "uploading" || data.status === "downloading") {
-            //   idEl.addClass("processing");
-            //   idEl.find(".fileName").text(data.name);
-            //   idEl.find(".fileProgress").css("width", "0%");
-            //   idEl.find(".fileProgressLoaded").text(0);
-            //   idEl.find(".fileProgressTotal").text(humanFileSize(data.size));
-            // } else if (data.status === "completed") {
-            //   idEl.find(".fileProgress").css("width", "100%");
-            //   idEl.find(".fileProgressLoaded").text(humanFileSize(data.size));
-            //   idEl.find(".fileProgressTotal").text(humanFileSize(data.size));
-            // }
           });
 
           ipcRenderer.on(FILE_PROGRESS_UPDATE, (_, data) => {
             console.log(FILE_PROGRESS_UPDATE, data);
-            // const idEl = progItem(data.identifier, data.isDownload);
-            // if (!idEl) return;
-            // const index = idEl.data("index");
-            // if (index === undefined) return;
-
-            // const progressEl = idEl.find(".fileProgress");
-            // progressEl.css("width", Math.min(data.percent * 100, 100) + "%");
-
-            // const loadedEl = idEl.find(".fileProgressLoaded");
-            // loadedEl.text(humanFileSize(data.loaded));
-
-            // const totalEl = idEl.find(".fileProgressTotal");
-            // totalEl.text(humanFileSize(data.total));
           });
           // </all sync events>
 
           // <single file download events>
-          // ipcRenderer.on("download-update", (_, data) => {
-          //   const toastId = data.filename.replace(/[^a-zA-Z0-9]/g, "_");
-          //   customToast(data.message, {
-          //     id: toastId,
-          //     positive: !data.error,
-          //   });
-          // });
+          ipcRenderer.on("download-update", (_, data) => {
+            const toastId = data.filename.replace(/[^a-zA-Z0-9]/g, "_");
+            customToast(data.message, {
+              id: toastId,
+              positive: !data.error,
+            });
+          });
           // </single file download events>
 
           lQuery("#desktoppendingpopover").livequery(function () {

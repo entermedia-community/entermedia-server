@@ -801,8 +801,13 @@ public class EntityModule extends BaseMediaModule
 		String syncfolderid = (String) params.get("syncfolderid");
 		
 		MultiValued syncfolder = (MultiValued) archive.getCachedData("desktopsyncfolder", syncfolderid);
-
-		syncfolder.setValue("desktopimportstatus", "sync-cancelled");
+		
+		String desktopimportstatus = syncfolder.get("desktopimportstatus");
+		
+		if(!desktopimportstatus.equals("sync-completed") && !desktopimportstatus.equals("sync-cancelled"))
+		{
+			syncfolder.setValue("desktopimportstatus", "sync-cancelled");
+		}
 		
 		syncfolder.setValue("completeddate", new Date());
 		

@@ -169,7 +169,7 @@ findClosest = function (link, inid) {
       }
     }
 
-    if (anchor.data("noToast") !== true) {
+    if (anchor.data("no-toast") !== true) {
       $(window).trigger("showToast", [anchor]);
     }
     var toastUid = $(anchor).data("uid");
@@ -468,7 +468,7 @@ $(document).ready(function () {
     e.stopPropagation();
     e.preventDefault();
     var $this = $(this);
-    $this.data("noToast", true);
+    $this.data("no-toast", true);
     $this.runAjax(function () {
       var focusParent = $this.closest(`.${$this.data("focusparent")}`);
       if (focusParent.length) {
@@ -490,7 +490,7 @@ $(document).ready(function () {
         div.data("targetdiv", classname); //Save to ourself
         div.data("oemaxlevel", 1);
       }
-      div.data("noToast", true);
+      div.data("no-toast", true);
       div.runAjax(function () {
         if (callback !== undefined && callback != null) {
           callback();
