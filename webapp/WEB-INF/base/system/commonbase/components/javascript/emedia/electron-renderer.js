@@ -407,6 +407,8 @@
                         autohideDelay: 5000,
                       }
                     );
+                    $(this).prop("disabled", false);
+                    $(this).removeClass("active");
                   } else if (downloadStatus === "TOO_MANY_DOWNLOADS") {
                     customToast(
                       "Wait for at least one other download task to finish",
@@ -415,10 +417,14 @@
                         autohideDelay: 5000,
                       }
                     );
+                    $(this).prop("disabled", false);
+                    $(this).removeClass("active");
                   }
                 })
                 .catch((error) => {
                   console.log("lightboxDownload", error);
+                  $(this).prop("disabled", false);
+                  $(this).removeClass("active");
                 });
             });
           });
