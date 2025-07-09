@@ -769,6 +769,7 @@ public class EntityModule extends BaseMediaModule
 	public void completeDesktopSync(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
+		Searcher searcher = archive.getSearcher("desktopsyncfolder");
 
 		Map params = inReq.getJsonRequest();
 		String syncfolderid = (String) params.get("syncfolderid");
@@ -788,14 +789,16 @@ public class EntityModule extends BaseMediaModule
 		
 		syncfolder.setValue("completeddate", new Date());
 		
-		archive.saveData("desktopsyncfolder", syncfolder);
+		searcher.saveData(syncfolder);
 		
-		inReq.putPageValue("syncfolder", syncfolder); 
+		inReq.putPageValue("syncfolder", syncfolder);
+		inReq.putPageValue("searcher", searcher);
 	}
 	
 	public void cancelDesktopSync(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
+		Searcher searcher = archive.getSearcher("desktopsyncfolder");
 
 		Map params = inReq.getJsonRequest();
 		String syncfolderid = (String) params.get("syncfolderid");
@@ -811,9 +814,10 @@ public class EntityModule extends BaseMediaModule
 		
 		syncfolder.setValue("completeddate", new Date());
 		
-		archive.saveData("desktopsyncfolder", syncfolder);
+		searcher.saveData(syncfolder);
 		
 		inReq.putPageValue("syncfolder", syncfolder);
+		inReq.putPageValue("searcher", searcher);
 	}
 	
 	public synchronized void updateScanStatus(WebPageRequest inReq) throws Exception

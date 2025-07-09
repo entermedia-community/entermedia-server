@@ -1,9 +1,8 @@
 {
   "response":
-      {
-        "status":"ok",
-        "id":"$syncfolder.id"
-      }
-  ,
+  {
+    "status":"ok",
+    "id":"$syncfolder.id"
+  },
   "data":#json($syncfolder $searcher.getPropertyDetails())
 }

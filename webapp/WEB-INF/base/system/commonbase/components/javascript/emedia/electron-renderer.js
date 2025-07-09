@@ -104,7 +104,7 @@
           );
           ipcRenderer.on("page-title-updated", (_, title) => {
             if (title && title != document.title) {
-              window.trigger("setPageTitle", [title]);
+              $(window).trigger("setPageTitle", [title]);
             }
           });
 
@@ -574,29 +574,33 @@
             updateSyncUI(() => update());
           });
 
-          ipcRenderer.on(SYNC_FULLY_COMPLETED, () => {
-            updateSyncUI();
-            const dataeditedreload = $(".dataeditedreload");
-            dataeditedreload.each(function () {
-              $(window).trigger("autoreload", [
-                $(this),
-                null,
-                "dataeditedreload",
-              ]);
-            });
-          });
+          ipcRenderer.on(
+            SYNC_FULLY_COMPLETED,
+            (_, { identifier, categoryPath, isDownload }) => {
+              updateSyncUI();
+              if (!isDownload) {
+                const dataeditedreload = $(".dataeditedreload");
+                dataeditedreload.each(function () {
+                  $(window).trigger("autoreload", [
+                    $(this),
+                    null,
+                    "dataeditedreload",
+                  ]);
+                });
+              }
+              if (categoryPath) {
+                customToast(
+                  `${
+                    isDownload ? "Downloaded" : "Uploaded"
+                  } all files from ${elideCat(categoryPath)}!`,
+                  { id: identifier }
+                );
+              }
+            }
+          );
 
           ipcRenderer.on(SYNC_FOLDER_COMPLETED, (_, data) => {
             console.log(SYNC_FOLDER_COMPLETED, data);
-
-            if (data.remaining && data.remaining.length === 0) {
-              customToast(
-                `${
-                  data.isDownload ? "Downloaded" : "Uploaded"
-                } all files from ${elideCat(data.currentFolder)}!`,
-                { id: data.identifier }
-              );
-            }
             updateSyncUI();
           });
 
