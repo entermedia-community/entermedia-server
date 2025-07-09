@@ -739,7 +739,8 @@ public class EntityModule extends BaseMediaModule
 		syncfolder.setValue("completeddate", null);
 		syncfolder.setValue("createddate", new Date());
 		
-		archive.saveData("desktopsyncfolder", syncfolder);
+
+		searcher.saveData(syncfolder);
 
 		inReq.putPageValue("syncfolder", syncfolder);
 		inReq.putPageValue("searcher", searcher);

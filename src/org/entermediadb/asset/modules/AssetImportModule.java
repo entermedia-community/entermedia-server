@@ -259,7 +259,8 @@ public class AssetImportModule  extends BaseMediaModule
 		}
 		MediaArchive archive = getMediaArchive(inReq);
 		
-		String categorypath = (String)params.get("categorypath");
+		String categorypath = (String) params.get("categorypath");
+		
 		inReq.putPageValue("categorypath", categorypath);
 		
 		Category category = archive.getCategorySearcher().loadCategoryByPath(categorypath);
@@ -277,18 +278,28 @@ public class AssetImportModule  extends BaseMediaModule
 			Long totalsize = (Long) allserverfiles.get("totalsize");
 			int totalcount = (int) allserverfiles.get("totalcount");
 			
-
+			boolean isDownload = (boolean) params.get("isdownload");
+			
+			if(isDownload)
+			{
+				//Missing Files on Local
+				Map pendingdownloads = manager.removeDuplicateAssetsFrom(allserverfiles,params);
+				inReq.putPageValue("pendingpull", new JSONObject(pendingdownloads));
+			}
+			else
+			{	
+				//Missing Files on Server
+				Map pendingupload = manager.findMissingAssetsToUpload(allserverfiles,params);
+				inReq.putPageValue("pendingpush", new JSONObject(pendingupload));
+				
+				totalsize += (Long) pendingupload.get("addedsize");
+				totalcount += (int) pendingupload.get("addedcount");
+			}
+			
 			inReq.putPageValue("totalsize", totalsize);
+			inReq.putPageValue("totalcount", totalcount);
 			
-			//Missing Files on Local
-			Map pendingdownloads = manager.removeDuplicateAssetsFrom(allserverfiles,params);
-			inReq.putPageValue("pendingpull", new JSONObject(pendingdownloads));
-			
-			//Missing Files on Server
-			Map pendingupload = manager.findMissingAssetsToUpload(allserverfiles,params);
-			inReq.putPageValue("pendingpush", new JSONObject(pendingupload));
-			
-			String syncfolderid = (String)params.get("syncfolderid");
+			String syncfolderid = (String) params.get("syncfolderid");
 			
 			manager.startCurrentFolder(syncfolderid, categorypath, totalsize, totalcount);
 			

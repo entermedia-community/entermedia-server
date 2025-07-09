@@ -1,40 +1,48 @@
-#set( $filestodownload = $pendingpull.files )
-#set( $filestoupload = $pendingpush.files )
+
 #set( $entityid = $context.getRequestParameter("entityid") )
 {
   "response": {
-		#ifnotnull( $filestodownload )
 		"status":"ok"
-		#end
-		#ifnull( $filestodownload ) 
-		"status": "error" 
-		#end
 	},
+
 	"totalsize": $totalsize,
-  "filestodownload" : [
-  #foreach( $file in $filestodownload )
-	#if( ${foreach.count} != 1 ), #end
-  	{ 
-			"path": "$file.path",
-  		"url": "$file.url",
-  		"size": "$file.size",
-  		"id": "$file.id"
-		}
+	"totalcount": $totalcount,
+
+	#ifnotnull($pendingpull)
+		#set( $filestodownload = $pendingpull.files )
+		"filestodownload" : [
+		#foreach( $file in $filestodownload )
+			#if( ${foreach.count} != 1 ), #end
+			{ 
+				"path": "$file.path",
+				"url": "$file.url",
+				"size": "$file.size",
+				"id": "$file.id"
+			}
+		#end
+		],
+		"skippedcount": $pendingpull.skippedcount,
+		"skippedsize": $pendingpull.skippedsize
 	#end
- 	],
-	"filestoupload" : [
-  #foreach( $file in $filestoupload )
-	#if( ${foreach.count} != 1 ), #end
-  	{ 
-			#ifnotnull($entityid)
-			"entityid":"$entityid",
-			#end
-			#ifnotnull($file.id)
-			"id": "$!file.id",
-			#end
-			"path": "$file.path",
-  		"size": "$file.size"
-		}
+
+	#ifnotnull($pendingpush)
+		#set( $filestoupload = $pendingpush.files )
+		"filestoupload" : [
+		#foreach( $file in $filestoupload )
+			#if( ${foreach.count} != 1 ), #end
+			{ 
+				#ifnotnull($entityid)
+				"entityid":"$entityid",
+				#end
+				#ifnotnull($file.id)
+				"id": "$!file.id",
+				#end
+				"path": "$file.path",
+				"size": "$file.size"
+			}
+		#end
+		],
+		"addedcount": $pendingpush.addedcount,
+		"addedsize": $pendingpush.addedsize
 	#end
- 	]
 }

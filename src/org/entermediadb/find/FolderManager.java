@@ -354,21 +354,33 @@ public class FolderManager implements CatalogEnabled
 				alreadydownloaded.add(path  + "|" +size);
 			}
 		}
+		
 
 		List assetservercopy = (List)response.get("files");
 		List mixedcopy = new ArrayList();
+		
+		int totalskippedcount = 0;
+		Long totalskippedsize = 0l;
+		
 		for (Iterator iterator = assetservercopy.iterator(); iterator.hasNext();) {
 			Map	serverfile = (Map) iterator.next();
 			String path = (String)serverfile.get("path");
 			long size = (Long)serverfile.get("size");
 			if( !alreadydownloaded.contains(path  + "|" +size) )
 			{
-				mixedcopy.add(serverfile);
+				mixedcopy.add(serverfile); 
+			}
+			else 
+			{
+				totalskippedcount++;
+				totalskippedsize += size;
 			}
 		}
 		
 		//Folders
-		response.put("files",mixedcopy);
+		response.put("files", mixedcopy);
+		response.put("skippedcount", totalskippedcount);
+		response.put("skippedsize", totalskippedsize);
 		return response;
 	}
 	
@@ -378,15 +390,6 @@ public class FolderManager implements CatalogEnabled
 	
 		Map response = new HashMap(assetmap);
 
-		/*
-		"entityid": "1234",
-		"moduleid": "entityactivimoduleid,
-		"rootpath": "/home/user/eMedia/",		
-		"categorypath": "Activities/Paris",
-        "files": [{path: filepath, size: 43232}], 
-			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
-		*/
-		
 		response.put("filedownloadpath", inParams.get("filedownloadpath"));
 		
 		List assetservercopy = (List)response.get("files");
@@ -401,6 +404,11 @@ public class FolderManager implements CatalogEnabled
 		
 		List remotecopy = (List)inParams.get("files");
 		List mixedcopy = new ArrayList();
+		
+		int totaladdedcount = 0;
+		Long totaladdedsize = 0l;
+		
+		
 		if(remotecopy != null) 
 		{
 			for (Iterator iterator = remotecopy.iterator(); iterator.hasNext();) {
@@ -411,18 +419,24 @@ public class FolderManager implements CatalogEnabled
 				if( existing == null)
 				{
 					mixedcopy.add(clientfile);
+					totaladdedcount++;
+					totaladdedsize += size;
 				}
 				else
 				{
 					long existingsize = (Long)existing.get("size");
 					if(existingsize != size) {
 						mixedcopy.add(existing);
+						totaladdedcount++;
+						totaladdedsize += size;
 					}
 				}
 			}
 		}
 		//Folders
 		response.put("files",mixedcopy);
+		response.put("addedcount", totaladdedcount);
+		response.put("addedsize", totaladdedsize);
 		return response;
 	}
 	
@@ -527,6 +541,7 @@ public class FolderManager implements CatalogEnabled
 	public void startCurrentFolder(String inSyncfolderid, String inCategorypath, Long inFolderTotalsize, Integer inFolderTotalcount) {
 		// TODO Auto-generated method stub
 		MediaArchive archive = getMediaArchive();
+		
 		MultiValued syncfolder = (MultiValued) archive.getCachedData("desktopsyncfolder", inSyncfolderid);
 		
 		
