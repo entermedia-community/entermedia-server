@@ -734,7 +734,7 @@ public class EntityModule extends BaseMediaModule
 		String namebreadcrumb = categorypath.replace("/", " &rsaquo; ");
 		syncfolder.setName(namebreadcrumb);
 
-		syncfolder.setValue("desktop",desktop); 
+		syncfolder.setValue("desktop", desktop);
 		
 		syncfolder.setValue("completeddate", null);
 		syncfolder.setValue("createddate", new Date());
@@ -745,14 +745,33 @@ public class EntityModule extends BaseMediaModule
 		inReq.putPageValue("syncfolder", syncfolder);
 		inReq.putPageValue("searcher", searcher);
 	}
+	
+	public void restartDesktopSync(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher searcher = archive.getSearcher("desktopsyncfolder");
+		
+		String syncfolderid = (String) inReq.getRequestParameter("syncfolderid");
+		
+		MultiValued syncfolder = (MultiValued) archive.getCachedData("desktopsyncfolder", syncfolderid);
+
+		String desktop = (String) inReq.getRequestParameter("desktop");
+		syncfolder.setValue("desktop", desktop);
+		
+		syncfolder.setValue("desktopimportstatus", "sync-started");
+		
+		searcher.saveData(syncfolder);
+		
+		inReq.putPageValue("syncfolder", syncfolder);
+		inReq.putPageValue("searcher", searcher);
+	}
 
 	public void completeDesktopSync(WebPageRequest inReq) throws Exception
 	{
-		Map params = inReq.getJsonRequest();
-		
-		String syncfolderid = (String)params.get("syncfolderid");
-		
 		MediaArchive archive = getMediaArchive(inReq);
+
+		Map params = inReq.getJsonRequest();
+		String syncfolderid = (String) params.get("syncfolderid");
 		
 		MultiValued syncfolder = (MultiValued) archive.getCachedData("desktopsyncfolder", syncfolderid);
 
@@ -776,11 +795,10 @@ public class EntityModule extends BaseMediaModule
 	
 	public void cancelDesktopSync(WebPageRequest inReq) throws Exception
 	{
-		Map params = inReq.getJsonRequest();
-		
-		String syncfolderid = (String)params.get("syncfolderid");
-		
 		MediaArchive archive = getMediaArchive(inReq);
+
+		Map params = inReq.getJsonRequest();
+		String syncfolderid = (String) params.get("syncfolderid");
 		
 		MultiValued syncfolder = (MultiValued) archive.getCachedData("desktopsyncfolder", syncfolderid);
 

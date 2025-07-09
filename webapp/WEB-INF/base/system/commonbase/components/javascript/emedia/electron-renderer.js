@@ -169,6 +169,26 @@
               },
             });
           }
+          function desktopSyncRestart(formData, callback = null) {
+            formData.set("desktop", computerName);
+            jQuery.ajax({
+              url:
+                "/" +
+                mediadb +
+                "/services/module/asset/entity/desktopsyncrestart.json",
+              type: "POST",
+              data: formData,
+              processData: false,
+              contentType: false,
+              "Content-Type": "multipart/form-data",
+              success: function (res) {
+                if (callback) callback(res.data);
+              },
+              error: function (_xhr, _status, error) {
+                console.log("desktopSyncRestart", error);
+              },
+            });
+          }
           // function desktopImport/StatusUpdater(formData, callback = null) {
           //   let entitymoduleid = formData.get("entitymoduleid");
           //   if (!entitymoduleid) entitymoduleid = "asset";
@@ -255,13 +275,12 @@
 
           lQuery(".deleteSyncFolder").livequery("click", function () {
             if (confirm("Are you sure you want to remove this sync task?")) {
-              const identifier = $(this).data("categorypath");
+              const id = $(this).data("syncfolderid");
               const isDownload = $(this).hasClass("download");
-              const delId = $(this).data("id");
               ipcRenderer.send("deleteSync", {
-                identifier,
+                identifier: id,
+                delId: id,
                 isDownload,
-                delId,
               });
             }
           });
@@ -271,12 +290,6 @@
             (_, { delId, isDownload, remaining, success = true }) => {
               if (success) {
                 $("#wf-" + delId).remove();
-                // if (isDownload) {
-                //   shouldDisableDownloadSyncBtn(remaining);
-                // } else {
-                //   shouldDisableUploadSyncBtn(remaining);
-                // }
-
                 customToast("Sync task deleted successfully!");
               } else {
                 customToast("Error deleting sync task!", {
@@ -369,34 +382,18 @@
             e.stopPropagation();
 
             var folder = $(this).closest(".work-folder");
-            var uploadsourcepath = folder.data("categorypath");
-            var entitymoduleid = folder.data("entitymoduleid");
-            var entityid = folder.data("entityid");
-
-            let categorypath = uploadsourcepath;
-            categorypath = categorypath.replace(/\\/g, "/");
-            categorypath = categorypath.replace(/\/+/g, "/");
-            categorypath = categorypath.replace(/\/$/g, "");
-
-            const formData = new FormData();
-            formData.set("entitymoduleid", entitymoduleid);
-            formData.set("entityid", entityid);
-            formData.set("categorypath", categorypath);
-
-            customToast(
-              elideCat(categorypath) + " download task added to Cloud Sync",
-              { id: categorypath }
-            );
+            var syncfolderid = folder.data("syncfolderid");
 
             $(this).prop("disabled", true);
+            $(this).addClass("active");
 
-            formData.set("desktopimportstatus", "scan-started");
-            formData.set("isdownload", "true");
-            desktopSyncStarter(formData, function (synfolder) {
-              console.log("download", synfolder);
+            const formData = new FormData();
+            formData.set("syncfolderid", syncfolderid);
+
+            desktopSyncRestart(formData, function (synfolder) {
               ipcRenderer
                 .invoke("lightboxDownload", {
-                  categoryPath: uploadsourcepath,
+                  categoryPath: synfolder.categorypath,
                   syncFolderId: synfolder.id,
                 })
                 .then((downloadStatus) => {
