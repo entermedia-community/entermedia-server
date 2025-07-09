@@ -2,7 +2,7 @@ var toastTO = {};
 
 $(window).on("showToast", function (_, anchor) {
   if (!anchor || anchor.length == 0 || typeof anchor.data != "function") return;
-  if (anchor.data("noToast") === true || anchor.hasClass("noToast")) {
+  if (anchor.data("no-toast") === true || anchor.hasClass("no-toast")) {
     return;
   }
   var uid = Date.now();
