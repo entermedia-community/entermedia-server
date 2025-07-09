@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -45,6 +44,7 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
@@ -286,6 +286,7 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 			List<Map> json = findFaces(inAsset, input);
 			if(json == null) {
+				
 				return;
 			}
 			Collection<MultiValued> moreprofiles = makeDataForEachFace(instructions,faceembeddingsearcher,inAsset,0L,input,json);
@@ -987,36 +988,62 @@ public class FaceProfileManager implements CatalogEnabled
 	/**
 	 * Used to cache the right person assigned to one embedding from the  method above 
 	 */
-	public Data loadPersonOfEmbedding(MultiValued embedding)
+	public Data loadFaceWithPersonFromFace(MultiValued embedding)
 	{
-		Searcher searcher = getMediaArchive().getSearcher("faceembedding");
-
 		String entitypersonid = embedding.get("entityperson");
+		if( entitypersonid != null)
+		{
+			return embedding;
+		}
 		if( entitypersonid == null)
 		{
-			entitypersonid = (String)getMediaArchive().getCacheManager().get("facepersonlookup",embedding.getId());
-			if( entitypersonid == null )
+			String embeddingid = (String)getMediaArchive().getCacheManager().get("facepersonlookuprecord",embedding.getId());
+			if(embeddingid == CacheManager.NULLVALUE )
 			{
-				Collection parentids = embedding.getValues("parentids");
-				if( parentids != null && !parentids.isEmpty() )
+				return null;
+			}
+			Data found = getMediaArchive().getCachedData("faceembedding", embeddingid);
+			if( found != null)
+			{
+				return found;
+			}
+			Collection parentids = embedding.getValues("parentids");
+			if( parentids != null && !parentids.isEmpty() )
+			{
+				HitTracker personlookup = getMediaArchive().query("faceembedding").orgroup("parentids",parentids).search();
+				
+				//Now grab ALL parentids of anyone related to these
+				Collection allpossibleparentids = personlookup.collectValues("parentids");
+				personlookup = getMediaArchive().query("faceembedding").orgroup("allpossibleparentids",parentids).search();
+
+				for (Iterator iterator = personlookup.iterator(); iterator.hasNext();)
 				{
-					HitTracker personlookup = searcher.query().orgroup("parentids",parentids).search();
-					Collection<String> peopleids = personlookup.collectValues("entityperson");
-					if( !peopleids.isEmpty() )
+					MultiValued data = (MultiValued) iterator.next();
+					entitypersonid = data.get("entityparent"); 
+					if( entitypersonid  != null )
 					{
-						entitypersonid = peopleids.iterator().next();
+						getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),data.getId());
+						return data;
 					}
 				}
-				if( entitypersonid != null)
-				{
-					getMediaArchive().getCacheManager().put("facepersonlookup",embedding.getId(),entitypersonid);
-				}
+				getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),  CacheManager.NULLVALUE);
 			}
 		}
-		Data entityperson = getMediaArchive().getCachedData("entityperson", entitypersonid); //Might be null
-		return entityperson;
+		return null;
 	}
+
 	
+	public Data loadPersonOfEmbedding(MultiValued embedding)
+	{
+		Data personlookup = loadFaceWithPersonFromFace(embedding);
+		if( personlookup != null)
+		{
+			Data entityperson = getMediaArchive().getCachedData("entityperson", personlookup.get("entityperson") ); //Might be null
+			return entityperson;
+		}
+		return null;
+	}
+
 	protected ContentItem generateInputFile(Asset inAsset, Block inBlock)
 	{
 		ConversionManager manager = getMediaArchive().getTranscodeTools().getManagerByRenderType("video");
@@ -1071,14 +1098,17 @@ public class FaceProfileManager implements CatalogEnabled
 		resp = getSharedConnection().sharedPostWithJson(url + "/represent",tosendparams);
 		if (resp.getStatusLine().getStatusCode() == 400)
 		{
-			//No faces found error
 			getSharedConnection().release(resp);
 			log.info("Face detection Remote Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
+			inAsset.setValue("facescanerror", true);
 			return Collections.EMPTY_LIST;
 		}
 		else if (resp.getStatusLine().getStatusCode() == 413)
 		{
+			//remote error body size
 			getSharedConnection().release(resp);
+			log.info("Face detection Remote Body Size Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
+			inAsset.setValue("facescanerror", true);
 			return null;
 		}
 		else if (resp.getStatusLine().getStatusCode() == 500)
@@ -1086,6 +1116,7 @@ public class FaceProfileManager implements CatalogEnabled
 			//remote server error, may be a broken image
 			getSharedConnection().release(resp);
 			log.info("Face detection Remote Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
+			inAsset.setValue("facescanerror", true);
 			return null;
 		}
 		
@@ -1344,6 +1375,47 @@ public class FaceProfileManager implements CatalogEnabled
 		
 		extractFaces(instructions, one);
 		
+	}
+	
+	
+	protected void assignPerson(String faceembeddingid, String assetid, String personid, String inUserId)
+	{
+		if (faceembeddingid != null && personid != null)
+		{
+			//Should we go disconnect the previous face? 
+
+			MultiValued face = (MultiValued) getMediaArchive().getData("faceembedding",faceembeddingid);
+			if (face != null)
+			{
+				Data personlookup = loadFaceWithPersonFromFace(face);
+				if( personlookup == null)
+				{
+					personlookup = face;
+				}
+				String oldpersonid = personlookup.get("entityperson");
+				
+				if (oldpersonid != null)
+				{
+					Data oldperson = getMediaArchive().getData("entityperson", oldpersonid);
+					String previousassetid = oldperson.get("primaryimage");
+					if (previousassetid != null && previousassetid.equals(assetid)) 
+					{
+						oldperson.setValue("primaryimage", null);
+						getMediaArchive().saveData("entityperson", oldperson);
+					}
+				}
+				personlookup.setValue("entityperson", personid);
+				personlookup.setValue("assignedby",inUserId );
+				personlookup.setValue("hasotherfaces",true);
+				getMediaArchive().saveData("faceembedding",personlookup);
+				
+				//always reset image
+				Data person = getMediaArchive().getData("entityperson", personid);
+				person.setValue("primaryimage", assetid);
+				getMediaArchive().saveData("entityperson", person);
+				
+			}
+		}
 	}
 
 	
