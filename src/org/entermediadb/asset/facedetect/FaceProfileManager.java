@@ -175,6 +175,7 @@ public class FaceProfileManager implements CatalogEnabled
 				try
 				{
 					asset.setValue("facehasprofile",false);
+					asset.setValue("facescanerror", true);
 					extractFaces(instructions, asset,foundfacestosave);
 				}
 				catch( Throwable ex)
