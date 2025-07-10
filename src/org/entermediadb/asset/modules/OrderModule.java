@@ -746,12 +746,15 @@ public class OrderModule extends BaseMediaModule
 		
 		searcher.updateData(inReq, fields, order);
 		
-		String ordertype = inReq.findValue("ordertype.value");
-		if (ordertype == null)
+		if (order.get("ordertype") == null)
 		{
-			ordertype = "download";
+			String ordertype = inReq.findValue("ordertype.value");
+			if (ordertype == null)
+			{
+				ordertype = "download";
+			}
+			order.setProperty("ordertype", ordertype);  //Will be saved on manager
 		}
-		order.setProperty("ordertype", ordertype);  //Will be saved on manager
 
 		MediaArchive archive = getMediaArchive(inReq);
 		Map params = inReq.getParameterMap();
