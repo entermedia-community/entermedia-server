@@ -613,7 +613,7 @@
                   .find(".fileCompletedSize")
                   .text(`${humanFileSize(data.completedSize)} / `);
               }
-              if (data.completed > 0) {
+              if (data.completed >= 0) {
                 idEl.find(".fileCompletedCount").text(`${data.completed} of `);
                 idEl.find(".filesStats").show();
               }
