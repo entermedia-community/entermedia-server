@@ -306,9 +306,10 @@
               updateSyncUI(delId, () => {
                 if (success) {
                   $("#wf-" + delId).remove();
-                  customToast("Sync task deleted successfully!");
+                  customToast("Sync task deleted successfully!", { id: delId });
                 } else {
                   customToast("Error deleting sync task!", {
+                    id: delId,
                     positive: false,
                   });
                 }
@@ -371,6 +372,7 @@
                     customToast(
                       "Already running a download task in this folder, wait until it finishes",
                       {
+                        id: synfolder.id,
                         positive: false,
                         autohideDelay: 5000,
                       }
@@ -379,6 +381,7 @@
                     customToast(
                       "Wait for at least one other download task to finish",
                       {
+                        id: synfolder.id,
                         positive: false,
                         autohideDelay: 5000,
                       }
@@ -420,6 +423,7 @@
                     customToast(
                       "Already running a download task in this folder, wait until it finishes",
                       {
+                        id: synfolder.id,
                         positive: false,
                         autohideDelay: 5000,
                       }
@@ -430,6 +434,7 @@
                     customToast(
                       "Wait for at least one other download task to finish",
                       {
+                        id: synfolder.id,
                         positive: false,
                         autohideDelay: 5000,
                       }
@@ -464,11 +469,6 @@
             formData.set("categorypath", categorypath);
 
             headerBtns.on("click", ".download-lightbox", function () {
-              customToast(
-                elideCat(categorypath) + " download task added to Cloud Sync",
-                { id: categorypath }
-              );
-
               $(this).prop("disabled", true);
               $(this).siblings(".upload-lightbox").prop("disabled", true);
               $(this).find("span").text("Downloading...");
@@ -489,10 +489,16 @@
                       headerBtns
                         .closest(".desktopSyncPreview")
                         .addClass("processing");
+                      customToast(
+                        elideCat(categorypath) +
+                          " download task added to Cloud Sync",
+                        { id: synfolder.id }
+                      );
                     } else if (downloadStatus === "DUPLICATE_DOWNLOAD") {
                       customToast(
                         "Already running a download task in this folder, wait until it finishes",
                         {
+                          id: synfolder.id,
                           positive: false,
                           autohideDelay: 5000,
                         }
@@ -501,6 +507,7 @@
                       customToast(
                         "Wait for at least one other download task to finish",
                         {
+                          id: synfolder.id,
                           positive: false,
                           autohideDelay: 5000,
                         }
@@ -514,11 +521,6 @@
             });
 
             headerBtns.on("click", ".upload-lightbox", function () {
-              customToast(
-                elideCat(categorypath) + " upload task added to Cloud Sync",
-                { id: categorypath }
-              );
-
               $(this).prop("disabled", true);
               $(this).siblings(".download-lightbox").prop("disabled", true);
               $(this).find("span").text("Uploading...");
@@ -539,10 +541,16 @@
                       headerBtns
                         .closest(".desktopSyncPreview")
                         .addClass("processing");
+                      customToast(
+                        elideCat(categorypath) +
+                          " upload task added to Cloud Sync",
+                        { id: synfolder.id }
+                      );
                     } else if (uploadStatus === "DUPLICATE_UPLOAD") {
                       customToast(
                         "Already running an upload task in this folder, wait until it finishes",
                         {
+                          id: synfolder.id,
                           positive: false,
                           autohideDelay: 5000,
                         }
@@ -551,6 +559,7 @@
                       customToast(
                         "Wait for at least one other upload task to finish",
                         {
+                          id: synfolder.id,
                           positive: false,
                           autohideDelay: 5000,
                         }
@@ -626,7 +635,13 @@
           ipcRenderer.on(
             SYNC_FULLY_COMPLETED,
             (_, { identifier, categoryPath, isDownload }) => {
-              updateSyncUI(identifier, null, true);
+              updateSyncUI(
+                identifier,
+                () => {
+                  $("#desktopSyncToggle").prop("checked", false);
+                },
+                true
+              );
               if (!isDownload) {
                 const dataeditedreload = $(".dataeditedreload");
                 dataeditedreload.each(function () {

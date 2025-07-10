@@ -74,14 +74,17 @@ customToast = function (message, options = {}) {
   }
 
   var toast = $(
-    `<div class="toastContainer" data-id="${options.id}" role="alert">
+    `<div class="toastContainer ${
+      positive ? "positive" : "negative"
+    }" data-id="${options.id}" role="alert">
 				${iconHtml}
 				<div class="toastMessage">${message.trim()}</div>
 				${btnText ? `<button class="${btnClass}">${btnText}</button>` : ""}
 				<div class="toastClose">&times;</div>
 			</div>`
   );
-  if (oldToast) {
+
+  if (oldToast && oldToast.length > 0) {
     oldToast.replaceWith(toast);
   } else {
     $(".toastList").append(toast);
