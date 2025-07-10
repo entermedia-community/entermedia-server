@@ -722,8 +722,6 @@ public class EntityModule extends BaseMediaModule
 
 		syncfolder.setValue("totalcompletedcount", 0);
 		syncfolder.setValue("totalcompletedsize", 0);
-
-		syncfolder.setValue("failedfiles", 0);
 		
 		syncfolder.setValue("desktopimportstatus", "scan-started"); 
 		
@@ -758,7 +756,19 @@ public class EntityModule extends BaseMediaModule
 		String desktop = (String) inReq.getRequestParameter("desktop");
 		syncfolder.setValue("desktop", desktop);
 		
-		syncfolder.setValue("desktopimportstatus", "sync-started");
+		syncfolder.setValue("desktopimportstatus", "scan-started");
+		
+		String categorypath = syncfolder.get("categorypath");
+		syncfolder.setValue("currentcategorypath", categorypath);
+		
+		syncfolder.setValue("currentfolderpendingsize", 0);
+		syncfolder.setValue("currentfoldertotalsize", 0);
+
+		syncfolder.setValue("currentfolderpendingcount", 0);
+		syncfolder.setValue("currentfoldertotalcount", 0);
+
+		syncfolder.setValue("totalcompletedcount", 0);
+		syncfolder.setValue("totalcompletedsize", 0);
 		
 		searcher.saveData(syncfolder);
 		
@@ -769,6 +779,7 @@ public class EntityModule extends BaseMediaModule
 	public void completeDesktopSync(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
+		Searcher searcher = archive.getSearcher("desktopsyncfolder");
 
 		Map params = inReq.getJsonRequest();
 		String syncfolderid = (String) params.get("syncfolderid");
@@ -788,14 +799,16 @@ public class EntityModule extends BaseMediaModule
 		
 		syncfolder.setValue("completeddate", new Date());
 		
-		archive.saveData("desktopsyncfolder", syncfolder);
+		searcher.saveData(syncfolder);
 		
-		inReq.putPageValue("syncfolder", syncfolder); 
+		inReq.putPageValue("syncfolder", syncfolder);
+		inReq.putPageValue("searcher", searcher);
 	}
 	
 	public void cancelDesktopSync(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
+		Searcher searcher = archive.getSearcher("desktopsyncfolder");
 
 		Map params = inReq.getJsonRequest();
 		String syncfolderid = (String) params.get("syncfolderid");
@@ -809,11 +822,21 @@ public class EntityModule extends BaseMediaModule
 			syncfolder.setValue("desktopimportstatus", "sync-cancelled");
 		}
 		
+		syncfolder.setValue("currentfolderpendingsize", 0);
+		syncfolder.setValue("currentfoldertotalsize", 0);
+
+		syncfolder.setValue("currentfolderpendingcount", 0);
+		syncfolder.setValue("currentfoldertotalcount", 0);
+
+		syncfolder.setValue("totalcompletedcount", 0);
+		syncfolder.setValue("totalcompletedsize", 0);
+		
 		syncfolder.setValue("completeddate", new Date());
 		
-		archive.saveData("desktopsyncfolder", syncfolder);
+		searcher.saveData(syncfolder);
 		
 		inReq.putPageValue("syncfolder", syncfolder);
+		inReq.putPageValue("searcher", searcher);
 	}
 	
 	public synchronized void updateScanStatus(WebPageRequest inReq) throws Exception

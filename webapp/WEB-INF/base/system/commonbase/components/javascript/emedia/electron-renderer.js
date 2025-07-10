@@ -104,7 +104,7 @@
           );
           ipcRenderer.on("page-title-updated", (_, title) => {
             if (title && title != document.title) {
-              window.trigger("setPageTitle", [title]);
+              $(window).trigger("setPageTitle", [title]);
             }
           });
 
@@ -557,46 +557,59 @@
             function update() {
               const idEl = progItem(data.identifier, data.isDownload);
               if (!idEl) return;
-              if (data.completed > 0) {
-                idEl.find(".fileCompletedCount").text(`${data.completed} of `);
-                if (data.total > 0 && data.completed <= data.total) {
-                  idEl
-                    .find(".fileProgress")
-                    .css("width", (data.completed / data.total) * 100 + "%");
-                }
-              }
               if (data.completedSize > 0) {
                 idEl
                   .find(".fileCompletedSize")
                   .text(`${humanFileSize(data.completedSize)} / `);
               }
+              if (data.completed > 0) {
+                idEl.find(".fileCompletedCount").text(`${data.completed} of `);
+                var totalCount = parseInt(idEl.find(".fileTotalCount").text());
+                if (isNaN(totalCount) || totalCount <= 0) {
+                  return;
+                }
+                if (totalCount !== data.total) {
+                  console.warn(
+                    `Total count mismatch: ${totalCount} vs ${data.total}`
+                  );
+                }
+                if (totalCount > 0 && data.completed <= totalCount) {
+                  idEl
+                    .find(".fileProgress")
+                    .css("width", (data.completed / totalCount) * 100 + "%");
+                }
+              }
             }
             updateSyncUI(() => update());
           });
 
-          ipcRenderer.on(SYNC_FULLY_COMPLETED, () => {
-            updateSyncUI();
-            const dataeditedreload = $(".dataeditedreload");
-            dataeditedreload.each(function () {
-              $(window).trigger("autoreload", [
-                $(this),
-                null,
-                "dataeditedreload",
-              ]);
-            });
-          });
+          ipcRenderer.on(
+            SYNC_FULLY_COMPLETED,
+            (_, { identifier, categoryPath, isDownload }) => {
+              updateSyncUI();
+              if (!isDownload) {
+                const dataeditedreload = $(".dataeditedreload");
+                dataeditedreload.each(function () {
+                  $(window).trigger("autoreload", [
+                    $(this),
+                    null,
+                    "dataeditedreload",
+                  ]);
+                });
+              }
+              if (categoryPath) {
+                customToast(
+                  `${
+                    isDownload ? "Downloaded" : "Uploaded"
+                  } all files from ${elideCat(categoryPath)}!`,
+                  { id: identifier }
+                );
+              }
+            }
+          );
 
           ipcRenderer.on(SYNC_FOLDER_COMPLETED, (_, data) => {
             console.log(SYNC_FOLDER_COMPLETED, data);
-
-            if (data.remaining && data.remaining.length === 0) {
-              customToast(
-                `${
-                  data.isDownload ? "Downloaded" : "Uploaded"
-                } all files from ${elideCat(data.currentFolder)}!`,
-                { id: data.identifier }
-              );
-            }
             updateSyncUI();
           });
 
