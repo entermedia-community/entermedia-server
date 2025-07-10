@@ -1014,7 +1014,8 @@ public class FaceProfileManager implements CatalogEnabled
 				
 				//Now grab ALL parentids of anyone related to these
 				Collection allpossibleparentids = personlookup.collectValues("parentids");
-				personlookup = getMediaArchive().query("faceembedding").orgroup("allpossibleparentids",parentids).search();
+				
+				personlookup = getMediaArchive().query("faceembedding").orgroup("parentids",allpossibleparentids).search();
 
 				for (Iterator iterator = personlookup.iterator(); iterator.hasNext();)
 				{
