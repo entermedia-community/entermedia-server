@@ -1010,7 +1010,7 @@ public class FaceProfileManager implements CatalogEnabled
 			Collection parentids = embedding.getValues("parentids");
 			if( parentids != null && !parentids.isEmpty() )
 			{
-				HitTracker personlookup = getMediaArchive().query("faceembedding").orgroup("parentids",parentids).search();
+				HitTracker personlookup = getMediaArchive().query("faceembedding").orgroup("parentids",parentids).hitsPerPage(500).search();
 				
 				//Now grab ALL parentids of anyone related to these
 				Collection allpossibleparentids = personlookup.collectValues("parentids");
