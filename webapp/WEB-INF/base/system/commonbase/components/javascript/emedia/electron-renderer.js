@@ -470,6 +470,7 @@
               );
 
               $(this).prop("disabled", true);
+              $(this).siblings(".upload-lightbox").prop("disabled", true);
               $(this).find("span").text("Downloading...");
 
               $(this).removeClass("has-changes");
@@ -519,6 +520,7 @@
               );
 
               $(this).prop("disabled", true);
+              $(this).siblings(".download-lightbox").prop("disabled", true);
               $(this).find("span").text("Uploading...");
 
               $(this).removeClass("has-changes");
