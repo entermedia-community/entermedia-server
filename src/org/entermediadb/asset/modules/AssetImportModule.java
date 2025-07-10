@@ -20,6 +20,7 @@ import org.entermediadb.find.FolderManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -255,9 +256,23 @@ public class AssetImportModule  extends BaseMediaModule
 		Map params = inReq.getJsonRequest();
 		if (params == null) {
 			log.info("No JSON parameters");
+			inReq.putPageValue("status", "No JSON parameters");
 			return;
 		}
 		MediaArchive archive = getMediaArchive(inReq);
+		
+		String syncfolderid = (String) params.get("syncfolderid");
+		
+		MultiValued syncfolder = (MultiValued) archive.getCachedData("desktopsyncfolder", syncfolderid);
+		
+		if(syncfolder == null) 
+		{
+			log.info("No syncfolder found for " + syncfolderid); 
+			inReq.putPageValue("status", "No syncfolder found for " + syncfolderid);
+			return; //Nothing to do
+		}
+		
+		inReq.putPageValue("syncfolder", syncfolder);
 		
 		String categorypath = (String) params.get("categorypath");
 		
@@ -266,17 +281,16 @@ public class AssetImportModule  extends BaseMediaModule
 		Category category = archive.getCategorySearcher().loadCategoryByPath(categorypath);
 		if(category == null) 
 		{
-			Map pendingdownloads = new HashMap();
-			inReq.putPageValue("pendingpull", new JSONObject(pendingdownloads));
-			inReq.putPageValue("pendingpush", new JSONObject(params));
-			inReq.putPageValue("totalsize", 0);
+			inReq.putPageValue("syncfolder", null);
+			inReq.putPageValue("status", "No category found for " + categorypath);
+			return; //Nothing to do
 		} else {
 
 			FolderManager manager = getFolderManager(inReq);
 			Map allserverfiles = manager.listAssetMap(archive, category);
 			
 			Long totalsize = (Long) allserverfiles.get("totalsize");
-			int totalcount = (int) allserverfiles.get("totalcount");
+			int currentfoldertotalcount = (int) allserverfiles.get("totalcount");
 			
 			boolean isDownload = (boolean) params.get("isdownload");
 			
@@ -293,15 +307,26 @@ public class AssetImportModule  extends BaseMediaModule
 				inReq.putPageValue("pendingpush", new JSONObject(pendingupload));
 				
 				totalsize += (Long) pendingupload.get("addedsize");
-				totalcount += (int) pendingupload.get("addedcount");
+				currentfoldertotalcount += (int) pendingupload.get("addedcount");
 			}
 			
 			inReq.putPageValue("totalsize", totalsize);
-			inReq.putPageValue("totalcount", totalcount);
+			inReq.putPageValue("totalcount", currentfoldertotalcount);
 			
-			String syncfolderid = (String) params.get("syncfolderid");
+			syncfolder = (MultiValued) archive.getCachedData("desktopsyncfolder", syncfolderid);
 			
-			manager.startCurrentFolder(syncfolderid, categorypath, totalsize, totalcount);
+			if(syncfolder == null) 
+			{
+				log.info("No syncfolder found for " + syncfolderid);
+				inReq.putPageValue("syncfolder", null);
+				inReq.putPageValue("status", "No syncfolder found for " + syncfolderid);
+				return; //Nothing to do
+			}
+			
+			manager.startCurrentFolder(syncfolder, categorypath, totalsize, currentfoldertotalcount);
+			
+			inReq.putPageValue("syncfolder", syncfolder);
+			inReq.putPageValue("status", "ok");
 			
 		}
 	}

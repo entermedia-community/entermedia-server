@@ -538,23 +538,13 @@ public class FolderManager implements CatalogEnabled
 		return response;
 	}
 
-	public void startCurrentFolder(String inSyncfolderid, String inCategorypath, Long inFolderTotalsize, Integer inFolderTotalcount) {
+	public void startCurrentFolder(MultiValued syncfolder, String inCategorypath, Long inFolderTotalsize, Integer inFolderTotalcount) {
 		// TODO Auto-generated method stub
-		MediaArchive archive = getMediaArchive();
-		
-		MultiValued syncfolder = (MultiValued) archive.getCachedData("desktopsyncfolder", inSyncfolderid);
-		
-		
-
-		Long totalcompletedcount = syncfolder.getLong("totalcompletedcount");
-		Long totalcompletedsize = syncfolder.getLong("totalcompletedsize");
+		MediaArchive archive = getMediaArchive();	
 		
 		Long currentfoldertotalcount = syncfolder.getLong("currentfoldertotalcount");
 		Long currentfoldertotalsize = syncfolder.getLong("currentfoldertotalsize");
 
-		syncfolder.setValue("totalcompletedcount", totalcompletedcount + currentfoldertotalcount);
-		syncfolder.setValue("totalcompletedsize", totalcompletedsize + currentfoldertotalsize);
-		 
 		syncfolder.setValue("currentfoldertotalsize", inFolderTotalsize);
 		syncfolder.setValue("currentfoldertotalcount", inFolderTotalcount);
 

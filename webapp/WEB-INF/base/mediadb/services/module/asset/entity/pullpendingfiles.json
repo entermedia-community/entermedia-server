@@ -1,15 +1,17 @@
-
-#set( $entityid = $context.getRequestParameter("entityid") )
 {
-  "response": {
-		"status":"ok"
-	},
+	"response": {
+		"status": "$status"
+	}
+#if($status == "ok")
+	,
+	#set( $entityid = $context.getRequestParameter("entityid") )
 
 	"totalsize": $totalsize,
-	"totalcount": $totalcount,
+	"totalcount": $totalcount
 
 	#ifnotnull($pendingpull)
 		#set( $filestodownload = $pendingpull.files )
+		,
 		"filestodownload" : [
 		#foreach( $file in $filestodownload )
 			#if( ${foreach.count} != 1 ), #end
@@ -27,6 +29,7 @@
 
 	#ifnotnull($pendingpush)
 		#set( $filestoupload = $pendingpush.files )
+		,
 		"filestoupload" : [
 		#foreach( $file in $filestoupload )
 			#if( ${foreach.count} != 1 ), #end
@@ -45,4 +48,5 @@
 		"addedcount": $pendingpush.addedcount,
 		"addedsize": $pendingpush.addedsize
 	#end
+#end
 }

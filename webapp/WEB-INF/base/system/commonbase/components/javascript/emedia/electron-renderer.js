@@ -104,7 +104,7 @@
           );
           ipcRenderer.on("page-title-updated", (_, title) => {
             if (title && title != document.title) {
-              $(window).trigger("setPageTitle", [title]);
+              document.title = title;
             }
           });
 
@@ -134,9 +134,45 @@
             });
           });
 
-          function updateSyncUI(callback = null) {
-            $("#desktoppendingpopover").runAjax(() => callback && callback());
-            $("#desktopsynchistory").runAjax(() => callback && callback());
+          let updateTO = null;
+          let lastCompleted = null;
+          function updateSyncUI(syncfolderid, callback = null, force = false) {
+            if (force) {
+              clearTimeout(updateTO);
+              updateTO = null;
+              $("#desktoppendingpopover").runAjax(() => callback && callback());
+              $("#desktopsynchistory").runAjax(() => callback && callback());
+            } else if (!updateTO) {
+              updateTO = setTimeout(() => {
+                $("#desktoppendingpopover").runAjax(
+                  () => callback && callback()
+                );
+                $("#desktopsynchistory").runAjax(() => callback && callback());
+                clearTimeout(updateTO);
+                updateTO = null;
+              }, 1000);
+            }
+            var loaderPreview = $(".desktopSyncPreview");
+            if (loaderPreview.find(".work-folder.processing").length > 0) {
+              loaderPreview
+                .find(".syncIcon")
+                .removeClass("fa-desktop")
+                .addClass("fa-spinner fa-spin");
+            } else {
+              loaderPreview
+                .find(".syncIcon")
+                .removeClass("fa-spinner fa-spin")
+                .addClass("fa-desktop");
+            }
+            if (lastCompleted && lastCompleted.trim().length > 0) {
+              $(
+                ".work-folder.processing[data-syncfolderid='" +
+                  syncfolderid +
+                  "']"
+              )
+                .find(".fileName")
+                .text(lastCompleted);
+            }
           }
 
           function desktopSyncStarter(formData, callback = null) {
@@ -152,10 +188,12 @@
               contentType: false,
               "Content-Type": "multipart/form-data",
               success: function (res) {
-                var json = res.data;
-                updateSyncUI();
-                $(document).trigger("domchanged");
-                if (callback) callback(json);
+                if (res.data && res.data.id) {
+                  updateSyncUI(res.data.id);
+                  if (callback) callback(res.data);
+                } else {
+                  console.log("desktopSyncStarter", res);
+                }
               },
               error: function (_xhr, _status, error) {
                 console.log("desktopSyncStarter", error);
@@ -175,7 +213,10 @@
               contentType: false,
               "Content-Type": "multipart/form-data",
               success: function (res) {
-                if (callback) callback(res.data);
+                if (res.data) {
+                  updateSyncUI(res.data.id);
+                  if (callback) callback(res.data);
+                }
               },
               error: function (_xhr, _status, error) {
                 console.log("desktopSyncRestart", error);
@@ -257,7 +298,7 @@
           ipcRenderer.on(
             SYNC_FOLDER_DELETED,
             (_, { delId, success = true }) => {
-              updateSyncUI(() => {
+              updateSyncUI(delId, () => {
                 if (success) {
                   $("#wf-" + delId).remove();
                   customToast("Sync task deleted successfully!");
@@ -516,7 +557,7 @@
             });
           });
 
-          lQuery(".cancelSync").livequery("click", function (e) {
+          jQuery(document).on("click", ".cancelSync", function (e) {
             e.preventDefault();
             e.stopPropagation();
             const btn = $(this);
@@ -549,7 +590,12 @@
               } files from ${elideCat(data.currentFolder)}!`,
               { id: data.identifier }
             );
-            updateSyncUI();
+            const idEl = progItem(data.identifier, data.isDownload);
+            if (idEl) {
+              idEl.find(".fileCompletedCount").text(`0 of `);
+              idEl.find(".filesStats").show();
+            }
+            updateSyncUI(data.identifier, null, true);
           });
 
           ipcRenderer.on(SYNC_PROGRESS_UPDATE, (_, data) => {
@@ -564,29 +610,16 @@
               }
               if (data.completed > 0) {
                 idEl.find(".fileCompletedCount").text(`${data.completed} of `);
-                var totalCount = parseInt(idEl.find(".fileTotalCount").text());
-                if (isNaN(totalCount) || totalCount <= 0) {
-                  return;
-                }
-                if (totalCount !== data.total) {
-                  console.warn(
-                    `Total count mismatch: ${totalCount} vs ${data.total}`
-                  );
-                }
-                if (totalCount > 0 && data.completed <= totalCount) {
-                  idEl
-                    .find(".fileProgress")
-                    .css("width", (data.completed / totalCount) * 100 + "%");
-                }
+                idEl.find(".filesStats").show();
               }
             }
-            updateSyncUI(() => update());
+            updateSyncUI(data.identifier, update);
           });
 
           ipcRenderer.on(
             SYNC_FULLY_COMPLETED,
             (_, { identifier, categoryPath, isDownload }) => {
-              updateSyncUI();
+              updateSyncUI(identifier, null, true);
               if (!isDownload) {
                 const dataeditedreload = $(".dataeditedreload");
                 dataeditedreload.each(function () {
@@ -610,7 +643,7 @@
 
           ipcRenderer.on(SYNC_FOLDER_COMPLETED, (_, data) => {
             console.log(SYNC_FOLDER_COMPLETED, data);
-            updateSyncUI();
+            updateSyncUI(data.identifier);
           });
 
           ipcRenderer.on(SYNC_CANCELLED, (_, { identifier, isDownload }) => {
@@ -619,15 +652,18 @@
               idEl.removeClass("processing");
               idEl.find(".currentSync").remove();
             }
-            updateSyncUI();
+            updateSyncUI(identifier, null, true);
           });
 
           ipcRenderer.on(FILE_STATUS_UPDATE, (_, data) => {
             console.log(FILE_STATUS_UPDATE, data);
+            if (data.status !== "completed") return;
+            lastCompleted = data.name;
           });
 
           ipcRenderer.on(FILE_PROGRESS_UPDATE, (_, data) => {
             console.log(FILE_PROGRESS_UPDATE, data);
+            lastCompleted = data.name;
           });
           // </all sync events>
 
