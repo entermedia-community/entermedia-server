@@ -347,6 +347,14 @@ public class FaceProfileManager implements CatalogEnabled
 		Collection<Block> ticks = timeline.getTicks();
 		List<Map> continuelooking = null;
 		
+		FaceScanInstructions videoinstructions = new FaceScanInstructions();
+		
+		videoinstructions.setAllAssetIds(instructions.getAllAssetIds());
+		videoinstructions.setAllRecords(instructions.getAllRecords());
+		videoinstructions.setConfidenceLimit(instructions.getConfidenceLimit() * .85D);
+		videoinstructions.setMinimumFaceSize(instructions.getMinimumFaceSize() * .75D);
+
+		
 		Collection<MultiValued> allfacesinvideo = new ArrayList();
 		for (Iterator iterator = ticks.iterator(); iterator.hasNext();)
 		{
@@ -369,7 +377,7 @@ public class FaceProfileManager implements CatalogEnabled
 			else
 			{
 				List<Map> json = findFaces(inAsset, item);	
-				Collection<MultiValued> moreprofiles = makeDataForEachFace(instructions,faceembeddingsearcher,inAsset,block.getSeconds(),item,json);
+				Collection<MultiValued> moreprofiles = makeDataForEachFace(videoinstructions,faceembeddingsearcher,inAsset,block.getSeconds(),item,json);
 				if( moreprofiles != null)
 				{
 					allfacesinvideo.addAll(moreprofiles);
@@ -1010,22 +1018,35 @@ public class FaceProfileManager implements CatalogEnabled
 			Collection parentids = embedding.getValues("parentids");
 			if( parentids != null && !parentids.isEmpty() )
 			{
-				HitTracker personlookup = getMediaArchive().query("faceembedding").orgroup("parentids",parentids).search();
+				HitTracker personlookup = getMediaArchive().query("faceembedding").orgroup("parentids",parentids).hitsPerPage(500).search();
 				
 				//Now grab ALL parentids of anyone related to these
 				Collection allpossibleparentids = personlookup.collectValues("parentids");
-				personlookup = getMediaArchive().query("faceembedding").orgroup("allpossibleparentids",parentids).search();
 
-				for (Iterator iterator = personlookup.iterator(); iterator.hasNext();)
+				if( !allpossibleparentids.isEmpty() )
 				{
-					MultiValued data = (MultiValued) iterator.next();
-					entitypersonid = data.get("entityparent"); 
-					if( entitypersonid  != null )
+					ArrayList parts = new ArrayList(allpossibleparentids);
+					int chunks = parts.size() / 500;
+					chunks++;
+					for (int i = 0; i < chunks; i++)
 					{
-						getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),data.getId());
-						return data;
+						int end = Math.min(parts.size(),(i+1)*500);
+						Collection sublist = parts.subList(i*500, end);
+						personlookup = getMediaArchive().query("faceembedding").orgroup("parentids",sublist).hitsPerPage(500).search();
+	
+						for (Iterator iterator = personlookup.iterator(); iterator.hasNext();)
+						{
+							MultiValued data = (MultiValued) iterator.next();
+							entitypersonid = data.get("entityparent"); 
+							if( entitypersonid  != null )
+							{
+								getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),data.getId());
+								return data;
+							}
+						}
 					}
 				}
+				
 				getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),  CacheManager.NULLVALUE);
 			}
 		}
