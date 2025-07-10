@@ -134,24 +134,7 @@
             });
           });
 
-          let updateTO = null;
-          let lastCompleted = null;
-          function updateSyncUI(syncfolderid, callback = null, force = false) {
-            if (force) {
-              clearTimeout(updateTO);
-              updateTO = null;
-              $("#desktoppendingpopover").runAjax(() => callback && callback());
-              $("#desktopsynchistory").runAjax(() => callback && callback());
-            } else if (!updateTO) {
-              updateTO = setTimeout(() => {
-                $("#desktoppendingpopover").runAjax(
-                  () => callback && callback()
-                );
-                $("#desktopsynchistory").runAjax(() => callback && callback());
-                clearTimeout(updateTO);
-                updateTO = null;
-              }, 1000);
-            }
+          const updateLoader = () => {
             var loaderPreview = $(".desktopSyncPreview");
             if (loaderPreview.find(".work-folder.processing").length > 0) {
               loaderPreview
@@ -164,14 +147,36 @@
                 .removeClass("fa-spinner fa-spin")
                 .addClass("fa-desktop");
             }
-            if (lastCompleted && lastCompleted.trim().length > 0) {
-              $(
-                ".work-folder.processing[data-syncfolderid='" +
-                  syncfolderid +
-                  "']"
-              )
-                .find(".fileName")
-                .text(lastCompleted);
+          };
+
+          let updateTO = null;
+          let lastCompleted = null;
+          function updateSyncUI(syncfolderid, callback = null, force = false) {
+            function handleCallback() {
+              if (callback) callback();
+              updateLoader();
+              if (lastCompleted && lastCompleted.trim().length > 0) {
+                $(
+                  ".work-folder.processing[data-syncfolderid='" +
+                    syncfolderid +
+                    "']"
+                )
+                  .find(".fileName")
+                  .text(lastCompleted);
+              }
+            }
+            if (force) {
+              clearTimeout(updateTO);
+              updateTO = null;
+              $("#desktoppendingpopover").runAjax(handleCallback);
+              $("#desktopsynchistory").runAjax(handleCallback);
+            } else if (!updateTO) {
+              updateTO = setTimeout(() => {
+                $("#desktoppendingpopover").runAjax(handleCallback);
+                $("#desktopsynchistory").runAjax(handleCallback);
+                clearTimeout(updateTO);
+                updateTO = null;
+              }, 1000);
             }
           }
 
