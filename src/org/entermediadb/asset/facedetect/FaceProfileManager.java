@@ -1014,19 +1014,31 @@ public class FaceProfileManager implements CatalogEnabled
 				
 				//Now grab ALL parentids of anyone related to these
 				Collection allpossibleparentids = personlookup.collectValues("parentids");
-				
-				personlookup = getMediaArchive().query("faceembedding").orgroup("parentids",allpossibleparentids).search();
 
-				for (Iterator iterator = personlookup.iterator(); iterator.hasNext();)
+				if( !allpossibleparentids.isEmpty() )
 				{
-					MultiValued data = (MultiValued) iterator.next();
-					entitypersonid = data.get("entityparent"); 
-					if( entitypersonid  != null )
+					ArrayList parts = new ArrayList(allpossibleparentids);
+					int chunks = parts.size() / 500;
+					chunks++;
+					for (int i = 0; i < chunks; i++)
 					{
-						getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),data.getId());
-						return data;
+						int end = Math.min(parts.size(),(i+1)*500);
+						Collection sublist = parts.subList(i*500, end);
+						personlookup = getMediaArchive().query("faceembedding").orgroup("parentids",sublist).search();
+	
+						for (Iterator iterator = personlookup.iterator(); iterator.hasNext();)
+						{
+							MultiValued data = (MultiValued) iterator.next();
+							entitypersonid = data.get("entityparent"); 
+							if( entitypersonid  != null )
+							{
+								getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),data.getId());
+								return data;
+							}
+						}
 					}
 				}
+				
 				getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),  CacheManager.NULLVALUE);
 			}
 		}
