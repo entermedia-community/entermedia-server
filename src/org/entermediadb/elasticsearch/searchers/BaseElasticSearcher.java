@@ -2761,9 +2761,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 		try
 		{
-			Map props = inData.getProperties();
+			//Map props = inData.getProperties();
 			HashSet allprops = new HashSet();
-			allprops.addAll(props.keySet());
+			//allprops.addAll(props.keySet());
 			for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
 			{
 				PropertyDetail detail = (PropertyDetail) iterator.next();
