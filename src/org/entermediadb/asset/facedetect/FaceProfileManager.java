@@ -347,6 +347,14 @@ public class FaceProfileManager implements CatalogEnabled
 		Collection<Block> ticks = timeline.getTicks();
 		List<Map> continuelooking = null;
 		
+		FaceScanInstructions videoinstructions = new FaceScanInstructions();
+		
+		videoinstructions.setAllAssetIds(instructions.getAllAssetIds());
+		videoinstructions.setAllRecords(instructions.getAllRecords());
+		videoinstructions.setConfidenceLimit(instructions.getConfidenceLimit() * .85D);
+		videoinstructions.setMinimumFaceSize(instructions.getMinimumFaceSize() * .75D);
+
+		
 		Collection<MultiValued> allfacesinvideo = new ArrayList();
 		for (Iterator iterator = ticks.iterator(); iterator.hasNext();)
 		{
@@ -369,7 +377,7 @@ public class FaceProfileManager implements CatalogEnabled
 			else
 			{
 				List<Map> json = findFaces(inAsset, item);	
-				Collection<MultiValued> moreprofiles = makeDataForEachFace(instructions,faceembeddingsearcher,inAsset,block.getSeconds(),item,json);
+				Collection<MultiValued> moreprofiles = makeDataForEachFace(videoinstructions,faceembeddingsearcher,inAsset,block.getSeconds(),item,json);
 				if( moreprofiles != null)
 				{
 					allfacesinvideo.addAll(moreprofiles);
