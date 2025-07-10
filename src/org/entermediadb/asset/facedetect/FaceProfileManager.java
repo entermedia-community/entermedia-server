@@ -1024,7 +1024,7 @@ public class FaceProfileManager implements CatalogEnabled
 					{
 						int end = Math.min(parts.size(),(i+1)*500);
 						Collection sublist = parts.subList(i*500, end);
-						personlookup = getMediaArchive().query("faceembedding").orgroup("parentids",sublist).search();
+						personlookup = getMediaArchive().query("faceembedding").orgroup("parentids",sublist).hitsPerPage(500).search();
 	
 						for (Iterator iterator = personlookup.iterator(); iterator.hasNext();)
 						{
