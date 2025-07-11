@@ -719,7 +719,7 @@ public class FaceProfileManager implements CatalogEnabled
 			// }
 			if( confidence < instructions.getConfidenceLimit())
 			{
-				log.info("Not enough confidence for " + inAsset.getName() + " -> " + confidence );
+				log.info("Not enough confidence for " + confidence + " -> " + inAsset.getName() );
 				continue;
 			}
 //			if( similarembedding != null)
@@ -793,25 +793,8 @@ public class FaceProfileManager implements CatalogEnabled
 			addedface.setValue("locationh",Math.round(h));
 			addedface.setValue("timecodestart",timecodestart);
 
-			//TODO: Make sure this is not already in there. For debug purposes. lets do this at the end?
-			/*
-			HitTracker results = facedb.query().between("locationh",300L,(long)Integer.MAX_VALUE).search(); //Cache this?
-			if( !results.isEmpty() )
-			{
-				Data similarembedding = findSimilar(facedb, addedface, inAsset.getId(), results); //Pass in how similar
-				if( similarembedding  != null)
-				{
-					String parentassetid = similarembedding.get("assetid");
-					Asset parentasset = getMediaArchive().getAsset(parentassetid);
-					if(parentasset != null)
-					{						
-						addedface.setValue("parentembeddingid",similarembedding.getId());
-						addedface.setValue("parentassetid",parentassetid);
-						log.info("Conected between child " + inAsset.getName() + " and parent " + parentasset.getName() );
-					}
-				}
-			}
-			*/
+			log.info("Found face Confidence:" + confidence + " Size:" +   box.getDouble("w") + "x" +  box.getDouble("h") + " " + inAsset.getName());
+
 			tosave.add(addedface);
 		}
 		return tosave;
