@@ -291,7 +291,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 				if( !input.exists() )
 				{
-					filename = "image3000x3000.jpeg";
+					filename = "image3000x3000.jpg";
 					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/" + filename);
 				}
 
