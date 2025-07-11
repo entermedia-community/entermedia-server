@@ -187,7 +187,15 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 				tosave.add(asset);
 			}  
-			fixSomeNewParents(allrecords, foundfacestosave); //This saves
+			if( instructions.isSetParents() )
+			{
+				fixSomeNewParents(allrecords, foundfacestosave); //This saves new faces
+			}
+			else
+			{
+				getMediaArchive().saveData("faceembedding",foundfacestosave);
+			}
+			
 			getMediaArchive().getAssetSearcher().saveAllData(tosave, null);
 			log.info(" Saved Assets " + tosave.size() + " added faces:  " + foundfacestosave.size());
 			return foundfacestosave.size();
