@@ -180,9 +180,9 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 				catch( Throwable ex)
 				{
-					log.error("Error on: " + inAsset, ex);
-					inAsset.setValue("facescancomplete","true");
-					inAsset.setValue("facescanerror","true");
+					log.error("Marking Error on one asset: " + inAsset + " error:" + ex);
+					inAsset.setValue("facescancomplete",true);
+					inAsset.setValue("facescanerror",true);
 					//throw new OpenEditException("Error on: " + inAssets.size(),ex);
 				}
 				tosave.add(asset);
@@ -286,15 +286,23 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 			else
 			{
-				String filename = getMediaArchive().generatedOutputName(inAsset,"image3000x3000");
+				String filename = "image3000x3000.webp";
 				input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/" + filename);
+
+				if( !input.exists() )
+				{
+					filename = "image3000x3000.jpeg";
+					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/" + filename);
+				}
+
 			}
 			if( !input.exists() )
 			{
 				throw new OpenEditException("Input not available " + input.getPath());
 			}
 			List<Map> json = findFaces(inAsset, input);
-			if(json == null) {
+			if(json == null || json.isEmpty()) 
+			{
 				
 				return;
 			}
@@ -793,7 +801,7 @@ public class FaceProfileManager implements CatalogEnabled
 			addedface.setValue("locationh",Math.round(h));
 			addedface.setValue("timecodestart",timecodestart);
 
-			log.info("Found face Confidence:" + confidence + " Size:" +   box.getDouble("w") + "x" +  box.getDouble("h") + " " + inAsset.getName());
+			log.info("added face with confidence:" + confidence + " " +   box.getDouble("w") + "x" +  box.getDouble("h") + " " + inAsset.getName());
 
 			tosave.add(addedface);
 		}
