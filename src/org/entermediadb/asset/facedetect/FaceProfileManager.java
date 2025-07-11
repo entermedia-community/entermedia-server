@@ -181,8 +181,8 @@ public class FaceProfileManager implements CatalogEnabled
 				catch( Throwable ex)
 				{
 					log.error("Marking Error on one asset: " + inAsset + " error:" + ex);
-					inAsset.setValue("facescancomplete",true);
-					inAsset.setValue("facescanerror",true);
+					asset.setValue("facescancomplete",true);
+					asset.setValue("facescanerror",true);
 					//throw new OpenEditException("Error on: " + inAssets.size(),ex);
 				}
 				tosave.add(asset);
