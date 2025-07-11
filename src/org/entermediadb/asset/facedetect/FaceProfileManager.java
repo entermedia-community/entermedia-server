@@ -766,6 +766,7 @@ public class FaceProfileManager implements CatalogEnabled
 							addedface.setValue("parentembeddingid",null);
 							addedface.setValue("parentassetid",null);
 							addedface.setValue("parentdistance", null);
+							log.info("Found existing embedding for asset " + inAsset.getName() ); 
 							break;
 						}
 					}	
