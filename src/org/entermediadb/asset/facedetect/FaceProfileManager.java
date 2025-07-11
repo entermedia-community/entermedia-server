@@ -187,7 +187,7 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 				tosave.add(asset);
 			}  
-			if( instructions.isSetParents() )
+			if( instructions.isFindParents() )
 			{
 				fixSomeNewParents(allrecords, foundfacestosave); //This saves new faces
 			}

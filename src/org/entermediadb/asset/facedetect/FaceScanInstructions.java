@@ -8,15 +8,15 @@ import org.openedit.MultiValued;
 public class FaceScanInstructions
 {
 	
-	boolean fieldSetParents = true;
+	boolean fieldFindParents = true;
 	
-	public boolean isSetParents()
+	public boolean isFindParents()
 	{
-		return fieldSetParents;
+		return fieldFindParents;
 	}
-	public void setSetParents(boolean inSetParents)
+	public void setFindParents(boolean inSetParents)
 	{
-		fieldSetParents = inSetParents;
+		fieldFindParents = inSetParents;
 	}
 	Collection<MultiValued> fieldAllRecords;
 	public Collection<MultiValued> getAllRecords()
