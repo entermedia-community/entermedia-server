@@ -7,7 +7,16 @@ import org.openedit.MultiValued;
 
 public class FaceScanInstructions
 {
+	boolean fieldForceVectorUpdate = false;
 	
+	public boolean isForceVectorUpdate()
+	{
+		return fieldForceVectorUpdate;
+	}
+	public void setForceVectorUpdate(boolean inForceVectorUpdate)
+	{
+		fieldForceVectorUpdate = inForceVectorUpdate;
+	}
 	boolean fieldFindParents = true;
 	
 	public boolean isFindParents()

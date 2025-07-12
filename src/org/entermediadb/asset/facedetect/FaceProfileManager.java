@@ -145,20 +145,8 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 			HitTracker allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").search();
 			allfaces.enableBulkOperations();
-			List<MultiValued> allrecords = new ArrayList(allfaces);  //This is huge
 
-			List<String> assetids = new ArrayList();
-			for (Iterator iterator = allrecords.iterator(); iterator.hasNext();)
-			{
-				MultiValued existingface = (MultiValued) iterator.next();
-				String assetid = existingface.get("assetid");
-				if( assetid != null)
-				{
-					assetids.add(assetid);
-				}
-			}
-			
-			instructions.setAllRecords(allrecords);
+			Collection<String> assetids = allfaces.collectValues("assetid");
 			instructions.setAllAssetIds(assetids);
 			
 			List<MultiValued> foundfacestosave = new ArrayList();
@@ -166,29 +154,43 @@ public class FaceProfileManager implements CatalogEnabled
 
 			for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 			{
-				MultiValued inAsset = (MultiValued) iterator.next();
-//				if( assetids.contains(inAsset.getId() ) )
-//				{
-//					continue;
-//				}		
-				Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(inAsset);
+				MultiValued hit = (MultiValued) iterator.next();
+				Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(hit);
+
+				asset.setValue("facescancomplete",true);
+				asset.setValue("facescanerror", false);
+				tosave.add(asset);
+
+				if( !instructions.isForceVectorUpdate() )
+				{
+					String assetid = asset.getId();
+					if( instructions.getAllAssetIds().contains(assetid ) )
+					{
+						log.error("Skipping, Already have assetid " + assetid);
+						continue;
+					}		
+				}	
 				try
 				{
 					asset.setValue("facehasprofile",false);
-					asset.setValue("facescanerror", false);
 					extractFaces(instructions, asset,foundfacestosave);
 				}
 				catch( Throwable ex)
 				{
-					log.error("Marking Error on one asset: " + inAsset + " error:" + ex);
+					log.error("Marking Error on one asset: " + asset + " error:" + ex);
 					asset.setValue("facescancomplete",true);
 					asset.setValue("facescanerror",true);
 					//throw new OpenEditException("Error on: " + inAssets.size(),ex);
 				}
-				tosave.add(asset);
 			}  
+			getMediaArchive().getAssetSearcher().saveAllData(tosave, null);
+			log.info(" Saved Assets " + tosave.size() + " added faces:  " + foundfacestosave.size());
 			if( instructions.isFindParents() )
 			{
+				HitTracker all = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").search();
+				all.enableBulkOperations();
+				List<MultiValued> allrecords = new ArrayList(all);
+				log.info(" Assign parents for " + foundfacestosave.size());
 				fixSomeNewParents(allrecords, foundfacestosave); //This saves new faces
 			}
 			else
@@ -196,8 +198,6 @@ public class FaceProfileManager implements CatalogEnabled
 				getMediaArchive().saveData("faceembedding",foundfacestosave);
 			}
 			
-			getMediaArchive().getAssetSearcher().saveAllData(tosave, null);
-			log.info(" Saved Assets " + tosave.size() + " added faces:  " + foundfacestosave.size());
 			return foundfacestosave.size();
 	}
 	
@@ -751,14 +751,15 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			MultiValued addedface = null;
 			
-			String assetid = inAsset.getId();
-			if( instructions.getAllAssetIds().contains(assetid ) )
+			if( instructions.isForceVectorUpdate() )  //Otherwise it never runs existing assets
 			{
-				for (Iterator iterator2 = instructions.getAllRecords().iterator(); iterator2.hasNext();)
+				String assetid = inAsset.getId();
+				if( instructions.getAllAssetIds().contains(assetid ) )
 				{
-					MultiValued existing = (MultiValued) iterator2.next();
-					if( assetid.equals(existing.get("assetid") ) )
+					Collection existingfaces = getMediaArchive().query("faceembedding").exact("assetid", assetid).search();
+					for (Iterator iterator2 = existingfaces.iterator(); iterator2.hasNext();)
 					{
+						MultiValued existing = (MultiValued) iterator2.next();
 						List<Double> othervalues = (List<Double>)existing.getValue("facedatadoubles"); //Manually done because Search did not work
 						if(othervalues.equals(vector) )
 						{
@@ -1391,7 +1392,7 @@ public class FaceProfileManager implements CatalogEnabled
 		one.add(inAsset);
 		
 		FaceScanInstructions instructions = createInstructions();
-
+		instructions.setForceVectorUpdate(true);
 		instructions.setConfidenceLimit(instructions.getConfidenceLimit() * .75D);
 		instructions.setMinimumFaceSize(instructions.getMinimumFaceSize() * .50D);
 		
