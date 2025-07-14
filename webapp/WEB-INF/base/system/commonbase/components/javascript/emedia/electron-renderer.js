@@ -242,9 +242,6 @@
 
           lQuery(".open-folder").livequery("click", function () {
             let path = $(this).data("path");
-            if (!path) {
-              path = $(this).closest(".ofl-path").data("path");
-            }
             const customRoot = $(this).data("root");
             const dropFromFolderPath = $(this).data("removecategorysubfolder");
             if (path) {
