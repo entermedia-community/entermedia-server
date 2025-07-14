@@ -10,8 +10,8 @@
     SYNC_FOLDER_COMPLETED = "sync-folder-completed",
     SYNC_FULLY_COMPLETED = "sync-fully-completed",
     FILE_PROGRESS_UPDATE = "file-progress-update",
-    FILE_STATUS_UPDATE = "file-status-update",
-    CHECK_SYNC = "check-sync";
+    FILE_STATUS_UPDATE = "file-status-update";
+  // CHECK_SYNC = "check-sync";
 
   function humanFileSize(bytes, htm = false) {
     if (typeof bytes === "string") bytes = parseInt(bytes);
@@ -632,15 +632,15 @@
           });
           // </single file download events>
 
-          lQuery("#desktoppendingpopover").livequery(function () {
-            const oldTask = $(this).find(".work-folder.processing");
-            if (oldTask.length > 0) {
-              ipcRenderer.send(CHECK_SYNC, {
-                syncFolderId: oldTask.data("syncfolderid"),
-                isDownload: oldTask.hasClass("download"),
-              });
-            }
-          });
+          // lQuery("#desktoppendingpopover").livequery(function () {
+          //   const oldTask = $(this).find(".work-folder.processing");
+          //   if (oldTask.length > 0) {
+          //     ipcRenderer.send(CHECK_SYNC, {
+          //       syncFolderId: oldTask.data("syncfolderid"),
+          //       isDownload: oldTask.hasClass("download"),
+          //     });
+          //   }
+          // });
 
           lQuery(".desktopdirectdownload").livequery("click", function (e) {
             e.preventDefault();
