@@ -331,72 +331,6 @@
             $(window).trigger("resize");
           });
 
-          lQuery(".quick-download").livequery("click", function () {
-            $(this).prop("disabled", true);
-            $("#col-sidebars").load(
-              apphome + "/components/sidebars/index.html",
-              {
-                propertyfield: "sidebarcomponent",
-                sidebarcomponent: "localdrives",
-                "sidebarcomponent.value": "localdrives",
-              }
-            );
-            $(window).trigger("resize");
-
-            const entityid = $(this).data("entityid");
-            const entitymoduleid = $(this).data("entitymoduleid");
-            const uploadsourcepath = $(this).data("path");
-
-            let categorypath = uploadsourcepath;
-            categorypath = categorypath.replace(/\\/g, "/");
-            categorypath = categorypath.replace(/\/+/g, "/");
-            categorypath = categorypath.replace(/\/$/g, "");
-
-            const formData = new FormData();
-            formData.set("categorypath", categorypath);
-            formData.set("entityid", entityid);
-            formData.set("entitymoduleid", entitymoduleid);
-            formData.set("desktopimportstatus", "scan-started");
-            formData.set("isdownload", "true");
-            desktopSyncStarter(formData, function (synfolder) {
-              console.log("quick-download", synfolder);
-              ipcRenderer
-                .invoke("lightboxDownload", {
-                  categoryPath: uploadsourcepath,
-                  syncFolderId: synfolder.id,
-                })
-                .then((downloadStatus) => {
-                  if (downloadStatus === "OK") {
-                    // OK
-                  } else if (downloadStatus === "DUPLICATE_DOWNLOAD") {
-                    customToast(
-                      "Already running a download task in this folder, wait until it finishes",
-                      {
-                        id: synfolder.id,
-                        positive: false,
-                        autohideDelay: 5000,
-                      }
-                    );
-                  } else if (downloadStatus === "TOO_MANY_DOWNLOADS") {
-                    customToast(
-                      "Wait for at least one other download task to finish",
-                      {
-                        id: synfolder.id,
-                        positive: false,
-                        autohideDelay: 5000,
-                      }
-                    );
-                  }
-                })
-                .catch((error) => {
-                  console.log("quick-download", error);
-                })
-                .finally(() => {
-                  $(this).prop("disabled", false);
-                });
-            });
-          });
-
           lQuery(".redownload").livequery("click", function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -454,11 +388,12 @@
           lQuery(".lightbox-header-btns").livequery(function () {
             const headerBtns = $(this);
 
-            const uploadsourcepath = headerBtns.data("path");
+            const startcategory = headerBtns.data("startcategory");
+            const startcategorypath = headerBtns.data("categorypath");
             const entityid = headerBtns.data("entityid");
             const entitymoduleid = headerBtns.data("entitymoduleid");
 
-            let categorypath = uploadsourcepath;
+            let categorypath = startcategorypath;
             categorypath = categorypath.replace(/\\/g, "/");
             categorypath = categorypath.replace(/\/+/g, "/");
             categorypath = categorypath.replace(/\/$/g, "");
@@ -466,6 +401,7 @@
             const formData = new FormData();
             formData.set("entitymoduleid", entitymoduleid);
             formData.set("entityid", entityid);
+            formData.set("startcategory", startcategory);
             formData.set("categorypath", categorypath);
 
             headerBtns.on("click", ".download-lightbox", function () {
@@ -481,7 +417,7 @@
                 console.log("download", synfolder);
                 ipcRenderer
                   .invoke("lightboxDownload", {
-                    categoryPath: uploadsourcepath,
+                    categoryPath: startcategorypath,
                     syncFolderId: synfolder.id,
                   })
                   .then((downloadStatus) => {
@@ -533,7 +469,7 @@
                 console.log("upload", synfolder);
                 ipcRenderer
                   .invoke("lightboxUpload", {
-                    categoryPath: uploadsourcepath,
+                    categoryPath: startcategorypath,
                     syncFolderId: synfolder.id,
                   })
                   .then((uploadStatus) => {

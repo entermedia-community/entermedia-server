@@ -693,17 +693,16 @@ public class EntityModule extends BaseMediaModule
 		Searcher searcher = archive.getSearcher("desktopsyncfolder");
 		
 		String desktop = inReq.getRequestParameter("desktop");
-		String categorypath = inReq.getRequestParameter("categorypath");
+		String startcategory = inReq.getRequestParameter("startcategory");
 		
-		Boolean isdownload = Boolean.parseBoolean(inReq.getRequestParameter("isdownload"));
-		
-		QueryBuilder query = searcher.query().exact("desktop", desktop).exact("categorypath", categorypath).exact("isdownload", isdownload);
+		QueryBuilder query = searcher.query().exact("desktop", desktop).exact("startcategory", startcategory);
 		
 		Data syncfolder = (Data) query.searchOne();
 		
 		if(syncfolder == null)
 		{
 			syncfolder = archive.getSearcher("desktopsyncfolder").createNewData();
+			syncfolder.setValue("startcategory", startcategory);
 		}
 		
 		String entityid = inReq.getRequestParameter("entityid");
@@ -712,6 +711,8 @@ public class EntityModule extends BaseMediaModule
 		String entitymoduleid = inReq.getRequestParameter("entitymoduleid");
 		syncfolder.setValue("entitymoduleid", entitymoduleid);
 		
+		String categorypath = inReq.getRequestParameter("categorypath");
+		syncfolder.setValue("categorypath", categorypath);
 		syncfolder.setValue("currentcategorypath", categorypath);
 		 
 		syncfolder.setValue("currentfoldertotalsize", 0); 
@@ -719,8 +720,7 @@ public class EntityModule extends BaseMediaModule
 		
 		syncfolder.setValue("desktopimportstatus", "scan-started"); 
 		
-		syncfolder.setValue("categorypath", categorypath);
-		
+		Boolean isdownload = Boolean.parseBoolean(inReq.getRequestParameter("isdownload"));
 		syncfolder.setValue("isdownload", isdownload);
 		
 		String namebreadcrumb = categorypath.replace("/", " &rsaquo; ");
@@ -805,81 +805,81 @@ public class EntityModule extends BaseMediaModule
 		searcher.delete(syncfolder, inReq.getUser());
 	}
 	
-	public synchronized void updateScanStatus(WebPageRequest inReq) throws Exception
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		Searcher searcher = archive.getSearcher("desktopsyncfolder");
-
-		String desktop = inReq.getRequestParameter("desktop");
-		String categorypath = inReq.getRequestParameter("categorypath");
-		if(desktop != null && categorypath != null)
-		{
-			categorypath = categorypath.replace("\\", "/");
-			categorypath = categorypath.replaceAll("/+", "/");
-			categorypath = categorypath.replaceAll("/$", "");
-
-			String desktopimportstatus = inReq.getRequestParameter("desktopimportstatus");
-
-			if(desktopimportstatus != null) 
-			{				
-				Boolean isdownload = Boolean.parseBoolean(inReq.getRequestParameter("isdownload"));
-				QueryBuilder query = searcher.query().exact("desktop", desktop).exact("categorypath", categorypath).exact("isdownload", isdownload);
-				
-				Data folder = (Data) query.searchOne();
-				
-				if(folder == null && !"sync-cancelled".equals(desktopimportstatus))
-				{
-					String entityid = inReq.getRequestParameter("entityid");
-					String moduleid = inReq.getRequestParameter("moduleid");
-					
-					Data entity = archive.getData(moduleid, entityid);
-					
-					folder = archive.getSearcher("desktopsyncfolder").createNewData();
-					
-					folder.setValue("categorypath", categorypath);
-					
-					folder.setValue("isdownload", isdownload);
-					
-					String namebreadcrumb = categorypath.replace("/", " &rsaquo; ");
-					folder.setName(namebreadcrumb);
-					folder.setValue("desktop",desktop);
-					folder.setValue("module",moduleid);
-					if(entity != null)
-					{						
-						folder.setValue("entityid", entity.getId());
-					}
-					folder.setValue("createddate", new Date());
-					archive.saveData("desktopsyncfolder", folder);
-				}
-				
-				if(folder != null)
-				{					
-					String completedfiles = inReq.getRequestParameter("completedfiles");
-					if(completedfiles != null)
-					{			
-						folder.setValue("completedfiles", completedfiles);
-					}
-					
-					String failedfiles = inReq.getRequestParameter("failedfiles");
-					if(failedfiles != null)
-					{
-						folder.setValue("failedfiles", failedfiles);
-					}
-					
-					
-					folder.setValue("desktopimportstatus", desktopimportstatus);
-					if(desktopimportstatus.equals("scan-started"))
-					{
-						folder.setValue("completeddate", new Date());
-					}
-					
-					searcher.saveData(folder, null);
-				}
-			}
-		}
-		Collection syncfolders = searcher.query().exact("desktop", desktop).sort("completeddateDown").search();
-		inReq.putPageValue("syncfolders", syncfolders);
-	}
+//	public synchronized void updateScanStatus(WebPageRequest inReq) throws Exception
+//	{
+//		MediaArchive archive = getMediaArchive(inReq);
+//		Searcher searcher = archive.getSearcher("desktopsyncfolder");
+//
+//		String desktop = inReq.getRequestParameter("desktop");
+//		String categorypath = inReq.getRequestParameter("categorypath");
+//		if(desktop != null && categorypath != null)
+//		{
+//			categorypath = categorypath.replace("\\", "/");
+//			categorypath = categorypath.replaceAll("/+", "/");
+//			categorypath = categorypath.replaceAll("/$", "");
+//
+//			String desktopimportstatus = inReq.getRequestParameter("desktopimportstatus");
+//
+//			if(desktopimportstatus != null) 
+//			{				
+//				Boolean isdownload = Boolean.parseBoolean(inReq.getRequestParameter("isdownload"));
+//				QueryBuilder query = searcher.query().exact("desktop", desktop).exact("categorypath", categorypath).exact("isdownload", isdownload);
+//				
+//				Data folder = (Data) query.searchOne();
+//				
+//				if(folder == null && !"sync-cancelled".equals(desktopimportstatus))
+//				{
+//					String entityid = inReq.getRequestParameter("entityid");
+//					String moduleid = inReq.getRequestParameter("moduleid");
+//					
+//					Data entity = archive.getData(moduleid, entityid);
+//					
+//					folder = archive.getSearcher("desktopsyncfolder").createNewData();
+//					
+//					folder.setValue("categorypath", categorypath);
+//					
+//					folder.setValue("isdownload", isdownload);
+//					
+//					String namebreadcrumb = categorypath.replace("/", " &rsaquo; ");
+//					folder.setName(namebreadcrumb);
+//					folder.setValue("desktop",desktop);
+//					folder.setValue("module",moduleid);
+//					if(entity != null)
+//					{						
+//						folder.setValue("entityid", entity.getId());
+//					}
+//					folder.setValue("createddate", new Date());
+//					archive.saveData("desktopsyncfolder", folder);
+//				}
+//				
+//				if(folder != null)
+//				{					
+//					String completedfiles = inReq.getRequestParameter("completedfiles");
+//					if(completedfiles != null)
+//					{			
+//						folder.setValue("completedfiles", completedfiles);
+//					}
+//					
+//					String failedfiles = inReq.getRequestParameter("failedfiles");
+//					if(failedfiles != null)
+//					{
+//						folder.setValue("failedfiles", failedfiles);
+//					}
+//					
+//					
+//					folder.setValue("desktopimportstatus", desktopimportstatus);
+//					if(desktopimportstatus.equals("scan-started"))
+//					{
+//						folder.setValue("completeddate", new Date());
+//					}
+//					
+//					searcher.saveData(folder, null);
+//				}
+//			}
+//		}
+//		Collection syncfolders = searcher.query().exact("desktop", desktop).sort("completeddateDown").search();
+//		inReq.putPageValue("syncfolders", syncfolders);
+//	}
 	
 	public void createEntitiesForFolders(WebPageRequest inReq) throws Exception
 	{
