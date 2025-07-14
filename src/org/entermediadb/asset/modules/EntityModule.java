@@ -758,6 +758,8 @@ public class EntityModule extends BaseMediaModule
 		syncfolder.setValue("currentfoldertotalsize", 0);
 		syncfolder.setValue("currentfoldertotalcount", 0);
 		
+		syncfolder.setValue("createddate", new Date());
+		
 		searcher.saveData(syncfolder);
 		
 		inReq.putPageValue("syncfolder", syncfolder);
