@@ -1698,6 +1698,18 @@ public class FinderModule extends BaseMediaModule
 			}
 			publishingid = PathUtilities.extractPageName(publishingurl);
 			publishing = (Data) archive.getCachedData("distributiongallery", publishingid);
+			
+			//Create if does not exist
+			if(publishing == null && entityid != null)
+			{
+				String moduleid = inReq.findValue("module");
+				publishing = archive.getSearcher("distributiongallery").createNewData();
+				publishing.setValue("entityid", entityid);
+				publishing.setValue("moduleid", moduleid);
+				publishing.setValue("distributiontype", inReq.getRequestParameter("playertype"));
+				publishing.setValue("enabled", "true");
+				archive.getSearcher("distributiongallery").saveData(publishing);
+			}
 		}
 		
 		if(publishing == null) {	
@@ -1738,9 +1750,16 @@ public class FinderModule extends BaseMediaModule
 		{
 			String lightboxid = inPublishing.get("lightboxid");
 			Data module = archive.getCachedData("module", inPublishing.get("moduleid"));
-			Data lightbox = archive.getCachedData("emedialightbox", lightboxid);
-			Category cat = archive.getEntityManager().loadLightboxCategory(module, entity, "emedialightbox",lightbox, inReq.getUser());
-			categoryid = cat.getId();
+			if (lightboxid == null)
+			{
+				lightboxid = "files";
+			}
+			if (lightboxid != null)
+			{
+				Data lightbox = archive.getCachedData("emedialightbox", lightboxid);
+				Category cat = archive.getEntityManager().loadLightboxCategory(module, entity, "emedialightbox",lightbox, inReq.getUser());
+				categoryid = cat.getId();
+			}
 		}
 		
 		if( categoryid == null)
