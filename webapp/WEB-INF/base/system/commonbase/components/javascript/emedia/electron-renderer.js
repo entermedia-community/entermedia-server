@@ -11,7 +11,8 @@
     SYNC_FULLY_COMPLETED = "sync-fully-completed",
     FILE_PROGRESS_UPDATE = "file-progress-update",
     FILE_STATUS_UPDATE = "file-status-update";
-  // CHECK_SYNC = "check-sync";
+  // CHECK_SYNC = "check-sync",
+  // SYNC_NOT_FOUND = "sync-not-found";
 
   function humanFileSize(bytes, htm = false) {
     if (typeof bytes === "string") bytes = parseInt(bytes);
@@ -135,7 +136,7 @@
           });
 
           const updateLoader = () => {
-            var loaderPreview = $(".desktopSyncPreview");
+            const loaderPreview = $(".desktopSyncPreview");
             if (loaderPreview.find(".work-folder.processing").length > 0) {
               loaderPreview
                 .find(".syncIcon")
@@ -332,8 +333,8 @@
             e.preventDefault();
             e.stopPropagation();
 
-            var folder = $(this).closest(".work-folder");
-            var syncfolderid = folder.data("syncfolderid");
+            const folder = $(this).closest(".work-folder");
+            const syncfolderid = folder.data("syncfolderid");
 
             $(this).prop("disabled", true);
             $(this).addClass("active");
@@ -632,15 +633,22 @@
           });
           // </single file download events>
 
-          // lQuery("#desktoppendingpopover").livequery(function () {
-          //   const oldTask = $(this).find(".work-folder.processing");
-          //   if (oldTask.length > 0) {
+          // lQuery(".work-folder.processing").livequery(function () {
+          //   const uncheckedTask = $(this);
+          //   if (uncheckedTask.length > 0) {
+          //     const flagTarget = $("#" + uncheckedTask.data("flagtarget"));
+          //     if (flagTarget.length === 0 || flagTarget.hasClass("checked")) {
+          //       return;
+          //     }
+          //     flagTarget.addClass("checked");
           //     ipcRenderer.send(CHECK_SYNC, {
-          //       syncFolderId: oldTask.data("syncfolderid"),
-          //       isDownload: oldTask.hasClass("download"),
+          //       syncFolderId: uncheckedTask.data("syncfolderid"),
+          //       isDownload: uncheckedTask.hasClass("download"),
           //     });
           //   }
           // });
+
+          // ipcRenderer.on(SYNC_NOT_FOUND, (_, data) => {});
 
           lQuery(".desktopdirectdownload").livequery("click", function (e) {
             e.preventDefault();
