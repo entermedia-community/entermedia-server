@@ -2236,6 +2236,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	 */
 	public void updateIndex(Collection<Data> inBuffer, User inUser)
 	{
+		if( inBuffer.isEmpty() )
+		{
+			return;
+		}
+		
 		if (inBuffer.size() > 2 || fieldForceBulk) // 100 was too low - caused shard exceptions
 		// due to thread pool size on large
 		// ingests..

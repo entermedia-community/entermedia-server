@@ -7,15 +7,15 @@ import org.openedit.MultiValued;
 
 public class FaceScanInstructions
 {
-	boolean fieldForceVectorUpdate = false;
+	boolean fieldUpdateExistingFace = true;
 	
-	public boolean isForceVectorUpdate()
+	public boolean isUpdateExistingFace()
 	{
-		return fieldForceVectorUpdate;
+		return fieldUpdateExistingFace;
 	}
-	public void setForceVectorUpdate(boolean inForceVectorUpdate)
+	public void setUpdateExistingFace(boolean inUpdateExistingFace)
 	{
-		fieldForceVectorUpdate = inForceVectorUpdate;
+		fieldUpdateExistingFace = inUpdateExistingFace;
 	}
 	boolean fieldFindParents = true;
 	
@@ -27,15 +27,15 @@ public class FaceScanInstructions
 	{
 		fieldFindParents = inSetParents;
 	}
-	Collection<MultiValued> fieldAllRecords;
-	public Collection<MultiValued> getAllRecords()
-	{
-		return fieldAllRecords;
-	}
-	public void setAllRecords(Collection<MultiValued> inAllFaces)
-	{
-		fieldAllRecords = inAllFaces;
-	}
+//	Collection<MultiValued> fieldAllRecords;
+//	public Collection<MultiValued> getAllRecords()
+//	{
+//		return fieldAllRecords;
+//	}
+//	public void setAllRecords(Collection<MultiValued> inAllFaces)
+//	{
+//		fieldAllRecords = inAllFaces;
+//	}
 	public Collection<String> getAllAssetIds()
 	{
 		return fieldAllAssetIds;
