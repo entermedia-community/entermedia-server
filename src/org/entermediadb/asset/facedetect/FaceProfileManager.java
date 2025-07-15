@@ -167,7 +167,7 @@ public class FaceProfileManager implements CatalogEnabled
 				if( !instructions.isUpdateExistingFace() )
 				{
 					String assetid = asset.getId();
-					if( instructions.getAllAssetIds().contains(assetid ) )
+					if( instructions.getAllAssetIds() != null && instructions.getAllAssetIds().contains(assetid ) )
 					{
 						log.error("Skipping, Already have assetid " + assetid);
 						continue;
