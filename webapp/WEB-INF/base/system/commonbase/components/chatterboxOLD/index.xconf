@@ -1,5 +1,0 @@
-<page>
-<path-action name="ChatModule.loadLastPageOfChats"/>
-<path-action name="ChatModule.getAsset"/>
-
-</page>
