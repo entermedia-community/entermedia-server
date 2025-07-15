@@ -1884,6 +1884,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					find = QueryBuilders.termQuery(fieldid, Double.parseDouble(valueof));
 
 				}
+				else if (inDetail.isDataType("float"))
+				{
+					find = QueryBuilders.termQuery(fieldid, Float.parseFloat(valueof));
+				}
 				else
 				{
 					find = QueryBuilders.termQuery(fieldid, Long.parseLong(valueof));
