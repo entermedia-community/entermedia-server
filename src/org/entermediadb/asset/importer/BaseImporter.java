@@ -547,8 +547,29 @@ public class BaseImporter extends EnterMediaObject
 			if (val != null && val.length() > 0)
 			{
 				val = val.trim(); 	//trim spaces and clean
-				Object value = lookUpListValIfNeeded(detail,val);
-				inData.setValue(detail.getId(), value);
+				
+				if( detail.isList() )
+				{
+					Object value = lookUpListValIfNeeded(detail,val);
+					inData.setValue(detail.getId(), value);
+				}
+				else if( detail.isNumber() && detail.isMultiValue() )
+				{
+					String[] values = MultiValued.VALUEDELMITER.split(val);
+					if( "double".equals( detail.getDataType() ) )
+					{
+						Collection dvalues = MultiValued.collectDoubles(values);
+						inData.setValue(detail.getId(), dvalues);
+					}
+					else
+					{
+						inData.setValue(detail.getId(), values);
+					}
+				}
+				else
+				{
+					inData.setValue(detail.getId(), val);  //Will save as a number anyways
+				}
 			}
 			else
 			{

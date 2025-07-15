@@ -452,17 +452,122 @@ public class FaceProfileManager implements CatalogEnabled
 
 	public void fixAllParents()
 	{
-		HitTracker allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").search();  //Smallest faces connect to the largest one
-		allfaces.enableBulkOperations();
-		
-		for(int i=0;i < allfaces.getTotalPages();i++)
+		int chunksize = 5000;
+		HitTracker allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").sort("id").search();  //Smallest faces connect to the largest one
+		allfaces.setHitsPerPage(chunksize); //We will loadup all 10000. save everything in the DB then run the search again?
+		int total = allfaces.getTotalPages();
+		for(int i=0;i < total;i++)
 		{
+			Collection includeonly = new ArrayList();
+			includeonly.add("assetid");
+			includeonly.add("facedatadoubles");
+			
+			allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").include(includeonly).sort("id").search();  //Smallest faces connect to the largest one
+			allfaces.setHitsPerPage(chunksize);
 			allfaces.setPage(i+1);
 			//Process this list of parents in chunks. All the while tracking the best score
-			log.info("Starting on page " + allfaces.getPage() );
+
 			Collection<MultiValued> onepage = allfaces.getPageOfHits();
-			fixSortedParents(onepage);
+			log.info("Starting comparison page " + allfaces.getPage() + " scanning " + onepage.size());
+			fixSortedParents(onepage); //This is saved
+			log.info("Starting parentids lookup" + allfaces.getPage() );
+			fixParentIds(onepage);
 		}
+		
+//		//Now a new process
+//		for(int i=0;i < total;i++)
+//		{
+//			allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").sort("id").search();  //Smallest faces connect to the largest one
+//			allfaces.setHitsPerPage(chunksize);
+//			allfaces.setPage(i+1);
+//			
+//			Collection<MultiValued> onepage = allfaces.getPageOfHits();
+//		
+//			
+//		}
+	}
+
+	protected void fixParentIds(Collection<MultiValued> inChunkToFinish)
+	{
+		//Load Cache DB
+		Map<String,String> parentlookup = new HashMap();
+		HitTracker allparents = null;
+		
+		Collection includeonly = new ArrayList();
+		includeonly.add("parentembeddingid");
+		
+		if( inChunkToFinish.size() > 1000)
+		{
+			//Load entire DB
+			allparents = getMediaArchive().query("faceembedding").exact("isremoved",false).exists("parentembeddingid").include(includeonly).search();
+		}
+		else
+		{
+			Collection possibleparents = new ArrayList();
+			for (Iterator iterator = inChunkToFinish.iterator(); iterator.hasNext();)
+			{
+				MultiValued face = (MultiValued) iterator.next();
+				String parentid = face.get("parentembeddingid");
+				if( parentid != null)
+				{
+					possibleparents.add(parentid);
+				}
+			}
+			allparents = getMediaArchive().query("faceembedding").exact("isremoved",false).
+					orgroup("parentembeddingid",possibleparents).
+					include(includeonly).search();
+		}
+		allparents.setHitsPerPage(1000);
+
+		for (Iterator iterator = allparents.iterator(); iterator.hasNext();)
+		{
+			MultiValued parent = (MultiValued) iterator.next();
+			String parentembeddingid = parent.get("parentembeddingid");
+			if( parentembeddingid != null )
+			{
+				parentlookup.put( parent.getId(), parentembeddingid );
+			}
+		}
+		Searcher fsearcher = getMediaArchive().getSearcher("faceembedding");
+
+		//Now go save all the best of
+		for (Iterator iterator = inChunkToFinish.iterator(); iterator.hasNext();)
+		{
+			MultiValued fixedface = (MultiValued) iterator.next();
+			//How do I get ALL the parents? I guess I can loop over till I get a null then search DB?
+			Collection parentids = new ArrayList();
+			parentids.add(fixedface.getId());
+			String moreparentid = fixedface.get("parentembeddingid");
+			//fixedface.getBestParentFace().setValue("hasotherfaces", true );
+			//Has to be in there
+			while( moreparentid != null)
+			{
+				if( parentids.contains(moreparentid) )
+				{
+					break; //Infinite loop
+				}
+				parentids.add(moreparentid);
+				moreparentid = parentlookup.get(moreparentid);
+				if( moreparentid == null)  //Problem finding parent
+				{
+					log.info("DB parent Lookup " + fixedface.getId() + " -> " + moreparentid );
+					MultiValued missingparent = (MultiValued)fsearcher.searchById(moreparentid);
+					if(missingparent == null)
+					{
+						break;
+					}
+					if( missingparent.getBoolean("isremoved") )
+					{
+						break;
+					}
+					moreparentid = missingparent.get("parentembeddingid");
+				}
+			}
+			fixedface.setValue("parentids", parentids);
+
+		}
+		getMediaArchive().saveData("faceembedding",inChunkToFinish); //All Saved
+		
 	}
 
 	public void fixSomeNewParents(List<MultiValued> somefacestosave)
@@ -489,9 +594,12 @@ public class FaceProfileManager implements CatalogEnabled
 		});
 		fixSortedParents(somefacestosave); //Adds them to allrecords
 		//allrecords.addAll(somefacestosave);
+		fixParentIds(somefacestosave);
 	}
 	protected void fixSortedParents(Collection<MultiValued> inResetFaces)
 	{
+		long start = System.currentTimeMillis();
+		Map<String,MultiValued> childchunk = new HashMap(inResetFaces.size());
 		List<Data> tosave = new ArrayList();
 		for (Iterator iterator = inResetFaces.iterator(); iterator.hasNext();)
 		{
@@ -503,110 +611,79 @@ public class FaceProfileManager implements CatalogEnabled
 			toreset.setValue("parentembeddingid",null);
 			toreset.setValue("parentids",null);
 			toreset.setValue("parentassetid",null);
-			toreset.setValue("parentdistance",null);
+			toreset.setValue("parentdistance",100D);
 			toreset.setValue("hasotherfaces",false);
+			childchunk.put(toreset.getId(),toreset);
 			
 		}
 		Searcher fsearcher = getMediaArchive().getSearcher("faceembedding");
 		fsearcher.saveAllData(tosave,null);
 		tosave.clear();
 
-		Map<String,MultiValued> parentlookup = new HashMap(inResetFaces.size());
-
-		Collection<FaceBestParent> bestscores = new ArrayList(inResetFaces.size());
-		for (Iterator iterator = inResetFaces.iterator(); iterator.hasNext();)
-		{
-			MultiValued toreset = (MultiValued) iterator.next();
-			FaceBestParent withparent = new FaceBestParent();
-			withparent.setFace(toreset);
-			bestscores.add(withparent);
-			parentlookup.put(toreset.getId(),toreset);
-		}
+		FaceScanInstructions instruction = createInstructions();
+		instruction.setChildChunk(childchunk);
 		
-		HitTracker allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhDown").search();
+		int chunksize = 5000;
+		Collection includeonly = new ArrayList();
+		includeonly.add("parentembeddingid");
+		includeonly.add("assetid");
+		includeonly.add("facedatadoubles");
+		
+		HitTracker allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).include(includeonly).sort("id").search();
 		allfaces.enableBulkOperations();
-
-		for(int i=0;i < allfaces.getTotalPages();i++)
+		allfaces.setHitsPerPage(chunksize);
+		int total = allfaces.getTotalPages();
+		log.info("Looking for parents " + inResetFaces.size() + " in " + allfaces.size() + " faces");
+		for(int i=0;i < total;i++)
 		{
+//			allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("id").search();
+//			allfaces.setHitsPerPage(10000);
 			allfaces.setPage(i+1);
 
-			log.info("Review Chunck of Faces " + allfaces.getPage() );
+			int starting = allfaces.getPage()*chunksize;
+			int ending = allfaces.getPage()*chunksize + chunksize;
 
 			//Process this list of parents in chunks. All the while tracking the best score
 			//long start = System.currentTimeMillis();
 			Collection<MultiValued> onepage = allfaces.getPageOfHits();
-			scanChunkOfParents(parentlookup,bestscores,onepage);
+			Map<String,MultiValued> parentchunk = new HashMap(onepage.size());
+			
+			for (Iterator iterator = allfaces.iterator(); iterator.hasNext();)
+			{
+				MultiValued possibleparent = (MultiValued) iterator.next();
+				parentchunk.put(possibleparent.getId(),possibleparent);
+			}
+			instruction.setParentChunk(parentchunk);
+			scanChunkOfParents(instruction);
+			log.info("Compared " + inResetFaces.size() + " to group of faces " + starting + " to " + ending);
 
 		}
-		
-		//Now go save all the best of
-		for (Iterator iterator = bestscores.iterator(); iterator.hasNext();)
-		{
-			FaceBestParent fixedface = (FaceBestParent) iterator.next();
-			MultiValued aface = (MultiValued)fixedface.getFace();
-			//How do I get ALL the parents? I guess I can loop over till I get a null then search DB?
-			tosave.add(aface);
-			if( fixedface.getBestParentFace() == null)
-			{
-				continue;
-			}
-			Collection parentids = new ArrayList();
-			parentids.add(aface.getId());
-			aface.setValue("parentembeddingid", fixedface.getBestParentFace().getId());
-			aface.setValue("parentassetid", fixedface.getBestParentFace().get("assetid"));
-			aface.setValue("parentdistance", fixedface.getBestParentScore() );
-			aface.setValue("hasotherfaces", true );
-			fixedface.getBestParentFace().setValue("hasotherfaces", true );
-			
-			parentids.add(fixedface.getBestParentFace().getId());
-			String moreparentid = fixedface.getBestParentFace().get("parentembeddingid");
-			while( moreparentid != null)
-			{
-				MultiValued otherparent = parentlookup.get(moreparentid);  //Check myself first. Since its not saved yet
-				if( otherparent == null)
-				{
-					log.info("DB parent Lookup " + aface.getId() + " -> " + moreparentid );
-					otherparent = (MultiValued)fsearcher.searchById(moreparentid);
-				}
-				if(otherparent == null)
-				{
-					break;
-				}
-				if( otherparent.getBoolean("isremoved") )
-				{
-					break;
-				}
-				if( parentids.contains(moreparentid) )
-				{
-					break; //Infinite loop
-				}
-				parentids.add(moreparentid);
-				moreparentid = otherparent.get("parentembeddingid");
-			}
-			aface.setValue("parentids", parentids);
-			
-			if(tosave.size() == 1000)
-			{
-				getMediaArchive().saveData("faceembedding",tosave); //All Saved
-				tosave.clear();
-				log.info("Saving parents list for a group of " + tosave.size()  );
-			}
-		}
-		getMediaArchive().saveData("faceembedding",tosave); //All Saved
+		long end = System.currentTimeMillis();
+		double minutes = (start-end)/1000D/60D;
+		getMediaArchive().saveData("faceembedding",inResetFaces);
+		log.info("Did a full scan on " + inResetFaces.size() + " faces in " +  minutes + "  minutes " );
+
 		
 	}
 	
 
-	protected void scanChunkOfParents(Map<String,MultiValued> parentlookup, Collection<FaceBestParent> inBestscores, Collection<MultiValued> inOnepageOfFaces)
+	protected void scanChunkOfParents(FaceScanInstructions inStructions)
 	{
-		for (Iterator iterator = inBestscores.iterator(); iterator.hasNext();)
+		double goodenough = .4D;
+		
+		for (Iterator iterator = inStructions.getChildChunk().values().iterator(); iterator.hasNext();)
 		{
-			FaceBestParent	oneface = (FaceBestParent) iterator.next();
-			String myassetid = oneface.getFace().get("assetid");
+			MultiValued child = (MultiValued)iterator.next();
+			if( child.getDouble("parentdistance") < goodenough) //Skip ones That are good enought
+			{
+				//Close enough
+				continue;
+			}
+			String myassetid = child.get("assetid");
 			
-			List<Double> myfacev = (List<Double>)oneface.getFace().getValue("facedatadoubles");
+			List<Double> myfacev = (List<Double>)child.getValue("facedatadoubles");
 
-			for (Iterator iterator2 = inOnepageOfFaces.iterator(); iterator2.hasNext();)
+			for (Iterator iterator2 = inStructions.getParentChunk().values().iterator(); iterator2.hasNext();)
 			{
 				MultiValued otherface = (MultiValued) iterator2.next();
 				
@@ -618,13 +695,10 @@ public class FaceProfileManager implements CatalogEnabled
 					continue;
 				}
 
-				if( parentlookup.containsKey(otherface.getId()) )
-				{
-					otherface = parentlookup.get(otherface.getId());
-				}
+				otherface = inStructions.loadData(otherface.getId());
 				//Dont find children who already have me as a parent
-				String imediateparent = otherface.get("parentembeddingid");
-				if( imediateparent != null && imediateparent.equals(oneface.getFace().getId()) )
+				String imediateparentid = otherface.get("parentembeddingid");
+				if( imediateparentid != null && imediateparentid.equals(child.getId()) )
 				{
 					//log.info("Skipping has me as parent");
 					continue;
@@ -635,19 +709,15 @@ public class FaceProfileManager implements CatalogEnabled
 				double distance = findCosineDistance(myfacev, comparetolist);
 				if( distance < getVectorScoreLimit())
 				{
-					if( distance < oneface.getBestParentScore())
+					if( distance < child.getDouble("parentdistance"))
 					{
-						log.info("Joining " +distance );
-						oneface.setBestParentScore(distance);
-						oneface.setBestParentFace(otherface);
-						
-						if( parentlookup.size() < 10000 )
-						{
-							if( !parentlookup.containsKey(otherface.getId()))
-							{
-								parentlookup.put( otherface.getId() ,otherface); //Dont run out of 
-							}
-						}
+						//log.info("Joining " +distance );
+						child.setValue("parentdistance",distance);
+						child.setValue("parentembeddingid", otherface.getId());
+						child.setValue("parentassetid", otherface.get("assetid"));
+						child.setValue("hasotherfaces", true );
+						child.setValue("parentids",null); //resolve at the end
+						otherface.setValue("hasotherfaces", true ); //TODO Saved?
 					}
 				}
 			}

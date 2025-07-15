@@ -400,7 +400,12 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			addHighlights(inQuery, search);
 			search.setRequestCache(true);
 
-			if (!inQuery.isIncludeDescription())
+			if (inQuery.getIncludeOnly() != null)
+			{
+				String[] includes = (String[])inQuery.getIncludeOnly().toArray( new String[inQuery.getIncludeOnly().size()]);
+				search.setFetchSource(includes, null);
+			} 
+			else if (!inQuery.isIncludeDescription())
 			{
 				search.setFetchSource(null, "description");
 			}

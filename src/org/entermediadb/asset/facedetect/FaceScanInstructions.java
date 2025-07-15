@@ -1,8 +1,8 @@
 package org.entermediadb.asset.facedetect;
 
 import java.util.Collection;
+import java.util.Map;
 
-import org.openedit.Data;
 import org.openedit.MultiValued;
 
 public class FaceScanInstructions
@@ -27,15 +27,36 @@ public class FaceScanInstructions
 	{
 		fieldFindParents = inSetParents;
 	}
-//	Collection<MultiValued> fieldAllRecords;
-//	public Collection<MultiValued> getAllRecords()
-//	{
-//		return fieldAllRecords;
-//	}
-//	public void setAllRecords(Collection<MultiValued> inAllFaces)
-//	{
-//		fieldAllRecords = inAllFaces;
-//	}
+
+	protected Map<String,MultiValued> fieldChildChunk; //Used to compare with then we loop again
+	public Map<String, MultiValued> getChildChunk()
+	{
+		return fieldChildChunk;
+	}
+	public void setChildChunk(Map<String, MultiValued> inChildChunk)
+	{
+		fieldChildChunk = inChildChunk;
+	}
+	public Map<String, MultiValued> getParentChunk()
+	{
+		return fieldParentChunk;
+	}
+	public void setParentChunk(Map<String, MultiValued> inParentChunk)
+	{
+		fieldParentChunk = inParentChunk;
+	}
+	protected Map<String,MultiValued> fieldParentChunk; //Used to compare with then we loop again
+
+	public MultiValued loadData(String inId)
+	{
+		MultiValued  found = getChildChunk().get(inId);
+		if( found == null)
+		{
+			found = getParentChunk().get(inId);
+		}
+		return found;
+	}
+	
 	public Collection<String> getAllAssetIds()
 	{
 		return fieldAllAssetIds;
