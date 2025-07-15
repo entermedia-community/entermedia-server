@@ -1,5 +1,0 @@
-<page>
-<path-action name="ChatModule.loadMoreMessages"/>
-<!-- path-action name="ChatModule.getAsset"/ -->
-
-</page>
