@@ -10,8 +10,9 @@
     SYNC_FOLDER_COMPLETED = "sync-folder-completed",
     SYNC_FULLY_COMPLETED = "sync-fully-completed",
     FILE_PROGRESS_UPDATE = "file-progress-update",
-    FILE_STATUS_UPDATE = "file-status-update",
-    CHECK_SYNC = "check-sync";
+    FILE_STATUS_UPDATE = "file-status-update";
+  // CHECK_SYNC = "check-sync",
+  // SYNC_NOT_FOUND = "sync-not-found";
 
   function humanFileSize(bytes, htm = false) {
     if (typeof bytes === "string") bytes = parseInt(bytes);
@@ -135,7 +136,7 @@
           });
 
           const updateLoader = () => {
-            var loaderPreview = $(".desktopSyncPreview");
+            const loaderPreview = $(".desktopSyncPreview");
             if (loaderPreview.find(".work-folder.processing").length > 0) {
               loaderPreview
                 .find(".syncIcon")
@@ -242,9 +243,6 @@
 
           lQuery(".open-folder").livequery("click", function () {
             let path = $(this).data("path");
-            if (!path) {
-              path = $(this).closest(".ofl-path").data("path");
-            }
             const customRoot = $(this).data("root");
             const dropFromFolderPath = $(this).data("removecategorysubfolder");
             if (path) {
@@ -331,78 +329,12 @@
             $(window).trigger("resize");
           });
 
-          lQuery(".quick-download").livequery("click", function () {
-            $(this).prop("disabled", true);
-            $("#col-sidebars").load(
-              apphome + "/components/sidebars/index.html",
-              {
-                propertyfield: "sidebarcomponent",
-                sidebarcomponent: "localdrives",
-                "sidebarcomponent.value": "localdrives",
-              }
-            );
-            $(window).trigger("resize");
-
-            const entityid = $(this).data("entityid");
-            const entitymoduleid = $(this).data("entitymoduleid");
-            const uploadsourcepath = $(this).data("path");
-
-            let categorypath = uploadsourcepath;
-            categorypath = categorypath.replace(/\\/g, "/");
-            categorypath = categorypath.replace(/\/+/g, "/");
-            categorypath = categorypath.replace(/\/$/g, "");
-
-            const formData = new FormData();
-            formData.set("categorypath", categorypath);
-            formData.set("entityid", entityid);
-            formData.set("entitymoduleid", entitymoduleid);
-            formData.set("desktopimportstatus", "scan-started");
-            formData.set("isdownload", "true");
-            desktopSyncStarter(formData, function (synfolder) {
-              console.log("quick-download", synfolder);
-              ipcRenderer
-                .invoke("lightboxDownload", {
-                  categoryPath: uploadsourcepath,
-                  syncFolderId: synfolder.id,
-                })
-                .then((downloadStatus) => {
-                  if (downloadStatus === "OK") {
-                    // OK
-                  } else if (downloadStatus === "DUPLICATE_DOWNLOAD") {
-                    customToast(
-                      "Already running a download task in this folder, wait until it finishes",
-                      {
-                        id: synfolder.id,
-                        positive: false,
-                        autohideDelay: 5000,
-                      }
-                    );
-                  } else if (downloadStatus === "TOO_MANY_DOWNLOADS") {
-                    customToast(
-                      "Wait for at least one other download task to finish",
-                      {
-                        id: synfolder.id,
-                        positive: false,
-                        autohideDelay: 5000,
-                      }
-                    );
-                  }
-                })
-                .catch((error) => {
-                  console.log("quick-download", error);
-                })
-                .finally(() => {
-                  $(this).prop("disabled", false);
-                });
-            });
-          });
-
           lQuery(".redownload").livequery("click", function (e) {
             e.preventDefault();
             e.stopPropagation();
 
-            var folder = $(this).closest(".work-folder");
-            var syncfolderid = folder.data("syncfolderid");
+            const folder = $(this).closest(".work-folder");
+            const syncfolderid = folder.data("syncfolderid");
 
             $(this).prop("disabled", true);
             $(this).addClass("active");
@@ -454,11 +386,12 @@
           lQuery(".lightbox-header-btns").livequery(function () {
             const headerBtns = $(this);
 
-            const uploadsourcepath = headerBtns.data("path");
+            const startcategory = headerBtns.data("startcategory");
+            const startcategorypath = headerBtns.data("categorypath");
             const entityid = headerBtns.data("entityid");
             const entitymoduleid = headerBtns.data("entitymoduleid");
 
-            let categorypath = uploadsourcepath;
+            let categorypath = startcategorypath;
             categorypath = categorypath.replace(/\\/g, "/");
             categorypath = categorypath.replace(/\/+/g, "/");
             categorypath = categorypath.replace(/\/$/g, "");
@@ -466,6 +399,7 @@
             const formData = new FormData();
             formData.set("entitymoduleid", entitymoduleid);
             formData.set("entityid", entityid);
+            formData.set("startcategory", startcategory);
             formData.set("categorypath", categorypath);
 
             headerBtns.on("click", ".download-lightbox", function () {
@@ -481,7 +415,7 @@
                 console.log("download", synfolder);
                 ipcRenderer
                   .invoke("lightboxDownload", {
-                    categoryPath: uploadsourcepath,
+                    categoryPath: startcategorypath,
                     syncFolderId: synfolder.id,
                   })
                   .then((downloadStatus) => {
@@ -533,7 +467,7 @@
                 console.log("upload", synfolder);
                 ipcRenderer
                   .invoke("lightboxUpload", {
-                    categoryPath: uploadsourcepath,
+                    categoryPath: startcategorypath,
                     syncFolderId: synfolder.id,
                   })
                   .then((uploadStatus) => {
@@ -699,15 +633,22 @@
           });
           // </single file download events>
 
-          lQuery("#desktoppendingpopover").livequery(function () {
-            const oldTask = $(this).find(".work-folder.processing");
-            if (oldTask.length > 0) {
-              ipcRenderer.send(CHECK_SYNC, {
-                syncFolderId: oldTask.data("syncfolderid"),
-                isDownload: oldTask.hasClass("download"),
-              });
-            }
-          });
+          // lQuery(".work-folder.processing").livequery(function () {
+          //   const uncheckedTask = $(this);
+          //   if (uncheckedTask.length > 0) {
+          //     const flagTarget = $("#" + uncheckedTask.data("flagtarget"));
+          //     if (flagTarget.length === 0 || flagTarget.hasClass("checked")) {
+          //       return;
+          //     }
+          //     flagTarget.addClass("checked");
+          //     ipcRenderer.send(CHECK_SYNC, {
+          //       syncFolderId: uncheckedTask.data("syncfolderid"),
+          //       isDownload: uncheckedTask.hasClass("download"),
+          //     });
+          //   }
+          // });
+
+          // ipcRenderer.on(SYNC_NOT_FOUND, (_, data) => {});
 
           lQuery(".desktopdirectdownload").livequery("click", function (e) {
             e.preventDefault();
