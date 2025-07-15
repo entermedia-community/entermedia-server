@@ -452,13 +452,14 @@ public class FaceProfileManager implements CatalogEnabled
 
 	public void fixAllParents()
 	{
-		int chunksize = 5000;
+		int chunksize = 1000;
 		HitTracker allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").sort("id").search();  //Smallest faces connect to the largest one
 		allfaces.setHitsPerPage(chunksize); //We will loadup all 10000. save everything in the DB then run the search again?
 		int total = allfaces.getTotalPages();
 		for(int i=0;i < total;i++)
 		{
 			Collection includeonly = new ArrayList();
+			includeonly.add("id");
 			includeonly.add("assetid");
 			includeonly.add("facedatadoubles");
 			

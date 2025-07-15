@@ -1197,6 +1197,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		{
 			jsonproperties = jsonproperties.field("type", "long");
 		}
+		else if (detail.isDataType("float"))
+		{
+			jsonproperties = jsonproperties.field("type", "float");
+		}
 		else if (detail.isDataType("double"))
 		{
 			jsonproperties = jsonproperties.field("type", "double");
