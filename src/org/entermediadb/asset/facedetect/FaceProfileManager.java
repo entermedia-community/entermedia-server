@@ -459,6 +459,7 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			allfaces.setPage(i+1);
 			//Process this list of parents in chunks. All the while tracking the best score
+			log.info("Starting on page " + allfaces.getPage() );
 			Collection<MultiValued> onepage = allfaces.getPageOfHits();
 			fixSortedParents(onepage);
 		}
@@ -529,22 +530,13 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			allfaces.setPage(i+1);
 
+			log.info("Review Chunck of Faces " + allfaces.getPage() );
+
 			//Process this list of parents in chunks. All the while tracking the best score
-			long start = System.currentTimeMillis();
+			//long start = System.currentTimeMillis();
 			Collection<MultiValued> onepage = allfaces.getPageOfHits();
 			scanChunkOfParents(parentlookup,bestscores,onepage);
-			
-			if( parentlookup.size() < 10000 )
-			{
-				for (Iterator iterator = onepage.iterator(); iterator.hasNext();)
-				{
-					MultiValued parent = (MultiValued) iterator.next();
-					if( !parentlookup.containsKey(parent.getId()))
-					{
-						parentlookup.put( parent.getId() ,parent); //Dont run out of 
-					}
-				}
-			}
+
 		}
 		
 		//Now go save all the best of
@@ -648,12 +640,16 @@ public class FaceProfileManager implements CatalogEnabled
 						log.info("Joining " +distance );
 						oneface.setBestParentScore(distance);
 						oneface.setBestParentFace(otherface);
+						
+						if( parentlookup.size() < 10000 )
+						{
+							if( !parentlookup.containsKey(otherface.getId()))
+							{
+								parentlookup.put( otherface.getId() ,otherface); //Dont run out of 
+							}
+						}
 					}
 				}
-			}
-
-			if( oneface.getBestParentFace() == null)
-			{
 			}
 		}
 	}
