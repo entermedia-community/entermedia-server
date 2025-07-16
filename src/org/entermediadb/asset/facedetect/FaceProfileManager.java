@@ -15,6 +15,7 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -457,7 +458,8 @@ public class FaceProfileManager implements CatalogEnabled
 		allfaces.enableBulkOperations();
 		
 		Collection tosave = new ArrayList();
-
+		int count = 0;
+		
 		logger.info("Setting " + allfaces.size() + " to 100D ");
 		for (Iterator iterator = allfaces.iterator(); iterator.hasNext();)
 		{
@@ -467,7 +469,8 @@ public class FaceProfileManager implements CatalogEnabled
 			if( tosave.size() == 1000)
 			{
 				getMediaArchive().saveData("faceembedding",tosave); //Save in chunks
-				logger.info("Saving " + tosave.size());
+				count = count + tosave.size();
+				logger.info("Saved " + count + " of " + allfaces.size());
 				tosave.clear();
 			}
 		}
@@ -492,15 +495,16 @@ public class FaceProfileManager implements CatalogEnabled
 			allfaces.setHitsPerPage(chunksize); //We will loadup all 10000. save everything in the DB then run the search again?
 			if( allfaces.isEmpty() )
 			{
-				log.info("No more faces to process");
+				logger.info("No more faces to process");
 				break;
 			}
 			Collection<MultiValued> onepage = allfaces.getPageOfHits();
 			count += onepage.size();
-			logger.info("Processed " + count + " faces with 100 distance out of " + allfaces.size());
+			logger.info(new Date() + " Starting " + count + " faces with 100 distance out of " + allfaces.size());
 			fixSortedParents(onepage); //This is saved
-			log.info("Starting parentids lookup" + allfaces.getPage() );
+			logger.info(new Date() + " Completed connecting parents lookup on" + count );
 			fixParentIds(onepage); //This saves with all parents set
+			logger.info(new Date() + " Completed parentids lookup on" + count );
 			
 		} while( !allfaces.isEmpty() );
 		
