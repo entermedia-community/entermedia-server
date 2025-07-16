@@ -3150,6 +3150,52 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 					inContent.field(key, val);
 				}
+				else if (detail.isDataType("float"))
+				{
+					if( detail.isMultiValue() )
+					{
+						if (value instanceof float[] )
+						{
+							float[] values = (float[]) value;
+							inContent.field(key, values);
+							continue;
+						}
+						if (value instanceof List )
+						{
+							List<Float> values = (List<Float>) value;
+							inContent.field(key, values);
+							continue;
+						}
+					}
+					Float val = null;
+
+					if (value instanceof Float)
+					{
+						val = (Float) value;
+					}
+					else if (value instanceof Integer)
+					{
+						val = Float.valueOf((int) value);
+					}
+					else if (value instanceof Long)
+					{
+						val = Float.valueOf((long) value);
+					}
+					else if (value != null)
+					{
+						try
+						{
+							val = Float.valueOf((String) value);
+						}
+						catch (Exception ef)
+						{
+							log.error("Cant format " + getSearchType() + " " + detail.getId() + " " + value, ef);
+							continue;
+						}
+
+					}
+					inContent.field(key, val);
+				}
 				else if (detail.isDataType("long"))
 				{
 					Long val = null;

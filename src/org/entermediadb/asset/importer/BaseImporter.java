@@ -561,6 +561,11 @@ public class BaseImporter extends EnterMediaObject
 						Collection dvalues = MultiValued.collectDoubles(values);
 						inData.setValue(detail.getId(), dvalues);
 					}
+					else if("float".equals( detail.getDataType() ) )
+					{
+						Collection dvalues = MultiValued.collectFloats(values);
+						inData.setValue(detail.getId(), dvalues);
+					}
 					else
 					{
 						inData.setValue(detail.getId(), values);

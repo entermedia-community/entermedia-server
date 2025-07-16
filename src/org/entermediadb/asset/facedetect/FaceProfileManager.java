@@ -420,13 +420,13 @@ public class FaceProfileManager implements CatalogEnabled
 				uniquefaces.add(embedded);
 			}
 			//Add it back after removing all the duplicated
-			List<Double> facedoubles = (List<Double>)embedded.getValue("facedatadoubles");
+			List<Float> facedoubles = (List<Float>)embedded.getValue("facedatadoubles");
 			
 			Collection<Data> remainingfacestmp = new ArrayList(remainingfaces);
 			for (Iterator iterator2 = remainingfacestmp.iterator(); iterator2.hasNext();)
 			{
 				Data otherface = (Data) iterator2.next();
-				List<Double> othervalues = (List<Double>)otherface.getValue("facedatadoubles");
+				List<Float> othervalues = (List<Float>)otherface.getValue("facedatadoubles");
 				boolean same = compareVectors(facedoubles, othervalues, getVectorScoreLimit() + 0.3D ); //Be more flexible
 				if( same )
 				{
@@ -682,7 +682,7 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 			String myassetid = child.get("assetid");
 			
-			List<Double> myfacev = (List<Double>)child.getValue("facedatadoubles");
+			List<Float> myfacev = (List<Float>)child.getValue("facedatadoubles");
 
 			for (Iterator iterator2 = inStructions.getParentChunk().values().iterator(); iterator2.hasNext();)
 			{
@@ -705,7 +705,7 @@ public class FaceProfileManager implements CatalogEnabled
 					continue;
 				}
 				
-				List<Double> comparetolist = (List<Double>)otherface.getValue("facedatadoubles");
+				List<Float> comparetolist = (List<Float>)otherface.getValue("facedatadoubles");
 	
 				double distance = findCosineDistance(myfacev, comparetolist);
 				if( distance < getVectorScoreLimit())
@@ -752,7 +752,7 @@ public class FaceProfileManager implements CatalogEnabled
 		
 	}
 	
-	public boolean compareVectors(List<Double> inputVector, List<Double> inCompareVector, double maxdistance)
+	public boolean compareVectors(List<Float> inputVector, List<Float> inCompareVector, double maxdistance)
 	{
 		double distance = findCosineDistance(inputVector, inCompareVector);
 		if( distance > maxdistance )
@@ -762,21 +762,21 @@ public class FaceProfileManager implements CatalogEnabled
 		return true;
 	}
 
-	public double findCosineDistance(List<Double> inputVector, List<Double> compreToV) 
+	public double findCosineDistance(List<Float> inputVector, List<Float> compreToV) 
 	{
 		if (inputVector.size() != compreToV.size()) 
 		{
 				throw new OpenEditException("Vectors must be the same length.");
 		}
 
-		double dotProduct = 0.0;
-		double normA = 0.0;
-		double normB = 0.0;
+		float dotProduct = 0.0f;
+		float normA = 0.0f;
+		float normB = 0.0f;
 
 		for (int i = 0; i < inputVector.size(); i++) 
 		{
-			Double iv = inputVector.get(i);
-			Double cv = compreToV.get(i);
+			float iv = inputVector.get(i);
+			float cv = compreToV.get(i);
 			
 			dotProduct += iv * cv;
 			normA += iv * iv;
@@ -966,7 +966,7 @@ public class FaceProfileManager implements CatalogEnabled
 		//log.info(inAllFaces.toString());
 		Double smallestdistance = null; 
 		Data parent = null;
-		List<Double> inputv = (List<Double>)inChild.getValue("facedatadoubles");
+		List<Float> inputv = (List<Float>)inChild.getValue("facedatadoubles");
 		for (Iterator iterator = inAllFaces.iterator(); iterator.hasNext();)
 		{
 			MultiValued hit = (MultiValued) iterator.next();
@@ -984,7 +984,7 @@ public class FaceProfileManager implements CatalogEnabled
 				continue;
 			}
 			
-			List<Double> comparetolist = (List<Double>)hit.getValue("facedatadoubles");
+			List<Float> comparetolist = (List<Float>)hit.getValue("facedatadoubles");
 			//Double[] comparetov = (Double[])comparetolist.toArray(new Double[comparetolist.size()]);
 			double distance = findCosineDistance(inputv, comparetolist);
 			if( distance < getVectorScoreLimit())

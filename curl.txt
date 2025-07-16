@@ -76,6 +76,8 @@ curl -XGET 'http://localhost:9200/site_catalog/trackedtopics/_search' -d '{ "que
 
 curl -XGET 'http://localhost:9200/finder_catalog/lock/_search' -d '{ "query" : {	"match_all" : {} } }' | python3 -mjson.tool
 
+curl -XGET 'http://localhost:9200/finder_catalog/faceembedding/_search' -d '{ "query" : {	"match_all" : {} } }' | python3 -mjson.tool
+
 curl -XGET 'http://localhost:9200/insights_catalog/insight_project_mip/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
 curl -XGET 'http://localhost:9200/app_catalog/userupload/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
