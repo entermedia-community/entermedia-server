@@ -246,7 +246,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 				return getSearchHit().getScore();
 			}
 			SearchHitField field = getSearchHit().field(key);
-			Map fields = getSearchHit().getFields();
+			//Map fields = getSearchHit().getFields();
 			if (field != null) {
 				value = field.getValue();
 			}

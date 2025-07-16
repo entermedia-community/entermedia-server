@@ -361,6 +361,11 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 			}
 			fieldTimer = null;
 		}
+		
+		getExecutorManager().shutdown();
+		fieldExecutorManager = null;
+		getRunningTasks().clear();
+		
 		clear();
 		fieldPathActions  = null;
 		fieldRunningTasks = null;
@@ -504,6 +509,7 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 	public void reload(String inEventPath)
 	{
 		PathEvent event = getPathEvent(inEventPath);
+		
 		getPathEvents().remove(event);
 		 	
 		//Remove the old one

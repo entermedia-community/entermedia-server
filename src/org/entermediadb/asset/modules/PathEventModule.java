@@ -150,6 +150,7 @@ public class PathEventModule extends BaseModule
 		settings.putProperty(prop);
 		
 		getPageManager().getPageSettingsManager().saveSetting(settings);
+		getPageManager().clearCache(event.getPage());
 		manager = getPathEventManager(inReq); 
 		manager.reload(eventPath);
 		inReq.putPageValue("pathevent", event);
@@ -159,6 +160,7 @@ public class PathEventModule extends BaseModule
 	{
 		PathEventManager manager = getPathEventManager(inReq); 
 		manager.shutdown();
+		manager.loadTasks();
 	}
 	public void clearPathEventLog(WebPageRequest inReq)
 	{

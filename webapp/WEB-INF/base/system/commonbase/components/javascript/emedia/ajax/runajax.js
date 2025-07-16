@@ -19,7 +19,6 @@ findClosest = function (link, inid) {
     if (confirmation && !confirm(confirmation)) {
       return this;
     }
-    debugger;
     anchor.attr("disabled", "disabled");
 
     if (anchor.hasClass("activelistener")) {
