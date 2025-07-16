@@ -690,7 +690,8 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 			instruction.setParentChunk(parentchunk);
 			scanChunkOfParents(instruction);
-			log.info("Compared " + inResetFaces.size() + " to group of faces " + starting + " to " + ending);
+			int totalchecked = inResetFaces.size()*allfaces.getPage();
+			log.info("Checked parents " + totalchecked + " to faces " + starting + " to " + ending);
 
 		}
 		
