@@ -136,90 +136,90 @@
       },
       crossDomain: true,
       success: function (result) {
-        $(window).trigger("successToast", toastUid);
-        $(window).trigger("checkautoreload", [form]);
-        if (showwaitingtarget !== undefined) {
-          showwaitingtarget.hide();
-        }
-
-        var pickertarget = form.data("pickertarget");
-        var targettype = form.data("targettype");
-        if (pickertarget !== undefined && targettype == "entitypickerfield") {
-          var parsed = $(result);
-          var dataid = parsed.data("dataid");
-          var dataname = parsed.data("dataname");
-
-          $(window).trigger("updatepickertarget", [
-            //Is this still used? Delete?
-            pickertarget,
-            dataid,
-            dataname,
-          ]);
-        }
-
-        var targetdivinner = form.data("targetdivinner");
-        if (targetdivinner) {
-          $("#" + $.escapeSelector(targetdivinner)).html(result);
-        } else {
-          if (targetdiv) {
-            targetdiv.replaceWith(result);
-          }
-        }
-        let closedialogid = form.data("closedialogid");
-        if (closedialogid !== undefined) {
-          let closedialog = $("#" + closedialogid);
-          if (closedialog.length > 0) {
-            closeemdialog(closedialog.closest(".modal"));
-          }
-        }
-        if (formmodal.length > 0 && form.hasClass("autocloseform")) {
-          if (formmodal.modal) {
-            closeemdialog(formmodal);
-          }
-        }
-
-        $("#resultsdiv").data("reloadresults", true);
-
-        //TODO: Move this to results.js
-        //if (form.hasClass("autohideOverlay")) {
-        //	hideOverlayDiv(getOverlay());
-        //}
-
-        if (form.hasClass("autoreloadsource")) {
-          //TODO: Use ajaxreloadtargets
-          var link = form.data("openedfrom");
-          if (link) {
-            window.location.replace(link);
-          }
-        }
-        $(window).trigger("resize");
-
-        //on success execute extra JS
-        if (form.data("onsuccess")) {
-          var onsuccess = form.data("onsuccess");
-          var fnc = window[onsuccess];
-          if (fnc && typeof fnc === "function") {
-            //make sure it exists and it is a function
-            fnc(form); //execute it
-          }
-        }
-
-        //experimental
-        if (form.data("onsuccessreload")) {
-          document.location.reload(true);
-        }
+	        $(window).trigger("successToast", toastUid);
+	        $(window).trigger("checkautoreload", [form]);
+	        if (showwaitingtarget !== undefined) {
+	          showwaitingtarget.hide();
+	        }
+	
+	        var pickertarget = form.data("pickertarget");
+	        var targettype = form.data("targettype");
+	        if (pickertarget !== undefined && targettype == "entitypickerfield") {
+	          var parsed = $(result);
+	          var dataid = parsed.data("dataid");
+	          var dataname = parsed.data("dataname");
+	
+	          $(window).trigger("updatepickertarget", [
+	            //Is this still used? Delete?
+	            pickertarget,
+	            dataid,
+	            dataname,
+	          ]);
+	        }
+	
+	        var targetdivinner = form.data("targetdivinner");
+	        if (targetdivinner) {
+	          $("#" + $.escapeSelector(targetdivinner)).html(result);
+	        } else {
+	          if (targetdiv) {
+	            targetdiv.replaceWith(result);
+	          }
+	        }
+	        let closedialogid = form.data("closedialogid");
+	        if (closedialogid !== undefined) {
+	          let closedialog = $("#" + closedialogid);
+	          if (closedialog.length > 0) {
+	            closeemdialog(closedialog.closest(".modal"));
+	          }
+	        }
+	        if (formmodal.length > 0 && form.hasClass("autocloseform")) {
+	          if (formmodal.modal) {
+	            closeemdialog(formmodal);
+	          }
+	        }
+	
+	        $("#resultsdiv").data("reloadresults", true);
+	
+	        //TODO: Move this to results.js
+	        if (form.hasClass("autohideOverlay")) {
+				$(window).trigger("hideMediaViewer");
+	        }
+	
+	        if (form.hasClass("autoreloadsource")) {
+	          //TODO: Use ajaxreloadtargets
+	          var link = form.data("openedfrom");
+	          if (link) {
+	            window.location.replace(link);
+	          }
+	        }
+	        $(window).trigger("resize");
+	
+	        //on success execute extra JS
+	        if (form.data("onsuccess")) {
+	          var onsuccess = form.data("onsuccess");
+	          var fnc = window[onsuccess];
+	          if (fnc && typeof fnc === "function") {
+	            //make sure it exists and it is a function
+	            fnc(form); //execute it
+	          }
+	        }
+	
+	        //experimental
+	        if (form.data("onsuccessreload")) {
+	          document.location.reload(true);
+	        }
       },
       error: function (data) {
-        $(window).trigger("errorToast", toastUid);
-        if (targetdiv) {
-          $("#" + $.escapeSelector(targetdiv)).html(data);
-        }
-        form.append(data);
+	        $(window).trigger("errorToast", toastUid);
+	        if (targetdiv) {
+	          $("#" + $.escapeSelector(targetdiv)).html(data);
+	        }
+	        form.append(data);
       },
       complete: function () {
-        submitButton.removeAttr("disabled");
-        submitButton.find(".fa-spinner").remove();
-        form.data("submitting", false);
+	        submitButton.removeAttr("disabled");
+	        submitButton.find(".fa-spinner").remove();
+	        form.data("submitting", false);
       },
     });
 
