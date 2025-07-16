@@ -30,6 +30,9 @@
 		height: var(--container-height);
 		overflow: hidden;
 	}
+	.__main-container * {
+		box-sizing: border-box;
+	}
 	.__title {
 		color: var(--text-color);
 		text-align: center;
@@ -148,25 +151,87 @@
 		align-items: center;
 		background-color: rgba(255, 255, 255, 0.35);
 	}
-	.__img_caption {
+	.__img_overlay {
 		position: absolute;
-		bottom: 8px;
-		left: 50%;
-		transform: translateX(-50%);
-		display: inline-block;
-		color: #fff;
-		background: rgba(0, 0, 0, 0.35);
-		text-align: center;
-		font-style: italic;
-		font-size: 1.2rem;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		font-family: Arial, Helvetica, sans-serif;
+		color: #000000;
+		background:rgba(255,255,255,.95);
 		padding: 12px 16px;
-		border-radius: 8px;
+		gap: 8px;
 		z-index: 10;
-		transition: opacity 0.3s ease, transform 0.3s ease;
-	}
-  .__image:hover .__img_caption {
 		opacity: 0;
-		transform: translateX(-50%) translateY(100%);
+		transition: opacity 0.2s ease, padding 0.2s ease;
+	}
+	.__overlay_minimizer {
+    height: 16px;
+    width: 32px;
+    background-color: #666;
+    border: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    margin-top: -28px; 
+		animation: __fadeout 2s ease forwards;
+	}
+	.__img_overlay:hover .__overlay_minimizer, .__overlay_minimizer:hover {
+		opacity: 1 ! important;
+	}
+	.__img_overlay.__minimized {
+		height: 0;
+		padding: 0;
+	}
+	.__img_overlay.__minimized .__img_creator,
+	.__img_overlay.__minimized .__img_caption {
+		display: none;
+	}
+	.__img_overlay.__minimized .__overlay_minimizer {
+		animation: none;
+    opacity: 1;
+    margin-top: -16px;
+    transform: rotate(180deg);
+    padding: 4px 0;
+    border-radius: 0;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+	}
+	@keyframes __fadeout {
+		0%, 80% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
+		}
+	}
+	@media screen and (max-width: 600px) {
+		.__overlay_minimizer {
+			animation: none;
+			opacity: 1 ! important;
+		}
+	}
+	.__img_creator {
+		line-height: 24px;
+		vertical-align: middle;
+		text-align: center;
+		margin: 0 0 -8px;
+		font-size: 0.9rem;
+		color: #666666;
+	}
+	.__img_caption {
+		margin: 0;
+		width: 100%;
+		text-align: center;
+		font-size: 1rem;
 	}
 	#__carousel .splide__arrow--prev .__arrow-btn {
 		transform: translateY(-30px);
@@ -192,6 +257,69 @@
 		opacity: 1;
 	}
 </style>
+<script type="text/javascript">
+	function __setOverlayPosition(img) {
+		var width = img.naturalWidth;
+		var height = img.naturalHeight;
+		var ratio = width / height; 
+
+		var containerWidth = img.offsetWidth;
+		var containerHeight = img.offsetHeight;
+
+		var renderWidth, renderHeight;
+		if(ratio > 1) {
+			renderWidth = containerWidth;
+			renderHeight = containerWidth / ratio;
+		} else {
+			renderWidth = containerHeight * ratio;
+			renderHeight = containerHeight;
+		}
+
+		if(renderHeight > containerHeight) {
+			renderHeight = containerHeight;
+			renderWidth = containerHeight * ratio;
+		}
+		if(renderWidth > containerWidth) {
+			renderWidth = containerWidth;
+			renderHeight = containerWidth / ratio;
+		}
+		
+		var renderBottom = Math.max(0, (containerHeight-renderHeight) / 2);
+		var renderLeft = Math.max(0, (containerWidth-renderWidth) / 2);
+		
+		var overlay = img.parentElement.querySelector(".__img_overlay");
+		overlay.style.bottom = renderBottom + "px";
+		overlay.style.left = renderLeft + "px";
+		overlay.style.width = renderWidth + "px";
+
+		var caption = overlay.querySelector(".__img_caption");
+		var creator = overlay.querySelector(".__img_creator");
+		
+		if(caption) {
+			var locales = caption.getAttribute("data-locales");
+			if(locales) {
+				try {
+					locales = JSON.parse(locales);
+					var lang = document.documentElement.lang;
+					if(!locales[lang]) {
+						lang = "en";
+					}
+					if(locales[lang]) {
+						caption.innerHTML = locales[lang];
+					} else {
+						caption = null;
+					}
+				} catch(e) {
+					// ignore
+				}
+			}
+		}
+
+		if(creator || caption) {
+			overlay.style.opacity = 1;
+		}
+	}
+</script>
 <div class="__main-container"> 
 	#if($publishing.title_enabled == "true" && $publishing.title)
 		<h1 class="__title">$publishing.title</h3>
@@ -232,29 +360,56 @@
 </div>
 <script type="text/javascript" src="$!siteroot$applink/components/splide/splide.min.js"></script>
 <script type="text/javascript">
-		var __main = new Splide("#__carousel", {
-			rewind: true,
-			pagination: false,
-			lazyLoad: "nearby",
-			keyboard: 'global',
-			autoplay: $publishing.autoplay_enabled,
-		});
-		var __thumbnail = new Splide("#__carousel-thumbnails", {
-			fixedWidth: 95,
-			fixedHeight: 60,
-			gap: 10,
-			rewind: true,
-			pagination: false,
-			isNavigation: true,
-			arrows: false,
-			breakpoints: {
-				600: {
-					fixedWidth: 60,
-					fixedHeight: 44,
-				},
+	window.addEventListener("resize", function() {
+		var imgs = document.querySelectorAll(".__image img");
+		for(var i = 0; i < imgs.length; i++) {
+			__setOverlayPosition(imgs[i]);
+		}
+	})
+	document.querySelectorAll(".__overlay_minimizer").forEach(function(btn) {
+		btn.addEventListener("click", function(e) {
+			e.preventDefault();
+			var overlay = btn.parentElement;
+			if(overlay.classList.contains("__minimized")) {
+				overlay.classList.remove("__minimized");
+			} else {
+				overlay.classList.add("__minimized"); 
+			}
+		})
+	})
+	var __main = new Splide("#__carousel", {
+		rewind: true,
+		pagination: false,
+		lazyLoad: "nearby",
+		keyboard: 'global',
+		autoplay: $publishing.autoplay_enabled,
+	});
+	__main.on("active", function(newSlide) {
+		if(!newSlide) return;
+		var image = newSlide.slide.querySelector(".__image img");
+		__setOverlayPosition(image);
+	})
+	__main.on("inactive", function(newSlide) {
+		if(!newSlide) return;
+		var overlay = newSlide.slide.querySelector(".__img_overlay");
+		overlay.style.opacity = 0;
+	})
+	var __thumbnail = new Splide("#__carousel-thumbnails", {
+		fixedWidth: 95,
+		fixedHeight: 60,
+		gap: 10,
+		rewind: true,
+		pagination: false,
+		isNavigation: true,
+		arrows: false,
+		breakpoints: {
+			600: {
+				fixedWidth: 60,
+				fixedHeight: 44,
 			},
-		});
-		__main.sync(__thumbnail);
-		__main.mount();
-		__thumbnail.mount();
+		},
+	});
+	__main.sync(__thumbnail);
+	__main.mount();
+	__thumbnail.mount();
 </script>
