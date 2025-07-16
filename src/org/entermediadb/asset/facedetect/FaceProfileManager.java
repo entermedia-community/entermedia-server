@@ -452,7 +452,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 	public void fixAllParents()
 	{
-		int chunksize = 1000;
+		int chunksize = 2000;
 		HitTracker allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").sort("id").search();  //Smallest faces connect to the largest one
 		allfaces.setHitsPerPage(chunksize); //We will loadup all 10000. save everything in the DB then run the search again?
 		int total = allfaces.getTotalPages();
@@ -634,7 +634,6 @@ public class FaceProfileManager implements CatalogEnabled
 		allfaces.enableBulkOperations();
 		allfaces.setHitsPerPage(chunksize);
 		int total = allfaces.getTotalPages();
-		log.info("Looking for parents " + inResetFaces.size() + " in " + allfaces.size() + " faces");
 		for(int i=0;i < total;i++)
 		{
 //			allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("id").search();
@@ -649,7 +648,8 @@ public class FaceProfileManager implements CatalogEnabled
 			Collection<MultiValued> onepage = allfaces.getPageOfHits();
 			Map<String,MultiValued> parentchunk = new HashMap(onepage.size());
 			
-			for (Iterator iterator = allfaces.iterator(); iterator.hasNext();)
+			log.info("Looking for parents " + inResetFaces.size() + " in " + allfaces.size() + " faces");
+			for (Iterator iterator = onepage.iterator(); iterator.hasNext();)
 			{
 				MultiValued possibleparent = (MultiValued) iterator.next();
 				parentchunk.put(possibleparent.getId(),possibleparent);
