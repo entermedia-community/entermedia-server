@@ -34,6 +34,7 @@ import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.net.HttpSharedConnection;
+import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.video.Block;
 import org.entermediadb.video.Timeline;
 import org.json.simple.JSONArray;
@@ -450,31 +451,60 @@ public class FaceProfileManager implements CatalogEnabled
 		return similaritycheck;
 	}
 
-	public void fixAllParents()
+	public void clearAllParents(ScriptLogger logger)
+	{
+		HitTracker allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").sort("id").search();  //Smallest faces connect to the largest one
+		allfaces.enableBulkOperations();
+		
+		Collection tosave = new ArrayList();
+
+		logger.info("Setting " + allfaces.size() + " to 100D ");
+		for (Iterator iterator = allfaces.iterator(); iterator.hasNext();)
+		{
+			MultiValued face = (MultiValued) iterator.next();
+			face.setValue("parentdistance",100D);
+			tosave.add(face);
+			if( tosave.size() == 1000)
+			{
+				getMediaArchive().saveData("faceembedding",tosave); //Save in chunks
+				logger.info("Saving " + tosave.size());
+				tosave.clear();
+			}
+		}
+		getMediaArchive().saveData("faceembedding",tosave); //All Saved
+		logger.info("Completed ");
+	}
+	public void completeMissingParents(ScriptLogger logger)
 	{
 		int chunksize = 2000;
-		HitTracker allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").sort("id").search();  //Smallest faces connect to the largest one
-		allfaces.setHitsPerPage(chunksize); //We will loadup all 10000. save everything in the DB then run the search again?
-		int total = allfaces.getTotalPages();
-		for(int i=0;i < total;i++)
-		{
-			Collection includeonly = new ArrayList();
-			includeonly.add("id");
-			includeonly.add("assetid");
-			includeonly.add("facedatadoubles");
-			
-			allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").include(includeonly).sort("id").search();  //Smallest faces connect to the largest one
-			allfaces.setHitsPerPage(chunksize);
-			allfaces.setPage(i+1);
-			//Process this list of parents in chunks. All the while tracking the best score
 
+//		Collection includeonly = new ArrayList();
+//		includeonly.add("id");
+//		includeonly.add("assetid");
+//		includeonly.add("facedatadoubles");
+//		"parentdistance"
+
+		int count = 0;
+		HitTracker allfaces = null;
+		do
+		{
+			allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).exact("parentdistance","100").sort("locationhUp").search();  //Smallest faces connect to the largest one
+			allfaces.setHitsPerPage(chunksize); //We will loadup all 10000. save everything in the DB then run the search again?
+			if( allfaces.isEmpty() )
+			{
+				log.info("No more faces to process");
+				break;
+			}
 			Collection<MultiValued> onepage = allfaces.getPageOfHits();
-			log.info("Starting comparison page " + allfaces.getPage() + " scanning " + onepage.size());
+			count += onepage.size();
+			logger.info("Processed " + count + " faces with 100 distance out of " + allfaces.size());
 			fixSortedParents(onepage); //This is saved
 			log.info("Starting parentids lookup" + allfaces.getPage() );
-			fixParentIds(onepage);
-		}
+			fixParentIds(onepage); //This saves with all parents set
+			
+		} while( !allfaces.isEmpty() );
 		
+		logger.info("Completed " + count + " faces");
 //		//Now a new process
 //		for(int i=0;i < total;i++)
 //		{
@@ -634,6 +664,7 @@ public class FaceProfileManager implements CatalogEnabled
 		allfaces.enableBulkOperations();
 		allfaces.setHitsPerPage(chunksize);
 		int total = allfaces.getTotalPages();
+		log.info("Looking for parents " + inResetFaces.size() + " in " + allfaces.size() + " faces");
 		for(int i=0;i < total;i++)
 		{
 //			allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("id").search();
@@ -648,7 +679,6 @@ public class FaceProfileManager implements CatalogEnabled
 			Collection<MultiValued> onepage = allfaces.getPageOfHits();
 			Map<String,MultiValued> parentchunk = new HashMap(onepage.size());
 			
-			log.info("Looking for parents " + inResetFaces.size() + " in " + allfaces.size() + " faces");
 			for (Iterator iterator = onepage.iterator(); iterator.hasNext();)
 			{
 				MultiValued possibleparent = (MultiValued) iterator.next();
@@ -658,6 +688,16 @@ public class FaceProfileManager implements CatalogEnabled
 			scanChunkOfParents(instruction);
 			log.info("Compared " + inResetFaces.size() + " to group of faces " + starting + " to " + ending);
 
+		}
+		
+		//Anything left clear our distance
+		for (Iterator iterator = inResetFaces.iterator(); iterator.hasNext();)
+		{
+			MultiValued toreset = (MultiValued) iterator.next();
+			if( (Double)toreset.getValue("parentdistance") == 100D)
+			{
+				toreset.setValue("parentdistance",null);
+			}
 		}
 		long end = System.currentTimeMillis();
 		double minutes = (end-start)/1000D/60D;
