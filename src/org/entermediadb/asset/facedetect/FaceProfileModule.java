@@ -222,7 +222,6 @@ public class FaceProfileModule extends BaseMediaModule
 		PaginatedIdHitTracker tracker = new PaginatedIdHitTracker();
 		tracker.setHitsName(hitsname);
 		tracker.setSearcher(archive.getSearcher("asset"));
-		tracker.setHitsPerPage(40);
 		
 		SearchQuery query = tracker.getSearcher().createSearchQuery();
 		query.setHitsName(hitsname);
@@ -230,6 +229,9 @@ public class FaceProfileModule extends BaseMediaModule
 		query.setValue("boxlookup", boxlookup);
 		tracker.addAll(boxlookup.keySet());
 		tracker.setSearchQuery(query);
+		
+		tracker.setHitsPerPage(40);
+
 		inReq.putPageValue(hitsname, tracker);
 		inReq.putSessionValue(tracker.getSessionId(), tracker);  //Fake asset tracker
 	}
