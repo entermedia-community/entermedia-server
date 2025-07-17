@@ -36,8 +36,8 @@ $context.putPageValue("thumbsize", $thumbsize)
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 		
 		<div class="mimethumbcontainer">
-       		<i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
-       </div>
+			<i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
+		</div>
 	#else	
 		#if($useoriginal)
 			#set($imagepath = "$!{siteroot}/${mediadbappid}/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
@@ -56,19 +56,41 @@ $context.putPageValue("thumbsize", $thumbsize)
 			#set($imagelink = $mediaarchive.asLinkToPreview($hit, "image3000x3000", true)) 
 		#end
 
-		
-		
-		<a href="${imagelink}" class="lightbox" data-downloadlink="$!{downloadlink}">
-		<img class="imagethumb img-fluid  img$!thumbsize "
+		#set($caption = "")
+
+		#set($hitcaptions = $hit.getValue("headline")) 
+		#ifnull($hitcaptions)
+			#set($hitcaptions = $hit.getValue("longcaption"))
+		#end
+
+		#set( $caption = $!{hitcaptions.get($context.language)} )
+
+		##set( $captionhtml = null)
+
+		#ifnotnull($caption)
+			#set( $captionhtml = "<p class='__img_caption'>$!{caption}</p>" )
+		#end
+		#ifnotnull($hit.creator)
+			#set( $captionhtml = "$!captionhtml<p class='__img_creator'>&copy; $!{hit.creator}</p>" )
+		#end
+
+		<a href="${imagelink}"
+			class="lightbox"
+			data-downloadlink="$!{downloadlink}"
+			data-locales="$hitcaptions"
+			#ifnotnull($captionhtml) title="<div class='__img_overlay'>$captionhtml</div>" #end>
+			<img class="imagethumb img-fluid  img$!thumbsize "
 				catalogid="$catalogid" 
 				assetid="$!{hit.id}" 
 				alt="#if($title)#esc($title)#else$!{hit.name}#end"
 				draggable="true"  
 				data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
 				data-imagesrc="$imagepath$!urlparams"	/>
-		#if($type =="video")<button class="videoplay-button"><span class="videoplay-icon"></span></button>#end
+			#if($type =="video")
+				<button class="videoplay-button">
+					<span class="videoplay-icon"></span>
+				</button>
+			#end
 		</a>
 	#end
 </div>
-
-
