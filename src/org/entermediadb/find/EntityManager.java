@@ -39,6 +39,7 @@ import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
+import org.openedit.util.PathUtilities;
 
 public class EntityManager implements CatalogEnabled
 {
@@ -174,56 +175,60 @@ public class EntityManager implements CatalogEnabled
 	
 	public Category loadDefaultFolder(Data module, Data entity, User inUser, boolean create)
 	{
-		//Ignore create
 		
-		if( entity == null || module == null || entity.getName() == null)
+		if( entity == null || module == null)
 		{
-			//log.error("No entity found entity:" + entity + " in module:" + module );
-			//Invalid names?
 			return null;
 		}
 		Category cat = null;
-		String existingsourcepath = entity.get("uploadsourcepath");
-		if( existingsourcepath != null ) //Dont use rootcategory if source is blank
+		entity.setValue("uploadsourcepath", null);
+		String entitysourcepath = loadUploadSourcepath(module,entity,inUser,true);
+		if( entitysourcepath == null )
 		{
-			String categoryid = entity.get("rootcategory");
-			if( categoryid != null)
-			{
-				cat = getMediaArchive().getCategory(categoryid);
-				if( cat != null)
-				{
-					String categorypath = cat.getCategoryPath();
-					if (existingsourcepath.endsWith("/"))
-					{
-						existingsourcepath = existingsourcepath.substring(0, existingsourcepath.length() - 1);
-					}
-					if( categorypath != null && !categorypath.equals( existingsourcepath ) )
-					{
-						throw new OpenEditException("Move Category to correct location: " + categorypath + "  " + existingsourcepath);
-					}
-				}
-			}
-		}	
-		else if(entity instanceof LibraryCollection)
-		{
-			LibraryCollection collection = (LibraryCollection) entity;
-			cat = collection.getCategory();
-			if( cat != null)
-			{
-				existingsourcepath = cat.getCategoryPath();
-				entity.setValue("uploadsourcepath",existingsourcepath);
-				getMediaArchive().saveData(module.getId(), entity);
-			}
+			throw new OpenEditException("Uploadsource empty " + entity.getId());
 			
 		}
+		entity.setValue("uploadsourcepath", entitysourcepath);
+			
+		String categoryid = entity.get("rootcategory");
+		if (categoryid != null)
+		{
+			cat = getMediaArchive().getCategory(categoryid);
+			if (cat != null)
+			{
+				//if( entity.getName() == null || !entity.getName().equals(cat.getName()))
+				if (!entitysourcepath.equals(cat.getCategoryPath()))
+				{
+					log.info("Category was renamed " + cat.getName() + " -> " + entity.getName());
+					String categoryname = null;
+					if (entitysourcepath.endsWith("/"))
+							{
+						categoryname = PathUtilities.extractDirectoryName(entitysourcepath);
+							}
+					else 
+					{
+						categoryname = PathUtilities.extractFileName(entitysourcepath);
+					}
+				
+					cat.setName(categoryname);
+					cat.setValue("categorypath", null); //clear it
+					//TODO: How can I move all the old content over?
+					//save all the childrem
+					getMediaArchive().getCategorySearcher().saveCategoryTree(cat);
+					if (!cat.getCategoryPath().equals(entitysourcepath))
+					{
+						entity.setValue("uploadsourcepath", cat.getCategoryPath());
+						getMediaArchive().saveData(module.getId(), entity);
+					}
+
+				}
+			}
+		}
+
 		if( cat == null)
 		{
-			String sourcepath = loadUploadSourcepath(module,entity,inUser,true);
-			if( sourcepath == null)
-			{
-				return null;
-			}
-			cat = getMediaArchive().getCategorySearcher().createCategoryPath(sourcepath);
+			
+			cat = getMediaArchive().getCategorySearcher().createCategoryPath(entitysourcepath);
 			if( cat != null )
 			{
 				boolean saveit = false;
@@ -233,9 +238,9 @@ public class EntityManager implements CatalogEnabled
 					saveit = true;
 				}
 				entity.setValue("rootcategory",cat.getId());
-				if( entity.getValue("uploadsourcepath") == null || !sourcepath.equals(entity.getValue("uploadsourcepath")) )
+				if( entity.getValue("uploadsourcepath") == null || !entitysourcepath.equals(entity.getValue("uploadsourcepath")) )
 				{
-					entity.setValue("uploadsourcepath",sourcepath);
+					entity.setValue("uploadsourcepath",entitysourcepath);
 					saveit = true;
 				}
 				if( saveit )
@@ -243,45 +248,11 @@ public class EntityManager implements CatalogEnabled
 					getMediaArchive().saveData(module.getId(), entity);
 				}
 			}
-
+			return cat;
 		}
-		if( cat == null)
-		{
-			//Cant find sourcepathsaveData
-			return null;
-		}
-		else
-		{
-			boolean updatename = false;
-			if( !entity.getName().equals(cat.getName()))
-			{
-				if (module.get("uploadsourcepath") == null)
-				{
-					updatename = true;
-				}
-				else if(module.get("uploadsourcepath").contains("${data.name}"))
-				{
-					updatename = true;
-				}
-				
-				
-				if (updatename)
-				{
-					String enpath = entity.get("uploadsourcepath");
-					log.info("Category was renamed " + cat.getName() + " -> " + entity.getName());
-					cat.setName(entity.getName());
-					cat.setValue("categorypath",null); //clear it
-					//TODO: How can I move all the old content over?
-					//save all the childrem
-					getMediaArchive().getCategorySearcher().saveCategoryTree(cat);
-					if(enpath == null || !cat.getCategoryPath().equals(enpath) )
-					{
-						entity.setValue("uploadsourcepath",cat.getCategoryPath());
-						getMediaArchive().saveData(module.getId(), entity);
-					}
-				}
-			}
-		}
+		
+			
+		
 		
 //		if( cat.getValue(module.getId()) == null)
 //		{
@@ -322,7 +293,7 @@ public class EntityManager implements CatalogEnabled
 		}
 		if( sourcepath == null && entity.getName("en") != null)
 		{
-			sourcepath = module.getName("en") + "/" + entity.getName("en") + "/";
+			sourcepath = module.getName("en") + "/" + entity.getName("en");
 		}
 		if( sourcepath != null && !sourcepath.isEmpty() && !sourcepath.equals( entity.get("uploadsourcepath")) )
 		{
