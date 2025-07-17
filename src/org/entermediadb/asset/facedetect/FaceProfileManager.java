@@ -534,7 +534,7 @@ public class FaceProfileManager implements CatalogEnabled
 		if( inChunkToFinish.size() > 1000)
 		{
 			//Load entire DB
-			allparents = getMediaArchive().query("faceembedding").exact("isremoved",false).exists("parentembeddingid").include(includeonly).search();
+			allparents = getMediaArchive().query("faceembedding").exact("isremoved",false).exists("parentembeddingid").includefields(includeonly).search();
 		}
 		else
 		{
@@ -550,7 +550,7 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 			allparents = getMediaArchive().query("faceembedding").exact("isremoved",false).
 					orgroup("parentembeddingid",possibleparents).
-					include(includeonly).search();
+					includefields(includeonly).search();
 		}
 		allparents.setHitsPerPage(1000);
 
@@ -664,7 +664,7 @@ public class FaceProfileManager implements CatalogEnabled
 		includeonly.add("assetid");
 		includeonly.add("facedatadoubles");
 		
-		HitTracker allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).include(includeonly).sort("id").search();
+		HitTracker allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).includefields(includeonly).sort("id").search();
 		allfaces.enableBulkOperations();
 		allfaces.setHitsPerPage(chunksize);
 		int total = allfaces.getTotalPages();
@@ -1128,19 +1128,25 @@ public class FaceProfileManager implements CatalogEnabled
 	/**
 	 * This is used in the asset UI to show the face a name
 	 */
-	public Collection collectFaceBoxesAllPeople(Data inAsset)
+	public Collection<FaceBox> collectFaceBoxesAllPeople(Data inAsset)
 	{
-		//TODO Add Search type for finder
-		Collection boxes = new ArrayList();
-		
 		if (inAsset == null)
 		{
-			return boxes;
+			return Collections.EMPTY_LIST;
 		}
+		Collection<FaceBox> boxes = (Collection<FaceBox>)getMediaArchive().getCacheManager().get("faceboxes", inAsset.getId());
+		if( boxes != null )
+		{
+			return (Collection<FaceBox>)boxes;
+		}
+		boxes = new ArrayList();
+		Collection exclude = new ArrayList();
+		exclude.add("facedatadoubles");
+		
 		
 		Searcher searcher = getMediaArchive().getSearcher("faceembedding");
-		HitTracker allthepeopleinasset = searcher.query().exact("assetid",inAsset).exact("isremoved", false).search();
-		
+		HitTracker allthepeopleinasset = searcher.query().exact("assetid",inAsset).exact("isremoved", false).excludefields(exclude).search();
+
 		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
 		{
 			MultiValued embedding = (MultiValued) iterator.next(); //One person
@@ -1149,6 +1155,7 @@ public class FaceProfileManager implements CatalogEnabled
 			FaceBox box = makeBox(embedding, entityperson);
 			boxes.add(box);
 		}
+		getMediaArchive().getCacheManager().put("faceboxes", inAsset.getId(), boxes);
 		return boxes;	
 	}
 
@@ -1177,35 +1184,35 @@ public class FaceProfileManager implements CatalogEnabled
 			Collection parentids = embedding.getValues("parentids");
 			if( parentids != null && !parentids.isEmpty() )
 			{
-				HitTracker personlookup = getMediaArchive().query("faceembedding").orgroup("parentids",parentids).hitsPerPage(500).search();
+				Collection includeonly = new ArrayList();
+				includeonly.add("parentids");
+				includeonly.add("entityparent");
+
+				HitTracker personlookup = getMediaArchive().query("faceembedding").orgroup("parentids",parentids).includefields(includeonly).hitsPerPage(500).search();
 				
 				//Now grab ALL parentids of anyone related to these
 				Collection allpossibleparentids = personlookup.collectValues("parentids");
 
 				if( !allpossibleparentids.isEmpty() )
 				{
+					int limit = 500;
 					ArrayList parts = new ArrayList(allpossibleparentids);
-					int chunks = parts.size() / 500;
+					int chunks = parts.size() / limit;
 					chunks++;
 					for (int i = 0; i < chunks; i++)
 					{
-						int end = Math.min(parts.size(),(i+1)*500);
-						Collection sublist = parts.subList(i*500, end);
-						personlookup = getMediaArchive().query("faceembedding").orgroup("parentids",sublist).hitsPerPage(500).search();
-	
-						for (Iterator iterator = personlookup.iterator(); iterator.hasNext();)
+						int start = i*limit;
+						int end = Math.min(parts.size(),(i+1)*limit);
+						Collection sublist = parts.subList(start, end);
+						MultiValued data = (MultiValued)getMediaArchive().query("faceembedding").exists("entityparent").orgroup("parentids",sublist).includefields(includeonly).hitsPerPage(limit).searchOne();
+						if( data != null)
 						{
-							MultiValued data = (MultiValued) iterator.next();
-							entitypersonid = data.get("entityparent"); 
-							if( entitypersonid  != null )
-							{
-								getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),data.getId());
-								return data;
-							}
+							//Save the cache
+							getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),data.getId());
+							return data;
 						}
 					}
 				}
-				
 				getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),  CacheManager.NULLVALUE);
 			}
 		}
@@ -1449,6 +1456,9 @@ public class FaceProfileManager implements CatalogEnabled
 //		{
 //			return null;
 //		}
+		Collection exclude = new ArrayList();
+		exclude.add("facedatadoubles");
+
 		Collection<FaceBox> boxes = new ArrayList();
 
 		Data entityperson = null;
@@ -1457,7 +1467,7 @@ public class FaceProfileManager implements CatalogEnabled
 		if( parentids != null && !parentids.isEmpty() )
 		{
 			//Search all children
-			HitTracker allthepeopleinasset = getMediaArchive().getSearcher("faceembedding").query().exact("isremoved",false).orgroup("parentids", parentids).search();
+			HitTracker allthepeopleinasset = getMediaArchive().getSearcher("faceembedding").query().exact("isremoved",false).orgroup("parentids", parentids).excludefields(exclude).search();
 			
 			//Look for a personid anyplace
 			Collection<String> person = allthepeopleinasset.collectValues("entityperson");
@@ -1498,7 +1508,7 @@ public class FaceProfileManager implements CatalogEnabled
 		
 		if( entityperson != null)
 		{
-			HitTracker morepeople = getMediaArchive().getSearcher("faceembedding").query().exact("isremoved",false).exact("entityperson", entityperson).search();
+			HitTracker morepeople = getMediaArchive().getSearcher("faceembedding").query().exact("isremoved",false).exact("entityperson", entityperson).excludefields(exclude).search();
 			for (Iterator iterator = morepeople.iterator(); iterator.hasNext();)
 			{
 				MultiValued embedding = (MultiValued) iterator.next(); //One person

@@ -102,9 +102,9 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 			//TODO: If we are doing a simple search then add in the fav results first?
 		}
 		
-		if (!inQuery.isIncludeDescription())
+		if (inQuery.getIncludeOnly() == null && inQuery.getExcludeFields() == null)
 		{
-			search.setFetchSource(null, "description");
+			search.setFetchSource(null, "description"); //Default
 		}
 		long start = System.currentTimeMillis();
 		

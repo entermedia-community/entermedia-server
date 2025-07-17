@@ -400,14 +400,23 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			addHighlights(inQuery, search);
 			search.setRequestCache(true);
 
-			if (inQuery.getIncludeOnly() != null)
+			if (inQuery.getIncludeOnly() != null || inQuery.getExcludeFields() != null)
 			{
-				String[] includes = (String[])inQuery.getIncludeOnly().toArray( new String[inQuery.getIncludeOnly().size()]);
-				search.setFetchSource(includes, null);
+				String[] includes = null;
+				String[] excludescludes = null;
+				if( inQuery.getIncludeOnly() != null && !inQuery.getIncludeOnly().isEmpty())
+				{
+					includes = (String[])inQuery.getIncludeOnly().toArray( new String[inQuery.getIncludeOnly().size()]);
+				} 
+				if (inQuery.getExcludeFields() != null && !inQuery.getExcludeFields().isEmpty())
+				{
+					excludescludes = (String[])inQuery.getExcludeFields().toArray( new String[inQuery.getExcludeFields().size()]);
+				}
+				search.setFetchSource(includes, excludescludes);
 			} 
-			else if (!inQuery.isIncludeDescription())
+			else  if( !inQuery.isIncludeDescription() )
 			{
-				search.setFetchSource(null, "description");
+				search.setFetchSource(null,"description");
 			}
 			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, inQuery.getHitsPerPage());
 			hits.setSearcherManager(getSearcherManager());

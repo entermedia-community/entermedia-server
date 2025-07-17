@@ -21,6 +21,8 @@ import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
+import org.openedit.hittracker.PaginatedIdHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.util.MathUtils;
 
@@ -218,12 +220,33 @@ public class FaceProfileModule extends BaseMediaModule
 		inReq.putPageValue("entityperson",entityperson);
 		
 		String hitsname = inReq.findValue("hitsname");
+		PaginatedIdHitTracker tracker = new PaginatedIdHitTracker();
+		tracker.setHitsName(hitsname);
+		tracker.setSearcher(archive.getSearcher("asset"));
+		tracker.setHitsPerPage(40);
 		
-		//"faceassets"
-		HitTracker assets = archive.query("asset").ids(boxlookup.keySet()).named(hitsname).search(inReq);
-		inReq.putPageValue(assets.getHitsName(),assets);
-		inReq.putSessionValue(assets.getSessionId(),assets);
+		SearchQuery query = tracker.getSearcher().createSearchQuery();
+		query.setHitsName(hitsname);
+		query.addOrsGroup("id",boxlookup.keySet());
+		query.setValue("faceboxes", boxlookup);
+		tracker.addAll(boxlookup.keySet());
+		tracker.setSearchQuery(query);
+		inReq.putPageValue(hitsname, tracker);
+		inReq.putSessionValue(tracker.getSessionId(), tracker);  //Fake asset tracker
+	}
+	
+	public void loadFaceBoxes(WebPageRequest inReq)
+	{
+		String assethitssessionid = inReq.getRequestParameter("assethitssessionid");
 		
+		HitTracker faceassets = (HitTracker)inReq.getSessionValue(assethitssessionid);
+		if( faceassets != null)
+		{
+			Object faceboxes = faceassets.getSearchQuery().getValue("faceboxes");
+			inReq.putPageValue("faceboxes",faceboxes);
+			inReq.putPageValue("showfaceboxes", "true");
+
+		}
 	}
 	
 	public void rescanAsset(WebPageRequest inReq)
