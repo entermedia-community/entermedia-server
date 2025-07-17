@@ -1202,7 +1202,7 @@ public class FaceProfileManager implements CatalogEnabled
 					for (int i = 0; i < chunks; i++)
 					{
 						int start = i*limit;
-						int end = Math.min(parts.size(),(i+1)*limit);
+						int end = Math.min(parts.size(),start+limit);
 						Collection sublist = parts.subList(start, end);
 						MultiValued data = (MultiValued)getMediaArchive().query("faceembedding").exists("entityparent").orgroup("parentids",sublist).includefields(includeonly).hitsPerPage(limit).searchOne();
 						if( data != null)
