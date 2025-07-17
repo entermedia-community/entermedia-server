@@ -3,18 +3,6 @@
 <link type="text/css" rel="stylesheet" href="$publishing.externalcss">
 #end
 <style type="text/css">
-	:root {
-		--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #efefef #end;
-		--text-color: #if($publishing.publishingfeedlayout=="dark") #fff #else #000 #end;
-		--highlight-color: #if($publishing.publishingfeedlayout=="dark") #666 #else #444 #end;
-		#if($publishing.containerdimension_enabled=="true")
-		--container-width: #if($publishing.containerwidth > 0) ${publishing.containerwidth}px #else 1000px #end;
-		--container-height: #if($publishing.containerheight > 0) ${publishing.containerheight}px #else 824px #end;
-		#else
-		--container-width: 100%;
-		--container-height: 100%;
-		#end
-	}
 	body {
 		width: 100vw;
 		height: 100vh;
@@ -22,6 +10,17 @@
 		padding: 0;
 	}
 	.__main-container {
+		--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #efefef #end;
+		--text-color: #if($publishing.publishingfeedlayout=="dark") #fff #else #000 #end;
+		--grey-color: #if($publishing.publishingfeedlayout=="dark") #888 #else #666 #end;
+		--translucent-bg: #if($publishing.publishingfeedlayout=="dark") rgba(20,20,20,.95) #else rgba(255,255,255,.95) #end;
+		#if($publishing.containerdimension_enabled=="true")
+		--container-width: #if($publishing.containerwidth > 0) ${publishing.containerwidth}px #else 1000px #end;
+		--container-height: #if($publishing.containerheight > 0) ${publishing.containerheight}px #else 824px #end;
+		#else
+		--container-width: 100%;
+		--container-height: 100%;
+		#end
 		position: relative;
 		display: flex;
 		flex-direction: column;
@@ -161,8 +160,8 @@
 		justify-content: center;
 		align-items: center;
 		font-family: Arial, Helvetica, sans-serif;
-		color: #000000;
-		background:rgba(255,255,255,.95);
+		color: var(--text-color);
+		background: var(--translucent-bg);
 		padding: 12px 16px;
 		gap: 8px;
 		z-index: 10;
@@ -225,7 +224,7 @@
 		text-align: center;
 		margin: 0 0 -8px;
 		font-size: 0.9rem;
-		color: #666666;
+		color: var(--grey-color);
 	}
 	.__img_caption {
 		margin: 0;
@@ -247,7 +246,7 @@
 		justify-content: center;
 		align-items: center;
 		color: #fff;
-		background-color: var(--highlight-color);
+		background-color: var(--grey-color);
 		text-decoration: none;
 		opacity: 0;
 		transition: opacity 0.5s;
