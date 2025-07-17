@@ -41,18 +41,6 @@
 					#elseif($hit.assettitle)
 							#set($hittitle = $context.getText($hit.assettitle))
 					#end
-					
-					#set($hitcaption = "")
-					#if( $publishing.image_caption_enabled  == true)
-						#if ($hit.headline)
-								#set($hitcaption = $hit.headline)
-						#elseif($hit.longcaption)
-								#set($hitcaption = $hit.longcaption)
-						#end
-					#end
-					
-					
-					
 
 					<li class="splide__slide" title="$!{hittitle}">
 						#if ($type=="image")
@@ -72,13 +60,34 @@
 							#else
 								#set($imagelink = $mediaarchive.asLinkToPreview($hit, null, $imagesize, true))
 								<img src="$imagelink" alt="$!{hittitle}">
-								#if($hitcaption != "")
-									<span class="__img_caption">$!{hitcaption}</span>
-								#end
 							#end
-							
-							
-							
+
+							#set($hitcaptions = $hit.getValue("headline")) 
+							#ifnull($hitcaptions)
+								#set($hitcaptions = $hit.getValue("longcaption"))
+							#end
+
+							<div class="__img_overlay">
+								<button class="__overlay_minimizer" title="[[Minimize Caption/Credits]]">
+									<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="#fff" viewBox="0 0 16 16">
+										<path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+									</svg>
+								</button>
+								#if($publishing.image_caption_enabled == true)
+									#ifnotnull($hitcaptions)
+										#set( $caption = $!{hitcaptions.get($context.language)} )
+										#ifnull($caption)
+											#set( $caption = $!{hitcaptions} )
+										#end
+										<p class="__img_caption" data-locales='$hitcaptions'>$caption</p>
+									#end
+								#end
+
+								#ifnotnull($hit.creator)
+									<p class="__img_creator" title="[[Photo by $!{hit.creator}]]">&copy; $!{hit.creator}</p>
+								#end
+							</div>
+
 						</div>
 					</li>
 				#end

@@ -188,6 +188,10 @@ public class UserProfileModule extends BaseMediaModule
 	public void loadSideBarWidth(WebPageRequest inReq)
 	{
 		String sidebarcomponent = inReq.getContentProperty("sidebarcomponent");
+		if(sidebarcomponent == null )
+		{
+			sidebarcomponent = inReq.getRequestParameter("sidebarcomponent");
+		}
 		if(sidebarcomponent == null && inReq.getUserProfile() != null)
 		{
 			sidebarcomponent = inReq.getUserProfile().get("sidebarcomponent");
