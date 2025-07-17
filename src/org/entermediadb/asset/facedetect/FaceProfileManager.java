@@ -690,8 +690,8 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 			instruction.setParentChunk(parentchunk);
 			scanChunkOfParents(instruction);
-			int totalchecked = inResetFaces.size()*allfaces.getPage();
-			log.info("Checked parents " + totalchecked + " to faces " + starting + " to " + ending);
+			long totalchecked = (long)inResetFaces.size()*(long)allfaces.getPage()*(long)chunksize;
+			log.info("Checked " + totalchecked + "combinations to faces. At " + ending + " of " + allfaces.size());
 
 		}
 		
@@ -1202,7 +1202,7 @@ public class FaceProfileManager implements CatalogEnabled
 					for (int i = 0; i < chunks; i++)
 					{
 						int start = i*limit;
-						int end = Math.min(parts.size(),start+limit);
+						int end = Math.min(parts.size(),start+	limit);
 						Collection sublist = parts.subList(start, end);
 						MultiValued data = (MultiValued)getMediaArchive().query("faceembedding").exists("entityparent").orgroup("parentids",sublist).includefields(includeonly).hitsPerPage(limit).searchOne();
 						if( data != null)
