@@ -216,7 +216,6 @@ public class FaceProfileModule extends BaseMediaModule
 			}
 		}
 		inReq.putPageValue("boxlookup",boxlookup);
-		inReq.putPageValue("faceboxes",boxes); //Used in Javascript? read in the DOM <face assetid="" location="{x,y,h,w}" />
 		inReq.putPageValue("entityperson",entityperson);
 		
 		String hitsname = inReq.findValue("hitsname");
@@ -228,7 +227,7 @@ public class FaceProfileModule extends BaseMediaModule
 		SearchQuery query = tracker.getSearcher().createSearchQuery();
 		query.setHitsName(hitsname);
 		query.addOrsGroup("id",boxlookup.keySet());
-		query.setValue("faceboxes", boxlookup);
+		query.setValue("boxlookup", boxlookup);
 		tracker.addAll(boxlookup.keySet());
 		tracker.setSearchQuery(query);
 		inReq.putPageValue(hitsname, tracker);
@@ -242,8 +241,8 @@ public class FaceProfileModule extends BaseMediaModule
 		HitTracker faceassets = (HitTracker)inReq.getSessionValue(assethitssessionid);
 		if( faceassets != null)
 		{
-			Object faceboxes = faceassets.getSearchQuery().getValue("faceboxes");
-			inReq.putPageValue("faceboxes",faceboxes);
+			Object boxlookup = faceassets.getSearchQuery().getValue("boxlookup");
+			inReq.putPageValue("boxlookup",boxlookup);
 			inReq.putPageValue("showfaceboxes", "true");
 
 		}
