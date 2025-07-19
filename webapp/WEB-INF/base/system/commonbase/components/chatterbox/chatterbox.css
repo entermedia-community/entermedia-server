@@ -25,7 +25,7 @@
   position: absolute;
   top: 0;
   width: 100%;
-  z-index: 9999;
+  z-index: 100;
 }
 .chatterbox-readonly .chatterbox-messages {
   height: calc(100% - 48px) !important;
