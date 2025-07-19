@@ -190,12 +190,10 @@ public class FaceProfileManager implements CatalogEnabled
 			}  
 			getMediaArchive().getAssetSearcher().saveAllData(tosave, null);
 			log.info(" Saved Assets " + tosave.size() + " added faces:  " + foundfacestosave.size());
+			
 			getMediaArchive().saveData("faceembedding",foundfacestosave);
-			if( instructions.isFindParents() )
-			{
-				log.info(" Assign parents for " + foundfacestosave.size());
-				fixSomeNewParents(foundfacestosave); //This saves new faces 
-			}
+			
+			
 			
 			return foundfacestosave.size();
 	}
@@ -452,322 +450,25 @@ public class FaceProfileManager implements CatalogEnabled
 		return similaritycheck;
 	}
 
-	public void clearAllParents(ScriptLogger logger)
+	public void reinitClusters(ScriptLogger logger)
 	{
-		HitTracker allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").sort("id").search();  //Smallest faces connect to the largest one
-		allfaces.enableBulkOperations();
-		
-		Collection tosave = new ArrayList();
-		int count = 0;
-		
-		logger.info("Setting " + allfaces.size() + " to 100D ");
-		for (Iterator iterator = allfaces.iterator(); iterator.hasNext();)
-		{
-			MultiValued face = (MultiValued) iterator.next();
-			face.setValue("parentdistance",100D);
-			tosave.add(face);
-			if( tosave.size() == 1000)
-			{
-				getMediaArchive().saveData("faceembedding",tosave); //Save in chunks
-				count = count + tosave.size();
-				logger.info("Saved " + count + " of " + allfaces.size());
-				tosave.clear();
-			}
-		}
-		getMediaArchive().saveData("faceembedding",tosave); //All Saved
-		logger.info("Completed ");
-	}
-	public void completeMissingParents(ScriptLogger logger)
-	{
-		int chunksize = 2000;
+		logger.info(new Date() +  " reinitNodes Start reinit ");
+		getKMeansManager().reinitClusters(logger);
+		logger.info(new Date() +  " reinitNodes Completed ");
 
-//		Collection includeonly = new ArrayList();
-//		includeonly.add("id");
-//		includeonly.add("assetid");
-//		includeonly.add("facedatadoubles");
-//		"parentdistance"
-
-		int count = 0;
-		HitTracker allfaces = null;
-		do
-		{
-			allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).exact("parentdistance","100").sort("locationhUp").search();  //Smallest faces connect to the largest one
-			allfaces.setHitsPerPage(chunksize); //We will loadup all 10000. save everything in the DB then run the search again?
-			if( allfaces.isEmpty() )
-			{
-				logger.info("No more faces to process");
-				break;
-			}
-			Collection<MultiValued> onepage = allfaces.getPageOfHits();
-			count += onepage.size();
-			logger.info(new Date() + " Starting " + count + " faces with 100 distance out of " + allfaces.size());
-			fixSortedParents(onepage); //This is saved
-			logger.info(new Date() + " Completed connecting parents lookup on" + count );
-			fixParentIds(onepage); //This saves with all parents set
-			logger.info(new Date() + " Completed parentids lookup on" + count );
-			
-		} while( !allfaces.isEmpty() );
-		
-		logger.info("Completed " + count + " faces");
-//		//Now a new process
-//		for(int i=0;i < total;i++)
-//		{
-//			allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").sort("id").search();  //Smallest faces connect to the largest one
-//			allfaces.setHitsPerPage(chunksize);
-//			allfaces.setPage(i+1);
-//			
-//			Collection<MultiValued> onepage = allfaces.getPageOfHits();
-//		
-//			
-//		}
 	}
 
-	protected void fixParentIds(Collection<MultiValued> inChunkToFinish)
+
+	protected KMeansManager fieldKManager;
+	public KMeansManager getKMeansManager()
 	{
-		//Load Cache DB
-		Map<String,String> parentlookup = new HashMap();
-		HitTracker allparents = null;
-		
-		Collection includeonly = new ArrayList();
-		includeonly.add("parentembeddingid");
-		
-		if( inChunkToFinish.size() > 1000)
+		if (fieldKManager == null)
 		{
-			//Load entire DB
-			allparents = getMediaArchive().query("faceembedding").exact("isremoved",false).exists("parentembeddingid").includefields(includeonly).search();
+			fieldKManager = (KMeansManager)getModuleManager().getBean(getCatalogId(),"kMeansManager");
 		}
-		else
-		{
-			Collection possibleparents = new ArrayList();
-			for (Iterator iterator = inChunkToFinish.iterator(); iterator.hasNext();)
-			{
-				MultiValued face = (MultiValued) iterator.next();
-				String parentid = face.get("parentembeddingid");
-				if( parentid != null)
-				{
-					possibleparents.add(parentid);
-				}
-			}
-			allparents = getMediaArchive().query("faceembedding").exact("isremoved",false).
-					orgroup("parentembeddingid",possibleparents).
-					includefields(includeonly).search();
-		}
-		allparents.setHitsPerPage(1000);
-
-		for (Iterator iterator = allparents.iterator(); iterator.hasNext();)
-		{
-			MultiValued parent = (MultiValued) iterator.next();
-			String parentembeddingid = parent.get("parentembeddingid");
-			if( parentembeddingid != null )
-			{
-				parentlookup.put( parent.getId(), parentembeddingid );
-			}
-		}
-		Searcher fsearcher = getMediaArchive().getSearcher("faceembedding");
-
-		//Now go save all the best of
-		for (Iterator iterator = inChunkToFinish.iterator(); iterator.hasNext();)
-		{
-			MultiValued fixedface = (MultiValued) iterator.next();
-			//How do I get ALL the parents? I guess I can loop over till I get a null then search DB?
-			Collection parentids = new ArrayList();
-			parentids.add(fixedface.getId());
-			String moreparentid = fixedface.get("parentembeddingid");
-			//fixedface.getBestParentFace().setValue("hasotherfaces", true );
-			//Has to be in there
-			while( moreparentid != null)
-			{
-				if( parentids.contains(moreparentid) )
-				{
-					break; //Infinite loop
-				}
-				parentids.add(moreparentid);
-				moreparentid = parentlookup.get(moreparentid);
-				if( moreparentid == null)  //Problem finding parent
-				{
-					log.info("DB parent Lookup " + fixedface.getId() + " -> " + moreparentid );
-					MultiValued missingparent = (MultiValued)fsearcher.searchById(moreparentid);
-					if(missingparent == null)
-					{
-						break;
-					}
-					if( missingparent.getBoolean("isremoved") )
-					{
-						break;
-					}
-					moreparentid = missingparent.get("parentembeddingid");
-				}
-			}
-			fixedface.setValue("parentids", parentids);
-
-		}
-		getMediaArchive().saveData("faceembedding",inChunkToFinish); //All Saved
-		
-	}
-
-	public void fixSomeNewParents(List<MultiValued> somefacestosave)
-	{
-		Collections.sort(somefacestosave, new Comparator<MultiValued>()
-		{
-			@Override
-			public int compare(MultiValued inO1, MultiValued inO2) //So small first
-			{
-				Double height = inO1.getDouble("locationh");
-				Double height2 = inO2.getDouble("locationh");
-				if( height == null || height2 == null)
-				{
-					//Problems
-					return -1;
-				}
-				if( height2 == null)
-				{
-					//Problems
-					return 1;
-				}
-				return height.compareTo(height2);
-			}
-		});
-		fixSortedParents(somefacestosave); //Adds them to allrecords
-		//allrecords.addAll(somefacestosave);
-		fixParentIds(somefacestosave);
-	}
-	protected void fixSortedParents(Collection<MultiValued> inResetFaces)
-	{
-		long start = System.currentTimeMillis();
-		Map<String,MultiValued> childchunk = new HashMap(inResetFaces.size());
-		List<Data> tosave = new ArrayList();
-		for (Iterator iterator = inResetFaces.iterator(); iterator.hasNext();)
-		{
-			MultiValued toreset = (MultiValued) iterator.next();
-			if( toreset.getId() == null)
-			{
-				tosave.add(toreset);
-			}
-			toreset.setValue("parentembeddingid",null);
-			toreset.setValue("parentids",null);
-			toreset.setValue("parentassetid",null);
-			toreset.setValue("parentdistance",100D);
-			toreset.setValue("hasotherfaces",false);
-			childchunk.put(toreset.getId(),toreset);
-			
-		}
-		Searcher fsearcher = getMediaArchive().getSearcher("faceembedding");
-		fsearcher.saveAllData(tosave,null);
-		tosave.clear();
-
-		FaceScanInstructions instruction = createInstructions();
-		instruction.setChildChunk(childchunk);
-		
-		int chunksize = 5000;
-		Collection includeonly = new ArrayList();
-		includeonly.add("parentembeddingid");
-		includeonly.add("assetid");
-		includeonly.add("facedatadoubles");
-		
-		HitTracker allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).includefields(includeonly).sort("id").search();
-		allfaces.enableBulkOperations();
-		allfaces.setHitsPerPage(chunksize);
-		int total = allfaces.getTotalPages();
-		log.info("Looking for parents " + inResetFaces.size() + " in " + allfaces.size() + " faces");
-		for(int i=0;i < total;i++)
-		{
-//			allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("id").search();
-//			allfaces.setHitsPerPage(10000);
-			allfaces.setPage(i+1);
-
-			int starting = allfaces.getPage()*chunksize;
-			int ending = allfaces.getPage()*chunksize + chunksize;
-
-			//Process this list of parents in chunks. All the while tracking the best score
-			//long start = System.currentTimeMillis();
-			Collection<MultiValued> onepage = allfaces.getPageOfHits();
-			Map<String,MultiValued> parentchunk = new HashMap(onepage.size());
-			
-			for (Iterator iterator = onepage.iterator(); iterator.hasNext();)
-			{
-				MultiValued possibleparent = (MultiValued) iterator.next();
-				parentchunk.put(possibleparent.getId(),possibleparent);
-			}
-			instruction.setParentChunk(parentchunk);
-			scanChunkOfParents(instruction);
-			long totalchecked = (long)inResetFaces.size()*(long)allfaces.getPage()*(long)chunksize;
-			log.info("Checked " + totalchecked + "combinations to faces. At " + ending + " of " + allfaces.size());
-
-		}
-		
-		//Anything left clear our distance
-		for (Iterator iterator = inResetFaces.iterator(); iterator.hasNext();)
-		{
-			MultiValued toreset = (MultiValued) iterator.next();
-			if( (Double)toreset.getValue("parentdistance") == 100D)
-			{
-				toreset.setValue("parentdistance",null);
-			}
-		}
-		long end = System.currentTimeMillis();
-		double minutes = (end-start)/1000D/60D;
-		getMediaArchive().saveData("faceembedding",inResetFaces);
-		log.info("Did a full scan on " + inResetFaces.size() + " faces in " +  minutes + "  minutes " );
-
+		return fieldKManager;
 	}
 	
-	protected void scanChunkOfParents(FaceScanInstructions inStructions)
-	{
-		double goodenough = .3D;
-		
-		for (Iterator iterator = inStructions.getChildChunk().values().iterator(); iterator.hasNext();)
-		{
-			MultiValued child = (MultiValued)iterator.next();
-			if( child.getDouble("parentdistance") < goodenough) //Skip ones That are good enought
-			{
-				//Close enough
-				continue;
-			}
-			String myassetid = child.get("assetid");
-			
-			List<Double> myfacev = (List<Double>)child.getValue("facedatadoubles");
-
-			for (Iterator iterator2 = inStructions.getParentChunk().values().iterator(); iterator2.hasNext();)
-			{
-				MultiValued otherface = (MultiValued) iterator2.next();
-				
-				//Dont find myself as my parent
-				String compareassetid = otherface.get("assetid");
-				if( myassetid != null && compareassetid.equals(myassetid) )
-				{
-					//log.info("Skipping assetid " + otherface.getId() + " == " + otherface.getId() );
-					continue;
-				}
-
-				otherface = inStructions.loadData(otherface.getId());
-				//Dont find children who already have me as a parent
-				String imediateparentid = otherface.get("parentembeddingid");
-				if( imediateparentid != null && imediateparentid.equals(child.getId()) )
-				{
-					//log.info("Skipping has me as parent");
-					continue;
-				}
-				
-				List<Double> comparetolist = (List<Double>)otherface.getValue("facedatadoubles");
-	
-				double distance = findCosineDistance(myfacev, comparetolist);
-				if( distance < getVectorScoreLimit())
-				{
-					if( distance < child.getDouble("parentdistance"))
-					{
-						//log.info("Joining " +distance );
-						child.setValue("parentdistance",distance);
-						child.setValue("parentembeddingid", otherface.getId());
-						child.setValue("parentassetid", otherface.get("assetid"));
-						child.setValue("hasotherfaces", true );
-						child.setValue("parentids",null); //resolve at the end
-						otherface.setValue("hasotherfaces", true ); //TODO Saved?
-					}
-				}
-			}
-		}
-	}
-
 	public void disableFaceBox(User inUser, MultiValued inEmbedding)
 	{
 		inEmbedding.setValue("isremoved", true);
@@ -784,14 +485,14 @@ public class FaceProfileManager implements CatalogEnabled
 			return;
 		}
 		getMediaArchive().saveData("faceembedding",inEmbedding);
-		List<MultiValued> somerecords = new ArrayList();
-		
-		for (Iterator iterator = boxes.iterator(); iterator.hasNext();)
-		{
-			FaceBox box = (FaceBox) iterator.next();
-			somerecords.add(box.getEmbeddedData());
-		}
-		fixSomeNewParents(somerecords);
+//		List<MultiValued> somerecords = new ArrayList();
+//		
+//		for (Iterator iterator = boxes.iterator(); iterator.hasNext();)
+//		{
+//			FaceBox box = (FaceBox) iterator.next();
+//			somerecords.add(box.getEmbeddedData());
+//		}
+//		//fixSomeNewParents(somerecords);
 		
 	}
 	
@@ -812,9 +513,9 @@ public class FaceProfileManager implements CatalogEnabled
 				throw new OpenEditException("Vectors must be the same length.");
 		}
 
-		double dotProduct = 0.0f;
-		double normA = 0.0f;
-		double normB = 0.0f;
+		double dotProduct = 0.0;
+		double normA = 0.0;
+		double normB = 0.0;
 
 		for (int i = 0; i < inputVector.size(); i++) 
 		{
@@ -873,8 +574,8 @@ public class FaceProfileManager implements CatalogEnabled
 
 			ValuesMap box = new ValuesMap((Map)facejson.get("facial_area"));
 //			
-			Collection left = box.getValues("left_eye");
-			Collection right = box.getValues("right_eye");
+//			Collection left = box.getValues("left_eye");
+//			Collection right = box.getValues("right_eye");
 			
 			Double confidence = (Double)facejson.get("face_confidence");  //This is useless
 			// if( left == null || right == null)
@@ -921,9 +622,6 @@ public class FaceProfileManager implements CatalogEnabled
 						if(othervalues.equals(vector) )
 						{
 							addedface = existing;
-							addedface.setValue("parentembeddingid",null);
-							addedface.setValue("parentassetid",null);
-							addedface.setValue("parentdistance", null);
 							log.info("Found existing embedding for asset " + inAsset.getName() ); 
 							break;
 						}
@@ -939,8 +637,8 @@ public class FaceProfileManager implements CatalogEnabled
 			//addedface.setValue("facedatajson",jsontext); 
 			addedface.setValue("facedatadoubles",vector); //Not saved to index
 			addedface.setValue("assetid",inAsset.getId() );
-			addedface.setValue("left_eye", left );
-			addedface.setValue("right_eye", right);
+//			addedface.setValue("left_eye", left );
+//			addedface.setValue("right_eye", right);
 
 			int assetwidth = getMediaArchive().getRealImageWidth(inAsset); 
 			int assetheight = getMediaArchive().getRealImageHeight(inAsset); 
@@ -959,9 +657,10 @@ public class FaceProfileManager implements CatalogEnabled
 			addedface.setValue("locationw",Math.round(w));
 			addedface.setValue("locationh",Math.round(h));
 			addedface.setValue("timecodestart",timecodestart);
-
+			
+			getKMeansManager().setCentroids(addedface);
+			
 			log.info("added face with confidence:" + confidence + " " +   box.getDouble("w") + "x" +  box.getDouble("h") + " " + inAsset.getName());
-
 			tosave.add(addedface);
 		}
 		return tosave;
@@ -999,56 +698,6 @@ public class FaceProfileManager implements CatalogEnabled
 //		return found;
 //	}
 //	
-	protected Data findSimilar(Searcher facedb, MultiValued inChild, String myassetid, Collection inAllFaces)
-	{
-//		Integer sourceh = myFace.getInt("locationh");
-//		if( sourceh < 300 )  //Dont link to small image no matter what
-//		{
-//			return null;
-//		}
-		//log.info(inAllFaces.toString());
-		Double smallestdistance = null; 
-		Data parent = null;
-		List<Double> inputv = (List<Double>)inChild.getValue("facedatadoubles");
-		for (Iterator iterator = inAllFaces.iterator(); iterator.hasNext();)
-		{
-			MultiValued hit = (MultiValued) iterator.next();
-			//save this as the parent
-			String compareassetid = hit.get("assetid");
-			if( compareassetid.equals(myassetid) )
-			{
-				continue;
-			}
-			
-			//Dont find children who already have me as a parent
-			String imediateparent = hit.get("parentembeddingid");
-			if( imediateparent != null && imediateparent.equals(inChild.getId()) )
-			{
-				continue;
-			}
-			
-			List<Double> comparetolist = (List<Double>)hit.getValue("facedatadoubles");
-			//Double[] comparetov = (Double[])comparetolist.toArray(new Double[comparetolist.size()]);
-			double distance = findCosineDistance(inputv, comparetolist);
-			if( distance < getVectorScoreLimit())
-			{
-				if( smallestdistance == null || smallestdistance < distance )
-				{
-					smallestdistance = distance;
-					parent = hit;
-				}
-			}
-		}
-		
-		if( parent  != null)
-		{
-			inChild.setValue("parentdistance", smallestdistance);
-			return parent;
-		}
-		
-		return null;
-	}
-	
 	
 	protected float[] collectFloats(Collection vector) 
 	{
@@ -1159,76 +808,44 @@ public class FaceProfileManager implements CatalogEnabled
 		return boxes;	
 	}
 
-	/**
-	 * Used to cache the right person assigned to one embedding from the  method above 
-	 */
-	public Data loadFaceWithPersonFromFace(MultiValued embedding)
-	{
-		String entitypersonid = embedding.get("entityperson");
-		if( entitypersonid != null)
-		{
-			return embedding;
-		}
-		if( entitypersonid == null)
-		{
-			String embeddingid = (String)getMediaArchive().getCacheManager().get("facepersonlookuprecord",embedding.getId());
-			if(embeddingid == CacheManager.NULLVALUE )
-			{
-				return null;
-			}
-			Data found = getMediaArchive().getCachedData("faceembedding", embeddingid);
-			if( found != null)
-			{
-				return found;
-			}
-			Collection parentids = embedding.getValues("parentids");
-			if( parentids != null && !parentids.isEmpty() )
-			{
-				Collection includeonly = new ArrayList();
-				includeonly.add("parentids");
-				includeonly.add("entityparent");
-
-				HitTracker personlookup = getMediaArchive().query("faceembedding").orgroup("parentids",parentids).includefields(includeonly).hitsPerPage(500).search();
-				
-				//Now grab ALL parentids of anyone related to these
-				Collection allpossibleparentids = personlookup.collectValues("parentids");
-
-				if( !allpossibleparentids.isEmpty() )
-				{
-					int limit = 500;
-					ArrayList parts = new ArrayList(allpossibleparentids);
-					int chunks = parts.size() / limit;
-					chunks++;
-					for (int i = 0; i < chunks; i++)
-					{
-						int start = i*limit;
-						int end = Math.min(parts.size(),start+	limit);
-						Collection sublist = parts.subList(start, end);
-						MultiValued data = (MultiValued)getMediaArchive().query("faceembedding").exists("entityparent").orgroup("parentids",sublist).includefields(includeonly).hitsPerPage(limit).searchOne();
-						if( data != null)
-						{
-							//Save the cache
-							getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),data.getId());
-							return data;
-						}
-					}
-				}
-				getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),  CacheManager.NULLVALUE);
-			}
-		}
-		return null;
-	}
-
-	
 	public Data loadPersonOfEmbedding(MultiValued embedding)
 	{
-		Data personlookup = loadFaceWithPersonFromFace(embedding);
-		if( personlookup != null)
+
+		Data entityperson = (Data)getMediaArchive().getCacheManager().get("facepersonlookuprecord",embedding.getId());
+		if(entityperson == CacheManager.NULLDATA )
 		{
-			Data entityperson = getMediaArchive().getCachedData("entityperson", personlookup.get("entityperson") ); //Might be null
-			return entityperson;
+			return null;
 		}
-		return null;
+
+		String entitypersonid = embedding.get("entityperson");
+		if( entitypersonid == null)
+		{
+			Collection<MultiValued> faces =  getKMeansManager().searchNearestItems(embedding);
+			for (Iterator iterator = faces.iterator(); iterator.hasNext();)
+			{
+				MultiValued face = (MultiValued) iterator.next();
+				entitypersonid = face.get("entitypersonid");
+				if( entitypersonid != null)
+				{
+					break;
+				}
+			}
+		}
+		if( entitypersonid != null)
+		{
+			entityperson = getMediaArchive().getCachedData("entityperson", entitypersonid ); //Might be null
+		}
+		
+		if( entityperson == null)
+		{
+			getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),CacheManager.NULLDATA);
+		}
+		else
+		{
+			getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),entityperson);
+		}
+		
+		return entityperson;
 	}
 
 	protected ContentItem generateInputFile(Asset inAsset, Block inBlock)
@@ -1577,7 +1194,7 @@ public class FaceProfileManager implements CatalogEnabled
 			MultiValued face = (MultiValued) getMediaArchive().getData("faceembedding",faceembeddingid);
 			if (face != null)
 			{
-				Data personlookup = loadFaceWithPersonFromFace(face);
+				Data personlookup = loadFaceMappingWithEnitityPerson(face);
 				if( personlookup == null)
 				{
 					personlookup = face;
@@ -1606,6 +1223,26 @@ public class FaceProfileManager implements CatalogEnabled
 				
 			}
 		}
+	}
+
+	protected Data loadFaceMappingWithEnitityPerson(MultiValued embedding)
+	{
+		String entitypersonid = embedding.get("entityperson");
+		if( entitypersonid != null)
+		{
+			return embedding;
+		}
+		Collection<MultiValued> faces =  getKMeansManager().searchNearestItems(embedding);
+		for (Iterator iterator = faces.iterator(); iterator.hasNext();)
+		{
+			MultiValued face = (MultiValued) iterator.next();
+			entitypersonid = face.get("entitypersonid");
+			if( entitypersonid != null)
+			{
+				return face;
+			}
+		}
+		return null;
 	}
 
 	

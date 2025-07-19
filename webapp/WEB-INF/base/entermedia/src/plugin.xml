@@ -2603,6 +2603,11 @@
 		</property>
 	</bean>
 	
+	<bean id="kMeansManager" class="org.entermediadb.asset.facedetect.KMeansManager" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
 	
 	
 	<bean id="pubLookUp" class="org.entermediadb.modules.publishing.PubLookUp" lazy-init="default" scope="prototype">
