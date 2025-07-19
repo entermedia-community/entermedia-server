@@ -14,9 +14,8 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -198,7 +197,7 @@ public class FaceProfileManager implements CatalogEnabled
 			return foundfacestosave.size();
 	}
 	
-	private void extractFaces(FaceScanInstructions instructions, Asset inAsset, List<MultiValued> inFoundfaces) throws Exception
+	protected void extractFaces(FaceScanInstructions instructions, Asset inAsset, List<MultiValued> inFoundfaces) throws Exception
 	{
 		
 		String type = getMediaArchive().getMediaRenderType(inAsset);
@@ -789,12 +788,9 @@ public class FaceProfileManager implements CatalogEnabled
 			return (Collection<FaceBox>)boxes;
 		}
 		boxes = new ArrayList();
-		Collection exclude = new ArrayList();
-		exclude.add("facedatadoubles");
-		
 		
 		Searcher searcher = getMediaArchive().getSearcher("faceembedding");
-		HitTracker allthepeopleinasset = searcher.query().exact("assetid",inAsset).exact("isremoved", false).excludefields(exclude).search();
+		HitTracker allthepeopleinasset = searcher.query().exact("assetid",inAsset).exact("isremoved", false).search();
 
 		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
 		{
@@ -1061,75 +1057,45 @@ public class FaceProfileManager implements CatalogEnabled
      */
 	public Collection<FaceBox> viewAllRelatedFaces(MultiValued startdata)
 	{
-		//Get all parents 
-//		Collection parentids = new ArrayList();
-//		while( startdata != null)
-//		{
-//			parentids.add(startdata.getId());
-//			String parent = startdata.get("parentembeddingid");
-//			startdata = getMediaArchive().getCachedData("faceembedding", parent);
-//		}
-//		if( parentids.isEmpty() )
-//		{
-//			return null;
-//		}
-		Collection exclude = new ArrayList();
-		exclude.add("facedatadoubles");
-
 		Collection<FaceBox> boxes = new ArrayList();
 
 		Data entityperson = null;
-		Collection loadedids = new ArrayList();
-		Collection parentids = startdata.getValues("parentids");
-		if( parentids != null && !parentids.isEmpty() )
+		//Search all children
+		Collection allthepeopleinasset = getKMeansManager().searchNearestItems(startdata);
+		
+		Collection<String> dedupids = new HashSet();
+		
+		//Look for a personid anyplace
+		String entitypersonid  = startdata.get("entityperson");
+		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
 		{
-			//Search all children
-			HitTracker allthepeopleinasset = getMediaArchive().getSearcher("faceembedding").query().exact("isremoved",false).orgroup("parentids", parentids).excludefields(exclude).search();
-			
-			//Look for a personid anyplace
-			Collection<String> person = allthepeopleinasset.collectValues("entityperson");
-			loadedids = allthepeopleinasset.collectValues("id");
-			if( !person.isEmpty() )
+			MultiValued hit = (MultiValued) iterator.next();
+			entitypersonid  = hit.get("entityperson");
+			if( entitypersonid != null)
 			{
-				String entitypersonid  = null;
-				entitypersonid = person.iterator().next();
-				if( entitypersonid != null)
+				entityperson = getMediaArchive().getCachedData("entityperson", entitypersonid);
+				if( entityperson != null)
 				{
-					entityperson = getMediaArchive().getCachedData("entityperson", entitypersonid);
+					break;
 				}
-			}
-			//What happens is another person is matched? We should have never allowed that in the UI
-			
-			for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
-			{
-				MultiValued embedding = (MultiValued) iterator.next(); //One person
-				FaceBox box = makeBox(embedding, entityperson);
-				boxes.add(box);
 			}
 		}
-		else
+		//What happens is another person is matched? We should have never allowed that in the UI
+		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
 		{
-			//Just one person
-			if( entityperson == null)
-			{
-				String entitypersonid = startdata.get("entityperson");
-				if( entitypersonid != null)
-				{
-					entityperson = getMediaArchive().getCachedData("entityperson", entitypersonid);
-				}
-			}
-			FaceBox box = makeBox(startdata, entityperson);
+			MultiValued embedding = (MultiValued) iterator.next(); //One person
+			dedupids.add(embedding.getId());
+			FaceBox box = makeBox(embedding, entityperson);
 			boxes.add(box);
-			loadedids.add(startdata.getId());
 		}
 		
 		if( entityperson != null)
 		{
-			HitTracker morepeople = getMediaArchive().getSearcher("faceembedding").query().exact("isremoved",false).exact("entityperson", entityperson).excludefields(exclude).search();
+			HitTracker morepeople = getMediaArchive().getSearcher("faceembedding").query().exact("isremoved",false).exact("entityperson", entityperson).search();
 			for (Iterator iterator = morepeople.iterator(); iterator.hasNext();)
 			{
 				MultiValued embedding = (MultiValued) iterator.next(); //One person
-				if( !loadedids.contains(embedding.getId() ) )
+				if( !dedupids.contains(embedding.getId() ) )
 				{
 					FaceBox box = makeBox(embedding, entityperson);
 					boxes.add(box);
