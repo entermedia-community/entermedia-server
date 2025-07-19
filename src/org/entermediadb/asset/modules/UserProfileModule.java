@@ -205,4 +205,19 @@ public class UserProfileModule extends BaseMediaModule
 		inReq.putPageValue("sidebarwidth", width);
 
 	}
+	
+	public void changeTable(WebPageRequest inReq)
+	{
+		String searchtype = inReq.getRequestParameter("searchtype");
+		if(searchtype != null && inReq.getUserProfile() != null)
+		{
+			inReq.getUserProfile().setValue("databasecurrentsearch",searchtype);
+		}
+		else
+		{
+			searchtype = inReq.getUserProfile().get("databasecurrentsearch");
+			inReq.setRequestParameter("searchtype",searchtype);
+		}
+
+	}
 }
