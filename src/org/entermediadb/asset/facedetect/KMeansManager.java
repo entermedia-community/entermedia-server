@@ -61,7 +61,6 @@ public class KMeansManager implements CatalogEnabled {
 		{
 			fieldMediaArchive = (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
 		}
-
 		return fieldMediaArchive;
 	}
 
@@ -76,6 +75,8 @@ public class KMeansManager implements CatalogEnabled {
 		KMeansConfiguration config = (KMeansConfiguration)getMediaArchive().getCacheManager().get("face","kmeansconfig");
 		if( config == null)
 		{
+			fieldClusters = null; //reload em
+			
 			config = new KMeansConfiguration();
 			String value = getMediaArchive().getCatalogSettingValue("facedetect_max_distance");
 			if( value != null)
@@ -101,49 +102,14 @@ public class KMeansManager implements CatalogEnabled {
 			int min = (int)Math.round(k);
 			config.kcount = min;
 			config.totalrecords = totalfaces;
-			config.maxresultspersearch  = 2000;
 			
 			getMediaArchive().getCacheManager().put("face","kmeansconfig",config);
 		}
 		return config;
 	}
-/**
- * 
- * 
-[0.2f, 0.1f, 0.3f],
-[0.3f, 0.1f, 0.3f],
-[0.4f, 0.5f, 0.3f],
-[0.2f, 0.7f, 0.3f],
-[0.2f, 0.1f, 0.7f],
-[0.2f, 0.2f, 0.3f],
-
- * 
- */
-
-
-//	public static void main(String[] args) {
-//		KMeansManager kmeans = new KMeansManager();	
-//
-//		Item three = new Item( new float[]{0.4f, 0.1f, 0.3f},"3");
-//		
-//		kmeans.vectors = new ArrayList<Item>();
-//		kmeans.saveWithCluster(new Item( new float[]{0.2f, 0.1f, 0.3f},"1") );
-//		kmeans.saveWithCluster(new Item( new float[]{0.3f, 0.1f, 0.3f},"2") );
-//		kmeans.saveWithCluster(three );
-//		kmeans.saveWithCluster(new Item( new float[]{0.5f, 0.1f, 0.3f},"4") );
-//		
-//		log.info( kmeans.clusters );
-//		
-//		Collection fund  = kmeans.searchNearestItems(three);
-//		//test search
-//		log.info( fund );
-//		
-//		//test cluster size
-//	}
 
 	public void reinitClusters(ScriptLogger inLog) 
 	{
-		//
 		if( getClusters().size() < getSettings().kcount )
 		{
 			int toadd = getSettings().kcount - getClusters().size();
@@ -151,6 +117,10 @@ public class KMeansManager implements CatalogEnabled {
 			double pagesize = (double)getSettings().totalrecords / (double)getSettings().kcount;
 			int perpage = (int)Math.round(Math.max(1,pagesize));
 			HitTracker tracker = getMediaArchive().query("faceembedding").exact("iscentroid",false).sort("id").hitsPerPage(perpage).search(); //More random
+			if( tracker.isEmpty() )
+			{
+				throw new OpenEditException("Do a deep reindex on faceembeddings");
+			}
 			Collection tosave = new ArrayList();
 			
 			//Make sure none are close to one another. And not the same face at all
@@ -164,6 +134,16 @@ public class KMeansManager implements CatalogEnabled {
 				tosave.add(hit);
 				if( toadd == tosave.size() )
 				{
+					//Make sure no two a near one another
+					compressDuplicates(tosave); //Did we compress any?
+					if( toadd > tosave.size() )
+					{
+						int removed = toadd - tosave.size();
+						log.info("Some duplicates removed. Adding " + removed + " more");
+						perpage = 1;
+						i = 0; //start over and add more
+						continue;
+					}					
 					//save
 					getMediaArchive().saveData("faceembedding",tosave);
 					fieldClusters = null; //reload
@@ -204,18 +184,61 @@ public class KMeansManager implements CatalogEnabled {
 		inLog.info("Complete: "  + totalsaved + " assigned cluster nodes in " + diff + " seconds");
 	}
 
+	protected void compressDuplicates(Collection<MultiValued> inTosave)
+	{
+		double min_distance = getSettings().cutoffdistance * 2;
+		
+		Collection<MultiValued> tocheck = new ArrayList<MultiValued>();
+		
+		for (Iterator iterator = tocheck.iterator(); iterator.hasNext();)
+		{
+			MultiValued master = (MultiValued) iterator.next();
+			if( !inTosave.contains(master) )
+			{
+				continue;
+			}
+			for (Iterator iterator2 = tocheck.iterator(); iterator.hasNext();)
+			{
+				MultiValued other = (MultiValued) iterator.next();
+				if( other != master && inTosave.contains(other) )
+				{
+					double distance = cosineDistance(master, other);
+					if (distance <= min_distance)  //To close together. All images are shared on that side
+					{
+						other.setValue("iscentroid",false);
+						other.removeValue("nearbycentroidids",other.getId());
+						//other.retired = tru
+						//Dont include anymore but leave for future used Save to DB?
+						inTosave.remove(other);  //Old records will still be able to search
+					}
+				}
+			}
+		}
+	
+	}
+
+
 	public void setCentroids(final MultiValued inFace) 
 	{
 		// This method is intended to find the nearest cluster for a given item.
 		// Implementation would typically involve calculating distances or similarities
 		// between the item and each cluster centroid.
+		//remove extras
 
+		if( getClusters().isEmpty())
+		{
+			//Chicken and egg
+			//log.info("run initialize later");
+			return;
+		}
+		
 		List<CloseCluster> closestclusters = (List<CloseCluster>)new ArrayList();
 	
 		for (MultiValued cluster : getClusters())
 		{
 			double distance = cosineDistance(inFace, cluster);
 			CloseCluster close = new CloseCluster(cluster,distance);
+			
 			closestclusters.add(close);
 		}
 		Collections.sort(closestclusters);
@@ -226,18 +249,31 @@ public class KMeansManager implements CatalogEnabled {
 		{
 			closestclusters = closestclusters.subList(0, kcount);  //Cut off far away ones
 		}
+		double max_distance = getSettings().cutoffdistance * 2;
+		
 		Collection<String> centroids = new ArrayList();
-		for (Iterator iterator = closestclusters.iterator(); iterator.hasNext();)
+		for (int i = 0; i < closestclusters.size(); i++)
 		{
-			CloseCluster cluster = (CloseCluster) iterator.next();
-			centroids.add( cluster.centroid.getId() );
+			CloseCluster cluster = (CloseCluster) closestclusters.get(i);
+			if( cluster.distance < max_distance)
+			{
+				centroids.add( cluster.centroid.getId() );
+			}
 		}
+		
+		if( centroids.isEmpty() )
+		{
+			log.info("Added another centroid due to sparce space " + inFace.getId());
+			inFace.setValue("iscentroid",true);
+			centroids.add(inFace.getId());
+		}
+		
 		inFace.setValue("nearbycentroidids",centroids);
 		
-		if( closestclusters.size() < kcount)
-		{
-			searchNearestItems(inFace); // Search for nearest items after setting the cluster to see if it should split
-		}
+//		if( closestclusters.size() < kcount)
+//		{
+//			searchNearestItems(inFace); // Search for nearest items after setting the cluster to see if it should split
+//		}
 		
 		//This will rebalance if needed by searching nearest items
 
@@ -256,22 +292,26 @@ public class KMeansManager implements CatalogEnabled {
 		}
 		
 		Collection nearbycentroidids = inSearch.getValues("nearbycentroidids");
+		if( nearbycentroidids == null || nearbycentroidids.isEmpty() )
+		{
+			throw new OpenEditException(inSearch + " Has no centroids. reindexfaces");
+		}
 		
 		HitTracker tracker = getMediaArchive().query("faceembedding").
 				orgroup("nearbycentroidids",nearbycentroidids).
 				exact("isremoved",false).search();
 		
 		//if we have too many lets make a new k
-		if( tracker.size() > getSettings().maxresultspersearch )
-		{
-			// Add the new cluster to the list
-			//Rebalance centroids
-			if(! inSearch.getBoolean("iscentroid"))
-			{
-				Collection<MultiValued> matches = divideCluster(inSearch, tracker);
-				return matches;
-			}
-		}
+//		if( tracker.size() > getSettings().maxresultspersearch )
+//		{
+//			// Add the new cluster to the list
+//			//Rebalance centroids
+//			if(! inSearch.getBoolean("iscentroid"))
+//			{
+//				Collection<MultiValued> matches = divideCluster(inSearch, tracker);
+//				return matches;
+//			}
+//		}
 		
 		//Filter by distance
 		Collection<MultiValued> matches = new ArrayList();
@@ -302,7 +342,7 @@ public class KMeansManager implements CatalogEnabled {
 		List<Double> vectorA = (List<Double>)hita.getValue("facedatadoubles");
 		List<Double> vectorB = (List<Double>)hitb.getValue("facedatadoubles");
 		
-		if (vectorA.size() != vectorA.size())
+		if (vectorA.size() != vectorB.size())
 		{
 			throw new IllegalArgumentException("Vectors must be of the same length");
 		}
@@ -327,9 +367,11 @@ public class KMeansManager implements CatalogEnabled {
 		return distance;
 	}
 
+	/*
 	// This method is intended to rebalance centroids in a KMeans clustering algorithm.
 	public Collection<MultiValued> divideCluster(MultiValued newcentroidItem, HitTracker allnearestItems)
 	{
+		log.info("Dividing the cluster from large resultset: " + allnearestItems.size() + " results for id: " + newcentroidItem.getId() );
 		if( newcentroidItem.getId() == null)
 		{
 			getMediaArchive().saveData("faceembedding",newcentroidItem);
@@ -368,12 +410,14 @@ public class KMeansManager implements CatalogEnabled {
 		//Save insidethecircle
 		newcentroidItem.setValue("iscentroid",true);
 		
-		
+		getMediaArchive().saveData("faceembedding",insidethecircle);
 		//else Reassing everyone?
 		return insidethecircle;
 	}
-
-
+*/
+	
+	
+/*
 	protected void removeFurthestAwayCluster(MultiValued inMoveFace)
 	{
 		Collection<String> clusters = inMoveFace.getValues("nearbycentroidids");
@@ -384,7 +428,7 @@ public class KMeansManager implements CatalogEnabled {
 		{
 			MultiValued cluster = findCluster(clusterid);
 			double distance = 0.0;
-			if( !cluster.getId().equals(inMoveFace.getId() ) )
+			if( !cluster.getId().equals(inMoveFace.getId() ) )  //Dont check myself its 0
 			{
 				distance = cosineDistance(inMoveFace, cluster);
 			}
@@ -393,7 +437,7 @@ public class KMeansManager implements CatalogEnabled {
 		}
 		Collections.sort(closestclusters);
 		
-		closestclusters.removeLast();
+		closestclusters.remove(closestclusters.size()-1);
 		
 		Collection<String> tosave = new ArrayList();
 		for (Iterator iterator = closestclusters.iterator(); iterator.hasNext();)
@@ -403,7 +447,8 @@ public class KMeansManager implements CatalogEnabled {
 		}
 		inMoveFace.setValue("nearbycentroidids",tosave);
 	}
-
+	*/
+	
 	protected MultiValued findCluster(String inId)
 	{
 		for (MultiValued cluster : getClusters())
@@ -426,6 +471,7 @@ public class KMeansManager implements CatalogEnabled {
 		{
 			HitTracker tracker = getMediaArchive().query("faceembedding").exact("iscentroid",true).search();
 			fieldClusters = new ArrayList<MultiValued>(tracker);
+			//	reinitClusters(null);
 		}
 		return fieldClusters;	
 	}

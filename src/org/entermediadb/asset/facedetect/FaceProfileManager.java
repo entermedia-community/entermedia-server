@@ -659,7 +659,15 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			getKMeansManager().setCentroids(addedface);
 			
-			log.info("added face with confidence:" + confidence + " " +   box.getDouble("w") + "x" +  box.getDouble("h") + " " + inAsset.getName());
+			Collection centroids = addedface.getValues("nearbycentroidids");
+			
+			int size = 0;
+			if( centroids != null)
+			{
+				size = centroids.size();
+			}
+					
+			log.info("added face with confidence: " + confidence + " centroids count: " + size  + " " + inAsset.getName());
 			tosave.add(addedface);
 		}
 		return tosave;
