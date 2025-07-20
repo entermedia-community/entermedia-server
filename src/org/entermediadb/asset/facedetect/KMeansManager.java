@@ -257,9 +257,9 @@ public class KMeansManager implements CatalogEnabled {
 		{
 			closestclusters = closestclusters.subList(0, kcount);  //Cut off far away ones
 		}
-		double max_distance = getSettings().cutoffdistance * 2;
+		double max_distance = getSettings().cutoffdistance * 2; //So we dont flood the zone with too many centoids that slows down ingestion
 		
-		//Double check all the distances are within 2x distance. Wide net. Later I can shrink this once I search
+		//Double check all the distances are within 2x distance. Wide net. Later I can shrink this once I search. 
 		Collection<String> centroids = new ArrayList();
 		for (int i = 0; i < closestclusters.size(); i++)
 		{
@@ -270,11 +270,14 @@ public class KMeansManager implements CatalogEnabled {
 			}
 		}
 		
-		if( centroids.isEmpty() )
+		if( centroids.isEmpty() ) //We are all along within a 2x radious
 		{
+			//We dont want to add too many clusters. Its slows down ingestion
+			
 			log.info("Added another centroid due to sparce space " + inFace.getId());
 			inFace.setValue("iscentroid",true);
-			centroids.add(inFace.getId());
+			centroids.add(inFace.getId()); 
+			getClusters().add(inFace);
 		}
 		
 		inFace.setValue("nearbycentroidids",centroids);
@@ -346,9 +349,9 @@ public class KMeansManager implements CatalogEnabled {
 				misses++;
 			}
 		}
-		if( misses > 0 )
+		if( misses > 50 )
 		{
-			log.info("Misses" + misses + " add more centroids to this area " + getClusters().size());
+			log.info("Misses " + misses + " might need to add more centroids to this area " + inSearch.getId());
 		}
 		return matches;
 	}
