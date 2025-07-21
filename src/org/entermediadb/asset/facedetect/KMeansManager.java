@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.CatalogEnabled;
@@ -170,7 +171,26 @@ public class KMeansManager implements CatalogEnabled {
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			MultiValued hit = (MultiValued) iterator.next();
-			setCentroids(hit); //Set em
+			
+			//Error checking
+			List<Double> vectorA = (List<Double>)hit.getValue("facedatadoubles");
+			if( vectorA == null)
+			{
+				//AZgZeJD6n_w3KYxNFTlK
+				Asset asset = getMediaArchive().getAsset(hit.get("assetid"));
+				if( asset != null)
+				{
+					asset.setValue("facescanerror",true);
+					getMediaArchive().saveAsset(asset);
+				}
+				continue;
+			}
+			
+			
+			setCentroids(hit); //Set em <-----
+			
+			
+			
 			tosave.add(hit);
 			if( tosave.size() == 500)
 			{
@@ -236,7 +256,7 @@ public class KMeansManager implements CatalogEnabled {
 		if( getClusters().isEmpty())
 		{
 			//Chicken and egg
-			//log.info("run initialize later");
+			log.info("run initialize");
 			return;
 		}
 		
@@ -249,36 +269,38 @@ public class KMeansManager implements CatalogEnabled {
 			
 			closestclusters.add(close);
 		}
-		Collections.sort(closestclusters);
+		Collections.sort(closestclusters);		
 		
-		int kcount = getSettings().kcount;  //10-100
-		
-		if( closestclusters.size() > kcount)
-		{
-			closestclusters = closestclusters.subList(0, kcount);  //Cut off far away ones
-		}
-		double max_distance = getSettings().cutoffdistance * 2; //So we dont flood the zone with too many centoids that slows down ingestion
-		
+		double max_distance = getSettings().cutoffdistance * 3; //So we dont flood the zone with too many centoids that slows down ingestion
 		//Double check all the distances are within 2x distance. Wide net. Later I can shrink this once I search. 
 		Collection<String> centroids = new ArrayList();
-		for (int i = 0; i < closestclusters.size(); i++)
+		double checkfordistance = getSettings().cutoffdistance;
+		while(  centroids.isEmpty() && checkfordistance <=  max_distance )
 		{
-			CloseCluster cluster = (CloseCluster) closestclusters.get(i);
-			if( cluster.distance < max_distance)
+			for (int i = 0; i < closestclusters.size(); i++)
 			{
-				centroids.add( cluster.centroid.getId() );
+				CloseCluster cluster = (CloseCluster) closestclusters.get(i);
+				if( cluster.distance < checkfordistance)
+				{
+					centroids.add( cluster.centroid.getId() );
+				}
 			}
+			checkfordistance = checkfordistance * 1.20; //Go up by 20% until we find a group
+		}	
+
+		if( checkfordistance > 1.0)
+		{
+			log.info("Had trouble finding a match " + checkfordistance + " " + inFace.getId());
 		}
 		
-		if( centroids.isEmpty() ) //We are all along within a 2x radious
+		if( centroids.isEmpty() ) //We are all alone within a 2x radious
 		{
-			//We dont want to add too many clusters. Its slows down ingestion
-			
 			log.info("Added another centroid due to sparce space " + inFace.getId());
 			inFace.setValue("iscentroid",true);
 			centroids.add(inFace.getId()); 
 			getClusters().add(inFace);
-		}
+		}	
+
 		
 		inFace.setValue("nearbycentroidids",centroids);
 		
