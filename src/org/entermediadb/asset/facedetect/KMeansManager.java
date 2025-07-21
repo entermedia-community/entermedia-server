@@ -288,7 +288,7 @@ public class KMeansManager implements CatalogEnabled {
 			checkfordistance = checkfordistance * 1.20; //Go up by 20% until we find a group
 		}	
 
-		if( checkfordistance > 1.0)
+		if( checkfordistance > 1.3)
 		{
 			log.info("Had trouble finding a match " + checkfordistance + " " + inFace.getId());
 		}

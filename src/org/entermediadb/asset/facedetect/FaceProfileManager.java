@@ -192,7 +192,11 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			getMediaArchive().saveData("faceembedding",foundfacestosave);
 			
-			
+			if( !foundfacestosave.isEmpty() )
+			{
+				getMediaArchive().getCacheManager().clear("faceboxes");
+				getMediaArchive().getCacheManager().clear("facepersonlookuprecord");
+			}
 			
 			return foundfacestosave.size();
 	}
