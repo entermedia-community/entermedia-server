@@ -115,7 +115,7 @@ public class KMeansManager implements CatalogEnabled {
 	public void reinitClusters(ScriptLogger inLog) 
 	{
 		//Reload from db
-		getMediaArchive().getCacheManager().remove("face","kmeansconfig");
+		getMediaArchive().getCacheManager().clear("face");
 		fieldClusters = null;
 		
 		
@@ -134,25 +134,39 @@ public class KMeansManager implements CatalogEnabled {
 			
 			//Make sure none are close to one another. And not the same face at all
 			
+			int maxcompresstimes = 100;
+			
+			int offset = 0;
+			
 			int totalpages = tracker.getTotalPages();
-			for (int i = 0; i < totalpages; i++)
+			for (int page = 0; page < totalpages; page++)
 			{
-				MultiValued hit = (MultiValued)tracker.get(i*perpage);
+				MultiValued hit = (MultiValued)tracker.get(page*perpage + offset);
 				hit.setValue("iscentroid",true);
 				hit.addValue("nearbycentroidids",hit.getId());
 				tosave.add(hit);
 				if( toadd == tosave.size() )
 				{
 					//Make sure no two a near one another
-					compressDuplicates(tosave); //Did we compress any?
-					if( toadd > tosave.size() )
+					maxcompresstimes--;
+					if( maxcompresstimes > 0)
 					{
-						int removed = toadd - tosave.size();
-						log.info("Some duplicates removed. Adding " + removed + " more");
-						perpage = 1;
-						i = 0; //start over and add more
-						continue;
-					}					
+						compressDuplicates(tosave); //Did we compress any?  KMeans++
+						//retry
+						if( toadd > tosave.size() )
+						{
+							int removed = toadd - tosave.size();
+							log.info("Some duplicates removed. Adding " + removed + " more");
+							offset++;
+							page = 0; //start over and add more
+							continue;
+						}					
+					}
+					if( maxcompresstimes == 0)
+					{
+						//Gave up looking for 
+						inLog.info("Gave up looking for far away nodes"); 
+					}
 					//save
 					getMediaArchive().saveData("faceembedding",tosave);
 					fieldClusters = null; //reload
@@ -161,6 +175,12 @@ public class KMeansManager implements CatalogEnabled {
 				}
 			}
 		}
+		
+		if( getClusters().size() < getSettings().kcount )
+		{
+			throw new OpenEditException("Problem creating centroids, try clicking on some results?");
+		}
+		
 		Collection tosave = new ArrayList();
 		HitTracker tracker = getMediaArchive().query("faceembedding").missing("nearbycentroidids").hitsPerPage(500).search();
 		tracker.enableBulkOperations();
@@ -186,9 +206,7 @@ public class KMeansManager implements CatalogEnabled {
 				continue;
 			}
 			
-			
 			setCentroids(hit); //Set em <-----
-			
 			
 			
 			tosave.add(hit);
@@ -212,11 +230,13 @@ public class KMeansManager implements CatalogEnabled {
 		inLog.info("Complete: "  + totalsaved + " assigned cluster nodes in " + diff + " seconds");
 	}
 
+	/**
+	 * This is called only when initiaslizing. To make sure no two clusters are close to one another. Ideally 3x  1.5
+	 */
 	protected void compressDuplicates(Collection<MultiValued> inTosave)
 	{
 		double min_distance = getSettings().cutoffdistance * 2;
-		
-		Collection<MultiValued> tocheck = new ArrayList<MultiValued>();
+		Collection<MultiValued> tocheck = new ArrayList<MultiValued>(inTosave);
 		
 		for (Iterator iterator = tocheck.iterator(); iterator.hasNext();)
 		{
@@ -233,6 +253,7 @@ public class KMeansManager implements CatalogEnabled {
 					double distance = cosineDistance(master, other);
 					if (distance <= min_distance)  //To close together. All images are shared on that side
 					{
+						log.info("Removing close by clusters, was " + distance);
 						other.setValue("iscentroid",false);
 						other.removeValue("nearbycentroidids",other.getId());
 						//other.retired = tru
@@ -270,47 +291,26 @@ public class KMeansManager implements CatalogEnabled {
 			closestclusters.add(close);
 		}
 		Collections.sort(closestclusters);		
-		
-		double max_distance = getSettings().cutoffdistance * 3; //So we dont flood the zone with too many centoids that slows down ingestion
-		//Double check all the distances are within 2x distance. Wide net. Later I can shrink this once I search. 
-		Collection<String> centroids = new ArrayList();
-		double checkfordistance = getSettings().cutoffdistance;
-		while(  centroids.isEmpty() && checkfordistance <=  max_distance )
-		{
-			for (int i = 0; i < closestclusters.size(); i++)
-			{
-				CloseCluster cluster = (CloseCluster) closestclusters.get(i);
-				if( cluster.distance < checkfordistance)
-				{
-					centroids.add( cluster.centroid.getId() );
-				}
-			}
-			checkfordistance = checkfordistance * 1.20; //Go up by 20% until we find a group
-		}	
 
-		if( checkfordistance > 1.3)
-		{
-			log.info("Had trouble finding a match " + checkfordistance + " " + inFace.getId());
-		}
+		double upto = getSettings().cutoffdistance * 2;
 		
+		Collection<String> centroids = new ArrayList();
+		for (int i = 0; i < closestclusters.size(); i++)
+		{
+			CloseCluster cluster = (CloseCluster) closestclusters.get(i);
+			if( cluster.distance < upto)  //Could be more than one that are close by
+			{
+				centroids.add( cluster.centroid.getId() );
+			}
+		}
 		if( centroids.isEmpty() ) //We are all alone within a 2x radious
 		{
-			log.info("Added another centroid due to sparce space " + inFace.getId());
-			inFace.setValue("iscentroid",true);
-			centroids.add(inFace.getId()); 
-			getClusters().add(inFace);
-		}	
+			CloseCluster first = (CloseCluster)closestclusters.iterator().next();
+			centroids.add( first.centroid.getId() );
+		}
 
-		
 		inFace.setValue("nearbycentroidids",centroids);
 		
-//		if( closestclusters.size() < kcount)
-//		{
-//			searchNearestItems(inFace); // Search for nearest items after setting the cluster to see if it should split
-//		}
-		
-		//This will rebalance if needed by searching nearest items
-
 	}
 
 
@@ -340,9 +340,9 @@ public class KMeansManager implements CatalogEnabled {
 		{
 			// Add the new cluster to the list
 			//Rebalance centroids
+			
 			if(inSearch.getBoolean("iscentroid"))
-			{
-				//Took this out because should have already been done to start with when we divided
+			{	//Took this out because should have already been done to start with when we divided
 //				//remove non matching centroids from the circle
 //				Collection<MultiValued> matches = compressResults(inSearch, tracker); //limit this group to like minded
 //				return matches;
@@ -416,7 +416,9 @@ public class KMeansManager implements CatalogEnabled {
 	// This method is intended to rebalance centroids in a KMeans clustering algorithm.
 	public Collection<MultiValued> divideCluster(MultiValued newcentroidItem, HitTracker allnearestItems)
 	{
-		log.info("Dividing the cluster from large resultset: " + allnearestItems.size() + " results for id: " + newcentroidItem.getId() );
+		Collection<MultiValued> results = new ArrayList(allnearestItems);
+		
+		log.info("Dividing the cluster from large resultset: " + results.size() + " results for id: " + newcentroidItem.getId() );
 		if( newcentroidItem.getId() == null)
 		{
 			getMediaArchive().saveData("faceembedding",newcentroidItem);
@@ -424,8 +426,14 @@ public class KMeansManager implements CatalogEnabled {
 		
 		//I got too many hits then add my myself as a centroid
 		List<MultiValued> insidethecircle = new ArrayList<MultiValued>(); //I am in here as well
+		
+		Collection<MultiValued> allimportantcentroid = new ArrayList();
+		
+		allimportantcentroid.add(newcentroidItem);
+		
+		
 		double cutoffdistance = getSettings().cutoffdistance;
-		for (Iterator iterator = allnearestItems.iterator(); iterator.hasNext();)
+		for (Iterator iterator = results.iterator(); iterator.hasNext();)
 		{
 			MultiValued test = (MultiValued) iterator.next();
 			if( newcentroidItem.getId().equals(test.getId()) )
@@ -437,6 +445,10 @@ public class KMeansManager implements CatalogEnabled {
 			if (distance <= cutoffdistance) 
 			{
 				insidethecircle.add(test);
+				if( test.getBoolean("iscentroid") ) 
+				{
+					allimportantcentroid.add(test);
+				}	
 			}
 		}
 		
@@ -456,22 +468,29 @@ public class KMeansManager implements CatalogEnabled {
 		{
 			MultiValued moveFace = (MultiValued) iterator.next();
 			Collection exactclusters = new ArrayList();
-			Collection clusters = moveFace.getValues("nearbycentroidids");
-			//Only leave the EXACT  .5 centroid that each node matches
-			for (Iterator iterator2 = clusters.iterator(); iterator2.hasNext();)
+			exactclusters.add(newcentroidItem.getId()); //We know this one is good
+			if( !moveFace.getBoolean("iscentroid") )  //For this we want 
 			{
-				String centroid = (String )iterator2.next();
-				MultiValued existingcentoid = findCentroid(centroid);
-				if( existingcentoid != null)
+				Collection clusters = moveFace.getValues("nearbycentroidids");
+				//Only leave the EXACT  .5 centroid that each node matches
+				for (Iterator iterator2 = clusters.iterator(); iterator2.hasNext();)
 				{
-					double distance = cosineDistance(moveFace,existingcentoid);
-					if (distance <= cutoffdistance) 
+					String centroid = (String )iterator2.next();
+					MultiValued existingcentoid = findCentroid(centroid);
+					if( existingcentoid != null)
 					{
-						exactclusters.add(centroid);
+						for (Iterator iterator3 = allimportantcentroid.iterator(); iterator3.hasNext();)
+						{
+							MultiValued important = (MultiValued) iterator3.next();
+							double distance = cosineDistance(moveFace,important);
+							if (distance <= cutoffdistance) 
+							{
+								exactclusters.add(centroid);
+							}
+						}
 					}
 				}
 			}
-			exactclusters.add(newcentroidItem.getId()); //We know this one is good
 			//TODO: Now check if those children match and reduce their cluster?
 			
 			moveFace.setValue("nearbycentroidids",exactclusters);
@@ -479,7 +498,7 @@ public class KMeansManager implements CatalogEnabled {
 		insidethecircle.add(newcentroidItem); //Add myself
 		getMediaArchive().saveData("faceembedding",insidethecircle);
 		
-		log.info("Made a new node with only exact faces in it: " + insidethecircle.size() + " with centroid id: " + newcentroidItem.getId() );
+		log.info("Made a new node with only exact faces in it: " + results.size() + "->" + insidethecircle.size() + " with centroid id: " + newcentroidItem.getId() );
 
 		
 		return insidethecircle;
