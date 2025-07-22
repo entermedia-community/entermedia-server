@@ -6,12 +6,14 @@
 :root {
 	--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #FFFFFF #end;
 	--text-color: #if($publishing.publishingfeedlayout=="dark") #fff #else #000 #end;
-	--highlight-color: #if($publishing.publishingfeedlayout=="dark") #666 #else #444 #end;
+	--grey-color: #if($publishing.publishingfeedlayout=="dark") #888 #else #666 #end;
+	--translucent-bg: #if($publishing.publishingfeedlayout=="dark") rgba(20,20,20,.95) #else rgba(255,255,255,.85) #end;
 	--filler-color: transparent;
 }
 
 .__main-container {
 	position: relative;
+	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
 	background-color: var(--bg-color);
@@ -63,20 +65,52 @@ div.masonry-grid-cell .grid-thumbimage img.imagethumb {
   object-fit: cover;
   transition: all 0.1s ease;
 }
-div.masonry-grid-cell:hover .grid-cell-footer  {
-	display: block;
-	}
 div.masonry-grid-cell .grid-cell-footer  {
-	position: absolute;
-	display: none;
-	bottom: 4px;
-	right: 4px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  position: absolute; 
+  bottom: -1px; 
+  width: 100%;
 }
-.downloadicon,
+.grid-cell-footer .__img_creator {
+  max-width: calc(100% - 24px);
+  display: inline;
+  line-height: 1;
+  vertical-align: middle; 
+  margin: 0;
+  padding: 2px 4px;
+  font-size: 0.8rem;
+  color: #666666;
+  background:rgba(255,255,255,.75);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: -webkit-box;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+div.masonry-grid-cell .grid-cell-footer a {
+  pointer-events: none;
+  align-self: flex-end;
+  margin: 0 0 0 auto;
+  padding: 0 2px 2px 0;
+  transition: all 0.1s ease;
+}
+div.masonry-grid-cell:hover .grid-cell-footer a {
+  opacity: 1;
+  pointer-events: auto;
+}
 .slbDownloadLink a {
-	background-image: url('data:image/svg+xml,<svg viewBox="198.154 72.654 19.853 19.835" xmlns="http://www.w3.org/2000/svg"><path d="M 208.644 87.175 C 208.499 87.332 208.295 87.421 208.081 87.421 C 207.866 87.421 207.662 87.332 207.517 87.175 L 203.444 82.74 C 203.16 82.43 203.181 81.949 203.493 81.666 C 203.805 81.382 204.287 81.404 204.572 81.713 L 207.317 84.704 L 207.317 73.484 C 207.317 73.065 207.659 72.724 208.081 72.724 C 208.502 72.724 208.844 73.065 208.844 73.484 L 208.844 84.704 L 211.589 81.713 C 211.874 81.404 212.357 81.382 212.668 81.666 C 212.98 81.949 213.001 82.43 212.716 82.74 L 208.644 87.175 Z" style="fill: rgba(0, 0, 0, 0.298);" transform="matrix(1, 0, 0, 1, 0, -7.105427357601002e-15)"></path><path d="M 199.681 85.647 C 199.681 85.228 199.339 84.887 198.918 84.887 C 198.496 84.887 198.154 85.228 198.154 85.647 L 198.154 85.703 C 198.154 87.089 198.154 88.206 198.273 89.085 C 198.396 89.997 198.659 90.766 199.272 91.376 C 199.885 91.986 200.657 92.249 201.573 92.371 C 202.456 92.489 203.578 92.489 204.97 92.489 L 211.191 92.489 C 212.583 92.489 213.706 92.489 214.588 92.371 C 215.505 92.249 216.276 91.986 216.889 91.376 C 217.502 90.766 217.765 89.997 217.888 89.085 C 218.007 88.206 218.007 87.089 218.007 85.703 L 218.007 85.647 C 218.007 85.228 217.665 84.887 217.244 84.887 C 216.822 84.887 216.48 85.228 216.48 85.647 C 216.48 87.103 216.478 88.117 216.375 88.883 C 216.274 89.626 216.091 90.021 215.809 90.301 C 215.527 90.581 215.132 90.765 214.385 90.864 C 213.615 90.967 212.596 90.968 211.135 90.968 L 205.026 90.968 C 203.565 90.968 202.545 90.967 201.776 90.864 C 201.029 90.765 200.634 90.581 200.352 90.301 C 200.07 90.021 199.887 89.626 199.786 88.883 C 199.683 88.117 199.681 87.103 199.681 85.647 Z" style="fill: rgba(0, 0, 0, 0.298);" transform="matrix(1, 0, 0, 1, 0, -7.105427357601002e-15)"></path><path d="M 208.595 86.911 C 208.453 87.066 208.253 87.154 208.042 87.154 C 207.831 87.154 207.631 87.066 207.488 86.911 L 203.488 82.536 C 203.209 82.23 203.23 81.755 203.536 81.476 C 203.842 81.196 204.316 81.218 204.596 81.523 L 207.292 84.473 L 207.292 73.404 C 207.292 72.99 207.628 72.654 208.042 72.654 C 208.456 72.654 208.792 72.99 208.792 73.404 L 208.792 84.473 L 211.488 81.523 C 211.768 81.218 212.242 81.196 212.548 81.476 C 212.854 81.755 212.875 82.23 212.595 82.536 L 208.595 86.911 Z" style="fill: rgb(255, 255, 255);" transform="matrix(1, 0, 0, 1, 0, -7.105427357601002e-15)"></path><path d="M 199.792 85.404 C 199.792 84.99 199.456 84.654 199.042 84.654 C 198.628 84.654 198.292 84.99 198.292 85.404 L 198.292 85.459 C 198.292 86.827 198.292 87.929 198.409 88.796 C 198.53 89.696 198.788 90.454 199.39 91.056 C 199.992 91.658 200.75 91.917 201.65 92.038 C 202.517 92.154 203.62 92.154 204.987 92.154 L 211.097 92.154 C 212.464 92.154 213.567 92.154 214.434 92.038 C 215.334 91.917 216.092 91.658 216.694 91.056 C 217.296 90.454 217.554 89.696 217.675 88.796 C 217.792 87.929 217.792 86.827 217.792 85.459 L 217.792 85.404 C 217.792 84.99 217.456 84.654 217.042 84.654 C 216.628 84.654 216.292 84.99 216.292 85.404 C 216.292 86.84 216.29 87.841 216.189 88.596 C 216.09 89.33 215.91 89.719 215.633 89.995 C 215.356 90.272 214.968 90.453 214.234 90.551 C 213.478 90.653 212.477 90.654 211.042 90.654 L 205.042 90.654 C 203.607 90.654 202.605 90.653 201.85 90.551 C 201.116 90.453 200.728 90.272 200.451 89.995 C 200.174 89.719 199.994 89.33 199.895 88.596 C 199.794 87.841 199.792 86.84 199.792 85.404 Z" style="fill: rgb(255, 255, 255);" transform="matrix(1, 0, 0, 1, 0, -7.105427357601002e-15)"></path></svg>');
-	width: 20px;
+  display: inline-block;
+  width: 20px;
 	height: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='%23fff' viewBox='0 0 16 16'%3E%3Cpath d='M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5'/%3E%3Cpath d='M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center center;
+} 
+.downloadicon {
 	display: inline-block;
 }
 .downloadicon span {
@@ -227,29 +261,42 @@ div.masonry-grid-cell .grid-cell-footer  {
 .slbDownloadLink {
 	display: inline-block;
 	position: absolute;
-	top: 0;
-	right: 10px;
-	padding-top: 3.5em;
+	top: 0 !important;
+	left: 10px;
+	padding-top: 1.5em;
 }
 
-.slbCaption {
-  display: inline-block;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  word-wrap: normal;
-  font-size: 1.4em;
+.slbCaption .__img_overlay {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 0.71429em 0;
-  color: #fff;
-  color: rgba(255, 255, 255, 0.7);
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; 
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 12px 16px;
+  gap: 8px;
+  transition: opacity 0.2s ease, padding 0.2s ease;
+  z-index: 10;
+  background: var(--translucent-bg);
 }
-
+.slbCaption p {
+  margin: 0;
+}
+.slbCaption .__img_creator {
+  line-height: 24px;
+  vertical-align: middle;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--grey-color);
+}
+.slbCaption .__img_caption { 
+  color: var(--text-color);
+  width: 100%;
+  text-align: center;
+  font-size: 1rem;
+}
 .slbCloseBtn, .slbArrow {
   margin: 0;
   padding: 0;

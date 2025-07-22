@@ -1679,6 +1679,7 @@ public class FinderModule extends BaseMediaModule
 		
 		String entityid = inReq.getRequestParameter("entityid");
 		String publishingid =  inReq.getRequestParameter("publishingid");
+		String moduleid = inReq.findValue("module");
 		Data publishing = null;
 		if (publishingid != null)
 		{
@@ -1698,11 +1699,11 @@ public class FinderModule extends BaseMediaModule
 			}
 			publishingid = PathUtilities.extractPageName(publishingurl);
 			publishing = (Data) archive.getCachedData("distributiongallery", publishingid);
-			
+					
 			//Create if does not exist
 			if(publishing == null && entityid != null)
 			{
-				String moduleid = inReq.findValue("module");
+				
 				publishing = archive.getSearcher("distributiongallery").createNewData();
 				publishing.setValue("entityid", entityid);
 				publishing.setValue("moduleid", moduleid);
@@ -1715,6 +1716,21 @@ public class FinderModule extends BaseMediaModule
 		if(publishing == null) {	
 			log.info("Publishing id not found " +publishingid);
 			return;
+		}
+		
+		if (moduleid == null)
+		{
+			moduleid = publishing.get("moduleid");
+		}
+		if (moduleid != null)
+		{
+			Data module = archive.getCachedData("module", moduleid);
+			if (module != null)
+			{
+				inReq.putPageValue("module", module);
+				inReq.putPageValue("moduleid", moduleid);
+			}
+			
 		}
 
 		HitTracker tracker = getPublishingAssets(inReq, publishing);
