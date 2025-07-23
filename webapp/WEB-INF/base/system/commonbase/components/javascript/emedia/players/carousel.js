@@ -114,3 +114,6 @@ function __setOverlayPosition(img) {
 	__main.sync(__thumbnail);
 	__main.mount();
 	__thumbnail.mount();
+	
+	
+	
