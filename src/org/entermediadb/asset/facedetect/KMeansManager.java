@@ -183,6 +183,7 @@ public class KMeansManager implements CatalogEnabled {
 			{
 				totalsaved = totalsaved + tosave.size();
 				getMediaArchive().saveData("faceembedding",tosave);
+				tosave.clear();
 				
 				long end = System.currentTimeMillis();
 				double diff = (end - start)/1000D;
