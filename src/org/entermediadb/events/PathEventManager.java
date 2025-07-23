@@ -510,29 +510,13 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 	{
 		PathEvent event = getPathEvent(inEventPath);
 		
-		getPathEvents().remove(event);
-		 	
-		//Remove the old one
-		List<TaskRunner> copy = new ArrayList<TaskRunner>(getRunningTasks());
-		for (Iterator iterator = copy.iterator(); iterator.hasNext();)
-		{
-			TaskRunner runner = (TaskRunner) iterator.next();
-			if( event == runner.getPathEvent() )
-			{
-				getRunningTasks().remove(runner);
-			}
-		}
-		
-		event = loadPathEvent(inEventPath);
+		//Update the old one in place
+		Page eventpage = getPageManager().getPage(inEventPath, true);
+		event.setPage(eventpage);
 
-		if (event.isEnabled())
+		if( getPathEvents().contains(event) )
 		{
-			if (event.getPeriod() > 0)
-			{
-				TaskRunner runner = new TaskRunner(event, this);
-				//runner.setRepeating(true);
-				getRunningTasks().push(runner);
-			}
+			log.info("hey");
 		}
 		
 		reloadScheduler();

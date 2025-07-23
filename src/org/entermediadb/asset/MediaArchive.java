@@ -1355,7 +1355,6 @@ public class MediaArchive implements CatalogEnabled
 					return tryPage;
 				}
 			}
-
 		}
 		return null;
 	}

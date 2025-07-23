@@ -118,67 +118,35 @@ public class KMeansManager implements CatalogEnabled {
 		getMediaArchive().getCacheManager().clear("face");
 		fieldClusters = null;
 		
-		
 		if( getClusters().size() < getSettings().kcount )
 		{
 			int toadd = getSettings().kcount - getClusters().size();
 			inLog.info("Adding "  + toadd + " random cluster nodes ");
-			double pagesize = (double)getSettings().totalrecords / (double)getSettings().kcount;
-			int perpage = (int)Math.round(Math.max(1,pagesize));
-			HitTracker tracker = getMediaArchive().query("faceembedding").exact("iscentroid",false).sort("id").hitsPerPage(perpage).search(); //More random
+			HitTracker tracker = getMediaArchive().query("faceembedding").exact("iscentroid",false).hitsPerPage(toadd).sort("face_confidenceDown").search(); //random enough?
+			tracker.enableBulkOperations();
 			if( tracker.isEmpty() )
 			{
 				throw new OpenEditException("Do a deep reindex on faceembeddings");
 			}
-			Collection tosave = new ArrayList();
-			
-			//Make sure none are close to one another. And not the same face at all
-			
-			int maxcompresstimes = 100;
-			
-			int offset = 0;
-			
-			int totalpages = tracker.getTotalPages();
-			for (int page = 0; page < totalpages; page++)
+			double min_distance = getSettings().cutoffdistance * 2;
+			Collection<MultiValued> found = findCentroids(inLog, tracker,min_distance, toadd);
+			getMediaArchive().saveData("faceembedding",found);
+			fieldClusters = null;
+			toadd = getSettings().kcount - getClusters().size();
+			if( found.size() < toadd)
 			{
-				MultiValued hit = (MultiValued)tracker.get(page*perpage + offset);
-				hit.setValue("iscentroid",true);
-				hit.addValue("nearbycentroidids",hit.getId());
-				tosave.add(hit);
-				if( toadd == tosave.size() )
-				{
-					//Make sure no two a near one another
-					maxcompresstimes--;
-					if( maxcompresstimes > 0)
-					{
-						compressDuplicates(tosave); //Did we compress any?  KMeans++
-						//retry
-						if( toadd > tosave.size() )
-						{
-							int removed = toadd - tosave.size();
-							log.info("Some duplicates removed. Adding " + removed + " more");
-							offset++;
-							page = 0; //start over and add more
-							continue;
-						}					
-					}
-					if( maxcompresstimes == 0)
-					{
-						//Gave up looking for 
-						inLog.info("Gave up looking for far away nodes"); 
-					}
-					//save
-					getMediaArchive().saveData("faceembedding",tosave);
-					fieldClusters = null; //reload
-					//reload clusters
-					break;
-				}
+				inLog.info(" is not enough data for a good distance. Needed " + toadd + " found " + found.size());
+				min_distance = getSettings().cutoffdistance; //Look closer
+				found = findCentroids(inLog, tracker, min_distance, toadd);
+				getMediaArchive().saveData("faceembedding",found);
 			}
-		}
-		
-		if( getClusters().size() < getSettings().kcount )
-		{
-			throw new OpenEditException("Problem creating centroids, try clicking on some results?");
+			
+			fieldClusters = null; //reload
+			if( getClusters().size() < getSettings().kcount )
+			{
+				inLog.info("Problem creating centroids, try clicking on some results?");
+			}
+
 		}
 		
 		Collection tosave = new ArrayList();
@@ -230,39 +198,58 @@ public class KMeansManager implements CatalogEnabled {
 		inLog.info("Complete: "  + totalsaved + " assigned cluster nodes in " + diff + " seconds");
 	}
 
+
+	protected Collection<MultiValued>  findCentroids(ScriptLogger inLog, HitTracker tracker, double mindistance, int toadd)
+	{
+		Collection tosave = new ArrayList();
+		
+		//Make sure none are close to one another. And not the same face at all
+		
+		int maxchecktimes = getSettings().kcount * 100;
+
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		{
+			MultiValued hit = (MultiValued)iterator.next();
+			boolean isfar = checkDistance(hit,mindistance);
+			if( isfar )
+			{
+				hit.setValue("iscentroid",true);
+				hit.addValue("nearbycentroidids",hit.getId());
+				tosave.add(hit);
+			}
+			if( toadd == tosave.size() )
+			{
+				break;
+			}
+			if( maxchecktimes-- == 0)
+			{
+				//Gave up looking for 
+				inLog.info("Gave up looking for far away nodes");
+				break;
+			}
+		}
+		return tosave;
+	}
+
 	/**
 	 * This is called only when initiaslizing. To make sure no two clusters are close to one another. Ideally 3x  1.5
 	 */
-	protected void compressDuplicates(Collection<MultiValued> inTosave)
+	protected boolean checkDistance(MultiValued master, double mindistance)
 	{
-		double min_distance = getSettings().cutoffdistance * 2;
-		Collection<MultiValued> tocheck = new ArrayList<MultiValued>(inTosave);
-		
-		for (Iterator iterator = tocheck.iterator(); iterator.hasNext();)
+		for (Iterator iterator2 = getClusters().iterator(); iterator2.hasNext();)
 		{
-			MultiValued master = (MultiValued) iterator.next();
-			if( !inTosave.contains(master) )
+			MultiValued other = (MultiValued) iterator2.next();
+			if( other.getId().equals( master.getId() ) )
 			{
-				continue;
+				continue; 
 			}
-			for (Iterator iterator2 = tocheck.iterator(); iterator.hasNext();)
+			double distance = cosineDistance(master, other);
+			if (distance <= mindistance)  //To close together. All images are shared on that side
 			{
-				MultiValued other = (MultiValued) iterator.next();
-				if( other != master && inTosave.contains(other) )
-				{
-					double distance = cosineDistance(master, other);
-					if (distance <= min_distance)  //To close together. All images are shared on that side
-					{
-						log.info("Removing close by clusters, was " + distance);
-						other.setValue("iscentroid",false);
-						other.removeValue("nearbycentroidids",other.getId());
-						//other.retired = tru
-						//Dont include anymore but leave for future used Save to DB?
-						inTosave.remove(other);  //Old records will still be able to search
-					}
-				}
+				return false;
 			}
 		}
+		return true;
 	
 	}
 
@@ -320,7 +307,7 @@ public class KMeansManager implements CatalogEnabled {
 		// Implementation would typically involve calculating distances or similarities
 		// between the search item and each item in the collection.
 		
-		if( getClusters().size() < getSettings().kcount)
+		if( getClusters().isEmpty())
 		{
 			throw new OpenEditException("Not enought clusters. Run reindexfaces event");
 		}

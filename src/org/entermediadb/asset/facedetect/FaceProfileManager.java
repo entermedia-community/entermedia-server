@@ -832,7 +832,7 @@ public class FaceProfileManager implements CatalogEnabled
 			for (Iterator iterator = faces.iterator(); iterator.hasNext();)
 			{
 				MultiValued face = (MultiValued) iterator.next();
-				entitypersonid = face.get("entitypersonid");
+				entitypersonid = face.get("entityperson");
 				if( entitypersonid != null)
 				{
 					break;
@@ -1172,12 +1172,13 @@ public class FaceProfileManager implements CatalogEnabled
 			MultiValued face = (MultiValued) getMediaArchive().getData("faceembedding",faceembeddingid);
 			if (face != null)
 			{
-				Data personlookup = loadFaceMappingWithEnitityPerson(face);
-				if( personlookup == null)
+				Data personfacelookup = loadFaceMappingWithEnitityPerson(face); //Always update the old one
+
+				if( personfacelookup == null)
 				{
-					personlookup = face;
+					personfacelookup = face;
 				}
-				String oldpersonid = personlookup.get("entityperson");
+				String oldpersonid = personfacelookup.get("entityperson");
 				
 				if (oldpersonid != null)
 				{
@@ -1189,15 +1190,18 @@ public class FaceProfileManager implements CatalogEnabled
 						getMediaArchive().saveData("entityperson", oldperson);
 					}
 				}
-				personlookup.setValue("entityperson", personid);
-				personlookup.setValue("assignedby",inUserId );
-				personlookup.setValue("hasotherfaces",true);
-				getMediaArchive().saveData("faceembedding",personlookup);
+				personfacelookup.setValue("entityperson", personid);
+				personfacelookup.setValue("assignedby",inUserId );
+				personfacelookup.setValue("hasotherfaces",true);
+				getMediaArchive().saveData("faceembedding",personfacelookup);
 				
 				//always reset image
 				Data person = getMediaArchive().getData("entityperson", personid);
 				person.setValue("primaryimage", assetid);
 				getMediaArchive().saveData("entityperson", person);
+				
+				getMediaArchive().getCacheManager().clear("faceboxes"); //No way to know what to clear
+				getMediaArchive().getCacheManager().clear("facepersonlookuprecord");
 				
 			}
 		}

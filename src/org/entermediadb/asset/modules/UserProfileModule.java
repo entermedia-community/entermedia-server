@@ -212,6 +212,7 @@ public class UserProfileModule extends BaseMediaModule
 		if(searchtype != null && inReq.getUserProfile() != null)
 		{
 			inReq.getUserProfile().setValue("databasecurrentsearch",searchtype);
+			inReq.getUserProfile().save();
 		}
 		else
 		{
