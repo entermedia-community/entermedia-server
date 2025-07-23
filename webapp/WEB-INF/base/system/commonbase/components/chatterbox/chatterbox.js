@@ -252,8 +252,8 @@ function connect() {
     params.collectionid = message.collectionid;
 
     jQuery.get(url, params, function (data) {
-      listarea.append(data);
-      $(document).trigger("domchanged");
+      listarea.append(data); 
+      //The replace with calls that  $(document).trigger("domchanged");
       scrollToChat();
     });
 

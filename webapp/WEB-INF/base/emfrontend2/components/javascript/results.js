@@ -408,7 +408,7 @@ $(document).ready(function(url,params)
 				enable(id,".gorightclick");
 				enable(id,"#rightpage");
 			}
-		    $(document).trigger("domchanged");
+		   // $(document).trigger("domchanged"); //The replaceWith calls that?
 			$(window).trigger( "resize" );
 			$(".gallery-thumb").removeClass("active-asset");
 			
@@ -1148,7 +1148,7 @@ checkScroll = function()
 				   $(".masonry-grid",resultsdiv).append(code);
 				   //$(resultsdiv).append(code);
 				   gridResize();
-				   $(document).trigger("domchanged");
+				   //The append calls that $(document).trigger("domchanged");
 				   stopautoscroll = false; 
 				   //Once that is all done loading we can see if we need a second page?
 			   	   //console.log( page + " Loaded get some more?" + getOverlay().is(':hidden') );

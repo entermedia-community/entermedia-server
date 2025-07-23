@@ -84,10 +84,10 @@ $.ajaxSetup({
 
   var oldappend = $.fn.append;
   $.fn.append = function (arg) {
-    var returned = oldappend.call($(this), arg);
+	var div = $(this);
+    var returned = oldappend.call(div, arg);
     //console.log("Called replacewith on " +	$(this).selector, arg.length );
-    $(document).trigger("domchanged", $(this));
-
+   	$(document).trigger("domchanged", div);
     return returned;
   };
 
@@ -176,7 +176,7 @@ $.ajaxSetup({
     //TODO: Loop over events ones and register them
     $.each(eventregistry, function () {
       var listener = this;
-      $(listener.selector, document).each(function () {
+      $(listener.selector, element).each(function () {
         var node = $(this);
         if (node.data("livequery") == null) {
           //console.log("Registering " + listener.selector );
@@ -189,7 +189,7 @@ $.ajaxSetup({
     //We need to do this as the end in case there are more than one click handlers on the same node
     $.each(eventregistry, function () {
       var listener = this;
-      $(listener.selector, document).each(function () {
+      $(listener.selector, element).each(function () {
         var node = $(this);
         if (node.data("livequery") == null) {
           node.data("livequery", true);

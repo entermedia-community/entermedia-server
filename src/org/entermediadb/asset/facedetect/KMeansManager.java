@@ -436,7 +436,7 @@ public class KMeansManager implements CatalogEnabled {
 				if (distance <= cutoffdistance) 
 				{
 					allimportantcentroids.add(test); //These are as good as connecting to myself. Brad pit as a kid
-					//test set new centroid as the only one that matters
+					//Then test each remaining nodes to see if they are exact match to any cluster
 				}
 			}	
 		}
@@ -484,67 +484,7 @@ public class KMeansManager implements CatalogEnabled {
 		
 		return tomove;
 	}
-	
-	/**
-	public Collection<MultiValued> compressResults(MultiValued selectednode, HitTracker allnearestItems)
-	{
-		log.info("Compressing the cluster from large resultset: " + allnearestItems.size() + " results for id: " + selectednode.getId() );
-		if( selectednode.getId() == null)
-		{
-			getMediaArchive().saveData("faceembedding",selectednode);
-		}
-		
-		//I got too many hits then add my myself as a centroid
-		List<MultiValued> insidethecircle = new ArrayList<MultiValued>(); //I am in here as well
-		double cutoffdistance = getSettings().cutoffdistance;
-		for (Iterator iterator = allnearestItems.iterator(); iterator.hasNext();)
-		{
-			MultiValued test = (MultiValued) iterator.next();
-			if( selectednode.getId().equals(test.getId()) )
-			{
-				insidethecircle.add(test);
-				continue; //Dont check myself
-			}
-				
-			double distance = cosineDistance(selectednode, test);
-			if (distance <= cutoffdistance) 
-			{
-				insidethecircle.add(test);
-			}
-		}
-		
-		//Reset in the circle
-		//These all match with me. Lets lower the bar any other centroids for my simblings
-		
-		for (Iterator iterator = insidethecircle.iterator(); iterator.hasNext();)
-		{
-			MultiValued moveFace = (MultiValued) iterator.next();
-			Collection exactclusters = new ArrayList();
-			Collection clusters = moveFace.getValues("nearbycentroidids");
-			//Only leave the EXACT  .5 centroid that each node matches
-			for (Iterator iterator2 = clusters.iterator(); iterator2.hasNext();)
-			{
-				String centroid = (String )iterator2.next();
-				MultiValued existingcentoid = findCentroid(centroid);
-				if( existingcentoid != null)
-				{
-					double distance = cosineDistance(moveFace,existingcentoid);
-					if (distance <= cutoffdistance) 
-					{
-						exactclusters.add(centroid);
-					}
-				}
-			}
-			moveFace.setValue("nearbycentroidids",exactclusters);
-		}
-		getMediaArchive().saveData("faceembedding",insidethecircle);
-		
-		log.info("Made a new node with only exact faces in it: " + insidethecircle.size() + " with centroid id: " + newcentroidItem.getId() );
 
-		
-		return insidethecircle;
-	}
-	*/
 	public MultiValued findCentroid(String inId)
 	{
 		for (Iterator iterator = getClusters().iterator(); iterator.hasNext();)
@@ -557,38 +497,6 @@ public class KMeansManager implements CatalogEnabled {
 		}
 		return null;
 	}
-	
-/*
-	protected void removeFurthestAwayCluster(MultiValued inMoveFace)
-	{
-		Collection<String> clusters = inMoveFace.getValues("nearbycentroidids");
-		
-		List<CloseCluster> closestclusters = (List<CloseCluster>)new ArrayList();
-		
-		for (String clusterid : clusters)
-		{
-			MultiValued cluster = findCluster(clusterid);
-			double distance = 0.0;
-			if( !cluster.getId().equals(inMoveFace.getId() ) )  //Dont check myself its 0
-			{
-				distance = cosineDistance(inMoveFace, cluster);
-			}
-			CloseCluster close = new CloseCluster(cluster,distance);
-			closestclusters.add(close);
-		}
-		Collections.sort(closestclusters);
-		
-		closestclusters.remove(closestclusters.size()-1);
-		
-		Collection<String> tosave = new ArrayList();
-		for (Iterator iterator = closestclusters.iterator(); iterator.hasNext();)
-		{
-			CloseCluster remaining = (CloseCluster) iterator.next();
-			tosave.add(remaining.centroid.getId() );
-		}
-		inMoveFace.setValue("nearbycentroidids",tosave);
-	}
-	*/
 	
 	protected MultiValued findCluster(String inId)
 	{

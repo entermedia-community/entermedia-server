@@ -64,7 +64,7 @@ $(document).ready(function () {
       if ($(selectlist).length > 0) {
         $("#languagesextra_" + detailid, div).append(data);
         $("#colanguagesextra_" + detailid, div).data("count", count);
-        $(document).trigger("domchanged");
+        //Double trigger $(document).trigger("domchanged");
       }
     });
   });
