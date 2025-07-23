@@ -3,6 +3,7 @@ package org.entermediadb.asset.facedetect;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -115,7 +116,7 @@ public class KMeansManager implements CatalogEnabled {
 	public void reinitClusters(ScriptLogger inLog) 
 	{
 		//Reload from db
-		getMediaArchive().getCacheManager().clear("face");
+
 		fieldClusters = null;
 		
 		if( getClusters().size() < getSettings().kcount )
@@ -293,7 +294,7 @@ public class KMeansManager implements CatalogEnabled {
 		if( centroids.isEmpty() ) //We are all alone within a 2x radious
 		{
 			CloseCluster first = (CloseCluster)closestclusters.iterator().next();
-			centroids.add( first.centroid.getId() );
+			centroids.add( first.centroid.getId() ); //Randomly set it  to something
 		}
 
 		inFace.setValue("nearbycentroidids",centroids);
@@ -397,7 +398,7 @@ public class KMeansManager implements CatalogEnabled {
 
 		double similar = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
 		double distance = 1D - similar;
-		return distance;
+		return Math.abs(distance);
 	}
 
 	// This method is intended to rebalance centroids in a KMeans clustering algorithm.
@@ -412,12 +413,12 @@ public class KMeansManager implements CatalogEnabled {
 		}
 		
 		//I got too many hits then add my myself as a centroid
-		List<MultiValued> insidethecircle = new ArrayList<MultiValued>(); //I am in here as well
 		
-		Collection<MultiValued> allimportantcentroid = new ArrayList();
-		
-		allimportantcentroid.add(newcentroidItem);
-		
+		Collection<MultiValued> allimportantcentroids = new HashSet();
+
+		//Add our new centroid
+		newcentroidItem.setValue("iscentroid",true);
+		allimportantcentroids.add(newcentroidItem);
 		
 		double cutoffdistance = getSettings().cutoffdistance;
 		for (Iterator iterator = results.iterator(); iterator.hasNext();)
@@ -425,70 +426,63 @@ public class KMeansManager implements CatalogEnabled {
 			MultiValued test = (MultiValued) iterator.next();
 			if( newcentroidItem.getId().equals(test.getId()) )
 			{
-				continue; //Dont add myself
+				continue; //Dont test myself
 			}
 				
-			double distance = cosineDistance(newcentroidItem, test);
-			if (distance <= cutoffdistance) 
+			//Look for centroids
+			if( test.getBoolean("iscentroid") ) 
 			{
-				insidethecircle.add(test);
-				if( test.getBoolean("iscentroid") ) 
+				double distance = cosineDistance(newcentroidItem, test);
+				if (distance <= cutoffdistance) 
 				{
-					allimportantcentroid.add(test);
-				}	
-			}
+					allimportantcentroids.add(test); //These are as good as connecting to myself. Brad pit as a kid
+					//test set new centroid as the only one that matters
+				}
+			}	
 		}
 		
-		//Then add us
-		//insidethecircle.add(newcentroidItem); //Add myself
+		List<MultiValued> tomove = new ArrayList<MultiValued>(); //I am in here as well
+		tomove.addAll(allimportantcentroids);
 		
-		//Reset in the circle
-		//Save insidethecircle
-		newcentroidItem.setValue("iscentroid",true);
-		Collection justmyself = new ArrayList();
-		justmyself.add(newcentroidItem.getId());
-		newcentroidItem.setValue("nearbycentroidids", justmyself);
-		
-		//These all match with me. Lets lower the bar any other centroids for my simblings
-		
-		for (Iterator iterator = insidethecircle.iterator(); iterator.hasNext();)
+		for (Iterator iterator = results.iterator(); iterator.hasNext();)
 		{
-			MultiValued moveFace = (MultiValued) iterator.next();
-			Collection exactclusters = new ArrayList();
-			exactclusters.add(newcentroidItem.getId()); //We know this one is good
-			if( !moveFace.getBoolean("iscentroid") )  //For this we want 
+			MultiValued test = (MultiValued) iterator.next();
+			if( newcentroidItem.getId().equals(test.getId()) )
 			{
-				Collection clusters = moveFace.getValues("nearbycentroidids");
-				//Only leave the EXACT  .5 centroid that each node matches
-				for (Iterator iterator2 = clusters.iterator(); iterator2.hasNext();)
+				continue; //Dont test myself
+			}
+			
+			if( !test.getBoolean("iscentroid") )  //Those have already been checked
+			{
+				//Loop over any important centroids. Then reset the parents
+				for (Iterator iterator2 = allimportantcentroids.iterator(); iterator2.hasNext();)
 				{
-					String centroid = (String )iterator2.next();
-					MultiValued existingcentoid = findCentroid(centroid);
-					if( existingcentoid != null)
+					MultiValued centroid = (MultiValued) iterator2.next();
+					double distance = cosineDistance(centroid, test);
+					if (distance <= cutoffdistance) 
 					{
-						for (Iterator iterator3 = allimportantcentroid.iterator(); iterator3.hasNext();)
-						{
-							MultiValued important = (MultiValued) iterator3.next();
-							double distance = cosineDistance(moveFace,important);
-							if (distance <= cutoffdistance) 
-							{
-								exactclusters.add(centroid);
-							}
-						}
+						tomove.add(test); //These are as good as connecting to myself. Brad pit as a kid
+						break; //Just find one and then we will be resetting EVERYONE in this group to be only the new one
 					}
 				}
 			}
-			//TODO: Now check if those children match and reduce their cluster?
-			
-			moveFace.setValue("nearbycentroidids",exactclusters);
 		}
-		insidethecircle.add(newcentroidItem); //Add myself
-		getMediaArchive().saveData("faceembedding",insidethecircle);
-		
-		log.info("Made a new node with only exact faces in it: " + results.size() + "->" + insidethecircle.size() + " with centroid id: " + newcentroidItem.getId() );
 
+		//Save all to be the same click. 
+		Collection newgroup = new ArrayList();
+		newgroup.add(newcentroidItem.getId());
 		
-		return insidethecircle;
+		//This includes everyone who matched important centoids
+		for (Iterator iterator = tomove.iterator(); iterator.hasNext();)
+		{
+			MultiValued moving = (MultiValued) iterator.next();
+			moving.setValue("nearbycentroidids", newgroup); //Takeover
+		}
+		getMediaArchive().saveData("faceembedding",tomove);
+		
+		log.info("Made a new node with only exact faces in it: " + results.size() + "->" + tomove.size() + " with centroid id: " + newcentroidItem.getId() );
+		
+		return tomove;
 	}
 	
 	/**

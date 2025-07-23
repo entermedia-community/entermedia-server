@@ -195,7 +195,8 @@ public class FaceProfileManager implements CatalogEnabled
 			if( !foundfacestosave.isEmpty() )
 			{
 				getMediaArchive().getCacheManager().clear("faceboxes");
-				getMediaArchive().getCacheManager().clear("facepersonlookuprecord");
+				getMediaArchive().getCacheManager().clear("facepersonlookuprecord"); //faceboxes
+				//getMediaArchive().getCacheManager().clear("face");
 			}
 			
 			return foundfacestosave.size();
@@ -456,6 +457,11 @@ public class FaceProfileManager implements CatalogEnabled
 	public void reinitClusters(ScriptLogger logger)
 	{
 		logger.info(new Date() +  " reinitNodes Start reinit ");
+		
+		getMediaArchive().getCacheManager().clear("face");
+		getMediaArchive().getCacheManager().clear("faceboxes");
+		getMediaArchive().getCacheManager().clear("facepersonlookuprecord"); 
+		
 		getKMeansManager().reinitClusters(logger);
 		logger.info(new Date() +  " reinitNodes Completed ");
 
