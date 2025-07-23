@@ -2498,7 +2498,6 @@
 		<property name="exec">
 			<ref bean="exec" />
 		</property>
-
 	</bean>
 
 	<bean id="gptManager" class="org.entermediadb.llm.GptManager">
@@ -2621,6 +2620,13 @@
 			<ref bean="moduleManager" />
 		</property>
 					
+	</bean>
+	
+	
+	<bean id="translationManager" class="org.entermediadb.translator.TranslationManager" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
 	</bean>
 
 
