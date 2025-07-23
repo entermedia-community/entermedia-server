@@ -2482,10 +2482,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	{
 		try
 		{
-			if (!isTrackEdits())
-			{
-				return;
-			}
 
 			Map status = (Map) inData.getValue("emrecordstatus");
 			/*
@@ -2493,13 +2489,27 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			 * (isReIndexing()) { content.field("emrecordstatus", status);
 			 * return; }
 			 */
+			String localClusterId = getElasticNodeManager().getLocalClusterId();
 			if (isReIndexing())
 			{
-				if (status != null)
+				if (status != null )
 				{
+					if (getElasticNodeManager().isForceSaveMasterCluster())
+					{
+						String oldClusterId = (String) status.get("mastereditclusterid");
+						String lastModifiedClusterId = (String) status.get("lastmodifiedclusterid");
+						if (oldClusterId != null && oldClusterId.equals(lastModifiedClusterId))
+						{
+							status.put("lastmodifiedclusterid", localClusterId);
+						}
+						
+						status.put("mastereditclusterid", localClusterId);
+						
+					}
 					content.field("emrecordstatus", status);
-					return;
+					return;				
 				}
+				
 				if (isOptimizeReindex())
 				{
 					return; //Dont worry if its not created already
@@ -2511,24 +2521,19 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				status = new HashMap();
 			}
 
-			String localClusterId = getElasticNodeManager().getLocalClusterId();
+			
 			String currentid = null;
 			
-			if( getElasticNodeManager().isForceSaveMasterCluster() )
+			
+			if (status != null)
+			{
+				currentid = (String) status.get("mastereditclusterid");
+			}
+			if (currentid == null)
 			{
 				currentid = localClusterId;
 			}
-			else
-			{
-				if (status != null)
-				{
-					currentid = (String) status.get("mastereditclusterid");
-				}
-				if (currentid == null)
-				{
-					currentid = localClusterId;
-				}
-			}
+			
 
 			status.put("recorddeleted", delete);
 			status.put("mastereditclusterid", currentid);
