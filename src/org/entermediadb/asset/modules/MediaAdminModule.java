@@ -841,40 +841,12 @@ public class MediaAdminModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String localmaster = archive.getNodeManager().getLocalClusterId();
-		HitTracker all = archive.getAssetSearcher().query().all().not("mastereditclusterid",localmaster ).search();
-		all.enableBulkOperations();
-		List tosave = new ArrayList();
-		for (Iterator iterator = all.iterator(); iterator.hasNext();)
-		{
-			Data asset = (Data) iterator.next();
-			asset.setValue("mastereditclusterid",localmaster);
-			tosave.add(asset);
-			if( tosave.size() > 1000)
-			{
-				archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
-				tosave.clear();
-			}
-		}
-		archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
-
-		all = archive.getAssetSearcher().query().all().search();
-		all.enableBulkOperations();
-		tosave = new ArrayList();
-		for (Iterator iterator = all.iterator(); iterator.hasNext();)
-		{
-			Data asset = (Data) iterator.next();
-			if( asset.getValue("recordmodificationdate") == null)
-			{
-				tosave.add(asset); //this will update it
-				if( tosave.size() > 1000)
-				{
-					archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
-					tosave.clear();
-				}
-			}	
-		}
-		archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
-
+		
+		//mastereditclusterid
+		archive.getNodeManager().setForceSaveMasterCluster(true);
+		
+		reindexAll(inReq);
+		archive.getNodeManager().setForceSaveMasterCluster(false);
 	}
 
 

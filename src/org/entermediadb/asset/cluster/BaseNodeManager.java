@@ -18,6 +18,17 @@ public abstract class BaseNodeManager implements NodeManager
 	protected SearcherManager fieldSearcherManager;
 	protected WebServer fieldWebServer;
 	protected Map fieldConnectedCatalogIds;
+	protected boolean fieldForceSaveMasterCluster;
+	
+	public boolean isForceSaveMasterCluster()
+	{
+		return fieldForceSaveMasterCluster;
+	}
+
+	public void setForceSaveMasterCluster(boolean inForceSaveMasterCluster)
+	{
+		fieldForceSaveMasterCluster = inForceSaveMasterCluster;
+	}
 
 	public Map getConnectedCatalogIds()
 	{
