@@ -15,7 +15,8 @@ public void init(){
 	String applicationid = context.findPathValue("applicationid");
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	
-	String previewpath = "/"+ applicationid + "/services/publishingdestination";
+	//String previewpath = "/"+ applicationid + "/services/publishingdestination";
+	String previewpath = "/"+ applicationid + "/services/module/default/players";  //Moved to Module Players
 	
 	String distributiontype = context.getPageValue("distributiontype");
 	if(distributiontype.equals("gallery")) {

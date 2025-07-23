@@ -6,7 +6,11 @@
 		<script type="text/javascript" src="$!siteroot$applink/components/javascript/simpleLightbox/jquery-simpleLightbox.js"></script>
 		
 		<div id="previewgallery" style="height: 100%;">
-		$pages.include("${apphome}/services/publishingdestination/gallery/index.html", $context)
+		##$pages.include("${apphome}/services/publishingdestination/gallery/index.html", $context)
+		
+		##Moved to use Module Players
+		$pages.include("${apphome}/services/module/${moduleid}/players/gallery/index.html", $context)
+		
 		</div>
 				
 		<script type="text/javascript">
@@ -23,8 +27,15 @@
 		</script>
 
 	#else 
+		<script type="text/javascript" src="$!siteroot$applink/components/javascript/splide/splide.min.js"></script>
+		<link type="text/css" rel="stylesheet" href="$!siteroot$applink/components/javascript/splide/splide.min.css">
 	
-		$pages.include("${apphome}/services/publishingdestination/carousel/index.html", $context)
+		##$pages.include("${apphome}/services/publishingdestination/carousel/index.html", $context)
+		
+		##Moved to use Module Players
+		$pages.include("${apphome}/services/module/${moduleid}/players/carousel/index.html", $context)
+		
+		<script type="text/javascript" src="$!siteroot$applink/components/javascript/emedia/players/carousel.js"></script>
 	#end
   
 #end
