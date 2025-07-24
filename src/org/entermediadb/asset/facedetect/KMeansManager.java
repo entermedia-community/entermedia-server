@@ -133,7 +133,7 @@ public class KMeansManager implements CatalogEnabled {
 			
 			while(toadd > 0)
 			{
-				Collection<MultiValued> found = findCentroids(inLog, tracker,min_distance, toadd, existingCentroids);
+				findCentroids(inLog, tracker,min_distance, toadd, existingCentroids);
 				min_distance = min_distance * 0.9;
 				toadd = getSettings().kcount - existingCentroids.size();
 				if(min_distance < .5)
@@ -217,7 +217,7 @@ public class KMeansManager implements CatalogEnabled {
 		
 		//Make sure none are close to one another. And not the same face at all
 		
-		int maxchecktimes = getSettings().kcount * 60;
+		int maxchecktimes = getSettings().kcount * 80;
 
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
