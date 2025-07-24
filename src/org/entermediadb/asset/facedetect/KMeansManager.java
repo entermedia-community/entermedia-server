@@ -197,7 +197,7 @@ public class KMeansManager implements CatalogEnabled {
 				long end = System.currentTimeMillis();
 				double diff = (end - start)/1000D;
 				diff = MathUtils.roundDouble(diff, 2);
-				inLog.info("Added "  + totalsaved + " assigned cluster nodes in " + diff + " seconds");
+				inLog.info("Added "  + tosave.size() + " assigned cluster nodes in " + diff + " seconds " + totalsaved + " of " + tracker.size());
 				start = System.currentTimeMillis();
 			}
 		}
@@ -369,6 +369,8 @@ public class KMeansManager implements CatalogEnabled {
 				orgroup("nearbycentroidids",nearbycentroidids).
 				exact("isremoved",false).search();
 		
+		log.info("Search found  " + tracker + " ");
+		
 		//if we have too many lets make a new k
 		if( tracker.size() > getSettings().maxresultspersearch )
 		{
@@ -395,12 +397,12 @@ public class KMeansManager implements CatalogEnabled {
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			MultiValued item = (MultiValued) iterator.next();
-			Collection parents = item.getValues("nearbycentroidids");
-			if( parents.size() == 1 ) //speed up, must be a pre-grouped face
-			{
-				matches.add(item);
-				continue;
-			}
+//			Collection parents = item.getValues("nearbycentroidids");
+//			if( parents.size() == 1 ) //speed up, must be a pre-grouped face
+//			{
+//				matches.add(item);
+//				continue;
+//			}
 			double distance = cosineDistance(inSearch, item);
 			if (distance <= cutoff) 
 			{
