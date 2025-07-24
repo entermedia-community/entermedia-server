@@ -122,17 +122,17 @@ public class KMeansManager implements CatalogEnabled {
 		{
 			int toadd = getSettings().kcount - getClusters().size();
 			inLog.info("Adding "  + toadd + " random cluster nodes ");
-			HitTracker tracker = getMediaArchive().query("faceembedding").exact("iscentroid",false).hitsPerPage(toadd).sort("locationx").search(); //random enough?
-			tracker.enableBulkOperations();
-			if( tracker.isEmpty() )
-			{
-				throw new OpenEditException("Do a deep reindex on faceembeddings");
-			}
 			double min_distance = getSettings().cutoffdistance * 2;
 			Collection<MultiValued> existingCentroids = new ArrayList(getClusters());
 			
 			while(toadd > 0)
 			{
+				HitTracker tracker = getMediaArchive().query("faceembedding").exact("iscentroid",false).sort("face_confidence").search(); //random enough?
+				tracker.enableBulkOperations();
+				if( tracker.isEmpty() )
+				{
+					throw new OpenEditException("Do a deep reindex on faceembeddings");
+				}
 				findCentroids(inLog, tracker,min_distance, toadd, existingCentroids);
 				min_distance = min_distance * 0.9;
 				toadd = getSettings().kcount - existingCentroids.size();
@@ -211,13 +211,14 @@ public class KMeansManager implements CatalogEnabled {
 
 	protected Collection<MultiValued> findCentroids(ScriptLogger inLog, HitTracker tracker, double mindistance, int toadd, Collection<MultiValued> existingCentroids)
 	{
-		inLog.info("Not enough centroids at a good distance. Needed " + toadd + " have " + existingCentroids.size() + " checking within " + mindistance);
+		int maxchecktimes = getSettings().kcount * 100;
+
+		inLog.info("Finding centroids Need: " + toadd + " have " + existingCentroids.size() + " checking within " + mindistance  + " search up to " + maxchecktimes);
 
 		Collection tosave = new ArrayList();
 		
 		//Make sure none are close to one another. And not the same face at all
 		
-		int maxchecktimes = getSettings().kcount * 80;
 
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
@@ -257,6 +258,7 @@ public class KMeansManager implements CatalogEnabled {
 				break;
 			}
 		}
+		inLog.info("Added " + tosave.size() + " Centroid within min distance:" + mindistance);
 		getMediaArchive().saveData("faceembedding",tosave);
 
 		return tosave;
