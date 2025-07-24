@@ -326,21 +326,26 @@ public class KMeansManager implements CatalogEnabled {
 		}
 		Collections.sort(closestclusters);		
 
-		double upto = getSettings().cutoffdistance * 2;
-		
 		Collection<String> centroids = new ArrayList();
-		for (int i = 0; i < closestclusters.size(); i++)
+
+		CloseCluster first = (CloseCluster)closestclusters.iterator().next();
+		centroids.add( first.centroid.getId() );
+		
+		double uptodistance = getSettings().cutoffdistance * 2;
+
+		for (int i = 1; i < closestclusters.size(); i++) //Starts at 2
 		{
 			CloseCluster cluster = (CloseCluster) closestclusters.get(i);
-			if( cluster.distance < upto)  //Could be more than one that are close by
+			if( cluster.distance > uptodistance)  //Stop looking once to far from first
 			{
-				centroids.add( cluster.centroid.getId() );
+				break;
 			}
-		}
-		if( centroids.isEmpty() ) //We are all alone within a 2x radious
-		{
-			CloseCluster first = (CloseCluster)closestclusters.iterator().next();
-			centroids.add( first.centroid.getId() ); //Randomly set it  to something
+			double distancetofirst = cosineDistance( first.centroid, cluster.centroid );
+			if( distancetofirst > uptodistance)  //Stop looking once 
+			{
+				break;
+			}
+			centroids.add( cluster.centroid.getId() );
 		}
 
 		inFace.setValue("nearbycentroidids",centroids);
@@ -370,6 +375,9 @@ public class KMeansManager implements CatalogEnabled {
 				exact("isremoved",false).search();
 		
 		log.info("Search found  " + tracker + " ");
+		
+		if( true )
+		return null;
 		
 		//if we have too many lets make a new k
 		if( tracker.size() > getSettings().maxresultspersearch )
