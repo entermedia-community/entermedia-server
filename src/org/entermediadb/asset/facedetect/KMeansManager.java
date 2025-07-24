@@ -116,36 +116,37 @@ public class KMeansManager implements CatalogEnabled {
 	public void reinitClusters(ScriptLogger inLog) 
 	{
 		//Reload from db
-
 		fieldClusters = null;
 		
 		if( getClusters().size() < getSettings().kcount )
 		{
 			int toadd = getSettings().kcount - getClusters().size();
 			inLog.info("Adding "  + toadd + " random cluster nodes ");
-			HitTracker tracker = getMediaArchive().query("faceembedding").exact("iscentroid",false).hitsPerPage(toadd).sort("face_confidenceDown").search(); //random enough?
+			HitTracker tracker = getMediaArchive().query("faceembedding").exact("iscentroid",false).hitsPerPage(toadd).sort("locationx").search(); //random enough?
 			tracker.enableBulkOperations();
 			if( tracker.isEmpty() )
 			{
 				throw new OpenEditException("Do a deep reindex on faceembeddings");
 			}
 			double min_distance = getSettings().cutoffdistance * 2;
-			Collection<MultiValued> found = findCentroids(inLog, tracker,min_distance, toadd);
-			getMediaArchive().saveData("faceembedding",found);
-			fieldClusters = null;
-			toadd = getSettings().kcount - getClusters().size();
-			if( found.size() < toadd)
+			Collection<MultiValued> existingCentroids = new ArrayList(getClusters());
+			
+			while(toadd > 0)
 			{
-				inLog.info(" is not enough data for a good distance. Needed " + toadd + " found " + found.size());
-				min_distance = getSettings().cutoffdistance; //Look closer
-				found = findCentroids(inLog, tracker, min_distance, toadd);
-				getMediaArchive().saveData("faceembedding",found);
+				Collection<MultiValued> found = findCentroids(inLog, tracker,min_distance, toadd, existingCentroids);
+				min_distance = min_distance * 0.9;
+				toadd = getSettings().kcount - existingCentroids.size();
+				if(min_distance < .5)
+				{
+					inLog.info("Got too low! " + min_distance);
+					break;
+				}
 			}
 			
 			fieldClusters = null; //reload
 			if( getClusters().size() < getSettings().kcount )
 			{
-				inLog.info("Problem creating centroids, try clicking on some results?");
+				inLog.info("Problem creating centroids, Data not random enough. Found: " + getClusters().size() + " centoids but wanted: " + getSettings().kcount + " with a min distance of " + min_distance);
 			}
 
 		}
@@ -153,9 +154,10 @@ public class KMeansManager implements CatalogEnabled {
 		Collection tosave = new ArrayList();
 		HitTracker tracker = getMediaArchive().query("faceembedding").missing("nearbycentroidids").hitsPerPage(500).search();
 		tracker.enableBulkOperations();
-		//Search for all notes not connected 
+		//Search for all notes not connected
+		
 		int totalsaved = 0;
-		inLog.info("Start Reindexing " +  tracker.size() + " faces");
+		inLog.info("Start Reindexing " +  tracker.size() + " faces into " + getClusters().size() + " clusters");
 		long start = System.currentTimeMillis();
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
@@ -174,8 +176,15 @@ public class KMeansManager implements CatalogEnabled {
 				}
 				continue;
 			}
-			
-			setCentroids(hit); //Set em <-----
+			try
+			{
+				setCentroids(hit); //Set em <-----
+			} catch( IllegalArgumentException ex)
+			{
+				//Bad vectors
+				log.error("Could not save vectors " + ex);
+				continue;
+			}
 			
 			
 			tosave.add(hit);
@@ -197,27 +206,45 @@ public class KMeansManager implements CatalogEnabled {
 		long end = System.currentTimeMillis();
 		double diff = (end - start)/1000D;
 		diff = MathUtils.roundDouble(diff, 2);
-		inLog.info("Complete: "  + totalsaved + " assigned cluster nodes in " + diff + " seconds");
+		inLog.info("Complete: "  + totalsaved + " assigned cluster nodes in " + diff + " seconds into " + getClusters().size() + " clusters");
 	}
 
-
-	protected Collection<MultiValued>  findCentroids(ScriptLogger inLog, HitTracker tracker, double mindistance, int toadd)
+	protected Collection<MultiValued> findCentroids(ScriptLogger inLog, HitTracker tracker, double mindistance, int toadd, Collection<MultiValued> existingCentroids)
 	{
+		inLog.info("Not enough centroids at a good distance. Needed " + toadd + " have " + existingCentroids.size() + " checking within " + mindistance);
+
 		Collection tosave = new ArrayList();
 		
 		//Make sure none are close to one another. And not the same face at all
 		
-		int maxchecktimes = getSettings().kcount * 100;
+		int maxchecktimes = getSettings().kcount * 60;
 
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			MultiValued hit = (MultiValued)iterator.next();
-			boolean isfar = checkDistance(hit,mindistance);
-			if( isfar )
+			if( existingCentroids.contains(hit) || hit.getBoolean("iscentroid") )
+			{
+				continue;
+			}
+			
+			double founddistance  = -1;
+			if( existingCentroids.isEmpty() )
+			{
+				founddistance = Double.MAX_VALUE; //Always take the first one
+			}
+			else
+			{
+				founddistance = checkDistances(hit,mindistance, existingCentroids);
+			}
+			if( founddistance != -1 && founddistance > mindistance )
 			{
 				hit.setValue("iscentroid",true);
-				hit.addValue("nearbycentroidids",hit.getId());
+				Collection<String> single = new java.util.ArrayList(1);
+				single.add(hit.getId());
+				hit.setValue("nearbycentroidids",single);
+				inLog.info("Added Centroid with min distance " + founddistance );
 				tosave.add(hit);
+				existingCentroids.add(hit);
 			}
 			if( toadd == tosave.size() )
 			{
@@ -226,32 +253,48 @@ public class KMeansManager implements CatalogEnabled {
 			if( maxchecktimes-- == 0)
 			{
 				//Gave up looking for 
-				inLog.info("Gave up looking for far away nodes");
+				inLog.info("Gave up looking for far away nodes at " + mindistance);
 				break;
 			}
 		}
+		getMediaArchive().saveData("faceembedding",tosave);
+
 		return tosave;
 	}
 
 	/**
 	 * This is called only when initiaslizing. To make sure no two clusters are close to one another. Ideally 3x  1.5
 	 */
-	protected boolean checkDistance(MultiValued master, double mindistance)
+	protected double checkDistances(MultiValued master, double mindistance, Collection<MultiValued> existingCentroids)
 	{
-		for (Iterator iterator2 = getClusters().iterator(); iterator2.hasNext();)
+		double worstscore = -1;
+		for (Iterator iterator2 = existingCentroids.iterator(); iterator2.hasNext();)
 		{
 			MultiValued other = (MultiValued) iterator2.next();
 			if( other.getId().equals( master.getId() ) )
 			{
 				continue; 
 			}
-			double distance = cosineDistance(master, other);
-			if (distance <= mindistance)  //To close together. All images are shared on that side
+			try
 			{
-				return false;
+				double distance = cosineDistance(master, other);
+				if (distance <= mindistance)  //To close together. All images are shared on that side
+				{
+					//Was too close to someone
+					return distance;
+				}
+				if(worstscore == -1 || distance  < worstscore)
+				{
+					worstscore = distance;
+				}
+			}
+			catch(IllegalArgumentException ex)
+			{
+				log.error("Cant compare vectors " + ex);
+				continue;
 			}
 		}
-		return true;
+		return worstscore;
 	
 	}
 
@@ -350,6 +393,12 @@ public class KMeansManager implements CatalogEnabled {
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			MultiValued item = (MultiValued) iterator.next();
+			Collection parents = item.getValues("nearbycentroidids");
+			if( parents.size() == 1 ) //speed up, must be a pre-grouped face
+			{
+				matches.add(item);
+				continue;
+			}
 			double distance = cosineDistance(inSearch, item);
 			if (distance <= cutoff) 
 			{
@@ -377,6 +426,14 @@ public class KMeansManager implements CatalogEnabled {
 		List<Double> vectorA = (List<Double>)hita.getValue("facedatadoubles");
 		List<Double> vectorB = (List<Double>)hitb.getValue("facedatadoubles");
 		
+		if (vectorA == null)
+		{
+			throw new IllegalArgumentException("Vectors was null "+ hita.getId());
+		}
+		if (vectorB == null)
+		{
+			throw new IllegalArgumentException("Vectors was null "+ hitb.getId());
+		}
 		if (vectorA.size() != vectorB.size())
 		{
 			throw new IllegalArgumentException("Vectors must be of the same length");
@@ -498,19 +555,7 @@ public class KMeansManager implements CatalogEnabled {
 		}
 		return null;
 	}
-	
-	protected MultiValued findCluster(String inId)
-	{
-		for (MultiValued cluster : getClusters())
-		{
-			if( cluster.getId().equals(inId) )
-			{
-				return cluster;
-			}
-		}
-		return null;
-	}
-	
+		
 	protected Collection<MultiValued> fieldClusters;
 	
 	public Collection<MultiValued> getClusters() 

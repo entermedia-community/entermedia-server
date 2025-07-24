@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.action.delete.DeleteRequestBuilder;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -27,7 +29,6 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.search.AssetSecurityArchive;
 import org.entermediadb.asset.search.DataConnector;
 import org.entermediadb.asset.xmldb.CategorySearcher;
-import org.entermediadb.data.DataArchive;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -43,8 +44,12 @@ import org.openedit.users.User;
 import org.openedit.util.IntCounter;
 import org.openedit.util.PathUtilities;
 
-public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements DataConnector
+public class ElasticAssetDataConnector extends BaseElasticSearcher implements DataConnector
 {
+	
+	static final Log log = LogFactory.getLog(ElasticAssetDataConnector.class);
+
+	
 	protected AssetSecurityArchive fieldAssetSecurityArchive;
 	protected MediaArchive fieldMediaArchive;
 	protected IntCounter fieldIntCounter;
@@ -52,20 +57,6 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	public Data createNewData()
 	{
 		return new BaseAsset(getMediaArchive());
-	}
-
-	protected DataArchive getDataArchive()
-	{
-		if (fieldDataArchive == null)
-		{
-			DataArchive archive = (DataArchive) getModuleManager().getBean(getCatalogId(), "assetDataArchive");
-			archive.setDataFileName(getDataFileName());
-			archive.setElementName(getSearchType());
-			archive.setPathToData(getPathToData());
-			fieldDataArchive = archive;
-		}
-
-		return fieldDataArchive;
 	}
 
 	public void deleteFromIndex(String inId)
