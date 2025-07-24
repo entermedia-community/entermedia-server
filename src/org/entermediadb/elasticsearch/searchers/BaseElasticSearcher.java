@@ -2482,6 +2482,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	{
 		try
 		{
+			if(!isTrackEdits())
+			{
+				return;
+			}
 
 			Map status = (Map) inData.getValue("emrecordstatus");
 			/*
