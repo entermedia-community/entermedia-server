@@ -178,7 +178,10 @@ public class KMeansManager implements CatalogEnabled {
 			}
 			try
 			{
+//				long end = System.currentTimeMillis();
 				setCentroids(hit); //Set em <-----
+//				start = System.currentTimeMillis();
+//				log.info( "Took " + (start-end) );
 			} catch( IllegalArgumentException ex)
 			{
 				//Bad vectors
@@ -192,13 +195,12 @@ public class KMeansManager implements CatalogEnabled {
 			{
 				totalsaved = totalsaved + tosave.size();
 				getMediaArchive().saveData("faceembedding",tosave);
-				tosave.clear();
-				
 				long end = System.currentTimeMillis();
 				double diff = (end - start)/1000D;
 				diff = MathUtils.roundDouble(diff, 2);
 				inLog.info("Added "  + tosave.size() + " assigned cluster nodes in " + diff + " seconds " + totalsaved + " of " + tracker.size());
 				start = System.currentTimeMillis();
+				tosave.clear();
 			}
 		}
 		getMediaArchive().saveData("faceembedding",tosave);
@@ -243,7 +245,7 @@ public class KMeansManager implements CatalogEnabled {
 				Collection<String> single = new java.util.ArrayList(1);
 				single.add(hit.getId());
 				hit.setValue("nearbycentroidids",single);
-				inLog.info("Added Centroid with min distance " + founddistance );
+				inLog.info("Added Centroid with min distance, bigger is better" + founddistance );
 				tosave.add(hit);
 				existingCentroids.add(hit);
 			}
@@ -369,35 +371,28 @@ public class KMeansManager implements CatalogEnabled {
 		{
 			throw new OpenEditException(inSearch + " Has no centroids. reindexfaces");
 		}
-		
+		long start = System.currentTimeMillis();
 		HitTracker tracker = getMediaArchive().query("faceembedding").
 				orgroup("nearbycentroidids",nearbycentroidids).
-				exact("isremoved",false).search();
-		
+				exact("isremoved",false).hitsPerPage(1000).search();
 		log.info("Search found  " + tracker + " ");
-		
-		if( true )
-		return null;
-		
+				
 		//if we have too many lets make a new k
 		if( tracker.size() > getSettings().maxresultspersearch )
 		{
 			// Add the new cluster to the list
 			//Rebalance centroids
-			
-			if(inSearch.getBoolean("iscentroid"))
-			{	//Took this out because should have already been done to start with when we divided
-//				//remove non matching centroids from the circle
-//				Collection<MultiValued> matches = compressResults(inSearch, tracker); //limit this group to like minded
-//				return matches;
+			boolean alreadydivided = false;
+			if(inSearch.getBoolean("iscentroid") && tracker.size() < 2000 &&  nearbycentroidids.size() < 3 )
+			{	
+				alreadydivided = true; //Probably
 			}
-			else
+			if( !alreadydivided)
 			{
 				Collection<MultiValued> matches = divideCluster(inSearch, tracker);
 				return matches;
 			}
-		}
-		
+		}		
 		//Filter by distance
 		Collection<MultiValued> matches = new ArrayList();
 		int misses = 0;
@@ -421,10 +416,10 @@ public class KMeansManager implements CatalogEnabled {
 				misses++;
 			}
 		}
-		if( misses > 50 )
-		{
-			log.info("Misses " + misses + " might need to add more centroids to this area " + inSearch.getId());
-		}
+		long end = System.currentTimeMillis();
+		double seconds = (end-start)/1000d;
+		
+		log.info("Did not divide, found: " + matches.size() + " Misses " + misses + " for " + inSearch.getId() + " in " + seconds + " seconds");
 		return matches;
 	}
 	
