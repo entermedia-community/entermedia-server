@@ -803,6 +803,7 @@ public class MediaAdminModule extends BaseMediaModule
 			 {
 				 cache.clearAll();
 			 }
+			 getMediaArchive(catalogid).getNodeManager().flushDb();
 		 }		 
 	}
 

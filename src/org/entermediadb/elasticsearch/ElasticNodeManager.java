@@ -48,6 +48,8 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest;
+import org.elasticsearch.action.admin.indices.flush.FlushRequest;
+import org.elasticsearch.action.admin.indices.flush.FlushResponse;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
@@ -287,7 +289,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					{
 						try
 						{
-							//TODO: Should we call FlushRequest req = Requests.flushRequest(toId(getCatalogId()));  ? To The disk drive
+							FlushRequest request = new FlushRequest(); // No index specified = all indices
+							request.force(true);
+							FlushResponse response = getClient().admin().indices().flush(request).actionGet();
+							//response.getSuccessfulShards()
 							fieldClient.close();
 						}
 						finally
@@ -296,7 +301,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 							{
 								fieldNode.close();
 							}
-							fieldNode.close();
 						}
 					}
 					if (fieldNode != null)
@@ -1622,4 +1626,11 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		
 	}
 
+	
+	public void flushDb()
+	{
+		FlushRequest request = new FlushRequest(); // No index specified = all indices
+		request.force(true);
+		FlushResponse response = getClient().admin().indices().flush(request).actionGet();
+	}
 }

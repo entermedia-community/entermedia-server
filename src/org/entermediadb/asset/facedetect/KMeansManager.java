@@ -134,9 +134,9 @@ public class KMeansManager implements CatalogEnabled {
 					throw new OpenEditException("Do a deep reindex on faceembeddings");
 				}
 				findCentroids(inLog, tracker,min_distance, toadd, existingCentroids);
-				min_distance = min_distance * 0.9;
+				min_distance = min_distance * 0.95; //If we add too too close then each node has tons of clusters
 				toadd = getSettings().kcount - existingCentroids.size();
-				if(min_distance < .5)
+				if(min_distance < .60) //If this gets too low we will have a ton of clusters on the same face
 				{
 					inLog.info("Got too low! " + min_distance);
 					break;
