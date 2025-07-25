@@ -34,18 +34,16 @@ $context.putPageValue("thumbsize", $thumbsize)
 		$pages.include("$componenthome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
 	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
-		
 		<div class="mimethumbcontainer">
-       		<i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
-       </div>
+			<i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
+		</div>
 	#else	
 		#if($useoriginal)
 			#set($imagepath = "$!{siteroot}/${mediadbappid}/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
 		#else
 			#set($imagepath = $mediaarchive.asLinkToPreview($hit, null, $imagesize, true))
-			
 		#end
-		
+
 		#if($tstamp)
 			#set($imagepath = "${imagepath}?_=$tstamp")
 		#end
@@ -64,33 +62,37 @@ $context.putPageValue("thumbsize", $thumbsize)
 		#end
 
 		#set( $caption = $!{hitcaptions.get($context.language)} )
-		
 
-		##set( $captionhtml = null)
+		#if($publishing.image_caption_enabled == "true")
+			#ifnotnull($caption)
+				#set( $captionhtml = "<p class='__img_caption'>$!{caption}</p>" )
+			#end
+		#end
 
-		#ifnotnull($caption)
-			#set( $captionhtml = "<p class='__img_caption'>$!{caption}</p>" )
+		#if($publishing.image_copyright_enabled == "true")
+			#ifnotnull($hit.creator)
+				#set( $captionhtml = "$!captionhtml<p class='__img_creator'>&copy; $!{hit.creator}</p>" )
+			#end
 		#end
-		#ifnotnull($hit.creator)
-			#set( $captionhtml = "$!captionhtml<p class='__img_creator'>&copy; $!{hit.creator}</p>" )
-		#end
-		
+
 		<a href="${imagelink}"
 			class="lightbox"
 			data-downloadlink="$!{downloadlink}"
-			data-locales="$hitcaptions"
-			#ifnotnull($captionhtml) title="<div class='__img_overlay'>$captionhtml</div>" #end
+			#ifnotnull($hitcaptions) data-locales="$hitcaptions" #end
+			#ifnotnull($captionhtml) title="<div class='__img_overlay'>#esc($captionhtml)</div>" #end
 		>
-		<img class="imagethumb img-fluid  img$!thumbsize "
+			<img class="imagethumb img-fluid  img$!thumbsize "
 				catalogid="$catalogid" 
 				assetid="$!{hit.id}" 
 				alt="#if($title)#esc($title)#else$!{hit.name}#end"
 				draggable="true"  
 				data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
 				data-imagesrc="$imagepath$!urlparams"	/>
-		#if($type =="video")<button class="videoplay-button"><span class="videoplay-icon"></span></button>#end
+			#if($type =="video")
+				<button class="videoplay-button">
+					<span class="videoplay-icon"></span>
+				</button>
+			#end
 		</a>
 	#end
 </div>
-
-
