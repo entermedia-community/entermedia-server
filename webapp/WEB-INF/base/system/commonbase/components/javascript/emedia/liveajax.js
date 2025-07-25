@@ -53,7 +53,7 @@ $.ajaxSetup({
         inComplete.call(this);
       }
       //console.log("html complete");
-      $(document).trigger("domchanged", $(oldscope).parent()); //Child got replaced
+      $(document).trigger("domchanged", [$(oldscope).parent()]); //Child got replaced
     });
     return returned;
   };
@@ -66,7 +66,7 @@ $.ajaxSetup({
     }
 
     var returned = oldhtml.call($(this), arg);
-    $(document).trigger("domchanged", $(this)); //a component may be adding html that will call this
+    $(document).trigger("domchanged", [$(this)]); //a component may be adding html that will call this
     return returned;
   };
 
@@ -77,7 +77,7 @@ $.ajaxSetup({
     var returned = oldreplaceWith.call($(this), arg);
     //console.log("Called replacewith on " +	$(this).selector, arg.length );
     //$(document).trigger("domchanged");
-    $(document).trigger("domchanged", parent); //Child got replaced
+    $(document).trigger("domchanged", [parent] ); //Child got replaced
 
     return returned;
   };
@@ -87,7 +87,7 @@ $.ajaxSetup({
 	var div = $(this);
     var returned = oldappend.call(div, arg);
     //console.log("Called replacewith on " +	$(this).selector, arg.length );
-   	$(document).trigger("domchanged", div);
+   	$(document).trigger("domchanged", [div]);
     return returned;
   };
 
@@ -121,7 +121,7 @@ $.ajaxSetup({
       }
       //Grab target div? 		$(document).trigger("domchanged",null,$(this));
       if (targetdiv) {
-        $(document).trigger("domchanged", $("#" + targetdiv));
+        $(document).trigger("domchanged", [$("#" + targetdiv)]);
       } else {
         $(document).trigger("domchanged");
       }
@@ -176,7 +176,14 @@ $.ajaxSetup({
     //TODO: Loop over events ones and register them
     $.each(eventregistry, function () {
       var listener = this;
-      $(listener.selector, element).each(function () {
+	  
+	  var check = element;
+	  if( listener.selector.contains(" ") )
+	  {
+		check = document;
+	  }
+	
+      $(listener.selector, check).each(function () {
         var node = $(this);
         if (node.data("livequery") == null) {
           //console.log("Registering " + listener.selector );
@@ -189,7 +196,13 @@ $.ajaxSetup({
     //We need to do this as the end in case there are more than one click handlers on the same node
     $.each(eventregistry, function () {
       var listener = this;
-      $(listener.selector, element).each(function () {
+	  var check = element;
+	  if( listener.selector.contains(" ") )
+	{
+	  	check = document;
+	  }
+
+      $(listener.selector, check).each(function () {
         var node = $(this);
         if (node.data("livequery") == null) {
           node.data("livequery", true);
