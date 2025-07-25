@@ -383,7 +383,7 @@ public class KMeansManager implements CatalogEnabled {
 			// Add the new cluster to the list
 			//Rebalance centroids
 			boolean alreadydivided = false;
-			if(inSearch.getBoolean("iscentroid") && tracker.size() < 2000 &&  nearbycentroidids.size() < 3 )
+			if(inSearch.getBoolean("iscentroid") || (tracker.size() < 2000 &&  nearbycentroidids.size() < 3 ) )
 			{	
 				alreadydivided = true; //Probably
 			}
