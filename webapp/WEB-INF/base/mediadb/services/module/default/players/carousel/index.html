@@ -3,296 +3,293 @@
 #end
 
 <style type="text/css">
-	:root {
-		--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #efefef #end;
-		--text-color: #if($publishing.publishingfeedlayout=="dark") #fff #else #000 #end;
-		--grey-color: #if($publishing.publishingfeedlayout=="dark") #888 #else #666 #end;
-		--translucent-bg: #if($publishing.publishingfeedlayout=="dark") rgba(20,20,20,.95) #else rgba(255,255,255,.95) #end;
-		--highlight-color: #if($publishing.publishingfeedlayout=="dark") #666 #else #444 #end;
-		#if($publishing.containerdimension_enabled=="true")
+:root {
+	--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #efefef #end;
+	--text-color: #if($publishing.publishingfeedlayout=="dark") #fff #else #000 #end;
+	--grey-color: #if($publishing.publishingfeedlayout=="dark") #888 #else #666 #end;
+	--translucent-bg: #if($publishing.publishingfeedlayout=="dark") rgba(20,20,20,.95) #else rgba(255,255,255,.95) #end;
+	--arrow-bg: #if($publishing.publishingfeedlayout=="dark") rgba(0, 0, 0, 0.35) #else rgba(255, 255, 255, 0.35) #end;
+	--highlight-color: #if($publishing.publishingfeedlayout=="dark") #666 #else #444 #end;
+	#if($publishing.containerdimension_enabled=="true")
 		--container-width: #if($publishing.containerwidth > 0) ${publishing.containerwidth}px #else 1000px #end;
 		--container-height: #if($publishing.containerheight > 0) ${publishing.containerheight}px #else 824px #end;
-		#else
+	#else
 		--container-width: 100%;
 		--container-height: 100%;
-		#end
-	}
-	.__main-container {
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		background-color: var(--bg-color);
-		width: var(--container-width);
-		height: var(--container-height);
-		overflow: hidden;
-	}
-	.__title {
-		color: var(--text-color);
-		text-align: center;
-		padding: 16px;
-		margin: 0;
-		background-color: #fff;
-	}
-	.__caption {
-		font-size: small;
-		color: var(--text-color);
-		text-align: center;
-		margin-bottom: 16px;
-		margin: 0 auto;
-		background-color: #fff;
-		padding-bottom: 8px;
-		width: 100%;
-	}
-	.__caption::after {
-		content: "";
-		display: block;
-		position: absolute;
-		width: var(--container-width);
-		left: 0;
-		height: 1px;
-		background-color: rgba(255, 255, 255, 0.1);
-		padding-top: 16px;
-	}
-	.__footer {
-		font-size: small;
-		color: var(--text-color);
-		text-align: center;
-		padding-top: 16px;
-		padding-bottom: 8px;
-		margin-top: 8px;
-		border-top: 0.5px solid rgba(255, 255, 255, 0.1);
-		background-color: #fff;
-	}
-	
-	
-	
-	.__carousel-container {
-		flex: 1;
-		overflow: hidden;
-	}	
-	#__carousel {
-		height: calc(100% - 60px);
-	}
-	@media screen and (max-width: 600px) {
-		#__carousel {
-			height: calc(100% - 44px);
-		}
-	}
-	#__carousel .splide__track {
-		height: 100%;
-	}
-	#__carousel .splide__slide {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		padding: 8px 0;
-		overflow: hidden;
-	}
-	#__carousel .splide__slide img {
-		width: 100%;
-		height: 100%;
-		object-fit: contain;
-		filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
-	}
-	#__carousel-thumbnails .splide__slide img {
-		width: 100%; 
-		height: 100%;
-		object-fit: cover;
-	}
-	#__carousel-thumbnails .splide__slide {
-		opacity: 0.95;
-	}
-	#__carousel-thumbnails .splide__slide.is-active {
-		opacity: 1;
-		border: 2px solid lime;
-		box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.5) inset;
-	}
-	#__carousel-thumbnails.splide:not(.is-overflow) .splide__list {
-		justify-content: center;
+	#end
 }
-	#__carousel .splide__arrow {
-		color: #fff; 
-		width: 7em;
-		height: 3.5em;
-		padding: 0.5em;
-		height: 100%;
-		border-radius: 0;
-		background-color: transparent;
-	} 
-	#__carousel .splide__arrow--next {
-		padding-left: 0;
-		right: 0;
-		cursor: e-resize;
+.__main-container * {
+	box-sizing: border-box;
+}
+.__main-container {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: var(--container-width);
+	height: var(--container-height);
+	overflow: hidden;
+}
+.__title {
+	color: var(--text-color);
+	text-align: center;
+	padding: 16px;
+	margin: 0;
+	background-color: var(--bg-color);
+}
+.__caption {
+	font-size: small;
+	color: var(--text-color);
+	text-align: center;
+	margin-bottom: 16px;
+	margin: 0 auto;
+	background-color: var(--bg-color);
+	padding-bottom: 8px;
+	width: 100%;
+}
+.__caption::after {
+	content: "";
+	display: block;
+	position: absolute;
+	width: var(--container-width);
+	left: 0;
+	height: 1px;
+	background-color: rgba(255, 255, 255, 0.1);
+	padding-top: 16px;
+}
+.__footer {
+	font-size: small;
+	color: var(--text-color);
+	text-align: center;
+	padding-top: 16px;
+	padding-bottom: 8px;
+	margin-top: 8px;
+	border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+	background-color: var(--bg-color);
+}
+.__carousel-container {
+	flex: 1;
+	overflow: hidden;
+}	
+#__carousel {
+	height: calc(100% - 60px);
+}
+@media screen and (max-width: 600px) {
+	#__carousel {
+		height: calc(100% - 44px);
 	}
-	#__carousel .splide__arrow--prev {
-		left: 0;
-		bottom: 0;
-		margin-top: 30px;
-		height: calc(100% - 60px);
-		cursor: w-resize;
+}
+#__carousel .splide__track {
+	height: 100%;
+}
+#__carousel .splide__slide {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0 0 8px;
+	overflow: hidden;
+}
+#__carousel .splide__slide img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	object-position: center top;
+	filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+}
+#__carousel-thumbnails .splide__slide img {
+	width: 100%; 
+	height: 100%;
+	object-fit: cover;
+}
+#__carousel-thumbnails .splide__slide {
+	opacity: 0.6;
+}
+#__carousel-thumbnails .splide__slide.is-active {
+	opacity: 1;
+	border: 4px solid #4fd7fb;
+	box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.5) inset;
+}
+#__carousel-thumbnails.splide:not(.is-overflow) .splide__list {
+	justify-content: center;
+}
+#__carousel .splide__arrow {
+	color: #fff; 
+	width: 7em;
+	height: 3.5em;
+	padding: 0.5em;
+	height: 100%;
+	border-radius: 0;
+	background-color: transparent;
+} 
+#__carousel .splide__arrow--next {
+	padding-left: 0;
+	right: 0;
+	cursor: e-resize;
+}
+#__carousel .splide__arrow--prev {
+	left: 0;
+	bottom: 0;
+	margin-top: 30px;
+	height: calc(100% - 60px);
+	cursor: w-resize;
+}
+#__carousel .splide__arrow svg {
+	fill: var(--text-color);
+	stroke: var(--text-color);
+	stroke-width: 1;
+	width: 40px;
+	height: 40px;
+}
+.__arrow-btn {
+	width: 50px;
+	height: 50px;
+	border-radius: 25px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--arrow-bg); 
+}
+.__img_overlay {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	font-family: Arial, Helvetica, sans-serif;
+	color: var(--text-color);
+	background: var(--translucent-bg);
+	padding: 12px 16px;
+	gap: 8px;
+	z-index: 10;
+	opacity: 0;
+	transition: opacity 0.2s ease, padding 0.2s ease;
+}
+.__overlay_minimizer {
+	height: 16px;
+	width: 32px;
+	background-color: #666;
+	border: none;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	margin-top: -28px; 
+	animation: __fadeout 2s ease forwards;
+}
+.__img_overlay:hover .__overlay_minimizer, .__overlay_minimizer:hover {
+	opacity: 1 ! important;
+}
+.__img_overlay.__minimized {
+	height: 0;
+	padding: 0;
+}
+.__img_overlay.__minimized .__img_creator,
+.__img_overlay.__minimized .__img_caption {
+	display: none;
+}
+.__img_overlay.__minimized .__overlay_minimizer {
+	animation: none;
+	opacity: 1;
+	margin-top: -16px;
+	transform: rotate(180deg);
+	padding: 4px 0;
+	border-radius: 0;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+}
+@keyframes __fadeout {
+	0%, 80% {
+		opacity: 1;
 	}
-	#__carousel .splide__arrow svg {
-		fill: var(--text-color);
-		stroke: var(--text-color);
-		stroke-width: 1;
-		width: 40px;
-		height: 40px;
-	}
-	.__arrow-btn {
-		width: 50px;
-		height: 50px;
-		border-radius: 25px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		background-color: rgba(255, 255, 255, 0.35);
-	}
-	.__img_overlay {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		font-family: Arial, Helvetica, sans-serif;
-		color: var(--text-color);
-		background: var(--translucent-bg);
-		padding: 12px 16px;
-		gap: 8px;
-		z-index: 10;
+	100% {
 		opacity: 0;
-		transition: opacity 0.2s ease, padding 0.2s ease;
 	}
+}
+@media screen and (max-width: 600px) {
 	.__overlay_minimizer {
-	    height: 16px;
-	    width: 32px;
-	    background-color: #666;
-	    border: none;
-	    padding: 0;
-	    display: flex;
-	    justify-content: center;
-	    align-items: center;
-	    cursor: pointer;
-	    border-top-left-radius: 4px;
-	    border-top-right-radius: 4px;
-	    margin-top: -28px; 
-		animation: __fadeout 2s ease forwards;
-	}
-	.__img_overlay:hover .__overlay_minimizer, .__overlay_minimizer:hover {
+		animation: none;
 		opacity: 1 ! important;
 	}
-	.__img_overlay.__minimized {
-		height: 0;
-		padding: 0;
-	}
-	.__img_overlay.__minimized .__img_creator,
-	.__img_overlay.__minimized .__img_caption {
-		display: none;
-	}
-	.__img_overlay.__minimized .__overlay_minimizer {
-		animation: none;
-	    opacity: 1;
-	    margin-top: -16px;
-	    transform: rotate(180deg);
-	    padding: 4px 0;
-	    border-radius: 0;
-	    border-bottom-left-radius: 4px;
-	    border-bottom-right-radius: 4px;
-	}
-	@keyframes __fadeout {
-			0%, 80% {
-				opacity: 1;
-			}
-			100% {
-				opacity: 0;
-			}
-	}
-	@media screen and (max-width: 600px) {
-		.__overlay_minimizer {
-			animation: none;
-			opacity: 1 ! important;
-		}
-	}
-	.__img_creator {
-		line-height: 20px;
-		vertical-align: middle;
-		text-align: center;
-		margin: 0 0 -8px;
-		font-size: 0.9rem;
-		color: var(--grey-color);
-	}
-	.__img_caption {
-		margin: 0;
-		width: 100%;
-		text-align: center;
-		font-size: 1rem;
-	}
-	#__carousel .splide__arrow--prev .__arrow-btn {
-		transform: translateY(-30px);
-	}
-	#__carousel .__download-img {
-		position: absolute;
-		top: 16px;
-		left: 16px;
-		width: 40px;
-		height: 40px;
-		border-radius: 20px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		color: #fff;
-		background-color: var(--grey-color);
-		text-decoration: none;
-		opacity: 0;
-		transition: opacity 0.5s;
-		z-index: 100;
-	}
-	#__carousel .splide__slide:hover .__download-img {
-		opacity: 1;
-	}
+}
+.__img_creator {
+	line-height: 20px;
+	vertical-align: middle;
+	text-align: center;
+	margin: 0 0 -8px;
+	font-size: 0.9rem;
+	color: var(--grey-color);
+}
+.__img_caption {
+	margin: 0;
+	width: 100%;
+	text-align: center;
+	font-size: 1rem;
+}
+#__carousel .splide__arrow--prev .__arrow-btn {
+	transform: translateY(-30px);
+}
+#__carousel .__download-img {
+	position: absolute;
+	top: 16px;
+	left: 16px;
+	width: 40px;
+	height: 40px;
+	border-radius: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: var(--text-color);
+	background: var(--arrow-bg);
+	text-decoration: none;
+	opacity: 0;
+	transition: opacity 0.5s;
+	z-index: 100;
+}
+#__carousel .splide__slide:hover .__download-img {
+	opacity: 1;
+}
 </style>
 
+<div class="__main-container"> 
+	#if($publishing.title_enabled == "true" && $publishing.title)
+		<h1 class="__title">$publishing.title</h3>
+	#end
+	#if($publishing.caption_enabled == "true" && $publishing.caption)
+		<div class="__caption">$publishing.caption</div>
+	#end
+	
+	#ifnull($defaultfolder)
+		#ifnull($entity)
+			#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))
+		#end
+		#ifnotnull($entity)
+			#if($topmodule.getId()=="faceprofilegroup")
+				#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))		
+			#else
+				#set($defaultfolder =  $mediaarchive.getBean("entityManager").createDefaultFolder($entity, $context.getUser()))
+			#end
+		#end
+	#end
 
-	<div class="__main-container"> 
-		#if($publishing.title_enabled == "true" && $publishing.title)
-			<h1 class="__title">$publishing.title</h3>
-		#end
-		#if($publishing.caption_enabled == "true" && $publishing.caption)
-			<div class="__caption">$publishing.caption</div>
-		#end
+	$context.putPageValue("defaultfolder", $defaultfolder)
+
+	#if(!$currentcategoryid && $defaultfolder)
+		#set( $currentcategoryid = $defaultfolder.getId())
+		$context.putPageValue("categoryid", $currentcategoryid)
+	#end
 		
-		#ifnull($defaultfolder)
-			#ifnull($entity)
-				#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))
-			#end
-			#ifnotnull($entity)
-				#if($topmodule.getId()=="faceprofilegroup")
-					#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))		
-				#else
-					#set($defaultfolder =  $mediaarchive.getBean("entityManager").createDefaultFolder($entity, $context.getUser()))
-				#end
-			#end
-		#end
-	
-		$context.putPageValue("defaultfolder", $defaultfolder)
-	
-		#if(!$currentcategoryid && $defaultfolder)
-			#set( $currentcategoryid = $defaultfolder.getId())
-			$context.putPageValue("categoryid", $currentcategoryid)
-		#end
-			
-		$context.putPageValue("entitydialogid", "entitypublishing")
-	
-		<div class="__carousel-container">
-			$pages.include("/$mediadbappid/services/module/${module.getId()}/players/carousel/results.html", $context)
-		</div>
-		
-		#if($publishing.footer_enabled=="true" && $publishing.footer)
-			<div class="__footer">$publishing.footer</div>
-		#end
+	$context.putPageValue("entitydialogid", "entitypublishing")
+
+	<div class="__carousel-container">
+		$pages.include("/$mediadbappid/services/module/${module.getId()}/players/carousel/results.html", $context)
 	</div>
-
-
-
+	
+	#if($publishing.footer_enabled=="true" && $publishing.footer)
+		<div class="__footer">$publishing.footer</div>
+	#end
+</div>
