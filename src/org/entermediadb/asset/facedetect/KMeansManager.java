@@ -537,6 +537,11 @@ public class KMeansManager implements CatalogEnabled {
 				throw new OpenEditException("Cant compare null nodes " + ids);
 			}
 			MultiValued centroid = findCentroid(centroidid);
+			if( centroid == null)
+			{
+				log.error("Centroid missing: " + centroidid);
+				continue;
+			}
 			double distance = cosineDistance(searchby, centroid);
 			if (distance <=  getSettings().maxdistancetomatch) 
 			{
