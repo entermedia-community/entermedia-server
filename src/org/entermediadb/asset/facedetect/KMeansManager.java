@@ -323,7 +323,8 @@ public class KMeansManager implements CatalogEnabled {
 			inFace.setValue("nearbycentroidids",centroids);
 			if( centroids.size() > 15)
 			{
-				log.info("Failed to limit centroids " + centroids.size() + " on " + inFace); 
+				//With large number of records and centroids we Might want to decrease the size since we have so many
+				log.info("Failed to limit centroids, decrease maxdistancetocentroid " + centroids.size() + " on " + inFace); 
 			}
 		}
 		
@@ -340,6 +341,7 @@ public class KMeansManager implements CatalogEnabled {
 		{
 			throw new OpenEditException("Not enought clusters. Run reindexfaces event");
 		}
+		inSearch.setValue("iscentroid",false);
 		
 		Collection nearbycentroidids = inSearch.getValues("nearbycentroidids");
 		if( nearbycentroidids == null || nearbycentroidids.isEmpty() )
@@ -350,7 +352,6 @@ public class KMeansManager implements CatalogEnabled {
 		HitTracker tracker = getMediaArchive().query("faceembedding").
 				orgroup("nearbycentroidids",nearbycentroidids).
 				exact("isremoved",false).hitsPerPage(1000).search();
-		log.info("Search found  " + tracker + " ");
 				
 		//if we have too many lets make a new k
 		if( tracker.size() > getSettings().maxresultspersearch )
@@ -368,33 +369,15 @@ public class KMeansManager implements CatalogEnabled {
 				return matches;
 			}
 		}		
-		//Filter by distance
-		Collection<MultiValued> matches = new ArrayList();
-		int misses = 0;
-		double cutoff = getSettings().maxdistancetomatch;
-		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-		{
-			MultiValued item = (MultiValued) iterator.next();
-//			Collection parents = item.getValues("nearbycentroidids");
-//			if( parents.size() == 1 ) //speed up, must be a pre-grouped face
-//			{
-//				matches.add(item);
-//				continue;
-//			}
-			double distance = cosineDistance(inSearch, item);
-			if (distance <= cutoff) 
-			{
-				matches.add(item);
-			}
-			else
-			{
-				misses++;
-			}
-		}
+		
+		Collection<MultiValued> allimportantcentroids =	findImportantCentroids(inSearch);
+		Collection<MultiValued> matches = findResultsWithinCentroids(inSearch, allimportantcentroids, tracker);
+
 		long end = System.currentTimeMillis();
 		double seconds = (end-start)/1000d;
-		
-		log.info("Did not divide, found: " + matches.size() + " Missed " + misses + " for " + inSearch.getId() + " in " + seconds + " seconds");
+		log.info("Search found  " + tracker + " -> " + matches.size() + "  in " + seconds + " seconds");
+
+		//log.info("Did not divide, found: " + matches.size() + " Missed " + misses + " for " + inSearch.getId() + " in " + seconds + " seconds");
 		return matches;
 	}
 	
@@ -446,48 +429,57 @@ public class KMeansManager implements CatalogEnabled {
 	{
 		Collection<MultiValued> results = new ArrayList(allnearestItems);
 		
-		log.info("Dividing the cluster from large resultset: " + results.size() + " results for id: " + newcentroidItem.getId() );
+		log.info("Dividing the cluster from large resultset: " + results.size() + " results for id: " + newcentroidItem.getId() + " all centroids:" +  newcentroidItem.getValues("nearbycentroidids") );
 		if( newcentroidItem.getId() == null)
 		{
 			getMediaArchive().saveData("faceembedding",newcentroidItem);
 		}
 		
 		//I got too many hits then add my myself as a centroid
-		
-		Collection<MultiValued> allimportantcentroids = new HashSet();
-
-		//Add our new centroid
 		newcentroidItem.setValue("iscentroid",true);
-		allimportantcentroids.add(newcentroidItem);
+
+		Collection<MultiValued> allimportantcentroids =	findImportantCentroids(newcentroidItem);
 		
-		double cutoffdistance = getSettings().maxdistancetomatch;
-		for (Iterator iterator = results.iterator(); iterator.hasNext();)
+		List<MultiValued> tomove = findResultsWithinCentroids(newcentroidItem, allimportantcentroids, results);
+
+		//Save all to be the same click. 
+		Collection<String> savecentroids = new HashSet();
+		for (Iterator iterator2 = allimportantcentroids.iterator(); iterator2.hasNext();)
 		{
-			MultiValued test = (MultiValued) iterator.next();
-			if( newcentroidItem.getId().equals(test.getId()) )
-			{
-				continue; //Dont test myself
-			}
-				
-			//Look for centroids
-			if( test.getBoolean("iscentroid") ) 
-			{
-				double distance = cosineDistance(newcentroidItem, test);
-				if (distance <=  getSettings().maxdistancetocentroid) 
-				{
-					allimportantcentroids.add(test); //These are as good as connecting to myself. Brad pit as a kid
-					//Then test each remaining nodes to see if they are exact match to any cluster
-				}
-			}	
+			MultiValued centroid = (MultiValued) iterator2.next();
+			savecentroids.add(centroid.getId());
 		}
 		
+		//This includes everyone who matched important centoids
+		for (Iterator iterator = tomove.iterator(); iterator.hasNext();)
+		{
+			MultiValued moving = (MultiValued) iterator.next();
+			if( moving.getId().equals(newcentroidItem.getId() ) )
+			{
+				newcentroidItem.setValue("iscentroid",true);
+			}
+			moving.setValue("nearbycentroidids", savecentroids); //Takeover
+		}
+		getMediaArchive().saveData("faceembedding",tomove);
+		
+		log.info("Made a new node with only exact faces in it: " + results.size() + "->" + tomove.size() + " with new centroid id: " + newcentroidItem.getId() + " saved centroids " + savecentroids);
+		
+		return tomove;
+	}
+
+
+	protected List<MultiValued> findResultsWithinCentroids(MultiValued inToSearch, Collection<MultiValued> allimportantcentroids, Collection<MultiValued> results)
+	{
 		List<MultiValued> tomove = new ArrayList<MultiValued>(); //I am in here as well
 		tomove.addAll(allimportantcentroids);
 		
+		double cutoffdistance = getSettings().maxdistancetomatch;
+
+		int misses = 0;
 		for (Iterator iterator = results.iterator(); iterator.hasNext();)
 		{
 			MultiValued test = (MultiValued) iterator.next();
-			if( newcentroidItem.getId().equals(test.getId()) )
+			if( inToSearch.getId().equals(test.getId()) )
 			{
 				continue; //Dont test myself
 			}
@@ -504,25 +496,43 @@ public class KMeansManager implements CatalogEnabled {
 						tomove.add(test); //These are as good as connecting to myself. Brad pit as a kid
 						break; //Just find one and then we will be resetting EVERYONE in this group to be only the new one
 					}
+					else
+					{
+						misses++;
+					}
 				}
 			}
 		}
-
-		//Save all to be the same click. 
-		Collection newgroup = new ArrayList();
-		newgroup.add(newcentroidItem.getId());
-		
-		//This includes everyone who matched important centoids
-		for (Iterator iterator = tomove.iterator(); iterator.hasNext();)
-		{
-			MultiValued moving = (MultiValued) iterator.next();
-			moving.setValue("nearbycentroidids", newgroup); //Takeover
-		}
-		getMediaArchive().saveData("faceembedding",tomove);
-		
-		log.info("Made a new node with only exact faces in it: " + results.size() + "->" + tomove.size() + " with centroid id: " + newcentroidItem.getId() );
-		
+		log.info("found: " + results.size() + ", missed: " + misses + " for " + inToSearch.getId());
 		return tomove;
+	}
+
+	protected Collection<MultiValued> findImportantCentroids(MultiValued searchby)
+	{
+		Collection<MultiValued> allimportantcentroids = new ArrayList();
+		//Add our new centroid
+		if( searchby.getBoolean("iscentroid") )
+		{
+			allimportantcentroids.add(searchby);
+		}
+		
+		Collection<String> ids = searchby.getValues("nearbycentroidids");
+		
+		for (Iterator iterator2 = ids.iterator(); iterator2.hasNext();)
+		{
+			String centroidid = (String) iterator2.next();
+			if( centroidid.equals(searchby.getId()) )
+			{
+				continue; //Dont test myself
+			}
+			MultiValued centroid = findCentroid(centroidid);
+			double distance = cosineDistance(searchby, centroid);
+			if (distance <=  getSettings().maxdistancetomatch) 
+			{
+				allimportantcentroids.add(centroid); //These are as good as connecting to myself. Brad pit as a kid
+			}	
+		}
+		return allimportantcentroids;
 	}
 
 	public MultiValued findCentroid(String inId)
