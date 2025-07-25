@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.data.QueryBuilder;
@@ -18,7 +19,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.util.ExecutorManager;
 
-public class QueueManager implements ConversionEventListener
+public class QueueManager implements ConversionEventListener, CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(QueueManager.class);
 	//Runs every 5 minutes or when new uploads come in or when an asset finishes and we need the next one

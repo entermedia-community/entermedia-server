@@ -304,7 +304,7 @@ public class KMeansManager implements CatalogEnabled {
 			}
 		}
 
-		//if I cant find any centroids within .6 then be my own so that we dont break the rule
+		//if I cant find any centroids within .9 then be my own so that we dont break the rule
 		if( centroids.isEmpty() )
 		{
 			getClusters().add(inFace);
@@ -456,11 +456,18 @@ public class KMeansManager implements CatalogEnabled {
 			MultiValued moving = (MultiValued) iterator.next();
 			if( moving.getId().equals(newcentroidItem.getId() ) )
 			{
-				newcentroidItem.setValue("iscentroid",true);
+				continue; //Skip myself
 			}
 			moving.setValue("nearbycentroidids", savecentroids); //Takeover
 		}
+
+		newcentroidItem.setValue("iscentroid",true);
+		newcentroidItem.setValue("nearbycentroidids", savecentroids); //Add us at the end
+		tomove.add(newcentroidItem);
+		
 		getMediaArchive().saveData("faceembedding",tomove);
+		
+		
 		
 		log.info("Made a new node with only exact faces in it: " + results.size() + "->" + tomove.size() + " with new centroid id: " + newcentroidItem.getId() + " saved centroids " + savecentroids);
 		
@@ -524,6 +531,10 @@ public class KMeansManager implements CatalogEnabled {
 			if( centroidid.equals(searchby.getId()) )
 			{
 				continue; //Dont test myself
+			}
+			if( centroidid == null)
+			{
+				throw new OpenEditException("Cant compare null nodes " + ids);
 			}
 			MultiValued centroid = findCentroid(centroidid);
 			double distance = cosineDistance(searchby, centroid);
