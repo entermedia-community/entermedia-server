@@ -72,46 +72,6 @@ public class KMeansManager implements CatalogEnabled {
 		fieldMediaArchive = inMediaArchive;
 	}
 
-	protected KMeansConfiguration getSettings()
-	{
-		KMeansConfiguration config = (KMeansConfiguration)getMediaArchive().getCacheManager().get("face","kmeansconfig");
-		if( config == null)
-		{
-			fieldClusters = null; //reload em
-			
-			config = new KMeansConfiguration();
-			String value = getMediaArchive().getCatalogSettingValue("facedetect_max_distance");
-			if( value != null)
-			{
-				config.cutoffdistance = Double.parseDouble(value);
-			}
-			else
-			{
-				config.cutoffdistance = 0.5;
-			}
-			/*
-			 *  Choosing the Number of Centroids (k)
-	k ≈ sqrt(n / 2) is a heuristic (where n = total number of face vectors)
-
-	Examples:
-
-	10,000 faces → ~70–100 centroids
-
-	1,000,000 faces → ~700–1000 centroids
-	*/
-			int totalfaces = getMediaArchive().query("faceembedding").all().hitsPerPage(1).search().size(); 
-			double k = Math.sqrt( totalfaces / 2d);
-			int min = (int)Math.round(k);
-			config.kcount = min;
-			config.totalrecords = totalfaces;
-			
-			//Create new nodes when we get over 300 results or more as more likely to have a ton of faces
-			config.maxresultspersearch = Math.max(min,300); 
-			
-			getMediaArchive().getCacheManager().put("face","kmeansconfig",config);
-		}
-		return config;
-	}
 
 	public void reinitClusters(ScriptLogger inLog) 
 	{
@@ -122,7 +82,7 @@ public class KMeansManager implements CatalogEnabled {
 		{
 			int toadd = getSettings().kcount - getClusters().size();
 			inLog.info("Adding "  + toadd + " random cluster nodes ");
-			double min_distance = getSettings().cutoffdistance * 2;
+			double min_distance = getSettings().maxdistancetomatch * 2;
 			Collection<MultiValued> existingCentroids = new ArrayList(getClusters());
 			
 			while(toadd > 0)
@@ -136,7 +96,7 @@ public class KMeansManager implements CatalogEnabled {
 				findCentroids(inLog, tracker,min_distance, toadd, existingCentroids);
 				min_distance = min_distance * 0.95; //If we add too too close then each node has tons of clusters
 				toadd = getSettings().kcount - existingCentroids.size();
-				if(min_distance < .60) //If this gets too low we will have a ton of clusters on the same face
+				if(min_distance < .70) //If this gets too low we will have a ton of clusters on the same face
 				{
 					inLog.info("Got too low! " + min_distance);
 					break;
@@ -189,8 +149,8 @@ public class KMeansManager implements CatalogEnabled {
 				continue;
 			}
 			
-			
 			tosave.add(hit);
+			
 			if( tosave.size() == 500)
 			{
 				totalsaved = totalsaved + tosave.size();
@@ -198,7 +158,7 @@ public class KMeansManager implements CatalogEnabled {
 				long end = System.currentTimeMillis();
 				double diff = (end - start)/1000D;
 				diff = MathUtils.roundDouble(diff, 2);
-				inLog.info("Added "  + tosave.size() + " assigned cluster nodes in " + diff + " seconds " + totalsaved + " of " + tracker.size());
+				inLog.info("Added "  + tosave.size() + " assigned cluster nodes in " + diff + " seconds " + totalsaved + " of " + tracker.size() + " into " + getClusters().size() + " clusters");
 				start = System.currentTimeMillis();
 				tosave.clear();
 			}
@@ -213,7 +173,7 @@ public class KMeansManager implements CatalogEnabled {
 
 	protected Collection<MultiValued> findCentroids(ScriptLogger inLog, HitTracker tracker, double mindistance, int toadd, Collection<MultiValued> existingCentroids)
 	{
-		int maxchecktimes = getSettings().kcount * 100;
+		int maxchecktimes = getSettings().kcount * 200;
 
 		inLog.info("Finding centroids Need: " + toadd + " have " + existingCentroids.size() + " checking within " + mindistance  + " search up to " + maxchecktimes);
 
@@ -245,7 +205,7 @@ public class KMeansManager implements CatalogEnabled {
 				Collection<String> single = new java.util.ArrayList(1);
 				single.add(hit.getId());
 				hit.setValue("nearbycentroidids",single);
-				inLog.info("Added Centroid with min distance, bigger is better" + founddistance );
+				inLog.info("Init added Centroid with min distance, bigger is better " + founddistance );
 				tosave.add(hit);
 				existingCentroids.add(hit);
 			}
@@ -303,7 +263,7 @@ public class KMeansManager implements CatalogEnabled {
 	}
 
 
-	public void setCentroids(final MultiValued inFace) 
+	public  void setCentroids(final MultiValued inFace) 
 	{
 		// This method is intended to find the nearest cluster for a given item.
 		// Implementation would typically involve calculating distances or similarities
@@ -330,27 +290,42 @@ public class KMeansManager implements CatalogEnabled {
 
 		Collection<String> centroids = new ArrayList();
 
-		CloseCluster first = (CloseCluster)closestclusters.iterator().next();
-		centroids.add( first.centroid.getId() );
-		
-		double uptodistance = getSettings().cutoffdistance * 2;
-
-		for (int i = 1; i < closestclusters.size(); i++) //Starts at 2
+		for (int i = 0; i < closestclusters.size(); i++) //Starts at 2
 		{
 			CloseCluster cluster = (CloseCluster) closestclusters.get(i);
-			if( cluster.distance > uptodistance)  //Stop looking once to far from first
+			
+			if( cluster.distance <= getSettings().maxdistancetocentroid ) //The More centroid the more hits
+			{
+				centroids.add( cluster.centroid.getId() ); //must be within within .75
+			}
+			else
 			{
 				break;
 			}
-			double distancetofirst = cosineDistance( first.centroid, cluster.centroid );
-			if( distancetofirst > uptodistance)  //Stop looking once 
-			{
-				break;
-			}
-			centroids.add( cluster.centroid.getId() );
 		}
 
-		inFace.setValue("nearbycentroidids",centroids);
+		//if I cant find any centroids within .6 then be my own so that we dont break the rule
+		if( centroids.isEmpty() )
+		{
+			getClusters().add(inFace);
+			inFace.setValue("iscentroid",true);
+			Collection<String> single = new java.util.ArrayList(1);
+			single.add(inFace.getId());
+			inFace.setValue("nearbycentroidids",single);
+			
+			//closestclusters.iterator().next();
+			
+			log.info("Bad: added another Centroid  " +  getClusters().size() );
+			getMediaArchive().saveData("faceembedding",inFace);
+		}
+		else
+		{
+			inFace.setValue("nearbycentroidids",centroids);
+			if( centroids.size() > 15)
+			{
+				log.info("Failed to limit centroids " + centroids.size() + " on " + inFace); 
+			}
+		}
 		
 	}
 
@@ -396,7 +371,7 @@ public class KMeansManager implements CatalogEnabled {
 		//Filter by distance
 		Collection<MultiValued> matches = new ArrayList();
 		int misses = 0;
-		double cutoff = getSettings().cutoffdistance;
+		double cutoff = getSettings().maxdistancetomatch;
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			MultiValued item = (MultiValued) iterator.next();
@@ -419,7 +394,7 @@ public class KMeansManager implements CatalogEnabled {
 		long end = System.currentTimeMillis();
 		double seconds = (end-start)/1000d;
 		
-		log.info("Did not divide, found: " + matches.size() + " Misses " + misses + " for " + inSearch.getId() + " in " + seconds + " seconds");
+		log.info("Did not divide, found: " + matches.size() + " Missed " + misses + " for " + inSearch.getId() + " in " + seconds + " seconds");
 		return matches;
 	}
 	
@@ -485,7 +460,7 @@ public class KMeansManager implements CatalogEnabled {
 		newcentroidItem.setValue("iscentroid",true);
 		allimportantcentroids.add(newcentroidItem);
 		
-		double cutoffdistance = getSettings().cutoffdistance;
+		double cutoffdistance = getSettings().maxdistancetomatch;
 		for (Iterator iterator = results.iterator(); iterator.hasNext();)
 		{
 			MultiValued test = (MultiValued) iterator.next();
@@ -498,7 +473,7 @@ public class KMeansManager implements CatalogEnabled {
 			if( test.getBoolean("iscentroid") ) 
 			{
 				double distance = cosineDistance(newcentroidItem, test);
-				if (distance <= cutoffdistance) 
+				if (distance <=  getSettings().maxdistancetocentroid) 
 				{
 					allimportantcentroids.add(test); //These are as good as connecting to myself. Brad pit as a kid
 					//Then test each remaining nodes to see if they are exact match to any cluster
@@ -577,5 +552,48 @@ public class KMeansManager implements CatalogEnabled {
 		}
 		return fieldClusters;	
 	}
-	
+
+	protected KMeansConfiguration getSettings()
+	{
+		KMeansConfiguration config = (KMeansConfiguration)getMediaArchive().getCacheManager().get("face","kmeansconfig");
+		if( config == null)
+		{
+			fieldClusters = null; //reload em
+			
+			config = new KMeansConfiguration();
+			String value = getMediaArchive().getCatalogSettingValue("facedetect_max_distance");
+			if( value != null)
+			{
+				config.maxdistancetomatch = Double.parseDouble(value);
+			}
+			else
+			{
+				config.maxdistancetomatch = 0.5;
+			}
+			/*
+			 *  Choosing the Number of Centroids (k)
+	k ≈ sqrt(n / 2) is a heuristic (where n = total number of face vectors)
+
+	Examples:
+
+	10,000 faces → ~70–100 centroids
+
+	1,000,000 faces → ~700–1000 centroids
+	*/
+			int totalfaces = getMediaArchive().query("faceembedding").all().hitsPerPage(1).search().size(); 
+			double k = Math.sqrt( totalfaces / 2d);
+			int min = (int)Math.round(k*.9); //Lowered by 10% will be added on demand or make it worse
+			config.kcount = min;
+			config.totalrecords = totalfaces;
+			
+			//Create new nodes when we get over 300 results or more as more likely to have a ton of faces
+			config.maxresultspersearch = Math.max(min,300); 
+			
+			getMediaArchive().getCacheManager().put("face","kmeansconfig",config);
+			
+			config.maxdistancetocentroid = .90; //Stay close by 87 added >150 centroids  .875 made 130/152  bigger the number the less are made by individuals
+		}
+		return config;
+	}
+
 }

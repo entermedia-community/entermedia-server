@@ -4,6 +4,7 @@ public class KMeansConfiguration
 {
 	protected int kcount;
 	protected int totalrecords;
-	protected double cutoffdistance;
+	protected double maxdistancetomatch;
+	protected double maxdistancetocentroid;
 	protected int maxresultspersearch;
 }

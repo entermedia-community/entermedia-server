@@ -456,6 +456,11 @@ public class FaceProfileManager implements CatalogEnabled
 
 	public void reinitClusters(ScriptLogger logger)
 	{
+		if( true )
+		{
+		//	return;
+		}
+		
 		logger.info(new Date() +  " reinitNodes Start reinit ");
 		
 		getMediaArchive().getCacheManager().clear("face");
