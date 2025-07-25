@@ -201,7 +201,7 @@ findClosest = function (link, inid) {
           ...options,
         },
         success: function (data) {
-          $(window).trigger("successToast", toastUid);
+          $(window).trigger("successToast", [toastUid]);
           /*
 						var cell;
 						if (useparent && useparent == "true") {
@@ -260,7 +260,7 @@ findClosest = function (link, inid) {
           }
         },
         error: function () {
-          $(window).trigger("errorToast", toastUid);
+          $(window).trigger("errorToast", [toastUid]);
         },
         type: "POST",
         dataType: "text",

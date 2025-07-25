@@ -178,7 +178,7 @@ $.ajaxSetup({
       var listener = this;
 	  
 	  var check = element;
-	  if( listener.selector.contains(" ") )
+	  if( listener.selector.indexOf(" ") > -1 )
 	  {
 		check = document;
 	  }
@@ -197,7 +197,7 @@ $.ajaxSetup({
     $.each(eventregistry, function () {
       var listener = this;
 	  var check = element;
-	  if( listener.selector.contains(" ") )
+	  if( listener.selector.indexOf(" ") > -1 )
 	{
 	  	check = document;
 	  }
