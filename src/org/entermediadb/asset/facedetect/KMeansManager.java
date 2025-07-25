@@ -341,7 +341,7 @@ public class KMeansManager implements CatalogEnabled {
 		{
 			throw new OpenEditException("Not enought clusters. Run reindexfaces event");
 		}
-		inSearch.setValue("iscentroid",false);
+		//inSearch.setValue("iscentroid",false);
 		
 		Collection nearbycentroidids = inSearch.getValues("nearbycentroidids");
 		if( nearbycentroidids == null || nearbycentroidids.isEmpty() )
