@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.CatalogEnabled;
@@ -17,6 +16,7 @@ import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.locks.Lock;
 import org.openedit.util.MathUtils;
 
 public class KMeansManager implements CatalogEnabled {
@@ -94,9 +94,9 @@ public class KMeansManager implements CatalogEnabled {
 					throw new OpenEditException("Do a deep reindex on faceembeddings");
 				}
 				findCentroids(inLog, tracker,min_distance, toadd, existingCentroids);
-				min_distance = min_distance * 0.95; //If we add too too close then each node has tons of clusters
+				min_distance = min_distance * 0.97; //If we add too too close then each node has tons of clusters
 				toadd = getSettings().kcount - existingCentroids.size();
-				if(min_distance < .70) //If this gets too low we will have a ton of clusters on the same face
+				if(min_distance < .90) //If this gets too low we will have a ton of clusters on the same face
 				{
 					inLog.info("Got too low! " + min_distance);
 					break;
@@ -166,7 +166,7 @@ public class KMeansManager implements CatalogEnabled {
 
 	protected Collection<MultiValued> findCentroids(ScriptLogger inLog, HitTracker tracker, double mindistance, int toadd, Collection<MultiValued> existingCentroids)
 	{
-		int maxchecktimes = getSettings().kcount * 200;
+		int maxchecktimes = 3000;
 
 		inLog.info("Finding centroids Need: " + toadd + " have " + existingCentroids.size() + " checking within " + mindistance  + " search up to " + maxchecktimes);
 
@@ -336,6 +336,8 @@ public class KMeansManager implements CatalogEnabled {
 		}
 		//inSearch.setValue("iscentroid",false);
 		
+		Lock lock = getMediaArchive().lock(inSearch.getId(), "KMeansSearch");
+		
 		Collection nearbycentroidids = inSearch.getValues("nearbycentroidids");
 		if( nearbycentroidids == null || nearbycentroidids.isEmpty() )
 		{
@@ -365,7 +367,9 @@ public class KMeansManager implements CatalogEnabled {
 		
 		Collection<MultiValued> allimportantcentroids =	findImportantCentroids(inSearch);
 		Collection<MultiValued> matches = findResultsWithinCentroids(inSearch, allimportantcentroids, tracker);
-
+		
+		getMediaArchive().releaseLock(lock);
+		
 		long end = System.currentTimeMillis();
 		double seconds = (end-start)/1000d;
 		log.info("Search found  " + tracker + " -> " + matches.size() + "  in " + seconds + " seconds");
@@ -601,18 +605,41 @@ public class KMeansManager implements CatalogEnabled {
 	*/
 			int totalfaces = getMediaArchive().query("faceembedding").all().hitsPerPage(1).search().size(); 
 			double k = Math.sqrt( totalfaces / 2d);
-			int min = (int)Math.round(k*.9); //Lowered by 10% will be added on demand or make it worse
+			int min = (int)Math.round(k*.8); //Lowered by 10% will be added on demand or make it worse
+			
+			String skcount = getMediaArchive().getCatalogSettingValue("facedetect_kcount");
+			if( skcount != null)
+			{
+				min = Integer.parseInt( skcount); 
+			}
+			
 			config.kcount = min;
 			config.totalrecords = totalfaces;
 			
 			//Create new nodes when we get over 300 results or more as more likely to have a ton of faces
-			config.maxresultspersearch = Math.max(min,300); 
+			
+			min =  Math.max(min,300); 
+			String smaxresultspersearch = getMediaArchive().getCatalogSettingValue("facedetect_maxresultspersearch");
+			if( smaxresultspersearch != null)
+			{
+				min = Integer.parseInt( smaxresultspersearch); 
+			}
+			
+			config.maxresultspersearch = min; 
 			
 			getMediaArchive().getCacheManager().put("face","kmeansconfig",config);
 			
 			double godownby = .1 * totalfaces / 20000.0; //Go down by .1 per 20k... .90 worked well for   
 			godownby = Math.min(godownby,.3); //UP to 6
-			config.maxdistancetocentroid = 1.0 - godownby; //Stay close by 87 added >150 centroids  .875 made 130/152  bigger the number the less are made by individuals
+			godownby = 1.0 - godownby; //Stay close by 87 added >150 centroids  .875 made 130/152  bigger the number the less are made by individuals
+			
+			String smaxdistancetocentroid = getMediaArchive().getCatalogSettingValue("facedetect_maxdistancetocentroid");
+			if( smaxdistancetocentroid != null)
+			{
+				godownby = Double.parseDouble(smaxdistancetocentroid); 
+			}
+			config.maxdistancetocentroid = godownby;
+
 			
 			log.info("Reloading settings kcount="+ config.kcount  + " maxresultspersearch=" + config.maxresultspersearch + " maxdistancetocentroid=" + config.maxdistancetocentroid );
 		}
