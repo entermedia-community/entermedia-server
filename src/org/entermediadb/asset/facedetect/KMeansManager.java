@@ -83,7 +83,7 @@ public class KMeansManager implements CatalogEnabled {
 
 			double loop_lower_percentage = 0.97;
 			double loop_lower_limit = .90;
-			double min_distance = getSettings().maxdistancetomatch * 2.0;
+			double min_distance = 1.0; //Start at 1. Its rare and nice starting point
 			
 			int toadd = getSettings().kcount - getClusters().size();
 			Collection<MultiValued> existingCentroids = new ArrayList(getClusters());
