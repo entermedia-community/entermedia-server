@@ -604,8 +604,8 @@ public class KMeansManager implements CatalogEnabled {
 	1,000,000 faces → ~700–1000 centroids
 	*/
 			int totalfaces = getMediaArchive().query("faceembedding").all().hitsPerPage(1).search().size(); 
-			double k = Math.sqrt( totalfaces / 2d);
-			int min = (int)Math.round(k*.8); //Lowered by 10% will be added on demand or make it worse
+			double k = Math.sqrt( totalfaces / 2d); //Higher slows down indexing, more can be added back later as they click
+			int min = (int)Math.round(k*.8); //Lowered by 20% will be added on demand or make it worse
 			
 			String skcount = getMediaArchive().getCatalogSettingValue("facedetect_kcount");
 			if( skcount != null)
@@ -629,7 +629,7 @@ public class KMeansManager implements CatalogEnabled {
 			
 			getMediaArchive().getCacheManager().put("face","kmeansconfig",config);
 			
-			double godownby = .1 * totalfaces / 20000.0; //Go down by .1 per 20k... .90 worked well for   
+			double godownby = .1 * totalfaces / 20000.0; //Go down by .1 per 20k... .90 worked well for  20k
 			godownby = Math.min(godownby,.3); //UP to 6
 			godownby = 1.0 - godownby; //Stay close by 87 added >150 centroids  .875 made 130/152  bigger the number the less are made by individuals
 			
