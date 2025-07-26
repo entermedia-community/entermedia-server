@@ -77,13 +77,17 @@ public class KMeansManager implements CatalogEnabled {
 	{
 		//Reload from db
 		fieldClusters = null;
-		
+
 		if( getClusters().size() < getSettings().kcount )
 		{
+
+			double loop_lower_percentage = 0.97;
+			double loop_lower_limit = .90;
+			double min_distance = getSettings().maxdistancetomatch * 2.0;
+			
 			int toadd = getSettings().kcount - getClusters().size();
-			inLog.info("Adding "  + toadd + " random cluster nodes ");
-			double min_distance = getSettings().maxdistancetomatch * 2;
 			Collection<MultiValued> existingCentroids = new ArrayList(getClusters());
+			inLog.info("Adding "  + toadd + " random cluster nodes to " + existingCentroids.size() + " with min_distance of " + min_distance );
 			
 			while(toadd > 0)
 			{
@@ -93,13 +97,22 @@ public class KMeansManager implements CatalogEnabled {
 				{
 					throw new OpenEditException("Do a deep reindex on faceembeddings");
 				}
-				findCentroids(inLog, tracker,min_distance, toadd, existingCentroids);
-				min_distance = min_distance * 0.97; //If we add too too close then each node has tons of clusters
-				toadd = getSettings().kcount - existingCentroids.size();
-				if(min_distance < .90) //If this gets too low we will have a ton of clusters on the same face
+				Collection addedlist = createCentroids(inLog, tracker, min_distance, toadd, existingCentroids);
+				toadd = toadd - addedlist.size();
+				if( toadd > 0 )
 				{
-					inLog.info("Got too low! " + min_distance);
-					break;
+					int maxpagestocheck = Math.max(tracker.getTotalPages(),5); //Up to 5 pages * 1000
+					if( tracker.getPage() > maxpagestocheck+tracker.getTotalPages() )
+					{
+						tracker.setPage(1); //Start over
+					}
+					min_distance = min_distance * loop_lower_percentage; //Drop by 3% each time If we add too too close then each node has tons of clusters
+					toadd = getSettings().kcount - existingCentroids.size();
+					if(min_distance < loop_lower_limit) //If this gets too low we will have a ton of clusters on the same face
+					{
+						inLog.info("Distance Got too low! " + min_distance + " Stopping at " + existingCentroids.size() );
+						break;
+					}
 				}
 			}
 			
@@ -164,53 +177,54 @@ public class KMeansManager implements CatalogEnabled {
 		inLog.info("Complete: "  + totalsaved + " assigned cluster nodes in " + diff + " seconds into " + getClusters().size() + " clusters");
 	}
 
-	protected Collection<MultiValued> findCentroids(ScriptLogger inLog, HitTracker tracker, double mindistance, int toadd, Collection<MultiValued> existingCentroids)
+	protected Collection<MultiValued> createCentroids(ScriptLogger inLog, HitTracker tracker, double mindistance, int toadd, Collection<MultiValued> existingCentroids)
 	{
-		int maxchecktimes = 3000;
+		int maxpagestocheck = Math.max(tracker.getTotalPages(),5); //Up to 5 pages * 1000
 
-		inLog.info("Finding centroids Need: " + toadd + " have " + existingCentroids.size() + " checking within " + mindistance  + " search up to " + maxchecktimes);
+		inLog.info("Finding " + toadd  + " centroids. currently have " + existingCentroids.size() + " checking within " + mindistance + " starting in page: " + tracker.getPage() );
 
 		Collection tosave = new ArrayList();
 		
 		//Make sure none are close to one another. And not the same face at all
+		int currentpage = tracker.getPage();
 		
-
-		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		while( maxpagestocheck > 0)
 		{
-			MultiValued hit = (MultiValued)iterator.next();
-			if( existingCentroids.contains(hit) || hit.getBoolean("iscentroid") )
+			tracker.setPage(currentpage);
+			maxpagestocheck--;
+			currentpage++;
+			for (Iterator iterator = tracker.getPageOfHits().iterator(); iterator.hasNext();)
 			{
-				continue;
-			}
-			
-			double founddistance  = -1;
-			if( existingCentroids.isEmpty() )
-			{
-				founddistance = Double.MAX_VALUE; //Always take the first one
-			}
-			else
-			{
-				founddistance = checkDistances(hit,mindistance, existingCentroids);
-			}
-			if( founddistance != -1 && founddistance > mindistance )
-			{
-				hit.setValue("iscentroid",true);
-				Collection<String> single = new java.util.ArrayList(1);
-				single.add(hit.getId());
-				hit.setValue("nearbycentroidids",single);
-				inLog.info("Init added Centroid with min distance, bigger is better " + founddistance );
-				tosave.add(hit);
-				existingCentroids.add(hit);
-			}
-			if( toadd == tosave.size() )
-			{
-				break;
-			}
-			if( maxchecktimes-- == 0)
-			{
-				//Gave up looking for 
-				inLog.info("Gave up looking for far away nodes at " + mindistance);
-				break;
+				MultiValued hit = (MultiValued)iterator.next();
+				if( existingCentroids.contains(hit) || hit.getBoolean("iscentroid") )
+				{
+					continue;
+				}
+				
+				double founddistance  = -1;
+				if( existingCentroids.isEmpty() )
+				{
+					founddistance = Double.MAX_VALUE; //Always take the first one
+				}
+				else
+				{
+					founddistance = checkDistances(hit,mindistance, existingCentroids);
+				}
+				if( founddistance != -1 && founddistance > mindistance )
+				{
+					hit.setValue("iscentroid",true);
+					Collection<String> single = new java.util.ArrayList(1);
+					single.add(hit.getId());
+					hit.setValue("nearbycentroidids",single);
+					inLog.info("Init added Centroid with min distance, bigger is better " + founddistance );
+					tosave.add(hit);
+					existingCentroids.add(hit);
+				}
+				if( toadd == tosave.size() )
+				{
+					maxpagestocheck = 0; //stop
+					break;
+				}
 			}
 		}
 		inLog.info("Added " + tosave.size() + " Centroid within min distance:" + mindistance);
