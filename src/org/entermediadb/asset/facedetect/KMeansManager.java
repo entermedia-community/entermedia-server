@@ -123,17 +123,10 @@ public class KMeansManager implements CatalogEnabled {
 		{
 			MultiValued hit = (MultiValued) iterator.next();
 			
-			//Error checking
 			List<Double> vectorA = (List<Double>)hit.getValue("facedatadoubles");
 			if( vectorA == null)
 			{
-				//AZgZeJD6n_w3KYxNFTlK
-				Asset asset = getMediaArchive().getAsset(hit.get("assetid"));
-				if( asset != null)
-				{
-					asset.setValue("facescanerror",true);
-					getMediaArchive().saveAsset(asset);
-				}
+				//User added node
 				continue;
 			}
 			try
@@ -158,7 +151,7 @@ public class KMeansManager implements CatalogEnabled {
 				long end = System.currentTimeMillis();
 				double diff = (end - start)/1000D;
 				diff = MathUtils.roundDouble(diff, 2);
-				inLog.info("Added "  + tosave.size() + " assigned cluster nodes in " + diff + " seconds " + totalsaved + " of " + tracker.size() + " into " + getClusters().size() + " clusters");
+				inLog.info("Added "  + tosave.size() + " assigned nodes in " + diff + " seconds " + totalsaved + " of " + tracker.size() + " into " + getClusters().size() + " clusters");
 				start = System.currentTimeMillis();
 				tosave.clear();
 			}

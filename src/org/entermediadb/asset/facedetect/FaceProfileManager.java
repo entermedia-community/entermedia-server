@@ -1082,23 +1082,42 @@ public class FaceProfileManager implements CatalogEnabled
 	{
 		Collection<FaceBox> boxes = new ArrayList();
 
+		String entitypersonid  = startdata.get("entityperson");
+
 		Data entityperson = null;
 		//Search all children
+		List<Double> vectorA = (List<Double>)startdata.getValue("facedatadoubles");
+		if( vectorA == null )  //Use selected face
+		{
+			MultiValued newdata = null;
+			if(  entitypersonid != null)
+			{
+				newdata = (MultiValued)getMediaArchive().getSearcher("faceembedding").query().exact("isremoved",false).exists("facedatadoubles").exact("entityperson", entitypersonid).searchOne();
+			} 
+			if(	newdata == null )
+			{
+				log.info("No faceembedding found for " + startdata.getId());
+				FaceBox box = makeBox(startdata, entityperson);
+				boxes.add(box);
+				return boxes;
+			}
+			startdata = newdata; //We have a faceembedding with a vector
+		}
 		Collection allthepeopleinasset = getKMeansManager().searchNearestItems(startdata);
 		
 		Collection<String> dedupids = new HashSet();
 		
 		//Look for a personid anyplace
-		String entitypersonid  = startdata.get("entityperson");
 		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
 		{
 			MultiValued hit = (MultiValued) iterator.next();
-			entitypersonid  = hit.get("entityperson");
-			if( entitypersonid != null)
+			String foundentitypersonid  = hit.get("entityperson");
+			if( foundentitypersonid != null)
 			{
-				entityperson = getMediaArchive().getCachedData("entityperson", entitypersonid);
+				entityperson = getMediaArchive().getCachedData("entityperson", foundentitypersonid);
 				if( entityperson != null)
 				{
+					entitypersonid = foundentitypersonid; //We have a person
 					break;
 				}
 			}
