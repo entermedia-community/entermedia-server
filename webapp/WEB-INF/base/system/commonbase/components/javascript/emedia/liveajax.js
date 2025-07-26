@@ -178,7 +178,8 @@ $.ajaxSetup({
       var listener = this;
 	  
 	  var check = element;
-	  if( listener.selector.contains(" ") )
+	  
+	  if( String(listener.selector).indexOf(" ") > -1 )
 	  {
 		check = document;
 	  }
@@ -197,7 +198,7 @@ $.ajaxSetup({
     $.each(eventregistry, function () {
       var listener = this;
 	  var check = element;
-	  if( listener.selector.contains(" ") )
+	  if( String(listener.selector).indexOf(" ") > -1 )
 	{
 	  	check = document;
 	  }
@@ -211,9 +212,11 @@ $.ajaxSetup({
     });
   }); //document.on
 
-  lQuery = function (
-    selector //https://api.jquery.com/selector/
-  ) {
+  lQuery = function (selector ) {
+	if (selector ==  undefined || selector == null) {
+		console.log("lQuery called with undefined selector");
+		return;
+	}
     var runner = {};
     runner.livequery = function () {
       var nodes = jQuery(selector);

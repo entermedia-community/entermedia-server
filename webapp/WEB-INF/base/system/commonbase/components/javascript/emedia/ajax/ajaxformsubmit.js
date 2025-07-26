@@ -121,8 +121,10 @@
     if (submitButton.length == 0) {
       submitButton = form.find('input[type="submit"]');
     }
-    submitButton.attr("disabled", "disabled");
-    submitButton.append("<i class='fa fa-spinner fa-spin ml-2'></i>");
+	if (submitButton.length > 0) {
+    	submitButton.attr("disabled", "disabled");
+    	submitButton.append("<i class='fa fa-spinner fa-spin ml-2'></i>");
+	}
 
     $(window).trigger("showToast", [form]);
     var toastUid = $(form).data("uid");
@@ -136,7 +138,7 @@
       },
       crossDomain: true,
       success: function (result) {
-	        $(window).trigger("successToast", toastUid);
+	        $(window).trigger("successToast", [toastUid]);
 	        $(window).trigger("checkautoreload", [form]);
 	        if (showwaitingtarget !== undefined) {
 	          showwaitingtarget.hide();
@@ -210,16 +212,18 @@
 	        }
       },
       error: function (data) {
-	        $(window).trigger("errorToast", toastUid);
+	        $(window).trigger("errorToast", [toastUid]);
 	        if (targetdiv) {
 	          $("#" + $.escapeSelector(targetdiv)).html(data);
 	        }
 	        form.append(data);
       },
       complete: function () {
+		if (submitButton.length > 0) {
 	        submitButton.removeAttr("disabled");
 	        submitButton.find(".fa-spinner").remove();
-	        form.data("submitting", false);
+		}
+	    form.data("submitting", false);
       },
     });
 

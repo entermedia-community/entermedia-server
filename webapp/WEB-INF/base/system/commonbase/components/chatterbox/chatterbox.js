@@ -593,6 +593,6 @@ jQuery(document).ready(function () {
     hideAttachFile();
   });
 
-  lQuery(window).livequery("click", hideChatPickers);
+  lQuery("window").livequery("click", hideChatPickers);
   lQuery(".modal").livequery("click", hideChatPickers);
 });
