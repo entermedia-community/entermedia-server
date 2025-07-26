@@ -591,7 +591,7 @@ public class KMeansManager implements CatalogEnabled {
 			}
 			else
 			{
-				config.maxdistancetomatch = 0.5;
+				config.maxdistancetomatch = 0.52;
 			}
 			/*
 			 *  Choosing the Number of Centroids (k)
