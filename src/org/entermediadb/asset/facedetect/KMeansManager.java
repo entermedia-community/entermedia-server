@@ -89,10 +89,12 @@ public class KMeansManager implements CatalogEnabled {
 			Collection<MultiValued> existingCentroids = new ArrayList(getClusters());
 			inLog.info("Adding "  + toadd + " random cluster nodes to " + existingCentroids.size() + " with min_distance of " + min_distance );
 			
+
 			while(toadd > 0)
 			{
 				HitTracker tracker = getMediaArchive().query("faceembedding").exact("iscentroid",false).sort("face_confidence").search(); //random enough?
 				tracker.enableBulkOperations();
+				int maxpagestocheck = Math.max(tracker.getTotalPages(),5); //Up to 5 pages * 1000
 				if( tracker.isEmpty() )
 				{
 					throw new OpenEditException("Do a deep reindex on faceembeddings");
@@ -101,9 +103,9 @@ public class KMeansManager implements CatalogEnabled {
 				toadd = toadd - addedlist.size();
 				if( toadd > 0 )
 				{
-					int maxpagestocheck = Math.max(tracker.getTotalPages(),5); //Up to 5 pages * 1000
-					if( tracker.getPage() > maxpagestocheck+tracker.getTotalPages() )
+					if( tracker.getPage() > maxpagestocheck)
 					{
+						inLog.info("Start from page 1 / " + maxpagestocheck);
 						tracker.setPage(1); //Start over
 					}
 					min_distance = min_distance * loop_lower_percentage; //Drop by 3% each time If we add too too close then each node has tons of clusters
