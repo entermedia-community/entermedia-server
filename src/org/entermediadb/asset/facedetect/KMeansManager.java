@@ -110,7 +110,7 @@ public class KMeansManager implements CatalogEnabled {
 					toadd = getSettings().kcount - existingCentroids.size();
 					if(min_distance < loop_lower_limit) //If this gets too low we will have a ton of clusters on the same face
 					{
-						inLog.info("Distance Got too low! " + min_distance + " Stopping at " + existingCentroids.size() );
+						inLog.info("Distance Got too low! " + min_distance + " Clusters: " + existingCentroids.size() );
 						break;
 					}
 				}
@@ -174,7 +174,7 @@ public class KMeansManager implements CatalogEnabled {
 		long end = System.currentTimeMillis();
 		double diff = (end - start)/1000D;
 		diff = MathUtils.roundDouble(diff, 2);
-		inLog.info("Complete: "  + totalsaved + " assigned cluster nodes in " + diff + " seconds into " + getClusters().size() + " clusters");
+		inLog.info("Complete: "  + totalsaved + " assigned to " + getClusters().size() + " clusters");
 	}
 
 	protected Collection<MultiValued> createCentroids(ScriptLogger inLog, HitTracker tracker, double mindistance, int toadd, Collection<MultiValued> existingCentroids)
@@ -200,6 +200,11 @@ public class KMeansManager implements CatalogEnabled {
 				{
 					continue;
 				}
+				List<Double> vectorA = (List<Double>)hit.getValue("facedatadoubles");
+				if( vectorA == null)
+				{
+					continue;
+				}
 				
 				double founddistance  = -1;
 				if( existingCentroids.isEmpty() )
@@ -216,7 +221,7 @@ public class KMeansManager implements CatalogEnabled {
 					Collection<String> single = new java.util.ArrayList(1);
 					single.add(hit.getId());
 					hit.setValue("nearbycentroidids",single);
-					inLog.info("Init added Centroid with min distance, bigger is better " + founddistance );
+					inLog.info("Init found Centroid with min distance, bigger is better " + founddistance );
 					tosave.add(hit);
 					existingCentroids.add(hit);
 				}
