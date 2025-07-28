@@ -422,6 +422,7 @@ public class OriginalsAssetSource extends BaseAssetSource
 			int removed = 0;
 			int existed = 0;	
 			int modified = 0;
+			int masterclusterskiped = 0;
 			List tosave = new ArrayList();
 			String localClusterId = archive.getNodeManager().getLocalClusterId();
 			for(Object obj: assets)
@@ -436,6 +437,7 @@ public class OriginalsAssetSource extends BaseAssetSource
 				if (!localClusterId.equals(clusterid))
 				{
 					//Skip it, We do not own this asset
+					masterclusterskiped++;
 					continue;
 				}
 				
@@ -468,7 +470,7 @@ public class OriginalsAssetSource extends BaseAssetSource
 					tosave.add(asset);
 					if( tosave.size() == 100 )
 					{
-						log.info("found modified: " + modified + " found deleted: " + removed + " found unmodified:" + existed );
+						log.info("Hotfolder: " + name + ", modified: " + modified + " deleted: " + removed + " modified:" + existed );
 						archive.saveAssets(tosave);
 						tosave.clear();
 					}
@@ -476,7 +478,7 @@ public class OriginalsAssetSource extends BaseAssetSource
 			}
 			archive.saveAssets(tosave);
 			tosave.clear();
-			log.info("found modified: " + modified + " found deleted: " + removed + " found unmodified:" + existed );
+			log.info("Hotfolder: " + name + ", modified: " + modified + " deleted: " + removed + " modified:" + existed );
 			if( modified > 0 )
 			{
 				archive.fireSharedMediaEvent("conversions/runconversions");
@@ -487,6 +489,11 @@ public class OriginalsAssetSource extends BaseAssetSource
 			if (remove > 0) 
 			{
 				log.info("Hot folder: " + name + ", removed categories " + remove);
+			}
+			
+			if (masterclusterskiped > 0)
+			{
+				log.info("Hotfolder: " + name + ", skipped " + masterclusterskiped + " assets that were not owned by this cluster.");
 			}
 			
 		}

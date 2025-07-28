@@ -2131,6 +2131,9 @@ public class AssetEditModule extends BaseMediaModule
 			if(id == null) {
 				id = inReq.getRequestParameter("id.value");
 			}
+			if(id == null) {
+				id = inReq.getRequestParameter("entityid");
+			}
 			if (moduleid != null && id != null)
 			{
 				target = archive.getData(moduleid, id);
