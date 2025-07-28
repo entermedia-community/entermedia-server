@@ -183,14 +183,16 @@ $.ajaxSetup({
 	  {
 		check = document;
 	  }
-	
+	  
       $(listener.selector, check).each(function () {
-        var node = $(this);
-        if (node.data("livequery") == null) {
+		var node = $(this);
+
+        if (node.data("livequery"+listener.selector) == null) {
           //console.log("Registering " + listener.selector );
           node.on(listener.event, listener.function);
         } else {
-          //console.log("already Registered " + listener.selector );
+        	  //console.log("already Registered:	 ");
+			  //console.log(node);
         }
       });
     });
@@ -199,14 +201,14 @@ $.ajaxSetup({
       var listener = this;
 	  var check = element;
 	  if( String(listener.selector).indexOf(" ") > -1 )
-	{
+		{
 	  	check = document;
 	  }
 
       $(listener.selector, check).each(function () {
         var node = $(this);
-        if (node.data("livequery") == null) {
-          node.data("livequery", true);
+        if (node.data("livequery"+listener.selector) == null) {
+          node.data("livequery"+listener.selector, true);
         }
       });
     });
@@ -268,7 +270,7 @@ $.ajaxSetup({
           function () //We need to make sure each row is initially handled
           {
             var node = $(this);
-            node.data("livequery", true);
+            node.data("livequery"+selector, true);
             node.on(eventlistener.event, eventlistener.function);
             //$(document).on(eventlistener.event,eventlistener.selector,eventlistener.function);
           }
