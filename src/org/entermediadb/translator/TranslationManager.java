@@ -85,7 +85,7 @@ public class TranslationManager implements CatalogEnabled {
 			if(valueMap != null)
 			{				
 				String value = valueMap.getText(sourceLang);
-				if(value != null) 
+				if(value != null && !value.equals(""))
 				{				
 					fieldNames.add(key);
 					fieldValues.add(value);
@@ -97,6 +97,10 @@ public class TranslationManager implements CatalogEnabled {
 		}
 		
 		try {
+			if(fieldValues.isEmpty())
+			{
+				return null;
+			}
 			JSONObject translations = translateFields(fieldValues, sourceLang, targetLangs);
 			if(translations == null)
 			{
