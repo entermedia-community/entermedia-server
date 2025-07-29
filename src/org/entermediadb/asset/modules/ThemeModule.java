@@ -19,6 +19,7 @@ import org.openedit.page.Page;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.page.PageSettings;
 import org.openedit.repository.filesystem.StringItem;
+import org.openedit.util.CSSUtils;
 import org.openedit.util.RequestUtils;
 import org.openedit.util.URLUtilities;
 
@@ -74,7 +75,6 @@ public class ThemeModule extends BaseMediaModule {
 	
 			Page page = getPageManager().getPage(inputfile);
 			
-			URLUtilities urlUtil = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
 	
 			WebPageRequest req = getRequestUtils().createPageRequest(
 					page,
@@ -89,6 +89,10 @@ public class ThemeModule extends BaseMediaModule {
 			req.putPageValue("theme", theme);
 			req.putPageValue("mediaarchive", archive);
 			//req.putPageValue("numberutils", new NumberUtils());
+			CSSUtils cssutils = (CSSUtils) archive.getBean("cssutils");
+			req.putPageValue("cssutils", cssutils);
+			
+			URLUtilities urlUtil = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
 			
 			req.putProtectedPageValue(PageRequestKeys.HOME,
 					urlUtil.relativeHomePrefix());
