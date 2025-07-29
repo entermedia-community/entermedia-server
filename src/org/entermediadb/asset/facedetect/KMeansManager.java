@@ -94,7 +94,7 @@ public class KMeansManager implements CatalogEnabled {
 			{
 				HitTracker tracker = getMediaArchive().query("faceembedding").exact("iscentroid",false).sort("face_confidence").search(); //random enough?
 				tracker.enableBulkOperations();
-				int maxpagestocheck = Math.max(tracker.getTotalPages(),5); //Up to 5 pages * 1000
+				int maxpagestocheck = Math.max(tracker.getTotalPages(),15); //Up to 15 pages * 1000
 				if( tracker.isEmpty() )
 				{
 					throw new OpenEditException("Do a deep reindex on faceembeddings");
@@ -181,7 +181,7 @@ public class KMeansManager implements CatalogEnabled {
 
 	protected Collection<MultiValued> createCentroids(ScriptLogger inLog, HitTracker tracker, double mindistance, int toadd, Collection<MultiValued> existingCentroids)
 	{
-		int maxpagestocheck = Math.max(tracker.getTotalPages(),5); //Up to 5 pages * 1000
+		int maxpagestocheck = Math.max(tracker.getTotalPages(),15); //Up to 5 pages * 1000
 
 		inLog.info("Finding " + toadd  + " centroids. currently have " + existingCentroids.size() + " checking within " + mindistance + " starting in page: " + tracker.getPage() );
 
@@ -626,7 +626,7 @@ public class KMeansManager implements CatalogEnabled {
 	*/
 			int totalfaces = getMediaArchive().query("faceembedding").all().hitsPerPage(1).search().size(); 
 			double k = Math.sqrt( totalfaces / 2d); //Higher slows down indexing, more can be added back later as they click
-			int min = (int)Math.round(k*.8); //Lowered by 20% will be added on demand or make it worse
+			int min = (int)Math.round(k*.9); //Lowered by 10% will be added on demand or make it worse
 			
 			String skcount = getMediaArchive().getCatalogSettingValue("facedetect_kcount");
 			if( skcount != null)

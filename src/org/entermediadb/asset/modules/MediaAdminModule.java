@@ -1055,7 +1055,6 @@ public class MediaAdminModule extends BaseMediaModule
 
 			Map<String,Data> parents = new HashMap<String,Data>();
 			
-			boolean replacemenu = false;
 			for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();) {
 				ValuesMap map = new ValuesMap((Map) iterator.next());
 				if("folderLabel".equals(map.get("cssClass")))
@@ -1115,11 +1114,7 @@ public class MediaAdminModule extends BaseMediaModule
 						int i = Integer.parseInt(ordering);
 						existingmenu.setValue("ordering",i);
 						tosavemenu.add(existingmenu);
-
-						if( i > -1)
-						{
-							replacemenu = true;
-						}
+					
 					}
 				}
 			}
@@ -1136,12 +1131,9 @@ public class MediaAdminModule extends BaseMediaModule
 			checkParents(archive,parents);
 			archive.saveData("module", tosave);  //Save children and parents
 			
-			if(replacemenu)
-			{
-				archive.getSearcher("appsection").deleteAll(inReq.getUser());
-				archive.getSearcher("appsection").saveAllData(tosavemenu,inReq.getUser());
-				archive.clearAll();
-			}
+			archive.getSearcher("appsection").deleteAll(inReq.getUser()); //
+			archive.getSearcher("appsection").saveAllData(tosavemenu,inReq.getUser());
+			archive.clearAll();
 		}
 
 	}
