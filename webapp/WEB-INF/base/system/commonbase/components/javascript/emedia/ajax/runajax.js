@@ -380,11 +380,14 @@ $(document).ready(function () {
         delete statusCallCount[uid];
         continue;
       }
-
-      if (!isInViewport(cell[0])) {
-        delete statusCallCount[uid];
-        continue;
-      }
+	  var alwaysrun = cell.data("runwhenhidden");
+	  if(alwaysrun == undefined)
+	  {
+	      if (!isInViewport(cell[0])) {
+	        delete statusCallCount[uid];
+	        continue;
+	      }
+	  }
 
       // Warn if ajax status is called more than 10 times
       var WARN_CAP = 20;
