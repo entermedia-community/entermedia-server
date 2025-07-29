@@ -69,18 +69,33 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 	{
 		fieldCatalogId = inCatalogId;
 	}
+	
+	public String getApikey()
+	{
+		if (apikey == null)
+		{
+			apikey = getMediaArchive().getCatalogSettingValue("ollama-key");
+			setApikey(apikey);
+		}
+		if (apikey == null)
+		{
+			log.error("No ollama-key defined in catalog settings");
+			//throw new OpenEditException("No gpt-key defined in catalog settings");
+		}
+		
+		return apikey;
+	}
 
 	public BaseLLMResponse runPageAsInput(WebPageRequest inReq, String inModel, String inTemplate)
 	{
-		String apikey = getMediaArchive().getCatalogSettingValue("ollama-key");
-		assert apikey != null;
+
 		String input = loadInputFromTemplate(inReq, inTemplate);
 		log.info(input);
 		String endpoint = getApiEndpoint() + "/api/chat";
 		
 
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + apikey);
+		method.addHeader("authorization", "Bearer " + getApikey());
 		method.setHeader("Content-Type", "application/json");
 
 		method.setEntity(new StringEntity(input, "UTF-8"));
@@ -137,7 +152,6 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 
 	public LLMResponse callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception {
 	    MediaArchive archive = getMediaArchive();
-	    String apikey = archive.getCatalogSettingValue("ollama-key");
 
 	    log.info("Llama function: " + inFunction + " Query: " + inQuery);
 
@@ -187,7 +201,7 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 	    // API request setup
 	    String endpoint = getApiEndpoint() + "/api/chat";
 	    HttpPost method = new HttpPost(endpoint);
-	    method.addHeader("authorization", "Bearer " + apikey);
+	    method.addHeader("authorization", "Bearer " + getApikey());
 	    method.setHeader("Content-Type", "application/json");
 	    method.setEntity(new StringEntity(obj.toJSONString(), StandardCharsets.UTF_8));
 

@@ -31,6 +31,17 @@ public abstract class BaseLLMManager implements LLMManager {
 	protected RequestUtils fieldRequestUtils;
 	OutputFiller filler = new OutputFiller();
 	protected OpenEditEngine fieldEngine;
+	protected String apikey;
+
+	public String getApikey()
+	{
+		return apikey;
+	}
+
+	public void setApikey(String inApikey)
+	{
+		apikey = inApikey;
+	}
 
 	public ModuleManager getModuleManager() {
 		return fieldModuleManager;
@@ -67,6 +78,14 @@ public abstract class BaseLLMManager implements LLMManager {
 		}
 
 		return fieldEngine;
+	}
+	
+	public Boolean isReady() {
+		if (getApikey() == null || getApikey().length() == 0) {
+			log.error("No apikey defined in catalog settings");
+			return false;
+		}
+		return true;
 	}
 
 	public String loadInputFromTemplate(WebPageRequest inReq, String inTemplate) {
