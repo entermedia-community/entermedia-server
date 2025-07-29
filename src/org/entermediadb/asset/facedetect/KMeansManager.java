@@ -94,7 +94,7 @@ public class KMeansManager implements CatalogEnabled {
 			{
 				HitTracker tracker = getMediaArchive().query("faceembedding").exact("iscentroid",false).sort("face_confidence").search(); //random enough?
 				tracker.enableBulkOperations();
-				int maxpagestocheck = Math.max(tracker.getTotalPages(),15); //Up to 15 pages * 1000
+				int maxpagestocheck = Math.max(tracker.getTotalPages(),getSettings().maxpagestocheck ); //Up to 15 pages * 1000
 				if( tracker.isEmpty() )
 				{
 					throw new OpenEditException("Do a deep reindex on faceembeddings");
@@ -181,7 +181,7 @@ public class KMeansManager implements CatalogEnabled {
 
 	protected Collection<MultiValued> createCentroids(ScriptLogger inLog, HitTracker tracker, double mindistance, int toadd, Collection<MultiValued> existingCentroids)
 	{
-		int maxpagestocheck = Math.max(tracker.getTotalPages(),15); //Up to 5 pages * 1000
+		int maxpagestocheck = Math.max(tracker.getTotalPages(),getSettings().maxpagestocheck ); //Up to 5 pages * 1000
 
 		inLog.info("Finding " + toadd  + " centroids. currently have " + existingCentroids.size() + " checking within " + mindistance + " starting in page: " + tracker.getPage() );
 
@@ -193,6 +193,7 @@ public class KMeansManager implements CatalogEnabled {
 		while( maxpagestocheck > 0)
 		{
 			tracker.setPage(currentpage);
+			log.info("Set page " + currentpage + " for distance " + mindistance);
 			maxpagestocheck--;
 			currentpage++;
 			for (Iterator iterator = tracker.getPageOfHits().iterator(); iterator.hasNext();)
@@ -338,7 +339,7 @@ public class KMeansManager implements CatalogEnabled {
 			if( centroids.size() > 15)
 			{
 				//With large number of records and centroids we Might want to decrease the size since we have so many
-				log.info("Failed to limit centroids, decrease maxdistancetocentroid " + centroids.size() + " on " + inFace); 
+				log.info("Too centroids per face, decrease maxdistancetocentroid " + centroids.size() + " on " + inFace); 
 			}
 		}
 		
