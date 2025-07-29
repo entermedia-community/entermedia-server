@@ -32,9 +32,7 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 
 	protected HttpSharedConnection getConnection()
 	{
-
 		connection = new HttpSharedConnection();
-
 		return connection;
 	}
 
@@ -66,12 +64,26 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 	{
 		fieldCatalogId = inCatalogId;
 	}
+	
+	public String getApikey()
+	{
+		if (apikey == null)
+		{
+			apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
+			setApikey(apikey);
+		}
+		if (apikey == null)
+		{
+			log.error("No gpt-key defined in catalog settings");
+			//throw new OpenEditException("No gpt-key defined in catalog settings");
+		}
+		
+		return apikey;
+	}
 
 	public LLMResponse runPageAsInput(WebPageRequest inReq, String inModel, String inTemplate)
 	{
 
-		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
-		assert apikey != null;
 		inReq.putPageValue("model", inModel);
 		inReq.putPageValue("gpt", this);
 		inReq.putPageValue("mediaarchive", getMediaArchive());
@@ -81,7 +93,7 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 		String endpoint = getApiEndpoint();
 
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + apikey);
+		method.addHeader("authorization", "Bearer " + getApikey());
 		method.setHeader("Content-Type", "application/json");
 
 		method.setEntity(new StringEntity(input, "UTF-8"));
@@ -99,8 +111,7 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 
 	public LLMResponse createImage(WebPageRequest inReq, String inModel, int imagecount, String inSize, String style, String inPrompt)
 	{
-		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
-		if (apikey == null)
+		if (getApikey() == null)
 		{
 			log.error("No gpt-key defined");
 			return null;
@@ -133,7 +144,7 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 
 		String endpoint = "https://api.openai.com/v1/images/generations";
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + apikey);
+		method.addHeader("authorization", "Bearer " + getApikey());
 		method.setHeader("Content-Type", "application/json");
 		method.setEntity(new StringEntity(obj.toJSONString(), "UTF-8"));
 
@@ -167,8 +178,6 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 		//text-embedding-ada-002 is best
 
 		MediaArchive bench = getMediaArchive();
-		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
-		assert apikey != null;
 		// {"model": "text-davinci-003", "prompt": "Say this is a test", "temperature":
 		// 0, "max_tokens": 7}
 		JSONObject obj = new JSONObject();
@@ -182,7 +191,7 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 		// String endpoint = "http://localhost:4891/v1/completions";
 
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + apikey);
+		method.addHeader("authorization", "Bearer " + getApikey());
 		method.setHeader("Content-Type", "application/json");
 		String string = obj.toString();
 		method.setEntity(new StringEntity(string, "UTF-8"));
@@ -199,9 +208,6 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 	public LLMResponse callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
-		String apikey = archive.getCatalogSettingValue("gpt-key");
-
-		assert apikey != null;
 
 		log.info("inQuery: " + inQuery);
 
@@ -277,7 +283,7 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 		// API request setup
 		String endpoint = "https://api.openai.com/v1/chat/completions";
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + apikey);
+		method.addHeader("authorization", "Bearer " + getApikey());
 		method.setHeader("Content-Type", "application/json");
 		method.setEntity(new StringEntity(obj.toJSONString(), StandardCharsets.UTF_8));
 
