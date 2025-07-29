@@ -187,7 +187,7 @@
 		</property>
 	</bean>
 
-	<bean id="permissions" class="org.openedit.users.Permissions"  scope="prototype">
+	<bean id="permissions" class="org.openedit.users.Permissions" scope="prototype">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
@@ -654,7 +654,7 @@
 
 	</bean>
 
-	<!-- <bean id="luceneLogSearcher" class="org.entermediadb.logger.LuceneLogSearcher" scope="prototype" > <property name="rootDirectory"> <bean class="java.io.File"> <constructor-arg><ref bean="root"/></constructor-arg> <constructor-arg><value>/WEB-INF/logs</value></constructor-arg> </bean> </property> <property name="pageManager"><ref bean="pageManager"/></property> </bean> -->
+	<!-- <bean id="luceneLogSearcher" class="org.entermediadb.logger.LuceneLogSearcher" scope="prototype"> <property name="rootDirectory"> <bean class="java.io.File"> <constructor-arg><ref bean="root"/></constructor-arg> <constructor-arg><value>/WEB-INF/logs</value></constructor-arg> </bean> </property> <property name="pageManager"><ref bean="pageManager"/></property> </bean> -->
 
 	<!-- <bean id="luceneAssetSearcher" class="org.entermediadb.asset.search.BaseAssetSearcher" scope="prototype"> <property name="dataConnector"> <ref bean="luceneAssetDataConnector" /> </property> <property name="eventManager"> <ref bean="eventManager" /> </property> <property name="pageManager"> <ref bean="pageManager" /> </property> </bean> -->
 
@@ -911,9 +911,7 @@
 	<bean id="AssetStatsModule" class="org.entermediadb.asset.modules.AssetStatsModule">
 	</bean>
 	<!-- <bean id="luceneAssetAutoCompleteSearcher" class="org.entermediadb.asset.autocomplete.AutoCompleteLuceneSearcher" scope="prototype"> <property name="rootDirectory"> <ref bean="root" /> </property> </bean> -->
-	<!-- <bean id="localDataManager" class="org.entermediadb.asset.cluster.LocalDataManager" > <property name="root"><ref bean="root" /></property> <property name="searcherManager"><ref bean="searcherManager"/></property> <property name="pageManager"><ref bean="pageManager"/></property> <property name="userManager"><ref bean="userManager"/></property> </bean> <bean id="remoteDataManager" class="org.entermediadb.asset.cluster.RemoteDataManager" 
-		> <property name="root"><ref bean="root" /></property> <property name="searcherManager"><ref bean="searcherManager"/></property> <property name="pageManager"><ref bean="pageManager"/></property> <property name="userManager"><ref bean="userManager"/></property> <property name="xmlArchive"><ref bean="xmlArchive" /></property> </bean> <bean id="DistributedDataModule" class="org.entermediadb.asset.modules.DistributedDataModule" 
-		> <property name="localDataManager"><ref bean="localDataManager" /></property> </bean> -->
+	<!-- <bean id="localDataManager" class="org.entermediadb.asset.cluster.LocalDataManager"> <property name="root"><ref bean="root" /></property> <property name="searcherManager"><ref bean="searcherManager"/></property> <property name="pageManager"><ref bean="pageManager"/></property> <property name="userManager"><ref bean="userManager"/></property> </bean> <bean id="remoteDataManager" class="org.entermediadb.asset.cluster.RemoteDataManager"> <property name="root"><ref bean="root" /></property> <property name="searcherManager"><ref bean="searcherManager"/></property> <property name="pageManager"><ref bean="pageManager"/></property> <property name="userManager"><ref bean="userManager"/></property> <property name="xmlArchive"><ref bean="xmlArchive" /></property> </bean> <bean id="DistributedDataModule" class="org.entermediadb.asset.modules.DistributedDataModule"> <property name="localDataManager"><ref bean="localDataManager" /></property> </bean> -->
 	<!-- <bean id="dataFileSearcher" class="org.entermediadb.asset.cluster.DataFileSearcher"> <property name="pageManager"> <ref bean="pageManager" /> </property> <property name="rootDirectory"> <ref bean="root" /> </property> </bean> -->
 	<bean id="OrderModule" class="org.entermediadb.asset.modules.OrderModule">
 	</bean>
@@ -1937,16 +1935,12 @@
 
 	<!-- GROOVY Script Version -->
 
-	<!-- <groovy id="cmykpreprocessorCreator" script-source="conversions/creators/cmykpreprocessorCreator.groovy" lazy-init="default"> <property name="pageManager"><ref bean="pageManager" /></property> <property name="exec"><ref bean="exec" /></property> </groovy> <groovy id="oofficeDocumentCreator" script-source="conversions/creators/oofficeDocumentCreator.groovy" lazy-init="default"> <property name="pageManager"><ref 
-		bean="pageManager" /></property> <property name="exec"><ref bean="exec" /></property> </groovy> <groovy id="originalCreator" script-source="conversions/creators/originalCreator.groovy" lazy-init="default"> <property name="pageManager"><ref bean="pageManager" /></property> <property name="exec"><ref bean="exec" /></property> </groovy> <groovy id="digitalrapidsCreator" script-source="conversions/creators/digitalrapidsCreator.groovy" 
-		lazy-init="default"> <property name="pageManager"><ref bean="pageManager" /></property> <property name="exec"><ref bean="exec" /></property> </groovy> <groovy id="audioCreator" script-source="conversions/creators/audioCreator.groovy" lazy-init="default"> <property name="pageManager"><ref bean="pageManager" /></property> <property name="exec"><ref bean="exec" /></property> </groovy> <groovy id="ffmpegCreator" 
-		script-source="conversions/creators/ffmpegCreator.groovy" lazy-init="default"> <property name="pageManager"><ref bean="pageManager" /></property> <property name="exec"><ref bean="exec" /></property> </groovy> <groovy id="ffmpegimageCreator" script-source="conversions/creators/ffmpegimageCreator.groovy" lazy-init="default"> <property name="pageManager"><ref bean="pageManager" /></property> <property 
-		name="exec"><ref bean="exec" /></property> </groovy> <groovy id="GhostScriptImageCreator" script-source="conversions/creators/GhostScriptImageCreator.groovy" lazy-init="default"> <property name="pageManager"><ref bean="pageManager" /></property> <property name="exec"><ref bean="exec" /></property> </groovy> -->
+	<!-- <groovy id="cmykpreprocessorCreator" script-source="conversions/creators/cmykpreprocessorCreator.groovy" lazy-init="default"> <property name="pageManager"><ref bean="pageManager" /></property> <property name="exec"><ref bean="exec" /></property> </groovy> <groovy id="oofficeDocumentCreator" script-source="conversions/creators/oofficeDocumentCreator.groovy" lazy-init="default"> <property name="pageManager"><ref bean="pageManager" /></property> <property name="exec"><ref bean="exec" /></property> </groovy> <groovy id="originalCreator" script-source="conversions/creators/originalCreator.groovy" lazy-init="default"> <property name="pageManager"><ref bean="pageManager" /></property> <property name="exec"><ref bean="exec" /></property> </groovy> <groovy id="digitalrapidsCreator" script-source="conversions/creators/digitalrapidsCreator.groovy" lazy-init="default"> <property name="pageManager"><ref bean="pageManager" /></property> <property name="exec"><ref bean="exec" /></property> </groovy> <groovy id="audioCreator" script-source="conversions/creators/audioCreator.groovy" lazy-init="default"> <property name="pageManager"><ref bean="pageManager" /></property> <property name="exec"><ref bean="exec" /></property> </groovy> <groovy id="ffmpegCreator" script-source="conversions/creators/ffmpegCreator.groovy" lazy-init="default"> <property name="pageManager"><ref bean="pageManager" /></property> <property name="exec"><ref bean="exec" /></property> </groovy> <groovy id="ffmpegimageCreator" script-source="conversions/creators/ffmpegimageCreator.groovy" lazy-init="default"> <property name="pageManager"><ref bean="pageManager" /></property> <property name="exec"><ref bean="exec" /></property> </groovy> <groovy id="GhostScriptImageCreator" script-source="conversions/creators/GhostScriptImageCreator.groovy" lazy-init="default"> <property name="pageManager"><ref bean="pageManager" /></property> <property name="exec"><ref bean="exec" /></property> </groovy> -->
 
 	<!-- <groovy id="amazonpublisher" script-source="org.entermediadb.asset.publish.publishersamazonpublisher.groovy" /> <groovy id="asperapublisher" script-source="org.entermediadb.asset.publish.publishersasperapublisher.groovy" /> -->
 	<!-- Not used <groovy id="entermediapublisher" script-source="org.entermediadb.asset.publish.publishersentermediapublisher.groovy" /> <groovy id="attachmentpublisher" script-source="org.entermediadb.asset.publish.publishersattachmentpublisher.groovy" /> <groovy id="pushpublisher" script-source="org.entermediadb.asset.publish.publisherspushpublisher.groovy" /> -->
 	<bean id="httppublisher" class="org.entermediadb.asset.publish.publishers.httppublisher" lazy-init="default" />
-	<bean id="emailpublisher" class="org.entermediadb.asset.publish.publishers.emailpublisher" lazy-init="default" 	/>
+	<bean id="emailpublisher" class="org.entermediadb.asset.publish.publishers.emailpublisher" lazy-init="default" />
 	<bean id="pushhttppublisher" class="org.entermediadb.asset.publish.publishers.pushhttppublisher" lazy-init="default" />
 	<bean id="externalpublisher" class="org.entermediadb.asset.publish.publishers.externalpublisher" lazy-init="default" />
 	<bean id="filecopypublisher" class="org.entermediadb.asset.publish.publishers.filecopypublisher" lazy-init="default" />
@@ -1978,11 +1972,11 @@
 	</bean>
 	<bean id="orderSearchSecurity" class="org.entermediadb.asset.search.OrderSearchSecurity" lazy-init="default">
 		<property name="cacheManager">
-				<ref bean="systemCacheManager" />
-			</property>
-			<property name="searcherManager">
-				<ref bean="searcherManager" />
-			</property>
+			<ref bean="systemCacheManager" />
+		</property>
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
 	</bean>
 
 	<bean id="ConvertModule" class="modules.convert.ConvertModule" lazy-init="default" />
@@ -2148,13 +2142,13 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	
+
 	<bean id="DrupalManager" class="org.entermediadb.drupal.DrupalManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	
+
 
 	<bean id="googleContactSearcher" class="org.entermediadb.google.GoogleContactSearcher" scope="prototype">
 
@@ -2163,7 +2157,7 @@
 		</property>
 	</bean>
 
-	<!-- bean id="zohoManager" class="org.entermediadb.zoho.ZohoManager" scope="prototype" > <property name="moduleManager"> <ref bean="moduleManager" /> </property> </bean -->
+	<!-- bean id="zohoManager" class="org.entermediadb.zoho.ZohoManager" scope="prototype"> <property name="moduleManager"> <ref bean="moduleManager" /> </property> </bean -->
 
 	<bean id="queueManager" class="org.entermediadb.asset.convert.QueueManager" scope="prototype">
 		<property name="moduleManager">
@@ -2331,7 +2325,7 @@
 			<ref bean="userManager" />
 		</property>
 	</bean>
-	<!-- We dont use this <bean id="transactionLogger" class="org.openedit.data.TransactionLogger" > <property name="moduleManager"><ref bean="moduleManager"/></property> </bean> -->
+	<!-- We dont use this <bean id="transactionLogger" class="org.openedit.data.TransactionLogger"> <property name="moduleManager"><ref bean="moduleManager"/></property> </bean> -->
 	<!-- Could replace with a composite someday -->
 	<bean id="twofactorAuthenticator" class="org.entermediadb.authenticate.GoogleTwoFactorAuthenticator">
 		<property name="searcherManager">
@@ -2353,11 +2347,11 @@
 
 	<bean id="categoryTreeModel" class="org.entermediadb.asset.links.CategoryWebTreeModel" scope="prototype">
 	</bean>
-	
+
 	<bean id="categoryTreeRenderer" class="org.entermediadb.asset.links.CatalogTreeRenderer" scope="prototype">
 	</bean>
-	
-	
+
+
 
 	<bean id="libraryTreeModel" class="org.entermediadb.projects.LibraryWebTreeModel" scope="prototype">
 	</bean>
@@ -2534,8 +2528,8 @@
 			<ref bean="pageManager" />
 		</property>
 	</bean>
-	
-	
+
+
 	<bean id="velocityRenderUtil" class="org.entermediadb.llm.VelocityRenderUtil">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -2544,54 +2538,54 @@
 			<ref bean="pageManager" />
 		</property>
 	</bean>
-	
 
-	<bean id="McpModule" class="org.entermediadb.mcp.McpModule">	
+
+	<bean id="McpModule" class="org.entermediadb.mcp.McpModule">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 		<property name="render">
 			<ref bean="velocityRenderUtil" />
-		</property>	
+		</property>
 	</bean>
-	
-	
+
+
 	<bean id="mcpGenerator" class="org.entermediadb.mcp.McpGenerator">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 		<property name="renderUtil">
 			<ref bean="velocityRenderUtil" />
-		</property>	
+		</property>
 	</bean>
-	
-	
-	<bean id="mcpManager" class="org.entermediadb.mcp.McpManager">	
+
+
+	<bean id="mcpManager" class="org.entermediadb.mcp.McpManager">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-		
+
 	</bean>
-	
-	
-	
+
+
+
 
 
 	<bean id="dropboxManager" class="org.entermediadb.dropbox.DropboxManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-			<property name="moduleManager">
+		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
-		
+
 	</bean>
 
 	<bean id="dropboxAssetSource" class="org.entermediadb.dropbox.DropboxAssetSource" scope="prototype">
-	<property name="webServer">
+		<property name="webServer">
 			<ref bean="WebServer" />
 		</property>
 		<property name="moduleManager">
@@ -2601,14 +2595,14 @@
 			<ref bean="pageManager" />
 		</property>
 	</bean>
-	
+
 	<bean id="kMeansManager" class="org.entermediadb.asset.facedetect.KMeansManager" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	
-	
+
+
 	<bean id="pubLookUp" class="org.entermediadb.modules.publishing.PubLookUp" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -2619,16 +2613,16 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-					
+
 	</bean>
-	
-	
+
+
 	<bean id="translationManager" class="org.entermediadb.translator.TranslationManager" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
 
-
+	<bean id="cssutils" class="org.openedit.util.CSSUtils" />
 
 </beans>
