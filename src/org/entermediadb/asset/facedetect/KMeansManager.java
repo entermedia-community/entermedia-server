@@ -651,16 +651,22 @@ public class KMeansManager implements CatalogEnabled {
 			
 			getMediaArchive().getCacheManager().put("face","kmeansconfig",config);
 			
-			double godownby = 1.0 - ( .1 * totalfaces / 20000.0 ); //.90 worked well for 20k so scale it up or down based on total
-			
-			godownby = Math.min(godownby,.70); //Dont go bellow 7
+			//.80-.9 = 20-100k
+			//		.9 / (t / 20k) = 
+					
+			double newrange = .9;
+			if( totalfaces > 50000 )
+			{
+				newrange = .8;  			 // (totalfaces / 20000.0)); //.90 worked well for 20k so scale it up or down based on total
+			}
+
 			
 			String smaxdistancetocentroid = getMediaArchive().getCatalogSettingValue("facedetect_maxdistancetocentroid");
 			if( smaxdistancetocentroid != null)
 			{
-				godownby = Double.parseDouble(smaxdistancetocentroid); 
+				newrange = Double.parseDouble(smaxdistancetocentroid); 
 			}
-			config.maxdistancetocentroid = godownby;
+			config.maxdistancetocentroid = newrange;
 
 			
 			log.info("Reloading settings kcount="+ config.kcount  + " maxresultspersearch=" + config.maxresultspersearch + " maxdistancetocentroid=" + config.maxdistancetocentroid );
