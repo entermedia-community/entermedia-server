@@ -651,9 +651,9 @@ public class KMeansManager implements CatalogEnabled {
 			
 			getMediaArchive().getCacheManager().put("face","kmeansconfig",config);
 			
-			double godownby = .1 * totalfaces / 20000.0; //Go down by .1 per 20k... .90 worked well for  20k
-			godownby = Math.min(godownby,.3); //UP to 6
-			godownby = 1.0 - godownby; //Stay close by 87 added >150 centroids  .875 made 130/152  bigger the number the less are made by individuals
+			double godownby = 1.0 - ( .1 * totalfaces / 20000.0 ); //.90 worked well for 20k so scale it up or down based on total
+			
+			godownby = Math.min(godownby,.70); //Dont go bellow 7
 			
 			String smaxdistancetocentroid = getMediaArchive().getCatalogSettingValue("facedetect_maxdistancetocentroid");
 			if( smaxdistancetocentroid != null)
