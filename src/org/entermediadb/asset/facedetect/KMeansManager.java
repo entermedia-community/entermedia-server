@@ -318,6 +318,11 @@ public class KMeansManager implements CatalogEnabled {
 				if( cluster.distance <=  extra) //The More centroid the more hits
 				{
 					centroids.add( cluster.centroid.getId() ); //must be within within .90
+					log.info("Picked one centroid  that was under 91, was " + cluster.distance + " was trying for " + getSettings().maxdistancetocentroid);
+				}
+				else
+				{
+					log.info("Could not set a single centroid under 91, was " + cluster.distance);
 				}
 				break;
 			}
@@ -347,7 +352,7 @@ public class KMeansManager implements CatalogEnabled {
 			if( centroids.size() > 15)
 			{
 				//With large number of records and centroids we Might want to decrease the size since we have so many
-				log.info("Too centroids per face, decrease maxdistancetocentroid " + centroids.size() + " on " + inFace); 
+				log.info("Too many centroids per face, decrease maxdistancetocentroid " + centroids.size() + " on " + inFace); 
 			}
 		}
 		
@@ -621,7 +626,7 @@ public class KMeansManager implements CatalogEnabled {
 			}
 			else
 			{
-				config.maxdistancetomatch = 0.52;
+				config.maxdistancetomatch = 0.52; //be more selective
 			}
 			/*
 			 *  Choosing the Number of Centroids (k)
@@ -635,7 +640,7 @@ public class KMeansManager implements CatalogEnabled {
 	*/
 			int totalfaces = getMediaArchive().query("faceembedding").all().hitsPerPage(1).search().size(); 
 			double k = Math.sqrt( totalfaces / 2d); //Higher slows down indexing, more can be added back later as they click
-			int min = (int)Math.round(k*.9); //Lowered by 10% will be added on demand or make it worse
+			int min = (int)Math.round(k); //Lowered by 10% will be added on demand or make it worse
 			
 			String skcount = getMediaArchive().getCatalogSettingValue("facedetect_kcount");
 			if( skcount != null)
@@ -662,7 +667,7 @@ public class KMeansManager implements CatalogEnabled {
 			//.80-.9 = 20-100k
 			//		.9 / (t / 20k) = 
 					
-			double newrange = .9;
+			double maxdistancetocentroid = .85;
 //			if( totalfaces > 50000 )
 //			{
 //				newrange = .8;  			 // (totalfaces / 20000.0)); //.90 worked well for 20k so scale it up or down based on total
@@ -671,10 +676,10 @@ public class KMeansManager implements CatalogEnabled {
 			String smaxdistancetocentroid = getMediaArchive().getCatalogSettingValue("facedetect_maxdistancetocentroid");
 			if( smaxdistancetocentroid != null)
 			{
-				newrange = Double.parseDouble(smaxdistancetocentroid);
-				log.info("Default size from db facedetect_maxdistancetocentroid=" + newrange );
+				maxdistancetocentroid = Double.parseDouble(smaxdistancetocentroid);
+				log.info("Default size from db facedetect_maxdistancetocentroid=" + maxdistancetocentroid );
 			}
-			config.maxdistancetocentroid = newrange;
+			config.maxdistancetocentroid = maxdistancetocentroid;
 
 			
 			String init_loop_lower_limit = getMediaArchive().getCatalogSettingValue("facedetect_init_loop_lower_limit");
