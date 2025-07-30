@@ -82,7 +82,7 @@ public class KMeansManager implements CatalogEnabled {
 		{
 
 			double loop_lower_percentage = 0.97;
-			double loop_lower_limit = .90;
+			double loop_lower_limit = .88;
 			double min_distance = 1.0; //Start at 1. Its rare and nice starting point
 			
 			int toadd = getSettings().kcount - getClusters().size();
@@ -94,7 +94,7 @@ public class KMeansManager implements CatalogEnabled {
 			{
 				HitTracker tracker = getMediaArchive().query("faceembedding").exact("iscentroid",false).sort("face_confidence").search(); //random enough?
 				tracker.enableBulkOperations();
-				int maxpagestocheck = Math.max(tracker.getTotalPages(),getSettings().maxpagestocheck ); //Up to 15 pages * 1000
+				int maxpagestocheck = tracker.getTotalPages(); //Up to 15 pages * 1000
 				if( tracker.isEmpty() )
 				{
 					throw new OpenEditException("Do a deep reindex on faceembeddings");
@@ -181,7 +181,7 @@ public class KMeansManager implements CatalogEnabled {
 
 	protected Collection<MultiValued> createCentroids(ScriptLogger inLog, HitTracker tracker, double mindistance, int toadd, Collection<MultiValued> existingCentroids)
 	{
-		int maxpagestocheck = Math.max(tracker.getTotalPages(),getSettings().maxpagestocheck ); //Up to 5 pages * 1000
+		int maxpagestocheck = tracker.getTotalPages(); //Up to 5 pages * 1000
 
 		inLog.info("Finding " + toadd  + " centroids. currently have " + existingCentroids.size() + " checking within " + mindistance + " starting in page: " + tracker.getPage() );
 
@@ -224,7 +224,7 @@ public class KMeansManager implements CatalogEnabled {
 					Collection<String> single = new java.util.ArrayList(1);
 					single.add(hit.getId());
 					hit.setValue("nearbycentroidids",single);
-					inLog.info("Init found Centroid with min distance, bigger is better " + founddistance );
+					inLog.info("Init " + existingCentroids.size() + "Centroids within distance, bigger is better " + founddistance );
 					tosave.add(hit);
 					existingCentroids.add(hit);
 				}
@@ -324,13 +324,13 @@ public class KMeansManager implements CatalogEnabled {
 		{
 			getClusters().add(inFace);
 			inFace.setValue("iscentroid",true);
-			Collection<String> single = new java.util.ArrayList(1);
-			single.add(inFace.getId());
-			inFace.setValue("nearbycentroidids",single);
+//			Collection<String> single = new java.util.ArrayList(1);
+//			single.add(inFace.getId());
+//			inFace.setValue("nearbycentroidids",single); //Hes still normal for now. When theysearchthey might divide
 			
 			//closestclusters.iterator().next();
 			
-			log.info("Bad: added another Centroid  " +  getClusters().size() );
+			log.info("Bad: No centroid found  " +  getClusters().size() );
 			getMediaArchive().saveData("faceembedding",inFace);
 		}
 		else
@@ -659,12 +659,12 @@ public class KMeansManager implements CatalogEnabled {
 			{
 				newrange = .8;  			 // (totalfaces / 20000.0)); //.90 worked well for 20k so scale it up or down based on total
 			}
-
 			
 			String smaxdistancetocentroid = getMediaArchive().getCatalogSettingValue("facedetect_maxdistancetocentroid");
 			if( smaxdistancetocentroid != null)
 			{
-				newrange = Double.parseDouble(smaxdistancetocentroid); 
+				newrange = Double.parseDouble(smaxdistancetocentroid);
+				log.info("Default size from db facedetect_maxdistancetocentroid=" + newrange );
 			}
 			config.maxdistancetocentroid = newrange;
 

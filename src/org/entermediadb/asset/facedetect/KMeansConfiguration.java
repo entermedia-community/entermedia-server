@@ -7,5 +7,5 @@ public class KMeansConfiguration
 	protected double maxdistancetomatch;
 	protected double maxdistancetocentroid;
 	protected int maxresultspersearch;
-	protected int maxpagestocheck = 40;
+	//protected int maxpagestocheck = 40;
 }
