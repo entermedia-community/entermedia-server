@@ -46,7 +46,7 @@ public class ProjectModule extends BaseMediaModule
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
 		manager.loadCollections(inReq, getMediaArchive(inReq));
 	}
-
+ 
 	/*
 	 * public void redirectToCollection(WebPageRequest inReq) throws Exception {
 	 * String catalogid = inReq.findPathValue("catalogid"); ProjectManager

@@ -6,6 +6,8 @@ public interface LLMManager {
 	
 	
 	public String getType();
+	
+	public Boolean isReady();
 
     public String getEmbedding(String inQuery) throws Exception;
 
