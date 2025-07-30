@@ -2623,6 +2623,12 @@
 		</property>
 	</bean>
 
+	<bean id="translationModule" class="org.entermediadb.translator.TranslationModule" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
 	<bean id="cssutils" class="org.openedit.util.CSSUtils" />
 
 </beans>

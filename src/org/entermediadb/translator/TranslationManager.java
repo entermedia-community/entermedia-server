@@ -69,6 +69,33 @@ public class TranslationManager implements CatalogEnabled {
 		}
 		return fieldMediaArchive;
 	}
+	public LanguageMap translateField(String field, LanguageMap languageMap, String sourceLang, Collection<String> targetLangs)
+	{
+		ArrayList<String> fieldNames = new ArrayList();
+		fieldNames.add(field);
+		ArrayList<String> fieldValues = new ArrayList();
+		fieldValues.add(languageMap.getText(sourceLang));
+		
+		JSONObject translations = translateFields(fieldValues, sourceLang, targetLangs);
+		if(translations == null)
+		{
+			return null;
+		}
+		
+		for (Iterator iterator = targetLangs.iterator(); iterator.hasNext();)
+		{
+			String lang = (String) iterator.next();
+			JSONArray fieldTranslations = (JSONArray) translations.get(lang);
+			if(fieldTranslations == null || fieldTranslations.isEmpty())
+			{
+				continue;
+			}
+			String value = (String) fieldTranslations.get(0);
+			languageMap.setText(lang, value);
+		}
+		
+		return languageMap;
+	}
 
 	public Map<String, LanguageMap> translateFields(Map fields, String sourceLang, Collection<String> targetLangs)
 	{

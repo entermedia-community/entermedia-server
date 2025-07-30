@@ -12,10 +12,12 @@
 	<div class="languageselector">
 		<select class="select2 lenguagepicker form-control" id="languages_${detailid}_${count}" name="${detailid}.language" data-count="$count" data-detailid="${detailid}">
 			#foreach($locale in $languages)
-			#if( !$usedlanguages.contains($locale.id))
-				#if( !$languagecode) #set( $languagecode = $locale.id) #end
-			<option value="$!locale.id" #if($!languagecode==$!locale.id) selected="selected" #end>$!locale</option>
-			#end
+				#if( !$usedlanguages.contains($locale.id))
+					#if( !$languagecode)
+						#set( $languagecode = $locale.id)
+					#end
+					<option value="$!locale.id" #if($!languagecode==$!locale.id) selected="selected" #end>$!locale</option>
+				#end
 			#end
 		</select>
 	</div>
@@ -39,8 +41,15 @@
 			#set($textarearows = 1)
 		#end
 		
-		<textarea  type="text" class="form-control langvalue #if($count == "1" && $detail.isRequired() && !$multiedit) required #end " name="${detailid}.${languagecode}.value" cols="40" rows="$textarearows" >#esc($value)</textarea>
-		
+		<textarea
+			type="text"
+			class="form-control langvalue #if($count == "1" && $detail.isRequired() && !$multiedit) required #end"
+			name="${detailid}.${languagecode}.value"
+			cols="40"
+			rows="$textarearows">#esc($value)</textarea>
+		<div class="input-group trnslationsource w-auto mt-1" style="opacity:0">
+			<input type="radio" name="${detailid}.sourcelang" id="${detailid}.${languagecode}" value="$languagecode" class="mr-1" #if($count == 1) checked #end />
+			<label for="${detailid}.${languagecode}" class="m-0">[[Translation Source]]</span>
+		</div>
 	</div>
-	<div class='clearfix'></div>	
 </div>
