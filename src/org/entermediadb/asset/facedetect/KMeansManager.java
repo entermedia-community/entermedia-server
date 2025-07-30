@@ -337,9 +337,11 @@ public class KMeansManager implements CatalogEnabled {
 		{
 			getClusters().add(inFace);
 			inFace.setValue("iscentroid",true);
-//			Collection<String> single = new java.util.ArrayList(1);
-//			single.add(inFace.getId());
-//			inFace.setValue("nearbycentroidids",single); //Hes still normal for now. When theysearchthey might divide
+			
+			//Its empty so add myself
+			Collection<String> single = new java.util.ArrayList(1);
+			single.add(inFace.getId());
+			inFace.setValue("nearbycentroidids",single); //Hes still normal for now. When theysearchthey might divide
 			
 			//closestclusters.iterator().next();
 			
@@ -667,7 +669,7 @@ public class KMeansManager implements CatalogEnabled {
 			//.80-.9 = 20-100k
 			//		.9 / (t / 20k) = 
 					
-			double maxdistancetocentroid = .85;
+			config.maxdistancetocentroid = .87;
 //			if( totalfaces > 50000 )
 //			{
 //				newrange = .8;  			 // (totalfaces / 20000.0)); //.90 worked well for 20k so scale it up or down based on total
@@ -676,10 +678,9 @@ public class KMeansManager implements CatalogEnabled {
 			String smaxdistancetocentroid = getMediaArchive().getCatalogSettingValue("facedetect_maxdistancetocentroid");
 			if( smaxdistancetocentroid != null)
 			{
-				maxdistancetocentroid = Double.parseDouble(smaxdistancetocentroid);
-				log.info("Default size from db facedetect_maxdistancetocentroid=" + maxdistancetocentroid );
+				config.maxdistancetocentroid = Double.parseDouble(smaxdistancetocentroid);
+				log.info("Default size from db facedetect_maxdistancetocentroid=" + config.maxdistancetocentroid );
 			}
-			config.maxdistancetocentroid = maxdistancetocentroid;
 
 			
 			String init_loop_lower_limit = getMediaArchive().getCatalogSettingValue("facedetect_init_loop_lower_limit");
