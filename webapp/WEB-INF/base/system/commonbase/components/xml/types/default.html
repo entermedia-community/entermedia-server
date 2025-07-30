@@ -4,35 +4,36 @@
 
 #if($detail.isMultiLanguage())
 	<div class="${detail.id}-languages languages-field #if( $searchform )insearchform#end">
-			#set($languages = $mediaarchive.getList("locale"))
-			#set($map = $data.getValue($detail.getId()))
-			
-			#set($dlocale = $context.getLanguage() )
-			#set($language_count = 0)
-			#if( !$searchform )
-			<div class="languagesadd">
-				<a class="languagesavebtn pr-2" href="$siteroot$apphome/components/xml/types/language/extralanguage.html" data-targetdiv="languagesextra_${detail.id}" data-detailid="${detail.id}" id="" title="[[Add Language]]">
-				<i class="bi bi-plus-circle"></i></a>
-			</div>
+		#set($languages = $mediaarchive.getList("locale"))
+		#set($map = $data.getValue($detail.getId()))
+		
+		#set($dlocale = $context.getLanguage() )
+		#set($language_count = 0)
+		#if( !$searchform )
+		<div class="languagesadd">
+			<a class="languagesavebtn p-1" href="$siteroot$apphome/components/xml/types/language/extralanguage.html" data-targetdiv="languagesextra_${detail.id}" data-detailid="${detail.id}" id="" title="[[Add Language]]">
+			<i class="bi bi-plus-circle"></i></a>
+		</div>
+		#end
+		<div class="languagesfield">
+			#foreach($locale in $languages)
+				#set($localval = $map.getText($locale.id))
+				#if($localval && $localval != "")
+					#set($language_count = $language_count+1)
+					$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&count=$language_count&languagecode=$locale.id",$context)
+				#end
+				#set($localval = "")
 			#end
-			<div class="languagesfield">
-				#foreach($locale in $languages)
-					#set($localval = $map.getText($locale.id))
-					#if($localval && $localval != "")
-						#set($language_count = $language_count+1)
-						$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&count=$language_count&languagecode=$locale.id",$context)
-					#end
-					#set($localval = "")
-				#end
-				#if($language_count == 0)
-				#set($language_count = $language_count+1)
-				$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&count=$language_count&languagecode=$dlocale",$context)
-				#end
-				<div id="languagesextra_${detail.id}" data-count='$language_count' ></div>	 
+			#if($language_count == 0)
+			#set($language_count = $language_count+1)
+			$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&count=$language_count&languagecode=$dlocale",$context)
+			#end
+			<div id="languagesextra_${detail.id}" data-count='$language_count'></div>	 
+			<div class="input-group w-auto mt-1">
+				<input type="checkbox" name="${detail.id}.enabletranslation" id="${detail.id}.enabletranslation" class="mr-2 enabletranslation" />
+				<label for="${detail.id}.enabletranslation" class="m-0">[[Translate on save]]</span>
 			</div>
-			
-			<div class="clearfix" ></div>
-			
+		</div>
 	</div>
 	
 #elseif( $detail.isKeywordMap() )

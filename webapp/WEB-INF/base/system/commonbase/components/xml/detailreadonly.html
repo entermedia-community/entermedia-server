@@ -19,7 +19,6 @@ $context.putPageValue("xmledithome",$xmledithome)
 		$pages.include("${searchhome}/types/qsresult.html", $context)
 	</div>
 #else
-
 	$pages.include("$xmledithome/typesreadonly/${viewtype}.html", $context)
 #end
 

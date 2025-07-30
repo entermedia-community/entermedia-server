@@ -1369,6 +1369,17 @@ public class MediaArchive implements CatalogEnabled
 		request.putPageValue("hits", inHits);
 		manager.runPathEvent(runpath, request);
 	}
+	
+	public void firePathEvent(String operation, User inUser, Map data)
+	{
+		String runpath = "/" + getCatalogId() + "/events/" + operation + ".html";
+		PathEventManager manager = (PathEventManager) getModuleManager().getBean(getCatalogId(), "pathEventManager");
+		WebPageRequest request = manager.getRequestUtils().createPageRequest(runpath, inUser);
+
+		request.setRequestParameter("catalogid", getCatalogId());
+		request.putPageValue("data", data);
+		manager.runPathEvent(runpath, request);
+	}
 
 	public void fireDataEvent(User inUser, String inSearchType, String inAction, Data inData)
 	{
