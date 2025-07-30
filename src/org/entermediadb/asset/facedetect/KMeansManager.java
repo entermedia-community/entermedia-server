@@ -312,6 +312,15 @@ public class KMeansManager implements CatalogEnabled {
 			{
 				centroids.add( cluster.centroid.getId() ); //must be within within .75
 			}
+			else if( i == 0 )
+			{
+				double extra = 91.0; //Good to pick at least one 
+				if( cluster.distance <=  extra) //The More centroid the more hits
+				{
+					centroids.add( cluster.centroid.getId() ); //must be within within .90
+				}
+				break;
+			}
 			else
 			{
 				break;
