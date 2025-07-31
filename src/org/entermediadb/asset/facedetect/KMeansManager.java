@@ -353,7 +353,7 @@ public class KMeansManager implements CatalogEnabled {
 			if( centroids.size() > 15)
 			{
 				//With large number of records and centroids we Might want to decrease the size since we have so many
-				log.info("Too many centroids per face, decrease maxdistancetocentroid " + centroids.size() + " on " + inFace); 
+				log.info("Too many per face centroids: " + centroids.size() + "/" + getClusters().size() + " on " + inFace); 
 			}
 		}
 		
