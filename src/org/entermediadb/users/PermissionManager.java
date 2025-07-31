@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -566,7 +567,10 @@ public class PermissionManager implements CatalogEnabled
 	            rootValues = new ArrayList();
 	        }
 	        if (combined == null) {
-	        	combined = new ArrayList();
+	        	combined = new HashSet();
+	        }
+	        else {
+	        	combined = new HashSet(combined);
 	        }
 
 	    	if (inModule.getValues("editor" + field) != null)
@@ -664,9 +668,17 @@ public class PermissionManager implements CatalogEnabled
 			
 			archive.getCategorySearcher().saveCategoryTree(rootcat);
 			
+			Searcher modulesearcher = getSearcher(module.getId());
 			
+			HitTracker missingcategory = modulesearcher.query().missing("rootcategory").search();
+			for (Iterator iterator2 = missingcategory.iterator(); iterator2.hasNext();)
+			{
+				Data data = (Data) iterator2.next();
+				archive.getEntityManager().loadDefaultFolder(module, data, null);
+			}
 			
-			getSearcher(module.getId()).reIndexAll();
+			modulesearcher.reIndexAll();
+			
 			buffer.append("Module " + module.getId() + " Permissions update completed");
 			
 			HitTracker assets =  archive.getAssetSearcher().query().exact("category", rootcat).search();
@@ -681,12 +693,13 @@ public class PermissionManager implements CatalogEnabled
 			}
 			
 		}
-		
-		Data finishedinfo = searcher.createNewData();
-		finishedinfo.setValue("date", new Date());
-		finishedinfo.setValue("notes", buffer.toString());
-		searcher.saveData(finishedinfo);
-
+		if (!needupdate.isEmpty())
+		{
+			Data finishedinfo = searcher.createNewData();
+			finishedinfo.setValue("date", new Date());
+			finishedinfo.setValue("notes", buffer.toString());
+			searcher.saveData(finishedinfo);
+		}
 	}
 
 	
