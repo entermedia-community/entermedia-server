@@ -572,7 +572,7 @@ public class ChatModule extends BaseMediaModule
 			chats.delete(hit, null);
 		}
 
-	}
+	}	
 
 	public BaseLLMManager loadManager(WebPageRequest inReq)
 	{
@@ -670,6 +670,13 @@ public class ChatModule extends BaseMediaModule
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 		Searcher chats = archive.getSearcher("chatterbox");
 		LLMManager manager = archive.getLLM(model);
+		
+		if (!manager.isReady()) 
+		{
+			log.error("LLM Manager is not ready: " + model + ". Cannot process channel: " + channel);
+			inReq.putPageValue("llmerror", "LLM Manager is not ready: " + model + ". Verify LLM Server address and key.");
+			return;
+		}
 
 		HitTracker recent = chats.query().exact("channel", channel.getId()).sort("dateUp").search(inReq);
 		inReq.putPageValue("recent", recent);

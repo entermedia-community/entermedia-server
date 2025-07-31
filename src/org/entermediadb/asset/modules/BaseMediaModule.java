@@ -37,7 +37,7 @@ public class BaseMediaModule extends BaseModule
 		HitTracker hits = (HitTracker) inReq.getPageValue(name);
 		return hits;
 	}
-
+ 
 	public EnterMedia getEnterMedia(String inApplicationId)
 	{
 		EnterMedia matt = (EnterMedia) getModuleManager().getBean(inApplicationId, "enterMedia");
