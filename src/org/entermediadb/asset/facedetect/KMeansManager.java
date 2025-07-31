@@ -314,8 +314,7 @@ public class KMeansManager implements CatalogEnabled {
 			}
 			else if( i == 0 )
 			{
-				double extra = .91; //Good to pick at least one 
-				if( cluster.distance <=  extra) //The More centroid the more hits
+				if( cluster.distance <=  getSettings().maxdistancetocentroid_one) //The More centroid the more hits
 				{
 					centroids.add( cluster.centroid.getId() ); //must be within within .90
 					log.info("Picked one centroid  that was under 91, was " + cluster.distance + " was trying for " + getSettings().maxdistancetocentroid);
@@ -631,10 +630,6 @@ public class KMeansManager implements CatalogEnabled {
 			{
 				config.maxdistancetomatch = Double.parseDouble(value);
 			}
-			else
-			{
-				config.maxdistancetomatch = 0.52; //be more selective
-			}
 			/*
 			 *  Choosing the Number of Centroids (k)
 	k ≈ sqrt(n / 2) is a heuristic (where n = total number of face vectors)
@@ -674,7 +669,6 @@ public class KMeansManager implements CatalogEnabled {
 			//.80-.9 = 20-100k
 			//		.9 / (t / 20k) = 
 					
-			config.maxdistancetocentroid = .87;
 //			if( totalfaces > 50000 )
 //			{
 //				newrange = .8;  			 // (totalfaces / 20000.0)); //.90 worked well for 20k so scale it up or down based on total
@@ -702,6 +696,14 @@ public class KMeansManager implements CatalogEnabled {
 				log.info("Default size from db sinit_loop_start_distance=" + sinit_loop_start_distance );
 			}
 
+			String smaxdistancetocentroid_one = getMediaArchive().getCatalogSettingValue("maxdistancetocentroid_one");
+			if( smaxdistancetocentroid_one != null)
+			{
+				config.maxdistancetocentroid_one = Double.parseDouble(smaxdistancetocentroid_one);
+				log.info("Default size from db maxdistancetocentroid_one=" + config.maxdistancetocentroid_one );
+			}
+			
+			
 			
 			log.info("Reloading settings kcount="+ config.kcount  + " maxresultspersearch=" + config.maxresultspersearch + " maxdistancetocentroid=" + config.maxdistancetocentroid );
 		}

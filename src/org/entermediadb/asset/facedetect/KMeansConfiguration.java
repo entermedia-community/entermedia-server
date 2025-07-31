@@ -4,8 +4,9 @@ public class KMeansConfiguration
 {
 	protected int kcount;
 	protected int totalrecords;
-	protected double maxdistancetomatch;
-	protected double maxdistancetocentroid;
+	protected double maxdistancetomatch = .52;
+	protected double maxdistancetocentroid = .87;
+	protected double maxdistancetocentroid_one = .9;
 	protected int maxresultspersearch;
 	//protected int maxpagestocheck = 40;
 	protected  double init_loop_start_distance = 1.0; //Start at 1. Its rare and nice starting point
