@@ -314,8 +314,7 @@ public class KMeansManager implements CatalogEnabled {
 			}
 			else if( i == 0 )
 			{
-				double extra = 91.0; //Good to pick at least one 
-				if( cluster.distance <=  extra) //The More centroid the more hits
+				if( cluster.distance <=  getSettings().maxdistancetocentroid_one) //The More centroid the more hits
 				{
 					centroids.add( cluster.centroid.getId() ); //must be within within .90
 					log.info("Picked one centroid  that was under 91, was " + cluster.distance + " was trying for " + getSettings().maxdistancetocentroid);
@@ -354,7 +353,7 @@ public class KMeansManager implements CatalogEnabled {
 			if( centroids.size() > 15)
 			{
 				//With large number of records and centroids we Might want to decrease the size since we have so many
-				log.info("Too many centroids per face, decrease maxdistancetocentroid " + centroids.size() + " on " + inFace); 
+				log.info("Too many per face centroids: " + centroids.size() + "/" + getClusters().size() + " on " + inFace); 
 			}
 		}
 		
@@ -372,44 +371,49 @@ public class KMeansManager implements CatalogEnabled {
 			throw new OpenEditException("Not enought clusters. Run reindexfaces event");
 		}
 		//inSearch.setValue("iscentroid",false);
+		Collection<MultiValued> matches = null;
 		
 		Lock lock = getMediaArchive().lock(inSearch.getId(), "KMeansSearch");
-		
-		Collection nearbycentroidids = inSearch.getValues("nearbycentroidids");
-		if( nearbycentroidids == null || nearbycentroidids.isEmpty() )
-		{
-			throw new OpenEditException(inSearch + " Has no centroids. reindexfaces");
-		}
 		long start = System.currentTimeMillis();
-		HitTracker tracker = getMediaArchive().query("faceembedding").
-				orgroup("nearbycentroidids",nearbycentroidids).
-				exact("isremoved",false).hitsPerPage(1000).search();
-				
-		//if we have too many lets make a new k
-		if( tracker.size() > getSettings().maxresultspersearch )
+		try
 		{
-			// Add the new cluster to the list
-			//Rebalance centroids
-			boolean alreadydivided = false;
-			if(inSearch.getBoolean("iscentroid") || (tracker.size() < 2000 &&  nearbycentroidids.size() < 3 ) )
-			{	
-				alreadydivided = true; //Probably
-			}
-			if( !alreadydivided)
+			Collection nearbycentroidids = inSearch.getValues("nearbycentroidids");
+			if( nearbycentroidids == null || nearbycentroidids.isEmpty() )
 			{
-				Collection<MultiValued> matches = divideCluster(inSearch, tracker);
-				return matches;
+				throw new OpenEditException(inSearch + " Has no centroids. reindexfaces");
 			}
-		}		
+			HitTracker tracker = getMediaArchive().query("faceembedding").
+					orgroup("nearbycentroidids",nearbycentroidids).
+					exact("isremoved",false).hitsPerPage(1000).search();
+					
+			//if we have too many lets make a new k
+			if( tracker.size() > getSettings().maxresultspersearch )
+			{
+				// Add the new cluster to the list
+				//Rebalance centroids
+				boolean alreadydivided = false;
+				if(inSearch.getBoolean("iscentroid") || (tracker.size() < 2000 &&  nearbycentroidids.size() < 3 ) )
+				{	
+					alreadydivided = true; //Probably
+				}
+				if( !alreadydivided)
+				{
+					matches = divideCluster(inSearch, tracker);
+					return matches;
+				}
+			}		
+			
+			Collection<MultiValued> allimportantcentroids =	findImportantCentroids(inSearch);
+			matches = findResultsWithinCentroids(inSearch, allimportantcentroids, tracker);
+			long end = System.currentTimeMillis();
+			double seconds = (end-start)/1000d;
+			log.info("Search found  " + tracker + " -> " + matches.size() + "  in " + seconds + " seconds");
+		}
+		finally
+		{
+			getMediaArchive().releaseLock(lock);
+		}
 		
-		Collection<MultiValued> allimportantcentroids =	findImportantCentroids(inSearch);
-		Collection<MultiValued> matches = findResultsWithinCentroids(inSearch, allimportantcentroids, tracker);
-		
-		getMediaArchive().releaseLock(lock);
-		
-		long end = System.currentTimeMillis();
-		double seconds = (end-start)/1000d;
-		log.info("Search found  " + tracker + " -> " + matches.size() + "  in " + seconds + " seconds");
 
 		//log.info("Did not divide, found: " + matches.size() + " Missed " + misses + " for " + inSearch.getId() + " in " + seconds + " seconds");
 		return matches;
@@ -626,10 +630,6 @@ public class KMeansManager implements CatalogEnabled {
 			{
 				config.maxdistancetomatch = Double.parseDouble(value);
 			}
-			else
-			{
-				config.maxdistancetomatch = 0.52; //be more selective
-			}
 			/*
 			 *  Choosing the Number of Centroids (k)
 	k ≈ sqrt(n / 2) is a heuristic (where n = total number of face vectors)
@@ -669,7 +669,6 @@ public class KMeansManager implements CatalogEnabled {
 			//.80-.9 = 20-100k
 			//		.9 / (t / 20k) = 
 					
-			config.maxdistancetocentroid = .87;
 //			if( totalfaces > 50000 )
 //			{
 //				newrange = .8;  			 // (totalfaces / 20000.0)); //.90 worked well for 20k so scale it up or down based on total
@@ -697,6 +696,14 @@ public class KMeansManager implements CatalogEnabled {
 				log.info("Default size from db sinit_loop_start_distance=" + sinit_loop_start_distance );
 			}
 
+			String smaxdistancetocentroid_one = getMediaArchive().getCatalogSettingValue("maxdistancetocentroid_one");
+			if( smaxdistancetocentroid_one != null)
+			{
+				config.maxdistancetocentroid_one = Double.parseDouble(smaxdistancetocentroid_one);
+				log.info("Default size from db maxdistancetocentroid_one=" + config.maxdistancetocentroid_one );
+			}
+			
+			
 			
 			log.info("Reloading settings kcount="+ config.kcount  + " maxresultspersearch=" + config.maxresultspersearch + " maxdistancetocentroid=" + config.maxdistancetocentroid );
 		}
