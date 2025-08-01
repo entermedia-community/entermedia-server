@@ -625,7 +625,7 @@ public class KMeansManager implements CatalogEnabled {
 			fieldClusters = null; //reload em
 			
 			config = new KMeansConfiguration();
-			String value = getMediaArchive().getCatalogSettingValue("facedetect_max_distance");
+			String value = getMediaArchive().getCatalogSettingValue("facedetect_maxdistancetomatch");
 			if( value != null)
 			{
 				config.maxdistancetomatch = Double.parseDouble(value);
@@ -696,7 +696,7 @@ public class KMeansManager implements CatalogEnabled {
 				log.info("Default size from db sinit_loop_start_distance=" + sinit_loop_start_distance );
 			}
 
-			String smaxdistancetocentroid_one = getMediaArchive().getCatalogSettingValue("maxdistancetocentroid_one");
+			String smaxdistancetocentroid_one = getMediaArchive().getCatalogSettingValue("facedetect_maxdistancetocentroid_one");
 			if( smaxdistancetocentroid_one != null)
 			{
 				config.maxdistancetocentroid_one = Double.parseDouble(smaxdistancetocentroid_one);
