@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -402,12 +403,12 @@ public class KMeansManager implements CatalogEnabled {
 					return matches;
 				}
 			}		
+			Collection<MultiValued> allsimilarroots =	findAllSimilarRoots(inSearch);
+			matches = findResultsWithinCentroids(inSearch, allsimilarroots, tracker);
 			
-			Collection<MultiValued> allimportantcentroids =	findImportantCentroids(inSearch);
-			matches = findResultsWithinCentroids(inSearch, allimportantcentroids, tracker);
 			long end = System.currentTimeMillis();
 			double seconds = (end-start)/1000d;
-			log.info("Search found  " + tracker + " -> " + matches.size() + "  in " + seconds + " seconds");
+			log.info("Search found  " +  matches.size()  + " from " +  tracker  + "  in " + seconds + " seconds");
 		}
 		finally
 		{
@@ -476,13 +477,13 @@ public class KMeansManager implements CatalogEnabled {
 		//I got too many hits then add my myself as a centroid
 		newcentroidItem.setValue("iscentroid",true);
 
-		Collection<MultiValued> allimportantcentroids =	findImportantCentroids(newcentroidItem);
+		Collection<MultiValued> allsimilarroots =	findAllSimilarRoots(newcentroidItem);
 		
-		List<MultiValued> tomove = findResultsWithinCentroids(newcentroidItem, allimportantcentroids, results);
+		List<MultiValued> tomove = findResultsWithinCentroids(newcentroidItem, allsimilarroots, results);
 
 		//Save all to be the same click. 
 		Collection<String> savecentroids = new HashSet();
-		for (Iterator iterator2 = allimportantcentroids.iterator(); iterator2.hasNext();)
+		for (Iterator iterator2 = allsimilarroots.iterator(); iterator2.hasNext();)
 		{
 			MultiValued centroid = (MultiValued) iterator2.next();
 			savecentroids.add(centroid.getId());
@@ -513,53 +514,53 @@ public class KMeansManager implements CatalogEnabled {
 	}
 
 
-	protected List<MultiValued> findResultsWithinCentroids(MultiValued inToSearch, Collection<MultiValued> allimportantcentroids, Collection<MultiValued> results)
+	protected List<MultiValued> findResultsWithinCentroids(MultiValued inToSearch, Collection<MultiValued> allsimilarroots, Collection<MultiValued> results)
 	{
 		List<MultiValued> tomove = new ArrayList<MultiValued>(); //I am in here as well
-		tomove.add(inToSearch);
-		
+		tomove.addAll(allsimilarroots);
+
+		Set toskip = new HashSet();
+		for (Iterator iterator2 = allsimilarroots.iterator(); iterator2.hasNext();)
+		{
+			MultiValued centroid = (MultiValued) iterator2.next();
+			toskip.add(centroid.getId());
+		}
 		double cutoffdistance = getSettings().maxdistancetomatch;
 
 		int misses = 0;
 		for (Iterator iterator = results.iterator(); iterator.hasNext();)
 		{
 			MultiValued test = (MultiValued) iterator.next();
-			if( inToSearch.getId().equals(test.getId()) )
+			if( toskip.contains(test.getId()) )
 			{
-				continue; //Dont test myself
+				continue; //Skip myself
 			}
 			
-			if( !test.getBoolean("iscentroid") )  //Those have already been checked
+			//Loop over any important centroids. Then reset the parents
+			for (Iterator iterator2 = allsimilarroots.iterator(); iterator2.hasNext();)
 			{
-				//Loop over any important centroids. Then reset the parents
-				for (Iterator iterator2 = allimportantcentroids.iterator(); iterator2.hasNext();)
+				MultiValued centroid = (MultiValued) iterator2.next();
+				double distance = cosineDistance(centroid, test);
+				if (distance <= cutoffdistance) 
 				{
-					MultiValued centroid = (MultiValued) iterator2.next();
-					double distance = cosineDistance(centroid, test);
-					if (distance <= cutoffdistance) 
-					{
-						tomove.add(test); //These are as good as connecting to myself. Brad pit as a kid
-						break; //Just find one and then we will be resetting EVERYONE in this group to be only the new one
-					}
-					else
-					{
-						misses++;
-					}
+					tomove.add(test); //These are as good as connecting to myself. Brad pit as a kid
+					break; //Just find one and then we will be resetting EVERYONE in this group to be only the new one
+				}
+				else
+				{
+					misses++;
 				}
 			}
 		}
-		log.info("found: " + tomove.size() + ", missed: " + misses + " for " + inToSearch.getId());
+		log.info("found: " + tomove.size() + ", missed: " + misses + " for " + inToSearch.getId() + " and " + toskip);
 		return tomove;
 	}
 
-	protected Collection<MultiValued> findImportantCentroids(MultiValued searchby)
+	protected Collection<MultiValued> findAllSimilarRoots(MultiValued searchby)
 	{
-		Collection<MultiValued> allimportantcentroids = new ArrayList();
-		//Add our new centroid
-		if( searchby.getBoolean("iscentroid") )
-		{
-			allimportantcentroids.add(searchby);
-		}
+		Collection<MultiValued> allsimilarroots = new ArrayList();
+
+		allsimilarroots.add(searchby);
 		
 		Collection<String> ids = searchby.getValues("nearbycentroidids");
 		
@@ -583,10 +584,10 @@ public class KMeansManager implements CatalogEnabled {
 			double distance = cosineDistance(searchby, centroid);
 			if (distance <=  getSettings().maxdistancetomatch) 
 			{
-				allimportantcentroids.add(centroid); //These are as good as connecting to myself. Brad pit as a kid
+				allsimilarroots.add(centroid); //These are as good as connecting to myself. Brad pit as a kid
 			}	
 		}
-		return allimportantcentroids;
+		return allsimilarroots;
 	}
 
 	public MultiValued findCentroid(String inId)
