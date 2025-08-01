@@ -322,7 +322,7 @@ public class KMeansManager implements CatalogEnabled {
 				}
 				else
 				{
-					log.info("Could not set a single centroid under 91, was " + cluster.distance);
+					log.info("Could not set a single centroid under " + getSettings().maxdistancetocentroid_one + ", was " + cluster.distance);
 				}
 				break;
 			}
@@ -643,7 +643,7 @@ public class KMeansManager implements CatalogEnabled {
 	*/
 			int totalfaces = getMediaArchive().query("faceembedding").all().hitsPerPage(1).search().size(); 
 			double k = Math.sqrt( totalfaces / 2d); //Higher slows down indexing, more can be added back later as they click
-			int min = (int)Math.round(k); //Lowered by 10% will be added on demand or make it worse
+			int min = (int)Math.round(k * 1.50); //Raise by 50% or will be added on demand or make it worse
 			
 			String skcount = getMediaArchive().getCatalogSettingValue("facedetect_kcount");
 			if( skcount != null)
