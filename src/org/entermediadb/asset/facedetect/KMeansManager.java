@@ -516,7 +516,7 @@ public class KMeansManager implements CatalogEnabled {
 	protected List<MultiValued> findResultsWithinCentroids(MultiValued inToSearch, Collection<MultiValued> allimportantcentroids, Collection<MultiValued> results)
 	{
 		List<MultiValued> tomove = new ArrayList<MultiValued>(); //I am in here as well
-		tomove.addAll(allimportantcentroids);
+		tomove.add(inToSearch);
 		
 		double cutoffdistance = getSettings().maxdistancetomatch;
 
@@ -548,7 +548,7 @@ public class KMeansManager implements CatalogEnabled {
 				}
 			}
 		}
-		log.info("found: " + results.size() + ", missed: " + misses + " for " + inToSearch.getId());
+		log.info("found: " + tomove.size() + ", missed: " + misses + " for " + inToSearch.getId());
 		return tomove;
 	}
 
