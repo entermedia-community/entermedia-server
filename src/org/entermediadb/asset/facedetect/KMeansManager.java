@@ -318,7 +318,7 @@ public class KMeansManager implements CatalogEnabled {
 				if( cluster.distance <=  getSettings().maxdistancetocentroid_one) //The More centroid the more hits
 				{
 					centroids.add( cluster.centroid.getId() ); //must be within within .90
-					log.info("Picked one centroid  that was under 91, was " + cluster.distance + " was trying for " + getSettings().maxdistancetocentroid);
+					log.info("Picked one centroid under " + getSettings().maxdistancetocentroid_one + " , was " + cluster.distance + " was trying for " + getSettings().maxdistancetocentroid);
 				}
 				else
 				{
