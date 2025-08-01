@@ -527,7 +527,6 @@ public class KMeansManager implements CatalogEnabled {
 		}
 		double cutoffdistance = getSettings().maxdistancetomatch;
 
-		int misses = 0;
 		for (Iterator iterator = results.iterator(); iterator.hasNext();)
 		{
 			MultiValued test = (MultiValued) iterator.next();
@@ -546,13 +545,9 @@ public class KMeansManager implements CatalogEnabled {
 					tomove.add(test); //These are as good as connecting to myself. Brad pit as a kid
 					break; //Just find one and then we will be resetting EVERYONE in this group to be only the new one
 				}
-				else
-				{
-					misses++;
-				}
 			}
 		}
-		log.info("found: " + tomove.size() + ", missed: " + misses + " for " + inToSearch.getId() + " and " + toskip);
+		log.info("found: " + tomove.size() + ", of: " + results.size() + " from similarroots: " + toskip);
 		return tomove;
 	}
 
