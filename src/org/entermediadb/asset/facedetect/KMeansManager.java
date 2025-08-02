@@ -305,26 +305,29 @@ public class KMeansManager implements CatalogEnabled {
 
 		Collection<String> centroids = new ArrayList();
 
-		for (int i = 0; i < closestclusters.size(); i++) //Starts at 2
+		KMeansConfiguration settings = getSettings();
+		
+		int max = Math.min(settings.maxnumberofcentroids,closestclusters.size());
+		
+		for (int i = 0; i < max; i++) //Starts at 2 but only up to 5 clusters needed
 		{
 			CloseCluster cluster = (CloseCluster) closestclusters.get(i);
 			
-			if( cluster.distance <= getSettings().maxdistancetocentroid ) //The More centroid the more hits
+			if( cluster.distance <= settings.maxdistancetocentroid ) //The More centroid the more hits
 			{
 				centroids.add( cluster.centroid.getId() ); //must be within within .75
 			}
-			else if( i == 0 )
+			else if( i == 0 || i == 1 )
 			{
-				if( cluster.distance <=  getSettings().maxdistancetocentroid_one) //The More centroid the more hits
+				if( cluster.distance <=  settings.maxdistancetocentroid_one) //The More centroid the more hits
 				{
 					centroids.add( cluster.centroid.getId() ); //must be within within .90
-					log.info("Picked one centroid under " + getSettings().maxdistancetocentroid_one + " , was " + cluster.distance + " was trying for " + getSettings().maxdistancetocentroid);
+					log.info("Picked one centroid under " + settings.maxdistancetocentroid_one + " , was " + cluster.distance + " was trying for " + settings.maxdistancetocentroid);
 				}
 				else
 				{
-					log.info("Could not set a single centroid under " + getSettings().maxdistancetocentroid_one + ", was " + cluster.distance);
+					log.info("Could not set a single centroid under " + settings.maxdistancetocentroid_one + ", was " + cluster.distance);
 				}
-				break;
 			}
 			else
 			{
@@ -345,7 +348,7 @@ public class KMeansManager implements CatalogEnabled {
 			
 			//closestclusters.iterator().next();
 			
-			log.info("Bad: No centroids within " + getSettings().maxdistancetocentroid + " across " +  getClusters().size() + " centroids");
+			log.info("Bad: No centroids within " + settings.maxdistancetocentroid + " across " +  getClusters().size() + " centroids");
 			getMediaArchive().saveData("faceembedding",inFace);
 		}
 		else
@@ -699,7 +702,12 @@ public class KMeansManager implements CatalogEnabled {
 				log.info("Default size from db maxdistancetocentroid_one=" + config.maxdistancetocentroid_one );
 			}
 			
-			
+			String smaxnumberofcentroids = getMediaArchive().getCatalogSettingValue("facedetect_maxnumberofcentroids ");
+			if( smaxnumberofcentroids  != null)
+			{
+				config.maxnumberofcentroids = Integer.parseInt(smaxnumberofcentroids );
+				log.info("Default size from db maxnumberofcentroids =" + config.maxnumberofcentroids );
+			}
 			
 			log.info("Reloading settings kcount="+ config.kcount  + " maxresultspersearch=" + config.maxresultspersearch + " maxdistancetocentroid=" + config.maxdistancetocentroid );
 		}
