@@ -7,15 +7,15 @@ import org.openedit.MultiValued;
 
 public class FaceScanInstructions
 {
-	boolean fieldUpdateExistingFace = true;
+	boolean fieldSkipExistingFaces = true;
 	
-	public boolean isUpdateExistingFace()
+	public boolean isSkipExistingFaces()
 	{
-		return fieldUpdateExistingFace;
+		return fieldSkipExistingFaces;
 	}
-	public void setUpdateExistingFace(boolean inUpdateExistingFace)
+	public void setSkipExistingFaces(boolean inUpdateExistingFace)
 	{
-		fieldUpdateExistingFace = inUpdateExistingFace;
+		fieldSkipExistingFaces = inUpdateExistingFace;
 	}
 	boolean fieldFindParents = true;
 	
@@ -57,15 +57,15 @@ public class FaceScanInstructions
 		return found;
 	}
 	
-	public Collection<String> getAllAssetIds()
+	public Map<String,Collection<MultiValued>> getExistingFacesByAssetId()
 	{
-		return fieldAllAssetIds;
+		return fieldExistingFacesByAssetId;
 	}
-	public void setAllAssetIds(Collection<String> inAssetIds)
+	public void setExistingFacesByAssetId(Map<String,Collection<MultiValued>> inAssetIds)
 	{
-		fieldAllAssetIds = inAssetIds;
+		fieldExistingFacesByAssetId = inAssetIds;
 	}
-	Collection<String> fieldAllAssetIds;
+	protected Map<String,Collection<MultiValued>> fieldExistingFacesByAssetId;
 	
 	
 	double fieldConfidenceLimit;
