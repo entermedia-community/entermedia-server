@@ -199,7 +199,8 @@ public class EntityManager implements CatalogEnabled
 				//if( entity.getName() == null || !entity.getName().equals(cat.getName()))
 				if (!entitysourcepath.equals(cat.getCategoryPath()))
 				{
-					log.info("Category was renamed " + cat.getName() + " -> " + entity.getName());
+					//TODO: move entire category to new	
+					log.info("Category was renamed " + cat.getCategoryPath() + " -> " + entitysourcepath);
 					String categoryname = null;
 					if (entitysourcepath.endsWith("/"))
 							{

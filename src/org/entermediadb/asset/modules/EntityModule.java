@@ -1526,9 +1526,11 @@ public class EntityModule extends BaseMediaModule
 		entity.removeValue("editorusers", dataid);
 		entity.removeValue("editorroles", dataid);			
 		entity.removeValue("editorgroups", dataid);			
+		
+		archive.saveData(module.getId(),entity);
 
 		archive.getPermissionManager().checkEntityCategoryPermission(module, (MultiValued)entity);
-		archive.saveData(module.getId(),entity);
+		
 	}
 /*
 	public void removeEntityPermission(WebPageRequest inReq) 
@@ -1540,6 +1542,35 @@ public class EntityModule extends BaseMediaModule
 		inReq.putPageValue("entitypermissions", all);
 	}
 	*/
+	
+	
+	public void assignUserToEntities(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		MultiValued entity = (MultiValued) inReq.getPageValue("entity"); 
+		
+		String moduleid = inReq.findPathValue("module");
+	
+		if( entity != null)
+		{
+	
+			if( !entity.containsValue("viewerusers", inReq.getUserName()) )
+			{
+				entity.addValue("viewerusers", inReq.getUserName());
+				archive.saveData(moduleid, entity);
+				
+				Data module = archive.getCachedData("module", moduleid);
+				if (module != null && entity != null)
+				{
+					archive.getPermissionManager().checkEntityCategoryPermission(module, (MultiValued)entity);
+				}
+			}	
+			inReq.putPageValue("openentityid", entity.getId());
+		}
+		
+		
+	}
 	
 	public void snapshotData(WebPageRequest inReq) {
 
