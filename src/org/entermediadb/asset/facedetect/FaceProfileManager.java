@@ -211,6 +211,7 @@ public class FaceProfileManager implements CatalogEnabled
 		
 		if (!"image".equalsIgnoreCase(type) && !"video".equalsIgnoreCase(type)  )
 		{
+			log.info("Skipping non images: " + inAsset.getName() );
 			return;
 		}
 		
@@ -383,10 +384,7 @@ public class FaceProfileManager implements CatalogEnabled
 			//ContentItem input = inArchive.getContent("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1500x1500.jpg");
 			//Convert quickly
 			ContentItem item = generateInputFile(inAsset,block);
-			if (item == null) {
-				continue;
-			}
-			if( !item.exists() )
+			if (item == null || !item.exists() )
 			{
 				//probblem
 				log.info("Faceprofile scan, no thumbnail found for : " +inAsset.getId() + " "+ inAsset.getSourcePath());
