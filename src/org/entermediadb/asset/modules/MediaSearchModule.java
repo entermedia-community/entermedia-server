@@ -201,6 +201,8 @@ public class MediaSearchModule extends BaseMediaModule
 			search.addSortBy(sort);
 		}
 		
+		search.setIncludeDescription(false);
+		
 		if( exact != null && Boolean.parseBoolean(exact))
 		{
 			search.addExact("category-exact",category.getId());
