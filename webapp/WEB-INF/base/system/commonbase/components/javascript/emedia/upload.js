@@ -15,12 +15,9 @@ $(document).ready(function () {
 	// 	const { ipcRenderer: ipc } = require("electron");
 	// 	ipcRenderer = ipc;
 	// }
-	if (apphome === undefined) {
-		if (!siteroot) {
-			siteroot = $("#application").data("siteroot");
-		}
-		apphome = siteroot + $("#application").data("apphome");
-	}
+	var siteroot = $("#application").data("siteroot");
+	var apphome = siteroot + $("#application").data("apphome");
+	var mediadb = $("#application").data("mediadbappid");
 
 	lQuery("#createmediapanel").livequery(function (e) {
 		//reset array
@@ -252,6 +249,99 @@ $(document).ready(function () {
 			div.removeClass("filehover");
 		});
 	});
+	lQuery(".dropentity").livequery(function () {
+		var div = $(this);
+		if (div.find(".drop-feedback").length == 0) {
+			div.append(
+				'<div class="drop-feedback"><div><i class="bi bi-upload"></i><p>Create Folder and Upload Files</p></div></div>'
+			);
+		}
+		div.on("dragover", function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			div.addClass("filehover");
+		});
+		div.on("dragenter", function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+		});
+		div.on("dragleave", function (e) {
+			div.removeClass("filehover");
+		});
+		div.on("drop", async function (e) {
+			if (e.originalEvent.dataTransfer) {
+				var items = e.originalEvent.dataTransfer.items;
+				if (items && items.length > 0) {
+					e.preventDefault();
+					e.stopPropagation();
+					if (items.length > 1) {
+						div.removeClass("filehover");
+						customToast("Please drop a single folder.", {
+							positive: false,
+						});
+						return;
+					}
+					var entry = items[0].webkitGetAsEntry();
+					if (!entry || !entry.isDirectory) {
+						div.removeClass("filehover");
+						customToast("Please drop a folder.", {
+							positive: false,
+						});
+						return;
+					}
+					const files = [];
+					await readFolderRecursively(entry, files);
+					var moduleid = div.data("moduleid");
+					$.ajax({
+						url: `/${mediadb}/services/module/${moduleid}/create`,
+						method: "POST",
+						data: JSON.stringify({
+							name: entry.name,
+						}),
+						contentType: "application/json",
+						success: function (data) {
+							//
+						},
+						error: function (error) {
+							customToast("Error creating the folder!", {
+								positive: false,
+								log: error,
+							});
+						},
+					});
+				}
+			} else {
+				customToast("Browser does not support drag and drop.", {
+					positive: false,
+				});
+			}
+			div.removeClass("filehover");
+		});
+	});
+
+	function readFolderRecursively(entry, fileList, path = "") {
+		return new Promise((resolve) => {
+			if (entry.isFile) {
+				entry.file((file) => {
+					file.fullPath = path + file.name;
+					fileList.push(file);
+					resolve();
+				});
+			} else if (entry.isDirectory) {
+				var reader = entry.createReader();
+				reader.readEntries(async (entries) => {
+					for (var i = 0; i < entries.length; i++) {
+						await readFolderRecursively(
+							entries[i],
+							fileList,
+							path + entry.name + "/"
+						);
+					}
+					resolve();
+				});
+			}
+		});
+	}
 
 	//Detect Youtube Link
 	$("#uploaddescription").on("keyup", function () {
