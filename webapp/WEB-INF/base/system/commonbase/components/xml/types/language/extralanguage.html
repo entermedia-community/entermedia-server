@@ -32,10 +32,11 @@
 			#set($textarearows = 1)
 		#end
 		
+		<input type="hidden" name="${detailid}.language" value="$languagecode" />
 		<textarea
 			type="text"
 			id="${detailid}-${languagecode}-value"
-			class="form-control langvalue #if($count == "1" && $detail.isRequired() && !$multiedit) required #end"
+			class='form-control langvalue #if($count == "1" && $detail.isRequired() && !$multiedit) required #end'
 			data-code="${languagecode}"
 			name="${detailid}.${languagecode}.value"
 			cols="40"

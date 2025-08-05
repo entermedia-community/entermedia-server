@@ -15,8 +15,7 @@
             #set($count = $count+1)
             <li>
               ## <input type="hidden" name="${detail.id}.language" value="$locale.id" />
-              <a tabindex="-1"
-                class="dropdown-item addlocale-ajax"
+              <a class="dropdown-item addlocale-ajax"
                 href="$siteroot$apphome/components/xml/types/language/extralanguage.html"
                 data-targetdiv="languagesextra_${detail.id}"
                 data-detailid="${detail.id}"
@@ -48,7 +47,7 @@
         #set($localval = $languagemap.getText($locale.id))
         #if($addedlocale == $locale.id || ($localval && $localval != ""))
         <li>
-          <a tabindex="-1" class="dropdown-item translate-ajax" data-detailid="${detail.id}" data-source="$locale.id">
+          <a class="dropdown-item translate-ajax" data-detailid="${detail.id}" data-source="$locale.id">
             $locale
           </a>
         </li>
