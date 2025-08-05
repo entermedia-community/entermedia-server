@@ -15,6 +15,7 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -145,14 +146,26 @@ public class FaceProfileManager implements CatalogEnabled
 				return 0;
 			}
 
-			if( instructions.getAllAssetIds() == null && instructions.isUpdateExistingFace() ) //WE need to know what assets are existing
+			HitTracker existingfaces = getMediaArchive().query("faceembedding").orgroup("assetid", inAssets).search();
+			existingfaces.enableBulkOperations();
+
+			HashMap<String,Collection<MultiValued>> byassetid = new HashMap(existingfaces.size());
+			
+			log.error("Loading giant list of assetid");
+			for (Iterator iterator = existingfaces.iterator(); iterator.hasNext();)
 			{
-				HitTracker allfaces = getMediaArchive().query("faceembedding").exact("isremoved",false).sort("locationhUp").search();
-				allfaces.enableBulkOperations();
-	
-				Collection<String> assetids = allfaces.collectValues("assetid");
-				instructions.setAllAssetIds(assetids);
+				MultiValued face = (MultiValued) iterator.next();
+				Collection<MultiValued> existing =  byassetid.get( face.get("assetid"));
+				if( existing == null)
+				{
+					existing = new ArrayList(2);
+				}
+				existing.add(face);
+				byassetid.put(face.get("assetid"),existing);
 			}
+			
+			instructions.setExistingFacesByAssetId(byassetid);
+
 			List<MultiValued> foundfacestosave = new ArrayList();
 			List<Data> tosave = new ArrayList();
 
@@ -165,10 +178,10 @@ public class FaceProfileManager implements CatalogEnabled
 				asset.setValue("facescanerror", false);
 				tosave.add(asset);
 
-				if( !instructions.isUpdateExistingFace() )
+				if( instructions.isSkipExistingFaces() )  //This is the default, but when rescanning one asset dont skip
 				{
 					String assetid = asset.getId();
-					if( instructions.getAllAssetIds() != null && instructions.getAllAssetIds().contains(assetid ) )
+					if( instructions.getExistingFacesByAssetId().containsKey(assetid ) )
 					{
 						log.error("Skipping, Already have assetid " + assetid);
 						continue;
@@ -182,7 +195,6 @@ public class FaceProfileManager implements CatalogEnabled
 				catch( Throwable ex)
 				{
 					log.error("Marking Error on one asset: " + asset + " error:" + ex);
-					asset.setValue("facescancomplete",true);
 					asset.setValue("facescanerror",true);
 					//throw new OpenEditException("Error on: " + inAssets.size(),ex);
 				}
@@ -368,7 +380,7 @@ public class FaceProfileManager implements CatalogEnabled
 		
 		FaceScanInstructions videoinstructions = new FaceScanInstructions();
 		
-		videoinstructions.setAllAssetIds(instructions.getAllAssetIds());
+		videoinstructions.setExistingFacesByAssetId(instructions.getExistingFacesByAssetId());
 		videoinstructions.setConfidenceLimit(instructions.getConfidenceLimit() * .85D);
 		videoinstructions.setMinimumFaceSize(instructions.getMinimumFaceSize() * .75D);
 
@@ -621,16 +633,16 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			MultiValued addedface = null;
 			
-			if( instructions.isUpdateExistingFace() ) 
+			if( instructions.getExistingFacesByAssetId() != null) 
 			{
 				String assetid = inAsset.getId();
-				if( instructions.getAllAssetIds() == null || instructions.getAllAssetIds().contains(assetid ) )
+				Collection<MultiValued> existingfaces = instructions.getExistingFacesByAssetId().get(inAsset.getId());
+				if( existingfaces != null)
 				{
-					Collection existingfaces = getMediaArchive().query("faceembedding").exact("assetid", assetid).search();  //Find exact same face record
 					for (Iterator iterator2 = existingfaces.iterator(); iterator2.hasNext();)
 					{
 						MultiValued existing = (MultiValued) iterator2.next();
-						List<Double> othervalues = (List<Double>)existing.getValue("facedatadoubles"); //Manually done because Search did not work
+						List<Double> othervalues = (List<Double>)existing.getValue("facedatadoubles"); //Manually done
 						if(othervalues.equals(vector) )
 						{
 							addedface = existing;
@@ -1182,7 +1194,7 @@ public class FaceProfileManager implements CatalogEnabled
 		one.add(inAsset);
 		
 		FaceScanInstructions instructions = createInstructions();
-		instructions.setUpdateExistingFace(true); //Will look it up just in case
+		instructions.setSkipExistingFaces(false); //Will look it up just in case
 		instructions.setConfidenceLimit(instructions.getConfidenceLimit() * .75D);
 		instructions.setMinimumFaceSize(instructions.getMinimumFaceSize() * .50D);
 		

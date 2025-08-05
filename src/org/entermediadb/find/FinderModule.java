@@ -1506,27 +1506,7 @@ public class FinderModule extends BaseMediaModule
 			}
 		}
 	}
-	public void assignUserToEntities(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		
-		MultiValued entity = (MultiValued) inReq.getPageValue("entity"); 
-		
-		String moduleid = inReq.findPathValue("module");
 	
-		if( entity != null)
-		{
-	
-			if( !entity.containsValue("customusers", inReq.getUserName()) )
-			{
-				entity.addValue("customusers", inReq.getUserName());
-				archive.saveData(moduleid, entity);
-			}	
-			inReq.putPageValue("openentityid", entity.getId());
-		}
-		
-		
-	}
 	
 	
 	public void assignUserToEntitiesOLD(WebPageRequest inReq)
