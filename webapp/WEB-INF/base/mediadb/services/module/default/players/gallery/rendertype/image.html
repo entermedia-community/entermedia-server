@@ -62,10 +62,11 @@ $context.putPageValue("thumbsize", $thumbsize)
 		#end
 
 		#set( $caption = $!{hitcaptions.get($context.language)} )
-
+		#set( $linktitle = "" )
 		#if($publishing.image_caption_enabled == "true")
 			#ifnotnull($caption)
 				#set( $captionhtml = "<p class='__img_caption'>$!{caption}</p>" )
+				#set( $linktitle = $caption )
 			#end
 		#end
 
@@ -79,7 +80,9 @@ $context.putPageValue("thumbsize", $thumbsize)
 			class="lightbox"
 			data-downloadlink="$!{downloadlink}"
 			#ifnotnull($hitcaptions) data-locales="$hitcaptions" #end
-			#ifnotnull($captionhtml) title="<div class='__img_overlay'>#esc($captionhtml)</div>" #end
+			#if($linktitle != "") title="#esc($linktitle)" #end
+			
+			#ifnotnull($captionhtml)data-caption="<div class='__img_overlay'>#esc(${captionhtml})</div>"#end
 		>
 			<img class="imagethumb img-fluid  img$!thumbsize "
 				catalogid="$catalogid" 
