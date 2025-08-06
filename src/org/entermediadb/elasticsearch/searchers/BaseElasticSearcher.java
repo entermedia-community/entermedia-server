@@ -3538,7 +3538,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 			if ("category".equals(securefield.getViewType()))  //View type can be rootcategory OR category-exact
 			{
-				Collection exact = inData.getValues(securityfield);
+				Collection exact = inData.getValues(securityfield); 
 				if (exact != null)
 				{
 						
@@ -3557,6 +3557,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						}
 						if (c == null)
 						{
+							log.info("Category missing: "+ obj + " Searchtype: " + getSearchType() + " Data: " + inData);
 							continue;
 						}
 						

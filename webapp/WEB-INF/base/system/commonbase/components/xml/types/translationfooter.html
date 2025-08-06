@@ -1,0 +1,60 @@
+#set($languages = $mediaarchive.getList("locale"))
+#set($count = $language_count)
+
+<div class="d-flex align-items-center justify-content-between mt-3">
+  <div class="languagesadd">
+    #if( !$searchform )
+    <div class="dropdown">
+      <button type="button" class="btn btn-cta" title="[[Add Language]]">
+        <i class="bi bi-plus-circle"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-right lenguageaddpicker" role="menu">
+        #foreach($locale in $languages)
+          #set($localval = $languagemap.getText($locale.id))
+          #if($addedlocale != $locale.id && (!$localval || $localval == ""))
+            #set($count = $count+1)
+            <li>
+              ## <input type="hidden" name="${detail.id}.language" value="$locale.id" />
+              <a class="dropdown-item addlocale-ajax"
+                href="$siteroot$apphome/components/xml/types/language/extralanguage.html"
+                data-targetdiv="languagesextra_${detail.id}"
+                data-detailid="${detail.id}"
+                data-count="${count}"
+                data-locale="${locale}"
+                data-languagecode="${locale.id}">
+                $locale
+              </a>
+            </li>
+          #end
+          #set($localval = "")
+        #end
+      </ul>
+    </div>
+    #end
+  </div>
+
+  #if($language_count > 1)
+  <div class="dropdown" id="translate-dropdown-${detail.id}">
+    <button type="button" class="btn btn-primary" title="[[Translate]]">
+      <i class="bi bi-translate"></i>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+      <li>
+        <p class="text-white text-center m-0 p-1 small bg-grey">[[Translate From]]</p>
+      </li>
+      <li class="divider"></li>
+      #foreach($locale in $languages)
+        #set($localval = $languagemap.getText($locale.id))
+        #if($addedlocale == $locale.id || ($localval && $localval != ""))
+        <li>
+          <a class="dropdown-item translate-ajax" data-detailid="${detail.id}" data-source="$locale.id">
+            $locale
+          </a>
+        </li>
+        #end
+        #set($localval = "")
+      #end
+    </ul>
+  </div>
+  #end
+</div>

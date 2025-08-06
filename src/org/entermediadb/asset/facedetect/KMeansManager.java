@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -304,27 +305,29 @@ public class KMeansManager implements CatalogEnabled {
 
 		Collection<String> centroids = new ArrayList();
 
-		for (int i = 0; i < closestclusters.size(); i++) //Starts at 2
+		KMeansConfiguration settings = getSettings();
+		
+		int max = Math.min(settings.maxnumberofcentroids,closestclusters.size());
+		
+		for (int i = 0; i < max; i++) //Starts at 2 but only up to 5 clusters needed
 		{
 			CloseCluster cluster = (CloseCluster) closestclusters.get(i);
 			
-			if( cluster.distance <= getSettings().maxdistancetocentroid ) //The More centroid the more hits
+			if( cluster.distance <= settings.maxdistancetocentroid ) //The More centroid the more hits
 			{
 				centroids.add( cluster.centroid.getId() ); //must be within within .75
 			}
-			else if( i == 0 )
+			else if( i == 0 || i == 1 )
 			{
-				double extra = 91.0; //Good to pick at least one 
-				if( cluster.distance <=  extra) //The More centroid the more hits
+				if( cluster.distance <=  settings.maxdistancetocentroid_one) //The More centroid the more hits
 				{
 					centroids.add( cluster.centroid.getId() ); //must be within within .90
-					log.info("Picked one centroid  that was under 91, was " + cluster.distance + " was trying for " + getSettings().maxdistancetocentroid);
+					log.info("Picked one centroid under " + settings.maxdistancetocentroid_one + " , was " + cluster.distance + " was trying for " + settings.maxdistancetocentroid);
 				}
 				else
 				{
-					log.info("Could not set a single centroid under 91, was " + cluster.distance);
+					log.info("Could not set a single centroid under " + settings.maxdistancetocentroid_one + ", was " + cluster.distance);
 				}
-				break;
 			}
 			else
 			{
@@ -345,7 +348,7 @@ public class KMeansManager implements CatalogEnabled {
 			
 			//closestclusters.iterator().next();
 			
-			log.info("Bad: No centroids within " + getSettings().maxdistancetocentroid + " across " +  getClusters().size() + " centroids");
+			log.info("Bad: No centroids within " + settings.maxdistancetocentroid + " across " +  getClusters().size() + " centroids");
 			getMediaArchive().saveData("faceembedding",inFace);
 		}
 		else
@@ -354,7 +357,7 @@ public class KMeansManager implements CatalogEnabled {
 			if( centroids.size() > 15)
 			{
 				//With large number of records and centroids we Might want to decrease the size since we have so many
-				log.info("Too many centroids per face, decrease maxdistancetocentroid " + centroids.size() + " on " + inFace); 
+				log.info("Too many per face centroids: " + centroids.size() + "/" + getClusters().size() + " on " + inFace); 
 			}
 		}
 		
@@ -372,44 +375,49 @@ public class KMeansManager implements CatalogEnabled {
 			throw new OpenEditException("Not enought clusters. Run reindexfaces event");
 		}
 		//inSearch.setValue("iscentroid",false);
+		Collection<MultiValued> matches = null;
 		
 		Lock lock = getMediaArchive().lock(inSearch.getId(), "KMeansSearch");
-		
-		Collection nearbycentroidids = inSearch.getValues("nearbycentroidids");
-		if( nearbycentroidids == null || nearbycentroidids.isEmpty() )
-		{
-			throw new OpenEditException(inSearch + " Has no centroids. reindexfaces");
-		}
 		long start = System.currentTimeMillis();
-		HitTracker tracker = getMediaArchive().query("faceembedding").
-				orgroup("nearbycentroidids",nearbycentroidids).
-				exact("isremoved",false).hitsPerPage(1000).search();
-				
-		//if we have too many lets make a new k
-		if( tracker.size() > getSettings().maxresultspersearch )
+		try
 		{
-			// Add the new cluster to the list
-			//Rebalance centroids
-			boolean alreadydivided = false;
-			if(inSearch.getBoolean("iscentroid") || (tracker.size() < 2000 &&  nearbycentroidids.size() < 3 ) )
-			{	
-				alreadydivided = true; //Probably
-			}
-			if( !alreadydivided)
+			Collection nearbycentroidids = inSearch.getValues("nearbycentroidids");
+			if( nearbycentroidids == null || nearbycentroidids.isEmpty() )
 			{
-				Collection<MultiValued> matches = divideCluster(inSearch, tracker);
-				return matches;
+				throw new OpenEditException(inSearch + " Has no centroids. reindexfaces");
 			}
-		}		
+			HitTracker tracker = getMediaArchive().query("faceembedding").
+					orgroup("nearbycentroidids",nearbycentroidids).
+					exact("isremoved",false).hitsPerPage(1000).search();
+					
+			//if we have too many lets make a new k
+			if( tracker.size() > getSettings().maxresultspersearch )
+			{
+				// Add the new cluster to the list
+				//Rebalance centroids
+				boolean alreadydivided = false;
+				if(inSearch.getBoolean("iscentroid") || (tracker.size() < 2000 &&  nearbycentroidids.size() < 3 ) )
+				{	
+					alreadydivided = true; //Probably
+				}
+				if( !alreadydivided)
+				{
+					matches = divideCluster(inSearch, tracker);
+					return matches;
+				}
+			}		
+			Collection<MultiValued> allsimilarroots =	findAllSimilarRoots(inSearch);
+			matches = findResultsWithinCentroids(inSearch, allsimilarroots, tracker);
+			
+			long end = System.currentTimeMillis();
+			double seconds = (end-start)/1000d;
+			log.info("Search found  " +  matches.size()  + " from " +  tracker  + "  in " + seconds + " seconds");
+		}
+		finally
+		{
+			getMediaArchive().releaseLock(lock);
+		}
 		
-		Collection<MultiValued> allimportantcentroids =	findImportantCentroids(inSearch);
-		Collection<MultiValued> matches = findResultsWithinCentroids(inSearch, allimportantcentroids, tracker);
-		
-		getMediaArchive().releaseLock(lock);
-		
-		long end = System.currentTimeMillis();
-		double seconds = (end-start)/1000d;
-		log.info("Search found  " + tracker + " -> " + matches.size() + "  in " + seconds + " seconds");
 
 		//log.info("Did not divide, found: " + matches.size() + " Missed " + misses + " for " + inSearch.getId() + " in " + seconds + " seconds");
 		return matches;
@@ -472,13 +480,13 @@ public class KMeansManager implements CatalogEnabled {
 		//I got too many hits then add my myself as a centroid
 		newcentroidItem.setValue("iscentroid",true);
 
-		Collection<MultiValued> allimportantcentroids =	findImportantCentroids(newcentroidItem);
+		Collection<MultiValued> allsimilarroots =	findAllSimilarRoots(newcentroidItem);
 		
-		List<MultiValued> tomove = findResultsWithinCentroids(newcentroidItem, allimportantcentroids, results);
+		List<MultiValued> tomove = findResultsWithinCentroids(newcentroidItem, allsimilarroots, results);
 
 		//Save all to be the same click. 
 		Collection<String> savecentroids = new HashSet();
-		for (Iterator iterator2 = allimportantcentroids.iterator(); iterator2.hasNext();)
+		for (Iterator iterator2 = allsimilarroots.iterator(); iterator2.hasNext();)
 		{
 			MultiValued centroid = (MultiValued) iterator2.next();
 			savecentroids.add(centroid.getId());
@@ -509,53 +517,48 @@ public class KMeansManager implements CatalogEnabled {
 	}
 
 
-	protected List<MultiValued> findResultsWithinCentroids(MultiValued inToSearch, Collection<MultiValued> allimportantcentroids, Collection<MultiValued> results)
+	protected List<MultiValued> findResultsWithinCentroids(MultiValued inToSearch, Collection<MultiValued> allsimilarroots, Collection<MultiValued> results)
 	{
 		List<MultiValued> tomove = new ArrayList<MultiValued>(); //I am in here as well
-		tomove.addAll(allimportantcentroids);
-		
+		tomove.addAll(allsimilarroots);
+
+		Set toskip = new HashSet();
+		for (Iterator iterator2 = allsimilarroots.iterator(); iterator2.hasNext();)
+		{
+			MultiValued centroid = (MultiValued) iterator2.next();
+			toskip.add(centroid.getId());
+		}
 		double cutoffdistance = getSettings().maxdistancetomatch;
 
-		int misses = 0;
 		for (Iterator iterator = results.iterator(); iterator.hasNext();)
 		{
 			MultiValued test = (MultiValued) iterator.next();
-			if( inToSearch.getId().equals(test.getId()) )
+			if( toskip.contains(test.getId()) )
 			{
-				continue; //Dont test myself
+				continue; //Skip myself
 			}
 			
-			if( !test.getBoolean("iscentroid") )  //Those have already been checked
+			//Loop over any important centroids. Then reset the parents
+			for (Iterator iterator2 = allsimilarroots.iterator(); iterator2.hasNext();)
 			{
-				//Loop over any important centroids. Then reset the parents
-				for (Iterator iterator2 = allimportantcentroids.iterator(); iterator2.hasNext();)
+				MultiValued centroid = (MultiValued) iterator2.next();
+				double distance = cosineDistance(centroid, test);
+				if (distance <= cutoffdistance) 
 				{
-					MultiValued centroid = (MultiValued) iterator2.next();
-					double distance = cosineDistance(centroid, test);
-					if (distance <= cutoffdistance) 
-					{
-						tomove.add(test); //These are as good as connecting to myself. Brad pit as a kid
-						break; //Just find one and then we will be resetting EVERYONE in this group to be only the new one
-					}
-					else
-					{
-						misses++;
-					}
+					tomove.add(test); //These are as good as connecting to myself. Brad pit as a kid
+					break; //Just find one and then we will be resetting EVERYONE in this group to be only the new one
 				}
 			}
 		}
-		log.info("found: " + results.size() + ", missed: " + misses + " for " + inToSearch.getId());
+		log.info("found: " + tomove.size() + ", of: " + results.size() + " from similarroots: " + toskip);
 		return tomove;
 	}
 
-	protected Collection<MultiValued> findImportantCentroids(MultiValued searchby)
+	protected Collection<MultiValued> findAllSimilarRoots(MultiValued searchby)
 	{
-		Collection<MultiValued> allimportantcentroids = new ArrayList();
-		//Add our new centroid
-		if( searchby.getBoolean("iscentroid") )
-		{
-			allimportantcentroids.add(searchby);
-		}
+		Collection<MultiValued> allsimilarroots = new ArrayList();
+
+		allsimilarroots.add(searchby);
 		
 		Collection<String> ids = searchby.getValues("nearbycentroidids");
 		
@@ -579,10 +582,10 @@ public class KMeansManager implements CatalogEnabled {
 			double distance = cosineDistance(searchby, centroid);
 			if (distance <=  getSettings().maxdistancetomatch) 
 			{
-				allimportantcentroids.add(centroid); //These are as good as connecting to myself. Brad pit as a kid
+				allsimilarroots.add(centroid); //These are as good as connecting to myself. Brad pit as a kid
 			}	
 		}
-		return allimportantcentroids;
+		return allsimilarroots;
 	}
 
 	public MultiValued findCentroid(String inId)
@@ -621,14 +624,10 @@ public class KMeansManager implements CatalogEnabled {
 			fieldClusters = null; //reload em
 			
 			config = new KMeansConfiguration();
-			String value = getMediaArchive().getCatalogSettingValue("facedetect_max_distance");
+			String value = getMediaArchive().getCatalogSettingValue("facedetect_maxdistancetomatch");
 			if( value != null)
 			{
 				config.maxdistancetomatch = Double.parseDouble(value);
-			}
-			else
-			{
-				config.maxdistancetomatch = 0.52; //be more selective
 			}
 			/*
 			 *  Choosing the Number of Centroids (k)
@@ -642,7 +641,7 @@ public class KMeansManager implements CatalogEnabled {
 	*/
 			int totalfaces = getMediaArchive().query("faceembedding").all().hitsPerPage(1).search().size(); 
 			double k = Math.sqrt( totalfaces / 2d); //Higher slows down indexing, more can be added back later as they click
-			int min = (int)Math.round(k); //Lowered by 10% will be added on demand or make it worse
+			int min = (int)Math.round(k * 1.50); //Raise by 50% or will be added on demand or make it worse
 			
 			String skcount = getMediaArchive().getCatalogSettingValue("facedetect_kcount");
 			if( skcount != null)
@@ -669,7 +668,6 @@ public class KMeansManager implements CatalogEnabled {
 			//.80-.9 = 20-100k
 			//		.9 / (t / 20k) = 
 					
-			config.maxdistancetocentroid = .87;
 //			if( totalfaces > 50000 )
 //			{
 //				newrange = .8;  			 // (totalfaces / 20000.0)); //.90 worked well for 20k so scale it up or down based on total
@@ -697,6 +695,19 @@ public class KMeansManager implements CatalogEnabled {
 				log.info("Default size from db sinit_loop_start_distance=" + sinit_loop_start_distance );
 			}
 
+			String smaxdistancetocentroid_one = getMediaArchive().getCatalogSettingValue("facedetect_maxdistancetocentroid_one");
+			if( smaxdistancetocentroid_one != null)
+			{
+				config.maxdistancetocentroid_one = Double.parseDouble(smaxdistancetocentroid_one);
+				log.info("Default size from db maxdistancetocentroid_one=" + config.maxdistancetocentroid_one );
+			}
+			
+			String smaxnumberofcentroids = getMediaArchive().getCatalogSettingValue("facedetect_maxnumberofcentroids ");
+			if( smaxnumberofcentroids  != null)
+			{
+				config.maxnumberofcentroids = Integer.parseInt(smaxnumberofcentroids );
+				log.info("Default size from db maxnumberofcentroids =" + config.maxnumberofcentroids );
+			}
 			
 			log.info("Reloading settings kcount="+ config.kcount  + " maxresultspersearch=" + config.maxresultspersearch + " maxdistancetocentroid=" + config.maxdistancetocentroid );
 		}

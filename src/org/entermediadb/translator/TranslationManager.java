@@ -24,8 +24,6 @@ public class TranslationManager implements CatalogEnabled {
 	
 	private static Log log = LogFactory.getLog(TranslationManager.class);
 
-	protected String sourceLang;
-	protected String targetLang;
 	protected HttpSharedConnection connection;
 	
 	protected String fieldCatalogId;
@@ -69,6 +67,28 @@ public class TranslationManager implements CatalogEnabled {
 		}
 		return fieldMediaArchive;
 	}
+	public Map<String, String> translatePlainText(String sourceLang, Collection<String> targetLangs, String text)
+	{
+		ArrayList<String> texts = new ArrayList<>(Arrays.asList(text));
+
+		JSONObject translations = translateFields(texts, sourceLang, targetLangs);
+		
+		Map<String, String> results = new HashMap<String, String>();
+		for (Iterator iterator = targetLangs.iterator(); iterator.hasNext();)
+		{
+			String lang = (String) iterator.next();
+			JSONArray fieldTranslations = (JSONArray) translations.get(lang);
+			if(fieldTranslations == null)
+			{
+				continue;
+			}
+			String tr = (String) fieldTranslations.get(0);
+			results.put(lang, tr);
+		}
+		
+		return results;
+		
+	}
 	public LanguageMap translateField(String field, LanguageMap languageMap, String sourceLang, Collection<String> targetLangs)
 	{
 		ArrayList<String> fieldNames = new ArrayList();
@@ -96,7 +116,6 @@ public class TranslationManager implements CatalogEnabled {
 		
 		return languageMap;
 	}
-
 	public Map<String, LanguageMap> translateFields(Map fields, String sourceLang, Collection<String> targetLangs)
 	{
 		ArrayList<String> fieldNames = new ArrayList();

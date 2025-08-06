@@ -1691,15 +1691,16 @@ public class ProjectModule extends BaseMediaModule
 		Searcher chats = mediaArchive.getSearcher("chatterbox");
 		HitTracker recent = chats.query().orgroup("id", messages).named("hits").sort("dateDown").hitsPerPage(50).search(inReq);
 		inReq.putPageValue("messages", recent);
-
-		List messageids = new ArrayList(recent.size());
-		for (Iterator iterator = recent.iterator(); iterator.hasNext();)
+		if (recent != null)
 		{
-			Data data = (Data) iterator.next();
-			messageids.add(data.getId());
+			List messageids = new ArrayList(recent.size());
+			for (Iterator iterator = recent.iterator(); iterator.hasNext();)
+			{
+				Data data = (Data) iterator.next();
+				messageids.add(data.getId());
+			}
+			inReq.putPageValue("messageids", messageids);
 		}
-		inReq.putPageValue("messageids", messageids);
-
 	}
 
 	public void loadUploadsInMessages(WebPageRequest inReq)
