@@ -1,6 +1,5 @@
 #set( $detailid = $context.getRequestParameter("detailid"))
-#set( $languagecode = $context.getRequestParameter("languagecode"))
-#set( $count = $context.getRequestParameter("count"))
+#set( $languagecode = $context.getRequestParameter("languagecode"))  
 #set( $locale = $context.getRequestParameter("locale") )
 
 #set( $map = $data.getValue($detailid))
@@ -36,7 +35,9 @@
 		<textarea
 			type="text"
 			id="${detailid}-${languagecode}-value"
-			class='form-control langvalue #if($count == "1" && $detail.isRequired() && !$multiedit) required #end'
+			class='form-control langvalue #if($detail.isRequired() && !$multiedit) required #end'
+			data-locale="${locale}"
+			data-detailid="${detailid}"
 			data-code="${languagecode}"
 			name="${detailid}.${languagecode}.value"
 			cols="40"

@@ -117,14 +117,17 @@ findClosest = function (link, inid) {
 
 		var anchorModal = anchor.closest(".modal");
 
-		var replaceHtml = true;
+		var appendType = anchor.data("appendtype");
+		if (!appendType) {
+			appendType = "replace";
+		}
 
 		var targetdiv = anchor.data("selectedtargetdiv");
 
 		var targetDivInner = anchor.data("targetdivinner");
 		if (targetDivInner) {
 			targetdiv = $("#" + $.escapeSelector(targetDivInner));
-			replaceHtml = false;
+			appendType = "children";
 		}
 
 		var targetdivS = anchor.data("targetdiv");
@@ -211,7 +214,7 @@ findClosest = function (link, inid) {
 						}*/
 					var onpage;
 					var newcell;
-					if (replaceHtml) {
+					if (appendType == "replace") {
 						//Call replacer to pull $scope variables
 						onpage = targetdiv.parent();
 						var targetdivid = "";
@@ -220,9 +223,13 @@ findClosest = function (link, inid) {
 						}
 						targetdiv.replaceWith(data); //Cant get a valid dom element
 						newcell = findClosest(onpage, targetdivid);
-					} else {
+					} else if (appendType == "children") {
 						onpage = targetdiv;
 						targetdiv.html(data);
+						newcell = onpage.children(":first");
+					} else if (appendType == "insertbefore") {
+						onpage = targetdiv;
+						$(data).insertBefore(targetdiv);
 						newcell = onpage.children(":first");
 					}
 					if (newcell.length > 0) {

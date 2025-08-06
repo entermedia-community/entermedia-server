@@ -77,10 +77,26 @@ public class TranslationManager implements CatalogEnabled {
 		for (Iterator iterator = targetLangs.iterator(); iterator.hasNext();)
 		{
 			String lang = (String) iterator.next();
+			String altLang = null;
+			if(lang.equals("zh-Hans"))
+			{
+				altLang = "zh";
+			}
+			else if(lang.equals("zh-Hant"))
+			{
+				altLang = "zt";
+			}
 			JSONArray fieldTranslations = (JSONArray) translations.get(lang);
 			if(fieldTranslations == null)
 			{
-				continue;
+				if(altLang != null)
+				{
+					fieldTranslations = (JSONArray) translations.get(altLang);
+				}
+				if(fieldTranslations == null)
+				{					
+					continue;
+				}
 			}
 			String tr = (String) fieldTranslations.get(0);
 			results.put(lang, tr);
