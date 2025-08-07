@@ -3,7 +3,7 @@
 	#if($publishing.get("distributiontype") == "gallery") 
 		<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-3.7.1.min.js"></script>
 		<script type="text/javascript" src="$!siteroot$applink/components/javascript/emedia/brickvertical.js"></script>
-		<script type="text/javascript" src="$!siteroot$applink/components/javascript/simpleLightbox/jquery-simpleLightbox.js"></script>
+		<script type="text/javascript" src="$!siteroot$applink/components/javascript/simpleLightbox/simple-lightbox.jquery.min.js"></script>
 		
 		<div id="previewgallery" style="height: 100%;">
 		##$pages.include("${apphome}/services/publishingdestination/gallery/index.html", $context)
@@ -21,14 +21,50 @@
 			jQuery(document).ready(function () {
 				var grid = $(".masonry-grid2");
 				grid.brickvertical();
-				$('.lightbox').simpleLightbox();
+				var slb = $('a.lightbox').simpleLightbox({
+					captionSelector: 'self',
+					captionType: 'data',
+					captionsData: 'caption',
+					captionDelay: 250,
+					widthRatio:0.98,
+					heightRatio:0.98,
+					overlayOpacity: 1
+				});
+				slb.on("shown.simplelightbox", function () {
+					var lang = document.documentElement.lang;
+					if(!lang) {
+						var drupalSelector = $("script[data-drupal-selector='drupal-settings-json']").text();
+						if(drupalSelector) {
+							var drupalSettings = JSON.parse(drupalSelector);
+							lang = drupalSettings.dataLayer.defaultLang;
+						}
+					}
+					if(lang) {
+						var locales = $(this).data("locales");
+						if(locales) {
+							if (typeof locales === "string") {
+								var txt = document.createElement("textarea");
+								txt.innerHTML = locales;
+								locales = JSON.parse(txt.value);
+							}
+							var localeCaption = locales[lang];
+							if(localeCaption) {
+								$(".sl-caption").html(localeCaption);
+							}
+						}
+					}
+					
+					var dl = $(this).data("downloadlink");
+					if(dl) {
+						$(".simple-lightbox").append("<a class='sl-dl' href='" + dl + "' target='_blank'></a>");
+					}
+				})
 			});
 		}(jQuery));		
 		</script>
 
 	#else 
 		<script type="text/javascript" src="$!siteroot$applink/components/javascript/splide/splide.min.js"></script>
-		<link type="text/css" rel="stylesheet" href="$!siteroot$applink/components/javascript/splide/splide.min.css">
 	
 		##$pages.include("${apphome}/services/publishingdestination/carousel/index.html", $context)
 		
@@ -39,6 +75,7 @@
 	#end
   
 #end
+
 #ifnull($publishing)
   <h2>Preview not available</h2>
 #end
