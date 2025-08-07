@@ -1215,6 +1215,8 @@ public class MediaArchive implements CatalogEnabled
 //			getPageManager().removePage(folder);
 //			return;
 //		}
+		
+		log.info("Removing generated images for: " + inAsset);
 
 		PathProcessor processor = new PathProcessor()
 		{
@@ -1223,7 +1225,7 @@ public class MediaArchive implements CatalogEnabled
 				if( everything)
 				{
 					getPageManager().getRepository().remove(inContent);
-					
+					log.info("All images removed.");
 					return;
 				}
 				//getPageManager().removePage(page);
@@ -1240,6 +1242,7 @@ public class MediaArchive implements CatalogEnabled
 				if (!"default".equals(fileformat)) { //For fulltext.txt files
 					Page page = getPageManager().getPage(inContent.getPath());
 					getPageManager().removePage(page);
+					log.info("Image removed: " + inContent.getName());
 				}
 
 			}
@@ -1255,6 +1258,40 @@ public class MediaArchive implements CatalogEnabled
 		//getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(MediaArchive.this, original, inAsset );
 
 	}
+	
+	// Remove one generated image
+	public void removeGeneratedImage(Asset inAsset, final String prefix)
+	{
+
+		String path = "/WEB-INF/data/" + getCatalogId() + "/generated/" + inAsset.getSourcePath();
+		if (inAsset.isFolder() && !path.endsWith("/"))
+		{
+			path = path + "/";
+
+		}
+		
+		log.info("Removing generated images for: " + inAsset);
+
+		PathProcessor processor = new PathProcessor()
+		{
+			public void processFile(ContentItem inContent, User inUser)
+			{
+				
+				if (inContent.getName().contains(prefix))
+				{
+					Page page = getPageManager().getPage(inContent.getPath());
+					getPageManager().removePage(page);
+					log.info("Image removed: " + inContent.getName());
+				}
+			}
+		};
+		
+		processor.setRecursive(true); //Should this be tr
+		processor.setRootPath(path);
+		processor.setPageManager(getPageManager());
+		processor.process();
+
+	}
 
 	public void removeGeneratedPages(Asset inAsset, final String prefix)
 	{
@@ -1265,18 +1302,19 @@ public class MediaArchive implements CatalogEnabled
 			path = path + "/";
 
 		}
-		log.info(inAsset);
+		log.info("Removing generated pages for: " + inAsset);
 
 		PathProcessor processor = new PathProcessor()
 		{
 			public void processFile(ContentItem inContent, User inUser)
 			{
-				log.info(inContent.getName());
+				
 				if (inContent.getName().contains(prefix) && inContent.getName().contains("page"))
 				{
 
 					Page page = getPageManager().getPage(inContent.getPath());
 					getPageManager().removePage(page);
+					log.info("Page removed: " + inContent.getName());
 				}
 
 			}
