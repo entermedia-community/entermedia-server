@@ -98,6 +98,8 @@
 							#set($convertpreset = $mediaarchive.getCachedData("convertpreset", "webplargeimage" ) )
 						#end
 
+						$context.putPageValue("convertpreset", $convertpreset)
+
 						<div class="grid-thumbimage" data-assetid="$!hit.id" data-rendertype="$!rendertype">
 							$pages.include("/$!mediadbappid/services/module/${module.getId()}/players/gallery/rendertype/$!{rendertype}.html", $context)
 						</div>
@@ -116,9 +118,6 @@
 								#set($downloadlink = $mediaarchive.asLinkToShare($siteroot, $hit, $convertpreset))
 								#ifnotnull($downloadlink)
 									#set($downloadlink = "${downloadlink}?download=true&ondemand=true")
-								#end
-								$context.putPageValue("downloadlink", $downloadlink)
-								#ifnotnull($downloadlink)
 									<a class="downloadicon" href="${downloadlink}" title="[[Download]] $!hit.getName()">
 										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ffffff" viewBox="0 0 16 16">
 											<path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
