@@ -2795,7 +2795,8 @@ public class MediaArchive implements CatalogEnabled
 			Asset asset = getCachedAsset(assetid);
 			if( asset != null)
 			{
-				return asLinkToPreview(asset, null, "image200x200.jpg");
+				
+				return asLinkToPreview(asset, null, "image200x200");
 			}
 		}
 		return null;
@@ -3186,30 +3187,42 @@ public class MediaArchive implements CatalogEnabled
 	{
 		return (UserProfileManager)getModuleManager().getBean(getCatalogId(),"userProfileManager",true);
 	}
-
-	public String asLinkToUserProfile(Data inUser)
+	
+	public Asset getUserProfileAssetPortrait(Data inUser)
 	{
 		if( inUser == null)
 		{
 			return null;
 		}
-		Data chatprofile = getUserProfile(inUser.getId());
-		if( chatprofile == null)
+		Data userprofile = getUserProfile(inUser.getId());
+		if( userprofile == null)
 		{
 			return null;
 		}
-		String userimageid = chatprofile.get("assetportrait");
+		String userimageid = userprofile.get("assetportrait");
 		if(userimageid == null)
 		{
 			userimageid = inUser.get("assetportrait");
 		}
 		if( userimageid != null)
 		{
-			String url  = asLinkToProfile(userimageid);
-			return url;
+			return getAsset(userimageid);
+		}
+		
+		return null;
+		
+	}
+
+	public String asLinkToUserProfile(Data inUser)
+	{
+		Data asset = getUserProfileAssetPortrait(inUser);
+		if (asset != null)
+		{
+			return asLinkToPreview(asset, null, "image200x200");
 		}
 		return null;
 	}
+	
 	public EntityManager getEntityManager()
 	{
 		return (EntityManager)getModuleManager().getBean(getCatalogId(),"entityManager",true);
