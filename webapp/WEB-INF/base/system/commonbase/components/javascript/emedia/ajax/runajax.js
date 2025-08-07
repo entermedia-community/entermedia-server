@@ -412,10 +412,6 @@ $(document).ready(function () {
 			}
 			//console.log("Loading " + path );
 			if (path && path.length > 1) {
-				var entermediakey = "";
-				if (app && app.data("entermediakey") != null) {
-					entermediakey = app.data("entermediakey");
-				}
 				var data = cell.cleandata();
 				if (data.targetdiv || data.targetdivinner) {
 					if (!data.oemaxlevel && !data.oemaxlayout) {
