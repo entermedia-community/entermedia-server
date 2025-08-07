@@ -7,7 +7,7 @@
 	--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #efefef #end;
 	--text-color: #if($publishing.publishingfeedlayout=="dark") #fff #else #000 #end;
 	--translucent-bg: #if($publishing.publishingfeedlayout=="dark") rgba(20,20,20,.75) #else rgba(255,255,255,.75) #end;
-  --transparent-bg: #if($publishing.publishingfeedlayout=="dark") rgba(255,255,255,.1) #else rgba(20,20,20,.1) #end;
+  --transparent-bg: #if($publishing.publishingfeedlayout=="dark") rgba(20,20,20,.2) #else rgba(255,255,255,.2) #end;
 	--highlight-color: #if($publishing.publishingfeedlayout=="dark") #666 #else #444 #end;
 	#if($publishing.containerdimension_enabled=="true")
 		--container-width: #if($publishing.containerwidth > 0) ${publishing.containerwidth}px #else 1000px #end;
@@ -116,25 +116,25 @@
 	justify-content: center;
 }
 #__carousel .splide__arrow {
-	height: 40px;
 	width: 40px;
-	line-height: 40px;
-	text-align: center; 
+  height: 40px;
+  line-height: 32px;
+  text-align: center;
+  padding-bottom: 8px;
 	display: block;
 	z-index: 10060;
 	font-family: Arial, Baskerville, monospace;
 	color: var(--text-color);
 	font-size: 3rem;
 	color: var(--text-color);
-	background-color: transparent;
+	background-color: var(--transparent-bg);
+	cursor: pointer;
 }
 #__carousel .splide__arrow--next {
 	right: 20px;
-	cursor: e-resize;
 }
 #__carousel .splide__arrow--prev {
 	left: 20px;
-	cursor: w-resize;
 }
 #__carousel .splide__arrow svg {
 	fill: var(--text-color);
