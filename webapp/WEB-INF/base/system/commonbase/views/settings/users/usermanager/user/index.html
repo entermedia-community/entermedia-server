@@ -15,31 +15,31 @@
 	<div style="margin-bottom:8px;">
 		#if($canactasotherusers)
 		<a href="$home$content.usermanagerhome/user/switchtouser.html?userid=$selectedUser.id" 
-		class="btn btn-sm btn-secondary" >[[Act As this user temporarily]]</a>
+		class="btn btn-secondary" >[[Act As this user temporarily]]</a>
 		#end
-		<a href="$siteroot$content.usermanagerhome/user/viewcategorypermissions.html?userid=$selectedUser.id" class="emdialog btn btn-sm btn-secondary" data-cancelsubmit="true">[[View Asset Permissions]]</a>
+		<a href="$siteroot$content.usermanagerhome/user/viewcategorypermissions.html?userid=$selectedUser.id" class="emdialog btn btn-secondary" data-cancelsubmit="true">[[View Asset Permissions]]</a>
 	</div>
 
 	<div style="margin-bottom:8px;">
 	<a href="$siteroot$content.usermanagerhome/user/setuserpassword.html?username=$selectedUser.id" 
-		class="btn btn-sm btn-secondary ajax"
+		class="btn btn-secondary ajax"
 		data-targetdivinner="settingslayout"
 		data-oemaxlevel="3" >[[Edit Password]]</a>
 	</div>
 	 #if( $selectedUser.password && $selectedUser.email )
-       	<a class="btn btn-sm btn-secondary ajax" 
+       	<a class="btn btn-secondary ajax" 
        	data-targetdivinner="passwordsent" 
        	href="$siteroot$usermanagerhome/user/sendresetpassword.html?username=$selectedUser.id">[[Send Magick Link]]</a>
 
 	#end
 		
 	
-	<a class="btn btn-sm btn-secondary emdialog"  data-cancelsubmit="true"
+	<a class="btn btn-secondary emdialog"  data-cancelsubmit="true"
 			href="$home$content.usermanagerhome/user/showkey.html?username=$userName">[[Generate Temporary EnterMedia Key]]</a>
 	
 	#if($mediaarchive.isCatalogSettingTrue("twofactorauthentication") && $canviewsettings)
 		<div style="margin:8px 0;">
-		<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="passwordsent" href="$siteroot$usermanagerhome/user/reset2factorkey.html?username=$selectedUser.id">[[Reset 2 Factor Authentication Key]]</a>
+		<a class="btn btn-secondary ajax" data-targetdivinner="passwordsent" href="$siteroot$usermanagerhome/user/reset2factorkey.html?username=$selectedUser.id">[[Reset 2 Factor Authentication Key]]</a>
 		</div>
 	#end
 	

@@ -65,9 +65,9 @@
 			#end
 
 			<div class="ui-widget-actions">
-			<a href="#" class="btn btn-sm btn-primary submitform">[[Save Changes]]</a>
+			<a href="#" class="btn btn-primary submitform">[[Save Changes]]</a>
 			#if($canactasotherusers)
-			<a class="btn btn-sm btn-danger ajax" 
+			<a class="btn btn-danger ajax" 
 				data-confirm="[[Are you sure?]]" 
 				href="$siteroot$usermanagerhome/user/removeuser.html?usertodelete=$selectedUser.id"
 				data-targetdivinner="settingslayout"
@@ -76,7 +76,7 @@
 				data-oemaxlevel="3">[[Delete User]]</a>
 			#end
 			<a href="$siteroot$usermanagerhome/users/index.html" 
-				class="btn btn-secondary btn-sm ajax" 
+				class="btn btn-secondary ajax" 
 				data-targetdivinner="applicationmaincontent"
 				data-updateurl="true"
 				data-urlbar="$siteroot$usermanagerhome/users/index.html"
