@@ -32,6 +32,13 @@ public abstract class BaseLLMManager implements LLMManager {
 	OutputFiller filler = new OutputFiller();
 	protected OpenEditEngine fieldEngine;
 	protected String apikey;
+	protected String fieldEndpoint;
+	
+	public String getApiEndpoint() {
+	    return fieldEndpoint;
+	}
+
+	
 
 	public String getApikey()
 	{
