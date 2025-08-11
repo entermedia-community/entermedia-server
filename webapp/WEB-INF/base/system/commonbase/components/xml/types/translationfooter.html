@@ -1,4 +1,4 @@
-#set($languages = $mediaarchive.getList("locale"))
+#set($languages = $mediaarchive.query("locale").exact("translatemetadata", true).search() )
 <hr style="opacity: 0.7;" class="mt-3 mb-2">
 <div class="d-flex align-items-end justify-content-between" id="languageaction_${detail.id}">
   <div class="d-flex flex-column">
