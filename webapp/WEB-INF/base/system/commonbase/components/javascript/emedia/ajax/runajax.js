@@ -475,6 +475,13 @@ $(document).ready(function () {
 			console.log("Aborting previous ajax request for " + uid);
 		}
 		var cell = $(this);
+		var showloader = cell.data("showloader");
+		if (showloader) {
+			cell.append(`<div class="ajax-loader">
+				<i class="fa fa-spinner fa-spin"></i>
+			</div>`);
+		}
+
 		var data = cell.cleandata();
 
 		if (!data.oemaxlevel && !data.oemaxlayout) {
