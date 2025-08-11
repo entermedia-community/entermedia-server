@@ -4,7 +4,7 @@
 
 #if($detail.isMultiLanguage())
 	<div class="${detail.id}-languages languages-field #if( $searchform )insearchform#end">
-		#set($languages = $mediaarchive.getList("locale"))
+		#set($languages = $mediaarchive.query("locale").exact("translatemetadata", true).search() )
 		#set($languagemap = $data.getValue($detail.getId()))
 		
 		#set($language_count = 0)
