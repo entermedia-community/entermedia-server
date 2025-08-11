@@ -117,9 +117,9 @@ findClosest = function (link, inid) {
 
 		var anchorModal = anchor.closest(".modal");
 
-		var appendType = anchor.data("appendtype");
-		if (!appendType) {
-			appendType = "replace";
+		var targetappendtype = anchor.data("targetappendtype");
+		if (!targetappendtype) {
+			targetappendtype = "replace";
 		}
 
 		var targetdiv = anchor.data("selectedtargetdiv");
@@ -127,7 +127,7 @@ findClosest = function (link, inid) {
 		var targetDivInner = anchor.data("targetdivinner");
 		if (targetDivInner) {
 			targetdiv = $("#" + $.escapeSelector(targetDivInner));
-			appendType = "children";
+			targetappendtype = "children";
 		}
 
 		var targetdivS = anchor.data("targetdiv");
@@ -214,7 +214,7 @@ findClosest = function (link, inid) {
 						}*/
 					var onpage;
 					var newcell;
-					if (appendType == "replace") {
+					if (targetappendtype == "replace") {
 						//Call replacer to pull $scope variables
 						onpage = targetdiv.parent();
 						var targetdivid = "";
@@ -223,11 +223,11 @@ findClosest = function (link, inid) {
 						}
 						targetdiv.replaceWith(data); //Cant get a valid dom element
 						newcell = findClosest(onpage, targetdivid);
-					} else if (appendType == "children") {
+					} else if (targetappendtype == "children") {
 						onpage = targetdiv;
 						targetdiv.html(data);
 						newcell = onpage.children(":first");
-					} else if (appendType == "insertbefore") {
+					} else if (targetappendtype == "insertbefore") {
 						onpage = targetdiv;
 						$(data).insertBefore(targetdiv);
 						newcell = onpage.children(":first");

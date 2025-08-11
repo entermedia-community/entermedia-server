@@ -23,9 +23,14 @@
 			#end
 
 			#if($language_count == 0)
+				#set($language_count = 1)
 				#set($locale = $mediaarchive.query("locale").exact("id", $context.getLanguage()).searchOne() )
 				$context.putPageValue("addedlocale", $locale.id)
 				$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&locale=$locale&languagecode=${locale.id}",$context)
+			#end
+
+			#if($language_count == 1)
+				<div class="hide-remove-btn"></div>
 			#end
 
 			<div id="languagesextra_${detail.id}"></div>

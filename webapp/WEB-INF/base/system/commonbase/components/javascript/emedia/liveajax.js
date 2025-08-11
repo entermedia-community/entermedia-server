@@ -91,6 +91,15 @@ $.ajaxSetup({
 		return returned;
 	};
 
+	var oldinsertbefore = $.fn.insertBefore;
+	$.fn.insertBefore = function (arg) {
+		var div = $(this);
+		var returned = oldinsertbefore.call(div, arg);
+		//console.log("Called replacewith on " +	$(this).selector, arg.length );
+		$(document).trigger("domchanged", [div]);
+		return returned;
+	};
+
 	var oldajaxSubmit = $.fn.ajaxSubmit;
 	$.fn.ajaxSubmit = function () {
 		var form = $(this);
