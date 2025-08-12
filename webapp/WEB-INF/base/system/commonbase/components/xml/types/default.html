@@ -4,7 +4,7 @@
 
 #if($detail.isMultiLanguage())
 	<div class="${detail.id}-languages languages-field #if( $searchform )insearchform#end">
-		#set($languages = $mediaarchive.getList("locale"))
+		#set($languages = $mediaarchive.query("locale").exact("translatemetadata", true).search() )
 		#set($languagemap = $data.getValue($detail.getId()))
 		
 		#set($language_count = 0)
@@ -17,7 +17,7 @@
 				#set($localval = $languagemap.getText($locale.id))
 				#if($localval && $localval != "")
 					#set($language_count = $language_count+1)
-					$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&count=$language_count&locale=$locale&languagecode=${locale.id}",$context)
+					$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&locale=$locale&languagecode=${locale.id}",$context)
 				#end
 				#set($localval = "")
 			#end
@@ -26,13 +26,16 @@
 				#set($language_count = 1)
 				#set($locale = $mediaarchive.query("locale").exact("id", $context.getLanguage()).searchOne() )
 				$context.putPageValue("addedlocale", $locale.id)
-				$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&count=$language_count&locale=$locale&languagecode=${locale.id}",$context)
+				$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&locale=$locale&languagecode=${locale.id}",$context)
 			#end
 
-			<div id="languagesextra_${detail.id}" data-count='$language_count'></div>
+			#if($language_count == 1)
+				<div class="hide-remove-btn"></div>
+			#end
+
+			<div id="languagesextra_${detail.id}"></div>
 			
 			$context.putPageValue("languagemap", $languagemap)
-			$context.putPageValue("language_count", $language_count)
 			$pages.include("$apphome/components/xml/types/translationfooter.html",$context)
 		</div>
 	</div>

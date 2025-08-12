@@ -112,7 +112,7 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 
 	}
 
-	private String getApiEndpoint()
+	public String getApiEndpoint()
 	{
 		// TODO Auto-generated method stub
 		String endpoint = getMediaArchive().getCatalogSettingValue("ollama-url");

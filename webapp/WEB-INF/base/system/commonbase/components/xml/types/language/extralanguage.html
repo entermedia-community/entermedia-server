@@ -1,6 +1,5 @@
 #set( $detailid = $context.getRequestParameter("detailid"))
-#set( $languagecode = $context.getRequestParameter("languagecode"))
-#set( $count = $context.getRequestParameter("count"))
+#set( $languagecode = $context.getRequestParameter("languagecode"))  
 #set( $locale = $context.getRequestParameter("locale") )
 
 #set( $map = $data.getValue($detailid))
@@ -19,27 +18,35 @@
 		#else 
 			#set($language_textbox = ${detailid} + "." + ${languages[0].id}) 
 		#end
+
 		#set($textarearows = 3)
 		#set($value = $map.getText($languagecode))
 		
 		#if($value && $value.length() < 30)
 			#set($textarearows = 1)
 		#end
+
 		#if($value && $value.length() > 200)
 			#set($textarearows = 5)
 		#end
-		 #if(!$value && $searchform )
+
+		#if(!$value && $searchform )
 			#set($textarearows = 1)
 		#end
 		
 		<input type="hidden" name="${detailid}.language" value="$languagecode" />
 		<textarea
 			type="text"
-			id="${detailid}-${languagecode}-value"
-			class='form-control langvalue #if($count == "1" && $detail.isRequired() && !$multiedit) required #end'
-			data-code="${languagecode}"
+			id="value-${detailid}-${languagecode}"
+			class='form-control langvalue #if($detail.isRequired() && !$multiedit) required #end'
+			data-locale="${locale}"
+			data-detailid="${detailid}"
+			data-languagecode="${languagecode}"
 			name="${detailid}.${languagecode}.value"
 			cols="40"
 			rows="$textarearows">#esc($value)</textarea>
 	</div>
+	<a href="#" class="remove-language" data-languagecode="$languagecode">
+		<i class="bi bi-x"></i>
+	</a>
 </div>

@@ -117,14 +117,17 @@ findClosest = function (link, inid) {
 
 		var anchorModal = anchor.closest(".modal");
 
-		var replaceHtml = true;
+		var targetappendtype = anchor.data("targetappendtype");
+		if (!targetappendtype) {
+			targetappendtype = "replace";
+		}
 
 		var targetdiv = anchor.data("selectedtargetdiv");
 
 		var targetDivInner = anchor.data("targetdivinner");
 		if (targetDivInner) {
 			targetdiv = $("#" + $.escapeSelector(targetDivInner));
-			replaceHtml = false;
+			targetappendtype = "children";
 		}
 
 		var targetdivS = anchor.data("targetdiv");
@@ -211,7 +214,7 @@ findClosest = function (link, inid) {
 						}*/
 					var onpage;
 					var newcell;
-					if (replaceHtml) {
+					if (targetappendtype == "replace") {
 						//Call replacer to pull $scope variables
 						onpage = targetdiv.parent();
 						var targetdivid = "";
@@ -220,9 +223,13 @@ findClosest = function (link, inid) {
 						}
 						targetdiv.replaceWith(data); //Cant get a valid dom element
 						newcell = findClosest(onpage, targetdivid);
-					} else {
+					} else if (targetappendtype == "children") {
 						onpage = targetdiv;
 						targetdiv.html(data);
+						newcell = onpage.children(":first");
+					} else if (targetappendtype == "insertbefore") {
+						onpage = targetdiv;
+						$(data).insertBefore(targetdiv);
 						newcell = onpage.children(":first");
 					}
 					if (newcell.length > 0) {
@@ -327,10 +334,11 @@ findClosest = function (link, inid) {
 
 $(document).ready(function () {
 	$(document).ajaxError(function (e, jqXhr, settings, exception) {
-		console.log(e, jqXhr, exception);
 		if (exception == "abort") {
+			console.log("Request aborted by user or another script.");
 			return;
 		}
+		console.log(e, jqXhr, exception);
 		var err = "An error occurred while processing the request!";
 		if (jqXhr.readyState == 0) {
 			err = "Network error! Please check your network connection.";
@@ -405,10 +413,6 @@ $(document).ready(function () {
 			}
 			//console.log("Loading " + path );
 			if (path && path.length > 1) {
-				var entermediakey = "";
-				if (app && app.data("entermediakey") != null) {
-					entermediakey = app.data("entermediakey");
-				}
 				var data = cell.cleandata();
 				if (data.targetdiv || data.targetdivinner) {
 					if (!data.oemaxlevel && !data.oemaxlayout) {
@@ -453,6 +457,55 @@ $(document).ready(function () {
 			setTimeout("runAjaxStatus();", 500); //Start checking then runs every second on all status
 			ajaxRunning = true;
 		}
+	});
+
+	var singleAjaxReqs = {};
+	lQuery(".ajaxonce").livequery(function () {
+		/**
+		 * Runs an ajax call on elements with class .ajaxonce
+		 * It will abort any previous ajax request that has the same id as the element
+		 */
+		var uid = $(this).attr("id");
+		if (!uid) {
+			console.warn(".ajaxonce must have an id.");
+			return;
+		}
+		if (singleAjaxReqs[uid] !== undefined) {
+			singleAjaxReqs[uid].abort();
+			console.log("Aborting previous ajax request for " + uid);
+		}
+		var cell = $(this);
+		var showloader = cell.data("showloader");
+		if (showloader) {
+			cell.append(`<div class="ajax-loader">
+				<i class="fa fa-spinner fa-spin"></i>
+			</div>`);
+		}
+
+		var data = cell.cleandata();
+
+		if (!data.oemaxlevel && !data.oemaxlayout) {
+			data.oemaxlevel = 1;
+		}
+
+		var path = cell.data("ajaxpath");
+		singleAjaxReqs[uid] = jQuery.ajax({
+			url: path,
+			data: {
+				...data,
+			},
+			success: function (data) {
+				cell.replaceWith(data);
+				$(window).trigger("resize");
+			},
+			complete: function () {
+				delete singleAjaxReqs[uid];
+			},
+			xhrFields: {
+				withCredentials: true,
+			},
+			crossDomain: true,
+		});
 	});
 
 	lQuery("a.ajax").livequery("click", function (e) {

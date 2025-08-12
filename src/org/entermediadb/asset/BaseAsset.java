@@ -21,6 +21,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.projects.LibraryCollection;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
@@ -1058,7 +1060,56 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 		
 	}
 	
-	
+	public String toJsonString()
+	{
+		StringBuffer output = new StringBuffer();
+		if (getId() != null)
+		{
+			output.append("{ \"_id\": \"" + getId() + "\",");
+		}
+		output.append(" \"_source\" :");
+		if (getSearchHit() == null)
+		{
+			JSONObject json = new JSONObject();
+			for(Iterator iterator = getMap().keySet().iterator(); iterator.hasNext();)
+			{
+				String key = (String) iterator.next();
+				Object value = getMap().get(key);
+				if (value == null)
+				{
+					continue;
+				}
+				if (value instanceof Collection)
+				{
+					JSONArray jsonarray = new JSONArray();
+					jsonarray.addAll((Collection) value);
+					json.put(key, jsonarray);
+				}
+				else if (value instanceof Map)
+				{
+					JSONObject jsonmap = new JSONObject((Map) value);
+					json.put(key, jsonmap);
+				}
+				else
+				{
+					json.put(key, value);
+				}
+			}
+			output.append(json.toJSONString());
+		}
+		else if(!getMap().isEmpty())
+		{
+			JSONObject json = new JSONObject(getSearchData());
+			json.putAll(getMap());
+			output.append(json.toJSONString());
+		}
+		else 
+		{
+			output.append(getSearchHit().getSourceAsString());
+		}
+		output.append(" \n}");
+		return output.toString();
+	}
 	
 	
 
