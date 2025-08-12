@@ -10,6 +10,8 @@ import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class PdfParser
 {
@@ -24,30 +26,9 @@ public class PdfParser
 			
 			pdf = PDDocument.load(inContent,"");
 
-			// collect text
-			PDFTextStripper stripper = new PDFTextStripper();
-			
-			//TODO: Write this out to a temp file that will be indexed seperately
-			
-			String text = null;
-			String title = null;
-			
-			try{
-				text = stripper.getText(pdf);
-			}
-			catch(Throwable e)
-			{
-				e.printStackTrace();
-				log.error("Could not parse" , e);
-				text = "";
-			}
-			text = scrubChars(text);
-			results.setText(text);
-			results.setPages(pdf.getNumberOfPages());
-
 			// collect title
 			PDDocumentInformation info = pdf.getDocumentInformation();
-			title = info.getTitle();
+			String title = info.getTitle();
 			results.setTitle(title);
 			if( pdf.getNumberOfPages()  > 0)
 			{
@@ -62,6 +43,38 @@ public class PdfParser
 					results.put("width", String.valueOf(Math.round(  mediaBox.getWidth()) ));
 					results.put("height", String.valueOf(Math.round(  mediaBox.getHeight()) ));
 				}
+				// collect text
+				int pages = pdf.getNumberOfPages();
+				JSONArray savedpages = new JSONArray();
+				
+				PDFTextStripper stripper = new PDFTextStripper();
+				
+				//TODO: Write this out to a temp file that will be indexed seperately
+				for (int i = 0; i < pages; i++)
+				{
+					String text = null;
+	
+					stripper.setStartPage(i);
+					stripper.setEndPage(i);
+					
+					try
+					{
+						text = stripper.getText(pdf);
+					}
+					catch(Throwable e)
+					{
+						e.printStackTrace();
+						log.error("Could not parse" , e);
+						text = "";
+					}
+					text = scrubChars(text);
+					JSONObject one = new JSONObject();
+					one.put("text",text);
+					one.put("page",i);
+					savedpages.add(one);
+				}
+				results.setText(savedpages.toJSONString());
+				results.setPages(pdf.getNumberOfPages());
 			}
 	
 			//Thread.sleep(500); // Slow down PDF's loading
