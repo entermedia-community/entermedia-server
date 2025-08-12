@@ -190,13 +190,13 @@ public class PresetCreator
 		String rendertype = mediaarchive.getMediaRenderType(asset.get("fileformat"));
 		
 		
-		if(rendertype == null)
-		{
-			//if(asset.get("fileformat") == "embedded" || asset.get("fileformat").startsWith("gd"))
-			{
-				rendertype = "image";   //assume jpg thumbnail was downloaded
-			}
-		}
+//		if(rendertype == null)
+//		{
+//			//if(asset.get("fileformat") == "embedded" || asset.get("fileformat").startsWith("gd"))
+//			{
+//				rendertype = "image";   //assume jpg thumbnail was downloaded
+//			}
+//		}
 		
 		if(rendertype==null)
 		{

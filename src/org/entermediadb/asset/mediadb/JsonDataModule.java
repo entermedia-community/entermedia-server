@@ -79,7 +79,7 @@ public class JsonDataModule extends BaseJsonModule
 	}
 	
 
-	public void createData(WebPageRequest inReq)
+	public Data createData(WebPageRequest inReq)
 	{
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
@@ -113,8 +113,38 @@ public class JsonDataModule extends BaseJsonModule
 
 		inReq.putPageValue("searcher", searcher);
 		inReq.putPageValue("data", newdata);
+		
+		return newdata;
 
 	}
+	
+	public Data searchOrCreateData(WebPageRequest inReq)
+	{
+
+		String catalogid = findCatalogId(inReq);
+		MediaArchive archive = getMediaArchive(inReq, catalogid);
+
+		String searchtype = resolveSearchType(inReq);
+		
+		Searcher searcher = archive.getSearcher(searchtype);
+		inReq.putPageValue("searcher", searcher);
+		
+		String name = inReq.getRequestParameter("name"); 
+
+		Data data = (Data) searcher.searchByField("name", name);
+
+		if(data == null)
+		{
+			data = createData(inReq);
+		}
+		
+		inReq.putPageValue("data", data);
+		
+
+		return data;
+
+	}
+	
 
 
 	protected void checkAssetUploads(WebPageRequest inReq, MediaArchive archive, Searcher searcher, Data newdata)
