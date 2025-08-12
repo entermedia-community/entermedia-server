@@ -134,7 +134,7 @@ public class DesktopModule extends BaseMediaModule
 		
 		
 		String useragent = inReq.getRequest().getHeader("User-Agent");
-		if(useragent.contains("eMediaDesktop")) 
+		if(useragent != null && useragent.contains("eMediaDesktop")) 
 		{
 			if(desktop == null) 
 			{
