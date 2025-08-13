@@ -2,7 +2,7 @@ package org.entermediadb.ai;
 
 import org.openedit.MultiValued;
 
-public class RankedResult
+public class RankedResult implements  Comparable<RankedResult>
 {
 	protected MultiValued fieldEmbedding;
 	
@@ -14,6 +14,16 @@ public class RankedResult
 	{
 		fieldEmbedding = inEmbedding;
 	}
+	
+	public String getModuleId()
+	{
+		return getEmbedding().get("moduleid");
+	}
+	public String getEntityId()
+	{
+		return getEmbedding().get("dataid");
+	}
+	
 	protected MultiValued fieldEntity;
 	public MultiValued getEntity()
 	{
@@ -32,4 +42,11 @@ public class RankedResult
 		fieldDistance = inDistance;
 	}
 	protected double fieldDistance;
+
+	@Override
+	public int compareTo(RankedResult inO)
+	{
+		int i = Double.compare(getDistance(), inO.getDistance());
+		return i;
+	}
 }

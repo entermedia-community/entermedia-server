@@ -481,7 +481,7 @@ public class KMeansIndexer implements CatalogEnabled {
 		
 		HitTracker hits = getMediaArchive().query(getSearchType()).orgroup("nearbycentroidids",goodcentroids).search();
 		//Double check these match and also load up Organized modules?
-		List finalmatches = new ArrayList();
+		List<RankedResult> finalmatches = new ArrayList();
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			MultiValued embedding = (MultiValued) iterator.next();
@@ -498,6 +498,8 @@ public class KMeansIndexer implements CatalogEnabled {
 			}
 		}
 
+		Collections.sort(finalmatches);
+		
 		return finalmatches;
 
 	}
