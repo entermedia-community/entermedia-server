@@ -330,7 +330,7 @@ public class SemanticIndexManager implements CatalogEnabled
 		fieldSharedConnection = inSharedConnection;
 	}
 
-	public Collection<RankedResult> viewRelatedEntities(String inTerms)
+	public Map<String,Collection<String>> viewRelatedEntities(String inTerms)
 	{
 		//Collection allthepeopleinasset = getKMeansIndexer().searchNearestItems(startdata);
 		JSONObject tosendparams = new JSONObject();
@@ -359,11 +359,50 @@ public class SemanticIndexManager implements CatalogEnabled
 		
 		Collection<RankedResult> found = getKMeansIndexer().searchNearestItems(vector);
 		
-		//TODO: Go look up all the entities
+		Map<String,Collection<String>> bytype = new HashMap();
+		for (Iterator iterator = found.iterator(); iterator.hasNext();)
+		{
+			RankedResult rankedResult = (RankedResult) iterator.next();
+			Collection hits = bytype.get(rankedResult.getModuleId());
+			if( hits == null)
+			{
+				hits = new ArrayList();
+			}
+			if( hits.size() < 1000)
+			{
+				hits.add(rankedResult.getEntityId());
+			}
+		}
+
+		//Search for them hits up to 1000
+		//getMediaArchive().getSearcherManager().organizeHits(
 		
-		
-		return found;		
+		return bytype;		
 	}
 
+	public void rescanSearchCategories()
+	{
+		//For each search category go look for relevent records. Reset old ones?
+		HitTracker tracker = getMediaArchive().query("searchcategory").exists("semantictopics").search();
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		{
+			Data searchcategory = (Data) iterator.next();
+			String values = searchcategory.get("semantictopics");
+			Map<String,Collection<String>> bytype = viewRelatedEntities(values);
+			for (Iterator iterator2 = bytype.keySet().iterator(); iterator2.hasNext();)
+			{
+				String moduleid = (String)iterator2.next();
+				Collection<String> ids = bytype.get(moduleid);
+				Collection addedentites = getMediaArchive().query(moduleid).ids(ids).not("searchcategory",searchcategory.getId()).search();
+				for (Iterator iterator3 = addedentites.iterator(); iterator3.hasNext();)
+				{
+					MultiValued entity = (MultiValued) iterator3.next();
+					entity.addValue("searchcategory",searchcategory.getId());
+				}
+				log.info("Saved " + addedentites.size() + " in " + moduleid);
+				getMediaArchive().saveData(moduleid,addedentites);
+			}
+		}
+	}
 	
 }
