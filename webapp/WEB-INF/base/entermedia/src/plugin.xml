@@ -2596,11 +2596,18 @@
 		</property>
 	</bean>
 
-	<bean id="faceCentroidManager" class="org.entermediadb.asset.facedetect.FaceCentroidManager" lazy-init="default" scope="prototype">
+	<bean id="faceProfileManager" class="org.entermediadb.asset.facedetect.FaceProfileManager" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
+
+	<bean id="semanticIndexManager" class="org.entermediadb.ai.semantics.SemanticIndexManager" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
 
 	<bean id="kMeansIndexer" class="org.entermediadb.ai.KMeansIndexer" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
