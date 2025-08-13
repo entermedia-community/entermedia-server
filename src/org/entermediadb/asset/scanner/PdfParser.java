@@ -50,7 +50,7 @@ public class PdfParser
 				PDFTextStripper stripper = new PDFTextStripper();
 				
 				//TODO: Write this out to a temp file that will be indexed seperately
-				for (int i = 0; i < pages; i++)
+				for (int i = 1; i <= pages; i++)
 				{
 					String text = null;
 	
@@ -68,10 +68,7 @@ public class PdfParser
 						text = "";
 					}
 					text = scrubChars(text);
-					JSONObject one = new JSONObject();
-					one.put("text",text);
-					one.put("page",i);
-					savedpages.add(one);
+					savedpages.add(text);
 				}
 				results.setText(savedpages.toJSONString());
 				results.setPages(pdf.getNumberOfPages());
@@ -107,22 +104,40 @@ public class PdfParser
 			char c = inVal.charAt(i);
 			switch (c)
 			{
-				 case '\t':
-		         case '\n':
-		         case '\r':
-		        	 done.append(c); //these are safe
-		        	 break;
-		         default:
-		         {
+				case '\t':
+				case '\n':
+				case '\r':
+					done.append(' '); //these are safe
+					break;
+				default:
+				{
 		 			if (c > 31) //other skip unless over 31
 					{
 						done.append(c); 
 					}
-		         }
+				}
 			}
 		}
-		return done.toString();
+		String finalText = done.toString().trim();
+		finalText = finalText.replaceAll("\\s+", " "); 
+		finalText = decodeUnicodeEscapes(finalText);
+		return finalText;
 	}
+	public static String decodeUnicodeEscapes(String str) {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        while (i < str.length()) {
+            if (str.charAt(i) == '\\' && i + 5 < str.length() && str.charAt(i+1) == 'u') {
+                String hex = str.substring(i + 2, i + 6);
+                sb.append((char) Integer.parseInt(hex, 16));
+                i += 6;
+            } else {
+                sb.append(str.charAt(i));
+                i++;
+            }
+        }
+        return sb.toString();
+    }
 /*
 	public Parse getParse(Content content) throws OpenEditException
 	{
