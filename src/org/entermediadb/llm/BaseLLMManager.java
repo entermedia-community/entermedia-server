@@ -127,7 +127,7 @@ public abstract class BaseLLMManager implements LLMManager {
 			
 			streamer.include(template, request);
 			String string = output.toString();
-			//log.info(inTemplate +" Output: " + string);
+			log.info(inTemplate +" Output: " + string);
 			return string;
 		} catch (OpenEditException e) {
 			throw e;
