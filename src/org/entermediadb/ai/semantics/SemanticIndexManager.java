@@ -73,20 +73,39 @@ public class SemanticIndexManager implements CatalogEnabled
 		}
 		return fieldKMeansIndexer;
 	}
-	public void reinitClusters(ScriptLogger logger)
+	public void reBalance(ScriptLogger logger)
 	{
 		if( true )
 		{
 		//	return;
 		}
-		
+		long start = System.currentTimeMillis();
 		logger.info(new Date() +  " reinitNodes Start reinit ");
 		
+		//Clear all centroids
+		HitTracker tracker = getMediaArchive().query(getKMeansIndexer().getSearchType()).exact("iscentroid",true).search(); 
+		tracker.enableBulkOperations();
+
+		Collection tosave = new ArrayList(1000);
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			data.setValue("iscentroid",false);
+			tosave.add(data);
+			if( tosave.size() == 1000)
+			{
+				getMediaArchive().saveData(getKMeansIndexer().getSearchType(),tosave);
+				tosave.clear();
+			}
+		}
+		getMediaArchive().saveData(getKMeansIndexer().getSearchType(),tosave);
 		getMediaArchive().getCacheManager().clear(getKMeansIndexer().getType());
 		getMediaArchive().getCacheManager().clear(getKMeansIndexer().getType() + "lookuprecord"); 
 		
 		getKMeansIndexer().reinitClusters(logger);
-		logger.info(new Date() +  " reinitNodes Completed ");
+		long end = System.currentTimeMillis();
+		double seconds = (end - start)  / 1000d;
+		logger.info(" reinitNodes Completed in  " + seconds  + " seconds ");
 
 	}
 	
