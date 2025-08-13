@@ -546,42 +546,49 @@
 							formData.set("desktopimportstatus", "scan-started");
 							folders.forEach((folder) => {
 								$.ajax({
-									url: `/${mediadb}/services/module/${moduleid}/create`,
+									url: `/${mediadb}/services/module/${moduleid}/searchorcreate`,
 									method: "POST",
 									data: JSON.stringify({
 										name: folder.name,
 									}),
 									contentType: "application/json",
 									success: function ({ data }) {
-										console.log(data);
 										formData.set("entityid", data.id);
 										categorypath = categorypath + "/" + data.name;
 										formData.set("startcategory", categorypath);
 										formData.set("categorypath", categorypath);
 										desktopSyncStarter(formData, function (synfolder) {
-											ipcRenderer
-												.invoke("dropUpload", {
-													folderPath: folder.path,
-													folderName: folder.name,
-													categoryPath: categorypath,
-													syncFolderId: synfolder.id,
-												})
-												.then((uploadStatus) => {
-													if (uploadStatus === "OK") {
-														customToast(
-															categorypath + " upload task added to Cloud Sync",
-															{ id: synfolder.id }
-														);
-													} else {
-														customToast("Error creating the folder!", {
-															id: synfolder.id,
-															positive: false,
-														});
-													}
-												})
-												.catch((error) => {
-													console.log("dropUpload", error);
-												});
+											ipcRenderer.send("dropUpload", {
+												folderPath: folder.path,
+												folderName: folder.name,
+												categoryPath: categorypath,
+												syncFolderId: synfolder.id,
+											});
+
+											customToast(
+												elideCat(categorypath) +
+													" upload task added to Cloud Sync",
+												{ id: synfolder.id }
+											);
+											var topmodulecontainer = $(".topmodulecontainer");
+											topmodulecontainer.data(
+												"sidebarcomponent",
+												"localdrives"
+											);
+											topmodulecontainer.data(
+												"targetdiv",
+												"applicationcontent"
+											);
+											topmodulecontainer.data("oemaxlevel", 5);
+											topmodulecontainer.runAjax();
+											// $("#col-sidebars").load(
+											// 	apphome + "/components/sidebars/index.html",
+											// 	{
+											// 		propertyfield: "sidebarcomponent",
+											// 		sidebarcomponent: "localdrives",
+											// 		"sidebarcomponent.value": "localdrives",
+											// 	}
+											// );
 										});
 									},
 									error: function (error) {

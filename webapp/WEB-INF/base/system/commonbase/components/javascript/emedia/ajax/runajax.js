@@ -15,6 +15,10 @@ findClosest = function (link, inid) {
 (function ($) {
 	$.fn.runAjax = function (successCallback = null) {
 		var anchor = $(this);
+		if (!anchor || anchor.length == 0) {
+			console.warn("runAjax called on an empty element");
+			return;
+		}
 		var confirmation = $(anchor).data("confirm");
 		if (confirmation && !confirm(confirmation)) {
 			return this;
@@ -357,7 +361,6 @@ $(document).ready(function () {
 			errors += "\n\tURL: " + settings.url;
 		}
 		console.error(errors);
-		return;
 	});
 
 	var runAjaxOn = {};
