@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,7 +15,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.ai.KMeansIndexer;
 import org.entermediadb.ai.RankedResult;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.facedetect.FaceBox;
 import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
@@ -27,6 +26,7 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 
@@ -109,34 +109,55 @@ public class SemanticIndexManager implements CatalogEnabled
 		return instructions;
 	}
 	
-	public int index(SemanticInstructions inStructions, Collection<Data> inEntities)  //Page of data
+	public void indexAll(ScriptLogger log)
 	{
-		String url = getMediaArchive().getCatalogSettingValue("semanticserver");
+		HitTracker all = getMediaArchive().query("module").exact("semanticenabled", true).search();
+		Collection<String> ids = all.collectValues("id");
+		
+		QueryBuilder query = getMediaArchive().getSearcher("modulesearch").query();
+		query.exact("semanticindexed", false);
+		query.exists("semantictopics");
+		query.put("searchtypes", ids);
+		
+		HitTracker hits = query.search();
+		hits.enableBulkOperations();
+		
+		SemanticInstructions instructions = createSemanticInstructions();
+		int indexed = 0;
+		for(int i=0;i < hits.getTotalPages();i++)
+		{
+			hits.setPage(i+1);
+			long start = System.currentTimeMillis();
+			Collection<MultiValued> onepage = hits.getPageOfHits();
+			indexed = indexed + index(instructions, onepage);;
+			
+		}
+		log.info("Total indexed: " + indexed + " of " + hits.size());
+		
+	}
+	
+	
+	public void clusterInit(ScriptLogger log)
+	{
+	
+		getKMeansIndexer().reinitClusters(log);
+	}
+	
+	public int index(SemanticInstructions inStructions, Collection<MultiValued> inEntities)  //Page of data
+	{
+		String url = getMediaArchive().getCatalogSettingValue("ai_vectorizer_server");
 		if( url == null)
 		{
 			log.error("No face server configured");
 			return 0;
 		}
 
-		HitTracker existingfaces = getMediaArchive().query(getKMeansIndexer().getSearchType() ).orgroup("dataid", inEntities).search();
-		existingfaces.enableBulkOperations();
-
-		HashMap<String,Collection<MultiValued>> bydataid = new HashMap(existingfaces.size());
+		HitTracker existingvectors = getMediaArchive().query(getKMeansIndexer().getSearchType() ).orgroup("dataid", inEntities).search();
+		existingvectors.enableBulkOperations();
 		
-		log.error("Loading list of existing dataids");
-		for (Iterator iterator = existingfaces.iterator(); iterator.hasNext();)
-		{
-			MultiValued face = (MultiValued) iterator.next();
-			Collection<MultiValued> existing =  bydataid.get( face.get("dataid"));
-			if( existing == null)
-			{
-				existing = new ArrayList(2);
-			}
-			existing.add(face);
-			bydataid.put(face.get("dataid"),existing);
-		}
+		Set<String> dataIds = (Set<String>)existingvectors.collectValues("dataid");
+		inStructions.setExistingEntityIds(dataIds);
 		
-		new ArrayList();
 		Map<String,List> entitiestoprocess = new HashMap();
 		
 		for (Iterator iterator = inEntities.iterator(); iterator.hasNext();)
@@ -189,7 +210,7 @@ public class SemanticIndexManager implements CatalogEnabled
 			{
 				MultiValued entity = (MultiValued) iterator.next();
 				String dataid = entity.getId();
-				if( inStructions.getExistingFacesByDataId().containsKey(dataid ) )
+				if( inStructions.getExistingEntityIds().contains(dataid ) )
 				{
 					log.error("Skipping, Already have dataid " + dataid);
 					continue;
@@ -198,7 +219,7 @@ public class SemanticIndexManager implements CatalogEnabled
 				{
 					continue;
 				}
-				entitiestoscan.add(entity);
+				toscan.add(entity);
 			}
 		}
 		else
@@ -229,13 +250,14 @@ public class SemanticIndexManager implements CatalogEnabled
 			entry.put("text",out.toString());
 			list.add(entry);
 		}
-		tosendparams.put("request",list);
+		tosendparams.put("data",list);
 		
 		CloseableHttpResponse resp = askServer(tosendparams);
 		
 		String responseStr = getSharedConnection().parseText(resp);
 		JSONParser parser = new JSONParser();
-		JSONArray results = (JSONArray) parser.parse(responseStr);
+		JSONObject jsonresponse = (JSONObject)parser.parse(responseStr);
+		JSONArray results = (JSONArray)jsonresponse.get("results");
 		
 		Searcher searcher = getMediaArchive().getSearcher(getKMeansIndexer().getSearchType());
 		
@@ -244,7 +266,7 @@ public class SemanticIndexManager implements CatalogEnabled
 		{
 			Map result = (Map)results.get(i);
 			MultiValued newdata = (MultiValued)searcher.createNewData();
-			String dataid = (String)result.get("dataid");
+			String dataid = (String)result.get("id");
 			newdata.setValue("dataid",dataid);
 			
 			Collection vectors = getKMeansIndexer().collectDoubles((Collection)result.get("embedding"));
@@ -259,7 +281,7 @@ public class SemanticIndexManager implements CatalogEnabled
 	protected CloseableHttpResponse askServer(JSONObject tosendparams)
 	{
 		CloseableHttpResponse resp;
-		String url = getMediaArchive().getCatalogSettingValue("semanticserver");
+		String url = getMediaArchive().getCatalogSettingValue("ai_vectorizer_server");
 		resp = getSharedConnection().sharedPostWithJson(url + "/text",tosendparams);
 		if (resp.getStatusLine().getStatusCode() != 200)
 		{
