@@ -451,7 +451,23 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 				log.info("No output found in GPT response");
 				return results;
 			}
-			JSONObject output = (JSONObject) outputs.get(0);
+			
+			JSONObject output = null;
+			for (Object outputObj : outputs)
+			{
+				if (!(outputObj instanceof JSONObject))
+				{
+					log.info("Output is not a JSONObject: " + outputObj);
+					continue;
+				}
+				JSONObject obj = (JSONObject) outputObj;
+				String role = (String) obj.get("role");
+				if(role != null && role.equals("assistant"))
+				{
+					output = obj;
+					break;
+				}
+			}
 			if (output == null || !output.get("status").equals("completed"))
 			{
 				log.info("No completed output found in GPT response");
