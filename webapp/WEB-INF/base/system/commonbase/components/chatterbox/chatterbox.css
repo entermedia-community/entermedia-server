@@ -102,7 +102,7 @@
 	border-radius: 8px;
 	background-color: #277371;
 	color: #fff;
-	font-size: 1rem;
+	font-size: 0.9rem;
 }
 .chatterbox-write .chatter-btn:hover {
 	background-color: #1a4c4a;
@@ -112,7 +112,9 @@
 	width: 88px;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: center;
+	gap: 8px;
+	line-height: 22px;
 }
 .chatterbox-write .chatter-emoji,
 .chatterbox-write .chatter-attachfile {
