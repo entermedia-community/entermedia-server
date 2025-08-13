@@ -1,9 +1,6 @@
 package org.entermediadb.ai.semantics;
 
-import java.util.Collection;
-import java.util.Map;
-
-import org.openedit.MultiValued;
+import java.util.Set;
 
 public class SemanticInstructions
 {
@@ -17,15 +14,15 @@ public class SemanticInstructions
 	{
 		fieldSkipExistingRecords = inUpdateExistingFace;
 	}
-	public Map<String,Collection<MultiValued>> getExistingFacesByDataId()
+	public Set<String> getExistingEntityIds()
 	{
-		return fieldExistingFacesByDataId;
+		return fieldExistingEntityIds;
 	}
-	public void setExistingFacesByDataId(Map<String,Collection<MultiValued>> inDataIds)
+	public void setExistingEntityIds(Set<String> inDataIds)
 	{
-		fieldExistingFacesByDataId = inDataIds;
+		fieldExistingEntityIds = inDataIds;
 	}
-	protected Map<String,Collection<MultiValued>> fieldExistingFacesByDataId;
+	protected Set<String> fieldExistingEntityIds;
 	
 	double fieldConfidenceLimit;
 	public double getConfidenceLimit()

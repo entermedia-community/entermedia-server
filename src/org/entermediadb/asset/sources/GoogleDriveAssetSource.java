@@ -234,7 +234,9 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 		}
 		catch (Exception ex)
 		{
-			throw new OpenEditException(ex);
+			//throw new OpenEditException(ex);
+			log.error("Error syncing assets from Google Drive: " + ex.getMessage(), ex);
+			return null;
 		}
 
 	}
