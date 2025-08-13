@@ -29,6 +29,7 @@ import javax.imageio.stream.ImageInputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.entermediadb.ai.KMeansIndexer;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
@@ -441,7 +442,7 @@ public class FaceProfileManager implements CatalogEnabled
 			{
 				Data otherface = (Data) iterator2.next();
 				List<Double> othervalues = (List<Double>)otherface.getValue("facedatadoubles");
-				boolean same = compareVectors(facedoubles, othervalues, getVectorScoreLimit() + 0.3D ); //Be more flexible
+				boolean same = getKMeansIndexer().compareVectors(facedoubles, othervalues, getVectorScoreLimit() + 0.3D ); //Be more flexible
 				if( same )
 				{
 					//TODO: Keep larger facebox
@@ -473,24 +474,31 @@ public class FaceProfileManager implements CatalogEnabled
 		
 		logger.info(new Date() +  " reinitNodes Start reinit ");
 		
-		getMediaArchive().getCacheManager().clear("face");
-		getMediaArchive().getCacheManager().clear("faceboxes");
-		getMediaArchive().getCacheManager().clear("facepersonlookuprecord"); 
 		
-		getKMeansManager().reinitClusters(logger);
+		getMediaArchive().getCacheManager().clear("face");
+		getMediaArchive().getCacheManager().clear(getKMeansIndexer().getType());
+		getMediaArchive().getCacheManager().clear(getKMeansIndexer().getType() + "lookuprecord"); 
+		
+		getKMeansIndexer().reinitClusters(logger);
 		logger.info(new Date() +  " reinitNodes Completed ");
 
 	}
 
 
-	protected KMeansManager fieldKManager;
-	public KMeansManager getKMeansManager()
+	protected KMeansIndexer fieldKMeansIndexer;
+	public KMeansIndexer getKMeansIndexer()
 	{
-		if (fieldKManager == null)
+		if (fieldKMeansIndexer == null)
 		{
-			fieldKManager = (KMeansManager)getModuleManager().getBean(getCatalogId(),"kMeansManager");
+			fieldKMeansIndexer = (KMeansIndexer)getModuleManager().getBean(getCatalogId(),"kMeansIndexer");
+			fieldKMeansIndexer.setType("facedetect");
+			fieldKMeansIndexer.setSearchType("faceembedding");
+			fieldKMeansIndexer.setRandomSortBy("face_confidence");
+			fieldKMeansIndexer.setFieldSaveConfidence("face_confidence");//kmeanconfidence ;
+			fieldKMeansIndexer.setFieldSaveVector("facedatadoubles");//vectorarray facedatadoubles
+			
 		}
-		return fieldKManager;
+		return fieldKMeansIndexer;
 	}
 	
 	public void disableFaceBox(User inUser, MultiValued inEmbedding)
@@ -520,41 +528,7 @@ public class FaceProfileManager implements CatalogEnabled
 		
 	}
 	
-	public boolean compareVectors(List<Double> inputVector, List<Double> inCompareVector, double maxdistance)
-	{
-		double distance = findCosineDistance(inputVector, inCompareVector);
-		if( distance > maxdistance )
-		{
-			return false;
-		}
-		return true;
-	}
 
-	public double findCosineDistance(List<Double> inputVector, List<Double> compreToV) 
-	{
-		if (inputVector.size() != compreToV.size()) 
-		{
-				throw new OpenEditException("Vectors must be the same length.");
-		}
-
-		double dotProduct = 0.0;
-		double normA = 0.0;
-		double normB = 0.0;
-
-		for (int i = 0; i < inputVector.size(); i++) 
-		{
-			double iv = inputVector.get(i);  //ParserBase line 686 defaults to double for filling a list of values
-			double cv = compreToV.get(i);
-			
-			dotProduct += iv * cv;
-			normA += iv * iv;
-			normB += cv * cv;
-		}
-		double diff = (dotProduct / (Math.sqrt(normA) * Math.sqrt(normB)));
-		double finalval = 1d - diff;
-		return finalval;
-	}
-	
 	protected List<MultiValued> makeDataForEachFace(FaceScanInstructions instructions, Searcher facedb, Asset inAsset,double timecodestart, ContentItem inInput, List<Map> inJsonOfFaces) throws Exception
 	{
 		if( inJsonOfFaces.isEmpty())
@@ -626,7 +600,7 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 			JSONArray collection = (JSONArray)facejson.get("embedding");
 			
-			List<Double> vector = collectDoubles(collection);
+			List<Double> vector = getKMeansIndexer().collectDoubles(collection);
 			//String encoded = encodeDoubles(vector);
 
 //			String jsontext = collection.toJSONString();
@@ -682,7 +656,7 @@ public class FaceProfileManager implements CatalogEnabled
 			addedface.setValue("locationh",Math.round(h));
 			addedface.setValue("timecodestart",timecodestart);
 			
-			getKMeansManager().setCentroids(addedface);
+			getKMeansIndexer().setCentroids(addedface);
 			
 			Collection centroids = addedface.getValues("nearbycentroidids");
 			
@@ -731,72 +705,6 @@ public class FaceProfileManager implements CatalogEnabled
 //	}
 //	
 	
-	protected float[] collectFloats(Collection vector) 
-	{
-		float[] floats = new float[vector.size()];
-		int i = 0;
-		for (Iterator iterator = vector.iterator(); iterator.hasNext();)
-		{
-			Object floatobj = iterator.next();
-			float f;
-			if( floatobj instanceof Float)
-			{
-				f = (Float)floatobj;
-			}
-			else
-			{
-				f = Float.parseFloat(floatobj.toString());
-			}
-			floats[i++] = f;
-		}
-		return floats;
-	}
-	 //Used for saving data
-	protected static String encodeFloats(float[] vector)
-	{
-		final int capacity = Float.BYTES * vector.length;
-	    final ByteBuffer bb = ByteBuffer.allocate(capacity);
-	    for (float v : vector) {
-	        bb.putFloat(v);
-	    }
-	    bb.rewind();
-	    final ByteBuffer encodedBB = Base64.getEncoder().encode(bb);
-
-	    return new String(encodedBB.array());
-	}
-
-	public List<Double> collectDoubles(Collection vector) 
-	{
-		List<Double> floats = new ArrayList(vector.size());
-		for (Iterator iterator = vector.iterator(); iterator.hasNext();)
-		{
-			Object floatobj = iterator.next();
-			double f;
-			if( floatobj instanceof Double)
-			{
-				f = (Double)floatobj;
-			}
-			else
-			{
-				f = Double.parseDouble(floatobj.toString());
-			}
-			floats.add(f);
-		}
-		return floats;
-	}
-	 //Used for saving data
-	protected static String encodeDoubles(double[] vector)
-	{
-		final int capacity = Double.BYTES * vector.length;
-	    final ByteBuffer bb = ByteBuffer.allocate(capacity);
-	    for (double v : vector) {
-	        bb.putDouble(v);
-	    }
-	    bb.rewind();
-	    final ByteBuffer encodedBB = Base64.getEncoder().encode(bb);
-
-	    return new String(encodedBB.array());
-	}
 
 //	    public static void main(String[] args) {
 //	        float[] vector = new float[] {
@@ -815,7 +723,7 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			return Collections.EMPTY_LIST;
 		}
-		Collection<FaceBox> boxes = (Collection<FaceBox>)getMediaArchive().getCacheManager().get("faceboxes", inAsset.getId());
+		Collection<FaceBox> boxes = (Collection<FaceBox>)getMediaArchive().getCacheManager().get(getKMeansIndexer().getType(), inAsset.getId());
 		if( boxes != null )
 		{
 			return (Collection<FaceBox>)boxes;
@@ -840,7 +748,7 @@ public class FaceProfileManager implements CatalogEnabled
 	public Data loadPersonOfEmbedding(MultiValued embedding)
 	{
 
-		Data entityperson = (Data)getMediaArchive().getCacheManager().get("facepersonlookuprecord",embedding.getId());
+		Data entityperson = (Data)getMediaArchive().getCacheManager().get(getKMeansIndexer().getType() + "personlookuprecord",embedding.getId());
 		if(entityperson == CacheManager.NULLDATA )
 		{
 			return null;
@@ -849,7 +757,7 @@ public class FaceProfileManager implements CatalogEnabled
 		String entitypersonid = embedding.get("entityperson");
 		if( entitypersonid == null)
 		{
-			Collection<MultiValued> faces =  getKMeansManager().searchNearestItems(embedding);
+			Collection<MultiValued> faces =  getKMeansIndexer().searchNearestItems(embedding);
 			for (Iterator iterator = faces.iterator(); iterator.hasNext();)
 			{
 				MultiValued face = (MultiValued) iterator.next();
@@ -1113,7 +1021,7 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 			startdata = newdata; //We have a faceembedding with a vector
 		}
-		Collection allthepeopleinasset = getKMeansManager().searchNearestItems(startdata);
+		Collection allthepeopleinasset = getKMeansIndexer().searchNearestItems(startdata);
 		
 		Collection<String> dedupids = new HashSet();
 		
@@ -1254,7 +1162,7 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			return embedding;
 		}
-		Collection<MultiValued> faces =  getKMeansManager().searchNearestItems(embedding);
+		Collection<MultiValued> faces =  getKMeansIndexer().searchNearestItems(embedding);
 		for (Iterator iterator = faces.iterator(); iterator.hasNext();)
 		{
 			MultiValued face = (MultiValued) iterator.next();

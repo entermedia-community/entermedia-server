@@ -1,4 +1,4 @@
-package org.entermediadb.asset.facedetect;
+package org.entermediadb.ai;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,13 +20,85 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.util.MathUtils;
 
-public class KMeansManager implements CatalogEnabled {
+public class KMeansIndexer implements CatalogEnabled {
 
-	private static final Log log = LogFactory.getLog(KMeansManager.class);
+	private static final Log log = LogFactory.getLog(KMeansIndexer.class);
 
-	public KMeansManager() 
+	public KMeansIndexer() 
 	{
 	
+	}
+
+	protected String fieldType = "semantic";
+	protected String fieldSearchType = "semanticembedding";
+	protected String fieldRandomSortBy = null;
+	protected String fieldFieldSaveConfidence = "kmeanconfidence";//kmeanconfidence ;
+	protected String fieldFieldSaveVector = "vectorarray";//vectorarray facedatadoubles
+	
+
+	public String getFieldSaveConfidence()
+	{
+		return fieldFieldSaveConfidence;
+	}
+
+
+	public void setFieldSaveConfidence(String inFieldSaveConfidence)
+	{
+		fieldFieldSaveConfidence = inFieldSaveConfidence;
+	}
+
+
+	public String getFieldSaveVector()
+	{
+		return fieldFieldSaveVector;
+	}
+
+
+	public void setFieldSaveVector(String inFieldSaveVector)
+	{
+		fieldFieldSaveVector = inFieldSaveVector;
+	}
+
+
+	public void setClusters(Collection<MultiValued> inClusters)
+	{
+		fieldClusters = inClusters;
+	}
+
+
+	public String getRandomSortBy()
+	{
+		return fieldRandomSortBy;
+	}
+
+
+	public void setRandomSortBy(String inRandomSortBy)
+	{
+		fieldRandomSortBy = inRandomSortBy;
+	}
+
+
+	public String getSearchType()
+	{
+		return fieldSearchType;
+	}
+
+
+	public void setSearchType(String inSearchType)
+	{
+		fieldSearchType = inSearchType;
+	}
+
+
+	public String getType()
+	{
+		return fieldType;
+	}
+
+
+	public void setType(String inType)
+	{
+		fieldType = inType;
 	}
 
 	protected MediaArchive fieldMediaArchive;
@@ -92,12 +164,12 @@ public class KMeansManager implements CatalogEnabled {
 
 			while(toadd > 0)
 			{
-				HitTracker tracker = getMediaArchive().query("faceembedding").exact("iscentroid",false).sort("face_confidence").search(); //random enough?
+				HitTracker tracker = getMediaArchive().query(getSearchType()).exact("iscentroid",false).sort(getRandomSortBy()).search(); //random enough?
 				tracker.enableBulkOperations();
 				int maxpagestocheck = tracker.getTotalPages(); //Up to 15 pages * 1000
 				if( tracker.isEmpty() )
 				{
-					throw new OpenEditException("Do a deep reindex on faceembeddings");
+					throw new OpenEditException("Do a deep reindex on " + getSearchType());
 				}
 				Collection addedlist = createCentroids(inLog, tracker, min_distance, toadd, existingCentroids);
 				toadd = toadd - addedlist.size();
@@ -127,18 +199,18 @@ public class KMeansManager implements CatalogEnabled {
 		}
 		
 		Collection tosave = new ArrayList();
-		HitTracker tracker = getMediaArchive().query("faceembedding").missing("nearbycentroidids").hitsPerPage(500).search();
+		HitTracker tracker = getMediaArchive().query(getSearchType()).missing("nearbycentroidids").hitsPerPage(500).search();
 		tracker.enableBulkOperations();
 		//Search for all notes not connected
 		
 		int totalsaved = 0;
-		inLog.info("Start Reindexing " +  tracker.size() + " faces into " + getClusters().size() + " clusters");
+		inLog.info("Start Reindexing " +  tracker.size() + " " + getSearchType() + " into " + getClusters().size() + " clusters");
 		long start = System.currentTimeMillis();
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			MultiValued hit = (MultiValued) iterator.next();
 			
-			List<Double> vectorA = (List<Double>)hit.getValue("facedatadoubles");
+			List<Double> vectorA = (List<Double>)hit.getValue(getFieldSaveVector());
 			if( vectorA == null)
 			{
 				//User added node
@@ -162,7 +234,7 @@ public class KMeansManager implements CatalogEnabled {
 			if( tosave.size() == 500)
 			{
 				totalsaved = totalsaved + tosave.size();
-				getMediaArchive().saveData("faceembedding",tosave);
+				getMediaArchive().saveData(getSearchType(),tosave);
 				long end = System.currentTimeMillis();
 				double diff = (end - start)/1000D;
 				diff = MathUtils.roundDouble(diff, 2);
@@ -171,7 +243,7 @@ public class KMeansManager implements CatalogEnabled {
 				tosave.clear();
 			}
 		}
-		getMediaArchive().saveData("faceembedding",tosave);
+		getMediaArchive().saveData(getSearchType(),tosave);
 		totalsaved = totalsaved + tosave.size();
 		long end = System.currentTimeMillis();
 		double diff = (end - start)/1000D;
@@ -203,7 +275,7 @@ public class KMeansManager implements CatalogEnabled {
 				{
 					continue;
 				}
-				List<Double> vectorA = (List<Double>)hit.getValue("facedatadoubles");
+				List<Double> vectorA = (List<Double>)hit.getValue(getFieldSaveVector());
 				if( vectorA == null)
 				{
 					continue;
@@ -236,7 +308,7 @@ public class KMeansManager implements CatalogEnabled {
 			}
 		}
 		inLog.info("Added " + tosave.size() + " Centroid within min distance:" + mindistance);
-		getMediaArchive().saveData("faceembedding",tosave);
+		getMediaArchive().saveData(getSearchType(),tosave);
 
 		return tosave;
 	}
@@ -256,7 +328,7 @@ public class KMeansManager implements CatalogEnabled {
 			}
 			try
 			{
-				double distance = cosineDistance(master, other);
+				double distance = findCosineDistance(master, other);
 				if (distance <= mindistance)  //To close together. All images are shared on that side
 				{
 					//Was too close to someone
@@ -278,7 +350,7 @@ public class KMeansManager implements CatalogEnabled {
 	}
 
 
-	public  void setCentroids(final MultiValued inFace) 
+	public  void setCentroids(final MultiValued inRecord) 
 	{
 		// This method is intended to find the nearest cluster for a given item.
 		// Implementation would typically involve calculating distances or similarities
@@ -292,12 +364,12 @@ public class KMeansManager implements CatalogEnabled {
 			return;
 		}
 		
-		List<CloseCluster> closestclusters = (List<CloseCluster>)new ArrayList();
+		List<KMeansCloseCluster> closestclusters = (List<KMeansCloseCluster>)new ArrayList();
 	
 		for (MultiValued cluster : getClusters())
 		{
-			double distance = cosineDistance(inFace, cluster);
-			CloseCluster close = new CloseCluster(cluster,distance);
+			double distance = findCosineDistance(inRecord, cluster);
+			KMeansCloseCluster close = new KMeansCloseCluster(cluster,distance);
 			
 			closestclusters.add(close);
 		}
@@ -311,7 +383,7 @@ public class KMeansManager implements CatalogEnabled {
 		
 		for (int i = 0; i < max; i++) //Starts at 2 but only up to 5 clusters needed
 		{
-			CloseCluster cluster = (CloseCluster) closestclusters.get(i);
+			KMeansCloseCluster cluster = (KMeansCloseCluster) closestclusters.get(i);
 			
 			if( cluster.distance <= settings.maxdistancetocentroid ) //The More centroid the more hits
 			{
@@ -338,33 +410,98 @@ public class KMeansManager implements CatalogEnabled {
 		//if I cant find any centroids within .9 then be my own so that we dont break the rule
 		if( centroids.isEmpty() )
 		{
-			getClusters().add(inFace);
-			inFace.setValue("iscentroid",true);
+			getClusters().add(inRecord);
+			inRecord.setValue("iscentroid",true);
 			
 			//Its empty so add myself
 			Collection<String> single = new java.util.ArrayList(1);
-			single.add(inFace.getId());
-			inFace.setValue("nearbycentroidids",single); //Hes still normal for now. When theysearchthey might divide
+			single.add(inRecord.getId());
+			inRecord.setValue("nearbycentroidids",single); //Hes still normal for now. When theysearchthey might divide
 			
 			//closestclusters.iterator().next();
 			
 			log.info("Bad: No centroids within " + settings.maxdistancetocentroid + " across " +  getClusters().size() + " centroids");
-			getMediaArchive().saveData("faceembedding",inFace);
+			getMediaArchive().saveData(getSearchType(),inRecord);
 		}
 		else
 		{
-			inFace.setValue("nearbycentroidids",centroids);
+			inRecord.setValue("nearbycentroidids",centroids);
 			if( centroids.size() > 15)
 			{
 				//With large number of records and centroids we Might want to decrease the size since we have so many
-				log.info("Too many per face centroids: " + centroids.size() + "/" + getClusters().size() + " on " + inFace); 
+				log.info("Too many per face centroids: " + centroids.size() + "/" + getClusters().size() + " on " + inRecord); 
+			}
+		}
+	}
+
+	public Collection<RankedResult> searchNearestItems(List<Double> searchVector)
+	{
+		List<KMeansCloseCluster> closestclusters = (List<KMeansCloseCluster>)new ArrayList();
+		
+		for (MultiValued cluster : getClusters())
+		{
+			List<Double> centroidVector = (List<Double>)cluster.getValue(getFieldSaveVector());
+
+			double distance = findCosineDistance(searchVector, centroidVector);
+			KMeansCloseCluster close = new KMeansCloseCluster(cluster,distance);
+			
+			closestclusters.add(close);
+		}
+		Collections.sort(closestclusters);	
+		KMeansConfiguration settings = getSettings();
+		
+		Collection goodcentroids = new ArrayList();
+		int max = Math.min(settings.maxnumberofcentroids,closestclusters.size());
+		
+		for (int i = 0; i < max; i++) //Starts at 2 but only up to 5 clusters needed
+		{
+			KMeansCloseCluster cluster = (KMeansCloseCluster) closestclusters.get(i);
+			
+			if( cluster.distance <= settings.maxdistancetocentroid ) //The More centroid the more hits
+			{
+				goodcentroids.add( cluster.centroid.getId() ); //must be within within .75
+			}
+			else if( i == 0 || i == 1 )
+			{
+				if( cluster.distance <=  settings.maxdistancetocentroid_one) //The More centroid the more hits
+				{
+					goodcentroids.add( cluster.centroid.getId() ); //must be within within .90
+					log.info("Picked one centroid under " + settings.maxdistancetocentroid_one + " , was " + cluster.distance + " was trying for " + settings.maxdistancetocentroid);
+				}
+				else
+				{
+					log.info("Could not set a single centroid under " + settings.maxdistancetocentroid_one + ", was " + cluster.distance);
+				}
+			}
+			else
+			{
+				break;
 			}
 		}
 		
+		HitTracker hits = getMediaArchive().query(getSearchType()).orgroup("nearbycentroidids",goodcentroids).search();
+		//Double check these match and also load up Organized modules?
+		List finalmatches = new ArrayList();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			MultiValued embedding = (MultiValued) iterator.next();
+			//double check
+			List<Double> centroidVector = (List<Double>)embedding.getValue(getFieldSaveVector());
+
+			double distance = findCosineDistance(searchVector, centroidVector);
+			if( distance < .4 )  //.6 is good
+			{
+				RankedResult rank = new RankedResult();
+				rank.setDistance(distance);
+				rank.setEmbedding(embedding);
+				finalmatches.add(rank);  //Add a ranking
+			}
+		}
+
+		return finalmatches;
+
 	}
-
-
-	public Collection<MultiValued> searchNearestItems(MultiValued inSearch)
+	public Collection<MultiValued> searchNearestItems(MultiValued inSearch)  //Like face
 	{
 		// This method is intended to search for the nearest items to a given item.
 		// Implementation would typically involve calculating distances or similarities
@@ -386,7 +523,7 @@ public class KMeansManager implements CatalogEnabled {
 			{
 				throw new OpenEditException(inSearch + " Has no centroids. reindexfaces");
 			}
-			HitTracker tracker = getMediaArchive().query("faceembedding").
+			HitTracker tracker = getMediaArchive().query(getSearchType()).
 					orgroup("nearbycentroidids",nearbycentroidids).
 					exact("isremoved",false).hitsPerPage(1000).search();
 					
@@ -423,48 +560,6 @@ public class KMeansManager implements CatalogEnabled {
 		return matches;
 	}
 	
-	protected double cosineDistance(MultiValued hita, MultiValued hitb) 
-	{
-		if(  hita.getId() != null && hita.getId().equals(hitb.getId() ) )
-		{
-			return 0.0;
-		}
-		
-		List<Double> vectorA = (List<Double>)hita.getValue("facedatadoubles");
-		List<Double> vectorB = (List<Double>)hitb.getValue("facedatadoubles");
-		
-		if (vectorA == null)
-		{
-			throw new IllegalArgumentException("Vectors was null "+ hita.getId());
-		}
-		if (vectorB == null)
-		{
-			throw new IllegalArgumentException("Vectors was null "+ hitb.getId());
-		}
-		if (vectorA.size() != vectorB.size())
-		{
-			throw new IllegalArgumentException("Vectors must be of the same length");
-		}
-
-		double dotProduct = 0.0;
-		double normA = 0.0;
-		double normB = 0.0;
-
-		for (int i = 0; i < vectorA.size(); i++) 
-		{
-			dotProduct += vectorA.get(i) * vectorB.get(i);
-			normA += Math.pow(vectorA.get(i), 2);
-			normB += Math.pow(vectorB.get(i), 2);
-		}
-
-		if (normA == 0 || normB == 0) {
-			return 0.0; // Avoid division by zero
-		}
-
-		double similar = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-		double distance = 1D - similar;
-		return Math.abs(distance);
-	}
 
 	// This method is intended to rebalance centroids in a KMeans clustering algorithm.
 	public Collection<MultiValued> divideCluster(MultiValued newcentroidItem, HitTracker allnearestItems)
@@ -474,7 +569,7 @@ public class KMeansManager implements CatalogEnabled {
 		log.info("Dividing the cluster from large resultset: " + results.size() + " results for id: " + newcentroidItem.getId() + " all centroids:" +  newcentroidItem.getValues("nearbycentroidids") );
 		if( newcentroidItem.getId() == null)
 		{
-			getMediaArchive().saveData("faceembedding",newcentroidItem);
+			getMediaArchive().saveData(getSearchType(),newcentroidItem);
 		}
 		
 		//I got too many hits then add my myself as a centroid
@@ -507,11 +602,11 @@ public class KMeansManager implements CatalogEnabled {
 		newcentroidItem.setValue("nearbycentroidids", savecentroids); //Add us at the end
 		tomove.add(newcentroidItem);
 		
-		getMediaArchive().saveData("faceembedding",tomove);
+		getMediaArchive().saveData(getSearchType(),tomove);
 		
 		
 		
-		log.info("Made a new node with only exact faces in it: " + results.size() + "->" + tomove.size() + " with new centroid id: " + newcentroidItem.getId() + " saved centroids " + savecentroids);
+		log.info("Made a new node with only exact nodes in it: " + results.size() + "->" + tomove.size() + " with new centroid id: " + newcentroidItem.getId() + " saved centroids " + savecentroids);
 		
 		return tomove;
 	}
@@ -542,7 +637,7 @@ public class KMeansManager implements CatalogEnabled {
 			for (Iterator iterator2 = allsimilarroots.iterator(); iterator2.hasNext();)
 			{
 				MultiValued centroid = (MultiValued) iterator2.next();
-				double distance = cosineDistance(centroid, test);
+				double distance = findCosineDistance(centroid, test);
 				if (distance <= cutoffdistance) 
 				{
 					tomove.add(test); //These are as good as connecting to myself. Brad pit as a kid
@@ -579,7 +674,7 @@ public class KMeansManager implements CatalogEnabled {
 				log.error("Centroid missing: " + centroidid);
 				continue;
 			}
-			double distance = cosineDistance(searchby, centroid);
+			double distance = findCosineDistance(searchby, centroid);
 			if (distance <=  getSettings().maxdistancetomatch) 
 			{
 				allsimilarroots.add(centroid); //These are as good as connecting to myself. Brad pit as a kid
@@ -609,7 +704,7 @@ public class KMeansManager implements CatalogEnabled {
 		// Implementation would typically involve querying the database and populating the clusters list.
 		if( fieldClusters == null ) 
 		{
-			HitTracker tracker = getMediaArchive().query("faceembedding").exact("iscentroid",true).search();
+			HitTracker tracker = getMediaArchive().query(getSearchType()).exact("iscentroid",true).search();
 			fieldClusters = new ArrayList<MultiValued>(tracker);
 			//	reinitClusters(null);
 		}
@@ -618,20 +713,22 @@ public class KMeansManager implements CatalogEnabled {
 
 	protected KMeansConfiguration getSettings()
 	{
-		KMeansConfiguration config = (KMeansConfiguration)getMediaArchive().getCacheManager().get("face","kmeansconfig");
+		KMeansConfiguration config = (KMeansConfiguration)getMediaArchive().getCacheManager().get(getType(),"kmeansconfig");
 		if( config == null)
 		{
 			fieldClusters = null; //reload em
 			
 			config = new KMeansConfiguration();
-			String value = getMediaArchive().getCatalogSettingValue("facedetect_maxdistancetomatch");
+			getMediaArchive().getCacheManager().put(getType(),"kmeansconfig",config);
+			
+			String value = getMediaArchive().getCatalogSettingValue(getType() + "_maxdistancetomatch");
 			if( value != null)
 			{
 				config.maxdistancetomatch = Double.parseDouble(value);
 			}
 			/*
 			 *  Choosing the Number of Centroids (k)
-	k ≈ sqrt(n / 2) is a heuristic (where n = total number of face vectors)
+	k ≈ sqrt(n / 2) is a heuristic (where n = total number of record vectors)
 
 	Examples:
 
@@ -639,23 +736,23 @@ public class KMeansManager implements CatalogEnabled {
 
 	1,000,000 faces → ~700–1000 centroids
 	*/
-			int totalfaces = getMediaArchive().query("faceembedding").all().hitsPerPage(1).search().size(); 
-			double k = Math.sqrt( totalfaces / 2d); //Higher slows down indexing, more can be added back later as they click
+			int totalrecords = getMediaArchive().query(getSearchType()).all().hitsPerPage(1).search().size(); 
+			double k = Math.sqrt( totalrecords / 2d); //Higher slows down indexing, more can be added back later as they click
 			int min = (int)Math.round(k * 1.50); //Raise by 50% or will be added on demand or make it worse
 			
-			String skcount = getMediaArchive().getCatalogSettingValue("facedetect_kcount");
+			String skcount = getMediaArchive().getCatalogSettingValue(getType() + "_kcount");
 			if( skcount != null)
 			{
 				min = Integer.parseInt( skcount); 
 			}
 			
 			config.kcount = min;
-			config.totalrecords = totalfaces;
+			config.totalrecords = totalrecords;
 			
 			//Create new nodes when we get over 300 results or more as more likely to have a ton of faces
 			
 			min =  Math.max(min,300); 
-			String smaxresultspersearch = getMediaArchive().getCatalogSettingValue("facedetect_maxresultspersearch");
+			String smaxresultspersearch = getMediaArchive().getCatalogSettingValue(getType() + "_maxresultspersearch");
 			if( smaxresultspersearch != null)
 			{
 				min = Integer.parseInt( smaxresultspersearch); 
@@ -663,7 +760,6 @@ public class KMeansManager implements CatalogEnabled {
 			
 			config.maxresultspersearch = min; 
 			
-			getMediaArchive().getCacheManager().put("face","kmeansconfig",config);
 			
 			//.80-.9 = 20-100k
 			//		.9 / (t / 20k) = 
@@ -673,40 +769,40 @@ public class KMeansManager implements CatalogEnabled {
 //				newrange = .8;  			 // (totalfaces / 20000.0)); //.90 worked well for 20k so scale it up or down based on total
 //			}
 			
-			String smaxdistancetocentroid = getMediaArchive().getCatalogSettingValue("facedetect_maxdistancetocentroid");
+			String smaxdistancetocentroid = getMediaArchive().getCatalogSettingValue(getType() + "_maxdistancetocentroid");
 			if( smaxdistancetocentroid != null)
 			{
 				config.maxdistancetocentroid = Double.parseDouble(smaxdistancetocentroid);
-				log.info("Default size from db facedetect_maxdistancetocentroid=" + config.maxdistancetocentroid );
+				log.info("Custom size from db " +  getType()  + "_maxdistancetocentroid=" + config.maxdistancetocentroid );
 			}
 
 			
-			String init_loop_lower_limit = getMediaArchive().getCatalogSettingValue("facedetect_init_loop_lower_limit");
+			String init_loop_lower_limit = getMediaArchive().getCatalogSettingValue(getType() + "_init_loop_lower_limit");
 			if( init_loop_lower_limit != null)
 			{
 				config.init_loop_lower_limit = Double.parseDouble(init_loop_lower_limit);
-				log.info("Default size from db init_loop_lower_limit=" + init_loop_lower_limit );
+				log.info("Custom size from db init_loop_lower_limit=" + init_loop_lower_limit );
 			}
 
-			String sinit_loop_start_distance = getMediaArchive().getCatalogSettingValue("facedetect_init_loop_start_distance");
+			String sinit_loop_start_distance = getMediaArchive().getCatalogSettingValue(getType() + "_init_loop_start_distance");
 			if( sinit_loop_start_distance != null)
 			{
 				config.init_loop_start_distance = Double.parseDouble(sinit_loop_start_distance);
-				log.info("Default size from db sinit_loop_start_distance=" + sinit_loop_start_distance );
+				log.info("Custom size from db sinit_loop_start_distance=" + sinit_loop_start_distance );
 			}
 
-			String smaxdistancetocentroid_one = getMediaArchive().getCatalogSettingValue("facedetect_maxdistancetocentroid_one");
+			String smaxdistancetocentroid_one = getMediaArchive().getCatalogSettingValue(getType() + "_maxdistancetocentroid_one");
 			if( smaxdistancetocentroid_one != null)
 			{
 				config.maxdistancetocentroid_one = Double.parseDouble(smaxdistancetocentroid_one);
-				log.info("Default size from db maxdistancetocentroid_one=" + config.maxdistancetocentroid_one );
+				log.info("Custom size from db maxdistancetocentroid_one=" + config.maxdistancetocentroid_one );
 			}
 			
-			String smaxnumberofcentroids = getMediaArchive().getCatalogSettingValue("facedetect_maxnumberofcentroids ");
+			String smaxnumberofcentroids = getMediaArchive().getCatalogSettingValue(getType() + "_maxnumberofcentroids ");
 			if( smaxnumberofcentroids  != null)
 			{
 				config.maxnumberofcentroids = Integer.parseInt(smaxnumberofcentroids );
-				log.info("Default size from db maxnumberofcentroids =" + config.maxnumberofcentroids );
+				log.info("Custom size from db maxnumberofcentroids =" + config.maxnumberofcentroids );
 			}
 			
 			log.info("Reloading settings kcount="+ config.kcount  + " maxresultspersearch=" + config.maxresultspersearch + " maxdistancetocentroid=" + config.maxdistancetocentroid );
@@ -714,4 +810,157 @@ public class KMeansManager implements CatalogEnabled {
 		return config;
 	}
 
+	
+	public boolean compareVectors(List<Double> inputVector, List<Double> inCompareVector, double maxdistance)
+	{
+		double distance = findCosineDistance(inputVector, inCompareVector);
+		if( distance > maxdistance )
+		{
+			return false;
+		}
+		return true;
+	}
+
+	public double findCosineDistance(List<Double> inputVector, List<Double> compreToV) 
+	{
+		if (inputVector.size() != compreToV.size()) 
+		{
+				throw new OpenEditException("Vectors must be the same length.");
+		}
+
+		double dotProduct = 0.0;
+		double normA = 0.0;
+		double normB = 0.0;
+
+		for (int i = 0; i < inputVector.size(); i++) 
+		{
+			double iv = inputVector.get(i);  //ParserBase line 686 defaults to double for filling a list of values
+			double cv = compreToV.get(i);
+			
+			dotProduct += iv * cv;
+			normA += iv * iv;
+			normB += cv * cv;
+		}
+		double diff = (dotProduct / (Math.sqrt(normA) * Math.sqrt(normB)));
+		double finalval = 1d - diff;
+		return finalval;
+	}
+	protected double findCosineDistance(MultiValued hita, MultiValued hitb) 
+	{
+		if(  hita.getId() != null && hita.getId().equals(hitb.getId() ) )
+		{
+			return 0.0;
+		}
+		
+		List<Double> vectorA = (List<Double>)hita.getValue(getFieldSaveVector());
+		List<Double> vectorB = (List<Double>)hitb.getValue(getFieldSaveVector());
+		
+		if (vectorA == null)
+		{
+			throw new IllegalArgumentException("Vectors was null "+ hita.getId());
+		}
+		if (vectorB == null)
+		{
+			throw new IllegalArgumentException("Vectors was null "+ hitb.getId());
+		}
+		if (vectorA.size() != vectorB.size())
+		{
+			throw new IllegalArgumentException("Vectors must be of the same length");
+		}
+
+		double dotProduct = 0.0;
+		double normA = 0.0;
+		double normB = 0.0;
+
+		for (int i = 0; i < vectorA.size(); i++) 
+		{
+			dotProduct += vectorA.get(i) * vectorB.get(i);
+			normA += Math.pow(vectorA.get(i), 2);
+			normB += Math.pow(vectorB.get(i), 2);
+		}
+
+		if (normA == 0 || normB == 0) {
+			return 0.0; // Avoid division by zero
+		}
+
+		double similar = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+		double distance = 1D - similar;
+		return Math.abs(distance);
+	}
+
+	
+	/*
+	protected float[] collectFloats(Collection vector) 
+	{
+		float[] floats = new float[vector.size()];
+		int i = 0;
+		for (Iterator iterator = vector.iterator(); iterator.hasNext();)
+		{
+			Object floatobj = iterator.next();
+			float f;
+			if( floatobj instanceof Float)
+			{
+				f = (Float)floatobj;
+			}
+			else
+			{
+				f = Float.parseFloat(floatobj.toString());
+			}
+			floats[i++] = f;
+		}
+		return floats;
+	}
+	
+	 //Used for saving data
+	protected static String encodeFloats(float[] vector)
+	{
+		final int capacity = Float.BYTES * vector.length;
+	    final ByteBuffer bb = ByteBuffer.allocate(capacity);
+	    for (float v : vector) {
+	        bb.putFloat(v);
+	    }
+	    bb.rewind();
+	    final ByteBuffer encodedBB = Base64.getEncoder().encode(bb);
+
+	    return new String(encodedBB.array());
+	}
+	*/
+	public List<Double> collectDoubles(Collection vector) 
+	{
+		List<Double> floats = new ArrayList(vector.size());
+		for (Iterator iterator = vector.iterator(); iterator.hasNext();)
+		{
+			Object floatobj = iterator.next();
+			double f;
+			if( floatobj instanceof Double)
+			{
+				f = (Double)floatobj;
+			}
+			else if( floatobj instanceof Float)
+			{
+				f = (Double)floatobj;
+			}
+			else
+			{
+				f = Double.parseDouble(floatobj.toString());
+			}
+			floats.add(f);
+		}
+		return floats;
+	}
+	 //Used for saving data
+	/*
+	protected static String encodeDoubles(double[] vector)
+	{
+		final int capacity = Double.BYTES * vector.length;
+	    final ByteBuffer bb = ByteBuffer.allocate(capacity);
+	    for (double v : vector) {
+	        bb.putDouble(v);
+	    }
+	    bb.rewind();
+	    final ByteBuffer encodedBB = Base64.getEncoder().encode(bb);
+
+	    return new String(encodedBB.array());
+	}
+	*/
 }
