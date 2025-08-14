@@ -402,8 +402,13 @@ public class SemanticIndexManager implements CatalogEnabled
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			Data searchcategory = (Data) iterator.next();
+			String text = null;
 			Collection values = searchcategory.getValues("semantictopics");
-			String text = collectText(values);
+			text = collectText(values);
+			if( text == null)
+			{
+				text = searchcategory.getName();
+			}
 			Map<String,Collection<String>> bytype = searchRelatedEntities(text);
 			for (Iterator iterator2 = bytype.keySet().iterator(); iterator2.hasNext();)
 			{
@@ -418,7 +423,7 @@ public class SemanticIndexManager implements CatalogEnabled
 					entity.addValue("searchcategory",searchcategory.getId());
 					tosave.add(entity);
 				}
-				log.info("Saved " + tosave.size() + " in " + moduleid);
+				log.info("Added " + tosave.size() + " to category " + moduleid);
 				getMediaArchive().saveData(moduleid,tosave);
 			}
 		}
