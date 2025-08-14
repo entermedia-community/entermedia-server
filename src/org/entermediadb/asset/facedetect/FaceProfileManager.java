@@ -494,7 +494,7 @@ public class FaceProfileManager implements CatalogEnabled
 			fieldKMeansIndexer.setType("facedetect");
 			fieldKMeansIndexer.setSearchType("faceembedding");
 			fieldKMeansIndexer.setRandomSortBy("face_confidence");
-			fieldKMeansIndexer.setFieldSaveConfidence("face_confidence");//kmeanconfidence ;
+			//fieldKMeansIndexer.setFieldSaveConfidence("face_confidence");//kmeanconfidence ;
 			fieldKMeansIndexer.setFieldSaveVector("facedatadoubles");//vectorarray facedatadoubles
 			
 		}
@@ -1175,5 +1175,6 @@ public class FaceProfileManager implements CatalogEnabled
 		return null;
 	}
 
+	
 	
 }

@@ -67,8 +67,15 @@ public class SemanticIndexManager implements CatalogEnabled
 			fieldKMeansIndexer.setType("semantic");
 			fieldKMeansIndexer.setSearchType("semanticembedding");
 			fieldKMeansIndexer.setRandomSortBy(null);
-			fieldKMeansIndexer.setFieldSaveConfidence("kmeanconfidence");//;
 			fieldKMeansIndexer.setFieldSaveVector("vectorarray");//facedatadoubles
+			Map<String,String> customsettings = new HashMap();
+			customsettings.put("maxnumberofcentroids","4");
+			customsettings.put("init_loop_start_distance","60");
+			customsettings.put("init_loop_lower_limit","50");
+			customsettings.put("maxdistancetocentroid","65");
+			customsettings.put("maxdistancetocentroid_one","75");
+			customsettings.put("maxdistancetomatch","50");
+			fieldKMeansIndexer.setCustomSettings(customsettings);
 			
 		}
 		return fieldKMeansIndexer;
@@ -255,7 +262,12 @@ public class SemanticIndexManager implements CatalogEnabled
 			MultiValued entity = (MultiValued) iterator.next();
 			
 			JSONObject entry = new JSONObject();
-			entry.put("id",entity.getId());
+			String moduleid = entity.get("entitysourcetype");
+			if( moduleid == null)
+			{
+				moduleid = "asset";
+			}
+			entry.put("id",moduleid + ":" + entity.getId());
 			Collection values = entity.getValues("semantictopics");
 			
 			StringBuffer out = new StringBuffer();
@@ -286,7 +298,9 @@ public class SemanticIndexManager implements CatalogEnabled
 			Map result = (Map)results.get(i);
 			MultiValued newdata = (MultiValued)searcher.createNewData();
 			String dataid = (String)result.get("id");
-			newdata.setValue("dataid",dataid);
+			String[] parts = dataid.split(":");
+			newdata.setValue("moduleid",parts[0]);
+			newdata.setValue("dataid",parts[1]);
 			
 			Collection vectors = getKMeansIndexer().collectDoubles((Collection)result.get("embedding"));
 			newdata.setValue(getKMeansIndexer().getFieldSaveVector(),vectors);
@@ -330,7 +344,7 @@ public class SemanticIndexManager implements CatalogEnabled
 		fieldSharedConnection = inSharedConnection;
 	}
 
-	public Map<String,Collection<String>> viewRelatedEntities(String inTerms)
+	public Map<String,Collection<String>> searchRelatedEntities(String inTerms)
 	{
 		//Collection allthepeopleinasset = getKMeansIndexer().searchNearestItems(startdata);
 		JSONObject tosendparams = new JSONObject();
@@ -339,7 +353,7 @@ public class SemanticIndexManager implements CatalogEnabled
 		ask.put("id","search");
 		ask.put("text",inTerms);
 		list.add(ask);
-		tosendparams.put("request",list);
+		tosendparams.put("data",list);
 		CloseableHttpResponse resp = askServer(tosendparams);
 		String responseStr = getSharedConnection().parseText(resp);
 		JSONObject objt;
@@ -352,9 +366,9 @@ public class SemanticIndexManager implements CatalogEnabled
 			throw new OpenEditException(e);
 		}
 
-		JSONArray results = (JSONArray)objt.get("result");
+		JSONArray results = (JSONArray)objt.get("results");
 		Map hit = (Map)results.iterator().next();
-		List vector = (List)hit.get("embeddings");
+		List vector = (List)hit.get("embedding");
 		vector = getKMeansIndexer().collectDoubles(vector);
 		
 		Collection<RankedResult> found = getKMeansIndexer().searchNearestItems(vector);
@@ -367,6 +381,7 @@ public class SemanticIndexManager implements CatalogEnabled
 			if( hits == null)
 			{
 				hits = new ArrayList();
+				bytype.put(rankedResult.getModuleId(),hits);
 			}
 			if( hits.size() < 1000)
 			{
@@ -388,7 +403,7 @@ public class SemanticIndexManager implements CatalogEnabled
 		{
 			Data searchcategory = (Data) iterator.next();
 			String values = searchcategory.get("semantictopics");
-			Map<String,Collection<String>> bytype = viewRelatedEntities(values);
+			Map<String,Collection<String>> bytype = searchRelatedEntities(values);
 			for (Iterator iterator2 = bytype.keySet().iterator(); iterator2.hasNext();)
 			{
 				String moduleid = (String)iterator2.next();
@@ -406,3 +421,4 @@ public class SemanticIndexManager implements CatalogEnabled
 	}
 	
 }
+

@@ -3,9 +3,11 @@ package org.entermediadb.ai;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -32,19 +34,18 @@ public class KMeansIndexer implements CatalogEnabled {
 	protected String fieldType = "semantic";
 	protected String fieldSearchType = "semanticembedding";
 	protected String fieldRandomSortBy = null;
-	protected String fieldFieldSaveConfidence = "kmeanconfidence";//kmeanconfidence ;
 	protected String fieldFieldSaveVector = "vectorarray";//vectorarray facedatadoubles
+
+	protected Map<String,String> fieldCustomSettings = null;
 	
-
-	public String getFieldSaveConfidence()
+	public Map<String,String> getCustomSettings()
 	{
-		return fieldFieldSaveConfidence;
-	}
+		if (fieldCustomSettings == null)
+		{
+			fieldCustomSettings = new HashMap();
+		}
 
-
-	public void setFieldSaveConfidence(String inFieldSaveConfidence)
-	{
-		fieldFieldSaveConfidence = inFieldSaveConfidence;
+		return fieldCustomSettings;
 	}
 
 
@@ -489,7 +490,7 @@ public class KMeansIndexer implements CatalogEnabled {
 			List<Double> centroidVector = (List<Double>)embedding.getValue(getFieldSaveVector());
 
 			double distance = findCosineDistance(searchVector, centroidVector);
-			if( distance < .4 )  //.6 is good
+			if( distance < settings.maxdistancetomatch )  //.6 is good
 			{
 				RankedResult rank = new RankedResult();
 				rank.setDistance(distance);
@@ -713,7 +714,7 @@ public class KMeansIndexer implements CatalogEnabled {
 		return fieldClusters;	
 	}
 
-	protected KMeansConfiguration getSettings()
+	public KMeansConfiguration getSettings()
 	{
 		KMeansConfiguration config = (KMeansConfiguration)getMediaArchive().getCacheManager().get(getType(),"kmeansconfig");
 		if( config == null)
@@ -723,7 +724,7 @@ public class KMeansIndexer implements CatalogEnabled {
 			config = new KMeansConfiguration();
 			getMediaArchive().getCacheManager().put(getType(),"kmeansconfig",config);
 			
-			String value = getMediaArchive().getCatalogSettingValue(getType() + "_maxdistancetomatch");
+			String value = loadSettingValue( "maxdistancetomatch");
 			if( value != null)
 			{
 				config.maxdistancetomatch = Double.parseDouble(value);
@@ -740,9 +741,9 @@ public class KMeansIndexer implements CatalogEnabled {
 	*/
 			int totalrecords = getMediaArchive().query(getSearchType()).all().hitsPerPage(1).search().size(); 
 			double k = Math.sqrt( totalrecords / 2d); //Higher slows down indexing, more can be added back later as they click
-			int min = (int)Math.round(k * 1.50); //Raise by 50% or will be added on demand or make it worse
+			int min = (int)Math.round(k * 1.50); //Raise by 50% or will be added on demand and that make it worse
 			
-			String skcount = getMediaArchive().getCatalogSettingValue(getType() + "_kcount");
+			String skcount = loadSettingValue("kcount");
 			if( skcount != null)
 			{
 				min = Integer.parseInt( skcount); 
@@ -754,7 +755,7 @@ public class KMeansIndexer implements CatalogEnabled {
 			//Create new nodes when we get over 300 results or more as more likely to have a ton of faces
 			
 			min =  Math.max(min,300); 
-			String smaxresultspersearch = getMediaArchive().getCatalogSettingValue(getType() + "_maxresultspersearch");
+			String smaxresultspersearch = loadSettingValue( "maxresultspersearch");
 			if( smaxresultspersearch != null)
 			{
 				min = Integer.parseInt( smaxresultspersearch); 
@@ -771,7 +772,7 @@ public class KMeansIndexer implements CatalogEnabled {
 //				newrange = .8;  			 // (totalfaces / 20000.0)); //.90 worked well for 20k so scale it up or down based on total
 //			}
 			
-			String smaxdistancetocentroid = getMediaArchive().getCatalogSettingValue(getType() + "_maxdistancetocentroid");
+			String smaxdistancetocentroid = loadSettingValue( "maxdistancetocentroid");
 			if( smaxdistancetocentroid != null)
 			{
 				config.maxdistancetocentroid = Double.parseDouble(smaxdistancetocentroid);
@@ -779,28 +780,28 @@ public class KMeansIndexer implements CatalogEnabled {
 			}
 
 			
-			String init_loop_lower_limit = getMediaArchive().getCatalogSettingValue(getType() + "_init_loop_lower_limit");
+			String init_loop_lower_limit = loadSettingValue( "init_loop_lower_limit");
 			if( init_loop_lower_limit != null)
 			{
 				config.init_loop_lower_limit = Double.parseDouble(init_loop_lower_limit);
 				log.info("Custom size from db init_loop_lower_limit=" + init_loop_lower_limit );
 			}
 
-			String sinit_loop_start_distance = getMediaArchive().getCatalogSettingValue(getType() + "_init_loop_start_distance");
+			String sinit_loop_start_distance = loadSettingValue( "init_loop_start_distance");
 			if( sinit_loop_start_distance != null)
 			{
 				config.init_loop_start_distance = Double.parseDouble(sinit_loop_start_distance);
 				log.info("Custom size from db sinit_loop_start_distance=" + sinit_loop_start_distance );
 			}
 
-			String smaxdistancetocentroid_one = getMediaArchive().getCatalogSettingValue(getType() + "_maxdistancetocentroid_one");
+			String smaxdistancetocentroid_one = loadSettingValue( "maxdistancetocentroid_one");
 			if( smaxdistancetocentroid_one != null)
 			{
 				config.maxdistancetocentroid_one = Double.parseDouble(smaxdistancetocentroid_one);
 				log.info("Custom size from db maxdistancetocentroid_one=" + config.maxdistancetocentroid_one );
 			}
 			
-			String smaxnumberofcentroids = getMediaArchive().getCatalogSettingValue(getType() + "_maxnumberofcentroids ");
+			String smaxnumberofcentroids = loadSettingValue( "maxnumberofcentroids ");
 			if( smaxnumberofcentroids  != null)
 			{
 				config.maxnumberofcentroids = Integer.parseInt(smaxnumberofcentroids );
@@ -810,6 +811,17 @@ public class KMeansIndexer implements CatalogEnabled {
 			log.info("Reloading settings kcount="+ config.kcount  + " maxresultspersearch=" + config.maxresultspersearch + " maxdistancetocentroid=" + config.maxdistancetocentroid );
 		}
 		return config;
+	}
+
+
+	protected String loadSettingValue(String inName)
+	{
+		String value = getCustomSettings().get(inName);
+		if( value == null)
+		{
+			value = getMediaArchive().getCatalogSettingValue(getType() + "_" + inName);
+		}
+		return value;
 	}
 
 	
@@ -965,4 +977,11 @@ public class KMeansIndexer implements CatalogEnabled {
 	    return new String(encodedBB.array());
 	}
 	*/
+
+
+	public void setCustomSettings(Map<String, String> inCustomsettings)
+	{
+		fieldCustomSettings = inCustomsettings;
+		
+	}
 }
