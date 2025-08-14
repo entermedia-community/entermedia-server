@@ -72,9 +72,9 @@ public class SemanticIndexManager implements CatalogEnabled
 			customsettings.put("maxnumberofcentroids","4");
 			customsettings.put("init_loop_start_distance",".60");
 			customsettings.put("init_loop_lower_limit",".50");
-			customsettings.put("maxdistancetocentroid",".65");
-			customsettings.put("maxdistancetocentroid_one",".75");
-			customsettings.put("maxdistancetomatch",".60");
+			customsettings.put("maxdistancetocentroid",".67");
+			customsettings.put("maxdistancetocentroid_one",".78");
+			customsettings.put("maxdistancetomatch",".648");
 			fieldKMeansIndexer.setCustomSettings(customsettings);
 			
 		}
