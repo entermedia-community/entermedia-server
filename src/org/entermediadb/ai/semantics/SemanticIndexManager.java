@@ -409,8 +409,8 @@ public class SemanticIndexManager implements CatalogEnabled
 			{
 				String moduleid = (String)iterator2.next();
 				Collection<String> ids = bytype.get(moduleid);
-				//Collection addedentites = getMediaArchive().query(moduleid).ids(ids).not("searchcategory",searchcategory.getId()).search();
-				Collection addedentites = getMediaArchive().query(moduleid).ids(ids).search();
+				Collection addedentites = getMediaArchive().query(moduleid).ids(ids).not("searchcategory",searchcategory.getId()).search();
+				//Collection addedentites = getMediaArchive().query(moduleid).ids(ids).search();
 				Collection tosave = new ArrayList(addedentites.size());
 				for (Iterator iterator3 = addedentites.iterator(); iterator3.hasNext();)
 				{
