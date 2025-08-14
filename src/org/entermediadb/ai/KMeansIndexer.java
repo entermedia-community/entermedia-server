@@ -808,7 +808,7 @@ public class KMeansIndexer implements CatalogEnabled {
 				log.info("Custom size from db maxnumberofcentroids =" + config.maxnumberofcentroids );
 			}
 			
-			log.info("Reloading settings kcount="+ config.kcount  + " maxresultspersearch=" + config.maxresultspersearch + " maxdistancetocentroid=" + config.maxdistancetocentroid );
+			log.info("Settings are maxdistancetomatch=" +  config.maxdistancetomatch + " kcount="+ config.kcount  + " maxresultspersearch=" + config.maxresultspersearch + " maxdistancetocentroid=" + config.maxdistancetocentroid );
 		}
 		return config;
 	}

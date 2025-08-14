@@ -70,11 +70,11 @@ public class SemanticIndexManager implements CatalogEnabled
 			fieldKMeansIndexer.setFieldSaveVector("vectorarray");//facedatadoubles
 			Map<String,String> customsettings = new HashMap();
 			customsettings.put("maxnumberofcentroids","4");
-			customsettings.put("init_loop_start_distance","60");
-			customsettings.put("init_loop_lower_limit","50");
-			customsettings.put("maxdistancetocentroid","65");
-			customsettings.put("maxdistancetocentroid_one","75");
-			customsettings.put("maxdistancetomatch","50");
+			customsettings.put("init_loop_start_distance",".60");
+			customsettings.put("init_loop_lower_limit",".50");
+			customsettings.put("maxdistancetocentroid",".65");
+			customsettings.put("maxdistancetocentroid_one",".75");
+			customsettings.put("maxdistancetomatch",".50");
 			fieldKMeansIndexer.setCustomSettings(customsettings);
 			
 		}
@@ -402,22 +402,43 @@ public class SemanticIndexManager implements CatalogEnabled
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			Data searchcategory = (Data) iterator.next();
-			String values = searchcategory.get("semantictopics");
-			Map<String,Collection<String>> bytype = searchRelatedEntities(values);
+			Collection values = searchcategory.getValues("semantictopics");
+			String text = collectText(values);
+			Map<String,Collection<String>> bytype = searchRelatedEntities(text);
 			for (Iterator iterator2 = bytype.keySet().iterator(); iterator2.hasNext();)
 			{
 				String moduleid = (String)iterator2.next();
 				Collection<String> ids = bytype.get(moduleid);
-				Collection addedentites = getMediaArchive().query(moduleid).ids(ids).not("searchcategory",searchcategory.getId()).search();
+				//Collection addedentites = getMediaArchive().query(moduleid).ids(ids).not("searchcategory",searchcategory.getId()).search();
+				Collection addedentites = getMediaArchive().query(moduleid).ids(ids).search();
+				Collection tosave = new ArrayList(addedentites.size());
 				for (Iterator iterator3 = addedentites.iterator(); iterator3.hasNext();)
 				{
 					MultiValued entity = (MultiValued) iterator3.next();
 					entity.addValue("searchcategory",searchcategory.getId());
+					tosave.add(entity);
 				}
-				log.info("Saved " + addedentites.size() + " in " + moduleid);
-				getMediaArchive().saveData(moduleid,addedentites);
+				log.info("Saved " + tosave.size() + " in " + moduleid);
+				getMediaArchive().saveData(moduleid,tosave);
 			}
 		}
+	}
+
+	private String collectText(Collection inValues)
+	{
+		StringBuffer words = new StringBuffer();
+		if( inValues == null)
+		{
+			return null;
+		}
+		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
+		{
+			String text = (String) iterator.next();
+			words.append(text);
+			words.append(" ");
+			
+		}
+		return words.toString();
 	}
 	
 }
