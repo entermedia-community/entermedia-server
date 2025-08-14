@@ -39,7 +39,7 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		{
 			//We always skip assets
 			searchmodules = new ArrayList(searchmodules);
-			searchmodules.remove("asset");
+			searchmodules.remove("asset"); //This is handled in organizeHits
 		}
 		SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);

@@ -202,7 +202,7 @@ public class FinderModule extends BaseMediaModule
 	//						
 	//					}
 						copy.addSortBy("assetaddeddateDown");
-						copy.setHitsName("entityhits");
+						copy.setHitsName("entityhits"); //? assethits makes more sense
 						HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq,copy);
 	//					assets.setSearcher(archive.getAssetSearcher());
 	//					assets.setDataSource("asset");
@@ -1362,8 +1362,8 @@ public class FinderModule extends BaseMediaModule
 		{
 			return;
 		}
-		Searcher searcher = archive.getSearcher("modulesearch");
-		SearchQuery search = searcher.addStandardSearchTerms(inReq);
+		Searcher modulesearcher = archive.getSearcher("modulesearch");
+		SearchQuery search = modulesearcher.addStandardSearchTerms(inReq);
 
 		String excludemodule = inReq.findPathValue("excludemodule");
 		searchmodules.remove(excludemodule);
@@ -1373,7 +1373,7 @@ public class FinderModule extends BaseMediaModule
 		
 		if (search == null)
 		{
-			search = searcher.createSearchQuery();
+			search = modulesearcher.createSearchQuery();
 			if(entityid != null && externalid != null) 
 			{
 				search.addExact(externalid, entityid);
@@ -1385,13 +1385,13 @@ public class FinderModule extends BaseMediaModule
 		}
 
 		search.setValue("searchtypes", searchmodules);
+		search.setValue("includeasset", true);
 		
 		search.addAggregation("entitysourcetype");
 		
 		search.addSortBy("name");
 		
-		HitTracker hits = searcher.cachedSearch(inReq, search);
-
+		HitTracker hits = modulesearcher.cachedSearch(inReq, search);  //always skips asset
 		//log.info("Report ran " +  hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:" + hits.size() );
 		if (hits != null)
 		{
@@ -1399,8 +1399,15 @@ public class FinderModule extends BaseMediaModule
 			inReq.putPageValue(name, hits);
 			inReq.putSessionValue(hits.getSessionId(), hits);
 		}
-		inReq.putPageValue("searcher", searcher);
-		
+		inReq.putPageValue("searcher", modulesearcher);
+//		if( searchmodules.contains("asset"))
+//		{
+//			SearchQuery assetsearch = search.copy();
+//			assetsearch.setName("assethits");
+//			HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq, search);  //cached
+//			log.info("Assets " +  assethits.getSearchType() + ": " + assethits.getSearchQuery().toQuery() + " size:" + assethits.size() );
+//		}
+
 	}
 
 	protected Collection loadUserSearchTypes(WebPageRequest inReq)

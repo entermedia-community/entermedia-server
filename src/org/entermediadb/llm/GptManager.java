@@ -378,7 +378,7 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 				if(name.equals("keywords"))
 				{
 					name = "Keywords";
-					ArrayList<String> aikeywords = (ArrayList<String>) asset.getValue("keywordsai");
+					Collection<String> aikeywords = asset.getValues("keywordsai");
 					if(aikeywords != null && !aikeywords.isEmpty())
 					{
 						String extraKeys = String.join(", ", aikeywords);
