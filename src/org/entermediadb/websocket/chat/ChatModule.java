@@ -577,7 +577,7 @@ public class ChatModule extends BaseMediaModule
 	public BaseLlmConnection loadManager(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		BaseLlmConnection manager = (BaseLlmConnection) archive.getBean("gptManager");
+		BaseLlmConnection manager = (BaseLlmConnection) archive.getBean("openaiConnection");
 		inReq.putPageValue("gpt", manager);
 		return manager;
 

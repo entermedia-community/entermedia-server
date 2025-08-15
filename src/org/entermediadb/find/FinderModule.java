@@ -980,7 +980,7 @@ public class FinderModule extends BaseMediaModule
 //		inReq.putPageValue("model", model);
 //		inReq.putPageValue("fulltext", fullText);
 //		
-//		LlmConnection manager = (LlmConnection) archive.getBean("gptManager");
+//		LlmConnection manager = (LlmConnection) archive.getBean("openaiConnection");
 //		
 //		String chattemplate = "/" + archive.getMediaDbId() + "/gpt/prompts/build_takeaways.html";
 //		LlmResponse response = manager.runPageAsInput(inReq, model, chattemplate);
