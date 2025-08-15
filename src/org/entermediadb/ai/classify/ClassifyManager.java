@@ -1,6 +1,8 @@
 package org.entermediadb.ai.classify;
 
 import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -13,15 +15,24 @@ import java.util.Map;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.util.EntityUtils;
+import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.llm.LLMResponse;
-import org.entermediadb.llm.LlmConnection;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.manager.BaseManager;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.modules.translations.LanguageMap;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.Exec;
@@ -31,15 +42,6 @@ import org.openedit.util.RequestUtils;
 public class ClassifyManager extends BaseManager
 {
 	private static final Log log = LogFactory.getLog(ClassifyManager.class);
-	protected RequestUtils fieldRequestUtils;
-	
-	public RequestUtils getRequestUtils() {
-		return fieldRequestUtils;
-	}
-
-	public void setRequestUtils(RequestUtils inRequestUtils) {
-		fieldRequestUtils = inRequestUtils;
-	}
 
 
 	public void scanEntityMetadataWithAI()
@@ -56,20 +58,12 @@ public class ClassifyManager extends BaseManager
 		if(model == null) {
 			model = "gpt-4o-mini";
 		}
-		String type = "gptManager";
 		
-		Data modelinfo = getMediaArchive().query("llmmodel").exact("modelid",model).searchOne();
-		
-		if(modelinfo != null)
-		{
-			type = modelinfo.get("llmtype") + "Manager";
-		}
-		
-		LlmConnection llmconnection = (LlmConnection)getMediaArchive().getBean(type);
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection(model);
 		
 		if (!llmconnection.isReady())
 		{
-			log.info("LLM Manager is not ready: " + type + " Model: " + model + ". Verify LLM Server and Key.");
+			log.info("LLM Manager is not Model: " + model + ". Verify LLM Server and Key.");
 			return; // Not ready, so we cannot proceed
 		}
 		
@@ -90,7 +84,7 @@ public class ClassifyManager extends BaseManager
 			return;
 		}
 
-		log.info("AI manager selected: " + type + " Model: "+ model + " - Adding metadata to: " + assets.size() + " assets in category: " + categoryid);
+		log.info("AI manager selected: Model: "+ model + " - Adding metadata to: " + assets.size() + " assets in category: " + categoryid);
 		
 		assets.enableBulkOperations();
 		int count = 1;
@@ -168,8 +162,8 @@ public class ClassifyManager extends BaseManager
 					params.put("asset", asset);
 					params.put("aifields", aifields);
 					
-					String template = llmconnection.loadInputFromTemplate(params, "/" +  getMediaArchive().getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
-					LLMResponse results = llmconnection.callFunction(params, model, "generate_metadata", template, 0, 5000, base64EncodedString);
+					String template = llmconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/gpt/systemmessage/analyzeasset.html", params);
+					LlmResponse results = llmconnection.callFunction(params, model, "generate_metadata", template, 0, 5000, base64EncodedString);
 
 					boolean wasUpdated = false;
 					if (results != null)
@@ -226,7 +220,7 @@ public class ClassifyManager extends BaseManager
 					params.put("asset", asset);
 					params.put("aifields", aifields);
 
-					Collection<String> semantic_topics = llmconnection.getSemanticTopics(params, model);
+					Collection<String> semantic_topics = getSemanticTopics(params, model);
 					if(semantic_topics != null && !semantic_topics.isEmpty())
 					{
 						asset.setValue("semantictopics", semantic_topics);
@@ -264,7 +258,198 @@ public class ClassifyManager extends BaseManager
 			log.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
 		}
 		
-		getMediaArchive().firePathEvent("llm/translatefields", inReq.getUser(), null);
+		getMediaArchive().fireSharedMediaEvent("llm/translatefields");
+
+	}
+	
+	public Collection<String> getSemanticTopics(Map params, String inModel) throws Exception
+	{
+		MediaArchive archive = getMediaArchive();
+
+		Asset asset = (Asset) params.get("asset");
+
+		Collection<HashedMap> fields = new ArrayList<>();
+		
+		Collection<String> fieldIdsToCheck = Arrays.asList("keywords", "longcaption", "assettitle", "headline", "alternatetext", "fulltext");
+
+		for (Iterator<String> iter = fieldIdsToCheck.iterator(); iter.hasNext();)
+		{
+			String fieldId = (String) iter.next();
+			if (fieldId != null)
+			{
+				Object valueObj = asset.getValue(fieldId);
+				if (valueObj == null)
+				{
+					log.info("Skipping empty field: " + fieldId);
+					continue;
+				}
+				if(valueObj instanceof ArrayList)
+				{
+					ArrayList<String> val = (ArrayList<String>) valueObj;
+					valueObj = String.join(", ", val);
+				}
+				else if (valueObj instanceof LanguageMap)
+				{
+					LanguageMap val = (LanguageMap) valueObj;
+					valueObj = val.getText("en");
+				}
+				if (!(valueObj instanceof String))
+				{
+					log.info("Skipping empty field: " + fieldId);
+					continue;
+				}
+				
+				String value = (String) valueObj;
+				if (value == null || value.isEmpty())
+				{
+					log.info("Skipping empty field: " + fieldId);
+					continue;
+				}
+				String name = fieldId;
+				
+				if(name.equals("keywords"))
+				{
+					name = "Keywords";
+					Collection<String> aikeywords = asset.getValues("keywordsai");
+					if(aikeywords != null && !aikeywords.isEmpty())
+					{
+						String extraKeys = String.join(", ", aikeywords);
+						value = value.isEmpty() ? extraKeys : value + ", " + extraKeys;
+					}
+				}
+				else if(name.equals("longcaption"))
+				{
+					name = "Description";
+				}
+				else if(name.equals("assettitle"))
+				{
+					name = "Title";
+				}
+				else if(name.equals("headline"))
+				{
+					name = "Caption";
+				}
+				else if(name.equals("alternatetext"))
+				{
+					name = "Alt Text";
+				}
+				else if(name.equals("fulltext"))
+				{
+					name = "Contents";
+					value = value.substring(0, 500);
+				}
+
+				HashedMap fieldMap = new HashedMap();
+				fieldMap.put("name", name);
+				fieldMap.put("value", value);
+				fields.add(fieldMap);
+
+			}
+		}
+
+		params.put("fields", fields);
+		params.put("model", inModel);
+		
+		Collection<String> results = new ArrayList<>();
+		/*
+
+		String inStructure = loadInputFromTemplate("/" + archive.getMediaDbId() + "/gpt/structures/semantic_topics.json", params);
+
+		JSONParser parser = new JSONParser();
+		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
+
+		String endpoint = "https://api.openai.com/v1/responses";
+		HttpPost method = new HttpPost(endpoint);
+		method.addHeader("authorization", "Bearer " + getApikey());
+		method.setHeader("Content-Type", "application/json");
+		method.setEntity(new StringEntity(structureDef.toJSONString(), StandardCharsets.UTF_8));
+
+		CloseableHttpResponse resp = getConnection().sharedExecute(method);
+		
+		
+		
+		try
+		{
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
+				throw new OpenEditException("GPT error: " + resp.getStatusLine());
+			}
+	
+			JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
+
+			log.info("Returned: " + json.toJSONString());
+		
+		
+			JSONArray outputs = (JSONArray) json.get("output");
+			if (outputs == null || outputs.isEmpty())
+			{
+				log.info("No output found in GPT response");
+				return results;
+			}
+			
+			JSONObject output = null;
+			for (Object outputObj : outputs)
+			{
+				if (!(outputObj instanceof JSONObject))
+				{
+					log.info("Output is not a JSONObject: " + outputObj);
+					continue;
+				}
+				JSONObject obj = (JSONObject) outputObj;
+				String role = (String) obj.get("role");
+				if(role != null && role.equals("assistant"))
+				{
+					output = obj;
+					break;
+				}
+			}
+			if (output == null || !output.get("status").equals("completed"))
+			{
+				log.info("No completed output found in GPT response");
+				return results;
+			}
+			JSONArray contents = (JSONArray) output.get("content");
+			if (contents == null || contents.isEmpty())
+			{
+				log.info("No content found in GPT response");
+				return results;
+			}
+			JSONObject content = (JSONObject) contents.get(0);
+			if (content == null || !content.containsKey("text"))
+			{
+				log.info("No structured data found in GPT response");
+				return results;
+			}
+			String text = (String) content.get("text");
+			if (text == null || text.isEmpty())
+			{
+				log.info("No text found in structured data");
+				return results;
+			}
+			JSONObject responseData = (JSONObject) parser.parse(new StringReader(text));
+			JSONArray topics = (JSONArray) responseData.get("topics");
+			if (topics == null || topics.isEmpty())
+			{
+				log.info("No topics found in structured data");
+				return results;
+			}
+			
+			for (Object topicObj : topics)
+			{
+				String topic = (String) topicObj;
+				if (topic != null && !topic.isEmpty())
+				{
+					results.add(topic);
+				}
+			}
+		}
+		finally
+		{
+			connection.release(resp);
+		}
+		*/
+		
+		return results;
 
 	}
 	

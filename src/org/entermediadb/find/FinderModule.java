@@ -13,14 +13,14 @@ import java.util.Map;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.search.SecurityEnabledSearchSecurity;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.find.picker.Picker;
-import org.entermediadb.llm.LlmConnection;
-import org.entermediadb.llm.LLMResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
@@ -929,68 +929,68 @@ public class FinderModule extends BaseMediaModule
 	}
 
 	
-	public void aiTakeaways(WebPageRequest inReq) throws Exception
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		
-		
-		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
-		
-		Collection<String> keywords = parseKeywords(arguments.get("keywords"));
-		
-		HitTracker pdfs = archive.query("asset").freeform("description", String.join(" ", keywords)).search();
-		
-		Collection pdfTexts = new ArrayList<String>();
-		
-		for (Iterator iterator = pdfs.iterator(); iterator.hasNext();) {
-			Data pdf = (Data) iterator.next();
-			ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + archive.getCatalogId() +"/assets/" + pdf.getSourcePath() + "/fulltext.txt");
-			
-			try(InputStream inputStream = item.getInputStream())
-			{				
-				String text = new String(inputStream.readAllBytes());
-				if(text.length() > 0)
-				{
-					pdfTexts.add(text); 					
-				}
-				log.info(text);
-			}
-		}
-
-		String fullText = String.join("\n\n", pdfTexts);
-		
-		if(fullText.replaceAll("\\s|\\n", "").length() == 0)
-		{
-			//TODO: Handle No text found;
-			return;
-		}
-		
-		
-		String model = inReq.findPathValue("model");
-
-		if (model == null)
-		{
-			model = archive.getCatalogSettingValue("gpt-model");
-		}
-		if (model == null)
-		{
-			model = "gpt-4o"; // Default fallback
-		}
-
-		inReq.putPageValue("model", model);
-		inReq.putPageValue("fulltext", fullText);
-		
-		LlmConnection manager = (LlmConnection) archive.getBean("gptManager");
-		
-		String chattemplate = "/" + archive.getMediaDbId() + "/gpt/prompts/build_takeaways.html";
-		LLMResponse response = manager.runPageAsInput(inReq, model, chattemplate);
-		
-		String takeaways = response.getMessage();
-		
-		inReq.putPageValue("takeaways", takeaways);
-		
-		
-	}
+//	public void aiTakeaways(WebPageRequest inReq) throws Exception
+//	{
+//		MediaArchive archive = getMediaArchive(inReq);
+//		
+//		
+//		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
+//		
+//		Collection<String> keywords = parseKeywords(arguments.get("keywords"));
+//		
+//		HitTracker pdfs = archive.query("asset").freeform("description", String.join(" ", keywords)).search();
+//		
+//		Collection pdfTexts = new ArrayList<String>();
+//		
+//		for (Iterator iterator = pdfs.iterator(); iterator.hasNext();) {
+//			Data pdf = (Data) iterator.next();
+//			ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + archive.getCatalogId() +"/assets/" + pdf.getSourcePath() + "/fulltext.txt");
+//			
+//			try(InputStream inputStream = item.getInputStream())
+//			{				
+//				String text = new String(inputStream.readAllBytes());
+//				if(text.length() > 0)
+//				{
+//					pdfTexts.add(text); 					
+//				}
+//				log.info(text);
+//			}
+//		}
+//
+//		String fullText = String.join("\n\n", pdfTexts);
+//		
+//		if(fullText.replaceAll("\\s|\\n", "").length() == 0)
+//		{
+//			//TODO: Handle No text found;
+//			return;
+//		}
+//		
+//		
+//		String model = inReq.findPathValue("model");
+//
+//		if (model == null)
+//		{
+//			model = archive.getCatalogSettingValue("gpt-model");
+//		}
+//		if (model == null)
+//		{
+//			model = "gpt-4o"; // Default fallback
+//		}
+//
+//		inReq.putPageValue("model", model);
+//		inReq.putPageValue("fulltext", fullText);
+//		
+//		LlmConnection manager = (LlmConnection) archive.getBean("gptManager");
+//		
+//		String chattemplate = "/" + archive.getMediaDbId() + "/gpt/prompts/build_takeaways.html";
+//		LlmResponse response = manager.runPageAsInput(inReq, model, chattemplate);
+//		
+//		String takeaways = response.getMessage();
+//		
+//		inReq.putPageValue("takeaways", takeaways);
+//		
+//		
+//	}
 
 	
 	

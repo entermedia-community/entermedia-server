@@ -2494,7 +2494,7 @@
 		</property>
 	</bean>
 
-	<bean id="openaiManager" class="org.entermediadb.ai.llm.openai.OpenAiConnection"  scope="prototype">
+	<bean id="openaiConnection" class="org.entermediadb.ai.llm.openai.OpenAiConnection"  scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2503,7 +2503,7 @@
 		</property>
 	</bean>
 
-	<bean id="ollamaManager" class="org.entermediadb.ai.llm.ollama.OllamaConnection"  scope="prototype">
+	<bean id="ollamaConnection" class="org.entermediadb.ai.llm.ollama.OllamaConnection"  scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2518,7 +2518,7 @@
 		</property>
 		<property name="requestUtils">
 			<ref bean="requestUtils" />
-		</propert>
+		</property>
 	</bean>
 
 

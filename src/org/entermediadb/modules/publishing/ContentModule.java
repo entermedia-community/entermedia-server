@@ -13,11 +13,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.enteremdiadb.postiz.PostizManager;
+import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
-import org.entermediadb.llm.LlmConnection;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -65,20 +65,9 @@ public class ContentModule extends BaseMediaModule
 			MultiValued contentrequest = (MultiValued) iterator.next();
 
 			String model = contentrequest.get("llmmodel");
-			Data modelinfo = archive.getData("llmmodel", model);
-
-			String type = modelinfo != null ? modelinfo.get("llmtype") : null;
-
-			if (type == null)
-			{
-				type = "gptManager";
-			}
-			else
-			{
-				type = type + "Manager";
-			}
-			LlmConnection llm = (LlmConnection) archive.getBean(type);
-			Data newdata = manager.createFromLLM(inReq, llm, model, contentrequest);
+			
+			LlmConnection llm = (LlmConnection) archive.getLlmConnection(model);
+//			Data newdata = manager.createFromLLM(inReq, llm, model, contentrequest);
 			contentrequest.setValue("status", "complete");
 			archive.saveData("contentcreator", contentrequest);
 		}
@@ -99,7 +88,7 @@ public class ContentModule extends BaseMediaModule
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			MultiValued contentrequest = (MultiValued) iterator.next();
-			Data newdata = manager.createAssetFromLLM(inReq,  contentrequest);
+//			Data newdata = manager.createAssetFromLLM(inReq,  contentrequest);
 		}
 
 	}
@@ -205,7 +194,7 @@ public class ContentModule extends BaseMediaModule
 //		{
 //			type = type + "Manager";
 //		}
-//		LLMManager llm = (LLMManager) archive.getBean(type);
+//		LlmConnection llm = (LlmConnection) archive.getBean(type);
 //
 //		Data newdata = manager.createFromLLM(inReq, llm, model, entitymodule.getId(), entity.getId(), submodsearchtype);
 //		boolean createassets = Boolean.parseBoolean(inReq.findValue("createassets"));
@@ -262,7 +251,7 @@ public class ContentModule extends BaseMediaModule
 //		{
 //			type = type + "Manager";
 //		}
-//		LLMManager llm = (LLMManager) getMediaArchive(inReq).getBean(type);
+//		LlmConnection llm = (LlmConnection) getMediaArchive(inReq).getBean(type);
 //		String edithome = inReq.findPathValue("edithome");
 //		String template = llm.loadInputFromTemplate(inReq, edithome + "/aitools/createnewasset.html");
 //		manager.createAssetFromLLM(inReq, entitymodule.getId(), entity.getId(), template);

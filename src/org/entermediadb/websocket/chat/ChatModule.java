@@ -30,13 +30,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.llm.BaseLlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.ai.llm.openai.OpenAiConnection;
+import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
-import org.entermediadb.llm.BaseLmmConnection;
-import org.entermediadb.llm.LlmConnection;
-import org.entermediadb.llm.LLMResponse;
-import org.entermediadb.llm.openai.OpenAiConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -574,264 +574,18 @@ public class ChatModule extends BaseMediaModule
 
 	}	
 
-	public BaseLmmConnection loadManager(WebPageRequest inReq)
+	public BaseLlmConnection loadManager(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		BaseLmmConnection manager = (BaseLmmConnection) archive.getBean("gptManager");
+		BaseLlmConnection manager = (BaseLlmConnection) archive.getBean("gptManager");
 		inReq.putPageValue("gpt", manager);
 		return manager;
 
 	}
 
-	public void monitorChannels(WebPageRequest inReq) throws Exception
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		User agent = archive.getUser("agent");
-		//TODO:  REmove after a while, we checked in one for new installs
-		if (agent == null)
-		{
-			agent = archive.getUserManager().createUser("agent", null);
-			agent.setFirstName("eMediaFinder");
-			agent.setLastName("AI Helper");
-			agent.setValue("screenname", "eMediaFinder AI Helper");
-			archive.getUserManager().saveUser(agent);
-			archive.getUserProfileManager().setRoleOnUser(archive.getCatalogId(), agent, "guest");
-		}
-		
-		Searcher channels = archive.getSearcher("channel");
-		
-		//TODO: How Do I know if this is still active?
-		
-		Calendar now = DateStorageUtil.getStorageUtil().createCalendar();
-		now.add(Calendar.HOUR_OF_DAY,-1);
-		
-		HitTracker allchannels = channels.query().exact("aienabled", true).after("refreshdate",now.getTime()).sort("refreshdateDown").search(inReq);
-		//DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
+	
 
-		Searcher chats = archive.getSearcher("chatterbox");
-		for (Iterator iterator = allchannels.iterator(); iterator.hasNext();)
-		{
-			Data channel = (Data) iterator.next();
-			
-			Data mostrecent = chats.query()
-								   .exact("channel", channel.getId())
-								   .exact("processingcomplete","false")
-								   .sort("dateDown")
-								   .searchOne();
-			
-			if (mostrecent  == null)
-			{
-				continue;
-			}
-			
-			if( channel.getName() == null )
-			{
-				String message = mostrecent.get("message");
-				if( message !=  null )
-				{
-					if( message.length() > 25)
-					{
-						message = message.substring(0,25);
-					}
-					channel.setName(message);
-					archive.saveData("channel",channel);
-				}
-			}
-
-			String userid = mostrecent.get("user");
-			if ("agent".equals(userid))
-			{
-				return;
-			}
-			
-			respondToChannel(inReq, channel, mostrecent);
-		}
-	}
-
-	public void respondToChannel(WebPageRequest inReq, Data channel, Data message) throws Exception
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		String model = inReq.findPathValue("model");
-
-		if (model == null)
-		{
-			model = archive.getCatalogSettingValue("gpt-model");
-		}
-		if (model == null)
-		{
-			model = "gpt-4o"; // Default fallback
-		}
-
-		inReq.putPageValue("model", model);
-
-		Date now = new Date();
-		DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
-
-		ChatServer server = (ChatServer) archive.getBean("chatServer");
-		Searcher chats = archive.getSearcher("chatterbox");
-		LlmConnection manager = archive.getLLM(model);
-		
-		if (!manager.isReady()) 
-		{
-			log.error("LLM Manager is not ready: " + model + ". Cannot process channel: " + channel);
-			inReq.putPageValue("llmerror", "LLM Manager is not ready: " + model + ". Verify LLM Server address and key.");
-			return;
-		}
-
-		HitTracker recent = chats.query().exact("channel", channel.getId()).sort("dateUp").search(inReq);
-		inReq.putPageValue("recent", recent);
-
-		String channeltype = channel.get("channeltype");
-		if (channeltype == null)
-		{
-			channeltype = "chatstreamer";
-		}
-
-		if (message != null)
-		{
-			String id = message.get("user");
-			if (!id.equals("agent"))
-			{
-				UserProfile profile = archive.getUserProfile(id);
-				inReq.putPageValue("chatprofile", profile);
-			}
-
-		}
-		
-		inReq.putPageValue("channel", channel);
-
-		//Update original message processing status
-		message.setValue("processingcomplete", true);
-		chats.saveData(message);
-		
-		inReq.putPageValue("message", message);
-
-
-		String chattemplate = "/" + archive.getMediaDbId() + "/gpt/inputs/" + manager.getType() + "/" + channeltype + ".html";
-		LLMResponse response = manager.runPageAsInput(inReq, model, chattemplate);
-
-		if (response.isToolCall())
-		{
-			// Function call detected
-			String functionName = response.getFunctionName();
-			JSONObject arguments = response.getArguments();
-			
-			if(arguments.get("types") == null)
-			{
-				arguments.put("types", new JSONArray());
-			}
-
-			String json = arguments.toJSONString();
-			// Create and save function call message
-			Data functionMessage = chats.createNewData();
-			functionMessage.setValue("user", "agent");
-			functionMessage.setValue("channel", channel.getId());
-			//functionMessage.setValue("messagetype", "function_call");
-			//functionMessage.setValue("function", functionName);
-			//functionMessage.setValue("message", json);
-			functionMessage.setValue("arguments", json);
-			functionMessage.setValue("date", new Date());
-			functionMessage.setValue("message", "Processing function " + functionName);
-			functionMessage.setValue("processingcomplete", true);
-			
-			chats.saveData(functionMessage);
-		
-			callFunction(functionMessage, functionName, inReq);
-			
-			//archive.fireDataEvent(inReq.getUser(), "llm", "callfunction", functionMessage);
-			archive.fireSharedMediaEvent("llm/monitorchats");
-
-			
-		}
-		else
-		{
-			// **Regular Text Response**
-			String output = response.getMessage();
-
-			if (output != null)
-			{
-				Data responsemessage = chats.createNewData();
-				responsemessage.setValue("user", "agent");
-				responsemessage.setValue("message", output);
-				responsemessage.setValue("date", new Date());
-				responsemessage.setValue("channel", channel.getId());
-				responsemessage.setValue("messagetype", "airesponse");
-				responsemessage.setValue("processingcomplete", true);
-
-				chats.saveData(responsemessage);
-				server.broadcastMessage(archive.getCatalogId(), responsemessage);
-			}
-		}
-		
-		//Dont listen again for a bit?
-//		channel.setValue("aienabled", "false" );
-//		archive.saveData("channel",channel);
-		
-	}
-
-	public void callFunction(Data messageToUpdate, String functionName, WebPageRequest inReq) throws Exception
-	{
-
-		MediaArchive archive = getMediaArchive(inReq);
-
-		//get the channel
-		Data channel = archive.getCachedData("channel", messageToUpdate.get("channel"));
-		inReq.putPageValue("channel", channel);
-		
-		//TODO:  Move loadInputFromTemplate
-		LlmConnection manager = (LlmConnection) archive.getBean("ollamaManager");//Doesn't matter which one right here.
-		ChatServer server = (ChatServer) archive.getBean("chatServer");
-
-		//String function = messageToUpdate.get("function");
-			//inReq.putPageValue("args", args);
-		String response;
-		
-		try
-		{
-			String filename = functionName;
-			if( functionName.equals("showHintOrHelpInfo") )
-			{
-				filename = "show-hints";
-			}
-			
-			inReq.putPageValue("data", messageToUpdate);
-
-			String args = (String) messageToUpdate.get("arguments");
-			JSONObject arguments = (JSONObject) new JSONParser().parse(args);
-			inReq.putPageValue("arguments", arguments);
-			
-			response = manager.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/functions/" + filename + ".html");
-			//log.info("Function " + functionName + " returned : " + response);
-
-			messageToUpdate.setValue("functionresponse", response);
-			messageToUpdate.setValue("message", response);
-			
-			Searcher chats = archive.getSearcher("chatterbox");
-			chats.saveData(messageToUpdate);
-			
-			JSONObject functionMessageUpdate = new JSONObject();
-			functionMessageUpdate.put("messagetype", "airesponse");
-			functionMessageUpdate.put("catalogid", archive.getCatalogId());
-			functionMessageUpdate.put("user", "agent");
-			functionMessageUpdate.put("channel", messageToUpdate.get("channel"));
-			functionMessageUpdate.put("messageid", messageToUpdate.getId());
-			functionMessageUpdate.put("message", response);
-
-			server.broadcastMessage(functionMessageUpdate);
-			
-		}
-		catch (Exception e)
-		{
-			log.error("Error: " + e.toString());
-			messageToUpdate.setValue("functionresponse", e.toString());
-			messageToUpdate.setValue("processingcomplete", true);
-
-		}
-		archive.saveData("chatterbox", messageToUpdate);
-		archive.fireSharedMediaEvent("chatterbox/monitorchats");
-
-	}
-
+	
 	
 
 }

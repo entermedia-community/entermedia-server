@@ -1,8 +1,8 @@
-package org.entermediadb.llm;
+package org.entermediadb.ai.llm;
 
 import org.json.simple.JSONObject;
 
-public abstract class BaseLLMResponse  implements LLMResponse{
+public abstract class BaseLlmResponse  implements LlmResponse{
     
     protected JSONObject rawResponse;
 

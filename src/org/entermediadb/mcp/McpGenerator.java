@@ -2,8 +2,8 @@ package org.entermediadb.mcp;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.llm.VelocityRenderUtil;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.llm.VelocityRenderUtil;
 import org.openedit.Generator;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;

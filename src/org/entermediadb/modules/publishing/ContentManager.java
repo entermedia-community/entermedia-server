@@ -15,14 +15,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.dom4j.Element;
+import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.importer.DitaImporter;
 import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.util.JsonUtil;
-import org.entermediadb.llm.LlmConnection;
-import org.entermediadb.llm.LLMResponse;
 import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONObject;
@@ -665,7 +665,7 @@ public class ContentManager implements CatalogEnabled
 		}
 	}
 
-	//    public Data createFromLLM(WebPageRequest inReq, LLMManager inManager, String inModel, String inModuleid,
+	//    public Data createFromLLM(WebPageRequest inReq, LlmConnection inManager, String inModel, String inModuleid,
 	//	    String inEntityid, String inTargetentity) throws Exception {
 	//
 	//	Data entity = getMediaArchive().getData(inModuleid, inEntityid);
@@ -712,128 +712,128 @@ public class ContentManager implements CatalogEnabled
 	//
 	//    }
 
-	public Asset createAssetFromLLM(WebPageRequest inReq, String inSourcepath, String inStructions)
-	{
+//	public Asset createAssetFromLLM(WebPageRequest inReq, String inSourcepath, String inStructions)
+//	{
+//
+//		// TODO: This is all hardcoded to use OpenAI - need to change this to lookup
+//		// once we have StableDiffusion or some other open soruce thing
+//		MediaArchive archive = getMediaArchive();
+//		Map inputdata = new HashMap();
+//
+//		String type = "gptManager";
+//		LlmConnection manager = (LlmConnection) archive.getBean(type);
+//		String model = "dall-e-3";
+//		String prompt = inReq.findValue("llmprompt.value");
+//
+//		inReq.putPageValue("inputdata", inputdata);
+//		inReq.putPageValue("prompt", prompt);
+//
+//		String imagestyle = inReq.findValue("llmimagestyle.value");
+//		if (imagestyle == null)
+//		{
+//			imagestyle = "vivid";
+//		}
+//		LlmResponse results = manager.createImage(inReq, model, 1, "1024x1024", imagestyle, inStructions);
+//		String[] fields = inReq.getRequestParameters("field");
+//		ArrayList assets = new ArrayList();
+//		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
+//		{
+//
+//			String url = (String) iterator.next();
+//			String filename = getMediaArchive().getUserManager().getStringEncryption().generateHashFromString(url, 15);
+//			filename = filename + ".png";
+//			String uploadsourcepath = inSourcepath + "/" + filename;
+//			AssetImporter importer = getMediaArchive().getAssetImporter();
+//			Asset asset = importer.createAssetFromFetchUrl(archive, url, inReq.getUser(), uploadsourcepath, filename, null);
+//			getMediaArchive().getAssetSearcher().updateData(inReq, fields, asset);
+//
+//			assets.add(asset);
+//		}
+//		getMediaArchive().saveAssets(assets);
+//		archive.fireSharedMediaEvent("importing/assetscreated");
+//
+//		return (Asset) assets.get(0);
+//
+//	}
 
-		// TODO: This is all hardcoded to use OpenAI - need to change this to lookup
-		// once we have StableDiffusion or some other open soruce thing
-		MediaArchive archive = getMediaArchive();
-		Map inputdata = new HashMap();
-
-		String type = "gptManager";
-		LlmConnection manager = (LlmConnection) archive.getBean(type);
-		String model = "dall-e-3";
-		String prompt = inReq.findValue("llmprompt.value");
-
-		inReq.putPageValue("inputdata", inputdata);
-		inReq.putPageValue("prompt", prompt);
-
-		String imagestyle = inReq.findValue("llmimagestyle.value");
-		if (imagestyle == null)
-		{
-			imagestyle = "vivid";
-		}
-		LLMResponse results = manager.createImage(inReq, model, 1, "1024x1024", imagestyle, inStructions);
-		String[] fields = inReq.getRequestParameters("field");
-		ArrayList assets = new ArrayList();
-		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
-		{
-
-			String url = (String) iterator.next();
-			String filename = getMediaArchive().getUserManager().getStringEncryption().generateHashFromString(url, 15);
-			filename = filename + ".png";
-			String uploadsourcepath = inSourcepath + "/" + filename;
-			AssetImporter importer = getMediaArchive().getAssetImporter();
-			Asset asset = importer.createAssetFromFetchUrl(archive, url, inReq.getUser(), uploadsourcepath, filename, null);
-			getMediaArchive().getAssetSearcher().updateData(inReq, fields, asset);
-
-			assets.add(asset);
-		}
-		getMediaArchive().saveAssets(assets);
-		archive.fireSharedMediaEvent("importing/assetscreated");
-
-		return (Asset) assets.get(0);
-
-	}
-
-	public Asset createAssetFromLLM(WebPageRequest inReq, Data contentrequest)
-	{
-
-		MediaArchive archive = getMediaArchive();
-
-		String model = contentrequest.get("llmmodel");
-		
-		Data modelinfo = archive.getData("llmmodel", model);
-
-		String type = modelinfo != null ? modelinfo.get("llmtype") : null;
-
-		if (type == null)
-		{
-			type = "gptManager";
-		}
-		else
-		{
-			type = type + "Manager";
-		}
-		LlmConnection llm = (LlmConnection) archive.getBean(type);
-
-		String prompt = inReq.findValue("llmprompt.value");
-
-		String edithome = inReq.findPathValue("edithome");
-
-		String imagestyle = contentrequest.get("llmimagestyle");
-		if (imagestyle == null)
-		{
-			imagestyle = "natural";
-		}
-		Asset asset = archive.getAsset(contentrequest.get("primarymedia"));
-		if(asset == null) {
-			return null;
-		}
-		
-		LLMResponse results = llm.createImage(inReq, model, 1, "1024x1024", imagestyle, contentrequest.get("createassetprompt"));
-		
-		Downloader downloader = new Downloader();
-
-		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
-		{
-
-			String url = (String) iterator.next();
-			asset.setValue("importstatus", "created");
-
-			String filename = asset.getName();
-
-			String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
-			File attachments = new File(archive.getPageManager().getPage(path).getContentItem().getAbsolutePath());
-			filename = filename.replaceAll("\\?.*", "");
-			log.info("Downloading " + url + " ->" + path + "/" + filename);
-			File target = new File(attachments, filename);
-			if (target.exists() || target.length() == 0)
-			{
-				try
-				{
-					downloader.download(url, target);
-				}
-				catch (Exception ex)
-				{
-					asset.setProperty("importstatus", "error");
-					log.error(ex);
-					archive.saveAsset(asset);
-
-				}
-			}
-			asset.setFolder(true);
-			asset.setName(filename);
-			asset.setPrimaryFile(filename);
-			// asset.setFolder(true);
-			asset.setProperty("importstatus", "created");
-			archive.saveAsset(asset);
-		}
-		archive.fireSharedMediaEvent("importing/assetscreated");
-		contentrequest.setValue("status", "complete");
-		archive.saveData("contentcreator", contentrequest);
-		return asset;
-	}
+//	public Asset createAssetFromLLM(WebPageRequest inReq, Data contentrequest)
+//	{
+//
+//		MediaArchive archive = getMediaArchive();
+//
+//		String model = contentrequest.get("llmmodel");
+//		
+//		Data modelinfo = archive.getData("llmmodel", model);
+//
+//		String type = modelinfo != null ? modelinfo.get("llmtype") : null;
+//
+//		if (type == null)
+//		{
+//			type = "gptManager";
+//		}
+//		else
+//		{
+//			type = type + "Manager";
+//		}
+//		LlmConnection llm = (LlmConnection) archive.getBean(type);
+//
+//		String prompt = inReq.findValue("llmprompt.value");
+//
+//		String edithome = inReq.findPathValue("edithome");
+//
+//		String imagestyle = contentrequest.get("llmimagestyle");
+//		if (imagestyle == null)
+//		{
+//			imagestyle = "natural";
+//		}
+//		Asset asset = archive.getAsset(contentrequest.get("primarymedia"));
+//		if(asset == null) {
+//			return null;
+//		}
+//		
+//		LlmResponse results = llm.createImage(inReq, model, 1, "1024x1024", imagestyle, contentrequest.get("createassetprompt"));
+//		
+//		Downloader downloader = new Downloader();
+//
+//		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
+//		{
+//
+//			String url = (String) iterator.next();
+//			asset.setValue("importstatus", "created");
+//
+//			String filename = asset.getName();
+//
+//			String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
+//			File attachments = new File(archive.getPageManager().getPage(path).getContentItem().getAbsolutePath());
+//			filename = filename.replaceAll("\\?.*", "");
+//			log.info("Downloading " + url + " ->" + path + "/" + filename);
+//			File target = new File(attachments, filename);
+//			if (target.exists() || target.length() == 0)
+//			{
+//				try
+//				{
+//					downloader.download(url, target);
+//				}
+//				catch (Exception ex)
+//				{
+//					asset.setProperty("importstatus", "error");
+//					log.error(ex);
+//					archive.saveAsset(asset);
+//
+//				}
+//			}
+//			asset.setFolder(true);
+//			asset.setName(filename);
+//			asset.setPrimaryFile(filename);
+//			// asset.setFolder(true);
+//			asset.setProperty("importstatus", "created");
+//			archive.saveAsset(asset);
+//		}
+//		archive.fireSharedMediaEvent("importing/assetscreated");
+//		contentrequest.setValue("status", "complete");
+//		archive.saveData("contentcreator", contentrequest);
+//		return asset;
+//	}
 
 	//    public Asset createAssetFromLLM(WebPageRequest inReq, String inModuleid, String inEntityid, String inStructions) {
 	//	Data entity = getMediaArchive().getData(inModuleid, inEntityid);
@@ -853,7 +853,7 @@ public class ContentManager implements CatalogEnabled
 	//	} else {
 	//	    type = type + "Manager";
 	//	}
-	//	LLMManager manager = (LLMManager) archive.getBean(type);
+	//	LlmConnection manager = (LlmConnection) archive.getBean(type);
 	//
 	//	String model = inReq.findValue("llmmodel.value");
 	//	if (model == null) {
@@ -899,7 +899,7 @@ public class ContentManager implements CatalogEnabled
 	//
 	//    }
 
-	public Data createFromLLM(WebPageRequest inReq, LlmConnection inLlm, String inModel, Data inContentrequest) throws Exception
+	public Data createFromLLM(Map inReq, LlmConnection inLlm, String inModel, Data inContentrequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -929,12 +929,12 @@ public class ContentManager implements CatalogEnabled
 			targetsearcher = getMediaArchive().getSearcher(moduleid);
 			Data targetmodule = getMediaArchive().getCachedData("module", moduleid);// Chapter
 
-			inReq.putPageValue("targetmodule", targetmodule);
+			inReq.put("targetmodule", targetmodule);
 
-			inReq.putPageValue("contentrequest", inContentrequest);
-			String template = inLlm.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/systemmessage/createtoplevel.html");
+			inReq.put("contentrequest", inContentrequest);
+			String template = inLlm.loadInputFromTemplate("/" + archive.getMediaDbId() + "/gpt/systemmessage/createtoplevel.html", inReq);
 			log.info(template);
-			LLMResponse results = inLlm.callFunction(inReq, inModel, "create_entity", template, 0, 5000);
+			LlmResponse results = inLlm.callFunction(inReq, inModel, "create_entity", template, 0, 5000);
 
 			child = targetsearcher.createNewData();
 			targetsearcher.updateData(child, results.getArguments());
@@ -954,18 +954,18 @@ public class ContentManager implements CatalogEnabled
 
 			Data directparent = getMediaArchive().getCachedData(moduleid, entityid);
 
-			inReq.putPageValue("parentmodule", moduleid); //Book
-			inReq.putPageValue("parententity", directparent); //Which book
-			inReq.putPageValue("parentsearcher", parentsearcher);
-			inReq.putPageValue("parentdetails", parentsearcher.getPropertyDetails());
+			inReq.put("parentmodule", moduleid); //Book
+			inReq.put("parententity", directparent); //Which book
+			inReq.put("parentsearcher", parentsearcher);
+			inReq.put("parentdetails", parentsearcher.getPropertyDetails());
 
-			inReq.putPageValue("targetmodule", targetmodule); //Chapter
-			inReq.putPageValue("targetsearcher", targetmodule);
+			inReq.put("targetmodule", targetmodule); //Chapter
+			inReq.put("targetsearcher", targetmodule);
 
-			inReq.putPageValue("contentrequest", inContentrequest);
+			inReq.put("contentrequest", inContentrequest);
 
-			String template = inLlm.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/systemmessage/create_child.html");
-			LLMResponse results = inLlm.callFunction(inReq, inModel, "create_entity", template, 0, 5000);
+			String template = inLlm.loadInputFromTemplate("/" + archive.getMediaDbId() + "/gpt/systemmessage/create_child.html", inReq);
+			LlmResponse results = inLlm.callFunction(inReq, inModel, "create_entity", template, 0, 5000);
 
 			child = targetsearcher.createNewData();
 			targetsearcher.updateData(child, results.getArguments());

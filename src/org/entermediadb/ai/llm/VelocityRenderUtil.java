@@ -1,4 +1,4 @@
-package org.entermediadb.llm;
+package org.entermediadb.ai.llm;
 
 import java.io.StringWriter;
 import java.util.HashMap;

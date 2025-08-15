@@ -25,6 +25,7 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
@@ -46,7 +47,6 @@ import org.entermediadb.error.EmailErrorHandler;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.find.EntityManager;
 import org.entermediadb.find.FolderManager;
-import org.entermediadb.llm.LlmConnection;
 import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.users.PermissionManager;
 import org.entermediadb.users.UserProfileManager;
@@ -3304,7 +3304,7 @@ public class MediaArchive implements CatalogEnabled
 		return manager;
 	}
 
-	public LlmConnection getLLM(String inModel)
+	public LlmConnection getLlmConnection(String inModel)
 	{
 		
 		Data modelinfo = query("llmmodel").exact("modelid",inModel).searchOne();

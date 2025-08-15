@@ -14,6 +14,7 @@ import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
+import org.openedit.WebPageRequest;
 import org.openedit.users.User;
 import org.openedit.util.URLUtilities;
 
@@ -244,4 +245,6 @@ public class ChatManager implements CatalogEnabled
 		}
 		return null;
 	}
+	
+	public void monitorChannels(WebPageRequest inReq) throws Exception {}
 }

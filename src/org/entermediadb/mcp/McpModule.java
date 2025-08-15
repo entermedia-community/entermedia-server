@@ -6,11 +6,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.llm.VelocityRenderUtil;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.jsonrpc.JsonRpcResponseBuilder;
-import org.entermediadb.llm.VelocityRenderUtil;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;

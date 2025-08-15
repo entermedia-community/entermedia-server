@@ -1,14 +1,14 @@
-package org.entermediadb.llm.openai;
+package org.entermediadb.ai.llm.openai;
 
 import java.util.ArrayList;
 
-import org.entermediadb.llm.BaseLLMResponse;
+import org.entermediadb.ai.llm.BaseLlmResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class GptResponse extends BaseLLMResponse {
+public class GptResponse extends BaseLlmResponse {
 
     @Override
     public boolean isToolCall() {

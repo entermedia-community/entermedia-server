@@ -1,17 +1,18 @@
-package org.entermediadb.llm.ollama;
+package org.entermediadb.ai.llm.ollama;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.entermediadb.ai.llm.BaseLlmConnection;
+import org.entermediadb.ai.llm.BaseLlmResponse;
+import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.llm.BaseLLMResponse;
-import org.entermediadb.llm.BaseLmmConnection;
-import org.entermediadb.llm.LlmConnection;
-import org.entermediadb.llm.LLMResponse;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,13 +20,12 @@ import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
-import org.openedit.WebPageRequest;
 import org.openedit.page.Page;
 import org.openedit.util.OutputFiller;
 
 
 
-public class OllamaConnection extends BaseLmmConnection implements CatalogEnabled, LlmConnection
+public class OllamaConnection extends BaseLlmConnection implements CatalogEnabled, LlmConnection
 {
 	private static Log log = LogFactory.getLog(OllamaConnection.class);
 
@@ -89,10 +89,10 @@ public class OllamaConnection extends BaseLmmConnection implements CatalogEnable
 		return apikey;
 	}
 
-	public BaseLLMResponse runPageAsInput(WebPageRequest inReq, String inModel, String inTemplate)
+	public BaseLlmResponse runPageAsInput(Map params, String inModel, String inTemplate)
 	{
 
-		String input = loadInputFromTemplate(inReq, inTemplate);
+		String input = loadInputFromTemplate(inTemplate, params);
 		log.info(input);
 		String endpoint = getApiEndpoint() + "/api/chat";
 		
@@ -126,7 +126,7 @@ public class OllamaConnection extends BaseLmmConnection implements CatalogEnable
 		return endpoint;
 	}
 
-	public BaseLLMResponse createImage(WebPageRequest inReq, String inModel, int imagecount, String inSize, String style, String inPrompt)
+	public BaseLlmResponse createImage(Map params, String inModel, int imagecount, String inSize, String style, String inPrompt)
 	{
 		throw new OpenEditException("Model doesn't support images");
 
@@ -153,7 +153,7 @@ public class OllamaConnection extends BaseLmmConnection implements CatalogEnable
 		return "Not Implemented";
 	}
 
-	public LLMResponse callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception {
+	public LlmResponse callFunction(Map params, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception {
 	    MediaArchive archive = getMediaArchive();
 
 	    log.info("Llama function: " + inFunction + " Query: " + inQuery);
@@ -192,7 +192,7 @@ public class OllamaConnection extends BaseLmmConnection implements CatalogEnable
 	        if(!defpage.exists()) {
 			       throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunction);
 		    }
-	        String definition = loadInputFromTemplate(inReq, templatepath);
+	        String definition = loadInputFromTemplate(templatepath, params);
 	        
 	        JSONParser parser = new JSONParser();
 	        JSONObject functionDef = (JSONObject) parser.parse(definition);
@@ -227,7 +227,7 @@ public class OllamaConnection extends BaseLmmConnection implements CatalogEnable
 	}
 
 	@Override
-	public String getType()
+	public String getServerName()
 	{
 		// TODO Auto-generated method stub
 		return "ollama";

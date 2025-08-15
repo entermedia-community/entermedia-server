@@ -1,10 +1,10 @@
-package org.entermediadb.llm;
+package org.entermediadb.ai.llm;
 
 import java.util.ArrayList;
 
 import org.json.simple.JSONObject;
 
-public interface LLMResponse {
+public interface LlmResponse {
 
 	
 	
