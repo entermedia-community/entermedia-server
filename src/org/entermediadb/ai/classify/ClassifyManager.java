@@ -1,8 +1,6 @@
 package org.entermediadb.ai.classify;
 
 import java.io.ByteArrayOutputStream;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -12,23 +10,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.manager.BaseManager;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
-import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -37,7 +27,6 @@ import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
-import org.openedit.util.RequestUtils;
 
 public class ClassifyManager extends BaseManager
 {
@@ -172,7 +161,7 @@ public class ClassifyManager extends BaseManager
 						if (arguments != null) {
 
 							Map metadata =  (Map) arguments.get("metadata");
-							Map datachanges = new HashedMap();
+							Map datachanges = new HashMap();
 							for (Iterator iterator2 = metadata.keySet().iterator(); iterator2.hasNext();)
 							{
 								String inKey = (String) iterator2.next();
@@ -268,7 +257,7 @@ public class ClassifyManager extends BaseManager
 
 		Asset asset = (Asset) params.get("asset");
 
-		Collection<HashedMap> fields = new ArrayList<>();
+		Collection<HashMap> fields = new ArrayList<>();
 		
 		Collection<String> fieldIdsToCheck = Arrays.asList("keywords", "longcaption", "assettitle", "headline", "alternatetext", "fulltext");
 
@@ -339,7 +328,7 @@ public class ClassifyManager extends BaseManager
 					value = value.substring(0, 500);
 				}
 
-				HashedMap fieldMap = new HashedMap();
+				HashMap fieldMap = new HashMap();
 				fieldMap.put("name", name);
 				fieldMap.put("value", value);
 				fields.add(fieldMap);

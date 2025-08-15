@@ -1,19 +1,11 @@
 package org.entermediadb.ai.llm.openai;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -21,21 +13,13 @@ import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.llm.BaseLlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
-import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
-import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
-import org.openedit.WebPageRequest;
-import org.openedit.data.PropertyDetail;
-import org.openedit.data.PropertyDetails;
-import org.openedit.modules.translations.LanguageMap;
 import org.openedit.page.Page;
-import org.openedit.repository.ContentItem;
 import org.openedit.util.OutputFiller;
 
 public class OpenAiConnection extends BaseLlmConnection implements CatalogEnabled, LlmConnection
