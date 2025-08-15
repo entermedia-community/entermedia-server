@@ -101,9 +101,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 				path = path + "/" + primaryname;
 			}
 			item.setPath(path);
-			
-			
-			
+			//Download asset
 			return getGoogleManager().loadFile(inAsset,  item);
 			
 		} catch (Exception e) {
@@ -221,6 +219,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 		try
 		{
 			//Load assets from Root
+			log.info("Syncing assets from Google Drive Root folder: " + inRoot);
 			Results results = getGoogleManager().listDriveFiles(inRoot);
 			if (results.getFiles() != null || results.getFolders() != null)
 			{
@@ -343,7 +342,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 				}
 			}
 
-			if (onepage.size() == 100)
+			if (onepage.size() == 25)
 			{
 				createAssetsIfNeeded(onepage, category);
 				onepage.clear();
@@ -363,17 +362,18 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 		Collection tosave = new ArrayList();
 
 		HitTracker existingassets = getMediaArchive().getAssetSearcher().query().orgroup("embeddedid", inOnepage.keySet()).search();
+		
+		log.info("Found " + existingassets.size() + " existing assets in " + category.getName() + " for " + inOnepage.size() + " google assets");
+		
 		for (Iterator iterator = existingassets.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
-
-			// Remove existing item from the list to avoid create new asset later
-			inOnepage.remove(data.get("embeddedid"));
+			Asset existing = (Asset) getMediaArchive().getAssetSearcher().loadData(data);
+			log.info("Existing asset " + existing.getName() + " with embeddedid " + existing.get("embeddedid"));
+			inOnepage.remove(existing.get("embeddedid"));
 			
 			//Re-assign Categories
-			Asset existing = (Asset) getMediaArchive().getAssetSearcher().loadData(data);
 			// existing.clearCategories();
-			
 			if (!existing.isInCategory(category))
 			{
 				
@@ -391,12 +391,16 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 					}
 				}
 				existing.addCategory(category);
-				getMediaArchive().saveAsset(existing);
+				tosave.add(existing);
 				log.info("Asset moved categories " + existing);
-				
 			}
-			
-			
+		}
+		
+		if (!tosave.isEmpty())
+		{
+			getMediaArchive().saveAssets(tosave);
+			log.info("Saving Existing Assets " + tosave.size());
+			tosave.clear();
 		}
 
 		// Only new Assets
@@ -515,12 +519,14 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 			
 			addImportCount();
 		}
+		
+		
 		if (!tosave.isEmpty())
 		{
 
 			getMediaArchive().saveAssets(tosave);
 
-			log.info("Saving new assets " + tosave.size());
+			log.info("Saving New Assets " + tosave.size());
 			
 			//Download if needed 
 			for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
