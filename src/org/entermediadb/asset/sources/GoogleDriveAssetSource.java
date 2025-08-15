@@ -363,7 +363,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 
 		HitTracker existingassets = getMediaArchive().getAssetSearcher().query().orgroup("embeddedid", inOnepage.keySet()).search();
 		
-		log.info("Found " + existingassets.size() + " existing assets in " + category.getName() + " for " + inOnepage.size() + " google assets");
+		log.info(existingassets);
 		
 		for (Iterator iterator = existingassets.iterator(); iterator.hasNext();)
 		{
