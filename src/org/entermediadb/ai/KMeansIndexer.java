@@ -524,6 +524,12 @@ public class KMeansIndexer implements CatalogEnabled {
 			Collection nearbycentroidids = inSearch.getValues("nearbycentroidids");
 			if( nearbycentroidids == null || nearbycentroidids.isEmpty() )
 			{
+				if(inSearch.getValue(getFieldSaveVector()) == null)
+				{
+					Collection<MultiValued> manulaface = new ArrayList();
+					manulaface.add(inSearch);
+					return manulaface; //Manually added face
+				}
 				throw new OpenEditException(inSearch + " Has no centroids. reindexfaces");
 			}
 			HitTracker tracker = getMediaArchive().query(getSearchType()).
