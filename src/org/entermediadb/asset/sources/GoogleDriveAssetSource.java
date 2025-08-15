@@ -219,6 +219,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 		try
 		{
 			//Load assets from Root
+			log.info("Syncing assets from Google Drive Root folder: " + inRoot);
 			Results results = getGoogleManager().listDriveFiles(inRoot);
 			if (results.getFiles() != null || results.getFolders() != null)
 			{
@@ -361,6 +362,9 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 		Collection tosave = new ArrayList();
 
 		HitTracker existingassets = getMediaArchive().getAssetSearcher().query().orgroup("embeddedid", inOnepage.keySet()).search();
+		
+		log.info("Found " + existingassets.size() + " existing assets in " + category.getName() + " for " + inOnepage.size() + " google assets");
+		
 		for (Iterator iterator = existingassets.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
@@ -389,10 +393,14 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 				existing.addCategory(category);
 				tosave.add(existing);
 				log.info("Asset moved categories " + existing);
-				
 			}
-			
-			
+		}
+		
+		if (!tosave.isEmpty())
+		{
+			getMediaArchive().saveAssets(tosave);
+			log.info("Saving Existing Assets " + tosave.size());
+			tosave.clear();
 		}
 
 		// Only new Assets
@@ -518,7 +526,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 
 			getMediaArchive().saveAssets(tosave);
 
-			log.info("Saving new assets " + tosave.size());
+			log.info("Saving New Assets " + tosave.size());
 			
 			//Download if needed 
 			for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
