@@ -2494,7 +2494,7 @@
 		</property>
 	</bean>
 
-	<bean id="gptManager" class="org.entermediadb.llm.GptManager"  scope="prototype">
+	<bean id="openaiManager" class="org.entermediadb.ai.llm.openai.OpenAiConnection"  scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2503,15 +2503,7 @@
 		</property>
 	</bean>
 
-	<bean id="openaiManager" class="org.entermediadb.llm.GptManager"  scope="prototype">
-		<property name="moduleManager">
-			<ref bean="moduleManager" />
-		</property>
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-	</bean>
-	<bean id="geminiManager" class="org.entermediadb.llm.GeminiManager"  scope="prototype">
+	<bean id="ollamaManager" class="org.entermediadb.ai.llm.ollama.OllamaConnection"  scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2520,17 +2512,17 @@
 		</property>
 	</bean>
 
-	<bean id="ollamaManager" class="org.entermediadb.llm.OllamaManager"  scope="prototype">
+	<bean id="classifyManager" class="org.entermediadb.ai.classify.ClassifyManager"  scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
+		<property name="requestUtils">
+			<ref bean="requestUtils" />
+		</propert>
 	</bean>
 
 
-	<bean id="velocityRenderUtil" class="org.entermediadb.llm.VelocityRenderUtil">
+	<bean id="velocityRenderUtil" class="org.entermediadb.ai.llm.VelocityRenderUtil">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
