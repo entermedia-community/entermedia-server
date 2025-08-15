@@ -46,7 +46,7 @@ import org.entermediadb.error.EmailErrorHandler;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.find.EntityManager;
 import org.entermediadb.find.FolderManager;
-import org.entermediadb.llm.LLMManager;
+import org.entermediadb.llm.LlmConnection;
 import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.users.PermissionManager;
 import org.entermediadb.users.UserProfileManager;
@@ -3304,7 +3304,7 @@ public class MediaArchive implements CatalogEnabled
 		return manager;
 	}
 
-	public LLMManager getLLM(String inModel)
+	public LlmConnection getLLM(String inModel)
 	{
 		
 		Data modelinfo = query("llmmodel").exact("modelid",inModel).searchOne();
@@ -3313,7 +3313,7 @@ public class MediaArchive implements CatalogEnabled
 			throw new OpenEditException("Could not find model " + inModel);
 		}
 		String llm = modelinfo.get("llmtype");
-		return (LLMManager) getBean(llm + "Manager");
+		return (LlmConnection) getBean(llm + "Manager");
 	}
 }
 

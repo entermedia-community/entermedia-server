@@ -33,10 +33,10 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
-import org.entermediadb.llm.BaseLLMManager;
-import org.entermediadb.llm.GptManager;
-import org.entermediadb.llm.LLMManager;
+import org.entermediadb.llm.BaseLmmConnection;
+import org.entermediadb.llm.LlmConnection;
 import org.entermediadb.llm.LLMResponse;
+import org.entermediadb.llm.openai.OpenAiConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -574,10 +574,10 @@ public class ChatModule extends BaseMediaModule
 
 	}	
 
-	public BaseLLMManager loadManager(WebPageRequest inReq)
+	public BaseLmmConnection loadManager(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		BaseLLMManager manager = (BaseLLMManager) archive.getBean("gptManager");
+		BaseLmmConnection manager = (BaseLmmConnection) archive.getBean("gptManager");
 		inReq.putPageValue("gpt", manager);
 		return manager;
 
@@ -669,7 +669,7 @@ public class ChatModule extends BaseMediaModule
 
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 		Searcher chats = archive.getSearcher("chatterbox");
-		LLMManager manager = archive.getLLM(model);
+		LlmConnection manager = archive.getLLM(model);
 		
 		if (!manager.isReady()) 
 		{
@@ -779,7 +779,7 @@ public class ChatModule extends BaseMediaModule
 		inReq.putPageValue("channel", channel);
 		
 		//TODO:  Move loadInputFromTemplate
-		LLMManager manager = (LLMManager) archive.getBean("ollamaManager");//Doesn't matter which one right here.
+		LlmConnection manager = (LlmConnection) archive.getBean("ollamaManager");//Doesn't matter which one right here.
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 
 		//String function = messageToUpdate.get("function");

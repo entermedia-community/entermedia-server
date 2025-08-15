@@ -17,7 +17,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
-import org.entermediadb.llm.LLMManager;
+import org.entermediadb.llm.LlmConnection;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -77,7 +77,7 @@ public class ContentModule extends BaseMediaModule
 			{
 				type = type + "Manager";
 			}
-			LLMManager llm = (LLMManager) archive.getBean(type);
+			LlmConnection llm = (LlmConnection) archive.getBean(type);
 			Data newdata = manager.createFromLLM(inReq, llm, model, contentrequest);
 			contentrequest.setValue("status", "complete");
 			archive.saveData("contentcreator", contentrequest);

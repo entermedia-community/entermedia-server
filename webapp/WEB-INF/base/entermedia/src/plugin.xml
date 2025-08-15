@@ -2494,7 +2494,7 @@
 		</property>
 	</bean>
 
-	<bean id="gptManager" class="org.entermediadb.llm.GptManager">
+	<bean id="gptManager" class="org.entermediadb.llm.GptManager"  scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2503,7 +2503,7 @@
 		</property>
 	</bean>
 
-	<bean id="openaiManager" class="org.entermediadb.llm.GptManager">
+	<bean id="openaiManager" class="org.entermediadb.llm.GptManager"  scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2511,7 +2511,7 @@
 			<ref bean="pageManager" />
 		</property>
 	</bean>
-	<bean id="geminiManager" class="org.entermediadb.llm.GeminiManager">
+	<bean id="geminiManager" class="org.entermediadb.llm.GeminiManager"  scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2520,7 +2520,7 @@
 		</property>
 	</bean>
 
-	<bean id="ollamaManager" class="org.entermediadb.llm.OllamaManager">
+	<bean id="ollamaManager" class="org.entermediadb.llm.OllamaManager"  scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

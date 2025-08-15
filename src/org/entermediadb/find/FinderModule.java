@@ -19,7 +19,7 @@ import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.search.SecurityEnabledSearchSecurity;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.find.picker.Picker;
-import org.entermediadb.llm.LLMManager;
+import org.entermediadb.llm.LlmConnection;
 import org.entermediadb.llm.LLMResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -980,7 +980,7 @@ public class FinderModule extends BaseMediaModule
 		inReq.putPageValue("model", model);
 		inReq.putPageValue("fulltext", fullText);
 		
-		LLMManager manager = (LLMManager) archive.getBean("gptManager");
+		LlmConnection manager = (LlmConnection) archive.getBean("gptManager");
 		
 		String chattemplate = "/" + archive.getMediaDbId() + "/gpt/prompts/build_takeaways.html";
 		LLMResponse response = manager.runPageAsInput(inReq, model, chattemplate);
