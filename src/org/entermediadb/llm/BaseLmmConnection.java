@@ -23,13 +23,13 @@ import org.openedit.util.OutputFiller;
 import org.openedit.util.RequestUtils;
 import org.openedit.util.URLUtilities;
 
-public abstract class BaseLLMManager implements LLMManager {
-	private static Log log = LogFactory.getLog(LLMManager.class);
+public abstract class BaseLmmConnection implements LlmConnection {
+	private static Log log = LogFactory.getLog(LlmConnection.class);
 
 	protected ModuleManager fieldModuleManager;
 	protected PageManager fieldPageManager;
 	protected RequestUtils fieldRequestUtils;
-	OutputFiller filler = new OutputFiller();
+	protected OutputFiller filler = new OutputFiller();
 	protected OpenEditEngine fieldEngine;
 	protected String apikey;
 	protected String fieldEndpoint;
@@ -58,15 +58,7 @@ public abstract class BaseLLMManager implements LLMManager {
 		fieldModuleManager = inModuleManager;
 	}
 
-	public RequestUtils getRequestUtils() {
-		return fieldRequestUtils;
-	}
-
-	public void setRequestUtils(RequestUtils inRequestUtils) {
-		fieldRequestUtils = inRequestUtils;
-	}
-
-	public BaseLLMManager() {
+	public BaseLmmConnection() {
 		super();
 	}
 

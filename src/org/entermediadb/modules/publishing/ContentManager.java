@@ -21,7 +21,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.importer.DitaImporter;
 import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.util.JsonUtil;
-import org.entermediadb.llm.LLMManager;
+import org.entermediadb.llm.LlmConnection;
 import org.entermediadb.llm.LLMResponse;
 import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.net.HttpSharedConnection;
@@ -721,7 +721,7 @@ public class ContentManager implements CatalogEnabled
 		Map inputdata = new HashMap();
 
 		String type = "gptManager";
-		LLMManager manager = (LLMManager) archive.getBean(type);
+		LlmConnection manager = (LlmConnection) archive.getBean(type);
 		String model = "dall-e-3";
 		String prompt = inReq.findValue("llmprompt.value");
 
@@ -775,7 +775,7 @@ public class ContentManager implements CatalogEnabled
 		{
 			type = type + "Manager";
 		}
-		LLMManager llm = (LLMManager) archive.getBean(type);
+		LlmConnection llm = (LlmConnection) archive.getBean(type);
 
 		String prompt = inReq.findValue("llmprompt.value");
 
@@ -899,7 +899,7 @@ public class ContentManager implements CatalogEnabled
 	//
 	//    }
 
-	public Data createFromLLM(WebPageRequest inReq, LLMManager inLlm, String inModel, Data inContentrequest) throws Exception
+	public Data createFromLLM(WebPageRequest inReq, LlmConnection inLlm, String inModel, Data inContentrequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 

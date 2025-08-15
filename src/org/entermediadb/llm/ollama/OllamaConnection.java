@@ -1,4 +1,4 @@
-package org.entermediadb.llm;
+package org.entermediadb.llm.ollama;
 
 import java.nio.charset.StandardCharsets;
 
@@ -8,7 +8,10 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.llm.ollama.OllamaResponse;
+import org.entermediadb.llm.BaseLLMResponse;
+import org.entermediadb.llm.BaseLmmConnection;
+import org.entermediadb.llm.LlmConnection;
+import org.entermediadb.llm.LLMResponse;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -22,9 +25,9 @@ import org.openedit.util.OutputFiller;
 
 
 
-public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLMManager
+public class OllamaConnection extends BaseLmmConnection implements CatalogEnabled, LlmConnection
 {
-	private static Log log = LogFactory.getLog(OllamaManager.class);
+	private static Log log = LogFactory.getLog(OllamaConnection.class);
 
 	protected String fieldCatalogId;
 	protected MediaArchive fieldMediaArchive;

@@ -1,4 +1,4 @@
-package org.entermediadb.llm;
+package org.entermediadb.llm.openai;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,7 +19,9 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.llm.openai.GptResponse;
+import org.entermediadb.llm.BaseLmmConnection;
+import org.entermediadb.llm.LlmConnection;
+import org.entermediadb.llm.LLMResponse;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -35,9 +37,9 @@ import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.OutputFiller;
 
-public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMManager
+public class OpenAiConnection extends BaseLmmConnection implements CatalogEnabled, LlmConnection
 {
-	private static Log log = LogFactory.getLog(GptManager.class);
+	private static Log log = LogFactory.getLog(OpenAiConnection.class);
 
 	protected String fieldCatalogId;
 	protected MediaArchive fieldMediaArchive;
