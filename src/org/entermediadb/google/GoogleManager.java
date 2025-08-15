@@ -165,40 +165,50 @@ public class GoogleManager implements CatalogEnabled
 		String rootParent = inParentId;
 		//verify if inParentid is a Shortcut
 		String url = "https://www.googleapis.com/drive/v3/files/" + inParentId + "?fields=*";
+		url = URLUtilities.urlEscape(url);
+		
 		HttpSharedConnection connection = getConnection(); 
 		connection.putSharedHeader("authorization", "Bearer " + getAccessToken());
-		url = URLUtilities.urlEscape(url);
-		JSONObject json = connection.getJson(url);
-		
-		JSONObject shortcutDetails = (JSONObject)json.get("shortcutDetails");
-		if (shortcutDetails  != null) {
-			String targetid = (String)shortcutDetails.get("targetId");
-			if (targetid != null)
-			{
-				rootParent = targetid;
+
+		try
+		{
+			JSONObject json = connection.getJson(url);
+			
+			JSONObject shortcutDetails = (JSONObject)json.get("shortcutDetails");
+			if (shortcutDetails  != null) {
+				String targetid = (String)shortcutDetails.get("targetId");
+				if (targetid != null)
+				{
+					rootParent = targetid;
+				}
+				
 			}
 			
+			// https://developers.google.com/drive/v3/reference/files/list
+			// https://developers.google.com/drive/v3/web/search-parameters
+			url = "https://www.googleapis.com/drive/v3/files?orderBy=modifiedTime desc,name&pageSize=1000&fields=*"; //escaped later
+			String search = "'" + rootParent + "' in parents";
+			url = url + "&q=" + search;
+			// TODO: Add date query from the last time we imported
+			log.info("Google Drive URL: "+url);
+	
+			Results results = new Results();
+	
+			// List one folders worth of files
+			boolean keepgoing = false;
+			do
+			{
+				keepgoing = populateMoreResults(url, results, false);
+			}
+			while (keepgoing);
+			
+			return results;
 		}
-		
-		// https://developers.google.com/drive/v3/reference/files/list
-		// https://developers.google.com/drive/v3/web/search-parameters
-		url = "https://www.googleapis.com/drive/v3/files?orderBy=modifiedTime desc,name&pageSize=1000&fields=*"; //escaped later
-		String search = "'" + rootParent + "' in parents";
-		url = url + "&q=" + search;
-		// TODO: Add date query from the last time we imported
-		log.info("Google Drive URL: "+url);
-
-		Results results = new Results();
-
-		// List one folders worth of files
-		boolean keepgoing = false;
-		do
-		{
-			keepgoing = populateMoreResults(url, results, false);
+		catch (Throwable ex) {
+			log.info("Error response: " + ex);
+			return null;
+			//throw new OpenEditException(ex);
 		}
-		while (keepgoing);
-		
-		return results;
 	}
 	
 
@@ -213,43 +223,52 @@ public class GoogleManager implements CatalogEnabled
 		HttpSharedConnection connection = getConnection(); 
 		connection.putSharedHeader("authorization", "Bearer " + getAccessToken());
 		
-		JSONObject json = connection.getJson(fileurl);
-		
-		if (json == null)
+		try
 		{
+			JSONObject json = connection.getJson(fileurl);
+			
+			if (json == null)
+			{
+				return false;
+			}
+			String pagekey = (String)json.get("nextPageToken");
+			if (pagekey != null)
+			{
+				results.setResultToken(pagekey);
+			}
+			JSONArray files = (JSONArray)json.get("files");
+			log.info("Google Drive found: "+files.size()+" items.");
+			for (Iterator iterator = files.iterator(); iterator.hasNext();)
+			{
+				JSONObject object = (JSONObject) iterator.next();
+				String name = (String)object.get("name");
+				String id = (String)object.get("id");
+	
+				String mt = (String)object.get("mimeType");
+				
+				log.info(name + " - File type: " + mt);
+				
+				if (mt.equals("application/vnd.google-apps.folder"))
+				{
+					results.addFolder(object);
+				}
+				else if (mt.equals("application/vnd.google-apps.shortcut")) {
+					results.addFolder(object);
+				}
+				else if (!foldersOnly)
+				{
+					results.addFile(object);
+				}
+			}
+			Boolean keepgoing = (Boolean) json.get("incompleteSearch");
+			return keepgoing;
+		}
+		catch (Throwable ex) {
+			log.info("Error response: " + ex);
 			return false;
+			//throw new OpenEditException(ex);
 		}
-		String pagekey = (String)json.get("nextPageToken");
-		if (pagekey != null)
-		{
-			results.setResultToken(pagekey);
-		}
-		JSONArray files = (JSONArray)json.get("files");
-		log.info("Google Drive found: "+files.size()+" items.");
-		for (Iterator iterator = files.iterator(); iterator.hasNext();)
-		{
-			JSONObject object = (JSONObject) iterator.next();
-			String name = (String)object.get("name");
-			String id = (String)object.get("id");
 
-			String mt = (String)object.get("mimeType");
-			
-			log.info(name + " - File type: " + mt);
-			
-			if (mt.equals("application/vnd.google-apps.folder"))
-			{
-				results.addFolder(object);
-			}
-			else if (mt.equals("application/vnd.google-apps.shortcut")) {
-				results.addFolder(object);
-			}
-			else if (!foldersOnly)
-			{
-				results.addFile(object);
-			}
-		}
-		Boolean keepgoing = (Boolean) json.get("incompleteSearch");
-		return keepgoing;
 	}
 
 

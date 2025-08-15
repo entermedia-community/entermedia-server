@@ -101,9 +101,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 				path = path + "/" + primaryname;
 			}
 			item.setPath(path);
-			
-			
-			
+			//Download asset
 			return getGoogleManager().loadFile(inAsset,  item);
 			
 		} catch (Exception e) {
@@ -343,7 +341,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 				}
 			}
 
-			if (onepage.size() == 100)
+			if (onepage.size() == 25)
 			{
 				createAssetsIfNeeded(onepage, category);
 				onepage.clear();
@@ -366,14 +364,12 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 		for (Iterator iterator = existingassets.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
-
-			// Remove existing item from the list to avoid create new asset later
-			inOnepage.remove(data.get("embeddedid"));
+			Asset existing = (Asset) getMediaArchive().getAssetSearcher().loadData(data);
+			log.info("Existing asset " + existing.getName() + " with embeddedid " + existing.get("embeddedid"));
+			inOnepage.remove(existing.get("embeddedid"));
 			
 			//Re-assign Categories
-			Asset existing = (Asset) getMediaArchive().getAssetSearcher().loadData(data);
 			// existing.clearCategories();
-			
 			if (!existing.isInCategory(category))
 			{
 				
@@ -391,7 +387,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 					}
 				}
 				existing.addCategory(category);
-				getMediaArchive().saveAsset(existing);
+				tosave.add(existing);
 				log.info("Asset moved categories " + existing);
 				
 			}
@@ -515,6 +511,8 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 			
 			addImportCount();
 		}
+		
+		
 		if (!tosave.isEmpty())
 		{
 
