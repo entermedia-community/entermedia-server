@@ -17,6 +17,7 @@ import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.manager.BaseManager;
+import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
@@ -37,7 +38,7 @@ public class ClassifyManager extends BaseManager
 		
 	}	
 	
-	public void scanMetadataWithAIAsset()
+	public void scanMetadataWithAIAsset(ScriptLogger inLog)
 	{
 		String model = getMediaArchive().getCatalogSettingValue("llmvisionmodel");
 		if(model == null) {
@@ -67,7 +68,7 @@ public class ClassifyManager extends BaseManager
 			return;
 		}
 
-		log.info("AI manager selected: Model: "+ model + " - Adding metadata to: " + assets.size() + " assets in category: " + categoryid);
+		inLog.info("AI manager selected: Model: "+ model + " - Adding metadata to: " + assets.size() + " assets in category: " + categoryid);
 		
 		assets.enableBulkOperations();
 		processAssets(llmconnection, model, assets);
