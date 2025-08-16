@@ -162,7 +162,9 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			Page template = getPageManager().getPage(inTemplate);
 			log.info("Loading input: " + inTemplate);
 			
-			WebPageRequest request = getRequestUtils().createPageRequest(template, null);
+			User user = getMediaArchive().getUserManager().getUser("agent");
+			
+			WebPageRequest request = getRequestUtils().createPageRequest(template, user);
 			
 			request.putPageValues(inMap);
 			

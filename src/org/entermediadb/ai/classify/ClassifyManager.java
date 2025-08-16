@@ -71,13 +71,13 @@ public class ClassifyManager extends BaseManager
 		inLog.info("AI manager selected: Model: "+ model + " - Adding metadata to: " + assets.size() + " assets in category: " + categoryid);
 		
 		assets.enableBulkOperations();
-		processAssets(llmconnection, model, assets);
+		processAssets(inLog, llmconnection, model, assets);
 		
 		getMediaArchive().fireSharedMediaEvent("llm/translatefields");
 
 	}
 
-	protected void processAssets(LlmConnection llmconnection, String model, HitTracker assets)
+	protected void processAssets(ScriptLogger inLog, LlmConnection llmconnection, String model, HitTracker assets)
 	{
 		int count = 1;
 		List tosave = new ArrayList();
@@ -140,11 +140,26 @@ public class ClassifyManager extends BaseManager
 	
 	protected boolean processOneAsset(LlmConnection llmconnection, String model, Asset asset) throws Exception
 	{
-		String base64EncodedString = loadBase64Image(asset);
-
-		if( base64EncodedString == null)
-		{
-			return false;
+		String mediatype = getMediaArchive().getMediaRenderType(asset);
+		String base64EncodedString = null;
+		if(mediatype == "image" || mediatype == "video")
+		{			
+			String imagesize = null;
+			if (mediatype == "image")
+			{
+				imagesize = "image3000x3000";
+			}
+			else if (mediatype == "video")
+			{
+				imagesize = "image1900x1080";
+			}
+			
+			base64EncodedString = loadBase64Image(asset, imagesize);
+			
+			if( base64EncodedString == null)
+			{
+				return false;
+			}
 		}
 			Collection allaifields = getMediaArchive().getAssetPropertyDetails().findAiCreationProperties();
 			Collection aifields = new ArrayList();
@@ -162,8 +177,8 @@ public class ClassifyManager extends BaseManager
 				params.put("asset", asset);
 				params.put("aifields", aifields);
 				
-				String template = llmconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/gpt/systemmessage/analyzeasset.html", params);
-				LlmResponse results = llmconnection.callFunction(params, model, "generate_metadata", template,base64EncodedString);
+				String requestPayload = llmconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/gpt/systemmessage/analyzeasset.html", params);
+				LlmResponse results = llmconnection.callFunction(params, model, "generate_metadata", requestPayload,base64EncodedString);
 
 				boolean wasUpdated = false;
 				if (results != null)
@@ -237,18 +252,8 @@ public class ClassifyManager extends BaseManager
 			return true;
 	}
 	
-	private String loadBase64Image(Asset inAsset)
+	private String loadBase64Image(Asset inAsset, String imagesize)
 	{
-		String mediatype = getMediaArchive().getMediaRenderType(inAsset);
-		String imagesize = null;
-		if (mediatype == "image")
-		{
-			imagesize = "image3000x3000.jpg";
-		}
-		else if (mediatype == "video")
-		{
-			imagesize = "image1900x1080.jpg";
-		}
 		ContentItem item = getMediaArchive().getGeneratedContent(inAsset, imagesize);
 		if(!item.exists()) 
 		{
