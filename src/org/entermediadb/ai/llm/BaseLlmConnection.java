@@ -54,7 +54,11 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		return connection;
 	}
 
-
+	public LlmResponse callFunction(Map params, String inModel, String inFunction, String inQuery) throws Exception 
+		{
+			return callFunction(params, inModel, inFunction, inQuery, null);
+		}
+		
 	public MediaArchive getMediaArchive()
 	{
 		if (fieldMediaArchive == null)

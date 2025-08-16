@@ -12,15 +12,14 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.manager.BaseManager;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
-import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.repository.ContentItem;
@@ -33,16 +32,13 @@ public class ClassifyManager extends BaseManager
 	private static final Log log = LogFactory.getLog(ClassifyManager.class);
 
 
-	public void scanEntityMetadataWithAI()
+	public void scanMetadataWithAIEntity()
 	{
 		
 	}	
 	
-	public void scanAssetMetadataWithAI()
+	public void scanMetadataWithAIAsset()
 	{
-
-		Searcher searcher = getMediaArchive().getAssetSearcher();
-
 		String model = getMediaArchive().getCatalogSettingValue("llmvisionmodel");
 		if(model == null) {
 			model = "gpt-4o-mini";
@@ -76,152 +72,46 @@ public class ClassifyManager extends BaseManager
 		log.info("AI manager selected: Model: "+ model + " - Adding metadata to: " + assets.size() + " assets in category: " + categoryid);
 		
 		assets.enableBulkOperations();
+		processAssets(llmconnection, model, assets);
+		
+		getMediaArchive().fireSharedMediaEvent("llm/translatefields");
+
+	}
+
+	protected void processAssets(LlmConnection llmconnection, String model, HitTracker assets)
+	{
 		int count = 1;
 		List tosave = new ArrayList();
-		
-		Exec exec = (Exec)getMediaArchive().getBean("exec");
 		
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();
 			Asset asset = getMediaArchive().getAsset(hit.getId());
-
+			
 			String mediatype = getMediaArchive().getMediaRenderType(asset);
-			String imagesize = null;
-			if (mediatype == "image")
+			if( mediatype.equals("default") )
 			{
-				imagesize = "image3000x3000.jpg";
-			}
-			else if (mediatype == "video")
-			{
-				imagesize = "image1900x1080.jpg";
-			}
-			else {
-				log.info("Skipping asset " + asset.getName() + " - Not an image or video.");
+				//Skip? Transcript in MetadataExtractor
+				log.info("Skipping asset " + asset);
 				continue;
 			}
-			ContentItem item = getMediaArchive().getGeneratedContent(asset, imagesize);
-			if(!item.exists()) 
-			{
-				
-				log.info("Missing " + imagesize + " generated image for asset ("+asset.getId()+") " + asset.getName());
-				continue;
-			}
-
-			ByteArrayOutputStream output = new ByteArrayOutputStream();
-			
-			ArrayList<String> args = new ArrayList<String>();
-			args.add(item.getAbsolutePath());
-			args.add("-resize");
-			args.add("1500x1500");
-			args.add("jpg:-");
-			
-			String base64EncodedString = "";
-			try {
-				ExecResult result = exec.runExecStream("convert", args, output, 5000);
-				byte[] bytes = output.toByteArray();  // Read InputStream as bytes
-				base64EncodedString = Base64.getEncoder().encodeToString(bytes); // Encode to Base64
-			} catch (Exception e) {
-				log.info("Error encoding asset to Base64: ${e}");
-				asset.setValue("llmerror", true);
-				tosave.add(asset);
-				continue;
-			} 
-
-			log.info("Analyzing asset ("+count+"/"+assets.size()+") Id: " + asset.getId() + " " + asset.getName());
+//			else {
+//				log.info("Skipping asset " + inAsset.getName() + " - Not an image or video.");
+//				return null;
+//			}
+			tosave.add(asset);
 			count++;
-
 			
 			try{
 				long startTime = System.currentTimeMillis();
+
+				log.info("Analyzing asset ("+count+"/"+assets.size()+") Id: " + asset.getId() + " " + asset.getName());
 				
-				Collection allaifields = getMediaArchive().getAssetPropertyDetails().findAiCreationProperties();
-				Collection aifields = new ArrayList();
-				for (Iterator iterator2 = allaifields.iterator(); iterator2.hasNext();)
+				boolean complete = processOneAsset(llmconnection, model,asset);
+				if( !complete )
 				{
-					PropertyDetail aifield = (PropertyDetail)iterator2.next();
-					if(asset.getValue(aifield.getId()) == null || asset.getValue(aifield.getId()) == "")
-					{
-						aifields.add(aifield);
-					}
+					continue;
 				}
-				if(!aifields.isEmpty())
-				{	 
-					Map params = new HashMap();
-					params.put("asset", asset);
-					params.put("aifields", aifields);
-					
-					String template = llmconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/gpt/systemmessage/analyzeasset.html", params);
-					LlmResponse results = llmconnection.callFunction(params, model, "generate_metadata", template, 0, 5000, base64EncodedString);
-
-					boolean wasUpdated = false;
-					if (results != null)
-					{
-						JSONObject arguments = results.getArguments();
-						if (arguments != null) {
-
-							Map metadata =  (Map) arguments.get("metadata");
-							Map datachanges = new HashMap();
-							for (Iterator iterator2 = metadata.keySet().iterator(); iterator2.hasNext();)
-							{
-								String inKey = (String) iterator2.next();
-								PropertyDetail detail = getMediaArchive().getAssetPropertyDetails().getDetail(inKey);
-								if (detail != null)
-								{
-									String value = (String)metadata.get(inKey);
-									if (detail.isMultiValue())
-									{
-										Collection<String> values = Arrays.asList(value.split(","));
-										datachanges.put(detail.getId(), values);
-									}
-									else 
-									{
-										datachanges.put(detail.getId(), value);
-									}
-								}
-							}
-							
-							//Save change event
-							User agent = getMediaArchive().getUser("agent");
-							if( agent != null)
-							{
-								getMediaArchive().getEventManager().fireDataEditEvent(getMediaArchive().getAssetSearcher(), agent, "assetgeneral", asset, datachanges);
-							}
-							
-							for (Iterator iterator2 = datachanges.keySet().iterator(); iterator2.hasNext();)
-							{
-								String inKey = (String) iterator2.next();
-								Object value = datachanges.get(inKey);
-								
-								asset.setValue(inKey, value);
-								log.info("AI updated field "+ inKey + ": "+metadata.get(inKey));
-							}
-						}
-						else {
-							log.info("Asset "+asset.getId() +" "+asset.getName()+" - Nothing Detected.");
-						}
-					}
-				}
-
-				if(asset.getValue("semantictopics") == null || asset.getValues("semantictopics").isEmpty())
-				{
-					Map params = new HashMap();
-					params.put("asset", asset);
-					params.put("aifields", aifields);
-
-					Collection<String> semantic_topics = getSemanticTopics(params, model);
-					if(semantic_topics != null && !semantic_topics.isEmpty())
-					{
-						asset.setValue("semantictopics", semantic_topics);
-						log.info("AI updated semantic topics: " + semantic_topics);
-					}
-					else 
-					{
-						log.info("No semantic topics detected for asset: " + asset.getId() + " " + asset.getName());
-					}
-				}
-
-				asset.setValue("taggedbyllm", true);
 				tosave.add(asset);
 				//getMediaArchive().saveAsset(asset);
 
@@ -231,7 +121,7 @@ public class ClassifyManager extends BaseManager
 				if( tosave.size() == 25)	{
 					getMediaArchive().saveAssets(tosave);
 					//searcher.saveAllData(tosave, null);
-					log.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
+					log.info("Saved: " + tosave.size() + " assets ");
 					tosave.clear();
 				}
 			}
@@ -242,31 +132,159 @@ public class ClassifyManager extends BaseManager
 				continue;
 			}	
 		}
-		if( tosave.size() > 0)	{
+		if( !tosave.isEmpty())	
+		{
 			getMediaArchive().saveAssets(tosave);
-			log.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
+			log.info("Saved: " + tosave.size() + " assets ");
 		}
-		
-		getMediaArchive().fireSharedMediaEvent("llm/translatefields");
-
 	}
 	
-	public Collection<String> getSemanticTopics(Map params, String inModel) throws Exception
+	protected boolean processOneAsset(LlmConnection llmconnection, String model, Asset asset) throws Exception
+	{
+		String base64EncodedString = loadBase64Image(asset);
+
+		if( base64EncodedString == null)
+		{
+			return false;
+		}
+			Collection allaifields = getMediaArchive().getAssetPropertyDetails().findAiCreationProperties();
+			Collection aifields = new ArrayList();
+			for (Iterator iterator2 = allaifields.iterator(); iterator2.hasNext();)
+			{
+				PropertyDetail aifield = (PropertyDetail)iterator2.next();
+				if(asset.getValue(aifield.getId()) == null || asset.getValue(aifield.getId()) == "")
+				{
+					aifields.add(aifield);
+				}
+			}
+			if(!aifields.isEmpty())
+			{	 
+				Map params = new HashMap();
+				params.put("asset", asset);
+				params.put("aifields", aifields);
+				
+				String template = llmconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/gpt/systemmessage/analyzeasset.html", params);
+				LlmResponse results = llmconnection.callFunction(params, model, "generate_metadata", template,base64EncodedString);
+
+				boolean wasUpdated = false;
+				if (results != null)
+				{
+					JSONObject arguments = results.getArguments();
+					if (arguments != null) {
+
+						Map metadata =  (Map) arguments.get("metadata");
+						Map datachanges = new HashMap();
+						for (Iterator iterator2 = metadata.keySet().iterator(); iterator2.hasNext();)
+						{
+							String inKey = (String) iterator2.next();
+							PropertyDetail detail = getMediaArchive().getAssetPropertyDetails().getDetail(inKey);
+							if (detail != null)
+							{
+								String value = (String)metadata.get(inKey);
+								if (detail.isMultiValue())
+								{
+									Collection<String> values = Arrays.asList(value.split(","));
+									datachanges.put(detail.getId(), values);
+								}
+								else 
+								{
+									datachanges.put(detail.getId(), value);
+								}
+							}
+						}
+						
+						//Save change event
+						User agent = getMediaArchive().getUser("agent");
+						if( agent != null)
+						{
+							getMediaArchive().getEventManager().fireDataEditEvent(getMediaArchive().getAssetSearcher(), agent, "assetgeneral", asset, datachanges);
+						}
+						
+						for (Iterator iterator2 = datachanges.keySet().iterator(); iterator2.hasNext();)
+						{
+							String inKey = (String) iterator2.next();
+							Object value = datachanges.get(inKey);
+							
+							asset.setValue(inKey, value);
+							log.info("AI updated field "+ inKey + ": "+metadata.get(inKey));
+						}
+					}
+					else {
+						log.info("Asset "+asset.getId() +" "+asset.getName()+" - Nothing Detected.");
+					}
+				}
+			}
+
+			if(asset.getValue("semantictopics") == null || asset.getValues("semantictopics").isEmpty())
+			{
+				Map params = new HashMap();
+				params.put("asset", asset);
+				params.put("aifields", aifields);
+
+				Collection<String> fieldIdsToCheck = Arrays.asList("keywords", "longcaption", "assettitle", "headline", "alternatetext", "fulltext");
+
+				Collection<String> semantic_topics = getSemanticTopics(params, fieldIdsToCheck, model,asset);
+				if(semantic_topics != null && !semantic_topics.isEmpty())
+				{
+					asset.setValue("semantictopics", semantic_topics);
+					log.info("AI updated semantic topics: " + semantic_topics);
+				}
+				else 
+				{
+					log.info("No semantic topics detected for asset: " + asset.getId() + " " + asset.getName());
+				}
+			}
+			asset.setValue("taggedbyllm", true);
+			return true;
+	}
+	
+	private String loadBase64Image(Asset inAsset)
+	{
+		String mediatype = getMediaArchive().getMediaRenderType(inAsset);
+		String imagesize = null;
+		if (mediatype == "image")
+		{
+			imagesize = "image3000x3000.jpg";
+		}
+		else if (mediatype == "video")
+		{
+			imagesize = "image1900x1080.jpg";
+		}
+		ContentItem item = getMediaArchive().getGeneratedContent(inAsset, imagesize);
+		if(!item.exists()) 
+		{
+			log.info("Missing " + imagesize + " generated image for asset ("+inAsset.getId()+") " + inAsset.getName());
+			return null;
+		}
+
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		
+		ArrayList<String> args = new ArrayList<String>();
+		args.add(item.getAbsolutePath());
+		args.add("-resize");
+		args.add("1500x1500");
+		args.add("jpg:-");
+		Exec exec = (Exec)getMediaArchive().getBean("exec");
+
+		ExecResult result = exec.runExecStream("convert", args, output, 5000);
+		byte[] bytes = output.toByteArray();  // Read InputStream as bytes
+		String base64EncodedString = Base64.getEncoder().encodeToString(bytes); // Encode to Base64
+		return base64EncodedString;
+		
+	}
+
+	public Collection<String> getSemanticTopics(Map params, Collection inFieldToCheck, String inModel, Data inData) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
-		Asset asset = (Asset) params.get("asset");
-
 		Collection<HashMap> fields = new ArrayList<>();
 		
-		Collection<String> fieldIdsToCheck = Arrays.asList("keywords", "longcaption", "assettitle", "headline", "alternatetext", "fulltext");
-
-		for (Iterator<String> iter = fieldIdsToCheck.iterator(); iter.hasNext();)
+		for (Iterator<String> iter = inFieldToCheck.iterator(); iter.hasNext();)
 		{
 			String fieldId = (String) iter.next();
 			if (fieldId != null)
 			{
-				Object valueObj = asset.getValue(fieldId);
+				Object valueObj = inData.getValue(fieldId);
 				if (valueObj == null)
 				{
 					log.info("Skipping empty field: " + fieldId);
@@ -299,7 +317,7 @@ public class ClassifyManager extends BaseManager
 				if(name.equals("keywords"))
 				{
 					name = "Keywords";
-					Collection<String> aikeywords = asset.getValues("keywordsai");
+					Collection<String> aikeywords = inData.getValues("keywordsai");
 					if(aikeywords != null && !aikeywords.isEmpty())
 					{
 						String extraKeys = String.join(", ", aikeywords);
@@ -336,110 +354,113 @@ public class ClassifyManager extends BaseManager
 			}
 		}
 
-		params.put("fields", fields);
-		params.put("model", inModel);
+		LlmConnection connection = getMediaArchive().getLlmConnection(inModel);
 		
-		Collection<String> results = new ArrayList<>();
-		/*
-
-		String inStructure = loadInputFromTemplate("/" + archive.getMediaDbId() + "/gpt/structures/semantic_topics.json", params);
-
-		JSONParser parser = new JSONParser();
-		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
-
-		String endpoint = "https://api.openai.com/v1/responses";
-		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + getApikey());
-		method.setHeader("Content-Type", "application/json");
-		method.setEntity(new StringEntity(structureDef.toJSONString(), StandardCharsets.UTF_8));
-
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-		
-		
-		
-		try
-		{
-			if (resp.getStatusLine().getStatusCode() != 200)
-			{
-				throw new OpenEditException("GPT error: " + resp.getStatusLine());
-			}
+		Collection values = connection.callStructuredOutputList("semantic_topics",inModel,fields, params);
 	
-			JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
+		return values;
 
-			log.info("Returned: " + json.toJSONString());
-		
-		
-			JSONArray outputs = (JSONArray) json.get("output");
-			if (outputs == null || outputs.isEmpty())
+	}
+	
+	protected boolean processOneEntity(LlmConnection llmconnection, String model, Data inEntity) throws Exception
+	{
+			Collection allaifields = getMediaArchive().getAssetPropertyDetails().findAiCreationProperties();
+			Collection aifields = new ArrayList();
+			for (Iterator iterator2 = allaifields.iterator(); iterator2.hasNext();)
 			{
-				log.info("No output found in GPT response");
-				return results;
-			}
-			
-			JSONObject output = null;
-			for (Object outputObj : outputs)
-			{
-				if (!(outputObj instanceof JSONObject))
+				PropertyDetail aifield = (PropertyDetail)iterator2.next();
+				if(inEntity.getValue(aifield.getId()) == null || inEntity.getValue(aifield.getId()) == "")
 				{
-					log.info("Output is not a JSONObject: " + outputObj);
-					continue;
-				}
-				JSONObject obj = (JSONObject) outputObj;
-				String role = (String) obj.get("role");
-				if(role != null && role.equals("assistant"))
-				{
-					output = obj;
-					break;
+					aifields.add(aifield);
 				}
 			}
-			if (output == null || !output.get("status").equals("completed"))
-			{
-				log.info("No completed output found in GPT response");
-				return results;
-			}
-			JSONArray contents = (JSONArray) output.get("content");
-			if (contents == null || contents.isEmpty())
-			{
-				log.info("No content found in GPT response");
-				return results;
-			}
-			JSONObject content = (JSONObject) contents.get(0);
-			if (content == null || !content.containsKey("text"))
-			{
-				log.info("No structured data found in GPT response");
-				return results;
-			}
-			String text = (String) content.get("text");
-			if (text == null || text.isEmpty())
-			{
-				log.info("No text found in structured data");
-				return results;
-			}
-			JSONObject responseData = (JSONObject) parser.parse(new StringReader(text));
-			JSONArray topics = (JSONArray) responseData.get("topics");
-			if (topics == null || topics.isEmpty())
-			{
-				log.info("No topics found in structured data");
-				return results;
-			}
-			
-			for (Object topicObj : topics)
-			{
-				String topic = (String) topicObj;
-				if (topic != null && !topic.isEmpty())
-				{
-					results.add(topic);
-				}
-			}
-		}
-		finally
-		{
-			connection.release(resp);
-		}
-		*/
-		
-		return results;
+			if(!aifields.isEmpty())
+			{	 
+				Map params = new HashMap();
+				params.put("entity", inEntity);
+				params.put("aifields", aifields);
+				
+				String query = llmconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/gpt/systemmessage/analyzentity.html", params);
+				LlmResponse results = llmconnection.callFunction(params, model, "generate_metadata_entity", query);
 
+				boolean wasUpdated = false;
+				if (results != null)
+				{
+					JSONObject arguments = results.getArguments();
+					if (arguments != null) {
+
+						Map metadata =  (Map) arguments.get("metadata");
+						Map datachanges = new HashMap();
+						for (Iterator iterator2 = metadata.keySet().iterator(); iterator2.hasNext();)
+						{
+							String inKey = (String) iterator2.next();
+							PropertyDetail detail = getMediaArchive().getAssetPropertyDetails().getDetail(inKey);
+							if (detail != null)
+							{
+								String value = (String)metadata.get(inKey);
+								if (detail.isMultiValue())
+								{
+									Collection<String> values = Arrays.asList(value.split(","));
+									datachanges.put(detail.getId(), values);
+								}
+								else 
+								{
+									datachanges.put(detail.getId(), value);
+								}
+							}
+						}
+						
+						//Save change event
+//						User agent = getMediaArchive().getUser("agent");
+//						if( agent != null)
+//						{
+//							getMediaArchive().getEventManager().fireDataEditEvent(getMediaArchive().getAssetSearcher(), agent, "assetgeneral", asset, datachanges);
+//						}
+						for (Iterator iterator2 = datachanges.keySet().iterator(); iterator2.hasNext();)
+						{
+							String inKey = (String) iterator2.next();
+							Object value = datachanges.get(inKey);
+							
+							inEntity.setValue(inKey, value);
+							log.info("AI updated field "+ inKey + ": "+metadata.get(inKey));
+						}
+					}
+					else {
+						log.info("inEntity "+inEntity.getId() +" "+inEntity.getName()+" - Nothing Detected.");
+					}
+				}
+			}
+
+			if(inEntity.getValue("semantictopics") == null || inEntity.getValues("semantictopics").isEmpty())
+			{
+				Map params = new HashMap();
+				params.put("entity", inEntity);
+				params.put("aifields", aifields);
+
+				Collection<String> fieldIdsToCheck = Arrays.asList("name","keywords","longcaption");
+
+				//Preload the image semantics
+				//,"primarymedia","primaryimage"
+				Asset attached = getMediaArchive().getAsset(inEntity.get(""));
+				if(attached != null)
+				{
+					Collection semantics = attached.getValues(""); //TODO
+					params.put("extrasemantics",semantics);
+				}
+				
+				Collection<String> semantic_topics = getSemanticTopics(params,fieldIdsToCheck, model, inEntity);
+				if(semantic_topics != null && !semantic_topics.isEmpty())
+				{
+					inEntity.setValue("semantictopics", semantic_topics);
+					log.info("AI updated semantic topics: " + semantic_topics);
+				}
+				else 
+				{
+					log.info("No semantic topics detected for inEntity: " + inEntity.getId() + " " + inEntity.getName());
+				}
+			}
+			inEntity.setValue("taggedbyllm", true);
+			return true;
 	}
 	
 }

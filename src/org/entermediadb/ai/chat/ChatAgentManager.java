@@ -24,7 +24,7 @@ import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
-public class ChatManager extends BaseManager {
+public class ChatAgentManager extends BaseManager {
 	public void monitorChannels(ScriptLogger log) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
@@ -90,6 +90,17 @@ public class ChatManager extends BaseManager {
 		}
 	}
 	
+	public LlmConnection getLlmConnection()
+	{
+		String model = getMediaArchive().getCatalogSettingValue("gpt-model");
+		if (model == null)
+		{
+			model = "gpt-4o"; // Default fallback
+		}
+		LlmConnection manager = getMediaArchive().getLlmConnection(model);
+		return manager;
+	}
+	
 	public void respondToChannel(ScriptLogger log, Data channel, Data message) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
@@ -102,6 +113,7 @@ public class ChatManager extends BaseManager {
 		{
 			model = "gpt-4o"; // Default fallback
 		}
+		LlmConnection manager = archive.getLlmConnection(model);
 
 		params.put("model", model);
 
@@ -110,7 +122,6 @@ public class ChatManager extends BaseManager {
 
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 		Searcher chats = archive.getSearcher("chatterbox");
-		LlmConnection manager = archive.getLlmConnection(model);
 		
 		if (!manager.isReady()) 
 		{

@@ -2,6 +2,8 @@ package org.entermediadb.ai.llm.openai;
 
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -150,7 +152,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		return embeddingArray.toJSONString(); // Convert to string for returning
 	}
 
-	public LlmResponse callFunction(Map params, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception
+	public LlmResponse callFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -272,6 +274,109 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	{
 		// TODO Auto-generated method stub
 		return "openai";
+	}
+
+	@Override
+	public Collection<String> callStructuredOutputList(String inStructureName, String inModel, Collection inFields, Map inParams) throws Exception
+	{
+		inParams.put("fields", inFields);
+		inParams.put("model", inModel);
+		
+		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/gpt/structures/" + inStructureName + ".json", inParams);
+
+		JSONParser parser = new JSONParser();
+		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
+
+		String endpoint = "https://api.openai.com/v1/responses";
+		HttpPost method = new HttpPost(endpoint);
+		method.addHeader("authorization", "Bearer " + getApikey());
+		method.setHeader("Content-Type", "application/json");
+		method.setEntity(new StringEntity(structureDef.toJSONString(), StandardCharsets.UTF_8));
+
+		CloseableHttpResponse resp = getConnection().sharedExecute(method);
+		
+		Collection<String> results = new ArrayList<>();
+
+		try
+		{
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
+				throw new OpenEditException("GPT error: " + resp.getStatusLine());
+			}
+	
+			JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
+
+			log.info("Returned: " + json.toJSONString());
+		
+		
+			JSONArray outputs = (JSONArray) json.get("output");
+			if (outputs == null || outputs.isEmpty())
+			{
+				log.info("No output found in GPT response");
+				return results;
+			}
+			
+			JSONObject output = null;
+			for (Object outputObj : outputs)
+			{
+				if (!(outputObj instanceof JSONObject))
+				{
+					log.info("Output is not a JSONObject: " + outputObj);
+					continue;
+				}
+				JSONObject obj = (JSONObject) outputObj;
+				String role = (String) obj.get("role");
+				if(role != null && role.equals("assistant"))
+				{
+					output = obj;
+					break;
+				}
+			}
+			if (output == null || !output.get("status").equals("completed"))
+			{
+				log.info("No completed output found in GPT response");
+				return results;
+			}
+			JSONArray contents = (JSONArray) output.get("content");
+			if (contents == null || contents.isEmpty())
+			{
+				log.info("No content found in GPT response");
+				return results;
+			}
+			JSONObject content = (JSONObject) contents.get(0);
+			if (content == null || !content.containsKey("text"))
+			{
+				log.info("No structured data found in GPT response");
+				return results;
+			}
+			String text = (String) content.get("text");
+			if (text == null || text.isEmpty())
+			{
+				log.info("No text found in structured data");
+				return results;
+			}
+			JSONObject responseData = (JSONObject) parser.parse(new StringReader(text));
+			JSONArray topics = (JSONArray) responseData.get("topics");
+			if (topics == null || topics.isEmpty())
+			{
+				log.info("No topics found in structured data");
+				return results;
+			}
+			
+			for (Object topicObj : topics)
+			{
+				String topic = (String) topicObj;
+				if (topic != null && !topic.isEmpty())
+				{
+					results.add(topic);
+				}
+			}
+		}
+		finally
+		{
+			connection.release(resp);
+		}
+		return results;
 	}
 
 }

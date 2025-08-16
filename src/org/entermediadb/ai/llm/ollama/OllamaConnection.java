@@ -1,6 +1,7 @@
 package org.entermediadb.ai.llm.ollama;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -153,7 +154,7 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		return "Not Implemented";
 	}
 
-	public LlmResponse callFunction(Map params, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception {
+	public LlmResponse callFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception {
 	    MediaArchive archive = getMediaArchive();
 
 	    log.info("Llama function: " + inFunction + " Query: " + inQuery);
@@ -233,4 +234,22 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		return "ollama";
 	}
 
+	@Override
+	public Collection<String> callStructuredOutputList(String inStructureName, String inModel, Collection inFields, Map inParams) throws Exception
+	{
+//		inParams.put("fields", inFields);
+//		inParams.put("model", inModel);
+//		
+//		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ollama/structures/" + inStructureName + ".json", inParams);
+//
+//		JSONParser parser = new JSONParser();
+//		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
+//
+//		String endpoint = "https://api.openai.com/v1/responses";
+//		HttpPost method = new HttpPost(endpoint);
+//		method.addHeader("authorization", "Bearer " + getApikey());
+//		method.setHeader("Content-Type", "application/json");
+//		method.setEntity(new StringEntity(structureDef.toJSONString(), StandardCharsets.UTF_8));
+		return null;
+	}
 }

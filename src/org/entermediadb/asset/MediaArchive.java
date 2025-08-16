@@ -3313,7 +3313,7 @@ public class MediaArchive implements CatalogEnabled
 			throw new OpenEditException("Could not find model " + inModel);
 		}
 		String llm = modelinfo.get("llmtype");
-		return (LlmConnection) getBean(llm + "Manager");
+		return (LlmConnection) getBean(llm + "Connection");
 	}
 }
 

@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.chat.ChatAgentManager;
 import org.entermediadb.ai.llm.BaseLlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.openai.OpenAiConnection;
@@ -37,6 +38,7 @@ import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -571,20 +573,35 @@ public class ChatModule extends BaseMediaModule
 			Data hit = (Data) iterator.next();
 			chats.delete(hit, null);
 		}
-
 	}	
-
-	public BaseLlmConnection loadManager(WebPageRequest inReq)
+	
+	//deprecated? not used?
+	public LlmConnection loadManager(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		BaseLlmConnection manager = (BaseLlmConnection) archive.getBean("openaiConnection");
-		inReq.putPageValue("gpt", manager);
-		return manager;
+		ChatAgentManager chatmanager = (ChatAgentManager)archive.getBean("chatAgentManager");
 
+//		String model = inReq.findValue("aimodel");
+//		if( model == null)
+//		{
+//			model = archive.getCatalogSettingValue("ai_default_chat_model");
+//		}
+		LlmConnection llmconnection = chatmanager.getLlmConnection();//(LlmConnection) archive.getLlmConnection(model);
+		inReq.putPageValue("gpt", llmconnection); //Deprecated
+		inReq.putPageValue("llmconnection", llmconnection);
+		inReq.putPageValue("chatagentmanager", chatmanager);
+		
+		return llmconnection;
 	}
 
 	
-
+	public void monitorChannels(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ChatAgentManager chatmanager = (ChatAgentManager)archive.getBean("chatAgentManager");
+		ScriptLogger log = (ScriptLogger)inReq.getPageValue("log");
+		chatmanager.monitorChannels(log);
+	}
 	
 	
 

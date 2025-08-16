@@ -19,13 +19,15 @@ public interface LlmConnection {
 
     public String loadInputFromTemplate(String inString, Map inParams);
     
-    public LlmResponse callFunction(Map inParams, String inModel, String inFunction, String inQuery, int temp, int maxtokens) throws Exception;
+    public LlmResponse callFunction(Map inParams, String inModel, String inFunction, String inQuery) throws Exception;
     
-    public LlmResponse callFunction(Map inParams, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception;
+    public LlmResponse callFunction(Map inParams, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception;
 
     public LlmResponse runPageAsInput(Map inParams, String inModel, String inChattemplate);
 
     public String getApiEndpoint();
 
 	public void callChatFunction(Data inFunctionMessage, String inFunctionName, Map inParams) throws Exception;
+	
+	public Collection<String> callStructuredOutputList(String inStructureName,String inModel, Collection inFields, Map inParams) throws Exception;
 }

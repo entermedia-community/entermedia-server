@@ -2498,6 +2498,10 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
+		<property name="requestUtils">
+			<ref bean="requestUtils" />
+		</property>
+
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -2507,12 +2511,25 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
+		<property name="requestUtils">
+			<ref bean="requestUtils" />
+		</property>
+
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
 	</bean>
 
 	<bean id="classifyManager" class="org.entermediadb.ai.classify.ClassifyManager"  scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="requestUtils">
+			<ref bean="requestUtils" />
+		</property>
+	</bean>
+
+	<bean id="chatAgentManager" class="org.entermediadb.ai.chat.ChatAgentManager"  scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
