@@ -52,14 +52,12 @@ public class ClassifyManager extends BaseManager
 			return; // Not ready, so we cannot proceed
 		}
 		
-		
-		String categoryid	 = getMediaArchive().getCatalogSettingValue("llmmetadatastartcategory");
+		String categoryid = getMediaArchive().getCatalogSettingValue("llmmetadatastartcategory");
 		
 		if (categoryid == null)
 	    {
 	        categoryid = "index";
 	    }
-		
 		
 		//Refine this to use a hit tracker?
 		HitTracker assets = getMediaArchive().query("asset").exact("previewstatus", "2").exact("category", categoryid).exact("taggedbyllm",false).exact("llmerror",false).search();
