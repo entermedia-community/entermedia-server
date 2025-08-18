@@ -362,14 +362,12 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 		Collection tosave = new ArrayList();
 
 		HitTracker existingassets = getMediaArchive().getAssetSearcher().query().orgroup("embeddedid", inOnepage.keySet()).search();
-		
-		log.info(existingassets);
-		
+			
 		for (Iterator iterator = existingassets.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
 			Asset existing = (Asset) getMediaArchive().getAssetSearcher().loadData(data);
-			log.info("Existing asset " + existing.getName() + " with embeddedid " + existing.get("embeddedid"));
+			//log.info("Existing asset " + existing.getName() + " with embeddedid " + existing.get("embeddedid"));
 			inOnepage.remove(existing.get("embeddedid"));
 			
 			//Re-assign Categories
