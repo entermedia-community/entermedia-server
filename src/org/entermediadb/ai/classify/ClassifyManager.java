@@ -66,59 +66,79 @@ public class ClassifyManager extends BaseManager
 		
 		QueryBuilder query = getMediaArchive().getSearcher("modulesearch").query();
 		query.exact("semanticindexed", false);
-		query.exists("semantictopics");
+		query.missing("semantictopics");
 		query.put("searchtypes", ids);
 		
-		String startdate = getMediaArchive().getCatalogSettingValue("ai_metadata_startdate");
-		
-		DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-		
-		if (startdate == null || startdate.isEmpty())
-		{
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DAY_OF_YEAR, -30);
-			Date thirtyDaysAgo = cal.getTime();
-			
-			startdate = format.format(thirtyDaysAgo);
-		}
-		
-		Date date = format.parse(startdate);			
-		query.after("entity_date", date);
+//		String startdate = getMediaArchive().getCatalogSettingValue("ai_metadata_startdate");
+//		
+//		DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+//		
+//		if (startdate == null || startdate.isEmpty())
+//		{
+//			Calendar cal = Calendar.getInstance();
+//			cal.add(Calendar.DAY_OF_YEAR, -30);
+//			Date thirtyDaysAgo = cal.getTime();
+//			
+//			startdate = format.format(thirtyDaysAgo);
+//		}
+//		
+//		Date date = format.parse(startdate);			
+//		query.after("entity_date", date);
 		
 		HitTracker hits = query.search();
 		hits.enableBulkOperations();
 		
-		Collection<Data> toSave = new ArrayList();
-		
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
-			Data hit = (Data) iterator.next();
+		for(int i=0;i < hits.getTotalPages();i++)
+		{
+			hits.setPage(i+1);
 			
-			try {
-				long startTime = System.currentTimeMillis();
-				inLog.info("Analyzing entity Id: " + hit.getId() + " " + hit.getName());
-				if(hit.getValue("semantictopics") == null || hit.getValues("semantictopics").isEmpty())
+			Collection<Data> entities = hits.getPageOfHits();
+			
+			Map<String, List<Data>> entitiestoprocess = new HashMap();
+			
+			for (Iterator iterator = entities.iterator(); iterator.hasNext();) {
+				Data entity = (Data) iterator.next();
+				String moduleid = entity.get("entitysourcetype");
+				if( moduleid == null) 
 				{
-					LlmConnection llmconnection = getMediaArchive().getLlmConnection(models.get("semantic"));
-					Data primaryAsset = getMediaArchive().getAsset(hit.get("primarymedia"));
-					if(primaryAsset == null)
+					continue;
+				}; 
+				
+				List<Data> bytype = entitiestoprocess.get(moduleid);
+				if( bytype == null)
+				{
+					bytype = new ArrayList<Data>();
+					entitiestoprocess.put(moduleid, bytype);
+				}
+				bytype.add(entity);
+				try {
+					long startTime = System.currentTimeMillis();
+					inLog.info("Analyzing entity Id: " + entity.getId() + " " + entity.getName());
+					if(entity.getValue("semantictopics") == null || entity.getValues("semantictopics").isEmpty())
 					{
-						primaryAsset = getMediaArchive().getAsset(hit.get("primaryimage"));
-						inLog.info("No primary asset for entity: " + hit.getId() + " " + hit.getName());
-						continue;
+						LlmConnection llmconnection = getMediaArchive().getLlmConnection(models.get("semantic"));
+						Data primaryAsset = getMediaArchive().getAsset(entity.get("primarymedia"));
+						if(primaryAsset == null)
+						{
+							primaryAsset = getMediaArchive().getAsset(entity.get("primaryimage"));
+						}
+						processOneEntity(llmconnection, models, entity, primaryAsset);
 					}
-					processOneEntity(llmconnection, models, hit, primaryAsset);
-					toSave.add(hit);
+					long duration = (System.currentTimeMillis() - startTime) / 1000L;
+					inLog.info("Took "+duration +"s to process entity: " + entity.getId() + " " + entity.getName());
+					
+				} catch (Exception e) {
+					inLog.error("LLM Error for entity: " + entity.getId() + " " + entity.getName(), e);
+					// TODO: handle exception
 				}
 				
-			} catch (Exception e) {
-				// TODO: handle exception
 			}
-			
-		}
-		if( !toSave.isEmpty())
-		{
-			getMediaArchive().getSearcher("modulesearch").saveAllData(toSave, null);
-			inLog.info("Saved: " + toSave.size() + " entities ");
+			for (Iterator iterator = entitiestoprocess.keySet().iterator(); iterator.hasNext();)
+			{
+				String moduleid = (String) iterator.next();
+				List<Data> tosave = entitiestoprocess.get(moduleid);
+				getMediaArchive().saveData(moduleid,tosave);
+			}
 		}
 		
 	}	
@@ -523,12 +543,12 @@ public class ClassifyManager extends BaseManager
 			}
 		}
 		
-		Collection<String> semantic_topics = getSemanticTopics(null, fieldIdsToCheck, models.get("semantic"), fieldsdata);
+		Collection<String> semantic_topics = getSemanticTopics(new HashMap(), fieldIdsToCheck, models.get("semantic"), fieldsdata);
 		if(semantic_topics == null || semantic_topics.isEmpty())
 		{
 			if(inPrimaryAsset != null)
 			{
-				Collection assetsemantictopics = inPrimaryAsset.getValues("semantictopics");
+				Collection<String> assetsemantictopics = inPrimaryAsset.getValues("semantictopics");
 				if(assetsemantictopics != null && !assetsemantictopics.isEmpty())
 				{
 					inEntity.setValue("semantictopics", assetsemantictopics);
