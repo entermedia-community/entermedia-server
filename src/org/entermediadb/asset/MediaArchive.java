@@ -3294,20 +3294,20 @@ public class MediaArchive implements CatalogEnabled
 
 	public UserProfileManager getProfileManager()
 	{
-		UserProfileManager manager = (UserProfileManager)getBean("userProfileManager");
+		UserProfileManager manager = (UserProfileManager) getBean("userProfileManager");
 		return manager;
 	}
 
 	public FaceProfileManager getFaceProfileManager()
 	{
-		FaceProfileManager manager = (FaceProfileManager)getBean("faceProfileManager");
+		FaceProfileManager manager = (FaceProfileManager) getBean("faceProfileManager");
 		return manager;
 	}
 
 	public LlmConnection getLlmConnection(String inModel)
 	{
 		
-		Data modelinfo = query("llmmodel").exact("modelid",inModel).searchOne();
+		Data modelinfo = query("llmmodel").exact("modelid", inModel).searchOne();
 		if( modelinfo == null)
 		{
 			throw new OpenEditException("Could not find model " + inModel);

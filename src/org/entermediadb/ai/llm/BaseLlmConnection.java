@@ -7,9 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.llm.openai.OpenAiConnection;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.events.PathEventManager;
 import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONObject;
@@ -20,14 +18,12 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.page.Page;
-import org.openedit.page.PageRequestKeys;
 import org.openedit.page.PageStreamer;
 import org.openedit.page.manage.PageManager;
 import org.openedit.servlet.OpenEditEngine;
 import org.openedit.users.User;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.RequestUtils;
-import org.openedit.util.URLUtilities;
 
 public abstract class BaseLlmConnection implements LlmConnection {
 	private static Log log = LogFactory.getLog(LlmConnection.class);
