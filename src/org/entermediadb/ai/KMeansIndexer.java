@@ -365,6 +365,11 @@ public class KMeansIndexer implements CatalogEnabled {
 			return;
 		}
 		
+		if(inRecord.getValue(getFieldSaveVector()) == null)
+		{
+			return; //Manually added face
+		}
+		
 		List<KMeansCloseCluster> closestclusters = (List<KMeansCloseCluster>)new ArrayList();
 	
 		for (MultiValued cluster : getClusters())
@@ -411,7 +416,7 @@ public class KMeansIndexer implements CatalogEnabled {
 		//if I cant find any centroids within .9 then be my own so that we dont break the rule
 		if( centroids.isEmpty() )
 		{
-			getClusters().add(inRecord);
+			
 			inRecord.setValue("iscentroid",true);
 			
 			//Its empty so add myself
@@ -423,6 +428,8 @@ public class KMeansIndexer implements CatalogEnabled {
 			
 			log.info("Bad: No centroids within " + settings.maxdistancetocentroid + " across " +  getClusters().size() + " centroids");
 			getMediaArchive().saveData(getSearchType(),inRecord);
+			
+			getClusters().add(inRecord);
 		}
 		else
 		{
@@ -514,8 +521,16 @@ public class KMeansIndexer implements CatalogEnabled {
 		{
 			throw new OpenEditException("Not enought clusters. Run reindexfaces event");
 		}
+		
 		//inSearch.setValue("iscentroid",false);
 		Collection<MultiValued> matches = null;
+		
+		if(inSearch.getValue(getFieldSaveVector()) == null)
+		{
+			Collection<MultiValued> manulaface = new ArrayList();
+			manulaface.add(inSearch);
+			return manulaface; //Manually added face
+		}
 		
 		Lock lock = getMediaArchive().lock(inSearch.getId(), "KMeansSearch");
 		long start = System.currentTimeMillis();
@@ -524,12 +539,7 @@ public class KMeansIndexer implements CatalogEnabled {
 			Collection nearbycentroidids = inSearch.getValues("nearbycentroidids");
 			if( nearbycentroidids == null || nearbycentroidids.isEmpty() )
 			{
-				if(inSearch.getValue(getFieldSaveVector()) == null)
-				{
-					Collection<MultiValued> manulaface = new ArrayList();
-					manulaface.add(inSearch);
-					return manulaface; //Manually added face
-				}
+				
 				throw new OpenEditException(inSearch + " Has no centroids. reindexfaces");
 			}
 			HitTracker tracker = getMediaArchive().query(getSearchType()).

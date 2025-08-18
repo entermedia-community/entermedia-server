@@ -3036,7 +3036,12 @@ public class MediaArchive implements CatalogEnabled
 
 	public void saveData(String inSearcher, Data inData)
 	{
-		Data existing = (Data)getCacheManager().get("data" + inSearcher,inData.getId());
+		Data existing = null;
+		if (inData.getId() != null)
+		{
+			existing = (Data)getCacheManager().get("data" + inSearcher,inData.getId());
+		}
+		
 		//getCacheManager().clear("searcher" + inSearcher); //Why?
 		getSearcher(inSearcher).saveData(inData);
 		if( existing != null)

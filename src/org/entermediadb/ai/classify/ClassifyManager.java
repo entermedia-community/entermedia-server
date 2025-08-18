@@ -195,7 +195,7 @@ public class ClassifyManager extends BaseManager
 			return;
 		}
 
-		inLog.info("AI manager selected: Model: "+ models + " - Adding metadata to: " + assets.size() + " assets in category: " + categoryid);
+		inLog.info("AI manager selected: Model: "+ models + " - Adding metadata to: " + assets.size() + " assets in category: " + categoryid + " After: " + startdate);
 		
 		assets.enableBulkOperations();
 		processAssets(inLog, llmconnection, models, assets);
@@ -222,8 +222,8 @@ public class ClassifyManager extends BaseManager
 				continue;
 			}
 
-			tosave.add(asset);
-			count++;
+			
+			
 			
 			try{
 				long startTime = System.currentTimeMillis();
@@ -236,13 +236,14 @@ public class ClassifyManager extends BaseManager
 					continue;
 				}
 				tosave.add(asset);
+				count++;
 				//getMediaArchive().saveAsset(asset);
 
 				long duration = (System.currentTimeMillis() - startTime) / 1000L;
 				inLog.info("Took "+duration +"s");
 				
-				if( tosave.size() == 25)	{
-					getMediaArchive().saveAssets(tosave);
+				if( tosave.size() >= 10)	{
+					getMediaArchive	().saveAssets(tosave);
 					//searcher.saveAllData(tosave, null);
 					inLog.info("Saved: " + tosave.size() + " assets ");
 					tosave.clear();
@@ -251,7 +252,7 @@ public class ClassifyManager extends BaseManager
 			catch(Exception e){
 				inLog.error("LLM Error", e);
 				asset.setValue("llmerror", true);
-				getMediaArchive().saveAsset(asset);
+				tosave.add(asset);
 				continue;
 			}	
 		}
@@ -311,6 +312,10 @@ public class ClassifyManager extends BaseManager
 					if (arguments != null) {
 
 						Map metadata =  (Map) arguments.get("metadata");
+						if (metadata == null || metadata.isEmpty())
+						{
+							return false; 
+						}
 						Map datachanges = new HashMap();
 						for (Iterator iterator2 = metadata.keySet().iterator(); iterator2.hasNext();)
 						{
