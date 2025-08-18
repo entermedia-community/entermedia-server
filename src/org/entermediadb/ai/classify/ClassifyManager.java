@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.pdfbox.debugger.ui.textsearcher.Searcher;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
@@ -117,12 +118,16 @@ public class ClassifyManager extends BaseManager
 					if(entity.getValue("semantictopics") == null || entity.getValues("semantictopics").isEmpty())
 					{
 						LlmConnection llmconnection = getMediaArchive().getLlmConnection(models.get("semantic"));
-						Data primaryAsset = getMediaArchive().getAsset(entity.get("primarymedia"));
+						String primaryimage = entity.get("primarymedia");
+						Data primaryAsset = getMediaArchive().getAsset(primaryimage);
 						if(primaryAsset == null)
 						{
-							primaryAsset = getMediaArchive().getAsset(entity.get("primaryimage"));
+							primaryimage = entity.get("primaryimage");
+							primaryAsset = getMediaArchive().getAsset(primaryimage);
 						}
-						processOneEntity(llmconnection, models, entity, primaryAsset);
+						// GET DETAILS
+						Collection detailsfields = getMediaArchive().getSearcher(moduleid).getDetailsForView(moduleid+"general");
+						processOneEntity(llmconnection, models, entity, primaryAsset, detailsfields);
 					}
 					long duration = (System.currentTimeMillis() - startTime) / 1000L;
 					inLog.info("Took "+duration +"s to process entity: " + entity.getId() + " " + entity.getName());
@@ -354,9 +359,20 @@ public class ClassifyManager extends BaseManager
 				params.put("asset", asset);
 				params.put("aifields", aifields);
 
-				Collection<String> fieldIdsToCheck = Arrays.asList("keywords", "longcaption", "assettitle", "headline", "alternatetext", "fulltext");
+				Collection<String> fieldIds = Arrays.asList("keywords", "longcaption", "assettitle", "headline", "alternatetext", "fulltext");
+				
+				Collection<PropertyDetail> assetDetails = getMediaArchive().getAssetPropertyDetails();
+				Collection<PropertyDetail> fieldsToCheck = new ArrayList<>();
+				for (Iterator iterator = assetDetails.iterator(); iterator.hasNext();) {
+					PropertyDetail detail = (PropertyDetail) iterator.next();
+					if (fieldIds.contains(detail.getId()))
+					{
+						fieldsToCheck.add(detail);
+					}
+					
+				}
 
-				Collection<String> semantic_topics = getSemanticTopics(params, fieldIdsToCheck, models.get("semantic"), asset);
+				Collection<String> semantic_topics = getSemanticTopics(params, fieldsToCheck, models.get("semantic"), asset);
 				if(semantic_topics != null && !semantic_topics.isEmpty())
 				{
 					asset.setValue("semantictopics", semantic_topics);
@@ -396,17 +412,34 @@ public class ClassifyManager extends BaseManager
 		
 	}
 
-	public Collection<String> getSemanticTopics(Map params, Collection inFieldToCheck, String inModel, Data inData) throws Exception
+	public Collection<String> getSemanticTopics(Map params, Collection<PropertyDetail> inFieldToCheck, String inModel, Data inData) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
 		Collection<HashMap> fields = new ArrayList<>();
 		
-		for (Iterator<String> iter = inFieldToCheck.iterator(); iter.hasNext();)
+		for (Iterator<PropertyDetail> iter = inFieldToCheck.iterator(); iter.hasNext();)
 		{
-			String fieldId = (String) iter.next();
+			PropertyDetail detail = (PropertyDetail) iter.next();
+			String fieldId = detail.getId();
 			if (fieldId != null)
 			{
+				String dataType = detail.getDataType();
+				if
+					(
+						fieldId.startsWith("semantic") ||
+						fieldId.equals("keywordsai") || // included in keywords
+//						!fieldId.equals("searchcategory") ||
+						(dataType != null && !dataType.equals("list")) ||
+						fieldId.equals("primaryimage") || 
+						fieldId.equals("primarymedia") || 
+						fieldId.equals("entity_date") ||
+						fieldId.equals("primaryaudio")
+					)
+				{
+					continue;
+				}
+
 				Object valueObj = inData.getValue(fieldId);
 				if (valueObj == null)
 				{
@@ -435,9 +468,9 @@ public class ClassifyManager extends BaseManager
 					log.info("Skipping empty field: " + fieldId);
 					continue;
 				}
-				String name = fieldId;
+				String name = detail.getName();
 				
-				if(name.equals("keywords"))
+				if(fieldId.equals("keywords"))
 				{
 					name = "Keywords";
 					Collection<String> aikeywords = inData.getValues("keywordsai");
@@ -447,25 +480,15 @@ public class ClassifyManager extends BaseManager
 						value = value.isEmpty() ? extraKeys : value + ", " + extraKeys;
 					}
 				}
-				else if(name.equals("longcaption"))
+//				else if(fieldId.equals("searchcategory"))
+//				{
+//					name = "Category";
+//					Object test = inData.getValues("searchcategory");
+////					log.info(typ);
+//				}
+				else if(fieldId.equals("fulltext"))
 				{
-					name = "Description";
-				}
-				else if(name.equals("assettitle") || name.equals("name"))
-				{
-					name = "Title";
-				}
-				else if(name.equals("headline"))
-				{
-					name = "Caption";
-				}
-				else if(name.equals("alternatetext"))
-				{
-					name = "Alt Text";
-				}
-				else if(name.equals("fulltext"))
-				{
-					name = "Contents";
+					name = "Text Contents";
 					value = value.substring(0, 500);
 				}
 
@@ -491,18 +514,18 @@ public class ClassifyManager extends BaseManager
 
 	}
 
-	protected boolean processOneEntity(LlmConnection llmconnection, Map<String, String> models, Data inEntity, Data inPrimaryAsset) throws Exception
+	protected boolean processOneEntity(LlmConnection llmconnection, Map<String, String> models, Data inEntity, Data inPrimaryAsset, Collection detailsfields) throws Exception
 	{
-		Collection<String> entityFieldIdsToCheck = Arrays.asList("keywords", "longcaption", "name");
-		
-		Collection<String> fieldIdsToCheck = new ArrayList();
+		Collection<PropertyDetail> fieldsToCheck = new ArrayList();
 		
 		
 		Data fieldsdata = new BaseData();
 
-		for (Iterator iterator = entityFieldIdsToCheck.iterator(); iterator.hasNext();)
+		for (Iterator iterator = detailsfields.iterator(); iterator.hasNext();)
 		{
-			String fieldId = (String) iterator.next();
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			String fieldId = (String) detail.getId();
+			
 			if(inEntity.getValue(fieldId) == null || inEntity.getValue(fieldId).toString().isEmpty())
 			{
 				if(inPrimaryAsset != null)
@@ -521,12 +544,12 @@ public class ClassifyManager extends BaseManager
 								name = (String) inPrimaryAsset.getValue("assettitle");
 							}
 							fieldsdata.setValue(fieldId, name);
-							fieldIdsToCheck.add(fieldId);
+							fieldsToCheck.add(detail);
 						}
 						else
 						{
 							fieldsdata.setValue(fieldId, inPrimaryAsset.getValue(fieldId));
-							fieldIdsToCheck.add(fieldId);
+							fieldsToCheck.add(detail);
 						}
 					}
 				}
@@ -539,11 +562,11 @@ public class ClassifyManager extends BaseManager
 			else
 			{
 				fieldsdata.setValue(fieldId, inEntity.getValue(fieldId));
-				fieldIdsToCheck.add(fieldId);
+				fieldsToCheck.add(detail);
 			}
 		}
 		
-		Collection<String> semantic_topics = getSemanticTopics(new HashMap(), fieldIdsToCheck, models.get("semantic"), fieldsdata);
+		Collection<String> semantic_topics = getSemanticTopics(new HashMap(), fieldsToCheck, models.get("semantic"), fieldsdata);
 		if(semantic_topics == null || semantic_topics.isEmpty())
 		{
 			if(inPrimaryAsset != null)
