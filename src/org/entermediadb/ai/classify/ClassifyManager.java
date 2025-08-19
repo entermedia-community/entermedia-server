@@ -17,7 +17,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.pdfbox.debugger.ui.textsearcher.Searcher;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
@@ -434,7 +433,6 @@ public class ClassifyManager extends BaseManager
 					(
 						fieldId.startsWith("semantic") ||
 						fieldId.equals("keywordsai") || // included in keywords
-//						!fieldId.equals("searchcategory") ||
 						(dataType != null && !dataType.equals("list")) ||
 						fieldId.equals("primaryimage") || 
 						fieldId.equals("primarymedia") || 
@@ -485,12 +483,21 @@ public class ClassifyManager extends BaseManager
 						value = value.isEmpty() ? extraKeys : value + ", " + extraKeys;
 					}
 				}
-//				else if(fieldId.equals("searchcategory"))
-//				{
-//					name = "Category";
-//					Object test = inData.getValues("searchcategory");
-////					log.info(typ);
-//				}
+				else if(dataType != null && dataType.equals("list"))
+				{
+					Collection<String> values = inData.getValues(fieldId);
+					Collection<String> textValues = new ArrayList<>();
+					for (Iterator iter2 = values.iterator(); iter2.hasNext();) {
+						String val = (String) iter2.next();
+						Data data = archive.getCachedData(detail.getListId(), val);
+						if(data != null)
+						{							
+							String v = data.getName();
+							textValues.add(v);
+						}
+					}
+					value = String.join(", ", textValues);
+				}
 				else if(fieldId.equals("fulltext"))
 				{
 					name = "Text Contents";
