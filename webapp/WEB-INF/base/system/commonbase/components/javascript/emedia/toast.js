@@ -76,7 +76,7 @@ customToast = function (message, options = {}) {
 	var toast = $(
 		`<div class="toastContainer ${
 			positive ? "positive" : "negative"
-		}" data-id="${options.id}" role="alert">
+		}" data-id="${options?.id || ""}" role="alert">
 				${iconHtml}
 				<div class="toastMessage">${message.trim()}</div>
 				${btnText ? `<button class="${btnClass}">${btnText}</button>` : ""}
