@@ -64,6 +64,13 @@ public class ClassifyManager extends BaseManager
 		HitTracker allmodules = getMediaArchive().query("module").exact("semanticenabled", true).search();
 		Collection<String> ids = allmodules.collectValues("id");
 		
+		if(ids.isEmpty())
+		{
+			inLog.info("No modules with semantic enabled found. Please enable semantic indexing for modules.");
+			return;
+		}
+		ids.remove("asset");
+		
 		QueryBuilder query = getMediaArchive().getSearcher("modulesearch").query();
 		query.exact("semanticindexed", false);
 		query.missing("semantictopics");
