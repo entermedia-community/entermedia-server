@@ -1,6 +1,5 @@
 #set($languages = $mediaarchive.query("locale").exact("translatemetadata", true).search() )
-<hr style="opacity: 0.7;" class="mt-3 mb-2">
-<div class="d-flex align-items-end justify-content-end" id="languageaction_${detail.id}">
+<div class="d-flex align-items-end justify-content-end mt-3" id="languageaction_${detail.id}">
   <div class="d-flex flex-column">
     <label for="translate-dropdown-${detail.id}" class="mb-1 small fw-bold">
       [[Select Language]] / [[Create Missing Translations]]:
