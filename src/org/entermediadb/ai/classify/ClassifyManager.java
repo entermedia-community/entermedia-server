@@ -69,21 +69,21 @@ public class ClassifyManager extends BaseManager
 		query.missing("semantictopics");
 		query.put("searchtypes", ids);
 		
-//		String startdate = getMediaArchive().getCatalogSettingValue("ai_metadata_startdate");
-//		
-//		DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-//		
-//		if (startdate == null || startdate.isEmpty())
-//		{
-//			Calendar cal = Calendar.getInstance();
-//			cal.add(Calendar.DAY_OF_YEAR, -30);
-//			Date thirtyDaysAgo = cal.getTime();
-//			
-//			startdate = format.format(thirtyDaysAgo);
-//		}
-//		
-//		Date date = format.parse(startdate);			
-//		query.after("entity_date", date);
+		String startdate = getMediaArchive().getCatalogSettingValue("ai_metadata_startdate");
+		
+		DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+		
+		if (startdate == null || startdate.isEmpty())
+		{
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DAY_OF_YEAR, -30);
+			Date thirtyDaysAgo = cal.getTime();
+			
+			startdate = format.format(thirtyDaysAgo);
+		}
+		
+		Date date = format.parse(startdate);			
+		query.after("entity_date", date);
 		
 		HitTracker hits = query.search();
 		hits.enableBulkOperations();
