@@ -54,7 +54,6 @@ $context.putPageValue("thumbsize", $thumbsize)
 			#set($imagelink = $mediaarchive.asLinkToPreview($hit, "image3000x3000", true)) 
 		#end
 
-		
 		#if($publishing.image_caption_enabled == "true")
 			#set($hitcaptions = $hit.getValue("headline")) 
 			#ifnull($hitcaptions)
