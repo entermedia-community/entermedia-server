@@ -1667,6 +1667,7 @@ public class FinderModule extends BaseMediaModule
 		String entityid = inReq.getRequestParameter("entityid");
 		String publishingid =  inReq.getRequestParameter("publishingid");
 		String moduleid = inReq.findValue("module");
+		String playertype =  inReq.findValue("playertype");
 		Data publishing = null;
 		if (publishingid != null)
 		{
@@ -1674,7 +1675,7 @@ public class FinderModule extends BaseMediaModule
 		}
 		if(publishing == null && entityid != null)
 		{
-			publishing = archive.getSearcher("distributiongallery").query().exact("entityid", entityid).searchOne();
+			publishing = archive.getSearcher("distributiongallery").query().exact("entityid", entityid).exact("distributiontype", playertype).searchOne();
 		}
 		if(publishing == null)
 		{
