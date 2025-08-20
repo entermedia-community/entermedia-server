@@ -42,6 +42,11 @@ $context.putPageValue("detail",$detail)
 	#if($ismulti)
 		#set($label = "[[Add]] #text($pickmodule)")
 	#end 
+	
+	
+	#ifnull($id)
+		#set($id = $asset.id)
+	#end
 	<a href="$pickerurl" 
 		class="emdialog btn btn-secondary"
 		data-dialogid="dialogpicker$!{entity_module}"
