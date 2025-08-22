@@ -3238,6 +3238,7 @@ public class MediaArchive implements CatalogEnabled
 		MetaDataReader reader = (MetaDataReader)getBean("metaDataReader");
 		reader.populateAssets(this,inAssets);
 		//asset.setValue("geo_point",null);
+		
 		for( Asset asset : inAssets)
 		{
 //			ContentItem content = getOriginalContent( asset );
@@ -3246,7 +3247,7 @@ public class MediaArchive implements CatalogEnabled
 		}
 		saveAssets( inAssets );
 		firePathEvent("importing/assetsimported",null,inAssets);
-		log.info("saved 100 metadata readings");
+		//log.info("saved 100 metadata readings");
 
 	}
 	
