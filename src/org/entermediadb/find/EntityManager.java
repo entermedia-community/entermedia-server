@@ -19,7 +19,6 @@ import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.projects.LibraryCollection;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
