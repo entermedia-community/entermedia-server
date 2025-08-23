@@ -14,6 +14,7 @@ import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.ai.semantics.SemanticIndexManager;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
@@ -853,6 +854,8 @@ public class FinderModule extends BaseMediaModule
 		
 		log.info("Searching as:" + inReq.getUser().getName());
 		MediaArchive archive = getMediaArchive(inReq);
+
+		// SemanticIndexManager semanticIndexManager = (SemanticIndexManager) archive.getBean("semanticIndexManager");
 		
 		String plainquery = "";
 		if(!conjunction.equals("inclusive"))
@@ -863,6 +866,9 @@ public class FinderModule extends BaseMediaModule
 		{
 			plainquery = String.join(" ", keywords);
 		}
+		
+		// Map<String, Collection<String>> semanticSearch = semanticIndexManager.searchRelatedEntities(plainquery);
+		// log.info("Semantic Search Results: " + semanticSearch);
 		
 		
 		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",plainquery).hitsPerPage(30);
