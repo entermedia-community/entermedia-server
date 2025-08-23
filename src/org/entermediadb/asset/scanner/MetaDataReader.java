@@ -103,6 +103,21 @@ public class MetaDataReader
 				{
 					log.debug("Got metadata in " + (end - start) + " mili seconds.");
 				}
+				for(Asset asset:inAssets)
+				{
+					//Defaults assettitle to filename if empty
+					if( asset.get("assettitle") == null)
+					{
+						String name = asset.getName();
+						int pos = name.lastIndexOf(".");
+						if( pos > 0)
+						{
+							name = name.substring(0,pos);
+						}
+						asset.setProperty("assettitle", name);
+					}
+				}
+				
 			}
 		}
 		catch (Exception e)
@@ -173,6 +188,19 @@ public class MetaDataReader
 				{
 					log.debug("Got metadata in " + (end - start) + " mili seconds.");
 				}
+				
+				//Defaults assettitle to filename if empty
+				if( inAsset.get("assettitle") == null)
+				{
+					String name = inAsset.getName();
+					int pos = name.lastIndexOf(".");
+					if( pos > 0)
+					{
+						name = name.substring(0,pos);
+					}
+					inAsset.setProperty("assettitle", name);
+				}
+				
 			}
 		}
 		catch (Exception e)
