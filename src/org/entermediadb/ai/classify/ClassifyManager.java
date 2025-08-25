@@ -32,6 +32,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
 
@@ -176,37 +177,34 @@ public class ClassifyManager extends BaseManager
 		QueryBuilder query = getMediaArchive().query("asset").exact("previewstatus", "2").exact("category", categoryid).exact("taggedbyllm",false).exact("llmerror",false);
 		
 		String startdate = getMediaArchive().getCatalogSettingValue("ai_metadata_startdate");
-		
-		DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-		
+		Date date = null;
 		if (startdate == null || startdate.isEmpty())
 		{
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DAY_OF_YEAR, -30);
 			Date thirtyDaysAgo = cal.getTime();
-			
-			startdate = format.format(thirtyDaysAgo);
+			date = DateStorageUtil.getStorageUtil().parseFromObject(thirtyDaysAgo);
 		}
 		
-		Date date = format.parse(startdate);
+		 date = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
 		
 		query.after("assetaddeddate", date);
 		
 		
 		//Refine this to use a hit tracker?
 		HitTracker assets = query.search();
-		if(assets.size() < 1)
+		if(assets.size() > 0)
+		{
+			inLog.info("AI manager selected: Model: "+ models + " - Adding metadata to: " + assets.size() + " assets in category: " + categoryid + " After: " + startdate);
+			assets.enableBulkOperations();
+			processAssets(inLog, llmconnection, models, assets);
+		}
+		else
 		{
 			inLog.info("No assets to tag in category: " + categoryid);
-			return;
 		}
-
-		inLog.info("AI manager selected: Model: "+ models + " - Adding metadata to: " + assets.size() + " assets in category: " + categoryid + " After: " + startdate);
 		
-		assets.enableBulkOperations();
-		processAssets(inLog, llmconnection, models, assets);
 		
-		getMediaArchive().fireSharedMediaEvent("llm/translatefields");
 
 	}
 
