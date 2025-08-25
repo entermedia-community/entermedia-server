@@ -336,14 +336,13 @@ public class TranslationManager implements CatalogEnabled {
 			assets.enableBulkOperations();
 		}
 		
-		
-		
-
 		if(assets.isEmpty())
 		{
 			inLog.info("No asset found for Metadata Translation");
 			return;
 		}
+		
+		log.info("Translating " + assets.size() + "("+ assets.getFriendlyQuery() +") assets to " + targetLangs);
 
 		Collection<String> checkfields = Arrays.asList(
 			"headline",
@@ -419,7 +418,7 @@ public class TranslationManager implements CatalogEnabled {
 				tosave.add(asset);
 				continue;
 			}
-			if( tosave.size() == 1000)	{
+			if( tosave.size() == 25)	{
 				archive.saveAssets(tosave);
 				//searcher.saveAllData(tosave, null);
 				inLog.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
