@@ -79,28 +79,37 @@ public class ClassifyManager extends BaseManager
 		
 		String startdate = getMediaArchive().getCatalogSettingValue("ai_metadata_startdate");
 		
-		DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-		
+		Date date = null;
 		if (startdate == null || startdate.isEmpty())
 		{
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DAY_OF_YEAR, -30);
 			Date thirtyDaysAgo = cal.getTime();
-			
-			startdate = format.format(thirtyDaysAgo);
+			date = DateStorageUtil.getStorageUtil().parseFromObject(thirtyDaysAgo);
 		}
-		
-		Date date = format.parse(startdate);			
+		else {
+			date = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
+		}
 		query.after("entity_date", date);
 		
 		HitTracker hits = query.search();
 		hits.enableBulkOperations();
+		
+		if (hits.size() == 0)
+		{
+			inLog.info("No entities to tag.");
+			return;
+		}
+		
+		log.info("AI adding metadata: " + hits.getFriendlyQuery());
 		
 		for(int i=0;i < hits.getTotalPages();i++)
 		{
 			hits.setPage(i+1);
 			
 			Collection<Data> entities = hits.getPageOfHits();
+			
+			inLog.info("AI adding metadata to: " + entities.size());
 			
 			Map<String, List<Data>> entitiestoprocess = new HashMap();
 			
@@ -109,8 +118,9 @@ public class ClassifyManager extends BaseManager
 				String moduleid = entity.get("entitysourcetype");
 				if( moduleid == null) 
 				{
+					log.info("Skipping entity with no source type: " + entity.getId() + " " + entity.getName());
 					continue;
-				}; 
+				}
 				
 				List<Data> bytype = entitiestoprocess.get(moduleid);
 				if( bytype == null)
@@ -185,8 +195,9 @@ public class ClassifyManager extends BaseManager
 			Date thirtyDaysAgo = cal.getTime();
 			date = DateStorageUtil.getStorageUtil().parseFromObject(thirtyDaysAgo);
 		}
-		
-		 date = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
+		else {
+			date = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
+		}
 		
 		query.after("assetaddeddate", date);
 		
