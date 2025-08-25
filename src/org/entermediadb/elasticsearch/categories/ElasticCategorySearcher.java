@@ -52,7 +52,17 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	
 	public Data createNewData()
 	{
-		return new ElasticCategory(this);
+		
+		String classname = getNewDataName();
+		if (classname == null)
+		{
+			return new ElasticCategory(this);
+		}
+		ElasticCategory cat =  (ElasticCategory) getModuleManager().getBean(getCatalogId(), getNewDataName(), false);
+		cat.setCategorySearcher(this);
+		return cat;
+		
+
 	}
 //	protected Category refreshData(String inId, GetResponse response) 
 //	{
@@ -269,7 +279,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			saveCategoryTree(root,tosave);
 	   		saveAllData(tosave, null);
 			//We are going to create a database tool to import categories.xml
-		}	
+		}
+		
 		return root;
 	}
 	

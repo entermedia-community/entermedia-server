@@ -12,7 +12,10 @@ public class ElasticCategory extends BaseCategory
 	public ElasticCategory(CategorySearcher inSearcher)
 	{
 		super(inSearcher);
-		setIndexId(inSearcher.getIndexId());
+		if(inSearcher != null) 
+		{
+			setIndexId(inSearcher.getIndexId());
+		}
 	}
 	
 	public boolean hasChildren()
