@@ -1,16 +1,17 @@
-package org.entermediadb.ai.chat;
+package org.entermediadb.ai.assistant;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.manager.BaseManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONArray;
@@ -22,7 +23,8 @@ import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
-public class ChatAgentManager extends BaseManager {
+public class AssitantManager extends BaseAiManager
+{
 	public void monitorChannels(ScriptLogger log) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
@@ -44,6 +46,8 @@ public class ChatAgentManager extends BaseManager {
 		
 		Calendar now = DateStorageUtil.getStorageUtil().createCalendar();
 		now.add(Calendar.HOUR_OF_DAY,-1);
+		
+		//TODO: Only process one "open" channel at a time. What ever the last one they clicked on
 		
 		HitTracker allchannels = channels.query().exact("aienabled", true).after("refreshdate",now.getTime()).sort("refreshdateDown").search();
 		//DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
@@ -127,9 +131,6 @@ public class ChatAgentManager extends BaseManager {
 			return;
 		}
 
-		HitTracker recent = chats.query().exact("channel", channel.getId()).sort("dateUp").search();
-		params.put("recent", recent);
-
 		String channeltype = channel.get("channeltype");
 		if (channeltype == null)
 		{
@@ -155,10 +156,17 @@ public class ChatAgentManager extends BaseManager {
 		
 		params.put("message", message);
 
-
-		String chattemplate = "/" + archive.getMediaDbId() + "/gpt/inputs/" + manager.getServerName() + "/" + channeltype + ".html";
+///$mediaarchive.getMediaDbId()/ai/assistant/instructions/context
+		String chattemplate = "/" + archive.getMediaDbId() + "/ai/assistant/instructions/current.json";
+		
+		params.put("assitant",this);
+		
+		AiCurrentStatus current = loadCurrentStatus(channel); //TODO: Update this often
+		params.put("currentstatus",current);
+		
 		LlmResponse response = manager.runPageAsInput(params, model, chattemplate);
-
+		//current update it?
+		
 		if (response.isToolCall())
 		{
 			// Function call detected
@@ -223,4 +231,29 @@ public class ChatAgentManager extends BaseManager {
 		
 	}
 
+	protected AiCurrentStatus loadCurrentStatus(Data inChannel)
+	{
+		AiCurrentStatus status = (AiCurrentStatus)getMediaArchive().getCacheManager().get("aistatus", inChannel.getId() );
+		if( status == null)
+		{
+			status = new AiCurrentStatus();
+			status.setMediaArchive(getMediaArchive());
+			status.setAssistantManager(this);
+			getMediaArchive().getCacheManager().put("aistatus", inChannel.getId(),status );
+		}
+		return status;
+	}
+
+	public String getAiFolder()
+	{
+		return "assistant";
+	}
+	
+	public Collection getFunctions()
+	{
+		Collection hits = getMediaArchive().query("aifunctions").exact("aifolder",getAiFolder()).sort("ordering").cachedSearch();
+		return hits;
+		
+		
+	}
 }
