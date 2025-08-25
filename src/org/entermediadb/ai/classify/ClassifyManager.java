@@ -95,13 +95,15 @@ public class ClassifyManager extends BaseManager
 		HitTracker hits = query.search();
 		hits.enableBulkOperations();
 		
+		log.info("AI entities to tag: " + hits.getFriendlyQuery());
+		
 		if (hits.size() == 0)
 		{
 			inLog.info("No entities to tag.");
 			return;
 		}
 		
-		log.info("AI adding metadata: " + hits.getFriendlyQuery());
+		
 		
 		for(int i=0;i < hits.getTotalPages();i++)
 		{
@@ -212,6 +214,7 @@ public class ClassifyManager extends BaseManager
 		}
 		else
 		{
+			log.info("AI assets to tag: " + assets.getFriendlyQuery());
 			inLog.info("No assets to tag in category: " + categoryid);
 		}
 		
