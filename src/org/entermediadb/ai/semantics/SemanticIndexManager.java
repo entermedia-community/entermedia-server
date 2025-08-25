@@ -121,12 +121,13 @@ public class SemanticIndexManager implements CatalogEnabled
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
 	}
 
-	public void index(Data inData)
+	public void index(MultiValued inData)
 	{
 		List one = new ArrayList();
 		one.add(inData);
 		SemanticInstructions instructions = createSemanticInstructions();
-		index(instructions, one);
+		index(instructions, one, null);
+		getKMeansIndexer().setCentroids(inData);
 	}
 	
 	public SemanticInstructions createSemanticInstructions()
@@ -151,17 +152,24 @@ public class SemanticIndexManager implements CatalogEnabled
 		
 		SemanticInstructions instructions = createSemanticInstructions();
 		int indexed = 0;
+		Collection<MultiValued> createdVectors = null;
 		for(int i=0;i < hits.getTotalPages();i++)
 		{
 			hits.setPage(i+1);
 			long start = System.currentTimeMillis();
 			Collection<MultiValued> onepage = hits.getPageOfHits();
-			indexed = indexed + index(instructions, onepage);;
-			
+			indexed = indexed + index(instructions, onepage, createdVectors);
+			if (createdVectors!= null && createdVectors.size() > 5000)
+			{
+				getKMeansIndexer().setCentroids(inLog, createdVectors);
+				createdVectors.clear();
+			}
 		}
 		inLog.info("Total indexed: " + indexed + " of " + hits.size());
-		
-		getKMeansIndexer().setCentroids(inLog, hits);
+		if (createdVectors!= null)
+		{
+			getKMeansIndexer().setCentroids(inLog, createdVectors);
+		}
 		
 	}
 	
@@ -172,7 +180,7 @@ public class SemanticIndexManager implements CatalogEnabled
 		getKMeansIndexer().reinitClusters(log);
 	}
 	
-	public int index(SemanticInstructions inStructions, Collection<MultiValued> inEntities)  //Page of data
+	public int index(SemanticInstructions inStructions, Collection<MultiValued> inEntities, Collection<MultiValued> createdVectors)  //Page of data
 	{
 		String url = getMediaArchive().getCatalogSettingValue("ai_vectorizer_server");
 		if( url == null)
@@ -221,6 +229,10 @@ public class SemanticIndexManager implements CatalogEnabled
 				log.info(" Saved datas " + tosave.size() + " added:  " + foundsemanticstosave.size());
 				getMediaArchive().saveData(getKMeansIndexer().getSearchType(),foundsemanticstosave);
 				getMediaArchive().saveData(moduleid,tosave);
+				if (createdVectors != null)
+				{
+					createdVectors.addAll(foundsemanticstosave);
+				}
 			}
 			
 		}
