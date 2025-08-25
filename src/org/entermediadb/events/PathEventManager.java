@@ -605,6 +605,16 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		
 		
 	}
+
+	public void loadExtraEvents(String inRoot)
+	{
+		clear();
+		//getPageManager().clearCache();
+		Set duplicates = new HashSet();
+		loadPathEvents(inRoot, duplicates);
+		Collections.sort(getPathEvents());
+		
+	}
 	
 	
 }
