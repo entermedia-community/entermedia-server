@@ -569,17 +569,17 @@ public class ChatModule extends BaseMediaModule
 	public LlmConnection loadManager(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		AssitantManager chatmanager = (AssitantManager)archive.getBean("chatAgentManager");
+		AssitantManager assistantManager = (AssitantManager) archive.getBean("assistantManager");
 
 //		String model = inReq.findValue("aimodel");
 //		if( model == null)
 //		{
 //			model = archive.getCatalogSettingValue("ai_default_chat_model");
 //		}
-		LlmConnection llmconnection = chatmanager.getLlmConnection();//(LlmConnection) archive.getLlmConnection(model);
+		LlmConnection llmconnection = assistantManager.getLlmConnection();//(LlmConnection) archive.getLlmConnection(model);
 		inReq.putPageValue("gpt", llmconnection); //Deprecated
 		inReq.putPageValue("llmconnection", llmconnection);
-		inReq.putPageValue("chatagentmanager", chatmanager);
+		inReq.putPageValue("assistantManager", assistantManager);
 		
 		return llmconnection;
 	}
@@ -588,9 +588,9 @@ public class ChatModule extends BaseMediaModule
 	public void monitorChannels(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		AssitantManager chatmanager = (AssitantManager)archive.getBean("chatAgentManager");
-		ScriptLogger log = (ScriptLogger)inReq.getPageValue("log");
-		chatmanager.monitorChannels(log);
+		AssitantManager assistantManager = (AssitantManager) archive.getBean("assistantManager");
+		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
+		assistantManager.monitorChannels(log);
 	}
 	
 	

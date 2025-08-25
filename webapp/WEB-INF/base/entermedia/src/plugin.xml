@@ -2529,16 +2529,13 @@
 		</property>
 	</bean>
 
-	<bean id="chatAgentManager" class="org.entermediadb.ai.chat.ChatAgentManager"  scope="prototype">
+	<bean id="assistantManager" class="org.entermediadb.ai.assistant.AssitantManager"  scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 		<property name="requestUtils">
 			<ref bean="requestUtils" />
 		</property>
-	</bean>
-
-	<bean id="chatParseModule" class="org.entermediadb.ai.chat.ChatParseModule" scope="prototype">
 	</bean>
 
 	<bean id="velocityRenderUtil" class="org.entermediadb.ai.llm.VelocityRenderUtil">
