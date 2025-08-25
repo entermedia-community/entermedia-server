@@ -135,7 +135,7 @@ public class SemanticIndexManager implements CatalogEnabled
 		return instructions;
 	}
 	
-	public void indexAll(ScriptLogger log)
+	public void indexAll(ScriptLogger inLog)
 	{
 		HitTracker all = getMediaArchive().query("module").exact("semanticenabled", true).search();
 		Collection<String> ids = all.collectValues("id");
@@ -159,7 +159,9 @@ public class SemanticIndexManager implements CatalogEnabled
 			indexed = indexed + index(instructions, onepage);;
 			
 		}
-		log.info("Total indexed: " + indexed + " of " + hits.size());
+		inLog.info("Total indexed: " + indexed + " of " + hits.size());
+		
+		getKMeansIndexer().setCentroids(inLog, hits);
 		
 	}
 	

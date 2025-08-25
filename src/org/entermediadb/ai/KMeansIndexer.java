@@ -151,13 +151,12 @@ public class KMeansIndexer implements CatalogEnabled {
 	{
 		//Reload from db
 		fieldClusters = null;
-
+		double min_distance = getSettings().init_loop_start_distance;
+		
 		if( getClusters().size() < getSettings().kcount )
 		{
 
 			double loop_lower_percentage = 0.97;
-			double min_distance = getSettings().init_loop_start_distance;
-			
 			int toadd = getSettings().kcount - getClusters().size();
 			Collection<MultiValued> existingCentroids = new ArrayList(getClusters());
 			inLog.info("Adding "  + toadd + " random cluster nodes to " + existingCentroids.size() + " with min_distance of " + min_distance );
@@ -190,66 +189,23 @@ public class KMeansIndexer implements CatalogEnabled {
 					}
 				}
 			}
-			
-			fieldClusters = null; //reload
-			if( getClusters().size() < getSettings().kcount )
-			{
-				inLog.info("Problem creating centroids, Data not random enough. Found: " + getClusters().size() + " centoids but wanted: " + getSettings().kcount + " with a min distance of " + min_distance);
-			}
-
 		}
-		
-		Collection tosave = new ArrayList();
-		HitTracker tracker = getMediaArchive().query(getSearchType()).missing("nearbycentroidids").hitsPerPage(500).search();
-		tracker.enableBulkOperations();
-		//Search for all notes not connected
-		
-		int totalsaved = 0;
-		inLog.info("Start Reindexing " +  tracker.size() + " " + getSearchType() + " into " + getClusters().size() + " clusters");
-		long start = System.currentTimeMillis();
-		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+			
+		fieldClusters = null; //reload
+		if( getClusters().size() < getSettings().kcount )
 		{
-			MultiValued hit = (MultiValued) iterator.next();
-			
-			List<Double> vectorA = (List<Double>)hit.getValue(getFieldSaveVector());
-			if( vectorA == null)
-			{
-				//User added node
-				continue;
-			}
-			try
-			{
-//				long end = System.currentTimeMillis();
-				setCentroids(hit); //Set em <-----
-//				start = System.currentTimeMillis();
-//				log.info( "Took " + (start-end) );
-			} catch( IllegalArgumentException ex)
-			{
-				//Bad vectors
-				log.error("Could not save vectors " + ex);
-				continue;
-			}
-			
-			tosave.add(hit);
-			
-			if( tosave.size() == 500)
-			{
-				totalsaved = totalsaved + tosave.size();
-				getMediaArchive().saveData(getSearchType(),tosave);
-				long end = System.currentTimeMillis();
-				double diff = (end - start)/1000D;
-				diff = MathUtils.roundDouble(diff, 2);
-				inLog.info("Added "  + tosave.size() + " assigned nodes in " + diff + " seconds " + totalsaved + " of " + tracker.size() + " into " + getClusters().size() + " clusters");
-				start = System.currentTimeMillis();
-				tosave.clear();
-			}
+			inLog.info("Problem creating centroids, Data not random enough. Found: " + getClusters().size() + " centoids but wanted: " + getSettings().kcount + " with a min distance of " + min_distance);
 		}
-		getMediaArchive().saveData(getSearchType(),tosave);
-		totalsaved = totalsaved + tosave.size();
-		long end = System.currentTimeMillis();
-		double diff = (end - start)/1000D;
-		diff = MathUtils.roundDouble(diff, 2);
-		inLog.info("Complete: "  + totalsaved + " assigned to " + getClusters().size() + " clusters");
+		else 
+		{
+			HitTracker tracker = getMediaArchive().query(getSearchType()).missing("nearbycentroidids").hitsPerPage(500).search();
+			tracker.enableBulkOperations();		
+			setCentroids(inLog, tracker);		
+		}
+
+	
+		
+		
 	}
 
 	protected Collection<MultiValued> createCentroids(ScriptLogger inLog, HitTracker tracker, double mindistance, int toadd, Collection<MultiValued> existingCentroids)
@@ -1000,4 +956,66 @@ public class KMeansIndexer implements CatalogEnabled {
 		fieldCustomSettings = inCustomsettings;
 		
 	}
+	
+
+	public void setCentroids(ScriptLogger inLog, Collection tracker)
+	{
+		if( getClusters().size() < getSettings().kcount )
+		{
+
+			reinitClusters(inLog);
+			return;
+		}
+		
+		Collection tosave = new ArrayList();
+		
+		int totalsaved = 0;
+		inLog.info("Start Reindexing " +  tracker.size() + " " + getSearchType() + " into " + getClusters().size() + " clusters");
+		long start = System.currentTimeMillis();
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		{
+			MultiValued hit = (MultiValued) iterator.next();
+			
+			List<Double> vectorA = (List<Double>)hit.getValue(getFieldSaveVector());
+			if( vectorA == null)
+			{
+				//User added node
+				continue;
+			}
+			try
+			{
+//				long end = System.currentTimeMillis();
+				setCentroids(hit); //Set em <-----
+//				start = System.currentTimeMillis();
+//				log.info( "Took " + (start-end) );
+			} catch( IllegalArgumentException ex)
+			{
+				//Bad vectors
+				log.error("Could not save vectors " + ex);
+				continue;
+			}
+			
+			tosave.add(hit);
+			
+			if( tosave.size() == 500)
+			{
+				totalsaved = totalsaved + tosave.size();
+				getMediaArchive().saveData(getSearchType(),tosave);
+				long end = System.currentTimeMillis();
+				double diff = (end - start)/1000D;
+				diff = MathUtils.roundDouble(diff, 2);
+				inLog.info("Added "  + tosave.size() + " assigned nodes in " + diff + " seconds " + totalsaved + " of " + tracker.size() + " into " + getClusters().size() + " clusters");
+				start = System.currentTimeMillis();
+				tosave.clear();
+			}
+		}
+		getMediaArchive().saveData(getSearchType(),tosave);
+		totalsaved = totalsaved + tosave.size();
+		long end = System.currentTimeMillis();
+		double diff = (end - start)/1000D;
+		diff = MathUtils.roundDouble(diff, 2);
+		inLog.info("Complete: "  + totalsaved + " assigned to " + getClusters().size() + " clusters");
+	}
+	
+	
 }
