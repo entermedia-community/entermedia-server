@@ -144,6 +144,7 @@ public class SemanticIndexManager implements CatalogEnabled
 		query.exact("semanticindexed", false);
 		query.exists("semantictopics");
 		query.put("searchtypes", ids);
+		query.put("searchasset", true);
 		
 		HitTracker hits = query.search();
 		hits.enableBulkOperations();
@@ -191,7 +192,10 @@ public class SemanticIndexManager implements CatalogEnabled
 			MultiValued entity = (MultiValued) iterator.next();
 
 			String moduleid = entity.get("entitysourcetype");
-			if( moduleid == null) { moduleid = "asset"; }; 
+			if( moduleid == null) 
+			{ 
+				moduleid = "asset"; 
+			}; 
 			
 			List bytype = entitiestoprocess.get(moduleid);
 			if( bytype == null)
