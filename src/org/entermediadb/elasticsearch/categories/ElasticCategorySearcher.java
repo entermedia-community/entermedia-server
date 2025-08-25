@@ -54,7 +54,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	{
 		
 		String classname = getNewDataName();
-		if (classname == null)
+		//elastcCategory has no empty contructor 
+		if (classname == null || classname.equals("elasticCategory"))
 		{
 			return new ElasticCategory(this);
 		}
