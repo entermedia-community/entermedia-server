@@ -1,6 +1,7 @@
 package org.entermediadb.ai.assistant;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
@@ -39,9 +40,7 @@ public class AiCurrentStatus
 	}
 	public Collection<Data> getMessageHistory()
 	{
-		HitTracker recent = getMediaArchive().query("chatterbox").exact("channel", getChannel().getId()).sort("dateUp").search();
-		setMessageHistory(recent);
-
+		fieldMessageHistory = getMediaArchive().query("chatterbox").exact("channel", getChannel().getId()).sort("dateUp").search();
 		return fieldMessageHistory;
 	}
 	public void setMessageHistory(Collection<Data> inMessageHistory)
