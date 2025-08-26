@@ -156,14 +156,16 @@ public class AssitantManager extends BaseAiManager
 		
 		params.put("message", message);
 
-///$mediaarchive.getMediaDbId()/ai/assistant/instructions/context
+		params.put("assitant", this);
+		
+		AiCurrentStatus currentstatus = loadCurrentStatus(channel); //TODO: Update this often
+		currentstatus.setChannel(channel);
+		params.put("currentstatus",currentstatus);
+		
+		Collection messages = currentstatus.getMessageHistory();
+		
 		String chattemplate = "/" + archive.getMediaDbId() + "/ai/assistant/instructions/current.json";
-		
-		params.put("assitant",this);
-		
-		AiCurrentStatus current = loadCurrentStatus(channel); //TODO: Update this often
-		params.put("currentstatus",current);
-		
+		String test = manager.loadInputFromTemplate(chattemplate, params);
 		LlmResponse response = manager.runPageAsInput(params, model, chattemplate);
 		//current update it?
 		
@@ -251,7 +253,7 @@ public class AssitantManager extends BaseAiManager
 	
 	public Collection getFunctions()
 	{
-		Collection hits = getMediaArchive().query("aifunctions").exact("aifolder",getAiFolder()).sort("ordering").cachedSearch();
+		Collection hits = getMediaArchive().query("aifunctions").exact("aifolder", getAiFolder()).sort("ordering").cachedSearch();
 		return hits;
 		
 		

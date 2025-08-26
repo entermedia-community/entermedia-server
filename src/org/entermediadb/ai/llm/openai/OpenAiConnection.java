@@ -32,7 +32,6 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	{
 
 		params.put("model", inModel);
-		params.put("gpt", this);
 		params.put("mediaarchive", getMediaArchive());
 
 		String input = loadInputFromTemplate(inTemplate, params);

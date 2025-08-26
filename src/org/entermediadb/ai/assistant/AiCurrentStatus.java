@@ -40,7 +40,7 @@ public class AiCurrentStatus
 	public Collection<Data> getMessageHistory()
 	{
 		HitTracker recent = getMediaArchive().query("chatterbox").exact("channel", getChannel().getId()).sort("dateUp").search();
-		//params.put("recent", recent);
+		setMessageHistory(recent);
 
 		return fieldMessageHistory;
 	}
