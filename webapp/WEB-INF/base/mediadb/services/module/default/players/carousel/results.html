@@ -2,7 +2,7 @@
 #set($imagesize = "image3000x3000")
 
 #if($hits)
-	<div id="__carousel" class="splide" role="group">
+	<div id="__carousel" class="splide" role="group" data-autoplay="$publishing.autoplay_enabled">
 		<div class="splide__arrows">
 			<button class="splide__arrow splide__arrow--prev">‹</button>
 			<button class="splide__arrow splide__arrow--next">›</button>
