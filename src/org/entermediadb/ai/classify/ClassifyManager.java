@@ -240,9 +240,6 @@ public class ClassifyManager extends BaseManager
 				continue;
 			}
 
-			
-			
-			
 			try{
 				long startTime = System.currentTimeMillis();
 
@@ -285,14 +282,14 @@ public class ClassifyManager extends BaseManager
 	{
 		String mediatype = getMediaArchive().getMediaRenderType(asset);
 		String base64EncodedString = null;
-		if(mediatype == "image" || mediatype == "video")
+		if(mediatype.equals("image") || mediatype.equals("video"))
 		{			
 			String imagesize = null;
-			if (mediatype == "image")
+			if (mediatype.equals("image"))
 			{
 				imagesize = "image3000x3000";
 			}
-			else if (mediatype == "video")
+			else if ( mediatype.equals("video"))
 			{
 				imagesize = "image1900x1080";
 			}
@@ -420,7 +417,7 @@ public class ClassifyManager extends BaseManager
 		}
 
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		
+		long starttime = System.currentTimeMillis();
 		ArrayList<String> args = new ArrayList<String>();
 		args.add(item.getAbsolutePath());
 		args.add("-resize");
@@ -431,6 +428,8 @@ public class ClassifyManager extends BaseManager
 		ExecResult result = exec.runExecStream("convert", args, output, 5000);
 		byte[] bytes = output.toByteArray();  // Read InputStream as bytes
 		String base64EncodedString = Base64.getEncoder().encodeToString(bytes); // Encode to Base64
+		long duration = (System.currentTimeMillis() - starttime) ;
+		log.info("Loaded and encoded " + inAsset.getName() + " in "+duration+"ms");
 		return base64EncodedString;
 		
 	}
