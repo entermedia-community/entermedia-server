@@ -148,7 +148,7 @@ public class TranslationManager implements CatalogEnabled {
 		
 		return languageMap;
 	}
-	public Map<String, LanguageMap> translateFields(Map fields, String sourceLang, Collection<String> targetLangs)
+	public Map<String, LanguageMap> translateFields(Map<String, LanguageMap> fields, String sourceLang, Collection<String> targetLangs)
 	{
 		ArrayList<String> fieldNames = new ArrayList();
 		ArrayList<String> fieldValues = new ArrayList();
@@ -363,7 +363,7 @@ public class TranslationManager implements CatalogEnabled {
 			try{
 				long startTime = System.currentTimeMillis();
 
-				Map fieldsmap = new HashMap();
+				Map<String, LanguageMap> fieldsmap = new HashMap();
 
 				for (Iterator iterator2 = checkfields.iterator(); iterator2.hasNext();)
 				{
@@ -372,13 +372,12 @@ public class TranslationManager implements CatalogEnabled {
 					if (detail != null && detail.isMultiLanguage())
 					{
 						
-						Object value = asset.getValue(inKey);
-						if(value instanceof String) {
-							LanguageMap lm = new LanguageMap();
-							lm.setText("en", (String) value);
-							value = lm;
+						LanguageMap value = asset.getLanguageMap(inKey);
+						if (value != null && value.getText("en") != null && !value.getText("en").isEmpty())
+						{
+							fieldsmap.put(inKey, value);
 						}
-						fieldsmap.put(inKey, value);
+						
 					}
 				} 
 
@@ -390,26 +389,17 @@ public class TranslationManager implements CatalogEnabled {
 					{
 						String key = (String) iterator2.next();
 						LanguageMap map = results.get(key);
-						Object value = asset.getValue(key);
-						if (value instanceof LanguageMap) 
-						{
-							LanguageMap existing = (LanguageMap) value;
-							existing.putAll(map);
-							map = existing;
-						}
-						else {
-							map.setText("en", (String) value);
-						}
-						 
-						asset.setValue(key, map);
+						LanguageMap value = asset.getLanguageMap(key);
+						value.putAll(map);
+						asset.setValue(key, value);
 					}
 					inLog.info("Found translation for "+ asset.getId() + ", " + asset.getName());
 				}
 				
 				asset.setValue("translatesuccess", true);
 				tosave.add(asset);
-				long duration = (System.currentTimeMillis() - startTime) / 1000L;
-				inLog.info("Asset translation took: "+duration +"s");
+				long duration = (System.currentTimeMillis() - startTime);
+				inLog.info("Asset translation took: "+duration +"ms");
 				
 			} 
 			catch(Exception e){
