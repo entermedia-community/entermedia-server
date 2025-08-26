@@ -26,8 +26,6 @@ public interface LlmConnection {
     public LlmResponse runPageAsInput(Map inParams, String inModel, String inChattemplate);
 
     public String getApiEndpoint();
-
-	public void callChatFunction(Data inFunctionMessage, String inFunctionName, Map inParams) throws Exception;
 	
 	public Collection<String> callStructuredOutputList(String inStructureName,String inModel, Collection inFields, Map inParams) throws Exception;
 }

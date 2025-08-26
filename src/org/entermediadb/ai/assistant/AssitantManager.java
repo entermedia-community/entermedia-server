@@ -16,6 +16,7 @@ import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -115,7 +116,7 @@ public class AssitantManager extends BaseAiManager
 		{
 			model = "gpt-4o"; // Default fallback
 		}
-		LlmConnection manager = archive.getLlmConnection(model);
+		LlmConnection llmconnection = archive.getLlmConnection(model);
 
 		params.put("model", model);
 
@@ -125,7 +126,7 @@ public class AssitantManager extends BaseAiManager
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 		Searcher chats = archive.getSearcher("chatterbox");
 		
-		if (!manager.isReady()) 
+		if (!llmconnection.isReady()) 
 		{
 			log.error("LLM Manager is not ready: " + model + ". Cannot process channel: " + channel);
 			return;
@@ -156,17 +157,15 @@ public class AssitantManager extends BaseAiManager
 		
 		params.put("message", message);
 
-		params.put("assitant", this);
-		
-		AiCurrentStatus currentstatus = loadCurrentStatus(channel); //TODO: Update this often
-		currentstatus.setChannel(channel);
-		params.put("currentstatus",currentstatus);
-		
-		Collection messages = currentstatus.getMessageHistory();
-		
+///$mediaarchive.getMediaDbId()/ai/assistant/instructions/context
 		String chattemplate = "/" + archive.getMediaDbId() + "/ai/assistant/instructions/current.json";
-		String test = manager.loadInputFromTemplate(chattemplate, params);
-		LlmResponse response = manager.runPageAsInput(params, model, chattemplate);
+		
+		params.put("assitant",this);
+		
+		AiCurrentStatus current = loadCurrentStatus(channel); //TODO: Update this often
+		params.put("currentstatus",current);
+		
+		LlmResponse response = llmconnection.runPageAsInput(params, model, chattemplate);
 		//current update it?
 		
 		if (response.isToolCall())
@@ -195,11 +194,9 @@ public class AssitantManager extends BaseAiManager
 			
 			chats.saveData(functionMessage);
 			
-			LlmConnection connection = archive.getLlmConnection(model);
-		
-			connection.callChatFunction(functionMessage, functionName, params);
+			execChatFunction(llmconnection, functionMessage, functionName, params);
 			
-			archive.saveData("chatterbox", functionMessage);
+			
 			archive.fireSharedMediaEvent("chatterbox/monitorchats");
 			
 			//archive.fireDataEvent(inReq.getUser(), "llm", "callfunction", functionMessage);
@@ -232,6 +229,61 @@ public class AssitantManager extends BaseAiManager
 //		archive.saveData("channel",channel);
 		
 	}
+	
+	public void execChatFunction(LlmConnection llmconnection, Data messageToUpdate, String functionName, Map params) throws Exception
+	{
+
+		MediaArchive archive = getMediaArchive();
+
+		//get the channel
+		Data channel = archive.getCachedData("channel", messageToUpdate.get("channel"));
+		params.put("channel", channel);
+		
+		
+		ChatServer server = (ChatServer) archive.getBean("chatServer");
+
+		//String function = messageToUpdate.get("function");
+			//params.putPageValue("args", args);
+		String response;
+		
+		try
+		{
+			
+			params.put("data", messageToUpdate);
+
+			String args = (String) messageToUpdate.get("arguments");
+			JSONObject arguments = (JSONObject) new JSONParser().parse(args);
+			params.put("arguments", arguments);
+			
+			response = llmconnection.loadInputFromTemplate("/" + archive.getMediaDbId() +"/ai/"+ getAiFolder() + "/responses/" + functionName + ".html", params);
+			//log.info("Function " + functionName + " returned : " + response);
+
+			messageToUpdate.setValue("functionresponse", response);
+			messageToUpdate.setValue("message", response);
+			
+			Searcher chats = archive.getSearcher("chatterbox");
+			chats.saveData(messageToUpdate);
+			
+			JSONObject functionMessageUpdate = new JSONObject();
+			functionMessageUpdate.put("messagetype", "airesponse");
+			functionMessageUpdate.put("catalogid", archive.getCatalogId());
+			functionMessageUpdate.put("user", "agent");
+			functionMessageUpdate.put("channel", messageToUpdate.get("channel"));
+			functionMessageUpdate.put("messageid", messageToUpdate.getId());
+			functionMessageUpdate.put("message", response);
+
+			server.broadcastMessage(functionMessageUpdate);
+			
+		}
+		catch (Exception e)
+		{
+			messageToUpdate.setValue("functionresponse", e.toString());
+			messageToUpdate.setValue("processingcomplete", true);
+			archive.saveData("chatterbox", messageToUpdate);
+		}
+		
+
+	}
 
 	protected AiCurrentStatus loadCurrentStatus(Data inChannel)
 	{
@@ -239,6 +291,7 @@ public class AssitantManager extends BaseAiManager
 		if( status == null)
 		{
 			status = new AiCurrentStatus();
+			status.setChannel(inChannel);
 			status.setMediaArchive(getMediaArchive());
 			status.setAssistantManager(this);
 			getMediaArchive().getCacheManager().put("aistatus", inChannel.getId(),status );
@@ -253,7 +306,7 @@ public class AssitantManager extends BaseAiManager
 	
 	public Collection getFunctions()
 	{
-		Collection hits = getMediaArchive().query("aifunctions").exact("aifolder", getAiFolder()).sort("ordering").cachedSearch();
+		Collection hits = getMediaArchive().query("aifunctions").exact("aifolder",getAiFolder()).sort("ordering").cachedSearch();
 		return hits;
 		
 		
