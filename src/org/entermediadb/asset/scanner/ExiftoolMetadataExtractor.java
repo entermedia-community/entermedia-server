@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.common.geo.GeoPoint;
@@ -367,7 +368,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				}
 				else if ("ImageWidth".equals(key))
 				{
-					if (inAsset.get("width") == null)
+					if (inAsset.getInt("width") == 0 && StringUtils.isNumeric(value) ) 
 					{
 						float wide = Float.parseFloat(value);
 						inAsset.setProperty("width", String.valueOf(Math.round(wide)));
@@ -375,10 +376,25 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				}
 				else if ("ImageHeight".equals(key))
 				{
-					if (inAsset.get("height") == null)
+					
+					if (inAsset.getInt("height") == 0  && StringUtils.isNumeric(value) )
 					{
 						float height = Float.parseFloat(value);
 						inAsset.setProperty("height", String.valueOf(Math.round(height)));
+					}
+				}
+				else if ("ViewBox".equals(key))
+				{
+					if (inAsset.getInt("width") == 0)
+					{
+						String[] dims = value.split(" ");
+						if (dims.length == 4)
+						{
+							int wide = Integer.parseInt(dims[2]);
+							int height = Integer.parseInt(dims[3]);
+							inAsset.setValue("width", wide);
+							inAsset.setValue("height", height);
+						}
 					}
 				}
 				else if ("MaxPageSizeW".equals(key))

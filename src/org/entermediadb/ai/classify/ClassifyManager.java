@@ -32,6 +32,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
 
@@ -78,28 +79,39 @@ public class ClassifyManager extends BaseManager
 		
 		String startdate = getMediaArchive().getCatalogSettingValue("ai_metadata_startdate");
 		
-		DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-		
+		Date date = null;
 		if (startdate == null || startdate.isEmpty())
 		{
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DAY_OF_YEAR, -30);
 			Date thirtyDaysAgo = cal.getTime();
-			
-			startdate = format.format(thirtyDaysAgo);
+			date = DateStorageUtil.getStorageUtil().parseFromObject(thirtyDaysAgo);
 		}
-		
-		Date date = format.parse(startdate);			
+		else {
+			date = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
+		}
 		query.after("entity_date", date);
 		
 		HitTracker hits = query.search();
 		hits.enableBulkOperations();
+		
+		log.info("AI entities to tag: " + hits.getFriendlyQuery());
+		
+		if (hits.size() == 0)
+		{
+			inLog.info("No entities to tag.");
+			return;
+		}
+		
+		
 		
 		for(int i=0;i < hits.getTotalPages();i++)
 		{
 			hits.setPage(i+1);
 			
 			Collection<Data> entities = hits.getPageOfHits();
+			
+			inLog.info("AI adding metadata to: " + entities.size());
 			
 			Map<String, List<Data>> entitiestoprocess = new HashMap();
 			
@@ -108,8 +120,9 @@ public class ClassifyManager extends BaseManager
 				String moduleid = entity.get("entitysourcetype");
 				if( moduleid == null) 
 				{
+					log.info("Skipping entity with no source type: " + entity.getId() + " " + entity.getName());
 					continue;
-				}; 
+				}
 				
 				List<Data> bytype = entitiestoprocess.get(moduleid);
 				if( bytype == null)
@@ -176,37 +189,36 @@ public class ClassifyManager extends BaseManager
 		QueryBuilder query = getMediaArchive().query("asset").exact("previewstatus", "2").exact("category", categoryid).exact("taggedbyllm",false).exact("llmerror",false);
 		
 		String startdate = getMediaArchive().getCatalogSettingValue("ai_metadata_startdate");
-		
-		DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-		
+		Date date = null;
 		if (startdate == null || startdate.isEmpty())
 		{
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DAY_OF_YEAR, -30);
 			Date thirtyDaysAgo = cal.getTime();
-			
-			startdate = format.format(thirtyDaysAgo);
+			date = DateStorageUtil.getStorageUtil().parseFromObject(thirtyDaysAgo);
 		}
-		
-		Date date = format.parse(startdate);
+		else {
+			date = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
+		}
 		
 		query.after("assetaddeddate", date);
 		
 		
 		//Refine this to use a hit tracker?
 		HitTracker assets = query.search();
-		if(assets.size() < 1)
+		if(assets.size() > 0)
 		{
-			inLog.info("No assets to tag in category: " + categoryid);
-			return;
+			inLog.info("AI manager selected: Model: "+ models + " - Adding metadata to: " + assets.size() + " assets in category: " + categoryid + " After: " + startdate);
+			assets.enableBulkOperations();
+			processAssets(inLog, llmconnection, models, assets);
 		}
-
-		inLog.info("AI manager selected: Model: "+ models + " - Adding metadata to: " + assets.size() + " assets in category: " + categoryid + " After: " + startdate);
+		else
+		{
+			log.info("AI assets to tag: " + assets.getFriendlyQuery());
+			inLog.info("No assets to tag in category: " + categoryid);
+		}
 		
-		assets.enableBulkOperations();
-		processAssets(inLog, llmconnection, models, assets);
 		
-		getMediaArchive().fireSharedMediaEvent("llm/translatefields");
 
 	}
 
@@ -228,9 +240,6 @@ public class ClassifyManager extends BaseManager
 				continue;
 			}
 
-			
-			
-			
 			try{
 				long startTime = System.currentTimeMillis();
 
@@ -273,14 +282,14 @@ public class ClassifyManager extends BaseManager
 	{
 		String mediatype = getMediaArchive().getMediaRenderType(asset);
 		String base64EncodedString = null;
-		if(mediatype == "image" || mediatype == "video")
+		if(mediatype.equals("image") || mediatype.equals("video"))
 		{			
 			String imagesize = null;
-			if (mediatype == "image")
+			if (mediatype.equals("image"))
 			{
 				imagesize = "image3000x3000";
 			}
-			else if (mediatype == "video")
+			else if ( mediatype.equals("video"))
 			{
 				imagesize = "image1900x1080";
 			}
@@ -408,7 +417,7 @@ public class ClassifyManager extends BaseManager
 		}
 
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		
+		long starttime = System.currentTimeMillis();
 		ArrayList<String> args = new ArrayList<String>();
 		args.add(item.getAbsolutePath());
 		args.add("-resize");
@@ -419,6 +428,8 @@ public class ClassifyManager extends BaseManager
 		ExecResult result = exec.runExecStream("convert", args, output, 5000);
 		byte[] bytes = output.toByteArray();  // Read InputStream as bytes
 		String base64EncodedString = Base64.getEncoder().encodeToString(bytes); // Encode to Base64
+		long duration = (System.currentTimeMillis() - starttime) ;
+		log.info("Loaded and encoded " + inAsset.getName() + " in "+duration+"ms");
 		return base64EncodedString;
 		
 	}

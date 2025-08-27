@@ -184,7 +184,8 @@ public class EntityManager implements CatalogEnabled
 		String entitysourcepath = loadUploadSourcepath(module,entity,inUser,true);
 		if( entitysourcepath == null )
 		{
-			throw new OpenEditException("Uploadsource empty " + entity.getId());
+			//throw new OpenEditException("Uploadsource empty " + entity.getId());
+			return null;
 			
 		}
 		entity.setValue("uploadsourcepath", entitysourcepath);
