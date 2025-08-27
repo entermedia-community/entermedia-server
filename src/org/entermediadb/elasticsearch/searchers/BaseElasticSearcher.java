@@ -3376,6 +3376,14 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						map.setText("en", target);
 						value = map;
 					}
+					if (value instanceof LanguageMap)
+					{
+						// all good
+					}
+					else if (value instanceof Map)
+					{
+						value = new LanguageMap((Map) value);
+					}
 					if (!(value instanceof LanguageMap))
 					{
 						throw new OpenEditException("Unexpexted value for MultiLanguage enabled field : " + value + " detail: " + detail.getId() + "Data Was: " + inData.getId() + " searchtype " + getSearchType());
