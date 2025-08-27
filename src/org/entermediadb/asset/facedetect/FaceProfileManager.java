@@ -490,7 +490,7 @@ public class FaceProfileManager implements CatalogEnabled
 	{
 		if (fieldKMeansIndexer == null)
 		{
-			fieldKMeansIndexer = (KMeansIndexer)getModuleManager().getBean(getCatalogId(),"kMeansIndexer");
+			fieldKMeansIndexer = (KMeansIndexer)getModuleManager().getBean(getCatalogId(),"kMeansIndexer",false);
 			fieldKMeansIndexer.setType("facedetect");
 			fieldKMeansIndexer.setSearchType("faceembedding");
 			fieldKMeansIndexer.setRandomSortBy("face_confidence");

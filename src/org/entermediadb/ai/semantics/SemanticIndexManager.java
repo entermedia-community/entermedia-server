@@ -63,7 +63,7 @@ public class SemanticIndexManager implements CatalogEnabled
 	{
 		if (fieldKMeansIndexer == null)
 		{
-			fieldKMeansIndexer = (KMeansIndexer)getModuleManager().getBean(getCatalogId(),"kMeansIndexer");
+			fieldKMeansIndexer = (KMeansIndexer)getModuleManager().getBean(getCatalogId(),"kMeansIndexer",false);
 			fieldKMeansIndexer.setType("semantic");
 			fieldKMeansIndexer.setSearchType("semanticembedding");
 			fieldKMeansIndexer.setRandomSortBy(null);
