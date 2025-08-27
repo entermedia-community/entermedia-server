@@ -150,6 +150,27 @@ public class SemanticIndexManager implements CatalogEnabled
 		HitTracker hits = query.search();
 		hits.enableBulkOperations();
 		
+		indexResults(inLog, hits);
+		
+		//process assets
+		/*
+		if (ids.contains("asset"))
+		{
+			query = getMediaArchive().getSearcher("asset").query();
+			query.exact("semanticindexed", false);
+			query.exists("semantictopics");
+			
+			hits = query.search();
+			hits.enableBulkOperations();
+			
+			indexResults(inLog, hits);
+		}
+		*/
+		
+	}
+
+	protected void indexResults(ScriptLogger inLog, HitTracker hits)
+	{
 		SemanticInstructions instructions = createSemanticInstructions();
 		int indexed = 0;
 		Collection<MultiValued> createdVectors = null;
@@ -165,12 +186,11 @@ public class SemanticIndexManager implements CatalogEnabled
 				createdVectors.clear();
 			}
 		}
-		inLog.info("Total indexed: " + indexed + " of " + hits.size());
+		inLog.info("Total indexed: " + indexed + "  in " + hits);
 		if (createdVectors!= null)
 		{
 			getKMeansIndexer().setCentroids(inLog, createdVectors);
 		}
-		
 	}
 	
 	
@@ -226,9 +246,9 @@ public class SemanticIndexManager implements CatalogEnabled
 				List<MultiValued> tosave = entitiestoprocess.get(moduleid);
 				Collection<MultiValued> foundsemanticstosave = extractVectors(inStructions, moduleid, tosave);
 				count = count + foundsemanticstosave.size();
-				log.info(" Saved datas " + tosave.size() + " added:  " + foundsemanticstosave.size());
 				getMediaArchive().saveData(getKMeansIndexer().getSearchType(),foundsemanticstosave);
 				getMediaArchive().saveData(moduleid,tosave);
+				log.info(" Saved datas " + tosave.size() + " added:  " + foundsemanticstosave.size());
 				if (createdVectors != null)
 				{
 					createdVectors.addAll(foundsemanticstosave);
@@ -288,15 +308,12 @@ public class SemanticIndexManager implements CatalogEnabled
 			entry.put("id",moduleid + ":" + entity.getId());
 			Collection values = entity.getValues("semantictopics");
 			
-			StringBuffer out = new StringBuffer();
-			for (Iterator iterator2 = values.iterator(); iterator2.hasNext();)
+			String out = collectText(values);
+			if (out == null)
 			{
-				String text = (String) iterator2.next();
-				out.append(text);
-				out.append(" ");
-				
+				continue;
 			}
-			entry.put("text",out.toString());
+			entry.put("text",out);
 			list.add(entry);
 		}
 		tosendparams.put("data",list);
@@ -316,6 +333,7 @@ public class SemanticIndexManager implements CatalogEnabled
 			Map result = (Map)results.get(i);
 			MultiValued newdata = (MultiValued)searcher.createNewData();
 			String dataid = (String)result.get("id");
+			newdata.setId(dataid); //Avoid duplicates
 			String[] parts = dataid.split(":");
 			newdata.setValue("moduleid",parts[0]);
 			newdata.setValue("dataid",parts[1]);
@@ -362,14 +380,26 @@ public class SemanticIndexManager implements CatalogEnabled
 		fieldSharedConnection = inSharedConnection;
 	}
 
-	public Map<String,Collection<String>> searchRelatedEntities(String inTerms)
+	public Map<String,Collection<String>> searchRelatedEntities(MultiValued searchcategory)
 	{
+		if( searchcategory.getBoolean("semanticindexed"))
+		{
+			//Todo: Use the Vector DB?
+		}
+		String text = null;
+		Collection values = searchcategory.getValues("semantictopics");
+		text = collectText(values);
+		if( text == null)
+		{
+			text = searchcategory.getName();
+		}
+		
 		//Collection allthepeopleinasset = getKMeansIndexer().searchNearestItems(startdata);
 		JSONObject tosendparams = new JSONObject();
 		JSONArray list = new JSONArray();
 		JSONObject ask = new JSONObject();
 		ask.put("id","search");
-		ask.put("text",inTerms);
+		ask.put("text",text);
 		list.add(ask);
 		tosendparams.put("data",list);
 		CloseableHttpResponse resp = askServer(tosendparams);
@@ -419,15 +449,9 @@ public class SemanticIndexManager implements CatalogEnabled
 		HitTracker tracker = getMediaArchive().query("searchcategory").exists("semantictopics").search();
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
-			Data searchcategory = (Data) iterator.next();
-			String text = null;
-			Collection values = searchcategory.getValues("semantictopics");
-			text = collectText(values);
-			if( text == null)
-			{
-				text = searchcategory.getName();
-			}
-			Map<String,Collection<String>> bytype = searchRelatedEntities(text);
+			MultiValued searchcategory = (MultiValued) iterator.next();
+			
+			Map<String,Collection<String>> bytype = searchRelatedEntities(searchcategory);
 			for (Iterator iterator2 = bytype.keySet().iterator(); iterator2.hasNext();)
 			{
 				String moduleid = (String)iterator2.next();
@@ -458,7 +482,10 @@ public class SemanticIndexManager implements CatalogEnabled
 		{
 			String text = (String) iterator.next();
 			words.append(text);
-			words.append(" ");
+			if (iterator.hasNext())
+			{
+				words.append(", ");
+			}
 			
 		}
 		return words.toString();
