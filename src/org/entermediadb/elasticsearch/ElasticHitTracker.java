@@ -400,7 +400,7 @@ public class ElasticHitTracker extends HitTracker
 		SearchHit hit = hits[indexlocation];
 		
 		Searcher searcher = (Searcher)getSearcher();
-		if( searcher == null && getSearcherManager() != null)
+		if( hit.getType() != null && getSearcherManager() != null)
 		{
 			searcher = getSearcherManager().getSearcher(getCatalogId(), hit.getType());
 		}
