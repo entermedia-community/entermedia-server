@@ -46,7 +46,6 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.ClearScrollRequest;
-import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -72,9 +71,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
-import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
-import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
-import org.elasticsearch.index.query.functionscore.script.ScriptScoreFunctionBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
@@ -123,6 +119,7 @@ import org.openedit.util.Replacer;
 import org.openedit.xml.XmlSearcher;
 
 import groovy.json.JsonOutput;
+import groovy.json.JsonSlurper;
 
 public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 {
@@ -1146,7 +1143,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 
 		//CHECK TIMECODE
-		if (detail.isDataType("objectarray"))
+		if (detail.isDataType("objectarray") || detail.isDataType("object"))
 		{
 			jsonproperties = jsonproperties.field("type", "object");
 			//"type": "nested",
@@ -1164,6 +1161,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			return;
 
 		}
+		
 		else if (detail.isDataType("nested"))
 		{
 			jsonproperties = jsonproperties.field("type", "nested");
@@ -2874,6 +2872,12 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				{
 					continue;
 				}
+				if (detail != null && detail.get("stored") != null && "false".equals(detail.get("stored")))
+				{
+					continue;
+				}
+				
+				
 				if (detail == null && !propid.equals("description") && !propid.contains("_int") && !propid.equals("emrecordstatus") && !propid.equals("recordmodificationdate") && !propid.equals("mastereditclusterid"))
 				{
 					if (isReIndexing())
@@ -2967,6 +2971,22 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				{
 					badges.add(getSearchType() + "_" + detail.getId() + "_" + value);
 				}
+
+				if (value != null && (detail.isDataType("object")))
+				{
+					 if (value instanceof String)
+					    {
+					        // parse JSON string → Map
+					        value = new JsonSlurper().parseText((String) value);
+					    }
+					    else if (!(value instanceof Map))
+					    {
+					        throw new OpenEditException(inData.getId() + " / " + detail.getId()
+					                + " Data was not a Map or JSON string " + value.getClass());
+					    }
+					    inContent.field(key, value); // accept single object
+				}
+				
 
 				if (value != null && (detail.isDataType("objectarray") || detail.isDataType("nested")))
 				{
@@ -3942,6 +3962,16 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						}
 					}
 				}
+				
+				else if (det.isDataType("object")) {
+					Object values = inData.getValue(det.getId());
+					if (values != null && values instanceof String)
+					{
+						
+					}
+				}	
+					
+				
 				else if (det.isDataType("objectarray") || det.isDataType("nested"))
 				{
 					Object values = inData.getValue(det.getId());
