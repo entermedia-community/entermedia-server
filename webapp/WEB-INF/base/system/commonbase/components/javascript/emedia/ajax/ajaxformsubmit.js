@@ -2,6 +2,8 @@
 	$.fn.ajaxFormSubmit = function () {
 		// $(window).trigger("ajaxsubmitting");
 		var form = $(this);
+		
+		var app = jQuery("#application");
 
 		if (form.data("submitting")) {
 			console.log(form.data("submitting"));
@@ -59,7 +61,7 @@
 			form.attr("action", action);
 		}
 
-		if (form.hasClass("showwaiting")) {
+		if (form.hasClass("showwaiting") && app !== undefined) {
 			var apphome = app.data("siteroot") + app.data("apphome");
 			var showwaitingtarget = targetdiv;
 			if (form.data("showwaitingtarget")) {
