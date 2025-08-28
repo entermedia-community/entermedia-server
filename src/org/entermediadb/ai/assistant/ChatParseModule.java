@@ -1,4 +1,4 @@
-package org.entermediadb.ai.chat;
+package org.entermediadb.ai.assistant;
 
 import java.util.Iterator;
 

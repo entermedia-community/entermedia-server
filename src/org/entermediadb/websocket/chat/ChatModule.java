@@ -16,10 +16,8 @@
  */
 package org.entermediadb.websocket.chat;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -30,18 +28,12 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.chat.ChatAgentManager;
-import org.entermediadb.ai.llm.BaseLlmConnection;
-import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.ai.llm.openai.OpenAiConnection;
+import org.entermediadb.ai.assistant.AssitantManager;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.scripts.ScriptLogger;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
@@ -49,9 +41,7 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.profile.UserProfile;
-import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
-import org.openedit.util.ExecutorManager;
 
 public class ChatModule extends BaseMediaModule
 {
@@ -579,17 +569,17 @@ public class ChatModule extends BaseMediaModule
 	public LlmConnection loadManager(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		ChatAgentManager chatmanager = (ChatAgentManager)archive.getBean("chatAgentManager");
+		AssitantManager assistantManager = (AssitantManager) archive.getBean("assistantManager");
 
 //		String model = inReq.findValue("aimodel");
 //		if( model == null)
 //		{
 //			model = archive.getCatalogSettingValue("ai_default_chat_model");
 //		}
-		LlmConnection llmconnection = chatmanager.getLlmConnection();//(LlmConnection) archive.getLlmConnection(model);
+		LlmConnection llmconnection = assistantManager.getLlmConnection();//(LlmConnection) archive.getLlmConnection(model);
 		inReq.putPageValue("gpt", llmconnection); //Deprecated
 		inReq.putPageValue("llmconnection", llmconnection);
-		inReq.putPageValue("chatagentmanager", chatmanager);
+		inReq.putPageValue("assistantManager", assistantManager);
 		
 		return llmconnection;
 	}
@@ -598,9 +588,9 @@ public class ChatModule extends BaseMediaModule
 	public void monitorChannels(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		ChatAgentManager chatmanager = (ChatAgentManager)archive.getBean("chatAgentManager");
-		ScriptLogger log = (ScriptLogger)inReq.getPageValue("log");
-		chatmanager.monitorChannels(log);
+		AssitantManager assistantManager = (AssitantManager) archive.getBean("assistantManager");
+		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
+		assistantManager.monitorChannels(log);
 	}
 	
 	
