@@ -8,13 +8,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.websocket.chat.ChatServer;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
@@ -26,7 +27,9 @@ import org.openedit.util.DateStorageUtil;
 
 public class AssitantManager extends BaseAiManager
 {
-	public void monitorChannels(ScriptLogger log) throws Exception
+	private static final Log log = LogFactory.getLog(AssitantManager.class);
+	
+	public void monitorChannels(ScriptLogger inLog) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 		User agent = archive.getUser("agent");
@@ -89,7 +92,7 @@ public class AssitantManager extends BaseAiManager
 				return;
 			}
 			
-			respondToChannel(log, channel, mostrecent);
+			respondToChannel(inLog, channel, mostrecent);
 		}
 	}
 	
@@ -104,7 +107,7 @@ public class AssitantManager extends BaseAiManager
 		return manager;
 	}
 	
-	public void respondToChannel(ScriptLogger log, Data channel, Data message) throws Exception
+	public void respondToChannel(ScriptLogger inLog, Data channel, Data message) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 		
@@ -128,7 +131,7 @@ public class AssitantManager extends BaseAiManager
 		
 		if (!llmconnection.isReady()) 
 		{
-			log.error("LLM Manager is not ready: " + model + ". Cannot process channel: " + channel);
+			inLog.error("LLM Manager is not ready: " + model + ". Cannot process channel: " + channel);
 			return;
 		}
 
@@ -272,6 +275,7 @@ public class AssitantManager extends BaseAiManager
 		}
 		catch (Exception e)
 		{
+			log.error(e);
 			messageToUpdate.setValue("functionresponse", e.toString());
 			messageToUpdate.setValue("processingcomplete", true);
 			archive.saveData("chatterbox", messageToUpdate);
