@@ -2386,6 +2386,15 @@
 	</bean>
 
 	<bean id="FinderModule" class="org.entermediadb.find.FinderModule">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+	
+	<bean id="resultsManager" class="org.entermediadb.find.ResultsManager" scope="prototype">
+        <property name="moduleManager">
+            <ref bean="moduleManager" />
+        </property>
 	</bean>
 
 	<bean id="finderPages" class="org.entermediadb.find.FinderPageLoader" scope="prototype">
@@ -2529,12 +2538,18 @@
 		</property>
 	</bean>
 
-	<bean id="assistantManager" class="org.entermediadb.ai.assistant.AssitantManager"  scope="prototype">
+	<bean id="assistantManager" class="org.entermediadb.ai.assistant.AssistantManager"  scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 		<property name="requestUtils">
 			<ref bean="requestUtils" />
+		</property>
+	</bean>
+	
+	<bean id="AgentModule" class="org.entermediadb.ai.assistant.AgentModule">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
 		</property>
 	</bean>
 

@@ -28,7 +28,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.assistant.AssitantManager;
+import org.entermediadb.ai.assistant.AssistantManager;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
@@ -569,7 +569,7 @@ public class ChatModule extends BaseMediaModule
 	public LlmConnection loadManager(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		AssitantManager assistantManager = (AssitantManager) archive.getBean("assistantManager");
+		AssistantManager assistantManager = (AssistantManager) archive.getBean("assistantManager");
 
 //		String model = inReq.findValue("aimodel");
 //		if( model == null)
@@ -588,7 +588,7 @@ public class ChatModule extends BaseMediaModule
 	public void monitorChannels(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		AssitantManager assistantManager = (AssitantManager) archive.getBean("assistantManager");
+		AssistantManager assistantManager = (AssistantManager) archive.getBean("assistantManager");
 		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
 		assistantManager.monitorChannels(log);
 	}

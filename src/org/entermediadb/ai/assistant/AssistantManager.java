@@ -1,6 +1,7 @@
 package org.entermediadb.ai.assistant;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -14,20 +15,28 @@ import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.find.ResultsManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.websocket.chat.ChatServer;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
+import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
-public class AssitantManager extends BaseAiManager
+public class AssistantManager extends BaseAiManager
 {
-	private static final Log log = LogFactory.getLog(AssitantManager.class);
+	private static final Log log = LogFactory.getLog(AssistantManager.class);
+	
+	public ResultsManager getResultsManager() {
+		ResultsManager resultsManager = (ResultsManager) getMediaArchive().getBean("resultsManager");
+		return resultsManager;
+	}
 	
 	public void monitorChannels(ScriptLogger inLog) throws Exception
 	{
@@ -309,5 +318,94 @@ public class AssitantManager extends BaseAiManager
 		return hits;
 		
 		
+	}
+	
+	public void sematicKeywordSearch(WebPageRequest inReq) throws Exception
+	{
+
+		MediaArchive archive = getMediaArchive();
+		
+		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
+		
+		if(arguments == null)
+		{			
+			return;
+		} 
+		else {	
+			log.info("Args: " + arguments.toJSONString());
+		}
+		
+		Collection<String> keywords = getResultsManager().parseKeywords(arguments.get("keywords")); 
+		
+		inReq.putPageValue("keywordsstring", getResultsManager().joinWithAnd(new ArrayList(keywords)));
+		
+		String conjunction = (String) arguments.get("conjunction");
+		if(conjunction == null || !conjunction.equals("inclusive")) {
+			conjunction = "exclusive";
+		}
+		
+		Object modules_object = arguments.get("types");
+
+		JSONArray modules_json = new JSONArray();
+		if(modules_object instanceof JSONArray)
+		{			
+			modules_json = (JSONArray) modules_object;
+		}
+		else if(modules_object instanceof String)
+		{
+			modules_json.add((String) modules_object); 
+		}
+		else
+		{
+			modules_json.add("all");
+		}
+		
+		Collection<String> modules = new ArrayList();
+		
+		for (int i = 0; i < modules_json.size(); i++)
+		{
+			modules.add((String) modules_json.get(i));
+		}
+		
+		UserProfile userprofile = (UserProfile) inReq.getPageValue("chatprofile");
+		if(userprofile == null)
+		{
+			userprofile = (UserProfile) inReq.getPageValue("userprofile");
+		}
+		else
+		{
+			inReq.putPageValue("userprofile", userprofile);
+		}
+		
+		if(modules.contains("all") || modules.size() == 0)
+		{
+			modules = userprofile.getEntitiesIds();
+			log.info("user modules:"+modules);
+			inReq.putPageValue("modulenamestext", "all modules");
+		}
+		else if(!modules.isEmpty())
+		{
+			Collection<Data> modulesdata = userprofile.getEntitiesByIdOrName(modules);
+			Collection<String> moduleNames = new ArrayList();
+			
+			for (Iterator iterator = modulesdata.iterator(); iterator.hasNext();)
+			{
+				Data module = (Data) iterator.next();
+				if(!modules.contains(module.getId()))
+				{					
+					modules.add(module.getId());
+				}
+				moduleNames.add(module.getName());
+			}
+			
+			inReq.putPageValue("modulenamestext", getResultsManager().joinWithAnd(new ArrayList(moduleNames)));
+		}
+		
+		log.info("Keywords:");
+		log.info(keywords);
+		log.info("Modules:");
+		log.info(modules);
+		
+		getResultsManager().searchByKeywords(inReq, modules, keywords, conjunction);
 	}
 }

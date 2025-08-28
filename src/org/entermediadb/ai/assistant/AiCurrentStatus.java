@@ -10,7 +10,7 @@ import org.openedit.hittracker.HitTracker;
 public class AiCurrentStatus
 {
 	
-	AssitantManager fieldAssistantManager;
+	AssistantManager fieldAssistantManager;
 	MediaArchive fieldMediaArchive;
 	
 	public MediaArchive getMediaArchive()
@@ -21,11 +21,11 @@ public class AiCurrentStatus
 	{
 		fieldMediaArchive = inMediaArchive;
 	}
-	public AssitantManager getAssistantManager()
+	public AssistantManager getAssistantManager()
 	{
 		return fieldAssistantManager;
 	}
-	public void setAssistantManager(AssitantManager inAssistantManager)
+	public void setAssistantManager(AssistantManager inAssistantManager)
 	{
 		fieldAssistantManager = inAssistantManager;
 	}
