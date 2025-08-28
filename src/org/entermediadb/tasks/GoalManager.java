@@ -1,5 +1,7 @@
 package org.entermediadb.tasks;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -320,19 +322,15 @@ public class GoalManager implements CatalogEnabled
 			goal.setValue("chatparentid", message.getId());
 			goal.addValue("userlikes",inReq.getUserName());
 			goal.setValue("owner", inReq.getUserName());
-			goal.addValue("details",content);
-			if( content != null && content.length() > 70)
+			//goal.setValue("details",content);
+			try
 			{
-				content = content.substring(0,70) + "...";
+				String firstline = new BufferedReader(new StringReader(content)).readLine();
+				goal.setName(firstline);
 			}
-			User user = archive.getUser(message.get("user"));
-			if( user != null)
+			catch( Exception ex)
 			{
-				goal.setName(user.getScreenName() + ": " + content);
-			}
-			else
-			{
-				goal.setName("Anonymous : " + content);				
+				//ignore
 			}
 			searcher.saveData(goal);
 			addStatus(archive, goal,inReq.getUserName());
@@ -386,8 +384,13 @@ public class GoalManager implements CatalogEnabled
 		{
 			intaskstatus = "0;";  //6
 		}
+		int start = 0;
+		if (tasks.length > 1)
+		{
+			start = 1;
+		}
 		
-		for (int i = 0; i < tasks.length; i++)
+		for (int i = start; i < tasks.length; i++)
 		{
 			//TODO: Check for items with numbers?
 			//Spit out everything else back to chat?

@@ -5,7 +5,7 @@
 		#if($caneditcollection)
 		<a data-cancelsubmit="true" 
 			data-hidefooter="true" 
-			href="$goallink"
+			href="${goallink}"
 			title="[[Ticket]] #$!goal.ticketnumber" 
 			class="emdialog goalticket-level float-left" 
 			data-urlbar="${communityhome}/project/goals/priorities/index.html?collectionid=$goal.collectionid&opengoalid=${goal.id}" 
@@ -14,6 +14,7 @@
 			##	#set( $level = $mediaarchive.getData("ticketlevel",$goal.ticketlevel))
 			##	#text($level) : #$!goal.ticketnumber  
 				#set( $status  = $mediaarchive.getData("projectstatus", $goal.projectstatus) )
+				<span class="goalname">$goal.name</span>
 		</a>
 		#end
 		<div class="goalslike float-right">
@@ -22,7 +23,8 @@
 		<div class="clearfix"></div>
 	</div>
 	<div class="goaltasksout">
-	$pages.include("${communityhome}/project/goals/search/goaltasks.html?indialog=true&onlyopen=false",$context)
+		
+		$pages.include("${communityhome}/project/goals/search/goaltasks.html?indialog=true&onlyopen=false",$context)
 	</div>
 
 </div>

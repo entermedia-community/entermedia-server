@@ -1700,8 +1700,10 @@ public class TaskModule extends BaseMediaModule
 		{
 			throw new OpenEditException("No collectionid on " + messageid);
 		}
-		HitTracker all = searcher.query().exact("collectionid",collectionid).exact("ticketlevel", "1").search();
 		List tosave = new ArrayList();
+		
+		//Save level 1 to the Agenda
+		HitTracker all = searcher.query().exact("collectionid",collectionid).exact("ticketlevel", "1").search();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
 			Data record = (Data) iterator.next();
@@ -1722,9 +1724,11 @@ public class TaskModule extends BaseMediaModule
 		goal.setValue("ticketlevel", "1");
 		searcher.saveData(goal);
 		
+		/*
 		Searcher tasksearcher = archive.getSearcher("goaltask");
-		Collection agendatasks = tasksearcher.query().exact("collectionid",collectionid).exact("taskstatus", "6").search();
-
+		Collection agendatasks = tasksearcher.query().exact("collectionid",collectionid).exact("taskstatus", "6").search(); //6 is agenda
+		
+		
 		for (Iterator iterator = agendatasks.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
@@ -1732,6 +1736,8 @@ public class TaskModule extends BaseMediaModule
 			tosave.add(data);
 		}
 		tasksearcher.saveAllData(tosave, null);
+		*/
+		
 		inReq.putPageValue("chat",message);
 	}
 
