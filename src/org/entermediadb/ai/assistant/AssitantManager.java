@@ -173,11 +173,6 @@ public class AssitantManager extends BaseAiManager
 			// Function call detected
 			String functionName = response.getFunctionName();
 			JSONObject arguments = response.getArguments();
-			
-			if(arguments.get("types") == null)
-			{
-				arguments.put("types", new JSONArray());
-			}
 
 			String json = arguments.toJSONString();
 			// Create and save function call message
