@@ -15,6 +15,7 @@ import org.dom4j.Element;
 import org.enteremdiadb.postiz.PostizManager;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.BaseAsset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
@@ -88,7 +89,7 @@ public class ContentModule extends BaseMediaModule
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			MultiValued contentrequest = (MultiValued) iterator.next();
-//			Data newdata = manager.createAssetFromLLM(inReq,  contentrequest);
+			Data newdata = manager.createAssetFromLLM(inReq,  contentrequest);
 		}
 
 	}
@@ -145,7 +146,10 @@ public class ContentModule extends BaseMediaModule
 	    Asset asset = archive.getAssetBySourcePath(sourcePath);
 	    
 	    if(asset == null) {
-			asset = (Asset) archive.createAsset(sourcePath);
+	    	asset = new BaseAsset(archive);
+//	    	String next = archive.getAssetSearcher().nextId();
+//			asset = (Asset) archive.createAsset(next, sourcePath);
+	    	asset.setSourcePath(sourcePath);
 			asset.setName(filename.toString());
 			asset.addCategory(rootcat);
 			asset.setSourcePath(sourcePath);

@@ -756,84 +756,77 @@ public class ContentManager implements CatalogEnabled
 //
 //	}
 
-//	public Asset createAssetFromLLM(WebPageRequest inReq, Data contentrequest)
-//	{
-//
-//		MediaArchive archive = getMediaArchive();
-//
-//		String model = contentrequest.get("llmmodel");
-//		
-//		Data modelinfo = archive.getData("llmmodel", model);
-//
-//		String type = modelinfo != null ? modelinfo.get("llmtype") : null;
-//
-//		if (type == null)
-//		{
-//			type = "gptManager";
-//		}
-//		else
-//		{
-//			type = type + "Manager";
-//		}
-//		LlmConnection llm = (LlmConnection) archive.getBean(type);
-//
-//		String prompt = inReq.findValue("llmprompt.value");
-//
+	public Asset createAssetFromLLM(WebPageRequest inReq, Data contentrequest)
+	{
+
+		MediaArchive archive = getMediaArchive();
+
+		String model = contentrequest.get("llmmodel");
+		
+		LlmConnection llm = archive.getLlmConnection(model);
+
+		String prompt = inReq.findValue("llmprompt.value");
+
 //		String edithome = inReq.findPathValue("edithome");
-//
-//		String imagestyle = contentrequest.get("llmimagestyle");
-//		if (imagestyle == null)
-//		{
-//			imagestyle = "natural";
-//		}
-//		Asset asset = archive.getAsset(contentrequest.get("primarymedia"));
-//		if(asset == null) {
-//			return null;
-//		}
-//		
-//		LlmResponse results = llm.createImage(inReq, model, 1, "1024x1024", imagestyle, contentrequest.get("createassetprompt"));
-//		
-//		Downloader downloader = new Downloader();
-//
-//		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
-//		{
-//
-//			String url = (String) iterator.next();
-//			asset.setValue("importstatus", "created");
-//
-//			String filename = asset.getName();
-//
-//			String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
-//			File attachments = new File(archive.getPageManager().getPage(path).getContentItem().getAbsolutePath());
-//			filename = filename.replaceAll("\\?.*", "");
-//			log.info("Downloading " + url + " ->" + path + "/" + filename);
-//			File target = new File(attachments, filename);
-//			if (target.exists() || target.length() == 0)
-//			{
-//				try
-//				{
-//					downloader.download(url, target);
-//				}
-//				catch (Exception ex)
-//				{
-//					asset.setProperty("importstatus", "error");
-//					log.error(ex);
-//					archive.saveAsset(asset);
-//
-//				}
-//			}
-//			asset.setFolder(true);
-//			asset.setName(filename);
-//			asset.setPrimaryFile(filename);
-//			// asset.setFolder(true);
-//			asset.setProperty("importstatus", "created");
-//			archive.saveAsset(asset);
-//		}
-//		archive.fireSharedMediaEvent("importing/assetscreated");
-//		contentrequest.setValue("status", "complete");
-//		archive.saveData("contentcreator", contentrequest);
-//		return asset;
-//	}
+
+		String imagestyle = contentrequest.get("llmimagestyle");
+		if (imagestyle == null)
+		{
+			imagestyle = "natural";
+		}
+		Asset asset = archive.getAsset(contentrequest.get("primarymedia"));
+		if(asset == null) {
+			return null;
+		}
+		
+		Map params = new HashMap();
+		params.put("model", model);
+		params.put("style", imagestyle);
+		params.put("prompt", prompt);
+
+		LlmResponse results = llm.createImage(params);
+
+		Downloader downloader = new Downloader();
+		
+		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
+		{
+
+			String url = (String) iterator.next();
+			asset.setValue("importstatus", "created");
+
+			String filename = asset.getName();
+
+			String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
+			File attachments = new File(archive.getPageManager().getPage(path).getContentItem().getAbsolutePath());
+			filename = filename.replaceAll("\\?.*", "");
+			log.info("Downloading " + url + " ->" + path + "/" + filename);
+			File target = new File(attachments, filename);
+			if (target.exists() || target.length() == 0)
+			{
+				try
+				{
+					downloader.download(url, target);
+				}
+				catch (Exception ex)
+				{
+					asset.setProperty("importstatus", "error");
+					log.error(ex);
+					archive.saveAsset(asset);
+
+				}
+			}
+			asset.setFolder(true);
+			asset.setName(filename);
+			asset.setPrimaryFile(filename);
+			// asset.setFolder(true);
+			asset.setProperty("importstatus", "created");
+			archive.saveAsset(asset);
+		}
+		archive.fireSharedMediaEvent("importing/assetscreated");
+		contentrequest.setValue("status", "complete");
+		archive.saveData("contentcreator", contentrequest);
+		return asset;
+	}
 
 	//    public Asset createAssetFromLLM(WebPageRequest inReq, String inModuleid, String inEntityid, String inStructions) {
 	//	Data entity = getMediaArchive().getData(inModuleid, inEntityid);

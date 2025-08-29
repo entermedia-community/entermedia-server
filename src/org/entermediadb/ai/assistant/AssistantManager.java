@@ -2,6 +2,7 @@ package org.entermediadb.ai.assistant;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -22,7 +23,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
-import org.openedit.WebPageRequest;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
@@ -399,5 +400,21 @@ public class AssistantManager extends BaseAiManager
 		searchArgs.setSelectedModules(modules);
 		
 		return searchArgs;
+	}
+	
+	public Collection<PropertyDetail> getCommonFields()
+	{
+		Collection<PropertyDetail> fields = new ArrayList();
+		PropertyDetail pd = new PropertyDetail();
+		
+//		Collection<String> fieldids = Arrays.from("title","description","keywords","caption","date");
+		pd.setId("title");
+		fields.add(pd);
+		
+//		fields.add("description");
+//		fields.add("keywords");
+//		fields.add("caption");
+//		fields.add("date");
+		return fields;
 	}
 }

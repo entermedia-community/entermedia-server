@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.assistant.AiSearch;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.manager.BaseManager;
@@ -310,7 +311,7 @@ public class ResultsManager extends BaseManager {
 		return bytypes;
 	}
 	
-	public void searchByKeywords(WebPageRequest inReq, Collection<String> moduleIds, Collection<String> keywords, String conjunction)
+	public void searchByKeywords(WebPageRequest inReq, AiSearch searchArgs)
 	{
 		
 		log.info("Searching as:" + inReq.getUser().getName());
@@ -319,13 +320,13 @@ public class ResultsManager extends BaseManager {
 		// SemanticIndexManager semanticIndexManager = (SemanticIndexManager) archive.getBean("semanticIndexManager");
 		
 		String plainquery = "";
-		if(!conjunction.equals("inclusive"))
+		if(!searchArgs.isStrictSearch())
 		{
-			plainquery = String.join(" OR ", keywords); // This does not work
+			plainquery = String.join(" ", searchArgs.getKeywords());
 		}
 		else
 		{
-			plainquery = String.join(" ", keywords);
+			plainquery = String.join(" OR ", searchArgs.getKeywords()); // This does not work
 		}
 		
 		// Map<String, Collection<String>> semanticSearch = semanticIndexManager.searchRelatedEntities(plainquery);
@@ -335,7 +336,7 @@ public class ResultsManager extends BaseManager {
 		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",plainquery).hitsPerPage(30);
 		dq.getQuery().setIncludeDescription(true);
 		
-		Collection searchmodules = loadUserSearchTypes(inReq, moduleIds);
+		Collection searchmodules = loadUserSearchTypes(inReq, searchArgs.getKeywords());
 		
 		Collection searchmodulescopy = new ArrayList(searchmodules);
 		searchmodulescopy.remove("asset");
@@ -391,7 +392,7 @@ public class ResultsManager extends BaseManager {
 		
 		
 		
-//		organizeHits(inReq, unsorted, pageOfHits);
+		organizeHits(inReq, unsorted, pageOfHits);
 		
 	}
 	public Collection loadUserSearchTypes(WebPageRequest inReq)
@@ -586,7 +587,7 @@ public class ResultsManager extends BaseManager {
 		
 		User u = inReq.getUser();
 		
-		searchByKeywords(inReq, modules, keywords, "exclusive");
+//		searchByKeywords(inReq, modules, keywords, "exclusive");
 	}
 
 	public static String joinWithAnd(ArrayList<String> items) {

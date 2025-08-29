@@ -55,14 +55,24 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 	}
 
-	public LlmResponse createImage(Map params, String inModel, int imagecount, String inSize, String style, String inPrompt)
+	public LlmResponse createImage(Map params)
+	{
+		return createImage(params, 1, "1024x1024");
+	}
+	
+	public LlmResponse createImage(Map params, int imagecount, String inSize)
 	{
 		if (getApikey() == null)
 		{
 			log.error("No gpt-key defined");
 			return null;
 		}
-		params.put("prompt", inPrompt);
+		
+		String inModel = (String) params.get("model");
+		String style = (String) params.get("style");
+		String inPrompt = (String) params.get("prompt");
+		
+		// params.put("prompt", inPrompt);
 
 		// Use JSON Simple's JSONObject
 		JSONObject obj = new JSONObject();

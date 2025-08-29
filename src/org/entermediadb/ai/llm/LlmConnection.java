@@ -15,7 +15,8 @@ public interface LlmConnection {
 
     public String getEmbedding(String inQuery) throws Exception;
 
-    public LlmResponse createImage(Map inParams, String inModel, int inI, String inString, String inImagestyle, String inTemplate);
+    public LlmResponse createImage(Map inParams);
+    public LlmResponse createImage(Map inParams, int inI, String inSize);
 
     public String loadInputFromTemplate(String inString, Map inParams);
     
