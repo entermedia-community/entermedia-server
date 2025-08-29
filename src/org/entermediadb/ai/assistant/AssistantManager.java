@@ -327,32 +327,31 @@ public class AssistantManager extends BaseAiManager
 		
 	}
 	
-	public Collection<String> getUserModules(AiSearch inSearch, UserProfile userprofile)
+	public Collection<String> getUserModules(Collection<String> inModules, UserProfile userprofile)
 	{
-		Collection<String> modules = inSearch.getSelectedModules();
 		
-		if(modules.contains("all") || modules.size() == 0)
+		if(inModules.size() == 0)
 		{
-			modules = userprofile.getEntitiesIds();
+			inModules = userprofile.getEntitiesIds();
 		}
-		else if(!modules.isEmpty())
+		else if(!inModules.isEmpty())
 		{
-			Collection<Data> modulesdata = userprofile.getEntitiesByIdOrName(modules);
+			Collection<Data> modulesdata = userprofile.getEntitiesByIdOrName(inModules);
 			
 			for (Iterator iterator = modulesdata.iterator(); iterator.hasNext();)
 			{
 				Data module = (Data) iterator.next();
-				if(!modules.contains(module.getId()))
+				if(!inModules.contains(module.getId()))
 				{					
-					modules.add(module.getId());
+					inModules.add(module.getId());
 				}
 			}
 		
 		}
-		return modules;
+		return inModules;
 	}
 	
-	public AiSearch processSematicSearchArgs(JSONObject arguments) throws Exception
+	public AiSearch processSematicSearchArgs(JSONObject arguments, UserProfile userprofile) throws Exception
 	{
 		if(arguments == null)
 		{			
@@ -367,7 +366,6 @@ public class AssistantManager extends BaseAiManager
 		Collection<String> keywords = getResultsManager().parseKeywords(arguments.get("keywords")); 
 		searchArgs.setKeywords(keywords);
 		
-		
 		String searchType = (String) arguments.get("search_type");
 		searchArgs.setBulkSearch("bulk".equals(searchType));
 		
@@ -376,28 +374,21 @@ public class AssistantManager extends BaseAiManager
 		
 		Object selectedModulesObj = arguments.get("targets");
 
-		JSONArray selectedModules = new JSONArray();
+		Collection<String> selectedModules = new ArrayList();
+		
 		if(selectedModulesObj instanceof JSONArray)
 		{			
-			selectedModules = (JSONArray) selectedModulesObj;
+			JSONArray arr = (JSONArray) selectedModulesObj;
+			selectedModules.addAll( Arrays.asList( (String[]) arr.toArray( new String[arr.size()] ) ) );
 		}
 		else if(selectedModulesObj instanceof String)
 		{
 			selectedModules.add((String) selectedModulesObj); 
 		}
-		else
-		{
-			selectedModules.add("all");
-		}
 		
-		Collection<String> modules = new ArrayList();
-		
-		for (int i = 0; i < selectedModules.size(); i++)
-		{
-			modules.add((String) selectedModules.get(i));
-		}
-		
-		searchArgs.setSelectedModules(modules);
+		Collection<String> permittedModules = getUserModules(selectedModules, userprofile);
+		searchArgs.setSelectedModules(permittedModules);
+
 		
 		return searchArgs;
 	}

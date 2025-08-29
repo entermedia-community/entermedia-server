@@ -94,12 +94,8 @@ public class AgentModule extends BaseMediaModule {
 		{
 			userprofile = (UserProfile) inReq.getPageValue("userprofile");
 		}
-		else
-		{
-			inReq.putPageValue("userprofile", userprofile);
-		}
-		
-		AiSearch aiSearchArgs = getAssistantManager(inReq).processSematicSearchArgs(arguments);
+
+		AiSearch aiSearchArgs = getAssistantManager(inReq).processSematicSearchArgs(arguments, userprofile);
 		
 		getResultsManager(inReq).searchByKeywords(inReq, aiSearchArgs);
 		

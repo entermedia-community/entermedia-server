@@ -336,7 +336,7 @@ public class ResultsManager extends BaseManager {
 		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",plainquery).hitsPerPage(30);
 		dq.getQuery().setIncludeDescription(true);
 		
-		Collection searchmodules = loadUserSearchTypes(inReq, searchArgs.getKeywords());
+		Collection searchmodules = loadUserSearchTypes(inReq, searchArgs.getSelectedModules());
 		
 		Collection searchmodulescopy = new ArrayList(searchmodules);
 		searchmodulescopy.remove("asset");

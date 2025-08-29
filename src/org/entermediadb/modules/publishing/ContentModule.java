@@ -6,8 +6,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,49 +53,6 @@ public class ContentModule extends BaseMediaModule
 
 		// PDF?
 	}
-
-	public void processCreationQueue(WebPageRequest inReq) throws Exception
-	{
-		// Add as child
-		MediaArchive archive = getMediaArchive(inReq);
-
-		ContentManager manager = getContentManager(inReq);
-
-		HitTracker hits = archive.query("contentcreator").exact("status", "new").search();
-
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-		{
-			MultiValued contentrequest = (MultiValued) iterator.next();
-
-			String model = contentrequest.get("llmmodel");
-			
-			LlmConnection llm = (LlmConnection) archive.getLlmConnection(model);
-//			Data newdata = manager.createFromLLM(inReq, llm, model, contentrequest);
-			contentrequest.setValue("status", "complete");
-			archive.saveData("contentcreator", contentrequest);
-		}
-		
-
-	}
-	
-	
-	public void processAssetRequests(WebPageRequest inReq) throws Exception
-	{
-		// Add as child
-		MediaArchive archive = getMediaArchive(inReq);
-
-		ContentManager manager = getContentManager(inReq);
-
-		HitTracker hits = archive.query("contentcreator").exact("status", "newimage").search();
-
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-		{
-			MultiValued contentrequest = (MultiValued) iterator.next();
-			Data newdata = manager.createAssetFromLLM(inReq,  contentrequest);
-		}
-
-	}
-	
 	
 	public void createNewRequest(WebPageRequest inReq) throws Exception
 	{
@@ -112,6 +71,56 @@ public class ContentModule extends BaseMediaModule
 	
 	}
 
+	public void processCreationQueue(WebPageRequest inReq) throws Exception
+	{
+		// Add as child
+		MediaArchive archive = getMediaArchive(inReq);
+
+		ContentManager manager = getContentManager(inReq);
+
+		HitTracker hits = archive.query("contentcreator").exact("status", "new").search();
+
+		Map params = new HashMap();
+		params.putAll(inReq.getParameterMap());
+		
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			MultiValued contentrequest = (MultiValued) iterator.next();
+
+			String model = contentrequest.get("llmmodel");
+			
+			LlmConnection llm = (LlmConnection) archive.getLlmConnection(model);
+			Data newdata = manager.createFromLLM(params, llm, model, contentrequest);
+			contentrequest.setValue("status", "complete");
+			archive.saveData("contentcreator", contentrequest);
+		}
+		
+
+	}
+	
+	
+	public void processAssetRequests(WebPageRequest inReq) throws Exception
+	{
+		// Add as child
+		MediaArchive archive = getMediaArchive(inReq);
+
+		ContentManager manager = getContentManager(inReq);
+
+		HitTracker hits = archive.query("contentcreator").exact("status", "newimage").search();
+		hits.enableBulkOperations();
+		
+		Map params = new HashMap();
+		params.putAll(inReq.getParameterMap());
+		
+
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			MultiValued contentrequest = (MultiValued) iterator.next();
+			manager.createAssetFromLLM(params, contentrequest);
+		}
+
+	}
+
 	public void createNewImageRequest(WebPageRequest inReq) throws Exception
 	{
 		// Add as child
@@ -126,7 +135,7 @@ public class ContentModule extends BaseMediaModule
 	    requests.saveData(info);
 	    
 	    Data entity = (Data) inReq.getPageValue("entity");
-            Data entitymodule = (Data) inReq.getPageValue("entitymodule");
+        Data entitymodule = (Data) inReq.getPageValue("entitymodule");
 
 	    Category rootcat = archive.getEntityManager().loadDefaultFolder(entitymodule, entity, inReq.getUser());
 		String sourcepathroot = rootcat.getCategoryPath();
@@ -242,8 +251,8 @@ public class ContentModule extends BaseMediaModule
 //		Data entity = (Data) inReq.getPageValue("entity");
 //		Data entitymodule = (Data) inReq.getPageValue("entitymodule");
 //
-//		String lastprompt = inReq.getRequestParameter("createassetprompt.value");
-//		entity.setValue("createassetprompt", lastprompt);
+//		String lastprompt = inReq.getRequestParameter("llmprompt.value");
+//		entity.setValue("llmprompt", lastprompt);
 //		getMediaArchive(inReq).saveData(entitymodule.getId(), entity);
 //		ContentManager manager = getContentManager(inReq);
 //		String type = inReq.findValue("llmtype.value");

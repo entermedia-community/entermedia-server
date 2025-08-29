@@ -756,7 +756,7 @@ public class ContentManager implements CatalogEnabled
 //
 //	}
 
-	public Asset createAssetFromLLM(WebPageRequest inReq, Data contentrequest)
+	public Asset createAssetFromLLM(Map params, Data contentrequest)
 	{
 
 		MediaArchive archive = getMediaArchive();
@@ -765,7 +765,12 @@ public class ContentManager implements CatalogEnabled
 		
 		LlmConnection llm = archive.getLlmConnection(model);
 
-		String prompt = inReq.findValue("llmprompt.value");
+		String prompt = (String) contentrequest.get("llmprompt");
+		
+		if (prompt == null)
+		{
+			return null;
+		}
 
 //		String edithome = inReq.findPathValue("edithome");
 
@@ -779,7 +784,6 @@ public class ContentManager implements CatalogEnabled
 			return null;
 		}
 		
-		Map params = new HashMap();
 		params.put("model", model);
 		params.put("style", imagestyle);
 		params.put("prompt", prompt);
@@ -892,7 +896,7 @@ public class ContentManager implements CatalogEnabled
 	//
 	//    }
 
-	public Data createFromLLM(Map inReq, LlmConnection inLlm, String inModel, Data inContentrequest) throws Exception
+	public Data createFromLLM(Map params, LlmConnection inLlm, String inModel, Data inContentrequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -922,12 +926,12 @@ public class ContentManager implements CatalogEnabled
 			targetsearcher = getMediaArchive().getSearcher(moduleid);
 			Data targetmodule = getMediaArchive().getCachedData("module", moduleid);// Chapter
 
-			inReq.put("targetmodule", targetmodule);
+			params.put("targetmodule", targetmodule);
 
-			inReq.put("contentrequest", inContentrequest);
-			String template = inLlm.loadInputFromTemplate("/" + archive.getMediaDbId() + "/gpt/systemmessage/createtoplevel.html", inReq);
+			params.put("contentrequest", inContentrequest);
+			String template = inLlm.loadInputFromTemplate("/" + archive.getMediaDbId() + "/gpt/systemmessage/createtoplevel.html", params);
 			log.info(template);
-			LlmResponse results = inLlm.callFunction(inReq, inModel, "create_entity", template);
+			LlmResponse results = inLlm.callFunction(params, inModel, "create_entity", template);
 
 			child = targetsearcher.createNewData();
 			targetsearcher.updateData(child, results.getArguments());
@@ -947,18 +951,18 @@ public class ContentManager implements CatalogEnabled
 
 			Data directparent = getMediaArchive().getCachedData(moduleid, entityid);
 
-			inReq.put("parentmodule", moduleid); //Book
-			inReq.put("parententity", directparent); //Which book
-			inReq.put("parentsearcher", parentsearcher);
-			inReq.put("parentdetails", parentsearcher.getPropertyDetails());
+			params.put("parentmodule", moduleid); //Book
+			params.put("parententity", directparent); //Which book
+			params.put("parentsearcher", parentsearcher);
+			params.put("parentdetails", parentsearcher.getPropertyDetails());
 
-			inReq.put("targetmodule", targetmodule); //Chapter
-			inReq.put("targetsearcher", targetmodule);
+			params.put("targetmodule", targetmodule); //Chapter
+			params.put("targetsearcher", targetmodule);
 
-			inReq.put("contentrequest", inContentrequest);
+			params.put("contentrequest", inContentrequest);
 
-			String template = inLlm.loadInputFromTemplate("/" + archive.getMediaDbId() + "/gpt/systemmessage/create_child.html", inReq);
-			LlmResponse results = inLlm.callFunction(inReq, inModel, "create_entity", template);
+			String template = inLlm.loadInputFromTemplate("/" + archive.getMediaDbId() + "/gpt/systemmessage/create_child.html", params);
+			LlmResponse results = inLlm.callFunction(params, inModel, "create_entity", template);
 
 			child = targetsearcher.createNewData();
 			targetsearcher.updateData(child, results.getArguments());

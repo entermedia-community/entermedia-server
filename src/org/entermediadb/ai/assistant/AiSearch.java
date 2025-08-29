@@ -3,9 +3,10 @@ package org.entermediadb.ai.assistant;
 import java.util.Collection;
 
 public class AiSearch {
-	Collection<String> fieldSelectedModules;
+	Collection<String> fieldSelectedModules; //Name or IDs
 	Collection<String> fieldKeywords;
 	Collection<String> fieldFilters;
+
 	boolean fieldStrictSearch;
 	boolean bulkSearch;
 	
