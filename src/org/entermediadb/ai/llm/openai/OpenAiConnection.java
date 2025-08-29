@@ -210,12 +210,11 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		// Handle function call definition
 		if (inFunction != null)
 		{
-
-			String templatepath = "/" + archive.getMediaDbId() + "/gpt/functiondefs/" + inFunction + ".json";
+			String templatepath = "/" + archive.getMediaDbId() + "/ai/classify/functions/" + inFunction + ".json";
 			Page defpage = archive.getPageManager().getPage(templatepath);
 			if (!defpage.exists())
 			{
-				templatepath = "/" + archive.getCatalogId() + "/gpt/functiondefs/" + inFunction + ".json";
+				templatepath = "/" + archive.getCatalogId() + "/ai/classify/functions/" + inFunction + ".json";
 				defpage = archive.getPageManager().getPage(templatepath);
 			}
 			if (!defpage.exists())
@@ -291,7 +290,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		inParams.put("fields", inFields);
 		inParams.put("model", inModel);
 		
-		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/gpt/structures/" + inStructureName + ".json", inParams);
+		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/classify/structures/" + inStructureName + ".json", inParams);
 
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(inStructure);

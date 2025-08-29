@@ -1,20 +1,13 @@
 package org.entermediadb.ai.assistant;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
-import org.openedit.data.PropertyDetail;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 
 public class AgentModule extends BaseMediaModule {
@@ -26,9 +19,7 @@ public class AgentModule extends BaseMediaModule {
 		AssistantManager assistantManager = (AssistantManager) getMediaArchive(catalogid).getBean("assistantManager");
 		return assistantManager;
 	}
-	
-	
-	
+
 	public void loadFields(WebPageRequest inReq)
 	{
 //		MediaArchive archive = getMediaArchive(inReq);
@@ -88,17 +79,17 @@ public class AgentModule extends BaseMediaModule {
 			log.warn("No arguments found in request");
 			return;
 		}
-		
-		
 
 		for (Iterator iterator = arguments.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
 			log.info("Arg: " + key + " = " + arguments.get(key));
 			inReq.putPageValue(key, arguments.get(key));
 		}
+
 		String channelId = message.get("channel");
-		AiCurrentStatus currentStatus = getAssistantManager(inReq).loadCurrentStatus(channelId);
+//		AiCurrentStatus currentStatus = getAssistantManager(inReq).loadCurrentStatus(channelId);
 		UserProfile userprofile = (UserProfile) inReq.getPageValue("chatprofile");
+		
 		if(userprofile == null)
 		{
 			userprofile = (UserProfile) inReq.getPageValue("userprofile");
