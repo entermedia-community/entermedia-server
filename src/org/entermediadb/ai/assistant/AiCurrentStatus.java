@@ -1,11 +1,9 @@
 package org.entermediadb.ai.assistant;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
-import org.openedit.hittracker.HitTracker;
 
 public class AiCurrentStatus
 {

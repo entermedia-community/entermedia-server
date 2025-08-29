@@ -306,6 +306,12 @@ public class AssistantManager extends BaseAiManager
 		}
 		return status;
 	}
+	
+	protected AiCurrentStatus loadCurrentStatus(String inChannelId)
+	{
+		Data channel = getMediaArchive().getCachedData("channel", inChannelId);
+		return loadCurrentStatus(channel);
+	}
 
 	public String getAiFolder()
 	{
@@ -320,73 +326,17 @@ public class AssistantManager extends BaseAiManager
 		
 	}
 	
-	public void sematicKeywordSearch(WebPageRequest inReq) throws Exception
+	public Collection<String> getUserModules(AiSearch inSearch, UserProfile userprofile)
 	{
-
-		MediaArchive archive = getMediaArchive();
-		
-		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
-		
-		if(arguments == null)
-		{			
-			return;
-		} 
-		else {	
-			log.info("Args: " + arguments.toJSONString());
-		}
-		
-		Collection<String> keywords = getResultsManager().parseKeywords(arguments.get("keywords")); 
-		
-		inReq.putPageValue("keywordsstring", getResultsManager().joinWithAnd(new ArrayList(keywords)));
-		
-		String conjunction = (String) arguments.get("conjunction");
-		if(conjunction == null || !conjunction.equals("inclusive")) {
-			conjunction = "exclusive";
-		}
-		
-		Object modules_object = arguments.get("types");
-
-		JSONArray modules_json = new JSONArray();
-		if(modules_object instanceof JSONArray)
-		{			
-			modules_json = (JSONArray) modules_object;
-		}
-		else if(modules_object instanceof String)
-		{
-			modules_json.add((String) modules_object); 
-		}
-		else
-		{
-			modules_json.add("all");
-		}
-		
-		Collection<String> modules = new ArrayList();
-		
-		for (int i = 0; i < modules_json.size(); i++)
-		{
-			modules.add((String) modules_json.get(i));
-		}
-		
-		UserProfile userprofile = (UserProfile) inReq.getPageValue("chatprofile");
-		if(userprofile == null)
-		{
-			userprofile = (UserProfile) inReq.getPageValue("userprofile");
-		}
-		else
-		{
-			inReq.putPageValue("userprofile", userprofile);
-		}
+		Collection<String> modules = inSearch.getSelectedModules();
 		
 		if(modules.contains("all") || modules.size() == 0)
 		{
 			modules = userprofile.getEntitiesIds();
-			log.info("user modules:"+modules);
-			inReq.putPageValue("modulenamestext", "all modules");
 		}
 		else if(!modules.isEmpty())
 		{
 			Collection<Data> modulesdata = userprofile.getEntitiesByIdOrName(modules);
-			Collection<String> moduleNames = new ArrayList();
 			
 			for (Iterator iterator = modulesdata.iterator(); iterator.hasNext();)
 			{
@@ -395,17 +345,59 @@ public class AssistantManager extends BaseAiManager
 				{					
 					modules.add(module.getId());
 				}
-				moduleNames.add(module.getName());
 			}
-			
-			inReq.putPageValue("modulenamestext", getResultsManager().joinWithAnd(new ArrayList(moduleNames)));
+		
+		}
+		return modules;
+	}
+	
+	public AiSearch processSematicSearchArgs(JSONObject arguments) throws Exception
+	{
+		if(arguments == null)
+		{			
+			return null;
+		} 
+		else {	
+			log.info("Args: " + arguments.toJSONString());
 		}
 		
-		log.info("Keywords:");
-		log.info(keywords);
-		log.info("Modules:");
-		log.info(modules);
+		AiSearch searchArgs = new AiSearch();
+
+		Collection<String> keywords = getResultsManager().parseKeywords(arguments.get("keywords")); 
+		searchArgs.setKeywords(keywords);
 		
-		getResultsManager().searchByKeywords(inReq, modules, keywords, conjunction);
+		
+		String searchType = (String) arguments.get("search_type");
+		searchArgs.setBulkSearch("bulk".equals(searchType));
+		
+		boolean isStrict = Boolean.parseBoolean((String) arguments.get("strict"));
+		searchArgs.setStrictSearch(isStrict);
+		
+		Object selectedModulesObj = arguments.get("targets");
+
+		JSONArray selectedModules = new JSONArray();
+		if(selectedModulesObj instanceof JSONArray)
+		{			
+			selectedModules = (JSONArray) selectedModulesObj;
+		}
+		else if(selectedModulesObj instanceof String)
+		{
+			selectedModules.add((String) selectedModulesObj); 
+		}
+		else
+		{
+			selectedModules.add("all");
+		}
+		
+		Collection<String> modules = new ArrayList();
+		
+		for (int i = 0; i < selectedModules.size(); i++)
+		{
+			modules.add((String) selectedModules.get(i));
+		}
+		
+		searchArgs.setSelectedModules(modules);
+		
+		return searchArgs;
 	}
 }
