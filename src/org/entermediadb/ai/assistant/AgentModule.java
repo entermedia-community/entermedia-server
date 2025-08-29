@@ -31,46 +31,46 @@ public class AgentModule extends BaseMediaModule {
 	
 	public void loadFields(WebPageRequest inReq)
 	{
-		MediaArchive archive = getMediaArchive(inReq);
-		
-		HitTracker allmodules = archive.query("module").exact("semanticenabled", true).search();
-		Collection<String> ids = allmodules.collectValues("id");
-		
-		Collection commonDetails = new ArrayList<>();
-		
-		Set existing = new HashSet();
-		
-		for (Iterator iterator = ids.iterator(); iterator.hasNext();) {
-			String id = (String) iterator.next();
-			Collection fields = archive.getSearcher(id).getPropertyDetails().findIndexProperties();
-			for (Iterator iterator2 = fields.iterator(); iterator2.hasNext();) {
-				PropertyDetail detail = (PropertyDetail) iterator2.next();
-				if( existing.contains(detail.getId()) )
-				{ 
-					commonDetails.add(detail);
-				}
-			}
-		}
-		
-		inReq.putPageValue("commonfields", commonDetails);
-		
-		Collection uniqueDetails = new ArrayList<>();
-		
-		for (Iterator iterator = ids.iterator(); iterator.hasNext();) {
-			String id = (String) iterator.next();
-			Collection fields = archive.getSearcher(id).getPropertyDetails().findAiSearchableProperties();
-			for (Iterator iterator2 = fields.iterator(); iterator2.hasNext();) {
-				PropertyDetail detail = (PropertyDetail) iterator2.next();
-				if( !uniqueDetails.contains(detail) )
-				{
-					//log.info("Already have field: " + detail.getId());
-					uniqueDetails.add(detail);
-				}
-			}
-		}
-		
-		inReq.putPageValue("uniquefields", uniqueDetails);
-		
+//		MediaArchive archive = getMediaArchive(inReq);
+//		
+//		HitTracker allmodules = archive.query("module").exact("semanticenabled", true).search();
+//		Collection<String> ids = allmodules.collectValues("id");
+//		
+//		Collection commonDetails = new ArrayList<>();
+//		
+//		Set existing = new HashSet();
+//		
+//		for (Iterator iterator = ids.iterator(); iterator.hasNext();) {
+//			String id = (String) iterator.next();
+//			Collection fields = archive.getSearcher(id).getPropertyDetails().findAiSearchableProperties();
+//			for (Iterator iterator2 = fields.iterator(); iterator2.hasNext();) {
+//				PropertyDetail detail = (PropertyDetail) iterator2.next();
+//				if( existing.contains(detail.getId()) )
+//				{ 
+//					commonDetails.add(detail);
+//				}
+//			}
+//		}
+//		
+//		inReq.putPageValue("commonfields", commonDetails);
+//		
+//		Collection uniqueDetails = new ArrayList<>();
+//		
+//		for (Iterator iterator = ids.iterator(); iterator.hasNext();) {
+//			String id = (String) iterator.next();
+//			Collection fields = archive.getSearcher(id).getPropertyDetails().findAiSearchableProperties();
+//			for (Iterator iterator2 = fields.iterator(); iterator2.hasNext();) {
+//				PropertyDetail detail = (PropertyDetail) iterator2.next();
+//				if( !uniqueDetails.contains(detail) )
+//				{
+//					//log.info("Already have field: " + detail.getId());
+//					uniqueDetails.add(detail);
+//				}
+//			}
+//		}
+//		
+//		inReq.putPageValue("uniquefields", uniqueDetails);
+//		
 	}
 	
 	public void semanticHybridSearch(WebPageRequest inReq) throws Exception {
