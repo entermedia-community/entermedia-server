@@ -83,14 +83,15 @@ public class ContentModule extends BaseMediaModule
 		Map params = new HashMap();
 		params.putAll(inReq.getParameterMap());
 		
+		String model = archive.getCatalogSettingValue("llmmetadatamodel");
+		
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			MultiValued contentrequest = (MultiValued) iterator.next();
 
-			String model = contentrequest.get("llmmodel");
 			
 			LlmConnection llm = (LlmConnection) archive.getLlmConnection(model);
-			Data newdata = manager.createFromLLM(params, llm, model, contentrequest);
+			manager.createFromLLM(params, llm, model, contentrequest);
 			contentrequest.setValue("status", "complete");
 			archive.saveData("contentcreator", contentrequest);
 		}

@@ -160,6 +160,17 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		return embeddingArray.toJSONString(); // Convert to string for returning
 	}
+	
+	public LlmResponse callFunctionFromPath(Map params, String inModel, String inFunction, String inPath) throws Exception
+	{
+		if(inPath == null)
+		{
+			inPath = "classify";
+		}
+		String template = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + inPath + "/systemmessage/createtoplevel.html", params);
+
+		return callFunction(params, inModel, inFunction, template, null);
+	}
 
 	public LlmResponse callFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception
 	{

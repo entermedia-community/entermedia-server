@@ -907,12 +907,6 @@ public class ContentManager implements CatalogEnabled
 		{
 			return null;
 		}
-		if (inModel == null)
-		{
-			inModel = "gpt-4o";
-		}
-		//Only gpt-4o
-		inModel = "gpt-4o";
 
 		Data entitypartentview = archive.getCachedData("view", view);
 
@@ -929,9 +923,8 @@ public class ContentManager implements CatalogEnabled
 			params.put("targetmodule", targetmodule);
 
 			params.put("contentrequest", inContentrequest);
-			String template = inLlm.loadInputFromTemplate("/" + archive.getMediaDbId() + "/gpt/systemmessage/createtoplevel.html", params);
-			log.info(template);
-			LlmResponse results = inLlm.callFunction(params, inModel, "create_entity", template);
+			
+			LlmResponse results = inLlm.callFunctionFromPath(params, inModel, "create_entity", "createdialog");
 
 			child = targetsearcher.createNewData();
 			targetsearcher.updateData(child, results.getArguments());
