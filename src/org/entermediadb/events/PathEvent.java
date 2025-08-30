@@ -38,6 +38,18 @@ public class PathEvent implements Comparable, TextAppender
 	protected RequestUtils fieldRequestUtils;
 	protected long fieldTotalRunCount;
 	protected String fieldStartingFromMidnight;
+	protected Throwable fieldException;
+	
+	
+	
+	public Throwable getException()
+	{
+		return fieldException;
+	}
+	public void setException(Throwable inException)
+	{
+		fieldException = inException;
+	}
 	
 	public String getStartingFromMidnight()
 	{
@@ -382,6 +394,7 @@ public class PathEvent implements Comparable, TextAppender
 			}
 			catch( Throwable ex)
 			{
+				setException(ex);
 				StringWriter ow = new StringWriter();
 				while( ex != null)
 				{
