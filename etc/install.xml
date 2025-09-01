@@ -18,7 +18,7 @@
 	<target name="update-dependencies" depends="clean">
 		<delete dir="${build}"/>
 		<mkdir dir="${build}"/>
-		<get src="${remotehome}/@BRANCH@entermedia-server/lastSuccessfulBuild/artifact/deploy/ROOT.war" dest="${build}/ROOT.war" />	
+		<get src="${remotehome}/@BRANCH@_entermedia-server/lastSuccessfulBuild/artifact/deploy/ROOT.war" dest="${build}/ROOT.war" />	
 	</target>
 
 	<target name="unwar" depends="update-dependencies">
