@@ -70,7 +70,7 @@
     	</copy>
 
   	<mkdir dir="${build}/tmp/" />
-	<get dest="${build}/tmp/oesite.war" src="${remotehome}/em11_entermedia/lastSuccessfulBuild/artifact/deploy/oesite.war"  usetimestamp="true" />
+	<get dest="${build}/tmp/oesite.war" src="${remotehome}/main_entermedia/lastSuccessfulBuild/artifact/deploy/oesite.war"  usetimestamp="true" />
 	<unwar src="${build}/tmp/oesite.war" dest="${build}/tmp/" />
 	<copy todir="${wardir}/WEB-INF/lib" preservelastmodified="true">
 		<fileset dir="${build}/tmp/WEB-INF/lib"	>
