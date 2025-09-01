@@ -56,6 +56,126 @@ public class McpModule extends BaseMediaModule
 		
 		
 	}
+	/**
+	public void handleMcpRequest(WebPageRequest inReq) throws Exception
+	{
+		//This request is from some random client like copilot - we told it what endpoint to use:
+		//client/key
+		
+		///http://172.17.0.1:8080/oneliveweb/mcp/test.json
+		MediaArchive archive = getMediaArchive(inReq);
+		McpManager manager = (McpManager) archive.getBean("mcpManager");
+		
+		String method = inReq.getRequest().getMethod();
+		
+		if ("GET".equals(method))
+		{
+		//	throw new OpenEditException("GET is handled by McpGenerator");
+		}
+		
+		McpConnection currentconnnection = manager.getConnection(inReq);
+		
+		
+		
+		JSONObject payload = (JSONObject) inReq.getJsonRequest();
+		if (payload == null)
+		{
+			payload = new JSONObject();
+			payload.put("method", "initialize");
+			payload.put("id", 0);
+
+		}
+		
+		String cmd = (String) payload.get("method");
+		if(cmd == null) {
+			cmd = "initialize";
+		}
+		inReq.putPageValue("currentconnection", currentconnnection);
+		
+		String appid = inReq.findPathValue("applicationid");
+	
+		inReq.putPageValue("payload", payload);
+		inReq.putPageValue("protocolVersion", "2025-03-26");
+		inReq.putPageValue("serverName", "EnterMedia MCP");
+		inReq.putPageValue("serverVersion", "1.0.0");
+
+		inReq.putPageValue("responsetext", "accepted");
+		inReq.putPageValue("render", getRender());
+
+		//This could be null if anonymous
+		User user = currentconnnection.getUser();
+		inReq.putPageValue("user", user);
+		inReq.putPageValue("userprofile", archive.getUserProfile(user.getId()));
+		
+		JSONObject params = (JSONObject) payload.get("params");
+		
+		String response = null;
+		
+		if(cmd.equals("tools/call"))
+		{
+			String functionname = (String) params.get("name");
+			
+			
+	//
+	//		{
+	//		  "jsonrpc": "2.0",
+	//		  "id": $payload.id,
+	//		  "result": {
+	//		    "content": [
+	//		      {
+	//		        "type": "text",
+	//		        "text": #jesc($raw)
+	//		      }
+	//		    ],
+	//		    "isError": false
+	//		  }
+	//		}
+			
+			String responsetext = getRender().loadInputFromTemplate(inReq,  appid + "/ai/mcp/functions/" + functionname + ".md");
+			
+			JSONObject jsonresponse = new JSONObject();
+			jsonresponse.put("jsonrpc", "2.0");
+			jsonresponse.put("id", payload.get("id"));
+			
+			JSONObject jsonresult = new JSONObject();
+			
+			JSONArray jsoncontentarray = new JSONArray();
+			
+			JSONObject jsoncontent = new JSONObject();
+			jsoncontent.put("type", "text");
+			jsoncontent.put("text", getJsonUtil().escape(responsetext));
+			
+			jsoncontentarray.add(jsoncontent);
+			
+			jsonresult.put("content", jsoncontentarray);
+			jsonresult.put("isError", false);
+			
+			jsonresponse.put("result", jsonresult);
+			
+			response = jsonresponse.toJSONString();
+			
+		}
+		else
+		{
+			response = getRender().loadInputFromTemplate(inReq,  appid + "/ai/mcp/method/" + cmd + ".json");
+		}
+		
+		
+		
+		String res = response;
+		
+		inReq.getResponse().setStatus(202);		
+
+		new Thread(() -> {
+			try {
+				currentconnnection.sendMessage(res);
+			} catch (Exception e) {
+				log.error("Failed to send SSE message", e);
+			}
+		}).start();
+		
+	}
+	 */
 	
 	public void handleMcpHttpRequest(WebPageRequest inReq) throws Exception
 	{
@@ -65,7 +185,7 @@ public class McpModule extends BaseMediaModule
 
 		String method = inReq.getRequest().getMethod();
 
-		 McpGetHandler gethandler = manager.loadGetHandler(inReq);
+		McpGetHandler gethandler = manager.loadGetHandler(inReq);
 
 		if ("GET".equals(method))
 		{
@@ -184,7 +304,8 @@ public class McpModule extends BaseMediaModule
 					
 					String fp = "/" + appid + "/ai/mcp/functions/" + functionname + ".md";
 					
-					String text = getRender().loadInputFromTemplate(inReq, fp); 
+					String text = getRender().loadInputFromTemplate(inReq, fp);
+					
 					text = text.replaceAll("(?m)^\\s*$\\n?", "");
 					text = text.replaceAll("(\\r?\\n){2,}", "\n");
 					
@@ -228,124 +349,6 @@ public class McpModule extends BaseMediaModule
 		
 	}
 
-	public void handleMpcRequest(WebPageRequest inReq) throws Exception
-	{
-		//This request is from some random client like copilot - we told it what endpoint to use:
-		//client/key
-		
-		///http://172.17.0.1:8080/oneliveweb/mcp/test.json
-		MediaArchive archive = getMediaArchive(inReq);
-		McpManager manager = (McpManager) archive.getBean("mcpManager");
-		
-		String method = inReq.getRequest().getMethod();
-		
-		if ("GET".equals(method))
-		{
-		//	throw new OpenEditException("GET is handled by McpGenerator");
-		}
-		
-		McpConnection currentconnnection = manager.getConnection(inReq);
-		
-		
-		
-		JSONObject payload = (JSONObject) inReq.getJsonRequest();
-		if (payload == null)
-		{
-			payload = new JSONObject();
-			payload.put("method", "initialize");
-			payload.put("id", 0);
-
-		}
-		
-		String cmd = (String) payload.get("method");
-		if(cmd == null) {
-			cmd = "initialize";
-		}
-		inReq.putPageValue("currentconnection", currentconnnection);
-		
-		String appid = inReq.findPathValue("applicationid");
-	
-		inReq.putPageValue("payload", payload);
-		inReq.putPageValue("protocolVersion", "2025-03-26");
-		inReq.putPageValue("serverName", "EnterMedia MCP");
-		inReq.putPageValue("serverVersion", "1.0.0");
-
-		inReq.putPageValue("responsetext", "accepted");
-		inReq.putPageValue("render", getRender());
-
-		//This could be null if anonymous
-		User user = currentconnnection.getUser();
-		inReq.putPageValue("user", user);
-		inReq.putPageValue("userprofile", archive.getUserProfile(user.getId()));
-		
-		JSONObject params = (JSONObject) payload.get("params");
-		
-		String response = null;
-		
-		if(cmd.equals("tools/call"))
-		{
-			String functionname = (String) params.get("name");
-			
-			
-	//
-	//		{
-	//		  "jsonrpc": "2.0",
-	//		  "id": $payload.id,
-	//		  "result": {
-	//		    "content": [
-	//		      {
-	//		        "type": "text",
-	//		        "text": #jesc($raw)
-	//		      }
-	//		    ],
-	//		    "isError": false
-	//		  }
-	//		}
-			
-			String responsetext = getRender().loadInputFromTemplate(inReq,  appid + "/ai/mcp/functions/" + functionname + ".md");
-			
-			JSONObject jsonresponse = new JSONObject();
-			jsonresponse.put("jsonrpc", "2.0");
-			jsonresponse.put("id", payload.get("id"));
-			
-			JSONObject jsonresult = new JSONObject();
-			
-			JSONArray jsoncontentarray = new JSONArray();
-			
-			JSONObject jsoncontent = new JSONObject();
-			jsoncontent.put("type", "text");
-			jsoncontent.put("text", getJsonUtil().escape(responsetext));
-			
-			jsoncontentarray.add(jsoncontent);
-			
-			jsonresult.put("content", jsoncontentarray);
-			jsonresult.put("isError", false);
-			
-			jsonresponse.put("result", jsonresult);
-			
-			response = jsonresponse.toJSONString();
-			
-		}
-		else
-		{
-			response = getRender().loadInputFromTemplate(inReq,  appid + "/ai/mcp/method/" + cmd + ".json");
-		}
-		
-		
-		
-		String res = response;
-		
-		inReq.getResponse().setStatus(202);		
-
-		new Thread(() -> {
-			try {
-				currentconnnection.sendMessage(res);
-			} catch (Exception e) {
-				log.error("Failed to send SSE message", e);
-			}
-		}).start();
-		
-	}
 	
 	protected JsonUtil fieldJsonUtil;
 	
