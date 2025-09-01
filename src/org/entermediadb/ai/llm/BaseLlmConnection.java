@@ -49,11 +49,6 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		connection = new HttpSharedConnection();
 		return connection;
 	}
-
-	public LlmResponse callFunction(Map params, String inModel, String inFunction, String inQuery) throws Exception 
-		{
-			return callFunction(params, inModel, inFunction, inQuery, null);
-		}
 		
 	public MediaArchive getMediaArchive()
 	{
@@ -185,14 +180,6 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			throw e;
 		} 
 	}
-	
-	
-	public LlmResponse callFunction(Map params, String inModel, String inFunction, String inQuery, int temp, int maxtokens) throws Exception {
-		return callFunction(params, inModel, inFunction, inQuery, temp, maxtokens);
-	}
-	
-	
-	
 	
 	public int copyData(JSONObject source, Data data)
 	{

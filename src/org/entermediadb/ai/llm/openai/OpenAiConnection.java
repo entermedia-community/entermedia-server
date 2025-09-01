@@ -161,18 +161,71 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		return embeddingArray.toJSONString(); // Convert to string for returning
 	}
 	
-	public LlmResponse callFunctionFromPath(Map params, String inModel, String inFunction, String inPath) throws Exception
+	public LlmResponse callCreateFunction(Map params, String inModel, String inFunction) throws Exception
 	{
-		if(inPath == null)
-		{
-			inPath = "classify";
-		}
-		String template = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + inPath + "/systemmessage/createtoplevel.html", params);
+		MediaArchive archive = getMediaArchive();
 
-		return callFunction(params, inModel, inFunction, template, null);
+		JSONObject obj = new JSONObject();
+		obj.put("model", inModel);
+
+		JSONArray messages = new JSONArray();
+		JSONObject message = new JSONObject();
+		
+		message.put("role", "user");
+
+		messages.add(message);
+		obj.put("messages", messages);
+		
+		String contentPath = "/" + archive.getMediaDbId() + "/ai/createdialog/systemmessage/" + inFunction + ".html";
+		boolean contentExists = archive.getPageManager().getPage(contentPath).exists();
+		if (!contentExists)
+		{
+			contentPath = "/" + archive.getCatalogId() + "/ai/createdialog/systemmessage/" + inFunction + ".html";
+			contentExists = archive.getPageManager().getPage(contentPath).exists();
+		}
+		if (!contentExists)
+		{
+			throw new OpenEditException("Requested Content Does Not Exist in MEdiaDB or Catatlog:" + inFunction);
+		}
+		
+		String content = loadInputFromTemplate(contentPath, params);
+		
+		obj.put("content", content);
+
+		// Handle function call definition
+		if (inFunction != null)
+		{
+			String functionPath = "/" + archive.getMediaDbId() + "/ai/createdialog/functions/" + inFunction + ".json";
+			boolean functionExists = archive.getPageManager().getPage(functionPath).exists();
+			if (!functionExists)
+			{
+				functionPath = "/" + archive.getCatalogId() + "/ai/createdialog/functions/" + inFunction + ".json";
+				functionExists = archive.getPageManager().getPage(functionPath).exists();
+			}
+			if (!functionExists)
+			{
+				throw new OpenEditException("Requested Function Does Not Exist in MEdiaDB or Catatlog:" + inFunction);
+			}
+			
+			String definition = loadInputFromTemplate(functionPath, params);
+
+			JSONParser parser = new JSONParser();
+			JSONObject functionDef = (JSONObject) parser.parse(definition);
+
+			JSONArray functions = new JSONArray();
+			functions.add(functionDef);
+			obj.put("functions", functions);
+
+			JSONObject func = new JSONObject();
+			func.put("name", inFunction);
+			obj.put("function_call", func);
+		}
+
+		return handleApiRequest(obj);
+
 	}
 
-	public LlmResponse callFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception
+	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -246,12 +299,18 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			obj.put("function_call", func);
 		}
 
+		return handleApiRequest(obj);
+
+	}
+	
+	protected LlmResponse handleApiRequest(JSONObject payload) throws Exception
+	{
 		// API request setup
 		String endpoint = "https://api.openai.com/v1/chat/completions";
 		HttpPost method = new HttpPost(endpoint);
 		method.addHeader("authorization", "Bearer " + getApikey());
 		method.setHeader("Content-Type", "application/json");
-		method.setEntity(new StringEntity(obj.toJSONString(), StandardCharsets.UTF_8));
+		method.setEntity(new StringEntity(payload.toJSONString(), StandardCharsets.UTF_8));
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 		
@@ -259,8 +318,8 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		{
 			if (resp.getStatusLine().getStatusCode() != 200)
 			{
-				log.info("Gpt Server error returned " + resp.getStatusLine().getStatusCode());
-				log.info("Gpt Server error returned " + resp.getStatusLine());
+				log.info("Gpt Server error status: " + resp.getStatusLine().getStatusCode());
+				log.info("Gpt Server error response: " + resp.toString());
 				throw new OpenEditException("GPT error: " + resp.getStatusLine());
 			}
 	
@@ -276,11 +335,15 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			return response;
 			
 		}
+		catch (Exception ex)
+		{
+			log.error("Error calling GPT", ex);
+			throw new OpenEditException(ex);
+		}
 		finally
 		{
 			connection.release(resp);
 		}
-
 	}
 
 	public String getApiEndpoint()

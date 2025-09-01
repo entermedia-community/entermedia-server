@@ -20,9 +20,8 @@ public interface LlmConnection {
 
     public String loadInputFromTemplate(String inString, Map inParams);
     
-    public LlmResponse callFunctionFromPath(Map params, String inModel, String inFunction, String inPath) throws Exception;
-    public LlmResponse callFunction(Map inParams, String inModel, String inFunction, String inQuery) throws Exception;
-    public LlmResponse callFunction(Map inParams, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception;
+    public LlmResponse callCreateFunction(Map params, String inModel, String inFunction) throws Exception;
+    public LlmResponse callClassifyFunction(Map inParams, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception;
 
     public LlmResponse runPageAsInput(Map inParams, String inModel, String inChattemplate);
 

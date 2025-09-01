@@ -924,7 +924,7 @@ public class ContentManager implements CatalogEnabled
 
 			params.put("contentrequest", inContentrequest);
 			
-			LlmResponse results = inLlm.callFunctionFromPath(params, inModel, "create_entity", "createdialog");
+			LlmResponse results = inLlm.callCreateFunction(params, inModel, "create_entity");
 
 			child = targetsearcher.createNewData();
 			targetsearcher.updateData(child, results.getArguments());
@@ -954,8 +954,7 @@ public class ContentManager implements CatalogEnabled
 
 			params.put("contentrequest", inContentrequest);
 
-			String template = inLlm.loadInputFromTemplate("/" + archive.getMediaDbId() + "/gpt/systemmessage/create_child.html", params);
-			LlmResponse results = inLlm.callFunction(params, inModel, "create_entity", template);
+			LlmResponse results = inLlm.callCreateFunction(params, inModel, "create_entity");
 
 			child = targetsearcher.createNewData();
 			targetsearcher.updateData(child, results.getArguments());
