@@ -927,7 +927,8 @@ public class ContentManager implements CatalogEnabled
 			LlmResponse results = inLlm.callCreateFunction(params, inModel, "create_entity");
 
 			child = targetsearcher.createNewData();
-			targetsearcher.updateData(child, results.getArguments());
+			JSONObject args = results.getArguments();
+			targetsearcher.updateData(child, args);
 			child.setValue("entity_date", new Date());
 			child.setValue("ai-functioncall", results.getFunctionName());
 			child.setValue("owner", inContentrequest.get("owner"));

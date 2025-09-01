@@ -168,14 +168,6 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		JSONObject obj = new JSONObject();
 		obj.put("model", inModel);
 
-		JSONArray messages = new JSONArray();
-		JSONObject message = new JSONObject();
-		
-		message.put("role", "user");
-
-		messages.add(message);
-		obj.put("messages", messages);
-		
 		String contentPath = "/" + archive.getMediaDbId() + "/ai/createdialog/systemmessage/" + inFunction + ".html";
 		boolean contentExists = archive.getPageManager().getPage(contentPath).exists();
 		if (!contentExists)
@@ -190,7 +182,13 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		
 		String content = loadInputFromTemplate(contentPath, params);
 		
-		obj.put("content", content);
+		JSONArray messages = new JSONArray();
+		JSONObject message = new JSONObject();
+		message.put("role", "user");
+		message.put("content", content);
+		messages.add(message);
+		
+		obj.put("messages", messages);
 
 		// Handle function call definition
 		if (inFunction != null)
@@ -220,6 +218,8 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			func.put("name", inFunction);
 			obj.put("function_call", func);
 		}
+		
+		log.info(obj.toJSONString());
 
 		return handleApiRequest(obj);
 
