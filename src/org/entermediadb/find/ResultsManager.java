@@ -16,6 +16,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.manager.BaseManager;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
@@ -336,7 +337,7 @@ public class ResultsManager extends BaseManager {
 		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",plainquery).hitsPerPage(30);
 		dq.getQuery().setIncludeDescription(true);
 		
-		Collection searchmodules = loadUserSearchTypes(inReq, searchArgs.getSelectedModules());
+		Collection searchmodules = loadUserSearchTypes(inReq, searchArgs.getSelectedModuleIds());
 		
 		Collection searchmodulescopy = new ArrayList(searchmodules);
 		searchmodulescopy.remove("asset");
@@ -395,6 +396,7 @@ public class ResultsManager extends BaseManager {
 		organizeHits(inReq, unsorted, pageOfHits);
 		
 	}
+	
 	public Collection loadUserSearchTypes(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive();

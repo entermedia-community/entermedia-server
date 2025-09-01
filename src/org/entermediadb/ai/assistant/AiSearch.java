@@ -2,8 +2,10 @@ package org.entermediadb.ai.assistant;
 
 import java.util.Collection;
 
+import org.openedit.Data;
+
 public class AiSearch {
-	Collection<String> fieldSelectedModules; //Name or IDs
+	Collection<Data> fieldSelectedModules; //Name or IDs
 	Collection<String> fieldKeywords;
 	Collection<String> fieldFilters;
 
@@ -17,10 +19,16 @@ public class AiSearch {
 		fieldKeywords = inKeywords;
 	}
 	
-	public Collection<String> getSelectedModules() {
+	public Collection<Data> getSelectedModules() {
 		return fieldSelectedModules;
 	}
-	public void setSelectedModules(Collection<String> inModules) {
+	public Collection<String> getSelectedModuleIds() {
+		if( fieldSelectedModules == null ) {
+			return null;
+		}
+		return fieldSelectedModules.stream().map(m -> m.getId()).toList();
+	}
+	public void setSelectedModules(Collection<Data> inModules) {
 		fieldSelectedModules = inModules;
 	}
 	

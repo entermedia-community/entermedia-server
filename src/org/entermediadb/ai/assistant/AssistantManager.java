@@ -23,6 +23,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
+import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -327,30 +328,6 @@ public class AssistantManager extends BaseAiManager
 		
 	}
 	
-	public Collection<String> getUserModules(Collection<String> inModules, UserProfile userprofile)
-	{
-		
-		if(inModules.size() == 0)
-		{
-			inModules = userprofile.getEntitiesIds();
-		}
-		else if(!inModules.isEmpty())
-		{
-			Collection<Data> modulesdata = userprofile.getEntitiesByIdOrName(inModules);
-			
-			for (Iterator iterator = modulesdata.iterator(); iterator.hasNext();)
-			{
-				Data module = (Data) iterator.next();
-				if(!inModules.contains(module.getId()))
-				{					
-					inModules.add(module.getId());
-				}
-			}
-		
-		}
-		return inModules;
-	}
-	
 	public AiSearch processSematicSearchArgs(JSONObject arguments, UserProfile userprofile) throws Exception
 	{
 		if(arguments == null)
@@ -386,9 +363,18 @@ public class AssistantManager extends BaseAiManager
 			selectedModules.add((String) selectedModulesObj); 
 		}
 		
-		Collection<String> permittedModules = getUserModules(selectedModules, userprofile);
+		Collection<Data> permittedModules = new ArrayList();
+		
+		if(selectedModules.contains("all") || selectedModules.size() == 0)
+		{
+			permittedModules = userprofile.getEntities();
+		}
+		else
+		{
+			permittedModules = userprofile.getEntitiesByIdOrName(selectedModules);
+		}
+		
 		searchArgs.setSelectedModules(permittedModules);
-
 		
 		return searchArgs;
 	}
@@ -407,5 +393,20 @@ public class AssistantManager extends BaseAiManager
 //		fields.add("caption");
 //		fields.add("date");
 		return fields;
+	}
+	
+
+	public String generateReport(Map params, String model) throws Exception
+	{
+		MediaArchive archive = getMediaArchive();
+
+		LlmConnection manager = (LlmConnection) archive.getBean("openaiConnection");
+		
+		String chattemplate = "/" + archive.getMediaDbId() + "/ai/mcp/prompts/build_takeaways.json";
+		LlmResponse response = manager.runPageAsInput(params, model, chattemplate);
+		
+		String takeaways = response.getMessage();
+		
+		return takeaways;
 	}
 }
