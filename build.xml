@@ -36,7 +36,7 @@
 	<property name="version"  value="${majorversion}.${env.BUILD_NUMBER}"/>
 	<property name="deployDir" value="deploy"/>
   	<property name="report" value="${deployDir}"/>
-	<property name="branch" value="" />
+	<property name="branch" value="main" />
 	<property name="remotehome" value="http://dev.entermediasoftware.com/jenkins/job" />
 
 	
@@ -70,7 +70,7 @@
     	</copy>
 
   	<mkdir dir="${build}/tmp/" />
-	<get dest="${build}/tmp/oesite.war" src="${remotehome}/main_entermedia/lastSuccessfulBuild/artifact/deploy/oesite.war"  usetimestamp="true" />
+	<get dest="${build}/tmp/oesite.war" src="${remotehome}/${branch}_entermedia/lastSuccessfulBuild/artifact/deploy/oesite.war"  usetimestamp="true" />
 	<unwar src="${build}/tmp/oesite.war" dest="${build}/tmp/" />
 	<copy todir="${wardir}/WEB-INF/lib" preservelastmodified="true">
 		<fileset dir="${build}/tmp/WEB-INF/lib"	>
@@ -134,7 +134,7 @@
 	<target name="jar">
 		<mkdir dir="${wardir}/WEB-INF/lib/" />
 		<mkdir dir="${deployDir}/builds/" />
-		<jar jarfile="${wardir}/WEB-INF/lib/${branch}${appname}-${version}.jar" basedir="${build}/compile" >
+		<jar jarfile="${wardir}/WEB-INF/lib/${branch}_${appname}-${version}.jar" basedir="${build}/compile" >
 
 			<manifest>
 		    	<attribute name="Built-By" value="${user.name}"/>
@@ -143,7 +143,7 @@
 			    <attribute name="Implementation-Vendor" value="${org}"/>
 		    </manifest>
 		</jar>
-		<copy file="${wardir}/WEB-INF/lib/${branch}${appname}-${version}.jar" todir="${deployDir}/builds/"/>
+		<copy file="${wardir}/WEB-INF/lib/${branch}_${appname}-${version}.jar" todir="${deployDir}/builds/"/>
   </target>
     
     
