@@ -49,11 +49,6 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		connection = new HttpSharedConnection();
 		return connection;
 	}
-
-	public LlmResponse callFunction(Map params, String inModel, String inFunction, String inQuery) throws Exception 
-		{
-			return callFunction(params, inModel, inFunction, inQuery, null);
-		}
 		
 	public MediaArchive getMediaArchive()
 	{
@@ -185,72 +180,6 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			throw e;
 		} 
 	}
-	
-	
-	public LlmResponse callFunction(Map params, String inModel, String inFunction, String inQuery, int temp, int maxtokens) throws Exception {
-		return callFunction(params, inModel, inFunction, inQuery, temp, maxtokens);
-	}
-	
-	public void callChatFunction(Data messageToUpdate, String functionName, Map params) throws Exception
-	{
-
-		MediaArchive archive = getMediaArchive();
-
-		//get the channel
-		Data channel = archive.getCachedData("channel", messageToUpdate.get("channel"));
-		params.put("channel", channel);
-		
-		
-		ChatServer server = (ChatServer) archive.getBean("chatServer");
-
-		//String function = messageToUpdate.get("function");
-			//params.putPageValue("args", args);
-		String response;
-		
-		try
-		{
-			String filename = functionName;
-			if( functionName.equals("showHintOrHelpInfo") )
-			{
-				filename = "show-hints";
-			}
-			
-			params.put("data", messageToUpdate);
-
-			String args = (String) messageToUpdate.get("arguments");
-			JSONObject arguments = (JSONObject) new JSONParser().parse(args);
-			params.put("arguments", arguments);
-			
-			response = loadInputFromTemplate("/" + archive.getMediaDbId() + "/gpt/functions/" + filename + ".html", params);
-			//log.info("Function " + functionName + " returned : " + response);
-
-			messageToUpdate.setValue("functionresponse", response);
-			messageToUpdate.setValue("message", response);
-			
-			Searcher chats = archive.getSearcher("chatterbox");
-			chats.saveData(messageToUpdate);
-			
-			JSONObject functionMessageUpdate = new JSONObject();
-			functionMessageUpdate.put("messagetype", "airesponse");
-			functionMessageUpdate.put("catalogid", archive.getCatalogId());
-			functionMessageUpdate.put("user", "agent");
-			functionMessageUpdate.put("channel", messageToUpdate.get("channel"));
-			functionMessageUpdate.put("messageid", messageToUpdate.getId());
-			functionMessageUpdate.put("message", response);
-
-			server.broadcastMessage(functionMessageUpdate);
-			
-		}
-		catch (Exception e)
-		{
-			log.error("Error: " + e.toString());
-			messageToUpdate.setValue("functionresponse", e.toString());
-			messageToUpdate.setValue("processingcomplete", true);
-
-		}
-
-	}
-	
 	
 	public int copyData(JSONObject source, Data data)
 	{

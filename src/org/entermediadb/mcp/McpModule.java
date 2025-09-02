@@ -56,168 +56,13 @@ public class McpModule extends BaseMediaModule
 		
 		
 	}
-	
-	public void handleMcpHttpRequest(WebPageRequest inReq) throws Exception
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		McpManager manager = (McpManager) archive.getBean("mcpManager");
-		
-
-		String method = inReq.getRequest().getMethod();
-
-		 McpGetHandler gethandler = manager.loadGetHandler(inReq);
-
-		if ("GET".equals(method))
-		{
-			inReq.setCancelActions(true);
-			inReq.setHasRedirected(true); //Dont render anything else after this
-
-			//TODO: Block on this one forever? Stream back events to the client? Not used?
-			inReq.getResponse().setContentType("text/event-stream");
-
-			inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId());
-			inReq.getResponse().flushBuffer();
-			//Only use Event-streams here
-			
-			//inReq.getResponse().setContentLength(100); //Without this we will use chunk encoding			
-			Thread.sleep(60000);
-			return;
-		}
-
-		String appid = inReq.findPathValue("applicationid");
-	
-		JSONObject payload = (JSONObject) inReq.getJsonRequest();
-		String cmd = (String) payload.get("method");
-
-		inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId());
-
-		if( cmd.equals("notifications/initialized") )
-		{
-			inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId());
-			inReq.getResponse().setStatus(HttpServletResponse.SC_ACCEPTED); //A blank response
-			inReq.setCancelActions(true);
-			inReq.setHasRedirected(true);
-			inReq.getResponse().flushBuffer();
-			return;
-		}
-		
-		inReq.getResponse().setStatus(HttpServletResponse.SC_OK);
-		inReq.getResponse().setHeader("content-type", "application/json");
-		
-		inReq.putPageValue("payload", payload);
-		
-		JSONObject params = (JSONObject) payload.get("params");
-		
-		String functionname = null;
-		JSONObject arguments = null;
-		
-		if(params != null)
-		{			
-			functionname = (String) params.get("name");
-			inReq.putPageValue("functionname", functionname);
-			
-			arguments = (JSONObject) params.get("arguments");
-			if(arguments != null) {
-				inReq.putPageValue("arguments", arguments);
-			}
-		}
-		
-		Object id = payload.get("id");
-		
-		inReq.putPageValue("id", id);
-		
-		String response = "";
-		
-		if(cmd.equals("initialize"))
-		{
-			response = new JsonRpcResponseBuilder(id)
-					.withServer("eMedia Live")
-					.build();
-		}
-		else if(cmd.startsWith("tools/"))
-		{
-			// This could be null if anonymous
-			User user = inReq.getUser();
-			inReq.putPageValue("user", user);
-			UserProfile profile = archive.getUserProfile(user.getId());
-			inReq.putPageValue("userprofile", profile);
-			
-			if(user == null || profile == null)
-			{
-				response = new JsonRpcResponseBuilder(id)
-						.withResponse("Authentication failed!", true)
-						.build();
-			}
-			else
-			{				
-				if(cmd.equals("tools/list"))
-				{
-					String fp = "/" + appid + "/mcp/method/tools/list.html";
-					inReq.putPageValue("modules", profile.getEntities());
-					
-					String toolsArrString = getRender().loadInputFromTemplate(inReq, fp);
-					
-					response = new JsonRpcResponseBuilder(id)
-							.withToolsList(toolsArrString)
-							.build();
-				}
-				else if(cmd.equals("tools/call"))
-				{
-					String siteid = inReq.findValue("siteid");
-					inReq.putPageValue("mcpapplicationid", siteid + "/find");
-					
-					String fp = "/" + appid + "/mcp/functions/" + functionname + ".md";
-					
-					String text = getRender().loadInputFromTemplate(inReq, fp); 
-					text = text.replaceAll("(?m)^\\s*$\\n?", "");
-					text = text.replaceAll("(\\r?\\n){2,}", "\n");
-					
-					response = new JsonRpcResponseBuilder(id)
-							.withResponse(text, false)
-							.build();
-				}
-			}
-
-		}
-		else 
-		{
-			String fp = "/" + appid + "/mcp/method/" + cmd + ".html";
-			response = getRender().loadInputFromTemplate(inReq, fp);
-		}
-		
-		if(response.length() == 0)
-		{
-			response = new JsonRpcResponseBuilder(id)
-					.withResponse("Server responded with nothing!", true)
-					.build();
-		}
-		else if(response.startsWith("404:"))
-		{
-			response = new JsonRpcResponseBuilder(id)
-					.withResponse("MCP Server error, function undefined (404)!", true)
-					.build();
-		}
-		
-		//inReq.getPageStreamer().include(fp);
-		//inReq.getResponse().setContentLength(response.length());
-		
-		inReq.getResponse().getOutputStream().write(response.getBytes());  //This should chunk it up
-		
-		//inReq.getPageStreamer().getOutput().getWriter().write(response);
-		inReq.getResponse().flushBuffer();
-		inReq.setHasRedirected(true); //Dont render anything more now
-
-		inReq.setCancelActions(true);
-		//Close?
-		
-	}
-
-	public void handleMpcRequest(WebPageRequest inReq) throws Exception
+	/**
+	public void handleMcpRequest(WebPageRequest inReq) throws Exception
 	{
 		//This request is from some random client like copilot - we told it what endpoint to use:
 		//client/key
 		
-		///http://172.17.0.1:8080/oneliveweb/mcp/test.html
+		///http://172.17.0.1:8080/oneliveweb/mcp/test.json
 		MediaArchive archive = getMediaArchive(inReq);
 		McpManager manager = (McpManager) archive.getBean("mcpManager");
 		
@@ -286,7 +131,7 @@ public class McpModule extends BaseMediaModule
 	//		  }
 	//		}
 			
-			String responsetext = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/functions/" + functionname + ".html");
+			String responsetext = getRender().loadInputFromTemplate(inReq,  appid + "/ai/mcp/functions/" + functionname + ".md");
 			
 			JSONObject jsonresponse = new JSONObject();
 			jsonresponse.put("jsonrpc", "2.0");
@@ -312,7 +157,7 @@ public class McpModule extends BaseMediaModule
 		}
 		else
 		{
-			response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html");
+			response = getRender().loadInputFromTemplate(inReq,  appid + "/ai/mcp/method/" + cmd + ".json");
 		}
 		
 		
@@ -330,6 +175,180 @@ public class McpModule extends BaseMediaModule
 		}).start();
 		
 	}
+	 */
+	
+	public void handleMcpHttpRequest(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		McpManager manager = (McpManager) archive.getBean("mcpManager");
+		
+
+		String method = inReq.getRequest().getMethod();
+
+		McpGetHandler gethandler = manager.loadGetHandler(inReq);
+
+		if ("GET".equals(method))
+		{
+			inReq.setCancelActions(true);
+			inReq.setHasRedirected(true); //Dont render anything else after this
+
+			//TODO: Block on this one forever? Stream back events to the client? Not used?
+			inReq.getResponse().setContentType("text/event-stream");
+
+			inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId());
+			inReq.getResponse().flushBuffer();
+			//Only use Event-streams here
+			
+			//inReq.getResponse().setContentLength(100); //Without this we will use chunk encoding			
+			Thread.sleep(60000);
+			return;
+		}
+
+		String appid = inReq.findPathValue("applicationid");
+	
+		JSONObject payload = (JSONObject) inReq.getJsonRequest();
+		String cmd = (String) payload.get("method");
+
+		inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId());
+
+		if( cmd.equals("notifications/initialized") )
+		{
+			inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId());
+			inReq.getResponse().setStatus(HttpServletResponse.SC_ACCEPTED); //A blank response
+			inReq.setCancelActions(true);
+			inReq.setHasRedirected(true);
+			inReq.getResponse().flushBuffer();
+			return;
+		}
+		
+		inReq.getResponse().setStatus(HttpServletResponse.SC_OK);
+		inReq.getResponse().setHeader("content-type", "application/json");
+		
+		inReq.putPageValue("payload", payload);
+		
+		JSONObject params = (JSONObject) payload.get("params");
+		
+		String functionname = null;
+		JSONObject arguments = null;
+		
+		if(params != null)
+		{			
+			functionname = (String) params.get("name");
+			inReq.putPageValue("functionname", functionname);
+			
+			arguments = (JSONObject) params.get("arguments");
+			if(arguments != null) {
+				inReq.putPageValue("arguments", arguments);
+			}
+		}
+		
+		Object id = payload.get("id");
+		
+		inReq.putPageValue("id", id);
+		
+		String response = "";
+		
+		if(cmd.equals("initialize"))
+		{
+			response = new JsonRpcResponseBuilder(id)
+					.withServer("eMedia Live")
+					.build();
+		}
+		else if(cmd.equals("logging/setLevel"))
+		{
+			response = new JsonRpcResponseBuilder(id)
+					.withServer("eMedia Live")
+					.build();
+		}
+		else if(cmd.startsWith("tools/"))
+		{
+			// This could be null if anonymous
+			User user = inReq.getUser();
+			UserProfile profile = null;
+			if(user != null)
+			{
+				profile = archive.getUserProfile(user.getId());
+			} 
+			else 
+			{
+				response = new JsonRpcResponseBuilder(id)
+						.withResponse("Authentication failed! User not found.", true)
+						.build();
+			}
+			if(profile == null)
+			{
+				response = new JsonRpcResponseBuilder(id)
+						.withResponse("Authentication failed! User profile not found.", true)
+						.build();
+			}
+			else
+			{
+				inReq.putPageValue("user", user);
+				inReq.putPageValue("userprofile", profile);
+				
+				if(cmd.equals("tools/list"))
+				{
+					String fp = "/" + appid + "/ai/mcp/method/tools/list.json";
+					inReq.putPageValue("modules", profile.getEntities());
+					
+					String toolsArrString = getRender().loadInputFromTemplate(inReq, fp);
+					
+					response = new JsonRpcResponseBuilder(id)
+							.withToolsList(toolsArrString)
+							.build();
+				}
+				else if(cmd.equals("tools/call"))
+				{
+					String siteid = inReq.findValue("siteid");
+					inReq.putPageValue("mcpapplicationid", siteid + "/find");
+					
+					String fp = "/" + appid + "/ai/mcp/functions/" + functionname + ".md";
+					
+					String text = getRender().loadInputFromTemplate(inReq, fp);
+					
+					text = text.replaceAll("(?m)^\\s*$\\n?", "");
+					text = text.replaceAll("(\\r?\\n){2,}", "\n");
+					
+					response = new JsonRpcResponseBuilder(id)
+							.withResponse(text, false)
+							.build();
+				}
+			}
+
+		}
+		else 
+		{
+			String fp = "/" + appid + "/ai/mcp/method/" + cmd + ".json";
+			response = getRender().loadInputFromTemplate(inReq, fp);
+		}
+		
+		if(response.length() == 0)
+		{
+			response = new JsonRpcResponseBuilder(id)
+					.withResponse("Server responded with nothing!", true)
+					.build();
+		}
+		else if(response.startsWith("404:"))
+		{
+			response = new JsonRpcResponseBuilder(id)
+					.withResponse("MCP Server error, function undefined (404)!", true)
+					.build();
+		}
+		
+		//inReq.getPageStreamer().include(fp);
+		//inReq.getResponse().setContentLength(response.length());
+		
+		inReq.getResponse().getOutputStream().write(response.getBytes());  //This should chunk it up
+		
+		//inReq.getPageStreamer().getOutput().getWriter().write(response);
+		inReq.getResponse().flushBuffer();
+		inReq.setHasRedirected(true); //Dont render anything more now
+
+		inReq.setCancelActions(true);
+		//Close?
+		
+	}
+
 	
 	protected JsonUtil fieldJsonUtil;
 	

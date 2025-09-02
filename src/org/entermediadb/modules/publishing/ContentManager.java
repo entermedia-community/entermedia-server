@@ -756,84 +756,81 @@ public class ContentManager implements CatalogEnabled
 //
 //	}
 
-//	public Asset createAssetFromLLM(WebPageRequest inReq, Data contentrequest)
-//	{
-//
-//		MediaArchive archive = getMediaArchive();
-//
-//		String model = contentrequest.get("llmmodel");
-//		
-//		Data modelinfo = archive.getData("llmmodel", model);
-//
-//		String type = modelinfo != null ? modelinfo.get("llmtype") : null;
-//
-//		if (type == null)
-//		{
-//			type = "gptManager";
-//		}
-//		else
-//		{
-//			type = type + "Manager";
-//		}
-//		LlmConnection llm = (LlmConnection) archive.getBean(type);
-//
-//		String prompt = inReq.findValue("llmprompt.value");
-//
+	public Asset createAssetFromLLM(Map params, Data contentrequest)
+	{
+
+		MediaArchive archive = getMediaArchive();
+
+		String model = contentrequest.get("llmmodel");
+		
+		LlmConnection llm = archive.getLlmConnection(model);
+
+		String prompt = (String) contentrequest.get("llmprompt");
+		
+		if (prompt == null)
+		{
+			return null;
+		}
+
 //		String edithome = inReq.findPathValue("edithome");
-//
-//		String imagestyle = contentrequest.get("llmimagestyle");
-//		if (imagestyle == null)
-//		{
-//			imagestyle = "natural";
-//		}
-//		Asset asset = archive.getAsset(contentrequest.get("primarymedia"));
-//		if(asset == null) {
-//			return null;
-//		}
-//		
-//		LlmResponse results = llm.createImage(inReq, model, 1, "1024x1024", imagestyle, contentrequest.get("createassetprompt"));
-//		
-//		Downloader downloader = new Downloader();
-//
-//		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
-//		{
-//
-//			String url = (String) iterator.next();
-//			asset.setValue("importstatus", "created");
-//
-//			String filename = asset.getName();
-//
-//			String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
-//			File attachments = new File(archive.getPageManager().getPage(path).getContentItem().getAbsolutePath());
-//			filename = filename.replaceAll("\\?.*", "");
-//			log.info("Downloading " + url + " ->" + path + "/" + filename);
-//			File target = new File(attachments, filename);
-//			if (target.exists() || target.length() == 0)
-//			{
-//				try
-//				{
-//					downloader.download(url, target);
-//				}
-//				catch (Exception ex)
-//				{
-//					asset.setProperty("importstatus", "error");
-//					log.error(ex);
-//					archive.saveAsset(asset);
-//
-//				}
-//			}
-//			asset.setFolder(true);
-//			asset.setName(filename);
-//			asset.setPrimaryFile(filename);
-//			// asset.setFolder(true);
-//			asset.setProperty("importstatus", "created");
-//			archive.saveAsset(asset);
-//		}
-//		archive.fireSharedMediaEvent("importing/assetscreated");
-//		contentrequest.setValue("status", "complete");
-//		archive.saveData("contentcreator", contentrequest);
-//		return asset;
-//	}
+
+		String imagestyle = contentrequest.get("llmimagestyle");
+		if (imagestyle == null)
+		{
+			imagestyle = "natural";
+		}
+		Asset asset = archive.getAsset(contentrequest.get("primarymedia"));
+		if(asset == null) {
+			return null;
+		}
+		
+		params.put("model", model);
+		params.put("style", imagestyle);
+		params.put("prompt", prompt);
+
+		LlmResponse results = llm.createImage(params);
+
+		Downloader downloader = new Downloader();
+		
+		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
+		{
+
+			String url = (String) iterator.next();
+			asset.setValue("importstatus", "created");
+
+			String filename = asset.getName();
+
+			String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
+			File attachments = new File(archive.getPageManager().getPage(path).getContentItem().getAbsolutePath());
+			filename = filename.replaceAll("\\?.*", "");
+			log.info("Downloading " + url + " ->" + path + "/" + filename);
+			File target = new File(attachments, filename);
+			if (target.exists() || target.length() == 0)
+			{
+				try
+				{
+					downloader.download(url, target);
+				}
+				catch (Exception ex)
+				{
+					asset.setProperty("importstatus", "error");
+					log.error(ex);
+					archive.saveAsset(asset);
+
+				}
+			}
+			asset.setFolder(true);
+			asset.setName(filename);
+			asset.setPrimaryFile(filename);
+			// asset.setFolder(true);
+			asset.setProperty("importstatus", "created");
+			archive.saveAsset(asset);
+		}
+		archive.fireSharedMediaEvent("importing/assetscreated");
+		contentrequest.setValue("status", "complete");
+		archive.saveData("contentcreator", contentrequest);
+		return asset;
+	}
 
 	//    public Asset createAssetFromLLM(WebPageRequest inReq, String inModuleid, String inEntityid, String inStructions) {
 	//	Data entity = getMediaArchive().getData(inModuleid, inEntityid);
@@ -899,7 +896,7 @@ public class ContentManager implements CatalogEnabled
 	//
 	//    }
 
-	public Data createFromLLM(Map inReq, LlmConnection inLlm, String inModel, Data inContentrequest) throws Exception
+	public Data createFromLLM(Map params, LlmConnection inLlm, String inModel, Data inContentrequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -910,12 +907,6 @@ public class ContentManager implements CatalogEnabled
 		{
 			return null;
 		}
-		if (inModel == null)
-		{
-			inModel = "gpt-4o";
-		}
-		//Only gpt-4o
-		inModel = "gpt-4o";
 
 		Data entitypartentview = archive.getCachedData("view", view);
 
@@ -929,15 +920,15 @@ public class ContentManager implements CatalogEnabled
 			targetsearcher = getMediaArchive().getSearcher(moduleid);
 			Data targetmodule = getMediaArchive().getCachedData("module", moduleid);// Chapter
 
-			inReq.put("targetmodule", targetmodule);
+			params.put("targetmodule", targetmodule);
 
-			inReq.put("contentrequest", inContentrequest);
-			String template = inLlm.loadInputFromTemplate("/" + archive.getMediaDbId() + "/gpt/systemmessage/createtoplevel.html", inReq);
-			log.info(template);
-			LlmResponse results = inLlm.callFunction(inReq, inModel, "create_entity", template);
+			params.put("contentrequest", inContentrequest);
+			
+			LlmResponse results = inLlm.callCreateFunction(params, inModel, "create_entity");
 
 			child = targetsearcher.createNewData();
-			targetsearcher.updateData(child, results.getArguments());
+			JSONObject args = results.getArguments();
+			targetsearcher.updateData(child, args);
 			child.setValue("entity_date", new Date());
 			child.setValue("ai-functioncall", results.getFunctionName());
 			child.setValue("owner", inContentrequest.get("owner"));
@@ -954,18 +945,17 @@ public class ContentManager implements CatalogEnabled
 
 			Data directparent = getMediaArchive().getCachedData(moduleid, entityid);
 
-			inReq.put("parentmodule", moduleid); //Book
-			inReq.put("parententity", directparent); //Which book
-			inReq.put("parentsearcher", parentsearcher);
-			inReq.put("parentdetails", parentsearcher.getPropertyDetails());
+			params.put("parentmodule", moduleid); //Book
+			params.put("parententity", directparent); //Which book
+			params.put("parentsearcher", parentsearcher);
+			params.put("parentdetails", parentsearcher.getPropertyDetails());
 
-			inReq.put("targetmodule", targetmodule); //Chapter
-			inReq.put("targetsearcher", targetmodule);
+			params.put("targetmodule", targetmodule); //Chapter
+			params.put("targetsearcher", targetmodule);
 
-			inReq.put("contentrequest", inContentrequest);
+			params.put("contentrequest", inContentrequest);
 
-			String template = inLlm.loadInputFromTemplate("/" + archive.getMediaDbId() + "/gpt/systemmessage/create_child.html", inReq);
-			LlmResponse results = inLlm.callFunction(inReq, inModel, "create_entity", template);
+			LlmResponse results = inLlm.callCreateFunction(params, inModel, "create_entity");
 
 			child = targetsearcher.createNewData();
 			targetsearcher.updateData(child, results.getArguments());

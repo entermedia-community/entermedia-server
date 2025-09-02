@@ -127,10 +127,13 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		return endpoint;
 	}
 
-	public BaseLlmResponse createImage(Map params, String inModel, int imagecount, String inSize, String style, String inPrompt)
+	public BaseLlmResponse createImage(Map params)
 	{
 		throw new OpenEditException("Model doesn't support images");
-
+	}
+	public BaseLlmResponse createImage(Map inParams, int inCount, String inSize)
+	{
+		throw new OpenEditException("Model doesn't support images");
 	}
 
 	public String getEmbedding(String inQuery) throws Exception
@@ -154,7 +157,7 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		return "Not Implemented";
 	}
 
-	public LlmResponse callFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception {
+	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception {
 	    MediaArchive archive = getMediaArchive();
 
 	    log.info("Llama function: " + inFunction + " Query: " + inQuery);
@@ -230,26 +233,20 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	@Override
 	public String getServerName()
 	{
-		// TODO Auto-generated method stub
 		return "ollama";
 	}
 
 	@Override
 	public Collection<String> callStructuredOutputList(String inStructureName, String inModel, Collection inFields, Map inParams) throws Exception
 	{
-//		inParams.put("fields", inFields);
-//		inParams.put("model", inModel);
-//		
-//		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ollama/structures/" + inStructureName + ".json", inParams);
-//
-//		JSONParser parser = new JSONParser();
-//		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
-//
-//		String endpoint = "https://api.openai.com/v1/responses";
-//		HttpPost method = new HttpPost(endpoint);
-//		method.addHeader("authorization", "Bearer " + getApikey());
-//		method.setHeader("Content-Type", "application/json");
-//		method.setEntity(new StringEntity(structureDef.toJSONString(), StandardCharsets.UTF_8));
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LlmResponse callCreateFunction(Map inParams, String inModel, String inFunction) throws Exception 
+	{
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

@@ -317,8 +317,8 @@ public class ClassifyManager extends BaseManager
 				params.put("asset", asset);
 				params.put("aifields", aifields);
 				
-				String requestPayload = llmconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/gpt/systemmessage/analyzeasset.html", params);
-				LlmResponse results = llmconnection.callFunction(params, models.get("vision"), "generate_metadata", requestPayload,base64EncodedString);
+				String requestPayload = llmconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/classify/systemmessage/analyzeasset.html", params);
+				LlmResponse results = llmconnection.callClassifyFunction(params, models.get("vision"), "generate_metadata", requestPayload,base64EncodedString);
 
 				boolean wasUpdated = false;
 				if (results != null)

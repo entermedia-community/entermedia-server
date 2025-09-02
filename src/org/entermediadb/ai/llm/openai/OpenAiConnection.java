@@ -32,7 +32,6 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	{
 
 		params.put("model", inModel);
-		params.put("gpt", this);
 		params.put("mediaarchive", getMediaArchive());
 
 		String input = loadInputFromTemplate(inTemplate, params);
@@ -56,14 +55,24 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 	}
 
-	public LlmResponse createImage(Map params, String inModel, int imagecount, String inSize, String style, String inPrompt)
+	public LlmResponse createImage(Map params)
+	{
+		return createImage(params, 1, "1024x1024");
+	}
+	
+	public LlmResponse createImage(Map params, int imagecount, String inSize)
 	{
 		if (getApikey() == null)
 		{
 			log.error("No gpt-key defined");
 			return null;
 		}
-		params.put("prompt", inPrompt);
+		
+		String inModel = (String) params.get("model");
+		String style = (String) params.get("style");
+		String inPrompt = (String) params.get("prompt");
+		
+		// params.put("prompt", inPrompt);
 
 		// Use JSON Simple's JSONObject
 		JSONObject obj = new JSONObject();
@@ -151,8 +160,72 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		return embeddingArray.toJSONString(); // Convert to string for returning
 	}
+	
+	public LlmResponse callCreateFunction(Map params, String inModel, String inFunction) throws Exception
+	{
+		MediaArchive archive = getMediaArchive();
 
-	public LlmResponse callFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception
+		JSONObject obj = new JSONObject();
+		obj.put("model", inModel);
+
+		String contentPath = "/" + archive.getMediaDbId() + "/ai/createdialog/systemmessage/" + inFunction + ".html";
+		boolean contentExists = archive.getPageManager().getPage(contentPath).exists();
+		if (!contentExists)
+		{
+			contentPath = "/" + archive.getCatalogId() + "/ai/createdialog/systemmessage/" + inFunction + ".html";
+			contentExists = archive.getPageManager().getPage(contentPath).exists();
+		}
+		if (!contentExists)
+		{
+			throw new OpenEditException("Requested Content Does Not Exist in MEdiaDB or Catatlog:" + inFunction);
+		}
+		
+		String content = loadInputFromTemplate(contentPath, params);
+		
+		JSONArray messages = new JSONArray();
+		JSONObject message = new JSONObject();
+		message.put("role", "user");
+		message.put("content", content);
+		messages.add(message);
+		
+		obj.put("messages", messages);
+
+		// Handle function call definition
+		if (inFunction != null)
+		{
+			String functionPath = "/" + archive.getMediaDbId() + "/ai/createdialog/functions/" + inFunction + ".json";
+			boolean functionExists = archive.getPageManager().getPage(functionPath).exists();
+			if (!functionExists)
+			{
+				functionPath = "/" + archive.getCatalogId() + "/ai/createdialog/functions/" + inFunction + ".json";
+				functionExists = archive.getPageManager().getPage(functionPath).exists();
+			}
+			if (!functionExists)
+			{
+				throw new OpenEditException("Requested Function Does Not Exist in MEdiaDB or Catatlog:" + inFunction);
+			}
+			
+			String definition = loadInputFromTemplate(functionPath, params);
+
+			JSONParser parser = new JSONParser();
+			JSONObject functionDef = (JSONObject) parser.parse(definition);
+
+			JSONArray functions = new JSONArray();
+			functions.add(functionDef);
+			obj.put("functions", functions);
+
+			JSONObject func = new JSONObject();
+			func.put("name", inFunction);
+			obj.put("function_call", func);
+		}
+		
+		log.info(obj.toJSONString());
+
+		return handleApiRequest(obj);
+
+	}
+
+	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -201,12 +274,11 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		// Handle function call definition
 		if (inFunction != null)
 		{
-
-			String templatepath = "/" + archive.getMediaDbId() + "/gpt/functiondefs/" + inFunction + ".json";
+			String templatepath = "/" + archive.getMediaDbId() + "/ai/classify/functions/" + inFunction + ".json";
 			Page defpage = archive.getPageManager().getPage(templatepath);
 			if (!defpage.exists())
 			{
-				templatepath = "/" + archive.getCatalogId() + "/gpt/functiondefs/" + inFunction + ".json";
+				templatepath = "/" + archive.getCatalogId() + "/ai/classify/functions/" + inFunction + ".json";
 				defpage = archive.getPageManager().getPage(templatepath);
 			}
 			if (!defpage.exists())
@@ -227,12 +299,18 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			obj.put("function_call", func);
 		}
 
+		return handleApiRequest(obj);
+
+	}
+	
+	protected LlmResponse handleApiRequest(JSONObject payload) throws Exception
+	{
 		// API request setup
 		String endpoint = "https://api.openai.com/v1/chat/completions";
 		HttpPost method = new HttpPost(endpoint);
 		method.addHeader("authorization", "Bearer " + getApikey());
 		method.setHeader("Content-Type", "application/json");
-		method.setEntity(new StringEntity(obj.toJSONString(), StandardCharsets.UTF_8));
+		method.setEntity(new StringEntity(payload.toJSONString(), StandardCharsets.UTF_8));
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 		
@@ -240,8 +318,8 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		{
 			if (resp.getStatusLine().getStatusCode() != 200)
 			{
-				log.info("Gpt Server error returned " + resp.getStatusLine().getStatusCode());
-				log.info("Gpt Server error returned " + resp.getStatusLine());
+				log.info("Gpt Server error status: " + resp.getStatusLine().getStatusCode());
+				log.info("Gpt Server error response: " + resp.toString());
 				throw new OpenEditException("GPT error: " + resp.getStatusLine());
 			}
 	
@@ -257,11 +335,15 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			return response;
 			
 		}
+		catch (Exception ex)
+		{
+			log.error("Error calling GPT", ex);
+			throw new OpenEditException(ex);
+		}
 		finally
 		{
 			connection.release(resp);
 		}
-
 	}
 
 	public String getApiEndpoint()
@@ -282,7 +364,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		inParams.put("fields", inFields);
 		inParams.put("model", inModel);
 		
-		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/gpt/structures/" + inStructureName + ".json", inParams);
+		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/classify/structures/" + inStructureName + ".json", inParams);
 
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
