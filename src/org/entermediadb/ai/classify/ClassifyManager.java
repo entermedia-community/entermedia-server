@@ -699,6 +699,31 @@ public class ClassifyManager extends BaseManager
 			{
 				mainsummary = mainsummary + "Description: " + inEntity.getValue("longcaption");
 			}
+			else
+			{
+				ContentItem documentText = getMediaArchive()
+						.getPageManager()
+						.getRepository()
+						.getStub("/WEB-INF/data/" + getMediaArchive()
+						.getCatalogId() +"/assets/" + inEntity.getSourcePath() + "/fulltext.txt");
+				if(documentText != null && documentText.exists())
+				{
+					try(ByteArrayOutputStream output = new ByteArrayOutputStream())
+					{
+						documentText.getInputStream().transferTo(output);
+						String text = output.toString();
+						if(text != null && !text.isEmpty())
+						{
+							mainsummary += "Document Text: " + text.substring(0, 500) + "\n";
+						}
+					}
+					catch (Exception e)
+					{
+						log.error("Could not load text for " + inEntity.getSourcePath(), e);
+					}
+				}
+			}
+			
 			Map params = new HashMap();
 			params.put("mainsummary", mainsummary);
 			
