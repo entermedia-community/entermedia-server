@@ -1609,6 +1609,7 @@ public class UserManagerModule extends BaseMediaModule
 			currentchannel.setValue("searchtype", module);
 			currentchannel.setValue("refreshdate", new Date() );
 			currentchannel.setValue("dataid", inReq.getUserName() );
+			currentchannel.setValue("user", inReq.getUser() );
 			currentchannel.setValue("moduleid", module);
 			String applicationid = inReq.findValue("applicationid");
 			currentchannel.setValue("chatapplicationid", applicationid);
@@ -1622,6 +1623,7 @@ public class UserManagerModule extends BaseMediaModule
 			currentchannel.setValue("refreshdate", new Date() );
 			
 		}
+		
 		topicsearcher.saveData(currentchannel);
 		
 		inReq.putPageValue("currentchannel", currentchannel);

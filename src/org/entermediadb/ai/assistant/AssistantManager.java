@@ -23,6 +23,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
+import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -150,17 +151,11 @@ public class AssistantManager extends BaseAiManager
 		{
 			channeltype = "chatstreamer";
 		}
-
-		if (message != null)
-		{
-			String id = message.get("user");
-			if (!id.equals("agent"))
-			{
-				UserProfile profile = archive.getUserProfile(id);
-				params.put("chatprofile", profile);
-			}
-
-		}
+		
+		String id = channel.get("user");
+		UserProfile profile = archive.getUserProfile(id);
+		params.put("chatprofile", profile);
+		
 		
 		params.put("channel", channel);
 
@@ -173,7 +168,7 @@ public class AssistantManager extends BaseAiManager
 ///$mediaarchive.getMediaDbId()/ai/assistant/instructions/context
 		String chattemplate = "/" + archive.getMediaDbId() + "/ai/assistant/instructions/current.json";
 		
-		params.put("assitant", this);
+		params.put("assistant", this);
 		
 		AiCurrentStatus current = loadCurrentStatus(channel); //TODO: Update this often
 		params.put("currentstatus",current);
@@ -377,6 +372,105 @@ public class AssistantManager extends BaseAiManager
 		
 		return searchArgs;
 	}
+
+	public void semanticHybridSearch(WebPageRequest inReq, boolean isMcp) throws Exception {
+		
+		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
+		
+		if(arguments == null)
+		{
+			log.warn("No arguments found in request");
+			return;
+		}
+		
+		UserProfile userprofile = (UserProfile) inReq.getPageValue("chatprofile");
+		
+		if(userprofile == null)
+		{
+			userprofile = (UserProfile) inReq.getPageValue("userprofile");
+		}
+		
+		inReq.putPageValue("userprofile", userprofile);
+
+		AiSearch aiSearchArgs = processSematicSearchArgs(arguments, userprofile);
+		
+		if(isMcp)
+		{
+			addMcpVars(inReq, aiSearchArgs);
+		}
+		
+		getResultsManager().searchByKeywords(inReq, aiSearchArgs);
+		
+	}
+	
+	public void addMcpVars(WebPageRequest inReq, AiSearch searchArgs)	
+	{
+		Collection<String> keywords = searchArgs.getKeywords();
+		inReq.putPageValue("keywordsstring", getResultsManager().joinWithAnd(keywords));
+		
+		Collection<Data> modules = searchArgs.getSelectedModules();
+		
+	
+		Collection<String> moduleNames = new ArrayList<String>();
+			
+		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+		{
+			Data module = (Data) iterator.next();
+			if(!moduleNames.contains(module.getName()))
+			{
+				moduleNames.add(module.getName());
+			}
+		}
+		
+		inReq.putPageValue("modulenamestext", getResultsManager().joinWithAnd(moduleNames));
+		
+	}
+	
+	public String generateReport(JSONObject arguments) throws Exception
+	{
+		Collection<String> keywords = getResultsManager().parseKeywords(arguments.get("keywords"));
+		 
+		MediaArchive archive = getMediaArchive();
+		
+		HitTracker pdfs = archive.query("asset").freeform("description", String.join(" ", keywords)).search();
+		
+		Collection<String> pdfTexts = new ArrayList<String>();
+		
+		for (Iterator iterator = pdfs.iterator(); iterator.hasNext();) {
+			Data pdf = (Data) iterator.next();
+			String text = (String) pdf.getValue("fulltext");
+			if(text != null && text.length() > 0)
+			{
+				pdfTexts.add(text); 					
+			}
+			log.info(text);
+		}
+
+		String fullText = String.join("\n\n", pdfTexts);
+		
+		if(fullText.replaceAll("\\s|\\n", "").length() == 0)
+		{ 
+			return null;
+		}
+
+		Map params = new HashMap();
+		params.put("fulltext", fullText);
+		
+		String model = archive.getCatalogSettingValue("mcp_model");
+		if(model == null)
+		{
+			model = "gpt-5-nano";
+		}
+
+		LlmConnection llmconnection = (LlmConnection) archive.getBean("openaiConnection");
+		
+		String chattemplate = "/" + archive.getMediaDbId() + "/ai/mcp/prompts/generate_report.json";
+		LlmResponse response = llmconnection.runPageAsInput(params, model, chattemplate);
+		
+		String report = response.getMessage();
+		
+		return report;
+	}
 	
 	public Collection<PropertyDetail> getCommonFields()
 	{
@@ -394,18 +488,4 @@ public class AssistantManager extends BaseAiManager
 		return fields;
 	}
 	
-
-	public String generateReport(Map params, String model) throws Exception
-	{
-		MediaArchive archive = getMediaArchive();
-
-		LlmConnection manager = (LlmConnection) archive.getBean("openaiConnection");
-		
-		String chattemplate = "/" + archive.getMediaDbId() + "/ai/mcp/prompts/generate_report.json";
-		LlmResponse response = manager.runPageAsInput(params, model, chattemplate);
-		
-		String takeaways = response.getMessage();
-		
-		return takeaways;
-	}
 }
