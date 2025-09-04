@@ -162,7 +162,9 @@ public class ProfileModule extends MediaArchiveModule
 			inReq.setRequestParameter("resultview" + moduleid,changerequest);
 			String type = moduleid + "resultview";
 			userProfile.setProperty(type, changerequest);
-			userProfile.save();
+			//userProfile.save();
+			
+			getUserProfileManager().saveUserProfile(userProfile);
 		}
 		HitTracker hits = (HitTracker) inReq.getPageValue("hits");
 		if (hits == null)

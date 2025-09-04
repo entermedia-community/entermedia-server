@@ -2813,7 +2813,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		try
 		{
 			//Map props = inData.getProperties();
+			
 			HashSet allprops = new HashSet();
+			
+			if( inDetails.isAllowDynamicFields() )
+			{
+				allprops.addAll(inData.getProperties().keySet());
+			}
 			//allprops.addAll(props.keySet());
 			for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
 			{
