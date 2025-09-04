@@ -237,7 +237,7 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	}
 
 	@Override
-	public Collection<String> callStructuredOutputList(String inStructureName, String inModel, Collection inFields, Map inParams) throws Exception
+	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Collection inFields, Map inParams) throws Exception
 	{
 		// TODO Auto-generated method stub
 		return null;

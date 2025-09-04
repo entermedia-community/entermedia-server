@@ -302,7 +302,7 @@ public class McpModule extends BaseMediaModule
 					String siteid = inReq.findValue("siteid");
 					inReq.putPageValue("mcpapplicationid", siteid + "/find");
 					
-					String fp = "/" + appid + "/ai/mcp/functions/" + functionname + ".md";
+					String fp = "/" + appid + "/ai/mcp/functions/" + functionname + ".html";
 					
 					String text = getRender().loadInputFromTemplate(inReq, fp);
 					

@@ -1,8 +1,6 @@
 package org.entermediadb.ai.classify;
 
 import java.io.ByteArrayOutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -12,7 +10,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -23,6 +20,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.manager.BaseManager;
 import org.entermediadb.scripts.ScriptLogger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.data.BaseData;
@@ -134,7 +132,7 @@ public class ClassifyManager extends BaseManager
 				try {
 					long startTime = System.currentTimeMillis();
 					inLog.info("Analyzing entity Id: " + entity.getId() + " " + entity.getName());
-					if(entity.getValue("semantictopics") == null || entity.getValues("semantictopics").isEmpty())
+					if(entity.getValue("semantictopics") == null || entity.getValues("semantictopics").isEmpty() )
 					{
 						LlmConnection llmconnection = getMediaArchive().getLlmConnection(models.get("semantic"));
 						String primaryimage = entity.get("primarymedia");
@@ -392,7 +390,7 @@ public class ClassifyManager extends BaseManager
 					
 				}
 
-				Collection<String> semantic_topics = getSemanticTopics(params, fieldsToCheck, models.get("semantic"), asset);
+				Collection<String> semantic_topics = getSemanticTopics(llmconnection, params, fieldsToCheck, models.get("semantic"), asset);
 				if(semantic_topics != null && !semantic_topics.isEmpty())
 				{
 					asset.setValue("semantictopics", semantic_topics);
@@ -434,7 +432,7 @@ public class ClassifyManager extends BaseManager
 		
 	}
 
-	public Collection<String> getSemanticTopics(Map params, Collection<PropertyDetail> inFieldToCheck, String inModel, Data inData) throws Exception
+	public Collection<String> getSemanticTopics(LlmConnection llmconnection, Map params, Collection<PropertyDetail> inFieldToCheck, String inModel, Data inData) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -535,26 +533,97 @@ public class ClassifyManager extends BaseManager
 			log.info("No fields to check for semantic topics in " + inData.getId() + " " + inData.getName());
 			return null;
 		}
-
-		LlmConnection connection = getMediaArchive().getLlmConnection(inModel);
 		
-		Collection values = connection.callStructuredOutputList("semantic_topics", inModel, fields, params);
+		JSONObject structure = llmconnection.callStructuredOutputList("semantic_topics", inModel, fields, params);
+		if (structure == null)
+		{
+			log.info("No structured data returned");
+			return null;
+		}
+		JSONArray topics = (JSONArray) structure.get("topics");
+		if (topics == null || topics.isEmpty())
+		{
+			log.info("No topics found in structured data");
+			return null;
+		}
+		
+		Collection<String> results = new ArrayList();
+		
+		for (Object topicObj : topics)
+		{
+			String topic = (String) topicObj;
+			if (topic != null && !topic.isEmpty())
+			{
+				results.add(topic);
+			}
+		}
 	
-		return values;
+		return results;
 
+	}
+	
+	public Map getSemanticAbstractAndTargetAudiences(LlmConnection llmconnection, Map params, String inModel, Data inData) throws Exception
+	{
+		Map results = new HashMap();
+		
+		if(inData.getValues("semantic_targetaudience") == null || !inData.getValues("semantic_targetaudience").isEmpty())
+		{
+			JSONObject structure = llmconnection.callStructuredOutputList("semantic_targetaudience", inModel, null, params);
+			if (structure != null)
+			{ 
+				JSONArray audiences = (JSONArray) structure.get("audiences");
+				if (audiences != null && !audiences.isEmpty())
+				{			
+					Collection<String> targetaudience = new ArrayList<String>();
+					
+					for (Object audienceObj : audiences)
+					{
+						String audience = (String) audienceObj;
+						if (audience != null && !audience.isEmpty())
+						{
+							targetaudience.add(audience);
+						}
+					}
+					
+					results.put("semantic_targetaudience", targetaudience);	
+				}
+			}
+		}
+	
+		if(inData.getValue("semantic_abstract") == null || inData.getValue("semantic_abstract").toString().isEmpty())
+		{
+			JSONObject structure = llmconnection.callStructuredOutputList("semantic_abstract", inModel, null, params);
+			if (structure != null)
+			{
+				String semantic_abstract = (String) structure.get("abstract");
+				if (semantic_abstract != null && !semantic_abstract.isEmpty())
+				{			
+					results.put("semantic_abstract", semantic_abstract);	
+				}
+			}
+		}
+		
+		return results;
 	}
 
 	protected boolean processOneEntity(LlmConnection llmconnection, Map<String, String> models, Data inEntity, Data inPrimaryAsset, Collection detailsfields) throws Exception
 	{
-		Collection<PropertyDetail> fieldsToCheck = new ArrayList();
+		Collection<PropertyDetail> fieldsToCheck = new ArrayList<PropertyDetail>();
+		boolean hasdocfields = false;
 		
 		
 		Data fieldsdata = new BaseData();
+
 
 		for (Iterator iterator = detailsfields.iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			String fieldId = (String) detail.getId();
+			
+			if(fieldId.equals("semantic_abstract") || fieldId.equals("semantic_targetaudience"))
+			{
+				hasdocfields = true;
+			}
 			
 			if(inEntity.getValue(fieldId) == null || inEntity.getValue(fieldId).toString().isEmpty())
 			{
@@ -596,7 +665,9 @@ public class ClassifyManager extends BaseManager
 			}
 		}
 		
-		Collection<String> semantic_topics = getSemanticTopics(new HashMap(), fieldsToCheck, models.get("semantic"), fieldsdata);
+		boolean updated = false;
+		
+		Collection<String> semantic_topics = getSemanticTopics(llmconnection, new HashMap(), fieldsToCheck, models.get("semantic"), fieldsdata);
 		if(semantic_topics == null || semantic_topics.isEmpty())
 		{
 			if(inPrimaryAsset != null)
@@ -606,7 +677,7 @@ public class ClassifyManager extends BaseManager
 				{
 					inEntity.setValue("semantictopics", assetsemantictopics);
 					log.info("No semantic topics found from AI, using primary asset's sematic topics: " + assetsemantictopics);
-					return true;
+					updated = true;
 				}
 			}
 		}
@@ -614,11 +685,67 @@ public class ClassifyManager extends BaseManager
 		{
 			inEntity.setValue("semantictopics", semantic_topics);
 			log.info("AI updated semantic topics: " + semantic_topics);
-			return true;
+			updated = true;
 		}
 		
-		log.info("No semantic topics detected for inEntity: " + inEntity.getId() + " " + inEntity.getName());
-		return false;
+		if(hasdocfields)
+		{
+			String mainsummary = "";
+			if(inEntity.getName() != null)
+			{
+				mainsummary += "Title: " + inEntity.getName() + "\n";
+			}
+			if(inEntity.getValue("longcaption") != null)
+			{
+				mainsummary = mainsummary + "Description: " + inEntity.getValue("longcaption");
+			}
+			else
+			{
+				ContentItem documentText = getMediaArchive()
+						.getPageManager()
+						.getRepository()
+						.getStub("/WEB-INF/data/" + getMediaArchive()
+						.getCatalogId() +"/assets/" + inEntity.getSourcePath() + "/fulltext.txt");
+				if(documentText != null && documentText.exists())
+				{
+					try(ByteArrayOutputStream output = new ByteArrayOutputStream())
+					{
+						documentText.getInputStream().transferTo(output);
+						String text = output.toString();
+						if(text != null && !text.isEmpty())
+						{
+							mainsummary += "Document Text: " + text.substring(0, 500) + "\n";
+						}
+					}
+					catch (Exception e)
+					{
+						log.error("Could not load text for " + inEntity.getSourcePath(), e);
+					}
+				}
+			}
+			
+			Map params = new HashMap();
+			params.put("mainsummary", mainsummary);
+			
+			Map result =  getSemanticAbstractAndTargetAudiences(llmconnection, params, models.get("semantic"), inEntity);
+			if(result.get("semantic_abstract") != null)
+			{
+				String semantic_abstract = (String) result.get("semantic_abstract");
+				inEntity.setValue("semantic_abstract", semantic_abstract);
+				log.info("AI updated semantic abstract: " + semantic_abstract);
+				updated = true;
+			}
+			if(result.get("semantic_targetaudience") != null)
+			{
+				Collection<String> targetaudience = (Collection<String>) result.get("semantic_targetaudience");
+				inEntity.setValue("semantic_targetaudience", targetaudience);
+				log.info("AI updated semantic target audience: " + targetaudience);
+				updated = true;
+			}
+		}
+		
+
+		return updated;
 		
 	}
 	

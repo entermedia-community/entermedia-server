@@ -23,7 +23,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
-import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -124,7 +123,7 @@ public class AssistantManager extends BaseAiManager
 		
 		Map params = new HashMap();
 		
-		String model = archive.getCatalogSettingValue("gpt-model");
+		String model = archive.getCatalogSettingValue("chat_agent_model");
 		
 		if (model == null)
 		{
@@ -174,7 +173,7 @@ public class AssistantManager extends BaseAiManager
 ///$mediaarchive.getMediaDbId()/ai/assistant/instructions/context
 		String chattemplate = "/" + archive.getMediaDbId() + "/ai/assistant/instructions/current.json";
 		
-		params.put("assitant",this);
+		params.put("assitant", this);
 		
 		AiCurrentStatus current = loadCurrentStatus(channel); //TODO: Update this often
 		params.put("currentstatus",current);
@@ -402,7 +401,7 @@ public class AssistantManager extends BaseAiManager
 
 		LlmConnection manager = (LlmConnection) archive.getBean("openaiConnection");
 		
-		String chattemplate = "/" + archive.getMediaDbId() + "/ai/mcp/prompts/build_takeaways.json";
+		String chattemplate = "/" + archive.getMediaDbId() + "/ai/mcp/prompts/generate_report.json";
 		LlmResponse response = manager.runPageAsInput(params, model, chattemplate);
 		
 		String takeaways = response.getMessage();
