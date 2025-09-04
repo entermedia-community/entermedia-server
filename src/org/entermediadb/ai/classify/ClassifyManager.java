@@ -184,7 +184,10 @@ public class ClassifyManager extends BaseManager
 	        categoryid = "index";
 	    }
 		
-		QueryBuilder query = getMediaArchive().query("asset").exact("previewstatus", "2").exact("category", categoryid).exact("taggedbyllm",false).exact("llmerror",false);
+		QueryBuilder query = getMediaArchive().query("asset")
+				.exact("previewstatus", "2")
+				.exact("category", categoryid)
+				.exact("taggedbyllm", false).exact("llmerror",false);
 		
 		String startdate = getMediaArchive().getCatalogSettingValue("ai_metadata_startdate");
 		Date date = null;

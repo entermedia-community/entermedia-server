@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.ai.semantics.SemanticIndexManager;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.ResultsManager;
 import org.entermediadb.scripts.ScriptLogger;
@@ -65,7 +66,6 @@ public class AssistantManager extends BaseAiManager
 		//TODO: Only process one "open" channel at a time. What ever the last one they clicked on
 		
 		HitTracker allchannels = channels.query().exact("aienabled", true).after("refreshdate",now.getTime()).sort("refreshdateDown").search();
-		//DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
 
 		Searcher chats = archive.getSearcher("chatterbox");
 		for (Iterator iterator = allchannels.iterator(); iterator.hasNext();)
@@ -187,15 +187,14 @@ public class AssistantManager extends BaseAiManager
 			Data functionMessage = chats.createNewData();
 			functionMessage.setValue("user", "agent");
 			functionMessage.setValue("channel", channel.getId());
-			//functionMessage.setValue("messagetype", "function_call");
-			//functionMessage.setValue("function", functionName);
-			//functionMessage.setValue("message", json);
 			functionMessage.setValue("arguments", json);
 			functionMessage.setValue("date", new Date());
 			functionMessage.setValue("message", "Processing function " + functionName);
 			functionMessage.setValue("processingcomplete", true);
 			
 			chats.saveData(functionMessage);
+			
+			server.broadcastMessage(archive.getCatalogId(), functionMessage);
 			
 			execChatFunction(llmconnection, functionMessage, functionName, params);
 			
@@ -227,10 +226,6 @@ public class AssistantManager extends BaseAiManager
 			}
 		}
 		
-		//Dont listen again for a bit?
-//		channel.setValue("aienabled", "false" );
-//		archive.saveData("channel",channel);
-		
 	}
 	
 	public void execChatFunction(LlmConnection llmconnection, Data messageToUpdate, String functionName, Map params) throws Exception
@@ -245,8 +240,6 @@ public class AssistantManager extends BaseAiManager
 		
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 
-		//String function = messageToUpdate.get("function");
-			//params.putPageValue("args", args);
 		String response;
 		
 		try
@@ -314,12 +307,10 @@ public class AssistantManager extends BaseAiManager
 		return "assistant";
 	}
 	
-	public Collection getFunctions()
+	public HitTracker getFunctions()
 	{
-		Collection hits = getMediaArchive().query("aifunctions").exact("aifolder",getAiFolder()).sort("ordering").cachedSearch();
+		HitTracker hits = getMediaArchive().query("aifunctions").exact("aifolder",getAiFolder()).sort("ordering").cachedSearch();
 		return hits;
-		
-		
 	}
 	
 	public AiSearch processSematicSearchArgs(JSONObject arguments, UserProfile userprofile) throws Exception
@@ -373,7 +364,7 @@ public class AssistantManager extends BaseAiManager
 		return searchArgs;
 	}
 
-	public void semanticHybridSearch(WebPageRequest inReq, boolean isMcp) throws Exception {
+	public void regularSearch(WebPageRequest inReq, boolean isMcp) throws Exception {
 		
 		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
 		
@@ -400,6 +391,78 @@ public class AssistantManager extends BaseAiManager
 		}
 		
 		getResultsManager().searchByKeywords(inReq, aiSearchArgs);
+		
+	}
+	
+	public void semanticSearch(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive();
+
+		String query = inReq.getRequestParameter("query");
+		if (query == null)
+		{
+			query = (String) inReq.getPageValue("query");
+		}
+		if (query == null)
+		{
+			log.warn("No query found in request");
+			return;
+		}
+		
+		String[] excludeentityids = inReq.getRequestParameters("excludeentityids");
+		if(excludeentityids == null)
+		{
+			excludeentityids = new String[0];
+		}
+		Collection<String> excludeEntityIds = Arrays.asList(excludeentityids);
+		
+		String[] excludeassetids = inReq.getRequestParameters("excludeassetids");
+		if(excludeassetids == null)
+		{
+			excludeassetids = new String[0];
+		}
+		Collection<String> excludeAssetIds = Arrays.asList(excludeassetids);
+		
+		inReq.putPageValue("input", query);
+		
+		SemanticIndexManager semanticIndexManager = (SemanticIndexManager) archive.getBean("semanticIndexManager");
+		Map<String, Collection<String>> relatedEntityIds = semanticIndexManager.searchRelatedEntities(query, excludeEntityIds, excludeAssetIds);
+		
+		log.info("Releted Entity Ids: " + relatedEntityIds);
+		
+		
+		Collection<Data> modules = new ArrayList();
+		Map<String, HitTracker> semanticEntities = new HashMap();
+
+		for (Iterator iterator = relatedEntityIds.keySet().iterator(); iterator.hasNext();)
+		{
+			String moduleid = (String) iterator.next();
+			
+			Data module = archive.getCachedData("module", moduleid);
+			
+			Collection<String> ids = relatedEntityIds.get(moduleid);
+			
+			HitTracker entites = getMediaArchive().query(moduleid).ids(ids).search();
+			
+			
+			if(entites == null || entites.size() == 0)
+			{
+				continue;
+			}
+			
+			modules.add(module);
+			
+			if(moduleid.equals("asset"))
+			{
+				inReq.putPageValue("semanticassethits", entites);
+			}
+			else
+			{				
+				semanticEntities.put(moduleid, entites);
+			}
+		}
+		inReq.putPageValue("semanticentities", modules);
+		inReq.putPageValue("semanticentityhits", semanticEntities);
 		
 	}
 	
