@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.assistant.AiSearch;
+import org.entermediadb.ai.semantics.SemanticIndexManager;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.manager.BaseManager;
@@ -317,8 +318,6 @@ public class ResultsManager extends BaseManager {
 		log.info("Searching as:" + inReq.getUser().getName());
 		MediaArchive archive = getMediaArchive();
 
-		// SemanticIndexManager semanticIndexManager = (SemanticIndexManager) archive.getBean("semanticIndexManager");
-		
 		Collection<String> keywords = searchArgs.getKeywords();
 		
 		String plainquery = "";
@@ -330,10 +329,6 @@ public class ResultsManager extends BaseManager {
 		{
 			plainquery = String.join(" OR ", keywords); // This does not work
 		}
-		
-		// Map<String, Collection<String>> semanticSearch = semanticIndexManager.searchRelatedEntities(plainquery);
-		// log.info("Semantic Search Results: " + semanticSearch);
-		
 		
 		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description", plainquery).hitsPerPage(30);
 		dq.getQuery().setIncludeDescription(true);
@@ -387,8 +382,6 @@ public class ResultsManager extends BaseManager {
 		
 		Collection pageOfHits = unsorted.getPageOfHits();
 		pageOfHits = new ArrayList(pageOfHits);
-		
-		
 		
 		organizeHits(inReq, unsorted, pageOfHits);
 		

@@ -379,8 +379,8 @@ public class SemanticIndexManager implements CatalogEnabled
 	{
 		fieldSharedConnection = inSharedConnection;
 	}
-
-	public Map<String,Collection<String>> searchRelatedEntities(MultiValued searchcategory)
+	
+	public Map<String,Collection<String>> searchRelatedEntitiesBySearchCategory(MultiValued searchcategory)
 	{
 		if( searchcategory.getBoolean("semanticindexed"))
 		{
@@ -394,6 +394,11 @@ public class SemanticIndexManager implements CatalogEnabled
 			text = searchcategory.getName();
 		}
 		
+		return searchRelatedEntities(text);
+	}
+
+	public Map<String,Collection<String>> searchRelatedEntities(String text)
+	{
 		//Collection allthepeopleinasset = getKMeansIndexer().searchNearestItems(startdata);
 		JSONObject tosendparams = new JSONObject();
 		JSONArray list = new JSONArray();
@@ -451,7 +456,7 @@ public class SemanticIndexManager implements CatalogEnabled
 		{
 			MultiValued searchcategory = (MultiValued) iterator.next();
 			
-			Map<String,Collection<String>> bytype = searchRelatedEntities(searchcategory);
+			Map<String,Collection<String>> bytype = searchRelatedEntitiesBySearchCategory(searchcategory);
 			for (Iterator iterator2 = bytype.keySet().iterator(); iterator2.hasNext();)
 			{
 				String moduleid = (String)iterator2.next();
