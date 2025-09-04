@@ -168,12 +168,14 @@ public class AgentModule extends BaseMediaModule {
 		
 		HitTracker pdfs = archive.query("asset").freeform("description", String.join(" ", keywords)).search();
 		
-		Collection pdfTexts = new ArrayList<String>();
+		Collection<String> pdfTexts = new ArrayList<String>();
 		
 		for (Iterator iterator = pdfs.iterator(); iterator.hasNext();) {
 			Data pdf = (Data) iterator.next();
 			ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + archive.getCatalogId() +"/assets/" + pdf.getSourcePath() + "/fulltext.txt");
-			
+			if( item == null || !item.exists() ) {
+				continue;
+			}
 			try(InputStream inputStream = item.getInputStream())
 			{				
 				String text = new String(inputStream.readAllBytes());

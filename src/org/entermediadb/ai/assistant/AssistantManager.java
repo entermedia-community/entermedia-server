@@ -401,7 +401,7 @@ public class AssistantManager extends BaseAiManager
 
 		LlmConnection manager = (LlmConnection) archive.getBean("openaiConnection");
 		
-		String chattemplate = "/" + archive.getMediaDbId() + "/ai/mcp/prompts/build_takeaways.json";
+		String chattemplate = "/" + archive.getMediaDbId() + "/ai/mcp/prompts/generate_report.json";
 		LlmResponse response = manager.runPageAsInput(params, model, chattemplate);
 		
 		String takeaways = response.getMessage();
