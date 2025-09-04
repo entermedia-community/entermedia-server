@@ -299,115 +299,120 @@ public class ClassifyManager extends BaseManager
 				return false;
 			}
 		}
-			Collection allaifields = getMediaArchive().getAssetPropertyDetails().findAiCreationProperties();
-			Collection aifields = new ArrayList();
-			for (Iterator iterator2 = allaifields.iterator(); iterator2.hasNext();)
+		Collection allaifields = getMediaArchive().getAssetPropertyDetails().findAiCreationProperties();
+		Collection aifields = new ArrayList();
+		for (Iterator iterator2 = allaifields.iterator(); iterator2.hasNext();)
+		{
+			PropertyDetail aifield = (PropertyDetail)iterator2.next();
+			if( mediatype.equals("document") && aifield.getId().equals("complexitylevel") )
 			{
-				PropertyDetail aifield = (PropertyDetail)iterator2.next();
-				if(asset.getValue(aifield.getId()) == null || asset.getValue(aifield.getId()) == "")
-				{
-					aifields.add(aifield);
-				}
+				// TODO: add better way to have media type specific fields
+				continue;
 			}
-			if(!aifields.isEmpty())
-			{	 
-				Map params = new HashMap();
-				params.put("asset", asset);
-				params.put("aifields", aifields);
-				
-				String requestPayload = llmconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/classify/systemmessage/analyzeasset.html", params);
-				LlmResponse results = llmconnection.callClassifyFunction(params, models.get("vision"), "generate_metadata", requestPayload,base64EncodedString);
+			if(asset.getValue(aifield.getId()) == null || asset.getValue(aifield.getId()) == "")
+			{
+				aifields.add(aifield);
+			}
+		}
+		if(!aifields.isEmpty())
+		{	 
+			Map params = new HashMap();
+			params.put("asset", asset);
+			params.put("aifields", aifields);
+			
+			String requestPayload = llmconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/classify/systemmessage/analyzeasset.html", params);
+			LlmResponse results = llmconnection.callClassifyFunction(params, models.get("vision"), "generate_metadata", requestPayload,base64EncodedString);
 
-				boolean wasUpdated = false;
-				if (results != null)
-				{
-					JSONObject arguments = results.getArguments();
-					if (arguments != null) {
+			boolean wasUpdated = false;
+			if (results != null)
+			{
+				JSONObject arguments = results.getArguments();
+				if (arguments != null) {
 
-						Map metadata =  (Map) arguments.get("metadata");
-						if (metadata == null || metadata.isEmpty())
+					Map metadata =  (Map) arguments.get("metadata");
+					if (metadata == null || metadata.isEmpty())
+					{
+						return false; 
+					}
+					Map datachanges = new HashMap();
+					for (Iterator iterator2 = metadata.keySet().iterator(); iterator2.hasNext();)
+					{
+						String inKey = (String) iterator2.next();
+						PropertyDetail detail = getMediaArchive().getAssetPropertyDetails().getDetail(inKey);
+						if (detail != null)
 						{
-							return false; 
-						}
-						Map datachanges = new HashMap();
-						for (Iterator iterator2 = metadata.keySet().iterator(); iterator2.hasNext();)
-						{
-							String inKey = (String) iterator2.next();
-							PropertyDetail detail = getMediaArchive().getAssetPropertyDetails().getDetail(inKey);
-							if (detail != null)
+							String value = (String)metadata.get(inKey);
+							if(detail.isList())
 							{
-								String value = (String)metadata.get(inKey);
-								if(detail.isList())
-								{
-									String listId = value.split("\\|")[0];
-									datachanges.put(detail.getId(), listId);
-								}
-								else if (detail.isMultiValue())
-								{
-									Collection<String> values = Arrays.asList(value.split(","));
-									datachanges.put(detail.getId(), values);
-								}
-								else 
-								{
-									datachanges.put(detail.getId(), value);
-								}
+								String listId = value.split("\\|")[0];
+								datachanges.put(detail.getId(), listId);
+							}
+							else if (detail.isMultiValue())
+							{
+								Collection<String> values = Arrays.asList(value.split(","));
+								datachanges.put(detail.getId(), values);
+							}
+							else 
+							{
+								datachanges.put(detail.getId(), value);
 							}
 						}
-						
-						//Save change event
-						User agent = getMediaArchive().getUser("agent");
-						if( agent != null)
-						{
-							getMediaArchive().getEventManager().fireDataEditEvent(getMediaArchive().getAssetSearcher(), agent, "assetgeneral", asset, datachanges);
-						}
-						
-						for (Iterator iterator2 = datachanges.keySet().iterator(); iterator2.hasNext();)
-						{
-							String inKey = (String) iterator2.next();
-							Object value = datachanges.get(inKey);
-							
-							asset.setValue(inKey, value);
-							log.info("AI updated field "+ inKey + ": "+metadata.get(inKey));
-						}
-					}
-					else {
-						log.info("Asset "+asset.getId() +" "+asset.getName()+" - Nothing Detected.");
-					}
-				}
-			}
-
-			if(asset.getValue("semantictopics") == null || asset.getValues("semantictopics").isEmpty())
-			{
-				Map params = new HashMap();
-				params.put("asset", asset);
-				params.put("aifields", aifields);
-
-				Collection<String> fieldIds = Arrays.asList("keywords", "longcaption", "assettitle", "headline", "alternatetext", "fulltext");
-				
-				Collection<PropertyDetail> assetDetails = getMediaArchive().getAssetPropertyDetails();
-				Collection<PropertyDetail> fieldsToCheck = new ArrayList<>();
-				for (Iterator iterator = assetDetails.iterator(); iterator.hasNext();) {
-					PropertyDetail detail = (PropertyDetail) iterator.next();
-					if (fieldIds.contains(detail.getId()))
-					{
-						fieldsToCheck.add(detail);
 					}
 					
+					//Save change event
+					User agent = getMediaArchive().getUser("agent");
+					if( agent != null)
+					{
+						getMediaArchive().getEventManager().fireDataEditEvent(getMediaArchive().getAssetSearcher(), agent, "assetgeneral", asset, datachanges);
+					}
+					
+					for (Iterator iterator2 = datachanges.keySet().iterator(); iterator2.hasNext();)
+					{
+						String inKey = (String) iterator2.next();
+						Object value = datachanges.get(inKey);
+						
+						asset.setValue(inKey, value);
+						log.info("AI updated field "+ inKey + ": "+metadata.get(inKey));
+					}
 				}
-
-				Collection<String> semantic_topics = getSemanticTopics(llmconnection, params, fieldsToCheck, models.get("semantic"), asset);
-				if(semantic_topics != null && !semantic_topics.isEmpty())
-				{
-					asset.setValue("semantictopics", semantic_topics);
-					log.info("AI updated semantic topics: " + semantic_topics);
-				}
-				else 
-				{
-					log.info("No semantic topics detected for asset: " + asset.getId() + " " + asset.getName());
+				else {
+					log.info("Asset "+asset.getId() +" "+asset.getName()+" - Nothing Detected.");
 				}
 			}
-			asset.setValue("taggedbyllm", true);
-			return true;
+		}
+
+		if(asset.getValue("semantictopics") == null || asset.getValues("semantictopics").isEmpty())
+		{
+			Map params = new HashMap();
+			params.put("asset", asset);
+			params.put("aifields", aifields);
+
+			Collection<String> fieldIds = Arrays.asList("keywords", "longcaption", "assettitle", "headline", "alternatetext", "fulltext");
+			
+			Collection<PropertyDetail> assetDetails = getMediaArchive().getAssetPropertyDetails();
+			Collection<PropertyDetail> fieldsToCheck = new ArrayList<>();
+			for (Iterator iterator = assetDetails.iterator(); iterator.hasNext();) {
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+				if (fieldIds.contains(detail.getId()))
+				{
+					fieldsToCheck.add(detail);
+				}
+				
+			}
+
+			Collection<String> semantic_topics = getSemanticTopics(llmconnection, params, fieldsToCheck, models.get("semantic"), asset);
+			if(semantic_topics != null && !semantic_topics.isEmpty())
+			{
+				asset.setValue("semantictopics", semantic_topics);
+				log.info("AI updated semantic topics: " + semantic_topics);
+			}
+			else 
+			{
+				log.info("No semantic topics detected for asset: " + asset.getId() + " " + asset.getName());
+			}
+		}
+		asset.setValue("taggedbyllm", true);
+		return true;
 	}
 	
 	private String loadBase64Image(Asset inAsset, String imagesize)
