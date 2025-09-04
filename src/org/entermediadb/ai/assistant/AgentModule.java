@@ -86,19 +86,20 @@ public class AgentModule extends BaseMediaModule {
 		UserProfile profile = archive.getUserProfile(user.getId());
 		inReq.putPageValue("modules", profile.getEntities());
 	}
-	public void semanticHybridSearch(WebPageRequest inReq) throws Exception 
+	public void chatSemanticHybridSearch(WebPageRequest inReq) throws Exception 
 	{	
 		semanticHybridSearch(inReq, false);
 	}
 	
 	public void semanticHybridSearch(WebPageRequest inReq, boolean isMcp) throws Exception {
 
-		Data message = (Data) inReq.getPageValue("message");
-		if (message == null) {
-			log.error("No message found in request");
-			return;
-		}
-		inReq.putPageValue("message", message.getValue("message"));
+//		Data message = (Data) inReq.getPageValue("message");
+//		if (message == null) {
+//			log.error("No message found in request");
+//			return;
+//		}
+//		inReq.putPageValue("message", message.getValue("message"));
+		
 		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
 		
 		if(arguments == null)
@@ -182,6 +183,10 @@ public class AgentModule extends BaseMediaModule {
 				}
 				log.info(text);
 			}
+			catch (Exception e)
+			{
+				log.error("Could not load text for " + pdf.getSourcePath(), e);
+			}
 		}
 
 		String fullText = String.join("\n\n", pdfTexts);
@@ -194,7 +199,7 @@ public class AgentModule extends BaseMediaModule {
 		Map params = new HashMap();
 		params.put("fulltext", fullText);
 		
-		String model = archive.getCatalogSettingValue("mcp_report_model");
+		String model = archive.getCatalogSettingValue("mcp_model");
 		if(model == null)
 		{
 			model = "gpt-5-nano";

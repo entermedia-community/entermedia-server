@@ -124,7 +124,7 @@ public class AssistantManager extends BaseAiManager
 		
 		Map params = new HashMap();
 		
-		String model = archive.getCatalogSettingValue("gpt-model");
+		String model = archive.getCatalogSettingValue("chat_agent_model");
 		
 		if (model == null)
 		{
