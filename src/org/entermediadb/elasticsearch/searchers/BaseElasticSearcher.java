@@ -2872,7 +2872,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				}
 				if (detail != null && detail.isDeleted())
 				{
-					continue;
+					if( !inDetails.isAllowDynamicFields() )
+					{
+						continue;
+					}
 				}
 				if (detail == null && !propid.equals("description") && !propid.contains("_int") && !propid.equals("emrecordstatus") && !propid.equals("recordmodificationdate") && !propid.equals("mastereditclusterid"))
 				{
