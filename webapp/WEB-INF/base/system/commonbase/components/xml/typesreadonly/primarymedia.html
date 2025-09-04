@@ -24,6 +24,8 @@
 	<div id="${detail.id}-preview" class="assetpreviewreadonly assetdraggable ui-draggable" data-assetid="$foundrow.getId()">
 		$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$value&readonly=true", $context)
 	</div>
+	#else
+        <em>[[Deleted Asset]]</em>
 	#end
 
 #end

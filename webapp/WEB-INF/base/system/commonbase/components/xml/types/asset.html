@@ -6,7 +6,6 @@
 	#set($value = $val)
 #end
 
-
 <div class="assetpicker"  id="entitypicker${detail.id}" data-detailid="${detail.id}">
 	<div class="render-type-thumbnail position-relative mb-1" id="${detail.id}-preview">
 		#if($value && $value != "")
@@ -14,7 +13,7 @@
 			
 			#if($foundrow)
 				#ifnull($searchhome)
-				$context.putPageValue("searchhome", "$apphome/components/results")
+					$context.putPageValue("searchhome", "$apphome/components/results")
 				#end
 				$context.putPageValue("componenthome", "$apphome/components") ##Legacy
 				$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$value", $context)
