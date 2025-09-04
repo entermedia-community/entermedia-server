@@ -3,7 +3,7 @@ package org.entermediadb.ai.llm;
 import java.util.Collection;
 import java.util.Map;
 
-import org.openedit.Data;
+import org.json.simple.JSONObject;
 
 public interface LlmConnection {
 	
@@ -27,5 +27,5 @@ public interface LlmConnection {
 
     public String getApiEndpoint();
 	
-	public Collection<String> callStructuredOutputList(String inStructureName,String inModel, Collection inFields, Map inParams) throws Exception;
+	public JSONObject callStructuredOutputList(String inStructureName,String inModel, Collection inFields, Map inParams) throws Exception;
 }

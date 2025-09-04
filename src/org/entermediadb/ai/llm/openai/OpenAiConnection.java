@@ -3,6 +3,7 @@ package org.entermediadb.ai.llm.openai;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -359,7 +360,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	}
 
 	@Override
-	public Collection<String> callStructuredOutputList(String inStructureName, String inModel, Collection inFields, Map inParams) throws Exception
+	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Collection inFields, Map inParams) throws Exception
 	{
 		inParams.put("fields", inFields);
 		inParams.put("model", inModel);
@@ -377,7 +378,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 		
-		Collection<String> results = new ArrayList<>();
+		JSONObject results = new JSONObject();
 
 		try
 		{
@@ -426,6 +427,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 				return results;
 			}
 			JSONObject content = (JSONObject) contents.get(0);
+			
 			if (content == null || !content.containsKey("text"))
 			{
 				log.info("No structured data found in GPT response");
@@ -437,22 +439,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 				log.info("No text found in structured data");
 				return results;
 			}
-			JSONObject responseData = (JSONObject) parser.parse(new StringReader(text));
-			JSONArray topics = (JSONArray) responseData.get("topics");
-			if (topics == null || topics.isEmpty())
-			{
-				log.info("No topics found in structured data");
-				return results;
-			}
-			
-			for (Object topicObj : topics)
-			{
-				String topic = (String) topicObj;
-				if (topic != null && !topic.isEmpty())
-				{
-					results.add(topic);
-				}
-			}
+			results = (JSONObject) parser.parse(new StringReader(text));
 		}
 		finally
 		{
