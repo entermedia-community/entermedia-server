@@ -23,7 +23,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
-import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -174,7 +173,7 @@ public class AssistantManager extends BaseAiManager
 ///$mediaarchive.getMediaDbId()/ai/assistant/instructions/context
 		String chattemplate = "/" + archive.getMediaDbId() + "/ai/assistant/instructions/current.json";
 		
-		params.put("assitant",this);
+		params.put("assitant", this);
 		
 		AiCurrentStatus current = loadCurrentStatus(channel); //TODO: Update this often
 		params.put("currentstatus",current);

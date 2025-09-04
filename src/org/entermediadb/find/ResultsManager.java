@@ -16,7 +16,6 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.manager.BaseManager;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
@@ -334,7 +333,7 @@ public class ResultsManager extends BaseManager {
 		// log.info("Semantic Search Results: " + semanticSearch);
 		
 		
-		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",plainquery).hitsPerPage(30);
+		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description", plainquery).hitsPerPage(30);
 		dq.getQuery().setIncludeDescription(true);
 		
 		Collection searchmodules = loadUserSearchTypes(inReq, searchArgs.getSelectedModuleIds());
