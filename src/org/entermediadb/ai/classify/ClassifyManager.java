@@ -337,7 +337,12 @@ public class ClassifyManager extends BaseManager
 							if (detail != null)
 							{
 								String value = (String)metadata.get(inKey);
-								if (detail.isMultiValue())
+								if(detail.isList())
+								{
+									String listId = value.split("\\|")[0];
+									datachanges.put(detail.getId(), listId);
+								}
+								else if (detail.isMultiValue())
 								{
 									Collection<String> values = Arrays.asList(value.split(","));
 									datachanges.put(detail.getId(), values);
@@ -701,26 +706,10 @@ public class ClassifyManager extends BaseManager
 			}
 			else
 			{
-				ContentItem documentText = getMediaArchive()
-						.getPageManager()
-						.getRepository()
-						.getStub("/WEB-INF/data/" + getMediaArchive()
-						.getCatalogId() +"/assets/" + inEntity.getSourcePath() + "/fulltext.txt");
-				if(documentText != null && documentText.exists())
+				String text = inEntity.get("fulltext");
+				if(text != null && !text.isEmpty())
 				{
-					try(ByteArrayOutputStream output = new ByteArrayOutputStream())
-					{
-						documentText.getInputStream().transferTo(output);
-						String text = output.toString();
-						if(text != null && !text.isEmpty())
-						{
-							mainsummary += "Document Text: " + text.substring(0, 500) + "\n";
-						}
-					}
-					catch (Exception e)
-					{
-						log.error("Could not load text for " + inEntity.getSourcePath(), e);
-					}
+					mainsummary += "Document Text: " + text.substring(0, 500) + "\n";
 				}
 			}
 			

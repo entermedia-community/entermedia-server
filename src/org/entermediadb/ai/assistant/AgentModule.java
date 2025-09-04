@@ -86,6 +86,7 @@ public class AgentModule extends BaseMediaModule {
 		UserProfile profile = archive.getUserProfile(user.getId());
 		inReq.putPageValue("modules", profile.getEntities());
 	}
+	
 	public void chatSemanticHybridSearch(WebPageRequest inReq) throws Exception 
 	{	
 		semanticHybridSearch(inReq, false);
@@ -172,23 +173,12 @@ public class AgentModule extends BaseMediaModule {
 		
 		for (Iterator iterator = pdfs.iterator(); iterator.hasNext();) {
 			Data pdf = (Data) iterator.next();
-			ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + archive.getCatalogId() +"/assets/" + pdf.getSourcePath() + "/fulltext.txt");
-			if( item == null || !item.exists() ) {
-				continue;
-			}
-			try(InputStream inputStream = item.getInputStream())
-			{				
-				String text = new String(inputStream.readAllBytes());
-				if(text.length() > 0)
-				{
-					pdfTexts.add(text); 					
-				}
-				log.info(text);
-			}
-			catch (Exception e)
+			String text = (String) pdf.getValue("fulltext");
+			if(text != null && text.length() > 0)
 			{
-				log.error("Could not load text for " + pdf.getSourcePath(), e);
+				pdfTexts.add(text); 					
 			}
+			log.info(text);
 		}
 
 		String fullText = String.join("\n\n", pdfTexts);

@@ -369,23 +369,19 @@ public class ResultsManager extends BaseManager {
 		inReq.putPageValue("livesuggestions", finallist);
 		inReq.putPageValue("highlighter", new Highlighter());
 		
-		if( searchmodules.contains("asset"))
+		int assetmax = 15;
+		if( unsorted.size() > 10)
 		{
-			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
-			log.info(assetdq.toString());
-			HitTracker assetunsorted = assetdq.search(inReq);
-			collectMatches(keywordsLower, plainquery, assetunsorted);
-			inReq.putPageValue("assethits", assetunsorted);
-			
-			User user = inReq.getUser();
-			log.info(user);
-			
-			if(searchmodules.size() == 1)
-			{
-				log.info("Searching for assets only");
-				return;
-			}
+			assetmax = 5;
 		}
+		
+		QueryBuilder assetdq = archive.query("asset")
+				.freeform("description", plainquery)
+				.hitsPerPage(assetmax);
+				
+		HitTracker assetunsorted = assetdq.search(inReq);
+		collectMatches(keywordsLower, plainquery, assetunsorted);
+		inReq.putPageValue("assethits", assetunsorted);
 		
 		Collection pageOfHits = unsorted.getPageOfHits();
 		pageOfHits = new ArrayList(pageOfHits);
