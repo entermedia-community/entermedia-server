@@ -2813,7 +2813,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		try
 		{
 			//Map props = inData.getProperties();
+			
 			HashSet allprops = new HashSet();
+			
+			if( inDetails.isAllowDynamicFields() )
+			{
+				allprops.addAll(inData.getProperties().keySet());
+			}
 			//allprops.addAll(props.keySet());
 			for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
 			{
@@ -2872,7 +2878,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				}
 				if (detail != null && detail.isDeleted())
 				{
-					continue;
+					if( !inDetails.isAllowDynamicFields() )
+					{
+						continue;
+					}
 				}
 				if (detail == null && !propid.equals("description") && !propid.contains("_int") && !propid.equals("emrecordstatus") && !propid.equals("recordmodificationdate") && !propid.equals("mastereditclusterid"))
 				{
