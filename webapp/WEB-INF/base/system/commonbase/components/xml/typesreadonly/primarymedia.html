@@ -17,15 +17,14 @@
 
 
 #if($value && $value != "")
-#set( $foundrow = $mediaarchive.getAsset($value)  )
-	
+	#set( $foundrow = $mediaarchive.getAsset($value)  )
 	
 	#if($foundrow)
 	<div id="${detail.id}-preview" class="assetpreviewreadonly assetdraggable ui-draggable" data-assetid="$foundrow.getId()">
 		$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$value&readonly=true", $context)
 	</div>
 	#else
-        <em>[[Deleted Asset]]</em>
+        <em data-assetid="${value}">[[Deleted Asset]]</em>
 	#end
 
 #end
