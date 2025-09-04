@@ -14,6 +14,8 @@
 		data-assetid="$foundrow.getId()">
 		$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$value&readonly=true", $context)
 	</div>
+	#else
+		<em>[[Deleted Asset]]</em>
 	#end
 
 #end
