@@ -74,19 +74,6 @@ public class AgentModule extends BaseMediaModule {
 //		
 	}
 	
-	public void loadModules(WebPageRequest inReq)
-	{
-		User user = inReq.getUser();
-
-		if(user != null)
-		{
-			return;
-		}
-		MediaArchive archive = getMediaArchive(inReq);
-		UserProfile profile = archive.getUserProfile(user.getId());
-		inReq.putPageValue("modules", profile.getEntities());
-	}
-	
 	public void chatSemanticHybridSearch(WebPageRequest inReq) throws Exception 
 	{	
 		semanticHybridSearch(inReq, false);
