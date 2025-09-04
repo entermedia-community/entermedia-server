@@ -409,25 +409,48 @@ public class AssistantManager extends BaseAiManager
 			return;
 		}
 		
+		String[] excludeentityids = inReq.getRequestParameters("excludeentityids");
+		if(excludeentityids == null)
+		{
+			excludeentityids = new String[0];
+		}
+		Collection<String> excludeEntityIds = Arrays.asList(excludeentityids);
+		
+		String[] excludeassetids = inReq.getRequestParameters("excludeassetids");
+		if(excludeassetids == null)
+		{
+			excludeassetids = new String[0];
+		}
+		Collection<String> excludeAssetIds = Arrays.asList(excludeassetids);
+		
+		inReq.putPageValue("input", query);
+		
 		SemanticIndexManager semanticIndexManager = (SemanticIndexManager) archive.getBean("semanticIndexManager");
-		Map<String, Collection<String>> relatedEntityIds = semanticIndexManager.searchRelatedEntities(query);
+		Map<String, Collection<String>> relatedEntityIds = semanticIndexManager.searchRelatedEntities(query, excludeEntityIds, excludeAssetIds);
 		
 		log.info("Releted Entity Ids: " + relatedEntityIds);
 		
 		
-		Collection semanticEntities = new ArrayList();
+		Collection<Data> modules = new ArrayList();
+		Map<String, HitTracker> semanticEntities = new HashMap();
 
 		for (Iterator iterator = relatedEntityIds.keySet().iterator(); iterator.hasNext();)
 		{
 			String moduleid = (String) iterator.next();
+			
+			Data module = archive.getCachedData("module", moduleid);
+			
 			Collection<String> ids = relatedEntityIds.get(moduleid);
 			
-			Collection entites = getMediaArchive().query(moduleid).ids(ids).search();
+			HitTracker entites = getMediaArchive().query(moduleid).ids(ids).search();
+			
 			
 			if(entites == null || entites.size() == 0)
 			{
 				continue;
 			}
+			
+			modules.add(module);
 			
 			if(moduleid.equals("asset"))
 			{
@@ -435,10 +458,10 @@ public class AssistantManager extends BaseAiManager
 			}
 			else
 			{				
-				semanticEntities.addAll(entites);
+				semanticEntities.put(moduleid, entites);
 			}
 		}
-		
+		inReq.putPageValue("semanticentities", modules);
 		inReq.putPageValue("semanticentityhits", semanticEntities);
 		
 	}
