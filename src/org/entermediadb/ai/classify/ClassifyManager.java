@@ -83,17 +83,22 @@ public class ClassifyManager extends BaseManager
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DAY_OF_YEAR, -30);
 			Date thirtyDaysAgo = cal.getTime();
+			
 			date = DateStorageUtil.getStorageUtil().parseFromObject(thirtyDaysAgo);
 		}
 		else {
 			date = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
 		}
+		inLog.info("Processing entity uploaded after: " + date);
+		
 		query.after("entity_date", date);
+		
+		inLog.info("Running entity search query: " + query);
 		
 		HitTracker hits = query.search();
 		hits.enableBulkOperations();
 		
-		log.info("AI entities to tag: " + hits.getFriendlyQuery());
+		inLog.info("AI entities to tag: " + hits);
 		
 		if (hits.size() == 0)
 		{
@@ -201,9 +206,11 @@ public class ClassifyManager extends BaseManager
 		else {
 			date = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
 		}
+		inLog.info("Processing assets uploaded after: " + date);
 		
 		query.after("assetaddeddate", date);
 		
+		inLog.info("Running asset search query: " + query);
 		
 		//Refine this to use a hit tracker?
 		HitTracker assets = query.search();
