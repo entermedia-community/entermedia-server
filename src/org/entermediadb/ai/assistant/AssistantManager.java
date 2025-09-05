@@ -409,6 +409,8 @@ public class AssistantManager extends BaseAiManager
 			return;
 		}
 		
+		log.info("Semantic Search for: " + query);
+		
 		String[] excludeentityids = inReq.getRequestParameters("excludeentityids");
 		if(excludeentityids == null)
 		{
@@ -461,6 +463,7 @@ public class AssistantManager extends BaseAiManager
 				semanticEntities.put(moduleid, entites);
 			}
 		}
+		
 		inReq.putPageValue("semanticentities", modules);
 		inReq.putPageValue("semanticentityhits", semanticEntities);
 		

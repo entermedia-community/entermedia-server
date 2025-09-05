@@ -418,6 +418,8 @@ public class SemanticIndexManager implements CatalogEnabled
 		{
 			throw new OpenEditException(e);
 		}
+		
+		log.info("Got response " + objt.keySet());
 
 		JSONArray results = (JSONArray)objt.get("results");
 		Map hit = (Map)results.iterator().next();
