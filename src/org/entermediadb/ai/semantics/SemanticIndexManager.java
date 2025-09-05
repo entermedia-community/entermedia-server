@@ -147,8 +147,10 @@ public class SemanticIndexManager implements CatalogEnabled
 		query.put("searchtypes", ids);
 		query.put("searchasset", true);
 		
+		 //query.sort("createddate");
 		HitTracker hits = query.search();
 		hits.enableBulkOperations();
+		log.info("Indexing semanticindexed = false in: " + ids + " found: " + hits.size());
 		
 		indexResults(inLog, hits);
 		

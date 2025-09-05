@@ -813,7 +813,7 @@ public class KMeansIndexer implements CatalogEnabled {
 		{
 				throw new OpenEditException("Vectors must be the same length.");
 		}
-
+		//TODO: https://download.java.net/java/early_access/jdk25/docs/api/jdk.incubator.vector/jdk/incubator/vector/package-summary.html
 		double dotProduct = 0.0;
 		double normA = 0.0;
 		double normB = 0.0;
