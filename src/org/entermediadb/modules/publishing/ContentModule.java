@@ -85,6 +85,10 @@ public class ContentModule extends BaseMediaModule
 		
 		String model = archive.getCatalogSettingValue("llmmetadatamodel");
 		
+		if(model == null) {
+			model = "gpt-5-nano";
+		}
+		
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			MultiValued contentrequest = (MultiValued) iterator.next();
