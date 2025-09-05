@@ -129,25 +129,28 @@ public class GeneratedMediaGenerator extends FileGenerator
 		{
 			output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
 			
-			if (!output.exists() && endingpath.contains("image550x350"))
+			if (!output.exists())
 			{
-				String fileext = PathUtilities.extractPageType(endingpath);
-				String basepath = PathUtilities.extractDirectoryPath(endingpath);
-				
-				endingpath = basepath + "/image550x550." + fileext;
-				
-				output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
-
-			}
-			else if (!output.exists() && endingpath.contains("image550x550"))
-			{
-				String fileext = PathUtilities.extractPageType(endingpath);
-				String basepath = PathUtilities.extractDirectoryPath(endingpath);
-				
-				endingpath = basepath + "/image550x350." + fileext;
-				
-				output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
-
+				if (endingpath.contains("image550x350"))
+				{
+					String fileext = PathUtilities.extractPageType(endingpath);
+					String basepath = PathUtilities.extractDirectoryPath(endingpath);
+					
+					endingpath = basepath + "/image550x550." + fileext;
+					
+					output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
+	
+				}
+				else if (endingpath.contains("image550x550"))
+				{
+					String fileext = PathUtilities.extractPageType(endingpath);
+					String basepath = PathUtilities.extractDirectoryPath(endingpath);
+					
+					endingpath = basepath + "/image550x350." + fileext;
+					
+					output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
+	
+				}
 			}
 		}
 		
