@@ -409,6 +409,8 @@ public class AssistantManager extends BaseAiManager
 			return;
 		}
 		
+		log.info("Semantic Search for: " + query);
+		
 		String[] excludeentityids = inReq.getRequestParameters("excludeentityids");
 		if(excludeentityids == null)
 		{
@@ -428,11 +430,10 @@ public class AssistantManager extends BaseAiManager
 		SemanticIndexManager semanticIndexManager = (SemanticIndexManager) archive.getBean("semanticIndexManager");
 		Map<String, Collection<String>> relatedEntityIds = semanticIndexManager.searchRelatedEntities(query, excludeEntityIds, excludeAssetIds);
 		
-		log.info("Releted Entity Ids: " + relatedEntityIds);
-		
-		
-		Collection<Data> modules = new ArrayList();
-		Map<String, HitTracker> semanticEntities = new HashMap();
+		log.info("Related Entity Ids: " + relatedEntityIds);
+
+		Collection<Data> semanticentities = new ArrayList();
+		Map<String, HitTracker> semanticentityhits = new HashMap();
 
 		for (Iterator iterator = relatedEntityIds.keySet().iterator(); iterator.hasNext();)
 		{
@@ -450,7 +451,7 @@ public class AssistantManager extends BaseAiManager
 				continue;
 			}
 			
-			modules.add(module);
+			semanticentities.add(module);
 			
 			if(moduleid.equals("asset"))
 			{
@@ -458,11 +459,12 @@ public class AssistantManager extends BaseAiManager
 			}
 			else
 			{				
-				semanticEntities.put(moduleid, entites);
+				semanticentityhits.put(moduleid, entites);
 			}
 		}
-		inReq.putPageValue("semanticentities", modules);
-		inReq.putPageValue("semanticentityhits", semanticEntities);
+		
+		inReq.putPageValue("semanticentities", semanticentities);
+		inReq.putPageValue("semanticentityhits", semanticentityhits);
 		
 	}
 	
