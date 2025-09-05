@@ -426,12 +426,16 @@ public class SemanticIndexManager implements CatalogEnabled
 		List vector = (List)hit.get("embedding");
 		vector = getKMeansIndexer().collectDoubles(vector);
 		
+		List allIds = new ArrayList(); //for debugging
+		
 		Collection<RankedResult> found = getKMeansIndexer().searchNearestItems(vector);
 		
 		Map<String,Collection<String>> bytype = new HashMap();
 		for (Iterator iterator = found.iterator(); iterator.hasNext();)
 		{
 			RankedResult rankedResult = (RankedResult) iterator.next();
+			
+			allIds.add(rankedResult.getModuleId() + ":" + rankedResult.getEntityId());
 			
 			if(rankedResult.getModuleId().equals("asset"))
 			{
@@ -456,6 +460,8 @@ public class SemanticIndexManager implements CatalogEnabled
 				hits.add(rankedResult.getEntityId());
 			}
 		}
+		
+		log.info("All matching IDs:" + allIds);
 
 		//Search for them hits up to 1000
 		//getMediaArchive().getSearcherManager().organizeHits(
