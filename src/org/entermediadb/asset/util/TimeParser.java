@@ -1,7 +1,21 @@
 package org.entermediadb.asset.util;
 
+import java.time.Duration;
+
 public class TimeParser {
 
+	
+	
+	public  Duration parseDuration(String expr) {
+	    try {
+	        return Duration.parse(expr); // supports ISO-8601
+	    } catch (Exception ignore) {
+	        long millis = new TimeParser().parse(expr); // fallback
+	        return Duration.ofMillis(millis);
+	    }
+	}
+	
+	
 	public long parse(String inPeriodString) 
 	{
 		inPeriodString = inPeriodString.trim();
