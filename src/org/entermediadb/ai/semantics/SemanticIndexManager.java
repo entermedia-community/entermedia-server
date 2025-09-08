@@ -68,6 +68,7 @@ public class SemanticIndexManager implements CatalogEnabled
 			fieldKMeansIndexer.setSearchType("semanticembedding");
 			fieldKMeansIndexer.setRandomSortBy(null);
 			fieldKMeansIndexer.setFieldSaveVector("vectorarray");//facedatadoubles
+			fieldKMeansIndexer.setDataField("semantictopics");
 			Map<String,String> customsettings = new HashMap();
 			customsettings.put("maxnumberofcentroids","4");
 			customsettings.put("init_loop_start_distance",".60");
@@ -143,7 +144,7 @@ public class SemanticIndexManager implements CatalogEnabled
 		
 		QueryBuilder query = getMediaArchive().getSearcher("modulesearch").query();
 		query.exact("semanticindexed", false);
-		query.exists("semantictopics");
+		query.exists(getKMeansIndexer().getDataField());
 		query.put("searchtypes", ids);
 		query.put("searchasset", true);
 		
@@ -179,7 +180,7 @@ public class SemanticIndexManager implements CatalogEnabled
 		for(int i=0;i < hits.getTotalPages();i++)
 		{
 			hits.setPage(i+1);
-			long start = System.currentTimeMillis();
+			//long start = System.currentTimeMillis();
 			Collection<MultiValued> onepage = hits.getPageOfHits();
 			indexed = indexed + index(instructions, onepage, createdVectors);
 			if (createdVectors!= null && createdVectors.size() > 5000)
@@ -281,7 +282,7 @@ public class SemanticIndexManager implements CatalogEnabled
 					log.error("Skipping, Already have dataid " + dataid);
 					continue;
 				}	
-				if( entity.getValue("semantictopics") == null)
+				if( entity.getValue(getKMeansIndexer().getDataField()) == null)
 				{
 					continue;
 				}
@@ -308,7 +309,7 @@ public class SemanticIndexManager implements CatalogEnabled
 				moduleid = "asset";
 			}
 			entry.put("id",moduleid + ":" + entity.getId());
-			Collection values = entity.getValues("semantictopics");
+			Collection values = entity.getValues(getKMeansIndexer().getDataField());
 			
 			String out = collectText(values);
 			if (out == null)
@@ -389,7 +390,7 @@ public class SemanticIndexManager implements CatalogEnabled
 			//Todo: Use the Vector DB?
 		}
 		String text = null;
-		Collection values = searchcategory.getValues("semantictopics");
+		Collection values = searchcategory.getValues(getKMeansIndexer().getDataField());
 		text = collectText(values);
 		if( text == null)
 		{
@@ -474,7 +475,7 @@ public class SemanticIndexManager implements CatalogEnabled
 	public void rescanSearchCategories()
 	{
 		//For each search category go look for relevent records. Reset old ones?
-		HitTracker tracker = getMediaArchive().query("searchcategory").exists("semantictopics").search();
+		HitTracker tracker = getMediaArchive().query("searchcategory").exists(getKMeansIndexer().getDataField()).search();
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			MultiValued searchcategory = (MultiValued) iterator.next();
