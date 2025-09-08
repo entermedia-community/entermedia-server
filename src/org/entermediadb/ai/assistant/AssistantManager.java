@@ -392,6 +392,13 @@ public class AssistantManager extends BaseAiManager
 		
 		getResultsManager().searchByKeywords(inReq, aiSearchArgs);
 		
+		int totalhits = (int) inReq.getPageValue("totalhits");
+		if(totalhits < 5)
+		{
+			inReq.putPageValue("query", String.join(" ", aiSearchArgs.getKeywords()));
+			semanticSearch(inReq);
+		}
+		
 	}
 	
 	public void semanticSearch(WebPageRequest inReq)
@@ -412,6 +419,17 @@ public class AssistantManager extends BaseAiManager
 		log.info("Semantic Search for: " + query);
 		
 		String[] excludeentityids = inReq.getRequestParameters("excludeentityids");
+		try
+		{			
+			if(excludeentityids == null)
+			{
+				excludeentityids = (String[]) inReq.getPageValue("excludeentityids");
+			}
+		}
+		catch( Exception e)
+		{
+			log.error("Could not parse excludeentityids",e);
+		}
 		if(excludeentityids == null)
 		{
 			excludeentityids = new String[0];
@@ -419,6 +437,17 @@ public class AssistantManager extends BaseAiManager
 		Collection<String> excludeEntityIds = Arrays.asList(excludeentityids);
 		
 		String[] excludeassetids = inReq.getRequestParameters("excludeassetids");
+		try
+		{			
+			if(excludeassetids == null)
+			{
+				excludeassetids = (String[]) inReq.getPageValue("excludeassetids");
+			}
+		}
+		catch( Exception e)
+		{
+			log.error("Could not parse excludeassetids",e);
+		}
 		if(excludeassetids == null)
 		{
 			excludeassetids = new String[0];

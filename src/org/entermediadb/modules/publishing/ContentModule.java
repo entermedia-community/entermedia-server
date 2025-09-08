@@ -65,7 +65,7 @@ public class ContentModule extends BaseMediaModule
 	    info.setValue("status", "new");
 	    String [] fields = inReq.getRequestParameters("field");
 	    requests.updateData(inReq, fields, info);
-	    requests.saveData(info);
+	    requests.saveData(info);  
 	    
 	    archive.fireSharedMediaEvent("llm/createentities");
 	
