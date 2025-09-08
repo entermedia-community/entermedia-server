@@ -383,6 +383,25 @@ public class ResultsManager extends BaseManager {
 		Collection pageOfHits = unsorted.getPageOfHits();
 		pageOfHits = new ArrayList(pageOfHits);
 		
+		String[] excludeentityids = new String[unsorted.size()];
+		String[] excludeassetids = new String[assetunsorted.size()];
+		int idx = 0;
+		for (Object entity : unsorted.getPageOfHits()) {
+			Data d = (Data) entity;
+			excludeentityids[idx] = d.getId();
+			idx++;
+		}
+		idx = 0;
+		for (Object asset : assetunsorted.getPageOfHits()) {
+			Data d = (Data) asset;
+			excludeassetids[idx] = d.getId();
+			idx++;
+		}
+		inReq.putPageValue("excludeentityids", excludeentityids);
+		inReq.putPageValue("excludeassetids", excludeassetids);
+		
+		inReq.putPageValue("totalhits", unsorted.size() + assetunsorted.size());
+		
 		organizeHits(inReq, unsorted, pageOfHits);
 		
 	}
