@@ -165,8 +165,8 @@ public class AssistantManager extends BaseAiManager
 		
 		params.put("message", message);
 
-///$mediaarchive.getMediaDbId()/ai/assistant/instructions/context
-		String chattemplate = "/" + archive.getMediaDbId() + "/ai/assistant/instructions/current.json";
+///$mediaarchive.getMediaDbId()/ai/openai/assistant/instructions/context
+		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/assistant/instructions/current.json";
 		
 		params.put("assistant", this);
 		
@@ -251,7 +251,7 @@ public class AssistantManager extends BaseAiManager
 			JSONObject arguments = (JSONObject) new JSONParser().parse(args);
 			params.put("arguments", arguments);
 			
-			response = llmconnection.loadInputFromTemplate("/" + archive.getMediaDbId() +"/ai/"+ getAiFolder() + "/responses/" + functionName + ".html", params);
+			response = llmconnection.loadInputFromTemplate("/" + archive.getMediaDbId() +"/ai/openai/"+ getAiFolder() + "/responses/" + functionName + ".html", params);
 			//log.info("Function " + functionName + " returned : " + response);
 
 			messageToUpdate.setValue("functionresponse", response);
@@ -558,7 +558,7 @@ public class AssistantManager extends BaseAiManager
 
 		LlmConnection llmconnection = (LlmConnection) archive.getBean("openaiConnection");
 		
-		String chattemplate = "/" + archive.getMediaDbId() + "/ai/mcp/prompts/generate_report.json";
+		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/mcp/prompts/generate_report.json";
 		LlmResponse response = llmconnection.runPageAsInput(params, model, chattemplate);
 		
 		String report = response.getMessage();
