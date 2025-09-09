@@ -2816,10 +2816,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			
 			HashSet allprops = new HashSet();
 			
-			if( inDetails.isAllowDynamicFields() )
-			{
-				allprops.addAll(inData.getProperties().keySet());
-			}
+			//if( inDetails.isAllowDynamicFields() )
+			//{
+				allprops.addAll(inData.getProperties().keySet()); //Needed for legacy field handling below
+			//}
 			//allprops.addAll(props.keySet());
 			for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
 			{
