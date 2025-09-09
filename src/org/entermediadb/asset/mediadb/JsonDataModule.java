@@ -89,25 +89,29 @@ public class JsonDataModule extends BaseJsonModule
 		Data newdata = searcher.createNewData();
 		
 		checkAssetUploads(inReq, archive, searcher, newdata);
-		
+
+		String id = inReq.getRequestParameter("id");
+		String sourcepath = inReq.getRequestParameter("sourcepath");
+
 		JSONObject request = (JSONObject)inReq.getJsonRequest();
 		if( request  == null)
 		{
 			request = new JSONObject();
-			searcher.updateData(newdata, request);
+			String[] fields = inReq.getRequestParameters("field");
+			searcher.updateData(inReq, fields, newdata);
 		}
-		
-		String id = (String)request.get("id");
-		if(id == null) {
-			id = (String)inReq.getPageValue("id");
+		else
+		{
+			if(id == null) 
+			{
+				id = (String)inReq.getPageValue("id");
+			}
+			if (id != null && id.isEmpty()) 
+			{
+				id = null;
+			}
+			populateJsonData(request,searcher,newdata);
 		}
-		if (id != null && id.isEmpty()) {
-			id = null;
-		}
-		
-		String sourcepath = (String) request.get("sourcepath");
-		populateJsonData(request,searcher,newdata);
-
 		newdata.setId(id);
 		newdata.setProperty("sourcepath", sourcepath);
 
