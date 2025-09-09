@@ -639,6 +639,12 @@
 						const idEl = progItem(data.identifier, data.isDownload);
 						if (idEl) {
 							idEl.find(".fileCompletedCount").text(`0 of `);
+							if (data.currentFolderSize) {
+								idEl
+									.find(".fileTotalSize")
+									.text(humanFileSize(data.currentFolderSize));
+							}
+							idEl.find(".fileTotalCount").text(data.total || "?");
 							idEl.find(".filesStats").show();
 						}
 						updateSyncUI(data.identifier, null, true);
@@ -653,9 +659,16 @@
 								idEl
 									.find(".fileCompletedSize")
 									.text(`${humanFileSize(data.completedSize)} / `);
+								if (data.currentFolderSize) {
+									idEl
+										.find(".fileTotalSize")
+										.text(humanFileSize(data.currentFolderSize));
+								}
 							}
 							if (data.completed >= 0) {
 								idEl.find(".fileCompletedCount").text(`${data.completed} of `);
+								idEl.find(".fileTotalCount").text(data.total || "?");
+
 								idEl.find(".filesStats").show();
 							}
 						}
