@@ -12,11 +12,11 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.assistant.AiSearch;
+import org.entermediadb.ai.semantics.SemanticIndexManager;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.manager.BaseManager;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
@@ -318,23 +318,19 @@ public class ResultsManager extends BaseManager {
 		log.info("Searching as:" + inReq.getUser().getName());
 		MediaArchive archive = getMediaArchive();
 
-		// SemanticIndexManager semanticIndexManager = (SemanticIndexManager) archive.getBean("semanticIndexManager");
+		Collection<String> keywords = searchArgs.getKeywords();
 		
 		String plainquery = "";
 		if(!searchArgs.isStrictSearch())
 		{
-			plainquery = String.join(" ", searchArgs.getKeywords());
+			plainquery = String.join(" ", keywords);
 		}
 		else
 		{
-			plainquery = String.join(" OR ", searchArgs.getKeywords()); // This does not work
+			plainquery = String.join(" OR ", keywords); // This does not work
 		}
 		
-		// Map<String, Collection<String>> semanticSearch = semanticIndexManager.searchRelatedEntities(plainquery);
-		// log.info("Semantic Search Results: " + semanticSearch);
-		
-		
-		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",plainquery).hitsPerPage(30);
+		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description", plainquery).hitsPerPage(30);
 		dq.getQuery().setIncludeDescription(true);
 		
 		Collection searchmodules = loadUserSearchTypes(inReq, searchArgs.getSelectedModuleIds());
@@ -370,28 +366,41 @@ public class ResultsManager extends BaseManager {
 		inReq.putPageValue("livesuggestions", finallist);
 		inReq.putPageValue("highlighter", new Highlighter());
 		
-		if( searchmodules.contains("asset"))
+		int assetmax = 15;
+		if( unsorted.size() > 10)
 		{
-			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
-			log.info(assetdq.toString());
-			HitTracker assetunsorted = assetdq.search(inReq);
-			collectMatches(keywordsLower, plainquery, assetunsorted);
-			inReq.putPageValue("assethits", assetunsorted);
-			
-			User user = inReq.getUser();
-			log.info(user);
-			
-			if(searchmodules.size() == 1)
-			{
-				log.info("Searching for assets only");
-				return;
-			}
+			assetmax = 5;
 		}
+		
+		QueryBuilder assetdq = archive.query("asset")
+				.freeform("description", plainquery)
+				.hitsPerPage(assetmax);
+				
+		HitTracker assetunsorted = assetdq.search(inReq);
+		collectMatches(keywordsLower, plainquery, assetunsorted);
+		inReq.putPageValue("assethits", assetunsorted);
 		
 		Collection pageOfHits = unsorted.getPageOfHits();
 		pageOfHits = new ArrayList(pageOfHits);
 		
+		String[] excludeentityids = new String[unsorted.size()];
+		String[] excludeassetids = new String[assetunsorted.size()];
+		int idx = 0;
+		for (Object entity : unsorted.getPageOfHits()) {
+			Data d = (Data) entity;
+			excludeentityids[idx] = d.getId();
+			idx++;
+		}
+		idx = 0;
+		for (Object asset : assetunsorted.getPageOfHits()) {
+			Data d = (Data) asset;
+			excludeassetids[idx] = d.getId();
+			idx++;
+		}
+		inReq.putPageValue("excludeentityids", excludeentityids);
+		inReq.putPageValue("excludeassetids", excludeassetids);
 		
+		inReq.putPageValue("totalhits", unsorted.size() + assetunsorted.size());
 		
 		organizeHits(inReq, unsorted, pageOfHits);
 		
@@ -592,21 +601,22 @@ public class ResultsManager extends BaseManager {
 //		searchByKeywords(inReq, modules, keywords, "exclusive");
 	}
 
-	public static String joinWithAnd(ArrayList<String> items) {
+	public String joinWithAnd(Collection<String> items) {
+		Iterator<String> iter = items.iterator();
 		if (items == null || items.size() == 0) {
 			return "";
 		} else if (items.size() == 1) {
-			return items.get(0);
+			return iter.next();
 		} else if (items.size() == 2) {
-			return items.get(0) + " and " + items.get(1);
+			return iter.next() + " and " + iter.next();
 		}
 
 		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < items.size() - 1; i++) {
-			result.append(items.get(i)).append(", ");
+			result.append(iter.next());
 		}
 
-		result.append("and ").append(items.get(items.size() - 1));
+		result.append("and ").append(iter.next());
 		return result.toString();
 	}
 }

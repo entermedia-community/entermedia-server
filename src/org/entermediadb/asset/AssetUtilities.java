@@ -443,18 +443,18 @@ public class AssetUtilities //TODO: Rename to AssetManager
 					}
 				}
 			}
-			else {
-				
-				String uploadsourcepath = inReq.getRequestParameter("uploadsourcepath");
-				if(uploadsourcepath != null) {
+			else 
+			{
+				String sourcepath = inReq.getRequestParameter("sourcepath");
+				if(sourcepath != null) {
 					if( Boolean.parseBoolean(inReq.getRequestParameter("createentity"))) 
 					{
 						sourcepathmask = "${categorypath}/${filename}";
-						uploadsourcepath = uploadsourcepath + '/' + fileName;
-						vals.put("categorypath", uploadsourcepath);
+						sourcepath = sourcepath + '/' + fileName;
+						vals.put("categorypath", sourcepath);
 					}
 					else {
-						vals.put("categorypath", uploadsourcepath);
+						vals.put("categorypath", sourcepath);
 					}
 				}
 			}

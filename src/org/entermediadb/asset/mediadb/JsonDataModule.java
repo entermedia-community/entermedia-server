@@ -15,6 +15,7 @@ import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.util.JsonUtil;
+import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -88,25 +89,31 @@ public class JsonDataModule extends BaseJsonModule
 		Data newdata = searcher.createNewData();
 		
 		checkAssetUploads(inReq, archive, searcher, newdata);
-		
-		Map request = inReq.getJsonRequest();
-		
-		if( request != null)
+
+		String id = inReq.getRequestParameter("id");
+		String sourcepath = inReq.getRequestParameter("sourcepath");
+
+		JSONObject request = (JSONObject)inReq.getJsonRequest();
+		if( request  == null)
 		{
-			String id = (String)request.get("id");
-			if(id == null) {
+			request = new JSONObject();
+			String[] fields = inReq.getRequestParameters("field");
+			searcher.updateData(inReq, fields, newdata);
+		}
+		else
+		{
+			if(id == null) 
+			{
 				id = (String)inReq.getPageValue("id");
 			}
-			if (id != null && id.isEmpty()) {
+			if (id != null && id.isEmpty()) 
+			{
 				id = null;
 			}
-			
-			String sourcepath = (String) request.get("sourcepath");
 			populateJsonData(request,searcher,newdata);
-
-			newdata.setId(id);
-			newdata.setProperty("sourcepath", sourcepath);
 		}
+		newdata.setId(id);
+		newdata.setProperty("sourcepath", sourcepath);
 
 		searcher.saveData(newdata, inReq.getUser());
 		archive.fireDataEvent(inReq.getUser(),searcher.getSearchType(), "saved", newdata);
@@ -129,7 +136,11 @@ public class JsonDataModule extends BaseJsonModule
 		Searcher searcher = archive.getSearcher(searchtype);
 		inReq.putPageValue("searcher", searcher);
 		
-		String name = inReq.getRequestParameter("name"); 
+		String name = inReq.getRequestParameter("name");
+		if(name == null)
+		{
+			name = inReq.getRequestParameter("name.value");
+		}
 
 		Data data = (Data) searcher.searchByField("name", name);
 

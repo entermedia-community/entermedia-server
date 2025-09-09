@@ -35,6 +35,18 @@ public class KMeansIndexer implements CatalogEnabled {
 	protected String fieldSearchType = "semanticembedding";
 	protected String fieldRandomSortBy = null;
 	protected String fieldFieldSaveVector = "vectorarray";//vectorarray facedatadoubles
+	protected String fieldDataField = "semantictopics"; //entity.getValue("semantictopics");
+
+	public String getDataField()
+	{
+		return fieldDataField;
+	}
+
+
+	public void setDataField(String inDataField)
+	{
+		fieldDataField = inDataField;
+	}
 
 	protected Map<String,String> fieldCustomSettings = null;
 	
@@ -251,6 +263,10 @@ public class KMeansIndexer implements CatalogEnabled {
 				{
 					hit.setValue("iscentroid",true);
 					Collection<String> single = new java.util.ArrayList(1);
+					if( hit.getId() == null)
+					{
+						getMediaArchive().saveData(getSearchType(),hit);
+					}
 					single.add(hit.getId());
 					hit.setValue("nearbycentroidids",single);
 					inLog.info("Init " + existingCentroids.size() + " Centroids within distance, bigger is better " + founddistance );
@@ -813,7 +829,7 @@ public class KMeansIndexer implements CatalogEnabled {
 		{
 				throw new OpenEditException("Vectors must be the same length.");
 		}
-
+		//TODO: https://download.java.net/java/early_access/jdk25/docs/api/jdk.incubator.vector/jdk/incubator/vector/package-summary.html
 		double dotProduct = 0.0;
 		double normA = 0.0;
 		double normB = 0.0;

@@ -559,7 +559,7 @@ public class OriginalsAssetSource extends BaseAssetSource
 			{
 				Category oldjunk = (Category) iterator.next();
 				//Look for entities with this exact path
-				QueryBuilder builder = getMediaArchive().query("modulesearch").exact("uploadsourcepath",oldjunk.getCategoryPath());
+				QueryBuilder builder = getMediaArchive().query("modulesearch").exact("sourcepath",oldjunk.getCategoryPath());
 				builder.getQuery().setSearchTypes(entities);	
 				
 				Collection hits = builder.search();

@@ -1,5 +1,6 @@
 package org.entermediadb.ai.llm.ollama;
 
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
@@ -9,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.llm.BaseLlmConnection;
 import org.entermediadb.ai.llm.BaseLlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
@@ -237,16 +239,66 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	}
 
 	@Override
-	public Collection<String> callStructuredOutputList(String inStructureName, String inModel, Collection inFields, Map inParams) throws Exception
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public LlmResponse callCreateFunction(Map inParams, String inModel, String inFunction) throws Exception 
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Collection inFields, Map inParams) throws Exception
+	{
+		inParams.put("fields", inFields);
+		inParams.put("model", inModel);
+		
+		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/ollama/classify/structures/" + inStructureName + ".json", inParams);
+
+		JSONParser parser = new JSONParser();
+		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
+
+
+		String endpoint = getApiEndpoint() + "/api/chat";
+		HttpPost method = new HttpPost(endpoint);
+		method.addHeader("authorization", "Bearer " + getApikey());
+		method.setHeader("Content-Type", "application/json");
+		method.setEntity(new StringEntity(structureDef.toJSONString(), StandardCharsets.UTF_8));
+
+		CloseableHttpResponse resp = getConnection().sharedExecute(method);
+		
+		JSONObject results = new JSONObject();
+
+		try
+		{
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
+				throw new OpenEditException("GPT error: " + resp.getStatusLine());
+			}
+	
+			JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
+
+			log.info("Returned: " + json.toJSONString());
+		
+		
+			JSONObject message = (JSONObject) json.get("message");
+			if (message == null || !message.get("role").equals("assistant"))
+			{
+				log.info("No message found in GPT response");
+				return results;
+			}
+
+			String content = (String) message.get("content");
+			
+			if (content == null || content.isEmpty())
+			{
+				log.info("No structured data found in GPT response");
+				return results;
+			}
+			results = (JSONObject) parser.parse(new StringReader(content));
+		}
+		finally
+		{
+			connection.release(resp);
+		}
+		return results;
 	}
 }

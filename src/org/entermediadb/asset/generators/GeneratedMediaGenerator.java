@@ -128,7 +128,33 @@ public class GeneratedMediaGenerator extends FileGenerator
 		else
 		{
 			output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
+			
+			if (!output.exists())
+			{
+				if (endingpath.contains("image550x350"))
+				{
+					String fileext = PathUtilities.extractPageType(endingpath);
+					String basepath = PathUtilities.extractDirectoryPath(endingpath);
+					
+					endingpath = basepath + "/image550x550." + fileext;
+					
+					output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
+	
+				}
+				else if (endingpath.contains("image550x550"))
+				{
+					String fileext = PathUtilities.extractPageType(endingpath);
+					String basepath = PathUtilities.extractDirectoryPath(endingpath);
+					
+					endingpath = basepath + "/image550x350." + fileext;
+					
+					output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
+	
+				}
+			}
 		}
+		
+		
 
 		if (!existed && !output.exists())
 		{

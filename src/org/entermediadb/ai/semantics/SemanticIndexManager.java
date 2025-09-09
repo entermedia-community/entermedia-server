@@ -68,6 +68,7 @@ public class SemanticIndexManager implements CatalogEnabled
 			fieldKMeansIndexer.setSearchType("semanticembedding");
 			fieldKMeansIndexer.setRandomSortBy(null);
 			fieldKMeansIndexer.setFieldSaveVector("vectorarray");//facedatadoubles
+			fieldKMeansIndexer.setDataField("semantictopics");
 			Map<String,String> customsettings = new HashMap();
 			customsettings.put("maxnumberofcentroids","4");
 			customsettings.put("init_loop_start_distance",".60");
@@ -143,12 +144,14 @@ public class SemanticIndexManager implements CatalogEnabled
 		
 		QueryBuilder query = getMediaArchive().getSearcher("modulesearch").query();
 		query.exact("semanticindexed", false);
-		query.exists("semantictopics");
+		query.exists(getKMeansIndexer().getDataField());
 		query.put("searchtypes", ids);
 		query.put("searchasset", true);
 		
+		 //query.sort("createddate");
 		HitTracker hits = query.search();
 		hits.enableBulkOperations();
+		log.info("Indexing semanticindexed = false in: " + ids + " found: " + hits.size());
 		
 		indexResults(inLog, hits);
 		
@@ -177,7 +180,7 @@ public class SemanticIndexManager implements CatalogEnabled
 		for(int i=0;i < hits.getTotalPages();i++)
 		{
 			hits.setPage(i+1);
-			long start = System.currentTimeMillis();
+			//long start = System.currentTimeMillis();
 			Collection<MultiValued> onepage = hits.getPageOfHits();
 			indexed = indexed + index(instructions, onepage, createdVectors);
 			if (createdVectors!= null && createdVectors.size() > 5000)
@@ -279,7 +282,7 @@ public class SemanticIndexManager implements CatalogEnabled
 					log.error("Skipping, Already have dataid " + dataid);
 					continue;
 				}	
-				if( entity.getValue("semantictopics") == null)
+				if( entity.getValue(getKMeansIndexer().getDataField()) == null)
 				{
 					continue;
 				}
@@ -306,7 +309,7 @@ public class SemanticIndexManager implements CatalogEnabled
 				moduleid = "asset";
 			}
 			entry.put("id",moduleid + ":" + entity.getId());
-			Collection values = entity.getValues("semantictopics");
+			Collection values = entity.getValues(getKMeansIndexer().getDataField());
 			
 			String out = collectText(values);
 			if (out == null)
@@ -379,21 +382,26 @@ public class SemanticIndexManager implements CatalogEnabled
 	{
 		fieldSharedConnection = inSharedConnection;
 	}
-
-	public Map<String,Collection<String>> searchRelatedEntities(MultiValued searchcategory)
+	
+	public Map<String,Collection<String>> searchRelatedEntitiesBySearchCategory(MultiValued searchcategory)
 	{
 		if( searchcategory.getBoolean("semanticindexed"))
 		{
 			//Todo: Use the Vector DB?
 		}
 		String text = null;
-		Collection values = searchcategory.getValues("semantictopics");
+		Collection values = searchcategory.getValues(getKMeansIndexer().getDataField());
 		text = collectText(values);
 		if( text == null)
 		{
 			text = searchcategory.getName();
 		}
 		
+		return searchRelatedEntities(text, null, null);
+	}
+
+	public Map<String,Collection<String>> searchRelatedEntities(String text, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
+	{
 		//Collection allthepeopleinasset = getKMeansIndexer().searchNearestItems(startdata);
 		JSONObject tosendparams = new JSONObject();
 		JSONArray list = new JSONArray();
@@ -413,11 +421,15 @@ public class SemanticIndexManager implements CatalogEnabled
 		{
 			throw new OpenEditException(e);
 		}
+		
+		log.info("Got response " + objt.keySet());
 
 		JSONArray results = (JSONArray)objt.get("results");
 		Map hit = (Map)results.iterator().next();
 		List vector = (List)hit.get("embedding");
 		vector = getKMeansIndexer().collectDoubles(vector);
+		
+		List allIds = new ArrayList(); //for debugging
 		
 		Collection<RankedResult> found = getKMeansIndexer().searchNearestItems(vector);
 		
@@ -425,6 +437,21 @@ public class SemanticIndexManager implements CatalogEnabled
 		for (Iterator iterator = found.iterator(); iterator.hasNext();)
 		{
 			RankedResult rankedResult = (RankedResult) iterator.next();
+			
+			allIds.add(rankedResult.getModuleId() + ":" + rankedResult.getEntityId());
+			
+			if(rankedResult.getModuleId().equals("asset"))
+			{
+				if(excludedAssetids != null && excludedAssetids.contains(rankedResult.getEntityId()))
+				{
+					continue;
+				}
+			}
+			else if(excludedEntityIds != null && excludedEntityIds.contains(rankedResult.getEntityId()))
+			{
+				continue;
+			}
+			
 			Collection hits = bytype.get(rankedResult.getModuleId());
 			if( hits == null)
 			{
@@ -436,6 +463,8 @@ public class SemanticIndexManager implements CatalogEnabled
 				hits.add(rankedResult.getEntityId());
 			}
 		}
+		
+		log.info("All matching IDs:" + allIds);
 
 		//Search for them hits up to 1000
 		//getMediaArchive().getSearcherManager().organizeHits(
@@ -446,12 +475,12 @@ public class SemanticIndexManager implements CatalogEnabled
 	public void rescanSearchCategories()
 	{
 		//For each search category go look for relevent records. Reset old ones?
-		HitTracker tracker = getMediaArchive().query("searchcategory").exists("semantictopics").search();
+		HitTracker tracker = getMediaArchive().query("searchcategory").exists(getKMeansIndexer().getDataField()).search();
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			MultiValued searchcategory = (MultiValued) iterator.next();
 			
-			Map<String,Collection<String>> bytype = searchRelatedEntities(searchcategory);
+			Map<String,Collection<String>> bytype = searchRelatedEntitiesBySearchCategory(searchcategory);
 			for (Iterator iterator2 = bytype.keySet().iterator(); iterator2.hasNext();)
 			{
 				String moduleid = (String)iterator2.next();

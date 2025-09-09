@@ -961,19 +961,17 @@ public class AssetEditModule extends BaseMediaModule
 			
 			
 			
-			//Create Entity, should be here?
+			//Create Entity, should be here? Test again
 			if( Boolean.parseBoolean(inReq.getRequestParameter("createentity")))
 			{
-				String uploadsourcepath = inReq.getRequestParameter("uploadsourcepath");
+				String archivesourcepath = inReq.getRequestParameter("archivesourcepath");
 				String entitytype = inReq.getRequestParameter("entitytype");
 				Searcher s = inArchive.getSearcher(entitytype );
 				Data newone = s.createNewData();
 				newone.setName(PathUtilities.extractPageName(filepath));
-				newone.setValue("uploadsourcepath", uploadsourcepath+'/'+filepath);
+				newone.setValue("archivesourcepath", archivesourcepath+'/'+filepath);
 				s.saveData(newone);
 			}
-			
-			
 			
 			//Disable unzip zip files
 			if (false && incollection && filename.toLowerCase().endsWith(".zip"))
@@ -2171,15 +2169,16 @@ public class AssetEditModule extends BaseMediaModule
 				PropertyDetail detail = searcher.getDetail(detailid);
 				if (detail != null)
 				{
-					String sourcemask = detail.get("sourcepath");
-					if( sourcemask != null && sourcemask.contains("uploadsourcepath") && target.get("uploadsourcepath") == null) 
-					{
-						log.error("Remove ${data.uploadsourcepath}/${filename} from entities");
-						sourcemask = null; 
-					}
+					String sourcemask = detail.get("sourcepath");					
+//					//Legacy work around
+//					if( sourcemask != null && sourcemask.contains("uploadsourcepath") && target.get("sourcepath") == null) 
+//					{
+//						log.error("Remove ${data.sourcepath}/${filename} from entities");
+//						sourcemask = null; 
+//					}
 					if( sourcemask == null)
 					{
-						if(searcher.getDetail("uploadsourcepath") != null )
+						if(searcher.getDetail("sourcepath") != null )
 						{
 							Data entitmodule = archive.getCachedData("module",moduleid);
 							Category cat = archive.getEntityManager().loadDefaultFolder(entitmodule,target, inReq.getUser());

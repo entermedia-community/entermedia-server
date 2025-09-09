@@ -65,7 +65,7 @@ public class ContentModule extends BaseMediaModule
 	    info.setValue("status", "new");
 	    String [] fields = inReq.getRequestParameters("field");
 	    requests.updateData(inReq, fields, info);
-	    requests.saveData(info);
+	    requests.saveData(info);  
 	    
 	    archive.fireSharedMediaEvent("llm/createentities");
 	
@@ -84,6 +84,10 @@ public class ContentModule extends BaseMediaModule
 		params.putAll(inReq.getParameterMap());
 		
 		String model = archive.getCatalogSettingValue("llmmetadatamodel");
+		
+		if(model == null) {
+			model = "gpt-5-nano";
+		}
 		
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
@@ -415,7 +419,7 @@ public class ContentModule extends BaseMediaModule
 	        String[] integrations = inReq.getRequestParameters("integrations");
 	        List<String> siteList = (integrations != null) ? Arrays.asList(integrations) : new ArrayList<>();
 
-	        String[] assetids = inReq.getRequestParameters("assetid");	        
+	        String[] assetids = inReq.getRequestParameters("assetid.value");	        
 	        List<String> assets = (assetids != null) ? Arrays.asList(assetids) : new ArrayList<>();
 
 	        String apiKey = getPostizKey(inReq);
