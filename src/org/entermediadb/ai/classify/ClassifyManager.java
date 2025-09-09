@@ -230,10 +230,12 @@ public class ClassifyManager extends BaseManager
 
 	}
 
-	protected void processAssets(ScriptLogger inLog, LlmConnection llmconnection, Map<String, String> models, HitTracker assets)
+	protected void processAssets(ScriptLogger inLog, LlmConnection llmvisionconnection, Map<String, String> models, HitTracker assets)
 	{
 		int count = 1;
 		List tosave = new ArrayList();
+		
+		LlmConnection llmsemanticconnection = getMediaArchive().getLlmConnection(models.get("semantic"));
 		
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 		{
@@ -253,7 +255,7 @@ public class ClassifyManager extends BaseManager
 
 				inLog.info("Analyzing asset ("+count+"/"+assets.size()+") Id: " + asset.getId() + " " + asset.getName());
 
-				boolean complete = processOneAsset(llmconnection, models, asset);
+				boolean complete = processOneAsset(llmvisionconnection, llmsemanticconnection, models, asset);
 				if( !complete )
 				{
 					continue;
@@ -286,7 +288,7 @@ public class ClassifyManager extends BaseManager
 		}
 	}
 
-	protected boolean processOneAsset(LlmConnection llmconnection, Map<String, String> models, Asset asset) throws Exception
+	protected boolean processOneAsset(LlmConnection llmvisionconnection, LlmConnection llmsemanticconnection, Map<String, String> models, Asset asset) throws Exception
 	{
 		String mediatype = getMediaArchive().getMediaRenderType(asset);
 		String base64EncodedString = null;
@@ -330,8 +332,8 @@ public class ClassifyManager extends BaseManager
 			params.put("asset", asset);
 			params.put("aifields", aifields);
 			
-			String requestPayload = llmconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/classify/systemmessage/analyzeasset.html", params);
-			LlmResponse results = llmconnection.callClassifyFunction(params, models.get("vision"), "generate_metadata", requestPayload,base64EncodedString);
+			String requestPayload = llmvisionconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/openai/classify/systemmessage/analyzeasset.html", params);
+			LlmResponse results = llmvisionconnection.callClassifyFunction(params, models.get("vision"), "generate_metadata", requestPayload,base64EncodedString);
 
 			boolean wasUpdated = false;
 			if (results != null)
@@ -410,7 +412,7 @@ public class ClassifyManager extends BaseManager
 				
 			}
 
-			Collection<String> semantic_topics = getSemanticTopics(llmconnection, params, fieldsToCheck, models.get("semantic"), asset);
+			Collection<String> semantic_topics = getSemanticTopics(llmsemanticconnection, params, fieldsToCheck, models.get("semantic"), asset);
 			if(semantic_topics != null && !semantic_topics.isEmpty())
 			{
 				asset.setValue("semantictopics", semantic_topics);

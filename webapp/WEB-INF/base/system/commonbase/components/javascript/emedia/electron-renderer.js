@@ -550,6 +550,7 @@
 									method: "POST",
 									data: JSON.stringify({
 										name: folder.name,
+										entity_date: new Date().toISOString().slice(0, 10),
 									}),
 									contentType: "application/json",
 									success: function ({ data }) {

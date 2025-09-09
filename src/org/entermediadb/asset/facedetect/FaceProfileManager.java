@@ -617,7 +617,7 @@ public class FaceProfileManager implements CatalogEnabled
 					{
 						MultiValued existing = (MultiValued) iterator2.next();
 						List<Double> othervalues = (List<Double>)existing.getValue("facedatadoubles"); //Manually done
-						if(othervalues.equals(vector) )
+						if(othervalues != null && othervalues.equals(vector) )
 						{
 							addedface = existing;
 							log.info("Found existing embedding for asset " + inAsset.getName() ); 

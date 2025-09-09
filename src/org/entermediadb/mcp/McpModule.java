@@ -131,7 +131,7 @@ public class McpModule extends BaseMediaModule
 	//		  }
 	//		}
 			
-			String responsetext = getRender().loadInputFromTemplate(inReq,  appid + "/ai/mcp/functions/" + functionname + ".md");
+			String responsetext = getRender().loadInputFromTemplate(inReq,  appid + "/ai/openai/mcp/functions/" + functionname + ".md");
 			
 			JSONObject jsonresponse = new JSONObject();
 			jsonresponse.put("jsonrpc", "2.0");
@@ -157,7 +157,7 @@ public class McpModule extends BaseMediaModule
 		}
 		else
 		{
-			response = getRender().loadInputFromTemplate(inReq,  appid + "/ai/mcp/method/" + cmd + ".json");
+			response = getRender().loadInputFromTemplate(inReq,  appid + "/ai/openai/mcp/method/" + cmd + ".json");
 		}
 		
 		
@@ -288,7 +288,7 @@ public class McpModule extends BaseMediaModule
 				
 				if(cmd.equals("tools/list"))
 				{
-					String fp = "/" + appid + "/ai/mcp/method/tools/list.json";
+					String fp = "/" + appid + "/ai/openai/mcp/method/tools/list.json";
 					inReq.putPageValue("modules", profile.getEntities());
 					
 					String toolsArrString = getRender().loadInputFromTemplate(inReq, fp);
@@ -302,7 +302,7 @@ public class McpModule extends BaseMediaModule
 					String siteid = inReq.findValue("siteid");
 					inReq.putPageValue("mcpapplicationid", siteid + "/find");
 					
-					String fp = "/" + appid + "/ai/mcp/functions/" + functionname + ".html";
+					String fp = "/" + appid + "/ai/openai/mcp/functions/" + functionname + ".html";
 					
 					String text = getRender().loadInputFromTemplate(inReq, fp);
 					
@@ -318,7 +318,7 @@ public class McpModule extends BaseMediaModule
 		}
 		else 
 		{
-			String fp = "/" + appid + "/ai/mcp/method/" + cmd + ".json";
+			String fp = "/" + appid + "/ai/openai/mcp/method/" + cmd + ".json";
 			response = getRender().loadInputFromTemplate(inReq, fp);
 		}
 		
