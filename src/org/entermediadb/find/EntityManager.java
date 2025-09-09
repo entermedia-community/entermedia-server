@@ -289,7 +289,7 @@ public class EntityManager implements CatalogEnabled
 			return sourcepath;
 		}
 
-		String mask = (String) module.getValue("sourcepath"); //Custom one that is saved forever
+		String mask = (String) module.getValue("uploadsourcepath"); //Custom one that is saved forever
 		
 		if(mask != null)
 		{
