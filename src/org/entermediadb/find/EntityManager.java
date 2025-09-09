@@ -169,18 +169,16 @@ public class EntityManager implements CatalogEnabled
 		
 	}
 	
-	
-	
-	
 	public Category loadDefaultFolder(Data module, Data entity, User inUser, boolean create)
 	{
-		
 		if( entity == null || module == null)
 		{
 			return null;
 		}
+		//Should we track changing paths? Should we move to using sourcepath as the dynamic path
+		
 		Category cat = null;
-		entity.setValue("uploadsourcepath", null);
+		entity.setValue("sourcepath", null); //Dynamic
 		String entitysourcepath = loadUploadSourcepath(module,entity,inUser,true);
 		if( entitysourcepath == null )
 		{
@@ -188,7 +186,7 @@ public class EntityManager implements CatalogEnabled
 			return null;
 			
 		}
-		entity.setValue("uploadsourcepath", entitysourcepath);
+		entity.setValue("sourcepath", entitysourcepath);
 			
 		String categoryid = entity.get("rootcategory");
 		if (categoryid != null)
@@ -196,16 +194,18 @@ public class EntityManager implements CatalogEnabled
 			cat = getMediaArchive().getCategory(categoryid);
 			if (cat != null)
 			{
+				//TODO change the entire Category. Assets will have the old categoryid in them...
+				
 				//if( entity.getName() == null || !entity.getName().equals(cat.getName()))
 				if (!entitysourcepath.equals(cat.getCategoryPath()))
 				{
 					//TODO: move entire category to new	
 					log.info("Category was renamed " + cat.getCategoryPath() + " -> " + entitysourcepath);
 					String categoryname = null;
-					if (entitysourcepath.endsWith("/"))
-							{
+					if (entitysourcepath.endsWith("/")) 
+					{
 						categoryname = PathUtilities.extractDirectoryName(entitysourcepath);
-							}
+					}
 					else 
 					{
 						categoryname = PathUtilities.extractFileName(entitysourcepath);
@@ -218,7 +218,7 @@ public class EntityManager implements CatalogEnabled
 					getMediaArchive().getCategorySearcher().saveCategoryTree(cat);
 					if (!cat.getCategoryPath().equals(entitysourcepath))
 					{
-						entity.setValue("uploadsourcepath", cat.getCategoryPath());
+						entity.setValue("sourcepath", cat.getCategoryPath());
 						getMediaArchive().saveData(module.getId(), entity);
 					}
 
@@ -239,9 +239,9 @@ public class EntityManager implements CatalogEnabled
 					saveit = true;
 				}
 				entity.setValue("rootcategory",cat.getId());
-				if( entity.getValue("uploadsourcepath") == null || !entitysourcepath.equals(entity.getValue("uploadsourcepath")) )
+				if( entity.getValue("sourcepath") == null || !entitysourcepath.equals(entity.getValue("sourcepath")) )
 				{
-					entity.setValue("uploadsourcepath",entitysourcepath);
+					entity.setValue("sourcepath",entitysourcepath);
 					saveit = true;
 				}
 				if( saveit )
@@ -268,16 +268,28 @@ public class EntityManager implements CatalogEnabled
 	}
 	public String loadUploadSourcepath(Data module, Data entity, User inUser)
 	{
-		if (entity == null ) {
+		if (entity == null ) 
+		{
 			return null;
 		}
-		String sourcepath = entity.get("uploadsourcepath");
+		String sourcepath = entity.get("sourcepath"); //Dynamic current sourcepath
+		String archivesourcepath = entity.get("archivesourcepath"); //Dynamic current sourcepath
+		if( archivesourcepath != null)
+		{
+			if( !archivesourcepath.equals(sourcepath))
+			{
+				entity.setValue("sourcepath",archivesourcepath );
+				getMediaArchive().saveData(module.getId(), entity);
+			}		
+			return archivesourcepath;
+		}
+
 		if( sourcepath != null)
 		{
 			return sourcepath;
 		}
-		
-		String mask = (String) module.getValue("uploadsourcepath");
+
+		String mask = (String) module.getValue("sourcepath"); //Custom one that is saved forever
 		
 		if(mask != null)
 		{
@@ -296,9 +308,9 @@ public class EntityManager implements CatalogEnabled
 		{
 			sourcepath = module.getName("en") + "/" + entity.getName("en");
 		}
-		if( sourcepath != null && !sourcepath.isEmpty() && !sourcepath.equals( entity.get("uploadsourcepath")) )
+		if( sourcepath != null && !sourcepath.isEmpty() && !sourcepath.equals( entity.get("sourcepath")) )
 		{
-			entity.setValue("uploadsourcepath",sourcepath );
+			entity.setValue("sourcepath",sourcepath );
 			getMediaArchive().saveData(module.getId(), entity);
 		}
 		
@@ -514,7 +526,7 @@ public class EntityManager implements CatalogEnabled
 
 		for (Iterator iterator = source.getProperties().keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
-			if(key.equals("rootcategory") || key.equals("uploadsourcepath")) {
+			if(key.equals("rootcategory") || key.equals("sourcepath")) {
 				continue;
 			}
 			Object val = source.getValue(key);
@@ -552,7 +564,7 @@ public class EntityManager implements CatalogEnabled
 		{
 			getMediaArchive().getCategoryEditor().copyEverything(inContext.getUser(), sourcecategory, targetcategory);
 		}
-		newchild.setValue("uploadsourcepath", targetcategory.getCategoryPath());
+		newchild.setValue("sourcepath", targetcategory.getCategoryPath());
 		
 		//Make a path
 		String parenttype = source.get("entitysourcetype");

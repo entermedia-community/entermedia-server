@@ -1049,7 +1049,7 @@ public class EntityModule extends BaseMediaModule
 			
 			String path = archive.getEntityManager().loadUploadSourcepath(module,tmpentity,inReq.getUser(), true);
 			
-			Data existing = archive.query(moduleid).exact("uploadsourcepath", path).searchOne();
+			Data existing = archive.query(moduleid).exact("sourcepath", path).searchOne();
 			
 			if( existing == null)
 			{
@@ -1062,7 +1062,7 @@ public class EntityModule extends BaseMediaModule
 				tmpentity = existing;
 			}
 			
-			folder.setValue("categorypath",tmpentity.getValue("uploadsourcepath"));
+			folder.setValue("categorypath",tmpentity.getValue("sourcepath"));
 			folder.setValue("entityid",tmpentity.getId());
 			
 			archive.saveData("desktopsyncfolder",folder);
