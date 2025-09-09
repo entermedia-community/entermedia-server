@@ -178,7 +178,7 @@ public class EntityManager implements CatalogEnabled
 		//Should we track changing paths? Should we move to using sourcepath as the dynamic path
 		
 		Category cat = null;
-		entity.setValue("sourcepath", null); //Dynamic
+		//entity.setValue("sourcepath", null); //Dynamic
 		String entitysourcepath = loadUploadSourcepath(module,entity,inUser,true);
 		if( entitysourcepath == null )
 		{
@@ -186,7 +186,7 @@ public class EntityManager implements CatalogEnabled
 			return null;
 			
 		}
-		entity.setValue("sourcepath", entitysourcepath);
+		//entity.setValue("sourcepath", entitysourcepath);
 			
 		String categoryid = entity.get("rootcategory");
 		if (categoryid != null)
@@ -279,15 +279,16 @@ public class EntityManager implements CatalogEnabled
 			if( !archivesourcepath.equals(sourcepath))
 			{
 				entity.setValue("sourcepath",archivesourcepath );
+				entity.setValue("rootcategory",null);
 				getMediaArchive().saveData(module.getId(), entity);
 			}		
 			return archivesourcepath;
 		}
 
-		if( sourcepath != null)
-		{
-			return sourcepath;
-		}
+//		if( sourcepath != null)
+//		{
+//			return sourcepath;
+//		}
 
 		String mask = (String) module.getValue("uploadsourcepath"); //Custom one that is saved forever
 		

@@ -186,6 +186,9 @@ curl -XGET 'http://localhost:9200/assets_catalog/assettype/_search' -d '{
 
 curl -XGET 'http://localhost:9200/assets_catalog/librarycollection/_search?q=id:AXVM1nWZ-rqBgwbiLUsK' | python -mjson.tool
 
+curl -XGET 'http://localhost:9200/site_catalog/eduactivity/_search?q=id:AZH8cp4TIaz-j_VTLdZp' | python3 -mjson.tool
+
+
 curl -XGET 'http://localhost:9200/tae_catalog/entitycapture/_search?q=id:AY53viMQxEcYhhVY3x47' | python -mjson.tool
 curl -XGET 'http://localhost:9200/tae_catalog/entitycapture/_search' -d '{ "query" : {	"match_all" : {} } }' | python3 -mjson.tool
 
