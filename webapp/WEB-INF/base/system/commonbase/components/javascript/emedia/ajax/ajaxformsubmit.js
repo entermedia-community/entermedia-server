@@ -1,8 +1,8 @@
 (function ($) {
-	$.fn.ajaxFormSubmit = function () {
+	$.fn.ajaxFormSubmit = function (callbackFunc = null) {
 		// $(window).trigger("ajaxsubmitting");
 		var form = $(this);
-		
+
 		var app = jQuery("#application");
 
 		if (form.data("submitting")) {
@@ -140,6 +140,9 @@
 			},
 			crossDomain: true,
 			success: function (result) {
+				if (callbackFunc) {
+					callbackFunc(result);
+				}
 				$(window).trigger("successToast", [toastUid]);
 				$(window).trigger("checkautoreload", [form]);
 				if (showwaitingtarget !== undefined) {

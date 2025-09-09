@@ -539,67 +539,21 @@
 									path: path,
 								});
 							}
-							var categorypath = div.data("categorypath");
-							var moduleid = div.data("moduleid");
-							const formData = new FormData();
-							formData.set("entitymoduleid", moduleid);
-							formData.set("desktopimportstatus", "scan-started");
-							folders.forEach((folder) => {
-								$.ajax({
-									url: `/${mediadb}/services/module/${moduleid}/searchorcreate`,
-									method: "POST",
-									data: JSON.stringify({
-										name: folder.name,
-										entity_date: new Date().toISOString().slice(0, 10),
-									}),
-									contentType: "application/json",
-									success: function ({ data }) {
-										formData.set("entityid", data.id);
-										categorypath = categorypath + "/" + data.name;
-										formData.set("startcategory", categorypath);
-										formData.set("categorypath", categorypath);
-										desktopSyncStarter(formData, function (synfolder) {
-											ipcRenderer.send("dropUpload", {
-												folderPath: folder.path,
-												folderName: folder.name,
-												categoryPath: categorypath,
-												syncFolderId: synfolder.id,
-											});
-
-											customToast(
-												elideCat(categorypath) +
-													" upload task added to Cloud Sync",
-												{ id: synfolder.id }
-											);
-											var topmodulecontainer = $(".topmodulecontainer");
-											topmodulecontainer.data(
-												"sidebarcomponent",
-												"localdrives"
-											);
-											topmodulecontainer.data(
-												"targetdiv",
-												"applicationcontent"
-											);
-											topmodulecontainer.data("oemaxlevel", 5);
-											topmodulecontainer.runAjax();
-											// $("#col-sidebars").load(
-											// 	apphome + "/components/sidebars/index.html",
-											// 	{
-											// 		propertyfield: "sidebarcomponent",
-											// 		sidebarcomponent: "localdrives",
-											// 		"sidebarcomponent.value": "localdrives",
-											// 	}
-											// );
-										});
-									},
-									error: function (error) {
-										customToast("Error creating the folder!", {
-											positive: false,
-											log: error,
-										});
-									},
-								});
-							});
+							if (folders.length == 0) {
+								return;
+							}
+							div.data("name.value", folders[0].name);
+							div.data("droppedfolderpath", folders[0].path);
+							div.emDialog();
+							if (folders.length > 1) {
+								customToast(
+									`Only the first folder (${folders[0].name}) will be uploaded.`,
+									{
+										positive: true,
+										autohideDelay: 5000,
+									}
+								);
+							}
 						});
 					});
 
@@ -778,6 +732,67 @@
 							id: "network-connection",
 						});
 						console.log("The network connection has been restored.");
+					});
+
+					lQuery(".desktopEntityUpload").livequery("submit", function (e) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						e.stopPropagation();
+
+						$(this).ajaxFormSubmit(function (data) {
+							closeemdialog($(".modal#entitydesktopdropeditdialog"));
+							if (
+								!data ||
+								!data.data ||
+								!data.droppedfolderpath ||
+								!data.entitymoduleid
+							) {
+								customToast("Error creating the folder!", {
+									positive: false,
+								});
+								return;
+							}
+							var droppedfolderpath = data.droppedfolderpath;
+							var entitymoduleid = data.entitymoduleid;
+							var entityid = data.data.id;
+							var categorypath = data.data.sourcepath;
+							var foldername = data.data.name;
+
+							const formData = new FormData();
+							formData.set("entitymoduleid", entitymoduleid);
+							formData.set("desktopimportstatus", "scan-started");
+							formData.set("entityid", entityid);
+
+							formData.set("startcategory", categorypath);
+							formData.set("categorypath", categorypath);
+
+							desktopSyncStarter(formData, function (synfolder) {
+								ipcRenderer.send("dropUpload", {
+									folderPath: droppedfolderpath,
+									folderName: foldername,
+									categoryPath: categorypath,
+									syncFolderId: synfolder.id,
+								});
+
+								customToast(
+									elideCat(categorypath) + " upload task added to Cloud Sync",
+									{ id: synfolder.id }
+								);
+								var topmodulecontainer = $(".topmodulecontainer");
+								topmodulecontainer.data("sidebarcomponent", "localdrives");
+								topmodulecontainer.data("targetdiv", "applicationcontent");
+								topmodulecontainer.data("oemaxlevel", 5);
+								topmodulecontainer.runAjax();
+								// $("#col-sidebars").load(
+								// 	apphome + "/components/sidebars/index.html",
+								// 	{
+								// 		propertyfield: "sidebarcomponent",
+								// 		sidebarcomponent: "localdrives",
+								// 		"sidebarcomponent.value": "localdrives",
+								// 	}
+								// );
+							});
+						});
 					});
 				}
 			)

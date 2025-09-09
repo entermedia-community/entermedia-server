@@ -1105,7 +1105,7 @@ public class EntityModule extends BaseMediaModule
 	}
 
 	
-	public void getEntity(WebPageRequest inPageRequest) 
+	public Data getEntity(WebPageRequest inPageRequest) 
 	{
 		String entitymoduleid = null;
 		
@@ -1150,7 +1150,7 @@ public class EntityModule extends BaseMediaModule
 
 		if (entityid == null)
 		{
-			return;
+			return null;
 		}
 		if (entityid.startsWith("multiedit:"))
 		{
@@ -1159,7 +1159,8 @@ public class EntityModule extends BaseMediaModule
 		
 		Data entity = getMediaArchive(inPageRequest).getCachedData(inPageRequest, entitymoduleid, entityid);
 		inPageRequest.putPageValue("entity",entity);
-
+		
+		return entity;
 	}
 	public void addAssetsToLightbox(WebPageRequest inPageRequest) throws Exception 
 	{
@@ -1675,5 +1676,19 @@ public class EntityModule extends BaseMediaModule
 			}
 		}
 	}	
+	
+	public void loadDefaultFolder(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Data entity = getEntity(inReq);
+		if(entity == null)
+		{
+			entity = (Data) inReq.getPageValue("data");
+		}
+		
+		archive.getEntityManager().loadDefaultFolder(entity, inReq.getUser());
+
+		inReq.putPageValue("entity", entity);
+	}
 	
 }

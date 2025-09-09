@@ -136,7 +136,11 @@ public class JsonDataModule extends BaseJsonModule
 		Searcher searcher = archive.getSearcher(searchtype);
 		inReq.putPageValue("searcher", searcher);
 		
-		String name = inReq.getRequestParameter("name"); 
+		String name = inReq.getRequestParameter("name");
+		if(name == null)
+		{
+			name = inReq.getRequestParameter("name.value");
+		}
 
 		Data data = (Data) searcher.searchByField("name", name);
 
