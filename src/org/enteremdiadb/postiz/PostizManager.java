@@ -19,6 +19,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
@@ -130,10 +131,11 @@ public class PostizManager implements CatalogEnabled {
 	                        	}
                         	}
                         }
+		                valueObject.put("image", imagesArray);
+		                valuesArray.add(valueObject);
+		                postObject.put("value", valuesArray);
                     }
-                    valueObject.put("image", imagesArray);
-                    valuesArray.add(valueObject);
-                    postObject.put("value", valuesArray);
+                    
 
                     // Add a random group ID to group these posts if needed
                     postObject.put("group", java.util.UUID.randomUUID().toString());
@@ -162,7 +164,7 @@ public class PostizManager implements CatalogEnabled {
             String jsonResponse = EntityUtils.toString(response.getEntity(), "UTF-8");
 
             // Parse the response as JSON
-            JSONArray result = (JSONArray) new org.json.simple.parser.JSONParser().parse(jsonResponse);
+            JSONArray result = (JSONArray) new JSONParser().parse(jsonResponse);
 
             response.close();
             return (JSONObject) result.get(0);

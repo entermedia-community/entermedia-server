@@ -419,7 +419,7 @@ public class ContentModule extends BaseMediaModule
 	        String[] integrations = inReq.getRequestParameters("integrations");
 	        List<String> siteList = (integrations != null) ? Arrays.asList(integrations) : new ArrayList<>();
 
-	        String[] assetids = inReq.getRequestParameters("assetid");	        
+	        String[] assetids = inReq.getRequestParameters("assetid.value");	        
 	        List<String> assets = (assetids != null) ? Arrays.asList(assetids) : new ArrayList<>();
 
 	        String apiKey = getPostizKey(inReq);
