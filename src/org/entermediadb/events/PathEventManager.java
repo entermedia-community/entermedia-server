@@ -206,6 +206,52 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		
 	}
 	
+	
+	public PathEvent execute(String runpath, WebPageRequest inReq )
+	{
+		if (runpath == null)
+		{
+			return null;
+		}
+		PathEvent event = getPathEvent(runpath);
+		//synchronized( event )
+		inReq.putPageValue("ranevent", event);
+//		String force = inReq.getRequestParameter("forcerun");
+				
+		if (event != null)
+		{ 
+//			if( Boolean.parseBoolean(force) || event.getDelay() == 0 )
+			TaskRunner runner = new TaskRunner(event, inReq.getParameterMap(), getRequestUtils().extractValueMap(inReq), this, getDefaultUser());
+//			{
+				getRunningTasks().push(runner);
+				runner.runBlocking(); //this will remove it again
+//			}
+//			else
+//			{
+//				schedule(event, runner);
+//			}
+			return event;
+		}
+		else
+		{
+			//I guess sometimes events fire that are not actually configured
+			if( !runpath.endsWith(".html"))
+			{
+				throw new OpenEditException("Event path must end with .html " + runpath);
+				
+			}
+			
+			//do nothingthrow new OpenEditException("Event not found " + runpath);
+			if( log.isDebugEnabled() )
+			{
+				log.debug("No actions enabled for this event: " + runpath);
+			}
+			return event;
+		}
+	}
+	
+	
+	
 	/**
 	 * This is the public API that event listeners need to run to exec
 	 * /catalogid/events/* actions
@@ -608,13 +654,20 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 
 	public void loadExtraEvents(String inRoot)
 	{
-		clear();
-		//getPageManager().clearCache();
-		Set duplicates = new HashSet();
-		loadPathEvents(inRoot, duplicates);
-		Collections.sort(getPathEvents());
-		
+	    // Collect existing event paths so we don’t reload them
+	    Set<String> duplicates = new HashSet<>();
+	    for (PathEvent existing : getPathEvents())
+	    {
+	        duplicates.add(existing.getPage().getPath());
+	    }
+
+	    // Load new ones from the extra root
+	    loadPathEvents(inRoot, duplicates);
+
+	    // Keep a stable order
+	    Collections.sort(getPathEvents());
 	}
+
 	
 	
 }
