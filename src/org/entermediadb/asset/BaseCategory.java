@@ -199,6 +199,11 @@ public class BaseCategory extends BaseData implements Category
 	@Override
 	public Category addChild(Category inNewChild)
 	{
+		Category oldParent = inNewChild.getParentCategory();
+		if( oldParent != null)
+		{
+			oldParent.removeChild(inNewChild);
+		}
 		inNewChild.setParentCategory(this);
 		// I removed this to speed things up
 		// for (int i = 0; i < getChildren().size(); i++)
@@ -392,6 +397,12 @@ public class BaseCategory extends BaseData implements Category
 			log.error("Called myself as a child");
 			return;
 		}
+		
+//		if( fieldParentCategory != null)
+//		{
+//			//remove
+//			fieldParentCategory.removeChild()
+//		}
 		fieldParentCategory = parentCatalog;
 		if (parentCatalog != null)
 		{

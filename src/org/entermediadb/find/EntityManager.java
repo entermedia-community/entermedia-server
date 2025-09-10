@@ -163,9 +163,11 @@ public class EntityManager implements CatalogEnabled
 		{
 			createcat = false;
 		}
-		
-		Category cat = loadDefaultFolder(module, entity,inUser,createcat);
-		return cat;
+		synchronized (entity)
+		{
+			Category cat = loadDefaultFolder(module, entity,inUser,createcat);
+			return cat;
+		}
 		
 	}
 	
@@ -176,9 +178,8 @@ public class EntityManager implements CatalogEnabled
 			return null;
 		}
 		//Should we track changing paths? Should we move to using sourcepath as the dynamic path
-		
 		Category cat = null;
-		entity.setValue("sourcepath", null); //Dynamic
+		//entity.setValue("sourcepath", null); //Dynamic
 		String entitysourcepath = loadUploadSourcepath(module,entity,inUser,true);
 		if( entitysourcepath == null )
 		{
@@ -186,7 +187,7 @@ public class EntityManager implements CatalogEnabled
 			return null;
 			
 		}
-		entity.setValue("sourcepath", entitysourcepath);
+		//entity.setValue("sourcepath", entitysourcepath);
 			
 		String categoryid = entity.get("rootcategory");
 		if (categoryid != null)
@@ -200,27 +201,21 @@ public class EntityManager implements CatalogEnabled
 				if (!entitysourcepath.equals(cat.getCategoryPath()))
 				{
 					//TODO: move entire category to new	
-					log.info("Category was renamed " + cat.getCategoryPath() + " -> " + entitysourcepath);
-					String categoryname = null;
-					if (entitysourcepath.endsWith("/")) 
-					{
-						categoryname = PathUtilities.extractDirectoryName(entitysourcepath);
-					}
-					else 
-					{
-						categoryname = PathUtilities.extractFileName(entitysourcepath);
-					}
-				
-					cat.setName(categoryname);
+					log.info("Category should be moved " + cat.getCategoryPath() + " -> " + entitysourcepath);
+					cat.setName(entity.getName());
+					String parent = PathUtilities.extractDirectoryPath(entity.getSourcePath());
+					Category parentCat = getMediaArchive().getCategorySearcher().createCategoryPath(parent);
+					parentCat.addChild(cat);
+					cat.setName(entity.getName());
 					cat.setValue("categorypath", null); //clear it
+
 					//TODO: How can I move all the old content over?
-					//save all the childrem
 					getMediaArchive().getCategorySearcher().saveCategoryTree(cat);
-					if (!cat.getCategoryPath().equals(entitysourcepath))
+					/*if (!cat.getCategoryPath().equals(entitysourcepath))
 					{
 						entity.setValue("sourcepath", cat.getCategoryPath());
 						getMediaArchive().saveData(module.getId(), entity);
-					}
+					}*/
 
 				}
 			}
@@ -279,15 +274,16 @@ public class EntityManager implements CatalogEnabled
 			if( !archivesourcepath.equals(sourcepath))
 			{
 				entity.setValue("sourcepath",archivesourcepath );
+				entity.setValue("rootcategory",null);
 				getMediaArchive().saveData(module.getId(), entity);
 			}		
 			return archivesourcepath;
 		}
 
-		if( sourcepath != null)
-		{
-			return sourcepath;
-		}
+//		if( sourcepath != null)
+//		{
+//			return sourcepath;
+//		}
 
 		String mask = (String) module.getValue("uploadsourcepath"); //Custom one that is saved forever
 		
@@ -303,13 +299,21 @@ public class EntityManager implements CatalogEnabled
 			
 			sourcepath = getMediaArchive().replaceFromMask( mask, entity, module.getId(), values, null);  //Static locale?
 			sourcepath = sourcepath.replace("//", "/");
+			
 		}
-		if( sourcepath == null && entity.getName("en") != null)
+		else
 		{
-			sourcepath = module.getName("en") + "/" + entity.getName("en");
+			if(entity.getName("en") != null)
+			{
+				sourcepath = module.getName("en") + "/" + entity.getName("en");
+			}
 		}
+		
 		if( sourcepath != null && !sourcepath.isEmpty() && !sourcepath.equals( entity.get("sourcepath")) )
 		{
+			if (!sourcepath.contains("/")) {
+				throw new OpenEditException("Must contain 1 folder deep");
+			}
 			entity.setValue("sourcepath",sourcepath );
 			getMediaArchive().saveData(module.getId(), entity);
 		}
