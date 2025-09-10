@@ -274,7 +274,7 @@ public class EntityManager implements CatalogEnabled
 			if( !archivesourcepath.equals(sourcepath))
 			{
 				entity.setValue("sourcepath",archivesourcepath );
-				entity.setValue("rootcategory",null);
+				//entity.setValue("rootcategory",null);
 				getMediaArchive().saveData(module.getId(), entity);
 			}		
 			return archivesourcepath;
