@@ -435,6 +435,15 @@ $(document).ready(function () {
 	});
 
 	lQuery("a.emdialog").livequery("click", function (e) {
+		var clicked = $(this);
+		if (clicked.hasClass("disableinpicker")) 
+		{
+			var pickerresults = clicked.closest(".clickableresultlist");
+			if (pickerresults.length > 0) {
+				return;
+			}
+		}
+		
 		e.preventDefault();
 		e.stopPropagation();
 		$(this).emDialog();
