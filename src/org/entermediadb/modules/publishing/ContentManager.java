@@ -977,7 +977,7 @@ public class ContentManager implements CatalogEnabled
 
 	}
 	
-	public void splitEntityDocuments(Data inEntityDocument, String inAssetId) throws Exception
+	public void splitEntityDocuments(String inEntityId, String inAssetId) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 		
@@ -1010,6 +1010,8 @@ public class ContentManager implements CatalogEnabled
 			pagesFulltext.add((String)pages);
 		}
 		
+		Collection<Data> existingPages = archive.query("entitydocumentpage").exact("entitydocument", inEntityId).exact("parentasset", inAssetId).search();
+		
 		List<Data> tosave = new ArrayList();
 		int pagenum = 0;
 		
@@ -1017,15 +1019,39 @@ public class ContentManager implements CatalogEnabled
 			pagenum++;
 			
 			String pageText = (String) iterator.next();
-			if(pageText.trim().length() == 0)
+			
+			Data existingPage = null;
+			for (Iterator iterator2 = existingPages.iterator(); iterator2.hasNext();) {
+				Data d = (Data) iterator2.next();
+				int p = (int) d.getValue("pagenum");
+				if( p == pagenum)
+				{
+					existingPage = d;
+					break;
+				}
+			}
+//			if(pageText.trim().length() == 0)
+//			{
+//				continue;
+//			}
+			Data docpage = null;
+			if(existingPage != null)
 			{
-				continue;
+				docpage = existingPage;
+				docpage.setValue("taggedbyllm", false);
+				docpage.setValue("semanticindexed", false);
+				docpage.setValue("semantictopics", null);
+			}
+			else
+			{
+				docpage = archive.getSearcher("entitydocumentpage").createNewData();
 			}
 			
-			Data docpage = archive.getSearcher("entitydocumentpage").createNewData();
+			docpage.setName("Page #" + pagenum);
 			docpage.setValue("pagenum", pagenum);
-			docpage.setValue("entitydocument", inEntityDocument.getId());
 			docpage.setValue("longcaption", pageText);
+			docpage.setValue("entitydocument", inEntityId);
+			docpage.setValue("parentasset", inAssetId);
 			docpage.setValue("pagethumbnail", inAssetId);
 			
 			tosave.add(docpage);
@@ -1038,7 +1064,6 @@ public class ContentManager implements CatalogEnabled
 		}
 		
 		archive.fireMediaEvent("llm/indexentitydocuments", null);
-		
 	}
 
 }

@@ -502,18 +502,11 @@ public class ContentModule extends BaseMediaModule
 
 	public void splitEntityDocuments(WebPageRequest inReq) throws Exception
 	{
-		String entitymoduleid = inReq.getRequestParameter("entitymoduleid");
 		String entityid = inReq.getRequestParameter("entityid");
-		
 		String assetid = inReq.getRequestParameter("assetid");
-
-		MediaArchive mediaArchive = getMediaArchive(inReq);
-
-		Data entity = mediaArchive.getCachedData(entitymoduleid, entityid);
 		
 		ContentManager manager = getContentManager(inReq);
-		
-		manager.splitEntityDocuments(entity, assetid);
+		manager.splitEntityDocuments(entityid, assetid);
 	}
 
 }
