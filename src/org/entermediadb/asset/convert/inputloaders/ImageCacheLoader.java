@@ -32,22 +32,22 @@ public class ImageCacheLoader implements InputLoader
 			page = "";
 		}
 		ContentItem item = null;
-		boolean isDocument = inStructions.isDocumentFormat();
-		if (isDocument)
-		{
-			item = loadFile(inStructions, page, "png");
-		}
+
+		item = loadFile(inStructions, page, "webp");
+		
 		if (item == null)
 		{
-			if("png".equals( inStructions.getOutputExtension() ) )
-			{
-				if( "png".equals( inStructions.getAsset().getFileFormat() ) )
-				{
-					return null;//use original
-				}
-				item = loadFile(inStructions, page, "png");
-			}
 			item = loadFile(inStructions, page, "jpg");
+		}
+		
+		if (item == null && inStructions.isDocumentFormat())
+		{
+			item = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/document.pdf");
+			if (item.exists())
+			{
+				return item;
+			}
+			return null;
 		}
 
 		return item;
@@ -73,16 +73,6 @@ public class ImageCacheLoader implements InputLoader
 
 			if (box.getWidth() < 3001) //Make sure we dont use the same file as the input and output
 			{
-				//WEBP is a Universal type
-				input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image3000x3000" + page + "." + "webp");
-				if (input.exists())
-				{
-					return input;
-				}
-			}
-
-			if (box.getWidth() < 3001) //Make sure we dont use the same file as the input and output
-			{
 				input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image3000x3000" + page + "." + cachetype);
 				if (input.exists())
 				{
@@ -104,14 +94,7 @@ public class ImageCacheLoader implements InputLoader
 
 			}
 		}
-		if ("png".equals(cachetype))
-		{
-			input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/document.pdf");
-			if (input.exists())
-			{
-				return input;
-			}
-		}
+		
 		return null;
 	}
 

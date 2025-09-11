@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,17 +16,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.dom4j.Element;
-import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.importer.DitaImporter;
-import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.net.HttpSharedConnection;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -973,6 +975,70 @@ public class ContentManager implements CatalogEnabled
 		// TODO: Create some assets?
 		return child;
 
+	}
+	
+	public void splitEntityDocuments(Data inEntityDocument, String inAssetId) throws Exception
+	{
+		MediaArchive archive = getMediaArchive();
+		
+		Asset asset = getMediaArchive().getAsset(inAssetId);
+		
+		String fulltext = (String) asset.getValue("fulltext");
+		
+		if(fulltext == null)
+		{
+			return;
+		}
+		JSONParser parser = new JSONParser();
+		Object pages = parser.parse(fulltext);
+		
+		Collection<String> pagesFulltext = new ArrayList<String>();
+		if(pages instanceof JSONArray)
+		{
+			JSONArray arr = (JSONArray) pages;
+			for (int i = 0; i < arr.size(); i++)
+			{
+				String text = (String) arr.get(i);
+				if(text != null)
+				{
+					pagesFulltext.add(text);
+				}
+			}
+		}
+		else if(pages instanceof String)
+		{
+			pagesFulltext.add((String)pages);
+		}
+		
+		List<Data> tosave = new ArrayList();
+		int pagenum = 0;
+		
+		for (Iterator iterator = pagesFulltext.iterator(); iterator.hasNext();) {
+			pagenum++;
+			
+			String pageText = (String) iterator.next();
+			if(pageText.trim().length() == 0)
+			{
+				continue;
+			}
+			
+			Data docpage = archive.getSearcher("entitydocumentpage").createNewData();
+			docpage.setValue("pagenum", pagenum);
+			docpage.setValue("entitydocument", inEntityDocument.getId());
+			docpage.setValue("longcaption", pageText);
+			docpage.setValue("pagethumbnail", inAssetId);
+			
+			tosave.add(docpage);
+			
+			if(tosave.size() > 20)
+			{
+				archive.saveData("entitydocumentpage", tosave);
+				tosave.clear();
+			}
+		}
+		
+		archive.fireMediaEvent("llm/indexentitydocuments", null);
+		
 	}
 
 }

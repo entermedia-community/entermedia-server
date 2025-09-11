@@ -1,0 +1,22 @@
+
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+
+#if($value && $value != "")
+
+	#set( $foundrow = $mediaarchive.getAsset($value)  )
+	
+	#if($foundrow)
+	<div id="$!{detail.id}-preview" 
+		class="assetpreviewreadonly assetdraggable ui-draggable" 
+		data-assetid="$foundrow.getId()">
+		#set($pagenum = $entity.get("pagenum"))
+		<img src="${mediaarchive.getMediaDbId()}/services/module/asset/generate/#esc(${foundrow.sourcepath})/image550x550page${pagenum}.webp/image550x550.webp">
+	</div>
+	#else
+		<em>[[Deleted Asset]]</em>
+	#end
+
+#end

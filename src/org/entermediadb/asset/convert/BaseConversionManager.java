@@ -243,6 +243,15 @@ public abstract class BaseConversionManager implements ConversionManager
 			String type = PathUtilities.extractPageType(inExportName);
 			generateName = inExportName.substring(0, offsetstart) + "." + type;
 		}
+		if (inExportName.contains("page"))
+		{
+			int offsetstart = inExportName.indexOf("page");
+			String pagenum = inExportName.substring(offsetstart + 4, inExportName.lastIndexOf(".") );
+			instructions.setProperty("pagenum", pagenum);
+			//instructions.setProperty("outputname",);
+			String type = PathUtilities.extractPageType(inExportName);
+			generateName = inExportName.substring(0, offsetstart) + "." + type;
+		}
 		
 		Data preset = getMediaArchive().getPresetManager().getPresetByOutputNameCached(getMediaArchive(), getRenderType(), generateName);
 		if( preset == null)
