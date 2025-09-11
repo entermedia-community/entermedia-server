@@ -1,16 +1,20 @@
+#ifnull($value)
+	#set($value = $data.get("parentasset"))
+#end
+
 #if($value && $value != "")
 
-	#set( $foundrow = $mediaarchive.getAsset($value)  )
+	#set( $foundrow = $mediaarchive.getAsset($value))
 	
 	#if($foundrow)
 	<div id="$!{detail.id}-preview" 
 		class="assetpreviewreadonly assetdraggable ui-draggable" 
 		data-assetid="$foundrow.getId()">
-		#set($pagenum = $entity.get("pagenum"))
+		#set($pagenum = $data.get("pagenum"))
 		#if($pagenum == 1)
 			$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$value&readonly=true", $context)
 		#else
-		<img src="/${mediaarchive.getMediaDbId()}/services/module/asset/generate/#esc(${foundrow.sourcepath})/image3000x3000page${pagenum}.webp/image550x550.webp" style="width: 200px;max-height: 400px;object-fit: contain;">
+		<img src="/${mediaarchive.getMediaDbId()}/services/module/asset/generate/#esc(${foundrow.sourcepath})/image3000x3000page${pagenum}.webp/image3000x3000page${pagenum}.webp" style="width: 200px;max-height: 400px;object-fit: contain;">
 		#end
 	</div>
 	#else

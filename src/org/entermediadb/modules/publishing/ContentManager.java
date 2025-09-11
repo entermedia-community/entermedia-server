@@ -1052,7 +1052,6 @@ public class ContentManager implements CatalogEnabled
 			docpage.setValue("longcaption", pageText);
 			docpage.setValue("entitydocument", inEntityId);
 			docpage.setValue("parentasset", inAssetId);
-			docpage.setValue("pagethumbnail", inAssetId);
 			
 			tosave.add(docpage);
 			
