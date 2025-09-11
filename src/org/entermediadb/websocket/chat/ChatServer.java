@@ -23,7 +23,9 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.TrayIcon.MessageType;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -33,11 +35,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.data.AddedPermission;
 import org.entermediadb.projects.ProjectManager;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.OpenEditException;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
@@ -172,11 +176,11 @@ public class ChatServer
 		}
 		Data entity = null;
 		String entityid = (String) inMap.get("entityid");
-		if (entityid != null && !entityid.equals("") && !entityid.equals("null"))
+		if (entityid == null || entityid.equals("") || entityid.equals("null"))
 		{
 			entityid = (String) inMap.get("collectionid");  //For OI chats attached to a collectionid
 		}
-		if (entityid != null && !entityid.equals("") && !entityid.equals("null"))
+		if (entityid != null)
 		{
 			entity = archive.getCachedData(moduleid, entityid); 
 		}
@@ -229,29 +233,49 @@ public class ChatServer
 					}	
 				}
 				else {
+					Set userids = null;
 					if( moduleid.equals("librarycollection"))
 					{
-						Set userids = projectmanager.listTeam(entity);
+						userids = projectmanager.listTeam(entity);
 						userids.add(userid);
-						
-						for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+					}
+					else {
+						//Todo: other Entities
+						Data module = archive.getCachedData("module", moduleid);
+						Collection<AddedPermission> permissions = archive.getPermissionManager().loadEntityPermissions(module, entity);
+						userids = new HashSet();
+						userids.add(userid);
+						for (Iterator iterator = permissions.iterator(); iterator.hasNext();)
 						{
-							ChatConnection chatConnection = (ChatConnection) iterator.next();
-							if( userids.contains(chatConnection.getUserId() ) )
+							AddedPermission addedPermission = (AddedPermission) iterator.next();
+							if (addedPermission.getPermissionType().equals("users"))
 							{
-								chatConnection.sendMessage(inMap);
+								userids.add(addedPermission.getData().getId());
 							}
+							
+						}
+					}
+					
+					for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+					{
+						ChatConnection chatConnection = (ChatConnection) iterator.next();
+						if( userids.contains(chatConnection.getUserId() ) )
+						{
+							chatConnection.sendMessage(inMap);
 						}
 					}
 				}
 			} 
 			else 
 			{ 
-				for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+				throw new OpenEditException("Entity or collectionid required");
+				/*
+				 * 
 				{
 					ChatConnection chatConnection = (ChatConnection) iterator.next();
 					chatConnection.sendMessage(inMap);
 				}	
+				*/
 			}
 			
 			//For people who are logged in, mark that they checked already
