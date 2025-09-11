@@ -14,11 +14,11 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.manager.BaseManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -34,33 +34,15 @@ import org.openedit.util.DateStorageUtil;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
 
-public class ClassifyManager extends BaseManager
+public class ClassifyManager extends BaseAiManager
 {
 	private static final Log log = LogFactory.getLog(ClassifyManager.class);
-	
-	public Map<String, String> getModels()
-	{
-		Map<String, String> models = new HashMap<>();
-		String visionmodel = getMediaArchive().getCatalogSettingValue("llmvisionmodel");
-		if(visionmodel == null) {
-			visionmodel = "gpt-5-nano";
-		}
-		models.put("vision", visionmodel);
-
-		String semanticmodel = getMediaArchive().getCatalogSettingValue("llmsemanticmodel");
-		if(semanticmodel == null) {
-			semanticmodel = "gpt-4o-mini";
-		}
-		models.put("semantic", semanticmodel);
-		
-		return models;
-	}
 
 
 	public void scanMetadataWithAIEntity(ScriptLogger inLog) throws Exception
 	{
 		Map<String, String> models = getModels();
-		HitTracker allmodules = getMediaArchive().query("module").exact("semanticenabled", true).search();
+		HitTracker allmodules = getMediaArchive().query("module").exact("semanticenabled", true).not("id", "entitydocumentpage").search();
 		Collection<String> ids = allmodules.collectValues("id");
 		
 		if(ids.isEmpty())
