@@ -21,10 +21,16 @@ public class BaseAiManager extends BaseManager
 			visionmodel = "gpt-5-nano";
 		}
 		models.put("vision", visionmodel);
+		
+		String metadatamodel = getMediaArchive().getCatalogSettingValue("llmmetadatamodel");
+		if(metadatamodel == null) {
+			metadatamodel = "gpt-5-nano";
+		}
+		models.put("metadata", metadatamodel);
 
 		String semanticmodel = getMediaArchive().getCatalogSettingValue("llmsemanticmodel");
 		if(semanticmodel == null) {
-			semanticmodel = "gpt-4o-mini";
+			semanticmodel = "qwen3:4b";
 		}
 		models.put("semantic", semanticmodel);
 		

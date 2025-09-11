@@ -1,9 +1,3 @@
-
-#set($idcount = $context.getRequestParameter("idcount"))
-#if(!$idcount)
-	#set($idcount = "")
-#end
-
 #if($value && $value != "")
 
 	#set( $foundrow = $mediaarchive.getAsset($value)  )
@@ -13,7 +7,11 @@
 		class="assetpreviewreadonly assetdraggable ui-draggable" 
 		data-assetid="$foundrow.getId()">
 		#set($pagenum = $entity.get("pagenum"))
-		<img src="${mediaarchive.getMediaDbId()}/services/module/asset/generate/#esc(${foundrow.sourcepath})/image550x550page${pagenum}.webp/image550x550.webp">
+		#if($pagenum == 1)
+			$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$value&readonly=true", $context)
+		#else
+		<img src="/${mediaarchive.getMediaDbId()}/services/module/asset/generate/#esc(${foundrow.sourcepath})/image3000x3000page${pagenum}.webp/image550x550.webp" style="width: 200px;max-height: 400px;object-fit: contain;">
+		#end
 	</div>
 	#else
 		<em>[[Deleted Asset]]</em>
