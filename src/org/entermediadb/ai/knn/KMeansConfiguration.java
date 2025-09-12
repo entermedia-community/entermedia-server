@@ -1,4 +1,4 @@
-package org.entermediadb.ai;
+package org.entermediadb.ai.knn;
 
 public class KMeansConfiguration
 {

@@ -15,7 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.ai.semantics.SemanticIndexManager;
+import org.entermediadb.ai.semantics.SemanticFieldsManager;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.ResultsManager;
 import org.entermediadb.scripts.ScriptLogger;
@@ -24,6 +24,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
@@ -456,8 +457,7 @@ public class AssistantManager extends BaseAiManager
 		
 		inReq.putPageValue("input", query);
 		
-		SemanticIndexManager semanticIndexManager = (SemanticIndexManager) archive.getBean("semanticIndexManager");
-		Map<String, Collection<String>> relatedEntityIds = semanticIndexManager.searchRelatedEntities(query, excludeEntityIds, excludeAssetIds);
+		Map<String, Collection<String>> relatedEntityIds = getSemanticFieldsManager().searchAllSemanticFields(query,excludeEntityIds, excludeAssetIds);
 		
 		log.info("Related Entity Ids: " + relatedEntityIds);
 
@@ -582,4 +582,75 @@ public class AssistantManager extends BaseAiManager
 		return fields;
 	}
 	
+	public void rescanSearchCategories()
+	{
+		//For each search category go look for relevent records. Reset old ones?
+		HitTracker tracker = getMediaArchive().query("searchcategory").exists("semantictopics").search();
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		{
+			MultiValued searchcategory = (MultiValued) iterator.next();
+			
+			Map<String,Collection<String>> bytype = searchRelatedEntitiesBySearchCategory(searchcategory);
+			for (Iterator iterator2 = bytype.keySet().iterator(); iterator2.hasNext();)
+			{
+				String moduleid = (String)iterator2.next();
+				Collection<String> ids = bytype.get(moduleid);
+				Collection addedentites = getMediaArchive().query(moduleid).ids(ids).not("searchcategory",searchcategory.getId()).search();
+				//Collection addedentites = getMediaArchive().query(moduleid).ids(ids).search();
+				Collection tosave = new ArrayList(addedentites.size());
+				for (Iterator iterator3 = addedentites.iterator(); iterator3.hasNext();)
+				{
+					MultiValued entity = (MultiValued) iterator3.next();
+					entity.addValue("searchcategory",searchcategory.getId());
+					tosave.add(entity);
+				}
+				log.info("Added " + tosave.size() + " to category " + moduleid);
+				getMediaArchive().saveData(moduleid,tosave);
+			}
+		}
+	}
+	public Map<String,Collection<String>> searchRelatedEntitiesBySearchCategory(MultiValued searchcategory)
+	{
+		if( searchcategory.getBoolean("semanticindexed"))
+		{
+			//Todo: Use the Vector DB?
+		}
+		String text = null;
+		Collection values = searchcategory.getValues("semantictopics");
+		text = collectText(values);
+		if( text == null)
+		{
+			text = searchcategory.getName();
+		}
+		
+		Map<String,Collection<String>> results = getSemanticFieldsManager().searchAllSemanticFields(text, null, null);
+		return results;
+	}
+
+
+	protected SemanticFieldsManager fieldSemanticFieldsManager;
+	public SemanticFieldsManager getSemanticFieldsManager()
+	{
+		if (fieldSemanticFieldsManager == null)
+		{
+			fieldSemanticFieldsManager = (SemanticFieldsManager)getModuleManager().getBean(getCatalogId(),"semanticFieldsManager");
+		}
+
+		return fieldSemanticFieldsManager;
+	}
+	
+//	public void hybridSearch(WebPageRequest inReq) throws Exception {
+//		
+//		AiSearch aiSearchArgs = processSematicSearchArgs(arguments, userprofile);
+//		
+//		getResultsManager().searchByKeywords(inReq, aiSearchArgs);
+//		
+//		int totalhits = (int) inReq.getPageValue("totalhits");
+//		if(totalhits < 5)
+//		{
+//			inReq.putPageValue("query", String.join(" ", aiSearchArgs.getKeywords()));
+//			semanticSearch(inReq);
+//		}
+//		
+//	}
 }

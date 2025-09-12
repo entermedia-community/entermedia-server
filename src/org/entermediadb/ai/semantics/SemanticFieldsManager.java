@@ -12,8 +12,8 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.entermediadb.ai.KMeansIndexer;
-import org.entermediadb.ai.RankedResult;
+import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
@@ -30,9 +30,9 @@ import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 
-public class SemanticIndexManager implements CatalogEnabled
+public class SemanticFieldsManager extends BaseAiManager implements CatalogEnabled
 {
-	private static final Log log = LogFactory.getLog(SemanticIndexManager.class);
+	private static final Log log = LogFactory.getLog(SemanticFieldsManager.class);
 	
 	protected String fieldCatalogId;
 
@@ -57,63 +57,45 @@ public class SemanticIndexManager implements CatalogEnabled
 	{
 		fieldModuleManager = inModuleManager;
 	}
-	protected KMeansIndexer fieldKMeansIndexer;
 	
-	public KMeansIndexer getKMeansIndexer()
-	{
-		if (fieldKMeansIndexer == null)
-		{
-			fieldKMeansIndexer = (KMeansIndexer)getModuleManager().getBean(getCatalogId(),"kMeansIndexer",false);
-			fieldKMeansIndexer.setType("semantic");
-			fieldKMeansIndexer.setSearchType("semanticembedding");
-			fieldKMeansIndexer.setRandomSortBy(null);
-			fieldKMeansIndexer.setFieldSaveVector("vectorarray");//facedatadoubles
-			fieldKMeansIndexer.setDataField("semantictopics");
-			Map<String,String> customsettings = new HashMap();
-			customsettings.put("maxnumberofcentroids","4");
-			customsettings.put("init_loop_start_distance",".60");
-			customsettings.put("init_loop_lower_limit",".50");
-			customsettings.put("maxdistancetocentroid",".67");
-			customsettings.put("maxdistancetocentroid_one",".78");
-			customsettings.put("maxdistancetomatch",".648");
-			fieldKMeansIndexer.setCustomSettings(customsettings);
-			
-		}
-		return fieldKMeansIndexer;
-	}
 	public void reBalance(ScriptLogger logger)
 	{
-		if( true )
-		{
-		//	return;
-		}
+//		if( true )
+//		{
+//		//	return;
+//		}
 		long start = System.currentTimeMillis();
 		logger.info(new Date() +  " reinitNodes Start reinit ");
 		
-		//Clear all centroids
-		HitTracker tracker = getMediaArchive().query(getKMeansIndexer().getSearchType()).exact("iscentroid",true).search(); 
-		tracker.enableBulkOperations();
-
-		Collection tosave = new ArrayList(1000);
-		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		for (Iterator iteratorS = getInstructions().iterator(); iteratorS.hasNext();)
 		{
-			Data data = (Data) iterator.next();
-			data.setValue("iscentroid",false);
-			tosave.add(data);
-			if( tosave.size() == 1000)
+			SemanticInstructions instruction = (SemanticInstructions) iteratorS.next();
+
+			//Clear all centroids
+			HitTracker tracker = getMediaArchive().query(instruction.getSearchType()).exact("iscentroid",true).search(); 
+			tracker.enableBulkOperations();
+	
+			Collection tosave = new ArrayList(1000);
+			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 			{
-				getMediaArchive().saveData(getKMeansIndexer().getSearchType(),tosave);
-				tosave.clear();
+				Data data = (Data) iterator.next();
+				data.setValue("iscentroid",false);
+				tosave.add(data);
+				if( tosave.size() == 1000)
+				{
+					getMediaArchive().saveData(instruction.getSearchType(),tosave);
+					tosave.clear();
+				}
 			}
+			getMediaArchive().saveData(instruction.getSearchType(),tosave);
+			getMediaArchive().getCacheManager().clear(instruction.getFieldName());
+			//getMediaArchive().getCacheManager().clear(instructions.getFieldName() + "lookuprecord"); 
+			
+			instruction.getKMeansIndexer().reinitClusters(logger);
+			long end = System.currentTimeMillis();
+			double seconds = (end - start)  / 1000d;
+			logger.info(" reinitNodes Completed in  " + seconds  + " seconds ");
 		}
-		getMediaArchive().saveData(getKMeansIndexer().getSearchType(),tosave);
-		getMediaArchive().getCacheManager().clear(getKMeansIndexer().getType());
-		getMediaArchive().getCacheManager().clear(getKMeansIndexer().getType() + "lookuprecord"); 
-		
-		getKMeansIndexer().reinitClusters(logger);
-		long end = System.currentTimeMillis();
-		double seconds = (end - start)  / 1000d;
-		logger.info(" reinitNodes Completed in  " + seconds  + " seconds ");
 
 	}
 	
@@ -126,55 +108,47 @@ public class SemanticIndexManager implements CatalogEnabled
 	{
 		List one = new ArrayList();
 		one.add(inData);
-		SemanticInstructions instructions = createSemanticInstructions();
-		index(instructions, one, null);
-		getKMeansIndexer().setCentroids(inData);
+		
+		for (Iterator iteratorS = getInstructions().iterator(); iteratorS.hasNext();)
+		{
+			SemanticInstructions instruction = (SemanticInstructions) iteratorS.next();
+			index(instruction, one, null);
+			instruction.getKMeansIndexer().setCentroids(inData);
+		}
 	}
-	
-	public SemanticInstructions createSemanticInstructions()
+
+	public SemanticInstructions createSemanticInstructions(MultiValued inField)
 	{
-		SemanticInstructions instructions = new SemanticInstructions();
+		SemanticInstructions instructions = (SemanticInstructions)getMediaArchive().getBean("semanticInstructions");
+		instructions.setSemanticField(inField);
 		return instructions;
 	}
 	
 	public void indexAll(ScriptLogger inLog)
 	{
+		
 		HitTracker all = getMediaArchive().query("module").exact("semanticenabled", true).search();
 		Collection<String> ids = all.collectValues("id");
-		
-		QueryBuilder query = getMediaArchive().getSearcher("modulesearch").query();
-		query.exact("semanticindexed", false);
-		query.exists(getKMeansIndexer().getDataField());
-		query.put("searchtypes", ids);
-		query.put("searchasset", true);
-		
-		 //query.sort("createddate");
-		HitTracker hits = query.search();
-		hits.enableBulkOperations();
-		log.info("Indexing semanticindexed = false in: " + ids + " found: " + hits.size());
-		
-		indexResults(inLog, hits);
-		
-		//process assets
-		/*
-		if (ids.contains("asset"))
+
+		for (Iterator iteratorS = getInstructions().iterator(); iteratorS.hasNext();)
 		{
-			query = getMediaArchive().getSearcher("asset").query();
-			query.exact("semanticindexed", false);
-			query.exists("semantictopics");
+			SemanticInstructions instruction = (SemanticInstructions) iteratorS.next();
+			QueryBuilder query = getMediaArchive().getSearcher("modulesearch").query();
+			query.exists(instruction.getFieldName());
+			query.exact(instruction.getFieldName() + "indexed", false);
+			query.put("searchtypes", ids);
+			query.put("searchasset", true); //Used?
 			
-			hits = query.search();
+			HitTracker hits = query.search();
 			hits.enableBulkOperations();
-			
-			indexResults(inLog, hits);
+			log.info("Indexing " + instruction.getSearchType() + "indexed = false in: " + ids + " found: " + hits.size());
+			indexResults(inLog, instruction, hits);
 		}
-		*/
 		
 	}
 
-	protected void indexResults(ScriptLogger inLog, HitTracker hits)
+	protected void indexResults(ScriptLogger inLog, SemanticInstructions instruction,  HitTracker hits)
 	{
-		SemanticInstructions instructions = createSemanticInstructions();
 		int indexed = 0;
 		Collection<MultiValued> createdVectors = null;
 		for(int i=0;i < hits.getTotalPages();i++)
@@ -182,25 +156,29 @@ public class SemanticIndexManager implements CatalogEnabled
 			hits.setPage(i+1);
 			//long start = System.currentTimeMillis();
 			Collection<MultiValued> onepage = hits.getPageOfHits();
-			indexed = indexed + index(instructions, onepage, createdVectors);
+			indexed = indexed + index(instruction, onepage, createdVectors);
 			if (createdVectors!= null && createdVectors.size() > 5000)
 			{
-				getKMeansIndexer().setCentroids(inLog, createdVectors);
+				instruction.getKMeansIndexer().setCentroids(inLog, createdVectors);
 				createdVectors.clear();
 			}
 		}
 		inLog.info("Total indexed: " + indexed + "  in " + hits);
 		if (createdVectors!= null)
 		{
-			getKMeansIndexer().setCentroids(inLog, createdVectors);
+			instruction.getKMeansIndexer().setCentroids(inLog, createdVectors);
 		}
 	}
 	
 	
 	public void clusterInit(ScriptLogger log)
 	{
-	
-		getKMeansIndexer().reinitClusters(log);
+		for (Iterator iteratorS = getInstructions().iterator(); iteratorS.hasNext();)
+		{
+			SemanticInstructions instruction = (SemanticInstructions) iteratorS.next();
+			instruction.getKMeansIndexer().reinitClusters(log);
+		}
+
 	}
 	
 	public int index(SemanticInstructions inStructions, Collection<MultiValued> inEntities, Collection<MultiValued> createdVectors)  //Page of data
@@ -212,7 +190,7 @@ public class SemanticIndexManager implements CatalogEnabled
 			return 0;
 		}
 
-		HitTracker existingvectors = getMediaArchive().query(getKMeansIndexer().getSearchType() ).orgroup("dataid", inEntities).search();
+		HitTracker existingvectors = getMediaArchive().query(inStructions.getSearchType() ).orgroup("dataid", inEntities).search();
 		existingvectors.enableBulkOperations();
 		
 		Set<String> dataIds = (Set<String>)existingvectors.collectValues("dataid");
@@ -249,7 +227,7 @@ public class SemanticIndexManager implements CatalogEnabled
 				List<MultiValued> tosave = entitiestoprocess.get(moduleid);
 				Collection<MultiValued> foundsemanticstosave = extractVectors(inStructions, moduleid, tosave);
 				count = count + foundsemanticstosave.size();
-				getMediaArchive().saveData(getKMeansIndexer().getSearchType(),foundsemanticstosave);
+				getMediaArchive().saveData(inStructions.getSearchType(),foundsemanticstosave);
 				getMediaArchive().saveData(moduleid,tosave);
 				log.info(" Saved datas " + tosave.size() + " added:  " + foundsemanticstosave.size());
 				if (createdVectors != null)
@@ -282,7 +260,7 @@ public class SemanticIndexManager implements CatalogEnabled
 					log.error("Skipping, Already have dataid " + dataid);
 					continue;
 				}	
-				if( entity.getValue(getKMeansIndexer().getDataField()) == null)
+				if( entity.getValue(inStructions.getFieldName()) == null)
 				{
 					continue;
 				}
@@ -293,7 +271,7 @@ public class SemanticIndexManager implements CatalogEnabled
 		{
 			toscan = entitiestoscan;
 		}
-		long start = System.currentTimeMillis();
+		//long start = System.currentTimeMillis();
 		//log.debug("Facial Profile Detection sending " + inAsset.getName() );
 		
 		JSONObject tosendparams = new JSONObject();
@@ -309,7 +287,7 @@ public class SemanticIndexManager implements CatalogEnabled
 				moduleid = "asset";
 			}
 			entry.put("id",moduleid + ":" + entity.getId());
-			Collection values = entity.getValues(getKMeansIndexer().getDataField());
+			Collection values = entity.getValues(inStructions.getFieldName());
 			
 			String out = collectText(values);
 			if (out == null)
@@ -328,7 +306,7 @@ public class SemanticIndexManager implements CatalogEnabled
 		JSONObject jsonresponse = (JSONObject)parser.parse(responseStr);
 		JSONArray results = (JSONArray)jsonresponse.get("results");
 		
-		Searcher searcher = getMediaArchive().getSearcher(getKMeansIndexer().getSearchType());
+		Searcher searcher = getMediaArchive().getSearcher(inStructions.getSearchType());
 		
 		Collection<MultiValued> newrecords = new ArrayList(results.size());
 		for (int i = 0; i < results.size(); i++)
@@ -341,8 +319,8 @@ public class SemanticIndexManager implements CatalogEnabled
 			newdata.setValue("moduleid",parts[0]);
 			newdata.setValue("dataid",parts[1]);
 			
-			Collection vectors = getKMeansIndexer().collectDoubles((Collection)result.get("embedding"));
-			newdata.setValue(getKMeansIndexer().getFieldSaveVector(),vectors);
+			Collection vectors = inStructions.getKMeansIndexer().collectDoubles((Collection)result.get("embedding"));
+			newdata.setValue(inStructions.getKMeansIndexer().getFieldSaveVector(),vectors);
 			newrecords.add(newdata);
 		}
 		return newrecords;
@@ -383,26 +361,85 @@ public class SemanticIndexManager implements CatalogEnabled
 		fieldSharedConnection = inSharedConnection;
 	}
 	
-	public Map<String,Collection<String>> searchRelatedEntitiesBySearchCategory(MultiValued searchcategory)
+	public Collection<SemanticInstructions> getInstructions()
 	{
-		if( searchcategory.getBoolean("semanticindexed"))
+		Collection<SemanticInstructions> instructions = (Collection<SemanticInstructions>)getMediaArchive().getCacheManager().get("ai","semanticinstructions");
+		if( instructions == null)
 		{
-			//Todo: Use the Vector DB?
-		}
-		String text = null;
-		Collection values = searchcategory.getValues(getKMeansIndexer().getDataField());
-		text = collectText(values);
-		if( text == null)
-		{
-			text = searchcategory.getName();
+			instructions = new ArrayList();
+			
+			Collection configs = getMediaArchive().query("semanticfield").exact("enabled", true).search();
+			for (Iterator iterator = configs.iterator(); iterator.hasNext();)
+			{
+				MultiValued data = (MultiValued) iterator.next();
+				SemanticInstructions newins = createSemanticInstructions(data);
+				instructions.add(newins);
+			}
+			getMediaArchive().getCacheManager().put("ai","semanticinstructions",instructions);
 		}
 		
-		return searchRelatedEntities(text, null, null);
+		return instructions;
 	}
 
-	public Map<String,Collection<String>> searchRelatedEntities(String text, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
+
+	public Map<String,Collection<String>> searchAllSemanticFields(String text, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
 	{
 		//Collection allthepeopleinasset = getKMeansIndexer().searchNearestItems(startdata);
+		JSONObject response = execMakeVector(text);
+
+		JSONArray results = (JSONArray)response.get("results");
+		Map hit = (Map)results.iterator().next();
+		List vector = (List)hit.get("embedding");
+		vector = collectDoubles(vector);
+
+		List allIds = new ArrayList(); //for debugging
+		Map<String,Collection<String>> bytype = new HashMap();
+
+		for (Iterator iteratorS = getInstructions().iterator(); iteratorS.hasNext();)
+		{
+			SemanticInstructions instruction = (SemanticInstructions) iteratorS.next();
+			Collection<RankedResult> found = instruction.getKMeansIndexer().searchNearestItems(vector);
+			
+			for (Iterator iterator = found.iterator(); iterator.hasNext();)
+			{
+				RankedResult rankedResult = (RankedResult) iterator.next();
+				
+				allIds.add(rankedResult.getModuleId() + ":" + rankedResult.getEntityId());
+				
+				if(rankedResult.getModuleId().equals("asset"))
+				{
+					if(excludedAssetids != null && excludedAssetids.contains(rankedResult.getEntityId()))
+					{
+						continue;
+					}
+				}
+				else if(excludedEntityIds != null && excludedEntityIds.contains(rankedResult.getEntityId()))
+				{
+					continue;
+				}
+				
+				Collection hits = bytype.get(rankedResult.getModuleId());
+				if( hits == null)
+				{
+					hits = new ArrayList();
+					bytype.put(rankedResult.getModuleId(),hits);
+				}
+				if( hits.size() < 1000)
+				{
+					hits.add(rankedResult.getEntityId());
+				}
+			}
+		}
+		log.info("All matching IDs:" + allIds);
+
+		//Search for them hits up to 1000
+		//getMediaArchive().getSearcherManager().organizeHits(
+		
+		return bytype;		
+	}
+
+	protected JSONObject execMakeVector(String text)
+	{
 		JSONObject tosendparams = new JSONObject();
 		JSONArray list = new JSONArray();
 		JSONObject ask = new JSONObject();
@@ -421,104 +458,35 @@ public class SemanticIndexManager implements CatalogEnabled
 		{
 			throw new OpenEditException(e);
 		}
-		
 		log.info("Got response " + objt.keySet());
+		return objt;
+	}
 
-		JSONArray results = (JSONArray)objt.get("results");
-		Map hit = (Map)results.iterator().next();
-		List vector = (List)hit.get("embedding");
-		vector = getKMeansIndexer().collectDoubles(vector);
-		
-		List allIds = new ArrayList(); //for debugging
-		
-		Collection<RankedResult> found = getKMeansIndexer().searchNearestItems(vector);
-		
-		Map<String,Collection<String>> bytype = new HashMap();
-		for (Iterator iterator = found.iterator(); iterator.hasNext();)
+
+	//Move to vector util package
+		private List<Double> collectDoubles(Collection vector) 
 		{
-			RankedResult rankedResult = (RankedResult) iterator.next();
-			
-			allIds.add(rankedResult.getModuleId() + ":" + rankedResult.getEntityId());
-			
-			if(rankedResult.getModuleId().equals("asset"))
+			List<Double> floats = new ArrayList(vector.size());
+			for (Iterator iterator = vector.iterator(); iterator.hasNext();)
 			{
-				if(excludedAssetids != null && excludedAssetids.contains(rankedResult.getEntityId()))
+				Object floatobj = iterator.next();
+				double f;
+				if( floatobj instanceof Double)
 				{
-					continue;
+					f = (Double)floatobj;
 				}
-			}
-			else if(excludedEntityIds != null && excludedEntityIds.contains(rankedResult.getEntityId()))
-			{
-				continue;
-			}
-			
-			Collection hits = bytype.get(rankedResult.getModuleId());
-			if( hits == null)
-			{
-				hits = new ArrayList();
-				bytype.put(rankedResult.getModuleId(),hits);
-			}
-			if( hits.size() < 1000)
-			{
-				hits.add(rankedResult.getEntityId());
-			}
-		}
-		
-		log.info("All matching IDs:" + allIds);
-
-		//Search for them hits up to 1000
-		//getMediaArchive().getSearcherManager().organizeHits(
-		
-		return bytype;		
-	}
-
-	public void rescanSearchCategories()
-	{
-		//For each search category go look for relevent records. Reset old ones?
-		HitTracker tracker = getMediaArchive().query("searchcategory").exists(getKMeansIndexer().getDataField()).search();
-		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-		{
-			MultiValued searchcategory = (MultiValued) iterator.next();
-			
-			Map<String,Collection<String>> bytype = searchRelatedEntitiesBySearchCategory(searchcategory);
-			for (Iterator iterator2 = bytype.keySet().iterator(); iterator2.hasNext();)
-			{
-				String moduleid = (String)iterator2.next();
-				Collection<String> ids = bytype.get(moduleid);
-				Collection addedentites = getMediaArchive().query(moduleid).ids(ids).not("searchcategory",searchcategory.getId()).search();
-				//Collection addedentites = getMediaArchive().query(moduleid).ids(ids).search();
-				Collection tosave = new ArrayList(addedentites.size());
-				for (Iterator iterator3 = addedentites.iterator(); iterator3.hasNext();)
+				else if( floatobj instanceof Float)
 				{
-					MultiValued entity = (MultiValued) iterator3.next();
-					entity.addValue("searchcategory",searchcategory.getId());
-					tosave.add(entity);
+					f = (Double)floatobj;
 				}
-				log.info("Added " + tosave.size() + " to category " + moduleid);
-				getMediaArchive().saveData(moduleid,tosave);
+				else
+				{
+					f = Double.parseDouble(floatobj.toString());
+				}
+				floats.add(f);
 			}
+			return floats;
 		}
-	}
-
-	private String collectText(Collection inValues)
-	{
-		StringBuffer words = new StringBuffer();
-		if( inValues == null)
-		{
-			return null;
-		}
-		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
-		{
-			String text = (String) iterator.next();
-			words.append(text);
-			if (iterator.hasNext())
-			{
-				words.append(", ");
-			}
-			
-		}
-		return words.toString();
-	}
 	
 }
 

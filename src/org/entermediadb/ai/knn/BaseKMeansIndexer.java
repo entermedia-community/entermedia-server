@@ -1,4 +1,4 @@
-package org.entermediadb.ai;
+package org.entermediadb.ai.knn;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,42 +22,31 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.util.MathUtils;
 
-public class KMeansIndexer implements CatalogEnabled {
+public class BaseKMeansIndexer implements CatalogEnabled {
 
-	private static final Log log = LogFactory.getLog(KMeansIndexer.class);
-
-	public KMeansIndexer() 
-	{
-	
-	}
-
-	protected String fieldType = "semantic";
+	private static final Log log = LogFactory.getLog(BaseKMeansIndexer.class);
 	protected String fieldSearchType = "semanticembedding";
 	protected String fieldRandomSortBy = null;
 	protected String fieldFieldSaveVector = "vectorarray";//vectorarray facedatadoubles
-	protected String fieldDataField = "semantictopics"; //entity.getValue("semantictopics");
+	protected String fieldFieldName = "semantictopics"; //entity.getValue("semantictopics");
+	protected ModuleManager fieldModuleManager;
+	protected String fieldCatalogId;
+	protected MediaArchive fieldMediaArchive;
 
-	public String getDataField()
+	public BaseKMeansIndexer() 
 	{
-		return fieldDataField;
-	}
-
-
-	public void setDataField(String inDataField)
-	{
-		fieldDataField = inDataField;
-	}
-
-	protected Map<String,String> fieldCustomSettings = null;
 	
-	public Map<String,String> getCustomSettings()
-	{
-		if (fieldCustomSettings == null)
-		{
-			fieldCustomSettings = new HashMap();
-		}
+	}
 
-		return fieldCustomSettings;
+	public String getFieldName()
+	{
+		return fieldFieldName;
+	}
+
+
+	public void setFieldName(String inDataField)
+	{
+		fieldFieldName = inDataField;
 	}
 
 
@@ -102,46 +91,26 @@ public class KMeansIndexer implements CatalogEnabled {
 		fieldSearchType = inSearchType;
 	}
 
-
-	public String getType()
-	{
-		return fieldType;
-	}
-
-
-	public void setType(String inType)
-	{
-		fieldType = inType;
-	}
-
-	protected MediaArchive fieldMediaArchive;
+	
 	public ModuleManager getModuleManager()
 	{
 		return fieldModuleManager;
 	}
 
-
 	public void setModuleManager(ModuleManager inModuleManager)
 	{
 		fieldModuleManager = inModuleManager;
 	}
-
-
-	protected ModuleManager fieldModuleManager;
-	protected String fieldCatalogId;
-	
 	
 	public String getCatalogId()
 	{
 		return fieldCatalogId;
 	}
 
-
 	public void setCatalogId(String inCatalogId)
 	{
 		fieldCatalogId = inCatalogId;
 	}
-
 
 	public MediaArchive getMediaArchive()
 	{
@@ -151,7 +120,6 @@ public class KMeansIndexer implements CatalogEnabled {
 		}
 		return fieldMediaArchive;
 	}
-
 
 	public void setMediaArchive(MediaArchive inMediaArchive)
 	{
@@ -702,114 +670,11 @@ public class KMeansIndexer implements CatalogEnabled {
 		return fieldClusters;	
 	}
 
+	protected KMeansConfiguration fieldSettings;
+	
 	public KMeansConfiguration getSettings()
 	{
-		KMeansConfiguration config = (KMeansConfiguration)getMediaArchive().getCacheManager().get(getType(),"kmeansconfig");
-		if( config == null)
-		{
-			fieldClusters = null; //reload em
-			
-			config = new KMeansConfiguration();
-			getMediaArchive().getCacheManager().put(getType(),"kmeansconfig",config);
-			
-			String value = loadSettingValue( "maxdistancetomatch");
-			if( value != null)
-			{
-				config.maxdistancetomatch = Double.parseDouble(value);
-			}
-			/*
-			 *  Choosing the Number of Centroids (k)
-	k ≈ sqrt(n / 2) is a heuristic (where n = total number of record vectors)
-
-	Examples:
-
-	10,000 faces → ~70–100 centroids
-
-	1,000,000 faces → ~700–1000 centroids
-	*/
-			int totalrecords = getMediaArchive().query(getSearchType()).all().hitsPerPage(1).search().size(); 
-			double k = Math.sqrt( totalrecords / 2d); //Higher slows down indexing, more can be added back later as they click
-			int min = (int)Math.round(k * 1.50); //Raise by 50% or will be added on demand and that make it worse
-			
-			String skcount = loadSettingValue("kcount");
-			if( skcount != null)
-			{
-				min = Integer.parseInt( skcount); 
-			}
-			
-			config.kcount = min;
-			config.totalrecords = totalrecords;
-			
-			//Create new nodes when we get over 300 results or more as more likely to have a ton of faces
-			
-			min =  Math.max(min,300); 
-			String smaxresultspersearch = loadSettingValue( "maxresultspersearch");
-			if( smaxresultspersearch != null)
-			{
-				min = Integer.parseInt( smaxresultspersearch); 
-			}
-			
-			config.maxresultspersearch = min; 
-			
-			
-			//.80-.9 = 20-100k
-			//		.9 / (t / 20k) = 
-					
-//			if( totalfaces > 50000 )
-//			{
-//				newrange = .8;  			 // (totalfaces / 20000.0)); //.90 worked well for 20k so scale it up or down based on total
-//			}
-			
-			String smaxdistancetocentroid = loadSettingValue( "maxdistancetocentroid");
-			if( smaxdistancetocentroid != null)
-			{
-				config.maxdistancetocentroid = Double.parseDouble(smaxdistancetocentroid);
-				log.info("Custom size from db " +  getType()  + "_maxdistancetocentroid=" + config.maxdistancetocentroid );
-			}
-
-			
-			String init_loop_lower_limit = loadSettingValue( "init_loop_lower_limit");
-			if( init_loop_lower_limit != null)
-			{
-				config.init_loop_lower_limit = Double.parseDouble(init_loop_lower_limit);
-				log.info("Custom size from db init_loop_lower_limit=" + init_loop_lower_limit );
-			}
-
-			String sinit_loop_start_distance = loadSettingValue( "init_loop_start_distance");
-			if( sinit_loop_start_distance != null)
-			{
-				config.init_loop_start_distance = Double.parseDouble(sinit_loop_start_distance);
-				log.info("Custom size from db sinit_loop_start_distance=" + sinit_loop_start_distance );
-			}
-
-			String smaxdistancetocentroid_one = loadSettingValue( "maxdistancetocentroid_one");
-			if( smaxdistancetocentroid_one != null)
-			{
-				config.maxdistancetocentroid_one = Double.parseDouble(smaxdistancetocentroid_one);
-				log.info("Custom size from db maxdistancetocentroid_one=" + config.maxdistancetocentroid_one );
-			}
-			
-			String smaxnumberofcentroids = loadSettingValue( "maxnumberofcentroids ");
-			if( smaxnumberofcentroids  != null)
-			{
-				config.maxnumberofcentroids = Integer.parseInt(smaxnumberofcentroids );
-				log.info("Custom size from db maxnumberofcentroids =" + config.maxnumberofcentroids );
-			}
-			
-			log.info("Settings are maxdistancetomatch=" +  config.maxdistancetomatch + " kcount="+ config.kcount  + " maxresultspersearch=" + config.maxresultspersearch + " maxdistancetocentroid=" + config.maxdistancetocentroid );
-		}
-		return config;
-	}
-
-
-	protected String loadSettingValue(String inName)
-	{
-		String value = getCustomSettings().get(inName);
-		if( value == null)
-		{
-			value = getMediaArchive().getCatalogSettingValue(getType() + "_" + inName);
-		}
-		return value;
+		return fieldSettings;
 	}
 
 	
@@ -967,13 +832,6 @@ public class KMeansIndexer implements CatalogEnabled {
 	*/
 
 
-	public void setCustomSettings(Map<String, String> inCustomsettings)
-	{
-		fieldCustomSettings = inCustomsettings;
-		
-	}
-	
-
 	public void setCentroids(ScriptLogger inLog, Collection tracker)
 	{
 		if( getClusters().size() < getSettings().kcount )
@@ -1032,6 +890,104 @@ public class KMeansIndexer implements CatalogEnabled {
 		diff = MathUtils.roundDouble(diff, 2);
 		inLog.info("Complete: "  + totalsaved + " assigned to " + getClusters().size() + " clusters");
 	}
+
+	public void loadSettings(MultiValued inSemanticField)
+	{
+		fieldSettings = new KMeansConfiguration();
+		
+		setFieldName(inSemanticField.getId());
+		setSearchType(inSemanticField.get("searchtype"));
+		
+//		fieldKMeansIndexer.setRandomSortBy(null);
+		setFieldSaveVector("vectorarray");//or facedatadoubles facedatadoubles
+		
+		fieldClusters = null; //reload em
+			
+
+		fieldSettings.maxdistancetomatch = inSemanticField.getDouble( "maxdistancetomatch");
+			
+			/*
+			 *  Choosing the Number of Centroids (k)
+	k ≈ sqrt(n / 2) is a heuristic (where n = total number of record vectors)
+
+	Examples:
+
+	10,000 faces → ~70–100 centroids
+
+	1,000,000 faces → ~700–1000 centroids
+	*/
+			int totalrecords = getMediaArchive().query(getSearchType()).all().hitsPerPage(1).search().size(); 
+			double k = Math.sqrt( totalrecords / 2d); //Higher slows down indexing, more can be added back later as they click
+			int min = (int)Math.round(k * 1.50); //Raise by 50% or will be added on demand and that make it worse
+			
+			String skcount = inSemanticField.get( "kcount");
+			if( skcount != null)
+			{
+				min = Integer.parseInt( skcount); 
+			}
+			
+			fieldSettings.kcount = min;
+			fieldSettings.totalrecords = totalrecords;
+			
+			//Create new nodes when we get over 300 results or more as more likely to have a ton of faces
+			
+			min =  Math.max(min,300); 
+			String smaxresultspersearch =  inSemanticField.get( "maxresultspersearch");
+			if( smaxresultspersearch != null)
+			{
+				min = Integer.parseInt( smaxresultspersearch); 
+			}
+			
+			fieldSettings.maxresultspersearch = min; 
+			
+			
+			//.80-.9 = 20-100k
+			//		.9 / (t / 20k) = 
+					
+//			if( totalfaces > 50000 )
+//			{
+//				newrange = .8;  			 // (totalfaces / 20000.0)); //.90 worked well for 20k so scale it up or down based on total
+//			}
+			
+			String smaxdistancetocentroid =  inSemanticField.get( "maxdistancetocentroid");
+			if( smaxdistancetocentroid != null)
+			{
+				fieldSettings.maxdistancetocentroid = Double.parseDouble(smaxdistancetocentroid);
+				log.info("Custom size from db " +  getSearchType()  + "_maxdistancetocentroid=" + fieldSettings.maxdistancetocentroid );
+			}
+
+			
+			String init_loop_lower_limit =  inSemanticField.get( "init_loop_lower_limit");
+			if( init_loop_lower_limit != null)
+			{
+				fieldSettings.init_loop_lower_limit = Double.parseDouble(init_loop_lower_limit);
+				log.info("Custom size from db init_loop_lower_limit=" + init_loop_lower_limit );
+			}
+
+			String sinit_loop_start_distance =  inSemanticField.get( "init_loop_start_distance");
+			if( sinit_loop_start_distance != null)
+			{
+				fieldSettings.init_loop_start_distance = Double.parseDouble(sinit_loop_start_distance);
+				log.info("Custom size from db sinit_loop_start_distance=" + sinit_loop_start_distance );
+			}
+
+			String smaxdistancetocentroid_one =  inSemanticField.get( "maxdistancetocentroid_one");
+			if( smaxdistancetocentroid_one != null)
+			{
+				fieldSettings.maxdistancetocentroid_one = Double.parseDouble(smaxdistancetocentroid_one);
+				log.info("Custom size from db maxdistancetocentroid_one=" + fieldSettings.maxdistancetocentroid_one );
+			}
+			
+			String smaxnumberofcentroids =  inSemanticField.get( "maxnumberofcentroids ");
+			if( smaxnumberofcentroids  != null)
+			{
+				fieldSettings.maxnumberofcentroids = Integer.parseInt(smaxnumberofcentroids );
+				log.info("Custom size from db maxnumberofcentroids =" + fieldSettings.maxnumberofcentroids );
+			}
+			
+			log.info("Settings are maxdistancetomatch=" +  fieldSettings.maxdistancetomatch + " kcount="+ fieldSettings.kcount  + " maxresultspersearch=" + 
+					fieldSettings.maxresultspersearch + " maxdistancetocentroid=" + fieldSettings.maxdistancetocentroid );
+	}
 	
-	
+
 }

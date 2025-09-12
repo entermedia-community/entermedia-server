@@ -2625,7 +2625,13 @@
 		</property>
 	</bean>
 
-	<bean id="semanticIndexManager" class="org.entermediadb.ai.semantics.SemanticIndexManager" lazy-init="default" scope="prototype">
+	<bean id="semanticFieldsManager" class="org.entermediadb.ai.semantics.SemanticFieldsManager" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+	<bean id="semanticInstructions" class="org.entermediadb.ai.semantics.SemanticInstructions" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

@@ -1,4 +1,4 @@
-package org.entermediadb.ai;
+package org.entermediadb.ai.knn;
 
 import org.openedit.MultiValued;
 

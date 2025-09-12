@@ -29,7 +29,8 @@ import javax.imageio.stream.ImageInputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.entermediadb.ai.KMeansIndexer;
+import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.knn.BaseKMeansIndexer;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
@@ -57,7 +58,7 @@ import org.openedit.util.FileUtils;
 import org.openedit.util.MathUtils;
 
 
-public class FaceProfileManager implements CatalogEnabled
+public class FaceProfileManager extends BaseAiManager implements CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(FaceProfileManager.class);
 
@@ -207,9 +208,7 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			if( !foundfacestosave.isEmpty() )
 			{
-				getMediaArchive().getCacheManager().clear("faceboxes");
-				getMediaArchive().getCacheManager().clear("facepersonlookuprecord"); //faceboxes
-				//getMediaArchive().getCacheManager().clear("face");
+				clearAllCaches();
 			}
 			
 			return foundfacestosave.size();
@@ -474,29 +473,27 @@ public class FaceProfileManager implements CatalogEnabled
 		
 		logger.info(new Date() +  " reinitNodes Start reinit ");
 		
+
+		clearAllCaches();
 		
-		getMediaArchive().getCacheManager().clear("face");
-		getMediaArchive().getCacheManager().clear(getKMeansIndexer().getType());
-		getMediaArchive().getCacheManager().clear(getKMeansIndexer().getType() + "lookuprecord"); 
 		
 		getKMeansIndexer().reinitClusters(logger);
 		logger.info(new Date() +  " reinitNodes Completed ");
 
 	}
 
-
-	protected KMeansIndexer fieldKMeansIndexer;
-	public KMeansIndexer getKMeansIndexer()
+	public BaseKMeansIndexer getKMeansIndexer()
 	{
+		BaseKMeansIndexer fieldKMeansIndexer = (BaseKMeansIndexer)getMediaArchive().getCacheManager().get("facedetect","facedetectindexer");
 		if (fieldKMeansIndexer == null)
 		{
-			fieldKMeansIndexer = (KMeansIndexer)getModuleManager().getBean(getCatalogId(),"kMeansIndexer",false);
-			fieldKMeansIndexer.setType("facedetect");
-			fieldKMeansIndexer.setSearchType("faceembedding");
+			fieldKMeansIndexer = (BaseKMeansIndexer)getModuleManager().getBean(getCatalogId(),"kMeansIndexer",false);
+			MultiValued settings = (MultiValued)getMediaArchive().getData("semanticfield","facedetect");
+			fieldKMeansIndexer.loadSettings(settings);
+			//fieldKMeansIndexer.setSearchType("faceembedding");
 			fieldKMeansIndexer.setRandomSortBy("face_confidence");
-			//fieldKMeansIndexer.setFieldSaveConfidence("face_confidence");//kmeanconfidence ;
 			fieldKMeansIndexer.setFieldSaveVector("facedatadoubles");//vectorarray facedatadoubles
-			
+			getMediaArchive().getCacheManager().put("facedetect","facedetectindexer",fieldKMeansIndexer);
 		}
 		return fieldKMeansIndexer;
 	}
@@ -723,7 +720,7 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			return Collections.EMPTY_LIST;
 		}
-		Collection<FaceBox> boxes = (Collection<FaceBox>)getMediaArchive().getCacheManager().get(getKMeansIndexer().getType(), inAsset.getId());
+		Collection<FaceBox> boxes = (Collection<FaceBox>)getMediaArchive().getCacheManager().get("faceboxes", inAsset.getId());
 		if( boxes != null )
 		{
 			return (Collection<FaceBox>)boxes;
@@ -748,7 +745,7 @@ public class FaceProfileManager implements CatalogEnabled
 	public Data loadPersonOfEmbedding(MultiValued embedding)
 	{
 
-		Data entityperson = (Data)getMediaArchive().getCacheManager().get(getKMeansIndexer().getType() + "personlookuprecord",embedding.getId());
+		Data entityperson = (Data)getMediaArchive().getCacheManager().get("aifacedetect",embedding.getId());
 		if(entityperson == CacheManager.NULLDATA )
 		{
 			return null;
@@ -775,11 +772,11 @@ public class FaceProfileManager implements CatalogEnabled
 		
 		if( entityperson == null)
 		{
-			getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),CacheManager.NULLDATA);
+			getMediaArchive().getCacheManager().put("aifacedetect" ,embedding.getId(),CacheManager.NULLDATA);
 		}
 		else
 		{
-			getMediaArchive().getCacheManager().put("facepersonlookuprecord",embedding.getId(),entityperson);
+			getMediaArchive().getCacheManager().put("aifacedetect",embedding.getId(),entityperson);
 		}
 		
 		return entityperson;
@@ -1148,9 +1145,7 @@ public class FaceProfileManager implements CatalogEnabled
 				person.setValue("primaryimage", assetid);
 				getMediaArchive().saveData("entityperson", person);
 				
-				getMediaArchive().getCacheManager().clear("faceboxes"); //No way to know what to clear
-				getMediaArchive().getCacheManager().clear("facepersonlookuprecord");
-				
+				clearAllCaches();
 			}
 		}
 	}
@@ -1176,5 +1171,12 @@ public class FaceProfileManager implements CatalogEnabled
 	}
 
 	
+	protected void clearAllCaches()
+	{
+
+		getMediaArchive().getCacheManager().clear("aifacedetect"); //Standard cache for this fieldname
+		getMediaArchive().getCacheManager().clear("faceboxes"); //All related boxes. TODO: Limit to this record
+
+	}
 	
 }

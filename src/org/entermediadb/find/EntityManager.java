@@ -711,11 +711,31 @@ public class EntityManager implements CatalogEnabled
 		Collection<Data> assets = new ArrayList(1);
 		assets.add(inAsset);
 		saveAssetActivity(applicationid, inUser, entity, assets, "assetsadded");
+		checkPrimaryAsset(entity, assets);
 	}
 	
 	public void fireAssetsAddedToEntity(String applicationid, User inUser, Collection<Data> inAssets, Data entity)
 	{
 		saveAssetActivity(applicationid, inUser, entity, inAssets, "assetsadded");
+		checkPrimaryAsset(entity, inAssets);
+	}
+
+	protected void checkPrimaryAsset(Data inEntity, Collection<Data> inAssets)
+	{
+		if( inEntity.getValue("primarymedia") == null && inEntity.getValue("primaryimage") == null )
+		{
+			for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
+			{
+				Data data = (Data) iterator.next();
+				inEntity.setValue("primaryimage",data.getId());
+				String moduleid = inEntity.get("entitysourcetype");
+				if( moduleid != null)
+				{
+					getMediaArchive().saveData(moduleid,inEntity);
+				}
+				break;
+			}
+		}
 	}
 
 	public void fireAssetRemovedFromEntity(String applicationid, User inUser, Data inAsset, Data entity)
