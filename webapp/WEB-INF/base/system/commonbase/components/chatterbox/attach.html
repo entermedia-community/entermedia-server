@@ -35,8 +35,8 @@
 			</button>
 		#end
 	</div>
+	
 
-#if($caneditgoal)
 	<form name="attach${chat.id}" 
 		method="post" 
 		enctype="multipart/form-data" 
@@ -74,9 +74,7 @@
 	$pages.include("${finderhome}/views/modules/${moduleid}/editors/assetattacher/index.html", $context)
 
 	</form>
-#else
-	
-#end
+
 </div>
 
 

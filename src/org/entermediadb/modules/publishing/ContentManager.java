@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,17 +16,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.dom4j.Element;
-import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.importer.DitaImporter;
-import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.net.HttpSharedConnection;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -115,7 +117,7 @@ public class ContentManager implements CatalogEnabled
 
 	public HttpSharedConnection getSharedConnection()
 	{
-		String api = getMediaArchive().getCatalogSettingValue("apikeyoneliveweb"); 
+		String api = getMediaArchive().getCatalogSettingValue("apikeyoneliveweb");
 
 		if (fieldHttpSharedConnection == null || !fieldsavedapikey.equals(api))
 		{
@@ -762,11 +764,11 @@ public class ContentManager implements CatalogEnabled
 		MediaArchive archive = getMediaArchive();
 
 		String model = contentrequest.get("llmmodel");
-		
+
 		LlmConnection llm = archive.getLlmConnection(model);
 
 		String prompt = (String) contentrequest.get("llmprompt");
-		
+
 		if (prompt == null)
 		{
 			return null;
@@ -783,7 +785,7 @@ public class ContentManager implements CatalogEnabled
 		if(asset == null) {
 			return null;
 		}
-		
+
 		params.put("model", model);
 		params.put("style", imagestyle);
 		params.put("prompt", prompt);
@@ -791,7 +793,7 @@ public class ContentManager implements CatalogEnabled
 		LlmResponse results = llm.createImage(params);
 
 		Downloader downloader = new Downloader();
-		
+
 		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
 		{
 
@@ -923,7 +925,7 @@ public class ContentManager implements CatalogEnabled
 			params.put("targetmodule", targetmodule);
 
 			params.put("contentrequest", inContentrequest);
-			
+
 			LlmResponse results = inLlm.callCreateFunction(params, inModel, "create_entity");
 
 			child = targetsearcher.createNewData();
@@ -973,6 +975,95 @@ public class ContentManager implements CatalogEnabled
 		// TODO: Create some assets?
 		return child;
 
+	}
+
+	public void splitEntityDocuments(String inEntityId, String inAssetId) throws Exception
+	{
+		MediaArchive archive = getMediaArchive();
+
+		Asset asset = getMediaArchive().getAsset(inAssetId);
+
+		String fulltext = (String) asset.getValue("fulltext");
+
+		if(fulltext == null)
+		{
+			return;
+		}
+		JSONParser parser = new JSONParser();
+		Object pages = parser.parse(fulltext);
+
+		Collection<String> pagesFulltext = new ArrayList<String>();
+		if(pages instanceof JSONArray)
+		{
+			JSONArray arr = (JSONArray) pages;
+			for (int i = 0; i < arr.size(); i++)
+			{
+				String text = (String) arr.get(i);
+				if(text != null)
+				{
+					pagesFulltext.add(text);
+				}
+			}
+		}
+		else if(pages instanceof String)
+		{
+			pagesFulltext.add((String)pages);
+		}
+
+		Collection<Data> existingPages = archive.query("entitydocumentpage").exact("entitydocument", inEntityId).exact("parentasset", inAssetId).search();
+
+		List<Data> tosave = new ArrayList();
+		int pagenum = 0;
+
+		for (Iterator iterator = pagesFulltext.iterator(); iterator.hasNext();) {
+			pagenum++;
+
+			String pageText = (String) iterator.next();
+
+			Data existingPage = null;
+			for (Iterator iterator2 = existingPages.iterator(); iterator2.hasNext();) {
+				Data d = (Data) iterator2.next();
+				int p = (int) d.getValue("pagenum");
+				if( p == pagenum)
+				{
+					existingPage = d;
+					break;
+				}
+			}
+//			if(pageText.trim().length() == 0)
+//			{
+//				continue;
+//			}
+			Data docpage = null;
+			if(existingPage != null)
+			{
+				docpage = existingPage;
+				docpage.setValue("taggedbyllm", false);
+				docpage.setValue("semanticindexed", false);
+				docpage.setValue("semantictopics", null);
+			}
+			else
+			{
+				docpage = archive.getSearcher("entitydocumentpage").createNewData();
+			}
+
+			docpage.setName("Page #" + pagenum);
+			docpage.setValue("pagenum", pagenum);
+			docpage.setValue("longcaption", pageText);
+			docpage.setValue("entitydocument", inEntityId);
+			docpage.setValue("parentasset", inAssetId);
+			docpage.setValue("entity_date", new Date());
+
+			tosave.add(docpage);
+
+			if(tosave.size() > 20)
+			{
+				archive.saveData("entitydocumentpage", tosave);
+				tosave.clear();
+			}
+		}
+
+		archive.fireMediaEvent("llm/addmetadata", null);
 	}
 
 }

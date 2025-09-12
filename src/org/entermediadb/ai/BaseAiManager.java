@@ -2,7 +2,9 @@ package org.entermediadb.ai;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.entermediadb.manager.BaseManager;
 import org.openedit.Data;
@@ -11,6 +13,36 @@ import org.openedit.profile.UserProfile;
 
 public class BaseAiManager extends BaseManager 
 {
+	public Map<String, String> getModels()
+	{
+		Map<String, String> models = new HashMap<>();
+		String visionmodel = getMediaArchive().getCatalogSettingValue("llmvisionmodel");
+		if(visionmodel == null) {
+			visionmodel = "gpt-5-nano";
+		}
+		models.put("vision", visionmodel);
+		
+		String metadatamodel = getMediaArchive().getCatalogSettingValue("llmmetadatamodel");
+		if(metadatamodel == null) {
+			metadatamodel = "gpt-5-nano";
+		}
+		models.put("metadata", metadatamodel);
+
+		String semanticmodel = getMediaArchive().getCatalogSettingValue("llmsemanticmodel");
+		if(semanticmodel == null) {
+			semanticmodel = "qwen3:4b";
+		}
+		models.put("semantic", semanticmodel);
+		
+		String ragmodel = getMediaArchive().getCatalogSettingValue("llmragmodel");
+		if(ragmodel == null) {
+			ragmodel = "qwen3:4b";
+		}
+		models.put("ragmodel", ragmodel);
+		
+		return models;
+	}
+	
 	public Collection<MultiValued> loadUserSearchModules(UserProfile inProfile)
 	{
 		Collection<Data> modules = inProfile.getEntities();
