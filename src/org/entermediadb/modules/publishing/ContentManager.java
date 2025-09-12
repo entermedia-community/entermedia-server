@@ -117,7 +117,7 @@ public class ContentManager implements CatalogEnabled
 
 	public HttpSharedConnection getSharedConnection()
 	{
-		String api = getMediaArchive().getCatalogSettingValue("apikeyoneliveweb"); 
+		String api = getMediaArchive().getCatalogSettingValue("apikeyoneliveweb");
 
 		if (fieldHttpSharedConnection == null || !fieldsavedapikey.equals(api))
 		{
@@ -764,11 +764,11 @@ public class ContentManager implements CatalogEnabled
 		MediaArchive archive = getMediaArchive();
 
 		String model = contentrequest.get("llmmodel");
-		
+
 		LlmConnection llm = archive.getLlmConnection(model);
 
 		String prompt = (String) contentrequest.get("llmprompt");
-		
+
 		if (prompt == null)
 		{
 			return null;
@@ -785,7 +785,7 @@ public class ContentManager implements CatalogEnabled
 		if(asset == null) {
 			return null;
 		}
-		
+
 		params.put("model", model);
 		params.put("style", imagestyle);
 		params.put("prompt", prompt);
@@ -793,7 +793,7 @@ public class ContentManager implements CatalogEnabled
 		LlmResponse results = llm.createImage(params);
 
 		Downloader downloader = new Downloader();
-		
+
 		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
 		{
 
@@ -925,7 +925,7 @@ public class ContentManager implements CatalogEnabled
 			params.put("targetmodule", targetmodule);
 
 			params.put("contentrequest", inContentrequest);
-			
+
 			LlmResponse results = inLlm.callCreateFunction(params, inModel, "create_entity");
 
 			child = targetsearcher.createNewData();
@@ -976,22 +976,22 @@ public class ContentManager implements CatalogEnabled
 		return child;
 
 	}
-	
+
 	public void splitEntityDocuments(String inEntityId, String inAssetId) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
-		
+
 		Asset asset = getMediaArchive().getAsset(inAssetId);
-		
+
 		String fulltext = (String) asset.getValue("fulltext");
-		
+
 		if(fulltext == null)
 		{
 			return;
 		}
 		JSONParser parser = new JSONParser();
 		Object pages = parser.parse(fulltext);
-		
+
 		Collection<String> pagesFulltext = new ArrayList<String>();
 		if(pages instanceof JSONArray)
 		{
@@ -1009,17 +1009,17 @@ public class ContentManager implements CatalogEnabled
 		{
 			pagesFulltext.add((String)pages);
 		}
-		
+
 		Collection<Data> existingPages = archive.query("entitydocumentpage").exact("entitydocument", inEntityId).exact("parentasset", inAssetId).search();
-		
+
 		List<Data> tosave = new ArrayList();
 		int pagenum = 0;
-		
+
 		for (Iterator iterator = pagesFulltext.iterator(); iterator.hasNext();) {
 			pagenum++;
-			
+
 			String pageText = (String) iterator.next();
-			
+
 			Data existingPage = null;
 			for (Iterator iterator2 = existingPages.iterator(); iterator2.hasNext();) {
 				Data d = (Data) iterator2.next();
@@ -1046,23 +1046,24 @@ public class ContentManager implements CatalogEnabled
 			{
 				docpage = archive.getSearcher("entitydocumentpage").createNewData();
 			}
-			
+
 			docpage.setName("Page #" + pagenum);
 			docpage.setValue("pagenum", pagenum);
 			docpage.setValue("longcaption", pageText);
 			docpage.setValue("entitydocument", inEntityId);
 			docpage.setValue("parentasset", inAssetId);
-			
+			docpage.setValue("entity_date", new Date());
+
 			tosave.add(docpage);
-			
+
 			if(tosave.size() > 20)
 			{
 				archive.saveData("entitydocumentpage", tosave);
 				tosave.clear();
 			}
 		}
-		
-		archive.fireMediaEvent("llm/indexentitydocuments", null);
+
+		archive.fireMediaEvent("llm/addmetadata", null);
 	}
 
 }

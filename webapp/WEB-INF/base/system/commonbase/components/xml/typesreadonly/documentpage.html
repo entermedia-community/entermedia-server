@@ -5,10 +5,10 @@
 #if($value && $value != "")
 
 	#set( $foundrow = $mediaarchive.getAsset($value))
-	
+
 	#if($foundrow)
-	<div id="$!{detail.id}-preview" 
-		class="assetpreviewreadonly assetdraggable ui-draggable" 
+	<div id="$!{detail.id}-preview"
+		class="assetpreviewreadonly assetdraggable ui-draggable"
 		data-assetid="$foundrow.getId()">
 		#set($pagenum = $data.get("pagenum"))
 		#if($pagenum == 1)
