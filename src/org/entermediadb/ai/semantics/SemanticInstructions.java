@@ -2,7 +2,7 @@ package org.entermediadb.ai.semantics;
 
 import java.util.Set;
 
-import org.entermediadb.ai.knn.BaseKMeansIndexer;
+import org.entermediadb.ai.knn.KMeansIndexer;
 import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
@@ -29,7 +29,7 @@ public class SemanticInstructions implements CatalogEnabled
 	{
 		fieldModuleManager = inModuleManager;
 	}
-	public void setKMeansIndexer(BaseKMeansIndexer inKMeansIndexer)
+	public void setKMeansIndexer(KMeansIndexer inKMeansIndexer)
 	{
 		fieldKMeansIndexer = inKMeansIndexer;
 	}
@@ -74,13 +74,13 @@ public class SemanticInstructions implements CatalogEnabled
 		fieldSemanticField = inSemanticField;
 	}
 	
-protected BaseKMeansIndexer fieldKMeansIndexer;
+protected KMeansIndexer fieldKMeansIndexer;
 	
-	public BaseKMeansIndexer getKMeansIndexer()
+	public KMeansIndexer getKMeansIndexer()
 	{
 		if (fieldKMeansIndexer == null)
 		{
-			fieldKMeansIndexer = (BaseKMeansIndexer)getModuleManager().getBean(getCatalogId(),"kMeansIndexer",false);
+			fieldKMeansIndexer = (KMeansIndexer)getModuleManager().getBean(getCatalogId(),"kMeansIndexer",false);
 			fieldKMeansIndexer.loadSettings(getSemanticField());
 			
 		}

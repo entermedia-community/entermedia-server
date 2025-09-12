@@ -22,9 +22,9 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.util.MathUtils;
 
-public class BaseKMeansIndexer implements CatalogEnabled {
+public class KMeansIndexer implements CatalogEnabled {
 
-	private static final Log log = LogFactory.getLog(BaseKMeansIndexer.class);
+	private static final Log log = LogFactory.getLog(KMeansIndexer.class);
 	protected String fieldSearchType = "semanticembedding";
 	protected String fieldRandomSortBy = null;
 	protected String fieldFieldSaveVector = "vectorarray";//vectorarray facedatadoubles
@@ -33,7 +33,7 @@ public class BaseKMeansIndexer implements CatalogEnabled {
 	protected String fieldCatalogId;
 	protected MediaArchive fieldMediaArchive;
 
-	public BaseKMeansIndexer() 
+	public KMeansIndexer() 
 	{
 	
 	}
@@ -834,12 +834,6 @@ public class BaseKMeansIndexer implements CatalogEnabled {
 
 	public void setCentroids(ScriptLogger inLog, Collection tracker)
 	{
-		if( getClusters().size() < getSettings().kcount )
-		{
-
-			reinitClusters(inLog);
-			return;
-		}
 		
 		Collection tosave = new ArrayList();
 		

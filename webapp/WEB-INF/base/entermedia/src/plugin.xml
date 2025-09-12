@@ -2647,7 +2647,7 @@
 	</bean>
 
 
-	<bean id="kMeansIndexer" class="org.entermediadb.ai.KMeansIndexer" lazy-init="default" scope="prototype">
+	<bean id="kMeansIndexer" class="org.entermediadb.ai.knn.KMeansIndexer" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

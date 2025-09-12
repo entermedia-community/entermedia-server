@@ -30,7 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.ai.BaseAiManager;
-import org.entermediadb.ai.knn.BaseKMeansIndexer;
+import org.entermediadb.ai.knn.KMeansIndexer;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
@@ -482,12 +482,12 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled
 
 	}
 
-	public BaseKMeansIndexer getKMeansIndexer()
+	public KMeansIndexer getKMeansIndexer()
 	{
-		BaseKMeansIndexer fieldKMeansIndexer = (BaseKMeansIndexer)getMediaArchive().getCacheManager().get("facedetect","facedetectindexer");
+		KMeansIndexer fieldKMeansIndexer = (KMeansIndexer)getMediaArchive().getCacheManager().get("facedetect","facedetectindexer");
 		if (fieldKMeansIndexer == null)
 		{
-			fieldKMeansIndexer = (BaseKMeansIndexer)getModuleManager().getBean(getCatalogId(),"kMeansIndexer",false);
+			fieldKMeansIndexer = (KMeansIndexer)getModuleManager().getBean(getCatalogId(),"kMeansIndexer",false);
 			MultiValued settings = (MultiValued)getMediaArchive().getData("semanticfield","facedetect");
 			fieldKMeansIndexer.loadSettings(settings);
 			//fieldKMeansIndexer.setSearchType("faceembedding");

@@ -142,12 +142,25 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	protected boolean fieldReIndexing;
 	protected boolean fieldCheckVersions;
 	protected boolean fieldRefreshSaves = true;
+	protected boolean fieldCheckLegacy = true;
 	protected long fieldIndexId = System.currentTimeMillis();
 	protected ArrayList<String> fieldSearchTypes;
 	protected boolean fieldIncludeFullText = true;
 	protected OutputFiller fieldFiller;
 	protected PageManager fieldPageManager;
 	protected Replacer fieldReplacer;
+
+	
+	
+	public boolean isCheckLegacy()
+	{
+		return fieldCheckLegacy;
+	}
+
+	public void setCheckLegacy(boolean inCheckLegacy)
+	{
+		fieldCheckLegacy = inCheckLegacy;
+	}
 
 	protected Replacer getReplacer()
 	{
@@ -2814,10 +2827,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			
 			HashSet allprops = new HashSet();
 			
-			//if( inDetails.isAllowDynamicFields() )
-			//{
+			if( inDetails.isAllowDynamicFields() || isCheckLegacy() )
+			{
 				allprops.addAll(inData.getProperties().keySet()); //Needed for legacy field handling below
-			//}
+			} 
 			//allprops.addAll(props.keySet());
 			for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
 			{

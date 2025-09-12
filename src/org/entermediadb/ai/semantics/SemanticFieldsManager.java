@@ -119,7 +119,7 @@ public class SemanticFieldsManager extends BaseAiManager implements CatalogEnabl
 
 	public SemanticInstructions createSemanticInstructions(MultiValued inField)
 	{
-		SemanticInstructions instructions = (SemanticInstructions)getMediaArchive().getBean("semanticInstructions");
+		SemanticInstructions instructions = (SemanticInstructions)getModuleManager().getBean(getCatalogId(),"semanticInstructions",false);
 		instructions.setSemanticField(inField);
 		return instructions;
 	}
@@ -129,7 +129,7 @@ public class SemanticFieldsManager extends BaseAiManager implements CatalogEnabl
 		
 		HitTracker all = getMediaArchive().query("module").exact("semanticenabled", true).search();
 		Collection<String> ids = all.collectValues("id");
-
+		log.info("Scanning modules " + ids);
 		for (Iterator iteratorS = getInstructions().iterator(); iteratorS.hasNext();)
 		{
 			SemanticInstructions instruction = (SemanticInstructions) iteratorS.next();
@@ -141,7 +141,7 @@ public class SemanticFieldsManager extends BaseAiManager implements CatalogEnabl
 			
 			HitTracker hits = query.search();
 			hits.enableBulkOperations();
-			log.info("Indexing " + instruction.getSearchType() + "indexed = false in: " + ids + " found: " + hits.size());
+			log.info("Indexing " + instruction.getFieldName() + " in: " + hits);
 			indexResults(inLog, instruction, hits);
 		}
 		
@@ -163,7 +163,7 @@ public class SemanticFieldsManager extends BaseAiManager implements CatalogEnabl
 				createdVectors.clear();
 			}
 		}
-		inLog.info("Total indexed: " + indexed + "  in " + hits);
+		inLog.info("Total indexed: " + indexed + "  from " + hits);
 		if (createdVectors!= null)
 		{
 			instruction.getKMeansIndexer().setCentroids(inLog, createdVectors);
@@ -215,7 +215,7 @@ public class SemanticFieldsManager extends BaseAiManager implements CatalogEnabl
 				entitiestoprocess.put(moduleid,bytype);
 			}
 			bytype.add(entity);
-			entity.setValue("semanticindexed", true);
+			entity.setValue(inStructions.getFieldName() + "indexed", true);
 		}  
 		
 		int count = 0;
