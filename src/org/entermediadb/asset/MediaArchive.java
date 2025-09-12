@@ -63,6 +63,7 @@ import org.openedit.data.BaseCompositeData;
 import org.openedit.data.BaseData;
 import org.openedit.data.CompositeData;
 import org.openedit.data.DataWithSearcher;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.QueryBuilder;
@@ -3119,7 +3120,25 @@ public class MediaArchive implements CatalogEnabled
 		
 		return word;
 	}
-	
+	public Collection<MultiValued> getValueList(PropertyDetail inDetail, MultiValued inData)
+	{
+		Collection<String> ids = inData.getValues(inDetail.getId());
+		if(ids == null || ids.isEmpty()) 
+		{
+			return null;
+		}
+		Collection<MultiValued> results = null;
+		if(ids.size() == 1)
+		{
+			MultiValued res = (MultiValued) getCachedData(inDetail.getListId(), ids.iterator().next());
+			results.add(res);
+		}
+		else
+		{			
+			results = query(inDetail.getListId()).ids(ids).search();
+		}
+		return results;
+	}
 	public String text(String text, String id)
 	{
 		if (text == null) {
@@ -3309,7 +3328,7 @@ public class MediaArchive implements CatalogEnabled
 		FaceProfileManager manager = (FaceProfileManager) getBean("faceProfileManager");
 		return manager;
 	}
-
+	
 	public LlmConnection getLlmConnection(String inModel)
 	{
 		

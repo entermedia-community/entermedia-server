@@ -315,15 +315,22 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 		
-		try
-		{
+	
 			if (resp.getStatusLine().getStatusCode() != 200)
 			{
 				log.info("Gpt Server error status: " + resp.getStatusLine().getStatusCode());
 				log.info("Gpt Server error response: " + resp.toString());
+				try
+				{
+					String error = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+					log.info(error);
+				}
+				catch(Exception e)
+				{}
 				throw new OpenEditException("GPT error: " + resp.getStatusLine());
 			}
-	
+		try
+		{
 			// Parse JSON response using JSON Simple
 			JSONParser parser = new JSONParser();
 			JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
