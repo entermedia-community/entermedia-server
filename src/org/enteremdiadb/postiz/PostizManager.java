@@ -114,27 +114,30 @@ public class PostizManager implements CatalogEnabled {
                     valueObject.put("content", inPostContent);
 
                     // Handle file uploads if provided
+                 // Add images if any
                     JSONArray imagesArray = new JSONArray();
                     if (inAssetIds != null && !inAssetIds.isEmpty()) {
                         for (String assetid : inAssetIds) {
-                        	Asset asset = getMediaArchive().getAsset(assetid);
-                        	if (asset != null)
-                        	{
-	                        	ContentItem item = getMediaArchive().getGeneratedContent(asset, "image3000x3000.jpg");
-	                        	if(item.exists()) {
-	                            String fileId = uploadFile(item.getAbsolutePath());
-			                        if (fileId != null) {
-			                            JSONObject imageObject = new JSONObject();
-			                            imageObject.put("id", fileId);
-			                            imagesArray.add(imageObject);
-			                        }
-	                        	}
-                        	}
+                            Asset asset = getMediaArchive().getAsset(assetid);
+                            if (asset != null) {
+                                ContentItem item = getMediaArchive().getGeneratedContent(asset, "image3000x3000.jpg");
+                                if (item.exists()) {
+                                    String fileId = uploadFile(item.getAbsolutePath());
+                                    if (fileId != null) {
+                                        JSONObject imageObject = new JSONObject();
+                                        imageObject.put("id", fileId);
+                                        imagesArray.add(imageObject);
+                                    }
+                                }
+                            }
                         }
-		                valueObject.put("image", imagesArray);
-		                valuesArray.add(valueObject);
-		                postObject.put("value", valuesArray);
                     }
+                        valueObject.put("image", imagesArray);
+                    
+
+                    // Now ALWAYS add value
+                    valuesArray.add(valueObject);
+                    postObject.put("value", valuesArray);
                     
 
                     // Add a random group ID to group these posts if needed
