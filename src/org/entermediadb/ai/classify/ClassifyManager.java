@@ -17,6 +17,8 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.ai.semantics.SemanticFieldsManager;
+import org.entermediadb.ai.semantics.SemanticInstructions;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.scripts.ScriptLogger;
@@ -728,6 +730,9 @@ public class ClassifyManager extends BaseAiManager
 			return results;
 		}
 
+		Collection<SemanticInstructions> fieldinstructions = getSemanticFieldsManager().getInstructions();
+		params.put("fieldinstructions", fieldinstructions);
+		
 		JSONObject structure = llmconnection.callStructuredOutputList("semantic_topics", inModel, fields, params);
 		if (structure == null)
 		{
@@ -804,4 +809,14 @@ public class ClassifyManager extends BaseAiManager
 		return results;
 	}
 
+	protected SemanticFieldsManager fieldSemanticFieldsManager;
+	public SemanticFieldsManager getSemanticFieldsManager()
+	{
+		if (fieldSemanticFieldsManager == null)
+		{
+			fieldSemanticFieldsManager = (SemanticFieldsManager)getModuleManager().getBean(getCatalogId(),"semanticFieldsManager");
+		}
+
+		return fieldSemanticFieldsManager;
+	}
 }
