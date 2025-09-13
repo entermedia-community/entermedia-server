@@ -231,57 +231,69 @@ public class ClassifyManager extends BaseAiManager
 				params.put("docpage", isDocPage);
 			}
 
-			String requestPayload = llmvisionconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/analyzeentity.html", params); 
-			LlmResponse results = llmvisionconnection.callClassifyFunction(params, models.get("vision"), "generate_entity_metadata", requestPayload, base64EncodedString);
-
-			if (results != null)
+			try 
 			{
-				JSONObject arguments = results.getArguments();
-				if (arguments != null) {
-
-					Map metadata =  (Map) arguments.get("metadata");
-					if (metadata == null || metadata.isEmpty())
-					{
-						return false;
-					}
-					Map datachanges = new HashMap();
-					for (Iterator iterator2 = metadata.keySet().iterator(); iterator2.hasNext();)
-					{
-						String inKey = (String) iterator2.next();
-						PropertyDetail detail = getMediaArchive().getAssetPropertyDetails().getDetail(inKey);
-						if (detail != null)
+				
+				String requestPayload = llmvisionconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/analyzeentity.html", params); 
+				LlmResponse results = llmvisionconnection.callClassifyFunction(params, models.get("vision"), "generate_entity_metadata", requestPayload, base64EncodedString);
+				
+				if (results != null)
+				{
+					JSONObject arguments = results.getArguments();
+					if (arguments != null) {
+						
+						Map metadata =  (Map) arguments.get("metadata");
+						if (metadata == null || metadata.isEmpty())
 						{
-							String value = (String)metadata.get(inKey);
-							if(detail.isList())
+							return false;
+						}
+						Map datachanges = new HashMap();
+						for (Iterator iterator2 = metadata.keySet().iterator(); iterator2.hasNext();)
+						{
+							String inKey = (String) iterator2.next();
+							PropertyDetail detail = getMediaArchive().getAssetPropertyDetails().getDetail(inKey);
+							if (detail != null)
 							{
-								String listId = value.split("\\|")[0];
-								datachanges.put(detail.getId(), listId);
-							}
-							else if (detail.isMultiValue())
-							{
-								Collection<String> values = Arrays.asList(value.split(","));
-								datachanges.put(detail.getId(), values);
-							}
-							else
-							{
-								datachanges.put(detail.getId(), value);
+								String value = (String)metadata.get(inKey);
+								if(detail.isList())
+								{
+									String listId = value.split("\\|")[0];
+									datachanges.put(detail.getId(), listId);
+								}
+								else if (detail.isMultiValue())
+								{
+									Collection<String> values = Arrays.asList(value.split(","));
+									datachanges.put(detail.getId(), values);
+								}
+								else
+								{
+									datachanges.put(detail.getId(), value);
+								}
 							}
 						}
+						
+						for (Iterator iterator2 = datachanges.keySet().iterator(); iterator2.hasNext();)
+						{
+							String inKey = (String) iterator2.next();
+							Object value = datachanges.get(inKey);
+							
+							inEntity.setValue(inKey, value);
+							log.info("AI updated field "+ inKey + ": "+metadata.get(inKey));
+						}
 					}
-
-					for (Iterator iterator2 = datachanges.keySet().iterator(); iterator2.hasNext();)
-					{
-						String inKey = (String) iterator2.next();
-						Object value = datachanges.get(inKey);
-
-						inEntity.setValue(inKey, value);
-						log.info("AI updated field "+ inKey + ": "+metadata.get(inKey));
+					else {
+						log.info("Entity "+inEntity.getId() +" "+inEntity.getName()+" - Nothing Detected.");
 					}
 				}
-				else {
-					log.info("Entity "+inEntity.getId() +" "+inEntity.getName()+" - Nothing Detected.");
-				}
+				inEntity.setValue("taggedbyllm", true);
+				inEntity.setValue("llmerror", false);
 			}
+			catch (Exception e) 
+			{
+				log.error("Error generating metadata for entity "+ inEntity, e);
+				inEntity.setValue("llmerror", true);
+			}
+			
 
 		}
 		
@@ -302,46 +314,40 @@ public class ClassifyManager extends BaseAiManager
 				}
 
 			}
-			Map semantics = getSemanticFields(llmsemanticconnection, params, fieldsToCheck, models.get("semantic"), inEntity);
+			Map semantics = createSemanticFieldsValues(llmsemanticconnection, params, fieldsToCheck, models.get("semantic"), inEntity);
 			
 			if(semantics != null)
 			{
-				if(isDocPage)
-				{
-					String pagetitle = (String) semantics.get("title");
-					if(pagetitle != null && !pagetitle.isEmpty())
+				Collection<SemanticInstructions> fieldinstructions = getSemanticFieldsManager().getInstructions();
+				
+				for (Iterator<SemanticInstructions> iterator = fieldinstructions.iterator(); iterator.hasNext();) {
+					SemanticInstructions instruction = iterator.next();
+					
+					String fieldname = instruction.getFieldName();
+					
+					Collection<String> semanticvalues = (Collection) semantics.get(fieldname);
+					
+					if(semanticvalues == null || semanticvalues.isEmpty())
 					{
-						inEntity.setName(pagetitle);
-						log.info("AI updated page title: " + pagetitle);
-					}
-				}
-	
-				Collection<String> semantic_topics = (Collection) semantics.get("semantictopics");
-	
-				if(semantic_topics == null || semantic_topics.isEmpty())
-				{
-					if(inPrimaryAsset != null)
-					{
-						Collection<String> assetsemantictopics = inPrimaryAsset.getValues("semantictopics");
-						if(assetsemantictopics != null && !assetsemantictopics.isEmpty())
+						if(inPrimaryAsset != null)
 						{
-							inEntity.setValue("semantictopics", assetsemantictopics);
-							log.info("No semantic topics found from AI, using primary asset's sematic topics: " + assetsemantictopics);
+							semanticvalues = inPrimaryAsset.getValues(fieldname);
+
+							inEntity.setValue("semantictopics", semanticvalues);
+							log.info("No semantic topics found from AI, using primary asset's sematic topics: " + semanticvalues);
 						}
 					}
+					else
+					{
+						inEntity.setValue(fieldname, semanticvalues);
+						log.info("AI updated semantic topics: " + semanticvalues);
+					}
+					
 				}
-				else
-				{
-					inEntity.setValue("semantictopics", semantic_topics);
-					log.info("AI updated semantic topics: " + semantic_topics);
-				}
-	
-				inEntity.setValue("taggedbyllm", true);
 			}
 			else 
 			{
-				inEntity.setValue("taggedbyllm", null);
-				inEntity.setValue("llmerror", null);
+				log.info("Semantics creation failed");
 			}
 		}
 		
@@ -581,8 +587,9 @@ public class ClassifyManager extends BaseAiManager
 
 			}
 
-			Map semantics = getSemanticFields(llmsemanticconnection, params, fieldsToCheck, models.get("semantic"), asset);
+			Map semantics = createSemanticFieldsValues(llmsemanticconnection, params, fieldsToCheck, models.get("semantic"), asset);
 			Collection<String> semantic_topics = (Collection) semantics.get("semantictopics");
+			
 			if(semantic_topics != null && !semantic_topics.isEmpty())
 			{
 				asset.setValue("semantictopics", semantic_topics);
@@ -624,7 +631,7 @@ public class ClassifyManager extends BaseAiManager
 
 	}
 
-	public Map getSemanticFields(LlmConnection llmconnection, Map params, Collection<PropertyDetail> inFieldToCheck, String inModel, Data inData) throws Exception
+	public Map createSemanticFieldsValues(LlmConnection llmconnection, Map params, Collection<PropertyDetail> inFieldToCheck, String inModel, Data inData) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
