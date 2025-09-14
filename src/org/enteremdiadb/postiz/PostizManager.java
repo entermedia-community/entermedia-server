@@ -189,15 +189,15 @@ public class PostizManager implements CatalogEnabled {
         getMethod.addHeader("Authorization", apiKey);
 
         try {
-            
-            JSONArray integrations = (JSONArray) getMediaArchive().getCacheManager().get("postiz", "integrations");
+            //This is per user!
+            JSONArray integrations = (JSONArray) getMediaArchive().getCacheManager().get("postiz", "integrations" + apiKey);
             if(integrations == null) {
                 CloseableHttpResponse response = getSharedClient().execute(getMethod);
 
                 String jsonResponse = EntityUtils.toString(response.getEntity(), "UTF-8");
             	integrations = (JSONArray) new org.json.simple.parser.JSONParser().parse(jsonResponse);
                 response.close();         
-                getMediaArchive().getCacheManager().put("postiz", "integrations", integrations);
+                getMediaArchive().getCacheManager().put("postiz", "integrations" + apiKey, integrations);
             }
             
             // Parse the response as JSON
