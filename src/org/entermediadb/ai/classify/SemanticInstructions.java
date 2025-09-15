@@ -1,4 +1,4 @@
-package org.entermediadb.ai.infomatics;
+package org.entermediadb.ai.classify;
 
 import java.util.Set;
 
@@ -7,7 +7,7 @@ import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 
-public class InformaticsInstructions implements CatalogEnabled
+public class SemanticInstructions implements CatalogEnabled
 {
 	
 	protected String fieldCatalogId;

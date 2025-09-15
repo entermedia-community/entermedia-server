@@ -13,8 +13,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.ai.BaseAiManager;
-import org.entermediadb.ai.infomatics.InformaticsInstructions;
 import org.entermediadb.ai.knn.RankedResult;
+import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
@@ -70,7 +70,7 @@ public class SemanticFieldsManager extends BaseAiManager implements CatalogEnabl
 		
 		for (Iterator iteratorS = getInstructions().iterator(); iteratorS.hasNext();)
 		{
-			InformaticsInstructions instruction = (InformaticsInstructions) iteratorS.next();
+			SemanticInstructions instruction = (SemanticInstructions) iteratorS.next();
 
 			//Clear all centroids
 			HitTracker tracker = getMediaArchive().query(instruction.getSearchType()).exact("iscentroid",true).search(); 
@@ -112,15 +112,15 @@ public class SemanticFieldsManager extends BaseAiManager implements CatalogEnabl
 		
 		for (Iterator iteratorS = getInstructions().iterator(); iteratorS.hasNext();)
 		{
-			InformaticsInstructions instruction = (InformaticsInstructions) iteratorS.next();
+			SemanticInstructions instruction = (SemanticInstructions) iteratorS.next();
 			index(instruction, one, null);
 			instruction.getKMeansIndexer().setCentroids(inData);
 		}
 	}
 
-	public InformaticsInstructions createSemanticInstructions(MultiValued inField)
+	public SemanticInstructions createSemanticInstructions(MultiValued inField)
 	{
-		InformaticsInstructions instructions = (InformaticsInstructions)getModuleManager().getBean(getCatalogId(),"semanticInstructions",false);
+		SemanticInstructions instructions = (SemanticInstructions)getModuleManager().getBean(getCatalogId(),"semanticInstructions",false);
 		instructions.setInstructionDetails(inField);
 		return instructions;
 	}
@@ -148,7 +148,7 @@ public class SemanticFieldsManager extends BaseAiManager implements CatalogEnabl
 		
 	}
 
-	protected void indexResults(ScriptLogger inLog, InformaticsInstructions instruction,  HitTracker hits)
+	protected void indexResults(ScriptLogger inLog, SemanticInstructions instruction,  HitTracker hits)
 	{
 		int indexed = 0;
 		Collection<MultiValued> createdVectors = null;
@@ -176,13 +176,13 @@ public class SemanticFieldsManager extends BaseAiManager implements CatalogEnabl
 	{
 		for (Iterator iteratorS = getInstructions().iterator(); iteratorS.hasNext();)
 		{
-			InformaticsInstructions instruction = (InformaticsInstructions) iteratorS.next();
+			SemanticInstructions instruction = (SemanticInstructions) iteratorS.next();
 			instruction.getKMeansIndexer().reinitClusters(log);
 		}
 
 	}
 	
-	public int index(InformaticsInstructions inStructions, Collection<MultiValued> inEntities, Collection<MultiValued> createdVectors)  //Page of data
+	public int index(SemanticInstructions inStructions, Collection<MultiValued> inEntities, Collection<MultiValued> createdVectors)  //Page of data
 	{
 		String url = getMediaArchive().getCatalogSettingValue("ai_vectorizer_server");
 		if( url == null)
@@ -246,7 +246,7 @@ public class SemanticFieldsManager extends BaseAiManager implements CatalogEnabl
 		return count;
 	}
 
-	protected Collection<MultiValued> extractVectors(InformaticsInstructions inStructions, String inModuleId, List<MultiValued> entitiestoscan) throws Exception
+	protected Collection<MultiValued> extractVectors(SemanticInstructions inStructions, String inModuleId, List<MultiValued> entitiestoscan) throws Exception
 	{
 		Collection toscan = new ArrayList(entitiestoscan.size());
 		
@@ -362,9 +362,9 @@ public class SemanticFieldsManager extends BaseAiManager implements CatalogEnabl
 		fieldSharedConnection = inSharedConnection;
 	}
 	
-	public Collection<InformaticsInstructions> getInstructions()
+	public Collection<SemanticInstructions> getInstructions()
 	{
-		Collection<InformaticsInstructions> instructions = (Collection<InformaticsInstructions>)getMediaArchive().getCacheManager().get("ai","semanticinstructions");
+		Collection<SemanticInstructions> instructions = (Collection<SemanticInstructions>)getMediaArchive().getCacheManager().get("ai","semanticinstructions");
 		if( instructions == null)
 		{
 			instructions = new ArrayList();
@@ -373,7 +373,7 @@ public class SemanticFieldsManager extends BaseAiManager implements CatalogEnabl
 			for (Iterator iterator = configs.iterator(); iterator.hasNext();)
 			{
 				MultiValued data = (MultiValued) iterator.next();
-				InformaticsInstructions newins = createSemanticInstructions(data);
+				SemanticInstructions newins = createSemanticInstructions(data);
 				instructions.add(newins);
 			}
 			getMediaArchive().getCacheManager().put("ai","semanticinstructions",instructions);
@@ -398,7 +398,7 @@ public class SemanticFieldsManager extends BaseAiManager implements CatalogEnabl
 
 		for (Iterator iteratorS = getInstructions().iterator(); iteratorS.hasNext();)
 		{
-			InformaticsInstructions instruction = (InformaticsInstructions) iteratorS.next();
+			SemanticInstructions instruction = (SemanticInstructions) iteratorS.next();
 			Collection<RankedResult> found = instruction.getKMeansIndexer().searchNearestItems(vector);
 			
 			for (Iterator iterator = found.iterator(); iterator.hasNext();)
@@ -489,5 +489,71 @@ public class SemanticFieldsManager extends BaseAiManager implements CatalogEnabl
 			return floats;
 		}
 	
+		public Map<String, Collection> createSemanticValues(LlmConnection llmconnection, String inModel, String inModuleId, MultiValued inData) throws Exception
+		{
+			MediaArchive archive = getMediaArchive();
+
+			if(contextfields.isEmpty())
+			{
+				log.info("No fields to check for semantic topics in " + inData.getId() + " " + inData.getName());
+				return null;
+			}
+
+			Collection<SemanticInstructions> fieldinstructions = getSemanticFieldsManager().getInstructions();
+			
+			Map<String, Collection> results  = new HashMap<String, Collection>();
+			
+			for (Iterator<SemanticInstructions> iterator = fieldinstructions.iterator(); iterator.hasNext();) {
+				
+				SemanticInstructions fieldinstruction = iterator.next();
+				MultiValued fieldparams = fieldinstruction.getInstructionDetails();
+				
+				Collection existing = inData.getValues(fieldparams.getId());
+				if(existing != null && !existing.isEmpty())
+				{
+					continue;
+				}
+				
+				Map params = new HashMap();
+				params.put("fieldparams", fieldparams);
+			
+				Map validcontext = new HashMap(contextfields);
+				validcontext.remove(fieldparams.getId());
+				
+				Collection<Map> context = validcontext.values();
+				
+				params.put("contextfields", context);
+				
+				JSONObject structure = llmconnection.callStructuredOutputList("semantics", inModel, params);
+				if (structure == null)
+				{
+					log.info("No structured data returned");
+					return null;
+				}
+
+				JSONArray values = (JSONArray) structure.get(fieldparams.getId());
+				if (values != null && !values.isEmpty())
+				{
+					results.put(fieldparams.getId(), values);
+				}
+			}
+			if(semantics != null)
+			{
+				for (Iterator iterator = semantics.keySet().iterator(); iterator.hasNext();) {
+					String key = (String) iterator.next();
+					if(key != null)
+					{
+						Object value = semantics.get(key);
+						inEntity.setValue(key, value);
+						log.info("AI updated "+key+": "+ value);
+					}
+				}
+			}
+
+			return results;
+
+		}
+		
+
 }
 
