@@ -246,9 +246,8 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	}
 	
 	@Override
-	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Collection inFields, Map inParams) throws Exception
+	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Map inParams) throws Exception
 	{
-		inParams.put("fields", inFields);
 		inParams.put("model", inModel);
 		
 		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/ollama/classify/structures/" + inStructureName + ".json", inParams);

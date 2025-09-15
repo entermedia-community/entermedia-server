@@ -43,8 +43,6 @@ public class ClassifyManager extends BaseAiManager
 
 	public void scanMetadataWithAIEntity(ScriptLogger inLog) throws Exception
 	{
-		Map<String, String> models = getModels();
-
 		HitTracker allmodules = getMediaArchive().query("module").exact("semanticenabled", true).search();
 		Collection<String> ids = allmodules.collectValues("id");
 
@@ -296,58 +294,18 @@ public class ClassifyManager extends BaseAiManager
 			
 
 		}
-		
 
-		if(inEntity.getValue("semantictopics") == null || inEntity.getValues("semantictopics").isEmpty())
+		Map<String, Collection> semantics = createSemanticFieldsValues(llmsemanticconnection, models.get("semantic"), inModuleId, inEntity);
+		if(semantics != null)
 		{
-			Map params = new HashMap();
-			params.put("docpage", isDocPage);
-			
-			Collection<PropertyDetail> fieldsToCheck = new ArrayList<>();
-			Collection<String> fieldIds = Arrays.asList("keywords", "longcaption", "synapsis", "name");
-			
-			for (Iterator iterator = detailsfields.iterator(); iterator.hasNext();) {
-				PropertyDetail detail = (PropertyDetail) iterator.next();
-				if (fieldIds.contains(detail.getId()))
+			for (Iterator iterator = semantics.keySet().iterator(); iterator.hasNext();) {
+				String key = (String) iterator.next();
+				if(key != null)
 				{
-					fieldsToCheck.add(detail);
+					Object value = semantics.get(key);
+					inEntity.setValue(key, value);
+					log.info("AI updated "+key+": "+ value);
 				}
-
-			}
-			Map semantics = createSemanticFieldsValues(llmsemanticconnection, params, fieldsToCheck, models.get("semantic"), inEntity);
-			
-			if(semantics != null)
-			{
-				Collection<SemanticInstructions> fieldinstructions = getSemanticFieldsManager().getInstructions();
-				
-				for (Iterator<SemanticInstructions> iterator = fieldinstructions.iterator(); iterator.hasNext();) {
-					SemanticInstructions instruction = iterator.next();
-					
-					String fieldname = instruction.getFieldName();
-					
-					Collection<String> semanticvalues = (Collection) semantics.get(fieldname);
-					
-					if(semanticvalues == null || semanticvalues.isEmpty())
-					{
-						if(inPrimaryAsset != null)
-						{
-							semanticvalues = inPrimaryAsset.getValues(fieldname);
-
-							inEntity.setValue("semantictopics", semanticvalues);
-							log.info("No semantic topics found from AI, using primary asset's sematic topics: " + semanticvalues);
-						}
-					}
-					else
-					{
-						inEntity.setValue(fieldname, semanticvalues);
-						log.info("AI updated semantic topics: " + semanticvalues);
-					}
-					
-				}
-			}
-			else 
-			{
-				log.info("Semantics creation failed");
 			}
 		}
 		
@@ -491,7 +449,7 @@ public class ClassifyManager extends BaseAiManager
 		for (Iterator iterator2 = allaifields.iterator(); iterator2.hasNext();)
 		{
 			PropertyDetail aifield = (PropertyDetail)iterator2.next();
-			if( mediatype.equals("document") && aifield.getId().equals("complexitylevel") )
+			if( mediatype.equals("document") )
 			{
 				// TODO: add better way to have media type specific fields
 				continue;
@@ -568,38 +526,20 @@ public class ClassifyManager extends BaseAiManager
 			}
 		}
 
-		if(asset.getValue("semantictopics") == null || asset.getValues("semantictopics").isEmpty())
+		Map<String, Collection> semantics = createSemanticFieldsValues(llmsemanticconnection, models.get("semantic"), "asset", asset);
+		if(semantics != null)
 		{
-			Map params = new HashMap();
-			params.put("asset", asset);
-			params.put("aifields", aifields);
-
-			Collection<String> fieldIds = Arrays.asList("keywords", "longcaption", "assettitle", "headline", "alternatetext", "fulltext");
-
-			Collection<PropertyDetail> assetDetails = getMediaArchive().getAssetPropertyDetails();
-			Collection<PropertyDetail> fieldsToCheck = new ArrayList<>();
-			for (Iterator iterator = assetDetails.iterator(); iterator.hasNext();) {
-				PropertyDetail detail = (PropertyDetail) iterator.next();
-				if (fieldIds.contains(detail.getId()))
+			for (Iterator iterator = semantics.keySet().iterator(); iterator.hasNext();) {
+				String key = (String) iterator.next();
+				if(key != null)
 				{
-					fieldsToCheck.add(detail);
+					Object value = semantics.get(key);
+					asset.setValue(key, value);
+					log.info("AI updated "+key+": "+ value);
 				}
-
-			}
-
-			Map semantics = createSemanticFieldsValues(llmsemanticconnection, params, fieldsToCheck, models.get("semantic"), asset);
-			Collection<String> semantic_topics = (Collection) semantics.get("semantictopics");
-			
-			if(semantic_topics != null && !semantic_topics.isEmpty())
-			{
-				asset.setValue("semantictopics", semantic_topics);
-				log.info("AI updated semantic topics: " + semantic_topics);
-			}
-			else
-			{
-				log.info("No semantic topics detected for asset: " + asset.getId() + " " + asset.getName());
 			}
 		}
+		
 		asset.setValue("taggedbyllm", true);
 		return true;
 	}
@@ -631,78 +571,61 @@ public class ClassifyManager extends BaseAiManager
 
 	}
 
-	public Map createSemanticFieldsValues(LlmConnection llmconnection, Map params, Collection<PropertyDetail> inFieldToCheck, String inModel, Data inData) throws Exception
+	public Map<String, Collection> createSemanticFieldsValues(LlmConnection llmconnection, String inModel, String inModuleId, MultiValued inData) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
-
-		Collection<HashMap> fields = new ArrayList<>();
-
-		for (Iterator<PropertyDetail> iter = inFieldToCheck.iterator(); iter.hasNext();)
+		
+		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inModuleId).exact("systemdefined", false).search();
+		
+		Map<String, PropertyDetail> detailsfields = new HashMap();
+		
+		for (Iterator iterator = detailsviews.iterator(); iterator.hasNext();) {
+			Data view = (Data) iterator.next();
+			Collection viewfields = getMediaArchive().getSearcher(inModuleId).getDetailsForView(view);
+			for (Iterator iterator2 = viewfields.iterator(); iterator2.hasNext();) {
+				PropertyDetail detail = (PropertyDetail) iterator2.next();
+				detailsfields.put(detail.getId(), detail);
+			}
+		}
+		
+		Map contextfields = new HashMap();
+		
+		for (Iterator iter = detailsfields.keySet().iterator(); iter.hasNext();)
 		{
-			PropertyDetail detail = (PropertyDetail) iter.next();
+			String key = (String) iter.next();
+			PropertyDetail detail = (PropertyDetail) detailsfields.get(key);
+			
 			String fieldId = detail.getId();
-			if (fieldId != null)
+			
+			
+			String stringValue = null;
+			
+			if(detail.isBoolean() || detail.isDate())
 			{
-				String dataType = detail.getDataType();
-				if
-					(
-						fieldId.startsWith("semantic") ||
-						fieldId.equals("keywordsai") || // included in keywords
-						(dataType != null && !dataType.equals("list")) ||
-						fieldId.equals("primaryimage") ||
-						fieldId.equals("primarymedia") ||
-						fieldId.equals("entity_date") ||
-						fieldId.equals("primaryaudio")
-					)
-				{
-					continue;
-				}
-
-				Object valueObj = inData.getValue(fieldId);
-				if (valueObj == null)
+				continue;
+			}
+			else if(detail.isMultiLanguage())
+			{
+				stringValue = inData.getText(fieldId, "en");
+			}
+			else if(detail.isMultiValue() || detail.isList())
+			{
+				Collection<String> values = inData.getValues(fieldId);
+				if(values == null || values.isEmpty())
 				{
 					log.info("Skipping empty field: " + fieldId);
 					continue;
 				}
-				if(valueObj instanceof ArrayList)
+				
+				Collection<String> textValues = new ArrayList<>();
+				if(detail.isMultiValue())
 				{
-					ArrayList<String> val = (ArrayList<String>) valueObj;
-					valueObj = String.join(", ", val);
+					textValues.addAll(values);
 				}
-				else if (valueObj instanceof LanguageMap)
+				else if (detail.isList())
 				{
-					LanguageMap val = (LanguageMap) valueObj;
-					valueObj = val.getText("en");
-				}
-				if (!(valueObj instanceof String))
-				{
-					log.info("Skipping empty field: " + fieldId);
-					continue;
-				}
-
-				String value = (String) valueObj;
-				if (value == null || value.isEmpty())
-				{
-					log.info("Skipping empty field: " + fieldId);
-					continue;
-				}
-				String name = detail.getName();
-
-				if(fieldId.equals("keywords"))
-				{
-					name = "Keywords";
-					Collection<String> aikeywords = inData.getValues("keywordsai");
-					if(aikeywords != null && !aikeywords.isEmpty())
+					for (Iterator iter2 = values.iterator(); iter2.hasNext();) 
 					{
-						String extraKeys = String.join(", ", aikeywords);
-						value = value.isEmpty() ? extraKeys : value + ", " + extraKeys;
-					}
-				}
-				else if(dataType != null && dataType.equals("list"))
-				{
-					Collection<String> values = inData.getValues(fieldId);
-					Collection<String> textValues = new ArrayList<>();
-					for (Iterator iter2 = values.iterator(); iter2.hasNext();) {
 						String val = (String) iter2.next();
 						Data data = archive.getCachedData(detail.getListId(), val);
 						if(data != null)
@@ -711,109 +634,86 @@ public class ClassifyManager extends BaseAiManager
 							textValues.add(v);
 						}
 					}
-					value = String.join(", ", textValues);
 				}
-				else if(fieldId.equals("fulltext"))
-				{
-					name = "Text Contents";
-					value = value.substring(0, 500);
-				}
+				stringValue = String.join(", ", textValues);
+			}
+			else 
+			{
+				stringValue = inData.get(fieldId);
+			}
+			
+			
+			if (stringValue == null)
+			{
+				log.info("Skipping empty field: " + fieldId);
+				continue;
+			}
+			
+			String label = detail.getName();
 
+			HashMap fieldMap = new HashMap();
+			fieldMap.put("label", label);
+			fieldMap.put("text", stringValue);
+			
+			contextfields.put(detail.getId(), fieldMap);
+		}
+		
+		if(inData.getBoolean("hasfulltext"))
+		{
+			String fulltext = inData.get("fulltext");
+			if(fulltext != null)
+			{				
+				fulltext = fulltext.replaceAll("\\s+", " ");
+				fulltext = fulltext.substring(0, Math.min(fulltext.length(), 5000));
 				HashMap fieldMap = new HashMap();
-				fieldMap.put("name", name);
-				fieldMap.put("value", value);
-				fields.add(fieldMap);
-
+				fieldMap.put("label", "Parsed Document Content");
+				fieldMap.put("text", fulltext);
+				
+				contextfields.put("fulltext", fieldMap);
 			}
 		}
 
-		Map results = new HashMap();
-		results.put("semantictopics", new ArrayList<String>());
-		results.put("synapsis", null);
-
-		if(fields.isEmpty())
+		if(contextfields.isEmpty())
 		{
 			log.info("No fields to check for semantic topics in " + inData.getId() + " " + inData.getName());
-			return results;
+			return null;
 		}
 
 		Collection<SemanticInstructions> fieldinstructions = getSemanticFieldsManager().getInstructions();
-		params.put("fieldinstructions", fieldinstructions);
 		
-		JSONObject structure = llmconnection.callStructuredOutputList("semantic_topics", inModel, fields, params);
-		if (structure == null)
-		{
-			log.info("No structured data returned");
-			return results;
-		}
-
-		String synapsis = (String) structure.get("synapsis");
-		if (synapsis != null && !synapsis.isEmpty())
-		{
-			results.put("synapsis", synapsis);
-		}
-
-		JSONArray topics = (JSONArray) structure.get("topics");
-		if (topics != null && !topics.isEmpty())
-		{
-			Collection<String> topicresults = new ArrayList();
-			for (Object topicObj : topics)
+		Map<String, Collection> results  = new HashMap<String, Collection>();
+		
+		for (Iterator<SemanticInstructions> iterator = fieldinstructions.iterator(); iterator.hasNext();) {
+			
+			SemanticInstructions fieldinstruction = iterator.next();
+			MultiValued fieldparams = fieldinstruction.getSemanticField();
+			
+			Map params = new HashMap();
+			params.put("fieldparams", fieldparams);
+		
+			Map validcontext = new HashMap(contextfields);
+			validcontext.remove(fieldparams.getId());
+			
+			Collection<Map> context = validcontext.values();
+			
+			params.put("contextfields", context);
+			
+			JSONObject structure = llmconnection.callStructuredOutputList("semantics", inModel, params);
+			if (structure == null)
 			{
-				String topic = (String) topicObj;
-				if (topic != null && !topic.isEmpty())
-				{
-					topicresults.add(topic);
-				}
+				log.info("No structured data returned");
+				return null;
 			}
-			results.put("semantictopics", topicresults);
-		}
 
-		return results;
-
-	}
-
-	public Map getSemanticAbstractAndTargetAudiences(LlmConnection llmconnection, Map params, String inModel, Data inData) throws Exception
-	{
-		Map results = new HashMap();
-
-		if(inData.getValues("semantic_targetaudience") == null || !inData.getValues("semantic_targetaudience").isEmpty())
-		{
-			JSONObject structure = llmconnection.callStructuredOutputList("semantic_targetaudience", inModel, null, params);
-			if (structure != null)
+			JSONArray values = (JSONArray) structure.get(fieldparams.getId());
+			if (values != null && !values.isEmpty())
 			{
-				JSONArray audiences = (JSONArray) structure.get("audiences");
-				if (audiences != null && !audiences.isEmpty())
-				{
-					Collection<String> targetaudience = new ArrayList<String>();
-
-					for (Object audienceObj : audiences)
-					{
-						String audience = (String) audienceObj;
-						if (audience != null && !audience.isEmpty())
-						{
-							targetaudience.add(audience);
-						}
-					}
-
-					results.put("semantic_targetaudience", targetaudience);
-				}
-			}
-		}
-
-		if(inData.getValue("semantic_abstract") == null || inData.getValue("semantic_abstract").toString().isEmpty())
-		{
-			JSONObject structure = llmconnection.callStructuredOutputList("semantic_abstract", inModel, null, params);
-			if (structure != null)
-			{
-				String semantic_abstract = (String) structure.get("abstract");
-				if (semantic_abstract != null && !semantic_abstract.isEmpty())
-				{
-					results.put("semantic_abstract", semantic_abstract);
-				}
+				results.put(fieldparams.getId(), values);
 			}
 		}
 
 		return results;
+
 	}
 
 	protected SemanticFieldsManager fieldSemanticFieldsManager;
