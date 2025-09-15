@@ -15,10 +15,9 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.infomatics.InformaticsInstructions;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.ai.semantics.SemanticFieldsManager;
-import org.entermediadb.ai.semantics.SemanticInstructions;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.scripts.ScriptLogger;
@@ -679,14 +678,20 @@ public class ClassifyManager extends BaseAiManager
 			return null;
 		}
 
-		Collection<SemanticInstructions> fieldinstructions = getSemanticFieldsManager().getInstructions();
+		Collection<InformaticsInstructions> fieldinstructions = getSemanticFieldsManager().getInstructions();
 		
 		Map<String, Collection> results  = new HashMap<String, Collection>();
 		
-		for (Iterator<SemanticInstructions> iterator = fieldinstructions.iterator(); iterator.hasNext();) {
+		for (Iterator<InformaticsInstructions> iterator = fieldinstructions.iterator(); iterator.hasNext();) {
 			
-			SemanticInstructions fieldinstruction = iterator.next();
-			MultiValued fieldparams = fieldinstruction.getSemanticField();
+			InformaticsInstructions fieldinstruction = iterator.next();
+			MultiValued fieldparams = fieldinstruction.getInstructionDetails();
+			
+			Collection existing = inData.getValues(fieldparams.getId());
+			if(existing != null && !existing.isEmpty())
+			{
+				continue;
+			}
 			
 			Map params = new HashMap();
 			params.put("fieldparams", fieldparams);
