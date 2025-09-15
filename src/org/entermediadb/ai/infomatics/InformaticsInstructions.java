@@ -1,4 +1,4 @@
-package org.entermediadb.ai.semantics;
+package org.entermediadb.ai.infomatics;
 
 import java.util.Set;
 
@@ -7,7 +7,7 @@ import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 
-public class SemanticInstructions implements CatalogEnabled
+public class InformaticsInstructions implements CatalogEnabled
 {
 	
 	protected String fieldCatalogId;
@@ -63,15 +63,15 @@ public class SemanticInstructions implements CatalogEnabled
 		fieldConfidenceLimit = inConfidenceLimit;
 	}
 	
-	public MultiValued fieldSemanticField;
+	public MultiValued fieldInstructionDetails;
 
-	public MultiValued getSemanticField()
+	public MultiValued getInstructionDetails()
 	{
-		return fieldSemanticField;
+		return fieldInstructionDetails;
 	}
-	public void setSemanticField(MultiValued inSemanticField)
+	public void setInstructionDetails(MultiValued inInstructicsField)
 	{
-		fieldSemanticField = inSemanticField;
+		fieldInstructionDetails = inInstructicsField;
 	}
 	
 protected KMeansIndexer fieldKMeansIndexer;
@@ -81,7 +81,7 @@ protected KMeansIndexer fieldKMeansIndexer;
 		if (fieldKMeansIndexer == null)
 		{
 			fieldKMeansIndexer = (KMeansIndexer)getModuleManager().getBean(getCatalogId(),"kMeansIndexer",false);
-			fieldKMeansIndexer.loadSettings(getSemanticField());
+			fieldKMeansIndexer.loadSettings(getInstructionDetails());
 			
 		}
 		return fieldKMeansIndexer;
