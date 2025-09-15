@@ -1,7 +1,0 @@
-<page>
-	<property name="eventname">Reset Asset Permissions </property>
-	<path-action name="AssetControlModule.resetPermissions"/>
-
-		
-	
-</page>

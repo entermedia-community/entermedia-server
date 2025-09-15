@@ -1,9 +1,0 @@
-<properties>
-	<property id="firstName" />
-	<property id="lastName" />
-	<property id="email" />
-	<property id="id" note="Optional, must be unique" editable="true"/>
-	<property id="enabled" />
-	<property id="notes" viewtype="textarea" header="blank"/>
-
-</properties> 

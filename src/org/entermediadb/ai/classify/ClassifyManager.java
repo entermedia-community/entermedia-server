@@ -53,7 +53,7 @@ public class ClassifyManager extends BaseAiManager
 		}
 		ids.remove("asset");
 
-		QueryBuilder query = getMediaArchive().getSearcher("modulesearch").query()
+		QueryBuilder query = getMediaArchive().localQuery("modulesearch")
 				.exact("semantictopicsindexed", false)
 				.missing("semantictopics")
 				.exact("taggedbyllm", false)
@@ -324,7 +324,7 @@ public class ClassifyManager extends BaseAiManager
 			categoryid = "index";
 		}
 
-		QueryBuilder query = getMediaArchive().query("asset")
+		QueryBuilder query = getMediaArchive().localQuery("asset")
 				.exact("previewstatus", "2")
 				.exact("category", categoryid)
 				.exact("taggedbyllm", false).exact("llmerror",false);

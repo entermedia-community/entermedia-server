@@ -1,4 +1,0 @@
-<properties>
-  <property id="library" showonsearch="true" href="/views/modules/library/index.html">Libraries</property>
-  <property id="librarycollection" showonnav="true" showonsearch="true" ordering="1"  href="/views/modules/librarycollection/index.html">Collections</property>
-</properties>

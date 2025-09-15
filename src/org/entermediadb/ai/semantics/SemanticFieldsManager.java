@@ -133,11 +133,11 @@ public class SemanticFieldsManager extends BaseAiManager implements CatalogEnabl
 		for (Iterator iteratorS = getInstructions().iterator(); iteratorS.hasNext();)
 		{
 			SemanticInstructions instruction = (SemanticInstructions) iteratorS.next();
-			QueryBuilder query = getMediaArchive().getSearcher("modulesearch").query();
+			QueryBuilder query = getMediaArchive().localQuery("modulesearch");
 			query.exists(instruction.getFieldName());
 			query.exact(instruction.getFieldName() + "indexed", false);
 			query.put("searchtypes", ids);
-			query.put("searchasset", true); //Used?
+			query.put("searchasset", true); //this is needed to include asset
 			
 			HitTracker hits = query.search();
 			hits.enableBulkOperations();

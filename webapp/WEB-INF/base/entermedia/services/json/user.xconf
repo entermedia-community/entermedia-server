@@ -1,7 +1,0 @@
-<page>
-<path-action name="UserModule.deleteUser" method="DELETE"/>
-<path-action name="UserModule.createNewUser" method="POST"/>
-<path-action name="UserModule.deleteUser" method="DELETE"/>
-<path-action name="UserModule.deleteUser" method="DELETE"/>
-
-</page>

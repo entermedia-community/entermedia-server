@@ -1,8 +1,0 @@
-<page>
-	<property name="eventname">Configure Sync</property>	
-	<path-action name="Script.run" allowduplicates="true" >
-		<script>/${catalogid}/events/scripts/importing/configuresync.groovy</script>
-	</path-action>
-	<property name="enabled">true</property>
-	
-</page>

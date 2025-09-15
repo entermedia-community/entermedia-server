@@ -1,5 +1,0 @@
-#if($user)
-{"userid":"$user.id","defaultcolor":"$user.defaultcolor"}
-#else
-{"authenticated":"false"}
-#end

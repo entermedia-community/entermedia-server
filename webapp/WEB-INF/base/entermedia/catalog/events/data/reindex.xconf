@@ -1,5 +1,0 @@
-<page>
-	<property name="eventname">Reindex Database</property>	
-	<path-action name="MediaAdminModule.reindexAll" />
-		
-</page>

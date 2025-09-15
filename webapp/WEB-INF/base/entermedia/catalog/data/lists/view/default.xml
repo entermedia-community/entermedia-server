@@ -1,9 +1,0 @@
-<properties>
-	
-	<property id="defaultgeneral" moduleid="default" systemdefined="false" byassettype="false">General</property>
-	<property id="defaultadvancedsearch" moduleid="default" systemdefined="true" byassettype="false">Advanced Search</property>
-	<property id="defaultresultstable" moduleid="default" systemdefined="true" byassettype="false">Results</property>
-	<property id="defaultheaderdetail" moduleid="default" systemdefined="true" byassettype="false">Header Details</property>
-	
-	
-</properties>

@@ -1,8 +1,0 @@
-<page>
-
-	<property name="eventname">Validate we have all originals</property>	
-	<property name="period">30s</property>
-	<property name="enabled">false</property>
-
-</page>
-
