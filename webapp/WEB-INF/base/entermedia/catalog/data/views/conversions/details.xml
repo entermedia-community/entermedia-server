@@ -1,9 +1,0 @@
-<properties usagelabel="Active and completed conversions">
-	
-	<property id="submitteddate"/>
-	<property id="presetid"  />
-	<property id="status"/>
-	<property id="completed"/>
-	<property id="errordetails"/>
-	
-</properties>

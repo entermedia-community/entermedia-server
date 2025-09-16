@@ -7,8 +7,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.entermediadb.manager.BaseManager;
+import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.data.PropertyDetail;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 
 public class BaseAiManager extends BaseManager 
@@ -91,5 +94,5 @@ public class BaseAiManager extends BaseManager
 
 	}
 
-
+	
 }

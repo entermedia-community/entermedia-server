@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<oauthproviders> 
-  <oauthprovider id="google" name="Google" redirecturi="/authentication/oauth/googleauth.html" clientid="" clientsecret=""/>  
-  <oauthprovider id="drupal" name="Drupal" redirecturi="/authentication/oauth/drupal.html" clientid="" clientsecret="" enabled="false" remoteroot=""/>  
-  <oauthprovider id="facebook" name="Facebook" redirecturi="/authentication/oauth/facebookauth.html"/> 
-</oauthproviders>

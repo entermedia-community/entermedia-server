@@ -1,7 +1,0 @@
-<properties>
-	<property id="table" >Table</property>
-	<property id="gallery" >Gallery</property>
-	<property id="stackedgallery" >Stacked Gallery</property>
-	<property id="hierarchy" >Hierarchy</property>
-	
-</properties>

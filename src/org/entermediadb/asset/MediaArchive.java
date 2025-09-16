@@ -2542,6 +2542,16 @@ public class MediaArchive implements CatalogEnabled
 		return getSearcher(inSearchType).query();
 	}
 
+	/**
+	 * I called this localQuery because I wanted to not interact with autocomplete on query()
+	*/
+	
+	public QueryBuilder localQuery(String inSearchType)
+	{
+		QueryBuilder builder = getSearcher(inSearchType).query();
+		builder.exact("emrecordstatus.mastereditclusterid", getNodeManager().getLocalClusterId());
+		return builder;
+	}
 	public Collection getBadges(MultiValued inRow)
 	{
 		Collection badges = inRow.getValues("badge");
