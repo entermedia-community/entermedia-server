@@ -24,7 +24,7 @@ public class InformaticsManager extends BaseAiManager
 	}
 	public void processAssets(ScriptLogger inLog)
 	{
-		Map<String, String> models = getModels();
+//		Map<String, String> models = getModels();
 
 		String categoryid = getMediaArchive().getCatalogSettingValue("llmmetadatastartcategory");
 
