@@ -1,5 +1,6 @@
 package org.entermediadb.ai.classify;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,9 +9,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.llm.LlmConnection;
-import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.asset.Asset;
-import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
@@ -22,16 +20,32 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	 @Override
 	 protected boolean processOneAsset(MultiValued inConfig, LlmConnection llmvisionconnection, LlmConnection llmsemanticconnection, Map<String, String> models, MultiValued inData)
 	 {
-		 boolean ok = processOneEntity(inConfig,llmvisionconnection,llmsemanticconnection,models,inData,"asset");
+		 boolean ok = processOneEntity(inConfig, llmvisionconnection, llmsemanticconnection, models, inData, "asset");
 		 return ok;
 	 }
 	 
 	 @Override
 	 protected boolean processOneEntity(MultiValued inConfig, LlmConnection llmvisionconnection, LlmConnection llmsemanticconnection, Map<String, String> models, MultiValued inData, String inModuleId)
 	 {
-	 	Collection<Map> tables = (Collection<Map>) inConfig.getValue("tables");
+	 	Collection<Map> tables =  (Collection<Map>) inConfig.getValue("tables");
+	 	//Validate tables
 	 	if (tables == null || tables.isEmpty())
 	 	{
+	 		log.info("No tables configured to check for names in " + inData.getId() + " " + inData.getName());
+	 		return false;
+	 	}
+	 	for (Iterator iterator = tables.iterator(); iterator.hasNext();) {
+			Map map = (Map) iterator.next();			
+			PropertyDetail detail = getMediaArchive().getSearcher(inModuleId).getDetail((String)map.get("sourcetype"));
+			if( detail == null || !detail.isList() )
+			{
+				iterator.remove();
+				log.info("Removing invalid table " + map.get("sourcetype") + " from config");
+			}
+		}
+	 	if( tables.isEmpty() )
+	 	{
+	 		log.info("No valid tables to check for names in " + inData.getId() + " " + inData.getName());
 	 		return false;
 	 	}
 	 	///Search for all nounds based on tables
@@ -44,41 +58,37 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 
  		Map params = new HashMap();
  		params.put("data", inData);
+ 		params.put("fieldparams", inConfig);
  		params.put("contextfields", contextfields);
+ 		params.put("tables", tables);
  		
-		String requestPayload = llmvisionconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/analyzenamed.html", params); 
 		String functionname = inConfig.get("aifunctionname");
-		LlmResponse results = llmvisionconnection.callClassifyFunction(params, models.get("vision"), functionname, requestPayload, null);
-		if (results != null)
- 		{
- 			JSONObject arguments = results.getArguments();
- 			if (arguments != null) 
- 			{
- 				Map metadata =  (Map) arguments.get("metadata");
- 				if (metadata == null || metadata.isEmpty())
- 				{
- 					return false;
- 				}
- 				for (Iterator iterator2 = metadata.keySet().iterator(); iterator2.hasNext();)
- 				{
- 					String inKey = (String) iterator2.next();
- 					PropertyDetail detail = getMediaArchive().getSearcher(inModuleId).getDetail(inKey);
- 					if (detail != null)
- 					{
- 						String value = (String)metadata.get(inKey);
- 						if(detail.isList())
- 						{
- 							Data savedrecord = saveIfNeeded(inConfig, detail, value);
- 							if( savedrecord != null)
- 							{
- 								inData.addValue(detail.getId(), savedrecord.getId());
- 							}
- 						}
- 					}
- 				}
- 			}
-
- 		}
+		Map results = llmsemanticconnection.callStructuredOutputList(functionname, models.get("vision"),  params);
+		for (Iterator iterator = results.keySet().iterator(); iterator.hasNext();) {
+			String sourcetype = (String) iterator.next();
+			Collection values = (Collection) results.get(sourcetype);
+			if( values == null || values.isEmpty() )
+			{
+				continue;
+			}
+			PropertyDetail detail = getMediaArchive().getSearcher(inModuleId).getDetail(sourcetype);
+			if (detail != null)
+			{
+				if(detail.isList())
+				{
+					for (Iterator iterator2 = values.iterator(); iterator2.hasNext();) {
+						String value = (String) iterator2.next();
+						Data savedrecord = saveIfNeeded(inConfig, detail, value);
+						if( savedrecord != null)
+						{
+							inData.addValue(detail.getId(), savedrecord.getId());
+						}
+					}
+					
+				}
+			}
+			
+		}
 	 	
 	 	//Then See if the field exists on the target table on a data case by case basis and add to it. Create the record if needed
 		
