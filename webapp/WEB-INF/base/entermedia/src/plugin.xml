@@ -2626,6 +2626,12 @@
 		</property>
 	</bean>
 
+	<bean id="informaticsManager" class="org.entermediadb.ai.infomatics.InformaticsManager" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
 	<bean id="semanticFieldsManager" class="org.entermediadb.ai.semantics.SemanticFieldsManager" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
