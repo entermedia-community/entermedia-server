@@ -222,7 +222,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		
 		log.info(obj.toJSONString());
 
-		return handleApiRequest(obj);
+		return handleApiRequest(obj.toJSONString());
 
 	}
 
@@ -300,58 +300,8 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			obj.put("function_call", func);
 		}
 
-		return handleApiRequest(obj);
+		return handleApiRequest(obj.toJSONString());
 
-	}
-	
-	protected LlmResponse handleApiRequest(JSONObject payload)
-	{
-		// API request setup
-		String endpoint = "https://api.openai.com/v1/chat/completions";
-		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + getApikey());
-		method.setHeader("Content-Type", "application/json");
-		method.setEntity(new StringEntity(payload.toJSONString(), StandardCharsets.UTF_8));
-
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-		
-	
-			if (resp.getStatusLine().getStatusCode() != 200)
-			{
-				log.info("Gpt Server error status: " + resp.getStatusLine().getStatusCode());
-				log.info("Gpt Server error response: " + resp.toString());
-				try
-				{
-					String error = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
-					log.info(error);
-				}
-				catch(Exception e)
-				{}
-				throw new OpenEditException("GPT error: " + resp.getStatusLine());
-			}
-		try
-		{
-			// Parse JSON response using JSON Simple
-			JSONParser parser = new JSONParser();
-			JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
-
-			log.info("returned: " + json.toJSONString());
-
-			// Wrap and return `GptResponse`
-			GptResponse response = new GptResponse();
-			response.setRawResponse(json);
-			return response;
-			
-		}
-		catch (Exception ex)
-		{
-			log.error("Error calling GPT", ex);
-			throw new OpenEditException(ex);
-		}
-		finally
-		{
-			connection.release(resp);
-		}
 	}
 
 	public String getApiEndpoint()

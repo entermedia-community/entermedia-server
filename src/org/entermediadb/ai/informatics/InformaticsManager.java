@@ -138,7 +138,7 @@ public class InformaticsManager extends BaseAiManager
 				for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
 				{
 					MultiValued config = (MultiValued) iterator2.next();
-					InformaticsProcessor processor = loadProcessor(config.get("beanname"));
+					InformaticsProcessor processor = loadProcessor(config.get("bean"));
 					processor.processInformaticsOnEntities(inLog, config, pageofhits);
 				}
 				//Group them by type

@@ -13,7 +13,6 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
@@ -261,10 +260,12 @@ public class ClassifyManager extends InformaticsProcessor
 			params.put("contextfields", contextFields);
 			params.put("fieldstofill", fieldsToFill);
 			
+			String base64EncodedString = null;
 			boolean isDocPage = inEntity.get("entitydocument") != null;
 			if(isDocPage)
 			{
 				params.put("docpage", isDocPage);
+				base64EncodedString = loadImageContent(inEntity);
 			}
 
 			try 
@@ -272,10 +273,8 @@ public class ClassifyManager extends InformaticsProcessor
 				
 				String requestPayload = llmvisionconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/analyzeentity.html", params); 
 
-				String base64EncodedString = loadImageContent(inEntity);
-
-				String functionname = inConfig.get("aifunctionname") + "_asset";
-				LlmResponse results = llmvisionconnection.callClassifyFunction(params, models.get("vision"), "generate_entity_metadata", requestPayload, base64EncodedString);
+				String functionname = inConfig.get("aifunctionname") + "_entity";
+				LlmResponse results = llmvisionconnection.callClassifyFunction(params, models.get("vision"), functionname, requestPayload, base64EncodedString);
 				
 				if (results != null)
 				{

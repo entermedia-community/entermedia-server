@@ -1,12 +1,18 @@
 package org.entermediadb.ai.llm;
 
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.util.EntityUtils;
+import org.entermediadb.ai.llm.openai.GptResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.websocket.chat.ChatServer;
@@ -195,5 +201,50 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		return i;
 	}
 	
+	protected LlmResponse handleApiRequest(String payload)
+	{
+		String endpoint = getApiEndpoint() + "/api/chat";
+		HttpPost method = new HttpPost(endpoint);
+		method.addHeader("Authorization", "Bearer " + getApikey());
+		method.setHeader("Content-Type", "application/json");
+		method.setEntity(new StringEntity(payload, StandardCharsets.UTF_8));
+
+		HttpSharedConnection connection = getConnection();
+		CloseableHttpResponse resp = connection.sharedExecute(method);
+		
+		try
+		{
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
+				log.info("AI Server error status: " + resp.getStatusLine().getStatusCode());
+				log.info("AI Server error response: " + resp.toString());
+				try
+				{
+					String error = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+					log.info(error);
+				}
+				catch(Exception e)
+				{}
+				throw new OpenEditException("GPT error: " + resp.getStatusLine());
+			}
+
+			JSONObject json = (JSONObject) connection.parseJson(resp);
+
+			log.info("returned: " + json.toJSONString());
+
+			GptResponse response = new GptResponse();
+			response.setRawResponse(json);
+			return response;
+		}
+		catch (Exception ex)
+		{
+			log.error("Error calling GPT", ex);
+			throw new OpenEditException(ex);
+		}
+		finally
+		{
+			connection.release(resp);
+		}
+	}
 	
 }

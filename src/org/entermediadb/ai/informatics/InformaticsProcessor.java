@@ -13,11 +13,11 @@ import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.classify.ClassifyManager;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.convert.ConvertResult;
+import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
-import org.openedit.hittracker.HitTracker;
 
 public abstract class InformaticsProcessor extends BaseAiManager 
 {
@@ -32,6 +32,8 @@ public abstract class InformaticsProcessor extends BaseAiManager
 		Map<String, PropertyDetail> detailsfields = loadActiveDetails(inModuleId);
 
 		Map<String,Map> contextfields = new HashMap();
+		
+		JsonUtil jsonutils = new JsonUtil();
 
 		for (Iterator iter = detailsfields.keySet().iterator(); iter.hasNext();)
 		{
@@ -93,8 +95,8 @@ public abstract class InformaticsProcessor extends BaseAiManager
 			String label = detail.getName();
 
 			HashMap fieldMap = new HashMap();
-			fieldMap.put("label", label);
-			fieldMap.put("text", stringValue);
+			fieldMap.put("label", jsonutils.escape(label));
+			fieldMap.put("text", jsonutils.escape(stringValue));
 
 			contextfields.put(detail.getId(), fieldMap);
 		}
@@ -108,7 +110,7 @@ public abstract class InformaticsProcessor extends BaseAiManager
 				fulltext = fulltext.substring(0, Math.min(fulltext.length(), 5000));
 				HashMap fieldMap = new HashMap();
 				fieldMap.put("label", "Parsed Document Content");
-				fieldMap.put("text", fulltext);
+				fieldMap.put("text", jsonutils.escape(fulltext));
 
 				contextfields.put("fulltext", fieldMap);
 			}

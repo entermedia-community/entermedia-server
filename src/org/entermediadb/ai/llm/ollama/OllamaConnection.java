@@ -15,6 +15,7 @@ import org.entermediadb.ai.llm.BaseLlmConnection;
 import org.entermediadb.ai.llm.BaseLlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.ai.llm.openai.GptResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
@@ -101,14 +102,14 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		
 
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + getApikey());
+		method.addHeader("Authorization", "Bearer " + getApikey());
 		method.setHeader("Content-Type", "application/json");
 
 		method.setEntity(new StringEntity(input, "UTF-8"));
 		
-		HttpSharedConnection connection = getConnection();
+//		HttpSharedConnection connection = ;
 
-		CloseableHttpResponse resp = connection.sharedExecute(method);
+		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 
 		JSONObject json = connection.parseJson(resp); // pretty dumb but I want to standardize on GSON
 
@@ -190,10 +191,10 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	    // Handle function call definition
 	    if (inFunction != null) {
 	    	
-	        String templatepath = "/" + archive.getMediaDbId() + "/gpt/functiondefs/" + inFunction + ".json";
+	        String templatepath = "/" + archive.getMediaDbId() + "/ai/ollama/classify/functions/" + inFunction + ".json";
 	        Page defpage = archive.getPageManager().getPage(templatepath);
 	        if(!defpage.exists()) {
-		        templatepath  ="/" + archive.getCatalogId() + "/gpt/functiondefs/" + inFunction + ".json";
+		        templatepath  ="/" + archive.getCatalogId() + "/ai/ollama/classify/functions/" + inFunction + ".json";
 		        defpage = archive.getPageManager().getPage(templatepath);
 	        }
 	        if(!defpage.exists()) {
@@ -207,30 +208,55 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	        JSONObject parameters = (JSONObject) functionDef.get("parameters");
 	        obj.put("format", parameters);
 	    }
-
-	    // API request setup
-	    String endpoint = getApiEndpoint() + "/api/chat";
-	    HttpPost method = new HttpPost(endpoint);
-	    method.addHeader("authorization", "Bearer " + getApikey());
-	    method.setHeader("Content-Type", "application/json");
-	    method.setEntity(new StringEntity(obj.toJSONString(), StandardCharsets.UTF_8));
-
-	    HttpSharedConnection connection = getConnection();
-	    
-	    CloseableHttpResponse resp = connection.sharedExecute(method);
-
-	    // Parse JSON response using JSON Simple
-	    //JSONParser parser = new JSONParser();
-	    //JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
-	    
-	    JSONObject json = connection.parseJson(resp);
-
-	    log.info("Llama returned: " + json.toJSONString());
-
-	    // Wrap and return `OllamaResponse`
-	    OllamaResponse response = new OllamaResponse();
-	    response.setRawResponse(json);
+	    String payload = obj.toJSONString();
+	    LlmResponse response = handleApiRequest(payload);
 	    return response;
+	}
+	
+	protected LlmResponse handleApiRequest(String payload)
+	{
+		String endpoint = getApiEndpoint() + "/api/chat";
+		HttpPost method = new HttpPost(endpoint);
+		method.addHeader("Authorization", "Bearer " + getApikey());
+		method.setHeader("Content-Type", "application/json");
+		method.setEntity(new StringEntity(payload, StandardCharsets.UTF_8));
+
+		HttpSharedConnection connection = getConnection();
+		CloseableHttpResponse resp = connection.sharedExecute(method);
+		
+		try
+		{
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
+				log.info("AI Server error status: " + resp.getStatusLine().getStatusCode());
+				log.info("AI Server error response: " + resp.toString());
+				try
+				{
+					String error = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+					log.info(error);
+				}
+				catch(Exception e)
+				{}
+				throw new OpenEditException("GPT error: " + resp.getStatusLine());
+			}
+
+			JSONObject json = (JSONObject) connection.parseJson(resp);
+
+			log.info("returned: " + json.toJSONString());
+
+			GptResponse response = new GptResponse();
+			response.setRawResponse(json);
+			return response;
+		}
+		catch (Exception ex)
+		{
+			log.error("Error calling GPT", ex);
+			throw new OpenEditException(ex);
+		}
+		finally
+		{
+			connection.release(resp);
+		}
 	}
 
 	@Override
@@ -253,56 +279,30 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		
 		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/ollama/classify/structures/" + inStructureName + ".json", inParams);
 
-		JSONParser parser = new JSONParser();
-		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
+		LlmResponse response = handleApiRequest(inStructure);
+		JSONObject json = response.getRawResponse();
 
-
-		String endpoint = getApiEndpoint() + "/api/chat";
-		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + getApikey());
-		method.setHeader("Content-Type", "application/json");
-		method.setEntity(new StringEntity(structureDef.toJSONString(), StandardCharsets.UTF_8));
-
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-		
+		log.info("Returned: " + json);
+			
 		JSONObject results = new JSONObject();
 
-		try
+		JSONObject message = (JSONObject) json.get("message");
+		if (message == null || !message.get("role").equals("assistant"))
 		{
-			if (resp.getStatusLine().getStatusCode() != 200)
-			{
-				throw new OpenEditException("GPT error: " + resp.getStatusLine());
-			}
-	
-			JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
+			log.info("No message found in GPT response");
+			return results;
+		}
 
-			log.info("Returned: " + json.toJSONString());
-		
-		
-			JSONObject message = (JSONObject) json.get("message");
-			if (message == null || !message.get("role").equals("assistant"))
-			{
-				log.info("No message found in GPT response");
-				return results;
-			}
-
-			String content = (String) message.get("content");
+		String content = (String) message.get("content");
 			
-			if (content == null || content.isEmpty())
-			{
-				log.info("No structured data found in GPT response");
-				return results;
-			}
-			results = (JSONObject) parser.parse(new StringReader(content));
-		}
-		catch( Throwable ex)
+		if (content == null || content.isEmpty())
 		{
-			throw new OpenEditException(ex);
+			log.info("No structured data found in GPT response");
+			return results;
 		}
-		finally
-		{
-			connection.release(resp);
-		}
+		JSONParser parser = new JSONParser();
+		results = (JSONObject) parser.parse(new StringReader(content));
+
 		return results;
 	}
 }
