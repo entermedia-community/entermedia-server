@@ -42,7 +42,7 @@ import org.entermediadb.video.Block;
 import org.entermediadb.video.Timeline;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -862,7 +862,7 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled
 		String responseStr = getSharedConnection().parseText(resp);
 		
 		JSONParser parser = new JSONParser();
-		JSONArray results = (JSONArray) parser.parse(responseStr);
+		JSONArray results = (JSONArray) parser.parseCollection(responseStr);
 		
 		//log.info((System.currentTimeMillis() - start) + "ms face detection for asset: "+ inAsset.getId() + " " + inAsset.getName() + " Found: " + results.size());
 		

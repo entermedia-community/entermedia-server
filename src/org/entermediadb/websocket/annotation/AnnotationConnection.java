@@ -12,7 +12,7 @@ import javax.websocket.Session;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.openedit.ModuleManager;
 import org.openedit.data.SearcherManager;
 

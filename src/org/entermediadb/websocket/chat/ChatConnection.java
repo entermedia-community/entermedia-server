@@ -16,7 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.data.SearcherManager;

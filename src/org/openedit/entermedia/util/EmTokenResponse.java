@@ -25,7 +25,7 @@ import org.apache.oltu.oauth2.client.response.OAuthAccessTokenResponse;
 import org.apache.oltu.oauth2.common.token.BasicOAuthToken;
 import org.apache.oltu.oauth2.common.token.OAuthToken;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.openedit.OpenEditException;
 
 /**

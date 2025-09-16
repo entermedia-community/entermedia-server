@@ -8,7 +8,7 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.openedit.OpenEditException;
 
 public class GoogleCaptcha {

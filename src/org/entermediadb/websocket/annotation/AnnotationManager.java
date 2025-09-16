@@ -27,7 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -265,16 +265,8 @@ public class AnnotationManager  {
 			String obj = (String)annotation.get("fabricObjects");
 			if( obj != null)
 			{
-				try
-				{
-					Collection parsed = (List)getJSONParser().parse(obj);
-					json.put("fabricObjects", parsed);
-				}
-				catch (ParseException e)
-				{
-					// TODO Auto-generated catch block
-					log.error(e);
-				}
+				Collection parsed = (List)getJSONParser().parse(obj);
+				json.put("fabricObjects", parsed);
 			}
 //			json.put("comment", annotation.get("comment") );
 //			//indexCount: null,

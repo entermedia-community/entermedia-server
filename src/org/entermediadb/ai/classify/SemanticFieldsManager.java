@@ -21,7 +21,7 @@ import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -452,14 +452,7 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 		CloseableHttpResponse resp = askServer(tosendparams);
 		String responseStr = getSharedConnection().parseText(resp);
 		JSONObject objt;
-		try
-		{
 			objt = (JSONObject)new JSONParser().parse(responseStr);
-		}
-		catch (ParseException e)
-		{
-			throw new OpenEditException(e);
-		}
 		log.info("Got response " + objt.keySet());
 		return objt;
 	}

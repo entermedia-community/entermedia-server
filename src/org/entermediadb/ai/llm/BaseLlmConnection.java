@@ -11,7 +11,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;

@@ -20,7 +20,7 @@ import org.entermediadb.events.PathEventManager;
 import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.workspace.WorkspaceManager;
 import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -1048,7 +1048,7 @@ public class MediaAdminModule extends BaseMediaModule
 		
 		JSONParser parser = new JSONParser();
 		JSONArray jsonarray = null;
-		jsonarray = (JSONArray) parser.parse(json);
+		jsonarray = (JSONArray) parser.parseCollection(json);
 		if ( jsonarray != null)
 		{
 			Collection tosavemenu = new ArrayList();
