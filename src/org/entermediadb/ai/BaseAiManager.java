@@ -1,21 +1,28 @@
 package org.entermediadb.ai;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.manager.BaseManager;
-import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
-import org.openedit.data.PropertyDetail;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
+import org.openedit.repository.ContentItem;
+import org.openedit.util.Exec;
+import org.openedit.util.ExecResult;
 
 public class BaseAiManager extends BaseManager 
 {
+	private static final Log log = LogFactory.getLog(BaseAiManager.class);
 	public Map<String, String> getModels()
 	{
 		Map<String, String> models = new HashMap<>();
@@ -93,6 +100,56 @@ public class BaseAiManager extends BaseManager
 ////		getMediaArchive().getCacheManager().clear("aifacedetect"); 
 
 	}
+	protected String loadBase64Image(Asset inAsset, String imagesize)
+	{
+		ContentItem item = getMediaArchive().getGeneratedContent(inAsset, imagesize);
+		if(!item.exists())
+		{
+			log.info("Missing " + imagesize + " generated image for asset ("+inAsset.getId()+") " + inAsset.getName());
+			return null;
+		}
+		return loadBase64Image(item);
+	}
+	protected String loadBase64Image(ContentItem item)
+	{
+		if(!item.exists())
+		{
+			log.info("Missing generated image " + item.getAbsolutePath());
+			return null;
+		}
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		long starttime = System.currentTimeMillis();
+		ArrayList<String> args = new ArrayList<String>();
+		args.add(item.getAbsolutePath());
+		args.add("-resize");
+		args.add("1500x1500");
+		args.add("jpg:-");
+		Exec exec = (Exec)getMediaArchive().getBean("exec");
 
+		ExecResult result = exec.runExecStream("convert", args, output, 5000);
+		byte[] bytes = output.toByteArray();  // Read InputStream as bytes
+		String base64EncodedString = Base64.getEncoder().encodeToString(bytes); // Encode to Base64
+		long duration = (System.currentTimeMillis() - starttime) ;
+		log.info("Loaded and encoded " + item.getName() + " in "+duration+"ms");
+		return base64EncodedString;
+
+	}
 	
+	protected Map<String, Collection> groupByModule(HitTracker inPendingrecords)
+	{
+		Map<String,Collection> groupbymodule = new HashMap();
+		for (Iterator iterator = inPendingrecords.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			String moduleid = data.get("entitysourcetype");
+			Collection tosave = groupbymodule.get(moduleid);
+			if ( tosave ==  null)
+			{
+				tosave = new ArrayList();
+				groupbymodule.put(moduleid,tosave);
+			}
+			tosave.add(data);
+		}
+		return groupbymodule;
+	}
 }

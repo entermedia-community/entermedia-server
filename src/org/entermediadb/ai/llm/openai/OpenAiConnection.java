@@ -19,7 +19,7 @@ import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
@@ -162,7 +162,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		return embeddingArray.toJSONString(); // Convert to string for returning
 	}
 	
-	public LlmResponse callCreateFunction(Map params, String inModel, String inFunction) throws Exception
+	public LlmResponse callCreateFunction(Map params, String inModel, String inFunction) 
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -226,7 +226,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 	}
 
-	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception
+	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image)
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -304,7 +304,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 	}
 	
-	protected LlmResponse handleApiRequest(JSONObject payload) throws Exception
+	protected LlmResponse handleApiRequest(JSONObject payload)
 	{
 		// API request setup
 		String endpoint = "https://api.openai.com/v1/chat/completions";
@@ -367,7 +367,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	}
 
 	@Override
-	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Map inParams) throws Exception
+	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Map inParams)
 	{
 		inParams.put("model", inModel);
 		
@@ -446,6 +446,10 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 				return results;
 			}
 			results = (JSONObject) parser.parse(new StringReader(text));
+		}
+		catch (Exception e) 
+		{
+			throw new OpenEditException(e);
 		}
 		finally
 		{

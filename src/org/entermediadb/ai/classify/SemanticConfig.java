@@ -7,7 +7,7 @@ import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 
-public class SemanticInstructions implements CatalogEnabled
+public class SemanticConfig implements CatalogEnabled
 {
 	
 	protected String fieldCatalogId;

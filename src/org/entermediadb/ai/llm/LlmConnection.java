@@ -20,12 +20,12 @@ public interface LlmConnection {
 
     public String loadInputFromTemplate(String inString, Map inParams);
     
-    public LlmResponse callCreateFunction(Map params, String inModel, String inFunction) throws Exception;
-    public LlmResponse callClassifyFunction(Map inParams, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception;
+    public LlmResponse callCreateFunction(Map params, String inModel, String inFunction);
+    public LlmResponse callClassifyFunction(Map inParams, String inModel, String inFunction, String inQuery, String inBase64Image);
 
     public LlmResponse runPageAsInput(Map inParams, String inModel, String inChattemplate);
 
     public String getApiEndpoint();
 	
-	public JSONObject callStructuredOutputList(String inStructureName,String inModel, Map inParams) throws Exception;
+	public JSONObject callStructuredOutputList(String inStructureName,String inModel, Map inParams);
 }

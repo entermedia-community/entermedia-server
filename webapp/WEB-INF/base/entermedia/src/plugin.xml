@@ -2538,14 +2538,6 @@
 		</property>
 	</bean>
 	
-	<bean id="documentRagManager" class="org.entermediadb.ai.classify.DocumentRagManager"  scope="prototype">
-		<property name="moduleManager">
-			<ref bean="moduleManager" />
-		</property>
-		<property name="requestUtils">
-			<ref bean="requestUtils" />
-		</property>
-	</bean>
 
 	<bean id="assistantManager" class="org.entermediadb.ai.assistant.AssistantManager"  scope="prototype">
 		<property name="moduleManager">
@@ -2640,7 +2632,7 @@
 		</property>
 	</bean>
 
-	<bean id="semanticInstructions" class="org.entermediadb.ai.semantics.SemanticInstructions" lazy-init="default" scope="prototype">
+	<bean id="semanticConfig" class="org.entermediadb.ai.semantics.SemanticConfig" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

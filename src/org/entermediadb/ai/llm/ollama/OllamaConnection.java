@@ -19,7 +19,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
@@ -159,7 +159,8 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		return "Not Implemented";
 	}
 
-	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception {
+	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image)
+	{
 	    MediaArchive archive = getMediaArchive();
 
 	    log.info("Llama function: " + inFunction + " Query: " + inQuery);
@@ -239,14 +240,14 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	}
 
 	@Override
-	public LlmResponse callCreateFunction(Map inParams, String inModel, String inFunction) throws Exception 
+	public LlmResponse callCreateFunction(Map inParams, String inModel, String inFunction) 
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Map inParams) throws Exception
+	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Map inParams) 
 	{
 		inParams.put("model", inModel);
 		
@@ -293,6 +294,10 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 				return results;
 			}
 			results = (JSONObject) parser.parse(new StringReader(content));
+		}
+		catch( Throwable ex)
+		{
+			throw new OpenEditException(ex);
 		}
 		finally
 		{

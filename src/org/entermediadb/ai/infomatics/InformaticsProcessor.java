@@ -21,8 +21,8 @@ public abstract class InformaticsProcessor extends BaseAiManager
 {
 	private static final Log log = LogFactory.getLog(ClassifyManager.class);
 
-	public abstract void processIformaticsOnAssets(ScriptLogger inLog,MultiValued inConfig, HitTracker assets );
-	public abstract void processIformaticsOnEntities(ScriptLogger inLog,MultiValued inConfig, HitTracker assets );
+	public abstract void processIformaticsOnAssets(ScriptLogger inLog,MultiValued inConfig, Collection<MultiValued> assets );
+	public abstract void processIformaticsOnEntities(ScriptLogger inLog,MultiValued inConfig, Collection<MultiValued> records );
 	
 	
 	protected Map<String,Map> populateFields(String inModuleId, MultiValued inData)
