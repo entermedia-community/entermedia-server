@@ -159,47 +159,8 @@ public class ClassifyManager extends InformaticsProcessor
 
 	}
 
-	protected String loadImageContent(MultiValued inEntity)
-	{
-		boolean isDocPage = inEntity.get("entitydocument") != null;
-		
-
-		String base64EncodedString = null;
-		if(isDocPage && inEntity.hasValue("pagenum") )
-		{
-			String parentasset = inEntity.get("parentasset");
-			if(parentasset != null)
-			{
-				Asset parentAsset = getMediaArchive().getAsset(parentasset);
-				//Do the conversion with page number in it
-				Map params = new HashMap();
-				params.put("pagenum",inEntity.get("pagenum") );
-				ConvertResult result = getMediaArchive().getTranscodeTools().createOutputIfNeeded(null,params,parentAsset.getSourcePath(), "image3000x3000.webp"); 
-				if( result.isOk() )
-				{
-					base64EncodedString = loadBase64Image(result.getOutput());
-				}
-			}
-		}
-		else
-		{
-			String primarymedia = inEntity.get("primarymedia");
-			Asset inPrimaryAsset = getMediaArchive().getAsset(primarymedia);
-			if(inPrimaryAsset == null)
-			{
-				primarymedia = inEntity.get("primaryimage");
-				inPrimaryAsset = getMediaArchive().getAsset(primarymedia);
-			}
-			if(inPrimaryAsset != null)
-			{
-				base64EncodedString = loadBase64Image(inPrimaryAsset, "image3000x3000");
-			}
-		}
-		return base64EncodedString;
-	}
-
 	@Override
-	public void processIformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> hits)
+	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> hits)
 	{
 		Map<String, String> models = getModels();
 
@@ -248,7 +209,7 @@ public class ClassifyManager extends InformaticsProcessor
 	}
 	
 	@Override
-	public void processIformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> assets)
+	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> assets)
 	{
 		int count = 1;
 		List tosave = new ArrayList();

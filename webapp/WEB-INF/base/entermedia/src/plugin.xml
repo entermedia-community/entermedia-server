@@ -2390,11 +2390,11 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	
+
 	<bean id="resultsManager" class="org.entermediadb.find.ResultsManager" scope="prototype">
-        <property name="moduleManager">
-            <ref bean="moduleManager" />
-        </property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
 	</bean>
 
 	<bean id="finderPages" class="org.entermediadb.find.FinderPageLoader" scope="prototype">
@@ -2503,7 +2503,7 @@
 		</property>
 	</bean>
 
-	<bean id="openaiConnection" class="org.entermediadb.ai.llm.openai.OpenAiConnection"  scope="prototype">
+	<bean id="openaiConnection" class="org.entermediadb.ai.llm.openai.OpenAiConnection" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2516,7 +2516,7 @@
 		</property>
 	</bean>
 
-	<bean id="ollamaConnection" class="org.entermediadb.ai.llm.ollama.OllamaConnection"  scope="prototype">
+	<bean id="ollamaConnection" class="org.entermediadb.ai.llm.ollama.OllamaConnection" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2529,7 +2529,7 @@
 		</property>
 	</bean>
 
-	<bean id="classifyManager" class="org.entermediadb.ai.classify.ClassifyManager"  scope="prototype">
+	<bean id="classifyManager" class="org.entermediadb.ai.classify.ClassifyManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2537,9 +2537,9 @@
 			<ref bean="requestUtils" />
 		</property>
 	</bean>
-	
 
-	<bean id="assistantManager" class="org.entermediadb.ai.assistant.AssistantManager"  scope="prototype">
+
+	<bean id="assistantManager" class="org.entermediadb.ai.assistant.AssistantManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2547,7 +2547,7 @@
 			<ref bean="requestUtils" />
 		</property>
 	</bean>
-	
+
 	<bean id="AgentModule" class="org.entermediadb.ai.assistant.AgentModule">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -2633,6 +2633,12 @@
 	</bean>
 
 	<bean id="semanticConfig" class="org.entermediadb.ai.semantics.SemanticConfig" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+	<bean id="namedEntityRecognitionManager" class="org.entermediadb.ai.classify.NamedEntityRecognitionManager" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

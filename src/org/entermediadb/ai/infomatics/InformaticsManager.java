@@ -69,7 +69,7 @@ public class InformaticsManager extends BaseAiManager
 				{
 					MultiValued config = (MultiValued) iterator2.next();
 					InformaticsProcessor processor = loadProcessor(config.get("beanname"));
-					processor.processIformaticsOnAssets(inLog, config, pageofhits);
+					processor.processInformaticsOnAssets(inLog, config, pageofhits);
 				}
 				//Save Records here?
 				for (Iterator iterator = pendingrecords.iterator(); iterator.hasNext();)
@@ -139,7 +139,7 @@ public class InformaticsManager extends BaseAiManager
 				{
 					MultiValued config = (MultiValued) iterator2.next();
 					InformaticsProcessor processor = loadProcessor(config.get("beanname"));
-					processor.processIformaticsOnEntities(inLog, config, pageofhits);
+					processor.processInformaticsOnEntities(inLog, config, pageofhits);
 				}
 				//Group them by type
 				for (Iterator iterator = pendingrecords.iterator(); iterator.hasNext();)

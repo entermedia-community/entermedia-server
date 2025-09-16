@@ -535,13 +535,13 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 		}
 
 		@Override
-		public void processIformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
+		public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
 		{
-			processIformaticsOnEntities(inLog,inConfig,inAssets);
+			processInformaticsOnEntities(inLog,inConfig,inAssets);
 		}
 
 		@Override
-		public void processIformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecords)
+		public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecords)
 		{
 			String fieldname = inConfig.get("fieldnname");
 			
