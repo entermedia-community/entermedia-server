@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.entermediadb.ai.llm.BaseLlmResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class GptResponse extends BaseLlmResponse {
@@ -27,19 +27,14 @@ public class GptResponse extends BaseLlmResponse {
     public JSONObject getArguments() {
         if (!isToolCall()) return null;
 
-        try {
-            JSONArray choices = (JSONArray) rawResponse.get("choices");
-            JSONObject choice = (JSONObject) choices.get(0);
-            JSONObject message = (JSONObject) choice.get("message");
-            JSONObject functionCall = (JSONObject) message.get("function_call");
+        JSONArray choices = (JSONArray) rawResponse.get("choices");
+        JSONObject choice = (JSONObject) choices.get(0);
+        JSONObject message = (JSONObject) choice.get("message");
+        JSONObject functionCall = (JSONObject) message.get("function_call");
 
-            String argumentsString = (String) functionCall.get("arguments");
-            JSONParser parser = new JSONParser();
-            return (JSONObject) parser.parse(argumentsString); // Parse the stringified JSON
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+        String argumentsString = (String) functionCall.get("arguments");
+        JSONParser parser = new JSONParser();
+        return (JSONObject) parser.parse(argumentsString); // Parse the stringified JSON
     }
 
     @Override
