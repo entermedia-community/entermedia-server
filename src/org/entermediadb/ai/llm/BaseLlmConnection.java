@@ -203,7 +203,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	
 	protected LlmResponse handleApiRequest(String payload)
 	{
-		String endpoint = getApiEndpoint() + "/api/chat";
+		String endpoint = getApiEndpoint();
 		HttpPost method = new HttpPost(endpoint);
 		method.addHeader("Authorization", "Bearer " + getApikey());
 		method.setHeader("Content-Type", "application/json");

@@ -1,8 +1,6 @@
 package org.entermediadb.ai.llm.ollama;
 
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -10,21 +8,19 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.llm.BaseLlmConnection;
 import org.entermediadb.ai.llm.BaseLlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.ai.llm.openai.GptResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.openedit.util.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
+import org.openedit.util.JSONParser;
 import org.openedit.util.OutputFiller;
 
 
@@ -122,11 +118,12 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	public String getApiEndpoint()
 	{
 		// TODO Auto-generated method stub
-		String endpoint = getMediaArchive().getCatalogSettingValue("ollama-url");
-		if (endpoint == null)
+		String apihost = getMediaArchive().getCatalogSettingValue("ollama-url");
+		if (apihost == null)
 		{
-			endpoint = "http://localhost:11434";
+			apihost = "http://localhost:11434";
 		}
+		String endpoint = apihost + "/api/chat";
 		return endpoint;
 	}
 
