@@ -13,7 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.ai.BaseAiManager;
-import org.entermediadb.ai.infomatics.InformaticsProcessor;
+import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.MediaArchive;
@@ -492,7 +492,7 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 	
 		public Collection<String> createSemanticValues(LlmConnection llmconnection, MultiValued inConfig, String inModel, String inModuleId, MultiValued inData)
 		{
-			MediaArchive archive = getMediaArchive();
+//			MediaArchive archive = getMediaArchive();
 
 			Map<String,Map> contextfields = populateFields(inModuleId, inData);
 			if(contextfields.isEmpty())
@@ -513,7 +513,7 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 			}
 			
 			Map params = new HashMap();
-			params.put("fieldparams", contextfields);
+			params.put("fieldparams", inConfig);
 		
 			Map validcontext = new HashMap(contextfields);
 			validcontext.remove(fieldname);
@@ -543,7 +543,7 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 		@Override
 		public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecords)
 		{
-			String fieldname = inConfig.get("fieldnname");
+			String fieldname = inConfig.get("fieldname");
 			
 			Map<String, String> models = getModels();
 

@@ -1,4 +1,4 @@
-package org.entermediadb.ai.infomatics;
+package org.entermediadb.ai.informatics;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -68,11 +68,11 @@ public class InformaticsManager extends BaseAiManager
 				for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
 				{
 					MultiValued config = (MultiValued) iterator2.next();
-					InformaticsProcessor processor = loadProcessor(config.get("beanname"));
+					InformaticsProcessor processor = loadProcessor(config.get("bean"));
 					processor.processInformaticsOnAssets(inLog, config, pageofhits);
 				}
 				//Save Records here?
-				for (Iterator iterator = pendingrecords.iterator(); iterator.hasNext();)
+				for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
 				{
 					Data data = (Data) iterator.next();
 					data.setValue("taggedbyllm", true);
@@ -162,6 +162,10 @@ public class InformaticsManager extends BaseAiManager
 
 	protected InformaticsProcessor loadProcessor(String inName)
 	{
+		if(inName == null)
+		{
+			throw new IllegalArgumentException("Bean name not provided");
+		}
 		InformaticsProcessor processor = (InformaticsProcessor) getMediaArchive().getCacheManager().get("ai", "processor" + inName);
 		if (processor == null)
 		{

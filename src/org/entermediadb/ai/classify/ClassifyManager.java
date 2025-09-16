@@ -10,7 +10,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.infomatics.InformaticsProcessor;
+import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
@@ -29,7 +29,6 @@ public class ClassifyManager extends InformaticsProcessor
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> assets)
 	{
 		int count = 1;
-		List tosave = new ArrayList();
 
 		Map<String, String> models = getModels();
 
@@ -38,8 +37,7 @@ public class ClassifyManager extends InformaticsProcessor
 
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 		{
-			Data hit = (Data) iterator.next();
-			Asset asset = getMediaArchive().getAsset(hit.getId());
+			MultiValued asset = (MultiValued) iterator.next(); 
 
 			String mediatype = getMediaArchive().getMediaRenderType(asset);
 			if( mediatype.equals("default") )
@@ -59,34 +57,20 @@ public class ClassifyManager extends InformaticsProcessor
 					continue;
 				}
 
-				tosave.add(asset);
 				count++;
 
 				long duration = (System.currentTimeMillis() - startTime) / 1000L;
 				inLog.info("Took "+duration +"s");
-
-				if( tosave.size() >= 10)	{
-					getMediaArchive	().saveAssets(tosave);
-					//searcher.saveAllData(tosave, null);
-					inLog.info("Saved: " + tosave.size() + " assets ");
-					tosave.clear();
-				}
 			}
 			catch(Exception e){
 				inLog.error("LLM Error", e);
 				asset.setValue("llmerror", true);
-				tosave.add(asset);
 				continue;
 			}
 		}
-		if( !tosave.isEmpty())
-		{
-			getMediaArchive().saveAssets(tosave);
-			inLog.info("Saved: " + tosave.size() + " assets ");
-		}
 	}
 
-	protected boolean processOneAsset(MultiValued inConfig, LlmConnection llmvisionconnection, LlmConnection llmsemanticconnection, Map<String, String> models, Asset asset) throws Exception
+	protected boolean processOneAsset(MultiValued inConfig, LlmConnection llmvisionconnection, LlmConnection llmsemanticconnection, Map<String, String> models, MultiValued asset) throws Exception
 	{
 		String mediatype = getMediaArchive().getMediaRenderType(asset);
 		String base64EncodedString = null;
@@ -120,7 +104,7 @@ public class ClassifyManager extends InformaticsProcessor
 				// TODO: add better way to have media type specific fields
 			//	continue;
 		//	}
-			if(asset.hasValue(aifield.getId()) )
+			if(!asset.hasValue(aifield.getId()) )
 			{
 				aifields.add(aifield);
 			}
@@ -154,19 +138,22 @@ public class ClassifyManager extends InformaticsProcessor
 						if (detail != null)
 						{
 							String value = (String)metadata.get(inKey);
-							if(detail.isList())
-							{
-								String listId = value.split("\\|")[0];
-								datachanges.put(detail.getId(), listId);
-							}
-							else if (detail.isMultiValue())
+							if (detail.isMultiValue())
 							{
 								Collection<String> values = Arrays.asList(value.split(","));
 								datachanges.put(detail.getId(), values);
+								asset.addValues(detail.getId(), values);
+							}
+							else if(detail.isList())
+							{
+								String listId = value.split("\\|")[0];
+								datachanges.put(detail.getId(), listId);
+								asset.setValue(detail.getId(), listId);
 							}
 							else
 							{
 								datachanges.put(detail.getId(), value);
+								asset.setValue(detail.getId(), value);
 							}
 						}
 					}
@@ -176,15 +163,6 @@ public class ClassifyManager extends InformaticsProcessor
 					if( agent != null)
 					{
 						getMediaArchive().getEventManager().fireDataEditEvent(getMediaArchive().getAssetSearcher(), agent, "assetgeneral", asset, datachanges);
-					}
-
-					for (Iterator iterator2 = datachanges.keySet().iterator(); iterator2.hasNext();)
-					{
-						String inKey = (String) iterator2.next();
-						Object value = datachanges.get(inKey);
-
-						asset.setValue(inKey, value);
-						log.info("AI updated field "+ inKey + ": "+metadata.get(inKey));
 					}
 				}
 				else {

@@ -100,7 +100,7 @@ public class BaseAiManager extends BaseManager
 ////		getMediaArchive().getCacheManager().clear("aifacedetect"); 
 
 	}
-	protected String loadBase64Image(Asset inAsset, String imagesize)
+	protected String loadBase64Image(Data inAsset, String imagesize)
 	{
 		ContentItem item = getMediaArchive().getGeneratedContent(inAsset, imagesize);
 		if(!item.exists())

@@ -1,4 +1,4 @@
-package org.entermediadb.ai.infomatics;
+package org.entermediadb.ai.informatics;
 
 
 import java.util.ArrayList;

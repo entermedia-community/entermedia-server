@@ -2626,19 +2626,19 @@
 		</property>
 	</bean>
 
-	<bean id="informaticsManager" class="org.entermediadb.ai.infomatics.InformaticsManager" lazy-init="default" scope="prototype">
+	<bean id="informaticsManager" class="org.entermediadb.ai.informatics.InformaticsManager" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
 
-	<bean id="semanticFieldsManager" class="org.entermediadb.ai.semantics.SemanticFieldsManager" lazy-init="default" scope="prototype">
+	<bean id="semanticFieldsManager" class="org.entermediadb.ai.classify.SemanticFieldsManager" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
 
-	<bean id="semanticConfig" class="org.entermediadb.ai.semantics.SemanticConfig" lazy-init="default" scope="prototype">
+	<bean id="semanticConfig" class="org.entermediadb.ai.classify.SemanticConfig" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
