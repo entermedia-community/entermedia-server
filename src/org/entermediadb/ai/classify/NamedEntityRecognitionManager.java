@@ -20,7 +20,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	private static final Log log = LogFactory.getLog(NamedEntityRecognitionManager.class);
 
 	 @Override
-	 protected boolean processOneAsset(MultiValued inConfig, LlmConnection llmvisionconnection, LlmConnection llmsemanticconnection, Map<String, String> models, Asset inData)
+	 protected boolean processOneAsset(MultiValued inConfig, LlmConnection llmvisionconnection, LlmConnection llmsemanticconnection, Map<String, String> models, MultiValued inData)
 	 {
 		 boolean ok = processOneEntity(inConfig,llmvisionconnection,llmsemanticconnection,models,inData,"asset");
 		 return ok;
