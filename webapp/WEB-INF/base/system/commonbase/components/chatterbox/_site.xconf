@@ -1,3 +1,10 @@
 <page>
 	<page-action name="PageValue.loadPageVariable" bean="numberutils" class="org.openedit.util.MathUtils"/>
+	
+	   <permission name="editcollection">
+		<or>
+			<action name="ProjectModule.canEditCollection" />
+			<action name="ProjectModule.isOnTeam" />			
+		</or>
+	</permission>
 </page>

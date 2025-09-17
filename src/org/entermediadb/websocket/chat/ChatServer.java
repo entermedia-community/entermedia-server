@@ -38,9 +38,9 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.data.AddedPermission;
 import org.entermediadb.projects.ProjectManager;
 import org.json.simple.JSONObject;
-import org.openedit.util.JSONParser;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
@@ -48,6 +48,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.ExecutorManager;
+import org.openedit.util.JSONParser;
 
 public class ChatServer
 {
@@ -143,6 +144,22 @@ public class ChatServer
 		// TODO Auto-generated method stub
 		connections.add(inConnection);
 	}
+	
+	public void broadcastRemovedMessage(String inCatalogId, Data inData)
+	{
+		JSONObject inMap = new JSONObject(inData.getProperties());
+		//Command
+		Date date = (Date)inData.getValue("date");
+		if(date != null) {
+			date = new Date();
+		}
+		
+		inMap.put("date",DateStorageUtil.getStorageUtil().getJsonFormat().format(date));
+		inMap.put("messageid",inData.getId());
+		inMap.put("command","messageremoved");
+		inMap.put("message",inData.get("message"));
+		broadcastMessage(inCatalogId,inMap);
+	}
 
 	public void broadcastMessage(String inCatalogId, Data inData)
 	{
@@ -164,6 +181,7 @@ public class ChatServer
 		String inCatalogId = (String)inMap.get("catalogid");
 		broadcastMessage(inCatalogId,inMap);
 	}
+	
 	public void broadcastMessage(String catalogid, JSONObject inMap)
 	{
 		
@@ -187,14 +205,11 @@ public class ChatServer
 		
 		String channelid = (String)inMap.get("channel");
 		
-		//LibraryCollection collection = (LibraryCollection) archive.getCachedData("librarycollection", collectionid);
-
 		if( catalogid != null && channelid != null )
 		{
 			final ChatManager manager = getChatManager(catalogid);
 			
 			//log.info("Sending " + inMap.toJSONString()		+" to " + connections.size() + " Clients");
-			
 			
 			String userid = null;
 			if( inMap.get("user") != null )
@@ -236,7 +251,16 @@ public class ChatServer
 					Set userids = null;
 					if( moduleid.equals("librarycollection"))
 					{
+						
+						//MultiValued topic = (MultiValued) archive.getCachedData("collectiveproject", channelid);
+						//if (topic.getBoolean("teamproject"))
+						{
 						userids = projectmanager.listTeam(entity);
+						}
+						//else 
+						{
+							//Broacast to all users who liked at least?
+						}
 						userids.add(userid);
 					}
 					else {
@@ -262,6 +286,15 @@ public class ChatServer
 						if( userids.contains(chatConnection.getUserId() ) )
 						{
 							chatConnection.sendMessage(inMap);
+						}
+						else
+						{
+							String connectionChannel = chatConnection.getChannelId();
+							if (channelid.equals(connectionChannel))
+							{
+								//log.info("Other connection is not a team member: " + chatConnection.getChannelId());
+								chatConnection.sendMessage(inMap);
+							}
 						}
 					}
 				}
@@ -383,25 +416,7 @@ public class ChatServer
 
 		String messageid = chat.getId();
 		inMap.put("messageid", messageid);
-		
-		/*
-		//handled in ProjectModule.attachAssetsToMessage
-		
-		if (inMap.get("assetid")!= null) {
-			String assetid = String.valueOf(inMap.get("assetid"));
-			if( assetid != null)
-			{
-				Asset asset = archive.getAsset( assetid);
-				if( asset != null && !asset.isPropertyTrue("haschat"))
-				{
-					asset.setValue("haschat", true);
-					archive.saveAsset(asset);
-				}
-				archive.fireMediaEvent("assetchat", user,asset );
-			}
-		}
-		*/
-		
+
 		return chat;//chat.get("message");
 	}
 

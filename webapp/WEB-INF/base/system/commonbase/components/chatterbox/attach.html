@@ -40,7 +40,7 @@
 	<form name="attach${chat.id}" 
 		method="post" 
 		enctype="multipart/form-data" 
-		action="${chatterboxhome}/uploadattachment.html" 
+		action="${chatterboxhome}/attachmentupload.html" 
 		class="ajaxform autosubmit chatattachasset closeattachbox" 
 		data-targetdiv="chatter-message-$!{chat.id}"
 		data-includeeditcontext="true" 
@@ -54,6 +54,7 @@
 		
 		#set($entityid = $context.getRequestParameter("entityid"))
 		<input type="hidden" name="entityid" value="$!entityid" />
+		<input type="hidden" name="collectionid" value="$!entityid" />  ##legacy
 		
 		<input type="hidden" name="channel" value="$!currentchannel.id" />
 		
@@ -61,9 +62,7 @@
 		<input type="hidden" name="messageids" value="$!chat.id" />
 		<input type="hidden" name="assetid" class="pickedassetid" value="" id="chatattachment" />
 		<!-- <input type="hidden" name="collectionid" value="$collectionid" /> -->
-		#if($librarycol)
-		<input type="hidden" name="collectionid" value="$librarycol.id" />
-		#end
+
 	
 		#ifnotnull($attachedasset)
 			<input type="hidden" name="attachedassetid" value="$!{attachedasset.id}" />

@@ -1,8 +1,7 @@
 #ifnull($chatterboxhome)
-#set($chatterboxhome = $page.chatterboxhome)
+	#set($chatterboxhome = $page.chatterboxhome)
 #end
 $context.putPageValue("chatterboxhome", $chatterboxhome)
-
 
 #set($goalsenabled = $content.isPropertyTrue("chatterboxgoalsenabled",false))
 
@@ -29,7 +28,7 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 	$pages.include($messagetype, $context)
 #else
 
-<div id="chatter-message-$!chat.id" class="msg-bubble">
+<div id="chatter-message-$!{chat.id}" class="msg-bubble">
 	<div class="chatterbox-chat" role="alert" >
 		<div class="chat-icon">
 			#if ($chat.user == "agent")
@@ -89,7 +88,7 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 				##end
 				
 				
-				#if($goalsenabled)
+				#if($goalsenabled && $caneditcollection)
 					#if(!$goal)		
 						<a class="message-menu-link ajax"   
 							data-targetdiv="chatter-message-$chat.id"
@@ -127,11 +126,16 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 			
 			<div class="msg-body #if($chat.user == $user.id) me #end" style=" #if($attachedassets) min-height: 110px; #end">
 				
+			
+				
+			##Attachments
 	
 			#if($otherassets)
 				$context.putPageValue("otherassets", $otherassets)
+				$context.putPageValue("chat", $chat)
 				$pages.include("${chatterboxhome}/listassets.html",$context)
 			#end
+			
 	
 				
 			#ifnotnull($chat.replytoid)

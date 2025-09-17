@@ -12,6 +12,8 @@ lQuery("a.chatEmDialog").livequery("click", function (e) {
   });
 });
 
+
+
 function chatterbox() {
   //console.log('loaded');
 
@@ -215,19 +217,32 @@ function connect() {
     jQuery(window).trigger("ajaxsocketautoreload");
     var message = JSON.parse(event.data);
     //console.log(message);
+	
+	if (message.command === "aithinking") 
+	{
+	  showSpinner();
+	  return;
+	} 
+	else {
+	  hideSpinner();
+	}
 
     var channel = message.channel;
     var id = message.messageid;
     message.id = id;
     var existing = jQuery("#chatter-message-" + id);
     if (existing.length) {
-      var chatMsg = $(existing).find(".chat-msg");
-      var msgBody = $(chatMsg).find(".msg-body-content");
-      if (msgBody.length) {
-        msgBody.html(message.message);
-      } else {
-        chatMsg.html(message.message);
-      }
+		if (message.command === "messageremoved") {
+			existing.remove();
+			return;
+		}
+		var chatMsg = $(existing).find(".chat-msg");
+      	var msgBody = $(chatMsg).find(".msg-body-content");
+      	if (msgBody.length) {
+	        msgBody.html(message.message);
+    	} else {
+        	chatMsg.html(message.message);
+      	}
       return;
     }
     var chatter = jQuery('div[data-channel="' + channel + '"]');
@@ -237,19 +252,22 @@ function connect() {
       url = apphome + "/components/chatterbox/message.html";
     }
 
-    if (message.command === "aithinking") {
-      showSpinner();
-      return;
-    } else {
-      hideSpinner();
-    }
-
     scrollToChat();
 
     var params = {};
     params.id = message.id;
     params.channel = message.channel;
-    params.collectionid = message.collectionid;
+	if (message.entityid != null) 
+		{
+			params.entityid = message.entityid;
+			params.collectionid = message.entityid;
+		}
+		else
+		{
+			params.entityid = message.collectionid;
+			params.collectionid = message.collectionid;		
+		}
+    
 
     jQuery.get(url, params, function (data) {
       listarea.append(data); 
@@ -291,12 +309,17 @@ function connect() {
 
       /*Check para permissions and ask.*/
       if (Notification.permission === "granted") {
-        showNotification();
+        console.log("Show notification");
+		showNotification();
+		
+		
       } else if (Notification.permission !== "denied") {
+		console.log("Notification: " + Notification.permission);
         createNotificationSubscription();
 
         Notification.requestPermission().then((permission) => {
           if (permission === "granted") {
+			console.log("Show notification (2)");
             showNotification();
           }
         });
@@ -595,4 +618,64 @@ jQuery(document).ready(function () {
 
   lQuery("window").livequery("click", hideChatPickers);
   lQuery(".modal").livequery("click", hideChatPickers);
+  
+  
+  
+  /**Attachments */
+  
+  lQuery(".chat-msg-attachments-asset .removefieldassetvalueZ").livequery(
+  		"click",
+  		function (e) {
+			$(this).runAjax();
+  		}
+  	);
+  
+  lQuery("a.lightbox").livequery(function () {
+	  var slb = $(this).simpleLightbox({
+			captionSelector: 'self',
+			captionType: 'data',
+			captionsData: 'caption',
+			captionDelay: 250,
+			widthRatio:0.98,
+			heightRatio:0.98,
+			overlayOpacity: 1,
+			fadeSpeed: 60
+		});
+		
+		slb.on("shown.simplelightbox", function () {
+			var lang = document.documentElement.lang;
+			if(lang) {
+				var locales = $(this).data("locales");
+				if(locales) {
+					if (typeof locales === "string") {
+						var txt = document.createElement("textarea");
+						txt.innerHTML = locales;
+						locales = JSON.parse(txt.value);
+					}
+					var localeCaption = locales[lang];
+					if(localeCaption) {
+						$(".sl-caption").html(localeCaption);
+					}
+				}
+			}
+			
+			var dl = $(this).data("downloadlink");
+			var al = $(this).data("assetlink");
+			if (dl || al) {
+				$(".simple-lightbox").append("<div class='sl-actions'></div>");
+				
+				if(dl) {
+					$(".simple-lightbox .sl-actions").append("<a class='sl-btn sl-dl' href='" + dl + "' target='_blank'></a>");
+				}
+				//Asset Link
+				
+				if(al) {
+					$(".simple-lightbox .sl-actions").append("<a class='sl-btn sl-al' href='" + al + "' target='_blank'></a>");
+				}
+			}
+		})
+	});
+  
+  
+  
 });

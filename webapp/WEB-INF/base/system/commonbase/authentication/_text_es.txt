@@ -1,10 +1,11 @@
 #
-#Mon Apr 21 12:43:36 CST 2025
+#Wed Sep 17 15:08:18 CST 2025
 You\ do\ not\ have\ permissions\ to\ perform\ the\ previous\ action.=No tiene permisos para realizar la acci\u00F3n anterior.
 Email\ or\ Username=Correo electr\u00F3nico o nombre de usuario
+Other\ login\ options=Otras opciones de inicio de sesi\u00F3n
 Back\ to\ Login\ page=Volver a la p\u00E1gina de inicio de sesi\u00F3n
-contact\ us=Cont\u00E1ctenos
 Login\ or\ Register\ with\ your\ Email\ Address=Inicie sesi\u00F3n o reg\u00EDstrese con su direcci\u00F3n de correo electr\u00F3nico
+contact\ us=Cont\u00E1ctenos
 Or\ Sign-in\ with\ E-Mail\ only=O inicie sesi\u00F3n solo con correo electr\u00F3nico
 You\ are\ logged\ in\ as=Has iniciado sesi\u00F3n como
 Your\ Login\ Info=Su informaci\u00F3n de inicio de sesi\u00F3n
@@ -23,12 +24,16 @@ Login=Iniciar Sesi\u00F3n
 Welcome\!\ Please\ enter\ your\ email\ and\ password\:=\u00A1Bienvenido\! 
 App\ Key=Clave de la aplicaci\u00F3n
 No\ user\ found=No se encontr\u00F3 ning\u00FAn usuario
+Error\ please\ contact\ an\ Administrator=Error por favor contacte a un Administrador
 Please=Por favor
 Do\ you\ have\ any\ questions?=\u00BFTiene usted alguna pregunta?
 Please\ enter\ your\ password=Por favor, introduzca su contrase\u00F1a
 Next=Pr\u00F3ximo
 Please\ check\ your\ email=Por favor revise su correo electr\u00F3nico
+Login\ Error=Error de inicio de sesi\u00F3n
+Sign-up=Inscribirse
 Sign-in\ with=Inicie sesi\u00F3n con
 Username\ and\ Password=Nombre de usuario y contrase\u00F1a
 or\ Create\ a\ New\ Account=o Crear una cuenta nueva
 Permission\ Error=Error de permisos
+Please\ contact\ and\ Administrator=Por favor, p\u00F3ngase en contacto con un administrador.

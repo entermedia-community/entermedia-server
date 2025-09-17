@@ -8,10 +8,20 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 	#set($collectionid = $librarycol.getId()) 
 #end
 
-#set($cansendchat = false)
-#if($page.openchat || ($user && $permissions && $permissions.canModule($module, "chat_send_messages")))
-	#set($cansendchat = true)
+#ifnull($cansendchat)
+	#set($cansendchat = false)
 #end
+
+#if ($currentchannel.teamproject == "true")
+	#if($caneditcollection)
+		#set($cansendchat = true)
+	#end
+#else
+	#if($page.openchat || ($user && $permissions && $permissions.canModule($module, "chat_send_messages")))
+		#set($cansendchat = true)
+	#end
+#end
+
 
 <div class='chatterbox #if($cansendchat == "false") chatterbox-readonly#end'
 	#ifnotnull($entity)data-entityid="$!entity.id"#end

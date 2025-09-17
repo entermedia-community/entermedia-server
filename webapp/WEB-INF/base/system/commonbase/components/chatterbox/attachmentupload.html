@@ -1,4 +1,6 @@
 #set($chatterboxhome = $page.chatterboxhome)
 $context.putPageValue("chatterboxhome", $chatterboxhome)
 
-$pages.include("${chatterboxhome}/message.html", $context)				
+#ifnotnull($chat)
+	$pages.include("${chatterboxhome}/message.html", $context)				
+#end

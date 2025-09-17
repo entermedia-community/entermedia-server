@@ -77,7 +77,7 @@ public class ChatManager implements CatalogEnabled
 			status = (MultiValued) getMediaArchive().getSearcher("chattopiclastmodified").createNewData();
 			status.setValue("chattopicid", channelid);
 			//String collectionid, 
-			MultiValued topic = (MultiValued) getMediaArchive().getData("collectiveproject", channelid);
+			MultiValued topic = (MultiValued) getMediaArchive().getCachedData("collectiveproject", channelid);
 			if (topic != null)
 			{
 				Collection collections = topic.getValues("parentcollectionid");
