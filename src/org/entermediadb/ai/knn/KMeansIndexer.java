@@ -384,6 +384,25 @@ public class KMeansIndexer implements CatalogEnabled {
 
 	public Collection<RankedResult> searchNearestItems(List<Double> searchVector)
 	{
+		if( getClusters().size() < 4)
+		{
+				Collection allrecords =  getMediaArchive().query(getSearchType()).all().search();
+				if( allrecords.isEmpty())
+				{
+					return Collections.EMPTY_LIST;
+				}
+				if( allrecords.size() < 300 )
+				{
+					List<RankedResult> finalmatches = findMatchesTo(getSettings(), searchVector, allrecords);
+					return finalmatches;
+				}
+				if( allrecords.size() > 2000)  //What is the right number?
+				{
+					ScriptLogger logger = new ScriptLogger();
+					reinitClusters(logger);
+				}
+			}
+		
 		List<KMeansCloseCluster> closestclusters = (List<KMeansCloseCluster>)new ArrayList();
 		
 		for (MultiValued cluster : getClusters())
@@ -429,8 +448,16 @@ public class KMeansIndexer implements CatalogEnabled {
 		
 		HitTracker hits = getMediaArchive().query(getSearchType()).orgroup("nearbycentroidids",goodcentroids).search();
 		//Double check these match and also load up Organized modules?
-		List<RankedResult> finalmatches = new ArrayList();
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		List<RankedResult> finalmatches = findMatchesTo(settings, searchVector, hits);
+		
+		return finalmatches;
+
+	}
+
+	protected List<RankedResult> findMatchesTo(KMeansConfiguration settings, List<Double> searchVector, Collection inRecords)
+	{
+		List<RankedResult> finalmatches  = new ArrayList(inRecords.size());
+		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
 		{
 			MultiValued embedding = (MultiValued) iterator.next();
 			//double check
@@ -447,9 +474,7 @@ public class KMeansIndexer implements CatalogEnabled {
 		}
 
 		Collections.sort(finalmatches);
-		
 		return finalmatches;
-
 	}
 	public Collection<MultiValued> searchNearestItems(MultiValued inSearch)  //Like face
 	{
@@ -854,6 +879,7 @@ public class KMeansIndexer implements CatalogEnabled {
 			{
 //				long end = System.currentTimeMillis();
 				setCentroids(hit); //Set em <-----
+
 //				start = System.currentTimeMillis();
 //				log.info( "Took " + (start-end) );
 			} catch( IllegalArgumentException ex)

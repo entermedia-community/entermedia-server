@@ -48,15 +48,14 @@ public class ClassifyManager extends InformaticsProcessor
 			try{
 				long startTime = System.currentTimeMillis();
 
-				inLog.info("Analyzing asset ("+count+"/"+assets.size()+") Id: " + asset.getId() + " " + asset.getName());
+				inLog.info("Analyzing asset ("+count+"/"+assets.size()+")" + asset.getName());
+				count++;
 
 				boolean complete = processOneAsset(inConfig, llmvisionconnection, llmsemanticconnection, models, asset);
 				if( !complete )
 				{
 					continue;
 				}
-
-				count++;
 
 				long duration = (System.currentTimeMillis() - startTime) / 1000L;
 				inLog.info("Took "+duration +"s");
@@ -265,7 +264,7 @@ public class ClassifyManager extends InformaticsProcessor
 			if(isDocPage)
 			{
 				params.put("docpage", isDocPage);
-				base64EncodedString = loadImageContent(inEntity);
+//				base64EncodedString = loadImageContent(inEntity);
 			}
 
 			try 

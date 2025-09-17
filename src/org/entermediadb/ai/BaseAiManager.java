@@ -135,7 +135,7 @@ public class BaseAiManager extends BaseManager
 
 	}
 	
-	protected Map<String, Collection> groupByModule(HitTracker inPendingrecords)
+	protected Map<String, Collection> groupByModule(Collection<MultiValued> inPendingrecords)
 	{
 		Map<String,Collection> groupbymodule = new HashMap();
 		for (Iterator iterator = inPendingrecords.iterator(); iterator.hasNext();)

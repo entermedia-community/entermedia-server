@@ -1,6 +1,5 @@
 package org.entermediadb.ai.classify;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,9 +33,12 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	 		log.info("No tables configured to check for names in " + inData.getId() + " " + inData.getName());
 	 		return false;
 	 	}
+	 	Map<String,Map> contextfields = populateFields(inModuleId,inData);
+	 	
 	 	for (Iterator iterator = tables.iterator(); iterator.hasNext();) {
 			Map map = (Map) iterator.next();			
 			PropertyDetail detail = getMediaArchive().getSearcher(inModuleId).getDetail((String)map.get("sourcetype"));
+			contextfields.remove(map.get("sourcetype"));
 			if( detail == null || !detail.isList() )
 			{
 				iterator.remove();
@@ -48,8 +50,6 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	 		log.info("No valid tables to check for names in " + inData.getId() + " " + inData.getName());
 	 		return false;
 	 	}
-	 	///Search for all nounds based on tables
-		Map<String,Map> contextfields = populateFields(inModuleId,inData);
 		if(contextfields.isEmpty())
 		{
 			log.info("No fields to check for names in " + inData.getId() + " " + inData.getName());
@@ -63,10 +63,11 @@ public class NamedEntityRecognitionManager extends ClassifyManager
  		params.put("tables", tables);
  		
 		String functionname = inConfig.get("aifunctionname");
-		Map results = llmsemanticconnection.callStructuredOutputList(functionname, models.get("vision"),  params);
-		for (Iterator iterator = results.keySet().iterator(); iterator.hasNext();) {
+		Map results = llmsemanticconnection.callStructuredOutputList(functionname, models.get("semantic"),  params);
+		Map categories = (Map) results.get("categories");
+		for (Iterator iterator = categories.keySet().iterator(); iterator.hasNext();) {
 			String sourcetype = (String) iterator.next();
-			Collection values = (Collection) results.get(sourcetype);
+			Collection values = (Collection) categories.get(sourcetype);
 			if( values == null || values.isEmpty() )
 			{
 				continue;
@@ -96,25 +97,21 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	 	
 	 }
 
-	protected Data saveIfNeeded(MultiValued inConfig, PropertyDetail inDetail, String inValue)
+	protected Data saveIfNeeded(MultiValued inConfig, PropertyDetail inDetail, String inlabel)
 	{
-		String[] returned = inValue.split(":");
-		
-		String aisourcetype = returned[0];
-		String label = returned[1];
 
-		Map config = findConfigForTable(inConfig,aisourcetype);
+		Map config = findConfigForTable(inConfig, inDetail.getId());
 		if( config == null )
 		{
 			return null;
 		}
 		//person:John Smith
 		String listid = inDetail.getId();
-		Data found = getMediaArchive().query(listid).match("name",label).searchOne();
+		Data found = getMediaArchive().query(listid).match("name", inlabel).searchOne();
 		if( found == null && Boolean.parseBoolean( (String)config.get("autocreate") ) )
 		{
 			found = getMediaArchive().getSearcher(listid).createNewData();
-			found.setName(label);
+			found.setName(inlabel);
 			getMediaArchive().saveData(listid,found);
 		}
 		return found;
@@ -128,8 +125,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 			Map table = (Map) iterator.next();
 			if( inListid.equals( table.get("sourcetype") ) )
 			{
-				//Save this to DB
-				break;
+				return table;
 			}
 				
 		}

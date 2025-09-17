@@ -36,6 +36,18 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 {
 	private static final Log log = LogFactory.getLog(SemanticFieldsManager.class);
 	
+	protected boolean fieldIndexingVectors;
+	
+	
+	public boolean isIndexingVectors()
+	{
+		return fieldIndexingVectors;
+	}
+
+	public void setIndexingVectors(boolean inWorking)
+	{
+		fieldIndexingVectors = inWorking;
+	}
 	protected String fieldCatalogId;
 
 	public String getCatalogId()
@@ -128,47 +140,72 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 	
 	public void indexAll(ScriptLogger inLog)
 	{
-		
-		HitTracker all = getMediaArchive().query("module").exact("semanticenabled", true).search();
-		Collection<String> ids = all.collectValues("id");
-		log.info("Scanning modules " + ids);
+		//Check that we are not already scanning
+		if( isIndexingVectors() )
+		{
+			inLog.error("Already Indexing");
+			return;
+		}
+		setIndexingVectors(true);
+		try
+		{
+			HitTracker all = getMediaArchive().query("module").exact("semanticenabled", true).search();
+			Collection<String> ids = all.collectValues("id");
+			log.info("Scanning modules " + ids);
+			for (Iterator iteratorS = getSemanticConfigs().iterator(); iteratorS.hasNext();)
+			{
+				SemanticConfig instruction = (SemanticConfig) iteratorS.next();
+				QueryBuilder query = getMediaArchive().query("modulesearch");
+				query.exists(instruction.getFieldName());
+				query.exact(instruction.getFieldName() + "indexed", false);
+				query.put("searchtypes", ids);
+				query.put("searchasset", true); //this is needed to include asset
+				
+				HitTracker hits = query.search();
+				hits.enableBulkOperations();
+				log.info("Indexing " + instruction.getFieldName() + " in: " + hits);
+				indexTracker(inLog, instruction, hits);
+			}
+		}
+		finally
+		{
+			setIndexingVectors(false);
+		}
+	}
+	public void indexData(ScriptLogger inLog, Collection<MultiValued> inRecords)
+	{
 		for (Iterator iteratorS = getSemanticConfigs().iterator(); iteratorS.hasNext();)
 		{
 			SemanticConfig instruction = (SemanticConfig) iteratorS.next();
-			QueryBuilder query = getMediaArchive().localQuery("modulesearch");
-			query.exists(instruction.getFieldName());
-			query.exact(instruction.getFieldName() + "indexed", false);
-			query.put("searchtypes", ids);
-			query.put("searchasset", true); //this is needed to include asset
 			
-			HitTracker hits = query.search();
-			hits.enableBulkOperations();
-			log.info("Indexing " + instruction.getFieldName() + " in: " + hits);
-			indexResults(inLog, instruction, hits);
+			indexData(inLog, instruction, inRecords);
+		}
+	}
+	
+	protected void indexData(ScriptLogger inLog, SemanticConfig instruction, Collection<MultiValued> inRecords)
+	{
+		Collection<MultiValued> createdVectors = new ArrayList();
+		int indexed = index(instruction, inRecords, createdVectors);
+		instruction.getKMeansIndexer().setCentroids(inLog, createdVectors);
+		
+		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
+		{
+			MultiValued data = (MultiValued) iterator.next();
+			data.setValue(instruction.getFieldName()+ "indexed", true);
 		}
 		
+		log.info("Indexed " + instruction.getFieldName() + " on: " + indexed + "/" + inRecords.size());
 	}
 
-	protected void indexResults(ScriptLogger inLog, SemanticConfig instruction,  HitTracker hits)
+	
+	protected void indexTracker(ScriptLogger inLog, SemanticConfig instruction,  HitTracker hits)
 	{
-		int indexed = 0;
-		Collection<MultiValued> createdVectors = null;
 		for(int i=0;i < hits.getTotalPages();i++)
 		{
 			hits.setPage(i+1);
 			//long start = System.currentTimeMillis();
 			Collection<MultiValued> onepage = hits.getPageOfHits();
-			indexed = indexed + index(instruction, onepage, createdVectors);
-			if (createdVectors!= null && createdVectors.size() > 5000)
-			{
-				instruction.getKMeansIndexer().setCentroids(inLog, createdVectors);
-				createdVectors.clear();
-			}
-		}
-		inLog.info("Total indexed: " + indexed + "  from " + hits);
-		if (createdVectors!= null)
-		{
-			instruction.getKMeansIndexer().setCentroids(inLog, createdVectors);
+			indexData(inLog, instruction, onepage);
 		}
 	}
 	
@@ -281,15 +318,19 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 		for (Iterator iterator = entitiestoscan.iterator(); iterator.hasNext();)
 		{
 			MultiValued entity = (MultiValued) iterator.next();
-			
+			Collection values = entity.getValues(inStructions.getFieldName());
+			if( values == null || values.isEmpty())
+			{
+				continue;
+			}
 			JSONObject entry = new JSONObject();
 			String moduleid = entity.get("entitysourcetype");
 			if( moduleid == null)
 			{
 				moduleid = "asset";
 			}
-			entry.put("id",moduleid + ":" + entity.getId());
-			Collection values = entity.getValues(inStructions.getFieldName());
+			entry.put("id",moduleid + ":" + entity.getId());  //Most unique
+			
 			
 			String out = collectText(values);
 			if (out == null)
@@ -547,18 +588,38 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 			for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
 			{
 				MultiValued data = (MultiValued) iterator.next();
-				Collection existing = data.getValues(fieldname);
-				if(existing != null && !existing.isEmpty())
-				{
-					continue;
-				}
 				String moduleid = data.get("entitysourcetype");
 				if( moduleid == null)
 				{
 					throw new OpenEditException("Requires sourcetype be set "  + data);
 				}
+				MultiValued module = (MultiValued)getMediaArchive().getCachedData("module", moduleid);
+				if( !module.getBoolean("semanticenabled") )
+				{
+					continue;
+				}
+				
+				Collection existing = data.getValues(fieldname);
+				if(existing != null && !existing.isEmpty())
+				{
+					continue;
+				}
 				Collection<String> newvalues = createSemanticValues(llmsemanticconnection,inConfig,model,moduleid,data);
 				data.setValue(fieldname,newvalues);
+			}
+			if( isIndexingVectors() )
+			{
+				log.info("Skipping indexing vectors for now, event will handle it later");
+				return;
+			}
+			setIndexingVectors(true);
+			try
+			{
+				indexData(inLog,inRecords);
+			}
+			finally
+			{
+				setIndexingVectors(false);
 			}
 
 		}
