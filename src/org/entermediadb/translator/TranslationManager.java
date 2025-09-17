@@ -335,7 +335,7 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 			for (Iterator iterator2 = detailsfields.keySet().iterator(); iterator2.hasNext();)
 			{
 				String inKey = (String) iterator2.next();
-				PropertyDetail detail = getMediaArchive().getSearcher("moduleid").getDetail(inKey);
+				PropertyDetail detail = getMediaArchive().getSearcher(moduleid).getDetail(inKey);
 				if (detail != null && detail.isMultiLanguage())
 				{
 					LanguageMap value = data.getLanguageMap(inKey);
