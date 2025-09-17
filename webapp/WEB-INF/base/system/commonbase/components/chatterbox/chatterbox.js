@@ -13,11 +13,7 @@ lQuery("a.chatEmDialog").livequery("click", function (e) {
 });
 
 
-
 function chatterbox() {
-  //console.log('loaded');
-
-  //reloadAll();
 
   if (chatopen) {
     return;
@@ -281,50 +277,53 @@ function connect() {
     var user = app.data("user");
 
     if (message.user != user && message.user != "agent") {
-      function showNotification() {
-        /*
-				if ($("#aichatsearch").length > 0) {
-					return;
-				}
-				*/
-        var header = "New Message";
-        if (message.name !== undefined) {
-          header = message.name;
-        }
-        if (message.topic != undefined) {
-          header += " in " + message.topic;
-        }
-        var notification = new Notification(header, {
-          //TODO: URL?
-          body: message.message,
-          renotify: false,
-          tag: message.message,
-          icon: apphome + "/theme/images/logo.png",
-        });
-        notification.addEventListener("click", function (event) {
-          //window.open('http://www.mozilla.org', '_blank');
-        });
-        play();
-      }
+		if (!document.hasFocus())
+		{
+		      function showNotification() {
+			        var header = "New Message";
+			        if (message.name !== undefined) {
+			          header = message.name;
+			        }
+			        if (message.topic != undefined) {
+			          header += " in " + message.topic;
+			        }
+					var messagebody = message.message;
+					if (messagebody != null)
+					{
+						messagebody = "New message...";
+					}
+			        var notification = new Notification(header, {
+			          //TODO: URL?
+			          body: message.message,
+			          renotify: false,
+			          tag: messagebody,
+			          icon: apphome + "/theme/images/logo.png",
+			        });
+			        notification.addEventListener("click", function (event) {
+			          //window.open('http://www.mozilla.org', '_blank');
+			        });
+			        play();
+			}      
 
-      /*Check para permissions and ask.*/
-      if (Notification.permission === "granted") {
-        console.log("Show notification");
-		showNotification();
+	      /*Check para permissions and ask.*/
+	      if (Notification.permission === "granted") {
+	        
+			showNotification();
+	      } 
+		  else if (Notification.permission !== "denied") 
+		  {
+				
+		        createNotificationSubscription();
 		
-		
-      } else if (Notification.permission !== "denied") {
-		console.log("Notification: " + Notification.permission);
-        createNotificationSubscription();
-
-        Notification.requestPermission().then((permission) => {
-          if (permission === "granted") {
-			console.log("Show notification (2)");
-            showNotification();
-          }
-        });
-      }
-    }
+		        Notification.requestPermission().then((permission) => {
+		          if (permission === "granted") {
+					
+		            showNotification();
+		          }
+		        });
+  		  }
+       }
+	}
   };
 }
 
