@@ -265,7 +265,7 @@ public class ClassifyManager extends InformaticsProcessor
 			if(isDocPage)
 			{
 				params.put("docpage", isDocPage);
-				base64EncodedString = loadImageContent(inEntity);
+//				base64EncodedString = loadImageContent(inEntity);
 			}
 
 			try 

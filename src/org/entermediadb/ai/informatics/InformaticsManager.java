@@ -124,7 +124,7 @@ public class InformaticsManager extends BaseAiManager
 
 		HitTracker pendingrecords = query.search();
 		pendingrecords.enableBulkOperations();
-		pendingrecords.setHitsPerPage(50);
+		pendingrecords.setHitsPerPage(5); //TODO:
 		
 		if (!pendingrecords.isEmpty())
 		{
@@ -142,12 +142,12 @@ public class InformaticsManager extends BaseAiManager
 					processor.processInformaticsOnEntities(inLog, config, pageofhits);
 				}
 				//Group them by type
-				for (Iterator iterator = pendingrecords.iterator(); iterator.hasNext();)
+				for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
 				{
 					Data data = (Data) iterator.next();
 					data.setValue("taggedbyllm", true);
 				}
-				Map<String,Collection> groupbymodule = groupByModule(pendingrecords);
+				Map<String, Collection> groupbymodule = groupByModule(pageofhits);
 				for (Iterator iterator = groupbymodule.keySet().iterator(); iterator.hasNext();)
 				{
 					String moduleid = (String) iterator.next();

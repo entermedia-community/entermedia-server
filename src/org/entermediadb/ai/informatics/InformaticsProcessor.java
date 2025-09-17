@@ -62,11 +62,7 @@ public abstract class InformaticsProcessor extends BaseAiManager
 				}
 
 				Collection<String> textValues = new ArrayList<>();
-				if (detail.isMultiValue())
-				{
-					textValues.addAll(values);
-				}
-				else if (detail.isList())
+				if (detail.isList())
 				{
 					for (Iterator iter2 = values.iterator(); iter2.hasNext();)
 					{
@@ -78,6 +74,10 @@ public abstract class InformaticsProcessor extends BaseAiManager
 							textValues.add(v);
 						}
 					}
+				}
+				else if (detail.isMultiValue())
+				{
+					textValues.addAll(values);
 				}
 				stringValue = String.join(", ", textValues);
 			}
