@@ -73,6 +73,8 @@ curl -XGET 'http://localhost:9200/finder_catalog/entityquestions/_search' -d '{ 
 
 curl -XGET 'http://localhost:9200/site_catalog/trackedtopics/_search' -d '{ "query" : {	"match_all" : {} } }' | python3 -mjson.tool
 
+curl -XGET 'http://localhost:9200/finder_catalog/informatics/_search' -d '{ "query" : {	"match_all" : {} } }' | python3 -mjson.tool
+
 
 curl -XGET 'http://localhost:9200/finder_catalog/lock/_search' -d '{ "query" : {	"match_all" : {} } }' | python3 -mjson.tool
 
