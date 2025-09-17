@@ -3140,8 +3140,12 @@ public class MediaArchive implements CatalogEnabled
 		Collection<MultiValued> results = null;
 		if(ids.size() == 1)
 		{
+			results = new ArrayList(1);
 			MultiValued res = (MultiValued) getCachedData(inDetail.getListId(), ids.iterator().next());
-			results.add(res);
+			if( res != null)
+			{
+				results.add(res);
+			}
 		}
 		else
 		{			
