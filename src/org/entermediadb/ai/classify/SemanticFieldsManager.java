@@ -155,7 +155,7 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 			for (Iterator iteratorS = getSemanticConfigs().iterator(); iteratorS.hasNext();)
 			{
 				SemanticConfig instruction = (SemanticConfig) iteratorS.next();
-				QueryBuilder query = getMediaArchive().localQuery("modulesearch");
+				QueryBuilder query = getMediaArchive().query("modulesearch");
 				query.exists(instruction.getFieldName());
 				query.exact(instruction.getFieldName() + "indexed", false);
 				query.put("searchtypes", ids);
@@ -187,6 +187,13 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 		Collection<MultiValued> createdVectors = new ArrayList();
 		int indexed = index(instruction, inRecords, createdVectors);
 		instruction.getKMeansIndexer().setCentroids(inLog, createdVectors);
+		
+		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
+		{
+			MultiValued data = (MultiValued) iterator.next();
+			data.setValue(instruction.getFieldName()+ "indexed", true);
+		}
+		
 		log.info("Indexed " + instruction.getFieldName() + " on: " + indexed + "/" + inRecords.size());
 	}
 
@@ -581,15 +588,21 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 			for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
 			{
 				MultiValued data = (MultiValued) iterator.next();
-				Collection existing = data.getValues(fieldname);
-				if(existing != null && !existing.isEmpty())
-				{
-					continue;
-				}
 				String moduleid = data.get("entitysourcetype");
 				if( moduleid == null)
 				{
 					throw new OpenEditException("Requires sourcetype be set "  + data);
+				}
+				MultiValued module = (MultiValued)getMediaArchive().getCachedData("module", moduleid);
+				if( !module.getBoolean("semanticenabled") )
+				{
+					continue;
+				}
+				
+				Collection existing = data.getValues(fieldname);
+				if(existing != null && !existing.isEmpty())
+				{
+					continue;
 				}
 				Collection<String> newvalues = createSemanticValues(llmsemanticconnection,inConfig,model,moduleid,data);
 				data.setValue(fieldname,newvalues);

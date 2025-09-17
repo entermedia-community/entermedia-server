@@ -384,6 +384,17 @@ public class KMeansIndexer implements CatalogEnabled {
 
 	public Collection<RankedResult> searchNearestItems(List<Double> searchVector)
 	{
+		if( getClusters().isEmpty() )
+		{
+			int size = getMediaArchive().query(getSearchType()).all().search().size();
+			if( size == 0 )
+			{
+				return Collections.EMPTY_LIST;
+			}
+			ScriptLogger logger = new ScriptLogger();
+			reinitClusters(logger);
+		}
+		
 		List<KMeansCloseCluster> closestclusters = (List<KMeansCloseCluster>)new ArrayList();
 		
 		for (MultiValued cluster : getClusters())
@@ -429,7 +440,7 @@ public class KMeansIndexer implements CatalogEnabled {
 		
 		HitTracker hits = getMediaArchive().query(getSearchType()).orgroup("nearbycentroidids",goodcentroids).search();
 		//Double check these match and also load up Organized modules?
-		List<RankedResult> finalmatches = new ArrayList();
+		List<RankedResult> finalmatches  = new ArrayList(hits.size());
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			MultiValued embedding = (MultiValued) iterator.next();
@@ -854,6 +865,7 @@ public class KMeansIndexer implements CatalogEnabled {
 			{
 //				long end = System.currentTimeMillis();
 				setCentroids(hit); //Set em <-----
+
 //				start = System.currentTimeMillis();
 //				log.info( "Took " + (start-end) );
 			} catch( IllegalArgumentException ex)
