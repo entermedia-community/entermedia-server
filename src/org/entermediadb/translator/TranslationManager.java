@@ -323,6 +323,10 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 		{
 			MultiValued data = (MultiValued) iterator.next();
 			String moduleid = data.get("entitysourcetype");
+			if(moduleid == null || moduleid.isEmpty())
+			{
+				moduleid = "asset";
+			}
 			inLog.info("Translating (" + count + "/" + inRecordsToTranslate.size() + ") type: " + moduleid + ", " + data.getName());
 			count++;
 

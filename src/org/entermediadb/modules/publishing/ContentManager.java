@@ -982,6 +982,7 @@ public class ContentManager implements CatalogEnabled
 		MediaArchive archive = getMediaArchive();
 
 		Asset asset = getMediaArchive().getAsset(inAssetId);
+		Data entitydocument = archive.getData("entitydocument", inEntityId);
 
 		String fulltext = (String) asset.getValue("fulltext");
 
@@ -1047,10 +1048,11 @@ public class ContentManager implements CatalogEnabled
 				docpage = archive.getSearcher("entitydocumentpage").createNewData();
 			}
 
-			docpage.setName("Page #" + pagenum);
+			String pagename = entitydocument.getName() + " - Page " + pagenum;
+			docpage.setName(pagename);
 			docpage.setValue("pagenum", pagenum);
 			docpage.setValue("longcaption", pageText);
-			docpage.setValue("entitydocument", inEntityId);
+			docpage.setValue("entitydocument", entitydocument.getId());
 			docpage.setValue("parentasset", inAssetId);
 			docpage.setValue("entity_date", new Date());
 
