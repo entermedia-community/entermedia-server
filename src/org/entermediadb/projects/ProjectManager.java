@@ -1806,6 +1806,7 @@ public class ProjectManager implements CatalogEnabled
 					orchild.addFreeFormQuery("description", fulltext.getValue());  //(TExt1 or Text2 ) and Collection ID
 				}
 				builder.getQuery().addChildQuery(orchild);
+				
 				builder.hitsPerPage(ids.getHitsPerPage());
 			}
 			else
@@ -1833,7 +1834,7 @@ public class ProjectManager implements CatalogEnabled
 		//#if( !$userprofile.containsValue("blockedusers",$upload.owner) )
 
 		
-		topuploads = builder.named("topuploads").sort("uploaddateDown").search(inReq);
+		topuploads = builder.named("topuploads").sort("entity_dateDown").search(inReq);
 		
 		String page = inReq.getRequestParameter("page");
 		if( page != null)
