@@ -752,12 +752,20 @@ $(document).ready(function () {
 	$(document).ajaxError(function (e, jqxhr, settings, exception) {
 		console.log(e, jqxhr, exception);
 
-		if (exception == "abort") {
+		var err = "An error occurred while processing the request!";
+		if (exception == "timeout") {
+			err = "Request timed out!";
+		}
+		if (exception == "abort" || jqXhr.readyState == 0) {
 			if (jqXhr.readyState == 0) {
-				console.log("Network error! Please check your network connection.");
-			} else {
-				console.log("Request aborted by user or another script.");
+				err = "Request aborted by user or another script.";
 			}
+			if (!navigator.onLine) {
+				err = "Network error! Please check your network connection.";
+			} else if (exception == "abort") {
+				err = "Request aborted by user or another script.";
+			}
+			console.log(err);
 			return;
 		}
 
