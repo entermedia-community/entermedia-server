@@ -12,7 +12,6 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.LlmConnection;
@@ -21,8 +20,6 @@ import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.openedit.util.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -31,6 +28,7 @@ import org.openedit.OpenEditException;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.util.JSONParser;
 
 public class SemanticFieldsManager extends InformaticsProcessor implements CatalogEnabled
 {
@@ -278,7 +276,7 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 		}
 		catch( Throwable ex)
 		{
-			throw new OpenEditException("Error reading semantics" ,ex); //Should never error
+			throw new OpenEditException("Error reading semantics", ex); //Should never error
 		}
 		
 		return count;
@@ -340,6 +338,10 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 			entry.put("text",out);
 			list.add(entry);
 		}
+		if( list.size() == 0)
+		{
+			return new ArrayList();
+		}
 		tosendparams.put("data",list);
 		
 		CloseableHttpResponse resp = askServer(tosendparams);
@@ -376,10 +378,12 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 		CloseableHttpResponse resp;
 		String url = getMediaArchive().getCatalogSettingValue("ai_vectorizer_server");
 		resp = getSharedConnection().sharedPostWithJson(url + "/text",tosendparams);
-		if (resp.getStatusLine().getStatusCode() != 200)
+		int statuscode = resp.getStatusLine().getStatusCode();
+		if (statuscode != 200)
 		{
 			//remote server error, may be a broken image
 			getSharedConnection().release(resp);
+			log.error(resp.toString());
 			throw new OpenEditException("Server not working" + resp.getStatusLine());
 		}
 		return resp;
@@ -492,8 +496,7 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 		tosendparams.put("data",list);
 		CloseableHttpResponse resp = askServer(tosendparams);
 		String responseStr = getSharedConnection().parseText(resp);
-		JSONObject objt;
-			objt = (JSONObject)new JSONParser().parse(responseStr);
+		JSONObject objt = (JSONObject) new JSONParser().parse(responseStr);
 		log.info("Got response " + objt.keySet());
 		return objt;
 	}
