@@ -982,7 +982,6 @@ public class ContentManager implements CatalogEnabled
 		MediaArchive archive = getMediaArchive();
 
 		Asset asset = getMediaArchive().getAsset(inAssetId);
-		Data entitydocument = archive.getData("entitydocument", inEntityId);
 
 		String fulltext = (String) asset.getValue("fulltext");
 
@@ -991,24 +990,10 @@ public class ContentManager implements CatalogEnabled
 			return;
 		}
 		JSONParser parser = new JSONParser();
-		Object pages = parser.parse(fulltext);
-
-		Collection<String> pagesFulltext = new ArrayList<String>();
-		if(pages instanceof JSONArray)
+		Collection pagesFulltext = parser.parseCollection(fulltext);
+		if (pagesFulltext == null || pagesFulltext.size() == 0)
 		{
-			JSONArray arr = (JSONArray) pages;
-			for (int i = 0; i < arr.size(); i++)
-			{
-				String text = (String) arr.get(i);
-				if(text != null)
-				{
-					pagesFulltext.add(text);
-				}
-			}
-		}
-		else if(pages instanceof String)
-		{
-			pagesFulltext.add((String)pages);
+			return;
 		}
 
 		Collection<Data> existingPages = archive.query("entitydocumentpage").exact("entitydocument", inEntityId).exact("parentasset", inAssetId).search();
@@ -1046,13 +1031,13 @@ public class ContentManager implements CatalogEnabled
 			else
 			{
 				docpage = archive.getSearcher("entitydocumentpage").createNewData();
+				String pagename = asset.getName() + " - Page " + pagenum;
+				docpage.setName(pagename);
 			}
 
-			String pagename = entitydocument.getName() + " - Page " + pagenum;
-			docpage.setName(pagename);
 			docpage.setValue("pagenum", pagenum);
 			docpage.setValue("longcaption", pageText);
-			docpage.setValue("entitydocument", entitydocument.getId());
+			docpage.setValue("entitydocument", inEntityId);
 			docpage.setValue("parentasset", inAssetId);
 			docpage.setValue("entity_date", new Date());
 
@@ -1063,6 +1048,11 @@ public class ContentManager implements CatalogEnabled
 				archive.saveData("entitydocumentpage", tosave);
 				tosave.clear();
 			}
+		}
+		if(tosave.size() > 0)
+		{
+			archive.saveData("entitydocumentpage", tosave);
+			tosave.clear();
 		}
 
 		archive.fireMediaEvent("llm/addmetadata", null);
