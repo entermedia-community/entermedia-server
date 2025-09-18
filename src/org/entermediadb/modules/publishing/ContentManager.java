@@ -1054,8 +1054,6 @@ public class ContentManager implements CatalogEnabled
 			archive.saveData("entitydocumentpage", tosave);
 			tosave.clear();
 		}
-
-		archive.fireMediaEvent("llm/addmetadata", null);
 	}
 
 }
