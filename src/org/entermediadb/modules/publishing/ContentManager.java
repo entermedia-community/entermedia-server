@@ -990,24 +990,10 @@ public class ContentManager implements CatalogEnabled
 			return;
 		}
 		JSONParser parser = new JSONParser();
-		Object pages = parser.parse(fulltext);
-
-		Collection<String> pagesFulltext = new ArrayList<String>();
-		if(pages instanceof JSONArray)
+		Collection pagesFulltext = parser.parseCollection(fulltext);
+		if (pagesFulltext == null || pagesFulltext.size() == 0)
 		{
-			JSONArray arr = (JSONArray) pages;
-			for (int i = 0; i < arr.size(); i++)
-			{
-				String text = (String) arr.get(i);
-				if(text != null)
-				{
-					pagesFulltext.add(text);
-				}
-			}
-		}
-		else if(pages instanceof String)
-		{
-			pagesFulltext.add((String)pages);
+			return;
 		}
 
 		Collection<Data> existingPages = archive.query("entitydocumentpage").exact("entitydocument", inEntityId).exact("parentasset", inAssetId).search();
@@ -1045,9 +1031,10 @@ public class ContentManager implements CatalogEnabled
 			else
 			{
 				docpage = archive.getSearcher("entitydocumentpage").createNewData();
+				String pagename = asset.getName() + " - Page " + pagenum;
+				docpage.setName(pagename);
 			}
 
-			docpage.setName("Page #" + pagenum);
 			docpage.setValue("pagenum", pagenum);
 			docpage.setValue("longcaption", pageText);
 			docpage.setValue("entitydocument", inEntityId);
@@ -1062,8 +1049,11 @@ public class ContentManager implements CatalogEnabled
 				tosave.clear();
 			}
 		}
-
-		archive.fireMediaEvent("llm/addmetadata", null);
+		if(tosave.size() > 0)
+		{
+			archive.saveData("entitydocumentpage", tosave);
+			tosave.clear();
+		}
 	}
 
 }

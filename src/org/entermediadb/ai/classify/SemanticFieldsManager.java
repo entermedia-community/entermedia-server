@@ -538,9 +538,7 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 				return null;
 			}
 
-			String fieldname = inConfig.get("fieldname");
-			
-			Map<String, Collection> results  = new HashMap<String, Collection>();
+			String fieldname = inConfig.get("fieldname"); 
 			
 			Collection existing = inData.getValues(fieldname);
 			if(existing != null && !existing.isEmpty())
@@ -566,9 +564,21 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 				return null;
 			}
 
-			JSONArray values = (JSONArray) structure.get(fieldname);
-			return (Collection<String>)values;
-
+			JSONArray jsonvalues = (JSONArray) structure.get(fieldname);
+			Collection<String> values = new ArrayList();
+			//replace underscore with spaces
+			for (Iterator iterator = jsonvalues.iterator(); iterator.hasNext();) {
+				String val = (String) iterator.next();
+				if(val != null)
+				{
+					val = val.replaceAll("_", " ").trim();
+					if( val.length() > 0)
+					{
+						values.add(val);
+					}
+				}
+			}
+			return values;
 		}
 
 		@Override
