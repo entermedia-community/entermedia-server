@@ -87,7 +87,7 @@ public class InformaticsManager extends BaseAiManager
 
 	public void processEntities(ScriptLogger inLog)
 	{
-		inLog.info("Entities");
+		inLog.info("Processing Entities Informatics");
 		HitTracker allmodules = getMediaArchive().query("module").exact("semanticenabled", true).search();
 		Collection<String> ids = allmodules.collectValues("id");
 
@@ -140,6 +140,7 @@ public class InformaticsManager extends BaseAiManager
 				{
 					MultiValued config = (MultiValued) iterator2.next();
 					InformaticsProcessor processor = loadProcessor(config.get("bean"));
+					inLog.info("Processing : " + config);
 					processor.processInformaticsOnEntities(inLog, config, pageofhits);
 				}
 				//Group them by type
