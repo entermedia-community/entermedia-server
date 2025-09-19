@@ -150,6 +150,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			docpage.setValue("pagenum", pagenum);
 			docpage.setValue("longcaption", pageText);
 			docpage.setValue("entitydocument", inEntityDocument.getId());
+			docpage.setValue("primaryimage", asset.getId());
 			docpage.setValue("parentasset", asset.getId());
 			docpage.setValue("entity_date", new Date());
 

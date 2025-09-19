@@ -953,8 +953,12 @@ public class KMeansIndexer implements CatalogEnabled {
 		
 		fieldClusters = null; //reload em
 			
+		Double maxdistancetomatch = inSemanticField.getDouble( "maxdistancetomatch");
+		if(maxdistancetomatch != null)
+		{			
+			fieldSettings.maxdistancetomatch = maxdistancetomatch;
+		}
 
-		fieldSettings.maxdistancetomatch = inSemanticField.getDouble( "maxdistancetomatch");
 			
 			/*
 			 *  Choosing the Number of Centroids (k)

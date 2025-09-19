@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,9 +24,7 @@ import org.entermediadb.asset.importer.DitaImporter;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.net.HttpSharedConnection;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.openedit.util.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
