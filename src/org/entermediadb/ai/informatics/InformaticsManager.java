@@ -117,7 +117,6 @@ public class InformaticsManager extends BaseAiManager
 		else {
 			date = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
 		}
-		inLog.info("Processing entity uploaded after: " + date);
 		query.after("entity_date", date);
 
 		inLog.info("Running entity search query: " + query);
@@ -125,7 +124,9 @@ public class InformaticsManager extends BaseAiManager
 		HitTracker pendingrecords = query.search();
 		pendingrecords.enableBulkOperations();
 		pendingrecords.setHitsPerPage(5); //TODO:
-		
+
+		inLog.info("Processing  " + ids + " modules " + pendingrecords);
+
 		if (!pendingrecords.isEmpty())
 		{
 			inLog.info("Adding metadata to: " + pendingrecords);
