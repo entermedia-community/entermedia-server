@@ -36,7 +36,7 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 	
 	protected boolean fieldIndexingVectors;
 	
-	protected String fieldSemanticSettingId = "semantictopic";
+	protected String fieldSemanticSettingId = "semantictopics";
 	
 	public String getSemanticSettingId()
 	{
@@ -144,7 +144,7 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 			instructions = (SemanticConfig)getModuleManager().getBean(getCatalogId(),"semanticConfig",false);
 			getMediaArchive().getCacheManager().put("semantictopicsinstructions", getSemanticSettingId(),instructions);
 			
-			MultiValued settings = (MultiValued)getMediaArchive().getCachedData("informatics",sematicsettingsid);
+			MultiValued settings = (MultiValued)getMediaArchive().getData("informatics",sematicsettingsid);
 			if (settings == null)
 			{
 				log.info("Emppty settings for " + sematicsettingsid);
