@@ -977,11 +977,38 @@ public class ContentManager implements CatalogEnabled
 
 	}
 
-	public void splitEntityDocuments(String inEntityId, String inAssetId) throws Exception
+	public void splitDocument(String inAssetId) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
 		Asset asset = getMediaArchive().getAsset(inAssetId);
+		if (asset == null)
+		{
+			return;
+		}
+		else
+		{
+			String rendertype = archive.getMediaRenderType(asset.getFileFormat());
+			if(rendertype == null || !rendertype.equals("document"))
+			{
+				return;
+			}
+		}
+		
+		Data entitydoc = archive.query("entitydocument").exact("parentasset", inAssetId).searchOne();
+		
+		if(entitydoc == null)
+		{
+			entitydoc = archive.getSearcher("entitydocument").createNewData();
+			String entitydocname = asset.getName().replaceAll("\\..*$", "");
+			if(entitydocname.length() == 0) {
+				entitydocname = asset.getName();
+			}
+			entitydoc.setName(entitydocname);
+			entitydoc.setValue("parentasset", inAssetId);
+			entitydoc.setValue("entity_date", new Date());
+			archive.saveData("entitydocument", entitydoc);
+		}
 
 		String fulltext = (String) asset.getValue("fulltext");
 
@@ -989,6 +1016,7 @@ public class ContentManager implements CatalogEnabled
 		{
 			return;
 		}
+		
 		JSONParser parser = new JSONParser();
 		Collection pagesFulltext = parser.parseCollection(fulltext);
 		if (pagesFulltext == null || pagesFulltext.size() == 0)
@@ -996,7 +1024,9 @@ public class ContentManager implements CatalogEnabled
 			return;
 		}
 
-		Collection<Data> existingPages = archive.query("entitydocumentpage").exact("entitydocument", inEntityId).exact("parentasset", inAssetId).search();
+		HitTracker existingPages = archive.query("entitydocumentpage")
+				.exact("entitydocument", entitydoc.getId())
+				.exact("parentasset", inAssetId).search();
 
 		List<Data> tosave = new ArrayList();
 		int pagenum = 0;
@@ -1006,24 +1036,19 @@ public class ContentManager implements CatalogEnabled
 
 			String pageText = (String) iterator.next();
 
-			Data existingPage = null;
+			Data docpage = null;
 			for (Iterator iterator2 = existingPages.iterator(); iterator2.hasNext();) {
 				Data d = (Data) iterator2.next();
 				int p = (int) d.getValue("pagenum");
 				if( p == pagenum)
 				{
-					existingPage = d;
+					docpage = d;
 					break;
 				}
 			}
-//			if(pageText.trim().length() == 0)
-//			{
-//				continue;
-//			}
-			Data docpage = null;
-			if(existingPage != null)
+
+			if(docpage != null)
 			{
-				docpage = existingPage;
 				docpage.setValue("taggedbyllm", false);
 				docpage.setValue("semanticindexed", false);
 				docpage.setValue("semantictopics", null);
@@ -1031,13 +1056,13 @@ public class ContentManager implements CatalogEnabled
 			else
 			{
 				docpage = archive.getSearcher("entitydocumentpage").createNewData();
-				String pagename = asset.getName() + " - Page " + pagenum;
+				String pagename = entitydoc.getName() + " - Page " + pagenum;
 				docpage.setName(pagename);
 			}
 
 			docpage.setValue("pagenum", pagenum);
 			docpage.setValue("longcaption", pageText);
-			docpage.setValue("entitydocument", inEntityId);
+			docpage.setValue("entitydocument", entitydoc.getId());
 			docpage.setValue("parentasset", inAssetId);
 			docpage.setValue("entity_date", new Date());
 

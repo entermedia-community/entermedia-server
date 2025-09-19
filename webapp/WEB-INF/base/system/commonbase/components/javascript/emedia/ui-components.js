@@ -198,7 +198,8 @@ jQuery(document).ready(function () {
 		var btn = $(this);
 		btn.addClass("loading");
 		btn.runAjax(function () {
-			btn.removeClass("loading");
+			btn.parent().remove();
+			customToast("Document split and pages queued for indexing");
 		});
 	});
 
@@ -619,139 +620,135 @@ jQuery(document).ready(function () {
 	showsidebaruploads = function () {
 		$("#sidebarUserUploads").trigger("click");
 	};
-	
-	
-	
+
 	autosubmitformtriggers = function (form) {
-			if ($(form).hasClass("autosubmitform")) {
-				$("select", form).on("select2:select", function () {
-					if (!$(this).hasClass("cancelautosubmit")) {
-						form.trigger("submit");
-					}
-				});
-				$("select", form).on("change", function () {
-					if (!$(this).hasClass("select2")) {
-						if (!$(this).hasClass("cancelautosubmit")) {
-							form.trigger("submit");
-						}
-					}
-				});
-				$("select", form).on("select2:unselect", function () {
-					if (!$(this).hasClass("cancelautosubmit")) {
-						$("#filtersremoveterm", form).val($(this).data("searchfield"));
-						form.trigger("submit");
-					}
-				});
-				$("input[type=checkbox]", form).change(function () {
-					if ($(this).hasClass("filtercheck")) {
-						var fieldname = $(this).data("fieldname");
-						var fieldtype = $(this).data("fieldtype");
-						if (fieldtype == "boolean") {
-							if ($("#filtersremoveterm", form).length) {
-								$("#filtersremoveterm", form).val(fieldname);
-							}
-						}
-						var boxes = $(".filtercheck" + fieldname + ":checkbox:checked", form);
-						if (boxes.length == 0) {
-							if ($("#filtersremoveterm", form).length) {
-								$("#filtersremoveterm", form).val(fieldname);
-							}
-						}
-					} else {
-						var parent = $(this).closest(".boolean-switches");
-						if ($(this).hasClass("true-switch")) {
-							parent.find(".false-switch").prop("checked", false);
-						} else {
-							parent.find(".true-switch").prop("checked", false);
-						}
-					}
+		if ($(form).hasClass("autosubmitform")) {
+			$("select", form).on("select2:select", function () {
+				if (!$(this).hasClass("cancelautosubmit")) {
 					form.trigger("submit");
-				});
-				$("input[type=radio], .selectbox", form).change(function () {
-					form.trigger("submit");
-				});
-
-				$("input[type=text]", form)
-					.not(".datepicker")
-					.not(".typeahead")
-					.change(function () {
-						form.trigger("submit");
-					});
-
-				$("input[type=text].typeahead", form).on("keyup change", function (e) {
-					if (e.keyCode == 13) {
-						form.trigger("submit");
-					}
-				});
-			}
-		};
-
-		lQuery(".autosubmitform").livequery(function () {
-			autosubmitformtriggers($(this));
-		});
-
-		$(".autosubmitform").on("submit", function () {
-			var form = $(this);
-			// Remove required from Filters Form
-			if (form.hasClass("filterform")) {
-				$(".required", form).each(function () {
-					$(this).removeClass("required");
-				});
-			}
-			if (form.valid()) {
-				return true;
-			}
-			return false;
-		});
-	
-	
-	//Select Generic Table - Entity Data picuers review dataentitypicker.js
-		lQuery(".emselectable table td").livequery("click", function (e) {
-			if (!isValidTarget(e)) {
-				return true;
-			}
-
-			var clicked = $(this);
-			clicked.css("pointer-events", "none");
-
-			var emselectable = clicked.closest("#emselectable");
-			if (emselectable.length < 1) {
-				emselectable = clicked.closest(".emselectable");
-			}
-			var row = clicked.closest("tr");
-			var rowid = row.attr("rowid");
-			if (rowid == null)
-			{
-				rowid = row.data("dataid");
-			}
-
-			emselectable.find("table tr").each(function (index) {
-				clicked.removeClass("emhighlight");
-			});
-			row.addClass("emhighlight");
-			row.removeClass("emborderhover");
-
-			var url = emselectable.data("url");
-
-			var form = emselectable.find("form");
-			if (!form.length) {
-				form = emselectable.data("emselectableform");
-				if (form) {
-					form = $("#" + form);
 				}
-			}
-			var data = row.data();
+			});
+			$("select", form).on("change", function () {
+				if (!$(this).hasClass("select2")) {
+					if (!$(this).hasClass("cancelautosubmit")) {
+						form.trigger("submit");
+					}
+				}
+			});
+			$("select", form).on("select2:unselect", function () {
+				if (!$(this).hasClass("cancelautosubmit")) {
+					$("#filtersremoveterm", form).val($(this).data("searchfield"));
+					form.trigger("submit");
+				}
+			});
+			$("input[type=checkbox]", form).change(function () {
+				if ($(this).hasClass("filtercheck")) {
+					var fieldname = $(this).data("fieldname");
+					var fieldtype = $(this).data("fieldtype");
+					if (fieldtype == "boolean") {
+						if ($("#filtersremoveterm", form).length) {
+							$("#filtersremoveterm", form).val(fieldname);
+						}
+					}
+					var boxes = $(".filtercheck" + fieldname + ":checkbox:checked", form);
+					if (boxes.length == 0) {
+						if ($("#filtersremoveterm", form).length) {
+							$("#filtersremoveterm", form).val(fieldname);
+						}
+					}
+				} else {
+					var parent = $(this).closest(".boolean-switches");
+					if ($(this).hasClass("true-switch")) {
+						parent.find(".false-switch").prop("checked", false);
+					} else {
+						parent.find(".true-switch").prop("checked", false);
+					}
+				}
+				form.trigger("submit");
+			});
+			$("input[type=radio], .selectbox", form).change(function () {
+				form.trigger("submit");
+			});
 
-			if (form && form.length > 0) {
-				data.id = rowid;
-				data.oemaxlevel = form.data("oemaxlevel");
-				form.find("#emselectedrow").val(rowid);
-				form.find(".emneedselection").each(function () {
-					clicked.removeAttr("disabled");
+			$("input[type=text]", form)
+				.not(".datepicker")
+				.not(".typeahead")
+				.change(function () {
+					form.trigger("submit");
 				});
-				//form.submit();
-				// var targetdiv = form.data("targetdiv");
-				/*if ((typeof targetdiv) != "undefined") {
+
+			$("input[type=text].typeahead", form).on("keyup change", function (e) {
+				if (e.keyCode == 13) {
+					form.trigger("submit");
+				}
+			});
+		}
+	};
+
+	lQuery(".autosubmitform").livequery(function () {
+		autosubmitformtriggers($(this));
+	});
+
+	$(".autosubmitform").on("submit", function () {
+		var form = $(this);
+		// Remove required from Filters Form
+		if (form.hasClass("filterform")) {
+			$(".required", form).each(function () {
+				$(this).removeClass("required");
+			});
+		}
+		if (form.valid()) {
+			return true;
+		}
+		return false;
+	});
+
+	//Select Generic Table - Entity Data picuers review dataentitypicker.js
+	lQuery(".emselectable table td").livequery("click", function (e) {
+		if (!isValidTarget(e)) {
+			return true;
+		}
+
+		var clicked = $(this);
+		clicked.css("pointer-events", "none");
+
+		var emselectable = clicked.closest("#emselectable");
+		if (emselectable.length < 1) {
+			emselectable = clicked.closest(".emselectable");
+		}
+		var row = clicked.closest("tr");
+		var rowid = row.attr("rowid");
+		if (rowid == null) {
+			rowid = row.data("dataid");
+		}
+
+		emselectable.find("table tr").each(function (index) {
+			clicked.removeClass("emhighlight");
+		});
+		row.addClass("emhighlight");
+		row.removeClass("emborderhover");
+
+		var url = emselectable.data("url");
+
+		var form = emselectable.find("form");
+		if (!form.length) {
+			form = emselectable.data("emselectableform");
+			if (form) {
+				form = $("#" + form);
+			}
+		}
+		var data = row.data();
+
+		if (form && form.length > 0) {
+			data.id = rowid;
+			data.oemaxlevel = form.data("oemaxlevel");
+			form.find("#emselectedrow").val(rowid);
+			form.find(".emneedselection").each(function () {
+				clicked.removeAttr("disabled");
+			});
+			//form.submit();
+			// var targetdiv = form.data("targetdiv");
+			/*if ((typeof targetdiv) != "undefined") {
 						$(form).ajaxSubmit({
 							target : "#" + $.escapeSelector(targetdiv), 
 							data:data
@@ -759,29 +756,22 @@ jQuery(document).ready(function () {
 						});
 					} else {
 						*/
-				$(form).trigger("submit");
-				//}
-				if (form.hasClass("autoclose")) {
-					closeemdialog(form.closest(".modal"));
-				}
-				clicked.css("pointer-events", "auto");
-			} else if (url != undefined && url != "") {
-				if (emselectable.hasClass("showmodal")) {
-					emselectable.data("id", rowid);
-					emselectable.emDialog(null, function () {
-						clicked.css("pointer-events", "auto");
-					});
-					//showmodal(emselectable, url);;
-				} else {
-					parent.document.location.href = url + rowid; //?
-				}
+			$(form).trigger("submit");
+			//}
+			if (form.hasClass("autoclose")) {
+				closeemdialog(form.closest(".modal"));
 			}
-		});
-	
-	
-	
-	
-	
-	
-	
+			clicked.css("pointer-events", "auto");
+		} else if (url != undefined && url != "") {
+			if (emselectable.hasClass("showmodal")) {
+				emselectable.data("id", rowid);
+				emselectable.emDialog(null, function () {
+					clicked.css("pointer-events", "auto");
+				});
+				//showmodal(emselectable, url);;
+			} else {
+				parent.document.location.href = url + rowid; //?
+			}
+		}
+	});
 }); //on ready
