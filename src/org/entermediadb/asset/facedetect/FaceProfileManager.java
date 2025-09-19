@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.knn.KMeansIndexer;
+import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
@@ -206,6 +207,8 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled
 			
 			getMediaArchive().saveData("faceembedding",foundfacestosave);
 			
+			getKMeansIndexer().checkReinit();
+			
 			if( !foundfacestosave.isEmpty() )
 			{
 				clearAllCaches();
@@ -214,6 +217,7 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled
 			return foundfacestosave.size();
 	}
 	
+
 	protected void extractFaces(FaceScanInstructions instructions, Asset inAsset, List<MultiValued> inFoundfaces) throws Exception
 	{
 		
@@ -488,7 +492,7 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled
 		if (fieldKMeansIndexer == null)
 		{
 			fieldKMeansIndexer = (KMeansIndexer)getModuleManager().getBean(getCatalogId(),"kMeansIndexer",false);
-			MultiValued settings = (MultiValued)getMediaArchive().getData("semanticfield","facedetect");
+			MultiValued settings = (MultiValued)getMediaArchive().getData("informatics","facedetect");
 			fieldKMeansIndexer.loadSettings(settings);
 			//fieldKMeansIndexer.setSearchType("faceembedding");
 			fieldKMeansIndexer.setRandomSortBy("face_confidence");

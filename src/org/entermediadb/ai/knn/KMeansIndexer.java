@@ -126,6 +126,21 @@ public class KMeansIndexer implements CatalogEnabled {
 		fieldMediaArchive = inMediaArchive;
 	}
 
+	public void checkReinit()
+	{
+		if( getClusters().size() < getSettings().start_using_centroids_cluster_count)
+		{
+			Collection fields = new ArrayList(1);
+			fields.add(getFieldSaveVector());
+			Collection allrecords =  getMediaArchive().query(getSearchType()).all().excludefields(fields).search();
+			if( allrecords.size() > getSettings().start_using_centroids_size )
+			{
+				ScriptLogger inLog = new ScriptLogger();
+				reinitClusters(inLog);
+			}
+		}
+	}
+
 
 	public void reinitClusters(ScriptLogger inLog) 
 	{
@@ -384,24 +399,19 @@ public class KMeansIndexer implements CatalogEnabled {
 
 	public Collection<RankedResult> searchNearestItems(List<Double> searchVector)
 	{
-		if( getClusters().size() < 4)
+		if( getClusters().size() < getSettings().start_using_centroids_cluster_count)
 		{
-				Collection allrecords =  getMediaArchive().query(getSearchType()).all().search();
-				if( allrecords.isEmpty())
-				{
-					return Collections.EMPTY_LIST;
-				}
-				if( allrecords.size() < 300 )
-				{
-					List<RankedResult> finalmatches = findMatchesTo(getSettings(), searchVector, allrecords);
-					return finalmatches;
-				}
-				if( allrecords.size() > 2000)  //What is the right number?
-				{
-					ScriptLogger logger = new ScriptLogger();
-					reinitClusters(logger);
-				}
+			Collection allrecords =  getMediaArchive().query(getSearchType()).all().cachedSearch();
+			if( allrecords.isEmpty())
+			{
+				return Collections.EMPTY_LIST;
 			}
+			if( allrecords.size() < getSettings().start_using_centroids_size )
+			{
+				List<RankedResult> finalmatches = findMatchesTo(getSettings(), searchVector, allrecords);
+				return finalmatches;
+			}
+		}
 		
 		List<KMeansCloseCluster> closestclusters = (List<KMeansCloseCluster>)new ArrayList();
 		
@@ -476,36 +486,56 @@ public class KMeansIndexer implements CatalogEnabled {
 		Collections.sort(finalmatches);
 		return finalmatches;
 	}
-	public Collection<MultiValued> searchNearestItems(MultiValued inSearch)  //Like face
+	public Collection<MultiValued> searchNearestItems(MultiValued inEmbedding)  //Like face
 	{
 		// This method is intended to search for the nearest items to a given item.
 		// Implementation would typically involve calculating distances or similarities
 		// between the search item and each item in the collection.
-		
-		if( getClusters().isEmpty())
+		if( getClusters().size() < getSettings().start_using_centroids_cluster_count)
 		{
-			throw new OpenEditException("Not enought clusters. Run reindexfaces event");
+			Collection allrecords =  getMediaArchive().query(getSearchType()).all().cachedSearch();
+			if( allrecords.isEmpty())
+			{
+				return Collections.EMPTY_LIST;
+			}
+			if( allrecords.size() < getSettings().start_using_centroids_size )
+			{
+				long start = System.currentTimeMillis();
+				List<Double> searchVector = (List<Double>)inEmbedding.getValue(getFieldSaveVector());
+				Collection<RankedResult> matches = findMatchesTo(getSettings(), searchVector, allrecords);
+				Collection<MultiValued> basichits = new ArrayList(matches.size());
+				for (Iterator iterator = matches.iterator(); iterator.hasNext();)
+				{
+					RankedResult result = (RankedResult) iterator.next();
+					basichits.add(result.getEmbedding());
+				}
+				long end = System.currentTimeMillis();
+				double seconds = (end-start);
+
+				log.info("Search found  " +  basichits.size()  + "  in " + seconds + " mili seconds");
+				return basichits;
+			}
 		}
 		
 		//inSearch.setValue("iscentroid",false);
 		Collection<MultiValued> matches = null;
 		
-		if(inSearch.getValue(getFieldSaveVector()) == null)
+		if(inEmbedding.getValue(getFieldSaveVector()) == null)
 		{
 			Collection<MultiValued> manulaface = new ArrayList();
-			manulaface.add(inSearch);
+			manulaface.add(inEmbedding);
 			return manulaface; //Manually added face
 		}
 		
-		Lock lock = getMediaArchive().lock(inSearch.getId(), "KMeansSearch");
+		Lock lock = getMediaArchive().lock(inEmbedding.getId(), "KMeansSearch");
 		long start = System.currentTimeMillis();
 		try
 		{
-			Collection nearbycentroidids = inSearch.getValues("nearbycentroidids");
+			Collection nearbycentroidids = inEmbedding.getValues("nearbycentroidids");
 			if( nearbycentroidids == null || nearbycentroidids.isEmpty() )
 			{
 				
-				throw new OpenEditException(inSearch + " Has no centroids. reindexfaces");
+				throw new OpenEditException(inEmbedding + " Has no centroids. reindexfaces");
 			}
 			HitTracker tracker = getMediaArchive().query(getSearchType()).
 					orgroup("nearbycentroidids",nearbycentroidids).
@@ -517,18 +547,18 @@ public class KMeansIndexer implements CatalogEnabled {
 				// Add the new cluster to the list
 				//Rebalance centroids
 				boolean alreadydivided = false;
-				if(inSearch.getBoolean("iscentroid") || (tracker.size() < 2000 &&  nearbycentroidids.size() < 3 ) )
+				if(inEmbedding.getBoolean("iscentroid") || (tracker.size() < 2000 &&  nearbycentroidids.size() < 3 ) )
 				{	
 					alreadydivided = true; //Probably
 				}
 				if( !alreadydivided)
 				{
-					matches = divideCluster(inSearch, tracker);
+					matches = divideCluster(inEmbedding, tracker);
 					return matches;
 				}
 			}		
-			Collection<MultiValued> allsimilarroots =	findAllSimilarRoots(inSearch);
-			matches = findResultsWithinCentroids(inSearch, allsimilarroots, tracker);
+			Collection<MultiValued> allsimilarroots =	findAllSimilarRoots(inEmbedding);
+			matches = findResultsWithinCentroids(inEmbedding, allsimilarroots, tracker);
 			
 			long end = System.currentTimeMillis();
 			double seconds = (end-start)/1000d;

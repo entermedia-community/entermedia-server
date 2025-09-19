@@ -192,7 +192,9 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 			data.setValue(instruction.getFieldName()+ "indexed", true);
 		}
 		
+		instruction.getKMeansIndexer().checkReinit();
 		log.info("Indexed " + instruction.getFieldName() + " on: " + indexed + "/" + inRecords.size());
+
 	}
 
 	
