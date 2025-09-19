@@ -137,13 +137,18 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 
 	public SemanticConfig getSemanticInstructions()
 	{
-		SemanticConfig instructions = (SemanticConfig)getMediaArchive().getCacheManager().get("semantictopicsinstructions",getSemanticSettingId());
+		String sematicsettingsid = getSemanticSettingId();
+		SemanticConfig instructions = (SemanticConfig)getMediaArchive().getCacheManager().get("semantictopicsinstructions",sematicsettingsid);
 		if( instructions == null)
 		{
 			instructions = (SemanticConfig)getModuleManager().getBean(getCatalogId(),"semanticConfig",false);
 			getMediaArchive().getCacheManager().put("semantictopicsinstructions", getSemanticSettingId(),instructions);
 			
-			MultiValued settings = (MultiValued)getMediaArchive().getCachedData("informatics",getSemanticSettingId());
+			MultiValued settings = (MultiValued)getMediaArchive().getCachedData("informatics",sematicsettingsid);
+			if (settings == null)
+			{
+				log.info("Emppty settings for " + sematicsettingsid);
+			}
 			instructions.setInstructionDetails(settings);
 		}
 		return instructions;
@@ -283,6 +288,8 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 			log.error("No face server configured");
 			return 0;
 		}
+		
+		log.info("Indexing: " + inStructions);
 
 		HitTracker existingvectors = getMediaArchive().query(inStructions.getSearchType() ).orgroup("dataid", inEntities).search();
 		existingvectors.enableBulkOperations();
