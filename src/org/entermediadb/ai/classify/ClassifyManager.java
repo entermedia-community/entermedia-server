@@ -104,9 +104,15 @@ public class ClassifyManager extends InformaticsProcessor
 		//	}
 			if(!asset.hasValue(aifield.getId()) )
 			{
+				if(aifield.getId().equals("documenttype") && !mediatype.equals("document"))
+				{
+					continue;
+				}
 				aifields.add(aifield);
 			}
 		}
+		
+		
 
 		if(!aifields.isEmpty())
 		{
