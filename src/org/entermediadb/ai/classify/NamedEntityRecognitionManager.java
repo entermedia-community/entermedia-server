@@ -101,7 +101,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	protected Data saveIfNeeded(MultiValued inConfig, PropertyDetail inDetail, String inlabel)
 	{
 
-		Map config = findConfigForTable(inConfig, inDetail.getId());
+		MultiValued config = findConfigForTable(inConfig, inDetail.getId());
 		if( config == null )
 		{
 			return null;
@@ -109,7 +109,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 		//person:John Smith
 		String listid = inDetail.getId();
 		Data found = getMediaArchive().query(listid).match("name", inlabel).searchOne();
-		if( found == null && Boolean.parseBoolean( (String)config.get("autocreate") ) )
+		if( found == null && config.getBoolean("autocreate") ) 
 		{
 			found = getMediaArchive().getSearcher(listid).createNewData();
 			found.setName(inlabel);
@@ -118,12 +118,13 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 		return found;
 	}
 
-	private Map findConfigForTable(MultiValued inConfig, String inListid)
+	private MultiValued findConfigForTable(MultiValued inConfig, String inListid)
 	{
-		Collection<Map> tables = (Collection<Map>) inConfig.getValue("tables");
+		
+		Collection<Data> tables = getMediaArchive().getList("informaticsnertable");
 		for (Iterator iterator = tables.iterator(); iterator.hasNext();)
 		{
-			Map table = (Map) iterator.next();
+			MultiValued table = (MultiValued) iterator.next();
 			if( inListid.equals( table.get("sourcetype") ) )
 			{
 				return table;

@@ -216,6 +216,7 @@ public class ClassifyManager extends InformaticsProcessor
 
 			} catch (Exception e) {
 				inLog.error("LLM Error for entity: " + entity.getId() + " " + entity.getName(), e);
+				entity.setValue("llmerror", true);
 			}
 		}
 	}
