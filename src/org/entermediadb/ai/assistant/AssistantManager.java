@@ -13,7 +13,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
-import org.entermediadb.ai.classify.SemanticFieldsManager;
+import org.entermediadb.ai.classify.SemanticFieldManager;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
@@ -457,7 +457,7 @@ public class AssistantManager extends BaseAiManager
 		
 		inReq.putPageValue("input", query);
 		
-		Map<String, Collection<String>> relatedEntityIds = getSemanticFieldsManager().searchAllSemanticFields(query,excludeEntityIds, excludeAssetIds);
+		Map<String, Collection<String>> relatedEntityIds = getSemanticTopicManager().search(query,excludeEntityIds, excludeAssetIds);
 		
 		log.info("Related Entity Ids: " + relatedEntityIds);
 
@@ -623,20 +623,21 @@ public class AssistantManager extends BaseAiManager
 			text = searchcategory.getName();
 		}
 		
-		Map<String,Collection<String>> results = getSemanticFieldsManager().searchAllSemanticFields(text, null, null);
+		Map<String,Collection<String>> results = getSemanticTopicManager().search(text, null, null);
 		return results;
 	}
 
 
-	protected SemanticFieldsManager fieldSemanticFieldsManager;
-	public SemanticFieldsManager getSemanticFieldsManager()
+	protected SemanticFieldManager fieldSemanticTopicManager;
+	public SemanticFieldManager getSemanticTopicManager()
 	{
-		if (fieldSemanticFieldsManager == null)
+		if (fieldSemanticTopicManager == null)
 		{
-			fieldSemanticFieldsManager = (SemanticFieldsManager)getModuleManager().getBean(getCatalogId(),"semanticFieldsManager");
+			fieldSemanticTopicManager = (SemanticFieldManager)getModuleManager().getBean(getCatalogId(),"semanticFieldManager",false);
+			fieldSemanticTopicManager.setSemanticSettingId("semantictopics");
 		}
 
-		return fieldSemanticFieldsManager;
+		return fieldSemanticTopicManager;
 	}
 	
 //	public void hybridSearch(WebPageRequest inReq) throws Exception {

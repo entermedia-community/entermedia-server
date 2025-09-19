@@ -2641,7 +2641,7 @@
 		</property>
 	</bean>
 
-	<bean id="semanticFieldsManager" class="org.entermediadb.ai.classify.SemanticFieldsManager" lazy-init="default" scope="prototype">
+	<bean id="semanticFieldManager" class="org.entermediadb.ai.classify.SemanticFieldManager" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

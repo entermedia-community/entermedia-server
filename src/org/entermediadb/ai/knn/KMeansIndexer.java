@@ -472,14 +472,16 @@ public class KMeansIndexer implements CatalogEnabled {
 			MultiValued embedding = (MultiValued) iterator.next();
 			//double check
 			List<Double> centroidVector = (List<Double>)embedding.getValue(getFieldSaveVector());
-
-			double distance = findCosineDistance(searchVector, centroidVector);
-			if( distance < settings.maxdistancetomatch )  //.6 is good
+			if( centroidVector != null)
 			{
-				RankedResult rank = new RankedResult();
-				rank.setDistance(distance);
-				rank.setEmbedding(embedding);
-				finalmatches.add(rank);  //Add a ranking
+				double distance = findCosineDistance(searchVector, centroidVector);
+				if( distance < settings.maxdistancetomatch )  //.6 is good
+				{
+					RankedResult rank = new RankedResult();
+					rank.setDistance(distance);
+					rank.setEmbedding(embedding);
+					finalmatches.add(rank);  //Add a ranking
+				}
 			}
 		}
 

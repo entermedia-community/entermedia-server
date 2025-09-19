@@ -30,13 +30,24 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.util.JSONParser;
 
-public class SemanticFieldsManager extends InformaticsProcessor implements CatalogEnabled
+public class SemanticFieldManager extends InformaticsProcessor implements CatalogEnabled
 {
-	private static final Log log = LogFactory.getLog(SemanticFieldsManager.class);
+	private static final Log log = LogFactory.getLog(SemanticFieldManager.class);
 	
 	protected boolean fieldIndexingVectors;
 	
+	protected String fieldSemanticSettingId = "semantictopic";
 	
+	public String getSemanticSettingId()
+	{
+		return fieldSemanticSettingId;
+	}
+
+	public void setSemanticSettingId(String inSemanticSettingId)
+	{
+		fieldSemanticSettingId = inSemanticSettingId;
+	}
+
 	public boolean isIndexingVectors()
 	{
 		return fieldIndexingVectors;
@@ -79,35 +90,32 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 		long start = System.currentTimeMillis();
 		logger.info(new Date() +  " reinitNodes Start reinit ");
 		
-		for (Iterator iteratorS = getSemanticConfigs().iterator(); iteratorS.hasNext();)
-		{
-			SemanticConfig instruction = (SemanticConfig) iteratorS.next();
+		SemanticConfig instruction = getSemanticInstructions();
 
-			//Clear all centroids
-			HitTracker tracker = getMediaArchive().query(instruction.getSearchType()).exact("iscentroid",true).search(); 
-			tracker.enableBulkOperations();
-	
-			Collection tosave = new ArrayList(1000);
-			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		//Clear all centroids
+		HitTracker tracker = getMediaArchive().query(instruction.getSearchType()).exact("iscentroid",true).search(); 
+		tracker.enableBulkOperations();
+
+		Collection tosave = new ArrayList(1000);
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			data.setValue("iscentroid",false);
+			tosave.add(data);
+			if( tosave.size() == 1000)
 			{
-				Data data = (Data) iterator.next();
-				data.setValue("iscentroid",false);
-				tosave.add(data);
-				if( tosave.size() == 1000)
-				{
-					getMediaArchive().saveData(instruction.getSearchType(),tosave);
-					tosave.clear();
-				}
+				getMediaArchive().saveData(instruction.getSearchType(),tosave);
+				tosave.clear();
 			}
-			getMediaArchive().saveData(instruction.getSearchType(),tosave);
-			getMediaArchive().getCacheManager().clear(instruction.getFieldName());
-			//getMediaArchive().getCacheManager().clear(instructions.getFieldName() + "lookuprecord"); 
-			
-			instruction.getKMeansIndexer().reinitClusters(logger);
-			long end = System.currentTimeMillis();
-			double seconds = (end - start)  / 1000d;
-			logger.info(" reinitNodes Completed in  " + seconds  + " seconds ");
 		}
+		getMediaArchive().saveData(instruction.getSearchType(),tosave);
+		getMediaArchive().getCacheManager().clear(instruction.getFieldName());
+		//getMediaArchive().getCacheManager().clear(instructions.getFieldName() + "lookuprecord"); 
+		
+		instruction.getKMeansIndexer().reinitClusters(logger);
+		long end = System.currentTimeMillis();
+		double seconds = (end - start)  / 1000d;
+		logger.info(" reinitNodes Completed in  " + seconds  + " seconds ");
 
 	}
 	
@@ -116,24 +124,81 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
 	}
 
+
 	public void index(MultiValued inData)
 	{
 		List one = new ArrayList();
 		one.add(inData);
 		
-		for (Iterator iteratorS = getSemanticConfigs().iterator(); iteratorS.hasNext();)
-		{
-			SemanticConfig instruction = (SemanticConfig) iteratorS.next();
-			index(instruction, one, null);
-			instruction.getKMeansIndexer().setCentroids(inData);
-		}
+		SemanticConfig instruction = getSemanticInstructions();
+		index(instruction, one, null);
+		instruction.getKMeansIndexer().setCentroids(inData);
 	}
 
-	public SemanticConfig createSemanticInstructions(MultiValued inField)
+	public SemanticConfig getSemanticInstructions()
 	{
-		SemanticConfig instructions = (SemanticConfig)getModuleManager().getBean(getCatalogId(),"semanticConfig",false);
-		instructions.setInstructionDetails(inField);
+		SemanticConfig instructions = (SemanticConfig)getMediaArchive().getCacheManager().get("semantictopicsinstructions",getSemanticSettingId());
+		if( instructions == null)
+		{
+			instructions = (SemanticConfig)getModuleManager().getBean(getCatalogId(),"semanticConfig",false);
+			getMediaArchive().getCacheManager().put("semantictopicsinstructions", getSemanticSettingId(),instructions);
+			
+			MultiValued settings = (MultiValued)getMediaArchive().getCachedData("informatics",getSemanticSettingId());
+			instructions.setInstructionDetails(settings);
+		}
 		return instructions;
+	}
+	
+	public Map<String,Collection<String>> search(String text, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
+	{
+		JSONObject response = execMakeVector(text);
+
+		JSONArray results = (JSONArray)response.get("results");
+		Map hit = (Map)results.iterator().next();
+		List vector = (List)hit.get("embedding");
+		vector = collectDoubles(vector);
+
+		List allIds = new ArrayList(); //for debugging
+		Map<String,Collection<String>> bytype = new HashMap();
+
+		SemanticConfig instruction = getSemanticInstructions();
+		Collection<RankedResult> found = instruction.getKMeansIndexer().searchNearestItems(vector);
+		
+		for (Iterator iterator = found.iterator(); iterator.hasNext();)
+		{
+			RankedResult rankedResult = (RankedResult) iterator.next();
+			
+			allIds.add(rankedResult.getModuleId() + ":" + rankedResult.getEntityId());
+			
+			if(rankedResult.getModuleId().equals("asset"))
+			{
+				if(excludedAssetids != null && excludedAssetids.contains(rankedResult.getEntityId()))
+				{
+					continue;
+				}
+			}
+			else if(excludedEntityIds != null && excludedEntityIds.contains(rankedResult.getEntityId()))
+			{
+				continue;
+			}
+			
+			Collection hits = bytype.get(rankedResult.getModuleId());
+			if( hits == null)
+			{
+				hits = new ArrayList();
+				bytype.put(rankedResult.getModuleId(),hits);
+			}
+			if( hits.size() < 1000)
+			{
+				hits.add(rankedResult.getEntityId());
+			}
+		}
+		log.info("All matching IDs:" + allIds);
+
+		//Search for them hits up to 1000
+		//getMediaArchive().getSearcherManager().organizeHits(
+		
+		return bytype;		
 	}
 	
 	public void indexAll(ScriptLogger inLog)
@@ -150,20 +215,17 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 			HitTracker all = getMediaArchive().query("module").exact("semanticenabled", true).search();
 			Collection<String> ids = all.collectValues("id");
 			log.info("Scanning modules " + ids);
-			for (Iterator iteratorS = getSemanticConfigs().iterator(); iteratorS.hasNext();)
-			{
-				SemanticConfig instruction = (SemanticConfig) iteratorS.next();
-				QueryBuilder query = getMediaArchive().query("modulesearch");
-				query.exists(instruction.getFieldName());
-				query.exact(instruction.getFieldName() + "indexed", false);
-				query.put("searchtypes", ids);
-				query.put("searchasset", true); //this is needed to include asset
-				
-				HitTracker hits = query.search();
-				hits.enableBulkOperations();
-				log.info("Indexing " + instruction.getFieldName() + " in: " + hits);
-				indexTracker(inLog, instruction, hits);
-			}
+			SemanticConfig instruction = getSemanticInstructions();
+			QueryBuilder query = getMediaArchive().query("modulesearch");
+			query.exists(instruction.getFieldName());
+			query.exact(instruction.getFieldName() + "indexed", false);
+			query.put("searchtypes", ids);
+			query.put("searchasset", true); //this is needed to include asset
+			
+			HitTracker hits = query.search();
+			hits.enableBulkOperations();
+			log.info("Indexing " + instruction.getFieldName() + " in: " + hits);
+			indexTracker(inLog, instruction, hits);
 		}
 		finally
 		{
@@ -172,12 +234,8 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 	}
 	public void indexData(ScriptLogger inLog, Collection<MultiValued> inRecords)
 	{
-		for (Iterator iteratorS = getSemanticConfigs().iterator(); iteratorS.hasNext();)
-		{
-			SemanticConfig instruction = (SemanticConfig) iteratorS.next();
-			
-			indexData(inLog, instruction, inRecords);
-		}
+		SemanticConfig instruction = getSemanticInstructions();
+		indexData(inLog, instruction, inRecords);
 	}
 	
 	protected void indexData(ScriptLogger inLog, SemanticConfig instruction, Collection<MultiValued> inRecords)
@@ -212,11 +270,8 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 	
 	public void clusterInit(ScriptLogger log)
 	{
-		for (Iterator iteratorS = getSemanticConfigs().iterator(); iteratorS.hasNext();)
-		{
-			SemanticConfig instruction = (SemanticConfig) iteratorS.next();
-			instruction.getKMeansIndexer().reinitClusters(log);
-		}
+		SemanticConfig instruction = getSemanticInstructions();
+		instruction.getKMeansIndexer().reinitClusters(log);
 
 	}
 	
@@ -409,83 +464,9 @@ public class SemanticFieldsManager extends InformaticsProcessor implements Catal
 	{
 		fieldSharedConnection = inSharedConnection;
 	}
-	
-	public Collection<SemanticConfig> getSemanticConfigs()
-	{
-		Collection<SemanticConfig> instructions = (Collection<SemanticConfig>)getMediaArchive().getCacheManager().get("ai","semanticinstructions");
-		if( instructions == null)
-		{
-			instructions = new ArrayList();
-			
-			Collection configs = getMediaArchive().query("informatics").exact("aifunctionname", "semantics").search();
-			for (Iterator iterator = configs.iterator(); iterator.hasNext();)
-			{
-				MultiValued data = (MultiValued) iterator.next();
-				SemanticConfig newins = createSemanticInstructions(data);
-				instructions.add(newins);
-			}
-			getMediaArchive().getCacheManager().put("ai","semanticinstructions",instructions);
-		}
-		
-		return instructions;
-	}
 
 
-	public Map<String,Collection<String>> searchAllSemanticFields(String text, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
-	{
-		//Collection allthepeopleinasset = getKMeansIndexer().searchNearestItems(startdata);
-		JSONObject response = execMakeVector(text);
 
-		JSONArray results = (JSONArray)response.get("results");
-		Map hit = (Map)results.iterator().next();
-		List vector = (List)hit.get("embedding");
-		vector = collectDoubles(vector);
-
-		List allIds = new ArrayList(); //for debugging
-		Map<String,Collection<String>> bytype = new HashMap();
-
-		for (Iterator iteratorS = getSemanticConfigs().iterator(); iteratorS.hasNext();)
-		{
-			SemanticConfig instruction = (SemanticConfig) iteratorS.next();
-			Collection<RankedResult> found = instruction.getKMeansIndexer().searchNearestItems(vector);
-			
-			for (Iterator iterator = found.iterator(); iterator.hasNext();)
-			{
-				RankedResult rankedResult = (RankedResult) iterator.next();
-				
-				allIds.add(rankedResult.getModuleId() + ":" + rankedResult.getEntityId());
-				
-				if(rankedResult.getModuleId().equals("asset"))
-				{
-					if(excludedAssetids != null && excludedAssetids.contains(rankedResult.getEntityId()))
-					{
-						continue;
-					}
-				}
-				else if(excludedEntityIds != null && excludedEntityIds.contains(rankedResult.getEntityId()))
-				{
-					continue;
-				}
-				
-				Collection hits = bytype.get(rankedResult.getModuleId());
-				if( hits == null)
-				{
-					hits = new ArrayList();
-					bytype.put(rankedResult.getModuleId(),hits);
-				}
-				if( hits.size() < 1000)
-				{
-					hits.add(rankedResult.getEntityId());
-				}
-			}
-		}
-		log.info("All matching IDs:" + allIds);
-
-		//Search for them hits up to 1000
-		//getMediaArchive().getSearcherManager().organizeHits(
-		
-		return bytype;		
-	}
 
 	protected JSONObject execMakeVector(String text)
 	{
