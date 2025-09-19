@@ -22,7 +22,6 @@ import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.openedit.util.JSONParser;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
@@ -32,6 +31,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.JSONParser;
 
 public class AssistantManager extends BaseAiManager
 {
@@ -174,6 +174,16 @@ public class AssistantManager extends BaseAiManager
 		AiCurrentStatus current = loadCurrentStatus(channel); //TODO: Update this often
 		params.put("currentstatus",current);
 		
+		Data functionMessage = chats.createNewData();
+		functionMessage.setValue("user", "agent");
+		functionMessage.setValue("channel", channel.getId());
+		functionMessage.setValue("date", new Date());
+		functionMessage.setValue("message", "Processing...");
+		functionMessage.setValue("processingcomplete", false);
+		chats.saveData(functionMessage);
+		
+		server.broadcastMessage(archive.getCatalogId(), functionMessage);
+		
 		LlmResponse response = llmconnection.runPageAsInput(params, model, chattemplate);
 		//current update it?
 		
@@ -185,16 +195,10 @@ public class AssistantManager extends BaseAiManager
 
 			String json = arguments.toJSONString();
 			// Create and save function call message
-			Data functionMessage = chats.createNewData();
-			functionMessage.setValue("user", "agent");
-			functionMessage.setValue("channel", channel.getId());
+			functionMessage.setValue("message", "Executing function " + functionName);
 			functionMessage.setValue("arguments", json);
-			functionMessage.setValue("date", new Date());
-			functionMessage.setValue("message", "Processing function " + functionName);
 			functionMessage.setValue("processingcomplete", true);
-			
 			chats.saveData(functionMessage);
-			
 			server.broadcastMessage(archive.getCatalogId(), functionMessage);
 			
 			execChatFunction(llmconnection, functionMessage, functionName, params);
