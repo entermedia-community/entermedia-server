@@ -1,5 +1,6 @@
 package org.entermediadb.ai.classify;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,7 +27,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	 @Override
 	 protected boolean processOneEntity(MultiValued inConfig, LlmConnection llmvisionconnection, LlmConnection llmsemanticconnection, Map<String, String> models, MultiValued inData, String inModuleId)
 	 {
-	 	Collection<Map> tables =  (Collection<Map>) inConfig.getValue("tables");
+	 	Collection<Data> tables =  new ArrayList(getMediaArchive().getList("informaticsnertable"));
 	 	//Validate tables
 	 	if (tables == null || tables.isEmpty())
 	 	{
