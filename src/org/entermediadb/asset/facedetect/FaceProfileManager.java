@@ -30,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.knn.KMeansIndexer;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.asset.Asset;
@@ -59,7 +60,7 @@ import org.openedit.util.FileUtils;
 import org.openedit.util.MathUtils;
 
 
-public class FaceProfileManager extends BaseAiManager implements CatalogEnabled
+public class FaceProfileManager extends InformaticsProcessor implements CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(FaceProfileManager.class);
 
@@ -135,12 +136,12 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled
 		instructions.setMinimumFaceSize(minfacesize);
 		return instructions;
 	}
-	public int extractFaces(Collection<Data> inAssets)  //Page of assets
-	{
-		FaceScanInstructions instructions = createInstructions();
-		return extractFaces(instructions,inAssets);
-	}
-	public int extractFaces(FaceScanInstructions instructions , Collection<Data> inAssets)  //Page of assets
+//	public int extractFaces(Collection<MultiValued> inAssets)  //Page of assets
+//	{
+//		FaceScanInstructions instructions = createInstructions();
+//		return extractFaces(instructions,inAssets);
+//	}
+	public int extractFaces(FaceScanInstructions instructions , Collection<MultiValued> inAssets)  //Page of assets
 	{
 			String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
 			if( url == null)
@@ -202,7 +203,7 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled
 					//throw new OpenEditException("Error on: " + inAssets.size(),ex);
 				}
 			}  
-			getMediaArchive().getAssetSearcher().saveAllData(tosave, null);
+			//getMediaArchive().getAssetSearcher().saveAllData(tosave, null);  //Is this needed?
 			log.info(" Saved Assets " + tosave.size() + " added faces:  " + foundfacestosave.size());
 			
 			getMediaArchive().saveData("faceembedding",foundfacestosave);
@@ -1108,6 +1109,7 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled
 		instructions.setMinimumFaceSize(instructions.getMinimumFaceSize() * .50D);
 		
 		extractFaces(instructions, one);
+		getMediaArchive().saveData("asset",inAsset);
 		
 	}
 	
@@ -1181,6 +1183,21 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled
 		getMediaArchive().getCacheManager().clear("aifacedetect"); //Standard cache for this fieldname
 		getMediaArchive().getCacheManager().clear("faceboxes"); //All related boxes. TODO: Limit to this record
 
+	}
+
+	@Override
+	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
+	{
+		FaceScanInstructions instructions = createInstructions();
+		extractFaces(instructions,inAssets);
+		
+	}
+
+	@Override
+	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecords)
+	{
+		//Do nothing
+		
 	}
 	
 }

@@ -500,12 +500,12 @@ public class ContentModule extends BaseMediaModule
 		return manager;
 	}
 
-	public void splitDocument(WebPageRequest inReq) throws Exception
-	{
-		String assetid = inReq.getRequestParameter("assetid");
-		
-		ContentManager manager = getContentManager(inReq);
-		manager.splitDocument(assetid);
-	}
+//	public void splitDocument(WebPageRequest inReq) throws Exception
+//	{
+//		String assetid = inReq.getRequestParameter("assetid");
+//		
+//		ContentManager manager = getContentManager(inReq);
+//		manager.splitDocument(assetid);
+//	}
 
 }
