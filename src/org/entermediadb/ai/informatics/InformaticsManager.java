@@ -25,7 +25,7 @@ public class InformaticsManager extends BaseAiManager
 	public void processAssets(ScriptLogger inLog)
 	{
 //		Map<String, String> models = getModels();
-
+		inLog.info("Assets");
 		String categoryid = getMediaArchive().getCatalogSettingValue("llmmetadatastartcategory");
 
 		if (categoryid == null)
@@ -48,18 +48,17 @@ public class InformaticsManager extends BaseAiManager
 		{
 			date = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
 		}
-		inLog.info("Processing assets uploaded after: " + date);
 		query.after("assetaddeddate", date);
 
-		inLog.info("Running asset search query: " + query);
 
 		HitTracker pendingrecords = query.search();
 		pendingrecords.enableBulkOperations();
 		pendingrecords.setHitsPerPage(25);
+		inLog.info("Asset search query: " + pendingrecords);
 
 		if (!pendingrecords.isEmpty())
 		{
-			inLog.info("Adding metadata to: " + pendingrecords.size() + " assets in category: " + categoryid + ", added after: " + startdate);
+			//inLog.info("Adding metadata to: " + pendingrecords.size() + " assets in category: " + categoryid + ", added after: " + startdate);
 
 			for (int i = 0; i < pendingrecords.getTotalPages(); i++)
 			{
@@ -88,6 +87,7 @@ public class InformaticsManager extends BaseAiManager
 
 	public void processEntities(ScriptLogger inLog)
 	{
+		inLog.info("Entities");
 		HitTracker allmodules = getMediaArchive().query("module").exact("semanticenabled", true).search();
 		Collection<String> ids = allmodules.collectValues("id");
 
@@ -119,17 +119,17 @@ public class InformaticsManager extends BaseAiManager
 		}
 		query.after("entity_date", date);
 
-		inLog.info("Running entity search query: " + query);
+		//inLog.info("Running entity search query: " + query);
 
 		HitTracker pendingrecords = query.search();
 		pendingrecords.enableBulkOperations();
 		pendingrecords.setHitsPerPage(5); //TODO:
 
-		inLog.info("Processing  " + ids + " modules " + pendingrecords);
+		inLog.info("Entities  " + ids + " with " + pendingrecords);
 
 		if (!pendingrecords.isEmpty())
 		{
-			inLog.info("Adding metadata to: " + pendingrecords);
+			//inLog.info("Adding metadata to: " + pendingrecords);
 
 			for (int i = 0; i < pendingrecords.getTotalPages(); i++)
 			{

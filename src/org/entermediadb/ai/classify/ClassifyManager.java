@@ -41,14 +41,14 @@ public class ClassifyManager extends InformaticsProcessor
 			String mediatype = getMediaArchive().getMediaRenderType(asset);
 			if( mediatype.equals("default") )
 			{
-				inLog.info("Skipping asset " + asset);
+				inLog.info(inConfig.get("bean") + " - Skipping asset " + asset);
 				continue;
 			}
 
 			try{
 				long startTime = System.currentTimeMillis();
 
-				inLog.info("Analyzing asset ("+count+"/"+assets.size()+")" + asset.getName());
+				inLog.info(inConfig.get("bean") + " - Analyzing asset ("+count+"/"+assets.size()+")" + asset.getName());
 				count++;
 
 				boolean complete = processOneAsset(inConfig, llmvisionconnection, llmsemanticconnection, models, asset);
@@ -58,7 +58,7 @@ public class ClassifyManager extends InformaticsProcessor
 				}
 
 				long duration = (System.currentTimeMillis() - startTime) / 1000L;
-				inLog.info("Took "+duration +"s");
+				inLog.info(inConfig.get("bean") + " - Took "+duration +"s");
 			}
 			catch(Exception e){
 				inLog.error("LLM Error", e);
