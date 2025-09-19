@@ -37,7 +37,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	 	Map<String,Map> contextfields = populateFields(inModuleId,inData);
 	 	
 	 	for (Iterator iterator = tables.iterator(); iterator.hasNext();) {
-			Map map = (Map) iterator.next();			
+			MultiValued map = (MultiValued) iterator.next();
 			PropertyDetail detail = getMediaArchive().getSearcher(inModuleId).getDetail((String)map.get("sourcetype"));
 			contextfields.remove(map.get("sourcetype"));
 			if( detail == null || !detail.isList() )
