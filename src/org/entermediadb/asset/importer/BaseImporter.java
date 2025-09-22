@@ -2,6 +2,7 @@ package org.entermediadb.asset.importer;
 
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -547,34 +548,48 @@ public class BaseImporter extends EnterMediaObject
 			if (val != null && val.length() > 0)
 			{
 				val = val.trim(); 	//trim spaces and clean
-				
-				if( detail.isList() )
-				{
-					Object value = lookUpListValIfNeeded(detail,val);
-					inData.setValue(detail.getId(), value);
-				}
-				else if( detail.isNumber() && detail.isMultiValue() )
+				Object fixedvalue = null;
+				if( detail.isMultiValue() )
 				{
 					String[] values = MultiValued.VALUEDELMITER.split(val);
-					if( "double".equals( detail.getDataType() ) )
+					if( detail.isList() )
 					{
-						Collection dvalues = MultiValued.collectDoubles(values);
-						inData.setValue(detail.getId(), dvalues);
+						Collection collection = new ArrayList(values.length);
+						for (int j = 0; j < values.length; j++)
+						{
+							String id = values[i];
+							Object value = lookUpListValIfNeeded(detail,val);
+							collection.add(value);
+						}
+						fixedvalue = collection;
 					}
-					else if("float".equals( detail.getDataType() ) )
+					else if( detail.isNumber())
 					{
-						Collection dvalues = MultiValued.collectFloats(values);
-						inData.setValue(detail.getId(), dvalues);
+						if( "double".equals( detail.getDataType() ) )
+						{
+							Collection dvalues = MultiValued.collectDoubles(values);
+							fixedvalue =  dvalues;
+						}
+						else if("float".equals( detail.getDataType() ) )
+						{
+							Collection dvalues = MultiValued.collectFloats(values);
+							fixedvalue =  dvalues;
+						}
+						else
+						{
+							fixedvalue = Arrays.asList( values );
+						}
 					}
 					else
 					{
-						inData.setValue(detail.getId(), values);
+						fixedvalue = Arrays.asList( values );
 					}
 				}
 				else
 				{
-					inData.setValue(detail.getId(), val);  //Will save as a number anyways
+					fixedvalue = lookUpListValIfNeeded(detail,val);
 				}
+				inData.setValue(detail.getId(), fixedvalue);
 			}
 			else
 			{
@@ -593,21 +608,7 @@ public class BaseImporter extends EnterMediaObject
 		Object value = null;
 		if( inDetail.isList() && (isLookUpLists() || getDbLookUps().contains(inDetail.getId())))
 		{
-			if(inDetail.isMultiValue())
-			{
-				Collection values = new ArrayList();
-				String[] vals = MultiValued.VALUEDELMITER.split(inVal);
-				for (int j = 0; j < vals.length; j++)
-				{
-					Object newvalue = findOrCreateData(inDetail, vals[j].trim());
-					values.add(newvalue);			
-				}
-				value = values;
-			}
-			else
-			{
-				value = findOrCreateData(inDetail,inVal);
-			}
+			value = findOrCreateData(inDetail,inVal);
 		}
 		else
 		{
