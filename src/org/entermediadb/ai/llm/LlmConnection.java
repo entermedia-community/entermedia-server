@@ -1,9 +1,9 @@
 package org.entermediadb.ai.llm;
 
-import java.util.Collection;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
+import org.openedit.Data;
 
 public interface LlmConnection {
 	
@@ -15,10 +15,12 @@ public interface LlmConnection {
 
     public String getEmbedding(String inQuery) throws Exception;
 
-    public LlmResponse createImage(Map inParams);
-    public LlmResponse createImage(Map inParams, int inCount, String inSize);
+    public LlmResponse createImage(String inModel, String inPrompt) throws Exception;
+    public LlmResponse createImage(String inModel, String inPrompt, int inCount, String inSize) throws Exception;
 
     public String loadInputFromTemplate(String inString, Map inParams);
+    
+    public String loadResponseFromTemplate(String inFunctionName, String inAppHome, Map inParams);
     
     public LlmResponse callCreateFunction(Map params, String inModel, String inFunction);
     public LlmResponse callClassifyFunction(Map inParams, String inModel, String inFunction, String inQuery, String inBase64Image);

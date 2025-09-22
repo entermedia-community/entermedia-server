@@ -23,7 +23,10 @@ public interface LlmResponse {
     int getTokensUsed();
     
     String getModel();
-    ArrayList getImageUrls();
+   
+    ArrayList<String> getImageUrls();
+    
+    ArrayList<String> getImageBase64s();
 
     
     
