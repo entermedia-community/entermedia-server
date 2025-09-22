@@ -24,6 +24,7 @@ import org.entermediadb.asset.importer.DitaImporter;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.net.HttpSharedConnection;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -955,12 +956,35 @@ public class ContentManager implements CatalogEnabled
 			params.put("contentrequest", inContentrequest);
 
 			LlmResponse results = inLlm.callCreateFunction(params, inModel, "create_entity");
+			
+			JSONObject args = results.getArguments();
+			for (Iterator iterator = args.keySet().iterator(); iterator.hasNext();) {
+				Object type = (Object) iterator.next();
+				Object val = args.get(type);
+				if(val instanceof String) 
+				{
+					String str = (String)val;
+					str = str.split("|")[0]; //TODO
+					args.put(type, str);
+				}
+				else if(val instanceof Collection) {
+					JSONArray arr = (JSONArray)val;
+					if(arr.size() > 0) {
+						String str = (String)arr.get(0);
+						str = str.split("|")[0]; //TODO
+						args.put(type, str);
+					}
+				}
+				else if(val instanceof Boolean) {
+					// TODO
+				} 
+			}
 
 			child = targetsearcher.createNewData();
-			targetsearcher.updateData(child, results.getArguments());
+			targetsearcher.updateData(child, args);
 			child.setValue("entity_date", new Date());
 			child.setValue(moduleid, entityid); // Lookup
-			child.setValue("ai-functioncall", results.getArguments());
+			child.setValue("ai-functioncall", args);
 			// No assets being created in this one.
 			child.setValue("owner", inContentrequest.get("owner"));
 
