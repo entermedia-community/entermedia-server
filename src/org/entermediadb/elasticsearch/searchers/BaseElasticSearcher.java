@@ -114,6 +114,7 @@ import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.IntCounter;
+import org.openedit.util.JSONParser;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.Replacer;
 import org.openedit.xml.XmlSearcher;
@@ -3382,11 +3383,26 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 					else if (value instanceof String)
 					{
-						  GeoPoint point = new GeoPoint((String) value);
-						  inContent.field(key, point); 
-						  Position position = new Position(point.getLat(), point.getLon());
+						String geopoint = (String) value;
+						if( geopoint.startsWith("{") )
+						{
+							if( !geopoint.contains("\""))
+							{
+								geopoint = geopoint.substring(6, geopoint.length() - 1);
+								geopoint = geopoint.replace("lng: ", "");
+							}
+							else
+							{
+								Map points = new JSONParser().parse(geopoint);
+								geopoint = points.get("lat") + "," + points.get("lng");	
+							}
+							
+						}
+						GeoPoint point = new GeoPoint(geopoint);
+						inContent.field(key, point); 
+						Position position = new Position(point.getLat(), point.getLon());
 						 
-						  inData.setValue(key, position); //For next time?
+						inData.setValue(key, position); //For next time?
 					}
 					else if (value instanceof GeoPoint)
 					{

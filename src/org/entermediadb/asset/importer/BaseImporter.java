@@ -557,7 +557,7 @@ public class BaseImporter extends EnterMediaObject
 						Collection collection = new ArrayList(values.length);
 						for (int j = 0; j < values.length; j++)
 						{
-							String id = values[i];
+							String id = values[j];
 							Object value = lookUpListValIfNeeded(detail,val);
 							collection.add(value);
 						}
@@ -606,6 +606,10 @@ public class BaseImporter extends EnterMediaObject
 	protected Object lookUpListValIfNeeded(PropertyDetail inDetail, String inVal)
 	{
 		Object value = null;
+		if (inDetail.isViewType("category") )
+		{
+			return inVal;
+		}
 		if( inDetail.isList() && (isLookUpLists() || getDbLookUps().contains(inDetail.getId())))
 		{
 			value = findOrCreateData(inDetail,inVal);
