@@ -64,19 +64,28 @@ public class InformaticsManager extends BaseAiManager
 			{
 				pendingrecords.setPage(i+1);
 				Collection pageofhits = pendingrecords.getPageOfHits();
-				for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
+				try
 				{
-					MultiValued config = (MultiValued) iterator2.next();
-					InformaticsProcessor processor = loadProcessor(config.get("bean"));
-					processor.processInformaticsOnAssets(inLog, config, pageofhits);
+					for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
+					{
+						MultiValued config = (MultiValued) iterator2.next();
+						InformaticsProcessor processor = loadProcessor(config.get("bean"));
+						inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" );
+						processor.processInformaticsOnAssets(inLog, config, pageofhits);
+						getMediaArchive().saveData("asset", pageofhits);
+					}
+					//Save Records here?
+					for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
+					{
+						Data data = (Data) iterator.next();
+						data.setValue("taggedbyllm", true);
+					}
+					getMediaArchive().saveData("asset", pageofhits);
 				}
-				//Save Records here?
-				for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
+				catch(Exception ex)
 				{
-					Data data = (Data) iterator.next();
-					data.setValue("taggedbyllm", true);
+					getMediaArchive().saveData("asset", pageofhits);
 				}
-				getMediaArchive().saveData("asset", pageofhits);
 			}
 		}
 		else
