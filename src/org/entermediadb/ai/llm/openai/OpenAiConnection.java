@@ -53,55 +53,43 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 	}
 
-	public LlmResponse createImage(Map params)
+	public LlmResponse createImage(String inModel, String inPrompt)  throws Exception
 	{
-		return createImage(params, 1, "1024x1024");
+		return createImage(inModel, inPrompt, 1, "1024x1024");
 	}
 	
-	public LlmResponse createImage(Map params, int imagecount, String inSize)
+	public LlmResponse createImage(String inModel, String inPrompt, int imagecount, String inSize) throws Exception
 	{
 		if (getApikey() == null)
 		{
 			log.error("No gpt-key defined");
 			return null;
 		}
-		
-		String inModel = (String) params.get("model");
-		
-		String inPrompt = (String) params.get("prompt");
-		
-		// params.put("prompt", inPrompt);
-
-		// Use JSON Simple's JSONObject
-		JSONObject obj = new JSONObject();
 
 		if (inModel == null)
 		{
-			inModel = "dall-e-3";
+			throw new OpenEditException("No model given for image creation");
 		}
 		if (inPrompt == null)
 		{
-			inPrompt = "Surprise ME";
+			throw new OpenEditException("No prompt given for image creation");
 		}
-
+		
 		log.info("Image creation prompt: " + inPrompt);
+		
+		JSONObject payload = new JSONObject();
 
-		obj.put("model", inModel);
-		obj.put("prompt", inPrompt);
-		obj.put("n", imagecount);
-		obj.put("size", inSize);
-
-		String style = (String) params.get("style");
-		if (style != null)
-		{
-			obj.put("style", style);
-		}
+		payload.put("model", inModel);
+		payload.put("prompt", inPrompt);
+		payload.put("n", imagecount);
+		payload.put("size", inSize);
+		payload.put("response_format", "b64_json");
 
 		String endpoint = "https://api.openai.com/v1/images/generations";
 		HttpPost method = new HttpPost(endpoint);
 		method.addHeader("Authorization", "Bearer " + getApikey());
 		method.setHeader("Content-Type", "application/json");
-		method.setEntity(new StringEntity(obj.toJSONString(), "UTF-8"));
+		method.setEntity(new StringEntity(payload.toJSONString(), "UTF-8"));
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 		JSONObject json = getConnection().parseJson(resp);

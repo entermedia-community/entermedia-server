@@ -1,12 +1,13 @@
 package org.entermediadb.ai.llm.openai;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.entermediadb.ai.llm.BaseLlmResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
-import org.json.simple.parser.ParseException;
 
 public class GptResponse extends BaseLlmResponse {
 
@@ -93,8 +94,8 @@ public class GptResponse extends BaseLlmResponse {
     }
 
     @Override
-    public ArrayList getImageUrls() {
-    	ArrayList images = new ArrayList();
+    public ArrayList<String> getImageUrls() {
+    	ArrayList<String> images = new ArrayList<String>();
         if (rawResponse == null) {
         	return images;
         }
@@ -107,7 +108,6 @@ public class GptResponse extends BaseLlmResponse {
         	return images;
         }
 
-        String[] urls = new String[dataArray.size()];
         for (int i = 0; i < dataArray.size(); i++) {
             JSONObject imageObject = (JSONObject) dataArray.get(i);
             String url = (String) imageObject.get("url");
@@ -115,4 +115,30 @@ public class GptResponse extends BaseLlmResponse {
         }
         return images;
     }
+    
+    @Override
+    public ArrayList<String> getImageBase64s() {
+    	ArrayList<String> images = new ArrayList<String>();
+        if (rawResponse == null) {
+        	return images;
+        }
+        
+        if (!rawResponse.containsKey("data")) {
+        	return images;
+        }
+        
+        JSONArray dataArray = (JSONArray) rawResponse.get("data");
+        
+        if (dataArray == null || dataArray.isEmpty()) {
+        	return images;
+        }
+
+        for (int i = 0; i < dataArray.size(); i++) {
+            JSONObject imageObject = (JSONObject) dataArray.get(i);
+            String url = (String) imageObject.get("b64_json");
+            images.add(url);
+        }
+        return images;
+    }
+    
 }

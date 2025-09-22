@@ -145,9 +145,14 @@ public class OllamaResponse extends BaseLlmResponse
 	}
 
 	@Override
-	public ArrayList getImageUrls()
+	public ArrayList<String> getImageUrls()
 	{
-
+		throw new OpenEditException("Ollama cannot create images");
+	}
+	
+	@Override
+	public ArrayList<String> getImageBase64s()
+	{
 		throw new OpenEditException("Ollama cannot create images");
 	}
 }

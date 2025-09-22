@@ -15,14 +15,11 @@ import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.llm.openai.GptResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
-import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONObject;
-import org.openedit.util.JSONParser;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
-import org.openedit.data.Searcher;
 import org.openedit.page.Page;
 import org.openedit.page.PageStreamer;
 import org.openedit.page.manage.PageManager;
@@ -181,6 +178,48 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			streamer.include(template, request);
 			String string = output.toString();
 			log.info(inTemplate +" Output: " + string);
+			return string;
+		} catch (OpenEditException e) {
+			throw e;
+		} 
+	}
+	
+	public String loadResponseFromTemplate(String functionName, String inApppHome, Map inParams) {
+		if(functionName == null) {
+			throw new OpenEditException("Cannot load function response, functionName is null" + inParams);
+		}
+		
+		inParams.put("apphome", inApppHome);
+		
+		String templatepath = inApppHome + "/views/modules/modulesearch/results/agentresponses/" + functionName + ".html";
+		
+		try {
+			Page template = getPageManager().getPage(templatepath);
+			log.info("Loading response: " + functionName);
+			
+			User user = getMediaArchive().getUserManager().getUser("agent");
+			
+			WebPageRequest request = getRequestUtils().createPageRequest(template, user);
+			
+			request.putPageValues(inParams);
+			
+			StringWriter output = new StringWriter();
+			request.setWriter(output);
+			
+			PageStreamer streamer = getEngine().createPageStreamer(template, request);
+			getEngine().executePathActions(request);
+			if( !request.hasRedirected())
+			{
+				getModuleManager().executePageActions( template,request );
+			}
+			if( request.hasRedirected())
+			{
+				log.info("action was redirected");
+			}
+			
+			streamer.include(template, request);
+			String string = output.toString();
+			log.info("Output: " + string);
 			return string;
 		} catch (OpenEditException e) {
 			throw e;

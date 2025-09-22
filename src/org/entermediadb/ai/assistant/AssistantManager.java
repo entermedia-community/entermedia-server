@@ -1,9 +1,11 @@
 package org.entermediadb.ai.assistant;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -20,7 +22,6 @@ import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.ResultsManager;
-import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONArray;
@@ -32,6 +33,8 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
+import org.openedit.repository.ContentItem;
+import org.openedit.repository.InputStreamItem;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.JSONParser;
@@ -204,7 +207,7 @@ public class AssistantManager extends BaseAiManager
 			chats.saveData(functionMessage);
 			server.broadcastMessage(archive.getCatalogId(), functionMessage);
 			
-			execChatFunction(llmconnection, functionMessage, functionName, params);
+			execChatFunction(llmconnection, functionMessage, functionName,  params);
 			
 			
 			archive.fireSharedMediaEvent("chatterbox/monitorchats");
@@ -245,6 +248,8 @@ public class AssistantManager extends BaseAiManager
 		Data channel = archive.getCachedData("channel", messageToUpdate.get("channel"));
 		params.put("channel", channel);
 		
+		String apphome = "/"+ channel.get("chatapplicationid");
+		
 		
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 
@@ -259,7 +264,7 @@ public class AssistantManager extends BaseAiManager
 			JSONObject arguments = (JSONObject) new JSONParser().parse(args);
 			params.put("arguments", arguments);
 			
-			response = llmconnection.loadInputFromTemplate("/" + archive.getMediaDbId() +"/ai/openai/"+ getAiFolder() + "/responses/" + functionName + ".html", params);
+			response = llmconnection.loadResponseFromTemplate(functionName, apphome, params);
 			//log.info("Function " + functionName + " returned : " + response);
 
 			messageToUpdate.setValue("functionresponse", response);
@@ -339,8 +344,17 @@ public class AssistantManager extends BaseAiManager
 		String searchType = (String) arguments.get("search_type");
 		searchArgs.setBulkSearch("bulk".equals(searchType));
 		
-		boolean isStrict = Boolean.parseBoolean((String) arguments.get("strict"));
-		searchArgs.setStrictSearch(isStrict);
+		Object isStrict = arguments.get("strict");
+		if(isStrict instanceof Boolean)
+		{
+			isStrict = (boolean) isStrict;
+		}
+		else 
+		{
+			isStrict = false;
+		}
+
+		searchArgs.setStrictSearch((boolean) isStrict);
 		
 		Object selectedModulesObj = arguments.get("targets");
 
@@ -665,9 +679,13 @@ public class AssistantManager extends BaseAiManager
 	public void createImage(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive();
 
-		String model = archive.getCatalogSettingValue("llmmodel");
-
-		LlmConnection llmconnection = archive.getLlmConnection("dall-e-3");
+		String model = archive.getCatalogSettingValue("llmimagegenerationmodel");
+		if (model == null)
+		{
+			model = "gpt-image-1";
+		}
+		
+		LlmConnection llmconnection = archive.getLlmConnection(model);
 
 		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
 		
@@ -684,57 +702,61 @@ public class AssistantManager extends BaseAiManager
 			return;
 		}
 
-		String style = (String) arguments.get("style");
-		if (style == null)
+		LlmResponse results = llmconnection.createImage(model, prompt);
+
+		for (Iterator iterator = results.getImageBase64s().iterator(); iterator.hasNext();)
 		{
-			style = "natural";
-		}
-		Asset asset = archive.createAsset("AI/ChatAgent");
-		
-		Map params = new HashMap();
-		params.put("model", model);
-		params.put("prompt", prompt);
-		params.put("style", style);
+			String base64 = (String) iterator.next();
 
-		LlmResponse results = llmconnection.createImage(params);
+			Asset asset = (Asset) archive.getAssetSearcher().createNewData();
 
-		Downloader downloader = new Downloader();
-
-		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
-		{
-
-			String url = (String) iterator.next();
 			asset.setValue("importstatus", "created");
 
-			String filename = asset.getName();
+			String filename = prompt.replaceAll("[^a-zA-Z0-9]", "_") + ".png";
+			asset.setName(filename);
+			
+			String sourcepath = "Channels/" + inReq.getUserName() + "/" + DateStorageUtil.getStorageUtil().getTodayForDisplay() + "/" + filename;
+			asset.setSourcePath(sourcepath);
 
 			String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
-			File attachments = new File(archive.getPageManager().getPage(path).getContentItem().getAbsolutePath());
-			filename = filename.replaceAll("\\?.*", "");
-			log.info("Downloading " + url + " ->" + path + "/" + filename);
-			File target = new File(attachments, filename);
-			if (target.exists() || target.length() == 0)
+			ContentItem saveTo = archive.getPageManager().getPage(path).getContentItem();
+			
+			try
 			{
-				try
-				{
-					downloader.download(url, target);
-				}
-				catch (Exception ex)
-				{
-					asset.setProperty("importstatus", "error");
-					log.error(ex);
-					archive.saveAsset(asset);
-
-				}
+				InputStreamItem revision = new InputStreamItem();
+				
+				revision.setAbsolutePath(saveTo.getAbsolutePath());
+				revision.setPath(saveTo.getPath());
+				revision.setAuthor( inReq.getUserName() );
+				revision.setType( ContentItem.TYPE_ADDED );
+				revision.setMessage( saveTo.getMessage());
+				
+				revision.setPreviewImage(saveTo.getPreviewImage());
+				revision.setMakeVersion(false);
+				
+				log.info("Saving image -> " + path + "/" + filename);
+				
+				InputStream input = null;
+				
+				String code = base64.substring(base64.indexOf(",") +1, base64.length());
+				byte[] tosave = Base64.getDecoder().decode(code);
+				input = new ByteArrayInputStream(tosave);
+				
+				revision.setInputStream(input);
+				
+				archive.getPageManager().getRepository().put( revision );
+				asset.setProperty("importstatus", "created");
+				archive.saveAsset(asset);
 			}
-			asset.setFolder(true);
-			asset.setName(filename);
-			asset.setPrimaryFile(filename);
-			// asset.setFolder(true);
-			asset.setProperty("importstatus", "created");
-			archive.saveAsset(asset);
+			catch (Exception ex)
+			{
+				asset.setProperty("importstatus", "error");
+				log.error(ex);
+				archive.saveAsset(asset);
+			}
+			
+			inReq.putPageValue("asset", asset);
 		}
-		inReq.putPageValue("asset", asset);
 		
 
 		archive.fireSharedMediaEvent("importing/assetscreated");

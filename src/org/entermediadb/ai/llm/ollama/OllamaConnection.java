@@ -127,11 +127,11 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		return endpoint;
 	}
 
-	public BaseLlmResponse createImage(Map params)
+	public BaseLlmResponse createImage(String inModel, String inPrompt)
 	{
 		throw new OpenEditException("Model doesn't support images");
 	}
-	public BaseLlmResponse createImage(Map inParams, int inCount, String inSize)
+	public BaseLlmResponse createImage(String inModel, String inPrompt, int inCount, String inSize)
 	{
 		throw new OpenEditException("Model doesn't support images");
 	}
