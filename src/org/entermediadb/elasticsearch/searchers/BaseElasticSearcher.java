@@ -178,7 +178,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		fieldReplacer = inReplacer;
 	}
 
-	protected boolean fieldOptimizeReindex = true;
+	protected boolean fieldOptimizeReindex = false;
 
 	public boolean isOptimizeReindex()
 	{
@@ -3930,7 +3930,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	
 	protected void populateKeywords(StringBuffer inFullDesc, Data inData, PropertyDetails inDetails)
 	{
-		for (Iterator iter = inDetails.findKeywordProperties().iterator(); iter.hasNext();)
+		Collection keywordFields = inDetails.findKeywordProperties();
+		for (Iterator iter = keywordFields.iterator(); iter.hasNext();)
 		{
 			PropertyDetail det = (PropertyDetail) iter.next();
 			if (det.isList())
