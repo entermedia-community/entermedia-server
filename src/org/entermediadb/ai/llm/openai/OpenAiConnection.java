@@ -2,9 +2,6 @@ package org.entermediadb.ai.llm.openai;
 
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -14,15 +11,15 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.llm.BaseLlmConnection;
-import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.openedit.util.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
+import org.openedit.util.JSONParser;
 import org.openedit.util.OutputFiller;
 
 public class OpenAiConnection extends BaseLlmConnection implements CatalogEnabled, LlmConnection
@@ -70,7 +67,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		}
 		
 		String inModel = (String) params.get("model");
-		String style = (String) params.get("style");
+		
 		String inPrompt = (String) params.get("prompt");
 		
 		// params.put("prompt", inPrompt);
@@ -94,6 +91,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		obj.put("n", imagecount);
 		obj.put("size", inSize);
 
+		String style = (String) params.get("style");
 		if (style != null)
 		{
 			obj.put("style", style);
@@ -101,7 +99,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		String endpoint = "https://api.openai.com/v1/images/generations";
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + getApikey());
+		method.addHeader("Authorization", "Bearer " + getApikey());
 		method.setHeader("Content-Type", "application/json");
 		method.setEntity(new StringEntity(obj.toJSONString(), "UTF-8"));
 

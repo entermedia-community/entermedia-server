@@ -912,6 +912,25 @@ public class ProjectModule extends BaseMediaModule
 		inReq.putPageValue("caneditcollection", caneditcollection);
 		return caneditcollection;
 	}
+	
+	public Boolean canViewProfitAndLoss(WebPageRequest inReq)
+	{
+		ProjectManager manager = getProjectManager(inReq);
+		LibraryCollection collection = loadCollection(inReq);
+		
+		String privacylevel = collection.get("priviacylevel");
+		
+		if(privacylevel == null || privacylevel.equals("community")) 
+		{
+			return true;
+		}
+		
+		return isOnTeam(inReq);
+	}
+	
+	
+	
+	
 	//
 	// public void loadCategoriesOnCollections(WebPageRequest inReq)
 	// {

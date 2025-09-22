@@ -187,22 +187,6 @@ public class ChatServer
 		
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		
-		String moduleid = (String) inMap.get("moduleid");
-		if (moduleid == null)
-		{
-			moduleid = "librarycollection";
-		}
-		Data entity = null;
-		String entityid = (String) inMap.get("entityid");
-		if (entityid == null || entityid.equals("") || entityid.equals("null"))
-		{
-			entityid = (String) inMap.get("collectionid");  //For OI chats attached to a collectionid
-		}
-		if (entityid != null)
-		{
-			entity = archive.getCachedData(moduleid, entityid); 
-		}
-		
 		String channelid = (String)inMap.get("channel");
 		
 		if( catalogid != null && channelid != null )
@@ -221,49 +205,72 @@ public class ChatServer
 			{
 				manager.updateChatTopicLastModified( channelid, userid, messageid );
 			}
-			if( entity != null)
+			
+			ProjectManager projectmanager = getProjectManager(catalogid);
+//				
+//			if(inMap.get("topic") == null)
+//			{
+//				inMap.put("topic", entity.getName());
+//			}
+			if( inMap.get("name") == null)
 			{
-				ProjectManager projectmanager = getProjectManager(catalogid);
-				
-				if(inMap.get("topic") == null)
+				User user = archive.getUser(userid);
+				if(user != null)
 				{
-					inMap.put("topic", entity.getName());
+					inMap.put("name",user.getScreenName());
 				}
-				if( inMap.get("name") == null)
+			}
+			
+			Boolean broadcastAll = (Boolean)inMap.get("broadcastall");
+			
+			if (broadcastAll != null && broadcastAll) {
+				for (Iterator iterator = connections.iterator(); iterator.hasNext();)
 				{
-					User user = archive.getUser(userid);
-					if(user != null)
-					{
-						inMap.put("name",user.getScreenName());
+					ChatConnection chatConnection = (ChatConnection) iterator.next();
+					chatConnection.sendMessage(inMap);
+				}	
+				return;
+			}
+
+			Set userids = null;
+				
+			
+			String moduleid = (String) inMap.get("moduleid");
+			
+			if( moduleid != null)
+			{
+				if(moduleid.equals("user"))
+				{
+					MultiValued channel = (MultiValued) archive.getCachedData("channel", channelid);
+					userids = new HashSet();
+					if(channel.getBoolean("aienabled"))
+					{					
+						userids.add("agent");
 					}
+					userids.add(userid);
 				}
-				
-				Boolean broadcastAll = (Boolean)inMap.get("broadcastall");
-				
-				if (broadcastAll != null && broadcastAll) {
-					for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+				else
+				{					
+					Data entity = null;
+					String entityid = (String) inMap.get("entityid");
+					if (entityid == null || entityid.equals("") || entityid.equals("null"))
 					{
-						ChatConnection chatConnection = (ChatConnection) iterator.next();
-						chatConnection.sendMessage(inMap);
-					}	
-				}
-				else {
-					Set userids = null;
-					if( moduleid.equals("librarycollection"))
+						entityid = (String) inMap.get("collectionid");  //For OI chats attached to a collectionid
+					}
+					if (entityid != null)
 					{
-						
+						entity = archive.getCachedData(moduleid, entityid); 
+					}
+					
+					if (moduleid.equals("librarycollection"))
+					{
 						//MultiValued topic = (MultiValued) archive.getCachedData("collectiveproject", channelid);
 						//if (topic.getBoolean("teamproject"))
-						{
 						userids = projectmanager.listTeam(entity);
-						}
-						//else 
-						{
-							//Broacast to all users who liked at least?
-						}
 						userids.add(userid);
 					}
-					else {
+					else
+					{
 						//Todo: other Entities
 						Data module = archive.getCachedData("module", moduleid);
 						Collection<AddedPermission> permissions = archive.getPermissionManager().loadEntityPermissions(module, entity);
@@ -279,37 +286,26 @@ public class ChatServer
 							
 						}
 					}
-					
-					for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+				}
+			}
+			
+			for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+			{
+				ChatConnection chatConnection = (ChatConnection) iterator.next();
+				if(userids != null && userids.contains(chatConnection.getUserId() ) )
+				{
+					chatConnection.sendMessage(inMap);
+				}
+				else
+				{
+					String connectionChannel = chatConnection.getChannelId();
+					if (channelid.equals(connectionChannel))
 					{
-						ChatConnection chatConnection = (ChatConnection) iterator.next();
-						if( userids.contains(chatConnection.getUserId() ) )
-						{
-							chatConnection.sendMessage(inMap);
-						}
-						else
-						{
-							String connectionChannel = chatConnection.getChannelId();
-							if (channelid.equals(connectionChannel))
-							{
-								//log.info("Other connection is not a team member: " + chatConnection.getChannelId());
-								chatConnection.sendMessage(inMap);
-							}
-						}
+						//log.info("Other connection is not a team member: " + chatConnection.getChannelId());
+						chatConnection.sendMessage(inMap);
 					}
 				}
 			} 
-			else 
-			{ 
-				throw new OpenEditException("Entity or collectionid required");
-				/*
-				 * 
-				{
-					ChatConnection chatConnection = (ChatConnection) iterator.next();
-					chatConnection.sendMessage(inMap);
-				}	
-				*/
-			}
 			
 			//For people who are logged in, mark that they checked already
 			getExecutorManager(catalogid).execute( new Runnable() {
@@ -333,9 +329,6 @@ public class ChatServer
 					}	
 				}
 			});
-		}
-		else {
-			log.info("Error broadcasting message to channel: "+ channelid + ", missing collection: " + entityid + " or module: "+ moduleid +" or catalog: " + catalogid);
 		}
 	}
 
