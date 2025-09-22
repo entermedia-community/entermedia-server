@@ -26,14 +26,18 @@ public class InformaticsManager extends BaseAiManager
 	{
 //		Map<String, String> models = getModels();
 		inLog.info("Assets");
+
+		QueryBuilder query = getMediaArchive().localQuery("asset").
+				exact("previewstatus", "2").
+				exact("taggedbyllm", false).
+				exact("llmerror", false);
+		
 		String categoryid = getMediaArchive().getCatalogSettingValue("llmmetadatastartcategory");
-
-		if (categoryid == null)
+		if (categoryid != null)
 		{
-			categoryid = "index";
+			//categoryid = "index";
+			query.exact("category", categoryid);
 		}
-
-		QueryBuilder query = getMediaArchive().localQuery("asset").exact("previewstatus", "2").exact("category", categoryid).exact("taggedbyllm", false).exact("llmerror", false);
 
 		String startdate = getMediaArchive().getCatalogSettingValue("ai_metadata_startdate");
 		Date date = null;
@@ -46,7 +50,7 @@ public class InformaticsManager extends BaseAiManager
 		}
 		else
 		{
-			date = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
+			date = DateStorageUtil.getStorageUtil().parseFromObject(startdate);
 		}
 		query.after("assetaddeddate", date);
 
@@ -54,7 +58,7 @@ public class InformaticsManager extends BaseAiManager
 		HitTracker pendingrecords = query.search();
 		pendingrecords.enableBulkOperations();
 		pendingrecords.setHitsPerPage(25);
-		inLog.info("Asset search query: " + pendingrecords);
+		inLog.info("Asset search query: " + pendingrecords + " " +date);
 
 		if (!pendingrecords.isEmpty())
 		{
