@@ -67,7 +67,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		}
 		
 		String inModel = (String) params.get("model");
-		String style = (String) params.get("style");
+		
 		String inPrompt = (String) params.get("prompt");
 		
 		// params.put("prompt", inPrompt);
@@ -91,6 +91,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		obj.put("n", imagecount);
 		obj.put("size", inSize);
 
+		String style = (String) params.get("style");
 		if (style != null)
 		{
 			obj.put("style", style);
@@ -98,7 +99,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		String endpoint = "https://api.openai.com/v1/images/generations";
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + getApikey());
+		method.addHeader("Authorization", "Bearer " + getApikey());
 		method.setHeader("Content-Type", "application/json");
 		method.setEntity(new StringEntity(obj.toJSONString(), "UTF-8"));
 

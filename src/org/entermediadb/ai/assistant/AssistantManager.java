@@ -1,5 +1,6 @@
 package org.entermediadb.ai.assistant;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,8 +17,10 @@ import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.classify.SemanticFieldManager;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.ResultsManager;
+import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONArray;
@@ -658,4 +661,82 @@ public class AssistantManager extends BaseAiManager
 //		}
 //		
 //	}
+	
+	public void createImage(WebPageRequest inReq) throws Exception {
+		MediaArchive archive = getMediaArchive();
+
+		String model = archive.getCatalogSettingValue("llmmodel");
+
+		LlmConnection llmconnection = archive.getLlmConnection("dall-e-3");
+
+		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
+		
+		if(arguments == null)
+		{
+			log.warn("No arguments found in request");
+			return;
+		}
+		
+		String prompt = (String) arguments.get("prompt");
+
+		if (prompt == null)
+		{
+			return;
+		}
+
+		String style = (String) arguments.get("style");
+		if (style == null)
+		{
+			style = "natural";
+		}
+		Asset asset = archive.createAsset("AI/ChatAgent");
+		
+		Map params = new HashMap();
+		params.put("model", model);
+		params.put("prompt", prompt);
+		params.put("style", style);
+
+		LlmResponse results = llmconnection.createImage(params);
+
+		Downloader downloader = new Downloader();
+
+		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
+		{
+
+			String url = (String) iterator.next();
+			asset.setValue("importstatus", "created");
+
+			String filename = asset.getName();
+
+			String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
+			File attachments = new File(archive.getPageManager().getPage(path).getContentItem().getAbsolutePath());
+			filename = filename.replaceAll("\\?.*", "");
+			log.info("Downloading " + url + " ->" + path + "/" + filename);
+			File target = new File(attachments, filename);
+			if (target.exists() || target.length() == 0)
+			{
+				try
+				{
+					downloader.download(url, target);
+				}
+				catch (Exception ex)
+				{
+					asset.setProperty("importstatus", "error");
+					log.error(ex);
+					archive.saveAsset(asset);
+
+				}
+			}
+			asset.setFolder(true);
+			asset.setName(filename);
+			asset.setPrimaryFile(filename);
+			// asset.setFolder(true);
+			asset.setProperty("importstatus", "created");
+			archive.saveAsset(asset);
+		}
+		inReq.putPageValue("asset", asset);
+		
+
+		archive.fireSharedMediaEvent("importing/assetscreated");
+	}
 }
