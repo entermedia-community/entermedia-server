@@ -1,8 +1,11 @@
 package org.entermediadb.modules.publishing;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +40,8 @@ import org.openedit.data.ViewFieldList;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
+import org.openedit.repository.InputStreamItem;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.Exec;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.XmlUtil;
@@ -761,65 +766,81 @@ public class ContentManager implements CatalogEnabled
 
 		MediaArchive archive = getMediaArchive();
 
-		String model = contentrequest.get("llmmodel");
-
-		LlmConnection llm = archive.getLlmConnection(model);
+		String model = archive.getCatalogSettingValue("llmimagegenerationmodel");
+		if (model == null)
+		{
+			model = "dall-e-3";
+		}
 
 		String prompt = (String) contentrequest.get("llmprompt");
-
+		
 		if (prompt == null)
 		{
 			return null;
 		}
-
+		
 		Asset asset = archive.getAsset(contentrequest.get("primarymedia"));
 		if(asset == null) {
 			return null;
 		}
-		
+
+
 		try 
 		{
-			LlmResponse results = llm.createImage(model, prompt);
+			LlmConnection llmconnection = archive.getLlmConnection(model);
 			
-			Downloader downloader = new Downloader();
-			
-			for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
+			LlmResponse results = llmconnection.createImage(model, prompt);
+
+			for (Iterator iterator = results.getImageBase64s().iterator(); iterator.hasNext();)
 			{
-				
-				String url = (String) iterator.next();
+				String base64 = (String) iterator.next();
+
 				asset.setValue("importstatus", "created");
-				
-				String filename = asset.getName();
-				
-				String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
-				File attachments = new File(archive.getPageManager().getPage(path).getContentItem().getAbsolutePath());
+				String filename = prompt.replaceAll("[^a-zA-Z0-9]", "_") + ".png";
 				filename = filename.replaceAll("\\?.*", "");
-				log.info("Downloading " + url + " ->" + path + "/" + filename);
-				File target = new File(attachments, filename);
-				if (target.exists() || target.length() == 0)
+
+				String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
+				ContentItem saveTo = archive.getPageManager().getPage(path).getContentItem();
+				
+				try
 				{
-					try
-					{
-						downloader.download(url, target);
-					}
-					catch (Exception ex)
-					{
-						asset.setProperty("importstatus", "error");
-						log.error(ex);
-						archive.saveAsset(asset);
-						
-					}
+					InputStreamItem revision = new InputStreamItem();
+					
+					revision.setAbsolutePath(saveTo.getAbsolutePath());
+					revision.setPath(saveTo.getPath());
+					revision.setType( ContentItem.TYPE_ADDED );
+					revision.setMessage( saveTo.getMessage());
+					
+					revision.setPreviewImage(saveTo.getPreviewImage());
+					revision.setMakeVersion(false);
+					
+					log.info("Saving image -> " + path + "/" + filename);
+					
+					InputStream input = null;
+					
+					String code = base64.substring(base64.indexOf(",") +1, base64.length());
+					byte[] tosave = Base64.getDecoder().decode(code);
+					input = new ByteArrayInputStream(tosave);
+					
+					revision.setInputStream(input);
+					
+					archive.getPageManager().getRepository().put( revision );
+					
+					asset.setName(filename);
+
+					archive.saveAsset(asset);
+
+					archive.fireSharedMediaEvent("importing/assetscreated");
+					contentrequest.setValue("status", "complete");
+					archive.saveData("contentcreator", contentrequest);
 				}
-				asset.setFolder(true);
-				asset.setName(filename);
-				asset.setPrimaryFile(filename);
-				// asset.setFolder(true);
-				asset.setProperty("importstatus", "created");
-				archive.saveAsset(asset);
-			}
-			archive.fireSharedMediaEvent("importing/assetscreated");
-			contentrequest.setValue("status", "complete");
-			archive.saveData("contentcreator", contentrequest);
+				catch (Exception ex)
+				{
+					asset.setProperty("importstatus", "error");
+					log.error(ex);
+					archive.saveAsset(asset);
+				}
+			} 
 		}
 		catch (Exception e)
 		{
