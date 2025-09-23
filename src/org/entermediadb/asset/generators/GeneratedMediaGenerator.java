@@ -91,6 +91,8 @@ public class GeneratedMediaGenerator extends FileGenerator
 				String outputfile = PathUtilities.extractFileName(endingpath); //image1200x1200.jpg
 				
 				ConvertResult result = transcodetools.createOutputIfNeeded(null,null,sourcepath, outputfile ); //String inSourcePath, Data inPreset, String inOutputType);
+				existed = result.isComplete();
+				item = result.getOutput();
 			}
 		}
 		/*
