@@ -76,9 +76,7 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 	}
 	public Map<String, String> translatePlainText(String sourceLang, Collection<String> targetLangs, String text)
 	{
-		ArrayList<String> texts = new ArrayList<>(Arrays.asList(text));
-
-		JSONObject translations = translateFields(texts, sourceLang, targetLangs);
+		JSONObject translations = translate(text, sourceLang, targetLangs);
 		
 		Map<String, String> results = new HashMap<String, String>();
 		for (Iterator iterator = targetLangs.iterator(); iterator.hasNext();)
@@ -117,7 +115,7 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 	{
 		HitTracker assets = (HitTracker) context.getPageValue("assetsToTranslate");
 	
-		MultiValued config = (MultiValued)getMediaArchive().getCachedData("informatics","autotranslate");
+		MultiValued config = (MultiValued)getMediaArchive().getCachedData("informatics", "autotranslate");
 		
 		Collection<MultiValued> records = new ArrayList(assets);
 		processInformaticsOnAssets(inLog, config, records);
@@ -125,18 +123,37 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 	
 	public LanguageMap translateField(String field, LanguageMap languageMap, String sourceLang, Collection<String> targetLangs)
 	{
-		ArrayList<String> fieldNames = new ArrayList();
-		fieldNames.add(field);
-		ArrayList<String> fieldValues = new ArrayList();
-		fieldValues.add(languageMap.getText(sourceLang));
+		String sourceText = languageMap.getText(sourceLang);
 		
-		JSONObject translations = translateFields(fieldValues, sourceLang, targetLangs);
-		if(translations == null)
+		if(sourceText == null || sourceText.equals(""))
 		{
-			return null;
+			return languageMap;
 		}
 		
-		for (Iterator iterator = targetLangs.iterator(); iterator.hasNext();)
+		Collection<String> validTargets = new ArrayList();
+		
+		for (Iterator iterator = targetLangs.iterator(); iterator.hasNext();) {
+			String target = (String) iterator.next();  
+			
+			String value = languageMap.getText(target);
+			if(value == null || value.equals(""))
+			{				
+				validTargets.add(target);
+			}
+				 
+		}
+		if(validTargets.isEmpty())
+		{
+			return languageMap;
+		}
+		
+		JSONObject translations = translate(sourceText, sourceLang, validTargets);
+		if(translations == null)
+		{
+			return languageMap;
+		}
+		
+		for (Iterator iterator = validTargets.iterator(); iterator.hasNext();)
 		{
 			String lang = (String) iterator.next();
 			JSONArray fieldTranslations = (JSONArray) translations.get(lang);
@@ -146,74 +163,24 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 			}
 			String value = (String) fieldTranslations.get(0);
 			languageMap.setText(lang, value);
+			
 		}
 		
 		return languageMap;
 	}
-	public Map<String, LanguageMap> translateFields(Map<String, LanguageMap> fields, String sourceLang, Collection<String> targetLangs)
-	{
-		ArrayList<String> fieldNames = new ArrayList();
-		ArrayList<String> fieldValues = new ArrayList();
-		
-		Map<String, LanguageMap> sourceLangMap = new HashMap<String, LanguageMap>();
-		
-		for (Iterator iterator = fields.keySet().iterator(); iterator.hasNext();) 
-		{
-			String key = (String) iterator.next();
-
-			LanguageMap valueMap = (LanguageMap) fields.get(key);
-			if(valueMap != null)
-			{				
-				String value = valueMap.getText(sourceLang);
-				if(value != null && !value.equals(""))
-				{				
-					fieldNames.add(key);
-					fieldValues.add(value);
-					LanguageMap lm = new LanguageMap();
-					lm.setText(sourceLang, value);
-					sourceLangMap.put(key, lm);
-				}
-			}
-		}
-		
-		try {
-			if(fieldValues.isEmpty())
-			{
-				return null;
-			}
-			JSONObject translations = translateFields(fieldValues, sourceLang, targetLangs);
-			if(translations == null)
-			{
-				return null;
-			}
-			return processTranslations(translations, fieldNames, sourceLangMap, targetLangs);
-		} catch (Exception e) 
-		{
-			log.error("Problem translating " + fieldValues, e);
-			return null;
-		}
-	}
 	
-	public JSONObject translateFields(ArrayList<String> texts, String sourceLang, Collection<String> targetLangs)
+	public JSONObject translate(String text, String sourceLang, Collection<String> targetLangs)
 	{
 		JSONObject payload = new JSONObject();
 		
 		JSONArray q = new JSONArray();
-		
-		for (Iterator iterator = texts.iterator(); iterator.hasNext();) {
-			String text = (String) iterator.next();
-			q.add(text);
-		}
-		
+		q.add(text);
 		payload.put("q", q);
+		
 		payload.put("source", sourceLang);
 		
 		JSONArray targets = new JSONArray();
-		
-		for (Iterator iterator = targetLangs.iterator(); iterator.hasNext();) {
-			String target = (String) iterator.next();
-			targets.add(target);
-		}
+		targets.addAll(targetLangs);
 		payload.put("target", targets);
 		
 		log.info("Translating " + q + " from " + sourceLang + " to " + targetLangs);
@@ -336,6 +303,8 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 
 			Map<String, PropertyDetail> detailsfields = loadActiveDetails(moduleid);
 			
+			Map<String, LanguageMap> results = new HashMap();
+			
 			for (Iterator iterator2 = detailsfields.keySet().iterator(); iterator2.hasNext();)
 			{
 				String inKey = (String) iterator2.next();
@@ -345,16 +314,16 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 					LanguageMap value = data.getLanguageMap(inKey);
 					if (value != null && value.getText("en") != null && !value.getText("en").isEmpty())
 					{
-						fieldsmap.put(inKey, value);
+						inLog.info("Translating field: " + inKey);
+						LanguageMap translated = translateField(inKey, value, "en", targetLangs);
+						results.put(inKey, translated);
 					}
 				}
 			} 
 
 			try
 			{
-				Map<String, LanguageMap> results = translateFields(fieldsmap, "en", targetLangs);
-
-				if(results != null)
+				if(results.size() > 0)
 				{
 					for (Iterator iterator2 = results.keySet().iterator(); iterator2.hasNext();) 
 					{
@@ -364,10 +333,9 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 						value.putAll(map);
 						data.setValue(key, value);
 					}
-					inLog.info("Found translation for "+ data.getId() + ", " + data.getName());
 				}
-				long duration = (System.currentTimeMillis() - startTime);
-				inLog.info("translation took: "+duration +"ms");
+				long duration = System.currentTimeMillis() - startTime;
+				inLog.info("Total translation took: " + duration + "ms");
 			} 
 			catch(Exception e){
 				inLog.error("Translation Error", e);
