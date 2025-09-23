@@ -185,7 +185,7 @@ public class AssistantManager extends BaseAiManager
 		functionMessage.setValue("channel", channel.getId());
 		functionMessage.setValue("date", new Date());
 		functionMessage.setValue("message", "Processing...");
-		functionMessage.setValue("processingcomplete", false);
+		
 		chats.saveData(functionMessage);
 		
 		server.broadcastMessage(archive.getCatalogId(), functionMessage);
@@ -197,23 +197,19 @@ public class AssistantManager extends BaseAiManager
 		{
 			// Function call detected
 			String functionName = response.getFunctionName();
-			JSONObject arguments = response.getArguments();
-
-			String json = arguments.toJSONString();
-			// Create and save function call message
+			
 			functionMessage.setValue("message", "Executing function " + functionName);
 			functionMessage.setValue("function", functionName);
-			functionMessage.setValue("arguments", json);
-			functionMessage.setValue("processingcomplete", true);
+			
 			chats.saveData(functionMessage);
+			
 			server.broadcastMessage(archive.getCatalogId(), functionMessage);
 			
 			execChatFunction(llmconnection, functionMessage, functionName,  params);
 			
 			
 			archive.fireSharedMediaEvent("chatterbox/monitorchats");
-			
-			//archive.fireDataEvent(inReq.getUser(), "llm", "callfunction", functionMessage);
+
 			archive.fireSharedMediaEvent("llm/monitorchats");
 
 			
@@ -231,7 +227,6 @@ public class AssistantManager extends BaseAiManager
 				responsemessage.setValue("date", new Date());
 				responsemessage.setValue("channel", channel.getId());
 				responsemessage.setValue("messagetype", "airesponse");
-				responsemessage.setValue("processingcomplete", true);
 
 				chats.saveData(responsemessage);
 				server.broadcastMessage(archive.getCatalogId(), responsemessage);
@@ -266,9 +261,14 @@ public class AssistantManager extends BaseAiManager
 			params.put("arguments", arguments);
 			
 			response = llmconnection.loadResponseFromTemplate(functionName, apphome, params);
-			//log.info("Function " + functionName + " returned : " + response);
+			
+			
+			
+			String params_json = params.toString();
+			messageToUpdate.setValue("params", params_json);
+			
+			
 
-			messageToUpdate.setValue("functionresponse", response);
 			messageToUpdate.setValue("message", response);
 			
 			Searcher chats = archive.getSearcher("chatterbox");
