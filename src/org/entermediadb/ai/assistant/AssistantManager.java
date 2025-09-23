@@ -202,6 +202,7 @@ public class AssistantManager extends BaseAiManager
 			String json = arguments.toJSONString();
 			// Create and save function call message
 			functionMessage.setValue("message", "Executing function " + functionName);
+			functionMessage.setValue("function", functionName);
 			functionMessage.setValue("arguments", json);
 			functionMessage.setValue("processingcomplete", true);
 			chats.saveData(functionMessage);
