@@ -424,7 +424,7 @@ public class EntityManager implements CatalogEnabled
 		getMediaArchive().saveAsset(asset); 
 		Collection tosave = new ArrayList();
 		tosave.add(asset);
-		getMediaArchive().getAssetManager().createLinksTo(tosave,destinationCategory.getCategoryPath());
+		getMediaArchive().getAssetManager().createLinksTo(tosave, destinationCategory.getCategoryPath());
 
 		return true;
 	}
