@@ -72,7 +72,7 @@ public class AssistantManager extends BaseAiManager
 		
 		//TODO: Only process one "open" channel at a time. What ever the last one they clicked on
 		
-		HitTracker allchannels = channels.query().exact("aienabled", true).after("refreshdate",now.getTime()).sort("refreshdateDown").search();
+		HitTracker allchannels = channels.query().exact("channeltype", "agentchat").after("refreshdate",now.getTime()).sort("refreshdateDown").search();
 
 		Searcher chats = archive.getSearcher("chatterbox");
 		for (Iterator iterator = allchannels.iterator(); iterator.hasNext();)
@@ -80,10 +80,10 @@ public class AssistantManager extends BaseAiManager
 			Data channel = (Data) iterator.next();
 			
 			Data mostrecent = chats.query()
-								   .exact("channel", channel.getId())
-								   .exact("processingcomplete","false")
-								   .sort("dateDown")
-								   .searchOne();
+				   .exact("channel", channel.getId())
+				   .exact("chatmessagestatus", "received")
+				   .sort("dateDown")
+				   .searchOne();
 			
 			if (mostrecent  == null)
 			{
@@ -156,7 +156,7 @@ public class AssistantManager extends BaseAiManager
 		String channeltype = channel.get("channeltype");
 		if (channeltype == null)
 		{
-			channeltype = "chatstreamer";
+			channeltype = "agentchat";
 		}
 		
 		String id = channel.get("user");
@@ -167,7 +167,7 @@ public class AssistantManager extends BaseAiManager
 		params.put("channel", channel);
 
 		//Update original message processing status
-		message.setValue("processingcomplete", true);
+		message.setValue("chatmessagestatus", "complete");
 		chats.saveData(message);
 		
 		params.put("message", message);
@@ -185,6 +185,7 @@ public class AssistantManager extends BaseAiManager
 		functionMessage.setValue("channel", channel.getId());
 		functionMessage.setValue("date", new Date());
 		functionMessage.setValue("message", "Processing...");
+		functionMessage.setValue("chatmessagestatus", "processing");
 		
 		chats.saveData(functionMessage);
 		
@@ -198,8 +199,16 @@ public class AssistantManager extends BaseAiManager
 			// Function call detected
 			String functionName = response.getFunctionName();
 			
+			JSONObject functionArguments = response.getArguments();
+			
+			JSONObject chatparams = new JSONObject();
+			chatparams.put("function", functionName);
+			chatparams.put("arguments", functionArguments);
+			
+			params.put("arguments", functionArguments);
+			
+			functionMessage.setValue("params", chatparams.toString());
 			functionMessage.setValue("message", "Executing function " + functionName);
-			functionMessage.setValue("function", functionName);
 			
 			chats.saveData(functionMessage);
 			
@@ -240,12 +249,8 @@ public class AssistantManager extends BaseAiManager
 
 		MediaArchive archive = getMediaArchive();
 
-		//get the channel
 		Data channel = archive.getCachedData("channel", messageToUpdate.get("channel"));
 		params.put("channel", channel);
-		
-		String apphome = "/"+ channel.get("chatapplicationid");
-		
 		
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 
@@ -253,23 +258,13 @@ public class AssistantManager extends BaseAiManager
 		
 		try
 		{
-			
 			params.put("data", messageToUpdate);
-
-			String args = (String) messageToUpdate.get("arguments");
-			JSONObject arguments = (JSONObject) new JSONParser().parse(args);
-			params.put("arguments", arguments);
 			
+			String apphome = "/"+ channel.get("chatapplicationid");
 			response = llmconnection.loadResponseFromTemplate(functionName, apphome, params);
-			
-			
-			
-			String params_json = params.toString();
-			messageToUpdate.setValue("params", params_json);
-			
-			
 
 			messageToUpdate.setValue("message", response);
+			messageToUpdate.setValue("chatmessagestatus", "complete");
 			
 			Searcher chats = archive.getSearcher("chatterbox");
 			chats.saveData(messageToUpdate);
@@ -281,19 +276,17 @@ public class AssistantManager extends BaseAiManager
 			functionMessageUpdate.put("channel", messageToUpdate.get("channel"));
 			functionMessageUpdate.put("messageid", messageToUpdate.getId());
 			functionMessageUpdate.put("message", response);
-
+			
 			server.broadcastMessage(functionMessageUpdate);
 			
 		}
 		catch (Exception e)
 		{
-			log.error(e);
+			log.error("Could not execute function: " + functionName, e);
 			messageToUpdate.setValue("functionresponse", e.toString());
-			messageToUpdate.setValue("processingcomplete", true);
+			messageToUpdate.setValue("chatmessagestatus", "failed");
 			archive.saveData("chatterbox", messageToUpdate);
 		}
-		
-
 	}
 
 	protected AiCurrentStatus loadCurrentStatus(Data inChannel)

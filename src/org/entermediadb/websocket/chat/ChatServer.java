@@ -243,7 +243,7 @@ public class ChatServer
 				{
 					MultiValued channel = (MultiValued) archive.getCachedData("channel", channelid);
 					userids = new HashSet();
-					if(channel.getBoolean("aienabled"))
+					if("agentchat".equals(channel.get("channeltype")))
 					{					
 						userids.add("agent");
 					}
@@ -394,8 +394,8 @@ public class ChatServer
 			else {
 				chat.setValue("collectionid", collectionid);	
 			}
-		
-			chat.setValue("channeltype", inMap.get("channeltype"));
+
+			chat.setValue("chatmessagestatus", "received");
 			chat.setValue("message", newmessage);
 			chat.setValue("messagetype", "message");
 		}
@@ -421,9 +421,7 @@ public class ChatServer
 			if (channel == null) {
 				channel = chats.createNewData();
 				channel.setId(channelid);
-				String channeltype = (String) inChannelInfo.get("channeltype");				
-				String aienabled = (String) inChannelInfo.get("aienabled");				
-				channel.setValue("aienabled", aienabled);
+				String channeltype = (String) inChannelInfo.get("channeltype");
 				channel.setValue("channeltype", channeltype);
 				chats.saveData(channel);
 			}
