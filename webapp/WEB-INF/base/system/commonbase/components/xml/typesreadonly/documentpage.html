@@ -7,17 +7,37 @@
 	#set( $foundrow = $mediaarchive.getAsset($value))
 
 	#if($foundrow)
+
+
+	#set($pagenum = $data.get("pagenum"))
+	#set($imagesize = "image550x550page${pagenum}")
+	#if($thumbsize == "largepreview")
+		#if( $type == "video" )
+			#set($imagesize = "image640x480page${pagenum}")
+		#else
+			#set($imagesize = "image3000x3000page${pagenum}")
+		#end
+	#elseif($thumbsize == "mediumplus")
+		#if( $type == "video" )
+			#set($imagesize = "image640x480page${pagenum}")
+		#end
+	#elseif($thumbsize == "small")
+		#set($imagesize = "image200x200page${pagenum}")
+	#elseif($thumbsize == "crop")
+		#set($imagesize = "image200x200page${pagenum}")
+	#end		
+	
 	<div id="$!{detail.id}-preview"
 		class="assetpreviewreadonly assetdraggable ui-draggable"
 		data-assetid="$foundrow.getId()">
-		#set($pagenum = $data.get("pagenum"))
 		#ifnull($pagenum)
 			#set($pagenum = 1)
 		#end
 		#if($pagenum == 1)
 			$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$value&readonly=true", $context)
 		#else
-		<img src="/${mediaarchive.getMediaDbId()}/services/module/asset/generate/#esc(${foundrow.sourcepath})/image3000x3000page${pagenum}.webp/image3000x3000page${pagenum}.webp" class="img-fluid">
+		
+		<img src="/${mediaarchive.getMediaDbId()}/services/module/asset/generate/#esc(${foundrow.sourcepath})/${imagesize}.webp/${imagesize}.webp" class="img-fluid">
 		#end
 	</div>
 	#else
