@@ -1,4 +1,4 @@
-#set($languages = $mediaarchive.query("locale").exact("translatemetadata", true).search() )
+#set($languages = $mediaarchive.getList("locale") )
 <div class="d-flex align-items-end justify-content-end mt-3" id="languageaction_${detail.id}">
   <div class="d-flex flex-column">
     <label for="translate-dropdown-${detail.id}" class="mb-1 small fw-bold">
@@ -17,18 +17,22 @@
         #set($skip = false)
         #set($selectedlocale = "")
         #foreach($locale in $languages)
-          #set($localval = $languagemap.getText($locale.id))
-          #set($selected = false)
-          #if(!$skip)
-            #if($addedlocale == $locale.id || ($localval && $localval != ""))
-              #set($skip = true)
-              #set($selected = true)
-              #set($selectedlocale = $locale)
-            #end
-          #end
-          <option value="$locale.id" #if($selected) selected #end>
-            $locale
-          </option>
+		  #if($locale.getBoolean("enabled"))
+	          #set($localval = $languagemap.getText($locale.id))
+	          #set($selected = false)
+	          #if(!$skip)
+	            #if($addedlocale == $locale.id || ($localval && $localval != ""))
+	              #set($skip = true)
+	              #set($selected = true)
+	              #set($selectedlocale = $locale)
+	            #end
+	          #end
+	          <option value="$locale.id" 
+			  	#if($selected) selected #end 
+			   >
+	            #text($locale)
+	          </option>
+			  #end
         #end
       </select>
 
