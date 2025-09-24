@@ -26,13 +26,13 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 {
 	private static Log log = LogFactory.getLog(OpenAiConnection.class);
 
-	public LlmResponse runPageAsInput(Map params, String inModel, String inTemplate)
+	public LlmResponse runPageAsInput(Map context, String inModel, String inTemplate)
 	{
 
-		params.put("model", inModel);
-		params.put("mediaarchive", getMediaArchive());
+		context.put("model", inModel);
+		context.put("mediaarchive", getMediaArchive());
 
-		String input = loadInputFromTemplate(inTemplate, params);
+		String input = loadInputFromTemplate(inTemplate, context);
 		log.info(inTemplate + " process chat");
 		String endpoint = getApiEndpoint();
 
@@ -148,7 +148,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		return embeddingArray.toJSONString(); // Convert to string for returning
 	}
 	
-	public LlmResponse callCreateFunction(Map params, String inModel, String inFunction) 
+	public LlmResponse callCreateFunction(Map context, String inModel, String inFunction) 
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -167,7 +167,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			throw new OpenEditException("Requested Content Does Not Exist in MEdiaDB or Catatlog:" + inFunction);
 		}
 		
-		String content = loadInputFromTemplate(contentPath, params);
+		String content = loadInputFromTemplate(contentPath, context);
 		
 		JSONArray messages = new JSONArray();
 		JSONObject message = new JSONObject();
@@ -192,7 +192,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 				throw new OpenEditException("Requested Function Does Not Exist in MEdiaDB or Catatlog:" + inFunction);
 			}
 			
-			String definition = loadInputFromTemplate(functionPath, params);
+			String definition = loadInputFromTemplate(functionPath, context);
 
 			JSONParser parser = new JSONParser();
 			JSONObject functionDef = (JSONObject) parser.parse(definition);

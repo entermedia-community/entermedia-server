@@ -129,7 +129,7 @@ public class AssistantManager extends BaseAiManager
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		Map params = new HashMap();
+		Map context = new HashMap();
 		
 		String model = archive.getCatalogSettingValue("chat_agent_model");
 		
@@ -139,7 +139,7 @@ public class AssistantManager extends BaseAiManager
 		}
 		LlmConnection llmconnection = archive.getLlmConnection(model);
 
-		params.put("model", model);
+		context.put("model", model);
 
 		Date now = new Date();
 		DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
@@ -161,24 +161,24 @@ public class AssistantManager extends BaseAiManager
 		
 		String id = channel.get("user");
 		UserProfile profile = archive.getUserProfile(id);
-		params.put("chatprofile", profile);
+		context.put("chatprofile", profile);
 		
 		
-		params.put("channel", channel);
+		context.put("channel", channel);
 
 		//Update original message processing status
 		message.setValue("chatmessagestatus", "complete");
 		chats.saveData(message);
 		
-		params.put("message", message);
+		context.put("message", message);
 
 ///$mediaarchive.getMediaDbId()/ai/openai/assistant/instructions/context
 		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/assistant/instructions/current.json";
 		
-		params.put("assistant", this);
+		context.put("assistant", this);
 		
 		AiCurrentStatus current = loadCurrentStatus(channel); //TODO: Update this often
-		params.put("currentstatus",current);
+		context.put("currentstatus",current);
 		
 		Data functionMessage = chats.createNewData();
 		functionMessage.setValue("user", "agent");
@@ -191,7 +191,7 @@ public class AssistantManager extends BaseAiManager
 		
 		server.broadcastMessage(archive.getCatalogId(), functionMessage);
 		
-		LlmResponse response = llmconnection.runPageAsInput(params, model, chattemplate);
+		LlmResponse response = llmconnection.runPageAsInput(context, model, chattemplate);
 		//current update it?
 		
 		if (response.isToolCall())
@@ -201,27 +201,21 @@ public class AssistantManager extends BaseAiManager
 			
 			JSONObject functionArguments = response.getArguments();
 			
-			JSONObject chatparams = new JSONObject();
-			chatparams.put("function", functionName);
-			chatparams.put("arguments", functionArguments);
-			
-			params.put("arguments", functionArguments);
-			
-			functionMessage.setValue("params", chatparams.toString());
+			JSONObject parameters = new JSONObject();
+			parameters.put("function", functionName);
+			parameters.put("arguments", functionArguments);
+			functionMessage.setValue("params", parameters.toJSONString());
 			functionMessage.setValue("message", "Executing function " + functionName);
 			
 			chats.saveData(functionMessage);
 			
 			server.broadcastMessage(archive.getCatalogId(), functionMessage);
 			
-			execChatFunction(llmconnection, functionMessage, functionName,  params);
-			
+			execChatFunction(llmconnection, functionMessage, functionName,  context, parameters);
 			
 			archive.fireSharedMediaEvent("chatterbox/monitorchats");
 
 			archive.fireSharedMediaEvent("llm/monitorchats");
-
-			
 		}
 		else
 		{
@@ -244,26 +238,23 @@ public class AssistantManager extends BaseAiManager
 		
 	}
 	
-	public void execChatFunction(LlmConnection llmconnection, Data messageToUpdate, String functionName, Map params) throws Exception
+	public void execChatFunction(LlmConnection llmconnection, Data messageToUpdate, String functionName, Map<String,Object> context, JSONObject parameters) throws Exception
 	{
-
 		MediaArchive archive = getMediaArchive();
 
 		Data channel = archive.getCachedData("channel", messageToUpdate.get("channel"));
-		params.put("channel", channel);
+		context.put("channel", channel);
 		
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 
-		String response;
-		
 		try
 		{
-			params.put("data", messageToUpdate);
+			context.put("data", messageToUpdate);
 			
 			String apphome = "/"+ channel.get("chatapplicationid");
-			response = llmconnection.loadResponseFromTemplate(functionName, apphome, params);
+			LlmResponse response = llmconnection.loadResponseFromTemplate(functionName, apphome, context, parameters);
 
-			messageToUpdate.setValue("message", response);
+			messageToUpdate.setValue("message", response.getMessage());
 			messageToUpdate.setValue("chatmessagestatus", "complete");
 			
 			Searcher chats = archive.getSearcher("chatterbox");
@@ -275,9 +266,19 @@ public class AssistantManager extends BaseAiManager
 			functionMessageUpdate.put("user", "agent");
 			functionMessageUpdate.put("channel", messageToUpdate.get("channel"));
 			functionMessageUpdate.put("messageid", messageToUpdate.getId());
-			functionMessageUpdate.put("message", response);
-			
+			functionMessageUpdate.put("message", response.getMessage());
 			server.broadcastMessage(functionMessageUpdate);
+			
+			if( response.getNextFunctionName() != null)
+			{
+				JSONObject params = response.getParameters();
+				TODO: Make sure this works
+				params.put("function", response.getNextFunctionName()); 
+				
+				messageToUpdate.setValue("params",params);
+				messageToUpdate.setValue("chatmessagestatus", "refresh");
+				chats.saveData(messageToUpdate);
+			}
 			
 		}
 		catch (Exception e)
@@ -320,15 +321,17 @@ public class AssistantManager extends BaseAiManager
 		return hits;
 	}
 	
-	public AiSearch processSematicSearchArgs(JSONObject arguments, UserProfile userprofile) throws Exception
+	public AiSearch processSematicSearchArgs(String inJsonArguments, UserProfile userprofile) throws Exception
 	{
-		if(arguments == null)
+		if(inJsonArguments == null)
 		{			
 			return null;
 		} 
 		else {	
-			log.info("Args: " + arguments.toJSONString());
+			log.info("Args: " + inJsonArguments);
 		}
+
+		JSONObject arguments = new JSONParser().parse( inJsonArguments );
 		
 		AiSearch searchArgs = new AiSearch();
 
@@ -382,7 +385,8 @@ public class AssistantManager extends BaseAiManager
 
 	public void regularSearch(WebPageRequest inReq, boolean isMcp) throws Exception {
 		
-		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
+		//JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
+		String arguments = inReq.getRequestParameter("arguments");
 		
 		if(arguments == null)
 		{
@@ -408,13 +412,13 @@ public class AssistantManager extends BaseAiManager
 		
 		getResultsManager().searchByKeywords(inReq, aiSearchArgs);
 		
-		int totalhits = (int) inReq.getPageValue("totalhits");
-		if(totalhits < 5)
-		{
+		//For now
+		//int totalhits = (int) inReq.getPageValue("totalhits");
+		//if(totalhits < 5)
+		//{
 			inReq.putPageValue("query", String.join(" ", aiSearchArgs.getKeywords()));
 			semanticSearch(inReq);
-		}
-		
+		//}
 	}
 	
 	public void semanticSearch(WebPageRequest inReq)
@@ -422,10 +426,10 @@ public class AssistantManager extends BaseAiManager
 		MediaArchive archive = getMediaArchive();
 
 		String query = inReq.getRequestParameter("query");
-		if (query == null)
-		{
-			query = (String) inReq.getPageValue("query");
-		}
+//		if (query == null)
+//		{
+//			query = (String) inReq.getPageValue("query");
+//		}
 		if (query == null)
 		{
 			log.warn("No query found in request");
@@ -670,7 +674,8 @@ public class AssistantManager extends BaseAiManager
 //		
 //	}
 	
-	public void createImage(WebPageRequest inReq) throws Exception {
+	public void createImage(WebPageRequest inReq) throws Exception 
+	{
 		MediaArchive archive = getMediaArchive();
 
 		String model = archive.getCatalogSettingValue("llmimagegenerationmodel");
@@ -681,7 +686,7 @@ public class AssistantManager extends BaseAiManager
 		
 		LlmConnection llmconnection = archive.getLlmConnection(model);
 
-		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
+		String arguments = inReq.getRequestParameter("arguments");
 		
 		if(arguments == null)
 		{
@@ -689,7 +694,7 @@ public class AssistantManager extends BaseAiManager
 			return;
 		}
 		
-		String prompt = (String) arguments.get("prompt");
+		String prompt = (String) inReq.getRequestParameter("prompt");
 
 		if (prompt == null)
 		{

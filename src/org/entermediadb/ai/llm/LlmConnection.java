@@ -20,7 +20,7 @@ public interface LlmConnection {
 
     public String loadInputFromTemplate(String inString, Map inParams);
     
-    public String loadResponseFromTemplate(String inFunctionName, String inAppHome, Map inParams);
+    public LlmResponse loadResponseFromTemplate(String inFunctionName, String inAppHome, Map<String,Object> inContext, JSONObject inParameters);
     
     public LlmResponse callCreateFunction(Map params, String inModel, String inFunction);
     public LlmResponse callClassifyFunction(Map inParams, String inModel, String inFunction, String inQuery, String inBase64Image);

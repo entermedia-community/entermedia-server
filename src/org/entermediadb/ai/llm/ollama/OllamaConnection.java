@@ -9,7 +9,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.entermediadb.ai.llm.BaseLlmConnection;
-import org.entermediadb.ai.llm.BaseLlmResponse;
+import org.entermediadb.ai.llm.BasicLlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
@@ -89,7 +89,7 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		return apikey;
 	}
 
-	public BaseLlmResponse runPageAsInput(Map params, String inModel, String inTemplate)
+	public BasicLlmResponse runPageAsInput(Map params, String inModel, String inTemplate)
 	{
 
 		String input = loadInputFromTemplate(inTemplate, params);
@@ -127,11 +127,11 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		return endpoint;
 	}
 
-	public BaseLlmResponse createImage(String inModel, String inPrompt)
+	public BasicLlmResponse createImage(String inModel, String inPrompt)
 	{
 		throw new OpenEditException("Model doesn't support images");
 	}
-	public BaseLlmResponse createImage(String inModel, String inPrompt, int inCount, String inSize)
+	public BasicLlmResponse createImage(String inModel, String inPrompt, int inCount, String inSize)
 	{
 		throw new OpenEditException("Model doesn't support images");
 	}
