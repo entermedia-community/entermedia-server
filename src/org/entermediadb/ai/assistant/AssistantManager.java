@@ -28,6 +28,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
@@ -425,23 +426,19 @@ public class AssistantManager extends BaseAiManager
 		
 		getResultsManager().searchByKeywords(inReq, aiSearchArgs);
 		
+		inReq.putPageValue("semanticquery", aiSearchArgs.toSemanticQuery());
 
-		inReq.putPageValue("query", String.join(" ", aiSearchArgs.getKeywords()));
 	}
 	
 	public void semanticSearch(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive();
 
-		String query = inReq.getRequestParameter("query");
-//		if (query == null)
-//		{
-//			query = (String) inReq.getPageValue("query");
-//		}
-		if (query == null)
+		String query = inReq.getRequestParameter("semanticquery");
+		
+		if(query == null || "null".equals(query))
 		{
-			log.warn("No query found in request");
-			return;
+			throw new OpenEditException("No query found in request");
 		}
 		
 		log.info("Semantic Search for: " + query);

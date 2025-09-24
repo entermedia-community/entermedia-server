@@ -264,9 +264,6 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			
 			response.setFunctionName(functionName);
 			
-			String nextfunction = (String)request.getPageValue("nextfunction");
-			response.setNextFunctionName(nextfunction);
-			
 			String string = output.toString();
 			log.info("Output: " + string);
 			

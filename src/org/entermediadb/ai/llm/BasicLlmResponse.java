@@ -29,16 +29,10 @@ public class BasicLlmResponse  implements LlmResponse
         rawResponse = inRawResponse;
     }
 
-    protected String fieldNextFunctionName;
-
 	public String getNextFunctionName()
 	{
-		return fieldNextFunctionName;
-	}
-
-	public void setNextFunctionName(String inNextFunction)
-	{
-		fieldNextFunctionName = inNextFunction;
+		String nextFunction = getParameters().get("nextfunction").toString();
+		return nextFunction;
 	}
 
 	@Override
