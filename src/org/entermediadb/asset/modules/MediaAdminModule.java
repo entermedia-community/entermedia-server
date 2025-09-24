@@ -1150,7 +1150,7 @@ public class MediaAdminModule extends BaseMediaModule
 			Data parentmodule = archive.getData("module",parentid);
 			if( parentmodule == null )
 			{
-				log.error("missing patent module");
+				log.error("missing parent module");
 				continue;
 			}
 			if( details.getDetail(parentid) == null)

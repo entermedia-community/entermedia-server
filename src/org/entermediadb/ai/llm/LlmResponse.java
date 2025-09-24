@@ -6,18 +6,20 @@ import org.json.simple.JSONObject;
 
 public interface LlmResponse {
 
-	
+	JSONObject getParameters();
+    JSONObject getArguments();
 	
     JSONObject getRawResponse();
     
     boolean isToolCall();
     
-    JSONObject getArguments();
     
     String getMessage();
     
     String getFunctionName();
-    
+
+    String getNextFunctionName();
+
     boolean isSuccessful();
     
     int getTokensUsed();

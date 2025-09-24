@@ -299,8 +299,6 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 
 			long startTime = System.currentTimeMillis();
 
-			Map<String, LanguageMap> fieldsmap = new HashMap();
-
 			Map<String, PropertyDetail> detailsfields = loadActiveDetails(moduleid);
 			
 			Map<String, LanguageMap> results = new HashMap();

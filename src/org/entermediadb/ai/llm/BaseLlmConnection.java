@@ -2,6 +2,7 @@ package org.entermediadb.ai.llm;
 
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -147,9 +148,14 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		return loadInputFromTemplate(inTemplate, new HashMap());
 	}
 
-	public String loadInputFromTemplate(String inTemplate, Map inMap) {
+	public String loadInputFromTemplate(String inTemplate, Map inContext) 
+	{
+		return loadInputFromTemplate(inTemplate,inContext);
+	}
+	public String loadInputFromTemplate(String inTemplate, Map<String,Object> inContext, Map<String,Object> inParameters) 
+	{
 		if(inTemplate == null) {
-			throw new OpenEditException("Cannot load input, template is null" + inMap);
+			throw new OpenEditException("Cannot load input, template is null" + inContext);
 		}
 		try {
 //			User user = params.getUser();
@@ -160,7 +166,8 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			
 			WebPageRequest request = getRequestUtils().createPageRequest(template, user);
 			
-			request.putPageValues(inMap);
+			loadParameters(inParameters, request);
+			request.putPageValues(inContext);
 			
 			StringWriter output = new StringWriter();
 			request.setWriter(output);
@@ -183,13 +190,39 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			throw e;
 		} 
 	}
+
+	protected void loadParameters(Map<String, Object> inParameters, WebPageRequest request)
+	{
+		if( inParameters != null)
+		{
+			for (Iterator iterator = inParameters.keySet().iterator(); iterator.hasNext();)
+			{
+				String key = (String) iterator.next();
+				Object obj = inParameters.get(key);
+				if( obj instanceof String)
+				{
+					request.setRequestParameter(key, (String)obj);
+				}
+				if( obj instanceof Collection)
+				{
+					Collection<String> col = (Collection<String>)obj;
+					obj = (String[])col.toArray(new String[col.size()]);
+				}
+				if( obj instanceof String[])
+				{
+					request.setRequestParameter(key, (String[])obj);
+				}
+			}
+		}
+	}
 	
-	public String loadResponseFromTemplate(String functionName, String inApppHome, Map inParams) {
+	public LlmResponse loadResponseFromTemplate(String functionName, String inApppHome, Map<String,Object> inContext, JSONObject inParameters) 
+	{
 		if(functionName == null) {
-			throw new OpenEditException("Cannot load function response, functionName is null" + inParams);
+			throw new OpenEditException("Cannot load function response, functionName is null" + inContext);
 		}
 		
-		inParams.put("apphome", inApppHome);
+		inContext.put("apphome", inApppHome);
 		
 		String templatepath = inApppHome + "/views/modules/modulesearch/results/agentresponses/" + functionName + ".html";
 		
@@ -200,8 +233,9 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			User user = getMediaArchive().getUserManager().getUser("agent");
 			
 			WebPageRequest request = getRequestUtils().createPageRequest(template, user);
-			
-			request.putPageValues(inParams);
+			request.putPageValues(inContext);
+			request.putPageValue("parameters",inParameters);
+			loadParameters(inParameters, request);
 			
 			StringWriter output = new StringWriter();
 			request.setWriter(output);
@@ -218,9 +252,20 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			}
 			
 			streamer.include(template, request);
+			
+			BasicLlmResponse response = new BasicLlmResponse();
+			response.setParameters(inParameters);
+			
+			response.setFunctionName(functionName);
+			
+			String nextfunction = (String)request.getPageValue("nextfunction");
+			response.setNextFunctionName(nextfunction);
+			
 			String string = output.toString();
 			log.info("Output: " + string);
-			return string;
+			
+			response.setMessage(string);
+			return response;
 		} catch (OpenEditException e) {
 			throw e;
 		} 

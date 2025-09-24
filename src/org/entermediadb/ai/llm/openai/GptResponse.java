@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.entermediadb.ai.llm.BaseLlmResponse;
+import org.entermediadb.ai.llm.BasicLlmResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 
-public class GptResponse extends BaseLlmResponse {
+public class GptResponse extends BasicLlmResponse {
 
     @Override
     public boolean isToolCall() {

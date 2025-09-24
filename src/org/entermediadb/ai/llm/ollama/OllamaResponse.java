@@ -2,13 +2,13 @@ package org.entermediadb.ai.llm.ollama;
 
 import java.util.ArrayList;
 
-import org.entermediadb.ai.llm.BaseLlmResponse;
+import org.entermediadb.ai.llm.BasicLlmResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 import org.openedit.OpenEditException;
 
-public class OllamaResponse extends BaseLlmResponse
+public class OllamaResponse extends BasicLlmResponse
 {
 
 	@Override
