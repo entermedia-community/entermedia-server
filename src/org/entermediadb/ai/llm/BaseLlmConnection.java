@@ -150,7 +150,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 
 	public String loadInputFromTemplate(String inTemplate, Map inContext) 
 	{
-		return loadInputFromTemplate(inTemplate,inContext);
+		return loadInputFromTemplate(inTemplate, inContext, null);
 	}
 	public String loadInputFromTemplate(String inTemplate, Map<String,Object> inContext, Map<String,Object> inParameters) 
 	{
