@@ -13,9 +13,14 @@ public class AgentModule extends BaseMediaModule {
 		return assistantManager;
 	}
 	
-	public void chatAgentSearch(WebPageRequest inReq) throws Exception 
+	public void chatAgentRegularSearch(WebPageRequest inReq) throws Exception 
 	{	
 		getAssistantManager(inReq).regularSearch(inReq, false);
+	}
+	
+	public void chatAgentSemanticSearch(WebPageRequest inReq) throws Exception 
+	{	
+		getAssistantManager(inReq).semanticSearch(inReq);
 	}
 	
 	public void chatAgentCreateImage(WebPageRequest inReq) throws Exception 

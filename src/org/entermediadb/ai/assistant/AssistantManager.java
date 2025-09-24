@@ -81,7 +81,7 @@ public class AssistantManager extends BaseAiManager
 			
 			Data mostrecent = chats.query()
 				   .exact("channel", channel.getId())
-				   .exact("chatmessagestatus", "received")
+				   .orgroup("chatmessagestatus", "received refresh")
 				   .sort("dateDown")
 				   .searchOne();
 			
@@ -99,15 +99,9 @@ public class AssistantManager extends BaseAiManager
 					{
 						message = message.substring(0,25);
 					}
-					channel.setName(message);
+					channel.setName(message.trim());
 					archive.saveData("channel",channel);
 				}
-			}
-
-			String userid = mostrecent.get("user");
-			if ("agent".equals(userid))
-			{
-				return;
 			}
 			
 			respondToChannel(inLog, channel, mostrecent);
@@ -166,6 +160,8 @@ public class AssistantManager extends BaseAiManager
 		
 		context.put("channel", channel);
 
+		String oldstatus = message.get("chatmessagestatus");
+		
 		//Update original message processing status
 		message.setValue("chatmessagestatus", "complete");
 		chats.saveData(message);
@@ -179,6 +175,19 @@ public class AssistantManager extends BaseAiManager
 		
 		AiCurrentStatus current = loadCurrentStatus(channel); //TODO: Update this often
 		context.put("currentstatus",current);
+		
+		if("refresh".equals(oldstatus))
+		{			
+			String firstcallparams = message.get("params");
+			if(firstcallparams != null)
+			{
+				
+				JSONObject oldparams = new JSONParser().parse(firstcallparams);
+				String functionName = (String) oldparams.get("function");
+				execChatFunction(llmconnection, message, functionName, context, oldparams);
+			}
+			return;
+		}
 		
 		Data functionMessage = chats.createNewData();
 		functionMessage.setValue("user", "agent");
@@ -212,10 +221,6 @@ public class AssistantManager extends BaseAiManager
 			server.broadcastMessage(archive.getCatalogId(), functionMessage);
 			
 			execChatFunction(llmconnection, functionMessage, functionName,  context, parameters);
-			
-			archive.fireSharedMediaEvent("chatterbox/monitorchats");
-
-			archive.fireSharedMediaEvent("llm/monitorchats");
 		}
 		else
 		{
@@ -272,13 +277,21 @@ public class AssistantManager extends BaseAiManager
 			if( response.getNextFunctionName() != null)
 			{
 				JSONObject params = response.getParameters();
-				TODO: Make sure this works
-				params.put("function", response.getNextFunctionName()); 
+
+				params.put("function", response.getNextFunctionName());
 				
-				messageToUpdate.setValue("params",params);
+				messageToUpdate.setValue("params", params.toJSONString());
 				messageToUpdate.setValue("chatmessagestatus", "refresh");
 				chats.saveData(messageToUpdate);
+				
 			}
+
+			archive.fireSharedMediaEvent("llm/monitorchats");
+//			else
+//			{
+//				messageToUpdate.setValue("chatmessagestatus", "complete");
+//				chats.saveData(messageToUpdate);
+//			}
 			
 		}
 		catch (Exception e)
@@ -412,13 +425,8 @@ public class AssistantManager extends BaseAiManager
 		
 		getResultsManager().searchByKeywords(inReq, aiSearchArgs);
 		
-		//For now
-		//int totalhits = (int) inReq.getPageValue("totalhits");
-		//if(totalhits < 5)
-		//{
-			inReq.putPageValue("query", String.join(" ", aiSearchArgs.getKeywords()));
-			semanticSearch(inReq);
-		//}
+
+		inReq.putPageValue("query", String.join(" ", aiSearchArgs.getKeywords()));
 	}
 	
 	public void semanticSearch(WebPageRequest inReq)

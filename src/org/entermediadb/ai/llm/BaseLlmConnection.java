@@ -203,12 +203,18 @@ public abstract class BaseLlmConnection implements LlmConnection {
 				{
 					request.setRequestParameter(key, (String)obj);
 				}
-				if( obj instanceof Collection)
+				else if( obj instanceof JSONObject)
+				{
+					JSONObject json = (JSONObject)obj;
+					request.setRequestParameter(key, json.toJSONString());
+				}
+				else if( obj instanceof Collection)
 				{
 					Collection<String> col = (Collection<String>)obj;
 					obj = (String[])col.toArray(new String[col.size()]);
+					request.setRequestParameter(key, (String[])obj);
 				}
-				if( obj instanceof String[])
+				else if( obj instanceof String[])
 				{
 					request.setRequestParameter(key, (String[])obj);
 				}
