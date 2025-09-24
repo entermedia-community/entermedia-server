@@ -180,7 +180,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 
 				asset.setValue("facescancomplete",true);
 				asset.setValue("facescanerror", false);
-				tosave.add(asset);
+				//tosave.add(asset);
 
 				if( instructions.isSkipExistingFaces() )  //This is the default, but when rescanning one asset dont skip
 				{
@@ -195,6 +195,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 				{
 					asset.setValue("facehasprofile",false);
 					extractFaces(instructions, asset,foundfacestosave);
+					hit = asset;
 				}
 				catch( Throwable ex)
 				{
