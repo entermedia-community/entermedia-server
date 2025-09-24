@@ -532,11 +532,22 @@
 							div.removeClass("filehover");
 							const files = e.originalEvent.dataTransfer.files;
 							const folders = [];
+							let filesDropped = false;
 							for (let file of files) {
+								if (file.type !== "") {
+									filesDropped = true;
+									continue;
+								}
 								const path = webUtils.getPathForFile(file);
 								folders.push({
 									name: file.name,
 									path: path,
+								});
+							}
+							if (filesDropped) {
+								customToast("Only folders can be dropped here.", {
+									positive: false,
+									autohideDelay: 5000,
 								});
 							}
 							if (folders.length == 0) {
