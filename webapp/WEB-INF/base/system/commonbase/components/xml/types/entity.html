@@ -7,7 +7,9 @@ $context.putPageValue("detail",$detail)
 #set($entity_module = $detail.getListId())
 #set($searchhome = "$applink/views/modules/$!{entity_module}/results/default")
 #set($ismulti = $detail.isMultiValue())
-<div id="entitypicker${detail.id}" data-ismulti="$!{ismulti}">
+
+
+<div id="entitypicker${detail.id}" class="entitylistcontainer" data-ismulti="$!{ismulti}">
 	<ul class="entity-value-list">
 		#foreach( $type in $values )
 			#set( $row = false )
@@ -30,7 +32,11 @@ $context.putPageValue("detail",$detail)
 		    #end 
 		#end
 	</ul>
-	<input type="hidden" name="${detail.id}.size" value="$!{values.size()}" data-entitypicker="entitypicker${detail.id}" class="#if($detail.isRequired()) entityRequired #end" />	
+	<input type="hidden" 
+		name="${detail.id}.size" 
+		value="$!{values.size()}" 
+		data-entitypicker="entitypicker${detail.id}" 
+		class="#if($detail.isRequired()) validatehidden entityRequired #end" />	
 </div>		
 
 	
