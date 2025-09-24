@@ -1,13 +1,14 @@
 package org.entermediadb.ai.informatics;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -67,9 +68,17 @@ public class InformaticsManager extends BaseAiManager
 			for (int i = 0; i < pendingrecords.getTotalPages(); i++)
 			{
 				pendingrecords.setPage(i+1);
-				Collection pageofhits = pendingrecords.getPageOfHits();
+				Collection pageofhits = new ArrayList();
 				try
 				{
+					
+					for (Iterator iterator = pendingrecords.getPageOfHits().iterator(); iterator.hasNext();)
+					{
+						Data data = (Data) iterator.next();
+						Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(data);
+						pageofhits.add(asset);
+						
+					}
 					for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
 					{
 						MultiValued config = (MultiValued) iterator2.next();

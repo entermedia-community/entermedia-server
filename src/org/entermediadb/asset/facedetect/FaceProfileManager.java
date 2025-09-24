@@ -175,12 +175,10 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 
 			for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 			{
-				MultiValued hit = (MultiValued) iterator.next();
-				Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(hit);
+				Asset asset = (Asset) iterator.next();	
 
-				asset.setValue("facescancomplete",true);
+				asset.setValue("facescancomplete",true); //ToDo: Remove this and relay in LLM Booleans
 				asset.setValue("facescanerror", false);
-				//tosave.add(asset);
 
 				if( instructions.isSkipExistingFaces() )  //This is the default, but when rescanning one asset dont skip
 				{
@@ -195,7 +193,6 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 				{
 					asset.setValue("facehasprofile",false);
 					extractFaces(instructions, asset,foundfacestosave);
-					hit = asset;
 				}
 				catch( Throwable ex)
 				{
@@ -204,7 +201,6 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 					//throw new OpenEditException("Error on: " + inAssets.size(),ex);
 				}
 			}  
-			//getMediaArchive().getAssetSearcher().saveAllData(tosave, null);  //Is this needed?
 			log.info(" Saved Assets " + tosave.size() + " added faces:  " + foundfacestosave.size());
 			
 			getMediaArchive().saveData("faceembedding",foundfacestosave);
