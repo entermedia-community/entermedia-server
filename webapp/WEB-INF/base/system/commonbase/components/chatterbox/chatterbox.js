@@ -172,6 +172,9 @@ function scrollToEdit(targetDiv) {
 }
 
 function connect() {
+	if (chatconnection && chatconnection.readyState != chatconnection.CLOSED) {
+		return;
+	}
 	var tabID =
 		sessionStorage.tabID && sessionStorage.closedLastTab !== "2"
 			? sessionStorage.tabID
