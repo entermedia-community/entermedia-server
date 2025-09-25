@@ -88,6 +88,7 @@ import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.ExecutorManager;
 import org.openedit.util.PathProcessor;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
@@ -139,6 +140,7 @@ public class MediaArchive implements CatalogEnabled
 	protected CacheManager fieldCacheManager;
 	protected OrderManager fieldOrderManager;
 	protected UserManager fieldUserManager;
+	protected ExecutorManager fieldExecutorManager;
 
 	public CacheManager getCacheManager()
 	{
@@ -155,6 +157,14 @@ public class MediaArchive implements CatalogEnabled
 		fieldCacheManager = inCacheManager;
 	}
 
+	public ExecutorManager getExecutorManager()
+	{
+		if( fieldExecutorManager == null)
+		{
+			fieldExecutorManager = (ExecutorManager)getModuleManager().getBean(getCatalogId(), "executorManager",true);
+		}
+		return fieldExecutorManager;
+	}
 	public PresetCreator getPresetManager()
 	{
 		if (fieldPresetManager == null)
