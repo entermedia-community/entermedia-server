@@ -174,29 +174,28 @@ public class AssistantManager extends BaseAiManager
 		
 		if("refresh".equals(oldstatus))
 		{			
-			String firstcallparams = message.get("params");
-			if(firstcallparams != null)
+			String callerParams = message.get("params");
+			if(callerParams != null)
 			{
 				
-				JSONObject oldparams = new JSONParser().parse(firstcallparams);
+				JSONObject parsedParams = new JSONParser().parse(callerParams);
 
-				llmrequest.setFunctionName((String) oldparams.get("function"));
-				oldparams.remove("function");
+				llmrequest.setFunctionName((String) parsedParams.get("function"));
+				parsedParams.remove("function");
 				
 		// Optionally delay next call. Is there a better solution?
 		/** { */
-				Object wait = oldparams.get("wait");
+				Object wait = parsedParams.get("wait");
 				if( wait != null && wait instanceof Long)
 				{
-					oldparams.remove("wait");
+					parsedParams.remove("wait");
 					Long waittime = (Long) wait;
 					log.info("Previous function requested to wait " + waittime + " milliseconds");
 					Thread.sleep(waittime);
 				}
-				
 		 /** } */
 				
-				llmrequest.setParameters((JSONObject) oldparams);
+				llmrequest.setParameters((JSONObject) parsedParams);
 	
 				execChatFunction(llmconnection, message, llmrequest);
 			}
