@@ -171,7 +171,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			
 			if(llmrequest != null)
 			{				
-				loadLlmRequestparameters(llmrequest, request);
+				loadLlmRequestParameters(llmrequest, request);
 			}
 			
 			request.putPageValues(inContext);
@@ -198,7 +198,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		} 
 	}
 
-	protected void loadLlmRequestparameters(LlmRequest llmrequest, WebPageRequest request)
+	protected void loadLlmRequestParameters(LlmRequest llmrequest, WebPageRequest request)
 	{
 		JSONObject inParameters = llmrequest.getParameters();
 		if( inParameters != null)
@@ -254,7 +254,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			WebPageRequest inReq = getRequestUtils().createPageRequest(template, user);
 			inReq.putPageValues(llmrequest.getContext());
 			inReq.putPageValue("llmrequest", llmrequest);
-			loadLlmRequestparameters(llmrequest, inReq);
+			loadLlmRequestParameters(llmrequest, inReq);
 			
 			StringWriter output = new StringWriter();
 			inReq.setWriter(output);
@@ -277,20 +277,8 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			
 			BasicLlmResponse response = new BasicLlmResponse();
 			
-			int dataStart = string.indexOf("<messageplain>");
-			if(dataStart >= 0)
-			{
-				int dataEnd = string.indexOf("</messageplain>");
-				String dataMessage = string.substring(dataStart + 14, dataEnd).trim();
-				response.setMessagePlain(dataMessage);
-				
-				String mainMessage = string.substring(0, dataStart).trim() + string.substring(dataEnd + 15).trim();
-				response.setMessage(mainMessage);
-			}
-			else
-			{
-				response.setMessage(string);
-			}
+			loadMessageResponse(string, response);
+			
 			return response;
 		} 
 		catch (OpenEditException e) 
@@ -299,6 +287,32 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		} 
 	}
 	
+	public void loadMessageResponse(String inMessage, BasicLlmResponse response)
+	{
+		String dataMessage = "";
+		String mainMessage = inMessage;
+
+		int dataStart = mainMessage.indexOf("<messageplain>");
+		while(dataStart >= 0)
+		{
+			int dataEnd = mainMessage.indexOf("</messageplain>");
+			if( dataEnd < 0)
+			{
+				break;
+			}
+			dataMessage += mainMessage.substring(dataStart + 14, dataEnd).trim() + "\n";
+			mainMessage = mainMessage.substring(0, dataStart).trim() + mainMessage.substring(dataEnd + 15).trim();
+			dataStart = mainMessage.indexOf("<messageplain>");
+		}
+
+		response.setMessage(mainMessage);
+		
+		if(dataMessage.length() > 0)
+		{
+			response.setMessagePlain(dataMessage.trim());
+		}
+	}
+
 	public int copyData(JSONObject source, Data data)
 	{
 		int i = 0; 
