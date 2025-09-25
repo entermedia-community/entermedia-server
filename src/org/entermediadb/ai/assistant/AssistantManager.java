@@ -682,15 +682,8 @@ public class AssistantManager extends BaseAiManager
 		{
 			//Todo: Use the Vector DB?
 		}
-		String text = null;
 		Collection values = searchcategory.getValues("semantictopics");
-		text = collectText(values);
-		if( text == null)
-		{
-			text = searchcategory.getName();
-		}
-		
-		Map<String,Collection<String>> results = getSemanticTopicManager().search(text, null, null);
+		Map<String,Collection<String>> results = getSemanticTopicManager().search(values, null, null);
 		return results;
 	}
 
