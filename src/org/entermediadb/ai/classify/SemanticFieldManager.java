@@ -398,6 +398,7 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 				entry.put("id",moduleid + ":" + entity.getId() + ":" + i);  //More unique
 				entry.put("text",topictext);
 				list.add(entry);
+				i++;
 			}
 		}
 		if( list.size() == 0)
