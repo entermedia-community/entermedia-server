@@ -344,7 +344,7 @@ public class AssistantManager extends BaseAiManager
 	
 	public HitTracker getFunctions()
 	{
-		HitTracker hits = getMediaArchive().query("aifunctions").exact("aifolder",getAiFolder()).sort("ordering").cachedSearch();
+		HitTracker hits = getMediaArchive().query("aifunctions").exact("aifolder",getAiFolder()).exact("enabled", true).sort("ordering").cachedSearch();
 		return hits;
 	}
 	
