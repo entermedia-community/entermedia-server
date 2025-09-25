@@ -1,10 +1,14 @@
 package org.entermediadb.ai.llm;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.json.simple.JSONObject;
 
 public class LlmRequest {
 	String functionName;
 	String nextFunctionName;
+	Map<String, Object> context;
 	JSONObject arguments;
 	JSONObject parameters;
 	
@@ -23,6 +27,28 @@ public class LlmRequest {
 	
 	public void setNextFunctionName(String inNextFunctionName) {
 		nextFunctionName = inNextFunctionName;
+	}
+	
+	public Map<String,Object> getContext() {
+		return context;
+	}
+	
+	public Object getContextValue(String inKey) {
+		if (context == null) {
+			return null;
+		}
+		return context.get(inKey);
+	}
+	
+	public void setContext(Map<String,Object> inContext) {
+		context = inContext;
+	}
+	
+	public void addContext(String inKey, Object inValue) {
+		if (context == null) {
+			context = new HashMap<String,Object>();
+		}
+		context.put(inKey, inValue);
 	}
 	
 	public JSONObject getArguments() {

@@ -44,9 +44,4 @@ public class AgentModule extends BaseMediaModule {
 		inReq.putPageValue("report", report);
 	}
 
-	public void semanticSearch(WebPageRequest inReq) throws Exception 
-	{	
-		getAssistantManager(inReq).regularSearch(inReq, false);
-	}
-
 }

@@ -26,7 +26,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 {
 	private static Log log = LogFactory.getLog(OpenAiConnection.class);
 
-	public LlmResponse runPageAsInput(Map context, String inModel, String inTemplate)
+	public LlmResponse runPageAsInput(Map<String, Object> context, String inModel, String inTemplate)
 	{
 
 		context.put("model", inModel);

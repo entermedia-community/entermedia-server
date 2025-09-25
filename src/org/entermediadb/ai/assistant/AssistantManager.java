@@ -125,7 +125,7 @@ public class AssistantManager extends BaseAiManager
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		Map context = new HashMap();
+		LlmRequest llmrequest = new LlmRequest();
 		
 		String model = archive.getCatalogSettingValue("chat_agent_model");
 		
@@ -135,7 +135,7 @@ public class AssistantManager extends BaseAiManager
 		}
 		LlmConnection llmconnection = archive.getLlmConnection(model);
 
-		context.put("model", model);
+		llmrequest.addContext("model", model);
 
 		Date now = new Date();
 		DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
@@ -157,10 +157,10 @@ public class AssistantManager extends BaseAiManager
 		
 		String id = channel.get("user");
 		UserProfile profile = archive.getUserProfile(id);
-		context.put("chatprofile", profile);
+		llmrequest.addContext("chatprofile", profile);
 		
 		
-		context.put("channel", channel);
+		llmrequest.addContext("channel", channel);
 
 		String oldstatus = message.get("chatmessagestatus");
 		
@@ -168,15 +168,15 @@ public class AssistantManager extends BaseAiManager
 		message.setValue("chatmessagestatus", "complete");
 		chats.saveData(message);
 		
-		context.put("message", message);
+		llmrequest.addContext("message", message);
 
 ///$mediaarchive.getMediaDbId()/ai/openai/assistant/instructions/context
 		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/assistant/instructions/current.json";
 		
-		context.put("assistant", this);
+		llmrequest.addContext("assistant", this);
 		
 		AiCurrentStatus current = loadCurrentStatus(channel); //TODO: Update this often
-		context.put("currentstatus",current);
+		llmrequest.addContext("currentstatus",current);
 		
 		if("refresh".equals(oldstatus))
 		{			
@@ -185,10 +185,11 @@ public class AssistantManager extends BaseAiManager
 			{
 				
 				JSONObject oldparams = new JSONParser().parse(firstcallparams);
-				LlmRequest llmrequest = new LlmRequest();
+
 				llmrequest.setFunctionName((String) oldparams.get("function"));
 				llmrequest.setArguments((JSONObject) oldparams.get("arguments"));
-				execChatFunction(llmconnection, message, context, llmrequest);
+	
+				execChatFunction(llmconnection, message, llmrequest);
 			}
 			return;
 		}
@@ -204,19 +205,17 @@ public class AssistantManager extends BaseAiManager
 		
 		server.broadcastMessage(archive.getCatalogId(), functionMessage);
 		
-		LlmResponse response = llmconnection.runPageAsInput(context, model, chattemplate);
+		LlmResponse response = llmconnection.runPageAsInput(llmrequest.getContext(), model, chattemplate);
 		//current update it?
 		
 		if (response.isToolCall())
 		{
 			// Function call detected
 			String functionName = response.getFunctionName();
-			
-			JSONObject functionArguments = response.getArguments();
-			
-			LlmRequest llmrequest = new LlmRequest();
 			llmrequest.setFunctionName(functionName);
-			llmrequest.setParameters(functionArguments);
+			
+			JSONObject functionArguments = response.getArguments();			
+			llmrequest.setParameter("arguments", functionArguments);
 			
 			functionMessage.setValue("params", llmrequest.toString());
 			functionMessage.setValue("message", "Executing function " + functionName);
@@ -225,7 +224,7 @@ public class AssistantManager extends BaseAiManager
 			
 			server.broadcastMessage(archive.getCatalogId(), functionMessage);
 			
-			execChatFunction(llmconnection, functionMessage, context, llmrequest);
+			execChatFunction(llmconnection, functionMessage, llmrequest);
 		}
 		else
 		{
@@ -248,21 +247,22 @@ public class AssistantManager extends BaseAiManager
 		
 	}
 	
-	public void execChatFunction(LlmConnection llmconnection, Data messageToUpdate, Map<String,Object> context, LlmRequest llmrequest) throws Exception
+	public void execChatFunction(LlmConnection llmconnection, Data messageToUpdate, LlmRequest llmrequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
 		Data channel = archive.getCachedData("channel", messageToUpdate.get("channel"));
-		context.put("channel", channel);
+		llmrequest.addContext("channel", channel);
 		
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 
 		try
 		{
-			context.put("data", messageToUpdate);
+			llmrequest.addContext("data", messageToUpdate);
 			
 			String apphome = "/"+ channel.get("chatapplicationid");
-			LlmResponse response = llmconnection.loadResponseFromTemplate(llmrequest.getFunctionName(), apphome, context, llmrequest);
+			llmrequest.addContext("apphome", apphome);
+			LlmResponse response = llmconnection.loadResponseFromTemplate(llmrequest);
 
 			messageToUpdate.setValue("message", response.getMessage());
 			messageToUpdate.setValue("chatmessagestatus", "complete");
@@ -279,7 +279,7 @@ public class AssistantManager extends BaseAiManager
 			functionMessageUpdate.put("message", response.getMessage());
 			server.broadcastMessage(functionMessageUpdate);
 			
-			if( response.getNextFunctionName() != null)
+			if( llmrequest.getNextFunctionName() != null)
 			{
 				JSONObject params = response.getParameters();
 

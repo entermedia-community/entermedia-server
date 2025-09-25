@@ -148,12 +148,16 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		return loadInputFromTemplate(inTemplate, new HashMap());
 	}
 
-	public String loadInputFromTemplate(String inTemplate, Map inContext) 
+	public String loadInputFromTemplate(String inTemplate, Map<String, Object> inContext) 
 	{
-		return loadInputFromTemplate(inTemplate, inContext, null);
+		LlmRequest llmrequest = new LlmRequest();
+		llmrequest.setContext(inContext);
+		
+		return loadInputFromTemplate(inTemplate, llmrequest);
 	}
-	public String loadInputFromTemplate(String inTemplate, Map<String,Object> inContext, LlmRequest llmrequest) 
+	public String loadInputFromTemplate(String inTemplate, LlmRequest llmrequest) 
 	{
+		Map<String,Object> inContext = llmrequest.getContext();
 		if(inTemplate == null) {
 			throw new OpenEditException("Cannot load input, template is null" + inContext);
 		}
@@ -166,7 +170,11 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			
 			WebPageRequest request = getRequestUtils().createPageRequest(template, user);
 			
-			loadLlmRequestparameters(llmrequest, request);
+			if(llmrequest != null)
+			{				
+				loadLlmRequestparameters(llmrequest, request);
+			}
+			
 			request.putPageValues(inContext);
 			
 			StringWriter output = new StringWriter();
@@ -223,46 +231,50 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		}
 	}
 	
-	public LlmResponse loadResponseFromTemplate(String functionName, String inApppHome, Map<String,Object> inContext, LlmRequest llmrequest) 
+	public LlmResponse loadResponseFromTemplate(LlmRequest llmrequest) 
 	{
-		if(functionName == null) {
-			throw new OpenEditException("Cannot load function response, functionName is null" + inContext);
+		String functionName = llmrequest.getFunctionName();
+		if(functionName == null) 
+		{
+			throw new OpenEditException("Cannot load function response, functionName is null");
 		}
 		
-		inContext.put("apphome", inApppHome);
+		log.info("Loading response for function: " + functionName);
 		
-		String templatepath = inApppHome + "/views/modules/modulesearch/results/agentresponses/" + functionName + ".html";
+		String apphome = (String) llmrequest.getContextValue("apphome");
 		
-		try {
+		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/" + functionName + ".html";
+		
+		try 
+		{
 			Page template = getPageManager().getPage(templatepath);
 			log.info("Loading response: " + functionName);
 			
 			User user = getMediaArchive().getUserManager().getUser("agent");
 			
-			WebPageRequest request = getRequestUtils().createPageRequest(template, user);
-			request.putPageValues(inContext);
-			request.putPageValue("llmrequest", llmrequest.getParameters());
-			loadLlmRequestparameters(llmrequest, request);
+			WebPageRequest inReq = getRequestUtils().createPageRequest(template, user);
+			inReq.putPageValues(llmrequest.getContext());
+			inReq.putPageValue("llmrequest", llmrequest);
+			loadLlmRequestparameters(llmrequest, inReq);
 			
 			StringWriter output = new StringWriter();
-			request.setWriter(output);
+			inReq.setWriter(output);
 			
-			PageStreamer streamer = getEngine().createPageStreamer(template, request);
-			getEngine().executePathActions(request);
-			if( !request.hasRedirected())
+			PageStreamer streamer = getEngine().createPageStreamer(template, inReq);
+			getEngine().executePathActions(inReq);
+			if( !inReq.hasRedirected())
 			{
-				getModuleManager().executePageActions( template,request );
+				getModuleManager().executePageActions( template,inReq );
 			}
-			if( request.hasRedirected())
+			if( inReq.hasRedirected())
 			{
 				log.info("action was redirected");
 			}
 			
-			streamer.include(template, request);
+			streamer.include(template, inReq);
 			
 			BasicLlmResponse response = new BasicLlmResponse();
-			response.setParameters(llmrequest.getParameters());
-			
+			response.setParameters(llmrequest.getArguments());
 			response.setFunctionName(functionName);
 			
 			String string = output.toString();
@@ -270,7 +282,9 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			
 			response.setMessage(string);
 			return response;
-		} catch (OpenEditException e) {
+		} 
+		catch (OpenEditException e) 
+		{
 			throw e;
 		} 
 	}
@@ -279,7 +293,8 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	{
 		int i = 0; 
 		Map metadata =  (Map) source.get("metadata");
-		for (Iterator iterator = metadata.keySet().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = metadata.keySet().iterator(); iterator.hasNext();) 
+		{
 			String key = (String) iterator.next();
 			Object value = metadata.get(key);
 

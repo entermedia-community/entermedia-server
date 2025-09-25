@@ -3,7 +3,6 @@ package org.entermediadb.ai.llm;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
-import org.openedit.Data;
 
 public interface LlmConnection {
 	
@@ -18,14 +17,14 @@ public interface LlmConnection {
     public LlmResponse createImage(String inModel, String inPrompt) throws Exception;
     public LlmResponse createImage(String inModel, String inPrompt, int inCount, String inSize) throws Exception;
 
-    public String loadInputFromTemplate(String inString, Map inParams);
+    public String loadInputFromTemplate(String inString, Map<String, Object> inParams);
     
-    public LlmResponse loadResponseFromTemplate(String inFunctionName, String inAppHome, Map<String,Object> inContext, LlmRequest inParameters);
+    public LlmResponse loadResponseFromTemplate(LlmRequest inParameters);
     
     public LlmResponse callCreateFunction(Map params, String inModel, String inFunction);
     public LlmResponse callClassifyFunction(Map inParams, String inModel, String inFunction, String inQuery, String inBase64Image);
 
-    public LlmResponse runPageAsInput(Map inParams, String inModel, String inChattemplate);
+    public LlmResponse runPageAsInput(Map<String, Object> inContext, String inModel, String inChattemplate);
 
     public String getApiEndpoint();
 	
