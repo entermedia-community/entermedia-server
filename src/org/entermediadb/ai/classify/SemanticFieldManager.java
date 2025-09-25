@@ -153,27 +153,46 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 		}
 		return instructions;
 	}
-	
+
 	public Map<String,Collection<String>> search(String text, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
 	{
-		JSONObject response = execMakeVector(text);
-
-		JSONArray results = (JSONArray)response.get("results");
-		Map hit = (Map)results.iterator().next();
-		List vector = (List)hit.get("embedding");
-		vector = collectDoubles(vector);
-
-		List allIds = new ArrayList(); //for debugging
+		Collection<String> values = new ArrayList(1);
+		values.add(text);
+		return search(values, excludedEntityIds, excludedAssetids);
+	}
+	public Map<String,Collection<String>> search(Collection<String> textvalues, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
+	{
 		Map<String,Collection<String>> bytype = new HashMap();
 
-		SemanticConfig instruction = getSemanticInstructions();
-		Collection<RankedResult> found = instruction.getKMeansIndexer().searchNearestItems(vector);
+		for (Iterator iterator = textvalues.iterator(); iterator.hasNext();)
+		{
+			String textsemantic = (String) iterator.next();
+			
+			JSONObject response = execMakeVector(textsemantic);
+	
+			JSONArray results = (JSONArray)response.get("results");
+			Map hit = (Map)results.iterator().next();
+			List vector = (List)hit.get("embedding");
+			vector = collectDoubles(vector);
+	
+			searchForVector(vector, bytype, excludedEntityIds, excludedAssetids);
+		}		
 		
+		return bytype;		
+	}
+
+	protected void searchForVector(List inVector, Map<String, Collection<String>> bytype, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
+	{
+		SemanticConfig instruction = getSemanticInstructions();
+		Collection<RankedResult> found = instruction.getKMeansIndexer().searchNearestItems(inVector);
+		
+		//List allIdsX = new ArrayList(); //for debugging
+
 		for (Iterator iterator = found.iterator(); iterator.hasNext();)
 		{
 			RankedResult rankedResult = (RankedResult) iterator.next();
 			
-			allIds.add(rankedResult.getModuleId() + ":" + rankedResult.getEntityId());
+			//allIds.add(rankedResult.getModuleId() + ":" + rankedResult.getEntityId());
 			
 			if(rankedResult.getModuleId().equals("asset"))
 			{
@@ -198,12 +217,8 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 				hits.add(rankedResult.getEntityId());
 			}
 		}
-		log.info("All matching IDs:" + allIds);
+		//log.info("Found matching IDs:" + allIds);
 
-		//Search for them hits up to 1000
-		//getMediaArchive().getSearcherManager().organizeHits(
-		
-		return bytype;		
 	}
 	
 	public void indexAll(ScriptLogger inLog)
@@ -398,6 +413,7 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 				entry.put("id",moduleid + ":" + entity.getId() + ":" + i);  //More unique
 				entry.put("text",topictext);
 				list.add(entry);
+				i++;
 			}
 		}
 		if( list.size() == 0)
