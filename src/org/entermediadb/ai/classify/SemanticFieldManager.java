@@ -385,22 +385,20 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 			{
 				continue;
 			}
-			JSONObject entry = new JSONObject();
-			String moduleid = entity.get("entitysourcetype");
-			if( moduleid == null)
+			int i = 0;
+			for (Iterator iterator2 = values.iterator(); iterator2.hasNext();)
 			{
-				moduleid = "asset";
+				String topictext = (String) iterator2.next();
+				JSONObject entry = new JSONObject();
+				String moduleid = entity.get("entitysourcetype");
+				if( moduleid == null)
+				{
+					moduleid = "asset";
+				}
+				entry.put("id",moduleid + ":" + entity.getId() + ":" + i);  //More unique
+				entry.put("text",topictext);
+				list.add(entry);
 			}
-			entry.put("id",moduleid + ":" + entity.getId());  //Most unique
-			
-			
-			String out = collectText(values);
-			if (out == null)
-			{
-				continue;
-			}
-			entry.put("text",out);
-			list.add(entry);
 		}
 		if( list.size() == 0)
 		{
@@ -422,12 +420,11 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 		{
 			Map result = (Map)results.get(i);
 			MultiValued newdata = (MultiValued)searcher.createNewData();
-			String dataid = (String)result.get("id");
-			newdata.setId(dataid); //Avoid duplicates
-			String[] parts = dataid.split(":");
+			String uid = (String)result.get("id");
+			newdata.setId(uid); //Avoid duplicates
+			String[] parts = uid.split(":");
 			newdata.setValue("moduleid",parts[0]);
 			newdata.setValue("dataid",parts[1]);
-			
 			Collection vectors = inStructions.getKMeansIndexer().collectDoubles((Collection)result.get("embedding"));
 			newdata.setValue(inStructions.getKMeansIndexer().getFieldSaveVector(),vectors);
 			newrecords.add(newdata);
