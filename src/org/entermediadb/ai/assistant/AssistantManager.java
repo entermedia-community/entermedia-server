@@ -169,9 +169,6 @@ public class AssistantManager extends BaseAiManager
 		chats.saveData(message);
 		
 		llmrequest.addContext("message", message);
-
-///$mediaarchive.getMediaDbId()/ai/openai/assistant/instructions/context
-		
 		
 		llmrequest.addContext("assistant", this);
 		
@@ -215,9 +212,6 @@ public class AssistantManager extends BaseAiManager
 			// Function call detected
 			String functionName = response.getFunctionName();
 			llmrequest.setFunctionName(functionName);
-			
-			String nextFunctionName = response.getNextFunctionName();
-			llmrequest.setNextFunctionName(nextFunctionName);
 			
 			JSONObject functionArguments = response.getArguments();			
 			llmrequest.setParameter("arguments", functionArguments);

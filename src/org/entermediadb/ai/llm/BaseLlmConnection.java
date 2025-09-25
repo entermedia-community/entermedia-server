@@ -277,7 +277,6 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			log.info("Output: " + string);
 
 			BasicLlmResponse response = new BasicLlmResponse();
-			response.setFunctionName(functionName);
 			response.setMessage(string);
 			return response;
 		} 

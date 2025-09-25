@@ -6,19 +6,15 @@ import org.json.simple.JSONObject;
 
 public interface LlmResponse {
 
-	JSONObject getParameters();
     JSONObject getArguments();
 	
     JSONObject getRawResponse();
     
     boolean isToolCall();
     
-    
     String getMessage();
 
     String getFunctionName();
-
-    String getNextFunctionName();
 
     boolean isSuccessful();
     
@@ -28,8 +24,5 @@ public interface LlmResponse {
    
     ArrayList<String> getImageUrls();
     
-    ArrayList<String> getImageBase64s();
-
-    
-    
+    ArrayList<String> getImageBase64s();    
 }

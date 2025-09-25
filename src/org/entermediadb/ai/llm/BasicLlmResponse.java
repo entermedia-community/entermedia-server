@@ -8,11 +8,6 @@ public class BasicLlmResponse implements LlmResponse
 {
 	protected String fieldMessage;
 	protected String fieldFunctionName;
-	
-	public void setFunctionName(String inFunctionName)
-	{
-		fieldFunctionName = inFunctionName;
-	}
 
 	public void setMessage(String inMessage)
 	{
@@ -28,21 +23,6 @@ public class BasicLlmResponse implements LlmResponse
     public void setRawResponse(JSONObject inRawResponse) {
         rawResponse = inRawResponse;
     }
-
-	public String getNextFunctionName()
-	{
-		JSONObject params = getParameters();
-		if (params == null)
-		{
-			return null;
-		}
-		Object nextFunction = params.get("nextfunction");
-		if(nextFunction == null)
-		{
-			return null;
-		}
-		return nextFunction.toString();
-	}
 
 	@Override
 	public boolean isToolCall()
@@ -104,19 +84,5 @@ public class BasicLlmResponse implements LlmResponse
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	JSONObject fieldParameters;
-	
-	public void setParameters(JSONObject inParameters)
-	{
-		fieldParameters = inParameters;
-	}
-
-	@Override
-	public JSONObject getParameters()
-	{
-		return fieldParameters;
-	}
-    
 
 }
