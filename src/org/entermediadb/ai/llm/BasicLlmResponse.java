@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 import org.json.simple.JSONObject;
 
-public class BasicLlmResponse  implements LlmResponse
+public class BasicLlmResponse implements LlmResponse
 {
 	protected String fieldMessage;
 	protected String fieldFunctionName;
-	public void setFunctionName(String inFunctionName)
 	
+	public void setFunctionName(String inFunctionName)
 	{
 		fieldFunctionName = inFunctionName;
 	}

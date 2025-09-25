@@ -15,7 +15,7 @@ public interface LlmResponse {
     
     
     String getMessage();
-    
+
     String getFunctionName();
 
     String getNextFunctionName();

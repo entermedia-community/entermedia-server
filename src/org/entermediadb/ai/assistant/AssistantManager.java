@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.classify.SemanticFieldManager;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmRequest;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
@@ -184,8 +185,10 @@ public class AssistantManager extends BaseAiManager
 			{
 				
 				JSONObject oldparams = new JSONParser().parse(firstcallparams);
-				String functionName = (String) oldparams.get("function");
-				execChatFunction(llmconnection, message, functionName, context, oldparams);
+				LlmRequest llmrequest = new LlmRequest();
+				llmrequest.setFunctionName((String) oldparams.get("function"));
+				llmrequest.setArguments((JSONObject) oldparams.get("arguments"));
+				execChatFunction(llmconnection, message, context, llmrequest);
 			}
 			return;
 		}
@@ -211,17 +214,18 @@ public class AssistantManager extends BaseAiManager
 			
 			JSONObject functionArguments = response.getArguments();
 			
-			JSONObject parameters = new JSONObject();
-			parameters.put("function", functionName);
-			parameters.put("arguments", functionArguments);
-			functionMessage.setValue("params", parameters.toJSONString());
+			LlmRequest llmrequest = new LlmRequest();
+			llmrequest.setFunctionName(functionName);
+			llmrequest.setParameters(functionArguments);
+			
+			functionMessage.setValue("params", llmrequest.toString());
 			functionMessage.setValue("message", "Executing function " + functionName);
 			
 			chats.saveData(functionMessage);
 			
 			server.broadcastMessage(archive.getCatalogId(), functionMessage);
 			
-			execChatFunction(llmconnection, functionMessage, functionName,  context, parameters);
+			execChatFunction(llmconnection, functionMessage, context, llmrequest);
 		}
 		else
 		{
@@ -244,7 +248,7 @@ public class AssistantManager extends BaseAiManager
 		
 	}
 	
-	public void execChatFunction(LlmConnection llmconnection, Data messageToUpdate, String functionName, Map<String,Object> context, JSONObject parameters) throws Exception
+	public void execChatFunction(LlmConnection llmconnection, Data messageToUpdate, Map<String,Object> context, LlmRequest llmrequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -258,7 +262,7 @@ public class AssistantManager extends BaseAiManager
 			context.put("data", messageToUpdate);
 			
 			String apphome = "/"+ channel.get("chatapplicationid");
-			LlmResponse response = llmconnection.loadResponseFromTemplate(functionName, apphome, context, parameters);
+			LlmResponse response = llmconnection.loadResponseFromTemplate(llmrequest.getFunctionName(), apphome, context, llmrequest);
 
 			messageToUpdate.setValue("message", response.getMessage());
 			messageToUpdate.setValue("chatmessagestatus", "complete");
@@ -297,7 +301,7 @@ public class AssistantManager extends BaseAiManager
 		}
 		catch (Exception e)
 		{
-			log.error("Could not execute function: " + functionName, e);
+			log.error("Could not execute function: " + llmrequest.getFunctionName(), e);
 			messageToUpdate.setValue("functionresponse", e.toString());
 			messageToUpdate.setValue("chatmessagestatus", "failed");
 			archive.saveData("chatterbox", messageToUpdate);

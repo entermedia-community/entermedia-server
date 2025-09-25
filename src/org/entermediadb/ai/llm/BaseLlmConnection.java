@@ -152,7 +152,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	{
 		return loadInputFromTemplate(inTemplate, inContext, null);
 	}
-	public String loadInputFromTemplate(String inTemplate, Map<String,Object> inContext, Map<String,Object> inParameters) 
+	public String loadInputFromTemplate(String inTemplate, Map<String,Object> inContext, LlmRequest llmrequest) 
 	{
 		if(inTemplate == null) {
 			throw new OpenEditException("Cannot load input, template is null" + inContext);
@@ -166,7 +166,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			
 			WebPageRequest request = getRequestUtils().createPageRequest(template, user);
 			
-			loadParameters(inParameters, request);
+			loadLlmRequestparameters(llmrequest, request);
 			request.putPageValues(inContext);
 			
 			StringWriter output = new StringWriter();
@@ -191,8 +191,9 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		} 
 	}
 
-	protected void loadParameters(Map<String, Object> inParameters, WebPageRequest request)
+	protected void loadLlmRequestparameters(LlmRequest llmrequest, WebPageRequest request)
 	{
+		JSONObject inParameters = llmrequest.getParameters();
 		if( inParameters != null)
 		{
 			for (Iterator iterator = inParameters.keySet().iterator(); iterator.hasNext();)
@@ -222,7 +223,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		}
 	}
 	
-	public LlmResponse loadResponseFromTemplate(String functionName, String inApppHome, Map<String,Object> inContext, JSONObject inParameters) 
+	public LlmResponse loadResponseFromTemplate(String functionName, String inApppHome, Map<String,Object> inContext, LlmRequest llmrequest) 
 	{
 		if(functionName == null) {
 			throw new OpenEditException("Cannot load function response, functionName is null" + inContext);
@@ -240,8 +241,8 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			
 			WebPageRequest request = getRequestUtils().createPageRequest(template, user);
 			request.putPageValues(inContext);
-			request.putPageValue("parameters",inParameters);
-			loadParameters(inParameters, request);
+			request.putPageValue("llmrequest", llmrequest.getParameters());
+			loadLlmRequestparameters(llmrequest, request);
 			
 			StringWriter output = new StringWriter();
 			request.setWriter(output);
@@ -260,7 +261,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			streamer.include(template, request);
 			
 			BasicLlmResponse response = new BasicLlmResponse();
-			response.setParameters(inParameters);
+			response.setParameters(llmrequest.getParameters());
 			
 			response.setFunctionName(functionName);
 			
