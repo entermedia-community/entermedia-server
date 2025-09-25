@@ -12,6 +12,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.llm.BaseLlmConnection;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmRequest;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
@@ -26,18 +27,16 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 {
 	private static Log log = LogFactory.getLog(OpenAiConnection.class);
 
-	public LlmResponse runPageAsInput(Map<String, Object> context, String inModel, String inTemplate)
+	public LlmResponse runPageAsInput(LlmRequest llmRequest, String inTemplate)
 	{
+		llmRequest.addContext("mediaarchive", getMediaArchive());
 
-		context.put("model", inModel);
-		context.put("mediaarchive", getMediaArchive());
-
-		String input = loadInputFromTemplate(inTemplate, context);
+		String input = loadInputFromTemplate(inTemplate, llmRequest.getContext());
 		log.info(inTemplate + " process chat");
 		String endpoint = getApiEndpoint();
 
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + getApikey());
+		method.addHeader("Authorization", "Bearer " + getApikey());
 		method.setHeader("Content-Type", "application/json");
 
 		method.setEntity(new StringEntity(input, "UTF-8"));
@@ -48,6 +47,9 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		GptResponse response = new GptResponse();
 		response.setRawResponse(json);
+		
+		String nextFunction = response.getFunctionName();
+		llmRequest.setFunctionName(nextFunction);
 
 		return response;
 

@@ -31,8 +31,17 @@ public class BasicLlmResponse implements LlmResponse
 
 	public String getNextFunctionName()
 	{
-		String nextFunction = getParameters().get("nextfunction").toString();
-		return nextFunction;
+		JSONObject params = getParameters();
+		if (params == null)
+		{
+			return null;
+		}
+		Object nextFunction = params.get("nextfunction");
+		if(nextFunction == null)
+		{
+			return null;
+		}
+		return nextFunction.toString();
 	}
 
 	@Override

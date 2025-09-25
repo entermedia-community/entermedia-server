@@ -9,7 +9,7 @@ public class LlmRequest {
 	String functionName;
 	String nextFunctionName;
 	Map<String, Object> context;
-	JSONObject arguments;
+//	JSONObject arguments;
 	JSONObject parameters;
 	
 	
@@ -51,13 +51,13 @@ public class LlmRequest {
 		context.put(inKey, inValue);
 	}
 	
-	public JSONObject getArguments() {
-		return arguments;
-	}
-	
-	public void setArguments(JSONObject inArguments) {
-		arguments = inArguments;
-	}
+//	public JSONObject getArguments() {
+//		return arguments;
+//	}
+//	
+//	public void setArguments(JSONObject inArguments) {
+//		arguments = inArguments;
+//	}
 	
 	public JSONObject getParameters() {
 		return parameters;
@@ -77,7 +77,8 @@ public class LlmRequest {
 	public String toString() {
 		JSONObject obj = new JSONObject();
 		obj.put("function", functionName);
-		obj.put("arguments", arguments);
+		obj.put("nextfunction", nextFunctionName);
+		obj.put("parameters", parameters);
 		return obj.toJSONString();
 	}
 	

@@ -171,7 +171,7 @@ public class AssistantManager extends BaseAiManager
 		llmrequest.addContext("message", message);
 
 ///$mediaarchive.getMediaDbId()/ai/openai/assistant/instructions/context
-		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/assistant/instructions/current.json";
+		
 		
 		llmrequest.addContext("assistant", this);
 		
@@ -187,7 +187,8 @@ public class AssistantManager extends BaseAiManager
 				JSONObject oldparams = new JSONParser().parse(firstcallparams);
 
 				llmrequest.setFunctionName((String) oldparams.get("function"));
-				llmrequest.setArguments((JSONObject) oldparams.get("arguments"));
+				oldparams.remove("function");
+				llmrequest.setParameters((JSONObject) oldparams);
 	
 				execChatFunction(llmconnection, message, llmrequest);
 			}
@@ -204,8 +205,9 @@ public class AssistantManager extends BaseAiManager
 		chats.saveData(functionMessage);
 		
 		server.broadcastMessage(archive.getCatalogId(), functionMessage);
-		
-		LlmResponse response = llmconnection.runPageAsInput(llmrequest.getContext(), model, chattemplate);
+
+		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/assistant/instructions/current.json";
+		LlmResponse response = llmconnection.runPageAsInput(llmrequest, chattemplate);
 		//current update it?
 		
 		if (response.isToolCall())
@@ -213,6 +215,9 @@ public class AssistantManager extends BaseAiManager
 			// Function call detected
 			String functionName = response.getFunctionName();
 			llmrequest.setFunctionName(functionName);
+			
+			String nextFunctionName = response.getNextFunctionName();
+			llmrequest.setNextFunctionName(nextFunctionName);
 			
 			JSONObject functionArguments = response.getArguments();			
 			llmrequest.setParameter("arguments", functionArguments);
@@ -281,9 +286,8 @@ public class AssistantManager extends BaseAiManager
 			
 			if( llmrequest.getNextFunctionName() != null)
 			{
-				JSONObject params = response.getParameters();
-
-				params.put("function", response.getNextFunctionName());
+				JSONObject params = llmrequest.getParameters();
+				params.put("function", llmrequest.getNextFunctionName());
 				
 				messageToUpdate.setValue("params", params.toJSONString());
 				messageToUpdate.setValue("chatmessagestatus", "refresh");
@@ -575,19 +579,20 @@ public class AssistantManager extends BaseAiManager
 			return null;
 		}
 
-		Map params = new HashMap();
-		params.put("fulltext", fullText);
+		LlmRequest llmrequest = new LlmRequest();
+		llmrequest.addContext("fulltext", fullText);
 		
 		String model = archive.getCatalogSettingValue("mcp_model");
 		if(model == null)
 		{
 			model = "gpt-5-nano";
 		}
+		llmrequest.addContext("model", model);
 
 		LlmConnection llmconnection = (LlmConnection) archive.getBean("openaiConnection");
 		
 		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/mcp/prompts/generate_report.json";
-		LlmResponse response = llmconnection.runPageAsInput(params, model, chattemplate);
+		LlmResponse response = llmconnection.runPageAsInput(llmrequest, chattemplate);
 		
 		String report = response.getMessage();
 		

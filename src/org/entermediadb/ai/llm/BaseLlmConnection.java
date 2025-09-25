@@ -273,13 +273,11 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			
 			streamer.include(template, inReq);
 			
-			BasicLlmResponse response = new BasicLlmResponse();
-			response.setParameters(llmrequest.getArguments());
-			response.setFunctionName(functionName);
-			
 			String string = output.toString();
 			log.info("Output: " + string);
-			
+
+			BasicLlmResponse response = new BasicLlmResponse();
+			response.setFunctionName(functionName);
 			response.setMessage(string);
 			return response;
 		} 

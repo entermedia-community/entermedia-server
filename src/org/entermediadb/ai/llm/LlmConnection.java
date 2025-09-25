@@ -19,12 +19,12 @@ public interface LlmConnection {
 
     public String loadInputFromTemplate(String inString, Map<String, Object> inParams);
     
-    public LlmResponse loadResponseFromTemplate(LlmRequest inParameters);
+    public LlmResponse loadResponseFromTemplate(LlmRequest llmreuest);
     
     public LlmResponse callCreateFunction(Map params, String inModel, String inFunction);
     public LlmResponse callClassifyFunction(Map inParams, String inModel, String inFunction, String inQuery, String inBase64Image);
 
-    public LlmResponse runPageAsInput(Map<String, Object> inContext, String inModel, String inChattemplate);
+    public LlmResponse runPageAsInput(LlmRequest llmRequest, String inChattemplate);
 
     public String getApiEndpoint();
 	

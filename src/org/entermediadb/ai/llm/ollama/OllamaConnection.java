@@ -11,6 +11,7 @@ import org.apache.http.entity.StringEntity;
 import org.entermediadb.ai.llm.BaseLlmConnection;
 import org.entermediadb.ai.llm.BasicLlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmRequest;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
@@ -89,10 +90,9 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		return apikey;
 	}
 
-	public BasicLlmResponse runPageAsInput(Map params, String inModel, String inTemplate)
+	public BasicLlmResponse runPageAsInput(LlmRequest llmrequest, String inTemplate)
 	{
-
-		String input = loadInputFromTemplate(inTemplate, params);
+		String input = loadInputFromTemplate(inTemplate, llmrequest);
 		log.info(input);
 		String endpoint = getApiEndpoint() + "/api/chat";
 		
