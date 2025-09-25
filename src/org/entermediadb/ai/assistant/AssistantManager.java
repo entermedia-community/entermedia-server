@@ -169,8 +169,7 @@ public class AssistantManager extends BaseAiManager
 		
 		llmrequest.addContext("assistant", this);
 		
-		AiCurrentStatus current = loadCurrentStatus(channel); //TODO: Update this often
-		llmrequest.addContext("currentstatus",current);
+		llmrequest.addContext("channelchathistory", loadChannelChatHistory(channel));
 		
 		if("refresh".equals(oldstatus))
 		{			
@@ -337,24 +336,11 @@ public class AssistantManager extends BaseAiManager
 		}
 	}
 
-	protected AiCurrentStatus loadCurrentStatus(Data inChannel)
+	protected HitTracker loadChannelChatHistory(Data inChannel)
 	{
-		AiCurrentStatus status = (AiCurrentStatus)getMediaArchive().getCacheManager().get("aistatus", inChannel.getId() );
-		if( status == null)
-		{
-			status = new AiCurrentStatus();
-			status.setChannel(inChannel);
-			status.setMediaArchive(getMediaArchive());
-			status.setAssistantManager(this);
-			getMediaArchive().getCacheManager().put("aistatus", inChannel.getId(),status );
-		}
-		return status;
-	}
-	
-	protected AiCurrentStatus loadCurrentStatus(String inChannelId)
-	{
-		Data channel = getMediaArchive().getCachedData("channel", inChannelId);
-		return loadCurrentStatus(channel);
+		HitTracker messages = getMediaArchive().query("chatterbox").exact("channel", inChannel).sort("dateUp").search();
+		
+		return messages;
 	}
 
 	public String getAiFolder()
