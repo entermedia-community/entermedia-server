@@ -38,7 +38,7 @@ function chatterbox() {
 
 		var json = JSON.stringify(data);
 
-		if (chatconnection.readyState === chatconnection.CLOSED) {
+		if (chatconnection.readyState == chatconnection.CLOSED) {
 			connect();
 			//IF we do a reconnect render the whole page
 		}
@@ -159,6 +159,7 @@ lQuery("#supportchat").livequery("shown.bs.collapse	", function (e) {
 });
 function scrollToChat() {
 	setTimeout(function () {
+		console.log("Scrolling to chat");
 		var inside = $(".chatterbox-body-inside");
 		if (inside.length > 0) {
 			inside.animate({ scrollTop: inside.get(0).scrollHeight }, 30);
@@ -371,6 +372,9 @@ function loadMoreChats() {
 var keepAliveTimeoutID = 0;
 
 function keepAlive() {
+	if (!chatconnection) {
+		return;
+	}
 	var timeout = 20000;
 	if (chatconnection.readyState == chatconnection.OPEN) {
 		var command = new Object();
@@ -386,7 +390,7 @@ function keepAlive() {
 		chatconnection.send(json);
 	}
 
-	if (chatconnection.readyState === chatconnection.CLOSED) {
+	if (chatconnection.readyState == chatconnection.CLOSED) {
 		connect();
 		//reloadAll();
 	}

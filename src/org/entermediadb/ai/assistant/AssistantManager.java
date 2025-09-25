@@ -336,11 +336,26 @@ public class AssistantManager extends BaseAiManager
 		}
 	}
 
-	protected HitTracker loadChannelChatHistory(Data inChannel)
+	protected Collection<Data> loadChannelChatHistory(Data inChannel)
 	{
 		HitTracker messages = getMediaArchive().query("chatterbox").exact("channel", inChannel).sort("dateUp").search();
 		
-		return messages;
+		Collection<Data> recent = new ArrayList<Data>();
+		
+		for (Iterator iterator = messages.iterator(); iterator.hasNext();) {
+			Data message = (Data) iterator.next();
+			if("agent".equals(message.get("user")))
+			{
+				String plainmessage = message.get("messageplain");
+				if( plainmessage == null || plainmessage.isEmpty())
+				{
+					continue;
+				}
+			}
+			recent.add(message);
+		}
+		
+		return recent;
 	}
 
 	public String getAiFolder()
