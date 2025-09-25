@@ -277,14 +277,14 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			
 			BasicLlmResponse response = new BasicLlmResponse();
 			
-			int dataStart = string.indexOf("<data>");
+			int dataStart = string.indexOf("<messageplain>");
 			if(dataStart >= 0)
 			{
-				int dataEnd = string.indexOf("</data>");
-				String dataMessage = string.substring(dataStart + 6, dataEnd).trim();
+				int dataEnd = string.indexOf("</messageplain>");
+				String dataMessage = string.substring(dataStart + 14, dataEnd).trim();
 				response.setMessagePlain(dataMessage);
 				
-				String mainMessage = string.replace("<data>" + dataMessage + "</data>", "").trim();
+				String mainMessage = string.substring(0, dataStart).trim() + string.substring(dataEnd + 15).trim();
 				response.setMessage(mainMessage);
 			}
 			else
