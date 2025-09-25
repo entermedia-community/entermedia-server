@@ -160,6 +160,7 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 		values.add(text);
 		return search(values, excludedEntityIds, excludedAssetids);
 	}
+	
 	public Map<String,Collection<String>> search(Collection<String> textvalues, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
 	{
 		Map<String,Collection<String>> bytype = new HashMap();
@@ -500,7 +501,7 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 		CloseableHttpResponse resp = askServer(tosendparams);
 		String responseStr = getSharedConnection().parseText(resp);
 		JSONObject objt = (JSONObject) new JSONParser().parse(responseStr);
-		log.info("Got response " + objt.keySet());
+		//log.info("Got response " + objt.keySet());
 		return objt;
 	}
 
