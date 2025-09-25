@@ -486,7 +486,7 @@ public class AssistantManager extends BaseAiManager
 		}
 		catch( Exception e)
 		{
-			log.error("Could not parse excludeentityids",e);
+			log.error("Could not parse excludeentityids", e);
 		}
 		if(excludeentityids == null)
 		{
@@ -520,6 +520,7 @@ public class AssistantManager extends BaseAiManager
 
 		Collection<Data> semanticentities = new ArrayList();
 		Map<String, HitTracker> semanticentityhits = new HashMap();
+		HitTracker semanticassethits = null;
 
 		for (Iterator iterator = relatedEntityIds.keySet().iterator(); iterator.hasNext();)
 		{
@@ -541,7 +542,7 @@ public class AssistantManager extends BaseAiManager
 			
 			if(moduleid.equals("asset"))
 			{
-				inReq.putPageValue("semanticassethits", entites);
+				semanticassethits = entites;
 			}
 			else
 			{				
@@ -551,7 +552,14 @@ public class AssistantManager extends BaseAiManager
 		
 		inReq.putPageValue("semanticentities", semanticentities);
 		inReq.putPageValue("semanticentityhits", semanticentityhits);
-		
+		if(semanticassethits == null)
+		{
+			inReq.putPageValue("semanticassethits", new ArrayList());
+		}
+		else
+		{	
+			inReq.putPageValue("semanticassethits", semanticassethits);
+		}		
 	}
 	
 	public void addMcpVars(WebPageRequest inReq, AiSearch searchArgs)	
