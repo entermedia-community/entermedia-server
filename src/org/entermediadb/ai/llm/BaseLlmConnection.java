@@ -162,7 +162,6 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			throw new OpenEditException("Cannot load input, template is null" + inContext);
 		}
 		try {
-//			User user = params.getUser();
 			Page template = getPageManager().getPage(inTemplate);
 			log.info("Loading input: " + inTemplate);
 			
@@ -275,9 +274,23 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			
 			String string = output.toString();
 			log.info("Output: " + string);
-
+			
 			BasicLlmResponse response = new BasicLlmResponse();
-			response.setMessage(string);
+			
+			int dataStart = string.indexOf("<data>");
+			if(dataStart >= 0)
+			{
+				int dataEnd = string.indexOf("</data>");
+				String dataMessage = string.substring(dataStart + 6, dataEnd).trim();
+				response.setMessagePlain(dataMessage);
+				
+				String mainMessage = string.replace("<data>" + dataMessage + "</data>", "").trim();
+				response.setMessage(mainMessage);
+			}
+			else
+			{
+				response.setMessage(string);
+			}
 			return response;
 		} 
 		catch (OpenEditException e) 

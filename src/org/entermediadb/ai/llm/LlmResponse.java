@@ -13,6 +13,8 @@ public interface LlmResponse {
     boolean isToolCall();
     
     String getMessage();
+    
+    String getMessagePlain();
 
     String getFunctionName();
 

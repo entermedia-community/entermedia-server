@@ -405,7 +405,7 @@ public class ChatServer
 		
 		User user = archive.getUser(userid);
 		archive.fireDataEvent(user,"chatterbox","saved", chat);
-		archive.fireSharedMediaEvent("llm/monitorchats");
+		archive.fireSharedMediaEvent("llm/monitorchats"); //TODO: move to generic event
 
 		String messageid = chat.getId();
 		inMap.put("messageid", messageid);

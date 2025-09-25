@@ -183,21 +183,9 @@ public class AssistantManager extends BaseAiManager
 				llmrequest.setFunctionName((String) parsedParams.get("function"));
 				parsedParams.remove("function");
 				
-		// Optionally delay next call. Is there a better solution?
-		/** { */
-				Object wait = parsedParams.get("wait");
-				if( wait != null && wait instanceof Long)
-				{
-					parsedParams.remove("wait");
-					Long waittime = (Long) wait;
-					log.info("Previous function requested to wait " + waittime + " milliseconds");
-					Thread.sleep(waittime);
-				}
-		 /** } */
-				
 				llmrequest.setParameters((JSONObject) parsedParams);
 	
-				execChatFunction(llmconnection, message, llmrequest);
+				execFunctionInChat(llmconnection, message, llmrequest);
 			}
 			return;
 		}
@@ -206,7 +194,7 @@ public class AssistantManager extends BaseAiManager
 		functionMessage.setValue("user", "agent");
 		functionMessage.setValue("channel", channel.getId());
 		functionMessage.setValue("date", new Date());
-		functionMessage.setValue("message", "Processing...");
+		functionMessage.setValue("message", "<i class=\"fas fa-spinner fa-spin\"></i>");
 		functionMessage.setValue("chatmessagestatus", "processing");
 		
 		chats.saveData(functionMessage);
@@ -223,17 +211,29 @@ public class AssistantManager extends BaseAiManager
 			String functionName = response.getFunctionName();
 			llmrequest.setFunctionName(functionName);
 			
-			JSONObject functionArguments = response.getArguments();			
+			JSONObject functionArguments = response.getArguments();		
+			
 			llmrequest.setParameter("arguments", functionArguments);
 			
+			
 			functionMessage.setValue("params", llmrequest.toString());
-			functionMessage.setValue("message", "Executing function " + functionName);
+			
+			Object explainer = functionArguments.get("explainer");
+			if( explainer != null && explainer instanceof String)
+			{
+				functionMessage.setValue("message", (String)explainer);
+			} 
+			else
+			{
+				Data function = getMediaArchive().getCachedData("aifunctions", functionName);
+				functionMessage.setValue("message", function.getValue("processingmessage"));
+			}
 			
 			chats.saveData(functionMessage);
 			
 			server.broadcastMessage(archive.getCatalogId(), functionMessage);
 			
-			execChatFunction(llmconnection, functionMessage, llmrequest);
+			execFunctionInChat(llmconnection, functionMessage, llmrequest);
 		}
 		else
 		{
@@ -245,9 +245,10 @@ public class AssistantManager extends BaseAiManager
 				Data responsemessage = chats.createNewData();
 				responsemessage.setValue("user", "agent");
 				responsemessage.setValue("message", output);
+				responsemessage.setValue("messageplain", output);
 				responsemessage.setValue("date", new Date());
 				responsemessage.setValue("channel", channel.getId());
-				responsemessage.setValue("messagetype", "airesponse");
+				functionMessage.setValue("chatmessagestatus", "completed");
 
 				chats.saveData(responsemessage);
 				server.broadcastMessage(archive.getCatalogId(), responsemessage);
@@ -256,7 +257,7 @@ public class AssistantManager extends BaseAiManager
 		
 	}
 	
-	public void execChatFunction(LlmConnection llmconnection, Data messageToUpdate, LlmRequest llmrequest) throws Exception
+	public void execFunctionInChat(LlmConnection llmconnection, Data messageToUpdate, LlmRequest llmrequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -267,13 +268,23 @@ public class AssistantManager extends BaseAiManager
 
 		try
 		{
-			llmrequest.addContext("data", messageToUpdate);
+			llmrequest.addContext("message", messageToUpdate);
 			
 			String apphome = "/"+ channel.get("chatapplicationid");
 			llmrequest.addContext("apphome", apphome);
 			LlmResponse response = llmconnection.loadResponseFromTemplate(llmrequest);
 
 			messageToUpdate.setValue("message", response.getMessage());
+			String messageplain = messageToUpdate.get("messageplain");
+			if(messageplain == null)
+			{
+				messageplain = response.getMessagePlain();
+			}
+			else
+			{
+				messageplain += "\n" + response.getMessagePlain();
+			}
+			messageToUpdate.setValue("messageplain", messageplain);
 			messageToUpdate.setValue("chatmessagestatus", "complete");
 			
 			Searcher chats = archive.getSearcher("chatterbox");
@@ -288,24 +299,34 @@ public class AssistantManager extends BaseAiManager
 			functionMessageUpdate.put("message", response.getMessage());
 			server.broadcastMessage(functionMessageUpdate);
 			
+			Long waittime = 200l;
 			if( llmrequest.getNextFunctionName() != null)
 			{
 				JSONObject params = llmrequest.getParameters();
+				
 				params.put("function", llmrequest.getNextFunctionName());
 				
 				messageToUpdate.setValue("params", params.toJSONString());
+
 				messageToUpdate.setValue("chatmessagestatus", "refresh");
 				chats.saveData(messageToUpdate);
+
+				Object wait = params.get("wait");
+				if( wait != null && wait instanceof Long)
+				{
+					params.remove("wait");
+					waittime = (Long) wait;
+					log.info("Previous function requested to wait " + waittime + " milliseconds");
+				}
 				
 			}
-
-			archive.fireSharedMediaEvent("llm/monitorchats");
-//			else
-//			{
-//				messageToUpdate.setValue("chatmessagestatus", "complete");
-//				chats.saveData(messageToUpdate);
-//			}
-			
+			Runnable runnable = new Runnable() {
+				public void run()
+				{
+					getMediaArchive().fireSharedMediaEvent("llm/monitorchats");
+				}
+			};
+			archive.getExecutorManager().execLater(runnable, waittime);
 		}
 		catch (Exception e)
 		{
@@ -719,8 +740,11 @@ public class AssistantManager extends BaseAiManager
 		{
 			return;
 		}
+		
+		
 
 		LlmResponse results = llmconnection.createImage(model, prompt);
+		
 
 		for (Iterator iterator = results.getImageBase64s().iterator(); iterator.hasNext();)
 		{
@@ -738,6 +762,8 @@ public class AssistantManager extends BaseAiManager
 
 			String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
 			ContentItem saveTo = archive.getPageManager().getPage(path).getContentItem();
+			
+			
 			
 			try
 			{
@@ -774,6 +800,12 @@ public class AssistantManager extends BaseAiManager
 			}
 			
 			inReq.putPageValue("asset", asset);
+		}
+		
+		Data message = (Data) inReq.getPageValue("message");
+		if( message != null)
+		{
+			archive.saveData("chatterbox", message);
 		}
 		
 

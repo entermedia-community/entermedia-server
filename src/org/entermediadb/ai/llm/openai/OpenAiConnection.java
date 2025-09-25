@@ -87,8 +87,8 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		payload.put("size", inSize);
 		payload.put("response_format", "b64_json");
 
-		String endpoint = "https://api.openai.com/v1/images/generations";
-		// String endpoint = "http://localhost:3000/generations";  // for local testing
+//		String endpoint = "https://api.openai.com/v1/images/generations";
+		 String endpoint = "http://localhost:3000/generations";  // for local testing
 		HttpPost method = new HttpPost(endpoint);
 		method.addHeader("Authorization", "Bearer " + getApikey());
 		method.setHeader("Content-Type", "application/json");

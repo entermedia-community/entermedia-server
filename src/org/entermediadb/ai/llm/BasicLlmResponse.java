@@ -7,11 +7,30 @@ import org.json.simple.JSONObject;
 public class BasicLlmResponse implements LlmResponse
 {
 	protected String fieldMessage;
+	protected String fieldMessagePlain;
 	protected String fieldFunctionName;
 
 	public void setMessage(String inMessage)
 	{
 		fieldMessage = inMessage;
+	}
+	
+	@Override
+	public String getMessage()
+	{
+		return fieldMessage;
+	}
+	
+	public String setMessagePlain(String inMessage)
+	{
+		fieldMessagePlain = inMessage;
+		return fieldMessagePlain;
+	}
+	
+	@Override
+	public String getMessagePlain()
+	{
+		return fieldMessagePlain;
 	}
 
 	protected JSONObject rawResponse;
@@ -36,12 +55,6 @@ public class BasicLlmResponse implements LlmResponse
 	{
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public String getMessage()
-	{
-		return fieldMessage;
 	}
 
 	@Override
