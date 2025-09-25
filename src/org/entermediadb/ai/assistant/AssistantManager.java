@@ -137,9 +137,6 @@ public class AssistantManager extends BaseAiManager
 
 		llmrequest.addContext("model", model);
 
-		Date now = new Date();
-		DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
-
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 		Searcher chats = archive.getSearcher("chatterbox");
 		
@@ -185,6 +182,20 @@ public class AssistantManager extends BaseAiManager
 
 				llmrequest.setFunctionName((String) oldparams.get("function"));
 				oldparams.remove("function");
+				
+		// Optionally delay next call. Is there a better solution?
+		/** { */
+				Object wait = oldparams.get("wait");
+				if( wait != null && wait instanceof Long)
+				{
+					oldparams.remove("wait");
+					Long waittime = (Long) wait;
+					log.info("Previous function requested to wait " + waittime + " milliseconds");
+					Thread.sleep(waittime);
+				}
+				
+		 /** } */
+				
 				llmrequest.setParameters((JSONObject) oldparams);
 	
 				execChatFunction(llmconnection, message, llmrequest);
@@ -694,15 +705,16 @@ public class AssistantManager extends BaseAiManager
 		
 		LlmConnection llmconnection = archive.getLlmConnection(model);
 
-		String arguments = inReq.getRequestParameter("arguments");
+		String args = inReq.getRequestParameter("arguments");
 		
-		if(arguments == null)
+		if(args == null)
 		{
 			log.warn("No arguments found in request");
 			return;
 		}
+		JSONObject arguments = new JSONParser().parse( args );
 		
-		String prompt = (String) inReq.getRequestParameter("prompt");
+		String prompt = (String) arguments.get("prompt");
 
 		if (prompt == null)
 		{
