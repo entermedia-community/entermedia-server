@@ -275,15 +275,22 @@ public class AssistantManager extends BaseAiManager
 
 			messageToUpdate.setValue("message", response.getMessage());
 			String messageplain = messageToUpdate.get("messageplain");
-			if(messageplain == null)
+			
+			String newmessageplain = response.getMessagePlain();
+			
+			if(newmessageplain != null)
 			{
-				messageplain = response.getMessagePlain();
+				if(messageplain == null)
+				{
+					messageplain = newmessageplain;
+				}
+				else
+				{
+					messageplain += "\n" + newmessageplain;
+				}
+				messageToUpdate.setValue("messageplain", messageplain);
 			}
-			else
-			{
-				messageplain += "\n" + response.getMessagePlain();
-			}
-			messageToUpdate.setValue("messageplain", messageplain);
+			
 			messageToUpdate.setValue("chatmessagestatus", "complete");
 			
 			Searcher chats = archive.getSearcher("chatterbox");
