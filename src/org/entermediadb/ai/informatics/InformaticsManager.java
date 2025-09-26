@@ -147,7 +147,8 @@ public class InformaticsManager extends BaseAiManager
 		pendingrecords.enableBulkOperations();
 		pendingrecords.setHitsPerPage(5); //TODO:
 
-		inLog.info("Entities  " + ids + " with " + pendingrecords);
+		inLog.info("Entities  " + ids + " with " + pendingrecords + " from date: " + date );
+		
 
 		if (!pendingrecords.isEmpty())
 		{
