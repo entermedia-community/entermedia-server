@@ -10,7 +10,7 @@
 
 
 	#set($pagenum = $data.get("pagenum"))
-	#set($imagesize = "image550x550page${pagenum}")
+	#set($imagesize = "image200x200page${pagenum}")
 	#if($thumbsize == "largepreview")
 		#if( $type == "video" )
 			#set($imagesize = "image640x480page${pagenum}")
@@ -24,7 +24,7 @@
 	#elseif($thumbsize == "small")
 		#set($imagesize = "image200x200page${pagenum}")
 	#elseif($thumbsize == "crop")
-		#set($imagesize = "image200x200page${pagenum}")
+		#set($imagesize = "image110x62croppedpage${pagenum}")
 	#end		
 	
 	<div id="$!{detail.id}-preview"

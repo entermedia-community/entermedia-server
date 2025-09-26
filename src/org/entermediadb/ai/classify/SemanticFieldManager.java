@@ -124,15 +124,20 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
 	}
 
-
-	public void index(MultiValued inData)
+	/**
+	 * Not used
+	 */
+	public void index(ScriptLogger inLogger, MultiValued inEntity)
 	{
 		List one = new ArrayList();
-		one.add(inData);
+		one.add(inEntity);
 		
 		SemanticConfig instruction = getSemanticInstructions();
-		index(instruction, one, null);
-		instruction.getKMeansIndexer().setCentroids(inData);
+		
+		Collection<MultiValued> createdVectors = new ArrayList();
+		index(instruction, one, createdVectors);
+		
+		instruction.getKMeansIndexer().setCentroids(inLogger, createdVectors);
 	}
 
 	public SemanticConfig getSemanticInstructions()
@@ -602,6 +607,10 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 			
 			LlmConnection llmsemanticconnection = getMediaArchive().getLlmConnection(model);
 
+			long start = System.currentTimeMillis();
+			
+			inLog.info("SemanticFieldManager Start values and indexing " + fieldname);
+			
 			for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
 			{
 				MultiValued data = (MultiValued) iterator.next();
@@ -638,7 +647,9 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 			{
 				setIndexingVectors(false);
 			}
-
+			long end = System.currentTimeMillis();
+			double seconds = end - start / 1000d;
+			inLog.info("SemanticFieldManager Completed " + inRecords.size() + " records in " +  seconds + " seconds ");
 		}
 		
 

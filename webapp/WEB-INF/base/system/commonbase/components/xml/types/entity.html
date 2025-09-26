@@ -26,7 +26,7 @@ $context.putPageValue("detail",$detail)
 			    	data-noesc="true" 
 			    	data-entityid="$!row.getId()"
 			    	title="$name">$name</a>  
-			    	<a class="removeentity"  href="#" title="[[Remove]] $!name" onclick='$(this).closest("li").remove(); return false;'><i class="bi bi-x"></i></a>
+			    	<a class="removeentity entity-value-list-remove"  href="#" title="[[Remove]] $!name"><i class="bi bi-x"></i></a>
 			    	<input type="hidden" name="${detail.id}.value" value="$!row.getId()" />
 			    </li>
 		    #end 
@@ -36,7 +36,7 @@ $context.putPageValue("detail",$detail)
 		name="${detail.id}.size" 
 		value="$!{values.size()}" 
 		data-entitypicker="entitypicker${detail.id}" 
-		class="#if($detail.isRequired()) validatehidden entityRequired #end" />	
+		class="entity-value-list-count #if($detail.isRequired()) validatehidden entityRequired #end" />	
 </div>		
 
 	

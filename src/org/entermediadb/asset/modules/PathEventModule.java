@@ -1,5 +1,6 @@
 package org.entermediadb.asset.modules;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -83,7 +84,7 @@ public class PathEventModule extends BaseModule
 	public void getPathEvents(WebPageRequest inReq)
 	{
 		PathEventManager manager = getPathEventManager(inReq);
-		List events = manager.getPathEvents();
+		List events = new ArrayList(manager.getPathEvents()); //Avoid concurrent mod
 		Collections.sort(events);
 		inReq.putPageValue("pathevents", events);
 	}

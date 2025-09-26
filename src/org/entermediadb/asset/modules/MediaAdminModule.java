@@ -20,6 +20,7 @@ import org.entermediadb.events.PathEventManager;
 import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.workspace.WorkspaceManager;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
@@ -1053,13 +1054,14 @@ public class MediaAdminModule extends BaseMediaModule
 		{
 			Collection tosavemenu = new ArrayList();
 
-			Map<String,Data> parents = new HashMap<String,Data>();
+			//Map<String,Data> parents = new HashMap<String,Data>();
+			Collection<ParentChildPair> parentschilds = new ArrayList();
 			
 			for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();) {
 				ValuesMap map = new ValuesMap((Map) iterator.next());
 				if("folderLabel".equals(map.get("cssClass")))
 				{
-					Map userdatamap = (Map) parser.parse(map.getString("userData"));
+					JSONObject userdatamap = (JSONObject) parser.parse(map.getString("userData"));
 					ValuesMap  userdata  = new ValuesMap(userdatamap);
 					String moduleid = userdata.getString("moduleid"); //TODO: get initialmoduleid  to rename
 					if( moduleid == null || moduleid.trim().isEmpty())
@@ -1093,10 +1095,26 @@ public class MediaAdminModule extends BaseMediaModule
 						module.setValue("showonsearch", true); 
 					}
 					//Children
-					String parentmoduleid = userdata.getString("parents");
-					if( parentmoduleid != null)
+					Collection<String> parentmoduleids = new ArrayList(); 
+					Object obj = userdatamap.get("parents");
+					if( obj != null)
 					{
-						parents.put(parentmoduleid,module);
+						if( obj instanceof String )
+						{
+							parentmoduleids.add((String)obj);
+						}
+						else
+						{
+							parentmoduleids.addAll((Collection)obj);
+						}
+						for (Iterator iterator2 = parentmoduleids.iterator(); iterator2.hasNext();)
+						{
+							String parentmoduleid = (String) iterator2.next();
+							ParentChildPair pair = new ParentChildPair();
+							pair.setParentModuleId(parentmoduleid);
+							pair.setChildModule(module);
+							parentschilds.add(pair);
+						}
 					}
 					tosave.add(module);
 					//Menu
@@ -1128,7 +1146,7 @@ public class MediaAdminModule extends BaseMediaModule
 				Data module = (Data) iterator.next();
 				getWorkspaceManager().saveModule(archive.getCatalogId(), appid, module);	 //Save views	
 			}
-			checkParents(archive,parents);
+			checkParents(archive,parentschilds);
 			archive.saveData("module", tosave);  //Save children and parents
 			
 			archive.getSearcher("appsection").deleteAll(inReq.getUser()); //
@@ -1138,38 +1156,38 @@ public class MediaAdminModule extends BaseMediaModule
 
 	}
 
-	private void checkParents(MediaArchive archive, Map<String, Data> parents) {
-		for (Iterator iterator = parents.keySet().iterator(); iterator.hasNext();) 
+	private void checkParents(MediaArchive archive, Collection<ParentChildPair> parentschilds)
+	{
+		for (Iterator<ParentChildPair> iterator = parentschilds.iterator(); iterator.hasNext();) 
 		{
-			String parentid = (String) iterator.next();
-			Data childmodule = parents.get(parentid);
+			ParentChildPair pair = iterator.next();
 			
 			//Make field and a one to many view? Add all the "Add New" columns to the view
-			Searcher childsearcher = archive.getSearcher(childmodule.getId());
+			Searcher childsearcher = archive.getSearcher(pair.getChildModule().getId());
 			PropertyDetails details = childsearcher.getPropertyDetails();
-			Data parentmodule = archive.getData("module",parentid);
+			Data parentmodule = archive.getData("module",pair.getParentModuleId());
 			if( parentmodule == null )
 			{
 				log.error("missing parent module");
 				continue;
 			}
-			if( details.getDetail(parentid) == null)
+			if( details.getDetail(pair.getParentModuleId()) == null)
 			{
-				PropertyDetail newprop = archive.getPropertyDetailsArchive().createDetail(parentid, parentmodule.getName());
+				PropertyDetail newprop = archive.getPropertyDetailsArchive().createDetail(pair.getParentModuleId(), parentmodule.getName());
 				newprop.setValue("name",parentmodule.getValue("name"));  //Int?
 				newprop.setDataType("list");
 				newprop.setValue("viewtype","entity");
 				newprop.setEditable(true);
 				newprop.setIndex(true);
-				archive.getPropertyDetailsArchive().savePropertyDetail(newprop, childmodule.getId(), null);
+				archive.getPropertyDetailsArchive().savePropertyDetail(newprop, pair.getChildModule().getId(), null);
 				archive.getPropertyDetailsArchive().clearCache();
 				childsearcher.putMappings();
 			}
 			//Make views
 			Searcher viewsearcher = archive.getSearcher("view");
 
-			String viewid = PathUtilities.makeId(parentmodule.getName());
-			viewid = viewid.toLowerCase();
+//			String viewid = PathUtilities.makeId(parentmodule.getName());
+//			viewid = viewid.toLowerCase();
 			
 //			String addpath = "/WEB-INF/data/" + archive.getCatalogId() + "/views/" + childmodule.getId() + "/" + childmodule.getId() + "addnew.xml";
 //			Page from = getPageManager().getPage(addpath);
@@ -1182,17 +1200,18 @@ public class MediaAdminModule extends BaseMediaModule
 //			{
 //				getPageManager().copyPage(from, to);
 //			}
-			Data data =  (Data)viewsearcher.searchById(parentmodule.getId() + viewid);
+			String viewid = parentmodule.getId() + pair.getChildModule().getId(); 
+			Data data =  (Data)viewsearcher.searchById(viewid);
 			if( data == null)
 			{
 				data = viewsearcher.createNewData();
 				//Copy the add new
-				data.setId(childmodule.getId() + viewid);
-				data.setName(childmodule.getName());
+				data.setId(viewid);
+				data.setName(pair.getChildModule().getName());
 
 				data.setProperty("moduleid", parentmodule.getId());
 				data.setProperty("rendertype", "entitysubmodules"); //POne to manuy
-				data.setProperty("rendertable", childmodule.getId());
+				data.setProperty("rendertable", pair.getChildModule().getId());
 				data.setProperty("renderexternalid", parentmodule.getId());
 				data.setProperty("systemdefined", "false");
 				data.setProperty("ordering", System.currentTimeMillis() + "");
