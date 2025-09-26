@@ -156,16 +156,15 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 					$context.putPageValue("goal",$goal)
 					$pages.include("${chatterboxhome}/goalrow.html",$context)
 				#else
-					<div class="msg-body-content">
-						#ifnotnull($chat.message)
-							#if($chat.user == "agent")
-								##$url_util.escapeMessage($chat.message)
-								$chat.message
-							#else
-								$url_util.escapeMessage($chat.message)
-							#end
+				
+					#ifnotnull($chat.message)
+						#if($chat.user == "agent")
+							<div class="msg-body-content">$chat.message</div>
+						#else
+							<div class="msg-body-content">$url_util.escapeMessage($chat.message)</div>
 						#end
-					</div>
+					#end
+
 				#end
 				<div class="clearfix"></div>
 			</div>

@@ -81,32 +81,38 @@ public class AssistantManager extends BaseAiManager
 		{
 			Data channel = (Data) iterator.next();
 			
-			Data mostrecent = chats.query()
+			Collection mostrecents = chats.query()
 				   .exact("channel", channel.getId())
 				   .orgroup("chatmessagestatus", "received refresh")
 				   .sort("dateDown")
-				   .searchOne();
+				   .search();
 			
-			if (mostrecent  == null)
+			if (mostrecents  == null)
 			{
 				continue;
 			}
 			
-			if( channel.getName() == null )
-			{
-				String message = mostrecent.get("message");
-				if( message !=  null )
+			
+			for (Iterator iterator2 = mostrecents.iterator(); iterator2.hasNext();) {
+
+				Data mostrecent = (Data) iterator2.next();
+				if( channel.getName() == null)
 				{
-					if( message.length() > 25)
+					String message = mostrecent.get("message");
+					if( message !=  null )
 					{
-						message = message.substring(0,25);
+						if( message.length() > 25)
+						{
+							message = message.substring(0,25);
+						}
+						channel.setName(message.trim());
+						archive.saveData("channel",channel);
 					}
-					channel.setName(message.trim());
-					archive.saveData("channel",channel);
 				}
+				
+				respondToChannel(inLog, channel, mostrecent);
 			}
 			
-			respondToChannel(inLog, channel, mostrecent);
 		}
 	}
 	
@@ -189,16 +195,16 @@ public class AssistantManager extends BaseAiManager
 			return;
 		}
 		
-		Data functionMessage = chats.createNewData();
-		functionMessage.setValue("user", "agent");
-		functionMessage.setValue("channel", channel.getId());
-		functionMessage.setValue("date", new Date());
-		functionMessage.setValue("message", "<i class=\"fas fa-spinner fa-spin\"></i>");
-		functionMessage.setValue("chatmessagestatus", "processing");
+		Data resopnseMessage = chats.createNewData();
+		resopnseMessage.setValue("user", "agent");
+		resopnseMessage.setValue("channel", channel.getId());
+		resopnseMessage.setValue("date", new Date());
+		resopnseMessage.setValue("message", "<i class=\"fas fa-spinner fa-spin\"></i>");
+		resopnseMessage.setValue("chatmessagestatus", "processing");
 		
-		chats.saveData(functionMessage);
+		chats.saveData(resopnseMessage);
 		
-		server.broadcastMessage(archive.getCatalogId(), functionMessage);
+		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 
 		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/assistant/instructions/current.json";
 		LlmResponse response = llmconnection.runPageAsInput(llmrequest, chattemplate);
@@ -215,24 +221,24 @@ public class AssistantManager extends BaseAiManager
 			llmrequest.setParameter("arguments", functionArguments);
 			
 			
-			functionMessage.setValue("params", llmrequest.toString());
+			resopnseMessage.setValue("params", llmrequest.toString());
 			
 			Object explainer = functionArguments.get("explainer");
 			if( explainer != null && explainer instanceof String)
 			{
-				functionMessage.setValue("message", (String)explainer);
+				resopnseMessage.setValue("message", (String)explainer);
 			} 
 			else
 			{
 				Data function = getMediaArchive().getCachedData("aifunctions", functionName);
-				functionMessage.setValue("message", function.getValue("processingmessage"));
+				resopnseMessage.setValue("message", function.getValue("processingmessage"));
 			}
 			
-			chats.saveData(functionMessage);
+			chats.saveData(resopnseMessage);
 			
-			server.broadcastMessage(archive.getCatalogId(), functionMessage);
+			server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 			
-			execFunctionInChat(llmconnection, functionMessage, llmrequest);
+			execFunctionInChat(llmconnection, resopnseMessage, llmrequest);
 		}
 		else
 		{
@@ -241,16 +247,12 @@ public class AssistantManager extends BaseAiManager
 
 			if (output != null)
 			{
-				Data responsemessage = chats.createNewData();
-				responsemessage.setValue("user", "agent");
-				responsemessage.setValue("message", output);
-				responsemessage.setValue("messageplain", output);
-				responsemessage.setValue("date", new Date());
-				responsemessage.setValue("channel", channel.getId());
-				functionMessage.setValue("chatmessagestatus", "completed");
+				resopnseMessage.setValue("message", output);
+				resopnseMessage.setValue("messageplain", output);
+				resopnseMessage.setValue("chatmessagestatus", "completed");
 
-				chats.saveData(responsemessage);
-				server.broadcastMessage(archive.getCatalogId(), responsemessage);
+				chats.saveData(resopnseMessage);
+				server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 			}
 		}
 		
