@@ -41,14 +41,16 @@ import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
-import org.openedit.OpenEditException;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.data.ValuesMap;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.ExecutorManager;
 import org.openedit.util.JSONParser;
+
+import groovy.json.internal.ValueMap;
 
 public class ChatServer
 {
@@ -343,65 +345,27 @@ public class ChatServer
 		
 		String userid = (String)inMap.get("user").toString();
 		
-		long now = System.currentTimeMillis() - 9*1000;
-		Data lastOne = chats.query().exact("channel",channel.getId()).after("date",new Date(now)).sort("dateDown").searchOne();
-		Data chat = null;
-		String newmessage = String.valueOf( inMap.get("message") );
-		/*
-		 * Check for previous user, if previous user is the same combine last message
-		 * content with new message.
-		 */
-	
-		if(lastOne != null)
-		{
-			String lastUserId = lastOne.get("user"); 
-			if( lastUserId.contentEquals(userid))
-			{
-				chat = lastOne;  //USE LAST ONE
-				String combined = lastOne.get("message");
-				combined = combined + "<br>" + newmessage;
-				lastOne.setValue("message",combined);
-			}
-		}
-		String entityid = null;
-		if(inMap.get("entityid")!= null) {
-			//CAST FROM LONG!
-			entityid = String.valueOf(inMap.get("entityid"));
-		}
-		String collectionid = null;
-		collectionid = String.valueOf(inMap.get("collectionid"));
+//		long now = System.currentTimeMillis() - 9*1000;
+//		Data lastOne = chats.query().exact("channel",channel.getId()).after("date",new Date(now)).sort("dateDown").searchOne();
+
+		ValuesMap values = new ValuesMap(inMap);
+
+		Data chat = chats.createNewData();
+		chat.setValue("date", new Date());
+		chat.setValue("user", userid);
+		chat.setValue("channel", channel.getId());
+		chat.setValue("entityid", values.getString("entityid"));
+		chat.setValue("moduleid", values.getString("moduleid"));
+		chat.setValue("collectionid", values.getString("collectionid"));
+		chat.setValue("chatmessagestatus", "received");
 		
-		String moduleid = null;
-		if(inMap.get("moduleid")!= null) {
-			moduleid = String.valueOf(inMap.get("moduleid"));
-		}
-		if(moduleid == null)
-		{
-			moduleid = "librarycollection";
-		}
-
-		if( chat == null)
-		{
-			chat = chats.createNewData();
-			chat.setValue("date", new Date());
-			chat.setValue("user", userid);
-			chat.setValue("channel", channel.getId());
-			if(entityid != null)
-			{
-				chat.setValue("entityid", entityid);
-				chat.setValue("moduleid",moduleid);
-			}
-			else {
-				chat.setValue("collectionid", collectionid);	
-			}
-
-			chat.setValue("chatmessagestatus", "received");
-			chat.setValue("message", newmessage);
-			chat.setValue("messagetype", "message");
-		}
-		String replytoid = (String)inMap.get("replytoid");
-		chat.setValue("replytoid",replytoid);
-		chats.saveData(chat);  //<----  SAVE chat
+		String newmessage = values.getString("message");
+		chat.setValue("message", newmessage);
+		chat.setValue("messagetype", "message");
+		
+		chat.setValue("replytoid", values.getString("replytoid"));
+		
+		chats.saveData(chat);
 		
 		User user = archive.getUser(userid);
 		archive.fireDataEvent(user,"chatterbox","saved", chat);
@@ -410,7 +374,7 @@ public class ChatServer
 		String messageid = chat.getId();
 		inMap.put("messageid", messageid);
 
-		return chat;//chat.get("message");
+		return chat; 
 	}
 
 	public Data loadChannel(MediaArchive inArchive, Map inChannelInfo)

@@ -378,7 +378,7 @@ public class AssistantManager extends BaseAiManager
 		return hits;
 	}
 	
-	public AiSearch processSematicSearchArgs(String inJsonArguments, UserProfile userprofile) throws Exception
+	public AiSearch processAISearchArgs(String inJsonArguments, UserProfile userprofile) throws Exception
 	{
 		if(inJsonArguments == null)
 		{			
@@ -432,7 +432,17 @@ public class AssistantManager extends BaseAiManager
 		}
 		else
 		{
-			permittedModules = userprofile.getEntitiesByIdOrName(selectedModules);
+			Collection<String> selectedModuleIds = new ArrayList<String>();
+			for (Iterator iterator = selectedModules.iterator(); iterator.hasNext();)
+			{
+				String id = (String) iterator.next();
+				if(id.contains("|"))
+				{
+					id = id.split("\\|")[0];
+				}
+				selectedModuleIds.add(id);
+			}
+			permittedModules = userprofile.getEntitiesByIdOrName(selectedModuleIds);
 		}
 		
 		searchArgs.setSelectedModules(permittedModules);
@@ -460,7 +470,7 @@ public class AssistantManager extends BaseAiManager
 		
 		inReq.putPageValue("userprofile", userprofile);
 
-		AiSearch aiSearchArgs = processSematicSearchArgs(arguments, userprofile);
+		AiSearch aiSearchArgs = processAISearchArgs(arguments, userprofile);
 		
 		if(isMcp)
 		{
@@ -821,5 +831,67 @@ public class AssistantManager extends BaseAiManager
 		
 
 		archive.fireSharedMediaEvent("importing/assetscreated");
+	}
+	public void createEntity(WebPageRequest inReq) throws Exception 
+	{
+		MediaArchive archive = getMediaArchive();
+
+		String args = inReq.getRequestParameter("arguments");
+		if(args == null)
+		{
+			log.warn("No arguments found in request");
+			return;
+		}
+		JSONObject arguments = new JSONParser().parse( args );
+		
+		String entityname = (String) arguments.get("name");
+		
+		JSONObject fields = (JSONObject) arguments.get("fields");
+		Collection tags = null;
+		String description = null;
+		if(fields != null)
+		{
+			tags = (JSONArray) fields.get("tags");
+			description = (String) fields.get("description");
+		}
+
+		String modulestr = (String) arguments.get("module");
+		
+		if (entityname == null)
+		{
+			inReq.putPageValue("error", "Please provide a name for the new entity");
+			return;
+		}
+		if (modulestr == null)
+		{
+			inReq.putPageValue("error", "Please provide the module name or id for the new entity");
+			return;
+		}
+		
+		String moduleid = modulestr.split("\\|")[0];
+		Data module = archive.getCachedData("module", moduleid);
+		
+		if(module == null)
+		{
+			inReq.putPageValue("error", "Could not find module. Please provide an existing module name or id");
+			return;
+		}
+		
+		Searcher searcher = archive.getSearcher(module.getId());
+		
+		Data entity = searcher.createNewData();
+		entity.setName(entityname);
+		if(description != null)
+		{
+			entity.setValue("longcaption", description);
+		}
+		if(tags != null)
+		{
+			entity.setValue("keywords", tags);
+		}
+		searcher.saveData(entity);
+		
+		inReq.putPageValue("entity", entity);
+		inReq.putPageValue("module", module);
 	}
 }

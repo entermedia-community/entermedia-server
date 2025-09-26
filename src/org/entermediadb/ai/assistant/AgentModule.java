@@ -28,6 +28,11 @@ public class AgentModule extends BaseMediaModule {
 		getAssistantManager(inReq).createImage(inReq);
 	}
 	
+	public void chatAgentCreateEntity(WebPageRequest inReq) throws Exception 
+	{	
+		getAssistantManager(inReq).createEntity(inReq);
+	}
+	
 	public void mcpSearch(WebPageRequest inReq) throws Exception
 	{
 		getAssistantManager(inReq).regularSearch(inReq, true);
