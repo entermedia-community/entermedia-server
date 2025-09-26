@@ -20,6 +20,7 @@ import org.entermediadb.events.PathEventManager;
 import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.workspace.WorkspaceManager;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
@@ -1060,7 +1061,7 @@ public class MediaAdminModule extends BaseMediaModule
 				ValuesMap map = new ValuesMap((Map) iterator.next());
 				if("folderLabel".equals(map.get("cssClass")))
 				{
-					Map userdatamap = (Map) parser.parse(map.getString("userData"));
+					JSONObject userdatamap = (JSONObject) parser.parse(map.getString("userData"));
 					ValuesMap  userdata  = new ValuesMap(userdatamap);
 					String moduleid = userdata.getString("moduleid"); //TODO: get initialmoduleid  to rename
 					if( moduleid == null || moduleid.trim().isEmpty())
@@ -1094,13 +1095,26 @@ public class MediaAdminModule extends BaseMediaModule
 						module.setValue("showonsearch", true); 
 					}
 					//Children
-					String parentmoduleid = userdata.getString("parent");
-					if( parentmoduleid != null)
+					Collection<String> parentmoduleids = new ArrayList(); 
+					Object obj = userdatamap.get("parent");
+					if( obj != null)
 					{
-						ParentChildPair pair = new ParentChildPair();
-						pair.setParentModuleId(parentmoduleid);
-						pair.setChildModule(module);
-						parentschilds.add(pair);
+						if( obj instanceof String )
+						{
+							parentmoduleids.add((String)obj);
+						}
+						else
+						{
+							parentmoduleids.addAll((Collection)obj);
+						}
+						for (Iterator iterator2 = parentmoduleids.iterator(); iterator2.hasNext();)
+						{
+							String parentmoduleid = (String) iterator2.next();
+							ParentChildPair pair = new ParentChildPair();
+							pair.setParentModuleId(parentmoduleid);
+							pair.setChildModule(module);
+							parentschilds.add(pair);
+						}
 					}
 					tosave.add(module);
 					//Menu
@@ -1172,8 +1186,8 @@ public class MediaAdminModule extends BaseMediaModule
 			//Make views
 			Searcher viewsearcher = archive.getSearcher("view");
 
-			String viewid = PathUtilities.makeId(parentmodule.getName());
-			viewid = viewid.toLowerCase();
+//			String viewid = PathUtilities.makeId(parentmodule.getName());
+//			viewid = viewid.toLowerCase();
 			
 //			String addpath = "/WEB-INF/data/" + archive.getCatalogId() + "/views/" + childmodule.getId() + "/" + childmodule.getId() + "addnew.xml";
 //			Page from = getPageManager().getPage(addpath);
@@ -1186,12 +1200,13 @@ public class MediaAdminModule extends BaseMediaModule
 //			{
 //				getPageManager().copyPage(from, to);
 //			}
-			Data data =  (Data)viewsearcher.searchById(parentmodule.getId() + viewid);
+			String viewid = parentmodule.getId() + pair.getChildModule().getId(); 
+			Data data =  (Data)viewsearcher.searchById(viewid);
 			if( data == null)
 			{
 				data = viewsearcher.createNewData();
 				//Copy the add new
-				data.setId(pair.getChildModule().getId() + viewid);
+				data.setId(viewid);
 				data.setName(pair.getChildModule().getName());
 
 				data.setProperty("moduleid", parentmodule.getId());
