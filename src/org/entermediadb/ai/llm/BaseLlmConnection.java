@@ -296,11 +296,15 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		while(dataStart >= 0)
 		{
 			int dataEnd = mainMessage.indexOf("</messageplain>");
-			if( dataEnd < 0)
+			if( dataEnd <= dataStart)
 			{
 				break;
 			}
-			dataMessage += mainMessage.substring(dataStart + 14, dataEnd).trim() + "\n";
+			String dm = mainMessage.substring(dataStart + 14, dataEnd).trim();
+			if(!dm.isEmpty())
+			{
+				dataMessage += dm + "\n";
+			}
 			mainMessage = mainMessage.substring(0, dataStart).trim() + mainMessage.substring(dataEnd + 15).trim();
 			dataStart = mainMessage.indexOf("<messageplain>");
 		}
