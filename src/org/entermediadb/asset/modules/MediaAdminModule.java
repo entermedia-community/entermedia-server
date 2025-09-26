@@ -1093,7 +1093,7 @@ public class MediaAdminModule extends BaseMediaModule
 						module.setValue("showonsearch", true); 
 					}
 					//Children
-					String parentmoduleid = userdata.getString("parent");
+					String parentmoduleid = userdata.getString("parents");
 					if( parentmoduleid != null)
 					{
 						parents.put(parentmoduleid,module);
