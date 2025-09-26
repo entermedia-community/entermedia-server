@@ -70,30 +70,11 @@ public class ClassifyManager extends InformaticsProcessor
 
 	protected boolean processOneAsset(MultiValued inConfig, LlmConnection llmvisionconnection, LlmConnection llmsemanticconnection, Map<String, String> models, MultiValued asset) throws Exception
 	{
-		String mediatype = getMediaArchive().getMediaRenderType(asset);
-		String base64EncodedString = null;
-		if(mediatype.equals("image") || mediatype.equals("video"))
-		{
-			String imagesize = null;
-			if (mediatype.equals("image"))
-			{
-				imagesize = "image3000x3000";
-			}
-			else if ( mediatype.equals("video"))
-			{
-				imagesize = "image1900x1080";
-			}
-
-			base64EncodedString = loadBase64Image(asset, imagesize);
-
-			if( base64EncodedString == null)
-			{
-				return false;
-			}
-		}
-
 		Collection allaifields = getMediaArchive().getAssetPropertyDetails().findAiCreationProperties();
-		Collection aifields = new ArrayList();
+		Collection<PropertyDetail> aifields = new ArrayList();
+		
+		String mediatype = getMediaArchive().getMediaRenderType(asset);
+
 		for (Iterator iterator2 = allaifields.iterator(); iterator2.hasNext();)
 		{
 			PropertyDetail aifield = (PropertyDetail)iterator2.next();
@@ -122,6 +103,44 @@ public class ClassifyManager extends InformaticsProcessor
 
 			String requestPayload = llmvisionconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/analyzeasset.html", params);
 			String functionname = inConfig.get("aifunctionname") + "_asset";
+			
+			String base64EncodedString = null;
+			if( aifields.size() > 1 )
+			{		
+				boolean loadthumb = true;
+				if( aifields.size() == 1)
+				{
+					PropertyDetail detail = aifields.iterator().next(); //First one
+					if( detail.getId().startsWith("semantic") )
+					{
+						loadthumb = false;
+					}
+				}
+				if( loadthumb  )
+				{
+					if(mediatype.equals("image") || mediatype.equals("video"))
+					{
+						String imagesize = null;
+						if (mediatype.equals("image"))
+						{
+							imagesize = "image3000x3000";
+						}
+						else if ( mediatype.equals("video"))
+						{
+							imagesize = "image1900x1080";
+						}
+		
+						base64EncodedString = loadBase64Image(asset, imagesize);
+		
+						if( base64EncodedString == null)
+						{
+							log.error("Image missing for asset: " + asset);
+							return false;
+						}
+					}
+				}
+			}
+			
 			LlmResponse results = llmvisionconnection.callClassifyFunction(params, models.get("vision"), functionname, requestPayload, base64EncodedString);
 
 			if (results != null)
