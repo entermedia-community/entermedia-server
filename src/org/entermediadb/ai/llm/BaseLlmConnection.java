@@ -303,7 +303,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			String dm = mainMessage.substring(dataStart + 14, dataEnd).trim();
 			if(!dm.isEmpty())
 			{
-				dataMessage += dm + "\n";
+				dataMessage += dm + " \n ";
 			}
 			mainMessage = mainMessage.substring(0, dataStart).trim() + mainMessage.substring(dataEnd + 15).trim();
 			dataStart = mainMessage.indexOf("<messageplain>");

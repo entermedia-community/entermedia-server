@@ -2,7 +2,6 @@ package org.entermediadb.ai.assistant;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -288,7 +287,7 @@ public class AssistantManager extends BaseAiManager
 				}
 				else
 				{
-					messageplain += "\n" + newmessageplain;
+					messageplain += " \n " + newmessageplain;
 				}
 				messageToUpdate.setValue("messageplain", messageplain);
 			}
@@ -775,15 +774,22 @@ public class AssistantManager extends BaseAiManager
 
 			asset.setValue("importstatus", "created");
 
-			String filename = prompt.replaceAll("[^a-zA-Z0-9]", "_") + ".png";
-			asset.setName(filename);
+			String filename = (String) arguments.get("filename");
+			if(filename == null || filename.length() == 0)
+			{	
+				prompt.replaceAll("[^a-zA-Z0-9 ]", "_");
+				if (filename.length() > 50)
+				{
+					filename = filename.substring(0, 50);
+				}
+			}
+			asset.setName(filename.trim()+ ".png");
 			
 			String sourcepath = "Channels/" + inReq.getUserName() + "/" + DateStorageUtil.getStorageUtil().getTodayForDisplay() + "/" + filename;
 			asset.setSourcePath(sourcepath);
 
 			String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
 			ContentItem saveTo = archive.getPageManager().getPage(path).getContentItem();
-			
 			
 			
 			try
@@ -891,6 +897,68 @@ public class AssistantManager extends BaseAiManager
 		}
 		searcher.saveData(entity);
 		
+		inReq.putPageValue("entity", entity);
+		inReq.putPageValue("module", module);
+	}
+	
+	public void updateEntity(WebPageRequest inReq) throws Exception 
+	{
+		MediaArchive archive = getMediaArchive();
+
+		String args = inReq.getRequestParameter("arguments");
+		if(args == null)
+		{
+			log.warn("No arguments found in request");
+			return;
+		}
+		JSONObject arguments = new JSONParser().parse( args );
+		
+		String entityid = (String) arguments.get("entityId");
+		String moduleid = (String) arguments.get("moduleId");
+		
+		if (entityid == null)
+		{
+			inReq.putPageValue("error", "Please provide the entity id for the entity to update");
+			return;
+		}
+		if (moduleid == null)
+		{
+			inReq.putPageValue("error", "Please provide the module id for the entity to update");
+			return;
+		}
+		
+		Data module = archive.getCachedData("module", moduleid);
+		if(module == null)
+		{
+			inReq.putPageValue("error", "Could not find module. Please provide the module id of the entity to update");
+			return;
+		}
+		Searcher searcher = archive.getSearcher(module.getId());
+		Data entity = searcher.query().id(entityid).cachedSearchOne();
+		if(entity == null)
+		{
+			inReq.putPageValue("error", "Could not find entity. Please provide an existing entity id to update");
+			return;
+		}
+		
+		String primaryImage = (String) arguments.get("primaryImageId");
+		String newName = (String) arguments.get("newName");
+		
+		if(newName != null && newName.length() > 0)
+		{
+			entity.setName(newName);
+			inReq.putPageValue("newname", newName);
+		}
+		if(primaryImage != null && primaryImage.length() > 0)
+		{
+			Asset asset = archive.getAsset(primaryImage);
+			if(asset != null)
+			{
+				entity.setValue("primaryimage", primaryImage);
+				inReq.putPageValue("primaryimage", asset);
+			}
+		}
+		searcher.saveData(entity);
 		inReq.putPageValue("entity", entity);
 		inReq.putPageValue("module", module);
 	}
