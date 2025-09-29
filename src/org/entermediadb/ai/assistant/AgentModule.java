@@ -12,7 +12,7 @@ public class AgentModule extends BaseMediaModule {
 		AssistantManager assistantManager = (AssistantManager) getMediaArchive(catalogid).getBean("assistantManager");
 		return assistantManager;
 	}
-	
+
 	public void chatAgentRegularSearch(WebPageRequest inReq) throws Exception 
 	{	
 		getAssistantManager(inReq).regularSearch(inReq, false);
