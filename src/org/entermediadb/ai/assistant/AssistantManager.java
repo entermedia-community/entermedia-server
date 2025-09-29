@@ -88,6 +88,25 @@ public class AssistantManager extends BaseAiManager
 		for (Iterator iterator = allchannels.iterator(); iterator.hasNext();)
 		{
 			Data channel = (Data) iterator.next();
+			if( channel.getName() == null)
+			{
+				Data lastusermessage = chats.query()
+						.exact("channel", channel.getId())
+						.not("user", "agent")
+						.sort("dateDown")
+						.searchOne();
+				
+				String message = lastusermessage.get("message");
+				if( message !=  null )
+				{
+					if( message.length() > 25)
+					{
+						message = message.substring(0,25);
+					}
+					channel.setName(message.trim());
+					archive.saveData("channel", channel);
+				}
+			}
 			
 			Collection mostrecents = chats.query()
 				   .exact("channel", channel.getId())
@@ -99,25 +118,9 @@ public class AssistantManager extends BaseAiManager
 			{
 				continue;
 			}
-			
-			
-			for (Iterator iterator2 = mostrecents.iterator(); iterator2.hasNext();) {
 
+			for (Iterator iterator2 = mostrecents.iterator(); iterator2.hasNext();) {
 				Data mostrecent = (Data) iterator2.next();
-				if( channel.getName() == null)
-				{
-					String message = mostrecent.get("message");
-					if( message !=  null )
-					{
-						if( message.length() > 25)
-						{
-							message = message.substring(0,25);
-						}
-						channel.setName(message.trim());
-						archive.saveData("channel", channel);
-					}
-				}
-				
 				respondToChannel(inLog, channel, mostrecent);
 			}
 			
