@@ -20,7 +20,9 @@ import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmRequest;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.find.EntityManager;
 import org.entermediadb.find.ResultsManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.websocket.chat.ChatServer;
@@ -47,6 +49,13 @@ public class AssistantManager extends BaseAiManager
 	public ResultsManager getResultsManager() {
 		ResultsManager resultsManager = (ResultsManager) getMediaArchive().getBean("resultsManager");
 		return resultsManager;
+	}
+	
+	protected EntityManager getEntityManager(WebPageRequest inPageRequest) 
+	{
+		String catalogid = inPageRequest.findValue("catalogid");
+		EntityManager entity = (EntityManager) getModuleManager().getBean(catalogid, "entityManager");
+		return entity;
 	}
 	
 	public void monitorChannels(ScriptLogger inLog) throws Exception
@@ -105,7 +114,7 @@ public class AssistantManager extends BaseAiManager
 							message = message.substring(0,25);
 						}
 						channel.setName(message.trim());
-						archive.saveData("channel",channel);
+						archive.saveData("channel", channel);
 					}
 				}
 				
@@ -167,7 +176,7 @@ public class AssistantManager extends BaseAiManager
 		String oldstatus = message.get("chatmessagestatus");
 		
 		//Update original message processing status
-		message.setValue("chatmessagestatus", "complete");
+		message.setValue("chatmessagestatus", "completed");
 		chats.saveData(message);
 		
 		llmrequest.addContext("message", message);
@@ -292,7 +301,7 @@ public class AssistantManager extends BaseAiManager
 				messageToUpdate.setValue("messageplain", messageplain);
 			}
 			
-			messageToUpdate.setValue("chatmessagestatus", "complete");
+			messageToUpdate.setValue("chatmessagestatus", "completed");
 			
 			Searcher chats = archive.getSearcher("chatterbox");
 			chats.saveData(messageToUpdate);
@@ -941,6 +950,45 @@ public class AssistantManager extends BaseAiManager
 			return;
 		}
 		
+		String newmoduleid = (String) arguments.get("newModuleId");
+		if(newmoduleid != null)
+		{
+			Data newmodule = archive.getCachedData("module", newmoduleid);
+			if(newmodule == null)
+			{
+				inReq.putPageValue("error", "Could not find new module. Please provide an existing module id to update");
+				return;
+			}
+			EntityManager entityManager = getEntityManager(inReq);
+			String modulechangemethod = (String) arguments.get("moduleChangeMethod");
+			if("copy".equals(modulechangemethod))
+			{
+				Data newentity = entityManager.copyEntity(inReq, module.getId(), newmodule.getId(), entity);
+				entity = newentity;
+				module = newmodule;
+				inReq.putPageValue("changemethod", "copy");
+			}
+			else if("move".equals(modulechangemethod))
+			{
+				Data newentity = entityManager.copyEntity(inReq, module.getId(), newmodule.getId(), entity);
+				if( newentity == null)
+				{
+					inReq.putPageValue("error", "Could not copy entity. Please try again");
+					return;
+				}
+				entityManager.deleteEntity(inReq, module.getId(), entity.getId());
+				entity = newentity;
+				module = newmodule;
+				inReq.putPageValue("changemethod", "move");
+			}
+			else
+			{
+				inReq.putPageValue("error", "Please specify whether to copy or move the entity to the new module");
+				return;
+			}
+			
+		}
+		
 		String primaryImage = (String) arguments.get("primaryImageId");
 		String newName = (String) arguments.get("newName");
 		
@@ -954,11 +1002,23 @@ public class AssistantManager extends BaseAiManager
 			Asset asset = archive.getAsset(primaryImage);
 			if(asset != null)
 			{
+				EntityManager entityManager = getEntityManager(inReq);
+				String destinationcategorypath = inReq.getRequestParameter("destinationcategorypath");
+				Category destinationCategory = null;
+				if(destinationcategorypath!= null)
+				{
+					destinationCategory = archive.getCategorySearcher().createCategoryPath(destinationcategorypath);
+				}
+				else {
+					destinationCategory = entityManager.loadDefaultFolder(module, entity, inReq.getUser());
+				}
+				entityManager.addAssetToEntity(inReq.getUser(), module, entity, asset, destinationCategory);
 				entity.setValue("primaryimage", primaryImage);
 				inReq.putPageValue("primaryimage", asset);
 			}
 		}
 		searcher.saveData(entity);
+		
 		inReq.putPageValue("entity", entity);
 		inReq.putPageValue("module", module);
 	}
