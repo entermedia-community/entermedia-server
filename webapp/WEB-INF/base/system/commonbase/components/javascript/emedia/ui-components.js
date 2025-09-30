@@ -171,7 +171,6 @@ jQuery(document).ready(function () {
 				link.data("entitymoduleviewid", backLink.entitymoduleviewid);
 				link.data("url", backLink.url);
 				link.attr("href", backLink.url);
-				//link.find("#showname").prepend(backLink.parententiylabel);
 				link.show();
 			}
 		}
