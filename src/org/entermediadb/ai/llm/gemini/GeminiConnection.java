@@ -21,7 +21,6 @@ import org.openedit.CatalogEnabled;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
 import org.openedit.util.JSONParser;
-import org.openedit.util.OutputFiller;
 
 public class GeminiConnection extends BaseLlmConnection implements CatalogEnabled, LlmConnection
 {
@@ -54,17 +53,18 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		return response;
 
 	}
+	
+	public LlmResponse createImage(String inModel, String inPrompt, int inCount, String inSize) throws Exception
+	{
+		// Gemini does not support count or size variations
+		return createImage(inModel, inPrompt);
+	}
 
 	public LlmResponse createImage(String inModel, String inPrompt)  throws Exception
 	{
-		return createImage(inModel, inPrompt, 1, "1024x1024");
-	}
-	
-	public LlmResponse createImage(String inModel, String inPrompt, int imagecount, String inSize) throws Exception
-	{
 		if (getApiKey() == null)
 		{
-			log.error("No gpt-key defined");
+			log.error("No gemini-key defined");
 			return null;
 		}
 
@@ -89,7 +89,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		JSONObject payload = new JSONObject();
 		payload.put("contents", contents);
 
-		String endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent";
+		String endpoint = "https://generativelanguage.googleapis.com/v1beta/models/"+inModel+":generateContent";
 		//  String endpoint = "http://localhost:3000/generations";  // for local testing
 		
 		HttpPost method = new HttpPost(endpoint);
