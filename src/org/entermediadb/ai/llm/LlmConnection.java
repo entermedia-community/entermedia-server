@@ -6,13 +6,11 @@ import org.json.simple.JSONObject;
 
 public interface LlmConnection {
 	
-	public String getApikey();
+	public String getApiKey();
 
 	public String getServerName();
 	
 	public Boolean isReady();
-
-    public String getEmbedding(String inQuery) throws Exception;
 
     public LlmResponse createImage(String inModel, String inPrompt) throws Exception;
     public LlmResponse createImage(String inModel, String inPrompt, int inCount, String inSize) throws Exception;

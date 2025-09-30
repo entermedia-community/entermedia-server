@@ -74,7 +74,7 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		fieldCatalogId = inCatalogId;
 	}
 	
-	public String getApikey()
+	public String getApiKey()
 	{
 		if (apikey == null)
 		{
@@ -98,7 +98,7 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		
 
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("Authorization", "Bearer " + getApikey());
+		method.addHeader("Authorization", "Bearer " + getApiKey());
 		method.setHeader("Content-Type", "application/json");
 
 		method.setEntity(new StringEntity(input, "UTF-8"));
@@ -136,11 +136,6 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		throw new OpenEditException("Model doesn't support images");
 	}
 
-	public String getEmbedding(String inQuery) throws Exception
-	{
-		return getEmbedding("text-embedding-ada-002", inQuery);
-	}
-
 	public OutputFiller getFiller()
 	{
 		return filler;
@@ -149,12 +144,6 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	public void setFiller(OutputFiller inFiller)
 	{
 		filler = inFiller;
-	}
-
-	public String getEmbedding(String inModel, String inQuery) throws Exception
-	{
-
-		return "Not Implemented";
 	}
 
 	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image)

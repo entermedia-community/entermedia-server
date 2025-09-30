@@ -13,7 +13,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
-import org.entermediadb.ai.llm.openai.GptResponse;
+import org.entermediadb.ai.llm.openai.OpenAiResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONObject;
@@ -74,7 +74,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	}
 	
 	
-	public String getApikey()
+	public String getApiKey()
 	{
 		if (apikey == null)
 		{
@@ -137,7 +137,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	}
 	
 	public Boolean isReady() {
-		if (getApikey() == null || getApikey().length() == 0) {
+		if (getApiKey() == null || getApiKey().length() == 0) {
 			log.error("No apikey defined in catalog settings");
 			return false;
 		}
@@ -336,7 +336,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	{
 		String endpoint = getApiEndpoint();
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("Authorization", "Bearer " + getApikey());
+		method.addHeader("Authorization", "Bearer " + getApiKey());
 		method.setHeader("Content-Type", "application/json");
 		method.setEntity(new StringEntity(payload, StandardCharsets.UTF_8));
 
@@ -363,7 +363,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 
 			log.info("returned: " + json.toJSONString());
 
-			GptResponse response = new GptResponse();
+			OpenAiResponse response = new OpenAiResponse();
 			response.setRawResponse(json);
 			return response;
 		}

@@ -1,4 +1,4 @@
-package org.entermediadb.ai.llm.openai;
+package org.entermediadb.ai.llm.gemini;
 
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
@@ -23,9 +23,9 @@ import org.openedit.page.Page;
 import org.openedit.util.JSONParser;
 import org.openedit.util.OutputFiller;
 
-public class OpenAiConnection extends BaseLlmConnection implements CatalogEnabled, LlmConnection
+public class GeminiConnection extends BaseLlmConnection implements CatalogEnabled, LlmConnection
 {
-	private static Log log = LogFactory.getLog(OpenAiConnection.class);
+	private static Log log = LogFactory.getLog(GeminiConnection.class);
 
 	public LlmResponse runPageAsInput(LlmRequest llmRequest, String inTemplate)
 	{
@@ -36,7 +36,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		String endpoint = getApiEndpoint();
 
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("Authorization", "Bearer " + getApiKey());
+		method.addHeader("x-goog-api-key", getApiKey());
 		method.setHeader("Content-Type", "application/json");
 
 		method.setEntity(new StringEntity(input, "UTF-8"));
@@ -45,7 +45,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		JSONObject json = getConnection().parseJson(resp);
 
-		OpenAiResponse response = new OpenAiResponse();
+		GeminiResponse response = new GeminiResponse();
 		response.setRawResponse(json);
 		
 		String nextFunction = response.getFunctionName();
@@ -79,18 +79,21 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		
 		log.info("Image creation prompt: " + inPrompt);
 		
+		
+		JSONArray parts = new JSONArray();
+		parts.add(new JSONObject().put("text", inPrompt));
+		
+		JSONArray contents = new JSONArray(); 
+		contents.add(new JSONObject().put("parts", parts));
+
 		JSONObject payload = new JSONObject();
+		payload.put("contents", contents);
 
-		payload.put("model", inModel);
-		payload.put("prompt", inPrompt);
-		payload.put("n", imagecount);
-		payload.put("size", inSize);
-		payload.put("response_format", "b64_json");
-
-		String endpoint = "https://api.openai.com/v1/images/generations";
+		String endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent";
 		//  String endpoint = "http://localhost:3000/generations";  // for local testing
+		
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("Authorization", "Bearer " + getApiKey());
+		method.addHeader("x-goog-api-key", getApiKey());
 		method.setHeader("Content-Type", "application/json");
 		method.setEntity(new StringEntity(payload.toJSONString(), "UTF-8"));
 
@@ -98,19 +101,9 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		JSONObject json = getConnection().parseJson(resp);
 
 		// Return a OpenAiResponse object instead of raw JSON
-		OpenAiResponse response = new OpenAiResponse();
+		GeminiResponse response = new GeminiResponse();
 		response.setRawResponse(json);
 		return response;
-	}
-
-	public OutputFiller getFiller()
-	{
-		return filler;
-	}
-
-	public void setFiller(OutputFiller inFiller)
-	{
-		filler = inFiller;
 	}
 	
 	public LlmResponse callCreateFunction(Map context, String inModel, String inFunction) 
@@ -120,11 +113,11 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		JSONObject obj = new JSONObject();
 		obj.put("model", inModel);
 
-		String contentPath = "/" + archive.getMediaDbId() + "/ai/openai/createdialog/systemmessage/" + inFunction + ".html";
+		String contentPath = "/" + archive.getMediaDbId() + "/ai/gemini/createdialog/systemmessage/" + inFunction + ".html";
 		boolean contentExists = archive.getPageManager().getPage(contentPath).exists();
 		if (!contentExists)
 		{
-			contentPath = "/" + archive.getCatalogId() + "/ai/openai/createdialog/systemmessage/" + inFunction + ".html";
+			contentPath = "/" + archive.getCatalogId() + "/ai/gemini/createdialog/systemmessage/" + inFunction + ".html";
 			contentExists = archive.getPageManager().getPage(contentPath).exists();
 		}
 		if (!contentExists)
@@ -145,11 +138,11 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		// Handle function call definition
 		if (inFunction != null)
 		{
-			String functionPath = "/" + archive.getMediaDbId() + "/ai/openai/createdialog/functions/" + inFunction + ".json";
+			String functionPath = "/" + archive.getMediaDbId() + "/ai/gemini/createdialog/functions/" + inFunction + ".json";
 			boolean functionExists = archive.getPageManager().getPage(functionPath).exists();
 			if (!functionExists)
 			{
-				functionPath = "/" + archive.getCatalogId() + "/ai/openai/createdialog/functions/" + inFunction + ".json";
+				functionPath = "/" + archive.getCatalogId() + "/ai/gemini/createdialog/functions/" + inFunction + ".json";
 				functionExists = archive.getPageManager().getPage(functionPath).exists();
 			}
 			if (!functionExists)
@@ -226,11 +219,11 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		// Handle function call definition
 		if (inFunction != null)
 		{
-			String templatepath = "/" + archive.getMediaDbId() + "/ai/openai/classify/functions/" + inFunction + ".json";
+			String templatepath = "/" + archive.getMediaDbId() + "/ai/gemini/classify/functions/" + inFunction + ".json";
 			Page defpage = archive.getPageManager().getPage(templatepath);
 			if (!defpage.exists())
 			{
-				templatepath = "/" + archive.getCatalogId() + "/ai/openai/classify/functions/" + inFunction + ".json";
+				templatepath = "/" + archive.getCatalogId() + "/ai/gemini/classify/functions/" + inFunction + ".json";
 				defpage = archive.getPageManager().getPage(templatepath);
 			}
 			if (!defpage.exists())
@@ -257,14 +250,13 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 	public String getApiEndpoint()
 	{
-		return "https://api.openai.com/v1/chat/completions";
+		return "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 	}
-
+	
 	@Override
 	public String getServerName()
-	{
-		// TODO Auto-generated method stub
-		return "openai";
+	{ 
+		return "gemini";
 	}
 
 	@Override
@@ -272,14 +264,14 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	{
 		inParams.put("model", inModel);
 		
-		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/openai/classify/structures/" + inStructureName + ".json", inParams);
+		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/gemini/classify/structures/" + inStructureName + ".json", inParams);
 
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
 
-		String endpoint = "https://api.openai.com/v1/responses";
+		String endpoint = getApiEndpoint();
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + getApiKey());
+		method.addHeader("x-goog-api-key", getApiKey());
 		method.setHeader("Content-Type", "application/json");
 		method.setEntity(new StringEntity(structureDef.toJSONString(), StandardCharsets.UTF_8));
 
