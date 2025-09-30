@@ -307,10 +307,7 @@
 					if (onfrontmodal.length) {
 						var backBtn = onfrontmodal.find(".entityNavBack");
 						if (backBtn.length && backBtn.is(":visible")) {
-							e.stopPropagation();
-							e.preventDefault();
-							backBtn.trigger("click");
-							return false;
+							return false; //Do not close if there is a back button
 						}
 					}
 					// restore the modal-open class to the body element, so that scrolling works
