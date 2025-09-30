@@ -366,6 +366,7 @@ closeemdialog = function (modaldialog) {
 	}
 	if ($(".modal:visible").length === 0) {
 		$(document.body).removeClass("modal-open");
+		$(".modal-backdrop").remove();
 	}
 };
 

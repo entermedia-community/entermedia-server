@@ -366,7 +366,7 @@ public class FinderModule extends BaseMediaModule
 		security.attachSecurity(inReq, archive.getSearcher("modulesearch"), dq.getQuery());
 		
 		HitTracker unsorted = dq.search(); //With permissions?
-
+		
 		Map<String,String> keywordsLower = new HashMap();
 		resultsManager.collectMatches(keywordsLower, plainquery, unsorted);
 		
