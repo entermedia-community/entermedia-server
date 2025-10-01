@@ -29,7 +29,7 @@ import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.xmp.XmpWriter;
-import org.entermediadb.projects.ProjectManager;
+import org.entermediadb.find.EntityManager;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -844,74 +844,21 @@ public class AssetEditModule extends BaseMediaModule
 			inReq.getUserProfile().setProperty("lastselectedcollection", currentcollection);
 		}
 		
+		boolean createentity = Boolean.parseBoolean(inReq.getRequestParameter("createentity"));
+		
 		//Update Primary Images in Collections and Entities
-		updateCollection(archive, tracker, currentcollection, user);
-		updateEntities(archive, tracker, metadata, user);
-		
-		
-	}
-	
-	public void updateCollection(final MediaArchive archive, Collection tracker, final String currentcollection,  final User inUser)
-	{
-		if (currentcollection != null) {
-			for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
-			{
-				//loop all assets and save them
-				Asset asset = (Asset)iterator2.next();
-				
-				Searcher s = archive.getSearcher("librarycollection");
-				List tosave = new ArrayList();
-				
-				Data entity = s.query().exact("id", currentcollection).searchOne();
-				if( entity != null)
-				{
-					String pi = entity.get("primaryimage");
-					if (entity != null && pi == null) {
-						entity.setValue("primaryimage", asset.getId());
-						tosave.add(entity);
-					}
-					s.saveAllData(tosave, inUser);
-				}
-			}
-		}
-	}
-	
-	
-	public void updateEntities(final MediaArchive archive, Collection tracker, final Map inMetadata,  final User inUser)
-	{
-		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
+		EntityManager entityManager = (EntityManager) archive.getEntityManager();
+		if(createentity)
 		{
-			String field  = (String)iterator.next();
-			if( field.startsWith("entity") ) {
-				for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
-				{
-					//loop all assets and save them
-					Asset asset = (Asset)iterator2.next();
-					Collection<String> values = asset.getValues(field);
-					if( values != null && !values.isEmpty())
-					{
-						Searcher s = archive.getSearcher(field);
-						List tosave = new ArrayList();
-						for (Iterator iterator3 = values.iterator(); iterator3.hasNext();)
-						{
-							String entityid = (String) iterator3.next();
-							
-							Data entity = s.query().exact("id", entityid).searchOne();
-							if (entity != null) {
-								String pi = entity.get("primaryimage");
-								if (entity != null && pi == null) {
-									entity.setValue("primaryimage", asset.getId());
-									tosave.add(entity);
-								}
-							}
-						}
-						s.saveAllData(tosave, inUser);
-						
-					}
-				}
-			}
+			entityManager.createEntitiesFromAssets(tracker);
 		}
+		entityManager.updateCollection(tracker, currentcollection, user);
+		entityManager.updateEntities(tracker, metadata, user);
+		
+		
 	}
+	
+	
 	
 	protected HitTracker saveFilesAndImport(final MediaArchive archive, final String currentcollection, final boolean createCategories, final Map metadata, final Map pages, final User user)
 	{
