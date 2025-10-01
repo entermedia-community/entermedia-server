@@ -18,6 +18,7 @@ import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
+import org.openedit.data.Searcher;
 import org.openedit.users.User;
 
 public class ClassifyManager extends InformaticsProcessor
@@ -261,7 +262,7 @@ public class ClassifyManager extends InformaticsProcessor
 				contextFields.add(field);
 			}
 			else if(field.get("aicreationcommand") != null)
-			{
+			{					
 				fieldsToFill.add(field);
 			}
 			
@@ -312,10 +313,12 @@ public class ClassifyManager extends InformaticsProcessor
 							return false;
 						}
 						Map datachanges = new HashMap();
+						
+						Searcher searcher = getMediaArchive().getSearcher(inModuleId);
 						for (Iterator iterator2 = metadata.keySet().iterator(); iterator2.hasNext();)
 						{
 							String inKey = (String) iterator2.next();
-							PropertyDetail detail = getMediaArchive().getAssetPropertyDetails().getDetail(inKey);
+							PropertyDetail detail = searcher.getDetail(inKey);
 							if (detail != null)
 							{
 								String value = (String)metadata.get(inKey);

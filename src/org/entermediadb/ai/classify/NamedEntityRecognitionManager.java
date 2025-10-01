@@ -27,33 +27,34 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	 @Override
 	 protected boolean processOneEntity(MultiValued inConfig, LlmConnection llmvisionconnection, LlmConnection llmsemanticconnection, Map<String, String> models, MultiValued inData, String inModuleId)
 	 {
-	 	Collection<Data> tables =  new ArrayList(getMediaArchive().getList("informaticsnertable"));
+	 	Collection<PropertyDetail> autocreatefields = getMediaArchive().getSearcher(inModuleId).getPropertyDetails().findAiAutoCreatedProperties();
+	 	
 	 	//Validate tables
-	 	if (tables == null || tables.isEmpty())
+	 	if (autocreatefields.isEmpty())
 	 	{
-	 		log.info(inConfig.get("bean") +" No tables configured to check for names in " + inData.getId() + " " + inData.getName());
 	 		return false;
 	 	}
-	 	Map<String,Map> contextfields = populateFields(inModuleId,inData);
+	 	Map<String, Map> contextfields = populateFields(inModuleId,inData);
 	 	
-	 	for (Iterator iterator = tables.iterator(); iterator.hasNext();) {
-			MultiValued map = (MultiValued) iterator.next();
-			PropertyDetail detail = getMediaArchive().getSearcher(inModuleId).getDetail((String)map.get("sourcetype"));
-			contextfields.remove(map.get("sourcetype"));
-			if( detail == null || !detail.isList() )
+	 	for (Iterator iterator = autocreatefields.iterator(); iterator.hasNext();) {
+	 		PropertyDetail detail = (PropertyDetail) iterator.next();
+			contextfields.remove(detail.getId());
+
+			Collection val = inData.getValues(detail.getId());
+			if(!detail.isList() || (val != null && val.size() > 0))
 			{
+				//Invalid filed or already has a value
 				iterator.remove();
-				//log.info("Removing invalid table " + map.get("sourcetype") + " from config");
 			}
 		}
-	 	if( tables.isEmpty() )
-	 	{
-	 		log.info(inConfig.get("bean") + " - No valid tables to check for names in " + inData.getId() + " " + inData.getName());
-	 		return false;
-	 	}
 		if(contextfields.isEmpty())
 		{
 			log.info(inConfig.get("bean") +" No fields to check for names in " + inData.getId() + " " + inData.getName());
+			return false;
+		}
+		if( autocreatefields.isEmpty())
+		{
+			log.info(inConfig.get("bean") +" No fields to create in " + inData.getId() + " " + inData.getName());
 			return false;
 		}
 
@@ -61,35 +62,38 @@ public class NamedEntityRecognitionManager extends ClassifyManager
  		params.put("data", inData);
  		params.put("fieldparams", inConfig);
  		params.put("contextfields", contextfields);
- 		params.put("tables", tables);
+ 		params.put("autocreatefields", autocreatefields);
  		
 		String functionname = inConfig.get("aifunctionname");
 		Map results = llmsemanticconnection.callStructuredOutputList(functionname, models.get("semantic"),  params);
 		Map categories = (Map) results.get("categories");
-		for (Iterator iterator = categories.keySet().iterator(); iterator.hasNext();) {
-			String sourcetype = (String) iterator.next();
-			Collection values = (Collection) categories.get(sourcetype);
-			if( values == null || values.isEmpty() )
-			{
-				continue;
-			}
-			PropertyDetail detail = getMediaArchive().getSearcher(inModuleId).getDetail(sourcetype);
-			if (detail != null)
-			{
-				if(detail.isList())
+		if(categories != null)
+		{			
+			for (Iterator iterator = categories.keySet().iterator(); iterator.hasNext();) {
+				String sourcetype = (String) iterator.next();
+				Collection values = (Collection) categories.get(sourcetype);
+				if( values == null || values.isEmpty() )
 				{
-					for (Iterator iterator2 = values.iterator(); iterator2.hasNext();) {
-						String value = (String) iterator2.next();
-						Data savedrecord = saveIfNeeded(inConfig, detail, value);
-						if( savedrecord != null)
-						{
-							inData.addValue(detail.getId(), savedrecord.getId());
-						}
-					}
-					
+					continue;
 				}
+				PropertyDetail detail = getMediaArchive().getSearcher(inModuleId).getDetail(sourcetype);
+				if (detail != null)
+				{
+					if(detail.isList())
+					{
+						for (Iterator iterator2 = values.iterator(); iterator2.hasNext();) {
+							String value = (String) iterator2.next();
+							Data savedrecord = saveIfNeeded(inConfig, detail, value);
+							if( savedrecord != null)
+							{
+								inData.addValue(detail.getId(), savedrecord.getId());
+							}
+						}
+						
+					}
+				}
+				
 			}
-			
 		}
 	 	
 	 	//Then See if the field exists on the target table on a data case by case basis and add to it. Create the record if needed
@@ -100,16 +104,9 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 
 	protected Data saveIfNeeded(MultiValued inConfig, PropertyDetail inDetail, String inlabel)
 	{
-
-		MultiValued config = findConfigForTable(inConfig, inDetail.getId());
-		if( config == null )
-		{
-			return null;
-		}
-		//person:John Smith
 		String listid = inDetail.getId();
 		Data found = getMediaArchive().query(listid).match("name", inlabel).searchOne();
-		if( found == null && config.getBoolean("autocreate") ) 
+		if( found == null ) 
 		{
 			found = getMediaArchive().getSearcher(listid).createNewData();
 			found.setName(inlabel);
@@ -117,105 +114,5 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 		}
 		return found;
 	}
-
-	private MultiValued findConfigForTable(MultiValued inConfig, String inListid)
-	{
-		
-		Collection<Data> tables = getMediaArchive().getList("informaticsnertable");
-		for (Iterator iterator = tables.iterator(); iterator.hasNext();)
-		{
-			MultiValued table = (MultiValued) iterator.next();
-			if( inListid.equals( table.get("sourcetype") ) )
-			{
-				return table;
-			}
-				
-		}
-		return null;
-	}	
-		
-	// 	Collection allaifields = getMediaArchive().getAssetPropertyDetails().findAiCreationProperties();
-	// 	Collection aifields = new ArrayList();
-	// 	for (Iterator iterator2 = allaifields.iterator(); iterator2.hasNext();)
-	// 	{
-	// 		PropertyDetail aifield = (PropertyDetail)iterator2.next();
-	// 	//	if( mediatype.equals("document") )
-	// 		//{
-	// 			// TODO: add better way to have media type specific fields
-	// 		//	continue;
-	// 	//	}
-	// 		if(asset.hasValue(aifield.getId()) )
-	// 		{
-	// 			aifields.add(aifield);
-	// 		}
-	// 	}
-
-	// 	if(!aifields.isEmpty())
-	// 	{
-	// 		Map params = new HashMap();
-	// 		params.put("asset", asset);
-	// 		params.put("aifields", aifields);
-
-	// 		String requestPayload = llmvisionconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/analyzeasset.html", params);
-	// 		LlmResponse results = llmvisionconnection.callClassifyFunction(params, models.get("vision"), "generate_asset_metadata", requestPayload, base64EncodedString);
-
-	// 		if (results != null)
-	// 		{
-	// 			JSONObject arguments = results.getArguments();
-	// 			if (arguments != null) {
-
-	// 				Map metadata =  (Map) arguments.get("metadata");
-	// 				if (metadata == null || metadata.isEmpty())
-	// 				{
-	// 					return false;
-	// 				}
-	// 				Map datachanges = new HashMap();
-	// 				for (Iterator iterator2 = metadata.keySet().iterator(); iterator2.hasNext();)
-	// 				{
-	// 					String inKey = (String) iterator2.next();
-	// 					PropertyDetail detail = getMediaArchive().getAssetPropertyDetails().getDetail(inKey);
-	// 					if (detail != null)
-	// 					{
-	// 						String value = (String)metadata.get(inKey);
-	// 						if(detail.isList())
-	// 						{
-	// 							String listId = value.split("\\|")[0];
-	// 							datachanges.put(detail.getId(), listId);
-	// 						}
-	// 						else if (detail.isMultiValue())
-	// 						{
-	// 							Collection<String> values = Arrays.asList(value.split(","));
-	// 							datachanges.put(detail.getId(), values);
-	// 						}
-	// 						else
-	// 						{
-	// 							datachanges.put(detail.getId(), value);
-	// 						}
-	// 					}
-	// 				}
-
-	// 				//Save change event
-	// 				User agent = getMediaArchive().getUser("agent");
-	// 				if( agent != null)
-	// 				{
-	// 					getMediaArchive().getEventManager().fireDataEditEvent(getMediaArchive().getAssetSearcher(), agent, "assetgeneral", asset, datachanges);
-	// 				}
-
-	// 				for (Iterator iterator2 = datachanges.keySet().iterator(); iterator2.hasNext();)
-	// 				{
-	// 					String inKey = (String) iterator2.next();
-	// 					Object value = datachanges.get(inKey);
-
-	// 					asset.setValue(inKey, value);
-	// 					log.info("AI updated field "+ inKey + ": "+metadata.get(inKey));
-	// 				}
-	// 			}
-	// 			else {
-	// 				log.info("Asset "+asset.getId() +" "+asset.getName()+" - Nothing Detected.");
-	// 			}
-	// 		}
-	// 	}
-	// 	return true;
-	// }
 
 }

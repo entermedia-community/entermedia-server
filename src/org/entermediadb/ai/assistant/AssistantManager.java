@@ -96,16 +96,20 @@ public class AssistantManager extends BaseAiManager
 						.sort("dateDown")
 						.searchOne();
 				
-				String message = lastusermessage.get("message");
-				if( message !=  null )
+				if( lastusermessage != null)
 				{
-					if( message.length() > 25)
+					String message = lastusermessage.get("message");
+					if( message !=  null )
 					{
-						message = message.substring(0,25);
+						if( message.length() > 25)
+						{
+							message = message.substring(0,25);
+						}
+						channel.setName(message.trim());
+						archive.saveData("channel", channel);
 					}
-					channel.setName(message.trim());
-					archive.saveData("channel", channel);
 				}
+				
 			}
 			
 			Collection mostrecents = chats.query()
