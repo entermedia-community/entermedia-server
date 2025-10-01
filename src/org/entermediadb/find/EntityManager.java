@@ -156,6 +156,11 @@ public class EntityManager implements CatalogEnabled
 			return null;
 		}
 		
+		if (entity.getId().startsWith("multiedit:"))
+		{
+			return null;
+		}
+		
 		boolean createcat = true;
 		
 		Object val =  module.getValue("enableuploading");
