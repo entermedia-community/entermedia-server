@@ -19,6 +19,7 @@ import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 
@@ -31,7 +32,7 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 	public HitTracker search(SearchQuery inQuery)
 	{
 		Collection searchmodules = inQuery.getValues("searchtypes");
-		if( searchmodules == null)
+		if( searchmodules == null || searchmodules.isEmpty())
 		{
 			throw new OpenEditException("DataEditModule.loadOrSearchByTypes needs to be called on this search " + inQuery);
 		}
@@ -40,6 +41,10 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 			//We always skip assets
 			searchmodules = new ArrayList(searchmodules);
 			searchmodules.remove("asset"); //This is handled in organizeHits
+		}
+		if(searchmodules.isEmpty())
+		{
+			return new ListHitTracker(); //empty
 		}
 		SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);

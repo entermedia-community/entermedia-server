@@ -137,8 +137,11 @@ jQuery(document).ready(function () {
 				if (modal.length) {
 					e.stopPropagation();
 					e.preventDefault();
+					var backBtn = modal.find(".entityNavBack");
 					var checkForm = modal.find("form.checkCloseDialog");
-					if (checkForm.length) {
+					if (backBtn.length && backBtn.is(":visible")) {
+						backBtn.trigger("click");
+					} else if (checkForm.length) {
 						confirmModalClose(modal);
 					} else {
 						closeemdialog(modal);

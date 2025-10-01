@@ -12,7 +12,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.assistant.AiSearch;
-import org.entermediadb.ai.classify.SemanticFieldManager;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.manager.BaseManager;
@@ -76,7 +75,7 @@ public class ResultsManager extends BaseManager {
 				{
 					targetsize = Integer.parseInt(smaxsize);
 				}
-				Map<String,Collection> bytypes = organizeHits(inReq,hits, pageOfHits.iterator(),targetsize);
+				Map<String,Collection> bytypes = organizeHits(inReq, hits, pageOfHits.iterator(),targetsize);
 				
 				ArrayList foundmodules = processResults(hits, archive, targetsize, bytypes);
 
@@ -88,46 +87,48 @@ public class ResultsManager extends BaseManager {
 					moduleid = (String) inReq.getPageValue("moduleid");
 				}
 				
-				if( moduleid == null || !moduleid.equals("asset"))
-				{
-					if( types == null || types.contains("asset"))
-					{
-						SearchQuery copy = hits.getSearchQuery().copy();
-						copy.setFacets(null);
-						copy.setProperty("ignoresearchttype", "true");
-						//Fix the terms so it has the right details
-	//					for (Iterator iterator = copy.getTerms().iterator(); iterator.hasNext();)
-	//					{
-	//						Term term = (Term) iterator.next();
-	//						term.copy();
-	//						
-	//					}
-						copy.addSortBy("assetaddeddateDown");
-						copy.setHitsName("entityhits"); //? assethits makes more sense
-						HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq,copy);
-	//					assets.setSearcher(archive.getAssetSearcher());
-	//					assets.setDataSource("asset");
-						assethits.setSessionId("hitsasset" + archive.getCatalogId() );
-	//					assets.setSearchQuery(hits.getSearchQuery());
-	//					assets.setIndexId(archive.getAssetSearcher().getIndexId());
-						//log.info(assets.getSessionId());
-						UserProfile profile = inReq.getUserProfile();
-						//Integer mediasample  = profile.getHitsPerPageForSearchType(hits.getSearchType());
-						assethits.setHitsPerPage( targetsize );
-						
-						inReq.putPageValue(assethits.getHitsName(), assethits);
-						inReq.putSessionValue(assethits.getSessionId(), assethits);
-						if( !assethits.isEmpty())
-						{
-							Data assetmodule = archive.getCachedData("module", "asset");
-							foundmodules.add(assetmodule);
-						}
-						bytypes.put("asset",assethits);
-					}
-				}
 				
-
+				
+//				if( moduleid == null || !moduleid.equals("asset"))
+//				{
+//					if( types == null || types.contains("asset"))
+//					{
+//						SearchQuery copy = hits.getSearchQuery().copy();
+//						copy.setFacets(null);
+//						copy.setProperty("ignoresearchttype", "true");
+//						//Fix the terms so it has the right details
+//	//					for (Iterator iterator = copy.getTerms().iterator(); iterator.hasNext();)
+//	//					{
+//	//						Term term = (Term) iterator.next();
+//	//						term.copy();
+//	//						
+//	//					}
+//						copy.addSortBy("assetaddeddateDown");
+//						copy.setHitsName("entityhits"); //? assethits makes more sense
+//						HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq,copy);
+//	//					assets.setSearcher(archive.getAssetSearcher());
+//	//					assets.setDataSource("asset");
+//						assethits.setSessionId("hitsasset" + archive.getCatalogId() );
+//	//					assets.setSearchQuery(hits.getSearchQuery());
+//	//					assets.setIndexId(archive.getAssetSearcher().getIndexId());
+//						//log.info(assets.getSessionId());
+//						UserProfile profile = inReq.getUserProfile();
+//						//Integer mediasample  = profile.getHitsPerPageForSearchType(hits.getSearchType());
+//						assethits.setHitsPerPage( targetsize );
+//						
+//						inReq.putPageValue(assethits.getHitsName(), assethits);
+//						inReq.putSessionValue(assethits.getSessionId(), assethits);
+//						if( !assethits.isEmpty())
+//						{
+//							Data assetmodule = archive.getCachedData("module", "asset");
+//							foundmodules.add(assetmodule);
+//						}
+//						bytypes.put("asset",assethits);
+//					}
+//				}
+				
 				sortModules(foundmodules);
+				
 				if( log.isDebugEnabled())
 				{
 					log.debug("Organized Modules: " + foundmodules);
@@ -285,7 +286,7 @@ public class ResultsManager extends BaseManager {
 				SearchQuery query = allhits.getSearchQuery().copy();
 				query.setResultType(type);
 				newvalues.setSearchQuery(query);
-				String v = newvalues.getInput("description");
+//				String v = newvalues.getInput("description");
 				//System.out.print(v);
 				values = newvalues;
 				bytypes.put(type,values);

@@ -59,6 +59,11 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			}
 			
 			Asset document = getMediaArchive().getAsset(assetid);
+			String rendertype = getMediaArchive().getMediaRenderType(document.getFileFormat());
+			if(rendertype == null || !rendertype.equals("document"))
+			{
+				continue;
+			}
 			String created = entity.get("pagescreatedfor");
 			if( created != null)
 			{
@@ -69,7 +74,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 					continue;
 				}
 			}
-			splitDocument(entity, document);
+			splitDocument(inConfig, entity, document);
 			String modtime = document.get("assetmodificationdate");
 			entity.setValue("pagescreatedfor", assetid + "|" + modtime);
 		}
@@ -77,13 +82,8 @@ public class DocumentSplitterManager extends InformaticsProcessor
 		//See if this has been indexed or not
 	}
 
-	public void splitDocument(MultiValued inEntityDocument, Asset asset) 
+	public void splitDocument(MultiValued inConfig, MultiValued inEntity, Asset asset) 
 	{
-		String rendertype = getMediaArchive().getMediaRenderType(asset.getFileFormat());
-		if(rendertype == null || !rendertype.equals("document"))
-		{
-			return;
-		}
 //		
 //		Data entitydoc = getMediaArchive().query("entitydocument").exact("parentasset", inAssetId).searchOne();
 //		
@@ -111,8 +111,10 @@ public class DocumentSplitterManager extends InformaticsProcessor
 		JSONParser parser = new JSONParser();
 		Collection pagesFulltext = parser.parseCollection(fulltext);
 
-		HitTracker existingPages = getMediaArchive().query("entitydocumentpage")
-				.exact("entitydocument", inEntityDocument.getId())
+		String parentsearchtype = inConfig.get("searchtype");
+		String generatedsearchtype = inConfig.get("generatedsearchtype");
+		HitTracker existingPages = getMediaArchive().query(generatedsearchtype)
+				.exact(parentsearchtype, inEntity.getId())
 				.exact("parentasset", asset.getId()).search();
 
 		List<Data> tosave = new ArrayList();
@@ -142,14 +144,14 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			}
 			else
 			{
-				docpage = getMediaArchive().getSearcher("entitydocumentpage").createNewData();
-				String pagename = inEntityDocument.getName() + " - Page " + pagenum;
+				docpage = getMediaArchive().getSearcher(generatedsearchtype).createNewData();
+				String pagename = inEntity.getName() + " - Page " + pagenum;
 				docpage.setName(pagename);
 			}
 
 			docpage.setValue("pagenum", pagenum);
 			docpage.setValue("longcaption", pageText);
-			docpage.setValue("entitydocument", inEntityDocument.getId());
+			docpage.setValue(parentsearchtype, inEntity.getId());
 			docpage.setValue("primaryimage", asset.getId());
 			docpage.setValue("parentasset", asset.getId());
 			docpage.setValue("entity_date", new Date());
@@ -158,11 +160,11 @@ public class DocumentSplitterManager extends InformaticsProcessor
 
 			if(tosave.size() > 20)
 			{
-				getMediaArchive().saveData("entitydocumentpage", tosave);
+				getMediaArchive().saveData(generatedsearchtype, tosave);
 				tosave.clear();
 			}
 		}
-		getMediaArchive().saveData("entitydocumentpage", tosave);
+		getMediaArchive().saveData(generatedsearchtype, tosave);
 	}
 
 	
