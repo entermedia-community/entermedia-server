@@ -1510,7 +1510,7 @@ public class EntityModule extends BaseMediaModule
 				entity.removeValue("editorgroups", dataid[i]);
 	
 				String fieldname = permissiontype[i];
-				if( iseditor[i].equals("true") )
+				if( iseditor != null && iseditor.length > i &&  iseditor[i].equals("true") )
 				{
 					entity.addValue("editor" + fieldname, dataid[i]);
 				}
