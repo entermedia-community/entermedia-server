@@ -404,7 +404,7 @@ $(document).ready(function () {
 		}
 		var targetselect = $(this).data("targetselect");
 		var select = $("#" + targetselect);
-		debugger;
+		
 		$.getJSON(url, queryString, function (data) {
 			var newOption = new Option(data.name, data.id, true, true);
 			select.append(newOption).trigger("change");
