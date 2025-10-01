@@ -1307,6 +1307,12 @@ public class ProjectManager implements CatalogEnabled
 				// dont filter since its the admin
 				return true;
 			}
+			
+			if (inReq.hasPermission("editsettings"))
+			{
+				// dont filter since its the admin
+				return true;
+			}
 
 			Object caneditall = inReq.getPageValue("editallcollections");
 			if (caneditall != null && Boolean.parseBoolean(caneditall.toString()))
