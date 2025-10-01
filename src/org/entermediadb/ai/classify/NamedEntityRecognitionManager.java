@@ -39,10 +39,22 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	 	for (Iterator iterator = autocreatefields.iterator(); iterator.hasNext();) {
 	 		PropertyDetail detail = (PropertyDetail) iterator.next();
 			contextfields.remove(detail.getId());
+
+			Collection val = inData.getValues(detail.getId());
+			if(!detail.isList() || (val != null && val.size() > 0))
+			{
+				//Invalid filed or already has a value
+				iterator.remove();
+			}
 		}
 		if(contextfields.isEmpty())
 		{
 			log.info(inConfig.get("bean") +" No fields to check for names in " + inData.getId() + " " + inData.getName());
+			return false;
+		}
+		if( autocreatefields.isEmpty())
+		{
+			log.info(inConfig.get("bean") +" No fields to create in " + inData.getId() + " " + inData.getName());
 			return false;
 		}
 
