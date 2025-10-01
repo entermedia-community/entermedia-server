@@ -27,30 +27,19 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	 @Override
 	 protected boolean processOneEntity(MultiValued inConfig, LlmConnection llmvisionconnection, LlmConnection llmsemanticconnection, Map<String, String> models, MultiValued inData, String inModuleId)
 	 {
-	 	Collection<Data> tables =  new ArrayList(getMediaArchive().getList("informaticsnertable"));
-	 	//Validate tables
-	 	if (tables == null || tables.isEmpty())
-	 	{
-	 		log.info(inConfig.get("bean") +" No tables configured to check for names in " + inData.getId() + " " + inData.getName());
-	 		return false;
-	 	}
-	 	Map<String,Map> contextfields = populateFields(inModuleId,inData);
+	 	Collection<PropertyDetail> autocreatefields = getMediaArchive().getSearcher(inModuleId).getPropertyDetails().findAiAutoCreatedProperties();
 	 	
-	 	for (Iterator iterator = tables.iterator(); iterator.hasNext();) {
-			MultiValued map = (MultiValued) iterator.next();
-			PropertyDetail detail = getMediaArchive().getSearcher(inModuleId).getDetail((String)map.get("sourcetype"));
-			contextfields.remove(map.get("sourcetype"));
-			if( detail == null || !detail.isList() )
-			{
-				iterator.remove();
-				//log.info("Removing invalid table " + map.get("sourcetype") + " from config");
-			}
-		}
-	 	if( tables.isEmpty() )
+	 	//Validate tables
+	 	if (autocreatefields.isEmpty())
 	 	{
-	 		log.info(inConfig.get("bean") + " - No valid tables to check for names in " + inData.getId() + " " + inData.getName());
 	 		return false;
 	 	}
+	 	Map<String, Map> contextfields = populateFields(inModuleId,inData);
+	 	
+	 	for (Iterator iterator = autocreatefields.iterator(); iterator.hasNext();) {
+	 		PropertyDetail detail = (PropertyDetail) iterator.next();
+			contextfields.remove(detail.getId());
+		}
 		if(contextfields.isEmpty())
 		{
 			log.info(inConfig.get("bean") +" No fields to check for names in " + inData.getId() + " " + inData.getName());
@@ -61,7 +50,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
  		params.put("data", inData);
  		params.put("fieldparams", inConfig);
  		params.put("contextfields", contextfields);
- 		params.put("tables", tables);
+ 		params.put("autocreatefields", autocreatefields);
  		
 		String functionname = inConfig.get("aifunctionname");
 		Map results = llmsemanticconnection.callStructuredOutputList(functionname, models.get("semantic"),  params);

@@ -262,7 +262,11 @@ public class ClassifyManager extends InformaticsProcessor
 			}
 			else if(field.get("aicreationcommand") != null)
 			{
-				fieldsToFill.add(field);
+				PropertyDetail detail = getMediaArchive().getAssetPropertyDetails().getDetail(field.getId()); //check if valid field
+				if(detail != null)
+				{					
+					fieldsToFill.add(field);
+				}
 			}
 			
 		}
