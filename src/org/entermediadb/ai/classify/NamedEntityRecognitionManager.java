@@ -67,30 +67,33 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 		String functionname = inConfig.get("aifunctionname");
 		Map results = llmsemanticconnection.callStructuredOutputList(functionname, models.get("semantic"),  params);
 		Map categories = (Map) results.get("categories");
-		for (Iterator iterator = categories.keySet().iterator(); iterator.hasNext();) {
-			String sourcetype = (String) iterator.next();
-			Collection values = (Collection) categories.get(sourcetype);
-			if( values == null || values.isEmpty() )
-			{
-				continue;
-			}
-			PropertyDetail detail = getMediaArchive().getSearcher(inModuleId).getDetail(sourcetype);
-			if (detail != null)
-			{
-				if(detail.isList())
+		if(categories != null)
+		{			
+			for (Iterator iterator = categories.keySet().iterator(); iterator.hasNext();) {
+				String sourcetype = (String) iterator.next();
+				Collection values = (Collection) categories.get(sourcetype);
+				if( values == null || values.isEmpty() )
 				{
-					for (Iterator iterator2 = values.iterator(); iterator2.hasNext();) {
-						String value = (String) iterator2.next();
-						Data savedrecord = saveIfNeeded(inConfig, detail, value);
-						if( savedrecord != null)
-						{
-							inData.addValue(detail.getId(), savedrecord.getId());
-						}
-					}
-					
+					continue;
 				}
+				PropertyDetail detail = getMediaArchive().getSearcher(inModuleId).getDetail(sourcetype);
+				if (detail != null)
+				{
+					if(detail.isList())
+					{
+						for (Iterator iterator2 = values.iterator(); iterator2.hasNext();) {
+							String value = (String) iterator2.next();
+							Data savedrecord = saveIfNeeded(inConfig, detail, value);
+							if( savedrecord != null)
+							{
+								inData.addValue(detail.getId(), savedrecord.getId());
+							}
+						}
+						
+					}
+				}
+				
 			}
-			
 		}
 	 	
 	 	//Then See if the field exists on the target table on a data case by case basis and add to it. Create the record if needed
