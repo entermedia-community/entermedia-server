@@ -2907,7 +2907,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					{
 						continue;
 					}
-					detail = getPropertyDetailsArchive().createDetail(propid, propid);
+					detail = getPropertyDetailsArchive().createDetail(getSearchType(), propid, propid);
 					detail.setDeleted(false);
 					//setType(detail);
 					getPropertyDetailsArchive().savePropertyDetail(detail, getSearchType(), null);

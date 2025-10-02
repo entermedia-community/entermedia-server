@@ -1173,7 +1173,7 @@ public class MediaAdminModule extends BaseMediaModule
 			}
 			if( details.getDetail(pair.getParentModuleId()) == null)
 			{
-				PropertyDetail newprop = archive.getPropertyDetailsArchive().createDetail(pair.getParentModuleId(), parentmodule.getName());
+				PropertyDetail newprop = archive.getPropertyDetailsArchive().createDetail(childsearcher.getSearchType(), pair.getParentModuleId(), parentmodule.getName());
 				newprop.setValue("name",parentmodule.getValue("name"));  //Int?
 				newprop.setDataType("list");
 				newprop.setValue("viewtype","entity");
