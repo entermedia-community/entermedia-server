@@ -1337,6 +1337,7 @@ public class EntityManager implements CatalogEnabled
 				entity = searcher.createNewData();
 				entity.setName(entityname);
 				entity.setValue("entitysourcetype", inModule.getId());
+				entity.setValue("entity_date", new Date());
 				cat = entityManager.createDefaultFolder(entity, inReq.getUser());
 				searcher.saveData(entity);
 			}
