@@ -24,14 +24,19 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	}
 	
 	@Override
-	protected boolean processOneAsset(MultiValued inConfig, LlmConnection llmconnection, Map<String, String> models, MultiValued inData)
+	protected boolean processOneAsset(MultiValued inConfig, Map<String, String> models, MultiValued inData)
 	{
-		boolean ok = processOneEntity(inConfig, llmconnection, models, inData, "asset");
+		String pagenum = inData.get("pagenum");
+		if(pagenum != null)
+		{
+			return false;
+		}
+		boolean ok = processOneEntity(inConfig, models, inData, "asset");
 		return ok;
 	}
 	 
 	@Override
-	protected boolean processOneEntity(MultiValued inConfig, LlmConnection llmconnection, Map<String, String> models, MultiValued inData, String inModuleId)
+	protected boolean processOneEntity(MultiValued inConfig, Map<String, String> models, MultiValued inData, String inModuleId)
 	{
 	 	Collection<PropertyDetail> autocreatefields = getMediaArchive().getSearcher(inModuleId).getPropertyDetails().findAiAutoCreatedProperties();
 	 	
@@ -71,7 +76,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
  		params.put("autocreatefields", autocreatefields);
  		
 		String functionname = inConfig.get("aifunctionname");
-		Map results = llmconnection.callStructuredOutputList(functionname, models.get("metadata"),  params);
+		Map results = getLlmConnection().callStructuredOutputList(functionname, models.get("metadata"),  params);
 		Map categories = (Map) results.get("categories");
 		if(categories != null)
 		{			
