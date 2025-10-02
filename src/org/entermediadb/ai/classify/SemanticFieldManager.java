@@ -239,6 +239,11 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 		try
 		{
 			HitTracker all = getMediaArchive().query("module").exact("semanticenabled", true).search();
+			if(all.isEmpty())
+			{
+				log.info("No modules enabled for semantics");
+				return;
+			}
 			Collection<String> ids = all.collectValues("id");
 			log.info("Scanning modules " + ids);
 			SemanticConfig instruction = getSemanticInstructions();

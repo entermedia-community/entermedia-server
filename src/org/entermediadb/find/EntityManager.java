@@ -1227,4 +1227,71 @@ public class EntityManager implements CatalogEnabled
 		Data found = getMediaArchive().query(inModuleId).exact("entitysourcetype",sourcepath).searchOne();
 		return found;
 	}
+	
+	public void createEntitiesFromAssets(Collection assets)
+	{
+		
+	}
+	
+	public void updateCollection(Collection tracker, final String currentcollection,  final User inUser)
+	{
+		if (currentcollection != null) {
+			for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+			{
+				//loop all assets and save them
+				Asset asset = (Asset)iterator2.next();
+				
+				Searcher s = getMediaArchive().getSearcher("librarycollection");
+				List tosave = new ArrayList();
+				
+				Data entity = s.query().exact("id", currentcollection).searchOne();
+				if( entity != null)
+				{
+					String pi = entity.get("primaryimage");
+					if (entity != null && pi == null) {
+						entity.setValue("primaryimage", asset.getId());
+						tosave.add(entity);
+					}
+					s.saveAllData(tosave, inUser);
+				}
+			}
+		}
+	}
+	
+	
+	public void updateEntities(Collection tracker, final Map inMetadata,  final User inUser)
+	{
+		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
+		{
+			String field  = (String)iterator.next();
+			if( field.startsWith("entity") ) {
+				for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+				{
+					//loop all assets and save them
+					Asset asset = (Asset)iterator2.next();
+					Collection<String> values = asset.getValues(field);
+					if( values != null && !values.isEmpty())
+					{
+						Searcher s = getMediaArchive().getSearcher(field);
+						List tosave = new ArrayList();
+						for (Iterator iterator3 = values.iterator(); iterator3.hasNext();)
+						{
+							String entityid = (String) iterator3.next();
+							
+							Data entity = s.query().exact("id", entityid).searchOne();
+							if (entity != null) {
+								String pi = entity.get("primaryimage");
+								if (entity != null && pi == null) {
+									entity.setValue("primaryimage", asset.getId());
+									tosave.add(entity);
+								}
+							}
+						}
+						s.saveAllData(tosave, inUser);
+						
+					}
+				}
+			}
+		}
+	}
 }

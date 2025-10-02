@@ -177,7 +177,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 			{
 				Asset asset = (Asset) iterator.next();	
 
-				asset.setValue("facescancomplete",true); //ToDo: Remove this and relay in LLM Booleans
+				asset.setValue("facescancomplete", true); //ToDo: Remove this and relay in LLM Booleans
 				asset.setValue("facescanerror", false);
 
 				if( instructions.isSkipExistingFaces() )  //This is the default, but when rescanning one asset dont skip
@@ -833,7 +833,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 			return null;
 			//url = "http://localhost:8000";
 		}
-		long start = System.currentTimeMillis();
+//		long start = System.currentTimeMillis();
 		//log.debug("Facial Profile Detection sending " + inAsset.getName() );
 		resp = getSharedConnection().sharedPostWithJson(url + "/represent",tosendparams);
 		if (resp.getStatusLine().getStatusCode() == 400)
@@ -1185,8 +1185,16 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 	@Override
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
 	{
+		Collection validAssets = new ArrayList();
+		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {
+			Asset asset = (Asset) iterator.next();
+			if(!asset.getBoolean("facescancomplete"))
+			{
+				validAssets.add(asset);
+			}
+		}
 		FaceScanInstructions instructions = createInstructions();
-		extractFaces(instructions,inAssets);
+		extractFaces(instructions, validAssets);
 		
 	}
 

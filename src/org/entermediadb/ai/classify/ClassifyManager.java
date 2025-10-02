@@ -25,15 +25,18 @@ public class ClassifyManager extends InformaticsProcessor
 {
 	private static final Log log = LogFactory.getLog(ClassifyManager.class);
 	
+	public LlmConnection getLlmConnection()
+	{
+		Map<String, String> models = getModels();
+		return getMediaArchive().getLlmConnection(models.get("vision"));
+	}
+	
 	@Override
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> assets)
 	{
 		int count = 1;
 
 		Map<String, String> models = getModels();
-
-		LlmConnection llmvisionconnection = getMediaArchive().getLlmConnection(models.get("vision"));
-		LlmConnection llmsemanticconnection = getMediaArchive().getLlmConnection(models.get("semantic"));
 
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 		{
@@ -52,7 +55,7 @@ public class ClassifyManager extends InformaticsProcessor
 				inLog.info(inConfig.get("bean") + " - Analyzing asset ("+count+"/"+assets.size()+")" + asset.getName());
 				count++;
 
-				boolean complete = processOneAsset(inConfig, llmvisionconnection, llmsemanticconnection, models, asset);
+				boolean complete = processOneAsset(inConfig, models, asset);
 				if( !complete )
 				{
 					continue;
@@ -69,7 +72,7 @@ public class ClassifyManager extends InformaticsProcessor
 		}
 	}
 
-	protected boolean processOneAsset(MultiValued inConfig, LlmConnection llmvisionconnection, LlmConnection llmsemanticconnection, Map<String, String> models, MultiValued asset) throws Exception
+	protected boolean processOneAsset(MultiValued inConfig, Map<String, String> models, MultiValued asset) throws Exception
 	{
 		Collection allaifields = getMediaArchive().getAssetPropertyDetails().findAiCreationProperties();
 		Collection<PropertyDetail> aifields = new ArrayList();
@@ -102,7 +105,7 @@ public class ClassifyManager extends InformaticsProcessor
 			params.put("asset", asset);
 			params.put("aifields", aifields);
 
-			String requestPayload = llmvisionconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/analyzeasset.html", params);
+			String requestPayload = getLlmConnection().loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/analyzeasset.html", params);
 			String functionname = inConfig.get("aifunctionname") + "_asset";
 			
 			String base64EncodedString = null;
@@ -142,7 +145,7 @@ public class ClassifyManager extends InformaticsProcessor
 				}
 			}
 			
-			LlmResponse results = llmvisionconnection.callClassifyFunction(params, models.get("vision"), functionname, requestPayload, base64EncodedString);
+			LlmResponse results = getLlmConnection().callClassifyFunction(params, models.get("vision"), functionname, requestPayload, base64EncodedString);
 
 			if (results != null)
 			{
@@ -200,11 +203,6 @@ public class ClassifyManager extends InformaticsProcessor
 	@Override
 	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> hits)
 	{
-		Map<String, String> models = getModels();
-
-		LlmConnection llmvisionconnection = getMediaArchive().getLlmConnection(models.get("vision"));
-		LlmConnection llmsemanticconnection = getMediaArchive().getLlmConnection(models.get("semantic"));
-
 		Map<String, List<Data>> entitiestoprocess = new HashMap();
 
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) 
@@ -231,7 +229,7 @@ public class ClassifyManager extends InformaticsProcessor
 
 				inLog.info("Analyzing entity Id: " + entity.getId() + " " + entity.getName());
 
-				boolean complete = processOneEntity(inConfig, llmvisionconnection, llmsemanticconnection, models, entity, moduleid);
+				boolean complete = processOneEntity(inConfig, getModels(), entity, moduleid);
 				if( !complete )
 				{
 					continue;
@@ -247,7 +245,7 @@ public class ClassifyManager extends InformaticsProcessor
 		}
 	}
 	
-	protected boolean processOneEntity(MultiValued inConfig, LlmConnection llmvisionconnection, LlmConnection llmsemanticconnection, Map<String, String> models, MultiValued inEntity, String inModuleId) throws Exception
+	protected boolean processOneEntity(MultiValued inConfig, Map<String, String> models, MultiValued inEntity, String inModuleId) throws Exception
 	{
 		Collection detailsfields = getMediaArchive().getSearcher(inModuleId).getDetailsForView(inModuleId+"general");
 
@@ -296,11 +294,11 @@ public class ClassifyManager extends InformaticsProcessor
 
 			try 
 			{
-				
-				String requestPayload = llmvisionconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/analyzeentity.html", params); 
+				LlmConnection llmconnection = getLlmConnection();
+				String requestPayload = llmconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/analyzeentity.html", params); 
 
 				String functionname = inConfig.get("aifunctionname") + "_entity";
-				LlmResponse results = llmvisionconnection.callClassifyFunction(params, models.get("vision"), functionname, requestPayload, base64EncodedString);
+				LlmResponse results = llmconnection.callClassifyFunction(params, models.get("vision"), functionname, requestPayload, base64EncodedString);
 				
 				if (results != null)
 				{

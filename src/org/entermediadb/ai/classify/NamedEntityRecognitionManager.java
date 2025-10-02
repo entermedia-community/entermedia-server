@@ -1,6 +1,5 @@
 package org.entermediadb.ai.classify;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,16 +16,28 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 {
 	private static final Log log = LogFactory.getLog(NamedEntityRecognitionManager.class);
 
-	 @Override
-	 protected boolean processOneAsset(MultiValued inConfig, LlmConnection llmvisionconnection, LlmConnection llmsemanticconnection, Map<String, String> models, MultiValued inData)
-	 {
-		 boolean ok = processOneEntity(inConfig, llmvisionconnection, llmsemanticconnection, models, inData, "asset");
-		 return ok;
-	 }
+	@Override
+	public LlmConnection getLlmConnection()
+	{
+		Map<String, String> models = getModels();
+		return getMediaArchive().getLlmConnection(models.get("metadata"));
+	}
+	
+	@Override
+	protected boolean processOneAsset(MultiValued inConfig, Map<String, String> models, MultiValued inData)
+	{
+		String pagenum = inData.get("pagenum");
+		if(pagenum != null)
+		{
+			return false;
+		}
+		boolean ok = processOneEntity(inConfig, models, inData, "asset");
+		return ok;
+	}
 	 
-	 @Override
-	 protected boolean processOneEntity(MultiValued inConfig, LlmConnection llmvisionconnection, LlmConnection llmsemanticconnection, Map<String, String> models, MultiValued inData, String inModuleId)
-	 {
+	@Override
+	protected boolean processOneEntity(MultiValued inConfig, Map<String, String> models, MultiValued inData, String inModuleId)
+	{
 	 	Collection<PropertyDetail> autocreatefields = getMediaArchive().getSearcher(inModuleId).getPropertyDetails().findAiAutoCreatedProperties();
 	 	
 	 	//Validate tables
@@ -65,7 +76,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
  		params.put("autocreatefields", autocreatefields);
  		
 		String functionname = inConfig.get("aifunctionname");
-		Map results = llmsemanticconnection.callStructuredOutputList(functionname, models.get("semantic"),  params);
+		Map results = getLlmConnection().callStructuredOutputList(functionname, models.get("metadata"),  params);
 		Map categories = (Map) results.get("categories");
 		if(categories != null)
 		{			
@@ -100,7 +111,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 		
 		return true;
 	 	
-	 }
+	}
 
 	protected Data saveIfNeeded(MultiValued inConfig, PropertyDetail inDetail, String inlabel)
 	{
