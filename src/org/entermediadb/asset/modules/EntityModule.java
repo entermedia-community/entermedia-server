@@ -1717,7 +1717,7 @@ public class EntityModule extends BaseMediaModule
 		UploadRequest uploadRequest = (UploadRequest) inReq.getPageValue("uploadrequest");
 		
 		MediaArchive archive = getMediaArchive(inReq);
-		String moduleid = inReq.getRequestParameter("module.value");
+		String moduleid = inReq.getRequestParameter("moduleid");
 		Data module = archive.getCachedData("module", moduleid);
 		
 		archive.getEntityManager().createEntitiesFromPages(inReq, uploadRequest, module);

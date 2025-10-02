@@ -22,7 +22,6 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.json.simple.JSONObject;
-import org.openedit.util.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -32,6 +31,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.DataWithSearcher;
 import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetails;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.FilterNode;
@@ -41,6 +41,7 @@ import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.util.JSONParser;
 import org.openedit.util.PathUtilities;
 
 public class EntityManager implements CatalogEnabled
@@ -1314,6 +1315,21 @@ public class EntityManager implements CatalogEnabled
 			log.info("No files found");
 			return;
 		}
+		
+		Map commonfields = new HashMap();
+		
+		String[] fields = inReq.getRequestParameters("field");
+		for (int i = 0; i < fields.length; i++)
+		{
+			String fieldname = fields[i];
+			String val = inReq.getRequestParameter(fieldname+".value");
+			
+			if( val != null && val.length() > 0)
+			{
+				commonfields.put(fields[i], val);
+			}
+		}
+		
 		EntityManager entityManager = archive.getEntityManager();
 		Collection tracker = new ArrayList();
 		for (Iterator iterator = items.iterator(); iterator.hasNext();) 
@@ -1338,6 +1354,11 @@ public class EntityManager implements CatalogEnabled
 				entity.setName(entityname);
 				entity.setValue("entitysourcetype", inModule.getId());
 				entity.setValue("entity_date", new Date());
+				for (Iterator iterator2 = commonfields.keySet().iterator(); iterator2.hasNext();)
+				{
+					String key = (String) iterator2.next();
+					entity.setValue(key, commonfields.get(key));
+				}
 				cat = entityManager.createDefaultFolder(entity, inReq.getUser());
 				searcher.saveData(entity);
 			}
@@ -1365,5 +1386,22 @@ public class EntityManager implements CatalogEnabled
 		updateCollection(tracker, currentcollection, inReq.getUser());
 		updateEntities(tracker, metadata, inReq.getUser());
 		archive.fireSharedMediaEvent("importing/assetscreated");
+	}
+	
+	
+	public Collection<PropertyDetail> getBulkEntityDetails(String inModuleId) 
+	{
+		Collection<PropertyDetail> details = getMediaArchive().getSearcher(inModuleId).getDetailsForView(inModuleId+"addnew");
+		Collection<PropertyDetail> bulkdetails = new ArrayList();
+		for (Iterator iterator = details.iterator(); iterator.hasNext();) {
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			String id =  detail.getId();
+			if(id.equals("name") || id.equals("longcaption") || id.equals("primaryimage") || id.equals("primarymedia") )
+			{
+				continue;
+			}
+			bulkdetails.add(detail);
+		}
+		return bulkdetails;
 	}
 }
