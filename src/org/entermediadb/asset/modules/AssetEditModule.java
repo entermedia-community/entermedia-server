@@ -771,7 +771,6 @@ public class AssetEditModule extends BaseMediaModule
 		boolean assigncategory =  true;
 		
 		String inputsourcepath = inReq.findValue("sourcepath");
-		
 		if( inputsourcepath != null && Boolean.parseBoolean(inReq.getRequestParameter("createentityfolder")))
 		{
 			FileUploadItem item = inUploadRequest.getFirstItem();
@@ -844,20 +843,11 @@ public class AssetEditModule extends BaseMediaModule
 			inReq.getUserProfile().setProperty("lastselectedcollection", currentcollection);
 		}
 		
-		boolean createentity = Boolean.parseBoolean(inReq.getRequestParameter("createentity"));
-		
 		//Update Primary Images in Collections and Entities
 		EntityManager entityManager = (EntityManager) archive.getEntityManager();
-		if(createentity)
-		{
-			entityManager.createEntitiesFromAssets(tracker);
-		}
 		entityManager.updateCollection(tracker, currentcollection, user);
 		entityManager.updateEntities(tracker, metadata, user);
-		
-		
 	}
-	
 	
 	
 	protected HitTracker saveFilesAndImport(final MediaArchive archive, final String currentcollection, final boolean createCategories, final Map metadata, final Map pages, final User user)

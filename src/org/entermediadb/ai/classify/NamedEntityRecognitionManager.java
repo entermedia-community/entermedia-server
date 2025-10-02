@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.asset.util.JsonUtil;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
@@ -26,11 +27,6 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	@Override
 	protected boolean processOneAsset(MultiValued inConfig, Map<String, String> models, MultiValued inData)
 	{
-		String pagenum = inData.get("pagenum");
-		if(pagenum != null)
-		{
-			return false;
-		}
 		boolean ok = processOneEntity(inConfig, models, inData, "asset");
 		return ok;
 	}
@@ -65,8 +61,15 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 		}
 		if( autocreatefields.isEmpty())
 		{
+			// Check again after removing any fields that already have values
 			log.info(inConfig.get("bean") +" No fields to create in " + inData.getId() + " " + inData.getName());
 			return false;
+		}
+		
+		// Non assets that are not split enabled and have a primarymedia with fulltext
+		if(!inModuleId.equals("asset") && !contextfields.keySet().contains("fulltext") && inData.get("pagenum") == null)
+		{
+			addPrimaryMediaFulltext(inData, contextfields);
 		}
 
  		Map params = new HashMap();
@@ -111,6 +114,35 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 		
 		return true;
 	 	
+	}
+
+	private void addPrimaryMediaFulltext(MultiValued inData, Map<String, Map> contextfields) {
+		String primarymedia = inData.get("primarymedia");
+		if(primarymedia == null || primarymedia.isEmpty())
+		{
+			primarymedia = inData.get("primaryimage");
+		}
+		if(primarymedia != null)
+		{
+			MultiValued primaryasset = getMediaArchive().getAsset(primarymedia);
+			if(primaryasset != null)
+			{
+				if (primaryasset.getBoolean("hasfulltext"))
+				{
+					String fulltext = primaryasset.get("fulltext");
+					if (fulltext != null)
+					{
+						fulltext = fulltext.replaceAll("\\s+", " ");
+						fulltext = fulltext.substring(0, Math.min(fulltext.length(), 5000));
+						HashMap fieldMap = new HashMap();
+						fieldMap.put("label", "Parsed Document Content");
+						JsonUtil jsonutils = new JsonUtil();
+						fieldMap.put("text", jsonutils.escape(fulltext));
+						contextfields.put("fulltext", fieldMap);
+					}
+				}
+			}
+		}
 	}
 
 	protected Data saveIfNeeded(MultiValued inConfig, PropertyDetail inDetail, String inlabel)

@@ -474,7 +474,7 @@ public class EntityManager implements CatalogEnabled
 
 	}
 	
-	public Boolean removeAssetToEntity(User inUser,String pickedmoduleid, String pickedentityid, String assetid) 
+	public Boolean removeAssetFromEntity(User inUser,String pickedmoduleid, String pickedentityid, String assetid) 
 	{
 		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
 		Data entity =getMediaArchive().getCachedData(pickedmoduleid,pickedentityid);
@@ -1226,11 +1226,6 @@ public class EntityManager implements CatalogEnabled
 	{
 		Data found = getMediaArchive().query(inModuleId).exact("entitysourcetype",sourcepath).searchOne();
 		return found;
-	}
-	
-	public void createEntitiesFromAssets(Collection assets)
-	{
-		
 	}
 	
 	public void updateCollection(Collection tracker, final String currentcollection,  final User inUser)
