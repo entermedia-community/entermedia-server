@@ -19,6 +19,8 @@ import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.upload.FileUploadItem;
+import org.entermediadb.asset.upload.UploadRequest;
 import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 import org.openedit.CatalogEnabled;
@@ -37,6 +39,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
+import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 
@@ -1288,5 +1291,78 @@ public class EntityManager implements CatalogEnabled
 				}
 			}
 		}
+	}
+	
+	public void createEntitiesFromPages(WebPageRequest inReq, UploadRequest inUploadRequest,  Data inModule)
+	{
+		//final boolean createCategories = Boolean.parseBoolean( inReq.findValue("assetcreateuploadcategories"));
+
+		MediaArchive archive = getMediaArchive();
+		
+		final Map metadata = archive.getAssetImporter().readMetaData(inReq, archive, "");
+		final String currentcollection = (String) metadata.get("collectionid");
+
+		boolean assigncategory =  true;
+		
+		String inputsourcepath = inReq.findValue("sourcepath");
+		
+		Searcher searcher = archive.getSearcher(inModule.getId());
+		
+		Collection items = inUploadRequest.getUploadItems();
+		if( items.size() == 0)
+		{
+			log.info("No files found");
+			return;
+		}
+		EntityManager entityManager = archive.getEntityManager();
+		Collection tracker = new ArrayList();
+		for (Iterator iterator = items.iterator(); iterator.hasNext();) 
+		{
+			FileUploadItem item = (FileUploadItem) iterator.next();
+			String filename = item.getName();
+			String ext = PathUtilities.extractPageType(item.getName());
+
+			if (filename.startsWith("tmp") && filename.indexOf('_') > -1)
+			{
+				filename = filename.substring(filename.indexOf('_') + 1);
+			}
+			
+			String entityname = filename.substring(0, filename.length() - (ext.length()+1));
+			
+			Data entity = searcher.query().exact("name", entityname).searchOne();
+
+			Category cat = null;
+			if( entity == null)
+			{
+				entity = searcher.createNewData();
+				entity.setName(entityname);
+				entity.setValue("entitysourcetype", inModule.getId());
+				cat = entityManager.createDefaultFolder(entity, inReq.getUser());
+				searcher.saveData(entity);
+			}
+			else
+			{
+				log.info("Entity already exists: " + entityname);
+				cat = entityManager.loadDefaultFolder(entity, inReq.getUser());
+			}
+			String catalogid = archive.getCatalogId();
+			String originalspath = "/WEB-INF/data/" + catalogid + "/originals/";
+			
+			String sourcepath = cat.getCategoryPath() + "/" + filename;
+			
+			ContentItem contentItem = inUploadRequest.saveFileAs(item, originalspath+sourcepath, inReq.getUser());
+			
+			Asset asset = archive.getAssetImporter().createAssetFromExistingFile(archive, inReq.getUser(), sourcepath);
+			archive.saveAsset(asset);
+			
+			entity.setValue("primaryimage", asset.getId());
+			searcher.saveData(entity);
+			
+			tracker.add(asset);
+		}
+
+		updateCollection(tracker, currentcollection, inReq.getUser());
+		updateEntities(tracker, metadata, inReq.getUser());
+		archive.fireSharedMediaEvent("importing/assetscreated");
 	}
 }

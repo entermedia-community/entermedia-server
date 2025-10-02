@@ -1720,41 +1720,6 @@ public class EntityModule extends BaseMediaModule
 		String moduleid = inReq.getRequestParameter("module.value");
 		Data module = archive.getCachedData("module", moduleid);
 		
-		Searcher searcher = archive.getSearcher(moduleid);
-		
-		Collection items = uploadRequest.getUploadItems();
-		if( items.size() == 0)
-		{
-			log.info("No files found");
-			return;
-		}
-		EntityManager entityManager = archive.getEntityManager();
-		for (Iterator iterator = items.iterator(); iterator.hasNext();) 
-		{
-			FileUploadItem item = (FileUploadItem) iterator.next();
-			String filename = item.getName();
-			String ext = PathUtilities.extractPageType(item.getName());
-			
-			String entityname = filename.substring(0, filename.length() - (ext.length()+1));
-			
-			Data entity = searcher.query().exact("name", entityname).searchOne();
-
-			Category cat = null;
-			if( entity == null)
-			{
-				entity = searcher.createNewData();
-				entity.setName(entityname);
-				entity.setValue("entitysourcetype", moduleid);
-				cat = entityManager.createDefaultFolder(entity, inReq.getUser());
-				searcher.saveData(entity);
-			}
-			else
-			{
-				log.info("Entity already exists: " + entityname);
-				cat = entityManager.loadDefaultFolder(entity, inReq.getUser());
-			}
-			inReq.setRequestParameter("parentcategoryid", cat.getId());
-			inReq.setRequestParameter("entityasset", "true");
-		}
+		archive.getEntityManager().createEntitiesFromPages(inReq, uploadRequest, module);
 	}
 }
