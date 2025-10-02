@@ -474,7 +474,7 @@ public class BaseImporter extends EnterMediaObject
 		}			
 		if (detail == null && !inHeader.contains("."))
 		{				
-			detail = getSearcher().getPropertyDetailsArchive().createDetail(id, inHeader);
+			detail = getSearcher().getPropertyDetailsArchive().createDetail(getSearcher().getSearchType(), id, inHeader);
 			
 			if( getDbLookUps().contains(id))
 			{
