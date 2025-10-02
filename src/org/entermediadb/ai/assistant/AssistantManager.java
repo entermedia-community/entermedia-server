@@ -667,13 +667,11 @@ public class AssistantManager extends BaseAiManager
 		return report;
 	}
 	
-	public Collection<PropertyDetail> getCommonFields()
+	public Collection<PropertyDetail> getCommonFields(String inSearchtype)
 	{
 		Collection<PropertyDetail> fields = new ArrayList();
-		PropertyDetail pd = new PropertyDetail();
-		
+		PropertyDetail pd = getMediaArchive().getSearcher(inSearchtype).getPropertyDetails().createDetail("title");
 //		Collection<String> fieldids = Arrays.from("title","description","keywords","caption","date");
-		pd.setId("title");
 		fields.add(pd);
 		
 //		fields.add("description");
