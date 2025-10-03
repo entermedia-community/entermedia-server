@@ -351,11 +351,20 @@ public class ResultsManager extends BaseManager {
 		OrganizedResults organizedresults = loadOrganizedResults(inReq,inUnsorted,inAssetunsorted,MEDIASAMPLE);
 		return organizedresults; 
 	}	
-	public OrganizedResults loadOrganizedResults(WebPageRequest inReq, HitTracker inUnsorted, HitTracker inAssetunsorted, int inSize)
+	public OrganizedResults loadOrganizedResults(WebPageRequest inReq, HitTracker inUnsortedEntities, HitTracker inAssetunsorted, int inSize)
 	{
 		OrganizedResults organizedresults = (OrganizedResults)inReq.getSessionValue("lastOrganizedResults");
-		//TODO: Check if changed
-		organizedresults =	createOrganizedResults(inUnsorted, inAssetunsorted, inSize);  //Check old values?
+		if( organizedresults != null)
+		{
+			boolean clearresults = organizedresults.hasChanged(inUnsortedEntities,inAssetunsorted);
+			if(!clearresults)
+			{
+				inReq.putPageValue("organizedResults",organizedresults);
+				return organizedresults;
+			}
+		}
+		
+		organizedresults =	createOrganizedResults(inUnsortedEntities, inAssetunsorted, inSize);  //Check old values?
 		inReq.putSessionValue("lastOrganizedResults",organizedresults);
 		inReq.putPageValue("organizedResults",organizedresults);
 		return organizedresults;

@@ -35,22 +35,22 @@ public class FinderModule extends BaseMediaModule
 	private static final Log log = LogFactory.getLog(FinderModule.class);
 
 	
-	
-	public void searchByQuery(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		String query = inReq.getRequestParameter("description.value");
-		if (query == null) {
-			return;
-		}
-		QueryBuilder dq = archive.query("modulesearch").freeform("description",query);
-		HitTracker unsorted = dq.search(inReq);
-		//log.info(unsorted.size());
-			
-		inReq.setRequestParameter("clearfilters","true");
-		unsorted.getSearchQuery().setValue("description",query); //Not needed?
-
-	}
+//	
+//	public void searchByQuery(WebPageRequest inReq)
+//	{
+//		MediaArchive archive = getMediaArchive(inReq);
+//		String query = inReq.getRequestParameter("description.value");
+//		if (query == null) {
+//			return;
+//		}
+//		QueryBuilder dq = archive.query("modulesearch").freeform("description",query);
+//		HitTracker unsorted = dq.search(inReq);
+//		//log.info(unsorted.size());
+//			
+//		inReq.setRequestParameter("clearfilters","true");
+//		unsorted.getSearchQuery().setValue("description",query); //Not needed?
+//
+//	}
 	
 	
 	public void searchModuleByQuery(WebPageRequest inReq)
@@ -316,7 +316,7 @@ public class FinderModule extends BaseMediaModule
 		SecurityEnabledSearchSecurity security = new SecurityEnabledSearchSecurity();
 		security.attachSecurity(inReq, archive.getSearcher("modulesearch"), dq.getQuery());
 		
-		HitTracker unsorted = dq.search(); //With permissions?
+		HitTracker unsorted = dq.search(inReq); //With permissions?
 		
 		Map<String,String> keywordsLower = new HashMap();
 		resultsManager.collectMatches(keywordsLower, plainquery, unsorted);

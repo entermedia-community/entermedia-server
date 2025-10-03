@@ -143,51 +143,6 @@ public class OrganizedResults
 		if( fieldByModule == null)
 		{
 			fieldByModule = new HashMap();
-
-			for (Iterator iterator = getModules().iterator(); iterator.hasNext();)
-			{
-				Data module = (Data) iterator.next();
-				String searchtype = module.getId();
-				
-				HitTracker newvalues = null;
-				if (searchtype.equals("asset"))
-				{
-					newvalues = getAssetResults();
-				}
-				else
-				{
-					//search for one page of the actual results... Seems crazy but only way to see right results?
-					Searcher searcher = getMediaArchive().getSearcher(searchtype);
-					SearchQuery query = searcher.createSearchQuery();
-	
-					Collection queryTerms = getEntityResults().getSearchQuery().getTerms();
-					query.copyTerms(queryTerms);
-					
-					query.setResultType(searchtype);
-					
-	//				newvalues.setActiveFilterValues(  getEntityResults().getActiveFilterValues() );
-	//				newvalues.setHitsPerPage(getSizeOfResults());
-	//				newvalues.setSearcher(searcher);
-	//				newvalues.setSearchQuery(query);
-	
-					query.setHitsName("organized" + searchtype);
-					newvalues = searcher.search(query);
-					//Set filters?
-					//set name and session session
-				}	
-				fieldByModule.put(searchtype,newvalues);
-	//				newvalues.setHitsName(searchtype +"idhits");
-	//				newvalues.setSessionId(searchtype + "idhits"+ archive.getCatalogId());
-					//inReq.putSessionValue(newvalues.getSessionId(), newvalues);
-				
-			}
-//			Collection values = getEntityResults().getSearchQuery().getValues("searchtypes");
-//			
-//			if(getAssetResults() != null && values != null && values.contains("asset"))
-//			{
-//				Collection onepage = getAssetResults().getPageOfHits();
-//				fieldByModule.put( "asset",onepage);
-//			}
 		}
 		return fieldByModule;
 	}
@@ -202,6 +157,40 @@ public class OrganizedResults
 	public HitTracker getByType(String inModuleId)
 	{
 		HitTracker hits = getByType().get(inModuleId);
+		
+		if( hits == null)
+		{
+				if (inModuleId.equals("asset"))
+				{
+					hits = getAssetResults();
+				}
+				else
+				{
+					//search for one page of the actual results... Seems crazy but only way to see right results?
+					Searcher searcher = getMediaArchive().getSearcher(inModuleId);
+					SearchQuery query = searcher.createSearchQuery();
+	
+					Collection queryTerms = getEntityResults().getSearchQuery().getTerms();
+					query.copyTerms(queryTerms);
+					
+					query.setResultType(inModuleId);
+					
+	//				newvalues.setActiveFilterValues(  getEntityResults().getActiveFilterValues() );
+	//				newvalues.setHitsPerPage(getSizeOfResults());
+	//				newvalues.setSearcher(searcher);
+	//				newvalues.setSearchQuery(query);
+	
+					query.setHitsName("organized" + inModuleId);
+					hits = searcher.search(query);
+					//Set filters?
+					//set name and session session
+				}	
+				fieldByModule.put(inModuleId,hits);
+	//				newvalues.setHitsName(searchtype +"idhits");
+	//				newvalues.setSessionId(searchtype + "idhits"+ archive.getCatalogId());
+					//inReq.putSessionValue(newvalues.getSessionId(), newvalues);
+		}
+		
 		return hits;
 	}
 
@@ -257,6 +246,39 @@ public class OrganizedResults
 			size = size + getAssetResults().size();
 		}
 		return size;
+	}
+
+	public boolean hasChanged( HitTracker inUnsortedEntities, HitTracker inAssetunsorted)
+	{
+		boolean clearresults = false; 
+		if( inAssetunsorted != null && getAssetResults() == null )
+		{
+			clearresults = true;
+		}
+		else if( getAssetResults() != null && inAssetunsorted == null )
+		{
+			clearresults = true;
+		}
+		else if( getAssetResults().hasChanged( inAssetunsorted ) )
+		{
+			clearresults = true;
+		}
+		if( !clearresults )
+		{
+			if( inUnsortedEntities != null && getEntityResults() == null )
+			{
+				clearresults = true;
+			}
+			else if( getEntityResults() != null && inUnsortedEntities == null )
+			{
+				clearresults = true;
+			}
+			else if( getEntityResults().hasChanged( inUnsortedEntities ) )
+			{
+				clearresults = true;
+			}
+		}
+		return clearresults;
 	}
 
 }
