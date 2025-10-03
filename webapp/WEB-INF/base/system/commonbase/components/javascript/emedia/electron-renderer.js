@@ -530,25 +530,46 @@
 						div.on("drop", function (e) {
 							e.preventDefault();
 							div.removeClass("filehover");
-							const files = e.originalEvent.dataTransfer.files;
+							const items = e.originalEvent.dataTransfer.files;
+							const files = [];
 							const folders = [];
 							let filesDropped = false;
-							for (let file of files) {
+							let foldersDropped = false;
+							for (let file of items) {
 								if (file.type !== "") {
 									filesDropped = true;
+									files.push(file);
 									continue;
 								}
+								foldersDropped = true;
 								const path = webUtils.getPathForFile(file);
 								folders.push({
 									name: file.name,
 									path: path,
 								});
 							}
-							if (filesDropped) {
-								customToast("Only folders can be dropped here.", {
+							if (filesDropped && foldersDropped) {
+								customToast("Drop only folders or only files at a time", {
 									positive: false,
 									autohideDelay: 5000,
 								});
+								return;
+							}
+							if (files.length > 0) {
+								const moduleid = $(".createnewentityfolder").data("moduleid");
+								if (!moduleid) {
+									return;
+								}
+								const uploader = `${apphome}/views/modules/${moduleid}/editors/bulkentitycreator/dialog.html?edit=true&addnew=true&moduleid=${moduleid}&viewid=${moduleid}addnew`;
+								const dialog = $(
+									`<a href="${uploader}" data-maxwidth="sm" title="Create Bulk Folders from Files"></a>`
+								);
+								dialog.emDialog(function () {
+									$(".upload_field")
+										.last()
+										.triggerHandler("html5_upload.filesPicked", [files]);
+								});
+								return;
 							}
 							if (folders.length == 0) {
 								return;
