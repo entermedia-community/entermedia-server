@@ -71,14 +71,16 @@ public class OrganizedResults
 		if( fieldModules == null)
 		{
 			fieldModules = new ArrayList();
-			
-			FilterNode nodes = (FilterNode)getEntityResults().getActiveFilterValues().get("entitysourcetype");
-			for (Iterator iterator = nodes.getChildren().iterator(); iterator.hasNext();)
+			if (getEntityResults() != null)
 			{
-				FilterNode onetype = (FilterNode) iterator.next();
-				String searchtype = onetype.getId();
-				Data module = getMediaArchive().getCachedData("module", searchtype);
-				fieldModules.add(module);
+				FilterNode nodes = (FilterNode)getEntityResults().getActiveFilterValues().get("entitysourcetype");
+				for (Iterator iterator = nodes.getChildren().iterator(); iterator.hasNext();)
+				{
+					FilterNode onetype = (FilterNode) iterator.next();
+					String searchtype = onetype.getId();
+					Data module = getMediaArchive().getCachedData("module", searchtype);
+					fieldModules.add(module);
+				}
 			}
 			if(getAssetResults() != null)
 			{
@@ -144,25 +146,37 @@ public class OrganizedResults
 				Data module = (Data) iterator.next();
 				String searchtype = module.getId();
 				
-				//search for one page of the actual results... Seems crazy but only way to see right results?
-				Searcher searcher = getMediaArchive().getSearcher(searchtype);
-				SearchQuery query = getEntityResults().getSearchQuery().copy();
-				query.setResultType(searchtype);
-				
-//				newvalues.setActiveFilterValues(  getEntityResults().getActiveFilterValues() );
-//				newvalues.setHitsPerPage(getSizeOfResults());
-//				newvalues.setSearcher(searcher);
-//				newvalues.setSearchQuery(query);
-
-				query.setHitsName("organized" + searchtype);
-				HitTracker newvalues = searcher.search(query);
-				//Set filters?
-				//set name and session session
-				
+				HitTracker newvalues = null;
+				if (searchtype.equals("asset"))
+				{
+					newvalues = getAssetResults();
+				}
+				else
+				{
+					//search for one page of the actual results... Seems crazy but only way to see right results?
+					Searcher searcher = getMediaArchive().getSearcher(searchtype);
+					SearchQuery query = searcher.createSearchQuery();
+	
+					Collection queryTerms = getEntityResults().getSearchQuery().getTerms();
+					query.copyTerms(queryTerms);
+					
+					query.setResultType(searchtype);
+					
+	//				newvalues.setActiveFilterValues(  getEntityResults().getActiveFilterValues() );
+	//				newvalues.setHitsPerPage(getSizeOfResults());
+	//				newvalues.setSearcher(searcher);
+	//				newvalues.setSearchQuery(query);
+	
+					query.setHitsName("organized" + searchtype);
+					newvalues = searcher.search(query);
+					//Set filters?
+					//set name and session session
+				}	
 				fieldByModule.put(searchtype,newvalues);
 	//				newvalues.setHitsName(searchtype +"idhits");
 	//				newvalues.setSessionId(searchtype + "idhits"+ archive.getCatalogId());
 					//inReq.putSessionValue(newvalues.getSessionId(), newvalues);
+				
 			}
 //			Collection values = getEntityResults().getSearchQuery().getValues("searchtypes");
 //			
