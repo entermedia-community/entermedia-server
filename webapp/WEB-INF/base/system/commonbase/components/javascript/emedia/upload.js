@@ -489,11 +489,11 @@ $.fn.initUpload = function () {
 			haderror = true;
 		},
 		onFinish: function (event, total) {
-			customToast(
-				`Uploaded ${total} file${total > 1 ? "s" : ""} successfully!`
-			);
-			//do a search
 			if (!haderror) {
+				customToast(
+					`Uploaded ${total} file${total > 1 ? "s" : ""} successfully!`
+				);
+				//do a search
 				var startb = uploadformarea.find(".startbutton");
 
 				startb.text(startb.data("textcomplete"));
@@ -511,6 +511,14 @@ $.fn.initUpload = function () {
 					editdiv.runAjax();
 				} else {
 					startb.prop("disabled", false);
+				}
+
+				var form = $(startb.closest("form"));
+
+				$(window).trigger("checkautoreload", [form]);
+				var formmodal = form.closest(".modal");
+				if (formmodal.length > 0 && form.hasClass("autocloseform")) {
+					closeemdialog(formmodal);
 				}
 			}
 		},

@@ -19,8 +19,9 @@ import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.upload.FileUploadItem;
+import org.entermediadb.asset.upload.UploadRequest;
 import org.json.simple.JSONObject;
-import org.openedit.util.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -30,6 +31,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.DataWithSearcher;
 import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetails;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.FilterNode;
@@ -37,7 +39,9 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
+import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.util.JSONParser;
 import org.openedit.util.PathUtilities;
 
 public class EntityManager implements CatalogEnabled
@@ -1288,5 +1292,116 @@ public class EntityManager implements CatalogEnabled
 				}
 			}
 		}
+	}
+	
+	public void createEntitiesFromPages(WebPageRequest inReq, UploadRequest inUploadRequest,  Data inModule)
+	{
+		//final boolean createCategories = Boolean.parseBoolean( inReq.findValue("assetcreateuploadcategories"));
+
+		MediaArchive archive = getMediaArchive();
+		
+		final Map metadata = archive.getAssetImporter().readMetaData(inReq, archive, "");
+		final String currentcollection = (String) metadata.get("collectionid");
+
+		boolean assigncategory =  true;
+		
+		String inputsourcepath = inReq.findValue("sourcepath");
+		
+		Searcher searcher = archive.getSearcher(inModule.getId());
+		
+		Collection items = inUploadRequest.getUploadItems();
+		if( items.size() == 0)
+		{
+			log.info("No files found");
+			return;
+		}
+		
+		Map commonfields = new HashMap();
+		
+		String[] fields = inReq.getRequestParameters("field");
+		for (int i = 0; i < fields.length; i++)
+		{
+			String fieldname = fields[i];
+			String val = inReq.getRequestParameter(fieldname+".value");
+			
+			if( val != null && val.length() > 0)
+			{
+				commonfields.put(fields[i], val);
+			}
+		}
+		
+		EntityManager entityManager = archive.getEntityManager();
+		Collection tracker = new ArrayList();
+		for (Iterator iterator = items.iterator(); iterator.hasNext();) 
+		{
+			FileUploadItem item = (FileUploadItem) iterator.next();
+			String filename = item.getName();
+			String ext = PathUtilities.extractPageType(item.getName());
+
+			if (filename.startsWith("tmp") && filename.indexOf('_') > -1)
+			{
+				filename = filename.substring(filename.indexOf('_') + 1);
+			}
+			
+			String entityname = filename.substring(0, filename.length() - (ext.length()+1));
+			
+			Data entity = searcher.query().exact("name", entityname).searchOne();
+
+			Category cat = null;
+			if( entity == null)
+			{
+				entity = searcher.createNewData();
+				entity.setName(entityname);
+				entity.setValue("entitysourcetype", inModule.getId());
+				entity.setValue("entity_date", new Date());
+				for (Iterator iterator2 = commonfields.keySet().iterator(); iterator2.hasNext();)
+				{
+					String key = (String) iterator2.next();
+					entity.setValue(key, commonfields.get(key));
+				}
+				cat = entityManager.createDefaultFolder(entity, inReq.getUser());
+				searcher.saveData(entity);
+			}
+			else
+			{
+				log.info("Entity already exists: " + entityname);
+				cat = entityManager.loadDefaultFolder(entity, inReq.getUser());
+			}
+			String catalogid = archive.getCatalogId();
+			String originalspath = "/WEB-INF/data/" + catalogid + "/originals/";
+			
+			String sourcepath = cat.getCategoryPath() + "/" + filename;
+			
+			ContentItem contentItem = inUploadRequest.saveFileAs(item, originalspath+sourcepath, inReq.getUser());
+			
+			Asset asset = archive.getAssetImporter().createAssetFromExistingFile(archive, inReq.getUser(), sourcepath);
+			archive.saveAsset(asset);
+			
+			entity.setValue("primaryimage", asset.getId());
+			searcher.saveData(entity);
+			
+			tracker.add(asset);
+		}
+
+		updateCollection(tracker, currentcollection, inReq.getUser());
+		updateEntities(tracker, metadata, inReq.getUser());
+		archive.fireSharedMediaEvent("importing/assetscreated");
+	}
+	
+	
+	public Collection<PropertyDetail> getBulkEntityDetails(String inModuleId) 
+	{
+		Collection<PropertyDetail> details = getMediaArchive().getSearcher(inModuleId).getDetailsForView(inModuleId+"addnew");
+		Collection<PropertyDetail> bulkdetails = new ArrayList();
+		for (Iterator iterator = details.iterator(); iterator.hasNext();) {
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			String id =  detail.getId();
+			if(id.equals("name") || id.equals("longcaption") || id.equals("primaryimage") || id.equals("primarymedia") )
+			{
+				continue;
+			}
+			bulkdetails.add(detail);
+		}
+		return bulkdetails;
 	}
 }
