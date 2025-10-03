@@ -74,12 +74,15 @@ public class OrganizedResults
 			if (getEntityResults() != null)
 			{
 				FilterNode nodes = (FilterNode)getEntityResults().getActiveFilterValues().get("entitysourcetype");
-				for (Iterator iterator = nodes.getChildren().iterator(); iterator.hasNext();)
+				if (nodes!= null && nodes.getChildren() != null)
 				{
-					FilterNode onetype = (FilterNode) iterator.next();
-					String searchtype = onetype.getId();
-					Data module = getMediaArchive().getCachedData("module", searchtype);
-					fieldModules.add(module);
+					for (Iterator iterator = nodes.getChildren().iterator(); iterator.hasNext();)
+					{
+						FilterNode onetype = (FilterNode) iterator.next();
+						String searchtype = onetype.getId();
+						Data module = getMediaArchive().getCachedData("module", searchtype);
+						fieldModules.add(module);
+					}
 				}
 			}
 			if(getAssetResults() != null)
