@@ -353,7 +353,10 @@ public class ResultsManager extends BaseManager {
 	}	
 	public OrganizedResults loadOrganizedResults(WebPageRequest inReq, HitTracker inUnsorted, HitTracker inAssetunsorted, int inSize)
 	{
-		OrganizedResults organizedresults = createOrganizedResults(inUnsorted, inAssetunsorted, inSize);
+		OrganizedResults organizedresults = (OrganizedResults)inReq.getSessionValue("lastOrganizedResults");
+		//TODO: Check if changed
+		organizedresults =	createOrganizedResults(inUnsorted, inAssetunsorted, inSize);  //Check old values?
+		inReq.putSessionValue("lastOrganizedResults",organizedresults);
 		inReq.putPageValue("organizedResults",organizedresults);
 		return organizedresults;
 	}
