@@ -85,7 +85,7 @@ public class OrganizedResults
 					}
 				}
 			}
-			if(getAssetResults() != null)
+			if(getAssetResults() != null && !getAssetResults().isEmpty() )
 			{
 				Data module = getMediaArchive().getCachedData("module", "asset");
 				fieldModules.add(module);
