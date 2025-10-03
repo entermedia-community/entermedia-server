@@ -36,14 +36,15 @@ public class ResultsManager extends BaseManager {
 	
 	private static final int MEDIASAMPLE=7;
 
-	public void organizeHits(WebPageRequest inReq, HitTracker hits, Collection pageOfHits) 
+	/*
+	public void organizeHits(WebPageRequest inReq, HitTracker inModuleHits, Collection pageOfHits, HitTracker inAssets) 
 	{
 		//if( inReq.getPageValue("organizedHits") == null )
 		{
 			// String HitsName = inReq.findValue("hitsname");
 			//  HitTracker hits = (HitTracker)inReq.getPageValue(HitsName);
 			// Collection pageOfHits = hits.getPageOfHits();
-			if( hits != null)
+			if( inModuleHits != null)
 			{
 				MediaArchive archive = getMediaArchive();
 
@@ -60,7 +61,7 @@ public class ResultsManager extends BaseManager {
 				
 				String smaxsize = inReq.findValue("maxhitsperpage");
 				
-				Collection types = (Collection)hits.getSearchQuery().getValues("searchtypes");
+				Collection types = (Collection)inModuleHits.getSearchQuery().getValues("searchtypes");
 				if(types != null && types.size() > 1)
 				{
 					String maxhitsperpagemultiple = inReq.findValue("maxhitsperpagemultiple");
@@ -75,9 +76,9 @@ public class ResultsManager extends BaseManager {
 				{
 					targetsize = Integer.parseInt(smaxsize);
 				}
-				Map<String,Collection> bytypes = organizeHits(inReq, hits, pageOfHits.iterator(),targetsize);
+				Map<String,Collection> bytypes = organizeHits(inReq, inModuleHits, pageOfHits.iterator(),targetsize, inAssets);
 				
-				ArrayList foundmodules = processResults(hits, archive, targetsize, bytypes);
+				ArrayList foundmodules = processResults(inModuleHits, archive, targetsize, bytypes);
 
 				//Put asset into session
 				//HitTracker assets = (HitTracker)bytypes.get("asset");
@@ -148,8 +149,8 @@ public class ResultsManager extends BaseManager {
 		}
 	}
 	
-	
-
+	*/
+/*
 	protected ArrayList processResults(HitTracker hits, MediaArchive archive, int targetsize, Map<String, Collection> bytypes)
 	{
 		ArrayList foundmodules = new ArrayList();
@@ -216,32 +217,8 @@ public class ResultsManager extends BaseManager {
 		}
 		return foundmodules;
 	}
-
-	protected void sortModules(ArrayList foundmodules)
-	{
-		if (!foundmodules.isEmpty()) {
-			Collections.sort(foundmodules,  new Comparator<Data>() 
-			{ 
-			    // Used for sorting in ascending order of 
-			    // roll number 
-			    public int compare(Data a, Data b) 
-			    { 
-			    	int a1 = Integer.parseInt(a.get("ordering"));
-			    	int b1 = Integer.parseInt(b.get("ordering"));
-			    	if( a1 == b1)
-			    	{
-			    		return 0;
-			    	}
-			        if ( a1 > b1 ) {
-			        	return 1;
-			        }
-			        return -1;
-			    } 
-			    
-			});
-		}
-		//log.info("Complete sort" + foundmodules);
-	}
+*/
+	
 	private Collection loadMoreResults(MediaArchive archive, SearchQuery inSearchQuery, String inSourcetype, int maxsize)
 	{
 		//search for more
@@ -264,54 +241,16 @@ public class ResultsManager extends BaseManager {
 		return more.getPageOfHits();
 	}
 
-
-	public Map organizeHits(WebPageRequest inReq, HitTracker allhits,Iterator hits, int maxsize) 
+	public OrganizedResults createOrganizedResults(HitTracker inEntities, HitTracker inAssets, int inPreferedSize)
 	{
-		Map bytypes = new HashMap();
-		MediaArchive archive = getMediaArchive();
-		
-		for (Iterator iterator = hits; iterator.hasNext();)
-		{
-			SearchHitData data = (SearchHitData) iterator.next();
-			String type = data.getSearchHit().getType();
-			
-			Collection values = (Collection) bytypes.get(type);
-			if( values == null)
-			{
-				Searcher searcher = archive.getSearcher(type);
-				ListHitTracker newvalues = new ListHitTracker();
-				newvalues.setActiveFilterValues(  allhits.getActiveFilterValues() );
-				newvalues.setHitsPerPage(maxsize);
-				newvalues.setSearcher(searcher);
-				SearchQuery query = allhits.getSearchQuery().copy();
-				query.setResultType(type);
-				newvalues.setSearchQuery(query);
-//				String v = newvalues.getInput("description");
-				//System.out.print(v);
-				values = newvalues;
-				bytypes.put(type,values);
-				//newvalues.setHitsName("idhits");
-				newvalues.setHitsName(type +"idhits");
-				newvalues.setSessionId(type + "idhits"+ archive.getCatalogId());
-				inReq.putSessionValue(newvalues.getSessionId(), newvalues);
-			}
-			int max = maxsize;
-			if( type.equals("asset"))
-			{
-				max = MEDIASAMPLE;
-			}
-
-			if(values.size()<max)
-			{
-				values.add(data);
-			}
-			
-		}
-//		log.info("put un page: " + bytypes);
-//		log.info("size: " + bytypes.size());
-		inReq.putPageValue("organizedHits",bytypes);
-		return bytypes;
+		OrganizedResults organizedResults = new OrganizedResults();
+		organizedResults.setMediaArchive(getMediaArchive());
+		organizedResults.setEntityResults(inEntities);
+		organizedResults.setAssetResults(inAssets);
+		organizedResults.setSizeOfResults(inPreferedSize);
+		return organizedResults;
 	}
+	
 	
 	public void searchByKeywords(WebPageRequest inReq, AiSearch searchArgs)
 	{
@@ -403,10 +342,22 @@ public class ResultsManager extends BaseManager {
 		
 		inReq.putPageValue("totalhits", unsorted.size() + assetunsorted.size());
 		
-		organizeHits(inReq, unsorted, pageOfHits);
+		loadOrganizedResults(inReq, unsorted,assetunsorted);
 		
 	}
 	
+	public OrganizedResults loadOrganizedResults(WebPageRequest inReq, HitTracker inUnsorted, HitTracker inAssetunsorted)
+	{
+		OrganizedResults organizedresults = loadOrganizedResults(inReq,inUnsorted,inAssetunsorted,MEDIASAMPLE);
+		return organizedresults; 
+	}	
+	public OrganizedResults loadOrganizedResults(WebPageRequest inReq, HitTracker inUnsorted, HitTracker inAssetunsorted, int inSize)
+	{
+		OrganizedResults organizedresults = createOrganizedResults(inUnsorted, inAssetunsorted, inSize);
+		inReq.putPageValue("organizedResults",organizedresults);
+		return organizedresults;
+	}
+
 	public Collection loadUserSearchTypes(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive();
@@ -620,4 +571,5 @@ public class ResultsManager extends BaseManager {
 		result.append("and ").append(iter.next());
 		return result.toString();
 	}
+	
 }
