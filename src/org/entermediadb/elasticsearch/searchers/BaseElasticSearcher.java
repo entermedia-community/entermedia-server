@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -18,6 +19,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -2298,197 +2302,95 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// inBuffer.clear();
 	}
 
-	public void updateInBatch(Collection<Data> inBuffer, User inUser)
-	{
-		String catid = getElasticIndexId();
-		long start = new Date().getTime();
-		// We cant use this for normal updates since we do not get back the id
-		// or the version for new data object
 
-		// final Map<String, Data> toversion = new HashMap(inBuffer.size());
-		final List<Data> toprocess = new ArrayList(inBuffer);
-		final List errors = new ArrayList();
-		// Make this not return till it is finished?
-		int currentordering = -1;
+	public void updateInBatch(Collection<Data> inBuffer, User inUser) {
+	    String catid = getElasticIndexId();
+	    long start = System.currentTimeMillis();
 
-		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
-		{
-			@Override
-			public void beforeBulk(long executionId, BulkRequest request)
-			{
+	    final List<Data> toprocess = new ArrayList<>(inBuffer);
+	    final List<String> errors = Collections.synchronizedList(new ArrayList<>());
 
-			}
+	    BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener() {
+	        @Override
+	        public void beforeBulk(long executionId, BulkRequest request) { }
 
-			@Override
-			public void afterBulk(long executionId, BulkRequest request, BulkResponse response)
-			{
-				for (int i = 0; i < response.getItems().length; i++)
-				{
-					// request.getFromContext(key)
-					BulkItemResponse res = response.getItems()[i];
-					if (res.isFailed())
-					{
-						log.info(res.getFailureMessage());
-						errors.add(res.getFailureMessage());
+	        @Override
+	        public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
+	            for (int i = 0; i < response.getItems().length; i++) {
+	                BulkItemResponse res = response.getItems()[i];
+	                if (res.isFailed()) {
+	                    log.warn(res.getFailureMessage());
+	                    errors.add(res.getFailureMessage());
+	                }
+	            }
+	        }
 
-					}
-					// Data toupdate = toversion.get(res.getId());
-					Data toupdate = toprocess.get(res.getItemId());
-					if (toupdate == null)
-					{
-						errors.add("Data [" + i + "] was null: " + res.getItemId());
-					}
-					else
-					{
-						if (isCheckVersions())
-						{
-							toupdate.setProperty(".version", String.valueOf(res.getVersion()));
-						}
-						toupdate.setId(res.getId());
-						getCacheManager().remove("data" + getSearchType(), res.getId());
-					}
-				}
-				//	request.refresh(true);
-			}
+	        @Override
+	        public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
+	            log.error("Bulk failed", failure);
+	            errors.add(failure.toString());
+	        }
+	    })
+	    .setBulkActions(5000)
+	    .setBulkSize(new ByteSizeValue(25, ByteSizeUnit.MB))
+	    .setFlushInterval(TimeValue.timeValueSeconds(15))
+	    .setConcurrentRequests(5)
+	    .setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10))
+	    .build();
 
-			@Override
-			public void afterBulk(long executionId, BulkRequest request, Throwable failure)
-			{
-				log.info(failure);
-				errors.add(failure);
-			}
-		}).setBulkActions(-1).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueMinutes(4)).setConcurrentRequests(1).setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10)).build();
+	    PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
+	    int threads = Runtime.getRuntime().availableProcessors() /2; 
+	    ExecutorService exec = Executors.newFixedThreadPool(threads);
 
-		//setConcurrentRequests = 1 sets concurrentRequests to 1, which means an asynchronous execution of the flush operation.
+	    List<Future<?>> futures = new ArrayList<>();
 
-		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
+	    for (Data data2 : inBuffer) {
+	        futures.add(exec.submit(() -> {
+	            try {
+	                XContentBuilder content = XContentFactory.jsonBuilder().startObject();
+	                presave(details, data2, content, false);
+	                updateIndex(content, data2, details, inUser);
+	                content.endObject();
 
-		PropertyDetail ordering = details.getDetail("ordering");
-		boolean fixordering = false;
-		if (ordering != null && ordering.isAutoIncrement() && ordering.isIndex())
-		{
-			fixordering = true;
-		}
+	                IndexRequest req = Requests.indexRequest(catid).type(getSearchType());
+	                if (data2.getId() != null) {
+	                    req.id(data2.getId());
+	                }
+	                req.source(content);
 
-		for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();)
-		{
-			try
-			{
-				Data data2 = (Data) iterator.next();
-				if (fixordering)
-				{
-					Object order = data2.getValue("ordering");
-					if (order != null)
-					{
-						if (Long.parseLong(order.toString()) == 0)
-						{
-							order = null;
-						}
-					}
-					if (order == null)
-					{
-						if (currentordering == -1)
-						{
-							IdManager manager = (IdManager) getModuleManager().getBean(getCatalogId(), "idManager");
-							currentordering = manager.nextNumber(getSearchType() + "_ordering").intValue();
-						}
-						else
-						{
-							currentordering = currentordering + 10;
-						}
-						data2.setValue("ordering", currentordering);
-					}
-				}
+	                bulkProcessor.add(req);
+	            } catch (Exception ex) {
+	                errors.add("Build failed: " + ex.getMessage());
+	            }
+	        }));
+	    }
 
-				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
-				presave(details, data2, content, false);
-				updateIndex(content, data2, details, inUser);
-				content.endObject();
-				IndexRequest req = Requests.indexRequest(catid).type(getSearchType());
-				PropertyDetail parent = details.getDetail("_parent");
-				if (parent != null)
-				{
-					// String _parent = data.get(parent.getListId());
-					String _parent = data2.get(parent.getId());
-					if (_parent != null)
-					{
-						req.parent(_parent);
-					}
-				}
-				if (data2.getId() != null)
-				{
-					req = req.id(data2.getId());
+	    // wait for all build tasks
+	    for (Future<?> f : futures) {
+	        try {
+	            f.get();
+	        } catch (Exception e) {
+	            throw new OpenEditException(e);
+	        }
+	    }
+	    exec.shutdown();
 
-				}
-				req = req.source(content);
-				// if( isRefreshSaves() )
-				// {
-				// req = req.refresh(true);
-				// }
-				//				try
-				//				{
-				bulkProcessor.add(req);
-				//				}
-				//				catch( RemoteTransportException ex)
-				//				{
-				//					if( ex.getCause() instanceof EsRejectedExecutionException)
-				//					{
-				//						
-				//					}
-				//				}
-			}
-			catch (Throwable ex)
-			{
-				if (ex instanceof OpenEditException)
-				{
-					throw (OpenEditException) ex;
-				}
-				throw new OpenEditException(ex);
+	    try {
+	        bulkProcessor.flush();
+	        bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
+	    } catch (InterruptedException e) {
+	        throw new OpenEditException(e);
+	    }
 
-			}
-		}
+	    if (!errors.isEmpty()) {
+	        throw new OpenEditException(errors.get(0));
+	    }
 
-		//		bulkProcessor.close();
-		try
-		{
-			bulkProcessor.flush();
-			bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
-
-			//This is in memory only flush
-			RefreshResponse actionGet = getClient().admin().indices().prepareRefresh(catid).execute().actionGet();
-
-		}
-		catch (InterruptedException e)
-		{
-			throw new OpenEditException(e);
-		}
-
-		if (errors.size() > 0)
-		{
-			throw new OpenEditException((String) errors.get(0).toString());
-
-		}
-		long end = new Date().getTime();
-		double total = (end - start) / 1000.0;
-		log.info("processed bulk save  " + inBuffer.size() + " records in " + total + " seconds (" + getSearchType() + ")");
-
-		if (currentordering != -1)
-		{
-			IdManager manager = (IdManager) getModuleManager().getBean(getCatalogId(), "idManager");
-			manager.setNumber(getSearchType() + "_ordering", currentordering);
-		}
-
-		// ConcurrentModificationException
-		// builder = builder.setSource(content).setRefresh(true);
-		// BulkRequestBuilder brb = getClient().prepareBulk();
-		//
-		// brb.add(Requests.indexRequest(indexName).type(getIndexType()).id(id).source(source));
-		// }
-		// if (brb.numberOfActions() > 0) brb.execute().actionGet();
-
-		//getClient().admin().cluster().prepareHealth().setWaitForGreenStatus().execute().actionGet();
-
+	    long end = System.currentTimeMillis();
+	    double total = (end - start) / 1000.0;
+	    log.info("processed bulk save " + inBuffer.size() + " records in " + total + " seconds (" + getSearchType() + ")");
 	}
+
 
 	protected void presave(PropertyDetails details, Data inData, XContentBuilder content, boolean delete)
 	{
@@ -4252,7 +4154,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		setReIndexing(true);
 		try
 		{
-			int SIZE = 3000;
+			int SIZE = 30000;
 
 			allhits.enableBulkOperations();
 			allhits.setHitsPerPage(SIZE);
