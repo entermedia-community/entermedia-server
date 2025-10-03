@@ -2730,10 +2730,22 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			
 			HashSet allprops = new HashSet();
 			
-			if( inDetails.isAllowDynamicFields() || isCheckLegacy() )
+			if( inDetails.isAllowDynamicFields() )
 			{
 				allprops.addAll(inData.getProperties().keySet()); //Needed for legacy field handling below
 			} 
+			else if( isCheckLegacy() )
+			{
+				for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
+				{
+					PropertyDetail detail = (PropertyDetail) iterator.next();
+					String legacyfield = detail.get("legacy");
+					if (legacyfield != null )
+					{
+						allprops.add(legacyfield); //We need to make a copy anyways
+					}
+				}
+			}
 			//allprops.addAll(props.keySet());
 			for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
 			{
