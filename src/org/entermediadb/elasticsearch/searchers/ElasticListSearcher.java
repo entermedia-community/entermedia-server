@@ -270,7 +270,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 		}
 		catch(Throwable ex)
 		{
-			log.error("problem saving " + inData.getId() +  ex.getMessage());
+			log.error("problem saving " + inData.getId() + " searchtype:" + getSearchType() + " "+ ex.getMessage());
 			throw new OpenEditException(ex);
 		}
 	}

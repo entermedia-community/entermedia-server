@@ -103,30 +103,13 @@ public class FinderModule extends BaseMediaModule
 		tracker = assetsearcher.cachedSearch(inReq, search);
 
 	}
-	
+
+	/*
 	public void organizeHits(WebPageRequest inReq) 
 	{
-		Collection organizedHits = (Collection)inReq.getPageValue("organizedHits");
-		
-		if( organizedHits != null)
-		{
-			log.info("Modules aready loaded" + inReq.getPage().getPath());
-			return;
-		}
-		String HitsName = inReq.findValue("hitsname");
-		HitTracker hits = (HitTracker)inReq.getPageValue(HitsName);
-		if( hits != null)
-		{
-			Collection pageOfHits = hits.getPageOfHits();
-			pageOfHits = new ArrayList(pageOfHits); 
-			getResultsManager(inReq).organizeHits(inReq, hits, pageOfHits);
-		}
+		//Moved to a session value
 	}
-	
-
-	
-	
-
+	*/
 	public void showFavorites(WebPageRequest inReq) 
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -140,8 +123,6 @@ public class FinderModule extends BaseMediaModule
 		
 		long totalhits = 0;
 		
-		ArrayList<Data> foundmodules = new ArrayList();
-		Map<String,Collection> bytypes = null;
 		HitTracker<Data> modulestocheck = 	getSearcherManager().getList(archive.getCatalogId(), "module");//listSearchModules(archive);
 
 		Collection uids = new ArrayList();
@@ -159,6 +140,7 @@ public class FinderModule extends BaseMediaModule
 				}
 			}
 		}
+		HitTracker entityhits = null;
 		if( !uids.isEmpty())
 		{
 			Searcher searcher = archive.getSearcher("modulesearch");
@@ -175,22 +157,12 @@ public class FinderModule extends BaseMediaModule
 			
 			query.setName("modulehits");
 			query.addOrsGroup("id",uids);  //TODO: Filter out duplicates based on type
-			query.setHitsPerPage(1000);
-			HitTracker hits = searcher.cachedSearch(inReq, query);
-			if( hits != null)
-			{
-				//organizeHits(inReq, hits, hits.getPageOfHits());
-				log.info("Found " + hits.size() + " favorite on " + hits.getHitsName());
-			}
-			totalhits = totalhits + hits.size(); 
+			query.setHitsPerPage(1);
+			entityhits = searcher.cachedSearch(inReq, query);
 			
-			String smaxsize = inReq.findValue("maxcols");
-			int targetsize = smaxsize == null? 7:Integer.parseInt(smaxsize);
-			bytypes = getResultsManager(inReq).organizeHits(inReq,hits, hits.iterator(),targetsize);
-
-			foundmodules = getResultsManager(inReq).processResults(hits, archive, targetsize, bytypes);
+			//bytypes = getResultsManager(inReq).organizeHits(inReq,hits, hits.iterator(),targetsize);
+			//foundmodules = getResultsManager(inReq).processResults(hits, archive, targetsize, bytypes);
 		}
-		
 		
 		//search Assets:assetvotes
 		//from MediaSearchModule.java
@@ -203,9 +175,9 @@ public class FinderModule extends BaseMediaModule
 		query.addExact("username", user.getId());
 		query.addSortBy("timeDown");
 		HitTracker assets = searcher.cachedSearch(inReq, query);
+		HitTracker assethits = null;
 		if( assets.size() > 0)
 		{
-			
 			//Now do a big OR statement
 			SearchQuery aquery = archive.getAssetSearcher().createSearchQuery();
 			aquery.setSortBy(inReq.findValue("sortby"));
@@ -224,42 +196,21 @@ public class FinderModule extends BaseMediaModule
 					orquery.addExact("id", data.get("assetid"));
 				}
 			}
-			
 			aquery.addChildQuery(orquery); 
 			aquery.setHitsName("favoriteassetsmatch");
 			
-			
-			
-			HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq, aquery);
-			
-			
-			if( !assethits.isEmpty())
-			{
-				Data module = archive.getCachedData("module", "asset");
-				foundmodules.add(module);
-				if( bytypes == null)
-				{
-					bytypes = new HashMap();
-				}
-				bytypes.put("asset",assethits);
-				
-				totalhits = totalhits + assethits.size();
-			}
+			assethits = archive.getAssetSearcher().cachedSearch(inReq, aquery);
 		}
 		
-		getResultsManager(inReq).sortModules(foundmodules);
-		log.info("Organized Modules: " + foundmodules);
-		
-		if (foundmodules.size() == 0) {
-			log.info("Found no modules.");
-		}
-		
-		inReq.putPageValue("organizedModules",foundmodules);
-		inReq.putPageValue("organizedHits", bytypes);
-		inReq.putPageValue("organizedHitsSize", totalhits);
-		
-		 
-		
+		//getResultsManager(inReq).sortModules(foundmodules);
+//		inReq.putPageValue("organizedModules",foundmodules);
+//		inReq.putPageValue("organizedHits", bytypes);
+//		inReq.putPageValue("organizedHitsSize", totalhits);
+		String smaxsize = inReq.findValue("maxcols");
+		int targetsize = smaxsize == null? 7:Integer.parseInt(smaxsize);
+
+		getResultsManager(inReq).loadOrganizedResults(inReq, entityhits,assethits, targetsize);
+		//inReq.putPageVaXXXlue("organizedResults",organizedresults);
 
 	}
 	
@@ -398,9 +349,7 @@ public class FinderModule extends BaseMediaModule
 		
 		
 		//Include module results
-		Collection pageOfHits = unsorted.getPageOfHits();
-		pageOfHits = new ArrayList(pageOfHits); 
-		resultsManager.organizeHits(inReq, unsorted, pageOfHits);
+		resultsManager.loadOrganizedResults(inReq, unsorted, assetunsorted);
 
 	}
 	
@@ -642,6 +591,7 @@ public class FinderModule extends BaseMediaModule
 		inReq.putPageValue("appsmenu", menu);
 	}
 	
+	/*
 	public void loadOrSearchChildren(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -661,8 +611,6 @@ public class FinderModule extends BaseMediaModule
 			
 			
 			//String searchingfor = inReq.findActionValue("searchallchildren");
-			List organizedModules = new ArrayList();
-			Map organizedHits = new HashMap();
 			
 			List organizedSubModulesIds = new ArrayList();
 			Map organizedSubModules = new HashMap();
@@ -765,15 +713,16 @@ public class FinderModule extends BaseMediaModule
 				}
 			}
 			
-			
-			inReq.putPageValue("organizedModules",organizedModules);
-			inReq.putPageValue("organizedHits",organizedHits);
-			
-			inReq.putPageValue("organizedSubModules",organizedSubModules);
-			inReq.putPageValue("organizedHitsSubModules",organizedHitsSubModules);
+			getResultsManager(inReq).loadOrganizedResults(inReq, entityhits, assethits, targetsize);
+
+//			inReq.putPageValue("organizedModules",organizedModules);
+//			inReq.putPageValue("organizedHits",organizedHits);
+//			
+//			inReq.putPageValue("organizedSubModules",organizedSubModules);
+//			inReq.putPageValue("organizedHitsSubModules",organizedHitsSubModules);
 		}
 	}
-
+*/
 	public void loadOrSearchByTypes(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -820,19 +769,18 @@ public class FinderModule extends BaseMediaModule
 			inReq.putSessionValue(hits.getSessionId(), hits);
 		}
 		inReq.putPageValue("searcher", modulesearcher);
-//		if( searchmodules.contains("asset"))
-//		{
-//			SearchQuery assetsearch = search.copy();
-//			assetsearch.setName("assethits");
-//			HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq, search);  //cached
-//			log.info("Assets " +  assethits.getSearchType() + ": " + assethits.getSearchQuery().toQuery() + " size:" + assethits.size() );
-//		}
+		HitTracker assethits = null;
+		if( searchmodules.contains("asset"))
+		{
+			SearchQuery assetsearch = search.copy();
+			assetsearch.setName("assethits");
+			assethits = archive.getAssetSearcher().cachedSearch(inReq, search);  //cached
+			log.info("Assets " +  assethits.getSearchType() + ": " + assethits.getSearchQuery().toQuery() + " size:" + assethits.size() );
+		}
+
+		getResultsManager(inReq).loadOrganizedResults(inReq, hits,assethits);
 
 	}
-
-	
-
-
 
 	public void assignDataPermissionsToCategory(WebPageRequest inReq)
 	{
