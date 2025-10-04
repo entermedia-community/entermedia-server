@@ -15,7 +15,7 @@
 
 #set( $imagesize = "image200x200.jpg")
 
-#if($thumbsize == "mediumplus")
+#if($thumbsize == "mediumplus" || $thumbsize == "medium")
 	#set($imagesize = "image550x350.jpg")
 #elseif($thumbsize == "crop")
 	#set($imagesize = "image110x62cropped.jpg")

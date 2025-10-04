@@ -2,7 +2,7 @@ package org.entermediadb.jsonrpc;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 
 public class JsonRpcResponseBuilder {
 	final private String version = "2.0";
@@ -50,7 +50,7 @@ public class JsonRpcResponseBuilder {
     	JSONObject result = new JSONObject();
     	
     	try {
-    		JSONArray toolsArray = (JSONArray) parser.parse(toolsStr);
+    		JSONArray toolsArray = (JSONArray) parser.parseCollection(toolsStr);
     		result.put("tools", toolsArray);
 		} catch (Exception e) {
 			result.put("text", "Invalid JSON Array in tools/list.html");

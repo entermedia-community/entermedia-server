@@ -1,5 +1,0 @@
-<page>
-	<property name="eventname">Manager Snapshot</property>	
-	<path-action name="MediaAdminModule.catalogSnapshot" />
-		
-</page>

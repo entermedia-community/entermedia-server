@@ -63,6 +63,7 @@ import org.openedit.data.BaseCompositeData;
 import org.openedit.data.BaseData;
 import org.openedit.data.CompositeData;
 import org.openedit.data.DataWithSearcher;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.QueryBuilder;
@@ -87,6 +88,7 @@ import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.ExecutorManager;
 import org.openedit.util.PathProcessor;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
@@ -138,6 +140,7 @@ public class MediaArchive implements CatalogEnabled
 	protected CacheManager fieldCacheManager;
 	protected OrderManager fieldOrderManager;
 	protected UserManager fieldUserManager;
+	protected ExecutorManager fieldExecutorManager;
 
 	public CacheManager getCacheManager()
 	{
@@ -154,6 +157,14 @@ public class MediaArchive implements CatalogEnabled
 		fieldCacheManager = inCacheManager;
 	}
 
+	public ExecutorManager getExecutorManager()
+	{
+		if( fieldExecutorManager == null)
+		{
+			fieldExecutorManager = (ExecutorManager)getModuleManager().getBean(getCatalogId(), "executorManager",true);
+		}
+		return fieldExecutorManager;
+	}
 	public PresetCreator getPresetManager()
 	{
 		if (fieldPresetManager == null)
@@ -2541,6 +2552,16 @@ public class MediaArchive implements CatalogEnabled
 		return getSearcher(inSearchType).query();
 	}
 
+	/**
+	 * I called this localQuery because I wanted to not interact with autocomplete on query()
+	*/
+	
+	public QueryBuilder localQuery(String inSearchType)
+	{
+		QueryBuilder builder = getSearcher(inSearchType).query();
+		builder.exact("emrecordstatus.mastereditclusterid", getNodeManager().getLocalClusterId());
+		return builder;
+	}
 	public Collection getBadges(MultiValued inRow)
 	{
 		Collection badges = inRow.getValues("badge");
@@ -3119,7 +3140,29 @@ public class MediaArchive implements CatalogEnabled
 		
 		return word;
 	}
-	
+	public Collection<MultiValued> getValueList(PropertyDetail inDetail, MultiValued inData)
+	{
+		Collection<String> ids = inData.getValues(inDetail.getId());
+		if(ids == null || ids.isEmpty()) 
+		{
+			return null;
+		}
+		Collection<MultiValued> results = null;
+		if(ids.size() == 1)
+		{
+			results = new ArrayList(1);
+			MultiValued res = (MultiValued) getCachedData(inDetail.getListId(), ids.iterator().next());
+			if( res != null)
+			{
+				results.add(res);
+			}
+		}
+		else
+		{			
+			results = query(inDetail.getListId()).ids(ids).search();
+		}
+		return results;
+	}
 	public String text(String text, String id)
 	{
 		if (text == null) {
@@ -3309,7 +3352,7 @@ public class MediaArchive implements CatalogEnabled
 		FaceProfileManager manager = (FaceProfileManager) getBean("faceProfileManager");
 		return manager;
 	}
-
+	
 	public LlmConnection getLlmConnection(String inModel)
 	{
 		

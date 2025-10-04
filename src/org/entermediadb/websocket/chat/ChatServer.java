@@ -23,7 +23,9 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.TrayIcon.MessageType;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -33,17 +35,22 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.data.AddedPermission;
 import org.entermediadb.projects.ProjectManager;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.data.ValuesMap;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.ExecutorManager;
+import org.openedit.util.JSONParser;
+
+import groovy.json.internal.ValueMap;
 
 public class ChatServer
 {
@@ -139,6 +146,22 @@ public class ChatServer
 		// TODO Auto-generated method stub
 		connections.add(inConnection);
 	}
+	
+	public void broadcastRemovedMessage(String inCatalogId, Data inData)
+	{
+		JSONObject inMap = new JSONObject(inData.getProperties());
+		//Command
+		Date date = (Date)inData.getValue("date");
+		if(date != null) {
+			date = new Date();
+		}
+		
+		inMap.put("date",DateStorageUtil.getStorageUtil().getJsonFormat().format(date));
+		inMap.put("messageid",inData.getId());
+		inMap.put("command","messageremoved");
+		inMap.put("message",inData.get("message"));
+		broadcastMessage(inCatalogId,inMap);
+	}
 
 	public void broadcastMessage(String inCatalogId, Data inData)
 	{
@@ -160,37 +183,19 @@ public class ChatServer
 		String inCatalogId = (String)inMap.get("catalogid");
 		broadcastMessage(inCatalogId,inMap);
 	}
+	
 	public void broadcastMessage(String catalogid, JSONObject inMap)
 	{
 		
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		
-		String moduleid = (String) inMap.get("moduleid");
-		if (moduleid == null)
-		{
-			moduleid = "librarycollection";
-		}
-		Data entity = null;
-		String entityid = (String) inMap.get("entityid");
-		if (entityid != null && !entityid.equals("") && !entityid.equals("null"))
-		{
-			entityid = (String) inMap.get("collectionid");  //For OI chats attached to a collectionid
-		}
-		if (entityid != null && !entityid.equals("") && !entityid.equals("null"))
-		{
-			entity = archive.getCachedData(moduleid, entityid); 
-		}
-		
 		String channelid = (String)inMap.get("channel");
 		
-		//LibraryCollection collection = (LibraryCollection) archive.getCachedData("librarycollection", collectionid);
-
 		if( catalogid != null && channelid != null )
 		{
 			final ChatManager manager = getChatManager(catalogid);
 			
 			//log.info("Sending " + inMap.toJSONString()		+" to " + connections.size() + " Clients");
-			
 			
 			String userid = null;
 			if( inMap.get("user") != null )
@@ -202,57 +207,107 @@ public class ChatServer
 			{
 				manager.updateChatTopicLastModified( channelid, userid, messageid );
 			}
-			if( entity != null)
+			
+			ProjectManager projectmanager = getProjectManager(catalogid);
+//				
+//			if(inMap.get("topic") == null)
+//			{
+//				inMap.put("topic", entity.getName());
+//			}
+			if( inMap.get("name") == null)
 			{
-				ProjectManager projectmanager = getProjectManager(catalogid);
-				
-				if(inMap.get("topic") == null)
+				User user = archive.getUser(userid);
+				if(user != null)
 				{
-					inMap.put("topic", entity.getName());
+					inMap.put("name",user.getScreenName());
 				}
-				if( inMap.get("name") == null)
-				{
-					User user = archive.getUser(userid);
-					if(user != null)
-					{
-						inMap.put("name",user.getScreenName());
-					}
-				}
-				
-				Boolean broadcastAll = (Boolean)inMap.get("broadcastall");
-				
-				if (broadcastAll != null && broadcastAll) {
-					for (Iterator iterator = connections.iterator(); iterator.hasNext();)
-					{
-						ChatConnection chatConnection = (ChatConnection) iterator.next();
-						chatConnection.sendMessage(inMap);
-					}	
-				}
-				else {
-					if( moduleid.equals("librarycollection"))
-					{
-						Set userids = projectmanager.listTeam(entity);
-						userids.add(userid);
-						
-						for (Iterator iterator = connections.iterator(); iterator.hasNext();)
-						{
-							ChatConnection chatConnection = (ChatConnection) iterator.next();
-							if( userids.contains(chatConnection.getUserId() ) )
-							{
-								chatConnection.sendMessage(inMap);
-							}
-						}
-					}
-				}
-			} 
-			else 
-			{ 
+			}
+			
+			Boolean broadcastAll = (Boolean)inMap.get("broadcastall");
+			
+			if (broadcastAll != null && broadcastAll) {
 				for (Iterator iterator = connections.iterator(); iterator.hasNext();)
 				{
 					ChatConnection chatConnection = (ChatConnection) iterator.next();
 					chatConnection.sendMessage(inMap);
 				}	
+				return;
 			}
+
+			Set userids = null;
+				
+			
+			String moduleid = (String) inMap.get("moduleid");
+			
+			if( moduleid != null)
+			{
+				if(moduleid.equals("user"))
+				{
+					MultiValued channel = (MultiValued) archive.getCachedData("channel", channelid);
+					userids = new HashSet();
+					if("agentchat".equals(channel.get("channeltype")))
+					{					
+						userids.add("agent");
+					}
+					userids.add(userid);
+				}
+				else
+				{					
+					Data entity = null;
+					String entityid = (String) inMap.get("entityid");
+					if (entityid == null || entityid.equals("") || entityid.equals("null"))
+					{
+						entityid = (String) inMap.get("collectionid");  //For OI chats attached to a collectionid
+					}
+					if (entityid != null)
+					{
+						entity = archive.getCachedData(moduleid, entityid); 
+					}
+					
+					if (moduleid.equals("librarycollection"))
+					{
+						//MultiValued topic = (MultiValued) archive.getCachedData("collectiveproject", channelid);
+						//if (topic.getBoolean("teamproject"))
+						userids = projectmanager.listTeam(entity);
+						userids.add(userid);
+					}
+					else
+					{
+						//Todo: other Entities
+						Data module = archive.getCachedData("module", moduleid);
+						Collection<AddedPermission> permissions = archive.getPermissionManager().loadEntityPermissions(module, entity);
+						userids = new HashSet();
+						userids.add(userid);
+						for (Iterator iterator = permissions.iterator(); iterator.hasNext();)
+						{
+							AddedPermission addedPermission = (AddedPermission) iterator.next();
+							if (addedPermission.getPermissionType().equals("users"))
+							{
+								userids.add(addedPermission.getData().getId());
+							}
+							
+						}
+					}
+				}
+			}
+			
+			for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+			{
+				ChatConnection chatConnection = (ChatConnection) iterator.next();
+				if(userids != null && userids.contains(chatConnection.getUserId() ) )
+				{
+					chatConnection.sendMessage(inMap);
+				}
+				else
+				{
+					String connectionChannel = chatConnection.getChannelId();
+					if (channelid.equals(connectionChannel))
+					{
+						//log.info("Other connection is not a team member: " + chatConnection.getChannelId());
+						chatConnection.sendMessage(inMap);
+					}
+				}
+			} 
 			
 			//For people who are logged in, mark that they checked already
 			getExecutorManager(catalogid).execute( new Runnable() {
@@ -277,9 +332,6 @@ public class ChatServer
 				}
 			});
 		}
-		else {
-			log.info("Error broadcasting message to channel: "+ channelid + ", missing collection: " + entityid + " or module: "+ moduleid +" or catalog: " + catalogid);
-		}
 	}
 
 	public Data saveMessage(final JSONObject inMap)
@@ -293,92 +345,36 @@ public class ChatServer
 		
 		String userid = (String)inMap.get("user").toString();
 		
-		long now = System.currentTimeMillis() - 9*1000;
-		Data lastOne = chats.query().exact("channel",channel.getId()).after("date",new Date(now)).sort("dateDown").searchOne();
-		Data chat = null;
-		String newmessage = String.valueOf( inMap.get("message") );
-		/*
-		 * Check for previous user, if previous user is the same combine last message
-		 * content with new message.
-		 */
-	
-		if(lastOne != null)
-		{
-			String lastUserId = lastOne.get("user"); 
-			if( lastUserId.contentEquals(userid))
-			{
-				chat = lastOne;  //USE LAST ONE
-				String combined = lastOne.get("message");
-				combined = combined + "<br>" + newmessage;
-				lastOne.setValue("message",combined);
-			}
-		}
-		String entityid = null;
-		if(inMap.get("entityid")!= null) {
-			//CAST FROM LONG!
-			entityid = String.valueOf(inMap.get("entityid"));
-		}
-		String collectionid = null;
-		collectionid = String.valueOf(inMap.get("collectionid"));
-		
-		String moduleid = null;
-		if(inMap.get("moduleid")!= null) {
-			moduleid = String.valueOf(inMap.get("moduleid"));
-		}
-		if(moduleid == null)
-		{
-			moduleid = "librarycollection";
-		}
+//		long now = System.currentTimeMillis() - 9*1000;
+//		Data lastOne = chats.query().exact("channel",channel.getId()).after("date",new Date(now)).sort("dateDown").searchOne();
 
-		if( chat == null)
-		{
-			chat = chats.createNewData();
-			chat.setValue("date", new Date());
-			chat.setValue("user", userid);
-			chat.setValue("channel", channel.getId());
-			if(entityid != null)
-			{
-				chat.setValue("entityid", entityid);
-				chat.setValue("moduleid",moduleid);
-			}
-			else {
-				chat.setValue("collectionid", collectionid);	
-			}
+		ValuesMap values = new ValuesMap(inMap);
+
+		Data chat = chats.createNewData();
+		chat.setValue("date", new Date());
+		chat.setValue("user", userid);
+		chat.setValue("channel", channel.getId());
+		chat.setValue("entityid", values.getString("entityid"));
+		chat.setValue("moduleid", values.getString("moduleid"));
+		chat.setValue("collectionid", values.getString("collectionid"));
+		chat.setValue("chatmessagestatus", "received");
 		
-			chat.setValue("channeltype", inMap.get("channeltype"));
-			chat.setValue("message", newmessage);
-			chat.setValue("messagetype", "message");
-		}
-		String replytoid = (String)inMap.get("replytoid");
-		chat.setValue("replytoid",replytoid);
-		chats.saveData(chat);  //<----  SAVE chat
+		String newmessage = values.getString("message");
+		chat.setValue("message", newmessage);
+		chat.setValue("messagetype", "message");
+		
+		chat.setValue("replytoid", values.getString("replytoid"));
+		
+		chats.saveData(chat);
 		
 		User user = archive.getUser(userid);
 		archive.fireDataEvent(user,"chatterbox","saved", chat);
-		archive.fireSharedMediaEvent("llm/monitorchats");
+		archive.fireSharedMediaEvent("llm/monitorchats"); //TODO: move to generic event
 
 		String messageid = chat.getId();
 		inMap.put("messageid", messageid);
-		
-		/*
-		//handled in ProjectModule.attachAssetsToMessage
-		
-		if (inMap.get("assetid")!= null) {
-			String assetid = String.valueOf(inMap.get("assetid"));
-			if( assetid != null)
-			{
-				Asset asset = archive.getAsset( assetid);
-				if( asset != null && !asset.isPropertyTrue("haschat"))
-				{
-					asset.setValue("haschat", true);
-					archive.saveAsset(asset);
-				}
-				archive.fireMediaEvent("assetchat", user,asset );
-			}
-		}
-		*/
-		
-		return chat;//chat.get("message");
+
+		return chat; 
 	}
 
 	public Data loadChannel(MediaArchive inArchive, Map inChannelInfo)
@@ -389,9 +385,7 @@ public class ChatServer
 			if (channel == null) {
 				channel = chats.createNewData();
 				channel.setId(channelid);
-				String channeltype = (String) inChannelInfo.get("channeltype");				
-				String aienabled = (String) inChannelInfo.get("aienabled");				
-				channel.setValue("aienabled", aienabled);
+				String channeltype = (String) inChannelInfo.get("channeltype");
 				channel.setValue("channeltype", channeltype);
 				chats.saveData(channel);
 			}

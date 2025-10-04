@@ -10,9 +10,9 @@ import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse
 import org.elasticsearch.cluster.metadata.MappingMetaData
 import org.elasticsearch.common.collect.ImmutableOpenMap
 import org.entermediadb.asset.MediaArchive
-import org.entermediadb.elasticsearch.SearchHitData
 import org.entermediadb.elasticsearch.searchers.ElasticListSearcher
 import org.openedit.Data;
+import org.openedit.MultiValued
 import org.openedit.data.NonExportable
 import org.openedit.data.PropertyDetails
 import org.openedit.data.PropertyDetailsArchive
@@ -167,7 +167,7 @@ public void exportDatabase(MediaArchive mediaarchive, List searchtypes, String r
 			return;
 		}
 	
-			PropertyDetails details = searcher.getPropertyDetails();
+		PropertyDetails details = searcher.getPropertyDetails();
 		HitTracker hits = searcher.getAllHits();
 		hits.enableBulkOperations();
 		if(hits.size() > 0){
@@ -184,7 +184,7 @@ public void exportDatabase(MediaArchive mediaarchive, List searchtypes, String r
 			int count = 0;
 			hits.each{
 				count++;
-				SearchHitData hit = it;
+				MultiValued hit = it;
 				IOUtils.write(hit.toJsonString(), finalZip, "UTF-8");
 				if(size != count) {
 				IOUtils.write(",", finalZip, "UTF-8");

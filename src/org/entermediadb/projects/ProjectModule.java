@@ -470,18 +470,19 @@ public class ProjectModule extends BaseMediaModule
 
 	public LibraryCollection loadCollection(WebPageRequest inReq)
 	{
-		String collectionid = loadCollectionId(inReq);
-		LibraryCollection collection = null;
-		if (collectionid == null)
-		{
-			collection = loadCollectionFromFolder(inReq);
-		}
-		else
-		{
-			collection = getProjectManager(inReq).getLibraryCollection(getMediaArchive(inReq), collectionid);
-		}
+		LibraryCollection collection = (LibraryCollection) inReq.getPageValue("librarycol");
 		if (collection == null)
 		{
+			String collectionid = loadCollectionId(inReq);
+			
+			if (collectionid == null)
+			{
+				collection = loadCollectionFromFolder(inReq);
+			}
+			else
+			{
+				collection = getProjectManager(inReq).getLibraryCollection(getMediaArchive(inReq), collectionid);
+			}
 			//log.error("No collection id found on " + inReq.getPath());
 			//collection = loadCollectionFromCommunityTagFolder(inReq);
 
@@ -909,9 +910,27 @@ public class ProjectModule extends BaseMediaModule
 		{
 			inReq.putPageValue("librarycol", collection);
 		}
-		inReq.putPageValue("caneditcollection", caneditcollection);
 		return caneditcollection;
 	}
+	
+	public Boolean canViewProfitAndLoss(WebPageRequest inReq)
+	{
+		ProjectManager manager = getProjectManager(inReq);
+		LibraryCollection collection = loadCollection(inReq);
+		
+		String privacylevel = collection.get("priviacylevel");
+		
+		if(privacylevel == null || privacylevel.equals("community")) 
+		{
+			return true;
+		}
+		
+		return isOnTeam(inReq);
+	}
+	
+	
+	
+	
 	//
 	// public void loadCategoriesOnCollections(WebPageRequest inReq)
 	// {
@@ -1905,7 +1924,6 @@ public class ProjectModule extends BaseMediaModule
 
 		MediaArchive archive = getMediaArchive(inReq);
 		
-		
 		Collection savedassets = (Collection) inReq.getPageValue("savedassets");
 		
 		String messageid = inReq.getRequestParameter("messageid");
@@ -1927,7 +1945,8 @@ public class ProjectModule extends BaseMediaModule
 				message.setValue("user", inReq.getUserName());
 				message.setValue("date", now);
 				message.setValue("channel", channel);
-				
+				String entityid = inReq.getRequestParameter("entityid");
+				message.setValue("entityid", entityid);
 				
 				chatterboxsearcher.saveData(message);
 	    		broadcast= true;
@@ -1953,7 +1972,6 @@ public class ProjectModule extends BaseMediaModule
 				tosave.add(asset);
 			}
 		}
-		
 
 		//When is getting here?
 		String[] assetids = inReq.getRequestParameters("assetid");
@@ -1979,7 +1997,65 @@ public class ProjectModule extends BaseMediaModule
 			ChatServer server = (ChatServer) archive.getBean("chatServer");
 			server.broadcastMessage(archive.getCatalogId(), message);
 		}
-}
+	}
+	
+	
+	public void removeAssetsFromMessage(WebPageRequest inReq)
+	{
+
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		Collection savedassets = (Collection) inReq.getPageValue("savedassets");
+		
+		String messageid = inReq.getRequestParameter("messageid");
+		String assetid = inReq.getRequestParameter("assetid");
+		
+		Data message = archive.getData("chatterbox", messageid);
+		Boolean broadcast = false;
+
+		if (message == null || assetid == null)
+		{
+			return;
+		}
+		
+		Asset asset = archive.getCachedAsset(assetid);
+		if (asset != null)
+		{
+			asset.removeValue("attachedtomessageid", messageid);
+			archive.saveAsset(asset);
+		}
+		
+		Searcher chatterboxsearcher = archive.getSearcher("chatterbox");
+		
+		Boolean messageotherassets = false;
+		
+		Collection otherassets = getMediaArchive(inReq).query("asset").exact("attachedtomessageid", messageid).search();
+		for (Iterator iterator = otherassets.iterator(); iterator.hasNext();)
+		{
+			Data asset2 = (Data) iterator.next();
+			Collection messageids = asset2.getValues("attachedtomessageid");
+			for (Iterator iterator2 = messageids.iterator(); iterator2.hasNext();)
+			{
+				String assetmessageid = (String) iterator2.next();
+				if (assetmessageid.equals(messageid))
+				{
+					messageotherassets = true;
+				}
+			}
+		}
+		
+		if (!messageotherassets) 
+		{
+			//Safe to delete message
+			ChatServer server = (ChatServer) archive.getBean("chatServer");
+			server.broadcastRemovedMessage(archive.getCatalogId(), message);
+		
+			chatterboxsearcher.delete(message, null);
+			inReq.putSessionValue("chat", null);
+			
+		}
+
+	}
 	
 	
 

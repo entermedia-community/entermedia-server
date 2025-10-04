@@ -13,7 +13,7 @@ import javax.websocket.Session;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.openedit.ModuleManager;
 
@@ -154,22 +154,8 @@ public class UserNotifyConnection  extends Endpoint implements MessageHandler.Pa
 //		{
 //			return;
 //		}
-		JSONObject map;
-		try
-		{
-			map = (JSONObject)getJSONParser().parse(new StringReader(message));
-			getUserNotifyManager().onMessage(this,map);
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (ParseException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		JSONObject map = (JSONObject)getJSONParser().parse(new StringReader(message));
+		getUserNotifyManager().onMessage(this,map);
 
 	}
 

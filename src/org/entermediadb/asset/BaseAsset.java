@@ -426,12 +426,7 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	@Override
 	public boolean hasProperty(String inKey)
 	{
-		String value = get(inKey);
-		if (value != null)
-		{
-			return true;
-		}
-		return false;
+		return hasValue(inKey);
 	}
 
 	@Override
@@ -1111,6 +1106,14 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 		return output.toString();
 	}
 	
-	
+	public boolean hasValue(String inKey)
+	{
+		Object value = getValue(inKey);
+		if (value != null)
+		{
+			return true;
+		}
+		return false;
+	}
 
 }

@@ -253,7 +253,7 @@ $(document).ready(function () {
 		var div = $(this);
 		if (div.find(".drop-feedback").length == 0) {
 			div.append(
-				'<div class="drop-feedback"><div><i class="bi bi-upload"></i><p>Create Folder and Upload Files</p></div></div>'
+				'<div class="drop-feedback"><div><i class="bi bi-upload"></i><p>Create Folders from Files</p></div></div>'
 			);
 		}
 		div.on("dragover", function (e) {
@@ -269,45 +269,51 @@ $(document).ready(function () {
 			div.removeClass("filehover");
 		});
 		div.on("drop", async function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			div.removeClass("filehover");
 			if (e.originalEvent.dataTransfer) {
 				var items = e.originalEvent.dataTransfer.items;
-				if (items && items.length > 0) {
+				var foldersDropped = false;
+				if (items && items.length) {
+					for (var i = 0; i < items.length; i++) {
+						var item = items[i];
+						if (item.kind === "file") {
+							var entry = item.webkitGetAsEntry();
+							if (entry && entry.isDirectory) {
+								foldersDropped = true;
+								break;
+							}
+						}
+					}
+				}
+				if (foldersDropped) {
+					customToast("Only files are supported. Folders were dropped.", {
+						positive: false,
+					});
+					return;
+				}
+				var files = e.originalEvent.dataTransfer.files;
+
+				if (files && files.length > 0) {
 					e.preventDefault();
 					e.stopPropagation();
-					if (items.length > 1) {
-						div.removeClass("filehover");
-						customToast("Please drop a single folder.", {
-							positive: false,
-						});
+					var moduleid = $(".createnewentityfolder").data("moduleid");
+					if (!moduleid) {
 						return;
 					}
-					var entry = items[0].webkitGetAsEntry();
-					if (!entry || !entry.isDirectory) {
-						div.removeClass("filehover");
-						customToast("Please drop a folder.", {
-							positive: false,
-						});
-						return;
-					}
-					const files = [];
-					await readFolderRecursively(entry, files);
-					var moduleid = div.data("moduleid");
-					$.ajax({
-						url: `/${mediadb}/services/module/${moduleid}/create`,
-						method: "POST",
-						data: JSON.stringify({
-							name: entry.name,
-						}),
-						contentType: "application/json",
-						success: function (data) {
-							//
-						},
-						error: function (error) {
-							customToast("Error creating the folder!", {
-								positive: false,
-								log: error,
-							});
-						},
+					var uploader = `${apphome}/views/modules/${moduleid}/editors/bulkentitycreator/dialog.html?edit=true&addnew=true&moduleid=${moduleid}&viewid=${moduleid}addnew`;
+					var dialog = $(
+						`<a href="${uploader}" data-maxwidth="sm" title="Create Bulk Folders from Files"></a>`
+					);
+					dialog.emDialog(function () {
+						$(".upload_field")
+							.last()
+							.triggerHandler("html5_upload.filesPicked", [files]);
+					});
+				} else {
+					customToast("No files were dropped.", {
+						positive: false,
 					});
 				}
 			} else {
@@ -315,33 +321,8 @@ $(document).ready(function () {
 					positive: false,
 				});
 			}
-			div.removeClass("filehover");
 		});
 	});
-
-	function readFolderRecursively(entry, fileList, path = "") {
-		return new Promise((resolve) => {
-			if (entry.isFile) {
-				entry.file((file) => {
-					file.fullPath = path + file.name;
-					fileList.push(file);
-					resolve();
-				});
-			} else if (entry.isDirectory) {
-				var reader = entry.createReader();
-				reader.readEntries(async (entries) => {
-					for (var i = 0; i < entries.length; i++) {
-						await readFolderRecursively(
-							entries[i],
-							fileList,
-							path + entry.name + "/"
-						);
-					}
-					resolve();
-				});
-			}
-		});
-	}
 
 	//Detect Youtube Link
 	$("#uploaddescription").on("keyup", function () {
@@ -489,11 +470,11 @@ $.fn.initUpload = function () {
 			haderror = true;
 		},
 		onFinish: function (event, total) {
-			customToast(
-				`Uploaded ${total} file${total > 1 ? "s" : ""} successfully!`
-			);
-			//do a search
 			if (!haderror) {
+				customToast(
+					`Uploaded ${total} file${total > 1 ? "s" : ""} successfully!`
+				);
+				//do a search
 				var startb = uploadformarea.find(".startbutton");
 
 				startb.text(startb.data("textcomplete"));
@@ -511,6 +492,14 @@ $.fn.initUpload = function () {
 					editdiv.runAjax();
 				} else {
 					startb.prop("disabled", false);
+				}
+
+				var form = $(startb.closest("form"));
+
+				$(window).trigger("checkautoreload", [form]);
+				var formmodal = form.closest(".modal");
+				if (formmodal.length > 0 && form.hasClass("autocloseform")) {
+					closeemdialog(formmodal);
 				}
 			}
 		},

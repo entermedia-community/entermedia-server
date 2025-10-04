@@ -1,8 +1,6 @@
 package org.entermediadb.ai.llm.ollama;
 
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -10,20 +8,20 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.llm.BaseLlmConnection;
-import org.entermediadb.ai.llm.BaseLlmResponse;
+import org.entermediadb.ai.llm.BasicLlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmRequest;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
+import org.openedit.util.JSONParser;
 import org.openedit.util.OutputFiller;
 
 
@@ -76,7 +74,7 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		fieldCatalogId = inCatalogId;
 	}
 	
-	public String getApikey()
+	public String getApiKey()
 	{
 		if (apikey == null)
 		{
@@ -92,23 +90,22 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		return apikey;
 	}
 
-	public BaseLlmResponse runPageAsInput(Map params, String inModel, String inTemplate)
+	public BasicLlmResponse runPageAsInput(LlmRequest llmrequest, String inTemplate)
 	{
-
-		String input = loadInputFromTemplate(inTemplate, params);
+		String input = loadInputFromTemplate(inTemplate, llmrequest);
 		log.info(input);
 		String endpoint = getApiEndpoint() + "/api/chat";
 		
 
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + getApikey());
+		method.addHeader("Authorization", "Bearer " + getApiKey());
 		method.setHeader("Content-Type", "application/json");
 
 		method.setEntity(new StringEntity(input, "UTF-8"));
 		
-		HttpSharedConnection connection = getConnection();
+//		HttpSharedConnection connection = ;
 
-		CloseableHttpResponse resp = connection.sharedExecute(method);
+		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 
 		JSONObject json = connection.parseJson(resp); // pretty dumb but I want to standardize on GSON
 
@@ -121,26 +118,22 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	public String getApiEndpoint()
 	{
 		// TODO Auto-generated method stub
-		String endpoint = getMediaArchive().getCatalogSettingValue("ollama-url");
-		if (endpoint == null)
+		String apihost = getMediaArchive().getCatalogSettingValue("ollama-url");
+		if (apihost == null)
 		{
-			endpoint = "http://localhost:11434";
+			apihost = "http://localhost:11434";
 		}
+		String endpoint = apihost + "/api/chat";
 		return endpoint;
 	}
 
-	public BaseLlmResponse createImage(Map params)
+	public BasicLlmResponse createImage(String inModel, String inPrompt)
 	{
 		throw new OpenEditException("Model doesn't support images");
 	}
-	public BaseLlmResponse createImage(Map inParams, int inCount, String inSize)
+	public BasicLlmResponse createImage(String inModel, String inPrompt, int inCount, String inSize)
 	{
 		throw new OpenEditException("Model doesn't support images");
-	}
-
-	public String getEmbedding(String inQuery) throws Exception
-	{
-		return getEmbedding("text-embedding-ada-002", inQuery);
 	}
 
 	public OutputFiller getFiller()
@@ -153,13 +146,8 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		filler = inFiller;
 	}
 
-	public String getEmbedding(String inModel, String inQuery) throws Exception
+	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image)
 	{
-
-		return "Not Implemented";
-	}
-
-	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception {
 	    MediaArchive archive = getMediaArchive();
 
 	    log.info("Llama function: " + inFunction + " Query: " + inQuery);
@@ -189,10 +177,10 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	    // Handle function call definition
 	    if (inFunction != null) {
 	    	
-	        String templatepath = "/" + archive.getMediaDbId() + "/gpt/functiondefs/" + inFunction + ".json";
+	        String templatepath = "/" + archive.getMediaDbId() + "/ai/ollama/classify/functions/" + inFunction + ".json";
 	        Page defpage = archive.getPageManager().getPage(templatepath);
 	        if(!defpage.exists()) {
-		        templatepath  ="/" + archive.getCatalogId() + "/gpt/functiondefs/" + inFunction + ".json";
+		        templatepath  ="/" + archive.getCatalogId() + "/ai/ollama/classify/functions/" + inFunction + ".json";
 		        defpage = archive.getPageManager().getPage(templatepath);
 	        }
 	        if(!defpage.exists()) {
@@ -206,29 +194,8 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	        JSONObject parameters = (JSONObject) functionDef.get("parameters");
 	        obj.put("format", parameters);
 	    }
-
-	    // API request setup
-	    String endpoint = getApiEndpoint() + "/api/chat";
-	    HttpPost method = new HttpPost(endpoint);
-	    method.addHeader("authorization", "Bearer " + getApikey());
-	    method.setHeader("Content-Type", "application/json");
-	    method.setEntity(new StringEntity(obj.toJSONString(), StandardCharsets.UTF_8));
-
-	    HttpSharedConnection connection = getConnection();
-	    
-	    CloseableHttpResponse resp = connection.sharedExecute(method);
-
-	    // Parse JSON response using JSON Simple
-	    //JSONParser parser = new JSONParser();
-	    //JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
-	    
-	    JSONObject json = connection.parseJson(resp);
-
-	    log.info("Llama returned: " + json.toJSONString());
-
-	    // Wrap and return `OllamaResponse`
-	    OllamaResponse response = new OllamaResponse();
-	    response.setRawResponse(json);
+	    String payload = obj.toJSONString();
+	    LlmResponse response = handleApiRequest(payload);
 	    return response;
 	}
 
@@ -239,66 +206,43 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	}
 
 	@Override
-	public LlmResponse callCreateFunction(Map inParams, String inModel, String inFunction) throws Exception 
+	public LlmResponse callCreateFunction(Map inParams, String inModel, String inFunction) 
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Collection inFields, Map inParams) throws Exception
+	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Map inParams) 
 	{
-		inParams.put("fields", inFields);
 		inParams.put("model", inModel);
 		
 		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/ollama/classify/structures/" + inStructureName + ".json", inParams);
 
-		JSONParser parser = new JSONParser();
-		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
+		LlmResponse response = handleApiRequest(inStructure);
+		JSONObject json = response.getRawResponse();
 
-
-		String endpoint = getApiEndpoint() + "/api/chat";
-		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + getApikey());
-		method.setHeader("Content-Type", "application/json");
-		method.setEntity(new StringEntity(structureDef.toJSONString(), StandardCharsets.UTF_8));
-
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-		
+		log.info("Returned: " + json);
+			
 		JSONObject results = new JSONObject();
 
-		try
+		JSONObject message = (JSONObject) json.get("message");
+		if (message == null || !message.get("role").equals("assistant"))
 		{
-			if (resp.getStatusLine().getStatusCode() != 200)
-			{
-				throw new OpenEditException("GPT error: " + resp.getStatusLine());
-			}
-	
-			JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
+			log.info("No message found in GPT response");
+			return results;
+		}
 
-			log.info("Returned: " + json.toJSONString());
-		
-		
-			JSONObject message = (JSONObject) json.get("message");
-			if (message == null || !message.get("role").equals("assistant"))
-			{
-				log.info("No message found in GPT response");
-				return results;
-			}
-
-			String content = (String) message.get("content");
+		String content = (String) message.get("content");
 			
-			if (content == null || content.isEmpty())
-			{
-				log.info("No structured data found in GPT response");
-				return results;
-			}
-			results = (JSONObject) parser.parse(new StringReader(content));
-		}
-		finally
+		if (content == null || content.isEmpty())
 		{
-			connection.release(resp);
+			log.info("No structured data found in GPT response");
+			return results;
 		}
+		JSONParser parser = new JSONParser();
+		results = (JSONObject) parser.parse(new StringReader(content));
+
 		return results;
 	}
 }

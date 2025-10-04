@@ -9,7 +9,7 @@
 	$context.putPageValue("viewid", $viewid)
 	#set( $targetselect = $context.getRequestParameter("update" ) )
 	
-	<form class="inlinedata" name="dataeditor"   >
+	<form class="inlinedata" name="dataeditor" action="$!{finderhome}/views/settings/lists/datamanager/edit/inlinesave.json"   >
 		<input name="save" type="hidden" value="true" />
 		<input name="id" type="hidden" value="$!data.id" />
 		<input name="catalogid" type="hidden" value="$searcher.catalogId" />

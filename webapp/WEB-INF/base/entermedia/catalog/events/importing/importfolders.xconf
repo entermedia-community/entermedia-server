@@ -1,7 +1,0 @@
-<page>
-	<property name="eventname">Import Hot Folders</property>	
-	<path-action name="HotFolderModule.scanFolders" />
-	<property name="period">10m</property>
-	<property name="enabled">true</property>
-	
-</page>

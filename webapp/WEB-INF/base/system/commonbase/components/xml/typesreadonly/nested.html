@@ -1,4 +1,6 @@
 #set($collection = $data.getValue($detail.getId()))
-$collection.size() [[Rows]]
+#ifnotnull( $collection)
+$collection [[Rows]]
+#end
 
 

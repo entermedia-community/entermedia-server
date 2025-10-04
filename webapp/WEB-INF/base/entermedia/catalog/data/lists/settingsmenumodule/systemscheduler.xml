@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<properties>
-  <property id="scheduler"  menulevel="toplevel" parentid="scheduler" moduleid="system" path="/views/settings/events/ps/index.html" ordering="500" sublabel="Scheduled">Scheduler</property>
-  <property id="events"  parentid="scheduler" moduleid="system" path="/views/settings/events/triggers/index.html" ordering="510">Events</property>
-   <property id="scripts"  parentid="scheduler" moduleid="system" path="/views/settings/scripts/scriptlist.html" ordering="520">Scripts</property>
-</properties>
-  

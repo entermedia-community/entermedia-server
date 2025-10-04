@@ -12,10 +12,30 @@ public class AgentModule extends BaseMediaModule {
 		AssistantManager assistantManager = (AssistantManager) getMediaArchive(catalogid).getBean("assistantManager");
 		return assistantManager;
 	}
-	
-	public void chatAgentSearch(WebPageRequest inReq) throws Exception 
+
+	public void chatAgentRegularSearch(WebPageRequest inReq) throws Exception 
 	{	
 		getAssistantManager(inReq).regularSearch(inReq, false);
+	}
+	
+	public void chatAgentSemanticSearch(WebPageRequest inReq) throws Exception 
+	{	
+		getAssistantManager(inReq).semanticSearch(inReq);
+	}
+	
+	public void chatAgentCreateImage(WebPageRequest inReq) throws Exception 
+	{	
+		getAssistantManager(inReq).createImage(inReq);
+	}
+	
+	public void chatAgentCreateEntity(WebPageRequest inReq) throws Exception 
+	{	
+		getAssistantManager(inReq).createEntity(inReq);
+	}
+	
+	public void chatAgentUpdateEntity(WebPageRequest inReq) throws Exception 
+	{	
+		getAssistantManager(inReq).updateEntity(inReq);
 	}
 	
 	public void mcpSearch(WebPageRequest inReq) throws Exception

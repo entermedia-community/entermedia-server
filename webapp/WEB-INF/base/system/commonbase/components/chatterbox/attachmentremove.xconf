@@ -1,0 +1,28 @@
+<page>
+
+	<path-action name="DataEditModule.loadData">
+		<property name="searchtype">chatterbox</property>
+		<property name="pageval">chat</property>
+	</path-action>
+	
+	<path-action name="ProjectModule.removeAssetsFromMessage"/>
+
+	<path-action name="ProjectModule.loadGoalsInMessages"/>
+	
+	<path-action name="ProjectModule.loadAttachmentsInMessages"/>
+
+   <permission name="editcollection">
+		<or>
+			<action name="ProjectModule.canEditCollection" />
+			<action name="ProjectModule.isOnTeam" />			
+		</or>
+	</permission>
+	
+	<path-action name="Admin.loadPermissions"/>
+	
+  	<path-action name="Admin.allowViewing"/>
+  	
+  	
+
+</page>
+

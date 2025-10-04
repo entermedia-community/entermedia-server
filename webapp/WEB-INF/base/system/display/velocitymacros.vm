@@ -57,6 +57,7 @@ $!jsonUtil.toJsonArray($list)
 #end
 #end
 #macro(jesc $object)"$!jsonUtil.escape($object)"#end
+#macro(jrender $object)$!jsonUtil.escape($object)#end
 #macro(json $hit $details)
 {
 #set($rendercomma = false)

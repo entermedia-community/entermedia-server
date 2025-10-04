@@ -2,13 +2,13 @@ package org.entermediadb.ai.llm.ollama;
 
 import java.util.ArrayList;
 
-import org.entermediadb.ai.llm.BaseLlmResponse;
+import org.entermediadb.ai.llm.BasicLlmResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.openedit.OpenEditException;
 
-public class OllamaResponse extends BaseLlmResponse
+public class OllamaResponse extends BasicLlmResponse
 {
 
 	@Override
@@ -145,9 +145,14 @@ public class OllamaResponse extends BaseLlmResponse
 	}
 
 	@Override
-	public ArrayList getImageUrls()
+	public ArrayList<String> getImageUrls()
 	{
-
+		throw new OpenEditException("Ollama cannot create images");
+	}
+	
+	@Override
+	public ArrayList<String> getImageBase64s()
+	{
 		throw new OpenEditException("Ollama cannot create images");
 	}
 }

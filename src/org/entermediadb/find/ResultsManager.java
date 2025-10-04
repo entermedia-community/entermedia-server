@@ -12,7 +12,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.assistant.AiSearch;
-import org.entermediadb.ai.semantics.SemanticIndexManager;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.manager.BaseManager;
@@ -37,14 +36,15 @@ public class ResultsManager extends BaseManager {
 	
 	private static final int MEDIASAMPLE=7;
 
-	public void organizeHits(WebPageRequest inReq, HitTracker hits, Collection pageOfHits) 
+	/*
+	public void organizeHits(WebPageRequest inReq, HitTracker inModuleHits, Collection pageOfHits, HitTracker inAssets) 
 	{
 		//if( inReq.getPageValue("organizedHits") == null )
 		{
 			// String HitsName = inReq.findValue("hitsname");
 			//  HitTracker hits = (HitTracker)inReq.getPageValue(HitsName);
 			// Collection pageOfHits = hits.getPageOfHits();
-			if( hits != null)
+			if( inModuleHits != null)
 			{
 				MediaArchive archive = getMediaArchive();
 
@@ -61,7 +61,7 @@ public class ResultsManager extends BaseManager {
 				
 				String smaxsize = inReq.findValue("maxhitsperpage");
 				
-				Collection types = (Collection)hits.getSearchQuery().getValues("searchtypes");
+				Collection types = (Collection)inModuleHits.getSearchQuery().getValues("searchtypes");
 				if(types != null && types.size() > 1)
 				{
 					String maxhitsperpagemultiple = inReq.findValue("maxhitsperpagemultiple");
@@ -76,9 +76,9 @@ public class ResultsManager extends BaseManager {
 				{
 					targetsize = Integer.parseInt(smaxsize);
 				}
-				Map<String,Collection> bytypes = organizeHits(inReq,hits, pageOfHits.iterator(),targetsize);
+				Map<String,Collection> bytypes = organizeHits(inReq, inModuleHits, pageOfHits.iterator(),targetsize, inAssets);
 				
-				ArrayList foundmodules = processResults(hits, archive, targetsize, bytypes);
+				ArrayList foundmodules = processResults(inModuleHits, archive, targetsize, bytypes);
 
 				//Put asset into session
 				//HitTracker assets = (HitTracker)bytypes.get("asset");
@@ -88,46 +88,48 @@ public class ResultsManager extends BaseManager {
 					moduleid = (String) inReq.getPageValue("moduleid");
 				}
 				
-				if( moduleid == null || !moduleid.equals("asset"))
-				{
-					if( types == null || types.contains("asset"))
-					{
-						SearchQuery copy = hits.getSearchQuery().copy();
-						copy.setFacets(null);
-						copy.setProperty("ignoresearchttype", "true");
-						//Fix the terms so it has the right details
-	//					for (Iterator iterator = copy.getTerms().iterator(); iterator.hasNext();)
-	//					{
-	//						Term term = (Term) iterator.next();
-	//						term.copy();
-	//						
-	//					}
-						copy.addSortBy("assetaddeddateDown");
-						copy.setHitsName("entityhits"); //? assethits makes more sense
-						HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq,copy);
-	//					assets.setSearcher(archive.getAssetSearcher());
-	//					assets.setDataSource("asset");
-						assethits.setSessionId("hitsasset" + archive.getCatalogId() );
-	//					assets.setSearchQuery(hits.getSearchQuery());
-	//					assets.setIndexId(archive.getAssetSearcher().getIndexId());
-						//log.info(assets.getSessionId());
-						UserProfile profile = inReq.getUserProfile();
-						//Integer mediasample  = profile.getHitsPerPageForSearchType(hits.getSearchType());
-						assethits.setHitsPerPage( targetsize );
-						
-						inReq.putPageValue(assethits.getHitsName(), assethits);
-						inReq.putSessionValue(assethits.getSessionId(), assethits);
-						if( !assethits.isEmpty())
-						{
-							Data assetmodule = archive.getCachedData("module", "asset");
-							foundmodules.add(assetmodule);
-						}
-						bytypes.put("asset",assethits);
-					}
-				}
 				
-
+				
+//				if( moduleid == null || !moduleid.equals("asset"))
+//				{
+//					if( types == null || types.contains("asset"))
+//					{
+//						SearchQuery copy = hits.getSearchQuery().copy();
+//						copy.setFacets(null);
+//						copy.setProperty("ignoresearchttype", "true");
+//						//Fix the terms so it has the right details
+//	//					for (Iterator iterator = copy.getTerms().iterator(); iterator.hasNext();)
+//	//					{
+//	//						Term term = (Term) iterator.next();
+//	//						term.copy();
+//	//						
+//	//					}
+//						copy.addSortBy("assetaddeddateDown");
+//						copy.setHitsName("entityhits"); //? assethits makes more sense
+//						HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq,copy);
+//	//					assets.setSearcher(archive.getAssetSearcher());
+//	//					assets.setDataSource("asset");
+//						assethits.setSessionId("hitsasset" + archive.getCatalogId() );
+//	//					assets.setSearchQuery(hits.getSearchQuery());
+//	//					assets.setIndexId(archive.getAssetSearcher().getIndexId());
+//						//log.info(assets.getSessionId());
+//						UserProfile profile = inReq.getUserProfile();
+//						//Integer mediasample  = profile.getHitsPerPageForSearchType(hits.getSearchType());
+//						assethits.setHitsPerPage( targetsize );
+//						
+//						inReq.putPageValue(assethits.getHitsName(), assethits);
+//						inReq.putSessionValue(assethits.getSessionId(), assethits);
+//						if( !assethits.isEmpty())
+//						{
+//							Data assetmodule = archive.getCachedData("module", "asset");
+//							foundmodules.add(assetmodule);
+//						}
+//						bytypes.put("asset",assethits);
+//					}
+//				}
+				
 				sortModules(foundmodules);
+				
 				if( log.isDebugEnabled())
 				{
 					log.debug("Organized Modules: " + foundmodules);
@@ -147,8 +149,8 @@ public class ResultsManager extends BaseManager {
 		}
 	}
 	
-	
-
+	*/
+/*
 	protected ArrayList processResults(HitTracker hits, MediaArchive archive, int targetsize, Map<String, Collection> bytypes)
 	{
 		ArrayList foundmodules = new ArrayList();
@@ -215,32 +217,8 @@ public class ResultsManager extends BaseManager {
 		}
 		return foundmodules;
 	}
-
-	protected void sortModules(ArrayList foundmodules)
-	{
-		if (!foundmodules.isEmpty()) {
-			Collections.sort(foundmodules,  new Comparator<Data>() 
-			{ 
-			    // Used for sorting in ascending order of 
-			    // roll number 
-			    public int compare(Data a, Data b) 
-			    { 
-			    	int a1 = Integer.parseInt(a.get("ordering"));
-			    	int b1 = Integer.parseInt(b.get("ordering"));
-			    	if( a1 == b1)
-			    	{
-			    		return 0;
-			    	}
-			        if ( a1 > b1 ) {
-			        	return 1;
-			        }
-			        return -1;
-			    } 
-			    
-			});
-		}
-		//log.info("Complete sort" + foundmodules);
-	}
+*/
+	
 	private Collection loadMoreResults(MediaArchive archive, SearchQuery inSearchQuery, String inSourcetype, int maxsize)
 	{
 		//search for more
@@ -263,149 +241,43 @@ public class ResultsManager extends BaseManager {
 		return more.getPageOfHits();
 	}
 
-
-	public Map organizeHits(WebPageRequest inReq, HitTracker allhits,Iterator hits, int maxsize) 
+	public OrganizedResults createOrganizedResults(HitTracker inEntities, HitTracker inAssets, int inPreferedSize)
 	{
-		Map bytypes = new HashMap();
-		MediaArchive archive = getMediaArchive();
-		
-		for (Iterator iterator = hits; iterator.hasNext();)
-		{
-			SearchHitData data = (SearchHitData) iterator.next();
-			String type = data.getSearchHit().getType();
-			
-			Collection values = (Collection) bytypes.get(type);
-			if( values == null)
-			{
-				Searcher searcher = archive.getSearcher(type);
-				ListHitTracker newvalues = new ListHitTracker();
-				newvalues.setActiveFilterValues(  allhits.getActiveFilterValues() );
-				newvalues.setHitsPerPage(maxsize);
-				newvalues.setSearcher(searcher);
-				SearchQuery query = allhits.getSearchQuery().copy();
-				query.setResultType(type);
-				newvalues.setSearchQuery(query);
-				String v = newvalues.getInput("description");
-				//System.out.print(v);
-				values = newvalues;
-				bytypes.put(type,values);
-				//newvalues.setHitsName("idhits");
-				newvalues.setHitsName(type +"idhits");
-				newvalues.setSessionId(type + "idhits"+ archive.getCatalogId());
-				inReq.putSessionValue(newvalues.getSessionId(), newvalues);
-			}
-			int max = maxsize;
-			if( type.equals("asset"))
-			{
-				max = MEDIASAMPLE;
-			}
-
-			if(values.size()<max)
-			{
-				values.add(data);
-			}
-			
-		}
-//		log.info("put un page: " + bytypes);
-//		log.info("size: " + bytypes.size());
-		inReq.putPageValue("organizedHits",bytypes);
-		return bytypes;
+		OrganizedResults organizedResults = new OrganizedResults();
+		organizedResults.setMediaArchive(getMediaArchive());
+		organizedResults.setEntityResults(inEntities);
+		organizedResults.setAssetResults(inAssets);
+		organizedResults.setSizeOfResults(inPreferedSize);
+		return organizedResults;
 	}
 	
-	public void searchByKeywords(WebPageRequest inReq, AiSearch searchArgs)
-	{
-		
-		log.info("Searching as:" + inReq.getUser().getName());
-		MediaArchive archive = getMediaArchive();
-
-		Collection<String> keywords = searchArgs.getKeywords();
-		
-		String plainquery = "";
-		if(!searchArgs.isStrictSearch())
-		{
-			plainquery = String.join(" ", keywords);
-		}
-		else
-		{
-			plainquery = String.join(" OR ", keywords); // This does not work
-		}
-		
-		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description", plainquery).hitsPerPage(30);
-		dq.getQuery().setIncludeDescription(true);
-		
-		Collection searchmodules = loadUserSearchTypes(inReq, searchArgs.getSelectedModuleIds());
-		
-		Collection searchmodulescopy = new ArrayList(searchmodules);
-		searchmodulescopy.remove("asset");
-		dq.getQuery().setValue("searchtypes", searchmodulescopy);
-		
-		
-		HitTracker unsorted = dq.search(inReq);
-		
-		log.info(unsorted);
-
-		Map<String,String> keywordsLower = new HashMap();
-		
-		collectMatches(keywordsLower, plainquery, unsorted);
-		
-		inReq.putPageValue("modulehits", unsorted);
-		inReq.putPageValue("livesearchfor", plainquery);
-		
-		List finallist = new ArrayList();
-		
-		for (Iterator iterator = keywordsLower.keySet().iterator(); iterator.hasNext();)
-		{
-			String keyword = (String) iterator.next();
-			String keywordcase = keywordsLower.get(keyword);
-			finallist.add(keywordcase);
-		}
-
-		Collections.sort(finallist);
-		
-		
-		inReq.putPageValue("livesuggestions", finallist);
-		inReq.putPageValue("highlighter", new Highlighter());
-		
-		int assetmax = 15;
-		if( unsorted.size() > 10)
-		{
-			assetmax = 5;
-		}
-		
-		QueryBuilder assetdq = archive.query("asset")
-				.freeform("description", plainquery)
-				.hitsPerPage(assetmax);
-				
-		HitTracker assetunsorted = assetdq.search(inReq);
-		collectMatches(keywordsLower, plainquery, assetunsorted);
-		inReq.putPageValue("assethits", assetunsorted);
-		
-		Collection pageOfHits = unsorted.getPageOfHits();
-		pageOfHits = new ArrayList(pageOfHits);
-		
-		String[] excludeentityids = new String[unsorted.size()];
-		String[] excludeassetids = new String[assetunsorted.size()];
-		int idx = 0;
-		for (Object entity : unsorted.getPageOfHits()) {
-			Data d = (Data) entity;
-			excludeentityids[idx] = d.getId();
-			idx++;
-		}
-		idx = 0;
-		for (Object asset : assetunsorted.getPageOfHits()) {
-			Data d = (Data) asset;
-			excludeassetids[idx] = d.getId();
-			idx++;
-		}
-		inReq.putPageValue("excludeentityids", excludeentityids);
-		inReq.putPageValue("excludeassetids", excludeassetids);
-		
-		inReq.putPageValue("totalhits", unsorted.size() + assetunsorted.size());
-		
-		organizeHits(inReq, unsorted, pageOfHits);
-		
-	}
 	
+	
+	
+	public OrganizedResults loadOrganizedResults(WebPageRequest inReq, HitTracker inUnsorted, HitTracker inAssetunsorted)
+	{
+		OrganizedResults organizedresults = loadOrganizedResults(inReq,inUnsorted,inAssetunsorted,MEDIASAMPLE);
+		return organizedresults; 
+	}	
+	public OrganizedResults loadOrganizedResults(WebPageRequest inReq, HitTracker inUnsortedEntities, HitTracker inAssetunsorted, int inSize)
+	{
+		OrganizedResults organizedresults = (OrganizedResults)inReq.getSessionValue("lastOrganizedResults");
+		if( organizedresults != null)
+		{
+			boolean clearresults = organizedresults.hasChanged(inUnsortedEntities,inAssetunsorted);
+			if(!clearresults)
+			{
+				inReq.putPageValue("organizedResults",organizedresults);
+				return organizedresults;
+			}
+		}
+		
+		organizedresults =	createOrganizedResults(inUnsortedEntities, inAssetunsorted, inSize);  //Check old values?
+		inReq.putSessionValue("lastOrganizedResults",organizedresults);
+		inReq.putPageValue("organizedResults",organizedresults);
+		return organizedresults;
+	}
+
 	public Collection loadUserSearchTypes(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive();
@@ -465,7 +337,7 @@ public class ResultsManager extends BaseManager {
 		//searchmodules.remove("asset"); 
 		return searchmodules;
 	}
-	protected Collection loadUserSearchTypes(WebPageRequest inReq, Collection<String> moduleIds)
+	public Collection loadUserSearchTypes(WebPageRequest inReq, Collection<String> moduleIds)
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -619,4 +491,5 @@ public class ResultsManager extends BaseManager {
 		result.append("and ").append(iter.next());
 		return result.toString();
 	}
+	
 }

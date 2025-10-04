@@ -1,6 +1,41 @@
 env GTK_IM_MODULE=ibus /home/shanti/eclipse/java-2024-09/eclipse/eclipse --launcher.openFile "$@"
 
 
+##Search Asset by Id
+curl -XGET 'http://localhost:9200/finder_catalog/asset/_search?q=id:AZXxrJ6vD5hAosRFNjDM' | python3 -mjson.tool
+
+
+##Search by field "exact" 
+curl -XGET http://localhost:9200/site_catalog/category/_search -d '{
+  "from" : 0,
+  "size" : 50,
+  "query" : {
+    "bool" : {
+      "must" : {
+        "term" : {
+          "categorypath.exact" : "Collections/General"
+        }
+      }
+    }
+  },
+  "explain" : true
+}'| python3 -mjson.tool
+
+
+##Search by field with wildcard
+curl -XGET http://localhost:9200/site_catalog/category/_search -d '{
+  "from" : 0,
+  "size" : 50,
+  "query" : {
+    "wildcard" : {
+      "categorypath" : "*folder*"
+    }
+  },
+  "explain" : true
+}'| python3 -mjson.tool
+
+
+
 curl -H "Content-Type: application/json" -XPOST https://emediafinder.com/entermediadb/mediadb/services/authentication/validateuser.json -d '{
  	"accountname":"900020",
 	"entermedia.key":"900020md5420800fc0c1150d80810830c20ab3a0e3400e20ed090fbtstamp2olLXOx+PYxTf3Eign+RFQ==",
@@ -72,6 +107,8 @@ curl -XGET 'http://localhost:9200/finder_catalog/dam_program_sched_request/_sear
 curl -XGET 'http://localhost:9200/finder_catalog/entityquestions/_search' -d '{ "query" : {	"match_all" : {} } }' | python3 -mjson.tool
 
 curl -XGET 'http://localhost:9200/site_catalog/trackedtopics/_search' -d '{ "query" : {	"match_all" : {} } }' | python3 -mjson.tool
+
+curl -XGET 'http://localhost:9200/finder_catalog/informatics/_search' -d '{ "query" : {	"match_all" : {} } }' | python3 -mjson.tool
 
 
 curl -XGET 'http://localhost:9200/finder_catalog/lock/_search' -d '{ "query" : {	"match_all" : {} } }' | python3 -mjson.tool
@@ -200,6 +237,10 @@ curl -XGET 'http://localhost:9200/finder_catalog/edudepartment/_search' -d '{ "q
 
 
 curl -XGET 'http://localhost:9200/finder_catalog/asset/_search?q=id:AYeRa8VzKBD-eE6vn2wS' | python -mjson.tool
+
+
+curl -XGET 'http://localhost:9200/site_catalog/asset/_search?q=id:AZXxrJ6vD5hAosRFNjDM' | python3 -mjson.tool
+
 
 curl -XGET 'http://localhost:9200/assets_catalog/order/_search?q=id:b0173a11_f45e_4be6_9465_b5985d023382' | python -mjson.tool
 

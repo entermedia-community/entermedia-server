@@ -1,8 +1,0 @@
-<properties>
-
-	<property id="asset" beanname="assetSearchSecurity" />
-	<property id="library" beanname="librarySearchSecurity" />
-	<property id="librarycollection" beanname="librarycollectionSearchSecurity" />
-	<property id="category" beanname="categorySearchSecurity" />
-	
-</properties>

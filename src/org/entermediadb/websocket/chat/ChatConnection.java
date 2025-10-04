@@ -16,7 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.data.SearcherManager;
@@ -240,13 +240,10 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				Data chat = getChatServer().saveMessage(map);  //<----- --------SAVE-----------------------------------SAVE!!!!
 				
 				String content = chat.get("message");
-				/* add user info to JSON message object- mando 6/11/2020*/
 				String catalogid = (String) map.get("catalogid");
 				MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 				
-				
 				/*
-				
 				if(map.get("entityid")!=null) {
 					entityid = (String) map.get("entityid").toString();
 				}
@@ -262,12 +259,6 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				{
 					moduleid = "librarycollection"; //Legacy
 				}
-				
-				
-				
-				
-				
-				
 				
 				// Get project name and save as topic for notification 
 				if(moduleid != null)
@@ -298,8 +289,11 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				
 				getChatServer().broadcastMessage(catalogid,map);
 				archive.fireDataEvent(auser, "chatterbox", "messagereceived", chat);
-
 				
+			}
+			else if("messageremoved".equals(command))
+			{
+				getChatServer().broadcastMessage(map);
 			}
 			else if("approveasset".equals(command)){
 				

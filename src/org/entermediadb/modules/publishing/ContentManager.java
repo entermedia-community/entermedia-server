@@ -1,8 +1,11 @@
 package org.entermediadb.modules.publishing;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,16 +18,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.dom4j.Element;
-import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.importer.DitaImporter;
-import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.net.HttpSharedConnection;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -37,6 +40,8 @@ import org.openedit.data.ViewFieldList;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
+import org.openedit.repository.InputStreamItem;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.Exec;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.XmlUtil;
@@ -115,7 +120,7 @@ public class ContentManager implements CatalogEnabled
 
 	public HttpSharedConnection getSharedConnection()
 	{
-		String api = getMediaArchive().getCatalogSettingValue("apikeyoneliveweb"); 
+		String api = getMediaArchive().getCatalogSettingValue("apikeyoneliveweb");
 
 		if (fieldHttpSharedConnection == null || !fieldsavedapikey.equals(api))
 		{
@@ -761,9 +766,11 @@ public class ContentManager implements CatalogEnabled
 
 		MediaArchive archive = getMediaArchive();
 
-		String model = contentrequest.get("llmmodel");
-		
-		LlmConnection llm = archive.getLlmConnection(model);
+		String model = archive.getCatalogSettingValue("llmimagegenerationmodel");
+		if (model == null)
+		{
+			model = "dall-e-3";
+		}
 
 		String prompt = (String) contentrequest.get("llmprompt");
 		
@@ -771,65 +778,79 @@ public class ContentManager implements CatalogEnabled
 		{
 			return null;
 		}
-
-//		String edithome = inReq.findPathValue("edithome");
-
-		String imagestyle = contentrequest.get("llmimagestyle");
-		if (imagestyle == null)
-		{
-			imagestyle = "natural";
-		}
+		
 		Asset asset = archive.getAsset(contentrequest.get("primarymedia"));
 		if(asset == null) {
 			return null;
 		}
-		
-		params.put("model", model);
-		params.put("style", imagestyle);
-		params.put("prompt", prompt);
 
-		LlmResponse results = llm.createImage(params);
 
-		Downloader downloader = new Downloader();
-		
-		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
+		try 
 		{
+			LlmConnection llmconnection = archive.getLlmConnection(model);
+			
+			LlmResponse results = llmconnection.createImage(model, prompt);
 
-			String url = (String) iterator.next();
-			asset.setValue("importstatus", "created");
-
-			String filename = asset.getName();
-
-			String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
-			File attachments = new File(archive.getPageManager().getPage(path).getContentItem().getAbsolutePath());
-			filename = filename.replaceAll("\\?.*", "");
-			log.info("Downloading " + url + " ->" + path + "/" + filename);
-			File target = new File(attachments, filename);
-			if (target.exists() || target.length() == 0)
+			for (Iterator iterator = results.getImageBase64s().iterator(); iterator.hasNext();)
 			{
+				String base64 = (String) iterator.next();
+
+				asset.setValue("importstatus", "created");
+				String filename = prompt.replaceAll("[^a-zA-Z0-9]", "_") + ".png";
+				filename = filename.replaceAll("\\?.*", "");
+
+				String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
+				ContentItem saveTo = archive.getPageManager().getPage(path).getContentItem();
+				
 				try
 				{
-					downloader.download(url, target);
+					InputStreamItem revision = new InputStreamItem();
+					
+					revision.setAbsolutePath(saveTo.getAbsolutePath());
+					revision.setPath(saveTo.getPath());
+					revision.setType( ContentItem.TYPE_ADDED );
+					revision.setMessage( saveTo.getMessage());
+					
+					revision.setPreviewImage(saveTo.getPreviewImage());
+					revision.setMakeVersion(false);
+					
+					log.info("Saving image -> " + path + "/" + filename);
+					
+					InputStream input = null;
+					
+					String code = base64.substring(base64.indexOf(",") +1, base64.length());
+					byte[] tosave = Base64.getDecoder().decode(code);
+					input = new ByteArrayInputStream(tosave);
+					
+					revision.setInputStream(input);
+					
+					archive.getPageManager().getRepository().put( revision );
+					
+					asset.setName(filename);
+
+					archive.saveAsset(asset);
+
+					archive.fireSharedMediaEvent("importing/assetscreated");
+					contentrequest.setValue("status", "complete");
+					archive.saveData("contentcreator", contentrequest);
 				}
 				catch (Exception ex)
 				{
 					asset.setProperty("importstatus", "error");
 					log.error(ex);
 					archive.saveAsset(asset);
-
 				}
-			}
-			asset.setFolder(true);
-			asset.setName(filename);
-			asset.setPrimaryFile(filename);
-			// asset.setFolder(true);
-			asset.setProperty("importstatus", "created");
-			archive.saveAsset(asset);
+			} 
 		}
-		archive.fireSharedMediaEvent("importing/assetscreated");
-		contentrequest.setValue("status", "complete");
-		archive.saveData("contentcreator", contentrequest);
+		catch (Exception e)
+		{
+			log.error(e);
+			contentrequest.setValue("status", "error");
+			contentrequest.setValue("errormessage", e.toString());
+			archive.saveData("contentcreator", contentrequest);
+		}
 		return asset;
+
 	}
 
 	//    public Asset createAssetFromLLM(WebPageRequest inReq, String inModuleid, String inEntityid, String inStructions) {
@@ -923,11 +944,33 @@ public class ContentManager implements CatalogEnabled
 			params.put("targetmodule", targetmodule);
 
 			params.put("contentrequest", inContentrequest);
-			
+
 			LlmResponse results = inLlm.callCreateFunction(params, inModel, "create_entity");
 
 			child = targetsearcher.createNewData();
 			JSONObject args = results.getArguments();
+			for (Iterator iterator = args.keySet().iterator(); iterator.hasNext();) {
+				Object key = (Object) iterator.next();
+				Object val = args.get(key);
+				if(val instanceof String) 
+				{
+					String str = (String)val;
+					str = str.split("\\|")[0];
+					args.put(key, str);
+				}
+				else if(val instanceof Collection) {
+					JSONArray arr = (JSONArray)val;
+					if(arr.size() > 0) {
+						for(int i = 0; i < arr.size(); i++) {
+							String str = (String)arr.get(i);
+							str = str.split("\\|")[0];
+							arr.set(i, str);
+						}
+						args.put(key, arr);
+					}
+				}
+				
+			}
 			targetsearcher.updateData(child, args);
 			child.setValue("entity_date", new Date());
 			child.setValue("ai-functioncall", results.getFunctionName());
@@ -956,12 +999,35 @@ public class ContentManager implements CatalogEnabled
 			params.put("contentrequest", inContentrequest);
 
 			LlmResponse results = inLlm.callCreateFunction(params, inModel, "create_entity");
+			
+			JSONObject args = results.getArguments();
+			for (Iterator iterator = args.keySet().iterator(); iterator.hasNext();) {
+				Object type = (Object) iterator.next();
+				Object val = args.get(type);
+				if(val instanceof String) 
+				{
+					String str = (String)val;
+					str = str.split("|")[0]; //TODO
+					args.put(type, str);
+				}
+				else if(val instanceof Collection) {
+					JSONArray arr = (JSONArray)val;
+					if(arr.size() > 0) {
+						String str = (String)arr.get(0);
+						str = str.split("|")[0]; //TODO
+						args.put(type, str);
+					}
+				}
+				else if(val instanceof Boolean) {
+					// TODO
+				} 
+			}
 
 			child = targetsearcher.createNewData();
-			targetsearcher.updateData(child, results.getArguments());
+			targetsearcher.updateData(child, args);
 			child.setValue("entity_date", new Date());
 			child.setValue(moduleid, entityid); // Lookup
-			child.setValue("ai-functioncall", results.getArguments());
+			child.setValue("ai-functioncall", args);
 			// No assets being created in this one.
 			child.setValue("owner", inContentrequest.get("owner"));
 
@@ -974,5 +1040,6 @@ public class ContentManager implements CatalogEnabled
 		return child;
 
 	}
+
 
 }

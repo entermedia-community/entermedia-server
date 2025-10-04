@@ -118,10 +118,8 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 		try
 		{
 			Searcher tasksearcher = getMediaArchive().getSearcher("conversiontask");
-			Searcher itemsearcher = getMediaArchive().getSearcher("orderitem");
-			Searcher presetsearcher = getMediaArchive().getSearcher("convertpreset");
 	
-			QueryBuilder query = tasksearcher.query();
+			QueryBuilder query =  getMediaArchive().localQuery("conversiontask");
 			query.orgroup("status", "new submitted retry missinginput");    //TODO: Create multiple conversion queues to deal with videos and retry and uploads
 			//query.sort("status");
 			query.sort("assetidDown");
@@ -150,6 +148,10 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 			//log.info("Thread checking: " + Thread.currentThread().getName() + " class:" + hashCode() );
 			long count = 0;
 			Map assetstoprocess = new HashMap();
+			
+			Searcher itemsearcher = getMediaArchive().getSearcher("orderitem");
+			Searcher presetsearcher = getMediaArchive().getSearcher("convertpreset");
+			
 			for (Iterator iterator = newtasks.iterator(); iterator.hasNext();)
 			{
 				Data hit = (Data) iterator.next();

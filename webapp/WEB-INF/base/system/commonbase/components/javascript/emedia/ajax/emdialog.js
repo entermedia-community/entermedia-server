@@ -48,7 +48,7 @@
 			jQuery("#application").append(
 				'<div class="modal" tabindex="-1" id="' +
 					id +
-					'" style="display:none" ></div>'
+					'" style="display:none"></div>'
 			);
 			modaldialog = jQuery("#" + id);
 		}
@@ -303,6 +303,13 @@
 				return this;
 			} else {
 				if ($(".modal:visible").length > 0) {
+					var onfrontmodal = $(".modal.onfront");
+					if (onfrontmodal.length) {
+						var backBtn = onfrontmodal.find(".entityNavBack");
+						if (backBtn.length && backBtn.is(":visible")) {
+							return false; //Do not close if there is a back button
+						}
+					}
 					// restore the modal-open class to the body element, so that scrolling works
 					// properly after de-stacking a modal.
 					setTimeout(function () {
@@ -359,6 +366,7 @@ closeemdialog = function (modaldialog) {
 	}
 	if ($(".modal:visible").length === 0) {
 		$(document.body).removeClass("modal-open");
+		$(".modal-backdrop").remove();
 	}
 };
 
@@ -436,14 +444,13 @@ $(document).ready(function () {
 
 	lQuery("a.emdialog").livequery("click", function (e) {
 		var clicked = $(this);
-		if (clicked.hasClass("disableinpicker")) 
-		{
+		if (clicked.hasClass("disableinpicker")) {
 			var pickerresults = clicked.closest(".clickableresultlist");
 			if (pickerresults.length > 0) {
 				return;
 			}
 		}
-		
+
 		e.preventDefault();
 		e.stopPropagation();
 		$(this).emDialog();

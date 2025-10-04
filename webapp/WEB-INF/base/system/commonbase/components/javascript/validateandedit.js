@@ -88,6 +88,7 @@ $(document).ready(function () {
 	    
 	});
 	*/
+	
 
   if ($.validator) {
     lQuery(".force-validate-inputs").livequery(function () {
@@ -105,10 +106,29 @@ $(document).ready(function () {
         ignore: ".ignore",
       });
     });
+	
+	
 
     $.validator.addClassRules("validateNumber", {
       number: true,
     });
+	
+	$.validator.addMethod("entityRequired",	function (value, element) 
+	{
+		if (value != "" && value > 0) 
+		{
+				return true;
+		}
+		return false;
+	},
+	"This field is required.");
+
+
+	$.validator.addClassRules("entityRequired", {
+	    required: true,
+	    number: true,
+	    entityRequired: true 
+	});
 
     $.validator.setDefaults({
       errorPlacement: function (error, element) {

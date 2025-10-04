@@ -18,6 +18,8 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.importer.CsvImporter;
 import org.entermediadb.asset.importer.XlsImporter;
+import org.entermediadb.asset.scanner.AssetImporter;
+import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
@@ -139,14 +141,23 @@ public class EntityModule extends BaseMediaModule
 		{
 			pickedentityid = inPageRequest.getRequestParameter("id");
 		}
+		if (pickedmoduleid == null || pickedentityid == null)
+		{
+			return;
+		}
 		Data entity = archive.getCachedData(pickedmoduleid ,pickedentityid );
+		
+		if (entity == null)
+		{
+			return;
+		}
 		
 		String pickedassetid = inPageRequest.getRequestParameter("assetid");
 		if( pickedassetid == null)
 		{
 			pickedassetid = inPageRequest.getRequestParameter("pickedassetid");
 		}
-		if( pickedassetid != null)
+		if( pickedassetid != null && !pickedassetid.startsWith("multiedit:"))
 		{
 			Asset asset = archive.getAsset(pickedassetid);
 			if(entityManager.addAssetToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, asset))
@@ -199,10 +210,15 @@ public class EntityModule extends BaseMediaModule
 	private Collection findPickedAssets(WebPageRequest inPageRequest, String pickedassetid) 
 	{
 	
-		Collection found = null;
+		List<Data> found =  new ArrayList();;
 		if (pickedassetid != null && pickedassetid.startsWith("multiedit:"))
 		{
-			found = (Collection) inPageRequest.getSessionValue(pickedassetid);
+			CompositeData assets  = (CompositeData) inPageRequest.getSessionValue(pickedassetid);
+			for (Iterator iterator = assets.iterator(); iterator.hasNext();)
+			{
+				Data asset = (Data) iterator.next();
+				found.add(asset);
+			}
 		}
 		else
 		{
@@ -210,7 +226,12 @@ public class EntityModule extends BaseMediaModule
 			HitTracker tracker = (HitTracker)inPageRequest.getSessionValue(copyinghitssessionid);
 			if( tracker != null)
 			{
-				found = tracker.getSelectedHitracker();
+				//found.addAll(tracker.getSelectedHitracker())
+				for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+				{
+					Data asset = (Data) iterator.next();
+					found.add(asset);
+				}
 			}
 		}
 		return found;
@@ -356,7 +377,7 @@ public class EntityModule extends BaseMediaModule
 		String assetid = inPageRequest.getRequestParameter("assetid");
 		
 		if(assetid != null) {
-			if(entityManager.removeAssetToEntity(inPageRequest.getUser(), entitymoduleid, entityid, assetid))
+			if(entityManager.removeAssetFromEntity(inPageRequest.getUser(), entitymoduleid, entityid, assetid))
 			{
 				inPageRequest.putPageValue("assets", "1");
 			}
@@ -510,7 +531,7 @@ public class EntityModule extends BaseMediaModule
 		{
 			Data data = (Data) iterator.next();
 			
-			Asset asset = archive.getAsset(data.getId());
+			Asset asset = archive.getAsset(data.getId()); //Is this needed?
 			
 			Collection<Data> entities = archive.getEntityManager().getEntitiesForCategories(inPageRequest, asset.getCategories());
 			for (Iterator iterator2 = entities.iterator(); iterator2.hasNext();) {
@@ -1491,7 +1512,7 @@ public class EntityModule extends BaseMediaModule
 				entity.removeValue("editorgroups", dataid[i]);
 	
 				String fieldname = permissiontype[i];
-				if( iseditor[i].equals("true") )
+				if( iseditor != null && iseditor.length > i &&  iseditor[i].equals("true") )
 				{
 					entity.addValue("editor" + fieldname, dataid[i]);
 				}
@@ -1691,4 +1712,14 @@ public class EntityModule extends BaseMediaModule
 		inReq.putPageValue("entity", entity);
 	}
 	
+	public void createEntityFromFiles(WebPageRequest inReq) throws Exception
+	{	
+		UploadRequest uploadRequest = (UploadRequest) inReq.getPageValue("uploadrequest");
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		String moduleid = inReq.getRequestParameter("moduleid");
+		Data module = archive.getCachedData("module", moduleid);
+		
+		archive.getEntityManager().createEntitiesFromPages(inReq, uploadRequest, module);
+	}
 }

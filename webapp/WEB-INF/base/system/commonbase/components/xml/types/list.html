@@ -76,14 +76,13 @@
 
 #set($searchfield = $detail.getId() )
 
-#set( $valueid = "$fieldname" )
 #if($types)
-<select name="${fieldname}.value"
+<select id="${fieldname}value" 
+	name="${fieldname}value"
 	class="listdropdown choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
 	listid="$listid"
-	id="${valueid}value"
 	data-listid="$listid"
-	data-searchtype= '$listid'
+	data-searchtype= "$listid"
 	data-searchfield="$searchfield"
 	#if($removeclear) data-allowclear="false" #end
 	>
@@ -104,9 +103,14 @@
 	[[No values found]] 
 #end
  #if( $caneditlists)
+ 	#ifnull($finderhome)
+		#set($finderhome = $apphome)
+	#end
  <span>
-		<a class="emdialog addnewitem btn btn-xs btn-light" data-dialogid="inlineedit" 
-			href="$!siteroot$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$listid&update=${valueid}value" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
+		<a class="emdialog addnewitem btn btn-xs btn-light" 
+			data-dialogid="inlineedit${listid}" 
+			href="${finderhome}/views/settings/lists/datamanager/edit/inline.html?searchtype=${listid}&update=${fieldname}value" 
+			title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
 </span>
   #end
   <div class="clearfix"></div>

@@ -85,7 +85,7 @@ public class PermissionModule extends BaseMediaModule
 
 		PageSettings settings = getPageManager().getPageSettingsManager().getPageSettings(path);
 		List localPermissions = settings.getFieldPermissions();
-		List parentPermissions = settings.getPermissions(false);
+		List parentPermissions = settings.getPermissions(true);
 
 		List combined = new ArrayList();
 		if( localPermissions != null)

@@ -114,6 +114,7 @@ import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.IntCounter;
+import org.openedit.util.JSONParser;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.Replacer;
 import org.openedit.xml.XmlSearcher;
@@ -142,12 +143,25 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	protected boolean fieldReIndexing;
 	protected boolean fieldCheckVersions;
 	protected boolean fieldRefreshSaves = true;
+	protected boolean fieldCheckLegacy = true;
 	protected long fieldIndexId = System.currentTimeMillis();
 	protected ArrayList<String> fieldSearchTypes;
 	protected boolean fieldIncludeFullText = true;
 	protected OutputFiller fieldFiller;
 	protected PageManager fieldPageManager;
 	protected Replacer fieldReplacer;
+
+	
+	
+	public boolean isCheckLegacy()
+	{
+		return fieldCheckLegacy;
+	}
+
+	public void setCheckLegacy(boolean inCheckLegacy)
+	{
+		fieldCheckLegacy = inCheckLegacy;
+	}
 
 	protected Replacer getReplacer()
 	{
@@ -164,7 +178,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		fieldReplacer = inReplacer;
 	}
 
-	protected boolean fieldOptimizeReindex = true;
+	protected boolean fieldOptimizeReindex = false;
 
 	public boolean isOptimizeReindex()
 	{
@@ -2814,10 +2828,22 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			
 			HashSet allprops = new HashSet();
 			
-			//if( inDetails.isAllowDynamicFields() )
-			//{
+			if( inDetails.isAllowDynamicFields() )
+			{
 				allprops.addAll(inData.getProperties().keySet()); //Needed for legacy field handling below
-			//}
+			} 
+			else if( isCheckLegacy() )
+			{
+				for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
+				{
+					PropertyDetail detail = (PropertyDetail) iterator.next();
+					String legacyfield = detail.get("legacy");
+					if (legacyfield != null )
+					{
+						allprops.add(legacyfield); //We need to make a copy anyways
+					}
+				}
+			}
 			//allprops.addAll(props.keySet());
 			for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
 			{
@@ -2893,7 +2919,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					{
 						continue;
 					}
-					detail = getPropertyDetailsArchive().createDetail(propid, propid);
+					detail = getPropertyDetailsArchive().createDetail(getSearchType(), propid, propid);
 					detail.setDeleted(false);
 					//setType(detail);
 					getPropertyDetailsArchive().savePropertyDetail(detail, getSearchType(), null);
@@ -3369,11 +3395,26 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 					else if (value instanceof String)
 					{
-						  GeoPoint point = new GeoPoint((String) value);
-						  inContent.field(key, point); 
-						  Position position = new Position(point.getLat(), point.getLon());
+						String geopoint = (String) value;
+						if( geopoint.startsWith("{") )
+						{
+							if( !geopoint.contains("\""))
+							{
+								geopoint = geopoint.substring(6, geopoint.length() - 1);
+								geopoint = geopoint.replace("lng: ", "");
+							}
+							else
+							{
+								Map points = new JSONParser().parse(geopoint);
+								geopoint = points.get("lat") + "," + points.get("lng");	
+							}
+							
+						}
+						GeoPoint point = new GeoPoint(geopoint);
+						inContent.field(key, point); 
+						Position position = new Position(point.getLat(), point.getLon());
 						 
-						  inData.setValue(key, position); //For next time?
+						inData.setValue(key, position); //For next time?
 					}
 					else if (value instanceof GeoPoint)
 					{
@@ -3901,7 +3942,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	
 	protected void populateKeywords(StringBuffer inFullDesc, Data inData, PropertyDetails inDetails)
 	{
-		for (Iterator iter = inDetails.findKeywordProperties().iterator(); iter.hasNext();)
+		Collection keywordFields = inDetails.findKeywordProperties();
+		for (Iterator iter = keywordFields.iterator(); iter.hasNext();)
 		{
 			PropertyDetail det = (PropertyDetail) iter.next();
 			if (det.isList())

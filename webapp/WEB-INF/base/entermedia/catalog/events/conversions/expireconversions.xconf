@@ -1,7 +1,0 @@
-<page>
-	<property name="eventname">Expire old conversion tasks</property>	
-	<property name="eventdescription">Check for conversions that were submitted and need to be expired</property>	
-		<path-action name="Script.run" allowduplicates="true" >
-		<script>/${catalogid}/events/scripts/conversions/expireconversions.groovy</script>
-	</path-action>
-</page>

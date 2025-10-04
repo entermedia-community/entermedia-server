@@ -1,7 +1,0 @@
-<page>
-	<property name="eventname">Assets Created</property>	
-	
-	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/importing/assetsreadmetadata.html"  allowduplicates="true"/>
-
-
-</page>

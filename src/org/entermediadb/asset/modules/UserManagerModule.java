@@ -1577,9 +1577,9 @@ public class UserManagerModule extends BaseMediaModule
 		{
 			//disableChannels(module,inReq.getUser(),channel);
 			currentchannel = (MultiValued)archive.getCachedData("channel", channel);
-			if( !currentchannel.getBoolean("aienabled") )
+			if( !"agentchat".equals(currentchannel.get("channeltype")) )
 			{
-				currentchannel.setValue("aienabled", "true" );
+				currentchannel.setValue("channeltype", "agentchat" );
 				archive.saveData("channel",currentchannel);
 			}
 			inReq.putPageValue("currentchannel", currentchannel);
@@ -1598,9 +1598,9 @@ public class UserManagerModule extends BaseMediaModule
 				now.add(Calendar.HOUR_OF_DAY,-1);
 				currentchannel =  (MultiValued)topicsearcher.query().exact("dataid",inReq.getUserName()).exact("searchtype", module).after("refreshdate",now.getTime()).sort("refreshdateDown").searchOne();
 			}
-			else if( !currentchannel.getBoolean("aienabled") )
+			else if(!"agentchat".equals(currentchannel.get("channeltype")) )
 			{
-				currentchannel.setValue("aienabled", "true" );
+				currentchannel.setValue("channeltype", "agentchat" );
 				archive.saveData("channel",currentchannel);
 			}
 		}
@@ -1613,10 +1613,7 @@ public class UserManagerModule extends BaseMediaModule
 			currentchannel.setValue("moduleid", module);
 			String applicationid = inReq.findValue("applicationid");
 			currentchannel.setValue("chatapplicationid", applicationid);
-			currentchannel.setValue("channeltype", "chatstreamer");
-			//currentchannel.setName("General");
-			///AI Enabled
-			currentchannel.setValue("aienabled", "true" );
+			currentchannel.setValue("channeltype", "agentchat");
 		}
 		else
 		{
@@ -1628,19 +1625,6 @@ public class UserManagerModule extends BaseMediaModule
 		
 		inReq.putPageValue("currentchannel", currentchannel);
 	}
-//	private void disableChannels(String inModule, User inUser, String inChannel)
-//	{
-//		MediaArchive archive = getMediaArchive(inReq);
-//		Collection hits =  archieve.query("channel").exact("dataid",inUser.getId()).exact("searchtype", inModule).exact("aienabled", "true" ).not("id",inChannel).search();
-//		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-//		{
-//			Data data = (Data) iterator.next();
-//			currentchannel.setValue("aienabled", "false" );
-//			
-//		}
-//		
-//
-//	}
 
 	
 }

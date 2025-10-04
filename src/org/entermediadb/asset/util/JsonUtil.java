@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -299,14 +299,7 @@ public class JsonUtil
 	{
 		JSONParser parser = new JSONParser();
 		JSONObject obj = null;
-		try
-		{
 			obj = (JSONObject)parser.parse(inText);
-		}
-		catch (ParseException e)
-		{
-			throw new OpenEditException(e);
-		}
 		return obj;
 	}
 }

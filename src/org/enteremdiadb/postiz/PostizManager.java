@@ -19,7 +19,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
@@ -114,27 +114,30 @@ public class PostizManager implements CatalogEnabled {
                     valueObject.put("content", inPostContent);
 
                     // Handle file uploads if provided
+                 // Add images if any
                     JSONArray imagesArray = new JSONArray();
                     if (inAssetIds != null && !inAssetIds.isEmpty()) {
                         for (String assetid : inAssetIds) {
-                        	Asset asset = getMediaArchive().getAsset(assetid);
-                        	if (asset != null)
-                        	{
-	                        	ContentItem item = getMediaArchive().getGeneratedContent(asset, "image3000x3000.jpg");
-	                        	if(item.exists()) {
-	                            String fileId = uploadFile(item.getAbsolutePath());
-			                        if (fileId != null) {
-			                            JSONObject imageObject = new JSONObject();
-			                            imageObject.put("id", fileId);
-			                            imagesArray.add(imageObject);
-			                        }
-	                        	}
-                        	}
+                            Asset asset = getMediaArchive().getAsset(assetid);
+                            if (asset != null) {
+                                ContentItem item = getMediaArchive().getGeneratedContent(asset, "image3000x3000.jpg");
+                                if (item.exists()) {
+                                    String fileId = uploadFile(item.getAbsolutePath());
+                                    if (fileId != null) {
+                                        JSONObject imageObject = new JSONObject();
+                                        imageObject.put("id", fileId);
+                                        imagesArray.add(imageObject);
+                                    }
+                                }
+                            }
                         }
-		                valueObject.put("image", imagesArray);
-		                valuesArray.add(valueObject);
-		                postObject.put("value", valuesArray);
                     }
+                        valueObject.put("image", imagesArray);
+                    
+
+                    // Now ALWAYS add value
+                    valuesArray.add(valueObject);
+                    postObject.put("value", valuesArray);
                     
 
                     // Add a random group ID to group these posts if needed
@@ -164,7 +167,7 @@ public class PostizManager implements CatalogEnabled {
             String jsonResponse = EntityUtils.toString(response.getEntity(), "UTF-8");
 
             // Parse the response as JSON
-            JSONArray result = (JSONArray) new JSONParser().parse(jsonResponse);
+            JSONArray result = (JSONArray) new JSONParser().parseCollection(jsonResponse);
 
             response.close();
             return (JSONObject) result.get(0);
@@ -192,7 +195,7 @@ public class PostizManager implements CatalogEnabled {
                 CloseableHttpResponse response = getSharedClient().execute(getMethod);
 
                 String jsonResponse = EntityUtils.toString(response.getEntity(), "UTF-8");
-            	integrations = (JSONArray) new org.json.simple.parser.JSONParser().parse(jsonResponse);
+            	integrations = (JSONArray) new org.openedit.util.JSONParser().parseCollection(jsonResponse);
                 response.close();         
                 getMediaArchive().getCacheManager().put("postiz", "integrations", integrations);
             }
@@ -228,7 +231,7 @@ public class PostizManager implements CatalogEnabled {
             String jsonResponse = EntityUtils.toString(response.getEntity(), "UTF-8");
 
             // Parse the response as JSON
-            JSONObject result = (JSONObject) new org.json.simple.parser.JSONParser().parse(jsonResponse);
+            JSONObject result = (JSONObject) new org.openedit.util.JSONParser().parse(jsonResponse);
 
             response.close();
             return (String) result.get("id");
