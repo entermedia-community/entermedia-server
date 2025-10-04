@@ -531,7 +531,7 @@ public class EntityModule extends BaseMediaModule
 		{
 			Data data = (Data) iterator.next();
 			
-			Asset asset = archive.getAsset(data.getId());
+			Asset asset = archive.getAsset(data.getId()); //Is this needed?
 			
 			Collection<Data> entities = archive.getEntityManager().getEntitiesForCategories(inPageRequest, asset.getCategories());
 			for (Iterator iterator2 = entities.iterator(); iterator2.hasNext();) {

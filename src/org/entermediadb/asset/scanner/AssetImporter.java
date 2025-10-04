@@ -568,7 +568,7 @@ public class AssetImporter
 		EntityManager entityManager = (EntityManager) inArchive.getEntityManager();
 		entityManager.updateCollection(tracker, currentcollection, user);
 		entityManager.updateEntities(tracker, metadata, user);
-		inArchive.fireSharedMediaEvent("importing/assetscreated");
+		//inArchive.fireSharedMediaEvent("importing/assetscreated");
 	}
 	
 	
