@@ -7,9 +7,11 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -33,7 +35,9 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.Highlighter;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
@@ -492,12 +496,105 @@ public class AssistantManager extends BaseAiManager
 			addMcpVars(inReq, aiSearchArgs);
 		}
 		
-		getResultsManager().searchByKeywords(inReq, aiSearchArgs);
+		searchByKeywords(inReq, aiSearchArgs);
 		
 		inReq.putPageValue("semanticquery", aiSearchArgs.toSemanticQuery());
 
 	}
 	
+	public void searchByKeywords(WebPageRequest inReq, AiSearch searchArgs)
+	{
+		
+		log.info("Searching as:" + inReq.getUser().getName());
+		MediaArchive archive = getMediaArchive();
+
+		Collection<String> keywords = searchArgs.getKeywords();
+		
+		String plainquery = "";
+		if(!searchArgs.isStrictSearch())
+		{
+			plainquery = String.join(" ", keywords);
+		}
+		else
+		{
+			plainquery = String.join(" OR ", keywords); // This does not work
+		}
+		
+		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description", plainquery).hitsPerPage(30);
+		dq.getQuery().setIncludeDescription(true);
+		
+		Collection searchmodules = getResultsManager().loadUserSearchTypes(inReq, searchArgs.getSelectedModuleIds());
+		
+		Collection searchmodulescopy = new ArrayList(searchmodules);
+		searchmodulescopy.remove("asset");
+		dq.getQuery().setValue("searchtypes", searchmodulescopy);
+		
+		
+		HitTracker unsorted = dq.search(inReq);
+		
+		log.info(unsorted);
+
+		Map<String,String> keywordsLower = new HashMap();
+		
+		getResultsManager().collectMatches(keywordsLower, plainquery, unsorted);
+		
+		inReq.putPageValue("modulehits", unsorted);
+		inReq.putPageValue("livesearchfor", plainquery);
+		
+		List finallist = new ArrayList();
+		
+		for (Iterator iterator = keywordsLower.keySet().iterator(); iterator.hasNext();)
+		{
+			String keyword = (String) iterator.next();
+			String keywordcase = keywordsLower.get(keyword);
+			finallist.add(keywordcase);
+		}
+
+		Collections.sort(finallist);
+		
+		
+		inReq.putPageValue("livesuggestions", finallist);
+		inReq.putPageValue("highlighter", new Highlighter());
+		
+		int assetmax = 15;
+		if( unsorted.size() > 10)
+		{
+			assetmax = 5;
+		}
+		
+		QueryBuilder assetdq = archive.query("asset")
+				.freeform("description", plainquery)
+				.hitsPerPage(assetmax);
+				
+		HitTracker assetunsorted = assetdq.search(inReq);
+		getResultsManager().collectMatches(keywordsLower, plainquery, assetunsorted);
+		inReq.putPageValue("assethits", assetunsorted);
+		
+		Collection pageOfHits = unsorted.getPageOfHits();
+		pageOfHits = new ArrayList(pageOfHits);
+		
+		String[] excludeentityids = new String[unsorted.size()];
+		String[] excludeassetids = new String[assetunsorted.size()];
+		int idx = 0;
+		for (Object entity : unsorted.getPageOfHits()) {
+			Data d = (Data) entity;
+			excludeentityids[idx] = d.getId();
+			idx++;
+		}
+		idx = 0;
+		for (Object asset : assetunsorted.getPageOfHits()) {
+			Data d = (Data) asset;
+			excludeassetids[idx] = d.getId();
+			idx++;
+		}
+		inReq.putPageValue("excludeentityids", excludeentityids);
+		inReq.putPageValue("excludeassetids", excludeassetids);
+		
+		inReq.putPageValue("totalhits", unsorted.size() + assetunsorted.size());
+		
+		getResultsManager().loadOrganizedResults(inReq, unsorted,assetunsorted);
+		
+	}
 	public void semanticSearch(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive();
