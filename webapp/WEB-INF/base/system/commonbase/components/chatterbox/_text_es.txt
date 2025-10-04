@@ -1,5 +1,5 @@
 #
-#Mon Apr 21 12:44:26 CST 2025
+#Wed Sep 17 15:01:35 CST 2025
 Flag\ as\ Goal=Marcar como gol
 Make\ Agenda=Hacer agenda
 Message=Mensaje
@@ -15,3 +15,4 @@ Next=Pr\u00F3ximo
 Previous=Anterior
 Reply=Responder
 Emoji=Emoji
+Remove\ This\ Asset=Eliminar este activo

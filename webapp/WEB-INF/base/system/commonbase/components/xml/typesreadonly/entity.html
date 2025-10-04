@@ -37,12 +37,12 @@
 							data-closedialog="true"
 						#else
 							class="emdialog entityupdateurl"
-							data-hitssessionid="$!hits.sessionId"
+							data-hitssessionid="$!{hits.sessionId}"
 							data-moduleid="$!{entity_module}"
 						#end
 						data-entityid="$!{entityid}"
 						##data-noesc="true" 
-						title="$!name">$name</a>
+						title="#text($name)">#text($name)</a>
 		    </li>
 	    #end 
 	#end	

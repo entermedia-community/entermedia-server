@@ -26,7 +26,7 @@ public class VotingTest extends BaseEnterMediaTest
 		HitTracker hits = searcher.fieldSearch("assetid", "101");
 		int before = hits.size();
 
-		mod.voteForAsset(asset, archive, req.getUser());
+		mod.voteForAsset(req);
 
 		HitTracker morehits = searcher.fieldSearch("assetid", "101");
 		assertEquals( before + 1, morehits.size() );

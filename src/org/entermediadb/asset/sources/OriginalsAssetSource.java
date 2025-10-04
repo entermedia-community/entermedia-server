@@ -584,30 +584,30 @@ public class OriginalsAssetSource extends BaseAssetSource
 		@Override
 		public void createSymbolicLink(Asset inAsset, String inCategoryPath)
 		{
-			ContentItem item = getOriginalContent(inAsset);
-			if( item.exists() )
-			{
-				String link = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/" + inCategoryPath + "/" + inAsset.getName();
-				
-				try
-				{
-					String linkabs = getPageManager().getContent(link).getAbsolutePath();
-					Path linkAbsPath = Paths.get(linkabs);
-					if( Files.notExists(linkAbsPath) )
-					{
-						Path realfilePath = Paths.get(item.getPath());
-						Path linkPath = Paths.get(link).getParent();
-						Path realFileRelative = linkPath.relativize(realfilePath); //getRelativePath(realfileS, link);
-
-						//Make em relative to one another
-						Files.createSymbolicLink(linkAbsPath, realFileRelative);
-					}
-				}
-				catch (IOException e)
-				{
-					log.error("Could not make link ",e);
-				}
-			}
+//			ContentItem item = getOriginalContent(inAsset);
+//			if( item.exists() )
+//			{
+//				String link = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/" + inCategoryPath + "/" + inAsset.getName();
+//				
+//				try
+//				{
+//					String linkabs = getPageManager().getContent(link).getAbsolutePath();
+//					Path linkAbsPath = Paths.get(linkabs);
+//					if( Files.notExists(linkAbsPath) )
+//					{
+//						Path realfilePath = Paths.get(item.getPath());
+//						Path linkPath = Paths.get(link).getParent();
+//						Path realFileRelative = linkPath.relativize(realfilePath); //getRelativePath(realfileS, link);
+//
+//						//Make em relative to one another
+//						Files.createSymbolicLink(linkAbsPath, realFileRelative);
+//					}
+//				}
+//				catch (IOException e)
+//				{
+//					log.error("Could not make link ",e);
+//				}
+//			}
 		}
 //        public Path getRelativePath(String realfile,String linkfile)
 //        {

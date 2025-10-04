@@ -415,8 +415,7 @@ public class DataEditModule extends BaseMediaModule
 		}
 		else
 		{
-			detail = new PropertyDetail();
-			detail.setId(id);
+			detail = details.createDetail(id);
 			detail.setName(label);
 			String catid = inReq.findPathValue("catalogid");
 			detail.setCatalogId(catid);

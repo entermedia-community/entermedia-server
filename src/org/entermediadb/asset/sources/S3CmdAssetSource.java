@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.openedit.util.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;

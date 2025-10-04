@@ -338,17 +338,24 @@ findClosest = function (link, inid) {
 
 $(document).ready(function () {
 	$(document).ajaxError(function (e, jqXhr, settings, exception) {
-		if (exception == "abort") {
-			console.log("Request aborted by user or another script.");
-			return;
-		}
 		console.log(e, jqXhr, exception);
 		var err = "An error occurred while processing the request!";
-		if (jqXhr.readyState == 0) {
-			err = "Network error! Please check your network connection.";
-		} else if (exception == "timeout") {
+		if (exception == "timeout") {
 			err = "Request timed out!";
 		}
+		if (exception == "abort" || jqXhr.readyState == 0) {
+			if (jqXhr.readyState == 0) {
+				err = "Request aborted by user or another script.";
+			}
+			if (!navigator.onLine) {
+				err = "Network error! Please check your network connection.";
+			} else if (exception == "abort") {
+				err = "Request aborted by user or another script.";
+			}
+			console.log(err);
+			return;
+		}
+
 		if (window.customToast) window.customToast(err, { positive: false });
 		var errors = "Error details: ";
 		if (exception) {

@@ -129,7 +129,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 
 		if (lock.isLocked())
 		{
-			log.info("Local was alreadY locked - returning null. CatalogID:" + inSearcher.getCatalogId() + " Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId() + " Searcher: " + inSearcher.getClass());
+			log.debug("Local was alreadY locked - returning null. CatalogID:" + inSearcher.getCatalogId() + " Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId() + " Searcher: " + inSearcher.getClass());
 			return null;
 		}
 
@@ -271,7 +271,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			Lock lock = loadLock(inPath);
 			if (lock != null && lock.isLocked())
 			{
-				log.info(inPath + " Already Locked by " + lock.getOwnerId() + " on " + lock.getNodeId());
+				log.debug(inPath + " Already Locked by " + lock.getOwnerId() + " on " + lock.getNodeId());
 				return null;
 			}
 			lock = grabLock(lock, inOwnerId, inPath);

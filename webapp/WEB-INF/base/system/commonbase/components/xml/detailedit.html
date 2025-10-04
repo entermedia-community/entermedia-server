@@ -14,11 +14,11 @@
 #end
 
 <div class="emfield-${viewtype} emfieldid-${detail.id}" data-viewtype="$!{viewtype}">
-#if($showcheckbox)
-	<input type="checkbox" value="$detail.id" name="field"/>
-#else
-	<input type="hidden" value="$detail.id" name="field"/>
-#end
-
-$pages.include("$xmledithome/types/${viewtype}.html", $context)
+	#if($showcheckbox)
+		<input type="checkbox" value="$detail.id" name="field"/>
+	#else
+		<input type="hidden" value="$detail.id" name="field"/>
+	#end
+	
+	$pages.include("${xmledithome}/types/${viewtype}.html", $context)
 </div>

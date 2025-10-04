@@ -2,7 +2,6 @@ package org.entermediadb.manager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.semantics.SemanticIndexManager;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;

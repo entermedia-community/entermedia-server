@@ -1,6 +1,0 @@
-<page>
-	<property name="eventname">Push Received and Imported</property>		
-	<path-action name="Script.run" allowduplicates="true">
-		<script>/${catalogid}/events/scripts/importing/assetsimportedcustom.groovy</script>
-	</path-action>
-</page>

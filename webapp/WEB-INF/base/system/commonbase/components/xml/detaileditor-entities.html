@@ -90,18 +90,17 @@ $context.putPageValue("xmledithome",$xmledithome)
 			
 			<div id="detail_$detail.id" class="emdatafieldvalue emdatafieldvalue-$!{detail.viewType} #if ($detail.isRequired()) requiredfield #end">
 				#if( $editrow )	
-					$pages.include("$xmledithome/detailedit.html", $context)
-					
+					$pages.include("${xmledithome}/detailedit.html", $context)
 					#if ( $detail.note )
 						<span class="detail-note">$context.getText($detail.note.toString())<span>
 					#elseif($detail.viewType == "tageditor")
-						<span class="text-muted d-inline-block mt-1" style="font-size: 13px;">[[Hit]] <kbd>[[enter]]</kbd> [[or]] <kbd>[[return]]</kbd> [[key after typing each tag]]<span>
+						<span class="text-muted d-inline-block mt-1" style="font-size: 0.8em;">[[Hit]] <kbd>[[enter]]</kbd> [[or]] <kbd>[[return]]</kbd> [[key after typing each tag]]<span>
 					#end
 				#else 
 				
 					##NOT EDITABLE
 					<div class="emdatafieldvalue-readonly">
-					$pages.include("$xmledithome/detailreadonly.html", $context)
+					$pages.include("${xmledithome}/detailreadonly.html", $context)
 					</div> 
 				#end
 

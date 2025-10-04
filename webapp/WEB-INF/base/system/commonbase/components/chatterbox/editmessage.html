@@ -15,7 +15,7 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 	<input type="hidden" name="channel" value="$!currentchannel.id" />
 	<!-- <strong>[[Edit Message]]</strong> -->
 	<div class="chatterbox-write" style="position: relative;">
-		<textarea class="chatter-msg-edit" data-replytoid="$!chat.replytoid" name="chatter-msg">$chat.message</textarea>
+		<textarea class="chatter-msg-edit" data-replytoid="$!chat.replytoid" name="chatter-msg">$!{chat.message}</textarea>
 	</div>
 	
 	<a href="#" class="btn btn-sm btn-primary chatter-save me-1">

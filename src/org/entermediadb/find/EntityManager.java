@@ -19,8 +19,9 @@ import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.upload.FileUploadItem;
+import org.entermediadb.asset.upload.UploadRequest;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -30,6 +31,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.DataWithSearcher;
 import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetails;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.FilterNode;
@@ -37,7 +39,9 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
+import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.util.JSONParser;
 import org.openedit.util.PathUtilities;
 
 public class EntityManager implements CatalogEnabled
@@ -152,6 +156,11 @@ public class EntityManager implements CatalogEnabled
 	public Category loadDefaultFolder(Data module, Data entity, User inUser)
 	{
 		if( module == null || entity == null || entity.getId() == null)
+		{
+			return null;
+		}
+		
+		if (entity.getId().startsWith("multiedit:"))
 		{
 			return null;
 		}
@@ -274,7 +283,7 @@ public class EntityManager implements CatalogEnabled
 			if( !archivesourcepath.equals(sourcepath))
 			{
 				entity.setValue("sourcepath",archivesourcepath );
-				entity.setValue("rootcategory",null);
+				//entity.setValue("rootcategory",null);
 				getMediaArchive().saveData(module.getId(), entity);
 			}		
 			return archivesourcepath;
@@ -424,7 +433,7 @@ public class EntityManager implements CatalogEnabled
 		getMediaArchive().saveAsset(asset); 
 		Collection tosave = new ArrayList();
 		tosave.add(asset);
-		getMediaArchive().getAssetManager().createLinksTo(tosave,destinationCategory.getCategoryPath());
+		getMediaArchive().getAssetManager().createLinksTo(tosave, destinationCategory.getCategoryPath());
 
 		return true;
 	}
@@ -469,7 +478,7 @@ public class EntityManager implements CatalogEnabled
 
 	}
 	
-	public Boolean removeAssetToEntity(User inUser,String pickedmoduleid, String pickedentityid, String assetid) 
+	public Boolean removeAssetFromEntity(User inUser,String pickedmoduleid, String pickedentityid, String assetid) 
 	{
 		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
 		Data entity =getMediaArchive().getCachedData(pickedmoduleid,pickedentityid);
@@ -711,11 +720,31 @@ public class EntityManager implements CatalogEnabled
 		Collection<Data> assets = new ArrayList(1);
 		assets.add(inAsset);
 		saveAssetActivity(applicationid, inUser, entity, assets, "assetsadded");
+		checkPrimaryAsset(entity, assets);
 	}
 	
 	public void fireAssetsAddedToEntity(String applicationid, User inUser, Collection<Data> inAssets, Data entity)
 	{
 		saveAssetActivity(applicationid, inUser, entity, inAssets, "assetsadded");
+		checkPrimaryAsset(entity, inAssets);
+	}
+
+	protected void checkPrimaryAsset(Data inEntity, Collection<Data> inAssets)
+	{
+		if( inEntity.getValue("primarymedia") == null && inEntity.getValue("primaryimage") == null )
+		{
+			for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
+			{
+				Data data = (Data) iterator.next();
+				inEntity.setValue("primaryimage",data.getId());
+				String moduleid = inEntity.get("entitysourcetype");
+				if( moduleid != null)
+				{
+					getMediaArchive().saveData(moduleid,inEntity);
+				}
+				break;
+			}
+		}
 	}
 
 	public void fireAssetRemovedFromEntity(String applicationid, User inUser, Data inAsset, Data entity)
@@ -1201,5 +1230,178 @@ public class EntityManager implements CatalogEnabled
 	{
 		Data found = getMediaArchive().query(inModuleId).exact("entitysourcetype",sourcepath).searchOne();
 		return found;
+	}
+	
+	public void updateCollection(Collection tracker, final String currentcollection,  final User inUser)
+	{
+		if (currentcollection != null) {
+			for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+			{
+				//loop all assets and save them
+				Asset asset = (Asset)iterator2.next();
+				
+				Searcher s = getMediaArchive().getSearcher("librarycollection");
+				List tosave = new ArrayList();
+				
+				Data entity = s.query().exact("id", currentcollection).searchOne();
+				if( entity != null)
+				{
+					String pi = entity.get("primaryimage");
+					if (entity != null && pi == null) {
+						entity.setValue("primaryimage", asset.getId());
+						tosave.add(entity);
+					}
+					s.saveAllData(tosave, inUser);
+				}
+			}
+		}
+	}
+	
+	
+	public void updateEntities(Collection tracker, final Map inMetadata,  final User inUser)
+	{
+		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
+		{
+			String field  = (String)iterator.next();
+			if( field.startsWith("entity") ) {
+				for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+				{
+					//loop all assets and save them
+					Asset asset = (Asset)iterator2.next();
+					Collection<String> values = asset.getValues(field);
+					if( values != null && !values.isEmpty())
+					{
+						Searcher s = getMediaArchive().getSearcher(field);
+						List tosave = new ArrayList();
+						for (Iterator iterator3 = values.iterator(); iterator3.hasNext();)
+						{
+							String entityid = (String) iterator3.next();
+							
+							Data entity = s.query().exact("id", entityid).searchOne();
+							if (entity != null) {
+								String pi = entity.get("primaryimage");
+								if (entity != null && pi == null) {
+									entity.setValue("primaryimage", asset.getId());
+									tosave.add(entity);
+								}
+							}
+						}
+						s.saveAllData(tosave, inUser);
+						
+					}
+				}
+			}
+		}
+	}
+	
+	public void createEntitiesFromPages(WebPageRequest inReq, UploadRequest inUploadRequest,  Data inModule)
+	{
+		//final boolean createCategories = Boolean.parseBoolean( inReq.findValue("assetcreateuploadcategories"));
+
+		MediaArchive archive = getMediaArchive();
+		
+		final Map metadata = archive.getAssetImporter().readMetaData(inReq, archive, "");
+		final String currentcollection = (String) metadata.get("collectionid");
+
+		boolean assigncategory =  true;
+		
+		String inputsourcepath = inReq.findValue("sourcepath");
+		
+		Searcher searcher = archive.getSearcher(inModule.getId());
+		
+		Collection items = inUploadRequest.getUploadItems();
+		if( items.size() == 0)
+		{
+			log.info("No files found");
+			return;
+		}
+		
+		Map commonfields = new HashMap();
+		
+		String[] fields = inReq.getRequestParameters("field");
+		for (int i = 0; i < fields.length; i++)
+		{
+			String fieldname = fields[i];
+			String val = inReq.getRequestParameter(fieldname+".value");
+			
+			if( val != null && val.length() > 0)
+			{
+				commonfields.put(fields[i], val);
+			}
+		}
+		
+		EntityManager entityManager = archive.getEntityManager();
+		Collection tracker = new ArrayList();
+		for (Iterator iterator = items.iterator(); iterator.hasNext();) 
+		{
+			FileUploadItem item = (FileUploadItem) iterator.next();
+			String filename = item.getName();
+			String ext = PathUtilities.extractPageType(item.getName());
+
+			if (filename.startsWith("tmp") && filename.indexOf('_') > -1)
+			{
+				filename = filename.substring(filename.indexOf('_') + 1);
+			}
+			
+			String entityname = filename.substring(0, filename.length() - (ext.length()+1));
+			
+			Data entity = searcher.query().exact("name", entityname).searchOne();
+
+			Category cat = null;
+			if( entity == null)
+			{
+				entity = searcher.createNewData();
+				entity.setName(entityname);
+				entity.setValue("entitysourcetype", inModule.getId());
+				entity.setValue("entity_date", new Date());
+				for (Iterator iterator2 = commonfields.keySet().iterator(); iterator2.hasNext();)
+				{
+					String key = (String) iterator2.next();
+					entity.setValue(key, commonfields.get(key));
+				}
+				cat = entityManager.createDefaultFolder(entity, inReq.getUser());
+				searcher.saveData(entity);
+			}
+			else
+			{
+				log.info("Entity already exists: " + entityname);
+				cat = entityManager.loadDefaultFolder(entity, inReq.getUser());
+			}
+			String catalogid = archive.getCatalogId();
+			String originalspath = "/WEB-INF/data/" + catalogid + "/originals/";
+			
+			String sourcepath = cat.getCategoryPath() + "/" + filename;
+			
+			ContentItem contentItem = inUploadRequest.saveFileAs(item, originalspath+sourcepath, inReq.getUser());
+			
+			Asset asset = archive.getAssetImporter().createAssetFromExistingFile(archive, inReq.getUser(), sourcepath);
+			archive.saveAsset(asset);
+			
+			entity.setValue("primaryimage", asset.getId());
+			searcher.saveData(entity);
+			
+			tracker.add(asset);
+		}
+
+		updateCollection(tracker, currentcollection, inReq.getUser());
+		updateEntities(tracker, metadata, inReq.getUser());
+		archive.fireSharedMediaEvent("importing/assetscreated");
+	}
+	
+	
+	public Collection<PropertyDetail> getBulkEntityDetails(String inModuleId) 
+	{
+		Collection<PropertyDetail> details = getMediaArchive().getSearcher(inModuleId).getDetailsForView(inModuleId+"addnew");
+		Collection<PropertyDetail> bulkdetails = new ArrayList();
+		for (Iterator iterator = details.iterator(); iterator.hasNext();) {
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			String id =  detail.getId();
+			if(id.equals("name") || id.equals("longcaption") || id.equals("primaryimage") || id.equals("primarymedia") )
+			{
+				continue;
+			}
+			bulkdetails.add(detail);
+		}
+		return bulkdetails;
 	}
 }

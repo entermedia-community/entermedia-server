@@ -121,7 +121,16 @@ public class ContentModule extends BaseMediaModule
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			MultiValued contentrequest = (MultiValued) iterator.next();
-			manager.createAssetFromLLM(params, contentrequest);
+			String entitymoduleid = contentrequest.get("entitymoduleid");
+			Data entity = archive.getCachedData(entitymoduleid, contentrequest.get("entityid"));
+			if(entity != null) {
+				Asset asset = manager.createAssetFromLLM(params, contentrequest);
+				if(asset != null)
+				{
+					entity.setValue("primarymedia", asset.getId());	
+					archive.saveData(entitymoduleid, entity);
+				}
+			}
 		}
 
 	}
@@ -139,8 +148,8 @@ public class ContentModule extends BaseMediaModule
 	    requests.updateData(inReq, fields, info);
 	    requests.saveData(info);
 	    
-	    Data entity = (Data) inReq.getPageValue("entity");
-        Data entitymodule = (Data) inReq.getPageValue("entitymodule");
+	    Data entity = (Data) archive.getCachedData(info.get("entitymoduleid"), info.get("entityid"));
+        Data entitymodule = (Data) archive.getCachedData("module", info.get("entitymoduleid"));
 
 	    Category rootcat = archive.getEntityManager().loadDefaultFolder(entitymodule, entity, inReq.getUser());
 		String sourcepathroot = rootcat.getCategoryPath();
@@ -249,32 +258,33 @@ public class ContentModule extends BaseMediaModule
 //		}
 //	}
 
-//	public void createNewAssetsWithAi(WebPageRequest inReq) throws Exception
-//	{
-//		// Add as child
-//		Data entitypartentview = (Data) inReq.getPageValue("entitymoduleviewdata");
-//		Data entity = (Data) inReq.getPageValue("entity");
-//		Data entitymodule = (Data) inReq.getPageValue("entitymodule");
-//
-//		String lastprompt = inReq.getRequestParameter("llmprompt.value");
-//		entity.setValue("llmprompt", lastprompt);
-//		getMediaArchive(inReq).saveData(entitymodule.getId(), entity);
-//		ContentManager manager = getContentManager(inReq);
-//		String type = inReq.findValue("llmtype.value");
-//		if (type == null)
-//		{
-//			type = "gptManager";
-//		}
-//		else
-//		{
-//			type = type + "Manager";
-//		}
-//		LlmConnection llm = (LlmConnection) getMediaArchive(inReq).getBean(type);
-//		String edithome = inReq.findPathValue("edithome");
-//		String template = llm.loadInputFromTemplate(inReq, edithome + "/aitools/createnewasset.html");
+	public void createNewAssetsWithAi(WebPageRequest inReq) throws Exception
+	{
+		// Add as child
+		Data entitypartentview = (Data) inReq.getPageValue("entitymoduleviewdata");
+		Data entity = (Data) inReq.getPageValue("entity");
+		Data entitymodule = (Data) inReq.getPageValue("entitymodule");
+
+		String lastprompt = inReq.getRequestParameter("llmprompt.value");
+		entity.setValue("llmprompt", lastprompt);
+		getMediaArchive(inReq).saveData(entitymodule.getId(), entity);
+		ContentManager manager = getContentManager(inReq);
+		String type = inReq.findValue("llmtype.value");
+		if (type == null)
+		{
+			type = "gptManager";
+		}
+		else
+		{
+			type = type + "Manager";
+		}
+		LlmConnection llm = (LlmConnection) getMediaArchive(inReq).getBean(type);
+		String edithome = inReq.findPathValue("edithome");
+		String template = llm.loadInputFromTemplate(edithome + "/aitools/createnewasset.html", inReq.getPageMap());
+		
 //		manager.createAssetFromLLM(inReq, entitymodule.getId(), entity.getId(), template);
-//
-//	}
+
+	}
 
 	public void loadDitaXml(WebPageRequest inReq)
 	{
@@ -500,6 +510,12 @@ public class ContentModule extends BaseMediaModule
 		return manager;
 	}
 
-	
+//	public void splitDocument(WebPageRequest inReq) throws Exception
+//	{
+//		String assetid = inReq.getRequestParameter("assetid");
+//		
+//		ContentManager manager = getContentManager(inReq);
+//		manager.splitDocument(assetid);
+//	}
 
 }

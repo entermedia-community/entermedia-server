@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<properties>
-<!-- 
-  <property id="tables" moduleid="asset"  menulevel="toplevel" parentid="tables" path="/views/settings/metadata/fields/index.html" ordering="30">Tables</property>
-  <property id="fields" moduleid="asset"  parentid="tables" path="/views/settings/metadata/fields/index.html" ordering="30">Fields</property>
- -->  
-</properties>

@@ -517,7 +517,13 @@ public class ProfileModule extends MediaArchiveModule
 		UserProfile prof = loadUserProfile(inReq);
 
 		String field = inReq.findValue("field");
-		String value = inReq.findValue(field + ".value");
+		
+		String valuefield = inReq.findValue("valuefield");
+		if( valuefield == null)
+		{
+			valuefield = field + ".value";
+		}
+		String value = inReq.findValue(valuefield);
 		String oldval = prof.get(field);
 		if( oldval == value || (oldval != null && oldval.equals(value)) )
 		{

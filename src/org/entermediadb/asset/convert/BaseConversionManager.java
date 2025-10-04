@@ -243,6 +243,16 @@ public abstract class BaseConversionManager implements ConversionManager
 			String type = PathUtilities.extractPageType(inExportName);
 			generateName = inExportName.substring(0, offsetstart) + "." + type;
 		}
+		if (inExportName.contains("page"))
+		{
+			int offsetstart = inExportName.indexOf("page");
+			String pagenum = inExportName.substring(offsetstart + 4, inExportName.lastIndexOf(".") );
+			//instructions.setProperty("pagenum", pagenum);
+			instructions.setPageNumber(pagenum);
+			//instructions.setProperty("outputname",);
+			String type = PathUtilities.extractPageType(inExportName);
+			generateName = inExportName.substring(0, offsetstart) + "." + type;
+		}
 		
 		Data preset = getMediaArchive().getPresetManager().getPresetByOutputNameCached(getMediaArchive(), getRenderType(), generateName);
 		if( preset == null)
@@ -253,6 +263,12 @@ public abstract class BaseConversionManager implements ConversionManager
 		if( inAsset != null)
 		{
 			instructions.setAsset(inAsset);
+		}
+		
+		if( instructions.getPageNumber() > 1)
+		{
+			instructions.setProperty("outputfile", null); //Reset the output name
+			instructions.setOutputFile(null);
 		}
 		//log.error("No preset defined for export file name" + inExportName);
 		instructions.setOutputExtension(PathUtilities.extractPageType(generateName)); //For cases where the output is not configured

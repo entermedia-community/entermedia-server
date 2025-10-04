@@ -58,7 +58,7 @@ public class AssetImportModule  extends BaseMediaModule
 			
 			massets.add(asset);
 		}
-		if(massets != null && !massets.isEmpty()) {
+		if(!massets.isEmpty()) {
 			inReq.putPageValue("hits", massets);
 			archive.firePathEvent("importing/importassets",inReq.getUser(),massets);
 		}
@@ -108,7 +108,7 @@ public class AssetImportModule  extends BaseMediaModule
 		manager.setAssetTypes(hits, true); 
 
 		//save everything
-		List tosave = new ArrayList();
+		List tosave = new ArrayList(); //Might be a hit tracker
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 			Asset asset = (Asset) iterator.next();
 			tosave.add(asset);

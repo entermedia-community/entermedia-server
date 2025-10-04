@@ -5,7 +5,10 @@
 	#set($idcount = "")
 #end
 
-#if(!$value)
+#ifnull($value)
+	#set($value = $hit)
+#end
+#ifnull($value)
 
 	#if($detail.getId() == "primarymedia")
 		#set($detail2 = $searcher.getDetail("primaryimage"))
@@ -14,7 +17,6 @@
 		#end
 	#end
 #end
-
 
 #if($value && $value != "")
 	#set( $foundrow = $mediaarchive.getAsset($value)  )

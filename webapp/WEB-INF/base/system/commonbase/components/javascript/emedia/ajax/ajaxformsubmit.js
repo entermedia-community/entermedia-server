@@ -21,8 +21,13 @@
 		if (!form.hasClass("novalidate")) {
 			if (form.validate) {
 				try {
+					$.validator.addClassRules("entityRequired", {
+						entityrequired: true,
+						number: true,
+						min: 1
+					});
 					form.validate({
-						ignore: ".ignore",
+						ignore: ".ignore,:hidden:not(.validatehidden)"
 					});
 					var isvalidate = form.valid();
 					if (!isvalidate) {

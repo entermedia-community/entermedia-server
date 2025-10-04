@@ -53,4 +53,8 @@ public class AiSearch {
 		bulkSearch = inBulkSearch;
 	}
 	
+	public String toSemanticQuery() {
+		return String.join(" ", fieldKeywords);
+	}
+	
 }

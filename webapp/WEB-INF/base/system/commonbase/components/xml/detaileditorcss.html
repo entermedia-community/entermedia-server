@@ -12,6 +12,7 @@ $context.putPageValue("xmledithome",$xmledithome)
 
 #ifnull($details)
 	#set( $viewdata = $mediaarchive.getCachedData("view",$viewid) )
+	
 	#set ($details = $viewdata.getDetailsForView($context.getUserProfile()))
 #end
 
@@ -20,7 +21,7 @@ $context.putPageValue("xmledithome",$xmledithome)
 	#set ($details = $searcher.getDetailsForView($viewid, $context.getUserProfile()))
 #end	
 #ifnull($details)
-	No viewdata found for $viewid at $content.path
+	No viewdata found for viewid: <strong>$viewid</strong>, searchtype:<strong> $searcher.getSearchType()</strong>, at <strong>$content.path</strong>
 #end
 
 <div class="oeinputform validate-inputs">

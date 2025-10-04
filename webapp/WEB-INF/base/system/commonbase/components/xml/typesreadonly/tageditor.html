@@ -18,7 +18,7 @@
 		#if ($clearfilters)
 			#set($fulllink = "$fulllink&clearfilters=true")
 		#end
-		<a class="badge badge-tags tageditor-${type} ajax #if($count>6) seelesstags #end" 
+		<a class="badge badge-tags tageditor-${type} ajax #if($count>4) seelesstags #end" 
 		href="$fulllink"
 		data-targetdiv="applicationcontent"
 		data-oemaxlevel="4"
@@ -29,7 +29,7 @@
 		#set($count = $count + 1)
 	#end
 </span>
-#if($count>6)
-	#set($more = $count - 6)
+#if($count>4)
+	#set($more = $count - 4)
 	<button class="see-more-tags-btn see-more" data-seemore="+${more} [[more]]" data-seeless="...[[see less]]">+${more} [[more]]</button>
 #end

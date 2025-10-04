@@ -2,9 +2,6 @@ package org.entermediadb.ai.llm.openai;
 
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -14,33 +11,32 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.llm.BaseLlmConnection;
-import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmRequest;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
+import org.openedit.util.JSONParser;
 import org.openedit.util.OutputFiller;
 
 public class OpenAiConnection extends BaseLlmConnection implements CatalogEnabled, LlmConnection
 {
 	private static Log log = LogFactory.getLog(OpenAiConnection.class);
 
-	public LlmResponse runPageAsInput(Map params, String inModel, String inTemplate)
+	public LlmResponse runPageAsInput(LlmRequest llmRequest, String inTemplate)
 	{
+		llmRequest.addContext("mediaarchive", getMediaArchive());
 
-		params.put("model", inModel);
-		params.put("mediaarchive", getMediaArchive());
-
-		String input = loadInputFromTemplate(inTemplate, params);
+		String input = loadInputFromTemplate(inTemplate, llmRequest.getContext());
 		log.info(inTemplate + " process chat");
 		String endpoint = getApiEndpoint();
 
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + getApikey());
+		method.addHeader("Authorization", "Bearer " + getApiKey());
 		method.setHeader("Content-Type", "application/json");
 
 		method.setEntity(new StringEntity(input, "UTF-8"));
@@ -49,74 +45,62 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		JSONObject json = getConnection().parseJson(resp);
 
-		GptResponse response = new GptResponse();
+		OpenAiResponse response = new OpenAiResponse();
 		response.setRawResponse(json);
+		
+		String nextFunction = response.getFunctionName();
+		llmRequest.setFunctionName(nextFunction);
 
 		return response;
 
 	}
 
-	public LlmResponse createImage(Map params)
+	public LlmResponse createImage(String inModel, String inPrompt)  throws Exception
 	{
-		return createImage(params, 1, "1024x1024");
+		return createImage(inModel, inPrompt, 1, "1024x1024");
 	}
 	
-	public LlmResponse createImage(Map params, int imagecount, String inSize)
+	public LlmResponse createImage(String inModel, String inPrompt, int imagecount, String inSize) throws Exception
 	{
-		if (getApikey() == null)
+		if (getApiKey() == null)
 		{
 			log.error("No gpt-key defined");
 			return null;
 		}
-		
-		String inModel = (String) params.get("model");
-		String style = (String) params.get("style");
-		String inPrompt = (String) params.get("prompt");
-		
-		// params.put("prompt", inPrompt);
-
-		// Use JSON Simple's JSONObject
-		JSONObject obj = new JSONObject();
 
 		if (inModel == null)
 		{
-			inModel = "dall-e-3";
+			throw new OpenEditException("No model given for image creation");
 		}
 		if (inPrompt == null)
 		{
-			inPrompt = "Surprise ME";
+			throw new OpenEditException("No prompt given for image creation");
 		}
-
+		
 		log.info("Image creation prompt: " + inPrompt);
+		
+		JSONObject payload = new JSONObject();
 
-		obj.put("model", inModel);
-		obj.put("prompt", inPrompt);
-		obj.put("n", imagecount);
-		obj.put("size", inSize);
-
-		if (style != null)
-		{
-			obj.put("style", style);
-		}
+		payload.put("model", inModel);
+		payload.put("prompt", inPrompt);
+		payload.put("n", imagecount);
+		payload.put("size", inSize);
+		payload.put("response_format", "b64_json");
 
 		String endpoint = "https://api.openai.com/v1/images/generations";
+		//  String endpoint = "http://localhost:3000/generations";  // for local testing
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + getApikey());
+		method.addHeader("Authorization", "Bearer " + getApiKey());
 		method.setHeader("Content-Type", "application/json");
-		method.setEntity(new StringEntity(obj.toJSONString(), "UTF-8"));
+		method.setEntity(new StringEntity(payload.toJSONString(), "UTF-8"));
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 		JSONObject json = getConnection().parseJson(resp);
 
-		// Return a GptResponse object instead of raw JSON
-		GptResponse response = new GptResponse();
+		// Return a OpenAiResponse object instead of raw JSON
+		OpenAiResponse response = new OpenAiResponse();
 		response.setRawResponse(json);
 		return response;
-	}
-
-	public String getEmbedding(String inQuery) throws Exception
-	{
-		return getEmbedding("text-embedding-ada-002", inQuery);
 	}
 
 	public OutputFiller getFiller()
@@ -128,41 +112,8 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	{
 		filler = inFiller;
 	}
-
-	public String getEmbedding(String inModel, String inQuery) throws Exception
-	{
-
-		//text-embedding-ada-002 is best
-
-		MediaArchive bench = getMediaArchive();
-		// {"model": "text-davinci-003", "prompt": "Say this is a test", "temperature":
-		// 0, "max_tokens": 7}
-		JSONObject obj = new JSONObject();
-
-		obj.put("model", inModel);
-		obj.put("input", inQuery);
-
-		// obj.addProperty("temperature", temp);//
-		// obj.addProperty("max_tokens", maxtokens);
-		String endpoint = "https://api.openai.com/v1/embeddings";
-		// String endpoint = "http://localhost:4891/v1/completions";
-
-		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + getApikey());
-		method.setHeader("Content-Type", "application/json");
-		String string = obj.toString();
-		method.setEntity(new StringEntity(string, "UTF-8"));
-
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-		JSONObject json = getConnection().parseJson(resp);
-		JSONArray dataArray = (JSONArray) json.get("data");
-		JSONObject firstDataObject = (JSONObject) dataArray.get(0);
-		JSONArray embeddingArray = (JSONArray) firstDataObject.get("embedding");
-
-		return embeddingArray.toJSONString(); // Convert to string for returning
-	}
 	
-	public LlmResponse callCreateFunction(Map params, String inModel, String inFunction) throws Exception
+	public LlmResponse callCreateFunction(Map context, String inModel, String inFunction) 
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -181,7 +132,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			throw new OpenEditException("Requested Content Does Not Exist in MEdiaDB or Catatlog:" + inFunction);
 		}
 		
-		String content = loadInputFromTemplate(contentPath, params);
+		String content = loadInputFromTemplate(contentPath, context);
 		
 		JSONArray messages = new JSONArray();
 		JSONObject message = new JSONObject();
@@ -206,7 +157,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 				throw new OpenEditException("Requested Function Does Not Exist in MEdiaDB or Catatlog:" + inFunction);
 			}
 			
-			String definition = loadInputFromTemplate(functionPath, params);
+			String definition = loadInputFromTemplate(functionPath, context);
 
 			JSONParser parser = new JSONParser();
 			JSONObject functionDef = (JSONObject) parser.parse(definition);
@@ -222,11 +173,11 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		
 		log.info(obj.toJSONString());
 
-		return handleApiRequest(obj);
+		return handleApiRequest(obj.toJSONString());
 
 	}
 
-	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image) throws Exception
+	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image)
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -300,51 +251,8 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			obj.put("function_call", func);
 		}
 
-		return handleApiRequest(obj);
+		return handleApiRequest(obj.toJSONString());
 
-	}
-	
-	protected LlmResponse handleApiRequest(JSONObject payload) throws Exception
-	{
-		// API request setup
-		String endpoint = "https://api.openai.com/v1/chat/completions";
-		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + getApikey());
-		method.setHeader("Content-Type", "application/json");
-		method.setEntity(new StringEntity(payload.toJSONString(), StandardCharsets.UTF_8));
-
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-		
-		try
-		{
-			if (resp.getStatusLine().getStatusCode() != 200)
-			{
-				log.info("Gpt Server error status: " + resp.getStatusLine().getStatusCode());
-				log.info("Gpt Server error response: " + resp.toString());
-				throw new OpenEditException("GPT error: " + resp.getStatusLine());
-			}
-	
-			// Parse JSON response using JSON Simple
-			JSONParser parser = new JSONParser();
-			JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
-
-			log.info("returned: " + json.toJSONString());
-
-			// Wrap and return `GptResponse`
-			GptResponse response = new GptResponse();
-			response.setRawResponse(json);
-			return response;
-			
-		}
-		catch (Exception ex)
-		{
-			log.error("Error calling GPT", ex);
-			throw new OpenEditException(ex);
-		}
-		finally
-		{
-			connection.release(resp);
-		}
 	}
 
 	public String getApiEndpoint()
@@ -360,9 +268,8 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	}
 
 	@Override
-	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Collection inFields, Map inParams) throws Exception
+	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Map inParams)
 	{
-		inParams.put("fields", inFields);
 		inParams.put("model", inModel);
 		
 		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/openai/classify/structures/" + inStructureName + ".json", inParams);
@@ -372,7 +279,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		String endpoint = "https://api.openai.com/v1/responses";
 		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + getApikey());
+		method.addHeader("authorization", "Bearer " + getApiKey());
 		method.setHeader("Content-Type", "application/json");
 		method.setEntity(new StringEntity(structureDef.toJSONString(), StandardCharsets.UTF_8));
 
@@ -440,6 +347,10 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 				return results;
 			}
 			results = (JSONObject) parser.parse(new StringReader(text));
+		}
+		catch (Exception e) 
+		{
+			throw new OpenEditException(e);
 		}
 		finally
 		{

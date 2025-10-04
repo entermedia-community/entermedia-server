@@ -1,7 +1,0 @@
-<page>
-	<property name="eventname">Reload All MD5</property>	
-	<path-action name="Script.run" allowduplicates="true" >
-		<script>/${catalogid}/events/scripts/importing/recalculatemd5.groovy</script>
-	</path-action>
-	
-</page>

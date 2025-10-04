@@ -1,6 +1,0 @@
-<page>
-	<path-action name="TimelineModule.autoTranscodeQueue" />
-	<property name="eventname">Transcribe Queue</property>	
-		
-	
-</page>

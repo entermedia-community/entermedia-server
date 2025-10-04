@@ -32,10 +32,8 @@
 	data-stackedviewpath="/$!mediadbappid/services/module/${module.getId()}/players/gallery/results.html">
 	<div class="scrollview">
 		<div class="masonry-grid2 masonry-grid-cells brickvertical" 
-			data-maxheight="180" 
-			data-maxwidth="180"
-			data-targeth="180"
-			data-cellpadding="4">
+			data-minwidth="250"
+		>
 		
 			#set($count = 0)
 			#set($viewerlink = $content.get("assetviewerlink") )
