@@ -28,6 +28,7 @@ import org.openedit.users.Group;
 import org.openedit.users.Permissions;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
+import org.openedit.util.ExecutorManager;
 
 public class UserProfileManager
 {
@@ -593,27 +594,45 @@ public class UserProfileManager
 
 	}
 
-	public void clearUserProfileViewValues(String inCatalogId, String inViewId)
+	public ExecutorManager getExecutorManager(String inCatalogId)
 	{
 		MediaArchive archive = getMediaArchive(inCatalogId);
 
-		Collection userprofiles = archive.query("userprofile").all().search();
+		ExecutorManager queue = (ExecutorManager) getModuleManager().getBean(inCatalogId, "executorManager");
+		return queue;
+	}
+	
+	public void clearUserProfileViewValues(String inCatalogId, String inViewId)
+	{
 
-		Set tosave = new HashSet();
-		String propId = "view_" + inViewId;
+		Runnable task = () -> {
+			MediaArchive archive = getMediaArchive(inCatalogId);
+			Collection userprofiles = archive.query("userprofile").all().search();
 
-		//Loop over all the userprofiles
-		for (Iterator iterator2 = userprofiles.iterator(); iterator2.hasNext();)
-		{
-			MultiValued profile = (MultiValued) iterator2.next();
-			Object found = profile.getValue(propId);
-			if (found != null)
+			Set tosave = new HashSet();
+			String propId = "view_" + inViewId;
+
+			//Loop over all the userprofiles
+			for (Iterator iterator2 = userprofiles.iterator(); iterator2.hasNext();)
 			{
-				profile.setValue(propId, null);
-				tosave.add(profile);
+				MultiValued profile = (MultiValued) iterator2.next();
+				Object found = profile.getValue(propId);
+				if (found != null)
+				{
+					profile.setValue(propId, null);
+					tosave.add(profile);
+					if(tosave.size() > 10000) {
+						archive.saveData("userprofile", tosave);
+						tosave.clear();
+					}
+					
+				}
 			}
-		}
-		archive.saveData("userprofile", tosave);
+			archive.saveData("userprofile", tosave);
+		};
+		getExecutorManager(inCatalogId).execute(task);
+		
+		
 	}
 
 }

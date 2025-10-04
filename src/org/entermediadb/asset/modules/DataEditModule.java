@@ -356,7 +356,6 @@ public class DataEditModule extends BaseMediaModule
 		Data viewdata = archive.getCachedData("view", viewid);
 
 		detailarchive.saveView( viewdata, sorted);
-		archive.getUserProfileManager().clearUserProfileViewValues(catalogid,viewid);
 
 	}
 	//TODO: Allow disable of views
