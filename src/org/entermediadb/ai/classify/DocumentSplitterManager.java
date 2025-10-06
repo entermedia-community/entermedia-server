@@ -168,6 +168,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			}
 		}
 		pageSearcher.saveAllData(tosave, null);
+		getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
 	}
 
 	

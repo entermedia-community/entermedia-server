@@ -411,6 +411,23 @@ $(document).ready(function () {
 		});
 		$(this).closest(".modal").modal("hide");
 	});
+	
+	
+	lQuery(".removeentityfromfield").livequery("click", function () {
+			let listcontainer = $(this).closest(".entitylistcontainer");
+			let countinput = listcontainer.find(".entity-value-list-count");
+			let count = countinput.val();
+			if (!$.isNumeric(count)) {
+				count = 0;
+			}
+			else 
+			{
+				count = count - 1;
+			}
+			countinput.val(count);
+			let entityrow = $(this).closest("li");
+			entityrow.remove();
+		});
 
 	//End of init
 });

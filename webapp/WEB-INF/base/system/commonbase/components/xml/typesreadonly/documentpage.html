@@ -8,9 +8,9 @@
 
 	#if($foundrow)
 
-
+	
 	#set($pagenum = $data.get("pagenum"))
-	#set($imagesize = "image200x200page${pagenum}")
+	#set($imagesize = "image550x550page${pagenum}")
 	#if($thumbsize == "largepreview")
 		#if( $type == "video" )
 			#set($imagesize = "image640x480page${pagenum}")
@@ -25,7 +25,9 @@
 		#set($imagesize = "image200x200page${pagenum}")
 	#elseif($thumbsize == "crop")
 		#set($imagesize = "image110x62croppedpage${pagenum}")
-	#end		
+	#end	
+	
+	
 	
 	<div id="$!{detail.id}-preview"
 		class="assetpreviewreadonly assetdraggable ui-draggable"
@@ -33,12 +35,9 @@
 		#ifnull($pagenum)
 			#set($pagenum = 1)
 		#end
-		#if($pagenum == 1)
-			$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$value&readonly=true", $context)
-		#else
 		
 		<img src="/${mediaarchive.getMediaDbId()}/services/module/asset/generate/#esc(${foundrow.sourcepath})/${imagesize}.webp/${imagesize}.webp" class="img-fluid">
-		#end
+		
 	</div>
 	#else
 		<em>[[Deleted Asset]]</em>
