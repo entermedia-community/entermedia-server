@@ -18,14 +18,13 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.importer.CsvImporter;
 import org.entermediadb.asset.importer.XlsImporter;
-import org.entermediadb.asset.scanner.AssetImporter;
-import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.util.Row;
 import org.entermediadb.data.AddedPermission;
 import org.entermediadb.find.EntityManager;
+import org.entermediadb.projects.LibraryCollection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -1722,4 +1721,27 @@ public class EntityModule extends BaseMediaModule
 		
 		archive.getEntityManager().createEntitiesFromPages(inReq, uploadRequest, module);
 	}
+	
+	public void createCollection(WebPageRequest inReq)
+	{
+		MediaArchive mediaArchive = getMediaArchive(inReq);
+		Searcher librarysearcher = mediaArchive.getSearcher("librarycollection");
+		LibraryCollection saved = (LibraryCollection) librarysearcher.createNewData();
+		librarysearcher.updateData(inReq, inReq.getRequestParameters("field"), saved);
+		
+		String rootcategory = inReq.getRequestParameter("rootcategory.value");
+		Category category = mediaArchive.getCategory(rootcategory);
+		
+		saved.setValue("archivesourcepath", category.getCategoryPath());
+		saved.setName(category.getName());
+		saved.setValue("entity_date", new Date());
+		saved.setValue("owner", inReq.getUserName());
+
+		librarysearcher.saveData(saved, null); //this fires event ProjectManager.configureCollection
+
+
+
+	}
+	
+	
 }
