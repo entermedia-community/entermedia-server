@@ -22,6 +22,7 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.Highlighter;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -287,8 +288,18 @@ public class FinderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		//String query[] = inReq.getRequestParameters("description.value");
 		String plainquery = inReq.getRequestParameter("description.value");
+		
+		Collection<FeaturedFolder> folders = new ArrayList();
+		inReq.putPageValue("featuredfolders",folders);
+		Collection folderhits = archive.query("librarycollection").exact("library","featured").sort("name").search(inReq);
 		if( plainquery == null)
 		{
+			HitTracker found = archive.query("asset").named("quicksearchlist").all().facet("category").hitsPerPage(1).search(inReq);
+			FilterNode node = (FilterNode)found.getActiveFilterValues().get("category");
+			if( node != null)
+			{
+				copyFoldersTo(folderhits, node.getChildren(),folders);
+			}
 			return;
 		}		
 		//String plainquery = String.join(" ", query);
@@ -324,12 +335,16 @@ public class FinderModule extends BaseMediaModule
 		HitTracker assetunsorted = null;
 		if( searchmodules.contains("asset"))
 		{
-			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
+			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).facet("category").hitsPerPage(15);
 			assetdq.getQuery().setIncludeDescription(true);
 			assetunsorted = assetdq.search(inReq);
 			resultsManager.collectMatches(keywordsLower, plainquery, assetunsorted);
 			inReq.putPageValue("assethits",assetunsorted);
-		
+			FilterNode node = (FilterNode)assetunsorted.getActiveFilterValues().get("category");
+			if( node != null)
+			{
+				copyFoldersTo(folderhits, node.getChildren(),folders);
+			}
 		}		
 		List finallist = new ArrayList();
 		for (Iterator iterator = keywordsLower.keySet().iterator(); iterator.hasNext();)
@@ -536,7 +551,42 @@ public class FinderModule extends BaseMediaModule
 		return hits;
 	}
 */
-	
+	private void copyFoldersTo(Collection inFolderhits, Collection<FilterNode> inNodes, Collection<FeaturedFolder> inFolders)
+	{
+		Map<String,FilterNode> nodes = new HashMap();
+		for (Iterator iterator2 = inNodes.iterator(); iterator2.hasNext();)
+		{
+			FilterNode node = (FilterNode) iterator2.next();
+			nodes.put(node.getId(),node);
+		}
+
+		
+		for (Iterator iterator = inFolderhits.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			FilterNode found = nodes.get(hit.getId());
+			if( found != null)
+			{
+				FeaturedFolder featured = new FeaturedFolder();
+				featured.setName(hit.getName());
+				featured.setId(hit.getId());
+				featured.setCount(found.getCount());
+				inFolders.add(featured);
+			}
+		}
+	}
+	private void copyFoldersTo(Collection inFolderhits, Collection<FeaturedFolder> inFolders)
+	{
+		for (Iterator iterator = inFolderhits.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			FeaturedFolder featured = new FeaturedFolder();
+			featured.setName(hit.getName());
+			featured.setId(hit.getId());
+			inFolders.add(featured);
+		}
+	}
+
 	public void loadTopMenu(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
