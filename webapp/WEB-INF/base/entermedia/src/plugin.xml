@@ -2593,7 +2593,7 @@
 	</bean>
 
 
-	<bean id="mcpManager" class="org.entermediadb.mcp.McpManager">
+	<bean id="mcpManager" class="org.entermediadb.mcp.McpManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
