@@ -224,8 +224,10 @@
 							fnc(initiator); //execute it
 						}
 					}
+					if (!$(this).hasClass("persistentmodal")) {
+						closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
+					}
 
-					closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
 					$(window).trigger("resize");
 				});
 
@@ -336,9 +338,11 @@ closeemdialog = function (modaldialog) {
 	} else {
 		modaldialog.modal("hide");
 	}
-	setTimeout(function () {
-		if (modaldialog) modaldialog.remove();
-	}, 200);
+	if (!modaldialog.hasClass("persistentmodal")) {
+		setTimeout(function () {
+			if (modaldialog) modaldialog.remove();
+		}, 200);
+	}
 	//other modals?
 	var othermodal = $(".modal");
 	if (othermodal.length && !othermodal.is(":hidden")) {
