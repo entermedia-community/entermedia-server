@@ -551,7 +551,7 @@ public class FinderModule extends BaseMediaModule
 		return hits;
 	}
 */
-	private void copyFoldersTo(Collection inFolderhits, Collection<FilterNode> inNodes, Collection<FeaturedFolder> inFolders)
+	private void copyFoldersTo(Collection inCollectionHits, Collection<FilterNode> inNodes, Collection<FeaturedFolder> inFolders)
 	{
 		Map<String,FilterNode> nodes = new HashMap();
 		for (Iterator iterator2 = inNodes.iterator(); iterator2.hasNext();)
@@ -561,15 +561,16 @@ public class FinderModule extends BaseMediaModule
 		}
 
 		
-		for (Iterator iterator = inFolderhits.iterator(); iterator.hasNext();)
+		for (Iterator iterator = inCollectionHits.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();
-			FilterNode found = nodes.get(hit.getId());
+			String rootcategory = hit.get("rootcategory");
+			FilterNode found = nodes.get(rootcategory);
 			if( found != null)
 			{
 				FeaturedFolder featured = new FeaturedFolder();
 				featured.setName(hit.getName());
-				featured.setId(hit.getId());
+				featured.setId(rootcategory);
 				featured.setCount(found.getCount());
 				inFolders.add(featured);
 			}
