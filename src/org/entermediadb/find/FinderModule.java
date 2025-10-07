@@ -300,6 +300,7 @@ public class FinderModule extends BaseMediaModule
 		modules.add(archive.getCachedData("module", "asset"));
 		results.setModules(modules);
 		
+		inReq.putPageValue("suggestedassets", true);
 		inReq.putPageValue("organizedresults",results);
 	}
 	public void searchForAll(WebPageRequest inReq)
