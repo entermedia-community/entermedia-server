@@ -45,10 +45,9 @@
 
 		var modaldialog = $("#" + id);
 		if (modaldialog.length == 0) {
+			var modalClass = initiator.data("modalclass");
 			jQuery("#application").append(
-				'<div class="modal" tabindex="-1" id="' +
-					id +
-					'" style="display:none"></div>'
+				`<div class="modal ${modalClass}" tabindex="-1" id="${id}" style="display:none"></div>`
 			);
 			modaldialog = jQuery("#" + id);
 		}
@@ -225,8 +224,10 @@
 							fnc(initiator); //execute it
 						}
 					}
+					if (!$(this).hasClass("persistentmodal")) {
+						closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
+					}
 
-					closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
 					$(window).trigger("resize");
 				});
 
@@ -337,7 +338,11 @@ closeemdialog = function (modaldialog) {
 	} else {
 		modaldialog.modal("hide");
 	}
-	modaldialog.remove();
+	if (!modaldialog.hasClass("persistentmodal")) {
+		setTimeout(function () {
+			if (modaldialog) modaldialog.remove();
+		}, 200);
+	}
 	//other modals?
 	var othermodal = $(".modal");
 	if (othermodal.length && !othermodal.is(":hidden")) {
