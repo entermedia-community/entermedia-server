@@ -286,23 +286,30 @@ public class FinderModule extends BaseMediaModule
 	public void searchForLiveSuggestions(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		//String query[] = inReq.getRequestParameters("description.value");
-		String plainquery = inReq.getRequestParameter("description.value");
 		
 		Collection<FeaturedFolder> folders = new ArrayList();
 		inReq.putPageValue("featuredfolders",folders);
 		Collection folderhits = archive.query("librarycollection").exact("library","featured").sort("name").search(inReq);
-		if( plainquery == null)
+	
+		HitTracker found = archive.query("asset").named("quicksearchlist").all().facet("category").hitsPerPage(1).search(inReq);
+		FilterNode node = (FilterNode)found.getActiveFilterValues().get("category");
+		if( node != null)
 		{
-			HitTracker found = archive.query("asset").named("quicksearchlist").all().facet("category").hitsPerPage(1).search(inReq);
-			FilterNode node = (FilterNode)found.getActiveFilterValues().get("category");
-			if( node != null)
-			{
-				copyFoldersTo(folderhits, node.getChildren(),folders);
-			}
+			copyFoldersTo(folderhits, node.getChildren(),folders);
+		}
+	}
+	public void searchForAll(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String plainquery = inReq.getRequestParameter("description.value");
+		
+		if(plainquery == null || plainquery.length() < 2)
+		{
 			return;
-		}		
-		//String plainquery = String.join(" ", query);
+		}
+		
+		Collection<FeaturedFolder> folders = new ArrayList();
+		Collection folderhits = archive.query("librarycollection").exact("library","featured").sort("name").search(inReq);
 		
 		
 		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",plainquery).hitsPerPage(30);
