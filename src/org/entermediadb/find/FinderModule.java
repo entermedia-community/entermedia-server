@@ -305,7 +305,13 @@ public class FinderModule extends BaseMediaModule
 			Collection<FeaturedFolder> folders = copyFoldersTo(folderhits, node.getChildren());
 			inReq.putPageValue("featuredfolders",folders);
 		}
-		inReq.putPageValue("recentassets",found);
+		OrganizedResults results = new OrganizedResults();
+		results.setAssetResults(found);
+		List modules = new ArrayList(1);
+		modules.add(archive.getCachedData("module", "asset"));
+		results.setModules(modules);
+		
+		inReq.putPageValue("organizedresults",results);
 	}
 	public void searchForAll(WebPageRequest inReq)
 	{
