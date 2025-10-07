@@ -45,10 +45,9 @@
 
 		var modaldialog = $("#" + id);
 		if (modaldialog.length == 0) {
+			var modalClass = initiator.data("modalclass");
 			jQuery("#application").append(
-				'<div class="modal" tabindex="-1" id="' +
-					id +
-					'" style="display:none"></div>'
+				`<div class="modal ${modalClass}" tabindex="-1" id="${id}" style="display:none"></div>`
 			);
 			modaldialog = jQuery("#" + id);
 		}
@@ -337,7 +336,9 @@ closeemdialog = function (modaldialog) {
 	} else {
 		modaldialog.modal("hide");
 	}
-	modaldialog.remove();
+	setTimeout(function () {
+		if (modaldialog) modaldialog.remove();
+	}, 200);
 	//other modals?
 	var othermodal = $(".modal");
 	if (othermodal.length && !othermodal.is(":hidden")) {
