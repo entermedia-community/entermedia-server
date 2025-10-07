@@ -301,7 +301,7 @@ public class FinderModule extends BaseMediaModule
 		results.setModules(modules);
 		
 		inReq.putPageValue("suggestedassets", true);
-		inReq.putPageValue("organizedresults",results);
+		inReq.putPageValue("organizedResults",results);
 	}
 	public void searchForAll(WebPageRequest inReq)
 	{
