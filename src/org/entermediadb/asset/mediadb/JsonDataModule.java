@@ -56,14 +56,14 @@ public class JsonDataModule extends BaseJsonModule
 		//Could probably handle this generically, but I think they want tags, keywords etc.
 
 		SearcherManager sm = (SearcherManager)inReq.getPageValue("searcherManager");
-
+		
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
 
 		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = archive.getSearcher(searchtype);
 		HitTracker hits = null;
-		if( inReq.getJsonRequest() == null)
+		if( inReq.getJsonRequest() == null)  //Todo: Catch invalid JSON
 		{
 			hits = searcher.getAllHits(inReq);
 			//Add sort
