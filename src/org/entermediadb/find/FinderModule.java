@@ -320,16 +320,16 @@ public class FinderModule extends BaseMediaModule
 
 		inReq.putPageValue("featuredfolders",folders);
 		
-		if(plainquery == null || plainquery.length() < 2)
-		{
-			HitTracker found = archive.query("asset").named("quicksearchlist").all().facet("category").hitsPerPage(1).search(inReq);
-			FilterNode node = (FilterNode)found.getActiveFilterValues().get("category");
-			if( node != null)
-			{
-				copyFoldersTo(folderhits, node.getChildren(),folders);
-			}
-			return;
-		}
+//		if(plainquery == null || plainquery.length() < 2)
+//		{
+//			HitTracker found = archive.query("asset").named("quicksearchlist").all().facet("category").hitsPerPage(1).search(inReq);
+//			FilterNode node = (FilterNode)found.getActiveFilterValues().get("category");
+//			if( node != null)
+//			{
+//				copyFoldersTo(folderhits, node.getChildren(),folders);
+//			}
+//			return;
+//		}
 		
 		
 		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",plainquery).hitsPerPage(30);
