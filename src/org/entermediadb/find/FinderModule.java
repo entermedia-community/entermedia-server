@@ -348,8 +348,8 @@ public class FinderModule extends BaseMediaModule
 		
 		HitTracker unsorted = dq.search(inReq); //With permissions?
 		
-		Map<String,String> keywordsLower = new HashMap();
-		resultsManager.collectMatches(keywordsLower, plainquery, unsorted);
+//		Map<String,String> keywordsLower = new HashMap();
+//		resultsManager.collectMatches(keywordsLower, plainquery, unsorted);
 		
 		HitTracker assetunsorted = null;
 		if( searchmodules.contains("asset"))
@@ -357,7 +357,7 @@ public class FinderModule extends BaseMediaModule
 			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).facet("category").hitsPerPage(15);
 			assetdq.getQuery().setIncludeDescription(true);
 			assetunsorted = assetdq.search(inReq);
-			resultsManager.collectMatches(keywordsLower, plainquery, assetunsorted);
+			//resultsManager.collectMatches(keywordsLower, plainquery, assetunsorted);
 			inReq.putPageValue("assethits",assetunsorted);
 			FilterNode node = (FilterNode)assetunsorted.getActiveFilterValues().get("category");
 			if( node != null)
@@ -367,20 +367,17 @@ public class FinderModule extends BaseMediaModule
 				inReq.putPageValue("featuredfolders",folders);
 			}
 		}		
-		List finallist = new ArrayList();
-		for (Iterator iterator = keywordsLower.keySet().iterator(); iterator.hasNext();)
-		{
-			String keyword = (String) iterator.next();
-			String keywordcase = keywordsLower.get(keyword);
-			finallist.add(keywordcase);
-		}
-		//inReq.setRequestParameter("clearfilters","true");
-		//unsorted.getSearchQuery().setValue("description",query); //Not needed?
-		//List finallist = new ArrayList(keywords);
-		Collections.sort(finallist);
+//		List finallist = new ArrayList();
+//		for (Iterator iterator = keywordsLower.keySet().iterator(); iterator.hasNext();)
+//		{
+//			String keyword = (String) iterator.next();
+//			String keywordcase = keywordsLower.get(keyword);
+//			finallist.add(keywordcase);
+//		}
+//		Collections.sort(finallist);
 		inReq.putPageValue("modulehits",unsorted);
 		inReq.putPageValue("livesearchfor",plainquery);
-		inReq.putPageValue("livesuggestions",finallist);
+//		inReq.putPageValue("livesuggestions",finallist);
 		inReq.putPageValue("highlighter",new Highlighter());
 		
 		
