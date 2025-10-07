@@ -2,7 +2,7 @@ package org.entermediadb.find;
 
 import org.openedit.data.BaseData;
 
-public class FeaturedFolder extends BaseData
+public class FeaturedFolder extends BaseData implements Comparable
 {
 	protected int fieldCount;
 
@@ -16,5 +16,12 @@ public class FeaturedFolder extends BaseData
 		fieldCount = inCount;
 	}
 	
+	@Override
+	public int compareTo(Object inO)
+	{
+		FeaturedFolder folder = (FeaturedFolder)inO;
+		int ret = Integer.compare(fieldCount, fieldCount);
+		return ret;
+	}
 	
 }

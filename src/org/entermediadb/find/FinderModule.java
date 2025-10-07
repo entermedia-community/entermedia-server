@@ -551,7 +551,7 @@ public class FinderModule extends BaseMediaModule
 		return hits;
 	}
 */
-	private void copyFoldersTo(Collection inFolderhits, Collection<FilterNode> inNodes, Collection<FeaturedFolder> inFolders)
+	private void copyFoldersTo(Collection inFolderhits, Collection<FilterNode> inNodes, List<FeaturedFolder> inFolders)
 	{
 		Map<String,FilterNode> nodes = new HashMap();
 		for (Iterator iterator2 = inNodes.iterator(); iterator2.hasNext();)
@@ -574,6 +574,11 @@ public class FinderModule extends BaseMediaModule
 				inFolders.add(featured);
 			}
 		}
+		
+		
+		Collections.sort(inFolders);
+		
+		
 	}
 	private void copyFoldersTo(Collection inFolderhits, Collection<FeaturedFolder> inFolders)
 	{
