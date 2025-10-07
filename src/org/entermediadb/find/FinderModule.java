@@ -297,28 +297,20 @@ public class FinderModule extends BaseMediaModule
 	public void searchForLiveSuggestions(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		
-		Collection<FeaturedFolder> folders = new ArrayList();
-		Collection folderhits = archive.query("librarycollection").exact("library","featured").sort("name").search(inReq);
-		
-		HitTracker found = archive.query("asset").named("quicksearchlist").all().facet("category").hitsPerPage(1).search(inReq);
+		HitTracker found = archive.query("asset").named("quicksearchlist").exact("previewstatus","2").hitsPerPage(24).sort("assetaddeddate").facet("category").search(inReq);
 		FilterNode node = (FilterNode)found.getActiveFilterValues().get("category");
 		if( node != null)
 		{
-			copyFoldersTo(folderhits, node.getChildren(),folders);
+			Collection folderhits = archive.query("librarycollection").exact("library","featured").sort("name").search(inReq);
+			Collection<FeaturedFolder> folders = copyFoldersTo(folderhits, node.getChildren());
+			inReq.putPageValue("featuredfolders",folders);
 		}
-		inReq.putPageValue("featuredfolders",folders);
+		inReq.putPageValue("recentassets",found);
 	}
 	public void searchForAll(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String plainquery = inReq.getRequestParameter("description.value");
-		
-		
-		Collection<FeaturedFolder> folders = new ArrayList();
-		Collection folderhits = archive.query("librarycollection").exact("library","featured").sort("name").search(inReq);
-
-		inReq.putPageValue("featuredfolders",folders);
 		
 //		if(plainquery == null || plainquery.length() < 2)
 //		{
@@ -370,7 +362,9 @@ public class FinderModule extends BaseMediaModule
 			FilterNode node = (FilterNode)assetunsorted.getActiveFilterValues().get("category");
 			if( node != null)
 			{
-				copyFoldersTo(folderhits, node.getChildren(),folders);
+				Collection folderhits = archive.query("librarycollection").exact("library","featured").sort("name").search(inReq); //All possible ones cached and securiy checked
+				Collection<FeaturedFolder> folders = copyFoldersTo(folderhits, node.getChildren());
+				inReq.putPageValue("featuredfolders",folders);
 			}
 		}		
 		List finallist = new ArrayList();
@@ -578,15 +572,15 @@ public class FinderModule extends BaseMediaModule
 		return hits;
 	}
 */
-	private void copyFoldersTo(Collection inCollectionHits, Collection<FilterNode> inNodes, Collection<FeaturedFolder> inFolders)
+	private Collection<FeaturedFolder>  copyFoldersTo(Collection inCollectionHits, Collection<FilterNode> inNodes)
 	{
+		List<FeaturedFolder> inFolders = new ArrayList();
 		Map<String,FilterNode> nodes = new HashMap();
 		for (Iterator iterator2 = inNodes.iterator(); iterator2.hasNext();)
 		{
 			FilterNode node = (FilterNode) iterator2.next();
 			nodes.put(node.getId(),node);
 		}
-
 		
 		for (Iterator iterator = inCollectionHits.iterator(); iterator.hasNext();)
 		{
@@ -602,18 +596,10 @@ public class FinderModule extends BaseMediaModule
 				inFolders.add(featured);
 			}
 		}
+		Collections.sort(inFolders);
+		return inFolders;
 	}
-	private void copyFoldersTo(Collection inFolderhits, Collection<FeaturedFolder> inFolders)
-	{
-		for (Iterator iterator = inFolderhits.iterator(); iterator.hasNext();)
-		{
-			Data hit = (Data) iterator.next();
-			FeaturedFolder featured = new FeaturedFolder();
-			featured.setName(hit.getName());
-			featured.setId(hit.getId());
-			inFolders.add(featured);
-		}
-	}
+
 
 	public void loadTopMenu(WebPageRequest inReq)
 	{

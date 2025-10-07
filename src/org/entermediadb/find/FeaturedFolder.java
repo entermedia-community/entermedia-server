@@ -20,7 +20,7 @@ public class FeaturedFolder extends BaseData implements Comparable
 	public int compareTo(Object inO)
 	{
 		FeaturedFolder folder = (FeaturedFolder)inO;
-		int ret = Integer.compare(fieldCount, fieldCount);
+		int ret = Integer.compare(folder.getCount(),getCount());
 		return ret;
 	}
 	
