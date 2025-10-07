@@ -282,34 +282,54 @@ public class FinderModule extends BaseMediaModule
 		}
 		return searchmodules;
 	}
+	
+	public void loadMainSearchInput(WebPageRequest inReq)
+	{
+		String query = inReq.getRequestParameter("description.value");
+		if( query == null)
+		{
+			query = "";
+		}
+		inReq.putPageValue("input", query);
+		
+	}
 
 	public void searchForLiveSuggestions(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		Collection<FeaturedFolder> folders = new ArrayList();
-		inReq.putPageValue("featuredfolders",folders);
 		Collection folderhits = archive.query("librarycollection").exact("library","featured").sort("name").search(inReq);
-	
+		
 		HitTracker found = archive.query("asset").named("quicksearchlist").all().facet("category").hitsPerPage(1).search(inReq);
 		FilterNode node = (FilterNode)found.getActiveFilterValues().get("category");
 		if( node != null)
 		{
 			copyFoldersTo(folderhits, node.getChildren(),folders);
 		}
+		inReq.putPageValue("featuredfolders",folders);
 	}
 	public void searchForAll(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String plainquery = inReq.getRequestParameter("description.value");
 		
-		if(plainquery == null || plainquery.length() < 2)
-		{
-			return;
-		}
 		
 		Collection<FeaturedFolder> folders = new ArrayList();
 		Collection folderhits = archive.query("librarycollection").exact("library","featured").sort("name").search(inReq);
+
+		inReq.putPageValue("featuredfolders",folders);
+		
+		if(plainquery == null || plainquery.length() < 2)
+		{
+			HitTracker found = archive.query("asset").named("quicksearchlist").all().facet("category").hitsPerPage(1).search(inReq);
+			FilterNode node = (FilterNode)found.getActiveFilterValues().get("category");
+			if( node != null)
+			{
+				copyFoldersTo(folderhits, node.getChildren(),folders);
+			}
+			return;
+		}
 		
 		
 		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",plainquery).hitsPerPage(30);
