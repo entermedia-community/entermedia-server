@@ -282,17 +282,6 @@ public class FinderModule extends BaseMediaModule
 		}
 		return searchmodules;
 	}
-	
-	public void loadMainSearchInput(WebPageRequest inReq)
-	{
-		String query = inReq.getRequestParameter("description.value");
-		if( query == null)
-		{
-			query = "";
-		}
-		inReq.putPageValue("input", query);
-		
-	}
 
 	public void searchForLiveSuggestions(WebPageRequest inReq)
 	{
@@ -311,7 +300,7 @@ public class FinderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String plainquery = inReq.getRequestParameter("description.value");
-		
+		inReq.putPageValue("input", plainquery);
 //		if(plainquery == null || plainquery.length() < 2)
 //		{
 //			HitTracker found = archive.query("asset").named("quicksearchlist").all().facet("category").hitsPerPage(1).search(inReq);
