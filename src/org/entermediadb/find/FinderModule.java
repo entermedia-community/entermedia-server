@@ -40,7 +40,7 @@ public class FinderModule extends BaseMediaModule
 //	public void searchByQuery(WebPageRequest inReq)
 //	{
 //		MediaArchive archive = getMediaArchive(inReq);
-//		String query = inReq.getRequestParameter("description.value");
+//		String query = inReq.getRequestParameter("query");
 //		if (query == null) {
 //			return;
 //		}
@@ -306,8 +306,8 @@ public class FinderModule extends BaseMediaModule
 	public void searchForAll(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String plainquery = inReq.getRequestParameter("description.value");
-		inReq.putPageValue("input", plainquery);
+		String plainquery = inReq.getRequestParameter("query");
+		inReq.putPageValue("query", plainquery);
 //		if(plainquery == null || plainquery.length() < 2)
 //		{
 //			HitTracker found = archive.query("asset").named("quicksearchlist").all().facet("category").hitsPerPage(1).search(inReq);
