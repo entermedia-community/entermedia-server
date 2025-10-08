@@ -80,10 +80,14 @@ public class FinderModule extends BaseMediaModule
 		}
 		
 		//Search
-		String searchby = inReq.getRequestParameter("search");
-		if(searchby != null)
+		if( query.equals("*") )
 		{
-			search.addFreeFormQuery("description", searchby);
+			search.addMatches("id", "*");
+			search.setShowAll(true);
+		}
+		else
+		{
+			search.addFreeFormQuery("description", query);
 		}
 		
 		if( search.getHitsName() == null)
