@@ -261,7 +261,7 @@ public class OrganizedResults
 		{
 			clearresults = true;
 		}
-		else if( getAssetResults().hasChanged( inAssetunsorted ) )
+		else if( getAssetResults() != null && getAssetResults().hasChanged( inAssetunsorted ) )
 		{
 			clearresults = true;
 		}
