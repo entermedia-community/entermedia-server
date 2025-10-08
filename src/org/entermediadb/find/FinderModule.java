@@ -290,7 +290,7 @@ public class FinderModule extends BaseMediaModule
 	public void searchForLiveSuggestions(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		HitTracker found = archive.query("asset").named("quicksearchlist").exact("previewstatus","2").hitsPerPage(24).sort("assetaddeddate").facet("category").search(inReq);
+		HitTracker found = archive.query("asset").named("quicksearchlist").exact("previewstatus","2").hitsPerPage(24).sort("assetaddeddateDown").facet("category").search(inReq);
 		FilterNode node = (FilterNode)found.getActiveFilterValues().get("category");
 		if( node != null)
 		{
