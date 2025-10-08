@@ -7,25 +7,25 @@
 #end
 
 <div class="assetpicker"  id="entitypicker${detail.id}" data-detailid="${detail.id}">
-	<div class="render-type-thumbnail position-relative mb-1" id="${detail.id}-preview">
-		#if($value && $value != "")
-			#set( $foundrow = $mediaarchive.getAsset($value)  )
-			
-			#if($foundrow)
-				#ifnull($searchhome)
-					$context.putPageValue("searchhome", "$apphome/components/results")
-				#end
-				$context.putPageValue("componenthome", "$apphome/components") ##Legacy
-				$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$value", $context)
+	#if($value && $value != "")
+		#set( $foundrow = $mediaarchive.getAsset($value)  )
+		#if($foundrow)
+			#ifnull($searchhome)
+				$context.putPageValue("searchhome", "$apphome/components/results")
+			#end
+			$context.putPageValue("componenthome", "$apphome/components") ##Legacy
+			$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$value", $context)
+			<div class="render-type-thumbnail position-relative mb-1" id="${detail.id}-preview">
 				<a href="#" 
 					class="removefieldassetvalue"
 					title="[[Remove This Asset]]" 
 					data-targetdivinner="${detail.id}-preview"
-					data-detailid="${detail.id}"
-					><i class="bi bi-x"></i></a>
-			#end
+					data-detailid="${detail.id}">
+					<i class="bi bi-x"></i>
+				</a>
+			</div>
 		#end
-	</div>
+	#end
 
 	<input type="hidden" name="${detail.id}.value" id="${detail.id}-value" data-detailid="${detail.id}" value="$!foundrow.id"/>
 
