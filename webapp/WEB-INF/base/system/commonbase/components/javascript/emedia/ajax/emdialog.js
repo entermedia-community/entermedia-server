@@ -45,7 +45,7 @@
 
 		var modaldialog = $("#" + id);
 		if (modaldialog.length == 0) {
-			var modalClass = initiator.data("modalclass");
+			var modalClass = initiator.data("modalclass") || "";
 			jQuery("#application").append(
 				`<div class="modal ${modalClass}" tabindex="-1" id="${id}" style="display:none"></div>`
 			);
@@ -373,6 +373,7 @@ closeemdialog = function (modaldialog) {
 		$(document.body).removeClass("modal-open");
 		$(".modal-backdrop").remove();
 	}
+	$(window).trigger("modalclosed", [dialogid]);
 };
 
 closeallemdialogs = function () {
