@@ -34,8 +34,6 @@ import org.openedit.users.User;
 public class ResultsManager extends BaseManager {
 	private static final Log log = LogFactory.getLog(ResultsManager.class);
 	
-	private static final int MEDIASAMPLE=7;
-
 	/*
 	public void organizeHits(WebPageRequest inReq, HitTracker inModuleHits, Collection pageOfHits, HitTracker inAssets) 
 	{
@@ -256,7 +254,7 @@ public class ResultsManager extends BaseManager {
 	
 	public OrganizedResults loadOrganizedResults(WebPageRequest inReq, HitTracker inUnsorted, HitTracker inAssetunsorted)
 	{
-		OrganizedResults organizedresults = loadOrganizedResults(inReq,inUnsorted,inAssetunsorted,MEDIASAMPLE);
+		OrganizedResults organizedresults = loadOrganizedResults(inReq,inUnsorted,inAssetunsorted,0);
 		return organizedresults; 
 	}	
 	public OrganizedResults loadOrganizedResults(WebPageRequest inReq, HitTracker inUnsortedEntities, HitTracker inAssetunsorted, int inSize)
