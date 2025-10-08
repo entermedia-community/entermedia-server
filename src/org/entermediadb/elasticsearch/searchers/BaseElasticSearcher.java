@@ -2950,7 +2950,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				if (propid.equals("description")) //This field must be defined by user first. or it will continue above
 				{
 					Object value = inData.getValue(propid);
-					if (value == null || !isReIndexing())
+					if (value == null || !isReIndexing() || !isOptimizeReindex()) 
 					{
 						StringBuffer desc = new StringBuffer();
 						populateKeywords(desc, inData, inDetails);
@@ -4248,6 +4248,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	@Override
 	public void reindexInternal() throws OpenEditException
 	{
+		//Manual Reindex
+		
 		HitTracker allhits = getAllIndexed();
 		setReIndexing(true);
 		try
