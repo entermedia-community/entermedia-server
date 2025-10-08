@@ -13,6 +13,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.util.JSONParser;
 
@@ -114,6 +115,8 @@ public class DocumentSplitterManager extends InformaticsProcessor
 
 		List<Data> tosave = new ArrayList();
 		int pagenum = 0;
+		
+		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
 
 		for (Iterator iterator = pagesFulltext.iterator(); iterator.hasNext();) {
 			pagenum++;
@@ -122,11 +125,16 @@ public class DocumentSplitterManager extends InformaticsProcessor
 
 			Data docpage = null;
 			for (Iterator iterator2 = existingPages.iterator(); iterator2.hasNext();) {
-				Data d = (Data) iterator2.next();
-				int p = (int) d.getValue("pagenum");
+				Data existingPage = (Data) iterator2.next();
+				Object pageval = existingPage.getValue("pagenum");
+				if( pageval == null || !(pageval instanceof Number) )
+				{
+					continue;
+				}
+				int p = (int) ((Number)pageval).doubleValue();
 				if( p == pagenum)
 				{
-					docpage = d;
+					docpage = existingPage;
 					break;
 				}
 			}
@@ -139,7 +147,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			}
 			else
 			{
-				docpage = getMediaArchive().getSearcher(generatedsearchtype).createNewData();
+				docpage = pageSearcher.createNewData();
 				String pagename = inEntity.getName() + " - Page " + pagenum;
 				docpage.setName(pagename);
 			}
@@ -155,11 +163,12 @@ public class DocumentSplitterManager extends InformaticsProcessor
 
 			if(tosave.size() > 20)
 			{
-				getMediaArchive().saveData(generatedsearchtype, tosave);
+				pageSearcher.saveAllData(tosave, null);
 				tosave.clear();
 			}
 		}
-		getMediaArchive().saveData(generatedsearchtype, tosave);
+		pageSearcher.saveAllData(tosave, null);
+		getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
 	}
 
 	

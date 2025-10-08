@@ -20,9 +20,7 @@ import org.openedit.hittracker.SearchQuery;
 
 public class OrganizedResults
 {
-	
-	protected int fieldSizeOfResults;
-	
+	protected int fieldSizeOfResults = 0; //Only set on quicksearch
 	
 	public int getSizeOfResults()
 	{
@@ -181,6 +179,10 @@ public class OrganizedResults
 	//				newvalues.setSearchQuery(query);
 	
 					query.setHitsName("organized" + inModuleId);
+					if( getSizeOfResults() > 0)
+					{
+						query.setHitsPerPage(getSizeOfResults());
+					}
 					hits = searcher.search(query);
 					//Set filters?
 					//set name and session session
@@ -259,7 +261,7 @@ public class OrganizedResults
 		{
 			clearresults = true;
 		}
-		else if( getAssetResults().hasChanged( inAssetunsorted ) )
+		else if( getAssetResults() != null && getAssetResults().hasChanged( inAssetunsorted ) )
 		{
 			clearresults = true;
 		}

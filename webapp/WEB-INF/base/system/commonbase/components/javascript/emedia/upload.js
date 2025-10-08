@@ -306,6 +306,7 @@ $(document).ready(function () {
 					var dialog = $(
 						`<a href="${uploader}" data-maxwidth="sm" title="Create Bulk Folders from Files"></a>`
 					);
+					allfiles = new Array();
 					dialog.emDialog(function () {
 						$(".upload_field")
 							.last()

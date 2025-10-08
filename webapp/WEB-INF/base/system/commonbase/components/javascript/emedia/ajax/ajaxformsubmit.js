@@ -179,10 +179,15 @@
 				}
 				let closedialogid = form.data("closedialogid");
 				if (closedialogid !== undefined) {
-					let closedialog = $("#" + closedialogid);
-					if (closedialog.length > 0) {
-						closeemdialog(closedialog.closest(".modal"));
-					}
+					
+					let splitnames = closedialogid.split(",");
+					$.each(splitnames, function (index, modalid) {
+						modalid = $.trim(modalid);
+						$("#" + modalid).each(function (index, div) {
+							closeemdialog($(div).closest(".modal"));
+						});
+					});			
+
 				}
 				if (formmodal.length > 0 && form.hasClass("autocloseform")) {
 					if (formmodal.modal) {
