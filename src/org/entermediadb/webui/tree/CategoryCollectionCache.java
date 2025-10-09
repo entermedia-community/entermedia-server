@@ -2,8 +2,10 @@ package org.entermediadb.webui.tree;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.entermediadb.asset.Category;
 import org.entermediadb.projects.LibraryCollection;
@@ -30,7 +32,6 @@ public class CategoryCollectionCache implements CatalogEnabled
 	{
 		fieldTimedCacheManager = inTimedCacheManager;
 	}
-	protected boolean init = false;
 	
 	public String getCatalogId()
 	{
@@ -61,36 +62,46 @@ public class CategoryCollectionCache implements CatalogEnabled
 	{
 		fieldCacheManager = inCacheManager;
 	}
-
-	protected void loadRoots()
+	
+	protected Map<String,LibraryCollection> getCategoryLookup()
 	{
-		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
-		HitTracker all = searcher.query().all().search();
-		all.setHitsPerPage(2000);
-		
-		for (Iterator iterator = all.getPageOfHits().iterator(); iterator.hasNext();)
+		Map<String,LibraryCollection> lookup = (Map<String,LibraryCollection>)getTimedCacheManager().get(getCatalogId(),"collectioncache");
+		if( lookup == null)
 		{
-			Data collection = (Data) iterator.next();
-			String rootid = collection.get("rootcategory");
-			if( rootid != null)
+			lookup = new HashMap();
+			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
+			HitTracker all = searcher.query().exists("rootcategory").search();
+			all.setHitsPerPage(2000);
+			
+			for (Iterator iterator = all.getPageOfHits().iterator(); iterator.hasNext();)
 			{
-				LibraryCollection librarycollection = (LibraryCollection)searcher.loadData(collection);
-				getCacheManager().put(getCatalogId() + "collectioncache", rootid, librarycollection);
+				Data collection = (Data) iterator.next();
+				String rootid = collection.get("rootcategory");
+				if( rootid != null)
+				{
+					LibraryCollection librarycollection = (LibraryCollection)searcher.loadData(collection);
+					lookup.put(rootid, librarycollection);
+				}
 			}
+			getTimedCacheManager().put(getCatalogId(),"collectioncache",lookup);
 		}
-//		CategorySearcher searcher = (CategorySearcher)getSearcherManager().getSearcher(getCatalogId(), "category");
-//		
-//		for (Iterator iterator = categoryids.iterator(); iterator.hasNext();)
-//		{
-//			String id = (String) iterator.next();
-//			Category cat = searcher.getCategory(id);
-//			if( cat != null)
-//			{
-//				fieldCategoryRoots.put( id, cat);
-//			}
-//		}
-		
+		return lookup;
 	}
+	
+	public String getCollectionId(Category inRoot)
+	{
+		if( inRoot == null)
+		{
+			return null;
+		}
+		LibraryCollection exists = getCategoryLookup().get(inRoot.getId());
+		if( exists == null )
+		{
+			return null;
+		}
+		return exists.getId();
+	}
+	
 	public String findCollectionId(Category inRoot)
 	{
 		if( inRoot == null)
@@ -111,31 +122,18 @@ public class CategoryCollectionCache implements CatalogEnabled
 		{
 			return false;
 		}
-		Boolean iscollection = (Boolean)getCacheManager().get(getCatalogId() + "iscollection", inRoot.getId());
-		
-		if( iscollection != null)
+		String collectionid = getCollectionId(inRoot);
+		if( collectionid == null)
 		{
-			return iscollection;
+			return false;
 		}
-		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
-		Data found = (Data)searcher.query().exact("rootcategory", inRoot.getId()).searchOne();
-		iscollection = found != null;
-		getCacheManager().put(getCatalogId() + "iscollection", inRoot.getId(), iscollection);
-		return iscollection;
+		return true;
+					
 	}
 
 	
 	public LibraryCollection findCollection(Category inRoot)
 	{
-		if( !init )
-		{
-			loadRoots();
-			init = true;
-		}
-		if( "index".equals(inRoot.getId()) )
-		{
-			return null;
-		}
 		List parents  = inRoot.getParentCategories();
 		if( parents != null)
 		{
@@ -145,39 +143,10 @@ public class CategoryCollectionCache implements CatalogEnabled
 		for (Iterator iterator = parents.iterator(); iterator.hasNext();)
 		{
 			Category parent = (Category) iterator.next();
-			LibraryCollection exists = (LibraryCollection)getCacheManager().get(getCatalogId() + "collectioncache", parent.getId());
+			LibraryCollection exists = getCategoryLookup().get(parent.getId());
 			if( exists != null)
 			{
 				return exists;  //Loaded on boot up once time and cached heaviliy
-			}
-			
-			exists = (LibraryCollection)getTimedCacheManager().get(getCatalogId() + "collectioncache", parent.getId());
-			if( exists == NULLCOLLECTION)
-			{
-				return null;
-			}
-			if( exists != null)
-			{
-				return exists;
-			}
-			else
-			{
-				//It expired after 15 min. Do a DB lookup just to be sure
-				Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
-				Data found = (Data)searcher.query().orgroup("rootcategory", parents).searchOne();
-				if( found == null)
-				{
-					exists = NULLCOLLECTION;
-				}
-				else
-				{
-					exists = (LibraryCollection)searcher.loadData(found);
-				}
-				getTimedCacheManager().put(getCatalogId() + "collectioncache", inRoot.getId(), exists);
-				if( exists != NULLCOLLECTION)
-				{
-					return exists;
-				}
 			}
 		}
 		return null;
@@ -190,12 +159,11 @@ public class CategoryCollectionCache implements CatalogEnabled
 
 	public void addCollection(LibraryCollection inSaved)
 	{
-		getCacheManager().put(getCatalogId() + "collectioncache", inSaved.getCategory().getId(),inSaved);
-		
+		String rootcat = inSaved.getRootCategoryId();
+		if( rootcat!= null)
+		{
+			getCategoryLookup().put(rootcat,inSaved);
+		}
 	}
-	public void removedCollection(LibraryCollection inSaved)
-	{
-		getCacheManager().remove(getCatalogId() + "collectioncache", inSaved.getCategory().getId());
-		
-	}
+	
 }
