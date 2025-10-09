@@ -111,21 +111,17 @@ public class CategoryCollectionCache implements CatalogEnabled
 		{
 			return false;
 		}
-		LibraryCollection exists = (LibraryCollection)getCacheManager().get(getCatalogId() + "collectioncache", inRoot.getId());
-		if( exists == NULLCOLLECTION)
-		{
-			return false;
-		}
-		if( exists == null)
-		{
-			exists = findCollection(inRoot);
-		}
-		if( exists != null)
-		{
-			return inRoot.getId().equals(exists.getRootCategoryId());
-		}
+		Boolean iscollection = (Boolean)getCacheManager().get(getCatalogId() + "iscollection", inRoot.getId());
 		
-		return false;
+		if( iscollection != null)
+		{
+			return iscollection;
+		}
+		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
+		Data found = (Data)searcher.query().exact("rootcategory", inRoot.getId()).searchOne();
+		iscollection = found != null;
+		getCacheManager().put(getCatalogId() + "iscollection", inRoot.getId(), iscollection);
+		return iscollection;
 	}
 
 	
