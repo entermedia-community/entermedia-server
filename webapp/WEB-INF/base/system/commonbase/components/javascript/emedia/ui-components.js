@@ -545,28 +545,28 @@ jQuery(document).ready(function () {
 				crossDomain: true,
 			});
 		} else if (toggler.data("action") == "hide") {
-			//hide sidebar
-			options["module"] = $("#applicationcontent").data("moduleid");
-			options["sidebarcomponent.value"] = "";
-			var url = apphome + "/components/sidebars/index.html";
-			jQuery.ajax({
-				url: url,
-				async: false,
-				data: options,
-				success: function (data) {
-					var cell = findClosest(toggler, "#" + targetdiv);
-					cell.replaceWith(data); //Cant get a valid dom element
-					$(".pushcontent").removeClass("pushcontent-" + sidebar);
-					$(".pushcontent").removeClass("pushcontent-open");
-					$(".pushcontent").addClass("pushcontent-fullwidth");
+			$(".pushcontent").removeClass("pushcontent-" + sidebar);
+			$(".pushcontent").removeClass("pushcontent-open");
+			$(".pushcontent").addClass("pushcontent-fullwidth");
+			$(".col-mainsidebar").remove();
+			$(window).trigger("resize");
 
-					$(window).trigger("resize");
-				},
-			});
 			var drawer = $(".drawer.open");
 			if (drawer.length) {
 				closeDrawer(drawer);
 			}
+
+			options["module"] = $("#applicationcontent").data("moduleid");
+			options["sidebarcomponent.value"] = "";
+
+			var url = apphome + "/components/sidebars/index.html";
+			setTimeout(() => {
+				jQuery.ajax({
+					url: url,
+					async: false,
+					data: options,
+				});
+			});
 		} else {
 			//showsidebar
 			showsidebar(toggler);
