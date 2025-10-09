@@ -294,7 +294,7 @@ public class FinderModule extends BaseMediaModule
 		FilterNode node = (FilterNode)found.getActiveFilterValues().get("category");
 		if( node != null)
 		{
-			Collection folderhits = archive.query("librarycollection").exact("library","featured").sort("name").search(inReq);
+			Collection folderhits = archive.query("librarycollection").exact("featuredcollection",true).sort("name").search(inReq);
 			Collection<FeaturedFolder> folders = copyFoldersTo(folderhits, node.getChildren());
 			inReq.putPageValue("featuredfolders",folders);
 		}
@@ -362,7 +362,7 @@ public class FinderModule extends BaseMediaModule
 			FilterNode node = (FilterNode)assetunsorted.getActiveFilterValues().get("category");
 			if( node != null)
 			{
-				Collection folderhits = archive.query("librarycollection").exact("library","featured").sort("name").search(inReq); //All possible ones cached and securiy checked
+				Collection folderhits = archive.query("librarycollection").exact("featuredcollection",true).sort("name").search(inReq); //All possible ones cached and securiy checked
 				Collection<FeaturedFolder> folders = copyFoldersTo(folderhits, node.getChildren());
 				inReq.putPageValue("featuredfolders",folders);
 			}
