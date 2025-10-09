@@ -290,13 +290,24 @@ public class FinderModule extends BaseMediaModule
 	public void searchForLiveSuggestions(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		HitTracker found = archive.query("asset").named("quicksearchlist").exact("previewstatus","2").hitsPerPage(24).sort("assetaddeddateDown").facet("category").search(inReq);
-		FilterNode node = (FilterNode)found.getActiveFilterValues().get("category");
-		if( node != null)
+		HitTracker found = null;
+		QueryBuilder builder = archive.query("asset").named("quicksearchlist").exact("previewstatus","2").hitsPerPage(24).sort("assetaddeddateDown");
+		if ( inReq.hasPermission("viewfeaturedcollections") )
 		{
-			Collection folderhits = archive.query("librarycollection").exact("library","featured").sort("name").search(inReq);
-			Collection<FeaturedFolder> folders = copyFoldersTo(folderhits, node.getChildren());
-			inReq.putPageValue("featuredfolders",folders);
+			builder.facet("category");
+			found = builder.search(inReq);
+
+			FilterNode node = (FilterNode)found.getActiveFilterValues().get("category");
+			if( node != null)
+			{
+				Collection folderhits = archive.query("librarycollection").exact("featuredcollection",true).sort("name").search(inReq);
+				Collection<FeaturedFolder> folders = copyFoldersTo(folderhits, node.getChildren());
+				inReq.putPageValue("featuredfolders",folders);
+			}
+		}
+		else
+		{
+			found = builder.search(inReq);
 		}
 		OrganizedResults results = new OrganizedResults();
 		results.setAssetResults(found);
@@ -354,18 +365,25 @@ public class FinderModule extends BaseMediaModule
 		HitTracker assetunsorted = null;
 		if( searchmodules.contains("asset"))
 		{
-			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).facet("category").hitsPerPage(15);
+			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
 			assetdq.getQuery().setIncludeDescription(true);
-			assetunsorted = assetdq.search(inReq);
-			//resultsManager.collectMatches(keywordsLower, plainquery, assetunsorted);
-			inReq.putPageValue("assethits",assetunsorted);
-			FilterNode node = (FilterNode)assetunsorted.getActiveFilterValues().get("category");
-			if( node != null)
+			if ( inReq.hasPermission("viewfeaturedcollections") )
 			{
-				Collection folderhits = archive.query("librarycollection").exact("library","featured").sort("name").search(inReq); //All possible ones cached and securiy checked
-				Collection<FeaturedFolder> folders = copyFoldersTo(folderhits, node.getChildren());
-				inReq.putPageValue("featuredfolders",folders);
+				assetdq.facet("category");
+				assetunsorted = assetdq.search(inReq);
+				FilterNode node = (FilterNode)assetunsorted.getActiveFilterValues().get("category");
+				if( node != null)
+				{
+					Collection folderhits = archive.query("librarycollection").exact("featuredcollection",true).sort("name").search(inReq); //All possible ones cached and securiy checked
+					Collection<FeaturedFolder> folders = copyFoldersTo(folderhits, node.getChildren());
+					inReq.putPageValue("featuredfolders",folders);
+				}
 			}
+			else
+			{
+				assetunsorted = assetdq.search(inReq);
+			}
+			inReq.putPageValue("assethits",assetunsorted);
 		}		
 //		List finallist = new ArrayList();
 //		for (Iterator iterator = keywordsLower.keySet().iterator(); iterator.hasNext();)
