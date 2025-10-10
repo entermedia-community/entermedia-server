@@ -22,7 +22,7 @@
 			#set($link = "${edithome}/tabs/index.html?entityid=$entityid&hitssessionid=$!hits.sessionId")
 			
 			#if($entity_module == "searchcategory")
-				#set($edithome = "$apphome/views/modules/$!{entity_module}/editors/listsearchcategories")
+				#set($edithome = "$apphome/views/modules/$!{entity_module}/editors/listsearchcategoriesresults")
 				#set($link = "${edithome}/index.html?searchcategoryid=$entityid")
 			#end
 
