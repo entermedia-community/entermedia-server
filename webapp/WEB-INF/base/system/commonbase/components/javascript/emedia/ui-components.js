@@ -46,10 +46,10 @@ jQuery(document).ready(function () {
 
 	function confirmModalClose(modal) {
 		var checkForm = modal.find("form.checkCloseDialog");
-
 		if (!checkForm) {
 			closeemdialog(modal);
 			trackKeydown = false;
+			return true;
 		} else {
 			var prevent = false;
 			$(checkForm)
@@ -71,8 +71,8 @@ jQuery(document).ready(function () {
 			} else {
 				closeemdialog(modal);
 				trackKeydown = false;
+				return true;
 			}
-			return false;
 		}
 	}
 

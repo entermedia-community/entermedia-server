@@ -646,7 +646,7 @@ public class AssistantManager extends BaseAiManager
 		
 		inReq.putPageValue("input", query);
 		
-		Map<String, Collection<String>> relatedEntityIds = getSemanticTopicManager().search(query,excludeEntityIds, excludeAssetIds);
+		Map<String, Collection<String>> relatedEntityIds = getSemanticTopicManager().search(query, excludeEntityIds, excludeAssetIds);
 		
 		log.info("Related Entity Ids: " + relatedEntityIds);
 
