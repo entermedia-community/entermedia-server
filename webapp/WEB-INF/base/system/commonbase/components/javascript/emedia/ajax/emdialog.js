@@ -338,11 +338,7 @@ closeemdialog = function (modaldialog) {
 	} else {
 		modaldialog.modal("hide");
 	}
-	if (!modaldialog.hasClass("persistentmodal")) {
-		setTimeout(function () {
-			if (modaldialog) modaldialog.remove();
-		}, 200);
-	}
+
 	//other modals?
 	var othermodal = $(".modal");
 	if (othermodal.length && !othermodal.is(":hidden")) {
@@ -369,12 +365,30 @@ closeemdialog = function (modaldialog) {
 
 		history.pushState($("#application").html(), null, oldurlbar);
 	}
+	if (!modaldialog.hasClass("persistentmodal")) {
+		setTimeout(function () {
+			if (modaldialog) modaldialog.remove();
+			onModalClosed(dialogid);
+		}, 200);
+	} else {
+		onModalClosed(dialogid);
+	}
+};
+
+function onModalClosed(dialogid) {
 	if ($(".modal:visible").length === 0) {
 		$(document.body).removeClass("modal-open");
 		$(".modal-backdrop").remove();
 	}
 	$(window).trigger("modalclosed", [dialogid]);
-};
+}
+
+lQuery(".modal-backdrop").livequery("click", function (e) {
+	if ($(".modal:visible").length === 0) {
+		$(this).remove();
+		$(document.body).removeClass("modal-open");
+	}
+});
 
 closeallemdialogs = function () {
 	$(".modal").each(function () {

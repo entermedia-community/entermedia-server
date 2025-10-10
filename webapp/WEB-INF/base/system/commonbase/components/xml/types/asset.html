@@ -15,8 +15,8 @@
 				$context.putPageValue("searchhome", "$apphome/components/results")
 			#end
 			$context.putPageValue("componenthome", "$apphome/components") ##Legacy
-			$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$value", $context)
-			
+			<div class="render-type-thumbnail position-relative mb-1" id="${detail.id}-preview">
+				$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$value", $context)
 				<a href="#" 
 					class="removefieldassetvalue"
 					title="[[Remove This Asset]]" 
@@ -24,10 +24,9 @@
 					data-detailid="${detail.id}">
 					<i class="bi bi-x"></i>
 				</a>
-			
+			</div>
 		#end
 	#end
-	</div>
 
 	<input type="hidden" name="${detail.id}.value" id="${detail.id}-value" data-detailid="${detail.id}" value="$!foundrow.id"/>
 
