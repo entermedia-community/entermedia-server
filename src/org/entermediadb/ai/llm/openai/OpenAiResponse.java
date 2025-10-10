@@ -139,4 +139,20 @@ public class OpenAiResponse extends BasicLlmResponse {
         return images;
     }
     
+    @Override
+    public String getFileName() {
+		String filename = null;
+		if(rawResponse != null && rawResponse.containsKey("filename")) {
+			filename = (String) rawResponse.get("filename");
+            if(filename != null && !filename.endsWith(".png")) {
+                filename += ".png";
+            }
+		}
+		if(filename == null) {
+			filename = System.currentTimeMillis() + ".png";
+		}
+		return filename;
+	}
+    
+    
 }

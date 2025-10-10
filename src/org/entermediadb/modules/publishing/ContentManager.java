@@ -795,9 +795,10 @@ public class ContentManager implements CatalogEnabled
 			{
 				String base64 = (String) iterator.next();
 
+	
 				asset.setValue("importstatus", "created");
-				String filename = prompt.replaceAll("[^a-zA-Z0-9]", "_") + ".png";
-				filename = filename.replaceAll("\\?.*", "");
+				
+				String filename = results.getFileName();
 
 				String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
 				ContentItem saveTo = archive.getPageManager().getPage(path).getContentItem();

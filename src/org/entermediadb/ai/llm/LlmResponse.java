@@ -27,4 +27,6 @@ public interface LlmResponse {
     ArrayList<String> getImageUrls();
     
     ArrayList<String> getImageBase64s();    
+    
+    String getFileName();
 }
