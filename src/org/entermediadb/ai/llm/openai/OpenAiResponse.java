@@ -142,10 +142,10 @@ public class OpenAiResponse extends BasicLlmResponse {
     @Override
     public String getFileName() {
 		String filename = null;
-		int rand = (int) (Math.random() * 10000);
 		if(rawResponse != null && rawResponse.containsKey("filename")) {
 			filename = (String) rawResponse.get("filename");
             if(filename != null) {
+            	int rand = (int) (Math.random() * 10000);
             	if(filename.endsWith(".png")) {
 					filename = filename.substring(0, filename.length() - 4) + "-" + rand + ".png";
 				} 

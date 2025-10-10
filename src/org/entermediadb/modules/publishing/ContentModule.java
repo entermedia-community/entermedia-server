@@ -154,14 +154,16 @@ public class ContentModule extends BaseMediaModule
 	    Category rootcat = archive.getEntityManager().loadDefaultFolder(entitymodule, entity, inReq.getUser());
 		String sourcepathroot = rootcat.getCategoryPath();
 	    
-	    StringBuffer filename = new StringBuffer( info.get("aitarget") );
+	    String filename = info.get("aitarget");
 	    String similarto = info.get("aiexamples");
 	    if( similarto != null)
 	    {
-	    	filename.append("-");
-	    	filename.append(similarto);
+	    	filename += "-";
+	    	filename += similarto;
 	    }
-	    filename.append(".png");
+	    filename = filename.substring(0, Math.min(30, filename.length()));
+	    int rand = (int) (Math.random() * 10000);
+	    filename += "-" + rand + ".png";
 	    //Collection styles = info.getValues("aistyle");
 	    
 	    String sourcePath = sourcepathroot + "/" +filename;
@@ -170,8 +172,6 @@ public class ContentModule extends BaseMediaModule
 	    
 	    if(asset == null) {
 	    	asset = new BaseAsset(archive);
-//	    	String next = archive.getAssetSearcher().nextId();
-//			asset = (Asset) archive.createAsset(next, sourcePath);
 	    	asset.setSourcePath(sourcePath);
 			asset.setName(filename.toString());
 			asset.addCategory(rootcat);
