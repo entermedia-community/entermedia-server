@@ -885,16 +885,9 @@ public class AssistantManager extends BaseAiManager
 
 			asset.setValue("importstatus", "created");
 
-			String filename = (String) arguments.get("filename");
-			if(filename == null || filename.length() == 0)
-			{	
-				prompt.replaceAll("[^a-zA-Z0-9 ]", "_");
-				if (filename.length() > 50)
-				{
-					filename = filename.substring(0, 50);
-				}
-			}
-			asset.setName(filename.trim()+ ".png");
+			String filename =  results.getFileName();
+			asset.setName(filename);
+			asset.setValue("assetaddeddate", new Date());
 			
 			String sourcepath = "Channels/" + inReq.getUserName() + "/" + DateStorageUtil.getStorageUtil().getTodayForDisplay() + "/" + filename;
 			asset.setSourcePath(sourcepath);

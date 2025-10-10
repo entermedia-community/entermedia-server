@@ -797,6 +797,7 @@ public class ContentManager implements CatalogEnabled
 
 	
 				asset.setValue("importstatus", "created");
+				asset.setValue("assetaddeddate", new Date());
 				
 				String filename = results.getFileName();
 
