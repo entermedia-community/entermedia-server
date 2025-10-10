@@ -5,8 +5,9 @@
 #ifnull($value)
 	#set($value = $val)
 #end
-
+ 
 <div class="assetpicker"  id="entitypicker${detail.id}" data-detailid="${detail.id}">
+	<div class="render-type-thumbnail position-relative mb-1" id="${detail.id}-preview">
 	#if($value && $value != "")
 		#set( $foundrow = $mediaarchive.getAsset($value)  )
 		#if($foundrow)
