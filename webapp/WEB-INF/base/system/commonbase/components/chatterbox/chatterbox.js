@@ -1,16 +1,6 @@
 var chatconnection;
 var loadingmore = false;
 
-lQuery("a.chatEmDialog").livequery("click", function (e) {
-	e.preventDefault();
-	e.stopPropagation();
-	$(this).emDialog(function () {
-		setTimeout(function () {
-			scrollToChat();
-		});
-	});
-});
-
 function chatterbox() {
 	console.log(
 		"Starting chat in channel: " + jQuery(".chatterbox").data("channel")
@@ -154,9 +144,7 @@ function chatterbox() {
 		}
 	});
 }
-lQuery("#supportchat").livequery("shown.bs.collapse	", function (e) {
-	scrollToChat();
-});
+
 function scrollToChat() {
 	setTimeout(function () {
 		console.log("Scrolling to chat");
@@ -479,6 +467,18 @@ function hideEmojiPicker() {
 }
 
 jQuery(document).ready(function () {
+	lQuery("a.chatEmDialog").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		$(this).emDialog(function () {
+			setTimeout(function () {
+				scrollToChat();
+			});
+		});
+	});
+	lQuery("#supportchat").livequery("shown.bs.collapse	", function (e) {
+		scrollToChat();
+	});
 	lQuery("#chatter-msg").livequery(function () {
 		var $this = $(this);
 		setTimeout(function () {
