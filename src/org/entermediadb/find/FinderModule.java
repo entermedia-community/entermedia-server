@@ -1166,26 +1166,22 @@ public class FinderModule extends BaseMediaModule
 
 	public void startPicker(WebPageRequest inReq)
 	{
-		MediaArchive archive = getMediaArchive(inReq);
-		
 		String targettype = inReq.getRequestParameter("pickingtargettype");
 		String moduleid = inReq.getRequestParameter("pickingmoduleid");
 		
-		Picker picker = (Picker)inReq.getPageValue("picker");
-		if( targettype != null || moduleid != null)
+		Picker picker = (Picker) inReq.getPageValue("picker");
+		if( picker == null)
 		{
-			String targetfieldid = inReq.getRequestParameter("targetfieldid");
-
-			if( picker == null)
-			{
-				picker = new Picker();
-			}
-			picker.setTargetFieldId(targetfieldid);
-			picker.setTargetType(targettype);
-			picker.setTargetModuleId(moduleid);
-			inReq.putSessionValue("picker",picker);
-			inReq.putPageValue("picker",picker);
+			picker = new Picker();
 		}
 		
+		String targetfieldid = inReq.getRequestParameter("targetfieldid");
+
+		picker.setTargetFieldId(targetfieldid);
+		picker.setTargetType(targettype);
+		picker.setTargetModuleId(moduleid);
+		
+		inReq.putSessionValue("picker", picker);
+		inReq.putPageValue("picker", picker);
 	}
 }
