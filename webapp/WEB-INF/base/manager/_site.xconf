@@ -1,88 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-  <property name="fallbackdirectory">/WEB-INF/base/emfrontend2</property>
-  
-  <property name="section">home</property>
-  <property name="title">EnterMedia Manager</property>
-  <property name="catalogid">system</property>
-  <property name="parentapplicationid">media</property>
-  <property name="applicationid">manager</property>
-  <property name="themeprefix">/${applicationid}/theme</property>
+	<property name="fallbackdirectory">/WEB-INF/base/emfrontend2</property>
 
-  <path-action name="MediaArchiveModule.loadApplicationId" />
-  <path-action name="ProfileModule.loadUserProfile" />
+	<property name="section">home</property>
+	<property name="title">EnterMedia Manager</property>
+	<property name="catalogid">system</property>
+	<property name="parentapplicationid">media</property>
+	<property name="applicationid">manager</property>
+	<property name="themeprefix">/${applicationid}/theme</property>
+
+	<path-action name="MediaArchiveModule.loadApplicationId" />
+	<path-action name="ProfileModule.loadUserProfile" />
 
 	<property name="login-path">/${applicationid}/authentication/nopermissions.html</property>
 	<property name="profilemanagerid">${catalogid}</property>
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing" />
 
-    <path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
+	<path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
 	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />
 	<path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true" />
 
 	<permission name="view">
 		<group name="administrators" />
 	</permission>
-  
+
 	<permission name="viewsettings">
 		<group name="administrators" />
 	</permission>
 
-<!-- Jquery -->
+	<!-- Jquery -->
 	<script cancel="true" id="jquery" src="/${applicationid}/components/javascript/jquery-3.3.1.min.js"/>
 	<script cancel="true" id="jquery-ui" src="/${applicationid}/components/javascript/jquery-ui/1.12/jquery-ui.min.js"/>
-	
+
 	<script cancel="true" id="jquery-ui-i18n" src="/${applicationid}/components/javascript/jquery-ui/i18n/jquery-ui-i18n.js"/>
 	<style cancel="true" id="jqueryui" href="/${applicationid}/components/javascript/jquery-ui/1.12/jquery-ui.css"/>
-	
+
+	<script id="jquery-liveajax" src="/${applicationid}/components/javascript/emedia/liveajax.js"/>
+	<script id="clickoutside" src="/${applicationid}/components/javascript/emedia/clickoutside.js" />
+
 	<!-- Ajax Plugins -->
 	<script id="runajax" src="/${applicationid}/components/javascript/emedia/ajax/runajax.js" />
 	<script id="emdialog" src="/${applicationid}/components/javascript/emedia/ajax/emdialog.js" />
-	
+
 	<script id="jquery-form" src="/${applicationid}/components/javascript/jquery.form.js"/>
 	<script id="ajaxformsubmit" src="/${applicationid}/components/javascript/emedia/ajax/ajaxformsubmit.js" />
-	
-	<script id="jquery-liveajax" src="/${applicationid}/components/javascript/emedia/liveajax.js"/>
+
 	<script id="jquery-validate" src="/${applicationid}/components/javascript/jquery.validation/jquery.validate.js"/>
 	<script id="validateandedit" src="/${applicationid}/components/javascript/validateandedit.js"/>
-	  
-  	<script id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/5.2.1/js/bootstrap.min.js" />
+
+	<script id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/5.2.1/js/bootstrap.min.js" />
 	<style id="bootstrap" href="/${applicationid}/components/javascript/bootstrap/5.2.1/css/bootstrap.min.css" />
-	<style id="fonts-css"  href="/${applicationid}/components/javascript/bootstrap/fonts/css/fontawesome-all.min.css"/>
-  
-   
+	<style id="fonts-css" href="/${applicationid}/components/javascript/bootstrap/fonts/css/fontawesome-all.min.css"/>
+
+
 	<script id="select2" src="/${applicationid}/components/javascript/select2/4.0.6/js/select2.full.js"/>
-	<style  id="select2-css" href="/${applicationid}/components/javascript/select2/4.0.6/css/select2.css"/>
-	
+	<style id="select2-css" href="/${applicationid}/components/javascript/select2/4.0.6/css/select2.css"/>
+
 	<script id="jplayer" src="/${applicationid}/components/javascript/jplayer/jquery.jplayer.min.js"/>
-  <style id="jplayer-css" href="/${applicationid}/components/javascript/jplayer/premium.pixels/premium-pixels.css"/>
-	
+	<style id="jplayer-css" href="/${applicationid}/components/javascript/jplayer/premium.pixels/premium-pixels.css"/>
+
 	<script id="minicolur" src="/${applicationid}/components/javascript/colorpicker/jquery.minicolors.js" />
-	<style  id="minicolorcss" href="/${applicationid}/components/javascript/colorpicker/jquery.minicolors.css"/>
-	
+	<style id="minicolorcss" href="/${applicationid}/components/javascript/colorpicker/jquery.minicolors.css"/>
+
 	<script id="detaileditor" src="/${applicationid}/components/xml/detaileditor.js"/>
-	
+
 	<script id="videojs" src="/${applicationid}/components/javascript/videojs/8.20.0/video.min.js" defer="true" />
-	<style  id="videojs-css"  href="/${applicationid}/components/javascript/videojs/8.20.0/video-js.min.css" />
-	
-	
+	<style id="videojs-css" href="/${applicationid}/components/javascript/videojs/8.20.0/video-js.min.css" />
+
+
 	<script id="entermedia" src="/${applicationid}/components/javascript/entermedia.js"/>
 
-	  <script id="uicomponentsold" src="/${applicationid}/components/javascript/emedia/ui-components-old.js" />
-	  <script id="theme-js" src="/${applicationid}/components/javascript/ui-components.js"/>
-	  
-	  <script id="emtree" src="/${applicationid}/components/javascript/emtree/emtree.js"/>
-	  <script id="detaileditor" src="/${applicationid}/components/xml/detaileditor.js"/>
-	  <script id="results" src="/${applicationid}/components/javascript/results.js"/>
-  
-  
-	
-  <style id="app-css" href="${themeprefix}/styles/theme.css"/>
-  <style id="results" href="${themeprefix}/styles/pages/results.css"/>
-  
-  <inner-layout>${themeprefix}/layouts/application.html</inner-layout>
-  
-  <property name="skipvirtualhost">true</property>
+	<script id="uicomponentsold" src="/${applicationid}/components/javascript/emedia/ui-components-old.js" />
+	<script id="theme-js" src="/${applicationid}/components/javascript/ui-components.js"/>
+
+	<script id="emtree" src="/${applicationid}/components/javascript/emtree/emtree.js"/>
+	<script id="detaileditor" src="/${applicationid}/components/xml/detaileditor.js"/>
+	<script id="results" src="/${applicationid}/components/javascript/results.js"/>
+
+
+
+	<style id="app-css" href="${themeprefix}/styles/theme.css"/>
+	<style id="results" href="${themeprefix}/styles/pages/results.css"/>
+
+	<inner-layout>${themeprefix}/layouts/application.html</inner-layout>
+
+	<property name="skipvirtualhost">true</property>
 </page>

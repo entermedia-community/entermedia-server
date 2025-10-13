@@ -24,10 +24,10 @@
 					$.validator.addClassRules("entityRequired", {
 						entityrequired: true,
 						number: true,
-						min: 1
+						min: 1,
 					});
 					form.validate({
-						ignore: ".ignore,:hidden:not(.validatehidden)"
+						ignore: ".ignore,:hidden:not(.validatehidden)",
 					});
 					var isvalidate = form.valid();
 					if (!isvalidate) {
@@ -179,15 +179,13 @@
 				}
 				let closedialogid = form.data("closedialogid");
 				if (closedialogid !== undefined) {
-					
 					let splitnames = closedialogid.split(",");
 					$.each(splitnames, function (index, modalid) {
 						modalid = $.trim(modalid);
 						$("#" + modalid).each(function (index, div) {
 							closeemdialog($(div).closest(".modal"));
 						});
-					});			
-
+					});
 				}
 				if (formmodal.length > 0 && form.hasClass("autocloseform")) {
 					if (formmodal.modal) {
