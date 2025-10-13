@@ -191,6 +191,7 @@ public class PostizManager implements CatalogEnabled
 
 			CloseableHttpResponse response = getSharedClient().execute(postMethod);
 			String jsonResponse = EntityUtils.toString(response.getEntity(), "UTF-8");
+			log.info(jsonResponse);
 			response.close();
 
 			JSONArray result = (JSONArray) new JSONParser().parse(jsonResponse);
