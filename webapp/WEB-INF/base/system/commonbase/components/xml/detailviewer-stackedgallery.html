@@ -21,10 +21,9 @@
 #end
 
 #if( $details)
-	<div class="plaintext-details">
+	<div class="plaintext-details overflow-y minimal">
 	#foreach( $detail in $details )
 		$!context.putPageValue("detail",$detail)
-		#set($value = false)
 		#set( $value = $data.get($detail.getId()) )
 		#if(  $value && $value.length() > 0 )
 			<div class="plaintext-detail">
@@ -34,7 +33,7 @@
 				#end
 				<div class="plaintextviewer-value">					
 					$!context.putPageValue("value",$value)
-					$context.putPageValue("showalllanguagevalues",true)
+					$context.putPageValue("showalllanguagevalues", true)
 					$!context.putPageValue("detail", $detail)
 					$pages.include("$apphome/components/xml/detailplaintext.html", $context) 
 				</div>
