@@ -4,6 +4,9 @@ $context.putPageValue("detail",$detail)
 #if( !$values && $data )
 	#set($values = $data.getValues($detail.id) )
 #end
+#if( !$values && $value )
+	#set($values = [$value] )
+#end
 #set($entity_module = $detail.getListId())
 #set($searchhome = "$applink/views/modules/$!{entity_module}/results/default")
 #set($ismulti = $detail.isMultiValue())
@@ -39,7 +42,8 @@ $context.putPageValue("detail",$detail)
 		value="$!{values.size()}" 
 		data-entitypicker="entitypicker${detail.id}" 
 		data-entityid="$!{data.id}"
-		class="entity-value-list-count #if($detail.isRequired()) validatehidden entityRequired #end" />	
+		class="entity-value-list-count #if($detail.isRequired()) validatehidden entityRequired #end"
+	/>	
 </div>		
 
 	

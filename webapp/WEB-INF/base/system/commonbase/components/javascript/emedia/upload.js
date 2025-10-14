@@ -298,11 +298,20 @@ $(document).ready(function () {
 				if (files && files.length > 0) {
 					e.preventDefault();
 					e.stopPropagation();
-					var moduleid = $(".createnewentityfolder").data("moduleid");
+					var moduleid = $(this).data("moduleid");
 					if (!moduleid) {
 						return;
 					}
 					var uploader = `${apphome}/views/modules/${moduleid}/editors/bulkentitycreator/dialog.html?edit=true&addnew=true&moduleid=${moduleid}&viewid=${moduleid}addnew`;
+
+					var parentmoduleid = $(this).data("entitymoduleid");
+					if (parentmoduleid) {
+						var parententityid = $(this).data("entityid");
+						if (parententityid) {
+							uploader += `&parentmoduleid=${parentmoduleid}&parententityid=${parententityid}`;
+						}
+					}
+
 					var dialog = $(
 						`<a href="${uploader}" data-maxwidth="sm" title="Create Bulk Folders from Files"></a>`
 					);
