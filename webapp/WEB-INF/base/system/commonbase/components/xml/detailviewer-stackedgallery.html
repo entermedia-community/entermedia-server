@@ -34,7 +34,7 @@
 				#end
 				<div class="plaintextviewer-value">					
 					$!context.putPageValue("value",$value)
-					$context.putPageValue("showalllanguagevalues", true)
+					$context.putPageValue("showalllanguagevalues", false)
 					$!context.putPageValue("detail", $detail)
 					$pages.include("$apphome/components/xml/detailplaintext.html", $context) 
 				</div>
