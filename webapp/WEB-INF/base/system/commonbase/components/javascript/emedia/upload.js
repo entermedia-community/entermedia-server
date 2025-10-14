@@ -253,7 +253,7 @@ $(document).ready(function () {
 		var div = $(this);
 		if (div.find(".drop-feedback").length == 0) {
 			div.append(
-				'<div class="drop-feedback"><div><i class="bi bi-upload"></i><p>Create Folders from Files</p></div></div>'
+				'<div class="drop-feedback"><div><i class="bi bi-upload"></i><p>Create Asset Folders from Files</p></div></div>'
 			);
 		}
 		div.on("dragover", function (e) {
