@@ -1,28 +1,32 @@
 #if($detail.isMultiLanguage()) 
-		#set($map = $data.getValue($detail.getId()))
-		
-		#if( $showalllanguagevalues )
-			#set($languages = $mediaarchive.getList("locale"))
-			#foreach($locale in $languages)
-				#set( $lval = false ) 
-				#set( $lval = $map.getText($locale.id) )
-				
-				#if($lval) 
-					$locale: $lval  
-				#end 
-			#end
-        #else
-			$!map.getText($context.language)
-		#end
-#elseif( $detail.isKeywordMap() )
 	#set($map = $data.getValue($detail.getId()))
-	#foreach($keyid in $map.keySet())
-		#set( $lval = false ) #set( $lval = $map.get($keyid) )
-		#if($lval) $keyid:$lval #end 
-	#end		
+	
+	#if( $showalllanguagevalues )
+		#set($languages = $mediaarchive.getList("locale"))
+		#foreach($locale in $languages)
+			#set( $lval = false ) 
+			#set( $lval = $map.getText($locale.id) )
+			
+			#if($lval) 
+				$locale: $lval  
+			#end 
+		#end
+			#else
+		$!map.getText($context.language)
+	#end
+#elseif( $detail.isMultiValue() )
+	#if( !$values && $data )
+		#set($values = $data.getValues($detail.id) )
+	#end
+	
+	#if( $values )
+		#foreach( $val in $values )
+			#if($foreach.count > 1), #end
+			#escarea($!val)
+		#end
+	#end
 #else
-
 	#ifnotnull($value)
 		#escarea($!value)	
 	#end
-#end	
+#end

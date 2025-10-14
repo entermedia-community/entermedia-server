@@ -4,18 +4,18 @@
 
 #set($entity_module = $detail.getListId())
 
-	<div class="entity-value-textlist">
-		#foreach( $type in $values )
-			#set( $row = false )
-			#set( $row = $searcherManager.getCachedData($detail.getListCatalogId(), $detail.getListId(), $type ))
-		    #if( $row )
-			    #if( $searcher.getDetail("name").isMultiLanguage())
-			    	#set($name = $row.getName($context.getLocale()))
-			    #else
-			    	#set($name = $row)
-			    #end
-			    #set($entityid = $row.id)
-			    <span>$name</span>
-		    #end 
-		#end	
-	</div>
+<div class="entity-value-textlist">
+	#foreach( $type in $values )
+		#set( $row = false )
+		#set( $row = $searcherManager.getCachedData($detail.getListCatalogId(), $detail.getListId(), $type ))
+			#if( $row )
+				#if( $searcher.getDetail("name").isMultiLanguage())
+					#set($name = $row.getName($context.getLocale()))
+				#else
+					#set($name = $row)
+				#end
+				#set($entityid = $row.id)
+				<span>$name</span>
+			#end 
+	#end	
+</div>
