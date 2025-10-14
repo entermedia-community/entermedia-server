@@ -300,7 +300,7 @@ public class FinderModule extends BaseMediaModule
 			FilterNode node = (FilterNode)found.getActiveFilterValues().get("category");
 			if( node != null)
 			{
-				Collection folderhits = archive.query("librarycollection").exact("featuredcollection",true).sort("name").search(inReq);
+				Collection folderhits = archive.query("librarycollection").exact("featuredcollection",true).named("featuredcollections").sort("name").search(inReq);
 				Collection<FeaturedFolder> folders = copyFoldersTo(folderhits, node.getChildren());
 				inReq.putPageValue("featuredfolders",folders);
 			}
@@ -335,7 +335,7 @@ public class FinderModule extends BaseMediaModule
 //		}
 		
 		
-		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",plainquery).hitsPerPage(30);
+		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").named("findersearchall").freeform("description",plainquery).hitsPerPage(30);
 		dq.getQuery().setIncludeDescription(true);
 		
 		Collection searchmodules = new ArrayList();
@@ -365,7 +365,7 @@ public class FinderModule extends BaseMediaModule
 		HitTracker assetunsorted = null;
 		if( searchmodules.contains("asset"))
 		{
-			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
+			QueryBuilder assetdq = archive.query("asset").named("finderassetsearch").freeform("description",plainquery).hitsPerPage(15);
 			assetdq.getQuery().setIncludeDescription(true);
 			if ( inReq.hasPermission("viewfeaturedcollections") )
 			{
@@ -374,7 +374,7 @@ public class FinderModule extends BaseMediaModule
 				FilterNode node = (FilterNode)assetunsorted.getActiveFilterValues().get("category");
 				if( node != null)
 				{
-					Collection folderhits = archive.query("librarycollection").exact("featuredcollection",true).sort("name").search(inReq); //All possible ones cached and securiy checked
+					Collection folderhits = archive.query("librarycollection").named("searchallfeaturedfolders").exact("featuredcollection",true).sort("name").search(inReq); //All possible ones cached and securiy checked
 					Collection<FeaturedFolder> folders = copyFoldersTo(folderhits, node.getChildren());
 					inReq.putPageValue("featuredfolders",folders);
 				}
