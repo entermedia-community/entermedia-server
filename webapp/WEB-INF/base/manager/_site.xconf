@@ -38,7 +38,7 @@
 	<style cancel="true" id="jqueryui" href="/${applicationid}/components/javascript/jquery-ui/1.12/jquery-ui.css"/>
 
 	<script id="jquery-liveajax" src="/${applicationid}/components/javascript/emedia/liveajax.js"/>
-	<script id="clickoutside" src="/${applicationid}/components/javascript/emedia/clickoutside.js" />
+	<script id="utility-plugins" src="/${applicationid}/components/javascript/emedia/utility-plugins.js" />
 
 	<!-- Ajax Plugins -->
 	<script id="runajax" src="/${applicationid}/components/javascript/emedia/ajax/runajax.js" />

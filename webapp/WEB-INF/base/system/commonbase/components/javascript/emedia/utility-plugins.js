@@ -1,3 +1,9 @@
+/**
+ * =================================================================
+ * jQuery ClickOutside Plugin
+ * Detects clicks outside a specified element and triggers a handler
+ * =================================================================
+ */
 (function ($) {
 	var pluginName = "clickOutside";
 	var doc = $(document);
@@ -151,13 +157,128 @@
 	$.fn[pluginName].defaults = defaults;
 })(jQuery);
 
-// example usage:
-/*
-$('#menu').clickOutside({
-  event: 'mousedown',
-  handler: function (ev, $el) {
-    $(this).hide();
-  },
-  exclude: '#toggle' // clicking the toggle won't close the menu
-});
+// Usage example:
+//
+// $('#menu').clickOutside({
+//   event: 'mousedown',
+//   handler: function (ev, $el) {
+//     $(this).hide();
+//   },
+//   exclude: '#toggle' // clicking the toggle won't close the menu
+// });
+
+/**
+ * ===============================================================
+ * jQuery ScrollIntoView Plugin
+ * Smoothly scrolls an element into view with customizable options
+ * ===============================================================
  */
+(function ($) {
+	$.fn.scrollIntoView = function (options) {
+		// Default settings
+		const settings = $.extend(
+			{
+				duration: 500, // Animation duration in ms
+				offset: 0, // Additional offset from top (can be negative)
+				easing: "swing", // jQuery easing function
+				container: null, // Scrollable container (null = window)
+				align: "top", // 'top', 'center', or 'bottom'
+				callback: null, // Function to call after scroll completes
+				onlyIfNeeded: false, // Only scroll if element is not already visible
+			},
+			options
+		);
+
+		return this.each(function () {
+			const $el = $(this);
+			const $container = settings.container
+				? $(settings.container)
+				: $("html, body");
+			// Calculate element position
+			let elementTop = $el.offset().top;
+			let containerScrollTop = settings.container
+				? $(settings.container).scrollTop()
+				: $(window).scrollTop();
+
+			// If using a custom container, adjust the calculation
+			if (settings.container) {
+				const containerTop = $(settings.container).offset().top;
+				elementTop = elementTop - containerTop + containerScrollTop;
+			}
+
+			// Calculate scroll position based on alignment
+			let scrollTo = elementTop;
+			const viewportHeight = settings.container
+				? $(settings.container).height()
+				: $(window).height();
+			const elementHeight = $el.outerHeight();
+
+			switch (settings.align) {
+				case "center":
+					scrollTo = elementTop - viewportHeight / 2 + elementHeight / 2;
+					break;
+				case "bottom":
+					scrollTo = elementTop - viewportHeight + elementHeight;
+					break;
+				default: // 'top'
+					scrollTo = elementTop;
+			}
+
+			// Apply offset
+			scrollTo += settings.offset;
+
+			// Check if scroll is needed
+			if (settings.onlyIfNeeded) {
+				const currentScroll = containerScrollTop;
+				const elementBottom = elementTop + elementHeight;
+				const viewportBottom = currentScroll + viewportHeight;
+
+				// Element is already fully visible
+				if (elementTop >= currentScroll && elementBottom <= viewportBottom) {
+					if (settings.callback) settings.callback.call($el[0]);
+					return;
+				}
+			}
+
+			// Perform the scroll animation
+			$container.animate(
+				{
+					scrollTop: scrollTo,
+				},
+				settings.duration,
+				settings.easing,
+				function () {
+					if (settings.callback) {
+						settings.callback.call($el[0]);
+					}
+				}
+			);
+		});
+	};
+})(jQuery);
+
+// Usage Examples:
+//
+// Basic usage:
+// $('#myElement').scrollIntoView();
+//
+// With options:
+// $('#myElement').scrollIntoView({
+//   duration: 800,
+//   offset: -50,
+//   align: 'center'
+// });
+//
+// Scroll within a container:
+// $('#myElement').scrollIntoView({
+//   container: '#scrollableDiv',
+//   duration: 600
+// });
+//
+// Only scroll if needed:
+// $('#myElement').scrollIntoView({
+//   onlyIfNeeded: true,
+//   callback: function() {
+//     console.log('Scrolled to element');
+//   }
+// });
