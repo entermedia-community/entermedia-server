@@ -2186,11 +2186,16 @@
 	<bean id="statManager" class="org.entermediadb.sitemonitor.StatManager" scope="prototype">
 	</bean>
 
-	<bean id="cloudTranscodeManager" class="org.entermediadb.video.CloudTranscodeManager" scope="prototype">
+	<bean id="googleTranscriberManager" class="org.entermediadb.video.GoogleTranscriberManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
+	</bean>
 
+	<bean id="whisperTranscriberManager" class="org.entermediadb.video.WhisperTranscriberManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
 	</bean>
 
 	<bean id="pullManager" class="org.entermediadb.asset.pull.PullManager" scope="prototype">
@@ -2558,6 +2563,18 @@
 	</bean>
 
 	<bean id="AgentModule" class="org.entermediadb.ai.assistant.AgentModule">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+	<bean id="transcriberManager" class="org.entermediadb.ai.transcriber.TranscriberManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+	<bean id="TranscriberModule" class="org.entermediadb.ai.transcriber.TranscriberModule">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

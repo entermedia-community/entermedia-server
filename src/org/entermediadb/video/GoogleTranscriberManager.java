@@ -29,9 +29,7 @@ import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.google.GoogleManager;
 import org.json.simple.JSONObject;
-import org.openedit.CatalogEnabled;
 import org.openedit.Data;
-import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.page.Page;
@@ -44,12 +42,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class CloudTranscodeManager implements CatalogEnabled {
-	protected String fieldCatalogId;
-	protected ModuleManager fieldModuleManager;
-	protected MediaArchive fieldMediaArchive;
-	protected GoogleManager fieldGoogleManager;
-	private static final Log log = LogFactory.getLog(CloudTranscodeManager.class);
+public class GoogleTranscriberManager extends BaseTranscriber {
+	protected GoogleManager fieldGoogleManager; 
+	
+	private static final Log log = LogFactory.getLog(GoogleTranscriberManager.class);
 
 	public GoogleManager getGoogleManager() {
 		if (fieldGoogleManager == null) {
@@ -58,33 +54,6 @@ public class CloudTranscodeManager implements CatalogEnabled {
 		}
 
 		return fieldGoogleManager;
-	}
-
-	public MediaArchive getMediaArchive() {
-		if (fieldMediaArchive == null) {
-			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
-		}
-		return fieldMediaArchive;
-	}
-
-	public void setMediaArchive(MediaArchive inMediaArchive) {
-		fieldMediaArchive = inMediaArchive;
-	}
-
-	public ModuleManager getModuleManager() {
-		return fieldModuleManager;
-	}
-
-	public void setModuleManager(ModuleManager inModuleManager) {
-		fieldModuleManager = inModuleManager;
-	}
-
-	public String getCatalogId() {
-		return fieldCatalogId;
-	}
-
-	public void setCatalogId(String inCatalogId) {
-		fieldCatalogId = inCatalogId;
 	}
 
 	public void transcodeCaptions(Data inTrack) throws RepositoryException, IOException {

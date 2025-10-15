@@ -20,7 +20,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
-import org.entermediadb.video.CloudTranscodeManager;
+import org.entermediadb.video.GoogleTranscriberManager;
 import org.entermediadb.video.Timeline;
 import org.entermediadb.video.TimelineManager;
 import org.entermediadb.video.VTT.Cue;
@@ -467,7 +467,7 @@ public class TimelineModule extends BaseMediaModule
 		//<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/conversions/autotranscode.html" allowduplicates="true" />
 		MediaArchive archive = getMediaArchive(inReq);
 
-		CloudTranscodeManager manager = (CloudTranscodeManager)getModuleManager().getBean(archive.getCatalogId(), "cloudTranscodeManager");
+		GoogleTranscriberManager manager = (GoogleTranscriberManager)getModuleManager().getBean(archive.getCatalogId(), "googleTranscriberManager");
 
 		
 		
@@ -481,7 +481,7 @@ public class TimelineModule extends BaseMediaModule
 		
 		inReq.putPageValue("track", lasttrack);
 //		inRe
-//		CloudTranscodeManager manager = (CloudTranscodeManager)getModuleManager().getBean(catalogid, "cloudTranscodeManager");
+//		GoogleTranscriberManager manager = (GoogleTranscriberManager)getModuleManager().getBean(catalogid, "googleTranscriberManager");
 //		manager.transcodeCaptions(asset,selectedlang);
 		archive.fireSharedMediaEvent("asset/autotranscribe");
 	}
@@ -490,7 +490,7 @@ public class TimelineModule extends BaseMediaModule
 		//<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/conversions/autotranscode.html" allowduplicates="true" />
 
 		MediaArchive archive = getMediaArchive(inReq);
-		CloudTranscodeManager manager = (CloudTranscodeManager)getModuleManager().getBean(archive.getCatalogId(), "cloudTranscodeManager");
+		GoogleTranscriberManager manager = (GoogleTranscriberManager)getModuleManager().getBean(archive.getCatalogId(), "googleTranscriberManager");
 
 		Searcher captionsearcher = archive.getSearcher("videotrack");
 
