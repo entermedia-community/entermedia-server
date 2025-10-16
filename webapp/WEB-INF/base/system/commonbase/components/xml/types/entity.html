@@ -56,7 +56,7 @@ $context.putPageValue("detail",$detail)
 		#set($label = "[[Add]] #text($pickmodule)")
 	#end 
 	
-	
+	#set($id = $data.id)	
 	#ifnull($id)
 		#set($id = $asset.id)
 	#end

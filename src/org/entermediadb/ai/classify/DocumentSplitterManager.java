@@ -73,6 +73,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			splitDocument(inConfig, entity, document);
 			String modtime = document.get("assetmodificationdate");
 			entity.setValue("pagescreatedfor", assetid + "|" + modtime);
+			entity.setValue("totalpages", document.getValue("pages"));
 		}
 		//Check the primarymedia
 		//See if this has been indexed or not
