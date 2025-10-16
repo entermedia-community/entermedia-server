@@ -171,9 +171,15 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			obj.put("function_call", func);
 		}
 		
-		log.info(obj.toJSONString());
-
-		return handleApiRequest(obj.toJSONString());
+		String payload = obj.toJSONString();
+		log.info(payload);
+		
+		JSONObject json = handleApiRequest(payload);
+	    
+	    OpenAiResponse response = new OpenAiResponse();
+	    response.setRawResponse(json);
+	    
+	    return response;
 
 	}
 
@@ -251,7 +257,15 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			obj.put("function_call", func);
 		}
 
-		return handleApiRequest(obj.toJSONString());
+		String payload = obj.toJSONString();
+		log.info(payload);
+		
+		JSONObject json = handleApiRequest(payload);
+	    
+	    OpenAiResponse response = new OpenAiResponse();
+	    response.setRawResponse(json);
+	    
+	    return response;
 
 	}
 

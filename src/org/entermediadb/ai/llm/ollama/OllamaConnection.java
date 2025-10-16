@@ -195,7 +195,12 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	        obj.put("format", parameters);
 	    }
 	    String payload = obj.toJSONString();
-	    LlmResponse response = handleApiRequest(payload);
+	    
+	    JSONObject json = handleApiRequest(payload);
+	    
+	    OllamaResponse response = new OllamaResponse();
+	    response.setRawResponse(json);
+	    
 	    return response;
 	}
 
@@ -218,9 +223,8 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		inParams.put("model", inModel);
 		
 		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/ollama/classify/structures/" + inStructureName + ".json", inParams);
-
-		LlmResponse response = handleApiRequest(inStructure);
-		JSONObject json = response.getRawResponse();
+		
+		JSONObject json = handleApiRequest(inStructure);
 
 		log.info("Returned: " + json);
 			

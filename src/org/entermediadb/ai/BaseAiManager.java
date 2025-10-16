@@ -10,11 +10,9 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.Asset;
 import org.entermediadb.manager.BaseManager;
 import org.openedit.Data;
 import org.openedit.MultiValued;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;

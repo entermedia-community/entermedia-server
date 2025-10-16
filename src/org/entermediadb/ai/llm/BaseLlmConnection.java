@@ -332,7 +332,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		return i;
 	}
 	
-	protected LlmResponse handleApiRequest(String payload)
+	protected JSONObject handleApiRequest(String payload)
 	{
 		String endpoint = getApiEndpoint();
 		HttpPost method = new HttpPost(endpoint);
@@ -363,9 +363,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 
 			log.info("returned: " + json.toJSONString());
 
-			OpenAiResponse response = new OpenAiResponse();
-			response.setRawResponse(json);
-			return response;
+			return json;
 		}
 		catch (Exception ex)
 		{

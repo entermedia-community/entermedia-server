@@ -72,7 +72,7 @@ public class GoogleTranscriberManager extends BaseTranscriber {
 
 		TranscodeTools transcodetools = archive.getTranscodeTools();
 		Map all = new HashMap(); // TODO: Get parent ones as well
-		ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat("flac");
+		ConversionManager manager = transcodetools.getManagerByFileFormat("flac");
 		ConvertInstructions instructions = manager.createInstructions(inAsset, "audio.flac");
 		ContentItem item = manager.findInput(instructions);
 
@@ -239,7 +239,7 @@ public class GoogleTranscriberManager extends BaseTranscriber {
 		
 		if ("needstranscribe".equals(currentstatus)) {
 			inAsset.setValue("closecaptionstatus", "inprogress");
-			ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat("flac");
+			ConversionManager manager = transcodetools.getManagerByFileFormat("flac");
 			ConvertInstructions instructions = manager.createInstructions(inAsset, "audio.flac");
 			ContentItem item = manager.findInput(instructions);
 
@@ -501,12 +501,5 @@ public class GoogleTranscriberManager extends BaseTranscriber {
 		return lasttrack;
 		
 	}
-
-	
-	
-	
-	
-	
-	
 	
 }

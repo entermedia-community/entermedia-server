@@ -20,9 +20,9 @@ public class OllamaResponse extends BasicLlmResponse
 		}
 
 		JSONObject message = (JSONObject) rawResponse.get("message");
-		if (message.containsKey("tool_calls"))
+		if (!message.containsKey("tool_calls"))
 		{
-			return true; // No tool calls in the message
+			return false; // No tool calls in the message
 		}
 
 		JSONArray toolCalls = (JSONArray) message.get("tool_calls");
@@ -32,14 +32,12 @@ public class OllamaResponse extends BasicLlmResponse
 	@Override
 	public JSONObject getArguments()
 	{
-		
-		
 		JSONObject message = (JSONObject) rawResponse.get("message");
 		JSONArray toolCalls = (JSONArray) message.get("tool_calls");
 
 		if (toolCalls == null || toolCalls.isEmpty())
 		{
-			String content = (String)message.get("content");
+			String content = (String) message.get("content");
 			JSONParser parser = new JSONParser();
 			try {
 				JSONObject contentargs = (JSONObject) parser.parse(content);
