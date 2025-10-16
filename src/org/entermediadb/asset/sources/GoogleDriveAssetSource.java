@@ -537,5 +537,12 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 		}
 	}
 
+	@Override
+	public boolean existsOriginalContent(Asset inAsset)
+	{
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 
 }

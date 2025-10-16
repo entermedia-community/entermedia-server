@@ -227,5 +227,14 @@ public class ZohoAssetSource extends BaseAssetSource
 		
 	}
 
+
+	@Override
+	public boolean existsOriginalContent(Asset inAsset)
+	{
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+
 	
 }
