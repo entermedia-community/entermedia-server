@@ -1,6 +1,5 @@
 package org.entermediadb.ai.transcriber;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,12 +11,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
@@ -25,7 +18,6 @@ import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.asset.convert.managers.AudioConversionManager;
-import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
