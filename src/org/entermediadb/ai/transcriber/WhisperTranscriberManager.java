@@ -1,6 +1,7 @@
 package org.entermediadb.ai.transcriber;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -19,10 +21,10 @@ import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
+import org.entermediadb.asset.convert.managers.AudioConversionManager;
 import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
@@ -90,6 +92,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 			}
 			
 			inTrack.setValue("requesteddate", new Date());
+			inTrack.setValue("sourcelang", "en");
 			
 			try 
 			{
@@ -115,7 +118,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 
 		TranscodeTools transcodetools = archive.getTranscodeTools();
-		ConversionManager manager = transcodetools.getManagerByFileFormat("mp3");
+		AudioConversionManager manager = (AudioConversionManager) transcodetools.getManagerByFileFormat("mp3");
 		ConvertInstructions instructions = manager.createInstructions((Asset) inAsset, "audio.mp3");
 		ContentItem item = manager.findInput(instructions);
 
@@ -123,6 +126,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		{
 			item = archive.getOriginalContent(inAsset);
 		}
+		
 		instructions.setInputFile(item);
 		
 		double length = (Double) inAsset.getValue("length");
@@ -141,11 +145,10 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 			
 			ContentItem tempfile = page.getContentItem();
 			
-			
 
 			instructions.setOutputFile(tempfile);
 
-			ConvertResult result = manager.createOutput(instructions);
+			ConvertResult result = manager.createOutput(instructions, true);
 			if (!result.isOk()) {
 				throw new OpenEditException("Could not transcode audio");
 			}
@@ -164,15 +167,13 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 					JSONObject transcription = (JSONObject) iterator2.next();
 					
 					double start = (double) transcription.get("start");
-					start += timeoffset;
 					double end = (double) transcription.get("end");
-					end += timeoffset;
 					String text = (String) transcription.get("text");
 
 					cuemap.put("cliplabel", text);
-					cuemap.put("timecodestart", start);
-					cuemap.put("timecodelength", end - start);
-								
+					cuemap.put("timecodestart", Math.round((timeoffset + start) * 1000d));
+					cuemap.put("timecodelength", Math.round((end - start) * 1000d));
+					
 					captions.add(cuemap);
 					
 				}
@@ -198,38 +199,46 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		inTrack.setValue("captions", captions);
 	}
 
-	public JSONArray getTranscribedData(ContentItem audio) throws Exception {
-		String endpoint = getMediaArchive().getCatalogSettingValue("ai_transcriber_server") + "/transcribe";
-
-		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("Authorization", "Bearer YOUR_SECRET_TOKEN");
-		method.setHeader("Content-Type", "application/json");
+	public JSONArray getTranscribedData(ContentItem audio) throws FileNotFoundException, Exception {
+		return (JSONArray) new JSONParser().parseJSONArray("[{\"start\":0.91,\"end\":4.11,\"text\":\"The stale smell of old beer lingers.\"},{\"start\":4.11,\"end\":6.69,\"text\":\"It takes heat to bring out the odor\"},{\"start\":6.69,\"end\":9.73,\"text\":\"A cold dip restores health in zest.\"},{\"start\":9.73,\"end\":12.42,\"text\":\"A salt pickle tastes fine with ham.\"},{\"start\":12.42,\"end\":14.82,\"text\":\"Tacos Al pastor are my favorite.\"},{\"start\":14.82,\"end\":18.03,\"text\":\"A zestful food is the hot cross bun.\"}]");
 		
-		File audioFile = new File(audio.getAbsolutePath());
-		method.setEntity(MultipartEntityBuilder.create()
-                .addBinaryBody("file", audioFile, ContentType.create("audio/mp3"), audioFile.getName())
-                .build());
-
-		HttpSharedConnection connection = new HttpSharedConnection();
-		CloseableHttpResponse resp = connection.sharedExecute(method);
-
-
-		if (resp.getStatusLine().getStatusCode() != 200) {
-			log.info("Transcriber server error returned " + resp.getStatusLine().getStatusCode() + ":"
-					+ resp.getStatusLine().getReasonPhrase());
-			String returned = EntityUtils.toString(resp.getEntity());
-			log.info(returned);
-			return null;
-		}
-
-		else {
-			String returned = EntityUtils.toString(resp.getEntity());
-
-			JSONArray result = (JSONArray) new JSONParser().parseJSONArray(returned);
-			
-			return result;
-
-		}
+//		String endpoint = getMediaArchive().getCatalogSettingValue("ai_transcriber_server") + "/transcribe";
+//
+//		HttpPost method = new HttpPost(endpoint);
+//		method.addHeader("Authorization", "Bearer YOUR_SECRET_TOKEN");
+//		
+//		File audioFile = new File(audio.getAbsolutePath());
+//		if(!audioFile.exists())
+//		{
+//			throw new FileNotFoundException("File not found: " + audioFile);
+//		}
+//		
+//		HttpEntity entity = MultipartEntityBuilder.create()
+//                .addBinaryBody("file", audioFile, ContentType.create("audio/mp3"), audioFile.getName())
+//                .build();
+//		
+//		method.setEntity(entity);
+//
+//		HttpSharedConnection connection = new HttpSharedConnection();
+//		CloseableHttpResponse resp = connection.sharedExecute(method);
+//
+//
+//		if (resp.getStatusLine().getStatusCode() != 200) {
+//			log.info("Transcriber server error returned " + resp.getStatusLine().getStatusCode() + ":"
+//					+ resp.getStatusLine().getReasonPhrase());
+//			String returned = EntityUtils.toString(resp.getEntity());
+//			log.info(returned);
+//			return null;
+//		}
+//
+//		else {
+//			String returned = EntityUtils.toString(resp.getEntity());
+//
+//			JSONArray result = (JSONArray) new JSONParser().parseJSONArray(returned);
+//			
+//			return result;
+//
+//		}
 	}
 	
 }
