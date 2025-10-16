@@ -1,5 +1,6 @@
-package org.entermediadb.ai.transcriber;
+package org.entermediadb.ai.transcriber; 
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,6 +12,12 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
@@ -18,6 +25,7 @@ import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.asset.convert.managers.AudioConversionManager;
+import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -31,7 +39,7 @@ import org.openedit.repository.RepositoryException;
 import org.openedit.util.JSONParser;
 
 public class WhisperTranscriberManager extends InformaticsProcessor {
-
+	
 	private static final Log log = LogFactory.getLog(WhisperTranscriberManager.class);
 	
 	@Override
@@ -46,66 +54,66 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 		{
 			MultiValued inAsset = (MultiValued) iterator.next();
-			String mediatype = getMediaArchive().getMediaRenderType(inAsset);
-			if( mediatype.equals("default") )
-			{
-				inLog.info(inConfig.get("bean") + " - Skipping asset " + inAsset);
-				continue;
-			}
-			if( !mediatype.equals("video") && !mediatype.equals("audio") )
-			{
-				inLog.info(inConfig.get("bean") + " - Skipping asset " + inAsset);
-				continue;
-			}
-			
-			Searcher captionSearcher = getMediaArchive().getSearcher("videotrack");
-			
-			Data inTrack = captionSearcher.query().exact("assetid", inAsset.getId()).searchOne();
-			
-			if( inTrack != null)
-			{
-				String status = inTrack.get("transcribestatus");
-				if(status != null && status.equals("complete"))
-				{
-					continue; //already done
-				}
-				else if(status == null ||  status.equals("error"))
-				{
-					inTrack.setValue("transcribestatus", "needstranscribe");
-				}
-				
-			}
-			if( inTrack == null)
-			{
-				inTrack = captionSearcher.createNewData();
-				inTrack.setProperty("assetid",  inAsset.getId());
-				inTrack.setValue("transcribestatus", "needstranscribe");
-				inTrack.setValue("length", inAsset.getValue("length"));
-			}
-			
-			inTrack.setValue("requesteddate", new Date());
-			inTrack.setValue("sourcelang", "en");
-			
-			try 
-			{
-				transcribeAsset(inLog, inAsset, inTrack);
-				inTrack.setValue("transcribestatus", "complete");
-			}
-			catch (Exception e) 
-			{
-				inLog.error("Could not transcribe " + inAsset, e);
-				inTrack.setValue("transcribestatus", "error");
-			}
-			finally
-			{
-				inTrack.setValue("completeddate", new Date());
-				captionSearcher.saveData(inTrack);
-			}
+			transcribeOneAsset(inLog, inAsset);
 		}
 		
 	}
+	
+	public void transcribeOneAsset(ScriptLogger inLog, MultiValued inAsset)
+	{
+		String mediatype = getMediaArchive().getMediaRenderType(inAsset);
 
-	public void transcribeAsset(ScriptLogger inLog, MultiValued inAsset, Data inTrack) throws RepositoryException, IOException 
+		if( !"video".equals(mediatype) && !"audio".equals(mediatype) )
+		{
+			return; //only video and audio
+		}
+		
+		Searcher captionSearcher = getMediaArchive().getSearcher("videotrack");
+		
+		Data inTrack = captionSearcher.query().exact("assetid", inAsset.getId()).searchOne();
+		
+		if( inTrack != null)
+		{
+			String status = inTrack.get("transcribestatus");
+			if(status != null && status.equals("complete"))
+			{
+				return; //already done
+			}
+			else if(status == null ||  status.equals("error"))
+			{
+				inTrack.setValue("transcribestatus", "needstranscribe");
+			}
+			
+		}
+		if( inTrack == null)
+		{
+			inTrack = captionSearcher.createNewData();
+			inTrack.setProperty("assetid",  inAsset.getId());
+			inTrack.setValue("transcribestatus", "needstranscribe");
+			inTrack.setValue("length", inAsset.getValue("length"));
+		}
+		
+		inTrack.setValue("requesteddate", new Date());
+		inTrack.setValue("sourcelang", "en");
+		
+		try 
+		{
+			transcribe(inLog, inAsset, inTrack);
+			inTrack.setValue("transcribestatus", "complete");
+		}
+		catch (Exception e) 
+		{
+			inLog.error("Could not transcribe " + inAsset, e);
+			inTrack.setValue("transcribestatus", "error");
+		}
+		finally
+		{
+			inTrack.setValue("completeddate", new Date());
+			captionSearcher.saveData(inTrack);
+		}
+	}
+
+	public void transcribe(ScriptLogger inLog, MultiValued inAsset, Data inTrack) throws RepositoryException, IOException 
 	{
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 
@@ -192,45 +200,43 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 	}
 
 	public JSONArray getTranscribedData(ContentItem audio) throws FileNotFoundException, Exception {
-		return (JSONArray) new JSONParser().parseJSONArray("[{\"start\":0.91,\"end\":4.11,\"text\":\"The stale smell of old beer lingers.\"},{\"start\":4.11,\"end\":6.69,\"text\":\"It takes heat to bring out the odor\"},{\"start\":6.69,\"end\":9.73,\"text\":\"A cold dip restores health in zest.\"},{\"start\":9.73,\"end\":12.42,\"text\":\"A salt pickle tastes fine with ham.\"},{\"start\":12.42,\"end\":14.82,\"text\":\"Tacos Al pastor are my favorite.\"},{\"start\":14.82,\"end\":18.03,\"text\":\"A zestful food is the hot cross bun.\"}]");
+		String endpoint = getMediaArchive().getCatalogSettingValue("ai_transcriber_server") + "/transcribe";
+
+		HttpPost method = new HttpPost(endpoint);
+		method.addHeader("Authorization", "Bearer YOUR_SECRET_TOKEN");
 		
-//		String endpoint = getMediaArchive().getCatalogSettingValue("ai_transcriber_server") + "/transcribe";
-//
-//		HttpPost method = new HttpPost(endpoint);
-//		method.addHeader("Authorization", "Bearer YOUR_SECRET_TOKEN");
-//		
-//		File audioFile = new File(audio.getAbsolutePath());
-//		if(!audioFile.exists())
-//		{
-//			throw new FileNotFoundException("File not found: " + audioFile);
-//		}
-//		
-//		HttpEntity entity = MultipartEntityBuilder.create()
-//                .addBinaryBody("file", audioFile, ContentType.create("audio/mp3"), audioFile.getName())
-//                .build();
-//		
-//		method.setEntity(entity);
-//
-//		HttpSharedConnection connection = new HttpSharedConnection();
-//		CloseableHttpResponse resp = connection.sharedExecute(method);
-//
-//
-//		if (resp.getStatusLine().getStatusCode() != 200) {
-//			log.info("Transcriber server error returned " + resp.getStatusLine().getStatusCode() + ":"
-//					+ resp.getStatusLine().getReasonPhrase());
-//			String returned = EntityUtils.toString(resp.getEntity());
-//			log.info(returned);
-//			return null;
-//		}
-//
-//		else {
-//			String returned = EntityUtils.toString(resp.getEntity());
-//
-//			JSONArray result = (JSONArray) new JSONParser().parseJSONArray(returned);
-//			
-//			return result;
-//
-//		}
+		File audioFile = new File(audio.getAbsolutePath());
+		if(!audioFile.exists())
+		{
+			throw new FileNotFoundException("File not found: " + audioFile);
+		}
+		
+		HttpEntity entity = MultipartEntityBuilder.create()
+                .addBinaryBody("file", audioFile, ContentType.create("audio/mp3"), audioFile.getName())
+                .build();
+		
+		method.setEntity(entity);
+
+		HttpSharedConnection connection = new HttpSharedConnection();
+		CloseableHttpResponse resp = connection.sharedExecute(method);
+
+
+		if (resp.getStatusLine().getStatusCode() != 200) {
+			log.info("Transcriber server error returned " + resp.getStatusLine().getStatusCode() + ":"
+					+ resp.getStatusLine().getReasonPhrase());
+			String returned = EntityUtils.toString(resp.getEntity());
+			log.info(returned);
+			return null;
+		}
+
+		else {
+			String returned = EntityUtils.toString(resp.getEntity());
+
+			JSONArray result = (JSONArray) new JSONParser().parseJSONArray(returned);
+			
+			return result;
+
+		}
 	}
 	
 }
