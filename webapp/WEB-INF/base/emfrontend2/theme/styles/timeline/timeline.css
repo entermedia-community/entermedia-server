@@ -1,227 +1,192 @@
 .selectedclip .timecell,
-.selectedclip .timecellcaption
-{
+.selectedclip .timecellcaption {
 	background-color: #ffab7d;
 	font-weight: bold;
 }
 
-.selectedtime
-{
-	border-color: #666; 
+.selectedtime {
+	border-color: #666;
 	background-color: #ffaf7d;
 }
 
-.selectedlength
-{
-	border-color: #666; 
+.selectedlength {
+	border-color: #666;
 	background-color: #ffaf7d;
 }
 
-
-#bottom-slider #btmcontent ul#slider_vdo
-{
+#bottom-slider #btmcontent ul#slider_vdo {
 	list-style: none;
 	margin: 0;
 	padding: 0;
 }
 
-
-#bottom-slider
-{
+#bottom-slider {
 	padding: 10px;
 }
 
+#bottom-slider #btmcontent ul#slider_vdo li a.current {
+	border-color: #2a6496;
+}
 
-#bottom-slider #btmcontent ul#slider_vdo li a.current  
-{
-	border-color: #2a6496; 
-}
- 
-.grabresize
-{
-	position:absolute;
-	right:0;
-	top:0px;
-	cursor:col-resize;
-	width:12px;
-	height:36px;
+.grabresize {
+	position: absolute;
+	right: 0;
+	top: 0px;
+	cursor: col-resize;
+	width: 12px;
+	height: 36px;
 	border-radius: 4px;
-	margin-right:-6px;
+	margin-right: -6px;
 }
-.grabresize:hover
-{
+.grabresize:hover {
 	background: #666;
 }
 
 .productpanel {
-
-  position: absolute; 
-  top: 0px; 
-  right: -0px;
-  color: #FFF; 
-  text-align: center;
-  font-size: 20px;
-  background-color: rgba(221, 221, 221, 0.6);
-  width: 20%;
-  padding: 10px 0;
-  z-index: 2147483647;
+	position: absolute;
+	top: 0px;
+	right: -0px;
+	color: #fff;
+	text-align: center;
+	font-size: 20px;
+	background-color: rgba(221, 221, 221, 0.6);
+	width: 20%;
+	padding: 10px 0;
+	z-index: 2147483647;
 	height: 80%;
 }
 
 #video {
-position: relative;
-z-index: 1;
+	position: relative;
+	z-index: 1;
 }
 
-.video-holder{
+.video-holder {
 	position: relative;
 }
- 
-#video-container{
+
+#video-container {
 	background-color: #333;
-	border-top:2px solid #222;
-	padding:10px;
-	 position: relative;
-	 width:100%;
+	border-top: 2px solid #222;
+	padding: 10px;
+	position: relative;
+	width: 100%;
 }
 
-#video-container video { margin: 0 auto;}
+#video-container video {
+	margin: 0 auto;
+}
 
-#product-dialog{
+#product-dialog {
 	position: absolute;
 	top: 0;
 	right: 0;
 	/*
 	background: url("../img/slide_bg.png") repeat;
 	*/
-	background-color:rgba(237,237,237,0.25);
+	background-color: rgba(237, 237, 237, 0.25);
 	z-index: 10;
 	padding: 2% 2% 3%;
-	 width: 27%;
-	     height: 92%;
-	 
-
+	width: 27%;
+	height: 92%;
 }
-#product-dialog .buy,#product-dialog .price,#product-dialog .share{
-	 padding-top: 6%;
-	 border-bottom: 1px ridge #999D9A;
-	 margin: 0;
-}
-
-#product-dialog .buy .highlight{
-	color: red;
-}
-
-
-#product-dialog .view{
-	padding-bottom: 7%;
-	border-bottom: 1px ridge #999D9A;
-}
-#product-dialog .brand{
-	padding-bottom: 3%;
-	border-bottom: 1px ridge #999D9A;
-}
-#product-dialog .brand p{
-	font-size: 12px;
-}
-#product-dialog .brand h5{
+#product-dialog .buy,
+#product-dialog .price,
+#product-dialog .share {
+	padding-top: 6%;
+	border-bottom: 1px ridge #999d9a;
 	margin: 0;
 }
 
-#product-dialog .brand ul{
+#product-dialog .buy .highlight {
+	color: red;
+}
+
+#product-dialog .view {
+	padding-bottom: 7%;
+	border-bottom: 1px ridge #999d9a;
+}
+#product-dialog .brand {
+	padding-bottom: 3%;
+	border-bottom: 1px ridge #999d9a;
+}
+#product-dialog .brand p {
+	font-size: 12px;
+}
+#product-dialog .brand h5 {
+	margin: 0;
+}
+
+#product-dialog .brand ul {
 	/*
 	list-style: url('../img/protag.png');
 	*/
 	list-style: none;
 }
-#left-slide
-{
-   background: none repeat scroll 0 0 #EDEDED;
-    /*margin-left: 1%;*/
-    padding-left: 2%;
-    padding-top: 2%;
-    position: relative;
-     padding-right: 2%;
-    
-     
+#left-slide {
+	background: none repeat scroll 0 0 #ededed;
+	/*margin-left: 1%;*/
+	padding-left: 2%;
+	padding-top: 2%;
+	position: relative;
+	padding-right: 2%;
 }
 
-
-
-
-
-#left-slide #links
-{
-	 left: 2%;
-    position: absolute;
-    top: 1%;
+#left-slide #links {
+	left: 2%;
+	position: absolute;
+	top: 1%;
 }
-#left-slide #left-page
-{
-	  list-style: none outside none;
-    margin: 0;
-    padding: 0;
+#left-slide #left-page {
+	list-style: none outside none;
+	margin: 0;
+	padding: 0;
 }
-#left-slide #products
-{
-	border-bottom: 1px solid #CACACA;
-    padding-bottom:24%;
+#left-slide #products {
+	border-bottom: 1px solid #cacaca;
+	padding-bottom: 24%;
 }
-#left-slide .product
-{
- padding-bottom:8%;
+#left-slide .product {
+	padding-bottom: 8%;
 }
-#left-slide #drop-link	
-{
-	margin:0;
+#left-slide #drop-link {
+	margin: 0;
 }
-#left-slide #drop-link .accordion-group
-{
-	border:none;
+#left-slide #drop-link .accordion-group {
+	border: none;
 }
 #left-slide #drop-link .accordion-group .accordion-toggle {
-    display: block;
-     padding-bottom: 10%;
-    padding-left: 12px;
+	display: block;
+	padding-bottom: 10%;
+	padding-left: 12px;
 }
-#left-slide #drop-link .accordion-group .accordion-toggle span{
-      line-height: 15px;
-    padding-left: 5%;
-    text-align: left;
-    width: 81%;
-    color: #000000;
+#left-slide #drop-link .accordion-group .accordion-toggle span {
+	line-height: 15px;
+	padding-left: 5%;
+	text-align: left;
+	width: 81%;
+	color: #000000;
 }
-#left-slide .thumbnail
-{
+#left-slide .thumbnail {
 	border: none;
-	  width: 48%;
-	
+	width: 48%;
 }
-#left-slide .thumbnail>p
-{
-	 margin: 7px 0 10px;
+#left-slide .thumbnail > p {
+	margin: 7px 0 10px;
 }
 
+#video {
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
 
-#video{
- margin-left: auto;
-    margin-right: auto;
-    display: block
-    }
-    
-    
- 
- 
- .productclosebutton {
- position: absolute;
- top: 0;
- left: 0;
- margin-left: -29px;;
- 
- }
- 
- 
- 
+.productclosebutton {
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin-left: -29px;
+}
 
 /* ------------------- */
 /* show / hide buttons */
@@ -253,22 +218,17 @@ z-index: 1;
 	width: 100%;
 }
 
-
-
 .closeLeft .to-hide {
-	display: none;;
+	display: none;
 }
 
 .closeLeft #openTrigger {
 	display: none;
 }
 
-
 .openLeft #closeTrigger {
 	display: none;
 }
-
-
 
 /* -----------------*/
 /*  Open Left       */
@@ -283,160 +243,135 @@ z-index: 1;
 /* CSS Transitions */
 /* -----------------*/
 
-
-
 .productpanel {
-
-  position: absolute; 
-  top: 0px; 
-  right: -0px;
-  color: #FFF; 
-  text-align: center;
-  font-size: 20px;
-  background-color: rgba(221, 221, 221, 0.6);
-  width: 20%;
-  padding: 10px 0;
-  z-index: 2147483647;
+	position: absolute;
+	top: 0px;
+	right: -0px;
+	color: #fff;
+	text-align: center;
+	font-size: 20px;
+	background-color: rgba(221, 221, 221, 0.6);
+	width: 20%;
+	padding: 10px 0;
+	z-index: 2147483647;
 	height: 80%;
 }
 
 #video {
-position: relative;
-z-index: 1;
-	
+	position: relative;
+	z-index: 1;
 }
 
-.video-holder{
-position: relative;
+.video-holder {
+	position: relative;
 }
-
 
 .video-tl {
-    max-width: 100%;
-    max-height: 420px;
+	max-width: 100%;
+	max-height: 420px;
 }
- 
- .productlink-tray{
-	display: inline-block;
-padding-top: 1px;
- width: 15px;
- height:15px;
-	
 
- }
- 
- 
- 
- 
- #left-dialog{
+.productlink-tray {
+	display: inline-block;
+	padding-top: 1px;
+	width: 15px;
+	height: 15px;
+}
+
+#left-dialog {
 	position: absolute;
 	top: 0;
 	left: 0;
 	/*
 	background: url("../img/slide_bg.png") repeat;
 	*/
-	background-color:rgba(237,237,237,0.25);
+	background-color: rgba(237, 237, 237, 0.25);
 	z-index: 10;
 	padding: 2% 2% 3%;
-	 width: 27%;
-	     height: 92%;
-	 
-
+	width: 27%;
+	height: 92%;
 }
- 
 
-#top-float{
+#top-float {
 	margin: 0 auto;
-	background-color:rgba(237,237,237,0.25);
+	background-color: rgba(237, 237, 237, 0.25);
 	z-index: 10;
 	padding: 2% 2% 3%;
-	 width: 27%;
+	width: 27%;
 }
- 
 
 .timelineviewer {
-	width:100%;
+	width: 100%;
 	background-color: #fff;
-	position:relative;
-	padding:10px 0 30px 30px;
+	position: relative;
+	padding: 10px 0 30px 30px;
 	overflow: hidden;
-}
-
-.cctimelineviewer {
-	width:100%;
-	background-color: #fff;
-	position:relative;
-	padding:20px 10px;
-	overflow-x:auto;
 }
 
 .timelinedata {
 	clear: both;
 	min-height: 400px;
-	position:relative;
+	position: relative;
 }
 
 .timelineviewercontainer {
-	overflow-x:auto;
-	margin-right:20px;
+	overflow-x: auto;
+	margin-right: 20px;
 }
 
 @media (max-width: 1910px) {
 	.timelineviewercontainer {
-		overflow-x:auto;
+		overflow-x: auto;
 	}
 	.timelinedata {
 		min-height: 350px;
 		height: 100%;
 	}
-	
 }
 
 .videotimelinecreate {
 	background-color: #333;
-	padding:5px 0px 0px 0px;
-	margin:0;
+	padding: 5px 0px 0px 0px;
+	margin: 0;
 }
 
 .videotimelinecreate h3 {
-	margin:0 0 20px;
+	margin: 0 0 20px;
 	font-weight: bold;
 	font-size: 0.95rem;
 	text-transform: uppercase;
 }
 
-
-.videoclosedcaptioninput {
-	
-	padding: 20px 15px;
-	
-}
-
 .timelinecontainer {
 	min-height: 60px;
-	position:relative;
+	position: relative;
 }
 
 .timelinecursor {
-	position:absolute;
-	left:60px; /*starting*/
+	position: absolute;
+	left: 60px; /*starting*/
 	height: 50px;
-	border-left:1px solid #333;
-	width:1px;
-	z-index:5;
+	border-left: 1px solid #333;
+	width: 1px;
+	z-index: 5;
 }
 
-#timelineviewerbackground { position:absolute; width:calc(100% - 40px); height: 100%; top:0; z-index:5;}
-
+#timelineviewerbackground {
+	position: absolute;
+	width: calc(100% - 40px);
+	height: 100%;
+	top: 0;
+	z-index: 5;
+}
 
 .cctimelinedata {
 	min-height: 280px;
-} 
+}
 
-
-.clipedit {padding:20px 10px;}
-
+.clipedit {
+	padding: 20px 10px;
+}
 
 .iconbarcontainer {
-	margin-bottom:10px;
+	margin-bottom: 10px;
 }

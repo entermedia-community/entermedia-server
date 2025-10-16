@@ -1,4 +1,0 @@
-<page>
-<path-action name="TimelineModule.addCaption"/>
-<path-action name="TimelineModule.loadCaptionEditor"/>
-</page>
