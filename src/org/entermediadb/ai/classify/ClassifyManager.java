@@ -106,46 +106,55 @@ public class ClassifyManager extends InformaticsProcessor
 			params.put("aifields", aifields);
 
 			String requestPayload = getLlmConnection().loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/analyzeasset.html", params);
-			String functionname = inConfig.get("aifunctionname") + "_asset";
+			String functionname = inConfig.get("aifunctionname");
 			
 			String base64EncodedString = null;
+			
+			String textContent = null;
+			
 			if( aifields.size() > 1 )
-			{		
-				boolean loadthumb = true;
-				if( aifields.size() == 1)
+			{
+				if(mediatype.equals("image"))
 				{
-					PropertyDetail detail = aifields.iterator().next(); //First one
-					if( detail.getId().startsWith("semantic") )
+					base64EncodedString = loadBase64Image(asset, "image3000x3000");
+	
+					if( base64EncodedString == null)
 					{
-						loadthumb = false;
+						log.error("Image missing for asset: " + asset);
+						return false;
 					}
+					functionname = functionname + "_image";
 				}
-				if( loadthumb  )
+				else if(mediatype.equals("document"))
 				{
-					if(mediatype.equals("image") || mediatype.equals("video"))
+					textContent = (String) asset.getValue("fulltext");
+	
+					if( textContent == null || textContent.trim().length() == 0)
 					{
-						String imagesize = null;
-						if (mediatype.equals("image"))
-						{
-							imagesize = "image3000x3000";
-						}
-						else if ( mediatype.equals("video"))
-						{
-							imagesize = "image1900x1080";
-						}
-		
-						base64EncodedString = loadBase64Image(asset, imagesize);
-		
-						if( base64EncodedString == null)
-						{
-							log.error("Image missing for asset: " + asset);
-							return false;
-						}
+						log.error("Document has no text: " + asset);
+						return false;
 					}
+					functionname = functionname + "_document";
+				}
+				else if(mediatype.equals("video") || mediatype.equals("audio"))
+				{
+					textContent = loadTranscript(asset);
+	
+					if( textContent == null)
+					{
+						log.error("Video missing for asset: " + asset);
+						return false;
+					}
+					functionname = functionname + "_transcript";
+				}
+				else
+				{
+					log.info("Skipping media type: " + mediatype + " for asset: " + asset);
+					return false;
 				}
 			}
 			
-			LlmResponse results = getLlmConnection().callClassifyFunction(params, models.get("vision"), functionname, requestPayload, base64EncodedString);
+			LlmResponse results = getLlmConnection().callClassifyFunction(params, models.get("vision"), functionname, requestPayload, textContent, base64EncodedString);
 
 			if (results != null)
 			{
@@ -363,117 +372,5 @@ public class ClassifyManager extends InformaticsProcessor
 		return true;
 
 	}
-
-		
-//	public Map<String, Collection> createSemanticFieldsValues(LlmConnection llmconnection, String inModel, String inModuleId, MultiValued inData) throws Exception
-//	{
-//			MediaArchive archive = getMediaArchive();
-//			
-//			Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inModuleId).exact("systemdefined", false).search();
-//			
-//			Map<String, PropertyDetail> detailsfields = new HashMap();
-//			
-//			for (Iterator iterator = detailsviews.iterator(); iterator.hasNext();) {
-//				Data view = (Data) iterator.next();
-//				Collection viewfields = getMediaArchive().getSearcher(inModuleId).getDetailsForView(view);
-//				for (Iterator iterator2 = viewfields.iterator(); iterator2.hasNext();) {
-//					PropertyDetail detail = (PropertyDetail) iterator2.next();
-//					detailsfields.put(detail.getId(), detail);
-//				}
-//			}
-//			
-//			Map contextfields = new HashMap();
-//			
-//			for (Iterator iter = detailsfields.keySet().iterator(); iter.hasNext();)
-//			{
-//				String key = (String) iter.next();
-//				PropertyDetail detail = (PropertyDetail) detailsfields.get(key);
-//				
-//				String fieldId = detail.getId();
-//				
-//				
-//				String stringValue = null;
-//				
-//				if(detail.isBoolean() || detail.isDate())
-//				{
-//					continue;
-//				}
-//				else if(detail.isMultiLanguage())
-//				{
-//					stringValue = inData.getText(fieldId, "en");
-//				}
-//				else if(detail.isMultiValue() || detail.isList())
-//				{
-//					Collection<String> values = inData.getValues(fieldId);
-//					if(values == null || values.isEmpty())
-//					{
-//						log.info("Skipping empty field: " + fieldId);
-//						continue;
-//					}
-//					
-//					Collection<String> textValues = new ArrayList<>();
-//					if(detail.isMultiValue())
-//					{
-//						textValues.addAll(values);
-//					}
-//					else if (detail.isList())
-//					{
-//						for (Iterator iter2 = values.iterator(); iter2.hasNext();) 
-//						{
-//							String val = (String) iter2.next();
-//							Data data = archive.getCachedData(detail.getListId(), val);
-//							if(data != null)
-//							{
-//								String v = data.getName();
-//								textValues.add(v);
-//							}
-//						}
-//					}
-//					stringValue = String.join(", ", textValues);
-//				}
-//				else 
-//				{
-//					stringValue = inData.get(fieldId);
-//				}
-//				
-//				
-//				if (stringValue == null)
-//				{
-//					log.info("Skipping empty field: " + fieldId);
-//					continue;
-//				}
-//				
-//				String label = detail.getName();
-//
-//				HashMap fieldMap = new HashMap();
-//				fieldMap.put("label", label);
-//				fieldMap.put("text", stringValue);
-//				
-//				contextfields.put(detail.getId(), fieldMap);
-//			}
-//			
-//			if(inData.getBoolean("hasfulltext"))
-//			{
-//				String fulltext = inData.get("fulltext");
-//				if(fulltext != null)
-//				{				
-//					fulltext = fulltext.replaceAll("\\s+", " ");
-//					fulltext = fulltext.substring(0, Math.min(fulltext.length(), 5000));
-//					HashMap fieldMap = new HashMap();
-//					fieldMap.put("label", "Parsed Document Content");
-//					fieldMap.put("text", fulltext);
-//					
-//					contextfields.put("fulltext", fieldMap);
-//				}
-//			}
-//
-//			if(contextfields.isEmpty())
-//			{
-//				log.info("No fields to check for semantic topics in " + inData.getId() + " " + inData.getName());
-//				return null;
-//			}
-
-	
-
 
 }

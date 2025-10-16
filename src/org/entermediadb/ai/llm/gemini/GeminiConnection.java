@@ -175,8 +175,13 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 	    return response;
 
 	}
-
+	
 	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image)
+	{
+		return callClassifyFunction(params, inModel, inFunction, inQuery, null, inBase64Image);
+	}
+
+	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String textContent, String inBase64Image)
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -198,10 +203,10 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 			JSONArray contentArray = new JSONArray();
 
 			// Add text content
-			JSONObject textContent = new JSONObject();
-			textContent.put("type", "text");
-			textContent.put("text", inQuery);
-			contentArray.add(textContent);
+			JSONObject systemCommand = new JSONObject();
+			systemCommand.put("type", "text");
+			systemCommand.put("text", inQuery);
+			contentArray.add(systemCommand);
 
 			// Add image content
 			JSONObject imageContent = new JSONObject();
@@ -226,16 +231,25 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		if (inFunction != null)
 		{
 			String templatepath = "/" + archive.getMediaDbId() + "/ai/gemini/classify/functions/" + inFunction + ".json";
+			
 			Page defpage = archive.getPageManager().getPage(templatepath);
+			
 			if (!defpage.exists())
 			{
 				templatepath = "/" + archive.getCatalogId() + "/ai/gemini/classify/functions/" + inFunction + ".json";
 				defpage = archive.getPageManager().getPage(templatepath);
 			}
+			
 			if (!defpage.exists())
 			{
 				throw new OpenEditException("Requested Function Does Not Exist in MEdiaDB or Catatlog:" + inFunction);
 			}
+
+			if(textContent == null)
+			{
+				params.put("textcontent", textContent);
+			}
+			
 			String definition = loadInputFromTemplate(templatepath, params);
 
 			JSONParser parser = new JSONParser();

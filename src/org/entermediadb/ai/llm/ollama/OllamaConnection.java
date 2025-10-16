@@ -145,8 +145,13 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	{
 		filler = inFiller;
 	}
-
+	
 	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image)
+	{
+		return callClassifyFunction(params, inModel, inFunction, inQuery, null, inBase64Image);
+	}
+
+	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String textContent, String inBase64Image)
 	{
 	    MediaArchive archive = getMediaArchive();
 
@@ -162,7 +167,8 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	    JSONObject message = new JSONObject();
 	    message.put("role", "user");
 
-        message.put("content", inQuery);
+			message.put("content", inQuery);
+
 	    if (inBase64Image != null && !inBase64Image.isEmpty()) 
 	    {
 	        // Add image content separately
@@ -176,16 +182,24 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 
 	    // Handle function call definition
 	    if (inFunction != null) {
-	    	
-	        String templatepath = "/" + archive.getMediaDbId() + "/ai/ollama/classify/functions/" + inFunction + ".json";
-	        Page defpage = archive.getPageManager().getPage(templatepath);
-	        if(!defpage.exists()) {
-		        templatepath  ="/" + archive.getCatalogId() + "/ai/ollama/classify/functions/" + inFunction + ".json";
-		        defpage = archive.getPageManager().getPage(templatepath);
-	        }
-	        if(!defpage.exists()) {
-			       throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunction);
+			String templatepath = "/" + archive.getMediaDbId() + "/ai/ollama/classify/functions/" + inFunction + ".json";
+			
+			Page defpage = archive.getPageManager().getPage(templatepath);
+			
+			if(!defpage.exists()) {
+				templatepath  ="/" + archive.getCatalogId() + "/ai/ollama/classify/functions/" + inFunction + ".json";
+				defpage = archive.getPageManager().getPage(templatepath);
+			}
+			
+			if(!defpage.exists()) {
+				throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunction);
 		    }
+			
+			if(textContent == null)
+			{
+				params.put("textcontent", textContent);
+			}
+			
 	        String definition = loadInputFromTemplate(templatepath, params);
 	        
 	        JSONParser parser = new JSONParser();
