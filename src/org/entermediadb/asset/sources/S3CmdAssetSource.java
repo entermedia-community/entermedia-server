@@ -559,4 +559,13 @@ public class S3CmdAssetSource extends BaseAssetSource
 		File file = getFile(inAsset);
 		upload(inAsset, file);
 	}
+
+	@Override
+	public boolean existsOriginalContent(Asset inAsset)
+	{
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+
 }

@@ -18,6 +18,8 @@ public interface AssetSource
 
 	ContentItem getOriginalContent(Asset inAsset);
 
+	boolean existsOriginalContent(Asset inAsset);
+
 	boolean handles(Asset inAsset);
 
 	boolean handlesPath(String inPath);
