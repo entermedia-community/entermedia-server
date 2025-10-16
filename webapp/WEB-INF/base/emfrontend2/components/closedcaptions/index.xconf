@@ -1,5 +1,0 @@
-<page>
-	<page-action name="MediaArchiveModule.getAsset"  />
-	<page-action name="TimelineModule.loadCaptionEditor" />
-  
-</page>

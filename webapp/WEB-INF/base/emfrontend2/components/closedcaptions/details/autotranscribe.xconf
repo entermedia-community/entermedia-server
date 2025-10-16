@@ -1,6 +1,0 @@
-<page>
-
-	<inner-layout />
-	<path-action name="TimelineModule.addAutoTranscode"  />
-
-</page>
