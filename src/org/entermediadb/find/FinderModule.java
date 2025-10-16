@@ -853,6 +853,7 @@ public class FinderModule extends BaseMediaModule
 		{
 			SearchQuery assetsearch = search.copy();
 			assetsearch.setName("assethits");
+			assetsearch.setHitsPerPage(16);
 			assethits = archive.getAssetSearcher().cachedSearch(inReq, search);  //cached
 			log.info("Assets " +  assethits.getSearchType() + ": " + assethits.getSearchQuery().toQuery() + " size:" + assethits.size() );
 		}
