@@ -411,23 +411,22 @@ public class FinderModule extends BaseMediaModule
 			nodes.put(node.getId(),node);
 		}
 		
-		Collection folderhits = inArchive.query("librarycollection").exact("featuredcollection",true).orgroup("rootcategory",nodes.keySet()).named("featuredcollections").sort("name").search(inReq);
+		Collection folderhits = inArchive.query("category").ids(nodes.keySet()).named("featuredfolders").search(inReq);
 		
 		List<FeaturedFolder> inFolders = new ArrayList();
 		
 		for (Iterator iterator = folderhits.iterator(); iterator.hasNext();)
 		{
-			Data hit = (Data) iterator.next();
-			String rootcategory = hit.get("rootcategory");
-			FilterNode found = nodes.get(rootcategory);
-			if( found != null)
+			Data category = (Data) iterator.next();
+			FeaturedFolder featured = new FeaturedFolder();
+			featured.setName(category.getName());
+			featured.setId(category.getId());
+			FilterNode found = nodes.get(category.getId());
+			if(found != null)
 			{
-				FeaturedFolder featured = new FeaturedFolder();
-				featured.setName(hit.getName());
-				featured.setId(rootcategory);
 				featured.setCount(found.getCount());
-				inFolders.add(featured);
 			}
+			inFolders.add(featured);
 		}
 		Collections.sort(inFolders);
 		return inFolders;
