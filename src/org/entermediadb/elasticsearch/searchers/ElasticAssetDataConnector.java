@@ -166,7 +166,7 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 
 	public boolean shoudSkipField(String inKey)
 	{
-		if (inKey.equals("category-exact") || inKey.equals("category") || inKey.equals("description") || inKey.equals("foldersourcepath"))
+		if (inKey.equals("category-exact") || inKey.equals("category-featured") || inKey.equals("category") || inKey.equals("description") || inKey.equals("foldersourcepath"))
 		{
 			return true;
 		}
@@ -229,17 +229,6 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 					}
 				}
 			}
-			if( !featured.isEmpty() )
-			{
-				String[] array = new String[featured.size()];
-				Object oa = featured.toArray(array);
-				inContent.field("category-featured", oa);
-			}
-			else
-			{
-				inData.setValue("category-featured", null);
-				inContent.field("category-featured", new String[0]);
-			}
 
 			// Searcher searcher =
 			// getSearcherManager().getSearcher(asset.getCatalogId(),"assetalbums");
@@ -264,6 +253,18 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 			// }
 			// }
 
+			if( !featured.isEmpty() )
+			{
+				String[] array = new String[featured.size()];
+				Object oa = featured.toArray(array);
+				inContent.field("category-featured", oa);
+			}
+			else
+			{
+				inData.setValue("category-featured", null);
+				inContent.field("category-featured", new String[0]);
+			}
+			
 			//This is for saving and loading.
 			saveArray(inContent, "category-exact", asset.getCategories());
 			//populatePermission(inContent, asset, "viewasset");
