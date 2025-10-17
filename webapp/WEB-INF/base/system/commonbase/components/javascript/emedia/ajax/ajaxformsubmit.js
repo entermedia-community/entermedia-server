@@ -123,7 +123,6 @@
 		data.oemaxlevel = oemaxlevel;
 
 		var formmodal = form.closest(".modal");
-
 		var submitButton = form.find('button[type="submit"]');
 		if (submitButton.length == 0) {
 			submitButton = form.find('input[type="submit"]');
@@ -141,9 +140,9 @@
 			submitButton.attr("disabled", "disabled");
 			var icon = submitButton.find("i");
 			if (icon.length == 0) {
-				submitButton.append("<i class='fa fa-spinner fa-spin ml-2'></i>");
+				submitButton.prepend("<i class='fas fa-spinner fa-spin mr-1'></i>");
 			} else {
-				icon.replaceWith("<i class='fa fa-spinner fa-spin ml-2'></i>");
+				icon.replaceWith("<i class='fas fa-spinner fa-spin mr-1'></i>");
 			}
 		}
 
