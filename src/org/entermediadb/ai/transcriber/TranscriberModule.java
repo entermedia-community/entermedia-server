@@ -25,6 +25,7 @@ public class TranscriberModule extends BaseMediaModule {
 	{
 		String assetid = inReq.getRequestParameter("assetid");
 		MultiValued inAsset = (MultiValued) getMediaArchive(inReq).getAsset(assetid);
+		inReq.putPageValue("asset", inAsset);
 		
 		String mediatype = getMediaArchive(inReq).getMediaRenderType(inAsset);
 
