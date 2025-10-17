@@ -75,13 +75,9 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		if( inTrack != null)
 		{
 			String status = inTrack.get("transcribestatus");
-			if(status != null && status.equals("complete"))
+			if("complete".equals(status) || "inprogress".equals(status))
 			{
-				return; //already done
-			}
-			else if(status == null ||  status.equals("error"))
-			{
-				inTrack.setValue("transcribestatus", "needstranscribe");
+				return; //already done or in progress
 			}
 			
 		}
@@ -89,7 +85,6 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		{
 			inTrack = captionSearcher.createNewData();
 			inTrack.setProperty("assetid",  inAsset.getId());
-			inTrack.setValue("transcribestatus", "needstranscribe");
 			inTrack.setValue("length", inAsset.getValue("length"));
 		}
 		
@@ -98,7 +93,10 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		
 		try 
 		{
-			transcribe(inLog, inAsset, inTrack);
+			inTrack.setValue("transcribestatus", "inprogress");
+			captionSearcher.saveData(inTrack);
+			
+			transcribe(inAsset, inTrack);
 			inTrack.setValue("transcribestatus", "complete");
 		}
 		catch (Exception e) 
@@ -113,7 +111,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		}
 	}
 
-	public void transcribe(ScriptLogger inLog, MultiValued inAsset, Data inTrack) throws RepositoryException, IOException 
+	public void transcribe(MultiValued inAsset, Data inTrack) throws RepositoryException, IOException 
 	{
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 
@@ -157,7 +155,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 				JSONArray transcriptions = getTranscribedData(tempfile);
 				
 				if (transcriptions == null) {
-					inLog.error("Transcriber server error");
+					log.error("Transcriber server error");
 					throw new OpenEditException("Transcriber server error");
 				}
 	
@@ -178,7 +176,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 					
 				}
 				
-				inLog.info("Transcribed " + (timeoffset - 300) + "s - " + timeoffset + "s of " + inAsset);
+				log.info("Transcribed " + (timeoffset - 300) + "s - " + timeoffset + "s of " + inAsset);
 
 			} 
 			catch (Exception e) 

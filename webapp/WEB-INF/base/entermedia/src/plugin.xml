@@ -2551,6 +2551,12 @@
 			<ref bean="requestUtils" />
 		</property>
 	</bean>
+	
+	<bean id="TranscriberModule" class="org.entermediadb.ai.transcriber.TranscriberModule">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
 
 	<bean id="documentSplitterManager" class="org.entermediadb.ai.classify.DocumentSplitterManager" scope="prototype">
 		<property name="moduleManager">
@@ -2572,18 +2578,6 @@
 	</bean>
 
 	<bean id="AgentModule" class="org.entermediadb.ai.assistant.AgentModule">
-		<property name="moduleManager">
-			<ref bean="moduleManager" />
-		</property>
-	</bean>
-
-	<bean id="transcriberManager" class="org.entermediadb.ai.transcriber.TranscriberManager" scope="prototype">
-		<property name="moduleManager">
-			<ref bean="moduleManager" />
-		</property>
-	</bean>
-
-	<bean id="TranscriberModule" class="org.entermediadb.ai.transcriber.TranscriberModule">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
