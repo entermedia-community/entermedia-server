@@ -226,7 +226,8 @@ public class EntityModule extends BaseMediaModule
 			if( tracker != null)
 			{
 				//found.addAll(tracker.getSelectedHitracker())
-				for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+				HitTracker selected = tracker.getSelectedHitracker();
+				for (Iterator iterator = selected.iterator(); iterator.hasNext();)
 				{
 					Data asset = (Data) iterator.next();
 					found.add(asset);
