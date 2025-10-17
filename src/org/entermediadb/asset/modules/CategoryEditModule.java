@@ -208,6 +208,26 @@ public class CategoryEditModule extends BaseMediaModule {
 		// check for a web tree?
 
 	}
+	
+	public void toggleFeatured(WebPageRequest inReq) throws OpenEditException {
+		String categoryid = inReq.getRequestParameter("categoryid");
+		CategoryEditor categoryEditor = getCategoryEditor(inReq);
+		Category cat = categoryEditor.getMediaArchive().getCategory(categoryid);
+		if(cat == null) {
+			return;
+		}
+		if (cat.getBoolean("isfeatured")) 
+		{
+			cat.setProperty("isfeatured", "false");
+		}
+		else
+		{
+			cat.setProperty("isfeatured", "true");
+		}
+		categoryEditor.saveCategory(cat);
+	}
+	
+	
 /*
 	public void resizeAllImages(WebPageRequest inContext) throws Exception {
 		CategoryEditor editor = getCategoryEditor(inContext);
