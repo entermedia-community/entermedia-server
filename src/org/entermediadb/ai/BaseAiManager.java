@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.manager.BaseManager;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.data.Searcher;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
@@ -131,6 +132,36 @@ public class BaseAiManager extends BaseManager
 		log.info("Loaded and encoded " + item.getName() + " in "+duration+"ms");
 		return base64EncodedString;
 
+	}
+	
+	protected String loadTranscript(Data inAsset)
+	{
+		Searcher captionSearcher = getMediaArchive().getSearcher("videotrack");
+		Data inTrack = captionSearcher.query().exact("assetid", inAsset.getId()).searchOne();
+		if( inTrack != null)
+		{
+			String status = inTrack.get("transcribestatus");
+			if(status != null && status.equals("complete"))
+			{
+				Collection captions = (Collection) inTrack.getValue("captions");
+				if( captions != null)
+				{
+					StringBuffer fulltext = new StringBuffer();
+					for (Iterator iterator = captions.iterator(); iterator.hasNext();)
+					{
+						Data caption = (Data) iterator.next();
+						String text = caption.get("cliplabel");
+						if( text != null)
+						{
+							fulltext.append(text);
+							fulltext.append(" ");
+						}
+					}
+					return fulltext.toString();
+				}
+			}
+		}
+		return null;
 	}
 	
 	protected Map<String, Collection> groupByModule(Collection<MultiValued> inPendingrecords)
