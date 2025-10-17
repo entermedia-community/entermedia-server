@@ -149,8 +149,8 @@ public class BaseAiManager extends BaseManager
 					StringBuffer fulltext = new StringBuffer();
 					for (Iterator iterator = captions.iterator(); iterator.hasNext();)
 					{
-						Data caption = (Data) iterator.next();
-						String text = caption.get("cliplabel");
+						Map caption = (Map) iterator.next();
+						String text = (String) caption.get("cliplabel");
 						if( text != null)
 						{
 							fulltext.append(text);

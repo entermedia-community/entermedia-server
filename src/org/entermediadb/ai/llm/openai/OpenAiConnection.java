@@ -252,7 +252,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 				throw new OpenEditException("Requested Function Does Not Exist in MEdiaDB or Catatlog:" + inFunction);
 			}
 			
-			if(textContent == null)
+			if(textContent != null)
 			{
 				params.put("textcontent", textContent);
 			}
