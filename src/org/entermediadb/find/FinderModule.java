@@ -294,14 +294,13 @@ public class FinderModule extends BaseMediaModule
 		QueryBuilder builder = archive.query("asset").named("quicksearchlist").exact("previewstatus","2").hitsPerPage(24).sort("assetaddeddateDown");
 		if ( inReq.hasPermission("viewfeaturedcollections") )
 		{
-			builder.facet("category");
+			builder.facet("category-featured");
 			found = builder.search(inReq);
 
-			FilterNode node = (FilterNode)found.getActiveFilterValues().get("category");
+			FilterNode node = (FilterNode)found.getActiveFilterValues().get("category-featured");
 			if( node != null)
 			{
-				Collection folderhits = archive.query("librarycollection").exact("featuredcollection",true).named("featuredcollections").sort("name").search(inReq);
-				Collection<FeaturedFolder> folders = copyFoldersTo(folderhits, node.getChildren());
+				Collection<FeaturedFolder> folders = copyFoldersTo(archive,inReq, node.getChildren());
 				inReq.putPageValue("featuredfolders",folders);
 			}
 		}
@@ -374,8 +373,7 @@ public class FinderModule extends BaseMediaModule
 				FilterNode node = (FilterNode)assetunsorted.getActiveFilterValues().get("category");
 				if( node != null)
 				{
-					Collection folderhits = archive.query("librarycollection").named("searchallfeaturedfolders").exact("featuredcollection",true).sort("name").search(inReq); //All possible ones cached and securiy checked
-					Collection<FeaturedFolder> folders = copyFoldersTo(folderhits, node.getChildren());
+					Collection<FeaturedFolder> folders = copyFoldersTo(archive,inReq, node.getChildren());
 					inReq.putPageValue("featuredfolders",folders);
 				}
 			}
@@ -404,9 +402,8 @@ public class FinderModule extends BaseMediaModule
 
 	}
 	
-	private Collection<FeaturedFolder>  copyFoldersTo(Collection inCollectionHits, Collection<FilterNode> inNodes)
+	private Collection<FeaturedFolder>  copyFoldersTo(MediaArchive inArchive, WebPageRequest inReq, Collection<FilterNode> inNodes)
 	{
-		List<FeaturedFolder> inFolders = new ArrayList();
 		Map<String,FilterNode> nodes = new HashMap();
 		for (Iterator iterator2 = inNodes.iterator(); iterator2.hasNext();)
 		{
@@ -414,7 +411,11 @@ public class FinderModule extends BaseMediaModule
 			nodes.put(node.getId(),node);
 		}
 		
-		for (Iterator iterator = inCollectionHits.iterator(); iterator.hasNext();)
+		Collection folderhits = inArchive.query("librarycollection").exact("featuredcollection",true).orgroup("rootcategory",nodes.keySet()).named("featuredcollections").sort("name").search(inReq);
+		
+		List<FeaturedFolder> inFolders = new ArrayList();
+		
+		for (Iterator iterator = folderhits.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();
 			String rootcategory = hit.get("rootcategory");

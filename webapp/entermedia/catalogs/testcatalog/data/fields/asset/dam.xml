@@ -54,6 +54,12 @@
       <language id="fr"><![CDATA[Categories]]></language> 
     </name> 
   </property>  
+  <property id="category-featured" index="true" stored="true" keyword="true"  editable="true" defaultoperation="contains" viewtype="category" listid="category" type="list" > 
+    <name> 
+      <language id="en"><![CDATA[Featured Folders]]></language>  
+    </name>
+  </property>  
+  
   <property id="location" index="true" editable="true" stored="true" externalid="Location" type="list" writenametoexif="true" autocreatefromexif="true"   sortable="true">Location 
     <name> 
       <language id="de"><![CDATA[Lage]]></language>  
