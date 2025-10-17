@@ -84,7 +84,6 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		if (apikey == null)
 		{
 			log.error("No ollama-key defined in catalog settings");
-			//throw new OpenEditException("No gpt-key defined in catalog settings");
 		}
 		
 		return apikey;
@@ -118,7 +117,7 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	public String getApiEndpoint()
 	{
 		// TODO Auto-generated method stub
-		String apihost = getMediaArchive().getCatalogSettingValue("ollama-url");
+		String apihost = getMediaArchive().getCatalogSettingValue("ai_ollama_server");
 		if (apihost == null)
 		{
 			apihost = "http://localhost:11434";

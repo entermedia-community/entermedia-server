@@ -137,10 +137,10 @@ public class AssistantManager extends BaseAiManager
 	
 	public LlmConnection getLlmConnection()
 	{
-		String model = getMediaArchive().getCatalogSettingValue("gpt-model");
+		String model = getMediaArchive().getCatalogSettingValue("llmagentmodel");
 		if (model == null)
 		{
-			model = "gpt-4o"; // Default fallback
+			model = "gpt-5-nano"; // Default fallback
 		}
 		LlmConnection manager = getMediaArchive().getLlmConnection(model);
 		return manager;
@@ -152,7 +152,7 @@ public class AssistantManager extends BaseAiManager
 		
 		LlmRequest llmrequest = new LlmRequest();
 		
-		String model = archive.getCatalogSettingValue("chat_agent_model");
+		String model = archive.getCatalogSettingValue("llmagentmodel");
 		
 		if (model == null)
 		{
@@ -747,7 +747,7 @@ public class AssistantManager extends BaseAiManager
 		LlmRequest llmrequest = new LlmRequest();
 		llmrequest.addContext("fulltext", fullText);
 		
-		String model = archive.getCatalogSettingValue("mcp_model");
+		String model = archive.getCatalogSettingValue("llmmcpmodel");
 		if(model == null)
 		{
 			model = "gpt-5-nano";

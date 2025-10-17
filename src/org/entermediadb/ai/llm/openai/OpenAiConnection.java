@@ -64,7 +64,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	{
 		if (getApiKey() == null)
 		{
-			log.error("No gpt-key defined");
+			log.error("No openai-key defined");
 			return null;
 		}
 

@@ -82,12 +82,12 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		}
 		if (apikey == null)
 		{
-			apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
+			apikey = getMediaArchive().getCatalogSettingValue("openai-key");
 		}
 		if (apikey == null)
 		{
 			log.error("No key defined in catalog settings");
-			//throw new OpenEditException("No gpt-key defined in catalog settings");
+			//throw new OpenEditException("No openai-key defined in catalog settings");
 		}
 		
 		setApikey(apikey);
