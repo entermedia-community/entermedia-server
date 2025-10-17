@@ -128,9 +128,23 @@
 		if (submitButton.length == 0) {
 			submitButton = form.find('input[type="submit"]');
 		}
+		if (submitButton.length == 0) {
+			var modalbutton = formmodal.find("#submitbutton");
+			if (
+				modalbutton.length > 0 &&
+				modalbutton.attr("form") == form.attr("id")
+			) {
+				submitButton = modalbutton;
+			}
+		}
 		if (submitButton.length > 0) {
 			submitButton.attr("disabled", "disabled");
-			submitButton.append("<i class='fa fa-spinner fa-spin ml-2'></i>");
+			var icon = submitButton.find("i");
+			if (icon.length == 0) {
+				submitButton.append("<i class='fa fa-spinner fa-spin ml-2'></i>");
+			} else {
+				icon.replaceWith("<i class='fa fa-spinner fa-spin ml-2'></i>");
+			}
 		}
 
 		$(window).trigger("showToast", [form]);
