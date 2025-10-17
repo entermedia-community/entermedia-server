@@ -233,7 +233,7 @@ public class CategoryEditModule extends BaseMediaModule {
 		tracker.enableBulkOperations();
 		if( tracker.size() < 10000 )
 		{
-			Searcher searcher = categoryEditor.getMediaArchive().getSearcher("category");	
+			Searcher searcher = categoryEditor.getMediaArchive().getSearcher("asset");	
 			for (int i=0;i<tracker.getTotalPages();i++)
 			{
 				Collection page = tracker.getPageOfHits();
