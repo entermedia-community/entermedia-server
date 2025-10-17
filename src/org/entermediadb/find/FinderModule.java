@@ -368,7 +368,7 @@ public class FinderModule extends BaseMediaModule
 			assetdq.getQuery().setIncludeDescription(true);
 			if ( inReq.hasPermission("viewfeaturedcollections") )
 			{
-				assetdq.facet("category");
+				assetdq.facet("category-featured");
 				assetunsorted = assetdq.search(inReq);
 				FilterNode node = (FilterNode)assetunsorted.getActiveFilterValues().get("category");
 				if( node != null)
@@ -404,6 +404,13 @@ public class FinderModule extends BaseMediaModule
 	
 	private Collection<FeaturedFolder>  copyFoldersTo(MediaArchive inArchive, WebPageRequest inReq, Collection<FilterNode> inNodes)
 	{
+		List<FeaturedFolder> inFolders = new ArrayList();
+		
+		if( inNodes.isEmpty() )
+		{
+			return inFolders;
+		}
+		
 		Map<String,FilterNode> nodes = new HashMap();
 		for (Iterator iterator2 = inNodes.iterator(); iterator2.hasNext();)
 		{
@@ -412,8 +419,10 @@ public class FinderModule extends BaseMediaModule
 		}
 		
 		Collection folderhits = inArchive.query("category").ids(nodes.keySet()).named("featuredfolders").search(inReq);
-		
-		List<FeaturedFolder> inFolders = new ArrayList();
+		if( folderhits.isEmpty() )
+		{
+			return inFolders;
+		}
 		
 		for (Iterator iterator = folderhits.iterator(); iterator.hasNext();)
 		{

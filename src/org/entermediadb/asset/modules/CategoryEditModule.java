@@ -6,6 +6,7 @@ package org.entermediadb.asset.modules;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.data.Searcher;
 import org.openedit.event.WebEventListener;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.util.PathUtilities;
@@ -225,6 +227,20 @@ public class CategoryEditModule extends BaseMediaModule {
 			cat.setProperty("isfeatured", "true");
 		}
 		categoryEditor.saveCategory(cat);
+		categoryEditor.getMediaArchive().clearCaches();
+		
+		HitTracker tracker = categoryEditor.getMediaArchive().query("asset").exact("category",cat).search();
+		tracker.enableBulkOperations();
+		if( tracker.size() < 10000 )
+		{
+			Searcher searcher = categoryEditor.getMediaArchive().getSearcher("category");	
+			for (int i=0;i<tracker.getTotalPages();i++)
+			{
+				Collection page = tracker.getPageOfHits();
+				searcher.saveAllData(page, null);
+			}
+		}
+		
 	}
 	
 	

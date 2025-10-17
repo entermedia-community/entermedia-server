@@ -216,18 +216,29 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 
 			saveArray(inContent, "category", categories);
 
-			Collection<Category> featured = new ArrayList();
+			Set<String> featured = new HashSet();
 			for (Iterator iterator = categories.iterator(); iterator.hasNext();)
 			{
 				Category category = (Category) iterator.next();
-				if( category.getBoolean("isfeatured") )
+				for (Iterator iterator2 = category.getParentCategories().iterator(); iterator2.hasNext();)
 				{
-					featured.add(category);
+					Category parent = (Category) iterator2.next();
+					if( parent.getBoolean("isfeatured") )
+					{
+						featured.add(parent.getId());
+					}
 				}
 			}
 			if( !featured.isEmpty() )
 			{
-				saveArray(inContent, "category-featured", categories);
+				String[] array = new String[featured.size()];
+				Object oa = featured.toArray(array);
+				inContent.field("category-featured", oa);
+			}
+			else
+			{
+				inData.setValue("category-featured", null);
+				inContent.field("category-featured", new String[0]);
 			}
 
 			// Searcher searcher =
