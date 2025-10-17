@@ -75,13 +75,9 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		if( inTrack != null)
 		{
 			String status = inTrack.get("transcribestatus");
-			if(status != null && status.equals("complete"))
+			if("complete".equals(status) || "inprogress".equals(status))
 			{
-				return; //already done
-			}
-			else if(status == null ||  status.equals("error"))
-			{
-				inTrack.setValue("transcribestatus", "needstranscribe");
+				return; //already done or in progress
 			}
 			
 		}
@@ -89,7 +85,6 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		{
 			inTrack = captionSearcher.createNewData();
 			inTrack.setProperty("assetid",  inAsset.getId());
-			inTrack.setValue("transcribestatus", "needstranscribe");
 			inTrack.setValue("length", inAsset.getValue("length"));
 		}
 		
@@ -98,6 +93,9 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		
 		try 
 		{
+			inTrack.setValue("transcribestatus", "inprogress");
+			captionSearcher.saveData(inTrack);
+			
 			transcribe(inAsset, inTrack);
 			inTrack.setValue("transcribestatus", "complete");
 		}
