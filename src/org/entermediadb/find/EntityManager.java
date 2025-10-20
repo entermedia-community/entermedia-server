@@ -214,6 +214,15 @@ public class EntityManager implements CatalogEnabled
 					cat.setName(entity.getName());
 					String parent = PathUtilities.extractDirectoryPath(entity.getSourcePath());
 					Category parentCat = getMediaArchive().getCategorySearcher().createCategoryPath(parent);
+					
+					Category existing = parentCat.getChildByName(entity.getName());
+					if( existing != null)
+					{
+						//Check for assets?
+						existing.setName(entity.getName() + " (old)"); //To manually merge together
+						existing.setValue("categorypath", null); //clear it
+						getMediaArchive().getCategorySearcher().saveCategoryTree(existing);
+					}
 					parentCat.addChild(cat);
 					cat.setName(entity.getName());
 					cat.setValue("categorypath", null); //clear it
