@@ -211,6 +211,7 @@ public class EntityManager implements CatalogEnabled
 					//TODO: move entire category to new	
 					log.info("Category should be moved " + cat.getCategoryPath() + " -> " + entitysourcepath);
 					cat.setName(entity.getName());
+					
 					String parent = PathUtilities.extractDirectoryPath(entity.getSourcePath());
 					Category parentCat = getMediaArchive().getCategorySearcher().createCategoryPath(parent);
 					
@@ -220,18 +221,16 @@ public class EntityManager implements CatalogEnabled
 						//Check for assets?
 						existing.setName(entity.getName() + " (old)"); //To manually merge together
 						existing.setValue("categorypath", null); //clear it
-						getMediaArchive().getCategorySearcher().saveCategoryTree(existing);
 					}
-					
-					cat.setName(entity.getName());
 					cat.setValue("categorypath", null); //clear it
 					parentCat.addChild(cat);
 					//TODO: How can I move all the old content over?
-					
-					mergeCategoryTo(existing,cat);
-					getMediaArchive().getCategorySearcher().deleteCategoryTree(existing);
-					getMediaArchive().getCategorySearcher().saveCategoryTree(cat);
-					
+					if( existing!= null)
+					{
+						mergeCategoryTo(existing,cat);
+						getMediaArchive().getCategorySearcher().delete(existing,null);
+						getMediaArchive().getCategorySearcher().saveCategoryTree(cat);
+					}					
 					/*if (!cat.getCategoryPath().equals(entitysourcepath))
 					{
 						entity.setValue("sourcepath", cat.getCategoryPath());
@@ -300,12 +299,14 @@ public class EntityManager implements CatalogEnabled
 				Category newchild = inGoodChild.getChildByName(oldchild.getName());
 				if( newchild == null)
 				{
+					oldchild.setValue("categorypath", null); //clear it
 					inGoodChild.addChild(oldchild);
 				}
 				else
 				{
-					mergeCategoryTo(oldchild,newchild);
 					//Move the assets
+					mergeCategoryTo(oldchild,newchild);
+					getMediaArchive().getCategorySearcher().delete(oldchild,null);
 				}
 			}
 		}

@@ -312,11 +312,15 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
    			saveAllData(toSave, null);
    			toSave.clear();
    		}
-   		for (Iterator iterator = inCategory.getChildren().iterator(); iterator.hasNext();)
-   		{
-   			Category child = (Category) iterator.next();
-   			saveCategoryTree(child, toSave);
-   		}
+		Collection children = inCategory.getChildren(false);
+		if( children != null)
+		{
+	   		for (Iterator iterator = children.iterator(); iterator.hasNext();)
+	   		{
+	   			Category child = (Category) iterator.next();
+	   			saveCategoryTree(child, toSave);
+	   		}
+    	}
    		
    	}
 	//	public CategoryArchive getCategoryArchive()

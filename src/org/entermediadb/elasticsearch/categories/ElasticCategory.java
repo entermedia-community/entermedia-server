@@ -22,6 +22,15 @@ public class ElasticCategory extends BaseCategory
 	{
 		return getChildren().size() > 0;
 	}
+	public List getChildren(boolean inReloadIfNeeded)
+	{
+		if( inReloadIfNeeded )
+		{
+			return getChildren();
+		}
+		return fieldChildren;
+	}	
+
 	public List getChildren()
 	{
 		if( isDirty() )
