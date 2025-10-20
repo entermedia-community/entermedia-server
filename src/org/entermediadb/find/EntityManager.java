@@ -222,10 +222,10 @@ public class EntityManager implements CatalogEnabled
 						existing.setValue("categorypath", null); //clear it
 						getMediaArchive().getCategorySearcher().saveCategoryTree(existing);
 					}
-					parentCat.addChild(cat);
+					
 					cat.setName(entity.getName());
 					cat.setValue("categorypath", null); //clear it
-
+					parentCat.addChild(cat);
 					//TODO: How can I move all the old content over?
 					
 					mergeCategoryTo(existing,cat);
@@ -291,18 +291,22 @@ public class EntityManager implements CatalogEnabled
 			tosave.add(asset);
 		}
 		getMediaArchive().saveData("asset", tosave);
-		for (Iterator iterator = inExisting.getChildren().iterator(); iterator.hasNext();)
+		if (inExisting.hasChildren())
 		{
-			Category oldchild = (Category) iterator.next();
-			Category newchild = inGoodChild.getChildByName(oldchild.getName());
-			if( newchild == null)
+			
+			for (Iterator iterator = new ArrayList(inExisting.getChildren()).iterator(); iterator.hasNext();)
 			{
-				inGoodChild.addChild(oldchild);
-			}
-			else
-			{
-				mergeCategoryTo(oldchild,newchild);
-				//Move the assets
+				Category oldchild = (Category) iterator.next();
+				Category newchild = inGoodChild.getChildByName(oldchild.getName());
+				if( newchild == null)
+				{
+					inGoodChild.addChild(oldchild);
+				}
+				else
+				{
+					mergeCategoryTo(oldchild,newchild);
+					//Move the assets
+				}
 			}
 		}
 	}
