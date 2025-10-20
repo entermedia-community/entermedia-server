@@ -229,8 +229,8 @@ public class EntityManager implements CatalogEnabled
 					{
 						mergeCategoryTo(existing,cat);
 						getMediaArchive().getCategorySearcher().delete(existing,null);
-						getMediaArchive().getCategorySearcher().saveCategoryTree(cat);
-					}					
+					}	
+					getMediaArchive().getCategorySearcher().saveCategoryTree(cat);
 					/*if (!cat.getCategoryPath().equals(entitysourcepath))
 					{
 						entity.setValue("sourcepath", cat.getCategoryPath());
