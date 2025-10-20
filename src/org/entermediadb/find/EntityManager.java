@@ -31,7 +31,6 @@ import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.DataWithSearcher;
 import org.openedit.data.PropertyDetail;
-import org.openedit.data.PropertyDetails;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.FilterNode;
@@ -228,7 +227,11 @@ public class EntityManager implements CatalogEnabled
 					cat.setValue("categorypath", null); //clear it
 
 					//TODO: How can I move all the old content over?
+					
+					mergeCategoryTo(existing,cat);
+					getMediaArchive().getCategorySearcher().deleteCategoryTree(existing);
 					getMediaArchive().getCategorySearcher().saveCategoryTree(cat);
+					
 					/*if (!cat.getCategoryPath().equals(entitysourcepath))
 					{
 						entity.setValue("sourcepath", cat.getCategoryPath());
@@ -275,6 +278,35 @@ public class EntityManager implements CatalogEnabled
 //		}
 		return cat;
 	}	
+	protected void mergeCategoryTo(Category inExisting, Category inCat)
+	{
+		for (Iterator iterator = inExisting.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category oldchild = (Category) iterator.next();
+			Category newchild = inCat.getChildByName(oldchild.getName());
+			if( newchild == null)
+			{
+				inCat.addChild(oldchild);
+			}
+			else
+			{
+				mergeCategoryTo(oldchild,newchild);
+				//Move the assets
+				HitTracker tracker = getMediaArchive().query("asset").exact("category-exact",oldchild.getId()).search();
+				Collection tosave = new ArrayList();
+				for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+				{
+					Data hit = (Data) iterator2.next();
+					Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(hit);
+					asset.removeCategory(oldchild);
+					asset.addCategory(newchild);
+					tosave.add(asset);
+				}
+				getMediaArchive().saveData("asset", tosave);
+			}
+		}
+	}
+
 	public String loadUploadSourcepath(Data module, Data entity, User inUser, boolean inCreate)
 	{
 		return loadUploadSourcepath(module, entity, inUser);
