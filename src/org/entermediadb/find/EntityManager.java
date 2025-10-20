@@ -289,6 +289,15 @@ public class EntityManager implements CatalogEnabled
 			asset.addCategory(inGoodChild);
 			tosave.add(asset);
 		}
+		//getMediaArchive().saveData("asset", tosave);
+		//Reindexing
+		tracker = getMediaArchive().query("asset").exact("category-exact",inGoodChild.getId()).search();
+		for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+		{
+			Data hit = (Data) iterator2.next();
+			Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(hit);
+			tosave.add(asset);
+		}
 		getMediaArchive().saveData("asset", tosave);
 		if (inExisting.hasChildren())
 		{
@@ -301,6 +310,18 @@ public class EntityManager implements CatalogEnabled
 				{
 					oldchild.setValue("categorypath", null); //clear it
 					inGoodChild.addChild(oldchild);
+					//Reindex
+					tracker = getMediaArchive().query("asset").exact("category-exact",oldchild.getId()).search();
+					tosave = new ArrayList();
+					for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+					{
+						Data hit = (Data) iterator2.next();
+						Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(hit);
+						asset.removeCategory(oldchild);
+						asset.addCategory(oldchild);
+						tosave.add(asset);
+					}
+					getMediaArchive().saveData("asset", tosave);
 				}
 				else
 				{
