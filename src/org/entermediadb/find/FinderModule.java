@@ -996,10 +996,13 @@ public class FinderModule extends BaseMediaModule
 		String moduleid = inReq.getRequestParameter("pickingmoduleid");
 		
 		Picker picker = (Picker) inReq.getPageValue("picker");
-		if( picker == null)
+		if( picker != null && picker.getTargetFieldId() != null)
 		{
-			picker = new Picker();
+			return;
 		}
+	
+		picker = new Picker();
+		
 		
 		String targetfieldid = inReq.getRequestParameter("targetfieldid");
 
