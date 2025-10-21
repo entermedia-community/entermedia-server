@@ -82,7 +82,7 @@ $context.putPageValue("hits", $userTracker)
 #if ($userTracker.size() == 0)
 	<tr>
 		<!-- <td colspan="${details.size()}" align="center"> -->
-			<td colspan="3" align="center">
+			<td colspan="7" align="center">
 			[[No users found.]]
 		</td>
 	</tr>
@@ -123,23 +123,6 @@ data-updateurl="true">
 
 #end
  
-    <script>
-        $('th.sortable').on({
-            click: function(){
-                var id = $(this).attr('id');
-                if ( $(this).hasClass('currentsort') ) {
-                    if ( $(this).hasClass('up') ) {
-                        jQuery('#datamanager-workarea').load( '$home$usermanagerhome/users/columnsort.html?oemaxlevel=1&hitssessionid=$userTracker.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&sortby=' + id + 'Down');
-                    } else {
-                        jQuery('#datamanager-workarea').load( '$home$usermanagerhome/users/columnsort.html?oemaxlevel=1&catalogid=$&hitssessionid=$userTracker.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&sortby=' + id + 'Up');
-                    }
-                } else {
-                    $('th.sortable').removeClass('currentsort');
-                    $(this).addClass('currentsort');
-                    jQuery('#datamanager-workarea').load( '$home$usermanagerhome/users/columnsort.html?oemaxlevel=1&catalogid=$&hitssessionid=$userTracker.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&sortby=' + id + 'Down');
-                }
-            }
-        });
-    </script>
+
  
  </div>

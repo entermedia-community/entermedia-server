@@ -18,22 +18,44 @@
 			<input type="hidden" name="search" value="true"/>
 			<div class="d-flex align-items-center justify-content-between mb-3">
 				<div class="mr-auto">
-					<a class="btn btn-primary ajax" 
-						href='$siteroot$usermanagerhome/users/reindex.html'
-						data-targetdivinner="settingssubtab">[[Reindex]]</a>
+					
 					<a class="btn btn-primary ajax"
 						data-targetdivinner="settingssubtab"
 						data-updateurl="true"
 						href='$siteroot$usermanagerhome/users/adduser.html'>[[Create User]]</a>
-					<a class="btn btn-primary ajax"
+						<a class="btn btn-secondary ajax" 
+												href='$siteroot$usermanagerhome/users/reindex.html'
+												data-targetdivinner="settingssubtab">[[Reindex]]</a>
+					<a class="btn btn-secondary ajax"
 						data-targetdivinner="applicationmaincontent"
 						data-oemaxlevel="5"
 						data-updateurl="true"
 						data-autoactivecontainer="datamanager-system-menu"
 						href='$applink/views/settings/lists/datamanager/list/index.html?searchtype=user'>[[Import/ Export]]</a>	 
 				</div>
-				$pages.include("${apphome}/components/xml/searchfields.html",$context)
+				
+				
+				<div class="" style="width:25%"> 
+				
+				<div class="mr-1 mb-4">
+					<div class="emsearchfield mr-2"> 
+					[[Search]]
+					</div> 
+					#set($searchingby = $context.getRequestParameter("description.value"))
+					<div id="detail_search" class="emsearchfieldvalue">
+						<input name="field" value="description" type="hidden">
+						<input name="operation" value="startswith" type="hidden" />
+						<input type="text" autocomplete="off" 
+							class="form-control detail_description textinput autosubmitedX " 
+							value="#esc($searchingby)" id="description.value" name="description.value" placeholder="[[Search by Username, Name or Email]]">
+					</div>
+					</div>
+				</div>
+				
+				
+				##$pages.include("${apphome}/components/xml/searchfields.html",$context)
 				#set($searching = $context.getRequestParameter("search"))
+				
 				#if($searching)
 				<div class="ml-1"><a href="$siteroot$usermanagerhome/users/index.html" class="btn btn-primary btn-sm">[[Clear]]</a></div>
 				#end
