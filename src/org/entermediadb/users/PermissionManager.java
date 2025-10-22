@@ -531,7 +531,25 @@ public class PermissionManager implements CatalogEnabled
 			archive.getCategorySearcher().saveCategory(rootcat);
 			archive.saveData(inModule.getId(), inEntity);
 			
-			//TODO: reindex all the submodules
+			//reindex all the submodules
+			Collection enttiyviews = getMediaArchive().query("view").exact("moduleid", inModule.getId()).
+					exact("systemdefined","false").exact("rendertype", "entitysubmodules").cachedSearch();
+			
+			for (Iterator iterator = enttiyviews.iterator(); iterator.hasNext();)
+			{
+				Data data = (Data) iterator.next();
+				String searchtype = data.get("rendertable"); //remote
+				
+				String renderexternalid = data.get("renderexternalid");  //join
+				
+				HitTracker hits = getMediaArchive().query(searchtype).exact(renderexternalid, inEntity.getId()).search();
+				for (int i = 0; i < hits.getTotalPages(); i++)
+				{
+					hits.setPage(i+1);
+					Collection page = hits.getPageOfHits();
+					getMediaArchive().saveData(searchtype, page); //Reindex
+				}
+			}
 			
 			HitTracker assets =  archive.getAssetSearcher().query().exact("category", rootcat).search();
 			assets.enableBulkOperations();
