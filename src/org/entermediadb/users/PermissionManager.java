@@ -531,9 +531,19 @@ public class PermissionManager implements CatalogEnabled
 			archive.getCategorySearcher().saveCategory(rootcat);
 			archive.saveData(inModule.getId(), inEntity);
 			
+			//TODO: reindex all the submodules
+			
 			HitTracker assets =  archive.getAssetSearcher().query().exact("category", rootcat).search();
 			assets.enableBulkOperations();
-			archive.getAssetSearcher().saveAllData(assets, null);
+			if( assets.size() > 10000)
+			{
+				//Do full reindex
+				log.error("Required full reindex");
+			}
+			else
+			{
+				archive.getAssetSearcher().saveAllData(assets, null);
+			}
 
 	    }    
 		

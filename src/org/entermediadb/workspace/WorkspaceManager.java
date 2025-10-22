@@ -181,8 +181,11 @@ public class WorkspaceManager
 		//getSearcherManager().clear();
 		return searchtype;
 	}
-
 	public void saveModule(String catalogid, String appid, Data module) 
+	{
+		saveModule(catalogid,appid,module,false);
+	}
+	public void saveModule(String catalogid, String appid, Data module, boolean verify) 
 	{
 		if(module == null )
 		{
@@ -227,6 +230,12 @@ public class WorkspaceManager
 				Searcher settingsmenumodule = getSearcherManager().getSearcher(catalogid, "settingsmenumodule");
 				settingsmenumodule.reIndexAll();
 			}
+			else if( verify )
+			{
+				//Merge
+				
+			}
+
 			String templte3 = "/" + catalogid + "/data/lists/settingsmodulepermissionsdefault.xml";
 			String path3 = "/WEB-INF/data/" + catalogid + "/lists/settingsmodulepermissions" + module.getId() + ".xml";
 			if( !getPageManager().getPage(path3).exists())
