@@ -1455,6 +1455,11 @@ public class EntityModule extends BaseMediaModule
 		Data module = archive.getData("module", moduleid);
 		Collection<AddedPermission> all = archive.getPermissionManager().loadEntityPermissions(module, entity);
 		inReq.putPageValue("entitypermissions", all);
+		
+		Collection<AddedPermission> parentviewers = archive.getPermissionManager().loadParentPermissions(module, entity);
+		inReq.putPageValue("parentpermissions", parentviewers);
+		
+		
 		return all;
 	}
 	

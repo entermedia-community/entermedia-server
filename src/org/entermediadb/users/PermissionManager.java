@@ -712,6 +712,13 @@ public class PermissionManager implements CatalogEnabled
 	    
 	    Collection<String> editorsfound = collectUsers(inEntity,true);
 	    Collection<String> viewersfound = collectUsers(inEntity,false);
+	    
+	    String owner = inEntity.get("owner");
+	    if( owner != null)
+	    {
+	    	viewersfound.add(owner);
+	    }
+	    
 	    viewersfound.removeAll(editorsfound);
 	    addUsers(alladded,editorsfound,viewersfound);
 
@@ -725,6 +732,37 @@ public class PermissionManager implements CatalogEnabled
 	    viewersfound = collectRoles(inEntity,false);
 	    viewersfound.removeAll(editorsfound);
 	    addRoles(alladded,editorsfound,viewersfound);
+
+	    return alladded;
+	    
+	}
+	
+	public Collection<AddedPermission> loadParentPermissions(Data inModule, Data inEntity)
+	{
+	    //Load all the view and edit record into a big list
+	    Collection<AddedPermission> alladded = new ArrayList<AddedPermission>();
+	
+		Category entiytycategory = getMediaArchive().getEntityManager().loadDefaultFolder(inModule, inEntity, null);
+		Category category = entiytycategory.getParentCategory();
+		Collection<String> empty = Collections.EMPTY_LIST;		
+		
+		Collection<String> viewersfound = category.collectValues("viewerusers"); //These are already combined from customusers
+		
+		Collection<String> more = category.collectValues("customusers"); //These are already combined from customusers
+		viewersfound.addAll(more);
+		
+		addUsers(alladded,empty,viewersfound);
+		
+		Collection<String> moregroups = category.collectValues("viewergroups");
+		more = category.collectValues("customgroups"); //These are already combined from customusers
+		moregroups.addAll(more);
+		addGroups(alladded,empty,moregroups);
+		 
+		Collection<String> moreroles = category.collectValues("viewerroles");
+		more = category.collectValues("customroles"); 
+		moreroles.addAll(more);
+		addRoles(alladded,empty,moreroles);
+		
 
 	    return alladded;
 	    
