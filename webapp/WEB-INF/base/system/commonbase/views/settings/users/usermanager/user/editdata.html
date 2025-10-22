@@ -47,14 +47,14 @@
 	#if($regexerror)
 
 
-<div class="alert alert-danger" role="alert">$regexerror</div>
+		<div class="alert alert-danger" role="alert"><strong>[[Password Error]]</strong><br>$regexerror</div>
 
 
 	
 	#else
 
 	<div class="alert alert-danger">
-	<p>[[Sorry - unable to change password at this time.  If this persists, please talk to your system administrator.]]</p>
+	<p>[[Unable to change password at this time.  If this persists, please talk to your system administrator.]]</p>
 	</div>
 	
 #end
