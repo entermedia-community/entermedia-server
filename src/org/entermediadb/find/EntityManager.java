@@ -249,7 +249,7 @@ public class EntityManager implements CatalogEnabled
 			{
 				boolean saveit = false;
 				String existing = entity.get("rootcategory");
-				if( existing == null || !existing.equals(entity.get("rootcategory") ) )
+				if( !cat.getId().equals(existing) )
 				{
 					saveit = true;
 				}
