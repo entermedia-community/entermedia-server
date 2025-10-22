@@ -551,6 +551,42 @@ public class PermissionManager implements CatalogEnabled
 				}
 			}
 			
+			HitTracker views = archive.getSearcher("view").query().
+					exact("moduleid", inModule.getId()).
+					exact("systemdefined","false").
+					exact("rendertype", "entitysubmodules").
+					search();
+			if (views != null)
+			{
+				for (Iterator iterator = views.iterator(); iterator.hasNext();)
+				{
+					Data view = (Data) iterator.next();
+					
+					String submoduleid = view.get("rendertable");
+					String renderexternalid = view.get("renderexternalid");
+					String renderinternalid = view.get("renderinternalid");
+					if (renderinternalid == null)
+					{
+						renderinternalid = "id";
+					}
+					String renderinternalvalue = inEntity.get(renderinternalid);
+					if (submoduleid != null && renderinternalvalue != null)
+					{
+						HitTracker subentities = archive.getSearcher(submoduleid).query().exact(renderexternalid, renderinternalvalue).search();
+						if (subentities != null)
+						{
+							for (Iterator iterator2 = subentities.iterator(); iterator2.hasNext();)
+							{
+								Data subentity = (Data) iterator2.next();
+								archive.getSearcher(submoduleid).saveData(subentity, null);
+							}
+							log.info("Reindexed " + subentities.size() + " subentities");
+						}
+					}
+					
+				}
+			}
+			
 			HitTracker assets =  archive.getAssetSearcher().query().exact("category", rootcat).search();
 			assets.enableBulkOperations();
 			if( assets.size() > 10000)
@@ -561,6 +597,7 @@ public class PermissionManager implements CatalogEnabled
 			else
 			{
 				archive.getAssetSearcher().saveAllData(assets, null);
+				log.info("Reindexed " + assets.size() + " assets");
 			}
 
 	    }    
