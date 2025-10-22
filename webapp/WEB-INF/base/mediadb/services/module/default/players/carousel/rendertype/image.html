@@ -78,7 +78,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 			#if($publishing.download_enabled == "true")
 				data-downloadlink="$!{downloadlink}"
 			#end 
-			data-locales="$hitcaptions"
+			data-locales="#esc($hitcaptions)"
 			#ifnotnull($captionhtml) title="<div class='__img_overlay'>$captionhtml</div>" #end
 		>
 			<img class="imagethumb img-fluid  img$!thumbsize "
