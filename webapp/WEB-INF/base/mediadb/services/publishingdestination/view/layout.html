@@ -32,7 +32,7 @@
 					fadeSpeed: 60
 				});
 				slb.on("shown.simplelightbox", function () {
-					var lang = document.documentElement.lang;
+					var lang = "es"; document.documentElement.lang;
 					if(!lang) {
 						var drupalSelector = $("script[data-drupal-selector='drupal-settings-json']").text();
 						if(drupalSelector) {
@@ -68,6 +68,7 @@
 						}
 						var localeCaption = locales[lang] ? locales[lang] : locales["en"];
 						if(localeCaption) {
+							$(this).attr("data-caption", localeCaption);
 							$(".sl-caption").html(localeCaption);
 						}
 					}
