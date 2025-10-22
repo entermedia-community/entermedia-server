@@ -32,7 +32,7 @@
 					fadeSpeed: 60
 				});
 				slb.on("shown.simplelightbox", function () {
-					var lang = "es"; document.documentElement.lang;
+					var lang = document.documentElement.lang;
 					if(!lang) {
 						var drupalSelector = $("script[data-drupal-selector='drupal-settings-json']").text();
 						if(drupalSelector) {
