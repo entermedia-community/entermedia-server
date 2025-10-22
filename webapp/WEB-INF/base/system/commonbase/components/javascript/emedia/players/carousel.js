@@ -97,11 +97,14 @@ __main.on("mounted", function () {
 		var locales = caption.getAttribute("data-locales");
 		if (locales) {
 			try {
-				locales = JSON.parse(locales);
-				if (locales[lang] || locales["en"]) {
-					caption.innerHTML = locales[lang] ? locales[lang] : locales["en"];
-				} else {
-					caption = null;
+				if (typeof locales === "string") {
+					var txt = document.createElement("textarea");
+					txt.innerHTML = locales;
+					locales = JSON.parse(txt.value);
+				}
+				var localeCaption = locales[lang] ? locales[lang] : locales["en"];
+				if (localeCaption) {
+					caption.innerHTML = localeCaption;
 				}
 			} catch (e) {
 				// ignore

@@ -79,7 +79,7 @@
 										#ifnull($caption)
 											#set( $caption = $!{hitcaptions} )
 										#end
-										<p class="__img_caption" data-locales='$hitcaptions'>$caption</p>
+										<p class="__img_caption" data-locales='#esc($hitcaptions)'>$caption</p>
 									#end
 								#end
 
