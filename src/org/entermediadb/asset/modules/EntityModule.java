@@ -1508,22 +1508,22 @@ public class EntityModule extends BaseMediaModule
 			String[] permissiontype = inReq.getRequestParameters("permissiontype");
 			for (int i = 0; i < dataid.length; i++)
 			{
-				entity.removeValue("viewerusers", dataid[i]);
-				entity.removeValue("viewerroles", dataid[i]);			
-				entity.removeValue("viewergroups", dataid[i]);	
-				
-				entity.removeValue("editorusers", dataid[i]);
-				entity.removeValue("editorroles", dataid[i]);			
-				entity.removeValue("editorgroups", dataid[i]);
-	
 				String fieldname = permissiontype[i];
-				if( iseditor != null && iseditor.length > i &&  iseditor[i].equals("true") )
+				String plural =fieldname;
+				if( !fieldname.endsWith("s") )
 				{
-					entity.addValue("editor" + fieldname, dataid[i]);
+					plural = plural + "s";
+				}
+				entity.removeValue("viewer" + plural, dataid[i]);
+				entity.removeValue("editor" + plural, dataid[i]);
+	
+				if( iseditor != null && iseditor[i].equals("true") ) //Must match or error
+				{
+					entity.addValue("editor" + plural, dataid[i]);
 				}
 				else
 				{
-					entity.addValue("viewer" + fieldname, dataid[i]);
+					entity.addValue("viewer" + plural, dataid[i]);
 				}
 			}
 		}
@@ -1557,7 +1557,6 @@ public class EntityModule extends BaseMediaModule
 		archive.saveData(module.getId(),entity);
 
 		archive.getPermissionManager().checkEntityCategoryPermission(module, (MultiValued)entity);
-		
 	}
 /*
 	public void removeEntityPermission(WebPageRequest inReq) 
