@@ -279,8 +279,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		}
 
 		String payload = obj.toJSONString();
-		log.info(payload);
-		
+
 		JSONObject json = handleApiRequest(payload);
 	    
 	    OpenAiResponse response = new OpenAiResponse();
