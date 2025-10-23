@@ -172,6 +172,14 @@ jQuery(document).ready(function () {
 				link.data("url", backLink.url);
 				link.attr("href", backLink.url);
 				link.show();
+				
+				var parententityheader = link.closest(".entity-header").find(".parententityheader");
+				if (parententityheader) {
+					parententityheader.show();
+				}
+				
+				var entitymodulelabel = link.closest(".entity-header").find(".entitymodulelabel");
+				entitymodulelabel.hide();
 			}
 		}
 	});
