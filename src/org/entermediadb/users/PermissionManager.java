@@ -545,10 +545,10 @@ public class PermissionManager implements CatalogEnabled
 				String renderinternalid = data.get("renderinternalid");
 				if (renderinternalid == null)
 				{
-					renderinternalid = "id"; //can be customized
+					renderinternalid = inModule.getId(); //can be customized
 				}
 				String renderinternalvalue = inEntity.get(renderinternalid);
-				if (searchtype != null && renderexternalid != null)
+				if (searchtype != null && renderexternalid != null && renderinternalvalue != null)
 				{
 					HitTracker hits = getMediaArchive().query(searchtype).exact(renderexternalid, renderinternalvalue).search();
 					for (int i = 0; i < hits.getTotalPages(); i++)
@@ -744,8 +744,6 @@ public class PermissionManager implements CatalogEnabled
 	
 	public Collection<AddedPermission> loadEntityPermissions(Data inModule, Data inEntity)
 	{
-	    MediaArchive archive = getMediaArchive();
-	    
 	    //Load all the view and edit record into a big list
 	    Collection<AddedPermission> alladded = new ArrayList<AddedPermission>();
 	    

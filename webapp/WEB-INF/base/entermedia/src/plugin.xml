@@ -193,6 +193,12 @@
 		</property>
 	</bean>
 
+	<bean id="entityPermissions" class="org.entermediadb.users.EntityPermissions" scope="prototype">
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+	</bean>
+
 	<bean id="PermissionModule" class="org.entermediadb.asset.modules.PermissionModule">
 	</bean>
 
