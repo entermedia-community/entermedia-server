@@ -262,6 +262,11 @@ jQuery(document).ready(function () {
 		e.stopPropagation();
 		var btn = $(this);
 		var textToCopy = btn.data("text");
+		
+		if (!textToCopy) {
+			var selectid = btn.data("textsource");
+			textToCopy = $("#" + selectid).val() ;
+		}
 		if (!textToCopy) {
 			var copyTextTarget = btn.data("copytarget");
 			if (copyTextTarget) {
