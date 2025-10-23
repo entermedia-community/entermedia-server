@@ -112,7 +112,7 @@ public class ClassifyManager extends InformaticsProcessor
 			
 			String textContent = null;
 			
-			if( aifields.size() > 1 )
+			if( !aifields.isEmpty() )
 			{
 				if(mediatype.equals("image"))
 				{
