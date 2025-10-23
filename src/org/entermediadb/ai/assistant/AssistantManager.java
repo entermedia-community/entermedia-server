@@ -386,14 +386,9 @@ public class AssistantManager extends BaseAiManager
 		return recent;
 	}
 
-	public String getAiFolder()
-	{
-		return "assistant";
-	}
-	
 	public HitTracker getFunctions()
 	{
-		HitTracker hits = getMediaArchive().query("aifunctions").exact("aifolder",getAiFolder()).exact("enabled", true).sort("ordering").cachedSearch();
+		HitTracker hits = getMediaArchive().query("aifunctions").exact("pipeline", "assistant").exact("enabled", true).sort("ordering").cachedSearch();
 		return hits;
 	}
 	

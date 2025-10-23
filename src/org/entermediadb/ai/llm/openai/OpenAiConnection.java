@@ -85,7 +85,14 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		payload.put("prompt", inPrompt);
 		payload.put("n", imagecount);
 		payload.put("size", inSize);
-		payload.put("response_format", "b64_json");
+		if(!"gpt-image-1".equals(inModel)) 
+		{
+			payload.put("response_format", "b64_json");
+		}
+		else 
+		{
+			payload.put("moderation", "low");
+		}
 
 		String endpoint = "https://api.openai.com/v1/images/generations";
 		//  String endpoint = "http://localhost:3000/generations";  // for local testing
