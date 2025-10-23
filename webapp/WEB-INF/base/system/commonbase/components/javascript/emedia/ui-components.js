@@ -172,13 +172,17 @@ jQuery(document).ready(function () {
 				link.data("url", backLink.url);
 				link.attr("href", backLink.url);
 				link.show();
-				
-				var parententityheader = link.closest(".entity-header").find(".parententityheader");
+
+				var parententityheader = link
+					.closest(".entity-header")
+					.find(".parententityheader");
 				if (parententityheader) {
-					parententityheader.show();
+					parententityheader.css("display", "flex");
 				}
-				
-				var entitymodulelabel = link.closest(".entity-header").find(".entitymodulelabel");
+
+				var entitymodulelabel = link
+					.closest(".entity-header")
+					.find(".entitymodulelabel");
 				entitymodulelabel.hide();
 			}
 		}
@@ -270,10 +274,10 @@ jQuery(document).ready(function () {
 		e.stopPropagation();
 		var btn = $(this);
 		var textToCopy = btn.data("text");
-		
+
 		if (!textToCopy) {
 			var selectid = btn.data("textsource");
-			textToCopy = $("#" + selectid).val() ;
+			textToCopy = $("#" + selectid).val();
 		}
 		if (!textToCopy) {
 			var copyTextTarget = btn.data("copytarget");
