@@ -20,8 +20,9 @@ public interface LlmConnection {
     public LlmResponse loadResponseFromTemplate(LlmRequest llmreuest);
     
     public LlmResponse callCreateFunction(Map params, String inModel, String inFunction);
-    public LlmResponse callClassifyFunction(Map inParams, String inModel, String inFunction, String inQuery, String inBase64Image);
-    public LlmResponse callClassifyFunction(Map inParams, String inModel, String inFunction, String inQuery, String textContent, String inBase64Image);
+    
+    public LlmResponse callClassifyFunction(Map inParams, String inModel, String inFunction, String inBase64Image);
+    public LlmResponse callClassifyFunction(Map inParams, String inModel, String inFunction, String inBase64Image, String textContent);
 
     public LlmResponse runPageAsInput(LlmRequest llmRequest, String inChattemplate);
 

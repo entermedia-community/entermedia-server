@@ -145,39 +145,41 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		filler = inFiller;
 	}
 	
-	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image)
+	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inBase64Image)
 	{
-		return callClassifyFunction(params, inModel, inFunction, inQuery, null, inBase64Image);
+		return callClassifyFunction(params, inModel, inFunction, inBase64Image, null);
 	}
 
-	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String textContent, String inBase64Image)
+	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inBase64Image, String textContent)
 	{
 	    MediaArchive archive = getMediaArchive();
-
-	    log.info("Llama function: " + inFunction + " Query: " + inQuery);
 
 	    // Use JSON Simple to create request payload
 	    JSONObject obj = new JSONObject();
 	    obj.put("model", inModel);
 	    obj.put("stream", false);
 
-	    // Prepare messages array
+
 	    JSONArray messages = new JSONArray();
-	    JSONObject message = new JSONObject();
-	    message.put("role", "user");
+		JSONObject message = new JSONObject();
+		
+		if (inBase64Image != null && !inBase64Image.isEmpty())
+		{
+			message.put("role", "user");
+			JSONArray images = new JSONArray();
+			images.add(inBase64Image);
+			message.put("images", images);
+		}
+		else
+		{
+			message.put("role", "system");
+			String systemMessage = loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/"+inFunction+".html");
+			message.put("content", systemMessage);
+		}
+		
+		messages.add(message);
+		obj.put("messages", messages);
 
-			message.put("content", inQuery);
-
-	    if (inBase64Image != null && !inBase64Image.isEmpty()) 
-	    {
-	        // Add image content separately
-	        JSONArray images = new JSONArray();
-	        images.add(inBase64Image);
-	        message.put("images", images);
-	    }
-
-	    messages.add(message);
-	    obj.put("messages", messages);
 
 	    // Handle function call definition
 	    if (inFunction != null) {

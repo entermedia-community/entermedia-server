@@ -35,22 +35,9 @@ public class AiSearch {
 	public Collection<String> getFilters() {
 		return fieldFilters;
 	}
+	
 	public void setFilters(Collection<String> inFilters) {
 		fieldFilters = inFilters;
-	}
-	
-	public boolean isStrictSearch() {
-		return fieldStrictSearch;
-	}
-	public void setStrictSearch(boolean inStrictSearch) {
-		fieldStrictSearch = inStrictSearch;
-	}
-	
-	public boolean isBulkSearch() {
-		return bulkSearch;
-	}
-	public void setBulkSearch(boolean inBulkSearch) {
-		bulkSearch = inBulkSearch;
 	}
 	
 	public String toSemanticQuery() {
