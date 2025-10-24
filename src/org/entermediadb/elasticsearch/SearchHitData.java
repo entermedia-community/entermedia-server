@@ -119,7 +119,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 			return null;
 		}
 		if (result instanceof Collection) {
-			return (Collection) result;
+			return new ArrayList((Collection) result);
 		}
 		if( result instanceof String)
 		{
@@ -133,7 +133,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 			{
 				vals = new String[] { inVal };
 			}
-			Collection collection = Arrays.asList(vals);
+			Collection collection = new ArrayList(Arrays.asList(vals));
 			return collection;
 
 		}
