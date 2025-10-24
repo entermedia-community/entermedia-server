@@ -11,7 +11,8 @@
  	method="post" 
 	id="adduser"
 	class="ajaxform"
-	data-targetdivinner="settingssubtab">
+	data-targetdivinner="settingssubtab"
+	data-toastsuccess="[[User saved]]">
 	<input type="hidden" name="method" value="adduser"/>
 
 	#set( $userSearcher = $searcherManager.getSearcher($catalogid,"user"))
@@ -47,13 +48,17 @@
 		
 			$("#adduser").validate({
 				ignore: ".ignore",
-			  rules: {
-				  'email.value': {
-				  required: true,
-				  email: true,
-				  duplicatedemail: false,
-				  remote: "verifyemail.html"
-				}
+			    rules: {
+					  'email.value': {
+						  required: true,
+						  email: true,
+						  duplicatedemail: false,
+						  remote: "verifyemail.html"
+						},
+						'id.value': {
+							useridvalidator: true
+							
+						}
 			  },
 			  messages: {
 				  'email.value': {
@@ -65,6 +70,9 @@
 		        form.trigger("submit");
 				}
 			});
+			jQuery.validator.addMethod("useridvalidator", function(value, element) {
+			        return this.optional(element) || /^[a-zA-Z0-9._]+$/.test(value);
+			    }, "Please enter only alphanumeric characters, dots, and underscores. No spaces allowed.");
 		});
 </script>
 
