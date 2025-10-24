@@ -409,21 +409,6 @@ public class AssistantManager extends BaseAiManager
 		Collection<String> keywords = getResultsManager().parseKeywords(arguments.get("keywords")); 
 		searchArgs.setKeywords(keywords);
 		
-		String searchType = (String) arguments.get("search_type");
-		searchArgs.setBulkSearch("bulk".equals(searchType));
-		
-		Object isStrict = arguments.get("strict");
-		if(isStrict instanceof Boolean)
-		{
-			isStrict = (boolean) isStrict;
-		}
-		else 
-		{
-			isStrict = false;
-		}
-
-		searchArgs.setStrictSearch((boolean) isStrict);
-		
 		Object selectedModulesObj = arguments.get("targets");
 
 		Collection<String> selectedModules = new ArrayList();
@@ -505,15 +490,7 @@ public class AssistantManager extends BaseAiManager
 
 		Collection<String> keywords = searchArgs.getKeywords();
 		
-		String plainquery = "";
-		if(!searchArgs.isStrictSearch())
-		{
-			plainquery = String.join(" ", keywords);
-		}
-		else
-		{
-			plainquery = String.join(" OR ", keywords); // This does not work
-		}
+		String plainquery = String.join(" ", keywords);
 		
 		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description", plainquery).hitsPerPage(30);
 		dq.getQuery().setIncludeDescription(true);

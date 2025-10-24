@@ -103,14 +103,19 @@ public class ClassifyManager extends InformaticsProcessor
 		{
 			Map params = new HashMap();
 			params.put("asset", asset);
+			params.put("data", asset);
 			params.put("aifields", aifields);
-
-			String requestPayload = getLlmConnection().loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/analyzeasset.html", params);
 			String functionname = inConfig.get("aifunctionname");
 			
 			String base64EncodedString = null;
 			
 			String textContent = null;
+			
+			Collection<PropertyDetail> contextFields = new ArrayList<PropertyDetail>();
+			
+			Searcher assetsearcher = getMediaArchive().getAssetSearcher();
+			contextFields.add(assetsearcher.getDetail("name"));
+			contextFields.add(assetsearcher.getDetail("assettype"));
 			
 			if( !aifields.isEmpty() )
 			{
@@ -154,7 +159,9 @@ public class ClassifyManager extends InformaticsProcessor
 				}
 			}
 			
-			LlmResponse results = getLlmConnection().callClassifyFunction(params, models.get("vision"), functionname, requestPayload, textContent, base64EncodedString);
+			params.put("contextfields", contextFields);
+			
+			LlmResponse results = getLlmConnection().callClassifyFunction(params, models.get("vision"), functionname, base64EncodedString, textContent);
 
 			if (results != null)
 			{
@@ -290,6 +297,7 @@ public class ClassifyManager extends InformaticsProcessor
 		{
 			Map params = new HashMap();
 			params.put("entity", inEntity);
+			params.put("data", inEntity);
 			params.put("contextfields", contextFields);
 			params.put("fieldstofill", fieldsToFill);
 			
@@ -304,10 +312,10 @@ public class ClassifyManager extends InformaticsProcessor
 			try 
 			{
 				LlmConnection llmconnection = getLlmConnection();
-				String requestPayload = llmconnection.loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/analyzeentity.html", params); 
 
 				String functionname = inConfig.get("aifunctionname") + "_entity";
-				LlmResponse results = llmconnection.callClassifyFunction(params, models.get("vision"), functionname, requestPayload, base64EncodedString);
+				
+				LlmResponse results = llmconnection.callClassifyFunction(params, models.get("vision"), functionname, base64EncodedString);
 				
 				if (results != null)
 				{

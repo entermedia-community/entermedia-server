@@ -190,16 +190,14 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 	}
 	
-	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image)
+	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inBase64Image)
 	{
-		return callClassifyFunction(params, inModel, inFunction, inQuery, null, inBase64Image);
+		return callClassifyFunction(params, inModel, inFunction, inBase64Image, null);
 	}
 
-	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String textContent, String inBase64Image)
+	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inBase64Image, String textContent)
 	{
 		MediaArchive archive = getMediaArchive();
-
-		log.info("inQuery: " + inQuery);
 
 		// Use JSON Simple to create request payload
 		JSONObject obj = new JSONObject();
@@ -207,20 +205,15 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		//obj.put("max_tokens", maxtokens);
 
 		// Prepare messages array
+
 		JSONArray messages = new JSONArray();
 		JSONObject message = new JSONObject();
-		message.put("role", "user");
-
+		
 		if (inBase64Image != null && !inBase64Image.isEmpty())
 		{
+			message.put("role", "user");
 			// Use an array for content if an image is provided
 			JSONArray contentArray = new JSONArray();
-
-			// Add text content
-			JSONObject systemCommand = new JSONObject();
-			systemCommand.put("type", "text");
-			systemCommand.put("text", inQuery);
-			contentArray.add(systemCommand);
 
 			// Add image content
 			JSONObject imageContent = new JSONObject();
@@ -234,12 +227,14 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		}
 		else
 		{
-			// Just text content
-			message.put("content", inQuery);
+			message.put("role", "system");
+			String systemMessage = loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/"+inFunction+".html");
+			message.put("content", systemMessage);
 		}
-
+		
 		messages.add(message);
 		obj.put("messages", messages);
+
 
 		// Handle function call definition
 		if (inFunction != null)
