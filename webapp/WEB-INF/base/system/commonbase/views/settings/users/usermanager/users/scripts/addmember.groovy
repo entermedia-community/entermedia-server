@@ -97,7 +97,7 @@ public void addUser()
 	usersearcher.saveDetails(context,fields,newuser,newuser.getId());
 	
 	saveUserProfile(newuser.getId());
-	
+	context.putPageValue("saved", true);
 	context.putPageValue("userName",newuser.getId());
 	context.putPageValue("selectedUser",newuser);
 	
