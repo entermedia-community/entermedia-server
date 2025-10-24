@@ -188,20 +188,7 @@ uiload = function () {
 
 	lQuery("select.select2").livequery(function () {
 		var theinput = $(this);
-		var dropdownParent = theinput.data("dropdownparent");
-		if (dropdownParent && $("#" + dropdownParent).length) {
-			dropdownParent = $("#" + dropdownParent);
-		} else {
-			dropdownParent = $(this).parent();
-		}
-		var parent = theinput.closest("#main-media-container");
-		if (parent.length) {
-			dropdownParent = parent;
-		}
-		var parent = theinput.parents(".modal-content");
-		if (parent.length) {
-			dropdownParent = parent;
-		}
+
 		var allowClear = $(this).data("allowclear");
 		if (allowClear == undefined) {
 			allowClear = true;
@@ -211,10 +198,11 @@ uiload = function () {
 		if (placeholder == undefined) {
 			placeholder = "";
 		}
+
 		theinput.select2({
 			allowClear: allowClear,
 			placeholder: placeholder,
-			dropdownParent: dropdownParent,
+			dropdownParent: getDropdownParent(theinput),
 		});
 		theinput.on("select2:open", function (e) {
 			var selectId = $(this).attr("id");
@@ -236,20 +224,6 @@ uiload = function () {
 
 	lQuery("select.listdropdown").livequery(function () {
 		var theinput = $(this);
-		var dropdownParent = theinput.data("dropdownparent");
-		if (dropdownParent && $("#" + dropdownParent).length) {
-			dropdownParent = $("#" + dropdownParent);
-		} else {
-			dropdownParent = $(this).parent();
-		}
-		var parent = theinput.closest("#main-media-container");
-		if (parent.length) {
-			dropdownParent = parent;
-		}
-		var parent = theinput.parents(".modal-content");
-		if (parent.length) {
-			dropdownParent = parent;
-		}
 
 		//console.log(theinput.attr("id")+"using: "+dropdownParent.attr("id"));
 		var placeholder = theinput.data("placeholder");
@@ -261,11 +235,12 @@ uiload = function () {
 		if (allowClear == undefined) {
 			allowClear = true;
 		}
-		theinput = theinput.select2({
+
+		theinput.select2({
 			placeholder: placeholder,
 			allowClear: allowClear,
 			minimumInputLength: 0,
-			dropdownParent: dropdownParent,
+			dropdownParent: getDropdownParent(theinput),
 		});
 		theinput.on("select2:open", function (e) {
 			var selectId = $(this).attr("id");
@@ -775,20 +750,7 @@ uiload = function () {
 
 	lQuery("select.listtags").livequery(function () {
 		var theinput = $(this);
-		var dropdownParent = theinput.data("dropdownparent");
-		if (dropdownParent && $("#" + dropdownParent).length) {
-			dropdownParent = $("#" + dropdownParent);
-		} else {
-			dropdownParent = $(this).parent();
-		}
-		var parent = theinput.closest("#main-media-container");
-		if (parent.length) {
-			dropdownParent = parent;
-		}
-		var parent = theinput.parents(".modal-content");
-		if (parent.length) {
-			dropdownParent = parent;
-		}
+
 		var searchtype = theinput.data("searchtype");
 		var searchfield = theinput.data("searchfield");
 		var catalogid = theinput.data("listcatalogid");
@@ -814,7 +776,7 @@ uiload = function () {
 			tags: true,
 			placeholder: defaulttext,
 			allowClear: allowClear,
-			dropdownParent: dropdownParent,
+			dropdownParent: getDropdownParent(theinput),
 			selectOnBlur: true,
 			delay: 150,
 			minimumInputLength: 1,
@@ -1060,30 +1022,16 @@ uiload = function () {
 					defaultvalueid;
 			}
 
-			var dropdownParent = theinput.data("dropdownparent");
-			if (dropdownParent && $("#" + dropdownParent).length) {
-				dropdownParent = $("#" + dropdownParent);
-			} else {
-				dropdownParent = $(this).parent();
-			}
-			var parent = theinput.closest("#main-media-container");
-			if (parent.length) {
-				dropdownParent = parent;
-			}
-			var parent = theinput.parents(".modal-content");
-			if (parent.length) {
-				dropdownParent = parent;
-			}
-
 			var allowClear = theinput.data("allowclear");
 			if (allowClear == undefined) {
 				allowClear = true;
 			}
+
 			theinput.select2({
 				placeholder: defaulttext,
 				allowClear: allowClear,
 				minimumInputLength: 0,
-				dropdownParent: dropdownParent,
+				dropdownParent: getDropdownParent(theinput),
 				ajax: {
 					// instead of writing the
 					// function to execute the
@@ -1191,7 +1139,6 @@ uiload = function () {
 			});
 
 			theinput.on("select2:open", function (e) {
-				//console.log("open");
 				var selectId = $(this).attr("id");
 				if (selectId) {
 					$(
@@ -1247,30 +1194,16 @@ uiload = function () {
 					defaultvalueid;
 			}
 
-			var dropdownParent = theinput.data("dropdownparent");
-			if (dropdownParent && $("#" + dropdownParent).length) {
-				dropdownParent = $("#" + dropdownParent);
-			} else {
-				dropdownParent = $(this).parent();
-			}
-			var parent = theinput.closest("#main-media-container");
-			if (parent.length) {
-				dropdownParent = parent;
-			}
-			var parent = theinput.parents(".modal-content");
-			if (parent.length) {
-				dropdownParent = parent;
-			}
-
 			var allowClear = theinput.data("allowclear");
 			if (allowClear == undefined) {
 				allowClear = true;
 			}
+
 			theinput.select2({
 				placeholder: defaulttext,
 				allowClear: allowClear,
 				minimumInputLength: 0,
-				dropdownParent: dropdownParent,
+				dropdownParent: getDropdownParent(theinput),
 				ajax: {
 					// instead of writing the
 					// function to execute the
@@ -1377,8 +1310,7 @@ uiload = function () {
 				}
 			});
 
-			theinput.on("select2:open", function (e) {
-				//console.log("open");
+			theinput.on("select2:open", function () {
 				var selectId = $(this).attr("id");
 				if (selectId) {
 					$(
@@ -1432,21 +1364,6 @@ uiload = function () {
 					defaultvalueid;
 			}
 
-			var dropdownParent = theinput.data("dropdownparent");
-			if (dropdownParent && $("#" + dropdownParent).length) {
-				dropdownParent = $("#" + dropdownParent);
-			} else {
-				dropdownParent = $(this).parent();
-			}
-			var parent = theinput.closest("#main-media-container");
-			if (parent.length) {
-				dropdownParent = parent;
-			}
-			var parent = theinput.parents(".modal-content");
-			if (parent.length) {
-				dropdownParent = parent;
-			}
-
 			var allowClear = theinput.data("allowclear");
 			if (allowClear == undefined) {
 				allowClear = true;
@@ -1456,7 +1373,7 @@ uiload = function () {
 				allowClear: allowClear,
 				minimumInputLength: 0,
 				tags: true,
-				dropdownParent: dropdownParent,
+				dropdownParent: getDropdownParent(theinput),
 				ajax: {
 					// instead of writing the
 					// function to execute the

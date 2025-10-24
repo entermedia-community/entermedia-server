@@ -7,7 +7,6 @@
 (function ($) {
 	var pluginName = "clickOutside";
 	var doc = $(document);
-
 	// Default options
 	var defaults = {
 		event: "mousedown", // 'mousedown' | 'click' | 'mouseup'
@@ -282,3 +281,30 @@
 //     console.log('Scrolled to element');
 //   }
 // });
+
+getDropdownParent = function (theinput) {
+	var dropdownParent = theinput.data("dropdownparent");
+	if (dropdownParent && $("#" + dropdownParent).length) {
+		return $("#" + dropdownParent);
+	}
+
+	var parent = theinput.closest("#main-media-container");
+	if (parent.length) {
+		return parent;
+	}
+
+	var parent = $(".detail-" + theinput.data("searchtype"));
+	if (parent.length) {
+		return parent;
+	}
+
+	var inmodal = theinput.closest(".modal");
+	if (inmodal.length) {
+		if (theinput.closest("form").length) {
+			return theinput.closest("form");
+		}
+		return inmodal.find(".modal-body");
+	}
+
+	return undefined;
+};

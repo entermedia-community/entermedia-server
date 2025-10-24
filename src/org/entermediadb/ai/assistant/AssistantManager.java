@@ -547,15 +547,44 @@ public class AssistantManager extends BaseAiManager
 		
 		String[] excludeentityids = new String[unsorted.size()];
 		String[] excludeassetids = new String[assetunsorted.size()];
+		
+		StringBuilder contextString = new StringBuilder();
+		
 		int idx = 0;
 		for (Object entity : unsorted.getPageOfHits()) {
 			Data d = (Data) entity;
+			
+			String parentassetid = d.get("parentasset");
+			if(parentassetid != null)
+			{
+				String fulltext = d.get("longdescription");
+				if(fulltext == null || fulltext.length() == 0)
+				{
+					Asset parent = archive.getAsset(parentassetid);
+					fulltext = parent.get("fulltext");
+				}
+				if(fulltext != null && fulltext.length() > 0)
+				{
+					contextString.append("From " + d.getName() + "\n");
+					contextString.append(fulltext);
+					contextString.append("\n\n");
+				}
+			}
 			excludeentityids[idx] = d.getId();
 			idx++;
 		}
 		idx = 0;
 		for (Object asset : assetunsorted.getPageOfHits()) {
 			Data d = (Data) asset;
+			
+			String fulltext = d.get("longdescription");
+			if(fulltext != null && fulltext.length() > 0)
+			{
+				contextString.append("From " + d.getName() + "\n");
+				contextString.append(fulltext);
+				contextString.append("\n\n");
+			}
+			
 			excludeassetids[idx] = d.getId();
 			idx++;
 		}
@@ -565,6 +594,12 @@ public class AssistantManager extends BaseAiManager
 		inReq.putPageValue("totalhits", unsorted.size() + assetunsorted.size());
 		
 		getResultsManager().loadOrganizedResults(inReq, unsorted,assetunsorted);
+		
+		if( contextString.length() > 0)
+		{
+			Data ragcontext = archive.getSearcher("ragcontext").createNewData();
+			ragcontext.setValue("", "");
+		}
 		
 	}
 	public void semanticSearch(WebPageRequest inReq)
