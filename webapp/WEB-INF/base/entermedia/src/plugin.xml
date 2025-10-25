@@ -1180,6 +1180,9 @@
 	<bean id="jsonUtil" class="org.entermediadb.asset.util.JsonUtil">
 	</bean>
 
+	<bean id="markdownUtil" class="org.entermediadb.markdown.MarkdownUtil">
+	</bean>
+
 	<bean id="RedirectModule" class="org.entermediadb.asset.modules.RedirectModule">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
@@ -2548,7 +2551,7 @@
 			<ref bean="requestUtils" />
 		</property>
 	</bean>
-	
+
 	<bean id="whisperTranscriberManager" class="org.entermediadb.ai.transcriber.WhisperTranscriberManager" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -2557,7 +2560,7 @@
 			<ref bean="requestUtils" />
 		</property>
 	</bean>
-	
+
 	<bean id="TranscriberModule" class="org.entermediadb.ai.transcriber.TranscriberModule">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -2705,7 +2708,7 @@
 		</property>
 
 	</bean>
-	
+
 	<bean id="translationManager" class="org.entermediadb.translator.TranslationManager" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />

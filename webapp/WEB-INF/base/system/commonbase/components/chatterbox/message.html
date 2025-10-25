@@ -159,7 +159,7 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 				
 					#ifnotnull($chat.message)
 						#if($chat.user == "agent")
-							<div class="msg-body-content">$chat.message</div>
+							<div class="msg-body-content">$markdownUtil.render($chat.message)</div>
 						#else
 							<div class="msg-body-content">$url_util.escapeMessage($chat.message)</div>
 						#end
