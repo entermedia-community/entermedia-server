@@ -555,6 +555,7 @@ $(document).ready(function () {
 				div.data("oemaxlevel", 1);
 			}
 			div.data("no-toast", true);
+			
 			div.runAjax(function () {
 				if (callback !== undefined && callback != null) {
 					callback();
@@ -583,10 +584,16 @@ $(document).ready(function () {
 			$.each(splitnames, function (index, classname) {
 				classname = $.trim(classname);
 				$("." + classname).each(function (index, div) {
+					
 					autoreload($(div), null, classname);
 				});
 			});
 		} else {
+			var element = indiv.data("ajaxreloadtargetid"); //For single reload
+			if(element)
+				{
+					autoreload($("#"+element), null, null);
+				}
 		}
 	});
 
