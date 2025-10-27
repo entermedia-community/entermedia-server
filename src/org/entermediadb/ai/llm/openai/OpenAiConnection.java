@@ -387,5 +387,36 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		}
 		return results;
 	}
+	
+	public LlmResponse callRagFunction(String inModel, String question, String textContent)
+	{
+		JSONObject obj = new JSONObject();
+		obj.put("model", inModel);
+
+		JSONArray messages = new JSONArray();
+		
+		JSONObject message = new JSONObject();
+		message.put("role", "system");
+		message.put("content", "You are a helpful assistant that answers questions based only on the provided context.");
+		messages.add(message);
+		
+		
+		JSONObject usermessage = new JSONObject();
+		usermessage.put("role", "user");
+		usermessage.put("content", "Context: " + textContent + "\n\nQuestion: " + question);
+		messages.add(usermessage);
+
+		obj.put("messages", messages);
+
+		String payload = obj.toJSONString();
+
+		JSONObject json = handleApiRequest(payload);
+	    
+	    OpenAiResponse response = new OpenAiResponse();
+	    response.setRawResponse(json);
+	    
+	    return response;
+
+	}
 
 }
