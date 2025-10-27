@@ -279,7 +279,6 @@
 	border: 0 none;
 }
 .goalticket-level {
-	
 }
 .chatterbox-body-inside {
 	scrollbar-color: #dfdfdf #fff;
@@ -332,6 +331,17 @@
 }
 .msg-body-content {
 	line-height: 1.5rem;
+}
+.msg-body-content *:last-child {
+	margin-bottom: 0;
+}
+.msg-body-content a {
+	color: var(--bs-link-color, royalblue);
+}
+.msg-body-content img {
+	max-width: 400px;
+	max-height: 400px;
+	object-fit: contain;
 }
 .chat-icon {
 	position: absolute;

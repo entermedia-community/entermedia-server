@@ -21,11 +21,13 @@ import org.entermediadb.ai.classify.SemanticFieldManager;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmRequest;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.ai.llm.openai.OpenAiConnection;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.EntityManager;
 import org.entermediadb.find.ResultsManager;
+import org.entermediadb.markdown.MarkdownUtil;
 import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONArray;
@@ -266,7 +268,8 @@ public class AssistantManager extends BaseAiManager
 
 			if (output != null)
 			{
-				resopnseMessage.setValue("message", output);
+				MarkdownUtil markdownutil = new MarkdownUtil();
+				resopnseMessage.setValue("message", markdownutil.render(output));
 				resopnseMessage.setValue("messageplain", output);
 				resopnseMessage.setValue("chatmessagestatus", "completed");
 
@@ -595,11 +598,21 @@ public class AssistantManager extends BaseAiManager
 		
 		getResultsManager().loadOrganizedResults(inReq, unsorted,assetunsorted);
 		
+		
 		if( contextString.length() > 0)
 		{
 			Data ragcontext = archive.getSearcher("ragcontext").createNewData();
-			ragcontext.setValue("", "");
+
+			ragcontext.setValue("channel",  inReq.getPageValue("channel"));
+			ragcontext.setValue("query", inReq.getPageValue("message"));
+			ragcontext.setValue("status", "pending");
+			ragcontext.setValue("context", contextString.toString());
+			ragcontext.setValue("keywords", keywords);
+			archive.saveData("ragcontext", ragcontext);
+			
+			getMediaArchive().fireSharedMediaEvent("llm/executerag");
 		}
+		
 		
 	}
 	public void semanticSearch(WebPageRequest inReq)
@@ -699,6 +712,22 @@ public class AssistantManager extends BaseAiManager
 		{	
 			inReq.putPageValue("semanticassethits", semanticassethits);
 		}		
+	}
+	
+	public void executeRag(WebPageRequest inReq) 
+	{
+		MediaArchive archive = getMediaArchive();
+		Data ragcontext = (Data) archive.query("ragcontext").exact("status", "pending").sort("dateUp").searchOne();
+		if(ragcontext == null)
+		{
+			log.info("No RAG context found to process");
+			return;
+		}
+		String model = archive.getCatalogSettingValue("llmragmodel");
+		OpenAiConnection llmconnection = (OpenAiConnection) archive.getLlmConnection(model);
+		
+		llmconnection.callRagFunction(model, ragcontext.get("context"), ragcontext.get("query"));
+		
 	}
 	
 	public void addMcpVars(WebPageRequest inReq, AiSearch searchArgs)	
