@@ -2670,13 +2670,20 @@
 		</property>
 	</bean>
 
-	<bean id="semanticFieldManager" class="org.entermediadb.ai.classify.SemanticFieldManager" lazy-init="default" scope="prototype">
+	<bean id="semanticCassifier" class="org.entermediadb.ai.classify.SemanticCassifier" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
 
-	<bean id="semanticConfig" class="org.entermediadb.ai.classify.SemanticConfig" lazy-init="default" scope="prototype">
+<bean id="semanticTableManager" class="org.entermediadb.ai.informatics.SemanticTableManager" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+
+	<bean id="semanticConfig" class="org.entermediadb.ai.informatics.SemanticConfig" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

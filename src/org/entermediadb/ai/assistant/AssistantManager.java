@@ -17,7 +17,9 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
-import org.entermediadb.ai.classify.SemanticFieldManager;
+import org.entermediadb.ai.classify.SemanticCassifier;
+import org.entermediadb.ai.informatics.SemanticTableManager;
+import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmRequest;
 import org.entermediadb.ai.llm.LlmResponse;
@@ -55,11 +57,9 @@ public class AssistantManager extends BaseAiManager
 		return resultsManager;
 	}
 	
-	protected EntityManager getEntityManager(WebPageRequest inPageRequest) 
+	protected EntityManager getEntityManager() 
 	{
-		String catalogid = inPageRequest.findValue("catalogid");
-		EntityManager entity = (EntityManager) getModuleManager().getBean(catalogid, "entityManager");
-		return entity;
+		return getMediaArchive().getEntityManager();
 	}
 	
 	public void monitorChannels(ScriptLogger inLog) throws Exception
@@ -701,6 +701,19 @@ public class AssistantManager extends BaseAiManager
 		}		
 	}
 	
+	public SemanticTableManager loadSemanticTableManager(String inConfigId)
+	{
+		SemanticTableManager table = (SemanticTableManager)getMediaArchive().getCacheManager().get("semantictables",inConfigId);
+		if( table == null)
+		{
+			table = (SemanticTableManager)getModuleManager().getBean(getCatalogId(),"semanticTableManager",false);
+			table.setConfigurationId(inConfigId);
+			getMediaArchive().getCacheManager().put("semantictables",inConfigId,table);
+		}
+		
+		return table;
+	}
+	
 	public void addMcpVars(WebPageRequest inReq, AiSearch searchArgs)	
 	{
 		Collection<String> keywords = searchArgs.getKeywords();
@@ -823,14 +836,13 @@ public class AssistantManager extends BaseAiManager
 		return results;
 	}
 
-
-	protected SemanticFieldManager fieldSemanticTopicManager;
-	public SemanticFieldManager getSemanticTopicManager()
+	protected SemanticCassifier fieldSemanticTopicManager;
+	public SemanticCassifier getSemanticTopicManager()
 	{
 		if (fieldSemanticTopicManager == null)
 		{
-			fieldSemanticTopicManager = (SemanticFieldManager)getModuleManager().getBean(getCatalogId(),"semanticFieldManager",false);
-			fieldSemanticTopicManager.setSemanticSettingId("semantictopics");
+			fieldSemanticTopicManager = (SemanticCassifier)getModuleManager().getBean(getCatalogId(),"semanticFieldManager",false);
+			fieldSemanticTopicManager.setConfigurationId("semantictopics");
 		}
 
 		return fieldSemanticTopicManager;
@@ -1061,7 +1073,7 @@ public class AssistantManager extends BaseAiManager
 				inReq.putPageValue("error", "Could not find new module. Please provide an existing module id to update");
 				return;
 			}
-			EntityManager entityManager = getEntityManager(inReq);
+			EntityManager entityManager = getEntityManager();
 			String modulechangemethod = (String) arguments.get("moduleChangeMethod");
 			if("copy".equals(modulechangemethod))
 			{
@@ -1104,7 +1116,7 @@ public class AssistantManager extends BaseAiManager
 			Asset asset = archive.getAsset(primaryImage);
 			if(asset != null)
 			{
-				EntityManager entityManager = getEntityManager(inReq);
+				EntityManager entityManager = getMediaArchive().getEntityManager();
 				String destinationcategorypath = inReq.getRequestParameter("destinationcategorypath");
 				Category destinationCategory = null;
 				if(destinationcategorypath!= null)
@@ -1124,4 +1136,130 @@ public class AssistantManager extends BaseAiManager
 		inReq.putPageValue("entity", entity);
 		inReq.putPageValue("module", module);
 	}
+	
+	public void loadAllActions(ScriptLogger inLog)
+	{
+		SemanticTableManager manager = loadSemanticTableManager("actionembedding");
+		
+		//Create batch of english words that describe how to search all these things
+		HitTracker modules = getMediaArchive().query("module").exact("isentity",true).search();
+		
+		Collection moduleids = modules.collectValues("id");
+		
+		Searcher embedsearcher = getMediaArchive().getSearcher("actionembedding");
+		
+		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+		{
+			Data parentmodule = (Data) iterator.next();
+			
+			Collection existing = embedsearcher.query().exact("parentmodule",parentmodule.getId()).search();
+			if( existing.size() > 5)
+			{
+				continue;
+			}
+			Collection<SemanticAction> actions = new ArrayList();
+			
+			SemanticAction action = new SemanticAction();
+			/*
+			 * "search",
+							"creation",
+							"how-to",
+							"task",
+							"conversation",
+							"support request"
+							*/
+			action.setRequestType("search");
+			action.setSemanticText("Search for " + parentmodule.getName());
+			action.setParentData(parentmodule);
+			actions.add(action);
+			action = new SemanticAction();
+			action.setParentData(parentmodule);
+			action.setRequestType("create");
+			action.setSemanticText("Create " + parentmodule.getName());
+			actions.add(action);
+			
+			//Check for child views
+			Map<String, PropertyDetail> details = loadActiveDetails(parentmodule.getId());
+			if( details != null)
+			{
+				for (Iterator iterator2 = details.values().iterator(); iterator2.hasNext();)
+				{
+					PropertyDetail detail = (PropertyDetail) iterator2.next();
+					if( detail.isList() )
+					{
+						String listid = detail.getListId();
+						if( moduleids.contains(listid) )
+						{
+							Data childmodule = getMediaArchive().getCachedData("module", listid);
+							action = new SemanticAction();
+							action.setParentData(parentmodule);
+							action.setChildData(childmodule);
+							action.setRequestType("searchjoin");
+							action.setSemanticText("Search for " + parentmodule.getName() + " in " + childmodule.getName() );
+							actions.add(action);
+						}
+					}
+				}
+			}
+			populateVectors(manager,actions);
+
+			//Save to db
+			Collection tosave = new ArrayList();
+			
+			for (Iterator iterator2 = actions.iterator(); iterator2.hasNext();)
+			{
+				SemanticAction semanticAction = (SemanticAction) iterator2.next();
+				Data data = embedsearcher.createNewData();
+				data.setValue("parentmodule",semanticAction.getParentData().getId());
+				if( semanticAction.getChildData() != null)
+				{
+					data.setValue("childmodule",semanticAction.getChildData().getId());
+				}
+				data.setValue("vectorarray",semanticAction.getVectors());
+				data.setValue("requesttype",semanticAction.getRequestType());
+				
+				tosave.add(data);
+			}
+			embedsearcher.saveAllData(tosave, null);
+			
+		}
+		//Test search
+		List<Double> tosearch = manager.makeVector("Search for Collection");
+		manager.reinitClusters(inLog);
+
+		//Collection<RankedResult> results = manager.searchNearestItems(tosearch);
+		//log.info(results);
+		
+		
+	}
+
+	protected void populateVectors(SemanticTableManager manager, Collection<SemanticAction> inActions)
+	{
+		Collection<String> textonly = new ArrayList(inActions.size());
+		Map<String,SemanticAction> actions = new HashMap();
+		Integer count = 0;
+		for (Iterator iterator = inActions.iterator(); iterator.hasNext();)
+		{
+			SemanticAction action = (SemanticAction) iterator.next();
+			textonly.add(action.getSemanticText());
+			actions.put( String.valueOf(count) , action);
+			count++;
+		}
+		
+		JSONObject response = manager.execMakeVector(textonly);
+		
+		JSONArray results = (JSONArray)response.get("results");
+		Collection<MultiValued> newrecords = new ArrayList(results.size());
+		for (int i = 0; i < results.size(); i++)
+		{
+			Map hit = (Map)results.get(i);
+			String countdone = (String)hit.get("id");
+			SemanticAction action = actions.get(countdone);
+			List vector = (List)hit.get("embedding");
+			vector = manager.collectDoubles(vector);
+			action.setVectors(vector);
+		}
+		
+	}
+	
 }

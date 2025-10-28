@@ -1,4 +1,4 @@
-package org.entermediadb.ai.classify;
+package org.entermediadb.ai.informatics;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +12,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.LlmConnection;
@@ -30,22 +31,22 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.util.JSONParser;
 
-public class SemanticFieldManager extends InformaticsProcessor implements CatalogEnabled
+public class SemanticTableManager extends BaseAiManager implements CatalogEnabled
 {
-	private static final Log log = LogFactory.getLog(SemanticFieldManager.class);
+	private static final Log log = LogFactory.getLog(SemanticTableManager.class);
 	
 	protected boolean fieldIndexingVectors;
 	
-	protected String fieldSemanticSettingId = "semantictopics";
+	protected String fieldConfigurationId;
 	
-	public String getSemanticSettingId()
+	public String getConfigurationId()
 	{
-		return fieldSemanticSettingId;
+		return fieldConfigurationId;
 	}
 
-	public void setSemanticSettingId(String inSemanticSettingId)
+	public void setConfigurationId(String inSemanticSettingId)
 	{
-		fieldSemanticSettingId = inSemanticSettingId;
+		fieldConfigurationId = inSemanticSettingId;
 	}
 
 	public boolean isIndexingVectors()
@@ -142,90 +143,31 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 
 	public SemanticConfig getSemanticInstructions()
 	{
-		String sematicsettingsid = getSemanticSettingId();
+		String sematicsettingsid = getConfigurationId();
+		if( sematicsettingsid == null)
+		{
+			throw new OpenEditException("SemanticSettingId is required");
+			//= "semantictopics";
+		}
+		
 		SemanticConfig instructions = (SemanticConfig)getMediaArchive().getCacheManager().get("semantictopicsinstructions",sematicsettingsid);
 		if( instructions == null)
 		{
 			instructions = (SemanticConfig)getModuleManager().getBean(getCatalogId(),"semanticConfig",false);
-			getMediaArchive().getCacheManager().put("semantictopicsinstructions", getSemanticSettingId(),instructions);
+			getMediaArchive().getCacheManager().put("semantictopicsinstructions", getConfigurationId(),instructions);
 			
 			MultiValued settings = (MultiValued)getMediaArchive().getData("informatics",sematicsettingsid);
 			if (settings == null)
 			{
-				log.info("Emppty settings for " + sematicsettingsid);
+				throw new OpenEditException("Empty settings for " + sematicsettingsid);
 			}
 			instructions.setInstructionDetails(settings);
 		}
 		return instructions;
 	}
 
-	public Map<String,Collection<String>> search(String text, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
-	{
-		Collection<String> values = new ArrayList(1);
-		values.add(text);
-		return search(values, excludedEntityIds, excludedAssetids);
-	}
 	
-	public Map<String,Collection<String>> search(Collection<String> textvalues, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
-	{
-		Map<String,Collection<String>> bytype = new HashMap();
 
-		for (Iterator iterator = textvalues.iterator(); iterator.hasNext();)
-		{
-			String textsemantic = (String) iterator.next();
-			
-			JSONObject response = execMakeVector(textsemantic);
-	
-			JSONArray results = (JSONArray)response.get("results");
-			Map hit = (Map)results.iterator().next();
-			List vector = (List)hit.get("embedding");
-			vector = collectDoubles(vector);
-	
-			searchForVector(vector, bytype, excludedEntityIds, excludedAssetids);
-		}		
-		
-		return bytype;		
-	}
-
-	protected void searchForVector(List inVector, Map<String, Collection<String>> bytype, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
-	{
-		SemanticConfig instruction = getSemanticInstructions();
-		Collection<RankedResult> found = instruction.getKMeansIndexer().searchNearestItems(inVector);
-		
-		//List allIdsX = new ArrayList(); //for debugging
-
-		for (Iterator iterator = found.iterator(); iterator.hasNext();)
-		{
-			RankedResult rankedResult = (RankedResult) iterator.next();
-			
-			//allIds.add(rankedResult.getModuleId() + ":" + rankedResult.getEntityId());
-			
-			if(rankedResult.getModuleId().equals("asset"))
-			{
-				if(excludedAssetids != null && excludedAssetids.contains(rankedResult.getEntityId()))
-				{
-					continue;
-				}
-			}
-			else if(excludedEntityIds != null && excludedEntityIds.contains(rankedResult.getEntityId()))
-			{
-				continue;
-			}
-			
-			Collection hits = bytype.get(rankedResult.getModuleId());
-			if( hits == null)
-			{
-				hits = new ArrayList();
-				bytype.put(rankedResult.getModuleId(),hits);
-			}
-			if( hits.size() < 1000)
-			{
-				hits.add(rankedResult.getEntityId());
-			}
-		}
-		//log.info("Found matching IDs:" + allIds);
-
-	}
 	
 	public void indexAll(ScriptLogger inLog)
 	{
@@ -401,7 +343,6 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 		//long start = System.currentTimeMillis();
 		//log.debug("Facial Profile Detection sending " + inAsset.getName() );
 		
-		JSONObject tosendparams = new JSONObject();
 		JSONArray list = new JSONArray();
 		for (Iterator iterator = entitiestoscan.iterator(); iterator.hasNext();)
 		{
@@ -431,6 +372,7 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 		{
 			return new ArrayList();
 		}
+		JSONObject tosendparams = new JSONObject();
 		tosendparams.put("data",list);
 		
 		CloseableHttpResponse resp = askServer(tosendparams);
@@ -497,9 +439,39 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 	}
 
 
+	public JSONObject execMakeVector(Collection<String> texts)
+	{
+		JSONObject tosendparams = new JSONObject();
+		JSONArray list = new JSONArray();
+		int count = 0;
+		for (Iterator iterator = texts.iterator(); iterator.hasNext();)
+		{
+			String text = (String) iterator.next();
+			JSONObject ask = new JSONObject();
+			ask.put("id",String.valueOf(count++));
+			ask.put("text",text);
+			list.add(ask);
+		}
+		tosendparams.put("data",list);
+		CloseableHttpResponse resp = askServer(tosendparams);
+		String responseStr = getSharedConnection().parseText(resp);
+		JSONObject jsonresponse = (JSONObject) new JSONParser().parse(responseStr);
+		
+		//log.info("Got response " + objt.keySet());
+		return jsonresponse;
+	}
 
+	public List<Double> makeVector(String text)
+	{
+		JSONObject response = execMakeVector(text);
+		JSONArray results = (JSONArray)response.get("results");
+		Map hit = (Map)results.iterator().next();
+		List<Double> vector = (List)hit.get("embedding");
+		vector = collectDoubles(vector);
+		return vector;
+	}
 
-	protected JSONObject execMakeVector(String text)
+	public JSONObject execMakeVector(String text)
 	{
 		JSONObject tosendparams = new JSONObject();
 		JSONArray list = new JSONArray();
@@ -517,7 +489,7 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 
 
 	//Move to vector util package
-		private List<Double> collectDoubles(Collection vector) 
+	public List<Double> collectDoubles(Collection vector) 
 		{
 			List<Double> floats = new ArrayList(vector.size());
 			for (Iterator iterator = vector.iterator(); iterator.hasNext();)
@@ -595,68 +567,16 @@ public class SemanticFieldManager extends InformaticsProcessor implements Catalo
 			return values;
 		}
 
-		@Override
-		public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
+		public Collection<RankedResult> searchNearestItems(List<Double> inVector)
 		{
-			processInformaticsOnEntities(inLog,inConfig,inAssets);
-		}
-
-		@Override
-		public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecords)
-		{
-			String fieldname = inConfig.get("fieldname");
-			
-			Map<String, String> models = getModels();
-
-			String model = models.get("semantic");
-			
-			LlmConnection llmsemanticconnection = getMediaArchive().getLlmConnection(model);
-
-			long start = System.currentTimeMillis();
-			
-			inLog.info("SemanticFieldManager Start values and indexing " + fieldname);
-			
-			for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
-			{
-				MultiValued data = (MultiValued) iterator.next();
-				String moduleid = data.get("entitysourcetype");
-				if( moduleid == null)
-				{
-					throw new OpenEditException("Requires sourcetype be set "  + data);
-				}
-				MultiValued module = (MultiValued)getMediaArchive().getCachedData("module", moduleid);
-				if( !module.getBoolean("semanticenabled") )
-				{
-					continue;
-				}
-				
-				Collection existing = data.getValues(fieldname);
-				if(existing != null && !existing.isEmpty())
-				{
-					continue;
-				}
-				Collection<String> newvalues = createSemanticValues(llmsemanticconnection,inConfig,model,moduleid,data);
-				data.setValue(fieldname,newvalues);
-			}
-			if( isIndexingVectors() )
-			{
-				log.info("Skipping indexing vectors for now, event will handle it later");
-				return;
-			}
-			setIndexingVectors(true);
-			try
-			{
-				indexData(inLog,inRecords);
-			}
-			finally
-			{
-				setIndexingVectors(false);
-			}
-			long end = System.currentTimeMillis();
-			double seconds = end - start / 1000d;
-			inLog.info("SemanticFieldManager Completed " + inRecords.size() + " records in " +  seconds + " seconds ");
+			Collection<RankedResult> results = getSemanticInstructions().getKMeansIndexer().searchNearestItems(inVector);
+			return results;
 		}
 		
+		public void reinitClusters(ScriptLogger inLog) 
+		{
+			getSemanticInstructions().getKMeansIndexer().reinitClusters(inLog);
+		}
 
 }
 

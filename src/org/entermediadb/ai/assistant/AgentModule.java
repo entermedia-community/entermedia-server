@@ -1,6 +1,7 @@
 package org.entermediadb.ai.assistant;
 
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.WebPageRequest;
 
@@ -52,6 +53,12 @@ public class AgentModule extends BaseMediaModule {
 		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
 		String report = getAssistantManager(inReq).generateReport(arguments);
 		inReq.putPageValue("report", report);
+	}
+
+	public void indexActions(WebPageRequest inReq) throws Exception 
+	{
+		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
+		getAssistantManager(inReq).loadAllActions(logger);
 	}
 
 }

@@ -1,4 +1,4 @@
-package org.entermediadb.ai.classify;
+package org.entermediadb.ai.informatics;
 
 import java.util.Set;
 
@@ -6,6 +6,7 @@ import org.entermediadb.ai.knn.KMeansIndexer;
 import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 
 public class SemanticConfig implements CatalogEnabled
 {
@@ -81,6 +82,10 @@ protected KMeansIndexer fieldKMeansIndexer;
 		if (fieldKMeansIndexer == null)
 		{
 			fieldKMeansIndexer = (KMeansIndexer)getModuleManager().getBean(getCatalogId(),"kMeansIndexer",false);
+			if( fieldInstructionDetails == null)
+			{
+				throw new OpenEditException("Instructions not set");
+			}
 			fieldKMeansIndexer.loadSettings(getInstructionDetails());
 			
 		}
