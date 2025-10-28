@@ -1077,7 +1077,7 @@ public class MediaAdminModule extends BaseMediaModule
 						module  = archive.getSearcher("module").createNewData();
 						module.setId(moduleid);
 					}
-					module.setName(modulename);
+					module.setName(modulename.replaceAll("\n", "").trim());
 					String icon = userdata.getString("moduleicon");
 					if( icon != null)
 					{

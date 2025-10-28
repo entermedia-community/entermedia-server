@@ -1,8 +1,8 @@
 <page>
 	<property name="sectiontitle">
-    	<value>Metadata Edits</value>
-  	</property>
-  	<property name="tab">asseteditorhistory</property>
+		<value>Metadata Edits</value>
+	</property>
+	<property name="tab">assethistory</property>
 	<property name="subtab">viewassetedithistory</property>
 	<property name="assettab">converthistory</property>
 	<property name="hitsname">loghits</property>

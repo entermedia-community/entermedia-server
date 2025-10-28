@@ -19,10 +19,10 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.classify.SemanticCassifier;
 import org.entermediadb.ai.informatics.SemanticTableManager;
-import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmRequest;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.ai.llm.openai.OpenAiConnection;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
@@ -602,6 +602,23 @@ public class AssistantManager extends BaseAiManager
 		}
 		
 	}
+	
+	public void executeRag(WebPageRequest inReq) 
+	{
+		MediaArchive archive = getMediaArchive();
+		Data ragcontext = (Data) archive.query("ragcontext").exact("status", "pending").sort("dateUp").searchOne();
+		if(ragcontext == null)
+		{
+			log.info("No RAG context found to process");
+			return;
+		}
+		String model = archive.getCatalogSettingValue("llmragmodel");
+		OpenAiConnection llmconnection = (OpenAiConnection) archive.getLlmConnection(model);
+		
+		llmconnection.callRagFunction(model, ragcontext.get("context"), ragcontext.get("query"));
+		
+	}
+	
 	public void semanticSearch(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive();
