@@ -28,5 +28,5 @@ public interface LlmConnection {
 
     public String getApiEndpoint();
 	
-	public JSONObject callStructuredOutputList(String inStructureName,String inModel, Map inParams);
+	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Map inParams);
 }

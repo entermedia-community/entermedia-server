@@ -225,8 +225,10 @@ public class AssistantManager extends BaseAiManager
 		
 		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 
-		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/assistant/instructions/current.json";
-		LlmResponse response = llmconnection.runPageAsInput(llmrequest, chattemplate);
+		
+//		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/assistant/instructions/current.json";
+		LlmResponse response = processUserRequest(llmrequest);
+		
 		//current update it?
 		
 		if (response.isToolCall())
@@ -275,6 +277,19 @@ public class AssistantManager extends BaseAiManager
 			}
 		}
 		
+	}
+	
+	protected LlmResponse processUserRequest(LlmRequest llmRequest)
+	{
+		MediaArchive archive = getMediaArchive();
+		
+		String model = "qwen3:8b";
+		
+		LlmConnection llmconnection = archive.getLlmConnection(model);
+		
+		JSONObject results = llmconnection.callStructuredOutputList("parse_sentence", model, llmRequest.getParameters());
+		
+		return null;
 	}
 	
 	public void execFunctionInChat(LlmConnection llmconnection, Data messageToUpdate, LlmRequest llmrequest) throws Exception
