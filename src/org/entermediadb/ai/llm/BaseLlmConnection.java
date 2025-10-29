@@ -200,7 +200,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 
 	protected void loadLlmRequestParameters(LlmRequest llmrequest, WebPageRequest request)
 	{
-		JSONObject inParameters = llmrequest.getParameters();
+		Map inParameters = llmrequest.getProperties();
 		if( inParameters != null)
 		{
 			for (Iterator iterator = inParameters.keySet().iterator(); iterator.hasNext();)

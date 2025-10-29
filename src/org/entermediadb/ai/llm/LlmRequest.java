@@ -15,7 +15,6 @@ public class LlmRequest extends BaseData {
 	String nextFunctionName;
 	Map<String, Object> context;
 //	JSONObject arguments;
-	JSONObject parameters;
 	
 	UserProfile fieldUserProfile;
 	
@@ -68,31 +67,10 @@ public class LlmRequest extends BaseData {
 //		arguments = inArguments;
 //	}
 	
-	public JSONObject getParameters() {
-		return parameters;
-	}
-	
-	public void setParameters(JSONObject inParameters) {
-		parameters = inParameters;
-	}
-	
-	public String getParameter(String inKey)
-	{
-		return (String)parameters.get(inKey);
-	}
-	
-	public void setParameter(String inKey, Object inValue) {
-		if (parameters == null) {
-			parameters = new JSONObject();
-		}
-		parameters.put(inKey, inValue);
-	}
-	
 	public String toString() {
 		JSONObject obj = new JSONObject();
 		obj.put("function", functionName);
 		obj.put("nextfunction", nextFunctionName);
-		obj.put("parameters", parameters);
 		return obj.toJSONString();
 	}
 	

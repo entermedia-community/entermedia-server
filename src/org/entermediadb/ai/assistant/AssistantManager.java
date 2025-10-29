@@ -241,7 +241,7 @@ public class AssistantManager extends BaseAiManager
 			
 			JSONObject functionArguments = response.getArguments();		
 			
-			llmrequest.setParameter("arguments", functionArguments);
+			llmrequest.setValue("arguments", functionArguments);
 			
 			
 			resopnseMessage.setValue("params", llmrequest.toString());
@@ -322,17 +322,17 @@ public class AssistantManager extends BaseAiManager
 				String value = (String)results.get(module.getName());
 				if( value != null && !value.isEmpty() )
 				{
-					if(llmRequest.getParameter("parentmodule") == null )
+					if(llmRequest.get("parentmodule") == null )
 					{
-						llmRequest.setParameter("parentmodule", module.getId());
-						llmRequest.setParameter("parentmodule.label",module.getName());
-						llmRequest.setParameter("parentmodule.value", value);
+						llmRequest.setValue("parentmodule", module.getId());
+						llmRequest.setValue("parentmodule.label",module.getName());
+						llmRequest.setValue("parentmodule.value", value);
 					}
 					else
 					{
-						llmRequest.setParameter("childmodule", module.getId());
-						llmRequest.setParameter("childmodule.label",module.getName());
-						llmRequest.setParameter("childmodule.value", value);
+						llmRequest.setValue("childmodule", module.getId());
+						llmRequest.setValue("childmodule.label",module.getName());
+						llmRequest.setValue("childmodule.value", value);
 						//type = "searchjoin"; //???
 					}
 				}
@@ -343,11 +343,11 @@ public class AssistantManager extends BaseAiManager
 				SemanticTableManager manager = loadSemanticTableManager("actionembedding");
 				//Look into our semantic DB and determine the real search type and real parameters
 				
-				String parent = llmRequest.getParameter("parentmodule.label");
+				String parent = llmRequest.get("parentmodule.label");
 				//String targets = llmRequest.getParameter("targets");
 				
 				String text = "Search for ";
-				String child = llmRequest.getParameter("childmodule.label");
+				String child = llmRequest.get("childmodule.label");
 				if( child != null)
 				{
 					text = text + child;
@@ -436,7 +436,7 @@ public class AssistantManager extends BaseAiManager
 			Long waittime = 200l;
 			if( llmrequest.getNextFunctionName() != null)
 			{
-				JSONObject params = llmrequest.getParameters();
+				Map params = llmrequest.getProperties();
 				
 				params.put("function", llmrequest.getNextFunctionName());
 				
