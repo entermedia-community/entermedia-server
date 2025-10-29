@@ -230,7 +230,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		}
 	}
 	
-	public LlmResponse loadResponseFromTemplate(LlmRequest llmrequest) 
+	public LlmResponse renderLocalAction(LlmRequest llmrequest) 
 	{
 		String functionName = llmrequest.getFunctionName();
 		if(functionName == null) 

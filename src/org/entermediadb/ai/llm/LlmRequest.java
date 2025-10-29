@@ -2,26 +2,33 @@ package org.entermediadb.ai.llm;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
+import org.entermediadb.ai.assistant.AiSearch;
+import org.entermediadb.ai.knn.RankedResult;
 import org.json.simple.JSONObject;
+import org.openedit.data.BaseData;
+import org.openedit.profile.UserProfile;
 
-public class LlmRequest {
+public class LlmRequest extends BaseData {
 	String functionName;
 	String nextFunctionName;
 	Map<String, Object> context;
 //	JSONObject arguments;
 	JSONObject parameters;
 	
+	UserProfile fieldUserProfile;
 	
-	public String getFunctionName() {
-		return functionName;
+	public UserProfile getUserProfile()
+	{
+		return fieldUserProfile;
 	}
-	
-	public void setFunctionName(String inFunctionName) {
-		functionName = inFunctionName;
+
+	public void setUserProfile(UserProfile inUserProfile)
+	{
+		fieldUserProfile = inUserProfile;
 	}
+
 	
 	public String getNextFunctionName() {
 		return nextFunctionName;
@@ -69,6 +76,11 @@ public class LlmRequest {
 		parameters = inParameters;
 	}
 	
+	public String getParameter(String inKey)
+	{
+		return (String)parameters.get(inKey);
+	}
+	
 	public void setParameter(String inKey, Object inValue) {
 		if (parameters == null) {
 			parameters = new JSONObject();
@@ -84,4 +96,39 @@ public class LlmRequest {
 		return obj.toJSONString();
 	}
 	
+	protected String fieldFunctionName;
+	protected AiSearch fieldAiSearchParams;
+	
+	Collection<RankedResult> fieldRankedSuggestions;
+	
+	public Collection<RankedResult> getRankedSuggestions()
+	{
+		return fieldRankedSuggestions;
+	}
+
+	public void setRankedSuggestions(Collection<RankedResult> inRankedSuggestions)
+	{
+		fieldRankedSuggestions = inRankedSuggestions;
+	}
+
+
+	public AiSearch getAiSearchParams()
+	{
+		return fieldAiSearchParams;
+	}
+
+	public void setAiSearchParams(AiSearch inAiSearchParams)
+	{
+		fieldAiSearchParams = inAiSearchParams;
+	}
+
+	public String getFunctionName()
+	{
+		return fieldFunctionName;
+	}
+
+	public void setFunctionName(String inFunctionName)
+	{
+		fieldFunctionName = inFunctionName;
+	}
 }

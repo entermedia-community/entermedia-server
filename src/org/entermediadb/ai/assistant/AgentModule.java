@@ -1,5 +1,6 @@
 package org.entermediadb.ai.assistant;
 
+import org.entermediadb.ai.llm.LlmRequest;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
@@ -16,7 +17,9 @@ public class AgentModule extends BaseMediaModule {
 
 	public void chatAgentRegularSearch(WebPageRequest inReq) throws Exception 
 	{	
-		getAssistantManager(inReq).regularSearch(inReq, false);
+		LlmRequest request =  (LlmRequest)inReq.getPageValue("llmrequest");
+		
+		getAssistantManager(inReq).regularSearch(inReq, request.getAiSearchParams());
 	}
 	
 	public void chatAgentSemanticSearch(WebPageRequest inReq) throws Exception 
@@ -44,10 +47,10 @@ public class AgentModule extends BaseMediaModule {
 		getAssistantManager(inReq).updateEntity(inReq);
 	}
 	
-	public void mcpSearch(WebPageRequest inReq) throws Exception
-	{
-		getAssistantManager(inReq).regularSearch(inReq, true);
-	}
+//	public void mcpSearch(WebPageRequest inReq) throws Exception
+//	{
+//		getAssistantManager(inReq).regularSearch(inReq, true);
+//	}
 	
 	public void loadSemanticMatches(WebPageRequest inReq) throws Exception
 	{

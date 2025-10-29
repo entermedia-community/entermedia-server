@@ -19,9 +19,11 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.classify.SemanticCassifier;
 import org.entermediadb.ai.informatics.SemanticTableManager;
+import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmRequest;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.ai.llm.emedia.EMediaAIResponse;
 import org.entermediadb.ai.llm.openai.OpenAiConnection;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
@@ -150,7 +152,7 @@ public class AssistantManager extends BaseAiManager
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		LlmRequest llmrequest = new LlmRequest();
+		LlmRequest llmrequest = new LlmRequest(); //TODO Look in DB or cache from hitory?
 		
 		String model = archive.getCatalogSettingValue("llmagentmodel");
 		
@@ -167,7 +169,7 @@ public class AssistantManager extends BaseAiManager
 		
 		if (!llmconnection.isReady()) 
 		{
-			inLog.error("LLM Manager is not ready: " + model + ". Cannot process channel: " + channel);
+			inLog.error("LLM Manager is not ready, check key for: " + model + ". Cannot process channel: " + channel);
 			return;
 		}
 
@@ -180,7 +182,7 @@ public class AssistantManager extends BaseAiManager
 		String id = channel.get("user");
 		UserProfile profile = archive.getUserProfile(id);
 		llmrequest.addContext("chatprofile", profile);
-		
+		llmrequest.setUserProfile(profile);
 		
 		llmrequest.addContext("channel", channel);
 
@@ -209,7 +211,7 @@ public class AssistantManager extends BaseAiManager
 				
 				llmrequest.setParameters((JSONObject) parsedParams);
 	
-				execFunctionInChat(llmconnection, message, llmrequest);
+				execLocalActionFromChat(llmconnection, message, llmrequest);
 			}
 			return;
 		}
@@ -252,14 +254,23 @@ public class AssistantManager extends BaseAiManager
 			else
 			{
 				Data function = getMediaArchive().getCachedData("aifunctions", functionName);
-				resopnseMessage.setValue("message", function.getValue("processingmessage"));
+				String processingmessage = null;
+				if( function != null)
+				{
+					processingmessage = function.get("processingmessage");
+				}
+				if( processingmessage == null )
+				{
+					processingmessage = "Analyzing...";
+				}
+				resopnseMessage.setValue("message", processingmessage);
 			}
 			
 			chats.saveData(resopnseMessage);
 			
 			server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 			
-			execFunctionInChat(llmconnection, resopnseMessage, llmrequest);
+			execLocalActionFromChat(llmconnection, resopnseMessage, llmrequest);
 		}
 		else
 		{
@@ -283,16 +294,94 @@ public class AssistantManager extends BaseAiManager
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		String model = "qwen3:8b";
+		HitTracker modules = getMediaArchive().query("module").exact("isentity",true).sort("ordering").search();
+		llmRequest.addContext("modules", modules);
 		
+		//String model = "qwen3:8b";
+		String model = archive.getCatalogSettingValue("llmagentmodel");
+
 		LlmConnection llmconnection = archive.getLlmConnection(model);
+		JSONObject results = llmconnection.callStructuredOutputList("parse_sentence", model, llmRequest.getContext());
+
+		EMediaAIResponse response = new EMediaAIResponse();
+		response.setRawResponse(results);
+		String type = (String)results.get("request_type");
+		if( type == null)
+		{
+			type = "chitchat";
+		}
+		response.setToolCall(true);
 		
-		JSONObject results = llmconnection.callStructuredOutputList("parse_sentence", model, llmRequest.getParameters());
-		
-		return null;
+//		if( type.equals("search") )   //TODO: Look in some kind of DB to map it back to handler
+//		{
+			//TODO: Move this to a handler of some kind
+			//Create batch of english words that describe how to search all these things
+			for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+			{
+				Data module = (Data) iterator.next();
+				String value = (String)results.get(module.getName());
+				if( value != null && !value.isEmpty() )
+				{
+					if(llmRequest.getParameter("parentmodule") == null )
+					{
+						llmRequest.setParameter("parentmodule", module.getId());
+						llmRequest.setParameter("parentmodule.label",module.getName());
+						llmRequest.setParameter("parentmodule.value", value);
+					}
+					else
+					{
+						llmRequest.setParameter("childmodule", module.getId());
+						llmRequest.setParameter("childmodule.label",module.getName());
+						llmRequest.setParameter("childmodule.value", value);
+						//type = "searchjoin"; //???
+					}
+				}
+			}
+			
+			if( "search".equals(type) )
+			{
+				SemanticTableManager manager = loadSemanticTableManager("actionembedding");
+				//Look into our semantic DB and determine the real search type and real parameters
+				
+				String parent = llmRequest.getParameter("parentmodule.label");
+				//String targets = llmRequest.getParameter("targets");
+				
+				String text = "Search for ";
+				String child = llmRequest.getParameter("childmodule.label");
+				if( child != null)
+				{
+					text = text + child;
+				}
+				if( parent != null)
+				{
+					text = text + " in " + parent;
+				}
+				
+				List<Double> tosearch = manager.makeVector(text);
+				Collection<RankedResult> suggestions = manager.searchNearestItems(tosearch);
+				//Load more details into this request and possibly change the type
+
+				//Let the search action parse any  extra parameters available from the context 
+				if( !suggestions.isEmpty())
+				{
+					llmRequest.setRankedSuggestions(suggestions);
+					RankedResult top = (RankedResult)suggestions.iterator().next();
+					if ( top.getDistance() < .7 )
+					{
+						type = top.getEmbedding().get("requesttype");
+					
+						AiSearch aisearch = processAISearchArgs(results,top.getEmbedding(), llmRequest.getUserProfile());
+						llmRequest.setAiSearchParams(aisearch);
+					}
+				}
+			}
+			response.setFunctionName(type);
+			//			
+//		}	
+		return response;
 	}
 	
-	public void execFunctionInChat(LlmConnection llmconnection, Data messageToUpdate, LlmRequest llmrequest) throws Exception
+	public void execLocalActionFromChat(LlmConnection llmconnection, Data messageToUpdate, LlmRequest llmrequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -304,10 +393,13 @@ public class AssistantManager extends BaseAiManager
 		try
 		{
 			llmrequest.addContext("message", messageToUpdate);
+			llmrequest.addContext("aisearchparams", llmrequest.getAiSearchParams() );
 			
 			String apphome = "/"+ channel.get("chatapplicationid");
 			llmrequest.addContext("apphome", apphome);
-			LlmResponse response = llmconnection.loadResponseFromTemplate(llmrequest);
+			
+			
+			LlmResponse response = llmconnection.renderLocalAction(llmrequest);  //Run Search
 
 			messageToUpdate.setValue("message", response.getMessage());
 			String messageplain = messageToUpdate.get("messageplain");
@@ -336,7 +428,7 @@ public class AssistantManager extends BaseAiManager
 			functionMessageUpdate.put("messagetype", "airesponse");
 			functionMessageUpdate.put("catalogid", archive.getCatalogId());
 			functionMessageUpdate.put("user", "agent");
-			functionMessageUpdate.put("channel", messageToUpdate.get("channel"));
+			functionMessageUpdate.put("channepeoplel", messageToUpdate.get("channel"));
 			functionMessageUpdate.put("messageid", messageToUpdate.getId());
 			functionMessageUpdate.put("message", response.getMessage());
 			server.broadcastMessage(functionMessageUpdate);
@@ -407,24 +499,32 @@ public class AssistantManager extends BaseAiManager
 		return hits;
 	}
 	
-	public AiSearch processAISearchArgs(String inJsonArguments, UserProfile userprofile) throws Exception
+	public AiSearch processAISearchArgs(JSONObject airesults, Data inEmbeddingMatch, UserProfile userprofile) 
 	{
-		if(inJsonArguments == null)
-		{			
-			return null;
-		} 
-		else {	
-			log.info("Args: " + inJsonArguments);
-		}
-
-		JSONObject arguments = new JSONParser().parse( inJsonArguments );
+		//Search for tomatoes in sales departments
 		
 		AiSearch searchArgs = new AiSearch();
+		
+		if( inEmbeddingMatch != null)
+		{						
+			String parentid = inEmbeddingMatch.get("parentmodule");
+			Data parentmodule = getMediaArchive().getCachedData("module", parentid);
+			if( parentmodule != null)
+			{
+				searchArgs.setParentModule(parentmodule);
+			}
+			String childid = inEmbeddingMatch.get("childmodule");
+			Data childmodule = getMediaArchive().getCachedData("module", childid);
+			if( childmodule != null)
+			{
+				searchArgs.setChildModule(childmodule);
+			}
+		}
 
-		Collection<String> keywords = getResultsManager().parseKeywords(arguments.get("keywords")); 
+		Collection<String> keywords = getResultsManager().parseKeywords(airesults.get("keywords")); 
 		searchArgs.setKeywords(keywords);
 		
-		Object selectedModulesObj = arguments.get("targets");
+		Object selectedModulesObj = airesults.get("targets");
 
 		Collection<String> selectedModules = new ArrayList();
 		
@@ -464,36 +564,19 @@ public class AssistantManager extends BaseAiManager
 		return searchArgs;
 	}
 
-	public void regularSearch(WebPageRequest inReq, boolean isMcp) throws Exception {
+	public void regularSearch(WebPageRequest inReq, AiSearch inAiSearchParams) throws Exception {
 		
 		//JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
-		String arguments = inReq.getRequestParameter("arguments");
-		
-		if(arguments == null)
-		{
-			log.warn("No arguments found in request");
-			return;
-		}
-		
-		UserProfile userprofile = (UserProfile) inReq.getPageValue("chatprofile");
-		
-		if(userprofile == null)
-		{
-			userprofile = (UserProfile) inReq.getPageValue("userprofile");
-		}
-		
-		inReq.putPageValue("userprofile", userprofile);
 
-		AiSearch aiSearchArgs = processAISearchArgs(arguments, userprofile);
+//		
+//		if(isMcp)
+//		{
+//			addMcpVars(inReq, aiSearchArgs);
+//		}
 		
-		if(isMcp)
-		{
-			addMcpVars(inReq, aiSearchArgs);
-		}
+		searchByKeywords(inReq, inAiSearchParams);
 		
-		searchByKeywords(inReq, aiSearchArgs);
-		
-		inReq.putPageValue("semanticquery", aiSearchArgs.toSemanticQuery());
+		inReq.putPageValue("semanticquery", inAiSearchParams.toSemanticQuery());
 
 	}
 	
@@ -1185,8 +1268,9 @@ public class AssistantManager extends BaseAiManager
 			Data parentmodule = (Data) iterator.next();
 			
 			Collection existing = embedsearcher.query().exact("parentmodule",parentmodule.getId()).search();
-			if( existing.size() > 5)
+			if( !existing.isEmpty())
 			{
+				log.info("Skipping " + parentmodule);
 				continue;
 			}
 			Collection<SemanticAction> actions = new ArrayList();
@@ -1207,7 +1291,7 @@ public class AssistantManager extends BaseAiManager
 			action = new SemanticAction();
 			action.setParentData(parentmodule);
 			action.setRequestType("create");
-			action.setSemanticText("Create " + parentmodule.getName());
+			action.setSemanticText("Create a new " + parentmodule.getName());
 			actions.add(action);
 			
 			//Check for child views
@@ -1227,7 +1311,7 @@ public class AssistantManager extends BaseAiManager
 							action.setParentData(parentmodule);
 							action.setChildData(childmodule);
 							action.setRequestType("searchjoin");
-							action.setSemanticText("Search for " + parentmodule.getName() + " in " + childmodule.getName() );
+							action.setSemanticText("Search for " + childmodule.getName() + " in " + parentmodule.getName());
 							actions.add(action);
 						}
 					}
@@ -1256,11 +1340,11 @@ public class AssistantManager extends BaseAiManager
 			
 		}
 		//Test search
-		List<Double> tosearch = manager.makeVector("Search for Collection");
 		manager.reinitClusters(inLog);
 
-		//Collection<RankedResult> results = manager.searchNearestItems(tosearch);
-		//log.info(results);
+//		List<Double> tosearch = manager.makeVector("Find all records in US States in 2023");
+//		Collection<RankedResult> results = manager.searchNearestItems(tosearch);
+//		log.info(results);
 		
 		
 	}

@@ -53,8 +53,7 @@ public class BasicLlmResponse implements LlmResponse
 	@Override
 	public JSONObject getArguments()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return getRawResponse();
 	}
 
 	@Override

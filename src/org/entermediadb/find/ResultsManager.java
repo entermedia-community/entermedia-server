@@ -420,7 +420,7 @@ public class ResultsManager extends BaseManager {
 		}
 		
 	}
-	public Collection<String> parseKeywords(Object keywords_object) throws Exception
+	public Collection<String> parseKeywords(Object keywords_object)
 	{
 		Collection<String> keywords = new ArrayList();
 		

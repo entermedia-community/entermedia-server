@@ -17,7 +17,7 @@ public interface LlmConnection {
 
     public String loadInputFromTemplate(String inString, Map<String, Object> inParams);
     
-    public LlmResponse loadResponseFromTemplate(LlmRequest llmreuest);
+    public LlmResponse renderLocalAction(LlmRequest llmreuest);
     
     public LlmResponse callCreateFunction(Map params, String inModel, String inFunction);
     

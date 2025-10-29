@@ -3,11 +3,53 @@ package org.entermediadb.ai.assistant;
 import java.util.Collection;
 
 import org.openedit.Data;
+import org.openedit.util.DateRange;
 
-public class AiSearch {
+public class AiSearch 
+{
+	
 	Collection<Data> fieldSelectedModules; //Name or IDs
 	Collection<String> fieldKeywords;
 	Collection<String> fieldFilters;
+
+	DateRange fieldDateRange;
+	public Data getParentModule()
+	{
+		return fieldParentModule;
+	}
+	public void setParentModule(Data inParentModule)
+	{
+		fieldParentModule = inParentModule;
+	}
+	public Data getChildModule()
+	{
+		return fieldChildModule;
+	}
+	public void setChildModule(Data inChildModule)
+	{
+		fieldChildModule = inChildModule;
+	}
+	public boolean isStrictSearch()
+	{
+		return fieldStrictSearch;
+	}
+	public void setStrictSearch(boolean inStrictSearch)
+	{
+		fieldStrictSearch = inStrictSearch;
+	}
+
+	Data fieldParentModule;
+	Data fieldChildModule;
+	
+	
+	public DateRange getDateRange()
+	{
+		return fieldDateRange;
+	}
+	public void setDateRange(DateRange inDateRange)
+	{
+		fieldDateRange = inDateRange;
+	}
 
 	boolean fieldStrictSearch;
 	boolean bulkSearch;
