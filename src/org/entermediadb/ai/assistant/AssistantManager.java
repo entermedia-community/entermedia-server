@@ -21,7 +21,7 @@ import org.entermediadb.ai.classify.SemanticCassifier;
 import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.LlmConnection;
-import org.entermediadb.ai.llm.LlmRequest;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.emedia.EMediaAIResponse;
 import org.entermediadb.ai.llm.openai.OpenAiConnection;
@@ -53,6 +53,8 @@ import org.openedit.util.JSONParser;
 public class AssistantManager extends BaseAiManager
 {
 	private static final Log log = LogFactory.getLog(AssistantManager.class);
+	
+	private AgentContext fieldAgentContext;
 	
 	public ResultsManager getResultsManager() {
 		ResultsManager resultsManager = (ResultsManager) getMediaArchive().getBean("resultsManager");
@@ -148,11 +150,33 @@ public class AssistantManager extends BaseAiManager
 		return manager;
 	}
 	
-	public void respondToChannel(ScriptLogger inLog, Data channel, Data message) throws Exception
+	
+	public AgentContext loadContext(String inChannelId) 
+	{
+		MediaArchive archive = getMediaArchive();
+		AgentContext agentContext = (AgentContext) archive.getCacheManager().get("agentcontext", inChannelId);
+		if( agentContext == null)
+		{
+			
+			agentContext = (AgentContext) archive.getSearcher("agentContext").query().exact("channel", inChannelId).searchOne(); //TODO Look in DB or cache from hitory?
+			if( agentContext == null)
+			{
+				agentContext = (AgentContext) archive.getSearcher("agentContext").createNewData();
+				agentContext.setValue("channel", inChannelId);
+				archive.getSearcher("agentContext").saveData(agentContext);
+			}
+			
+			archive.getCacheManager().put("agentcontext", inChannelId, agentContext);
+		
+		}
+		return agentContext;
+	}
+	
+	public void respondToChannel(ScriptLogger inLog, Data inChannel, Data message) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		LlmRequest llmrequest = new LlmRequest(); //TODO Look in DB or cache from hitory?
+		AgentContext agentContext = loadContext(inChannel.getId());
 		
 		String model = archive.getCatalogSettingValue("llmagentmodel");
 		
@@ -162,29 +186,29 @@ public class AssistantManager extends BaseAiManager
 		}
 		LlmConnection llmconnection = archive.getLlmConnection(model);
 
-		llmrequest.addContext("model", model);
+		agentContext.addContext("model", model);
 
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 		Searcher chats = archive.getSearcher("chatterbox");
 		
 		if (!llmconnection.isReady()) 
 		{
-			inLog.error("LLM Manager is not ready, check key for: " + model + ". Cannot process channel: " + channel);
+			inLog.error("LLM Manager is not ready, check key for: " + model + ". Cannot process channel: " + inChannel);
 			return;
 		}
 
-		String channeltype = channel.get("channeltype");
+		String channeltype = inChannel.get("channeltype");
 		if (channeltype == null)
 		{
 			channeltype = "agentchat";
 		}
 		
-		String id = channel.get("user");
+		String id = inChannel.get("user");
 		UserProfile profile = archive.getUserProfile(id);
-		llmrequest.addContext("chatprofile", profile);
-		llmrequest.setUserProfile(profile);
+		agentContext.addContext("chatprofile", profile);
+		agentContext.setUserProfile(profile);
 		
-		llmrequest.addContext("channel", channel);
+		agentContext.addContext("channel", inChannel);
 
 		String oldstatus = message.get("chatmessagestatus");
 		
@@ -192,11 +216,11 @@ public class AssistantManager extends BaseAiManager
 		message.setValue("chatmessagestatus", "completed");
 		chats.saveData(message);
 		
-		llmrequest.addContext("message", message);
+		agentContext.addContext("message", message);
 		
-		llmrequest.addContext("assistant", this);
+		agentContext.addContext("assistant", this);
 		
-		llmrequest.addContext("channelchathistory", loadChannelChatHistory(channel));
+		agentContext.addContext("channelchathistory", loadChannelChatHistory(inChannel));
 		
 		if("refresh".equals(oldstatus))
 		{			
@@ -206,19 +230,19 @@ public class AssistantManager extends BaseAiManager
 				
 				JSONObject parsedParams = new JSONParser().parse(callerParams);
 
-				llmrequest.setFunctionName((String) parsedParams.get("function"));
+				agentContext.setFunctionName((String) parsedParams.get("function"));
 				parsedParams.remove("function");
 				
-				llmrequest.setParameters((JSONObject) parsedParams);  //TODO: Get this from a database table called llrequests
+				//agentContext.setParameters((JSONObject) parsedParams);  //TODO: Get this from a database table called llrequests
 	
-				execLocalActionFromChat(llmconnection, message, llmrequest);
+				execLocalActionFromChat(llmconnection, message, agentContext);
 			}
 			return;
 		}
 		
 		Data resopnseMessage = chats.createNewData();
 		resopnseMessage.setValue("user", "agent");
-		resopnseMessage.setValue("channel", channel.getId());
+		resopnseMessage.setValue("channel", inChannel.getId());
 		resopnseMessage.setValue("date", new Date());
 		resopnseMessage.setValue("message", "<i class=\"fas fa-spinner fa-spin\"></i>");
 		resopnseMessage.setValue("chatmessagestatus", "processing");
@@ -229,7 +253,7 @@ public class AssistantManager extends BaseAiManager
 
 		
 //		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/assistant/instructions/current.json";
-		LlmResponse response = processUserRequest(llmrequest);
+		LlmResponse response = processUserRequest(agentContext);
 		
 		//current update it?
 		
@@ -237,14 +261,14 @@ public class AssistantManager extends BaseAiManager
 		{
 			// Function call detected
 			String functionName = response.getFunctionName();
-			llmrequest.setFunctionName(functionName);
+			agentContext.setFunctionName(functionName);
 			
 			JSONObject functionArguments = response.getArguments();		
 			
-			llmrequest.setValue("arguments", functionArguments);
+			agentContext.setValue("arguments", functionArguments);
 			
 			
-			resopnseMessage.setValue("params", llmrequest.toString());
+			resopnseMessage.setValue("params", agentContext.toString());
 			
 			Object explainer = functionArguments.get("explainer");
 			if( explainer != null && explainer instanceof String)
@@ -270,7 +294,7 @@ public class AssistantManager extends BaseAiManager
 			
 			server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 			
-			execLocalActionFromChat(llmconnection, resopnseMessage, llmrequest);
+			execLocalActionFromChat(llmconnection, resopnseMessage, agentContext);
 		}
 		else
 		{
@@ -290,7 +314,7 @@ public class AssistantManager extends BaseAiManager
 		
 	}
 	
-	protected LlmResponse processUserRequest(LlmRequest llmRequest)
+	protected LlmResponse processUserRequest(AgentContext llmRequest)
 	{
 		MediaArchive archive = getMediaArchive();
 		
@@ -381,25 +405,25 @@ public class AssistantManager extends BaseAiManager
 		return response;
 	}
 	
-	public void execLocalActionFromChat(LlmConnection llmconnection, Data messageToUpdate, LlmRequest llmrequest) throws Exception
+	public void execLocalActionFromChat(LlmConnection llmconnection, Data messageToUpdate, AgentContext agentContext) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
 		Data channel = archive.getCachedData("channel", messageToUpdate.get("channel"));
-		llmrequest.addContext("channel", channel);
+		agentContext.addContext("channel", channel);
 		
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 
 		try
 		{
-			llmrequest.addContext("message", messageToUpdate);
-			llmrequest.addContext("aisearchparams", llmrequest.getAiSearchParams() );
+			agentContext.addContext("message", messageToUpdate);
+			agentContext.addContext("aisearchparams", agentContext.getAiSearchParams() );
 			
 			String apphome = "/"+ channel.get("chatapplicationid");
-			llmrequest.addContext("apphome", apphome);
+			agentContext.addContext("apphome", apphome);
 			
 			
-			LlmResponse response = llmconnection.renderLocalAction(llmrequest);  //Run Search
+			LlmResponse response = llmconnection.renderLocalAction(agentContext);  //Run Search
 
 			messageToUpdate.setValue("message", response.getMessage());
 			String messageplain = messageToUpdate.get("messageplain");
@@ -434,13 +458,11 @@ public class AssistantManager extends BaseAiManager
 			server.broadcastMessage(functionMessageUpdate);
 			
 			Long waittime = 200l;
-			if( llmrequest.getNextFunctionName() != null)
+			if( agentContext.getNextFunctionName() != null)
 			{
-				Map params = llmrequest.getProperties();
-				
-				params.put("function", llmrequest.getNextFunctionName());
-				
-				messageToUpdate.setValue("params", params.toJSONString());
+				Map params = agentContext.getProperties();
+				//params.put("function", agentContext.getNextFunctionName());
+				//messageToUpdate.setValue("params", params.toJSONString());
 
 				messageToUpdate.setValue("chatmessagestatus", "refresh");
 				chats.saveData(messageToUpdate);
@@ -464,7 +486,7 @@ public class AssistantManager extends BaseAiManager
 		}
 		catch (Exception e)
 		{
-			log.error("Could not execute function: " + llmrequest.getFunctionName(), e);
+			log.error("Could not execute function: " + agentContext.getFunctionName(), e);
 			messageToUpdate.setValue("functionresponse", e.toString());
 			messageToUpdate.setValue("chatmessagestatus", "failed");
 			archive.saveData("chatterbox", messageToUpdate);
@@ -879,7 +901,7 @@ public class AssistantManager extends BaseAiManager
 			return null;
 		}
 
-		LlmRequest llmrequest = new LlmRequest();
+		AgentContext llmrequest = new AgentContext();
 		llmrequest.addContext("fulltext", fullText);
 		
 		String model = archive.getCatalogSettingValue("llmmcpmodel");

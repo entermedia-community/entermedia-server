@@ -17,14 +17,14 @@ public interface LlmConnection {
 
     public String loadInputFromTemplate(String inString, Map<String, Object> inParams);
     
-    public LlmResponse renderLocalAction(LlmRequest llmreuest);
+    public LlmResponse renderLocalAction(AgentContext llmreuest);
     
     public LlmResponse callCreateFunction(Map params, String inModel, String inFunction);
     
     public LlmResponse callClassifyFunction(Map inParams, String inModel, String inFunction, String inBase64Image);
     public LlmResponse callClassifyFunction(Map inParams, String inModel, String inFunction, String inBase64Image, String textContent);
 
-    public LlmResponse runPageAsInput(LlmRequest llmRequest, String inChattemplate);
+    public LlmResponse runPageAsInput(AgentContext llmRequest, String inChattemplate);
 
     public String getApiEndpoint();
 	

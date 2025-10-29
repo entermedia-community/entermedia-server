@@ -1,6 +1,6 @@
 package org.entermediadb.ai.assistant;
 
-import org.entermediadb.ai.llm.LlmRequest;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
@@ -17,7 +17,7 @@ public class AgentModule extends BaseMediaModule {
 
 	public void chatAgentRegularSearch(WebPageRequest inReq) throws Exception 
 	{	
-		LlmRequest request =  (LlmRequest)inReq.getPageValue("llmrequest");
+		AgentContext request =  (AgentContext)inReq.getPageValue("llmrequest");
 		
 		getAssistantManager(inReq).regularSearch(inReq, request.getAiSearchParams());
 	}

@@ -7,10 +7,12 @@ import java.util.Map;
 import org.entermediadb.ai.assistant.AiSearch;
 import org.entermediadb.ai.knn.RankedResult;
 import org.json.simple.JSONObject;
+import org.openedit.CatalogEnabled;
+import org.openedit.ModuleManager;
 import org.openedit.data.BaseData;
 import org.openedit.profile.UserProfile;
 
-public class LlmRequest extends BaseData {
+public class AgentContext extends BaseData implements CatalogEnabled {
 	String functionName;
 	String nextFunctionName;
 	Map<String, Object> context;
@@ -18,6 +20,31 @@ public class LlmRequest extends BaseData {
 	
 	UserProfile fieldUserProfile;
 	
+	ModuleManager fieldModuleManager;
+	
+	String fieldCatalogId;
+	
+	
+	public String getCatalogId()
+	{
+		return fieldCatalogId;
+	}
+
+	public void setCatalogId(String inCatalogId)
+	{
+		fieldCatalogId = inCatalogId;
+	}
+
+	public ModuleManager getModuleManager()
+	{
+		return fieldModuleManager;
+	}
+
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
+		fieldModuleManager = inModuleManager;
+	}
+
 	public UserProfile getUserProfile()
 	{
 		return fieldUserProfile;

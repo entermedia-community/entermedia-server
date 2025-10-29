@@ -12,7 +12,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.llm.BaseLlmConnection;
 import org.entermediadb.ai.llm.LlmConnection;
-import org.entermediadb.ai.llm.LlmRequest;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
@@ -26,7 +26,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 {
 	private static Log log = LogFactory.getLog(GeminiConnection.class);
 
-	public LlmResponse runPageAsInput(LlmRequest llmRequest, String inTemplate)
+	public LlmResponse runPageAsInput(AgentContext llmRequest, String inTemplate)
 	{
 		llmRequest.addContext("mediaarchive", getMediaArchive());
 

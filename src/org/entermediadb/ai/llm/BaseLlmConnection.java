@@ -150,12 +150,12 @@ public abstract class BaseLlmConnection implements LlmConnection {
 
 	public String loadInputFromTemplate(String inTemplate, Map<String, Object> inContext) 
 	{
-		LlmRequest llmrequest = new LlmRequest();
+		AgentContext llmrequest = new AgentContext();
 		llmrequest.setContext(inContext);
 		
 		return loadInputFromTemplate(inTemplate, llmrequest);
 	}
-	public String loadInputFromTemplate(String inTemplate, LlmRequest llmrequest) 
+	public String loadInputFromTemplate(String inTemplate, AgentContext llmrequest) 
 	{
 		Map<String,Object> inContext = llmrequest.getContext();
 		if(inTemplate == null) {
@@ -198,7 +198,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		} 
 	}
 
-	protected void loadLlmRequestParameters(LlmRequest llmrequest, WebPageRequest request)
+	protected void loadLlmRequestParameters(AgentContext llmrequest, WebPageRequest request)
 	{
 		Map inParameters = llmrequest.getProperties();
 		if( inParameters != null)
@@ -230,7 +230,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		}
 	}
 	
-	public LlmResponse renderLocalAction(LlmRequest llmrequest) 
+	public LlmResponse renderLocalAction(AgentContext llmrequest) 
 	{
 		String functionName = llmrequest.getFunctionName();
 		if(functionName == null) 
