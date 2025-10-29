@@ -209,7 +209,7 @@ public class AssistantManager extends BaseAiManager
 				llmrequest.setFunctionName((String) parsedParams.get("function"));
 				parsedParams.remove("function");
 				
-				llmrequest.setParameters((JSONObject) parsedParams);
+				llmrequest.setParameters((JSONObject) parsedParams);  //TODO: Get this from a database table called llrequests
 	
 				execLocalActionFromChat(llmconnection, message, llmrequest);
 			}
