@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <user enabled="true">
-  <user-name>admin</user-name>
-  <password>DES:2JPGMLB8Y60=</password>
-  <creation-date>1146231775645</creation-date>
+  <user-name><![CDATA[admin]]></user-name>
+  <password><![CDATA[DES:2JPGMLB8Y60=]]></password>
   <properties>
     <property name="lastName" value="Administrator"/>
+    <property name=".version" value="3"/>
+    <property name="creationdate" value="2023-12-16T10:05:18.854Z"/>
     <property name="virtual" value="false"/>
+    <property name="lastlogin" value="2025-10-30 22:39:44 +0600"/>
+    <property name="description" value="support@openedit.org|The|Administrator|admin|admin|preview|false|org|openedit|support|"/>
     <property name="groups" value="administrators"/>
-    <property name="oe_edit_mode" value="editing"/>
+    <property name="oe_edit_mode" value="preview"/>
     <property name="enabled" value="true"/>
+    <property name="expiresin"/>
     <property name="firstName" value="The"/>
+    <property name="password" value="DES:2JPGMLB8Y60="/>
+    <property name="catalogid" value="system"/>
     <property name="screenname" value="admin"/>
+    <property name="emrecordstatus" value="{&quot;recorddeleted&quot;:false,&quot;mastereditclusterid&quot;:&quot;entermedia-em9clusterCB&quot;,&quot;lastmodifiedclusterid&quot;:&quot;entermedia-em9clusterCB&quot;,&quot;recordmodificationdate&quot;:&quot;2025-10-30T16:05:24.818Z&quot;,&quot;masterrecordmodificationdate&quot;:&quot;2025-10-30T16:05:24.818Z&quot;}"/>
     <property name="email" value="support@openedit.org"/>
   </properties>
   <group id="administrators"/>
