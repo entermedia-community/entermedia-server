@@ -624,8 +624,6 @@ public class AssistantManager extends BaseAiManager
 		String text  = inAiSearchParams.getPart2().getParameterValue();
 		HitTracker foundhits = getMediaArchive().query(parentmoduleid).freeform("description", text).search();
 		
-		Data module = getMediaArchive().getCachedData("module", parentmoduleid);
-		inReq.putPageValue("module",module);
 		if( foundhits.isEmpty() )
 		{
 			return;
@@ -633,6 +631,8 @@ public class AssistantManager extends BaseAiManager
 		Collection<String> ids = foundhits.collectValues("id");
 		
 		String moduleid2 = inAiSearchParams.getPart1().getTargetTable(); //Need ID of sales collection?
+		Data module = getMediaArchive().getCachedData("module", moduleid2);
+		inReq.putPageValue("module",module);
 
 		QueryBuilder search = getMediaArchive().query(moduleid2).named("assitedsearch").orgroup(parentmoduleid,ids);
 		String filter = inAiSearchParams.getPart1().getParameterValue();
