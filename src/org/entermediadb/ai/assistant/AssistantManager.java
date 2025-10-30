@@ -260,10 +260,7 @@ public class AssistantManager extends BaseAiManager
 		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 		
 //		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/assistant/instructions/current.json";
-		LlmResponse response = processUserRequest(message,agentContext);
-		
-		//current update it?
-//			// Function call detected
+		LlmResponse response = processRecentUserRequest(message,agentContext);
 		if( response.getFunctionName() != null)
 		{
 			agentContext.setFunctionName(response.getFunctionName());
@@ -318,14 +315,14 @@ public class AssistantManager extends BaseAiManager
 				server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 			}
 		}
-		else
+		else //add option to run AI based functions like create an image
 		{
 			execLocalActionFromChat(llmconnection, resopnseMessage, agentContext);
 		}
 		
 	}
 	
-	protected LlmResponse processUserRequest(MultiValued message, AgentContext inAgentContext)
+	protected LlmResponse processRecentUserRequest(MultiValued message, AgentContext inAgentContext)
 	{
 		EMediaAIResponse response = new EMediaAIResponse();
 		String usermessage = message.get("message");
@@ -346,22 +343,26 @@ public class AssistantManager extends BaseAiManager
 		LlmConnection llmconnection = archive.getLlmConnection(model);
 		
 		//Run AI
-		JSONObject results = llmconnection.callStructuredOutputList("parse_sentence", model, inAgentContext.getContext());
-
+		JSONObject results = llmconnection.callStructuredOutputList("parse_sentence", model, inAgentContext.getContext()); //TODO: Replace with local API that is faster
 		response.setRawResponse(results);
+		processResults(inAgentContext, response, results);
+		return response;
+	}
+
+	protected void processResults(AgentContext inAgentContext, EMediaAIResponse response, JSONObject results)
+	{
 		String type = (String)results.get("request_type");
+
 		if( type == null)
 		{
 			type = "chitchat";
 		}
-		processResults(inAgentContext, response, results, type);
-		return response;
-	}
-
-	protected void processResults(AgentContext inAgentContext, EMediaAIResponse response, JSONObject results, String type)
-	{
-		if( "search".equals(type) )
+		
+		//TODO Add howto rag handling
+		
+		else if( "search".equals(type) )
 		{
+			//Search for lamp products within the sales Collection
 			ArrayList steps = (ArrayList)results.get("steps");
 			if( steps != null)
 			{
@@ -405,8 +406,6 @@ public class AssistantManager extends BaseAiManager
 				List<Double> tosearch = manager.makeVector(text);
 				Collection<RankedResult> suggestions = manager.searchNearestItems(tosearch);
 				//Load more details into this request and possibly change the type
-
-				//Let the search action parse any  extra parameters available from the context 
 				if( !suggestions.isEmpty())
 				{
 					inAgentContext.setRankedSuggestions(suggestions);
@@ -420,10 +419,8 @@ public class AssistantManager extends BaseAiManager
 					}
 				}
 			}
-			
 		}
 		response.setFunctionName(type);
-		//Search for lamp products within the sales Collection
 		
 	}
 	
