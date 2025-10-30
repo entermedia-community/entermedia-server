@@ -367,6 +367,10 @@ public class AssistantManager extends BaseAiManager
 			if( steps != null)
 			{
 				AiSearch search = inAgentContext.getAiSearchParams();
+				search.setPart1(null);
+				search.setPart2(null);
+				search.setPart3(null);
+				
 				for (Iterator iterator = steps.iterator(); iterator.hasNext();)
 				{
 					JSONObject step = (JSONObject) iterator.next();
@@ -393,13 +397,13 @@ public class AssistantManager extends BaseAiManager
 				}
 				
 				String text = "Search for ";
-				if( search.getPart1() != null)
-				{
-					text = text + search.getPart1().getTargetTable();
-				}
 				if( search.getPart2() != null)
 				{
-					text = text +  " in " + search.getPart2().getTargetTable();
+					text = text + search.getPart1().getTargetTable() + " in " + search.getPart2().getTargetTable();
+				}
+				else if( search.getPart1() != null)
+				{
+					text = text +  " in " + search.getPart1().getTargetTable();
 				}
 				
 				SemanticTableManager manager = loadSemanticTableManager("actionembedding");
@@ -412,7 +416,7 @@ public class AssistantManager extends BaseAiManager
 					RankedResult top = (RankedResult)suggestions.iterator().next();
 					if ( top.getDistance() < .7 )
 					{
-						type = top.getEmbedding().get("requesttype");  //More specific type of search
+						type = top.getEmbedding().get("aifunction");  //More specific type of search
 					
 						AiSearch aisearch = processAISearchArgs(results,top.getEmbedding(), inAgentContext);
 						inAgentContext.setAiSearchParams(aisearch);
@@ -471,7 +475,7 @@ public class AssistantManager extends BaseAiManager
 			functionMessageUpdate.put("messagetype", "airesponse");
 			functionMessageUpdate.put("catalogid", archive.getCatalogId());
 			functionMessageUpdate.put("user", "agent");
-			functionMessageUpdate.put("channepeoplel", messageToUpdate.get("channel"));
+			functionMessageUpdate.put("channel", messageToUpdate.get("channel"));
 			functionMessageUpdate.put("messageid", messageToUpdate.getId());
 			functionMessageUpdate.put("message", response.getMessage());
 			server.broadcastMessage(functionMessageUpdate);
@@ -479,6 +483,7 @@ public class AssistantManager extends BaseAiManager
 			Long waittime = 200l;
 			if( agentContext.getNextFunctionName() != null)
 			{
+				//Search semantic now?
 				Map params = agentContext.getProperties();
 				//params.put("function", agentContext.getNextFunctionName());
 				//messageToUpdate.setValue("params", params.toJSONString());
@@ -615,14 +620,27 @@ public class AssistantManager extends BaseAiManager
 
 	public void searchJoin(WebPageRequest inReq, AiSearch inAiSearchParams)
 	{
-		String parentmoduleid = inAiSearchParams.getPart1().getTargetTable(); //Need ID of sales collection?
-		String text  = inAiSearchParams.getPart1().getParameterValue();
+		String parentmoduleid = inAiSearchParams.getPart2().getTargetTable(); //Need ID of sales collection?
+		String text  = inAiSearchParams.getPart2().getParameterValue();
 		HitTracker foundhits = getMediaArchive().query(parentmoduleid).freeform("description", text).search();
+		
+		Data module = getMediaArchive().getCachedData("module", parentmoduleid);
+		inReq.putPageValue("module",module);
+		if( foundhits.isEmpty() )
+		{
+			return;
+		}
 		Collection<String> ids = foundhits.collectValues("id");
 		
-		String moduleid2 = inAiSearchParams.getPart2().getTargetTable(); //Need ID of sales collection?
+		String moduleid2 = inAiSearchParams.getPart1().getTargetTable(); //Need ID of sales collection?
 
-		HitTracker finalhits = getMediaArchive().query(moduleid2).named("assitantedsearch").orgroup(parentmoduleid,ids).search();
+		QueryBuilder search = getMediaArchive().query(moduleid2).named("assitedsearch").orgroup(parentmoduleid,ids);
+		String filter = inAiSearchParams.getPart1().getParameterValue();
+		if( filter != null)
+		{
+			search.freeform("description", filter);
+		}
+		HitTracker finalhits = search.search();
 		//inReq.putPageValue( finalhits.getSessionId(), finalhits);
 		inReq.putPageValue("hits",finalhits);		
 	}
@@ -1359,13 +1377,13 @@ public class AssistantManager extends BaseAiManager
 							"conversation",
 							"support request"
 							*/
-			action.setAiFunction("search");
+			action.setAiFunction("searchQuery");
 			action.setSemanticText("Search for " + parentmodule.getName());
 			action.setParentData(parentmodule);
 			actions.add(action);
 			action = new SemanticAction();
 			action.setParentData(parentmodule);
-			action.setAiFunction("create");
+			action.setAiFunction("createEntity");
 			action.setSemanticText("Create a new " + parentmodule.getName());
 			actions.add(action);
 			

@@ -17,14 +17,14 @@ public class AgentModule extends BaseMediaModule {
 
 	public void chatAgentJoinSearch(WebPageRequest inReq) throws Exception 
 	{	
-		AgentContext request =  (AgentContext)inReq.getPageValue("llmrequest");
+		AgentContext request =  (AgentContext)inReq.getPageValue("agentcontext");
 		
 		getAssistantManager(inReq).searchJoin(inReq, request.getAiSearchParams());
 	}
 
 	public void chatAgentRegularSearch(WebPageRequest inReq) throws Exception 
 	{	
-		AgentContext request =  (AgentContext)inReq.getPageValue("llmrequest");
+		AgentContext request =  (AgentContext)inReq.getPageValue("agentcontext");
 		
 		getAssistantManager(inReq).searchRegular(inReq, request.getAiSearchParams());
 	}
