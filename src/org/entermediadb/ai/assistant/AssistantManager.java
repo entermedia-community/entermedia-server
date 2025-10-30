@@ -1380,7 +1380,7 @@ public class AssistantManager extends BaseAiManager
 							"conversation",
 							"support request"
 							*/
-			action.setAiFunction("searchQuery");
+			action.setAiFunction("searchOne");
 			action.setSemanticText("Search for " + parentmodule.getName());
 			action.setParentData(parentmodule);
 			actions.add(action);
@@ -1406,7 +1406,7 @@ public class AssistantManager extends BaseAiManager
 							action = new SemanticAction();
 							action.setParentData(parentmodule);
 							action.setChildData(childmodule);
-							action.setAiFunction("searchJoin");
+							action.setAiFunction("searchOne");
 							action.setSemanticText("Search for " + childmodule.getName() + " in " + parentmodule.getName());
 							actions.add(action);
 						}
