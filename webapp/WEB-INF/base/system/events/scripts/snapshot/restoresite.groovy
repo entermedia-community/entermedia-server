@@ -74,7 +74,7 @@ public void init() {
 			String logstring = String.format("restoring: %s config= %s ", site.get("rootpath"), configonly);
 			log.info(logstring);
 			
-			restore(mediaarchive, site,snapshot,configonly);
+			restore(mediaarchive, site, snapshot, configonly);
 			snapshot.setValue("snapshotstatus", "complete");
 		}
 		catch( Exception ex)
@@ -93,6 +93,7 @@ public void init() {
 		//Fix app paths
 		//deploypath
 		Searcher appsearcher = mediaarchive.getSearcher("app");
+		
 		//Loop over apps
 		appsearcher.deleteAll(null);
 		Collection paths = mediaarchive.getPageManager().getChildrenPaths(site.get("rootpath"));
@@ -107,27 +108,10 @@ public void init() {
 				newapp.setName(name);
 				newapp.setValue("deploypath", path);
 				appsearcher.saveData(newapp);
-				log.info("Fixed app " + path);
+				log.info("Saved app " + path);
 				
 			}
 		}
-		
-		HitTracker apps = appsearcher.query().all().search();
-		for(Data app:apps)
-		{
-			
-			if( app.getId() == "emsare")
-			{
-					Collection all = mediaarchive.getList("module");
-					WorkspaceManager manager = mediaarchive.getBean("workspaceManager");
-					for (Iterator iterator = all.iterator(); iterator.hasNext();)
-					{
-						Data module = (Data) iterator.next();
-						manager.saveModule(catalogid, app.getId(), module);
-					}
-			}
-		}
-
 
 		//mediaarchive.getCategorySearcher().reIndexAll();
 	}
@@ -177,13 +161,16 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 		archiveFolder(mediaarchive.getPageManager(), target, tempindex);
 		mediaarchive.getPageManager().copyPage(sitefolder, target);
 
-		//TODO: Go fix the catalogid's and applicationids
+		//TODO: Go fix the catalogid's, siteid and applicationids for applications
 		fixXconfs(mediaarchive.getPageManager(),target,catalogid);
+	
 	}
 	else
 	{
 		log.info(" site not included " + sitefolder.getPath());
 	}
+	
+	
 
 	Page orig = mediaarchive.getPageManager().getPage(rootfolder + "/originals");
 	if( orig.exists() )
@@ -203,12 +190,12 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 	PropertyDetailsArchive pdarchive = mediaarchive.getPropertyDetailsArchive();
 	pdarchive.clearCache();
 
-	/*
-	 Page categories = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/category.csv");
-	 if(categories.exists()){
-	 populateData(categories);
-	 }
-	 */
+	
+	// Page categories = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/category.csv");
+	// if(categories.exists()){
+	// populateData(categories);
+	// }
+	
 
 	Page fields = mediaarchive.getPageManager().getPage(rootfolder + "/fields/");
 	if(fields.exists()) {
@@ -345,16 +332,21 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 
 
 
-public void fixXconfs(PageManager pageManager, Page site,String catalogid)
+public void fixXconfs(PageManager pageManager, Page site, String catalogid)
 {
 	PageSettings settings = pageManager.getPageSettingsManager().getPageSettings(site.getPath() + "/_site.xconf");
+	
 	if( settings.exists() )
 	{
 		settings.setProperty("catalogid", catalogid);
-		String appid = PathUtilities.extractPageName(site.getPath());
-		settings.setProperty("applicationid", appid);
+		
+		String siteid = PathUtilities.extractPageName(site.getPath());
+		settings.setProperty("siteid", siteid);
 		pageManager.getPageSettingsManager().saveSetting(settings);
+		
+		log.info("Root settings saved: catalogid: ${catalogid} siteid: ${siteid}")
 	}
+	
 	//Loop over apps
 	Collection paths = pageManager.getChildrenPaths(site.getPath());
 	for(String path:paths)
@@ -367,6 +359,8 @@ public void fixXconfs(PageManager pageManager, Page site,String catalogid)
 			String appid = site.getPath().substring(1) + "/" + PathUtilities.extractPageName(path);
 			settings.setProperty("applicationid", appid);
 			pageManager.getPageSettingsManager().saveSetting(settings);
+			
+			log.info("${path} settings saved: catalogid: ${catalogid} applicationid: ${appid}")
 		}
 	}
 	pageManager.clearCache();
