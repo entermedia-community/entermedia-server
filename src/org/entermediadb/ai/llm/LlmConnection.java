@@ -25,6 +25,7 @@ public interface LlmConnection {
     public LlmResponse callClassifyFunction(Map inParams, String inModel, String inFunction, String inBase64Image, String textContent);
 
     public LlmResponse runPageAsInput(AgentContext llmRequest, String inChattemplate);
+    public LlmResponse callPlainMessage(AgentContext llmRequest, String inChitChatPageName);
 
     public String getApiEndpoint();
 	

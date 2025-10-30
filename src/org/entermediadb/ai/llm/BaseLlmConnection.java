@@ -150,14 +150,14 @@ public abstract class BaseLlmConnection implements LlmConnection {
 
 	public String loadInputFromTemplate(String inTemplate, Map<String, Object> inContext) 
 	{
-		AgentContext llmrequest = new AgentContext();
-		llmrequest.setContext(inContext);
+		AgentContext agentcontext = new AgentContext();
+		agentcontext.setContext(inContext);
 		
-		return loadInputFromTemplate(inTemplate, llmrequest);
+		return loadInputFromTemplate(inTemplate, agentcontext);
 	}
-	public String loadInputFromTemplate(String inTemplate, AgentContext llmrequest) 
+	public String loadInputFromTemplate(String inTemplate, AgentContext agentcontext) 
 	{
-		Map<String,Object> inContext = llmrequest.getContext();
+		Map<String,Object> inContext = agentcontext.getContext();
 		if(inTemplate == null) {
 			throw new OpenEditException("Cannot load input, template is null" + inContext);
 		}
@@ -169,9 +169,9 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			
 			WebPageRequest request = getRequestUtils().createPageRequest(template, user);
 			
-			if(llmrequest != null)
+			if(agentcontext != null)
 			{				
-				loadLlmRequestParameters(llmrequest, request);
+				loadagentcontextParameters(agentcontext, request);
 			}
 			
 			request.putPageValues(inContext);
@@ -198,9 +198,9 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		} 
 	}
 
-	protected void loadLlmRequestParameters(AgentContext llmrequest, WebPageRequest request)
+	protected void loadagentcontextParameters(AgentContext agentcontext, WebPageRequest request)
 	{
-		Map inParameters = llmrequest.getProperties();
+		Map inParameters = agentcontext.getProperties();
 		if( inParameters != null)
 		{
 			for (Iterator iterator = inParameters.keySet().iterator(); iterator.hasNext();)
@@ -230,9 +230,9 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		}
 	}
 	
-	public LlmResponse renderLocalAction(AgentContext llmrequest) 
+	public LlmResponse renderLocalAction(AgentContext agentcontext) 
 	{
-		String functionName = llmrequest.getFunctionName();
+		String functionName = agentcontext.getFunctionName();
 		if(functionName == null) 
 		{
 			throw new OpenEditException("Cannot load function response, functionName is null");
@@ -240,7 +240,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		
 		log.info("Loading response for function: " + functionName);
 		
-		String apphome = (String) llmrequest.getContextValue("apphome");
+		String apphome = (String) agentcontext.getContextValue("apphome");
 		
 		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/" + functionName + ".html";
 		
@@ -252,9 +252,9 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			User user = getMediaArchive().getUserManager().getUser("agent");
 			
 			WebPageRequest inReq = getRequestUtils().createPageRequest(template, user);
-			inReq.putPageValues(llmrequest.getContext());
-			inReq.putPageValue("llmrequest", llmrequest);
-			loadLlmRequestParameters(llmrequest, inReq);
+			inReq.putPageValues(agentcontext.getContext());
+			inReq.putPageValue("agentcontext", agentcontext);
+			loadagentcontextParameters(agentcontext, inReq);
 			
 			StringWriter output = new StringWriter();
 			inReq.setWriter(output);
@@ -375,5 +375,35 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			connection.release(resp);
 		}
 	}
-	
+
+	public LlmResponse callPlainMessage(AgentContext agentcontext, String inPageName)
+	{
+		agentcontext.addContext("mediaarchive", getMediaArchive());
+		String input = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getServerName() +"/assistant/messages/" + inPageName + ".json", agentcontext.getContext());
+		log.info(inPageName + " process chat");
+		String endpoint = getApiEndpoint();
+
+		HttpPost method = new HttpPost(endpoint);
+		method.addHeader("Authorization", "Bearer " + getApiKey());
+		method.setHeader("Content-Type", "application/json");
+
+		method.setEntity(new StringEntity(input, "UTF-8"));
+
+		CloseableHttpResponse resp = getConnection().sharedExecute(method);
+
+		JSONObject json = getConnection().parseJson(resp);
+
+		OpenAiResponse response = new OpenAiResponse();
+		response.setRawResponse(json);
+		
+		String nextFunction = response.getFunctionName();
+		if( nextFunction != null)
+		{
+			agentcontext.setFunctionName(nextFunction);
+		}
+
+		getMediaArchive().saveData("agentcontext",agentcontext);
+		return response;
+
+	}
 }

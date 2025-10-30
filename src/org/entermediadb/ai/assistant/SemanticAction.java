@@ -37,15 +37,15 @@ public class SemanticAction
 	{
 		fieldFunctionNames = inFunctionNames;
 	}
-	public String getRequestType()
+	public String getAiFunction()
 	{
-		return fieldRequestType;
+		return fieldAiFunction;
 	}
-	public void setRequestType(String inRequestType)
+	public void setAiFunction(String inRequestType)
 	{
-		fieldRequestType = inRequestType;
+		fieldAiFunction = inRequestType;
 	}
-	protected String fieldRequestType;
+	protected String fieldAiFunction;
 	
 	protected String fieldSemanticText;
 	public String getSemanticText()

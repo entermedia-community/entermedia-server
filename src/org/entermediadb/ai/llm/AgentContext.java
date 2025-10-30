@@ -57,11 +57,11 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 
 	
 	public String getNextFunctionName() {
-		return nextFunctionName;
+		return get("nextfunctionname");
 	}
 	
 	public void setNextFunctionName(String inNextFunctionName) {
-		nextFunctionName = inNextFunctionName;
+		setValue("nextfunctionname",inNextFunctionName);
 	}
 	
 	public Map<String,Object> getContext() {
@@ -119,6 +119,10 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 
 	public AiSearch getAiSearchParams()
 	{
+		if( fieldAiSearchParams == null)
+		{
+			fieldAiSearchParams  = new AiSearch();
+		}
 		return fieldAiSearchParams;
 	}
 
@@ -129,11 +133,11 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 
 	public String getFunctionName()
 	{
-		return fieldFunctionName;
+		return get("functionname");
 	}
 
 	public void setFunctionName(String inFunctionName)
 	{
-		fieldFunctionName = inFunctionName;
+		setValue("functionname",inFunctionName);
 	}
 }

@@ -132,7 +132,7 @@ public class AssistantManager extends BaseAiManager
 			}
 
 			for (Iterator iterator2 = mostrecents.iterator(); iterator2.hasNext();) {
-				Data mostrecent = (Data) iterator2.next();
+				MultiValued mostrecent = (MultiValued) iterator2.next();
 				try
 				{
 					respondToChannel(inLog, channel, mostrecent);
@@ -179,7 +179,7 @@ public class AssistantManager extends BaseAiManager
 		return agentContext;
 	}
 	
-	public void respondToChannel(ScriptLogger inLog, Data inChannel, Data message) throws Exception
+	public void respondToChannel(ScriptLogger inLog, Data inChannel, MultiValued message) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 		
@@ -239,7 +239,8 @@ public class AssistantManager extends BaseAiManager
 
 				agentContext.setFunctionName((String) parsedParams.get("function"));
 				parsedParams.remove("function");
-				
+				getMediaArchive().saveData("agentcontext",agentContext);
+
 				//agentContext.setParameters((JSONObject) parsedParams);  //TODO: Get this from a database table called llrequests
 	
 				execLocalActionFromChat(llmconnection, message, agentContext);
@@ -257,56 +258,55 @@ public class AssistantManager extends BaseAiManager
 		chats.saveData(resopnseMessage);
 		
 		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
-
 		
 //		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/assistant/instructions/current.json";
-		LlmResponse response = processUserRequest(agentContext);
+		LlmResponse response = processUserRequest(message,agentContext);
 		
 		//current update it?
-		
-		if (response.isToolCall())
+//			// Function call detected
+		if( response.getFunctionName() != null)
 		{
-			// Function call detected
-			String functionName = response.getFunctionName();
-			agentContext.setFunctionName(functionName);
-			
-			JSONObject functionArguments = response.getArguments();		
-			
-			agentContext.setValue("arguments", functionArguments);
-			
-			
-			resopnseMessage.setValue("params", agentContext.toString());
-			
-			Object explainer = functionArguments.get("explainer");
-			if( explainer != null && explainer instanceof String)
-			{
-				resopnseMessage.setValue("message", (String)explainer);
-			} 
-			else
-			{
-				Data function = getMediaArchive().getCachedData("aifunctions", functionName);
-				String processingmessage = null;
-				if( function != null)
-				{
-					processingmessage = function.get("processingmessage");
-				}
-				if( processingmessage == null )
-				{
-					processingmessage = "Analyzing...";
-				}
-				resopnseMessage.setValue("message", processingmessage);
-			}
-			
-			chats.saveData(resopnseMessage);
-			
-			server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
-			
-			execLocalActionFromChat(llmconnection, resopnseMessage, agentContext);
+			agentContext.setFunctionName(response.getFunctionName());
 		}
-		else
+		getMediaArchive().saveData("agentcontext",agentContext);
+
+		String functionName = agentContext.getFunctionName();
+//			JSONObject functionArguments = response.getArguments();		
+//			agentContext.setValue("arguments", functionArguments); //Needed?
+//			resopnseMessage.setValue("params", agentContext.toString());
+			
+//			Object explainer = functionArguments.get("explainer");
+//			if( explainer != null && explainer instanceof String)
+//			{
+//				resopnseMessage.setValue("message", (String)explainer);
+//			} 
+//			else
+//			{
+		MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunctions", functionName); //Chitchat etc
+		String processingmessage = null;
+		if( function != null)
 		{
+			processingmessage = function.get("processingmessage");
+		}
+		if( processingmessage == null )
+		{
+			processingmessage = "Analyzing...";
+		}
+		resopnseMessage.setValue("message", processingmessage);
+			
+		chats.saveData(resopnseMessage);
+		
+		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
+
+		if( functionName.equals("chitchat"))
+		{
+			//Run Chat AI
+			String apphome = (String) agentContext.getContextValue("apphome");
+			agentContext.addContext("messagetosend", message.get("message") );
+			LlmResponse chatresponse = llmconnection.callPlainMessage(agentContext,functionName); //TODO: Add message history
+
 			// **Regular Text Response**
-			String output = response.getMessage();
+			String output = chatresponse.getMessage();
 
 			if (output != null)
 			{
@@ -318,11 +318,23 @@ public class AssistantManager extends BaseAiManager
 				server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 			}
 		}
+		else
+		{
+			execLocalActionFromChat(llmconnection, resopnseMessage, agentContext);
+		}
 		
 	}
 	
-	protected LlmResponse processUserRequest(AgentContext inAgentContext)
+	protected LlmResponse processUserRequest(MultiValued message, AgentContext inAgentContext)
 	{
+		EMediaAIResponse response = new EMediaAIResponse();
+		String usermessage = message.get("message");
+		if( usermessage.length() < 10)
+		{
+			response.setFunctionName("chitchat");
+			return response;
+		}
+		
 		MediaArchive archive = getMediaArchive();
 		
 		HitTracker modules = getMediaArchive().query("module").exact("isentity",true).sort("ordering").search();
@@ -332,62 +344,64 @@ public class AssistantManager extends BaseAiManager
 		String model = archive.getCatalogSettingValue("llmagentmodel");
 
 		LlmConnection llmconnection = archive.getLlmConnection(model);
+		
+		//Run AI
 		JSONObject results = llmconnection.callStructuredOutputList("parse_sentence", model, inAgentContext.getContext());
 
-		EMediaAIResponse response = new EMediaAIResponse();
 		response.setRawResponse(results);
 		String type = (String)results.get("request_type");
 		if( type == null)
 		{
 			type = "chitchat";
 		}
-		response.setToolCall(true);
-		
-//		if( type.equals("search") )   //TODO: Look in some kind of DB to map it back to handler
-//		{
-			//TODO: Move this to a handler of some kind
-			//Create batch of english words that describe how to search all these things
-			for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+		processResults(inAgentContext, response, results, type);
+		return response;
+	}
+
+	protected void processResults(AgentContext inAgentContext, EMediaAIResponse response, JSONObject results, String type)
+	{
+		if( "search".equals(type) )
+		{
+			ArrayList steps = (ArrayList)results.get("steps");
+			if( steps != null)
 			{
-				Data module = (Data) iterator.next();
-				String value = (String)results.get(module.getName());
-				if( value != null && !value.isEmpty() )
+				AiSearch search = inAgentContext.getAiSearchParams();
+				for (Iterator iterator = steps.iterator(); iterator.hasNext();)
 				{
-					if(inAgentContext.get("parentmodule") == null )
+					JSONObject step = (JSONObject) iterator.next();
+				
+					AiSearchPart part = new AiSearchPart();
+					part.setTargetTable((String)step.get("table"));
+					JSONObject filters = (JSONObject)step.get("filters");
+					String label = (String)filters.keySet().iterator().next();
+					part.setParameterName(label);
+					String value = 	(String)filters.get(label);
+					part.setParameterValue(value);
+					if (search.getPart1() == null)
 					{
-						inAgentContext.setValue("parentmodule", module.getId());
-						inAgentContext.setValue("parentmodule.label",module.getName());
-						inAgentContext.setValue("parentmodule.value", value);
+						search.setPart1(part);
 					}
-					else
+					else if (search.getPart2() == null)
 					{
-						inAgentContext.setValue("childmodule", module.getId());
-						inAgentContext.setValue("childmodule.label",module.getName());
-						inAgentContext.setValue("childmodule.value", value);
-						//type = "searchjoin"; //???
+						search.setPart2(part);
+					}
+					else if (search.getPart3() == null)
+					{
+						search.setPart3(part);
 					}
 				}
-			}
-			
-			if( "search".equals(type) )
-			{
-				SemanticTableManager manager = loadSemanticTableManager("actionembedding");
-				//Look into our semantic DB and determine the real search type and real parameters
-				
-				String parent = inAgentContext.get("parentmodule.label");
-				//String targets = llmRequest.getParameter("targets");
 				
 				String text = "Search for ";
-				String child = inAgentContext.get("childmodule.label");
-				if( child != null)
+				if( search.getPart1() != null)
 				{
-					text = text + child;
+					text = text + search.getPart1().getTargetTable();
 				}
-				if( parent != null)
+				if( search.getPart2() != null)
 				{
-					text = text + " in " + parent;
+					text = text +  " in " + search.getPart2().getTargetTable();
 				}
 				
+				SemanticTableManager manager = loadSemanticTableManager("actionembedding");
 				List<Double> tosearch = manager.makeVector(text);
 				Collection<RankedResult> suggestions = manager.searchNearestItems(tosearch);
 				//Load more details into this request and possibly change the type
@@ -399,17 +413,18 @@ public class AssistantManager extends BaseAiManager
 					RankedResult top = (RankedResult)suggestions.iterator().next();
 					if ( top.getDistance() < .7 )
 					{
-						type = top.getEmbedding().get("requesttype");
+						type = top.getEmbedding().get("requesttype");  //More specific type of search
 					
 						AiSearch aisearch = processAISearchArgs(results,top.getEmbedding(), inAgentContext);
 						inAgentContext.setAiSearchParams(aisearch);
 					}
 				}
 			}
-			response.setFunctionName(type);
-			//			
-//		}	
-		return response;
+			
+		}
+		response.setFunctionName(type);
+		//Search for lamp products within the sales Collection
+		
 	}
 	
 	public void execLocalActionFromChat(LlmConnection llmconnection, Data messageToUpdate, AgentContext agentContext) throws Exception
@@ -528,74 +543,106 @@ public class AssistantManager extends BaseAiManager
 		return hits;
 	}
 	
-	public AiSearch processAISearchArgs(JSONObject airesults, Data inEmbeddingMatch, AgentContext inContext) 
+	public AiSearch processAISearchArgs(JSONObject airesults, Data inEmbeddingMatch, AgentContext inContext)
 	{
 		//Search for tomatoes in sales departments
-		
 		//airesults
+		AiSearch searchArgs = inContext.getAiSearchParams();
 		
-		AiSearch searchArgs = new AiSearch();
-		
-		if( inEmbeddingMatch != null)
-		{						
-			String parentid = inEmbeddingMatch.get("parentmodule");
-			Data parentmodule = getMediaArchive().getCachedData("module", parentid);
-			if( parentmodule != null)
-			{
-				searchArgs.setParentModule(parentmodule);
-			}
-			String childid = inEmbeddingMatch.get("childmodule");
-			Data childmodule = getMediaArchive().getCachedData("module", childid);
-			if( childmodule != null)
-			{
-				searchArgs.setChildModule(childmodule);
-			}
-		}
-
-		Collection<String> keywords = getResultsManager().parseKeywords(airesults.get("keywords")); 
-		//searchArgs.setKeywords(keywords);
-		
-		Object selectedModulesObj = airesults.get("targets");
-
-		Collection<String> selectedModules = new ArrayList();
-		
-		if(selectedModulesObj instanceof JSONArray)
-		{			
-			JSONArray arr = (JSONArray) selectedModulesObj;
-			selectedModules.addAll( Arrays.asList( (String[]) arr.toArray( new String[arr.size()] ) ) );
-		}
-		else if(selectedModulesObj instanceof String)
+		ArrayList steps = (ArrayList) airesults.get("steps");
+		if (steps != null)
 		{
-			selectedModules.add((String) selectedModulesObj); 
-		}
-		
-		Collection<Data> permittedModules = new ArrayList();
-		
-		if(selectedModules.contains("all") || selectedModules.size() == 0)
-		{
-			permittedModules = inContext.getUserProfile().getEntities();
-		}
-		else
-		{
-			Collection<String> selectedModuleIds = new ArrayList<String>();
-			for (Iterator iterator = selectedModules.iterator(); iterator.hasNext();)
+			if (inEmbeddingMatch != null)
 			{
-				String id = (String) iterator.next();
-				if(id.contains("|"))
+				String parentid = inEmbeddingMatch.get("parentmodule");
+				Data parentmodule = getMediaArchive().getCachedData("module", parentid);
+				if (parentmodule != null)
 				{
-					id = id.split("\\|")[0];
+					searchArgs.setParentModule(parentmodule);
+					searchArgs.getPart1().setTargetTable(parentmodule.getId());
 				}
-				selectedModuleIds.add(id);
+				String childid = inEmbeddingMatch.get("childmodule");
+				Data childmodule = getMediaArchive().getCachedData("module", childid);
+				if (childmodule != null)
+				{
+					searchArgs.setChildModule(childmodule);
+					searchArgs.getPart2().setTargetTable(childmodule.getId());
+				}
+
+
 			}
-			permittedModules = inContext.getUserProfile().getEntitiesByIdOrName(selectedModuleIds);
+//
+//			Collection<String> keywords = getResultsManager().parseKeywords(airesults.get("keywords"));
+//			//searchArgs.setKeywords(keywords);
+//
+//			Object selectedModulesObj = airesults.get("targets");
+//
+//			Collection<String> selectedModules = new ArrayList();
+//
+//			if (selectedModulesObj instanceof JSONArray)
+//			{
+//				JSONArray arr = (JSONArray) selectedModulesObj;
+//				selectedModules.addAll(Arrays.asList((String[]) arr.toArray(new String[arr.size()])));
+//			}
+//			else if (selectedModulesObj instanceof String)
+//			{
+//				selectedModules.add((String) selectedModulesObj);
+//			}
+//
+//			Collection<Data> permittedModules = new ArrayList();
+//
+//			if (selectedModules.contains("all") || selectedModules.size() == 0)
+//			{
+//				permittedModules = inContext.getUserProfile().getEntities();
+//			}
+//			else
+//			{
+//				Collection<String> selectedModuleIds = new ArrayList<String>();
+//				for (Iterator iterator = selectedModules.iterator(); iterator.hasNext();)
+//				{
+//					String id = (String) iterator.next();
+//					if (id.contains("|"))
+//					{
+//						id = id.split("\\|")[0];
+//					}
+//					selectedModuleIds.add(id);
+//				}
+//				permittedModules = inContext.getUserProfile().getEntitiesByIdOrName(selectedModuleIds);
+//			}
+
+			//searchArgs.setSelectedModules(permittedModules);
 		}
-		
-		//searchArgs.setSelectedModules(permittedModules);
-		
 		return searchArgs;
 	}
 
-	public void regularSearch(WebPageRequest inReq, AiSearch inAiSearchParams) throws Exception {
+
+	public void searchJoin(WebPageRequest inReq, AiSearch inAiSearchParams)
+	{
+		String parentmoduleid = inAiSearchParams.getPart1().getTargetTable(); //Need ID of sales collection?
+		String text  = inAiSearchParams.getPart1().getParameterValue();
+		HitTracker foundhits = getMediaArchive().query(parentmoduleid).freeform("description", text).search();
+		Collection<String> ids = foundhits.collectValues("id");
+		
+		String moduleid2 = inAiSearchParams.getPart2().getTargetTable(); //Need ID of sales collection?
+
+		HitTracker finalhits = getMediaArchive().query(moduleid2).named("assitantedsearch").orgroup(parentmoduleid,ids).search();
+		//inReq.putPageValue( finalhits.getSessionId(), finalhits);
+		inReq.putPageValue("hits",finalhits);		
+	}
+	
+	
+	public void searchRegular(WebPageRequest inReq, AiSearch inAiSearchParams) 
+	{
+		
+		String parentmoduleid = inAiSearchParams.getPart1().getTargetTable(); //Need ID of sales collection?
+		if( parentmoduleid == null)
+		{
+			parentmoduleid = "modulesearch";
+		}
+		String text  = inAiSearchParams.getPart1().getParameterValue();
+		HitTracker foundhits = getMediaArchive().query(parentmoduleid).freeform("description", text).search();
+		//inReq.putPageValue( finalhits.getSessionId(), finalhits);
+		inReq.putPageValue("hits",foundhits);
 		
 		//JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
 
@@ -605,7 +652,7 @@ public class AssistantManager extends BaseAiManager
 //			addMcpVars(inReq, aiSearchArgs);
 //		}
 		
-		searchByKeywords(inReq, inAiSearchParams);
+		//searchByKeywords(inReq, inAiSearchParams);
 		
 		//inReq.putPageValue("semanticquery", inAiSearchParams.toSemanticQuery());
 
@@ -910,20 +957,20 @@ public class AssistantManager extends BaseAiManager
 			return null;
 		}
 
-		AgentContext llmrequest = new AgentContext();
-		llmrequest.addContext("fulltext", fullText);
+		AgentContext agentcontext = new AgentContext();
+		agentcontext.addContext("fulltext", fullText);
 		
 		String model = archive.getCatalogSettingValue("llmmcpmodel");
 		if(model == null)
 		{
 			model = "gpt-5-nano";
 		}
-		llmrequest.addContext("model", model);
+		agentcontext.addContext("model", model);
 
 		LlmConnection llmconnection = (LlmConnection) archive.getBean("openaiConnection");
 		
 		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/mcp/prompts/generate_report.json";
-		LlmResponse response = llmconnection.runPageAsInput(llmrequest, chattemplate);
+		LlmResponse response = llmconnection.runPageAsInput(agentcontext, chattemplate);
 		
 		String report = response.getMessage();
 		
@@ -1315,13 +1362,13 @@ public class AssistantManager extends BaseAiManager
 							"conversation",
 							"support request"
 							*/
-			action.setRequestType("search");
+			action.setAiFunction("search");
 			action.setSemanticText("Search for " + parentmodule.getName());
 			action.setParentData(parentmodule);
 			actions.add(action);
 			action = new SemanticAction();
 			action.setParentData(parentmodule);
-			action.setRequestType("create");
+			action.setAiFunction("create");
 			action.setSemanticText("Create a new " + parentmodule.getName());
 			actions.add(action);
 			
@@ -1341,7 +1388,7 @@ public class AssistantManager extends BaseAiManager
 							action = new SemanticAction();
 							action.setParentData(parentmodule);
 							action.setChildData(childmodule);
-							action.setRequestType("searchjoin");
+							action.setAiFunction("searchJoin");
 							action.setSemanticText("Search for " + childmodule.getName() + " in " + parentmodule.getName());
 							actions.add(action);
 						}
@@ -1363,7 +1410,7 @@ public class AssistantManager extends BaseAiManager
 					data.setValue("childmodule",semanticAction.getChildData().getId());
 				}
 				data.setValue("vectorarray",semanticAction.getVectors());
-				data.setValue("requesttype",semanticAction.getRequestType());
+				data.setValue("aifunction",semanticAction.getAiFunction());
 				
 				tosave.add(data);
 			}
@@ -1408,5 +1455,5 @@ public class AssistantManager extends BaseAiManager
 		}
 		
 	}
-	
+
 }
