@@ -93,6 +93,7 @@ public void init() {
 		//Fix app paths
 		//deploypath
 		Searcher appsearcher = mediaarchive.getSearcher("app");
+		
 		//Loop over apps
 		appsearcher.deleteAll(null);
 		Collection paths = mediaarchive.getPageManager().getChildrenPaths(site.get("rootpath"));
@@ -107,27 +108,10 @@ public void init() {
 				newapp.setName(name);
 				newapp.setValue("deploypath", path);
 				appsearcher.saveData(newapp);
-				log.info("Fixed app " + path);
+				log.info("Saved app " + path);
 				
 			}
 		}
-		
-		HitTracker apps = appsearcher.query().all().search();
-		for(Data app:apps)
-		{
-			
-			if( app.getId() == "emsare")
-			{
-					Collection all = mediaarchive.getList("module");
-					WorkspaceManager manager = mediaarchive.getBean("workspaceManager");
-					for (Iterator iterator = all.iterator(); iterator.hasNext();)
-					{
-						Data module = (Data) iterator.next();
-						manager.saveModule(catalogid, app.getId(), module);
-					}
-			}
-		}
-
 
 		//mediaarchive.getCategorySearcher().reIndexAll();
 	}
@@ -360,8 +344,9 @@ public void fixXconfs(PageManager pageManager, Page site, String catalogid)
 		settings.setProperty("siteid", siteid);
 		pageManager.getPageSettingsManager().saveSetting(settings);
 		
-		log.info("Settings saved: catalogid: ${catalogid} siteid: ${siteid}")
+		log.info("Root settings saved: catalogid: ${catalogid} siteid: ${siteid}")
 	}
+	
 	//Loop over apps
 	Collection paths = pageManager.getChildrenPaths(site.getPath());
 	for(String path:paths)
@@ -374,6 +359,8 @@ public void fixXconfs(PageManager pageManager, Page site, String catalogid)
 			String appid = site.getPath().substring(1) + "/" + PathUtilities.extractPageName(path);
 			settings.setProperty("applicationid", appid);
 			pageManager.getPageSettingsManager().saveSetting(settings);
+			
+			log.info("${path} settings saved: catalogid: ${catalogid} applicationid: ${appid}")
 		}
 	}
 	pageManager.clearCache();
