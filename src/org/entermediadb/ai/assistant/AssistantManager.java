@@ -378,10 +378,13 @@ public class AssistantManager extends BaseAiManager
 					AiSearchPart part = new AiSearchPart();
 					part.setTargetTable((String)step.get("table"));
 					JSONObject filters = (JSONObject)step.get("filters");
-					String label = (String)filters.keySet().iterator().next();
-					part.setParameterName(label);
-					String value = 	(String)filters.get(label);
-					part.setParameterValue(value);
+					if( filters != null)
+					{
+						String label = (String)filters.keySet().iterator().next();
+						part.setParameterName(label);
+						String value = 	(String)filters.get(label);
+						part.setParameterValue(value);
+					}
 					if (search.getPart1() == null)
 					{
 						search.setPart1(part);
