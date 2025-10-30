@@ -1,7 +1,10 @@
 package org.entermediadb.ai.llm;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
+import org.entermediadb.ai.assistant.AiSearch;
+import org.entermediadb.ai.knn.RankedResult;
 import org.json.simple.JSONObject;
 
 public class BasicLlmResponse implements LlmResponse
@@ -9,6 +12,29 @@ public class BasicLlmResponse implements LlmResponse
 	protected String fieldMessage;
 	protected String fieldMessagePlain;
 	protected String fieldFunctionName;
+	protected AiSearch fieldAiSearchParams;
+	Collection<RankedResult> fieldRankedSuggestions;
+	
+	public Collection<RankedResult> getRankedSuggestions()
+	{
+		return fieldRankedSuggestions;
+	}
+
+	public void setRankedSuggestions(Collection<RankedResult> inRankedSuggestions)
+	{
+		fieldRankedSuggestions = inRankedSuggestions;
+	}
+	
+
+	public AiSearch getAiSearchParams()
+	{
+		return fieldAiSearchParams;
+	}
+
+	public void setAiSearchParams(AiSearch inAiSearchParams)
+	{
+		fieldAiSearchParams = inAiSearchParams;
+	}
 
 	public void setMessage(String inMessage)
 	{

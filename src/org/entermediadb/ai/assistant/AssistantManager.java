@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,8 +19,8 @@ import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.classify.SemanticCassifier;
 import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.knn.RankedResult;
-import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.emedia.EMediaAIResponse;
 import org.entermediadb.ai.llm.openai.OpenAiConnection;
@@ -41,7 +40,6 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
-import org.openedit.hittracker.Highlighter;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
@@ -325,16 +323,17 @@ public class AssistantManager extends BaseAiManager
 	protected LlmResponse processRecentUserRequest(MultiValued message, AgentContext inAgentContext)
 	{
 		EMediaAIResponse response = new EMediaAIResponse();
-		String usermessage = message.get("message");
-		if( usermessage.length() < 10)
-		{
-			response.setFunctionName("chitchat");
-			return response;
-		}
+//		String usermessage = message.get("message");
+//		if( usermessage.length() < 10)
+//		{
+//			//TODO:
+//			response.setFunctionName("chitchat");
+//			return response;
+//		}
 		
 		MediaArchive archive = getMediaArchive();
 		
-		HitTracker modules = getMediaArchive().query("module").exact("isentity",true).sort("ordering").search();
+		HitTracker modules = getMediaArchive().query("module").exact("showonsearch", true).sort("ordering").search();
 		inAgentContext.addContext("modules", modules);
 		
 		//String model = "qwen3:8b";
@@ -362,73 +361,87 @@ public class AssistantManager extends BaseAiManager
 		
 		else if( "search".equals(type) )
 		{
-			//Search for lamp products within the sales Collection
-			ArrayList steps = (ArrayList)results.get("steps");
-			if( steps != null)
-			{
-				AiSearch search = inAgentContext.getAiSearchParams();
-				search.setPart1(null);
-				search.setPart2(null);
-				search.setPart3(null);
-				
-				for (Iterator iterator = steps.iterator(); iterator.hasNext();)
-				{
-					JSONObject step = (JSONObject) iterator.next();
-				
-					AiSearchPart part = new AiSearchPart();
-					part.setTargetTable((String)step.get("table"));
-					JSONObject filters = (JSONObject)step.get("filters");
-					if( filters != null)
-					{
-						String label = (String)filters.keySet().iterator().next();
-						part.setParameterName(label);
-						String value = 	(String)filters.get(label);
-						part.setParameterValue(value);
-					}
-					if (search.getPart1() == null)
-					{
-						search.setPart1(part);
-					}
-					else if (search.getPart2() == null)
-					{
-						search.setPart2(part);
-					}
-					else if (search.getPart3() == null)
-					{
-						search.setPart3(part);
-					}
-				}
-				
-				String text = "Search for ";
-				if( search.getPart2() != null)
-				{
-					text = text + search.getPart1().getTargetTable() + " in " + search.getPart2().getTargetTable();
-				}
-				else if( search.getPart1() != null)
-				{
-					text = text +  " in " + search.getPart1().getTargetTable();
-				}
-				
-				SemanticTableManager manager = loadSemanticTableManager("actionembedding");
-				List<Double> tosearch = manager.makeVector(text);
-				Collection<RankedResult> suggestions = manager.searchNearestItems(tosearch);
-				//Load more details into this request and possibly change the type
-				if( !suggestions.isEmpty())
-				{
-					inAgentContext.setRankedSuggestions(suggestions);
-					RankedResult top = (RankedResult)suggestions.iterator().next();
-					if ( top.getDistance() < .7 )
-					{
-						type = top.getEmbedding().get("aifunction");  //More specific type of search
-					
-						AiSearch aisearch = processAISearchArgs(results,top.getEmbedding(), inAgentContext);
-						inAgentContext.setAiSearchParams(aisearch);
-					}
-				}
-			}
+			type = setAiSearchParts(inAgentContext, results, type);
 		}
 		response.setFunctionName(type);
 		
+	}
+
+	private String setAiSearchParts(AgentContext inAgentContext, JSONObject results, String type) {
+		ArrayList steps = (ArrayList)results.get("steps");
+		if( steps == null)
+		{
+			return type;
+		}
+		
+		AiSearch search = inAgentContext.getAiSearchParams();
+		search.setPart1(null);
+		search.setPart2(null);
+		search.setPart3(null);
+		
+		for (Iterator iterator = steps.iterator(); iterator.hasNext();)
+		{
+			JSONObject step = (JSONObject) iterator.next();
+			AiSearchPart part = new AiSearchPart();
+			
+			String targetTable = (String) step.get("table");
+			part.setTargetTable(targetTable);
+
+			JSONObject filters = (JSONObject)step.get("filters");
+			if( filters != null)
+			{
+				String label = (String)filters.keySet().iterator().next();
+				part.setParameterName(label);
+				String value = 	(String)filters.get(label);
+				part.setParameterValue(value);
+			}
+			if (search.getPart1() == null)
+			{
+				search.setPart1(part);
+			}
+			else if (search.getPart2() == null)
+			{
+				search.setPart2(part);
+			}
+			else if (search.getPart3() == null)
+			{
+				search.setPart3(part);
+			}
+			
+			if("All".equals(targetTable))
+			{
+				return "searchMultiple";
+			}
+
+		}
+		
+		String text = "Search for ";
+		if( search.getPart2() != null)
+		{
+			text = text + search.getPart1().getTargetTable() + " in " + search.getPart2().getTargetTable();
+		}
+		else if( search.getPart1() != null)
+		{
+			text = text + search.getPart1().getTargetTable();
+		}
+		
+		SemanticTableManager manager = loadSemanticTableManager("actionembedding");
+		List<Double> tosearch = manager.makeVector(text);
+		Collection<RankedResult> suggestions = manager.searchNearestItems(tosearch);
+		//Load more details into this request and possibly change the type
+		if( !suggestions.isEmpty())
+		{
+			inAgentContext.setRankedSuggestions(suggestions);
+			RankedResult top = (RankedResult)suggestions.iterator().next();
+			if ( top.getDistance() < .7 )
+			{
+				type = top.getEmbedding().get("aifunction");  //More specific type of search
+			
+				AiSearch aisearch = processAISearchArgs(results,top.getEmbedding(), inAgentContext);
+				inAgentContext.setAiSearchParams(aisearch);
+			}
+		}
+		return type;
 	}
 	
 	public void execLocalActionFromChat(LlmConnection llmconnection, Data messageToUpdate, AgentContext agentContext) throws Exception
@@ -623,44 +636,99 @@ public class AssistantManager extends BaseAiManager
 
 	public void searchJoin(WebPageRequest inReq, AiSearch inAiSearchParams)
 	{
-		String parentmoduleid = inAiSearchParams.getPart2().getTargetTable(); //Need ID of sales collection?
-		String text  = inAiSearchParams.getPart2().getParameterValue();
-		HitTracker foundhits = getMediaArchive().query(parentmoduleid).freeform("description", text).search();
-		
-		if( foundhits.isEmpty() )
-		{
-			return;
-		}
-		Collection<String> ids = foundhits.collectValues("id");
-		
-		String moduleid2 = inAiSearchParams.getPart1().getTargetTable(); //Need ID of sales collection?
-		Data module = getMediaArchive().getCachedData("module", moduleid2);
-		inReq.putPageValue("module",module);
+		AiSearchPart part1 = inAiSearchParams.getPart1();
+		AiSearchPart part2 = inAiSearchParams.getPart2();
 
-		QueryBuilder search = getMediaArchive().query(moduleid2).named("assitedsearch").orgroup(parentmoduleid,ids);
-		String filter = inAiSearchParams.getPart1().getParameterValue();
-		if( filter != null)
-		{
-			search.freeform("description", filter);
+		//		AiSearchPart part3 = inAiSearchParams.getPart3();
+		
+		HitTracker finalhits = null;
+		
+		if(part1 != null && part2 != null)
+		{		
+			String parentmoduleid = part2.getTargetTable(); //Need ID of sales collection?
+			String text  = part2.getParameterValue();
+			HitTracker foundhits = getMediaArchive().query(parentmoduleid).freeform("description", text).search();
+			
+			if( foundhits.isEmpty() )
+			{
+				return;
+			}
+			Collection<String> ids = foundhits.collectValues("id");
+			
+			String moduleid2 = part1.getTargetTable(); //Need ID of sales collection?
+			Data module = getMediaArchive().getCachedData("module", moduleid2);
+			inReq.putPageValue("module",module);
+			
+			QueryBuilder search = getMediaArchive().query(moduleid2).named("assitedsearch").orgroup(parentmoduleid,ids);
+			String filter = part1.getParameterValue();
+			if( filter != null)
+			{
+				search.freeform("description", filter);
+			}
+			finalhits = search.search();
+			//inReq.putPageValue( finalhits.getSessionId(), finalhits);
+			
 		}
-		HitTracker finalhits = search.search();
-		//inReq.putPageValue( finalhits.getSessionId(), finalhits);
-		inReq.putPageValue("hits",finalhits);		
+		else if(part1 != null)
+		{
+			String parentmoduleid = part1.getTargetTable();
+			String text  = part1.getParameterValue();
+
+			if(text != null)
+			{
+				finalhits = getMediaArchive().query(parentmoduleid).freeform("description", text).search();
+			}
+			else
+			{
+				finalhits = getMediaArchive().query(parentmoduleid).search();
+			}
+			if( finalhits.isEmpty() )
+			{
+				return;
+			}
+			
+		}
+		
+		inReq.putPageValue("hits", finalhits);
 	}
 	
 	
 	public void searchRegular(WebPageRequest inReq, AiSearch inAiSearchParams) 
 	{
 		
-		String parentmoduleid = inAiSearchParams.getPart1().getTargetTable(); //Need ID of sales collection?
-		if( parentmoduleid == null)
-		{
-			parentmoduleid = "modulesearch";
-		}
+//		String parentmoduleid = inAiSearchParams.getPart1().getTargetTable(); //Need ID of sales collection?
+//		if( parentmoduleid == null || parentmoduleid.equals("All"))
+//		{
+		String parentmoduleid = "modulesearch";
+//		}
 		String text  = inAiSearchParams.getPart1().getParameterValue();
-		HitTracker foundhits = getMediaArchive().query(parentmoduleid).freeform("description", text).search();
+		Collection<String> modules = getResultsManager().loadUserSearchTypes(inReq);
+		HitTracker foundhits = getMediaArchive().query(parentmoduleid)
+				.addFacet("entitysourcetype")
+				.put("searchtypes", modules)
+				.freeform("description", text)
+				.search();
 		//inReq.putPageValue( finalhits.getSessionId(), finalhits);
 		inReq.putPageValue("hits",foundhits);
+		
+		int assetmax = 15;
+		if( foundhits.size() > 10)
+		{
+			assetmax = 5;
+		}
+		
+		QueryBuilder assetdq = getMediaArchive().query("asset")
+				.freeform("description", text)
+				.hitsPerPage(assetmax);
+				
+		HitTracker assetunsorted = assetdq.search(inReq);
+
+		inReq.putPageValue("assethits", assetunsorted);
+		
+
+		inReq.putPageValue("totalhits", foundhits.size() + assetunsorted.size());
+
+		getResultsManager().loadOrganizedResults(inReq, foundhits, assetunsorted);
 		
 		//JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
 
@@ -1353,7 +1421,7 @@ public class AssistantManager extends BaseAiManager
 		SemanticTableManager manager = loadSemanticTableManager("actionembedding");
 		
 		//Create batch of english words that describe how to search all these things
-		HitTracker modules = getMediaArchive().query("module").exact("isentity",true).search();
+		HitTracker modules = getMediaArchive().query("module").exact("showonsearch",true).search();
 		
 		Collection moduleids = modules.collectValues("id");
 		
