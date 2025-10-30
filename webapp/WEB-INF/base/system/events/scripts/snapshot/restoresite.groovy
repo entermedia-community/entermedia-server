@@ -74,7 +74,7 @@ public void init() {
 			String logstring = String.format("restoring: %s config= %s ", site.get("rootpath"), configonly);
 			log.info(logstring);
 			
-			restore(mediaarchive, site,snapshot,configonly);
+			restore(mediaarchive, site, snapshot, configonly);
 			snapshot.setValue("snapshotstatus", "complete");
 		}
 		catch( Exception ex)
@@ -177,13 +177,16 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 		archiveFolder(mediaarchive.getPageManager(), target, tempindex);
 		mediaarchive.getPageManager().copyPage(sitefolder, target);
 
-		//TODO: Go fix the catalogid's and applicationids
+		//TODO: Go fix the catalogid's, siteid and applicationids for applications
 		fixXconfs(mediaarchive.getPageManager(),target,catalogid);
+	
 	}
 	else
 	{
 		log.info(" site not included " + sitefolder.getPath());
 	}
+	
+	
 
 	Page orig = mediaarchive.getPageManager().getPage(rootfolder + "/originals");
 	if( orig.exists() )
@@ -203,12 +206,12 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 	PropertyDetailsArchive pdarchive = mediaarchive.getPropertyDetailsArchive();
 	pdarchive.clearCache();
 
-	/*
-	 Page categories = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/category.csv");
-	 if(categories.exists()){
-	 populateData(categories);
-	 }
-	 */
+	
+	// Page categories = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/category.csv");
+	// if(categories.exists()){
+	// populateData(categories);
+	// }
+	
 
 	Page fields = mediaarchive.getPageManager().getPage(rootfolder + "/fields/");
 	if(fields.exists()) {
@@ -345,15 +348,19 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 
 
 
-public void fixXconfs(PageManager pageManager, Page site,String catalogid)
+public void fixXconfs(PageManager pageManager, Page site, String catalogid)
 {
 	PageSettings settings = pageManager.getPageSettingsManager().getPageSettings(site.getPath() + "/_site.xconf");
+	
 	if( settings.exists() )
 	{
 		settings.setProperty("catalogid", catalogid);
-		String appid = PathUtilities.extractPageName(site.getPath());
-		settings.setProperty("applicationid", appid);
+		
+		String siteid = PathUtilities.extractPageName(site.getPath());
+		settings.setProperty("siteid", siteid);
 		pageManager.getPageSettingsManager().saveSetting(settings);
+		
+		log.info("Settings saved: catalogid: ${catalogid} siteid: ${siteid}")
 	}
 	//Loop over apps
 	Collection paths = pageManager.getChildrenPaths(site.getPath());
