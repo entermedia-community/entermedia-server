@@ -5,7 +5,7 @@
 	height: 100%;
 }
 .chatterbox-messages {
-	height: calc(100% - 150px);
+	height: calc(100% - 146px);
 	min-height: 250px;
 	position: relative;
 }
@@ -229,11 +229,17 @@
 	cursor: pointer;
 	display: inline-block;
 }
+#aichatsearch .modal-body {
+	padding-bottom: 0 !important;
+}
 #aichatsearch .message-menu-link {
 	color: #6585e7;
 }
 #aichatsearch .message-menu-link:hover {
 	color: #4169e1;
+}
+#aichatsearch .chatterbox-write {
+	padding: 8px 8px 0;
 }
 .message-menu-link:hover {
 	color: #28a745;
@@ -277,8 +283,6 @@
 	max-height: 100px;
 	overflow-y: auto;
 	border: 0 none;
-}
-.goalticket-level {
 }
 .chatterbox-body-inside {
 	scrollbar-color: #dfdfdf #fff;
