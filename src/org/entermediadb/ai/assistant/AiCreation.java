@@ -7,7 +7,7 @@ public class AiCreation
 	
 	String fieldCreationType;
 	
-	String fieldImagePrompt;
+	JSONObject fieldImageFields;
 	
 	JSONObject fieldEntityFields;
 	
@@ -20,13 +20,13 @@ public class AiCreation
 		fieldCreationType = inCreationType;
 	}
 	
-	public String getImagePrompt()
+	public JSONObject getImageFields()
 	{
-		return fieldImagePrompt;
+		return fieldImageFields;
 	}
-	public void setImagePrompt(String inPrompt)
+	public void setImageFields(JSONObject inImageFields)
 	{
-		fieldImagePrompt = inPrompt;
+		fieldImageFields = inImageFields;
 	}
 	
 	public JSONObject getEntityFields()

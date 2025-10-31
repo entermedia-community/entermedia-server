@@ -368,18 +368,34 @@ public class AssistantManager extends BaseAiManager
 							type = "createImage";
 							
 							String prompt = (String) attributes.get("prompt");
+							String image_name = (String) attributes.get("image_name");
 							if( prompt != null)
 							{
 								creation.setCreationType("image");
-								creation.setImagePrompt(prompt);
+								
+								JSONObject imageattrs = new JSONObject();
+								imageattrs.put("prompt", prompt);
+								imageattrs.put("image_name", image_name);
+			
+								creation.setImageFields(imageattrs);
 							}
 							
 						}
 						else if(content_type.equals("entity"))
 						{
 							type = "createEntity";
-							attributes.remove("prompt");
-							creation.setEntityFields(attributes);
+							String entity_name = (String) attributes.get("entity_name");
+							String module_id = (String) attributes.get("module_id");
+							if(module_id != null && entity_name != null)
+							{
+								creation.setCreationType("entity");
+								
+								JSONObject entityattrs = new JSONObject();
+								entityattrs.put("entity_name", entity_name);
+								entityattrs.put("module_id", module_id);
+								
+								creation.setEntityFields(entityattrs);
+							}
 						}
 					}
 				}
@@ -1199,14 +1215,16 @@ public class AssistantManager extends BaseAiManager
 		
 		LlmConnection llmconnection = archive.getLlmConnection(model);
 		
-		String prompt = (String) aiCreation.getImagePrompt();
+		JSONObject imageattr = (JSONObject) aiCreation.getImageFields();
+		
+		String prompt = (String) imageattr.get("prompt");
 
 		if (prompt == null)
 		{
 			return;
 		}
 		
-		
+		String filename = (String) imageattr.get("image_name");
 
 		LlmResponse results = llmconnection.createImage(model, prompt);
 		
@@ -1219,8 +1237,13 @@ public class AssistantManager extends BaseAiManager
 
 			asset.setValue("importstatus", "created");
 
-			String filename =  results.getFileName();
-			asset.setName(filename);
+			if( filename == null || filename.length() == 0)
+			{
+				filename = "aiimage_" + System.currentTimeMillis() ;
+			}
+			
+			asset.setName(filename + ".png");
+			asset.setValue("assettitle", filename);
 			asset.setValue("assetaddeddate", new Date());
 			
 			String sourcepath = "Channels/" + inReq.getUserName() + "/" + DateStorageUtil.getStorageUtil().getTodayForDisplay() + "/" + filename;
