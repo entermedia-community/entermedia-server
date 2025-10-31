@@ -72,12 +72,9 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 				for (Iterator iterator = streams.iterator(); iterator.hasNext();)
 				{
 					Map stream = (Map) iterator.next();
-					if( "video".equals( stream.get("codec_type") ) )
+					
+					if (inAsset.getValue("length") == null)
 					{
-						inAsset.setProperty("videocodec", (String)stream.get("codec_name"));	
-						inAsset.setProperty("width", String.valueOf( stream.get("width")) );	
-						inAsset.setProperty("height", String.valueOf( stream.get("height")) );
-						
 						String val =  (String)stream.get("duration");
 						if(val != null)
 						{
@@ -86,6 +83,14 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 							inAsset.setValue("length",  Double.parseDouble( val ) ); //in fractional seconds
 							inAsset.setProperty("aspect_ratio", (String)stream.get("display_aspect_ratio"));
 						}
+					}
+					
+					if( "video".equals( stream.get("codec_type") ) )
+					{
+						inAsset.setProperty("videocodec", (String)stream.get("codec_name"));	
+						inAsset.setProperty("width", String.valueOf( stream.get("width")) );	
+						inAsset.setProperty("height", String.valueOf( stream.get("height")) );
+						
 						videostreamids.add(String.valueOf( stream.get("index")));
 					}
 					else if( "audio".equals( stream.get("codec_type") ) )

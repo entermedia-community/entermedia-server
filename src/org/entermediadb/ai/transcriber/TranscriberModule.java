@@ -14,6 +14,7 @@ import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.translator.TranslationManager;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 
@@ -41,6 +42,12 @@ public class TranscriberModule extends BaseMediaModule {
 			return; //only video and audio
 		}
 		
+		if(inAsset.getValue("length") == null) 
+		{
+			///Can't process if no lenght defined
+			throw new OpenEditException("Asset with no lenght: " + inAsset);
+		}
+		
 		Searcher captionSearcher = getMediaArchive(inReq).getSearcher("videotrack");
 		
 		Data inTrack = captionSearcher.query().exact("assetid", inAsset.getId()).searchOne();
@@ -66,14 +73,16 @@ public class TranscriberModule extends BaseMediaModule {
 		}
 		catch (Exception e) 
 		{
-			log.error("Could not transcribe " + inAsset, e);
+			log.info("Could not transcribe " + inAsset, e);
 			inTrack.setValue("transcribestatus", "error");
 		}
 		finally
 		{
 			inTrack.setValue("completeddate", new Date());
-			captionSearcher.saveData(inTrack);
+			
 		}
+		
+		captionSearcher.saveData(inTrack);
 	}
 	
 	public void translateTranscription(WebPageRequest inReq)

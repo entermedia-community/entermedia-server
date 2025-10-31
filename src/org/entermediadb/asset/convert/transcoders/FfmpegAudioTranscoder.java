@@ -156,7 +156,7 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		}
 		comm.add(bitRate + "k");
 		
-		String resample = inStructions.getProperty("resample");
+		String resample = inStructions.getProperty("resample"); 
 		
 		if(resample != null)
 		{
