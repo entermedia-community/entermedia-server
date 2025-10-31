@@ -54,6 +54,23 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 		{
 			MultiValued inAsset = (MultiValued) iterator.next();
+			
+			String mediatype = getMediaArchive().getMediaRenderType(inAsset);
+
+			if( !"video".equals(mediatype) && !"audio".equals(mediatype) )
+			{
+				return; //only video and audio
+			}
+			
+			if(inAsset.getValue("length") == null) 
+			{
+				///Can't process if no lenght defined
+				inAsset.setValue("llmerror", true);
+				getMediaArchive().saveData("asset",inAsset);
+				iterator.remove();
+				inLog.info("Skiping Asset with no lenght defined: " + inAsset);
+			}
+			
 			transcribeOneAsset(inLog, inAsset);
 		}
 		
@@ -61,12 +78,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 	
 	public void transcribeOneAsset(ScriptLogger inLog, MultiValued inAsset)
 	{
-		String mediatype = getMediaArchive().getMediaRenderType(inAsset);
-
-		if( !"video".equals(mediatype) && !"audio".equals(mediatype) )
-		{
-			return; //only video and audio
-		}
+		
 		
 		Searcher captionSearcher = getMediaArchive().getSearcher("videotrack");
 		
@@ -77,6 +89,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 			String status = inTrack.get("transcribestatus");
 			if("complete".equals(status) || "inprogress".equals(status))
 			{
+				inLog.info("Asset already assigned to a videotrack");
 				return; //already done or in progress
 			}
 			
@@ -126,6 +139,12 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		}
 		
 		instructions.setInputFile(item);
+		
+		if (inAsset.getValue("length") == null)
+		{
+			log.info("Asset with no lenght, can't transcribe.");
+			return;
+		}
 		
 		double length = (Double) inAsset.getValue("length");
 

@@ -39,28 +39,9 @@ public class SemanticCassifier extends InformaticsProcessor implements CatalogEn
 
 	public SemanticTableManager getSemanticTableManager()
 	{
-		return loadSemanticTableManager("semantictopics");
-		/*
-		if (fieldSemanticTableManager == null)
-		{
-			fieldSemanticTableManager = (SemanticTableManager)getModuleManager().getBean(getCatalogId(),"semanticTableManager",false);
-			if( getConfigurationId() == null)
-			{
-				throw new OpenEditException("Configuration id required");
-			}
-			fieldSemanticTableManager.setConfigurationId(getConfigurationId());
-		}
-
-		return fieldSemanticTableManager;*/
+		return loadSemanticTableManager(getConfigurationId()); //"semantictopics"
 	}
 
-	public void setSemanticTableManager(SemanticTableManager inSemanticTableManager)
-	{
-	
-		fieldSemanticTableManager = inSemanticTableManager;
-	}
-	
-	
 	public SemanticTableManager loadSemanticTableManager(String inConfigId)
 	{
 		SemanticTableManager table = (SemanticTableManager)getMediaArchive().getCacheManager().get("semantictables",inConfigId);
@@ -86,6 +67,8 @@ public class SemanticCassifier extends InformaticsProcessor implements CatalogEn
 	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecords)
 	{
 		String fieldname = inConfig.get("fieldname");
+		
+		setConfigurationId(fieldname);
 		
 		Map<String, String> models = getModels();
 
@@ -208,6 +191,7 @@ public class SemanticCassifier extends InformaticsProcessor implements CatalogEn
 	
 	public void indexAll(ScriptLogger inLog)
 	{
+		setConfigurationId("semantictopics");
 		getSemanticTableManager().indexAll(inLog);
 	}
 }
