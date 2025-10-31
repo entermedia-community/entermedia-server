@@ -229,18 +229,14 @@ public class AssistantManager extends BaseAiManager
 		
 		if("refresh".equals(oldstatus))
 		{			
-			String callerParams = message.get("params");
-			if(callerParams != null)
+			String nextFunction = agentContext.getNextFunctionName();
+			if(nextFunction != null)
 			{
+				agentContext.setFunctionName(nextFunction);
+				agentContext.setNextFunctionName(null);
 				
-				JSONObject parsedParams = new JSONParser().parse(callerParams);
-
-				agentContext.setFunctionName((String) parsedParams.get("function"));
-				parsedParams.remove("function");
-				getMediaArchive().saveData("agentcontext",agentContext);
-
-				//agentContext.setParameters((JSONObject) parsedParams);  //TODO: Get this from a database table called llrequests
-	
+				getMediaArchive().saveData("agentcontext", agentContext);
+				
 				execLocalActionFromChat(llmconnection, message, agentContext);
 			}
 			return;
@@ -548,18 +544,17 @@ public class AssistantManager extends BaseAiManager
 			if( agentContext.getNextFunctionName() != null)
 			{
 				//Search semantic now?
-				Map params = agentContext.getProperties();
 				//params.put("function", agentContext.getNextFunctionName());
 				//messageToUpdate.setValue("params", params.toJSONString());
 
 				messageToUpdate.setValue("chatmessagestatus", "refresh");
 				chats.saveData(messageToUpdate);
 
-				Object wait = params.get("wait");
+				Long wait = agentContext.getLong("wait");
 				if( wait != null && wait instanceof Long)
 				{
-					params.remove("wait");
-					waittime = (Long) wait;
+					agentContext.setValue("wait", null);
+					waittime = wait;
 					log.info("Previous function requested to wait " + waittime + " milliseconds");
 				}
 				
@@ -615,7 +610,7 @@ public class AssistantManager extends BaseAiManager
 		//airesults
 		AiSearch searchArgs = inContext.getAiSearchParams();
 		
-		ArrayList steps = (ArrayList) airesults.get("sarch_steps");
+		ArrayList steps = (ArrayList) airesults.get("search_steps");
 		if (steps != null)
 		{
 			if (inEmbeddingMatch != null)
@@ -1303,8 +1298,9 @@ public class AssistantManager extends BaseAiManager
 		}
 		
 		
-		Data module = archive.getCachedData("module", moduleid);
 		moduleid = moduleid.split("\\|")[0];
+
+		Data module = archive.getCachedData("module", moduleid);
 		
 		if(module == null)
 		{
