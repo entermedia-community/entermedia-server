@@ -151,7 +151,7 @@ public class ContentModule extends BaseMediaModule
 	    String entitymoduleid = info.get("entitymoduleid");
 	    String entityid = info.get("entityid");
 	    Data entity = (Data) archive.getCachedData(entitymoduleid, entityid);
-      Data entitymodule = (Data) archive.getCachedData("module", info.get("entitymoduleid"));
+	    Data entitymodule = (Data) archive.getCachedData("module", info.get("entitymoduleid"));
 
 	    Category rootcat = archive.getEntityManager().loadDefaultFolder(entitymodule, entity, inReq.getUser());
 			String sourcepathroot = rootcat.getCategoryPath();
