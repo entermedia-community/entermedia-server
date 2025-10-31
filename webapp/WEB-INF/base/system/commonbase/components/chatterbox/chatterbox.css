@@ -74,6 +74,9 @@
 	flex-direction: column;
 	box-shadow: 0 5px 5px 0px rgba(0, 0, 0, 0.1), 0 2px 2px 0px rgba(0, 0, 0, 0.2);
 }
+#aichatsearch .chatterbox-editorarea {
+	border-radius: 6px;
+}
 .chatterbox-write .chatterbox-text {
 	height: 75px;
 	width: 100%;
