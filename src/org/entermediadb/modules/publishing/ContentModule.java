@@ -148,11 +148,13 @@ public class ContentModule extends BaseMediaModule
 	    requests.updateData(inReq, fields, info);
 	    requests.saveData(info);
 	    
-	    Data entity = (Data) archive.getCachedData(info.get("entitymoduleid"), info.get("entityid"));
-        Data entitymodule = (Data) archive.getCachedData("module", info.get("entitymoduleid"));
+	    String entitymoduleid = info.get("entitymoduleid");
+	    String entityid = info.get("entityid");
+	    Data entity = (Data) archive.getCachedData(entitymoduleid, entityid);
+      Data entitymodule = (Data) archive.getCachedData("module", info.get("entitymoduleid"));
 
 	    Category rootcat = archive.getEntityManager().loadDefaultFolder(entitymodule, entity, inReq.getUser());
-		String sourcepathroot = rootcat.getCategoryPath();
+			String sourcepathroot = rootcat.getCategoryPath();
 	    
 	    String filename = info.get("aitarget");
 	    String similarto = info.get("aiexamples");
@@ -171,24 +173,22 @@ public class ContentModule extends BaseMediaModule
 	    Asset asset = archive.getAssetBySourcePath(sourcePath);
 	    
 	    if(asset == null) {
-	    	asset = new BaseAsset(archive);
-	    	asset.setSourcePath(sourcePath);
-			asset.setName(filename.toString());
-			asset.addCategory(rootcat);
-			asset.setSourcePath(sourcePath);
-			asset.setValue("importstatus", "uploading");
-			asset.setValue("fileformat", "png");
-			asset.setValue("previewstatus", "converting");
-			asset.setValue("assetaddeddate", new Date());
-			asset.setValue("contentcreator", info.getId());
-			archive.saveAsset(asset);
+				asset = new BaseAsset(archive);
+				asset.setSourcePath(sourcePath);
+				asset.setName(filename.toString());
+				asset.addCategory(rootcat);
+				asset.setSourcePath(sourcePath);
+				asset.setValue("importstatus", "uploading");
+				asset.setValue("fileformat", "png");
+				asset.setValue("previewstatus", "converting");
+				asset.setValue("assetaddeddate", new Date());
+				asset.setValue("contentcreator", info.getId());
+				archive.saveAsset(asset);
 	    }
 	    info.setValue("primarymedia", asset.getId());
 	    requests.saveData(info);
 	    inReq.putPageValue("data", info);
 	    archive.fireSharedMediaEvent("llm/createassets");
-	    
-	    
 	}
 	
 	
