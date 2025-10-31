@@ -417,6 +417,8 @@ public class AssistantManager extends BaseAiManager
 			return type;
 		}
 		
+		log.info("Steps to search parts: " + results.toJSONString());
+		
 		AiSearch search = inAgentContext.getAiSearchParams();
 		search.setPart1(null);
 		search.setPart2(null);
@@ -638,14 +640,16 @@ public class AssistantManager extends BaseAiManager
 					searchArgs.setParentModule(parentmodule);
 					searchArgs.getPart1().setTargetTable(parentmodule.getId());
 				}
-				String childid = inEmbeddingMatch.get("childmodule");
-				Data childmodule = getMediaArchive().getCachedData("module", childid);
-				if (childmodule != null)
+				if (searchArgs.getPart2() != null)
 				{
-					searchArgs.setChildModule(childmodule);
-					searchArgs.getPart2().setTargetTable(childmodule.getId());
+					String childid = inEmbeddingMatch.get("childmodule");
+					Data childmodule = getMediaArchive().getCachedData("module", childid);
+					if (childmodule != null)
+					{
+						searchArgs.setChildModule(childmodule);
+						searchArgs.getPart2().setTargetTable(childmodule.getId());
+					}
 				}
-
 
 			}
 //
@@ -706,6 +710,13 @@ public class AssistantManager extends BaseAiManager
 		{		
 			String parentmoduleid = part2.getTargetTable(); //Need ID of sales collection?
 			String text  = part2.getParameterValue();
+			
+			
+			/*if(text == null)
+			{
+				return;
+			}*/
+			
 			HitTracker foundhits = getMediaArchive().query(parentmoduleid).freeform("description", text).search();
 			
 			if( foundhits.isEmpty() )
@@ -1460,9 +1471,21 @@ public class AssistantManager extends BaseAiManager
 		SemanticTableManager manager = loadSemanticTableManager("actionembedding");
 		
 		//Create batch of english words that describe how to search all these things
-		HitTracker modules = getMediaArchive().query("module").exact("showonsearch",true).search();
+		HitTracker allmodules = getMediaArchive().query("module").exact("showonsearch",true).search();
+		Collection<Data> modules = new ArrayList();
+		Collection moduleids = new ArrayList();
 		
-		Collection moduleids = modules.collectValues("id");
+		for (Iterator iterator = allmodules.iterator(); iterator.hasNext();)
+		{
+			Data module = (Data) iterator.next();
+			Data record = getMediaArchive().query(module.getId()).all().searchOne();
+			
+			if(record != null)
+			{
+				modules.add(module);
+				moduleids.add(module.getId());
+			}
+		}
 		
 		Searcher embedsearcher = getMediaArchive().getSearcher("actionembedding");
 		
