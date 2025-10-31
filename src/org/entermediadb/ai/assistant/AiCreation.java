@@ -6,10 +6,10 @@ public class AiCreation
 {
 	
 	String fieldCreationType;
-	String fieldPrompt;
 	
-	String fieldEntityName;
-	String fieldModuleId;
+	String fieldImagePrompt;
+	
+	JSONObject fieldEntityFields;
 	
 	public String getCreationType()
 	{
@@ -20,31 +20,22 @@ public class AiCreation
 		fieldCreationType = inCreationType;
 	}
 	
-	public String getPrompt()
+	public String getImagePrompt()
 	{
-		return fieldPrompt;
+		return fieldImagePrompt;
 	}
-	public void setPrompt(String inPrompt)
+	public void setImagePrompt(String inPrompt)
 	{
-		fieldPrompt = inPrompt;
-	}
-	
-	public String getEntityName()
-	{
-		return fieldEntityName;
-	}
-	public void setEntityName(String inEntityName)
-	{
-		fieldEntityName = inEntityName;
+		fieldImagePrompt = inPrompt;
 	}
 	
-	public String getModuleId()
+	public JSONObject getEntityFields()
 	{
-		return fieldModuleId;
+		return fieldEntityFields;
 	}
-	public void setModuleId(String inModuleId)
+	public void setEntityFields(JSONObject inEntityFields)
 	{
-		fieldModuleId = inModuleId;
+		fieldEntityFields = inEntityFields;
 	}
 	
 }

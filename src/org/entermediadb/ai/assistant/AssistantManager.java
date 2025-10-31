@@ -357,41 +357,33 @@ public class AssistantManager extends BaseAiManager
 		}
 		else if("creation".equals(type))
 		{
-			String creation_details = (String)results.get("creation_details");
+			JSONObject creation_details = (JSONObject) results.get("creation_details");
 			if( creation_details != null)
 			{
-				String content_type = (String)results.get("content_type");
+				String content_type = (String) creation_details.get("content_type");
 				if(content_type != null)
 				{
 					AiCreation creation = inAgentContext.getAiCreationParams();
-					if(content_type.equals("image"))
+					JSONObject attributes = (JSONObject) creation_details.get("attributes");
+					if(attributes != null)
 					{
-						type = "createImage";
-
-						JSONObject attributes = (JSONObject) results.get("attributes");
-						if(attributes != null)
+						if(content_type.equals("image"))
 						{
+							type = "createImage";
+							
 							String prompt = (String) attributes.get("prompt");
 							if( prompt != null)
 							{
 								creation.setCreationType("image");
-								creation.setPrompt(prompt);
+								creation.setImagePrompt(prompt);
 							}
+							
 						}
-					}
-					else if(content_type.equals("entity"))
-					{
-						type = "createEntity";
-						JSONObject attributes = (JSONObject) results.get("attributes");
-						if(attributes != null)
+						else if(content_type.equals("entity"))
 						{
-							String moduleid = (String) attributes.get("moduleid");			
-							if( moduleid != null)
-							{
-								creation.setCreationType("entity");
-								moduleid = moduleid.split("\\|")[0];
-								creation.setModuleId(moduleid);
-							}
+							type = "createEntity";
+							attributes.remove("prompt");
+							creation.setEntityFields(attributes);
 						}
 					}
 				}
@@ -1212,7 +1204,7 @@ public class AssistantManager extends BaseAiManager
 		
 		LlmConnection llmconnection = archive.getLlmConnection(model);
 		
-		String prompt = (String) aiCreation.getPrompt();
+		String prompt = (String) aiCreation.getImagePrompt();
 
 		if (prompt == null)
 		{
@@ -1294,7 +1286,8 @@ public class AssistantManager extends BaseAiManager
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		String entityname = (String) aiCreation.getEntityName();
+		JSONObject entityfields = (JSONObject) aiCreation.getEntityFields();
+		String entityname = (String) entityfields.get("entity_name");
 
 		if (entityname == null)
 		{
@@ -1302,9 +1295,16 @@ public class AssistantManager extends BaseAiManager
 			return;
 		}
 		
-		String moduleid = (String) aiCreation.getModuleId();
+		String moduleid = (String) entityfields.get("module_id");
+		if(moduleid == null)
+		{
+			inReq.putPageValue("error", "Could not find module. Please provide an existing module name or id");
+			return;
+		}
+		
 		
 		Data module = archive.getCachedData("module", moduleid);
+		moduleid = moduleid.split("\\|")[0];
 		
 		if(module == null)
 		{
