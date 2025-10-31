@@ -16,6 +16,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.Schema;
 import org.entermediadb.ai.classify.SemanticCassifier;
 import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.knn.RankedResult;
@@ -1471,25 +1472,11 @@ public class AssistantManager extends BaseAiManager
 		SemanticTableManager manager = loadSemanticTableManager("actionembedding");
 		
 		//Create batch of english words that describe how to search all these things
-		HitTracker allmodules = getMediaArchive().query("module").exact("showonsearch",true).search();
-		Collection<Data> modules = new ArrayList();
-		Collection moduleids = new ArrayList();
-		
-		for (Iterator iterator = allmodules.iterator(); iterator.hasNext();)
-		{
-			Data module = (Data) iterator.next();
-			Data record = getMediaArchive().query(module.getId()).all().searchOne();
-			
-			if(record != null)
-			{
-				modules.add(module);
-				moduleids.add(module.getId());
-			}
-		}
+		Schema shema = loadSchema();
 		
 		Searcher embedsearcher = getMediaArchive().getSearcher("actionembedding");
 		
-		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+		for (Iterator iterator = shema.getModules().iterator(); iterator.hasNext();)
 		{
 			Data parentmodule = (Data) iterator.next();
 			
@@ -1514,34 +1501,24 @@ public class AssistantManager extends BaseAiManager
 			action.setSemanticText("Search for " + parentmodule.getName());
 			action.setParentData(parentmodule);
 			actions.add(action);
-			action = new SemanticAction();
-			action.setParentData(parentmodule);
-			action.setAiFunction("createEntity");
-			action.setSemanticText("Create a new " + parentmodule.getName());
-			actions.add(action);
+//			action = new SemanticAction();
+//			action.setParentData(parentmodule);
+//			action.setAiFunction("createEntity");
+//			action.setSemanticText("Create a new " + parentmodule.getName());
+//			actions.add(action);
 			
 			//Check for child views
-			Map<String, PropertyDetail> details = loadActiveDetails(parentmodule.getId());
-			if( details != null)
+			Collection<Data> children = shema.getChildrenOf(parentmodule.getId());
+			
+			for (Iterator iterator2 = children.iterator(); iterator2.hasNext();)
 			{
-				for (Iterator iterator2 = details.values().iterator(); iterator2.hasNext();)
-				{
-					PropertyDetail detail = (PropertyDetail) iterator2.next();
-					if( detail.isList() )
-					{
-						String listid = detail.getListId();
-						if( moduleids.contains(listid) )
-						{
-							Data childmodule = getMediaArchive().getCachedData("module", listid);
-							action = new SemanticAction();
-							action.setParentData(parentmodule);
-							action.setChildData(childmodule);
-							action.setAiFunction("searchOne");
-							action.setSemanticText("Search for " + childmodule.getName() + " in " + parentmodule.getName());
-							actions.add(action);
-						}
-					}
-				}
+				Data childmodule = (Data) iterator2.next();
+				action = new SemanticAction();
+				action.setParentData(parentmodule);
+				action.setChildData(childmodule);
+				action.setAiFunction("searchOne");
+				action.setSemanticText("Search for " + childmodule.getName() + " in " + parentmodule.getName());
+				actions.add(action);
 			}
 			populateVectors(manager,actions);
 
@@ -1573,6 +1550,55 @@ public class AssistantManager extends BaseAiManager
 //		log.info(results);
 		
 		
+	}
+
+	private Schema loadSchema()
+	{
+		Schema schema = (Schema)getMediaArchive().getCacheManager().get("assitant","schema");
+		
+		if( schema == null)
+		{
+			schema = new Schema();
+			HitTracker allmodules = getMediaArchive().query("module").exact("showonsearch",true).search();
+			Collection<Data> modules = new ArrayList();
+			Collection moduleids = new ArrayList();
+			
+			for (Iterator iterator = allmodules.iterator(); iterator.hasNext();)
+			{
+				Data module = (Data) iterator.next();
+				Data record = getMediaArchive().query(module.getId()).all().searchOne();
+				
+				if(record != null)
+				{
+					modules.add(module);
+					moduleids.add(module.getId());
+					Map<String, PropertyDetail> details = loadActiveDetails(module.getId());
+					if( details != null)
+					{
+						for (Iterator iterator2 = details.values().iterator(); iterator2.hasNext();)
+						{
+							PropertyDetail detail = (PropertyDetail) iterator2.next();
+							if( detail.isList() )
+							{
+								String listid = detail.getListId();
+								if( moduleids.contains(listid) )
+								{
+									Data childmodule = getMediaArchive().getCachedData("module", listid);
+									schema.addChildOf(module.getId(),childmodule);
+								}
+							}
+						}
+					}
+	
+				}
+			}
+			schema.setModules(modules);
+			schema.setModuleIds(moduleids);
+			getMediaArchive().getCacheManager().put("assitant","schema",schema);
+			
+		}
+		
+		return schema;
 	}
 
 	protected void populateVectors(SemanticTableManager manager, Collection<SemanticAction> inActions)
