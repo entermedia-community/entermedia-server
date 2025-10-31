@@ -615,7 +615,7 @@ public class AssistantManager extends BaseAiManager
 		//airesults
 		AiSearch searchArgs = inContext.getAiSearchParams();
 		
-		ArrayList steps = (ArrayList) airesults.get("steps");
+		ArrayList steps = (ArrayList) airesults.get("sarch_steps");
 		if (steps != null)
 		{
 			if (inEmbeddingMatch != null)
