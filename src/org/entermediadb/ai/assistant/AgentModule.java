@@ -17,16 +17,16 @@ public class AgentModule extends BaseMediaModule {
 
 	public void searchSpecifiedTables(WebPageRequest inReq) throws Exception 
 	{	
-		AgentContext request =  (AgentContext)inReq.getPageValue("agentcontext");
+		AgentContext agentContext =  (AgentContext)inReq.getPageValue("agentcontext");
 		
-		getAssistantManager(inReq).searchSpecifiedTables(inReq, request.getAiSearchParams());
+		getAssistantManager(inReq).searchSpecifiedTables(inReq, agentContext.getAiSearchParams());
 	}
 
 	public void searchAllTables(WebPageRequest inReq) throws Exception 
 	{	
-		AgentContext request =  (AgentContext)inReq.getPageValue("agentcontext");
+		AgentContext agentContext =  (AgentContext)inReq.getPageValue("agentcontext");
 		
-		getAssistantManager(inReq).searchAllTables(inReq, request.getAiSearchParams());
+		getAssistantManager(inReq).searchAllTables(inReq, agentContext.getAiSearchParams());
 	}
 	
 	public void chatAgentSemanticSearch(WebPageRequest inReq) throws Exception 
@@ -41,12 +41,14 @@ public class AgentModule extends BaseMediaModule {
 	
 	public void chatAgentCreateImage(WebPageRequest inReq) throws Exception 
 	{	
-		getAssistantManager(inReq).createImage(inReq);
+		AgentContext agentContext =  (AgentContext)inReq.getPageValue("agentcontext");
+		getAssistantManager(inReq).createImage(inReq, agentContext.getAiCreationParams());
 	}
 	
 	public void chatAgentCreateEntity(WebPageRequest inReq) throws Exception 
 	{	
-		getAssistantManager(inReq).createEntity(inReq);
+		AgentContext agentContext =  (AgentContext)inReq.getPageValue("agentcontext");
+		getAssistantManager(inReq).createEntity(inReq, agentContext.getAiCreationParams());
 	}
 	
 	public void chatAgentUpdateEntity(WebPageRequest inReq) throws Exception 

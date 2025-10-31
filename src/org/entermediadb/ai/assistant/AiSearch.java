@@ -1,11 +1,8 @@
 package org.entermediadb.ai.assistant;
 
-import java.util.Collection;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
-import org.openedit.util.DateRange;
 import org.openedit.util.JSONParser;
 
 public class AiSearch extends JSONObject

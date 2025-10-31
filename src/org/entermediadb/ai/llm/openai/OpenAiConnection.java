@@ -381,6 +381,11 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 				return results;
 			}
 			results = (JSONObject) parser.parse(new StringReader(text));
+
+			if(results.containsKey("type") && results.get("type").equals("object") && results.containsKey("properties"))
+			{
+				results = (JSONObject) results.get("properties"); // gpt-4o-mini sometimes wraps in properties
+			}
 		}
 		catch (Exception e) 
 		{

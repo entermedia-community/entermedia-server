@@ -257,14 +257,14 @@ public class AssistantManager extends BaseAiManager
 		
 		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 		
-		LlmResponse response = processRecentUserRequest(message,agentContext);   //<-- Run process
+		LlmResponse response = processRecentUserRequest(message, agentContext);   //<-- Run process
 		
 		
 		if( response.getFunctionName() != null)
 		{
 			agentContext.setFunctionName(response.getFunctionName());
 		}
-		getMediaArchive().saveData("agentcontext",agentContext);
+		getMediaArchive().saveData("agentcontext", agentContext);
 
 		String functionName = agentContext.getFunctionName();
 //			JSONObject functionArguments = response.getArguments();		
@@ -296,8 +296,6 @@ public class AssistantManager extends BaseAiManager
 
 		if( functionName.equals("chitchat"))
 		{
-			//Run Chat AI
-			String apphome = (String) agentContext.getContextValue("apphome");
 			agentContext.addContext("messagetosend", message.get("message") );
 			LlmResponse chatresponse = llmconnection.callPlainMessage(agentContext,functionName); //TODO: Add message history
 
@@ -357,19 +355,59 @@ public class AssistantManager extends BaseAiManager
 		{
 			type = "chitchat";
 		}
-		
-		//TODO Add howto rag handling
-		
+		else if("creation".equals(type))
+		{
+			String creation_details = (String)results.get("creation_details");
+			if( creation_details != null)
+			{
+				String content_type = (String)results.get("content_type");
+				if(content_type != null)
+				{
+					AiCreation creation = inAgentContext.getAiCreationParams();
+					if(content_type.equals("image"))
+					{
+						type = "createImage";
+
+						JSONObject attributes = (JSONObject) results.get("attributes");
+						if(attributes != null)
+						{
+							String prompt = (String) attributes.get("prompt");
+							if( prompt != null)
+							{
+								creation.setCreationType("image");
+								creation.setPrompt(prompt);
+							}
+						}
+					}
+					else if(content_type.equals("entity"))
+					{
+						type = "createEntity";
+						JSONObject attributes = (JSONObject) results.get("attributes");
+						if(attributes != null)
+						{
+							String moduleid = (String) attributes.get("moduleid");			
+							if( moduleid != null)
+							{
+								creation.setCreationType("entity");
+								moduleid = moduleid.split("\\|")[0];
+								creation.setModuleId(moduleid);
+							}
+						}
+					}
+				}
+			}
+		}
+		//TODO Add how-to rag handling
 		else if( "search".equals(type) )
 		{
 			type = setAiSearchParts(inAgentContext, results, type);
 		}
-		response.setFunctionName(type);
 		
+		response.setFunctionName(type);
 	}
 
 	private String setAiSearchParts(AgentContext inAgentContext, JSONObject results, String type) {
-		ArrayList steps = (ArrayList)results.get("steps");
+		ArrayList steps = (ArrayList)results.get("search_steps");
 		if( steps == null)
 		{
 			return type;
@@ -1162,7 +1200,7 @@ public class AssistantManager extends BaseAiManager
 //		
 //	}
 	
-	public void createImage(WebPageRequest inReq) throws Exception 
+	public void createImage(WebPageRequest inReq, AiCreation aiCreation) throws Exception 
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -1173,17 +1211,8 @@ public class AssistantManager extends BaseAiManager
 		}
 		
 		LlmConnection llmconnection = archive.getLlmConnection(model);
-
-		String args = inReq.getRequestParameter("arguments");
 		
-		if(args == null)
-		{
-			log.warn("No arguments found in request");
-			return;
-		}
-		JSONObject arguments = new JSONParser().parse( args );
-		
-		String prompt = (String) arguments.get("prompt");
+		String prompt = (String) aiCreation.getPrompt();
 
 		if (prompt == null)
 		{
@@ -1260,43 +1289,21 @@ public class AssistantManager extends BaseAiManager
 
 		archive.fireSharedMediaEvent("importing/assetscreated");
 	}
-	public void createEntity(WebPageRequest inReq) throws Exception 
+	
+	public void createEntity(WebPageRequest inReq, AiCreation aiCreation) throws Exception 
 	{
 		MediaArchive archive = getMediaArchive();
+		
+		String entityname = (String) aiCreation.getEntityName();
 
-		String args = inReq.getRequestParameter("arguments");
-		if(args == null)
-		{
-			log.warn("No arguments found in request");
-			return;
-		}
-		JSONObject arguments = new JSONParser().parse( args );
-		
-		String entityname = (String) arguments.get("name");
-		
-		JSONObject fields = (JSONObject) arguments.get("fields");
-		Collection tags = null;
-		String description = null;
-		if(fields != null)
-		{
-			tags = (JSONArray) fields.get("tags");
-			description = (String) fields.get("description");
-		}
-
-		String modulestr = (String) arguments.get("module");
-		
 		if (entityname == null)
 		{
 			inReq.putPageValue("error", "Please provide a name for the new entity");
 			return;
 		}
-		if (modulestr == null)
-		{
-			inReq.putPageValue("error", "Please provide the module name or id for the new entity");
-			return;
-		}
 		
-		String moduleid = modulestr.split("\\|")[0];
+		String moduleid = (String) aiCreation.getModuleId();
+		
 		Data module = archive.getCachedData("module", moduleid);
 		
 		if(module == null)
@@ -1309,14 +1316,7 @@ public class AssistantManager extends BaseAiManager
 		
 		Data entity = searcher.createNewData();
 		entity.setName(entityname);
-		if(description != null)
-		{
-			entity.setValue("longcaption", description);
-		}
-		if(tags != null)
-		{
-			entity.setValue("keywords", tags);
-		}
+
 		searcher.saveData(entity);
 		
 		inReq.putPageValue("entity", entity);

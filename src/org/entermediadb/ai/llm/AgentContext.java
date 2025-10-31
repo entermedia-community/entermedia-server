@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.entermediadb.ai.assistant.AiCreation;
 import org.entermediadb.ai.assistant.AiSearch;
 import org.entermediadb.ai.knn.RankedResult;
 import org.json.simple.JSONObject;
@@ -132,6 +133,25 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	{
 		fieldAiSearchParams = inAiSearchParams;
 	}
+	
+	
+	AiCreation fieldAiCreationParams;
+	
+	public AiCreation getAiCreationParams()
+	{
+		if( fieldAiCreationParams == null)
+		{
+			fieldAiCreationParams  = new AiCreation();
+		}
+		return fieldAiCreationParams;
+	}
+
+	public void setAiCreationParams(AiCreation inAiCreationParams)
+	{
+		fieldAiCreationParams = inAiCreationParams;
+	}
+	
+	
 
 	public String getFunctionName()
 	{
