@@ -15,18 +15,18 @@ public class AgentModule extends BaseMediaModule {
 		return assistantManager;
 	}
 
-	public void chatAgentJoinSearch(WebPageRequest inReq) throws Exception 
+	public void searchSpecifiedTables(WebPageRequest inReq) throws Exception 
 	{	
 		AgentContext request =  (AgentContext)inReq.getPageValue("agentcontext");
 		
-		getAssistantManager(inReq).searchJoin(inReq, request.getAiSearchParams());
+		getAssistantManager(inReq).searchSpecifiedTables(inReq, request.getAiSearchParams());
 	}
 
-	public void chatAgentRegularSearch(WebPageRequest inReq) throws Exception 
+	public void searchAllTables(WebPageRequest inReq) throws Exception 
 	{	
 		AgentContext request =  (AgentContext)inReq.getPageValue("agentcontext");
 		
-		getAssistantManager(inReq).searchRegular(inReq, request.getAiSearchParams());
+		getAssistantManager(inReq).searchAllTables(inReq, request.getAiSearchParams());
 	}
 	
 	public void chatAgentSemanticSearch(WebPageRequest inReq) throws Exception 

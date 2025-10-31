@@ -18,6 +18,8 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	Map<String, Object> context;
 //	JSONObject arguments;
 	
+	//TODO: Cache history here for performance
+	
 	UserProfile fieldUserProfile;
 	
 	ModuleManager fieldModuleManager;

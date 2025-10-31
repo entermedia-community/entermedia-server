@@ -257,8 +257,9 @@ public class AssistantManager extends BaseAiManager
 		
 		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 		
-//		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/assistant/instructions/current.json";
-		LlmResponse response = processRecentUserRequest(message,agentContext);
+		LlmResponse response = processRecentUserRequest(message,agentContext);   //<-- Run process
+		
+		
 		if( response.getFunctionName() != null)
 		{
 			agentContext.setFunctionName(response.getFunctionName());
@@ -352,7 +353,7 @@ public class AssistantManager extends BaseAiManager
 	{
 		String type = (String)results.get("request_type");
 
-		if( type == null)
+		if( type == null || type.equals("conversation"))
 		{
 			type = "chitchat";
 		}
@@ -388,24 +389,38 @@ public class AssistantManager extends BaseAiManager
 			part.setTargetTable(targetTable);
 
 			JSONObject filters = (JSONObject)step.get("filters");
-			if( filters != null)
+			if( filters != null && !filters.isEmpty())
 			{
 				String label = (String)filters.keySet().iterator().next();
 				part.setParameterName(label);
-				String value = 	(String)filters.get(label);
-				part.setParameterValue(value);
+				Object value = 	filters.get(label);
+				if( value != null)
+				{
+					if( (value instanceof String))
+					{
+						part.setParameterValue(String.valueOf(value));
+					}
+				}
 			}
+			
 			if (search.getPart1() == null)
 			{
 				search.setPart1(part);
 			}
-			else if (search.getPart2() == null)
+			else
 			{
-				search.setPart2(part);
-			}
-			else if (search.getPart3() == null)
-			{
-				search.setPart3(part);
+				if( "join".equals( step.get("operation")) || search.getPart1().getTargetTable().equals(targetTable) )
+				{
+					continue; //Duplicate
+				}
+				if (search.getPart2() == null)
+				{
+					search.setPart2(part);
+				}
+				else if (search.getPart3() == null)
+				{
+					search.setPart3(part);
+				}
 			}
 			
 			if("All".equals(targetTable))
@@ -415,14 +430,14 @@ public class AssistantManager extends BaseAiManager
 
 		}
 		
-		String text = "Search for ";
+		String text = "Search";
 		if( search.getPart2() != null)
 		{
-			text = text + search.getPart1().getTargetTable() + " in " + search.getPart2().getTargetTable();
+			text = text + " for " + search.getPart1().getTargetTable() + " in " + search.getPart2().getTargetTable();
 		}
 		else if( search.getPart1() != null)
 		{
-			text = text + search.getPart1().getTargetTable();
+			text = text + " for " + search.getPart1().getTargetTable();
 		}
 		
 		SemanticTableManager manager = loadSemanticTableManager("actionembedding");
@@ -440,6 +455,10 @@ public class AssistantManager extends BaseAiManager
 				AiSearch aisearch = processAISearchArgs(results,top.getEmbedding(), inAgentContext);
 				inAgentContext.setAiSearchParams(aisearch);
 			}
+		}
+		else
+		{
+			type = "chitchat";
 		}
 		return type;
 	}
@@ -460,7 +479,6 @@ public class AssistantManager extends BaseAiManager
 			
 			String apphome = "/"+ channel.get("chatapplicationid");
 			agentContext.addContext("apphome", apphome);
-			
 			
 			LlmResponse response = llmconnection.renderLocalAction(agentContext);  //Run Search
 
@@ -634,7 +652,7 @@ public class AssistantManager extends BaseAiManager
 	}
 
 
-	public void searchJoin(WebPageRequest inReq, AiSearch inAiSearchParams)
+	public void searchSpecifiedTables(WebPageRequest inReq, AiSearch inAiSearchParams)
 	{
 		AiSearchPart part1 = inAiSearchParams.getPart1();
 		AiSearchPart part2 = inAiSearchParams.getPart2();
@@ -673,6 +691,8 @@ public class AssistantManager extends BaseAiManager
 		{
 			String parentmoduleid = part1.getTargetTable();
 			String text  = part1.getParameterValue();
+			Data module = getMediaArchive().getCachedData("module", parentmoduleid);
+			inReq.putPageValue("module",module);
 
 			if(text != null)
 			{
@@ -680,7 +700,7 @@ public class AssistantManager extends BaseAiManager
 			}
 			else
 			{
-				finalhits = getMediaArchive().query(parentmoduleid).search();
+				finalhits = getMediaArchive().query(parentmoduleid).all().search();
 			}
 			if( finalhits.isEmpty() )
 			{
@@ -693,7 +713,7 @@ public class AssistantManager extends BaseAiManager
 	}
 	
 	
-	public void searchRegular(WebPageRequest inReq, AiSearch inAiSearchParams) 
+	public void searchAllTables(WebPageRequest inReq, AiSearch inAiSearchParams) 
 	{
 		
 //		String parentmoduleid = inAiSearchParams.getPart1().getTargetTable(); //Need ID of sales collection?
