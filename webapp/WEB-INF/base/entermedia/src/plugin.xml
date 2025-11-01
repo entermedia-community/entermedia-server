@@ -2676,7 +2676,7 @@
 		</property>
 	</bean>
 
-	<bean id="semanticCassifier" class="org.entermediadb.ai.classify.SemanticClassifier" lazy-init="default" scope="prototype">
+	<bean id="semanticClassifier" class="org.entermediadb.ai.classify.SemanticClassifier" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
