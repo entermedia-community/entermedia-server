@@ -1,4 +1,4 @@
-\<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <beans projectname="entermedia" depends="system">
 
 	<bean id="Admin" class="org.entermediadb.asset.modules.AdminModule">
