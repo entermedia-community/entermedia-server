@@ -31,7 +31,21 @@ public class AgentModule extends BaseMediaModule {
 	
 	public void chatAgentSemanticSearch(WebPageRequest inReq) throws Exception 
 	{	
-		getAssistantManager(inReq).semanticSearch(inReq);
+		AgentContext agentContext =  (AgentContext)inReq.getPageValue("agentcontext");
+		
+		Object semanticquery = agentContext.getValue("semanticquery");
+
+		agentContext.setValue("semanticquery", null);
+		agentContext.setNextFunctionName(null);
+		
+		if( semanticquery == null)
+		{
+			return;
+		}
+		
+		String query = (String) semanticquery;
+		
+		getAssistantManager(inReq).semanticSearch(inReq, query);
 	}
 	
 	public void chatAgentExecuteRAG(WebPageRequest inReq) throws Exception 
@@ -63,7 +77,12 @@ public class AgentModule extends BaseMediaModule {
 	
 	public void loadSemanticMatches(WebPageRequest inReq) throws Exception
 	{
-		getAssistantManager(inReq).semanticSearch(inReq);
+		String query = inReq.getRequestParameter("semanticquery");
+		
+		if(query != null && !"null".equals(query))
+		{
+			getAssistantManager(inReq).semanticSearch(inReq, query);
+		}
 	}
 
 	public void mcpGenerateReport(WebPageRequest inReq) throws Exception {

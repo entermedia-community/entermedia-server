@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+\<?xml version="1.0" encoding="UTF-8"?>
 <beans projectname="entermedia" depends="system">
 
 	<bean id="Admin" class="org.entermediadb.asset.modules.AdminModule">
@@ -2585,7 +2585,7 @@
 			<ref bean="requestUtils" />
 		</property>
 	</bean>
-	
+
 	<bean id="agentContext" class="org.entermediadb.ai.llm.AgentContext" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -2676,13 +2676,13 @@
 		</property>
 	</bean>
 
-	<bean id="semanticCassifier" class="org.entermediadb.ai.classify.SemanticCassifier" lazy-init="default" scope="prototype">
+	<bean id="semanticCassifier" class="org.entermediadb.ai.classify.SemanticClassifier" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
 
-<bean id="semanticTableManager" class="org.entermediadb.ai.informatics.SemanticTableManager" lazy-init="default" scope="prototype">
+	<bean id="semanticTableManager" class="org.entermediadb.ai.informatics.SemanticTableManager" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

@@ -20,8 +20,7 @@ import org.openedit.CatalogEnabled;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 
-//TODO: Rename to SemanticCassifier
-public class SemanticCassifier extends InformaticsProcessor implements CatalogEnabled
+public class SemanticClassifier extends InformaticsProcessor implements CatalogEnabled
 {
 	protected SemanticTableManager fieldSemanticTableManager;
 	protected String fieldConfigurationId;
@@ -55,7 +54,7 @@ public class SemanticCassifier extends InformaticsProcessor implements CatalogEn
 		return table;
 	}
 
-	private static final Log log = LogFactory.getLog(SemanticCassifier.class);
+	private static final Log log = LogFactory.getLog(SemanticClassifier.class);
 
 	@Override
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
@@ -78,7 +77,7 @@ public class SemanticCassifier extends InformaticsProcessor implements CatalogEn
 
 		long start = System.currentTimeMillis();
 		
-		inLog.info("SemanticFieldManager Start values and indexing " + fieldname);
+		inLog.info("SemanticClassifier Start values and indexing " + fieldname);
 		
 		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
 		{
@@ -118,7 +117,7 @@ public class SemanticCassifier extends InformaticsProcessor implements CatalogEn
 		}
 		long end = System.currentTimeMillis();
 		double seconds = end - start / 1000d;
-		inLog.info("SemanticFieldManager Completed " + inRecords.size() + " records in " +  seconds + " seconds ");
+		inLog.info("SemanticClassifier Completed " + inRecords.size() + " records in " +  seconds + " seconds ");
 	}
 	public Map<String,Collection<String>> search(Collection<String> textvalues, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
 	{

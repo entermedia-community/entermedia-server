@@ -58,4 +58,10 @@ public class Schema
 		getChildrenOf(inId).add(inChildmodule);
 	}
 	
+	public boolean hasChildren(String inId)
+	{
+		return getChildrenOf(inId).size() > 0;
+	}
+	
+	
 }

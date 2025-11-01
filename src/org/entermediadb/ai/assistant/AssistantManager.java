@@ -17,7 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.Schema;
-import org.entermediadb.ai.classify.SemanticCassifier;
+import org.entermediadb.ai.classify.SemanticClassifier;
 import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.AgentContext;
@@ -329,15 +329,13 @@ public class AssistantManager extends BaseAiManager
 		
 		MediaArchive archive = getMediaArchive();
 		
-		HitTracker modules = getMediaArchive().query("module").exact("showonsearch", true).sort("ordering").search();
-		inAgentContext.addContext("modules", modules);
-		
 		//String model = "qwen3:8b";
 		String model = archive.getCatalogSettingValue("llmagentmodel");
 
 		LlmConnection llmconnection = archive.getLlmConnection(model);
 		
 		//Run AI
+		inAgentContext.addContext("schema", loadSchema());
 		JSONObject results = llmconnection.callStructuredOutputList("parse_sentence", model, inAgentContext.getContext()); //TODO: Replace with local API that is faster
 		response.setRawResponse(results);
 		processResults(inAgentContext, response, results);
@@ -746,10 +744,29 @@ public class AssistantManager extends BaseAiManager
 			String text  = part1.getParameterValue();
 			Data module = getMediaArchive().getCachedData("module", parentmoduleid);
 			inReq.putPageValue("module",module);
+			
 
 			if(text != null)
 			{
-				finalhits = getMediaArchive().query(parentmoduleid).freeform("description", text).search();
+				Schema schema = loadSchema();
+				
+				Collection<Data> modules = schema.getChildrenOf(parentmoduleid);
+				
+				Collection<String> moduleids = new ArrayList<String>();
+				moduleids.add(parentmoduleid);
+				for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+				{
+					Data mod = (Data) iterator.next();
+					moduleids.add(mod.getId());
+				}
+				
+				QueryBuilder search = getMediaArchive().query("modulesearch")
+					.addFacet("entitysourcetype")
+					.put("searchtypes", moduleids);
+			
+				finalhits = search.freeform("description", text).search();
+				
+				inReq.putPageValue("semanticquery", text);
 			}
 			else
 			{
@@ -763,17 +780,14 @@ public class AssistantManager extends BaseAiManager
 		}
 		
 		inReq.putPageValue("hits", finalhits);
+		
 	}
 	
 	
 	public void searchAllTables(WebPageRequest inReq, AiSearch inAiSearchParams) 
 	{
-		
-//		String parentmoduleid = inAiSearchParams.getPart1().getTargetTable(); //Need ID of sales collection?
-//		if( parentmoduleid == null || parentmoduleid.equals("All"))
-//		{
 		String parentmoduleid = "modulesearch";
-//		}
+
 		String text  = inAiSearchParams.getPart1().getParameterValue();
 		Collection<String> modules = getResultsManager().loadUserSearchTypes(inReq);
 		HitTracker foundhits = getMediaArchive().query(parentmoduleid)
@@ -781,7 +795,7 @@ public class AssistantManager extends BaseAiManager
 				.put("searchtypes", modules)
 				.freeform("description", text)
 				.search();
-		//inReq.putPageValue( finalhits.getSessionId(), finalhits);
+
 		inReq.putPageValue("hits",foundhits);
 		
 		int assetmax = 15;
@@ -802,18 +816,8 @@ public class AssistantManager extends BaseAiManager
 		inReq.putPageValue("totalhits", foundhits.size() + assetunsorted.size());
 
 		getResultsManager().loadOrganizedResults(inReq, foundhits, assetunsorted);
-		
-		//JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
 
-//		
-//		if(isMcp)
-//		{
-//			addMcpVars(inReq, aiSearchArgs);
-//		}
-		
-		//searchByKeywords(inReq, inAiSearchParams);
-		
-		//inReq.putPageValue("semanticquery", inAiSearchParams.toSemanticQuery());
+		inReq.putPageValue("semanticquery", text);
 
 	}
 	
@@ -954,15 +958,13 @@ public class AssistantManager extends BaseAiManager
 		
 	}
 	
-	public void semanticSearch(WebPageRequest inReq)
+	public void semanticSearch(WebPageRequest inReq, String query)
 	{
 		MediaArchive archive = getMediaArchive();
-
-		String query = inReq.getRequestParameter("semanticquery");
 		
 		if(query == null || "null".equals(query))
 		{
-			throw new OpenEditException("No query found in request");
+			return;
 		}
 		
 		log.info("Semantic Search for: " + query);
@@ -1188,12 +1190,12 @@ public class AssistantManager extends BaseAiManager
 		return results;
 	}
 
-	protected SemanticCassifier fieldSemanticTopicManager;
-	public SemanticCassifier getSemanticTopicManager()
+	protected SemanticClassifier fieldSemanticTopicManager;
+	public SemanticClassifier getSemanticTopicManager()
 	{
 		if (fieldSemanticTopicManager == null)
 		{
-			fieldSemanticTopicManager = (SemanticCassifier)getModuleManager().getBean(getCatalogId(),"semanticFieldManager",false);
+			fieldSemanticTopicManager = (SemanticClassifier)getModuleManager().getBean(getCatalogId(), "semanticCassifier",false);
 			fieldSemanticTopicManager.setConfigurationId("semantictopics");
 		}
 
@@ -1561,7 +1563,7 @@ public class AssistantManager extends BaseAiManager
 			schema = new Schema();
 			HitTracker allmodules = getMediaArchive().query("module").exact("showonsearch",true).search();
 			Collection<Data> modules = new ArrayList();
-			Collection moduleids = new ArrayList();
+			Collection<String> moduleids = new ArrayList();
 			
 			for (Iterator iterator = allmodules.iterator(); iterator.hasNext();)
 			{
@@ -1572,24 +1574,19 @@ public class AssistantManager extends BaseAiManager
 				{
 					modules.add(module);
 					moduleids.add(module.getId());
-					Map<String, PropertyDetail> details = loadActiveDetails(module.getId());
-					if( details != null)
+					
+					Collection detailsviews = getMediaArchive().query("view").exact("moduleid", module.getId()).exact("rendertype", "entitysubmodules").search();  //Cache this
+
+					for (Iterator iterator2 = detailsviews.iterator(); iterator2.hasNext();)
 					{
-						for (Iterator iterator2 = details.values().iterator(); iterator2.hasNext();)
+						Data view = (Data) iterator2.next();
+						String listid = view.get("rendertable");
+						if( moduleids.contains(listid) )
 						{
-							PropertyDetail detail = (PropertyDetail) iterator2.next();
-							if( detail.isList() )
-							{
-								String listid = detail.getListId();
-								if( moduleids.contains(listid) )
-								{
-									Data childmodule = getMediaArchive().getCachedData("module", listid);
-									schema.addChildOf(module.getId(),childmodule);
-								}
-							}
+							Data childmodule = getMediaArchive().getCachedData("module", listid);
+							schema.addChildOf(module.getId(),childmodule);
 						}
 					}
-	
 				}
 			}
 			schema.setModules(modules);
