@@ -1195,7 +1195,7 @@ public class AssistantManager extends BaseAiManager
 	{
 		if (fieldSemanticTopicManager == null)
 		{
-			fieldSemanticTopicManager = (SemanticClassifier)getModuleManager().getBean(getCatalogId(), "semanticCassifier",false);
+			fieldSemanticTopicManager = (SemanticClassifier)getModuleManager().getBean(getCatalogId(), "semanticClassifier",false);
 			fieldSemanticTopicManager.setConfigurationId("semantictopics");
 		}
 
