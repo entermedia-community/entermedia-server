@@ -79,7 +79,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
  		params.put("autocreatefields", autocreatefields);
  		
 		String functionname = inConfig.get("aifunctionname");
-		Map results = getLlmConnection().callStructuredOutputList(functionname, models.get("metadata"),  params);
+		Map results = getLlmConnection().callStructuredOutputList(functionname,  params);
 		Map categories = (Map) results.get("categories");
 		if(categories != null)
 		{			

@@ -789,7 +789,7 @@ public class ContentManager implements CatalogEnabled
 		{
 			LlmConnection llmconnection = archive.getLlmConnection(model);
 			
-			LlmResponse results = llmconnection.createImage(model, prompt);
+			LlmResponse results = llmconnection.createImage(prompt);
 
 			for (Iterator iterator = results.getImageBase64s().iterator(); iterator.hasNext();)
 			{
@@ -883,7 +883,7 @@ public class ContentManager implements CatalogEnabled
 
 			params.put("contentrequest", inContentrequest);
 
-			LlmResponse results = inLlm.callCreateFunction(params, inModel, "create_entity");
+			LlmResponse results = inLlm.callCreateFunction(params, "create_entity");
 
 			child = targetsearcher.createNewData();
 			JSONObject args = results.getArguments();
@@ -936,7 +936,7 @@ public class ContentManager implements CatalogEnabled
 
 			params.put("contentrequest", inContentrequest);
 
-			LlmResponse results = inLlm.callCreateFunction(params, inModel, "create_entity");
+			LlmResponse results = inLlm.callCreateFunction(params, "create_entity");
 			
 			JSONObject args = results.getArguments();
 			for (Iterator iterator = args.keySet().iterator(); iterator.hasNext();) {

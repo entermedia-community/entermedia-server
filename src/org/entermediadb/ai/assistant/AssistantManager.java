@@ -333,7 +333,7 @@ public class AssistantManager extends BaseAiManager
 		
 		//Run AI
 		inAgentContext.addContext("schema", loadSchema());
-		JSONObject results = llmconnection.callStructuredOutputList("parse_sentence", model, inAgentContext.getContext()); //TODO: Replace with local API that is faster
+		JSONObject results = llmconnection.callStructuredOutputList("parse_sentence", inAgentContext.getContext()); //TODO: Replace with local API that is faster
 		response.setRawResponse(results);
 		processResults(inAgentContext, message.get("message"), response, results);
 		return response;
@@ -955,7 +955,7 @@ public class AssistantManager extends BaseAiManager
 		String model = archive.getCatalogSettingValue("llmragmodel");
 		OpenAiConnection llmconnection = (OpenAiConnection) archive.getLlmConnection(model);
 		
-		llmconnection.callRagFunction(model, ragcontext.get("context"), ragcontext.get("query"));
+		llmconnection.callRagFunction(ragcontext.get("context"), ragcontext.get("query"));
 		
 	}
 	
@@ -1211,7 +1211,7 @@ public class AssistantManager extends BaseAiManager
 		
 		String filename = (String) imageattr.get("image_name");
 
-		LlmResponse results = llmconnection.createImage(model, prompt);
+		LlmResponse results = llmconnection.createImage(prompt);
 		
 
 		for (Iterator iterator = results.getImageBase64s().iterator(); iterator.hasNext();)

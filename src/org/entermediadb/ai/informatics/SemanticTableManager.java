@@ -543,7 +543,7 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 			
 			params.put("contextfields", context);
 			
-			JSONObject structure = llmconnection.callStructuredOutputList("semantics", inModel, params);
+			JSONObject structure = llmconnection.callStructuredOutputList("semantics", params);
 			if (structure == null)
 			{
 				log.info("No structured data returned");

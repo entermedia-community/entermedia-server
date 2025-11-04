@@ -161,7 +161,7 @@ public class ClassifyManager extends InformaticsProcessor
 			
 			params.put("contextfields", contextFields);
 			
-			LlmResponse results = getLlmConnection().callClassifyFunction(params, models.get("vision"), functionname, base64EncodedString, textContent);
+			LlmResponse results = getLlmConnection().callClassifyFunction(params, functionname, base64EncodedString, textContent);
 
 			if (results != null)
 			{
@@ -315,7 +315,7 @@ public class ClassifyManager extends InformaticsProcessor
 
 				String functionname = inConfig.get("aifunctionname") + "_entity";
 				
-				LlmResponse results = llmconnection.callClassifyFunction(params, models.get("vision"), functionname, base64EncodedString);
+				LlmResponse results = llmconnection.callClassifyFunction(params, functionname, base64EncodedString);
 				
 				if (results != null)
 				{
