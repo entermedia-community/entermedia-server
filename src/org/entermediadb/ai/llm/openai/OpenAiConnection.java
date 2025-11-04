@@ -291,7 +291,12 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 	public String getApiEndpoint()
 	{
-		return "https://api.openai.com/v1/chat/completions";
+		String url = getMediaArchive().getCatalogSettingValue("ai_openai_server");
+		if(url == null)
+		{
+			url = "https://api.openai.com/v1/chat/completions";
+		}
+		return url;
 	}
 
 	@Override

@@ -1,5 +1,9 @@
 package org.entermediadb.ai.assistant;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.json.simple.JSONObject;
 import org.openedit.util.DateRange;
 
@@ -17,18 +21,27 @@ public class AiSearchPart extends JSONObject
 	{
 		return (String)get("parametername");
 	}
-	public void setParameterName(String inParameterName)
+	
+	public void setParameters(Map<String, String>inParameters)
 	{
-		put("parametername",inParameterName);
-	}
-	public String getParameterValue()
+		put("parameters",inParameters);
+	} 
+	
+	public Map<String, String> getParameters()
 	{
-		return (String)get("parametervalue");
+		Map<String, String> params = (Map<String, String>) get("parameters");
+		return params;
 	}
-	public void setParameterValue(String parametervalue)
-	{
-		put("parametervalue",parametervalue);
+	
+	public String getParameterValues() {
+		String values = null;
+		Map<String, String> params = getParameters();
+		if (params != null) {
+			values = String.join(" ", params.values());
+		}
+		return values;
 	}
+
 	DateRange fieldDateRange;
 	
 	public DateRange getDateRange()

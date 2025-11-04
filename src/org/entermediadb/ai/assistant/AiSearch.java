@@ -7,6 +7,18 @@ import org.openedit.util.JSONParser;
 
 public class AiSearch extends JSONObject
 {
+	String originalSearch;
+	
+	public String getOriginalSearchString()
+	{
+		return originalSearch;
+	}
+	
+	public void setOriginalSearchString(String inOriginalSearch)
+	{
+		originalSearch = inOriginalSearch;
+	}
+	
 	public Data getParentModule()
 	{
 		return fieldParentModule;
@@ -87,5 +99,7 @@ public class AiSearch extends JSONObject
 		//TODO Finish loading from DB
 		
 	}
+	
+	
 	
 }

@@ -162,4 +162,45 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	{
 		setValue("functionname",inFunctionName);
 	}
+	
+	Collection<String> fieldExcludedEntityIds;
+	Collection<String> fieldExcludedAssetIds;
+	
+	public Collection<String> getExcludedEntityIds()
+	{
+		return fieldExcludedEntityIds;
+	}
+	
+	public void setExcludedEntityIds(Collection<String> inExcludedEntityids)
+	{
+		fieldExcludedEntityIds = inExcludedEntityids;
+	}
+	
+	public void addExcludedEntityId(String inEntityid)
+	{
+		if( fieldExcludedEntityIds == null)
+		{
+			fieldExcludedEntityIds = new java.util.ArrayList<>();
+		}
+		fieldExcludedEntityIds.add(inEntityid);
+	}
+	
+	public Collection<String> getExcludedAssetIds()
+	{
+		return fieldExcludedAssetIds;
+	}
+	
+	public void setExcludedAssetIds(Collection<String> inExcludedAssetids)
+	{
+		fieldExcludedAssetIds = inExcludedAssetids;
+	}
+	
+	public void addExcludedAssetId(String inAssetid)
+	{
+		if( fieldExcludedAssetIds == null)
+		{
+			fieldExcludedAssetIds = new java.util.ArrayList<>();
+		}
+		fieldExcludedAssetIds.add(inAssetid);
+	}
 }

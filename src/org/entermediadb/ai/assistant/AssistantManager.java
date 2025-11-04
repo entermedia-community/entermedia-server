@@ -36,7 +36,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
-import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
@@ -52,8 +51,6 @@ import org.openedit.util.JSONParser;
 public class AssistantManager extends BaseAiManager
 {
 	private static final Log log = LogFactory.getLog(AssistantManager.class);
-	
-	private AgentContext fieldAgentContext;
 	
 	public ResultsManager getResultsManager() {
 		ResultsManager resultsManager = (ResultsManager) getMediaArchive().getBean("resultsManager");
@@ -338,11 +335,11 @@ public class AssistantManager extends BaseAiManager
 		inAgentContext.addContext("schema", loadSchema());
 		JSONObject results = llmconnection.callStructuredOutputList("parse_sentence", model, inAgentContext.getContext()); //TODO: Replace with local API that is faster
 		response.setRawResponse(results);
-		processResults(inAgentContext, response, results);
+		processResults(inAgentContext, message.get("message"), response, results);
 		return response;
 	}
 
-	protected void processResults(AgentContext inAgentContext, EMediaAIResponse response, JSONObject results)
+	protected void processResults(AgentContext inAgentContext, String messageText, EMediaAIResponse response, JSONObject results)
 	{
 		String type = (String)results.get("request_type");
 
@@ -403,13 +400,13 @@ public class AssistantManager extends BaseAiManager
 		//TODO Add how-to rag handling
 		else if( "search".equals(type) )
 		{
-			type = setAiSearchParts(inAgentContext, results, type);
+			type = setAiSearchParts(inAgentContext, results, type, messageText);
 		}
 		
 		response.setFunctionName(type);
 	}
 
-	private String setAiSearchParts(AgentContext inAgentContext, JSONObject results, String type) {
+	private String setAiSearchParts(AgentContext inAgentContext, JSONObject results, String type, String messageText) {
 		ArrayList steps = (ArrayList)results.get("search_steps");
 		if( steps == null)
 		{
@@ -419,6 +416,8 @@ public class AssistantManager extends BaseAiManager
 		log.info("Steps to search parts: " + results.toJSONString());
 		
 		AiSearch search = inAgentContext.getAiSearchParams();
+		search.setOriginalSearchString(messageText);
+		
 		search.setPart1(null);
 		search.setPart2(null);
 		search.setPart3(null);
@@ -431,19 +430,20 @@ public class AssistantManager extends BaseAiManager
 			String targetTable = (String) step.get("table");
 			part.setTargetTable(targetTable);
 
-			JSONObject filters = (JSONObject)step.get("filters");
+			Map filters = (Map) step.get("filters");
 			if( filters != null && !filters.isEmpty())
 			{
-				String label = (String)filters.keySet().iterator().next();
-				part.setParameterName(label);
-				Object value = 	filters.get(label);
-				if( value != null)
-				{
-					if( (value instanceof String))
-					{
-						part.setParameterValue(String.valueOf(value));
-					}
-				}
+				part.setParameters(filters);
+//				String label = (String)filters.keySet().iterator().next();
+//				part.setParameterName(label);
+//				Object value = 	filters.get(label);
+//				if( value != null)
+//				{
+//					if( (value instanceof String))
+//					{
+//						part.setParameterValue(String.valueOf(value));
+//					}
+//				}
 			}
 			
 			if (search.getPart1() == null)
@@ -700,6 +700,8 @@ public class AssistantManager extends BaseAiManager
 	{
 		AiSearchPart part1 = inAiSearchParams.getPart1();
 		AiSearchPart part2 = inAiSearchParams.getPart2();
+		
+		inReq.putPageValue("semanticquery", inAiSearchParams.getOriginalSearchString());
 
 		//		AiSearchPart part3 = inAiSearchParams.getPart3();
 		
@@ -708,7 +710,7 @@ public class AssistantManager extends BaseAiManager
 		if(part1 != null && part2 != null)
 		{		
 			String parentmoduleid = part2.getTargetTable(); //Need ID of sales collection?
-			String text  = part2.getParameterValue();
+			String text = part2.getParameterValues();
 			
 			
 			/*if(text == null)
@@ -729,7 +731,7 @@ public class AssistantManager extends BaseAiManager
 			inReq.putPageValue("module",module);
 			
 			QueryBuilder search = getMediaArchive().query(moduleid2).named("assitedsearch").orgroup(parentmoduleid,ids);
-			String filter = part1.getParameterValue();
+			String filter = part1.getParameterValues();
 			if( filter != null)
 			{
 				search.freeform("description", filter);
@@ -741,7 +743,7 @@ public class AssistantManager extends BaseAiManager
 		else if(part1 != null)
 		{
 			String parentmoduleid = part1.getTargetTable();
-			String text  = part1.getParameterValue();
+			String text  = part1.getParameterValues();
 			Data module = getMediaArchive().getCachedData("module", parentmoduleid);
 			inReq.putPageValue("module",module);
 			
@@ -765,8 +767,6 @@ public class AssistantManager extends BaseAiManager
 					.put("searchtypes", moduleids);
 			
 				finalhits = search.freeform("description", text).search();
-				
-				inReq.putPageValue("semanticquery", text);
 			}
 			else
 			{
@@ -788,7 +788,8 @@ public class AssistantManager extends BaseAiManager
 	{
 		String parentmoduleid = "modulesearch";
 
-		String text  = inAiSearchParams.getPart1().getParameterValue();
+		String text  = inAiSearchParams.getPart1().getParameterValues();
+		
 		Collection<String> modules = getResultsManager().loadUserSearchTypes(inReq);
 		HitTracker foundhits = getMediaArchive().query(parentmoduleid)
 				.addFacet("entitysourcetype")
@@ -796,7 +797,7 @@ public class AssistantManager extends BaseAiManager
 				.freeform("description", text)
 				.search();
 
-		inReq.putPageValue("hits",foundhits);
+		inReq.putPageValue("hits", foundhits);
 		
 		int assetmax = 15;
 		if( foundhits.size() > 10)
@@ -817,7 +818,7 @@ public class AssistantManager extends BaseAiManager
 
 		getResultsManager().loadOrganizedResults(inReq, foundhits, assetunsorted);
 
-		inReq.putPageValue("semanticquery", text);
+		inReq.putPageValue("semanticquery", inAiSearchParams.getOriginalSearchString());
 
 	}
 	
@@ -958,56 +959,26 @@ public class AssistantManager extends BaseAiManager
 		
 	}
 	
-	public void semanticSearch(WebPageRequest inReq, String query)
+	public void semanticSearch(WebPageRequest inReq, AgentContext agentContext)
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		if(query == null || "null".equals(query))
+		String semanticquery = inReq.getRequestParameter("semanticquery");
+		
+		log.info("Semantic Search for: " + semanticquery);
+		
+		Collection<String> excludeEntityIds = agentContext.getExcludedEntityIds();
+
+		if(excludeEntityIds == null)
 		{
-			return;
+			excludeEntityIds = new ArrayList<String>();
 		}
 		
-		log.info("Semantic Search for: " + query);
+		Collection<String> excludeAssetIds = agentContext.getExcludedAssetIds();
 		
-		String[] excludeentityids = inReq.getRequestParameters("excludeentityids");
-		try
-		{			
-			if(excludeentityids == null)
-			{
-				excludeentityids = (String[]) inReq.getPageValue("excludeentityids");
-			}
-		}
-		catch( Exception e)
-		{
-			log.error("Could not parse excludeentityids", e);
-		}
-		if(excludeentityids == null)
-		{
-			excludeentityids = new String[0];
-		}
-		Collection<String> excludeEntityIds = Arrays.asList(excludeentityids);
+		inReq.putPageValue("input", semanticquery);
 		
-		String[] excludeassetids = inReq.getRequestParameters("excludeassetids");
-		try
-		{			
-			if(excludeassetids == null)
-			{
-				excludeassetids = (String[]) inReq.getPageValue("excludeassetids");
-			}
-		}
-		catch( Exception e)
-		{
-			log.error("Could not parse excludeassetids",e);
-		}
-		if(excludeassetids == null)
-		{
-			excludeassetids = new String[0];
-		}
-		Collection<String> excludeAssetIds = Arrays.asList(excludeassetids);
-		
-		inReq.putPageValue("input", query);
-		
-		Map<String, Collection<String>> relatedEntityIds = getSemanticTopicManager().search(query, excludeEntityIds, excludeAssetIds);
+		Map<String, Collection<String>> relatedEntityIds = getSemanticTopicManager().search(semanticquery, excludeEntityIds, excludeAssetIds);
 		
 		log.info("Related Entity Ids: " + relatedEntityIds);
 
