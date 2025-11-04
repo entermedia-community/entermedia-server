@@ -60,12 +60,12 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	}
 
 	
-	public LlmResponse createImage(String inModel, String inPrompt)  throws Exception
+	public LlmResponse createImage(String inPrompt) 
 	{
-		return createImage(inModel, inPrompt, 1, "1024x1024");
+		return createImage(inPrompt, 1, "1024x1024");
 	}
 	
-	public LlmResponse createImage(String inModel, String inPrompt, int imagecount, String inSize) throws Exception
+	public LlmResponse createImage(String inPrompt, int imagecount, String inSize)
 	{
 		if (getApiKey() == null)
 		{
@@ -73,10 +73,6 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			return null;
 		}
 
-		if (inModel == null)
-		{
-			throw new OpenEditException("No model given for image creation");
-		}
 		if (inPrompt == null)
 		{
 			throw new OpenEditException("No prompt given for image creation");
@@ -86,11 +82,11 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		
 		JSONObject payload = new JSONObject();
 
-		payload.put("model", inModel);
+		payload.put("model", getModelIdentifier());
 		payload.put("prompt", inPrompt);
 		payload.put("n", imagecount);
 		payload.put("size", inSize);
-		if(!"gpt-image-1".equals(inModel)) 
+		if(!"gpt-image-1".equals(getModelIdentifier())) 
 		{
 			payload.put("response_format", "b64_json");
 		}
@@ -125,18 +121,19 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		filler = inFiller;
 	}
 	
-	public LlmResponse callCreateFunction(Map context, String inModel, String inFunction) 
+	public LlmResponse callCreateFunction(Map context, String inFunction) 
 	{
 		MediaArchive archive = getMediaArchive();
+		
 
 		JSONObject obj = new JSONObject();
-		obj.put("model", inModel);
+		obj.put("model", getModelIdentifier());
 
-		String contentPath = "/" + archive.getMediaDbId() + "/ai/" + getServerName() +"/createdialog/systemmessage/" + inFunction + ".html";
+		String contentPath = "/" + archive.getMediaDbId() + "/ai/" + getLlmType() +"/createdialog/systemmessage/" + inFunction + ".html";
 		boolean contentExists = archive.getPageManager().getPage(contentPath).exists();
 		if (!contentExists)
 		{
-			contentPath = "/" + archive.getCatalogId() + "/ai/" + getServerName() +"/createdialog/systemmessage/" + inFunction + ".html";
+			contentPath = "/" + archive.getCatalogId() + "/ai/" + getLlmType() +"/createdialog/systemmessage/" + inFunction + ".html";
 			contentExists = archive.getPageManager().getPage(contentPath).exists();
 		}
 		if (!contentExists)
@@ -157,11 +154,11 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		// Handle function call definition
 		if (inFunction != null)
 		{
-			String functionPath = "/" + archive.getMediaDbId() + "/ai/" + getServerName() +"/createdialog/functions/" + inFunction + ".json";
+			String functionPath = "/" + archive.getMediaDbId() + "/ai/" + getLlmType() +"/createdialog/functions/" + inFunction + ".json";
 			boolean functionExists = archive.getPageManager().getPage(functionPath).exists();
 			if (!functionExists)
 			{
-				functionPath = "/" + archive.getCatalogId() + "/ai/" + getServerName() +"/createdialog/functions/" + inFunction + ".json";
+				functionPath = "/" + archive.getCatalogId() + "/ai/" + getLlmType() +"/createdialog/functions/" + inFunction + ".json";
 				functionExists = archive.getPageManager().getPage(functionPath).exists();
 			}
 			if (!functionExists)
@@ -195,18 +192,18 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 	}
 	
-	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inBase64Image)
+	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image)
 	{
-		return callClassifyFunction(params, inModel, inFunction, inBase64Image, null);
+		return callClassifyFunction(params, inFunction, inBase64Image, null);
 	}
 
-	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inBase64Image, String textContent)
+	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image, String textContent)
 	{
 		MediaArchive archive = getMediaArchive();
 
 		// Use JSON Simple to create request payload
 		JSONObject obj = new JSONObject();
-		obj.put("model", inModel);
+		obj.put("model", getModelIdentifier());
 		//obj.put("max_tokens", maxtokens);
 
 		// Prepare messages array
@@ -244,13 +241,13 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		// Handle function call definition
 		if (inFunction != null)
 		{
-			String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getServerName() +"/classify/functions/" + inFunction + ".json";
+			String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmType() +"/classify/functions/" + inFunction + ".json";
 			
 			Page defpage = archive.getPageManager().getPage(templatepath);
 			
 			if (!defpage.exists())
 			{
-				templatepath = "/" + archive.getCatalogId() + "/ai/" + getServerName() +"/classify/functions/" + inFunction + ".json";
+				templatepath = "/" + archive.getCatalogId() + "/ai/" + getLlmType() +"/classify/functions/" + inFunction + ".json";
 				defpage = archive.getPageManager().getPage(templatepath);
 			}
 			
@@ -289,29 +286,12 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 	}
 
-	public String getApiEndpoint()
-	{
-		String url = getMediaArchive().getCatalogSettingValue("ai_openai_server");
-		if(url == null)
-		{
-			url = "https://api.openai.com/v1/chat/completions";
-		}
-		return url;
-	}
-
 	@Override
-	public String getServerName()
+	public JSONObject callStructuredOutputList(String inStructureName, Map inParams)
 	{
-		// TODO Auto-generated method stub
-		return "openai";
-	}
-
-	@Override
-	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Map inParams)
-	{
-		inParams.put("model", inModel);
+		inParams.put("model", getModelIdentifier());
 		
-		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getServerName() +"/classify/structures/" + inStructureName + ".json", inParams);
+		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmType() +"/classify/structures/" + inStructureName + ".json", inParams);
 
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
@@ -403,10 +383,10 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		return results;
 	}
 	
-	public LlmResponse callRagFunction(String inModel, String question, String textContent)
+	public LlmResponse callRagFunction(String question, String textContent)
 	{
 		JSONObject obj = new JSONObject();
-		obj.put("model", inModel);
+		obj.put("model", getModelIdentifier());
 
 		JSONArray messages = new JSONArray();
 		

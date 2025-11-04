@@ -126,37 +126,23 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		return endpoint;
 	}
 
-	public BasicLlmResponse createImage(String inModel, String inPrompt)
-	{
-		throw new OpenEditException("Model doesn't support images");
-	}
-	public BasicLlmResponse createImage(String inModel, String inPrompt, int inCount, String inSize)
-	{
-		throw new OpenEditException("Model doesn't support images");
-	}
-
-	public OutputFiller getFiller()
-	{
-		return filler;
-	}
-
 	public void setFiller(OutputFiller inFiller)
 	{
 		filler = inFiller;
 	}
 	
-	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inBase64Image)
+	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image)
 	{
-		return callClassifyFunction(params, inModel, inFunction, inBase64Image, null);
+		return callClassifyFunction(params, inFunction, inBase64Image, null);
 	}
 
-	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inBase64Image, String textContent)
+	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image, String textContent)
 	{
 	    MediaArchive archive = getMediaArchive();
 
 	    // Use JSON Simple to create request payload
 	    JSONObject obj = new JSONObject();
-	    obj.put("model", inModel);
+	    obj.put("model", getModelIdentifier());
 	    obj.put("stream", false);
 
 
@@ -220,22 +206,16 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	}
 
 	@Override
-	public String getServerName()
-	{
-		return "ollama";
-	}
-
-	@Override
-	public LlmResponse callCreateFunction(Map inParams, String inModel, String inFunction) 
+	public LlmResponse callCreateFunction(Map inParams, String inFunction) 
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Map inParams) 
+	public JSONObject callStructuredOutputList(String inStructureName, Map inParams) 
 	{
-		inParams.put("model", inModel);
+		inParams.put("model", getModelIdentifier());
 		
 		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/ollama/classify/structures/" + inStructureName + ".json", inParams);
 		

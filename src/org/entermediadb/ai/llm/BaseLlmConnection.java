@@ -38,12 +38,58 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	protected OutputFiller filler = new OutputFiller();
 	protected OpenEditEngine fieldEngine;
 	protected String apikey;
-	protected String fieldEndpoint;
 	
-	public String getApiEndpoint() {
-	    return fieldEndpoint;
+	protected Data fieldModelData;
+	
+	public Data getModelData() {
+		return fieldModelData;
 	}
-
+	
+	public void setModelData(Data inModelData) {
+		fieldModelData = inModelData;
+	}
+	
+	public String getApiEndpoint() 
+	{
+		String endpoint = getModelData().get("endpoint");
+		if( endpoint == null)
+		{
+			String llmtype = getLlmType();
+			
+			if(llmtype.equals("openai"))
+			{
+				return "https://api.openai.com/v1/chat/completions";
+			}
+			else if(llmtype.equals("ollama"))
+			{
+				return "https://ollama.entermediadb.net";
+			}
+			else if(llmtype.equals("llama"))
+			{
+				return "http://llama.entermediadb.net:30427/v1/chat/completions";
+			}
+			else if(llmtype.equals("gemini"))
+			{
+				return "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+			}
+		}
+		if( endpoint == null)
+		{
+			throw new OpenEditException("No endpoint defined for model: " + getModelData().getId());
+		}
+		return endpoint;
+	}
+	
+	public String getModelIdentifier()
+	{
+		return getModelData().getId();
+	}
+	
+	public String getLlmType()
+	{
+		return getModelData().get("llmtype");
+	}
+	
 	protected String fieldCatalogId;
 	protected MediaArchive fieldMediaArchive;
 	protected HttpSharedConnection connection;
@@ -78,7 +124,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	{
 		if (apikey == null)
 		{
-			apikey = getMediaArchive().getCatalogSettingValue(getServerName()+"-key");
+			apikey = getMediaArchive().getCatalogSettingValue(getLlmType()+"-key");
 		}
 		if (apikey == null)
 		{
@@ -379,7 +425,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	public LlmResponse callPlainMessage(AgentContext agentcontext, String inPageName)
 	{
 		agentcontext.addContext("mediaarchive", getMediaArchive());
-		String input = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getServerName() +"/assistant/messages/" + inPageName + ".json", agentcontext.getContext());
+		String input = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmType() +"/assistant/messages/" + inPageName + ".json", agentcontext.getContext());
 		log.info(inPageName + " process chat");
 		String endpoint = getApiEndpoint();
 
@@ -405,5 +451,17 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		getMediaArchive().saveData("agentcontext",agentcontext);
 		return response;
 
+	}
+	
+	@Override
+	public LlmResponse createImage(String inPrompt)  throws Exception
+	{
+		throw new OpenEditException("Model doesn't support images");
+	}
+	
+	@Override
+	public LlmResponse createImage(String inPrompt, int imagecount, String inSize)
+	{
+		throw new OpenEditException("Model doesn't support images");
 	}
 }

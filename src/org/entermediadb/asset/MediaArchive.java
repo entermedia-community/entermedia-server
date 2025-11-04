@@ -3355,14 +3355,23 @@ public class MediaArchive implements CatalogEnabled
 	
 	public LlmConnection getLlmConnection(String inModel)
 	{
+		LlmConnection connection = (LlmConnection) getCacheManager().get("llmconnection", inModel);
 		
-		Data modelinfo = query("llmmodel").exact("modelid", inModel).searchOne();
-		if( modelinfo == null)
-		{
-			throw new OpenEditException("Could not find model " + inModel);
+		if(connection == null)
+		{			
+			Data modelinfo = query("llmmodel").exact("modelid", inModel).searchOne();
+			if( modelinfo == null)
+			{
+				throw new OpenEditException("Could not find model " + inModel);
+			}
+			String llm = modelinfo.get("llmtype");
+			connection = (LlmConnection) getBean(llm + "Connection");
+			connection.setModelData(modelinfo);
+			
+			getCacheManager().put("llmconnection", inModel, connection);
 		}
-		String llm = modelinfo.get("llmtype");
-		return (LlmConnection) getBean(llm + "Connection");
+		
+		return connection;
 	}
 }
 
