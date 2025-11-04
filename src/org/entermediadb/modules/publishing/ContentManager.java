@@ -700,7 +700,7 @@ public class ContentManager implements CatalogEnabled
 	//	String template = inManager.loadInputFromTemplate(inReq,
 	//		"/" + archive.getMediaDbId() + "/gpt/templates/create_entity.html");
 	//
-	//	JSONObject results = inManager.callFunction(inReq, inModel, "create_entity", template, 0, 5000);
+	//	JSONObject results = inManager.callFunction(inReq, "create_entity", template, 0, 5000);
 	//
 	//	Data child = getMediaArchive().getSearcher(inTargetentity).createNewData();
 	//
@@ -738,7 +738,7 @@ public class ContentManager implements CatalogEnabled
 //		{
 //			imagestyle = "vivid";
 //		}
-//		LlmResponse results = manager.createImage(inReq, model, 1, "1024x1024", imagestyle, inStructions);
+//		LlmResponse results = manager.createImage(inReq, 1, "1024x1024", imagestyle, inStructions);
 //		String[] fields = inReq.getRequestParameters("field");
 //		ArrayList assets = new ArrayList();
 //		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
