@@ -295,7 +295,7 @@ public class ConversionUtil {
 		//HitTracker all = sm.getSearcher(inCatalogId, "convertpreset").query().match("display", "true").sort("ordering").search();
 		return all;
 	}
-	
+	//Todo: Rename to All Convertpressets with display true
 	public Collection getCroppablePresetList(MediaArchive inArchive, Asset inAsset)
 	{
 		String rendertype = inArchive.getMediaRenderType(inAsset.get("fileformat"));
