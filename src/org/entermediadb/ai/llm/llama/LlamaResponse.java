@@ -1,4 +1,4 @@
-package org.entermediadb.ai.llama;
+package org.entermediadb.ai.llm.llama;
 
 import org.entermediadb.ai.llm.openai.OpenAiResponse;
 

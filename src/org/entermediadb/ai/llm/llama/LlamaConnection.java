@@ -1,11 +1,8 @@
-package org.entermediadb.ai.llama;
+package org.entermediadb.ai.llm.llama;
 
-import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.openai.OpenAiConnection;
-import org.openedit.CatalogEnabled;
 
-public class LlamaConnection extends OpenAiConnection implements CatalogEnabled, LlmConnection
-{
+public class LlamaConnection extends OpenAiConnection {
 	@Override
 	public String getModelIdentifier()
 	{
