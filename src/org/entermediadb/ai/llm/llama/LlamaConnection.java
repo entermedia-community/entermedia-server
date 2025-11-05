@@ -45,32 +45,12 @@ public class LlamaConnection extends OpenAiConnection {
 			contentitem.put("type", "text");
 			contentitem.put("text", "You are a metadata generator. You are given an instruction in Open AI tool format, parse it and give a response in JSON with all the required fields.");
 			
+			contentarray.add(contentitem);
+			
 			systemmessage.put("content", contentarray);
 			
 			messages.add(systemmessage);
 		}
-		
-		if (inBase64Image != null && !inBase64Image.isEmpty())
-		{
-			JSONObject message = new JSONObject();
-			message.put("role", "user");
-			// Use an array for content if an image is provided
-			JSONArray contentArray = new JSONArray();
-
-			// Add image content
-			JSONObject imageContent = new JSONObject();
-			imageContent.put("type", "image_url");
-			JSONObject imageUrl = new JSONObject();
-			imageUrl.put("url", "data:image/png;base64," + inBase64Image); // Base64 as a data URL
-			imageContent.put("image_url", imageUrl);
-			contentArray.add(imageContent);
-
-			message.put("content", contentArray);
-
-			messages.add(message);
-		}
-		
-
 
 		// Handle function call definition
 		if (inFunction != null)
@@ -116,6 +96,26 @@ public class LlamaConnection extends OpenAiConnection {
 			
 			messages.add(message);
 
+		}
+		
+		if (inBase64Image != null && !inBase64Image.isEmpty())
+		{
+			JSONObject message = new JSONObject();
+			message.put("role", "user");
+			// Use an array for content if an image is provided
+			JSONArray contentArray = new JSONArray();
+
+			// Add image content
+			JSONObject imageContent = new JSONObject();
+			imageContent.put("type", "image_url");
+			JSONObject imageUrl = new JSONObject();
+			imageUrl.put("url", "data:image/png;base64," + inBase64Image); // Base64 as a data URL
+			imageContent.put("image_url", imageUrl);
+			contentArray.add(imageContent);
+
+			message.put("content", contentArray);
+
+			messages.add(message);
 		}
 		
 
