@@ -179,7 +179,7 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 			}
 			
 			if(!defpage.exists()) {
-				throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunction);
+				throw new OpenEditException("Requested Content Does Not Exist in MediaDB or Catalog:" + inFunction);
 		    }
 			
 			if(textContent == null)

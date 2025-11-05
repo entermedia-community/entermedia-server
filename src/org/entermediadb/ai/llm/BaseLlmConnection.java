@@ -82,7 +82,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	
 	public String getModelIdentifier()
 	{
-		return getModelData().getId();
+		return getModelData().get("modelid");
 	}
 	
 	public String getLlmType()

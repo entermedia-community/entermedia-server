@@ -138,7 +138,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		}
 		if (!contentExists)
 		{
-			throw new OpenEditException("Requested Content Does Not Exist in MEdiaDB or Catatlog:" + inFunction);
+			throw new OpenEditException("Requested Content Does Not Exist in MediaDB or Catalog:" + inFunction);
 		}
 		
 		String content = loadInputFromTemplate(contentPath, context);
@@ -163,7 +163,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			}
 			if (!functionExists)
 			{
-				throw new OpenEditException("Requested Function Does Not Exist in MEdiaDB or Catatlog:" + inFunction);
+				throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunction);
 			}
 			
 			String definition = loadInputFromTemplate(functionPath, context);
@@ -253,7 +253,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			
 			if (!defpage.exists())
 			{
-				throw new OpenEditException("Requested Function Does Not Exist in MEdiaDB or Catatlog:" + inFunction);
+				throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunction);
 			}
 			
 			if(textContent != null)

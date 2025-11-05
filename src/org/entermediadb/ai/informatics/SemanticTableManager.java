@@ -13,7 +13,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.ai.BaseAiManager;
-import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.MediaArchive;
