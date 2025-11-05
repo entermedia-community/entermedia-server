@@ -251,7 +251,7 @@ public class AssistantManager extends BaseAiManager
 		
 		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 		
-		LlmResponse response = processRecentUserRequest(message, agentContext);   //<-- Run process
+		EMediaAIResponse response = processRecentUserRequest(message, agentContext);   //<-- Run process
 		
 		
 		if( response.getFunctionName() != null)
@@ -290,12 +290,16 @@ public class AssistantManager extends BaseAiManager
 
 		if( functionName.equals("chitchat"))
 		{
-			agentContext.addContext("messagetosend", message.get("message") );
-			LlmResponse chatresponse = llmconnection.callPlainMessage(agentContext,functionName); //TODO: Add message history
+			String output = response.getGeneralResponse();
+			
+			if(output == null || output.isEmpty())
+			{
+				agentContext.addContext("messagetosend", message.get("message") );
+				LlmResponse chatresponse = llmconnection.callPlainMessage(agentContext,functionName); //TODO: Add message history
+				output = chatresponse.getMessage();
+			}
 
 			// **Regular Text Response**
-			String output = chatresponse.getMessage();
-
 			if (output != null)
 			{
 				resopnseMessage.setValue("message", output);
@@ -313,7 +317,7 @@ public class AssistantManager extends BaseAiManager
 		
 	}
 	
-	protected LlmResponse processRecentUserRequest(MultiValued message, AgentContext inAgentContext)
+	protected EMediaAIResponse processRecentUserRequest(MultiValued message, AgentContext inAgentContext)
 	{
 		EMediaAIResponse response = new EMediaAIResponse();
 //		String usermessage = message.get("message");
@@ -346,6 +350,11 @@ public class AssistantManager extends BaseAiManager
 		if( type == null || type.equals("conversation"))
 		{
 			type = "chitchat";
+			String generalresponse = (String) results.get("general_response");
+			if(generalresponse != null)
+			{
+				response.setGeneralResponse(generalresponse);
+			}
 		}
 		else if("creation".equals(type))
 		{

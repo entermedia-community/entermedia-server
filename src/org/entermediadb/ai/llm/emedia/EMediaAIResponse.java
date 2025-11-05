@@ -14,6 +14,18 @@ public class EMediaAIResponse extends BasicLlmResponse
 	{
 		fieldFunctionName = inFunctionName;
 	}
+	
+	String fieldGeneralResponse;
+	
+	public String getGeneralResponse()
+	{
+		return fieldGeneralResponse;
+	}
+	
+	public void setGeneralResponse(String inGeneralResponse)
+	{
+		fieldGeneralResponse = inGeneralResponse;
+	}
 
 	public String getFileName()
 	{
