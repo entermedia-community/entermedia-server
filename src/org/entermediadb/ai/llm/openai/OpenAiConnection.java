@@ -211,6 +211,22 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		JSONArray messages = new JSONArray();
 		JSONObject message = new JSONObject();
 		
+		if("llama".equals(getLlmType()))
+		{
+			JSONObject systemmessage = new JSONObject();
+			systemmessage.put("role", "system");
+			
+			JSONArray contentarray = new JSONArray();
+			
+			JSONObject contentitem = new JSONObject();
+			contentitem.put("type", "text");
+			contentitem.put("text", "You are a metadata generator. You are given an instruction in Open AI tool format, parse it and give a response in JSON with all the required fields.");
+			
+			systemmessage.put("content", contentarray);
+			
+			messages.add(systemmessage);
+		}
+		
 		if (inBase64Image != null && !inBase64Image.isEmpty())
 		{
 			message.put("role", "user");

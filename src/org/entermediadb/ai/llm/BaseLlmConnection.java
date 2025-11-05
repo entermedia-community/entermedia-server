@@ -66,7 +66,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			}
 			else if(llmtype.equals("llama"))
 			{
-				return "http://llama.entermediadb.net:30427/v1/chat/completions";
+				return "https://llama.entermediadb.net/v1/chat/completions";
 			}
 			else if(llmtype.equals("gemini"))
 			{
@@ -408,7 +408,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			JSONObject json = (JSONObject) connection.parseJson(resp);
 
 			log.info("returned: " + json.toJSONString());
-
+			 
 			return json;
 		}
 		catch (Exception ex)
