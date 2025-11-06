@@ -3,7 +3,6 @@ package org.entermediadb.ai.assistant;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Collection;
@@ -36,6 +35,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
@@ -338,6 +338,10 @@ public class AssistantManager extends BaseAiManager
 		//Run AI
 		inAgentContext.addContext("schema", loadSchema());
 		JSONObject results = llmconnection.callStructuredOutputList("parse_sentence", inAgentContext.getContext()); //TODO: Replace with local API that is faster
+		if(results == null)
+		{
+			throw new OpenEditException("No results from AI for message: " + message.get("message"));
+		}
 		response.setRawResponse(results);
 		processResults(inAgentContext, message.get("message"), response, results);
 		return response;
@@ -345,18 +349,20 @@ public class AssistantManager extends BaseAiManager
 
 	protected void processResults(AgentContext inAgentContext, String messageText, EMediaAIResponse response, JSONObject results)
 	{
-		String type = (String)results.get("request_type");
+		String type = results.keySet().iterator().next().toString();
+		
+		JSONObject structure = (JSONObject) results.get(type);
 
-		if( type == null || type.equals("conversation"))
+		if( type.equals("conversation"))
 		{
 			type = "chitchat";
-			String generalresponse = (String) results.get("general_response");
+			String generalresponse = (String) structure.get("friendly_response");
 			if(generalresponse != null)
 			{
 				response.setGeneralResponse(generalresponse);
 			}
 		}
-		else if("creation".equals(type))
+		else if(type.equals("create_image"))
 		{
 			JSONObject creation_details = (JSONObject) results.get("creation_details");
 			if( creation_details != null)
@@ -409,20 +415,21 @@ public class AssistantManager extends BaseAiManager
 		//TODO Add how-to rag handling
 		else if( "search".equals(type) )
 		{
-			type = setAiSearchParts(inAgentContext, results, type, messageText);
+			type = setAiSearchParts(inAgentContext, structure, type, messageText);
 		}
 		
 		response.setFunctionName(type);
 	}
 
-	private String setAiSearchParts(AgentContext inAgentContext, JSONObject results, String type, String messageText) {
-		ArrayList steps = (ArrayList)results.get("search_steps");
+	private String setAiSearchParts(AgentContext inAgentContext, JSONObject structure, String type, String messageText) {
+		ArrayList steps = (ArrayList) structure.get("search_steps");
+		
 		if( steps == null)
 		{
 			return type;
 		}
 		
-		log.info("Steps to search parts: " + results.toJSONString());
+		log.info("Steps to search parts: " + structure.toJSONString());
 		
 		AiSearch search = inAgentContext.getAiSearchParams();
 		search.setOriginalSearchString(messageText);
@@ -437,6 +444,7 @@ public class AssistantManager extends BaseAiManager
 			AiSearchStep part = new AiSearchStep();
 			
 			String targetTable = (String) step.get("table");
+
 			part.setTargetTable(targetTable);
 
 			Map filters = (Map) step.get("filters");
@@ -461,10 +469,10 @@ public class AssistantManager extends BaseAiManager
 			}
 			else
 			{
-				if( "join".equals( step.get("operation")) || search.getStep1().getTargetTable().equals(targetTable) )
-				{
-					continue; //Duplicate
-				}
+//				if( "join".equals( step.get("operation")) || search.getStep1().getTargetTable().equals(targetTable) )
+//				{
+//					continue; //Duplicate
+//				}
 				if (search.getStep2() == null)
 				{
 					search.setStep2(part);
@@ -475,7 +483,7 @@ public class AssistantManager extends BaseAiManager
 				}
 			}
 			
-			if("All".equals(targetTable))
+			if("Not specified".equals(targetTable))
 			{
 				return "searchMultiple";
 			}
@@ -483,6 +491,7 @@ public class AssistantManager extends BaseAiManager
 		}
 		
 		String text = "Search";
+		
 		if( search.getStep2() != null)
 		{
 			text = text + " for " + search.getStep1().getTargetTable() + " in " + search.getStep2().getTargetTable();
@@ -504,7 +513,7 @@ public class AssistantManager extends BaseAiManager
 			{
 				type = top.getEmbedding().get("aifunction");  //More specific type of search
 			
-				AiSearch aisearch = processAISearchArgs(results,top.getEmbedding(), inAgentContext);
+				AiSearch aisearch = processAISearchArgs(structure, top.getEmbedding(), inAgentContext);
 				inAgentContext.setAiSearchParams(aisearch);
 			}
 		}
