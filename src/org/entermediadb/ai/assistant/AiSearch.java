@@ -38,35 +38,36 @@ public class AiSearch extends JSONObject
 
 	Data fieldParentModule;
 	Data fieldChildModule;
-	AiSearchPart fieldPart1;
+	protected AiSearchStep fieldStep1;
+	protected AiSearchStep fieldStep2;
+	protected AiSearchStep fieldStep3;
 	
-	public AiSearchPart getPart1()
+	public AiSearchStep getStep1()
 	{
-		return fieldPart1;
+		return fieldStep1;
 	}
-	public void setPart1(AiSearchPart inPart1)
+	public void setStep1(AiSearchStep inStep1)
 	{
-		fieldPart1 = inPart1;
+		fieldStep1 = inStep1;
 	}
-	public AiSearchPart getPart2()
+	public AiSearchStep getStep2()
 	{
-		return fieldPart2;
+		return fieldStep2;
 	}
-	public void setPart2(AiSearchPart inPart2)
+	public void setStep2(AiSearchStep inStep2)
 	{
-		fieldPart2 = inPart2;
+		fieldStep2 = inStep2;
 	}
-	public AiSearchPart getPart3()
+	public AiSearchStep getStep3()
 	{
-		return fieldPart3;
+		return fieldStep3;
 	}
-	public void setPart3(AiSearchPart inPart3)
+	public void setStep3(AiSearchStep inStep3)
 	{
-		fieldPart3 = inPart3;
+		fieldStep3 = inStep3;
 	}
 
-	protected AiSearchPart fieldPart2;
-	protected AiSearchPart fieldPart3;
+
 	
 //	public String toSemanticQuery() {
 //		return String.join(" ", fieldKeywords);
@@ -77,17 +78,17 @@ public class AiSearch extends JSONObject
 		parent.put("search",this);
 		
 		JSONArray parts  = new JSONArray();
-		if( getPart1() != null)
+		if( getStep1() != null)
 		{
-			parts.add(getPart1());
+			parts.add(getStep1());
 		}
-		if( getPart2() != null)
+		if( getStep2() != null)
 		{
-			parts.add(getPart2());
+			parts.add(getStep2());
 		}
-		if( getPart3() != null)
+		if( getStep3() != null)
 		{
-			parts.add(getPart3());
+			parts.add(getStep3());
 		}
 		return parent.toJSONString();
 	}

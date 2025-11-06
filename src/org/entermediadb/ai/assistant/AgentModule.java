@@ -85,8 +85,11 @@ public class AgentModule extends BaseMediaModule {
 		if(query != null && !"null".equals(query))
 		{
 			AgentContext agentContext =  (AgentContext) inReq.getPageValue("agentcontext");
-			agentContext.setValue("semanticquery", query);
-			getAssistantManager(inReq).semanticSearch(inReq, agentContext);
+			if (agentContext != null)
+			{
+				agentContext.setValue("semanticquery", query);
+				getAssistantManager(inReq).semanticSearch(inReq, agentContext);
+			}
 		}
 	}
 

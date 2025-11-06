@@ -427,14 +427,14 @@ public class AssistantManager extends BaseAiManager
 		AiSearch search = inAgentContext.getAiSearchParams();
 		search.setOriginalSearchString(messageText);
 		
-		search.setPart1(null);
-		search.setPart2(null);
-		search.setPart3(null);
+		search.setStep1(null);
+		search.setStep2(null);
+		search.setStep3(null);
 		
 		for (Iterator iterator = steps.iterator(); iterator.hasNext();)
 		{
 			JSONObject step = (JSONObject) iterator.next();
-			AiSearchPart part = new AiSearchPart();
+			AiSearchStep part = new AiSearchStep();
 			
 			String targetTable = (String) step.get("table");
 			part.setTargetTable(targetTable);
@@ -455,23 +455,23 @@ public class AssistantManager extends BaseAiManager
 //				}
 			}
 			
-			if (search.getPart1() == null)
+			if (search.getStep1() == null)
 			{
-				search.setPart1(part);
+				search.setStep1(part);
 			}
 			else
 			{
-				if( "join".equals( step.get("operation")) || search.getPart1().getTargetTable().equals(targetTable) )
+				if( "join".equals( step.get("operation")) || search.getStep1().getTargetTable().equals(targetTable) )
 				{
 					continue; //Duplicate
 				}
-				if (search.getPart2() == null)
+				if (search.getStep2() == null)
 				{
-					search.setPart2(part);
+					search.setStep2(part);
 				}
-				else if (search.getPart3() == null)
+				else if (search.getStep3() == null)
 				{
-					search.setPart3(part);
+					search.setStep3(part);
 				}
 			}
 			
@@ -483,13 +483,13 @@ public class AssistantManager extends BaseAiManager
 		}
 		
 		String text = "Search";
-		if( search.getPart2() != null)
+		if( search.getStep2() != null)
 		{
-			text = text + " for " + search.getPart1().getTargetTable() + " in " + search.getPart2().getTargetTable();
+			text = text + " for " + search.getStep1().getTargetTable() + " in " + search.getStep2().getTargetTable();
 		}
-		else if( search.getPart1() != null)
+		else if( search.getStep1() != null)
 		{
-			text = text + " for " + search.getPart1().getTargetTable();
+			text = text + " for " + search.getStep1().getTargetTable();
 		}
 		
 		SemanticTableManager manager = loadSemanticTableManager("actionembedding");
@@ -646,16 +646,16 @@ public class AssistantManager extends BaseAiManager
 				if (parentmodule != null)
 				{
 					searchArgs.setParentModule(parentmodule);
-					searchArgs.getPart1().setTargetTable(parentmodule.getId());
+					searchArgs.getStep1().setTargetTable(parentmodule.getId());
 				}
-				if (searchArgs.getPart2() != null)
+				if (searchArgs.getStep2() != null)
 				{
 					String childid = inEmbeddingMatch.get("childmodule");
 					Data childmodule = getMediaArchive().getCachedData("module", childid);
 					if (childmodule != null)
 					{
 						searchArgs.setChildModule(childmodule);
-						searchArgs.getPart2().setTargetTable(childmodule.getId());
+						searchArgs.getStep2().setTargetTable(childmodule.getId());
 					}
 				}
 
@@ -707,8 +707,8 @@ public class AssistantManager extends BaseAiManager
 
 	public void searchSpecifiedTables(WebPageRequest inReq, AiSearch inAiSearchParams)
 	{
-		AiSearchPart part1 = inAiSearchParams.getPart1();
-		AiSearchPart part2 = inAiSearchParams.getPart2();
+		AiSearchStep step1 = inAiSearchParams.getStep1();
+		AiSearchStep step2 = inAiSearchParams.getStep2();
 		
 		inReq.putPageValue("semanticquery", inAiSearchParams.getOriginalSearchString());
 
@@ -716,10 +716,13 @@ public class AssistantManager extends BaseAiManager
 		
 		HitTracker finalhits = null;
 		
-		if(part1 != null && part2 != null)
+		if(step1 != null && step2 != null)
 		{		
-			String parentmoduleid = part2.getTargetTable(); //Need ID of sales collection?
-			String text = part2.getParameterValues();
+			String modulestep1id = step1.getTargetTable(); //Need ID of sales collection?
+			String modulestep2id = step2.getTargetTable(); //Need ID of sales collection?
+			
+			
+			String text = step1.getParameterValues();
 			
 			
 			/*if(text == null)
@@ -727,7 +730,7 @@ public class AssistantManager extends BaseAiManager
 				return;
 			}*/
 			
-			HitTracker foundhits = getMediaArchive().query(parentmoduleid).freeform("description", text).search();
+			HitTracker foundhits = getMediaArchive().query(modulestep1id).freeform("description", text).search();
 			
 			if( foundhits.isEmpty() )
 			{
@@ -735,24 +738,26 @@ public class AssistantManager extends BaseAiManager
 			}
 			Collection<String> ids = foundhits.collectValues("id");
 			
-			String moduleid2 = part1.getTargetTable(); //Need ID of sales collection?
-			Data module = getMediaArchive().getCachedData("module", moduleid2);
-			inReq.putPageValue("module",module);
+			Data module2 = getMediaArchive().getCachedData("module", modulestep2id);
+			inReq.putPageValue("module",module2);
 			
-			QueryBuilder search = getMediaArchive().query(moduleid2).named("assitedsearch").orgroup(parentmoduleid,ids);
-			String filter = part1.getParameterValues();
+			QueryBuilder search = getMediaArchive().query(modulestep2id).named("assitedsearch").orgroup(modulestep1id,ids);
+			String filter = step1.getParameterValues();
 			if( filter != null)
 			{
 				search.freeform("description", filter);
 			}
 			finalhits = search.search();
+			
+			step2.setCount((long) finalhits.size());
+			
 			//inReq.putPageValue( finalhits.getSessionId(), finalhits);
 			
 		}
-		else if(part1 != null)
+		else if(step1 != null)
 		{
-			String parentmoduleid = part1.getTargetTable();
-			String text  = part1.getParameterValues();
+			String parentmoduleid = step1.getTargetTable();
+			String text  = step1.getParameterValues();
 			Data module = getMediaArchive().getCachedData("module", parentmoduleid);
 			inReq.putPageValue("module",module);
 			
@@ -797,7 +802,7 @@ public class AssistantManager extends BaseAiManager
 	{
 		String parentmoduleid = "modulesearch";
 
-		String text  = inAiSearchParams.getPart1().getParameterValues();
+		String text  = inAiSearchParams.getStep1().getParameterValues();
 		
 		Collection<String> modules = getResultsManager().loadUserSearchTypes(inReq);
 		HitTracker foundhits = getMediaArchive().query(parentmoduleid)
@@ -1518,6 +1523,7 @@ public class AssistantManager extends BaseAiManager
 				}
 				data.setValue("vectorarray",semanticAction.getVectors());
 				data.setValue("aifunction",semanticAction.getAiFunction());
+				data.setName(semanticAction.getSemanticText());
 				
 				tosave.add(data);
 			}

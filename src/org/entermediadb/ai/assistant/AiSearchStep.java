@@ -1,14 +1,58 @@
 package org.entermediadb.ai.assistant;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
+import org.openedit.Data;
 import org.openedit.util.DateRange;
 
-public class AiSearchPart extends JSONObject
+public class AiSearchStep extends JSONObject
 {
+	
+	protected Long fieldCount;
+	protected Collection<Data> fieldModules;
+	
+	public Collection<Data> getModules()
+	{
+		return fieldModules;
+	}
+
+
+	public void setModules(Collection<Data> inModules)
+	{
+		fieldModules = inModules;
+	}
+
+
+	public Boolean hasMultipleTables()
+	{
+		if (getModules() != null && getModules().size() > 1) 
+		{
+		return true;
+		}
+		
+		return false;
+	}
+	
+	public Data getModule()
+	{
+		if (fieldModules!= null && !fieldModules.isEmpty())
+		{
+			return fieldModules.iterator().next();
+		}
+		return null;
+	}
+	
+
+	public Long getCount()
+	{
+		return fieldCount;
+	}
+	public void setCount(Long inCount)
+	{
+		fieldCount = inCount;
+	}
 	public String getTargetTable()
 	{
 		return (String)get("targettable");
