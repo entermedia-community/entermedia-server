@@ -352,6 +352,11 @@ public class AssistantManager extends BaseAiManager
 		String type = results.keySet().iterator().next().toString();
 		
 		JSONObject structure = (JSONObject) results.get(type);
+		
+		if(structure == null)
+		{
+			throw new OpenEditException("No structure found for type: " + type);
+		}
 
 		if( type.equals("conversation"))
 		{
@@ -364,53 +369,19 @@ public class AssistantManager extends BaseAiManager
 		}
 		else if(type.equals("create_image"))
 		{
-			JSONObject creation_details = (JSONObject) results.get("creation_details");
-			if( creation_details != null)
-			{
-				String content_type = (String) creation_details.get("content_type");
-				if(content_type != null)
-				{
-					AiCreation creation = inAgentContext.getAiCreationParams();
-					JSONObject attributes = (JSONObject) creation_details.get("attributes");
-					if(attributes != null)
-					{
-						if(content_type.equals("image"))
-						{
-							type = "createImage";
-							
-							String prompt = (String) attributes.get("prompt");
-							String image_name = (String) attributes.get("image_name");
-							if( prompt != null)
-							{
-								creation.setCreationType("image");
-								
-								JSONObject imageattrs = new JSONObject();
-								imageattrs.put("prompt", prompt);
-								imageattrs.put("image_name", image_name);
+			type = "createImage";
 			
-								creation.setImageFields(imageattrs);
-							}
-							
-						}
-						else if(content_type.equals("entity"))
-						{
-							type = "createEntity";
-							String entity_name = (String) attributes.get("entity_name");
-							String module_id = (String) attributes.get("module_id");
-							if(module_id != null && entity_name != null)
-							{
-								creation.setCreationType("entity");
-								
-								JSONObject entityattrs = new JSONObject();
-								entityattrs.put("entity_name", entity_name);
-								entityattrs.put("module_id", module_id);
-								
-								creation.setEntityFields(entityattrs);
-							}
-						}
-					}
-				}
-			}
+			AiCreation creation = inAgentContext.getAiCreationParams();					
+			creation.setCreationType("image");
+			creation.setImageFields(structure);
+		}
+		else if(type.equals("create_entity"))
+		{
+			type = "createEntity";
+			
+			AiCreation creation = inAgentContext.getAiCreationParams();
+			creation.setCreationType("entity");
+			creation.setEntityFields(structure);
 		}
 		//TODO Add how-to rag handling
 		else if( "search".equals(type) )
