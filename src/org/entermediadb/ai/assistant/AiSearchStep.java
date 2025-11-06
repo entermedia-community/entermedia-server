@@ -1,5 +1,6 @@
 package org.entermediadb.ai.assistant;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -11,7 +12,8 @@ public class AiSearchStep extends JSONObject
 {
 	
 	protected Long fieldCount;
-	protected Collection<Data> fieldModules;
+	protected Collection<Data> fieldModules = new ArrayList();
+	
 	
 	public Collection<Data> getModules()
 	{
@@ -42,6 +44,11 @@ public class AiSearchStep extends JSONObject
 			return fieldModules.iterator().next();
 		}
 		return null;
+	}
+	
+	public void addModule(Data inModule)
+	{
+		getModules().add(inModule);
 	}
 	
 
