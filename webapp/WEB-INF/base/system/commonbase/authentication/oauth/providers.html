@@ -14,3 +14,11 @@
     </a>
 </div>
 #end
+#set($provider = $mediaarchive.getCachedData("oauthprovider", "microsoft"))
+###if($provider.getBoolean("enabled"))
+<div class="mx-2">
+    <a href="$applink/authentication/oauth/oauth.html?provider=microsoft" style="display:block;width:42px;height:42px;">
+        <img src="$apphome/authentication/oauth/microsoft.png" class="img-fluid" />
+    </a>
+</div>
+###end
