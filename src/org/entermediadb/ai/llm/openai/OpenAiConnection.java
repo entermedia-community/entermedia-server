@@ -69,8 +69,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	{
 		if (getApiKey() == null)
 		{
-			log.error("No openai-key defined");
-			return null;
+			throw new OpenEditException("No API key configured for OpenAI image creation");
 		}
 
 		if (inPrompt == null)

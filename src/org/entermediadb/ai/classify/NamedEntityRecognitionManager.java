@@ -129,16 +129,20 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 			{
 				if (primaryasset.getBoolean("hasfulltext"))
 				{
-					String fulltext = primaryasset.get("fulltext");
-					if (fulltext != null)
+					String mediatype = getMediaArchive().getMediaRenderType(primaryasset);
+					if(mediatype.equals("document"))
 					{
-						fulltext = fulltext.replaceAll("\\s+", " ");
-						fulltext = fulltext.substring(0, Math.min(fulltext.length(), 5000));
-						HashMap fieldMap = new HashMap();
-						fieldMap.put("label", "Parsed Document Content");
-						JsonUtil jsonutils = new JsonUtil();
-						fieldMap.put("text", jsonutils.escape(fulltext));
-						contextfields.put("fulltext", fieldMap);
+						String fulltext = primaryasset.get("fulltext");
+						if (fulltext != null)
+						{
+							fulltext = fulltext.replaceAll("\\s+", " ");
+							fulltext = fulltext.substring(0, Math.min(fulltext.length(), 5000));
+							HashMap fieldMap = new HashMap();
+							fieldMap.put("label", "Parsed Document Content");
+							JsonUtil jsonutils = new JsonUtil();
+							fieldMap.put("text", jsonutils.escape(fulltext));
+							contextfields.put("fulltext", fieldMap);
+						}
 					}
 				}
 			}

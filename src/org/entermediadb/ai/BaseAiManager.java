@@ -298,16 +298,20 @@ public class BaseAiManager extends BaseManager
 
 		if (inData.getBoolean("hasfulltext"))
 		{
-			String fulltext = inData.get("fulltext");
-			if (fulltext != null)
+			String mediatype = getMediaArchive().getMediaRenderType(inData);
+			if(mediatype.equals("document"))
 			{
-				fulltext = fulltext.replaceAll("\\s+", " ");
-				fulltext = fulltext.substring(0, Math.min(fulltext.length(), 5000));
-				HashMap fieldMap = new HashMap();
-				fieldMap.put("label", "Parsed Document Content");
-				fieldMap.put("text", jsonutils.escape(fulltext));
+				String fulltext = inData.get("fulltext");
+				if (fulltext != null)
+				{
+					fulltext = fulltext.replaceAll("\\s+", " ");
+					fulltext = fulltext.substring(0, Math.min(fulltext.length(), 5000));
+					HashMap fieldMap = new HashMap();
+					fieldMap.put("label", "Parsed Document Content");
+					fieldMap.put("text", jsonutils.escape(fulltext));
 
-				contextfields.put("fulltext", fieldMap);
+					contextfields.put("fulltext", fieldMap);
+				}
 			}
 		}
 		return contextfields;
