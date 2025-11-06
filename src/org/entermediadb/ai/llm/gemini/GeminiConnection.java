@@ -200,7 +200,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 			JSONObject imageContent = new JSONObject();
 			imageContent.put("type", "image_url");
 			JSONObject imageUrl = new JSONObject();
-			imageUrl.put("url", "data:image/png;base64," + inBase64Image); // Base64 as a data URL
+			imageUrl.put("url", inBase64Image); // Base64 as a data URL
 			imageContent.put("image_url", imageUrl);
 			contentArray.add(imageContent);
 

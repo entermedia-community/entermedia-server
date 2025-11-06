@@ -1,10 +1,8 @@
 package org.entermediadb.ai.informatics;
 
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -13,11 +11,8 @@ import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.classify.ClassifyManager;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.scripts.ScriptLogger;
-import org.openedit.Data;
 import org.openedit.MultiValued;
-import org.openedit.data.PropertyDetail;
 
 public abstract class InformaticsProcessor extends BaseAiManager 
 {

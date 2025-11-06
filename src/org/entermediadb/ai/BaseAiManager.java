@@ -129,6 +129,7 @@ public class BaseAiManager extends BaseManager
 ////		getMediaArchive().getCacheManager().clear("aifacedetect"); 
 
 	}
+	
 	protected String loadBase64Image(Data inAsset, String imagesize)
 	{
 		ContentItem item = getMediaArchive().getGeneratedContent(inAsset, imagesize);
@@ -139,6 +140,7 @@ public class BaseAiManager extends BaseManager
 		}
 		return loadBase64Image(item);
 	}
+	
 	protected String loadBase64Image(ContentItem item)
 	{
 		if(!item.exists())
@@ -153,14 +155,22 @@ public class BaseAiManager extends BaseManager
 		args.add("-resize");
 		args.add("1500x1500");
 		args.add("jpg:-");
+		
 		Exec exec = (Exec)getMediaArchive().getBean("exec");
-
-		ExecResult result = exec.runExecStream("convert", args, output, 5000);
+		exec.runExecStream("convert", args, output, 5000);
+		
 		byte[] bytes = output.toByteArray();  // Read InputStream as bytes
 		String base64EncodedString = Base64.getEncoder().encodeToString(bytes); // Encode to Base64
+		
 		long duration = (System.currentTimeMillis() - starttime) ;
 		log.info("Loaded and encoded " + item.getName() + " in "+duration+"ms");
-		return base64EncodedString;
+		
+		if(base64EncodedString == null || base64EncodedString.length() < 100)
+		{
+			return null;
+		}
+		
+		return "data:image/jpeg;base64," + base64EncodedString;
 
 	}
 	

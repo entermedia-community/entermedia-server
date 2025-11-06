@@ -35,32 +35,25 @@ public class LlamaConnection extends OpenAiConnection {
 	{
 		MediaArchive archive = getMediaArchive();
 
-		// Use JSON Simple to create request payload
 		JSONObject obj = new JSONObject();
 		obj.put("model", getModelIdentifier());
-		//obj.put("max_tokens", maxtokens);
-
-		// Prepare messages array
 
 		JSONArray messages = new JSONArray();
+	
+		JSONObject systemmessage = new JSONObject();
+		systemmessage.put("role", "system");
 		
-		if("llama".equals(getLlmType()))
-		{
-			JSONObject systemmessage = new JSONObject();
-			systemmessage.put("role", "system");
-			
-			JSONArray contentarray = new JSONArray();
-			
-			JSONObject contentitem = new JSONObject();
-			contentitem.put("type", "text");
-			contentitem.put("text", "You are a metadata generator. You are given an instruction in Open AI tool format, parse it and give a response in JSON with all the required fields.");
-			
-			contentarray.add(contentitem);
-			
-			systemmessage.put("content", contentarray);
-			
-			messages.add(systemmessage);
-		}
+		JSONArray contentarray = new JSONArray();
+		
+		JSONObject contentitem = new JSONObject();
+		contentitem.put("type", "text");
+		contentitem.put("text", "You are a metadata generator. You are given an instruction in Open AI tool format, parse it and give a response in JSON with all the required fields.");
+		
+		contentarray.add(contentitem);
+		
+		systemmessage.put("content", contentarray);
+		
+		messages.add(systemmessage);
 
 		// Handle function call definition
 		if (inFunction != null)
@@ -119,7 +112,7 @@ public class LlamaConnection extends OpenAiConnection {
 			JSONObject imageContent = new JSONObject();
 			imageContent.put("type", "image_url");
 			JSONObject imageUrl = new JSONObject();
-			imageUrl.put("url", "data:image/png;base64," + inBase64Image); // Base64 as a data URL
+			imageUrl.put("url", inBase64Image); // Base64 as a data URL
 			imageContent.put("image_url", imageUrl);
 			contentArray.add(imageContent);
 
