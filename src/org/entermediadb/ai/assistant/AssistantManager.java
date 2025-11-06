@@ -351,6 +351,11 @@ public class AssistantManager extends BaseAiManager
 	{
 		String type = results.keySet().iterator().next().toString();
 		
+		if(type == null)
+		{
+			throw new OpenEditException("No type specified in results: " + results.toJSONString());
+		}
+		
 		JSONObject structure = (JSONObject) results.get(type);
 		
 		if(structure == null)
@@ -358,7 +363,11 @@ public class AssistantManager extends BaseAiManager
 			throw new OpenEditException("No structure found for type: " + type);
 		}
 
-		if( type.equals("conversation"))
+		if( type.equals("search") )
+		{
+			type = setAiSearchParts(inAgentContext, structure, type, messageText);
+		}
+		else if( type.equals("conversation"))
 		{
 			type = "chitchat";
 			String generalresponse = (String) structure.get("friendly_response");
@@ -384,10 +393,6 @@ public class AssistantManager extends BaseAiManager
 			creation.setEntityFields(structure);
 		}
 		//TODO Add how-to rag handling
-		else if( "search".equals(type) )
-		{
-			type = setAiSearchParts(inAgentContext, structure, type, messageText);
-		}
 		
 		response.setFunctionName(type);
 	}
