@@ -720,6 +720,7 @@ public class AssistantManager extends BaseAiManager
 			
 			Data module2 = getMediaArchive().getCachedData("module", modulestep2id);
 			inReq.putPageValue("module",module2);
+			step2.addModule(module2);
 			
 			QueryBuilder search = getMediaArchive().query(modulestep2id).named("assitedsearch").orgroup(modulestep1id,ids);
 			String filter = step1.getParameterValues();
@@ -750,10 +751,13 @@ public class AssistantManager extends BaseAiManager
 				
 				Collection<String> moduleids = new ArrayList<String>();
 				moduleids.add(parentmoduleid);
+				step1.addModule(module);
 				for (Iterator iterator = modules.iterator(); iterator.hasNext();)
 				{
 					Data mod = (Data) iterator.next();
 					moduleids.add(mod.getId());
+					Data searchmodule = getMediaArchive().getCachedData("module", parentmoduleid);
+					step1.addModule(searchmodule);
 				}
 				
 				QueryBuilder search = getMediaArchive().query("modulesearch")
@@ -761,10 +765,13 @@ public class AssistantManager extends BaseAiManager
 					.put("searchtypes", moduleids);
 			
 				finalhits = search.freeform("description", text).search();
+				step1.setCount((long) finalhits.size());
 			}
 			else
 			{
+				step1.addModule(module);
 				finalhits = getMediaArchive().query(parentmoduleid).all().search();
+				step1.setCount((long) finalhits.size()); 
 			}
 			if( finalhits.isEmpty() )
 			{
