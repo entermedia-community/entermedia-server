@@ -276,7 +276,7 @@ public class ResultsManager extends BaseManager {
 		return organizedresults;
 	}
 
-	public Collection loadUserSearchTypes(WebPageRequest inReq)
+	public Collection<String> loadUserSearchTypes(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -335,7 +335,7 @@ public class ResultsManager extends BaseManager {
 		//searchmodules.remove("asset"); 
 		return searchmodules;
 	}
-	public Collection loadUserSearchTypes(WebPageRequest inReq, Collection<String> moduleIds)
+	public Collection<String> loadUserSearchTypes(WebPageRequest inReq, Collection<String> moduleIds)
 	{
 		MediaArchive archive = getMediaArchive();
 
