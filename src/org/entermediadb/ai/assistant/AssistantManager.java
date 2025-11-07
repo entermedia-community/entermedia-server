@@ -753,7 +753,7 @@ public class AssistantManager extends BaseAiManager
 						.addFacet("entitysourcetype")
 						.put("searchtypes", moduleids).includeDescription(true);
 					entityhits = search.freeform("description", text).search();
-					
+					log.info(" Here:  "+ entityhits.getActiveFilterValues() );
 					//TODO: Not sure this is needed or works
 					if( moduleids.contains("asset") )
 					{
@@ -761,6 +761,11 @@ public class AssistantManager extends BaseAiManager
 						Collection categories = entityhits.collectValues("rootcategory");
 						search = getMediaArchive().query("asset").orgroup("category",categories);
 						assethits = search.freeform("description", text).search();
+						step1.setCount( (long) (entityhits.size()  + assethits.size()));
+					}
+					else
+					{
+						step1.setCount((long) entityhits.size());
 					}
 					
 				}
@@ -768,12 +773,13 @@ public class AssistantManager extends BaseAiManager
 				{
 					search = getMediaArchive().query(step1.getModule().getId());
 					assethits = search.freeform("description", text).search();
+					step1.setCount((long) assethits.size());
 				}	
 				else {
 					search = getMediaArchive().query(step1.getModule().getId());
 					entityhits = search.freeform("description", text).search();
+					step1.setCount((long) entityhits.size());
 				}
-				step1.setCount((long) entityhits.size());
 			}
 			else
 			{
@@ -781,24 +787,18 @@ public class AssistantManager extends BaseAiManager
 				entityhits = getMediaArchive().query(step1.getModule().getId()).all().search();
 				step1.setCount((long) entityhits.size()); 
 			}
-			if( entityhits.isEmpty() )
-			{
-				return;
-			}
 			
 		}
 		
-		
-		if( "asset".equals( entityhits.getSearcher().getSearchType() ) )
+		if(entityhits != null )
 		{
-			inReq.putPageValue("hits", assethits);
-			organizeResults(inReq,entityhits,assethits);
+			inReq.putPageValue("hits", entityhits);
 		}
 		else
 		{
-			inReq.putPageValue("hits", entityhits);
-			organizeResults(inReq,entityhits,assethits);
+			inReq.putPageValue("hits", assethits);
 		}
+		organizeResults(inReq,entityhits,assethits);
 		
 	}
 	
@@ -808,9 +808,13 @@ public class AssistantManager extends BaseAiManager
 
 		inReq.putPageValue("assethits", assetunsorted);
 		
-		if( assetunsorted == null)
+		if(entityhits != null && assetunsorted == null)
 		{
 			inReq.putPageValue("totalhits", entityhits.size());
+		}
+		else if(entityhits == null && assetunsorted != null)
+		{
+			inReq.putPageValue("totalhits", assetunsorted.size());
 		}
 		else
 		{
