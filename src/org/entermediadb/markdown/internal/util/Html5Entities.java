@@ -10,9 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Html5Entities {
-
-    private static final Map<String, String> NAMED_CHARACTER_REFERENCES = readEntities();
-    private static final String ENTITY_PATH = "/org.entermediadb.markdown.internal/util/entities.txt";
+ ;
+    private final String ENTITY_PATH = "/org.entermediadb.markdown.internal/util/entities.txt";
 
     public static String entityToString(String input) {
         if (!input.startsWith("&") || !input.endsWith(";")) {
@@ -38,7 +37,7 @@ public class Html5Entities {
                 return "\uFFFD";
             }
         } else {
-            String s = NAMED_CHARACTER_REFERENCES.get(value);
+            String s = readEntities().get(value);
             if (s != null) {
                 return s;
             } else {
@@ -47,7 +46,7 @@ public class Html5Entities {
         }
     }
 
-    private static Map<String, String> readEntities() {
+    private Map<String, String> readEntities() {
         Map<String, String> entities = new HashMap<>();
         InputStream stream = Html5Entities.class.getResourceAsStream(ENTITY_PATH);
         Charset charset = StandardCharsets.UTF_8;
