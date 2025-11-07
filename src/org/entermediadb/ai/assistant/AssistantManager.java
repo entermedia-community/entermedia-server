@@ -469,6 +469,12 @@ public class AssistantManager extends BaseAiManager
 //			}
 
 		}
+		
+		if(search.getStep1() == null)
+		{
+			type = "chitchat"; 
+			return type;
+		}
 
 		if( "Not specified".equalsIgnoreCase( search.getStep1().getTargetTable() ) )
 		{
