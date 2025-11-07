@@ -29,6 +29,7 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.EntityManager;
 import org.entermediadb.find.ResultsManager;
+import org.entermediadb.markdown.MarkdownUtil;
 import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONArray;
@@ -373,7 +374,8 @@ public class AssistantManager extends BaseAiManager
 			String generalresponse = (String) structure.get("friendly_response");
 			if(generalresponse != null)
 			{
-				response.setGeneralResponse(generalresponse);
+				MarkdownUtil md = new MarkdownUtil();
+				response.setGeneralResponse(md.render(generalresponse));
 			}
 		}
 		else if(type.equals("create_image"))
