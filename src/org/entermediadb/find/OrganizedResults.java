@@ -71,16 +71,24 @@ public class OrganizedResults
 			fieldModules = new ArrayList();
 			if (getEntityResults() != null)
 			{
-				FilterNode nodes = (FilterNode)getEntityResults().getActiveFilterValues().get("entitysourcetype");
-				if (nodes!= null && nodes.getChildren() != null)
+				if( getEntityResults().getSearchType().equals( "modulesearch") )
 				{
-					for (Iterator iterator = nodes.getChildren().iterator(); iterator.hasNext();)
+					FilterNode nodes = (FilterNode)getEntityResults().getActiveFilterValues().get("entitysourcetype");
+					if (nodes!= null && nodes.getChildren() != null)
 					{
-						FilterNode onetype = (FilterNode) iterator.next();
-						String searchtype = onetype.getId();
-						Data module = getMediaArchive().getCachedData("module", searchtype);
-						fieldModules.add(module);
+						for (Iterator iterator = nodes.getChildren().iterator(); iterator.hasNext();)
+						{
+							FilterNode onetype = (FilterNode) iterator.next();
+							String searchtype = onetype.getId();
+							Data module = getMediaArchive().getCachedData("module", searchtype);
+							fieldModules.add(module);
+						}
 					}
+				}
+				else
+				{
+					Data module = getMediaArchive().getCachedData("module", getEntityResults().getSearchType());
+					fieldModules.add(module);
 				}
 			}
 			if(getAssetResults() != null && !getAssetResults().isEmpty() )
@@ -112,6 +120,11 @@ public class OrganizedResults
 		{
 			return getAssetResults().size();
 		}
+		if( getEntityResults().getSearchType().equals( inModuleId ) )
+		{
+			return getEntityResults().size();
+		}
+		
 		FilterNode node = (FilterNode)getEntityResults().getActiveFilterValues().get("entitysourcetype");
 		if( node == null)
 		{

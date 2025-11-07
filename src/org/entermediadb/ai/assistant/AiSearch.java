@@ -2,10 +2,10 @@ package org.entermediadb.ai.assistant;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.openedit.Data;
+import org.openedit.data.BaseData;
 import org.openedit.util.JSONParser;
 
-public class AiSearch extends JSONObject
+public class AiSearch extends BaseData
 {
 	String originalSearch;
 	
