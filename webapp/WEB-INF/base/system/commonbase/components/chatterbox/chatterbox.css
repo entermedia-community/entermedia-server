@@ -4,6 +4,15 @@
 .chatterbox {
 	height: 100%;
 }
+.entity-tab-chatterbox {
+	background-color: #efefef;
+}
+.entity-tab-chatterbox .chatterbox {
+	width: 820px;
+	margin: 0 auto;
+	padding: 0 10px 10px;
+	background-color: #ffffff;
+}
 .chatterbox-messages {
 	height: calc(100% - 146px);
 	min-height: 250px;
