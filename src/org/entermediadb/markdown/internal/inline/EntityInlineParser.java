@@ -49,9 +49,17 @@ public class EntityInlineParser implements InlineContentParser {
         return ParsedInline.none();
     }
 
+    private Html5Entities entities = null;
+
     private ParsedInline entity(Scanner scanner, Position start) {
         String text = scanner.getSource(start, scanner.position()).getContent();
-        return ParsedInline.of(new Text(Html5Entities.entityToString(text)), scanner.position());
+        
+        if( entities == null)
+    	{
+    		entities = new Html5Entities();
+    	}
+        
+        return ParsedInline.of(new Text(entities.entityToString(text)), scanner.position());
     }
 
     public static class Factory implements InlineContentParserFactory {

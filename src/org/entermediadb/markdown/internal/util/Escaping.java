@@ -25,13 +25,21 @@ public class Escaping {
 
     private static final Pattern WHITESPACE = Pattern.compile("[ \t\r\n]+");
 
+    private static Html5Entities entities = null;
+    
     private static final Replacer UNESCAPE_REPLACER = new Replacer() {
         @Override
         public void replace(String input, StringBuilder sb) {
             if (input.charAt(0) == '\\') {
                 sb.append(input, 1, input.length());
             } else {
-                sb.append(Html5Entities.entityToString(input));
+            	
+            	if( entities == null)
+            	{
+            		entities = new Html5Entities();
+            	}
+            	
+                sb.append(entities.entityToString(input));
             }
         }
     };

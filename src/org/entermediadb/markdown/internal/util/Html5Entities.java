@@ -10,10 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Html5Entities {
- ;
+ 
     private final String ENTITY_PATH = "/org.entermediadb.markdown.internal/util/entities.txt";
 
-    public static String entityToString(String input) {
+    public String entityToString(String input) {
         if (!input.startsWith("&") || !input.endsWith(";")) {
             return input;
         }
