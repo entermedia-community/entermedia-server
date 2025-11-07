@@ -365,7 +365,7 @@ public class AssistantManager extends BaseAiManager
 
 		if( type.equals("search") )
 		{
-			type = setAiSearchParts(inAgentContext, structure, type, messageText);
+			type = partsSearchParts(inAgentContext, structure, type, messageText);
 		}
 		else if( type.equals("conversation"))
 		{
@@ -397,7 +397,7 @@ public class AssistantManager extends BaseAiManager
 		response.setFunctionName(type);
 	}
 
-	private String setAiSearchParts(AgentContext inAgentContext, JSONObject structure, String type, String messageText) {
+	private String partsSearchParts(AgentContext inAgentContext, JSONObject structure, String type, String messageText) {
 		ArrayList tables = (ArrayList) structure.get("tables");
 		
 		if( tables == null)
@@ -693,7 +693,6 @@ public class AssistantManager extends BaseAiManager
 			Collection<String> ids = foundhits.collectValues("id");
 
 			inReq.putPageValue("module", step2.getModule());
-			step2.addModule(step2.getModule());
 			
 			QueryBuilder search = getMediaArchive().query(step2.getModule().getId()).named("assitedsearch").orgroup(step1.getModule().getId(),ids);
 			String step2Keyowrd = step2.getParameterValues();
