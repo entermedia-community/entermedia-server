@@ -8,13 +8,25 @@ import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.util.DateRange;
 
-public class AiSearchStep extends JSONObject
+public class AiSearchTable extends JSONObject
 {
 	
 	protected Long fieldCount;
 	protected Collection<Data> fieldModules = new ArrayList();
+	protected AiSearchTable fieldForeignTable;
 	
-	
+	public AiSearchTable getForeignTable()
+	{
+		return fieldForeignTable;
+	}
+
+
+	public void setForeignTable(AiSearchTable inForeingTable)
+	{
+		fieldForeignTable = inForeingTable;
+	}
+
+
 	public Collection<Data> getModules()
 	{
 		return fieldModules;

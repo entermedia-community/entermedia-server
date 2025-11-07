@@ -398,9 +398,9 @@ public class AssistantManager extends BaseAiManager
 	}
 
 	private String setAiSearchParts(AgentContext inAgentContext, JSONObject structure, String type, String messageText) {
-		ArrayList steps = (ArrayList) structure.get("search_steps");
+		ArrayList tables = (ArrayList) structure.get("tables");
 		
-		if( steps == null)
+		if( tables == null)
 		{
 			return type;
 		}
@@ -414,34 +414,34 @@ public class AssistantManager extends BaseAiManager
 		search.setStep2(null);
 		search.setStep3(null);
 		
-		for (Iterator iterator = steps.iterator(); iterator.hasNext();)
+		for (Iterator iterator = tables.iterator(); iterator.hasNext();)
 		{
-			JSONObject step = (JSONObject) iterator.next();
-			AiSearchStep part = new AiSearchStep();
+			JSONObject jsontable = (JSONObject) iterator.next();
+			AiSearchTable searchtable = new AiSearchTable();
 			
-			String targetTable = (String) step.get("table");
+			String targetTable = (String) jsontable.get("name");
+			searchtable.setTargetTable(targetTable);
 
-			part.setTargetTable(targetTable);
-
-			Map filters = (Map) step.get("filters");
-			if( filters != null && !filters.isEmpty())
+			Map filters = (Map) jsontable.get("parameters");
+			searchtable.setParameters(filters);
+			
+			String foreigntablename = (String) jsontable.get("foreign_table");
+			if( foreigntablename != null)
 			{
-				part.setParameters(filters);
-//				String label = (String)filters.keySet().iterator().next();
-//				part.setParameterName(label);
-//				Object value = 	filters.get(label);
-//				if( value != null)
-//				{
-//					if( (value instanceof String))
-//					{
-//						part.setParameterValue(String.valueOf(value));
-//					}
-//				}
+				AiSearchTable ftable = new AiSearchTable();
+				ftable.setTargetTable(foreigntablename);
+				
+				Map parameters = (Map) jsontable.get("foreign_parameters");
+				ftable.setParameters(filters);
+				
+				searchtable.setForeignTable(ftable);
+				
 			}
+			
 			
 			if (search.getStep1() == null)
 			{
-				search.setStep1(part);
+				search.setStep1(searchtable);
 			}
 			else
 			{
@@ -451,19 +451,24 @@ public class AssistantManager extends BaseAiManager
 //				}
 				if (search.getStep2() == null)
 				{
-					search.setStep2(part);
+					search.setStep2(searchtable);
 				}
 				else if (search.getStep3() == null)
 				{
-					search.setStep3(part);
+					search.setStep3(searchtable);
 				}
 			}
 			
-			if("Not specified".equals(targetTable))
-			{
-				return "searchMultiple";
-			}
+//			if("Not specified".equals(targetTable))
+//			{
+//				return "searchMultiple";
+//			}
 
+		}
+
+		if(search.getStep2() == null )
+		{
+			search.setStep2( search.getStep1().getForeignTable() );
 		}
 		
 		String text = "Search";
@@ -692,8 +697,8 @@ public class AssistantManager extends BaseAiManager
 
 	public void searchSpecifiedTables(WebPageRequest inReq, AiSearch inAiSearchParams)
 	{
-		AiSearchStep step1 = inAiSearchParams.getStep1();
-		AiSearchStep step2 = inAiSearchParams.getStep2();
+		AiSearchTable step1 = inAiSearchParams.getStep1();
+		AiSearchTable step2 = inAiSearchParams.getStep2();
 		
 		inReq.putPageValue("semanticquery", inAiSearchParams.getOriginalSearchString());
 

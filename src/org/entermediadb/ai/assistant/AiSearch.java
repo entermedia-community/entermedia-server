@@ -38,31 +38,31 @@ public class AiSearch extends JSONObject
 
 	Data fieldParentModule;
 	Data fieldChildModule;
-	protected AiSearchStep fieldStep1;
-	protected AiSearchStep fieldStep2;
-	protected AiSearchStep fieldStep3;
+	protected AiSearchTable fieldStep1;
+	protected AiSearchTable fieldStep2;
+	protected AiSearchTable fieldStep3;
 	
-	public AiSearchStep getStep1()
+	public AiSearchTable getStep1()
 	{
 		return fieldStep1;
 	}
-	public void setStep1(AiSearchStep inStep1)
+	public void setStep1(AiSearchTable inStep1)
 	{
 		fieldStep1 = inStep1;
 	}
-	public AiSearchStep getStep2()
+	public AiSearchTable getStep2()
 	{
 		return fieldStep2;
 	}
-	public void setStep2(AiSearchStep inStep2)
+	public void setStep2(AiSearchTable inStep2)
 	{
 		fieldStep2 = inStep2;
 	}
-	public AiSearchStep getStep3()
+	public AiSearchTable getStep3()
 	{
 		return fieldStep3;
 	}
-	public void setStep3(AiSearchStep inStep3)
+	public void setStep3(AiSearchTable inStep3)
 	{
 		fieldStep3 = inStep3;
 	}
