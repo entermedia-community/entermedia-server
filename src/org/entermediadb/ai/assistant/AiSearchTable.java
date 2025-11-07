@@ -57,7 +57,13 @@ public class AiSearchTable extends JSONObject
 		}
 		return null;
 	}
-	
+
+	public void setModule(Data inModule)
+	{
+		getModules().clear();
+		getModules().add(inModule);
+	}
+
 	public void addModule(Data inModule)
 	{
 		getModules().add(inModule);

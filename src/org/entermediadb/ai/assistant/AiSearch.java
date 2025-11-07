@@ -19,25 +19,6 @@ public class AiSearch extends JSONObject
 		originalSearch = inOriginalSearch;
 	}
 	
-	public Data getParentModule()
-	{
-		return fieldParentModule;
-	}
-	public void setParentModule(Data inParentModule)
-	{
-		fieldParentModule = inParentModule;
-	}
-	public Data getChildModule()
-	{
-		return fieldChildModule;
-	}
-	public void setChildModule(Data inChildModule)
-	{
-		fieldChildModule = inChildModule;
-	}
-
-	Data fieldParentModule;
-	Data fieldChildModule;
 	protected AiSearchTable fieldStep1;
 	protected AiSearchTable fieldStep2;
 	protected AiSearchTable fieldStep3;
