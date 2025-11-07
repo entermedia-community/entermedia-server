@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.json.simple.JSONObject;
 import org.openedit.Data;
+import org.openedit.data.BaseData;
 import org.openedit.util.DateRange;
 
-public class AiSearchTable extends JSONObject
+public class AiSearchTable extends BaseData
 {
 	
 	protected Long fieldCount;
@@ -84,7 +84,7 @@ public class AiSearchTable extends JSONObject
 	}
 	public void setTargetTable(String inTargetTable)
 	{
-		put("targettable",inTargetTable);
+		setValue("targettable",inTargetTable);
 	}
 	public String getParameterName()
 	{
@@ -93,12 +93,12 @@ public class AiSearchTable extends JSONObject
 	
 	public void setParameters(Map<String, String>inParameters)
 	{
-		put("parameters",inParameters);
+		setValue("parameters",inParameters);
 	} 
 	
 	public Map<String, String> getParameters()
 	{
-		Map<String, String> params = (Map<String, String>) get("parameters");
+		Map<String, String> params = (Map<String, String>) getValue("parameters");
 		return params;
 	}
 	

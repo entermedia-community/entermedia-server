@@ -435,8 +435,8 @@ public class AssistantManager extends BaseAiManager
 				AiSearchTable ftable = new AiSearchTable();
 				ftable.setTargetTable(foreigntablename);
 				
-				Map parameters = (Map) jsontable.get("foreign_parameters");
-				ftable.setParameters(filters);
+				Map parameters = (Map) jsontable.get("foreign_table_parameters");
+				ftable.setParameters(parameters);
 				
 				searchtable.setForeignTable(ftable);
 				
@@ -479,16 +479,18 @@ public class AssistantManager extends BaseAiManager
 		else
 		{
 			
-			if(search.getStep2() == null )
+			if(search.getStep2() == null && search.getStep1().getForeignTable() != null)
 			{
-				search.setStep2( search.getStep1().getForeignTable() );
+				search.setStep2( search.getStep1() );
+				
+				search.setStep1( search.getStep2().getForeignTable() );
 			}
 			
 			String text = "Search";
 			
 			if( search.getStep2() != null)
 			{
-				text = text + " for " + search.getStep1().getTargetTable() + " in " + search.getStep2().getTargetTable();
+				text = text + " for " + search.getStep2().getTargetTable() + " in " + search.getStep1().getTargetTable();
 			}
 			else if( search.getStep1() != null)
 			{
@@ -654,7 +656,7 @@ public class AssistantManager extends BaseAiManager
 				Data childmodule = getMediaArchive().getCachedData("module", childid);
 				if (childmodule != null)
 				{
-					tables.getStep2().setModule(parentmodule);
+					tables.getStep2().setModule(childmodule);
 				}
 			}
 		}
@@ -675,13 +677,13 @@ public class AssistantManager extends BaseAiManager
 		
 		if(step1 != null && step2 != null)
 		{		
-			String text = step1.getParameterValues();
+			String step1Keyword = step1.getParameterValues();
 			/*if(text == null)
 			{
 				return;
 			}*/
 			
-			HitTracker foundhits = getMediaArchive().query(step1.getModule().getId()).freeform("description", text).search();
+			HitTracker foundhits = getMediaArchive().query(step1.getModule().getId()).freeform("description", step1Keyword).search();
 			
 			if( foundhits.isEmpty() )
 			{
@@ -689,14 +691,27 @@ public class AssistantManager extends BaseAiManager
 			}
 			Collection<String> ids = foundhits.collectValues("id");
 
-			inReq.putPageValue("module",step2.getModule());
+			inReq.putPageValue("module", step2.getModule());
 			step2.addModule(step2.getModule());
 			
 			QueryBuilder search = getMediaArchive().query(step2.getModule().getId()).named("assitedsearch").orgroup(step1.getModule().getId(),ids);
-			String filter = step1.getParameterValues();
-			if( filter != null)
+			String step2Keyowrd = step2.getParameterValues();
+			if( step2Keyowrd != null)
 			{
-				search.freeform("description", filter);
+				if (step1Keyword == null || !step1Keyword.equalsIgnoreCase(step2Keyowrd))  //Remove the keyword if is  same
+				{
+					//Remove Module Name from Keywords
+					/*
+					String step1table = step1.getTargetTable();
+					step2Keyowrd = step2Keyowrd.replace(step1table, "");
+					if (step1table.endsWith("s"))
+					{
+						step1table = step1table.substring(0, step1table.length()-1);
+						step2Keyowrd = step2Keyowrd.replace(step1table, "");
+					}
+					*/
+					search.freeform("description", step2Keyowrd);
+				}
 			}
 			finalhits = search.search();
 			
@@ -708,28 +723,34 @@ public class AssistantManager extends BaseAiManager
 		else if(step1 != null)
 		{
 			String text  = step1.getParameterValues();
-
+			inReq.putPageValue("module", step1.getModule());
 			if(text != null)
 			{
+				QueryBuilder search = null;
 				Schema schema = loadSchema();
-				
 				Collection<Data> modules = schema.getChildrenOf(step1.getModule().getId());
-				
-				Collection<String> moduleids = new ArrayList<String>();
-				moduleids.add(step1.getModule().getId());
-				//step1.addModule(step1.getModule());
-				for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+				if (modules != null && !modules.isEmpty())
 				{
-					Data mod = (Data) iterator.next();
-					moduleids.add(mod.getId());
-					step1.addModule(mod);
+					Collection<String> moduleids = new ArrayList<String>();
+					moduleids.add(step1.getModule().getId());
+					//step1.addModule(step1.getModule());
+					for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+					{
+						Data mod = (Data) iterator.next();
+						moduleids.add(mod.getId());
+						step1.addModule(mod);
+					}
+					
+					search = getMediaArchive().query("modulesearch")
+						.addFacet("entitysourcetype")
+						.put("searchtypes", moduleids);
+				}
+				else {
+					search = getMediaArchive().query(step1.getModule().getId());
 				}
 				
-				QueryBuilder search = getMediaArchive().query("modulesearch")
-					.addFacet("entitysourcetype")
-					.put("searchtypes", moduleids);
-			
 				finalhits = search.freeform("description", text).search();
+				
 				step1.setCount((long) finalhits.size());
 			}
 			else
@@ -755,6 +776,11 @@ public class AssistantManager extends BaseAiManager
 		String parentmoduleid = "modulesearch";
 
 		String text  = inAiSearchParams.getStep1().getParameterValues();
+		
+		if (text == null)
+		{
+			return;
+		}
 		
 		Collection<String> modules = getResultsManager().loadUserSearchTypes(inReq);
 		HitTracker foundhits = getMediaArchive().query(parentmoduleid)
@@ -785,7 +811,6 @@ public class AssistantManager extends BaseAiManager
 		getResultsManager().loadOrganizedResults(inReq, foundhits, assetunsorted);
 
 		inReq.putPageValue("semanticquery", inAiSearchParams.getOriginalSearchString());
-
 	}
 	
 	public void searchByKeywords(WebPageRequest inReq, AiSearch searchArgs)
