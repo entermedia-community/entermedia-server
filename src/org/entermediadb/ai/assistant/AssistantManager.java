@@ -420,6 +420,10 @@ public class AssistantManager extends BaseAiManager
 			AiSearchTable searchtable = new AiSearchTable();
 			
 			String targetTable = (String) jsontable.get("name");
+//			if( "Not Specified".equals(targetTable) )
+//			{
+//				targetTable = "";
+//			}
 			searchtable.setTargetTable(targetTable);
 
 			Map filters = (Map) jsontable.get("parameters");
@@ -466,41 +470,51 @@ public class AssistantManager extends BaseAiManager
 
 		}
 
-		if(search.getStep2() == null )
+		if( "Not specified".equalsIgnoreCase( search.getStep1().getTargetTable() ) )
 		{
-			search.setStep2( search.getStep1().getForeignTable() );
-		}
-		
-		String text = "Search";
-		
-		if( search.getStep2() != null)
-		{
-			text = text + " for " + search.getStep1().getTargetTable() + " in " + search.getStep2().getTargetTable();
-		}
-		else if( search.getStep1() != null)
-		{
-			text = text + " for " + search.getStep1().getTargetTable();
-		}
-		
-		SemanticTableManager manager = loadSemanticTableManager("actionembedding");
-		List<Double> tosearch = manager.makeVector(text);
-		Collection<RankedResult> suggestions = manager.searchNearestItems(tosearch);
-		//Load more details into this request and possibly change the type
-		if( !suggestions.isEmpty())
-		{
-			inAgentContext.setRankedSuggestions(suggestions);
-			RankedResult top = (RankedResult)suggestions.iterator().next();
-			if ( top.getDistance() < .7 )
-			{
-				type = top.getEmbedding().get("aifunction");  //More specific type of search
-			
-				AiSearch aisearch = processAISearchArgs(structure, top.getEmbedding(), inAgentContext);
-				inAgentContext.setAiSearchParams(aisearch);
-			}
-		}
+			Data modulesearch = getMediaArchive().getCachedData("module", "modulesearch");
+			search.getStep1().setModule(modulesearch);
+			type = "searchMultiple";
+		}	
 		else
 		{
-			type = "chitchat";
+			
+			if(search.getStep2() == null )
+			{
+				search.setStep2( search.getStep1().getForeignTable() );
+			}
+			
+			String text = "Search";
+			
+			if( search.getStep2() != null)
+			{
+				text = text + " for " + search.getStep1().getTargetTable() + " in " + search.getStep2().getTargetTable();
+			}
+			else if( search.getStep1() != null)
+			{
+				text = text + " for " + search.getStep1().getTargetTable();
+			}
+			
+			SemanticTableManager manager = loadSemanticTableManager("actionembedding");
+			List<Double> tosearch = manager.makeVector(text);
+			Collection<RankedResult> suggestions = manager.searchNearestItems(tosearch);
+			//Load more details into this request and possibly change the type
+			if( !suggestions.isEmpty())
+			{
+				inAgentContext.setRankedSuggestions(suggestions);
+				RankedResult top = (RankedResult)suggestions.iterator().next();
+				if ( top.getDistance() < .7 )
+				{
+					type = top.getEmbedding().get("aifunction");  //More specific type of search
+				
+					AiSearch aisearch = processAISearchArgs(structure, top.getEmbedding(), inAgentContext);
+					inAgentContext.setAiSearchParams(aisearch);
+				}
+			}
+			else
+			{
+				type = "chitchat";
+			}
 		}
 		return type;
 	}
@@ -703,7 +717,7 @@ public class AssistantManager extends BaseAiManager
 				
 				Collection<String> moduleids = new ArrayList<String>();
 				moduleids.add(step1.getModule().getId());
-				step1.addModule(step1.getModule());
+				//step1.addModule(step1.getModule());
 				for (Iterator iterator = modules.iterator(); iterator.hasNext();)
 				{
 					Data mod = (Data) iterator.next();
@@ -720,7 +734,7 @@ public class AssistantManager extends BaseAiManager
 			}
 			else
 			{
-				step1.addModule(step1.getModule());
+				//step1.addModule(step1.getModule());
 				finalhits = getMediaArchive().query(step1.getModule().getId()).all().search();
 				step1.setCount((long) finalhits.size()); 
 			}
