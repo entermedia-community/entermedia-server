@@ -27,7 +27,7 @@ public class MarkdownUtil
 				)
 			).build();
 		Node document = parser.parse(markdown);
-		HtmlRenderer renderer = HtmlRenderer.builder().build();
+		HtmlRenderer renderer = HtmlRenderer.builder().softbreak("<br>").build();
 		return renderer.render(document);
 	}
 }
