@@ -995,38 +995,40 @@ public class FinderModule extends BaseMediaModule
 		
 		String targettype = inReq.getRequestParameter("pickingtargettype"); 
 		String moduleid = inReq.getRequestParameter("pickingmoduleid"); 
-		if (moduleid == null) {
-			moduleid = "asset"; //default to asset?
-		}
-		
 		String targetfieldid = inReq.getRequestParameter("targetfieldid");
 		
 		Picker picker = (Picker) inReq.getPageValue("picker");
 		if (picker == null) {
 			picker = (Picker) inReq.getSessionValue("picker");
 		}
-		if( picker != null 	&& picker.getTargetType() != null)
-		{
-			//got reseted?
-			if (moduleid != null)
+		
+		if( picker != null) {
+			//verify if change
+			if (targettype == null) 
 			{
-				if (moduleid.equals(picker.getTargetModuleId()))
-				{
-					return; //no changes
-				}
+				return;
 			}
-			else 
-			{
-				return; //no changes
+			else if (targettype.equals(picker.getTargetType())) {
+				//same no changes
+				return;
 			}
 		}
-	
-		picker = new Picker();
-		picker.setTargetFieldId(targetfieldid);
-		picker.setTargetType(targettype);
-
-		picker.setTargetModuleId(moduleid);
 		
+		if (targettype != null) 
+		{
+			picker = new Picker();
+			picker.setTargetType(targettype);
+			if (targetfieldid != null)
+			{
+				picker.setTargetFieldId(targetfieldid);
+			}
+			if (moduleid == null) {
+				moduleid = "asset"; //default to asset?
+			}
+			picker.setTargetModuleId(moduleid);
+
+		}
+				
 		inReq.putSessionValue("picker", picker);
 		inReq.putPageValue("picker", picker);
 	}
