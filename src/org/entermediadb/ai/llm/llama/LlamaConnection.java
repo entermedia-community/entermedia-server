@@ -194,10 +194,7 @@ public class LlamaConnection extends OpenAiConnection {
 	        	results = parser.parse(contentString);
 	        } catch (Exception e) {
 	        	log.error("Not a JSON String");
-	        	
-	        	JSONObject conversation = new JSONObject();
-	        	conversation.put("friendly_response", contentString);
-	        	results.put("conversation", conversation);
+	        	results.put("plaintext", contentString);
 	        }
 	        
 	        

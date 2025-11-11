@@ -343,6 +343,14 @@ public class AssistantManager extends BaseAiManager
 		{
 			throw new OpenEditException("No results from AI for message: " + message.get("message"));
 		}
+		if(results.containsKey("plaintext"))
+		{
+			String contentString = (String) results.get("plaintext");
+			JSONObject conversation = new JSONObject();
+			conversation.put("friendly_response", contentString);
+			results.put("conversation", conversation);
+			results.remove("plaintext");
+		}
 		response.setRawResponse(results);
 		processResults(inAgentContext, message.get("message"), response, results);
 		return response;
