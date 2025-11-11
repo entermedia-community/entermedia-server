@@ -319,12 +319,18 @@ public class ConversionUtil {
 				log.error("Convert Preset missing guid: " + preset.getId());
 				continue;
 			}
+			
+			/*
 			Data croppable = (Data) inArchive.query("presetparameter").exact("parameterdata", presetid).exact("name", "crop").searchOne();
 			
 			if(croppable != null)
 			{
 				croppableList.add(preset);
 			}
+			*/
+			
+			croppableList.add(preset); //Add all
+			
 			// doesPresetExist(MediaArchive inArchive, Asset inAsset, String outputname???)
 		}
 		
