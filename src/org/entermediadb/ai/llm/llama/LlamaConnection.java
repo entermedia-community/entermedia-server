@@ -183,9 +183,22 @@ public class LlamaConnection extends OpenAiConnection {
 	        JSONObject choice = (JSONObject) choices.get(0);
 	        JSONObject message = (JSONObject) choice.get("message");
 	        
-	        String contentString = (String) message.get("content");
+	        String contentString = (String) message.get("content"); // Possibly a string
 	        
-	        results = parser.parse(contentString);
+	        if (contentString == null)
+	        {
+	        	return results;
+	        }
+	        
+	        try {	        	
+	        	results = parser.parse(contentString);
+	        } catch (Exception e) {
+	        	log.error("Not a JSON String");
+	        	
+	        	JSONObject conversation = new JSONObject();
+	        	conversation.put("friendly_response", contentString);
+	        	results.put("conversation", conversation);
+	        }
 	        
 	        
 		}
