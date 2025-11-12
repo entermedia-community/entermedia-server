@@ -828,6 +828,16 @@ public class AssistantManager extends BaseAiManager
 		{
 			semanticquery = semanticquery + " " + step2Keyword;
 		}
+		
+		if(semanticquery.isBlank())
+		{
+			String originalQuery = inAiSearchParams.getOriginalSearchString();
+			if( originalQuery != null)
+			{
+				originalQuery = originalQuery.replaceAll("search|find|look for|show me", "").trim();
+				semanticquery = originalQuery;
+			}
+		}
 
 		if(!semanticquery.isBlank())
 		{			
