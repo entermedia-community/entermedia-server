@@ -1654,17 +1654,28 @@ public class EntityModule extends BaseMediaModule
 		Data currentchannel = archive.getCachedData("channel", channel);
 		
 		Searcher topicsearcher = archive.getSearcher("channel");
-		Data entity  = (Data) inReq.getPageValue("entity");
+		MultiValued entity  = (MultiValued) inReq.getPageValue("entity");
 		String module = inReq.findValue("module");
 		if (currentchannel == null) {
 			currentchannel = topicsearcher.query().match("dataid",entity.getId()).match("searchtype", module).sort("name").searchOne();
 		}
+		
 		if (currentchannel == null) {
 			currentchannel = topicsearcher.createNewData();
 			currentchannel.setValue("searchtype", module);
 			currentchannel.setValue("dataid", entity.getId() );
-			currentchannel.setValue("channeltype", "entity");
-			currentchannel.setName("General");
+			
+			boolean ragenabled = entity.getBoolean("enablerag");
+			if(ragenabled)
+			{
+				currentchannel.setName("RAG Chat");
+				currentchannel.setValue("channeltype", "agententitychat");
+			}
+			else
+			{
+				currentchannel.setName("General");
+				currentchannel.setValue("channeltype", "entity");
+			}
 			topicsearcher.saveData(currentchannel);
 		}
 		
