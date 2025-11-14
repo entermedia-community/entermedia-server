@@ -171,7 +171,8 @@ public class LlamaConnection extends OpenAiConnection {
 		{
 			if (resp.getStatusLine().getStatusCode() != 200)
 			{
-				throw new OpenEditException("GPT error: " + resp.getStatusLine());
+				log.error("Could't connect to: " + endpoint);
+				throw new OpenEditException("Llama error: " + resp.getStatusLine());
 			}
 	
 			JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));

@@ -93,7 +93,7 @@ public class AiSearchTable extends BaseData
 	
 	public void setParameters(Map<String, String>inParameters)
 	{
-		setValue("parameters",inParameters);
+		setValue("parameters", inParameters);
 	} 
 	
 	public Map<String, String> getParameters()

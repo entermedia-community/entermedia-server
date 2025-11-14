@@ -3,6 +3,7 @@ package org.entermediadb.ai.assistant;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Collection;
@@ -87,7 +88,7 @@ public class AssistantManager extends BaseAiManager
 		
 		//TODO: Only process one "open" channel at a time. What ever the last one they clicked on
 		
-		HitTracker allchannels = channels.query().exact("channeltype", "agentchat").after("refreshdate",now.getTime()).sort("refreshdateDown").search();
+		HitTracker allchannels = channels.query().orgroup("channeltype", "agentchat,agententitychat").after("refreshdate",now.getTime()).sort("refreshdateDown").search();
 
 		Searcher chats = archive.getSearcher("chatterbox");
 		for (Iterator iterator = allchannels.iterator(); iterator.hasNext();)
@@ -289,7 +290,7 @@ public class AssistantManager extends BaseAiManager
 		
 		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 
-		if( functionName.equals("chitchat"))
+		if( functionName.equals("conversation"))
 		{
 			String output = response.getGeneralResponse();
 			
@@ -364,21 +365,20 @@ public class AssistantManager extends BaseAiManager
 		{
 			throw new OpenEditException("No type specified in results: " + results.toJSONString());
 		}
-		
-		JSONObject structure = (JSONObject) results.get(type);
-		
-		if(structure == null)
-		{
-			throw new OpenEditException("No structure found for type: " + type);
-		}
 
 		if( type.equals("search") )
 		{
+			JSONObject structure = (JSONObject) results.get(type);
+			if(structure == null)
+			{
+				throw new OpenEditException("No structure found for type: " + type);
+			}
 			type = partsSearchParts(inAgentContext, structure, type, messageText);
 		}
 		else if( type.equals("conversation"))
 		{
-			type = "chitchat";
+			//type = "chitchat";
+			JSONObject structure = (JSONObject) results.get(type);
 			String generalresponse = (String) structure.get("friendly_response");
 			if(generalresponse != null)
 			{
@@ -392,6 +392,7 @@ public class AssistantManager extends BaseAiManager
 			
 			AiCreation creation = inAgentContext.getAiCreationParams();					
 			creation.setCreationType("image");
+			JSONObject structure = (JSONObject) results.get(type);
 			creation.setImageFields(structure);
 		}
 		else if(type.equals("create_entity"))
@@ -400,6 +401,7 @@ public class AssistantManager extends BaseAiManager
 			
 			AiCreation creation = inAgentContext.getAiCreationParams();
 			creation.setCreationType("entity");
+			JSONObject structure = (JSONObject) results.get(type);
 			creation.setEntityFields(structure);
 		}
 		//TODO Add how-to rag handling
@@ -685,20 +687,19 @@ public class AssistantManager extends BaseAiManager
 		AiSearchTable step1 = inAiSearchParams.getStep1();
 		AiSearchTable step2 = inAiSearchParams.getStep2();
 		
-		inReq.putPageValue("semanticquery", inAiSearchParams.getOriginalSearchString());
 
 		//		AiSearchPart part3 = inAiSearchParams.getPart3();
 		
 		HitTracker entityhits = null;
 		HitTracker assethits = null;
 		
+		String step1Keyword = null;
+		String step2Keyword = null;
+		
 		if(step1 != null && step2 != null)
-		{		
-			String step1Keyword = step1.getParameterValues();
-			/*if(text == null)
-			{
-				return;
-			}*/
+		{
+			
+			step1Keyword = step1.getParameterValues();
 			
 			HitTracker foundhits = getMediaArchive().query(step1.getModule().getId()).freeform("description", step1Keyword).search();
 			
@@ -711,10 +712,10 @@ public class AssistantManager extends BaseAiManager
 			inReq.putPageValue("module", step2.getModule());
 			
 			QueryBuilder search = getMediaArchive().query(step2.getModule().getId()).named("assitedsearch").orgroup(step1.getModule().getId(),ids);
-			String step2Keyowrd = step2.getParameterValues();
-			if( step2Keyowrd != null)
+			step2Keyword = step2.getParameterValues();
+			if( step2Keyword != null)
 			{
-				if (step1Keyword == null || !step1Keyword.equalsIgnoreCase(step2Keyowrd))  //Remove the keyword if is  same
+				if (step1Keyword == null || !step1Keyword.equalsIgnoreCase(step2Keyword))  //Remove the keyword if is  same
 				{
 					//Remove Module Name from Keywords
 					/*
@@ -726,7 +727,7 @@ public class AssistantManager extends BaseAiManager
 						step2Keyowrd = step2Keyowrd.replace(step1table, "");
 					}
 					*/
-					search.freeform("description", step2Keyowrd);
+					search.freeform("description", step2Keyword);
 				}
 			}
 			entityhits = search.search();
@@ -738,9 +739,11 @@ public class AssistantManager extends BaseAiManager
 		}
 		else if(step1 != null)
 		{
-			String text  = step1.getParameterValues();
+			
+			step1Keyword  = step1.getParameterValues();
+			
 			inReq.putPageValue("module", step1.getModule());
-			if(text != null)
+			if(step1Keyword != null)
 			{
 				QueryBuilder search = null;
 				
@@ -767,7 +770,7 @@ public class AssistantManager extends BaseAiManager
 					search = getMediaArchive().query("modulesearch")
 						.addFacet("entitysourcetype")
 						.put("searchtypes", moduleids).includeDescription(true);
-					entityhits = search.freeform("description", text).search();
+					entityhits = search.freeform("description", step1Keyword).search();
 					log.info(" Here:  "+ entityhits.getActiveFilterValues() );
 					//TODO: Not sure this is needed or works
 					if( moduleids.contains("asset") )
@@ -775,7 +778,7 @@ public class AssistantManager extends BaseAiManager
 						//Loop over the categories in these entityhits
 						Collection categories = entityhits.collectValues("rootcategory");
 						search = getMediaArchive().query("asset").orgroup("category",categories);
-						assethits = search.freeform("description", text).search();
+						assethits = search.freeform("description", step1Keyword).search();
 						step1.setCount( (long) (entityhits.size()  + assethits.size()));
 					}
 					else
@@ -787,12 +790,12 @@ public class AssistantManager extends BaseAiManager
 				else if( "asset".equals( step1.getModule().getId() ) )
 				{
 					search = getMediaArchive().query(step1.getModule().getId());
-					assethits = search.freeform("description", text).search();
+					assethits = search.freeform("description", step1Keyword).search();
 					step1.setCount((long) assethits.size());
 				}	
 				else {
 					search = getMediaArchive().query(step1.getModule().getId());
-					entityhits = search.freeform("description", text).search();
+					entityhits = search.freeform("description", step1Keyword).search();
 					step1.setCount((long) entityhits.size());
 				}
 			}
@@ -813,7 +816,34 @@ public class AssistantManager extends BaseAiManager
 		{
 			inReq.putPageValue("hits", assethits);
 		}
-		organizeResults(inReq,entityhits,assethits);
+		
+		organizeResults(inReq, entityhits, assethits);
+		
+		String semanticquery = "";
+		
+		if(step1Keyword != null)
+		{
+			semanticquery = step1Keyword;
+		}
+		if(step2Keyword != null)
+		{
+			semanticquery = semanticquery + " " + step2Keyword;
+		}
+		
+		if(semanticquery.isBlank())
+		{
+			String originalQuery = inAiSearchParams.getOriginalSearchString();
+			if( originalQuery != null)
+			{
+				originalQuery = originalQuery.replaceAll("search|find|look for|show me", "").trim();
+				semanticquery = originalQuery;
+			}
+		}
+
+		if(!semanticquery.isBlank())
+		{			
+			inReq.putPageValue("semanticquery", semanticquery.trim());
+		}
 		
 	}
 	
@@ -837,8 +867,6 @@ public class AssistantManager extends BaseAiManager
 		}
 
 		getResultsManager().loadOrganizedResults(inReq, entityhits, assetunsorted);
-
-	//	inReq.putPageValue("semanticquery", inAiSearchParams.getOriginalSearchString());
 		
 		/**
 		 * log.info("Searching as:" + inReq.getUser().getName());
@@ -980,19 +1008,12 @@ public class AssistantManager extends BaseAiManager
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		String semanticquery = inReq.getRequestParameter("semanticquery");
-		
-		log.info("Semantic Search for: " + semanticquery);
+		String semanticquery = inReq.getRequestParameter("semanticquery"); 
 		
 		Collection<String> excludeEntityIds = agentContext.getExcludedEntityIds();
-
-		if(excludeEntityIds == null)
-		{
-			excludeEntityIds = new ArrayList<String>();
-		}
-		
 		Collection<String> excludeAssetIds = agentContext.getExcludedAssetIds();
 		
+		log.info("Semantic Search for: " + semanticquery);
 		inReq.putPageValue("input", semanticquery);
 		
 		Map<String, Collection<String>> relatedEntityIds = getSemanticTopicManager().search(semanticquery, excludeEntityIds, excludeAssetIds);
