@@ -3,12 +3,15 @@ package org.entermediadb.ai.classify;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
+import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.llama.LlamaResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
@@ -86,21 +89,6 @@ public class DocumentSplitterManager extends InformaticsProcessor
 
 	public void splitDocument(MultiValued inConfig, MultiValued inEntity, Asset asset) 
 	{
-//		
-//		Data entitydoc = getMediaArchive().query("entitydocument").exact("parentasset", inAssetId).searchOne();
-//		
-//		if(entitydoc == null)
-//		{
-//			entitydoc = archive.getSearcher("entitydocument").createNewData();
-//			String entitydocname = asset.getName().replaceAll("\\..*$", "");
-//			if(entitydocname.length() == 0) {
-//				entitydocname = asset.getName();
-//			}
-//			entitydoc.setName(entitydocname);
-//			entitydoc.setValue("parentasset", inAssetId);
-//			entitydoc.setValue("entity_date", new Date());
-//			archive.saveData("entitydocument", entitydoc);
-//		}
 
 		String fulltext = (String) asset.getValue("fulltext");
 
@@ -180,32 +168,36 @@ public class DocumentSplitterManager extends InformaticsProcessor
 	public void generateMarkdown(MultiValued inConfig, MultiValued inEntity, Asset asset) 
 	{
 
-		String fulltext = (String) asset.getValue("fulltext");
-
-		if(fulltext == null || fulltext.trim().isEmpty())
-		{
-			log.info("No full text found");
-			return;
-		}
-		
-		JSONParser parser = new JSONParser();
-		Collection pagesFulltext = parser.parseCollection(fulltext);
-
 		String parentsearchtype = inConfig.get("searchtype");
 		String generatedsearchtype = inConfig.get("generatedsearchtype");
 		HitTracker pages = getMediaArchive().query(generatedsearchtype)
 				.exact(parentsearchtype, inEntity.getId())
 				.exact("parentasset", asset.getId()).search();
+		
+		String model = getMediaArchive().getCatalogSettingValue("llmvisionmodel");
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection(model);
 
 		List<Data> tosave = new ArrayList();
 		
-		for (Iterator iterator = pages.iterator(); iterator.hasNext();) {
-			Data page = (Data) iterator.next();
-			
-			
-		}
+		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
 		
+		for (Iterator iterator = pages.iterator(); iterator.hasNext();) {
+			MultiValued pageEntity = (MultiValued) iterator.next();
+			String base64Img = loadImageContent(pageEntity);
+			
+			LlamaResponse result = (LlamaResponse) llmconnection.callOCRFunction(new HashMap(), "document_ocr", base64Img);
+			String markdown = result.getOcrResponse();
+			
+			pageEntity.setValue("markdowncontent", markdown);
+			tosave.add(pageEntity);
+			
+			if(tosave.size() > 20)
+			{
+				pageSearcher.saveAllData(tosave, null);
+				tosave.clear();
+			}
+		}
+		pageSearcher.saveAllData(tosave, null);
 	}
-
 	
 }

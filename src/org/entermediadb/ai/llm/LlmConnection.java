@@ -34,5 +34,5 @@ public interface LlmConnection {
 	
 	public JSONObject callStructuredOutputList(String inStructureName, Map inParams);
 	
-	public JSONObject callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image);
+	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image);
 }

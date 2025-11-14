@@ -30,7 +30,7 @@ public class LlamaConnection extends OpenAiConnection {
 		return "/root/.cache/llama.cpp/unsloth_"+modelname+".gguf";
 	}
 	
-	
+	@Override
 	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image, String textContent)
 	{
 		MediaArchive archive = getMediaArchive();
@@ -129,9 +129,9 @@ public class LlamaConnection extends OpenAiConnection {
 		JSONObject json = handleApiRequest(payload);
 	    
 		LlamaResponse response = new LlamaResponse();
-	    response.setRawResponse(json);
+		response.setRawResponse(json);
 	    
-	    return response;
+		return response;
 
 	}
 	
@@ -212,7 +212,7 @@ public class LlamaConnection extends OpenAiConnection {
 	}
 	
 	@Override
-	public JSONObject callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image)
+	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image)
 	{
 		MediaArchive archive = getMediaArchive();
 		String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmType() +"/classify/functions/" + inOCRInstruction + ".json";
@@ -238,16 +238,23 @@ public class LlamaConnection extends OpenAiConnection {
 		JSONObject usermessage = (JSONObject) messages.get(messages.size() - 1);
 		JSONArray contentarray = (JSONArray) usermessage.get("content");
 
-		JSONObject contentitem = new JSONObject();
-		contentitem.put("type", "text");
+		JSONObject imagecontentitem = new JSONObject();
+		imagecontentitem.put("type", "image_url");
 
 		JSONObject imageurl = new JSONObject();
-		imageurl.put("url", inParams.get("imageurl"));
+		imageurl.put("url", inBase64Image); // Base64 as a data URL
 		
-		contentitem.put("image_url", imageurl);
-		contentarray.add(contentitem);
+		imagecontentitem.put("image_url", imageurl);
+		contentarray.add(imagecontentitem);
 		
-		return null;
+		String payload = templateObject.toJSONString();
+
+		JSONObject json = handleApiRequest(payload);
+	    
+		LlamaResponse response = new LlamaResponse();
+		response.setOcrResponse(json);
+	    
+		return response;
 
 	}
 	
