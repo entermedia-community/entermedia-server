@@ -1642,7 +1642,9 @@ public class EntityModule extends BaseMediaModule
 	}
 
 	
-	
+	/*
+	 * Moved to UserManager.loadChatChannel
+	 * 
 	public void loadChatChannel( WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -1683,7 +1685,7 @@ public class EntityModule extends BaseMediaModule
 		
 		inReq.putPageValue("currentchannel", currentchannel);
 	}
-	
+	*/
 	
 	
 	

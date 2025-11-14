@@ -2588,6 +2588,16 @@
 			<ref bean="requestUtils" />
 		</property>
 	</bean>
+	
+	<bean id="documentEmbeddingManager" class="org.entermediadb.ai.classify.DocumentEmbeddingManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="requestUtils">
+			<ref bean="requestUtils" />
+		</property>
+	</bean>
+	
 
 
 	<bean id="assistantManager" class="org.entermediadb.ai.assistant.AssistantManager" scope="prototype">

@@ -1640,6 +1640,8 @@ public class UserManagerModule extends BaseMediaModule
 		channelsearcher.saveData(currentchannel);
 		
 		inReq.putPageValue("currentchannel", currentchannel);
+		
+		inReq.putPageValue("createnew", false);
 	}
 
 	
