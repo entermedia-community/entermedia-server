@@ -244,4 +244,10 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 
 		return results;
 	}
+	
+	@Override
+	public JSONObject callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image)
+	{
+		throw new OpenEditException("Not implemented yet");
+	}
 }

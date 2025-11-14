@@ -210,4 +210,44 @@ public class LlamaConnection extends OpenAiConnection {
 		return results;
 	}
 	
+	@Override
+	public JSONObject callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image)
+	{
+		MediaArchive archive = getMediaArchive();
+		String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmType() +"/classify/functions/" + inOCRInstruction + ".json";
+		Page defpage = archive.getPageManager().getPage(templatepath);
+		if (!defpage.exists())
+		{
+			templatepath = "/" + archive.getCatalogId() + "/ai/" + getLlmType() +"/classify/functions/" + inOCRInstruction + ".json";
+			defpage = archive.getPageManager().getPage(templatepath);
+		}
+		
+		if (!defpage.exists())
+		{
+			throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inOCRInstruction);
+		}
+
+		String template = loadInputFromTemplate(templatepath, inParams);
+
+		JSONParser parser = new JSONParser();
+		JSONObject templateObject = (JSONObject) parser.parse(template);
+
+		JSONArray messages = (JSONArray) templateObject.get("messages");
+
+		JSONObject usermessage = (JSONObject) messages.get(messages.size() - 1);
+		JSONArray contentarray = (JSONArray) usermessage.get("content");
+
+		JSONObject contentitem = new JSONObject();
+		contentitem.put("type", "text");
+
+		JSONObject imageurl = new JSONObject();
+		imageurl.put("url", inParams.get("imageurl"));
+		
+		contentitem.put("image_url", imageurl);
+		contentarray.add(contentitem);
+		
+		return null;
+
+	}
+	
 }

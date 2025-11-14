@@ -33,4 +33,6 @@ public interface LlmConnection {
     public void setModelData(Data inData);
 	
 	public JSONObject callStructuredOutputList(String inStructureName, Map inParams);
+	
+	public JSONObject callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image);
 }

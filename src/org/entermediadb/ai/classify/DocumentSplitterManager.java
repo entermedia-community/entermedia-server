@@ -74,6 +74,11 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			String modtime = document.get("assetmodificationdate");
 			entity.setValue("pagescreatedfor", assetid + "|" + modtime);
 			entity.setValue("totalpages", document.getValue("pages"));
+			
+			if(inConfig.getBoolean("generatemarkdown"))
+			{
+				generateMarkdown(inConfig, entity, document);
+			}
 		}
 		//Check the primarymedia
 		//See if this has been indexed or not
@@ -170,6 +175,36 @@ public class DocumentSplitterManager extends InformaticsProcessor
 		}
 		pageSearcher.saveAllData(tosave, null);
 		getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
+	}
+	
+	public void generateMarkdown(MultiValued inConfig, MultiValued inEntity, Asset asset) 
+	{
+
+		String fulltext = (String) asset.getValue("fulltext");
+
+		if(fulltext == null || fulltext.trim().isEmpty())
+		{
+			log.info("No full text found");
+			return;
+		}
+		
+		JSONParser parser = new JSONParser();
+		Collection pagesFulltext = parser.parseCollection(fulltext);
+
+		String parentsearchtype = inConfig.get("searchtype");
+		String generatedsearchtype = inConfig.get("generatedsearchtype");
+		HitTracker pages = getMediaArchive().query(generatedsearchtype)
+				.exact(parentsearchtype, inEntity.getId())
+				.exact("parentasset", asset.getId()).search();
+
+		List<Data> tosave = new ArrayList();
+		
+		for (Iterator iterator = pages.iterator(); iterator.hasNext();) {
+			Data page = (Data) iterator.next();
+			
+			
+		}
+		
 	}
 
 	
