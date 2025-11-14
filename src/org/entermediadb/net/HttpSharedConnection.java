@@ -43,6 +43,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.OpenEditException;
+import org.openedit.repository.ContentItem;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.URLUtilities;
 
@@ -382,6 +383,12 @@ public class HttpSharedConnection
 			else if(value instanceof File)
 			{
 				builder.addPart(key, (File)value);
+			}
+			else if(value instanceof ContentItem)
+			{
+				ContentItem item = (ContentItem)value;
+				File file = new File(item.getAbsolutePath());
+				builder.addPart(key, file);
 			}
 			else if( value instanceof JSONObject)
 			{

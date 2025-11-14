@@ -1642,7 +1642,9 @@ public class EntityModule extends BaseMediaModule
 	}
 
 	
-	
+	/*
+	 * Moved to UserManager.loadChatChannel
+	 * 
 	public void loadChatChannel( WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -1665,23 +1667,25 @@ public class EntityModule extends BaseMediaModule
 			currentchannel.setValue("searchtype", module);
 			currentchannel.setValue("dataid", entity.getId() );
 			
-			boolean ragenabled = entity.getBoolean("enablerag");
-			if(ragenabled)
+			String channeltype = inReq.findValue("channeltype");
+			if ("agententitychat".equals(channeltype))
 			{
-				currentchannel.setName("RAG Chat");
+				currentchannel.setName("Guided Chat");
 				currentchannel.setValue("channeltype", "agententitychat");
 			}
-			else
+			else 
 			{
 				currentchannel.setName("General");
 				currentchannel.setValue("channeltype", "entity");
 			}
+			
+			currentchannel.setValue("refreshdate", new Date() );
 			topicsearcher.saveData(currentchannel);
 		}
 		
 		inReq.putPageValue("currentchannel", currentchannel);
 	}
-	
+	*/
 	
 	
 	

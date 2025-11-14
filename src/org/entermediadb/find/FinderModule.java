@@ -1024,6 +1024,7 @@ public class FinderModule extends BaseMediaModule
 			}
 			if (moduleid == null) {
 				moduleid = "asset"; //default to asset?
+				inReq.putPageValue("entitymoduleid", moduleid);
 			}
 			picker.setTargetModuleId(moduleid);
 

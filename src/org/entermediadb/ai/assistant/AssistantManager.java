@@ -3,7 +3,6 @@ package org.entermediadb.ai.assistant;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Collection;
@@ -17,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.Schema;
+import org.entermediadb.ai.classify.DocumentEmbeddingManager;
 import org.entermediadb.ai.classify.SemanticClassifier;
 import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.knn.RankedResult;
@@ -253,7 +253,15 @@ public class AssistantManager extends BaseAiManager
 		
 		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 		
-		EMediaAIResponse response = processRecentUserRequest(message, agentContext);   //<-- Run process
+		EMediaAIResponse response = null;
+		if (channeltype.equals("agententitychat"))
+		{
+			response = processDocumentChat(message, agentContext);  
+		}
+		else 
+		{
+			response = processAgentChat(message, agentContext);   
+		}
 		
 		
 		if( response.getFunctionName() != null)
@@ -263,17 +271,6 @@ public class AssistantManager extends BaseAiManager
 		getMediaArchive().saveData("agentcontext", agentContext);
 
 		String functionName = agentContext.getFunctionName();
-//			JSONObject functionArguments = response.getArguments();		
-//			agentContext.setValue("arguments", functionArguments); //Needed?
-//			resopnseMessage.setValue("params", agentContext.toString());
-			
-//			Object explainer = functionArguments.get("explainer");
-//			if( explainer != null && explainer instanceof String)
-//			{
-//				resopnseMessage.setValue("message", (String)explainer);
-//			} 
-//			else
-//			{
 		MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunctions", functionName); //Chitchat etc
 		String processingmessage = null;
 		if( function != null)
@@ -290,7 +287,7 @@ public class AssistantManager extends BaseAiManager
 		
 		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 
-		if( functionName.equals("chitchat"))
+		if( functionName.equals("conversation"))
 		{
 			String output = response.getGeneralResponse();
 			
@@ -319,17 +316,9 @@ public class AssistantManager extends BaseAiManager
 		
 	}
 	
-	protected EMediaAIResponse processRecentUserRequest(MultiValued message, AgentContext inAgentContext)
+	protected EMediaAIResponse processAgentChat(MultiValued message, AgentContext inAgentContext)
 	{
 		EMediaAIResponse response = new EMediaAIResponse();
-//		String usermessage = message.get("message");
-//		if( usermessage.length() < 10)
-//		{
-//			//TODO:
-//			response.setFunctionName("chitchat");
-//			return response;
-//		}
-		
 		MediaArchive archive = getMediaArchive();
 		
 		//String model = "qwen3:8b";
@@ -356,6 +345,18 @@ public class AssistantManager extends BaseAiManager
 		processResults(inAgentContext, message.get("message"), response, results);
 		return response;
 	}
+	
+	
+	protected EMediaAIResponse processDocumentChat(MultiValued message, AgentContext inAgentContext)
+	{
+		EMediaAIResponse response = new EMediaAIResponse();
+		MediaArchive archive = getMediaArchive();
+		
+		DocumentEmbeddingManager embeddingManager = (DocumentEmbeddingManager) getMediaArchive().getBean("embeddingManager");
+		
+		return embeddingManager.processMessage(message, inAgentContext);
+	}
+	
 
 	protected void processResults(AgentContext inAgentContext, String messageText, EMediaAIResponse response, JSONObject results)
 	{
@@ -365,21 +366,20 @@ public class AssistantManager extends BaseAiManager
 		{
 			throw new OpenEditException("No type specified in results: " + results.toJSONString());
 		}
-		
-		JSONObject structure = (JSONObject) results.get(type);
-		
-		if(structure == null)
-		{
-			throw new OpenEditException("No structure found for type: " + type);
-		}
 
 		if( type.equals("search") )
 		{
+			JSONObject structure = (JSONObject) results.get(type);
+			if(structure == null)
+			{
+				throw new OpenEditException("No structure found for type: " + type);
+			}
 			type = partsSearchParts(inAgentContext, structure, type, messageText);
 		}
 		else if( type.equals("conversation"))
 		{
-			type = "chitchat";
+			//type = "chitchat";
+			JSONObject structure = (JSONObject) results.get(type);
 			String generalresponse = (String) structure.get("friendly_response");
 			if(generalresponse != null)
 			{
@@ -393,6 +393,7 @@ public class AssistantManager extends BaseAiManager
 			
 			AiCreation creation = inAgentContext.getAiCreationParams();					
 			creation.setCreationType("image");
+			JSONObject structure = (JSONObject) results.get(type);
 			creation.setImageFields(structure);
 		}
 		else if(type.equals("create_entity"))
@@ -401,6 +402,7 @@ public class AssistantManager extends BaseAiManager
 			
 			AiCreation creation = inAgentContext.getAiCreationParams();
 			creation.setCreationType("entity");
+			JSONObject structure = (JSONObject) results.get(type);
 			creation.setEntityFields(structure);
 		}
 		//TODO Add how-to rag handling
