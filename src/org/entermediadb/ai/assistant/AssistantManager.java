@@ -290,7 +290,7 @@ public class AssistantManager extends BaseAiManager
 		
 		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 
-		if( functionName.equals("chitchat"))
+		if( functionName.equals("conversation"))
 		{
 			String output = response.getGeneralResponse();
 			
@@ -365,21 +365,20 @@ public class AssistantManager extends BaseAiManager
 		{
 			throw new OpenEditException("No type specified in results: " + results.toJSONString());
 		}
-		
-		JSONObject structure = (JSONObject) results.get(type);
-		
-		if(structure == null)
-		{
-			throw new OpenEditException("No structure found for type: " + type);
-		}
 
 		if( type.equals("search") )
 		{
+			JSONObject structure = (JSONObject) results.get(type);
+			if(structure == null)
+			{
+				throw new OpenEditException("No structure found for type: " + type);
+			}
 			type = partsSearchParts(inAgentContext, structure, type, messageText);
 		}
 		else if( type.equals("conversation"))
 		{
-			type = "chitchat";
+			//type = "chitchat";
+			JSONObject structure = (JSONObject) results.get(type);
 			String generalresponse = (String) structure.get("friendly_response");
 			if(generalresponse != null)
 			{
@@ -393,6 +392,7 @@ public class AssistantManager extends BaseAiManager
 			
 			AiCreation creation = inAgentContext.getAiCreationParams();					
 			creation.setCreationType("image");
+			JSONObject structure = (JSONObject) results.get(type);
 			creation.setImageFields(structure);
 		}
 		else if(type.equals("create_entity"))
@@ -401,6 +401,7 @@ public class AssistantManager extends BaseAiManager
 			
 			AiCreation creation = inAgentContext.getAiCreationParams();
 			creation.setCreationType("entity");
+			JSONObject structure = (JSONObject) results.get(type);
 			creation.setEntityFields(structure);
 		}
 		//TODO Add how-to rag handling

@@ -1587,8 +1587,31 @@ public class UserManagerModule extends BaseMediaModule
 		}		
 		
 		String createnew = inReq.getRequestParameter("createnew");
-		Searcher topicsearcher = archive.getSearcher("channel");
-
+		Searcher channelsearcher = archive.getSearcher("channel");
+		String channeltype = inReq.findValue("channeltype");
+		if (channeltype == null)
+		{
+			channeltype = "agentchat";
+		}
+		String dataid = null;
+		String channelname = null;
+		MultiValued entity  = (MultiValued) inReq.getPageValue("entity");
+		switch(channeltype)
+		{
+			case "agententitychat":
+				dataid = entity.getId();
+				channelname = "Guided Chat";
+				break;
+			case "entity":
+				dataid = entity.getId();
+				channelname = "Entity Chat";
+				break;
+			case "agentchat":
+				dataid = inReq.getUserName();
+				channelname = "AI Chat";
+				break;
+		}
+			
 		if( !Boolean.parseBoolean(createnew) )
 		{
 			currentchannel =  (MultiValued)archive.getCachedData("channel", channel);
@@ -1596,32 +1619,25 @@ public class UserManagerModule extends BaseMediaModule
 			{
 				Calendar now = DateStorageUtil.getStorageUtil().createCalendar();
 				now.add(Calendar.HOUR_OF_DAY,-1);
-				currentchannel =  (MultiValued)topicsearcher.query().exact("dataid",inReq.getUserName()).exact("searchtype", module).after("refreshdate",now.getTime()).sort("refreshdateDown").searchOne();
+				
+				currentchannel =  (MultiValued)channelsearcher.query().exact("dataid",dataid).exact("searchtype", module).after("refreshdate",now.getTime()).sort("refreshdateDown").searchOne();
 			}
-			else if(!"agentchat".equals(currentchannel.get("channeltype")) )
-			{
-				currentchannel.setValue("channeltype", "agentchat" );
-				archive.saveData("channel",currentchannel);
-			}
+			
 		}
 		if (currentchannel == null) {
-			currentchannel =  (MultiValued)topicsearcher.createNewData();
+			currentchannel =  (MultiValued)channelsearcher.createNewData();
+			currentchannel.setName(channelname);
 			currentchannel.setValue("searchtype", module);
-			currentchannel.setValue("refreshdate", new Date() );
-			currentchannel.setValue("dataid", inReq.getUserName() );
+			currentchannel.setValue("dataid", dataid );
 			currentchannel.setValue("user", inReq.getUser() );
 			currentchannel.setValue("moduleid", module);
 			String applicationid = inReq.findValue("applicationid");
 			currentchannel.setValue("chatapplicationid", applicationid);
-			currentchannel.setValue("channeltype", "agentchat");
+			currentchannel.setValue("channeltype", channeltype );
 		}
-		else
-		{
-			currentchannel.setValue("refreshdate", new Date() );
-			
-		}
-		
-		topicsearcher.saveData(currentchannel);
+
+		currentchannel.setValue("refreshdate", new Date() );
+		channelsearcher.saveData(currentchannel);
 		
 		inReq.putPageValue("currentchannel", currentchannel);
 	}

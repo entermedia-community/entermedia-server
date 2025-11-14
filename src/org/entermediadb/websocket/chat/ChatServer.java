@@ -234,30 +234,27 @@ public class ChatServer
 				return;
 			}
 
-			Set userids = null;
-				
+			MultiValued channel = (MultiValued) archive.getCachedData("channel", channelid);
+			
+			Set userids =  new HashSet();
 			
 			String moduleid = (String) inMap.get("moduleid");
-			
+			if (moduleid == null && channel != null)
+			{
+				moduleid = channel.get("moduleid");
+			}
 			if( moduleid != null)
 			{
-				if(moduleid.equals("user"))
-				{
-					MultiValued channel = (MultiValued) archive.getCachedData("channel", channelid);
-					userids = new HashSet();
-					if("agentchat".equals(channel.get("channeltype")))
-					{					
-						userids.add("agent");
-					}
-					userids.add(userid);
-				}
-				else
-				{					
+				
 					Data entity = null;
 					String entityid = (String) inMap.get("entityid");
 					if (entityid == null || entityid.equals("") || entityid.equals("null"))
 					{
 						entityid = (String) inMap.get("collectionid");  //For OI chats attached to a collectionid
+					}
+					if (entityid == null && channel != null)
+					{
+						entityid = channel.get("dataid");
 					}
 					if (entityid != null)
 					{
@@ -269,15 +266,14 @@ public class ChatServer
 						//MultiValued topic = (MultiValued) archive.getCachedData("collectiveproject", channelid);
 						//if (topic.getBoolean("teamproject"))
 						userids = projectmanager.listTeam(entity);
-						userids.add(userid);
 					}
 					else
 					{
 						//Todo: other Entities
 						Data module = archive.getCachedData("module", moduleid);
 						Collection<AddedPermission> permissions = archive.getPermissionManager().loadEntityPermissions(module, entity);
-						userids = new HashSet();
-						userids.add(userid);
+						
+						
 						for (Iterator iterator = permissions.iterator(); iterator.hasNext();)
 						{
 							AddedPermission addedPermission = (AddedPermission) iterator.next();
@@ -288,7 +284,13 @@ public class ChatServer
 							
 						}
 					}
+					
+				
+				if("agentchat".equals(channel.get("channeltype")) || "agententitychat".equals(channel.get("channeltype")))
+				{					
+					userids.add("agent");
 				}
+				userids.add(userid); //always the message author
 			}
 			
 			for (Iterator iterator = connections.iterator(); iterator.hasNext();)
