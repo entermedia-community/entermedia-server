@@ -68,10 +68,6 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			{
 				return "https://llama.entermediadb.net/v1/chat/completions";
 			}
-			else if(llmtype.equals("llamaindex"))
-			{
-				return "https://llama.entermediadb.net/v1/chat/completions";
-			}
 			else if(llmtype.equals("gemini"))
 			{
 				return "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
