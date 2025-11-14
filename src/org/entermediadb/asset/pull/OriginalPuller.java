@@ -25,6 +25,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
@@ -171,12 +172,12 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 	{
 
 		Collection nodes = getNodeManager().getRemoteEditClusters(inArchive.getCatalogId());
-		Data node = null;
+		MultiValued node = null;
 		for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
 		{
 			try
 			{
-				node = (Data) iterator.next();
+				node = (MultiValued) iterator.next();
 
 				if (node.get("entermediakey") == null)
 				{
