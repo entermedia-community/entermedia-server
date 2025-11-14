@@ -1,0 +1,3 @@
+<page>
+  <page-action bean="markdownUtil" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true" />
+</page>

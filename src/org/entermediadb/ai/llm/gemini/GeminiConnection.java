@@ -356,5 +356,11 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		}
 		return results;
 	}
+	
+	@Override
+	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image)
+	{
+		throw new OpenEditException("Not implemented yet. Only available in Llama connection.");
+	}
 
 }

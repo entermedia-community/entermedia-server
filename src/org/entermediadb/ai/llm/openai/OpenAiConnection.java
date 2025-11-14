@@ -428,5 +428,11 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	    return response;
 
 	}
+	
+	@Override
+	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image)
+	{
+		throw new OpenEditException("Not implemented yet. Only available in Llama connection.");
+	}
 
 }

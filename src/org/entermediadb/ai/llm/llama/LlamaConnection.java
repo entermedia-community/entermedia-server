@@ -30,7 +30,7 @@ public class LlamaConnection extends OpenAiConnection {
 		return "/root/.cache/llama.cpp/unsloth_"+modelname+".gguf";
 	}
 	
-	
+	@Override
 	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image, String textContent)
 	{
 		MediaArchive archive = getMediaArchive();
@@ -129,9 +129,9 @@ public class LlamaConnection extends OpenAiConnection {
 		JSONObject json = handleApiRequest(payload);
 	    
 		LlamaResponse response = new LlamaResponse();
-	    response.setRawResponse(json);
+		response.setRawResponse(json);
 	    
-	    return response;
+		return response;
 
 	}
 	
@@ -209,6 +209,53 @@ public class LlamaConnection extends OpenAiConnection {
 			connection.release(resp);
 		}
 		return results;
+	}
+	
+	@Override
+	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image)
+	{
+		MediaArchive archive = getMediaArchive();
+		String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmType() +"/classify/functions/" + inOCRInstruction + ".json";
+		Page defpage = archive.getPageManager().getPage(templatepath);
+		if (!defpage.exists())
+		{
+			templatepath = "/" + archive.getCatalogId() + "/ai/" + getLlmType() +"/classify/functions/" + inOCRInstruction + ".json";
+			defpage = archive.getPageManager().getPage(templatepath);
+		}
+		
+		if (!defpage.exists())
+		{
+			throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inOCRInstruction);
+		}
+
+		String template = loadInputFromTemplate(templatepath, inParams);
+
+		JSONParser parser = new JSONParser();
+		JSONObject templateObject = (JSONObject) parser.parse(template);
+
+		JSONArray messages = (JSONArray) templateObject.get("messages");
+
+		JSONObject usermessage = (JSONObject) messages.get(messages.size() - 1);
+		JSONArray contentarray = (JSONArray) usermessage.get("content");
+
+		JSONObject imagecontentitem = new JSONObject();
+		imagecontentitem.put("type", "image_url");
+
+		JSONObject imageurl = new JSONObject();
+		imageurl.put("url", inBase64Image); // Base64 as a data URL
+		
+		imagecontentitem.put("image_url", imageurl);
+		contentarray.add(imagecontentitem);
+		
+		String payload = templateObject.toJSONString();
+
+		JSONObject json = handleApiRequest(payload);
+	    
+		LlamaResponse response = new LlamaResponse();
+		response.setOcrResponse(json);
+	    
+		return response;
+
 	}
 	
 }
