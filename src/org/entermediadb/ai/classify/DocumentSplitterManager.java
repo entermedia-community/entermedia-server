@@ -82,6 +82,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			{
 				generateMarkdown(inConfig, entity, document);
 			}
+			getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
 		}
 		//Check the primarymedia
 		//See if this has been indexed or not
@@ -162,17 +163,16 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			}
 		}
 		pageSearcher.saveAllData(tosave, null);
-		getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
 	}
 	
-	public void generateMarkdown(MultiValued inConfig, MultiValued inEntity, Asset asset) 
+	public void generateMarkdown(MultiValued inConfig, MultiValued inEntity, Asset document) 
 	{
 
 		String parentsearchtype = inConfig.get("searchtype");
 		String generatedsearchtype = inConfig.get("generatedsearchtype");
 		HitTracker pages = getMediaArchive().query(generatedsearchtype)
 				.exact(parentsearchtype, inEntity.getId())
-				.exact("parentasset", asset.getId()).search();
+				.exact("parentasset", document.getId()).search();
 		
 		String model = getMediaArchive().getCatalogSettingValue("llmvisionmodel");
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection(model);

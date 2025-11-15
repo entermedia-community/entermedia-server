@@ -4,6 +4,7 @@ import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.AgentContext;
@@ -20,8 +22,10 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
+import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.data.Searcher;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.JSONParser;
 
@@ -57,83 +61,124 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 	}
 
 	@Override
-	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecords)
+	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inDocumentPages)
 	{
-		String searchtype = inConfig.get("searchtype");
+		
+		String generatedsearchtype = inConfig.get("generatedsearchtype");
+		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
+		
+		Collection<Data> tosave = new ArrayList();
 
-		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
+		for (Iterator iterator = inDocumentPages.iterator(); iterator.hasNext();)
 		{
-			MultiValued entity = (MultiValued) iterator.next();
+			MultiValued documentPage = (MultiValued) iterator.next();
 			
-			String moduleid = entity.get("entitysourcetype");
+			String moduleid = documentPage.get("entitysourcetype");
 			
-			if( !searchtype.equals(moduleid) )
+			if( !generatedsearchtype.equals(moduleid) )
 			{
 				continue;
 			}
 			
-			Collection<Asset> assets = new ArrayList();
-			
-			String assetid = entity.get("primarymedia");
-			if( assetid == null)
-			{
-				assetid = entity.get("primaryimage");
-			}
-			if( assetid == null)
+			String markdowncontent = documentPage.get("markdowncontent");
+			if( markdowncontent == null || markdowncontent.isEmpty())
 			{
 				continue;
 			}
 			
-			Asset document = getMediaArchive().getAsset(assetid);
-			if (document.getBoolean("documentembedded"))
+			JSONObject embeddingPayload = new JSONObject();
+			embeddingPayload.put("id", documentPage.getId());
+			embeddingPayload.put("data", markdowncontent);
+			
+			JSONObject metadata = new JSONObject();
+			metadata.put("page_label", documentPage.get("pagenum"));
+
+			String searchtype = inConfig.get("searchtype");
+			
+			Data documentRecord = getMediaArchive().getCachedData(searchtype, documentPage.getId());
+			if( documentRecord != null)
 			{
-				continue;
+				metadata.put("file_name", documentRecord.getName());
 			}
-			assets.add(document);
 			
-			embedDocuments(inLog, inConfig, assets);
+			Asset documentAsset = getMediaArchive().getCachedAsset(documentPage.get("parentasset"));
+			if(documentAsset != null)
+			{
+				metadata.put("file_type", documentAsset.get("fileformat"));
+				metadata.put("creation_date", documentAsset.get("assetcreationdate"));
+			}
+
+			embeddingPayload.put("metadata", metadata);
 			
+			boolean ok = embedDocuments(inLog, embeddingPayload);
+			
+			if( ok )
+			{
+				documentPage.setValue("documentembedded", ok);
+				documentPage.setValue("documentembeddeddate", new Date());
+				tosave.add(documentAsset);
+			}
+			
+			if(tosave.size() > 10)
+			{
+				pageSearcher.saveAllData(tosave, null);
+				tosave.clear();
+			}
+		}
+		if(tosave.size() > 0)
+		{
+			pageSearcher.saveAllData(tosave, null);
 		}
 	}
 	
-	public void embedDocuments(ScriptLogger inLog, MultiValued inConfig, Collection<Asset> inAssets)
+	public boolean embedDocuments(ScriptLogger inLog, JSONObject embeddingPayload)
 	{
-		Collection<Asset> tosave = new ArrayList();
-		for (Asset asset : inAssets)
+		try
 		{
-			if("pdf".equals(asset.getFileFormat()))
+			String endpoint = getMediaArchive().getCatalogSettingValue("ai_llmembedding_server") +  "/save";
+			HttpPost method = new HttpPost(endpoint);
+			method.setHeader("Content-Type", "application/json");
+			method.setEntity(new StringEntity(embeddingPayload.toJSONString(), StandardCharsets.UTF_8));
+			
+			HttpSharedConnection connection = getSharedConnection();
+			CloseableHttpResponse resp = connection.sharedExecute(method);
+			
+			try
 			{
-				try
+				if (resp.getStatusLine().getStatusCode() != 200)
 				{
-					Map tosendpameters = new HashMap();
-					ContentItem content = getMediaArchive().getOriginalContent(asset);
-					tosendpameters.put("file", content);
-					tosendpameters.put("assetid", asset.getId());
-					
-					CloseableHttpResponse resp;
-					String url = getMediaArchive().getCatalogSettingValue("ai_llmembedding_server");
-					resp = getSharedConnection().sharedMimePost(url + "/text",tosendpameters);
-					
-					int statuscode = resp.getStatusLine().getStatusCode();
-					if (statuscode != 200)
+					inLog.info("Embedding Server error status: " + resp.getStatusLine().getStatusCode());
+					inLog.info("Error response: " + resp.toString());
+					try
 					{
-						//remote server error, may be a broken image
-						inLog.error(resp.toString());
-						//throw new OpenEditException("Server not working" + resp.getStatusLine());
+						String error = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+						log.info(error);
 					}
-					getSharedConnection().release(resp);
-					asset.setValue("documentembedded", true);	
-					tosave.add(asset);
-					
+					catch(Exception e)
+					{}
+					return false;
 				}
-				catch (Exception e)
+				else
 				{
-					inLog.error("Error embedding document for asset: " + asset.getId() + " - " + e.getMessage());
+					inLog.info("Embedded document: " + embeddingPayload.get("id"));
+					return true;
 				}
+
 			}
+			catch (Exception ex)
+			{
+				log.error("Error calling Embedding", ex);
+				return false;
+			}
+			finally
+			{
+				connection.release(resp);
+			}
+			
 		}
-		if (tosave.size() > 0) {
-			getMediaArchive().saveAssets(tosave);
+		catch (Exception e)
+		{
+			return false;
 		}
 	}
 

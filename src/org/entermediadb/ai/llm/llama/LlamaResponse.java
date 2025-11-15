@@ -31,7 +31,7 @@ public class LlamaResponse extends OpenAiResponse {
     }
     
     public void setOcrResponse(JSONObject inRawResponse) {
-    	JSONArray choices = (JSONArray) rawResponse.get("choices");
+    	JSONArray choices = (JSONArray) inRawResponse.get("choices");
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
         
