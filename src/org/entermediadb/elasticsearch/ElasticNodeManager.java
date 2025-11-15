@@ -88,6 +88,7 @@ import org.entermediadb.asset.cluster.BaseNodeManager;
 import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.entermediadb.elasticsearch.searchers.LockSearcher;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
 import org.openedit.cache.CacheManager;
@@ -1463,7 +1464,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		//TODO cache this
 		for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
 		{
-			Data node = (Data) iterator.next();
+			MultiValued node = (MultiValued) iterator.next();
 			String clusterid = node.get("clustername");
 			if (!clusterid.equals(getLocalClusterId()))
 			{
