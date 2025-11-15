@@ -33,25 +33,6 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 {
 	private static final Log log = LogFactory.getLog(DocumentEmbeddingManager.class);
 	
-	protected HttpSharedConnection fieldSharedConnection;
-
-	protected HttpSharedConnection getSharedConnection()
-	{
-		if (fieldSharedConnection == null)
-		{
-			HttpSharedConnection connection = new HttpSharedConnection();
-			//connection.addSharedHeader("x-api-key", api);
-			fieldSharedConnection = connection;
-		}
-
-		return fieldSharedConnection;
-	}
-
-	public void setSharedConnection(HttpSharedConnection inSharedConnection)
-	{
-		fieldSharedConnection = inSharedConnection;
-	}
-
 
 	@Override
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
@@ -83,8 +64,16 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 			String markdowncontent = documentPage.get("markdowncontent");
 			if( markdowncontent == null || markdowncontent.isEmpty())
 			{
+				log.info("No markdowncontent found "+ documentPage);
 				continue;
 			}
+			
+			if( documentPage.getBoolean("documentembedded") )
+			{
+				log.info("Already embedded " + documentPage);
+				continue;
+			}
+			
 			
 			JSONObject embeddingPayload = new JSONObject();
 			embeddingPayload.put("id", documentPage.getId());
@@ -183,32 +172,40 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 	}
 
 	
-	public EMediaAIResponse processMessage(MultiValued message, AgentContext inAgentContext)
+	public EMediaAIResponse processMessage(MultiValued message, Data inEntity, AgentContext inAgentContext)
 	{
+		
+		String prompt = message.get("prompt");
+		JSONObject chat = new JSONObject();
+		chat.put("prompt",prompt);
+		
+		//TODO: Refer to the IDS we gathers previously
+		
+		chat.put("embed_ids", inEntity);
+		
 		String url = getMediaArchive().getCatalogSettingValue("ai_llmembedding_server");
-		HttpPost method = new HttpPost(url);
-		CloseableHttpResponse resp = getSharedConnection().sharedExecute(method);
-		JSONParser parser = new JSONParser();
+		CloseableHttpResponse resp = getSharedConnection().sharedPostWithJson(url + "/chat",chat);
+		
 		try
 		{
-			JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
-	
-			log.info("Returned: " + json.toJSONString());
-			
-			//JSONObject results = parser.parse();
-			//response.setRawResponse(results);
-		}
-		catch (Exception e) 
-		{
-			throw new OpenEditException(e);
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
+				log.info("Embedding Server error status: " + resp.getStatusLine().getStatusCode());
+				log.info("Error response: " + resp.toString());
+				
+				String error =	getSharedConnection().parseText(resp);
+				log.info(error);
+				throw new OpenEditException("server down" + url);
+			}
+			String reply = getSharedConnection().parseText(resp);
+			EMediaAIResponse response = new EMediaAIResponse();
+			response.setMessage(reply);
+			return response;
 		}
 		finally
 		{
-			getSharedConnection().release(resp);
+			 getSharedConnection().release(resp);
 		}
-		EMediaAIResponse response = new EMediaAIResponse();
-		return response;
 	}
-	
 	
 }

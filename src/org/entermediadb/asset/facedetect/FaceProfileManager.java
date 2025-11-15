@@ -64,7 +64,6 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 {
 	private static final Log log = LogFactory.getLog(FaceProfileManager.class);
 
-	protected HttpSharedConnection fieldSharedConnection;
 	protected String fieldCatalogId;
 	protected String savedapikey = "";
 	
@@ -105,10 +104,6 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 		return fieldSharedConnection;
 	}
 
-	public void setSharedConnection(HttpSharedConnection inSharedConnection)
-	{
-		fieldSharedConnection = inSharedConnection;
-	}
 	protected MediaArchive getMediaArchive()
 	{
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");

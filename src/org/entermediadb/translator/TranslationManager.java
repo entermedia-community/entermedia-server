@@ -31,19 +31,9 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 	
 	private static Log log = LogFactory.getLog(TranslationManager.class);
 
-	protected HttpSharedConnection connection;
-	
 	protected String fieldCatalogId;
 	protected MediaArchive fieldMediaArchive;
 	protected ModuleManager fieldModuleManager;
-	
-	protected HttpSharedConnection getConnection()
-	{
-
-		connection = new HttpSharedConnection();
-
-		return connection;
-	}
 	
 	public ModuleManager getModuleManager()
 	{
@@ -193,8 +183,8 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 			method.setHeader("Content-Type", "application/json");
 			method.setEntity(new StringEntity(payload.toJSONString(), "UTF-8"));
 			
-			CloseableHttpResponse resp = getConnection().sharedExecute(method);
-			JSONObject json = getConnection().parseJson(resp);
+			CloseableHttpResponse resp = getSharedConnection().sharedExecute(method);
+			JSONObject json = getSharedConnection().parseJson(resp);
 			
 			JSONObject translatedText = (JSONObject) json.get("translatedText");
 			

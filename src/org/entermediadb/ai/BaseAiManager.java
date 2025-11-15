@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.manager.BaseManager;
+import org.entermediadb.net.HttpSharedConnection;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
@@ -19,11 +20,31 @@ import org.openedit.data.Searcher;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
-import org.openedit.util.ExecResult;
 
 public class BaseAiManager extends BaseManager 
 {
 	private static final Log log = LogFactory.getLog(BaseAiManager.class);
+	
+	
+	protected HttpSharedConnection fieldSharedConnection;
+
+	protected HttpSharedConnection getSharedConnection()
+	{
+		if (fieldSharedConnection == null)
+		{
+			HttpSharedConnection connection = new HttpSharedConnection();
+			//connection.addSharedHeader("x-api-key", api);
+			fieldSharedConnection = connection;
+		}
+
+		return fieldSharedConnection;
+	}
+
+	public void setSharedConnection(HttpSharedConnection inSharedConnection)
+	{
+		fieldSharedConnection = inSharedConnection;
+	}
+	
 	public Map<String, String> getModels()
 	{
 		Map<String, String> models = new HashMap<>();

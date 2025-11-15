@@ -234,8 +234,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		
 		method.setEntity(entity);
 
-		HttpSharedConnection connection = new HttpSharedConnection();
-		CloseableHttpResponse resp = connection.sharedExecute(method);
+		CloseableHttpResponse resp = getSharedConnection().sharedExecute(method);
 
 
 		if (resp.getStatusLine().getStatusCode() != 200) {
