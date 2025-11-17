@@ -141,7 +141,9 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 						log.info(error);
 					}
 					catch(Exception e)
-					{ //Ignore }
+					{ 
+						//Ignore }
+					}
 					return false;
 				}
 				else
