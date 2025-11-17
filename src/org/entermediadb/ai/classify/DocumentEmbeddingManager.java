@@ -62,6 +62,9 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 				log.info("Already embedded " + document);
 				continue;
 			}
+			
+			inLog.info("Embedding document " + document);
+			
 
 			JSONObject documentdata = new JSONObject();
 			documentdata.put("doc_id", document.getId());
@@ -148,7 +151,7 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 					try
 					{
 						String error = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
-						log.info(error);
+						inLog.info(error);
 					}
 					catch(Exception e)
 					{ 
@@ -165,7 +168,7 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 			}
 			catch (Exception ex)
 			{
-				log.error("Error calling Embedding", ex);
+				inLog.error("Error calling Embedding", ex);
 				return false;
 			}
 			finally

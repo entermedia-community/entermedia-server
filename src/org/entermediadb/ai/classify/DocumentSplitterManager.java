@@ -28,7 +28,6 @@ public class DocumentSplitterManager extends InformaticsProcessor
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
 	{
 		//Do nothing
-		
 	}
 
 	@Override
@@ -73,6 +72,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 					continue;
 				}
 			}
+			inLog.info("Splitting document " + document);
 			splitDocument(inConfig, entity, document);
 			String modtime = document.get("assetmodificationdate");
 			entity.setValue("pagescreatedfor", assetid + "|" + modtime);
@@ -80,6 +80,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			
 			if(inConfig.getBoolean("generatemarkdown"))
 			{
+				inLog.info("Generating markdown for document " + document);
 				generateMarkdown(inConfig, entity, document);
 			}
 			getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
@@ -181,9 +182,10 @@ public class DocumentSplitterManager extends InformaticsProcessor
 		
 		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
 		
-		for (Iterator iterator = pages.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = pages.iterator(); iterator.hasNext();) 
+		{
 			MultiValued pageEntity = (MultiValued) iterator.next();
-			String base64Img = loadImageContent(pageEntity);
+			String base64Img = loadDocumentContent(pageEntity);
 			
 			LlamaResponse result = (LlamaResponse) llmconnection.callOCRFunction(new HashMap(), "document_ocr", base64Img);
 			String markdown = result.getOcrResponse();

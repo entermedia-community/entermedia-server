@@ -325,7 +325,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		{
 			if (resp.getStatusLine().getStatusCode() != 200)
 			{
-				throw new OpenEditException("GPT error: " + resp.getStatusLine());
+				throw new OpenEditException("OpenAI error: " + resp.getStatusLine());
 			}
 	
 			JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
@@ -336,7 +336,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			JSONArray outputs = (JSONArray) json.get("output");
 			if (outputs == null || outputs.isEmpty())
 			{
-				log.info("No output found in GPT response");
+				log.info("No output found in OpenAI response");
 				return results;
 			}
 			

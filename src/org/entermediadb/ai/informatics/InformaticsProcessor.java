@@ -22,10 +22,9 @@ public abstract class InformaticsProcessor extends BaseAiManager
 	public abstract void processInformaticsOnEntities(ScriptLogger inLog,MultiValued inConfig, Collection<MultiValued> records );
 	
 	
-	protected String loadImageContent(MultiValued inEntity)
+	protected String loadDocumentContent(MultiValued inEntity)
 	{
 		boolean isDocPage = inEntity.get("entitydocument") != null;
-		
 
 		String base64EncodedString = null;
 		if(isDocPage && inEntity.hasValue("pagenum") )
@@ -40,7 +39,7 @@ public abstract class InformaticsProcessor extends BaseAiManager
 				ConvertResult result = getMediaArchive().getTranscodeTools().createOutputIfNeeded(null,params,parentAsset.getSourcePath(), "image3000x3000.webp"); 
 				if( result.isOk() )
 				{
-					base64EncodedString = loadBase64Image(result.getOutput());
+					base64EncodedString = loadBase64Png(result.getOutput());
 				}
 			}
 		}
@@ -55,7 +54,7 @@ public abstract class InformaticsProcessor extends BaseAiManager
 			}
 			if(inPrimaryAsset != null)
 			{
-				base64EncodedString = loadBase64Image(inPrimaryAsset, "image3000x3000");
+				base64EncodedString = loadBase64Png(inPrimaryAsset, "image3000x3000");
 			}
 		}
 		return base64EncodedString;
