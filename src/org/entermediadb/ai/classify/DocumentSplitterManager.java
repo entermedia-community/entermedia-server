@@ -28,7 +28,6 @@ public class DocumentSplitterManager extends InformaticsProcessor
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
 	{
 		//Do nothing
-		
 	}
 
 	@Override
@@ -181,9 +180,10 @@ public class DocumentSplitterManager extends InformaticsProcessor
 		
 		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
 		
-		for (Iterator iterator = pages.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = pages.iterator(); iterator.hasNext();) 
+		{
 			MultiValued pageEntity = (MultiValued) iterator.next();
-			String base64Img = loadImageContent(pageEntity);
+			String base64Img = loadDocumentContent(pageEntity);
 			
 			LlamaResponse result = (LlamaResponse) llmconnection.callOCRFunction(new HashMap(), "document_ocr", base64Img);
 			String markdown = result.getOcrResponse();

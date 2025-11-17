@@ -20,6 +20,7 @@ import org.openedit.data.Searcher;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
+import org.openedit.util.ExecResult;
 
 public class BaseAiManager extends BaseManager 
 {
@@ -151,6 +152,65 @@ public class BaseAiManager extends BaseManager
 
 	}
 	
+	
+	protected String loadBase64Png(Data inAsset, String imagesize)
+	{
+		ContentItem item = getMediaArchive().getGeneratedContent(inAsset, imagesize);
+		if(!item.exists())
+		{
+			log.info("Missing " + imagesize + " generated image for asset ("+inAsset.getId()+") " + inAsset.getName());
+			return null;
+		}
+		return loadBase64Image(item);
+	}
+	
+	protected String loadBase64Png(ContentItem item)
+	{
+		if(!item.exists())
+		{
+			log.info("Missing generated image " + item.getAbsolutePath());
+			return null;
+		}
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		long starttime = System.currentTimeMillis();
+		ArrayList<String> args = new ArrayList<String>();
+		args.add("-density");
+		args.add("300");
+		args.add(item.getAbsolutePath());
+		args.add("-antialias"); 
+		args.add("-resize");
+		args.add("1500x1500>");
+		args.add("-background");
+		args.add("white");
+		args.add("-alpha");
+		args.add("remove");
+		args.add("-alpha");
+		args.add("off");
+		args.add("-strip");
+		args.add("png:-");
+		
+		
+		//convert  -density 600  Ford.pdf[3] -antialias -background white -alpha remove  -strip  -resize 11% ford4.png 
+
+		
+		Exec exec = (Exec)getMediaArchive().getBean("exec");
+		exec.runExecStream("convert", args, output, 5000);
+		
+		byte[] bytes = output.toByteArray();  // Read InputStream as bytes
+		String base64EncodedString = Base64.getEncoder().encodeToString(bytes); // Encode to Base64
+		
+		long duration = (System.currentTimeMillis() - starttime) ;
+		log.info("Loaded and encoded " + item.getName() + " in "+duration+"ms");
+		
+		if(base64EncodedString == null || base64EncodedString.length() < 100)
+		{
+			return null;
+		}
+		
+		return "data:image/png;base64," + base64EncodedString;
+
+	}
+	
 	protected String loadBase64Image(Data inAsset, String imagesize)
 	{
 		ContentItem item = getMediaArchive().getGeneratedContent(inAsset, imagesize);
@@ -174,30 +234,16 @@ public class BaseAiManager extends BaseManager
 		ArrayList<String> args = new ArrayList<String>();
 		args.add(item.getAbsolutePath());
 		args.add("-resize");
-		args.add("1500x1500");
-		args.add("-background");
-		args.add("white");
-		args.add("-alpha");
-		args.add("remove");
-		args.add("-alpha");
-		args.add("off");
-		args.add("png:-");
-		
+		args.add("1500x1500>");
+		args.add("jpg:-");
 		Exec exec = (Exec)getMediaArchive().getBean("exec");
-		exec.runExecStream("convert", args, output, 5000);
-		
+
+		ExecResult result = exec.runExecStream("convert", args, output, 5000);
 		byte[] bytes = output.toByteArray();  // Read InputStream as bytes
 		String base64EncodedString = Base64.getEncoder().encodeToString(bytes); // Encode to Base64
-		
 		long duration = (System.currentTimeMillis() - starttime) ;
 		log.info("Loaded and encoded " + item.getName() + " in "+duration+"ms");
-		
-		if(base64EncodedString == null || base64EncodedString.length() < 100)
-		{
-			return null;
-		}
-		
-		return "data:image/png;base64," + base64EncodedString;
+		return base64EncodedString;
 
 	}
 	
