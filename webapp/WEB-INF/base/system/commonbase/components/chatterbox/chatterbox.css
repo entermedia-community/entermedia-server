@@ -327,7 +327,7 @@
 	justify-content: center;
 	padding: 4px;
 }
-.msg-bubble .msg-avt img {
+.chat-icon img {
 	width: 34px;
 	height: 34px;
 	border-radius: 6px;
@@ -361,7 +361,7 @@
 }
 .chat-icon {
 	position: absolute;
-	padding: 0 5px;
+	/*padding: 0 5px;*/
 	width: 50px;
 }
 .chat-icon-usr {
@@ -485,6 +485,7 @@
 	display: flex;
 	align-items: center;
 	width: 100%;
+	min-height:44px;
 	padding: 0.3rem 0.5rem;
 	margin-bottom: 5px;
 	border-radius: 8px;

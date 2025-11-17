@@ -184,7 +184,7 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 	public EMediaAIResponse processMessage(MultiValued message, AgentContext inAgentContext)
 	{
 		String entityid = inAgentContext.getChannel().get("dataid");
-//		String moduleid = inAgentContext.getChannel().get("searchtype"); //librarycollection
+		String parentmoduleid = inAgentContext.getChannel().get("searchtype"); //librarycollection
 		
 //		Data inDocument = getMediaArchive().getCachedData(entityid, moduleid);
 		
@@ -192,19 +192,27 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 		JSONObject chat = new JSONObject();
 		chat.put("query",query);
 		
-		//TODO: Support SearchCategorties and system wide search
-		//TODO: Load up views and include all of them
-		//TODO: Pass in the config data
-		String submoduleid = "entitydocument";
-		String parentmoduleid = "librarycollection"; 
-		
-		HitTracker children = getMediaArchive().query(submoduleid).exact(parentmoduleid, entityid).search();
-		
-		Collection ids = children.collectValues("id");
 		JSONArray docids = new JSONArray();
-		docids.addAll(ids);
-		chat.put("doc_ids", docids);
+
+		if(parentmoduleid.equals("entitydocument"))
+		{
+			docids.add(entityid);
+		}
+		else
+		{
+			//TODO: Support SearchCategorties and system wide search
+			//TODO: Load up views and include all of them
+			//TODO: Pass in the config data
+			String submoduleid = "entitydocument";
+	//		String parentmoduleid = "librarycollection"; 
+			
+			HitTracker children = null;
+			children = getMediaArchive().query(submoduleid).exact(parentmoduleid, entityid).search();
+			Collection ids = children.collectValues("id");
+			docids.addAll(ids);
+		}	
 		
+		chat.put("doc_ids", docids);
 		
 		String url = getMediaArchive().getCatalogSettingValue("ai_llmembedding_server");
 		
