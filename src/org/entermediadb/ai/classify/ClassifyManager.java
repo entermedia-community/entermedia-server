@@ -132,7 +132,12 @@ public class ClassifyManager extends InformaticsProcessor
 				}
 				else if(mediatype.equals("document"))
 				{
-					textContent = (String) asset.getValue("fulltext");
+					textContent = asset.get("markdowncontent");
+					
+					if( textContent == null || textContent.trim().length() == 0)
+					{
+						textContent = (String) asset.getValue("fulltext");
+					}
 	
 					if( textContent == null || textContent.trim().length() == 0)
 					{

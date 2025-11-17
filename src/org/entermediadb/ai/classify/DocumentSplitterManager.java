@@ -77,12 +77,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			String modtime = document.get("assetmodificationdate");
 			entity.setValue("pagescreatedfor", assetid + "|" + modtime);
 			entity.setValue("totalpages", document.getValue("pages"));
-			
-			if(inConfig.getBoolean("generatemarkdown"))
-			{
-				inLog.info("Generating markdown for document " + document);
-				generateMarkdown(inConfig, entity, document);
-			}
+
 			getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
 		}
 		//Check the primarymedia
@@ -92,68 +87,51 @@ public class DocumentSplitterManager extends InformaticsProcessor
 	public void splitDocument(MultiValued inConfig, MultiValued inEntity, Asset asset) 
 	{
 
-		String fulltext = (String) asset.getValue("fulltext");
-
-		if(fulltext == null || fulltext.trim().isEmpty())
-		{
-			log.info("No full text found");
-			return;
-		}
-		
-		JSONParser parser = new JSONParser();
-		Collection pagesFulltext = parser.parseCollection(fulltext);
-
 		String parentsearchtype = inConfig.get("searchtype");
 		String generatedsearchtype = inConfig.get("generatedsearchtype");
 		HitTracker existingPages = getMediaArchive().query(generatedsearchtype)
 				.exact(parentsearchtype, inEntity.getId())
 				.exact("parentasset", asset.getId()).search();
+		
+		Collection pagenums = existingPages.collectValues("pagenum");
 
 		List<Data> tosave = new ArrayList();
-		int pagenum = 0;
+		int totalpages = inEntity.getInt("totalpages");
 		
 		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
 
-		for (Iterator iterator = pagesFulltext.iterator(); iterator.hasNext();) {
-			pagenum++;
+		for (int i = 0; i < totalpages; i++) 
+		{
 
-			String pageText = (String) iterator.next();
-
-			Data docpage = null;
-			for (Iterator iterator2 = existingPages.iterator(); iterator2.hasNext();) {
-				Data existingPage = (Data) iterator2.next();
-				Object pageval = existingPage.getValue("pagenum");
-				if( pageval == null || !(pageval instanceof Number) )
-				{
-					continue;
-				}
-				int p = (int) ((Number)pageval).doubleValue();
-				if( p == pagenum)
-				{
-					docpage = existingPage;
-					break;
-				}
-			}
-
-			if(docpage != null)
+			if( pagenums.contains(i+1))
 			{
-				docpage.setValue("taggedbyllm", false);
-				docpage.setValue("semanticindexed", false);
-				docpage.setValue("semantictopics", null);
+				continue;
 			}
-			else
-			{
-				docpage = pageSearcher.createNewData();
-				String pagename = inEntity.getName() + " - Page " + pagenum;
-				docpage.setName(pagename);
-			}
+			int pagenum = i + 1;
+			
+			MultiValued docpage = (MultiValued) pageSearcher.createNewData();
+			
+			String pagename = inEntity.getName() + " - Page " + pagenum;
+			docpage.setName(pagename);
+			
 
 			docpage.setValue("pagenum", pagenum);
-			docpage.setValue("longcaption", pageText);
+			
 			docpage.setValue(parentsearchtype, inEntity.getId());
 			docpage.setValue("primaryimage", asset.getId());
 			docpage.setValue("parentasset", asset.getId());
 			docpage.setValue("entity_date", new Date());
+			
+			if(docpage.get("markdowncontent") == null && inConfig.getBoolean("generatemarkdown"))
+			{
+				log.info("Generating markdown for document " + docpage);
+				generateMarkdown(docpage);
+			}
+			else
+			{	
+			
+//				docpage.setValue("longcaption", pageText);
+			}
 
 			tosave.add(docpage);
 
@@ -166,40 +144,17 @@ public class DocumentSplitterManager extends InformaticsProcessor
 		pageSearcher.saveAllData(tosave, null);
 	}
 	
-	public void generateMarkdown(MultiValued inConfig, MultiValued inEntity, Asset document) 
+	public void generateMarkdown(MultiValued pageEntity) 
 	{
-
-		String parentsearchtype = inConfig.get("searchtype");
-		String generatedsearchtype = inConfig.get("generatedsearchtype");
-		HitTracker pages = getMediaArchive().query(generatedsearchtype)
-				.exact(parentsearchtype, inEntity.getId())
-				.exact("parentasset", document.getId()).search();
-		
 		String model = getMediaArchive().getCatalogSettingValue("llmvisionmodel");
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection(model);
 
-		List<Data> tosave = new ArrayList();
-		
-		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
-		
-		for (Iterator iterator = pages.iterator(); iterator.hasNext();) 
-		{
-			MultiValued pageEntity = (MultiValued) iterator.next();
-			String base64Img = loadDocumentContent(pageEntity);
+		String base64Img = loadDocumentContent(pageEntity);
 			
-			LlamaResponse result = (LlamaResponse) llmconnection.callOCRFunction(new HashMap(), "document_ocr", base64Img);
-			String markdown = result.getOcrResponse();
+		LlamaResponse result = (LlamaResponse) llmconnection.callOCRFunction(new HashMap(), "document_ocr", base64Img);
+		String markdown = result.getOcrResponse();
 			
-			pageEntity.setValue("markdowncontent", markdown);
-			tosave.add(pageEntity);
-			
-			if(tosave.size() > 20)
-			{
-				pageSearcher.saveAllData(tosave, null);
-				tosave.clear();
-			}
-		}
-		pageSearcher.saveAllData(tosave, null);
+		pageEntity.setValue("markdowncontent", markdown);
 	}
 	
 }

@@ -374,10 +374,14 @@ public class BaseAiManager extends BaseManager
 			String mediatype = getMediaArchive().getMediaRenderType(inData);
 			if(mediatype.equals("document"))
 			{
-				String fulltext = inData.get("fulltext");
+				String fulltext = inData.get("markdowncontent");
+				if(fulltext == null)
+				{
+					fulltext = inData.get("fulltext");
+					fulltext = fulltext.replaceAll("\\s+", " ");
+				}
 				if (fulltext != null)
 				{
-					fulltext = fulltext.replaceAll("\\s+", " ");
 					fulltext = fulltext.substring(0, Math.min(fulltext.length(), 5000));
 					HashMap fieldMap = new HashMap();
 					fieldMap.put("label", "Parsed Document Content");
