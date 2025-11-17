@@ -62,19 +62,27 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 				continue;
 			}
 
-			JSONObject metadata = new JSONObject();
-			metadata.put("id", document.getId());
+			JSONObject documentdata = new JSONObject();
+			documentdata.put("doc_id", document.getId());
 
-			Asset documentAsset = getMediaArchive().getCachedAsset(document.get("parentasset"));
+			String asset_id = document.get("primarymedia");
+			if(asset_id == null)
+			{
+				asset_id = document.get("primaryimage");
+			}
+			Asset documentAsset = getMediaArchive().getCachedAsset(asset_id);
 			if(documentAsset != null)
 			{
-				metadata.put("file_name", documentAsset.getName());
-				metadata.put("file_type", documentAsset.get("fileformat"));
-				metadata.put("creation_date", documentAsset.get("assetcreationdate"));
+				documentdata.put("file_name", documentAsset.getName());
+				
+				String mime_type = getMediaArchive().getMimeTypeMap().getMimeType(documentAsset.getFileFormat());
+				documentdata.put("file_type", mime_type);
+				
+				documentdata.put("creation_date", documentAsset.get("assetcreationdate"));
 			}
 
 			//Get all the pages
-			Collection pages = getMediaArchive().query(searchtype + "pages").exact(searchtype, document.getId()).search();
+			Collection pages = getMediaArchive().query(searchtype + "page").exact(searchtype, document.getId()).search();
 			Collection allpages  = new ArrayList(pages.size());
 			
 			for (Iterator iterator2 = pages.iterator(); iterator2.hasNext();)
@@ -88,15 +96,16 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 				}
 
 				JSONObject pagedata = new JSONObject();
-				pagedata.put("id", page.getId());
-				pagedata.put("data", markdowncontent);
-				metadata.put("page_label", page.get("pagenum"));
+				pagedata.put("page_id", page.getId());
+				pagedata.put("text", markdowncontent);
+				pagedata.put("page_label", page.get("pagenum"));
 				allpages.add(pagedata);
 				
-			}			
-			metadata.put("pages", allpages);
+			}		
 			
-			boolean ok = embedDocument(inLog, metadata);
+			documentdata.put("pages", allpages);
+			
+			boolean ok = embedDocument(inLog, documentdata);
 			
 			if( ok )
 			{
