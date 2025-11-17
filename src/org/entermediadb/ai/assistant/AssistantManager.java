@@ -309,6 +309,36 @@ public class AssistantManager extends BaseAiManager
 				server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 			}
 		}
+		else if (functionName.equals("ragresponse"))
+		{
+			JSONObject ragoutput = response.getRawResponse();
+			
+			String answer = null;
+			
+			if(ragoutput == null || ragoutput.isEmpty())
+			{
+				answer = "Didn't get any response from RAG";
+			}
+			else
+			{
+				answer = (String) ragoutput.get("answer");
+			}
+
+			// **Regular Text Response**
+			if (answer != null)
+			{
+				if(answer.equals("Empty Response"))
+				{
+					answer = "No relevant information found for your question.";
+				}
+				resopnseMessage.setValue("message", answer);
+				resopnseMessage.setValue("messageplain", answer);
+				resopnseMessage.setValue("chatmessagestatus", "completed");
+
+				chats.saveData(resopnseMessage);
+				server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
+			}
+		}
 		else //add option to run AI based functions like create an image
 		{
 			execLocalActionFromChat(llmconnection, resopnseMessage, agentContext);
@@ -348,10 +378,7 @@ public class AssistantManager extends BaseAiManager
 	
 	
 	protected EMediaAIResponse processDocumentChat(MultiValued message, AgentContext inAgentContext)
-	{
-		EMediaAIResponse response = new EMediaAIResponse();
-		MediaArchive archive = getMediaArchive();
-		
+	{		
 		DocumentEmbeddingManager embeddingManager = (DocumentEmbeddingManager) getMediaArchive().getBean("documentEmbeddingManager");
 		
 		return embeddingManager.processMessage(message, inAgentContext);

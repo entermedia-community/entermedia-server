@@ -18,6 +18,7 @@ import org.entermediadb.ai.llm.emedia.EMediaAIResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -183,9 +184,9 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 	public EMediaAIResponse processMessage(MultiValued message, AgentContext inAgentContext)
 	{
 		String entityid = inAgentContext.getChannel().get("dataid");
-		String moduleid = inAgentContext.getChannel().get("searchtype"); //librarycollection
+//		String moduleid = inAgentContext.getChannel().get("searchtype"); //librarycollection
 		
-		Data inDocument = getMediaArchive().getCachedData(entityid, moduleid);
+//		Data inDocument = getMediaArchive().getCachedData(entityid, moduleid);
 		
 		String query = message.get("message");
 		JSONObject chat = new JSONObject();
@@ -200,7 +201,9 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 		HitTracker children = getMediaArchive().query(submoduleid).exact(parentmoduleid, entityid).search();
 		
 		Collection ids = children.collectValues("id");
-		chat.put("doc_ids", ids);
+		JSONArray docids = new JSONArray();
+		docids.addAll(ids);
+		chat.put("doc_ids", docids);
 		
 		
 		String url = getMediaArchive().getCatalogSettingValue("ai_llmembedding_server");
@@ -226,7 +229,8 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 			}
 			JSONObject reply = getSharedConnection().parseJson(resp);
 			EMediaAIResponse response = new EMediaAIResponse();
-			//response.setMessage(reply);
+			response.setRawResponse(reply);
+			response.setFunctionName("ragresponse");
 			return response;
 		}
 		finally
