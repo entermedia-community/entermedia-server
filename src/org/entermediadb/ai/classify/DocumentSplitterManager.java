@@ -72,6 +72,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 					continue;
 				}
 			}
+			inLog.info("Splitting document " + document);
 			splitDocument(inConfig, entity, document);
 			String modtime = document.get("assetmodificationdate");
 			entity.setValue("pagescreatedfor", assetid + "|" + modtime);
@@ -79,6 +80,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			
 			if(inConfig.getBoolean("generatemarkdown"))
 			{
+				inLog.info("Generating markdown for document " + document);
 				generateMarkdown(inConfig, entity, document);
 			}
 			getMediaArchive().fireSharedMediaEvent("llm/addmetadata");

@@ -402,7 +402,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 				}
 				catch(Exception e)
 				{}
-				throw new OpenEditException("GPT error: " + resp.getStatusLine());
+				throw new OpenEditException("handleApiRequest error: " + resp.getStatusLine());
 			}
 
 			JSONObject json = (JSONObject) connection.parseJson(resp);
@@ -413,7 +413,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		}
 		catch (Exception ex)
 		{
-			log.error("Error calling GPT", ex);
+			log.error("Error calling handleApiRequest", ex);
 			throw new OpenEditException(ex);
 		}
 		finally
