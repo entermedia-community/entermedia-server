@@ -175,7 +175,13 @@ public class BaseAiManager extends BaseManager
 		args.add(item.getAbsolutePath());
 		args.add("-resize");
 		args.add("1500x1500");
-		args.add("jpg:-");
+		args.add("-background");
+		args.add("white");
+		args.add("-alpha");
+		args.add("remove");
+		args.add("-alpha");
+		args.add("off");
+		args.add("png:-");
 		
 		Exec exec = (Exec)getMediaArchive().getBean("exec");
 		exec.runExecStream("convert", args, output, 5000);
@@ -191,7 +197,7 @@ public class BaseAiManager extends BaseManager
 			return null;
 		}
 		
-		return "data:image/jpeg;base64," + base64EncodedString;
+		return "data:image/png;base64," + base64EncodedString;
 
 	}
 	
