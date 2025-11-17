@@ -66,7 +66,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			}
 			else if(llmtype.equals("llama"))
 			{
-				return "https://llama.entermediadb.net/v1/chat/completions";
+				return "http://142.113.71.170:36143/v1/chat/completions";
 			}
 			else if(llmtype.equals("gemini"))
 			{
