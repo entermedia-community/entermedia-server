@@ -9,6 +9,7 @@ import org.entermediadb.ai.assistant.AiSearch;
 import org.entermediadb.ai.knn.RankedResult;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
+import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.data.BaseData;
 import org.openedit.profile.UserProfile;
@@ -69,6 +70,11 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	
 	public Map<String,Object> getContext() {
 		return context;
+	}
+	
+	public Data getChannel()
+	{
+		return (Data)getContextValue("channel");
 	}
 	
 	public Object getContextValue(String inKey) {

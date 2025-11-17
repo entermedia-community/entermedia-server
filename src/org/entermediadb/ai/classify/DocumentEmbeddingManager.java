@@ -1,13 +1,10 @@
 package org.entermediadb.ai.classify;
 
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,8 +23,7 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
-import org.openedit.repository.ContentItem;
-import org.openedit.util.JSONParser;
+import org.openedit.hittracker.HitTracker;
 
 public class DocumentEmbeddingManager extends InformaticsProcessor 
 {
@@ -42,69 +38,70 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 	}
 
 	@Override
-	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inDocumentPages)
+	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRandomEntities)
 	{
 		
-		String generatedsearchtype = inConfig.get("generatedsearchtype");
-		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
+		String searchtype = inConfig.get("searchtype");
+		Searcher pageSearcher = getMediaArchive().getSearcher(searchtype);
 		
 		Collection<Data> tosave = new ArrayList();
 
-		for (Iterator iterator = inDocumentPages.iterator(); iterator.hasNext();)
+		for (Iterator iterator = inRandomEntities.iterator(); iterator.hasNext();)
 		{
-			MultiValued documentPage = (MultiValued) iterator.next();
+			MultiValued document = (MultiValued) iterator.next();
+			String moduleid = document.get("entitysourcetype");
 			
-			String moduleid = documentPage.get("entitysourcetype");
-			
-			if( !generatedsearchtype.equals(moduleid) )
+			if( !searchtype.equals(moduleid) )
 			{
-				continue;
+				continue; //Skip other types
 			}
 			
-			String markdowncontent = documentPage.get("markdowncontent");
-			if( markdowncontent == null || markdowncontent.isEmpty())
+			if( document.getBoolean("documentembedded") )
 			{
-				log.info("No markdowncontent found "+ documentPage);
+				log.info("Already embedded " + document);
 				continue;
 			}
-			
-			if( documentPage.getBoolean("documentembedded") )
-			{
-				log.info("Already embedded " + documentPage);
-				continue;
-			}
-			
-			
-			JSONObject embeddingPayload = new JSONObject();
-			embeddingPayload.put("id", documentPage.getId());
-			embeddingPayload.put("data", markdowncontent);
-			
-			JSONObject metadata = new JSONObject();
-			metadata.put("page_label", documentPage.get("pagenum"));
 
-			String searchtype = inConfig.get("searchtype");
-			
-			Data documentRecord = getMediaArchive().getCachedData(searchtype, documentPage.getId());
-			if( documentRecord != null)
-			{
-				metadata.put("file_name", documentRecord.getName());
-			}
-			
-			Asset documentAsset = getMediaArchive().getCachedAsset(documentPage.get("parentasset"));
+			JSONObject metadata = new JSONObject();
+			metadata.put("id", document.getId());
+
+			Asset documentAsset = getMediaArchive().getCachedAsset(document.get("parentasset"));
 			if(documentAsset != null)
 			{
+				metadata.put("file_name", documentAsset.getName());
 				metadata.put("file_type", documentAsset.get("fileformat"));
 				metadata.put("creation_date", documentAsset.get("assetcreationdate"));
 			}
 
-			embeddingPayload.put("metadata", metadata);
+			//Get all the pages
+			Collection pages = getMediaArchive().query(searchtype + "pages").exact(searchtype, document.getId()).search();
+			Collection allpages  = new ArrayList(pages.size());
 			
-			boolean ok = embedDocuments(inLog, embeddingPayload);
+			for (Iterator iterator2 = pages.iterator(); iterator2.hasNext();)
+			{
+				Data page = (Data) iterator2.next();
+				String markdowncontent = page.get("markdowncontent");
+				if( markdowncontent == null || markdowncontent.isEmpty())
+				{
+					log.info("No markdowncontent found "+ document);
+					continue;
+				}
+
+				JSONObject pagedata = new JSONObject();
+				pagedata.put("id", page.getId());
+				pagedata.put("data", markdowncontent);
+				metadata.put("page_label", page.get("pagenum"));
+				allpages.add(pagedata);
+				
+			}			
+			metadata.put("pages", allpages);
+			
+			boolean ok = embedDocument(inLog, metadata);
 			
 			if( ok )
 			{
-				documentPage.setValue("documentembedded", ok);
-				documentPage.setValue("documentembeddeddate", new Date());
+				document.setValue("documentembedded", ok);
+				document.setValue("documentembeddeddate", new Date());
 				tosave.add(documentAsset);
 			}
 			
@@ -120,7 +117,7 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 		}
 	}
 	
-	public boolean embedDocuments(ScriptLogger inLog, JSONObject embeddingPayload)
+	public boolean embedDocument(ScriptLogger inLog, JSONObject embeddingPayload)
 	{
 		try
 		{
@@ -144,7 +141,7 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 						log.info(error);
 					}
 					catch(Exception e)
-					{}
+					{ //Ignore }
 					return false;
 				}
 				else
@@ -172,16 +169,27 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 	}
 
 	
-	public EMediaAIResponse processMessage(MultiValued message, Data inEntity, AgentContext inAgentContext)
+	public EMediaAIResponse processMessage(MultiValued message, AgentContext inAgentContext)
 	{
+		String entityid = inAgentContext.getChannel().get("dataid");
+		String moduleid = inAgentContext.getChannel().get("searchtype"); //librarycollection
+		
+		Data inDocument = getMediaArchive().getCachedData(entityid, moduleid);
 		
 		String prompt = message.get("prompt");
 		JSONObject chat = new JSONObject();
 		chat.put("prompt",prompt);
 		
-		//TODO: Refer to the IDS we gathers previously
+		//TODO: Support SearchCategorties and system wide search
+		//TODO: Load up views and include all of them
+		//TODO: Pass in the config data
+		String submoduleid = "entitydocument";
+		String parentmoduleid = "librarycollection"; 
 		
-		chat.put("embed_ids", inEntity);
+		HitTracker children = getMediaArchive().query(submoduleid).exact(parentmoduleid, entityid).search();
+		
+		Collection ids = children.collectValues("id");
+		chat.put("embed_ids", ids);
 		
 		String url = getMediaArchive().getCatalogSettingValue("ai_llmembedding_server");
 		CloseableHttpResponse resp = getSharedConnection().sharedPostWithJson(url + "/chat",chat);
