@@ -352,7 +352,7 @@ public class AssistantManager extends BaseAiManager
 		EMediaAIResponse response = new EMediaAIResponse();
 		MediaArchive archive = getMediaArchive();
 		
-		DocumentEmbeddingManager embeddingManager = (DocumentEmbeddingManager) getMediaArchive().getBean("embeddingManager");
+		DocumentEmbeddingManager embeddingManager = (DocumentEmbeddingManager) getMediaArchive().getBean("documentEmbeddingManager");
 		
 		return embeddingManager.processMessage(message, inAgentContext);
 	}

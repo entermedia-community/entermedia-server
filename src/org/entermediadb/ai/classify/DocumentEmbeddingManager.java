@@ -187,9 +187,9 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 		
 		Data inDocument = getMediaArchive().getCachedData(entityid, moduleid);
 		
-		String prompt = message.get("prompt");
+		String query = message.get("message");
 		JSONObject chat = new JSONObject();
-		chat.put("prompt",prompt);
+		chat.put("query",query);
 		
 		//TODO: Support SearchCategorties and system wide search
 		//TODO: Load up views and include all of them
@@ -200,10 +200,18 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 		HitTracker children = getMediaArchive().query(submoduleid).exact(parentmoduleid, entityid).search();
 		
 		Collection ids = children.collectValues("id");
-		chat.put("embed_ids", ids);
+		chat.put("doc_ids", ids);
+		
 		
 		String url = getMediaArchive().getCatalogSettingValue("ai_llmembedding_server");
-		CloseableHttpResponse resp = getSharedConnection().sharedPostWithJson(url + "/chat",chat);
+		
+		//CloseableHttpResponse resp = getSharedConnection().sharedPostWithJson(url + "/query",chat);
+		
+		HttpPost method = new HttpPost(url+"/query");
+		method.setHeader("Content-Type", "application/json");
+		method.setEntity(new StringEntity(chat.toJSONString(), StandardCharsets.UTF_8));
+
+		CloseableHttpResponse resp = getSharedConnection().sharedExecute(method);
 		
 		try
 		{
@@ -216,9 +224,9 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 				log.info(error);
 				throw new OpenEditException("server down" + url);
 			}
-			String reply = getSharedConnection().parseText(resp);
+			JSONObject reply = getSharedConnection().parseJson(resp);
 			EMediaAIResponse response = new EMediaAIResponse();
-			response.setMessage(reply);
+			//response.setMessage(reply);
 			return response;
 		}
 		finally
