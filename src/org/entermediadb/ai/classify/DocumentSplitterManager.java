@@ -73,10 +73,10 @@ public class DocumentSplitterManager extends InformaticsProcessor
 				}
 			}
 			inLog.info("Splitting document " + document);
+			entity.setValue("totalpages", document.getValue("pages"));
 			splitDocument(inConfig, entity, document);
 			String modtime = document.get("assetmodificationdate");
 			entity.setValue("pagescreatedfor", assetid + "|" + modtime);
-			entity.setValue("totalpages", document.getValue("pages"));
 
 			getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
 		}
