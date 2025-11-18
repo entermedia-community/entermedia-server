@@ -359,6 +359,16 @@
 	max-height: 400px;
 	object-fit: contain;
 }
+.msg-citations {
+	margin-top: 8px;
+	font-size: 0.9em;
+	color: #666666;
+}
+.msg-citations a {
+	display: inline-block;
+	margin-left: 16px;
+	color: #4169e1 !important;
+}
 .chat-icon {
 	position: absolute;
 	/*padding: 0 5px;*/
@@ -485,7 +495,7 @@
 	display: flex;
 	align-items: center;
 	width: 100%;
-	min-height:44px;
+	min-height: 44px;
 	padding: 0.3rem 0.5rem;
 	margin-bottom: 5px;
 	border-radius: 8px;

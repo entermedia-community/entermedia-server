@@ -163,6 +163,23 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 						#else
 							<div class="msg-body-content">$url_util.escapeUnsafeHtml($chat.message)</div>
 						#end
+
+						#set($sources = $chat.getValues("sources"))
+						
+						#ifnotnull($sources)
+							#if(!$sources.isEmpty())
+								<div class="msg-citations">
+									<strong>[[Citations]]:</strong>
+									<br>
+									#foreach($source in $sources)
+									 	<a href="$siteroot$apphome/views/modules/${source.pageentityid}/index.html?entityid=${source.pageid}" target="_blank">
+											Page $source.pagelabel of $source.filename
+										</a>
+										<br>
+									#end
+								</div>
+							#end
+						#end
 					#end
 
 				#end

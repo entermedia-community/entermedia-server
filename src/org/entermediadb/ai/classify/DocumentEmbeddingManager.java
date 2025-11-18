@@ -16,6 +16,7 @@ import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.emedia.EMediaAIResponse;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
@@ -67,7 +68,7 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 			
 
 			JSONObject documentdata = new JSONObject();
-			documentdata.put("doc_id", document.getId());
+			documentdata.put("doc_id", searchtype + "_" + document.getId());
 
 			String asset_id = document.get("primarymedia");
 			if(asset_id == null)
@@ -100,7 +101,7 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 				}
 
 				JSONObject pagedata = new JSONObject();
-				pagedata.put("page_id", page.getId());
+				pagedata.put("page_id", searchtype + "page_" + page.getId());
 				pagedata.put("text", markdowncontent);
 				pagedata.put("page_label", page.get("pagenum"));
 				allpages.add(pagedata);
@@ -137,6 +138,14 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 			String endpoint = getMediaArchive().getCatalogSettingValue("ai_llmembedding_server") +  "/save";
 			HttpPost method = new HttpPost(endpoint);
 			method.setHeader("Content-Type", "application/json");
+			
+			String customerkey = getMediaArchive().getCatalogSettingValue("customer-key");
+			if( customerkey == null)
+			{
+				customerkey = "demo";
+			}
+			method.setHeader("x-customerkey", customerkey);
+			
 			method.setEntity(new StringEntity(embeddingPayload.toJSONString(), StandardCharsets.UTF_8));
 			
 			HttpSharedConnection connection = getSharedConnection();
@@ -186,6 +195,8 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 	
 	public EMediaAIResponse processMessage(MultiValued message, AgentContext inAgentContext)
 	{
+		MediaArchive archive = getMediaArchive();
+		
 		String entityid = inAgentContext.getChannel().get("dataid");
 		String parentmoduleid = inAgentContext.getChannel().get("searchtype"); //librarycollection
 		
@@ -197,9 +208,9 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 		
 		JSONArray docids = new JSONArray();
 
-		if(parentmoduleid.equals("entitydocument"))
+		if(parentmoduleid.equals("entitydocument")) // TODO: check if rag enabled
 		{
-			docids.add(entityid);
+			docids.add("entitydocument_" + entityid);
 		}
 		else
 		{
@@ -209,19 +220,30 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 			String submoduleid = "entitydocument";
 	//		String parentmoduleid = "librarycollection"; 
 			
-			HitTracker children = null;
-			children = getMediaArchive().query(submoduleid).exact(parentmoduleid, entityid).search();
+			HitTracker children = archive.query(submoduleid).exact(parentmoduleid, entityid).search();
 			Collection ids = children.collectValues("id");
-			docids.addAll(ids);
+			
+			for (Object id : ids)
+			{
+				docids.add(submoduleid + "_" + id);
+			}
 		}	
 		
 		chat.put("doc_ids", docids);
 		
-		String url = getMediaArchive().getCatalogSettingValue("ai_llmembedding_server");
+		String url = archive.getCatalogSettingValue("ai_llmembedding_server");
 		
 		//CloseableHttpResponse resp = getSharedConnection().sharedPostWithJson(url + "/query",chat);
 		
 		HttpPost method = new HttpPost(url+"/query");
+		
+		String customerkey = archive.getCatalogSettingValue("customer-key");
+		if( customerkey == null)
+		{
+			customerkey = "demo";
+		}
+		method.setHeader("x-customerkey", customerkey);
+		
 		method.setHeader("Content-Type", "application/json");
 		method.setEntity(new StringEntity(chat.toJSONString(), StandardCharsets.UTF_8));
 

@@ -332,69 +332,62 @@ public class AssistantManager extends BaseAiManager
 					answer = "No relevant information found for your question.";
 				}
 				
-				
-				//temporary fix for citation
-//				"sources": [
-//		    		{
-//		    			"id": "paul-page-1",
-//		    			"parent_id": "paul",
-//		    			"page_label": "1",
-//		    			"file_name": "Paul.pdf",
-//		    			"score": 0.5038881085051246
-//		    		}
-//		    	]
 				String sourcetext = "";
 				
-				JSONArray sources = (JSONArray) ragoutput.get("sources");
-				if( sources != null && !sources.isEmpty())
+				JSONArray sourcesdata = (JSONArray) ragoutput.get("sources");
+				
+				Collection sources = new ArrayList();
+				
+				HashMap duplicates = new HashMap();
+				
+				for (Iterator iterator = sourcesdata.iterator(); iterator.hasNext();) 
 				{
-					sourcetext += "<br><br><b>Citation:</b><br>";
+					JSONObject sourcedata = (JSONObject) iterator.next();
 					
-					HashMap docs = new HashMap();
-					Collection sourcepages = new ArrayList();
+					HashMap source = new HashMap();
 					
-					for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
-						JSONObject source = (JSONObject) iterator.next();
-						
-						String docid = (String) source.get("parent_id");
-						String filename = (String) source.get("file_name");
-						
-						String pagelabel = (String) source.get("page_label");
-						if(sourcepages.contains(pagelabel))
-						{
-							continue;
-						}
-						sourcepages.add(pagelabel);
-						
-						if(!docs.containsKey(docid))
-						{
-							HashMap docinfo = new HashMap();
-							docinfo.put("filename", filename);
-							docinfo.put("pages", new ArrayList());
-							docs.put(docid, docinfo);
-						}
-						HashMap docinfo = (HashMap) docs.get(docid);
-						List pages = (List) docinfo.get("pages");
-						pages.add(pagelabel);
-						
+					String filename = (String) sourcedata.get("file_name");
+					String pagelabel = (String) sourcedata.get("page_label");
+					
+					String page = (String) sourcedata.get("id");
+					if(page == null)
+					{
+						continue;
 					}
 					
-					for (Iterator iterator = docs.values().iterator(); iterator.hasNext();) {
-						HashMap docinfo = (HashMap) iterator.next();
-						String filename = (String) docinfo.get("filename");
-						List pages = (List) docinfo.get("pages");
-						
-						sourcetext += filename + "<br>";
-						for (Iterator iterator2 = pages.iterator(); iterator2.hasNext();) {
-							String pagelabel = (String) iterator2.next();
-							sourcetext += "Page " + pagelabel;
-						}
-						if(iterator.hasNext())
-						{
-							sourcetext += ", ";
-						}
+					String pageentityid = page.split("_")[0];
+					String pageid = page.replace(pageentityid + "_", "");
+					
+					String doc = (String) sourcedata.get("parent_id");
+					if (doc == null)
+					{
+						continue;
 					}
+					
+					String docentityid = doc.split("_")[0];
+					String docid = doc.replace(docentityid + "_", "");
+					
+					if(duplicates.get(docid + pageid) != null)
+					{
+						continue;
+					}
+					
+					duplicates.put(docid + pageid, source);
+					
+					source.put("filename", filename);
+					source.put("pagelabel", pagelabel);
+					
+					source.put("pageentityid", pageentityid);
+					source.put("pageid", pageid);
+					
+					source.put("docentity", docentityid);
+					source.put("docid", docid);
+					
+					sources.add(source);
 				}
+				
+				resopnseMessage.setValue("sources", sources);
+				
 				
 				resopnseMessage.setValue("messageplain", answer);
 
