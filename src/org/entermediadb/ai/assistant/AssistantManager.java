@@ -331,8 +331,80 @@ public class AssistantManager extends BaseAiManager
 				{
 					answer = "No relevant information found for your question.";
 				}
-				resopnseMessage.setValue("message", answer);
+				
+				
+				//temporary fix for citation
+//				"sources": [
+//		    		{
+//		    			"id": "paul-page-1",
+//		    			"parent_id": "paul",
+//		    			"page_label": "1",
+//		    			"file_name": "Paul.pdf",
+//		    			"score": 0.5038881085051246
+//		    		}
+//		    	]
+				String sourcetext = "";
+				
+				JSONArray sources = (JSONArray) ragoutput.get("sources");
+				if( sources != null && !sources.isEmpty())
+				{
+					sourcetext += "<br><br><b>Citation:</b><br>";
+					
+					HashMap docs = new HashMap();
+					Collection sourcepages = new ArrayList();
+					
+					for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
+						JSONObject source = (JSONObject) iterator.next();
+						
+						String docid = (String) source.get("parent_id");
+						String filename = (String) source.get("file_name");
+						
+						String pagelabel = (String) source.get("page_label");
+						if(sourcepages.contains(pagelabel))
+						{
+							continue;
+						}
+						sourcepages.add(pagelabel);
+						
+						if(!docs.containsKey(docid))
+						{
+							HashMap docinfo = new HashMap();
+							docinfo.put("filename", filename);
+							docinfo.put("pages", new ArrayList());
+							docs.put(docid, docinfo);
+						}
+						HashMap docinfo = (HashMap) docs.get(docid);
+						List pages = (List) docinfo.get("pages");
+						pages.add(pagelabel);
+						
+					}
+					
+					for (Iterator iterator = docs.values().iterator(); iterator.hasNext();) {
+						HashMap docinfo = (HashMap) iterator.next();
+						String filename = (String) docinfo.get("filename");
+						List pages = (List) docinfo.get("pages");
+						
+						sourcetext += filename + "<br>";
+						for (Iterator iterator2 = pages.iterator(); iterator2.hasNext();) {
+							String pagelabel = (String) iterator2.next();
+							sourcetext += "Page " + pagelabel;
+						}
+						if(iterator.hasNext())
+						{
+							sourcetext += ", ";
+						}
+					}
+				}
+				
 				resopnseMessage.setValue("messageplain", answer);
+
+				if(!sourcetext.isEmpty())
+				{					
+					sourcetext = "<small>" + sourcetext + "</small>";
+					answer += sourcetext;
+				}
+				resopnseMessage.setValue("message", answer);
+				
 				resopnseMessage.setValue("chatmessagestatus", "completed");
 
 				chats.saveData(resopnseMessage);

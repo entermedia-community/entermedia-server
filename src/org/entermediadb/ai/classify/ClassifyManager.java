@@ -163,6 +163,11 @@ public class ClassifyManager extends InformaticsProcessor
 					return false;
 				}
 			}
+
+			if( textContent != null)
+			{
+				textContent = textContent.substring(0, Math.min(4000, textContent.length()));
+			}
 			
 			params.put("contextfields", contextFields);
 			

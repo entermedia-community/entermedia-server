@@ -382,7 +382,7 @@ public class BaseAiManager extends BaseManager
 				}
 				if (fulltext != null)
 				{
-					fulltext = fulltext.substring(0, Math.min(fulltext.length(), 5000));
+					fulltext = fulltext.substring(0, Math.min(4000, fulltext.length()));
 					HashMap fieldMap = new HashMap();
 					fieldMap.put("label", "Parsed Document Content");
 					fieldMap.put("text", jsonutils.escape(fulltext));

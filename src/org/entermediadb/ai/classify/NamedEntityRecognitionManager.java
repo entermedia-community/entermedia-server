@@ -136,7 +136,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 						if (fulltext != null)
 						{
 							fulltext = fulltext.replaceAll("\\s+", " ");
-							fulltext = fulltext.substring(0, Math.min(fulltext.length(), 5000));
+							fulltext = fulltext.substring(0, Math.min(4000, fulltext.length()));
 							HashMap fieldMap = new HashMap();
 							fieldMap.put("label", "Parsed Document Content");
 							JsonUtil jsonutils = new JsonUtil();
