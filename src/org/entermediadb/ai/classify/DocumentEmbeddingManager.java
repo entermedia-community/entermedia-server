@@ -115,7 +115,7 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 			{
 				document.setValue("documentembedded", ok);
 				document.setValue("documentembeddeddate", new Date());
-				tosave.add(documentAsset);
+				tosave.add(document);
 			}
 			
 			if(tosave.size() > 10)
