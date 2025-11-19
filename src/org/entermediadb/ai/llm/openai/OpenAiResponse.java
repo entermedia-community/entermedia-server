@@ -11,10 +11,16 @@ public class OpenAiResponse extends BasicLlmResponse {
 
     @Override
     public boolean isToolCall() {
-        if (rawResponse == null) return false;
+        if (rawResponse == null) 
+    	{
+    	return false;
+    	}
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
-        if (choices == null || choices.isEmpty()) return false;
+        if (choices == null || choices.isEmpty()) 
+        {
+        	return false;
+        }
 
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
@@ -24,16 +30,39 @@ public class OpenAiResponse extends BasicLlmResponse {
 
     @Override
     public JSONObject getArguments() {
-        if (!isToolCall()) return null;
-
+      /*  if (!isToolCall())
+        {
+        	
+        	return null;
+        }*/
+    	
+    	JSONObject arguments = null;
         JSONArray choices = (JSONArray) rawResponse.get("choices");
+        if (choices == null || choices.isEmpty()) 
+        {
+        	return null;
+        }
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
+        if (message == null || message.isEmpty()) 
+        {
+        	return null;
+        }
         JSONObject functionCall = (JSONObject) message.get("function_call");
-
-        String argumentsString = (String) functionCall.get("arguments");
-        JSONParser parser = new JSONParser();
-        return (JSONObject) parser.parse(argumentsString); // Parse the stringified JSON
+        if (functionCall != null) 
+		{
+        	String argumentsString = (String) functionCall.get("arguments");
+            JSONParser parser = new JSONParser();
+            arguments = parser.parse(argumentsString);
+		}
+        else 
+        {
+        	String argumentsString = (String) message.get("content");
+            JSONParser parser = new JSONParser();
+            arguments = parser.parse(argumentsString);
+        }
+        
+        return arguments;
     }
 
     @Override

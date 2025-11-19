@@ -33,6 +33,7 @@ import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
@@ -887,29 +888,31 @@ public class ContentManager implements CatalogEnabled
 
 			child = targetsearcher.createNewData();
 			JSONObject args = results.getArguments();
-			for (Iterator iterator = args.keySet().iterator(); iterator.hasNext();) {
-				Object key = (Object) iterator.next();
-				Object val = args.get(key);
-				if(val instanceof String) 
-				{
-					String str = (String)val;
-					str = str.split("\\|")[0];
-					args.put(key, str);
-				}
-				else if(val instanceof Collection) {
-					JSONArray arr = (JSONArray)val;
-					if(arr.size() > 0) {
-						for(int i = 0; i < arr.size(); i++) {
-							String str = (String)arr.get(i);
-							str = str.split("\\|")[0];
-							arr.set(i, str);
-						}
-						args.put(key, arr);
+			if (args != null) {
+				for (Iterator iterator = args.keySet().iterator(); iterator.hasNext();) {
+					Object key = (Object) iterator.next();
+					Object val = args.get(key);
+					if(val instanceof String) 
+					{
+						String str = (String)val;
+						str = str.split("\\|")[0];
+						args.put(key, str);
 					}
+					else if(val instanceof Collection) {
+						JSONArray arr = (JSONArray)val;
+						if(arr.size() > 0) {
+							for(int i = 0; i < arr.size(); i++) {
+								String str = (String)arr.get(i);
+								str = str.split("\\|")[0];
+								arr.set(i, str);
+							}
+							args.put(key, arr);
+						}
+					}
+					
 				}
-				
+				targetsearcher.updateData(child, args);
 			}
-			targetsearcher.updateData(child, args);
 			child.setValue("entity_date", new Date());
 			child.setValue("ai-functioncall", results.getFunctionName());
 			child.setValue("owner", inContentrequest.get("owner"));
