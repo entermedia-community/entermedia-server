@@ -237,7 +237,16 @@ public class ChatServer
 			
 			if(moduleid == null)
 			{
-				throw new OpenEditException("No channel difined");
+				//Legacy fix for OI
+				if (inMap.get("moduleid") != null) 
+				{
+					moduleid = (String) inMap.get("moduleid");
+					channel.setValue("searchtype", moduleid);
+					archive.getSearcher("channel").saveData(channel);
+				}
+				else {
+					throw new OpenEditException("No channel difined");
+				}
 			}
 			
 			if( moduleid != null)
