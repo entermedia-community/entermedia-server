@@ -181,7 +181,10 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	*/
 			
 
-			saveCategoryTree(getRootCategory());
+			saveCategory(getRootCategory());
+	    	List tosave = new ArrayList(1000);
+			saveCategoryTree(getRootCategory(),tosave, true);
+			saveAllData(tosave, null);
 			
 			//Keep in mind that the index is about the clear so the cache will be invalid anyways since isDirty will be called
 			getCacheManager().clear(getCacheKey());
@@ -277,7 +280,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 				root = (Category)loadData(root);
 			}
 			List tosave = new ArrayList();
-			saveCategoryTree(root,tosave);
+			saveCategoryTree(root,tosave, false);
 	   		saveAllData(tosave, null);
 			//We are going to create a database tool to import categories.xml
 		}
@@ -295,10 +298,10 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
     	 * */
     	saveCategory(inRootCategory);
     	List tosave = new ArrayList(1000);
-		saveCategoryTree(inRootCategory,tosave);
+		saveCategoryTree(inRootCategory,tosave, false);
 		saveAllData(tosave, null);
 	}
-    protected void saveCategoryTree(Category inCategory, List toSave)
+    protected void saveCategoryTree(Category inCategory, List toSave, Boolean inReloadChildren)
    	{
    		//saveData(inRootCategory, null);
     	
@@ -312,11 +315,15 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
    			saveAllData(toSave, null);
    			toSave.clear();
    		}
-   		for (Iterator iterator = inCategory.getChildren().iterator(); iterator.hasNext();)
-   		{
-   			Category child = (Category) iterator.next();
-   			saveCategoryTree(child, toSave);
-   		}
+		Collection children = inCategory.getChildren(inReloadChildren);
+		if( children != null)
+		{
+	   		for (Iterator iterator = children.iterator(); iterator.hasNext();)
+	   		{
+	   			Category child = (Category) iterator.next();
+	   			saveCategoryTree(child, toSave, false);
+	   		}
+    	}
    		
    	}
 	//	public CategoryArchive getCategoryArchive()

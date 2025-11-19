@@ -38,12 +38,58 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	protected OutputFiller filler = new OutputFiller();
 	protected OpenEditEngine fieldEngine;
 	protected String apikey;
-	protected String fieldEndpoint;
 	
-	public String getApiEndpoint() {
-	    return fieldEndpoint;
+	protected Data fieldModelData;
+	
+	public Data getModelData() {
+		return fieldModelData;
 	}
-
+	
+	public void setModelData(Data inModelData) {
+		fieldModelData = inModelData;
+	}
+	
+	public String getApiEndpoint() 
+	{
+		String endpoint = getModelData().get("endpoint");
+		if( endpoint == null)
+		{
+			String llmtype = getLlmType();
+			
+			if(llmtype.equals("openai"))
+			{
+				return "https://api.openai.com/v1/chat/completions";
+			}
+			else if(llmtype.equals("ollama"))
+			{
+				return "https://ollama.entermediadb.net";
+			}
+			else if(llmtype.equals("llama"))
+			{
+				return "http://142.113.71.170:36143/v1/chat/completions";
+			}
+			else if(llmtype.equals("gemini"))
+			{
+				return "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+			}
+		}
+		if( endpoint == null)
+		{
+			throw new OpenEditException("No endpoint defined for model: " + getModelData().getId());
+		}
+		return endpoint;
+	}
+	
+	public String getModelIdentifier()
+	{
+		return getModelData().get("modelid");
+	}
+	
+	public String getLlmType()
+	{
+		return getModelData().get("llmtype");
+	}
+	
 	protected String fieldCatalogId;
 	protected MediaArchive fieldMediaArchive;
 	protected HttpSharedConnection connection;
@@ -78,16 +124,16 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	{
 		if (apikey == null)
 		{
-			apikey = getMediaArchive().getCatalogSettingValue(getServerName()+"-key");
+			apikey = getMediaArchive().getCatalogSettingValue(getLlmType()+"-key");
 		}
 		if (apikey == null)
 		{
-			apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
+			apikey = getMediaArchive().getCatalogSettingValue("openai-key");
 		}
 		if (apikey == null)
 		{
 			log.error("No key defined in catalog settings");
-			//throw new OpenEditException("No gpt-key defined in catalog settings");
+			//throw new OpenEditException("No openai-key defined in catalog settings");
 		}
 		
 		setApikey(apikey);
@@ -150,14 +196,14 @@ public abstract class BaseLlmConnection implements LlmConnection {
 
 	public String loadInputFromTemplate(String inTemplate, Map<String, Object> inContext) 
 	{
-		LlmRequest llmrequest = new LlmRequest();
-		llmrequest.setContext(inContext);
+		AgentContext agentcontext = new AgentContext();
+		agentcontext.setContext(inContext);
 		
-		return loadInputFromTemplate(inTemplate, llmrequest);
+		return loadInputFromTemplate(inTemplate, agentcontext);
 	}
-	public String loadInputFromTemplate(String inTemplate, LlmRequest llmrequest) 
+	public String loadInputFromTemplate(String inTemplate, AgentContext agentcontext) 
 	{
-		Map<String,Object> inContext = llmrequest.getContext();
+		Map<String,Object> inContext = agentcontext.getContext();
 		if(inTemplate == null) {
 			throw new OpenEditException("Cannot load input, template is null" + inContext);
 		}
@@ -169,9 +215,9 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			
 			WebPageRequest request = getRequestUtils().createPageRequest(template, user);
 			
-			if(llmrequest != null)
+			if(agentcontext != null)
 			{				
-				loadLlmRequestParameters(llmrequest, request);
+				loadagentcontextParameters(agentcontext, request);
 			}
 			
 			request.putPageValues(inContext);
@@ -198,9 +244,9 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		} 
 	}
 
-	protected void loadLlmRequestParameters(LlmRequest llmrequest, WebPageRequest request)
+	protected void loadagentcontextParameters(AgentContext agentcontext, WebPageRequest request)
 	{
-		JSONObject inParameters = llmrequest.getParameters();
+		Map inParameters = agentcontext.getProperties();
 		if( inParameters != null)
 		{
 			for (Iterator iterator = inParameters.keySet().iterator(); iterator.hasNext();)
@@ -230,9 +276,9 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		}
 	}
 	
-	public LlmResponse loadResponseFromTemplate(LlmRequest llmrequest) 
+	public LlmResponse renderLocalAction(AgentContext agentcontext) 
 	{
-		String functionName = llmrequest.getFunctionName();
+		String functionName = agentcontext.getFunctionName();
 		if(functionName == null) 
 		{
 			throw new OpenEditException("Cannot load function response, functionName is null");
@@ -240,7 +286,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		
 		log.info("Loading response for function: " + functionName);
 		
-		String apphome = (String) llmrequest.getContextValue("apphome");
+		String apphome = (String) agentcontext.getContextValue("apphome");
 		
 		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/" + functionName + ".html";
 		
@@ -252,9 +298,9 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			User user = getMediaArchive().getUserManager().getUser("agent");
 			
 			WebPageRequest inReq = getRequestUtils().createPageRequest(template, user);
-			inReq.putPageValues(llmrequest.getContext());
-			inReq.putPageValue("llmrequest", llmrequest);
-			loadLlmRequestParameters(llmrequest, inReq);
+			inReq.putPageValues(agentcontext.getContext());
+			inReq.putPageValue("agentcontext", agentcontext);
+			loadagentcontextParameters(agentcontext, inReq);
 			
 			StringWriter output = new StringWriter();
 			inReq.setWriter(output);
@@ -332,7 +378,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		return i;
 	}
 	
-	protected LlmResponse handleApiRequest(String payload)
+	protected JSONObject handleApiRequest(String payload)
 	{
 		String endpoint = getApiEndpoint();
 		HttpPost method = new HttpPost(endpoint);
@@ -356,20 +402,18 @@ public abstract class BaseLlmConnection implements LlmConnection {
 				}
 				catch(Exception e)
 				{}
-				throw new OpenEditException("GPT error: " + resp.getStatusLine());
+				throw new OpenEditException("handleApiRequest error: " + resp.getStatusLine());
 			}
 
 			JSONObject json = (JSONObject) connection.parseJson(resp);
 
 			log.info("returned: " + json.toJSONString());
-
-			OpenAiResponse response = new OpenAiResponse();
-			response.setRawResponse(json);
-			return response;
+			 
+			return json;
 		}
 		catch (Exception ex)
 		{
-			log.error("Error calling GPT", ex);
+			log.error("Error calling handleApiRequest", ex);
 			throw new OpenEditException(ex);
 		}
 		finally
@@ -377,5 +421,47 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			connection.release(resp);
 		}
 	}
+
+	public LlmResponse callPlainMessage(AgentContext agentcontext, String inPageName)
+	{
+		agentcontext.addContext("mediaarchive", getMediaArchive());
+		String input = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmType() +"/assistant/messages/" + inPageName + ".json", agentcontext.getContext());
+		log.info(inPageName + " process chat");
+		String endpoint = getApiEndpoint();
+
+		HttpPost method = new HttpPost(endpoint);
+		method.addHeader("Authorization", "Bearer " + getApiKey());
+		method.setHeader("Content-Type", "application/json");
+
+		method.setEntity(new StringEntity(input, "UTF-8"));
+
+		CloseableHttpResponse resp = getConnection().sharedExecute(method);
+
+		JSONObject json = getConnection().parseJson(resp);
+
+		OpenAiResponse response = new OpenAiResponse();
+		response.setRawResponse(json);
+		
+		String nextFunction = response.getFunctionName();
+		if( nextFunction != null)
+		{
+			agentcontext.setFunctionName(nextFunction);
+		}
+
+		getMediaArchive().saveData("agentcontext",agentcontext);
+		return response;
+
+	}
 	
+	@Override
+	public LlmResponse createImage(String inPrompt)  throws Exception
+	{
+		throw new OpenEditException("Model doesn't support images");
+	}
+	
+	@Override
+	public LlmResponse createImage(String inPrompt, int imagecount, String inSize)
+	{
+		throw new OpenEditException("Model doesn't support images");
+	}
 }

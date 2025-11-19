@@ -1,6 +1,8 @@
 package org.entermediadb.ai.assistant;
 
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.WebPageRequest;
 
@@ -13,24 +15,50 @@ public class AgentModule extends BaseMediaModule {
 		return assistantManager;
 	}
 
-	public void chatAgentRegularSearch(WebPageRequest inReq) throws Exception 
+	public void searchTables(WebPageRequest inReq) throws Exception 
 	{	
-		getAssistantManager(inReq).regularSearch(inReq, false);
+		AgentContext agentContext =  (AgentContext)inReq.getPageValue("agentcontext");
+		
+		getAssistantManager(inReq).searchTables(inReq, agentContext.getAiSearchParams());
 	}
 	
 	public void chatAgentSemanticSearch(WebPageRequest inReq) throws Exception 
 	{	
-		getAssistantManager(inReq).semanticSearch(inReq);
+		AgentContext agentContext =  (AgentContext) inReq.getPageValue("agentcontext");
+		
+		Object semanticquery = agentContext.getValue("semanticquery");
+
+		agentContext.setValue("semanticquery", null);
+		agentContext.setNextFunctionName(null);
+		
+		if( semanticquery == null)
+		{
+			return;
+		}
+		
+		String query = (String) semanticquery;
+		
+		if(query != null && !"null".equals(query))
+		{		
+			getAssistantManager(inReq).semanticSearch(inReq, agentContext);
+		}
+	}
+	
+	public void chatAgentExecuteRAG(WebPageRequest inReq) throws Exception 
+	{	
+		getAssistantManager(inReq).executeRag(inReq);
 	}
 	
 	public void chatAgentCreateImage(WebPageRequest inReq) throws Exception 
 	{	
-		getAssistantManager(inReq).createImage(inReq);
+		AgentContext agentContext =  (AgentContext) inReq.getPageValue("agentcontext");
+		getAssistantManager(inReq).createImage(inReq, agentContext.getAiCreationParams());
 	}
 	
 	public void chatAgentCreateEntity(WebPageRequest inReq) throws Exception 
 	{	
-		getAssistantManager(inReq).createEntity(inReq);
+		AgentContext agentContext =  (AgentContext)inReq.getPageValue("agentcontext");
+		getAssistantManager(inReq).createEntity(inReq, agentContext.getAiCreationParams());
 	}
 	
 	public void chatAgentUpdateEntity(WebPageRequest inReq) throws Exception 
@@ -38,20 +66,36 @@ public class AgentModule extends BaseMediaModule {
 		getAssistantManager(inReq).updateEntity(inReq);
 	}
 	
-	public void mcpSearch(WebPageRequest inReq) throws Exception
-	{
-		getAssistantManager(inReq).regularSearch(inReq, true);
-	}
+//	public void mcpSearch(WebPageRequest inReq) throws Exception
+//	{
+//		getAssistantManager(inReq).regularSearch(inReq, true);
+//	}
 	
 	public void loadSemanticMatches(WebPageRequest inReq) throws Exception
 	{
-		getAssistantManager(inReq).semanticSearch(inReq);
+		String query = inReq.getRequestParameter("semanticquery");
+		
+		if(query != null && !"null".equals(query))
+		{
+			AgentContext agentContext =  (AgentContext) inReq.getPageValue("agentcontext");
+			if (agentContext != null)
+			{
+				agentContext.setValue("semanticquery", query);
+				getAssistantManager(inReq).semanticSearch(inReq, agentContext);
+			}
+		}
 	}
 
 	public void mcpGenerateReport(WebPageRequest inReq) throws Exception {
 		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
 		String report = getAssistantManager(inReq).generateReport(arguments);
 		inReq.putPageValue("report", report);
+	}
+
+	public void indexActions(WebPageRequest inReq) throws Exception 
+	{
+		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
+		getAssistantManager(inReq).loadAllActions(logger);
 	}
 
 }

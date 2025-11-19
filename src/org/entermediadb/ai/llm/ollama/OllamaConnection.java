@@ -11,7 +11,7 @@ import org.apache.http.entity.StringEntity;
 import org.entermediadb.ai.llm.BaseLlmConnection;
 import org.entermediadb.ai.llm.BasicLlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
-import org.entermediadb.ai.llm.LlmRequest;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
@@ -84,13 +84,12 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		if (apikey == null)
 		{
 			log.error("No ollama-key defined in catalog settings");
-			//throw new OpenEditException("No gpt-key defined in catalog settings");
 		}
 		
 		return apikey;
 	}
 
-	public BasicLlmResponse runPageAsInput(LlmRequest llmrequest, String inTemplate)
+	public BasicLlmResponse runPageAsInput(AgentContext llmrequest, String inTemplate)
 	{
 		String input = loadInputFromTemplate(inTemplate, llmrequest);
 		log.info(input);
@@ -118,7 +117,7 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	public String getApiEndpoint()
 	{
 		// TODO Auto-generated method stub
-		String apihost = getMediaArchive().getCatalogSettingValue("ollama-url");
+		String apihost = getMediaArchive().getCatalogSettingValue("ai_ollama_server");
 		if (apihost == null)
 		{
 			apihost = "http://localhost:11434";
@@ -127,65 +126,67 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		return endpoint;
 	}
 
-	public BasicLlmResponse createImage(String inModel, String inPrompt)
-	{
-		throw new OpenEditException("Model doesn't support images");
-	}
-	public BasicLlmResponse createImage(String inModel, String inPrompt, int inCount, String inSize)
-	{
-		throw new OpenEditException("Model doesn't support images");
-	}
-
-	public OutputFiller getFiller()
-	{
-		return filler;
-	}
-
 	public void setFiller(OutputFiller inFiller)
 	{
 		filler = inFiller;
 	}
+	
+	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image)
+	{
+		return callClassifyFunction(params, inFunction, inBase64Image, null);
+	}
 
-	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image)
+	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image, String textContent)
 	{
 	    MediaArchive archive = getMediaArchive();
 
-	    log.info("Llama function: " + inFunction + " Query: " + inQuery);
-
 	    // Use JSON Simple to create request payload
 	    JSONObject obj = new JSONObject();
-	    obj.put("model", inModel);
+	    obj.put("model", getModelIdentifier());
 	    obj.put("stream", false);
 
-	    // Prepare messages array
+
 	    JSONArray messages = new JSONArray();
-	    JSONObject message = new JSONObject();
-	    message.put("role", "user");
+		JSONObject message = new JSONObject();
+		
+		if (inBase64Image != null && !inBase64Image.isEmpty())
+		{
+			message.put("role", "user");
+			JSONArray images = new JSONArray();
+			images.add(inBase64Image);
+			message.put("images", images);
+		}
+		else
+		{
+			message.put("role", "system");
+			String systemMessage = loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/"+inFunction+".html");
+			message.put("content", systemMessage);
+		}
+		
+		messages.add(message);
+		obj.put("messages", messages);
 
-        message.put("content", inQuery);
-	    if (inBase64Image != null && !inBase64Image.isEmpty()) 
-	    {
-	        // Add image content separately
-	        JSONArray images = new JSONArray();
-	        images.add(inBase64Image);
-	        message.put("images", images);
-	    }
-
-	    messages.add(message);
-	    obj.put("messages", messages);
 
 	    // Handle function call definition
 	    if (inFunction != null) {
-	    	
-	        String templatepath = "/" + archive.getMediaDbId() + "/ai/ollama/classify/functions/" + inFunction + ".json";
-	        Page defpage = archive.getPageManager().getPage(templatepath);
-	        if(!defpage.exists()) {
-		        templatepath  ="/" + archive.getCatalogId() + "/ai/ollama/classify/functions/" + inFunction + ".json";
-		        defpage = archive.getPageManager().getPage(templatepath);
-	        }
-	        if(!defpage.exists()) {
-			       throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunction);
+			String templatepath = "/" + archive.getMediaDbId() + "/ai/ollama/classify/functions/" + inFunction + ".json";
+			
+			Page defpage = archive.getPageManager().getPage(templatepath);
+			
+			if(!defpage.exists()) {
+				templatepath  ="/" + archive.getCatalogId() + "/ai/ollama/classify/functions/" + inFunction + ".json";
+				defpage = archive.getPageManager().getPage(templatepath);
+			}
+			
+			if(!defpage.exists()) {
+				throw new OpenEditException("Requested Content Does Not Exist in MediaDB or Catalog:" + inFunction);
 		    }
+			
+			if(textContent == null)
+			{
+				params.put("textcontent", textContent);
+			}
+			
 	        String definition = loadInputFromTemplate(templatepath, params);
 	        
 	        JSONParser parser = new JSONParser();
@@ -195,32 +196,30 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	        obj.put("format", parameters);
 	    }
 	    String payload = obj.toJSONString();
-	    LlmResponse response = handleApiRequest(payload);
+	    
+	    JSONObject json = handleApiRequest(payload);
+	    
+	    OllamaResponse response = new OllamaResponse();
+	    response.setRawResponse(json);
+	    
 	    return response;
 	}
 
 	@Override
-	public String getServerName()
-	{
-		return "ollama";
-	}
-
-	@Override
-	public LlmResponse callCreateFunction(Map inParams, String inModel, String inFunction) 
+	public LlmResponse callCreateFunction(Map inParams, String inFunction) 
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Map inParams) 
+	public JSONObject callStructuredOutputList(String inStructureName, Map inParams) 
 	{
-		inParams.put("model", inModel);
+		inParams.put("model", getModelIdentifier());
 		
 		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/ollama/classify/structures/" + inStructureName + ".json", inParams);
-
-		LlmResponse response = handleApiRequest(inStructure);
-		JSONObject json = response.getRawResponse();
+		
+		JSONObject json = handleApiRequest(inStructure);
 
 		log.info("Returned: " + json);
 			
@@ -244,5 +243,11 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		results = (JSONObject) parser.parse(new StringReader(content));
 
 		return results;
+	}
+	
+	@Override
+	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image)
+	{
+		throw new OpenEditException("Not implemented yet. Only available in Llama connection.");
 	}
 }

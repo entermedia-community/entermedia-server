@@ -4,6 +4,9 @@ $context.putPageValue("detail",$detail)
 #if( !$values && $data )
 	#set($values = $data.getValues($detail.id) )
 #end
+#if( !$values && $value )
+	#set($values = [$value] )
+#end
 #set($entity_module = $detail.getListId())
 #set($searchhome = "$applink/views/modules/$!{entity_module}/results/default")
 #set($ismulti = $detail.isMultiValue())
@@ -26,17 +29,21 @@ $context.putPageValue("detail",$detail)
 			    	data-noesc="true" 
 			    	data-entityid="$!row.getId()"
 			    	title="#text($name)">#text($name)</a>  
-			    	<a class="removeentity entity-value-list-remove"  href="#" title="[[Remove]] #text($name)"><i class="bi bi-x"></i></a>
+			    	<a class="removeentityfromfield entity-value-list-remove"  href="#" title="[[Remove]] #text($name)"><i class="bi bi-x"></i></a>
 			    	<input type="hidden" name="${detail.id}.value" value="$!row.getId()" />
 			    </li>
 		    #end 
 		#end
 	</ul>
+	
+	
 	<input type="hidden" 
 		name="${detail.id}.size" 
 		value="$!{values.size()}" 
 		data-entitypicker="entitypicker${detail.id}" 
-		class="entity-value-list-count #if($detail.isRequired()) validatehidden entityRequired #end" />	
+		data-entityid="$!{data.id}"
+		class="entity-value-list-count #if($detail.isRequired()) validatehidden entityRequired #end"
+	/>	
 </div>		
 
 	
@@ -49,7 +56,7 @@ $context.putPageValue("detail",$detail)
 		#set($label = "[[Add]] #text($pickmodule)")
 	#end 
 	
-	
+	#set($id = $data.id)	
 	#ifnull($id)
 		#set($id = $asset.id)
 	#end

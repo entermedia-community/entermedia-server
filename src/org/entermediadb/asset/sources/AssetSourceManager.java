@@ -127,6 +127,13 @@ public class AssetSourceManager implements CatalogEnabled
 
 	}
 	
+	public boolean existsOriginalContent(Asset inAsset)
+	{
+		AssetSource findAssetSource = findAssetSource(inAsset);
+		boolean exists =  findAssetSource.existsOriginalContent(inAsset);
+		return exists;
+	}
+	
 	public AssetSource findAssetSource(String inPath)
 	{
 		for (Iterator iterator = getAssetSources().iterator(); iterator.hasNext();)

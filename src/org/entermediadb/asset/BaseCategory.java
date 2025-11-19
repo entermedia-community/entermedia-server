@@ -175,7 +175,16 @@ public class BaseCategory extends BaseData implements Category
 		}
 		return fieldChildren;
 	}
-
+	
+	public List getChildren(boolean inReloadIfNeeded)
+	{
+		if( inReloadIfNeeded )
+		{
+			return getChildren();
+		}
+		return fieldChildren;
+	}	
+	
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.Category2#setChildren(java.util.List)
 	 */

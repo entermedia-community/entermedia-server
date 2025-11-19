@@ -4,8 +4,17 @@
 .chatterbox {
 	height: 100%;
 }
+.entity-tab-chatterbox {
+	background-color: #efefef;
+}
+.entity-tab-chatterbox .chatterbox {
+	width: 820px;
+	margin: 0 auto;
+	padding: 0 10px 10px;
+	background-color: #ffffff;
+}
 .chatterbox-messages {
-	height: calc(100% - 150px);
+	height: calc(100% - 146px);
 	min-height: 250px;
 	position: relative;
 }
@@ -73,6 +82,9 @@
 	display: flex;
 	flex-direction: column;
 	box-shadow: 0 5px 5px 0px rgba(0, 0, 0, 0.1), 0 2px 2px 0px rgba(0, 0, 0, 0.2);
+}
+#aichatsearch .chatterbox-editorarea {
+	border-radius: 6px;
 }
 .chatterbox-write .chatterbox-text {
 	height: 75px;
@@ -229,11 +241,17 @@
 	cursor: pointer;
 	display: inline-block;
 }
+#aichatsearch .modal-body {
+	padding-bottom: 0 !important;
+}
 #aichatsearch .message-menu-link {
 	color: #6585e7;
 }
 #aichatsearch .message-menu-link:hover {
 	color: #4169e1;
+}
+#aichatsearch .chatterbox-write {
+	padding: 8px 8px 0;
 }
 .message-menu-link:hover {
 	color: #28a745;
@@ -278,9 +296,6 @@
 	overflow-y: auto;
 	border: 0 none;
 }
-.goalticket-level {
-	color: #c4e3e2;
-}
 .chatterbox-body-inside {
 	scrollbar-color: #dfdfdf #fff;
 	scrollbar-width: thin;
@@ -312,7 +327,7 @@
 	justify-content: center;
 	padding: 4px;
 }
-.msg-bubble .msg-avt img {
+.chat-icon img {
 	width: 34px;
 	height: 34px;
 	border-radius: 6px;
@@ -333,9 +348,30 @@
 .msg-body-content {
 	line-height: 1.5rem;
 }
+.msg-body-content *:last-child {
+	margin-bottom: 0;
+}
+.msg-body-content a {
+	color: var(--bs-link-color, royalblue);
+}
+.msg-body-content img {
+	max-width: 400px;
+	max-height: 400px;
+	object-fit: contain;
+}
+.msg-citations {
+	margin-top: 8px;
+	font-size: 0.9em;
+	color: #666666;
+}
+.msg-citations a {
+	display: inline-block;
+	margin-left: 16px;
+	color: #4169e1 !important;
+}
 .chat-icon {
 	position: absolute;
-	padding: 0 5px;
+	/*padding: 0 5px;*/
 	width: 50px;
 }
 .chat-icon-usr {
@@ -459,6 +495,7 @@
 	display: flex;
 	align-items: center;
 	width: 100%;
+	min-height: 44px;
 	padding: 0.3rem 0.5rem;
 	margin-bottom: 5px;
 	border-radius: 8px;

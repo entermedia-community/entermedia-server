@@ -700,7 +700,7 @@ public class ContentManager implements CatalogEnabled
 	//	String template = inManager.loadInputFromTemplate(inReq,
 	//		"/" + archive.getMediaDbId() + "/gpt/templates/create_entity.html");
 	//
-	//	JSONObject results = inManager.callFunction(inReq, inModel, "create_entity", template, 0, 5000);
+	//	JSONObject results = inManager.callFunction(inReq, "create_entity", template, 0, 5000);
 	//
 	//	Data child = getMediaArchive().getSearcher(inTargetentity).createNewData();
 	//
@@ -738,7 +738,7 @@ public class ContentManager implements CatalogEnabled
 //		{
 //			imagestyle = "vivid";
 //		}
-//		LlmResponse results = manager.createImage(inReq, model, 1, "1024x1024", imagestyle, inStructions);
+//		LlmResponse results = manager.createImage(inReq, 1, "1024x1024", imagestyle, inStructions);
 //		String[] fields = inReq.getRequestParameters("field");
 //		ArrayList assets = new ArrayList();
 //		for (Iterator iterator = results.getImageUrls().iterator(); iterator.hasNext();)
@@ -789,15 +789,17 @@ public class ContentManager implements CatalogEnabled
 		{
 			LlmConnection llmconnection = archive.getLlmConnection(model);
 			
-			LlmResponse results = llmconnection.createImage(model, prompt);
+			LlmResponse results = llmconnection.createImage(prompt);
 
 			for (Iterator iterator = results.getImageBase64s().iterator(); iterator.hasNext();)
 			{
 				String base64 = (String) iterator.next();
 
+	
 				asset.setValue("importstatus", "created");
-				String filename = prompt.replaceAll("[^a-zA-Z0-9]", "_") + ".png";
-				filename = filename.replaceAll("\\?.*", "");
+				asset.setValue("assetaddeddate", new Date());
+				
+				String filename = results.getFileName();
 
 				String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
 				ContentItem saveTo = archive.getPageManager().getPage(path).getContentItem();
@@ -853,70 +855,6 @@ public class ContentManager implements CatalogEnabled
 
 	}
 
-	//    public Asset createAssetFromLLM(WebPageRequest inReq, String inModuleid, String inEntityid, String inStructions) {
-	//	Data entity = getMediaArchive().getData(inModuleid, inEntityid);
-	//
-	//	// https://oneliveweb.com/oneliveweb/ditachat/llm/api/ditapayload.json?inputdata=Fish%20Recipie&entermedia.key=adminmd5420b06b0ea0d5066b0bb413837460f409108a0be38tstampeMxOa62cNXmuVomBh0oFNw==
-	//	MediaArchive archive = getMediaArchive();
-	//
-	//	Data parentmodule = getMediaArchive().getCachedData("module", inModuleid);
-	//
-	//	// String uploadsourcepath =
-	//	// getMediaArchive().getEntityManager().loadUploadSourcepath(parentmodule,
-	//	// entity, inReq.getUser(), true);
-	//
-	//	String type = inReq.findValue("llmtype.value");
-	//	if (type == null) {
-	//	    type = "gptManager";
-	//	} else {
-	//	    type = type + "Manager";
-	//	}
-	//	LlmConnection manager = (LlmConnection) archive.getBean(type);
-	//
-	//	String model = inReq.findValue("llmmodel.value");
-	//	if (model == null) {
-	//	    model = archive.getCatalogSettingValue("gpt-model");
-	//	}
-	//	if (model == null) {
-	//	    model = "dall-e-3";
-	//	}
-	//	String prompt = inReq.findValue("llmprompt.value");
-	//
-	//	String edithome = inReq.findPathValue("edithome");
-	//
-	//	String imagestyle = inReq.findValue("llmimagestyle.value");
-	//	if (imagestyle == null) {
-	//	    imagestyle = "vivid";
-	//	}
-	//	JSONObject results = manager.createImage(inReq, model, 1, "1024x1024", imagestyle, inStructions);
-	//	JSONArray data = (JSONArray) results.get("data");
-	//	String[] fields = inReq.getRequestParameters("field");
-	//	Category rootcat = getMediaArchive().getEntityManager().loadDefaultFolder(parentmodule, entity,
-	//		inReq.getUser());
-	//	ArrayList assets = new ArrayList();
-	//	for (Iterator iterator = data.iterator(); iterator.hasNext();) {
-	//	    JSONObject row = (JSONObject) iterator.next();
-	//	    String url = (String) row.get("url");
-	//	    String filename = getMediaArchive().getUserManager().getStringEncryption().generateHashFromString(url, 15);
-	//	    filename = filename + ".png";
-	//	    String uploadsourcepath = rootcat.getCategoryPath() + "/" + filename;
-	//	    AssetImporter importer = getMediaArchive().getAssetImporter();
-	//	    Asset asset = importer.createAssetFromFetchUrl(archive, url, inReq.getUser(), uploadsourcepath, filename,
-	//		    null);
-	//	    getMediaArchive().getAssetSearcher().updateData(inReq, fields, asset);
-	//	    asset.addCategory(rootcat);
-	//	    assets.add(asset);
-	//	    asset.setValue("owner", inReq.getUserName());
-	//	    asset.setValue("assetaddeddate", new Date());
-	//
-	//	}
-	//	getMediaArchive().saveAssets(assets);
-	//	archive.fireSharedMediaEvent("importing/assetscreated");
-	//
-	//	return (Asset) assets.get(0);
-	//
-	//    }
-
 	public Data createFromLLM(Map params, LlmConnection inLlm, String inModel, Data inContentrequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
@@ -945,7 +883,7 @@ public class ContentManager implements CatalogEnabled
 
 			params.put("contentrequest", inContentrequest);
 
-			LlmResponse results = inLlm.callCreateFunction(params, inModel, "create_entity");
+			LlmResponse results = inLlm.callCreateFunction(params, "create_entity");
 
 			child = targetsearcher.createNewData();
 			JSONObject args = results.getArguments();
@@ -998,7 +936,7 @@ public class ContentManager implements CatalogEnabled
 
 			params.put("contentrequest", inContentrequest);
 
-			LlmResponse results = inLlm.callCreateFunction(params, inModel, "create_entity");
+			LlmResponse results = inLlm.callCreateFunction(params, "create_entity");
 			
 			JSONObject args = results.getArguments();
 			for (Iterator iterator = args.keySet().iterator(); iterator.hasNext();) {

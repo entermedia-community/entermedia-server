@@ -343,9 +343,6 @@ $(document).ready(function () {
 			var tree = node.closest(".emtree");
 			var maxlevel = 2;
 
-			var collectionid = node.data("collectionid");
-			var postfix = "";
-
 			//clear other entities on Upload Form
 			var options = [];
 
@@ -378,7 +375,6 @@ $(document).ready(function () {
 		var node = getNode(this);
 		var nodeid = node.data("nodeid");
 		var tree = node.closest(".emtree");
-		var collectionid = node.data("collectionid");
 
 		link.data("copyingcategoryid", nodeid);
 
@@ -571,10 +567,11 @@ $(document).ready(function () {
 			var yPos = pos.y - 10;
 
 			contextMenu.data("selectednoderow", noderow);
-			var iscollection = noderow.data("collectionid");
-			$("#" + treename + "contextMenu #createcollection").show();
-			if (iscollection != null && iscollection != "") {
+			var collectionid = noderow.data("collectionid");
+			if (collectionid) {
 				$("#" + treename + "contextMenu #createcollection").hide();
+			} else {
+				$("#" + treename + "contextMenu #createcollection").show();
 			}
 
 			contextMenu.css({

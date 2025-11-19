@@ -48,7 +48,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 	{
 		return fieldUserId;
 	}
-
+/*
 	public void setChannelId(String inChannelId)
 	{
 		fieldChannelId = inChannelId;
@@ -57,7 +57,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 	public String getChannelId()
 	{
 		return fieldChannelId;
-	}
+	}*/
 
 	public void setUserId(String inUserId)
 	{
@@ -231,8 +231,8 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				//String userid = (String) map.get("userid");
 				String userid = String.valueOf(map.get("userid"));
 				setUserId(userid);
-				String channelid = String.valueOf(map.get("channel"));
-				setChannelId(channelid);
+				//String channelid = String.valueOf(map.get("channel"));
+				//setChannelId(channelid);
 			}
 			else if("messagereceived".equals(command) || "notify".equals(command))
 			{

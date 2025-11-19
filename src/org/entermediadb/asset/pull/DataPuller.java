@@ -25,6 +25,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -172,14 +173,14 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 	{
 
 		Collection nodes = getNodeManager().getRemoteEditClusters(inArchive.getCatalogId());
-		Data node = null;
+		MultiValued node = null;
 		
 		inLog.info("Scanning " + nodes.size() + " nodes ");
 		for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
 		{
 			try
 			{
-				node = (Data) iterator.next();
+				node = (MultiValued) iterator.next();
 				node.setValue("lasterrordate",null);
 				node.setValue("lasterrormessage", null);
 
@@ -226,11 +227,17 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 
 				inLog.info(node.getName() + " checking since " + pulldate);
 
-				long totalcount = downloadAllData(inArchive, connection, node, params);
+				long totalcount = downloadAllData(inArchive, connection, node, params);  //Download is here
 
 				inLog.info(node.getName() + " imported " + totalcount);
 
 				//uploadChanges... 
+				
+				if (node.getBoolean("pulldataonly"))
+				{
+					continue; //Pull only data
+				}
+				
 				ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
 				HitTracker localchanges = manager.getEditedDocuments(getCatalogId(), pulldate);
 				

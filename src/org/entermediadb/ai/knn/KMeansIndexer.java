@@ -141,8 +141,7 @@ public class KMeansIndexer implements CatalogEnabled {
 		}
 	}
 
-
-	public void reinitClusters(ScriptLogger inLog) 
+	public synchronized void reinitClusters(ScriptLogger inLog) 
 	{
 		//Reload from db
 		fieldClusters = null;
@@ -455,6 +454,13 @@ public class KMeansIndexer implements CatalogEnabled {
 				break;
 			}
 		}
+		
+		if( goodcentroids.isEmpty() )
+		{
+			log.info("No good centroids found");
+			return Collections.EMPTY_LIST;
+		}
+		
 		
 		HitTracker hits = getMediaArchive().query(getSearchType()).orgroup("nearbycentroidids",goodcentroids).search();
 		//Double check these match and also load up Organized modules?

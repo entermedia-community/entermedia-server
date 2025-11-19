@@ -22,6 +22,7 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.Highlighter;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -39,7 +40,7 @@ public class FinderModule extends BaseMediaModule
 //	public void searchByQuery(WebPageRequest inReq)
 //	{
 //		MediaArchive archive = getMediaArchive(inReq);
-//		String query = inReq.getRequestParameter("description.value");
+//		String query = inReq.getRequestParameter("query");
 //		if (query == null) {
 //			return;
 //		}
@@ -79,10 +80,14 @@ public class FinderModule extends BaseMediaModule
 		}
 		
 		//Search
-		String searchby = inReq.getRequestParameter("search");
-		if(searchby != null)
+		if( query.equals("*") )
 		{
-			search.addFreeFormQuery("description", searchby);
+			search.addMatches("id", "*");
+			search.setShowAll(true);
+		}
+		else
+		{
+			search.addFreeFormQuery("description", query);
 		}
 		
 		if( search.getHitsName() == null)
@@ -285,16 +290,51 @@ public class FinderModule extends BaseMediaModule
 	public void searchForLiveSuggestions(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		//String query[] = inReq.getRequestParameters("description.value");
-		String plainquery = inReq.getRequestParameter("description.value");
-		if( plainquery == null)
+		HitTracker found = null;
+		QueryBuilder builder = archive.query("asset").named("quicksearchlist").exact("previewstatus","2").hitsPerPage(24).sort("assetaddeddateDown");
+		if ( inReq.hasPermission("viewfeaturedcollections") )
 		{
-			return;
-		}		
-		//String plainquery = String.join(" ", query);
+			builder.facet("category-featured");
+			found = builder.search(inReq);
+
+			FilterNode node = (FilterNode)found.getActiveFilterValues().get("category-featured");
+			if( node != null)
+			{
+				Collection<FeaturedFolder> folders = copyFoldersTo(archive,inReq, node.getChildren());
+				inReq.putPageValue("featuredfolders",folders);
+			}
+		}
+		else
+		{
+			found = builder.search(inReq);
+		}
+		OrganizedResults results = new OrganizedResults();
+		results.setAssetResults(found);
+		List modules = new ArrayList(1);
+		modules.add(archive.getCachedData("module", "asset"));
+		results.setModules(modules);
+		
+		inReq.putPageValue("suggestedassets", true);
+		inReq.putPageValue("organizedResults",results);
+	}
+	public void searchForAll(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String plainquery = inReq.getRequestParameter("query");
+		inReq.putPageValue("query", plainquery);
+//		if(plainquery == null || plainquery.length() < 2)
+//		{
+//			HitTracker found = archive.query("asset").named("quicksearchlist").all().facet("category").hitsPerPage(1).search(inReq);
+//			FilterNode node = (FilterNode)found.getActiveFilterValues().get("category");
+//			if( node != null)
+//			{
+//				copyFoldersTo(folderhits, node.getChildren(),folders);
+//			}
+//			return;
+//		}
 		
 		
-		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",plainquery).hitsPerPage(30);
+		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").named("findersearchall").freeform("description",plainquery).hitsPerPage(30);
 		dq.getQuery().setIncludeDescription(true);
 		
 		Collection searchmodules = new ArrayList();
@@ -318,33 +358,42 @@ public class FinderModule extends BaseMediaModule
 		
 		HitTracker unsorted = dq.search(inReq); //With permissions?
 		
-		Map<String,String> keywordsLower = new HashMap();
-		resultsManager.collectMatches(keywordsLower, plainquery, unsorted);
+//		Map<String,String> keywordsLower = new HashMap();
+//		resultsManager.collectMatches(keywordsLower, plainquery, unsorted);
 		
 		HitTracker assetunsorted = null;
 		if( searchmodules.contains("asset"))
 		{
-			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
+			QueryBuilder assetdq = archive.query("asset").named("finderassetsearch").freeform("description",plainquery).hitsPerPage(15);
 			assetdq.getQuery().setIncludeDescription(true);
-			assetunsorted = assetdq.search(inReq);
-			resultsManager.collectMatches(keywordsLower, plainquery, assetunsorted);
+			if ( inReq.hasPermission("viewfeaturedcollections") )
+			{
+				assetdq.facet("category-featured");
+				assetunsorted = assetdq.search(inReq);
+				FilterNode node = (FilterNode)assetunsorted.getActiveFilterValues().get("category");
+				if( node != null)
+				{
+					Collection<FeaturedFolder> folders = copyFoldersTo(archive,inReq, node.getChildren());
+					inReq.putPageValue("featuredfolders",folders);
+				}
+			}
+			else
+			{
+				assetunsorted = assetdq.search(inReq);
+			}
 			inReq.putPageValue("assethits",assetunsorted);
-		
 		}		
-		List finallist = new ArrayList();
-		for (Iterator iterator = keywordsLower.keySet().iterator(); iterator.hasNext();)
-		{
-			String keyword = (String) iterator.next();
-			String keywordcase = keywordsLower.get(keyword);
-			finallist.add(keywordcase);
-		}
-		//inReq.setRequestParameter("clearfilters","true");
-		//unsorted.getSearchQuery().setValue("description",query); //Not needed?
-		//List finallist = new ArrayList(keywords);
-		Collections.sort(finallist);
+//		List finallist = new ArrayList();
+//		for (Iterator iterator = keywordsLower.keySet().iterator(); iterator.hasNext();)
+//		{
+//			String keyword = (String) iterator.next();
+//			String keywordcase = keywordsLower.get(keyword);
+//			finallist.add(keywordcase);
+//		}
+//		Collections.sort(finallist);
 		inReq.putPageValue("modulehits",unsorted);
 		inReq.putPageValue("livesearchfor",plainquery);
-		inReq.putPageValue("livesuggestions",finallist);
+//		inReq.putPageValue("livesuggestions",finallist);
 		inReq.putPageValue("highlighter",new Highlighter());
 		
 		
@@ -353,190 +402,46 @@ public class FinderModule extends BaseMediaModule
 
 	}
 	
-	
-
-	
-//	public void aiTakeaways(WebPageRequest inReq) throws Exception
-//	{
-//		MediaArchive archive = getMediaArchive(inReq);
-//		
-//		
-//		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
-//		
-//		Collection<String> keywords = parseKeywords(arguments.get("keywords"));
-//		
-//		HitTracker pdfs = archive.query("asset").freeform("description", String.join(" ", keywords)).search();
-//		
-//		Collection pdfTexts = new ArrayList<String>();
-//		
-//		for (Iterator iterator = pdfs.iterator(); iterator.hasNext();) {
-//			Data pdf = (Data) iterator.next();
-//			ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + archive.getCatalogId() +"/assets/" + pdf.getSourcePath() + "/fulltext.txt");
-//			
-//			try(InputStream inputStream = item.getInputStream())
-//			{				
-//				String text = new String(inputStream.readAllBytes());
-//				if(text.length() > 0)
-//				{
-//					pdfTexts.add(text); 					
-//				}
-//				log.info(text);
-//			}
-//		}
-//
-//		String fullText = String.join("\n\n", pdfTexts);
-//		
-//		if(fullText.replaceAll("\\s|\\n", "").length() == 0)
-//		{
-//			//TODO: Handle No text found;
-//			return;
-//		}
-//		
-//		
-//		String model = inReq.findPathValue("model");
-//
-//		if (model == null)
-//		{
-//			model = archive.getCatalogSettingValue("gpt-model");
-//		}
-//		if (model == null)
-//		{
-//			model = "gpt-4o"; // Default fallback
-//		}
-//
-//		inReq.putPageValue("model", model);
-//		inReq.putPageValue("fulltext", fullText);
-//		
-//		LlmConnection manager = (LlmConnection) archive.getBean("openaiConnection");
-//		
-//		String chattemplate = "/" + archive.getMediaDbId() + "/gpt/prompts/build_takeaways.html";
-//		LlmResponse response = manager.runPageAsInput(inReq, model, chattemplate);
-//		
-//		String takeaways = response.getMessage();
-//		
-//		inReq.putPageValue("takeaways", takeaways);
-//		
-//		
-//	}
-
-	
-	
-
-
-	
-	
-	/*
-	public HitTracker searchDefaultModule(WebPageRequest inReq) throws Exception
+	private Collection<FeaturedFolder>  copyFoldersTo(MediaArchive inArchive, WebPageRequest inReq, Collection<FilterNode> inNodes)
 	{
-		MediaArchive archive = getMediaArchive(inReq);
+		List<FeaturedFolder> inFolders = new ArrayList();
 		
-		Data firstmenu = (Data)inReq.getPageValue("firstmenu");
-		if(firstmenu == null)
+		if( inNodes.isEmpty() )
 		{
-			loadTopMenu(inReq);
-			firstmenu = (Data)inReq.getPageValue("firstmenu");
+			return inFolders;
 		}
-		Data module = (Data)inReq.getPageValue("firstmodule");
-		if (module != null) 
+		
+		Map<String,FilterNode> nodes = new HashMap();
+		for (Iterator iterator2 = inNodes.iterator(); iterator2.hasNext();)
 		{
-			inReq.putPageValue("module", module);
-			HitTracker hits = null;
-			
-			String custompath = firstmenu.get("custompath");
-			
-			if( custompath == null)
+			FilterNode node = (FilterNode) iterator2.next();
+			nodes.put(node.getId(),node);
+		}
+		
+		Collection folderhits = inArchive.query("category").ids(nodes.keySet()).named("featuredfolders").search(inReq);
+		if( folderhits.isEmpty() )
+		{
+			return inFolders;
+		}
+		
+		for (Iterator iterator = folderhits.iterator(); iterator.hasNext();)
+		{
+			Data category = (Data) iterator.next();
+			FeaturedFolder featured = new FeaturedFolder();
+			featured.setName(category.getName());
+			featured.setId(category.getId());
+			FilterNode found = nodes.get(category.getId());
+			if(found != null)
 			{
-				Searcher searcher = archive.getSearcher(module.getId());
-				
-				if (searcher != null)
-				{
-					
-	//				if(firstmenu.getValue("toplevelentityid") != null) {
-	//					String moduleid = firstmenu.get("toplevelentity");
-	//					inReq.setRequestParameter("field", moduleid);
-	//					inReq.setRequestParameter(moduleid+".value", firstmenu.get("toplevelentityid"));
-	//					inReq.setRequestParameter("operation", "exact");
-	//				}
-					
-					hits = searcher.fieldSearch(inReq);
-	
-					if (hits == null) //this seems unexpected. Should it be a new API such as searchAll?
-					{
-						String defaultsort = (String) module.getValue("defaultsort");
-						if (defaultsort != null) {
-							inReq.putPageValue("sortby", defaultsort);
-						}
-						
-						hits = searcher.getAllHits(inReq);
-					}
-					//log.info("Report ran " +  hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:" + hits.size() );
-					if (hits != null)
-					{
-						String name = inReq.findValue("hitsname");
-						inReq.putPageValue(name, hits);
-						inReq.putSessionValue(hits.getSessionId(), hits);
-					}
-					
-				}
-				inReq.putPageValue("defaultmodule", module.getId());
-				inReq.putPageValue("moduleid", module.getId());
-				inReq.putPageValue("searcher", searcher);
-			}			
-			
-			
-			return hits;
-		}
-		
-		
-		//Legacy defaultmodule logic
-		
-		UserProfile profile = inReq.getUserProfile();
-		String defaultmodule  = ""; 
-		if(defaultmodule == null)
-		{
-			defaultmodule = (String) profile.getValue("defaultmodule");
-		}
-		if(defaultmodule != null) 
-		{
-			if(defaultmodule.equals("none"))
-			{
-				return null;
+				featured.setCount(found.getCount());
 			}
+			inFolders.add(featured);
 		}
-		if(defaultmodule == null)
-		{
-			defaultmodule = archive.getCatalogSettingValue("defaultmodule");
-		}
-		if( defaultmodule == null || defaultmodule.equals(""))
-		{
-			return null;
-		}
-		Searcher searcher = archive.getSearcher(defaultmodule);
-		HitTracker hits = null;
-		if (searcher != null)
-		{
-			hits = searcher.fieldSearch(inReq);
-
-			if (hits == null) //this seems unexpected. Should it be a new API such as searchAll?
-			{
-				hits = searcher.getAllHits(inReq);
-			}
-			//log.info("Report ran " +  hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:" + hits.size() );
-			if (hits != null)
-			{
-				String name = inReq.findValue("hitsname");
-				inReq.putPageValue(name, hits);
-				inReq.putSessionValue(hits.getSessionId(), hits);
-			}
-		}
-		inReq.putPageValue("defaultmodule", defaultmodule);
-		inReq.putPageValue("searcher", searcher);
-		inReq.putPageValue("module", archive.getCachedData("module", defaultmodule));
-		inReq.putPageValue("moduleid", defaultmodule);
-		return hits;
+		Collections.sort(inFolders);
+		return inFolders;
 	}
-*/
-	
+
+
 	public void loadTopMenu(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -1087,26 +992,45 @@ public class FinderModule extends BaseMediaModule
 
 	public void startPicker(WebPageRequest inReq)
 	{
-		MediaArchive archive = getMediaArchive(inReq);
 		
-		String targettype = inReq.getRequestParameter("pickingtargettype");
-		String moduleid = inReq.getRequestParameter("pickingmoduleid");
+		String targettype = inReq.getRequestParameter("pickingtargettype"); 
+		String moduleid = inReq.getRequestParameter("pickingmoduleid"); 
+		String targetfieldid = inReq.getRequestParameter("targetfieldid");
 		
-		Picker picker = (Picker)inReq.getPageValue("picker");
-		if( targettype != null || moduleid != null)
-		{
-			String targetfieldid = inReq.getRequestParameter("targetfieldid");
-
-			if( picker == null)
-			{
-				picker = new Picker();
-			}
-			picker.setTargetFieldId(targetfieldid);
-			picker.setTargetType(targettype);
-			picker.setTargetModuleId(moduleid);
-			inReq.putSessionValue("picker",picker);
-			inReq.putPageValue("picker",picker);
+		Picker picker = (Picker) inReq.getPageValue("picker");
+		if (picker == null) {
+			picker = (Picker) inReq.getSessionValue("picker");
 		}
 		
+		if( picker != null) {
+			//verify if change
+			if (targettype == null) 
+			{
+				return;
+			}
+			else if (targettype.equals(picker.getTargetType())) {
+				//same no changes
+				return;
+			}
+		}
+		
+		if (targettype != null) 
+		{
+			picker = new Picker();
+			picker.setTargetType(targettype);
+			if (targetfieldid != null)
+			{
+				picker.setTargetFieldId(targetfieldid);
+			}
+			if (moduleid == null) {
+				moduleid = "asset"; //default to asset?
+				inReq.putPageValue("entitymoduleid", moduleid);
+			}
+			picker.setTargetModuleId(moduleid);
+
+		}
+				
+		inReq.putSessionValue("picker", picker);
+		inReq.putPageValue("picker", picker);
 	}
 }

@@ -34,8 +34,6 @@ import org.openedit.users.User;
 public class ResultsManager extends BaseManager {
 	private static final Log log = LogFactory.getLog(ResultsManager.class);
 	
-	private static final int MEDIASAMPLE=7;
-
 	/*
 	public void organizeHits(WebPageRequest inReq, HitTracker inModuleHits, Collection pageOfHits, HitTracker inAssets) 
 	{
@@ -256,7 +254,7 @@ public class ResultsManager extends BaseManager {
 	
 	public OrganizedResults loadOrganizedResults(WebPageRequest inReq, HitTracker inUnsorted, HitTracker inAssetunsorted)
 	{
-		OrganizedResults organizedresults = loadOrganizedResults(inReq,inUnsorted,inAssetunsorted,MEDIASAMPLE);
+		OrganizedResults organizedresults = loadOrganizedResults(inReq,inUnsorted,inAssetunsorted,0);
 		return organizedresults; 
 	}	
 	public OrganizedResults loadOrganizedResults(WebPageRequest inReq, HitTracker inUnsortedEntities, HitTracker inAssetunsorted, int inSize)
@@ -278,7 +276,7 @@ public class ResultsManager extends BaseManager {
 		return organizedresults;
 	}
 
-	public Collection loadUserSearchTypes(WebPageRequest inReq)
+	public Collection<String> loadUserSearchTypes(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -337,7 +335,7 @@ public class ResultsManager extends BaseManager {
 		//searchmodules.remove("asset"); 
 		return searchmodules;
 	}
-	public Collection loadUserSearchTypes(WebPageRequest inReq, Collection<String> moduleIds)
+	public Collection<String> loadUserSearchTypes(WebPageRequest inReq, Collection<String> moduleIds)
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -422,7 +420,7 @@ public class ResultsManager extends BaseManager {
 		}
 		
 	}
-	public Collection<String> parseKeywords(Object keywords_object) throws Exception
+	public Collection<String> parseKeywords(Object keywords_object)
 	{
 		Collection<String> keywords = new ArrayList();
 		

@@ -88,6 +88,32 @@ public class OauthModule extends BaseMediaModule
 			{
 				redirect = siteroot + "/" + redirect;
 			}
+			
+			if ("microsoft".equals(provider))
+			{
+				String clientid = authinfo.get("clientid");
+				String state = inReq.findValue("state");
+				if (state == null)
+				{
+					state = "login";
+				}
+
+				String requestedpermissions = "openid profile email offline_access User.Read";
+
+				OAuthClientRequest request = OAuthClientRequest
+					.authorizationLocation("https://login.microsoftonline.com/common/oauth2/v2.0/authorize")
+					.setClientId(clientid)
+					.setRedirectURI(redirect)
+					.setResponseType("code")
+					.setScope(requestedpermissions)
+					.setState(state)
+					.buildQueryMessage();
+
+				String locationUri = request.getLocationUri();
+				log.info("Redirecting to Microsoft OAuth: " + locationUri);
+				inReq.redirect(locationUri);
+			}
+			
 			if ("google".equals(provider))
 			{
 
@@ -253,7 +279,64 @@ public class OauthModule extends BaseMediaModule
 			}
 			return;//login didn't work. 
 		}
-		
+		if ("microsoft".equals(provider))
+		{
+			Data authinfo = archive.getData("oauthprovider", provider);
+			String siteroot = inReq.findValue("siteRoot");
+			URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
+			if (siteroot == null && utils != null)
+			{
+				siteroot = utils.siteRoot();
+			}
+			String redirect = inReq.findValue("redirecturi");
+			if (redirect == null)
+			{
+				redirect = siteroot + "/" + appid + authinfo.get("redirecturi");
+			}
+			else
+			{
+				redirect = siteroot + "/" + redirect;
+			}
+
+			String clientid = authinfo.get("clientid");
+			String clientsecret = authinfo.get("clientsecret");
+
+			OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(inReq.getRequest());
+			String code = oar.getCode();
+
+			OAuthClientRequest tokenRequest = OAuthClientRequest
+				.tokenLocation("https://login.microsoftonline.com/common/oauth2/v2.0/token")
+				.setGrantType(GrantType.AUTHORIZATION_CODE)
+				.setClientId(clientid)
+				.setClientSecret(clientsecret)
+				.setRedirectURI(redirect)
+				.setCode(code)
+				.buildBodyMessage();
+
+			OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+			EmTokenResponse tokenResponse = oAuthClient.accessToken(tokenRequest, EmTokenResponse.class);
+
+			String accessToken = tokenResponse.getAccessToken();
+			String refresh = tokenResponse.getRefreshToken();
+
+			OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://graph.microsoft.com/v1.0/me")
+				    .setAccessToken(accessToken)
+				    .buildHeaderMessage(); // required for Microsoft Graph
+
+				OAuthResourceResponse resourceResponse = oAuthClient.resource(bearerClientRequest, "GET", OAuthResourceResponse.class);
+				String userinfoJSON = resourceResponse.getBody();
+				log.info("Microsoft Graph response: " + userinfoJSON);
+			JSONParser parser = new JSONParser();
+			JSONObject data = (JSONObject) parser.parse(userinfoJSON);
+
+			String email = (String) data.get("email");
+			String firstname = (String) data.get("given_name");
+			String lastname = (String) data.get("family_name");
+			boolean autocreate = Boolean.parseBoolean(authinfo.get("autocreateusers"));
+
+			handleLogin(inReq, email, firstname, lastname, true, autocreate, authinfo, refresh, null);
+		}
+
 		
 		if ("google".equals(provider))
 		{

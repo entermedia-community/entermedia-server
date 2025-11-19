@@ -90,7 +90,7 @@ public class ElasticViewSearcher extends ElasticListSearcher
 		
 		HitTracker combinedviews = actualviews;
 		//Basic searches we can mege with template
-		if( inSearch.getTerms().size() == 2 && moduleid  != null && systemdefined != null)
+		if( moduleid  != null && systemdefined != null)
 		{
 			//Now go deal with the standard list
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(),"viewtemplate");
@@ -101,6 +101,14 @@ public class ElasticViewSearcher extends ElasticListSearcher
 				systemdefinedval = "false";
 			}
 			SearchQuery q = searcher.query().exact("systemdefined",systemdefinedval).getQuery();
+			
+			if (inSearch.getTermByDetailId("rendertype") != null)
+			{
+				Term rendertype = inSearch.getTermByDetailId("rendertype").copy();
+				rendertype.setDetail(searcher.getDetail("rendertype"));
+				q.addTerm(rendertype);
+			}
+			
 			Collection templateresults = searcher.search(q); 
 		
 			combinedviews = mergeResults( actualviews, moduleid.getValue(),templateresults);

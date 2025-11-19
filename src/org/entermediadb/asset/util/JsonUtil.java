@@ -8,14 +8,12 @@ import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.openedit.util.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.JSONParser;
 
 public class JsonUtil
 {

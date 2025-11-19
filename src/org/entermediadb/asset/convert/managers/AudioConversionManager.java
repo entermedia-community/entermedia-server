@@ -90,14 +90,22 @@ public class AudioConversionManager extends BaseConversionManager
 	    		result.setComplete(true);
 	    		result.setOutput(inStructions.getOriginalDocument());
 	    		return result;
-				
-				
-				
+
 			}
 		}
 		
 		// TODO Auto-generated method stub
 		return super.createOutput(inStructions);
+	}
+
+	public ConvertResult createOutput(ConvertInstructions inStructions, boolean allowSameFormat)
+	{
+		if(allowSameFormat)
+		{
+			return super.createOutput(inStructions);
+		}
+		
+		return createOutput(inStructions);
 	}
 	
 	

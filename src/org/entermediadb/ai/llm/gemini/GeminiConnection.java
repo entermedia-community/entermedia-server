@@ -12,7 +12,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.llm.BaseLlmConnection;
 import org.entermediadb.ai.llm.LlmConnection;
-import org.entermediadb.ai.llm.LlmRequest;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
@@ -26,7 +26,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 {
 	private static Log log = LogFactory.getLog(GeminiConnection.class);
 
-	public LlmResponse runPageAsInput(LlmRequest llmRequest, String inTemplate)
+	public LlmResponse runPageAsInput(AgentContext llmRequest, String inTemplate)
 	{
 		llmRequest.addContext("mediaarchive", getMediaArchive());
 
@@ -54,13 +54,13 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 
 	}
 	
-	public LlmResponse createImage(String inModel, String inPrompt, int inCount, String inSize) throws Exception
+	public LlmResponse createImage(String inPrompt, int inCount, String inSize)
 	{
 		// Gemini does not support count or size variations
-		return createImage(inModel, inPrompt);
+		return createImage(inPrompt);
 	}
 
-	public LlmResponse createImage(String inModel, String inPrompt)  throws Exception
+	public LlmResponse createImage( String inPrompt)
 	{
 		if (getApiKey() == null)
 		{
@@ -68,10 +68,6 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 			return null;
 		}
 
-		if (inModel == null)
-		{
-			throw new OpenEditException("No model given for image creation");
-		}
 		if (inPrompt == null)
 		{
 			throw new OpenEditException("No prompt given for image creation");
@@ -89,7 +85,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		JSONObject payload = new JSONObject();
 		payload.put("contents", contents);
 
-		String endpoint = "https://generativelanguage.googleapis.com/v1beta/models/"+inModel+":generateContent";
+		String endpoint = "https://generativelanguage.googleapis.com/v1beta/models/"+getModelIdentifier()+":generateContent";
 		//  String endpoint = "http://localhost:3000/generations";  // for local testing
 		
 		HttpPost method = new HttpPost(endpoint);
@@ -106,12 +102,12 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		return response;
 	}
 	
-	public LlmResponse callCreateFunction(Map context, String inModel, String inFunction) 
+	public LlmResponse callCreateFunction(Map context, String inFunction) 
 	{
 		MediaArchive archive = getMediaArchive();
 
 		JSONObject obj = new JSONObject();
-		obj.put("model", inModel);
+		obj.put("model", getModelIdentifier());
 
 		String contentPath = "/" + archive.getMediaDbId() + "/ai/gemini/createdialog/systemmessage/" + inFunction + ".html";
 		boolean contentExists = archive.getPageManager().getPage(contentPath).exists();
@@ -164,44 +160,47 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 			obj.put("function_call", func);
 		}
 		
-		log.info(obj.toJSONString());
-
-		return handleApiRequest(obj.toJSONString());
+		String payload = obj.toJSONString();
+		log.info(payload);
+		
+		JSONObject json = handleApiRequest(payload);
+	    
+		GeminiResponse response = new GeminiResponse();
+	    response.setRawResponse(json);
+	    
+	    return response;
 
 	}
+	
+	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image)
+	{
+		return callClassifyFunction(params, inFunction, inBase64Image, null);
+	}
 
-	public LlmResponse callClassifyFunction(Map params, String inModel, String inFunction, String inQuery, String inBase64Image)
+	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image, String textContent)
 	{
 		MediaArchive archive = getMediaArchive();
 
-		log.info("inQuery: " + inQuery);
-
 		// Use JSON Simple to create request payload
 		JSONObject obj = new JSONObject();
-		obj.put("model", inModel);
+		obj.put("model", getModelIdentifier());
 		//obj.put("max_tokens", maxtokens);
 
-		// Prepare messages array
+
 		JSONArray messages = new JSONArray();
 		JSONObject message = new JSONObject();
-		message.put("role", "user");
-
+		
 		if (inBase64Image != null && !inBase64Image.isEmpty())
 		{
+			message.put("role", "user");
 			// Use an array for content if an image is provided
 			JSONArray contentArray = new JSONArray();
-
-			// Add text content
-			JSONObject textContent = new JSONObject();
-			textContent.put("type", "text");
-			textContent.put("text", inQuery);
-			contentArray.add(textContent);
 
 			// Add image content
 			JSONObject imageContent = new JSONObject();
 			imageContent.put("type", "image_url");
 			JSONObject imageUrl = new JSONObject();
-			imageUrl.put("url", "data:image/png;base64," + inBase64Image); // Base64 as a data URL
+			imageUrl.put("url", inBase64Image); // Base64 as a data URL
 			imageContent.put("image_url", imageUrl);
 			contentArray.add(imageContent);
 
@@ -209,10 +208,11 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		}
 		else
 		{
-			// Just text content
-			message.put("content", inQuery);
+			message.put("role", "system");
+			String systemMessage = loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/"+inFunction+".html");
+			message.put("content", systemMessage);
 		}
-
+		
 		messages.add(message);
 		obj.put("messages", messages);
 
@@ -220,16 +220,25 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		if (inFunction != null)
 		{
 			String templatepath = "/" + archive.getMediaDbId() + "/ai/gemini/classify/functions/" + inFunction + ".json";
+			
 			Page defpage = archive.getPageManager().getPage(templatepath);
+			
 			if (!defpage.exists())
 			{
 				templatepath = "/" + archive.getCatalogId() + "/ai/gemini/classify/functions/" + inFunction + ".json";
 				defpage = archive.getPageManager().getPage(templatepath);
 			}
+			
 			if (!defpage.exists())
 			{
 				throw new OpenEditException("Requested Function Does Not Exist in MEdiaDB or Catatlog:" + inFunction);
 			}
+
+			if(textContent == null)
+			{
+				params.put("textcontent", textContent);
+			}
+			
 			String definition = loadInputFromTemplate(templatepath, params);
 
 			JSONParser parser = new JSONParser();
@@ -244,25 +253,22 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 			obj.put("function_call", func);
 		}
 
-		return handleApiRequest(obj.toJSONString());
+		String payload = obj.toJSONString();
+		log.info(payload);
+		
+		JSONObject json = handleApiRequest(payload);
+	    
+	    GeminiResponse response = new GeminiResponse();
+	    response.setRawResponse(json);
+	    
+	    return response;
 
-	}
-
-	public String getApiEndpoint()
-	{
-		return "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
-	}
-	
-	@Override
-	public String getServerName()
-	{ 
-		return "gemini";
 	}
 
 	@Override
-	public JSONObject callStructuredOutputList(String inStructureName, String inModel, Map inParams)
+	public JSONObject callStructuredOutputList(String inStructureName, Map inParams)
 	{
-		inParams.put("model", inModel);
+		inParams.put("model", getModelIdentifier());
 		
 		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/gemini/classify/structures/" + inStructureName + ".json", inParams);
 
@@ -283,7 +289,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		{
 			if (resp.getStatusLine().getStatusCode() != 200)
 			{
-				throw new OpenEditException("GPT error: " + resp.getStatusLine());
+				throw new OpenEditException("Gemini error: " + resp.getStatusLine());
 			}
 	
 			JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
@@ -294,7 +300,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 			JSONArray outputs = (JSONArray) json.get("output");
 			if (outputs == null || outputs.isEmpty())
 			{
-				log.info("No output found in GPT response");
+				log.info("No output found in Gemini response");
 				return results;
 			}
 			
@@ -349,6 +355,12 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 			connection.release(resp);
 		}
 		return results;
+	}
+	
+	@Override
+	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image)
+	{
+		throw new OpenEditException("Not implemented yet. Only available in Llama connection.");
 	}
 
 }

@@ -1,16 +1,6 @@
 var chatconnection;
 var loadingmore = false;
 
-lQuery("a.chatEmDialog").livequery("click", function (e) {
-	e.preventDefault();
-	e.stopPropagation();
-	$(this).emDialog(function () {
-		setTimeout(function () {
-			scrollToChat();
-		});
-	});
-});
-
 function chatterbox() {
 	console.log(
 		"Starting chat in channel: " + jQuery(".chatterbox").data("channel")
@@ -154,9 +144,7 @@ function chatterbox() {
 		}
 	});
 }
-lQuery("#supportchat").livequery("shown.bs.collapse	", function (e) {
-	scrollToChat();
-});
+
 function scrollToChat() {
 	setTimeout(function () {
 		console.log("Scrolling to chat");
@@ -212,9 +200,17 @@ function connect() {
 		var apphome = app.data("home") + app.data("apphome");
 		jQuery(window).trigger("ajaxsocketautoreload");
 		var message = JSON.parse(event.data);
-
-		var channel = message.channel;
 		var id = message.messageid;
+		
+		var channel = message.channel;
+		var chatbox = jQuery('div.chatterbox[data-channel="' + channel + '"]');
+		
+		if(chatbox.length == 0)
+		{
+			//Channel Not on the screen
+			return;
+		}
+		
 		message.id = id;
 		var existing = jQuery("#chatter-message-" + id);
 		if (existing.length) {
@@ -232,15 +228,34 @@ function connect() {
 			scrollToChat();
 			return;
 		}
-		var chatter = jQuery('div[data-channel="' + channel + '"]');
-		var listarea = chatter.find(".chatterbox-message-list");
-		var url = chatter.data("rendermessageurl");
+		
+		var listarea = chatbox.find(".chatterbox-message-list");
+		var url = chatbox.data("rendermessageurl");
 		if (!url) {
 			url = apphome + "/components/chatterbox/message.html";
 		}
 
 		scrollToChat();
-
+		
+		var options = chatbox.cleandata();
+		if (!options) options = {};
+		var editdiv = chatbox.closest(".editdiv"); 
+		if (
+			chatbox.data("includeeditcontext") === undefined ||
+			chatbox.data("includeeditcontext") == true
+		) {
+			if (editdiv.length > 0) {
+				var otherdata = editdiv.cleandata();
+				options = {
+					...otherdata,
+					...options,
+				};
+			} 
+		}
+		
+		options.id = message.id;
+		
+		/*
 		var params = {};
 		params.id = message.id;
 		params.channel = message.channel;
@@ -250,9 +265,9 @@ function connect() {
 		} else {
 			params.entityid = message.collectionid;
 			params.collectionid = message.collectionid;
-		}
+		}*/
 
-		jQuery.get(url, params, function (data) {
+		jQuery.get(url, options, function (data) {
 			listarea.append(data);
 			//The replace with calls that  $(document).trigger("domchanged");
 			scrollToChat();
@@ -479,6 +494,18 @@ function hideEmojiPicker() {
 }
 
 jQuery(document).ready(function () {
+	lQuery("a.chatEmDialog").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		$(this).emDialog(function () {
+			setTimeout(function () {
+				scrollToChat();
+			});
+		});
+	});
+	lQuery("#supportchat").livequery("shown.bs.collapse	", function (e) {
+		scrollToChat();
+	});
 	lQuery("#chatter-msg").livequery(function () {
 		var $this = $(this);
 		setTimeout(function () {

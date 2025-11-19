@@ -1,0 +1,6 @@
+<page>
+<path-action name="OauthModule.login"/>
+<property name="provider">microsoft</property>
+
+
+</page>

@@ -12,6 +12,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.data.QueryBuilder;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.util.DateStorageUtil;
@@ -95,9 +96,17 @@ public class InformaticsManager extends BaseAiManager
 					}
 					getMediaArchive().saveData("asset", pageofhits);
 				}
-				catch(Exception ex)
+				catch(Exception e)
 				{
+					inLog.error(e);
 					getMediaArchive().saveData("asset", pageofhits);
+					
+					if (e instanceof OpenEditException) 
+					{
+						throw (OpenEditException) e;
+					}
+					throw new OpenEditException(e);
+					
 				}
 			}
 		}

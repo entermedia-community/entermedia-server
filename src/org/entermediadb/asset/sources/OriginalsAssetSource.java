@@ -628,4 +628,11 @@ public class OriginalsAssetSource extends BaseAssetSource
 //        }
 
 
+		@Override
+		public boolean existsOriginalContent(Asset inAsset)
+		{
+			ContentItem item = getOriginalContent(inAsset);
+			return item.exists();
+		}
+
 }

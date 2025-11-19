@@ -44,23 +44,21 @@ $context.putPageValue("longform",false)
 	#end
 #end	
 
-  #set ($mode = $user.get("oe_edit_mode"))
-   #if($viewid)
-   #if($mode && ($mode == "debug" || $mode == "editing" ))
+#set ($mode = $user.get("oe_edit_mode"))
+#if($viewid)
+	#if($mode && ($mode == "debug" || $mode == "editing" ))
 		<span class="widget-header-edit">
 		<a class="ir emdialog" data-autoclose="false" href="$apphome/views/settings/lists/datamanager/views/indexdialog.html?viewpath=$view&searchtype=$searcher.searchType&viewid=$viewid">
 		[[Edit]]
 		</a>
 		</span>
 	#end
-	#end
+#end
 
-  
-	
 <div class="oeinputform detaileditor detaileditor-2cols">
 	<div id="allerrors"></div>
 
- #foreach( $detail in $details )
+#foreach( $detail in $details )
  
 	#set( $val = false)
 	#set( $target = "${detail.id}.value")
@@ -69,19 +67,19 @@ $context.putPageValue("longform",false)
 	#if( !$val)
 		#set( $val = $!{data.get($detail.getId())} )
 	#end
-
-
+	
 	$!context.putPageValue("detail",$detail)
 	$!context.putPageValue("val",$val)
+	
  	<div class="form-group row no-gutters">
     <label for="exampleTextarea" class="col">$detail.getText($context)</label>
     #if(!$fieldcolumnsize)
     	#set($fieldcolumnsize = 10)
     #end
     <div class="col-$fieldcolumnsize" style="padding-left:10px;">
-    $pages.include("$xmledithome/detailedit.html", $context)
+    	$pages.include("$xmledithome/detailedit.html", $context)
     </div>
-    </div>	
+	</div>	
 	
 #end
 </div>

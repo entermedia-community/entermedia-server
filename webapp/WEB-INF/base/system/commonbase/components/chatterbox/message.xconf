@@ -1,15 +1,17 @@
 <page>
 
+	<page-action bean="markdownUtil" name="PageValue.loadPageVariable" allowduplicates="true"/>
+
 	<page-action name="DataEditModule.loadData">
 		<property name="searchtype">chatterbox</property>
 		<property name="pageval">chat</property>
 	</page-action>
-	
+
 	<page-action name="ProjectModule.loadGoalsInMessages"/>
-	
+
 	<page-action name="ProjectModule.loadAttachmentsInMessages"/>
 
-	
+
 	<inner-layout />
 
 </page>

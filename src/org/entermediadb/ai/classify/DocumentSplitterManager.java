@@ -3,18 +3,22 @@ package org.entermediadb.ai.classify;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
+import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.llama.LlamaResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.util.JSONParser;
 
 public class DocumentSplitterManager extends InformaticsProcessor 
 {
@@ -24,12 +28,13 @@ public class DocumentSplitterManager extends InformaticsProcessor
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
 	{
 		//Do nothing
-		
 	}
 
 	@Override
 	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecords)
 	{
+		inLog.headline("Splitting " + inRecords.size() + " documents");
+		
 		String searchtype = inConfig.get("searchtype");
 
 		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
@@ -53,8 +58,8 @@ public class DocumentSplitterManager extends InformaticsProcessor
 				continue;
 			}
 			
-			Asset document = getMediaArchive().getAsset(assetid);
-			String rendertype = getMediaArchive().getMediaRenderType(document.getFileFormat());
+			Asset asset = getMediaArchive().getAsset(assetid);
+			String rendertype = getMediaArchive().getMediaRenderType(asset.getFileFormat());
 			if(rendertype == null || !rendertype.equals("document"))
 			{
 				continue;
@@ -63,104 +68,102 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			if( created != null)
 			{
 				//Check everything
-				String modtime = document.get("assetmodificationdate");
+				String modtime = asset.get("assetmodificationdate");
 				if( created.equals( assetid + "|" + modtime) )
 				{
 					continue;
 				}
 			}
-			splitDocument(inConfig, entity, document);
-			String modtime = document.get("assetmodificationdate");
+			inLog.info("Splitting document " + asset);
+			entity.setValue("totalpages", asset.getValue("pages"));
+			splitDocument(inLog, inConfig, entity, asset);
+			String modtime = asset.get("assetmodificationdate");
 			entity.setValue("pagescreatedfor", assetid + "|" + modtime);
+
+			getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
 		}
 		//Check the primarymedia
 		//See if this has been indexed or not
 	}
 
-	public void splitDocument(MultiValued inConfig, MultiValued inEntity, Asset asset) 
+	public void splitDocument(ScriptLogger inLog, MultiValued inConfig, MultiValued inEntity, Asset asset) 
 	{
-//		
-//		Data entitydoc = getMediaArchive().query("entitydocument").exact("parentasset", inAssetId).searchOne();
-//		
-//		if(entitydoc == null)
-//		{
-//			entitydoc = archive.getSearcher("entitydocument").createNewData();
-//			String entitydocname = asset.getName().replaceAll("\\..*$", "");
-//			if(entitydocname.length() == 0) {
-//				entitydocname = asset.getName();
-//			}
-//			entitydoc.setName(entitydocname);
-//			entitydoc.setValue("parentasset", inAssetId);
-//			entitydoc.setValue("entity_date", new Date());
-//			archive.saveData("entitydocument", entitydoc);
-//		}
-
-		String fulltext = (String) asset.getValue("fulltext");
-
-		if(fulltext == null || fulltext.trim().isEmpty())
-		{
-			log.info("No full text found");
-			return;
-		}
-		
-		JSONParser parser = new JSONParser();
-		Collection pagesFulltext = parser.parseCollection(fulltext);
 
 		String parentsearchtype = inConfig.get("searchtype");
 		String generatedsearchtype = inConfig.get("generatedsearchtype");
 		HitTracker existingPages = getMediaArchive().query(generatedsearchtype)
 				.exact(parentsearchtype, inEntity.getId())
 				.exact("parentasset", asset.getId()).search();
+		
+		Map<Integer, MultiValued> pagenums = new HashMap();
+		
+		for (Iterator iterator = existingPages.iterator(); iterator.hasNext();)
+		{
+			MultiValued object = (MultiValued) iterator.next();
+			pagenums.put(object.getInt("pagenum"), object);
+			
+		}
+				
 
 		List<Data> tosave = new ArrayList();
-		int pagenum = 0;
+		int totalpages = inEntity.getInt("totalpages");
+		
+		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
+		
+		Long starttime = System.currentTimeMillis();
+		if(inConfig.getBoolean("generatemarkdown"))
+		{
+			log.info("Generating markdown for " + totalpages + " pages of " + inEntity);
+		}
 
-		for (Iterator iterator = pagesFulltext.iterator(); iterator.hasNext();) {
-			pagenum++;
-
-			String pageText = (String) iterator.next();
-
-			Data docpage = null;
-			for (Iterator iterator2 = existingPages.iterator(); iterator2.hasNext();) {
-				Data d = (Data) iterator2.next();
-				int p = (int) d.getValue("pagenum");
-				if( p == pagenum)
-				{
-					docpage = d;
-					break;
-				}
-			}
-
-			if(docpage != null)
+		
+		for (int i = 0; i < totalpages; i++) 
+		{
+			int pagenum = i + 1;
+			MultiValued docpage = pagenums.get(pagenum);
+			
+			if( docpage == null)
 			{
-				docpage.setValue("taggedbyllm", false);
-				docpage.setValue("semanticindexed", false);
-				docpage.setValue("semantictopics", null);
-			}
-			else
-			{
-				docpage = getMediaArchive().getSearcher(generatedsearchtype).createNewData();
+				docpage = (MultiValued) pageSearcher.createNewData();
 				String pagename = inEntity.getName() + " - Page " + pagenum;
 				docpage.setName(pagename);
+				docpage.setValue("pagenum", pagenum);
+				docpage.setValue(parentsearchtype, inEntity.getId());
+				docpage.setValue("primaryimage", asset.getId());
+				docpage.setValue("parentasset", asset.getId());
+				docpage.setValue("entity_date", new Date());
 			}
-
-			docpage.setValue("pagenum", pagenum);
-			docpage.setValue("longcaption", pageText);
-			docpage.setValue(parentsearchtype, inEntity.getId());
-			docpage.setValue("primaryimage", asset.getId());
-			docpage.setValue("parentasset", asset.getId());
-			docpage.setValue("entity_date", new Date());
+			
+			if((!inEntity.getBoolean("documentembedded") || docpage.get("markdowncontent") == null) && inConfig.getBoolean("generatemarkdown"))
+			{
+				log.info("Generating markdown for page: " + docpage);
+				generateMarkdown(docpage);
+			}
 
 			tosave.add(docpage);
 
 			if(tosave.size() > 20)
 			{
-				getMediaArchive().saveData(generatedsearchtype, tosave);
+				pageSearcher.saveAllData(tosave, null);
 				tosave.clear();
 			}
 		}
-		getMediaArchive().saveData(generatedsearchtype, tosave);
+		Long endtime = System.currentTimeMillis();
+		inLog.info("Generated: " + totalpages + " pages for:" + inEntity + " in: " + endtime + "ms");
+		pageSearcher.saveAllData(tosave, null);
 	}
+	
+	public void generateMarkdown(MultiValued pageEntity) 
+	{
+		String model = getMediaArchive().getCatalogSettingValue("llmvisionmodel");
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection(model);
 
+		String base64Img = loadDocumentContent(pageEntity);
+			
+		LlamaResponse result = (LlamaResponse) llmconnection.callOCRFunction(new HashMap(), "document_ocr", base64Img);
+		String markdown = result.getOcrResponse();
+			
+		pageEntity.setValue("markdowncontent", markdown);
+	}
 	
 }

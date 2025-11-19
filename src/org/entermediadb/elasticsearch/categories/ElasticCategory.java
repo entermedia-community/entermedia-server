@@ -22,6 +22,7 @@ public class ElasticCategory extends BaseCategory
 	{
 		return getChildren().size() > 0;
 	}
+
 	public List getChildren()
 	{
 		if( isDirty() )

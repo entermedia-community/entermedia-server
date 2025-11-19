@@ -155,8 +155,15 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 			bitRate = "96";
 		}
 		comm.add(bitRate + "k");
-		//					comm.add("-ar");
-		//					comm.add("44100");
+		
+		String resample = inStructions.getProperty("resample"); 
+		
+		if(resample != null)
+		{
+			comm.add("-ar");
+			comm.add(resample);
+		}
+		
 		comm.add("-ac");
 		comm.add("1"); //mono
 

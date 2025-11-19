@@ -110,6 +110,12 @@ public class ScriptLogger extends Handler
 	{
 		saveLog("info", inText, ex);
 	}
+	public void headline(String inText)
+	{
+		String divider = "*".repeat(Math.min(80, inText.length()+4));
+		String text = "\n" + divider + "\n* " + inText + " *\n" + divider;
+		saveLog("info", text, null);
+	}
 	public void info(String inText)
 	{
 		saveLog("info", inText, null);

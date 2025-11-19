@@ -6,7 +6,7 @@
       }
   #ifnotnull($asset),
 	$context.putPageValue("hit",$asset)
-	"data": $pages.include(	"${apphome}/services/module/${searcher.getSearchType()}/hit.json",$context)
+	"data": $pages.include(	"${apphome}/services/module/asset/hit.json",$context)
 	,"html": #jesc($!{renderedhtml})
   #end
 }

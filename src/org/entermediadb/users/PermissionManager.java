@@ -531,9 +531,48 @@ public class PermissionManager implements CatalogEnabled
 			archive.getCategorySearcher().saveCategory(rootcat);
 			archive.saveData(inModule.getId(), inEntity);
 			
+			//reindex all the submodules
+			Collection enttiyviews = getMediaArchive().query("view").exact("moduleid", inModule.getId()).
+					exact("systemdefined","false").exact("rendertype", "entitysubmodules").cachedSearch();
+			
+			for (Iterator iterator = enttiyviews.iterator(); iterator.hasNext();)
+			{
+				Data data = (Data) iterator.next();
+				String searchtype = data.get("rendertable"); //remote
+				
+				String renderexternalid = data.get("renderexternalid");  //join
+				
+				String renderinternalid = data.get("renderinternalid");
+				if (renderinternalid == null)
+				{
+					renderinternalid = inModule.getId(); //can be customized
+				}
+				String renderinternalvalue = inEntity.get(renderinternalid);
+				if (searchtype != null && renderexternalid != null && renderinternalvalue != null)
+				{
+					HitTracker hits = getMediaArchive().query(searchtype).exact(renderexternalid, renderinternalvalue).search();
+					for (int i = 0; i < hits.getTotalPages(); i++)
+					{
+						hits.setPage(i+1);
+						Collection page = hits.getPageOfHits();
+						getMediaArchive().saveData(searchtype, page); //Reindex
+					}
+				}
+			}
+		
+			
 			HitTracker assets =  archive.getAssetSearcher().query().exact("category", rootcat).search();
 			assets.enableBulkOperations();
-			archive.getAssetSearcher().saveAllData(assets, null);
+			if( assets.size() > 10000)
+			{
+				//Do full reindex
+				log.error("Required full reindex");
+			}
+			else
+			{
+				archive.getAssetSearcher().saveAllData(assets, null);
+				log.info("Reindexed " + assets.size() + " assets");
+			}
 
 	    }    
 		
@@ -705,13 +744,18 @@ public class PermissionManager implements CatalogEnabled
 	
 	public Collection<AddedPermission> loadEntityPermissions(Data inModule, Data inEntity)
 	{
-	    MediaArchive archive = getMediaArchive();
-	    
 	    //Load all the view and edit record into a big list
 	    Collection<AddedPermission> alladded = new ArrayList<AddedPermission>();
 	    
 	    Collection<String> editorsfound = collectUsers(inEntity,true);
 	    Collection<String> viewersfound = collectUsers(inEntity,false);
+	    
+	    String owner = inEntity.get("owner");
+	    if( owner != null)
+	    {
+	    	viewersfound.add(owner);
+	    }
+	    
 	    viewersfound.removeAll(editorsfound);
 	    addUsers(alladded,editorsfound,viewersfound);
 
@@ -725,6 +769,37 @@ public class PermissionManager implements CatalogEnabled
 	    viewersfound = collectRoles(inEntity,false);
 	    viewersfound.removeAll(editorsfound);
 	    addRoles(alladded,editorsfound,viewersfound);
+
+	    return alladded;
+	    
+	}
+	
+	public Collection<AddedPermission> loadParentPermissions(Data inModule, Data inEntity)
+	{
+	    //Load all the view and edit record into a big list
+	    Collection<AddedPermission> alladded = new ArrayList<AddedPermission>();
+	
+		Category entiytycategory = getMediaArchive().getEntityManager().loadDefaultFolder(inModule, inEntity, null);
+		Category category = entiytycategory.getParentCategory();
+		Collection<String> empty = Collections.EMPTY_LIST;		
+		
+		Collection<String> viewersfound = category.collectValues("viewerusers"); //These are already combined from customusers
+		
+		Collection<String> more = category.collectValues("customusers"); //These are already combined from customusers
+		viewersfound.addAll(more);
+		
+		addUsers(alladded,empty,viewersfound);
+		
+		Collection<String> moregroups = category.collectValues("viewergroups");
+		more = category.collectValues("customgroups"); //These are already combined from customusers
+		moregroups.addAll(more);
+		addGroups(alladded,empty,moregroups);
+		 
+		Collection<String> moreroles = category.collectValues("viewerroles");
+		more = category.collectValues("customroles"); 
+		moreroles.addAll(more);
+		addRoles(alladded,empty,moreroles);
+		
 
 	    return alladded;
 	    

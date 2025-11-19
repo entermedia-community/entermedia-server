@@ -3,11 +3,9 @@ package org.entermediadb.ai.assistant;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,15 +15,22 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
-import org.entermediadb.ai.classify.SemanticFieldManager;
+import org.entermediadb.ai.Schema;
+import org.entermediadb.ai.classify.DocumentEmbeddingManager;
+import org.entermediadb.ai.classify.SemanticClassifier;
+import org.entermediadb.ai.informatics.SemanticTableManager;
+import org.entermediadb.ai.knn.RankedResult;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
-import org.entermediadb.ai.llm.LlmRequest;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.ai.llm.emedia.EMediaAIResponse;
+import org.entermediadb.ai.llm.openai.OpenAiConnection;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.EntityManager;
 import org.entermediadb.find.ResultsManager;
+import org.entermediadb.markdown.MarkdownUtil;
 import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONArray;
@@ -37,7 +42,6 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
-import org.openedit.hittracker.Highlighter;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
@@ -55,11 +59,9 @@ public class AssistantManager extends BaseAiManager
 		return resultsManager;
 	}
 	
-	protected EntityManager getEntityManager(WebPageRequest inPageRequest) 
+	protected EntityManager getEntityManager() 
 	{
-		String catalogid = inPageRequest.findValue("catalogid");
-		EntityManager entity = (EntityManager) getModuleManager().getBean(catalogid, "entityManager");
-		return entity;
+		return getMediaArchive().getEntityManager();
 	}
 	
 	public void monitorChannels(ScriptLogger inLog) throws Exception
@@ -86,7 +88,7 @@ public class AssistantManager extends BaseAiManager
 		
 		//TODO: Only process one "open" channel at a time. What ever the last one they clicked on
 		
-		HitTracker allchannels = channels.query().exact("channeltype", "agentchat").after("refreshdate",now.getTime()).sort("refreshdateDown").search();
+		HitTracker allchannels = channels.query().orgroup("channeltype", "agentchat,agententitychat").after("refreshdate",now.getTime()).sort("refreshdateDown").search();
 
 		Searcher chats = archive.getSearcher("chatterbox");
 		for (Iterator iterator = allchannels.iterator(); iterator.hasNext();)
@@ -128,8 +130,15 @@ public class AssistantManager extends BaseAiManager
 			}
 
 			for (Iterator iterator2 = mostrecents.iterator(); iterator2.hasNext();) {
-				Data mostrecent = (Data) iterator2.next();
-				respondToChannel(inLog, channel, mostrecent);
+				MultiValued mostrecent = (MultiValued) iterator2.next();
+				try
+				{
+					respondToChannel(inLog, channel, mostrecent);
+				}
+				catch (Throwable ex )
+				{
+					log.error("Could not process message " + mostrecent,ex);
+				}
 			}
 			
 		}
@@ -137,22 +146,44 @@ public class AssistantManager extends BaseAiManager
 	
 	public LlmConnection getLlmConnection()
 	{
-		String model = getMediaArchive().getCatalogSettingValue("gpt-model");
+		String model = getMediaArchive().getCatalogSettingValue("llmagentmodel");
 		if (model == null)
 		{
-			model = "gpt-4o"; // Default fallback
+			model = "gpt-5-nano"; // Default fallback
 		}
 		LlmConnection manager = getMediaArchive().getLlmConnection(model);
 		return manager;
 	}
 	
-	public void respondToChannel(ScriptLogger inLog, Data channel, Data message) throws Exception
+	
+	public AgentContext loadContext(String inChannelId) 
+	{
+		MediaArchive archive = getMediaArchive();
+		AgentContext agentContext = (AgentContext) archive.getCacheManager().get("agentcontext", inChannelId);
+		if( agentContext == null)
+		{
+			Searcher searcher =  archive.getSearcher("agentcontext");
+			agentContext = (AgentContext)searcher.query().exact("channel", inChannelId).searchOne(); //TODO Look in DB or cache from hitory?
+			if( agentContext == null)
+			{
+				agentContext = (AgentContext) searcher.createNewData();
+				agentContext.setValue("channel", inChannelId);
+				searcher.saveData(agentContext);
+			}
+			
+			archive.getCacheManager().put("agentcontext", inChannelId, agentContext);
+		
+		}
+		return agentContext;
+	}
+	
+	public void respondToChannel(ScriptLogger inLog, Data inChannel, MultiValued message) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		LlmRequest llmrequest = new LlmRequest();
+		AgentContext agentContext = loadContext(inChannel.getId());
 		
-		String model = archive.getCatalogSettingValue("chat_agent_model");
+		String model = archive.getCatalogSettingValue("llmagentmodel");
 		
 		if (model == null)
 		{
@@ -160,29 +191,29 @@ public class AssistantManager extends BaseAiManager
 		}
 		LlmConnection llmconnection = archive.getLlmConnection(model);
 
-		llmrequest.addContext("model", model);
+		agentContext.addContext("model", model);
 
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 		Searcher chats = archive.getSearcher("chatterbox");
 		
 		if (!llmconnection.isReady()) 
 		{
-			inLog.error("LLM Manager is not ready: " + model + ". Cannot process channel: " + channel);
+			inLog.error("LLM Manager is not ready, check key for: " + model + ". Cannot process channel: " + inChannel);
 			return;
 		}
 
-		String channeltype = channel.get("channeltype");
+		String channeltype = inChannel.get("channeltype");
 		if (channeltype == null)
 		{
 			channeltype = "agentchat";
 		}
 		
-		String id = channel.get("user");
+		String id = inChannel.get("user");
 		UserProfile profile = archive.getUserProfile(id);
-		llmrequest.addContext("chatprofile", profile);
+		agentContext.addContext("chatprofile", profile);
+		agentContext.setUserProfile(profile);
 		
-		
-		llmrequest.addContext("channel", channel);
+		agentContext.addContext("channel", inChannel);
 
 		String oldstatus = message.get("chatmessagestatus");
 		
@@ -190,80 +221,87 @@ public class AssistantManager extends BaseAiManager
 		message.setValue("chatmessagestatus", "completed");
 		chats.saveData(message);
 		
-		llmrequest.addContext("message", message);
+		agentContext.addContext("message", message);
 		
-		llmrequest.addContext("assistant", this);
+		agentContext.addContext("assistant", this);
 		
-		llmrequest.addContext("channelchathistory", loadChannelChatHistory(channel));
+		agentContext.addContext("channelchathistory", loadChannelChatHistory(inChannel));
 		
 		if("refresh".equals(oldstatus))
 		{			
-			String callerParams = message.get("params");
-			if(callerParams != null)
+			String nextFunction = agentContext.getNextFunctionName();
+			if(nextFunction != null)
 			{
+				agentContext.setFunctionName(nextFunction);
+				agentContext.setNextFunctionName(null);
 				
-				JSONObject parsedParams = new JSONParser().parse(callerParams);
-
-				llmrequest.setFunctionName((String) parsedParams.get("function"));
-				parsedParams.remove("function");
+				getMediaArchive().saveData("agentcontext", agentContext);
 				
-				llmrequest.setParameters((JSONObject) parsedParams);
-	
-				execFunctionInChat(llmconnection, message, llmrequest);
+				execLocalActionFromChat(llmconnection, message, agentContext);
 			}
 			return;
 		}
 		
 		Data resopnseMessage = chats.createNewData();
 		resopnseMessage.setValue("user", "agent");
-		resopnseMessage.setValue("channel", channel.getId());
+		resopnseMessage.setValue("channel", inChannel.getId());
 		resopnseMessage.setValue("date", new Date());
-		resopnseMessage.setValue("message", "<i class=\"fas fa-spinner fa-spin\"></i>");
+		resopnseMessage.setValue("message", "<i class=\"fas fa-spinner fa-spin mr-2\"></i> Processing request...");
 		resopnseMessage.setValue("chatmessagestatus", "processing");
 		
 		chats.saveData(resopnseMessage);
 		
 		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
-
-		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/assistant/instructions/current.json";
-		LlmResponse response = llmconnection.runPageAsInput(llmrequest, chattemplate);
-		//current update it?
 		
-		if (response.isToolCall())
+		EMediaAIResponse response = null;
+		String processingmessage = null; // TODO: Change to language mao
+		
+		if (channeltype.equals("agententitychat"))
 		{
-			// Function call detected
-			String functionName = response.getFunctionName();
-			llmrequest.setFunctionName(functionName);
-			
-			JSONObject functionArguments = response.getArguments();		
-			
-			llmrequest.setParameter("arguments", functionArguments);
-			
-			
-			resopnseMessage.setValue("params", llmrequest.toString());
-			
-			Object explainer = functionArguments.get("explainer");
-			if( explainer != null && explainer instanceof String)
-			{
-				resopnseMessage.setValue("message", (String)explainer);
-			} 
-			else
-			{
-				Data function = getMediaArchive().getCachedData("aifunctions", functionName);
-				resopnseMessage.setValue("message", function.getValue("processingmessage"));
-			}
-			
-			chats.saveData(resopnseMessage);
-			
-			server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
-			
-			execFunctionInChat(llmconnection, resopnseMessage, llmrequest);
+			response = processDocumentChat(message, agentContext);  
+			processingmessage = "Generating response...";
 		}
-		else
+		else 
 		{
-			// **Regular Text Response**
-			String output = response.getMessage();
+			response = processAgentChat(message, agentContext);   
+		}
+		
+		
+		if( response.getFunctionName() != null)
+		{
+			agentContext.setFunctionName(response.getFunctionName());
+		}
+		getMediaArchive().saveData("agentcontext", agentContext);
 
+		String functionName = agentContext.getFunctionName();
+		MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunctions", functionName); //Chitchat etc
+		
+		if( function != null)
+		{
+			processingmessage = function.get("processingmessage");
+		}
+		if( processingmessage == null )
+		{
+			processingmessage = "Analyzing...";
+		}
+		resopnseMessage.setValue("message", processingmessage);
+			
+		chats.saveData(resopnseMessage);
+		
+		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
+
+		if( functionName.equals("conversation"))
+		{
+			String output = response.getGeneralResponse();
+			
+			if(output == null || output.isEmpty())
+			{
+				agentContext.addContext("messagetosend", message.get("message") );
+				LlmResponse chatresponse = llmconnection.callPlainMessage(agentContext,functionName); //TODO: Add message history
+				output = chatresponse.getMessage();
+			}
+
+			// **Regular Text Response**
 			if (output != null)
 			{
 				resopnseMessage.setValue("message", output);
@@ -274,25 +312,261 @@ public class AssistantManager extends BaseAiManager
 				server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 			}
 		}
+		else if (functionName.equals("ragresponse"))
+		{
+			resopnseMessage.setValue("messageplain", response.getMessagePlain());
+			resopnseMessage.setValue("message", response.getMessage());
+			resopnseMessage.setValue("chatmessagestatus", "completed");
+
+			chats.saveData(resopnseMessage);
+			server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
+		}
+		else //add option to run AI based functions like create an image
+		{
+			execLocalActionFromChat(llmconnection, resopnseMessage, agentContext);
+		}
 		
 	}
 	
-	public void execFunctionInChat(LlmConnection llmconnection, Data messageToUpdate, LlmRequest llmrequest) throws Exception
+	protected EMediaAIResponse processAgentChat(MultiValued message, AgentContext inAgentContext)
+	{
+		EMediaAIResponse response = new EMediaAIResponse();
+		MediaArchive archive = getMediaArchive();
+		
+		//String model = "qwen3:8b";
+		String model = archive.getCatalogSettingValue("llmagentmodel");
+
+		LlmConnection llmconnection = archive.getLlmConnection(model);
+		
+		//Run AI
+		inAgentContext.addContext("schema", loadSchema());
+		JSONObject results = llmconnection.callStructuredOutputList("parse_sentence", inAgentContext.getContext()); //TODO: Replace with local API that is faster
+		if(results == null)
+		{
+			throw new OpenEditException("No results from AI for message: " + message.get("message"));
+		}
+		if(results.containsKey("plaintext"))
+		{
+			String contentString = (String) results.get("plaintext");
+			JSONObject conversation = new JSONObject();
+			conversation.put("friendly_response", contentString);
+			results.put("conversation", conversation);
+			results.remove("plaintext");
+		}
+		response.setRawResponse(results);
+		processResults(inAgentContext, message.get("message"), response, results);
+		return response;
+	}
+	
+	
+	protected EMediaAIResponse processDocumentChat(MultiValued message, AgentContext inAgentContext)
+	{		
+		DocumentEmbeddingManager embeddingManager = (DocumentEmbeddingManager) getMediaArchive().getBean("documentEmbeddingManager");
+		
+		return embeddingManager.processMessage(message, inAgentContext);
+	}
+	
+
+	protected void processResults(AgentContext inAgentContext, String messageText, EMediaAIResponse response, JSONObject results)
+	{
+		String type = results.keySet().iterator().next().toString();
+		
+		if(type == null)
+		{
+			throw new OpenEditException("No type specified in results: " + results.toJSONString());
+		}
+
+		if( type.equals("search") )
+		{
+			JSONObject structure = (JSONObject) results.get(type);
+			if(structure == null)
+			{
+				throw new OpenEditException("No structure found for type: " + type);
+			}
+			type = partsSearchParts(inAgentContext, structure, type, messageText);
+		}
+		else if( type.equals("conversation"))
+		{
+			//type = "chitchat";
+			JSONObject structure = (JSONObject) results.get(type);
+			String generalresponse = (String) structure.get("friendly_response");
+			if(generalresponse != null)
+			{
+				MarkdownUtil md = new MarkdownUtil();
+				response.setGeneralResponse(md.render(generalresponse));
+			}
+		}
+		else if(type.equals("create_image"))
+		{
+			type = "createImage";
+			
+			AiCreation creation = inAgentContext.getAiCreationParams();					
+			creation.setCreationType("image");
+			JSONObject structure = (JSONObject) results.get(type);
+			creation.setImageFields(structure);
+		}
+		else if(type.equals("create_entity"))
+		{
+			type = "createEntity";
+			
+			AiCreation creation = inAgentContext.getAiCreationParams();
+			creation.setCreationType("entity");
+			JSONObject structure = (JSONObject) results.get(type);
+			creation.setEntityFields(structure);
+		}
+		//TODO Add how-to rag handling
+		
+		response.setFunctionName(type);
+	}
+
+	private String partsSearchParts(AgentContext inAgentContext, JSONObject structure, String type, String messageText) {
+		ArrayList tables = (ArrayList) structure.get("tables");
+		
+		if( tables == null)
+		{
+			return type;
+		}
+		
+		log.info("Steps to search parts: " + structure.toJSONString());
+		
+		AiSearch search = inAgentContext.getAiSearchParams();
+		search.setOriginalSearchString(messageText);
+		
+		search.setStep1(null);
+		search.setStep2(null);
+		search.setStep3(null);
+		
+		for (Iterator iterator = tables.iterator(); iterator.hasNext();)
+		{
+			JSONObject jsontable = (JSONObject) iterator.next();
+			AiSearchTable searchtable = new AiSearchTable();
+			
+			String targetTable = (String) jsontable.get("name");
+//			if( "Not Specified".equals(targetTable) )
+//			{
+//				targetTable = "";
+//			}
+			searchtable.setTargetTable(targetTable);
+
+			Map filters = (Map) jsontable.get("parameters");
+			searchtable.setParameters(filters);
+			
+			String foreigntablename = (String) jsontable.get("foreign_table");
+			if( foreigntablename != null)
+			{
+				AiSearchTable ftable = new AiSearchTable();
+				ftable.setTargetTable(foreigntablename);
+				
+				Map parameters = (Map) jsontable.get("foreign_table_parameters");
+				ftable.setParameters(parameters);
+				
+				searchtable.setForeignTable(ftable);
+				
+			}
+			
+			
+			if (search.getStep1() == null)
+			{
+				search.setStep1(searchtable);
+			}
+			else
+			{
+//				if( "join".equals( step.get("operation")) || search.getStep1().getTargetTable().equals(targetTable) )
+//				{
+//					continue; //Duplicate
+//				}
+				if (search.getStep2() == null)
+				{
+					search.setStep2(searchtable);
+				}
+				else if (search.getStep3() == null)
+				{
+					search.setStep3(searchtable);
+				}
+			}
+			
+//			if("Not specified".equals(targetTable))
+//			{
+//				return "searchMultiple";
+//			}
+
+		}
+		
+		if(search.getStep1() == null)
+		{
+			type = "chitchat"; 
+			return type;
+		}
+
+		if( "Not specified".equalsIgnoreCase( search.getStep1().getTargetTable() ) )
+		{
+			Data modulesearch = getMediaArchive().getCachedData("module", "modulesearch");
+			search.getStep1().setModule(modulesearch);
+			type = "searchTables";
+		}	
+		else
+		{
+			
+			if(search.getStep2() == null && search.getStep1().getForeignTable() != null)
+			{
+				search.setStep2( search.getStep1() );
+				
+				search.setStep1( search.getStep2().getForeignTable() );
+			}
+			
+			String text = "Search";
+			
+			if( search.getStep2() != null)
+			{
+				text = text + " for " + search.getStep2().getTargetTable() + " in " + search.getStep1().getTargetTable();
+			}
+			else if( search.getStep1() != null)
+			{
+				text = text + " for " + search.getStep1().getTargetTable();
+			}
+			
+			SemanticTableManager manager = loadSemanticTableManager("actionembedding");
+			List<Double> tosearch = manager.makeVector(text);
+			Collection<RankedResult> suggestions = manager.searchNearestItems(tosearch);
+			//Load more details into this request and possibly change the type
+			if( !suggestions.isEmpty())
+			{
+				inAgentContext.setRankedSuggestions(suggestions);
+				RankedResult top = (RankedResult)suggestions.iterator().next();
+				if ( top.getDistance() < .7 )
+				{
+					type = top.getEmbedding().get("aifunction");  //More specific type of search
+				
+					AiSearch aisearch = processAISearchArgs(structure, top.getEmbedding(), inAgentContext);
+					inAgentContext.setAiSearchParams(aisearch);
+				}
+			}
+			else
+			{
+				type = "chitchat";
+			}
+		}
+		return type;
+	}
+	
+	public void execLocalActionFromChat(LlmConnection llmconnection, Data messageToUpdate, AgentContext agentContext) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 
 		Data channel = archive.getCachedData("channel", messageToUpdate.get("channel"));
-		llmrequest.addContext("channel", channel);
+		agentContext.addContext("channel", channel);
 		
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 
 		try
 		{
-			llmrequest.addContext("message", messageToUpdate);
+			agentContext.addContext("message", messageToUpdate);
+			agentContext.addContext("aisearchparams", agentContext.getAiSearchParams() );
 			
 			String apphome = "/"+ channel.get("chatapplicationid");
-			llmrequest.addContext("apphome", apphome);
-			LlmResponse response = llmconnection.loadResponseFromTemplate(llmrequest);
+			agentContext.addContext("apphome", apphome);
+			
+			LlmResponse response = llmconnection.renderLocalAction(agentContext);  //Run Search
 
 			messageToUpdate.setValue("message", response.getMessage());
 			String messageplain = messageToUpdate.get("messageplain");
@@ -327,22 +601,20 @@ public class AssistantManager extends BaseAiManager
 			server.broadcastMessage(functionMessageUpdate);
 			
 			Long waittime = 200l;
-			if( llmrequest.getNextFunctionName() != null)
+			if( agentContext.getNextFunctionName() != null)
 			{
-				JSONObject params = llmrequest.getParameters();
-				
-				params.put("function", llmrequest.getNextFunctionName());
-				
-				messageToUpdate.setValue("params", params.toJSONString());
+				//Search semantic now?
+				//params.put("function", agentContext.getNextFunctionName());
+				//messageToUpdate.setValue("params", params.toJSONString());
 
 				messageToUpdate.setValue("chatmessagestatus", "refresh");
 				chats.saveData(messageToUpdate);
 
-				Object wait = params.get("wait");
+				Long wait = agentContext.getLong("wait");
 				if( wait != null && wait instanceof Long)
 				{
-					params.remove("wait");
-					waittime = (Long) wait;
+					agentContext.setValue("wait", null);
+					waittime = wait;
 					log.info("Previous function requested to wait " + waittime + " milliseconds");
 				}
 				
@@ -357,7 +629,7 @@ public class AssistantManager extends BaseAiManager
 		}
 		catch (Exception e)
 		{
-			log.error("Could not execute function: " + llmrequest.getFunctionName(), e);
+			log.error("Could not execute function: " + agentContext.getFunctionName(), e);
 			messageToUpdate.setValue("functionresponse", e.toString());
 			messageToUpdate.setValue("chatmessagestatus", "failed");
 			archive.saveData("chatterbox", messageToUpdate);
@@ -386,139 +658,233 @@ public class AssistantManager extends BaseAiManager
 		return recent;
 	}
 
-	public String getAiFolder()
-	{
-		return "assistant";
-	}
-	
 	public HitTracker getFunctions()
 	{
-		HitTracker hits = getMediaArchive().query("aifunctions").exact("aifolder",getAiFolder()).exact("enabled", true).sort("ordering").cachedSearch();
+		HitTracker hits = getMediaArchive().query("aifunctions").exact("pipeline", "assistant").exact("enabled", true).sort("ordering").cachedSearch();
 		return hits;
 	}
 	
-	public AiSearch processAISearchArgs(String inJsonArguments, UserProfile userprofile) throws Exception
+	public AiSearch processAISearchArgs(JSONObject airesults, Data inEmbeddingMatch, AgentContext inContext)
 	{
-		if(inJsonArguments == null)
-		{			
-			return null;
-		} 
-		else {	
-			log.info("Args: " + inJsonArguments);
-		}
-
-		JSONObject arguments = new JSONParser().parse( inJsonArguments );
+		//Search for tomatoes in sales departments
+		//airesults
+		AiSearch tables = inContext.getAiSearchParams();
 		
-		AiSearch searchArgs = new AiSearch();
-
-		Collection<String> keywords = getResultsManager().parseKeywords(arguments.get("keywords")); 
-		searchArgs.setKeywords(keywords);
-		
-		String searchType = (String) arguments.get("search_type");
-		searchArgs.setBulkSearch("bulk".equals(searchType));
-		
-		Object isStrict = arguments.get("strict");
-		if(isStrict instanceof Boolean)
+		if (inEmbeddingMatch != null)
 		{
-			isStrict = (boolean) isStrict;
+			String parentid = inEmbeddingMatch.get("parentmodule");
+			Data parentmodule = getMediaArchive().getCachedData("module", parentid);
+			if (parentmodule != null)
+			{
+				tables.getStep1().setModule(parentmodule);
+			}
+			if (tables.getStep2() != null) //Not needed?
+			{
+				String childid = inEmbeddingMatch.get("childmodule");
+				Data childmodule = getMediaArchive().getCachedData("module", childid);
+				if (childmodule != null)
+				{
+					tables.getStep2().setModule(childmodule);
+				}
+			}
 		}
-		else 
-		{
-			isStrict = false;
-		}
+		return tables;
+	}
 
-		searchArgs.setStrictSearch((boolean) isStrict);
-		
-		Object selectedModulesObj = arguments.get("targets");
 
-		Collection<String> selectedModules = new ArrayList();
+	public void searchTables(WebPageRequest inReq, AiSearch inAiSearchParams)
+	{
+		AiSearchTable step1 = inAiSearchParams.getStep1();
+		AiSearchTable step2 = inAiSearchParams.getStep2();
 		
-		if(selectedModulesObj instanceof JSONArray)
-		{			
-			JSONArray arr = (JSONArray) selectedModulesObj;
-			selectedModules.addAll( Arrays.asList( (String[]) arr.toArray( new String[arr.size()] ) ) );
-		}
-		else if(selectedModulesObj instanceof String)
+
+		//		AiSearchPart part3 = inAiSearchParams.getPart3();
+		
+		HitTracker entityhits = null;
+		HitTracker assethits = null;
+		
+		String step1Keyword = null;
+		String step2Keyword = null;
+		
+		if(step1 != null && step2 != null)
 		{
-			selectedModules.add((String) selectedModulesObj); 
+			
+			step1Keyword = step1.getParameterValues();
+			
+			HitTracker foundhits = getMediaArchive().query(step1.getModule().getId()).freeform("description", step1Keyword).search();
+			
+			if( foundhits.isEmpty() )
+			{
+				return;
+			}
+			Collection<String> ids = foundhits.collectValues("id");
+
+			inReq.putPageValue("module", step2.getModule());
+			
+			QueryBuilder search = getMediaArchive().query(step2.getModule().getId()).named("assitedsearch").orgroup(step1.getModule().getId(),ids);
+			step2Keyword = step2.getParameterValues();
+			if( step2Keyword != null)
+			{
+				if (step1Keyword == null || !step1Keyword.equalsIgnoreCase(step2Keyword))  //Remove the keyword if is  same
+				{
+					//Remove Module Name from Keywords
+					/*
+					String step1table = step1.getTargetTable();
+					step2Keyowrd = step2Keyowrd.replace(step1table, "");
+					if (step1table.endsWith("s"))
+					{
+						step1table = step1table.substring(0, step1table.length()-1);
+						step2Keyowrd = step2Keyowrd.replace(step1table, "");
+					}
+					*/
+					search.freeform("description", step2Keyword);
+				}
+			}
+			entityhits = search.search();
+			
+			step2.setCount((long) entityhits.size());
+			
+			//inReq.putPageValue( finalhits.getSessionId(), finalhits);
+			
+		}
+		else if(step1 != null)
+		{
+			
+			step1Keyword  = step1.getParameterValues();
+			
+			inReq.putPageValue("module", step1.getModule());
+			if(step1Keyword != null)
+			{
+				QueryBuilder search = null;
+				
+				Schema schema = loadSchema();
+				Collection<Data> modules = schema.getChildrenOf(step1.getModule().getId());
+				Collection<String> moduleids = new ArrayList<String>();
+				moduleids.add(step1.getModule().getId());
+				//step1.addModule(step1.getModule());
+				for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+				{
+					Data mod = (Data) iterator.next();
+					moduleids.add(mod.getId());
+					step1.addModule(mod);
+				}
+				
+				if ( moduleids.contains("modulesearch") || moduleids.size() > 1)
+				{
+					
+					if( moduleids.size() == 1 || moduleids.contains("modulesearch"))
+					{
+						moduleids = schema.getModuleIds();
+					}
+					
+					search = getMediaArchive().query("modulesearch")
+						.addFacet("entitysourcetype")
+						.put("searchtypes", moduleids).includeDescription(true);
+					entityhits = search.freeform("description", step1Keyword).search();
+					log.info(" Here:  "+ entityhits.getActiveFilterValues() );
+					//TODO: Not sure this is needed or works
+					if( moduleids.contains("asset") )
+					{
+						//Loop over the categories in these entityhits
+						Collection categories = entityhits.collectValues("rootcategory");
+						search = getMediaArchive().query("asset").orgroup("category",categories);
+						assethits = search.freeform("description", step1Keyword).search();
+						step1.setCount( (long) (entityhits.size()  + assethits.size()));
+					}
+					else
+					{
+						step1.setCount((long) entityhits.size());
+					}
+					
+				}
+				else if( "asset".equals( step1.getModule().getId() ) )
+				{
+					search = getMediaArchive().query(step1.getModule().getId());
+					assethits = search.freeform("description", step1Keyword).search();
+					step1.setCount((long) assethits.size());
+				}	
+				else {
+					search = getMediaArchive().query(step1.getModule().getId());
+					entityhits = search.freeform("description", step1Keyword).search();
+					step1.setCount((long) entityhits.size());
+				}
+			}
+			else
+			{
+				//step1.addModule(step1.getModule());
+				entityhits = getMediaArchive().query(step1.getModule().getId()).all().search();
+				step1.setCount((long) entityhits.size()); 
+			}
+			
 		}
 		
-		Collection<Data> permittedModules = new ArrayList();
-		
-		if(selectedModules.contains("all") || selectedModules.size() == 0)
+		if(entityhits != null )
 		{
-			permittedModules = userprofile.getEntities();
+			inReq.putPageValue("hits", entityhits);
 		}
 		else
 		{
-			Collection<String> selectedModuleIds = new ArrayList<String>();
-			for (Iterator iterator = selectedModules.iterator(); iterator.hasNext();)
+			inReq.putPageValue("hits", assethits);
+		}
+		
+		organizeResults(inReq, entityhits, assethits);
+		
+		String semanticquery = "";
+		
+		if(step1Keyword != null)
+		{
+			semanticquery = step1Keyword;
+		}
+		if(step2Keyword != null)
+		{
+			semanticquery = semanticquery + " " + step2Keyword;
+		}
+		
+		if(semanticquery.isBlank())
+		{
+			String originalQuery = inAiSearchParams.getOriginalSearchString();
+			if( originalQuery != null)
 			{
-				String id = (String) iterator.next();
-				if(id.contains("|"))
-				{
-					id = id.split("\\|")[0];
-				}
-				selectedModuleIds.add(id);
+				originalQuery = originalQuery.replaceAll("search|find|look for|show me", "").trim();
+				semanticquery = originalQuery;
 			}
-			permittedModules = userprofile.getEntitiesByIdOrName(selectedModuleIds);
 		}
-		
-		searchArgs.setSelectedModules(permittedModules);
-		
-		return searchArgs;
-	}
 
-	public void regularSearch(WebPageRequest inReq, boolean isMcp) throws Exception {
-		
-		//JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
-		String arguments = inReq.getRequestParameter("arguments");
-		
-		if(arguments == null)
-		{
-			log.warn("No arguments found in request");
-			return;
+		if(!semanticquery.isBlank())
+		{			
+			inReq.putPageValue("semanticquery", semanticquery.trim());
 		}
 		
-		UserProfile userprofile = (UserProfile) inReq.getPageValue("chatprofile");
-		
-		if(userprofile == null)
-		{
-			userprofile = (UserProfile) inReq.getPageValue("userprofile");
-		}
-		
-		inReq.putPageValue("userprofile", userprofile);
-
-		AiSearch aiSearchArgs = processAISearchArgs(arguments, userprofile);
-		
-		if(isMcp)
-		{
-			addMcpVars(inReq, aiSearchArgs);
-		}
-		
-		searchByKeywords(inReq, aiSearchArgs);
-		
-		inReq.putPageValue("semanticquery", aiSearchArgs.toSemanticQuery());
-
 	}
 	
-	public void searchByKeywords(WebPageRequest inReq, AiSearch searchArgs)
+	
+	public void organizeResults(WebPageRequest inReq, HitTracker entityhits, HitTracker assetunsorted) 
 	{
+
+		inReq.putPageValue("assethits", assetunsorted);
 		
-		log.info("Searching as:" + inReq.getUser().getName());
+		if(entityhits != null && assetunsorted == null)
+		{
+			inReq.putPageValue("totalhits", entityhits.size());
+		}
+		else if(entityhits == null && assetunsorted != null)
+		{
+			inReq.putPageValue("totalhits", assetunsorted.size());
+		}
+		else
+		{
+			inReq.putPageValue("totalhits", entityhits.size() + assetunsorted.size());
+		}
+
+		getResultsManager().loadOrganizedResults(inReq, entityhits, assetunsorted);
+		
+		/**
+		 * log.info("Searching as:" + inReq.getUser().getName());
 		MediaArchive archive = getMediaArchive();
 
 		Collection<String> keywords = searchArgs.getKeywords();
 		
-		String plainquery = "";
-		if(!searchArgs.isStrictSearch())
-		{
-			plainquery = String.join(" ", keywords);
-		}
-		else
-		{
-			plainquery = String.join(" OR ", keywords); // This does not work
-		}
+		String plainquery = String.join(" ", keywords);
 		
 		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description", plainquery).hitsPerPage(30);
 		dq.getQuery().setIncludeDescription(true);
@@ -575,15 +941,44 @@ public class AssistantManager extends BaseAiManager
 		
 		String[] excludeentityids = new String[unsorted.size()];
 		String[] excludeassetids = new String[assetunsorted.size()];
+		
+		StringBuilder contextString = new StringBuilder();
+		
 		int idx = 0;
 		for (Object entity : unsorted.getPageOfHits()) {
 			Data d = (Data) entity;
+			
+			String parentassetid = d.get("parentasset");
+			if(parentassetid != null)
+			{
+				String fulltext = d.get("longdescription");
+				if(fulltext == null || fulltext.length() == 0)
+				{
+					Asset parent = archive.getAsset(parentassetid);
+					fulltext = parent.get("fulltext");
+				}
+				if(fulltext != null && fulltext.length() > 0)
+				{
+					contextString.append("From " + d.getName() + "\n");
+					contextString.append(fulltext);
+					contextString.append("\n\n");
+				}
+			}
 			excludeentityids[idx] = d.getId();
 			idx++;
 		}
 		idx = 0;
 		for (Object asset : assetunsorted.getPageOfHits()) {
 			Data d = (Data) asset;
+			
+			String fulltext = d.get("longdescription");
+			if(fulltext != null && fulltext.length() > 0)
+			{
+				contextString.append("From " + d.getName() + "\n");
+				contextString.append(fulltext);
+				contextString.append("\n\n");
+			}
+			
 			excludeassetids[idx] = d.getId();
 			idx++;
 		}
@@ -594,59 +989,44 @@ public class AssistantManager extends BaseAiManager
 		
 		getResultsManager().loadOrganizedResults(inReq, unsorted,assetunsorted);
 		
+		if( contextString.length() > 0)
+		{
+			Data ragcontext = archive.getSearcher("ragcontext").createNewData();
+			ragcontext.setValue("", "");
+		}
+		*/
+		
 	}
-	public void semanticSearch(WebPageRequest inReq)
+	
+	public void executeRag(WebPageRequest inReq) 
 	{
 		MediaArchive archive = getMediaArchive();
-
-		String query = inReq.getRequestParameter("semanticquery");
-		
-		if(query == null || "null".equals(query))
+		Data ragcontext = (Data) archive.query("ragcontext").exact("status", "pending").sort("dateUp").searchOne();
+		if(ragcontext == null)
 		{
-			throw new OpenEditException("No query found in request");
+			log.info("No RAG context found to process");
+			return;
 		}
+		String model = archive.getCatalogSettingValue("llmragmodel");
+		OpenAiConnection llmconnection = (OpenAiConnection) archive.getLlmConnection(model);
 		
-		log.info("Semantic Search for: " + query);
+		llmconnection.callRagFunction(ragcontext.get("context"), ragcontext.get("query"));
 		
-		String[] excludeentityids = inReq.getRequestParameters("excludeentityids");
-		try
-		{			
-			if(excludeentityids == null)
-			{
-				excludeentityids = (String[]) inReq.getPageValue("excludeentityids");
-			}
-		}
-		catch( Exception e)
-		{
-			log.error("Could not parse excludeentityids", e);
-		}
-		if(excludeentityids == null)
-		{
-			excludeentityids = new String[0];
-		}
-		Collection<String> excludeEntityIds = Arrays.asList(excludeentityids);
+	}
+	
+	public void semanticSearch(WebPageRequest inReq, AgentContext agentContext)
+	{
+		MediaArchive archive = getMediaArchive();
 		
-		String[] excludeassetids = inReq.getRequestParameters("excludeassetids");
-		try
-		{			
-			if(excludeassetids == null)
-			{
-				excludeassetids = (String[]) inReq.getPageValue("excludeassetids");
-			}
-		}
-		catch( Exception e)
-		{
-			log.error("Could not parse excludeassetids",e);
-		}
-		if(excludeassetids == null)
-		{
-			excludeassetids = new String[0];
-		}
-		Collection<String> excludeAssetIds = Arrays.asList(excludeassetids);
+		String semanticquery = inReq.getRequestParameter("semanticquery"); 
 		
-		inReq.putPageValue("input", query);
+		Collection<String> excludeEntityIds = agentContext.getExcludedEntityIds();
+		Collection<String> excludeAssetIds = agentContext.getExcludedAssetIds();
 		
-		Map<String, Collection<String>> relatedEntityIds = getSemanticTopicManager().search(query,excludeEntityIds, excludeAssetIds);
+		log.info("Semantic Search for: " + semanticquery);
+		inReq.putPageValue("input", semanticquery);
+		
+		Map<String, Collection<String>> relatedEntityIds = getSemanticTopicManager().search(semanticquery, excludeEntityIds, excludeAssetIds);
 		
 		log.info("Related Entity Ids: " + relatedEntityIds);
 
@@ -694,26 +1074,39 @@ public class AssistantManager extends BaseAiManager
 		}		
 	}
 	
-	public void addMcpVars(WebPageRequest inReq, AiSearch searchArgs)	
+	public SemanticTableManager loadSemanticTableManager(String inConfigId)
 	{
-		Collection<String> keywords = searchArgs.getKeywords();
-		inReq.putPageValue("keywordsstring", getResultsManager().joinWithAnd(keywords));
-		
-		Collection<Data> modules = searchArgs.getSelectedModules();
-		
-	
-		Collection<String> moduleNames = new ArrayList<String>();
-			
-		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+		SemanticTableManager table = (SemanticTableManager)getMediaArchive().getCacheManager().get("semantictables",inConfigId);
+		if( table == null)
 		{
-			Data module = (Data) iterator.next();
-			if(!moduleNames.contains(module.getName()))
-			{
-				moduleNames.add(module.getName());
-			}
+			table = (SemanticTableManager)getModuleManager().getBean(getCatalogId(),"semanticTableManager",false);
+			table.setConfigurationId(inConfigId);
+			getMediaArchive().getCacheManager().put("semantictables",inConfigId,table);
 		}
 		
-		inReq.putPageValue("modulenamestext", getResultsManager().joinWithAnd(moduleNames));
+		return table;
+	}
+	
+	public void addMcpVars(WebPageRequest inReq, AiSearch searchArgs)	
+	{
+//		Collection<String> keywords = searchArgs.getKeywords();
+//		inReq.putPageValue("keywordsstring", getResultsManager().joinWithAnd(keywords));
+//		
+//		Collection<Data> modules = searchArgs.getSelectedModules();
+//		
+//	
+//		Collection<String> moduleNames = new ArrayList<String>();
+//			
+//		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+//		{
+//			Data module = (Data) iterator.next();
+//			if(!moduleNames.contains(module.getName()))
+//			{
+//				moduleNames.add(module.getName());
+//			}
+//		}
+//		
+//		inReq.putPageValue("modulenamestext", getResultsManager().joinWithAnd(moduleNames));
 		
 	}
 	
@@ -744,20 +1137,20 @@ public class AssistantManager extends BaseAiManager
 			return null;
 		}
 
-		LlmRequest llmrequest = new LlmRequest();
-		llmrequest.addContext("fulltext", fullText);
+		AgentContext agentcontext = new AgentContext();
+		agentcontext.addContext("fulltext", fullText);
 		
-		String model = archive.getCatalogSettingValue("mcp_model");
+		String model = archive.getCatalogSettingValue("llmmcpmodel");
 		if(model == null)
 		{
 			model = "gpt-5-nano";
 		}
-		llmrequest.addContext("model", model);
+		agentcontext.addContext("model", model);
 
 		LlmConnection llmconnection = (LlmConnection) archive.getBean("openaiConnection");
 		
 		String chattemplate = "/" + archive.getMediaDbId() + "/ai/openai/mcp/prompts/generate_report.json";
-		LlmResponse response = llmconnection.runPageAsInput(llmrequest, chattemplate);
+		LlmResponse response = llmconnection.runPageAsInput(agentcontext, chattemplate);
 		
 		String report = response.getMessage();
 		
@@ -816,14 +1209,13 @@ public class AssistantManager extends BaseAiManager
 		return results;
 	}
 
-
-	protected SemanticFieldManager fieldSemanticTopicManager;
-	public SemanticFieldManager getSemanticTopicManager()
+	protected SemanticClassifier fieldSemanticTopicManager;
+	public SemanticClassifier getSemanticTopicManager()
 	{
 		if (fieldSemanticTopicManager == null)
 		{
-			fieldSemanticTopicManager = (SemanticFieldManager)getModuleManager().getBean(getCatalogId(),"semanticFieldManager",false);
-			fieldSemanticTopicManager.setSemanticSettingId("semantictopics");
+			fieldSemanticTopicManager = (SemanticClassifier)getModuleManager().getBean(getCatalogId(), "semanticClassifier",false);
+			fieldSemanticTopicManager.setConfigurationId("semantictopics");
 		}
 
 		return fieldSemanticTopicManager;
@@ -844,7 +1236,7 @@ public class AssistantManager extends BaseAiManager
 //		
 //	}
 	
-	public void createImage(WebPageRequest inReq) throws Exception 
+	public void createImage(WebPageRequest inReq, AiCreation aiCreation) throws Exception 
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -855,26 +1247,19 @@ public class AssistantManager extends BaseAiManager
 		}
 		
 		LlmConnection llmconnection = archive.getLlmConnection(model);
-
-		String args = inReq.getRequestParameter("arguments");
 		
-		if(args == null)
-		{
-			log.warn("No arguments found in request");
-			return;
-		}
-		JSONObject arguments = new JSONParser().parse( args );
+		JSONObject imageattr = (JSONObject) aiCreation.getImageFields();
 		
-		String prompt = (String) arguments.get("prompt");
+		String prompt = (String) imageattr.get("prompt");
 
 		if (prompt == null)
 		{
 			return;
 		}
 		
-		
+		String filename = (String) imageattr.get("image_name");
 
-		LlmResponse results = llmconnection.createImage(model, prompt);
+		LlmResponse results = llmconnection.createImage(prompt);
 		
 
 		for (Iterator iterator = results.getImageBase64s().iterator(); iterator.hasNext();)
@@ -885,16 +1270,14 @@ public class AssistantManager extends BaseAiManager
 
 			asset.setValue("importstatus", "created");
 
-			String filename = (String) arguments.get("filename");
-			if(filename == null || filename.length() == 0)
-			{	
-				prompt.replaceAll("[^a-zA-Z0-9 ]", "_");
-				if (filename.length() > 50)
-				{
-					filename = filename.substring(0, 50);
-				}
+			if( filename == null || filename.length() == 0)
+			{
+				filename = "aiimage_" + System.currentTimeMillis() ;
 			}
-			asset.setName(filename.trim()+ ".png");
+			
+			asset.setName(filename + ".png");
+			asset.setValue("assettitle", filename);
+			asset.setValue("assetaddeddate", new Date());
 			
 			String sourcepath = "Channels/" + inReq.getUserName() + "/" + DateStorageUtil.getStorageUtil().getTodayForDisplay() + "/" + filename;
 			asset.setSourcePath(sourcepath);
@@ -949,43 +1332,30 @@ public class AssistantManager extends BaseAiManager
 
 		archive.fireSharedMediaEvent("importing/assetscreated");
 	}
-	public void createEntity(WebPageRequest inReq) throws Exception 
+	
+	public void createEntity(WebPageRequest inReq, AiCreation aiCreation) throws Exception 
 	{
 		MediaArchive archive = getMediaArchive();
+		
+		JSONObject entityfields = (JSONObject) aiCreation.getEntityFields();
+		String entityname = (String) entityfields.get("entity_name");
 
-		String args = inReq.getRequestParameter("arguments");
-		if(args == null)
-		{
-			log.warn("No arguments found in request");
-			return;
-		}
-		JSONObject arguments = new JSONParser().parse( args );
-		
-		String entityname = (String) arguments.get("name");
-		
-		JSONObject fields = (JSONObject) arguments.get("fields");
-		Collection tags = null;
-		String description = null;
-		if(fields != null)
-		{
-			tags = (JSONArray) fields.get("tags");
-			description = (String) fields.get("description");
-		}
-
-		String modulestr = (String) arguments.get("module");
-		
 		if (entityname == null)
 		{
 			inReq.putPageValue("error", "Please provide a name for the new entity");
 			return;
 		}
-		if (modulestr == null)
+		
+		String moduleid = (String) entityfields.get("module_id");
+		if(moduleid == null)
 		{
-			inReq.putPageValue("error", "Please provide the module name or id for the new entity");
+			inReq.putPageValue("error", "Could not find module. Please provide an existing module name or id");
 			return;
 		}
 		
-		String moduleid = modulestr.split("\\|")[0];
+		
+		moduleid = moduleid.split("\\|")[0];
+
 		Data module = archive.getCachedData("module", moduleid);
 		
 		if(module == null)
@@ -998,14 +1368,7 @@ public class AssistantManager extends BaseAiManager
 		
 		Data entity = searcher.createNewData();
 		entity.setName(entityname);
-		if(description != null)
-		{
-			entity.setValue("longcaption", description);
-		}
-		if(tags != null)
-		{
-			entity.setValue("keywords", tags);
-		}
+
 		searcher.saveData(entity);
 		
 		inReq.putPageValue("entity", entity);
@@ -1061,7 +1424,7 @@ public class AssistantManager extends BaseAiManager
 				inReq.putPageValue("error", "Could not find new module. Please provide an existing module id to update");
 				return;
 			}
-			EntityManager entityManager = getEntityManager(inReq);
+			EntityManager entityManager = getEntityManager();
 			String modulechangemethod = (String) arguments.get("moduleChangeMethod");
 			if("copy".equals(modulechangemethod))
 			{
@@ -1104,7 +1467,7 @@ public class AssistantManager extends BaseAiManager
 			Asset asset = archive.getAsset(primaryImage);
 			if(asset != null)
 			{
-				EntityManager entityManager = getEntityManager(inReq);
+				EntityManager entityManager = getMediaArchive().getEntityManager();
 				String destinationcategorypath = inReq.getRequestParameter("destinationcategorypath");
 				Category destinationCategory = null;
 				if(destinationcategorypath!= null)
@@ -1124,4 +1487,164 @@ public class AssistantManager extends BaseAiManager
 		inReq.putPageValue("entity", entity);
 		inReq.putPageValue("module", module);
 	}
+	
+	public void loadAllActions(ScriptLogger inLog)
+	{
+		SemanticTableManager manager = loadSemanticTableManager("actionembedding");
+		
+		//Create batch of english words that describe how to search all these things
+		Schema shema = loadSchema();
+		
+		Searcher embedsearcher = getMediaArchive().getSearcher("actionembedding");
+		
+		for (Iterator iterator = shema.getModules().iterator(); iterator.hasNext();)
+		{
+			Data parentmodule = (Data) iterator.next();
+			
+			Collection existing = embedsearcher.query().exact("parentmodule",parentmodule.getId()).search();
+			if( !existing.isEmpty())
+			{
+				log.info("Skipping " + parentmodule);
+				continue;
+			}
+			Collection<SemanticAction> actions = new ArrayList();
+			
+			SemanticAction action = new SemanticAction();
+			/*
+			 * "search",
+							"creation",
+							"how-to",
+							"task",
+							"conversation",
+							"support request"
+							*/
+			action.setAiFunction("searchTables");
+			action.setSemanticText("Search for " + parentmodule.getName());
+			action.setParentData(parentmodule);
+			actions.add(action);
+//			action = new SemanticAction();
+//			action.setParentData(parentmodule);
+//			action.setAiFunction("createEntity");
+//			action.setSemanticText("Create a new " + parentmodule.getName());
+//			actions.add(action);
+			
+			//Check for child views
+			Collection<Data> children = shema.getChildrenOf(parentmodule.getId());
+			
+			for (Iterator iterator2 = children.iterator(); iterator2.hasNext();)
+			{
+				Data childmodule = (Data) iterator2.next();
+				action = new SemanticAction();
+				action.setParentData(parentmodule);
+				action.setChildData(childmodule);
+				action.setAiFunction("searchTables");
+				action.setSemanticText("Search for " + childmodule.getName() + " in " + parentmodule.getName());
+				actions.add(action);
+			}
+			populateVectors(manager,actions);
+
+			//Save to db
+			Collection tosave = new ArrayList();
+			
+			for (Iterator iterator2 = actions.iterator(); iterator2.hasNext();)
+			{
+				SemanticAction semanticAction = (SemanticAction) iterator2.next();
+				Data data = embedsearcher.createNewData();
+				data.setValue("parentmodule",semanticAction.getParentData().getId());
+				if( semanticAction.getChildData() != null)
+				{
+					data.setValue("childmodule",semanticAction.getChildData().getId());
+				}
+				data.setValue("vectorarray",semanticAction.getVectors());
+				data.setValue("aifunction",semanticAction.getAiFunction());
+				data.setName(semanticAction.getSemanticText());
+				
+				tosave.add(data);
+			}
+			embedsearcher.saveAllData(tosave, null);
+			
+		}
+		//Test search
+		manager.reinitClusters(inLog);
+
+//		List<Double> tosearch = manager.makeVector("Find all records in US States in 2023");
+//		Collection<RankedResult> results = manager.searchNearestItems(tosearch);
+//		log.info(results);
+		
+		
+	}
+
+	private Schema loadSchema()
+	{
+		Schema schema = (Schema)getMediaArchive().getCacheManager().get("assitant","schema");
+		
+		if( schema == null)
+		{
+			schema = new Schema();
+			HitTracker allmodules = getMediaArchive().query("module").exact("showonsearch",true).search();
+			Collection<Data> modules = new ArrayList();
+			Collection<String> moduleids = new ArrayList();
+			
+			for (Iterator iterator = allmodules.iterator(); iterator.hasNext();)
+			{
+				Data module = (Data) iterator.next();
+				Data record = getMediaArchive().query(module.getId()).all().searchOne();
+				
+				if(record != null)
+				{
+					modules.add(module);
+					moduleids.add(module.getId());
+					
+					Collection detailsviews = getMediaArchive().query("view").exact("moduleid", module.getId()).exact("rendertype", "entitysubmodules").search();  //Cache this
+
+					for (Iterator iterator2 = detailsviews.iterator(); iterator2.hasNext();)
+					{
+						Data view = (Data) iterator2.next();
+						String listid = view.get("rendertable");
+						if( moduleids.contains(listid) )
+						{
+							Data childmodule = getMediaArchive().getCachedData("module", listid);
+							schema.addChildOf(module.getId(),childmodule);
+						}
+					}
+				}
+			}
+			schema.setModules(modules);
+			schema.setModuleIds(moduleids);
+			getMediaArchive().getCacheManager().put("assitant","schema",schema);
+			
+		}
+		
+		return schema;
+	}
+
+	protected void populateVectors(SemanticTableManager manager, Collection<SemanticAction> inActions)
+	{
+		Collection<String> textonly = new ArrayList(inActions.size());
+		Map<String,SemanticAction> actions = new HashMap();
+		Integer count = 0;
+		for (Iterator iterator = inActions.iterator(); iterator.hasNext();)
+		{
+			SemanticAction action = (SemanticAction) iterator.next();
+			textonly.add(action.getSemanticText());
+			actions.put( String.valueOf(count) , action);
+			count++;
+		}
+		
+		JSONObject response = manager.execMakeVector(textonly);
+		
+		JSONArray results = (JSONArray)response.get("results");
+		Collection<MultiValued> newrecords = new ArrayList(results.size());
+		for (int i = 0; i < results.size(); i++)
+		{
+			Map hit = (Map)results.get(i);
+			String countdone = (String)hit.get("id");
+			SemanticAction action = actions.get(countdone);
+			List vector = (List)hit.get("embedding");
+			vector = manager.collectDoubles(vector);
+			action.setVectors(vector);
+		}
+		
+	}
+
 }

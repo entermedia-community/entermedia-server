@@ -23,97 +23,6 @@ function initializeUI() {
 		});
 	}
 
-	var browserlanguage = app.data("browserlanguage");
-	if (browserlanguage == undefined || browserlanguage == "") {
-		browserlanguage = "en";
-	}
-
-	lQuery("input.datepicker").livequery("mousedown", function () {
-		var trigger = $(this).parent().find(".ui-datepicker-trigger");
-		trigger.trigger("click");
-	});
-	lQuery("input.datepicker").livequery(function () {
-		if ($.datepicker) {
-			var dpicker = $(this);
-			$.datepicker.setDefaults($.datepicker.regional[browserlanguage]);
-			$.datepicker.setDefaults(
-				$.extend({
-					showOn: "button",
-					buttonImage:
-						"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='%23444444' class='bi bi-calendar-plus' viewBox='0 0 16 16'%3E%3Cpath d='M8 7a.5.5 0 0 1 .5.5V9H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V10H6a.5.5 0 0 1 0-1h1.5V7.5A.5.5 0 0 1 8 7'/%3E%3Cpath d='M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z'/%3E%3C/svg%3E",
-					buttonImageOnly: true,
-					changeMonth: true,
-					changeYear: true,
-					yearRange: "1900:2050",
-				})
-			); // Move this to the Layouts?
-
-			var targetid = dpicker.data("targetid");
-			dpicker.datepicker({
-				altField: "#" + targetid,
-				altFormat: "yy-mm-dd",
-				yearRange: "1900:2050",
-				beforeShow: function (input, inst) {
-					setTimeout(function () {
-						$("#ui-datepicker-div").css("z-index", 100100);
-						$("#application").append($("#ui-datepicker-div"));
-						// var quickSelect = $("#operationentitydatefindercatalog");
-						// quickSelect.css("display", "block");
-						// $("#ui-datepicker-div").append(quickSelect);
-						//Fix Position if in bootstrap modal
-						var modal = $("#modals");
-						if (modal.length) {
-							var modaltop = $("#modals").offset().top;
-							if (modaltop) {
-								var dpickertop = dpicker.offset().top;
-								dpickertop = dpickertop - modaltop;
-								var dpHeight = inst.dpDiv.outerHeight();
-								var inputHeight = inst.input ? inst.input.outerHeight() : 0;
-								var viewHeight = document.documentElement.clientHeight;
-								if (dpickertop + dpHeight + inputHeight > viewHeight) {
-									dpickertop = dpickertop - dpHeight;
-								}
-								inst.dpDiv.css({
-									top: dpickertop + inputHeight,
-								});
-							}
-						}
-					}, 0);
-				},
-			});
-
-			var current = $("#" + targetid).val();
-			if (current != undefined) {
-				// alert(current);
-				var date;
-				if (current.indexOf("-") > 0) {
-					// this is the standard
-					current = current.substring(0, 10);
-					// 2012-09-17 09:32:28 -0400
-					date = $.datepicker.parseDate("yy-mm-dd", current);
-				} else {
-					date = $.datepicker.parseDate("mm/dd/yy", current); // legacy
-				}
-				$(this).datepicker("setDate", date);
-			}
-			$(this).blur(function () {
-				var val = $(this).val();
-				if (val == "") {
-					$("#" + targetid).val("");
-				}
-			});
-		} //datepicker
-	});
-
-	// if ($.fn.minicolors) {
-	lQuery(".color-picker").livequery(function () {
-		$(this).minicolors({
-			defaultValue: "",
-			letterCase: "uppercase",
-		});
-	});
-	// }
-
 	lQuery("#module-dropdown").livequery("click", function (e) {
 		e.stopPropagation();
 		if ($(this).hasClass("active")) {
@@ -150,20 +59,6 @@ function initializeUI() {
 
 	lQuery("select.select2").livequery(function () {
 		var theinput = $(this);
-		var dropdownParent = theinput.data("dropdownparent");
-		if (dropdownParent && $("#" + dropdownParent).length) {
-			dropdownParent = $("#" + dropdownParent);
-		} else {
-			dropdownParent = $(this).parent();
-		}
-		var parent = theinput.closest("#main-media-container");
-		if (parent.length) {
-			dropdownParent = parent;
-		}
-		var parent = theinput.parents(".modal-content");
-		if (parent.length) {
-			dropdownParent = parent;
-		}
 		var allowClear = $(this).data("allowclear");
 		if (allowClear == undefined) {
 			allowClear = true;
@@ -179,27 +74,26 @@ function initializeUI() {
 			theinput.select2({
 				allowClear: allowClear,
 				placeholder: placeholder,
-				dropdownParent: dropdownParent,
+				dropdownParent: getDropdownParent(theinput),
 				dropdownCssClass: dropdownCssClass,
 			});
+			theinput.on("select2:open", function (e) {
+				var selectId = $(this).attr("id");
+				if (selectId) {
+					$(
+						".select2-search__field[aria-controls='select2-" +
+							selectId +
+							"-results']"
+					).each(function (key, value) {
+						value.focus();
+					});
+				} else {
+					document
+						.querySelector(".select2-container--open .select2-search__field")
+						.focus();
+				}
+			});
 		}
-
-		theinput.on("select2:open", function (e) {
-			var selectId = $(this).attr("id");
-			if (selectId) {
-				$(
-					".select2-search__field[aria-controls='select2-" +
-						selectId +
-						"-results']"
-				).each(function (key, value) {
-					value.focus();
-				});
-			} else {
-				document
-					.querySelector(".select2-container--open .select2-search__field")
-					.focus();
-			}
-		});
 	});
 	/*
 	$(".select2simple").select2({
@@ -208,20 +102,6 @@ function initializeUI() {
 	*/
 	lQuery("select.listdropdown").livequery(function () {
 		var theinput = $(this);
-		var dropdownParent = theinput.data("dropdownparent");
-		if (dropdownParent && $("#" + dropdownParent).length) {
-			dropdownParent = $("#" + dropdownParent);
-		} else {
-			dropdownParent = $(this).parent();
-		}
-		var parent = theinput.closest("#main-media-container");
-		if (parent.length) {
-			dropdownParent = parent;
-		}
-		var parent = theinput.parents(".modal-content");
-		if (parent.length) {
-			dropdownParent = parent;
-		}
 
 		var placeholder = getSelect2Placeholder.call(this);
 
@@ -231,52 +111,51 @@ function initializeUI() {
 			allowClear = true;
 		}
 		if ($.fn.select2) {
-			theinput = theinput.select2({
+			theinput.select2({
 				placeholder: placeholder,
 				allowClear: allowClear,
 				minimumInputLength: 0,
-				dropdownParent: dropdownParent,
+				dropdownParent: getDropdownParent(theinput),
 			});
-		}
-		theinput.on("change", function (e) {
-			//console.log("XX changed")
-			if (theinput.hasClass("uifilterpicker")) {
-				var selectedids = theinput.val();
-				if (selectedids) {
-					//console.log("XX has class" + selectedids);
-					var parent = theinput.closest(".filter-box-options");
-					//console.log(parent.find(".filtercheck"));
-					parent.find(".filtercheck").each(function () {
-						var filter = $(this);
-						filter.prop("checked", false); //remove?
-					});
-					for (i = 0; i < selectedids.length; i++) {
-						//$entry.getId()${fieldname}_val
-						var selectedid = selectedids[i];
-						var fieldname = theinput.data("fieldname");
-						var targethidden = $("#" + selectedid + fieldname + "_val");
-						targethidden.prop("checked", true);
+			theinput.on("change", function (e) {
+				//console.log("XX changed")
+				if (theinput.hasClass("uifilterpicker")) {
+					var selectedids = theinput.val();
+					if (selectedids) {
+						//console.log("XX has class" + selectedids);
+						var parent = theinput.closest(".filter-box-options");
+						//console.log(parent.find(".filtercheck"));
+						parent.find(".filtercheck").each(function () {
+							var filter = $(this);
+							filter.prop("checked", false); //remove?
+						});
+						for (i = 0; i < selectedids.length; i++) {
+							//$entry.getId()${fieldname}_val
+							var selectedid = selectedids[i];
+							var fieldname = theinput.data("fieldname");
+							var targethidden = $("#" + selectedid + fieldname + "_val");
+							targethidden.prop("checked", true);
+						}
 					}
 				}
-			}
-		});
-
-		theinput.on("select2:open", function (e) {
-			var selectId = $(this).attr("id");
-			if (selectId) {
-				$(
-					".select2-search__field[aria-controls='select2-" +
-						selectId +
-						"-results']"
-				).each(function (key, value) {
-					value.focus();
-				});
-			} else {
-				document
-					.querySelector(".select2-container--open .select2-search__field")
-					.focus();
-			}
-		});
+			});
+			theinput.on("select2:open", function (e) {
+				var selectId = $(this).attr("id");
+				if (selectId) {
+					$(
+						".select2-search__field[aria-controls='select2-" +
+							selectId +
+							"-results']"
+					).each(function (key, value) {
+						value.focus();
+					});
+				} else {
+					document
+						.querySelector(".select2-container--open .select2-search__field")
+						.focus();
+				}
+			});
+		}
 	});
 
 	lQuery(".TODELETEselect2editable").livequery(function () {
@@ -329,24 +208,23 @@ function initializeUI() {
 						}
 					}
 				});
+			input.on("select2:open", function (e) {
+				var selectId = $(this).attr("id");
+				if (selectId) {
+					$(
+						".select2-search__field[aria-controls='select2-" +
+							selectId +
+							"-results']"
+					).each(function (key, value) {
+						value.focus();
+					});
+				} else {
+					document
+						.querySelector(".select2-container--open .select2-search__field")
+						.focus();
+				}
+			});
 		}
-
-		input.on("select2:open", function (e) {
-			var selectId = $(this).attr("id");
-			if (selectId) {
-				$(
-					".select2-search__field[aria-controls='select2-" +
-						selectId +
-						"-results']"
-				).each(function (key, value) {
-					value.focus();
-				});
-			} else {
-				document
-					.querySelector(".select2-container--open .select2-search__field")
-					.focus();
-			}
-		});
 	});
 
 	lQuery("select.ajax").livequery("change", function (e) {
@@ -826,20 +704,7 @@ function initializeUI() {
 	lQuery("select.listtags").livequery(function () {
 		var theinput = $(this);
 		var isSelectMode = theinput.hasClass("choose-select");
-		var dropdownParent = theinput.data("dropdownparent");
-		if (dropdownParent && $("#" + dropdownParent).length) {
-			dropdownParent = $("#" + dropdownParent);
-		} else {
-			dropdownParent = $(this).parent();
-		}
-		var parent = theinput.closest("#main-media-container");
-		if (parent.length) {
-			dropdownParent = parent;
-		}
-		var parent = theinput.parents(".modal-content");
-		if (parent.length) {
-			dropdownParent = parent;
-		}
+
 		var searchtype = theinput.data("searchtype");
 		var searchfield = theinput.data("searchfield");
 		// var catalogid = theinput.data("listcatalogid");
@@ -870,12 +735,13 @@ function initializeUI() {
 					});
 				}
 			});
+
 			theinput.select2({
 				data: preloadedData,
 				tags: true,
 				placeholder: defaulttext,
 				allowClear: allowClear,
-				dropdownParent: dropdownParent,
+				dropdownParent: getDropdownParent(theinput),
 				selectOnBlur: true,
 				delay: 150,
 				ajax: {
@@ -953,23 +819,8 @@ function initializeUI() {
 
 	lQuery("select.searchtags").livequery(function () {
 		var theinput = $(this);
-		var dropdownParent = theinput.data("dropdownparent");
-		if (dropdownParent && $("#" + dropdownParent).length) {
-			dropdownParent = $("#" + dropdownParent);
-		} else {
-			dropdownParent = $(this).parent();
-		}
-		var parent = theinput.closest("#main-media-container");
-		if (parent.length) {
-			dropdownParent = parent;
-		}
-		var parent = theinput.parents(".modal-content");
-		if (parent.length) {
-			dropdownParent = parent;
-		}
 
 		var searchfield = theinput.data("searchfield");
-		var sortby = theinput.data("sortby");
 		var defaulttext = theinput.data("showdefault");
 		if (!defaulttext) {
 			defaulttext = "Search";
@@ -991,7 +842,7 @@ function initializeUI() {
 				tags: true,
 				placeholder: defaulttext,
 				allowClear: allowClear,
-				dropdownParent: dropdownParent,
+				dropdownParent: getDropdownParent(theinput),
 				selectOnBlur: true,
 				delay: 150,
 				minimumInputLength: 2,
@@ -1042,31 +893,31 @@ function initializeUI() {
 				tokenSeparators: ["|"],
 				separator: "|",
 			});
+			theinput.on("select2:select", function () {
+				if ($(this).parents(".ignore").length == 0) {
+					$(this).valid();
+					var selected = $(this).select2("data");
+					var terms = "";
+					selected.forEach(function (item, index, arr) {
+						terms = terms + " " + item["id"] + "";
+					});
+					$("#descriptionvalue", form).val(terms);
+					form.trigger("submit");
+				}
+			});
+			theinput.on("select2:unselect", function () {
+				if ($(this).parents(".ignore").length == 0) {
+					$(this).valid();
+					var selected = $(this).select2("data");
+					var terms = "";
+					selected.forEach(function (item, index, arr) {
+						terms = terms + " " + item["id"] + "";
+					});
+					$("#descriptionvalue", form).val(terms);
+					form.trigger("submit");
+				}
+			});
 		}
-		theinput.on("select2:select", function () {
-			if ($(this).parents(".ignore").length == 0) {
-				$(this).valid();
-				var selected = $(this).select2("data");
-				var terms = "";
-				selected.forEach(function (item, index, arr) {
-					terms = terms + " " + item["id"] + "";
-				});
-				$("#descriptionvalue", form).val(terms);
-				form.trigger("submit");
-			}
-		});
-		theinput.on("select2:unselect", function () {
-			if ($(this).parents(".ignore").length == 0) {
-				$(this).valid();
-				var selected = $(this).select2("data");
-				var terms = "";
-				selected.forEach(function (item, index, arr) {
-					terms = terms + " " + item["id"] + "";
-				});
-				$("#descriptionvalue", form).val(terms);
-				form.trigger("submit");
-			}
-		});
 	});
 
 	lQuery("a.changeuserprofile").livequery("click", function (e) {
@@ -1291,21 +1142,6 @@ function initializeUI() {
 					defaultvalueid;
 			}
 
-			var dropdownParent = theinput.data("dropdownparent");
-			if (dropdownParent && $("#" + dropdownParent).length) {
-				dropdownParent = $("#" + dropdownParent);
-			} else {
-				dropdownParent = $(this).parent();
-			}
-			var parent = theinput.closest("#main-media-container");
-			if (parent.length) {
-				dropdownParent = parent;
-			}
-			var parent = theinput.parents(".modal-content");
-			if (parent.length) {
-				dropdownParent = parent;
-			}
-
 			var allowClear = theinput.data("allowclear");
 			if (allowClear == undefined) {
 				allowClear = true;
@@ -1315,12 +1151,8 @@ function initializeUI() {
 					placeholder: defaulttext,
 					allowClear: allowClear,
 					minimumInputLength: 0,
-					dropdownParent: dropdownParent,
+					dropdownParent: getDropdownParent(theinput),
 					ajax: {
-						// instead of writing the
-						// function to execute the
-						// request we use Select2's
-						// convenient helper
 						url: url,
 						dataType: "json",
 						data: function (params) {
@@ -1389,63 +1221,68 @@ function initializeUI() {
 					templateResult: select2formatResult,
 					templateSelection: select2Selected,
 				});
-			}
-			// TODO: Remove this?
-			theinput.on("change", function (e) {
-				if (e.val == "") {
-					// Work around for a bug
-					// with the select2 code
-					var id = "#list-" + theinput.attr("id");
-					$(id).val("");
-				} else {
-					// Check for "_addnew_" show ajax form
-					var selectedid = theinput.val();
+				// TODO: Remove this?
+				theinput.on("change", function (e) {
+					if (e.val == "") {
+						// Work around for a bug
+						// with the select2 code
+						var id = "#list-" + theinput.attr("id");
+						$(id).val("");
+					} else {
+						// Check for "_addnew_" show ajax form
+						var selectedid = theinput.val();
 
-					if (selectedid == "_addnew_") {
-						var clicklink = $("#" + theinput.attr("id") + "add");
-						clicklink.trigger("click");
+						if (selectedid == "_addnew_") {
+							var clicklink = $("#" + theinput.attr("id") + "add");
+							clicklink.trigger("click");
 
-						e.preventDefault();
-						theinput.select2("val", "");
-						return false;
-					}
-					if (theinput.hasClass("uifilterpicker")) {
-						//Not used?
-						//$entry.getId()${fieldname}_val
-						var fieldname = theinput.data("fieldname");
-						var targethidden = $("#" + selectedid + fieldname + "_val");
-						targethidden.prop("checked", true);
-					}
-					// Check for "_addnew_" show ajax form
-					if (theinput.hasClass("selectautosubmit")) {
-						if (selectedid) {
-							//var theform = $(this).closest("form");
-							var theform = $(this).parent("form");
-							if (theform.hasClass("autosubmitform")) {
-								theform.trigger("submit");
+							e.preventDefault();
+							theinput.select2("val", "");
+							return false;
+						}
+						if (theinput.hasClass("uifilterpicker")) {
+							//Not used?
+							//$entry.getId()${fieldname}_val
+							var fieldname = theinput.data("fieldname");
+							var targethidden = $("#" + selectedid + fieldname + "_val");
+							targethidden.prop("checked", true);
+						}
+						// Check for "_addnew_" show ajax form
+						if (theinput.hasClass("selectautosubmit")) {
+							if (selectedid) {
+								//var theform = $(this).closest("form");
+								var theform = $(this).parent("form");
+								if (theform.hasClass("autosubmitform")) {
+									theform.trigger("submit");
+								}
 							}
 						}
 					}
-				}
-			});
+				});
 
-			theinput.on("select2:open", function (e) {
-				console.log("open");
-				var selectId = $(this).attr("id");
-				if (selectId) {
-					$(
-						".select2-search__field[aria-controls='select2-" +
-							selectId +
-							"-results']"
-					).each(function (key, value) {
-						value.focus();
+				theinput.on("select2:open", function (e) {
+					var selectId = $(this).attr("id");
+					if (selectId) {
+						$(
+							".select2-search__field[aria-controls='select2-" +
+								selectId +
+								"-results']"
+						).each(function (key, value) {
+							value.focus();
+						});
+					} else {
+						document
+							.querySelector(".select2-container--open .select2-search__field")
+							.focus();
+					}
+					$(document).on("click", function (evt) {
+						if (!$(evt.target).closest(".select2-container").length) {
+							theinput.select2("close");
+							$(this).off(evt);
+						}
 					});
-				} else {
-					document
-						.querySelector(".select2-container--open .select2-search__field")
-						.focus();
-				}
-			});
+				});
+			}
 		}
 	});
 	//-
@@ -1483,31 +1320,17 @@ function initializeUI() {
 					defaultvalueid;
 			}
 
-			var dropdownParent = theinput.data("dropdownparent");
-			if (dropdownParent && $("#" + dropdownParent).length) {
-				dropdownParent = $("#" + dropdownParent);
-			} else {
-				dropdownParent = $(this).parent();
-			}
-			var parent = theinput.closest("#main-media-container");
-			if (parent.length) {
-				dropdownParent = parent;
-			}
-			var parent = theinput.parents(".modal-content");
-			if (parent.length) {
-				dropdownParent = parent;
-			}
-
 			var allowClear = theinput.data("allowclear");
 			if (allowClear == undefined) {
 				allowClear = true;
 			}
+
 			theinput.select2({
 				placeholder: defaulttext,
 				allowClear: allowClear,
 				minimumInputLength: 0,
 				tags: true,
-				dropdownParent: dropdownParent,
+				dropdownParent: getDropdownParent(theinput),
 				ajax: {
 					// instead of writing the
 					// function to execute the

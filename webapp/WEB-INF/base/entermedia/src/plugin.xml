@@ -193,6 +193,12 @@
 		</property>
 	</bean>
 
+	<bean id="entityPermissions" class="org.entermediadb.users.EntityPermissions" scope="prototype">
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+	</bean>
+
 	<bean id="PermissionModule" class="org.entermediadb.asset.modules.PermissionModule">
 	</bean>
 
@@ -1172,6 +1178,9 @@
 	</bean>
 	<!-- <bean id="htmlUtil" class="org.entermediadb.asset.util.HtmlUtil"> </bean> -->
 	<bean id="jsonUtil" class="org.entermediadb.asset.util.JsonUtil">
+	</bean>
+
+	<bean id="markdownUtil" class="org.entermediadb.markdown.MarkdownUtil">
 	</bean>
 
 	<bean id="RedirectModule" class="org.entermediadb.asset.modules.RedirectModule">
@@ -2186,11 +2195,16 @@
 	<bean id="statManager" class="org.entermediadb.sitemonitor.StatManager" scope="prototype">
 	</bean>
 
-	<bean id="cloudTranscodeManager" class="org.entermediadb.video.CloudTranscodeManager" scope="prototype">
+	<bean id="googleTranscriberManager" class="org.entermediadb.video.GoogleTranscriberManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
+	</bean>
 
+	<bean id="whisperTranscriberManager" class="org.entermediadb.video.WhisperTranscriberManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
 	</bean>
 
 	<bean id="pullManager" class="org.entermediadb.asset.pull.PullManager" scope="prototype">
@@ -2515,6 +2529,19 @@
 			<ref bean="pageManager" />
 		</property>
 	</bean>
+	
+	<bean id="llamaConnection" class="org.entermediadb.ai.llm.llama.LlamaConnection" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="requestUtils">
+			<ref bean="requestUtils" />
+		</property>
+
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>
 
 	<bean id="ollamaConnection" class="org.entermediadb.ai.llm.ollama.OllamaConnection" scope="prototype">
 		<property name="moduleManager">
@@ -2538,7 +2565,7 @@
 		</property>
 	</bean>
 
-	<bean id="documentSplitterManager" class="org.entermediadb.ai.classify.DocumentSplitterManager" scope="prototype">
+	<bean id="whisperTranscriberManager" class="org.entermediadb.ai.transcriber.WhisperTranscriberManager" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2547,6 +2574,31 @@
 		</property>
 	</bean>
 
+	<bean id="TranscriberModule" class="org.entermediadb.ai.transcriber.TranscriberModule">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+	<bean id="documentSplitterManager" class="org.entermediadb.ai.classify.DocumentSplitterManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="requestUtils">
+			<ref bean="requestUtils" />
+		</property>
+	</bean>
+	
+	<bean id="documentEmbeddingManager" class="org.entermediadb.ai.classify.DocumentEmbeddingManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="requestUtils">
+			<ref bean="requestUtils" />
+		</property>
+	</bean>
+	
+
 
 	<bean id="assistantManager" class="org.entermediadb.ai.assistant.AssistantManager" scope="prototype">
 		<property name="moduleManager">
@@ -2554,6 +2606,12 @@
 		</property>
 		<property name="requestUtils">
 			<ref bean="requestUtils" />
+		</property>
+	</bean>
+
+	<bean id="agentContext" class="org.entermediadb.ai.llm.AgentContext" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
 		</property>
 	</bean>
 
@@ -2593,7 +2651,7 @@
 	</bean>
 
 
-	<bean id="mcpManager" class="org.entermediadb.mcp.McpManager">
+	<bean id="mcpManager" class="org.entermediadb.mcp.McpManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2641,13 +2699,20 @@
 		</property>
 	</bean>
 
-	<bean id="semanticFieldManager" class="org.entermediadb.ai.classify.SemanticFieldManager" lazy-init="default" scope="prototype">
+	<bean id="semanticClassifier" class="org.entermediadb.ai.classify.SemanticClassifier" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
 
-	<bean id="semanticConfig" class="org.entermediadb.ai.classify.SemanticConfig" lazy-init="default" scope="prototype">
+	<bean id="semanticTableManager" class="org.entermediadb.ai.informatics.SemanticTableManager" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+
+	<bean id="semanticConfig" class="org.entermediadb.ai.informatics.SemanticConfig" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2679,7 +2744,6 @@
 		</property>
 
 	</bean>
-
 
 	<bean id="translationManager" class="org.entermediadb.translator.TranslationManager" lazy-init="default" scope="prototype">
 		<property name="moduleManager">

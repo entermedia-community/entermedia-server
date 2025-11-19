@@ -1597,7 +1597,7 @@ public class AssetEditModule extends BaseMediaModule
 
 			searcher = archive.getSearcher(moduleid);
 			
-			if (target == null  && id == null) //new record
+			if (target == null  && id == null && searcher != null) //new record
 			{
 				target = searcher.createNewData();
 				String[] fields = inReq.getRequestParameters("field");

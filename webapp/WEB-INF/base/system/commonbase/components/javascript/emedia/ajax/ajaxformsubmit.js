@@ -24,10 +24,10 @@
 					$.validator.addClassRules("entityRequired", {
 						entityrequired: true,
 						number: true,
-						min: 1
+						min: 1,
 					});
 					form.validate({
-						ignore: ".ignore,:hidden:not(.validatehidden)"
+						ignore: ".ignore,:hidden:not(.validatehidden)",
 					});
 					var isvalidate = form.valid();
 					if (!isvalidate) {
@@ -123,14 +123,27 @@
 		data.oemaxlevel = oemaxlevel;
 
 		var formmodal = form.closest(".modal");
-
 		var submitButton = form.find('button[type="submit"]');
 		if (submitButton.length == 0) {
 			submitButton = form.find('input[type="submit"]');
 		}
+		if (submitButton.length == 0) {
+			var modalbutton = formmodal.find("#submitbutton");
+			if (
+				modalbutton.length > 0 &&
+				modalbutton.attr("form") == form.attr("id")
+			) {
+				submitButton = modalbutton;
+			}
+		}
 		if (submitButton.length > 0) {
 			submitButton.attr("disabled", "disabled");
-			submitButton.append("<i class='fa fa-spinner fa-spin ml-2'></i>");
+			var icon = submitButton.find("i");
+			if (icon.length == 0) {
+				submitButton.prepend("<i class='fas fa-spinner fa-spin mr-1'></i>");
+			} else {
+				icon.replaceWith("<i class='fas fa-spinner fa-spin mr-1'></i>");
+			}
 		}
 
 		$(window).trigger("showToast", [form]);
@@ -179,10 +192,13 @@
 				}
 				let closedialogid = form.data("closedialogid");
 				if (closedialogid !== undefined) {
-					let closedialog = $("#" + closedialogid);
-					if (closedialog.length > 0) {
-						closeemdialog(closedialog.closest(".modal"));
-					}
+					let splitnames = closedialogid.split(",");
+					$.each(splitnames, function (index, modalid) {
+						modalid = $.trim(modalid);
+						$("#" + modalid).each(function (index, div) {
+							closeemdialog($(div).closest(".modal"));
+						});
+					});
 				}
 				if (formmodal.length > 0 && form.hasClass("autocloseform")) {
 					if (formmodal.modal) {
@@ -190,7 +206,7 @@
 					}
 				}
 
-				$("#resultsdiv").data("reloadresults", true);
+				//OLD? $("#resultsdiv").data("reloadresults", true);
 
 				//TODO: Move this to results.js
 				if (form.hasClass("hideMediaViewer")) {

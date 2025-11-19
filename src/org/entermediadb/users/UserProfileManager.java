@@ -293,7 +293,8 @@ public class UserProfileManager
 		userprofile.setSourcePath(inUserName);
 		userprofile.setCatalogId(inCatalogId);
 
-		Permissions permissions = (Permissions) mediaArchive.getModuleManager().getBean(mediaArchive.getCatalogId(), "permissions", false);
+		EntityPermissions permissions = (EntityPermissions) mediaArchive.getModuleManager().getBean(mediaArchive.getCatalogId(), "entityPermissions", false);
+		permissions.setEntityManager(mediaArchive.getEntityManager());
 		permissions.setUserProfile(userprofile);
 		if (fieldSettingsGroup != null)
 		{

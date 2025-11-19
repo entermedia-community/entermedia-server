@@ -31,7 +31,6 @@ import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.DataWithSearcher;
 import org.openedit.data.PropertyDetail;
-import org.openedit.data.PropertyDetails;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.FilterNode;
@@ -212,13 +211,25 @@ public class EntityManager implements CatalogEnabled
 					//TODO: move entire category to new	
 					log.info("Category should be moved " + cat.getCategoryPath() + " -> " + entitysourcepath);
 					cat.setName(entity.getName());
+					
 					String parent = PathUtilities.extractDirectoryPath(entity.getSourcePath());
 					Category parentCat = getMediaArchive().getCategorySearcher().createCategoryPath(parent);
-					parentCat.addChild(cat);
-					cat.setName(entity.getName());
+					
+					Category existing = parentCat.getChildByName(entity.getName());
+					if( existing != null)
+					{
+						//Check for assets?
+						existing.setName(entity.getName() + " (old)"); //To manually merge together
+						existing.setValue("categorypath", null); //clear it
+					}
 					cat.setValue("categorypath", null); //clear it
-
+					parentCat.addChild(cat);
 					//TODO: How can I move all the old content over?
+					if( existing!= null)
+					{
+						mergeCategoryTo(existing,cat);
+						getMediaArchive().getCategorySearcher().delete(existing,null);
+					}	
 					getMediaArchive().getCategorySearcher().saveCategoryTree(cat);
 					/*if (!cat.getCategoryPath().equals(entitysourcepath))
 					{
@@ -238,7 +249,7 @@ public class EntityManager implements CatalogEnabled
 			{
 				boolean saveit = false;
 				String existing = entity.get("rootcategory");
-				if( existing == null || !existing.equals(entity.get("rootcategory") ) )
+				if( !cat.getId().equals(existing) )
 				{
 					saveit = true;
 				}
@@ -266,6 +277,62 @@ public class EntityManager implements CatalogEnabled
 //		}
 		return cat;
 	}	
+	protected void mergeCategoryTo(Category inExisting, Category inGoodChild)
+	{
+		HitTracker tracker = getMediaArchive().query("asset").exact("category-exact",inExisting.getId()).search();
+		Collection tosave = new ArrayList();
+		for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+		{
+			Data hit = (Data) iterator2.next();
+			Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(hit);
+			asset.removeCategory(inExisting);
+			asset.addCategory(inGoodChild);
+			tosave.add(asset);
+		}
+		//getMediaArchive().saveData("asset", tosave);
+		//Reindexing
+		tracker = getMediaArchive().query("asset").exact("category-exact",inGoodChild.getId()).search();
+		for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+		{
+			Data hit = (Data) iterator2.next();
+			Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(hit);
+			tosave.add(asset);
+		}
+		getMediaArchive().saveData("asset", tosave);
+		if (inExisting.hasChildren())
+		{
+			
+			for (Iterator iterator = new ArrayList(inExisting.getChildren()).iterator(); iterator.hasNext();)
+			{
+				Category oldchild = (Category) iterator.next();
+				Category newchild = inGoodChild.getChildByName(oldchild.getName());
+				if( newchild == null)
+				{
+					oldchild.setValue("categorypath", null); //clear it
+					inGoodChild.addChild(oldchild);
+					//Reindex
+					tracker = getMediaArchive().query("asset").exact("category-exact",oldchild.getId()).search();
+					tosave = new ArrayList();
+					for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+					{
+						Data hit = (Data) iterator2.next();
+						Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(hit);
+						asset.removeCategory(oldchild);
+						asset.addCategory(oldchild);
+						tosave.add(asset);
+					}
+					getMediaArchive().saveData("asset", tosave);
+				}
+				else
+				{
+					//Move the assets
+					mergeCategoryTo(oldchild,newchild);
+					getMediaArchive().getCategorySearcher().delete(oldchild,null);
+				}
+			}
+		}
+	}
+
 	public String loadUploadSourcepath(Data module, Data entity, User inUser, boolean inCreate)
 	{
 		return loadUploadSourcepath(module, entity, inUser);

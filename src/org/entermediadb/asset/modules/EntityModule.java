@@ -18,14 +18,13 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.importer.CsvImporter;
 import org.entermediadb.asset.importer.XlsImporter;
-import org.entermediadb.asset.scanner.AssetImporter;
-import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.util.Row;
 import org.entermediadb.data.AddedPermission;
 import org.entermediadb.find.EntityManager;
+import org.entermediadb.projects.LibraryCollection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -227,7 +226,8 @@ public class EntityModule extends BaseMediaModule
 			if( tracker != null)
 			{
 				//found.addAll(tracker.getSelectedHitracker())
-				for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+				HitTracker selected = tracker.getSelectedHitracker();
+				for (Iterator iterator = selected.iterator(); iterator.hasNext();)
 				{
 					Data asset = (Data) iterator.next();
 					found.add(asset);
@@ -1455,6 +1455,11 @@ public class EntityModule extends BaseMediaModule
 		Data module = archive.getData("module", moduleid);
 		Collection<AddedPermission> all = archive.getPermissionManager().loadEntityPermissions(module, entity);
 		inReq.putPageValue("entitypermissions", all);
+		
+		Collection<AddedPermission> parentviewers = archive.getPermissionManager().loadParentPermissions(module, entity);
+		inReq.putPageValue("parentpermissions", parentviewers);
+		
+		
 		return all;
 	}
 	
@@ -1503,22 +1508,22 @@ public class EntityModule extends BaseMediaModule
 			String[] permissiontype = inReq.getRequestParameters("permissiontype");
 			for (int i = 0; i < dataid.length; i++)
 			{
-				entity.removeValue("viewerusers", dataid[i]);
-				entity.removeValue("viewerroles", dataid[i]);			
-				entity.removeValue("viewergroups", dataid[i]);	
-				
-				entity.removeValue("editorusers", dataid[i]);
-				entity.removeValue("editorroles", dataid[i]);			
-				entity.removeValue("editorgroups", dataid[i]);
-	
 				String fieldname = permissiontype[i];
-				if( iseditor != null && iseditor.length > i &&  iseditor[i].equals("true") )
+				String plural =fieldname;
+				if( !fieldname.endsWith("s") )
 				{
-					entity.addValue("editor" + fieldname, dataid[i]);
+					plural = plural + "s";
+				}
+				entity.removeValue("viewer" + plural, dataid[i]);
+				entity.removeValue("editor" + plural, dataid[i]);
+	
+				if( iseditor != null && iseditor[i].equals("true") ) //Must match or error
+				{
+					entity.addValue("editor" + plural, dataid[i]);
 				}
 				else
 				{
-					entity.addValue("viewer" + fieldname, dataid[i]);
+					entity.addValue("viewer" + plural, dataid[i]);
 				}
 			}
 		}
@@ -1552,7 +1557,6 @@ public class EntityModule extends BaseMediaModule
 		archive.saveData(module.getId(),entity);
 
 		archive.getPermissionManager().checkEntityCategoryPermission(module, (MultiValued)entity);
-		
 	}
 /*
 	public void removeEntityPermission(WebPageRequest inReq) 
@@ -1638,7 +1642,9 @@ public class EntityModule extends BaseMediaModule
 	}
 
 	
-	
+	/*
+	 * Moved to UserManager.loadChatChannel
+	 * 
 	public void loadChatChannel( WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -1650,23 +1656,36 @@ public class EntityModule extends BaseMediaModule
 		Data currentchannel = archive.getCachedData("channel", channel);
 		
 		Searcher topicsearcher = archive.getSearcher("channel");
-		Data entity  = (Data) inReq.getPageValue("entity");
+		MultiValued entity  = (MultiValued) inReq.getPageValue("entity");
 		String module = inReq.findValue("module");
 		if (currentchannel == null) {
 			currentchannel = topicsearcher.query().match("dataid",entity.getId()).match("searchtype", module).sort("name").searchOne();
 		}
+		
 		if (currentchannel == null) {
 			currentchannel = topicsearcher.createNewData();
 			currentchannel.setValue("searchtype", module);
 			currentchannel.setValue("dataid", entity.getId() );
-			currentchannel.setValue("channeltype", "entity");
-			currentchannel.setName("General");
+			
+			String channeltype = inReq.findValue("channeltype");
+			if ("agententitychat".equals(channeltype))
+			{
+				currentchannel.setName("Guided Chat");
+				currentchannel.setValue("channeltype", "agententitychat");
+			}
+			else 
+			{
+				currentchannel.setName("General");
+				currentchannel.setValue("channeltype", "entity");
+			}
+			
+			currentchannel.setValue("refreshdate", new Date() );
 			topicsearcher.saveData(currentchannel);
 		}
 		
 		inReq.putPageValue("currentchannel", currentchannel);
 	}
-	
+	*/
 	
 	
 	
@@ -1722,4 +1741,27 @@ public class EntityModule extends BaseMediaModule
 		
 		archive.getEntityManager().createEntitiesFromPages(inReq, uploadRequest, module);
 	}
+	
+	public void createCollection(WebPageRequest inReq)
+	{
+		MediaArchive mediaArchive = getMediaArchive(inReq);
+		Searcher librarysearcher = mediaArchive.getSearcher("librarycollection");
+		LibraryCollection saved = (LibraryCollection) librarysearcher.createNewData();
+		librarysearcher.updateData(inReq, inReq.getRequestParameters("field"), saved);
+		
+		String rootcategory = inReq.getRequestParameter("rootcategory.value");
+		Category category = mediaArchive.getCategory(rootcategory);
+		
+		saved.setValue("archivesourcepath", category.getCategoryPath());
+		saved.setName(category.getName());
+		saved.setValue("entity_date", new Date());
+		saved.setValue("owner", inReq.getUserName());
+
+		librarysearcher.saveData(saved, null); //this fires event ProjectManager.configureCollection
+
+
+
+	}
+	
+	
 }

@@ -31,19 +31,9 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 	
 	private static Log log = LogFactory.getLog(TranslationManager.class);
 
-	protected HttpSharedConnection connection;
-	
 	protected String fieldCatalogId;
 	protected MediaArchive fieldMediaArchive;
 	protected ModuleManager fieldModuleManager;
-	
-	protected HttpSharedConnection getConnection()
-	{
-
-		connection = new HttpSharedConnection();
-
-		return connection;
-	}
 	
 	public ModuleManager getModuleManager()
 	{
@@ -193,8 +183,8 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 			method.setHeader("Content-Type", "application/json");
 			method.setEntity(new StringEntity(payload.toJSONString(), "UTF-8"));
 			
-			CloseableHttpResponse resp = getConnection().sharedExecute(method);
-			JSONObject json = getConnection().parseJson(resp);
+			CloseableHttpResponse resp = getSharedConnection().sharedExecute(method);
+			JSONObject json = getSharedConnection().parseJson(resp);
 			
 			JSONObject translatedText = (JSONObject) json.get("translatedText");
 			
@@ -249,13 +239,15 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 	@Override
 	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecordsToTranslate)
 	{
+		inLog.headline("Translating metadata from " + inRecordsToTranslate.size() + " entities");
+
 		HitTracker locales = getMediaArchive().query("locale").exact("translatemetadata", true).search();
 		
 		if (locales.size() == 1 && "en".equals(locales.get(0).getId())) 
-	    {
-	        //log.info("No locales found for translation, defaulting to English");
-	        return; // No locales to translate, so we exit
-	    }
+		{
+				//log.info("No locales found for translation, defaulting to English");
+				return; // No locales to translate, so we exit
+		}
 
 		Collection<String> availableTargets = Arrays.asList("en,es,fr,de,ar,pt,bn,hi,ur,ru,zh-Hans,zh-Hant".split(","));
 		
@@ -283,7 +275,7 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 			}
 		}
 		
-		log.info("Translating " + inRecordsToTranslate + " with " + targetLangs);
+		log.info("Translating to " + targetLangs);
 
 		int count = 1;
 		for (Iterator iterator = inRecordsToTranslate.iterator(); iterator.hasNext();)

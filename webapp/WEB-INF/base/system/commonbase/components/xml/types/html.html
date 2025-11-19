@@ -1,10 +1,11 @@
 
 #if($editortype != "datamanager")
 	#set($htmleditor = "htmleditor")
+	#if($htmladvanced)
+		#set($htmleditor = "htmleditor-advanced")
+	#end
 #end
 
 #ifnotnull($detail)
-
-<textarea name="${detail.getId()}.value" id="${detail.getId()}" cols="40" rows="5" class="$!htmleditor #if($detail.isRequired() && !$multiedit) required #end">$!value</textarea>
-
+	<textarea name="${detail.getId()}.value" id="${detail.getId()}" cols="40" rows="5" class="$!htmleditor #if($detail.isRequired() && !$multiedit) required #end" data-editonly="true">$!value</textarea>
 #end

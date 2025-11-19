@@ -1,60 +1,87 @@
 package org.entermediadb.ai.assistant;
 
-import java.util.Collection;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.openedit.data.BaseData;
+import org.openedit.util.JSONParser;
 
-import org.openedit.Data;
-
-public class AiSearch {
-	Collection<Data> fieldSelectedModules; //Name or IDs
-	Collection<String> fieldKeywords;
-	Collection<String> fieldFilters;
-
-	boolean fieldStrictSearch;
-	boolean bulkSearch;
+public class AiSearch extends BaseData
+{
+	String originalSearch;
 	
-	public Collection<String> getKeywords() {
-		return fieldKeywords;
-	}
-	public void setKeywords(Collection<String> inKeywords) {
-		fieldKeywords = inKeywords;
+	public String getOriginalSearchString()
+	{
+		return originalSearch;
 	}
 	
-	public Collection<Data> getSelectedModules() {
-		return fieldSelectedModules;
+	public void setOriginalSearchString(String inOriginalSearch)
+	{
+		originalSearch = inOriginalSearch;
 	}
-	public Collection<String> getSelectedModuleIds() {
-		if( fieldSelectedModules == null ) {
-			return null;
+	
+	protected AiSearchTable fieldStep1;
+	protected AiSearchTable fieldStep2;
+	protected AiSearchTable fieldStep3;
+	
+	public AiSearchTable getStep1()
+	{
+		return fieldStep1;
+	}
+	public void setStep1(AiSearchTable inStep1)
+	{
+		fieldStep1 = inStep1;
+	}
+	public AiSearchTable getStep2()
+	{
+		return fieldStep2;
+	}
+	public void setStep2(AiSearchTable inStep2)
+	{
+		fieldStep2 = inStep2;
+	}
+	public AiSearchTable getStep3()
+	{
+		return fieldStep3;
+	}
+	public void setStep3(AiSearchTable inStep3)
+	{
+		fieldStep3 = inStep3;
+	}
+
+
+	
+//	public String toSemanticQuery() {
+//		return String.join(" ", fieldKeywords);
+//	}
+	public String toJson() 
+	{
+		JSONObject parent = new JSONObject();
+		parent.put("search",this);
+		
+		JSONArray parts  = new JSONArray();
+		if( getStep1() != null)
+		{
+			parts.add(getStep1());
 		}
-		return fieldSelectedModules.stream().map(m -> m.getId()).toList();
-	}
-	public void setSelectedModules(Collection<Data> inModules) {
-		fieldSelectedModules = inModules;
-	}
-	
-	public Collection<String> getFilters() {
-		return fieldFilters;
-	}
-	public void setFilters(Collection<String> inFilters) {
-		fieldFilters = inFilters;
+		if( getStep2() != null)
+		{
+			parts.add(getStep2());
+		}
+		if( getStep3() != null)
+		{
+			parts.add(getStep3());
+		}
+		return parent.toJSONString();
 	}
 	
-	public boolean isStrictSearch() {
-		return fieldStrictSearch;
-	}
-	public void setStrictSearch(boolean inStrictSearch) {
-		fieldStrictSearch = inStrictSearch;
-	}
-	
-	public boolean isBulkSearch() {
-		return bulkSearch;
-	}
-	public void setBulkSearch(boolean inBulkSearch) {
-		bulkSearch = inBulkSearch;
+	public void loadJsonParts(String inJson)
+	{
+		//Read the parts
+		JSONObject parent = new JSONParser().parse(inJson);
+		//TODO Finish loading from DB
+		
 	}
 	
-	public String toSemanticQuery() {
-		return String.join(" ", fieldKeywords);
-	}
+	
 	
 }

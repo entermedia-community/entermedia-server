@@ -45,10 +45,9 @@
 
 		var modaldialog = $("#" + id);
 		if (modaldialog.length == 0) {
+			var modalClass = initiator.data("modalclass") || "";
 			jQuery("#application").append(
-				'<div class="modal" tabindex="-1" id="' +
-					id +
-					'" style="display:none"></div>'
+				`<div class="modal ${modalClass}" tabindex="-1" id="${id}" style="display:none"></div>`
 			);
 			modaldialog = jQuery("#" + id);
 		}
@@ -225,8 +224,10 @@
 							fnc(initiator); //execute it
 						}
 					}
+					if (!$(this).hasClass("persistentmodal")) {
+						closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
+					}
 
-					closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
 					$(window).trigger("resize");
 				});
 
@@ -337,7 +338,7 @@ closeemdialog = function (modaldialog) {
 	} else {
 		modaldialog.modal("hide");
 	}
-	modaldialog.remove();
+
 	//other modals?
 	var othermodal = $(".modal");
 	if (othermodal.length && !othermodal.is(":hidden")) {
@@ -364,11 +365,30 @@ closeemdialog = function (modaldialog) {
 
 		history.pushState($("#application").html(), null, oldurlbar);
 	}
+	if (!modaldialog.hasClass("persistentmodal")) {
+		setTimeout(function () {
+			if (modaldialog) modaldialog.remove();
+			onModalClosed(dialogid);
+		}, 200);
+	} else {
+		onModalClosed(dialogid);
+	}
+};
+
+function onModalClosed(dialogid) {
 	if ($(".modal:visible").length === 0) {
 		$(document.body).removeClass("modal-open");
 		$(".modal-backdrop").remove();
 	}
-};
+	$(window).trigger("modalclosed", [dialogid]);
+}
+
+lQuery(".modal-backdrop").livequery("click", function (e) {
+	if ($(".modal:visible").length === 0) {
+		$(this).remove();
+		$(document.body).removeClass("modal-open");
+	}
+});
 
 closeallemdialogs = function () {
 	$(".modal").each(function () {

@@ -295,7 +295,7 @@ public class ConversionUtil {
 		//HitTracker all = sm.getSearcher(inCatalogId, "convertpreset").query().match("display", "true").sort("ordering").search();
 		return all;
 	}
-	
+	//Todo: Rename to All Convertpressets with display true
 	public Collection getCroppablePresetList(MediaArchive inArchive, Asset inAsset)
 	{
 		String rendertype = inArchive.getMediaRenderType(inAsset.get("fileformat"));
@@ -319,12 +319,18 @@ public class ConversionUtil {
 				log.error("Convert Preset missing guid: " + preset.getId());
 				continue;
 			}
+			
+			/*
 			Data croppable = (Data) inArchive.query("presetparameter").exact("parameterdata", presetid).exact("name", "crop").searchOne();
 			
 			if(croppable != null)
 			{
 				croppableList.add(preset);
 			}
+			*/
+			
+			croppableList.add(preset); //Add all
+			
 			// doesPresetExist(MediaArchive inArchive, Asset inAsset, String outputname???)
 		}
 		

@@ -1,8 +1,8 @@
 <page>
 	<property name="sectiontitle">
-    	<value>Preview History</value>
-  	</property>
-	<property name="tab">asseteditorhistory</property>
+		<value>Preview History</value>
+	</property>
+	<property name="tab">assethistory</property>
 	<property name="subtab">viewassetpreviewhistory</property>
 	<property name="assettab">converthistory</property>
 	<property name="hitsname">loghits</property>
