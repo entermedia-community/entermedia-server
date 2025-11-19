@@ -56,8 +56,8 @@ public class DocumentSplitterManager extends InformaticsProcessor
 				continue;
 			}
 			
-			Asset document = getMediaArchive().getAsset(assetid);
-			String rendertype = getMediaArchive().getMediaRenderType(document.getFileFormat());
+			Asset asset = getMediaArchive().getAsset(assetid);
+			String rendertype = getMediaArchive().getMediaRenderType(asset.getFileFormat());
 			if(rendertype == null || !rendertype.equals("document"))
 			{
 				continue;
@@ -66,16 +66,16 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			if( created != null)
 			{
 				//Check everything
-				String modtime = document.get("assetmodificationdate");
+				String modtime = asset.get("assetmodificationdate");
 				if( created.equals( assetid + "|" + modtime) )
 				{
 					continue;
 				}
 			}
-			inLog.info("Splitting document " + document);
-			entity.setValue("totalpages", document.getValue("pages"));
-			splitDocument(inLog, inConfig, entity, document);
-			String modtime = document.get("assetmodificationdate");
+			inLog.info("Splitting document " + asset);
+			entity.setValue("totalpages", asset.getValue("pages"));
+			splitDocument(inLog, inConfig, entity, asset);
+			String modtime = asset.get("assetmodificationdate");
 			entity.setValue("pagescreatedfor", assetid + "|" + modtime);
 
 			getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
