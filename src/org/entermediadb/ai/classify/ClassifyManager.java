@@ -255,7 +255,7 @@ public class ClassifyManager extends InformaticsProcessor
 			try {
 				long startTime = System.currentTimeMillis();
 
-				inLog.log("Classifying entity: " + entity.getName());
+				inLog.info("Classifying entity: " + entity.getName());
 
 				boolean complete = processOneEntity(inConfig, getModels(), entity, moduleid);
 				if( !complete )
