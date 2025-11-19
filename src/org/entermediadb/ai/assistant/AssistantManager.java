@@ -246,7 +246,7 @@ public class AssistantManager extends BaseAiManager
 		resopnseMessage.setValue("user", "agent");
 		resopnseMessage.setValue("channel", inChannel.getId());
 		resopnseMessage.setValue("date", new Date());
-		resopnseMessage.setValue("message", "<i class=\"fas fa-spinner fa-spin\"></i>");
+		resopnseMessage.setValue("message", "<i class=\"fas fa-spinner fa-spin mr-2\"></i> Processing request...");
 		resopnseMessage.setValue("chatmessagestatus", "processing");
 		
 		chats.saveData(resopnseMessage);
@@ -254,9 +254,12 @@ public class AssistantManager extends BaseAiManager
 		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 		
 		EMediaAIResponse response = null;
+		String processingmessage = null; // TODO: Change to language mao
+		
 		if (channeltype.equals("agententitychat"))
 		{
 			response = processDocumentChat(message, agentContext);  
+			processingmessage = "Generating response...";
 		}
 		else 
 		{
@@ -272,7 +275,7 @@ public class AssistantManager extends BaseAiManager
 
 		String functionName = agentContext.getFunctionName();
 		MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunctions", functionName); //Chitchat etc
-		String processingmessage = null;
+		
 		if( function != null)
 		{
 			processingmessage = function.get("processingmessage");
