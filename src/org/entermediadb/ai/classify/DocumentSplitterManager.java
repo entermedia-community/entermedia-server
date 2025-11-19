@@ -74,7 +74,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 					continue;
 				}
 			}
-			inLog.info("Splitting document " + asset);
+			inLog.info("Splitting " + asset.getValue("pages") + " pages in document " + asset);
 			entity.setValue("totalpages", asset.getValue("pages"));
 			splitDocument(inLog, inConfig, entity, asset);
 			String modtime = asset.get("assetmodificationdate");
@@ -149,7 +149,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			}
 		}
 		Long endtime = System.currentTimeMillis();
-		inLog.info("Generated: " + totalpages + " pages for:" + inEntity + " in: " + endtime + "ms");
+		inLog.info("Generated: " + totalpages + " pages for:" + inEntity + " in: " + (endtime - starttime)/1000L + "s");
 		pageSearcher.saveAllData(tosave, null);
 	}
 	
