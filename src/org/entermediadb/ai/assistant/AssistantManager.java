@@ -311,98 +311,12 @@ public class AssistantManager extends BaseAiManager
 		}
 		else if (functionName.equals("ragresponse"))
 		{
-			JSONObject ragoutput = response.getRawResponse();
-			
-			String answer = null;
-			
-			if(ragoutput == null || ragoutput.isEmpty())
-			{
-				answer = "Didn't get any response from RAG";
-			}
-			else
-			{
-				answer = (String) ragoutput.get("answer");
-			}
+			resopnseMessage.setValue("messageplain", response.getMessagePlain());
+			resopnseMessage.setValue("message", response.getMessage());
+			resopnseMessage.setValue("chatmessagestatus", "completed");
 
-			// **Regular Text Response**
-			if (answer != null)
-			{
-				if(answer.equals("Empty Response"))
-				{
-					answer = "No relevant information found for your question.";
-				}
-				
-				String sourcetext = "";
-				
-				JSONArray sourcesdata = (JSONArray) ragoutput.get("sources");
-				
-				Collection sources = new ArrayList();
-				
-				HashMap duplicates = new HashMap();
-				
-				for (Iterator iterator = sourcesdata.iterator(); iterator.hasNext();) 
-				{
-					JSONObject sourcedata = (JSONObject) iterator.next();
-					
-					HashMap source = new HashMap();
-					
-					String filename = (String) sourcedata.get("file_name");
-					String pagelabel = (String) sourcedata.get("page_label");
-					
-					String page = (String) sourcedata.get("id");
-					if(page == null)
-					{
-						continue;
-					}
-					
-					String pageentityid = page.split("_")[0];
-					String pageid = page.replace(pageentityid + "_", "");
-					
-					String doc = (String) sourcedata.get("parent_id");
-					if (doc == null)
-					{
-						continue;
-					}
-					
-					String docentityid = doc.split("_")[0];
-					String docid = doc.replace(docentityid + "_", "");
-					
-					if(duplicates.get(docid + pageid) != null)
-					{
-						continue;
-					}
-					
-					duplicates.put(docid + pageid, source);
-					
-					source.put("filename", filename);
-					source.put("pagelabel", pagelabel);
-					
-					source.put("pageentityid", pageentityid);
-					source.put("pageid", pageid);
-					
-					source.put("docentity", docentityid);
-					source.put("docid", docid);
-					
-					sources.add(source);
-				}
-				
-				resopnseMessage.setValue("sources", sources);
-				
-				
-				resopnseMessage.setValue("messageplain", answer);
-
-				if(!sourcetext.isEmpty())
-				{					
-					sourcetext = "<small>" + sourcetext + "</small>";
-					answer += sourcetext;
-				}
-				resopnseMessage.setValue("message", answer);
-				
-				resopnseMessage.setValue("chatmessagestatus", "completed");
-
-				chats.saveData(resopnseMessage);
-				server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
-			}
+			chats.saveData(resopnseMessage);
+			server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 		}
 		else //add option to run AI based functions like create an image
 		{

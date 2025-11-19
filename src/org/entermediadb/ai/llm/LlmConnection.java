@@ -17,6 +17,7 @@ public interface LlmConnection {
     public LlmResponse createImage(String inPrompt, int inCount, String inSize) throws Exception;
 
     public String loadInputFromTemplate(String inString, Map<String, Object> inParams);
+    public String loadInputFromTemplate(String inTemplate, AgentContext agentcontext);
     
     public LlmResponse renderLocalAction(AgentContext llmreuest);
     

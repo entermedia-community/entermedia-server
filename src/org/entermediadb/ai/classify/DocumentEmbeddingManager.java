@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
@@ -14,6 +15,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.emedia.EMediaAIResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
@@ -26,11 +28,33 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.page.manage.PageManager;
+import org.openedit.servlet.OpenEditEngine;
+import org.openedit.util.RequestUtils;
 
 public class DocumentEmbeddingManager extends InformaticsProcessor 
 {
 	private static final Log log = LogFactory.getLog(DocumentEmbeddingManager.class);
 	
+	protected PageManager fieldPageManager;
+	public PageManager getPageManager() {
+		return fieldPageManager;
+	}
+	
+	protected RequestUtils fieldRequestUtils;
+	public RequestUtils getRequestUtils() {
+		return fieldRequestUtils;
+	}
+	
+	protected OpenEditEngine fieldEngine;
+	public OpenEditEngine getEngine() {
+		if (fieldEngine == null) {
+			fieldEngine = (OpenEditEngine) getModuleManager().getBean("OpenEditEngine");
+
+		}
+
+		return fieldEngine;
+	}
 
 	@Override
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
@@ -260,16 +284,115 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 				log.info(error);
 				throw new OpenEditException("server down" + url);
 			}
-			JSONObject reply = getSharedConnection().parseJson(resp);
+			
+			JSONObject ragresponse = getSharedConnection().parseJson(resp);
+			
 			EMediaAIResponse response = new EMediaAIResponse();
-			response.setRawResponse(reply);
 			response.setFunctionName("ragresponse");
+			response.setRawResponse(ragresponse);
+			
+			processRagResponseWithSource(inAgentContext, ragresponse, response);
+			
 			return response;
 		}
 		finally
 		{
 			 getSharedConnection().release(resp);
 		}
+	}
+	
+	public void processRagResponseWithSource(AgentContext inAgentContext, JSONObject ragresponse, EMediaAIResponse response)
+	{
+		String answer = null;
+		
+		if(ragresponse == null || ragresponse.isEmpty())
+		{
+			answer = "Didn't get any response from RAG";
+		}
+		else
+		{
+			answer = (String) ragresponse.get("answer");
+		}
+
+		// **Regular Text Response**
+		if (answer != null)
+		{
+			if(answer.equals("Empty Response"))
+			{
+				answer = "No relevant information found for your question.";
+			}
+			
+			JSONArray sourcesdata = (JSONArray) ragresponse.get("sources");
+			
+			Collection sources = new ArrayList();
+			
+			HashMap duplicates = new HashMap();
+			
+			for (Iterator iterator = sourcesdata.iterator(); iterator.hasNext();) 
+			{
+				JSONObject sourcedata = (JSONObject) iterator.next();
+				
+				HashMap source = new HashMap();
+				
+				String filename = (String) sourcedata.get("file_name");
+				String pagelabel = (String) sourcedata.get("page_label");
+				
+				String page = (String) sourcedata.get("id");
+				if(page == null)
+				{
+					continue;
+				}
+				
+				String pageentityid = page.split("_")[0];
+				String pageid = page.replace(pageentityid + "_", "");
+				
+				String doc = (String) sourcedata.get("parent_id");
+				if (doc == null)
+				{
+					continue;
+				}
+				
+				String docentityid = doc.split("_")[0];
+				String docid = doc.replace(docentityid + "_", "");
+				
+				if(duplicates.get(docid + pageid) != null)
+				{
+					continue;
+				}
+				
+				duplicates.put(docid + pageid, source);
+				
+				source.put("filename", filename);
+				source.put("pagelabel", pagelabel);
+				
+				source.put("pageentityid", pageentityid);
+				source.put("pageid", pageid);
+				
+				source.put("docentity", docentityid);
+				source.put("docid", docid);
+				
+				sources.add(source);
+			}
+			
+			inAgentContext.addContext("ragsources", sources);
+		}
+		
+		inAgentContext.addContext("raganswer", answer);
+		
+		String model = getMediaArchive().getCatalogSettingValue("llmagentmodel");
+		if (model == null)
+		{
+			model = "qwen3vl";
+		}
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection(model);
+		
+		Data channel = inAgentContext.getChannel();
+		String apphome = "/"+ channel.get("chatapplicationid");
+		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/ragresponse.html";
+		String responsetext = llmconnection.loadInputFromTemplate(templatepath, inAgentContext);
+		
+		response.setMessage(responsetext);
+		response.setMessagePlain(answer);
 	}
 	
 }
