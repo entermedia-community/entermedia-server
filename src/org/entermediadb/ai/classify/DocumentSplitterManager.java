@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,7 +19,6 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.util.JSONParser;
 
 public class DocumentSplitterManager extends InformaticsProcessor 
 {
@@ -74,7 +74,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			}
 			inLog.info("Splitting document " + document);
 			entity.setValue("totalpages", document.getValue("pages"));
-			splitDocument(inConfig, entity, document);
+			splitDocument(inLog, inConfig, entity, document);
 			String modtime = document.get("assetmodificationdate");
 			entity.setValue("pagescreatedfor", assetid + "|" + modtime);
 
@@ -84,7 +84,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 		//See if this has been indexed or not
 	}
 
-	public void splitDocument(MultiValued inConfig, MultiValued inEntity, Asset asset) 
+	public void splitDocument(ScriptLogger inLog, MultiValued inConfig, MultiValued inEntity, Asset asset) 
 	{
 
 		String parentsearchtype = inConfig.get("searchtype");
@@ -93,45 +93,47 @@ public class DocumentSplitterManager extends InformaticsProcessor
 				.exact(parentsearchtype, inEntity.getId())
 				.exact("parentasset", asset.getId()).search();
 		
-		Collection pagenums = existingPages.collectValues("pagenum");
+		Map<Integer, MultiValued> pagenums = new HashMap();
+		
+		for (Iterator iterator = existingPages.iterator(); iterator.hasNext();)
+		{
+			MultiValued object = (MultiValued) iterator.next();
+			pagenums.put(object.getInt("pagenum"), object);
+			
+		}
+				
 
 		List<Data> tosave = new ArrayList();
 		int totalpages = inEntity.getInt("totalpages");
 		
 		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
-
+		
+		Long starttime = System.currentTimeMillis();
+		log.info("Generating: " + totalpages + " for:" + inEntity);
+		
 		for (int i = 0; i < totalpages; i++) 
 		{
-
-			if( pagenums.contains(i+1))
-			{
-				continue;
-			}
 			int pagenum = i + 1;
+			MultiValued docpage = pagenums.get(pagenum);
 			
-			MultiValued docpage = (MultiValued) pageSearcher.createNewData();
-			
-			String pagename = inEntity.getName() + " - Page " + pagenum;
-			docpage.setName(pagename);
-			
-
-			docpage.setValue("pagenum", pagenum);
-			
-			docpage.setValue(parentsearchtype, inEntity.getId());
-			docpage.setValue("primaryimage", asset.getId());
-			docpage.setValue("parentasset", asset.getId());
-			docpage.setValue("entity_date", new Date());
+			if( docpage == null)
+			{
+				docpage = (MultiValued) pageSearcher.createNewData();
+				String pagename = inEntity.getName() + " - Page " + pagenum;
+				docpage.setName(pagename);
+				docpage.setValue("pagenum", pagenum);
+				docpage.setValue(parentsearchtype, inEntity.getId());
+				docpage.setValue("primaryimage", asset.getId());
+				docpage.setValue("parentasset", asset.getId());
+				docpage.setValue("entity_date", new Date());
+			}
 			
 			if(docpage.get("markdowncontent") == null && inConfig.getBoolean("generatemarkdown"))
 			{
-				log.info("Generating markdown for document " + docpage);
+				log.info("Generating markdown for document page " + docpage);
 				generateMarkdown(docpage);
 			}
-			else
-			{	
-			
-//				docpage.setValue("longcaption", pageText);
-			}
+
 
 			tosave.add(docpage);
 
@@ -141,6 +143,8 @@ public class DocumentSplitterManager extends InformaticsProcessor
 				tosave.clear();
 			}
 		}
+		Long endtime = System.currentTimeMillis();
+		inLog.info("Generated: " + totalpages + " for:" + inEntity + " in: " + endtime + "ms");
 		pageSearcher.saveAllData(tosave, null);
 	}
 	
