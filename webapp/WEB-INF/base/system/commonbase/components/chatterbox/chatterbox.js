@@ -205,6 +205,12 @@ function connect() {
 		var channel = message.channel;
 		var chatbox = jQuery('div.chatterbox[data-channel="' + channel + '"]');
 		
+		if(chatbox.length == 0)
+		{
+			//Channel Not on the screen
+			return;
+		}
+		
 		message.id = id;
 		var existing = jQuery("#chatter-message-" + id);
 		if (existing.length) {
