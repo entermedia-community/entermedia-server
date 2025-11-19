@@ -33,6 +33,8 @@ public class DocumentSplitterManager extends InformaticsProcessor
 	@Override
 	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecords)
 	{
+		inLog.headline("Splitting " + inRecords.size() + " documents");
+		
 		String searchtype = inConfig.get("searchtype");
 
 		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
@@ -109,7 +111,11 @@ public class DocumentSplitterManager extends InformaticsProcessor
 		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
 		
 		Long starttime = System.currentTimeMillis();
-		log.info("Generating: " + totalpages + " for:" + inEntity);
+		if(inConfig.getBoolean("generatemarkdown"))
+		{
+			log.info("Generating markdown for " + totalpages + " pages of " + inEntity);
+		}
+
 		
 		for (int i = 0; i < totalpages; i++) 
 		{
@@ -130,7 +136,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			
 			if(docpage.get("markdowncontent") == null && inConfig.getBoolean("generatemarkdown"))
 			{
-				log.info("Generating markdown for document page " + docpage);
+				log.info("Generating markdown for page: " + docpage);
 				generateMarkdown(docpage);
 			}
 

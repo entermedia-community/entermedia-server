@@ -229,6 +229,8 @@ public class ClassifyManager extends InformaticsProcessor
 	@Override
 	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> hits)
 	{
+		inLog.headline("Classifying " + hits.size() + " entities");
+
 		Map<String, List<Data>> entitiestoprocess = new HashMap();
 
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) 
@@ -253,7 +255,7 @@ public class ClassifyManager extends InformaticsProcessor
 			try {
 				long startTime = System.currentTimeMillis();
 
-				inLog.info("Analyzing entity Id: " + entity.getId() + " " + entity.getName());
+				inLog.log("Classifying entity: " + entity.getName());
 
 				boolean complete = processOneEntity(inConfig, getModels(), entity, moduleid);
 				if( !complete )
@@ -265,7 +267,7 @@ public class ClassifyManager extends InformaticsProcessor
 				inLog.info("Took "+duration +"s to process entity: " + entity.getId() + " " + entity.getName());
 
 			} catch (Exception e) {
-				inLog.error("LLM Error for entity: " + entity.getId() + " " + entity.getName(), e);
+				inLog.error("LLM Error for entity: " + entity.getName(), e);
 				entity.setValue("llmerror", true);
 			}
 		}

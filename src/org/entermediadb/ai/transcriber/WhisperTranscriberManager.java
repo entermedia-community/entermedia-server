@@ -51,6 +51,8 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 	@Override
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
 	{
+		inLog.headline("Transcribing " + inAssets.size() + " assets");
+		
 		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 		{
 			MultiValued inAsset = (MultiValued) iterator.next();

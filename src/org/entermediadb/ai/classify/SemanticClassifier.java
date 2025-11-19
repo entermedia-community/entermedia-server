@@ -67,6 +67,8 @@ public class SemanticClassifier extends InformaticsProcessor implements CatalogE
 	{
 		String fieldname = inConfig.get("fieldname");
 		
+		inLog.headline("SemanticClassifier indexing " + fieldname);
+
 		setConfigurationId(fieldname);
 		
 		Map<String, String> models = getModels();
@@ -76,8 +78,6 @@ public class SemanticClassifier extends InformaticsProcessor implements CatalogE
 		LlmConnection llmsemanticconnection = getMediaArchive().getLlmConnection(model);
 
 		long start = System.currentTimeMillis();
-		
-		inLog.info("SemanticClassifier Start values and indexing " + fieldname);
 		
 		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
 		{

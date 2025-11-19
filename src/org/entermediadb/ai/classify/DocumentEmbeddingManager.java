@@ -65,8 +65,9 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 
 	@Override
 	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRandomEntities)
-	{
-		
+	{		
+		inLog.headline("Embedding " + inRandomEntities.size() + " documents");
+
 		String searchtype = inConfig.get("searchtype");
 		Searcher pageSearcher = getMediaArchive().getSearcher(searchtype);
 		
@@ -74,6 +75,8 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 
 		for (Iterator iterator = inRandomEntities.iterator(); iterator.hasNext();)
 		{
+			long start = System.currentTimeMillis();
+			
 			MultiValued document = (MultiValued) iterator.next();
 			String moduleid = document.get("entitysourcetype");
 			
@@ -87,8 +90,6 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 				log.info("Already embedded " + document);
 				continue;
 			}
-			
-			inLog.info("Embedding document " + document);
 			
 
 			JSONObject documentdata = new JSONObject();
@@ -112,6 +113,9 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 
 			//Get all the pages
 			Collection pages = getMediaArchive().query(searchtype + "page").exact(searchtype, document.getId()).search();
+			
+			inLog.info("Embedding document: " + document.getName() + " with " + pages.size() + " pages");
+			
 			Collection allpages  = new ArrayList(pages.size());
 			
 			for (Iterator iterator2 = pages.iterator(); iterator2.hasNext();)
@@ -141,6 +145,8 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 				document.setValue("documentembedded", ok);
 				document.setValue("documentembeddeddate", new Date());
 				tosave.add(document);
+				
+				inLog.info("Embedded in " + (System.currentTimeMillis() - start) + " ms");
 			}
 			
 			if(tosave.size() > 10)
@@ -194,7 +200,6 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 				}
 				else
 				{
-					inLog.info("Embedded document: " + embeddingPayload.get("id"));
 					return true;
 				}
 
