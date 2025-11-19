@@ -1,5 +1,10 @@
 package org.entermediadb.asset.modules;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
@@ -12,9 +17,12 @@ import org.entermediadb.asset.upload.UploadRequest;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
 import org.openedit.page.PageProperty;
 import org.openedit.page.PageSettings;
+import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 import org.openedit.xml.XmlArchive;
@@ -221,4 +229,74 @@ public class UserProfileModule extends BaseMediaModule
 		}
 
 	}
+	
+	
+	public void saveUserProfile(WebPageRequest inReq)
+	{
+		MediaArchive archive =getMediaArchive(inReq);
+		
+		String userid = inReq.getRequestParameter("username");
+		
+		User user = archive.getUser(userid); 
+		/*if( !user.getId().equals(  inReq.getUser().getId() ) )
+		{
+			//checkAdminPermission(inReq);
+		}
+		*/
+		
+		Map params = inReq.getParameterMap();
+		String[] fieldsarray = (String[])params.get("field");
+		Collection formfields = new ArrayList();
+		for (int i = 0; i < fieldsarray.length; i++)
+		{
+				formfields.add(fieldsarray[i]);
+		}
+		
+		UserProfile userprofile = archive.getUserProfile(userid);
+		
+		//Save to profile
+		Collection userprofilefields = new ArrayList();
+		PropertyDetails updetails = archive.getSearcher("userprofile").getPropertyDetails();
+		for (Iterator iterator =  updetails.iterator(); iterator.hasNext();)
+		{
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			if (detail.getId().equals("id") || !formfields.contains(detail.getId())) 
+			{
+				continue;
+			}
+			userprofilefields.add(detail.getId());
+		}
+		String[] userprofilearray = (String[])userprofilefields.toArray(new String[userprofilefields.size()]);
+		archive.getSearcher("userprofile").updateData(inReq, userprofilearray, userprofile);
+		archive.getSearcher("userprofile").saveData( userprofile ,inReq.getUser());
+		
+		//Save to user
+		Collection userfields = new ArrayList();
+		PropertyDetails udetails = archive.getSearcher("user").getPropertyDetails();
+		for (Iterator iterator =  udetails.iterator(); iterator.hasNext();)
+		{
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			if (detail.getId().equals("id") || !formfields.contains(detail.getId()))
+			{
+				continue;
+			}
+			userfields.add(detail.getId());
+		}
+		String[] userfilearray = (String[])userfields.toArray(new String[userfields.size()]);
+		archive.getSearcher("user").updateData(inReq, userfilearray, user);
+		archive.getSearcher("user").saveData( user ,inReq.getUser());
+		
+		archive.getCacheManager().put("usercache", user.getId(), user); //update cache
+		
+		inReq.putPageValue("status","Saved");
+		inReq.putPageValue("saved",true);
+		
+		if( user.getId().equals(  inReq.getUser().getId() ) )
+		{
+			inReq.putSessionValue("systemuser",user);
+			inReq.putPageValue("user",user);
+		}
+		
+	}
+	
 }

@@ -27,7 +27,7 @@
 	
 	<property id="assetportrait" index="true" stored="true" editable="true" type="list" viewtype="asset" listid="asset" internalfield="false" datatype="list" sourcepath="userprofiles/${data.id}/">
         <name> 
-      	<language id="en"><![CDATA[Profile]]></language> 
+      	<language id="en"><![CDATA[Profile Picture]]></language> 
     	</name> 
     </property>
 
