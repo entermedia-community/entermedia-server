@@ -109,7 +109,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
 		
 		Long starttime = System.currentTimeMillis();
-		log.info("Generating: " + totalpages + " for:" + inEntity);
+		log.info("Generating: " + totalpages + " pages for:" + inEntity);
 		
 		for (int i = 0; i < totalpages; i++) 
 		{
@@ -128,12 +128,11 @@ public class DocumentSplitterManager extends InformaticsProcessor
 				docpage.setValue("entity_date", new Date());
 			}
 			
-			if(docpage.get("markdowncontent") == null && inConfig.getBoolean("generatemarkdown"))
+			if((!inEntity.getBoolean("documentembedded") || docpage.get("markdowncontent") == null) && inConfig.getBoolean("generatemarkdown"))
 			{
 				log.info("Generating markdown for document page " + docpage);
 				generateMarkdown(docpage);
 			}
-
 
 			tosave.add(docpage);
 
@@ -144,7 +143,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			}
 		}
 		Long endtime = System.currentTimeMillis();
-		inLog.info("Generated: " + totalpages + " for:" + inEntity + " in: " + endtime + "ms");
+		inLog.info("Generated: " + totalpages + " pages for:" + inEntity + " in: " + endtime + "ms");
 		pageSearcher.saveAllData(tosave, null);
 	}
 	
