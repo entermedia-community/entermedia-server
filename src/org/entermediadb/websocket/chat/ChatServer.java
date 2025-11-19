@@ -23,7 +23,6 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.TrayIcon.MessageType;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,22 +34,22 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.data.AddedPermission;
 import org.entermediadb.projects.ProjectManager;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.data.ValuesMap;
+import org.openedit.profile.UserProfile;
+import org.openedit.users.Permissions;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.ExecutorManager;
 import org.openedit.util.JSONParser;
-
-import groovy.json.internal.ValueMap;
 
 public class ChatServer
 {
@@ -209,11 +208,6 @@ public class ChatServer
 			}
 			
 			ProjectManager projectmanager = getProjectManager(catalogid);
-//				
-//			if(inMap.get("topic") == null)
-//			{
-//				inMap.put("topic", entity.getName());
-//			}
 			if( inMap.get("name") == null)
 			{
 				User user = archive.getUser(userid);
@@ -235,62 +229,69 @@ public class ChatServer
 			}
 
 			MultiValued channel = (MultiValued) archive.getCachedData("channel", channelid);
-			
+			Data module = null;
+			Data entity = null;
 			Set userids =  new HashSet();
 			
-			String moduleid = (String) inMap.get("moduleid");
-			if (moduleid == null && channel != null)
+			String moduleid = channel.get("searchtype");
+			
+			if(moduleid == null)
 			{
-				moduleid = channel.get("moduleid");
+				throw new OpenEditException("No channel difined");
 			}
+			
 			if( moduleid != null)
 			{
+				module = archive.getCachedData("module", moduleid);
 				
-					Data entity = null;
-					String entityid = (String) inMap.get("entityid");
-					if (entityid == null || entityid.equals("") || entityid.equals("null"))
-					{
-						entityid = (String) inMap.get("collectionid");  //For OI chats attached to a collectionid
-					}
-					if (entityid == null && channel != null)
-					{
-						entityid = channel.get("dataid");
-					}
-					if (entityid != null)
-					{
-						entity = archive.getCachedData(moduleid, entityid); 
-					}
+				String entityid = (String) inMap.get("entityid");
+				if (entityid == null || entityid.equals("") || entityid.equals("null"))
+				{
+					entityid = (String) inMap.get("collectionid");  //For OI chats attached to a collectionid
+				}
+				if (entityid == null && channel != null)
+				{
+					entityid = channel.get("dataid");
+				}
+				if (entityid != null)
+				{
+					entity = archive.getCachedData(moduleid, entityid); 
+				}
+				
+				if (moduleid.equals("librarycollection"))
+				{
+					userids = projectmanager.listTeam(entity);
+				}
+				else
+				{
+					//Todo: other Entities
 					
-					if (moduleid.equals("librarycollection"))
+					/*
+					Collection<AddedPermission> permissions = archive.getPermissionManager().loadEntityPermissions(module, entity);
+					
+					
+					for (Iterator iterator = permissions.iterator(); iterator.hasNext();)
 					{
-						//MultiValued topic = (MultiValued) archive.getCachedData("collectiveproject", channelid);
-						//if (topic.getBoolean("teamproject"))
-						userids = projectmanager.listTeam(entity);
-					}
-					else
-					{
-						//Todo: other Entities
-						Data module = archive.getCachedData("module", moduleid);
-						Collection<AddedPermission> permissions = archive.getPermissionManager().loadEntityPermissions(module, entity);
-						
-						
-						for (Iterator iterator = permissions.iterator(); iterator.hasNext();)
+						AddedPermission addedPermission = (AddedPermission) iterator.next();
+						if (addedPermission.getPermissionType().equals("users"))
 						{
-							AddedPermission addedPermission = (AddedPermission) iterator.next();
-							if (addedPermission.getPermissionType().equals("users"))
-							{
-								userids.add(addedPermission.getData().getId());
-							}
-							
+							userids.add(addedPermission.getData().getId());
 						}
+						
 					}
+					*/
+				}
 					
 				
 				if("agentchat".equals(channel.get("channeltype")) || "agententitychat".equals(channel.get("channeltype")))
 				{					
 					userids.add("agent");
 				}
+				
+				
 				userids.add(userid); //always the message author
+				
+				userids.add(channel.get("user"));
 			}
 			
 			for (Iterator iterator = connections.iterator(); iterator.hasNext();)
@@ -302,12 +303,24 @@ public class ChatServer
 				}
 				else
 				{
+					
+					UserProfile userprofile =  archive.getUserProfile(chatConnection.getUserId());
+					Permissions userpermissions = userprofile.getPermissions();
+					
+					if(userpermissions.canEntity(module, entity, "view"))
+					{
+						chatConnection.sendMessage(inMap);
+					}
+					
+					
+					/*
 					String connectionChannel = chatConnection.getChannelId();
 					if (channelid.equals(connectionChannel))
 					{
 						//log.info("Other connection is not a team member: " + chatConnection.getChannelId());
 						chatConnection.sendMessage(inMap);
 					}
+					*/
 				}
 			} 
 			
@@ -324,11 +337,14 @@ public class ChatServer
 						String connectedUser = chatConnection.getUserId(); 
 						if( connectedUser != null)
 						{
+							/*
 							String connectionTopic = chatConnection.getChannelId();  //Current Connection Channel
 							if( channelid != null && channelid.equals(connectionTopic))
 							{
 								manager.updateChatTopicLastChecked(String.valueOf(channelid),  connectedUser);
 							}
+							*/
+							manager.updateChatTopicLastChecked(String.valueOf(channelid),  connectedUser);
 						}						
 					}	
 				}

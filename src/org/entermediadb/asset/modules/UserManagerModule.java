@@ -1630,7 +1630,6 @@ public class UserManagerModule extends BaseMediaModule
 			currentchannel.setValue("searchtype", module);
 			currentchannel.setValue("dataid", dataid );
 			currentchannel.setValue("user", inReq.getUser() );
-			currentchannel.setValue("moduleid", module);
 			String applicationid = inReq.findValue("applicationid");
 			currentchannel.setValue("chatapplicationid", applicationid);
 			currentchannel.setValue("channeltype", channeltype );
