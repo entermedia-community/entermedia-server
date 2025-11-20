@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
@@ -291,6 +292,26 @@ public class ClassifyManager extends InformaticsProcessor
 			{					
 				fieldsToFill.add(field);
 			}
+		}
+		
+		Map params = new HashMap();
+		
+		String assetid = inEntity.get("primarymedia");
+		if( assetid == null)
+		{
+			assetid = inEntity.get("primaryimage");
+		}
+		
+		Asset primaryasset = getMediaArchive().getAsset(assetid);
+		
+		if (primaryasset != null)
+		{
+			params.put("primaryasset", primaryasset);
+			
+			Searcher assetsearcher = getMediaArchive().getAssetSearcher();
+			
+			contextFields.add(assetsearcher.getDetail("longcaption"));
+			contextFields.add(assetsearcher.getDetail("keywordsai"));
 			
 		}
 		
@@ -307,13 +328,13 @@ public class ClassifyManager extends InformaticsProcessor
 		}
 		else
 		{
-			Map params = new HashMap();
+			
 			params.put("entity", inEntity);
 			params.put("data", inEntity);
 			params.put("contextfields", contextFields);
 			params.put("fieldstofill", fieldsToFill);
 			
-			String base64EncodedString = null;
+			
 			boolean isDocPage = inEntity.get("entitydocument") != null;
 			if(isDocPage)
 			{
@@ -327,7 +348,7 @@ public class ClassifyManager extends InformaticsProcessor
 
 				String functionname = inConfig.get("aifunctionname") + "_entity";
 				
-				LlmResponse results = llmconnection.callClassifyFunction(params, functionname, base64EncodedString);
+				LlmResponse results = llmconnection.callClassifyFunction(params, functionname, null);
 				
 				if (results != null)
 				{
