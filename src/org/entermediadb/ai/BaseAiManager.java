@@ -243,7 +243,8 @@ public class BaseAiManager extends BaseManager
 		String base64EncodedString = Base64.getEncoder().encodeToString(bytes); // Encode to Base64
 		long duration = (System.currentTimeMillis() - starttime) ;
 		log.info("Loaded and encoded " + item.getName() + " in "+duration+"ms");
-		return base64EncodedString;
+		
+		return "data:image/jpeg;base64," + base64EncodedString;
 
 	}
 	
