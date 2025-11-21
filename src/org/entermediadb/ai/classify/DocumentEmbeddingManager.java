@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,9 +14,11 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
+import org.elasticsearch.common.recycler.Recycler.V;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.emedia.EMediaAIResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
@@ -163,62 +166,13 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 	
 	public boolean embedDocument(ScriptLogger inLog, JSONObject embeddingPayload)
 	{
-		try
-		{
-			String endpoint = getMediaArchive().getCatalogSettingValue("ai_llmembedding_server") +  "/save";
-			HttpPost method = new HttpPost(endpoint);
-			method.setHeader("Content-Type", "application/json");
-			
-			String customerkey = getMediaArchive().getCatalogSettingValue("customer-key");
-			if( customerkey == null)
-			{
-				customerkey = "demo";
-			}
-			method.setHeader("x-customerkey", customerkey);
-			
-			method.setEntity(new StringEntity(embeddingPayload.toJSONString(), StandardCharsets.UTF_8));
-			
-			HttpSharedConnection connection = getSharedConnection();
-			CloseableHttpResponse resp = connection.sharedExecute(method);
-			
-			try
-			{
-				if (resp.getStatusLine().getStatusCode() != 200)
-				{
-					inLog.info("Embedding Server error status: " + resp.getStatusLine().getStatusCode());
-					inLog.info("Error response: " + resp.toString());
-					try
-					{
-						String error = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
-						inLog.info(error);
-					}
-					catch(Exception e)
-					{ 
-						//Ignore }
-					}
-					return false;
-				}
-				else
-				{
-					return true;
-				}
+		LlmConnection connection = getMediaArchive().getLlmConnection("documentEmbedding");
 
-			}
-			catch (Exception ex)
-			{
-				inLog.error("Error calling Embedding", ex);
-				return false;
-			}
-			finally
-			{
-				connection.release(resp);
-			}
-			
-		}
-		catch (Exception e)
-		{
-			return false;
-		}
+		Map<String,String> header = new HashMap();
+		header.put("x-customerkey", connection.getApiKey());
+		LlmResponse response = connection.callJson( "/save",header,embeddingPayload);
+		response.getMessage();
+		return true;
 	}
 
 	
