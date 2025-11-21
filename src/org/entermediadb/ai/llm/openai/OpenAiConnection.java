@@ -33,7 +33,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		String input = loadInputFromTemplate(inTemplate, agentcontext.getContext());
 		log.info(inTemplate + " process chat");
-		String endpoint = getApiEndpoint();
+		String endpoint = getServerRoot();
 
 		HttpPost method = new HttpPost(endpoint);
 		method.addHeader("Authorization", "Bearer " + getApiKey());

@@ -93,7 +93,7 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	{
 		String input = loadInputFromTemplate(inTemplate, llmrequest);
 		log.info(input);
-		String endpoint = getApiEndpoint() + "/api/chat";
+		String endpoint = getServerRoot() + "/api/chat";
 		
 
 		HttpPost method = new HttpPost(endpoint);
@@ -114,7 +114,7 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 
 	}
 
-	public String getApiEndpoint()
+	public String getServerRoot()
 	{
 		// TODO Auto-generated method stub
 		String apihost = getMediaArchive().getCatalogSettingValue("ai_ollama_server");

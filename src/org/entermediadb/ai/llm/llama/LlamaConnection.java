@@ -157,7 +157,7 @@ public class LlamaConnection extends OpenAiConnection {
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(prompt);
 
-		String endpoint = getApiEndpoint();
+		String endpoint = getServerRoot();
 		HttpPost method = new HttpPost(endpoint);
 		method.addHeader("Authorization", "Bearer " + getApiKey());
 		method.setHeader("Content-Type", "application/json");

@@ -55,6 +55,12 @@ public class BaseAiManager extends BaseManager
 		}
 		models.put("vision", visionmodel);
 		
+		String entityclassificationmodel = getMediaArchive().getCatalogSettingValue("llmentityclassificationmodel");
+		if(entityclassificationmodel == null) {
+			entityclassificationmodel = "qwen3_4b";
+		}
+		models.put("entityclassification", entityclassificationmodel);
+		
 		String metadatamodel = getMediaArchive().getCatalogSettingValue("llmmetadatamodel");
 		if(metadatamodel == null) {
 			metadatamodel = "gpt-5-nano";

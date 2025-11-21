@@ -32,6 +32,12 @@ public class ClassifyManager extends InformaticsProcessor
 		return getMediaArchive().getLlmConnection(models.get("vision"));
 	}
 	
+	public LlmConnection getEntityClassificationLlmConnection()
+	{
+		Map<String, String> models = getModels();
+		return getMediaArchive().getLlmConnection(models.get("entityclassification"));
+	}
+	
 	@Override
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> assets)
 	{
@@ -312,6 +318,8 @@ public class ClassifyManager extends InformaticsProcessor
 			
 			contextFields.add(assetsearcher.getDetail("longcaption"));
 			contextFields.add(assetsearcher.getDetail("keywordsai"));
+			contextFields.add(assetsearcher.getDetail("semanticcopics"));
+			contextFields.add(assetsearcher.getDetail("headline"));
 			
 		}
 		
@@ -344,7 +352,7 @@ public class ClassifyManager extends InformaticsProcessor
 
 			try 
 			{
-				LlmConnection llmconnection = getLlmConnection();
+				LlmConnection llmconnection = getEntityClassificationLlmConnection();
 
 				String functionname = inConfig.get("aifunctionname") + "_entity";
 				

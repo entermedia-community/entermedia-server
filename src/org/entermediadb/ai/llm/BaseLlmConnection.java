@@ -49,30 +49,39 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		fieldModelData = inModelData;
 	}
 	
-	public String getApiEndpoint() 
+	public String getServerRoot() 
 	{
-		String endpoint = getModelData().get("endpoint");
-		if( endpoint == null)
+		
+		//TODO: lookuo from new servers table
+		// - create llama-vision and llama implementation, they may be in 2 different servers
+		// - put the extension part (v1/....) inside each place we call getServerRoot.
+		// - cleanup catalogsettings server ids.
+		
+		
+		String llmtype = getLlmType();
+		
+		if(llmtype.equals("openai"))
 		{
-			String llmtype = getLlmType();
-			
-			if(llmtype.equals("openai"))
-			{
-				return "https://api.openai.com/v1/chat/completions";
-			}
-			else if(llmtype.equals("ollama"))
-			{
-				return "https://ollama.entermediadb.net";
-			}
-			else if(llmtype.equals("llama"))
-			{
-				return "http://142.113.71.170:36143/v1/chat/completions";
-			}
-			else if(llmtype.equals("gemini"))
-			{
-				return "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
-			}
+			return "https://api.openai.com/v1/chat/completions";
 		}
+		else if(llmtype.equals("ollama"))
+		{
+			return "https://ollama.entermediadb.net";
+		}
+		else if(llmtype.equals("llama"))
+		{
+			String server = getMediaArchive().getCatalogSettingValue("ai_asset_classification_server");
+			return server + "/v1/chat/completions";
+		}
+		else if(llmtype.equals("llamaopenai"))
+		{
+			return "https://llamam50.entermediadb.net/v1/chat/completions";
+		}
+		else if(llmtype.equals("gemini"))
+		{
+			return "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+		}
+			
 		if( endpoint == null)
 		{
 			throw new OpenEditException("No endpoint defined for model: " + getModelData().getId());
@@ -380,7 +389,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	
 	protected JSONObject handleApiRequest(String payload)
 	{
-		String endpoint = getApiEndpoint();
+		String endpoint = getServerRoot();
 		HttpPost method = new HttpPost(endpoint);
 		method.addHeader("Authorization", "Bearer " + getApiKey());
 		method.setHeader("Content-Type", "application/json");
@@ -427,7 +436,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		agentcontext.addContext("mediaarchive", getMediaArchive());
 		String input = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmType() +"/assistant/messages/" + inPageName + ".json", agentcontext.getContext());
 		log.info(inPageName + " process chat");
-		String endpoint = getApiEndpoint();
+		String endpoint = getServerRoot();
 
 		HttpPost method = new HttpPost(endpoint);
 		method.addHeader("Authorization", "Bearer " + getApiKey());

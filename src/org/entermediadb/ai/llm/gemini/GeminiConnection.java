@@ -32,7 +32,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 
 		String input = loadInputFromTemplate(inTemplate, llmRequest.getContext());
 		log.info(inTemplate + " process chat");
-		String endpoint = getApiEndpoint();
+		String endpoint = getServerRoot();
 
 		HttpPost method = new HttpPost(endpoint);
 		method.addHeader("x-goog-api-key", getApiKey());
@@ -275,7 +275,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
 
-		String endpoint = getApiEndpoint();
+		String endpoint = getServerRoot();
 		HttpPost method = new HttpPost(endpoint);
 		method.addHeader("x-goog-api-key", getApiKey());
 		method.setHeader("Content-Type", "application/json");
