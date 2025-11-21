@@ -46,6 +46,7 @@ public class BaseAiManager extends BaseManager
 		fieldSharedConnection = inSharedConnection;
 	}
 	
+	/*
 	public Map<String, String> getModels()
 	{
 		Map<String, String> models = new HashMap<>();
@@ -81,7 +82,7 @@ public class BaseAiManager extends BaseManager
 		
 		return models;
 	}
-	
+	*/
 	protected Map<String, PropertyDetail> loadActiveDetails(String inModuleId)
 	{
 		//TODO: Cache these!!

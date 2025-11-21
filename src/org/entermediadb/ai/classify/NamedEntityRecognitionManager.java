@@ -18,21 +18,20 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	private static final Log log = LogFactory.getLog(NamedEntityRecognitionManager.class);
 
 	@Override
-	public LlmConnection getLlmConnection()
+	public LlmConnection getLlmAssetClassification()
 	{
-		Map<String, String> models = getModels();
-		return getMediaArchive().getLlmConnection(models.get("metadata"));
+		return getMediaArchive().getLlmConnection("classifyAsset");
 	}
 	
 	@Override
-	protected boolean processOneAsset(MultiValued inConfig, Map<String, String> models, MultiValued inData)
+	protected boolean processOneAsset(MultiValued inConfig, MultiValued inData)
 	{
-		boolean ok = processOneEntity(inConfig, models, inData, "asset");
+		boolean ok = processOneEntity(inConfig, inData, "asset");
 		return ok;
 	}
 	 
 	@Override
-	protected boolean processOneEntity(MultiValued inConfig, Map<String, String> models, MultiValued inData, String inModuleId)
+	protected boolean processOneEntity(MultiValued inConfig, MultiValued inData, String inModuleId)
 	{
 	 	Collection<PropertyDetail> autocreatefields = getMediaArchive().getSearcher(inModuleId).getPropertyDetails().findAiAutoCreatedProperties();
 	 	
@@ -79,7 +78,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
  		params.put("autocreatefields", autocreatefields);
  		
 		String functionname = inConfig.get("aifunctionname");
-		Map results = getLlmConnection().callStructuredOutputList(functionname,  params);
+		Map results = getLlmAssetClassification().callStructuredOutputList(functionname,  params);
 		Map categories = (Map) results.get("categories");
 		if(categories != null)
 		{			
