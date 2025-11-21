@@ -512,7 +512,7 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 			return floats;
 		}
 	
-		public Collection<String> createSemanticValues(LlmConnection llmconnection, MultiValued inConfig, String inModel, String inModuleId, MultiValued inData)
+		public Collection<String> createSemanticValues(LlmConnection llmconnection, MultiValued inConfig, String inModuleId, MultiValued inData)
 		{
 //			MediaArchive archive = getMediaArchive();
 

@@ -26,24 +26,20 @@ public class ClassifyManager extends InformaticsProcessor
 {
 	private static final Log log = LogFactory.getLog(ClassifyManager.class);
 	
-	public LlmConnection getLlmConnection()
+	public LlmConnection getLlmAssetClassification()
 	{
-		Map<String, String> models = getModels();
-		return getMediaArchive().getLlmConnection(models.get("vision"));
+		return getMediaArchive().getLlmConnection("classifyAsset");
 	}
 	
 	public LlmConnection getEntityClassificationLlmConnection()
 	{
-		Map<String, String> models = getModels();
-		return getMediaArchive().getLlmConnection(models.get("entityclassification"));
+		return getMediaArchive().getLlmConnection("classifyEntity");
 	}
 	
 	@Override
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> assets)
 	{
 		int count = 1;
-
-		Map<String, String> models = getModels();
 
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 		{
@@ -62,7 +58,7 @@ public class ClassifyManager extends InformaticsProcessor
 				inLog.info(inConfig.get("bean") + " - Analyzing asset ("+count+"/"+assets.size()+")" + asset.getName());
 				count++;
 
-				boolean complete = processOneAsset(inConfig, models, asset);
+				boolean complete = processOneAsset(inConfig, asset);
 				if( !complete )
 				{
 					continue;
@@ -79,7 +75,7 @@ public class ClassifyManager extends InformaticsProcessor
 		}
 	}
 
-	protected boolean processOneAsset(MultiValued inConfig, Map<String, String> models, MultiValued asset) throws Exception
+	protected boolean processOneAsset(MultiValued inConfig, MultiValued asset) throws Exception
 	{
 		Collection allaifields = getMediaArchive().getAssetPropertyDetails().findAiCreationProperties();
 		Collection<PropertyDetail> aifields = new ArrayList();
@@ -178,7 +174,7 @@ public class ClassifyManager extends InformaticsProcessor
 			
 			params.put("contextfields", contextFields);
 			
-			LlmResponse results = getLlmConnection().callClassifyFunction(params, functionname, base64EncodedString, textContent);
+			LlmResponse results = getLlmAssetClassification().callClassifyFunction(params, functionname, base64EncodedString, textContent);
 
 			if (results != null)
 			{
@@ -264,7 +260,7 @@ public class ClassifyManager extends InformaticsProcessor
 
 				inLog.info("Classifying entity: " + entity.getName());
 
-				boolean complete = processOneEntity(inConfig, getModels(), entity, moduleid);
+				boolean complete = processOneEntity(inConfig, entity, moduleid);
 				if( !complete )
 				{
 					continue;
@@ -280,7 +276,7 @@ public class ClassifyManager extends InformaticsProcessor
 		}
 	}
 	
-	protected boolean processOneEntity(MultiValued inConfig, Map<String, String> models, MultiValued inEntity, String inModuleId) throws Exception
+	protected boolean processOneEntity(MultiValued inConfig, MultiValued inEntity, String inModuleId) throws Exception
 	{
 		Collection detailsfields = getMediaArchive().getSearcher(inModuleId).getDetailsForView(inModuleId+"general");
 
