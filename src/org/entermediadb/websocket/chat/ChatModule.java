@@ -565,24 +565,24 @@ public class ChatModule extends BaseMediaModule
 		}
 	}	
 	
-	//deprecated? not used?
-	public LlmConnection loadManager(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		AssistantManager assistantManager = (AssistantManager) archive.getBean("assistantManager");
-
-//		String model = inReq.findValue("aimodel");
-//		if( model == null)
-//		{
-//			model = archive.getCatalogSettingValue("ai_default_chat_model");
-//		}
-		LlmConnection llmconnection = assistantManager.getLlmConnection();//(LlmConnection) archive.getLlmConnection(model);
-		inReq.putPageValue("gpt", llmconnection); //Deprecated
-		inReq.putPageValue("llmconnection", llmconnection);
-		inReq.putPageValue("assistantManager", assistantManager);
-		
-		return llmconnection;
-	}
+//	//deprecated? not used?
+//	public LlmConnection loadManager(WebPageRequest inReq)
+//	{
+//		MediaArchive archive = getMediaArchive(inReq);
+//		AssistantManager assistantManager = (AssistantManager) archive.getBean("assistantManager");
+//
+////		String model = inReq.findValue("aimodel");
+////		if( model == null)
+////		{
+////			model = archive.getCatalogSettingValue("ai_default_chat_model");
+////		}
+//		LlmConnection llmconnection = assistantManager.getLlmConnection();//(LlmConnection) archive.getLlmConnection(model);
+//		inReq.putPageValue("gpt", llmconnection); //Deprecated
+//		inReq.putPageValue("llmconnection", llmconnection);
+//		inReq.putPageValue("assistantManager", assistantManager);
+//		
+//		return llmconnection;
+//	}
 
 	
 	public void monitorChannels(WebPageRequest inReq) throws Exception

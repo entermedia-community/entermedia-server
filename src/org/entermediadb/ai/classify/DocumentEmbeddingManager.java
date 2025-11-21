@@ -260,13 +260,13 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 		
 		chat.put("doc_ids", docids);
 		
-		String url = archive.getCatalogSettingValue("ai_llmembedding_server");
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
 		
 		//CloseableHttpResponse resp = getSharedConnection().sharedPostWithJson(url + "/query",chat);
 		
-		HttpPost method = new HttpPost(url+"/query");
+		HttpPost method = new HttpPost(llmconnection.getServerRoot() + "/query");
 		
-		String customerkey = archive.getCatalogSettingValue("customer-key");
+		String customerkey = llmconnection.getApiKey();
 		if( customerkey == null)
 		{
 			customerkey = "demo";
@@ -287,7 +287,7 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 				
 				String error =	getSharedConnection().parseText(resp);
 				log.info(error);
-				throw new OpenEditException("server down" + url);
+				throw new OpenEditException("server down" + llmconnection.getServerRoot() );
 			}
 			
 			JSONObject ragresponse = getSharedConnection().parseJson(resp);
@@ -384,12 +384,7 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 		
 		inAgentContext.addContext("raganswer", answer);
 		
-		String model = getMediaArchive().getCatalogSettingValue("llmagentmodel");
-		if (model == null)
-		{
-			model = "qwen3vl";
-		}
-		LlmConnection llmconnection = getMediaArchive().getLlmConnection(model);
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding"); //agentChat
 		
 		Data channel = inAgentContext.getChannel();
 		String apphome = "/"+ channel.get("chatapplicationid");

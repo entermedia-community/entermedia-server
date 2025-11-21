@@ -26,6 +26,12 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 {
 	private static Log log = LogFactory.getLog(GeminiConnection.class);
 
+	@Override
+	public String getLlmProtocol()
+	{
+		return "gemini";
+	}
+	
 	public LlmResponse runPageAsInput(AgentContext llmRequest, String inTemplate)
 	{
 		llmRequest.addContext("mediaarchive", getMediaArchive());

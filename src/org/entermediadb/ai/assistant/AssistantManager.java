@@ -144,17 +144,17 @@ public class AssistantManager extends BaseAiManager
 		}
 	}
 	
-	public LlmConnection getLlmConnection()
-	{
-		String model = getMediaArchive().getCatalogSettingValue("llmagentmodel");
-		if (model == null)
-		{
-			model = "gpt-5-nano"; // Default fallback
-		}
-		LlmConnection manager = getMediaArchive().getLlmConnection(model);
-		return manager;
-	}
-	
+//	public LlmConnection getLlmConnection()
+//	{
+//		String model = getMediaArchive().getCatalogSettingValue("llmagentmodel");
+//		if (model == null)
+//		{
+//			model = "gpt-5-nano"; // Default fallback
+//		}
+//		LlmConnection manager = getMediaArchive().getLlmConnection(model);
+//		return manager;
+//	}
+//	
 	
 	public AgentContext loadContext(String inChannelId) 
 	{
@@ -183,22 +183,16 @@ public class AssistantManager extends BaseAiManager
 		
 		AgentContext agentContext = loadContext(inChannel.getId());
 		
-		String model = archive.getCatalogSettingValue("llmagentmodel");
-		
-		if (model == null)
-		{
-			model = "gpt-4o"; // Default fallback
-		}
-		LlmConnection llmconnection = archive.getLlmConnection(model);
+		LlmConnection llmconnection = archive.getLlmConnection("agentChat");
 
-		agentContext.addContext("model", model);
+		agentContext.addContext("model", llmconnection.getModelName() );
 
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 		Searcher chats = archive.getSearcher("chatterbox");
 		
 		if (!llmconnection.isReady()) 
 		{
-			inLog.error("LLM Manager is not ready, check key for: " + model + ". Cannot process channel: " + inChannel);
+			inLog.error("LLM Manager is not ready, check key for: " +  llmconnection.getModelName() + ". Cannot process channel: " + inChannel);
 			return;
 		}
 
@@ -333,10 +327,7 @@ public class AssistantManager extends BaseAiManager
 		EMediaAIResponse response = new EMediaAIResponse();
 		MediaArchive archive = getMediaArchive();
 		
-		//String model = "qwen3:8b";
-		String model = archive.getCatalogSettingValue("llmagentmodel");
-
-		LlmConnection llmconnection = archive.getLlmConnection(model);
+		LlmConnection llmconnection = archive.getLlmConnection("agentChat");
 		
 		//Run AI
 		inAgentContext.addContext("schema", loadSchema());
@@ -1007,8 +998,7 @@ public class AssistantManager extends BaseAiManager
 			log.info("No RAG context found to process");
 			return;
 		}
-		String model = archive.getCatalogSettingValue("llmragmodel");
-		OpenAiConnection llmconnection = (OpenAiConnection) archive.getLlmConnection(model);
+		OpenAiConnection llmconnection = (OpenAiConnection) archive.getLlmConnection("ragSearch");
 		
 		llmconnection.callRagFunction(ragcontext.get("context"), ragcontext.get("query"));
 		
@@ -1240,13 +1230,7 @@ public class AssistantManager extends BaseAiManager
 	{
 		MediaArchive archive = getMediaArchive();
 
-		String model = archive.getCatalogSettingValue("llmimagegenerationmodel");
-		if (model == null)
-		{
-			model = "gpt-image-1";
-		}
-		
-		LlmConnection llmconnection = archive.getLlmConnection(model);
+		LlmConnection llmconnection = archive.getLlmConnection("createAsset");
 		
 		JSONObject imageattr = (JSONObject) aiCreation.getImageFields();
 		

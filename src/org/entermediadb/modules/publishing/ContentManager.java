@@ -764,15 +764,6 @@ public class ContentManager implements CatalogEnabled
 
 	public Asset createAssetFromLLM(Map params, Data contentrequest)
 	{
-
-		MediaArchive archive = getMediaArchive();
-
-		String model = archive.getCatalogSettingValue("llmimagegenerationmodel");
-		if (model == null)
-		{
-			model = "dall-e-3";
-		}
-
 		String prompt = (String) contentrequest.get("llmprompt");
 		
 		if (prompt == null)
@@ -780,6 +771,7 @@ public class ContentManager implements CatalogEnabled
 			return null;
 		}
 		
+		MediaArchive archive = getMediaArchive();
 		Asset asset = archive.getAsset(contentrequest.get("primarymedia"));
 		if(asset == null) {
 			return null;
@@ -788,7 +780,7 @@ public class ContentManager implements CatalogEnabled
 
 		try 
 		{
-			LlmConnection llmconnection = archive.getLlmConnection(model);
+			LlmConnection llmconnection = archive.getLlmConnection("createAsset");
 			
 			LlmResponse results = llmconnection.createImage(prompt);
 
@@ -856,7 +848,7 @@ public class ContentManager implements CatalogEnabled
 
 	}
 
-	public Data createFromLLM(Map params, LlmConnection inLlm, String inModel, Data inContentrequest) throws Exception
+	public Data createFromLLM(Map params, LlmConnection inLlm, Data inContentrequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 

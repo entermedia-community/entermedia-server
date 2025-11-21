@@ -23,6 +23,12 @@ import org.openedit.util.JSONParser;
 public class LlamaVisionConnection extends OpenAiConnection {
 	private static Log log = LogFactory.getLog(LlamaVisionConnection.class);
 	
+	@Override
+	public String getLlmProtocol()
+	{
+		return "llama";
+	}
+	
 	public String getModelPath()
 	{
 		String modelname = getModelName();
@@ -57,13 +63,13 @@ public class LlamaVisionConnection extends OpenAiConnection {
 		// Handle function call definition
 		if (inFunction != null)
 		{
-			String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmType() +"/classify/functions/" + inFunction + ".json";
+			String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/functions/" + inFunction + ".json";
 			
 			Page defpage = archive.getPageManager().getPage(templatepath);
 			
 			if (!defpage.exists())
 			{
-				templatepath = "/" + archive.getCatalogId() + "/ai/" + getLlmType() +"/classify/functions/" + inFunction + ".json";
+				templatepath = "/" + archive.getCatalogId() + "/ai/" + getLlmProtocol() +"/classify/functions/" + inFunction + ".json";
 				defpage = archive.getPageManager().getPage(templatepath);
 			}
 			
@@ -142,7 +148,7 @@ public class LlamaVisionConnection extends OpenAiConnection {
 		inParams.put("model", getModelName());
 		
 		
-		String structurepath = "/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmType() +"/classify/structures/" + inStructureName + "_structure.json";
+		String structurepath = "/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/structures/" + inStructureName + "_structure.json";
 		Page defpage = archive.getPageManager().getPage(structurepath);
 		
 		if (defpage.exists())
@@ -151,7 +157,7 @@ public class LlamaVisionConnection extends OpenAiConnection {
 			inParams.put("structure", structure);
 		}
 		
-		String prompt = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmType() +"/classify/structures/" + inStructureName + ".json", inParams);
+		String prompt = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/structures/" + inStructureName + ".json", inParams);
 
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(prompt);
@@ -214,11 +220,11 @@ public class LlamaVisionConnection extends OpenAiConnection {
 	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image)
 	{
 		MediaArchive archive = getMediaArchive();
-		String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmType() +"/classify/functions/" + inOCRInstruction + ".json";
+		String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/functions/" + inOCRInstruction + ".json";
 		Page defpage = archive.getPageManager().getPage(templatepath);
 		if (!defpage.exists())
 		{
-			templatepath = "/" + archive.getCatalogId() + "/ai/" + getLlmType() +"/classify/functions/" + inOCRInstruction + ".json";
+			templatepath = "/" + archive.getCatalogId() + "/ai/" + getLlmProtocol() +"/classify/functions/" + inOCRInstruction + ".json";
 			defpage = archive.getPageManager().getPage(templatepath);
 		}
 		

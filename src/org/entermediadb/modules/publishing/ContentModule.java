@@ -83,19 +83,12 @@ public class ContentModule extends BaseMediaModule
 		Map params = new HashMap();
 		params.putAll(inReq.getParameterMap());
 		
-		String model = archive.getCatalogSettingValue("llmmetadatamodel");
-		
-		if(model == null) {
-			model = "gpt-5-nano";
-		}
-		
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			MultiValued contentrequest = (MultiValued) iterator.next();
-
 			
-			LlmConnection llm = (LlmConnection) archive.getLlmConnection(model);
-			manager.createFromLLM(params, llm, model, contentrequest);
+			LlmConnection llm = (LlmConnection) archive.getLlmConnection("createAsset");
+			manager.createFromLLM(params, llm, contentrequest);
 			contentrequest.setValue("status", "complete");
 			archive.saveData("contentcreator", contentrequest);
 		}

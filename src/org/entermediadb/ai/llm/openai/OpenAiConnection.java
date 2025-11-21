@@ -27,6 +27,12 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 {
 	private static Log log = LogFactory.getLog(OpenAiConnection.class);
 
+	@Override
+	public String getLlmProtocol()
+	{
+		return "openai";
+	}	
+	
 	public LlmResponse runPageAsInput(AgentContext agentcontext, String inTemplate)
 	{
 		agentcontext.addContext("mediaarchive", getMediaArchive());
@@ -128,11 +134,11 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		JSONObject obj = new JSONObject();
 		obj.put("model", getModelName());
 
-		String contentPath = "/" + archive.getMediaDbId() + "/ai/" + getLlmType() +"/createdialog/systemmessage/" + inFunction + ".html";
+		String contentPath = "/" + archive.getMediaDbId() + "/ai/" + getLlmProtocol() +"/createdialog/systemmessage/" + inFunction + ".html";
 		boolean contentExists = archive.getPageManager().getPage(contentPath).exists();
 		if (!contentExists)
 		{
-			contentPath = "/" + archive.getCatalogId() + "/ai/" + getLlmType() +"/createdialog/systemmessage/" + inFunction + ".html";
+			contentPath = "/" + archive.getCatalogId() + "/ai/" + getLlmProtocol() +"/createdialog/systemmessage/" + inFunction + ".html";
 			contentExists = archive.getPageManager().getPage(contentPath).exists();
 		}
 		if (!contentExists)
@@ -153,11 +159,11 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		// Handle function call definition
 		if (inFunction != null)
 		{
-			String functionPath = "/" + archive.getMediaDbId() + "/ai/" + getLlmType() +"/createdialog/functions/" + inFunction + ".json";
+			String functionPath = "/" + archive.getMediaDbId() + "/ai/" + getLlmProtocol() +"/createdialog/functions/" + inFunction + ".json";
 			boolean functionExists = archive.getPageManager().getPage(functionPath).exists();
 			if (!functionExists)
 			{
-				functionPath = "/" + archive.getCatalogId() + "/ai/" + getLlmType() +"/createdialog/functions/" + inFunction + ".json";
+				functionPath = "/" + archive.getCatalogId() + "/ai/" + getLlmProtocol() +"/createdialog/functions/" + inFunction + ".json";
 				functionExists = archive.getPageManager().getPage(functionPath).exists();
 			}
 			if (!functionExists)
@@ -210,7 +216,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		JSONArray messages = new JSONArray();
 		JSONObject message = new JSONObject();
 		
-		if("llama".equals(getLlmType()))
+		if("llama".equals(getLlmProtocol()))
 		{
 			JSONObject systemmessage = new JSONObject();
 			systemmessage.put("role", "system");
@@ -256,13 +262,13 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		// Handle function call definition
 		if (inFunction != null)
 		{
-			String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmType() +"/classify/functions/" + inFunction + ".json";
+			String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/functions/" + inFunction + ".json";
 			
 			Page defpage = archive.getPageManager().getPage(templatepath);
 			
 			if (!defpage.exists())
 			{
-				templatepath = "/" + archive.getCatalogId() + "/ai/" + getLlmType() +"/classify/functions/" + inFunction + ".json";
+				templatepath = "/" + archive.getCatalogId() + "/ai/" + getLlmProtocol() +"/classify/functions/" + inFunction + ".json";
 				defpage = archive.getPageManager().getPage(templatepath);
 			}
 			
@@ -306,7 +312,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	{
 		inParams.put("model", getModelName());
 		
-		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmType() +"/classify/structures/" + inStructureName + ".json", inParams);
+		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/structures/" + inStructureName + ".json", inParams);
 
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(inStructure);

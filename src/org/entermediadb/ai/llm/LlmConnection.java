@@ -9,7 +9,9 @@ public interface LlmConnection {
 	
 	public String getApiKey();
 
-	public String getLlmType();
+	public String getServerRoot();
+	
+	public String getLlmProtocol();
 
 	public String getModelName();
 
