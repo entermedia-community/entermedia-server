@@ -3353,22 +3353,21 @@ public class MediaArchive implements CatalogEnabled
 		return manager;
 	}
 	
-	public LlmConnection getLlmConnection(String inModel)
+	public LlmConnection getLlmConnection(String inAiFunctionName)
 	{
-		LlmConnection connection = (LlmConnection) getCacheManager().get("llmconnection", inModel);
+		LlmConnection connection = (LlmConnection) getCacheManager().get("llmconnection", inAiFunctionName);
 		
 		if(connection == null)
 		{			
-			Data modelinfo = query("llmmodel").exact("modelid", inModel).searchOne();
-			if( modelinfo == null)
+			Data serverinfo = query("aiserver").exact("aifunction", inAiFunctionName).sort("ordering").searchOne();
+			if( serverinfo == null)
 			{
-				throw new OpenEditException("Could not find model " + inModel);
+				throw new OpenEditException("Could not find model " + inAiFunctionName);
 			}
-			String llm = modelinfo.get("llmtype");
-			connection = (LlmConnection) getBean(llm + "Connection");
-			connection.setModelData(modelinfo);
-			
-			getCacheManager().put("llmconnection", inModel, connection);
+			String llm = serverinfo.get("connectionbean");
+			connection = (LlmConnection) getBean(llm);
+			connection.setAiServerData(serverinfo);
+			getCacheManager().put("llmconnection", inAiFunctionName, connection);
 		}
 		
 		return connection;

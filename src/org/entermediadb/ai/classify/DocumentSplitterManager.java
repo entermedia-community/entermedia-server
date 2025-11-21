@@ -12,7 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.LlmConnection;
-import org.entermediadb.ai.llm.llama.LlamaResponse;
+import org.entermediadb.ai.llm.llama.LlamaVisionResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
@@ -155,12 +155,11 @@ public class DocumentSplitterManager extends InformaticsProcessor
 	
 	public void generateMarkdown(MultiValued pageEntity) 
 	{
-		String model = getMediaArchive().getCatalogSettingValue("llmvisionmodel");
-		LlmConnection llmconnection = getMediaArchive().getLlmConnection(model);
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("generateMarkdown");
 
 		String base64Img = loadDocumentContent(pageEntity);
 			
-		LlamaResponse result = (LlamaResponse) llmconnection.callOCRFunction(new HashMap(), "document_ocr", base64Img);
+		LlamaVisionResponse result = (LlamaVisionResponse) llmconnection.callOCRFunction(new HashMap(), "document_ocr", base64Img);
 		String markdown = result.getOcrResponse();
 			
 		pageEntity.setValue("markdowncontent", markdown);
