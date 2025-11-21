@@ -3,12 +3,14 @@ package org.entermediadb.ai.llm;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -17,6 +19,7 @@ import org.entermediadb.ai.llm.http.HttpResponse;
 import org.entermediadb.ai.llm.openai.OpenAiResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -398,7 +401,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 
-		JSONObject json = getConnection().parseJson(resp);
+		JSONObject json = (JSONObject) getConnection().parseJson(resp);
 
 		OpenAiResponse response = new OpenAiResponse();
 		response.setRawResponse(json);
@@ -445,6 +448,90 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		
 		HttpSharedConnection connection = getConnection();
 		CloseableHttpResponse resp = connection.sharedExecute(method);
+		Object object = null;
+		try
+		{
+			/*
+			if (resp.getStatusLine().getStatusCode() == 400)
+			{
+				getSharedConnection().release(resp);
+				log.info("Face detection Remote Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
+				inAsset.setValue("facescanerror", true);
+				return Collections.EMPTY_LIST;
+			}
+			else if (resp.getStatusLine().getStatusCode() == 413)
+			{
+				//remote error body size
+				getSharedConnection().release(resp);
+				log.info("Face detection Remote Body Size Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
+				inAsset.setValue("facescanerror", true);
+				return null;
+			}
+			else if (resp.getStatusLine().getStatusCode() == 500)
+			{
+				//remote server error, may be a broken image
+				getSharedConnection().release(resp);
+				log.info("Face detection Remote Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
+				inAsset.setValue("facescanerror", true);
+				return null;
+			}
+			*/
+			
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
+				log.info("Embedding Server error status: " + resp.getStatusLine().getStatusCode());
+				log.info("Error response: " + resp.toString());
+				try
+				{
+					String error = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+					log.info(error);
+				}
+				catch(Exception e)
+				{ 
+					//Ignore 
+				}
+				throw new OpenEditException("Could not call " + inPath);
+			}
+			
+			object = connection.parseJson(resp);
+		}
+		finally
+		{
+			connection.release(resp);
+		}
+		HttpResponse response = new HttpResponse();
+		
+		if (object instanceof JSONObject) 
+		{
+			response.setRawResponse((JSONObject) object);
+		}
+		else
+		{
+			response.setRawCollection((JSONArray) object);
+		}
+		
+		return response;
+	}
+	
+	@Override
+	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, HttpEntity inEntity)
+	{
+		HttpPost method = new HttpPost(getServerRoot() + inPath);
+		
+		if(inHeaders != null)
+		{
+			for (Iterator iterator = inHeaders.keySet().iterator(); iterator.hasNext();)
+			{
+				String key = (String) iterator.next();
+				String value = inHeaders.get(key);
+				method.setHeader(key,value);
+			}
+		}
+		
+		method.setEntity(inEntity);
+		
+		HttpSharedConnection connection = getConnection();
+		CloseableHttpResponse resp = connection.sharedExecute(method);
 		JSONObject res = null;
 		try
 		{
@@ -463,7 +550,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 				}
 				throw new OpenEditException("Could not call " + inPath);
 			}
-			res = connection.parseJson(resp);
+			res = (JSONObject) connection.parseJson(resp);
 		}
 		finally
 		{

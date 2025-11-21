@@ -18,9 +18,9 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	private static final Log log = LogFactory.getLog(NamedEntityRecognitionManager.class);
 
 	@Override
-	public LlmConnection getLlmAssetClassification()
+	public LlmConnection getLlmNamingServer()
 	{
-		return getMediaArchive().getLlmConnection("classifyAsset");
+		return getMediaArchive().getLlmConnection("namedEntityRecognition");
 	}
 	
 	@Override
@@ -78,7 +78,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
  		params.put("autocreatefields", autocreatefields);
  		
 		String functionname = inConfig.get("aifunctionname");
-		Map results = getLlmAssetClassification().callStructuredOutputList(functionname,  params);
+		Map results = getLlmNamingServer().callStructuredOutputList(functionname,  params);
 		Map categories = (Map) results.get("categories");
 		if(categories != null)
 		{			

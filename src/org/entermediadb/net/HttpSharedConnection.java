@@ -40,6 +40,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.OpenEditException;
@@ -198,9 +199,16 @@ public class HttpSharedConnection
 	public JSONObject getJson(String inUrl,Map extraHeaders) 
 	{
 		CloseableHttpResponse resp = sharedGet(inUrl,extraHeaders);
-		JSONObject elem = parseJson(resp);
+		JSONObject elem = (JSONObject) parseJson(resp);
 		return elem;
 	}
+	public JSONArray getJsonCollection(String inUrl,Map extraHeaders) 
+	{
+		CloseableHttpResponse resp = sharedGet(inUrl,extraHeaders);
+		JSONArray elem = (JSONArray) parseJson(resp);
+		return elem;
+	}
+	
 	public String getResponseString(String inUrl) 
 	{
 		return getResponseString(inUrl, null);
@@ -241,7 +249,7 @@ public class HttpSharedConnection
 		throw new OpenEditException(errormessage);
 	}
 
-	public JSONObject parseJson(CloseableHttpResponse resp) 
+	public Object parseJson(CloseableHttpResponse resp) 
 	{
 		try {
 			
@@ -258,14 +266,14 @@ public class HttpSharedConnection
 			
 			HttpEntity entity = resp.getEntity();
 			
-			JSONObject json = null;
+			Object json = null;
 			JSONParser parser = new JSONParser();
 
 			if (DEBUG)
 			{
 				String returned = EntityUtils.toString(resp.getEntity());
 				log.info(returned);
-				json = (JSONObject)parser.parse(returned);
+				json = parser.parse(returned);
 			}
 			else
 			{
@@ -275,7 +283,7 @@ public class HttpSharedConnection
 					charset = entity.getContentEncoding().getValue();
 				}
 				InputStreamReader reader = new InputStreamReader(entity.getContent(),charset);
-				json = (JSONObject)parser.parse(reader);
+				json = parser.parse(reader);
 				
 			}
 			// log.info(content);

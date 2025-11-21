@@ -176,7 +176,6 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 		payload.put("target", targets);
 		
 		log.info("Translating " + q + " from " + sourceLang + " to " + targetLangs);
-
 		
 		LlmConnection connection = getMediaArchive().getLlmConnection("translateFields");
 		LlmResponse resp = connection.callJson("/translate", null,payload);

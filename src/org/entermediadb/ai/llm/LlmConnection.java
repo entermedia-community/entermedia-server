@@ -2,6 +2,7 @@ package org.entermediadb.ai.llm;
 
 import java.util.Map;
 
+import org.apache.http.HttpEntity;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 
@@ -42,4 +43,9 @@ public interface LlmConnection {
 	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image);
 
 	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inEmbeddingPayload);
+	
+	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, HttpEntity inEntity);
+	
+	
+	
 }

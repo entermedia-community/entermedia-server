@@ -19,13 +19,14 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
+import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.asset.convert.managers.AudioConversionManager;
-import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -217,8 +218,32 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		
 		inTrack.setValue("captions", captions);
 	}
-
+	
+	
+	
 	public JSONArray getTranscribedData(ContentItem audio) throws FileNotFoundException, Exception {
+		
+		File audioFile = new File(audio.getAbsolutePath());
+		if(!audioFile.exists())
+		{
+			throw new FileNotFoundException("File not found: " + audioFile);
+		}
+		
+		HttpEntity entity = MultipartEntityBuilder.create()
+                .addBinaryBody("file", audioFile, ContentType.create("audio/mp3"), audioFile.getName())
+                .build();
+		
+		LlmConnection connection = getMediaArchive().getLlmConnection("transcribeFile");
+		LlmResponse resp = connection.callJson("/transcribe", null, entity);
+		
+		JSONArray result = (JSONArray) resp.getRawResponse().get("results");  //TODO: Change server to return JSONOBject
+		return result;
+
+	}
+	
+	
+/*
+	public JSONArray getTranscribedData_OLD(ContentItem audio) throws FileNotFoundException, Exception {
 		String endpoint = getMediaArchive().getCatalogSettingValue("ai_transcriber_server") + "/transcribe";
 
 		HttpPost method = new HttpPost(endpoint);
@@ -249,12 +274,10 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 
 		else {
 			String returned = EntityUtils.toString(resp.getEntity());
-
 			JSONArray result = (JSONArray) new JSONParser().parseJSONArray(returned);
-			
 			return result;
 
 		}
 	}
-	
+	*/
 }

@@ -26,7 +26,7 @@ public class ClassifyManager extends InformaticsProcessor
 {
 	private static final Log log = LogFactory.getLog(ClassifyManager.class);
 	
-	public LlmConnection getLlmAssetClassification()
+	public LlmConnection getLlmNamingServer()
 	{
 		return getMediaArchive().getLlmConnection("classifyAsset");
 	}
@@ -174,7 +174,7 @@ public class ClassifyManager extends InformaticsProcessor
 			
 			params.put("contextfields", contextFields);
 			
-			LlmResponse results = getLlmAssetClassification().callClassifyFunction(params, functionname, base64EncodedString, textContent);
+			LlmResponse results = getLlmNamingServer().callClassifyFunction(params, functionname, base64EncodedString, textContent);
 
 			if (results != null)
 			{

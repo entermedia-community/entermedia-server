@@ -2,6 +2,7 @@ package org.entermediadb.ai.llm;
 
 import java.util.ArrayList;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public interface LlmResponse {
@@ -9,6 +10,8 @@ public interface LlmResponse {
     JSONObject getArguments();
 	
     JSONObject getRawResponse();
+    
+    JSONArray getRawCollection();
     
     boolean isToolCall();
     

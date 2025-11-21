@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.entermediadb.ai.assistant.AiSearch;
 import org.entermediadb.ai.knn.RankedResult;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class BasicLlmResponse implements LlmResponse
@@ -57,6 +58,19 @@ public class BasicLlmResponse implements LlmResponse
 	public String getMessagePlain()
 	{
 		return fieldMessagePlain;
+	}
+	
+	protected JSONArray fieldRawCollection;
+	
+
+	public JSONArray getRawCollection()
+	{
+		return fieldRawCollection;
+	}
+
+	public void setRawCollection(JSONArray inRawCollection)
+	{
+		fieldRawCollection = inRawCollection;
 	}
 
 	protected JSONObject rawResponse;

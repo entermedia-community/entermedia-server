@@ -33,6 +33,8 @@ import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.knn.KMeansIndexer;
 import org.entermediadb.ai.knn.RankedResult;
+import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
@@ -89,21 +91,6 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 
 	protected ModuleManager fieldModuleManager;
 	
-	protected HttpSharedConnection getSharedConnection()
-	{
-		String api = getMediaArchive().getCatalogSettingValue("faceapikey");
-		
-		if (fieldSharedConnection == null || !savedapikey.equals(api))
-		{
-			HttpSharedConnection connection = new HttpSharedConnection();
-			connection.addSharedHeader("x-api-key", api);
-			fieldSharedConnection = connection;
-			savedapikey = api;
-		}
-
-		return fieldSharedConnection;
-	}
-
 	protected MediaArchive getMediaArchive()
 	{
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
@@ -820,46 +807,12 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 		// tosendparams.put("img","http://localhost:8080" + inUrl);
 		tosendparams.put("img",tosend);
 
-		CloseableHttpResponse resp = null;
-		String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
-		if( url == null)
-		{
-			log.error("No faceprofileserver URL configured" );
-			return null;
-			//url = "http://localhost:8000";
-		}
 //		long start = System.currentTimeMillis();
 		//log.debug("Facial Profile Detection sending " + inAsset.getName() );
-		resp = getSharedConnection().sharedPostWithJson(url + "/represent",tosendparams);
-		if (resp.getStatusLine().getStatusCode() == 400)
-		{
-			getSharedConnection().release(resp);
-			log.info("Face detection Remote Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
-			inAsset.setValue("facescanerror", true);
-			return Collections.EMPTY_LIST;
-		}
-		else if (resp.getStatusLine().getStatusCode() == 413)
-		{
-			//remote error body size
-			getSharedConnection().release(resp);
-			log.info("Face detection Remote Body Size Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
-			inAsset.setValue("facescanerror", true);
-			return null;
-		}
-		else if (resp.getStatusLine().getStatusCode() == 500)
-		{
-			//remote server error, may be a broken image
-			getSharedConnection().release(resp);
-			log.info("Face detection Remote Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
-			inAsset.setValue("facescanerror", true);
-			return null;
-		}
+		LlmConnection connection = getMediaArchive().getLlmConnection("transcribeFile");
+		LlmResponse resp = connection.callJson("/represent", null, tosendparams);
 		
-		
-		String responseStr = getSharedConnection().parseText(resp);
-		
-		JSONParser parser = new JSONParser();
-		JSONArray results = (JSONArray) parser.parseCollection(responseStr);
+		JSONArray results = (JSONArray) resp;
 		
 		//log.info((System.currentTimeMillis() - start) + "ms face detection for asset: "+ inAsset.getId() + " " + inAsset.getName() + " Found: " + results.size());
 		

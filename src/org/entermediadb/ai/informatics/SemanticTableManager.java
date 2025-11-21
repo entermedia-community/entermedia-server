@@ -15,6 +15,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
@@ -374,11 +375,7 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 		JSONObject tosendparams = new JSONObject();
 		tosendparams.put("data",list);
 		
-		CloseableHttpResponse resp = askServer(tosendparams);
-		
-		String responseStr = getSharedConnection().parseText(resp);
-		JSONParser parser = new JSONParser();
-		JSONObject jsonresponse = (JSONObject)parser.parse(responseStr);
+		JSONObject jsonresponse = askServer(tosendparams);
 		JSONArray results = (JSONArray)jsonresponse.get("results");
 		
 		Searcher searcher = getMediaArchive().getSearcher(inStructions.getSearchType());
@@ -402,20 +399,12 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 
 	}
 
-	protected CloseableHttpResponse askServer(JSONObject tosendparams)
+	protected JSONObject askServer(JSONObject tosendparams)
 	{
-		CloseableHttpResponse resp;
-		String url = getMediaArchive().getCatalogSettingValue("ai_vectorizer_server");
-		resp = getSharedConnection().sharedPostWithJson(url + "/text",tosendparams);
-		int statuscode = resp.getStatusLine().getStatusCode();
-		if (statuscode != 200)
-		{
-			//remote server error, may be a broken image
-			getSharedConnection().release(resp);
-			log.error(resp.toString());
-			throw new OpenEditException("Server not working" + resp.getStatusLine());
-		}
-		return resp;
+		
+		LlmConnection connection = getMediaArchive().getLlmConnection("vectorizeText");
+		LlmResponse resp = connection.callJson("/text", null, tosendparams);
+		return resp.getRawResponse();
 	}
 	
 	protected HttpSharedConnection fieldSharedConnection;
@@ -452,9 +441,8 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 			list.add(ask);
 		}
 		tosendparams.put("data",list);
-		CloseableHttpResponse resp = askServer(tosendparams);
-		String responseStr = getSharedConnection().parseText(resp);
-		JSONObject jsonresponse = (JSONObject) new JSONParser().parse(responseStr);
+
+		JSONObject jsonresponse = askServer(tosendparams);
 		
 		//log.info("Got response " + objt.keySet());
 		return jsonresponse;
@@ -479,9 +467,7 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 		ask.put("text",text);
 		list.add(ask);
 		tosendparams.put("data",list);
-		CloseableHttpResponse resp = askServer(tosendparams);
-		String responseStr = getSharedConnection().parseText(resp);
-		JSONObject objt = (JSONObject) new JSONParser().parse(responseStr);
+		JSONObject objt = askServer(tosendparams);
 		//log.info("Got response " + objt.keySet());
 		return objt;
 	}
