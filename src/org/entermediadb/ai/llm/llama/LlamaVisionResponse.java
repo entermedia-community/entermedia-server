@@ -5,7 +5,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 
-public class LlamaResponse extends OpenAiResponse {
+public class LlamaVisionResponse extends OpenAiResponse {
 	
 	
     @Override

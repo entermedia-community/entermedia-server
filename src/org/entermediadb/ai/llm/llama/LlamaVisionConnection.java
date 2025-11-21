@@ -20,14 +20,13 @@ import org.openedit.OpenEditException;
 import org.openedit.page.Page;
 import org.openedit.util.JSONParser;
 
-public class LlamaConnection extends OpenAiConnection {
-	private static Log log = LogFactory.getLog(LlamaConnection.class);
+public class LlamaVisionConnection extends OpenAiConnection {
+	private static Log log = LogFactory.getLog(LlamaVisionConnection.class);
 	
-	@Override
-	public String getModelIdentifier()
+	public String getModelPath()
 	{
-		String modelname = getModelData().getId();
-		return "/root/.cache/llama.cpp/unsloth_"+modelname+".gguf";
+		String modelname = getModelName();
+		return "/root/.cache/llama.cpp/"+modelname;
 	}
 	
 	@Override
@@ -36,7 +35,7 @@ public class LlamaConnection extends OpenAiConnection {
 		MediaArchive archive = getMediaArchive();
 
 		JSONObject obj = new JSONObject();
-		obj.put("model", getModelIdentifier());
+		obj.put("model", getModelName());
 
 		JSONArray messages = new JSONArray();
 	
@@ -128,7 +127,7 @@ public class LlamaConnection extends OpenAiConnection {
 
 		JSONObject json = handleApiRequest(payload);
 	    
-		LlamaResponse response = new LlamaResponse();
+		LlamaVisionResponse response = new LlamaVisionResponse();
 		response.setRawResponse(json);
 	    
 		return response;
@@ -140,7 +139,7 @@ public class LlamaConnection extends OpenAiConnection {
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		inParams.put("model", getModelIdentifier());
+		inParams.put("model", getModelName());
 		
 		
 		String structurepath = "/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmType() +"/classify/structures/" + inStructureName + "_structure.json";
@@ -251,7 +250,7 @@ public class LlamaConnection extends OpenAiConnection {
 
 		JSONObject json = handleApiRequest(payload);
 	    
-		LlamaResponse response = new LlamaResponse();
+		LlamaVisionResponse response = new LlamaVisionResponse();
 		response.setOcrResponse(json);
 	    
 		return response;

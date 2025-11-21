@@ -81,11 +81,11 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		
 		JSONObject payload = new JSONObject();
 
-		payload.put("model", getModelIdentifier());
+		payload.put("model", getModelName());
 		payload.put("prompt", inPrompt);
 		payload.put("n", imagecount);
 		payload.put("size", inSize);
-		if(!"gpt-image-1".equals(getModelIdentifier())) 
+		if(!"gpt-image-1".equals(getModelName())) 
 		{
 			payload.put("response_format", "b64_json");
 		}
@@ -126,7 +126,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		
 
 		JSONObject obj = new JSONObject();
-		obj.put("model", getModelIdentifier());
+		obj.put("model", getModelName());
 
 		String contentPath = "/" + archive.getMediaDbId() + "/ai/" + getLlmType() +"/createdialog/systemmessage/" + inFunction + ".html";
 		boolean contentExists = archive.getPageManager().getPage(contentPath).exists();
@@ -202,7 +202,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		// Use JSON Simple to create request payload
 		JSONObject obj = new JSONObject();
-		obj.put("model", getModelIdentifier());
+		obj.put("model", getModelName());
 		//obj.put("max_tokens", maxtokens);
 
 		// Prepare messages array
@@ -304,7 +304,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	@Override
 	public JSONObject callStructuredOutputList(String inStructureName, Map inParams)
 	{
-		inParams.put("model", getModelIdentifier());
+		inParams.put("model", getModelName());
 		
 		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmType() +"/classify/structures/" + inStructureName + ".json", inParams);
 
@@ -401,7 +401,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	public LlmResponse callRagFunction(String question, String textContent)
 	{
 		JSONObject obj = new JSONObject();
-		obj.put("model", getModelIdentifier());
+		obj.put("model", getModelName());
 
 		JSONArray messages = new JSONArray();
 		

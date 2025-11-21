@@ -85,7 +85,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		JSONObject payload = new JSONObject();
 		payload.put("contents", contents);
 
-		String endpoint = "https://generativelanguage.googleapis.com/v1beta/models/"+getModelIdentifier()+":generateContent";
+		String endpoint = "https://generativelanguage.googleapis.com/v1beta/models/"+getModelName()+":generateContent";
 		//  String endpoint = "http://localhost:3000/generations";  // for local testing
 		
 		HttpPost method = new HttpPost(endpoint);
@@ -107,7 +107,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		MediaArchive archive = getMediaArchive();
 
 		JSONObject obj = new JSONObject();
-		obj.put("model", getModelIdentifier());
+		obj.put("model", getModelName());
 
 		String contentPath = "/" + archive.getMediaDbId() + "/ai/gemini/createdialog/systemmessage/" + inFunction + ".html";
 		boolean contentExists = archive.getPageManager().getPage(contentPath).exists();
@@ -183,7 +183,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 
 		// Use JSON Simple to create request payload
 		JSONObject obj = new JSONObject();
-		obj.put("model", getModelIdentifier());
+		obj.put("model", getModelName());
 		//obj.put("max_tokens", maxtokens);
 
 
@@ -268,7 +268,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 	@Override
 	public JSONObject callStructuredOutputList(String inStructureName, Map inParams)
 	{
-		inParams.put("model", getModelIdentifier());
+		inParams.put("model", getModelName());
 		
 		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/gemini/classify/structures/" + inStructureName + ".json", inParams);
 

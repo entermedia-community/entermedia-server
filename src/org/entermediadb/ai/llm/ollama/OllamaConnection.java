@@ -74,20 +74,6 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 		fieldCatalogId = inCatalogId;
 	}
 	
-	public String getApiKey()
-	{
-		if (apikey == null)
-		{
-			apikey = getMediaArchive().getCatalogSettingValue("ollama-key");
-			setApikey(apikey);
-		}
-		if (apikey == null)
-		{
-			log.error("No ollama-key defined in catalog settings");
-		}
-		
-		return apikey;
-	}
 
 	public BasicLlmResponse runPageAsInput(AgentContext llmrequest, String inTemplate)
 	{
@@ -142,7 +128,7 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 
 	    // Use JSON Simple to create request payload
 	    JSONObject obj = new JSONObject();
-	    obj.put("model", getModelIdentifier());
+	    obj.put("model", getModelName());
 	    obj.put("stream", false);
 
 
@@ -215,7 +201,7 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	@Override
 	public JSONObject callStructuredOutputList(String inStructureName, Map inParams) 
 	{
-		inParams.put("model", getModelIdentifier());
+		inParams.put("model", getModelName());
 		
 		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/ollama/classify/structures/" + inStructureName + ".json", inParams);
 		

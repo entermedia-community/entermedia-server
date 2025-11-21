@@ -37,66 +37,36 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	protected RequestUtils fieldRequestUtils;
 	protected OutputFiller filler = new OutputFiller();
 	protected OpenEditEngine fieldEngine;
-	protected String apikey;
+	protected Data fieldAiServerData;
 	
-	protected Data fieldModelData;
-	
-	public Data getModelData() {
-		return fieldModelData;
+	public Data getAiServerData() {
+		return fieldAiServerData;
 	}
-	
-	public void setModelData(Data inModelData) {
-		fieldModelData = inModelData;
+
+	public void setAiServerData(Data fieldMainServerUrl) {
+		this.fieldAiServerData = fieldMainServerUrl;
 	}
+
 	
 	public String getServerRoot() 
 	{
-		
+		String url = getAiServerData().get("serverroot");
+		return url;
 		//TODO: lookuo from new servers table
 		// - create llama-vision and llama implementation, they may be in 2 different servers
 		// - put the extension part (v1/....) inside each place we call getServerRoot.
 		// - cleanup catalogsettings server ids.
 		
-		
-		String llmtype = getLlmType();
-		
-		if(llmtype.equals("openai"))
-		{
-			return "https://api.openai.com/v1/chat/completions";
-		}
-		else if(llmtype.equals("ollama"))
-		{
-			return "https://ollama.entermediadb.net";
-		}
-		else if(llmtype.equals("llama"))
-		{
-			String server = getMediaArchive().getCatalogSettingValue("ai_asset_classification_server");
-			return server + "/v1/chat/completions";
-		}
-		else if(llmtype.equals("llamaopenai"))
-		{
-			return "https://llamam50.entermediadb.net/v1/chat/completions";
-		}
-		else if(llmtype.equals("gemini"))
-		{
-			return "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
-		}
-			
-		if( endpoint == null)
-		{
-			throw new OpenEditException("No endpoint defined for model: " + getModelData().getId());
-		}
-		return endpoint;
 	}
 	
-	public String getModelIdentifier()
+	public String getModelName()
 	{
-		return getModelData().get("modelid");
+		return getAiServerData().get("modelname");
 	}
 	
 	public String getLlmType()
 	{
-		return getModelData().get("llmtype");
+		return getAiServerData().get("llmtype");
 	}
 	
 	protected String fieldCatalogId;
@@ -131,29 +101,10 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	
 	public String getApiKey()
 	{
-		if (apikey == null)
-		{
-			apikey = getMediaArchive().getCatalogSettingValue(getLlmType()+"-key");
-		}
-		if (apikey == null)
-		{
-			apikey = getMediaArchive().getCatalogSettingValue("openai-key");
-		}
-		if (apikey == null)
-		{
-			log.error("No key defined in catalog settings");
-			//throw new OpenEditException("No openai-key defined in catalog settings");
-		}
-		
-		setApikey(apikey);
-		return apikey;
+		String api = getAiServerData().get("serverkey");
+		return api;
 	}
 	
-	public void setApikey(String inApikey)
-	{
-		apikey = inApikey;
-	}
-
 	public ModuleManager getModuleManager() {
 		return fieldModuleManager;
 	}

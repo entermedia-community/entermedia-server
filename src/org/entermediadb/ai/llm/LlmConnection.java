@@ -10,7 +10,9 @@ public interface LlmConnection {
 	public String getApiKey();
 
 	public String getLlmType();
-	
+
+	public String getModelName();
+
 	public Boolean isReady();
 
     public LlmResponse createImage(String inPrompt) throws Exception;
@@ -29,11 +31,11 @@ public interface LlmConnection {
     public LlmResponse runPageAsInput(AgentContext llmRequest, String inChattemplate);
     public LlmResponse callPlainMessage(AgentContext llmRequest, String inChitChatPageName);
 
-    public Data getModelData();
-    
-    public void setModelData(Data inData);
 	
-	public JSONObject callStructuredOutputList(String inStructureName, Map inParams);
+	public Data getAiServerData();
+	public void setAiServerData(Data fieldMainServerUrl);
+
+    public JSONObject callStructuredOutputList(String inStructureName, Map inParams);
 	
 	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image);
 }
