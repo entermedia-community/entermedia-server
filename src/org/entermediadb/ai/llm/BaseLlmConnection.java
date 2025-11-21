@@ -64,10 +64,10 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		return getAiServerData().get("modelname");
 	}
 	
-	public String getLlmType()
-	{
-		return getAiServerData().get("llmtype");
-	}
+//	public String getLlmProtocol()
+//	{
+//		return getAiServerData().get("llmprotocol");
+//	}
 	
 	protected String fieldCatalogId;
 	protected MediaArchive fieldMediaArchive;
@@ -385,7 +385,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	public LlmResponse callPlainMessage(AgentContext agentcontext, String inPageName)
 	{
 		agentcontext.addContext("mediaarchive", getMediaArchive());
-		String input = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmType() +"/assistant/messages/" + inPageName + ".json", agentcontext.getContext());
+		String input = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/assistant/messages/" + inPageName + ".json", agentcontext.getContext());
 		log.info(inPageName + " process chat");
 		String endpoint = getServerRoot();
 
