@@ -226,7 +226,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 
 				if( Boolean.parseBoolean( node.get("pulloriginals") ) )
 				{
-					long totalcount = downloadOriginals(inArchive, connection, node,params,inLog);
+					long totalcount = downloadOriginals(inArchive, connection, node,params, inLog);
 					
 					if( node.getValue("lasterrormessageoriginals") != null )
 					{
@@ -314,7 +314,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 			
 			JSONArray jsonarray = (JSONArray) remotechanges.get("results");  //This comes from pullrecentuploads.json
 
-			counted = counted + downloadOriginalFiles(inArchive, connection, node,  params,removecatalogid,jsonarray);
+			counted = counted + downloadOriginalFiles(inArchive, inLog, connection, node,  params,removecatalogid,jsonarray);
 
 			int pages = Integer.parseInt(response.get("pages").toString());
 			//loop over pages
@@ -346,7 +346,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 	
 					//JSONArray results = (JSONArray)remotechanges.get("results"); //records?
 					
-					counted = counted + downloadOriginalFiles(inArchive, connection, node, params,removecatalogid,jsonarray);
+					counted = counted + downloadOriginalFiles(inArchive, inLog, connection, node, params,removecatalogid,jsonarray);
 				}
 			}
 			return counted;
@@ -362,7 +362,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 		}
 	}
 
-	protected int downloadOriginalFiles(MediaArchive inArchive, HttpSharedConnection inConnection, Data node, Map<String,String> params, String removecatalogid, JSONArray inJsonarray)
+	protected int downloadOriginalFiles(MediaArchive inArchive, ScriptLogger inLog, HttpSharedConnection inConnection, Data node, Map<String,String> params, String removecatalogid, JSONArray inJsonarray)
 	{
 		int downloads = 0;
 		String url = node.get("baseurl");
@@ -400,8 +400,10 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 						StatusLine filestatus = genfile.getStatusLine();
 						if (filestatus.getStatusCode() != 200)
 						{
+							inLog.info("Could not download original file: " + filestatus + " " + path);
 							log.error("Could not download originals " + filestatus + " " + path);
-							throw new OpenEditException("Could not download originals " + filestatus + " " + path);
+							continue;
+							//throw new OpenEditException("Could not download originals " + filestatus + " " + path);
 						}
 						downloads++;
 						//Save to local file

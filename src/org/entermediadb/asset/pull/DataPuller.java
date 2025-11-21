@@ -228,33 +228,31 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				inLog.info(node.getName() + " checking since " + pulldate);
 
 				long totalcount = downloadAllData(inArchive, connection, node, params);  //Download is here
-
-				inLog.info(node.getName() + " imported " + totalcount);
-
-				//uploadChanges... 
 				
-				if (node.getBoolean("pulldataonly"))
+				if (totalcount > 0)
 				{
-					continue; //Pull only data
+					inLog.info(node.getName() + " imported " + totalcount);
 				}
 				
-				ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
-				HitTracker localchanges = manager.getEditedDocuments(getCatalogId(), pulldate);
-				
-				String remotemastereditid = node.get("clustername");
-				HitTracker trimmed = removeRemotesMasterNodeEdits(remotemastereditid, localchanges);
-				
-				if(!trimmed.isEmpty()) 
+				//uploadChanges if not  pulldataonly flag
+				if (!node.getBoolean("pulldataonly"))
 				{
-					syncUpLocalDataChanges(inArchive,node, pulldate, trimmed, connection);
-					inLog.info(node.getName() + " syncup local changes " + trimmed.size());
+					ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
+					HitTracker localchanges = manager.getEditedDocuments(getCatalogId(), pulldate);
+					
+					String remotemastereditid = node.get("clustername");
+					HitTracker trimmed = removeRemotesMasterNodeEdits(remotemastereditid, localchanges);
+					long totaluploadcount = 0;
+					if(!trimmed.isEmpty()) 
+					{
+						totaluploadcount = trimmed.size();
+						syncUpLocalDataChanges(inArchive,node, pulldate, trimmed, connection);
+						inLog.info(node.getName() + " syncup local changes " + totaluploadcount);
+					}	
 				}
-				inLog.info(node.getName() + " data downloaded " + totalcount + " and uploaded " + trimmed.size() );
-				if( totalcount > -1)
-				{
-					node.setValue("lastpulldate", now);
-					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
-				}
+			
+				node.setValue("lastpulldate", now);
+				getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
 
 			}
 			catch (Throwable ex)
