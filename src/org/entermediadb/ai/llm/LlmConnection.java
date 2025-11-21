@@ -40,4 +40,6 @@ public interface LlmConnection {
     public JSONObject callStructuredOutputList(String inStructureName, Map inParams);
 	
 	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image);
+
+	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inEmbeddingPayload);
 }

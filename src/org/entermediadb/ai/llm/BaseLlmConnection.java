@@ -13,6 +13,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
+import org.entermediadb.ai.llm.http.HttpResponse;
 import org.entermediadb.ai.llm.openai.OpenAiResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
@@ -424,4 +425,90 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	{
 		throw new OpenEditException("Model doesn't support images");
 	}
+
+	@Override
+	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inEmbeddingPayload)
+	{
+		HttpPost method = new HttpPost(getServerRoot() + inPath);
+		
+		if(inHeaders != null)
+		{
+			for (Iterator iterator = inHeaders.keySet().iterator(); iterator.hasNext();)
+			{
+				String key = (String) iterator.next();
+				String value = inHeaders.get(key);
+				method.setHeader(key,value);
+			}
+		}
+		
+		method.setEntity(new StringEntity(inEmbeddingPayload.toJSONString(), StandardCharsets.UTF_8));
+		
+		HttpSharedConnection connection = getConnection();
+		CloseableHttpResponse resp = connection.sharedExecute(method);
+		JSONObject res = null;
+		try
+		{
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
+				log.info("Embedding Server error status: " + resp.getStatusLine().getStatusCode());
+				log.info("Error response: " + resp.toString());
+				try
+				{
+					String error = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+					log.info(error);
+				}
+				catch(Exception e)
+				{ 
+					//Ignore 
+				}
+				throw new OpenEditException("Could not call " + inPath);
+			}
+			res = connection.parseJson(resp);
+		}
+		finally
+		{
+			connection.release(resp);
+		}
+		HttpResponse response = new HttpResponse();
+		response.setRawResponse(res);
+		
+		return response;
+	}
+
+	@Override
+	public LlmResponse callCreateFunction(Map inParams, String inFunction)
+	{
+		throw new OpenEditException("Call not supported");
+	}
+
+	@Override
+	public LlmResponse callClassifyFunction(Map inParams, String inFunction, String inBase64Image)
+	{
+		throw new OpenEditException("Call not supported");
+	}
+
+	@Override
+	public LlmResponse callClassifyFunction(Map inParams, String inFunction, String inBase64Image, String inTextContent)
+	{
+		throw new OpenEditException("Call not supported");
+	}
+
+	@Override
+	public LlmResponse runPageAsInput(AgentContext inLlmRequest, String inChattemplate)
+	{
+		throw new OpenEditException("Call not supported");
+	}
+
+	@Override
+	public JSONObject callStructuredOutputList(String inStructureName, Map inParams)
+	{
+		throw new OpenEditException("Call not supported");
+	}
+
+	@Override
+	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image)
+	{
+		throw new OpenEditException("Call not supported");
+	}
+
 }

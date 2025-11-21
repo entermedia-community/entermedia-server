@@ -26,26 +26,6 @@ public class BaseAiManager extends BaseManager
 {
 	private static final Log log = LogFactory.getLog(BaseAiManager.class);
 	
-	
-	protected HttpSharedConnection fieldSharedConnection;
-
-	protected HttpSharedConnection getSharedConnection()
-	{
-		if (fieldSharedConnection == null)
-		{
-			HttpSharedConnection connection = new HttpSharedConnection();
-			//connection.addSharedHeader("x-api-key", api);
-			fieldSharedConnection = connection;
-		}
-
-		return fieldSharedConnection;
-	}
-
-	public void setSharedConnection(HttpSharedConnection inSharedConnection)
-	{
-		fieldSharedConnection = inSharedConnection;
-	}
-	
 	/*
 	public Map<String, String> getModels()
 	{

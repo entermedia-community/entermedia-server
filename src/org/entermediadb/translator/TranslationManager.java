@@ -13,6 +13,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
+import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
@@ -175,24 +177,13 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 		
 		log.info("Translating " + q + " from " + sourceLang + " to " + targetLangs);
 
-		String translationserver = getMediaArchive().getCatalogSettingValue("ai_translate_server");
-		String endpoint = translationserver +"/translate";
 		
-		try {			
-			HttpPost method = new HttpPost(endpoint);
-			method.setHeader("Content-Type", "application/json");
-			method.setEntity(new StringEntity(payload.toJSONString(), "UTF-8"));
+		LlmConnection connection = getMediaArchive().getLlmConnection("translateFields");
+		LlmResponse resp = connection.callJson("/translate", null,payload);
+		
+		JSONObject translatedText = (JSONObject) resp.getRawResponse().get("translatedText");
 			
-			CloseableHttpResponse resp = getSharedConnection().sharedExecute(method);
-			JSONObject json = getSharedConnection().parseJson(resp);
-			
-			JSONObject translatedText = (JSONObject) json.get("translatedText");
-			
-			return translatedText;
-		} catch (Exception e) {
-			// TODO: handle exception
-			return null;
-		}
+		return translatedText;
 		
 	}
 	
