@@ -402,7 +402,7 @@ public class AssistantManager extends BaseAiManager
 			
 			AiCreation creation = inAgentContext.getAiCreationParams();					
 			creation.setCreationType("image");
-			JSONObject structure = (JSONObject) results.get(type);
+			JSONObject structure = (JSONObject) results.get("create_image");
 			creation.setImageFields(structure);
 		}
 		else if(type.equals("create_entity"))
@@ -411,7 +411,7 @@ public class AssistantManager extends BaseAiManager
 			
 			AiCreation creation = inAgentContext.getAiCreationParams();
 			creation.setCreationType("entity");
-			JSONObject structure = (JSONObject) results.get(type);
+			JSONObject structure = (JSONObject) results.get("create_entity");
 			creation.setEntityFields(structure);
 		}
 		//TODO Add how-to rag handling
