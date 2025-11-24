@@ -365,7 +365,7 @@ public class AssistantManager extends BaseAiManager
 
 	protected void processResults(AgentContext inAgentContext, String messageText, EMediaAIResponse response, JSONObject results)
 	{
-		String type = results.keySet().iterator().next().toString();
+		String type = (String)results.get("type");
 		
 		if(type == null)
 		{
@@ -384,8 +384,12 @@ public class AssistantManager extends BaseAiManager
 		else if( type.equals("conversation"))
 		{
 			//type = "chitchat";
-			JSONObject structure = (JSONObject) results.get(type);
-			String generalresponse = (String) structure.get("friendly_response");
+//			JSONObject structure = (JSONObject) results.get(type);
+//			String generalresponse = (String) structure.get("friendly_response");
+//			if(generalresponse != null)
+//			{
+			String generalresponse = (String) results.get("response");
+//			}
 			if(generalresponse != null)
 			{
 				MarkdownUtil md = new MarkdownUtil();
