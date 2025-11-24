@@ -1,8 +1,8 @@
 package org.entermediadb.ai.llm;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public interface LlmResponse {
@@ -10,16 +10,22 @@ public interface LlmResponse {
     JSONObject getArguments();
 	
     JSONObject getRawResponse();
+	void setRawResponse(JSONObject inObj);
     
-    JSONArray getRawCollection();
+    Collection getRawCollection();
+	void setRawCollection(Collection inObj);
     
     boolean isToolCall();
     
     String getMessage();
+    void setMessage(String inMessage);
     
-    String getMessagePlain();
+    String getMessagePlain();    
+    void setMessagePlain(String inMessagePlain);
 
     String getFunctionName();
+
+    void setFunctionName(String inFunction);
 
     boolean isSuccessful();
     
@@ -32,4 +38,5 @@ public interface LlmResponse {
     ArrayList<String> getImageBase64s();    
     
     String getFileName();
+
 }

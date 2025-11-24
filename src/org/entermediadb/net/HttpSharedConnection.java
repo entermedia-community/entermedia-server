@@ -248,7 +248,17 @@ public class HttpSharedConnection
 		}
 		throw new OpenEditException(errormessage);
 	}
-
+	public JSONObject parseMap(CloseableHttpResponse resp) 
+	{
+		Object res = parseJson(resp);
+		return (JSONObject) res;
+	}
+	public Collection parseCollection(CloseableHttpResponse resp) 
+	{
+		Object res = parseJson(resp);
+		return (Collection) res;
+	}
+	
 	public Object parseJson(CloseableHttpResponse resp) 
 	{
 		try {

@@ -176,7 +176,7 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 	}
 
 	
-	public EMediaAIResponse processMessage(MultiValued message, AgentContext inAgentContext)
+	public LlmResponse processMessage(MultiValued message, AgentContext inAgentContext)
 	{
 		MediaArchive archive = getMediaArchive();
 		
@@ -215,52 +215,23 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 		chat.put("doc_ids", docids);
 		
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
-		
-		//CloseableHttpResponse resp = getSharedConnection().sharedPostWithJson(url + "/query",chat);
-		
-		HttpPost method = new HttpPost(llmconnection.getServerRoot() + "/query");
-		
+
 		String customerkey = llmconnection.getApiKey();
 		if( customerkey == null)
 		{
 			customerkey = "demo";
 		}
-		method.setHeader("x-customerkey", customerkey);
+		Map headers = new HashMap();
+		headers.put("x-customerkey", customerkey);
 		
-		method.setHeader("Content-Type", "application/json");
-		method.setEntity(new StringEntity(chat.toJSONString(), StandardCharsets.UTF_8));
-
-		CloseableHttpResponse resp = getSharedConnection().sharedExecute(method);
-		
-		try
-		{
-			if (resp.getStatusLine().getStatusCode() != 200)
-			{
-				log.info("Embedding Server error status: " + resp.getStatusLine().getStatusCode());
-				log.info("Error response: " + resp.toString());
-				
-				String error =	getSharedConnection().parseText(resp);
-				log.info(error);
-				throw new OpenEditException("server down" + llmconnection.getServerRoot() );
-			}
+		LlmResponse response = llmconnection.callJson("/query", headers, chat);
+		response.setFunctionName("ragresponse");
+		processRagResponseWithSource(inAgentContext, response.getRawResponse(), response);
 			
-			JSONObject ragresponse = getSharedConnection().parseJson(resp);
-			
-			EMediaAIResponse response = new EMediaAIResponse();
-			response.setFunctionName("ragresponse");
-			response.setRawResponse(ragresponse);
-			
-			processRagResponseWithSource(inAgentContext, ragresponse, response);
-			
-			return response;
-		}
-		finally
-		{
-			 getSharedConnection().release(resp);
-		}
+		return response;
 	}
 	
-	public void processRagResponseWithSource(AgentContext inAgentContext, JSONObject ragresponse, EMediaAIResponse response)
+	public void processRagResponseWithSource(AgentContext inAgentContext, JSONObject ragresponse, LlmResponse response)
 	{
 		String answer = null;
 		

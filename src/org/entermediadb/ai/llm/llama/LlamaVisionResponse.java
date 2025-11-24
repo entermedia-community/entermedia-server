@@ -24,18 +24,5 @@ public class LlamaVisionResponse extends OpenAiResponse {
         return content;
     }
     
-    protected String ocrResponse;
-    
-    public String getOcrResponse() {    	
-    	return ocrResponse;
-    }
-    
-    public void setOcrResponse(JSONObject inRawResponse) {
-    	JSONArray choices = (JSONArray) inRawResponse.get("choices");
-        JSONObject choice = (JSONObject) choices.get(0);
-        JSONObject message = (JSONObject) choice.get("message");
-        
-        ocrResponse = (String) message.get("content");
-	}
 
 }

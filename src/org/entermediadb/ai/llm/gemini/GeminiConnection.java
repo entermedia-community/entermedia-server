@@ -10,9 +10,9 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.BaseLlmConnection;
 import org.entermediadb.ai.llm.LlmConnection;
-import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
@@ -48,7 +48,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 
-		JSONObject json = getConnection().parseJson(resp);
+		JSONObject json = getConnection().parseMap(resp);
 
 		GeminiResponse response = new GeminiResponse();
 		response.setRawResponse(json);
@@ -100,7 +100,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		method.setEntity(new StringEntity(payload.toJSONString(), "UTF-8"));
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-		JSONObject json = getConnection().parseJson(resp);
+		JSONObject json = getConnection().parseMap(resp);
 
 		// Return a OpenAiResponse object instead of raw JSON
 		GeminiResponse response = new GeminiResponse();
@@ -169,14 +169,57 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		String payload = obj.toJSONString();
 		log.info(payload);
 		
-		JSONObject json = handleApiRequest(payload);
-	    
+		//TODO: Finish JSONObject json = callJson("",null,payload);
 		GeminiResponse response = new GeminiResponse();
-	    response.setRawResponse(json);
+	    response.setRawResponse(obj);
 	    
 	    return response;
 
 	}
+	/*
+	protected JSONObject handleApiRequest(String payload)
+	{
+		String endpoint = getServerRoot();
+		HttpPost method = new HttpPost(endpoint);
+		method.addHeader("Authorization", "Bearer " + getApiKey());
+		method.setHeader("Content-Type", "application/json");
+		method.setEntity(new StringEntity(payload, StandardCharsets.UTF_8));
+
+		HttpSharedConnection connection = getConnection();
+		CloseableHttpResponse resp = connection.sharedExecute(method);
+		
+		try
+		{
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
+				log.info("AI Server error status: " + resp.getStatusLine().getStatusCode());
+				log.info("AI Server error response: " + resp.toString());
+				try
+				{
+					String error = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+					log.info(error);
+				}
+				catch(Exception e)
+				{}
+				throw new OpenEditException("handleApiRequest error: " + resp.getStatusLine());
+			}
+
+			JSONObject json = (JSONObject) connection.parseJson(resp);
+
+			log.info("returned: " + json.toJSONString());
+			 
+			return json;
+		}
+		catch (Exception ex)
+		{
+			log.error("Error calling handleApiRequest", ex);
+			throw new OpenEditException(ex);
+		}
+		finally
+		{
+			connection.release(resp);
+		}
+	}*/
 	
 	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image)
 	{
@@ -262,10 +305,10 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		String payload = obj.toJSONString();
 		log.info(payload);
 		
-		JSONObject json = handleApiRequest(payload);
+		//JSONObject json = handleApiRequest(payload);
 	    
 	    GeminiResponse response = new GeminiResponse();
-	    response.setRawResponse(json);
+	  //  response.setRawResponse(json);
 	    
 	    return response;
 
@@ -358,7 +401,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		}
 		finally
 		{
-			connection.release(resp);
+			getConnection().release(resp);
 		}
 		return results;
 	}
@@ -368,5 +411,12 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 	{
 		throw new OpenEditException("Not implemented yet. Only available in Llama connection.");
 	}
+
+	@Override
+	public LlmResponse createResponse()
+	{
+		return new GeminiResponse();
+	}
+
 
 }

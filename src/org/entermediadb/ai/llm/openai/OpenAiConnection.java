@@ -14,6 +14,7 @@ import org.entermediadb.ai.llm.BaseLlmConnection;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.ai.llm.http.HttpResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -49,7 +50,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 
-		JSONObject json = getConnection().parseJson(resp);
+		JSONObject json = getConnection().parseMap(resp);
 
 		OpenAiResponse response = new OpenAiResponse();
 		response.setRawResponse(json);
@@ -108,7 +109,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		method.setEntity(new StringEntity(payload.toJSONString(), "UTF-8"));
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-		JSONObject json = getConnection().parseJson(resp);
+		JSONObject json = getConnection().parseMap(resp);
 
 		// Return a OpenAiResponse object instead of raw JSON
 		OpenAiResponse response = new OpenAiResponse();
@@ -185,15 +186,8 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			obj.put("function_call", func);
 		}
 		
-		String payload = obj.toJSONString();
-		log.info(payload);
-		
-		JSONObject json = handleApiRequest(payload);
-	    
-	    OpenAiResponse response = new OpenAiResponse();
-	    response.setRawResponse(json);
-	    
-	    return response;
+		LlmResponse res = callJson("/api/chat",obj);
+	    return res;
 
 	}
 	
@@ -295,15 +289,8 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			func.put("name", inFunction);
 			obj.put("function_call", func);
 		}
-
-		String payload = obj.toJSONString();
-
-		JSONObject json = handleApiRequest(payload);
-	    
-	    OpenAiResponse response = new OpenAiResponse();
-	    response.setRawResponse(json);
-	    
-	    return response;
+		LlmResponse res = callJson("/api/chat",obj);
+	    return res;
 
 	}
 
@@ -399,7 +386,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		}
 		finally
 		{
-			connection.release(resp);
+			getConnection().release(resp);
 		}
 		return results;
 	}
@@ -424,14 +411,16 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		obj.put("messages", messages);
 
-		String payload = obj.toJSONString();
-
-		JSONObject json = handleApiRequest(payload);
-	    
-	    OpenAiResponse response = new OpenAiResponse();
-	    response.setRawResponse(json);
-	    
-	    return response;
+		LlmResponse res = callJson("/v1/chat/completions",obj);
+		
+		JSONArray choices = (JSONArray) res.getRawResponse().get("choices");
+        JSONObject choice = (JSONObject) choices.get(0);
+        JSONObject resmessage = (JSONObject) choice.get("message");
+        
+        String ocrResponse = (String) resmessage.get("content");
+        res.setMessage(ocrResponse);
+        
+	    return res;
 
 	}
 	
@@ -441,4 +430,8 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		throw new OpenEditException("Not implemented yet. Only available in Llama connection.");
 	}
 
+	public LlmResponse createResponse()
+	{
+		return new OpenAiResponse();
+	}
 }

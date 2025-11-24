@@ -247,7 +247,7 @@ public class AssistantManager extends BaseAiManager
 		
 		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
 		
-		EMediaAIResponse response = null;
+		LlmResponse response = null;
 		String processingmessage = null; // TODO: Change to language mao
 		
 		if (channeltype.equals("agententitychat"))
@@ -286,7 +286,7 @@ public class AssistantManager extends BaseAiManager
 
 		if( functionName.equals("conversation"))
 		{
-			String output = response.getGeneralResponse();
+			String output = response.getMessage();
 			
 			if(output == null || output.isEmpty())
 			{
@@ -350,7 +350,7 @@ public class AssistantManager extends BaseAiManager
 	}
 	
 	
-	protected EMediaAIResponse processDocumentChat(MultiValued message, AgentContext inAgentContext)
+	protected LlmResponse processDocumentChat(MultiValued message, AgentContext inAgentContext)
 	{		
 		DocumentEmbeddingManager embeddingManager = (DocumentEmbeddingManager) getMediaArchive().getBean("documentEmbeddingManager");
 		
@@ -384,7 +384,7 @@ public class AssistantManager extends BaseAiManager
 			if(generalresponse != null)
 			{
 				MarkdownUtil md = new MarkdownUtil();
-				response.setGeneralResponse(md.render(generalresponse));
+				response.setMessage(md.render(generalresponse));
 			}
 		}
 		else if(type.equals("create_image"))

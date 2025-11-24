@@ -37,21 +37,16 @@ public class BasicLlmResponse implements LlmResponse
 		fieldAiSearchParams = inAiSearchParams;
 	}
 
-	public void setMessage(String inMessage)
-	{
-		fieldMessage = inMessage;
-	}
-	
+		
 	@Override
 	public String getMessage()
 	{
 		return fieldMessage;
 	}
 	
-	public String setMessagePlain(String inMessage)
+	public void setMessagePlain(String inMessage)
 	{
 		fieldMessagePlain = inMessage;
-		return fieldMessagePlain;
 	}
 	
 	@Override
@@ -60,10 +55,10 @@ public class BasicLlmResponse implements LlmResponse
 		return fieldMessagePlain;
 	}
 	
-	protected JSONArray fieldRawCollection;
+	protected Collection fieldRawCollection;
 	
 
-	public JSONArray getRawCollection()
+	public Collection getRawCollection()
 	{
 		return fieldRawCollection;
 	}
@@ -102,6 +97,12 @@ public class BasicLlmResponse implements LlmResponse
 		return fieldFunctionName;
 	}
 
+	public void setFunctionName(String inFunctionName)
+	{
+		fieldFunctionName = inFunctionName;
+	}
+
+	
 	@Override
 	public boolean isSuccessful()
 	{
@@ -109,6 +110,8 @@ public class BasicLlmResponse implements LlmResponse
 		return false;
 	}
 
+	//Are these needed?
+	
 	@Override
 	public int getTokensUsed()
 	{
@@ -142,6 +145,18 @@ public class BasicLlmResponse implements LlmResponse
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setMessage(String inMessage)
+	{
+		fieldMessage = inMessage;
+	}
+
+	@Override
+	public void setRawCollection(Collection inObj)
+	{
+		fieldRawCollection = inObj;
 	}
 	
 	

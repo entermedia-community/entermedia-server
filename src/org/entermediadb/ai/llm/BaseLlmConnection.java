@@ -42,6 +42,17 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	protected OutputFiller filler = new OutputFiller();
 	protected OpenEditEngine fieldEngine;
 	protected Data fieldAiServerData;
+
+	protected HttpSharedConnection fieldConnection;
+
+	protected HttpSharedConnection getConnection()
+	{
+		if( fieldConnection == null)
+		{
+			fieldConnection = new HttpSharedConnection();
+		}
+		return fieldConnection;
+	}
 	
 	public Data getAiServerData() {
 		return fieldAiServerData;
@@ -75,13 +86,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	
 	protected String fieldCatalogId;
 	protected MediaArchive fieldMediaArchive;
-	protected HttpSharedConnection connection;
 
-	protected HttpSharedConnection getConnection()
-	{
-		connection = new HttpSharedConnection();
-		return connection;
-	}
 		
 	public MediaArchive getMediaArchive()
 	{
@@ -342,50 +347,48 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		return i;
 	}
 	
-	protected JSONObject handleApiRequest(String payload)
-	{
-		String endpoint = getServerRoot();
-		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("Authorization", "Bearer " + getApiKey());
-		method.setHeader("Content-Type", "application/json");
-		method.setEntity(new StringEntity(payload, StandardCharsets.UTF_8));
-
-		HttpSharedConnection connection = getConnection();
-		CloseableHttpResponse resp = connection.sharedExecute(method);
-		
-		try
-		{
-			if (resp.getStatusLine().getStatusCode() != 200)
-			{
-				log.info("AI Server error status: " + resp.getStatusLine().getStatusCode());
-				log.info("AI Server error response: " + resp.toString());
-				try
-				{
-					String error = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
-					log.info(error);
-				}
-				catch(Exception e)
-				{}
-				throw new OpenEditException("handleApiRequest error: " + resp.getStatusLine());
-			}
-
-			JSONObject json = (JSONObject) connection.parseJson(resp);
-
-			log.info("returned: " + json.toJSONString());
-			 
-			return json;
-		}
-		catch (Exception ex)
-		{
-			log.error("Error calling handleApiRequest", ex);
-			throw new OpenEditException(ex);
-		}
-		finally
-		{
-			connection.release(resp);
-		}
-	}
-
+//	protected JSONObject handleApiRequest(String payload)
+//	{
+//		String endpoint = getServerRoot();
+//		HttpPost method = new HttpPost(endpoint);
+//		method.addHeader("Authorization", "Bearer " + getApiKey());
+//		method.setHeader("Content-Type", "application/json");
+//		method.setEntity(new StringEntity(payload, StandardCharsets.UTF_8));
+//
+//		
+//		try
+//		{
+//			if (resp.getStatusLine().getStatusCode() != 200)
+//			{
+//				log.info("AI Server error status: " + resp.getStatusLine().getStatusCode());
+//				log.info("AI Server error response: " + resp.toString());
+//				try
+//				{
+//					String error = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+//					log.info(error);
+//				}
+//				catch(Exception e)
+//				{}
+//				throw new OpenEditException("handleApiRequest error: " + resp.getStatusLine());
+//			}
+//
+//			JSONObject json = (JSONObject) connection.parseJson(resp);
+//
+//			log.info("returned: " + json.toJSONString());
+//			 
+//			return json;
+//		}
+//		catch (Exception ex)
+//		{
+//			log.error("Error calling handleApiRequest", ex);
+//			throw new OpenEditException(ex);
+//		}
+//		finally
+//		{
+//			connection.release(resp);
+//		}
+//	}
+/*
 	public LlmResponse callPlainMessage(AgentContext agentcontext, String inPageName)
 	{
 		agentcontext.addContext("mediaarchive", getMediaArchive());
@@ -416,6 +419,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		return response;
 
 	}
+	*/
 	
 	@Override
 	public LlmResponse createImage(String inPrompt)  throws Exception
@@ -428,11 +432,36 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	{
 		throw new OpenEditException("Model doesn't support images");
 	}
+	
+	protected Map<String,String> fieldSharedHeaders = null;
+	
+	public Map<String, String> getSharedHeaders()
+	{
+		if (fieldSharedHeaders == null)
+		{
+			fieldSharedHeaders = new HashMap();
+		}
 
+		return fieldSharedHeaders;
+	}
+	
+	public LlmResponse callJson(String inPath, JSONObject inPayload)
+	{
+		LlmResponse res = callJson(inPath, getSharedHeaders(), inPayload);
+		return res;
+			
+	}
 	@Override
 	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inEmbeddingPayload)
 	{
 		HttpPost method = new HttpPost(getServerRoot() + inPath);
+		
+		for (Iterator iterator = getSharedHeaders().keySet().iterator(); iterator.hasNext();)
+		{
+			String key = (String) iterator.next();
+			String value = inHeaders.get(key);
+			method.setHeader(key,value);
+		}
 		
 		if(inHeaders != null)
 		{
@@ -443,7 +472,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 				method.setHeader(key,value);
 			}
 		}
-		
+		 
 		method.setEntity(new StringEntity(inEmbeddingPayload.toJSONString(), StandardCharsets.UTF_8));
 		
 		HttpSharedConnection connection = getConnection();
@@ -499,7 +528,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		{
 			connection.release(resp);
 		}
-		HttpResponse response = new HttpResponse();
+		LlmResponse response = createResponse();
 		
 		if (object instanceof JSONObject) 
 		{

@@ -32,7 +32,7 @@ public interface LlmConnection {
     public LlmResponse callClassifyFunction(Map inParams, String inFunction, String inBase64Image, String textContent);
 
     public LlmResponse runPageAsInput(AgentContext llmRequest, String inChattemplate);
-    public LlmResponse callPlainMessage(AgentContext llmRequest, String inChitChatPageName);
+   // public LlmResponse callPlainMessage(AgentContext llmRequest, String inChitChatPageName);
 
 	
 	public Data getAiServerData();
@@ -46,6 +46,6 @@ public interface LlmConnection {
 	
 	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, HttpEntity inEntity);
 	
-	
+	LlmResponse createResponse();
 	
 }

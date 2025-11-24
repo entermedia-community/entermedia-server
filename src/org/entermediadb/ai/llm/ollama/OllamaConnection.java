@@ -50,7 +50,7 @@ public class OllamaConnection extends OpenAiConnection implements CatalogEnabled
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 
-		JSONObject json = connection.parseJson(resp); // pretty dumb but I want to standardize on GSON
+		JSONObject json = getConnection().parseMap(resp); // pretty dumb but I want to standardize on GSON
 
 		OllamaResponse response = new OllamaResponse();
 		response.setRawResponse(json);
@@ -122,13 +122,8 @@ public class OllamaConnection extends OpenAiConnection implements CatalogEnabled
 	        JSONObject parameters = (JSONObject) functionDef.get("parameters");
 	        obj.put("format", parameters);
 	    }
-	    String payload = obj.toJSONString();
 	    
-	    JSONObject json = handleApiRequest(payload);
-	    
-	    OllamaResponse response = new OllamaResponse();
-	    response.setRawResponse(json);
-	    
+	    LlmResponse response = callJson("/api/chat",null,obj);
 	    return response;
 	}
 
@@ -145,14 +140,16 @@ public class OllamaConnection extends OpenAiConnection implements CatalogEnabled
 		inParams.put("model", getModelName());
 		
 		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/ollama/classify/structures/" + inStructureName + ".json", inParams);
-		
-		JSONObject json = handleApiRequest(inStructure);
 
-		log.info("Returned: " + json);
+		JSONObject req = new JSONParser().parse(inStructure);
+		
+		LlmResponse res = callJson("/api/chat",req); //Tools?
+
+		log.info("Returned: " + res);
 			
 		JSONObject results = new JSONObject();
 
-		JSONObject message = (JSONObject) json.get("message");
+		JSONObject message = (JSONObject) res.getRawResponse().get("message");
 		if (message == null || !message.get("role").equals("assistant"))
 		{
 			log.info("No message found in GPT response");

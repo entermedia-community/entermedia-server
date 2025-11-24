@@ -129,15 +129,8 @@ public class LlamaVisionConnection extends OpenAiConnection {
 
 		obj.put("messages", messages);
 
-		String payload = obj.toJSONString();
-
-		JSONObject json = handleApiRequest(payload);
-	    
-		LlamaVisionResponse response = new LlamaVisionResponse();
-		response.setRawResponse(json);
-	    
-		return response;
-
+		LlmResponse res = callJson("/api/chat",obj);
+	    return res;
 	}
 	
 	@Override
@@ -211,7 +204,7 @@ public class LlamaVisionConnection extends OpenAiConnection {
 		}
 		finally
 		{
-			connection.release(resp);
+			getConnection().release(resp);
 		}
 		return results;
 	}
@@ -252,14 +245,11 @@ public class LlamaVisionConnection extends OpenAiConnection {
 		imagecontentitem.put("image_url", imageurl);
 		contentarray.add(imagecontentitem);
 		
-		String payload = templateObject.toJSONString();
-
-		JSONObject json = handleApiRequest(payload);
-	    
-		LlamaVisionResponse response = new LlamaVisionResponse();
-		response.setOcrResponse(json);
-	    
-		return response;
+		LlmResponse res = callJson("/v1/chat/completions",templateObject);
+		
+		//TODO Parse out the OCR to message
+		
+	    return res;
 
 	}
 	
