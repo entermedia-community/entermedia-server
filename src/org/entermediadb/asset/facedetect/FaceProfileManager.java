@@ -125,12 +125,12 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 //	}
 	public int extractFaces(FaceScanInstructions instructions , Collection<MultiValued> inAssets)  //Page of assets
 	{
-			String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
-			if( url == null)
-			{
-				log.error("No face server configured");
-				return 0;
-			}
+//			String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
+//			if( url == null)
+//			{
+//				log.error("No face server configured");
+//				return 0;
+//			}
 
 			HitTracker existingfaces = getMediaArchive().query("faceembedding").orgroup("assetid", inAssets).search();
 			existingfaces.enableBulkOperations();
@@ -210,14 +210,6 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 			log.info("Skipping non images: " + inAsset.getName() );
 			return;
 		}
-		
-		String api = getMediaArchive().getCatalogSettingValue("faceapikey");
-		if(api == null)
-		{
-			log.info("faceapikey not set");
-			return;
-		}
-	
 		//If its a video then generate all the images and scan them
 		
 		Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
@@ -809,10 +801,10 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 
 //		long start = System.currentTimeMillis();
 		//log.debug("Facial Profile Detection sending " + inAsset.getName() );
-		LlmConnection connection = getMediaArchive().getLlmConnection("transcribeFile");
+		LlmConnection connection = getMediaArchive().getLlmConnection("faceDetect");
 		LlmResponse resp = connection.callJson("/represent", null, tosendparams);
 		
-		JSONArray results = (JSONArray) resp;
+		List<Map> results = (List<Map>) resp.getRawCollection();
 		
 		//log.info((System.currentTimeMillis() - start) + "ms face detection for asset: "+ inAsset.getId() + " " + inAsset.getName() + " Found: " + results.size());
 		
