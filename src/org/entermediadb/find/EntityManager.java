@@ -746,6 +746,11 @@ public class EntityManager implements CatalogEnabled
 		Collection allowed = userprofile.getEntitiesIds();
 		allowed.remove("asset");
 		
+		if( allowed.isEmpty() )
+		{
+			throw new OpenEditException("No permissions");
+		}
+		
 //always returns emtpy
 		HitTracker found =  getMediaArchive().query("modulesearch").named("modulsearchcathits").orgroup("rootcategory", categories).put("searchtypes", allowed).search(inReq);
 		
