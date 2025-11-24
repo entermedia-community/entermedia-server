@@ -310,7 +310,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 			log.error("Initial data server error " + sl);
 			return -1;
 		}
-		JSONObject	remotechanges = connection.parseJson(response2);
+		JSONObject	remotechanges = connection.parseMap(response2);
 		long datacounted = 0;
 		Map response = (Map) remotechanges.get("response");
 		String ok = (String) response.get("status");
@@ -347,7 +347,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				{
 					throw new OpenEditException("Could not load page of data " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 				}
-				remotechanges = connection.parseJson(response2);
+				remotechanges = connection.parseMap(response2);
 				response = (Map) remotechanges.get("response");
 				ok = (String) response.get("status");
 				if (ok != null && !ok.equals("ok"))
@@ -727,7 +727,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		//log.info("Got back this " + sl.getStatusCode());
 
 		//The server will return a list of files it needs
-		JSONObject json = inConnection.parseJson(response2);
+		JSONObject json = inConnection.parseMap(response2);
 		//log.info("Data returned:" + params.toJSONString() );
 		
 		String remotecatalogid = (String)json.get("catalogid");

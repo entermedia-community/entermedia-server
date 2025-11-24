@@ -204,7 +204,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 				throw new OpenEditException("handleApiRequest error: " + resp.getStatusLine());
 			}
 
-			JSONObject json = (JSONObject) connection.parseJson(resp);
+			JSONObject json = (JSONObject) connection.parseMap(resp);
 
 			log.info("returned: " + json.toJSONString());
 			 

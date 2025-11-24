@@ -377,7 +377,7 @@ public class DrupalManager implements CatalogEnabled
 			}
 			
 
-			JSONObject json = getConnection().parseJson(resp);
+			JSONObject json = getConnection().parseMap(resp);
 			if(json.get("access_token") != null) {
 				accesstoken = (String)json.get("access_token"); 
 				authinfo.setValue("httprequesttoken", json.get("access_token"));
@@ -408,7 +408,7 @@ public class DrupalManager implements CatalogEnabled
 			}
 			
 	
-			JSONObject json = getConnection().parseJson(resp);
+			JSONObject json = getConnection().parseMap(resp);
 			if(json.get("access_token") != null) {
 				accesstoken = (String)json.get("access_token"); 
 				authinfo.setValue("httprequesttoken", json.get("access_token"));

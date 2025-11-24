@@ -303,7 +303,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 			log.error("(" + inArchive.getCatalogId()  + ") Initial originals server error " + sl);
 			return -1;
 		}
-		JSONObject	remotechanges = connection.parseJson(response2);
+		JSONObject	remotechanges = connection.parseMap(response2);
 		long counted = 0;
 		Map response = (Map) remotechanges.get("response");
 		String ok = (String) response.get("status");
@@ -336,7 +336,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 						connection.release(response2);
 						throw new OpenEditException("Could not load page of data " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 					}
-					remotechanges = connection.parseJson(response2);
+					remotechanges = connection.parseMap(response2);
 					response = (Map) remotechanges.get("response");
 					ok = (String) response.get("status");
 					if (ok != null && !ok.equals("ok"))
@@ -537,7 +537,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 					return;
 				}
 				//The server will return a list of files it needs
-				JSONObject json = inConnection.parseJson(response2);
+				JSONObject json = inConnection.parseMap(response2);
 				
 				Map responseheader = (Map)json.get("response");  //These are files they want us to send them
 				

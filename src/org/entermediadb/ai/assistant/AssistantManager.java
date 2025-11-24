@@ -291,7 +291,7 @@ public class AssistantManager extends BaseAiManager
 			if(output == null || output.isEmpty())
 			{
 				agentContext.addContext("messagetosend", message.get("message") );
-				LlmResponse chatresponse = llmconnection.callPlainMessage(agentContext,functionName); //TODO: Add message history
+				LlmResponse chatresponse = llmconnection.callMessageTemplate(agentContext,functionName); //TODO: Add message history
 				output = chatresponse.getMessage();
 			}
 

@@ -133,6 +133,8 @@ public class ContentManager implements CatalogEnabled
 
 		return fieldHttpSharedConnection;
 	}
+	
+	
 
 	public void createDitaEntityFromAI(String inModuleid, String inEntityid, String inTargetentity)
 	{
@@ -213,7 +215,9 @@ public class ContentManager implements CatalogEnabled
 			getSharedConnection().release(resp);
 			return;
 		}
-		JSONObject json = getSharedConnection().parseJson(resp);
+		
+		/*
+		JSONObject json = getSharedConnection().parseMap(resp);
 		log.info("Received: \n" + json.toJSONString());
 		// Pare DITA xml stuff
 		// SECURITY BUG!!
@@ -270,7 +274,7 @@ public class ContentManager implements CatalogEnabled
 		// send Thumbnail?
 		// Needed?
 		getMediaArchive().saveData(inTargetentity, child);
-
+		 */
 	}
 
 	protected String processDitaXml(JSONObject json, Element root, Data child)

@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.http.HttpResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
@@ -159,8 +160,8 @@ public class DocumentSplitterManager extends InformaticsProcessor
 
 		String base64Img = loadDocumentContent(pageEntity);
 			
-		HttpResponse result = (HttpResponse) llmconnection.callOCRFunction(new HashMap(), "document_ocr", base64Img);
-		String markdown = result.getOcrResponse();
+		LlmResponse result = (LlmResponse) llmconnection.callOCRFunction(new HashMap(), "document_ocr", base64Img);
+		String markdown = result.getMessage();
 			
 		pageEntity.setValue("markdowncontent", markdown);
 	}

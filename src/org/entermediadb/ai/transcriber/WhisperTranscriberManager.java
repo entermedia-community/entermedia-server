@@ -274,7 +274,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 
 		else {
 			String returned = EntityUtils.toString(resp.getEntity());
-			JSONArray result = (JSONArray) new JSONParser().parseJSONArray(returned);
+			JSONArray result = (JSONArray) new JSONParser().parseMapArray(returned);
 			return result;
 
 		}

@@ -216,7 +216,7 @@ public class DropboxManager implements CatalogEnabled
 		    method.addHeader("Authorization", "Bearer " + getAccessToken());
 		    //method.setHeader("Content-Type", "application/json");
 		    CloseableHttpResponse resp = getConnection().sharedExecute(method);
-		    JSONObject json = getConnection().parseJson(resp);
+		    JSONObject json = getConnection().parseMap(resp);
 
 		    if (json != null && json.containsKey("root_info")) {
 		        JSONObject rootInfo = (JSONObject) json.get("root_info");
@@ -267,7 +267,7 @@ public class DropboxManager implements CatalogEnabled
 		method.setEntity(new StringEntity(payload, "UTF-8"));
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-		JSONObject json = getConnection().parseJson(resp);
+		JSONObject json = getConnection().parseMap(resp);
 
 		if (json != null)
 		{
@@ -304,7 +304,7 @@ public class DropboxManager implements CatalogEnabled
 					continueMethod.setEntity(new StringEntity(continuePayload.toJSONString(), "UTF-8"));
 
 					resp = getConnection().sharedExecute(continueMethod);
-					json = getConnection().parseJson(resp);
+					json = getConnection().parseMap(resp);
 				}
 			}
 			while (hasMore);
@@ -402,7 +402,7 @@ public class DropboxManager implements CatalogEnabled
 			method.setEntity(new StringEntity(payload, "UTF-8"));
 
 			CloseableHttpResponse resp = getConnection().sharedExecute(method);
-			JSONObject json = getConnection().parseJson(resp);
+			JSONObject json = getConnection().parseMap(resp);
 
 			if (json != null)
 			{
@@ -423,7 +423,7 @@ public class DropboxManager implements CatalogEnabled
 					method.setEntity(new StringEntity(payload, "UTF-8"));
 
 					resp = getConnection().sharedExecute(method);
-					json = getConnection().parseJson(resp);
+					json = getConnection().parseMap(resp);
 
 					members = (JSONArray) json.get("members");
 					for (Object memberObj : members)
@@ -461,7 +461,7 @@ public class DropboxManager implements CatalogEnabled
 			method.setEntity(new StringEntity(payload, "UTF-8"));
 
 			CloseableHttpResponse resp = getConnection().sharedExecute(method);
-			JSONObject json = getConnection().parseJson(resp);
+			JSONObject json = getConnection().parseMap(resp);
 
 			if (json != null)
 			{

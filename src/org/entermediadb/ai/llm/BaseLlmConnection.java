@@ -372,7 +372,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 //				throw new OpenEditException("handleApiRequest error: " + resp.getStatusLine());
 //			}
 //
-//			JSONObject json = (JSONObject) connection.parseJson(resp);
+//			JSONObject json = (JSONObject) connection.parseMap(resp);
 //
 //			log.info("returned: " + json.toJSONString());
 //			 
@@ -388,8 +388,8 @@ public abstract class BaseLlmConnection implements LlmConnection {
 //			connection.release(resp);
 //		}
 //	}
-/*
-	public LlmResponse callPlainMessage(AgentContext agentcontext, String inPageName)
+
+	public LlmResponse callMessageTemplate(AgentContext agentcontext, String inPageName)
 	{
 		agentcontext.addContext("mediaarchive", getMediaArchive());
 		String input = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/assistant/messages/" + inPageName + ".json", agentcontext.getContext());
@@ -404,9 +404,9 @@ public abstract class BaseLlmConnection implements LlmConnection {
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 
-		JSONObject json = (JSONObject) getConnection().parseJson(resp);
+		JSONObject json = (JSONObject) getConnection().parseMap(resp);
 
-		OpenAiResponse response = new OpenAiResponse();
+		OpenAiResponse response = (OpenAiResponse) createResponse();
 		response.setRawResponse(json);
 		
 		String nextFunction = response.getFunctionName();
@@ -415,11 +415,11 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			agentcontext.setFunctionName(nextFunction);
 		}
 
-		getMediaArchive().saveData("agentcontext",agentcontext);
+//		getMediaArchive().saveData("agentcontext",agentcontext);
 		return response;
 
 	}
-	*/
+	
 	
 	@Override
 	public LlmResponse createImage(String inPrompt)  throws Exception
@@ -455,6 +455,10 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inEmbeddingPayload)
 	{
 		HttpPost method = new HttpPost(getServerRoot() + inPath);
+		
+		method.addHeader("Authorization", "Bearer " + getApiKey());
+		method.setHeader("Content-Type", "application/json");
+
 		
 		for (Iterator iterator = getSharedHeaders().keySet().iterator(); iterator.hasNext();)
 		{
@@ -522,7 +526,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 				throw new OpenEditException("Could not call " + inPath);
 			}
 			
-			object = connection.parseJson(resp);
+			object = connection.parseMap(resp);
 		}
 		finally
 		{
@@ -579,7 +583,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 				}
 				throw new OpenEditException("Could not call " + inPath);
 			}
-			res = (JSONObject) connection.parseJson(resp);
+			res = (JSONObject) connection.parseMap(resp);
 		}
 		finally
 		{

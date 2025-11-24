@@ -129,7 +129,7 @@ public class LlamaVisionConnection extends OpenAiConnection {
 
 		obj.put("messages", messages);
 
-		LlmResponse res = callJson("/api/chat",obj);
+		LlmResponse res = callJson("/api/chat",obj); //Todo: Confirm is ok
 	    return res;
 	}
 	
@@ -155,58 +155,21 @@ public class LlamaVisionConnection extends OpenAiConnection {
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(prompt);
 
-		String endpoint = getServerRoot();
-		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("Authorization", "Bearer " + getApiKey());
-		method.setHeader("Content-Type", "application/json");
-		method.setEntity(new StringEntity(structureDef.toJSONString(), StandardCharsets.UTF_8));
+		LlmResponse res = callJson("/v1/chat/completions", structureDef);
 
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-		
-		JSONObject results = new JSONObject();
-
-		try
-		{
-			if (resp.getStatusLine().getStatusCode() != 200)
-			{
-				log.error("Could't connect to: " + endpoint);
-				throw new OpenEditException("Llama error: " + resp.getStatusLine());
-			}
-	
-			JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
-
-			log.info("Returned: " + json.toJSONString());
-		
-		
-			JSONArray choices = (JSONArray) json.get("choices");
-	        JSONObject choice = (JSONObject) choices.get(0);
-	        JSONObject message = (JSONObject) choice.get("message");
-	        
-	        String contentString = (String) message.get("content"); // Possibly a string
-	        
-	        if (contentString == null)
-	        {
-	        	return results;
-	        }
-	        
-	        try {	        	
-	        	results = parser.parse(contentString);
-	        } catch (Exception e) {
-	        	log.error("Not a JSON String");
-	        	results.put("plaintext", contentString);
-	        }
-	        
-	        
-		}
-		catch (Exception e) 
-		{
-			throw new OpenEditException(e);
-		}
-		finally
-		{
-			getConnection().release(resp);
-		}
-		return results;
+		JSONArray choices = (JSONArray) res.getRawResponse().get("choices");
+        JSONObject choice = (JSONObject) choices.get(0);
+        JSONObject message = (JSONObject) choice.get("message");
+        
+        String contentString = (String) message.get("content"); // Possibly a string
+                
+        if (contentString != null)
+        {
+        	JSONObject content = parser.parse(contentString);
+        	return content;
+        }
+        
+		return null;
 	}
 	
 	@Override

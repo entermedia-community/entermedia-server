@@ -676,7 +676,7 @@ public class GoogleManager implements CatalogEnabled
 			//CloseableHttpClient httpclient = HttpClients.createSystem();
 			CloseableHttpResponse resp = null;
 	 		resp = getConnection().sharedPostWithJson(url,request);
-			JSONObject json = getConnection().parseJson(resp);
+			JSONObject json = getConnection().parseMap(resp);
 			return json;
 		}
 		catch (SSLException e) {
@@ -745,7 +745,7 @@ public class GoogleManager implements CatalogEnabled
 		method.setHeader("Content-Type", "multipart/related; boundary=" + boundary);
 
 		CloseableHttpResponse resp = getConnection().sharedPost(method);
-		JSONObject json2 = getConnection().parseJson(resp);
+		JSONObject json2 = getConnection().parseMap(resp);
 		return json2;
 
 	}
@@ -846,7 +846,7 @@ public class GoogleManager implements CatalogEnabled
 			method.setHeader("Content-Type", "multipart/related; boundary=" + boundary);
 
 			CloseableHttpResponse resp = getConnection().sharedExecute(method);
-			JSONObject json = getConnection().parseJson(resp);
+			JSONObject json = getConnection().parseMap(resp);
 			
 			//ok?
 		}
@@ -1076,7 +1076,7 @@ public class GoogleManager implements CatalogEnabled
  			log.error("Could not log into Firebase. Please delete user " + inUser.getEmail());
  			return null;
 		}
- 		JSONObject json  = getConnection().parseJson(createresp);
+ 		JSONObject json  = getConnection().parseMap(createresp);
  		String idtoken = (String)json.get("idToken");
  		return idtoken;
 	}
@@ -1097,7 +1097,7 @@ public class GoogleManager implements CatalogEnabled
  			log.error("Could not update password in Firebase. Please delete user " + inUser.getEmail());
  			return;
 		}
- 		JSONObject json  = getConnection().parseJson(createresp);
+ 		JSONObject json  = getConnection().parseMap(createresp);
  		String idtoken = (String)json.get("idToken");
 	}
 		
@@ -1121,7 +1121,7 @@ public class GoogleManager implements CatalogEnabled
  			log.error("Could not create user in firebase. Please manually delete existing user " + inUser.getEmail() + " " + returned);
  			return;
 		}
- 		JSONObject json  = getConnection().parseJson(createresp);
+ 		JSONObject json  = getConnection().parseMap(createresp);
  		
  		inUser.setProperty("firebasepassword", firebasepassword);
  		getMediaArchive().getUserManager().saveUser(inUser);
@@ -1140,7 +1140,7 @@ public class GoogleManager implements CatalogEnabled
 //	 	try
 //	 	{
 //	 		resp = getConnection().sharedPostWithJson(url,request);
-//			JSONObject json = getConnection().parseJson(resp);
+//			JSONObject json = getConnection().parseMap(resp);
 //			return json;
 //	 	}
 //	 	catch( Throwable ex)
