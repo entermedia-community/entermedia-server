@@ -2504,6 +2504,19 @@
 	</bean>
 
 
+	<bean id="httpConnection" class="org.entermediadb.ai.llm.http.HttpConnection" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="requestUtils">
+			<ref bean="requestUtils" />
+		</property>
+
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>
+
 
 	<bean id="contentManager" class="org.entermediadb.modules.publishing.ContentManager" lazy-init="default" scope="prototype">
 		<property name="xmlUtil">

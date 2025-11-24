@@ -538,14 +538,17 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 			JSONArray jsonvalues = (JSONArray) structure.getMessageStructured().get(fieldname);
 			Collection<String> values = new ArrayList();
 			//replace underscore with spaces
-			for (Iterator iterator = jsonvalues.iterator(); iterator.hasNext();) {
-				String val = (String) iterator.next();
-				if(val != null)
-				{
-					val = val.replaceAll("_", " ").trim();
-					if( val.length() > 0)
+			if (jsonvalues != null)
+			{
+				for (Iterator iterator = jsonvalues.iterator(); iterator.hasNext();) {
+					String val = (String) iterator.next();
+					if(val != null)
 					{
-						values.add(val);
+						val = val.replaceAll("_", " ").trim();
+						if( val.length() > 0)
+						{
+							values.add(val);
+						}
 					}
 				}
 			}

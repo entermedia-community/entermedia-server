@@ -215,7 +215,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			JSONObject systemmessage = new JSONObject();
 			systemmessage.put("role", "system");
 			
-			JSONArray contentarray = new JSONArray();
+			JSONArray contentarray = new JSONArray(); 
 			
 			JSONObject contentitem = new JSONObject();
 			contentitem.put("type", "text");

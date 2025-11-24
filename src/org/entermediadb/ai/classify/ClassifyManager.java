@@ -352,7 +352,7 @@ public class ClassifyManager extends InformaticsProcessor
 
 				String functionname = inConfig.get("aifunctionname") + "_entity";
 				
-				LlmResponse results = llmconnection.callClassifyFunction(params, functionname, null);
+				LlmResponse results = llmconnection.callClassifyFunction(params, functionname, null); 
 				
 				if (results != null)
 				{

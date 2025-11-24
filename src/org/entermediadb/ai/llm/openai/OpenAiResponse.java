@@ -59,6 +59,11 @@ public class OpenAiResponse extends BasicLlmResponse {
         {
         	String argumentsString = (String) message.get("content");
             JSONParser parser = new JSONParser();
+            if (!argumentsString.startsWith("{"))
+            {
+            	//log.info("Response is Plain Text: " + argumentsString);
+            	return null;
+            }
             arguments = parser.parse(argumentsString);
         }
         
