@@ -110,7 +110,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	
 	public String getApiKey()
 	{
-		String api = getAiServerData().get("serverkey");
+		String api = getAiServerData().get("serverapikey");
 		return api;
 	}
 	

@@ -304,7 +304,14 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
 
-		String endpoint = "https://api.openai.com/v1/responses";
+		String endpoint = "https://api.openai.com/v1/responses"; //https://api.openai.com/v1/responses
+		
+		if( getLlmProtocol().equals("llama"))
+		{
+			//
+			endpoint = getServerRoot() + "/v1/chat/completions"; 
+		}
+		
 		HttpPost method = new HttpPost(endpoint);
 		method.addHeader("authorization", "Bearer " + getApiKey());
 		method.setHeader("Content-Type", "application/json");

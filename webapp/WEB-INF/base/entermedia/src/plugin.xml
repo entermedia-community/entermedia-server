@@ -2530,7 +2530,20 @@
 		</property>
 	</bean>
 	
-	<bean id="llamaConnection" class="org.entermediadb.ai.llm.llama.LlamaConnection" scope="prototype">
+	<bean id="llamaOpenAiConnection" class="org.entermediadb.ai.llm.llama.LlamaOpenAiConnection" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="requestUtils">
+			<ref bean="requestUtils" />
+		</property>
+
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>
+
+	<bean id="llamaVisionConnection" class="org.entermediadb.ai.llm.llama.LlamaVisionConnection" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
