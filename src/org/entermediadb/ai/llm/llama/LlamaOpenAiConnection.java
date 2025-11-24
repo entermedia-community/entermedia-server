@@ -28,7 +28,7 @@ public class LlamaOpenAiConnection extends OpenAiConnection {
 	
 	public LlmResponse callStructuredOutputList(String inStructureName, Map inParams)
 	{
-		inParams.put("model", getModelName());
+		inParams.put("model", getModelName()); 
 		
 		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/structures/" + inStructureName + ".json", inParams);
 

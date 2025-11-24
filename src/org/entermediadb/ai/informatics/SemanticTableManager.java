@@ -500,7 +500,6 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 	
 		public Collection<String> createSemanticValues(LlmConnection llmconnection, MultiValued inConfig, String inModuleId, MultiValued inData)
 		{
-//			MediaArchive archive = getMediaArchive();
 
 			Map<String,Map> contextfields = populateFields(inModuleId, inData);
 			if(contextfields.isEmpty())
@@ -520,6 +519,7 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 			
 			Map params = new HashMap();
 			params.put("fieldparams", inConfig);
+			params.put("structure", inConfig.getId());
 		
 			Map validcontext = new HashMap(contextfields);
 			validcontext.remove(fieldname);
@@ -534,14 +534,15 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 				log.info("No structured data returned");
 				return null;
 			}
-
-			JSONArray jsonvalues = (JSONArray) structure.getMessageStructured().get(fieldname);
+			JSONObject content = structure.getMessageStructured();
+			JSONArray jsonvalues = (JSONArray) content.get(fieldname);
 			Collection<String> values = new ArrayList();
 			//replace underscore with spaces
 			if (jsonvalues != null)
 			{
 				for (Iterator iterator = jsonvalues.iterator(); iterator.hasNext();) {
-					String val = (String) iterator.next();
+					JSONObject object = (JSONObject) iterator.next();  
+					String val = (String) object.get("topic");   //TODO: hardcoded to topic?
 					if(val != null)
 					{
 						val = val.replaceAll("_", " ").trim();
