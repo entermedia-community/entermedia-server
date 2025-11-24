@@ -23,7 +23,7 @@ public class GeminiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public JSONObject getArguments() {
+    public JSONObject getMessageStructured() {
         if (!isToolCall()) return null;
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");

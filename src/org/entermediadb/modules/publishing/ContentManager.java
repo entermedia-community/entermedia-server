@@ -883,7 +883,7 @@ public class ContentManager implements CatalogEnabled
 			LlmResponse results = inLlm.callCreateFunction(params, "create_entity");
 
 			child = targetsearcher.createNewData();
-			JSONObject args = results.getArguments();
+			JSONObject args = results.getMessageStructured();
 			if (args != null) {
 				for (Iterator iterator = args.keySet().iterator(); iterator.hasNext();) {
 					Object key = (Object) iterator.next();
@@ -937,7 +937,7 @@ public class ContentManager implements CatalogEnabled
 
 			LlmResponse results = inLlm.callCreateFunction(params, "create_entity");
 			
-			JSONObject args = results.getArguments();
+			JSONObject args = results.getMessageStructured();
 			for (Iterator iterator = args.keySet().iterator(); iterator.hasNext();) {
 				Object type = (Object) iterator.next();
 				Object val = args.get(type);

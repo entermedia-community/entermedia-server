@@ -178,7 +178,7 @@ public class ClassifyManager extends InformaticsProcessor
 
 			if (results != null)
 			{
-				JSONObject arguments = results.getArguments();
+				JSONObject arguments = results.getMessageStructured();
 				if (arguments != null) {
 
 					Map metadata =  (Map) arguments.get("metadata");
@@ -356,7 +356,7 @@ public class ClassifyManager extends InformaticsProcessor
 				
 				if (results != null)
 				{
-					JSONObject arguments = results.getArguments();
+					JSONObject arguments = results.getMessageStructured();
 					if (arguments != null) {
 						
 						Map metadata =  (Map) arguments.get("metadata");

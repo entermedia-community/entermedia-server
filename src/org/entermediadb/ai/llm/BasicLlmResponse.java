@@ -86,7 +86,7 @@ public class BasicLlmResponse implements LlmResponse
 	}
 
 	@Override
-	public JSONObject getArguments()
+	public JSONObject getMessageStructured()
 	{
 		return getRawResponse();
 	}

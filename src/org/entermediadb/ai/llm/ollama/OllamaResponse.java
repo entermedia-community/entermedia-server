@@ -1,5 +1,6 @@
 package org.entermediadb.ai.llm.ollama;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 
 import org.entermediadb.ai.llm.BasicLlmResponse;
@@ -30,11 +31,53 @@ public class OllamaResponse extends BasicLlmResponse
 	}
 
 	@Override
-	public JSONObject getArguments()
+	public JSONObject getMessageStructured()
 	{
+		/*
+		JSONArray choices = (JSONArray) res.getRawResponse().get("choices");
+        JSONObject choice = (JSONObject) choices.get(0);
+        JSONObject message = (JSONObject) choice.get("message");
+        
+        String contentString = (String) message.get("content"); // Possibly a string
+                
+        if (contentString != null)
+        {
+        	JSONObject content = parser.parse(contentString);
+        	return content;
+        }
+		 */
+		
 		JSONObject message = (JSONObject) rawResponse.get("message");
 		JSONArray toolCalls = (JSONArray) message.get("tool_calls");
 
+		/**
+		 * 
+		 
+		 
+		 
+		 		JSONObject results = new JSONObject();
+
+		JSONObject message = (JSONObject) res.getRawResponse().get("message");
+		if (message == null || !message.get("role").equals("assistant"))
+		{
+			log.info("No message found in GPT response");
+			return results;
+		}
+
+		String content = (String) message.get("content");
+			
+		if (content == null || content.isEmpty())
+		{
+			log.info("No structured data found in GPT response");
+			return results;
+		}
+		JSONParser parser = new JSONParser();
+		results = (JSONObject) parser.parse(new StringReader(content));
+
+	
+		 */
+		
+		
 		if (toolCalls == null || toolCalls.isEmpty())
 		{
 			String content = (String) message.get("content");

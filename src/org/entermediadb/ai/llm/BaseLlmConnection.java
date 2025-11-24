@@ -620,7 +620,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	}
 
 	@Override
-	public JSONObject callStructuredOutputList(String inStructureName, Map inParams)
+	public LlmResponse callStructuredOutputList(String inStructureName, Map inParams)
 	{
 		throw new OpenEditException("Call not supported");
 	}

@@ -295,7 +295,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	}
 
 	@Override
-	public JSONObject callStructuredOutputList(String inStructureName, Map inParams)
+	public LlmResponse callStructuredOutputList(String inStructureName, Map inParams)
 	{
 		inParams.put("model", getModelName());
 		
@@ -328,11 +328,15 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 				throw new OpenEditException("OpenAI error: " + resp.getStatusLine());
 			}
 	
-			JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
+			JSONObject json = (JSONObject)getConnection().parseMap(resp);
 
 			log.info("Returned: " + json.toJSONString());
 		
-		
+			LlmResponse response = createResponse();
+			response.setRawResponse(json);
+			return response;
+			
+			/*
 			JSONArray outputs = (JSONArray) json.get("output");
 			if (outputs == null || outputs.isEmpty())
 			{
@@ -386,16 +390,12 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			{
 				results = (JSONObject) results.get("properties"); // gpt-4o-mini sometimes wraps in properties
 			}
-		}
-		catch (Exception e) 
-		{
-			throw new OpenEditException(e);
+			*/
 		}
 		finally
 		{
 			getConnection().release(resp);
 		}
-		return results;
 	}
 	
 	public LlmResponse callRagFunction(String question, String textContent)

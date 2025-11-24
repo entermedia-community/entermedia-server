@@ -135,7 +135,7 @@ public class OllamaConnection extends OpenAiConnection implements CatalogEnabled
 	}
 	
 	@Override
-	public JSONObject callStructuredOutputList(String inStructureName, Map inParams) 
+	public LlmResponse callStructuredOutputList(String inStructureName, Map inParams) 
 	{
 		inParams.put("model", getModelName());
 		
@@ -146,27 +146,7 @@ public class OllamaConnection extends OpenAiConnection implements CatalogEnabled
 		LlmResponse res = callJson("/api/chat",req); //Tools?
 
 		log.info("Returned: " + res);
-			
-		JSONObject results = new JSONObject();
-
-		JSONObject message = (JSONObject) res.getRawResponse().get("message");
-		if (message == null || !message.get("role").equals("assistant"))
-		{
-			log.info("No message found in GPT response");
-			return results;
-		}
-
-		String content = (String) message.get("content");
-			
-		if (content == null || content.isEmpty())
-		{
-			log.info("No structured data found in GPT response");
-			return results;
-		}
-		JSONParser parser = new JSONParser();
-		results = (JSONObject) parser.parse(new StringReader(content));
-
-		return results;
+		return res;
 	}
 	
 	@Override

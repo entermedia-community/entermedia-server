@@ -7,7 +7,7 @@ import org.json.simple.JSONObject;
 
 public interface LlmResponse {
 
-    JSONObject getArguments();
+    JSONObject getMessageStructured();
 	
     JSONObject getRawResponse();
 	void setRawResponse(JSONObject inObj);

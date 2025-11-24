@@ -1,36 +1,27 @@
 package org.entermediadb.ai.llm.gemini;
 
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.util.EntityUtils;
-import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.BaseLlmConnection;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.asset.MediaArchive;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
-import org.openedit.OpenEditException;
-import org.openedit.page.Page;
-import org.openedit.util.JSONParser;
 
 public class GeminiConnection extends BaseLlmConnection implements CatalogEnabled, LlmConnection
 {
 	private static Log log = LogFactory.getLog(GeminiConnection.class);
-
+	@Override
+	public LlmResponse createResponse()
+	{
+		return new GeminiResponse();
+	}
 	@Override
 	public String getLlmProtocol()
 	{
 		return "gemini";
 	}
+/**
+	
 	
 	public LlmResponse runPageAsInput(AgentContext llmRequest, String inTemplate)
 	{
@@ -176,7 +167,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 	    return response;
 
 	}
-	/*
+	
 	protected JSONObject handleApiRequest(String payload)
 	{
 		String endpoint = getServerRoot();
@@ -219,7 +210,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		{
 			connection.release(resp);
 		}
-	}*/
+	}
 	
 	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image)
 	{
@@ -315,7 +306,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 	}
 
 	@Override
-	public JSONObject callStructuredOutputList(String inStructureName, Map inParams)
+	public LlmResponse callStructuredOutputList(String inStructureName, Map inParams)
 	{
 		inParams.put("model", getModelName());
 		
@@ -418,5 +409,5 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		return new GeminiResponse();
 	}
 
-
+*/
 }

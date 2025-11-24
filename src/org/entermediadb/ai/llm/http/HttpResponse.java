@@ -9,7 +9,7 @@ public class HttpResponse extends OpenAiResponse {
 	
 	
     @Override
-    public JSONObject getArguments() {
+    public JSONObject getMessageStructured() {
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
         JSONObject choice = (JSONObject) choices.get(0);

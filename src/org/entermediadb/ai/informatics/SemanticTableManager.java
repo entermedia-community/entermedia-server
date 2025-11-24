@@ -528,14 +528,14 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 			
 			params.put("contextfields", context);
 			
-			JSONObject structure = llmconnection.callStructuredOutputList("semantics", params);
+			LlmResponse structure = llmconnection.callStructuredOutputList("semantics", params);
 			if (structure == null)
 			{
 				log.info("No structured data returned");
 				return null;
 			}
 
-			JSONArray jsonvalues = (JSONArray) structure.get(fieldname);
+			JSONArray jsonvalues = (JSONArray) structure.getMessageStructured().get(fieldname);
 			Collection<String> values = new ArrayList();
 			//replace underscore with spaces
 			for (Iterator iterator = jsonvalues.iterator(); iterator.hasNext();) {

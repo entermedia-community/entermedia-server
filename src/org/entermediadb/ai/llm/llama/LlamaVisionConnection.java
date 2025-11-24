@@ -134,7 +134,7 @@ public class LlamaVisionConnection extends OpenAiConnection {
 	}
 	
 	@Override
-	public JSONObject callStructuredOutputList(String inStructureName, Map inParams)
+	public LlmResponse callStructuredOutputList(String inStructureName, Map inParams)
 	{
 		MediaArchive archive = getMediaArchive();
 		
@@ -157,19 +157,8 @@ public class LlamaVisionConnection extends OpenAiConnection {
 
 		LlmResponse res = callJson("/v1/chat/completions", structureDef);
 
-		JSONArray choices = (JSONArray) res.getRawResponse().get("choices");
-        JSONObject choice = (JSONObject) choices.get(0);
-        JSONObject message = (JSONObject) choice.get("message");
         
-        String contentString = (String) message.get("content"); // Possibly a string
-                
-        if (contentString != null)
-        {
-        	JSONObject content = parser.parse(contentString);
-        	return content;
-        }
-        
-		return null;
+		return res;
 	}
 	
 	@Override

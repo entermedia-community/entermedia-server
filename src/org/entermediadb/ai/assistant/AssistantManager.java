@@ -331,21 +331,26 @@ public class AssistantManager extends BaseAiManager
 		
 		//Run AI
 		inAgentContext.addContext("schema", loadSchema());
-		JSONObject results = llmconnection.callStructuredOutputList("parse_sentence", inAgentContext.getContext()); //TODO: Replace with local API that is faster
+		LlmResponse results = llmconnection.callStructuredOutputList("parse_sentence", inAgentContext.getContext()); //TODO: Replace with local API that is faster
 		if(results == null)
 		{
 			throw new OpenEditException("No results from AI for message: " + message.get("message"));
 		}
-		if(results.containsKey("plaintext"))
+		JSONObject json = results.getMessageStructured();
+		
+		if(json.containsKey("plaintext"))
 		{
-			String contentString = (String) results.get("plaintext");
+			String contentString = (String) json.get("plaintext");
 			JSONObject conversation = new JSONObject();
-			conversation.put("friendly_response", contentString);
-			results.put("conversation", conversation);
-			results.remove("plaintext");
+			
+			//TODO: What was this?
+			
+//			conversation.put("friendly_response", contentString);
+//			results.put("conversation", conversation);
+//			results.remove("plaintext");
 		}
-		response.setRawResponse(results);
-		processResults(inAgentContext, message.get("message"), response, results);
+		//response.setRawResponse(results);
+		processResults(inAgentContext, message.get("message"), response, json);
 		return response;
 	}
 	

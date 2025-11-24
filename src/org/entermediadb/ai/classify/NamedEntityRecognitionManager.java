@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.util.JsonUtil;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -78,8 +79,8 @@ public class NamedEntityRecognitionManager extends ClassifyManager
  		params.put("autocreatefields", autocreatefields);
  		
 		String functionname = inConfig.get("aifunctionname");
-		Map results = getLlmNamingServer().callStructuredOutputList(functionname,  params);
-		Map categories = (Map) results.get("categories");
+		LlmResponse results = getLlmNamingServer().callStructuredOutputList(functionname,  params);
+		Map categories = (Map) results.getMessageStructured().get("categories");
 		if(categories != null)
 		{			
 			for (Iterator iterator = categories.keySet().iterator(); iterator.hasNext();) {

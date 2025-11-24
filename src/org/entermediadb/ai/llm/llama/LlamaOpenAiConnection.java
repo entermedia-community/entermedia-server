@@ -1,7 +1,6 @@
 package org.entermediadb.ai.llm.llama;
 
 
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
@@ -10,9 +9,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.util.EntityUtils;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.openai.OpenAiConnection;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.OpenEditException;
 import org.openedit.util.JSONParser;
@@ -28,7 +26,7 @@ public class LlamaOpenAiConnection extends OpenAiConnection {
 	}
 	
 	
-	public JSONObject callStructuredOutputList(String inStructureName, Map inParams)
+	public LlmResponse callStructuredOutputList(String inStructureName, Map inParams)
 	{
 		inParams.put("model", getModelName());
 		
@@ -54,16 +52,16 @@ public class LlamaOpenAiConnection extends OpenAiConnection {
 				throw new OpenEditException("OpenAI error: " + resp.getStatusLine());
 			}
 	
-			json = (JSONObject)  getConnection().parseMap(resp);
-				
-			json.get("");
+			json = (JSONObject)getConnection().parseMap(resp);
+			log.info("Returned: " + json.toJSONString());
+			LlmResponse response = createResponse();
+			response.setRawResponse(json);
+			return response;
 			
 		} finally {
 			getConnection().release(resp);
 		}
 
-		log.info("Returned: " + json.toJSONString());
 		
-		return results;
 	}
 }
