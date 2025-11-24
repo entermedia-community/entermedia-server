@@ -11,8 +11,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.openai.OpenAiConnection;
+import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONObject;
 import org.openedit.OpenEditException;
+import org.openedit.page.Page;
 import org.openedit.util.JSONParser;
 
 public class LlamaOpenAiConnection extends OpenAiConnection {
@@ -30,9 +32,20 @@ public class LlamaOpenAiConnection extends OpenAiConnection {
 	{
 		inParams.put("model", getModelName()); 
 		
-		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/structures/" + inStructureName + ".json", inParams);
+		MediaArchive archive = getMediaArchive();
+		String structurepath = "/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/structures/" + inStructureName + "_structure.json";
+		Page defpage = archive.getPageManager().getPage(structurepath);
+		
+		if (defpage.exists())
+		{
+			String structure = loadInputFromTemplate(structurepath, inParams);
+			inParams.put("structure", structure);
+		}
+		
+		
+		String propmpt = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/structures/" + inStructureName + ".json", inParams);
 
-		JSONObject structureDef = (JSONObject) new JSONParser().parse(inStructure);
+		JSONObject structureDef = (JSONObject) new JSONParser().parse(propmpt);
 
 		String endpoint = getServerRoot() + "/v1/chat/completions"; 
 		
