@@ -284,7 +284,6 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 					filename = "image3000x3000.jpg";
 					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/" + filename);
 				}
-
 			}
 			if( !input.exists() )
 			{
@@ -293,7 +292,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 			List<Map> json = findFaces(inAsset, input);
 			if(json == null || json.isEmpty()) 
 			{
-				
+				log.info("No faces found");
 				return;
 			}
 			Collection<MultiValued> moreprofiles = makeDataForEachFace(instructions,faceembeddingsearcher,inAsset,0L,input,json);

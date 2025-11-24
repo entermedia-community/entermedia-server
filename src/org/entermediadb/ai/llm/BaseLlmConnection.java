@@ -526,7 +526,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 				throw new OpenEditException("Could not call " + inPath);
 			}
 			
-			object = connection.parseMap(resp);
+			object = connection.parseJson(resp);
 		}
 		finally
 		{
@@ -565,7 +565,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		
 		HttpSharedConnection connection = getConnection();
 		CloseableHttpResponse resp = connection.sharedExecute(method);
-		JSONObject res = null;
+		Object object = null;
 		try
 		{
 			if (resp.getStatusLine().getStatusCode() != 200)
@@ -583,14 +583,21 @@ public abstract class BaseLlmConnection implements LlmConnection {
 				}
 				throw new OpenEditException("Could not call " + inPath);
 			}
-			res = (JSONObject) connection.parseMap(resp);
+			object = (JSONObject) connection.parseJson(resp);
 		}
 		finally
 		{
 			connection.release(resp);
 		}
 		HttpResponse response = new HttpResponse();
-		response.setRawResponse(res);
+		if (object instanceof JSONObject) 
+		{
+			response.setRawResponse((JSONObject) object);
+		}
+		else
+		{
+			response.setRawCollection((JSONArray) object);
+		}
 		
 		return response;
 	}
