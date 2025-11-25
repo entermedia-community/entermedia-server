@@ -314,7 +314,7 @@ public class ClassifyManager extends InformaticsProcessor
 			
 			contextFields.add(assetsearcher.getDetail("longcaption"));
 			contextFields.add(assetsearcher.getDetail("keywordsai"));
-			contextFields.add(assetsearcher.getDetail("semanticcopics"));
+			contextFields.add(assetsearcher.getDetail("semantictopics"));
 			contextFields.add(assetsearcher.getDetail("headline"));
 			
 		}

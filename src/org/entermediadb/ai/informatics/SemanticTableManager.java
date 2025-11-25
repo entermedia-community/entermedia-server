@@ -519,7 +519,6 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 			
 			Map params = new HashMap();
 			params.put("fieldparams", inConfig);
-			params.put("structure", inConfig.getId());
 		
 			Map validcontext = new HashMap(contextfields);
 			validcontext.remove(fieldname);

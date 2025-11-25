@@ -77,4 +77,38 @@ public class LlamaOpenAiConnection extends OpenAiConnection {
 
 		
 	}
+	
+	
+	@Override 
+	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image, String textContent)
+	{
+		MediaArchive archive = getMediaArchive();
+		// Handle function call definition
+		String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/functions/" + inFunction + ".json";
+		
+		Page defpage = archive.getPageManager().getPage(templatepath);
+		
+		if (!defpage.exists())
+		{
+			throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + templatepath);
+		}
+		
+		if(textContent != null)
+		{
+			params.put("textcontent", textContent);
+		}
+		
+		
+		params.put("aimodel", getModelName());
+		
+		
+		String definition = loadInputFromTemplate(templatepath, params);
+
+		JSONParser parser = new JSONParser();
+		JSONObject functionDef = (JSONObject) parser.parse(definition);
+
+		LlmResponse res = callJson("/v1/chat/completions", functionDef);
+	    return res;
+
+	}
 }
