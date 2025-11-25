@@ -84,10 +84,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			throw new OpenEditException("No prompt given for image creation");
 		}
 		
-		log.info("Image creation prompt: " + inPrompt);
-		
 		JSONObject payload = new JSONObject();
-
 		payload.put("model", getModelName());
 		payload.put("prompt", inPrompt);
 		payload.put("n", imagecount);
@@ -101,20 +98,13 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			payload.put("moderation", "low");
 		}
 
-		String endpoint = "https://api.openai.com/v1/images/generations";
-		//  String endpoint = "http://localhost:3000/generations";  // for local testing
-		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("Authorization", "Bearer " + getApiKey());
-		method.setHeader("Content-Type", "application/json");
-		method.setEntity(new StringEntity(payload.toJSONString(), "UTF-8"));
-
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-		JSONObject json = getConnection().parseMap(resp);
-
-		// Return a OpenAiResponse object instead of raw JSON
-		OpenAiResponse response = new OpenAiResponse();
-		response.setRawResponse(json);
-		return response;
+		//String endpoint = "https://api.openai.com/v1/images/generations";
+		//String endpoint = "http://localhost:3000/generations";  // for local testing
+		
+		log.info("Image creation prompt: " + inPrompt + " with model: " + getModelName());
+		LlmResponse res = callJson("/v1/images/generations",payload);
+		return res;
+		
 	}
 
 	public OutputFiller getFiller()

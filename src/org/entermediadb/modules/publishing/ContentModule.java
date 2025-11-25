@@ -72,7 +72,7 @@ public class ContentModule extends BaseMediaModule
 	}
 
 	public void processCreationQueue(WebPageRequest inReq) throws Exception
-	{
+	{ 
 		// Add as child
 		MediaArchive archive = getMediaArchive(inReq);
 
@@ -88,6 +88,7 @@ public class ContentModule extends BaseMediaModule
 			MultiValued contentrequest = (MultiValued) iterator.next();
 			
 			LlmConnection llm = (LlmConnection) archive.getLlmConnection("createAsset");
+			
 			manager.createFromLLM(params, llm, contentrequest);
 			contentrequest.setValue("status", "complete");
 			archive.saveData("contentcreator", contentrequest);
