@@ -363,14 +363,15 @@ public class AssistantManager extends BaseAiManager
 			server.broadcastMessage(functionMessageUpdate);
 			
 			Long waittime = 200l;
+			
 			if( agentContext.getNextFunctionName() != null)
 			{
 				//Search semantic now?
 				//params.put("function", agentContext.getNextFunctionName());
 				//agentmessage.setValue("params", params.toJSONString());
 
-				agentmessage.setValue("chatmessagestatus", "refresh");
-				getMediaArchive().saveData("chatterbox",agentmessage);
+//				agentmessage.setValue("chatmessagestatus", "refresh");
+//				getMediaArchive().saveData("chatterbox",agentmessage);
 
 				Long wait = agentContext.getLong("wait");
 				if( wait != null && wait instanceof Long)
@@ -378,14 +379,19 @@ public class AssistantManager extends BaseAiManager
 					agentContext.setValue("wait", null);
 					waittime = wait;
 					log.info("Previous function requested to wait " + waittime + " milliseconds");
+					Thread.sleep(wait);
 				}
-				Runnable runnable = new Runnable() {
-					public void run()
-					{
-						getMediaArchive().fireSharedMediaEvent("llm/monitorchats");
-					}
-				};
-				archive.getExecutorManager().execLater(runnable, waittime);
+				//TODO: Just sleep for a bit? and try again
+				agentContext.setFunctionName(agentContext.getNextFunctionName());
+				agentContext.setNextFunctionName(null);
+				execCurrentFunctionFromChat(usermessage,agentmessage,agentContext);
+//				Runnable runnable = new Runnable() {
+//					public void run()
+//					{
+//						getMediaArchive().fireSharedMediaEvent("llm/monitorchats");
+//					}
+//				};
+//				archive.getExecutorManager().execLater(runnable, waittime);
 			}
 			
 		}
