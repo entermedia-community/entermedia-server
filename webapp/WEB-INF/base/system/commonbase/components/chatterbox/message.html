@@ -139,16 +139,18 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 	
 				
 			#ifnotnull($chat.replytoid)
-				#set( $otherchat = $mediaarchive.getCachedData("chatterbox",$chat.replytoid))
-				#set( $otherchatuser = $mediaarchive.getUser($otherchat.user) )
-				<div class="chatterboxreplyto">
-					<a href="#esc($userlink)" title="$context.getDateTime($otherchat.date)">
-						<strong>$otherchatuser.getAnonNickName()</strong>
-					</a>
-					<div>
-						$url_util.escapeMessage($otherchat.message)
+				#if ($chat.user != "agent")
+					#set( $otherchat = $mediaarchive.getCachedData("chatterbox",$chat.replytoid))
+					#set( $otherchatuser = $mediaarchive.getUser($otherchat.user) )
+					<div class="chatterboxreplyto">
+						<a href="#esc($userlink)" title="$context.getDateTime($otherchat.date)">
+							<strong>$otherchatuser.getAnonNickName()</strong>
+						</a>
+						<div>
+							$url_util.escapeMessage($otherchat.message)
+						</div>
 					</div>
-				</div>
+				#end
 			#end
 			
 				#if($caneditcollection && $goal)
