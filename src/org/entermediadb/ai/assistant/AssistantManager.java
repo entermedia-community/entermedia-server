@@ -230,7 +230,8 @@ public class AssistantManager extends BaseAiManager
 				
 				getMediaArchive().saveData("agentcontext", agentContext);
 				
-				execNextFunctionFromChat(message, agentContext);
+				MultiValued usermessage = (MultiValued)archive.getCachedData("chatterbox",message.get("replytoid"));
+				execNextFunctionFromChat(usermessage,message, agentContext);
 			}
 			return;
 		}
@@ -254,28 +255,21 @@ public class AssistantManager extends BaseAiManager
 		}
 		else 
 		{
-			LlmResponse response = determineFunction(message, agentContext);   
+			LlmResponse response = determineFunction(message, messageToUpdate, agentContext);   
 			if( response.getFunctionName() != null)
 			{
 				agentContext.setFunctionName(response.getFunctionName());
-				
-				if( response.getFunctionName().equals("conversation"))
-				{
-					String output = response.getMessage();
-					messageToUpdate.setValue("message", output);  //Needed"
-					messageToUpdate.setValue("messageplain", output);
-				}
 			}
 		}
-		execNextFunctionFromChat(messageToUpdate, agentContext);
+		execNextFunctionFromChat(message,messageToUpdate, agentContext);
 	}
 	
-	public void execNextFunctionFromChat(MultiValued messageToUpdate, AgentContext agentContext) 
+	public void execNextFunctionFromChat(MultiValued usermessage, MultiValued agentmessage, AgentContext agentContext) 
 	{
 		String functionName = agentContext.getFunctionName();
 		MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", functionName); //Chitchat etc
 		
-		if(messageToUpdate.getValue("message") == null )
+		if(agentmessage.getValue("message") == null )
 		{
 			String processingmessage = null; // TODO: Change to language mao
 			if( function != null)
@@ -286,18 +280,18 @@ public class AssistantManager extends BaseAiManager
 			{
 				processingmessage = "Analyzing...";
 			}
-			messageToUpdate.setValue("message", processingmessage);
+			agentmessage.setValue("message", processingmessage);
+			getMediaArchive().saveData("chatterbox",agentmessage);	
 		}
 		ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
-		getMediaArchive().saveData("chatterbox",messageToUpdate);	
-		server.broadcastMessage(getMediaArchive().getCatalogId(), messageToUpdate);
+		server.broadcastMessage(getMediaArchive().getCatalogId(), agentmessage);
 		
 		MediaArchive archive = getMediaArchive();
 
-		Data channel = archive.getCachedData("channel", messageToUpdate.get("channel"));
+		Data channel = archive.getCachedData("channel", agentmessage.get("channel"));
 		agentContext.addContext("channel", channel);
 		
-		agentContext.addContext("message", messageToUpdate);
+		agentContext.addContext("message", agentmessage);
 		agentContext.addContext("aisearchparams", agentContext.getAiSearchParams() );
 		
 		String apphome = "/"+ channel.get("chatapplicationid");
@@ -306,11 +300,13 @@ public class AssistantManager extends BaseAiManager
 		try
 		{
 				
-			ChatMessageHandler handler = (ChatMessageHandler)getMediaArchive().getBean( function.get("messagehandler") );
-			LlmResponse response = handler.processMessage(messageToUpdate, agentContext);
-
-			messageToUpdate.setValue("message", response.getMessage());
-			String messageplain = messageToUpdate.get("messageplain");
+			String bean = function.get("messagehandler");
+			
+			ChatMessageHandler handler = (ChatMessageHandler)getMediaArchive().getBean( bean);
+			LlmResponse response = handler.processMessage(agentmessage, agentContext);
+			
+			agentmessage.setValue("message", response.getMessage());
+			String messageplain = agentmessage.get("messageplain");
 			String newmessageplain = response.getMessagePlain();
 			
 			if(newmessageplain != null)
@@ -323,18 +319,18 @@ public class AssistantManager extends BaseAiManager
 				{
 					messageplain += " \n " + newmessageplain;
 				}
-				messageToUpdate.setValue("messageplain", messageplain);
+				agentmessage.setValue("messageplain", messageplain);
 			}
 			
-			messageToUpdate.setValue("chatmessagestatus", "completed");
-			getMediaArchive().saveData("chatterbox",messageToUpdate);
+			agentmessage.setValue("chatmessagestatus", "completed");
+			getMediaArchive().saveData("chatterbox",agentmessage);
 			
 			JSONObject functionMessageUpdate = new JSONObject();
 			functionMessageUpdate.put("messagetype", "airesponse");
 			functionMessageUpdate.put("catalogid", archive.getCatalogId());
 			functionMessageUpdate.put("user", "agent");
-			functionMessageUpdate.put("channel", messageToUpdate.get("channel"));
-			functionMessageUpdate.put("messageid", messageToUpdate.getId());
+			functionMessageUpdate.put("channel", agentmessage.get("channel"));
+			functionMessageUpdate.put("messageid", agentmessage.getId());
 			functionMessageUpdate.put("message", response.getMessage());
 			server.broadcastMessage(functionMessageUpdate);
 			
@@ -345,8 +341,8 @@ public class AssistantManager extends BaseAiManager
 				//params.put("function", agentContext.getNextFunctionName());
 				//messageToUpdate.setValue("params", params.toJSONString());
 
-				messageToUpdate.setValue("chatmessagestatus", "refresh");
-				getMediaArchive().saveData("chatterbox",messageToUpdate);
+				agentmessage.setValue("chatmessagestatus", "refresh");
+				getMediaArchive().saveData("chatterbox",agentmessage);
 
 				Long wait = agentContext.getLong("wait");
 				if( wait != null && wait instanceof Long)
@@ -368,14 +364,14 @@ public class AssistantManager extends BaseAiManager
 		catch (Exception e)
 		{
 			log.error("Could not execute function: " + agentContext.getFunctionName(), e);
-			messageToUpdate.setValue("functionresponse", e.toString());
-			messageToUpdate.setValue("chatmessagestatus", "failed");
-			archive.saveData("chatterbox", messageToUpdate);
+			agentmessage.setValue("functionresponse", e.toString());
+			agentmessage.setValue("chatmessagestatus", "failed");
+			archive.saveData("chatterbox", agentmessage);
 		}
 	}
 	
 	@Override
-	public LlmResponse processMessage(MultiValued inMessage, AgentContext inAgentContext)
+	public LlmResponse processMessage(MultiValued inAgentMessage, AgentContext inAgentContext)
 	{
 //		if(output == null || output.isEmpty())
 //		{  //What is this for?
@@ -385,81 +381,94 @@ public class AssistantManager extends BaseAiManager
 //			output = chatresponse.getMessage();
 //		}
 		//ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
-		inMessage.setValue("chatmessagestatus", "completed");
+		inAgentMessage.setValue("chatmessagestatus", "completed");
+		
+		
+//		String output = inMessage.getMessage();
+//		messageToUpdate.setValue("message", output);  //Needed"
+//		messageToUpdate.setValue("messageplain", output);
+//		
+		String generalresponse  = inAgentMessage.get("message");
+		if(generalresponse != null)
+		{
+			MarkdownUtil md = new MarkdownUtil();
+			generalresponse = md.render(generalresponse);
+			inAgentMessage.setValue("message",generalresponse);
+		}
 		
 		LlmResponse respond = new EMediaAIResponse();
-		respond.setMessage(inMessage.get("message"));  //TODO: Format it?
+		respond.setMessage(generalresponse);
+		
+//		if(generalresponse != null)
+//		{
+//			MarkdownUtil md = new MarkdownUtil();
+//			response.setMessage(md.render(generalresponse));
+//		}
+		
 		//respond.setFunctionName(null);
 //		getMediaArchive().saveData("chatterbox",inMessage);
 //		server.broadcastMessage(getMediaArchive().getCatalogId(), inMessage);
 		return respond;
 	}
 	
-	protected EMediaAIResponse determineFunction(MultiValued message, AgentContext inAgentContext)
+	protected LlmResponse determineFunction(MultiValued userMessage,MultiValued agentMessage, AgentContext inAgentContext)
 	{
-		EMediaAIResponse response = new EMediaAIResponse();
 		MediaArchive archive = getMediaArchive();
 		
 		LlmConnection llmconnection = archive.getLlmConnection("agentChat");
 		
 		//Run AI
 		inAgentContext.addContext("schema", loadSchema());
-		LlmResponse results = llmconnection.callStructuredOutputList("parse_sentence", inAgentContext.getContext()); //TODO: Replace with local API that is faster
-		if(results == null)
+		LlmResponse response = llmconnection.callStructuredOutputList("parse_sentence", inAgentContext.getContext()); //TODO: Replace with local API that is faster
+		if(response == null)
 		{
-			throw new OpenEditException("No results from AI for message: " + message.get("message"));
+			throw new OpenEditException("No results from AI for message: " + userMessage.get("message"));
 		}
-		JSONObject json = results.getMessageStructured();
 		
-		if(json.containsKey("plaintext"))
-		{
-			String contentString = (String) json.get("plaintext");
-			JSONObject conversation = new JSONObject();
+//			String contentString = (String) json.get("friendly_response");
+//			JSONObject conversation = new JSONObject();
 			
 			//TODO: What was this?
 			
 //			conversation.put("friendly_response", contentString);
 //			results.put("conversation", conversation);
 //			results.remove("plaintext");
-		}
 		//response.setRawResponse(results);
-		processResults(inAgentContext, message.get("message"), response, json);
-		return response;
-	}
-	
-
-	protected void processResults(AgentContext inAgentContext, String messageText, EMediaAIResponse response, JSONObject results)
-	{
-		String type = (String)results.get("type");
+		JSONObject content = response.getMessageStructured();
 		
+		String type = (String)content.get("type");
+		if( type == null)
+		{
+			if(content.containsKey("conversation"))
+			{
+				type = "conversation";
+			}
+		}		
 		if(type == null)
 		{
-			throw new OpenEditException("No type specified in results: " + results.toJSONString());
+			throw new OpenEditException("No type specified in results: " + content.toJSONString());
 		}
 
 		if( type.equals("search") )
 		{
-			JSONObject structure = (JSONObject) results.get(type);
+			JSONObject structure = (JSONObject) content.get(type);
 			if(structure == null)
 			{
 				throw new OpenEditException("No structure found for type: " + type);
 			}
-			type = partsSearchParts(inAgentContext, structure, type, messageText);
+			type = partsSearchParts(inAgentContext, structure, type, response.getMessage());
 		}
 		else if( type.equals("conversation"))
 		{
 			//type = "chitchat";
 //			JSONObject structure = (JSONObject) results.get(type);
-//			String generalresponse = (String) structure.get("friendly_response");
+			JSONObject conversation = (JSONObject) content.get("conversation");
+			String generalresponse = (String) conversation.get("friendly_response");
 //			if(generalresponse != null)
 //			{
-			String generalresponse = (String) results.get("response");
+			//String generalresponse = (String) content.get("response");
 //			}
-			if(generalresponse != null)
-			{
-				MarkdownUtil md = new MarkdownUtil();
-				response.setMessage(md.render(generalresponse));
-			}
+			agentMessage.setValue("message", generalresponse);
 		}
 		else if(type.equals("create_image"))
 		{
@@ -467,7 +476,7 @@ public class AssistantManager extends BaseAiManager
 			
 			AiCreation creation = inAgentContext.getAiCreationParams();					
 			creation.setCreationType("image");
-			JSONObject structure = (JSONObject) results.get("create_image");
+			JSONObject structure = (JSONObject) content.get("create_image");
 			creation.setImageFields(structure);
 		}
 		else if(type.equals("create_entity"))
@@ -476,15 +485,16 @@ public class AssistantManager extends BaseAiManager
 			
 			AiCreation creation = inAgentContext.getAiCreationParams();
 			creation.setCreationType("entity");
-			JSONObject structure = (JSONObject) results.get("create_entity");
+			JSONObject structure = (JSONObject) content.get("create_entity");
 			creation.setEntityFields(structure);
 		}
-		//TODO Add how-to rag handling
-		
 		response.setFunctionName(type);
+		return response;
 	}
+	
 
-	private String partsSearchParts(AgentContext inAgentContext, JSONObject structure, String type, String messageText) {
+	protected String partsSearchParts(AgentContext inAgentContext, JSONObject structure, String type, String messageText) 
+	{
 		ArrayList tables = (ArrayList) structure.get("tables");
 		
 		if( tables == null)

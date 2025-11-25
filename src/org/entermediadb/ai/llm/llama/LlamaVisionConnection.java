@@ -206,5 +206,10 @@ public class LlamaVisionConnection extends OpenAiConnection {
 	    return res;
 
 	}
-	
+
+	@Override
+	public LlmResponse createResponse()
+	{
+		return new LlamaVisionResponse();
+	}
 }

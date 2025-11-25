@@ -142,7 +142,13 @@ public class OpenAiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public String getFunctionName() {
+    public String getFunctionName() 
+    {
+    	if( fieldFunctionName != null)
+    	{
+    		return fieldFunctionName;
+    	}
+    	
         if (!isToolCall()) return null;
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
