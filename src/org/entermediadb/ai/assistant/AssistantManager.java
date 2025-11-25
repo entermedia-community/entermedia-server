@@ -253,17 +253,17 @@ public class AssistantManager extends BaseAiManager
 			if (channeltype.equals("agententitychat"))
 			{
 				//response = processDocumentChat(message, agentContext);
-				agentContext.setFunctionName("ragSearch");
+				agentContext.setNextFunctionName("ragSearch");
 			}
 			else 
 			{
 				LlmResponse response = determineFunction(message, messageToUpdate, agentContext);   
 				if( response.getFunctionName() != null)
 				{
-					agentContext.setFunctionName(response.getFunctionName());
+					agentContext.setNextFunctionName(response.getFunctionName());
 				}
 			}
-			execNextFunctionFromChat(message,messageToUpdate, agentContext);
+			execNextFunctionFromChat(message, messageToUpdate, agentContext);
 		}
 		catch( Exception ex)
 		{
@@ -277,6 +277,12 @@ public class AssistantManager extends BaseAiManager
 	{
 		String functionName = agentContext.getFunctionName();
 		MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", functionName); //Chitchat etc
+		
+		if (function == null)
+		{
+			log.info("No Ai function defined: " + functionName);
+			return;
+		}
 		
 		if(agentmessage.getValue("message") == null )
 		{
@@ -314,7 +320,9 @@ public class AssistantManager extends BaseAiManager
 			ChatMessageHandler handler = (ChatMessageHandler)getMediaArchive().getBean( bean);
 			LlmResponse response = handler.processMessage(agentmessage, agentContext);
 			
-			agentmessage.setValue("message", response.getMessage());
+			String message = response.getMessage();
+			agentmessage.setValue("message", message);
+			
 			String messageplain = agentmessage.get("messageplain");
 			String newmessageplain = response.getMessagePlain();
 			
@@ -390,13 +398,28 @@ public class AssistantManager extends BaseAiManager
 //			output = chatresponse.getMessage();
 //		}
 		//ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
-		inAgentMessage.setValue("chatmessagestatus", "completed");
+		
 		
 		
 //		String output = inMessage.getMessage();
 //		messageToUpdate.setValue("message", output);  //Needed"
 //		messageToUpdate.setValue("messageplain", output);
 //		
+		
+		if ("searchTables".equals(inAgentContext.getFunctionName()))
+		{
+			//search
+			LlmConnection searcher = getMediaArchive().getLlmConnection("agentChat");
+			LlmResponse response =  searcher.renderLocalAction(inAgentContext);
+			return response;
+		}
+		else 
+		{
+			//chitchat
+			inAgentMessage.setValue("chatmessagestatus", "completed");
+		}
+		
+		
 		String generalresponse  = inAgentMessage.get("message");
 		if(generalresponse != null)
 		{
@@ -508,7 +531,7 @@ public class AssistantManager extends BaseAiManager
 			return type;
 		}
 		
-		log.info("Steps to search parts: " + structure.toJSONString());
+		log.info("AI Assistant Searching Tables: " + structure.toJSONString());
 		
 		AiSearch search = inAgentContext.getAiSearchParams();
 		search.setOriginalSearchString(messageText);
