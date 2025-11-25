@@ -1,6 +1,5 @@
 package org.entermediadb.ai.llm.openai;
 
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
@@ -9,12 +8,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.util.EntityUtils;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.BaseLlmConnection;
 import org.entermediadb.ai.llm.LlmConnection;
-import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.ai.llm.http.HttpResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -52,7 +49,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		JSONObject json = getConnection().parseMap(resp);
 
-		OpenAiResponse response = new OpenAiResponse();
+		LlmResponse response = (LlmResponse) createResponse();
 		response.setRawResponse(json);
 		
 		String nextFunction = response.getFunctionName();
@@ -101,7 +98,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		//String endpoint = "https://api.openai.com/v1/images/generations";
 		//String endpoint = "http://localhost:3000/generations";  // for local testing
 		
-		log.info("Image creation prompt: " + inPrompt + " with model: " + getModelName());
+		log.info("Creating image with prompt: " + inPrompt + "  Model: " + getModelName());
 		LlmResponse res = callJson("/v1/images/generations",payload);
 		return res;
 		
@@ -169,14 +166,31 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 			JSONArray functions = new JSONArray();
 			functions.add(functionDef);
-			obj.put("functions", functions);
+			
+			
+			JSONArray tools = new JSONArray();
+			JSONObject toolfunction = new JSONObject();
+			
+			toolfunction.put("function", functionDef);
+			toolfunction.put("type", "function");
+			tools.add(toolfunction);
+			
+			obj.put("tools", tools);
 
-			JSONObject func = new JSONObject();
-			func.put("name", inFunction);
-			obj.put("function_call", func);
+			JSONObject toolchoice = new JSONObject();
+			toolchoice.put("type", "function");
+			JSONObject functionname = new JSONObject();
+			functionname.put("name", inFunction);
+			toolchoice.put("function", functionname);
+			obj.put("tool_choice", toolchoice);
+			
+			
+			
 		}
 		
-		LlmResponse res = callJson("/api/chat",obj);
+		log.info("Call Function: " + obj.toJSONString());
+		
+		LlmResponse res = callJson("/v1/chat/completions",obj);
 	    return res;
 
 	}

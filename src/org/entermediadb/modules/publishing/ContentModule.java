@@ -86,8 +86,15 @@ public class ContentModule extends BaseMediaModule
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			MultiValued contentrequest = (MultiValued) iterator.next();
-			
-			LlmConnection llm = (LlmConnection) archive.getLlmConnection("createAsset");
+			LlmConnection llm = null;
+			if ("image".equals(contentrequest.get("contentcreatortype")))
+			{
+				llm = (LlmConnection) archive.getLlmConnection("createAsset");
+			}
+			else
+			{
+				llm = (LlmConnection) archive.getLlmConnection("createEntity");
+			}
 			
 			manager.createFromLLM(params, llm, contentrequest);
 			contentrequest.setValue("status", "complete");

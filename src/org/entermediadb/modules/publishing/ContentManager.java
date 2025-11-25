@@ -969,6 +969,8 @@ public class ContentManager implements CatalogEnabled
 			child.setValue("owner", inContentrequest.get("owner"));
 
 			archive.saveData(submodsearchtype, child);
+			
+			log.info("New record created for: " + moduleid + " Name: " + child.getName());
 			// Category folder =
 			// getMediaArchive().getEntityManager().createDefaultFolder(entity, null);
 

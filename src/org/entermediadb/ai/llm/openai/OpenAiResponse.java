@@ -35,7 +35,7 @@ public class OpenAiResponse extends BasicLlmResponse {
         	
         	return null;
         }*/
-    	
+    	JSONParser parser = new JSONParser();
     	JSONObject arguments = null;
         JSONArray choices = (JSONArray) rawResponse.get("choices");
         if (choices == null || choices.isEmpty()) 
@@ -52,13 +52,23 @@ public class OpenAiResponse extends BasicLlmResponse {
         if (functionCall != null) 
 		{
         	String argumentsString = (String) functionCall.get("arguments");
-            JSONParser parser = new JSONParser();
+            
+            arguments = parser.parse(argumentsString);
+		}
+        //gpt-5-nano tool_calls response
+        JSONArray tool_calls = (JSONArray) message.get("tool_calls");
+        if (tool_calls != null) 
+		{
+        	JSONObject function = (JSONObject) tool_calls.get(0);
+        	JSONObject function0 = (JSONObject) function.get("function");
+        	//JSONObject functionarguments = (JSONObject) function0.get("arguments");
+        	String argumentsString = (String) function0.get("arguments");
+            
             arguments = parser.parse(argumentsString);
 		}
         else 
         {
         	String argumentsString = (String) message.get("content");
-            JSONParser parser = new JSONParser();
             if (!argumentsString.startsWith("{"))
             {
             	//log.info("Response is Plain Text: " + argumentsString);

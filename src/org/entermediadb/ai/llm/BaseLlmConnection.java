@@ -406,7 +406,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 
 		JSONObject json = (JSONObject) getConnection().parseMap(resp);
 
-		OpenAiResponse response = (OpenAiResponse) createResponse();
+		LlmResponse response = (LlmResponse) createResponse();
 		response.setRawResponse(json);
 		
 		String nextFunction = response.getFunctionName();
