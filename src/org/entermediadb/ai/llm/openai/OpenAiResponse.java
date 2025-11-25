@@ -139,7 +139,12 @@ public class OpenAiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public String getMessage() {
+    public String getMessage() 
+    {
+    	if( fieldMessage != null)
+    	{
+    		return fieldMessage;
+    	}
         if (rawResponse == null) return null;
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");

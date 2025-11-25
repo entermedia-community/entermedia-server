@@ -157,6 +157,8 @@ public class LlamaVisionConnection extends OpenAiConnection {
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(prompt);
 
+		log.info("Sending: " + structureDef.toJSONString());
+		
 		LlmResponse res = callJson("/v1/chat/completions", structureDef);
 
         
