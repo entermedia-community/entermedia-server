@@ -15,8 +15,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.Schema;
-import org.entermediadb.ai.classify.DocumentEmbeddingManager;
 import org.entermediadb.ai.classify.SemanticClassifier;
 import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.knn.RankedResult;
@@ -183,18 +183,17 @@ public class AssistantManager extends BaseAiManager
 		
 		AgentContext agentContext = loadContext(inChannel.getId());
 		
-		LlmConnection llmconnection = archive.getLlmConnection("agentChat");
-
-		agentContext.addContext("model", llmconnection.getModelName() );
+		//LlmConnection llmconnection = archive.getLlmConnection("agentChat");
+		//agentContext.addContext("model", llmconnection.getModelName() );
 
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 		Searcher chats = archive.getSearcher("chatterbox");
 		
-		if (!llmconnection.isReady()) 
-		{
-			inLog.error("LLM Manager is not ready, check key for: " +  llmconnection.getModelName() + ". Cannot process channel: " + inChannel);
-			return;
-		}
+//		if (!llmconnection.isReady()) 
+//		{
+//			inLog.error("LLM Manager is not ready, check key for: " +  llmconnection.getModelName() + ". Cannot process channel: " + inChannel);
+//			return;
+//		}
 
 		String channeltype = inChannel.get("channeltype");
 		if (channeltype == null)
@@ -231,98 +230,172 @@ public class AssistantManager extends BaseAiManager
 				
 				getMediaArchive().saveData("agentcontext", agentContext);
 				
-				execLocalActionFromChat(llmconnection, message, agentContext);
+				execNextFunctionFromChat(message, agentContext);
 			}
 			return;
 		}
 		
-		Data resopnseMessage = chats.createNewData();
-		resopnseMessage.setValue("user", "agent");
-		resopnseMessage.setValue("channel", inChannel.getId());
-		resopnseMessage.setValue("date", new Date());
-		resopnseMessage.setValue("message", "<i class=\"fas fa-spinner fa-spin mr-2\"></i> Processing request...");
-		resopnseMessage.setValue("chatmessagestatus", "processing");
+		MultiValued messageToUpdate = (MultiValued)chats.createNewData();
+		messageToUpdate.setValue("user", "agent");
+		messageToUpdate.setValue("replytoid",message.getId() );
+		messageToUpdate.setValue("channel", inChannel.getId());
+		messageToUpdate.setValue("date", new Date());
+		messageToUpdate.setValue("message", "<i class=\"fas fa-spinner fa-spin mr-2\"></i> Processing request...");
+		messageToUpdate.setValue("chatmessagestatus", "processing");
+		chats.saveData(messageToUpdate);
+		server.broadcastMessage(archive.getCatalogId(), messageToUpdate);
 		
-		chats.saveData(resopnseMessage);
-		
-		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
-		
-		LlmResponse response = null;
-		String processingmessage = null; // TODO: Change to language mao
+		//Determine what will need to be processed
 		
 		if (channeltype.equals("agententitychat"))
 		{
-			response = processDocumentChat(message, agentContext);  
-			processingmessage = "Generating response...";
+			//response = processDocumentChat(message, agentContext);
+			agentContext.setFunctionName("ragSearch");
 		}
 		else 
 		{
-			response = processAgentChat(message, agentContext);   
-		}
-		
-		
-		if( response.getFunctionName() != null)
-		{
-			agentContext.setFunctionName(response.getFunctionName());
-		}
-		getMediaArchive().saveData("agentcontext", agentContext);
-
-		String functionName = agentContext.getFunctionName();
-		MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunctions", functionName); //Chitchat etc
-		
-		if( function != null)
-		{
-			processingmessage = function.get("processingmessage");
-		}
-		if( processingmessage == null )
-		{
-			processingmessage = "Analyzing...";
-		}
-		resopnseMessage.setValue("message", processingmessage);
-			
-		chats.saveData(resopnseMessage);
-		
-		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
-
-		if( functionName.equals("conversation"))
-		{
-			String output = response.getMessage();
-			
-			if(output == null || output.isEmpty())
+			LlmResponse response = determineFunction(message, agentContext);   
+			if( response.getFunctionName() != null)
 			{
-				agentContext.addContext("messagetosend", message.get("message") );
-				LlmResponse chatresponse = llmconnection.callMessageTemplate(agentContext,functionName); //TODO: Add message history
-				output = chatresponse.getMessage();
-			}
-
-			// **Regular Text Response**
-			if (output != null)
-			{
-				resopnseMessage.setValue("message", output);
-				resopnseMessage.setValue("messageplain", output);
-				resopnseMessage.setValue("chatmessagestatus", "completed");
-
-				chats.saveData(resopnseMessage);
-				server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
+				agentContext.setFunctionName(response.getFunctionName());
+				
+				if( response.getFunctionName().equals("conversation"))
+				{
+					String output = response.getMessage();
+					messageToUpdate.setValue("message", output);  //Needed"
+					messageToUpdate.setValue("messageplain", output);
+				}
 			}
 		}
-		else if (functionName.equals("ragresponse"))
-		{
-			resopnseMessage.setValue("messageplain", response.getMessagePlain());
-			resopnseMessage.setValue("message", response.getMessage());
-			resopnseMessage.setValue("chatmessagestatus", "completed");
-
-			chats.saveData(resopnseMessage);
-			server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
-		}
-		else //add option to run AI based functions like create an image
-		{
-			execLocalActionFromChat(llmconnection, resopnseMessage, agentContext);
-		}
-		
+		execNextFunctionFromChat(messageToUpdate, agentContext);
 	}
 	
-	protected EMediaAIResponse processAgentChat(MultiValued message, AgentContext inAgentContext)
+	public void execNextFunctionFromChat(MultiValued messageToUpdate, AgentContext agentContext) 
+	{
+		String functionName = agentContext.getFunctionName();
+		MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", functionName); //Chitchat etc
+		
+		if(messageToUpdate.getValue("message") == null )
+		{
+			String processingmessage = null; // TODO: Change to language mao
+			if( function != null)
+			{
+				processingmessage = function.get("processingmessage");
+			}
+			if( processingmessage == null )
+			{
+				processingmessage = "Analyzing...";
+			}
+			messageToUpdate.setValue("message", processingmessage);
+		}
+		ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
+		getMediaArchive().saveData("chatterbox",messageToUpdate);	
+		server.broadcastMessage(getMediaArchive().getCatalogId(), messageToUpdate);
+		
+		MediaArchive archive = getMediaArchive();
+
+		Data channel = archive.getCachedData("channel", messageToUpdate.get("channel"));
+		agentContext.addContext("channel", channel);
+		
+		agentContext.addContext("message", messageToUpdate);
+		agentContext.addContext("aisearchparams", agentContext.getAiSearchParams() );
+		
+		String apphome = "/"+ channel.get("chatapplicationid");
+		agentContext.addContext("apphome", apphome);
+		
+		try
+		{
+				
+			ChatMessageHandler handler = (ChatMessageHandler)getMediaArchive().getBean( function.get("messagehandler") );
+			LlmResponse response = handler.processMessage(messageToUpdate, agentContext);
+
+			messageToUpdate.setValue("message", response.getMessage());
+			String messageplain = messageToUpdate.get("messageplain");
+			String newmessageplain = response.getMessagePlain();
+			
+			if(newmessageplain != null)
+			{
+				if(messageplain == null)
+				{
+					messageplain = newmessageplain;
+				}
+				else
+				{
+					messageplain += " \n " + newmessageplain;
+				}
+				messageToUpdate.setValue("messageplain", messageplain);
+			}
+			
+			messageToUpdate.setValue("chatmessagestatus", "completed");
+			getMediaArchive().saveData("chatterbox",messageToUpdate);
+			
+			JSONObject functionMessageUpdate = new JSONObject();
+			functionMessageUpdate.put("messagetype", "airesponse");
+			functionMessageUpdate.put("catalogid", archive.getCatalogId());
+			functionMessageUpdate.put("user", "agent");
+			functionMessageUpdate.put("channel", messageToUpdate.get("channel"));
+			functionMessageUpdate.put("messageid", messageToUpdate.getId());
+			functionMessageUpdate.put("message", response.getMessage());
+			server.broadcastMessage(functionMessageUpdate);
+			
+			Long waittime = 200l;
+			if( agentContext.getNextFunctionName() != null)
+			{
+				//Search semantic now?
+				//params.put("function", agentContext.getNextFunctionName());
+				//messageToUpdate.setValue("params", params.toJSONString());
+
+				messageToUpdate.setValue("chatmessagestatus", "refresh");
+				getMediaArchive().saveData("chatterbox",messageToUpdate);
+
+				Long wait = agentContext.getLong("wait");
+				if( wait != null && wait instanceof Long)
+				{
+					agentContext.setValue("wait", null);
+					waittime = wait;
+					log.info("Previous function requested to wait " + waittime + " milliseconds");
+				}
+				
+			}
+			Runnable runnable = new Runnable() {
+				public void run()
+				{
+					getMediaArchive().fireSharedMediaEvent("llm/monitorchats");
+				}
+			};
+			archive.getExecutorManager().execLater(runnable, waittime);
+		}
+		catch (Exception e)
+		{
+			log.error("Could not execute function: " + agentContext.getFunctionName(), e);
+			messageToUpdate.setValue("functionresponse", e.toString());
+			messageToUpdate.setValue("chatmessagestatus", "failed");
+			archive.saveData("chatterbox", messageToUpdate);
+		}
+	}
+	
+	@Override
+	public LlmResponse processMessage(MultiValued inMessage, AgentContext inAgentContext)
+	{
+//		if(output == null || output.isEmpty())
+//		{  //What is this for?
+//			agentContext.addContext("messagetosend", message.get("message") );
+//			LlmResponse chatresponse = llmconnection.callMessageTemplate(agentContext,response.getFunctionName()); 
+//			//TODO: Add message history
+//			output = chatresponse.getMessage();
+//		}
+		//ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
+		inMessage.setValue("chatmessagestatus", "completed");
+		
+		LlmResponse respond = new EMediaAIResponse();
+		respond.setMessage(inMessage.get("message"));  //TODO: Format it?
+		//respond.setFunctionName(null);
+//		getMediaArchive().saveData("chatterbox",inMessage);
+//		server.broadcastMessage(getMediaArchive().getCatalogId(), inMessage);
+		return respond;
+	}
+	
+	protected EMediaAIResponse determineFunction(MultiValued message, AgentContext inAgentContext)
 	{
 		EMediaAIResponse response = new EMediaAIResponse();
 		MediaArchive archive = getMediaArchive();
@@ -352,14 +425,6 @@ public class AssistantManager extends BaseAiManager
 		//response.setRawResponse(results);
 		processResults(inAgentContext, message.get("message"), response, json);
 		return response;
-	}
-	
-	
-	protected LlmResponse processDocumentChat(MultiValued message, AgentContext inAgentContext)
-	{		
-		DocumentEmbeddingManager embeddingManager = (DocumentEmbeddingManager) getMediaArchive().getBean("documentEmbeddingManager");
-		
-		return embeddingManager.processMessage(message, inAgentContext);
 	}
 	
 
@@ -549,92 +614,6 @@ public class AssistantManager extends BaseAiManager
 		return type;
 	}
 	
-	public void execLocalActionFromChat(LlmConnection llmconnection, Data messageToUpdate, AgentContext agentContext) throws Exception
-	{
-		MediaArchive archive = getMediaArchive();
-
-		Data channel = archive.getCachedData("channel", messageToUpdate.get("channel"));
-		agentContext.addContext("channel", channel);
-		
-		ChatServer server = (ChatServer) archive.getBean("chatServer");
-
-		try
-		{
-			agentContext.addContext("message", messageToUpdate);
-			agentContext.addContext("aisearchparams", agentContext.getAiSearchParams() );
-			
-			String apphome = "/"+ channel.get("chatapplicationid");
-			agentContext.addContext("apphome", apphome);
-			
-			LlmResponse response = llmconnection.renderLocalAction(agentContext);  //Run Search
-
-			messageToUpdate.setValue("message", response.getMessage());
-			String messageplain = messageToUpdate.get("messageplain");
-			
-			String newmessageplain = response.getMessagePlain();
-			
-			if(newmessageplain != null)
-			{
-				if(messageplain == null)
-				{
-					messageplain = newmessageplain;
-				}
-				else
-				{
-					messageplain += " \n " + newmessageplain;
-				}
-				messageToUpdate.setValue("messageplain", messageplain);
-			}
-			
-			messageToUpdate.setValue("chatmessagestatus", "completed");
-			
-			Searcher chats = archive.getSearcher("chatterbox");
-			chats.saveData(messageToUpdate);
-			
-			JSONObject functionMessageUpdate = new JSONObject();
-			functionMessageUpdate.put("messagetype", "airesponse");
-			functionMessageUpdate.put("catalogid", archive.getCatalogId());
-			functionMessageUpdate.put("user", "agent");
-			functionMessageUpdate.put("channel", messageToUpdate.get("channel"));
-			functionMessageUpdate.put("messageid", messageToUpdate.getId());
-			functionMessageUpdate.put("message", response.getMessage());
-			server.broadcastMessage(functionMessageUpdate);
-			
-			Long waittime = 200l;
-			if( agentContext.getNextFunctionName() != null)
-			{
-				//Search semantic now?
-				//params.put("function", agentContext.getNextFunctionName());
-				//messageToUpdate.setValue("params", params.toJSONString());
-
-				messageToUpdate.setValue("chatmessagestatus", "refresh");
-				chats.saveData(messageToUpdate);
-
-				Long wait = agentContext.getLong("wait");
-				if( wait != null && wait instanceof Long)
-				{
-					agentContext.setValue("wait", null);
-					waittime = wait;
-					log.info("Previous function requested to wait " + waittime + " milliseconds");
-				}
-				
-			}
-			Runnable runnable = new Runnable() {
-				public void run()
-				{
-					getMediaArchive().fireSharedMediaEvent("llm/monitorchats");
-				}
-			};
-			archive.getExecutorManager().execLater(runnable, waittime);
-		}
-		catch (Exception e)
-		{
-			log.error("Could not execute function: " + agentContext.getFunctionName(), e);
-			messageToUpdate.setValue("functionresponse", e.toString());
-			messageToUpdate.setValue("chatmessagestatus", "failed");
-			archive.saveData("chatterbox", messageToUpdate);
-		}
-	}
 
 	protected Collection<Data> loadChannelChatHistory(Data inChannel)
 	{

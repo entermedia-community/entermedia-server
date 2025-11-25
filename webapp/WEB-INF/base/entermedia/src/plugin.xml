@@ -2504,7 +2504,7 @@
 	</bean>
 
 
-	<bean id="httpConnection" class="org.entermediadb.ai.llm.http.HttpConnection" scope="prototype">
+	<bean id="httpConnection" class="org.entermediadb.ai.llm.http.HttpConnection" scope="prototype"  lazy-init="default">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

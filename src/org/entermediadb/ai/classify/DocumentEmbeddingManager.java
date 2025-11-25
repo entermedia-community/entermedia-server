@@ -178,6 +178,25 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 	
 	public LlmResponse processMessage(MultiValued message, AgentContext inAgentContext)
 	{
+		
+		/**
+		 * 
+		 //Set the function name
+		//getMediaArchive().saveData("agentcontext", agentContext);
+
+//		if (functionName.equals("ragresponse"))
+//		{
+//			messageToUpdate.setValue("messageplain", response.getMessagePlain());
+//			messageToUpdate.setValue("message", response.getMessage());
+//			messageToUpdate.setValue("chatmessagestatus", "completed");
+//
+//			chats.saveData(messageToUpdate);
+//			server.broadcastMessage(archive.getCatalogId(), messageToUpdate);
+//		}
+//		else //add option to run AI based functions like create an image
+//		{
+		 */
+		
 		MediaArchive archive = getMediaArchive();
 		
 		String entityid = inAgentContext.getChannel().get("dataid");
@@ -185,7 +204,8 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 		
 //		Data inDocument = getMediaArchive().getCachedData(entityid, moduleid);
 		
-		String query = message.get("message");
+		MultiValued parent = (MultiValued)archive.getCachedData("chatterbox",message.get("replytoid"));
+		String query = parent.get("message");
 		JSONObject chat = new JSONObject();
 		chat.put("query",query);
 		
@@ -224,8 +244,12 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 		Map headers = new HashMap();
 		headers.put("x-customerkey", customerkey);
 		
+		log.info(" sending to server: " +  chat.toJSONString());
+		
 		LlmResponse response = llmconnection.callJson("/query", headers, chat);
 		response.setFunctionName("ragresponse");
+		
+		//TODO: Handle in second request?
 		processRagResponseWithSource(inAgentContext, response.getRawResponse(), response);
 			
 		return response;

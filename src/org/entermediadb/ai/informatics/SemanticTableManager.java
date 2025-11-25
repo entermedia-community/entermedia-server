@@ -401,7 +401,6 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 
 	protected JSONObject askServer(JSONObject tosendparams)
 	{
-		
 		LlmConnection connection = getMediaArchive().getLlmConnection("vectorizeText");
 		LlmResponse resp = connection.callJson("/text", null, tosendparams);
 		return resp.getRawResponse();

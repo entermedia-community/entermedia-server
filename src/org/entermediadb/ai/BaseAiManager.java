@@ -10,10 +10,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.manager.BaseManager;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.profile.UserProfile;
@@ -21,7 +24,7 @@ import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
 
-public class BaseAiManager extends BaseManager 
+public class BaseAiManager extends BaseManager implements ChatMessageHandler
 {
 	private static final Log log = LogFactory.getLog(BaseAiManager.class);
 	
@@ -379,6 +382,12 @@ public class BaseAiManager extends BaseManager
 			}
 		}
 		return contextfields;
+	}
+
+	@Override
+	public LlmResponse processMessage(MultiValued inMessage, AgentContext inAgentContext)
+	{
+		throw new OpenEditException("Not implemented");
 	}
 
 }

@@ -1,11 +1,12 @@
 package org.entermediadb.ai.llm.http;
 
+import org.entermediadb.ai.llm.BasicLlmResponse;
 import org.entermediadb.ai.llm.openai.OpenAiResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 
-public class HttpResponse extends OpenAiResponse {
+public class HttpResponse extends BasicLlmResponse {
 	
 	
     @Override

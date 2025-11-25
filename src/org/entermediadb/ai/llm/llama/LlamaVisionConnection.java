@@ -129,6 +129,8 @@ public class LlamaVisionConnection extends OpenAiConnection {
 
 		obj.put("messages", messages);
 
+		log.info("Sending to server: " + obj.toJSONString());
+		
 		LlmResponse res = callJson("/api/chat",obj); //Todo: Confirm is ok
 	    return res;
 	}
