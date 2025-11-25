@@ -248,20 +248,29 @@ public class AssistantManager extends BaseAiManager
 		
 		//Determine what will need to be processed
 		
-		if (channeltype.equals("agententitychat"))
+		try
 		{
-			//response = processDocumentChat(message, agentContext);
-			agentContext.setFunctionName("ragSearch");
-		}
-		else 
-		{
-			LlmResponse response = determineFunction(message, messageToUpdate, agentContext);   
-			if( response.getFunctionName() != null)
+			if (channeltype.equals("agententitychat"))
 			{
-				agentContext.setFunctionName(response.getFunctionName());
+				//response = processDocumentChat(message, agentContext);
+				agentContext.setFunctionName("ragSearch");
 			}
+			else 
+			{
+				LlmResponse response = determineFunction(message, messageToUpdate, agentContext);   
+				if( response.getFunctionName() != null)
+				{
+					agentContext.setFunctionName(response.getFunctionName());
+				}
+			}
+			execNextFunctionFromChat(message,messageToUpdate, agentContext);
 		}
-		execNextFunctionFromChat(message,messageToUpdate, agentContext);
+		catch( Exception ex)
+		{
+			messageToUpdate.setValue("message",ex.toString());
+			chats.saveData(messageToUpdate);
+			server.broadcastMessage(archive.getCatalogId(), messageToUpdate);
+		}
 	}
 	
 	public void execNextFunctionFromChat(MultiValued usermessage, MultiValued agentmessage, AgentContext agentContext) 
@@ -439,10 +448,7 @@ public class AssistantManager extends BaseAiManager
 		String type = (String)content.get("type");
 		if( type == null)
 		{
-			if(content.containsKey("conversation"))
-			{
-				type = "conversation";
-			}
+			type = (String)content.keySet().iterator().next(); 
 		}		
 		if(type == null)
 		{
