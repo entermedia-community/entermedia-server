@@ -461,7 +461,7 @@ public class AssistantManager extends BaseAiManager
 		else if ("searchTables".equals(inAgentContext.getFunctionName()))
 		{
 			//search
-			LlmConnection searcher = getMediaArchive().getLlmConnection("agentChat");
+			LlmConnection searcher = getMediaArchive().getLlmConnection("searchTables");
 			LlmResponse response =  searcher.renderLocalAction(inAgentContext);
 			return response;
 		}
