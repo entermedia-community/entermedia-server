@@ -236,21 +236,21 @@ public class AssistantManager extends BaseAiManager
 		
 		agentContext.addContext("channelchathistory", loadChannelChatHistory(inChannel));
 		
-		if("refresh".equals(oldstatus))
-		{			
-			String nextFunction = agentContext.getNextFunctionName();
-			if(nextFunction != null)
-			{
-				agentContext.setFunctionName(nextFunction);
-				agentContext.setNextFunctionName(null);
-				
-				getMediaArchive().saveData("agentcontext", agentContext);
-				
-				MultiValued realusermessage = (MultiValued)archive.getCachedData("chatterbox",usermessage.get("replytoid"));
-				execCurrentFunctionFromChat(realusermessage,usermessage, agentContext);
-			}
-			return;
-		}
+//		if("refresh".equals(oldstatus))
+//		{			
+//			String nextFunction = agentContext.getNextFunctionName();
+//			if(nextFunction != null)
+//			{
+//				agentContext.setFunctionName(nextFunction);
+//				agentContext.setNextFunctionName(null);
+//				
+//				getMediaArchive().saveData("agentcontext", agentContext);
+//				
+//				MultiValued realusermessage = (MultiValued)archive.getCachedData("chatterbox",usermessage.get("replytoid"));
+//				execCurrentFunctionFromChat(realusermessage,usermessage, agentContext);
+//			}
+//			return;
+//		}
 		//Add new agentmessage
 		MultiValued agentmessage = (MultiValued)getMediaArchive().getSearcher("chatterbox").createNewData();
 		agentmessage.setValue("user", "agent");
