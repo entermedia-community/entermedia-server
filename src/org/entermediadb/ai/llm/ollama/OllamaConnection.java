@@ -150,7 +150,7 @@ public class OllamaConnection extends OpenAiConnection implements CatalogEnabled
 	}
 	
 	@Override
-	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image)
+	public LlmResponse callOCRFunction(Map inParams, String inBase64Image)
 	{
 		throw new OpenEditException("Not implemented yet. Only available in Llama connection.");
 	}

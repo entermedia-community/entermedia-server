@@ -645,7 +645,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	}
 
 	@Override
-	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image)
+	public LlmResponse callOCRFunction(Map inParams, String inBase64Image)
 	{
 		throw new OpenEditException("Call not supported");
 	}

@@ -160,7 +160,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 
 		String base64Img = loadDocumentContent(pageEntity);
 			
-		LlmResponse result = (LlmResponse) llmconnection.callOCRFunction(new HashMap(), "document_ocr", base64Img);
+		LlmResponse result = (LlmResponse) llmconnection.callOCRFunction(new HashMap(), base64Img);
 		String markdown = result.getMessage();
 			
 		pageEntity.setValue("markdowncontent", markdown);

@@ -1,18 +1,11 @@
 package org.entermediadb.ai.llm.llama;
 
 
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.ai.llm.openai.OpenAiConnection;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -20,13 +13,13 @@ import org.openedit.OpenEditException;
 import org.openedit.page.Page;
 import org.openedit.util.JSONParser;
 
-public class LlamaVisionConnection extends OpenAiConnection {
+public class LlamaVisionConnection extends LlamaOpenAiConnection {
 	private static Log log = LogFactory.getLog(LlamaVisionConnection.class);
 	
 	@Override
 	public String getLlmProtocol()
 	{
-		return "llama";
+		return "llamavision";
 	}
 	
 	public String getModelPath()
@@ -159,27 +152,27 @@ public class LlamaVisionConnection extends OpenAiConnection {
 
 		log.info("Sending: " + structureDef.toJSONString());
 		
-		LlmResponse res = callJson("/v1/chat/completions", structureDef);
+		LlmResponse res = callJson("/chat/completions", structureDef);
 
         
 		return res;
 	}
 	
 	@Override
-	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image)
+	public LlmResponse callOCRFunction(Map inParams, String inBase64Image)
 	{
 		MediaArchive archive = getMediaArchive();
-		String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/functions/" + inOCRInstruction + ".json";
+		String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmProtocol() +"/calls/" + getAiFunctionName() + ".json";
 		Page defpage = archive.getPageManager().getPage(templatepath);
 		if (!defpage.exists())
 		{
-			templatepath = "/" + archive.getCatalogId() + "/ai/" + getLlmProtocol() +"/classify/functions/" + inOCRInstruction + ".json";
+			templatepath = "/" + archive.getCatalogId() + "/ai/" + getLlmProtocol() +"/calls/" + getAiFunctionName() + ".json";
 			defpage = archive.getPageManager().getPage(templatepath);
 		}
 		
 		if (!defpage.exists())
 		{
-			throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inOCRInstruction);
+			throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + getAiFunctionName());
 		}
 
 		String template = loadInputFromTemplate(templatepath, inParams);
@@ -201,7 +194,7 @@ public class LlamaVisionConnection extends OpenAiConnection {
 		imagecontentitem.put("image_url", imageurl);
 		contentarray.add(imagecontentitem);
 		
-		LlmResponse res = callJson("/v1/chat/completions",templateObject);
+		LlmResponse res = callJson("/chat/completions",templateObject);
 		
 		//TODO Parse out the OCR to message
 		
