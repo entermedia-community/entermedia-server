@@ -484,7 +484,7 @@ public class AssistantManager extends BaseAiManager
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		LlmConnection llmconnection = archive.getLlmConnection("agentChat");
+		LlmConnection llmconnection = archive.getLlmConnection("parsePrompt");
 		
 		//Run AI
 		inAgentContext.addContext("schema", loadSchema());
