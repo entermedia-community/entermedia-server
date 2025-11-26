@@ -353,7 +353,7 @@ public class ClassifyManager extends InformaticsProcessor
 			{
 				LlmConnection llmconnection = getEntityClassificationLlmConnection();
 
-				String functionname = llmconnection.getAiFunctionName() + "_entity";
+				String functionname = llmconnection.getAiFunctionName();
 				
 				LlmResponse results = llmconnection.callClassifyFunction(params, functionname, null); 
 				
