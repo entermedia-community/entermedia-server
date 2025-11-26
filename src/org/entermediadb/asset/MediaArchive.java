@@ -3358,7 +3358,12 @@ public class MediaArchive implements CatalogEnabled
 		LlmConnection connection = (LlmConnection) getCacheManager().get("llmconnection", inAiFunctionName);
 		
 		if(connection == null)
-		{			
+		{	
+			Data aifunction = query("aifunction").exact("name", inAiFunctionName).searchOne();
+			if( aifunction == null)
+			{
+				throw new OpenEditException("Could not find AIFunction named " + inAiFunctionName);
+			}
 			Data serverinfo = query("aiserver").exact("aifunction", inAiFunctionName).sort("ordering").searchOne();
 			if( serverinfo == null)
 			{
@@ -3366,6 +3371,7 @@ public class MediaArchive implements CatalogEnabled
 			}
 			String llm = serverinfo.get("connectionbean");
 			connection = (LlmConnection) getBean(llm);
+			connection.setAiFunctionData(aifunction);
 			connection.setAiServerData(serverinfo);
 			getCacheManager().put("llmconnection", inAiFunctionName, connection);
 		}

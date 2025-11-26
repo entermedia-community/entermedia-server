@@ -15,6 +15,10 @@ public interface LlmConnection {
 	public String getLlmProtocol();
 
 	public String getModelName();
+	
+	public String getAiFunctionName();
+	public Data getAiFunctionData();
+	public void setAiFunctionData(Data aiFunctionData);
 
 	public Boolean isReady();
 

@@ -42,6 +42,18 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	protected OutputFiller filler = new OutputFiller();
 	protected OpenEditEngine fieldEngine;
 	protected Data fieldAiServerData;
+	
+	protected Data aiFunctionData;
+	
+	public Data getAiFunctionData() {
+		return aiFunctionData;
+	}
+	public void setAiFunctionData(Data aiFunctionData) {
+		this.aiFunctionData = aiFunctionData;
+	}
+	public String getAiFunctionName() {
+		return getAiFunctionData().getId();
+	}
 
 	protected HttpSharedConnection fieldConnection;
 

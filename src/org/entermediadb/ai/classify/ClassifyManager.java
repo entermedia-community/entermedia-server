@@ -108,7 +108,10 @@ public class ClassifyManager extends InformaticsProcessor
 			params.put("asset", asset);
 			params.put("data", asset);
 			params.put("aifields", aifields);
-			String functionname = inConfig.get("aifunctionname");
+			
+			LlmConnection llmconnection = getLlmNamingServer();
+			
+			String functionname = llmconnection.getAiFunctionName();
 			
 			String base64EncodedString = null;
 			
@@ -174,7 +177,7 @@ public class ClassifyManager extends InformaticsProcessor
 			
 			params.put("contextfields", contextFields);
 			
-			LlmResponse results = getLlmNamingServer().callClassifyFunction(params, functionname, base64EncodedString, textContent);
+			LlmResponse results = llmconnection.callClassifyFunction(params, functionname, base64EncodedString, textContent);
 
 			if (results != null)
 			{
