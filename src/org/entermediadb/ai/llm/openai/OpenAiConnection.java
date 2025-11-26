@@ -212,13 +212,13 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			params.put("textcontent", textContent);
 		}
 
-		String templatepath = "/" + archive.getMediaDbId() + "/ai/default/calls/" + inFunction + ".json";
+		String templatepath = "/" + archive.getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + inFunction + ".json";
 			
 		Page template = archive.getPageManager().getPage(templatepath);
 			
 		if (!template.exists())
 		{
-			templatepath = "/" + archive.getCatalogId() + "/ai/default/calls/" + inFunction + ".json";
+			templatepath = "/" + archive.getCatalogId() + "/ai/"+getLlmProtocol()+"/calls/" + inFunction + ".json";
 			template = archive.getPageManager().getPage(templatepath);
 		}
 		
@@ -242,20 +242,12 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	{
 		inParams.put("model", getModelName());
 		
-		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/default/calls/" + getAiFunctionName() + ".json", inParams);
+		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + getAiFunctionName() + ".json", inParams);
 
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
-
-		String endpoint = "https://api.openai.com/v1/responses"; //https://api.openai.com/v1/responses
 		
-		if( getLlmProtocol().equals("llama"))
-		{
-			//
-			endpoint = getServerRoot() + "/v1/chat/completions"; 
-		}
-		
-		HttpPost method = new HttpPost(endpoint);
+		HttpPost method = new HttpPost(getServerRoot() + "/chat/completions");
 		method.addHeader("authorization", "Bearer " + getApiKey());
 		method.setHeader("Content-Type", "application/json");
 		method.setEntity(new StringEntity(structureDef.toJSONString(), StandardCharsets.UTF_8));
