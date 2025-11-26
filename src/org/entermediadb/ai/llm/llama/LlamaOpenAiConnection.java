@@ -28,12 +28,12 @@ public class LlamaOpenAiConnection extends OpenAiConnection {
 	}
 	
 	
-	public LlmResponse callStructuredOutputList(String inStructureName, Map inParams)
+	public LlmResponse callStructuredOutputList(Map inParams)
 	{
 		inParams.put("model", getModelName()); 
 		
 		MediaArchive archive = getMediaArchive();
-		String structurepath = "/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/structures/" + inStructureName + "_structure.json";
+		String structurepath = "/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/structures/" + getAiFunctionName() + "_structure.json";
 		Page defpage = archive.getPageManager().getPage(structurepath);
 		
 		if (defpage.exists())
@@ -43,7 +43,7 @@ public class LlamaOpenAiConnection extends OpenAiConnection {
 		}
 		
 		
-		String propmpt = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/structures/" + inStructureName + ".json", inParams);
+		String propmpt = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/structures/" + getAiFunctionName() + ".json", inParams);
 
 		JSONObject structureDef = (JSONObject) new JSONParser().parse(propmpt);
 
