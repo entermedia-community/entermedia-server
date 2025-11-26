@@ -135,11 +135,11 @@ public class OllamaConnection extends OpenAiConnection implements CatalogEnabled
 	}
 	
 	@Override
-	public LlmResponse callStructuredOutputList(String inStructureName, Map inParams) 
+	public LlmResponse callStructuredOutputList(Map inParams) 
 	{
 		inParams.put("model", getModelName());
 		
-		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/ollama/classify/structures/" + inStructureName + ".json", inParams);
+		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/ollama/classify/structures/" + getAiFunctionName() + ".json", inParams);
 
 		JSONObject req = new JSONParser().parse(inStructure);
 		

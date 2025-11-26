@@ -80,8 +80,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
  		
  		LlmConnection llmconnection = getLlmNamingServer();
  		
-		String functionname = llmconnection.getAiFunctionName();
-		LlmResponse results = llmconnection.callStructuredOutputList(functionname,  params);
+		LlmResponse results = llmconnection.callStructuredOutputList(params);
 		Map categories = (Map) results.getMessageStructured().get("categories");
 		if(categories != null)
 		{			

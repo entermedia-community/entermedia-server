@@ -42,7 +42,7 @@ public interface LlmConnection {
 	public Data getAiServerData();
 	public void setAiServerData(Data fieldMainServerUrl);
 
-    public LlmResponse callStructuredOutputList(String inStructureName, Map inParams);
+    public LlmResponse callStructuredOutputList(Map inParams);
 	
 	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image);
 

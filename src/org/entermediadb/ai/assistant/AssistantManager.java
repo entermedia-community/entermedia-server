@@ -488,7 +488,7 @@ public class AssistantManager extends BaseAiManager
 		
 		//Run AI
 		inAgentContext.addContext("schema", loadSchema());
-		LlmResponse response = llmconnection.callStructuredOutputList("parse_sentence", inAgentContext.getContext()); //TODO: Replace with local API that is faster
+		LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext()); //TODO: Replace with local API that is faster
 		if(response == null)
 		{
 			throw new OpenEditException("No results from AI for message: " + userMessage.get("message"));
