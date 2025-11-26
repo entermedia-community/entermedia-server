@@ -317,7 +317,8 @@ public class AssistantManager extends BaseAiManager
 		Data channel = archive.getCachedData("channel", agentmessage.get("channel"));
 		agentContext.addContext("channel", channel);
 		
-		agentContext.addContext("message", agentmessage);
+		agentContext.addContext("usermessage", usermessage);
+		agentContext.addContext("agentmessage", agentmessage);
 		agentContext.addContext("aisearchparams", agentContext.getAiSearchParams() );
 		
 		String apphome = "/"+ channel.get("chatapplicationid");
@@ -488,6 +489,8 @@ public class AssistantManager extends BaseAiManager
 		
 		//Run AI
 		inAgentContext.addContext("schema", loadSchema());
+		//inAgentContext.addContext("message", userMessage);
+		
 		LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext()); //TODO: Replace with local API that is faster
 		if(response == null)
 		{
