@@ -84,7 +84,7 @@ public class LlamaOpenAiConnection extends OpenAiConnection {
 	{
 		MediaArchive archive = getMediaArchive();
 		// Handle function call definition
-		String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/functions/" + inFunction + ".json";
+		String templatepath = "/" + archive.getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + inFunction + ".json";
 		
 		Page defpage = archive.getPageManager().getPage(templatepath);
 		
@@ -107,7 +107,7 @@ public class LlamaOpenAiConnection extends OpenAiConnection {
 		JSONParser parser = new JSONParser();
 		JSONObject functionDef = (JSONObject) parser.parse(definition);
 
-		LlmResponse res = callJson("/v1/chat/completions", functionDef);
+		LlmResponse res = callJson("/chat/completions", functionDef);
 	    return res;
 
 	}
