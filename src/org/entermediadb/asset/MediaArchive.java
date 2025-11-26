@@ -3359,7 +3359,7 @@ public class MediaArchive implements CatalogEnabled
 		
 		if(connection == null)
 		{	
-			Data aifunction = query("aifunction").exact("name", inAiFunctionName).searchOne();
+			Data aifunction = query("aifunction").id(inAiFunctionName).searchOne();
 			if( aifunction == null)
 			{
 				throw new OpenEditException("Could not find AIFunction named " + inAiFunctionName);
