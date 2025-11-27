@@ -3355,7 +3355,7 @@ public class MediaArchive implements CatalogEnabled
 	
 	public LlmConnection getLlmConnection(String inAiFunctionName)
 	{
-		String cacheName = "llmconnection"+inAiFunctionName;
+		String cacheName = "llmconnection";
 		
 		LlmConnection connection = (LlmConnection) getCacheManager().get(cacheName, inAiFunctionName);
 		
@@ -3372,7 +3372,7 @@ public class MediaArchive implements CatalogEnabled
 				throw new OpenEditException("Could not find Connector for aifunction " + inAiFunctionName);
 			}
 			String llm = serverinfo.get("connectionbean");
-			connection = (LlmConnection) getBean(llm);
+			connection = (LlmConnection) getModuleManager().getBean(getCatalogId(),llm, false);
 			connection.setAiFunctionData(aifunction);
 			connection.setAiServerData(serverinfo);
 			getCacheManager().put(cacheName, inAiFunctionName, connection);
