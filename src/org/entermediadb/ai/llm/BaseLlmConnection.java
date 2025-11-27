@@ -432,7 +432,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	
 	
 	@Override
-	public LlmResponse createImage(String inPrompt)  throws Exception
+	public LlmResponse createImage(String inPrompt)
 	{
 		throw new OpenEditException("Model doesn't support images");
 	}

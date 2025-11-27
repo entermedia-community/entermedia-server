@@ -1,9 +1,6 @@
 package org.entermediadb.ai.assistant;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -23,10 +20,7 @@ import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.ai.llm.emedia.EMediaAIResponse;
 import org.entermediadb.ai.llm.openai.OpenAiConnection;
-import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.EntityManager;
 import org.entermediadb.find.ResultsManager;
@@ -44,11 +38,8 @@ import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
-import org.openedit.repository.ContentItem;
-import org.openedit.repository.InputStreamItem;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
-import org.openedit.util.JSONParser;
 
 public class AssistantManager extends BaseAiManager
 {
@@ -283,7 +274,6 @@ public class AssistantManager extends BaseAiManager
 	
 	public void execCurrentFunctionFromChat(MultiValued usermessage, MultiValued agentmessage, AgentContext agentContext) 
 	{
-		Searcher chats = getMediaArchive().getSearcher("chatterbox");
 
 		String functionName = agentContext.getFunctionName();
 		MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", functionName); //Chitchat etc
@@ -508,19 +498,23 @@ public class AssistantManager extends BaseAiManager
 		//response.setRawResponse(results);
 		JSONObject content = response.getMessageStructured();
 		
-		String type = (String)content.get("type");
-		if( type == null)
-		{
-			type = (String)content.keySet().iterator().next(); 
-		}		
+		String type = (String) content.get("request_type");
+		
 		if(type == null)
 		{
 			throw new OpenEditException("No type specified in results: " + content.toJSONString());
 		}
 
+		JSONObject details = (JSONObject) content.get("request_details");
+		
+		if(details == null)
+		{
+			throw new OpenEditException("No details specified in results: " + content.toJSONString());
+		}
+
 		if( type.equals("search") )
 		{
-			JSONObject structure = (JSONObject) content.get(type);
+			JSONObject structure = (JSONObject) details.get(type);
 			if(structure == null)
 			{
 				throw new OpenEditException("No structure found for type: " + type);
@@ -531,7 +525,7 @@ public class AssistantManager extends BaseAiManager
 		{
 			//type = "chitchat";
 //			JSONObject structure = (JSONObject) results.get(type);
-			JSONObject conversation = (JSONObject) content.get("conversation");
+			JSONObject conversation = (JSONObject) details.get("conversation");
 			String generalresponse = (String) conversation.get("friendly_response");
 //			if(generalresponse != null)
 //			{
@@ -545,7 +539,7 @@ public class AssistantManager extends BaseAiManager
 			
 			AiCreation creation = inAgentContext.getAiCreationParams();					
 			creation.setCreationType("image");
-			JSONObject structure = (JSONObject) content.get("create_image");
+			JSONObject structure = (JSONObject) details.get("create_image");
 			creation.setImageFields(structure);
 		}
 		else if(type.equals("create_entity"))
@@ -554,7 +548,7 @@ public class AssistantManager extends BaseAiManager
 			
 			AiCreation creation = inAgentContext.getAiCreationParams();
 			creation.setCreationType("entity");
-			JSONObject structure = (JSONObject) content.get("create_entity");
+			JSONObject structure = (JSONObject) details.get("create_entity");
 			creation.setEntityFields(structure);
 		}
 		response.setFunctionName(type);
@@ -1293,251 +1287,7 @@ public class AssistantManager extends BaseAiManager
 //		
 //	}
 	
-	public void createImage(WebPageRequest inReq, AiCreation aiCreation) throws Exception 
-	{
-		MediaArchive archive = getMediaArchive();
-
-		LlmConnection llmconnection = archive.getLlmConnection("createAsset");
-		
-		JSONObject imageattr = (JSONObject) aiCreation.getImageFields();
-		
-		String prompt = (String) imageattr.get("prompt");
-
-		if (prompt == null)
-		{
-			return;
-		}
-		
-		String filename = (String) imageattr.get("image_name");
-
-		LlmResponse results = llmconnection.createImage(prompt);
-		
-
-		for (Iterator iterator = results.getImageBase64s().iterator(); iterator.hasNext();)
-		{
-			String base64 = (String) iterator.next();
-
-			Asset asset = (Asset) archive.getAssetSearcher().createNewData();
-
-			asset.setValue("importstatus", "created");
-
-			if( filename == null || filename.length() == 0)
-			{
-				filename = "aiimage_" + System.currentTimeMillis() ;
-			}
-			
-			asset.setName(filename + ".png");
-			asset.setValue("assettitle", filename);
-			asset.setValue("assetaddeddate", new Date());
-			
-			String sourcepath = "Channels/" + inReq.getUserName() + "/" + DateStorageUtil.getStorageUtil().getTodayForDisplay() + "/" + filename;
-			asset.setSourcePath(sourcepath);
-
-			String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
-			ContentItem saveTo = archive.getPageManager().getPage(path).getContentItem();
-			
-			
-			try
-			{
-				InputStreamItem revision = new InputStreamItem();
-				
-				revision.setAbsolutePath(saveTo.getAbsolutePath());
-				revision.setPath(saveTo.getPath());
-				revision.setAuthor( inReq.getUserName() );
-				revision.setType( ContentItem.TYPE_ADDED );
-				revision.setMessage( saveTo.getMessage());
-				
-				revision.setPreviewImage(saveTo.getPreviewImage());
-				revision.setMakeVersion(false);
-				
-				log.info("Saving image -> " + path + "/" + filename);
-				
-				InputStream input = null;
-				
-				String code = base64.substring(base64.indexOf(",") +1, base64.length());
-				byte[] tosave = Base64.getDecoder().decode(code);
-				input = new ByteArrayInputStream(tosave);
-				
-				revision.setInputStream(input);
-				
-				archive.getPageManager().getRepository().put( revision );
-				asset.setProperty("importstatus", "created");
-				archive.saveAsset(asset);
-			}
-			catch (Exception ex)
-			{
-				asset.setProperty("importstatus", "error");
-				log.error(ex);
-				archive.saveAsset(asset);
-			}
-			
-			inReq.putPageValue("asset", asset);
-		}
-		
-		Data message = (Data) inReq.getPageValue("message");
-		if( message != null)
-		{
-			archive.saveData("chatterbox", message);
-		}
-		
-
-		archive.fireSharedMediaEvent("importing/assetscreated");
-	}
 	
-	public void createEntity(WebPageRequest inReq, AiCreation aiCreation) throws Exception 
-	{
-		MediaArchive archive = getMediaArchive();
-		
-		JSONObject entityfields = (JSONObject) aiCreation.getEntityFields();
-		String entityname = (String) entityfields.get("entity_name");
-
-		if (entityname == null)
-		{
-			inReq.putPageValue("error", "Please provide a name for the new entity");
-			return;
-		}
-		
-		String moduleid = (String) entityfields.get("module_id");
-		if(moduleid == null)
-		{
-			inReq.putPageValue("error", "Could not find module. Please provide an existing module name or id");
-			return;
-		}
-		
-		
-		moduleid = moduleid.split("\\|")[0];
-
-		Data module = archive.getCachedData("module", moduleid);
-		
-		if(module == null)
-		{
-			inReq.putPageValue("error", "Could not find module. Please provide an existing module name or id");
-			return;
-		}
-		
-		Searcher searcher = archive.getSearcher(module.getId());
-		
-		Data entity = searcher.createNewData();
-		entity.setName(entityname);
-
-		searcher.saveData(entity);
-		
-		inReq.putPageValue("entity", entity);
-		inReq.putPageValue("module", module);
-	}
-	
-	public void updateEntity(WebPageRequest inReq) throws Exception 
-	{
-		MediaArchive archive = getMediaArchive();
-
-		String args = inReq.getRequestParameter("arguments");
-		if(args == null)
-		{
-			log.warn("No arguments found in request");
-			return;
-		}
-		JSONObject arguments = new JSONParser().parse( args );
-		
-		String entityid = (String) arguments.get("entityId");
-		String moduleid = (String) arguments.get("moduleId");
-		
-		if (entityid == null)
-		{
-			inReq.putPageValue("error", "Please provide the entity id for the entity to update");
-			return;
-		}
-		if (moduleid == null)
-		{
-			inReq.putPageValue("error", "Please provide the module id for the entity to update");
-			return;
-		}
-		
-		Data module = archive.getCachedData("module", moduleid);
-		if(module == null)
-		{
-			inReq.putPageValue("error", "Could not find module. Please provide the module id of the entity to update");
-			return;
-		}
-		Searcher searcher = archive.getSearcher(module.getId());
-		Data entity = searcher.query().id(entityid).cachedSearchOne();
-		if(entity == null)
-		{
-			inReq.putPageValue("error", "Could not find entity. Please provide an existing entity id to update");
-			return;
-		}
-		
-		String newmoduleid = (String) arguments.get("newModuleId");
-		if(newmoduleid != null)
-		{
-			Data newmodule = archive.getCachedData("module", newmoduleid);
-			if(newmodule == null)
-			{
-				inReq.putPageValue("error", "Could not find new module. Please provide an existing module id to update");
-				return;
-			}
-			EntityManager entityManager = getEntityManager();
-			String modulechangemethod = (String) arguments.get("moduleChangeMethod");
-			if("copy".equals(modulechangemethod))
-			{
-				Data newentity = entityManager.copyEntity(inReq, module.getId(), newmodule.getId(), entity);
-				entity = newentity;
-				module = newmodule;
-				inReq.putPageValue("changemethod", "copy");
-			}
-			else if("move".equals(modulechangemethod))
-			{
-				Data newentity = entityManager.copyEntity(inReq, module.getId(), newmodule.getId(), entity);
-				if( newentity == null)
-				{
-					inReq.putPageValue("error", "Could not copy entity. Please try again");
-					return;
-				}
-				entityManager.deleteEntity(inReq, module.getId(), entity.getId());
-				entity = newentity;
-				module = newmodule;
-				inReq.putPageValue("changemethod", "move");
-			}
-			else
-			{
-				inReq.putPageValue("error", "Please specify whether to copy or move the entity to the new module");
-				return;
-			}
-			
-		}
-		
-		String primaryImage = (String) arguments.get("primaryImageId");
-		String newName = (String) arguments.get("newName");
-		
-		if(newName != null && newName.length() > 0)
-		{
-			entity.setName(newName);
-			inReq.putPageValue("newname", newName);
-		}
-		if(primaryImage != null && primaryImage.length() > 0)
-		{
-			Asset asset = archive.getAsset(primaryImage);
-			if(asset != null)
-			{
-				EntityManager entityManager = getMediaArchive().getEntityManager();
-				String destinationcategorypath = inReq.getRequestParameter("destinationcategorypath");
-				Category destinationCategory = null;
-				if(destinationcategorypath!= null)
-				{
-					destinationCategory = archive.getCategorySearcher().createCategoryPath(destinationcategorypath);
-				}
-				else {
-					destinationCategory = entityManager.loadDefaultFolder(module, entity, inReq.getUser());
-				}
-				entityManager.addAssetToEntity(inReq.getUser(), module, entity, asset, destinationCategory);
-				entity.setValue("primaryimage", primaryImage);
-				inReq.putPageValue("primaryimage", asset);
-			}
-		}
-		searcher.saveData(entity);
-		
-		inReq.putPageValue("entity", entity);
-		inReq.putPageValue("module", module);
-	}
 	
 	public void loadAllActions(ScriptLogger inLog)
 	{

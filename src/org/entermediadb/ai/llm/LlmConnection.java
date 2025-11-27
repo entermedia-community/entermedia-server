@@ -22,7 +22,7 @@ public interface LlmConnection {
 
 	public Boolean isReady();
 
-    public LlmResponse createImage(String inPrompt) throws Exception;
+    public LlmResponse createImage(String inPrompt);
     public LlmResponse createImage(String inPrompt, int inCount, String inSize) throws Exception;
 
     public String loadInputFromTemplate(String inString, Map<String, Object> inParams);

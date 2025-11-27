@@ -35,7 +35,7 @@ public class LlamaOpenAiConnection extends OpenAiConnection {
 //
 //		JSONObject structureDef = (JSONObject) new JSONParser().parse(propmpt);
 //
-//		String endpoint = getServerRoot() + "/v1/chat/completions"; 
+//		String endpoint = getServerRoot() + "/chat/completions"; 
 //		
 //		HttpPost method = new HttpPost(endpoint);
 //		method.addHeader("authorization", "Bearer " + getApiKey());

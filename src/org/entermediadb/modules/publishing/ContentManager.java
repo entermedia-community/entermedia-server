@@ -18,6 +18,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.dom4j.Element;
+import org.entermediadb.ai.ChatMessageHandler;
+import org.entermediadb.ai.assistant.AiCreation;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
@@ -25,7 +28,7 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.importer.DitaImporter;
 import org.entermediadb.asset.util.JsonUtil;
-import org.entermediadb.modules.update.Downloader;
+import org.entermediadb.find.EntityManager;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -44,10 +47,11 @@ import org.openedit.repository.ContentItem;
 import org.openedit.repository.InputStreamItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.Exec;
+import org.openedit.util.JSONParser;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.XmlUtil;
 
-public class ContentManager implements CatalogEnabled
+public class ContentManager implements CatalogEnabled, ChatMessageHandler
 {
 
 	private static final String INPUTDIR = "/DITA/"; // /Inputs/";
@@ -978,6 +982,292 @@ public class ContentManager implements CatalogEnabled
 		// TODO: Create some assets?
 		return child;
 
+	}
+	
+	@Override
+	public LlmResponse processMessage(MultiValued inAgentMessage, AgentContext inAgentContext)
+	{
+		
+		if("createImage".equals(inAgentContext.getFunctionName()))
+		{
+			
+			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
+			LlmResponse result = createImage(usermessage, inAgentContext);
+			return result;
+		}
+		else if("renderImage".equals(inAgentContext.getFunctionName()))
+		{
+			String assetid = inAgentContext.get("assetid");
+			
+			Asset asset = getMediaArchive().getAsset(assetid);
+			inAgentContext.addContext("asset", asset); //Get the updated asset
+
+			inAgentContext.addContext("refreshing", "true");
+			
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("renderImage");
+			
+			LlmResponse result = llmconnection.renderLocalAction(inAgentContext);
+			
+			log.info("Next function: " + inAgentContext.getNextFunctionName());
+			
+			
+			return result;
+			
+		}
+		else if ("createEntity".equals(inAgentContext.getFunctionName()))
+		{
+			// TODO: 
+		}
+		
+		throw new OpenEditException("Unknown function name: " + inAgentContext.getFunctionName());
+	}
+	
+	public LlmResponse createImage(MultiValued usermessage, AgentContext inAgentContext) 
+	{
+		MediaArchive archive = getMediaArchive();
+		
+		AiCreation aiCreation = inAgentContext.getAiCreationParams();
+
+		LlmConnection llmconnection = archive.getLlmConnection("createImage");
+		
+		JSONObject imageattr = (JSONObject) aiCreation.getImageFields();
+		
+		String prompt = (String) imageattr.get("prompt");
+
+		if (prompt == null)
+		{
+			return null;
+		}
+		
+		String filename = (String) imageattr.get("image_name");
+
+		LlmResponse results = llmconnection.createImage(prompt);
+		
+
+		for (Iterator iterator = results.getImageBase64s().iterator(); iterator.hasNext();)
+		{
+			String base64 = (String) iterator.next();
+
+			Asset asset = (Asset) archive.getAssetSearcher().createNewData();
+
+			asset.setValue("importstatus", "created");
+
+			if( filename == null || filename.length() == 0)
+			{
+				filename = "aiimage_" + System.currentTimeMillis() ;
+			}
+			
+			asset.setName(filename + ".png");
+			asset.setValue("assettitle", filename);
+			asset.setValue("assetaddeddate", new Date());
+			
+			String sourcepath = "Channels/" + usermessage.get("user") + "/" + DateStorageUtil.getStorageUtil().getTodayForDisplay() + "/" + filename;
+			asset.setSourcePath(sourcepath);
+
+			String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
+			ContentItem saveTo = archive.getPageManager().getPage(path).getContentItem();
+			
+			
+			try
+			{
+				InputStreamItem revision = new InputStreamItem();
+				
+				revision.setAbsolutePath(saveTo.getAbsolutePath());
+				revision.setPath(saveTo.getPath());
+				revision.setAuthor( usermessage.get("user") );
+				revision.setType( ContentItem.TYPE_ADDED );
+				revision.setMessage( saveTo.getMessage());
+				
+				revision.setPreviewImage(saveTo.getPreviewImage());
+				revision.setMakeVersion(false);
+				
+				log.info("Saving image -> " + path + "/" + filename);
+				
+				InputStream input = null;
+				
+				String code = base64.substring(base64.indexOf(",") +1, base64.length());
+				byte[] tosave = Base64.getDecoder().decode(code);
+				input = new ByteArrayInputStream(tosave);
+				
+				revision.setInputStream(input);
+				
+				archive.getPageManager().getRepository().put( revision );
+				asset.setProperty("importstatus", "created");
+				archive.saveAsset(asset);
+			}
+			catch (Exception ex)
+			{
+				asset.setProperty("importstatus", "error");
+				log.error(ex);
+				archive.saveAsset(asset);
+			}
+			
+//			inReq.putPageValue("asset", asset);
+			inAgentContext.addContext("asset", asset);
+			inAgentContext.setNextFunctionName("renderImage");
+			inAgentContext.setValue("assetid", asset.getId());
+			inAgentContext.setValue("wait", 1000);
+		}
+		
+		
+		archive.fireSharedMediaEvent("importing/assetscreated");
+		
+		return results;
+	}
+	
+	public void createEntity(WebPageRequest inReq, AiCreation aiCreation) throws Exception 
+	{
+		MediaArchive archive = getMediaArchive();
+		
+		JSONObject entityfields = (JSONObject) aiCreation.getEntityFields();
+		String entityname = (String) entityfields.get("entity_name");
+
+		if (entityname == null)
+		{
+			inReq.putPageValue("error", "Please provide a name for the new entity");
+			return;
+		}
+		
+		String moduleid = (String) entityfields.get("module_id");
+		if(moduleid == null)
+		{
+			inReq.putPageValue("error", "Could not find module. Please provide an existing module name or id");
+			return;
+		}
+		
+		
+		moduleid = moduleid.split("\\|")[0];
+
+		Data module = archive.getCachedData("module", moduleid);
+		
+		if(module == null)
+		{
+			inReq.putPageValue("error", "Could not find module. Please provide an existing module name or id");
+			return;
+		}
+		
+		Searcher searcher = archive.getSearcher(module.getId());
+		
+		Data entity = searcher.createNewData();
+		entity.setName(entityname);
+
+		searcher.saveData(entity);
+		
+		inReq.putPageValue("entity", entity);
+		inReq.putPageValue("module", module);
+	}
+	
+	public void updateEntity(WebPageRequest inReq) throws Exception 
+	{
+		MediaArchive archive = getMediaArchive();
+
+		String args = inReq.getRequestParameter("arguments");
+		if(args == null)
+		{
+			log.warn("No arguments found in request");
+			return;
+		}
+		JSONObject arguments = new JSONParser().parse( args );
+		
+		String entityid = (String) arguments.get("entityId");
+		String moduleid = (String) arguments.get("moduleId");
+		
+		if (entityid == null)
+		{
+			inReq.putPageValue("error", "Please provide the entity id for the entity to update");
+			return;
+		}
+		if (moduleid == null)
+		{
+			inReq.putPageValue("error", "Please provide the module id for the entity to update");
+			return;
+		}
+		
+		Data module = archive.getCachedData("module", moduleid);
+		if(module == null)
+		{
+			inReq.putPageValue("error", "Could not find module. Please provide the module id of the entity to update");
+			return;
+		}
+		Searcher searcher = archive.getSearcher(module.getId());
+		Data entity = searcher.query().id(entityid).cachedSearchOne();
+		if(entity == null)
+		{
+			inReq.putPageValue("error", "Could not find entity. Please provide an existing entity id to update");
+			return;
+		}
+		
+		String newmoduleid = (String) arguments.get("newModuleId");
+		if(newmoduleid != null)
+		{
+			Data newmodule = archive.getCachedData("module", newmoduleid);
+			if(newmodule == null)
+			{
+				inReq.putPageValue("error", "Could not find new module. Please provide an existing module id to update");
+				return;
+			}
+			EntityManager entityManager = archive.getEntityManager();
+			String modulechangemethod = (String) arguments.get("moduleChangeMethod");
+			if("copy".equals(modulechangemethod))
+			{
+				Data newentity = entityManager.copyEntity(inReq, module.getId(), newmodule.getId(), entity);
+				entity = newentity;
+				module = newmodule;
+				inReq.putPageValue("changemethod", "copy");
+			}
+			else if("move".equals(modulechangemethod))
+			{
+				Data newentity = entityManager.copyEntity(inReq, module.getId(), newmodule.getId(), entity);
+				if( newentity == null)
+				{
+					inReq.putPageValue("error", "Could not copy entity. Please try again");
+					return;
+				}
+				entityManager.deleteEntity(inReq, module.getId(), entity.getId());
+				entity = newentity;
+				module = newmodule;
+				inReq.putPageValue("changemethod", "move");
+			}
+			else
+			{
+				inReq.putPageValue("error", "Please specify whether to copy or move the entity to the new module");
+				return;
+			}
+			
+		}
+		
+		String primaryImage = (String) arguments.get("primaryImageId");
+		String newName = (String) arguments.get("newName");
+		
+		if(newName != null && newName.length() > 0)
+		{
+			entity.setName(newName);
+			inReq.putPageValue("newname", newName);
+		}
+		if(primaryImage != null && primaryImage.length() > 0)
+		{
+			Asset asset = archive.getAsset(primaryImage);
+			if(asset != null)
+			{
+				EntityManager entityManager = getMediaArchive().getEntityManager();
+				String destinationcategorypath = inReq.getRequestParameter("destinationcategorypath");
+				Category destinationCategory = null;
+				if(destinationcategorypath!= null)
+				{
+					destinationCategory = archive.getCategorySearcher().createCategoryPath(destinationcategorypath);
+				}
+				else {
+					destinationCategory = entityManager.loadDefaultFolder(module, entity, inReq.getUser());
+				}
+				entityManager.addAssetToEntity(inReq.getUser(), module, entity, asset, destinationCategory);
+				entity.setValue("primaryimage", primaryImage);
+				inReq.putPageValue("primaryimage", asset);
+			}
+		}
+		searcher.saveData(entity);
+		
+		inReq.putPageValue("entity", entity);
+		inReq.putPageValue("module", module);
 	}
 
 
