@@ -1065,14 +1065,14 @@ public class AssistantManager extends BaseAiManager
 		
 	}
 	
-	public void semanticSearch(WebPageRequest inReq, AgentContext agentContext)
+	public void semanticSearch(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive();
 		
 		String semanticquery = inReq.getRequestParameter("semanticquery"); 
 		
-		Collection<String> excludeEntityIds = agentContext.getExcludedEntityIds();
-		Collection<String> excludeAssetIds = agentContext.getExcludedAssetIds();
+		Collection<String> excludeEntityIds = inReq.getRequestCollection("excludeentityids");
+		Collection<String> excludeAssetIds = inReq.getRequestCollection("excludeassetids");
 		
 		log.info("Semantic Search for: " + semanticquery);
 		inReq.putPageValue("input", semanticquery);
