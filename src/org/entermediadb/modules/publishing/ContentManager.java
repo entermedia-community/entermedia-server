@@ -788,7 +788,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 
 		try 
 		{
-			LlmConnection llmconnection = archive.getLlmConnection("createAsset");
+			LlmConnection llmconnection = archive.getLlmConnection("createImage");
 			
 			LlmResponse results = llmconnection.createImage(prompt);
 
