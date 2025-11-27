@@ -242,7 +242,9 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	{
 		inParams.put("model", getModelName());
 		
-		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + getAiFunctionName() + ".json", inParams);
+		String templatepath = "/" + getMediaArchive().getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + getAiFunctionName() + ".json";
+		
+		String inStructure = loadInputFromTemplate(templatepath, inParams);
 
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
@@ -256,7 +258,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 		
-		JSONObject results = new JSONObject();
+//		JSONObject results = new JSONObject();
 
 		try
 		{

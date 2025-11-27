@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -65,7 +67,7 @@ public class BaseAiManager extends BaseManager implements ChatMessageHandler
 		return models;
 	}
 	*/
-	protected Map<String, PropertyDetail> loadActiveDetails(String inModuleId)
+	protected Collection<PropertyDetail> loadActiveDetails(String inModuleId)
 	{
 		//TODO: Cache these!!
 		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inModuleId).exact("systemdefined", false).search();  //Cache this
@@ -75,7 +77,7 @@ public class BaseAiManager extends BaseManager implements ChatMessageHandler
 			return null;
 		}
 		
-		Map<String, PropertyDetail> detailsfields = new HashMap();
+		Collection<PropertyDetail> detailsfields = new ArrayList<PropertyDetail>();
 
 		for (Iterator iterator = detailsviews.iterator(); iterator.hasNext();)
 		{
@@ -86,7 +88,7 @@ public class BaseAiManager extends BaseManager implements ChatMessageHandler
 				for (Iterator iterator2 = viewfields.iterator(); iterator2.hasNext();)
 				{
 					PropertyDetail detail = (PropertyDetail) iterator2.next();
-					detailsfields.put(detail.getId(), detail);
+					detailsfields.add(detail);
 				}
 			}
 		}
@@ -285,103 +287,74 @@ public class BaseAiManager extends BaseManager implements ChatMessageHandler
 		return groupbymodule;
 	}
 	
-	protected Map<String,Map> populateFields(String inModuleId, MultiValued inData)
+	protected Collection<PropertyDetail> populateFields(String inModuleId, MultiValued inData, Collection<PropertyDetail> inExcludeFields)
 	{
-		Map<String, PropertyDetail> detailsfields = loadActiveDetails(inModuleId);
+		Collection<PropertyDetail> detailsfields = loadActiveDetails(inModuleId);
 
-		Map<String,Map> contextfields = new HashMap();
+		Collection<PropertyDetail> contextfields = new ArrayList<PropertyDetail>();
 		
-		JsonUtil jsonutils = new JsonUtil();
-
-		for (Iterator iter = detailsfields.keySet().iterator(); iter.hasNext();)
+		Set<String> contextfieldids = new HashSet<String>();
+		
+		Set<String> excludeids = new HashSet<String>();
+		for (Iterator iterator = inExcludeFields.iterator(); iterator.hasNext();)
 		{
-			String key = (String) iter.next();
-			PropertyDetail detail = (PropertyDetail) detailsfields.get(key);
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			excludeids.add(detail.getId());
+		}
 
-			String fieldId = detail.getId();
-
-			String stringValue = null;
-
-			if (detail.isBoolean() || detail.isDate())
+		for (Iterator iter = detailsfields.iterator(); iter.hasNext();)
+		{
+			PropertyDetail detail = (PropertyDetail) iter.next();
+			if(excludeids.contains(detail.getId()) || contextfieldids.contains(detail.getId()))
 			{
 				continue;
 			}
-			else if (detail.isMultiLanguage())
+			contextfields.add(detail);
+			contextfieldids.add(detail.getId());
+		}
+		
+		if(!inModuleId.equals("asset") && !contextfieldids.contains("fulltext") && inData.get("pagenum") == null  )
+		{
+			addPrimaryMediaFulltext(inData, contextfields);
+		}
+		
+		return contextfields;
+	}
+	
+	private void addPrimaryMediaFulltext(MultiValued inData, Collection<PropertyDetail> contextfields) {
+		String primarymedia = inData.get("primarymedia");
+		if(primarymedia == null || primarymedia.isEmpty())
+		{
+			primarymedia = inData.get("primaryimage");
+		}
+		if(primarymedia != null)
+		{
+			MultiValued primaryasset = getMediaArchive().getAsset(primarymedia);
+			if(primaryasset != null)
 			{
-				stringValue = inData.getText(fieldId, "en");
-			}
-			else if (detail.isMultiValue() || detail.isList())
-			{
-				Collection<String> values = inData.getValues(fieldId);
-				if (values == null || values.isEmpty())
+				if (primaryasset.getBoolean("hasfulltext"))
 				{
-					log.info("Skipping empty field: " + fieldId);
-					continue;
-				}
-
-				Collection<String> textValues = new ArrayList<>();
-				if (detail.isList())
-				{
-					for (Iterator iter2 = values.iterator(); iter2.hasNext();)
+					String mediatype = getMediaArchive().getMediaRenderType(primaryasset);
+					if(mediatype.equals("document"))
 					{
-						String val = (String) iter2.next();
-						Data data = getMediaArchive().getCachedData(detail.getListId(), val);
-						if (data != null)
+						String fulltext = primaryasset.get("fulltext");
+						if (fulltext != null)
 						{
-							String v = data.getName();
-							textValues.add(v);
+							fulltext = fulltext.replaceAll("\\s+", " ");
+							fulltext = fulltext.substring(0, Math.min(4000, fulltext.length()));
+							PropertyDetail fieldMap = new PropertyDetail();
+							fieldMap.setName("Parsed Document Content");
+							fieldMap.setId("fulltext");
+							
+							JsonUtil jsonutils = new JsonUtil();
+							inData.setValue("fulltext", jsonutils.escape(fulltext));
+							
+							contextfields.add(fieldMap);
 						}
 					}
 				}
-				else if (detail.isMultiValue())
-				{
-					textValues.addAll(values);
-				}
-				stringValue = String.join(", ", textValues);
-			}
-			else
-			{
-				stringValue = inData.get(fieldId);
-			}
-
-			if (stringValue == null)
-			{
-				log.info("Skipping empty field: " + fieldId);
-				continue;
-			}
-
-			String label = detail.getName();
-
-			HashMap fieldMap = new HashMap();
-			fieldMap.put("label", jsonutils.escape(label));
-			fieldMap.put("text", jsonutils.escape(stringValue));
-
-			contextfields.put(detail.getId(), fieldMap);
-		}
-
-		if (inData.getBoolean("hasfulltext"))
-		{
-			String mediatype = getMediaArchive().getMediaRenderType(inData);
-			if(mediatype.equals("document"))
-			{
-				String fulltext = inData.get("markdowncontent");
-				if(fulltext == null)
-				{
-					fulltext = inData.get("fulltext");
-					fulltext = fulltext.replaceAll("\\s+", " ");
-				}
-				if (fulltext != null)
-				{
-					fulltext = fulltext.substring(0, Math.min(4000, fulltext.length()));
-					HashMap fieldMap = new HashMap();
-					fieldMap.put("label", "Parsed Document Content");
-					fieldMap.put("text", jsonutils.escape(fulltext));
-
-					contextfields.put("fulltext", fieldMap);
-				}
 			}
 		}
-		return contextfields;
 	}
 
 	@Override

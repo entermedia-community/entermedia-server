@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.LlmConnection;
@@ -26,10 +25,10 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.util.JSONParser;
 
 public class SemanticTableManager extends BaseAiManager implements CatalogEnabled
 {
@@ -500,13 +499,6 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 		public Collection<String> createSemanticValues(LlmConnection llmconnection, MultiValued inConfig, String inModuleId, MultiValued inData)
 		{
 
-			Map<String,Map> contextfields = populateFields(inModuleId, inData);
-			if(contextfields.isEmpty())
-			{
-				log.info("No fields to check for semantic topics in " + inData.getId() + " " + inData.getName());
-				return null;
-			}
-
 			String fieldname = inConfig.get("fieldname"); 
 			
 			Collection existing = inData.getValues(fieldname);
@@ -518,13 +510,21 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 			
 			Map params = new HashMap();
 			params.put("fieldparams", inConfig);
+			
+			Collection<PropertyDetail> exclude = new ArrayList();
+			PropertyDetail fielddetail = getMediaArchive().getSearcher(inModuleId).getDetail(fieldname);
+			exclude.add(fielddetail);
 		
-			Map validcontext = new HashMap(contextfields);
-			validcontext.remove(fieldname);
+			Collection<PropertyDetail> contextfields = populateFields(inModuleId, inData, exclude);
 			
-			Collection<Map> context = validcontext.values();
+			if(contextfields.isEmpty())
+			{
+				log.info("No fields to check for semantic topics in " + inData.getId() + " " + inData.getName());
+				return null;
+			}
 			
-			params.put("contextfields", context);
+			params.put("contextfields", contextfields);
+			params.put("data", inData);
 			
 			LlmResponse structure = llmconnection.callStructuredOutputList(params);
 			if (structure == null)
@@ -539,14 +539,14 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 			if (jsonvalues != null)
 			{
 				for (Iterator iterator = jsonvalues.iterator(); iterator.hasNext();) {
-					JSONObject object = (JSONObject) iterator.next();  
-					String val = (String) object.get("topic");   //TODO: hardcoded to topic?
-					if(val != null)
+					Object topicobj = iterator.next();  
+					if(topicobj instanceof String)
 					{
-						val = val.replaceAll("_", " ").trim();
-						if( val.length() > 0)
+						String topic = (String) topicobj;
+						topic = topic.replaceAll("_", " ").trim();
+						if( topic.length() > 0)
 						{
-							values.add(val);
+							values.add(topic);
 						}
 					}
 				}

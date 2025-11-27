@@ -56,13 +56,13 @@ public class LlamaVisionConnection extends LlamaOpenAiConnection {
 		// Handle function call definition
 		if (inFunction != null)
 		{
-			String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/functions/" + inFunction + ".json";
+			String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmProtocol() +"/calls/" + inFunction + ".json";
 			
 			Page defpage = archive.getPageManager().getPage(templatepath);
 			
 			if (!defpage.exists())
 			{
-				templatepath = "/" + archive.getCatalogId() + "/ai/" + getLlmProtocol() +"/classify/functions/" + inFunction + ".json";
+				templatepath = "/" + archive.getCatalogId() + "/ai/" + getLlmProtocol() +"/calls/" + inFunction + ".json";
 				defpage = archive.getPageManager().getPage(templatepath);
 			}
 			
@@ -131,21 +131,10 @@ public class LlamaVisionConnection extends LlamaOpenAiConnection {
 	@Override
 	public LlmResponse callStructuredOutputList(Map inParams)
 	{
-		MediaArchive archive = getMediaArchive();
-		
 		inParams.put("model", getModelName());
 		
-		
-		String structurepath = "/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/structures/" + getAiFunctionName() + "_structure.json";
-		Page defpage = archive.getPageManager().getPage(structurepath);
-		
-		if (defpage.exists())
-		{
-			String structure = loadInputFromTemplate(structurepath, inParams);
-			inParams.put("structure", structure);
-		}
-		
-		String prompt = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/classify/structures/" + getAiFunctionName() + ".json", inParams);
+		String templatepath = "/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/calls/" + getAiFunctionName() + ".json";
+		String prompt = loadInputFromTemplate(templatepath, inParams);
 
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(prompt);

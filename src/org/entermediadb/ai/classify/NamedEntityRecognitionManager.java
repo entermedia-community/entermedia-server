@@ -41,19 +41,8 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	 	{
 	 		return false;
 	 	}
-	 	Map<String, Map> contextfields = populateFields(inModuleId,inData);
+	 	Collection<PropertyDetail> contextfields = populateFields(inModuleId, inData, autocreatefields);
 	 	
-	 	for (Iterator iterator = autocreatefields.iterator(); iterator.hasNext();) {
-	 		PropertyDetail detail = (PropertyDetail) iterator.next();
-			contextfields.remove(detail.getId());
-
-			Collection val = inData.getValues(detail.getId());
-			if(!detail.isList() || (val != null && val.size() > 0))
-			{
-				//Invalid filed or already has a value
-				iterator.remove();
-			}
-		}
 		if(contextfields.isEmpty())
 		{
 			log.info(inConfig.get("bean") +" No fields to check for names in " + inData.getId() + " " + inData.getName());
@@ -64,12 +53,6 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 			// Check again after removing any fields that already have values
 			log.info(inConfig.get("bean") +" No fields to create in " + inData.getId() + " " + inData.getName());
 			return false;
-		}
-		
-		// Non assets that are not split enabled and have a primarymedia with fulltext
-		if(!inModuleId.equals("asset") && !contextfields.keySet().contains("fulltext") && inData.get("pagenum") == null)
-		{
-			addPrimaryMediaFulltext(inData, contextfields);
 		}
 
  		Map params = new HashMap();
@@ -98,6 +81,10 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 					{
 						for (Iterator iterator2 = values.iterator(); iterator2.hasNext();) {
 							String value = (String) iterator2.next();
+							if(value == null || value.isEmpty())
+							{
+								continue;
+							}
 							Data savedrecord = saveIfNeeded(inConfig, detail, value);
 							if( savedrecord != null)
 							{
@@ -117,38 +104,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	 	
 	}
 
-	private void addPrimaryMediaFulltext(MultiValued inData, Map<String, Map> contextfields) {
-		String primarymedia = inData.get("primarymedia");
-		if(primarymedia == null || primarymedia.isEmpty())
-		{
-			primarymedia = inData.get("primaryimage");
-		}
-		if(primarymedia != null)
-		{
-			MultiValued primaryasset = getMediaArchive().getAsset(primarymedia);
-			if(primaryasset != null)
-			{
-				if (primaryasset.getBoolean("hasfulltext"))
-				{
-					String mediatype = getMediaArchive().getMediaRenderType(primaryasset);
-					if(mediatype.equals("document"))
-					{
-						String fulltext = primaryasset.get("fulltext");
-						if (fulltext != null)
-						{
-							fulltext = fulltext.replaceAll("\\s+", " ");
-							fulltext = fulltext.substring(0, Math.min(4000, fulltext.length()));
-							HashMap fieldMap = new HashMap();
-							fieldMap.put("label", "Parsed Document Content");
-							JsonUtil jsonutils = new JsonUtil();
-							fieldMap.put("text", jsonutils.escape(fulltext));
-							contextfields.put("fulltext", fieldMap);
-						}
-					}
-				}
-			}
-		}
-	}
+	
 
 	protected Data saveIfNeeded(MultiValued inConfig, PropertyDetail inDetail, String inlabel)
 	{
