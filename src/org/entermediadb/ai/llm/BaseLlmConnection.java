@@ -524,7 +524,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			
 			if (resp.getStatusLine().getStatusCode() != 200)
 			{
-				log.info("Embedding Server error status: " + resp.getStatusLine().getStatusCode());
+				log.info("Error: " + getServerRoot() + inPath + " returned status code: " + resp.getStatusLine().getStatusCode());
 				log.info("Error response: " + resp.toString());
 				try
 				{
