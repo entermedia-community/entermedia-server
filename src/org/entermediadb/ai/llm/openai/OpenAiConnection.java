@@ -100,7 +100,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		//String endpoint = "http://localhost:3000/generations";  // for local testing
 		
 		log.info("Creating image with prompt: " + inPrompt + "  Model: " + getModelName());
-		LlmResponse res = callJson("/v1/images/generations",payload);
+		LlmResponse res = callJson("/images/generations",payload);
 		return res;
 		
 	}
@@ -191,7 +191,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		
 		log.info("Call Function: " + obj.toJSONString());
 		
-		LlmResponse res = callJson("/v1/chat/completions",obj);
+		LlmResponse res = callJson("/chat/completions",obj);
 	    return res;
 
 	}
@@ -357,7 +357,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		obj.put("messages", messages);
 
-		LlmResponse res = callJson("/v1/chat/completions",obj);
+		LlmResponse res = callJson("/chat/completions",obj);
 		
 		JSONArray choices = (JSONArray) res.getRawResponse().get("choices");
         JSONObject choice = (JSONObject) choices.get(0);
