@@ -16,7 +16,10 @@
 			return this;
 		}
 
-		if ("updateAllCK5" in window) updateAllCK5();
+		if ("updateAllCK5" in window)
+		{
+			updateAllCK5();
+		} 
 
 		if (!form.hasClass("novalidate")) {
 			if (form.validate) {
@@ -32,6 +35,7 @@
 					var isvalidate = form.valid();
 					if (!isvalidate) {
 						//e.preventDefault();
+						console.log("Form is not Valid");
 						return this;
 					}
 				} catch (_e) {
