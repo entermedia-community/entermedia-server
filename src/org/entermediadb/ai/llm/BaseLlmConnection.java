@@ -3,7 +3,6 @@ package org.entermediadb.ai.llm;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -16,7 +15,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.llm.http.HttpResponse;
-import org.entermediadb.ai.llm.openai.OpenAiResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
@@ -457,6 +455,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		return fieldSharedHeaders;
 	}
 	
+	@Override
 	public LlmResponse callJson(String inPath, JSONObject inPayload)
 	{
 		LlmResponse res = callJson(inPath, getSharedHeaders(), inPayload);
@@ -466,6 +465,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	@Override
 	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inEmbeddingPayload)
 	{
+		log.info("Calling LLM Server at: " + getServerRoot() + inPath);
 		HttpPost method = new HttpPost(getServerRoot() + inPath);
 		
 		method.addHeader("Authorization", "Bearer " + getApiKey());

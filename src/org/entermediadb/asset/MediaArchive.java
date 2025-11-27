@@ -3355,7 +3355,9 @@ public class MediaArchive implements CatalogEnabled
 	
 	public LlmConnection getLlmConnection(String inAiFunctionName)
 	{
-		LlmConnection connection = (LlmConnection) getCacheManager().get("llmconnection", inAiFunctionName);
+		String cacheName = "llmconnection"+inAiFunctionName;
+		
+		LlmConnection connection = (LlmConnection) getCacheManager().get(cacheName, inAiFunctionName);
 		
 		if(connection == null)
 		{	
@@ -3373,7 +3375,7 @@ public class MediaArchive implements CatalogEnabled
 			connection = (LlmConnection) getBean(llm);
 			connection.setAiFunctionData(aifunction);
 			connection.setAiServerData(serverinfo);
-			getCacheManager().put("llmconnection", inAiFunctionName, connection);
+			getCacheManager().put(cacheName, inAiFunctionName, connection);
 		}
 		
 		return connection;

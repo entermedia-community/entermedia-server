@@ -9,14 +9,10 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -178,7 +174,8 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 		log.info("Translating " + q + " from " + sourceLang + " to " + targetLangs);
 		
 		LlmConnection connection = getMediaArchive().getLlmConnection("translateFields");
-		LlmResponse resp = connection.callJson("/translate", null,payload);
+		
+		LlmResponse resp = connection.callJson("/translate", payload);
 		
 		JSONObject translatedText = (JSONObject) resp.getRawResponse().get("translatedText");
 			

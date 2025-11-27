@@ -46,9 +46,9 @@ public interface LlmConnection {
 	
 	public LlmResponse callOCRFunction(Map inParams, String inBase64Image);
 
-	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inEmbeddingPayload);
-	
+	public LlmResponse callJson(String inPath, JSONObject inPayload);	
 	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, HttpEntity inEntity);
+	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inEmbeddingPayload);
 	
 	LlmResponse createResponse();
 	
