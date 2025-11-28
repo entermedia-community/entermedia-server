@@ -2,6 +2,7 @@ package org.entermediadb.ai.assistant;
 
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.modules.publishing.ContentManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.WebPageRequest;
@@ -60,23 +61,6 @@ public class AgentModule extends BaseMediaModule {
 	{	
 		getAssistantManager(inReq).executeRag(inReq);
 	}
-	
-//	public void chatAgentCreateImage(WebPageRequest inReq) throws Exception 
-//	{	
-//		AgentContext agentContext =  (AgentContext) inReq.getPageValue("agentcontext");
-//		getAssistantManager(inReq).createImage(inReq, agentContext.getAiCreationParams());
-//	}
-//	
-//	public void chatAgentCreateEntity(WebPageRequest inReq) throws Exception 
-//	{	
-//		AgentContext agentContext =  (AgentContext)inReq.getPageValue("agentcontext");
-//		getAssistantManager(inReq).createEntity(inReq, agentContext.getAiCreationParams());
-//	}
-//	
-//	public void chatAgentUpdateEntity(WebPageRequest inReq) throws Exception 
-//	{	
-//		getAssistantManager(inReq).updateEntity(inReq);
-//	}
 	
 //	public void mcpSearch(WebPageRequest inReq) throws Exception
 //	{

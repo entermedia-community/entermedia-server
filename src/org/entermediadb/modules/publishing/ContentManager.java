@@ -1016,7 +1016,11 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 		}
 		else if ("createEntity".equals(inAgentContext.getFunctionName()))
 		{
-			// TODO: 
+			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
+			
+			LlmResponse result = createEntity(usermessage, inAgentContext);
+			
+			return result;
 		}
 		
 		throw new OpenEditException("Unknown function name: " + inAgentContext.getFunctionName());
@@ -1115,24 +1119,26 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 		return results;
 	}
 	
-	public void createEntity(WebPageRequest inReq, AiCreation aiCreation) throws Exception 
+	public LlmResponse createEntity(MultiValued usermessage, AgentContext inAgentContext) 
 	{
 		MediaArchive archive = getMediaArchive();
+		
+		AiCreation aiCreation = inAgentContext.getAiCreationParams();
 		
 		JSONObject entityfields = (JSONObject) aiCreation.getEntityFields();
 		String entityname = (String) entityfields.get("entity_name");
 
 		if (entityname == null)
 		{
-			inReq.putPageValue("error", "Please provide a name for the new entity");
-			return;
+			inAgentContext.addContext("error", "Please provide a name for the new entity");
+			return null;
 		}
 		
 		String moduleid = (String) entityfields.get("module_id");
 		if(moduleid == null)
 		{
-			inReq.putPageValue("error", "Could not find module. Please provide an existing module name or id");
-			return;
+			inAgentContext.addContext("error", "Could not find module. Please provide an existing module name or id");
+			return null;
 		}
 		
 		
@@ -1142,8 +1148,8 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 		
 		if(module == null)
 		{
-			inReq.putPageValue("error", "Could not find module. Please provide an existing module name or id");
-			return;
+			inAgentContext.addContext("error", "Could not find module. Please provide an existing module name or id");
+			return null;
 		}
 		
 		Searcher searcher = archive.getSearcher(module.getId());
@@ -1153,8 +1159,16 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 
 		searcher.saveData(entity);
 		
-		inReq.putPageValue("entity", entity);
-		inReq.putPageValue("module", module);
+		inAgentContext.addContext("entity", entity);
+		inAgentContext.addContext("module", module);
+		
+		
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("createEntity");
+		
+		LlmResponse result = llmconnection.renderLocalAction(inAgentContext);
+		
+		return result;
+		
 	}
 	
 	public void updateEntity(WebPageRequest inReq) throws Exception 
