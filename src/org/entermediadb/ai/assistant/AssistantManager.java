@@ -242,13 +242,10 @@ public class AssistantManager extends BaseAiManager
 //			}
 //			return;
 //		}
+		
 		//Add new agentmessage
-		MultiValued agentmessage = (MultiValued)getMediaArchive().getSearcher("chatterbox").createNewData();
-		agentmessage.setValue("user", "agent");
-		agentmessage.setValue("replytoid",usermessage.getId() );
-		agentmessage.setValue("channel", agentContext.getChannel().getId());
-		agentmessage.setValue("date", new Date());
-		agentmessage.setValue("chatmessagestatus", "processing");
+		MultiValued agentmessage = newAgentMessage(usermessage, agentContext);
+		
 		//ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
 		//Determine what will need to be processed
 		try
@@ -272,6 +269,18 @@ public class AssistantManager extends BaseAiManager
 		}
 	}
 	
+	
+	public MultiValued newAgentMessage(MultiValued usermessage, AgentContext agentContext)
+	{
+		MultiValued agentmessage = (MultiValued)getMediaArchive().getSearcher("chatterbox").createNewData();
+		agentmessage.setValue("user", "agent");
+		agentmessage.setValue("replytoid",usermessage.getId() );
+		agentmessage.setValue("channel", agentContext.getChannel().getId());
+		agentmessage.setValue("date", new Date());
+		agentmessage.setValue("chatmessagestatus", "processing");
+		return agentmessage;
+	}
+	
 	public void execCurrentFunctionFromChat(MultiValued usermessage, MultiValued agentmessage, AgentContext agentContext) 
 	{
 
@@ -285,22 +294,21 @@ public class AssistantManager extends BaseAiManager
 		}
 		ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
 
-		if(agentmessage.getValue("message") == null )
+		
+		String prefix = "<i class=\"fas fa-spinner fa-spin mr-2\"></i> ";
+		String processingmessage = null; // TODO: Change to language mao
+		if( function != null)
 		{
-			String prefix = "<i class=\"fas fa-spinner fa-spin mr-2\"></i> ";
-			String processingmessage = null; // TODO: Change to language mao
-			if( function != null)
-			{
-				processingmessage = function.get("processingmessage");
-			}
-			if( processingmessage == null )
-			{
-				processingmessage = "Analyzing...";
-			}
-			agentmessage.setValue("message", prefix + processingmessage);
-			getMediaArchive().saveData("chatterbox",agentmessage);	
-			server.broadcastMessage(getMediaArchive().getCatalogId(), agentmessage);
+			processingmessage = function.get("processingmessage");
 		}
+		if( processingmessage == null )
+		{
+			processingmessage = "Analyzing...";
+		}
+		agentmessage.setValue("message", prefix + processingmessage); //setting status
+		getMediaArchive().saveData("chatterbox",agentmessage);	
+		server.broadcastMessage(getMediaArchive().getCatalogId(), agentmessage);
+	
 		
 		MediaArchive archive = getMediaArchive();
 
@@ -322,8 +330,15 @@ public class AssistantManager extends BaseAiManager
 			ChatMessageHandler handler = (ChatMessageHandler)getMediaArchive().getBean( bean);
 			LlmResponse response = handler.processMessage(agentmessage, agentContext);
 			
-			String message = response.getMessage();
-			agentmessage.setValue("message", message);
+			
+			
+			
+			
+			if( agentContext.getNextFunctionName() == null || "searchSemantic".equals(agentContext.getNextFunctionName()) )
+			{
+				String message = response.getMessage();
+				agentmessage.setValue("message", message); //Final message
+			}
 			
 			String messageplain = agentmessage.get("messageplain");
 			String newmessageplain = response.getMessagePlain();
@@ -344,6 +359,8 @@ public class AssistantManager extends BaseAiManager
 			agentmessage.setValue("chatmessagestatus", "completed");
 			getMediaArchive().saveData("chatterbox",agentmessage);
 			
+
+			
 			JSONObject functionMessageUpdate = new JSONObject();
 			functionMessageUpdate.put("messagetype", "airesponse");
 			functionMessageUpdate.put("catalogid", archive.getCatalogId());
@@ -363,6 +380,15 @@ public class AssistantManager extends BaseAiManager
 
 //				agentmessage.setValue("chatmessagestatus", "refresh");
 //				getMediaArchive().saveData("chatterbox",agentmessage);
+				
+				if("searchSemantic".equals(agentContext.getNextFunctionName()))
+				{
+					//New Agent Message
+					agentmessage = newAgentMessage(usermessage, agentContext);
+					
+					//Or update existing one
+					getMediaArchive().saveData("chatterbox",agentmessage);
+				}
 
 				Long wait = agentContext.getLong("wait");
 				if( wait != null && wait instanceof Long)
@@ -375,7 +401,7 @@ public class AssistantManager extends BaseAiManager
 				//TODO: Just sleep for a bit? and try again
 				agentContext.setFunctionName(agentContext.getNextFunctionName());
 				agentContext.setNextFunctionName(null);
-				execCurrentFunctionFromChat(usermessage,agentmessage,agentContext);
+				execCurrentFunctionFromChat(usermessage, agentmessage, agentContext);
 //				Runnable runnable = new Runnable() {
 //					public void run()
 //					{
