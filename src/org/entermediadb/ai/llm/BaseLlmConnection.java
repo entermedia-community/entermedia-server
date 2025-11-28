@@ -559,9 +559,9 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	}
 	
 	@Override
-	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, HttpEntity inEntity)
+	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, Map inMap)
 	{
-		HttpPost method = new HttpPost(getServerRoot() + inPath);
+		HttpSharedConnection connection = getConnection();
 		
 		if(inHeaders != null)
 		{
@@ -569,20 +569,17 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			{
 				String key = (String) iterator.next();
 				String value = inHeaders.get(key);
-				method.setHeader(key,value);
+				connection.addSharedHeader(key,value); //Todo: Pass in heades in the parameters
 			}
 		}
 		
-		method.setEntity(inEntity);
-		
-		HttpSharedConnection connection = getConnection();
-		CloseableHttpResponse resp = connection.sharedExecute(method);
+		CloseableHttpResponse resp = connection.sharedMimePost(getServerRoot() + inPath, inMap);
 		Object object = null;
 		try
 		{
 			if (resp.getStatusLine().getStatusCode() != 200)
 			{
-				log.info("Embedding Server error status: " + resp.getStatusLine().getStatusCode());
+				log.info("Error: " + getServerRoot() + inPath + " returned status code: " + resp.getStatusLine().getStatusCode());
 				log.info("Error response: " + resp.toString());
 				try
 				{
@@ -595,7 +592,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 				}
 				throw new OpenEditException("Could not call " + inPath);
 			}
-			object = (JSONObject) connection.parseJson(resp);
+			object = connection.parseJson(resp);
 		}
 		finally
 		{

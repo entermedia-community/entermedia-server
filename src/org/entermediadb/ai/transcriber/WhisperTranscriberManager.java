@@ -228,15 +228,17 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		{
 			throw new FileNotFoundException("File not found: " + audioFile);
 		}
-		
-		HttpEntity entity = MultipartEntityBuilder.create()
-                .addBinaryBody("file", audioFile, ContentType.create("audio/mp3"), audioFile.getName())
-                .build();
-		
 		LlmConnection connection = getMediaArchive().getLlmConnection("transcribeFile");
-		LlmResponse resp = connection.callJson("/transcribe", null, entity);
 		
-		JSONArray result = (JSONArray) resp.getRawResponse().get("results");  //TODO: Change server to return JSONOBject
+		Map headers = new HashMap();
+		headers.put("Authorization", "Bearer " + connection.getApiKey());
+		
+		Map params = new HashMap();
+		params.put("file", audioFile);
+		
+		LlmResponse resp = connection.callJson("/transcribe", headers, params);
+		
+		JSONArray result = (JSONArray) resp.getRawCollection();  //TODO: Change server to return JSONOBject
 		return result;
 
 	}
