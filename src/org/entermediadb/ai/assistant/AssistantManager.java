@@ -292,10 +292,12 @@ public class AssistantManager extends BaseAiManager
 			log.info("No Ai function defined: " + functionName);
 			return;
 		}
+		
 		ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
 
 		
-		String prefix = "<i class=\"fas fa-spinner fa-spin mr-2\"></i> ";
+		String loader = "<i class=\"fas fa-spinner fa-spin mr-2\"></i> ";
+		
 		String processingmessage = null; // TODO: Change to language mao
 		if( function != null)
 		{
@@ -305,7 +307,11 @@ public class AssistantManager extends BaseAiManager
 		{
 			processingmessage = "Analyzing...";
 		}
-		agentmessage.setValue("message", prefix + processingmessage); //setting status
+		
+		processingmessage = loader + processingmessage;
+		
+		String message = agentContext.getMessagePrefix() + processingmessage;
+		agentmessage.setValue("message", message ); //setting status
 		getMediaArchive().saveData("chatterbox",agentmessage);	
 		server.broadcastMessage(getMediaArchive().getCatalogId(), agentmessage);
 	
@@ -330,16 +336,17 @@ public class AssistantManager extends BaseAiManager
 			ChatMessageHandler handler = (ChatMessageHandler)getMediaArchive().getBean( bean);
 			LlmResponse response = handler.processMessage(agentmessage, agentContext);
 			
+			String updatedMessage = agentContext.getMessagePrefix();
 			
-			
-			
-			
-			if( agentContext.getNextFunctionName() == null || "searchSemantic".equals(agentContext.getNextFunctionName()) )
+			if( response.getMessage() != null )
 			{
-				String message = response.getMessage();
-				agentmessage.setValue("message", message); //Final message
+				updatedMessage += response.getMessage();
 			}
+
+			agentmessage.setValue("message", updatedMessage); //Final message
 			
+			
+
 			String messageplain = agentmessage.get("messageplain");
 			String newmessageplain = response.getMessagePlain();
 			
@@ -384,7 +391,7 @@ public class AssistantManager extends BaseAiManager
 				if("searchSemantic".equals(agentContext.getNextFunctionName()))
 				{
 					//New Agent Message
-					agentmessage = newAgentMessage(usermessage, agentContext);
+//					agentmessage = newAgentMessage(usermessage, agentContext);
 					
 					//Or update existing one
 					getMediaArchive().saveData("chatterbox",agentmessage);
@@ -481,6 +488,12 @@ public class AssistantManager extends BaseAiManager
 			LlmConnection searcher = getMediaArchive().getLlmConnection("searchTables");
 			LlmResponse response =  searcher.renderLocalAction(inAgentContext);
 			
+			String message = response.getMessage();
+			
+			if(message != null)
+			{
+				inAgentContext.setMessagePrefix(message);
+			}
 			
 			return response;
 		}

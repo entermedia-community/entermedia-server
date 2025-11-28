@@ -169,6 +169,21 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 		setValue("functionname",inFunctionName);
 	}
 	
+	public String getMessagePrefix()
+	{
+		String message = get("messageprefix");
+		if( message == null)
+		{
+			message = "";
+		}
+		return message;
+	}
+
+	public void setMessagePrefix(String inMessagePrefix)
+	{
+		setValue("messageprefix", inMessagePrefix);
+	}
+	
 	Collection<String> fieldExcludedEntityIds;
 	Collection<String> fieldExcludedAssetIds;
 	
