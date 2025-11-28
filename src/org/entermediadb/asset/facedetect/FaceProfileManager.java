@@ -479,6 +479,8 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 		inEmbedding.setValue("removedby", inUser.getId());
 		getMediaArchive().saveData("faceembedding",inEmbedding);
 		
+		getMediaArchive().getCacheManager().remove("faceboxes",inEmbedding.get("assetid"));
+		
 		//reconnect parents and children and other faces
 		
 		Collection<FaceBox> boxes = viewAllRelatedFaces(inEmbedding.getId());
@@ -664,6 +666,9 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 		addedface.setValue("owner",inUser.getId());
 
 		faceembeddingsearcher.saveData(addedface, inUser);
+		
+		getMediaArchive().getCacheManager().remove("faceboxes",inAsset.getId());
+		
 		return addedface;
 	}
 //	
