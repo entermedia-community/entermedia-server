@@ -454,7 +454,15 @@ public class AssistantManager extends BaseAiManager
 			//search
 			LlmConnection searcher = getMediaArchive().getLlmConnection("searchTables");
 			LlmResponse response =  searcher.renderLocalAction(inAgentContext);
+			
+			
 			return response;
+		}
+		else if ("searchSemantic".equals(inAgentContext.getFunctionName()))
+		{	
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("searchSemantic");
+			LlmResponse result = llmconnection.renderLocalAction(inAgentContext);
+			return result;
 		}
 		
 		throw new OpenEditException("Function not supported " + inAgentContext.getFunctionName());
