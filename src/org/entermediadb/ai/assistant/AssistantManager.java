@@ -445,6 +445,7 @@ public class AssistantManager extends BaseAiManager
 //		agentmessage.setValue("message", output);  //Needed"
 //		agentmessage.setValue("messageplain", output);
 //		
+
 		if ("parsePrompt".equals(inAgentContext.getFunctionName()))
 		{
 			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox",inAgentMessage.get("replytoid"));
@@ -474,10 +475,13 @@ public class AssistantManager extends BaseAiManager
 				}
 				//LlmResponse respond = new EMediaAIResponse();
 				response.setMessage(generalresponse);
+				
+				inAgentContext.setNextFunctionName(null);
 
 			}
 			else
 			{
+				response.setMessage("");
 				inAgentContext.setNextFunctionName(response.getFunctionName());
 			}
 			return response;
