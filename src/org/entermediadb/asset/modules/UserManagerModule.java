@@ -1568,30 +1568,22 @@ public class UserManagerModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String channel = inReq.findValue("channel");
-		MultiValued currentchannel = null;
 		String module = inReq.findValue("module");
 		
-		String restorechannel = inReq.getRequestParameter("restorechannel");
+		MultiValued currentchannel = (MultiValued)archive.getCachedData("channel", channel);
 		
-		if( Boolean.parseBoolean(restorechannel) )
+		if( currentchannel != null )
 		{
-			//disableChannels(module,inReq.getUser(),channel);
-			currentchannel = (MultiValued)archive.getCachedData("channel", channel);
-			if( !"agentchat".equals(currentchannel.get("channeltype")) )
-			{
-				currentchannel.setValue("channeltype", "agentchat" );
-				archive.saveData("channel",currentchannel);
-			}
 			inReq.putPageValue("currentchannel", currentchannel);
 			return;
-		}		
+		}	
 		
 		String createnew = inReq.getRequestParameter("createnew");
 		Searcher channelsearcher = archive.getSearcher("channel");
 		String channeltype = inReq.findValue("channeltype");
 		if (channeltype == null)
 		{
-			channeltype = "agentchat";
+			throw new IllegalArgumentException("channeltype is required");
 		}
 		String dataid = null;
 		String channelname = null;
