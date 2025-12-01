@@ -232,7 +232,8 @@ public class BaseAiManager extends BaseManager implements ChatMessageHandler
 		ExecResult result = exec.runExecStream("convert", args, output, 5000);
 		if (!result.isRunOk())
 		{
-			throw new OpenEditException("Error converting image");
+			
+			throw new OpenEditException("Error converting image, returned: "+ result.getReturnValue());
 		}
 		long duration = (System.currentTimeMillis() - starttime) ;
 		log.info("Converted " + item.getName() + " in "+duration+"ms");
