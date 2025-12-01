@@ -230,10 +230,18 @@ public class BaseAiManager extends BaseManager implements ChatMessageHandler
 		Exec exec = (Exec)getMediaArchive().getBean("exec");
 
 		ExecResult result = exec.runExecStream("convert", args, output, 5000);
+		if (!result.isRunOk())
+		{
+			throw new OpenEditException("Error converting image");
+		}
+		long duration = (System.currentTimeMillis() - starttime) ;
+		log.info("Converted " + item.getName() + " in "+duration+"ms");
+
+		starttime = System.currentTimeMillis();
 		byte[] bytes = output.toByteArray();  // Read InputStream as bytes
 		String base64EncodedString = Base64.getEncoder().encodeToString(bytes); // Encode to Base64
-		long duration = (System.currentTimeMillis() - starttime) ;
-		log.info("Loaded and encoded " + item.getName() + " in "+duration+"ms");
+		duration = (System.currentTimeMillis() - starttime) ;
+		log.info("Encoded " + item.getName() + " in "+duration+"ms");
 		
 		return "data:image/jpeg;base64," + base64EncodedString;
 
