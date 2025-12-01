@@ -182,8 +182,8 @@ public class ChatServer
 		String inCatalogId = (String)inMap.get("catalogid");
 		broadcastMessage(inCatalogId,inMap);
 	}
-	
-	public void broadcastMessage(String catalogid, JSONObject inMap)
+
+	public synchronized void broadcastMessage(String catalogid, JSONObject inMap)
 	{
 		
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
