@@ -200,7 +200,7 @@
 				: $(window).scrollTop();
 
 			// If using a custom container, adjust the calculation
-			if (settings.container) {
+			if (settings.container && $(settings.container).offset()) {
 				const containerTop = $(settings.container).offset().top;
 				elementTop = elementTop - containerTop + containerScrollTop;
 			}
