@@ -29,7 +29,7 @@ $(document).ready(function () {
 		trnslationsource.find("label").attr("for", detailid + "." + lang);
 	});
 
-	lQuery(".addlocale-ajax").livequery("change", function (event) {
+	lQuery(".addlocale-ajax").livequery("click", function (event) {
 		event.stopPropagation();
 		event.preventDefault();
 
@@ -37,30 +37,23 @@ $(document).ready(function () {
 		addLanguageInput(btn);
 	});
 
-	function addLanguageInput(select, languagecode = null, val = "") {
-		var detailid = select.data("detailid");
+	function addLanguageInput(btn, languagecode = null, val = "") {
+		var detailid = btn.data("detailid");
 
 		if (!languagecode) {
-			languagecode = select.val();
-			select.find("option:first-child").prop("disabled", true);
+			languagecode = btn.data("value");
+			btn.hide();
 		}
+
 		if (!languagecode) return;
 
-		var opt = select.find("option[value='" + languagecode + "']");
-		var locale = opt.text();
+		if ($(`#value-${detailid}-${languagecode}`).length > 0) return;
 
-		select.data("languagecode", languagecode);
-		select.data("locale", locale);
-
-		if ($(`#value-${detailid}-${languagecode}`).length > 0) {
-			return;
-		}
-
-		select.runAjax(function () {
+		btn.runAjax(function () {
 			if (val) {
 				$(`#value-${detailid}-${languagecode}`).val(val);
 			}
-			var languagesfield = select.closest(".languagesfield");
+			var languagesfield = btn.closest(".languagesfield");
 			$(".hide-remove-btn", languagesfield).remove();
 		});
 	}
@@ -75,17 +68,17 @@ $(document).ready(function () {
 		}
 	}
 
-	$(document).on("focus", ".langvalue", autoSelectTranslationSource);
-	$(document).on("input", ".langvalue", autoSelectTranslationSource);
+	// $(document).on("focus", ".langvalue", autoSelectTranslationSource);
+	// $(document).on("input", ".langvalue", autoSelectTranslationSource);
 
-	function autoSelectTranslationSource(forced = false) {
-		if (forced || $(this).val().trim().length > 0) {
-			var detailid = $(this).data("detailid");
-			var code = $(this).data("languagecode");
-			var locale = $(this).data("locale");
-			$(`#translate-dropdown-${detailid}`).val(code);
-		}
-	}
+	// function autoSelectTranslationSource(forced = false) {
+	// 	if (forced || $(this).val().trim().length > 0) {
+	// 		var detailid = $(this).data("detailid");
+	// 		var code = $(this).data("languagecode");
+	// 		var locale = $(this).data("locale");
+	// 		$(`#translate-dropdown-${detailid}`).val(code);
+	// 	}
+	// }
 
 	lQuery(".remove-language").livequery("click", function (e) {
 		e.preventDefault();
@@ -156,7 +149,7 @@ $(document).ready(function () {
 	lQuery(".translate-ajax").livequery("click", function (e) {
 		e.preventDefault();
 		var div = $(this).closest(".emdatafieldvalue");
-		var select = div.find(".addlocale-ajax");
+		var select = div.find(".sourcelocale");
 		var source = select.val();
 		if (!source) {
 			customToast("Please select a source language!", {
@@ -332,9 +325,8 @@ $(document).ready(function () {
 		jQuery.validator.addMethod(
 			"entityrequired",
 			function (value, element) {
-				
 				var entitylistdiv = $(element).closest(".entitylistcontainer");
-				var entitylist = entitylistdiv.find(".entity-value-list")
+				var entitylist = entitylistdiv.find(".entity-value-list");
 				if (entitylist.children("li").length > 0) {
 					return true;
 				}
@@ -346,7 +338,7 @@ $(document).ready(function () {
 		$.validator.addClassRules("entityRequired", {
 			entityrequired: true,
 			number: true,
-			min: 1
+			min: 1,
 		});
 
 		$.validator.setDefaults({
@@ -374,22 +366,18 @@ $(document).ready(function () {
 			},
 		});
 	}
-	
-	lQuery(".entity-value-list-remove").livequery("click", function () { 
-		
+
+	lQuery(".entity-value-list-remove").livequery("click", function () {
 		var entitylistdiv = $(this).closest(".entitylistcontainer");
 		var input = entitylistdiv.find(".entity-value-list-count");
-		if (input.lenght > 0)
-			{
-				var count = input.val();
-				if($.isNumeric(count) && count > 0) {
-					input.val(count - 1);
-				}
-				else 
-				{
-					input.val("0");
-				}
-			} 
+		if (input.lenght > 0) {
+			var count = input.val();
+			if ($.isNumeric(count) && count > 0) {
+				input.val(count - 1);
+			} else {
+				input.val("0");
+			}
+		}
 		$(this).closest("li").remove();
 		return false;
 	});
@@ -398,36 +386,32 @@ $(document).ready(function () {
 		var form = $(this).closest(".inlinedata");
 		var queryString = form.formSerialize();
 		var url = form.attr("action");
-		if (url == null)
-		{
+		if (url == null) {
 			url = apphome + "/views/settings/lists/datamanager/edit/inlinesave.json";
 		}
 		var targetselect = $(this).data("targetselect");
 		var select = $("#" + targetselect);
-		
+
 		$.getJSON(url, queryString, function (data) {
 			var newOption = new Option(data.name, data.id, true, true);
 			select.append(newOption).trigger("change");
 		});
 		$(this).closest(".modal").modal("hide");
 	});
-	
-	
+
 	lQuery(".removeentityfromfield").livequery("click", function () {
-			let listcontainer = $(this).closest(".entitylistcontainer");
-			let countinput = listcontainer.find(".entity-value-list-count");
-			let count = countinput.val();
-			if (!$.isNumeric(count)) {
-				count = 0;
-			}
-			else 
-			{
-				count = count - 1;
-			}
-			countinput.val(count);
-			let entityrow = $(this).closest("li");
-			entityrow.remove();
-		});
+		let listcontainer = $(this).closest(".entitylistcontainer");
+		let countinput = listcontainer.find(".entity-value-list-count");
+		let count = countinput.val();
+		if (!$.isNumeric(count)) {
+			count = 0;
+		} else {
+			count = count - 1;
+		}
+		countinput.val(count);
+		let entityrow = $(this).closest("li");
+		entityrow.remove();
+	});
 
 	//End of init
 });

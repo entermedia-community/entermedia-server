@@ -1,23 +1,16 @@
 #set($languages = $mediaarchive.getList("locale") )
-<div class="d-flex align-items-end justify-content-end mt-3" id="languageaction_${detail.id}">
+<div class="d-flex align-items-start justify-content-between mt-3 mb-1 bg-red" id="languageaction_${detail.id}">
+
   <div class="d-flex flex-column">
-    <label for="translate-dropdown-${detail.id}" class="mb-1 small fw-bold">
-      [[Select Language]] / [[Create Missing Translations]]:
-    </label>
-    <div class="d-flex align-items-center">
-      <select id="translate-dropdown-${detail.id}"
-        class="form-control form-select form-control-sm w-auto addlocale-ajax" 
-        data-detailid="${detail.id}"
-        data-url="$siteroot$apphome/components/xml/types/language/extralanguage.html"
-        data-targetdiv="languagesextra_${detail.id}"
-        data-targetappendtype="insertbefore"
-        data-detailid="${detail.id}"
-        data-no-toast="true">
-        <option value="">[[Select Language]]</option>
+    <div class="dropdown">
+      <button type="button" class="dropdown-toggle btn btn-sm btn-primary mr-1" title="[[Add Language]]">
+        <i class="bi bi-plus-lg mr-1"></i> <span>[[Add]]</span>
+      </button>
+      <div class="dropdown-menu">
         #set($skip = false)
         #set($selectedlocale = "")
         #foreach($locale in $languages)
-		  #if($locale.getBoolean("enabled"))
+    		  #if($locale.getBoolean("enabled"))
 	          #set($localval = $languagemap.getText($locale.id))
 	          #set($selected = false)
 	          #if(!$skip)
@@ -27,18 +20,60 @@
 	              #set($selectedlocale = $locale)
 	            #end
 	          #end
-	          <option value="$locale.id" 
-			  	#if($selected) selected #end 
-			   >
-	            #text($locale)
-	          </option>
-			  #end
-        #end
-      </select>
 
-      <button type="button" class="btn btn-sm btn-primary mr-1 translate-ajax" title="[[Translate]]">
-        <i class="bi bi-translate mr-1"></i> [[Translate]] 
-      </button>
+            <a class="dropdown-item addlocale-ajax" 
+              data-detailid="${detail.id}"
+              data-url="$siteroot$apphome/components/xml/types/language/extralanguage.html"
+              data-targetdiv="languagesextra_${detail.id}"
+              data-targetappendtype="insertbefore"
+              data-detailid="${detail.id}"
+              data-no-toast="true"
+              data-locale="#text($locale)"
+              data-languagecode="$locale.id"
+              data-value="$locale.id"
+            >
+	            #text($locale)
+            </a>
+			    #end
+        #end
+      </div>
     </div>
+  </div>
+
+  <div class="d-flex align-items-center">
+    <button type="button" class="btn btn-sm btn-primary mr-1 translate-ajax" title="[[Creates Translations for Missing Languages]]">
+      <i class="bi bi-translate mr-1"></i> [[Auto Translate]]
+    </button>
+    <span>[[from]]</span>
+    <select id="translate-dropdown-${detail.id}"
+      class="form-control form-select form-control-sm ml-1 sourcelocale"
+      style="max-width: 120px;"
+      data-detailid="${detail.id}"
+      data-url="$siteroot$apphome/components/xml/types/language/extralanguage.html"
+      data-targetdiv="languagesextra_${detail.id}"
+      data-targetappendtype="insertbefore"
+      data-detailid="${detail.id}"
+      data-no-toast="true">
+      #set($skip = false)
+      #set($selectedlocale = "")
+      #foreach($locale in $languages)
+    #if($locale.getBoolean("enabled"))
+          #set($localval = $languagemap.getText($locale.id))
+          #set($selected = false)
+          #if(!$skip)
+            #if($addedlocale == $locale.id || ($localval && $localval != ""))
+              #set($skip = true)
+              #set($selected = true)
+              #set($selectedlocale = $locale)
+            #end
+          #end
+          <option value="$locale.id" 
+        #if($selected) selected #end 
+        >
+            #text($locale)
+          </option>
+      #end
+      #end
+    </select>
   </div>
 </div>

@@ -7,12 +7,12 @@
 #set($languages = $mediaarchive.getList("locale"))
 
 
-<div class="languagesaddform">
-	<div class="languageselector" data-languagecode="$languagecode">
-		<strong>$locale</strong>
+<div class="languagesaddform flex-column">
+	<div class="languageselector mb-1 fw-bold" data-languagecode="$languagecode">
+		$locale
 	</div>
 
-	<div class="languageinput">
+	<div class="languageinput m-0">
 		#if($languagecode!='') 
 			#set($language_textbox = ${detailid} + "." + $languagecode) 
 		#else 
@@ -38,7 +38,7 @@
 		<textarea
 			type="text"
 			id="value-${detailid}-${languagecode}"
-			class='form-control langvalue #if($detail.isRequired() && !$multiedit) required #end'
+			class='form-control langvalue mb-2 #if($detail.isRequired() && !$multiedit) required #end'
 			data-locale="${locale}"
 			data-detailid="${detailid}"
 			data-languagecode="${languagecode}"
