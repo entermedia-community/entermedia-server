@@ -37,13 +37,11 @@ $(document).ready(function () {
 		addLanguageInput(btn);
 	});
 
-	function addLanguageInput(btn, languagecode = null, val = "") {
+	function addLanguageInput(btn, val = "") {
 		var detailid = btn.data("detailid");
 
-		if (!languagecode) {
-			languagecode = btn.data("value");
-			btn.hide();
-		}
+		var languagecode = btn.data("languagecode");
+		btn.hide();
 
 		if (!languagecode) return;
 
@@ -151,6 +149,7 @@ $(document).ready(function () {
 		var div = $(this).closest(".emdatafieldvalue");
 		var select = div.find(".sourcelocale");
 		var source = select.val();
+
 		if (!source) {
 			customToast("Please select a source language!", {
 				positive: false,
@@ -214,10 +213,10 @@ $(document).ready(function () {
 							}
 						});
 
-						select.find("option").each(function () {
-							var code = $(this).attr("value");
+						$(".addlocale-ajax").each(function () {
+							var code = $(this).data("languagecode");
 							if (code && translations[code]) {
-								addLanguageInput(select, code, translations[code]);
+								addLanguageInput($(this), translations[code]);
 							}
 						});
 					}

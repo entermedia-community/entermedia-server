@@ -21,7 +21,8 @@
 	            #end
 	          #end
 
-            <a class="dropdown-item addlocale-ajax" 
+            <a id="add-${detail.id}-${locale.id}"
+              class="dropdown-item addlocale-ajax" 
               data-detailid="${detail.id}"
               data-url="$siteroot$apphome/components/xml/types/language/extralanguage.html"
               data-targetdiv="languagesextra_${detail.id}"
@@ -30,7 +31,6 @@
               data-no-toast="true"
               data-locale="#text($locale)"
               data-languagecode="$locale.id"
-              data-value="$locale.id"
             >
 	            #text($locale)
             </a>
