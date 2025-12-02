@@ -213,7 +213,7 @@ $(document).ready(function () {
 							}
 						});
 
-						$(".addlocale-ajax").each(function () {
+						div.find(".addlocale-ajax").each(function () {
 							var code = $(this).data("languagecode");
 							if (code && translations[code]) {
 								addLanguageInput($(this), translations[code]);
