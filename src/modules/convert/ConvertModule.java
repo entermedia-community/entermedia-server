@@ -80,7 +80,13 @@ public class ConvertModule extends BaseMediaModule
 		if( logger != null)
 		{
 			logger.info("Total Pending Tasks: " + manager.getTotalPending());
-			logger.info("Threads running: " + manager.runningProcesses());
+			logger.info("Threads running: " + manager.runningProcesses() + " of " + manager.getMaxProcessors() + " processors");
+			
+			if (manager.getRunningAssetIds().size() > 1 )
+			{
+				logger.info("Processing asset ids: " + manager.getRunningAssetIds());
+			}
+			
 		}
 	}	
 }
