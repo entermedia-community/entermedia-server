@@ -281,7 +281,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 		{
 			fieldRunningAssetConversions.remove(inAssetconversions.getAssetId());
 			getMediaArchive().releaseLock(inAssetconversions.getLock());
-			//log.info("RELEASED" + inAssetconversions.getAssetId());
+			log.info("RELEASED" + inAssetconversions.getAssetId());
 			getMediaArchive().conversionCompleted(inAssetconversions.getAsset());
 			//getMediaArchive().fireMediaEvent("conversions/conversioncomplete",null,inAssetconversions.getAsset());
 			//log.info("Thread complete: " + Thread.currentThread().getName() );
