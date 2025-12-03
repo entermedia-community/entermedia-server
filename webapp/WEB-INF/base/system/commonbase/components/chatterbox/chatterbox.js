@@ -147,7 +147,6 @@ function chatterbox() {
 
 function scrollToChat() {
 	setTimeout(function () {
-		console.log("Scrolling to chat");
 		var inside = $(".chatterbox-body-inside");
 		if (inside.length > 0) {
 			inside.animate({ scrollTop: inside.get(0).scrollHeight }, 30);
@@ -201,16 +200,15 @@ function connect() {
 		jQuery(window).trigger("ajaxsocketautoreload");
 		var message = JSON.parse(event.data);
 		var id = message.messageid;
-		
+
 		var channel = message.channel;
 		var chatbox = jQuery('div.chatterbox[data-channel="' + channel + '"]');
-		
-		if(chatbox.length == 0)
-		{
+
+		if (chatbox.length == 0) {
 			//Channel Not on the screen
 			return;
 		}
-		
+
 		message.id = id;
 		var existing = jQuery("#chatter-message-" + id);
 		if (existing.length) {
@@ -228,7 +226,7 @@ function connect() {
 			scrollToChat();
 			return;
 		}
-		
+
 		var listarea = chatbox.find(".chatterbox-message-list");
 		var url = chatbox.data("rendermessageurl");
 		if (!url) {
@@ -236,10 +234,10 @@ function connect() {
 		}
 
 		scrollToChat();
-		
+
 		var options = chatbox.cleandata();
 		if (!options) options = {};
-		var editdiv = chatbox.closest(".editdiv"); 
+		var editdiv = chatbox.closest(".editdiv");
 		if (
 			chatbox.data("includeeditcontext") === undefined ||
 			chatbox.data("includeeditcontext") == true
@@ -250,11 +248,11 @@ function connect() {
 					...otherdata,
 					...options,
 				};
-			} 
+			}
 		}
-		
+
 		options.id = message.id;
-		
+
 		/*
 		var params = {};
 		params.id = message.id;
@@ -268,9 +266,35 @@ function connect() {
 		}*/
 
 		jQuery.get(url, options, function (data) {
-			listarea.append(data);
-			//The replace with calls that  $(document).trigger("domchanged");
-			scrollToChat();
+			var $div = jQuery("<div></div>");
+			$div.html(data);
+			var $data = $div.find("#chatter-message-" + message.id);
+			var inserted = false;
+			try {
+				var createddat = $data.data("createdat");
+				var timestamp = new Date(createddat).getTime();
+				if (!isNaN(timestamp)) {
+					var messages = listarea.find(".msg-bubble");
+					messages.each(function () {
+						var msgcreatedat = jQuery(this).data("createdat");
+						var msgtimestamp = new Date(msgcreatedat).getTime();
+						if (!isNaN(msgtimestamp)) {
+							if (timestamp < msgtimestamp) {
+								jQuery(this).before($data);
+								inserted = true;
+								return false;
+							}
+						}
+					});
+				}
+			} catch (e) {
+				// ignore
+			} finally {
+				if (!inserted) {
+					listarea.append($data);
+				}
+				scrollToChat();
+			}
 		});
 
 		registerServiceWorker();

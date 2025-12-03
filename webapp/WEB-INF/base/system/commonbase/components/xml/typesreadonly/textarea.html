@@ -1,11 +1,9 @@
 #ifnotnull($value)
-#if( $value.length() > 80)
-	<span class="trim-text" data-max="50" style="white-space: pre-wrap; ">#esc($value)</span>
+#set($dmax = 150)
+#if( $value.length() > $dmax)
+	<span class="trim-text" data-max="$dmax" style="white-space: pre-wrap; ">#esc($value)</span>
 	<button class="see-more-btn see-more" data-seemore="(...[[see more]])" data-seeless="(...[[see less]])"></button>
 #else
 	#escarea($!value)	
 #end
 #end
-
-##<span class="trim-text" data-max="150" style="white-space: pre-wrap; ">#esc($!value)</span>
-##$pages.include("$apphome/components/xml/typesreadonly/default.html", $context)

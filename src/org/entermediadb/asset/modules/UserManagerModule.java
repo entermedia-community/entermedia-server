@@ -1567,18 +1567,24 @@ public class UserManagerModule extends BaseMediaModule
 	public void loadChatChannel(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
+		boolean createnew = Boolean.parseBoolean(inReq.getRequestParameter("createnew"));
+		
 		String channel = inReq.findValue("channel");
 		String module = inReq.findValue("module");
 		
-		MultiValued currentchannel = (MultiValued)archive.getCachedData("channel", channel);
+		MultiValued currentchannel = null;
+		
+		if(!createnew)
+		{
+			currentchannel = (MultiValued) archive.getCachedData("channel", channel);
+		}
 		
 		if( currentchannel != null )
 		{
 			inReq.putPageValue("currentchannel", currentchannel);
 			return;
-		}	
+		}
 		
-		String createnew = inReq.getRequestParameter("createnew");
 		Searcher channelsearcher = archive.getSearcher("channel");
 		String channeltype = inReq.findValue("channeltype");
 		if (channeltype == null)
@@ -1604,7 +1610,7 @@ public class UserManagerModule extends BaseMediaModule
 				break;
 		}
 			
-		if( !Boolean.parseBoolean(createnew) )
+		if( !createnew )
 		{
 			currentchannel =  (MultiValued)archive.getCachedData("channel", channel);
 			if (currentchannel == null) 

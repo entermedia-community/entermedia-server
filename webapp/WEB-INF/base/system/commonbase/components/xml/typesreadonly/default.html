@@ -41,7 +41,7 @@
 			#escarea($!value)
 		#else
 		
-			#if(  $value.length() > 80)
+			#if(  $value.length() > $dmax)
 				<span class="trim-text" data-max="$dmax">#escarea($value)</span>
 				<button class="see-more-btn see-more" data-seemore="(...[[see more]])" data-seeless="(...[[see less]])"></button>
 			#else
