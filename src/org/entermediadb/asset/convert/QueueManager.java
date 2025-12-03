@@ -225,12 +225,17 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 		}
 	}
 
+	public Map getRunningAssetConversions()
+	{
+		return fieldRunningAssetConversions;
+	}
+	
 	private boolean hasRunningConversions()
 	{
 		return fieldRunningAssetConversions.isEmpty() == false;
 	}
 
-	private Set getRunningAssetIds()
+	public Set getRunningAssetIds()
 	{
 		return fieldRunningAssetConversions.keySet();
 	}
