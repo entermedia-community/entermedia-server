@@ -54,6 +54,8 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 			log.info(inConfig.get("bean") +" No fields to create in " + inData.getId() + " " + inData.getName());
 			return false;
 		}
+		
+		
 
  		Map params = new HashMap();
  		params.put("data", inData);

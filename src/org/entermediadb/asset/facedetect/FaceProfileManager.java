@@ -123,7 +123,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 //		FaceScanInstructions instructions = createInstructions();
 //		return extractFaces(instructions,inAssets);
 //	}
-	public int extractFaces(FaceScanInstructions instructions , Collection<MultiValued> inAssets)  //Page of assets
+	public int extractFaces(ScriptLogger inLog, FaceScanInstructions instructions , Collection<MultiValued> inAssets)  //Page of assets
 	{
 //			String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
 //			if( url == null)
@@ -137,7 +137,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 
 			HashMap<String,Collection<MultiValued>> byassetid = new HashMap(existingfaces.size());
 			
-			log.error("Loading giant list of assetid");
+			//log.error("Loading giant list of assetid");
 			for (Iterator iterator = existingfaces.iterator(); iterator.hasNext();)
 			{
 				MultiValued face = (MultiValued) iterator.next();
@@ -174,7 +174,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 				try
 				{
 					asset.setValue("facehasprofile",false);
-					extractFaces(instructions, asset,foundfacestosave);
+					extractFaces(inLog, instructions, asset,foundfacestosave);
 				}
 				catch( Throwable ex)
 				{
@@ -183,9 +183,14 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 					//throw new OpenEditException("Error on: " + inAssets.size(),ex);
 				}
 			}  
-			log.info(" Saved Assets " + tosave.size() + " added faces:  " + foundfacestosave.size());
 			
 			getMediaArchive().saveData("faceembedding",foundfacestosave);
+			
+			log.info("Saved Assets " + tosave.size() + " added faces:  " + foundfacestosave.size());
+			if( inLog != null)
+			{	
+				inLog.info(" Found " + foundfacestosave.size() + " faces");
+			}
 			
 			getKMeansIndexer().checkReinit();
 			
@@ -198,7 +203,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 	}
 	
 
-	protected void extractFaces(FaceScanInstructions instructions, Asset inAsset, List<MultiValued> inFoundfaces) throws Exception
+	protected void extractFaces(ScriptLogger inLog, FaceScanInstructions instructions, Asset inAsset, List<MultiValued> inFoundfaces) throws Exception
 	{
 		
 		String type = getMediaArchive().getMediaRenderType(inAsset);
@@ -1049,7 +1054,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 		instructions.setConfidenceLimit(instructions.getConfidenceLimit() * .75D);
 		instructions.setMinimumFaceSize(instructions.getMinimumFaceSize() * .50D);
 		
-		extractFaces(instructions, one);
+		extractFaces(null, instructions, one);
 		getMediaArchive().saveData("asset",inAsset);
 		
 	}
@@ -1137,8 +1142,13 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 				validAssets.add(asset);
 			}
 		}
+		if(validAssets.isEmpty())
+		{
+			return;
+		}
+		inLog.headline("FaceprofileManager processing " + validAssets.size() + " assets");
 		FaceScanInstructions instructions = createInstructions();
-		extractFaces(instructions, validAssets);
+		extractFaces(inLog, instructions, validAssets);
 		
 	}
 

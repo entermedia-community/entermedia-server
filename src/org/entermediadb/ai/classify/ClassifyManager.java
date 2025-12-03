@@ -48,14 +48,15 @@ public class ClassifyManager extends InformaticsProcessor
 			String mediatype = getMediaArchive().getMediaRenderType(asset);
 			if( mediatype.equals("default") )
 			{
-				inLog.info(inConfig.get("bean") + " - Skipping asset " + asset);
+				//inLog.info(inConfig.get("bean") + " - Skipping asset " + asset);
 				continue;
 			}
 
 			try{
 				long startTime = System.currentTimeMillis();
-
-				inLog.info(inConfig.get("bean") + " - Analyzing asset ("+count+"/"+assets.size()+")" + asset.getName());
+				
+				inLog.headline("ClassifyManager " + inConfig.get("bean") + " processing " + asset.getName());
+				//inLog.info(inConfig.get("bean") + " - Analyzing asset ("+count+"/"+assets.size()+")" + asset.getName());
 				count++;
 
 				boolean complete = processOneAsset(inConfig, asset);
