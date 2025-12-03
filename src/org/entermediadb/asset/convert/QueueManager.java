@@ -122,6 +122,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 			QueryBuilder query =  getMediaArchive().localQuery("conversiontask");
 			query.orgroup("status", "new submitted retry missinginput");    //TODO: Create multiple conversion queues to deal with videos and retry and uploads
 			//query.sort("status");
+			query.sort("submitteddateDown");
 			query.sort("assetidDown");
 			query.sort("ordering");
 			//TODO: Exclude any existing asseids we are already processing
