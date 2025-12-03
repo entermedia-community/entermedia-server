@@ -9,9 +9,10 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.llm.http.HttpResponse;
@@ -76,8 +77,15 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	public String getServerRoot() 
 	{
 		String url = getAiServerData().get("serverroot");
+		
+		String serverpathprefix = getAiServerData().get("serverpathprefix");
+		if (serverpathprefix != null)
+		{
+			url = url + serverpathprefix;
+		}
+		
 		return url;
-		//TODO: lookuo from new servers table
+		//TODO: lookup from new servers table
 		// - create llama-vision and llama implementation, they may be in 2 different servers
 		// - put the extension part (v1/....) inside each place we call getServerRoot.
 		// - cleanup catalogsettings server ids.
@@ -466,7 +474,17 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inEmbeddingPayload)
 	{
 		log.info("Calling LLM Server at: " + getServerRoot() + inPath);
-		HttpPost method = new HttpPost(getServerRoot() + inPath);
+		HttpRequestBase method = null;
+		
+		if (inEmbeddingPayload == null) 
+		{
+			method = new HttpGet(getServerRoot() + inPath);
+		}
+		else
+		{
+			method = new HttpPost(getServerRoot() + inPath);
+		}
+		
 		
 		method.addHeader("Authorization", "Bearer " + getApiKey());
 		method.setHeader("Content-Type", "application/json");
@@ -488,9 +506,11 @@ public abstract class BaseLlmConnection implements LlmConnection {
 				method.setHeader(key,value);
 			}
 		}
-		 
-		method.setEntity(new StringEntity(inEmbeddingPayload.toJSONString(), StandardCharsets.UTF_8));
 		
+		if (method instanceof HttpPost)
+		{
+			((HttpPost) method).setEntity(new StringEntity(inEmbeddingPayload.toJSONString(), StandardCharsets.UTF_8));
+		}
 		HttpSharedConnection connection = getConnection();
 		CloseableHttpResponse resp = connection.sharedExecute(method);
 		Object object = null;
