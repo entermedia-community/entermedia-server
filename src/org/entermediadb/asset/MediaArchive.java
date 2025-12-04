@@ -3376,6 +3376,7 @@ public class MediaArchive implements CatalogEnabled
 			connection.setAiFunctionData(aifunction);
 			connection.setAiServerData(serverinfo);
 			getCacheManager().put(cacheName, inAiFunctionName, connection);
+			log.info(llm + " selected AI server: " + serverinfo.get("serverroot"));
 		}
 		
 		return connection;
