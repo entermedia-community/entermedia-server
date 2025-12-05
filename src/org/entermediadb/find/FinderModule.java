@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.search.SecurityEnabledSearchSecurity;
 import org.entermediadb.find.picker.Picker;
 import org.openedit.Data;
@@ -677,7 +678,8 @@ public class FinderModule extends BaseMediaModule
 		HitTracker assethits = null;
 		if( searchmodules.contains("asset"))
 		{
-			SearchQuery assetsearch = search.copy();
+			AssetSearcher assetsearcher = archive.getAssetSearcher();
+			SearchQuery assetsearch = assetsearcher.copyQuery(search);
 			assetsearch.setName("assethits");
 			assethits = archive.getAssetSearcher().cachedSearch(inReq, search);  //cached
 			log.info("Assets " +  assethits.getSearchType() + ": " + assethits.getSearchQuery().toQuery() + " size:" + assethits.size() );
