@@ -339,7 +339,7 @@ public class EntityManager implements CatalogEnabled
 	}
 	public String loadUploadSourcepath(Data module, Data entity, User inUser)
 	{
-		if (entity == null ) 
+		if (entity == null || module == null) 
 		{
 			return null;
 		}
