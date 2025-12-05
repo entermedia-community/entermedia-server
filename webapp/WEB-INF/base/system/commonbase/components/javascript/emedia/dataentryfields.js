@@ -81,33 +81,7 @@ $(document).ready(function () {
 	lQuery(".remove-language").livequery("click", function (e) {
 		e.preventDefault();
 		var parent = $(this).parent();
-		var languagesfield = parent.closest(".languagesfield");
-		var hasvalue = parent.find(".langvalue").val().trim().length > 0;
-		var confirmed = true;
-
-		if (hasvalue) {
-			confirmed = confirm("Are you sure you want to remove this language?");
-		}
-		if (confirmed) {
-			//parent.remove();
-			parent.find(".langvalue").val("");
-			return;
-		}
-		/*
-		var languagecode = $(this).data("languagecode");
-		var dropdown = $(".addlocale-ajax", languagesfield);
-
-		if (dropdown.val() === languagecode) {
-			var langvalue = $(".langvalue", languagesfield);
-			autoSelectTranslationSource.call(langvalue[0], true);
-		}
-
-		if ($(".langvalue", languagesfield).length < 2) {
-			languagesfield.append(`<div class="hide-remove-btn"></div>`);
-		} else {
-			$(".hide-remove-btn", languagesfield).remove();
-		}
-		*/
+		parent.find(".langvalue").val("");
 	});
 
 	function parseLangCodes(targets) {
@@ -147,8 +121,10 @@ $(document).ready(function () {
 	lQuery(".translate-ajax").livequery("click", function (e) {
 		e.preventDefault();
 		var div = $(this).closest(".emdatafieldvalue");
-		var select = div.find(".sourcelocale");
-		var source = select.val();
+		var sourceSelect = div.find(".sourcelocale");
+		var targetSelect = div.find(".targetlocale");
+		var source = sourceSelect.val();
+		var target = targetSelect.val();
 
 		if (!source) {
 			customToast("Please select a source language!", {
@@ -156,42 +132,62 @@ $(document).ready(function () {
 			});
 			return;
 		}
+
+		if (!target) {
+			customToast("Please select a target language!", {
+				positive: false,
+			});
+			return;
+		}
+
+		if (target === source) {
+			customToast("Source and target languages cannot be the same!", {
+				positive: false,
+			});
+			return;
+		}
+
 		var text = "",
 			targets = new Set();
 
-		select.find("option").each(function () {
-			var val = $(this).attr("value");
-			if (val) {
-				targets.add(val);
-			}
-		});
-		targets.delete(source);
+		if (target === "all" || target === "missing") {
+			targetSelect.find("option").each(function () {
+				var val = $(this).attr("value");
+				if (val) {
+					targets.add(val);
+				}
+			});
+			targets.delete(source);
+		} else {
+			targets.add(target);
+		}
 
 		var selectedLangs = div.find("textarea.langvalue");
 		selectedLangs.each(function () {
 			var code = $(this).data("languagecode");
+			var val = $(this).val().trim();
 			if (code == source) {
-				text = $(this).val().trim();
-			} else {
-				if ($(this).val().trim().length > 1) {
-					targets.delete(code);
-				}
+				text = val;
+			} else if (target === "missing" && val.length > 1) {
+				targets.delete(code);
 			}
 		});
+
 		if (text == "") {
 			customToast("Source language is empty!", {
 				positive: false,
 			});
 			return;
 		}
+
 		if (targets.size == 0) {
-			customToast(
-				"No target languages found. Only empty fields will be translated!",
-				{ positive: false }
-			);
+			customToast("No translation targets found!", { positive: false });
 			return;
 		}
-		div.find(".translation-mask").addClass("active");
+
+		var mask = div.find(".translation-mask");
+		mask.addClass("active");
+
 		var parsedTargets = parseLangCodes(targets);
 		$.ajax({
 			url: `/${mediadb}/services/module/translation/translate.json`,
@@ -221,13 +217,14 @@ $(document).ready(function () {
 						});
 					}
 				}
-				div.find(".translation-mask").removeClass("active");
+				mask.removeClass("active");
 			},
 			error: function (error) {
 				customToast("Error creating the folder!", {
 					positive: false,
 					log: error,
 				});
+				mask.removeClass("active");
 			},
 		});
 	});
