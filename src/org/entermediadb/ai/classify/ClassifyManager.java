@@ -54,19 +54,20 @@ public class ClassifyManager extends InformaticsProcessor
 
 			try{
 				long startTime = System.currentTimeMillis();
-				
-				inLog.headline("ClassifyManager " + inConfig.get("bean") + " processing " + asset.getName());
+
 				//inLog.info(inConfig.get("bean") + " - Analyzing asset ("+count+"/"+assets.size()+")" + asset.getName());
 				count++;
 
-				boolean complete = processOneAsset(inConfig, asset);
-				if( !complete )
+				inLog.headline("Classifying " + asset.getName());
+
+				boolean ok = processOneAsset(inConfig, asset);
+				if( !ok )
 				{
 					continue;
 				}
 
 				long duration = (System.currentTimeMillis() - startTime) / 1000L;
-				inLog.info(inConfig.get("bean") + " - Took "+duration +"s");
+				inLog.info("Classified successfully! Took "+duration +"s");
 			}
 			catch(Exception e){
 				inLog.error("LLM Error", e);

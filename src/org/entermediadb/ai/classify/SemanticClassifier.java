@@ -67,7 +67,7 @@ public class SemanticClassifier extends InformaticsProcessor implements CatalogE
 	{
 		String fieldname = inConfig.get("fieldname");
 		
-		inLog.headline("SemanticClassifier indexing " + fieldname);
+		inLog.headline("Adding semantic topics to " + inRecords.size() + " records");
 
 		setConfigurationId(fieldname);
 		

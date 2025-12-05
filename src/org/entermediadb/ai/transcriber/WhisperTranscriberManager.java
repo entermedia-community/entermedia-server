@@ -52,8 +52,8 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 	@Override
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
 	{
-		inLog.headline("Transcribing " + inAssets.size() + " assets");
-		
+		Collection<MultiValued> toprocess = new ArrayList<MultiValued>();
+
 		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 		{
 			MultiValued inAsset = (MultiValued) iterator.next();
@@ -62,26 +62,48 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 
 			if( !"video".equals(mediatype) && !"audio".equals(mediatype) )
 			{
-				return; //only video and audio
+				continue;
 			}
+			toprocess.add(inAsset);
 			
-			if(inAsset.getValue("length") == null) 
+		}
+		
+		if(toprocess.size() > 0) 
+		{
+			inLog.headline("Transcribing " + toprocess.size() + " asset(s)");
+			
+			for (Iterator iterator = toprocess.iterator(); iterator.hasNext();)			
 			{
-				///Can't process if no lenght defined
-				inAsset.setValue("llmerror", true);
-				getMediaArchive().saveData("asset",inAsset);
-				iterator.remove();
-				inLog.info("Skiping Asset with no lenght defined: " + inAsset);
+				MultiValued inAsset = (MultiValued) iterator.next();
+				
+				if(inAsset.getValue("length") == null) 
+				{
+					///Can't process if no lenght defined
+					inAsset.setValue("llmerror", true);
+					getMediaArchive().saveData("asset",inAsset);
+					iterator.remove();
+					inLog.info("Skiping Asset with no lenght defined: " + inAsset);
+					continue;
+				}
+
+				inLog.info("Transcribing: " + inAsset);
+				
+				long starttime = System.currentTimeMillis();
+				boolean ok = transcribeOneAsset(inLog, inAsset);
+				long duration = (System.currentTimeMillis() - starttime) / 1000L;
+				
+				if(ok)
+				{					
+					inLog.info("Transcribed successfully! Took: " + duration + " seconds");
+				}
+				
 			}
-			
-			transcribeOneAsset(inLog, inAsset);
 		}
 		
 	}
 	
-	public void transcribeOneAsset(ScriptLogger inLog, MultiValued inAsset)
+	public boolean transcribeOneAsset(ScriptLogger inLog, MultiValued inAsset)
 	{
-		
 		
 		Searcher captionSearcher = getMediaArchive().getSearcher("videotrack");
 		
@@ -93,7 +115,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 			if("complete".equals(status) || "inprogress".equals(status))
 			{
 				inLog.info("Asset already assigned to a videotrack");
-				return; //already done or in progress
+				return false; //already done or in progress
 			}
 			
 		}
@@ -114,11 +136,13 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 			
 			transcribe(inAsset, inTrack);
 			inTrack.setValue("transcribestatus", "complete");
+			return true;
 		}
 		catch (Exception e) 
 		{
 			inLog.error("Could not transcribe " + inAsset, e);
 			inTrack.setValue("transcribestatus", "error");
+			return false;
 		}
 		finally
 		{

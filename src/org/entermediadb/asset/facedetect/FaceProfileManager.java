@@ -28,11 +28,8 @@ import javax.imageio.stream.ImageInputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.knn.KMeansIndexer;
-import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
@@ -40,13 +37,11 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.video.Block;
 import org.entermediadb.video.Timeline;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.openedit.util.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -118,11 +113,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 		instructions.setMinimumFaceSize(minfacesize);
 		return instructions;
 	}
-//	public int extractFaces(Collection<MultiValued> inAssets)  //Page of assets
-//	{
-//		FaceScanInstructions instructions = createInstructions();
-//		return extractFaces(instructions,inAssets);
-//	}
+
 	public int extractFaces(ScriptLogger inLog, FaceScanInstructions instructions , Collection<MultiValued> inAssets)  //Page of assets
 	{
 //			String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
@@ -203,7 +194,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 	}
 	
 
-	protected void extractFaces(ScriptLogger inLog, FaceScanInstructions instructions, Asset inAsset, List<MultiValued> inFoundfaces) throws Exception
+	protected int extractFaces(ScriptLogger inLog, FaceScanInstructions instructions, Asset inAsset, List<MultiValued> inFoundfaces) throws Exception
 	{
 		
 		String type = getMediaArchive().getMediaRenderType(inAsset);
@@ -213,7 +204,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 		if (!"image".equalsIgnoreCase(type) && !"video".equalsIgnoreCase(type)  )
 		{
 			log.info("Skipping non images: " + inAsset.getName() );
-			return;
+			return 0;
 		}
 		//If its a video then generate all the images and scan them
 		
@@ -228,7 +219,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 			long imagesize = imagew * imageh;
 			
 			if(imagesize < 90000) {
-				return;
+				return 0;
 			}
 			
 			String fileformat = inAsset.getFileFormat();
@@ -294,11 +285,16 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 			{
 				throw new OpenEditException("Input not available " + input.getPath());
 			}
+
+			if(inLog != null)
+			{
+				inLog.headline("Scanning faces in: " + inAsset.getName());
+			}
+				
 			List<Map> json = findFaces(inAsset, input);
 			if(json == null || json.isEmpty()) 
 			{
-				log.info("No faces found");
-				return;
+				return 0;
 			}
 			Collection<MultiValued> moreprofiles = makeDataForEachFace(instructions,faceembeddingsearcher,inAsset,0L,input,json);
 			if( moreprofiles != null)
@@ -335,6 +331,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 //			}
 		}
 		//faceembeddingsearcher.saveAllData(tosave,null);
+		return inFoundfaces.size();
 	}
 
 	protected Collection<MultiValued> findAllFacesInVideo(FaceScanInstructions instructions, Asset inAsset) throws Exception
@@ -1146,9 +1143,18 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 		{
 			return;
 		}
-		inLog.headline("FaceprofileManager processing " + validAssets.size() + " assets");
+		inLog.headline("Scanning faces in " + validAssets.size() + " assets");
 		FaceScanInstructions instructions = createInstructions();
-		extractFaces(inLog, instructions, validAssets);
+		int found = extractFaces(inLog, instructions, validAssets);
+		if(found > 0)
+		{
+			inLog.info("Found " + found + " faces in " + validAssets.size() + " assets");
+		}
+		else
+		{
+			inLog.info("No faces found in " + validAssets.size() + " assets");
+		}
+ 
 		
 	}
 
