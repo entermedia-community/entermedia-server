@@ -68,18 +68,16 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 
 	@Override
 	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRandomEntities)
-	{		
-		inLog.headline("Embedding " + inRandomEntities.size() + " documents");
+	{
 
 		String searchtype = inConfig.get("searchtype");
 		Searcher pageSearcher = getMediaArchive().getSearcher(searchtype);
 		
-		Collection<Data> tosave = new ArrayList();
-
+		
+		Collection<MultiValued> toprecess = new ArrayList();
+		
 		for (Iterator iterator = inRandomEntities.iterator(); iterator.hasNext();)
 		{
-			long start = System.currentTimeMillis();
-			
 			MultiValued document = (MultiValued) iterator.next();
 			String moduleid = document.get("entitysourcetype");
 			
@@ -94,6 +92,24 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 				continue;
 			}
 			
+			toprecess.add(document);
+		}
+		
+		if(toprecess.isEmpty())
+		{
+			return;
+		}
+		
+		inLog.headline("Embedding " + inRandomEntities.size() + " documents");
+		
+		
+		Collection<Data> tosave = new ArrayList();
+
+		for (Iterator iterator = toprecess.iterator(); iterator.hasNext();)
+		{
+			long start = System.currentTimeMillis();
+			
+			MultiValued document = (MultiValued) iterator.next();
 
 			JSONObject documentdata = new JSONObject();
 			documentdata.put("doc_id", searchtype + "_" + document.getId());
