@@ -14,7 +14,7 @@
       <language id="en"><![CDATA[Requested Date]]></language>
     </name>
   </property> 
-<property id="email" index="true" stored="true" keyword="true" editable="true"  indextype="not_analyzed">Email</property>
+<property id="email" index="true" stored="true" keyword="true" editable="true">Email</property>
   
   <property id="user"  index="true" viewtype="userdefault" type="list" listcatalogid="system" listid="user" filter="true"  keyword="true" stored="true" editable="true" >
     <name> 
