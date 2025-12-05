@@ -213,6 +213,8 @@ public class DocumentConversionManager extends BaseConversionManager
 			if("pdf".equals(fileFormat))
 			{
 				instructions2.setInputFile(getMediaArchive().getOriginalContent(inStructions.getAsset()));
+				
+				//Using -sDEVICE=png16m for PDF transparent background to white
 				ConvertResult pre = getGsTranscoder().convertIfNeeded( instructions2 ); //pre convert
 				instructions2.setInputFile(pre.getOutput());
 				//instructions2.setForce(true);
