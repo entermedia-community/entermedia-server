@@ -681,7 +681,7 @@ public class FinderModule extends BaseMediaModule
 			AssetSearcher assetsearcher = archive.getAssetSearcher();
 			SearchQuery assetsearch = assetsearcher.copyQuery(search);
 			assetsearch.setName("assethits");
-			assethits = archive.getAssetSearcher().cachedSearch(inReq, search);  //cached
+			assethits = archive.getAssetSearcher().cachedSearch(inReq, assetsearch);  //cached
 			log.info("Assets " +  assethits.getSearchType() + ": " + assethits.getSearchQuery().toQuery() + " size:" + assethits.size() );
 		}
 
