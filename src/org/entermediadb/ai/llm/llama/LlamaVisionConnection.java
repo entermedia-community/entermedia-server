@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.ai.llm.openai.OpenAiResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -33,96 +34,38 @@ public class LlamaVisionConnection extends LlamaOpenAiConnection {
 	{
 		MediaArchive archive = getMediaArchive();
 
-		JSONObject obj = new JSONObject();
-		obj.put("model", getModelName());
-
-		JSONArray messages = new JSONArray();
-	
-		JSONObject systemmessage = new JSONObject();
-		systemmessage.put("role", "system");
+		params.put("model", getModelName());
 		
-		JSONArray contentarray = new JSONArray();
-		
-		JSONObject contentitem = new JSONObject();
-		contentitem.put("type", "text");
-		contentitem.put("text", "You are a metadata generator. You are given an instruction in Open AI tool format, parse it and give a response in JSON with all the required fields.");
-		
-		contentarray.add(contentitem);
-		
-		systemmessage.put("content", contentarray);
-		
-		messages.add(systemmessage);
-
-		// Handle function call definition
-		if (inFunction != null)
+		if(textContent != null)
 		{
-			String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmProtocol() +"/calls/" + inFunction + ".json";
-			
-			Page defpage = archive.getPageManager().getPage(templatepath);
-			
-			if (!defpage.exists())
-			{
-				templatepath = "/" + archive.getCatalogId() + "/ai/" + getLlmProtocol() +"/calls/" + inFunction + ".json";
-				defpage = archive.getPageManager().getPage(templatepath);
-			}
-			
-			if (!defpage.exists())
-			{
-				throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunction);
-			}
-			
-			if(textContent != null)
-			{
-				params.put("textcontent", textContent);
-			}
-			
-			String definition = loadInputFromTemplate(templatepath, params);
+			params.put("textcontent", textContent);
+		}
 
-			JSONParser parser = new JSONParser();
-			JSONObject functionDef = (JSONObject) parser.parse(definition);
+		String templatepath = "/" + archive.getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + inFunction + ".json";
 			
-			JSONObject message = new JSONObject();
-			message.put("role", "user");
-			// Use an array for content if an image is provided
-			JSONArray contentArray = new JSONArray();
-
-			// Add image content
-			JSONObject functionContent = new JSONObject();
-			functionContent.put("type", "text");
-			functionContent.put("text", functionDef.toJSONString());
+		Page template = archive.getPageManager().getPage(templatepath);
 			
-			contentArray.add(functionContent);
-			
-			message.put("content", contentArray);
-			
-			messages.add(message);
-
+		if (!template.exists())
+		{
+			templatepath = "/" + archive.getCatalogId() + "/ai/"+getLlmProtocol()+"/calls/" + inFunction + ".json";
+			template = archive.getPageManager().getPage(templatepath);
 		}
 		
-		if (inBase64Image != null && !inBase64Image.isEmpty())
+		if (!template.exists())
 		{
-			JSONObject message = new JSONObject();
-			message.put("role", "user");
-			// Use an array for content if an image is provided
-			JSONArray contentArray = new JSONArray();
-
-			// Add image content
-			JSONObject imageContent = new JSONObject();
-			imageContent.put("type", "image_url");
-			JSONObject imageUrl = new JSONObject();
-			imageUrl.put("url", inBase64Image); // Base64 as a data URL
-			imageContent.put("image_url", imageUrl);
-			contentArray.add(imageContent);
-
-			message.put("content", contentArray);
-
-			messages.add(message);
+			throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunction);
 		}
-		
+			
+		String definition = loadInputFromTemplate(templatepath, params);
 
-		obj.put("messages", messages);
+		JSONParser parser = new JSONParser();
+		JSONObject payload = (JSONObject) parser.parse(definition);
 		
-		LlmResponse res = callJson("/api/chat",obj); //Todo: Confirm is ok
+		log.info(payload);
+		
+		attachImageMessage(payload, inBase64Image);
+		
+		LlmResponse res = callJson("/chat/completions", payload);
 	    return res;
 	}
 	
@@ -192,6 +135,6 @@ public class LlamaVisionConnection extends LlamaOpenAiConnection {
 	@Override
 	public LlmResponse createResponse()
 	{
-		return new LlamaVisionResponse();
+		return new OpenAiResponse();
 	}
 }

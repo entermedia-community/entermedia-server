@@ -231,10 +231,39 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 		JSONParser parser = new JSONParser();
 		JSONObject payload = (JSONObject) parser.parse(definition);
-
+		
 		log.info(payload);
+		
+		attachImageMessage(payload, inBase64Image);
+
 		LlmResponse res = callJson("/chat/completions", payload);
 	    return res;
+	}
+	
+	public JSONObject attachImageMessage(JSONObject payload, String inBase64Image) {
+		if (inBase64Image != null && !inBase64Image.isEmpty())
+		{
+			JSONArray messages = (JSONArray) payload.get("messages");
+			
+			JSONObject message = new JSONObject();
+			message.put("role", "user");
+
+			JSONArray contentArray = new JSONArray();
+
+			JSONObject imageContent = new JSONObject();
+			imageContent.put("type", "image_url");
+			JSONObject imageUrl = new JSONObject();
+			imageUrl.put("url", inBase64Image);
+			imageContent.put("image_url", imageUrl);
+			
+			contentArray.add(imageContent);
+
+			message.put("content", contentArray);
+
+			messages.add(message);
+		}
+		
+		return payload;
 	}
 
 	@Override

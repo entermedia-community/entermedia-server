@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import org.entermediadb.ai.llm.BasicLlmResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.openedit.OpenEditException;
 import org.openedit.util.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class OpenAiResponse extends BasicLlmResponse {
 
@@ -44,18 +46,23 @@ public class OpenAiResponse extends BasicLlmResponse {
         }
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
+        
         if (message == null || message.isEmpty()) 
         {
         	return null;
         }
+        
         JSONObject functionCall = (JSONObject) message.get("function_call");
+        
         if (functionCall != null) 
 		{
         	String argumentsString = (String) functionCall.get("arguments");
             
             arguments = parser.parse(argumentsString);
+            
+            return arguments;
 		}
-        //gpt-5-nano tool_calls response
+
         JSONArray tool_calls = (JSONArray) message.get("tool_calls");
         if (tool_calls != null) 
 		{
@@ -65,77 +72,19 @@ public class OpenAiResponse extends BasicLlmResponse {
         	String argumentsString = (String) function0.get("arguments");
             
             arguments = parser.parse(argumentsString);
+            
+            return arguments;
 		}
-        else 
-        {
-        	String argumentsString = (String) message.get("content");
-            if (!argumentsString.startsWith("{"))
-            {
-            	//log.info("Response is Plain Text: " + argumentsString);
-            	return null;
-            }
-            arguments = parser.parse(argumentsString);
-        }
         
-        return arguments;
+        try {
+	    	String argumentsString = (String) message.get("content");
+	        arguments = parser.parse(argumentsString);
+	        return arguments;
+        } catch (Exception e) {
+			// ignore
+		}
         
-        
-        /**
-         	JSONArray outputs = (JSONArray) json.get("output");
-			if (outputs == null || outputs.isEmpty())
-			{
-				log.info("No output found in OpenAI response");
-				return results;
-			}
-			
-			JSONObject output = null;
-			for (Object outputObj : outputs)
-			{
-				if (!(outputObj instanceof JSONObject))
-				{
-					log.info("Output is not a JSONObject: " + outputObj);
-					continue;
-				}
-				JSONObject obj = (JSONObject) outputObj;
-				String role = (String) obj.get("role");
-				if(role != null && role.equals("assistant"))
-				{
-					output = obj;
-					break;
-				}
-			}
-			if (output == null || !output.get("status").equals("completed"))
-			{
-				log.info("No completed output found in GPT response");
-				return results;
-			}
-			JSONArray contents = (JSONArray) output.get("content");
-			if (contents == null || contents.isEmpty())
-			{
-				log.info("No content found in GPT response");
-				return results;
-			}
-			JSONObject content = (JSONObject) contents.get(0);
-			
-			if (content == null || !content.containsKey("text"))
-			{
-				log.info("No structured data found in GPT response");
-				return results;
-			}
-			String text = (String) content.get("text");
-			if (text == null || text.isEmpty())
-			{
-				log.info("No text found in structured data");
-				return results;
-			}
-			results = (JSONObject) parser.parse(new StringReader(text));
-
-			if(results.containsKey("type") && results.get("type").equals("object") && results.containsKey("properties"))
-			{
-				results = (JSONObject) results.get("properties"); // gpt-4o-mini sometimes wraps in properties
-			}
-         * 
-         */
+        return null;
     }
 
     @Override

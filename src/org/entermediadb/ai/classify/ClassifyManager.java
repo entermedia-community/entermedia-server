@@ -58,7 +58,7 @@ public class ClassifyManager extends InformaticsProcessor
 				//inLog.info(inConfig.get("bean") + " - Analyzing asset ("+count+"/"+assets.size()+")" + asset.getName());
 				count++;
 
-				inLog.headline("Classifying " + asset.getName());
+				inLog.headline("Classifying asset: " + asset.getName());
 
 				boolean ok = processOneAsset(inConfig, asset);
 				if( !ok )
@@ -102,7 +102,6 @@ public class ClassifyManager extends InformaticsProcessor
 			}
 		}
 		
-		
 
 		if(!aifields.isEmpty())
 		{
@@ -125,6 +124,15 @@ public class ClassifyManager extends InformaticsProcessor
 			contextFields.add(assetsearcher.getDetail("name"));
 			contextFields.add(assetsearcher.getDetail("assettype"));
 			
+			if(asset.hasValue("description") && asset.get("description").length() > 0)
+			{
+				contextFields.add( assetsearcher.getDetail("description"));
+			}
+			if(asset.hasValue("keywords") && asset.getValues("keywords").size() > 0)
+			{
+				contextFields.add( assetsearcher.getDetail("keywords"));
+			}
+			
 			if( !aifields.isEmpty() )
 			{
 				if(mediatype.equals("image"))
@@ -137,6 +145,7 @@ public class ClassifyManager extends InformaticsProcessor
 						return false;
 					}
 					functionname = functionname + "_image";
+					
 				}
 				else if(mediatype.equals("document"))
 				{
