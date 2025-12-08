@@ -138,6 +138,11 @@ function initializeUI() {
 						}
 					}
 				}
+				if ($(this).parents(".ignore").length == 0) {
+					$(this).valid();
+					var form = $(this).closest("form");
+					form.valid();
+				}
 			});
 			theinput.on("select2:open", function (e) {
 				var selectId = $(this).attr("id");
@@ -155,6 +160,28 @@ function initializeUI() {
 						.focus();
 				}
 			});
+			/*
+			theinput.on("select2:select", function () {
+				if ($(this).parents(".ignore").length == 0) {
+					$(this).valid();
+					var form = $(this).closest("form");
+					if(form)
+					{
+					form.validate();
+					}
+				}
+			});
+
+			theinput.on("select2:unselect", function () {
+				if ($(this).parents(".ignore").length == 0) {
+					$(this).valid();
+					var form = $(this).closest("form");
+					if(form)
+					{
+					form.validate();
+					}
+				}
+			});*/
 		}
 	});
 
