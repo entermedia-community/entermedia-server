@@ -242,7 +242,7 @@ public class BaseAiManager extends BaseManager implements ChatMessageHandler
 		byte[] bytes = output.toByteArray();  // Read InputStream as bytes
 		String base64EncodedString = Base64.getEncoder().encodeToString(bytes); // Encode to Base64
 		duration = (System.currentTimeMillis() - starttime) ;
-		log.info("Encoded " + item.getName() + " in "+duration+"ms");
+		log.info("Encoded " + item.getName() + " in "+duration+"ms" + " base64length:" + base64EncodedString.length());
 		
 		return "data:image/jpeg;base64," + base64EncodedString;
 
