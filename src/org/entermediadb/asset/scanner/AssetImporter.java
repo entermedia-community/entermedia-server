@@ -652,10 +652,17 @@ public class AssetImporter
 					//already handled above
 					continue;
 				}
-				Object val = inReq.getRequestParameters(prefix + afield + ".value");
+				Object val = inReq.getRequestParameter(prefix + afield + "value");
+				if (val == null)
+				{
+					val = inReq.getRequestParameter(prefix + afield + ".value");
+				}
 				if (val == null)
 				{
 					String[] array = inReq.getRequestParameters(prefix + afield + ".values");
+					if (array == null) {
+						array = inReq.getRequestParameters(prefix + afield + ".values");
+					}
 					if (array != null)
 					{
 						val = Arrays.asList(array);

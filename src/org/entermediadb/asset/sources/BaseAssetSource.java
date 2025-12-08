@@ -274,6 +274,7 @@ public abstract class BaseAssetSource implements AssetSource
 					asset.setValue(field, val);
 				}
 				
+				/*
 				//Check for _auto
 				PropertyDetail detail = getMediaArchive().getAssetSearcher().getPropertyDetails().getDetail(field);
 				if( detail != null && detail.isList() )  
@@ -298,6 +299,7 @@ public abstract class BaseAssetSource implements AssetSource
 						asset.setValue(field,tosave);
 					}
 				}
+				*/
 			}
 		}
 		

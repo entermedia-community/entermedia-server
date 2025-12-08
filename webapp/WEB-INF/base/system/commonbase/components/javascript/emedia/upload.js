@@ -126,12 +126,13 @@ $(document).ready(function () {
 		}
 		var valid = $("#uploaddata").validate().form();
 		if (!valid) {
-			startbuttonn;
+			startbutton.prop('disabled', false);
+			return; 
 		}
 
 		startbutton.text(startbutton.data("textuploading"));
-		startbutton.attr("disabled", "disabled");
-		//startbutton.prop('disabled', true);
+		//startbutton.attr("disabled", "disabled");
+		startbutton.prop('disabled', true);
 		$(uploadformarea)
 			.find(".upload_field")
 			.triggerHandler("html5_upload.start");
