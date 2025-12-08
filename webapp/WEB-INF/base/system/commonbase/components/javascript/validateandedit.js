@@ -88,7 +88,11 @@ $(document).ready(function () {
 	    
 	});
 	*/
+	 
 	
+	/*
+	
+	// Moved to dataentryfields.js
 
   if ($.validator) {
     lQuery(".force-validate-inputs").livequery(function () {
@@ -150,6 +154,7 @@ $(document).ready(function () {
       },
     });
   }
+  */
 
   lQuery(".inlinesave").livequery("click", function () {
     var queryString = $(this).closest(".inlinedata").formSerialize();

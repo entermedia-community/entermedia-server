@@ -313,6 +313,12 @@ $(document).ready(function () {
 				ignore: ".ignore",
 			});
 		});
+		
+		$.validator.methods.number = function(value, element) { 
+            var globalizedValue = value.replace(/[$,]/g, '');
+			$(element).val(globalizedValue);
+		    return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\., ]\d+)?$/.test(globalizedValue);
+		};
 
 		$.validator.addClassRules("validateNumber", {
 			number: true,
