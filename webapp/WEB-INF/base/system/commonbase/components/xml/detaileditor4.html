@@ -4,17 +4,20 @@
 	#set( $readonly = "false" )
 #end
 #set( $alwaysshow = $context.getRequestParameter("alwaysshow"))
-#set( $multiedit = $context.getRequestParameter("multiedit"))
-#ifnull($multiedit)
-	#set( $multiedit = "false")
-#end
 
+#ifnull($multiedit)
+	#set( $multiedit = $context.getRequestParameter("multiedit"))
+#end
+#ifnull($multiedit)
+	#set( $multiedit = false)
+#end
 #if ( $multiedit == "true" )
 	#set( $multiedit = true)
-#else
+#elseif( $multiedit == "false")
 	#set( $multiedit = false)
 #end
 $context.putPageValue("multiedit",$multiedit)
+
 $context.putPageValue("longform",false)
 
 #if(!$view)
