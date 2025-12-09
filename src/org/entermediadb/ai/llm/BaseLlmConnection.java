@@ -546,16 +546,20 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			{
 				log.info("Error: " + getServerRoot() + inPath + " returned status code: " + resp.getStatusLine().getStatusCode());
 				log.info("Error response: " + resp.toString());
+				String error = null;
 				try
 				{
-					String error = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
-					log.info(error);
+					error = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
 				}
 				catch(Exception e)
 				{ 
 					//Ignore 
 				}
-				throw new OpenEditException("Could not call " + inPath);
+				if(error == null) {
+					error = "Could not call " + inPath + " - Status: " + resp.getStatusLine().toString();
+				}
+				log.info(error);
+				throw new OpenEditException(error);
 			}
 			
 			object = connection.parseJson(resp);
