@@ -72,7 +72,7 @@
         [[All Languages]]
       </option>
       #foreach($locale in $languages)
-        #if($locale.getBoolean("enabled"))
+        #if($locale.getBoolean("enabled") && $locale.getBoolean("translatemetadata"))
           <option value="$locale.id">
             #text($locale)
           </option>

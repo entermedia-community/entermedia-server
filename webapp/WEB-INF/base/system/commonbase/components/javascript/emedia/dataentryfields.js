@@ -94,6 +94,7 @@ $(document).ready(function () {
 				} else if (code === "zh_TW") {
 					code = "zh-Hant";
 				}
+				if (code === "all" || code === "missing") return;
 				langCodes.push(code);
 			});
 		}
@@ -220,7 +221,7 @@ $(document).ready(function () {
 				mask.removeClass("active");
 			},
 			error: function (error) {
-				customToast("Error creating the folder!", {
+				customToast("Translation request failed!", {
 					positive: false,
 					log: error,
 				});
@@ -313,11 +314,16 @@ $(document).ready(function () {
 				ignore: ".ignore",
 			});
 		});
-		
-		$.validator.methods.number = function(value, element) { 
-            var globalizedValue = value.replace(/[$,]/g, '');
+
+		$.validator.methods.number = function (value, element) {
+			var globalizedValue = value.replace(/[$,]/g, "");
 			$(element).val(globalizedValue);
-		    return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\., ]\d+)?$/.test(globalizedValue);
+			return (
+				this.optional(element) ||
+				/^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\., ]\d+)?$/.test(
+					globalizedValue
+				)
+			);
 		};
 
 		$.validator.addClassRules("validateNumber", {
