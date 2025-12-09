@@ -397,34 +397,24 @@ public class EntityModule extends BaseMediaModule
 	
 	public void removeOneToMany(WebPageRequest inPageRequest) throws Exception 
 	{
-	
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		EntityManager entityManager = getEntityManager(inPageRequest);
 		
 		String moduleid = inPageRequest.getRequestParameter("moduleid");
+		
+		String entitymoduleid = inPageRequest.getRequestParameter("entitymoduleid");
 		String entityid = inPageRequest.getRequestParameter("entityid");
 		
-		String removemoduleid = inPageRequest.getRequestParameter("removemoduleid");
-		String removeentityid = inPageRequest.getRequestParameter("removeentityid");
+		String removinghitssessionid = inPageRequest.getRequestParameter("removinghitssessionid");
+		HitTracker removinghits = (HitTracker) inPageRequest.getSessionValue(removinghitssessionid);
 		
-		
-		if(entityid != null && moduleid != null) {
-			Data entity = archive.getCachedData(moduleid, entityid);
-			if(entity != null) {
-				Collection entities = entity.getValues(removemoduleid);
-				if(entities != null) {
-					entities.remove(removeentityid);
-					entity.setValue(removemoduleid, entities);
-					Searcher searcher = archive.getSearcher(moduleid);
-					searcher.saveData(entity);
-				}
-			}
+		if(removinghits!= null && entityid != null && entitymoduleid != null) {
+			Integer removed = entityManager.removeRecordsFromEntity(inPageRequest.getUser(), entitymoduleid, entityid, removinghits);
+			inPageRequest.putPageValue("removed", removed);
 		}
 
-		inPageRequest.putPageValue("moduleid", removemoduleid);
-		inPageRequest.putPageValue("entityid", removeentityid);
+
 		
-		inPageRequest.putPageValue("removed", "1");
 	}
 	
 	protected EntityManager getEntityManager(WebPageRequest inPageRequest) 

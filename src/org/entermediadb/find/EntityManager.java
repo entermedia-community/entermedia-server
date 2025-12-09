@@ -541,8 +541,6 @@ public class EntityManager implements CatalogEnabled
 		fireAssetsRemovedFromEntity(null, inUser, tosave , entity);
 		hits.deselectAll();
 		return tosave.size();
-		
-
 	}
 	
 	public Boolean removeAssetFromEntity(User inUser,String pickedmoduleid, String pickedentityid, String assetid) 
@@ -560,7 +558,33 @@ public class EntityManager implements CatalogEnabled
 		
 		fireAssetRemovedFromEntity(null, inUser, asset, entity);
 		return true;
-
+	}
+	
+	public Integer removeRecordsFromEntity(User inUser,String pickedmoduleid, String pickedentityid, HitTracker hits) 
+	{
+		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
+		Data entity =getMediaArchive().getCachedData(pickedmoduleid,pickedentityid);
+		if(entity == null) {
+			return 0;
+		}
+		
+		List tosave = new ArrayList();
+		if(hits != null && hits.getSelectedHitracker() != null && module != null && entity != null) {
+			
+			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
+				Data hit = (Data) iterator.next();
+				
+				Collection entities = hit.getValues(pickedmoduleid);
+				if(entities != null) {
+					entities.remove(pickedentityid);
+					hit.setValue(pickedmoduleid, entities);
+					tosave.add(hit);
+				}
+			}
+			getMediaArchive().getSearcher(hits.getSearchType()).saveAllData(tosave, inUser);
+		}
+		hits.deselectAll();
+		return tosave.size();
 	}
 	
 	public Boolean addCategoryToEntity(User inUser,String pickedmoduleid, String pickedentityid, String categoryid) 
