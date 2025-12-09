@@ -292,10 +292,12 @@ getDropdownParent = function (theinput) {
 	if (parent.length) {
 		return parent;
 	}
-
-	var parent = $(".detail-" + theinput.data("searchtype"));
-	if (parent.length) {
-		return parent;
+	if(theinput.data("searchtype"))
+	{
+		var parent = $(".detail-" + theinput.data("searchtype"));
+		if (parent.length) {
+			return parent;
+		}
 	}
 
 	var inmodal = theinput.closest(".modal");
