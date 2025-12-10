@@ -3,7 +3,7 @@ package org.entermediadb.find;
 import org.entermediadb.asset.Category;
 import org.openedit.Data;
 
-public class CategoryWithEntity
+public class CategoryWithEntity implements Comparable<CategoryWithEntity>
 {
 	public Category getCategory()
 	{
@@ -32,5 +32,12 @@ public class CategoryWithEntity
 	protected Category fieldCategory;
 	protected Data fieldEntity;
 	protected Data fieldEntityModule;
+	
+	@Override
+	public int compareTo(CategoryWithEntity inArg0) {
+		// TODO Auto-generated method stub
+		return getCategory().getCategoryPath().compareTo(inArg0.getCategory().getCategoryPath());
+	}
+
 }
 

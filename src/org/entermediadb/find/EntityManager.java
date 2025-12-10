@@ -2,6 +2,7 @@ package org.entermediadb.find;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1506,7 +1507,7 @@ public class EntityManager implements CatalogEnabled
 		Collection<Category> inParentCategories = inAsset.getCategories();
 		Collection<Data> entities = getEntitiesForCategories(inReq, inParentCategories);
 		
-		Collection<CategoryWithEntity> found = new ArrayList<CategoryWithEntity>(); 
+		List<CategoryWithEntity> found = new ArrayList<CategoryWithEntity>(); 
 		
 		for (Iterator iterator = inParentCategories.iterator(); iterator.hasNext();)
 		{
@@ -1527,6 +1528,7 @@ public class EntityManager implements CatalogEnabled
 			}
 			found.add(toadd);
 		}
+		Collections.sort(found);
 		return found;
 	}
 }
