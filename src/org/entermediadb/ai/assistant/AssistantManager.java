@@ -1,9 +1,6 @@
 package org.entermediadb.ai.assistant;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -15,18 +12,15 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.Schema;
-import org.entermediadb.ai.classify.DocumentEmbeddingManager;
 import org.entermediadb.ai.classify.SemanticClassifier;
 import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.ai.llm.emedia.EMediaAIResponse;
 import org.entermediadb.ai.llm.openai.OpenAiConnection;
-import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.EntityManager;
 import org.entermediadb.find.ResultsManager;
@@ -44,11 +38,8 @@ import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
-import org.openedit.repository.ContentItem;
-import org.openedit.repository.InputStreamItem;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
-import org.openedit.util.JSONParser;
 
 public class AssistantManager extends BaseAiManager
 {
@@ -129,11 +120,28 @@ public class AssistantManager extends BaseAiManager
 				continue;
 			}
 
+			//Remove from DB
+			Collection tosave = new ArrayList();
+			
+			for (Iterator iterator2 = mostrecents.iterator(); iterator2.hasNext();)
+			{
+				Data	data = (Data) iterator2.next();
+				data.setValue("chatmessagestatus","processing");
+				tosave.add(data);
+			}
+			archive.saveData("chatterbox", tosave);
+			
 			for (Iterator iterator2 = mostrecents.iterator(); iterator2.hasNext();) {
 				MultiValued mostrecent = (MultiValued) iterator2.next();
 				try
 				{
-					respondToChannel(inLog, channel, mostrecent);
+					Runnable runnable = new Runnable() { //Let the user broadcast finish
+						public void run()
+						{
+							respondToChannel(inLog, channel, mostrecent);
+						}
+					};
+					archive.getExecutorManager().execLater(runnable, 0);
 				}
 				catch (Throwable ex )
 				{
@@ -144,17 +152,17 @@ public class AssistantManager extends BaseAiManager
 		}
 	}
 	
-	public LlmConnection getLlmConnection()
-	{
-		String model = getMediaArchive().getCatalogSettingValue("llmagentmodel");
-		if (model == null)
-		{
-			model = "gpt-5-nano"; // Default fallback
-		}
-		LlmConnection manager = getMediaArchive().getLlmConnection(model);
-		return manager;
-	}
-	
+//	public LlmConnection getLlmConnection()
+//	{
+//		String model = getMediaArchive().getCatalogSettingValue("llmagentmodel");
+//		if (model == null)
+//		{
+//			model = "gpt-5-nano"; // Default fallback
+//		}
+//		LlmConnection manager = getMediaArchive().getLlmConnection(model);
+//		return manager;
+//	}
+//	
 	
 	public AgentContext loadContext(String inChannelId) 
 	{
@@ -177,30 +185,22 @@ public class AssistantManager extends BaseAiManager
 		return agentContext;
 	}
 	
-	public void respondToChannel(ScriptLogger inLog, Data inChannel, MultiValued message) throws Exception
+	public void respondToChannel(ScriptLogger inLog, Data inChannel, MultiValued usermessage)
 	{
 		MediaArchive archive = getMediaArchive();
 		
 		AgentContext agentContext = loadContext(inChannel.getId());
 		
-		String model = archive.getCatalogSettingValue("llmagentmodel");
-		
-		if (model == null)
-		{
-			model = "gpt-4o"; // Default fallback
-		}
-		LlmConnection llmconnection = archive.getLlmConnection(model);
-
-		agentContext.addContext("model", model);
+		//LlmConnection llmconnection = archive.getLlmConnection("agentChat");
+		//agentContext.addContext("model", llmconnection.getModelName() );
 
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
-		Searcher chats = archive.getSearcher("chatterbox");
 		
-		if (!llmconnection.isReady()) 
-		{
-			inLog.error("LLM Manager is not ready, check key for: " + model + ". Cannot process channel: " + inChannel);
-			return;
-		}
+//		if (!llmconnection.isReady()) 
+//		{
+//			inLog.error("LLM Manager is not ready, check key for: " +  llmconnection.getModelName() + ". Cannot process channel: " + inChannel);
+//			return;
+//		}
 
 		String channeltype = inChannel.get("channeltype");
 		if (channeltype == null)
@@ -215,67 +215,90 @@ public class AssistantManager extends BaseAiManager
 		
 		agentContext.addContext("channel", inChannel);
 
-		String oldstatus = message.get("chatmessagestatus");
+		String oldstatus = usermessage.get("chatmessagestatus");
 		
 		//Update original message processing status
-		message.setValue("chatmessagestatus", "completed");
-		chats.saveData(message);
+		usermessage.setValue("chatmessagestatus", "completed");
+		getMediaArchive().saveData("chatterbox",usermessage);
 		
-		agentContext.addContext("message", message);
+		agentContext.addContext("message", usermessage);
 		
 		agentContext.addContext("assistant", this);
 		
 		agentContext.addContext("channelchathistory", loadChannelChatHistory(inChannel));
 		
-		if("refresh".equals(oldstatus))
-		{			
-			String nextFunction = agentContext.getNextFunctionName();
-			if(nextFunction != null)
+//		if("refresh".equals(oldstatus))
+//		{			
+//			String nextFunction = agentContext.getNextFunctionName();
+//			if(nextFunction != null)
+//			{
+//				agentContext.setFunctionName(nextFunction);
+//				agentContext.setNextFunctionName(null);
+//				
+//				getMediaArchive().saveData("agentcontext", agentContext);
+//				
+//				MultiValued realusermessage = (MultiValued)archive.getCachedData("chatterbox",usermessage.get("replytoid"));
+//				execCurrentFunctionFromChat(realusermessage,usermessage, agentContext);
+//			}
+//			return;
+//		}
+		
+		//Add new agentmessage
+		MultiValued agentmessage = newAgentMessage(usermessage, agentContext);
+		
+		//ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
+		//Determine what will need to be processed
+		try
+		{
+			if (channeltype.equals("agententitychat"))
 			{
-				agentContext.setFunctionName(nextFunction);
-				agentContext.setNextFunctionName(null);
-				
-				getMediaArchive().saveData("agentcontext", agentContext);
-				
-				execLocalActionFromChat(llmconnection, message, agentContext);
+				//response = processDocumentChat(message, agentContext);
+				agentContext.setFunctionName("ragSearch");
 			}
+			else 
+			{
+				agentContext.setFunctionName("parsePrompt");
+			}
+			execCurrentFunctionFromChat(usermessage, agentmessage, agentContext);
+		}
+		catch( Exception ex)
+		{
+			agentmessage.setValue("message",ex.toString());
+			archive.saveData("chatterbox",agentmessage);
+			server.broadcastMessage(archive.getCatalogId(), agentmessage);
+		}
+	}
+	
+	
+	public MultiValued newAgentMessage(MultiValued usermessage, AgentContext agentContext)
+	{
+		MultiValued agentmessage = (MultiValued)getMediaArchive().getSearcher("chatterbox").createNewData();
+		agentmessage.setValue("user", "agent");
+		agentmessage.setValue("replytoid",usermessage.getId() );
+		agentmessage.setValue("channel", agentContext.getChannel().getId());
+		agentmessage.setValue("date", new Date());
+		agentmessage.setValue("chatmessagestatus", "processing");
+		return agentmessage;
+	}
+	
+	public void execCurrentFunctionFromChat(MultiValued usermessage, MultiValued agentmessage, AgentContext agentContext) 
+	{
+
+		String functionName = agentContext.getFunctionName();
+		MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", functionName); //Chitchat etc
+		
+		if (function == null)
+		{
+			log.info("No Ai function defined: " + functionName);
 			return;
 		}
 		
-		Data resopnseMessage = chats.createNewData();
-		resopnseMessage.setValue("user", "agent");
-		resopnseMessage.setValue("channel", inChannel.getId());
-		resopnseMessage.setValue("date", new Date());
-		resopnseMessage.setValue("message", "<i class=\"fas fa-spinner fa-spin mr-2\"></i> Processing request...");
-		resopnseMessage.setValue("chatmessagestatus", "processing");
-		
-		chats.saveData(resopnseMessage);
-		
-		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
-		
-		EMediaAIResponse response = null;
-		String processingmessage = null; // TODO: Change to language mao
-		
-		if (channeltype.equals("agententitychat"))
-		{
-			response = processDocumentChat(message, agentContext);  
-			processingmessage = "Generating response...";
-		}
-		else 
-		{
-			response = processAgentChat(message, agentContext);   
-		}
-		
-		
-		if( response.getFunctionName() != null)
-		{
-			agentContext.setFunctionName(response.getFunctionName());
-		}
-		getMediaArchive().saveData("agentcontext", agentContext);
+		ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
 
-		String functionName = agentContext.getFunctionName();
-		MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunctions", functionName); //Chitchat etc
 		
+		String loader = "<i class=\"fas fa-spinner fa-spin mr-2\"></i> ";
+		
+		String processingmessage = null; // TODO: Change to language mao
 		if( function != null)
 		{
 			processingmessage = function.get("processingmessage");
@@ -284,117 +307,282 @@ public class AssistantManager extends BaseAiManager
 		{
 			processingmessage = "Analyzing...";
 		}
-		resopnseMessage.setValue("message", processingmessage);
-			
-		chats.saveData(resopnseMessage);
 		
-		server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
+		processingmessage = loader + processingmessage;
+		
+		String message = agentContext.getMessagePrefix() + processingmessage;
+		agentmessage.setValue("message", message ); //setting status
+		getMediaArchive().saveData("chatterbox",agentmessage);	
+		server.broadcastMessage(getMediaArchive().getCatalogId(), agentmessage);
+	
+		
+		MediaArchive archive = getMediaArchive();
 
-		if( functionName.equals("conversation"))
+		Data channel = archive.getCachedData("channel", agentmessage.get("channel"));
+		agentContext.addContext("channel", channel);
+		
+		agentContext.addContext("usermessage", usermessage);
+		agentContext.addContext("agentmessage", agentmessage);
+		agentContext.addContext("aisearchparams", agentContext.getAiSearchParams() );
+		
+		String apphome = "/"+ channel.get("chatapplicationid");
+		agentContext.addContext("apphome", apphome);
+		
+		try
 		{
-			String output = response.getGeneralResponse();
+				
+			String bean = function.get("messagehandler");
 			
-			if(output == null || output.isEmpty())
+			ChatMessageHandler handler = (ChatMessageHandler)getMediaArchive().getBean( bean);
+			LlmResponse response = handler.processMessage(agentmessage, agentContext);
+			
+			String updatedMessage = agentContext.getMessagePrefix();
+			
+			if( response.getMessage() != null )
 			{
-				agentContext.addContext("messagetosend", message.get("message") );
-				LlmResponse chatresponse = llmconnection.callPlainMessage(agentContext,functionName); //TODO: Add message history
-				output = chatresponse.getMessage();
+				updatedMessage += response.getMessage();
 			}
 
-			// **Regular Text Response**
-			if (output != null)
+			agentmessage.setValue("message", updatedMessage); //Final message
+			
+			
+
+			String messageplain = agentmessage.get("messageplain");
+			String newmessageplain = response.getMessagePlain();
+			
+			if(newmessageplain != null)
 			{
-				resopnseMessage.setValue("message", output);
-				resopnseMessage.setValue("messageplain", output);
-				resopnseMessage.setValue("chatmessagestatus", "completed");
-
-				chats.saveData(resopnseMessage);
-				server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
+				if(messageplain == null)
+				{
+					messageplain = newmessageplain;
+				}
+				else
+				{
+					messageplain += " \n " + newmessageplain;
+				}
+				agentmessage.setValue("messageplain", messageplain);
 			}
-		}
-		else if (functionName.equals("ragresponse"))
-		{
-			resopnseMessage.setValue("messageplain", response.getMessagePlain());
-			resopnseMessage.setValue("message", response.getMessage());
-			resopnseMessage.setValue("chatmessagestatus", "completed");
+			
+			agentmessage.setValue("chatmessagestatus", "completed");
+			getMediaArchive().saveData("chatterbox",agentmessage);
+			
 
-			chats.saveData(resopnseMessage);
-			server.broadcastMessage(archive.getCatalogId(), resopnseMessage);
+			
+			JSONObject functionMessageUpdate = new JSONObject();
+			functionMessageUpdate.put("messagetype", "airesponse");
+			functionMessageUpdate.put("catalogid", archive.getCatalogId());
+			functionMessageUpdate.put("user", "agent");
+			functionMessageUpdate.put("channel", agentmessage.get("channel"));
+			functionMessageUpdate.put("messageid", agentmessage.getId());
+			functionMessageUpdate.put("message", agentmessage.get("message"));
+			server.broadcastMessage(functionMessageUpdate);
+			
+			Long waittime = 200l;
+			
+			if( agentContext.getNextFunctionName() != null)
+			{
+				//Search semantic now?
+				//params.put("function", agentContext.getNextFunctionName());
+				//agentmessage.setValue("params", params.toJSONString());
+
+//				agentmessage.setValue("chatmessagestatus", "refresh");
+//				getMediaArchive().saveData("chatterbox",agentmessage);
+				
+				if("searchSemantic".equals(agentContext.getNextFunctionName()))
+				{
+					//New Agent Message
+//					agentmessage = newAgentMessage(usermessage, agentContext);
+					
+					//Or update existing one
+					getMediaArchive().saveData("chatterbox",agentmessage);
+				}
+
+				Long wait = agentContext.getLong("wait");
+				if( wait != null && wait instanceof Long)
+				{
+					agentContext.setValue("wait", null);
+					waittime = wait;
+					log.info("Previous function requested to wait " + waittime + " milliseconds");
+					Thread.sleep(wait);
+				}
+				//TODO: Just sleep for a bit? and try again
+				agentContext.setFunctionName(agentContext.getNextFunctionName());
+				agentContext.setNextFunctionName(null);
+				execCurrentFunctionFromChat(usermessage, agentmessage, agentContext);
+//				Runnable runnable = new Runnable() {
+//					public void run()
+//					{
+//						getMediaArchive().fireSharedMediaEvent("llm/monitorchats");
+//					}
+//				};
+//				archive.getExecutorManager().execLater(runnable, waittime);
+			}
+			
 		}
-		else //add option to run AI based functions like create an image
+		catch (Exception e)
 		{
-			execLocalActionFromChat(llmconnection, resopnseMessage, agentContext);
+			log.error("Could not execute function: " + agentContext.getFunctionName(), e);
+			agentmessage.setValue("functionresponse", e.toString());
+			agentmessage.setValue("chatmessagestatus", "failed");
+			archive.saveData("chatterbox", agentmessage);
 		}
-		
 	}
 	
-	protected EMediaAIResponse processAgentChat(MultiValued message, AgentContext inAgentContext)
+	@Override
+	public LlmResponse processMessage(MultiValued inAgentMessage, AgentContext inAgentContext)
 	{
-		EMediaAIResponse response = new EMediaAIResponse();
+//		if(output == null || output.isEmpty())
+//		{  //What is this for?
+//			agentContext.addContext("messagetosend", message.get("message") );
+//			LlmResponse chatresponse = llmconnection.callMessageTemplate(agentContext,response.getFunctionName()); 
+//			//TODO: Add message history
+//			output = chatresponse.getMessage();
+//		}
+		//ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
+		
+		
+//		String output = inMessage.getMessage();
+//		agentmessage.setValue("message", output);  //Needed"
+//		agentmessage.setValue("messageplain", output);
+//		
+
+		if ("parsePrompt".equals(inAgentContext.getFunctionName()))
+		{
+			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox",inAgentMessage.get("replytoid"));
+			LlmResponse response = determineFunction(usermessage, inAgentMessage, inAgentContext);   
+//			agentmessage.setValue("user", "agent");
+//			agentmessage.setValue("replytoid",usermessage.getId() );
+//			agentmessage.setValue("channel", inAgentContext.getChannel().getId());
+//			agentmessage.setValue("date", new Date());
+//			agentmessage.setValue("message", "<i class=\"fas fa-spinner fa-spin mr-2\"></i> Processing request...");
+//			agentmessage.setValue("chatmessagestatus", "processing");
+//			chats.saveData(agentmessage);
+//			ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
+//			server.broadcastMessage(getMediaArchive().getCatalogId(), agentmessage);
+
+			//Handle right now
+			if ("conversation".equals(response.getFunctionName()))
+			{
+				//chitchat
+				inAgentMessage.setValue("chatmessagestatus", "completed");
+				
+				String generalresponse  = response.getMessage();
+				if(generalresponse != null)
+				{
+					MarkdownUtil md = new MarkdownUtil();
+					generalresponse = md.render(generalresponse);
+					//inAgentMessage.setValue("message",generalresponse);
+				}
+				//LlmResponse respond = new EMediaAIResponse();
+				response.setMessage(generalresponse);
+				
+				inAgentContext.setNextFunctionName(null);
+
+			}
+			else
+			{
+				response.setMessage("");
+				inAgentContext.setNextFunctionName(response.getFunctionName());
+			}
+			return response;
+		}
+		else if ("searchTables".equals(inAgentContext.getFunctionName()))
+		{
+			//search
+			LlmConnection searcher = getMediaArchive().getLlmConnection("searchTables");
+			LlmResponse response =  searcher.renderLocalAction(inAgentContext);
+			
+			String message = response.getMessage();
+			
+			if(message != null)
+			{
+				inAgentContext.setMessagePrefix(message);
+			}
+			
+			return response;
+		}
+		else if ("searchSemantic".equals(inAgentContext.getFunctionName()))
+		{	
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("searchSemantic");
+			LlmResponse result = llmconnection.renderLocalAction(inAgentContext);
+			return result;
+		}
+		
+		throw new OpenEditException("Function not supported " + inAgentContext.getFunctionName());
+		
+				
+//		if(generalresponse != null)
+//		{
+//			MarkdownUtil md = new MarkdownUtil();
+//			response.setMessage(md.render(generalresponse));
+//		}
+		
+		//respond.setFunctionName(null);
+//		getMediaArchive().saveData("chatterbox",inMessage);
+//		server.broadcastMessage(getMediaArchive().getCatalogId(), inMessage);
+	}
+	
+	protected LlmResponse determineFunction(MultiValued userMessage,MultiValued agentMessage, AgentContext inAgentContext)
+	{
 		MediaArchive archive = getMediaArchive();
 		
-		//String model = "qwen3:8b";
-		String model = archive.getCatalogSettingValue("llmagentmodel");
-
-		LlmConnection llmconnection = archive.getLlmConnection(model);
+		LlmConnection llmconnection = archive.getLlmConnection("parsePrompt");
 		
 		//Run AI
 		inAgentContext.addContext("schema", loadSchema());
-		JSONObject results = llmconnection.callStructuredOutputList("parse_sentence", inAgentContext.getContext()); //TODO: Replace with local API that is faster
-		if(results == null)
-		{
-			throw new OpenEditException("No results from AI for message: " + message.get("message"));
-		}
-		if(results.containsKey("plaintext"))
-		{
-			String contentString = (String) results.get("plaintext");
-			JSONObject conversation = new JSONObject();
-			conversation.put("friendly_response", contentString);
-			results.put("conversation", conversation);
-			results.remove("plaintext");
-		}
-		response.setRawResponse(results);
-		processResults(inAgentContext, message.get("message"), response, results);
-		return response;
-	}
-	
-	
-	protected EMediaAIResponse processDocumentChat(MultiValued message, AgentContext inAgentContext)
-	{		
-		DocumentEmbeddingManager embeddingManager = (DocumentEmbeddingManager) getMediaArchive().getBean("documentEmbeddingManager");
+		//inAgentContext.addContext("message", userMessage);
 		
-		return embeddingManager.processMessage(message, inAgentContext);
-	}
-	
-
-	protected void processResults(AgentContext inAgentContext, String messageText, EMediaAIResponse response, JSONObject results)
-	{
-		String type = results.keySet().iterator().next().toString();
+		LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext()); //TODO: Replace with local API that is faster
+		if(response == null)
+		{
+			throw new OpenEditException("No results from AI for message: " + userMessage.get("message"));
+		}
+		
+//			String contentString = (String) json.get("friendly_response");
+//			JSONObject conversation = new JSONObject();
+			
+			//TODO: What was this?
+			
+//			conversation.put("friendly_response", contentString);
+//			results.put("conversation", conversation);
+//			results.remove("plaintext");
+		//response.setRawResponse(results);
+		JSONObject content = response.getMessageStructured();
+		
+		String type = (String) content.get("request_type");
 		
 		if(type == null)
 		{
-			throw new OpenEditException("No type specified in results: " + results.toJSONString());
+			throw new OpenEditException("No type specified in results: " + content.toJSONString());
+		}
+
+		JSONObject details = (JSONObject) content.get("request_details");
+		
+		if(details == null)
+		{
+			throw new OpenEditException("No details specified in results: " + content.toJSONString());
 		}
 
 		if( type.equals("search") )
 		{
-			JSONObject structure = (JSONObject) results.get(type);
+			JSONObject structure = (JSONObject) details.get(type);
 			if(structure == null)
 			{
 				throw new OpenEditException("No structure found for type: " + type);
 			}
-			type = partsSearchParts(inAgentContext, structure, type, messageText);
+			type = partsSearchParts(inAgentContext, structure, type, response.getMessage());
 		}
 		else if( type.equals("conversation"))
 		{
 			//type = "chitchat";
-			JSONObject structure = (JSONObject) results.get(type);
-			String generalresponse = (String) structure.get("friendly_response");
-			if(generalresponse != null)
-			{
-				MarkdownUtil md = new MarkdownUtil();
-				response.setGeneralResponse(md.render(generalresponse));
-			}
+//			JSONObject structure = (JSONObject) results.get(type);
+			JSONObject conversation = (JSONObject) details.get("conversation");
+			String generalresponse = (String) conversation.get("friendly_response");
+//			if(generalresponse != null)
+//			{
+			//String generalresponse = (String) content.get("response");
+//			}
+			response.setMessage( generalresponse);
 		}
 		else if(type.equals("create_image"))
 		{
@@ -402,7 +590,7 @@ public class AssistantManager extends BaseAiManager
 			
 			AiCreation creation = inAgentContext.getAiCreationParams();					
 			creation.setCreationType("image");
-			JSONObject structure = (JSONObject) results.get(type);
+			JSONObject structure = (JSONObject) details.get("create_image");
 			creation.setImageFields(structure);
 		}
 		else if(type.equals("create_entity"))
@@ -411,15 +599,16 @@ public class AssistantManager extends BaseAiManager
 			
 			AiCreation creation = inAgentContext.getAiCreationParams();
 			creation.setCreationType("entity");
-			JSONObject structure = (JSONObject) results.get(type);
+			JSONObject structure = (JSONObject) details.get("create_entity");
 			creation.setEntityFields(structure);
 		}
-		//TODO Add how-to rag handling
-		
 		response.setFunctionName(type);
+		return response;
 	}
+	
 
-	private String partsSearchParts(AgentContext inAgentContext, JSONObject structure, String type, String messageText) {
+	protected String partsSearchParts(AgentContext inAgentContext, JSONObject structure, String type, String messageText) 
+	{
 		ArrayList tables = (ArrayList) structure.get("tables");
 		
 		if( tables == null)
@@ -427,7 +616,7 @@ public class AssistantManager extends BaseAiManager
 			return type;
 		}
 		
-		log.info("Steps to search parts: " + structure.toJSONString());
+		log.info("AI Assistant Searching Tables: " + structure.toJSONString());
 		
 		AiSearch search = inAgentContext.getAiSearchParams();
 		search.setOriginalSearchString(messageText);
@@ -549,92 +738,6 @@ public class AssistantManager extends BaseAiManager
 		return type;
 	}
 	
-	public void execLocalActionFromChat(LlmConnection llmconnection, Data messageToUpdate, AgentContext agentContext) throws Exception
-	{
-		MediaArchive archive = getMediaArchive();
-
-		Data channel = archive.getCachedData("channel", messageToUpdate.get("channel"));
-		agentContext.addContext("channel", channel);
-		
-		ChatServer server = (ChatServer) archive.getBean("chatServer");
-
-		try
-		{
-			agentContext.addContext("message", messageToUpdate);
-			agentContext.addContext("aisearchparams", agentContext.getAiSearchParams() );
-			
-			String apphome = "/"+ channel.get("chatapplicationid");
-			agentContext.addContext("apphome", apphome);
-			
-			LlmResponse response = llmconnection.renderLocalAction(agentContext);  //Run Search
-
-			messageToUpdate.setValue("message", response.getMessage());
-			String messageplain = messageToUpdate.get("messageplain");
-			
-			String newmessageplain = response.getMessagePlain();
-			
-			if(newmessageplain != null)
-			{
-				if(messageplain == null)
-				{
-					messageplain = newmessageplain;
-				}
-				else
-				{
-					messageplain += " \n " + newmessageplain;
-				}
-				messageToUpdate.setValue("messageplain", messageplain);
-			}
-			
-			messageToUpdate.setValue("chatmessagestatus", "completed");
-			
-			Searcher chats = archive.getSearcher("chatterbox");
-			chats.saveData(messageToUpdate);
-			
-			JSONObject functionMessageUpdate = new JSONObject();
-			functionMessageUpdate.put("messagetype", "airesponse");
-			functionMessageUpdate.put("catalogid", archive.getCatalogId());
-			functionMessageUpdate.put("user", "agent");
-			functionMessageUpdate.put("channel", messageToUpdate.get("channel"));
-			functionMessageUpdate.put("messageid", messageToUpdate.getId());
-			functionMessageUpdate.put("message", response.getMessage());
-			server.broadcastMessage(functionMessageUpdate);
-			
-			Long waittime = 200l;
-			if( agentContext.getNextFunctionName() != null)
-			{
-				//Search semantic now?
-				//params.put("function", agentContext.getNextFunctionName());
-				//messageToUpdate.setValue("params", params.toJSONString());
-
-				messageToUpdate.setValue("chatmessagestatus", "refresh");
-				chats.saveData(messageToUpdate);
-
-				Long wait = agentContext.getLong("wait");
-				if( wait != null && wait instanceof Long)
-				{
-					agentContext.setValue("wait", null);
-					waittime = wait;
-					log.info("Previous function requested to wait " + waittime + " milliseconds");
-				}
-				
-			}
-			Runnable runnable = new Runnable() {
-				public void run()
-				{
-					getMediaArchive().fireSharedMediaEvent("llm/monitorchats");
-				}
-			};
-			archive.getExecutorManager().execLater(runnable, waittime);
-		}
-		catch (Exception e)
-		{
-			log.error("Could not execute function: " + agentContext.getFunctionName(), e);
-			messageToUpdate.setValue("functionresponse", e.toString());
-			messageToUpdate.setValue("chatmessagestatus", "failed");
-			archive.saveData("chatterbox", messageToUpdate);
-		}
-	}
 
 	protected Collection<Data> loadChannelChatHistory(Data inChannel)
 	{
@@ -1007,21 +1110,20 @@ public class AssistantManager extends BaseAiManager
 			log.info("No RAG context found to process");
 			return;
 		}
-		String model = archive.getCatalogSettingValue("llmragmodel");
-		OpenAiConnection llmconnection = (OpenAiConnection) archive.getLlmConnection(model);
+		OpenAiConnection llmconnection = (OpenAiConnection) archive.getLlmConnection("ragSearch");
 		
 		llmconnection.callRagFunction(ragcontext.get("context"), ragcontext.get("query"));
 		
 	}
 	
-	public void semanticSearch(WebPageRequest inReq, AgentContext agentContext)
+	public void semanticSearch(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive();
 		
 		String semanticquery = inReq.getRequestParameter("semanticquery"); 
 		
-		Collection<String> excludeEntityIds = agentContext.getExcludedEntityIds();
-		Collection<String> excludeAssetIds = agentContext.getExcludedAssetIds();
+		Collection<String> excludeEntityIds = inReq.getRequestCollection("excludeentityids");
+		Collection<String> excludeAssetIds = inReq.getRequestCollection("excludeassetids");
 		
 		log.info("Semantic Search for: " + semanticquery);
 		inReq.putPageValue("input", semanticquery);
@@ -1236,257 +1338,7 @@ public class AssistantManager extends BaseAiManager
 //		
 //	}
 	
-	public void createImage(WebPageRequest inReq, AiCreation aiCreation) throws Exception 
-	{
-		MediaArchive archive = getMediaArchive();
-
-		String model = archive.getCatalogSettingValue("llmimagegenerationmodel");
-		if (model == null)
-		{
-			model = "gpt-image-1";
-		}
-		
-		LlmConnection llmconnection = archive.getLlmConnection(model);
-		
-		JSONObject imageattr = (JSONObject) aiCreation.getImageFields();
-		
-		String prompt = (String) imageattr.get("prompt");
-
-		if (prompt == null)
-		{
-			return;
-		}
-		
-		String filename = (String) imageattr.get("image_name");
-
-		LlmResponse results = llmconnection.createImage(prompt);
-		
-
-		for (Iterator iterator = results.getImageBase64s().iterator(); iterator.hasNext();)
-		{
-			String base64 = (String) iterator.next();
-
-			Asset asset = (Asset) archive.getAssetSearcher().createNewData();
-
-			asset.setValue("importstatus", "created");
-
-			if( filename == null || filename.length() == 0)
-			{
-				filename = "aiimage_" + System.currentTimeMillis() ;
-			}
-			
-			asset.setName(filename + ".png");
-			asset.setValue("assettitle", filename);
-			asset.setValue("assetaddeddate", new Date());
-			
-			String sourcepath = "Channels/" + inReq.getUserName() + "/" + DateStorageUtil.getStorageUtil().getTodayForDisplay() + "/" + filename;
-			asset.setSourcePath(sourcepath);
-
-			String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
-			ContentItem saveTo = archive.getPageManager().getPage(path).getContentItem();
-			
-			
-			try
-			{
-				InputStreamItem revision = new InputStreamItem();
-				
-				revision.setAbsolutePath(saveTo.getAbsolutePath());
-				revision.setPath(saveTo.getPath());
-				revision.setAuthor( inReq.getUserName() );
-				revision.setType( ContentItem.TYPE_ADDED );
-				revision.setMessage( saveTo.getMessage());
-				
-				revision.setPreviewImage(saveTo.getPreviewImage());
-				revision.setMakeVersion(false);
-				
-				log.info("Saving image -> " + path + "/" + filename);
-				
-				InputStream input = null;
-				
-				String code = base64.substring(base64.indexOf(",") +1, base64.length());
-				byte[] tosave = Base64.getDecoder().decode(code);
-				input = new ByteArrayInputStream(tosave);
-				
-				revision.setInputStream(input);
-				
-				archive.getPageManager().getRepository().put( revision );
-				asset.setProperty("importstatus", "created");
-				archive.saveAsset(asset);
-			}
-			catch (Exception ex)
-			{
-				asset.setProperty("importstatus", "error");
-				log.error(ex);
-				archive.saveAsset(asset);
-			}
-			
-			inReq.putPageValue("asset", asset);
-		}
-		
-		Data message = (Data) inReq.getPageValue("message");
-		if( message != null)
-		{
-			archive.saveData("chatterbox", message);
-		}
-		
-
-		archive.fireSharedMediaEvent("importing/assetscreated");
-	}
 	
-	public void createEntity(WebPageRequest inReq, AiCreation aiCreation) throws Exception 
-	{
-		MediaArchive archive = getMediaArchive();
-		
-		JSONObject entityfields = (JSONObject) aiCreation.getEntityFields();
-		String entityname = (String) entityfields.get("entity_name");
-
-		if (entityname == null)
-		{
-			inReq.putPageValue("error", "Please provide a name for the new entity");
-			return;
-		}
-		
-		String moduleid = (String) entityfields.get("module_id");
-		if(moduleid == null)
-		{
-			inReq.putPageValue("error", "Could not find module. Please provide an existing module name or id");
-			return;
-		}
-		
-		
-		moduleid = moduleid.split("\\|")[0];
-
-		Data module = archive.getCachedData("module", moduleid);
-		
-		if(module == null)
-		{
-			inReq.putPageValue("error", "Could not find module. Please provide an existing module name or id");
-			return;
-		}
-		
-		Searcher searcher = archive.getSearcher(module.getId());
-		
-		Data entity = searcher.createNewData();
-		entity.setName(entityname);
-
-		searcher.saveData(entity);
-		
-		inReq.putPageValue("entity", entity);
-		inReq.putPageValue("module", module);
-	}
-	
-	public void updateEntity(WebPageRequest inReq) throws Exception 
-	{
-		MediaArchive archive = getMediaArchive();
-
-		String args = inReq.getRequestParameter("arguments");
-		if(args == null)
-		{
-			log.warn("No arguments found in request");
-			return;
-		}
-		JSONObject arguments = new JSONParser().parse( args );
-		
-		String entityid = (String) arguments.get("entityId");
-		String moduleid = (String) arguments.get("moduleId");
-		
-		if (entityid == null)
-		{
-			inReq.putPageValue("error", "Please provide the entity id for the entity to update");
-			return;
-		}
-		if (moduleid == null)
-		{
-			inReq.putPageValue("error", "Please provide the module id for the entity to update");
-			return;
-		}
-		
-		Data module = archive.getCachedData("module", moduleid);
-		if(module == null)
-		{
-			inReq.putPageValue("error", "Could not find module. Please provide the module id of the entity to update");
-			return;
-		}
-		Searcher searcher = archive.getSearcher(module.getId());
-		Data entity = searcher.query().id(entityid).cachedSearchOne();
-		if(entity == null)
-		{
-			inReq.putPageValue("error", "Could not find entity. Please provide an existing entity id to update");
-			return;
-		}
-		
-		String newmoduleid = (String) arguments.get("newModuleId");
-		if(newmoduleid != null)
-		{
-			Data newmodule = archive.getCachedData("module", newmoduleid);
-			if(newmodule == null)
-			{
-				inReq.putPageValue("error", "Could not find new module. Please provide an existing module id to update");
-				return;
-			}
-			EntityManager entityManager = getEntityManager();
-			String modulechangemethod = (String) arguments.get("moduleChangeMethod");
-			if("copy".equals(modulechangemethod))
-			{
-				Data newentity = entityManager.copyEntity(inReq, module.getId(), newmodule.getId(), entity);
-				entity = newentity;
-				module = newmodule;
-				inReq.putPageValue("changemethod", "copy");
-			}
-			else if("move".equals(modulechangemethod))
-			{
-				Data newentity = entityManager.copyEntity(inReq, module.getId(), newmodule.getId(), entity);
-				if( newentity == null)
-				{
-					inReq.putPageValue("error", "Could not copy entity. Please try again");
-					return;
-				}
-				entityManager.deleteEntity(inReq, module.getId(), entity.getId());
-				entity = newentity;
-				module = newmodule;
-				inReq.putPageValue("changemethod", "move");
-			}
-			else
-			{
-				inReq.putPageValue("error", "Please specify whether to copy or move the entity to the new module");
-				return;
-			}
-			
-		}
-		
-		String primaryImage = (String) arguments.get("primaryImageId");
-		String newName = (String) arguments.get("newName");
-		
-		if(newName != null && newName.length() > 0)
-		{
-			entity.setName(newName);
-			inReq.putPageValue("newname", newName);
-		}
-		if(primaryImage != null && primaryImage.length() > 0)
-		{
-			Asset asset = archive.getAsset(primaryImage);
-			if(asset != null)
-			{
-				EntityManager entityManager = getMediaArchive().getEntityManager();
-				String destinationcategorypath = inReq.getRequestParameter("destinationcategorypath");
-				Category destinationCategory = null;
-				if(destinationcategorypath!= null)
-				{
-					destinationCategory = archive.getCategorySearcher().createCategoryPath(destinationcategorypath);
-				}
-				else {
-					destinationCategory = entityManager.loadDefaultFolder(module, entity, inReq.getUser());
-				}
-				entityManager.addAssetToEntity(inReq.getUser(), module, entity, asset, destinationCategory);
-				entity.setValue("primaryimage", primaryImage);
-				inReq.putPageValue("primaryimage", asset);
-			}
-		}
-		searcher.saveData(entity);
-		
-		inReq.putPageValue("entity", entity);
-		inReq.putPageValue("module", module);
-	}
 	
 	public void loadAllActions(ScriptLogger inLog)
 	{

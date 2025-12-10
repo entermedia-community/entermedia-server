@@ -95,8 +95,8 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 			//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
 			//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
 			String tmpfilename = PathUtilities.extractFileName(endpath);
-			//String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/generatedpreview" + endpath + "/" + tmpfilename);
-			String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/generatedpreview" + endpath);
+			String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/generatedpreview" + endpath + "/" + tmpfilename); 
+			//String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/generatedpreview" + endpath);
 			CloseableHttpResponse genfile = null;
 			try
 			{
@@ -228,33 +228,31 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				inLog.info(node.getName() + " checking since " + pulldate);
 
 				long totalcount = downloadAllData(inArchive, connection, node, params);  //Download is here
-
-				inLog.info(node.getName() + " imported " + totalcount);
-
-				//uploadChanges... 
 				
-				if (node.getBoolean("pulldataonly"))
+				if (totalcount > 0)
 				{
-					continue; //Pull only data
+					inLog.info(node.getName() + " imported " + totalcount);
 				}
 				
-				ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
-				HitTracker localchanges = manager.getEditedDocuments(getCatalogId(), pulldate);
-				
-				String remotemastereditid = node.get("clustername");
-				HitTracker trimmed = removeRemotesMasterNodeEdits(remotemastereditid, localchanges);
-				
-				if(!trimmed.isEmpty()) 
+				//uploadChanges if not  pulldataonly flag
+				if (!node.getBoolean("pulldataonly"))
 				{
-					syncUpLocalDataChanges(inArchive,node, pulldate, trimmed, connection);
-					inLog.info(node.getName() + " syncup local changes " + trimmed.size());
+					ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
+					HitTracker localchanges = manager.getEditedDocuments(getCatalogId(), pulldate);
+					
+					String remotemastereditid = node.get("clustername");
+					HitTracker trimmed = removeRemotesMasterNodeEdits(remotemastereditid, localchanges);
+					long totaluploadcount = 0;
+					if(!trimmed.isEmpty()) 
+					{
+						totaluploadcount = trimmed.size();
+						syncUpLocalDataChanges(inArchive,node, pulldate, trimmed, connection);
+						inLog.info(node.getName() + " syncup local changes " + totaluploadcount);
+					}	
 				}
-				inLog.info(node.getName() + " data downloaded " + totalcount + " and uploaded " + trimmed.size() );
-				if( totalcount > -1)
-				{
-					node.setValue("lastpulldate", now);
-					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
-				}
+			
+				node.setValue("lastpulldate", now);
+				getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
 
 			}
 			catch (Throwable ex)
@@ -312,7 +310,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 			log.error("Initial data server error " + sl);
 			return -1;
 		}
-		JSONObject	remotechanges = connection.parseJson(response2);
+		JSONObject	remotechanges = connection.parseMap(response2);
 		long datacounted = 0;
 		Map response = (Map) remotechanges.get("response");
 		String ok = (String) response.get("status");
@@ -349,7 +347,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				{
 					throw new OpenEditException("Could not load page of data " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 				}
-				remotechanges = connection.parseJson(response2);
+				remotechanges = connection.parseMap(response2);
 				response = (Map) remotechanges.get("response");
 				ok = (String) response.get("status");
 				if (ok != null && !ok.equals("ok"))
@@ -729,7 +727,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		//log.info("Got back this " + sl.getStatusCode());
 
 		//The server will return a list of files it needs
-		JSONObject json = inConnection.parseJson(response2);
+		JSONObject json = inConnection.parseMap(response2);
 		//log.info("Data returned:" + params.toJSONString() );
 		
 		String remotecatalogid = (String)json.get("catalogid");

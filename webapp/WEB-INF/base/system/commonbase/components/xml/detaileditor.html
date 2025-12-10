@@ -21,6 +21,20 @@ $!context.putPageValue("readonly", $readonly)
 	No details found for $viewid - Searchtype: $searcher.getSearchType() in $content.path
 #end
 
+#ifnull($multiedit)
+	#set( $multiedit = $context.getRequestParameter("multiedit"))
+#end
+#ifnull($multiedit)
+	#set( $multiedit = false)
+#end
+#if ( $multiedit == "true" )
+	#set( $multiedit = true)
+#elseif( $multiedit == "false")
+	#set( $multiedit = false)
+#end
+$context.putPageValue("multiedit",$multiedit)
+
+
 <div class="oeinputform validate-inputs">
 	<div id="allerrors">
 	</div>

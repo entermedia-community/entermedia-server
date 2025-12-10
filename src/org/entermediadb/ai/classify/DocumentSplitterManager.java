@@ -12,7 +12,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.LlmConnection;
-import org.entermediadb.ai.llm.llama.LlamaResponse;
+import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.ai.llm.http.HttpResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
@@ -74,7 +75,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 					continue;
 				}
 			}
-			inLog.info("Splitting document " + asset);
+			inLog.info("Splitting " + asset.getValue("pages") + " pages in document " + asset);
 			entity.setValue("totalpages", asset.getValue("pages"));
 			splitDocument(inLog, inConfig, entity, asset);
 			String modtime = asset.get("assetmodificationdate");
@@ -149,19 +150,18 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			}
 		}
 		Long endtime = System.currentTimeMillis();
-		inLog.info("Generated: " + totalpages + " pages for:" + inEntity + " in: " + endtime + "ms");
+		inLog.info("Generated: " + totalpages + " pages for:" + inEntity + " in: " + (endtime - starttime)/1000L + "s");
 		pageSearcher.saveAllData(tosave, null);
 	}
 	
 	public void generateMarkdown(MultiValued pageEntity) 
 	{
-		String model = getMediaArchive().getCatalogSettingValue("llmvisionmodel");
-		LlmConnection llmconnection = getMediaArchive().getLlmConnection(model);
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("generateMarkdown");
 
 		String base64Img = loadDocumentContent(pageEntity);
 			
-		LlamaResponse result = (LlamaResponse) llmconnection.callOCRFunction(new HashMap(), "document_ocr", base64Img);
-		String markdown = result.getOcrResponse();
+		LlmResponse result = (LlmResponse) llmconnection.callOCRFunction(new HashMap(), base64Img);
+		String markdown = result.getMessage();
 			
 		pageEntity.setValue("markdowncontent", markdown);
 	}

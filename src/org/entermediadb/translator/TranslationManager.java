@@ -9,12 +9,10 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
+import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -174,25 +172,14 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 		payload.put("target", targets);
 		
 		log.info("Translating " + q + " from " + sourceLang + " to " + targetLangs);
-
-		String translationserver = getMediaArchive().getCatalogSettingValue("ai_translate_server");
-		String endpoint = translationserver +"/translate";
 		
-		try {			
-			HttpPost method = new HttpPost(endpoint);
-			method.setHeader("Content-Type", "application/json");
-			method.setEntity(new StringEntity(payload.toJSONString(), "UTF-8"));
+		LlmConnection connection = getMediaArchive().getLlmConnection("translateFields");
+		
+		LlmResponse resp = connection.callJson("/translate", payload);
+		
+		JSONObject translatedText = (JSONObject) resp.getRawResponse().get("translatedText");
 			
-			CloseableHttpResponse resp = getSharedConnection().sharedExecute(method);
-			JSONObject json = getSharedConnection().parseJson(resp);
-			
-			JSONObject translatedText = (JSONObject) json.get("translatedText");
-			
-			return translatedText;
-		} catch (Exception e) {
-			// TODO: handle exception
-			return null;
-		}
+		return translatedText;
 		
 	}
 	
@@ -239,14 +226,12 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 	@Override
 	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecordsToTranslate)
 	{
-		inLog.headline("Translating metadata from " + inRecordsToTranslate.size() + " entities");
 
 		HitTracker locales = getMediaArchive().query("locale").exact("translatemetadata", true).search();
 		
 		if (locales.size() == 1 && "en".equals(locales.get(0).getId())) 
 		{
-				//log.info("No locales found for translation, defaulting to English");
-				return; // No locales to translate, so we exit
+			return;
 		}
 
 		Collection<String> availableTargets = Arrays.asList("en,es,fr,de,ar,pt,bn,hi,ur,ru,zh-Hans,zh-Hant".split(","));
@@ -275,7 +260,7 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 			}
 		}
 		
-		log.info("Translating to " + targetLangs);
+		inLog.headline("Translating " + inRecordsToTranslate.size() + " record(s)");
 
 		int count = 1;
 		for (Iterator iterator = inRecordsToTranslate.iterator(); iterator.hasNext();)
@@ -291,14 +276,15 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 
 			long startTime = System.currentTimeMillis();
 
-			Map<String, PropertyDetail> detailsfields = loadActiveDetails(moduleid);
+			Collection<PropertyDetail> detailsfields = loadActiveDetails(moduleid);
 			
 			Map<String, LanguageMap> results = new HashMap();
 			
-			for (Iterator iterator2 = detailsfields.keySet().iterator(); iterator2.hasNext();)
+			for (Iterator iterator2 = detailsfields.iterator(); iterator2.hasNext();)
 			{
-				String inKey = (String) iterator2.next();
-				PropertyDetail detail = getMediaArchive().getSearcher(moduleid).getDetail(inKey);
+				PropertyDetail detail = (PropertyDetail) iterator2.next();
+				String inKey = detail.getId();
+				
 				if (detail != null && detail.isMultiLanguage())
 				{
 					LanguageMap value = data.getLanguageMap(inKey);

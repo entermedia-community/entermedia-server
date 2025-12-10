@@ -1,17 +1,26 @@
 
 #ifnotnull($value)
 	#if( $detail.isMultiValue())
-		$value 
+		#foreach( $type in $values )
+			#set( $foundrow = $searcherManager.getCachedData($detail.getListCatalogId(),$detail.getListId(), $value) )
+			#set($label = $foundrow.getName($context.getLanguage()))
+					
+			#ifnotnull($label)
+				#esc($label)
+			#end
+			#ifnull($label)
+				#esc($value) [[Not Found]]
+			#end		
+		#end	
 	#else
-	
-	#set( $foundrow = $searcherManager.getCachedData($detail.getListCatalogId(),$detail.getListId(),$value) )
-	#set($label = $foundrow.getName($context.getLanguage()))
-	#ifnotnull($label)
-		#esc($label)
-	#end
-	#ifnull($label)
-		#esc($value)
-	#end
-	
+		#set( $foundrow = $searcherManager.getCachedData($detail.getListCatalogId(),$detail.getListId(), $value) )
+		#set($label = $foundrow.getName($context.getLanguage()))
+		
+		#ifnotnull($label)
+			#esc($label)
+		#end
+		#ifnull($label)
+			#esc($value) [[Not Found]]
+		#end
 	#end
 #end	

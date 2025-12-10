@@ -1,4 +1,7 @@
 #
-#Thu Apr 20 13:25:59 CDT 2017
+#Tue Nov 18 16:26:02 CST 2025
 No=No
 Yes=S\u00ED
+see\ less=ver menos
+see\ more=Ver m\u00E1s
+Deleted\ Asset=Activo eliminado

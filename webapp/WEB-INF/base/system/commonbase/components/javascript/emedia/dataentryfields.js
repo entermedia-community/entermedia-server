@@ -29,7 +29,7 @@ $(document).ready(function () {
 		trnslationsource.find("label").attr("for", detailid + "." + lang);
 	});
 
-	lQuery(".addlocale-ajax").livequery("change", function (event) {
+	lQuery(".addlocale-ajax").livequery("click", function (event) {
 		event.stopPropagation();
 		event.preventDefault();
 
@@ -37,30 +37,21 @@ $(document).ready(function () {
 		addLanguageInput(btn);
 	});
 
-	function addLanguageInput(select, languagecode = null, val = "") {
-		var detailid = select.data("detailid");
+	function addLanguageInput(btn, val = "") {
+		var detailid = btn.data("detailid");
 
-		if (!languagecode) {
-			languagecode = select.val();
-			select.find("option:first-child").prop("disabled", true);
-		}
+		var languagecode = btn.data("languagecode");
+		btn.hide();
+
 		if (!languagecode) return;
 
-		var opt = select.find("option[value='" + languagecode + "']");
-		var locale = opt.text();
+		if ($(`#value-${detailid}-${languagecode}`).length > 0) return;
 
-		select.data("languagecode", languagecode);
-		select.data("locale", locale);
-
-		if ($(`#value-${detailid}-${languagecode}`).length > 0) {
-			return;
-		}
-
-		select.runAjax(function () {
+		btn.runAjax(function () {
 			if (val) {
 				$(`#value-${detailid}-${languagecode}`).val(val);
 			}
-			var languagesfield = select.closest(".languagesfield");
+			var languagesfield = btn.closest(".languagesfield");
 			$(".hide-remove-btn", languagesfield).remove();
 		});
 	}
@@ -75,48 +66,22 @@ $(document).ready(function () {
 		}
 	}
 
-	$(document).on("focus", ".langvalue", autoSelectTranslationSource);
-	$(document).on("input", ".langvalue", autoSelectTranslationSource);
+	// $(document).on("focus", ".langvalue", autoSelectTranslationSource);
+	// $(document).on("input", ".langvalue", autoSelectTranslationSource);
 
-	function autoSelectTranslationSource(forced = false) {
-		if (forced || $(this).val().trim().length > 0) {
-			var detailid = $(this).data("detailid");
-			var code = $(this).data("languagecode");
-			var locale = $(this).data("locale");
-			$(`#translate-dropdown-${detailid}`).val(code);
-		}
-	}
+	// function autoSelectTranslationSource(forced = false) {
+	// 	if (forced || $(this).val().trim().length > 0) {
+	// 		var detailid = $(this).data("detailid");
+	// 		var code = $(this).data("languagecode");
+	// 		var locale = $(this).data("locale");
+	// 		$(`#translate-dropdown-${detailid}`).val(code);
+	// 	}
+	// }
 
 	lQuery(".remove-language").livequery("click", function (e) {
 		e.preventDefault();
 		var parent = $(this).parent();
-		var languagesfield = parent.closest(".languagesfield");
-		var hasvalue = parent.find(".langvalue").val().trim().length > 0;
-		var confirmed = true;
-
-		if (hasvalue) {
-			confirmed = confirm("Are you sure you want to remove this language?");
-		}
-		if (confirmed) {
-			//parent.remove();
-			parent.find(".langvalue").val("");
-			return;
-		}
-		/*
-		var languagecode = $(this).data("languagecode");
-		var dropdown = $(".addlocale-ajax", languagesfield);
-
-		if (dropdown.val() === languagecode) {
-			var langvalue = $(".langvalue", languagesfield);
-			autoSelectTranslationSource.call(langvalue[0], true);
-		}
-
-		if ($(".langvalue", languagesfield).length < 2) {
-			languagesfield.append(`<div class="hide-remove-btn"></div>`);
-		} else {
-			$(".hide-remove-btn", languagesfield).remove();
-		}
-		*/
+		parent.find(".langvalue").val("");
 	});
 
 	function parseLangCodes(targets) {
@@ -129,6 +94,7 @@ $(document).ready(function () {
 				} else if (code === "zh_TW") {
 					code = "zh-Hant";
 				}
+				if (code === "all" || code === "missing") return;
 				langCodes.push(code);
 			});
 		}
@@ -156,50 +122,73 @@ $(document).ready(function () {
 	lQuery(".translate-ajax").livequery("click", function (e) {
 		e.preventDefault();
 		var div = $(this).closest(".emdatafieldvalue");
-		var select = div.find(".addlocale-ajax");
-		var source = select.val();
+		var sourceSelect = div.find(".sourcelocale");
+		var targetSelect = div.find(".targetlocale");
+		var source = sourceSelect.val();
+		var target = targetSelect.val();
+
 		if (!source) {
 			customToast("Please select a source language!", {
 				positive: false,
 			});
 			return;
 		}
+
+		if (!target) {
+			customToast("Please select a target language!", {
+				positive: false,
+			});
+			return;
+		}
+
+		if (target === source) {
+			customToast("Source and target languages cannot be the same!", {
+				positive: false,
+			});
+			return;
+		}
+
 		var text = "",
 			targets = new Set();
 
-		select.find("option").each(function () {
-			var val = $(this).attr("value");
-			if (val) {
-				targets.add(val);
-			}
-		});
-		targets.delete(source);
+		if (target === "all" || target === "missing") {
+			targetSelect.find("option").each(function () {
+				var val = $(this).attr("value");
+				if (val) {
+					targets.add(val);
+				}
+			});
+			targets.delete(source);
+		} else {
+			targets.add(target);
+		}
 
 		var selectedLangs = div.find("textarea.langvalue");
 		selectedLangs.each(function () {
 			var code = $(this).data("languagecode");
+			var val = $(this).val().trim();
 			if (code == source) {
-				text = $(this).val().trim();
-			} else {
-				if ($(this).val().trim().length > 1) {
-					targets.delete(code);
-				}
+				text = val;
+			} else if (target === "missing" && val.length > 1) {
+				targets.delete(code);
 			}
 		});
+
 		if (text == "") {
 			customToast("Source language is empty!", {
 				positive: false,
 			});
 			return;
 		}
+
 		if (targets.size == 0) {
-			customToast(
-				"No target languages found. Only empty fields will be translated!",
-				{ positive: false }
-			);
+			customToast("No translation targets found!", { positive: false });
 			return;
 		}
-		div.find(".translation-mask").addClass("active");
+
+		var mask = div.find(".translation-mask");
+		mask.addClass("active");
+
 		var parsedTargets = parseLangCodes(targets);
 		$.ajax({
 			url: `/${mediadb}/services/module/translation/translate.json`,
@@ -221,21 +210,22 @@ $(document).ready(function () {
 							}
 						});
 
-						select.find("option").each(function () {
-							var code = $(this).attr("value");
+						div.find(".addlocale-ajax").each(function () {
+							var code = $(this).data("languagecode");
 							if (code && translations[code]) {
-								addLanguageInput(select, code, translations[code]);
+								addLanguageInput($(this), translations[code]);
 							}
 						});
 					}
 				}
-				div.find(".translation-mask").removeClass("active");
+				mask.removeClass("active");
 			},
 			error: function (error) {
-				customToast("Error creating the folder!", {
+				customToast("Translation request failed!", {
 					positive: false,
 					log: error,
 				});
+				mask.removeClass("active");
 			},
 		});
 	});
@@ -325,6 +315,17 @@ $(document).ready(function () {
 			});
 		});
 
+		$.validator.methods.number = function (value, element) {
+			var globalizedValue = value.replace(/[$,]/g, "");
+			$(element).val(globalizedValue);
+			return (
+				this.optional(element) ||
+				/^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\., ]\d+)?$/.test(
+					globalizedValue
+				)
+			);
+		};
+
 		$.validator.addClassRules("validateNumber", {
 			number: true,
 		});
@@ -332,9 +333,8 @@ $(document).ready(function () {
 		jQuery.validator.addMethod(
 			"entityrequired",
 			function (value, element) {
-				
 				var entitylistdiv = $(element).closest(".entitylistcontainer");
-				var entitylist = entitylistdiv.find(".entity-value-list")
+				var entitylist = entitylistdiv.find(".entity-value-list");
 				if (entitylist.children("li").length > 0) {
 					return true;
 				}
@@ -346,7 +346,7 @@ $(document).ready(function () {
 		$.validator.addClassRules("entityRequired", {
 			entityrequired: true,
 			number: true,
-			min: 1
+			min: 1,
 		});
 
 		$.validator.setDefaults({
@@ -374,22 +374,18 @@ $(document).ready(function () {
 			},
 		});
 	}
-	
-	lQuery(".entity-value-list-remove").livequery("click", function () { 
-		
+
+	lQuery(".entity-value-list-remove").livequery("click", function () {
 		var entitylistdiv = $(this).closest(".entitylistcontainer");
 		var input = entitylistdiv.find(".entity-value-list-count");
-		if (input.lenght > 0)
-			{
-				var count = input.val();
-				if($.isNumeric(count) && count > 0) {
-					input.val(count - 1);
-				}
-				else 
-				{
-					input.val("0");
-				}
-			} 
+		if (input.lenght > 0) {
+			var count = input.val();
+			if ($.isNumeric(count) && count > 0) {
+				input.val(count - 1);
+			} else {
+				input.val("0");
+			}
+		}
 		$(this).closest("li").remove();
 		return false;
 	});
@@ -398,36 +394,32 @@ $(document).ready(function () {
 		var form = $(this).closest(".inlinedata");
 		var queryString = form.formSerialize();
 		var url = form.attr("action");
-		if (url == null)
-		{
+		if (url == null) {
 			url = apphome + "/views/settings/lists/datamanager/edit/inlinesave.json";
 		}
 		var targetselect = $(this).data("targetselect");
 		var select = $("#" + targetselect);
-		
+
 		$.getJSON(url, queryString, function (data) {
 			var newOption = new Option(data.name, data.id, true, true);
 			select.append(newOption).trigger("change");
 		});
 		$(this).closest(".modal").modal("hide");
 	});
-	
-	
+
 	lQuery(".removeentityfromfield").livequery("click", function () {
-			let listcontainer = $(this).closest(".entitylistcontainer");
-			let countinput = listcontainer.find(".entity-value-list-count");
-			let count = countinput.val();
-			if (!$.isNumeric(count)) {
-				count = 0;
-			}
-			else 
-			{
-				count = count - 1;
-			}
-			countinput.val(count);
-			let entityrow = $(this).closest("li");
-			entityrow.remove();
-		});
+		let listcontainer = $(this).closest(".entitylistcontainer");
+		let countinput = listcontainer.find(".entity-value-list-count");
+		let count = countinput.val();
+		if (!$.isNumeric(count)) {
+			count = 0;
+		} else {
+			count = count - 1;
+		}
+		countinput.val(count);
+		let entityrow = $(this).closest("li");
+		entityrow.remove();
+	});
 
 	//End of init
 });

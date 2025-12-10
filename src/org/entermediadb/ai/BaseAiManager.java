@@ -5,16 +5,20 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.manager.BaseManager;
-import org.entermediadb.net.HttpSharedConnection;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.profile.UserProfile;
@@ -22,30 +26,11 @@ import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
 
-public class BaseAiManager extends BaseManager 
+public class BaseAiManager extends BaseManager implements ChatMessageHandler
 {
 	private static final Log log = LogFactory.getLog(BaseAiManager.class);
 	
-	
-	protected HttpSharedConnection fieldSharedConnection;
-
-	protected HttpSharedConnection getSharedConnection()
-	{
-		if (fieldSharedConnection == null)
-		{
-			HttpSharedConnection connection = new HttpSharedConnection();
-			//connection.addSharedHeader("x-api-key", api);
-			fieldSharedConnection = connection;
-		}
-
-		return fieldSharedConnection;
-	}
-
-	public void setSharedConnection(HttpSharedConnection inSharedConnection)
-	{
-		fieldSharedConnection = inSharedConnection;
-	}
-	
+	/*
 	public Map<String, String> getModels()
 	{
 		Map<String, String> models = new HashMap<>();
@@ -54,6 +39,12 @@ public class BaseAiManager extends BaseManager
 			visionmodel = "gpt-5-nano";
 		}
 		models.put("vision", visionmodel);
+		
+		String entityclassificationmodel = getMediaArchive().getCatalogSettingValue("llmentityclassificationmodel");
+		if(entityclassificationmodel == null) {
+			entityclassificationmodel = "qwen3_4b";
+		}
+		models.put("entityclassification", entityclassificationmodel);
 		
 		String metadatamodel = getMediaArchive().getCatalogSettingValue("llmmetadatamodel");
 		if(metadatamodel == null) {
@@ -75,8 +66,8 @@ public class BaseAiManager extends BaseManager
 		
 		return models;
 	}
-	
-	protected Map<String, PropertyDetail> loadActiveDetails(String inModuleId)
+	*/
+	protected Collection<PropertyDetail> loadActiveDetails(String inModuleId)
 	{
 		//TODO: Cache these!!
 		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inModuleId).exact("systemdefined", false).search();  //Cache this
@@ -86,7 +77,7 @@ public class BaseAiManager extends BaseManager
 			return null;
 		}
 		
-		Map<String, PropertyDetail> detailsfields = new HashMap();
+		Collection<PropertyDetail> detailsfields = new ArrayList<PropertyDetail>();
 
 		for (Iterator iterator = detailsviews.iterator(); iterator.hasNext();)
 		{
@@ -97,7 +88,7 @@ public class BaseAiManager extends BaseManager
 				for (Iterator iterator2 = viewfields.iterator(); iterator2.hasNext();)
 				{
 					PropertyDetail detail = (PropertyDetail) iterator2.next();
-					detailsfields.put(detail.getId(), detail);
+					detailsfields.add(detail);
 				}
 			}
 		}
@@ -239,11 +230,21 @@ public class BaseAiManager extends BaseManager
 		Exec exec = (Exec)getMediaArchive().getBean("exec");
 
 		ExecResult result = exec.runExecStream("convert", args, output, 5000);
+		if (!result.isRunOk())
+		{
+			
+			throw new OpenEditException("Error converting image: "+ result.getReturnValue());
+		}
+		long duration = (System.currentTimeMillis() - starttime) ;
+		log.info("Converted " + item.getName() + " in "+duration+"ms");
+
+		starttime = System.currentTimeMillis();
 		byte[] bytes = output.toByteArray();  // Read InputStream as bytes
 		String base64EncodedString = Base64.getEncoder().encodeToString(bytes); // Encode to Base64
-		long duration = (System.currentTimeMillis() - starttime) ;
-		log.info("Loaded and encoded " + item.getName() + " in "+duration+"ms");
-		return base64EncodedString;
+		duration = (System.currentTimeMillis() - starttime) ;
+		log.info("Encoded " + item.getName() + " in "+duration+"ms" + " base64length:" + base64EncodedString.length());
+		
+		return "data:image/jpeg;base64," + base64EncodedString;
 
 	}
 	
@@ -295,103 +296,80 @@ public class BaseAiManager extends BaseManager
 		return groupbymodule;
 	}
 	
-	protected Map<String,Map> populateFields(String inModuleId, MultiValued inData)
+	protected Collection<PropertyDetail> populateFields(String inModuleId, MultiValued inData, Collection<PropertyDetail> inExcludeFields)
 	{
-		Map<String, PropertyDetail> detailsfields = loadActiveDetails(inModuleId);
+		Collection<PropertyDetail> detailsfields = loadActiveDetails(inModuleId);
 
-		Map<String,Map> contextfields = new HashMap();
+		Collection<PropertyDetail> contextfields = new ArrayList<PropertyDetail>();
 		
-		JsonUtil jsonutils = new JsonUtil();
-
-		for (Iterator iter = detailsfields.keySet().iterator(); iter.hasNext();)
+		Set<String> contextfieldids = new HashSet<String>();
+		
+		Set<String> excludeids = new HashSet<String>();
+		for (Iterator iterator = inExcludeFields.iterator(); iterator.hasNext();)
 		{
-			String key = (String) iter.next();
-			PropertyDetail detail = (PropertyDetail) detailsfields.get(key);
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			excludeids.add(detail.getId());
+		}
 
-			String fieldId = detail.getId();
-
-			String stringValue = null;
-
-			if (detail.isBoolean() || detail.isDate())
+		for (Iterator iter = detailsfields.iterator(); iter.hasNext();)
+		{
+			PropertyDetail detail = (PropertyDetail) iter.next();
+			if(excludeids.contains(detail.getId()) || contextfieldids.contains(detail.getId()))
 			{
 				continue;
 			}
-			else if (detail.isMultiLanguage())
+			contextfields.add(detail);
+			contextfieldids.add(detail.getId());
+		}
+		
+		if(!inModuleId.equals("asset") && !contextfieldids.contains("fulltext") && inData.get("pagenum") == null  )
+		{
+			addPrimaryMediaFulltext(inData, contextfields);
+		}
+		
+		return contextfields;
+	}
+	
+	private void addPrimaryMediaFulltext(MultiValued inData, Collection<PropertyDetail> contextfields) {
+		String primarymedia = inData.get("primarymedia");
+		if(primarymedia == null || primarymedia.isEmpty())
+		{
+			primarymedia = inData.get("primaryimage");
+		}
+		if(primarymedia != null)
+		{
+			MultiValued primaryasset = getMediaArchive().getAsset(primarymedia);
+			if(primaryasset != null)
 			{
-				stringValue = inData.getText(fieldId, "en");
-			}
-			else if (detail.isMultiValue() || detail.isList())
-			{
-				Collection<String> values = inData.getValues(fieldId);
-				if (values == null || values.isEmpty())
+				if (primaryasset.getBoolean("hasfulltext"))
 				{
-					log.info("Skipping empty field: " + fieldId);
-					continue;
-				}
-
-				Collection<String> textValues = new ArrayList<>();
-				if (detail.isList())
-				{
-					for (Iterator iter2 = values.iterator(); iter2.hasNext();)
+					String mediatype = getMediaArchive().getMediaRenderType(primaryasset);
+					if(mediatype.equals("document"))
 					{
-						String val = (String) iter2.next();
-						Data data = getMediaArchive().getCachedData(detail.getListId(), val);
-						if (data != null)
+						String fulltext = primaryasset.get("fulltext");
+						if (fulltext != null)
 						{
-							String v = data.getName();
-							textValues.add(v);
+							fulltext = fulltext.replaceAll("\\s+", " ");
+							fulltext = fulltext.substring(0, Math.min(4000, fulltext.length()));
+							PropertyDetail fieldMap = new PropertyDetail();
+							fieldMap.setName("Parsed Document Content");
+							fieldMap.setId("fulltext");
+							
+							JsonUtil jsonutils = new JsonUtil();
+							inData.setValue("fulltext", jsonutils.escape(fulltext));
+							
+							contextfields.add(fieldMap);
 						}
 					}
 				}
-				else if (detail.isMultiValue())
-				{
-					textValues.addAll(values);
-				}
-				stringValue = String.join(", ", textValues);
-			}
-			else
-			{
-				stringValue = inData.get(fieldId);
-			}
-
-			if (stringValue == null)
-			{
-				log.info("Skipping empty field: " + fieldId);
-				continue;
-			}
-
-			String label = detail.getName();
-
-			HashMap fieldMap = new HashMap();
-			fieldMap.put("label", jsonutils.escape(label));
-			fieldMap.put("text", jsonutils.escape(stringValue));
-
-			contextfields.put(detail.getId(), fieldMap);
-		}
-
-		if (inData.getBoolean("hasfulltext"))
-		{
-			String mediatype = getMediaArchive().getMediaRenderType(inData);
-			if(mediatype.equals("document"))
-			{
-				String fulltext = inData.get("markdowncontent");
-				if(fulltext == null)
-				{
-					fulltext = inData.get("fulltext");
-					fulltext = fulltext.replaceAll("\\s+", " ");
-				}
-				if (fulltext != null)
-				{
-					fulltext = fulltext.substring(0, Math.min(4000, fulltext.length()));
-					HashMap fieldMap = new HashMap();
-					fieldMap.put("label", "Parsed Document Content");
-					fieldMap.put("text", jsonutils.escape(fulltext));
-
-					contextfields.put("fulltext", fieldMap);
-				}
 			}
 		}
-		return contextfields;
+	}
+
+	@Override
+	public LlmResponse processMessage(MultiValued inMessage, AgentContext inAgentContext)
+	{
+		throw new OpenEditException("Not implemented");
 	}
 
 }

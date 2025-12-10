@@ -51,8 +51,11 @@
 <script type="text/javascript">
 
 function getLatLngFromString(ll) {
-    var latlng = ll.split(/, ?/);
-    return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1])); 
+	if (typeof google !== 'undefined' && google.maps)
+	{
+	    var latlng = ll.split(/, ?/);
+	    return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
+	} 
 }
 
 
@@ -158,11 +161,14 @@ function clear(marker) {
 
 
 $(document).ready(function () {
-	initialize(); //Onload?
+	if (typeof google !== 'undefined' && google.maps)
+	{
+		initialize(); //Onload?
+	}
 });
 
 $(window).resize(function() {
-	if (typeof map !== 'undefined') {
+	if (typeof google !== 'undefined' && typeof map !== 'undefined') {
   		google.maps.event.trigger(map, "resize");
 	}
 });

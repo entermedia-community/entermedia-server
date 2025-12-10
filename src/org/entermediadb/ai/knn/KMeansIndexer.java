@@ -901,7 +901,7 @@ public class KMeansIndexer implements CatalogEnabled {
 		Collection tosave = new ArrayList();
 		
 		int totalsaved = 0;
-		inLog.info("Start Reindexing " +  tracker.size() + " " + getSearchType() + " into " + getClusters().size() + " clusters");
+		inLog.info("Start Reindexing " +  tracker.size() + " " + getSearchType() + " using " + getClusters().size() + " clusters");
 		long start = System.currentTimeMillis();
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
@@ -936,7 +936,7 @@ public class KMeansIndexer implements CatalogEnabled {
 				long end = System.currentTimeMillis();
 				double diff = (end - start)/1000D;
 				diff = MathUtils.roundDouble(diff, 2);
-				inLog.info("Added "  + tosave.size() + " assigned nodes in " + diff + " seconds " + totalsaved + " of " + tracker.size() + " into " + getClusters().size() + " clusters");
+				inLog.info("Added "  + tosave.size() + " assigned nodes in " + diff + " seconds " + totalsaved + " of " + tracker.size() + " using " + getClusters().size() + " clusters");
 				start = System.currentTimeMillis();
 				tosave.clear();
 			}

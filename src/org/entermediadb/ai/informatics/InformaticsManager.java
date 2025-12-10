@@ -72,7 +72,7 @@ public class InformaticsManager extends BaseAiManager
 				Collection pageofhits = new ArrayList();
 				try
 				{
-					
+					long startTime = System.currentTimeMillis();
 					for (Iterator iterator = pendingrecords.getPageOfHits().iterator(); iterator.hasNext();)
 					{
 						Data data = (Data) iterator.next();
@@ -84,7 +84,7 @@ public class InformaticsManager extends BaseAiManager
 					{
 						MultiValued config = (MultiValued) iterator2.next();
 						InformaticsProcessor processor = loadProcessor(config.get("bean"));
-						inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" );
+						//inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" ); //Add Header Logs in each Bean
 						processor.processInformaticsOnAssets(inLog, config, pageofhits);
 						getMediaArchive().saveData("asset", pageofhits);
 					}
@@ -95,6 +95,8 @@ public class InformaticsManager extends BaseAiManager
 						data.setValue("taggedbyllm", true);
 					}
 					getMediaArchive().saveData("asset", pageofhits);
+					long duration = (System.currentTimeMillis() - startTime) / 1000L;
+					inLog.info("Processing " + pageofhits.size() + " records took "+duration +"s");
 				}
 				catch(Exception e)
 				{

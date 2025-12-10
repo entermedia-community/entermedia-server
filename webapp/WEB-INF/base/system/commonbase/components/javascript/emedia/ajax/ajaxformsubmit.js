@@ -16,9 +16,13 @@
 			return this;
 		}
 
-		if ("updateAllCK5" in window) updateAllCK5();
+		if ("updateAllCK5" in window)
+		{
+			updateAllCK5();
+		} 
 
 		if (!form.hasClass("novalidate")) {
+			//
 			if (form.validate) {
 				try {
 					$.validator.addClassRules("entityRequired", {
@@ -27,11 +31,23 @@
 						min: 1,
 					});
 					form.validate({
-						ignore: ".ignore,:hidden:not(.validatehidden)",
+						ignore: ".ignore,:hidden:not(.validatehidden),:hidden:not(.select2-hidden-accessible)",
 					});
 					var isvalidate = form.valid();
 					if (!isvalidate) {
 						//e.preventDefault();
+						console.log("Form is not Valid");
+						var validator = form.validate();
+						var errors = validator.errorList;
+					    if (errors.length > 0) {
+					        console.log("Form is invalid. Errors found:", errors);
+					    } else {
+					        console.log("Form is truly valid now.");
+					    }
+						var submitbtn = form.find(".submitform");
+						if (submitbtn) {
+							submitbtn.prop("disabled", false);
+						}
 						return this;
 					}
 				} catch (_e) {

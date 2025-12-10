@@ -8,92 +8,36 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.entermediadb.ai.llm.BaseLlmConnection;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.BasicLlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
-import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.ai.llm.openai.OpenAiConnection;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
-import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
 import org.openedit.util.JSONParser;
-import org.openedit.util.OutputFiller;
 
 
 
-public class OllamaConnection extends BaseLlmConnection implements CatalogEnabled, LlmConnection
+public class OllamaConnection extends OpenAiConnection implements CatalogEnabled, LlmConnection
 {
 	private static Log log = LogFactory.getLog(OllamaConnection.class);
 
-	protected String fieldCatalogId;
-	protected MediaArchive fieldMediaArchive;
-	protected HttpSharedConnection connection;
-
-	protected HttpSharedConnection getConnection()
+	@Override
+	public String getLlmProtocol()
 	{
-		
-		if (connection == null)
-		{
-			connection = new HttpSharedConnection();
-		}
-
-		return connection;
-	}
-
-	public ModuleManager getModuleManager()
-	{
-		return fieldModuleManager;
-	}
-
-	public void setModuleManager(ModuleManager inModuleManager)
-	{
-		fieldModuleManager = inModuleManager;
-	}
-
-	public MediaArchive getMediaArchive()
-	{
-		if (fieldMediaArchive == null)
-		{
-			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
-		}
-		return fieldMediaArchive;
-	}
-
-	public String getCatalogId()
-	{
-		return fieldCatalogId;
-	}
-
-	public void setCatalogId(String inCatalogId)
-	{
-		fieldCatalogId = inCatalogId;
+		return "ollama";
 	}
 	
-	public String getApiKey()
-	{
-		if (apikey == null)
-		{
-			apikey = getMediaArchive().getCatalogSettingValue("ollama-key");
-			setApikey(apikey);
-		}
-		if (apikey == null)
-		{
-			log.error("No ollama-key defined in catalog settings");
-		}
-		
-		return apikey;
-	}
-
 	public BasicLlmResponse runPageAsInput(AgentContext llmrequest, String inTemplate)
 	{
 		String input = loadInputFromTemplate(inTemplate, llmrequest);
 		log.info(input);
-		String endpoint = getApiEndpoint() + "/api/chat";
+		String endpoint = getServerRoot() + "/api/chat";
 		
 
 		HttpPost method = new HttpPost(endpoint);
@@ -106,29 +50,12 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 
-		JSONObject json = connection.parseJson(resp); // pretty dumb but I want to standardize on GSON
+		JSONObject json = getConnection().parseMap(resp); // pretty dumb but I want to standardize on GSON
 
 		OllamaResponse response = new OllamaResponse();
 		response.setRawResponse(json);
 		return response;
 
-	}
-
-	public String getApiEndpoint()
-	{
-		// TODO Auto-generated method stub
-		String apihost = getMediaArchive().getCatalogSettingValue("ai_ollama_server");
-		if (apihost == null)
-		{
-			apihost = "http://localhost:11434";
-		}
-		String endpoint = apihost + "/api/chat";
-		return endpoint;
-	}
-
-	public void setFiller(OutputFiller inFiller)
-	{
-		filler = inFiller;
 	}
 	
 	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image)
@@ -142,7 +69,7 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 
 	    // Use JSON Simple to create request payload
 	    JSONObject obj = new JSONObject();
-	    obj.put("model", getModelIdentifier());
+	    obj.put("model", getModelName());
 	    obj.put("stream", false);
 
 
@@ -195,13 +122,8 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	        JSONObject parameters = (JSONObject) functionDef.get("parameters");
 	        obj.put("format", parameters);
 	    }
-	    String payload = obj.toJSONString();
 	    
-	    JSONObject json = handleApiRequest(payload);
-	    
-	    OllamaResponse response = new OllamaResponse();
-	    response.setRawResponse(json);
-	    
+	    LlmResponse response = callJson("/api/chat",null,obj);
 	    return response;
 	}
 
@@ -213,40 +135,22 @@ public class OllamaConnection extends BaseLlmConnection implements CatalogEnable
 	}
 	
 	@Override
-	public JSONObject callStructuredOutputList(String inStructureName, Map inParams) 
+	public LlmResponse callStructuredOutputList(Map inParams) 
 	{
-		inParams.put("model", getModelIdentifier());
+		inParams.put("model", getModelName());
 		
-		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/ollama/classify/structures/" + inStructureName + ".json", inParams);
+		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/ollama/classify/structures/" + getAiFunctionName() + ".json", inParams);
+
+		JSONObject req = new JSONParser().parse(inStructure);
 		
-		JSONObject json = handleApiRequest(inStructure);
+		LlmResponse res = callJson("/api/chat",req); //Tools?
 
-		log.info("Returned: " + json);
-			
-		JSONObject results = new JSONObject();
-
-		JSONObject message = (JSONObject) json.get("message");
-		if (message == null || !message.get("role").equals("assistant"))
-		{
-			log.info("No message found in GPT response");
-			return results;
-		}
-
-		String content = (String) message.get("content");
-			
-		if (content == null || content.isEmpty())
-		{
-			log.info("No structured data found in GPT response");
-			return results;
-		}
-		JSONParser parser = new JSONParser();
-		results = (JSONObject) parser.parse(new StringReader(content));
-
-		return results;
+		log.info("Returned: " + res);
+		return res;
 	}
 	
 	@Override
-	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image)
+	public LlmResponse callOCRFunction(Map inParams, String inBase64Image)
 	{
 		throw new OpenEditException("Not implemented yet. Only available in Llama connection.");
 	}

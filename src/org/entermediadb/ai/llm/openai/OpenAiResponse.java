@@ -5,16 +5,24 @@ import java.util.ArrayList;
 import org.entermediadb.ai.llm.BasicLlmResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.openedit.OpenEditException;
 import org.openedit.util.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class OpenAiResponse extends BasicLlmResponse {
 
     @Override
     public boolean isToolCall() {
-        if (rawResponse == null) return false;
+        if (rawResponse == null) 
+    	{
+    	return false;
+    	}
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
-        if (choices == null || choices.isEmpty()) return false;
+        if (choices == null || choices.isEmpty()) 
+        {
+        	return false;
+        }
 
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
@@ -23,21 +31,69 @@ public class OpenAiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public JSONObject getArguments() {
-        if (!isToolCall()) return null;
-
+    public JSONObject getMessageStructured() {
+      /*  if (!isToolCall())
+        {
+        	
+        	return null;
+        }*/
+    	JSONParser parser = new JSONParser();
+    	JSONObject arguments = null;
         JSONArray choices = (JSONArray) rawResponse.get("choices");
+        if (choices == null || choices.isEmpty()) 
+        {
+        	return null;
+        }
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
+        
+        if (message == null || message.isEmpty()) 
+        {
+        	return null;
+        }
+        
         JSONObject functionCall = (JSONObject) message.get("function_call");
+        
+        if (functionCall != null) 
+		{
+        	String argumentsString = (String) functionCall.get("arguments");
+            
+            arguments = parser.parse(argumentsString);
+            
+            return arguments;
+		}
 
-        String argumentsString = (String) functionCall.get("arguments");
-        JSONParser parser = new JSONParser();
-        return (JSONObject) parser.parse(argumentsString); // Parse the stringified JSON
+        JSONArray tool_calls = (JSONArray) message.get("tool_calls");
+        if (tool_calls != null) 
+		{
+        	JSONObject function = (JSONObject) tool_calls.get(0);
+        	JSONObject function0 = (JSONObject) function.get("function");
+        	//JSONObject functionarguments = (JSONObject) function0.get("arguments");
+        	String argumentsString = (String) function0.get("arguments");
+            
+            arguments = parser.parse(argumentsString);
+            
+            return arguments;
+		}
+        
+        try {
+	    	String argumentsString = (String) message.get("content");
+	        arguments = parser.parse(argumentsString);
+	        return arguments;
+        } catch (Exception e) {
+			// ignore
+		}
+        
+        return null;
     }
 
     @Override
-    public String getMessage() {
+    public String getMessage() 
+    {
+    	if( fieldMessage != null)
+    	{
+    		return fieldMessage;
+    	}
         if (rawResponse == null) return null;
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
@@ -50,7 +106,13 @@ public class OpenAiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public String getFunctionName() {
+    public String getFunctionName() 
+    {
+    	if( fieldFunctionName != null)
+    	{
+    		return fieldFunctionName;
+    	}
+    	
         if (!isToolCall()) return null;
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");

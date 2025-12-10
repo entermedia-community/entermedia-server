@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.entermediadb.ai.assistant.AiSearch;
 import org.entermediadb.ai.knn.RankedResult;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class BasicLlmResponse implements LlmResponse
@@ -36,27 +37,35 @@ public class BasicLlmResponse implements LlmResponse
 		fieldAiSearchParams = inAiSearchParams;
 	}
 
-	public void setMessage(String inMessage)
-	{
-		fieldMessage = inMessage;
-	}
-	
+		
 	@Override
 	public String getMessage()
 	{
 		return fieldMessage;
 	}
 	
-	public String setMessagePlain(String inMessage)
+	public void setMessagePlain(String inMessage)
 	{
 		fieldMessagePlain = inMessage;
-		return fieldMessagePlain;
 	}
 	
 	@Override
 	public String getMessagePlain()
 	{
 		return fieldMessagePlain;
+	}
+	
+	protected Collection fieldRawCollection;
+	
+
+	public Collection getRawCollection()
+	{
+		return fieldRawCollection;
+	}
+
+	public void setRawCollection(JSONArray inRawCollection)
+	{
+		fieldRawCollection = inRawCollection;
 	}
 
 	protected JSONObject rawResponse;
@@ -77,7 +86,7 @@ public class BasicLlmResponse implements LlmResponse
 	}
 
 	@Override
-	public JSONObject getArguments()
+	public JSONObject getMessageStructured()
 	{
 		return getRawResponse();
 	}
@@ -88,6 +97,12 @@ public class BasicLlmResponse implements LlmResponse
 		return fieldFunctionName;
 	}
 
+	public void setFunctionName(String inFunctionName)
+	{
+		fieldFunctionName = inFunctionName;
+	}
+
+	
 	@Override
 	public boolean isSuccessful()
 	{
@@ -95,6 +110,8 @@ public class BasicLlmResponse implements LlmResponse
 		return false;
 	}
 
+	//Are these needed?
+	
 	@Override
 	public int getTokensUsed()
 	{
@@ -128,6 +145,18 @@ public class BasicLlmResponse implements LlmResponse
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setMessage(String inMessage)
+	{
+		fieldMessage = inMessage;
+	}
+
+	@Override
+	public void setRawCollection(Collection inObj)
+	{
+		fieldRawCollection = inObj;
 	}
 	
 	

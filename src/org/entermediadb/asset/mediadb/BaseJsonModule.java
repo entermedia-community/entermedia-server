@@ -264,6 +264,11 @@ public class BaseJsonModule extends BaseMediaModule
 					{
 						Map object = (Map)it;
 						String val = (String)object.get("id");
+						if( val == null)
+						{
+							ids.add(it);
+							continue;
+						}
 						//log.info("In VALUE: ${val}");
 						ids.add(val);
 						if(detail != null)
@@ -284,7 +289,7 @@ public class BaseJsonModule extends BaseMediaModule
 						}
 					}
 				} 
-				inData.setValue(key, ids);				
+				inData.setValue(key, ids);
 			}
 			else if(value instanceof Map )
 			{

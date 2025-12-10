@@ -122,6 +122,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 			QueryBuilder query =  getMediaArchive().localQuery("conversiontask");
 			query.orgroup("status", "new submitted retry missinginput");    //TODO: Create multiple conversion queues to deal with videos and retry and uploads
 			//query.sort("status");
+			query.sort("submitteddateDown");
 			query.sort("assetidDown");
 			query.sort("ordering");
 			//TODO: Exclude any existing asseids we are already processing
@@ -225,12 +226,17 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 		}
 	}
 
+	public Map getRunningAssetConversions()
+	{
+		return fieldRunningAssetConversions;
+	}
+	
 	private boolean hasRunningConversions()
 	{
 		return fieldRunningAssetConversions.isEmpty() == false;
 	}
 
-	private Set getRunningAssetIds()
+	public Set getRunningAssetIds()
 	{
 		return fieldRunningAssetConversions.keySet();
 	}
@@ -275,7 +281,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 		{
 			fieldRunningAssetConversions.remove(inAssetconversions.getAssetId());
 			getMediaArchive().releaseLock(inAssetconversions.getLock());
-			//log.info("RELEASED" + inAssetconversions.getAssetId());
+			log.info("RELEASED" + inAssetconversions.getAssetId());
 			getMediaArchive().conversionCompleted(inAssetconversions.getAsset());
 			//getMediaArchive().fireMediaEvent("conversions/conversioncomplete",null,inAssetconversions.getAsset());
 			//log.info("Thread complete: " + Thread.currentThread().getName() );

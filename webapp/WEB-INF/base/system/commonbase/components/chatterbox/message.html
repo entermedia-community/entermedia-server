@@ -28,7 +28,7 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 	$pages.include($messagetype, $context)
 #else
 
-<div id="chatter-message-$!{chat.id}" class="msg-bubble">
+<div id="chatter-message-$!{chat.id}" data-createdat="${chat.date}" class="msg-bubble">
 	<div class="chatterbox-chat" role="alert" >
 		<div class="chat-icon">
 			#if ($chat.user == "agent")
@@ -139,16 +139,18 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 	
 				
 			#ifnotnull($chat.replytoid)
-				#set( $otherchat = $mediaarchive.getCachedData("chatterbox",$chat.replytoid))
-				#set( $otherchatuser = $mediaarchive.getUser($otherchat.user) )
-				<div class="chatterboxreplyto">
-					<a href="#esc($userlink)" title="$context.getDateTime($otherchat.date)">
-						<strong>$otherchatuser.getAnonNickName()</strong>
-					</a>
-					<div>
-						$url_util.escapeMessage($otherchat.message)
+				#if ($chat.user != "agent")
+					#set( $otherchat = $mediaarchive.getCachedData("chatterbox",$chat.replytoid))
+					#set( $otherchatuser = $mediaarchive.getUser($otherchat.user) )
+					<div class="chatterboxreplyto">
+						<a href="#esc($userlink)" title="$context.getDateTime($otherchat.date)">
+							<strong>$otherchatuser.getAnonNickName()</strong>
+						</a>
+						<div>
+							$url_util.escapeMessage($otherchat.message)
+						</div>
 					</div>
-				</div>
+				#end
 			#end
 			
 				#if($caneditcollection && $goal)
@@ -161,7 +163,7 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 						#if($chat.user == "agent")
 							<div class="msg-body-content">$chat.message</div>
 						#else
-							<div class="msg-body-content">$url_util.escapeUnsafeHtml($chat.message)</div>
+							<div class="msg-body-content">$url_util.escapeMessage($chat.message)</div>
 						#end
 					#end
 

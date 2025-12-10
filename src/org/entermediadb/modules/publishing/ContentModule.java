@@ -72,7 +72,7 @@ public class ContentModule extends BaseMediaModule
 	}
 
 	public void processCreationQueue(WebPageRequest inReq) throws Exception
-	{
+	{ 
 		// Add as child
 		MediaArchive archive = getMediaArchive(inReq);
 
@@ -83,19 +83,20 @@ public class ContentModule extends BaseMediaModule
 		Map params = new HashMap();
 		params.putAll(inReq.getParameterMap());
 		
-		String model = archive.getCatalogSettingValue("llmmetadatamodel");
-		
-		if(model == null) {
-			model = "gpt-5-nano";
-		}
-		
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			MultiValued contentrequest = (MultiValued) iterator.next();
-
+			LlmConnection llm = null;
+			if ("image".equals(contentrequest.get("contentcreatortype")))
+			{
+				llm = (LlmConnection) archive.getLlmConnection("createAsset");
+			}
+			else
+			{
+				llm = (LlmConnection) archive.getLlmConnection("createEntity");
+			}
 			
-			LlmConnection llm = (LlmConnection) archive.getLlmConnection(model);
-			manager.createFromLLM(params, llm, model, contentrequest);
+			manager.createFromLLM(params, llm, contentrequest);
 			contentrequest.setValue("status", "complete");
 			archive.saveData("contentcreator", contentrequest);
 		}

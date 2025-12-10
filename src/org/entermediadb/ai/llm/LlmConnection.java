@@ -2,6 +2,7 @@ package org.entermediadb.ai.llm;
 
 import java.util.Map;
 
+import org.apache.http.HttpEntity;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 
@@ -9,12 +10,20 @@ public interface LlmConnection {
 	
 	public String getApiKey();
 
-	public String getLlmType();
+	public String getServerRoot();
 	
+	public String getLlmProtocol();
+
+	public String getModelName();
+	
+	public String getAiFunctionName();
+	public Data getAiFunctionData();
+	public void setAiFunctionData(Data aiFunctionData);
+
 	public Boolean isReady();
 
-    public LlmResponse createImage(String inPrompt) throws Exception;
-    public LlmResponse createImage(String inPrompt, int inCount, String inSize) throws Exception;
+    public LlmResponse createImage(String inPrompt);
+    public LlmResponse createImage(String inPrompt, int inCount, String inSize);
 
     public String loadInputFromTemplate(String inString, Map<String, Object> inParams);
     public String loadInputFromTemplate(String inTemplate, AgentContext agentcontext);
@@ -27,13 +36,20 @@ public interface LlmConnection {
     public LlmResponse callClassifyFunction(Map inParams, String inFunction, String inBase64Image, String textContent);
 
     public LlmResponse runPageAsInput(AgentContext llmRequest, String inChattemplate);
-    public LlmResponse callPlainMessage(AgentContext llmRequest, String inChitChatPageName);
+    public LlmResponse callMessageTemplate(AgentContext llmRequest, String inChitChatPageName);
 
-    public Data getModelData();
-    
-    public void setModelData(Data inData);
 	
-	public JSONObject callStructuredOutputList(String inStructureName, Map inParams);
+	public Data getAiServerData();
+	public void setAiServerData(Data fieldMainServerUrl);
+
+    public LlmResponse callStructuredOutputList(Map inParams);
 	
-	public LlmResponse callOCRFunction(Map inParams, String inOCRInstruction, String inBase64Image);
+	public LlmResponse callOCRFunction(Map inParams, String inBase64Image);
+
+	public LlmResponse callJson(String inPath, JSONObject inPayload);	
+	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, Map inMap);
+	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inEmbeddingPayload);
+	
+	LlmResponse createResponse();
+	
 }

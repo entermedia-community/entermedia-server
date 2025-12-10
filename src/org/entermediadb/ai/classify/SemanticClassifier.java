@@ -67,15 +67,11 @@ public class SemanticClassifier extends InformaticsProcessor implements CatalogE
 	{
 		String fieldname = inConfig.get("fieldname");
 		
-		inLog.headline("SemanticClassifier indexing " + fieldname);
+		inLog.headline("Adding semantic topics to " + inRecords.size() + " records");
 
 		setConfigurationId(fieldname);
 		
-		Map<String, String> models = getModels();
-
-		String model = models.get("semantic");
-		
-		LlmConnection llmsemanticconnection = getMediaArchive().getLlmConnection(model);
+		LlmConnection llmsemanticconnection = getMediaArchive().getLlmConnection("createSemanticTopics");
 
 		long start = System.currentTimeMillis();
 		
@@ -98,7 +94,7 @@ public class SemanticClassifier extends InformaticsProcessor implements CatalogE
 			{
 				continue;
 			}
-			Collection<String> newvalues = getSemanticTableManager().createSemanticValues(llmsemanticconnection,inConfig,model,moduleid,data);
+			Collection<String> newvalues = getSemanticTableManager().createSemanticValues(llmsemanticconnection, inConfig, moduleid,data);
 			data.setValue(fieldname,newvalues);
 		}
 		if( getSemanticTableManager().isIndexingVectors() )

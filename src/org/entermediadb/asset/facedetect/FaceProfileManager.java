@@ -28,23 +28,20 @@ import javax.imageio.stream.ImageInputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.knn.KMeansIndexer;
-import org.entermediadb.ai.knn.RankedResult;
+import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.video.Block;
 import org.entermediadb.video.Timeline;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.openedit.util.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -89,21 +86,6 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 
 	protected ModuleManager fieldModuleManager;
 	
-	protected HttpSharedConnection getSharedConnection()
-	{
-		String api = getMediaArchive().getCatalogSettingValue("faceapikey");
-		
-		if (fieldSharedConnection == null || !savedapikey.equals(api))
-		{
-			HttpSharedConnection connection = new HttpSharedConnection();
-			connection.addSharedHeader("x-api-key", api);
-			fieldSharedConnection = connection;
-			savedapikey = api;
-		}
-
-		return fieldSharedConnection;
-	}
-
 	protected MediaArchive getMediaArchive()
 	{
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
@@ -131,26 +113,22 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 		instructions.setMinimumFaceSize(minfacesize);
 		return instructions;
 	}
-//	public int extractFaces(Collection<MultiValued> inAssets)  //Page of assets
-//	{
-//		FaceScanInstructions instructions = createInstructions();
-//		return extractFaces(instructions,inAssets);
-//	}
-	public int extractFaces(FaceScanInstructions instructions , Collection<MultiValued> inAssets)  //Page of assets
+
+	public int extractFaces(ScriptLogger inLog, FaceScanInstructions instructions , Collection<MultiValued> inAssets)  //Page of assets
 	{
-			String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
-			if( url == null)
-			{
-				log.error("No face server configured");
-				return 0;
-			}
+//			String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
+//			if( url == null)
+//			{
+//				log.error("No face server configured");
+//				return 0;
+//			}
 
 			HitTracker existingfaces = getMediaArchive().query("faceembedding").orgroup("assetid", inAssets).search();
 			existingfaces.enableBulkOperations();
 
 			HashMap<String,Collection<MultiValued>> byassetid = new HashMap(existingfaces.size());
 			
-			log.error("Loading giant list of assetid");
+			//log.error("Loading giant list of assetid");
 			for (Iterator iterator = existingfaces.iterator(); iterator.hasNext();)
 			{
 				MultiValued face = (MultiValued) iterator.next();
@@ -187,7 +165,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 				try
 				{
 					asset.setValue("facehasprofile",false);
-					extractFaces(instructions, asset,foundfacestosave);
+					extractFaces(inLog, instructions, asset,foundfacestosave);
 				}
 				catch( Throwable ex)
 				{
@@ -196,9 +174,14 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 					//throw new OpenEditException("Error on: " + inAssets.size(),ex);
 				}
 			}  
-			log.info(" Saved Assets " + tosave.size() + " added faces:  " + foundfacestosave.size());
 			
 			getMediaArchive().saveData("faceembedding",foundfacestosave);
+			
+			log.info("Saved Assets " + tosave.size() + " added faces:  " + foundfacestosave.size());
+			if( inLog != null)
+			{	
+				inLog.info(" Found " + foundfacestosave.size() + " faces");
+			}
 			
 			getKMeansIndexer().checkReinit();
 			
@@ -211,7 +194,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 	}
 	
 
-	protected void extractFaces(FaceScanInstructions instructions, Asset inAsset, List<MultiValued> inFoundfaces) throws Exception
+	protected int extractFaces(ScriptLogger inLog, FaceScanInstructions instructions, Asset inAsset, List<MultiValued> inFoundfaces) throws Exception
 	{
 		
 		String type = getMediaArchive().getMediaRenderType(inAsset);
@@ -221,16 +204,8 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 		if (!"image".equalsIgnoreCase(type) && !"video".equalsIgnoreCase(type)  )
 		{
 			log.info("Skipping non images: " + inAsset.getName() );
-			return;
+			return 0;
 		}
-		
-		String api = getMediaArchive().getCatalogSettingValue("faceapikey");
-		if(api == null)
-		{
-			log.info("faceapikey not set");
-			return;
-		}
-	
 		//If its a video then generate all the images and scan them
 		
 		Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
@@ -244,7 +219,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 			long imagesize = imagew * imageh;
 			
 			if(imagesize < 90000) {
-				return;
+				return 0;
 			}
 			
 			String fileformat = inAsset.getFileFormat();
@@ -305,17 +280,21 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 					filename = "image3000x3000.jpg";
 					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/" + filename);
 				}
-
 			}
 			if( !input.exists() )
 			{
 				throw new OpenEditException("Input not available " + input.getPath());
 			}
+
+			if(inLog != null)
+			{
+				inLog.headline("Scanning faces in: " + inAsset.getName());
+			}
+				
 			List<Map> json = findFaces(inAsset, input);
 			if(json == null || json.isEmpty()) 
 			{
-				
-				return;
+				return 0;
 			}
 			Collection<MultiValued> moreprofiles = makeDataForEachFace(instructions,faceembeddingsearcher,inAsset,0L,input,json);
 			if( moreprofiles != null)
@@ -352,6 +331,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 //			}
 		}
 		//faceembeddingsearcher.saveAllData(tosave,null);
+		return inFoundfaces.size();
 	}
 
 	protected Collection<MultiValued> findAllFacesInVideo(FaceScanInstructions instructions, Asset inAsset) throws Exception
@@ -500,6 +480,8 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 		inEmbedding.setValue("isremoved", true);
 		inEmbedding.setValue("removedby", inUser.getId());
 		getMediaArchive().saveData("faceembedding",inEmbedding);
+		
+		getMediaArchive().getCacheManager().remove("faceboxes",inEmbedding.get("assetid"));
 		
 		//reconnect parents and children and other faces
 		
@@ -686,6 +668,9 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 		addedface.setValue("owner",inUser.getId());
 
 		faceembeddingsearcher.saveData(addedface, inUser);
+		
+		getMediaArchive().getCacheManager().remove("faceboxes",inAsset.getId());
+		
 		return addedface;
 	}
 //	
@@ -820,46 +805,12 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 		// tosendparams.put("img","http://localhost:8080" + inUrl);
 		tosendparams.put("img",tosend);
 
-		CloseableHttpResponse resp = null;
-		String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
-		if( url == null)
-		{
-			log.error("No faceprofileserver URL configured" );
-			return null;
-			//url = "http://localhost:8000";
-		}
 //		long start = System.currentTimeMillis();
 		//log.debug("Facial Profile Detection sending " + inAsset.getName() );
-		resp = getSharedConnection().sharedPostWithJson(url + "/represent",tosendparams);
-		if (resp.getStatusLine().getStatusCode() == 400)
-		{
-			getSharedConnection().release(resp);
-			log.info("Face detection Remote Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
-			inAsset.setValue("facescanerror", true);
-			return Collections.EMPTY_LIST;
-		}
-		else if (resp.getStatusLine().getStatusCode() == 413)
-		{
-			//remote error body size
-			getSharedConnection().release(resp);
-			log.info("Face detection Remote Body Size Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
-			inAsset.setValue("facescanerror", true);
-			return null;
-		}
-		else if (resp.getStatusLine().getStatusCode() == 500)
-		{
-			//remote server error, may be a broken image
-			getSharedConnection().release(resp);
-			log.info("Face detection Remote Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
-			inAsset.setValue("facescanerror", true);
-			return null;
-		}
+		LlmConnection connection = getMediaArchive().getLlmConnection("faceDetect");
+		LlmResponse resp = connection.callJson("/represent", null, tosendparams);
 		
-		
-		String responseStr = getSharedConnection().parseText(resp);
-		
-		JSONParser parser = new JSONParser();
-		JSONArray results = (JSONArray) parser.parseCollection(responseStr);
+		List<Map> results = (List<Map>) resp.getRawCollection();
 		
 		//log.info((System.currentTimeMillis() - start) + "ms face detection for asset: "+ inAsset.getId() + " " + inAsset.getName() + " Found: " + results.size());
 		
@@ -1100,7 +1051,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 		instructions.setConfidenceLimit(instructions.getConfidenceLimit() * .75D);
 		instructions.setMinimumFaceSize(instructions.getMinimumFaceSize() * .50D);
 		
-		extractFaces(instructions, one);
+		extractFaces(null, instructions, one);
 		getMediaArchive().saveData("asset",inAsset);
 		
 	}
@@ -1188,8 +1139,22 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 				validAssets.add(asset);
 			}
 		}
+		if(validAssets.isEmpty())
+		{
+			return;
+		}
+		inLog.headline("Scanning faces in " + validAssets.size() + " assets");
 		FaceScanInstructions instructions = createInstructions();
-		extractFaces(instructions, validAssets);
+		int found = extractFaces(inLog, instructions, validAssets);
+		if(found > 0)
+		{
+			inLog.info("Found " + found + " faces in " + validAssets.size() + " assets");
+		}
+		else
+		{
+			inLog.info("No faces found in " + validAssets.size() + " assets");
+		}
+ 
 		
 	}
 

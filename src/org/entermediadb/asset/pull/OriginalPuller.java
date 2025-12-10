@@ -226,7 +226,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 
 				if( Boolean.parseBoolean( node.get("pulloriginals") ) )
 				{
-					long totalcount = downloadOriginals(inArchive, connection, node,params,inLog);
+					long totalcount = downloadOriginals(inArchive, connection, node,params, inLog);
 					
 					if( node.getValue("lasterrormessageoriginals") != null )
 					{
@@ -303,7 +303,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 			log.error("(" + inArchive.getCatalogId()  + ") Initial originals server error " + sl);
 			return -1;
 		}
-		JSONObject	remotechanges = connection.parseJson(response2);
+		JSONObject	remotechanges = connection.parseMap(response2);
 		long counted = 0;
 		Map response = (Map) remotechanges.get("response");
 		String ok = (String) response.get("status");
@@ -314,7 +314,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 			
 			JSONArray jsonarray = (JSONArray) remotechanges.get("results");  //This comes from pullrecentuploads.json
 
-			counted = counted + downloadOriginalFiles(inArchive, connection, node,  params,removecatalogid,jsonarray);
+			counted = counted + downloadOriginalFiles(inArchive, inLog, connection, node,  params,removecatalogid,jsonarray);
 
 			int pages = Integer.parseInt(response.get("pages").toString());
 			//loop over pages
@@ -336,7 +336,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 						connection.release(response2);
 						throw new OpenEditException("Could not load page of data " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 					}
-					remotechanges = connection.parseJson(response2);
+					remotechanges = connection.parseMap(response2);
 					response = (Map) remotechanges.get("response");
 					ok = (String) response.get("status");
 					if (ok != null && !ok.equals("ok"))
@@ -346,7 +346,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 	
 					//JSONArray results = (JSONArray)remotechanges.get("results"); //records?
 					
-					counted = counted + downloadOriginalFiles(inArchive, connection, node, params,removecatalogid,jsonarray);
+					counted = counted + downloadOriginalFiles(inArchive, inLog, connection, node, params,removecatalogid,jsonarray);
 				}
 			}
 			return counted;
@@ -362,7 +362,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 		}
 	}
 
-	protected int downloadOriginalFiles(MediaArchive inArchive, HttpSharedConnection inConnection, Data node, Map<String,String> params, String removecatalogid, JSONArray inJsonarray)
+	protected int downloadOriginalFiles(MediaArchive inArchive, ScriptLogger inLog, HttpSharedConnection inConnection, Data node, Map<String,String> params, String removecatalogid, JSONArray inJsonarray)
 	{
 		int downloads = 0;
 		String url = node.get("baseurl");
@@ -400,8 +400,10 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 						StatusLine filestatus = genfile.getStatusLine();
 						if (filestatus.getStatusCode() != 200)
 						{
+							inLog.info("Could not download original file: " + filestatus + " " + path);
 							log.error("Could not download originals " + filestatus + " " + path);
-							throw new OpenEditException("Could not download originals " + filestatus + " " + path);
+							continue;
+							//throw new OpenEditException("Could not download originals " + filestatus + " " + path);
 						}
 						downloads++;
 						//Save to local file
@@ -535,7 +537,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 					return;
 				}
 				//The server will return a list of files it needs
-				JSONObject json = inConnection.parseJson(response2);
+				JSONObject json = inConnection.parseMap(response2);
 				
 				Map responseheader = (Map)json.get("response");  //These are files they want us to send them
 				

@@ -22,6 +22,7 @@ import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.websocket.chat.ChatServer;
 import org.entermediadb.webui.tree.CategoryCollectionCache;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
@@ -29,6 +30,7 @@ import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
+import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
@@ -2101,6 +2103,93 @@ public class ProjectModule extends BaseMediaModule
 		inReq.putPageValue("collikes", collectionlikes);
 		
 	}
+	
+	
+	public void loadCollectiveIncome(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String collectionid = inReq.getRequestParameter("collectionid");
+		
+		String searchtype = "collectiveincome";
+		
+		SearchQuery query = archive.getSearcher(searchtype).addStandardSearchTerms(inReq);
+		if (query == null)
+		{
+			query = archive.getSearcher(searchtype).createSearchQuery();
+		}
+		query.addExact("collectionid", collectionid);
+		
+		String sortby = inReq.getRequestParameter(searchtype+"sortby");
+		if(sortby != null)
+		{
+			query.addSortBy(sortby);
+		}
+		
+		HitTracker results = archive.getSearcher(searchtype).cachedSearch(inReq,query);
+		inReq.putPageValue("income", results);
+		
+		//Get Totals by Currency
+		if (results != null)
+		{
+			HashMap<String, Double> totals = new HashMap<String,Double>();
+			for (Iterator iterator = results.iterator(); iterator.hasNext();)
+			{
+				MultiValued row = (MultiValued) iterator.next();
+				String currency = row.get("currencytype");
+				Double total = row.getDouble("total");
+				if (total != null)
+				{
+					totals.put(currency, totals.getOrDefault(currency, 0.0) + total);
+				}
+			}
+			inReq.putPageValue("totalsbycurrency", totals);
+		}
+		
+	}
+	
+	
+	public void loadCollectiveExpenses(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String collectionid = inReq.getRequestParameter("collectionid");
+		
+		String searchtype = "collectiveexpense";
+		
+		SearchQuery query = archive.getSearcher(searchtype).addStandardSearchTerms(inReq);
+		if (query == null)
+		{
+			query = archive.getSearcher(searchtype).createSearchQuery();
+		}
+		query.addExact("collectionid", collectionid);
+		
+		String sortby = inReq.getRequestParameter(searchtype+"sortby");
+		if(sortby != null)
+		{
+			query.addSortBy(sortby);
+		}
+		
+		HitTracker results = archive.getSearcher(searchtype).cachedSearch(inReq,query);
+		inReq.putPageValue("expenses", results);
+		
+		//Get Totals by Currency
+		if (results != null)
+		{
+			HashMap<String, Double> totals = new HashMap<String,Double>();
+			for (Iterator iterator = results.iterator(); iterator.hasNext();)
+			{
+				MultiValued row = (MultiValued) iterator.next();
+				String currency = row.get("currencytype");
+				Double total = row.getDouble("total");
+				if (total != null)
+				{
+					totals.put(currency, totals.getOrDefault(currency, 0.0) + total);
+				}
+			}
+			inReq.putPageValue("totalsbycurrency", totals);
+		}
+		
+	}
+	
 
 
 }

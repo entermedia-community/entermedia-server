@@ -342,7 +342,7 @@ public class ZohoManager implements CatalogEnabled
 			}
 			
 
-			JSONObject json = getConnection().parseJson(resp);
+			JSONObject json = getConnection().parseMap(resp);
 			if(json.get("access_token") != null) {
 				accesstoken = (String)json.get("access_token"); 
 				authinfo.setValue("httprequesttoken", json.get("access_token"));
@@ -372,8 +372,8 @@ public class ZohoManager implements CatalogEnabled
 				log.info("Zoho Server error returned " + resp.getStatusLine().getStatusCode());
 			}
 			
-	
-			JSONObject json = getConnection().parseJson(resp);
+			JSONObject json = getConnection().parseMap(resp);
+			
 			if(json.get("access_token") != null) {
 				accesstoken = (String)json.get("access_token"); 
 				authinfo.setValue("httprequesttoken", json.get("access_token"));

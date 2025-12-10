@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
@@ -25,18 +26,20 @@ public class ClassifyManager extends InformaticsProcessor
 {
 	private static final Log log = LogFactory.getLog(ClassifyManager.class);
 	
-	public LlmConnection getLlmConnection()
+	public LlmConnection getLlmNamingServer()
 	{
-		Map<String, String> models = getModels();
-		return getMediaArchive().getLlmConnection(models.get("vision"));
+		return getMediaArchive().getLlmConnection("classifyAsset");
+	}
+	
+	public LlmConnection getEntityClassificationLlmConnection()
+	{
+		return getMediaArchive().getLlmConnection("classifyEntity");
 	}
 	
 	@Override
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> assets)
 	{
 		int count = 1;
-
-		Map<String, String> models = getModels();
 
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 		{
@@ -45,24 +48,26 @@ public class ClassifyManager extends InformaticsProcessor
 			String mediatype = getMediaArchive().getMediaRenderType(asset);
 			if( mediatype.equals("default") )
 			{
-				inLog.info(inConfig.get("bean") + " - Skipping asset " + asset);
+				//inLog.info(inConfig.get("bean") + " - Skipping asset " + asset);
 				continue;
 			}
 
 			try{
 				long startTime = System.currentTimeMillis();
 
-				inLog.info(inConfig.get("bean") + " - Analyzing asset ("+count+"/"+assets.size()+")" + asset.getName());
+				//inLog.info(inConfig.get("bean") + " - Analyzing asset ("+count+"/"+assets.size()+")" + asset.getName());
 				count++;
 
-				boolean complete = processOneAsset(inConfig, models, asset);
-				if( !complete )
+				inLog.headline("Classifying asset: " + asset.getName());
+
+				boolean ok = processOneAsset(inConfig, asset);
+				if( !ok )
 				{
 					continue;
 				}
 
 				long duration = (System.currentTimeMillis() - startTime) / 1000L;
-				inLog.info(inConfig.get("bean") + " - Took "+duration +"s");
+				inLog.info("Classified successfully! Took "+duration +"s");
 			}
 			catch(Exception e){
 				inLog.error("LLM Error", e);
@@ -72,7 +77,7 @@ public class ClassifyManager extends InformaticsProcessor
 		}
 	}
 
-	protected boolean processOneAsset(MultiValued inConfig, Map<String, String> models, MultiValued asset) throws Exception
+	protected boolean processOneAsset(MultiValued inConfig, MultiValued asset) throws Exception
 	{
 		Collection allaifields = getMediaArchive().getAssetPropertyDetails().findAiCreationProperties();
 		Collection<PropertyDetail> aifields = new ArrayList();
@@ -97,7 +102,6 @@ public class ClassifyManager extends InformaticsProcessor
 			}
 		}
 		
-		
 
 		if(!aifields.isEmpty())
 		{
@@ -105,7 +109,10 @@ public class ClassifyManager extends InformaticsProcessor
 			params.put("asset", asset);
 			params.put("data", asset);
 			params.put("aifields", aifields);
-			String functionname = inConfig.get("aifunctionname");
+			
+			LlmConnection llmconnection = getLlmNamingServer();
+			
+			String functionname = llmconnection.getAiFunctionName();
 			
 			String base64EncodedString = null;
 			
@@ -116,6 +123,15 @@ public class ClassifyManager extends InformaticsProcessor
 			Searcher assetsearcher = getMediaArchive().getAssetSearcher();
 			contextFields.add(assetsearcher.getDetail("name"));
 			contextFields.add(assetsearcher.getDetail("assettype"));
+			
+			if(asset.hasValue("description") && asset.get("description").length() > 0)
+			{
+				contextFields.add( assetsearcher.getDetail("description"));
+			}
+			if(asset.hasValue("keywords") && asset.getValues("keywords").size() > 0)
+			{
+				contextFields.add( assetsearcher.getDetail("keywords"));
+			}
 			
 			if( !aifields.isEmpty() )
 			{
@@ -129,6 +145,7 @@ public class ClassifyManager extends InformaticsProcessor
 						return false;
 					}
 					functionname = functionname + "_image";
+					
 				}
 				else if(mediatype.equals("document"))
 				{
@@ -171,11 +188,11 @@ public class ClassifyManager extends InformaticsProcessor
 			
 			params.put("contextfields", contextFields);
 			
-			LlmResponse results = getLlmConnection().callClassifyFunction(params, functionname, base64EncodedString, textContent);
+			LlmResponse results = llmconnection.callClassifyFunction(params, functionname, base64EncodedString, textContent);
 
 			if (results != null)
 			{
-				JSONObject arguments = results.getArguments();
+				JSONObject arguments = results.getMessageStructured();
 				if (arguments != null) {
 
 					Map metadata =  (Map) arguments.get("metadata");
@@ -255,9 +272,9 @@ public class ClassifyManager extends InformaticsProcessor
 			try {
 				long startTime = System.currentTimeMillis();
 
-				inLog.log("Classifying entity: " + entity.getName());
+				inLog.info("Classifying entity: " + entity.getName());
 
-				boolean complete = processOneEntity(inConfig, getModels(), entity, moduleid);
+				boolean complete = processOneEntity(inConfig, entity, moduleid);
 				if( !complete )
 				{
 					continue;
@@ -273,7 +290,7 @@ public class ClassifyManager extends InformaticsProcessor
 		}
 	}
 	
-	protected boolean processOneEntity(MultiValued inConfig, Map<String, String> models, MultiValued inEntity, String inModuleId) throws Exception
+	protected boolean processOneEntity(MultiValued inConfig, MultiValued inEntity, String inModuleId) throws Exception
 	{
 		Collection detailsfields = getMediaArchive().getSearcher(inModuleId).getDetailsForView(inModuleId+"general");
 
@@ -291,6 +308,28 @@ public class ClassifyManager extends InformaticsProcessor
 			{					
 				fieldsToFill.add(field);
 			}
+		}
+		
+		Map params = new HashMap();
+		
+		String assetid = inEntity.get("primarymedia");
+		if( assetid == null)
+		{
+			assetid = inEntity.get("primaryimage");
+		}
+		
+		Asset primaryasset = getMediaArchive().getAsset(assetid);
+		
+		if (primaryasset != null)
+		{
+			params.put("primaryasset", primaryasset);
+			
+			Searcher assetsearcher = getMediaArchive().getAssetSearcher();
+			
+			contextFields.add(assetsearcher.getDetail("longcaption"));
+			contextFields.add(assetsearcher.getDetail("keywordsai"));
+			contextFields.add(assetsearcher.getDetail("semantictopics"));
+			contextFields.add(assetsearcher.getDetail("headline"));
 			
 		}
 		
@@ -307,13 +346,13 @@ public class ClassifyManager extends InformaticsProcessor
 		}
 		else
 		{
-			Map params = new HashMap();
+			
 			params.put("entity", inEntity);
 			params.put("data", inEntity);
 			params.put("contextfields", contextFields);
 			params.put("fieldstofill", fieldsToFill);
 			
-			String base64EncodedString = null;
+			
 			boolean isDocPage = inEntity.get("entitydocument") != null;
 			if(isDocPage)
 			{
@@ -323,15 +362,15 @@ public class ClassifyManager extends InformaticsProcessor
 
 			try 
 			{
-				LlmConnection llmconnection = getLlmConnection();
+				LlmConnection llmconnection = getEntityClassificationLlmConnection();
 
-				String functionname = inConfig.get("aifunctionname") + "_entity";
+				String functionname = llmconnection.getAiFunctionName();
 				
-				LlmResponse results = llmconnection.callClassifyFunction(params, functionname, base64EncodedString);
+				LlmResponse results = llmconnection.callClassifyFunction(params, functionname, null); 
 				
 				if (results != null)
 				{
-					JSONObject arguments = results.getArguments();
+					JSONObject arguments = results.getMessageStructured();
 					if (arguments != null) {
 						
 						Map metadata =  (Map) arguments.get("metadata");

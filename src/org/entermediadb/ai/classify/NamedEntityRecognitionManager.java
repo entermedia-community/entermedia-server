@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.util.JsonUtil;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -18,21 +19,20 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	private static final Log log = LogFactory.getLog(NamedEntityRecognitionManager.class);
 
 	@Override
-	public LlmConnection getLlmConnection()
+	public LlmConnection getLlmNamingServer()
 	{
-		Map<String, String> models = getModels();
-		return getMediaArchive().getLlmConnection(models.get("metadata"));
+		return getMediaArchive().getLlmConnection("namedEntityRecognition");
 	}
 	
 	@Override
-	protected boolean processOneAsset(MultiValued inConfig, Map<String, String> models, MultiValued inData)
+	protected boolean processOneAsset(MultiValued inConfig, MultiValued inData)
 	{
-		boolean ok = processOneEntity(inConfig, models, inData, "asset");
+		boolean ok = processOneEntity(inConfig, inData, "asset");
 		return ok;
 	}
 	 
 	@Override
-	protected boolean processOneEntity(MultiValued inConfig, Map<String, String> models, MultiValued inData, String inModuleId)
+	protected boolean processOneEntity(MultiValued inConfig, MultiValued inData, String inModuleId)
 	{
 	 	Collection<PropertyDetail> autocreatefields = getMediaArchive().getSearcher(inModuleId).getPropertyDetails().findAiAutoCreatedProperties();
 	 	
@@ -41,19 +41,8 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	 	{
 	 		return false;
 	 	}
-	 	Map<String, Map> contextfields = populateFields(inModuleId,inData);
+	 	Collection<PropertyDetail> contextfields = populateFields(inModuleId, inData, autocreatefields);
 	 	
-	 	for (Iterator iterator = autocreatefields.iterator(); iterator.hasNext();) {
-	 		PropertyDetail detail = (PropertyDetail) iterator.next();
-			contextfields.remove(detail.getId());
-
-			Collection val = inData.getValues(detail.getId());
-			if(!detail.isList() || (val != null && val.size() > 0))
-			{
-				//Invalid filed or already has a value
-				iterator.remove();
-			}
-		}
 		if(contextfields.isEmpty())
 		{
 			log.info(inConfig.get("bean") +" No fields to check for names in " + inData.getId() + " " + inData.getName());
@@ -66,11 +55,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 			return false;
 		}
 		
-		// Non assets that are not split enabled and have a primarymedia with fulltext
-		if(!inModuleId.equals("asset") && !contextfields.keySet().contains("fulltext") && inData.get("pagenum") == null)
-		{
-			addPrimaryMediaFulltext(inData, contextfields);
-		}
+		
 
  		Map params = new HashMap();
  		params.put("data", inData);
@@ -78,9 +63,10 @@ public class NamedEntityRecognitionManager extends ClassifyManager
  		params.put("contextfields", contextfields);
  		params.put("autocreatefields", autocreatefields);
  		
-		String functionname = inConfig.get("aifunctionname");
-		Map results = getLlmConnection().callStructuredOutputList(functionname,  params);
-		Map categories = (Map) results.get("categories");
+ 		LlmConnection llmconnection = getLlmNamingServer();
+ 		
+		LlmResponse results = llmconnection.callStructuredOutputList(params);
+		Map categories = (Map) results.getMessageStructured().get("categories");
 		if(categories != null)
 		{			
 			for (Iterator iterator = categories.keySet().iterator(); iterator.hasNext();) {
@@ -97,6 +83,10 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 					{
 						for (Iterator iterator2 = values.iterator(); iterator2.hasNext();) {
 							String value = (String) iterator2.next();
+							if(value == null || value.isEmpty())
+							{
+								continue;
+							}
 							Data savedrecord = saveIfNeeded(inConfig, detail, value);
 							if( savedrecord != null)
 							{
@@ -116,38 +106,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	 	
 	}
 
-	private void addPrimaryMediaFulltext(MultiValued inData, Map<String, Map> contextfields) {
-		String primarymedia = inData.get("primarymedia");
-		if(primarymedia == null || primarymedia.isEmpty())
-		{
-			primarymedia = inData.get("primaryimage");
-		}
-		if(primarymedia != null)
-		{
-			MultiValued primaryasset = getMediaArchive().getAsset(primarymedia);
-			if(primaryasset != null)
-			{
-				if (primaryasset.getBoolean("hasfulltext"))
-				{
-					String mediatype = getMediaArchive().getMediaRenderType(primaryasset);
-					if(mediatype.equals("document"))
-					{
-						String fulltext = primaryasset.get("fulltext");
-						if (fulltext != null)
-						{
-							fulltext = fulltext.replaceAll("\\s+", " ");
-							fulltext = fulltext.substring(0, Math.min(4000, fulltext.length()));
-							HashMap fieldMap = new HashMap();
-							fieldMap.put("label", "Parsed Document Content");
-							JsonUtil jsonutils = new JsonUtil();
-							fieldMap.put("text", jsonutils.escape(fulltext));
-							contextfields.put("fulltext", fieldMap);
-						}
-					}
-				}
-			}
-		}
-	}
+	
 
 	protected Data saveIfNeeded(MultiValued inConfig, PropertyDetail inDetail, String inlabel)
 	{

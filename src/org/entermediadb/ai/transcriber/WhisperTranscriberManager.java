@@ -19,13 +19,14 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
+import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.asset.convert.managers.AudioConversionManager;
-import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -51,8 +52,8 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 	@Override
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
 	{
-		inLog.headline("Transcribing " + inAssets.size() + " assets");
-		
+		Collection<MultiValued> toprocess = new ArrayList<MultiValued>();
+
 		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 		{
 			MultiValued inAsset = (MultiValued) iterator.next();
@@ -61,26 +62,48 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 
 			if( !"video".equals(mediatype) && !"audio".equals(mediatype) )
 			{
-				return; //only video and audio
+				continue;
 			}
+			toprocess.add(inAsset);
 			
-			if(inAsset.getValue("length") == null) 
+		}
+		
+		if(toprocess.size() > 0) 
+		{
+			inLog.headline("Transcribing " + toprocess.size() + " asset(s)");
+			
+			for (Iterator iterator = toprocess.iterator(); iterator.hasNext();)			
 			{
-				///Can't process if no lenght defined
-				inAsset.setValue("llmerror", true);
-				getMediaArchive().saveData("asset",inAsset);
-				iterator.remove();
-				inLog.info("Skiping Asset with no lenght defined: " + inAsset);
+				MultiValued inAsset = (MultiValued) iterator.next();
+				
+				if(inAsset.getValue("length") == null) 
+				{
+					///Can't process if no lenght defined
+					inAsset.setValue("llmerror", true);
+					getMediaArchive().saveData("asset",inAsset);
+					iterator.remove();
+					inLog.info("Skiping Asset with no lenght defined: " + inAsset);
+					continue;
+				}
+
+				inLog.info("Transcribing: " + inAsset);
+				
+				long starttime = System.currentTimeMillis();
+				boolean ok = transcribeOneAsset(inLog, inAsset);
+				long duration = (System.currentTimeMillis() - starttime) / 1000L;
+				
+				if(ok)
+				{					
+					inLog.info("Transcribed successfully! Took: " + duration + " seconds");
+				}
+				
 			}
-			
-			transcribeOneAsset(inLog, inAsset);
 		}
 		
 	}
 	
-	public void transcribeOneAsset(ScriptLogger inLog, MultiValued inAsset)
+	public boolean transcribeOneAsset(ScriptLogger inLog, MultiValued inAsset)
 	{
-		
 		
 		Searcher captionSearcher = getMediaArchive().getSearcher("videotrack");
 		
@@ -92,7 +115,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 			if("complete".equals(status) || "inprogress".equals(status))
 			{
 				inLog.info("Asset already assigned to a videotrack");
-				return; //already done or in progress
+				return false; //already done or in progress
 			}
 			
 		}
@@ -113,11 +136,13 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 			
 			transcribe(inAsset, inTrack);
 			inTrack.setValue("transcribestatus", "complete");
+			return true;
 		}
 		catch (Exception e) 
 		{
 			inLog.error("Could not transcribe " + inAsset, e);
 			inTrack.setValue("transcribestatus", "error");
+			return false;
 		}
 		finally
 		{
@@ -217,8 +242,34 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		
 		inTrack.setValue("captions", captions);
 	}
-
+	
+	
+	
 	public JSONArray getTranscribedData(ContentItem audio) throws FileNotFoundException, Exception {
+		
+		File audioFile = new File(audio.getAbsolutePath());
+		if(!audioFile.exists())
+		{
+			throw new FileNotFoundException("File not found: " + audioFile);
+		}
+		LlmConnection connection = getMediaArchive().getLlmConnection("transcribeFile");
+		
+		Map headers = new HashMap();
+		headers.put("Authorization", "Bearer " + connection.getApiKey());
+		
+		Map params = new HashMap();
+		params.put("file", audioFile);
+		
+		LlmResponse resp = connection.callJson("/transcribe", headers, params);
+		
+		JSONArray result = (JSONArray) resp.getRawCollection();  //TODO: Change server to return JSONOBject
+		return result;
+
+	}
+	
+	
+/*
+	public JSONArray getTranscribedData_OLD(ContentItem audio) throws FileNotFoundException, Exception {
 		String endpoint = getMediaArchive().getCatalogSettingValue("ai_transcriber_server") + "/transcribe";
 
 		HttpPost method = new HttpPost(endpoint);
@@ -249,12 +300,10 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 
 		else {
 			String returned = EntityUtils.toString(resp.getEntity());
-
-			JSONArray result = (JSONArray) new JSONParser().parseJSONArray(returned);
-			
+			JSONArray result = (JSONArray) new JSONParser().parseMapArray(returned);
 			return result;
 
 		}
 	}
-	
+	*/
 }

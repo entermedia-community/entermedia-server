@@ -2,8 +2,10 @@ package org.entermediadb.ai.assistant;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.json.simple.JSONArray;
 import org.openedit.Data;
 import org.openedit.data.BaseData;
 import org.openedit.util.DateRange;
@@ -96,19 +98,40 @@ public class AiSearchTable extends BaseData
 		setValue("parameters", inParameters);
 	} 
 	
-	public Map<String, String> getParameters()
+	public Map<String, Object> getParameters()
 	{
-		Map<String, String> params = (Map<String, String>) getValue("parameters");
+		Map<String, Object> params = (Map<String, Object>) getValue("parameters");
 		return params;
 	}
 	
 	public String getParameterValues() {
-		String values = null;
-		Map<String, String> params = getParameters();
+		String returnvalues = "";
+		Map<String, Object> params = getParameters();
 		if (params != null) {
-			values = String.join(" ", params.values());
+			 
+			 for (Map.Entry<String, Object> entry : params.entrySet())
+			{
+				String key = entry.getKey();
+				Object val = entry.getValue();
+			
+				if (val instanceof String) {
+					returnvalues += val.toString();
+				}
+				else if (val instanceof JSONArray) {
+					String values2 = null;
+					for (Object obj : (JSONArray) val) {
+						if (values2 == null) {
+							values2 = obj.toString();
+						} else {
+							values2 += " " + obj.toString();
+						}
+					}
+					returnvalues = String.join(" ", values2);
+				}
+			}
+			
 		}
-		return values;
+		return returnvalues;
 	}
 
 	DateRange fieldDateRange;

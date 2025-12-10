@@ -11,10 +11,10 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
@@ -25,10 +25,10 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.util.JSONParser;
 
 public class SemanticTableManager extends BaseAiManager implements CatalogEnabled
 {
@@ -374,11 +374,7 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 		JSONObject tosendparams = new JSONObject();
 		tosendparams.put("data",list);
 		
-		CloseableHttpResponse resp = askServer(tosendparams);
-		
-		String responseStr = getSharedConnection().parseText(resp);
-		JSONParser parser = new JSONParser();
-		JSONObject jsonresponse = (JSONObject)parser.parse(responseStr);
+		JSONObject jsonresponse = askServer(tosendparams);
 		JSONArray results = (JSONArray)jsonresponse.get("results");
 		
 		Searcher searcher = getMediaArchive().getSearcher(inStructions.getSearchType());
@@ -402,20 +398,11 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 
 	}
 
-	protected CloseableHttpResponse askServer(JSONObject tosendparams)
+	protected JSONObject askServer(JSONObject tosendparams)
 	{
-		CloseableHttpResponse resp;
-		String url = getMediaArchive().getCatalogSettingValue("ai_vectorizer_server");
-		resp = getSharedConnection().sharedPostWithJson(url + "/text",tosendparams);
-		int statuscode = resp.getStatusLine().getStatusCode();
-		if (statuscode != 200)
-		{
-			//remote server error, may be a broken image
-			getSharedConnection().release(resp);
-			log.error(resp.toString());
-			throw new OpenEditException("Server not working" + resp.getStatusLine());
-		}
-		return resp;
+		LlmConnection connection = getMediaArchive().getLlmConnection("vectorizeText");
+		LlmResponse resp = connection.callJson("/text", null, tosendparams);
+		return resp.getRawResponse();
 	}
 	
 	protected HttpSharedConnection fieldSharedConnection;
@@ -452,9 +439,8 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 			list.add(ask);
 		}
 		tosendparams.put("data",list);
-		CloseableHttpResponse resp = askServer(tosendparams);
-		String responseStr = getSharedConnection().parseText(resp);
-		JSONObject jsonresponse = (JSONObject) new JSONParser().parse(responseStr);
+
+		JSONObject jsonresponse = askServer(tosendparams);
 		
 		//log.info("Got response " + objt.keySet());
 		return jsonresponse;
@@ -479,9 +465,7 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 		ask.put("text",text);
 		list.add(ask);
 		tosendparams.put("data",list);
-		CloseableHttpResponse resp = askServer(tosendparams);
-		String responseStr = getSharedConnection().parseText(resp);
-		JSONObject objt = (JSONObject) new JSONParser().parse(responseStr);
+		JSONObject objt = askServer(tosendparams);
 		//log.info("Got response " + objt.keySet());
 		return objt;
 	}
@@ -512,16 +496,8 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 			return floats;
 		}
 	
-		public Collection<String> createSemanticValues(LlmConnection llmconnection, MultiValued inConfig, String inModel, String inModuleId, MultiValued inData)
+		public Collection<String> createSemanticValues(LlmConnection llmconnection, MultiValued inConfig, String inModuleId, MultiValued inData)
 		{
-//			MediaArchive archive = getMediaArchive();
-
-			Map<String,Map> contextfields = populateFields(inModuleId, inData);
-			if(contextfields.isEmpty())
-			{
-				log.info("No fields to check for semantic topics in " + inData.getId() + " " + inData.getName());
-				return null;
-			}
 
 			String fieldname = inConfig.get("fieldname"); 
 			
@@ -534,32 +510,44 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 			
 			Map params = new HashMap();
 			params.put("fieldparams", inConfig);
+			
+			Collection<PropertyDetail> exclude = new ArrayList();
+			PropertyDetail fielddetail = getMediaArchive().getSearcher(inModuleId).getDetail(fieldname);
+			exclude.add(fielddetail);
 		
-			Map validcontext = new HashMap(contextfields);
-			validcontext.remove(fieldname);
+			Collection<PropertyDetail> contextfields = populateFields(inModuleId, inData, exclude);
 			
-			Collection<Map> context = validcontext.values();
+			if(contextfields.isEmpty())
+			{
+				log.info("No fields to check for semantic topics in " + inData.getId() + " " + inData.getName());
+				return null;
+			}
 			
-			params.put("contextfields", context);
+			params.put("contextfields", contextfields);
+			params.put("data", inData);
 			
-			JSONObject structure = llmconnection.callStructuredOutputList("semantics", params);
+			LlmResponse structure = llmconnection.callStructuredOutputList(params);
 			if (structure == null)
 			{
 				log.info("No structured data returned");
 				return null;
 			}
-
-			JSONArray jsonvalues = (JSONArray) structure.get(fieldname);
+			JSONObject content = structure.getMessageStructured();
+			JSONArray jsonvalues = (JSONArray) content.get(fieldname);
 			Collection<String> values = new ArrayList();
 			//replace underscore with spaces
-			for (Iterator iterator = jsonvalues.iterator(); iterator.hasNext();) {
-				String val = (String) iterator.next();
-				if(val != null)
-				{
-					val = val.replaceAll("_", " ").trim();
-					if( val.length() > 0)
+			if (jsonvalues != null)
+			{
+				for (Iterator iterator = jsonvalues.iterator(); iterator.hasNext();) {
+					Object topicobj = iterator.next();  
+					if(topicobj instanceof String)
 					{
-						values.add(val);
+						String topic = (String) topicobj;
+						topic = topic.replaceAll("_", " ").trim();
+						if( topic.length() > 0)
+						{
+							values.add(topic);
+						}
 					}
 				}
 			}

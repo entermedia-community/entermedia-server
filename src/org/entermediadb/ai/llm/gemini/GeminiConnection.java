@@ -1,38 +1,35 @@
 package org.entermediadb.ai.llm.gemini;
 
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.llm.BaseLlmConnection;
 import org.entermediadb.ai.llm.LlmConnection;
-import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.asset.MediaArchive;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
-import org.openedit.OpenEditException;
-import org.openedit.page.Page;
-import org.openedit.util.JSONParser;
 
 public class GeminiConnection extends BaseLlmConnection implements CatalogEnabled, LlmConnection
 {
 	private static Log log = LogFactory.getLog(GeminiConnection.class);
-
+	@Override
+	public LlmResponse createResponse()
+	{
+		return new GeminiResponse();
+	}
+	@Override
+	public String getLlmProtocol()
+	{
+		return "gemini";
+	}
+/**
+	
+	
 	public LlmResponse runPageAsInput(AgentContext llmRequest, String inTemplate)
 	{
 		llmRequest.addContext("mediaarchive", getMediaArchive());
 
 		String input = loadInputFromTemplate(inTemplate, llmRequest.getContext());
 		log.info(inTemplate + " process chat");
-		String endpoint = getApiEndpoint();
+		String endpoint = getServerRoot();
 
 		HttpPost method = new HttpPost(endpoint);
 		method.addHeader("x-goog-api-key", getApiKey());
@@ -42,7 +39,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 
-		JSONObject json = getConnection().parseJson(resp);
+		JSONObject json = getConnection().parseMap(resp);
 
 		GeminiResponse response = new GeminiResponse();
 		response.setRawResponse(json);
@@ -85,7 +82,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		JSONObject payload = new JSONObject();
 		payload.put("contents", contents);
 
-		String endpoint = "https://generativelanguage.googleapis.com/v1beta/models/"+getModelIdentifier()+":generateContent";
+		String endpoint = "https://generativelanguage.googleapis.com/v1beta/models/"+getModelName()+":generateContent";
 		//  String endpoint = "http://localhost:3000/generations";  // for local testing
 		
 		HttpPost method = new HttpPost(endpoint);
@@ -94,7 +91,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		method.setEntity(new StringEntity(payload.toJSONString(), "UTF-8"));
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-		JSONObject json = getConnection().parseJson(resp);
+		JSONObject json = getConnection().parseMap(resp);
 
 		// Return a OpenAiResponse object instead of raw JSON
 		GeminiResponse response = new GeminiResponse();
@@ -107,7 +104,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		MediaArchive archive = getMediaArchive();
 
 		JSONObject obj = new JSONObject();
-		obj.put("model", getModelIdentifier());
+		obj.put("model", getModelName());
 
 		String contentPath = "/" + archive.getMediaDbId() + "/ai/gemini/createdialog/systemmessage/" + inFunction + ".html";
 		boolean contentExists = archive.getPageManager().getPage(contentPath).exists();
@@ -163,13 +160,56 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		String payload = obj.toJSONString();
 		log.info(payload);
 		
-		JSONObject json = handleApiRequest(payload);
-	    
+		//TODO: Finish JSONObject json = callJson("",null,payload);
 		GeminiResponse response = new GeminiResponse();
-	    response.setRawResponse(json);
+	    response.setRawResponse(obj);
 	    
 	    return response;
 
+	}
+	
+	protected JSONObject handleApiRequest(String payload)
+	{
+		String endpoint = getServerRoot();
+		HttpPost method = new HttpPost(endpoint);
+		method.addHeader("Authorization", "Bearer " + getApiKey());
+		method.setHeader("Content-Type", "application/json");
+		method.setEntity(new StringEntity(payload, StandardCharsets.UTF_8));
+
+		HttpSharedConnection connection = getConnection();
+		CloseableHttpResponse resp = connection.sharedExecute(method);
+		
+		try
+		{
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
+				log.info("AI Server error status: " + resp.getStatusLine().getStatusCode());
+				log.info("AI Server error response: " + resp.toString());
+				try
+				{
+					String error = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+					log.info(error);
+				}
+				catch(Exception e)
+				{}
+				throw new OpenEditException("handleApiRequest error: " + resp.getStatusLine());
+			}
+
+			JSONObject json = (JSONObject) connection.parseMap(resp);
+
+			log.info("returned: " + json.toJSONString());
+			 
+			return json;
+		}
+		catch (Exception ex)
+		{
+			log.error("Error calling handleApiRequest", ex);
+			throw new OpenEditException(ex);
+		}
+		finally
+		{
+			connection.release(resp);
+		}
 	}
 	
 	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image)
@@ -183,7 +223,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 
 		// Use JSON Simple to create request payload
 		JSONObject obj = new JSONObject();
-		obj.put("model", getModelIdentifier());
+		obj.put("model", getModelName());
 		//obj.put("max_tokens", maxtokens);
 
 
@@ -256,26 +296,26 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		String payload = obj.toJSONString();
 		log.info(payload);
 		
-		JSONObject json = handleApiRequest(payload);
+		//JSONObject json = handleApiRequest(payload);
 	    
 	    GeminiResponse response = new GeminiResponse();
-	    response.setRawResponse(json);
+	  //  response.setRawResponse(json);
 	    
 	    return response;
 
 	}
 
 	@Override
-	public JSONObject callStructuredOutputList(String inStructureName, Map inParams)
+	public LlmResponse callStructuredOutputList(String inStructureName, Map inParams)
 	{
-		inParams.put("model", getModelIdentifier());
+		inParams.put("model", getModelName());
 		
 		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/gemini/classify/structures/" + inStructureName + ".json", inParams);
 
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
 
-		String endpoint = getApiEndpoint();
+		String endpoint = getServerRoot();
 		HttpPost method = new HttpPost(endpoint);
 		method.addHeader("x-goog-api-key", getApiKey());
 		method.setHeader("Content-Type", "application/json");
@@ -352,7 +392,7 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		}
 		finally
 		{
-			connection.release(resp);
+			getConnection().release(resp);
 		}
 		return results;
 	}
@@ -363,4 +403,11 @@ public class GeminiConnection extends BaseLlmConnection implements CatalogEnable
 		throw new OpenEditException("Not implemented yet. Only available in Llama connection.");
 	}
 
+	@Override
+	public LlmResponse createResponse()
+	{
+		return new GeminiResponse();
+	}
+
+*/
 }

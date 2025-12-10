@@ -129,7 +129,7 @@ public class EnterMediaCloudModule extends BaseJsonModule
 			inReq.setCancelActions(true);
 			return;
 		}
-		JSONObject data = getConnection(archive).parseJson(resp);
+		JSONObject data = getConnection(archive).parseMap(resp);
 		String status = (String)data.get("status");
 		if( "ok".equals(status))
 		{
@@ -244,7 +244,7 @@ public class EnterMediaCloudModule extends BaseJsonModule
 			inReq.setCancelActions(true);
 			return false;
 		}
-		JSONObject data = getConnection(archive).parseJson(resp);
+		JSONObject data = getConnection(archive).parseMap(resp);
 		String status = (String)data.get("status");
 		inReq.putPageValue("status",status);
 		if( "ok".equals(status))
@@ -314,7 +314,7 @@ public class EnterMediaCloudModule extends BaseJsonModule
 			log.info( filestatus.getStatusCode() + " URL issue " + " " + url);
 			return null;
 		}
-		JSONObject data = getConnection(archive).parseJson(resp);
+		JSONObject data = getConnection(archive).parseMap(resp);
 		Collection jsonarray = (Collection)data.get("results");
 		return jsonarray;
 	}
@@ -345,7 +345,7 @@ public class EnterMediaCloudModule extends BaseJsonModule
 			log.info( filestatus.getStatusCode() + " URL issue " + " " + url);
 			return null;
 		}
-		JSONObject data = getConnection(archive).parseJson(resp);
+		JSONObject data = getConnection(archive).parseMap(resp);
 		Collection jsonarray = (Collection)data.get("results");
 		return jsonarray;
 	}
@@ -425,7 +425,7 @@ public class EnterMediaCloudModule extends BaseJsonModule
 			log.info( filestatus.getStatusCode() + " URL issue " + " " + url);
 			return null;
 		}
-		JSONObject data = getConnection(archive).parseJson(resp);
+		JSONObject data = getConnection(archive).parseMap(resp);
 		Collection jsonarray = (Collection)data.get("results");
 		return jsonarray;
 	}
@@ -443,7 +443,7 @@ public class EnterMediaCloudModule extends BaseJsonModule
 				//Problem
 				throw new OpenEditException( filestatus.getStatusCode() + " URL issue " + " " + path);
 			}
-			JSONObject data = getConnection(archive).parseJson(resp);
+			JSONObject data = getConnection(archive).parseMap(resp);
 			Data newasset = createAssetRecord(archive, assetids[i], (Map)data.get("data"));
 			tosave.add(newasset);
 		}

@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,9 +14,11 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
+import org.elasticsearch.common.recycler.Recycler.V;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.emedia.EMediaAIResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
@@ -65,18 +68,16 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 
 	@Override
 	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRandomEntities)
-	{		
-		inLog.headline("Embedding " + inRandomEntities.size() + " documents");
+	{
 
 		String searchtype = inConfig.get("searchtype");
 		Searcher pageSearcher = getMediaArchive().getSearcher(searchtype);
 		
-		Collection<Data> tosave = new ArrayList();
-
+		
+		Collection<MultiValued> toprecess = new ArrayList();
+		
 		for (Iterator iterator = inRandomEntities.iterator(); iterator.hasNext();)
 		{
-			long start = System.currentTimeMillis();
-			
 			MultiValued document = (MultiValued) iterator.next();
 			String moduleid = document.get("entitysourcetype");
 			
@@ -91,6 +92,24 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 				continue;
 			}
 			
+			toprecess.add(document);
+		}
+		
+		if(toprecess.isEmpty())
+		{
+			return;
+		}
+		
+		inLog.headline("Embedding " + inRandomEntities.size() + " documents");
+		
+		
+		Collection<Data> tosave = new ArrayList();
+
+		for (Iterator iterator = toprecess.iterator(); iterator.hasNext();)
+		{
+			long start = System.currentTimeMillis();
+			
+			MultiValued document = (MultiValued) iterator.next();
 
 			JSONObject documentdata = new JSONObject();
 			documentdata.put("doc_id", searchtype + "_" + document.getId());
@@ -163,67 +182,37 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 	
 	public boolean embedDocument(ScriptLogger inLog, JSONObject embeddingPayload)
 	{
-		try
-		{
-			String endpoint = getMediaArchive().getCatalogSettingValue("ai_llmembedding_server") +  "/save";
-			HttpPost method = new HttpPost(endpoint);
-			method.setHeader("Content-Type", "application/json");
-			
-			String customerkey = getMediaArchive().getCatalogSettingValue("customer-key");
-			if( customerkey == null)
-			{
-				customerkey = "demo";
-			}
-			method.setHeader("x-customerkey", customerkey);
-			
-			method.setEntity(new StringEntity(embeddingPayload.toJSONString(), StandardCharsets.UTF_8));
-			
-			HttpSharedConnection connection = getSharedConnection();
-			CloseableHttpResponse resp = connection.sharedExecute(method);
-			
-			try
-			{
-				if (resp.getStatusLine().getStatusCode() != 200)
-				{
-					inLog.info("Embedding Server error status: " + resp.getStatusLine().getStatusCode());
-					inLog.info("Error response: " + resp.toString());
-					try
-					{
-						String error = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
-						inLog.info(error);
-					}
-					catch(Exception e)
-					{ 
-						//Ignore }
-					}
-					return false;
-				}
-				else
-				{
-					return true;
-				}
+		LlmConnection connection = getMediaArchive().getLlmConnection("documentEmbedding");
 
-			}
-			catch (Exception ex)
-			{
-				inLog.error("Error calling Embedding", ex);
-				return false;
-			}
-			finally
-			{
-				connection.release(resp);
-			}
-			
-		}
-		catch (Exception e)
-		{
-			return false;
-		}
+		Map<String,String> header = new HashMap();
+		header.put("x-customerkey", connection.getApiKey());
+		LlmResponse response = connection.callJson( "/save",header,embeddingPayload);
+		response.getMessage();
+		return true;
 	}
 
 	
-	public EMediaAIResponse processMessage(MultiValued message, AgentContext inAgentContext)
+	public LlmResponse processMessage(MultiValued message, AgentContext inAgentContext)
 	{
+		
+		/**
+		 * 
+		 //Set the function name
+		//getMediaArchive().saveData("agentcontext", agentContext);
+
+//		if (functionName.equals("ragresponse"))
+//		{
+//			messageToUpdate.setValue("messageplain", response.getMessagePlain());
+//			messageToUpdate.setValue("message", response.getMessage());
+//			messageToUpdate.setValue("chatmessagestatus", "completed");
+//
+//			chats.saveData(messageToUpdate);
+//			server.broadcastMessage(archive.getCatalogId(), messageToUpdate);
+//		}
+//		else //add option to run AI based functions like create an image
+//		{
+		 */
+		
 		MediaArchive archive = getMediaArchive();
 		
 		String entityid = inAgentContext.getChannel().get("dataid");
@@ -231,7 +220,8 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 		
 //		Data inDocument = getMediaArchive().getCachedData(entityid, moduleid);
 		
-		String query = message.get("message");
+		MultiValued parent = (MultiValued)archive.getCachedData("chatterbox",message.get("replytoid"));
+		String query = parent.get("message");
 		JSONObject chat = new JSONObject();
 		chat.put("query",query);
 		
@@ -260,53 +250,28 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 		
 		chat.put("doc_ids", docids);
 		
-		String url = archive.getCatalogSettingValue("ai_llmembedding_server");
-		
-		//CloseableHttpResponse resp = getSharedConnection().sharedPostWithJson(url + "/query",chat);
-		
-		HttpPost method = new HttpPost(url+"/query");
-		
-		String customerkey = archive.getCatalogSettingValue("customer-key");
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
+
+		String customerkey = llmconnection.getApiKey();
 		if( customerkey == null)
 		{
 			customerkey = "demo";
 		}
-		method.setHeader("x-customerkey", customerkey);
+		Map headers = new HashMap();
+		headers.put("x-customerkey", customerkey);
 		
-		method.setHeader("Content-Type", "application/json");
-		method.setEntity(new StringEntity(chat.toJSONString(), StandardCharsets.UTF_8));
-
-		CloseableHttpResponse resp = getSharedConnection().sharedExecute(method);
+		log.info(" sending to server: " +  chat.toJSONString());
 		
-		try
-		{
-			if (resp.getStatusLine().getStatusCode() != 200)
-			{
-				log.info("Embedding Server error status: " + resp.getStatusLine().getStatusCode());
-				log.info("Error response: " + resp.toString());
-				
-				String error =	getSharedConnection().parseText(resp);
-				log.info(error);
-				throw new OpenEditException("server down" + url);
-			}
+		LlmResponse response = llmconnection.callJson("/query", headers, chat);
+		response.setFunctionName("ragresponse");
+		
+		//TODO: Handle in second request?
+		processRagResponseWithSource(inAgentContext, response.getRawResponse(), response);
 			
-			JSONObject ragresponse = getSharedConnection().parseJson(resp);
-			
-			EMediaAIResponse response = new EMediaAIResponse();
-			response.setFunctionName("ragresponse");
-			response.setRawResponse(ragresponse);
-			
-			processRagResponseWithSource(inAgentContext, ragresponse, response);
-			
-			return response;
-		}
-		finally
-		{
-			 getSharedConnection().release(resp);
-		}
+		return response;
 	}
 	
-	public void processRagResponseWithSource(AgentContext inAgentContext, JSONObject ragresponse, EMediaAIResponse response)
+	public void processRagResponseWithSource(AgentContext inAgentContext, JSONObject ragresponse, LlmResponse response)
 	{
 		String answer = null;
 		
@@ -384,12 +349,7 @@ public class DocumentEmbeddingManager extends InformaticsProcessor
 		
 		inAgentContext.addContext("raganswer", answer);
 		
-		String model = getMediaArchive().getCatalogSettingValue("llmagentmodel");
-		if (model == null)
-		{
-			model = "qwen3vl";
-		}
-		LlmConnection llmconnection = getMediaArchive().getLlmConnection(model);
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding"); //agentChat
 		
 		Data channel = inAgentContext.getChannel();
 		String apphome = "/"+ channel.get("chatapplicationid");
