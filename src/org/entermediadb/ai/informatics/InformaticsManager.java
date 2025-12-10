@@ -24,6 +24,14 @@ public class InformaticsManager extends BaseAiManager
 		processAssets(inLog);
 		processEntities(inLog);
 	}
+	
+	public void processAsset(ScriptLogger inLog, Asset inAsset)
+	{
+		Collection pageofhits = new ArrayList();
+		pageofhits.add(inAsset);
+		processAssets(inLog, pageofhits);
+	}
+	
 	public void processAssets(ScriptLogger inLog)
 	{
 //		Map<String, String> models = getModels();
@@ -80,21 +88,9 @@ public class InformaticsManager extends BaseAiManager
 						pageofhits.add(asset);
 						
 					}
-					for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
-					{
-						MultiValued config = (MultiValued) iterator2.next();
-						InformaticsProcessor processor = loadProcessor(config.get("bean"));
-						//inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" ); //Add Header Logs in each Bean
-						processor.processInformaticsOnAssets(inLog, config, pageofhits);
-						getMediaArchive().saveData("asset", pageofhits);
-					}
-					//Save Records here?
-					for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
-					{
-						Data data = (Data) iterator.next();
-						data.setValue("taggedbyllm", true);
-					}
-					getMediaArchive().saveData("asset", pageofhits);
+					
+					processAssets(inLog, pageofhits);
+					
 					long duration = (System.currentTimeMillis() - startTime) / 1000L;
 					inLog.info("Processing " + pageofhits.size() + " records took "+duration +"s");
 				}
@@ -116,6 +112,25 @@ public class InformaticsManager extends BaseAiManager
 		{
 			inLog.info("AI assets to tag:` " + pendingrecords.getFriendlyQuery());
 		}
+	}
+
+	protected void processAssets(ScriptLogger inLog, Collection pageofhits)
+	{
+		for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
+		{
+			MultiValued config = (MultiValued) iterator2.next();
+			InformaticsProcessor processor = loadProcessor(config.get("bean"));
+			//inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" ); //Add Header Logs in each Bean
+			processor.processInformaticsOnAssets(inLog, config, pageofhits);
+			getMediaArchive().saveData("asset", pageofhits);
+		}
+		//Save Records here?
+		for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			data.setValue("taggedbyllm", true);
+		}
+		getMediaArchive().saveData("asset", pageofhits);
 	}
 
 	public void processEntities(ScriptLogger inLog)
