@@ -1522,7 +1522,7 @@ public class EntityManager implements CatalogEnabled
 				if( rootid != null && category.hasCatalog(rootid))
 				{
 					toadd.setEntity(entity);
-					Data module = getMediaArchive().getCachedData("module", entity.get("sourcetype"));
+					Data module = getMediaArchive().getCachedData("module", entity.get("entitysourcetype"));
 					toadd.setEntityModule(module);
 				}
 			}
