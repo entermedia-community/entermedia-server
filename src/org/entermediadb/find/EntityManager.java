@@ -1505,6 +1505,12 @@ public class EntityManager implements CatalogEnabled
 	public Collection<CategoryWithEntity> loadCategoriesWithEntities( WebPageRequest inReq, Asset inAsset)
 	{
 		Collection<Category> inParentCategories = inAsset.getCategories();
+		
+		if (inParentCategories == null)
+		{
+			return null;
+		}
+		
 		Collection<Data> entities = getEntitiesForCategories(inReq, inParentCategories);
 		
 		List<CategoryWithEntity> found = new ArrayList<CategoryWithEntity>(); 
