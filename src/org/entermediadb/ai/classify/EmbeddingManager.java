@@ -1,6 +1,5 @@
 package org.entermediadb.ai.classify;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -10,34 +9,26 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.util.EntityUtils;
-import org.elasticsearch.common.recycler.Recycler.V;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.ai.llm.emedia.EMediaAIResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
-import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.manage.PageManager;
 import org.openedit.servlet.OpenEditEngine;
 import org.openedit.util.RequestUtils;
 
-public class DocumentEmbeddingManager extends InformaticsProcessor 
+public class EmbeddingManager extends InformaticsProcessor 
 {
-	private static final Log log = LogFactory.getLog(DocumentEmbeddingManager.class);
+	private static final Log log = LogFactory.getLog(EmbeddingManager.class);
 	
 	protected PageManager fieldPageManager;
 	public PageManager getPageManager() {
