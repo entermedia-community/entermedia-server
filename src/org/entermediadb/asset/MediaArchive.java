@@ -3366,10 +3366,10 @@ public class MediaArchive implements CatalogEnabled
 			{
 				throw new OpenEditException("Could not find AIFunction named " + inAiFunctionName);
 			}
-			Data serverinfo = query("aiserver").exact("aifunction", inAiFunctionName).sort("ordering").searchOne();
+			Data serverinfo = query("aiserver").exact("aifunction", inAiFunctionName).exact("enabled", true).sort("ordering").searchOne();
 			if( serverinfo == null)
 			{
-				throw new OpenEditException("Could not find Connector for aifunction " + inAiFunctionName);
+				throw new OpenEditException("Could not find enabled Connector for aifunction " + inAiFunctionName);
 			}
 			String llm = serverinfo.get("connectionbean");
 			connection = (LlmConnection) getModuleManager().getBean(getCatalogId(),llm, false);
