@@ -2504,7 +2504,7 @@
 	</bean>
 
 
-	<bean id="httpConnection" class="org.entermediadb.ai.llm.http.HttpConnection" scope="prototype"  lazy-init="default">
+	<bean id="httpConnection" class="org.entermediadb.ai.llm.http.HttpConnection" scope="prototype" lazy-init="default">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2542,7 +2542,7 @@
 			<ref bean="pageManager" />
 		</property>
 	</bean>
-	
+
 	<bean id="llamaOpenAiConnection" class="org.entermediadb.ai.llm.llama.LlamaOpenAiConnection" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -2614,8 +2614,8 @@
 			<ref bean="requestUtils" />
 		</property>
 	</bean>
-	
-	<bean id="documentEmbeddingManager" class="org.entermediadb.ai.classify.DocumentEmbeddingManager" scope="prototype">
+
+	<bean id="embeddingManager" class="org.entermediadb.ai.classify.EmbeddingManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2623,8 +2623,6 @@
 			<ref bean="requestUtils" />
 		</property>
 	</bean>
-	
-
 
 	<bean id="assistantManager" class="org.entermediadb.ai.assistant.AssistantManager" scope="prototype">
 		<property name="moduleManager">
