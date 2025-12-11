@@ -36,9 +36,19 @@ public class InformaticsManager extends BaseAiManager
 	{
 //		Map<String, String> models = getModels();
 		inLog.info("Assets");
+		QueryBuilder query = null;
 
-		QueryBuilder query = getMediaArchive().localQuery("asset").
-				exact("previewstatus", "2").
+		String allowclassifyothernodes = getMediaArchive().getCatalogSettingValue("allowclassifyothernodes");
+		if (Boolean.valueOf(allowclassifyothernodes) )
+		{
+			//Classify assets from other nodes
+			query = getMediaArchive().query("asset");	
+		}
+		else {
+			//Scan only local files
+			query = getMediaArchive().localQuery("asset");
+		}
+		query.exact("previewstatus", "2").
 				exact("taggedbyllm", false).
 				exact("llmerror", false);
 		
@@ -145,11 +155,21 @@ public class InformaticsManager extends BaseAiManager
 			return;
 		}
 		ids.remove("asset");
-
-		QueryBuilder query = getMediaArchive().localQuery("modulesearch")
+		
+		QueryBuilder query = null;
+		String allowclassifyothernodes = getMediaArchive().getCatalogSettingValue("allowclassifyothernodes");
+		if (Boolean.valueOf(allowclassifyothernodes) )
+		{
+			//Classify assets from other nodes
+			query = getMediaArchive().query("modulesearch");	
+		}
+		else {
+			//Scan only local entities
+			query = getMediaArchive().localQuery("modulesearch");
+		}
 				//.exact("semantictopicsindexed", false)
 				//.missing("semantictopics")
-				.exact("taggedbyllm", false)
+		query.exact("taggedbyllm", false)
 				.exact("llmerror", false)
 				.put("searchtypes", ids);
 
