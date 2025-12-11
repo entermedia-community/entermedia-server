@@ -89,10 +89,10 @@ $(document).ready(function () {
 		var langCodes = [];
 		if (codes && codes.length > 0) {
 			codes.forEach(function (code) {
-				if (code === "zh") {
-					code = "zh-Hans";
-				} else if (code === "zh_TW") {
-					code = "zh-Hant";
+				if (code === "zh-Hans") {
+					code = "zh";
+				} else if (code === "zh_TW" || code === "zh-Hant") {
+					code = "zht";
 				}
 				if (code === "all" || code === "missing") return;
 				langCodes.push(code);
@@ -105,10 +105,11 @@ $(document).ready(function () {
 		var langTranslations = {};
 		if (translations && Object.keys(translations).length > 0) {
 			Object.keys(translations).forEach(function (code) {
-				if (code === "zh-Hans") {
-					langTranslations["zh"] = translations[code];
+				if (code === "zh") {
+					langTranslations["zh-Hans"] = translations[code];
 					langTranslations["zh_CN"] = translations[code];
-				} else if (code === "zh-Hant") {
+				} else if (code === "zht") {
+					langTranslations["zh-Hant"] = translations[code];
 					langTranslations["zh_TW"] = translations[code];
 				}
 				langTranslations[code] = translations[code];

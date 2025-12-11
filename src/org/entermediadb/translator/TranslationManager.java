@@ -75,9 +75,9 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 			{
 				altLang = "zh";
 			}
-			else if(lang.equals("zh-Hant"))
+			else if(lang.equals("zh-Hant") || lang.equals("zh_TW"))
 			{
-				altLang = "zt";
+				altLang = "zht";
 			}
 			JSONArray fieldTranslations = (JSONArray) translations.get(lang);
 			if(fieldTranslations == null)
@@ -234,7 +234,7 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 			return;
 		}
 
-		Collection<String> availableTargets = Arrays.asList("en,es,fr,de,ar,pt,bn,hi,ur,ru,zh-Hans,zh-Hant".split(","));
+		Collection<String> availableTargets = Arrays.asList("en,es,fr,de,ar,pt,bn,hi,ur,ru,zh,zht,sw".split(","));
 		
 		Collection<String> targetLangs = new ArrayList();
 
@@ -246,13 +246,13 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 			{
 				continue;
 			}
-			if ("zh".equals(code))
+			if ("zh-Hans".equals(code))
 			{
-				code = "zh-Hans";
+				code = "zh";
 			}
 			else if ("zh_TW".equals(code))
 			{
-				code = "zh-Hant";
+				code = "zht";
 			}
 			if(availableTargets.contains(code))
 			{
