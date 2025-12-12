@@ -124,9 +124,9 @@ public class ClassifyManager extends InformaticsProcessor
 			contextFields.add(assetsearcher.getDetail("name"));
 			contextFields.add(assetsearcher.getDetail("assettype"));
 			
-			if(asset.hasValue("description") && asset.get("description").length() > 0)
+			if(asset.hasValue("longcaption") && asset.get("longcaption").length() > 0)
 			{
-				contextFields.add( assetsearcher.getDetail("description"));
+				contextFields.add( assetsearcher.getDetail("longcaption"));
 			}
 			if(asset.hasValue("keywords") && asset.getValues("keywords").size() > 0)
 			{
