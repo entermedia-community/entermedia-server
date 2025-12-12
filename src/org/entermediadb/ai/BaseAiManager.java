@@ -226,6 +226,9 @@ public class BaseAiManager extends BaseManager implements ChatMessageHandler
 		args.add(item.getAbsolutePath());
 		args.add("-resize");
 		args.add("1500x1500>");
+		args.add("-quality");
+		args.add("70");
+		args.add("-strip"); //very important (!!)
 		args.add("jpg:-");
 		Exec exec = (Exec)getMediaArchive().getBean("exec");
 
