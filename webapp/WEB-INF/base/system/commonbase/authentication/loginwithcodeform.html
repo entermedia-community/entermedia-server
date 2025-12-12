@@ -47,12 +47,12 @@
 								<input type="hidden" name="loginokpage" value="#esc($!loginok)"/>
 							#end
 							#ifnotnull( $userCategory)
-								<input type="hidden" name="categoryid" value="$userCategory.id" />
+								<input type="hidden" name="categoryid" value="$!userCategory.id" />
 							#end
 						
 					</form>   
 					
-					<div class="my-4 text-center"><a href="$!{home}${content.loginroot}/login.html" style="">[[Other login options]]</a></div>
+					<div class="my-4 text-center"><a href="$!{home}${content.loginroot}/login.html" style=""><i class="fas fa-sign-in"></i> [[Other login options]]</a></div>
 				
 				</div>
 				#end

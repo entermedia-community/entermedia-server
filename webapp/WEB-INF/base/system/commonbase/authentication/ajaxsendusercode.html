@@ -25,12 +25,12 @@
 		#if( $email )
 		<input  type="hidden" name="email" value="$email" />
 		#else
-		<div class="col-12 col-md-6">
+		<div class="col-12 col-md-6 mb-3">
 		<input class="form-control required grabfocus" type="text" name="email" size="50" placeholder="[[Enter your Email Address]]" required />
 		</div>
 		#end
 		
-		<div class="col-12 col-md-6">
+		<div class="col-12 col-md-6 mb-3">
 					<input class="form-control grabfocus required" id="entermediakey" name="templogincode" placeholder="[[Enter six digit login code]]" required />
 		</div>
 
@@ -50,12 +50,12 @@
 	
 
 	#ifnotnull( $userCategory)
-			<input type="hidden" name="categoryid" value="$userCategory.id" />
+			<input type="hidden" name="categoryid" value="$!userCategory.id" />
 	#end
 	
 </form>   
 
-<div class="my-4 text-center"><a href="$!{home}${content.loginroot}/login.html" style="">[[Other login options]]</a></div>
+<div class="my-4 text-center"><a href="$!{home}${content.loginroot}/login.html" style=""><i class="fas fa-sign-in"></i> [[Other login options]]</a></div>
 </div>
 #if ( $context.getPageValue("oe-exception") )
 		<div style="border: 1px solid black; width: 60%; text-align: center">$context.getPageValue("oe-exception")</div>
