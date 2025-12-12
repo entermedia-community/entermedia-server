@@ -85,7 +85,6 @@ $(document).ready(function () {
 	});
 
 	function parseLangCodes(targets) {
-		debugger;
 		var codes = Array.from(targets);
 		var langCodes = [];
 		if (codes && codes.length > 0) {
@@ -150,8 +149,6 @@ $(document).ready(function () {
 			return;
 		}
 
-		debugger;
-
 		var text = "",
 			targets = new Set();
 
@@ -196,7 +193,6 @@ $(document).ready(function () {
 		mask.addClass("active");
 
 		var parsedTargets = parseLangCodes(targets);
-		debugger;
 		$.ajax({
 			url: `/${mediadb}/services/module/translation/translate.json`,
 			method: "POST",
