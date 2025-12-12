@@ -70,6 +70,7 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 		for (Iterator iterator = targetLangs.iterator(); iterator.hasNext();)
 		{
 			String lang = (String) iterator.next();
+			
 			String altLang = null;
 			if(lang.equals("zh-Hans"))
 			{
@@ -159,6 +160,19 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 	
 	public JSONObject translate(String text, String sourceLang, Collection<String> targetLangs)
 	{
+		if (text == null || text.isEmpty())
+		{
+			throw new IllegalArgumentException("Text to translate cannot be null or empty");
+		}
+		if (sourceLang == null || sourceLang.isEmpty())
+		{
+			throw new IllegalArgumentException("Source language cannot be null or empty");
+		}
+		if (targetLangs == null || targetLangs.size() == 0)
+		{
+			throw new IllegalArgumentException("Target languages cannot be null or empty");
+		}
+		
 		JSONObject payload = new JSONObject();
 		
 		JSONArray q = new JSONArray();
