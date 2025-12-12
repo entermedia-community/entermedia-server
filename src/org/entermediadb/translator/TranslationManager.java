@@ -20,6 +20,7 @@ import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.hittracker.HitTracker;
@@ -162,15 +163,15 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 	{
 		if (text == null || text.isEmpty())
 		{
-			throw new IllegalArgumentException("Text to translate cannot be null or empty");
+			throw new OpenEditException("Text to translate cannot be null or empty");
 		}
 		if (sourceLang == null || sourceLang.isEmpty())
 		{
-			throw new IllegalArgumentException("Source language cannot be null or empty");
+			throw new OpenEditException("Source language cannot be null or empty");
 		}
 		if (targetLangs == null || targetLangs.size() == 0)
 		{
-			throw new IllegalArgumentException("Target languages cannot be null or empty");
+			throw new OpenEditException("Target languages cannot be null or empty");
 		}
 		
 		JSONObject payload = new JSONObject();
