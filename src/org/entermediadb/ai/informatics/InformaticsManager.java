@@ -145,16 +145,21 @@ public class InformaticsManager extends BaseAiManager
 
 	public void processEntities(ScriptLogger inLog)
 	{
-		inLog.info("Processing Entities Informatics");
+		
 		HitTracker allmodules = getMediaArchive().query("module").exact("semanticenabled", true).search();
 		Collection<String> ids = allmodules.collectValues("id");
-
+		
+		if(!ids.isEmpty())
+		{
+			ids.remove("asset");
+		}
 		if(ids.isEmpty())
 		{
-			inLog.info("No modules with semantic enabled found. Please enable semantic indexing for modules.");
+			inLog.info("No modules with semantic enabled found.");
 			return;
 		}
-		ids.remove("asset");
+		
+		inLog.info("Processing Entities Informatics");
 		
 		QueryBuilder query = null;
 		String allowclassifyothernodes = getMediaArchive().getCatalogSettingValue("allowclassifyothernodes");
@@ -193,7 +198,7 @@ public class InformaticsManager extends BaseAiManager
 		pendingrecords.enableBulkOperations();
 		pendingrecords.setHitsPerPage(5); //TODO:
 
-		inLog.info("Entities  " + ids + " with " + pendingrecords + " from date: " + date );
+		//inLog.info("Entities  " + ids + " with " + pendingrecords + " from date: " + date );
 		
 
 		if (!pendingrecords.isEmpty())
@@ -209,7 +214,7 @@ public class InformaticsManager extends BaseAiManager
 				{
 					MultiValued config = (MultiValued) iterator2.next();
 					InformaticsProcessor processor = loadProcessor(config.get("bean"));
-					inLog.info("Processing : " + config);
+					//inLog.info("Processing : " + config);
 					processor.processInformaticsOnEntities(inLog, config, pageofhits);
 				}
 				//Group them by type
