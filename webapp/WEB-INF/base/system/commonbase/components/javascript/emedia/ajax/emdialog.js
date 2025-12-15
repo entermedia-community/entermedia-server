@@ -136,6 +136,10 @@
 				if (maxwidth) {
 					$(".modal-dialog", modaldialog).css("max-width", maxwidth + "px");
 				}
+				var minwidth = initiator.data("minwidth");
+				if (minwidth) {
+					$(".modal-dialog", modaldialog).css("min-width", minwidth + "px");
+				}
 
 				var modalbackdrop = true;
 				if ($(".modal-backdrop").length) {
