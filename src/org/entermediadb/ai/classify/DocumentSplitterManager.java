@@ -34,10 +34,10 @@ public class DocumentSplitterManager extends InformaticsProcessor
 	@Override
 	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecords)
 	{
-		inLog.headline("Splitting " + inRecords.size() + " documents");
+		
 		
 		String searchtype = inConfig.get("searchtype");
-
+		int count = 0;
 		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
 		{
 			MultiValued entity = (MultiValued) iterator.next();
@@ -75,6 +75,12 @@ public class DocumentSplitterManager extends InformaticsProcessor
 					continue;
 				}
 			}
+			if(count == 0)
+			{
+				inLog.headline("Splitting " + inRecords.size() + " documents"); 
+			}
+			count++;
+			
 			inLog.info("Splitting " + asset.getValue("pages") + " pages in document " + asset);
 			entity.setValue("totalpages", asset.getValue("pages"));
 			splitDocument(inLog, inConfig, entity, asset);
