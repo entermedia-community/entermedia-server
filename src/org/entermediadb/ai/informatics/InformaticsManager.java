@@ -148,13 +148,17 @@ public class InformaticsManager extends BaseAiManager
 		inLog.info("Processing Entities Informatics");
 		HitTracker allmodules = getMediaArchive().query("module").exact("semanticenabled", true).search();
 		Collection<String> ids = allmodules.collectValues("id");
-
+		
+		if(!ids.isEmpty())
+		{
+			ids.remove("asset");
+		}
 		if(ids.isEmpty())
 		{
 			inLog.info("No modules with semantic enabled found. Please enable semantic indexing for modules.");
 			return;
 		}
-		ids.remove("asset");
+		
 		
 		QueryBuilder query = null;
 		String allowclassifyothernodes = getMediaArchive().getCatalogSettingValue("allowclassifyothernodes");
