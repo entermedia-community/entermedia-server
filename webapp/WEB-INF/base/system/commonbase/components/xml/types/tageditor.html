@@ -20,7 +20,8 @@
 #ifnull($vals)
 	#set( $vals = $val.split("\s*\,\s*") )
 #end
-<select name="${detail.getId()}.value" 
+xxx
+<select name="${detail.getId()}.values" 
 		##id="list-${detailid}${idcount}" 
 		multiple="multiple" 
 		class="listtags select2-container--bootstrap4 #if($detail.isRequired() && !$multiedit) required #end" 
