@@ -6,7 +6,6 @@
 		if(target.tagName != "A") {
 			target = target.closest("a");
 		}
-		console.log(target);
 		if(!target) return;
 		if(target.classList.contains("ajax") || target.classList.contains("emdialog")) {
 			capturedClick = target;
