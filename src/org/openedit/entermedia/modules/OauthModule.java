@@ -282,6 +282,10 @@ public class OauthModule extends BaseMediaModule
 		if ("microsoft".equals(provider))
 		{
 			Data authinfo = archive.getData("oauthprovider", provider);
+			if(authinfo == null) {
+				inReq.redirect("/"+appid+"/authentication/nopermissions.html");
+				return; //provider not enabled
+			}
 			String siteroot = inReq.findValue("siteRoot");
 			URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
 			if (siteroot == null && utils != null)
@@ -342,13 +346,15 @@ public class OauthModule extends BaseMediaModule
 		{
 
 			Data authinfo = archive.getData("oauthprovider", provider);
-
+			if(authinfo == null) {
+				inReq.redirect("/"+appid+"/authentication/nopermissions.html");
+				return; //provider not enabled
+			}
 			String siteroot = inReq.findValue("siteRoot");
 
 			URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
 			if (siteroot == null && utils != null)
 			{
-
 				siteroot = utils.siteRoot();
 			}
 			String redirect = inReq.findValue("redirecturi");
@@ -466,7 +472,10 @@ public class OauthModule extends BaseMediaModule
 		}
 		if ("dropbox".equals(provider)) {
 		    Data authinfo = archive.getData("oauthprovider", provider);
-
+		    if(authinfo == null) {
+				inReq.redirect("/"+appid+"/authentication/nopermissions.html");
+				return; //provider not enabled
+			}
 		    // Extract the authorization code from the request
 		    OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(inReq.getRequest());
 		    String code = oar.getCode();
@@ -525,7 +534,10 @@ public class OauthModule extends BaseMediaModule
 		{
 
 			Data authinfo = archive.getData("oauthprovider", provider);
-
+			if(authinfo == null) {
+				inReq.redirect("/"+appid+"/authentication/nopermissions.html");
+				return; //provider not enabled
+			}
 			String siteroot = inReq.findValue("siteRoot");
 
 			URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
@@ -604,7 +616,10 @@ public class OauthModule extends BaseMediaModule
 		if ("drupal".equals(provider))
 		{
 			Data authinfo = archive.getData("oauthprovider", provider);
-
+			if(authinfo == null) {
+				inReq.redirect("/"+appid+"/authentication/nopermissions.html");
+				return; //provider not enabled
+			}
 			OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(inReq.getRequest());
 			String code = oar.getCode();
 
