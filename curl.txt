@@ -4,6 +4,9 @@ env GTK_IM_MODULE=ibus /home/shanti/eclipse/java-2024-09/eclipse/eclipse --launc
 ##Search Asset by Id
 curl -XGET 'http://localhost:9200/finder_catalog/asset/_search?q=id:AZXxrJ6vD5hAosRFNjDM' | python3 -mjson.tool
 
+curl -XGET 'http://localhost:9200/system/user/_search?q=id:testuser' | python3 -mjson.tool
+
+
 
 ##Search by field "exact" 
 curl -XGET http://localhost:9200/site_catalog/category/_search -d '{
