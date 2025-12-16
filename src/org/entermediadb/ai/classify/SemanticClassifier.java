@@ -81,7 +81,11 @@ public class SemanticClassifier extends InformaticsProcessor implements CatalogE
 			String moduleid = data.get("entitysourcetype");
 			if( moduleid == null)
 			{
-				throw new OpenEditException("Requires sourcetype be set "  + data);
+				//throw new OpenEditException("Requires sourcetype be set "  + data);
+
+				//Todo: Should we skip data with no sourcetype earlier?
+				log.info(data +" doesn't contain a sourcetype");
+				continue;
 			}
 			MultiValued module = (MultiValued)getMediaArchive().getCachedData("module", moduleid);
 			if( !module.getBoolean("semanticenabled") )
