@@ -273,10 +273,13 @@ public class OauthModule extends BaseMediaModule
 		String error = inReq.getRequestParameter("error");
 		if(error != null) {
 			inReq.putPageValue("oatherror", error);
+			String error_description = inReq.getRequestParameter("error_description");
+			log.info("Error Login with " + provider + ": " + error + " - " + error_description);
 			String errorurl = inReq.findActionValue("errorurl");
 			if(errorurl != null) {
 				inReq.redirect(errorurl);
 			}
+			
 			return;//login didn't work. 
 		}
 		
