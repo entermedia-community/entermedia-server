@@ -2120,10 +2120,11 @@ public class ProjectModule extends BaseMediaModule
 		query.addExact("collectionid", collectionid);
 		
 		String sortby = inReq.getRequestParameter(searchtype+"sortby");
-		if(sortby != null)
+		if(sortby == null)
 		{
-			query.addSortBy(sortby);
+			sortby = "dateDown";
 		}
+		query.addSortBy(sortby);
 		
 		HitTracker results = archive.getSearcher(searchtype).cachedSearch(inReq,query);
 		inReq.putPageValue("income", results);
@@ -2163,10 +2164,11 @@ public class ProjectModule extends BaseMediaModule
 		query.addExact("collectionid", collectionid);
 		
 		String sortby = inReq.getRequestParameter(searchtype+"sortby");
-		if(sortby != null)
+		if(sortby == null)
 		{
-			query.addSortBy(sortby);
+			sortby = "dateDown";
 		}
+		query.addSortBy(sortby);
 		
 		HitTracker results = archive.getSearcher(searchtype).cachedSearch(inReq,query);
 		inReq.putPageValue("expenses", results);
