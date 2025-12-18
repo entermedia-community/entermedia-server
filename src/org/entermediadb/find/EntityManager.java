@@ -2,6 +2,7 @@ package org.entermediadb.find;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1499,5 +1500,41 @@ public class EntityManager implements CatalogEnabled
 			bulkdetails.add(detail);
 		}
 		return bulkdetails;
+	}
+	
+	public Collection<CategoryWithEntity> loadCategoriesWithEntities( WebPageRequest inReq, Asset inAsset)
+	{
+		Collection<Category> inParentCategories = inAsset.getCategories();
+		
+		if (inParentCategories == null)
+		{
+			return null;
+		}
+		
+		Collection<Data> entities = getEntitiesForCategories(inReq, inParentCategories);
+		
+		List<CategoryWithEntity> found = new ArrayList<CategoryWithEntity>(); 
+		
+		for (Iterator iterator = inParentCategories.iterator(); iterator.hasNext();)
+		{
+			Category category = (Category) iterator.next();
+			CategoryWithEntity toadd = new CategoryWithEntity();
+			toadd.setCategory(category);
+			
+			for (Iterator iterator2 = entities.iterator(); iterator2.hasNext();)
+			{
+				Data entity = (Data) iterator2.next();
+				String rootid = entity.get("rootcategory");
+				if( rootid != null && category.hasCatalog(rootid))
+				{
+					toadd.setEntity(entity);
+					Data module = getMediaArchive().getCachedData("module", entity.get("entitysourcetype"));
+					toadd.setEntityModule(module);
+				}
+			}
+			found.add(toadd);
+		}
+		Collections.sort(found);
+		return found;
 	}
 }

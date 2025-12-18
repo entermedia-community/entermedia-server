@@ -1,18 +1,17 @@
 package org.entermediadb.translator;
 
-import org.openedit.ModuleManager;
-import org.openedit.WebPageRequest;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.openedit.ModuleManager;
+import org.openedit.WebPageRequest;
 
 
 
@@ -64,7 +63,15 @@ public class TranslationModule extends BaseMediaModule {
 		}
 		String sourceLang = (String) params.get("source");
 		String targetLangStr = (String) params.get("targets");
-		Collection<String> targetLangs = Arrays.asList(targetLangStr.split(","));
+		Collection<String> targets = Arrays.asList(targetLangStr.split(","));
+		Collection<String> targetLangs = new ArrayList<String>();
+		
+		for (Iterator iterator = targets.iterator(); iterator.hasNext();) {
+			String lang = (String) iterator.next();
+			if(lang != null && lang.length() > 1) {
+				targetLangs.add(lang);
+			}
+		}
 		
 		String text = (String) params.get("text");
 		

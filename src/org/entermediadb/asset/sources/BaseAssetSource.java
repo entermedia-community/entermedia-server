@@ -211,17 +211,31 @@ public abstract class BaseAssetSource implements AssetSource
 		Asset asset = getMediaArchive().getAssetImporter().getAssetUtilities().populateAsset(inAsset, dest, getMediaArchive(), inCreateCategories, sourcepath, inUser);
 		
 
+		Collection<String> keywords = new ArrayList<String>();
+		
 		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
 		{
 			String field  = (String)iterator.next();
 			Object val = inMetadata.get(field);
 			if( field.equals("keywords"))
 			{
-				//combine lists
-				String[] col = (String[])val;
-				for (int i = 0; i < col.length; i++)
+				if(val instanceof String) 
 				{
-					asset.addKeyword(col[i]);					
+					String keywordstring = (String)val;
+					keywords.add(keywordstring);
+				}
+				else if (val instanceof Collection)
+				{
+					Collection vals = (Collection)val;
+					keywords.addAll(vals);
+				}
+				else if(val instanceof String[])
+				{
+					String[] vals = (String[])val;
+					for (int i = 0; i < vals.length; i++)
+					{
+						keywords.add(vals[i]);
+					}
 				}
 			}
 			else if( field.equals("categories"))
@@ -301,6 +315,11 @@ public abstract class BaseAssetSource implements AssetSource
 				}
 				*/
 			}
+		}
+		
+		if( !keywords.isEmpty())
+		{
+			asset.setValue("keywords", keywords);
 		}
 		
 		if( asset.get("editstatus") == null )

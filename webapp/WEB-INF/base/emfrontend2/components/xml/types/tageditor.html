@@ -13,7 +13,7 @@ $pages.include("$apphome/components/xml/types/select2translations.html",$context
 #set( $values = $val.split("\s*\|\s*") )
 #end
 
-<select name="${detail.getId()}.value" 
+<select name="${detail.getId()}.values" 
 		##id="list-${detailid}${idcount}" 
 		multiple="multiple" 
 		class="listtags select2-container--bootstrap4 #if($detail.isRequired() && !$multiedit) required #end" 

@@ -24,13 +24,31 @@ public class InformaticsManager extends BaseAiManager
 		processAssets(inLog);
 		processEntities(inLog);
 	}
+	
+	public void processAsset(ScriptLogger inLog, Asset inAsset)
+	{
+		Collection pageofhits = new ArrayList();
+		pageofhits.add(inAsset);
+		processAssets(inLog, pageofhits);
+	}
+	
 	public void processAssets(ScriptLogger inLog)
 	{
 //		Map<String, String> models = getModels();
 		inLog.info("Assets");
+		QueryBuilder query = null;
 
-		QueryBuilder query = getMediaArchive().localQuery("asset").
-				exact("previewstatus", "2").
+		String allowclassifyothernodes = getMediaArchive().getCatalogSettingValue("allowclassifyothernodes");
+		if (Boolean.valueOf(allowclassifyothernodes) )
+		{
+			//Classify assets from other nodes
+			query = getMediaArchive().query("asset");	
+		}
+		else {
+			//Scan only local files
+			query = getMediaArchive().localQuery("asset");
+		}
+		query.exact("previewstatus", "2").
 				exact("taggedbyllm", false).
 				exact("llmerror", false);
 		
@@ -80,21 +98,9 @@ public class InformaticsManager extends BaseAiManager
 						pageofhits.add(asset);
 						
 					}
-					for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
-					{
-						MultiValued config = (MultiValued) iterator2.next();
-						InformaticsProcessor processor = loadProcessor(config.get("bean"));
-						//inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" ); //Add Header Logs in each Bean
-						processor.processInformaticsOnAssets(inLog, config, pageofhits);
-						getMediaArchive().saveData("asset", pageofhits);
-					}
-					//Save Records here?
-					for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
-					{
-						Data data = (Data) iterator.next();
-						data.setValue("taggedbyllm", true);
-					}
-					getMediaArchive().saveData("asset", pageofhits);
+					
+					processAssets(inLog, pageofhits);
+					
 					long duration = (System.currentTimeMillis() - startTime) / 1000L;
 					inLog.info("Processing " + pageofhits.size() + " records took "+duration +"s");
 				}
@@ -118,23 +124,57 @@ public class InformaticsManager extends BaseAiManager
 		}
 	}
 
+	protected void processAssets(ScriptLogger inLog, Collection pageofhits)
+	{
+		for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
+		{
+			MultiValued config = (MultiValued) iterator2.next();
+			InformaticsProcessor processor = loadProcessor(config.get("bean"));
+			//inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" ); //Add Header Logs in each Bean
+			processor.processInformaticsOnAssets(inLog, config, pageofhits);
+			getMediaArchive().saveData("asset", pageofhits);
+		}
+		//Save Records here?
+		for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			data.setValue("taggedbyllm", true);
+		}
+		getMediaArchive().saveData("asset", pageofhits);
+	}
+
 	public void processEntities(ScriptLogger inLog)
 	{
-		inLog.info("Processing Entities Informatics");
+		
 		HitTracker allmodules = getMediaArchive().query("module").exact("semanticenabled", true).search();
 		Collection<String> ids = allmodules.collectValues("id");
-
+		
+		if(!ids.isEmpty())
+		{
+			ids.remove("asset");
+		}
 		if(ids.isEmpty())
 		{
-			inLog.info("No modules with semantic enabled found. Please enable semantic indexing for modules.");
+			inLog.info("No modules with semantic enabled found.");
 			return;
 		}
-		ids.remove("asset");
-
-		QueryBuilder query = getMediaArchive().localQuery("modulesearch")
+		
+		inLog.info("Processing Entities Informatics");
+		
+		QueryBuilder query = null;
+		String allowclassifyothernodes = getMediaArchive().getCatalogSettingValue("allowclassifyothernodes");
+		if (Boolean.valueOf(allowclassifyothernodes) )
+		{
+			//Classify assets from other nodes
+			query = getMediaArchive().query("modulesearch");	
+		}
+		else {
+			//Scan only local entities
+			query = getMediaArchive().localQuery("modulesearch");
+		}
 				//.exact("semantictopicsindexed", false)
 				//.missing("semantictopics")
-				.exact("taggedbyllm", false)
+		query.exact("taggedbyllm", false)
 				.exact("llmerror", false)
 				.put("searchtypes", ids);
 
@@ -158,7 +198,7 @@ public class InformaticsManager extends BaseAiManager
 		pendingrecords.enableBulkOperations();
 		pendingrecords.setHitsPerPage(5); //TODO:
 
-		inLog.info("Entities  " + ids + " with " + pendingrecords + " from date: " + date );
+		//inLog.info("Entities  " + ids + " with " + pendingrecords + " from date: " + date );
 		
 
 		if (!pendingrecords.isEmpty())
@@ -174,7 +214,7 @@ public class InformaticsManager extends BaseAiManager
 				{
 					MultiValued config = (MultiValued) iterator2.next();
 					InformaticsProcessor processor = loadProcessor(config.get("bean"));
-					inLog.info("Processing : " + config);
+					//inLog.info("Processing : " + config);
 					processor.processInformaticsOnEntities(inLog, config, pageofhits);
 				}
 				//Group them by type

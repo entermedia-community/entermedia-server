@@ -225,14 +225,16 @@ public class BaseAiManager extends BaseManager implements ChatMessageHandler
 		ArrayList<String> args = new ArrayList<String>();
 		args.add(item.getAbsolutePath());
 		args.add("-resize");
-		args.add("1500x1500>");
+		args.add("1024x1024>");
+		args.add("-quality");
+		args.add("70");
+		args.add("-strip"); //very important (!!)
 		args.add("jpg:-");
 		Exec exec = (Exec)getMediaArchive().getBean("exec");
 
 		ExecResult result = exec.runExecStream("convert", args, output, 5000);
 		if (!result.isRunOk())
 		{
-			
 			throw new OpenEditException("Error converting image: "+ result.getReturnValue());
 		}
 		long duration = (System.currentTimeMillis() - starttime) ;

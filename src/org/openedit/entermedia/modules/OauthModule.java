@@ -273,15 +273,28 @@ public class OauthModule extends BaseMediaModule
 		String error = inReq.getRequestParameter("error");
 		if(error != null) {
 			inReq.putPageValue("oatherror", error);
+			String error_description = inReq.getRequestParameter("error_description");
+			log.info("Error Login with " + provider + ": " + error + " - " + error_description);
 			String errorurl = inReq.findActionValue("errorurl");
 			if(errorurl != null) {
 				inReq.redirect(errorurl);
 			}
+			
 			return;//login didn't work. 
 		}
+		
+		log.info("Login atempt with: " + provider);
+		
+		log.info(inReq.getRequestParamsAsList() );
+		
 		if ("microsoft".equals(provider))
 		{
-			Data authinfo = archive.getData("oauthprovider", provider);
+			Data authinfo = archive.getCachedData("oauthprovider", provider);
+			if(authinfo == null) {
+				inReq.redirect("/"+appid+"/authentication/nopermissions.html");
+				log.info("Missing oauthprovider configuration: microsoft");
+				return; //provider not enabled
+			}
 			String siteroot = inReq.findValue("siteRoot");
 			URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
 			if (siteroot == null && utils != null)
@@ -303,6 +316,8 @@ public class OauthModule extends BaseMediaModule
 
 			OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(inReq.getRequest());
 			String code = oar.getCode();
+			
+			log.info("Sending token request with code: " +code);
 
 			OAuthClientRequest tokenRequest = OAuthClientRequest
 				.tokenLocation("https://login.microsoftonline.com/common/oauth2/v2.0/token")
@@ -323,9 +338,9 @@ public class OauthModule extends BaseMediaModule
 				    .setAccessToken(accessToken)
 				    .buildHeaderMessage(); // required for Microsoft Graph
 
-				OAuthResourceResponse resourceResponse = oAuthClient.resource(bearerClientRequest, "GET", OAuthResourceResponse.class);
-				String userinfoJSON = resourceResponse.getBody();
-				log.info("Microsoft Graph response: " + userinfoJSON);
+			OAuthResourceResponse resourceResponse = oAuthClient.resource(bearerClientRequest, "GET", OAuthResourceResponse.class);
+			String userinfoJSON = resourceResponse.getBody();
+			log.info("Microsoft Graph response: " + userinfoJSON);
 			JSONParser parser = new JSONParser();
 			JSONObject data = (JSONObject) parser.parse(userinfoJSON);
 
@@ -342,13 +357,15 @@ public class OauthModule extends BaseMediaModule
 		{
 
 			Data authinfo = archive.getData("oauthprovider", provider);
-
+			if(authinfo == null) {
+				inReq.redirect("/"+appid+"/authentication/nopermissions.html");
+				return; //provider not enabled
+			}
 			String siteroot = inReq.findValue("siteRoot");
 
 			URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
 			if (siteroot == null && utils != null)
 			{
-
 				siteroot = utils.siteRoot();
 			}
 			String redirect = inReq.findValue("redirecturi");
@@ -466,7 +483,10 @@ public class OauthModule extends BaseMediaModule
 		}
 		if ("dropbox".equals(provider)) {
 		    Data authinfo = archive.getData("oauthprovider", provider);
-
+		    if(authinfo == null) {
+				inReq.redirect("/"+appid+"/authentication/nopermissions.html");
+				return; //provider not enabled
+			}
 		    // Extract the authorization code from the request
 		    OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(inReq.getRequest());
 		    String code = oar.getCode();
@@ -525,7 +545,10 @@ public class OauthModule extends BaseMediaModule
 		{
 
 			Data authinfo = archive.getData("oauthprovider", provider);
-
+			if(authinfo == null) {
+				inReq.redirect("/"+appid+"/authentication/nopermissions.html");
+				return; //provider not enabled
+			}
 			String siteroot = inReq.findValue("siteRoot");
 
 			URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
@@ -604,7 +627,10 @@ public class OauthModule extends BaseMediaModule
 		if ("drupal".equals(provider))
 		{
 			Data authinfo = archive.getData("oauthprovider", provider);
-
+			if(authinfo == null) {
+				inReq.redirect("/"+appid+"/authentication/nopermissions.html");
+				return; //provider not enabled
+			}
 			OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(inReq.getRequest());
 			String code = oar.getCode();
 
