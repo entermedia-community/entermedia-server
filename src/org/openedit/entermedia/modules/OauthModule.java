@@ -100,7 +100,25 @@ public class OauthModule extends BaseMediaModule
 
 				String requestedpermissions = "openid profile email offline_access User.Read";
 
-				OAuthClientRequest request = OAuthClientRequest
+				String tenantid = authinfo.get("tenantid");
+				
+				
+				OAuthClientRequest request = null;
+				
+				if(tenantid != null) {
+					String authorizeUrl =
+						    "https://login.microsoftonline.com/" + tenantid + "/oauth2/v2.0/authorize";
+					request =OAuthClientRequest
+							.authorizationLocation(authorizeUrl)
+							.setClientId(clientid)
+							.setRedirectURI(redirect)
+							.setResponseType("code")
+							.setScope(requestedpermissions)
+							.setState(state)
+							.buildQueryMessage();
+
+				} else {
+					request = OAuthClientRequest
 					.authorizationLocation("https://login.microsoftonline.com/common/oauth2/v2.0/authorize")
 					.setClientId(clientid)
 					.setRedirectURI(redirect)
@@ -109,6 +127,8 @@ public class OauthModule extends BaseMediaModule
 					.setState(state)
 					.buildQueryMessage();
 
+				}
+				
 				String locationUri = request.getLocationUri();
 				log.info("Redirecting to Microsoft OAuth: " + locationUri);
 				inReq.redirect(locationUri);
@@ -318,8 +338,10 @@ public class OauthModule extends BaseMediaModule
 			String code = oar.getCode();
 			
 			log.info("Sending token request with code: " +code);
-
-			OAuthClientRequest tokenRequest = OAuthClientRequest
+			String tenantid = authinfo.get("tenantid");
+			OAuthClientRequest tokenRequest  = null;
+			if(tenantid == null) {
+				tokenRequest = OAuthClientRequest
 				.tokenLocation("https://login.microsoftonline.com/common/oauth2/v2.0/token")
 				.setGrantType(GrantType.AUTHORIZATION_CODE)
 				.setClientId(clientid)
@@ -327,7 +349,19 @@ public class OauthModule extends BaseMediaModule
 				.setRedirectURI(redirect)
 				.setCode(code)
 				.buildBodyMessage();
-
+			} else {
+				//https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token
+				String url = "https://login.microsoftonline.com/" + tenantid + "/oauth2/v2.0/token";
+				
+				tokenRequest = OAuthClientRequest
+						.tokenLocation(url)
+						.setGrantType(GrantType.AUTHORIZATION_CODE)
+						.setClientId(clientid)
+						.setClientSecret(clientsecret)
+						.setRedirectURI(redirect)
+						.setCode(code)
+						.buildBodyMessage();
+			}
 			OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
 			EmTokenResponse tokenResponse = oAuthClient.accessToken(tokenRequest, EmTokenResponse.class);
 
