@@ -13,10 +13,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.classify.EmbeddingManager;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
+import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -664,6 +667,8 @@ public class DataEditModule extends BaseMediaModule
 
 				}
 			}
+
+			//TODO: embed
 			
 			String variablename = inReq.findValue("pageval");
 			if (variablename == null)

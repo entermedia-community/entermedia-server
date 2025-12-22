@@ -20,6 +20,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.manage.PageManager;
@@ -53,8 +54,15 @@ public class EmbeddingManager extends InformaticsProcessor
 	@Override
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
 	{
-		//Do nothing
-		
+		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
+		{
+			MultiValued asset = (MultiValued) iterator.next();
+			String moduleid = asset.get("entitysourcetype");
+			if("librarycollection".equals(moduleid))
+			{
+				embedAssetData(inLog, asset);
+			}
+		}
 	}
 
 	@Override
@@ -182,9 +190,9 @@ public class EmbeddingManager extends InformaticsProcessor
 		return true;
 	}
 
-	
-	
-	
+
+
+
 	/**
 	This is from the handler API to deal with chats
 	*/
@@ -354,6 +362,102 @@ public class EmbeddingManager extends InformaticsProcessor
 		
 		response.setMessage(responsetext);
 		response.setMessagePlain(answer);
+	}
+	
+	
+	public void embedAssetData(ScriptLogger inLog, MultiValued inAsset) 
+	{
+		Map<String, Object> inParams = new HashMap();
+		Collection<PropertyDetail> contextFields = new ArrayList<PropertyDetail>();
+		
+		Searcher assetsearcher = getMediaArchive().getAssetSearcher();
+		contextFields.add(assetsearcher.getDetail("name"));
+		contextFields.add(assetsearcher.getDetail("assettype"));
+		
+		if(inAsset.hasValue("longcaption") && inAsset.get("longcaption").length() > 0)
+		{
+			contextFields.add( assetsearcher.getDetail("longcaption"));
+		}
+		if(inAsset.hasValue("keywords") && inAsset.getValues("keywords").size() > 0)
+		{
+			contextFields.add( assetsearcher.getDetail("keywords"));
+		}
+		
+		inParams.put("contextfields", contextFields);
+		
+		Boolean entityembedded = inAsset.getBoolean("entityembedded");
+		if(entityembedded == null || !entityembedded) { 
+			String searchtype = inAsset.get("entitysourcetype");
+			
+			JSONObject documentdata = new JSONObject();
+			documentdata.put("doc_id", searchtype + "_" + inAsset.getId());
+			documentdata.put("file_name", inAsset.get("assettitle"));
+			
+			documentdata.put("file_type", "text/plain");
+			
+			documentdata.put("creation_date", inAsset.get("entity_date"));
+			
+			JSONObject pagedata = new JSONObject();
+			pagedata.put("page_id", searchtype + "page_" + inAsset.getId());
+			
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
+			
+			String templatepath = getMediaArchive().getMediaDbId() + "/ai/default/calls/commons/context_fields.json";
+			String responsetext = llmconnection.loadInputFromTemplate(templatepath, inParams);
+
+			pagedata.put("text", responsetext);
+			pagedata.put("page_label", inAsset.getName());
+			
+			Collection allpages  = new ArrayList(1);
+			allpages.add(pagedata);
+			
+			documentdata.put("pages", allpages);
+			
+			embedDocument(inLog, documentdata);
+			
+			inAsset.setValue("entityembedded", "true");
+			inAsset.setValue("entityembeddeddate", new Date());
+		} 
+	}
+	
+	public void embedBlogData(ScriptLogger inLog, Data blog) 
+	{
+		String entityembedded = blog.get("entityembedded");
+		if(entityembedded == null || !entityembedded.equals("true")) {
+
+			String searchtype = blog.get("entitysourcetype");
+			
+			Searcher searcher = getMediaArchive().getSearcher(searchtype);
+
+			JSONObject documentdata = new JSONObject();
+			documentdata.put("doc_id", searchtype + "_" + blog.getId());
+			documentdata.put("file_name", blog.getName());
+
+			documentdata.put("file_type", "text/plain");
+				
+			documentdata.put("creation_date", blog.get("entity_date"));
+			
+			JSONObject pagedata = new JSONObject();
+			pagedata.put("page_id", searchtype + "page_" + blog.getId());
+
+			pagedata.put("text", blog.get("maincontent"));
+			pagedata.put("page_label", blog.getName());
+			
+			Collection allpages  = new ArrayList(1);
+			allpages.add(pagedata);
+			
+			documentdata.put("pages", allpages);
+			
+			embedDocument(inLog, documentdata);
+			
+			blog.setValue("entityembedded", "true");
+			blog.setValue("entityembeddeddate", new Date());
+			searcher.saveData(blog);
+		}
+	}
+	
+	public void embedProjectGoal(Data goal) {
+		// TODO
 	}
 	
 }
