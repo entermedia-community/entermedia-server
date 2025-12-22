@@ -36,6 +36,7 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
@@ -1557,7 +1558,10 @@ public class AssistantManager extends BaseAiManager
 							tosave.add(data);
 						}
 					}
-					processor.processInformaticsOnEntities(inLog, null, tosave);
+					MultiValued config = new BaseData();
+					config.setValue("searchtype",listid);
+					
+					processor.processInformaticsOnEntities(inLog, config, tosave);
 					//Save entities
 					status.setCountReady(status.getCountReady() + tosave.size());
 					getMediaArchive().saveData(listid, tosave);
