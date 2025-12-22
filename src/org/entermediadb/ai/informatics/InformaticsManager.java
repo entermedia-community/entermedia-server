@@ -236,7 +236,7 @@ public class InformaticsManager extends BaseAiManager
 	
 	}
 
-	protected InformaticsProcessor loadProcessor(String inName)
+	public InformaticsProcessor loadProcessor(String inName)
 	{
 		if(inName == null)
 		{

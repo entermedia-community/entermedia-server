@@ -1,10 +1,13 @@
 package org.entermediadb.ai.assistant;
 
+import java.util.Collection;
+
 import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
-import org.entermediadb.modules.publishing.ContentManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
+import org.openedit.Data;
 import org.openedit.WebPageRequest;
 
 public class AgentModule extends BaseMediaModule {
@@ -57,6 +60,7 @@ public class AgentModule extends BaseMediaModule {
 		}
 	}
 	
+	//Is this used?
 	public void chatAgentExecuteRAG(WebPageRequest inReq) throws Exception 
 	{	
 		getAssistantManager(inReq).executeRag(inReq);
@@ -89,4 +93,22 @@ public class AgentModule extends BaseMediaModule {
 		getAssistantManager(inReq).loadAllActions(logger);
 	}
 
+	public void prepareDataForGuide(WebPageRequest inReq) throws Exception 
+	{
+		
+		String entityid = inReq.getRequestParameter("entityid");
+		String entitymoduleid = inReq.getRequestParameter("entitymoduleid");
+		String[] processsearchtypes = inReq.getRequestParameters("processsearchtypes");
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		Data module = archive.getCachedData("module",entitymoduleid);
+		Data entity = archive.getCachedData(entitymoduleid,entityid);
+		
+		Collection<GuideStatus> status =  getAssistantManager(inReq).prepareDataForGuide(module,entity,processsearchtypes);
+		inReq.putPageValue("statuses",status);
+	}
+
+	
+	
 }

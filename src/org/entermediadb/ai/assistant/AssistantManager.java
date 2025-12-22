@@ -1,6 +1,7 @@
 package org.entermediadb.ai.assistant;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -15,6 +16,8 @@ import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.Schema;
 import org.entermediadb.ai.classify.SemanticClassifier;
+import org.entermediadb.ai.informatics.InformaticsManager;
+import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.AgentContext;
@@ -36,6 +39,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
@@ -1447,7 +1451,7 @@ public class AssistantManager extends BaseAiManager
 					modules.add(module);
 					moduleids.add(module.getId());
 					
-					Collection detailsviews = getMediaArchive().query("view").exact("moduleid", module.getId()).exact("rendertype", "entitysubmodules").search();  //Cache this
+					Collection detailsviews = getMediaArchive().query("view").exact("moduleid", module.getId()).exact("rendertype", "entitysubmodules").cachedSearch();  //Cache this
 
 					for (Iterator iterator2 = detailsviews.iterator(); iterator2.hasNext();)
 					{
@@ -1499,4 +1503,77 @@ public class AssistantManager extends BaseAiManager
 		
 	}
 
+	public Collection<GuideStatus> prepareDataForGuide(Data inEntityModule, Data inEntity, String[] inToProcess)
+	{
+		Collection<String> filter = null;
+		
+		if( inToProcess != null)
+		{
+			filter = Arrays.asList(inToProcess);
+		}
+		return prepareDataForGuide(inEntityModule, inEntity, filter);
+	}
+	public Collection<GuideStatus> prepareDataForGuide(Data inEntityModule, Data inEntity, Collection<String> inToProcess)
+	{
+		//Should we look for children...
+		Collection<GuideStatus> statuses = new ArrayList<GuideStatus>();
+		
+		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inEntityModule.getId()).exact("systemdefined",false).cachedSearch(); 
+
+		for (Iterator iterator = detailsviews.iterator(); iterator.hasNext();)
+		{
+			Data view = (Data) iterator.next();
+			
+			String listid = view.get("rendertable");
+			if( listid != null)
+			{
+				GuideStatus status = new GuideStatus();
+				status.setViewData(view);
+				HitTracker found = getMediaArchive().query("view").exact(inEntityModule.getId(),inEntity.getId()).facet("documentembedded").search();
+				FilterNode value = found.findFilterValue("documentembedded");
+				if( value != null)
+				{
+					status.setCountReady( value.getCount() );
+				}
+				status.setCountPending( found.size() - status.getCountReady() );
+				status.setCountTotal(found.size());
+				status.setSearchType(listid);
+				
+				statuses.add(status);
+				
+				ScriptLogger inLog = new ScriptLogger();
+				//If not done
+				if( status.getCountPending() > 0 && inToProcess.contains(listid) )
+				{
+					//Process the missing entities
+					
+					InformaticsProcessor processor = getInformaticManager().loadProcessor("embeddingManager");
+					Collection<MultiValued> tosave = new ArrayList();
+					for (Iterator iterator2 = found.iterator(); iterator2.hasNext();)
+					{
+						MultiValued data = (MultiValued) iterator2.next();
+						if( !data.getBoolean("documentembedded") )
+						{
+							tosave.add(data);
+						}
+					}
+					processor.processInformaticsOnEntities(inLog, null, tosave);
+					//Save entities
+					status.setCountReady(status.getCountReady() + tosave.size());
+					getMediaArchive().saveData(listid, tosave);
+				}
+			}
+		}
+		
+		
+		return statuses;
+		
+	}
+	
+	public InformaticsManager getInformaticManager()
+	{
+		InformaticsManager manager = (InformaticsManager)getMediaArchive().getBean("informaticsManager");
+		return manager;
+	}	
+	
 }

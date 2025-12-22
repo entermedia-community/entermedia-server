@@ -69,8 +69,7 @@ public class BaseAiManager extends BaseManager implements ChatMessageHandler
 	*/
 	protected Collection<PropertyDetail> loadActiveDetails(String inModuleId)
 	{
-		//TODO: Cache these!!
-		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inModuleId).exact("systemdefined", false).search();  //Cache this
+		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inModuleId).exact("systemdefined", false).cachedSearch();  //Cache this
 
 		if( detailsviews == null)
 		{

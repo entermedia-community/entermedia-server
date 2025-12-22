@@ -122,7 +122,7 @@ public class EmbeddingManager extends InformaticsProcessor
 			}
 
 			//Get all the pages
-			Collection pages = getMediaArchive().query(searchtype + "page").exact(searchtype, document.getId()).search();
+			Collection pages = getMediaArchive().query(searchtype + "page").exact(searchtype, document.getId()).search();  //TODO: Check a view?
 			
 			inLog.info("Embedding document: " + document.getName() + " with " + pages.size() + " pages");
 			
@@ -131,7 +131,7 @@ public class EmbeddingManager extends InformaticsProcessor
 			for (Iterator iterator2 = pages.iterator(); iterator2.hasNext();)
 			{
 				Data page = (Data) iterator2.next();
-				String markdowncontent = page.get("markdowncontent");
+				String markdowncontent = page.get("markdowncontent");     ///TODO: Support on the fly option
 				if( markdowncontent == null || markdowncontent.isEmpty())
 				{
 					log.info("No markdowncontent found "+ document);
@@ -183,6 +183,11 @@ public class EmbeddingManager extends InformaticsProcessor
 	}
 
 	
+	
+	
+	/**
+	This is from the handler API to deal with chats
+	*/
 	public LlmResponse processMessage(MultiValued message, AgentContext inAgentContext)
 	{
 		
