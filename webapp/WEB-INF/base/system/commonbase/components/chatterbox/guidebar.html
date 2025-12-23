@@ -17,11 +17,10 @@
     #foreach($status in $statuses)
       <span class="chatter-guide #if($status.isReady()) success #end mr-2">
         #if($status.isReady())
-          <i class="fas fa-check"></i>
+          <i class="bi bi-check-lg mr-1"></i> #text($status.getViewData()) <span>($status.getCountTotal())</span>
         #else
-          <i class="fas fa-spinner fa-spin"></i>
+          <i class="fas fa-spinner fa-spin mr-1"></i> #text($status.getViewData()) <span>($status.getCountPending() / $status.getCountTotal())</span>
         #end
-        #text($status.getViewData())
       </span>
     #end
   </div>
