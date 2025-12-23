@@ -1,12 +1,29 @@
-<div class="d-flex align-items-center px-2 chatter-checkboxes">
-  <span class="text-muted mr-2">[[Include in query]]:</span>
-  <div class="checkbox-bar">
+<div id="indexstatuschecker"  
+  class="ajaxstatus"
+  data-entityid="$entity.id"
+  data-moduleid="$module.id"
+  #if($refresh)
+    data-ajaxrunning="true"
+  #else
+    data-ajaxstatuscomplete="true"
+  #end
+  data-oemaxlevel="1"
+  data-interval="5000"
+  data-chatterboxhome="$chatterboxhome"
+  data-ajaxpath="${chatterboxhome}/guidebar.html">
 
-    <input type="checkbox" id="marketingassets" name="marketingassets" value="true" checked>
-    <label for="marketingassets"><i class="bi bi-image-fill mr-1"></i> Marketing Assets</label>
-
-    <input type="checkbox" id="bankaccounts" name="bankaccounts" value="true" disabled>
-    <label for="bankaccounts"><i class="bi bi-coin mr-1"></i> Bank Accounts</label>
-
+  <div class="chatter-guides">
+    <span class="text-muted mr-2">[[Using records from]]:</span>
+    #foreach($status in $statuses)
+      <span class="chatter-guide #if($status.isReady()) success #end mr-2">
+        #if($status.isReady())
+          <i class="fas fa-check"></i>
+        #else
+          <i class="fas fa-spinner fa-spin"></i>
+        #end
+        #text($status.getViewData())
+      </span>
+    #end
   </div>
+
 </div>

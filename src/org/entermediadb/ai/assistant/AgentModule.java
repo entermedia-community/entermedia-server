@@ -95,20 +95,42 @@ public class AgentModule extends BaseMediaModule {
 
 	public void prepareDataForGuide(WebPageRequest inReq) throws Exception 
 	{
-		
-		String entityid = inReq.getRequestParameter("entityid");
-		String entitymoduleid = inReq.getRequestParameter("entitymoduleid");
-		String[] processsearchtypes = inReq.getRequestParameters("processsearchtypes");
-		
 		MediaArchive archive = getMediaArchive(inReq);
 		
-		Data module = archive.getCachedData("module",entitymoduleid);
-		Data entity = archive.getCachedData(entitymoduleid,entityid);
+
+		String chatterboxhome = inReq.getRequestParameter("chatterboxhome");
+		inReq.putPageValue("chatterboxhome", chatterboxhome);
 		
-		Collection<GuideStatus> status =  getAssistantManager(inReq).prepareDataForGuide(module,entity,processsearchtypes);
-		inReq.putPageValue("statuses",status);
+		Data entity = (Data) inReq.getPageValue("entity");
+		if(entity == null)
+		{
+			String entityid = inReq.getRequestParameter("entityid");
+			entity = archive.getCachedData("entity", entityid);
+			inReq.putPageValue("entity", entity);
+		}
+		
+		Data module = (Data) inReq.getPageValue("module");
+		if(module == null)
+		{
+			String moduleid = inReq.getRequestParameter("moduleid");
+			module = archive.getCachedData("module", moduleid);
+			inReq.putPageValue("module", module);
+		}
+		
+		String[] processsearchtypes = inReq.getRequestParameters("processsearchtypes");
+		
+		Collection<GuideStatus> statuses =  getAssistantManager(inReq).prepareDataForGuide(module,entity,processsearchtypes);
+		boolean refresh= false;
+		for(GuideStatus stat : statuses)
+		{
+			if(!stat.isReady())
+			{
+				refresh = true;
+				break;
+			}
+		}
+		inReq.putPageValue("refresh", refresh);
+		inReq.putPageValue("statuses", statuses);
 	}
 
-	
-	
 }

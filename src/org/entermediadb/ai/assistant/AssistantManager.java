@@ -1530,21 +1530,29 @@ public class AssistantManager extends BaseAiManager
 			{
 				GuideStatus status = new GuideStatus();
 				status.setViewData(view);
-				HitTracker found = getMediaArchive().query("view").exact(inEntityModule.getId(),inEntity.getId()).facet("documentembedded").search();
-				FilterNode value = found.findFilterValue("documentembedded");
+				HitTracker found = getMediaArchive().query(listid).exact(inEntityModule.getId(),inEntity.getId()).facet("entityembedded").search();
+				if(found.isEmpty())
+				{
+					continue;
+				}
+				FilterNode value = found.findFilterChildValue("entityembedded", "1");
 				if( value != null)
 				{
 					status.setCountReady( value.getCount() );
 				}
-				status.setCountPending( found.size() - status.getCountReady() );
-				status.setCountTotal(found.size());
+				
+				int ready = status.getCountReady();
+				int total = found.size();
+				
+				status.setCountPending( total - ready );
+				status.setCountTotal(total);
 				status.setSearchType(listid);
 				
 				statuses.add(status);
 				
 				ScriptLogger inLog = new ScriptLogger();
 				//If not done
-				if( status.getCountPending() > 0 && inToProcess.contains(listid) )
+				if(inToProcess != null && status.getCountPending() > 0 && inToProcess.contains(listid) )
 				{
 					//Process the missing entities
 					
@@ -1553,7 +1561,7 @@ public class AssistantManager extends BaseAiManager
 					for (Iterator iterator2 = found.iterator(); iterator2.hasNext();)
 					{
 						MultiValued data = (MultiValued) iterator2.next();
-						if( !data.getBoolean("documentembedded") )
+						if( !data.getBoolean("entityembedded") )
 						{
 							tosave.add(data);
 						}

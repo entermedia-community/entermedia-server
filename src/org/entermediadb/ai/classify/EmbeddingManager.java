@@ -54,15 +54,7 @@ public class EmbeddingManager extends InformaticsProcessor
 	@Override
 	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
 	{
-		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
-		{
-			MultiValued asset = (MultiValued) iterator.next();
-			String moduleid = asset.get("entitysourcetype");
-			if("librarycollection".equals(moduleid))
-			{
-				embedAssetData(inLog, asset);
-			}
-		}
+		return;
 	}
 
 	@Override

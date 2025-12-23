@@ -53,6 +53,12 @@ public class GuideStatus
 	{
 		fieldCountTotal = inCountTotal;
 	}
+	
+	public boolean isReady()
+	{
+		return getCountReady() >= getCountTotal();
+	}
+
 	protected boolean fieldUserSelected;
 	protected String fieldSearchType;
 	protected int fieldCountReady;
