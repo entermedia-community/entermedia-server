@@ -1,10 +1,9 @@
 package org.entermediadb.asset.modules;
 
-import java.util.Map;
-
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.fetch.YoutubeParser;
+import org.entermediadb.asset.fetch.YoutubeMetadataSnippet;
+import org.entermediadb.asset.fetch.YoutubeImporter;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 
@@ -15,9 +14,11 @@ public class FetchModule extends BaseMediaModule
 		String url = inReq.getRequestParameter("youtubeurl");
 		if(url != null)
 		{
-			YoutubeParser parser = new YoutubeParser();
-			Map<String, String> data = parser.parseUrl(url);
-			inReq.putPageValue("youtubedata", data);
+			MediaArchive archive = getMediaArchive(inReq);
+			YoutubeImporter importer = new YoutubeImporter();
+			
+			YoutubeMetadataSnippet metadata = importer.importVideoMetadata(archive, url);
+			inReq.putPageValue("youtubedata", metadata);
 		}
 	}
 	
