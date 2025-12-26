@@ -1540,7 +1540,7 @@ public class EntityManager implements CatalogEnabled
 		return found;
 	}
 
-	public void createEntityFromYoutubeMetadata(User inUser, Data inModule, YoutubeMetadataSnippet inMetadata, String inParentmoduleid, String inParententityid, String sourcepath) 
+	public void createEntityFromYoutubeMetadata(User inUser, Data inModule, YoutubeMetadataSnippet inMetadata, String inParentmoduleid, String inParententityid, String sourcepath)
 	{
 		MediaArchive archive = getMediaArchive();
 		Searcher searcher = archive.getSearcher(inModule.getId());
@@ -1578,11 +1578,9 @@ public class EntityManager implements CatalogEnabled
 		asset.setProperty("importstatus","needsdownload");
 		asset.setProperty("previewstatus", "0");
 		
-		String assetname = inMetadata.getTitle();
-		
 		asset.setSourcePath(sourcepath + ".ytube");
 
-		asset.setName(assetname);
+		asset.setName(PathUtilities.extractFileName(sourcepath));
 		
 		archive.saveAsset(asset, inUser);
 		

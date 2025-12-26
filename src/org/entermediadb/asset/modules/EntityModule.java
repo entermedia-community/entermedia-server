@@ -1792,7 +1792,9 @@ public class EntityModule extends BaseMediaModule
 			Collection<YoutubeMetadataSnippet> metadatas = importer.importMetadataFromUrl(archive, url);
 			
 			for (YoutubeMetadataSnippet metadata : metadatas) {
-				String sourcepath = archive.getAssetImporter().getAssetUtilities().createSourcePath(inReq, archive, metadata.getTitle());
+				String thumbnailname = PathUtilities.extractFileName(metadata.getTitle(), true);
+				String sourcepath = archive.getAssetImporter().getAssetUtilities().createSourcePath(inReq, archive, thumbnailname);
+				
 				archive.getEntityManager().createEntityFromYoutubeMetadata(inReq.getUser(), module, metadata, parentmoduleid, parententityid, sourcepath);
 			}
 			inReq.putPageValue("importedcount", metadatas.size());
