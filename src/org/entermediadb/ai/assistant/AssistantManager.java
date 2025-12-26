@@ -220,7 +220,7 @@ public class AssistantManager extends BaseAiManager
 		
 		agentContext.addContext("channel", inChannel);
 
-		String oldstatus = usermessage.get("chatmessagestatus");
+//		String oldstatus = usermessage.get("chatmessagestatus");
 		
 		//Update original message processing status
 		usermessage.setValue("chatmessagestatus", "completed");
@@ -257,8 +257,7 @@ public class AssistantManager extends BaseAiManager
 		{
 			if (channeltype.equals("agententitychat"))
 			{
-				//response = processDocumentChat(message, agentContext);
-				agentContext.setFunctionName("ragSearch");
+				agentContext.setFunctionName("parseRagPrompt");
 			}
 			else 
 			{
@@ -453,7 +452,7 @@ public class AssistantManager extends BaseAiManager
 
 		if ("parsePrompt".equals(inAgentContext.getFunctionName()))
 		{
-			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox",inAgentMessage.get("replytoid"));
+			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
 			LlmResponse response = determineFunction(usermessage, inAgentMessage, inAgentContext);   
 //			agentmessage.setValue("user", "agent");
 //			agentmessage.setValue("replytoid",usermessage.getId() );
@@ -489,6 +488,25 @@ public class AssistantManager extends BaseAiManager
 				response.setMessage("");
 				inAgentContext.setNextFunctionName(response.getFunctionName());
 			}
+			return response;
+		}
+		if ("parseRagPrompt".equals(inAgentContext.getFunctionName()))
+		{
+			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
+			MediaArchive archive = getMediaArchive();
+			
+			LlmConnection llmconnection = archive.getLlmConnection("parseRagPrompt");
+			
+			inAgentContext.addContext("schema", loadSchema());
+			
+			LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext()); //TODO: Replace with local API that is faster
+			if(response == null)
+			{
+				throw new OpenEditException("No results from AI for message: " + usermessage.get("message"));
+			}
+			
+			JSONObject content = response.getMessageStructured();
+			
 			return response;
 		}
 		else if ("searchTables".equals(inAgentContext.getFunctionName()))
@@ -1530,12 +1548,26 @@ public class AssistantManager extends BaseAiManager
 			{
 				GuideStatus status = new GuideStatus();
 				status.setViewData(view);
-				HitTracker found = getMediaArchive().query(listid).exact(inEntityModule.getId(),inEntity.getId()).facet("entityembedded").search();
+				
+				HitTracker found = null;
+		
+				try
+				{
+					found = getMediaArchive().query(listid).exact(inEntityModule.getId(),inEntity.getId()).facet("entityembedded").search();
+				}
+				catch (Exception e)
+				{
+					log.error("Entity must have entityembedded field to use guide feature.");
+					continue;
+				}
+				
 				if(found.isEmpty())
 				{
 					continue;
 				}
+
 				FilterNode value = found.findFilterChildValue("entityembedded", "1");
+				
 				if( value != null)
 				{
 					status.setCountReady( value.getCount() );
