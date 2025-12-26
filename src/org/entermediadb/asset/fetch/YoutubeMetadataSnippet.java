@@ -52,7 +52,7 @@ public class YoutubeMetadataSnippet extends HashMap<String, Object> {
 	
 	@Override
 	public String toString() {
-		return "YoutubeMetadataSnippet [id=" + getVideoId() + ", title=" + getTitle() + ", channelTitle=" + getChannelTitle() + "]";
+		return "YoutubeMetadataSnippet [id=" + getVideoId() + ", title=" + getTitle() + ", channelTitle=" + getChannelTitle() + ", publishedAt=" + getPublishedAt() + "]";
 	}
 	
 }

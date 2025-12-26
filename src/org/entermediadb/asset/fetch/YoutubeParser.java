@@ -258,9 +258,9 @@ public class YoutubeParser
 					String assetcreationdate = (String) snippet.get("publishedAt");
 					if(assetcreationdate != null)
 					{
-						metadataMap.put("assetcreationdate", DateStorageUtil.getStorageUtil().parseFromObject(assetcreationdate));
+						metadataMap.put("publishedAt", DateStorageUtil.getStorageUtil().parseFromObject(assetcreationdate));
 					}
-					metadataMap.put("creator", (String) snippet.get("channelTitle"));
+					metadataMap.put("channelTitle", (String) snippet.get("channelTitle"));
 					
 					YoutubeMetadataSnippet metadata = new YoutubeMetadataSnippet();
 					metadata.setSnippet(metadataMap);
