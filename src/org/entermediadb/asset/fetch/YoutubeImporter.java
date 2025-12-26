@@ -62,7 +62,7 @@ public class YoutubeImporter implements UrlMetadataImporter
 		}
 		else if(type.equals("PLAYLIST"))
 		{
-			dataApi += "playlistItems?part=snippet&maxResults=20&playlistId=" + id;
+			dataApi += "playlistItems?part=snippet&maxResults=50&playlistId=" + id;
 		}
 		else if(type.equals("CHANNEL") || type.equals("HANDLE"))
 		{
@@ -96,10 +96,11 @@ public class YoutubeImporter implements UrlMetadataImporter
 		}
 
 		JSONObject json = handleHttpRequest(endPoint, ytParser);
+		
 		items.addAll(ytParser.parseMetadataSnippets(json));
 		
 		String nextPageToken = (String) json.get("nextPageToken");
-		if( nextPageToken != null && items.size() < 200 )
+		if( nextPageToken != null )
 		{
 			callDataApi(ytParser, dataApi, items, nextPageToken);
 		}

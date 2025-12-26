@@ -1550,10 +1550,15 @@ public class EntityManager implements CatalogEnabled
 		entity.setValue("entity_date", inMetadata.getPublishedAt());
 		entity.setValue("longcaption", inMetadata.getDescription());
 		entity.setValue("keywords", inMetadata.getTags());
+		entity.setValue("embeddedid", inMetadata.getVideoId());
+		entity.setValue("embeddedtype", "youtube");
+		
 		if( inParentmoduleid != null && inParententityid != null)
 		{
 			entity.setValue(inParentmoduleid, inParententityid);
 		}
+		searcher.saveData(entity);
+		
 		Category cat = archive.getEntityManager().createDefaultFolder(entity, inUser);
 		
 		Asset asset = (Asset) archive.getAssetSearcher().createNewData();
@@ -1569,7 +1574,7 @@ public class EntityManager implements CatalogEnabled
 		asset.setKeywords(inMetadata.getTags());
 		asset.setValue("assetcreateddate", inMetadata.getPublishedAt());
 		asset.setValue("creator", inMetadata.getChannelTitle());
-		asset.setValue("embeddedid", inMetadata.getId());
+		asset.setValue("embeddedid", inMetadata.getVideoId());
 		asset.setValue("embeddedtype", "youtube");
 		
 		asset.setProperty("fetchurl", inMetadata.getThumbnail());

@@ -1791,7 +1791,16 @@ public class EntityModule extends BaseMediaModule
 			
 			Collection<YoutubeMetadataSnippet> metadatas = importer.importMetadataFromUrl(archive, url);
 			
+			
+			Collection<String> existingIds = archive.query(moduleid).exists("embeddedid").exact("embeddedtype", "youtube").search().collectValues("embeddedid");
+			
 			for (YoutubeMetadataSnippet metadata : metadatas) {
+				if(existingIds.contains( metadata.getVideoId()))
+				{
+					log.info("Skipping existing video: " + metadata.getTitle());
+					continue;
+				}
+				
 				String thumbnailname = PathUtilities.extractFileName(metadata.getTitle(), true);
 				String sourcepath = archive.getAssetImporter().getAssetUtilities().createSourcePath(inReq, archive, thumbnailname);
 				

@@ -13,7 +13,7 @@ public class YoutubeMetadataSnippet extends HashMap<String, Object> {
 		snippet = inSnippet;
 	}
 	
-	public String getId() {
+	public String getVideoId() {
 		return (String) snippet.get("id");
 	}
 	
@@ -38,7 +38,7 @@ public class YoutubeMetadataSnippet extends HashMap<String, Object> {
 	}
 	
 	public String getWebviewLink() {
-		return "https://youtu.be/" + getId();
+		return "https://youtu.be/" + getVideoId();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -52,7 +52,7 @@ public class YoutubeMetadataSnippet extends HashMap<String, Object> {
 	
 	@Override
 	public String toString() {
-		return "YoutubeMetadataSnippet [id=" + getId() + ", title=" + getTitle() + ", channelTitle=" + getChannelTitle() + "]";
+		return "YoutubeMetadataSnippet [id=" + getVideoId() + ", title=" + getTitle() + ", channelTitle=" + getChannelTitle() + "]";
 	}
 	
 }
