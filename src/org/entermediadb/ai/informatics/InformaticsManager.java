@@ -35,10 +35,11 @@ public class InformaticsManager extends BaseAiManager
 	public void processAssets(ScriptLogger inLog)
 	{
 //		Map<String, String> models = getModels();
-		inLog.info("Assets");
+		//inLog.info("Assets");
 		QueryBuilder query = null;
 
 		String allowclassifyothernodes = getMediaArchive().getCatalogSettingValue("allowclassifyothernodes");
+		
 		if (Boolean.valueOf(allowclassifyothernodes) )
 		{
 			//Classify assets from other nodes
@@ -78,7 +79,15 @@ public class InformaticsManager extends BaseAiManager
 		HitTracker pendingrecords = query.search();
 		pendingrecords.enableBulkOperations();
 		pendingrecords.setHitsPerPage(25);
-		inLog.info("Asset search query: " + pendingrecords + " " +date);
+		
+		if (Boolean.valueOf(allowclassifyothernodes) ) 
+		{
+			inLog.info("Asset search query: " + pendingrecords + " " +date);
+		}
+		else 
+		{
+			inLog.info("Asset local search query: " + pendingrecords + " " +date);
+		}
 
 		if (!pendingrecords.isEmpty())
 		{
