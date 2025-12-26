@@ -1547,8 +1547,9 @@ public class EntityManager implements CatalogEnabled
 		Data entity = searcher.createNewData();
 		entity.setName(inMetadata.getTitle());
 		entity.setValue("entitysourcetype", inModule.getId());
-		entity.setValue("entity_date", new Date());
+		entity.setValue("entity_date", inMetadata.getPublishedAt());
 		entity.setValue("longcaption", inMetadata.getDescription());
+		entity.setValue("keywords", inMetadata.getTags());
 		if( inParentmoduleid != null && inParententityid != null)
 		{
 			entity.setValue(inParentmoduleid, inParententityid);
@@ -1573,6 +1574,7 @@ public class EntityManager implements CatalogEnabled
 		
 		asset.setProperty("fetchurl", inMetadata.getThumbnail());
 		asset.setProperty("fetchthumbnailurl", inMetadata.getThumbnail());
+		asset.setProperty("webviewlink", inMetadata.getWebviewLink());
 		asset.setProperty("fileformat", "ytube");
 		
 		asset.setProperty("importstatus","needsdownload");

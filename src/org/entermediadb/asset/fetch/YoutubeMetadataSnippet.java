@@ -37,6 +37,10 @@ public class YoutubeMetadataSnippet extends HashMap<String, Object> {
 		return (String) snippet.get("channelTitle");
 	}
 	
+	public String getWebviewLink() {
+		return "https://youtu.be/" + getId();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public Collection<String> getTags() {
 		Object tags = snippet.get("tags");
