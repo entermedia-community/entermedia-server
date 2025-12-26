@@ -36,10 +36,10 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 	data-broadcastall="false">
 	
 		$pages.include("${chatterboxhome}/messages.html", $context)
-		
-		##if($showcontextbar)
+
+		#if($channeltype == "agententitychat")
 			$pages.include("${chatterboxhome}/guidebar.html", $context)				
-		##end
+		#end
 
 		#if($cansendchat)
 			$pages.include("${chatterboxhome}/editarea.html", $context)				

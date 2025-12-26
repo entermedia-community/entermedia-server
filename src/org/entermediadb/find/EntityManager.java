@@ -20,6 +20,7 @@ import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.fetch.YoutubeMetadataSnippet;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.json.simple.JSONObject;
@@ -41,6 +42,7 @@ import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.JSONParser;
 import org.openedit.util.PathUtilities;
 
@@ -1536,5 +1538,61 @@ public class EntityManager implements CatalogEnabled
 		}
 		Collections.sort(found);
 		return found;
+	}
+
+	public void createEntityFromYoutubeMetadata(User inUser, Data inModule, YoutubeMetadataSnippet inMetadata, String inParentmoduleid, String inParententityid, String sourcepath)
+	{
+		MediaArchive archive = getMediaArchive();
+		Searcher searcher = archive.getSearcher(inModule.getId());
+		Data entity = searcher.createNewData();
+		entity.setName(inMetadata.getTitle());
+		entity.setValue("entitysourcetype", inModule.getId());
+		entity.setValue("entity_date", inMetadata.getPublishedAt());
+		entity.setValue("longcaption", inMetadata.getDescription());
+		entity.setValue("keywords", inMetadata.getTags());
+		entity.setValue("embeddedid", inMetadata.getVideoId());
+		entity.setValue("embeddedtype", "youtube");
+		
+		if( inParentmoduleid != null && inParententityid != null)
+		{
+			entity.setValue(inParentmoduleid, inParententityid);
+		}
+		searcher.saveData(entity);
+		
+		Category cat = archive.getEntityManager().createDefaultFolder(entity, inUser);
+		
+		Asset asset = (Asset) archive.getAssetSearcher().createNewData();
+		asset.setFolder(true);
+		asset.setProperty("owner", inUser.getUserName());
+		asset.setProperty("datatype", "original");
+		asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+		
+		asset.addCategory(cat);
+		
+		asset.setValue("longcaption", inMetadata.getDescription());
+		asset.setValue("assettitle", inMetadata.getTitle());
+		asset.setKeywords(inMetadata.getTags());
+		asset.setValue("assetcreateddate", inMetadata.getPublishedAt());
+		asset.setValue("creator", inMetadata.getChannelTitle());
+		asset.setValue("embeddedid", inMetadata.getVideoId());
+		asset.setValue("embeddedtype", "youtube");
+		
+		asset.setProperty("fetchurl", inMetadata.getThumbnail());
+		asset.setProperty("fetchthumbnailurl", inMetadata.getThumbnail());
+		asset.setProperty("webviewlink", inMetadata.getWebviewLink());
+		asset.setProperty("fileformat", "ytube");
+		
+		asset.setProperty("importstatus","needsdownload");
+		asset.setProperty("previewstatus", "0");
+		
+		asset.setSourcePath(sourcepath + ".ytube");
+
+		asset.setName(PathUtilities.extractFileName(sourcepath));
+		
+		archive.saveAsset(asset, inUser);
+		
+		entity.setValue("primarymedia", asset);
+		
+		searcher.saveData(entity);
 	}
 }

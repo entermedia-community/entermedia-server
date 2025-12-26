@@ -16,6 +16,9 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.fetch.YoutubeImporter;
+import org.entermediadb.asset.fetch.YoutubeMetadataSnippet;
+import org.entermediadb.asset.fetch.YoutubeParser;
 import org.entermediadb.asset.importer.CsvImporter;
 import org.entermediadb.asset.importer.XlsImporter;
 import org.entermediadb.asset.upload.FileUpload;
@@ -1730,6 +1733,82 @@ public class EntityModule extends BaseMediaModule
 		Data module = archive.getCachedData("module", moduleid);
 		
 		archive.getEntityManager().createEntitiesFromPages(inReq, uploadRequest, module);
+	}
+	
+	public void createEntityFromYoutube(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String parentmoduleid = inReq.getRequestParameter("parentmoduleid");
+		String parententityid = inReq.getRequestParameter("parententityid");
+		
+		String moduleid = inReq.getRequestParameter("moduleid");
+		Data module = archive.getCachedData("module", moduleid);
+		
+		String confirmed = inReq.getRequestParameter("confirmed");
+		
+		String url = inReq.getRequestParameter("youtubeurl");
+		String overwriteurl = inReq.getRequestParameter("overwriteurl");
+		if(overwriteurl != null && overwriteurl.length() > 0)
+		{
+			url = overwriteurl;
+			confirmed = "true";
+		}
+		
+		inReq.putPageValue("youtubeurl", url);
+		if(url != null)
+		{
+			
+			YoutubeImporter importer = (YoutubeImporter) archive.getBean("youtubeImporter");
+
+			if( confirmed == null || !confirmed.equals("true"))
+			{
+				YoutubeParser ytParser = importer.getParser(url);
+				String type = ytParser.getType();
+				int count = 0;
+				
+				if(type.equals("CHANNEL") || type.equals("HANDLE"))
+				{
+					count = importer.countVideosInChannel(archive, ytParser);
+				}
+				else if(type.equals("PLAYLIST"))
+				{
+					count = importer.countVideosInPlaylist(archive, ytParser);
+				}
+				
+				if(count > 1)
+				{						
+					inReq.putPageValue("videocount", count);
+					inReq.putPageValue("confirmimport", true);
+					inReq.putPageValue("overwriteurl", "https://youtube.com/playlist?list=" + ytParser.getId());
+					return;
+				}
+				else 
+				{
+					inReq.putPageValue("confirmimport", false);
+				}
+			}
+			
+			Collection<YoutubeMetadataSnippet> metadatas = importer.importMetadataFromUrl(archive, url);
+			
+			
+			Collection<String> existingIds = archive.query(moduleid).exists("embeddedid").exact("embeddedtype", "youtube").search().collectValues("embeddedid");
+			
+			for (YoutubeMetadataSnippet metadata : metadatas) {
+				if(existingIds.contains( metadata.getVideoId()))
+				{
+					log.info("Skipping existing video: " + metadata.getTitle());
+					continue;
+				}
+				
+				String thumbnailname = PathUtilities.extractFileName(metadata.getTitle(), true);
+				String sourcepath = archive.getAssetImporter().getAssetUtilities().createSourcePath(inReq, archive, thumbnailname);
+				
+				archive.getEntityManager().createEntityFromYoutubeMetadata(inReq.getUser(), module, metadata, parentmoduleid, parententityid, sourcepath);
+			}
+			inReq.putPageValue("importedcount", metadatas.size());
+			archive.fireSharedMediaEvent("importing/fetchdownloads");
+		}
 	}
 	
 	public void createCollection(WebPageRequest inReq)

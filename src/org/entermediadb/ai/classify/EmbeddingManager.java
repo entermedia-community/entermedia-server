@@ -62,8 +62,6 @@ public class EmbeddingManager extends InformaticsProcessor
 	{
 
 		String searchtype = inConfig.get("searchtype");
-		Searcher pageSearcher = getMediaArchive().getSearcher(searchtype);
-		
 		
 		Collection<MultiValued> toprecess = new ArrayList();
 		
@@ -72,12 +70,16 @@ public class EmbeddingManager extends InformaticsProcessor
 			MultiValued document = (MultiValued) iterator.next();
 			String moduleid = document.get("entitysourcetype");
 			
-			if( !searchtype.equals(moduleid) )
+			if(searchtype == null || searchtype.isEmpty())
+			{
+				searchtype = moduleid;
+			} 
+			else if( !searchtype.equals(moduleid) )
 			{
 				continue; //Skip other types
 			}
 			
-			if( document.getBoolean("documentembedded") )
+			if( document.getBoolean("entityembedded") )
 			{
 				log.info("Already embedded " + document);
 				continue;
@@ -93,6 +95,7 @@ public class EmbeddingManager extends InformaticsProcessor
 		
 		inLog.headline("Embedding " + inRandomEntities.size() + " documents");
 		
+		Searcher pageSearcher = getMediaArchive().getSearcher(searchtype);
 		
 		Collection<Data> tosave = new ArrayList();
 
@@ -152,8 +155,8 @@ public class EmbeddingManager extends InformaticsProcessor
 			
 			if( ok )
 			{
-				document.setValue("documentembedded", ok);
-				document.setValue("documentembeddeddate", new Date());
+				document.setValue("entityembedded", ok);
+				document.setValue("entityembeddeddate", new Date());
 				tosave.add(document);
 				
 				inLog.info("Embedded in " + (System.currentTimeMillis() - start) + " ms");
