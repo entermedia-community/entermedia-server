@@ -15,6 +15,7 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.net.HttpSharedConnection;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
@@ -23,6 +24,16 @@ import org.openedit.users.User;
 public class YoutubeImporter implements UrlMetadataImporter
 {
 	private static Log log = LogFactory.getLog(YoutubeImporter.class);
+	
+	private String getApiKey(MediaArchive inArchive)
+	{
+		String youtubeDataApiKey = inArchive.getCatalogSettingValue("youtube-data-api-key");
+		if( youtubeDataApiKey == null )
+		{
+			throw new OpenEditException("You must set the youtube-data-api-key catalog setting to use the Youtube importer");
+		}
+		return youtubeDataApiKey;
+	}
 	
 	public YoutubeMetadataSnippet importVideoMetadata(MediaArchive inArchive, String inUrl)
 	{
@@ -33,11 +44,7 @@ public class YoutubeImporter implements UrlMetadataImporter
 	
 	public Collection<YoutubeMetadataSnippet> importMetadataFromUrl(MediaArchive inArchive, String inUrl)
 	{
-		String youtubeDataApiKey = inArchive.getCatalogSettingValue("youtube-data-api-key");
-		if( youtubeDataApiKey == null )
-		{
-			throw new OpenEditException("You must set the youtube-data-api-key catalog setting to use the Youtube importer");
-		}
+		String youtubeDataApiKey = getApiKey(inArchive);
 		
 		String dataApi = "https://www.googleapis.com/youtube/v3/";
 		
@@ -56,6 +63,10 @@ public class YoutubeImporter implements UrlMetadataImporter
 		else if(type.equals("PLAYLIST"))
 		{
 			dataApi += "playlistItems?part=snippet&maxResults=20&playlistId=" + id;
+		}
+		else if(type.equals("CHANNEL") || type.equals("HANDLE"))
+		{
+			return null;
 		}
 		else
 		{
@@ -83,6 +94,21 @@ public class YoutubeImporter implements UrlMetadataImporter
 		{
 			endPoint += "&pageToken=" + pageToken;
 		}
+
+		JSONObject json = handleHttpRequest(endPoint, ytParser);
+		items.addAll(ytParser.parseMetadataSnippets(json));
+		
+		String nextPageToken = (String) json.get("nextPageToken");
+		if( nextPageToken != null && items.size() < 200 )
+		{
+			callDataApi(ytParser, dataApi, items, nextPageToken);
+		}
+		return items;
+		
+	}
+	
+	private JSONObject handleHttpRequest(String endPoint, YoutubeParser ytParser)
+	{
 		HttpRequestBase method = new HttpGet(endPoint);
 		method.setHeader("Content-Type", "application/json");
 
@@ -98,15 +124,7 @@ public class YoutubeImporter implements UrlMetadataImporter
 				return null;
 			}
 			JSONObject json = (JSONObject) connection.parseJson(resp);
-			items.addAll(ytParser.parseMetadataSnippets(json));
-			
-			String nextPageToken = (String) json.get("nextPageToken");
-			if( nextPageToken != null && items.size() < 200 )
-			{
-				callDataApi(ytParser, dataApi, items, nextPageToken);
-			}
-			return items;
-			
+			return json;
 		}
 		catch( Exception e)
 		{
@@ -214,6 +232,57 @@ public class YoutubeImporter implements UrlMetadataImporter
 		YoutubeParser fieldParser = new YoutubeParser();
 		fieldParser.parse(inUrl);
 		return fieldParser;
+	}
+
+	public int countVideosInChannel(MediaArchive inArchive, YoutubeParser parser) {
+		String youtubeDataApiKey = getApiKey(inArchive);
+		String endpoint = "https://www.googleapis.com/youtube/v3/channels?part=contentDetails&key=" + youtubeDataApiKey;
+		if(parser.getType().equals("CHANNEL")) 
+		{
+			endpoint += "&id=" + parser.getId();
+		} 
+		else if(parser.getType().equals("HANDLE"))
+		{
+			endpoint += "&forHandle=" + parser.getId();
+		} 
+		else 
+		{
+			return 0;
+		}
+
+		JSONObject json = handleHttpRequest(endpoint, parser);
+		if(json != null) 
+		{
+			JSONArray items = (JSONArray) json.get("items");
+			if(items != null && items.size() > 0) 
+			{
+				JSONObject item = (JSONObject) items.get(0);
+				JSONObject contentDetails = (JSONObject) item.get("contentDetails");
+				JSONObject relatedPlaylists = (JSONObject) contentDetails.get("relatedPlaylists");
+				String uploadsPlaylistId = (String) relatedPlaylists.get("uploads");
+				parser.setId(uploadsPlaylistId);
+				parser.setType("PLAYLIST");
+				return countVideosInPlaylist(inArchive, parser);
+			}
+		}
+		return 0;
+	}
+
+	public int countVideosInPlaylist(MediaArchive inArchive, YoutubeParser parser) {
+		String youtubeDataApiKey = getApiKey(inArchive);
+		String endpoint = "https://www.googleapis.com/youtube/v3/playlistItems?part=id&maxResults=0&key=" + youtubeDataApiKey + "&playlistId=" + parser.getId();
+		
+		JSONObject json = handleHttpRequest(endpoint, parser);
+		if(json != null) 
+		{
+			JSONObject pageInfo = (JSONObject) json.get("pageInfo");
+			Long totalResults = (Long) pageInfo.get("totalResults");
+			if(totalResults != null) 
+			{
+				return totalResults.intValue();
+			}
+		}
+		return 0;
 	}
 
 }

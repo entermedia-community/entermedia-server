@@ -22,7 +22,7 @@ public class YoutubeParser
 	protected String id = null;
 	protected String type = null;
 	
-	private void setId(String inId)
+	public void setId(String inId)
 	{
 		id = inId;
 	}
@@ -32,7 +32,7 @@ public class YoutubeParser
 		return id;
 	}
 	
-	private void setType(String inType)
+	public void setType(String inType)
 	{
 		type = inType;
 	}
