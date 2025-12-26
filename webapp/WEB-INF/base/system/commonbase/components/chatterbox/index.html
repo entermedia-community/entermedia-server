@@ -37,9 +37,9 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 	
 		$pages.include("${chatterboxhome}/messages.html", $context)
 		
-		##if($showcontextbar)
+		#if($showguidebar)
 			$pages.include("${chatterboxhome}/guidebar.html", $context)				
-		##end
+		#end
 
 		#if($cansendchat)
 			$pages.include("${chatterboxhome}/editarea.html", $context)				
