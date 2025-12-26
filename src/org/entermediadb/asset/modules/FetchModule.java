@@ -15,7 +15,7 @@ public class FetchModule extends BaseMediaModule
 		if(url != null)
 		{
 			MediaArchive archive = getMediaArchive(inReq);
-			YoutubeImporter importer = new YoutubeImporter();
+			YoutubeImporter importer = (YoutubeImporter) archive.getBean("youtubeImporter");
 			
 			YoutubeMetadataSnippet metadata = importer.importVideoMetadata(archive, url);
 			inReq.putPageValue("youtubedata", metadata);
@@ -28,21 +28,18 @@ public class FetchModule extends BaseMediaModule
 		String url = inReq.getRequestParameter("importurl");
 		Asset asset = archive.getAssetImporter().createAssetFromFetchUrl(archive, url, inReq.getUser(), null, null, null);
 		inReq.putPageValue("asset", asset);
-		//This will download the asset in a catalog event handler
 	}
+	
 	public void fetchMediaForAsset(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String sourcepath = inReq.getRequestParameter("sourcepath");
-		if( sourcepath == null)
+		if( sourcepath == null )
 		{
 			throw new OpenEditException("sourcepath is required");
 		}
 		Asset asset = archive.getAssetBySourcePath(sourcepath);
 		archive.getAssetImporter().fetchMediaForAsset(archive, asset, inReq.getUser());
-		
-		
-		
 	}
 
 }

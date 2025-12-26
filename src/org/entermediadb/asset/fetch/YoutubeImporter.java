@@ -55,7 +55,7 @@ public class YoutubeImporter implements UrlMetadataImporter
 		}
 		else if(type.equals("PLAYLIST"))
 		{
-			dataApi += "playlists?part=snippet&id=" + id;
+			dataApi += "playlistItems?part=snippet&maxResults=20&playlistId=" + id;
 		}
 		else
 		{

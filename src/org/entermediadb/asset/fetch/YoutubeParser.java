@@ -61,19 +61,21 @@ public class YoutubeParser
             return;
         }
         setVideoUrl(url);
-	        
-        // Priority 1: Try to get video ID
-        String videoId = getYouTubeVideoId();
-        if (videoId != null) {
-            setId(videoId);
-            setType("VIDEO");
-        }
-	        
-        // Priority 2: Try to get playlist ID
+	    
+        // Priority 1: Try to get playlist ID
         String playlistId = getYouTubePlaylistId();
         if (playlistId != null) {
         	setId(playlistId);
             setType("PLAYLIST");
+            return;
+        }
+        
+        // Priority 2: Try to get video ID
+        String videoId = getYouTubeVideoId();
+        if (videoId != null) {
+            setId(videoId);
+            setType("VIDEO");
+            return;
         }
 	        
         // Priority 3: Try to get handle
@@ -81,6 +83,7 @@ public class YoutubeParser
         if (handle != null) {
         	setId(handle);
 			setType("HANDLE");
+			return;
         }
         
         // Priority 4: Try to get channel ID
@@ -88,6 +91,7 @@ public class YoutubeParser
         if (channelId != null) {
 			setId(channelId);
 			setType("CHANNEL");
+			return;
         }
 	}
 	
@@ -185,7 +189,30 @@ public class YoutubeParser
 				if( snippet != null)
 				{
 					Map<String, Object> metadataMap = new HashMap<String, Object>();
-					metadataMap.put("id", (String) item.get("id"));
+					
+					String videoId = null;
+					
+					String kind = (String) item.get("kind");
+					
+					if("youtube#video".equals(kind))
+					{
+						videoId = (String) item.get("id");
+					}
+					else if("youtube#playlistItem".equals(kind))
+					{
+						JSONObject resourceId = (JSONObject) snippet.get("resourceId");
+						if( resourceId != null)
+						{
+							videoId = (String) resourceId.get("videoId");
+						}
+					}
+					
+					if( videoId == null)
+					{
+						continue;
+					}
+					
+					metadataMap.put("id", videoId);
 					
 					metadataMap.put("title", (String) snippet.get("title"));
 					metadataMap.put("description", (String) snippet.get("description"));

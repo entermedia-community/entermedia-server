@@ -16,6 +16,8 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.fetch.YoutubeImporter;
+import org.entermediadb.asset.fetch.YoutubeMetadataSnippet;
 import org.entermediadb.asset.importer.CsvImporter;
 import org.entermediadb.asset.importer.XlsImporter;
 import org.entermediadb.asset.upload.FileUpload;
@@ -1730,6 +1732,33 @@ public class EntityModule extends BaseMediaModule
 		Data module = archive.getCachedData("module", moduleid);
 		
 		archive.getEntityManager().createEntitiesFromPages(inReq, uploadRequest, module);
+	}
+	
+	public void createEntityFromYoutube(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String parentmoduleid = inReq.getRequestParameter("parentmoduleid");
+		String parententityid = inReq.getRequestParameter("parententityid");
+		
+		String moduleid = inReq.getRequestParameter("moduleid");
+		Data module = archive.getCachedData("module", moduleid);
+		
+		String url = inReq.getRequestParameter("youtubeurl");
+		if(url != null)
+		{
+			
+			YoutubeImporter importer = (YoutubeImporter) archive.getBean("youtubeImporter");
+			
+			Collection<YoutubeMetadataSnippet> metadatas = importer.importMetadataFromUrl(archive, url);
+			
+			for (YoutubeMetadataSnippet metadata : metadatas) {
+				String sourcepath = archive.getAssetImporter().getAssetUtilities().createSourcePath(inReq, archive, metadata.getTitle());
+				archive.getEntityManager().createEntityFromYoutubeMetadata(inReq.getUser(), module, metadata, parentmoduleid, parententityid, sourcepath);
+			}
+			inReq.putPageValue("importedcount", metadatas.size());
+			archive.fireSharedMediaEvent("importing/fetchdownloads");
+		}
 	}
 	
 	public void createCollection(WebPageRequest inReq)
