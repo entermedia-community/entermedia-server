@@ -1554,14 +1554,10 @@ public class AssistantManager extends BaseAiManager
 					continue;
 				}
 				
-				FilterNode value = found.findFilterChildValue("entityembeddingstatus", null);
-				int notembeddedcount = value != null ? value.getCount() : 0;
-				value = found.findFilterChildValue("entityembeddingstatus", "notembedded");
-				notembeddedcount += (value != null ? value.getCount() : 0);
 
-				status.setCountNotEmbedded(notembeddedcount);
+				
 
-				value = found.findFilterChildValue("entityembeddingstatus", "embedded");
+				FilterNode value = found.findFilterChildValue("entityembeddingstatus", "embedded");
 				int embeddedcount = value != null ? value.getCount() : 0;
 				
 				status.setCountEmbedded(embeddedcount);
@@ -1578,6 +1574,11 @@ public class AssistantManager extends BaseAiManager
 				
 				int totalcount = found.size();				
 				status.setCountTotal(totalcount);
+				
+				value = found.findFilterChildValue("entityembeddingstatus", "notembedded");
+				int notembeddedcount = value != null ? value.getCount() : 0;
+				notembeddedcount += totalcount - (embeddedcount + pendingcount + failedcount);
+				status.setCountNotEmbedded(notembeddedcount);
 				
 				statuses.add(status);
 				
