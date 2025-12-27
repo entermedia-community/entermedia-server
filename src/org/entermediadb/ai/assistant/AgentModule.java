@@ -117,9 +117,7 @@ public class AgentModule extends BaseMediaModule {
 			inReq.putPageValue("module", module);
 		}
 		
-		String[] processsearchtypes = inReq.getRequestParameters("processsearchtypes");
-		
-		Collection<GuideStatus> statuses =  getAssistantManager(inReq).prepareDataForGuide(module,entity,processsearchtypes);
+		Collection<GuideStatus> statuses =  getAssistantManager(inReq).prepareDataForGuide(module, entity);
 		boolean refresh= false;
 		for(GuideStatus stat : statuses)
 		{

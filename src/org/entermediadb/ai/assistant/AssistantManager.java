@@ -338,6 +338,7 @@ public class AssistantManager extends BaseAiManager
 			String bean = function.get("messagehandler");
 			
 			ChatMessageHandler handler = (ChatMessageHandler)getMediaArchive().getBean( bean);
+			
 			LlmResponse response = handler.processMessage(agentmessage, agentContext);
 			
 			String updatedMessage = agentContext.getMessagePrefix();
@@ -504,8 +505,6 @@ public class AssistantManager extends BaseAiManager
 			{
 				throw new OpenEditException("No results from AI for message: " + usermessage.get("message"));
 			}
-			
-			JSONObject content = response.getMessageStructured();
 			
 			return response;
 		}
@@ -1522,17 +1521,7 @@ public class AssistantManager extends BaseAiManager
 		
 	}
 
-	public Collection<GuideStatus> prepareDataForGuide(Data inEntityModule, Data inEntity, String[] inToProcess)
-	{
-		Collection<String> filter = null;
-		
-		if( inToProcess != null)
-		{
-			filter = Arrays.asList(inToProcess);
-		}
-		return prepareDataForGuide(inEntityModule, inEntity, filter);
-	}
-	public Collection<GuideStatus> prepareDataForGuide(Data inEntityModule, Data inEntity, Collection<String> inToProcess)
+	public Collection<GuideStatus> prepareDataForGuide(Data inEntityModule, Data inEntity)
 	{
 		//Should we look for children...
 		Collection<GuideStatus> statuses = new ArrayList<GuideStatus>();
@@ -1550,14 +1539,13 @@ public class AssistantManager extends BaseAiManager
 				status.setViewData(view);
 				
 				HitTracker found = null;
-		
 				try
 				{
-					found = getMediaArchive().query(listid).exact(inEntityModule.getId(),inEntity.getId()).facet("entityembedded").search();
+					found = getMediaArchive().query(listid).exact(inEntityModule.getId(),inEntity.getId()).facet("entityembeddingstatus").search();
 				}
 				catch (Exception e)
 				{
-					log.error("Entity must have entityembedded field to use guide feature.");
+					log.error("Entity must have entityembeddingstatus field to use guide feature.");
 					continue;
 				}
 				
@@ -1565,45 +1553,58 @@ public class AssistantManager extends BaseAiManager
 				{
 					continue;
 				}
+				
+				FilterNode value = found.findFilterChildValue("entityembeddingstatus", null);
+				int notembeddedcount = value != null ? value.getCount() : 0;
+				value = found.findFilterChildValue("entityembeddingstatus", "notembedded");
+				notembeddedcount += (value != null ? value.getCount() : 0);
 
-				FilterNode value = found.findFilterChildValue("entityembedded", "1");
+				status.setCountNotEmbedded(notembeddedcount);
+
+				value = found.findFilterChildValue("entityembeddingstatus", "embedded");
+				int embeddedcount = value != null ? value.getCount() : 0;
 				
-				if( value != null)
-				{
-					status.setCountReady( value.getCount() );
-				}
+				status.setCountEmbedded(embeddedcount);
 				
-				int ready = status.getCountReady();
-				int total = found.size();
+				value = found.findFilterChildValue("entityembeddingstatus", "pending");
+				int pendingcount = value != null ? value.getCount() : 0;
 				
-				status.setCountPending( total - ready );
-				status.setCountTotal(total);
-				status.setSearchType(listid);
+				status.setCountPending(pendingcount);
+				
+				value = found.findFilterChildValue("entityembeddingstatus", "failed");
+				int failedcount = value != null ? value.getCount() : 0;
+
+				status.setCountFailed(failedcount);
+				
+				int totalcount = found.size();				
+				status.setCountTotal(totalcount);
 				
 				statuses.add(status);
 				
 				ScriptLogger inLog = new ScriptLogger();
+				
 				//If not done
-				if(inToProcess != null && status.getCountPending() > 0 && inToProcess.contains(listid) )
-				{
-					//Process the missing entities
-					
+				if( status.getCountNotEmbedded() > 0 )
+				{	
 					InformaticsProcessor processor = getInformaticManager().loadProcessor("embeddingManager");
-					Collection<MultiValued> tosave = new ArrayList();
-					for (Iterator iterator2 = found.iterator(); iterator2.hasNext();)
+					Collection<MultiValued> tosave = new ArrayList<MultiValued>();
+					for (Iterator<MultiValued> iterator2 = found.iterator(); iterator2.hasNext();)
 					{
 						MultiValued data = (MultiValued) iterator2.next();
-						if( !data.getBoolean("entityembedded") )
+						String embeddingstatus = data.get("entityembeddingstatus");
+						if( !"embedded".equals(embeddingstatus) && !"pending".equals(embeddingstatus) && !"failed".equals(embeddingstatus) )
 						{
 							tosave.add(data);
 						}
 					}
+					status.setCountPending( status.getCountPending() + tosave.size());
 					MultiValued config = new BaseData();
-					config.setValue("searchtype",listid);
-					
+					config.setValue("searchtype", listid);
 					processor.processInformaticsOnEntities(inLog, config, tosave);
-					//Save entities
-					status.setCountReady(status.getCountReady() + tosave.size());
+					
+					status.setCountEmbedded(status.getCountEmbedded() + tosave.size());
+					status.setCountNotEmbedded( status.getCountNotEmbedded() - tosave.size());
+					
 					getMediaArchive().saveData(listid, tosave);
 				}
 			}

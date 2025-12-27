@@ -13,14 +13,7 @@ public class GuideStatus
 	{
 		fieldViewData = inViewData;
 	}
-	public boolean isUserSelected()
-	{
-		return fieldUserSelected;
-	}
-	public void setUserSelected(boolean inUserSelected)
-	{
-		fieldUserSelected = inUserSelected;
-	}
+	
 	public String getSearchType()
 	{
 		return fieldSearchType;
@@ -29,13 +22,21 @@ public class GuideStatus
 	{
 		fieldSearchType = inSearchType;
 	}
-	public int getCountReady()
+	public int getCountNotEmbedded()
 	{
-		return fieldCountReady;
+		return fieldCountNotEmbedded;
 	}
-	public void setCountReady(int inCountReady)
+	public void setCountNotEmbedded(int inCountNotEmbedded)
 	{
-		fieldCountReady = inCountReady;
+		fieldCountNotEmbedded = inCountNotEmbedded;
+	}
+	public int getCountEmbedded()
+	{
+		return fieldCountEmbedded;
+	}
+	public void setCountEmbedded(int inCountEmbedded)
+	{
+		fieldCountEmbedded = inCountEmbedded;
 	}
 	public int getCountPending()
 	{
@@ -44,6 +45,14 @@ public class GuideStatus
 	public void setCountPending(int inCountPending)
 	{
 		fieldCountPending = inCountPending;
+	}
+	public int getCountFailed()
+	{
+		return fieldCountFailed;
+	}
+	public void setCountFailed(int inCountFailed)
+	{
+		fieldCountFailed = inCountFailed;
 	}
 	public int getCountTotal()
 	{
@@ -56,12 +65,13 @@ public class GuideStatus
 	
 	public boolean isReady()
 	{
-		return getCountReady() >= getCountTotal();
+		return getCountPending() == 0;
 	}
 
-	protected boolean fieldUserSelected;
 	protected String fieldSearchType;
-	protected int fieldCountReady;
-	protected int fieldCountPending;
-	protected int fieldCountTotal;
+	protected int fieldCountNotEmbedded = 0;
+	protected int fieldCountEmbedded = 0;
+	protected int fieldCountPending = 0;
+	protected int fieldCountFailed = 0;
+	protected int fieldCountTotal = 0;
 }
