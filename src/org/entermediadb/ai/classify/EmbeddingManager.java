@@ -118,21 +118,27 @@ public class EmbeddingManager extends InformaticsProcessor
 		
 		inLog.headline("Embedding " + inRandomEntities.size() + " documents");
 		
-		if(searchtype.equals("entitydocument") || searchtype.equals("entitymarketingasset"))
+		
+		if(searchtype == "userpost")
 		{			
-			embedDocuments(inLog, searchtype, toprecess, pageSearcher);
-		}
-		else if(searchtype.equals("userpost"))
-		{
 			embedBlogs(inLog, searchtype, toprecess, pageSearcher);
 		}
-		else if(searchtype.equals("projectgoal"))
-		{
-			// TODO: implement embedProjectGoals
+		else if(searchtype.equals("asset"))
+		{			
+			//embedAssets(inLog, searchtype, toprecess, pageSearcher);
 		}
-		else
-		{
-			embedEntity(inLog, searchtype, toprecess, pageSearcher);
+		else //if(searchtype.equals("entitydocument") || searchtype.equals("entitymarketingasset"))
+		{	
+			PropertyDetail detail = getMediaArchive().getSearcher(searchtype).getDetail("markdowncontent");
+			if( detail != null)
+			{
+				embedDocuments(inLog, searchtype, toprecess, pageSearcher);
+			}
+			else
+			{
+				//TODO: Implements a velocity template that renders the markdown on the fly
+				embedEntity(inLog, searchtype, toprecess, pageSearcher);
+			}
 		}
 	}
 	
