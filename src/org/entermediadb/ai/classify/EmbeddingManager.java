@@ -122,13 +122,17 @@ public class EmbeddingManager extends InformaticsProcessor
 		{			
 			embedDocuments(inLog, searchtype, toprecess, pageSearcher);
 		}
-		else if(searchtype == "userpost")
-		{			
+		else if(searchtype.equals("userpost"))
+		{
 			embedBlogs(inLog, searchtype, toprecess, pageSearcher);
 		}
-		else // if(searchtype.equals("asset"))
-		{			
-			embedAssets(inLog, searchtype, toprecess, pageSearcher);
+		else if(searchtype.equals("projectgoal"))
+		{
+			// TODO: implement embedProjectGoals
+		}
+		else
+		{
+			embedEntityAssets(inLog, searchtype, toprecess, pageSearcher);
 		}
 	}
 	
@@ -215,15 +219,15 @@ public class EmbeddingManager extends InformaticsProcessor
 		}
 	}
 	
-	private void embedAssets(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
+	private void embedEntityAssets(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
 		Collection<Data> tosave = new ArrayList();
 
 		for (Iterator iterator = inToprecess.iterator(); iterator.hasNext();)
 		{
 			long start = System.currentTimeMillis();
 			
-			MultiValued asset = (MultiValued) iterator.next();
-			embedAssetData(inLog, asset, inSearchtype);	
+			MultiValued entityasset = (MultiValued) iterator.next();
+			embedEntityAssetData(inLog, entityasset, inSearchtype);	
 			inLog.info("Embedded "+ inSearchtype + " in " + (System.currentTimeMillis() - start) + " ms");
 			
 			if(tosave.size() > 10)
@@ -238,61 +242,82 @@ public class EmbeddingManager extends InformaticsProcessor
 		}
 	}
 	
-	public void embedAssetData(ScriptLogger inLog, MultiValued inAsset, String searchtype)
-	{
-		Map<String, Object> inParams = new HashMap();
-		Collection<PropertyDetail> contextFields = new ArrayList<PropertyDetail>();
+	public void embedEntityAssetData(ScriptLogger inLog, MultiValued inEntityAsset, String searchtype)
+	{	
+		String entityembeddingstatus = inEntityAsset.get("entityembeddingstatus");
 		
-		Searcher assetsearcher = getMediaArchive().getAssetSearcher();
-		contextFields.add(assetsearcher.getDetail("name"));
-		contextFields.add(assetsearcher.getDetail("assettype"));
-		
-		if(inAsset.hasValue("longcaption") && inAsset.get("longcaption").length() > 0)
-		{
-			contextFields.add( assetsearcher.getDetail("longcaption"));
-		}
-		if(inAsset.hasValue("keywords") && inAsset.getValues("keywords").size() > 0)
-		{
-			contextFields.add( assetsearcher.getDetail("keywords"));
-		}
-		
-		inParams.put("contextfields", contextFields);
-		
-		String entityembeddingstatus = inAsset.get("entityembeddingstatus");
 		if(entityembeddingstatus == null || !"embedded".equals(entityembeddingstatus)) { 
-			JSONObject asetdata = new JSONObject();
-			asetdata.put("doc_id", searchtype + "_" + inAsset.getId());
-			asetdata.put("file_name", inAsset.get("assettitle"));
 			
-			asetdata.put("file_type", "text/plain");
+			String asset_id = inEntityAsset.get("primarymedia");
+			if(asset_id == null)
+			{
+				asset_id = inEntityAsset.get("primaryimage");
+			}
 			
-			asetdata.put("creation_date", inAsset.get("entity_date"));
+			Asset asset = getMediaArchive().getCachedAsset(asset_id);
+			if(asset == null)
+			{
+				inEntityAsset.setValue("entityembeddingstatus", "failed");
+				log.error("No asset found for entity asset: " + inEntityAsset);
+				return;
+			}
+
+			JSONObject assetdata = new JSONObject();
+			
+			assetdata.put("file_name", inEntityAsset.getName());
+			
+			String mime_type = getMediaArchive().getMimeTypeMap().getMimeType(asset.getFileFormat());
+			assetdata.put("file_type", mime_type);
+			
+			assetdata.put("creation_date", asset.get("assetcreationdate"));
+			
+			
+			
+			assetdata.put("doc_id", searchtype + "_" + inEntityAsset.getId());
+			assetdata.put("file_name", asset.get("assettitle"));
+			
+			assetdata.put("file_type", "text/plain");
+			
+			assetdata.put("creation_date", inEntityAsset.get("entity_date"));
 			
 			JSONObject pagedata = new JSONObject();
-			pagedata.put("page_id", searchtype + "page_" + inAsset.getId());
+			pagedata.put("page_id", searchtype + "page_" + asset.getId());
+			pagedata.put("page_label", asset.getName());
 			
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
 			
-			String templatepath = getMediaArchive().getMediaDbId() + "/ai/default/calls/commons/context_fields.json";
+			Searcher assetsearcher = getMediaArchive().getAssetSearcher();
+			
+			Collection<PropertyDetail> contextFields = new ArrayList<PropertyDetail>();
+			contextFields.add(assetsearcher.getDetail("name"));
+			contextFields.add(assetsearcher.getDetail("assettype"));
+			contextFields.add( assetsearcher.getDetail("longcaption") );
+			contextFields.add( assetsearcher.getDetail("keywords"));
+			
+			Map<String, Object> inParams = new HashMap();
+			inParams.put("entity", inEntityAsset);
+			inParams.put("asset", asset);
+			inParams.put("contextfields", contextFields);
+			
+			String templatepath = getMediaArchive().getMediaDbId() + "/ai/default/calls/commons/context_fields_rag.json";
 			String responsetext = llmconnection.loadInputFromTemplate(templatepath, inParams);
 
 			pagedata.put("text", responsetext);
-			pagedata.put("page_label", inAsset.getName());
 			
 			Collection allpages  = new ArrayList(1);
 			allpages.add(pagedata);
 			
-			asetdata.put("pages", allpages);
+			assetdata.put("pages", allpages);
 			
-			boolean OK = embedData(inLog, asetdata);
+			boolean OK = embedData(inLog, assetdata);
 			if(OK)
 			{
-				inAsset.setValue("entityembeddingstatus", "embedded");
-				inAsset.setValue("entityembeddeddate", new Date());
+				inEntityAsset.setValue("entityembeddingstatus", "embedded");
+				inEntityAsset.setValue("entityembeddeddate", new Date());
 			}
 			else
 			{
-				inAsset.setValue("entityembeddingstatus", "failed");
+				inEntityAsset.setValue("entityembeddingstatus", "failed");
 			}
 		} 
 	}
