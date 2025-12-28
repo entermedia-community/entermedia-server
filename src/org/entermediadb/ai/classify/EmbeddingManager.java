@@ -119,7 +119,7 @@ public class EmbeddingManager extends InformaticsProcessor
 		inLog.headline("Embedding " + inRandomEntities.size() + " documents");
 		
 		
-		if(searchtype == "userpost")
+		if(searchtype.equals("userpost"))
 		{			
 			embedBlogs(inLog, searchtype, toprecess, pageSearcher);
 		}
@@ -127,18 +127,17 @@ public class EmbeddingManager extends InformaticsProcessor
 		{			
 			//embedAssets(inLog, searchtype, toprecess, pageSearcher);
 		}
-		else //if(searchtype.equals("entitydocument") || searchtype.equals("entitymarketingasset"))
+		else if(searchtype.equals("projectgoal"))
+		{			
+			//embedCollections(inLog, searchtype, toprecess, pageSearcher);
+		}
+		else if(searchtype.equals("entitydocument") || searchtype.equals("entitymarketingasset"))
+		{			
+			embedDocuments(inLog, searchtype, toprecess, pageSearcher);
+		}
+		else
 		{	
-			PropertyDetail detail = getMediaArchive().getSearcher(searchtype).getDetail("markdowncontent");
-			if( detail != null)
-			{
-				embedDocuments(inLog, searchtype, toprecess, pageSearcher);
-			}
-			else
-			{
-				//TODO: Implements a velocity template that renders the markdown on the fly
-				embedEntity(inLog, searchtype, toprecess, pageSearcher);
-			}
+			embedEntity(inLog, searchtype, toprecess, pageSearcher);
 		}
 	}
 	
@@ -267,27 +266,43 @@ public class EmbeddingManager extends InformaticsProcessor
 			
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
 			
-			Collection detailsfields = getMediaArchive().getSearcher(searchtype).getDetailsForView(searchtype+"general");
-
-			Collection<PropertyDetail> contextFields = new ArrayList<PropertyDetail>();
-
-			for (Iterator iterator = detailsfields.iterator(); iterator.hasNext();)
+			PropertyDetail detail = getMediaArchive().getSearcher(searchtype).getDetail("markdowncontent");
+			if( detail != null)
 			{
-				PropertyDetail field = (PropertyDetail) iterator.next();
-				if(inEntity.hasValue(field.getId()))
+				String markdown = inEntity.get("markdowncontent");
+				if(markdown == null || markdown.isEmpty())
 				{
-					contextFields.add(field);
+					log.info("No markdowncontent found "+ inEntity);
+					inEntity.setValue("entityembeddingstatus", "failed"); // TODO: add ways to retry
+					return;
 				}
+				pagedata.put("text", markdown);
 			}
-			
-			Map<String, Object> inParams = new HashMap();
-			inParams.put("data", inEntity);
-			inParams.put("contextfields", contextFields);
-			
-			String templatepath = getMediaArchive().getMediaDbId() + "/ai/default/calls/commons/context_fields.json";
-			String responsetext = llmconnection.loadInputFromTemplate(templatepath, inParams);
-
-			pagedata.put("text", responsetext);
+			else
+			{
+				Collection<PropertyDetail> contextFields = new ArrayList<PropertyDetail>();
+				
+				Collection detailsfields = getMediaArchive().getSearcher(searchtype).getDetailsForView(searchtype+"general");
+				
+				
+				for (Iterator iterator = detailsfields.iterator(); iterator.hasNext();)
+				{
+					PropertyDetail field = (PropertyDetail) iterator.next();
+					if(inEntity.hasValue(field.getId()))
+					{
+						contextFields.add(field);
+					}
+				}
+				
+				Map<String, Object> inParams = new HashMap();
+				inParams.put("data", inEntity);
+				inParams.put("contextfields", contextFields);
+				
+				String templatepath = getMediaArchive().getMediaDbId() + "/ai/default/calls/commons/context_fields.json";
+				String responsetext = llmconnection.loadInputFromTemplate(templatepath, inParams);
+				
+				pagedata.put("text", responsetext);
+			}
 			
 			Collection allpages  = new ArrayList(1);
 			allpages.add(pagedata);
