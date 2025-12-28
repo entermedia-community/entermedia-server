@@ -548,7 +548,8 @@ public class AssistantManager extends BaseAiManager
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		LlmConnection llmconnection = archive.getLlmConnection("parsePrompt");
+		//TODO: Add channel type searching workflow or reporting
+		LlmConnection llmconnection = archive.getLlmConnection("parsePrompt"); //Depend on the channel mode parseSearch parseReporting parseWorkflow
 		
 		//Run AI
 		inAgentContext.addContext("schema", loadSchema());
@@ -560,15 +561,7 @@ public class AssistantManager extends BaseAiManager
 			throw new OpenEditException("No results from AI for message: " + userMessage.get("message"));
 		}
 		
-//			String contentString = (String) json.get("friendly_response");
-//			JSONObject conversation = new JSONObject();
-			
-			//TODO: What was this?
-			
-//			conversation.put("friendly_response", contentString);
-//			results.put("conversation", conversation);
-//			results.remove("plaintext");
-		//response.setRawResponse(results);
+		//TODO: Use IF statements to sort what parsing we need to do. parseSearchParams parseWorkflowParams etc
 		JSONObject content = response.getMessageStructured();
 		
 		String type = (String) content.get("request_type");
