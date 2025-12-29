@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import org.entermediadb.ai.llm.BasicLlmResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.openedit.OpenEditException;
 import org.openedit.util.JSONParser;
-import org.json.simple.parser.ParseException;
 
 public class OpenAiResponse extends BasicLlmResponse {
 
@@ -15,7 +13,7 @@ public class OpenAiResponse extends BasicLlmResponse {
     public boolean isToolCall() {
         if (rawResponse == null) 
     	{
-    	return false;
+        	return false;
     	}
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");

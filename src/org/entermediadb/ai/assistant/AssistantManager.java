@@ -257,11 +257,11 @@ public class AssistantManager extends BaseAiManager
 		{
 			if (channeltype.equals("agententitychat"))
 			{
-				agentContext.setFunctionName("parseRagPrompt");
+				agentContext.setFunctionName("parseQuestion");
 			}
 			else 
 			{
-				agentContext.setFunctionName("parsePrompt");
+				agentContext.setFunctionName("parseSearch");
 			}
 			execCurrentFunctionFromChat(usermessage, agentmessage, agentContext);
 		}
@@ -289,7 +289,7 @@ public class AssistantManager extends BaseAiManager
 	{
 
 		String functionName = agentContext.getFunctionName();
-		MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", functionName); //Chitchat etc
+		MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", functionName);
 		
 		if (function == null)
 		{
@@ -384,7 +384,8 @@ public class AssistantManager extends BaseAiManager
 			
 			Long waittime = 200l;
 			
-			if( agentContext.getNextFunctionName() != null)
+			String agentNextFn = agentContext.getNextFunctionName();
+			if( agentNextFn != null)
 			{
 				//Search semantic now?
 				//params.put("function", agentContext.getNextFunctionName());
@@ -393,7 +394,7 @@ public class AssistantManager extends BaseAiManager
 //				agentmessage.setValue("chatmessagestatus", "refresh");
 //				getMediaArchive().saveData("chatterbox",agentmessage);
 				
-				if("searchSemantic".equals(agentContext.getNextFunctionName()))
+				if("searchSemantic".equals(agentNextFn))
 				{
 					//New Agent Message
 //					agentmessage = newAgentMessage(usermessage, agentContext);
@@ -411,7 +412,7 @@ public class AssistantManager extends BaseAiManager
 					Thread.sleep(wait);
 				}
 				//TODO: Just sleep for a bit? and try again
-				agentContext.setFunctionName(agentContext.getNextFunctionName());
+				agentContext.setFunctionName(agentNextFn);
 				agentContext.setNextFunctionName(null);
 				execCurrentFunctionFromChat(usermessage, agentmessage, agentContext);
 //				Runnable runnable = new Runnable() {
@@ -450,25 +451,16 @@ public class AssistantManager extends BaseAiManager
 //		agentmessage.setValue("message", output);  //Needed"
 //		agentmessage.setValue("messageplain", output);
 //		
-
-		if ("parsePrompt".equals(inAgentContext.getFunctionName()))
+		String agentFn = inAgentContext.getFunctionName();
+		if ("parseSearch".equals(agentFn))
 		{
 			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
-			LlmResponse response = determineFunction(usermessage, inAgentMessage, inAgentContext);   
-//			agentmessage.setValue("user", "agent");
-//			agentmessage.setValue("replytoid",usermessage.getId() );
-//			agentmessage.setValue("channel", inAgentContext.getChannel().getId());
-//			agentmessage.setValue("date", new Date());
-//			agentmessage.setValue("message", "<i class=\"fas fa-spinner fa-spin mr-2\"></i> Processing request...");
-//			agentmessage.setValue("chatmessagestatus", "processing");
-//			chats.saveData(agentmessage);
-//			ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
-//			server.broadcastMessage(getMediaArchive().getCatalogId(), agentmessage);
-
+			LlmResponse response = determineFunction(usermessage, inAgentMessage, inAgentContext);
+			
 			//Handle right now
-			if ("conversation".equals(response.getFunctionName()))
+			String responseFn = response.getFunctionName();
+			if ("conversation".equals(responseFn))
 			{
-				//chitchat
 				inAgentMessage.setValue("chatmessagestatus", "completed");
 				
 				String generalresponse  = response.getMessage();
@@ -487,28 +479,26 @@ public class AssistantManager extends BaseAiManager
 			else
 			{
 				response.setMessage("");
-				inAgentContext.setNextFunctionName(response.getFunctionName());
+				inAgentContext.setNextFunctionName(responseFn);
 			}
 			return response;
 		}
-		if ("parseRagPrompt".equals(inAgentContext.getFunctionName()))
-		{
-			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
-			MediaArchive archive = getMediaArchive();
-			
-			LlmConnection llmconnection = archive.getLlmConnection("parseRagPrompt");
-			
-			inAgentContext.addContext("schema", loadSchema());
-			
-			LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext()); //TODO: Replace with local API that is faster
-			if(response == null)
-			{
-				throw new OpenEditException("No results from AI for message: " + usermessage.get("message"));
-			}
-			
-			return response;
-		}
-		else if ("searchTables".equals(inAgentContext.getFunctionName()))
+//		else if ("processQuestion".equals(agentFn))
+//		{
+//			//search
+//			LlmConnection searcher = getMediaArchive().getLlmConnection("processQuestion");
+//			LlmResponse response =  searcher.renderLocalAction(inAgentContext);
+//			
+//			String message = response.getMessage();
+//			
+//			if(message != null)
+//			{
+//				inAgentContext.setMessagePrefix(message);
+//			}
+//			
+//			return response;
+//		}
+		else if ("searchTables".equals(agentFn))
 		{
 			//search
 			LlmConnection searcher = getMediaArchive().getLlmConnection("searchTables");
@@ -523,14 +513,14 @@ public class AssistantManager extends BaseAiManager
 			
 			return response;
 		}
-		else if ("searchSemantic".equals(inAgentContext.getFunctionName()))
+		else if ("searchSemantic".equals(agentFn))
 		{	
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection("searchSemantic");
 			LlmResponse result = llmconnection.renderLocalAction(inAgentContext);
 			return result;
 		}
 		
-		throw new OpenEditException("Function not supported " + inAgentContext.getFunctionName());
+		throw new OpenEditException("Function not supported " + agentFn);
 		
 				
 //		if(generalresponse != null)
@@ -544,14 +534,25 @@ public class AssistantManager extends BaseAiManager
 //		server.broadcastMessage(getMediaArchive().getCatalogId(), inMessage);
 	}
 	
-	protected LlmResponse determineFunction(MultiValued userMessage,MultiValued agentMessage, AgentContext inAgentContext)
+	protected LlmResponse determineFunction(MultiValued userMessage, MultiValued agentMessage, AgentContext inAgentContext)
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		String chaneltype = inAgentContext.getChannel().get("intention");
+		String intention = null; // inAgentContext.getChannel().get("intention"); // TODO:
+		String chaneltype = inAgentContext.getChannel().get("channeltype");
+		
+		// Temporary test
+		if( "agententitychat".equals( chaneltype ) )
+		{
+			intention = "Question";
+		}
+		else 
+		{
+			intention = "Search";
+		}
 		
 		//TODO: Add channel type searching workflow or reporting
-		LlmConnection llmconnection = archive.getLlmConnection("parse" + chaneltype ); //Depend on the channel mode parseSearch parseReporting parseWorkflow
+		LlmConnection llmconnection = archive.getLlmConnection("parse" + intention ); //Depend on the channel mode parseSearch parseReporting parseWorkflow
 		
 		//Run AI
 		inAgentContext.addContext("schema", loadSchema());
@@ -581,7 +582,6 @@ public class AssistantManager extends BaseAiManager
 		}
 		if( toolname.equals("conversation"))
 		{
-			//type = "chitchat";
 //				JSONObject structure = (JSONObject) results.get(type);
 			JSONObject conversation = (JSONObject) details.get("conversation");
 			String generalresponse = (String) conversation.get("friendly_response");
@@ -590,6 +590,7 @@ public class AssistantManager extends BaseAiManager
 			//String generalresponse = (String) content.get("response");
 //				}
 			response.setMessage( generalresponse);
+//			response.setFunctionName("conversation");
 		}
 		else if( toolname.equals("search") )
 		{
@@ -599,6 +600,16 @@ public class AssistantManager extends BaseAiManager
 				throw new OpenEditException("No structure found for type: " + toolname);
 			}
 			toolname = partsSearchParts(inAgentContext, structure, toolname, response.getMessage());
+//			response.setFunctionName("parseSearch");
+		}
+		else if( toolname.equals("question") )
+		{
+			JSONObject structure = (JSONObject) details.get(toolname);
+			if(structure == null)
+			{
+				throw new OpenEditException("No structure found for type: " + toolname);
+			}
+			toolname = "processQuestion"; //TODO: use question type to determine more precise function
 		}
 		else if(toolname.equals("run_workflow"))  //One at a time until the cancel or finish
 		{
@@ -611,8 +622,11 @@ public class AssistantManager extends BaseAiManager
 			creation.setCreationType("image");
 			JSONObject structure = (JSONObject) details.get("run_workflow");
 			creation.setImageFields(structure);
+			toolname = "runWorkflow";
 		}
 		else
+		{
+		}
 //		else if(toolname.equals("create_image"))
 //		{
 //			toolname = "createImage";
@@ -631,6 +645,8 @@ public class AssistantManager extends BaseAiManager
 //			JSONObject structure = (JSONObject) details.get("create_entity");
 //			creation.setEntityFields(structure);
 //		}
+		
+		
 		response.setFunctionName(toolname);
 		return response;
 	}
@@ -712,7 +728,7 @@ public class AssistantManager extends BaseAiManager
 		
 		if(search.getStep1() == null)
 		{
-			type = "chitchat"; 
+			type = "conversation"; 
 			return type;
 		}
 
@@ -761,7 +777,7 @@ public class AssistantManager extends BaseAiManager
 			}
 			else
 			{
-				type = "chitchat";
+				type = "conversation";
 			}
 		}
 		return type;
@@ -1127,21 +1143,6 @@ public class AssistantManager extends BaseAiManager
 			ragcontext.setValue("", "");
 		}
 		*/
-		
-	}
-	
-	public void executeRag(WebPageRequest inReq) 
-	{
-		MediaArchive archive = getMediaArchive();
-		Data ragcontext = (Data) archive.query("ragcontext").exact("status", "pending").sort("dateUp").searchOne();
-		if(ragcontext == null)
-		{
-			log.info("No RAG context found to process");
-			return;
-		}
-		OpenAiConnection llmconnection = (OpenAiConnection) archive.getLlmConnection("ragSearch");
-		
-		llmconnection.callRagFunction(ragcontext.get("context"), ragcontext.get("query"));
 		
 	}
 	
@@ -1543,6 +1544,7 @@ public class AssistantManager extends BaseAiManager
 			if( listid != null)
 			{
 				GuideStatus status = new GuideStatus();
+				status.setSearchType(listid);
 				status.setViewData(view);
 				
 				HitTracker found = null;

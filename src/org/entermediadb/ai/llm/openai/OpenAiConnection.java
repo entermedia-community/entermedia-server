@@ -16,7 +16,6 @@ import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
-import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
 import org.openedit.util.JSONParser;

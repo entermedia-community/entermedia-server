@@ -60,12 +60,6 @@ public class AgentModule extends BaseMediaModule {
 		}
 	}
 	
-	//Is this used?
-	public void chatAgentExecuteRAG(WebPageRequest inReq) throws Exception 
-	{	
-		getAssistantManager(inReq).executeRag(inReq);
-	}
-	
 //	public void mcpSearch(WebPageRequest inReq) throws Exception
 //	{
 //		getAssistantManager(inReq).regularSearch(inReq, true);

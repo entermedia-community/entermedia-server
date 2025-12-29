@@ -9,6 +9,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.assistant.AssistantManager;
+import org.entermediadb.ai.assistant.GuideStatus;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
@@ -392,9 +394,16 @@ public class EmbeddingManager extends InformaticsProcessor
 		
 		MediaArchive archive = getMediaArchive();
 		
-		String entityid = inAgentContext.getChannel().get("dataid");
-		String parentmoduleid = inAgentContext.getChannel().get("searchtype"); //librarycollection
+		AssistantManager assistant = (AssistantManager) archive.getBean("assistantManager");
 		
+		String parentmoduleid = inAgentContext.getChannel().get("searchtype"); 
+		Data module = archive.getCachedData("module", parentmoduleid);
+
+		String entityid = inAgentContext.getChannel().get("dataid");
+		Data entity = archive.getCachedData(parentmoduleid, entityid);
+		
+		Collection<GuideStatus> statuses = assistant.prepareDataForGuide(module, entity);
+
 //		Data inDocument = getMediaArchive().getCachedData(entityid, moduleid);
 		
 		MultiValued parent = (MultiValued)archive.getCachedData("chatterbox",message.get("replytoid"));
@@ -404,26 +413,21 @@ public class EmbeddingManager extends InformaticsProcessor
 		
 		JSONArray docids = new JSONArray();
 
-		if(parentmoduleid.equals("entitydocument")) // TODO: check if rag enabled
+		for(GuideStatus stat : statuses)
 		{
-			docids.add("entitydocument_" + entityid);
-		}
-		else
-		{
-			//TODO: Support SearchCategorties and system wide search
-			//TODO: Load up views and include all of them
-			//TODO: Pass in the config data
-			String submoduleid = "entitydocument";
-	//		String parentmoduleid = "librarycollection"; 
-			
-			HitTracker children = archive.query(submoduleid).exact(parentmoduleid, entityid).search();
-			Collection ids = children.collectValues("id");
-			
-			for (Object id : ids)
+			if(stat.isReady())
 			{
-				docids.add(submoduleid + "_" + id);
+				String searchtype = stat.getSearchType();
+				Searcher searcher = archive.getSearcher(searchtype);
+				HitTracker hits = searcher.query().exact("entityembeddingstatus", "embedded").search();
+				for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+				{
+					MultiValued doc = (MultiValued) iterator.next();
+					String docid = searchtype + "_" + doc.getId();
+					docids.add(docid);
+				}
 			}
-		}	
+		}
 		
 		chat.put("doc_ids", docids);
 		
