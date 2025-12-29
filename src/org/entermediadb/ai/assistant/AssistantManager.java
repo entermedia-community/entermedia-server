@@ -548,8 +548,10 @@ public class AssistantManager extends BaseAiManager
 	{
 		MediaArchive archive = getMediaArchive();
 		
+		String chaneltype = inAgentContext.getChannel().get("intention");
+		
 		//TODO: Add channel type searching workflow or reporting
-		LlmConnection llmconnection = archive.getLlmConnection("parsePrompt"); //Depend on the channel mode parseSearch parseReporting parseWorkflow
+		LlmConnection llmconnection = archive.getLlmConnection("parse" + chaneltype ); //Depend on the channel mode parseSearch parseReporting parseWorkflow
 		
 		//Run AI
 		inAgentContext.addContext("schema", loadSchema());
@@ -564,9 +566,9 @@ public class AssistantManager extends BaseAiManager
 		//TODO: Use IF statements to sort what parsing we need to do. parseSearchParams parseWorkflowParams etc
 		JSONObject content = response.getMessageStructured();
 		
-		String type = (String) content.get("request_type");
+		String toolname = (String) content.get("request_type");
 		
-		if(type == null)
+		if(toolname == null)
 		{
 			throw new OpenEditException("No type specified in results: " + content.toJSONString());
 		}
@@ -577,47 +579,59 @@ public class AssistantManager extends BaseAiManager
 		{
 			throw new OpenEditException("No details specified in results: " + content.toJSONString());
 		}
-
-		if( type.equals("search") )
-		{
-			JSONObject structure = (JSONObject) details.get(type);
-			if(structure == null)
-			{
-				throw new OpenEditException("No structure found for type: " + type);
-			}
-			type = partsSearchParts(inAgentContext, structure, type, response.getMessage());
-		}
-		else if( type.equals("conversation"))
+		if( toolname.equals("conversation"))
 		{
 			//type = "chitchat";
-//			JSONObject structure = (JSONObject) results.get(type);
+//				JSONObject structure = (JSONObject) results.get(type);
 			JSONObject conversation = (JSONObject) details.get("conversation");
 			String generalresponse = (String) conversation.get("friendly_response");
-//			if(generalresponse != null)
-//			{
+//				if(generalresponse != null)
+//				{
 			//String generalresponse = (String) content.get("response");
-//			}
+//				}
 			response.setMessage( generalresponse);
 		}
-		else if(type.equals("create_image"))
+		else if( toolname.equals("search") )
 		{
-			type = "createImage";
+			JSONObject structure = (JSONObject) details.get(toolname);
+			if(structure == null)
+			{
+				throw new OpenEditException("No structure found for type: " + toolname);
+			}
+			toolname = partsSearchParts(inAgentContext, structure, toolname, response.getMessage());
+		}
+		else if(toolname.equals("run_workflow"))  //One at a time until the cancel or finish
+		{
+			//Simplify what they are asking for
+			//action:create
+			//target: image
+			//Vector search "create image" -> function  name=createImage  //We can confirm with user
 			
 			AiCreation creation = inAgentContext.getAiCreationParams();					
 			creation.setCreationType("image");
-			JSONObject structure = (JSONObject) details.get("create_image");
+			JSONObject structure = (JSONObject) details.get("run_workflow");
 			creation.setImageFields(structure);
 		}
-		else if(type.equals("create_entity"))
-		{
-			type = "createEntity";
-			
-			AiCreation creation = inAgentContext.getAiCreationParams();
-			creation.setCreationType("entity");
-			JSONObject structure = (JSONObject) details.get("create_entity");
-			creation.setEntityFields(structure);
-		}
-		response.setFunctionName(type);
+		else
+//		else if(toolname.equals("create_image"))
+//		{
+//			toolname = "createImage";
+//			
+//			AiCreation creation = inAgentContext.getAiCreationParams();					
+//			creation.setCreationType("image");
+//			JSONObject structure = (JSONObject) details.get("create_image");
+//			creation.setImageFields(structure);
+//		}
+//		else if(toolname.equals("create_entity"))
+//		{
+//			toolname = "createEntity";
+//			
+//			AiCreation creation = inAgentContext.getAiCreationParams();
+//			creation.setCreationType("entity");
+//			JSONObject structure = (JSONObject) details.get("create_entity");
+//			creation.setEntityFields(structure);
+//		}
+		response.setFunctionName(toolname);
 		return response;
 	}
 	
