@@ -69,12 +69,12 @@ public class AssistantManager extends BaseAiManager
 		for (Iterator iterator = allchannels.iterator(); iterator.hasNext();)
 		{
 			Data channel = (Data) iterator.next();
-			String intention = channel.get("intention");
-			if(intention == null)
+			String functiongroup = channel.get("aifunctiongroup");
+			if(functiongroup == null)
 			{
 				continue;
 			}
-			log.info("Processing channel: " + channel.getId() + " with " + intention);
+			log.info("Processing channel: " + channel.getId() + " with " + functiongroup);
 			if( channel.getName() == null)
 			{
 				Data lastusermessage = chats.query()
