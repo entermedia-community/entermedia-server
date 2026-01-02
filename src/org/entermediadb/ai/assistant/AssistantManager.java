@@ -84,12 +84,13 @@ public class AssistantManager extends BaseAiManager
 		
 		//TODO: Only process one "open" channel at a time. What ever the last one they clicked on
 		
-		HitTracker allchannels = channels.query().orgroup("channeltype", "agentchat,agententitychat").after("refreshdate",now.getTime()).sort("refreshdateDown").search();
+		HitTracker allchannels = channels.query().orgroup("channeltype", "agentchat,agententitychat").exists("intention").after("refreshdate",now.getTime()).sort("refreshdateDown").search();
 
 		Searcher chats = archive.getSearcher("chatterbox");
 		for (Iterator iterator = allchannels.iterator(); iterator.hasNext();)
 		{
 			Data channel = (Data) iterator.next();
+			log.info("Processing channel: " + channel.getId() + " with " + channel.get("intention"));
 			if( channel.getName() == null)
 			{
 				Data lastusermessage = chats.query()
@@ -255,14 +256,12 @@ public class AssistantManager extends BaseAiManager
 		//Determine what will need to be processed
 		try
 		{
-			if (channeltype.equals("agententitychat"))
+			String channelintention = inChannel.get("intention");
+			if(channelintention == null)
 			{
-				agentContext.setFunctionName("parseQuestion");
+				return;
 			}
-			else 
-			{
-				agentContext.setFunctionName("parseSearch");
-			}
+			agentContext.setFunctionName("parse"+channelintention);
 			execCurrentFunctionFromChat(usermessage, agentmessage, agentContext);
 		}
 		catch( Exception ex)

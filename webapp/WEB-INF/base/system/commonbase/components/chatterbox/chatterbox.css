@@ -507,10 +507,16 @@
 	cursor: pointer;
 }
 .sessionhistory-item:hover {
-	background-color: #f3f3f3;
+	background-color: rgba(148, 229, 148, 0.1);
 }
 .sessionhistory-item.active {
-	background-color: #27727120;
+	background-color: rgba(148, 229, 148, 0.25);
+}
+.sessionhistory-item .session-name {
+	color: #666666;
+}
+.sessionhistory-item.active .session-name {
+	color: var(--themed-btn-cta-text);
 }
 .sessionhistory-item a.item {
 	flex: 1;
