@@ -20,6 +20,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.dom4j.Element;
 import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.assistant.AiCreation;
+import org.entermediadb.ai.assistant.SemanticAction;
+import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
@@ -1282,6 +1284,11 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 		
 		inReq.putPageValue("entity", entity);
 		inReq.putPageValue("module", module);
+	}
+
+	@Override
+	public void populateVectors(SemanticTableManager manager, Collection<SemanticAction> inActions)
+	{
 	}
 
 

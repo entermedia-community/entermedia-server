@@ -347,7 +347,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		
 	}
 	
-	public void loadAllActions(ScriptLogger inLog)
+	public void indexPossibleFunctionParameters(ScriptLogger inLog)
 	{
 		SemanticTableManager manager = loadSemanticTableManager("aifunctionparameter");
 		
@@ -434,34 +434,6 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 	}
 
 
-	protected void populateVectors(SemanticTableManager manager, Collection<SemanticAction> inActions)
-	{
-		Collection<String> textonly = new ArrayList(inActions.size());
-		Map<String,SemanticAction> actions = new HashMap();
-		Integer count = 0;
-		for (Iterator iterator = inActions.iterator(); iterator.hasNext();)
-		{
-			SemanticAction action = (SemanticAction) iterator.next();
-			textonly.add(action.getSemanticText());
-			actions.put( String.valueOf(count) , action);
-			count++;
-		}
-		
-		JSONObject response = manager.execMakeVector(textonly);
-		
-		JSONArray results = (JSONArray)response.get("results");
-		Collection<MultiValued> newrecords = new ArrayList(results.size());
-		for (int i = 0; i < results.size(); i++)
-		{
-			Map hit = (Map)results.get(i);
-			String countdone = (String)hit.get("id");
-			SemanticAction action = actions.get(countdone);
-			List vector = (List)hit.get("embedding");
-			vector = manager.collectDoubles(vector);
-			action.setVectors(vector);
-		}
-		
-	}
 	
 	protected String partsSearchParts(AgentContext inAgentContext, JSONObject structure, String type, String messageText) 
 	{

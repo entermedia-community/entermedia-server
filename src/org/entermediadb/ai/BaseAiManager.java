@@ -7,11 +7,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.assistant.SemanticAction;
 import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
@@ -19,6 +21,8 @@ import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.manager.BaseManager;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -480,4 +484,32 @@ public abstract class BaseAiManager extends BaseManager
 		//Do nothin
 	}
 
+	public void populateVectors(SemanticTableManager manager, Collection<SemanticAction> inActions)
+	{
+		Collection<String> textonly = new ArrayList(inActions.size());
+		Map<String,SemanticAction> actions = new HashMap();
+		Integer count = 0;
+		for (Iterator iterator = inActions.iterator(); iterator.hasNext();)
+		{
+			SemanticAction action = (SemanticAction) iterator.next();
+			textonly.add(action.getSemanticText());
+			actions.put( String.valueOf(count) , action);
+			count++;
+		}
+		
+		JSONObject response = manager.execMakeVector(textonly);
+		
+		JSONArray results = (JSONArray)response.get("results");
+		Collection<MultiValued> newrecords = new ArrayList(results.size());
+		for (int i = 0; i < results.size(); i++)
+		{
+			Map hit = (Map)results.get(i);
+			String countdone = (String)hit.get("id");
+			SemanticAction action = actions.get(countdone);
+			List vector = (List)hit.get("embedding");
+			vector = manager.collectDoubles(vector);
+			action.setVectors(vector);
+		}
+		
+	}
 }

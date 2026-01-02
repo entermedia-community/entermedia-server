@@ -92,7 +92,7 @@ public class AgentModule extends BaseMediaModule {
 	public void indexActions(WebPageRequest inReq) throws Exception 
 	{
 		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
-		getSearchingManager(inReq).loadAllActions(logger);
+		getSearchingManager(inReq).indexPossibleFunctionParameters(logger);
 		
 		//TODO: Call the other ones
 		
