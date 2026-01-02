@@ -15,7 +15,6 @@ import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
-import org.openedit.data.Searcher;
 
 public class CreationManager extends BaseAiManager implements ChatMessageHandler
 {
