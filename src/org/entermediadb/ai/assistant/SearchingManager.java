@@ -354,7 +354,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		//Create batch of english words that describe how to search all these things
 		Schema shema = loadSchema();
 		
-		Searcher embedsearcher = getMediaArchive().getSearcher("actionembedding");
+		Searcher embedsearcher = getMediaArchive().getSearcher("aifunctionparameter");
 		
 		for (Iterator iterator = shema.getModules().iterator(); iterator.hasNext();)
 		{
@@ -570,7 +570,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 				text = text + " for " + search.getStep1().getTargetTable();
 			}
 			
-			SemanticTableManager manager = loadSemanticTableManager("actionembedding");
+			SemanticTableManager manager = loadSemanticTableManager("aifunctionparameter"); 
 			List<Double> tosearch = manager.makeVector(text);
 			Collection<RankedResult> suggestions = manager.searchNearestItems(tosearch);
 			//Load more details into this request and possibly change the type
