@@ -240,7 +240,7 @@ public class AssistantManager extends BaseAiManager
 		//Determine what will need to be processed
 		try
 		{
-			String functiongroup = inChannel.get("functiongroup");
+			String functiongroup = inChannel.get("aifunctiongroup");
 			if(functiongroup == null)
 			{
 				return;
@@ -271,7 +271,7 @@ public class AssistantManager extends BaseAiManager
 	protected void execCurrentFunctionFromChat(MultiValued usermessage, MultiValued agentmessage, AgentContext agentContext) 
 	{
 		String functionName = agentContext.getFunctionName();
-		MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", functionName);
+		MultiValued function = (MultiValued) getMediaArchive().getCachedData("aifunction", functionName);
 		
 		if (function == null)
 		{
@@ -284,11 +284,8 @@ public class AssistantManager extends BaseAiManager
 		
 		String loader = "<i class=\"fas fa-spinner fa-spin mr-2\"></i> ";
 		
-		String processingmessage = null; // TODO: Change to language mao
-		if( function != null)
-		{
-			processingmessage = function.get("processingmessage");
-		}
+		String processingmessage = function.get("processingmessage");
+		
 		if( processingmessage == null )
 		{
 			processingmessage = "Analyzing...";
@@ -309,7 +306,8 @@ public class AssistantManager extends BaseAiManager
 		
 		agentContext.addContext("usermessage", usermessage);
 		agentContext.addContext("agentmessage", agentmessage);
-		agentContext.addContext("aisearchparams", agentContext.getAiSearchParams() );
+		
+		agentContext.addContext("aisearchparams", agentContext.getAiSearchParams() ); // ??
 		
 		String apphome = "/"+ channel.get("chatapplicationid");
 		agentContext.addContext("apphome", apphome);
@@ -321,7 +319,7 @@ public class AssistantManager extends BaseAiManager
 			
 			ChatMessageHandler handler = (ChatMessageHandler)getMediaArchive().getBean( bean);
 			
-			LlmResponse response = handler.processMessage(agentContext,agentmessage,function);
+			LlmResponse response = handler.processMessage(agentContext, agentmessage, function);
 			
 			String updatedMessage = agentContext.getMessagePrefix();
 			

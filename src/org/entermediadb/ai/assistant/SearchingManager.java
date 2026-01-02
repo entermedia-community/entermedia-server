@@ -463,7 +463,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		
 	}
 	
-	protected String partsSearchParts(AgentContext inAgentContext, JSONObject structure, String type, String messageText) 
+	protected String parseSearchParts(AgentContext inAgentContext, JSONObject structure, String type, String messageText) 
 	{
 		ArrayList tables = (ArrayList) structure.get("tables");
 		
@@ -765,7 +765,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			{
 				throw new OpenEditException("No structure found for type: " + toolname);
 			}
-			toolname = partsSearchParts(inAgentContext, structure, toolname, response.getMessage());
+			toolname = parseSearchParts(inAgentContext, structure, toolname, response.getMessage());
 //			response.setFunctionName("parseSearch");
 		}
 		else if( toolname.equals("question") )
