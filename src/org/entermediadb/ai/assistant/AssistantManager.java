@@ -261,12 +261,12 @@ public class AssistantManager extends BaseAiManager
 		//Determine what will need to be processed
 		try
 		{
-			String channelintention = inChannel.get("intention");
-			if(channelintention == null)
+			String functiongroup = inChannel.get("functiongroup");
+			if(functiongroup == null)
 			{
 				return;
 			}
-			agentContext.setFunctionName("parse"+channelintention);
+			agentContext.setFunctionName("start"+functiongroup);
 			execCurrentFunctionFromChat(usermessage, agentmessage, agentContext);
 		}
 		catch( Exception ex)
