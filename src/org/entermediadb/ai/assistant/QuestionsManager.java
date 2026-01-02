@@ -126,7 +126,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog)
 	{
 		//List all functions
-		Collection creations = getMediaArchive().query("aifunction").exact("functiongroup", "creation").search();
+		Collection creations = getMediaArchive().query("aifunction").exact("functiongroup", "questions").search();
 		
 		Collection<SemanticAction> actions = new ArrayList();
 
