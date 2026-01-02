@@ -12,8 +12,11 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.manager.BaseManager;
 import org.openedit.Data;
@@ -21,12 +24,13 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
 
-public class BaseAiManager extends BaseManager implements ChatMessageHandler
+public abstract class BaseAiManager extends BaseManager 
 {
 	private static final Log log = LogFactory.getLog(BaseAiManager.class);
 	
@@ -367,10 +371,113 @@ public class BaseAiManager extends BaseManager implements ChatMessageHandler
 		}
 	}
 
-	@Override
-	public LlmResponse processMessage(MultiValued inMessage, AgentContext inAgentContext)
+	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inMessage, MultiValued inAiFunction)
 	{
 		throw new OpenEditException("Not implemented");
+	}
+
+	protected Schema loadSchema()
+	{
+		Schema schema = (Schema)getMediaArchive().getCacheManager().get("assitant","schema");
+		
+		if( schema == null)
+		{
+			schema = new Schema();
+			HitTracker allmodules = getMediaArchive().query("module").exact("showonsearch",true).search();
+			Collection<Data> modules = new ArrayList();
+			Collection<String> moduleids = new ArrayList();
+			
+			for (Iterator iterator = allmodules.iterator(); iterator.hasNext();)
+			{
+				Data module = (Data) iterator.next();
+				Data record = getMediaArchive().query(module.getId()).all().searchOne();
+				
+				if(record != null)
+				{
+					modules.add(module);
+					moduleids.add(module.getId());
+					
+					Collection detailsviews = getMediaArchive().query("view").exact("moduleid", module.getId()).exact("rendertype", "entitysubmodules").cachedSearch();  //Cache this
+
+					for (Iterator iterator2 = detailsviews.iterator(); iterator2.hasNext();)
+					{
+						Data view = (Data) iterator2.next();
+						String listid = view.get("rendertable");
+						if( moduleids.contains(listid) )
+						{
+							Data childmodule = getMediaArchive().getCachedData("module", listid);
+							schema.addChildOf(module.getId(),childmodule);
+						}
+					}
+				}
+			}
+			schema.setModules(modules);
+			schema.setModuleIds(moduleids);
+			getMediaArchive().getCacheManager().put("assitant","schema",schema);
+			
+		}
+		
+		return schema;
+	}
+
+	
+	public SemanticTableManager loadSemanticTableManager(String inConfigId)
+	{
+		SemanticTableManager table = (SemanticTableManager)getMediaArchive().getCacheManager().get("semantictables",inConfigId);
+		if( table == null)
+		{
+			table = (SemanticTableManager)getModuleManager().getBean(getCatalogId(),"semanticTableManager",false);
+			table.setConfigurationId(inConfigId);
+			getMediaArchive().getCacheManager().put("semantictables",inConfigId,table);
+		}
+		
+		return table;
+	}
+
+	protected LlmResponse startChat(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued userMessage, MultiValued inAiFunction )
+	{
+		MediaArchive archive = getMediaArchive();
+		
+		//String functiongroup = inAgentContext.getChannel().get("functiongroup");
+		
+		LlmConnection llmconnection = archive.getLlmConnection(inAiFunction.getId()); //Should stay startSearch
+		
+		//Run AI
+		inAgentContext.addContext("schema", loadSchema());
+		//inAgentContext.addContext("message", userMessage);
+		
+		LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext()); //TODO: Replace with local API that is faster
+		if(response == null)
+		{
+			throw new OpenEditException("No results from AI for message: " + userMessage.get("message"));
+		}
+		
+		handleLlmResponse(inAgentContext, response);
+//		else if(toolname.equals("create_image"))
+//		{
+//			toolname = "createImage";
+//			
+//			AiCreation creation = inAgentContext.getAiCreationParams();					
+//			creation.setCreationType("image");
+//			JSONObject structure = (JSONObject) details.get("create_image");
+//			creation.setImageFields(structure);
+//		}
+//		else if(toolname.equals("create_entity"))
+//		{
+//			toolname = "createEntity";
+//			
+//			AiCreation creation = inAgentContext.getAiCreationParams();
+//			creation.setCreationType("entity");
+//			JSONObject structure = (JSONObject) details.get("create_entity");
+//			creation.setEntityFields(structure);
+//		}
+		
+		return response;
+	}
+
+	protected void handleLlmResponse(AgentContext inAgentContext, LlmResponse response)
+	{
+		//Do nothin
 	}
 
 }

@@ -2633,6 +2633,25 @@
 		</property>
 	</bean>
 
+	<bean id="searchingManager" class="org.entermediadb.ai.assistant.SearchingManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+	<bean id="actionManager" class="org.entermediadb.ai.assistant.ActionManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+	<bean id="questionsManager" class="org.entermediadb.ai.assistant.QuestionsManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+
 	<bean id="agentContext" class="org.entermediadb.ai.llm.AgentContext" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />

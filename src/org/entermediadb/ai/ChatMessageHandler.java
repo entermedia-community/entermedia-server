@@ -6,6 +6,6 @@ import org.openedit.MultiValued;
 
 public interface ChatMessageHandler
 {
-	public LlmResponse processMessage(MultiValued message, AgentContext inAgentContext);
+	public LlmResponse processMessage(AgentContext inAgentContext,MultiValued message, MultiValued inAiFunction);
 
 }

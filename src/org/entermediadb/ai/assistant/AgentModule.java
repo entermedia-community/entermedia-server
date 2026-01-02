@@ -19,11 +19,18 @@ public class AgentModule extends BaseMediaModule {
 		return assistantManager;
 	}
 
+	public SearchingManager getSearchingManager(WebPageRequest inReq)
+	{
+		String catalogid = inReq.findValue("catalogid");
+		SearchingManager searchingManager = (SearchingManager) getMediaArchive(catalogid).getBean("searchingManager");
+		return searchingManager;
+	}
+
 	public void searchTables(WebPageRequest inReq) throws Exception 
 	{	
 		AgentContext agentContext =  (AgentContext)inReq.getPageValue("agentcontext");
 		
-		getAssistantManager(inReq).searchTables(inReq, agentContext.getAiSearchParams());
+		getSearchingManager(inReq).searchTables(inReq, agentContext.getAiSearchParams());
 	}
 	
 	public void chatAgentSemanticSearch(WebPageRequest inReq) throws Exception 
@@ -56,7 +63,7 @@ public class AgentModule extends BaseMediaModule {
 		
 		if(query != null && !"null".equals(query))
 		{		
-			getAssistantManager(inReq).semanticSearch(inReq);
+			getSearchingManager(inReq).semanticSearch(inReq);
 		}
 	}
 	
@@ -71,20 +78,24 @@ public class AgentModule extends BaseMediaModule {
 		
 		if(query != null && !"null".equals(query))
 		{
-			getAssistantManager(inReq).semanticSearch(inReq);
+			getSearchingManager(inReq).semanticSearch(inReq);
 		}
 	}
 
+	/*
 	public void mcpGenerateReport(WebPageRequest inReq) throws Exception {
 		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
-		String report = getAssistantManager(inReq).generateReport(arguments);
+		String report = getSearchingManager(inReq).generateReport(arguments);
 		inReq.putPageValue("report", report);
-	}
+	}*/
 
 	public void indexActions(WebPageRequest inReq) throws Exception 
 	{
 		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
-		getAssistantManager(inReq).loadAllActions(logger);
+		getSearchingManager(inReq).loadAllActions(logger);
+		
+		//TODO: Call the other ones
+		
 	}
 
 	public void prepareDataForGuide(WebPageRequest inReq) throws Exception 

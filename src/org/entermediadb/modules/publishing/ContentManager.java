@@ -985,7 +985,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 	}
 	
 	@Override
-	public LlmResponse processMessage(MultiValued inAgentMessage, AgentContext inAgentContext)
+	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
 	{
 		
 		if("createImage".equals(inAgentContext.getFunctionName()))

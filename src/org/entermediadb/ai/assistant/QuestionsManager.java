@@ -1,0 +1,113 @@
+package org.entermediadb.ai.assistant;
+
+import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.ChatMessageHandler;
+import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.markdown.MarkdownUtil;
+import org.json.simple.JSONObject;
+import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
+
+public class QuestionsManager extends BaseAiManager implements ChatMessageHandler
+
+{
+	@Override
+	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
+	{
+//		if(output == null || output.isEmpty())
+//		{  //What is this for?
+//			agentContext.addContext("messagetosend", message.get("message") );
+//			LlmResponse chatresponse = llmconnection.callMessageTemplate(agentContext,response.getFunctionName()); 
+//			//TODO: Add message history
+//			output = chatresponse.getMessage();
+//		}
+		//ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
+		
+		
+//		String output = inMessage.getMessage();
+//		agentmessage.setValue("message", output);  //Needed"
+//		agentmessage.setValue("messageplain", output);
+//		
+		String agentFn = inAgentContext.getFunctionName();
+		if ("startQuestions".equals(agentFn))
+		{
+			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
+			MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", agentFn);
+
+			LlmResponse response = startChat(inAgentContext, usermessage, inAgentMessage, function);
+			
+			//Handle right now
+			String responseFn = response.getFunctionName();
+			if ("conversation".equals(responseFn))
+			{
+				inAgentMessage.setValue("chatmessagestatus", "completed");
+				
+				String generalresponse  = response.getMessage();
+				if(generalresponse != null)
+				{
+					MarkdownUtil md = new MarkdownUtil();
+					generalresponse = md.render(generalresponse);
+					//inAgentMessage.setValue("message",generalresponse);
+				}
+				//LlmResponse respond = new EMediaAIResponse();
+				response.setMessage(generalresponse);
+				
+				inAgentContext.setNextFunctionName(null);
+
+			}
+			else
+			{
+				response.setMessage("");
+				inAgentContext.setNextFunctionName(responseFn);
+			}
+			return response;
+		}
+
+		throw new OpenEditException("Function not supported " + agentFn);
+		
+	}
+	
+	
+	protected void handleLlmResponse(AgentContext inAgentContext, LlmResponse response)
+	{
+		//TODO: Use IF statements to sort what parsing we need to do. parseSearchParams parseWorkflowParams etc
+		JSONObject content = response.getMessageStructured();
+		
+		String toolname = (String) content.get("next_function");  //request_type
+		
+		if(toolname == null)
+		{
+			throw new OpenEditException("No type specified in results: " + content.toJSONString());
+		}
+
+		JSONObject details = (JSONObject) content.get("request_details");
+		
+		if(details == null)
+		{
+			throw new OpenEditException("No details specified in results: " + content.toJSONString());
+		}
+		if( toolname.equals("conversation"))
+		{
+//				JSONObject structure = (JSONObject) results.get(type);
+			JSONObject conversation = (JSONObject) details.get("conversation");
+			String generalresponse = (String) conversation.get("friendly_response");
+//				if(generalresponse != null)
+//				{
+			//String generalresponse = (String) content.get("response");
+//				}
+			response.setMessage( generalresponse);
+//			response.setFunctionName("conversation");
+		}
+		else if( toolname.equals("question") )
+		{
+			JSONObject structure = (JSONObject) details.get(toolname);
+			if(structure == null)
+			{
+				throw new OpenEditException("No structure found for type: " + toolname);
+			}
+			toolname = "processQuestion"; //TODO: use question type to determine more precise function
+		}
+		response.setFunctionName(toolname);
+	}
+}
