@@ -1582,10 +1582,10 @@ public class UserManagerModule extends BaseMediaModule
 		
 		if( currentchannel != null )
 		{
-			String intention = inReq.getRequestParameter("intention");
-			if( intention != null)
+			String functiongroup = inReq.getRequestParameter("functiongroup");
+			if( functiongroup != null)
 			{
-				currentchannel.setValue("intention", intention);
+				currentchannel.setValue("aifunctiongroup", functiongroup);
 			}
 			channelsearcher.saveData(currentchannel);
 			inReq.putPageValue("currentchannel", currentchannel);
