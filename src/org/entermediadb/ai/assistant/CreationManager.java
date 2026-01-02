@@ -33,13 +33,40 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 			Data function = (Data) iterator.next();
 			
 			Data module = null;
-			
+
+			Collection phrases  = function.getValues("phrases");
+			if(phrases ==null || phrases.isEmpty())
+			{
+				phrases = new ArrayList();
+			}
+
 			if( function.getId().equals("createImage" ) )
 			{
 				module = getMediaArchive().getCachedData("module","asset");
+				
 			}
 			
-			Collection phrases  = function.getValues("phrases");
+			if( function.getId().equals("createEntity" ) )
+			{
+				Collection modules = getMediaArchive().query("module").exact("ismodule", true).search();
+				for (Iterator iterator2 = modules.iterator(); iterator2.hasNext();)
+				{
+					module = (Data) iterator2.next();
+					Collection morephrases = new ArrayList();
+					morephrases.add("Create " + module.getName());
+					morephrases.add("Make " + module.getName());
+					for (Iterator iterator3 = morephrases.iterator(); iterator2.hasNext();)
+					{
+						String text = (String)iterator3.next();
+						SemanticAction action = new SemanticAction();
+						action.setAiFunction(function.getId());
+						action.setSemanticText(text);
+						action.setParentData(module);
+						actions.add(action);
+					}
+				}
+			}
+			
 			for (Iterator iterator2 = phrases.iterator(); iterator2.hasNext();)
 			{
 				String phrase = (String) iterator2.next();
