@@ -24,7 +24,7 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog)
 	{
 		//List all functions
-		Collection creations = getMediaArchive().query("aifunction").exact("functiongroup", "creation").search();
+		Collection creations = getMediaArchive().query("aifunction").exact("functiongroup", "Creation").search();
 		
 		Collection<SemanticAction> actions = new ArrayList();
 
@@ -79,7 +79,7 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 		}
 		SemanticTableManager manager = loadSemanticTableManager("aifunctionparameter");
 
-		populateVectors(manager,actions);
+		populateVectors(manager, actions);
 
 		return actions;
 

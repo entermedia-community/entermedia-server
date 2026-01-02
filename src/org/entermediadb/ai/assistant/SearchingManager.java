@@ -418,7 +418,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		
 		if( tables == null)
 		{
-			return type;
+			return null;
 		}
 		
 		log.info("AI Assistant Searching Tables: " + structure.toJSONString());
@@ -620,21 +620,6 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			}
 			return response;
 		}
-//		else if ("processQuestion".equals(agentFn))
-//		{
-//			//search
-//			LlmConnection searcher = getMediaArchive().getLlmConnection("processQuestion");
-//			LlmResponse response =  searcher.renderLocalAction(inAgentContext);
-//			
-//			String message = response.getMessage();
-//			
-//			if(message != null)
-//			{
-//				inAgentContext.setMessagePrefix(message);
-//			}
-//			
-//			return response;
-//		}
 		else if ("searchTables".equals(agentFn))
 		{
 			//search
