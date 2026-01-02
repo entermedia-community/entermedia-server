@@ -2639,7 +2639,7 @@
 		</property>
 	</bean>
 
-	<bean id="actionManager" class="org.entermediadb.ai.assistant.ActionManager" scope="prototype">
+	<bean id="creationManager" class="org.entermediadb.ai.assistant.CreationManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

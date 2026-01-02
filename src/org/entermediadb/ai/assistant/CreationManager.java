@@ -1,15 +1,68 @@
 package org.entermediadb.ai.assistant;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.ChatMessageHandler;
+import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
+import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.data.Searcher;
 
-public class ActionsManager extends BaseAiManager implements ChatMessageHandler
+public class CreationManager extends BaseAiManager implements ChatMessageHandler
 {
+	private static final Log log = LogFactory.getLog(CreationManager.class);
 
+	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog)
+	{
+		//List all functions
+		Collection creations = getMediaArchive().query("aifunction").exact("functiongroup", "creation").search();
+		
+		Collection<SemanticAction> actions = new ArrayList();
+
+		for (Iterator iterator = creations.iterator(); iterator.hasNext();)
+		{
+			Data function = (Data) iterator.next();
+			
+			Data module = null;
+			
+			if( function.getId().equals("createImage" ) )
+			{
+				module = getMediaArchive().getCachedData("module","asset");
+			}
+			
+			Collection phrases  = function.getValues("phrases");
+			for (Iterator iterator2 = phrases.iterator(); iterator2.hasNext();)
+			{
+				String phrase = (String) iterator2.next();
+				SemanticAction action = new SemanticAction();
+				action.setAiFunction(function.getId());
+				action.setSemanticText(function.getName());
+				action.setParentData(module);
+				actions.add(action);
+			}
+		}
+		SemanticTableManager manager = loadSemanticTableManager("aifunctionparameter");
+
+		populateVectors(manager,actions);
+
+		return actions;
+
+//		List<Double> tosearch = manager.makeVector("Find all records in US States in 2023");
+//		Collection<RankedResult> results = manager.searchNearestItems(tosearch);
+//		log.info(results);
+		
+		
+	}
+	
 	protected void handleLlmResponse(AgentContext inAgentContext, LlmResponse response)
 	{
 		JSONObject content = response.getMessageStructured();

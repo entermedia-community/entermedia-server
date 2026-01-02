@@ -13,6 +13,6 @@ public interface ChatMessageHandler
 {
 	public LlmResponse processMessage(AgentContext inAgentContext,MultiValued message, MultiValued inAiFunction);
 
-	public void indexPossibleFunctionParameters(ScriptLogger inLog);
+	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog);
 
 }

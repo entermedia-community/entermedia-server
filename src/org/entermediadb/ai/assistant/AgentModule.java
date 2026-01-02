@@ -1,14 +1,16 @@
 package org.entermediadb.ai.assistant;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.scripts.ScriptLogger;
-import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
+import org.openedit.data.Searcher;
 
 public class AgentModule extends BaseMediaModule {
 	
@@ -19,13 +21,26 @@ public class AgentModule extends BaseMediaModule {
 		return assistantManager;
 	}
 
+	public CreationManager getCreationManager(WebPageRequest inReq)
+	{
+		String catalogid = inReq.findValue("catalogid");
+		CreationManager creationManager = (CreationManager) getMediaArchive(catalogid).getBean("creationManager");
+		return creationManager;
+	}
+
+	public QuestionsManager getQuestionsManager(WebPageRequest inReq)
+	{
+		String catalogid = inReq.findValue("catalogid");
+		QuestionsManager questionsManager = (QuestionsManager) getMediaArchive(catalogid).getBean("questionsManager");
+		return questionsManager;
+	}
+	
 	public SearchingManager getSearchingManager(WebPageRequest inReq)
 	{
 		String catalogid = inReq.findValue("catalogid");
 		SearchingManager searchingManager = (SearchingManager) getMediaArchive(catalogid).getBean("searchingManager");
 		return searchingManager;
 	}
-
 	public void searchTables(WebPageRequest inReq) throws Exception 
 	{	
 		AgentContext agentContext =  (AgentContext)inReq.getPageValue("agentcontext");
@@ -92,10 +107,43 @@ public class AgentModule extends BaseMediaModule {
 	public void indexActions(WebPageRequest inReq) throws Exception 
 	{
 		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
-		getSearchingManager(inReq).indexPossibleFunctionParameters(logger);
+		Collection<SemanticAction> actions = new ArrayList();
 		
+		Collection<SemanticAction> found = getSearchingManager(inReq).createPossibleFunctionParameters(logger);
+		actions.addAll(found);
+
+		found = getSearchingManager(inReq).createPossibleFunctionParameters(logger);
+		actions.addAll(found);
+
+		found = getSearchingManager(inReq).createPossibleFunctionParameters(logger);
+		actions.addAll(found);
+
+		Searcher embedsearcher = getMediaArchive(inReq).getSearcher("aifunctionparameter");
+
 		//TODO: Call the other ones
 		
+		//Save to db
+				Collection tosave = new ArrayList();
+				
+				for (Iterator iterator2 = actions.iterator(); iterator2.hasNext();)
+				{
+					SemanticAction semanticAction = (SemanticAction) iterator2.next();
+					Data data = embedsearcher.createNewData();
+					data.setValue("parentmodule",semanticAction.getParentData().getId());
+					if( semanticAction.getChildData() != null)
+					{
+						data.setValue("childmodule",semanticAction.getChildData().getId());
+					}
+					data.setValue("vectorarray",semanticAction.getVectors());
+					data.setValue("aifunction",semanticAction.getAiFunction());
+					data.setName(semanticAction.getSemanticText());
+					
+					tosave.add(data);
+				}
+				//Test search
+				//populateVectors(manager,actions);
+
+				//manager.reinitClusters(inLog); //How to do this?
 	}
 
 	public void prepareDataForGuide(WebPageRequest inReq) throws Exception 
