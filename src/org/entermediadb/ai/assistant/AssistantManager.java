@@ -84,13 +84,18 @@ public class AssistantManager extends BaseAiManager
 		
 		//TODO: Only process one "open" channel at a time. What ever the last one they clicked on
 		
-		HitTracker allchannels = channels.query().orgroup("channeltype", "agentchat,agententitychat").exists("intention").after("refreshdate",now.getTime()).sort("refreshdateDown").search();
+		HitTracker allchannels = channels.query().orgroup("channeltype", "agentchat,agententitychat").after("refreshdate",now.getTime()).sort("refreshdateDown").search();
 
 		Searcher chats = archive.getSearcher("chatterbox");
 		for (Iterator iterator = allchannels.iterator(); iterator.hasNext();)
 		{
 			Data channel = (Data) iterator.next();
-			log.info("Processing channel: " + channel.getId() + " with " + channel.get("intention"));
+			String intention = channel.get("intention");
+			if(intention == null)
+			{
+				continue;
+			}
+			log.info("Processing channel: " + channel.getId() + " with " + intention);
 			if( channel.getName() == null)
 			{
 				Data lastusermessage = chats.query()
