@@ -48,7 +48,7 @@
 		 {"id":"$type.getId()","name":#jesc($type.getName()),"children":
 		    [
 			#foreach($entry in $type.children)#if( $foreach.count != 1 ), #end
-			{"id":"$entry.getId()","name":#jesc($entry.getName()),"count":#jesc($entry.count)}
+			{"id":#jesc($entry.getId()), "name":#jesc($entry.getName()),"count":#jesc($entry.count)}
 			#end
 			]
 		}
