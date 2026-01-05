@@ -386,51 +386,17 @@ public class EmbeddingManager extends InformaticsProcessor
 		}
 	}
 
+	
 	/**
-	This is from the handler API to deal with chats
+	 * @override
+	 * This is from the handler API to deal with chats
 	*/
-	public LlmResponse processMessage(MultiValued message, AgentContext inAgentContext)
+	public LlmResponse findAnswer(AgentContext inAgentContext, Collection<String> docids, String inQuery)
 	{
-		
 		MediaArchive archive = getMediaArchive();
 		
-		AssistantManager assistant = (AssistantManager) archive.getBean("assistantManager");
-		
-		String parentmoduleid = inAgentContext.getChannel().get("searchtype"); 
-		Data module = archive.getCachedData("module", parentmoduleid);
-
-		String entityid = inAgentContext.getChannel().get("dataid");
-		Data entity = archive.getCachedData(parentmoduleid, entityid);
-		
-		Collection<GuideStatus> statuses = assistant.prepareDataForGuide(module, entity);
-
-//		Data inDocument = getMediaArchive().getCachedData(entityid, moduleid);
-		
-		MultiValued parent = (MultiValued)archive.getCachedData("chatterbox",message.get("replytoid"));
-		String query = parent.get("message");
-		JSONObject chat = new JSONObject();
-		chat.put("query",query);
-		
-		JSONArray docids = new JSONArray();
-
-		for(GuideStatus stat : statuses)
-		{
-			if(stat.isReady())
-			{
-				String searchtype = stat.getSearchType();
-				Searcher searcher = archive.getSearcher(searchtype);
-				HitTracker hits = searcher.query().exact("entityembeddingstatus", "embedded").search();
-				for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-				{
-					MultiValued doc = (MultiValued) iterator.next();
-					String docid = searchtype + "_" + doc.getId();
-					docids.add(docid);
-				}
-			}
-		}
-		
-		chat.put("doc_ids", docids);
-		
+		JSONObject chatjson = new JSONObject();
+		chatjson.put("doc_ids", docids);
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
 
 		String customerkey = llmconnection.getApiKey();
@@ -441,9 +407,9 @@ public class EmbeddingManager extends InformaticsProcessor
 		Map headers = new HashMap();
 		headers.put("x-customerkey", customerkey);
 		
-		log.info(" sending to server: " +  chat.toJSONString());
+		log.info(" sending to server: " +  chatjson.toJSONString());
 		
-		LlmResponse response = llmconnection.callJson("/query", headers, chat);
+		LlmResponse response = llmconnection.callJson("/query", headers, chatjson);
 		response.setFunctionName("ragresponse");
 		
 		//TODO: Handle in second request?
