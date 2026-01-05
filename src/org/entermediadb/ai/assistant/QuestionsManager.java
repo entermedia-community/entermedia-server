@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.ChatMessageHandler;
+import org.entermediadb.ai.Schema;
 import org.entermediadb.ai.classify.EmbeddingManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
@@ -44,7 +45,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 //		agentmessage.setValue("messageplain", output);
 //		
 		MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
-		String query = usermessage.get("mesage");
+		String query = usermessage.get("message");
 		
 		String agentFn = inAgentContext.getFunctionName();
 		if ("startQuestions".equals(agentFn))
@@ -54,11 +55,11 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			String entiyid = inAgentContext.getChannel().get("dataid");
 			String moduleid = inAgentContext.getChannel().get("searchtype");
 			
-			if(entiyid != null && moduleid != null)
+			if(entiyid != null && moduleid != null && !"admin".equals(entiyid))
 			{
 				Collection<String> docids = findDocIdsForEntity(moduleid,entiyid);
-				EmbeddingManager embeddings = (EmbeddingManager)getMediaArchive().getBean("embeddingManager");
-				LlmResponse response = embeddings.findAnswer(inAgentContext,docids,query);
+				EmbeddingManager embeddings = (EmbeddingManager) getMediaArchive().getBean("embeddingManager");
+				LlmResponse response = embeddings.findAnswer(inAgentContext, docids, query);
 				return response;
 			}
 			
@@ -66,7 +67,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			//If we dont know what we are asking then run a search for related records and do a RAG on them. 
 			//Was president Obama effective?   //Pullout the keywords and search across all embedded data
 			//What product sold the most invoices? //Limit to products and invoices
-			MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", agentFn);
+			MultiValued function = (MultiValued) getMediaArchive().getCachedData("aifunction", agentFn);
 
 			LlmResponse response = startChat(inAgentContext, usermessage, inAgentMessage, function);
 			
@@ -100,9 +101,18 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			//1 Do the search from keyword,
 			//2 grab the ids
 			//Do an embedding search
-			String keyword = inAgentContext.get("question_scope_keyword");
+			String keyword = inAgentContext.get("search_keyword");
 			
-			HitTracker hits = getMediaArchive().query("modulesearch").exact("description", keyword).exact("entityembeddingstatus", "embedded").search();
+			Schema schema = loadSchema();
+			
+			Collection<String> moduleids = schema.getModuleIds();
+			
+			HitTracker hits = getMediaArchive().query("modulesearch")
+					.put("searchtypes", moduleids)
+					.freeform("description", keyword)
+					.exact("entityembeddingstatus", "embedded")
+					.search();
+			
 			Collection<String> docids = new JSONArray();
 			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 			{
@@ -133,7 +143,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			throw new OpenEditException("No type specified in results: " + content.toJSONString());
 		}
 
-		JSONObject details = (JSONObject) content.get("request_details");
+		JSONObject details = (JSONObject) content.get("step_details");
 		
 		if(details == null)
 		{
@@ -141,25 +151,21 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		}
 		if( toolname.equals("conversation"))
 		{
-//				JSONObject structure = (JSONObject) results.get(type);
 			JSONObject conversation = (JSONObject) details.get("conversation");
 			String generalresponse = (String) conversation.get("friendly_response");
-//				if(generalresponse != null)
-//				{
-			//String generalresponse = (String) content.get("response");
-//				}
+			
 			response.setMessage( generalresponse);
 //			response.setFunctionName("conversation");
 		}
-		else if( toolname.equals("searchByKeywordsForQuestioning") )
+		else if( toolname.equals("searchByKeywordForQuestioning") )
 		{
 			JSONObject structure = (JSONObject) details.get(toolname);
 			if(structure == null)
 			{
 				throw new OpenEditException("No structure found for type: " + toolname);
 			}
-			String question_scope_keyword = (String)structure.get("question_scope_keyword");
-			inAgentContext.setValue("question_scope_keyword",question_scope_keyword);
+			String search_keyword = (String) structure.get("search_keyword");
+			inAgentContext.setValue("search_keyword", search_keyword);
 			//Search system wise for keyword hits that are embedded
 		}
 

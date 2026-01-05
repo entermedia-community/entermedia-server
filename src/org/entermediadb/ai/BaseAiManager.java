@@ -446,8 +446,6 @@ public abstract class BaseAiManager extends BaseManager
 		
 		LlmConnection llmconnection = archive.getLlmConnection(inAiFunction.getId()); //Should stay startSearch
 		
-		//Run AI
-		inAgentContext.addContext("schema", loadSchema());
 		//inAgentContext.addContext("message", userMessage);
 		
 		LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext()); //TODO: Replace with local API that is faster

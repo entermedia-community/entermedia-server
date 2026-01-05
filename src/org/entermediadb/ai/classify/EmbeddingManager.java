@@ -9,14 +9,11 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.assistant.AssistantManager;
-import org.entermediadb.ai.assistant.GuideStatus;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,7 +21,6 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.page.manage.PageManager;
 import org.openedit.servlet.OpenEditEngine;
 import org.openedit.util.RequestUtils;
@@ -392,11 +388,11 @@ public class EmbeddingManager extends InformaticsProcessor
 	 * This is from the handler API to deal with chats
 	*/
 	public LlmResponse findAnswer(AgentContext inAgentContext, Collection<String> docids, String inQuery)
-	{
-		MediaArchive archive = getMediaArchive();
-		
+	{  
 		JSONObject chatjson = new JSONObject();
+		chatjson.put("query", inQuery);
 		chatjson.put("doc_ids", docids);
+		
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
 
 		String customerkey = llmconnection.getApiKey();
