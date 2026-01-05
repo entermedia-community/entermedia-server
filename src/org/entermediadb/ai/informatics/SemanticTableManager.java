@@ -315,6 +315,7 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 
 	protected Collection<MultiValued> extractVectors(SemanticConfig inStructions, String inModuleId, List<MultiValued> entitiestoscan) throws Exception
 	{
+		
 		Collection toscan = new ArrayList(entitiestoscan.size());
 		
 		if( inStructions.isSkipExistingRecords() ) //This is the default, but when rescanning one asset dont skip
@@ -437,6 +438,10 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 			ask.put("id",String.valueOf(count++));
 			ask.put("text",text);
 			list.add(ask);
+		}
+		if( list.size() == 0)
+		{
+			return new JSONObject();
 		}
 		tosendparams.put("data",list);
 

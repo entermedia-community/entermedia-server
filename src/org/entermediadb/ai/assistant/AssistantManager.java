@@ -69,7 +69,7 @@ public class AssistantManager extends BaseAiManager
 		for (Iterator iterator = allchannels.iterator(); iterator.hasNext();)
 		{
 			Data channel = (Data) iterator.next();
-			String functiongroup = channel.get("aifunctiongroup");
+			String functiongroup = channel.get("functiongroup");
 			if(functiongroup == null)
 			{
 				continue;
@@ -240,7 +240,7 @@ public class AssistantManager extends BaseAiManager
 		//Determine what will need to be processed
 		try
 		{
-			String functiongroup = inChannel.get("aifunctiongroup");
+			String functiongroup = inChannel.get("functiongroup");
 			if(functiongroup == null)
 			{
 				return;
@@ -317,7 +317,7 @@ public class AssistantManager extends BaseAiManager
 				
 			String bean = function.get("messagehandler");
 			
-			ChatMessageHandler handler = (ChatMessageHandler)getMediaArchive().getBean( bean);
+			ChatMessageHandler handler = (ChatMessageHandler) getMediaArchive().getBean( bean);
 			
 			LlmResponse response = handler.processMessage(agentContext, agentmessage, function);
 			

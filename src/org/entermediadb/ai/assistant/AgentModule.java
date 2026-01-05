@@ -112,10 +112,10 @@ public class AgentModule extends BaseMediaModule {
 		Collection<SemanticAction> found = getSearchingManager(inReq).createPossibleFunctionParameters(logger);
 		actions.addAll(found);
 
-		found = getSearchingManager(inReq).createPossibleFunctionParameters(logger);
+		found = getCreationManager(inReq).createPossibleFunctionParameters(logger);
 		actions.addAll(found);
 
-		found = getSearchingManager(inReq).createPossibleFunctionParameters(logger);
+		found = getQuestionsManager(inReq).createPossibleFunctionParameters(logger);
 		actions.addAll(found);
 
 		Searcher embedsearcher = getMediaArchive(inReq).getSearcher("aifunctionparameter");
@@ -123,27 +123,28 @@ public class AgentModule extends BaseMediaModule {
 		//TODO: Call the other ones
 		
 		//Save to db
-				Collection tosave = new ArrayList();
-				
-				for (Iterator iterator2 = actions.iterator(); iterator2.hasNext();)
-				{
-					SemanticAction semanticAction = (SemanticAction) iterator2.next();
-					Data data = embedsearcher.createNewData();
-					data.setValue("parentmodule",semanticAction.getParentData().getId());
-					if( semanticAction.getChildData() != null)
-					{
-						data.setValue("childmodule",semanticAction.getChildData().getId());
-					}
-					data.setValue("vectorarray",semanticAction.getVectors());
-					data.setValue("aifunction",semanticAction.getAiFunction());
-					data.setName(semanticAction.getSemanticText());
-					
-					tosave.add(data);
-				}
-				//Test search
-				//populateVectors(manager,actions);
+		Collection tosave = new ArrayList();
+		
+		for (Iterator iterator2 = actions.iterator(); iterator2.hasNext();)
+		{
+			SemanticAction semanticAction = (SemanticAction) iterator2.next();
+			Data data = embedsearcher.createNewData();
+			data.setValue("parentmodule",semanticAction.getParentData().getId());
+			if( semanticAction.getChildData() != null)
+			{
+				data.setValue("childmodule",semanticAction.getChildData().getId());
+			}
+			data.setValue("vectorarray",semanticAction.getVectors());
+			data.setValue("aifunction",semanticAction.getAiFunction());
+			data.setName(semanticAction.getSemanticText());
+			
+			tosave.add(data);
+		}
+		embedsearcher.saveAllData(tosave, null);
+		//Test search
+		//populateVectors(manager,actions);
 
-				//manager.reinitClusters(inLog); //How to do this?
+		//manager.reinitClusters(inLog); //How to do this?
 	}
 
 	public void prepareDataForGuide(WebPageRequest inReq) throws Exception 

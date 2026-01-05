@@ -14,6 +14,7 @@ import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 
 public class CreationManager extends BaseAiManager implements ChatMessageHandler
@@ -23,7 +24,7 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog)
 	{
 		//List all functions
-		Collection creations = getMediaArchive().query("aifunction").exact("functiongroup", "creation").search();
+		Collection creations = getMediaArchive().query("aifunction").exact("functiongroup", "Creation").search();
 		
 		Collection<SemanticAction> actions = new ArrayList();
 
@@ -78,7 +79,7 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 		}
 		SemanticTableManager manager = loadSemanticTableManager("aifunctionparameter");
 
-		populateVectors(manager,actions);
+		populateVectors(manager, actions);
 
 		return actions;
 
@@ -133,6 +134,12 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 //			toolname = "runWorkflow";
 //		}
 		response.setFunctionName(next_function);
+	}
+	
+	@Override
+	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inMessage, MultiValued inAiFunction)
+	{
+		return null;
 	}
 
 }

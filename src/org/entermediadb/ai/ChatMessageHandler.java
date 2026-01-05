@@ -3,7 +3,6 @@ package org.entermediadb.ai;
 import java.util.Collection;
 
 import org.entermediadb.ai.assistant.SemanticAction;
-import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.scripts.ScriptLogger;

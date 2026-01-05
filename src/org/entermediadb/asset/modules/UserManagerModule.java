@@ -1585,7 +1585,7 @@ public class UserManagerModule extends BaseMediaModule
 			String functiongroup = inReq.getRequestParameter("functiongroup");
 			if( functiongroup != null)
 			{
-				currentchannel.setValue("aifunctiongroup", functiongroup);
+				currentchannel.setValue("functiongroup", functiongroup);
 			}
 			channelsearcher.saveData(currentchannel);
 			inReq.putPageValue("currentchannel", currentchannel);

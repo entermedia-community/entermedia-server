@@ -500,6 +500,10 @@ public abstract class BaseAiManager extends BaseManager
 		JSONObject response = manager.execMakeVector(textonly);
 		
 		JSONArray results = (JSONArray)response.get("results");
+		if( results == null)
+		{
+			return;
+		}
 		Collection<MultiValued> newrecords = new ArrayList(results.size());
 		for (int i = 0; i < results.size(); i++)
 		{

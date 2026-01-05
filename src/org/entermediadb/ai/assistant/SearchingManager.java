@@ -418,7 +418,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		
 		if( tables == null)
 		{
-			return type;
+			return null;
 		}
 		
 		log.info("AI Assistant Searching Tables: " + structure.toJSONString());
@@ -620,21 +620,6 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			}
 			return response;
 		}
-//		else if ("processQuestion".equals(agentFn))
-//		{
-//			//search
-//			LlmConnection searcher = getMediaArchive().getLlmConnection("processQuestion");
-//			LlmResponse response =  searcher.renderLocalAction(inAgentContext);
-//			
-//			String message = response.getMessage();
-//			
-//			if(message != null)
-//			{
-//				inAgentContext.setMessagePrefix(message);
-//			}
-//			
-//			return response;
-//		}
 		else if ("searchTables".equals(agentFn))
 		{
 			//search
@@ -682,14 +667,14 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		//TODO: Use IF statements to sort what parsing we need to do. parseSearchParams parseWorkflowParams etc
 		JSONObject content = response.getMessageStructured();
 		
-		String toolname = (String) content.get("next_function");  //request_type
+		String toolname = (String) content.get("next_step");  //request_type
 		
 		if(toolname == null)
 		{
 			throw new OpenEditException("No type specified in results: " + content.toJSONString());
 		}
 
-		JSONObject details = (JSONObject) content.get("request_details");
+		JSONObject details = (JSONObject) content.get("step_details");
 		
 		if(details == null)
 		{
@@ -707,7 +692,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			response.setMessage( generalresponse);
 //			response.setFunctionName("conversation");
 		}
-		else if( toolname.equals("search") )  //TODO Use other functions from aifunction table. Dont use tool ids
+		else if( toolname.equals("parseSearchParts") )  //TODO Use other functions from aifunction table. Dont use tool ids
 		{
 			JSONObject structure = (JSONObject) details.get(toolname);
 			if(structure == null)
@@ -716,28 +701,6 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			}
 			toolname = parseSearchParts(inAgentContext, structure, toolname, response.getMessage());
 //			response.setFunctionName("parseSearch");
-		}
-		else if( toolname.equals("question") )
-		{
-			JSONObject structure = (JSONObject) details.get(toolname);
-			if(structure == null)
-			{
-				throw new OpenEditException("No structure found for type: " + toolname);
-			}
-			toolname = "processQuestion"; //TODO: use question type to determine more precise function
-		}
-		else if(toolname.equals("run_workflow"))  //One at a time until the cancel or finish
-		{
-			//Simplify what they are asking for
-			//action:create
-			//target: image
-			//Vector search "create image" -> function  name=createImage  //We can confirm with user
-			
-			AiCreation creation = inAgentContext.getAiCreationParams();					
-			creation.setCreationType("image");
-			JSONObject structure = (JSONObject) details.get("run_workflow");
-			creation.setImageFields(structure);
-			toolname = "runWorkflow";
 		}
 		else
 		{
