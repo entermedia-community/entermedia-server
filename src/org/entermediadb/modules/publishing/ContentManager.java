@@ -1129,7 +1129,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 		AiCreation aiCreation = inAgentContext.getAiCreationParams();
 		
 		JSONObject entityfields = (JSONObject) aiCreation.getCreationFields();
-		String entityname = (String) entityfields.get("entity_name");
+		String entityname = (String) entityfields.get("name");
 
 		if (entityname == null)
 		{
@@ -1137,7 +1137,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 			return null;
 		}
 		
-		String moduleid = (String) entityfields.get("module_id");
+		String moduleid = (String) entityfields.get("module");
 		if(moduleid == null)
 		{
 			inAgentContext.addContext("error", "Could not find module. Please provide an existing module name or id");
