@@ -2,23 +2,18 @@ package org.entermediadb.ai.assistant;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.ChatMessageHandler;
-import org.entermediadb.ai.Schema;
-import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.markdown.MarkdownUtil;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
-import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
-import org.openedit.data.Searcher;
 
 public class QuestionsManager extends BaseAiManager implements ChatMessageHandler
 {
@@ -125,24 +120,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 	
 	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog)
 	{
-		Collection<SemanticAction> actions = new ArrayList();
-		
-		//What do we ask?
-		
-		
-		SemanticAction action = new SemanticAction();
-		action.setAiFunction("question");
-		//action.setSemanticText(function.getName());
-		//action.setParentData(module);
-		actions.add(action);
-		
-		return actions;
-
-//		List<Double> tosearch = manager.makeVector("Find all records in US States in 2023");
-//		Collection<RankedResult> results = manager.searchNearestItems(tosearch);
-//		log.info(results);
-		
-		
+		return new ArrayList();
 	}
 
 

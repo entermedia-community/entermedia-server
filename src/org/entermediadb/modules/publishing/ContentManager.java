@@ -1037,16 +1037,16 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 
 		LlmConnection llmconnection = archive.getLlmConnection("createImage");
 		
-		JSONObject imageattr = (JSONObject) aiCreation.getImageFields();
+		JSONObject imagefields = (JSONObject) aiCreation.getCreationFields();
 		
-		String prompt = (String) imageattr.get("prompt");
+		String prompt = (String) imagefields.get("prompt");
 
 		if (prompt == null)
 		{
 			return null;
 		}
 		
-		String filename = (String) imageattr.get("image_name");
+		String filename = (String) imagefields.get("image_name");
 
 		LlmResponse results = llmconnection.createImage(prompt);
 		
@@ -1128,7 +1128,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 		
 		AiCreation aiCreation = inAgentContext.getAiCreationParams();
 		
-		JSONObject entityfields = (JSONObject) aiCreation.getEntityFields();
+		JSONObject entityfields = (JSONObject) aiCreation.getCreationFields();
 		String entityname = (String) entityfields.get("entity_name");
 
 		if (entityname == null)

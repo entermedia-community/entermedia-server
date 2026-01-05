@@ -2,7 +2,6 @@ package org.entermediadb.ai.llm;
 
 import java.util.Map;
 
-import org.apache.http.HttpEntity;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 

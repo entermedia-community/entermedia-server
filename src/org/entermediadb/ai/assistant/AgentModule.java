@@ -129,7 +129,10 @@ public class AgentModule extends BaseMediaModule {
 		{
 			SemanticAction semanticAction = (SemanticAction) iterator2.next();
 			Data data = embedsearcher.createNewData();
-			data.setValue("parentmodule",semanticAction.getParentData().getId());
+			if(semanticAction.getParentData() != null)
+			{				
+				data.setValue("parentmodule",semanticAction.getParentData().getId());
+			}
 			if( semanticAction.getChildData() != null)
 			{
 				data.setValue("childmodule",semanticAction.getChildData().getId());
