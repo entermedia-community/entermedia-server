@@ -125,37 +125,17 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 	
 	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog)
 	{
-		//List all functions
-		Collection creations = getMediaArchive().query("aifunction").exact("functiongroup", "questions").search();
-		
 		Collection<SemanticAction> actions = new ArrayList();
-
-		for (Iterator iterator = creations.iterator(); iterator.hasNext();)
-		{
-			Data function = (Data) iterator.next();
-			
-			Data module = null;
-			
-			if( function.getId().equals("createImage" ) )
-			{
-				module = getMediaArchive().getCachedData("module","asset");
-			}
-			
-			Collection phrases  = function.getValues("phrases");
-			for (Iterator iterator2 = phrases.iterator(); iterator2.hasNext();)
-			{
-				String phrase = (String) iterator2.next();
-				SemanticAction action = new SemanticAction();
-				action.setAiFunction(function.getId());
-				action.setSemanticText(function.getName());
-				action.setParentData(module);
-				actions.add(action);
-			}
-		}
-		SemanticTableManager manager = loadSemanticTableManager("aifunctionparameter");
-
-		populateVectors(manager,actions);
-
+		
+		//What do we ask?
+		
+		
+		SemanticAction action = new SemanticAction();
+		action.setAiFunction("question");
+		//action.setSemanticText(function.getName());
+		//action.setParentData(module);
+		actions.add(action);
+		
 		return actions;
 
 //		List<Double> tosearch = manager.makeVector("Find all records in US States in 2023");
