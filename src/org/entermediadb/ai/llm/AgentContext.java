@@ -147,7 +147,7 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	{
 		if( fieldAiCreationParams == null)
 		{
-			fieldAiCreationParams  = new AiCreation();
+			fieldAiCreationParams = new AiCreation();
 		}
 		return fieldAiCreationParams;
 	}

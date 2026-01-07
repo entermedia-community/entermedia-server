@@ -9,14 +9,11 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.assistant.AssistantManager;
-import org.entermediadb.ai.assistant.GuideStatus;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,7 +21,6 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.page.manage.PageManager;
 import org.openedit.servlet.OpenEditEngine;
 import org.openedit.util.RequestUtils;
@@ -386,50 +382,16 @@ public class EmbeddingManager extends InformaticsProcessor
 		}
 	}
 
+	
 	/**
-	This is from the handler API to deal with chats
+	 * @override
+	 * This is from the handler API to deal with chats
 	*/
-	public LlmResponse processMessage(MultiValued message, AgentContext inAgentContext)
-	{
-		
-		MediaArchive archive = getMediaArchive();
-		
-		AssistantManager assistant = (AssistantManager) archive.getBean("assistantManager");
-		
-		String parentmoduleid = inAgentContext.getChannel().get("searchtype"); 
-		Data module = archive.getCachedData("module", parentmoduleid);
-
-		String entityid = inAgentContext.getChannel().get("dataid");
-		Data entity = archive.getCachedData(parentmoduleid, entityid);
-		
-		Collection<GuideStatus> statuses = assistant.prepareDataForGuide(module, entity);
-
-//		Data inDocument = getMediaArchive().getCachedData(entityid, moduleid);
-		
-		MultiValued parent = (MultiValued)archive.getCachedData("chatterbox",message.get("replytoid"));
-		String query = parent.get("message");
-		JSONObject chat = new JSONObject();
-		chat.put("query",query);
-		
-		JSONArray docids = new JSONArray();
-
-		for(GuideStatus stat : statuses)
-		{
-			if(stat.isReady())
-			{
-				String searchtype = stat.getSearchType();
-				Searcher searcher = archive.getSearcher(searchtype);
-				HitTracker hits = searcher.query().exact("entityembeddingstatus", "embedded").search();
-				for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-				{
-					MultiValued doc = (MultiValued) iterator.next();
-					String docid = searchtype + "_" + doc.getId();
-					docids.add(docid);
-				}
-			}
-		}
-		
-		chat.put("doc_ids", docids);
+	public LlmResponse findAnswer(AgentContext inAgentContext, Collection<String> docids, String inQuery)
+	{  
+		JSONObject chatjson = new JSONObject();
+		chatjson.put("query", inQuery);
+		chatjson.put("doc_ids", docids);
 		
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
 
@@ -441,9 +403,9 @@ public class EmbeddingManager extends InformaticsProcessor
 		Map headers = new HashMap();
 		headers.put("x-customerkey", customerkey);
 		
-		log.info(" sending to server: " +  chat.toJSONString());
+		log.info(" sending to server: " +  chatjson.toJSONString());
 		
-		LlmResponse response = llmconnection.callJson("/query", headers, chat);
+		LlmResponse response = llmconnection.callJson("/query", headers, chatjson);
 		response.setFunctionName("ragresponse");
 		
 		//TODO: Handle in second request?

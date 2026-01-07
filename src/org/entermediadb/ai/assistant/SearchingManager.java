@@ -351,16 +351,16 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		SemanticTableManager manager = loadSemanticTableManager("aifunctionparameter");
 		
 		//Create batch of english words that describe how to search all these things
-		Schema shema = loadSchema();
+		Schema schema = loadSchema();
 		
 		Searcher embedsearcher = getMediaArchive().getSearcher("aifunctionparameter");
 		Collection<SemanticAction> actions = new ArrayList();
 
-		for (Iterator iterator = shema.getModules().iterator(); iterator.hasNext();)
+		for (Iterator iterator = schema.getModules().iterator(); iterator.hasNext();)
 		{
 			Data parentmodule = (Data) iterator.next();
 			
-			Collection existing = embedsearcher.query().exact("parentmodule",parentmodule.getId()).search();
+			Collection existing = embedsearcher.query().exact("aifunction", "searchTables").exact("parentmodule",parentmodule.getId()).search();
 			if( !existing.isEmpty())
 			{
 				log.info("Skipping " + parentmodule);
@@ -387,7 +387,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 //			actions.add(action);
 			
 			//Check for child views
-			Collection<Data> children = shema.getChildrenOf(parentmodule.getId());
+			Collection<Data> children = schema.getChildrenOf(parentmodule.getId());
 			
 			for (Iterator iterator2 = children.iterator(); iterator2.hasNext();)
 			{
@@ -682,15 +682,9 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		}
 		if( toolname.equals("conversation"))
 		{
-//				JSONObject structure = (JSONObject) results.get(type);
 			JSONObject conversation = (JSONObject) details.get("conversation");
 			String generalresponse = (String) conversation.get("friendly_response");
-//				if(generalresponse != null)
-//				{
-			//String generalresponse = (String) content.get("response");
-//				}
 			response.setMessage( generalresponse);
-//			response.setFunctionName("conversation");
 		}
 		else if( toolname.equals("parseSearchParts") )  //TODO Use other functions from aifunction table. Dont use tool ids
 		{
@@ -700,10 +694,6 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 				throw new OpenEditException("No structure found for type: " + toolname);
 			}
 			toolname = parseSearchParts(inAgentContext, structure, toolname, response.getMessage());
-//			response.setFunctionName("parseSearch");
-		}
-		else
-		{
 		}
 		response.setFunctionName(toolname);
 	}
