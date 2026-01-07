@@ -435,15 +435,37 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			JSONObject jsontable = (JSONObject) iterator.next();
 			AiSearchTable searchtable = new AiSearchTable();
 			
-			String targetTable = (String) jsontable.get("name");
-//			if( "Not Specified".equals(targetTable) )
-//			{
-//				targetTable = "";
-//			}
-			searchtable.setTargetTable(targetTable);
+			Map parameters = (Map) jsontable.get("parameters");
+			searchtable.setParameters(parameters);
 
-			Map filters = (Map) jsontable.get("parameters");
-			searchtable.setParameters(filters);
+			String targetTable = (String) jsontable.get("table_name");
+			
+			if( "all".equalsIgnoreCase(targetTable))
+			{
+				if(parameters.keySet().contains("module"))
+				{
+					targetTable = (String) parameters.get("module");
+				}
+				else
+				{
+					targetTable = null;
+				}
+			}
+			
+			if(targetTable != null)
+			{
+				String[] check = targetTable.split("\\|");
+				if( check.length == 2)
+				{
+					targetTable = check[1];
+				}
+				else
+				{
+					targetTable = check[0];
+				}
+			}
+			
+			searchtable.setTargetTable(targetTable);
 			
 			String foreigntablename = (String) jsontable.get("foreign_table");
 			if( foreigntablename != null)
@@ -451,8 +473,8 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 				AiSearchTable ftable = new AiSearchTable();
 				ftable.setTargetTable(foreigntablename);
 				
-				Map parameters = (Map) jsontable.get("foreign_table_parameters");
-				ftable.setParameters(parameters);
+				Map foreignparameters = (Map) jsontable.get("foreign_table_parameters");
+				ftable.setParameters(foreignparameters);
 				
 				searchtable.setForeignTable(ftable);
 				
@@ -479,7 +501,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 				}
 			}
 			
-//			if("Not specified".equals(targetTable))
+//			if("all".equals(targetTable))
 //			{
 //				return "searchMultiple";
 //			}
@@ -492,12 +514,12 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			return type;
 		}
 
-		if( "Not specified".equalsIgnoreCase( search.getStep1().getTargetTable() ) )
+		if( search.getStep1().getTargetTable() == null )
 		{
 			Data modulesearch = getMediaArchive().getCachedData("module", "modulesearch");
 			search.getStep1().setModule(modulesearch);
 			type = "searchTables";
-		}	
+		}
 		else
 		{
 			

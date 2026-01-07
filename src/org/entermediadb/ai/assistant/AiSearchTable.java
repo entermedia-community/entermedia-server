@@ -105,33 +105,33 @@ public class AiSearchTable extends BaseData
 	}
 	
 	public String getParameterValues() {
-		String returnvalues = "";
+		Collection<String> returnvalues = new ArrayList<String>();
 		Map<String, Object> params = getParameters();
 		if (params != null) {
-			 
 			 for (Map.Entry<String, Object> entry : params.entrySet())
 			{
 				String key = entry.getKey();
-				Object val = entry.getValue();
-			
-				if (val instanceof String) {
-					returnvalues += val.toString();
+				if("module".equals(key))
+				{
+					continue;
 				}
-				else if (val instanceof JSONArray) {
-					String values2 = null;
-					for (Object obj : (JSONArray) val) {
-						if (values2 == null) {
-							values2 = obj.toString();
-						} else {
-							values2 += " " + obj.toString();
-						}
+
+				Object value = entry.getValue();
+			
+				if (value instanceof String) 
+				{
+					returnvalues.add(value.toString().trim());
+				}
+				else if (value instanceof JSONArray) 
+				{
+					for (Object object : (JSONArray) value) 
+					{
+						returnvalues.add(object.toString().trim());
 					}
-					returnvalues = String.join(" ", values2);
 				}
 			}
-			
 		}
-		return returnvalues;
+		return String.join(" ", returnvalues);
 	}
 
 	DateRange fieldDateRange;
