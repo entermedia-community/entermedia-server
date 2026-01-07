@@ -63,6 +63,26 @@ public class AssetEditor
 		//			 setCurrentAsset(null);
 		//		 }
 	}
+	
+	
+	
+	public void deleteAsset(Asset asset, HitTracker inTracker, boolean inDeleteOriginal, User inUser)
+	{
+		if (inTracker != null)
+		{
+			inTracker.removeSelection(asset.getId());
+		}
+		getMediaArchive().fireMediaEvent("deleting", inUser, asset);
+		deleteAsset(asset,inUser);
+		if (inDeleteOriginal)
+		{
+			getMediaArchive().getAssetManager().removeOriginal(inUser, asset);
+		}
+		
+		getMediaArchive().fireMediaEvent("deleted", inUser, asset);
+		log.info("Asset Deleted - assetid " + asset.getId() + " - user " + inUser + " - sourcepath: " + asset.getSourcePath() + " original: " + inDeleteOriginal);
+	}
+
 
 	public Asset getAsset(String inAssetId) throws OpenEditRuntimeException
 	{

@@ -368,72 +368,35 @@ public class AssetEditModule extends BaseMediaModule
 	public void deleteAssets(WebPageRequest inContext) throws OpenEditException
 	{
 		AssetEditor editor = getAssetEditor(inContext);
-		int deleted = 0;
-		String[] assetIds = inContext.getRequestParameters("assetid");
-		if (assetIds == null)
-		{
-			return;
-		}
-		Asset asset;
-		String deleteoriginal = inContext.getRequestParameter("deleteoriginal");
+		boolean deleteoriginal = Boolean.parseBoolean(inContext.getRequestParameter("deleteoriginal"));
 		HitTracker tracker = editor.getMediaArchive().getAssetSearcher().loadHits(inContext);
-
-		for (int i = 0; i < assetIds.length; i++)
+		int deleted = 0;
+		String assetid = inContext.getRequestParameter("assetid");
+		Asset asset;
+		if (assetid != null)
 		{
-			if (assetIds[i].startsWith("multiedit:"))
+			asset = editor.getMediaArchive().getAsset(assetid);
+			editor.deleteAsset(asset, tracker, deleteoriginal, inContext.getUser());
+			deleted++;
+			
+		}
+		else
+		{
+			for (Iterator iterator = tracker.getSelectedHitracker().iterator(); iterator.hasNext();)
 			{
-				try
-				{
-					CompositeAsset assets = (CompositeAsset) inContext.getSessionValue(assetIds[i]);
-					//editor.getMediaArchive().fireMediaEvent(inContext.getUser(), "asset", "deletingbulk", assets.getSelectedResults());
-					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
-					{
-						asset = (Asset) iterator.next();
-						if (tracker != null)
-						{
-							tracker.removeSelection(asset.getId());
-						}
-						editor.deleteAsset(asset, inContext.getUser());
-						
-						if (Boolean.parseBoolean(deleteoriginal))
-						{
-							editor.getMediaArchive().getAssetManager().removeOriginal(inContext.getUser(), asset);
-						}
-						deleted++;
-						log.info("Asset Deleted - assetid " + asset.getId() + " - user " + inContext.getUserName() + " - sourcepath: " + asset.getSourcePath() + " original: " + deleteoriginal);
-					}
-					editor.getMediaArchive().fireMediaEvent("deletedbulk", inContext.getUser(), assets);
-				}
-				catch (Exception e)
-				{
-					log.info(e);
-					continue;
-				}
-			}
-			else
-			{
-				asset = editor.getAsset(assetIds[i]);
-				if (asset != null)
-				{
-					if (tracker != null)
-					{
-						tracker.removeSelection(asset.getId());
-					}
-					editor.getMediaArchive().fireMediaEvent("deleting", inContext.getUser(), asset);
-					editor.deleteAsset(asset,inContext.getUser());
-					if (Boolean.parseBoolean(deleteoriginal))
-					{
-						editor.getMediaArchive().getAssetManager().removeOriginal(inContext.getUser(), asset);
-					}
-					deleted++;
-					editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
-					log.info("Asset Deleted - assetid " + asset.getId() + " - user " + inContext.getUserName() + " - sourcepath: " + asset.getSourcePath() + " original: " + deleteoriginal);
-				}
+				Data data = (Data) iterator.next();
+				
+				asset = (Asset) editor.getMediaArchive().getAssetSearcher().loadData(data);
+				editor.deleteAsset(asset, tracker, deleteoriginal, inContext.getUser());
+				deleted++;
+				
 			}
 		}
 		inContext.putPageValue("rowsedited", String.valueOf(deleted));
 
 	}
+
+
 
 	/*
 	 * public void saveAsset(WebPageRequest inContext) throws OpenEditException
@@ -1441,7 +1404,7 @@ public class AssetEditModule extends BaseMediaModule
 
 		//		HitTracker freshhits = store.getAssetSearcher().cachedSearch(inReq,hits.getSearchQuery());
 		//freshhits.setSelections(hits.getSelections()); //TODO: What if the order changes?
-		//HitTracker selected = freshhits.getSelectedHitracker();
+		//HitTracker selected = freshhits.getSelectedHitracker(); 
 		
 		String assetid = "multiedit:" + hitssessionid;
 		inReq.removeSessionValue(assetid);
@@ -1451,7 +1414,7 @@ public class AssetEditModule extends BaseMediaModule
 		inReq.putPageValue("data", composite);
 		inReq.putPageValue("asset", composite);
 		inReq.putSessionValue(composite.getId(), composite);
-
+ 
 		return composite;
 	}
 
