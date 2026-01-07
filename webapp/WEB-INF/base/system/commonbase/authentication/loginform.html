@@ -57,7 +57,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 							<input type="hidden" name="subject" value="[[Your Login Info]]"/>
 						</form>
 						<div class="text-right">
-							<a href="#" class="loginmethod" data-target="#passwordLogin"><i class="fas fa-key mr-1 me-1 text-muted"></i>[[Legacy Login]]</a>
+							<a href="#" class="loginmethod" data-target="#passwordLogin" title="[[Legacy login with username & password]]"><i class="fas fa-key mr-1 me-1 text-muted"></i>[[Legacy Login]]</a>
 						</div>
 					</div>
 				#end
@@ -109,7 +109,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 							<span class="flex-grow-1" style="border-top:1px solid #cfcfcf;"></span>
 						</span>
 					</div>
-					<div class="d-flex flex-wrap align-items-center justify-content-center mb-3">
+					<div class="loginproviders d-flex flex-wrap align-items-center justify-content-center mb-3">
 						$pages.include("$home$content.loginroot/oauth/providers.html", $context)
 					</div>
 				#end
