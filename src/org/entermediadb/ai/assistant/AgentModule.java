@@ -3,6 +3,7 @@ package org.entermediadb.ai.assistant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.MediaArchive;
@@ -186,6 +187,13 @@ public class AgentModule extends BaseMediaModule {
 		}
 		inReq.putPageValue("refresh", refresh);
 		inReq.putPageValue("statuses", statuses);
+	}
+	
+	public void loadModuleSchemaForJson(WebPageRequest inReq) throws Exception 
+	{
+		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
+		Map<String,String> modulesenum = assistant.getModulesAsEnum();
+		inReq.putPageValue("modulesenum", modulesenum);
 	}
 
 }

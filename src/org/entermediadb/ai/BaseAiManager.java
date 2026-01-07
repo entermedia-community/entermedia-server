@@ -417,11 +417,67 @@ public abstract class BaseAiManager extends BaseManager
 			}
 			schema.setModules(modules);
 			schema.setModuleIds(moduleids);
-			getMediaArchive().getCacheManager().put("assitant","schema",schema);
+			getMediaArchive().getCacheManager().put("assitant", "schema", schema);
 			
 		}
 		
 		return schema;
+	}
+	
+	public Map<String, String> getModulesAsEnum()
+	{
+		Collection<String> nameenums = new ArrayList<String>();
+		Collection<String> idnameenums = new ArrayList<String>();
+		for (Data module : loadSchema().getModules())
+		{
+			String id = module.getId();
+			String name = module.getName();
+			if(id.equals("asset"))
+			{
+				continue;
+			}
+			// The 'search' in module name/id confuses AI
+			
+			if (id.toLowerCase().contains("search") && !name.toLowerCase().contains("search"))
+			{
+				nameenums.add("\"" + name + "\"");
+				continue;
+			}
+			if (!id.toLowerCase().contains("search") && name.toLowerCase().contains("search"))
+			{
+				idnameenums.add("\"" + id + "\"");
+				continue;
+			}
+			if((id+name).toLowerCase().contains("search"))
+			{
+				continue;
+			}
+			
+			idnameenums.add("\"" + id + "|" + name + "\"");
+			nameenums.add("\"" + name + "\"");
+		}
+		
+		Map<String, String> enums = new HashMap<>();
+		
+		if(idnameenums.isEmpty())
+		{
+			idnameenums = null;
+		}
+		else
+		{			
+			enums.put("idnames", String.join(",", idnameenums));
+		}
+		
+		if(nameenums.isEmpty())
+		{
+			nameenums = null;
+		}
+		else
+		{			
+			enums.put("names", String.join(",", nameenums));
+		}
+		
+		return enums;
 	}
 
 	

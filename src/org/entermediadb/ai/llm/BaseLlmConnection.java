@@ -212,15 +212,16 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			StringWriter output = new StringWriter();
 			request.setWriter(output);
 			PageStreamer streamer = getEngine().createPageStreamer(template, request);
-				getEngine().executePathActions(request);
-				if( !request.hasRedirected())
-				{
-					getModuleManager().executePageActions( template,request );
-				}
-				if( request.hasRedirected())
-				{
-					log.info("action was redirected");
-				}
+			
+			getEngine().executePathActions(request);
+			if( !request.hasRedirected())
+			{
+				getModuleManager().executePageActions( template,request );
+			}
+			if( request.hasRedirected())
+			{
+				log.info("action was redirected");
+			}
 			
 			streamer.include(template, request);
 			String string = output.toString();
