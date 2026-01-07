@@ -1236,7 +1236,7 @@ public class MediaArchive implements CatalogEnabled
 				if( everything)
 				{
 					getPageManager().getRepository().remove(inContent);
-					log.info("All images removed.");
+					//log.info("All images removed.");
 					return;
 				}
 				//getPageManager().removePage(page);
