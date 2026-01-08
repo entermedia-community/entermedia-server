@@ -1090,14 +1090,14 @@ body.hidden-scroll {
 .ai-suggestions {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 8px;
+	gap: 4px;
 	padding: 0;
 	margin: 0;
 }
 .ai-suggestion {
 	display: inline-block;
 	color: #3884fd;
-	padding: 8px 12px;
+	padding: 4px 8px;
 	cursor: pointer;
 	border-radius: 4px;
 	border: 1px solid #3884fd;
@@ -1121,15 +1121,16 @@ body.hidden-scroll {
 	bottom: 42px;
 	right: -10px;
 	background-color: rgba(56, 132, 253, 0.18);
+	backdrop-filter: blur(4px);
 	padding: 8px;
-	margin: 8px;
+	margin: 8px 12px;
 	border-radius: 8px;
 	max-width: 600px;
 	transform: scale(0);
 	opacity: 0;
-	transform-origin: bottom right;
 	filter: drop-shadow(0 0 4px rgba(207, 207, 207, 0.5));
-	transition: transform 0.2s ease, opacity 0.2s ease;
+	transition: opacity 0.2s ease-in-out;
+	user-select: none;
 }
 .ai-suggestions-container.expanded {
 	transform: scale(1);

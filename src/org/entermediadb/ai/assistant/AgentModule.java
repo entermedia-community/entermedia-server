@@ -204,6 +204,13 @@ public class AgentModule extends BaseMediaModule {
 		inReq.putPageValue("questionsModules", modules);
 	}
 	
+	public void loadSearchSuggestions(WebPageRequest inReq) throws Exception 
+	{
+		SearchingManager searching = (SearchingManager) getMediaArchive(inReq).getBean("searchingManager");
+		Collection<String> suggestions = searching.makeSearchSuggestions(inReq.getUserProfile());
+		inReq.putPageValue("suggestions", suggestions);
+	}
+	
 	public void saveAgentContextField(WebPageRequest inReq) throws Exception 
 	{
 		AgentContext agentContext =  (AgentContext) inReq.getPageValue("agentcontext");
