@@ -111,7 +111,7 @@
 	padding: 5px;
 }
 .chatterbox-write .chatter-btn {
-	border-radius: 8px;
+	border-radius: var(--btn-radius, 8px);
 	background-color: #277371;
 	color: #fff;
 	font-size: 0.9rem;
@@ -1063,6 +1063,53 @@ body.hidden-scroll {
 	background: #d4edda;
 	color: #155724;
 }
-.workflow-picker .dropdown-toggle::after {
-	display: none !important;
+.ai-functions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+.ai-func {
+	display: inline-block;
+	color: #32cd32;
+	background-color: #ffffff;
+	border: 1px solid #32cd32;
+	cursor: pointer;
+	padding: 0.1rem 0.6rem;
+	font-size: 0.85rem;
+	line-height: 2;
+	border-radius: var(--btn-radius);
+}
+.ai-func i {
+	transform: scale(1);
+	margin-right: 4px;
+}
+.ai-func:hover {
+	color: #32cd32;
+	background-color: #e6ffe6;
+	text-decoration: none;
+}
+.ai-func.active {
+	color: #ffffff;
+	background-color: #32cd32;
+}
+.ai-option-picker .picker-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #3884fd;
+	padding: 0.25rem 0.5rem;
+	border: 1px solid #3884fd;
+	background-color: #f5f5ff;
+	line-height: 22px;
+	font-size: 0.85rem;
+	border-radius: var(--btn-radius, 8px);
+}
+.ai-option-picker .picker-btn i {
+	font-size: 1.2rem;
+	line-height: 1;
+	transform: scale(1);
+}
+.ai-option-picker .picker-btn:hover {
+	color: #ffffff;
+	background-color: #3884fd;
 }
