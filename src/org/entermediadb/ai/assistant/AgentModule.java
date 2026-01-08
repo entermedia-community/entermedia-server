@@ -201,9 +201,18 @@ public class AgentModule extends BaseMediaModule {
 	{
 		QuestionsManager questions = (QuestionsManager) getMediaArchive(inReq).getBean("questionsManager");
 		Collection<Data> modules = questions.findEnabledModules(inReq.getUserProfile());
-		inReq.putPageValue("questionModules", modules);
+		inReq.putPageValue("questionsModules", modules);
 	}
-}
+	
+	public void saveAgentContextField(WebPageRequest inReq) throws Exception 
+	{
+		AgentContext agentContext =  (AgentContext) inReq.getPageValue("agentcontext");
+		String fieldname = inReq.getRequestParameter("fieldname");
+		String fieldvalue = inReq.getRequestParameter("fieldvalue");
+		agentContext.setValue(fieldname, fieldvalue);
+		Searcher searcher =  getMediaArchive(inReq).getSearcher("agentcontext");
+		searcher.saveData(agentContext, inReq.getUser());
+	}
 	
 
 }

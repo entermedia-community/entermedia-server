@@ -1066,7 +1066,7 @@ body.hidden-scroll {
 	color: #ffffff;
 	background-color: #32cd32;
 }
-.ai-option-picker .picker-btn {
+.ai-suggestions-picker .picker-btn {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -1078,23 +1078,23 @@ body.hidden-scroll {
 	font-size: 0.85rem;
 	border-radius: var(--btn-radius, 8px);
 }
-.ai-option-picker .picker-btn i {
+.ai-suggestions-picker .picker-btn i {
 	font-size: 1.2rem;
 	line-height: 1;
 	transform: scale(1);
 }
-.ai-option-picker .picker-btn:hover {
+.ai-suggestions-picker .picker-btn:hover {
 	color: #ffffff;
 	background-color: #3884fd;
 }
-.ai-options {
+.ai-suggestions {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 8px;
 	padding: 0;
 	margin: 0;
 }
-.ai-option {
+.ai-suggestion {
 	display: inline-block;
 	color: #3884fd;
 	padding: 8px 12px;
@@ -1104,19 +1104,19 @@ body.hidden-scroll {
 	background-color: #ffffff;
 	list-style: none;
 }
-.ai-option:hover {
+.ai-suggestion:hover {
 	background-color: #f5f5ff;
 }
-.ai-option.selected {
+.ai-suggestion.selected {
 	color: #ffffff;
 	background-color: #3884fd;
 }
-.ai-option u {
+.ai-suggestion u {
 	font-weight: 500;
 	text-transform: capitalize;
 	text-decoration-color: #b3d0fe;
 }
-.ai-options-container {
+.ai-suggestions-container {
 	position: absolute;
 	bottom: 42px;
 	right: -10px;
@@ -1131,20 +1131,20 @@ body.hidden-scroll {
 	filter: drop-shadow(0 0 4px rgba(207, 207, 207, 0.5));
 	transition: transform 0.2s ease, opacity 0.2s ease;
 }
-.ai-options-container.expanded {
+.ai-suggestions-container.expanded {
 	transform: scale(1);
 	opacity: 1;
 }
-.ai-options-container.expanded::after {
+.ai-suggestions-container.expanded::after {
 	content: "";
 	position: absolute;
 	bottom: -32px;
-	right: 12px;
+	right: 52px;
 	border-width: 16px;
 	border-style: solid;
 	border-color: rgba(56, 132, 253, 0.18) transparent transparent transparent;
 }
-.ai-options-title {
+.ai-suggestions-title {
 	color: #3884fd;
 }
 .ai-func-toggle {
@@ -1163,8 +1163,13 @@ body.hidden-scroll {
 	background-color: #3884fd;
 	text-decoration: none;
 }
-.ai-options-container.expanded + .ai-func-toggle {
-	color: #ff4f4f;
-	border-color: #ff9c9c;
-	background-color: #ffeeee;
+.ai-suggestions-container.expanded + .ai-func-toggle {
+	color: #5c5c5c;
+	border-color: #5c5c5c;
+	background-color: #ededed;
+}
+.ai-suggestions-container.expanded + .ai-func-toggle:hover {
+	color: #444444;
+	border-color: #444444;
+	background-color: #ffffff;
 }

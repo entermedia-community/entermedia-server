@@ -715,29 +715,29 @@ jQuery(document).ready(function () {
 		if (!editorid) {
 			editorid = "chatter-msg";
 		}
-		var container = $(".ai-options-container");
 		var editor = $("#" + editorid);
-		editor.val(prefix + " ");
+		editor.val(prefix);
 		setTimeout(() => {
-			container.removeClass("expanded");
+			toggleAiSuggestions();
 			editor.focus();
 		}, 100);
 	});
-	lQuery(".ai-option").livequery("click", function () {
-		var parent = $(this).closest(".ai-options");
-		parent.find(".ai-option").each(function () {
+	lQuery(".ai-suggestion").livequery("click", function () {
+		var parent = $(this).closest(".ai-suggestions");
+		parent.find(".ai-suggestion").each(function () {
 			$(this).removeClass("selected");
 		});
 		$(this).addClass("selected");
 	});
-	lQuery(".ai-func-toggle").livequery("click", function () {
-		var container = $(".ai-options-container");
+	lQuery(".ai-func-toggle").livequery("click", toggleAiSuggestions);
+	function toggleAiSuggestions() {
+		var container = $(".ai-suggestions-container");
 		if (container.hasClass("expanded")) {
 			container.removeClass("expanded");
-			$(this).text("Show Options");
+			$(".ai-func-toggle").text("Show Suggestions");
 		} else {
 			container.addClass("expanded");
-			$(this).text("Hide");
+			$(".ai-func-toggle").text("Hide Suggestions");
 		}
-	});
+	}
 });

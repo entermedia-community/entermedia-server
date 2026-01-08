@@ -147,16 +147,16 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		
 		Collection<Data> modules = new ArrayList();
 		
-		FilterNode node = tracker.findFilterValue("entitysourcetype");
+		FilterNode nodes = tracker.findFilterValue("entitysourcetype");
 
 		Collection<String> enabled = inProfile.getModuleIds();
 
-		for (Iterator iterator = node.getChildren().iterator(); iterator.hasNext();)
+		for (Iterator iterator = nodes.getChildren().iterator(); iterator.hasNext();)
 		{
-			String id = (String) iterator.next();
-			if( enabled.contains(id))
+			FilterNode node = (FilterNode) iterator.next();
+			if( enabled.contains(node.getId()))
 			{
-				Data module = getMediaArchive().getCachedData("module", id);
+				Data module = getMediaArchive().getCachedData("module", node.getId());
 				modules.add(module);
 			}
 		}
