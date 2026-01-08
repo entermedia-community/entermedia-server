@@ -716,8 +716,26 @@ jQuery(document).ready(function () {
 			editorid = "chatter-msg";
 		}
 		var editor = $("#" + editorid);
-		editor.val(prefix);
-		editor.focus();
-		$(this).parent().removeClass("show");
+		editor.val(prefix + " ");
+		setTimeout(() => {
+			editor.focus();
+		}, 100);
+	});
+	lQuery(".ai-option").livequery("click", function () {
+		var parent = $(this).closest(".ai-options");
+		parent.find(".ai-option").each(function () {
+			$(this).removeClass("selected");
+		});
+		$(this).addClass("selected");
+	});
+	lQuery(".ai-func-toggle").livequery("click", function () {
+		var container = $(".ai-options-container");
+		if (container.hasClass("expanded")) {
+			container.removeClass("expanded");
+			$(this).text("Show Options");
+		} else {
+			container.addClass("expanded");
+			$(this).text("Hide");
+		}
 	});
 });
