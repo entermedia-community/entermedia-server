@@ -708,4 +708,16 @@ jQuery(document).ready(function () {
 			}
 		});
 	});
+
+	lQuery(".autoprefixchatmsg").livequery("click", function () {
+		var prefix = $(this).data("prefix");
+		var editorid = $(this).data("editorid");
+		if (!editorid) {
+			editorid = "chatter-msg";
+		}
+		var editor = $("#" + editorid);
+		editor.val(prefix);
+		editor.focus();
+		$(this).parent().removeClass("show");
+	});
 });

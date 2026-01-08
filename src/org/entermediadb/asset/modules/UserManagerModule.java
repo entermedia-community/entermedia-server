@@ -1573,6 +1573,9 @@ public class UserManagerModule extends BaseMediaModule
 		String channel = inReq.findValue("channel");
 		String module = inReq.findValue("module");
 		
+		String functiongroup = inReq.getRequestParameter("functiongroup");
+		
+		
 		MultiValued currentchannel = null;
 		
 		if(!createnew)
@@ -1582,8 +1585,7 @@ public class UserManagerModule extends BaseMediaModule
 		
 		if( currentchannel != null )
 		{
-			String functiongroup = inReq.getRequestParameter("functiongroup");
-			if( functiongroup != null)
+			if( functiongroup != null )
 			{
 				currentchannel.setValue("functiongroup", functiongroup);
 			}
@@ -1638,6 +1640,18 @@ public class UserManagerModule extends BaseMediaModule
 			String applicationid = inReq.findValue("applicationid");
 			currentchannel.setValue("chatapplicationid", applicationid);
 			currentchannel.setValue("channeltype", channeltype );
+			if( functiongroup == null)
+			{
+				functiongroup = "Searching";
+			}
+			currentchannel.setValue("functiongroup", functiongroup);
+		}
+		else
+		{
+			if( functiongroup != null )
+			{
+				currentchannel.setValue("functiongroup", functiongroup);
+			}
 		}
 
 		currentchannel.setValue("refreshdate", new Date() );
@@ -1648,6 +1662,4 @@ public class UserManagerModule extends BaseMediaModule
 		
 		inReq.putPageValue("createnew", false);
 	}
-
-	
 }
