@@ -715,9 +715,11 @@ jQuery(document).ready(function () {
 		if (!editorid) {
 			editorid = "chatter-msg";
 		}
+		var container = $(".ai-options-container");
 		var editor = $("#" + editorid);
 		editor.val(prefix + " ");
 		setTimeout(() => {
+			container.removeClass("expanded");
 			editor.focus();
 		}, 100);
 	});
