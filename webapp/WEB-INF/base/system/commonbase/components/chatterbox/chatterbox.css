@@ -1124,7 +1124,7 @@ body.hidden-scroll {
 	padding: 8px;
 	margin: 8px;
 	border-radius: 8px;
-	max-width: 500px;
+	max-width: 600px;
 	transform: scale(0);
 	opacity: 0;
 	transform-origin: bottom right;
