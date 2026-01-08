@@ -2,8 +2,10 @@ package org.entermediadb.ai.assistant;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,11 +24,19 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.modules.translations.LanguageMap;
 
 public class CreationManager extends BaseAiManager implements ChatMessageHandler
 {
 	private static final Log log = LogFactory.getLog(CreationManager.class);
 
+	@Override
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
+	{
+		savePossibleFunctionSuggestions(inLog, "Creation");
+	}
+	
 	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog)
 	{
 		//List all functions
@@ -74,6 +84,15 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 				for (Iterator iterator2 = schema.getModules().iterator(); iterator2.hasNext();)
 				{
 					Data parentmodule = (Data) iterator2.next();
+					
+//					<data id="5" featured="true" functiongroup="Creation" shortname="Create Product Entity">
+//					  <name>
+//					     <language id="en"><![CDATA[Create a Product ]]></language>
+//					  </name>
+//					</data>
+
+					
+					
 					Collection existing = embedsearcher.query().exact("aifunction", function.getId()).exact("parentmodule",parentmodule.getId()).search();
 					if( !existing.isEmpty())
 					{

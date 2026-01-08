@@ -146,10 +146,22 @@ public class AgentModule extends BaseMediaModule {
 			tosave.add(data);
 		}
 		embedsearcher.saveAllData(tosave, null);
+		
+		
+		//Now save all the suggestions?
+		
 		//Test search
 		//populateVectors(manager,actions);
 
 		//manager.reinitClusters(inLog); //How to do this?
+	}
+
+	public void saveSuggestions(WebPageRequest inReq) throws Exception 
+	{
+		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
+		getSearchingManager(inReq).savePossibleFunctionSuggestions(logger);
+		getCreationManager(inReq).createPossibleFunctionParameters(logger);
+		getQuestionsManager(inReq).createPossibleFunctionParameters(logger);
 	}
 
 	public void prepareDataForGuide(WebPageRequest inReq) throws Exception 

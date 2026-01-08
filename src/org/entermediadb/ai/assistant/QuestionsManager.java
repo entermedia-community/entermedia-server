@@ -30,6 +30,12 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 	private static final Log log = LogFactory.getLog(QuestionsManager.class);
 
 	@Override
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
+	{
+		savePossibleFunctionSuggestions(inLog, "Questions");
+	}
+
+	@Override
 	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
 	{
 //		if(output == null || output.isEmpty())
@@ -148,16 +154,18 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		Collection<Data> modules = new ArrayList();
 		
 		FilterNode nodes = tracker.findFilterValue("entitysourcetype");
-
-		Collection<String> enabled = inProfile.getModuleIds();
-
-		for (Iterator iterator = nodes.getChildren().iterator(); iterator.hasNext();)
+		if( nodes != null)
 		{
-			FilterNode node = (FilterNode) iterator.next();
-			if( enabled.contains(node.getId()))
+			Collection<String> enabled = inProfile.getModuleIds();
+	
+			for (Iterator iterator = nodes.getChildren().iterator(); iterator.hasNext();)
 			{
-				Data module = getMediaArchive().getCachedData("module", node.getId());
-				modules.add(module);
+				FilterNode node = (FilterNode) iterator.next();
+				if( enabled.contains(node.getId()))
+				{
+					Data module = getMediaArchive().getCachedData("module", node.getId());
+					modules.add(module);
+				}
 			}
 		}
 		return modules;

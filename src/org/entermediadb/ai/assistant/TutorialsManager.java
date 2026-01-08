@@ -23,4 +23,11 @@ public class TutorialsManager extends BaseAiManager implements ChatMessageHandle
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
+	{
+		savePossibleFunctionSuggestions(inLog, "Tutorial");
+	}
+
 }

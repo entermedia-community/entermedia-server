@@ -21,6 +21,7 @@ import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.manager.BaseManager;
+import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
@@ -29,6 +30,7 @@ import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.modules.translations.LanguageMap;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
@@ -570,4 +572,52 @@ public abstract class BaseAiManager extends BaseManager
 		}
 		
 	}
+	
+
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog, String inFunctionGoup)
+	{
+		//List all functions
+		Collection functions = getMediaArchive().query("aifunction").exact("functiongroup", inFunctionGoup).search();
+
+		Searcher suggestionsearcher = getMediaArchive().getSearcher("aisuggestion");
+
+		for (Iterator iterator = functions.iterator(); iterator.hasNext();)
+		{
+			Data function = (Data) iterator.next();
+			//TODO: Make sure they are not already created
+			String functiongroup = function.get("functiongroup");
+			HitTracker existing = suggestionsearcher.query().exact("functiongroup", functiongroup).search();
+			if( !existing.isEmpty())
+			{
+				inLog.info("Already found suggestions " + inFunctionGoup);
+				continue;
+			}
+			Map params = new HashMap();
+			Schema schema = loadSchema();
+			params.put("schema", schema);
+			params.put("function", function);
+			
+			//Run AI to create a set of suggestions
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("createSuggestionsFor" + inFunctionGoup + "Function");
+			LlmResponse response = llmconnection.callStructuredOutputList(params); //TODO: Replace with local API that is faster
+
+			Collection<Data> tosave = new ArrayList();
+
+			//Get all the suggestions back
+			Collection<String> suggestions = response.getRawCollection();
+			for (Iterator iterator2 = suggestions.iterator(); iterator.hasNext();)
+			{
+				String suggestion = (String) iterator2.next();
+				Data newsuggestion = suggestionsearcher.createNewData();
+				newsuggestion.setValue("aifunction",function.getId());
+				LanguageMap lang = new LanguageMap();
+				lang.setText("en", suggestion);
+				newsuggestion.setValue("name",lang);
+			}
+			suggestionsearcher.saveAllData(tosave, null); 
+		}
+
+	}
+	
+	
 }

@@ -36,6 +36,12 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 {
 	private static final Log log = LogFactory.getLog(SearchingManager.class);
 
+	@Override
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
+	{
+		savePossibleFunctionSuggestions(inLog, "Searching");
+	}
+
 	
 	public void searchTables(WebPageRequest inReq, AiSearch inAiSearchParams)
 	{
