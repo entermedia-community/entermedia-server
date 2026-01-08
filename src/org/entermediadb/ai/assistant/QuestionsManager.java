@@ -21,7 +21,9 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.profile.UserProfile;
 
 public class QuestionsManager extends BaseAiManager implements ChatMessageHandler
 {
@@ -130,6 +132,38 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		throw new OpenEditException("Function not supported " + agentFn);
 		
 	}
+	
+	public Collection<Data> findEnabledModules(UserProfile inProfile)
+	{
+		Schema schema = loadSchema();
+		
+		Collection<String> moduleids = schema.getModuleIds();
+		HitTracker tracker = getMediaArchive().query("modulesearch")
+		.put("searchtypes", moduleids)
+		.facet("entitysourcetype")
+		.all()
+		.exact("entityembeddingstatus", "embedded")
+		.search();
+		
+		Collection<Data> modules = new ArrayList();
+		
+		FilterNode node = tracker.findFilterValue("entitysourcetype");
+
+		Collection<String> enabled = inProfile.getModuleIds();
+
+		for (Iterator iterator = node.getChildren().iterator(); iterator.hasNext();)
+		{
+			String id = (String) iterator.next();
+			if( enabled.contains(id))
+			{
+				Data module = getMediaArchive().getCachedData("module", id);
+				modules.add(module);
+			}
+		}
+		return modules;
+		
+	}
+
 	
 	protected void handleLlmResponse(AgentContext inAgentContext, LlmResponse response)
 	{

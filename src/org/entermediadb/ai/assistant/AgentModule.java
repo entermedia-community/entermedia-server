@@ -12,6 +12,7 @@ import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 
 public class AgentModule extends BaseMediaModule {
 	
@@ -195,5 +196,14 @@ public class AgentModule extends BaseMediaModule {
 		Map<String,String> modulesenum = assistant.getModulesAsEnum();
 		inReq.putPageValue("modulesenum", modulesenum);
 	}
+	
+	public void loadQuestionsModules(WebPageRequest inReq) throws Exception 
+	{
+		QuestionsManager questions = (QuestionsManager) getMediaArchive(inReq).getBean("questionsManager");
+		Collection<Data> modules = questions.findEnabledModules(inReq.getUserProfile());
+		inReq.putPageValue("questionModules", modules);
+	}
+}
+	
 
 }
