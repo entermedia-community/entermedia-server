@@ -872,12 +872,15 @@ public class EntityManager implements CatalogEnabled
 		event.setProperty("operation", inOperation);
 		event.setProperty("moduleid", entity.get("entitysourcetype"));
 		event.setProperty("entityid", entity.getId()); //data.getId() ??
-		event.setValue("assetids", inAssets);
+		
 		Collection names = new ArrayList();
+		Collection ids = new ArrayList();
 		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {
 			Data asset = (Data) iterator.next();
 			names.add(asset.getName());
+			ids.add(asset.getId());
 		}
+		event.setValue("assetids", ids);
 		event.setValue("assetnames", names);
 		event.setValue("date", new Date()); 
 		
@@ -1274,7 +1277,7 @@ public class EntityManager implements CatalogEnabled
 		return tosave.size();
 	}
 
-	public void createEntitySnapshot(User inUser, Data inEntity, String changes)
+	public void createEntitySnapshot(User inUser, MultiValued inEntity, String changes)
 	{
 	
 		Searcher searcher = getMediaArchive().getSearcher("entityactivityhistory");
@@ -1320,7 +1323,20 @@ public class EntityManager implements CatalogEnabled
 			throw new OpenEditException("Noting to save");
 		
 		}
-		JSONObject sourceObj = (JSONObject) sourceObject.get("_source");
+		JSONObject sourceObj = (JSONObject) sourceObject.get("map");
+	   if (sourceObj != null) {
+	        List<Object> keysToRemove = new ArrayList<>();
+	        for (Object keyObj : sourceObj.keySet()) {
+	            String key = keyObj == null ? null : keyObj.toString();
+	            if (key != null && key.startsWith(".")) {
+	                keysToRemove.add(key);
+	            }
+	        }
+	        for (Object k : keysToRemove) {
+	            sourceObj.remove(k);
+	        }
+	    }
+		
 		Searcher searcher = getMediaArchive().getSearcher(moduleid);
 		searcher.saveJson(entityid, sourceObj);	
 	}

@@ -1618,7 +1618,7 @@ public class EntityModule extends BaseMediaModule
 		//changes = archive.getEventManager().readChanges(inReq, archive.getSearcher(moduleid), entity);
 		String changes = (String)inReq.getPageValue("datachanges");
 		for (Iterator iterator = tosave.iterator(); iterator.hasNext();) {
-			Data entity = (Data) iterator.next();
+			MultiValued entity = (MultiValued) iterator.next();
 			archive.getEntityManager().createEntitySnapshot( inReq.getUser(), entity, changes );
 		}
 		
