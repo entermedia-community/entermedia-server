@@ -3369,7 +3369,11 @@ public class MediaArchive implements CatalogEnabled
 			Data serverinfo = query("aiserver").exact("aifunction", inAiFunctionName).sort("ordering").searchOne();
 			if( serverinfo == null)
 			{
-				throw new OpenEditException("Could not find Connector for aifunction " + inAiFunctionName);
+				serverinfo = query("aiserver").exact("aifunction", "default").sort("ordering").searchOne();
+				if( serverinfo == null)
+				{
+					throw new OpenEditException("Could not find Connector for aifunction " + inAiFunctionName);
+				}
 			}
 			String llm = serverinfo.get("connectionbean");
 			connection = (LlmConnection) getModuleManager().getBean(getCatalogId(),llm, false);

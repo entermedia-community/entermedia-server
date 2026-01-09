@@ -12,6 +12,7 @@ import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 
 public class AgentModule extends BaseMediaModule {
 	
@@ -145,10 +146,22 @@ public class AgentModule extends BaseMediaModule {
 			tosave.add(data);
 		}
 		embedsearcher.saveAllData(tosave, null);
+		
+		
+		//Now save all the suggestions?
+		
 		//Test search
 		//populateVectors(manager,actions);
 
 		//manager.reinitClusters(inLog); //How to do this?
+	}
+
+	public void saveSuggestions(WebPageRequest inReq) throws Exception 
+	{
+		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
+		getSearchingManager(inReq).savePossibleFunctionSuggestions(logger);
+		getCreationManager(inReq).createPossibleFunctionParameters(logger);
+		getQuestionsManager(inReq).createPossibleFunctionParameters(logger);
 	}
 
 	public void prepareDataForGuide(WebPageRequest inReq) throws Exception 
@@ -195,5 +208,30 @@ public class AgentModule extends BaseMediaModule {
 		Map<String,String> modulesenum = assistant.getModulesAsEnum();
 		inReq.putPageValue("modulesenum", modulesenum);
 	}
+	
+	public void loadQuestionsModules(WebPageRequest inReq) throws Exception 
+	{
+		QuestionsManager questions = (QuestionsManager) getMediaArchive(inReq).getBean("questionsManager");
+		Collection<Data> modules = questions.findEnabledModules(inReq.getUserProfile());
+		inReq.putPageValue("questionsModules", modules);
+	}
+	
+	public void loadSearchSuggestions(WebPageRequest inReq) throws Exception 
+	{
+		SearchingManager searching = (SearchingManager) getMediaArchive(inReq).getBean("searchingManager");
+		Collection<String> suggestions = searching.makeSearchSuggestions(inReq.getUserProfile());
+		inReq.putPageValue("suggestions", suggestions);
+	}
+	
+	public void saveAgentContextField(WebPageRequest inReq) throws Exception 
+	{
+		AgentContext agentContext =  (AgentContext) inReq.getPageValue("agentcontext");
+		String fieldname = inReq.getRequestParameter("fieldname");
+		String fieldvalue = inReq.getRequestParameter("fieldvalue");
+		agentContext.setValue(fieldname, fieldvalue);
+		Searcher searcher =  getMediaArchive(inReq).getSearcher("agentcontext");
+		searcher.saveData(agentContext, inReq.getUser());
+	}
+	
 
 }

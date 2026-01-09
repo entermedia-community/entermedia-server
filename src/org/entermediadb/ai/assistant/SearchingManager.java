@@ -30,10 +30,17 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.profile.UserProfile;
 
 public class SearchingManager extends BaseAiManager  implements ChatMessageHandler
 {
 	private static final Log log = LogFactory.getLog(SearchingManager.class);
+
+	@Override
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
+	{
+		savePossibleFunctionSuggestions(inLog, "Searching");
+	}
 
 	
 	public void searchTables(WebPageRequest inReq, AiSearch inAiSearchParams)
@@ -829,6 +836,33 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 				getMediaArchive().saveData(moduleid,tosave);
 			}
 		}
+	}
+
+	public Collection<String> makeSearchSuggestions(UserProfile inUserProfile) {
+		int count = 0;
+		Collection<String> suggestions = new ArrayList<String>();
+		for (Iterator iterator = inUserProfile.getEntities().iterator(); iterator.hasNext();) 
+		{
+			MultiValued module = (MultiValued) iterator.next();
+			if(module.getBoolean("showonsearch") && !module.getId().equals("asset") && count < 5) 
+			{
+				Data entity = getMediaArchive().query(module.getId()).searchOne();
+				if( entity != null ) 
+				{
+					String entityname = entity.getName();
+					String prefix = "";
+					if( count % 3 == 0 ) {
+						prefix = "Search for ";
+					} else {
+						prefix = "Find ";
+					}
+					prefix = prefix + entityname + " in " + module.getName();
+					suggestions.add( prefix );
+					count++;
+				}
+			}
+		}
+		return suggestions;
 	}
 	
 }

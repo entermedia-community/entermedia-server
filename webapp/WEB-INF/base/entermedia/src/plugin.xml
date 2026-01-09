@@ -2650,6 +2650,12 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
+	
+	<bean id="tutorialsManager" class="org.entermediadb.ai.assistant.TutorialsManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
 
 
 	<bean id="agentContext" class="org.entermediadb.ai.llm.AgentContext" scope="prototype">

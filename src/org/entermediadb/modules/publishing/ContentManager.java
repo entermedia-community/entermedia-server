@@ -1293,5 +1293,11 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 		return null;
 	}
 
+	@Override
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

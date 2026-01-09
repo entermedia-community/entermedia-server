@@ -717,7 +717,27 @@ jQuery(document).ready(function () {
 		}
 		var editor = $("#" + editorid);
 		editor.val(prefix);
-		editor.focus();
-		$(this).parent().removeClass("show");
+		setTimeout(() => {
+			toggleAiSuggestions();
+			editor.focus();
+		}, 100);
 	});
+	lQuery(".ai-suggestion").livequery("click", function () {
+		var parent = $(this).closest(".ai-suggestions");
+		parent.find(".ai-suggestion").each(function () {
+			$(this).removeClass("selected");
+		});
+		$(this).addClass("selected");
+	});
+	lQuery(".ai-func-toggle").livequery("click", toggleAiSuggestions);
+	function toggleAiSuggestions() {
+		var container = $(".ai-suggestions-container");
+		if (container.hasClass("expanded")) {
+			container.removeClass("expanded");
+			$(".ai-func-toggle").text("Show Suggestions");
+		} else {
+			container.addClass("expanded");
+			$(".ai-func-toggle").text("Hide Suggestions");
+		}
+	}
 });

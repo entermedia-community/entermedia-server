@@ -21,11 +21,19 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.profile.UserProfile;
 
 public class QuestionsManager extends BaseAiManager implements ChatMessageHandler
 {
 	private static final Log log = LogFactory.getLog(QuestionsManager.class);
+
+	@Override
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
+	{
+		savePossibleFunctionSuggestions(inLog, "Questions");
+	}
 
 	@Override
 	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
@@ -130,6 +138,40 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		throw new OpenEditException("Function not supported " + agentFn);
 		
 	}
+	
+	public Collection<Data> findEnabledModules(UserProfile inProfile)
+	{
+		Schema schema = loadSchema();
+		
+		Collection<String> moduleids = schema.getModuleIds();
+		HitTracker tracker = getMediaArchive().query("modulesearch")
+		.put("searchtypes", moduleids)
+		.facet("entitysourcetype")
+		.all()
+		.exact("entityembeddingstatus", "embedded")
+		.search();
+		
+		Collection<Data> modules = new ArrayList();
+		
+		FilterNode nodes = tracker.findFilterValue("entitysourcetype");
+		if( nodes != null)
+		{
+			Collection<String> enabled = inProfile.getModuleIds();
+	
+			for (Iterator iterator = nodes.getChildren().iterator(); iterator.hasNext();)
+			{
+				FilterNode node = (FilterNode) iterator.next();
+				if( enabled.contains(node.getId()))
+				{
+					Data module = getMediaArchive().getCachedData("module", node.getId());
+					modules.add(module);
+				}
+			}
+		}
+		return modules;
+		
+	}
+
 	
 	protected void handleLlmResponse(AgentContext inAgentContext, LlmResponse response)
 	{

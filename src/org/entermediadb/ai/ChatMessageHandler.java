@@ -13,5 +13,7 @@ public interface ChatMessageHandler
 	public LlmResponse processMessage(AgentContext inAgentContext,MultiValued message, MultiValued inAiFunction);
 
 	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog);
+	
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog);
 
 }
