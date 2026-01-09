@@ -598,7 +598,7 @@ public abstract class BaseAiManager extends BaseManager
 			params.put("function", function);
 			
 			//Run AI to create a set of suggestions
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("createSuggestionsFor" + inFunctionGoup + "Function");
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("createSuggestionsFor" + inFunctionGoup);
 			LlmResponse response = llmconnection.callStructuredOutputList(params); //TODO: Replace with local API that is faster
 
 			Collection<Data> tosave = new ArrayList();
