@@ -262,8 +262,6 @@ public class EmbeddingManager extends InformaticsProcessor
 			pagedata.put("page_id", searchtype + "page_" + inEntity.getId());
 			pagedata.put("page_label", inEntity.getName());
 			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
-			
 			PropertyDetail detail = getMediaArchive().getSearcher(searchtype).getDetail("markdowncontent");
 			if( detail != null)
 			{
@@ -297,6 +295,8 @@ public class EmbeddingManager extends InformaticsProcessor
 				inParams.put("contextfields", contextFields);
 				
 				String templatepath = getMediaArchive().getMediaDbId() + "/ai/default/calls/commons/context_fields.json";
+				
+				LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
 				String responsetext = llmconnection.loadInputFromTemplate(templatepath, inParams);
 				
 				pagedata.put("text", responsetext);

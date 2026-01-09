@@ -159,9 +159,9 @@ public class AgentModule extends BaseMediaModule {
 	public void saveSuggestions(WebPageRequest inReq) throws Exception 
 	{
 		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
-		getSearchingManager(inReq).savePossibleFunctionSuggestions(logger);
-		getCreationManager(inReq).createPossibleFunctionParameters(logger);
-		getQuestionsManager(inReq).createPossibleFunctionParameters(logger);
+//		getSearchingManager(inReq).savePossibleFunctionSuggestions(logger);
+		getCreationManager(inReq).savePossibleFunctionSuggestions(logger);
+		getQuestionsManager(inReq).savePossibleFunctionSuggestions(logger);
 	}
 
 	public void prepareDataForGuide(WebPageRequest inReq) throws Exception 

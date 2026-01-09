@@ -270,7 +270,14 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	{
 		inParams.put("model", getModelName());
 		
-		String templatepath = "/" + getMediaArchive().getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + getAiFunctionName() + ".json";
+		String jsonfilename = getAiFunctionName();
+		
+		if(inParams.containsKey("jsonfilename"))
+		{
+			jsonfilename = (String) inParams.get("jsonfilename");
+		}
+		
+		String templatepath = "/" + getMediaArchive().getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + jsonfilename + ".json";
 		
 		String inStructure = loadInputFromTemplate(templatepath, inParams);
 

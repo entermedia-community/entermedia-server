@@ -158,7 +158,15 @@ public class BasicLlmResponse implements LlmResponse
 	{
 		fieldRawCollection = inObj;
 	}
-	
-	
+
+	@Override
+	public Collection getCollection(String inKey) {
+		Object obj = getMessageStructured().get(inKey);
+		if( obj instanceof JSONArray || obj instanceof Collection)
+		{
+			return (Collection) obj;
+		}
+		return null;
+	}
 
 }

@@ -573,46 +573,88 @@ public abstract class BaseAiManager extends BaseManager
 		
 	}
 	
-
 	public void savePossibleFunctionSuggestions(ScriptLogger inLog, String inFunctionGoup)
 	{
-		//List all functions
-		Collection functions = getMediaArchive().query("aifunction").exact("functiongroup", inFunctionGoup).search();
+		Map params = new HashMap();
+		savePossibleFunctionSuggestions(inLog, inFunctionGoup, params);
+	}
+
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog, String inFunctionGoup, Map inParams)
+	{
+		Schema schema = loadSchema();
+		
+		inParams.put("model", "Qwen3:14B");
+		inParams.put("schema", schema);
+		
+		//List all suggestion enabled functions
+		Collection functions = getMediaArchive().query("aifunction").exact("functiongroup", inFunctionGoup).exact("cratesuggestions", true).search();
+		if(functions.isEmpty())
+		{
+			functions = getMediaArchive().query("aifunction").id("start"+inFunctionGoup).exact("cratesuggestions", true).search();
+		}
 
 		Searcher suggestionsearcher = getMediaArchive().getSearcher("aisuggestion");
 
 		for (Iterator iterator = functions.iterator(); iterator.hasNext();)
 		{
 			Data function = (Data) iterator.next();
-			//TODO: Make sure they are not already created
-			String functiongroup = function.get("functiongroup");
-			HitTracker existing = suggestionsearcher.query().exact("functiongroup", functiongroup).search();
-			if( !existing.isEmpty())
+
+			HitTracker existing = suggestionsearcher.query().exact("aifunction", function.getId()).search();
+			if( existing.size() >= 3)
 			{
 				inLog.info("Already found suggestions " + inFunctionGoup);
 				continue;
 			}
-			Map params = new HashMap();
-			Schema schema = loadSchema();
-			params.put("schema", schema);
-			params.put("function", function);
+			
+			inParams.put("function", function);
 			
 			//Run AI to create a set of suggestions
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("createSuggestionsFor" + inFunctionGoup);
-			LlmResponse response = llmconnection.callStructuredOutputList(params); //TODO: Replace with local API that is faster
+			String creatorFunctionName = "createSuggestionsFor" + function.getId();
 
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(creatorFunctionName);
+			
+			inParams.put("jsonfilename", "suggestions/"+function.getId());
+
+			LlmResponse response = llmconnection.callStructuredOutputList(inParams);
+			
+			Collection<Map> suggestions = response.getCollection("suggestions");
 			Collection<Data> tosave = new ArrayList();
-
-			//Get all the suggestions back
-			Collection<String> suggestions = response.getRawCollection();
-			for (Iterator iterator2 = suggestions.iterator(); iterator.hasNext();)
+			
+			int count = 0;
+			for (Iterator iterator2 = suggestions.iterator(); iterator2.hasNext();)
 			{
-				String suggestion = (String) iterator2.next();
+				Object suggestion = iterator2.next();
+				
+				String title = null;
+				String prompt = null;
+				if(suggestion instanceof String)
+				{
+					title = (String) suggestion;
+					prompt = title;
+				}
+				else if(suggestion instanceof Map)
+				{
+					Map map = (Map)suggestion;
+					title = (String) map.get("title");
+					prompt = (String) map.get("prompt");
+				}
+				else
+				{
+					continue;
+				}
+				
 				Data newsuggestion = suggestionsearcher.createNewData();
 				newsuggestion.setValue("aifunction",function.getId());
 				LanguageMap lang = new LanguageMap();
-				lang.setText("en", suggestion);
-				newsuggestion.setValue("name",lang);
+				lang.setText("en", title);
+				newsuggestion.setValue("name", lang);
+				newsuggestion.setValue("prompt", prompt);
+				if(count < 3) 
+				{
+					newsuggestion.setValue("featured", "true");
+				}
+				count++;
+				tosave.add(newsuggestion);
 			}
 			suggestionsearcher.saveAllData(tosave, null); 
 		}

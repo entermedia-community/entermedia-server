@@ -2,7 +2,9 @@ package org.entermediadb.ai.assistant;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,6 +13,7 @@ import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.Schema;
 import org.entermediadb.ai.classify.EmbeddingManager;
 import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.markdown.MarkdownUtil;
@@ -20,6 +23,7 @@ import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
@@ -32,7 +36,95 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 	@Override
 	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
 	{
-		savePossibleFunctionSuggestions(inLog, "Questions");
+		UserProfile profile = getMediaArchive().getUserProfileManager().getUserProfile(getMediaArchive().getCatalogId(), "admin");
+		Collection<Data> moduleids = findEnabledModules(profile);
+
+		Collection<String> embeddedcontents = new ArrayList<String>();
+		
+		for (Data module : moduleids)
+		{
+			String searchtype = module.getId();
+			HitTracker moduleentities = getMediaArchive().query(module.getId()).exact("entityembeddingstatus", "embedded").search();
+			if(!moduleentities.isEmpty())
+			{
+				for (Iterator iterator = moduleentities.iterator(); iterator.hasNext();)
+				{
+					MultiValued entity = (MultiValued) iterator.next();
+					String content = null;
+					
+					if(searchtype.equals("userpost"))
+					{			
+						content = entity.get("maincontent");
+					}
+					else if(searchtype.equals("entitydocument") || searchtype.equals("entitymarketingasset"))
+					{			
+						content = entity.get("markdowncontent");
+					}
+					else
+					{	
+						Collection<PropertyDetail> contextFields = new ArrayList<PropertyDetail>();
+						
+						Collection detailsfields = getMediaArchive().getSearcher(searchtype).getDetailsForView(searchtype+"general");
+						for (Iterator iterator3 = detailsfields.iterator(); iterator3.hasNext();)
+						{
+							PropertyDetail field = (PropertyDetail) iterator3.next();
+							if(entity.hasValue(field.getId()))
+							{
+								contextFields.add(field);
+							}
+						}
+						
+						Map<String, Object> inParams = new HashMap();
+						inParams.put("data", entity);
+						inParams.put("contextfields", contextFields);
+						
+						String templatepath = getMediaArchive().getMediaDbId() + "/ai/default/calls/commons/context_fields.json";
+						LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
+						content = llmconnection.loadInputFromTemplate(templatepath, inParams);
+
+					}
+					 
+					if( content == null || content.isEmpty())
+					{
+						continue;
+					}
+					String cleanText = content.replaceAll("<[^>]*>", "").trim();
+					if(cleanText.length() > 100)
+					{
+						embeddedcontents.add(cleanText);
+					}
+				}
+			}
+		}
+		
+		Collection pickedcontents = getRandomFromCollection(embeddedcontents, 5);
+		
+		Map params = new HashMap();
+		params.put("contents", pickedcontents);
+		
+		savePossibleFunctionSuggestions(inLog, "Questions", params);
+	}
+	
+	private Collection getRandomFromCollection(Collection inCollection, int inMax)
+	{
+		if(inCollection.size() <= inMax)
+		{
+			return inCollection;
+		}
+		
+		Collection picked = new ArrayList();
+		int count = 0;
+		for (Iterator iterator = inCollection.iterator(); iterator.hasNext();)
+		{
+			Object obj = (Object) iterator.next();
+			picked.add(obj);
+			count++;
+			if(count >= inMax)
+			{
+				break;
+			}
+		}
+		return picked;
 	}
 
 	@Override
@@ -145,11 +237,11 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		
 		Collection<String> moduleids = schema.getModuleIds();
 		HitTracker tracker = getMediaArchive().query("modulesearch")
-		.put("searchtypes", moduleids)
-		.facet("entitysourcetype")
-		.all()
-		.exact("entityembeddingstatus", "embedded")
-		.search();
+			.put("searchtypes", moduleids)
+			.facet("entitysourcetype")
+			.all()
+			.exact("entityembeddingstatus", "embedded")
+			.search();
 		
 		Collection<Data> modules = new ArrayList();
 		

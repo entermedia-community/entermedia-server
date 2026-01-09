@@ -14,6 +14,8 @@ public interface LlmResponse {
     
     Collection getRawCollection();
 	void setRawCollection(Collection inObj);
+	
+	Collection getCollection(String inKey);
     
     boolean isToolCall();
     

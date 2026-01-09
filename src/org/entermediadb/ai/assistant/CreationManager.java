@@ -2,10 +2,8 @@ package org.entermediadb.ai.assistant;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,8 +22,6 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
-import org.openedit.hittracker.HitTracker;
-import org.openedit.modules.translations.LanguageMap;
 
 public class CreationManager extends BaseAiManager implements ChatMessageHandler
 {
