@@ -2,6 +2,7 @@ package org.entermediadb.ai.assistant;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -209,11 +210,38 @@ public class AgentModule extends BaseMediaModule {
 		inReq.putPageValue("modulesenum", modulesenum);
 	}
 	
-	public void loadQuestionsModules(WebPageRequest inReq) throws Exception 
+	public void loadSuggestions(WebPageRequest inReq) throws Exception 
 	{
-		QuestionsManager questions = (QuestionsManager) getMediaArchive(inReq).getBean("questionsManager");
-		Collection<Data> modules = questions.findEnabledModules(inReq.getUserProfile());
-		inReq.putPageValue("questionsModules", modules);
+		String functiongroup = (String) inReq.findValue("functiongroup");
+		if(functiongroup == null)
+		{
+			return;
+		}
+		
+		Searcher aifunctionsearcher = getMediaArchive(inReq).getSearcher("aifunction");
+		
+		HitTracker functionhits = aifunctionsearcher.query().exact("functiongroup", functiongroup).search();
+		Collection<String> functionids = functionhits.collectValues("id");
+		functionids.add("start" + functiongroup); //Also add self
+		
+		Searcher aisuggestions = getMediaArchive(inReq).getSearcher("aisuggestion");
+		
+		HitTracker hits = aisuggestions.query().orgroup("aifunction", functionids).exact("featured", "true").search();
+		
+		Collection<Map<String, String>> suggestions = new ArrayList<Map<String, String>>();
+		
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			
+			Map<String, String> suggestion = new HashMap<String, String>();
+			suggestion.put("name", data.getName());
+			suggestion.put("prompt", data.get("prompt"));
+			
+			suggestions.add(suggestion);
+			
+		}
+		inReq.putPageValue("suggestions", suggestions);
 	}
 	
 	public void loadSearchSuggestions(WebPageRequest inReq) throws Exception 
