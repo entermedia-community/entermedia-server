@@ -407,37 +407,6 @@ public abstract class BaseLlmConnection implements LlmConnection {
 //			connection.release(resp);
 //		}
 //	}
-
-	public LlmResponse callMessageTemplate(AgentContext agentcontext, String inPageName)
-	{
-		agentcontext.addContext("mediaarchive", getMediaArchive());
-		String input = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/assistant/messages/" + inPageName + ".json", agentcontext.getContext());
-		log.info(inPageName + " process chat");
-		String endpoint = getServerRoot();
-
-		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("Authorization", "Bearer " + getApiKey());
-		method.setHeader("Content-Type", "application/json");
-
-		method.setEntity(new StringEntity(input, "UTF-8"));
-
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-
-		JSONObject json = (JSONObject) getConnection().parseMap(resp);
-
-		LlmResponse response = (LlmResponse) createResponse();
-		response.setRawResponse(json);
-		
-		String nextFunction = response.getFunctionName();
-		if( nextFunction != null)
-		{
-			agentcontext.setFunctionName(nextFunction);
-		}
-
-//		getMediaArchive().saveData("agentcontext",agentcontext);
-		return response;
-
-	}
 	
 	
 	@Override

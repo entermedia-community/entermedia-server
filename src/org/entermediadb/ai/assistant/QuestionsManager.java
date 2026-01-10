@@ -130,20 +130,6 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 	@Override
 	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
 	{
-//		if(output == null || output.isEmpty())
-//		{  //What is this for?
-//			agentContext.addContext("messagetosend", message.get("message") );
-//			LlmResponse chatresponse = llmconnection.callMessageTemplate(agentContext,response.getFunctionName()); 
-//			//TODO: Add message history
-//			output = chatresponse.getMessage();
-//		}
-		//ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
-		
-		
-//		String output = inMessage.getMessage();
-//		agentmessage.setValue("message", output);  //Needed"
-//		agentmessage.setValue("messageplain", output);
-//		
 		MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
 		String query = usermessage.get("message");
 		

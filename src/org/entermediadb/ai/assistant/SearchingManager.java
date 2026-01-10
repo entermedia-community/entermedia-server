@@ -601,20 +601,6 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 	@Override
 	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
 	{
-//		if(output == null || output.isEmpty())
-//		{  //What is this for?
-//			agentContext.addContext("messagetosend", message.get("message") );
-//			LlmResponse chatresponse = llmconnection.callMessageTemplate(agentContext,response.getFunctionName()); 
-//			//TODO: Add message history
-//			output = chatresponse.getMessage();
-//		}
-		//ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
-		
-		
-//		String output = inMessage.getMessage();
-//		agentmessage.setValue("message", output);  //Needed"
-//		agentmessage.setValue("messageplain", output);
-//		
 		String agentFn = inAgentContext.getFunctionName();
 		if ("startSearching".equals(agentFn))
 		{
