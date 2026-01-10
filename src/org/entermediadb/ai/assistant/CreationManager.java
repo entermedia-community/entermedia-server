@@ -73,7 +73,7 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 				module = getMediaArchive().getCachedData("module", "asset");
 			}
 			
-			if( function.getId().equals("createEntity" ) )
+			if( function.getId().equals("createRecord" ) )
 			{
 				Schema schema = loadSchema();
 				
@@ -98,7 +98,7 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 					SemanticAction action = new SemanticAction();
 					action.setAiFunction(function.getId());
 					action.setParentData(parentmodule);
-					action.setSemanticText("Create an entity in " + parentmodule.getName());
+					action.setSemanticText("Create a record in " + parentmodule.getName());
 					actions.add(action);
 					
 					Collection<Data> children = schema.getChildrenOf(parentmodule.getId());

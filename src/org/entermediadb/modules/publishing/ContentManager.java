@@ -710,9 +710,9 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 	//	// access anything.
 	//	inReq.putPageValue("inputdata", inputdata);
 	//	String template = inManager.loadInputFromTemplate(inReq,
-	//		"/" + archive.getMediaDbId() + "/gpt/templates/create_entity.html");
+	//		"/" + archive.getMediaDbId() + "/gpt/templates/create_record.html");
 	//
-	//	JSONObject results = inManager.callFunction(inReq, "create_entity", template, 0, 5000);
+	//	JSONObject results = inManager.callFunction(inReq, "create_record", template, 0, 5000);
 	//
 	//	Data child = getMediaArchive().getSearcher(inTargetentity).createNewData();
 	//
@@ -887,7 +887,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 
 			params.put("contentrequest", inContentrequest);
 
-			LlmResponse results = inLlm.callCreateFunction(params, "create_entity");
+			LlmResponse results = inLlm.callCreateFunction(params, "create_record");
 
 			child = targetsearcher.createNewData();
 			JSONObject args = results.getMessageStructured();
@@ -942,7 +942,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 
 			params.put("contentrequest", inContentrequest);
 
-			LlmResponse results = inLlm.callCreateFunction(params, "create_entity");
+			LlmResponse results = inLlm.callCreateFunction(params, "create_record");
 			
 			JSONObject args = results.getMessageStructured();
 			for (Iterator iterator = args.keySet().iterator(); iterator.hasNext();) {
@@ -1017,11 +1017,11 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 			return result;
 			
 		}
-		else if ("createEntity".equals(inAgentContext.getFunctionName()))
+		else if ("createRecord".equals(inAgentContext.getFunctionName()))
 		{
 			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
 			
-			LlmResponse result = createEntity(usermessage, inAgentContext);
+			LlmResponse result = createRecord(usermessage, inAgentContext);
 			
 			return result;
 		}
@@ -1122,7 +1122,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 		return results;
 	}
 	
-	public LlmResponse createEntity(MultiValued usermessage, AgentContext inAgentContext) 
+	public LlmResponse createRecord(MultiValued usermessage, AgentContext inAgentContext) 
 	{
 		MediaArchive archive = getMediaArchive();
 		
@@ -1166,7 +1166,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 		inAgentContext.addContext("module", module);
 		
 		
-		LlmConnection llmconnection = getMediaArchive().getLlmConnection("createEntity");
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("createRecord");
 		
 		LlmResponse result = llmconnection.renderLocalAction(inAgentContext);
 		

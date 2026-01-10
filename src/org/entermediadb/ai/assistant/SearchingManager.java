@@ -389,7 +389,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			actions.add(action);
 //			action = new SemanticAction();
 //			action.setParentData(parentmodule);
-//			action.setAiFunction("createEntity");
+//			action.setAiFunction("createRecord");
 //			action.setSemanticText("Create a new " + parentmodule.getName());
 //			actions.add(action);
 			

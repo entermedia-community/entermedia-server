@@ -522,13 +522,13 @@ public abstract class BaseAiManager extends BaseManager
 //			JSONObject structure = (JSONObject) details.get("create_image");
 //			creation.setImageFields(structure);
 //		}
-//		else if(toolname.equals("create_entity"))
+//		else if(toolname.equals("create_record"))
 //		{
-//			toolname = "createEntity";
+//			toolname = "createRecord";
 //			
 //			AiCreation creation = inAgentContext.getAiCreationParams();
 //			creation.setCreationType("entity");
-//			JSONObject structure = (JSONObject) details.get("create_entity");
+//			JSONObject structure = (JSONObject) details.get("create_record");
 //			creation.setEntityFields(structure);
 //		}
 		

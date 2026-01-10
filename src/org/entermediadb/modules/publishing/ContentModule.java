@@ -93,7 +93,7 @@ public class ContentModule extends BaseMediaModule
 			}
 			else
 			{
-				llm = (LlmConnection) archive.getLlmConnection("createEntity");
+				llm = (LlmConnection) archive.getLlmConnection("createRecord");
 			}
 			
 			manager.createFromLLM(params, llm, contentrequest);
