@@ -716,10 +716,10 @@ jQuery(document).ready(function () {
 			editorid = "chatter-msg";
 		}
 		var editor = $("#" + editorid);
-		editor.val(prefix);
 		setTimeout(() => {
 			toggleAiSuggestions();
 			editor.focus();
+			editor.val(prefix);
 		}, 100);
 	});
 	lQuery(".ai-suggestion").livequery("click", function () {
@@ -734,10 +734,10 @@ jQuery(document).ready(function () {
 		var container = $(".ai-suggestions-container");
 		if (container.hasClass("expanded")) {
 			container.removeClass("expanded");
-			$(".ai-func-toggle").text("Show Suggestions");
+			$(".ai-func-toggle").text("Show Examples");
 		} else {
 			container.addClass("expanded");
-			$(".ai-func-toggle").text("Hide Suggestions");
+			$(".ai-func-toggle").text("Hide Examples");
 		}
 	}
 });
