@@ -215,7 +215,7 @@ function connect() {
 			console.log("Got a message: " + document.hasFocus())
 			if (!document.hasFocus()) {
 				function showNotification() {
-					console.log("Sending notification");
+					console.log("Showing notification...");
 					var header = "New Message";
 					if (message.name !== undefined) {
 						header = message.name;
@@ -237,7 +237,7 @@ function connect() {
 					notification.addEventListener("click", function (event) {
 						//window.open('http://www.mozilla.org', '_blank');
 					});
-					play();
+										
 				}
 
 				/*Check para permissions and ask.*/
@@ -251,6 +251,9 @@ function connect() {
 							showNotification();
 						}
 					});
+				}
+				else {
+					console.log("Notification Browser permission:" + Notification.permission);
 				}
 			}
 		}
@@ -442,19 +445,6 @@ function cancelKeepAlive() {
 	if (keepAliveTimeoutID) {
 		clearTimeout(keepAliveTimeoutID);
 	}
-}
-
-function play() {
-	var app = jQuery("#application");
-	var apphome = app.data("apphome");
-	var home = app.data("home");
-	if (home !== undefined) {
-		apphome = home + apphome;
-	}
-	var urls = apphome + "/components/chatterbox/stairs.wav";
-
-	var snd = new Audio(urls); // buffers automatically when created
-	snd.play();
 }
 
 /*-------Start Push and Notification --------*/
