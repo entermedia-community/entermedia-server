@@ -579,18 +579,19 @@ public abstract class BaseAiManager extends BaseManager
 		savePossibleFunctionSuggestions(inLog, inFunctionGoup, params);
 	}
 
-	public void savePossibleFunctionSuggestions(ScriptLogger inLog, String inFunctionGoup, Map inParams)
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog, String inFunctionGroup, Map inParams)
 	{
 		Schema schema = loadSchema();
 		
 		inParams.put("model", "Qwen3:14B");
 		inParams.put("schema", schema);
 		
-		//List all suggestion enabled functions
-		Collection functions = getMediaArchive().query("aifunction").exact("functiongroup", inFunctionGoup).exact("cratesuggestions", true).search();
+		
+		Collection functions = getMediaArchive().query("aifunction").exact("functiongroup", inFunctionGroup).exact("cratesuggestions", true).search();
+		
 		if(functions.isEmpty())
 		{
-			functions = getMediaArchive().query("aifunction").id("start"+inFunctionGoup).exact("cratesuggestions", true).search();
+			functions = getMediaArchive().query("aifunction").id("start"+inFunctionGroup).exact("cratesuggestions", true).search();
 		}
 
 		Searcher suggestionsearcher = getMediaArchive().getSearcher("aisuggestion");
@@ -599,10 +600,10 @@ public abstract class BaseAiManager extends BaseManager
 		{
 			Data function = (Data) iterator.next();
 
-			HitTracker existing = suggestionsearcher.query().exact("aifunction", function.getId()).search();
-			if( existing.size() >= 3)
+			HitTracker existing = suggestionsearcher.query().exact("aifunction", function.getId()).exact("aigenerated", true).search();
+			if( existing.size() >= 5)
 			{
-				inLog.info("Already found suggestions " + inFunctionGoup);
+				inLog.info("Already found enough suggestions " + inFunctionGroup);
 				continue;
 			}
 			
@@ -653,6 +654,7 @@ public abstract class BaseAiManager extends BaseManager
 				{
 					newsuggestion.setValue("featured", "true");
 				}
+				newsuggestion.setValue("aigenerated", true);
 				count++;
 				tosave.add(newsuggestion);
 			}

@@ -631,6 +631,11 @@ public class AssistantManager extends BaseAiManager
 	{
 		InformaticsManager manager = (InformaticsManager)getMediaArchive().getBean("informaticsManager");
 		return manager;
+	}
+
+	public Collection<Data> getTutorials() {
+		// TODO Auto-generated method stub
+		return null;
 	}	
 	
 }

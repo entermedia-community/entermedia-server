@@ -56,7 +56,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 					{			
 						content = entity.get("maincontent");
 					}
-					else if(searchtype.equals("entitydocument") || searchtype.equals("entitymarketingasset"))
+					else if(searchtype.equals("entitydocument") || searchtype.equals("entityasset"))
 					{			
 						content = entity.get("markdowncontent");
 					}

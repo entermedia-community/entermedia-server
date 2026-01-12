@@ -1099,6 +1099,9 @@ body.hidden-scroll {
 	scrollbar-width: thin;
 	scrollbar-color: #b3d0fe #fff;
 }
+#aisuggestions {
+	min-width: 320px;
+}
 .ai-suggestions::-webkit-scrollbar {
 	width: 5px;
 	height: 5px;
@@ -1165,7 +1168,7 @@ body.hidden-scroll {
 	content: "";
 	position: absolute;
 	bottom: -32px;
-	right: 52px;
+	right: 36px;
 	border-width: 16px;
 	border-style: solid;
 	border-color: #a3c2f5 transparent transparent transparent;

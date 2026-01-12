@@ -248,8 +248,6 @@ public class ClassifyManager extends InformaticsProcessor
 	{
 		inLog.headline("Classifying " + hits.size() + " entities");
 
-		Map<String, List<Data>> entitiestoprocess = new HashMap();
-
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) 
 		{
 			MultiValued entity = (MultiValued) iterator.next();
@@ -260,14 +258,6 @@ public class ClassifyManager extends InformaticsProcessor
 				log.info("Skipping entity with no source type: " + entity.getId() + " " + entity.getName());
 				continue;
 			}
-
-			List<Data> bytype = entitiestoprocess.get(moduleid);
-			if( bytype == null)
-			{
-				bytype = new ArrayList<Data>();
-				entitiestoprocess.put(moduleid, bytype);
-			}
-			bytype.add(entity);
 
 			try {
 				long startTime = System.currentTimeMillis();
