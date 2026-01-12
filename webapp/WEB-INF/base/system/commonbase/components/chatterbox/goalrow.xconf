@@ -1,0 +1,7 @@
+<page>
+	
+	<path-action name="ProjectModule.loadGoalInMessage"/>
+	
+	<inner-layout />
+
+</page>
