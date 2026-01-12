@@ -1596,6 +1596,10 @@ public class EntityModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		String id = inReq.getRequestParameter("id");
+		if (id == null) {
+			//New Record
+			return;
+		}
 		String moduleid = inReq.findPathValue("module");
 		
 		List<Data> tosave = new ArrayList();
