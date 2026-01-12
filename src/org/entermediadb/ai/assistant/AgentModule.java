@@ -251,6 +251,20 @@ public class AgentModule extends BaseMediaModule {
 		inReq.putPageValue("suggestions", suggestions);
 	}
 	
+	public void loadTutorials(WebPageRequest inReq) throws Exception 
+	{
+		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
+		Collection<Data> tutorials = assistant.getTutorials();
+		inReq.putPageValue("tutorials", tutorials);
+	}
+	
+	public void saveTutorials(WebPageRequest inReq) throws Exception 
+	{
+		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
+		Collection<Data> tutorials = assistant.getTutorials();
+		inReq.putPageValue("tutorials", tutorials);
+	}
+	
 	public void saveAgentContextField(WebPageRequest inReq) throws Exception 
 	{
 		AgentContext agentContext =  (AgentContext) inReq.getPageValue("agentcontext");
@@ -260,6 +274,7 @@ public class AgentModule extends BaseMediaModule {
 		Searcher searcher =  getMediaArchive(inReq).getSearcher("agentcontext");
 		searcher.saveData(agentContext, inReq.getUser());
 	}
+	
 	
 
 }

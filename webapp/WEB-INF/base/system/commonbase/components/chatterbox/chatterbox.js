@@ -731,4 +731,16 @@ jQuery(document).ready(function () {
 			$(".ai-func-toggle").text("Hide Examples");
 		}
 	}
+
+	lQuery("#functionName").livequery("input", function () {
+		var val = $(this).val();
+		words = val.split(" ");
+		console.log(words);
+		if (words.filter(Boolean).length > 1) {
+			val = words
+				.map((w, i) => (i == 0 ? w : w.charAt(0).toUpperCase() + w.slice(1)))
+				.join("");
+			$(this).val(val);
+		}
+	});
 });

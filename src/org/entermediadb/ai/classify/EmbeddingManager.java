@@ -54,7 +54,15 @@ public class EmbeddingManager extends InformaticsProcessor
 		LlmConnection connection = getMediaArchive().getLlmConnection("documentEmbedding");
 
 		Map<String,String> header = new HashMap();
-		header.put("x-customerkey", connection.getApiKey());
+		
+		String customerkey = getMediaArchive().getCatalogSettingValue("catalog-storageid");
+		if( customerkey == null)
+		{
+			customerkey = "demo";
+		}
+		
+		header.put("x-customerkey", customerkey);
+		
 		LlmResponse response = connection.callJson( "/save",header,embeddingPayload);
 		response.getMessage();
 		return true;
@@ -69,9 +77,10 @@ public class EmbeddingManager extends InformaticsProcessor
 	@Override
 	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRandomEntities)
 	{
-
-		String searchtype = inConfig.get("searchtype");
+		inLog.headline("Embedding " + inRandomEntities.size() + " entities");
 		
+		String searchtype = inConfig.get("searchtype");
+
 		Collection<Data> toprecess = new ArrayList();
 		
 		for (Iterator iterator = inRandomEntities.iterator(); iterator.hasNext();)
@@ -102,8 +111,9 @@ public class EmbeddingManager extends InformaticsProcessor
 			}
 			
 			entity.setValue("entityembeddingstatus", "pending");
-			
+
 			toprecess.add(entity);
+			
 		}
 		
 		if(toprecess.isEmpty())
@@ -129,7 +139,7 @@ public class EmbeddingManager extends InformaticsProcessor
 		{			
 			//embedCollections(inLog, searchtype, toprecess, pageSearcher);
 		}
-		else if(searchtype.equals("entitydocument") || searchtype.equals("entitymarketingasset"))
+		else if(searchtype.equals("entitydocument") || searchtype.equals("entityasset"))
 		{			
 			embedDocuments(inLog, searchtype, toprecess, pageSearcher);
 		}
@@ -139,9 +149,7 @@ public class EmbeddingManager extends InformaticsProcessor
 		}
 	}
 	
-	private void embedDocuments(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
-		Collection<Data> tosave = new ArrayList();
-
+	protected void embedDocuments(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
 		for (Iterator iterator = inToprecess.iterator(); iterator.hasNext();)
 		{
 			long start = System.currentTimeMillis();
@@ -149,20 +157,10 @@ public class EmbeddingManager extends InformaticsProcessor
 			MultiValued document = (MultiValued) iterator.next();
 			embedDocumentData(inLog, document, inSearchtype);	
 			inLog.info("Embedded "+ inSearchtype + " in " + (System.currentTimeMillis() - start) + " ms");
-			
-			if(tosave.size() > 10)
-			{
-				inPageSearcher.saveAllData(tosave, null);
-				tosave.clear();
-			}
-		}
-		if(tosave.size() > 0)
-		{
-			inPageSearcher.saveAllData(tosave, null);
 		}
 	}
 
-	private void embedDocumentData(ScriptLogger inLog, Data document, String searchtype)
+	protected void embedDocumentData(ScriptLogger inLog, Data document, String searchtype)
 	{
 		JSONObject documentdata = new JSONObject();
 		documentdata.put("doc_id", searchtype + "_" + document.getId());
@@ -222,9 +220,7 @@ public class EmbeddingManager extends InformaticsProcessor
 		}
 	}
 	
-	private void embedEntity(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
-		Collection<Data> tosave = new ArrayList();
-
+	protected void embedEntity(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
 		for (Iterator iterator = inToprecess.iterator(); iterator.hasNext();)
 		{
 			long start = System.currentTimeMillis();
@@ -232,16 +228,6 @@ public class EmbeddingManager extends InformaticsProcessor
 			MultiValued entityasset = (MultiValued) iterator.next();
 			embedEntityData(inLog, entityasset, inSearchtype);	
 			inLog.info("Embedded "+ inSearchtype + " in " + (System.currentTimeMillis() - start) + " ms");
-			
-			if(tosave.size() > 10)
-			{
-				inPageSearcher.saveAllData(tosave, null);
-				tosave.clear();
-			}
-		}
-		if(tosave.size() > 0)
-		{
-			inPageSearcher.saveAllData(tosave, null);
 		}
 	}
 	
@@ -320,9 +306,8 @@ public class EmbeddingManager extends InformaticsProcessor
 		} 
 	}
 	
-	private void embedBlogs(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher)
+	protected void embedBlogs(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher)
 	{
-		Collection<Data> tosave = new ArrayList();
 
 		for (Iterator iterator = inToprecess.iterator(); iterator.hasNext();)
 		{
@@ -332,15 +317,6 @@ public class EmbeddingManager extends InformaticsProcessor
 			embedBlogData(inLog, blog, inSearchtype);	
 			inLog.info("Embedded "+ inSearchtype + " in " + (System.currentTimeMillis() - start) + " ms");
 			
-			if(tosave.size() > 10)
-			{
-				inPageSearcher.saveAllData(tosave, null);
-				tosave.clear();
-			}
-		}
-		if(tosave.size() > 0)
-		{
-			inPageSearcher.saveAllData(tosave, null);
 		}
 	}
 	
@@ -395,11 +371,12 @@ public class EmbeddingManager extends InformaticsProcessor
 		
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
 
-		String customerkey = llmconnection.getApiKey();
+		String customerkey = getMediaArchive().getCatalogSettingValue("catalog-storageid");
 		if( customerkey == null)
 		{
 			customerkey = "demo";
 		}
+		
 		Map headers = new HashMap();
 		headers.put("x-customerkey", customerkey);
 		
