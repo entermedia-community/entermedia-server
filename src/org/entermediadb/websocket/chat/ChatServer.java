@@ -306,18 +306,23 @@ public class ChatServer
 			for (Iterator iterator = connections.iterator(); iterator.hasNext();)
 			{
 				ChatConnection chatConnection = (ChatConnection) iterator.next();
-				if(userids != null && userids.contains(chatConnection.getUserId() ) )
+				String connectionUser = chatConnection.getUserId();
+				//log.info("Sending message to: " + connectionUser);
+				if(userids != null && userids.contains(connectionUser ) )
 				{
+					//User is onTeam and connected, send message
 					chatConnection.sendMessage(inMap);
 				}
 				else
 				{
+					String connectionChanelId = chatConnection.getChannelId();
 					
 					UserProfile userprofile =  archive.getUserProfile(chatConnection.getUserId());
 					Permissions userpermissions = userprofile.getPermissions();
 					
-					if(userpermissions.canEntity(module, entity, "view"))
+					if(channelid.equals(connectionChanelId) &&  userpermissions.canEntity(module, entity, "view"))
 					{
+						//If connected user is navigating the channel and has permission to view
 						chatConnection.sendMessage(inMap);
 					}
 					
