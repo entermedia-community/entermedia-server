@@ -644,7 +644,7 @@ public class AssistantManager extends BaseAiManager
 		
 		return statuses;
 		
-	}
+	}	
 	
 	public InformaticsManager getInformaticManager()
 	{
@@ -669,12 +669,15 @@ public class AssistantManager extends BaseAiManager
 		
 		ScriptLogger inLog = new ScriptLogger();
 
-		JSONObject outlinedata = tutorialsmanager.createTutorialOutline(inLog, name);
+		JSONObject outlinedata = tutorialsmanager.createTutorialOutline(inLog, name);   //Returns Markdown in sections
 		
 		tutorial.setValue("aifunction", outlinedata.get("function_name"));
 		tutorial.setValue("outline", outlinedata.get("outline"));
 		
 		searcher.saveData(tutorial, inReq.getUser());
+		
+		//Parse this into outlinedata components for loading into a UI
+		//each level needs a button to create more content		
 		
 		return tutorial;
 	}	
