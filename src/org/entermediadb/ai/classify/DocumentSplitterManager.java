@@ -81,7 +81,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			}
 			count++;
 			
-			inLog.info("Splitting " + asset.getValue("pages") + " pages in document " + asset);
+			inLog.info("Splitting " + asset.getValue("pages") + " pages in document " + asset.getName());
 			entity.setValue("totalpages", asset.getValue("pages"));
 			splitDocument(inLog, inConfig, entity, asset);
 			String modtime = asset.get("assetmodificationdate");

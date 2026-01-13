@@ -535,6 +535,28 @@ public class AssistantManager extends BaseAiManager
 	{
 		//Should we look for children...
 		Collection<GuideStatus> statuses = new ArrayList<GuideStatus>();
+	
+		PropertyDetail detail = getMediaArchive().getSearcher(inEntityModule.getId()).getDetail("entityembeddingstatus");
+		if( detail == null)
+		{
+			return statuses;
+		}
+		String mystatus = inEntity.get("entityembeddingstatus"); 
+		if(mystatus == null)
+		{
+			mystatus = "notembedded";
+		}
+		if(mystatus != null && "embedded".equals(mystatus))
+		{
+			//Ready to roll
+			GuideStatus status = new GuideStatus();
+			status.setSearchType(inEntityModule.getId());
+			//status.setViewData(view); //General Data?
+			status.setCountTotal(1);
+			status.setCountEmbedded(1);
+			statuses.add(status);
+		}
+			
 		
 		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inEntityModule.getId()).exact("systemdefined",false).cachedSearch(); 
 
@@ -556,7 +578,7 @@ public class AssistantManager extends BaseAiManager
 				}
 				catch (Exception e)
 				{
-					log.error("Entity must have entityembeddingstatus field to use guide feature.");
+					log.debug(inEntityModule + " search error " + inEntity);
 					continue;
 				}
 				
@@ -564,9 +586,6 @@ public class AssistantManager extends BaseAiManager
 				{
 					continue;
 				}
-				
-
-				
 
 				FilterNode value = found.findFilterChildValue("entityembeddingstatus", "embedded");
 				int embeddedcount = value != null ? value.getCount() : 0;

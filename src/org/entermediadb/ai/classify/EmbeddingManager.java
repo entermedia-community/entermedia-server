@@ -203,6 +203,7 @@ public class EmbeddingManager extends InformaticsProcessor
 			pagedata.put("page_id", searchtype + "page_" + page.getId());
 			pagedata.put("text", markdowncontent);
 			pagedata.put("page_label", page.get("pagenum"));
+
 			allpages.add(pagedata);
 			
 		}		
@@ -210,15 +211,23 @@ public class EmbeddingManager extends InformaticsProcessor
 		documentdata.put("pages", allpages);
 		
 		boolean OK = embedData(inLog, documentdata);
+		String newstatus = "embedded";
 		if(OK)
 		{		
-			document.setValue("entityembeddingstatus", "embedded");
 			document.setValue("entityembeddeddate", new Date());
 		}
 		else
 		{
-			document.setValue("entityembeddingstatus", "failed");
+			newstatus =  "failed";
 		}
+		document.setValue("entityembeddingstatus", newstatus);
+		
+		for (Iterator iterator2 = pages.iterator(); iterator2.hasNext();)
+		{
+			Data page = (Data) iterator2.next();
+			page.setValue("entityembeddingstatus", newstatus);
+		}
+		//Save pages
 	}
 	
 	protected void embedEntity(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
@@ -337,7 +346,19 @@ public class EmbeddingManager extends InformaticsProcessor
 			JSONObject pagedata = new JSONObject();
 			pagedata.put("page_id", searchtype + "page_" + blog.getId());
 
-			pagedata.put("text", blog.get("maincontent"));
+			String content = blog.get("maincontent");
+			if( content == null)
+			{
+				content = blog.get("longcaption");
+			}
+			if( content == null)
+			{
+				blog.setValue("entityembeddingstatus", "notreadyyet");
+				blog.setValue("entityembeddeddate", new Date());
+				//not ready
+				return;
+			}
+			pagedata.put("text", content);
 			pagedata.put("page_label", blog.getName());
 			
 			Collection allpages  = new ArrayList(1);
