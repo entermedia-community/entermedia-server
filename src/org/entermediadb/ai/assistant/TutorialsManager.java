@@ -68,6 +68,21 @@ public class TutorialsManager extends BaseAiManager implements ChatMessageHandle
 	
 		String command = "Create a outline in a list format for " + tutorialTopic;
 		String outlines = questionsmanager.getAnswerByEntity(moduleid, entityid, command);
+		// String outlines = "- **Prepare the Beetroot Puree**  \n"
+		// 		+ "  - Toast coriander, fennel, cumin, and mustard seeds in a dry pan until fragrant, then grind to a fine powder.  \n"
+		// 		+ "  - Roast Datterini tomatoes with red wine vinegar, olive oil, sea salt, and black pepper at 180°C until wrinkled.  \n"
+		// 		+ "  - Boil and peel beetroot, then dress with balsamic vinegar, olive oil, and salt.  \n"
+		// 		+ "  - Combine roasted tomatoes, beetroot, and spice mix; blend until smooth. Fold in Greek yogurt, horseradish, and chopped herbs. Adjust seasoning.  \n"
+		// 		+ "\n"
+		// 		+ "- **Make the Parsley Oil**  \n"
+		// 		+ "  - Blanch spinach and parsley in boiling water, then ice bath. Drain and squeeze excess water.  \n"
+		// 		+ "  - Blend with grapeseed oil and a pinch of salt until smooth and warm. Strain through muslin for a clean oil.  \n"
+		// 		+ "\n"
+		// 		+ "- **Assemble the Salad**  \n"
+		// 		+ "  - Plate the beetroot puree as a base.  \n"
+		// 		+ "  - Drizzle with parsley oil.  \n"
+		// 		+ "  - Garnish with roasted tomatoes, toasted seeds, and fresh herbs.  \n"
+		// 		+ "  - Serve with additional components like salt-baked beetroot (if prepared separately) and green salad elements.";
 		
 		createComponentContentForTutorial(tutorial, parseOutlines(outlines));
 		
@@ -86,13 +101,13 @@ public class TutorialsManager extends BaseAiManager implements ChatMessageHandle
 			Map outlineitem = new HashMap();
 			
 			String line = lines[i];
-			if(line.matches("^\\- ")) 
+			if(line.startsWith("- "))
 			{
 				lastParent++;
 				outlineitem.put("id", "outline-" + lastParent);
 				outlineitem.put("parent", null);
 			}
-			else if(line.matches("^\\s+\\- ")) 
+			else if(Pattern.matches("^\\s+\\- .*", line))
 			{
 				outlineitem.put("id", "outline-child-" + lastParent + "-" + i);
 				outlineitem.put("parent", "outline-" + lastParent);
@@ -103,7 +118,6 @@ public class TutorialsManager extends BaseAiManager implements ChatMessageHandle
 			}
 			String cleaned = line.trim();
 			cleaned = cleaned.replaceAll("^\\- ", "");
-			cleaned = cleaned.replaceAll("^\\s+\\- ", "");
 			cleaned = cleaned.replaceAll("^\\*+", "");
 			cleaned = cleaned.replaceAll("\\*+$", "");
 			outlineitem.put("label", cleaned.trim());
