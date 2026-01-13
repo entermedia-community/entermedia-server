@@ -653,24 +653,25 @@ public class AssistantManager extends BaseAiManager
 	}
 
 	public Data createTutorial(WebPageRequest inReq) {
+		String moduleid = inReq.getRequestParameter("entitymoduleid");
+		String entityid = inReq.getRequestParameter("entityid");
 		String name = inReq.getRequestParameter("name");
-		if(name == null || name.length() < 5)
+		if(moduleid == null || entityid == null || name == null || name.length() < 5)
 		{
-			throw new IllegalArgumentException("Tutorial name is required and must be at least 5 characters.");
+			throw new IllegalArgumentException("Missing required parameters");
 		}
 		boolean featured = "on".equals(inReq.getRequestParameter("featured"));
 		
 		Searcher searcher = getMediaArchive().getSearcher("aitutorials");
 		Data tutorial = searcher.createNewData();
 		tutorial.setName(name);
+		tutorial.setValue("entitymoduleid", moduleid);
+		tutorial.setValue("entityid", entityid);
 		tutorial.setValue("featured", featured);
 		
 		TutorialsManager tutorialsmanager = (TutorialsManager) getMediaArchive().getBean("tutorialsManager");
-		
 		ScriptLogger inLog = new ScriptLogger();
-
 		JSONObject outlinedata = tutorialsmanager.createTutorialOutline(inLog, name);
-		
 		tutorial.setValue("aifunction", outlinedata.get("function_name"));
 		tutorial.setValue("outline", outlinedata.get("outline"));
 		
