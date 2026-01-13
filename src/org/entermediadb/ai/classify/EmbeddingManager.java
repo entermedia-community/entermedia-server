@@ -14,6 +14,7 @@ import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.markdown.MarkdownUtil;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -407,9 +408,14 @@ public class EmbeddingManager extends InformaticsProcessor
 		// **Regular Text Response**
 		if (answer != null)
 		{
-			if(answer.equals("Empty Response"))
+			if(answer.equalsIgnoreCase("Empty Response"))
 			{
 				answer = "No relevant information found for your question.";
+			}
+			else
+			{
+				MarkdownUtil md = new MarkdownUtil();
+				answer = md.render(answer);
 			}
 			
 			JSONArray sourcesdata = (JSONArray) ragresponse.get("sources");
