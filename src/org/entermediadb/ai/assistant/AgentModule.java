@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.MediaArchive;
@@ -261,8 +262,8 @@ public class AgentModule extends BaseMediaModule {
 	
 	public void saveTutorial(WebPageRequest inReq) throws Exception 
 	{
-		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
-		assistant.createTutorial(inReq);
+		TutorialsManager tutorialsManager = (TutorialsManager) getMediaArchive(inReq).getBean("tutorialsManager");
+		tutorialsManager.createTutorial(inReq);
 	}
 	
 	public void saveAgentContextField(WebPageRequest inReq) throws Exception 

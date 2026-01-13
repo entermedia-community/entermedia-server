@@ -341,5 +341,13 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		}
 		return docids;
 	}
+	
+	public String getAnswerByEntity(String inModuleId, String inEntityid, String inQuestion)
+	{
+		Collection<String> docIds = findDocIdsForEntity(inModuleId, inEntityid);
+		EmbeddingManager embeddings = (EmbeddingManager) getMediaArchive().getBean("embeddingManager");
+		String answer = embeddings.findAnswer(docIds, inQuestion);
+		return answer;
+	}
 
 }

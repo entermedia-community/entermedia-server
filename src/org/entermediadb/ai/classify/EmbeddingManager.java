@@ -413,11 +413,47 @@ public class EmbeddingManager extends InformaticsProcessor
 		return response;
 	}
 	
+	public String findAnswer(Collection<String> docids, String inQuery)
+	{  
+		JSONObject chatjson = new JSONObject();
+		chatjson.put("query", inQuery);
+		chatjson.put("doc_ids", docids);
+		
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
+
+		String customerkey = getMediaArchive().getCatalogSettingValue("catalog-storageid");
+		if( customerkey == null)
+		{
+			customerkey = "demo";
+		}
+		
+		Map headers = new HashMap();
+		headers.put("x-customerkey", customerkey);
+		
+		log.info(" sending to server: " +  chatjson.toJSONString());
+		
+		LlmResponse response = llmconnection.callJson("/query", headers, chatjson);
+		
+		if(response == null)
+		{
+			return null;
+		}		
+		
+		String answer = (String) response.getRawResponse().get("answer");
+		
+		if(!answer.equalsIgnoreCase("Empty Response"))
+		{
+			return answer;
+		}
+		
+		return null;
+	}
+	
 	public void processRagResponseWithSource(AgentContext inAgentContext, JSONObject ragresponse, LlmResponse response)
 	{
 		String answer = null;
 		
-		if(ragresponse == null || ragresponse.isEmpty())
+		if(ragresponse == null)
 		{
 			answer = "Didn't get any response from RAG";
 		}
