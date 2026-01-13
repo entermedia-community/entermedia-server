@@ -253,16 +253,16 @@ public class AgentModule extends BaseMediaModule {
 	
 	public void loadTutorials(WebPageRequest inReq) throws Exception 
 	{
-		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
-		Collection<Data> tutorials = assistant.getTutorials();
-		inReq.putPageValue("tutorials", tutorials);
+		Searcher tutorialsearcher = getMediaArchive(inReq).getSearcher("aitutorials");
+		HitTracker hits = tutorialsearcher.query().exact("featured", true).search();
+		
+		inReq.putPageValue("tutorials", hits);
 	}
 	
-	public void saveTutorials(WebPageRequest inReq) throws Exception 
+	public void saveTutorial(WebPageRequest inReq) throws Exception 
 	{
 		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
-		Collection<Data> tutorials = assistant.getTutorials();
-		inReq.putPageValue("tutorials", tutorials);
+		assistant.createTutorial(inReq);
 	}
 	
 	public void saveAgentContextField(WebPageRequest inReq) throws Exception 
