@@ -19,7 +19,7 @@
 	flex: 1;
 }
 .chatterbox-container {
-	height: calc(100% - 32px);
+	height: calc(100%);
 }
 .chatterbox-write {
 	padding: 8px;
@@ -103,7 +103,37 @@
 	outline: none;
 }
 .chatterbox-editorarea:focus-within {
-	outline: 1px solid #277371 !important;
+	outline: 1px solid #888989 !important;
+}
+
+@media screen and (max-width: 1199px) {
+	.chatterbox-write {
+		padding: 8px 8px 0;
+	}
+	.chatterbox-write .chatterbox-text {
+		height: 45px;
+		padding: 0.35rem;
+		font-size: 0.88rem;	
+	}
+	.chatterbox-messages {
+		min-height:100px;	
+	}
+	.chatterbox-messages .resultspositions {
+		line-height: 18px;
+		font-size: 0.85rem;
+	}
+	.emwidget-chatterbox .emwidget-header {
+		padding:8px 0 0 15px;
+	}
+	.chatterbox-editorarea {
+		border-radius: 0;
+		border:0 none;
+		border-top: 1px solid #ddd;
+		box-shadow:none;
+	}
+	.chatterbox-editorarea:focus-within {
+		outline: 0 none !important;
+	}
 }
 .chatterbox-editactions {
 	display: flex;
@@ -444,6 +474,14 @@
 .msg-body .chatterboxreplyto a {
 	line-height: 1;
 }
+@media screen and (max-width: 1199px) {
+	.msg-bubble .msg-body 
+	{
+		border-radius: 0.75rem;
+		padding:0.35rem 0.75rem;
+	}
+}
+
 @media (max-width: 640px) {
 	.chatterbox-chat .card-task {
 		width: 186px;
