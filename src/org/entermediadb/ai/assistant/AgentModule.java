@@ -5,16 +5,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.scripts.ScriptLogger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.util.JSONParser;
 
 public class AgentModule extends BaseMediaModule {
 	
@@ -277,5 +279,37 @@ public class AgentModule extends BaseMediaModule {
 	}
 	
 	
-
+	public void loadTutorial(WebPageRequest inReq) throws Exception 
+	{
+		TutorialsManager tutorialsManager = (TutorialsManager) getMediaArchive(inReq).getBean("tutorialsManager");
+		tutorialsManager.loadTutorial(inReq);
+	}
+	
+	public void loadSmartComponentsJSON(WebPageRequest inReq) throws Exception 
+	{
+		String tutorialid = inReq.getRequestParameter("tutorialid");
+		TutorialsManager tutorialsManager = (TutorialsManager) getMediaArchive(inReq).getBean("tutorialsManager");
+		Collection<String> components = tutorialsManager.loadSmartComponents(tutorialid);
+		
+		JSONParser parser = new JSONParser();
+		
+		JSONArray smartComponents = new JSONArray();
+		
+		for (Iterator iterator = components.iterator(); iterator.hasNext();)
+		{
+			String jsonStr = (String) iterator.next();
+			if(jsonStr == null || jsonStr.length() == 0)
+			{
+				continue;
+			}
+			JSONArray compjson = parser.parseJSONArray(jsonStr);
+			if(compjson != null)
+			{
+				smartComponents.addAll(compjson);
+			}
+		}
+		String smartcomponentsjson = smartComponents.toJSONString();
+		inReq.putPageValue("smartcomponentsjson", smartcomponentsjson);
+	}
+	
 }

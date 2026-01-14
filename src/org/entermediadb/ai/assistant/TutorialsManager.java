@@ -14,14 +14,13 @@ import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.scripts.ScriptLogger;
-import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
-import org.openedit.util.JSONParser;
 
 public class TutorialsManager extends BaseAiManager implements ChatMessageHandler
 {
@@ -66,23 +65,8 @@ public class TutorialsManager extends BaseAiManager implements ChatMessageHandle
 		
 		searcher.saveData(tutorial, inReq.getUser());
 	
-		String command = "Create a outline in a list format for " + tutorialTopic;
+		String command = "Create a lesson outline for " + tutorialTopic;
 		String outlines = questionsmanager.getAnswerByEntity(moduleid, entityid, command);
-		// String outlines = "- **Prepare the Beetroot Puree**  \n"
-		// 		+ "  - Toast coriander, fennel, cumin, and mustard seeds in a dry pan until fragrant, then grind to a fine powder.  \n"
-		// 		+ "  - Roast Datterini tomatoes with red wine vinegar, olive oil, sea salt, and black pepper at 180°C until wrinkled.  \n"
-		// 		+ "  - Boil and peel beetroot, then dress with balsamic vinegar, olive oil, and salt.  \n"
-		// 		+ "  - Combine roasted tomatoes, beetroot, and spice mix; blend until smooth. Fold in Greek yogurt, horseradish, and chopped herbs. Adjust seasoning.  \n"
-		// 		+ "\n"
-		// 		+ "- **Make the Parsley Oil**  \n"
-		// 		+ "  - Blanch spinach and parsley in boiling water, then ice bath. Drain and squeeze excess water.  \n"
-		// 		+ "  - Blend with grapeseed oil and a pinch of salt until smooth and warm. Strain through muslin for a clean oil.  \n"
-		// 		+ "\n"
-		// 		+ "- **Assemble the Salad**  \n"
-		// 		+ "  - Plate the beetroot puree as a base.  \n"
-		// 		+ "  - Drizzle with parsley oil.  \n"
-		// 		+ "  - Garnish with roasted tomatoes, toasted seeds, and fresh herbs.  \n"
-		// 		+ "  - Serve with additional components like salt-baked beetroot (if prepared separately) and green salad elements.";
 		
 		createComponentContentForTutorial(tutorial, parseOutlines(outlines));
 		
@@ -208,6 +192,25 @@ public class TutorialsManager extends BaseAiManager implements ChatMessageHandle
 		String comnponentJson = llmconnection.loadInputFromTemplate(templatepath, attr);
 
 		return comnponentJson;
+	}
+
+	public void loadTutorial(WebPageRequest inReq) {
+		String tutorialid = inReq.getRequestParameter("tutorialid");
+		if(tutorialid == null)
+		{
+			throw new IllegalArgumentException("Missing tutorialid parameter");
+		}
+		Searcher tutorialsearcher = getMediaArchive().getSearcher("aitutorials");
+		Data tutorial = tutorialsearcher.query().id(tutorialid).searchOne();
+		inReq.putPageValue("tutorial", tutorial);
+	}
+	
+	public Collection<String> loadSmartComponents(String inTutorialId) {
+		Searcher contentsearcher = getMediaArchive().getSearcher("componentcontent");
+		HitTracker hits = contentsearcher.query().exact("tutorialid", inTutorialId).search();
+		
+		Collection<String> components = hits.collectValues("json");
+		return components;
 	}
 
 }
