@@ -68,7 +68,7 @@ public class TutorialsManager extends BaseAiManager implements ChatMessageHandle
 		String command = "Create a lesson outline for " + tutorialTopic;
 		String outlines = questionsmanager.getAnswerByEntity(moduleid, entityid, command);
 		
-		createComponentContentForTutorial(tutorial, parseOutlines(outlines));
+		createComponentSectionForTutorial(tutorial, parseOutlines(outlines));
 		
 		inReq.putPageValue("tutorial", tutorial);
 	}
@@ -112,10 +112,10 @@ public class TutorialsManager extends BaseAiManager implements ChatMessageHandle
 		return outlineitems;
 	}
 
-	protected void createComponentContentForTutorial(Data inTutorial, Collection<Map> inOutlines)
+	protected void createComponentSectionForTutorial(Data inTutorial, Collection<Map> inOutlines)
 	{
 		MediaArchive archive = getMediaArchive();
-		Searcher contentsearcher = archive.getSearcher("componentcontent");
+		Searcher contentsearcher = archive.getSearcher("componentsection");
 
 		String entitymoduleid = inTutorial.get("entitymoduleid");
 		String entityid = inTutorial.get("entityid");
@@ -125,17 +125,17 @@ public class TutorialsManager extends BaseAiManager implements ChatMessageHandle
 		for (Iterator iterator = inOutlines.iterator(); iterator.hasNext();) {
 			Map outline = (Map) iterator.next();
 			
-			Data componentContent = contentsearcher.createNewData();
+			Data componentSection = contentsearcher.createNewData();
 			String label = (String) outline.get("label");
-			componentContent.setName(label);
-			componentContent.setValue("tutorialid", inTutorial.getId());
-			componentContent.setValue("entitymoduleid", entitymoduleid);
-			componentContent.setValue("entityid", entityid);
-			componentContent.setValue("componenttype", "text");
+			componentSection.setName(label);
+			componentSection.setValue("tutorialid", inTutorial.getId());
+			componentSection.setValue("entitymoduleid", entitymoduleid);
+			componentSection.setValue("entityid", entityid);
+			componentSection.setValue("componenttype", "text");
 
-			componentContent.setValue("json", createJSONForOutline(idx, outline));
+			componentSection.setValue("json", createJSONForOutline(idx, outline));
 
-			tosave.add(componentContent);
+			tosave.add(componentSection);
 			idx++;
 			
 		}

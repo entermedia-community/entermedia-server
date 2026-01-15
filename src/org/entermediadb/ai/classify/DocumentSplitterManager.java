@@ -13,8 +13,8 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.ai.llm.http.HttpResponse;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -165,11 +165,62 @@ public class DocumentSplitterManager extends InformaticsProcessor
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("generateMarkdown");
 
 		String base64Img = loadDocumentContent(pageEntity);
+		
+		if(base64Img == null)
+		{
+			log.error("No image found for page: " + pageEntity);
+			return;
+		}
 			
 		LlmResponse result = (LlmResponse) llmconnection.callOCRFunction(new HashMap(), base64Img);
 		String markdown = result.getMessage();
 			
 		pageEntity.setValue("markdowncontent", markdown);
+	}
+	
+	protected String loadDocumentContent(MultiValued inEntity)
+	{
+		String base64EncodedString = null;
+		if(inEntity.hasValue("pagenum") )
+		{
+			String parentasset = inEntity.get("parentasset");
+			if(parentasset != null)
+			{
+				Asset parentAsset = getMediaArchive().getAsset(parentasset);
+				//Do the conversion with page number in it
+				Map params = new HashMap();
+				params.put("pagenum",inEntity.get("pagenum") );
+				ConvertResult result = getMediaArchive().getTranscodeTools().createOutputIfNeeded(null,params,parentAsset.getSourcePath(), "image3000x3000.webp"); 
+				if( result.isOk() )
+				{
+					base64EncodedString = loadBase64Png(result.getOutput());
+				}
+				else
+				{
+					log.error("Could not convert document page thumbnail for asset: " + parentasset);
+				}
+			}
+		}
+		else
+		{
+			String primarymedia = inEntity.get("primarymedia");
+			Asset inPrimaryAsset = getMediaArchive().getAsset(primarymedia);
+			if(inPrimaryAsset == null)
+			{
+				primarymedia = inEntity.get("primaryimage");
+				inPrimaryAsset = getMediaArchive().getAsset(primarymedia);
+			}
+			if(inPrimaryAsset != null)
+			{
+				base64EncodedString = loadBase64Png(inPrimaryAsset, "image3000x3000");
+			}
+			else
+			{
+				log.error("Could not find primary asset for entity: " + inEntity.getId());
+			}
+		}
+		
+		return base64EncodedString;
 	}
 	
 }
