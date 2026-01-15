@@ -149,19 +149,7 @@ public class LibraryCollection extends BaseDataEntity implements SaveableData, C
 	}
 	
 	
-	@Override
-	public void setValue(String inKey, Object inValue)
-	{
-		if( inKey.equals("urlname") && super.getValue("urlname") == null)
-		{
-			if(getName() != null)
-			{
-				inValue = PathUtilities.dash(String.valueOf( getName() ) );
-				return;
-			}
-		}
-		super.setValue(inKey, inValue);
-	}
+
 	
 	public Category getCategory()
 	{
