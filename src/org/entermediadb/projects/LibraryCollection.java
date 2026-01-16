@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.modules.BaseDataEntity;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.data.SaveableData;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.strainer.FilterReader;
@@ -143,6 +147,9 @@ public class LibraryCollection extends BaseDataEntity implements SaveableData, C
 		}
 		return super.getValue(inKey);
 	}
+	
+	
+
 	
 	public Category getCategory()
 	{
