@@ -204,7 +204,7 @@ function connect() {
 		if (message && chatbox.length == 1) {
 			//Channel on the screen
 			channelUpdateMessage(chatbox, message);
-			return; 
+			return;
 		}
 
 		registerServiceWorker();
@@ -212,7 +212,7 @@ function connect() {
 		/*Check if you are the sender, play sound and notify. "message.topic != message.user" checks for private chat*/
 		var user = app.data("user");
 		if (message.user != user && message.user != "agent") {
-			console.log("Got a message: " + document.hasFocus())
+			console.log("Got a message: " + document.hasFocus());
 			if (!document.hasFocus()) {
 				function showNotification() {
 					console.log("Showing notification...");
@@ -237,7 +237,6 @@ function connect() {
 					notification.addEventListener("click", function (event) {
 						//window.open('http://www.mozilla.org', '_blank');
 					});
-										
 				}
 
 				/*Check para permissions and ask.*/
@@ -251,9 +250,10 @@ function connect() {
 							showNotification();
 						}
 					});
-				}
-				else {
-					console.log("Notification Browser permission:" + Notification.permission);
+				} else {
+					console.log(
+						"Notification Browser permission:" + Notification.permission
+					);
 				}
 			}
 		}
@@ -261,7 +261,6 @@ function connect() {
 }
 
 function channelUpdateMessage(chatbox, message) {
-	
 	var existing = jQuery("#chatter-message-" + message.messageid);
 	if (existing.length) {
 		if (message.command === "messageremoved") {
@@ -712,6 +711,12 @@ jQuery(document).ready(function () {
 			editor.focus();
 			editor.val(prefix);
 		}, 100);
+	});
+	lQuery(".aitutorial").livequery("click", function () {
+		$("#chatter-msg").val("Start Tutorial: " + $(this).data("tutorialname"));
+		setTimeout(function () {
+			$(".chatter-send").trigger("click");
+		});
 	});
 	lQuery(".ai-suggestion").livequery("click", function () {
 		var parent = $(this).closest(".ai-suggestions");

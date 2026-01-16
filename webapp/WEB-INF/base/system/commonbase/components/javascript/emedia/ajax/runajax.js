@@ -235,6 +235,10 @@ findClosest = function (link, inid) {
 						onpage = targetdiv;
 						$(data).insertBefore(targetdiv);
 						newcell = onpage.children(":first");
+					} else if (targetappendtype == "append") {
+						onpage = targetdiv;
+						targetdiv.append(data);
+						newcell = onpage.children(":last");
 					}
 					if (newcell.length > 0) {
 						$(window).trigger("setPageTitle", [newcell]);

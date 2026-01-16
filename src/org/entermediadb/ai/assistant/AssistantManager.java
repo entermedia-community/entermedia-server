@@ -153,7 +153,6 @@ public class AssistantManager extends BaseAiManager
 //		return manager;
 //	}
 //	
-	
 	public AgentContext loadContext(String inChannelId) 
 	{
 		MediaArchive archive = getMediaArchive();
