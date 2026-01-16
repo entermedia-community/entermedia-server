@@ -146,11 +146,20 @@ public class CreatorManager extends BaseAiManager
 		MediaArchive archive = getMediaArchive();
 		Searcher contentsearcher = archive.getSearcher("componentcontent");
 		
+		String content = (String) inComponents.get("content");
+		if(content == null)
+		{
+			content = "";
+		}
+		
+		content = content.trim();
+		
+		
 		String componentcontentid = (String) inComponents.get("componentcontentid");
 		if(componentcontentid != null)
 		{
 			Data existing = contentsearcher.loadData(componentcontentid);
-			existing.setValue("content", inComponents.get("content"));
+			existing.setValue("content", content);
 			existing.setValue("modificationdate", new Date());
 			existing.setValue("ordering", inComponents.get("ordering"));
 			contentsearcher.saveData(existing, null);
@@ -159,7 +168,7 @@ public class CreatorManager extends BaseAiManager
 		
 		Data componentSection = contentsearcher.createNewData();
 
-		componentSection.setValue("content", inComponents.get("content"));
+		componentSection.setValue("content", content);
 		componentSection.setValue("componentsectionid", inSectionId);
 		componentSection.setValue("componenttype", inComponents.get("componenttype"));
 		componentSection.setValue("ordering", inComponents.get("ordering"));
