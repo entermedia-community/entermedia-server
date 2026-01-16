@@ -111,6 +111,14 @@ class CloseButtonPlugin extends Plugin {
 
 			button.on("execute", () => {
 				editor.sourceElement.style.display = "block";
+				const uid = editor.sourceElement.id;
+				if (window.CK5Editor[uid]) {
+					delete window.CK5Editor[uid];
+				}
+				if (window.CK5EditorInline[uid]) {
+					delete window.CK5EditorInline[uid];
+				}
+				$(editor.sourceElement).data("ck5Initialized", false);
 				editor.sourceElement = null;
 				editor.destroy();
 			});
