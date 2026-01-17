@@ -42,6 +42,25 @@ import {
 
 import prettifyHTML from "prettyhtml";
 
+function disposeCKEditor(editor, callback = null) {
+	if (!editor) {
+		if (callback) callback();
+		return;
+	}
+	const uid = editor.sourceElement.id;
+	if (window.CK5Editor[uid]) {
+		delete window.CK5Editor[uid];
+	}
+	if (window.CK5EditorInline[uid]) {
+		delete window.CK5EditorInline[uid];
+	}
+	$(editor.sourceElement).data("ck5Initialized", false);
+	editor.sourceElement = null;
+	editor.destroy().then(function () {
+		if (callback) callback();
+	});
+}
+
 class SaveButtonPlugin extends Plugin {
 	init() {
 		const editor = this.editor;
@@ -62,6 +81,7 @@ class SaveButtonPlugin extends Plugin {
 				const keepEditor = $(editor.sourceElement).data("keepeditor");
 
 				let content = editor.getData();
+				content = content.replace(/<p.*>&nbsp;<\/p>/gi, "");
 				if (content) content = prettifyHTML(editor.getData());
 				$(editor.sourceElement).val(content);
 				$.ajax({
@@ -75,14 +95,7 @@ class SaveButtonPlugin extends Plugin {
 					success: function () {
 						if (!keepEditor) {
 							editor.updateSourceElement();
-							editor
-								.destroy()
-								.then(() => {
-									if (editor.sourceElement) editor.sourceElement = null;
-								})
-								.catch((error) => {
-									console.log(error);
-								});
+							disposeCKEditor(editor);
 						}
 					},
 					error: function () {
@@ -111,16 +124,7 @@ class CloseButtonPlugin extends Plugin {
 
 			button.on("execute", () => {
 				editor.sourceElement.style.display = "block";
-				const uid = editor.sourceElement.id;
-				if (window.CK5Editor[uid]) {
-					delete window.CK5Editor[uid];
-				}
-				if (window.CK5EditorInline[uid]) {
-					delete window.CK5EditorInline[uid];
-				}
-				$(editor.sourceElement).data("ck5Initialized", false);
-				editor.sourceElement = null;
-				editor.destroy();
+				disposeCKEditor(editor);
 			});
 			return button;
 		});
@@ -141,7 +145,11 @@ class ImagePicker extends Plugin {
 
 			button.on("execute", () => {
 				//TODO: Open image picker dialog
-				const findRoot = $("#application").data("findroot");
+				let findRoot = $("#application").data("findroot");
+				if (!findRoot) {
+					const siteRoot = $("#application").data("siteroot");
+					findRoot = `${siteRoot}/blockfind`;
+				}
 				const anchor = document.createElement("a");
 				anchor.id = "dialogpickerassetpicker";
 				anchor.href = findRoot + "/blockiframe.html?targetfieldid=htmleditor";
@@ -617,12 +625,9 @@ $(window).on("edithtmlstart", function (_, targetDiv) {
 	};
 	const uid = targetDiv[0].id;
 	if (uid && window.CK5Editor[uid]) {
-		window.CK5Editor[uid]
-			.destroy()
-			.then(() => createCK5(targetDiv[0], options))
-			.catch((error) => {
-				console.error(error);
-			});
+		disposeCKEditor(window.CK5Editor[uid], () => {
+			createCK5(targetDiv[0], options);
+		});
 	} else {
 		createCK5(targetDiv[0], options);
 	}
@@ -660,16 +665,7 @@ function createInlineCK5(target, options = {}) {
 	}
 
 	if (window.CK5EditorInline[uid]) {
-		window.CK5EditorInline[uid]
-			.destroy()
-			.then(() => {
-				delete window.CK5EditorInline[uid];
-				doCreate();
-			})
-			.catch((error) => {
-				console.error(error);
-				doCreate();
-			});
+		disposeCKEditor(window.CK5EditorInline[uid], doCreate);
 	} else {
 		doCreate();
 	}
@@ -729,12 +725,9 @@ $(window).on("inlinehtmlstart", function (_, targetDiv) {
 	targetDiv.data("ck5Initialized", true);
 
 	if (uid && window.CK5Editor[uid]) {
-		window.CK5Editor[uid]
-			.destroy()
-			.then(() => createInlineCK5(targetDiv[0], options))
-			.catch((error) => {
-				console.error(error);
-			});
+		disposeCKEditor(window.CK5Editor[uid], () => {
+			createInlineCK5(targetDiv[0], options);
+		});
 	} else {
 		createInlineCK5(targetDiv[0], options);
 	}
@@ -753,12 +746,9 @@ $(document).ready(function () {
 			// hideSourceEditing: true,
 		};
 		if (uid && window.CK5Editor[uid]) {
-			window.CK5Editor[uid]
-				.destroy()
-				.then(() => createCK5($this, options))
-				.catch((error) => {
-					console.error(error);
-				});
+			disposeCKEditor(window.CK5Editor[uid], () => {
+				createCK5($this, options);
+			});
 		} else {
 			createCK5($this, options);
 		}

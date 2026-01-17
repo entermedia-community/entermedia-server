@@ -291,11 +291,13 @@ public class AgentModule extends BaseMediaModule {
 		creatorManager.createComponentSection(tutorialid, section);
 	}
 	
-	public void deleteComponentSection(WebPageRequest inReq) throws Exception 
+	public void deleteCreatorSection(WebPageRequest inReq) throws Exception 
 	{
+		String searchtype = inReq.getRequestParameter("searchtype");
+		String dataid = inReq.getRequestParameter("id");
+		
 		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
-		String sectionid = inReq.getRequestParameter("sectionid");
-		creatorManager.deleteComponentSection(sectionid);
+		creatorManager.deleteCreatorSection(searchtype, dataid);
 	}
 	
 	public void createComponentContent(WebPageRequest inReq) throws Exception 
@@ -305,12 +307,19 @@ public class AgentModule extends BaseMediaModule {
 		
 		Map component = new HashMap();
 		component.put("content", inReq.getRequestParameter("content"));
-		component.put("componenttype", inReq.getRequestParameter("componenttype"));
+		String componenttype = inReq.getRequestParameter("componenttype");
+		component.put("componenttype", componenttype);
 		component.put("ordering", inReq.getRequestParameter("ordering"));
 		component.put("componentcontentid", inReq.getRequestParameter("componentcontentid"));
 		
 		Data componentcontent = creatorManager.createComponentContent(sectionid, component);
 		inReq.putPageValue("componentcontent", componentcontent);
+	}
+	
+	public void orderCreatorSection(WebPageRequest inReq)
+	{
+		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		creatorManager.orderCreatorSection(inReq);
 	}
 	
 }

@@ -17,6 +17,21 @@ import org.openedit.hittracker.HitTracker;
 
 public class CreatorManager extends BaseAiManager 
 {
+	public void getCreator(WebPageRequest inReq) {
+		String tutorialid = inReq.getRequestParameter("tutorialid");
+		if(tutorialid == null)
+		{
+			throw new IllegalArgumentException("Missing tutorialid parameter");
+		}
+		Searcher tutorialsearcher = getMediaArchive().getSearcher("aitutorials");
+		Data tutorial = tutorialsearcher.query().id(tutorialid).searchOne();
+		inReq.putPageValue("tutorial", tutorial);
+		
+		Searcher sectionsearcher = getMediaArchive().getSearcher("componentsection");
+		HitTracker hits = sectionsearcher.query().exact("tutorialid", tutorialid).sort("ordering").search();
+		inReq.putPageValue("componentsections", hits);
+	}
+	
 	public void createTutorial(WebPageRequest inReq)
 	{
 		String moduleid = inReq.getRequestParameter("entitymoduleid");
@@ -152,18 +167,31 @@ public class CreatorManager extends BaseAiManager
 			content = "";
 		}
 		
-		content = content.trim();
-		
+		content = content.replaceAll("<p.*>&nbsp;</p>", "\n");
+		content = content.replaceAll("^\\s+", "");
+		content = content.replaceAll("\\s+$", "");
 		
 		String componentcontentid = (String) inComponents.get("componentcontentid");
+		
+		String order = (String)  inComponents.get("ordering");
+		int ordering = Integer.parseInt(order);
+		if(ordering < 0)
+		{
+			ordering = 0;
+		}
+		
 		if(componentcontentid != null)
 		{
 			Data existing = contentsearcher.loadData(componentcontentid);
 			existing.setValue("content", content);
 			existing.setValue("modificationdate", new Date());
-			existing.setValue("ordering", inComponents.get("ordering"));
+			existing.setValue("ordering", ordering);
 			contentsearcher.saveData(existing, null);
 			return existing;
+		}
+		else
+		{
+			ordering = Math.max(ordering + 1, 0);
 		}
 		
 		Data componentSection = contentsearcher.createNewData();
@@ -171,7 +199,7 @@ public class CreatorManager extends BaseAiManager
 		componentSection.setValue("content", content);
 		componentSection.setValue("componentsectionid", inSectionId);
 		componentSection.setValue("componenttype", inComponents.get("componenttype"));
-		componentSection.setValue("ordering", inComponents.get("ordering"));
+		componentSection.setValue("ordering", ordering);
 		componentSection.setValue("creationdate", new Date());
 		componentSection.setValue("modificationdate", new Date());
 		
@@ -181,25 +209,33 @@ public class CreatorManager extends BaseAiManager
 		return componentSection;
 		
 	}
-
-	public void getCreator(WebPageRequest inReq) {
-		String tutorialid = inReq.getRequestParameter("tutorialid");
-		if(tutorialid == null)
-		{
-			throw new IllegalArgumentException("Missing tutorialid parameter");
-		}
-		Searcher tutorialsearcher = getMediaArchive().getSearcher("aitutorials");
-		Data tutorial = tutorialsearcher.query().id(tutorialid).searchOne();
-		inReq.putPageValue("tutorial", tutorial);
+	
+	public void orderCreatorSection(WebPageRequest inReq)
+	{
+		String sourceid = inReq.getRequestParameter("source");
+		String targetid = inReq.getRequestParameter("target");
+		String sourceorder = inReq.getRequestParameter("sourceorder");
+		String targetorder = inReq.getRequestParameter("targetorder");
 		
-		Searcher sectionsearcher = getMediaArchive().getSearcher("componentsection");
-		HitTracker hits = sectionsearcher.query().exact("tutorialid", tutorialid).search();
-		inReq.putPageValue("componentsections", hits);
+		String searchtype = inReq.getRequestParameter("searchtype");
+		Searcher searcher = getMediaArchive().getSearcher(searchtype);
+		
+		Data source = searcher.loadData(sourceid);
+		Data target = searcher.loadData(targetid);
+		
+		source.setValue("ordering", Integer.parseInt(targetorder));
+		target.setValue("ordering", Integer.parseInt(sourceorder));
+		
+		searcher.saveData(source, inReq.getUser());
+		searcher.saveData(target, inReq.getUser());
 	}
 
-	public void deleteComponentSection(String inSectionid) {
-		Searcher sectionsearcher = getMediaArchive().getSearcher("componentsection");
-		Data section = sectionsearcher.loadData(inSectionid);
-		sectionsearcher.delete(section, null);
+	public void deleteCreatorSection(String inSearchType, String inId) {
+		Searcher sectionsearcher = getMediaArchive().getSearcher(inSearchType);
+		Data section = sectionsearcher.loadData(inId);
+		if(section != null)
+		{			
+			sectionsearcher.delete(section, null);
+		}
 	}
 }
