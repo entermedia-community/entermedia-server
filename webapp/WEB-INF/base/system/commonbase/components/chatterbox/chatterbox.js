@@ -3,7 +3,7 @@ var loadingmore = false;
 
 function chatterbox() {
 	console.log(
-		"Starting chat in channel: " + jQuery(".chatterbox").data("channel")
+		"Starting chat in channel: " + jQuery(".chatterbox").data("channel"),
 	);
 
 	cancelKeepAlive();
@@ -100,7 +100,7 @@ function chatterbox() {
 		"click",
 		function (e) {
 			//jQuery("#chatter-msg").val("");
-		}
+		},
 	);
 
 	lQuery(".chatter-save").livequery("click", function (e) {
@@ -252,7 +252,7 @@ function connect() {
 					});
 				} else {
 					console.log(
-						"Notification Browser permission:" + Notification.permission
+						"Notification Browser permission:" + Notification.permission,
 					);
 				}
 			}
@@ -646,7 +646,7 @@ jQuery(document).ready(function () {
 		"click",
 		function (e) {
 			$(this).runAjax();
-		}
+		},
 	);
 
 	lQuery("a.lightbox").livequery(function () {
@@ -685,67 +685,17 @@ jQuery(document).ready(function () {
 
 				if (dl) {
 					$(".simple-lightbox .sl-actions").append(
-						"<a class='sl-btn sl-dl' href='" + dl + "' target='_blank'></a>"
+						"<a class='sl-btn sl-dl' href='" + dl + "' target='_blank'></a>",
 					);
 				}
 				//Asset Link
 
 				if (al) {
 					$(".simple-lightbox .sl-actions").append(
-						"<a class='sl-btn sl-al' href='" + al + "' target='_blank'></a>"
+						"<a class='sl-btn sl-al' href='" + al + "' target='_blank'></a>",
 					);
 				}
 			}
 		});
-	});
-
-	lQuery(".autoprefixchatmsg").livequery("click", function () {
-		var prefix = $(this).data("prefix");
-		var editorid = $(this).data("editorid");
-		if (!editorid) {
-			editorid = "chatter-msg";
-		}
-		var editor = $("#" + editorid);
-		setTimeout(() => {
-			toggleAiSuggestions();
-			editor.focus();
-			editor.val(prefix);
-		}, 100);
-	});
-	lQuery(".aitutorial").livequery("click", function () {
-		$("#chatter-msg").val("Start Tutorial: " + $(this).data("tutorialname"));
-		setTimeout(function () {
-			$(".chatter-send").trigger("click");
-		});
-	});
-	lQuery(".ai-suggestion").livequery("click", function () {
-		var parent = $(this).closest(".ai-suggestions");
-		parent.find(".ai-suggestion").each(function () {
-			$(this).removeClass("selected");
-		});
-		$(this).addClass("selected");
-	});
-	lQuery(".ai-func-toggle").livequery("click", toggleAiSuggestions);
-	function toggleAiSuggestions() {
-		var container = $(".ai-suggestions-container");
-		if (container.hasClass("expanded")) {
-			container.removeClass("expanded");
-			$(".ai-func-toggle").text("Show Examples");
-		} else {
-			container.addClass("expanded");
-			$(".ai-func-toggle").text("Hide Examples");
-		}
-	}
-
-	lQuery("#functionName").livequery("input", function () {
-		var val = $(this).val();
-		words = val.split(" ");
-		console.log(words);
-		if (words.filter(Boolean).length > 1) {
-			val = words
-				.map((w, i) => (i == 0 ? w : w.charAt(0).toUpperCase() + w.slice(1)))
-				.join("");
-			$(this).val(val);
-		}
 	});
 });

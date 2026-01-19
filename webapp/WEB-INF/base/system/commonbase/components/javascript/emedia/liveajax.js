@@ -6,7 +6,7 @@ $.ajaxSetup({
 	beforeSend: function (xhr) {
 		xhr.setRequestHeader(
 			"X-TimeZone",
-			Intl.DateTimeFormat().resolvedOptions().timeZone
+			Intl.DateTimeFormat().resolvedOptions().timeZone,
 		);
 	},
 });
@@ -100,6 +100,14 @@ $.ajaxSetup({
 		return returned;
 	};
 
+	var oldinsertafter = $.fn.insertAfter;
+	$.fn.insertAfter = function (arg) {
+		var div = $(this);
+		var returned = oldinsertafter.call(div, arg);
+		$(document).trigger("domchanged", [div]);
+		return returned;
+	};
+
 	var oldajaxSubmit = $.fn.ajaxSubmit;
 	$.fn.ajaxSubmit = function () {
 		var form = $(this);
@@ -115,7 +123,7 @@ $.ajaxSetup({
 			}
 
 			form.append(
-				$(`<input type='hidden' name='oemaxlevel' value='${oemaxlevel}'>`)
+				$(`<input type='hidden' name='oemaxlevel' value='${oemaxlevel}'>`),
 			);
 		}
 
@@ -165,8 +173,8 @@ $.ajaxSetup({
 			element = document;
 		}
 		//console.log("domchanged reload on ",element);
-		$.each(regelements, function () //Everyone
-		{
+		$.each(regelements, function () {
+			//Everyone
 			var item = this;
 			var funct = item.function;
 			$(item.selector, element).each(function () {
@@ -247,14 +255,12 @@ $.ajaxSetup({
 		*/
 				regelements.push(item);
 				try {
-					nodes.each(
-						function () //We need to make sure each row is initially handled
-						{
-							var onerow = $(this);
-							onerow.data("livequeryinit" + selector, true);
-							func.call(onerow);
-						}
-					);
+					nodes.each(function () {
+						//We need to make sure each row is initially handled
+						var onerow = $(this);
+						onerow.data("livequeryinit" + selector, true);
+						func.call(onerow);
+					});
 				} catch (error) {
 					console.log("Could not process: " + selector, error);
 				}
@@ -273,15 +279,13 @@ $.ajaxSetup({
 				eventregistry.push(eventlistener);
 				//console.log("Initial Registering  event" + eventlistener.selector );
 
-				nodes.each(
-					function () //We need to make sure each row is initially handled
-					{
-						var node = $(this);
-						node.data("livequery" + selector, true);
-						node.on(eventlistener.event, eventlistener.function);
-						//$(document).on(eventlistener.event,eventlistener.selector,eventlistener.function);
-					}
-				);
+				nodes.each(function () {
+					//We need to make sure each row is initially handled
+					var node = $(this);
+					node.data("livequery" + selector, true);
+					node.on(eventlistener.event, eventlistener.function);
+					//$(document).on(eventlistener.event,eventlistener.selector,eventlistener.function);
+				});
 			}
 			return this;
 		};

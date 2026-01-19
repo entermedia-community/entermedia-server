@@ -372,7 +372,7 @@ public class ChatServer
 		//log.info("Saving Message: " + inMap.toJSONString());
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		Searcher chats = archive.getSearcher("chatterbox");
-		Data channel = loadChannel(archive,inMap);
+		Data channel = loadChannel(archive, inMap);
 		
 		
 		String userid = (String)inMap.get("user").toString();
@@ -400,7 +400,11 @@ public class ChatServer
 		chats.saveData(chat);
 		
 		User user = archive.getUser(userid);
-		archive.fireDataEvent(user,"chatterbox","saved", chat);
+		
+		
+		
+		archive.fireDataEvent(user,"chatterbox", "saved", chat);
+		
 		archive.fireSharedMediaEvent("llm/monitorchats"); //TODO: move to generic event
 
 		String messageid = chat.getId();
@@ -411,17 +415,27 @@ public class ChatServer
 
 	public Data loadChannel(MediaArchive inArchive, Map inChannelInfo)
 	{
-			Searcher chats = inArchive.getSearcher("channel");
-			String channelid = (String)inChannelInfo.get("channel");
-			Data channel = inArchive.getCachedData("channel", channelid);
-			if (channel == null) {
-				channel = chats.createNewData();
-				channel.setId(channelid);
-				String channeltype = (String) inChannelInfo.get("channeltype");
-				channel.setValue("channeltype", channeltype);
-				chats.saveData(channel);
-			}
-			return channel;
+		Searcher chats = inArchive.getSearcher("channel");
+		String channelid = (String)inChannelInfo.get("channel");
+		Data channel = inArchive.getCachedData("channel", channelid);
+		
+		if (channel == null) {
+			channel = chats.createNewData();
+			channel.setId(channelid);
+			String channeltype = (String) inChannelInfo.get("channeltype");
+			channel.setValue("channeltype", channeltype);
+		}
+		
+		String playbackentityid = (String) inChannelInfo.get("playbackentityid");
+		String playbackentitymoduleid = (String) inChannelInfo.get("playbackentitymoduleid");
+		if(playbackentitymoduleid != null && playbackentityid != null) {
+			channel.setValue("playbackentityid", playbackentityid);
+			channel.setValue("playbackentitymoduleid", playbackentitymoduleid);
+		}
+
+		chats.saveData(channel);
+		
+		return channel;
 	}
 
 	/* Desktop notificationsss */

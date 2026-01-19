@@ -188,20 +188,17 @@ jQuery(document).ready(function () {
 		}
 	});
 
-	lQuery(".entity-tab-content.overflow-x").livequery(
-		"scroll",
-		function (event) {
-			if (event.shiftKey) {
-				if (event.originalEvent.deltaY > 0) {
-					event.preventDefault();
-					$(this).scrollLeft($(this).scrollLeft() - 100);
-				} else {
-					event.preventDefault();
-					$(this).scrollLeft($(this).scrollLeft() + 100);
-				}
+	lQuery(".entity-tab-content.overflow-x").livequery("scroll", function (e) {
+		if (e.shiftKey) {
+			if (e.originalEvent.deltaY > 0) {
+				e.preventDefault();
+				$(this).scrollLeft($(this).scrollLeft() - 100);
+			} else {
+				e.preventDefault();
+				$(this).scrollLeft($(this).scrollLeft() + 100);
 			}
 		}
-	);
+	});
 
 	lQuery(".indexDocPages").livequery("click", function (e) {
 		e.preventDefault();
@@ -816,7 +813,7 @@ jQuery(document).ready(function () {
 					changeMonth: true,
 					changeYear: true,
 					yearRange: "1900:2050",
-				})
+				}),
 			); // Move this to the Layouts?
 
 			var targetid = dpicker.data("targetid");
@@ -893,5 +890,57 @@ jQuery(document).ready(function () {
 				exclude: [".ui-datepicker", ".ui-icon"],
 			});
 		} //datepicker
+	});
+
+	function toggleAiSuggestions() {
+		var container = $(".ai-suggestions-container");
+		if (container.hasClass("expanded")) {
+			container.removeClass("expanded");
+			$(".ai-func-toggle").text("Show Examples");
+		} else {
+			container.addClass("expanded");
+			$(".ai-func-toggle").text("Hide Examples");
+		}
+	}
+
+	lQuery(".autoprefixchatmsg").livequery("click", function () {
+		var prefix = $(this).data("prefix");
+		var editorid = $(this).data("editorid");
+		if (!editorid) {
+			editorid = "chatter-msg";
+		}
+		var editor = $("#" + editorid);
+		setTimeout(() => {
+			toggleAiSuggestions();
+			editor.focus();
+			editor.val(prefix);
+		}, 100);
+	});
+
+	lQuery(".ai-func-toggle").livequery("click", toggleAiSuggestions);
+
+	lQuery(".ai-suggestion").livequery("click", function () {
+		var parent = $(this).closest(".ai-suggestions");
+		parent.find(".ai-suggestion").each(function () {
+			$(this).removeClass("selected");
+		});
+		$(this).addClass("selected");
+	});
+
+	lQuery(".aitutorial").livequery("click", function () {
+		debugger;
+
+		var playbackentityid = $(this).data("playbackentityid");
+		var playbackentitymoduleid = $(this).data("playbackentitymoduleid");
+
+		var chatterbox = $(this).closest(".chatterbox");
+		chatterbox.data("playbackentityid", playbackentityid);
+		chatterbox.data("playbackentitymoduleid", playbackentitymoduleid);
+
+		$("#chatter-msg").val("Start Tutorial: " + $(this).data("tutorialname"));
+		setTimeout(function () {
+			$(".chatter-send").trigger("click");
+			$(".ai-functions").remove();
+		});
 	});
 }); //on ready
