@@ -283,12 +283,31 @@ public class AgentModule extends BaseMediaModule {
 		creatorManager.getCreator(inReq);
 	}
 	
-	public void createConmponentSection(WebPageRequest inReq) throws Exception 
+	public void createCreatorSection(WebPageRequest inReq) throws Exception 
 	{
+		
 		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
 		String tutorialid = inReq.getRequestParameter("tutorialid");
-		String section = inReq.getRequestParameter("section");
-		creatorManager.createComponentSection(tutorialid, section);
+		Searcher tutorialsearcher = getMediaArchive(inReq).getSearcher("aitutorials");
+		Data tutorial = tutorialsearcher.loadData(tutorialid);
+		
+		if( tutorial == null)
+		{
+			throw new IllegalArgumentException("No tutorial found for id: " + tutorialid);
+		}
+		
+		String ordering = inReq.getRequestParameter("ordering");
+		try
+		{
+			int orderingint = Integer.parseInt(ordering);
+			Data section = creatorManager.createCreatorSection(tutorial, orderingint + 1);
+			inReq.putPageValue("tutorial", tutorial);
+			inReq.putPageValue("section", section);
+		}
+		catch( Exception ex)
+		{
+			throw new IllegalArgumentException("Ordering must be a number");
+		}
 	}
 	
 	public void deleteCreatorSection(WebPageRequest inReq) throws Exception 

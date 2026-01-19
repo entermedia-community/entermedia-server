@@ -59,7 +59,7 @@ public class CreatorManager extends BaseAiManager
 		String sections = questionsmanager.getAnswerByEntity(moduleid, entityid, command);
 		if(sections != null)
 		{			
-			createComponentSection(tutorial, parseOutlines(sections));
+			batchCreateCreatorSection(tutorial, parseOutlines(sections));
 			
 			inReq.putPageValue("tutorial", tutorial);
 		}
@@ -113,19 +113,9 @@ public class CreatorManager extends BaseAiManager
 		return outlineitems;
 	}
 
-	public void createComponentSection(String inTutorialId, String inSection)
-	{
-		MediaArchive archive = getMediaArchive();
-		Searcher tutorialsearcher = archive.getSearcher("aitutorials");
-		Data inTutorial = tutorialsearcher.loadData(inTutorialId);
-		
-		Collection<String> sections = new ArrayList<String>();
-		sections.add(inSection);
-		
-		createComponentSection(inTutorial, sections);
-	}
 	
-	public void createComponentSection(Data inTutorial, Collection<String> inSections)
+	
+	public void batchCreateCreatorSection(Data inTutorial, Collection<String> inSections)
 	{
 		MediaArchive archive = getMediaArchive();
 		Searcher sectionsearcher = archive.getSearcher("componentsection");
@@ -155,6 +145,43 @@ public class CreatorManager extends BaseAiManager
 		
 		sectionsearcher.saveAllData(tosave, null);
 		
+	}
+	
+	public Data createCreatorSection(Data inTutorial, int inOrdering)
+	{
+		MediaArchive archive = getMediaArchive();
+		
+		Searcher sectionsearcher = archive.getSearcher("componentsection");
+		Data section = sectionsearcher.createNewData();
+
+		section.setName("New Section");
+		section.setValue("tutorialid", inTutorial.getId());
+		section.setValue("entitymoduleid", inTutorial.get("entitymoduleid"));
+		section.setValue("entityid", inTutorial.get("entityid"));
+		section.setValue("ordering", inOrdering);
+		section.setValue("creationdate", new Date());
+		section.setValue("modificationdate", new Date());
+		
+		sectionsearcher.saveData(section, null);
+		
+		Collection<MultiValued> allSections = sectionsearcher.query().exact("tutorialid", inTutorial.getId()).search();
+		Collection<Data> tosave = new ArrayList<Data>();
+		for (Iterator iterator = allSections.iterator(); iterator.hasNext();) {
+			MultiValued data = (MultiValued) iterator.next();
+			if(data.getId().equals(section.getId()))
+			{
+				continue;
+			}
+			int currentordering = data.getInt("ordering");
+			if(currentordering >= inOrdering)
+			{
+				data.setValue("ordering", currentordering + 1);
+				tosave.add(data);
+			}
+		}
+		sectionsearcher.saveAllData(tosave, null);
+		
+		return section;
 	}
 	
 	public Data createComponentContent(String inSectionId, Map inComponents)
