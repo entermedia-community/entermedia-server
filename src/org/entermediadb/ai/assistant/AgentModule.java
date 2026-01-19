@@ -6,17 +6,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.entermediadb.ai.creator.CreatorManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.scripts.ScriptLogger;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.util.JSONParser;
 
 public class AgentModule extends BaseMediaModule {
 	
@@ -264,8 +262,8 @@ public class AgentModule extends BaseMediaModule {
 	
 	public void saveTutorial(WebPageRequest inReq) throws Exception 
 	{
-		TutorialsManager tutorialsManager = (TutorialsManager) getMediaArchive(inReq).getBean("tutorialsManager");
-		tutorialsManager.createTutorial(inReq);
+		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		creatorManager.createTutorial(inReq);
 	}
 	
 	public void saveAgentContextField(WebPageRequest inReq) throws Exception 
@@ -279,37 +277,82 @@ public class AgentModule extends BaseMediaModule {
 	}
 	
 	
-	public void loadTutorial(WebPageRequest inReq) throws Exception 
+	public void loadCreator(WebPageRequest inReq) throws Exception 
 	{
-		TutorialsManager tutorialsManager = (TutorialsManager) getMediaArchive(inReq).getBean("tutorialsManager");
-		tutorialsManager.loadTutorial(inReq);
+		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		creatorManager.getCreator(inReq);
 	}
 	
-	public void loadSmartComponentsJSON(WebPageRequest inReq) throws Exception 
+	public void createCreatorSection(WebPageRequest inReq) throws Exception 
 	{
+		
+		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
 		String tutorialid = inReq.getRequestParameter("tutorialid");
-		TutorialsManager tutorialsManager = (TutorialsManager) getMediaArchive(inReq).getBean("tutorialsManager");
-		Collection<String> components = tutorialsManager.loadSmartComponents(tutorialid);
+		Searcher tutorialsearcher = getMediaArchive(inReq).getSearcher("aitutorials");
+		Data tutorial = tutorialsearcher.loadData(tutorialid);
 		
-		JSONParser parser = new JSONParser();
-		
-		JSONArray smartComponents = new JSONArray();
-		
-		for (Iterator iterator = components.iterator(); iterator.hasNext();)
+		if( tutorial == null)
 		{
-			String jsonStr = (String) iterator.next();
-			if(jsonStr == null || jsonStr.length() == 0)
-			{
-				continue;
-			}
-			JSONArray compjson = parser.parseJSONArray(jsonStr);
-			if(compjson != null)
-			{
-				smartComponents.addAll(compjson);
-			}
+			throw new IllegalArgumentException("No tutorial found for id: " + tutorialid);
 		}
-		String smartcomponentsjson = smartComponents.toJSONString();
-		inReq.putPageValue("smartcomponentsjson", smartcomponentsjson);
+		
+		try
+		{
+			Map fields = new HashMap();
+			String sectionid = inReq.getRequestParameter("sectionid");
+			if( sectionid != null && sectionid.length() > 0)
+			{
+				fields.put("sectionid", sectionid);
+				String name = inReq.getRequestParameter("name");
+				fields.put("name", name);
+			}
+			else
+			{
+				String ordering = inReq.getRequestParameter("ordering");
+				int orderingint = Integer.parseInt(ordering);
+				fields.put("ordering", orderingint + 1);				
+			}
+			
+			
+			Data section = creatorManager.createCreatorSection(tutorial, fields);
+			inReq.putPageValue("tutorial", tutorial);
+			inReq.putPageValue("section", section);
+		}
+		catch( Exception ex)
+		{
+			throw new IllegalArgumentException("Ordering must be a number");
+		}
+	}
+	
+	public void deleteCreatorSection(WebPageRequest inReq) throws Exception 
+	{
+		String searchtype = inReq.getRequestParameter("searchtype");
+		String dataid = inReq.getRequestParameter("id");
+		
+		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		creatorManager.deleteCreatorSection(searchtype, dataid);
+	}
+	
+	public void createComponentContent(WebPageRequest inReq) throws Exception 
+	{
+		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		String sectionid = inReq.getRequestParameter("sectionid");
+		
+		Map component = new HashMap();
+		component.put("content", inReq.getRequestParameter("content"));
+		String componenttype = inReq.getRequestParameter("componenttype");
+		component.put("componenttype", componenttype);
+		component.put("ordering", inReq.getRequestParameter("ordering"));
+		component.put("componentcontentid", inReq.getRequestParameter("componentcontentid"));
+		
+		Data componentcontent = creatorManager.createComponentContent(sectionid, component);
+		inReq.putPageValue("componentcontent", componentcontent);
+	}
+	
+	public void orderCreatorSection(WebPageRequest inReq)
+	{
+		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		creatorManager.orderCreatorSection(inReq);
 	}
 	
 }

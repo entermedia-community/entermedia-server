@@ -2656,6 +2656,13 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
+	
+	
+	<bean id="creatorManager" class="org.entermediadb.ai.creator.CreatorManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
 
 
 	<bean id="agentContext" class="org.entermediadb.ai.llm.AgentContext" scope="prototype">
