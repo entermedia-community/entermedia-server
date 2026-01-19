@@ -343,10 +343,16 @@ public class AgentModule extends BaseMediaModule {
 		String componenttype = inReq.getRequestParameter("componenttype");
 		component.put("componenttype", componenttype);
 		component.put("ordering", inReq.getRequestParameter("ordering"));
-		component.put("componentcontentid", inReq.getRequestParameter("componentcontentid"));
+		String componentcontentid = inReq.getRequestParameter("componentcontentid");
+		component.put("componentcontentid", componentcontentid);
 		
 		Data componentcontent = creatorManager.createComponentContent(sectionid, component);
 		inReq.putPageValue("componentcontent", componentcontent);
+		
+		if(componentcontentid == null || componentcontentid.length() == 0)
+		{			
+			inReq.putPageValue("newcontent", true);
+		}
 	}
 	
 	public void orderCreatorSection(WebPageRequest inReq)
