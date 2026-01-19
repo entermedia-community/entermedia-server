@@ -19,11 +19,12 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.openedit.util.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.repository.ContentItem;
+import org.openedit.util.JSONParser;
 
 public class PostizManager implements CatalogEnabled {
 
@@ -203,6 +204,39 @@ public class PostizManager implements CatalogEnabled {
             // Parse the response as JSON
             
             return integrations;
+
+        } catch (Exception e) {
+            log.error("Error listing integrations in Postiz", e);
+            throw new OpenEditException("Failed to list integrations", e);
+        }
+    }
+    
+    
+    public JSONArray listsubReddits(WebPageRequest inReq) {
+        //String apiKey = getApiKey();
+        
+ 
+        try {
+            
+            JSONArray subreddits = (JSONArray) getMediaArchive().getCacheManager().get("postiz", "subreddits");
+            if(subreddits == null) {
+                String redditprofile = inReq.getRequestParameter("profile");
+                String term = inReq.getRequestParameter("term");
+                String endpoint = "https://oauth.reddit.com/subreddits/search?show=public&q="+term+"&sort=activity&show_users=false&limit=10";
+                HttpGet getMethod = new HttpGet(endpoint);
+                getMethod.addHeader("User-Agent", "Java:MySubredditFetcherApp:v1.0.0 (by /u/"+redditprofile+")");
+
+                CloseableHttpResponse response = getSharedClient().execute(getMethod);
+
+                String jsonResponse = EntityUtils.toString(response.getEntity(), "UTF-8");
+                subreddits = (JSONArray) new org.openedit.util.JSONParser().parseCollection(jsonResponse);
+                response.close();         
+                getMediaArchive().getCacheManager().put("postiz", "subreddits", subreddits);
+            }
+            
+            // Parse the response as JSON
+            
+            return subreddits;
 
         } catch (Exception e) {
             log.error("Error listing integrations in Postiz", e);
