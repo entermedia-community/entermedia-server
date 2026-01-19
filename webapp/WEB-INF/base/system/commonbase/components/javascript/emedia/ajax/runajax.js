@@ -234,7 +234,11 @@ findClosest = function (link, inid) {
 					} else if (targetappendtype == "insertbefore") {
 						onpage = targetdiv;
 						$(data).insertBefore(targetdiv);
-						newcell = onpage.children(":first");
+						newcell = findClosest(onpage, targetdivid).prev();
+					} else if (targetappendtype == "insertafter") {
+						onpage = targetdiv;
+						$(data).insertAfter(targetdiv);
+						newcell = findClosest(onpage, targetdivid).next();
 					} else if (targetappendtype == "append") {
 						onpage = targetdiv;
 						targetdiv.append(data);

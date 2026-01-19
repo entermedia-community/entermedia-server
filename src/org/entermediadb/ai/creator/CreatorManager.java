@@ -11,6 +11,7 @@ import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.assistant.QuestionsManager;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -168,30 +169,39 @@ public class CreatorManager extends BaseAiManager
 		}
 		
 		content = content.replaceAll("<p.*>&nbsp;</p>", "\n");
+		content = content.replaceAll("<p.*></p>", "\n");
 		content = content.replaceAll("^\\s+", "");
 		content = content.replaceAll("\\s+$", "");
 		
 		String componentcontentid = (String) inComponents.get("componentcontentid");
-		
-		String order = (String)  inComponents.get("ordering");
-		int ordering = Integer.parseInt(order);
-		if(ordering < 0)
-		{
-			ordering = 0;
-		}
 		
 		if(componentcontentid != null)
 		{
 			Data existing = contentsearcher.loadData(componentcontentid);
 			existing.setValue("content", content);
 			existing.setValue("modificationdate", new Date());
-			existing.setValue("ordering", ordering);
 			contentsearcher.saveData(existing, null);
 			return existing;
 		}
-		else
+		
+		Collection<MultiValued> allCompononets = contentsearcher.query().exact("componentsectionid", inSectionId).search();
+		
+		String orderingStr = (String)  inComponents.get("ordering");
+		
+		int ordering = -1;
+		
+		try
+		{			
+			ordering = Integer.parseInt(orderingStr) + 1;
+		}
+		catch (Exception e)
 		{
-			ordering = Math.max(ordering + 1, 0);
+			//ignore
+		}
+		
+		if(ordering < 0)
+		{
+			ordering = allCompononets.size();
 		}
 		
 		Data componentSection = contentsearcher.createNewData();
@@ -205,6 +215,22 @@ public class CreatorManager extends BaseAiManager
 		
 		
 		contentsearcher.saveData(componentSection, null);
+		
+		Collection<Data> tosave = new ArrayList<Data>();
+		for (Iterator iterator = allCompononets.iterator(); iterator.hasNext();) {
+			MultiValued data = (MultiValued) iterator.next();
+			if(data.getId().equals(componentSection.getId()))
+			{
+				continue;
+			}
+			int currentordering = data.getInt("ordering");
+			if(currentordering >= ordering)
+			{
+				data.setValue("ordering", currentordering + 1);
+				tosave.add(data);
+			}
+		}
+		contentsearcher.saveAllData(tosave, null);
 		
 		return componentSection;
 		
@@ -223,11 +249,25 @@ public class CreatorManager extends BaseAiManager
 		Data source = searcher.loadData(sourceid);
 		Data target = searcher.loadData(targetid);
 		
-		source.setValue("ordering", Integer.parseInt(targetorder));
-		target.setValue("ordering", Integer.parseInt(sourceorder));
+		try 
+		{
+			if(source != null)
+			{				
+				source.setValue("ordering", Integer.parseInt(targetorder));
+				searcher.saveData(source, inReq.getUser());
+			}
+			if(target != null)
+			{				
+				target.setValue("ordering", Integer.parseInt(sourceorder));
+				searcher.saveData(target, inReq.getUser());
+			}
+			
+		}
+		catch (Exception e) 
+		{
+			throw new RuntimeException(e);
+		}
 		
-		searcher.saveData(source, inReq.getUser());
-		searcher.saveData(target, inReq.getUser());
 	}
 
 	public void deleteCreatorSection(String inSearchType, String inId) {
