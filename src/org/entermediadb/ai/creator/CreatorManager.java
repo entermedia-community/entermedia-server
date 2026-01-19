@@ -278,6 +278,64 @@ public class CreatorManager extends BaseAiManager
 		
 	}
 	
+	public Data duplicateCreatorSection(String inSearchType, String inId) {
+		Searcher sectionsearcher = getMediaArchive().getSearcher(inSearchType);
+		MultiValued section = (MultiValued) sectionsearcher.loadData(inId);
+		
+		if(section != null)
+		{			
+			int currentordering = section.getInt("ordering");
+
+			Data newsection = sectionsearcher.createNewData();
+			
+			for (Iterator iterator = section.keySet().iterator(); iterator.hasNext();) {
+				String key = (String) iterator.next();
+				if(key.equals("id") || key.startsWith("."))
+				{
+					continue;
+				}
+				if("ordering".equals(key))
+				{
+					newsection.setValue("ordering", currentordering + 1);
+					continue;
+				}
+				newsection.setValue(key, section.getValue(key));
+			}
+			sectionsearcher.saveData(newsection, null);
+			
+			Collection<MultiValued> all = new ArrayList<MultiValued>();
+			if("componentcontent".equals(inSearchType))
+			{
+				all = sectionsearcher.query().exact("componentsectionid", section.get("componentsectionid")).search();
+			}
+			else if("componentsection".equals(inSearchType))
+			{			
+				all = sectionsearcher.query().exact("tutorialid", section.get("tutorialid")).search();
+			}
+			Collection<Data> tosave = new ArrayList<Data>();
+			for (Iterator iterator = all.iterator(); iterator.hasNext();) {
+				MultiValued data = (MultiValued) iterator.next();
+				if(data.getId().equals(newsection.getId()))
+				{
+					continue;
+				}
+				int ordering = data.getInt("ordering");
+				if(ordering >= currentordering)
+				{
+					data.setValue("ordering", ordering + 1);
+					tosave.add(data);
+				}
+			}
+			sectionsearcher.saveAllData(tosave, null);
+			
+			
+			return newsection;
+		}
+		
+		return null;
+		
+	}
+	
 	public void orderCreatorSection(WebPageRequest inReq)
 	{
 		String sourceid = inReq.getRequestParameter("source");

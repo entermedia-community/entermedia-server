@@ -361,4 +361,24 @@ public class AgentModule extends BaseMediaModule {
 		creatorManager.orderCreatorSection(inReq);
 	}
 	
+	public void duplicateCreatorSection(WebPageRequest inReq)
+	{
+		String searchtype = inReq.getRequestParameter("searchtype");
+		String dataid = inReq.getRequestParameter("id");
+		
+		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		Data duplicate = creatorManager.duplicateCreatorSection(searchtype, dataid);
+		
+		inReq.putPageValue("searchtype", searchtype);
+
+		if("componentcontent".equals(searchtype))
+		{
+			inReq.putPageValue("componentcontent", duplicate);
+		}
+		else if("componentsection".equals(searchtype))
+		{			
+			inReq.putPageValue("section", duplicate);
+		}
+	}
+	
 }
