@@ -296,11 +296,25 @@ public class AgentModule extends BaseMediaModule {
 			throw new IllegalArgumentException("No tutorial found for id: " + tutorialid);
 		}
 		
-		String ordering = inReq.getRequestParameter("ordering");
 		try
 		{
-			int orderingint = Integer.parseInt(ordering);
-			Data section = creatorManager.createCreatorSection(tutorial, orderingint + 1);
+			Map fields = new HashMap();
+			String sectionid = inReq.getRequestParameter("sectionid");
+			if( sectionid != null && sectionid.length() > 0)
+			{
+				fields.put("sectionid", sectionid);
+				String name = inReq.getRequestParameter("name");
+				fields.put("name", name);
+			}
+			else
+			{
+				String ordering = inReq.getRequestParameter("ordering");
+				int orderingint = Integer.parseInt(ordering);
+				fields.put("ordering", orderingint + 1);				
+			}
+			
+			
+			Data section = creatorManager.createCreatorSection(tutorial, fields);
 			inReq.putPageValue("tutorial", tutorial);
 			inReq.putPageValue("section", section);
 		}

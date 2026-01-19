@@ -147,11 +147,26 @@ public class CreatorManager extends BaseAiManager
 		
 	}
 	
-	public Data createCreatorSection(Data inTutorial, int inOrdering)
+	public Data createCreatorSection(Data inTutorial, Map inFields)
 	{
 		MediaArchive archive = getMediaArchive();
 		
 		Searcher sectionsearcher = archive.getSearcher("componentsection");
+		
+		String sectionid = (String) inFields.get("sectionid");
+		
+		if(sectionid != null)
+		{
+			Data existing = sectionsearcher.loadData(sectionid);
+			existing.setName((String) inFields.get("name"));
+			existing.setValue("modificationdate", new Date());
+			sectionsearcher.saveData(existing, null);
+			return existing;
+		}
+		
+		
+		int inOrdering = (int) inFields.get("ordering");
+		
 		Data section = sectionsearcher.createNewData();
 
 		section.setName("New Section");
