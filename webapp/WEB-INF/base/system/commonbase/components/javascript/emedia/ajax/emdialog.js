@@ -30,7 +30,7 @@
 				if (resultsdiv.length > 1) {
 					console.error(
 						"Should not be finding more than one resultdiv ",
-						resultsdiv
+						resultsdiv,
 					);
 				}
 				var otherdata = resultsdiv.cleandata();
@@ -47,7 +47,7 @@
 		if (modaldialog.length == 0) {
 			var modalClass = initiator.data("modalclass") || "";
 			jQuery("#application").append(
-				`<div class="modal ${modalClass}" tabindex="-1" id="${id}" style="display:none"></div>`
+				`<div class="modal ${modalClass}" tabindex="-1" id="${id}" style="display:none"></div>`,
 			);
 			modaldialog = jQuery("#" + id);
 		}
@@ -146,17 +146,12 @@
 					modalbackdrop = false;
 				}
 
-				var modalinstance;
 				var modalOptions = {
 					closeExisting: false,
 					show: true,
 					backdrop: modalbackdrop,
 					keyboard: false,
 				};
-
-				if (!window.bsVersion) {
-					window.bsVersion = parseInt(bootstrap.Modal.VERSION);
-				}
 
 				if (
 					modaldialog.find(".htmleditor").length > 0 ||
@@ -165,25 +160,11 @@
 					modalOptions.focus = false;
 				}
 
-				if (window.bsVersion == 5) {
-					var modIns = new bootstrap.Modal(modaldialog[0], modalOptions);
-					modIns.show();
-					modalinstance = $(modaldialog[0]);
-				} else {
-					modalinstance = modaldialog.modal(modalOptions);
-				}
+				var modalInstance = new bootstrap.Modal(modaldialog[0], modalOptions);
+				modalInstance.show();
 
 				$(document.body).addClass("modal-open");
-				/*  Use editdivid
-				var autosetformtargetdiv = initiatorData["autosetformtargetdiv"];
-				if (autosetformtargetdiv !== undefined) {
-					var tdiv = initiator.closest("." + autosetformtargetdiv);
-					if (tdiv.length == 1) {
-						firstform.data("targetdiv", tdiv.attr("id"));
-					}
-				}
-				*/
-				// fix submit button
+
 				var justok = initiatorData["cancelsubmit"];
 				if (justok != null) {
 					$(".modal-footer #submitbutton", modaldialog).hide();
@@ -214,11 +195,11 @@
 
 				//backup url
 				var currenturl = window.location.href;
-				modalinstance.data("oldurlbar", currenturl);
+				modaldialog.data("oldurlbar", currenturl);
 
 				searchpagetitle = modaldialog.find("[data-setpagetitle]");
 
-				modalinstance.on("hidden.bs.modal", function () {
+				modaldialog.on("hidden.bs.modal", function () {
 					//on close execute extra JS -- Todo: Move it to closedialog()
 					if (initiatorData["onclose"]) {
 						var onclose = initiatorData["onclose"];
@@ -235,7 +216,7 @@
 					$(window).trigger("resize");
 				});
 
-				adjustZIndex(modalinstance);
+				// adjustZIndex(modaldialog);
 
 				if (
 					typeof global_updateurl !== "undefined" &&
@@ -282,7 +263,7 @@
 			},
 		});
 
-		$(modaldialog).on("shown.bs.modal", function () {
+		modaldialog.on("shown.bs.modal", function () {
 			trackKeydown = true;
 			var focuselement = modaldialog.data("focuson");
 			if (focuselement) {
@@ -292,73 +273,39 @@
 			}
 		});
 
-		// $(modaldialog).on("hidePrevented.bs.modal", function (e) {
-		// 	var backUrl = $(modaldialog).find(".entityNavBack");
-		// 	if (backUrl.length > 0) {
-		// 		e.stopImmediatePropagation();
-		// 		e.preventDefault();
-		// 		backUrl.trigger("click");
-		// 	}
-		// });
-		
-		/*
-		$(modaldialog).on("hide.bs.modal", function (e) {
-			trackKeydown = false;
-			if (!$(this).hasClass("onfront")) {
-				e.stopPropagation();
-				e.stopImmediatePropagation();
-				return this;
-			} else {
-				if ($(".modal:visible").length > 0) {
-					var onfrontmodal = $(".modal.onfront");
-					if (onfrontmodal.length) {
-						var backBtn = onfrontmodal.find(".entityNavBack");
-						if (backBtn.length && backBtn.is(":visible")) {
-							return false; //Do not close if there is a back button
-						}
+		modaldialog.on("hide.bs.modal", () => {
+			this.inert = true; // Makes everything in the modal non-interactive immediately
+		});
+
+		document.addEventListener("keydown", function (event) {
+			if (event.key === "Escape") {
+				// Find all currently open modals (those with the 'show' class)
+				const openModals = document.querySelectorAll(".modal.show");
+				//console.log(openModals);
+				if (openModals.length > 0) {
+					// Get the top-most modal (the last one in the list based on display order)
+					const topModalEl = openModals[openModals.length - 1];
+
+					// Get the Bootstrap modal instance for that element
+					const modalInstance = bootstrap.Modal.getInstance(topModalEl);
+
+					document.querySelectorAll(".modal").forEach((modalElement) => {
+						modalElement.addEventListener("hide.bs.modal", () => {
+							if (document.activeElement instanceof HTMLElement) {
+								document.activeElement.blur(); //
+							}
+						});
+					});
+
+					// Hide only the top-most modal
+					if (modalInstance) {
+						modalInstance.hide();
+						// Stop the event from propagating further to other modals
+						event.stopPropagation();
+						event.stopImmediatePropagation();
 					}
-					// restore the modal-open class to the body element, so that scrolling works
-					// properly after de-stacking a modal.
-					setTimeout(function () {
-						$(document.body).removeClass("modal-open");
-					}, 0);
 				}
 			}
-		});*/
-		
-		modaldialog[0].addEventListener('hide.bs.modal', () => {
-		  modaldialog[0].inert = true; // Makes everything in the modal non-interactive immediately
-		});
-		
-		document.addEventListener('keydown', function (event) {
-		  if (event.key === 'Escape') {
-		    // Find all currently open modals (those with the 'show' class)
-		    const openModals = document.querySelectorAll('.modal.show');
-			//console.log(openModals);
-		    if (openModals.length > 0) {
-		      // Get the top-most modal (the last one in the list based on display order)
-		      const topModalEl = openModals[openModals.length - 1];
-
-		      // Get the Bootstrap modal instance for that element
-		      const modalInstance = bootstrap.Modal.getInstance(topModalEl);
-			  
-			  document.querySelectorAll('.modal').forEach(modalElement => {
-			    modalElement.addEventListener('hide.bs.modal', () => {
-			      if (document.activeElement instanceof HTMLElement) {
-			        document.activeElement.blur(); //
-			      }
-			    });
-			  });
-
-		      // Hide only the top-most modal
-		      if (modalInstance) {
-		        modalInstance.hide();
-		        // Stop the event from propagating further to other modals
-		        event.stopPropagation();
-				event.stopImmediatePropagation();
-		      }
-		    }
-		  }
 		});
 
 		//Close drodpown if exists
@@ -370,15 +317,11 @@
 })(jQuery);
 
 closeemdialog = function (modaldialog) {
-	var oldurlbar = modaldialog.data("oldurlbar");
 	var dialogid = modaldialog.attr("id");
+	var oldurlbar = modaldialog.data("oldurlbar");
 
-	if (window.bsVersion == 5) {
-		var modIns = bootstrap.Modal.getInstance(modaldialog[0]);
-		modIns.hide();
-	} else {
-		modaldialog.modal("hide");
-	}
+	var modalInstance = bootstrap.Modal.getInstance(modaldialog[0]);
+	modalInstance.hide();
 
 	//other modals?
 	var othermodal = $(".modal");
@@ -434,12 +377,8 @@ lQuery(".modal-backdrop").livequery("click", function (e) {
 closeallemdialogs = function () {
 	$(".modal").each(function () {
 		var modaldialog = $(this);
-		if (window.bsVersion == 5) {
-			var modIns = bootstrap.Modal.getInstance(this);
-			modIns.hide();
-		} else {
-			modaldialog.modal("hide");
-		}
+		var modalInstance = bootstrap.Modal.getInstance(modaldialog[0]);
+		modalInstance.hide();
 		modaldialog.remove();
 	});
 	var overlay = $("#hiddenoverlay");
@@ -454,7 +393,6 @@ function RemoveParameterFromUrl(url, parameter) {
 		.replace(new RegExp("[?&]" + parameter + "=[^&#]*(#.*)?$"), "$1")
 		.replace(new RegExp("([?&])" + parameter + "=[^&]*&"), "$1");
 }
-
 
 function adjustZIndex(element) {
 	/*
