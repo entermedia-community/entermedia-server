@@ -15,6 +15,7 @@ import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.markdown.MarkdownUtil;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -52,6 +53,23 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection("startCreator");
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
 			return response;
+		}
+		else if ("conversation".equals(agentFn))
+		{
+			// TODO
+			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
+			MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", agentFn);
+			LlmResponse response = startChat(inAgentContext, usermessage, inAgentMessage, function);
+			String generalresponse  = response.getMessage();
+			if(generalresponse != null)
+			{
+				MarkdownUtil md = new MarkdownUtil();
+				generalresponse = md.render(generalresponse);
+			}
+			response.setMessage(generalresponse);
+			
+			inAgentContext.setNextFunctionName(null);
+
 		}
 		return null;
 	}
