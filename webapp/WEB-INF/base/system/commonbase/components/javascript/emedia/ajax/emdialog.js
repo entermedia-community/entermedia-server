@@ -168,7 +168,7 @@
 				if (window.bsVersion == 5) {
 					var modIns = new bootstrap.Modal(modaldialog[0], modalOptions);
 					modIns.show();
-					modalinstance = $(modIns);
+					modalinstance = $(modaldialog[0]);
 				} else {
 					modalinstance = modaldialog.modal(modalOptions);
 				}
@@ -300,6 +300,8 @@
 		// 		backUrl.trigger("click");
 		// 	}
 		// });
+		
+		/*
 		$(modaldialog).on("hide.bs.modal", function (e) {
 			trackKeydown = false;
 			if (!$(this).hasClass("onfront")) {
@@ -322,6 +324,41 @@
 					}, 0);
 				}
 			}
+		});*/
+		
+		modaldialog[0].addEventListener('hide.bs.modal', () => {
+		  modaldialog[0].inert = true; // Makes everything in the modal non-interactive immediately
+		});
+		
+		document.addEventListener('keydown', function (event) {
+		  if (event.key === 'Escape') {
+		    // Find all currently open modals (those with the 'show' class)
+		    const openModals = document.querySelectorAll('.modal.show');
+			//console.log(openModals);
+		    if (openModals.length > 0) {
+		      // Get the top-most modal (the last one in the list based on display order)
+		      const topModalEl = openModals[openModals.length - 1];
+
+		      // Get the Bootstrap modal instance for that element
+		      const modalInstance = bootstrap.Modal.getInstance(topModalEl);
+			  
+			  document.querySelectorAll('.modal').forEach(modalElement => {
+			    modalElement.addEventListener('hide.bs.modal', () => {
+			      if (document.activeElement instanceof HTMLElement) {
+			        document.activeElement.blur(); //
+			      }
+			    });
+			  });
+
+		      // Hide only the top-most modal
+		      if (modalInstance) {
+		        modalInstance.hide();
+		        // Stop the event from propagating further to other modals
+		        event.stopPropagation();
+				event.stopImmediatePropagation();
+		      }
+		    }
+		  }
 		});
 
 		//Close drodpown if exists
@@ -418,11 +455,13 @@ function RemoveParameterFromUrl(url, parameter) {
 		.replace(new RegExp("([?&])" + parameter + "=[^&]*&"), "$1");
 }
 
+
 function adjustZIndex(element) {
+	/*
 	var zIndex = 100000;
 	setTimeout(function () {
 		var adjust = 0;
-		if (element.hasClass("modalmediaviewer")) {
+		if (element.find("modalmediaviewer")) {
 			$(".modal:visible").css("z-index", zIndex);
 			$(".modal:visible").off();
 			$(".modal:visible").addClass("behind");
@@ -443,6 +482,7 @@ function adjustZIndex(element) {
 
 		//$(window).trigger("resize");
 	});
+	*/
 }
 
 $(document).ready(function () {

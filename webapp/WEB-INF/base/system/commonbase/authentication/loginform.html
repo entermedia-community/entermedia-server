@@ -38,7 +38,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 						#set( $error = $context.getPageValue("oe-exception") )
 						#if ( $error ) 
 							<div class="alert alert-danger my-2" role="alert" style="min-width: 450px;">
-								<i class="bi bi-exclamation-triangle-fill mr-1 ns"></i>
+								<i class="bi bi-exclamation-triangle-fill me-1 ns"></i>
 								$error
 							</div>
 							$context.removeSessionValue("oe-exception")
@@ -57,7 +57,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 							<input type="hidden" name="subject" value="[[Your Login Info]]"/>
 						</form>
 						<div class="text-right">
-							<a href="#" class="loginmethod" data-target="#passwordLogin" title="[[Legacy login with username & password]]"><i class="fas fa-key mr-1 me-1 text-muted"></i>[[Legacy Login]]</a>
+							<a href="#" class="loginmethod" data-target="#passwordLogin" title="[[Legacy login with username & password]]"><i class="fas fa-key me-1 me-1 text-muted"></i>[[Legacy Login]]</a>
 						</div>
 					</div>
 				#end
@@ -89,7 +89,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 					</form>   
 					#if($allowloginbyemail == "true")
 					<div class="text-right">
-						<a href="#" class="loginmethod"  data-target="#passwordLessLogin" ><i class="fas fa-arrow-left me-1 mr-1"></i> [[Login by Email]]</a> 
+						<a href="#" class="loginmethod"  data-target="#passwordLessLogin" ><i class="fas fa-arrow-left me-1 me-1"></i> [[Login by Email]]</a> 
 					</div>
 					#end
 				</div> 
