@@ -50,6 +50,7 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		{
 			inAgentContext.addContext("playbackentityid", playbackentityid);
 			inAgentContext.addContext("playbackentitymoduleid", playbackentitymoduleid);
+
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection("startCreator");
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
 			return response;
@@ -79,9 +80,10 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		String playbackentityid = inReq.getRequestParameter("playbackentityid");
 		String playbackentitymoduleid = inReq.getRequestParameter("playbackentitymoduleid");
 
+		AgentContext agentContext =  (AgentContext) inReq.getPageValue("agentcontext");
+
 		if(playbackentityid == null)
 		{
-			AgentContext agentContext =  (AgentContext) inReq.getPageValue("agentcontext");
 			playbackentityid = (String) agentContext.getContextValue("playbackentityid");
 			playbackentitymoduleid = (String) agentContext.getContextValue("playbackentitymoduleid");
 		}
@@ -96,8 +98,44 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		inReq.putPageValue("playbackentity", playbackentity);
 		
 		Searcher sectionsearcher = getMediaArchive().getSearcher("componentsection");
-		HitTracker hits = sectionsearcher.query().exact("playbackentityid", playbackentityid).sort("ordering").search();
-		inReq.putPageValue("componentsections", hits);
+		
+		Integer playbacksection = null;
+		
+		String secpage = inReq.getRequestParameter("playbacksection");
+		if(secpage != null)
+		{
+			playbacksection = Integer.parseInt(secpage);
+		}
+		if(playbacksection == null && agentContext != null)
+		{
+			playbacksection = (Integer) agentContext.getContextValue("playbacksection");
+		}
+		
+		if(playbacksection != null)
+		{
+			Data selectedsection = sectionsearcher.query().exact("playbackentityid", playbackentityid)
+					.exact("ordering", String.valueOf(playbacksection)).searchOne();
+			inReq.putPageValue("selectedsection", selectedsection);
+			
+			Data prevsection = sectionsearcher.query().exact("playbackentityid", playbackentityid)
+					.exact("ordering", String.valueOf(playbacksection - 1)).searchOne();
+			if(prevsection != null)
+			{				
+				inReq.putPageValue("prevsection", prevsection);
+			}
+			
+			Data nextsection = sectionsearcher.query().exact("playbackentityid", playbackentityid)
+					.exact("ordering", String.valueOf(playbacksection + 1)).searchOne();
+			if(nextsection != null)
+			{
+				inReq.putPageValue("nextsection", nextsection);
+			}
+		}
+		else
+		{
+			HitTracker hits = sectionsearcher.query().exact("playbackentityid", playbackentityid).sort("ordering").search();
+			inReq.putPageValue("componentsections", hits);
+		}
 	}
 	
 	public void createTutorial(WebPageRequest inReq)
@@ -267,6 +305,8 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		}
 		sectionsearcher.saveAllData(tosave, null);
 		
+		reorderAll(sectionsearcher);
+		
 		return section;
 	}
 	
@@ -345,6 +385,8 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		}
 		contentsearcher.saveAllData(tosave, null);
 		
+		reorderAll(contentsearcher);
+		
 		return componentSection;
 		
 	}
@@ -383,6 +425,7 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 			{			
 				all = sectionsearcher.query().exact("playbackentityid", section.get("playbackentityid")).search();
 			}
+			
 			Collection<Data> tosave = new ArrayList<Data>();
 			for (Iterator iterator = all.iterator(); iterator.hasNext();) {
 				MultiValued data = (MultiValued) iterator.next();
@@ -399,6 +442,7 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 			}
 			sectionsearcher.saveAllData(tosave, null);
 			
+			reorderAll(sectionsearcher);
 			
 			return newsection;
 		}
@@ -433,11 +477,13 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 				searcher.saveData(target, inReq.getUser());
 			}
 			
+			reorderAll(searcher);
 		}
 		catch (Exception e) 
 		{
 			throw new RuntimeException(e);
 		}
+		
 		
 	}
 
@@ -448,7 +494,21 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		{			
 			sectionsearcher.delete(section, null);
 		}
+		reorderAll(sectionsearcher);
 	}
-
+	
+	protected void reorderAll(Searcher searcher)
+	{
+		HitTracker inHits = searcher.query().sort("ordering").search();
+		Collection<Data> tosave = new ArrayList<Data>();
+		int idx = 0;
+		for (Iterator iterator = inHits.iterator(); iterator.hasNext();) {
+			MultiValued data = (MultiValued) iterator.next();
+			data.setValue("ordering", idx);
+			tosave.add(data);
+			idx++;
+		}
+		searcher.saveAllData(tosave, null);
+	}
 
 }

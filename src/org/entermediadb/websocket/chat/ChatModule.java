@@ -247,6 +247,10 @@ public class ChatModule extends BaseMediaModule
 		{
 			Data data = (Data) iterator.next();
 			Data message = chats.loadData(data);
+			if("system".equals(message.get("messagetype"))) 
+			{
+				continue;
+			}
 			loaded.add(message);
 
 			lastdateloaded = message.get("date");
