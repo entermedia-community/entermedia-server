@@ -829,7 +829,6 @@ jQuery(document).ready(function () {
 			dpicker.datepicker({
 				altField: "#" + targetid,
 				altFormat: "yy-mm-dd",
-				yearRange: "1900:2050",
 				beforeShow: function (input, inst) {
 					setTimeout(function () {
 						$("#ui-datepicker-div").css("z-index", 100100);
@@ -874,7 +873,7 @@ jQuery(document).ready(function () {
 				$(this).datepicker("setDate", date);
 			}
 
-			var picker = $(this).parent().find(".ui-datepicker-trigger");
+			
 
 			$(this).blur(function () {
 				var val = $(this).val();
@@ -886,18 +885,22 @@ jQuery(document).ready(function () {
 				if ($("#ui-datepicker-div").is(":visible")) {
 					return;
 				}
+				let picker = $(this).parent().find(".ui-datepicker-trigger");
 				picker.trigger("click");
 			});
+			/*
 			$(this).clickOutside({
 				event: "click",
 				handler: function () {
 					if (!$("#ui-datepicker-div").is(":visible")) {
 						return;
 					}
+					let picker = $(this).parent().find(".ui-datepicker-trigger");
 					picker.trigger("click");
 				},
 				exclude: [".ui-datepicker", ".ui-icon"],
 			});
+			*/
 		} //datepicker
 	});
 }); //on ready
