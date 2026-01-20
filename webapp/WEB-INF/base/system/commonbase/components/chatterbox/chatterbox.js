@@ -120,15 +120,18 @@ function chatterbox() {
 		e.preventDefault();
 		var editbtn = $(this);
 		var targetDiv = editbtn.data("targetdiv");
-		var options = editbtn.data();
+		var options = editbtn.cleandata();
 		options.oemaxlevel = 1;
 		var nextpage = editbtn.attr("href");
-		$.get(nextpage, options, function (data) {
-			//var cell = findclosest($(this), "#" + targetDiv);
-			var cell = editbtn.closest("#" + targetDiv);
-			cell.replaceWith(data);
-			scrollToEdit(targetDiv);
-		});
+		$.get(
+			nextpage, 
+			options, 
+			function (data) {
+				//var cell = findclosest($(this), "#" + targetDiv);
+				var cell = editbtn.closest("#" + targetDiv);
+				cell.replaceWith(data);
+				scrollToEdit(targetDiv);
+			});
 	});
 
 	lQuery(".chatterbox-body-inside").livequery("scroll", function (e) {
@@ -156,7 +159,10 @@ function scrollToChat() {
 
 function scrollToEdit(targetDiv) {
 	var messagecontainer = $("#" + targetDiv);
-	messagecontainer.get(0).scrollIntoView();
+	if (messagecontainer.lenght)
+	{
+		messagecontainer.get(0).scrollIntoView();
+	}
 }
 
 function connect() {
