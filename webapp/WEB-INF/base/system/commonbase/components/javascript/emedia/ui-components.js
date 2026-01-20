@@ -321,9 +321,9 @@ jQuery(document).ready(function () {
 					data = targetEl.val();
 				}
 				navigator.clipboard.writeText(data);
-				$this.html('<i class="bi bi-check-lg mr-1"></i> Copied!');
+				$this.html('<i class="bi bi-check-lg me-1"></i> Copied!');
 				setTimeout(() => {
-					$this.html('<i class="bi bi-clipboard mr-1"></i> ' + btnText);
+					$this.html('<i class="bi bi-clipboard me-1"></i> ' + btnText);
 				}, 2000);
 			} else {
 				if (!targetEl.is("img")) {
@@ -538,7 +538,9 @@ jQuery(document).ready(function () {
 			jQuery.ajax({
 				url: url,
 				async: false,
-				data: options,
+				data: {
+					...options,
+				},
 				success: function (data) {
 					//data = $(data);
 					var cell = findClosest(toggler, "#" + targetdiv);
@@ -578,7 +580,9 @@ jQuery(document).ready(function () {
 				jQuery.ajax({
 					url: url,
 					async: false,
-					data: options,
+					data: {
+						...options,
+					},
 				});
 			});
 		} else {
@@ -611,7 +615,9 @@ jQuery(document).ready(function () {
 		jQuery.ajax({
 			url: url,
 			async: false,
-			data: options,
+			data: {
+				...options,
+			},
 			success: function (data) {
 				targetdiv.replaceWith(data); //Cant get a valid dom element
 				$(".pushcontent").removeClass("pushcontent-fullwidth");
@@ -803,12 +809,18 @@ jQuery(document).ready(function () {
 	lQuery("input.datepicker").livequery(function () {
 		if ($.datepicker) {
 			var dpicker = $(this);
+			var icontext = dpicker.data("alt");
+			if (!icontext)
+				{
+					icontext = "Select Date";
+				}
 			$.datepicker.setDefaults($.datepicker.regional[browserlanguage]);
 			$.datepicker.setDefaults(
 				$.extend({
 					showOn: "button",
 					buttonImage:
 						"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='%23444444' class='bi bi-calendar-plus' viewBox='0 0 16 16'%3E%3Cpath d='M8 7a.5.5 0 0 1 .5.5V9H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V10H6a.5.5 0 0 1 0-1h1.5V7.5A.5.5 0 0 1 8 7'/%3E%3Cpath d='M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z'/%3E%3C/svg%3E",
+					buttonText: icontext,
 					buttonImageOnly: true,
 					changeMonth: true,
 					changeYear: true,
@@ -820,7 +832,6 @@ jQuery(document).ready(function () {
 			dpicker.datepicker({
 				altField: "#" + targetid,
 				altFormat: "yy-mm-dd",
-				yearRange: "1900:2050",
 				beforeShow: function (input, inst) {
 					setTimeout(function () {
 						$("#ui-datepicker-div").css("z-index", 100100);
@@ -865,7 +876,7 @@ jQuery(document).ready(function () {
 				$(this).datepicker("setDate", date);
 			}
 
-			var picker = $(this).parent().find(".ui-datepicker-trigger");
+			
 
 			$(this).blur(function () {
 				var val = $(this).val();
@@ -877,18 +888,22 @@ jQuery(document).ready(function () {
 				if ($("#ui-datepicker-div").is(":visible")) {
 					return;
 				}
+				let picker = $(this).parent().find(".ui-datepicker-trigger");
 				picker.trigger("click");
 			});
+			/*
 			$(this).clickOutside({
 				event: "click",
 				handler: function () {
 					if (!$("#ui-datepicker-div").is(":visible")) {
 						return;
 					}
+					let picker = $(this).parent().find(".ui-datepicker-trigger");
 					picker.trigger("click");
 				},
 				exclude: [".ui-datepicker", ".ui-icon"],
 			});
+			*/
 		} //datepicker
 	});
 
