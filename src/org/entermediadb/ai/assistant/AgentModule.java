@@ -316,7 +316,7 @@ public class AgentModule extends BaseMediaModule {
 			}
 			
 			
-			Data section = creatorManager.createCreatorSection(playbackentity, fields);
+			Data section = creatorManager.createCreatorSection(playbackentity, playbackentitymoduleid, fields);
 			inReq.putPageValue("playbackentity", playbackentity);
 			inReq.putPageValue("section", section);
 		}

@@ -214,7 +214,7 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		
 	}
 	
-	public Data createCreatorSection(Data inPlayback, Map inFields)
+	public Data createCreatorSection(Data inPlayback, String inPlaybackModuleId, Map inFields)
 	{
 		MediaArchive archive = getMediaArchive();
 		
@@ -238,6 +238,7 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 
 		section.setName("New Section");
 		section.setValue("playbackentityid", inPlayback.getId());
+		section.setValue("playbackentitymoduleid", inPlaybackModuleId);
 		section.setValue("entitymoduleid", inPlayback.get("entitymoduleid"));
 		section.setValue("entityid", inPlayback.get("entityid"));
 		section.setValue("ordering", inOrdering);
@@ -246,7 +247,10 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		
 		sectionsearcher.saveData(section, null);
 		
-		Collection<MultiValued> allSections = sectionsearcher.query().exact("playbackentityid", inPlayback.getId()).search();
+		Collection<MultiValued> allSections = sectionsearcher.query()
+				.exact("playbackentityid", inPlayback.getId())
+				.moreThan("ordering", inOrdering-1)
+				.search();
 		Collection<Data> tosave = new ArrayList<Data>();
 		for (Iterator iterator = allSections.iterator(); iterator.hasNext();) {
 			MultiValued data = (MultiValued) iterator.next();
