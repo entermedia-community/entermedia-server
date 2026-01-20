@@ -541,7 +541,9 @@ jQuery(document).ready(function () {
 			jQuery.ajax({
 				url: url,
 				async: false,
-				data: options,
+				data: {
+					...options,
+				},
 				success: function (data) {
 					//data = $(data);
 					var cell = findClosest(toggler, "#" + targetdiv);
@@ -581,7 +583,9 @@ jQuery(document).ready(function () {
 				jQuery.ajax({
 					url: url,
 					async: false,
-					data: options,
+					data: {
+						...options,
+					},
 				});
 			});
 		} else {
@@ -614,7 +618,9 @@ jQuery(document).ready(function () {
 		jQuery.ajax({
 			url: url,
 			async: false,
-			data: options,
+			data: {
+				...options,
+			},
 			success: function (data) {
 				targetdiv.replaceWith(data); //Cant get a valid dom element
 				$(".pushcontent").removeClass("pushcontent-fullwidth");

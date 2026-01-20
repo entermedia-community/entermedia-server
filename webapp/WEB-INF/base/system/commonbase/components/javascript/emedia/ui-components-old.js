@@ -2422,6 +2422,7 @@ function switchsubmodulebox(item) {
 }
 
 //Old not used
+/*
 replaceelement = function (url, div, options, callback) {
 	jQuery.ajax({
 		url: url,
@@ -2442,7 +2443,7 @@ replaceelement = function (url, div, options, callback) {
 		crossDomain: true,
 	});
 };
-
+*/
 lQuery(".changeimportmodule").livequery("change", function () {
 	var select = $(this);
 	var moduleid = select.val();
