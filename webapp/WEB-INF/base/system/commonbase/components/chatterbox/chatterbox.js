@@ -322,6 +322,11 @@ function channelUpdateMessage(chatbox, message) {
 		var $data = $div.find("#chatter-message-" + message.messageid);
 		var inserted = false;
 		try {
+			var messagetype = $data.data("messagetype");
+			if (messagetype === "system") {
+				inserted = true;
+				return;
+			}
 			var createddat = $data.data("createdat");
 			var timestamp = new Date(createddat).getTime();
 			if (!isNaN(timestamp)) {

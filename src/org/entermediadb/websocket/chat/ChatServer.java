@@ -393,7 +393,15 @@ public class ChatServer
 		
 		String newmessage = values.getString("message");
 		chat.setValue("message", newmessage);
-		chat.setValue("messagetype", "message");
+		
+		String messagetype = (String) inMap.get("messagetype");
+		
+		if(messagetype == null)
+		{
+			messagetype = "message";
+		}
+		
+		chat.setValue("messagetype", messagetype);
 		
 		chat.setValue("replytoid", values.getString("replytoid"));
 		
@@ -431,6 +439,17 @@ public class ChatServer
 		if(playbackentitymoduleid != null && playbackentityid != null) {
 			channel.setValue("playbackentityid", playbackentityid);
 			channel.setValue("playbackentitymoduleid", playbackentitymoduleid);
+		}
+		
+		Object pbsection = inChannelInfo.get("playbacksection");
+		if(pbsection != null)
+		{
+			Integer playbacksection = Integer.parseInt(String.valueOf(pbsection));
+			if(playbacksection != null)
+			{
+				channel.setValue("playbacksection", playbacksection);
+				inChannelInfo.put("messagetype", "system");
+			}
 		}
 
 		chats.saveData(channel);

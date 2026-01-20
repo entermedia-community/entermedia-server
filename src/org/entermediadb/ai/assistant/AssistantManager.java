@@ -244,6 +244,15 @@ public class AssistantManager extends BaseAiManager
 			if( playbackentitymoduleid != null)
 			{
 				functionName = "startCreator_" + playbackentitymoduleid;
+				Integer playbacksection = (Integer) inChannel.getValue("playbacksection");
+				if( playbacksection != null)
+				{
+					agentContext.addContext("playbacksection", playbacksection);
+				}
+				else
+				{
+					agentContext.addContext("playbacksection", 0);
+				}
 			}
 			else
 			{
@@ -413,6 +422,10 @@ public class AssistantManager extends BaseAiManager
 		
 		for (Iterator iterator = messages.iterator(); iterator.hasNext();) {
 			Data message = (Data) iterator.next();
+			if("system".equals(message.get("messagetype")))
+			{
+				continue;
+			}
 			if("agent".equals(message.get("user")))
 			{
 				String plainmessage = message.get("messageplain");
