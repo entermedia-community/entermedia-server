@@ -239,12 +239,24 @@ public class AssistantManager extends BaseAiManager
 		//Determine what will need to be processed
 		try
 		{
-			String functiongroup = inChannel.get("functiongroup");
-			if(functiongroup == null)
+			String functionName = null;
+			String playbackentitymoduleid = inChannel.get("playbackentitymoduleid");
+			if( playbackentitymoduleid != null)
 			{
-				return;
+				functionName = "startCreator_" + playbackentitymoduleid;
 			}
-			agentContext.setFunctionName("start"+functiongroup);
+			else
+			{
+				
+				String functiongroup = inChannel.get("functiongroup");
+				if(functiongroup == null)
+				{
+					return;
+				}
+				functionName = "start"+functiongroup;
+			}
+			
+			agentContext.setFunctionName(functionName);
 			execCurrentFunctionFromChat(usermessage, agentmessage, agentContext);
 		}
 		catch( Exception ex)

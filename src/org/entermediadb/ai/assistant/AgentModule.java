@@ -287,13 +287,15 @@ public class AgentModule extends BaseMediaModule {
 	{
 		
 		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
-		String tutorialid = inReq.getRequestParameter("tutorialid");
-		Searcher tutorialsearcher = getMediaArchive(inReq).getSearcher("aitutorials");
-		Data tutorial = tutorialsearcher.loadData(tutorialid);
+		String playbackentityid = inReq.getRequestParameter("playbackentityid");
+		String playbackentitymoduleid = inReq.getRequestParameter("playbackentitymoduleid");
 		
-		if( tutorial == null)
+		Searcher searcher = getMediaArchive(inReq).getSearcher(playbackentitymoduleid);
+		Data playbackentity = searcher.loadData(playbackentityid);
+		
+		if( playbackentity == null)
 		{
-			throw new IllegalArgumentException("No tutorial found for id: " + tutorialid);
+			throw new IllegalArgumentException("No tutorial found for id: " + playbackentityid);
 		}
 		
 		try
@@ -314,8 +316,8 @@ public class AgentModule extends BaseMediaModule {
 			}
 			
 			
-			Data section = creatorManager.createCreatorSection(tutorial, fields);
-			inReq.putPageValue("tutorial", tutorial);
+			Data section = creatorManager.createCreatorSection(playbackentity, fields);
+			inReq.putPageValue("playbackentity", playbackentity);
 			inReq.putPageValue("section", section);
 		}
 		catch( Exception ex)

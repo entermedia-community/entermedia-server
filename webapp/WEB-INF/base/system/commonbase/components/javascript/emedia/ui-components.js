@@ -926,21 +926,4 @@ jQuery(document).ready(function () {
 		});
 		$(this).addClass("selected");
 	});
-
-	lQuery(".aitutorial").livequery("click", function () {
-		debugger;
-
-		var playbackentityid = $(this).data("playbackentityid");
-		var playbackentitymoduleid = $(this).data("playbackentitymoduleid");
-
-		var chatterbox = $(this).closest(".chatterbox");
-		chatterbox.data("playbackentityid", playbackentityid);
-		chatterbox.data("playbackentitymoduleid", playbackentitymoduleid);
-
-		$("#chatter-msg").val("Start Tutorial: " + $(this).data("tutorialname"));
-		setTimeout(function () {
-			$(".chatter-send").trigger("click");
-			$(".ai-functions").remove();
-		});
-	});
 }); //on ready

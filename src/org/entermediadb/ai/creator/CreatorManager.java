@@ -8,28 +8,77 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.assistant.QuestionsManager;
+import org.entermediadb.ai.assistant.SemanticAction;
+import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 
-public class CreatorManager extends BaseAiManager 
+public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 {
-	public void getCreator(WebPageRequest inReq) {
-		String tutorialid = inReq.getRequestParameter("tutorialid");
-		if(tutorialid == null)
+	@Override
+	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
+	{
+		Data channel = inAgentContext.getChannel();
+		String playbackentitymoduleid = channel.get("playbackentitymoduleid");
+		String playbackentityid = channel.get("playbackentityid");
+		
+		String agentFn = inAgentContext.getFunctionName();
+		if(agentFn.startsWith("startCreator"))
 		{
-			throw new IllegalArgumentException("Missing tutorialid parameter");
+			inAgentContext.addContext("playbackentityid", playbackentityid);
+			inAgentContext.addContext("playbackentitymoduleid", playbackentitymoduleid);
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("startCreator");
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
+			return response;
 		}
-		Searcher tutorialsearcher = getMediaArchive().getSearcher("aitutorials");
-		Data tutorial = tutorialsearcher.query().id(tutorialid).searchOne();
-		inReq.putPageValue("tutorial", tutorial);
+		return null;
+	}
+
+	
+	public void getCreator(WebPageRequest inReq) {
+		String playbackentityid = inReq.getRequestParameter("playbackentityid");
+		String playbackentitymoduleid = inReq.getRequestParameter("playbackentitymoduleid");
+
+		if(playbackentityid == null)
+		{
+			AgentContext agentContext =  (AgentContext) inReq.getPageValue("agentcontext");
+			playbackentityid = (String) agentContext.getContextValue("playbackentityid");
+			playbackentitymoduleid = (String) agentContext.getContextValue("playbackentitymoduleid");
+		}
+		
+		if(playbackentityid == null)
+		{
+			throw new IllegalArgumentException("Missing playbackentityid parameter");
+		}
+		
+		Searcher searcher = getMediaArchive().getSearcher(playbackentitymoduleid);
+		Data playbackentity = searcher.loadCachedData(playbackentityid);
+		inReq.putPageValue("playbackentity", playbackentity);
 		
 		Searcher sectionsearcher = getMediaArchive().getSearcher("componentsection");
-		HitTracker hits = sectionsearcher.query().exact("tutorialid", tutorialid).sort("ordering").search();
+		HitTracker hits = sectionsearcher.query().exact("playbackentityid", playbackentityid).sort("ordering").search();
 		inReq.putPageValue("componentsections", hits);
 	}
 	
@@ -115,13 +164,13 @@ public class CreatorManager extends BaseAiManager
 
 	
 	
-	public void batchCreateCreatorSection(Data inTutorial, Collection<String> inSections)
+	public void batchCreateCreatorSection(Data inPlayback, Collection<String> inSections)
 	{
 		MediaArchive archive = getMediaArchive();
 		Searcher sectionsearcher = archive.getSearcher("componentsection");
 
-		String entitymoduleid = inTutorial.get("entitymoduleid");
-		String entityid = inTutorial.get("entityid");
+		String entitymoduleid = inPlayback.get("entitymoduleid");
+		String entityid = inPlayback.get("entityid");
 		
 		Collection<Data> tosave = new ArrayList<Data>();
 		int idx = 0;
@@ -131,7 +180,7 @@ public class CreatorManager extends BaseAiManager
 			Data componentSection = sectionsearcher.createNewData();
 
 			componentSection.setName(outline);
-			componentSection.setValue("tutorialid", inTutorial.getId());
+			componentSection.setValue("playbackentityid", inPlayback.getId());
 			componentSection.setValue("entitymoduleid", entitymoduleid);
 			componentSection.setValue("entityid", entityid);
 			componentSection.setValue("ordering", idx);
@@ -147,7 +196,7 @@ public class CreatorManager extends BaseAiManager
 		
 	}
 	
-	public Data createCreatorSection(Data inTutorial, Map inFields)
+	public Data createCreatorSection(Data inPlayback, Map inFields)
 	{
 		MediaArchive archive = getMediaArchive();
 		
@@ -170,16 +219,16 @@ public class CreatorManager extends BaseAiManager
 		Data section = sectionsearcher.createNewData();
 
 		section.setName("New Section");
-		section.setValue("tutorialid", inTutorial.getId());
-		section.setValue("entitymoduleid", inTutorial.get("entitymoduleid"));
-		section.setValue("entityid", inTutorial.get("entityid"));
+		section.setValue("playbackentityid", inPlayback.getId());
+		section.setValue("entitymoduleid", inPlayback.get("entitymoduleid"));
+		section.setValue("entityid", inPlayback.get("entityid"));
 		section.setValue("ordering", inOrdering);
 		section.setValue("creationdate", new Date());
 		section.setValue("modificationdate", new Date());
 		
 		sectionsearcher.saveData(section, null);
 		
-		Collection<MultiValued> allSections = sectionsearcher.query().exact("tutorialid", inTutorial.getId()).search();
+		Collection<MultiValued> allSections = sectionsearcher.query().exact("playbackentityid", inPlayback.getId()).search();
 		Collection<Data> tosave = new ArrayList<Data>();
 		for (Iterator iterator = allSections.iterator(); iterator.hasNext();) {
 			MultiValued data = (MultiValued) iterator.next();
@@ -310,7 +359,7 @@ public class CreatorManager extends BaseAiManager
 			}
 			else if("componentsection".equals(inSearchType))
 			{			
-				all = sectionsearcher.query().exact("tutorialid", section.get("tutorialid")).search();
+				all = sectionsearcher.query().exact("playbackentityid", section.get("playbackentityid")).search();
 			}
 			Collection<Data> tosave = new ArrayList<Data>();
 			for (Iterator iterator = all.iterator(); iterator.hasNext();) {
@@ -378,4 +427,6 @@ public class CreatorManager extends BaseAiManager
 			sectionsearcher.delete(section, null);
 		}
 	}
+
+
 }
