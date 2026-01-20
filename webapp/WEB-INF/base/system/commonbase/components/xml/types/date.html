@@ -11,10 +11,12 @@
 
 #set($formateddate = $context.getSearchDate($value))
 
-<input name="$!{detailprefix}${detail.getId()}.value" id="${detail.id}${idcount}value" value="#esc($!formateddate)"  type="hidden" >
+<input name="$!{detailprefix}${detail.getId()}.value" id="${detail.id}${idcount}value" value="#esc($!formateddate)"  type="hidden" />
 <input type="text" 
+	id="date${detail.id}${idcount}value"
 	class="datepicker form-control #if($detail.isRequired()  && !$multiedit) required #end " 
-	data-targetid="${detail.id}${idcount}value" /> 
+	data-targetid="${detail.id}${idcount}value"
+	data-alt="[[Select]] $!detail.getText($context)" /> 
 
 #if ($detail.picker == "false" && $detail.format)
 	<span style="color:gray;font-style:italic;font-size:.9em;">$detail.format<span>
