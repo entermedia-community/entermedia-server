@@ -324,9 +324,9 @@ jQuery(document).ready(function () {
 					data = targetEl.val();
 				}
 				navigator.clipboard.writeText(data);
-				$this.html('<i class="bi bi-check-lg mr-1"></i> Copied!');
+				$this.html('<i class="bi bi-check-lg me-1"></i> Copied!');
 				setTimeout(() => {
-					$this.html('<i class="bi bi-clipboard mr-1"></i> ' + btnText);
+					$this.html('<i class="bi bi-clipboard me-1"></i> ' + btnText);
 				}, 2000);
 			} else {
 				if (!targetEl.is("img")) {

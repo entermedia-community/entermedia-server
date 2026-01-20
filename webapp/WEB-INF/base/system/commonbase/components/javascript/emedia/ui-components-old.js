@@ -1861,37 +1861,8 @@ function initializeUI() {
 		});
 	});
 
-	lQuery(".dropdown").livequery(function (e) {
-		var dropdown = $(this);
 
-		dropdown.hover(function () {
-			dropdown.children(".dropdown-menu").addClass("show");
-		});
-	});
 
-	lQuery(".dropdown-menu a.dropdown-toggle").livequery("click", function (e) {
-		if (!$(this).next().hasClass("show")) {
-			$(this)
-				.parents(".dropdown-menu")
-				.first()
-				.find(".show")
-				.removeClass("show");
-		}
-		var $subMenu = $(this).next(".dropdown-menu");
-		$subMenu.toggleClass("show");
-
-		$(this)
-			.parents("li.nav-item.dropdown.show")
-			.on("hidden.bs.dropdown", function (e) {
-				$(".dropdown-submenu .show").removeClass("show");
-			});
-
-		return false;
-	});
-
-	lQuery(".dropdown-menu a.dropdown-item").livequery("click", function (e) {
-		$(this).parents(".dropdown-menu").removeClass("show");
-	});
 
 	//Sidebar Custom Width
 	lQuery(".sidebar-toggler-resize").livequery(function () {
