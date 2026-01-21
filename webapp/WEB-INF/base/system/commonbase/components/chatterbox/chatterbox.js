@@ -692,6 +692,7 @@ jQuery(document).ready(function () {
 			var dl = $(this).data("downloadlink");
 			var al = $(this).data("assetlink");
 			if (dl || al) {
+				$(".simple-lightbox .sl-actions").remove();
 				$(".simple-lightbox").append("<div class='sl-actions'></div>");
 
 				if (dl) {
