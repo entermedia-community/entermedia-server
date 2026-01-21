@@ -1006,9 +1006,12 @@ body.hidden-scroll {
 	}
 }
 .sl-wrapper .sl-actions {
-	bottom: 30px;
-	left: 30px;
 	position: absolute;
+	bottom:10px;
+	width:100%;
+	display:flex;
+	justify-content:center;
+	z-index:10060;
 }
 .sl-wrapper .sl-btn {
 	display: inline-block;
