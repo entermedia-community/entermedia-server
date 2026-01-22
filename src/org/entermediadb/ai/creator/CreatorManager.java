@@ -22,6 +22,7 @@ import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
 
 public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 {
@@ -171,14 +172,16 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		String sections = questionsmanager.getAnswerByEntity(entitymoduleid, entityid, command);
 		if(sections != null)
 		{
-			batchCreateCreatorSection(data, parseOutlines(sections));
+			batchCreateCreatorSection(data, parseSectionString(sections));
 			
 			inReq.putPageValue("data", data);
 		}
 		
+		getMediaArchive().fireSharedMediaEvent("llm/creatorcomponentcontent");
+		
 	}
 
-	protected Collection<String> parseOutlines(String inOutlines)
+	protected Collection<String> parseSectionString(String inOutlines)
 	{
 		Collection<String> outlineitems = new ArrayList<String>();
 		
@@ -519,9 +522,79 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 	
 	public void autoPopulateComponentContent() 
 	{
-		Collection<String> emptySections = new ArrayList<String>();
+		Searcher contentearcher = getMediaArchive().getSearcher("componentcontent");
+		Searcher sectionsearcher = getMediaArchive().getSearcher("componentsection");
 		
-		
-	}
+		QuestionsManager questionsmanager = (QuestionsManager) getMediaArchive().getBean("questionsManager");
 
+		HitTracker sections = sectionsearcher.query().all().search();
+		
+		Collection<Data> tosave = new ArrayList<Data>();
+
+		MarkdownUtil md = new MarkdownUtil();
+		
+		for (Iterator iterator = sections.iterator(); iterator.hasNext();) 
+		{
+			MultiValued section = (MultiValued) iterator.next();
+			String sectionid = section.getId();
+			
+			SearchQuery orquery = contentearcher.query().exists("content").exists("asseid").or().getQuery();
+			HitTracker existingcomponentcontents = contentearcher.query().exact("componentsectionid", sectionid).addchild(orquery).search();
+			
+			if(!existingcomponentcontents.isEmpty())
+			{
+				continue;
+			}
+			 
+			String topicName = section.getName();
+			String command = "Create a detailed description on this topic: " + topicName;
+			
+			String contents = questionsmanager.getAnswerByEntity(section.get("entitymoduleid"), section.get("entityid"), command);
+			if(contents == null)
+			{
+				continue;
+			}
+			
+			String[] paragraphs = contents.split("\\\\n");
+			int ordering = 0;
+			for (int i = 0; i < paragraphs.length; i++)
+			{
+				String paragraph = paragraphs[i];
+				paragraph = paragraph.replaceAll("^\\s+", "");
+				paragraph = paragraph.replaceAll("\\s+$", "");
+				
+				String componenttype = "paragraph";
+				if(paragraph.startsWith("#"))
+				{
+					componenttype = "heading";
+				}
+				
+				if(paragraph.trim().length() == 0)
+				{
+					continue;
+				}
+				
+				paragraph = paragraph.replaceAll("^#+", "");
+				
+				String content = md.renderPlain(paragraph);
+				
+				Data componentcontent = contentearcher.createNewData();
+				componentcontent.setValue("componentsectionid", sectionid);
+				componentcontent.setValue("content", content.trim());
+				componentcontent.setValue("componenttype", componenttype);
+				componentcontent.setValue("ordering", ordering);
+				componentcontent.setValue("creationdate", new Date());
+				componentcontent.setValue("modificationdate", new Date());
+				
+				tosave.add(componentcontent);
+				
+				ordering++;
+			}	
+			
+			//TODO: add image
+			
+		}
+		
+		contentearcher.saveAllData(tosave, null);
+	}
 }
