@@ -3,6 +3,7 @@ package org.entermediadb.ai.creator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -565,37 +566,72 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 			
 			contents = contents.replace("\\n", "\n");
 			
-			String[] paragraphs = contents.split("\\n+");
-			int ordering = 0;
-			for (int i = 0; i < paragraphs.length; i++)
+			String[] lines = contents.split("\\n+");
+			
+			Collection<Map> boundaries = new ArrayList<Map>();
+			
+			Collection<String> listItems = new ArrayList<String>();
+			
+			for (int i = 0; i < lines.length; i++)
 			{
-				String paragraph = paragraphs[i];
-				paragraph = paragraph.replaceAll("^\\s+", "");
-				paragraph = paragraph.replaceAll("\\s+$", "");
+				String line = lines[i];
+				line = line.replaceAll("^\\s+", "");
+				line = line.replaceAll("\\s+$", "");
 				
-				String componenttype = "paragraph";
-				if(paragraph.startsWith("#"))
-				{
-					componenttype = "heading";
-				}
-				else
-				{
-					
-				}
-				
-				if(paragraph.trim().length() == 0)
+				if(line.length() == 0)
 				{
 					continue;
 				}
+				boolean listEnded = false;
 				
-				paragraph = paragraph.replaceAll("^#+", "");
+				if(line.startsWith("#"))
+				{
+					listEnded = true;
+					Map boundary = new HashMap();
+					boundary.put("componenttype", "heading");
+					
+					line = line.replaceAll("^#+", "");
+					line = md.renderPlain(line);
+					boundary.put("content", line);
+					boundaries.add(boundary);
+				}
+				else if(Pattern.matches("^\\s*\\- .*", line) ||	Pattern.matches("^\\d+\\. .*", line))
+				{
+					listItems.add(line);
+				}
+				else
+				{
+					listEnded = true;
+					Map boundary = new HashMap();
+					boundary.put("componenttype", "paragraph");
+					line = md.renderPlain(line);
+					boundary.put("content", line);
+					boundaries.add(boundary);
+				}
 				
-				String content = md.renderPlain(paragraph);
+				if(listEnded && !listItems.isEmpty())
+				{
+					String listcontent = String.join("\n", listItems);
+					listcontent = md.renderPlain(listcontent);
+					Map boundary = new HashMap();
+					boundary.put("componenttype", "paragraph");
+					boundary.put("content", listcontent);
+					boundaries.add(boundary);
+					
+					listItems.clear();
+				}
+			}
+			
+			
+			int ordering = 0;
+			for (Iterator iterator2 = boundaries.iterator(); iterator2.hasNext();) {
+				Map boundary = (Map) iterator2.next();
+				
 				
 				Data componentcontent = contentearcher.createNewData();
 				componentcontent.setValue("componentsectionid", sectionid);
-				componentcontent.setValue("content", content.trim());
-				componentcontent.setValue("componenttype", componenttype);
+				componentcontent.setValue("content", boundary.get("content"));
+				componentcontent.setValue("componenttype", boundary.get("componenttype"));
 				componentcontent.setValue("ordering", ordering);
 				componentcontent.setValue("creationdate", new Date());
 				componentcontent.setValue("modificationdate", new Date());
@@ -604,8 +640,6 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 				
 				ordering++;
 			}
-			
-			//TODO: add image
 			
 			SearchingManager searchingmanager = (SearchingManager) getMediaArchive().getBean("searchingManager");
 			
