@@ -81,7 +81,6 @@ class SaveButtonPlugin extends Plugin {
 				const keepEditor = $(editor.sourceElement).data("keepeditor");
 
 				let content = editor.getData();
-				content = content.replace(/<p.*>&nbsp;<\/p>/gi, "");
 				if (content) content = prettifyHTML(editor.getData());
 				$(editor.sourceElement).val(content);
 				$.ajax({
@@ -189,7 +188,7 @@ class UploadFileButtonPlugin extends Plugin {
 						const adapter = new EmUploadAdapter(
 							file,
 							editor,
-							editor.sourceElement.dataset.uploadUrl
+							editor.sourceElement.dataset.uploadUrl,
 						);
 
 						try {
@@ -289,7 +288,7 @@ class EmUploadAdapter {
 
 							//  Insert the raw HTML into the editor manually
 							const viewFragment = this.editor.data.processor.toView(
-								response.html
+								response.html,
 							);
 							const modelFragment = this.editor.data.toModel(viewFragment);
 							this.editor.model.insertContent(modelFragment);
@@ -301,7 +300,7 @@ class EmUploadAdapter {
 							reject(errorThrown || textStatus);
 						},
 					});
-				})
+				}),
 		);
 	}
 
@@ -421,7 +420,7 @@ const editorConfig = (options, isInline = false) => {
 			ImageResize,
 			ImageStyle,
 			ImageToolbar,
-			ImageUpload
+			ImageUpload,
 		);
 		image = {
 			toolbar: [
@@ -449,7 +448,7 @@ const editorConfig = (options, isInline = false) => {
 			ImageResize,
 			ImageStyle,
 			ImageToolbar,
-			ImageUpload
+			ImageUpload,
 		);
 
 		image = {

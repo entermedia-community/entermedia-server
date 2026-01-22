@@ -164,6 +164,7 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		playback.setValue("entitymoduleid", entitymoduleid);
 		playback.setValue("entityid", entityid);
 		playback.setValue("featured", featured);
+		playback.setValue("creatorstatus", "creating");
 		
 		searcher.saveData(playback, inReq.getUser());
 
@@ -175,6 +176,9 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		if(sections != null)
 		{
 			batchCreateCreatorSection(playback, playbackentitymoduleid, parseSectionString(sections));
+			playback.setValue("creatorstatus", "populating");
+			
+			searcher.saveData(playback, inReq.getUser());
 			
 			inReq.putPageValue("data", playback);
 		}
