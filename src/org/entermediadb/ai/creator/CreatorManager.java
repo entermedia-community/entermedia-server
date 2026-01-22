@@ -144,10 +144,11 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 	
 	public void autoPopulateSection(WebPageRequest inReq)
 	{
-		String playbackentitymoduleid = inReq.getRequestParameter("entitymoduleid");
-		String playbackentityid = inReq.getRequestParameter("entityid");
+		String entitymoduleid = inReq.getRequestParameter("entitymoduleid");
+		String entityid = inReq.getRequestParameter("entityid");
+
 		String topicName = inReq.getRequestParameter("name");
-		if(playbackentitymoduleid == null || playbackentityid == null || topicName == null || topicName.length() < 5)
+		if(entityid == null || entitymoduleid == null || topicName == null || topicName.length() < 5)
 		{
 			throw new IllegalArgumentException("Missing required parameters");
 		}
@@ -155,10 +156,11 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		
 		String searchtype = (String) inReq.getRequestParameter("creatortype");
 		Searcher searcher = getMediaArchive().getSearcher(searchtype);
+		
 		Data data = searcher.createNewData();
 		data.setName(topicName);
-		data.setValue("entitymoduleid", playbackentitymoduleid);
-		data.setValue("entityid", playbackentityid);
+		data.setValue("entitymoduleid", entitymoduleid);
+		data.setValue("entityid", entityid);
 		data.setValue("featured", featured);
 		
 		QuestionsManager questionsmanager = (QuestionsManager) getMediaArchive().getBean("questionsManager");
@@ -166,7 +168,7 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		searcher.saveData(data, inReq.getUser());
 	
 		String command = "Create a simple list of index/outline for " + topicName;
-		String sections = questionsmanager.getAnswerByEntity(playbackentitymoduleid, playbackentityid, command);
+		String sections = questionsmanager.getAnswerByEntity(entitymoduleid, entityid, command);
 		if(sections != null)
 		{
 			batchCreateCreatorSection(data, parseOutlines(sections));
@@ -230,10 +232,8 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		MediaArchive archive = getMediaArchive();
 		Searcher sectionsearcher = archive.getSearcher("componentsection");
 
-		String entitymoduleid = inPlayback.get("entitymoduleid");
-		String entityid = inPlayback.get("entityid");
-		
 		Collection<Data> tosave = new ArrayList<Data>();
+
 		int idx = 0;
 		for (Iterator iterator = inSections.iterator(); iterator.hasNext();) {
 			String outline = (String) iterator.next();
@@ -242,15 +242,15 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 
 			componentSection.setName(outline);
 			componentSection.setValue("playbackentityid", inPlayback.getId());
-			componentSection.setValue("entitymoduleid", entitymoduleid);
-			componentSection.setValue("entityid", entityid);
+			componentSection.setValue("playbackentitymoduleid", inPlayback.get("entitysourcetype"));
+			componentSection.setValue("entitymoduleid", inPlayback.get("entitymoduleid"));
+			componentSection.setValue("entityid", inPlayback.get("entityid"));
 			componentSection.setValue("ordering", idx);
 			componentSection.setValue("creationdate", new Date());
 			componentSection.setValue("modificationdate", new Date());
 
 			tosave.add(componentSection);
 			idx++;
-			
 		}
 		
 		sectionsearcher.saveAllData(tosave, null);
@@ -519,6 +519,8 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 	
 	public void autoPopulateComponentContent() 
 	{
+		Collection<String> emptySections = new ArrayList<String>();
+		
 		
 	}
 
