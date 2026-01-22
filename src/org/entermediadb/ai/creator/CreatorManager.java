@@ -230,11 +230,7 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 			
 			if(parentType == null)
 			{				
-				if(line.startsWith("^\\- .*"))
-				{
-					parentType = "^\\*+ .*";
-				}
-				else if(Pattern.matches("^\\s*\\- .*", line))
+				if(Pattern.matches("^\\s*\\- .*", line))
 				{
 					parentType = "^\\s*\\- .*";
 				}
@@ -581,6 +577,10 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 				if(paragraph.startsWith("#"))
 				{
 					componenttype = "heading";
+				}
+				else
+				{
+					
 				}
 				
 				if(paragraph.trim().length() == 0)
