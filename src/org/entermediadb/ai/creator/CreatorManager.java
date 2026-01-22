@@ -88,14 +88,18 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 			playbackentitymoduleid = (String) agentContext.getContextValue("playbackentitymoduleid");
 		}
 		
-		if(playbackentityid == null)
+		if(playbackentityid == null || playbackentitymoduleid == null)
 		{
-			throw new IllegalArgumentException("Missing playbackentityid parameter");
+			throw new IllegalArgumentException("Missing playbackentityid or playbackentitymoduleid parameter");
 		}
 		
-		Searcher searcher = getMediaArchive().getSearcher(playbackentitymoduleid);
-		Data playbackentity = searcher.loadCachedData(playbackentityid);
+		Data playbackmodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
+		inReq.putPageValue("playbackmodule", playbackmodule);
+		
+		Data playbackentity = getMediaArchive().getCachedData(playbackentitymoduleid, playbackentityid);
 		inReq.putPageValue("playbackentity", playbackentity);
+		
+		
 		
 		Searcher sectionsearcher = getMediaArchive().getSearcher("componentsection");
 		
@@ -332,6 +336,7 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		{
 			Data existing = contentsearcher.loadData(componentcontentid);
 			existing.setValue("content", content);
+			existing.setValue("assetid", inComponents.get("assetid"));
 			existing.setValue("modificationdate", new Date());
 			contentsearcher.saveData(existing, null);
 			return existing;

@@ -341,10 +341,26 @@ public class AgentModule extends BaseMediaModule {
 		String sectionid = inReq.getRequestParameter("sectionid");
 		
 		Map component = new HashMap();
-		component.put("content", inReq.getRequestParameter("content"));
+		
+		String content = inReq.getRequestParameter("content.value");
+		if(content == null)
+		{
+			content = inReq.getRequestParameter("content");
+		}
+		component.put("content", content);
+		
+		String assetid = inReq.getRequestParameter("assetid.value");
+		if(assetid == null)
+		{
+			assetid = inReq.getRequestParameter("assetid");
+		}
+		component.put("assetid", assetid);
+		
 		String componenttype = inReq.getRequestParameter("componenttype");
 		component.put("componenttype", componenttype);
+		
 		component.put("ordering", inReq.getRequestParameter("ordering"));
+		
 		String componentcontentid = inReq.getRequestParameter("componentcontentid");
 		component.put("componentcontentid", componentcontentid);
 		

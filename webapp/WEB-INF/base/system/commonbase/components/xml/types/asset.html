@@ -6,6 +6,13 @@
 	#set($value = $val)
 #end
 
+#ifnull($uploadenabled)
+	#set($uploadenabled = true)
+#end
+#ifnull($browseenabled)
+	#set($browseenabled = true)
+#end
+
 <div class="assetpicker"  id="entitypicker${detail.id}" data-detailid="${detail.id}">
 	<div class="render-type-thumbnail position-relative mb-1" id="${detail.id}-preview">
 		#if($value && $value != "")
@@ -27,22 +34,28 @@
 				</div>
 			#end
 		#end
+		#ifnull($foundrow)
+			<span class="empty">No asset selected</span>
+		#end
 	</div>
 	<input type="hidden" name="${detail.id}.value" id="${detail.id}-value" data-detailid="${detail.id}" value="$!foundrow.id"/>
 
-	<div class="d-flex align-items-center">
+	<div class="asset-picker-btns">
+		#if($uploadenabled)
 		<span class="btn btn-secondary btn-file">
 			<i class="bi bi-upload me-1"></i>
 			[[Upload]] 
 			<input type="file" multiple name="file.${detail.getId()}" id="${detail.id}-file" class="assetInput">
 		</span>
+		#end
 
 		#ifnull($pickerurl)
 			#set($pickerurl = "${siteroot}${finderhome}/views/modules/asset/editors/pickerpickasset/index.html")
 		#end
 		
+		#if($browseenabled)
 		<a href="$pickerurl" 
-			class="emdialog btn btn-secondary mx-2"
+			class="emdialog btn btn-secondary"
 			data-dialogid="dialogpickerassetpicker"
 			data-assetclearresults="true"
 			data-assetclearselections="true"
@@ -55,7 +68,8 @@
 		>
 			<i class="bi bi-card-list me-1"></i> [[Browse]]
 		</a>
-		
+		#end
+
 		#if($module && $entity)
 			#if($mediaarchive.isCatalogSettingTrue("ai_create_image_enabled") && $permissions.canEntity($module, $entity, "createassetswithai"))
 					<a href="$siteroot$apphome/views/modules/contentcreator/editors/contentcreatorpickasset/index.html"
