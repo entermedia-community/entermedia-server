@@ -273,7 +273,7 @@ public class AgentModule extends BaseMediaModule {
 	public void populateSection(WebPageRequest inReq) throws Exception 
 	{
 		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
-		creatorManager.autoPopulateSection(inReq);
+		creatorManager.createCreatorAndPopulateSection(inReq);
 	}
 	
 	

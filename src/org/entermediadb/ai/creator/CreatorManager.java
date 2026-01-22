@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.assistant.QuestionsManager;
+import org.entermediadb.ai.assistant.SearchingManager;
 import org.entermediadb.ai.assistant.SemanticAction;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
@@ -143,7 +144,7 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		}
 	}
 	
-	public void autoPopulateSection(WebPageRequest inReq)
+	public void createCreatorAndPopulateSection(WebPageRequest inReq)
 	{
 		String entitymoduleid = inReq.getRequestParameter("entitymoduleid");
 		String entityid = inReq.getRequestParameter("entityid");
@@ -155,29 +156,60 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		}
 		boolean featured = "on".equals(inReq.getRequestParameter("featured"));
 		
-		String searchtype = (String) inReq.getRequestParameter("creatortype");
-		Searcher searcher = getMediaArchive().getSearcher(searchtype);
+		String playbackentitymoduleid = (String) inReq.getRequestParameter("creatortype");
+		Searcher searcher = getMediaArchive().getSearcher(playbackentitymoduleid);
 		
-		Data data = searcher.createNewData();
-		data.setName(topicName);
-		data.setValue("entitymoduleid", entitymoduleid);
-		data.setValue("entityid", entityid);
-		data.setValue("featured", featured);
+		Data playback = searcher.createNewData();
+		playback.setName(topicName);
+		playback.setValue("entitymoduleid", entitymoduleid);
+		playback.setValue("entityid", entityid);
+		playback.setValue("featured", featured);
 		
+		searcher.saveData(playback, inReq.getUser());
+
 		QuestionsManager questionsmanager = (QuestionsManager) getMediaArchive().getBean("questionsManager");
 		
-		searcher.saveData(data, inReq.getUser());
 	
 		String command = "Create a simple list of index/outline for " + topicName;
 		String sections = questionsmanager.getAnswerByEntity(entitymoduleid, entityid, command);
 		if(sections != null)
 		{
-			batchCreateCreatorSection(data, parseSectionString(sections));
+			batchCreateCreatorSection(playback, playbackentitymoduleid, parseSectionString(sections));
 			
-			inReq.putPageValue("data", data);
+			inReq.putPageValue("data", playback);
 		}
 		
 		getMediaArchive().fireSharedMediaEvent("llm/creatorcomponentcontent");
+		
+	}
+	
+	protected void batchCreateCreatorSection(Data inPlayback, String playbackentitymoduleid, Collection<String> inSections)
+	{
+		MediaArchive archive = getMediaArchive();
+		Searcher sectionsearcher = archive.getSearcher("componentsection");
+
+		Collection<Data> tosave = new ArrayList<Data>();
+
+		int idx = 0;
+		for (Iterator iterator = inSections.iterator(); iterator.hasNext();) {
+			String outline = (String) iterator.next();
+			
+			Data componentSection = sectionsearcher.createNewData();
+
+			componentSection.setName(outline);
+			componentSection.setValue("playbackentityid", inPlayback.getId());
+			componentSection.setValue("playbackentitymoduleid", playbackentitymoduleid);
+			componentSection.setValue("entitymoduleid", inPlayback.get("entitymoduleid"));
+			componentSection.setValue("entityid", inPlayback.get("entityid"));
+			componentSection.setValue("ordering", idx);
+			componentSection.setValue("creationdate", new Date());
+			componentSection.setValue("modificationdate", new Date());
+
+			tosave.add(componentSection);
+			idx++;
+		}
+		
+		sectionsearcher.saveAllData(tosave, null);
 		
 	}
 
@@ -226,38 +258,6 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		}
 		
 		return outlineitems;
-	}
-
-	
-	
-	public void batchCreateCreatorSection(Data inPlayback, Collection<String> inSections)
-	{
-		MediaArchive archive = getMediaArchive();
-		Searcher sectionsearcher = archive.getSearcher("componentsection");
-
-		Collection<Data> tosave = new ArrayList<Data>();
-
-		int idx = 0;
-		for (Iterator iterator = inSections.iterator(); iterator.hasNext();) {
-			String outline = (String) iterator.next();
-			
-			Data componentSection = sectionsearcher.createNewData();
-
-			componentSection.setName(outline);
-			componentSection.setValue("playbackentityid", inPlayback.getId());
-			componentSection.setValue("playbackentitymoduleid", inPlayback.get("entitysourcetype"));
-			componentSection.setValue("entitymoduleid", inPlayback.get("entitymoduleid"));
-			componentSection.setValue("entityid", inPlayback.get("entityid"));
-			componentSection.setValue("ordering", idx);
-			componentSection.setValue("creationdate", new Date());
-			componentSection.setValue("modificationdate", new Date());
-
-			tosave.add(componentSection);
-			idx++;
-		}
-		
-		sectionsearcher.saveAllData(tosave, null);
-		
 	}
 	
 	public Data createCreatorSection(Data inPlayback, String inPlaybackModuleId, Map inFields)
@@ -545,17 +545,27 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 			{
 				continue;
 			}
-			 
-			String topicName = section.getName();
-			String command = "Create a detailed description on this topic: " + topicName;
+			
+			String playbackentityid = section.get("playbackentityid");
+			String playbackentitymoduleid = section.get("playbackentitymoduleid");
+			Data playbackentity = getMediaArchive().getCachedData(playbackentitymoduleid, playbackentityid);
+			
+			String creatorName = playbackentity.getName();
+			
+			String sectionName = section.getName();
+			
+			String command = "Create a detailed description of " + sectionName + " that is relevant to " + creatorName;
 			
 			String contents = questionsmanager.getAnswerByEntity(section.get("entitymoduleid"), section.get("entityid"), command);
+			
 			if(contents == null)
 			{
 				continue;
 			}
 			
-			String[] paragraphs = contents.split("\\\\n");
+			contents = contents.replace("\\n", "\n");
+			
+			String[] paragraphs = contents.split("\\n+");
 			int ordering = 0;
 			for (int i = 0; i < paragraphs.length; i++)
 			{
@@ -589,9 +599,32 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 				tosave.add(componentcontent);
 				
 				ordering++;
-			}	
+			}
 			
 			//TODO: add image
+			
+			SearchingManager searchingmanager = (SearchingManager) getMediaArchive().getBean("searchingManager");
+			
+			Data asset = searchingmanager.semanticSearchBestMatch(creatorName + " " + sectionName, "asset");
+			if(asset != null)
+			{
+				Data componentcontent = contentearcher.createNewData();
+				componentcontent.setValue("componentsectionid", sectionid);
+				componentcontent.setValue("assetid", asset.getId());
+				String caption = asset.get("headline");
+				if(caption == null)
+				{
+					caption = asset.get("longcaption");
+				}
+				if(caption != null)
+				{					
+					componentcontent.setValue("content", caption);
+				}
+				componentcontent.setValue("componenttype", "asset");
+				componentcontent.setValue("ordering", ordering);
+				componentcontent.setValue("creationdate", new Date());
+				componentcontent.setValue("modificationdate", new Date());
+			}
 			
 		}
 		

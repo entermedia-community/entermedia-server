@@ -772,6 +772,12 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			inReq.putPageValue("semanticassethits", semanticassethits);
 		}		
 	}
+
+	public Data semanticSearchBestMatch(String inQuery, String inModuleId)
+	{
+		Data relatedEntityId = getSemanticTopicManager().searchOne(inQuery, inModuleId);
+		return relatedEntityId;
+	}
 	
 	protected SemanticClassifier fieldSemanticTopicManager;
 	public SemanticClassifier getSemanticTopicManager()
