@@ -181,7 +181,7 @@ public class ClassifyManager extends InformaticsProcessor
 				}
 			}
 
-			if( textContent != null)
+			if( textContent != null && textContent.length() > 4000)
 			{
 				textContent = textContent.substring(0, Math.min(4000, textContent.length()));
 			}
