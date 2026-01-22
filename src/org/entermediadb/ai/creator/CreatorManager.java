@@ -142,35 +142,36 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		}
 	}
 	
-	public void createTutorial(WebPageRequest inReq)
+	public void autoPopulateSection(WebPageRequest inReq)
 	{
-		String moduleid = inReq.getRequestParameter("entitymoduleid");
-		String entityid = inReq.getRequestParameter("entityid");
-		String tutorialTopic = inReq.getRequestParameter("name");
-		if(moduleid == null || entityid == null || tutorialTopic == null || tutorialTopic.length() < 5)
+		String playbackentitymoduleid = inReq.getRequestParameter("entitymoduleid");
+		String playbackentityid = inReq.getRequestParameter("entityid");
+		String topicName = inReq.getRequestParameter("name");
+		if(playbackentitymoduleid == null || playbackentityid == null || topicName == null || topicName.length() < 5)
 		{
 			throw new IllegalArgumentException("Missing required parameters");
 		}
 		boolean featured = "on".equals(inReq.getRequestParameter("featured"));
 		
-		Searcher searcher = getMediaArchive().getSearcher("aitutorials");
-		Data tutorial = searcher.createNewData();
-		tutorial.setName(tutorialTopic);
-		tutorial.setValue("entitymoduleid", moduleid);
-		tutorial.setValue("entityid", entityid);
-		tutorial.setValue("featured", featured);
+		String searchtype = (String) inReq.getRequestParameter("creatortype");
+		Searcher searcher = getMediaArchive().getSearcher(searchtype);
+		Data data = searcher.createNewData();
+		data.setName(topicName);
+		data.setValue("entitymoduleid", playbackentitymoduleid);
+		data.setValue("entityid", playbackentityid);
+		data.setValue("featured", featured);
 		
 		QuestionsManager questionsmanager = (QuestionsManager) getMediaArchive().getBean("questionsManager");
 		
-		searcher.saveData(tutorial, inReq.getUser());
+		searcher.saveData(data, inReq.getUser());
 	
-		String command = "Create a simple list of tutorial index/outline for " + tutorialTopic;
-		String sections = questionsmanager.getAnswerByEntity(moduleid, entityid, command);
+		String command = "Create a simple list of index/outline for " + topicName;
+		String sections = questionsmanager.getAnswerByEntity(playbackentitymoduleid, playbackentityid, command);
 		if(sections != null)
-		{			
-			batchCreateCreatorSection(tutorial, parseOutlines(sections));
+		{
+			batchCreateCreatorSection(data, parseOutlines(sections));
 			
-			inReq.putPageValue("tutorial", tutorial);
+			inReq.putPageValue("data", data);
 		}
 		
 	}
@@ -514,6 +515,11 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 			idx++;
 		}
 		searcher.saveAllData(tosave, null);
+	}
+	
+	public void autoPopulateComponentContent() 
+	{
+		
 	}
 
 }

@@ -252,20 +252,6 @@ public class AgentModule extends BaseMediaModule {
 		inReq.putPageValue("suggestions", suggestions);
 	}
 	
-	public void loadTutorials(WebPageRequest inReq) throws Exception 
-	{
-		Searcher tutorialsearcher = getMediaArchive(inReq).getSearcher("aitutorials");
-		HitTracker hits = tutorialsearcher.query().exact("featured", true).search();
-		
-		inReq.putPageValue("tutorials", hits);
-	}
-	
-	public void saveTutorial(WebPageRequest inReq) throws Exception 
-	{
-		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
-		creatorManager.createTutorial(inReq);
-	}
-	
 	public void saveAgentContextField(WebPageRequest inReq) throws Exception 
 	{
 		AgentContext agentContext =  (AgentContext) inReq.getPageValue("agentcontext");
@@ -274,6 +260,20 @@ public class AgentModule extends BaseMediaModule {
 		agentContext.setValue(fieldname, fieldvalue);
 		Searcher searcher =  getMediaArchive(inReq).getSearcher("agentcontext");
 		searcher.saveData(agentContext, inReq.getUser());
+	}
+	
+	public void loadTutorials(WebPageRequest inReq) throws Exception 
+	{
+		Searcher tutorialsearcher = getMediaArchive(inReq).getSearcher("aitutorials");
+		HitTracker hits = tutorialsearcher.query().exact("featured", true).search();
+		
+		inReq.putPageValue("tutorials", hits);
+	}
+	
+	public void populateSection(WebPageRequest inReq) throws Exception 
+	{
+		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		creatorManager.autoPopulateSection(inReq);
 	}
 	
 	
@@ -295,7 +295,7 @@ public class AgentModule extends BaseMediaModule {
 		
 		if( playbackentity == null)
 		{
-			throw new IllegalArgumentException("No tutorial found for id: " + playbackentityid);
+			throw new IllegalArgumentException("No creator entity found for id: " + playbackentityid);
 		}
 		
 		try
@@ -368,9 +368,15 @@ public class AgentModule extends BaseMediaModule {
 		inReq.putPageValue("componentcontent", componentcontent);
 		
 		if(componentcontentid == null || componentcontentid.length() == 0)
-		{			
+		{
 			inReq.putPageValue("newcontent", true);
 		}
+	}
+	
+	public void populateComponentContent(WebPageRequest inReq) throws Exception 
+	{
+		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		creatorManager.autoPopulateComponentContent();
 	}
 	
 	public void orderCreatorSection(WebPageRequest inReq)
