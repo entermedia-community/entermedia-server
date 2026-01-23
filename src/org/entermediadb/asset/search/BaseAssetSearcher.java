@@ -35,6 +35,7 @@ import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.OutputFiller;
+import org.openedit.util.PathUtilities;
 
 
 public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, FullTextLoader
@@ -494,25 +495,24 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, Fu
 	@Override
 	public String getFulltext(Asset asset) 
 	{
-		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + getCatalogId() +"/assets/" + asset.getSourcePath() + "/fulltext.txt");
+		String filename = asset.getMediaName();
+		ContentItem item = null;
+		if( filename != null)
+		{
+			String mime = getMediaArchive().getMimeTypeMap().getMimeType(PathUtilities.extractPageType(filename));
+			if( mime != null && mime.startsWith("text/"))
+			{
+				item = getMediaArchive().getOriginalContent(asset);				
+			}
+		}		
+		if( item == null)
+		{
+			item = getPageManager().getRepository().getStub("/WEB-INF/data/" + getCatalogId() +"/assets/" + asset.getSourcePath() + "/fulltext.txt");
+		}
 		if( item.exists() )
 		{
-			Reader input = null;
-			try
-			{
-				input= new InputStreamReader( item.getInputStream(), "UTF-8");
-				StringWriter output = new StringWriter(); 
-				fieldOutputFiller.fill(input, output);
-				return output.toString();
-			}
-			catch( IOException ex)
-			{
-				log.error(ex);
-			}
-			finally
-			{
-				fieldOutputFiller.close(input);
-			}
+			String text = fieldOutputFiller.readAllText(item.getInputStream());
+			return text;
 		}
 
 		return null;

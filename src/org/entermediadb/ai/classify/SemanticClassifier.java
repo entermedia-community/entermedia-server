@@ -98,8 +98,17 @@ public class SemanticClassifier extends InformaticsProcessor implements CatalogE
 			{
 				continue;
 			}
-			Collection<String> newvalues = getSemanticTableManager().createSemanticValues(llmsemanticconnection, inConfig, moduleid,data);
-			data.setValue(fieldname,newvalues);
+			
+			try
+			{
+				Collection<String> newvalues = getSemanticTableManager().createSemanticValues(llmsemanticconnection, inConfig, moduleid,data);
+				data.setValue(fieldname,newvalues);
+			}
+			catch( Throwable ex)
+			{
+				log.error("Could not process " + moduleid + " -> " + data, ex);
+				data.setValue("llmerror", true);
+			}
 		}
 		if( getSemanticTableManager().isIndexingVectors() )
 		{

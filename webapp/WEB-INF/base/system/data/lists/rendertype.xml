@@ -2,6 +2,7 @@
 	<property id="all" >All Types</property>
 	<property id="default" >Default</property>
 	<property id="document" >Documents</property>
+	<property id="text" >Text</property>
 	<property id="video" >Video</property>
 	<property id="streaming" >Streaming Video</property>
 	<property id="embedded" >Web</property>

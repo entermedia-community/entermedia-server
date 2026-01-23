@@ -21,6 +21,7 @@ import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.users.User;
+import org.openedit.util.PathUtilities;
 
 public class ClassifyManager extends InformaticsProcessor
 {
@@ -135,6 +136,22 @@ public class ClassifyManager extends InformaticsProcessor
 			
 			if( !aifields.isEmpty() )
 			{
+				if( mediatype.equals("text") )
+				{
+					String fulltext = getMediaArchive().getAssetSearcher().getFulltext(asset);
+					if( fulltext == null)
+					{
+						log.error("Text has no text: " + asset);
+						return false;
+					}
+					if( fulltext.length() > 4000)
+					{
+						fulltext = fulltext.substring(0,Math.min(fulltext.length(), 4000));
+					}
+					asset.setValue("markdowncontent",fulltext);
+					mediatype = "document";	
+				}
+				
 				if(mediatype.equals("image"))
 				{
 					base64EncodedString = loadBase64Image(asset, "image3000x3000");
@@ -176,6 +193,7 @@ public class ClassifyManager extends InformaticsProcessor
 				}
 				else
 				{
+					///Check for text type
 					log.info("Skipping media type: " + mediatype + " for asset: " + asset);
 					return false;
 				}

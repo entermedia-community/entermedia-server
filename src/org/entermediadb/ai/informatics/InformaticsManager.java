@@ -43,13 +43,16 @@ public class InformaticsManager extends BaseAiManager
 		if (Boolean.valueOf(allowclassifyothernodes) )
 		{
 			//Classify assets from other nodes
-			query = getMediaArchive().query("asset");	
+			query = getMediaArchive().query("asset");
 		}
 		else {
 			//Scan only local files
 			query = getMediaArchive().localQuery("asset");
 		}
-		query.exact("previewstatus", "2").
+		
+		QueryBuilder orquery = getMediaArchive().query("asset").or().exact("previewstatus", "2").exact("previewstatus", "mime");
+
+		query.addchild(orquery.getQuery()).
 				exact("taggedbyllm", false).
 				exact("llmerror", false);
 		
