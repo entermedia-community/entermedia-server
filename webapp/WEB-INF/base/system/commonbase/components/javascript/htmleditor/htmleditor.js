@@ -82,6 +82,11 @@ class SaveButtonPlugin extends Plugin {
 
 				let content = editor.getData();
 				if (content) content = prettifyHTML(editor.getData());
+				content = content
+					.replaceAll("<p></p>", "")
+					.replaceAll("<p>&nbsp;</p>", "")
+					.replace(/<p>\s*<\/p>/g, "")
+					.trim();
 				$(editor.sourceElement).val(content);
 				$.ajax({
 					url: savePath,
@@ -576,7 +581,7 @@ const editorConfig = (options, isInline = false) => {
 				},
 			},
 		},
-		placeholder: "Type or paste your content here!",
+		placeholder: isInline ? "" : "Type or paste your content here!",
 		...htmlSupportConfig,
 	};
 };
