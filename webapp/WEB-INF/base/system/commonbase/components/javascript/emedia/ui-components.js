@@ -79,15 +79,24 @@ jQuery(document).ready(function () {
 		strategy: "fixed",
 		modifiers: [
 			{
+				name: "computeStyles",
+				options: {
+					gpuAcceleration: true,
+					adaptive: false,
+				},
+			},
+			{
 				name: "preventOverflow",
 				options: {
 					boundary: "viewport",
+					altAxis: true,
 				},
 			},
 			{
 				name: "flip",
 				options: {
 					fallbackPlacements: ["bottom", "top", "right", "left"],
+					flipVariations: true,
 				},
 			},
 		],
