@@ -73,12 +73,8 @@ $.ajaxSetup({
 	var oldreplaceWith = $.fn.replaceWith;
 	$.fn.replaceWith = function (arg) {
 		var parent = $(this).parent();
-
 		var returned = oldreplaceWith.call($(this), arg);
-		//console.log("Called replacewith on " +	$(this).selector, arg.length );
-		//$(document).trigger("domchanged");
-		$(document).trigger("domchanged", [parent]); //Child got replaced
-
+		$(document).trigger("domchanged", [parent]);
 		return returned;
 	};
 
@@ -86,7 +82,6 @@ $.ajaxSetup({
 	$.fn.append = function (arg) {
 		var div = $(this);
 		var returned = oldappend.call(div, arg);
-		//console.log("Called replacewith on " +	$(this).selector, arg.length );
 		$(document).trigger("domchanged", [div]);
 		return returned;
 	};
@@ -95,8 +90,7 @@ $.ajaxSetup({
 	$.fn.insertBefore = function (arg) {
 		var div = $(this);
 		var returned = oldinsertbefore.call(div, arg);
-		//console.log("Called replacewith on " +	$(this).selector, arg.length );
-		$(document).trigger("domchanged", [div]);
+		$(document).trigger("domchanged", [div.parent()]);
 		return returned;
 	};
 
@@ -104,7 +98,7 @@ $.ajaxSetup({
 	$.fn.insertAfter = function (arg) {
 		var div = $(this);
 		var returned = oldinsertafter.call(div, arg);
-		$(document).trigger("domchanged", [div]);
+		$(document).trigger("domchanged", [div.parent()]);
 		return returned;
 	};
 
