@@ -279,6 +279,12 @@ public class AgentModule extends BaseMediaModule {
 	
 	public void loadCreator(WebPageRequest inReq) throws Exception 
 	{
+		String module = inReq.findValue("module");
+		String entityid =  inReq.findValue("entityid");
+		
+		inReq.setRequestParameter("playbackentityid", entityid);
+		inReq.setRequestParameter("playbackentitymoduleid", module);
+
 		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
 		creatorManager.getCreator(inReq);
 	}
