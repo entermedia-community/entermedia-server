@@ -58,14 +58,24 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 				inAgentContext.setFunctionName("welcomeQuestions");
 				inAgentContext.setNextFunctionName("welcomeQuestions");
 			}
-			else if( query.contains("tutorial") )
+			else if( query.contains("tutor") )
 			{
 				inAgentContext.setFunctionName("welcomecreate_aitutorials");
 				inAgentContext.setNextFunctionName("welcomecreate_aitutorials");
 			}
+			else if( query.contains("blog") )
+			{
+				inAgentContext.setFunctionName("welcomecreate_aitutorials"); //?
+				inAgentContext.setNextFunctionName("welcomecreate_aitutorials");
+			}
 			else if( query.contains("search") )
 			{
-				inAgentContext.setFunctionName("askQuestion");
+				inAgentContext.setFunctionName("welcomeSearch");
+				inAgentContext.setNextFunctionName("welcomeSearch");
+			}
+			else if( query.contains("chat") )
+			{
+				inAgentContext.setFunctionName("welcomeAutoDetectConversation");
 			}
 			
 //			MultiValued function = (MultiValued) getMediaArchive().getCachedData("aifunction", agentFn);
