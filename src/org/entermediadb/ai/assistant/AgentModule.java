@@ -404,5 +404,41 @@ public class AgentModule extends BaseMediaModule {
 			inReq.putPageValue("section", duplicate);
 		}
 	}
+
+	public void startFunction(WebPageRequest inReq) throws Exception
+	{
+		
+		AssistantManager assistantManager = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
+		
+		//Get the contenxt and update it first
+		String channelid = inReq.getRequestParameter("channel");
+		AgentContext context = assistantManager.loadContext(channelid);
+		
+		String toplevel = inReq.getRequestParameter("toplevelaifunctionid");
+		if( toplevel != null )
+		{
+			context.setTopLevelFunctionName(toplevel);
+		}
+		String functionname = inReq.getRequestParameter("functionname");
+		if( functionname != null )
+		{
+			context.setFunctionName(functionname);
+		}
+		getMediaArchive(inReq).saveData("agentcontext",context);
+		
+		//Now that Context is set. Let the chat respond
+		
+		assistantManager.sendSystemMessage(context,inReq.getUserName(),null);
+
+		//Refresh drop down area?
+	}
+	
+	public void monitorChannels(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		AssistantManager assistantManager = (AssistantManager) archive.getBean("assistantManager");
+		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
+		assistantManager.monitorChannels(log);
+	}
 	
 }

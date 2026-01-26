@@ -137,6 +137,16 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		if ("startQuestions".equals(agentFn))
 		{
 			
+			inAgentMessage.setValue("chatmessagestatus", "completed");
+			
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay startSearch
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
+			inAgentContext.setFunctionName("askQuestion");
+			return response;
+		}
+		if ("askQuestion".equals(agentFn))
+		{
+			
 			//Make sure they have already picked the documents
 			String entiyid = inAgentContext.getChannel().get("dataid");
 			String moduleid = inAgentContext.getChannel().get("searchtype");

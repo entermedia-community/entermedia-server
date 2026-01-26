@@ -68,14 +68,10 @@ public class AssistantManager extends BaseAiManager
 		Searcher chats = archive.getSearcher("chatterbox");
 		for (Iterator iterator = allchannels.iterator(); iterator.hasNext();)
 		{
-			Data channel = (Data) iterator.next();
-			String functiongroup = channel.get("functiongroup");
-			if(functiongroup == null)
-			{
-				continue;
-			}
-			log.info("Processing channel: " + channel.getId() + " with " + functiongroup);
-			if( channel.getName() == null)
+			Data data = (Data) iterator.next();
+			log.info("Processing channel: " + data.getId());
+			Data channel = (Data)archive.getCachedData("channel", data.getId());
+			if( channel.getName() == null)  //Make smarter
 			{
 				Data lastusermessage = chats.query()
 						.exact("channel", channel.getId())
@@ -96,7 +92,6 @@ public class AssistantManager extends BaseAiManager
 						archive.saveData("channel", channel);
 					}
 				}
-				
 			}
 			
 			Collection mostrecents = chats.query()
@@ -105,19 +100,20 @@ public class AssistantManager extends BaseAiManager
 				   .sort("dateDown")
 				   .search();
 			
-			if (mostrecents  == null)
+			if (mostrecents.isEmpty())
 			{
 				continue;
 			}
 
 			//Remove from DB
+			//TODO: Use a local lock
 			Collection tosave = new ArrayList();
 			
 			for (Iterator iterator2 = mostrecents.iterator(); iterator2.hasNext();)
 			{
-				Data	data = (Data) iterator2.next();
-				data.setValue("chatmessagestatus","processing");
-				tosave.add(data);
+				Data lockdata = (Data) iterator2.next();
+				lockdata.setValue("chatmessagestatus","processing");
+				tosave.add(lockdata);
 			}
 			archive.saveData("chatterbox", tosave);
 			
@@ -167,9 +163,10 @@ public class AssistantManager extends BaseAiManager
 				agentContext.setValue("channel", inChannelId);
 				searcher.saveData(agentContext);
 			}
+			Data channel = getMediaArchive().getCachedData("channel", inChannelId);
+			agentContext.setChannel(channel);
 			
 			archive.getCacheManager().put("agentcontext", inChannelId, agentContext);
-		
 		}
 		return agentContext;
 	}
@@ -208,29 +205,13 @@ public class AssistantManager extends BaseAiManager
 		
 		//Update original message processing status
 		usermessage.setValue("chatmessagestatus", "completed");
-		getMediaArchive().saveData("chatterbox",usermessage);
+		getMediaArchive().saveData("chatterbox",usermessage);  //Update the user message again to finish it
 		
 		agentContext.addContext("message", usermessage);
 		
 		agentContext.addContext("assistant", this);
 		
 		agentContext.addContext("channelchathistory", loadChannelChatHistory(inChannel));
-		
-//		if("refresh".equals(oldstatus))
-//		{			
-//			String nextFunction = agentContext.getNextFunctionName();
-//			if(nextFunction != null)
-//			{
-//				agentContext.setFunctionName(nextFunction);
-//				agentContext.setNextFunctionName(null);
-//				
-//				getMediaArchive().saveData("agentcontext", agentContext);
-//				
-//				MultiValued realusermessage = (MultiValued)archive.getCachedData("chatterbox",usermessage.get("replytoid"));
-//				execCurrentFunctionFromChat(realusermessage,usermessage, agentContext);
-//			}
-//			return;
-//		}
 		
 		//Add new agentmessage
 		MultiValued agentmessage = newAgentMessage(usermessage, agentContext);
@@ -256,16 +237,14 @@ public class AssistantManager extends BaseAiManager
 			}
 			else
 			{
-				
-				String functiongroup = inChannel.get("functiongroup");
-				if(functiongroup == null)
+				String toplevelaifunctionid = agentContext.getTopLevelFunctionName();
+				if(toplevelaifunctionid == null)
 				{
+					log.error("This should never happen");
 					return;
 				}
-				functionName = "start"+functiongroup;
 			}
-			
-			agentContext.setFunctionName(functionName);
+			//agentContext.setFunctionName(functionName);
 			execCurrentFunctionFromChat(usermessage, agentmessage, agentContext);
 		}
 		catch( Exception ex)
@@ -291,6 +270,10 @@ public class AssistantManager extends BaseAiManager
 	protected void execCurrentFunctionFromChat(MultiValued usermessage, MultiValued agentmessage, AgentContext agentContext) 
 	{
 		String functionName = agentContext.getFunctionName();
+		if( functionName == null)
+		{
+			functionName = agentContext.getNextFunctionName();
+		}
 		MultiValued function = (MultiValued) getMediaArchive().getCachedData("aifunction", functionName);
 		
 		if (function == null)
@@ -674,6 +657,28 @@ public class AssistantManager extends BaseAiManager
 	{
 		InformaticsManager manager = (InformaticsManager)getMediaArchive().getBean("informaticsManager");
 		return manager;
+	}
+
+	public void sendSystemMessage(AgentContext inContext, String inUser, String message)
+	{
+		MediaArchive archive = getMediaArchive();
+		
+		//currentchannel set next function
+		//Save a message
+		Data chat = archive.getSearcher("chatterbox").createNewData();
+		chat.setValue("messagetype", "system");
+		chat.setValue("user", inUser);
+		chat.setValue("date", new Date());
+		chat.setValue("chatmessagestatus","received");
+		chat.setValue("channel", inContext.getChannel().getId());
+		chat.setValue("message", message);
+		
+		archive.saveData("chatterbox",chat);
+		//inReq.putPageValue("chat", chat);
+		
+		//Fire monitor
+		archive.fireSharedMediaEvent("llm/monitorchats");
+
 	}
 	
 }

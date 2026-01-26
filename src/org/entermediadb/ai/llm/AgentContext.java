@@ -67,6 +67,15 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	public void setNextFunctionName(String inNextFunctionName) {
 		setValue("nextfunctionname",inNextFunctionName);
 	}
+
+	public String getTopLevelFunctionName() {
+		return get("toplevelaifunctionid");
+	}
+	
+	public void setTopLevelFunctionName(String inNextFunctionName) {
+		setValue("toplevelaifunctionid",inNextFunctionName);
+	}
+
 	
 	public Map<String,Object> getContext() {
 		return context;
@@ -74,7 +83,18 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	
 	public Data getChannel()
 	{
-		return (Data)getContextValue("channel");
+		Data channel = (Data)getContextValue("channel");
+		if( channel == null)
+		{
+			
+		}
+		return channel;
+	}
+	
+	public void setChannel(Data inChannel)
+	{
+		setValue("channel",inChannel.getId());
+		addContext("channel",inChannel);
 	}
 	
 	public Object getContextValue(String inKey) {
