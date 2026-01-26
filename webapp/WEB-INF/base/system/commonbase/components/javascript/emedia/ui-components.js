@@ -75,6 +75,63 @@ jQuery(document).ready(function () {
 			}
 		}
 	}
+	var defaultPopperConfig = {
+		strategy: "fixed",
+		modifiers: [
+			{
+				name: "computeStyles",
+				options: {
+					gpuAcceleration: true,
+					adaptive: false,
+				},
+			},
+			{
+				name: "preventOverflow",
+				options: {
+					boundary: "viewport",
+					altAxis: true,
+				},
+			},
+			{
+				name: "flip",
+				options: {
+					fallbackPlacements: ["bottom", "top", "right", "left"],
+					flipVariations: true,
+				},
+			},
+		],
+	};
+
+	var drops = [
+		".dropdown",
+		".dropup",
+		".dropstart",
+		".dropend",
+		".dropupstart",
+		".dropupend",
+		".dropdown-center",
+		".dropdown-submenu",
+	];
+
+	drops.forEach(function (drop) {
+		lQuery(drop).livequery("mouseenter", function () {
+			var dropdownToggleEl = $(this).find(
+				'[data-bs-toggle="dropdown"], .dropdown-toggle',
+			)[0];
+			var dropdown = new bootstrap.Dropdown(dropdownToggleEl, {
+				popperConfig: defaultPopperConfig,
+			});
+			dropdown.show();
+		});
+
+		lQuery(drop).livequery("mouseleave", function () {
+			var dropdownToggleEl = $(this).find(
+				'[data-bs-toggle="dropdown"], .dropdown-toggle',
+			)[0];
+			var dropdown = bootstrap.Dropdown.getOrCreateInstance(dropdownToggleEl);
+			dropdown.hide();
+		});
+	});
 
 	lQuery("form.checkCloseDialog").livequery(function () {
 		trackKeydown = true;
@@ -810,10 +867,9 @@ jQuery(document).ready(function () {
 		if ($.datepicker) {
 			var dpicker = $(this);
 			var icontext = dpicker.data("alt");
-			if (!icontext)
-				{
-					icontext = "Select Date";
-				}
+			if (!icontext) {
+				icontext = "Select Date";
+			}
 			$.datepicker.setDefaults($.datepicker.regional[browserlanguage]);
 			$.datepicker.setDefaults(
 				$.extend({
@@ -875,8 +931,6 @@ jQuery(document).ready(function () {
 				}
 				$(this).datepicker("setDate", date);
 			}
-
-			
 
 			$(this).blur(function () {
 				var val = $(this).val();

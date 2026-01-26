@@ -13,7 +13,11 @@
 	#set($browseenabled = true)
 #end
 
-<div class="assetpicker"  id="entitypicker${detail.id}" data-detailid="${detail.id}">
+#ifnull($pickerid)
+	#set($pickerid = "entitypicker${detail.id}")
+#end
+
+<div class="assetpicker" id="$pickerid" data-detailid="${detail.id}">
 	<div class="render-type-thumbnail position-relative mb-1" id="${detail.id}-preview">
 		#if($value && $value != "")
 			#set( $foundrow = $mediaarchive.getAsset($value)  )
@@ -61,7 +65,7 @@
 			data-assetclearselections="true"
 			data-width="1200"
 			data-detailid="${detail.id}" 
-			data-pickertargetfield="entitypicker${detail.id}"
+			data-pickertargetfield="$pickerid"
 			data-hidefooter="true"
 			data-includeeditcontext="true"
 			data-edithome=""
@@ -79,7 +83,7 @@
 						data-assetclearselections="true"
 						data-width="1200"
 						data-detailid="${detail.id}" 
-						data-pickertargetfield="entitypicker${detail.id}"
+						data-pickertargetfield="$pickerid"
 						data-hidefooter="true"
 						data-includeeditcontext="true"
 						data-edithome=""

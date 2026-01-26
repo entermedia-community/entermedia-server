@@ -43,6 +43,8 @@ public interface LlmConnection {
     public LlmResponse callStructuredOutputList(Map inParams);
 	
 	public LlmResponse callOCRFunction(Map inParams, String inBase64Image);
+	
+	public LlmResponse callSmartCreatorAiAction(Map params, String inActionName);
 
 	public LlmResponse callJson(String inPath, JSONObject inPayload);	
 	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, Map inMap);

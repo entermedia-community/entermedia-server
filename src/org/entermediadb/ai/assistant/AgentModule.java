@@ -441,4 +441,36 @@ public class AgentModule extends BaseMediaModule {
 		assistantManager.monitorChannels(log);
 	}
 	
+	public void creatorAiAction(WebPageRequest inReq)
+	{
+		String aiaction = inReq.getRequestParameter("aiaction");
+		String componentcontentid = inReq.getRequestParameter("componentcontentid");
+		
+		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		
+		if("grammar".equals(aiaction))
+		{
+			creatorManager.correctGrammar(inReq, componentcontentid);
+		}
+		else if("improve".equals(aiaction))
+		{
+			creatorManager.improveContent(inReq, componentcontentid);
+		}
+		else if("generate".equals(aiaction))
+		{
+			String prompt = inReq.getRequestParameter("aiprompt");
+			creatorManager.generateContent(inReq, componentcontentid, prompt);
+		}
+		else if("image".equals(aiaction))
+		{
+			String prompt = inReq.getRequestParameter("aiprompt");
+			creatorManager.createImage(inReq, componentcontentid, prompt);
+		}
+		else if("caption".equals(aiaction))
+		{
+			String assetid = inReq.getRequestParameter("assetid");
+			creatorManager.captionImage(inReq, componentcontentid, assetid);
+		}
+	}
+	
 }

@@ -372,6 +372,48 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		}
 	}
 	
+	@Override
+	public LlmResponse callSmartCreatorAiAction(Map inParams, String inActionName)
+	{
+		inParams.put("model", getModelName());
+		
+		String templatepath = "/" + getMediaArchive().getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/smartcreator/" + inActionName + ".json";
+		
+		String inStructure = loadInputFromTemplate(templatepath, inParams);
+
+		JSONParser parser = new JSONParser();
+		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
+		
+		log.info( "Sent: " + structureDef.toJSONString());
+		
+		HttpPost method = new HttpPost(getServerRoot() + "/chat/completions");
+		method.addHeader("authorization", "Bearer " + getApiKey());
+		method.setHeader("Content-Type", "application/json");
+		method.setEntity(new StringEntity(structureDef.toJSONString(), StandardCharsets.UTF_8));
+
+		CloseableHttpResponse resp = getConnection().sharedExecute(method);
+
+		try
+		{
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
+				throw new OpenEditException("OpenAI error: " + resp.getStatusLine());
+			}
+	
+			JSONObject json = (JSONObject)getConnection().parseMap(resp);
+
+			log.info("Returned: " + json.toJSONString());
+		
+			LlmResponse response = createResponse();
+			response.setRawResponse(json);
+			return response;
+		}
+		finally
+		{
+			getConnection().release(resp);
+		}
+	}
+	
 	public LlmResponse callRagFunction(String question, String textContent)
 	{
 		JSONObject obj = new JSONObject();
