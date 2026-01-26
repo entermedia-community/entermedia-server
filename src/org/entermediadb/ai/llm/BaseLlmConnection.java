@@ -235,8 +235,6 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	protected void loadagentcontextParameters(AgentContext agentcontext, WebPageRequest request)
 	{
 		Map inParameters = agentcontext.getProperties();
-		if( inParameters != null)
-		{
 			for (Iterator iterator = inParameters.keySet().iterator(); iterator.hasNext();)
 			{
 				String key = (String) iterator.next();
@@ -261,10 +259,22 @@ public abstract class BaseLlmConnection implements LlmConnection {
 					request.setRequestParameter(key, (String[])obj);
 				}
 			}
-		}
+			Map pagevalues = agentcontext.getContext();
+			if (pagevalues != null)
+			{
+				for (Iterator iterator = pagevalues.keySet().iterator(); iterator.hasNext();)
+				{
+					String key = (String) iterator.next();
+					Object obj = pagevalues.get(key);
+					if( obj instanceof String)
+					{
+						request.setRequestParameter(key, (String)obj);
+					}
+				}
+			}
 	}
 	
-	public LlmResponse renderLocalAction(AgentContext agentcontext) 
+	public LlmResponse renderLocalAction(AgentContext agentcontext)
 	{
 		String functionName = agentcontext.getFunctionName();
 		if(functionName == null) 
@@ -272,16 +282,18 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			throw new OpenEditException("Cannot load function response, functionName is null");
 		}
 		
-		log.info("Loading response for function: " + functionName);
-		
+		return renderLocalAction(agentcontext,  functionName);
+	}
+	
+	
+	public LlmResponse renderLocalAction(AgentContext agentcontext, String inTemplateName)
+	{
 		String apphome = (String) agentcontext.getContextValue("apphome");
-		
-		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/" + functionName + ".html";
+		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/" + inTemplateName + ".html";
 		
 		try 
 		{
 			Page template = getPageManager().getPage(templatepath);
-			log.info("Loading response: " + functionName);
 			
 			User user = getMediaArchive().getUserManager().getUser("agent");
 			
@@ -307,7 +319,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			streamer.include(template, inReq);
 			
 			String string = output.toString();
-			log.info("Output: " + string);
+			log.info("Loading response for function: " + inTemplateName + " Output: " + string);
 			
 			BasicLlmResponse response = new BasicLlmResponse();
 			

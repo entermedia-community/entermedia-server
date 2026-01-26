@@ -28,6 +28,7 @@ public interface LlmConnection {
     public String loadInputFromTemplate(String inTemplate, AgentContext agentcontext);
     
     public LlmResponse renderLocalAction(AgentContext llmreuest);
+    public LlmResponse renderLocalAction(AgentContext llmreuest, String inTemplate);
     
     public LlmResponse callCreateFunction(Map params, String inFunction);
     

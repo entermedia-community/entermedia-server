@@ -22,6 +22,7 @@ import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -46,17 +47,30 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
 	{
 		Data channel = inAgentContext.getChannel();
-		String playbackentitymoduleid = channel.get("playbackentitymoduleid");
-		String playbackentityid = channel.get("playbackentityid");
+
 		
 		String agentFn = inAgentContext.getFunctionName();
-		if(agentFn.startsWith("startCreator"))  //create_aitutorial
+			
+		if(agentFn.startsWith("welcome_"))  
 		{
-			inAgentContext.addContext("playbackentityid", playbackentityid);
-			inAgentContext.addContext("playbackentitymoduleid", playbackentitymoduleid);
-
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection("startCreator");
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "welcomeDefault");
+			
+			String playbackentitymoduleid = agentFn.substring("welcome_".length());
+			inAgentContext.addContext("playbackentitymoduleid", playbackentitymoduleid);
+			inAgentContext.setFunctionName("smartcreator_CreateNew");
+			return response;
+		}
+		else if(agentFn.equals("smartcreator_CreateNew"))  //create_
+		{
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("startCreator");
+			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
+			inAgentContext.addContext("usertopic", usermessage.get("message"));
+			//inAgentContext.addContext("entitymoduleid", usermessage.get("entitymoduleid"));
+			//inAgentContext.addContext("entityid", usermessage.get("entityid"));
+			
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
+			
 			return response;
 		}
 		else if ("conversation".equals(agentFn))
@@ -72,11 +86,11 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 				generalresponse = md.render(generalresponse);
 			}
 			response.setMessage(generalresponse);
-			
 			inAgentContext.setNextFunctionName(null);
-
+			return response;
 		}
-		return null;
+
+		throw new OpenEditException("Function not handled: " + agentFn);
 	}
 
 	
@@ -151,21 +165,21 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		String entitymoduleid = inReq.getRequestParameter("entitymoduleid");
 		String entityid = inReq.getRequestParameter("entityid");
 
-		String topicName = inReq.getRequestParameter("name");
+		String topicName = inReq.getRequestParameter("usertopic");
 		if(entityid == null || entitymoduleid == null || topicName == null || topicName.length() < 5)
 		{
 			throw new IllegalArgumentException("Missing required parameters");
 		}
 		boolean featured = "on".equals(inReq.getRequestParameter("featured"));
 		
-		String playbackentitymoduleid = (String) inReq.getRequestParameter("creatortype");
+		String playbackentitymoduleid = (String) inReq.getRequestParameter("playbackentitymoduleid");
 		Searcher searcher = getMediaArchive().getSearcher(playbackentitymoduleid);
 		
 		Data playback = searcher.createNewData();
 		playback.setName(topicName);
 		playback.setValue("entitymoduleid", entitymoduleid);
 		playback.setValue("entityid", entityid);
-		playback.setValue("featured", featured);
+		//playback.setValue("featured", featured);
 		playback.setValue("creatorstatus", "creating");
 		
 		searcher.saveData(playback, inReq.getUser());
@@ -182,7 +196,8 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 			
 			searcher.saveData(playback, inReq.getUser());
 			
-			inReq.putPageValue("data", playback);
+			inReq.putPageValue("playbackentity", playback);
+			inReq.putPageValue("playbackentitymoduleid", playbackentitymoduleid);
 		}
 		
 		getMediaArchive().fireSharedMediaEvent("llm/creatorcomponentcontent");

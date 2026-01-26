@@ -162,7 +162,7 @@ public class AgentModule extends BaseMediaModule {
 
 	public void addModules(WebPageRequest inReq) throws Exception 
 	{
-		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
+		ScriptLogger log = (ScriptLogger)inReq.getPageValue("log");
 		
 		
 		//Add toplevelfunctions
@@ -180,21 +180,32 @@ public class AgentModule extends BaseMediaModule {
 				{
 					continue;
 				}
-				if( method.equals("smartcreator"))
+				String messagehandler = "";
+				if( method.equals("fieldsonly"))
 				{
-					 found = getMediaArchive(inReq).getSearcher("aifunction").createNewData();
-					 found.setId(id);
-					 found.setValue("messagehandler","creatorManager");
-					 found.setValue("toplevel",true);
-					 found.setName("Create " + module.getName());
-					 tosave.add(found);
-					 
-					 //TODO: Add create
-					 found = getMediaArchive(inReq).getSearcher("aifunction").createNewData();
-					 found.setId("create_" + module.getId());
-					 found.setValue("messagehandler","creatorManager");
-					 tosave.add(found);
+					messagehandler = "entityCreationManager";
 				}
+				else if( method.equals("smartcreator"))
+				{
+					 messagehandler = "creatorManager";
+				}
+				
+				 found = getMediaArchive(inReq).getSearcher("aifunction").createNewData();
+				 found.setId(id);
+				 found.setValue("messagehandler", messagehandler);
+				 found.setValue("toplevel",true);
+				 found.setName("Create " + module.getName());
+				 tosave.add(found);
+				 
+				 //TODO: Add create
+				 found = getMediaArchive(inReq).getSearcher("aifunction").createNewData();
+				 found.setId("create_" + module.getId());
+				 found.setValue("messagehandler", messagehandler);
+				 tosave.add(found);
+				 
+				 log.info("AI "+ module.getName()+" functions created");
+			
+				
 			}
 		}
 		getMediaArchive(inReq).saveData("aifunction", tosave);

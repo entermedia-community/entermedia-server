@@ -561,6 +561,13 @@
 			<ref bean="pageManager" />
 		</property>
 	</bean>
+	
+	<bean id="entityCreationManager" class="org.entermediadb.ai.assistant.EntityCreationManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
 
 	<bean id="originalDownloadGenerator" class="org.entermediadb.asset.generators.OriginalDocumentGenerator">
 		<property name="moduleManager">

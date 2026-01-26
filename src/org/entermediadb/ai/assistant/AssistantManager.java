@@ -21,6 +21,7 @@ import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
@@ -160,12 +161,14 @@ public class AssistantManager extends BaseAiManager
 			if( agentContext == null)
 			{
 				agentContext = (AgentContext) searcher.createNewData();
-				agentContext.setValue("channel", inChannelId);
-				searcher.saveData(agentContext);
 			}
 			Data channel = getMediaArchive().getCachedData("channel", inChannelId);
 			agentContext.setChannel(channel);
-			
+			agentContext.setValue("channel", inChannelId);
+			agentContext.setValue("entityid", channel.get("dataid"));
+			agentContext.setValue("entitymoduleid", channel.get("searchtype"));
+			searcher.saveData(agentContext);
+
 			archive.getCacheManager().put("agentcontext", inChannelId, agentContext);
 		}
 		return agentContext;
@@ -315,15 +318,23 @@ public class AssistantManager extends BaseAiManager
 		String apphome = "/"+ channel.get("chatapplicationid");
 		agentContext.addContext("apphome", apphome);
 		
-		try
-		{
+		
 				
-			String bean = function.get("messagehandler");
-			
-			ChatMessageHandler handler = (ChatMessageHandler) getMediaArchive().getBean( bean);
-			
-			LlmResponse response = handler.processMessage(agentContext, agentmessage, function);
-			
+		String bean = function.get("messagehandler");
+		
+		ChatMessageHandler handler = (ChatMessageHandler) getMediaArchive().getBean( bean);
+		LlmResponse response = null;
+		try
+		{		
+			response = handler.processMessage(agentContext, agentmessage, function);
+		}
+		catch (Exception e) 
+		{
+			response = handleError(agentContext, e.getMessage());
+		}
+		
+		try
+		{	
 			String updatedMessage = agentContext.getMessagePrefix();
 			
 			if( response.getMessage() != null )
