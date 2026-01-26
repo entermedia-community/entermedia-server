@@ -179,6 +179,7 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		playback.setName(topicName);
 		playback.setValue("entitymoduleid", entitymoduleid);
 		playback.setValue("entityid", entityid);
+		playback.setValue(entitymoduleid, entityid);
 		//playback.setValue("featured", featured);
 		playback.setValue("creatorstatus", "creating");
 		
