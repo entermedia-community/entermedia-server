@@ -620,7 +620,7 @@ public class ChatModule extends BaseMediaModule
 		String entityid =  inReq.findValue("entityid");
 		if( entityid == null)
 		{
-			entityid = inReq.findValue("entityid");
+			entityid = inReq.findValue("dataid");
 		}
 		String channelname = null;
 //		MultiValued entity  = (MultiValued) inReq.getPageValue("entity");
@@ -682,11 +682,13 @@ public class ChatModule extends BaseMediaModule
 		currentchannel.setValue("refreshdate", new Date() );
 		channelsearcher.saveData(currentchannel);
 		
+		inReq.setRequestParameter("channel", currentchannel.getId());
 		
 		inReq.putPageValue("currentchannel", currentchannel);
 		
 		inReq.putPageValue("createnew", false);
 	}
+	
 
 
 }

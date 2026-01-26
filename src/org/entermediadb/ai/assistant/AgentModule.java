@@ -169,26 +169,26 @@ public class AgentModule extends BaseMediaModule {
 	public void prepareDataForGuide(WebPageRequest inReq) throws Exception 
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		
 
 		String chatterboxhome = inReq.getRequestParameter("chatterboxhome");
 		inReq.putPageValue("chatterboxhome", chatterboxhome);
 		
-		Data entity = (Data) inReq.getPageValue("entity");
-		if(entity == null)
-		{
-			String entityid = inReq.getRequestParameter("entityid");
-			entity = archive.getCachedData("entity", entityid);
-			inReq.putPageValue("entity", entity);
+		AgentContext context = loadAgentContext(inReq);
+		
+		String moduleid = context.get("moduleid");
+		if (moduleid == null) {
+			moduleid = inReq.getRequestParameter("moduleid");
+		}
+		Data module = archive.getCachedData("module", moduleid);
+		inReq.putPageValue("module", module);
+		
+		String entityid = context.get("entityid");
+		if (entityid == null) {
+			entityid = inReq.getRequestParameter("entityid");
 		}
 		
-		Data module = (Data) inReq.getPageValue("module");
-		if(module == null)
-		{
-			String moduleid = inReq.getRequestParameter("moduleid");
-			module = archive.getCachedData("module", moduleid);
-			inReq.putPageValue("module", module);
-		}
+		Data entity = archive.getCachedData(moduleid, entityid);
+		inReq.putPageValue("entity", entity);
 		
 		Collection<GuideStatus> statuses =  getAssistantManager(inReq).prepareDataForGuide(module, entity);
 		boolean refresh= false;
@@ -202,6 +202,13 @@ public class AgentModule extends BaseMediaModule {
 		}
 		inReq.putPageValue("refresh", refresh);
 		inReq.putPageValue("statuses", statuses);
+		
+		if (refresh)
+		{
+			
+			context.setValue("wait", 1000L);
+			context.setNextFunctionName(context.getFunctionName());
+		}
 	}
 	
 	public void loadModuleSchemaForJson(WebPageRequest inReq) throws Exception 
@@ -433,7 +440,7 @@ public class AgentModule extends BaseMediaModule {
 		//Refresh drop down area?
 	}
 	
-	public void loadAgentContext(WebPageRequest inReq) throws Exception
+	public AgentContext loadAgentContext(WebPageRequest inReq) throws Exception
 	{
 		AssistantManager assistantManager = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
 		
@@ -445,12 +452,20 @@ public class AgentModule extends BaseMediaModule {
 			channelid = currentchannel.getId();
 		}
 		AgentContext context = assistantManager.loadContext(channelid);
+		
+		inReq.putPageValue("agentcontext", context);
+		
 		String toplevel = inReq.getRequestParameter("toplevelaifunctionid");
 
 		if( toplevel == null && context.getTopLevelFunctionName() == null)
 		{
-			context.setTopLevelFunctionName("welcomeAutoDetectConversation");
-			context.setFunctionName("welcomeAutoDetectConversation");
+			//context.setTopLevelFunctionName("welcomeAutoDetectConversation");
+			//context.setFunctionName("welcomeAutoDetectConversation");
+			inReq.setRequestParameter("channel", channelid);
+			inReq.setRequestParameter("toplevelaifunctionid", "welcomeAutoDetectConversation");
+			inReq.setRequestParameter("functionname", "welcomeAutoDetectConversation");
+			startFunction(inReq);
+			return context;
 		}
 		
 		if( toplevel != null )
@@ -466,7 +481,7 @@ public class AgentModule extends BaseMediaModule {
 		{
 			getMediaArchive(inReq).saveData("agentcontext",context);
 		}
-		inReq.putPageValue("agentcontext", context);
+		return context;
 		
 		//Now that Context is set. Let the chat respond
 		//Refresh drop down area?

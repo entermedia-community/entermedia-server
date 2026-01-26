@@ -58,6 +58,24 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	{
 		fieldUserProfile = inUserProfile;
 	}
+	
+	@Override
+	public String get(String inId)
+	{
+		// TODO Auto-generated method stub
+		String value = super.get(inId);
+		
+		if (value == null && inId.equals("entityid"))
+		{
+			value = getChannel().get("dataid");
+		}
+		else if (value == null && inId.equals("moduleid"))
+		{
+			value = getChannel().get("searchtype");
+		}
+		
+		return value;
+	}
 
 	
 	public String getNextFunctionName() {
@@ -244,4 +262,7 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 		}
 		fieldExcludedAssetIds.add(inAssetid);
 	}
+	
+	
+	
 }
