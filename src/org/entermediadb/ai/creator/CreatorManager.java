@@ -19,6 +19,7 @@ import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.markdown.MarkdownUtil;
 import org.entermediadb.scripts.ScriptLogger;
+import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
@@ -667,5 +668,103 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		}
 		
 		contentearcher.saveAllData(tosave, null);
+	}
+
+
+	public void correctGrammar(WebPageRequest inReq, String inComponentcontentid) {
+		Data componentcontent = getMediaArchive().getCachedData("componentcontent", inComponentcontentid);
+		String content = componentcontent.get("content");
+		
+		if(content == null || content.isEmpty())
+		{
+			return;
+		}
+		
+		
+		Map params = new HashMap();
+		params.put("paragraph", content);
+		
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("startCreator");
+		LlmResponse response = llmconnection.callSmartCreatorAiAction(params, "grammar");
+		
+		JSONObject result = response.getMessageStructured();
+		if(result != null)
+		{
+			String corrected_text = (String) result.get("corrected_text");
+			if(corrected_text != null)
+			{
+				inReq.putPageValue("paragraph", corrected_text);
+			}
+		}
+		
+	}
+
+
+	public void improveContent(WebPageRequest inReq, String inComponentcontentid) {
+		Data componentcontent = getMediaArchive().getCachedData("componentcontent", inComponentcontentid);
+		String content = componentcontent.get("content");
+		
+		if(content == null || content.isEmpty())
+		{
+			return;
+		}
+		
+		
+		Map params = new HashMap();
+		params.put("paragraph", content);
+		
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("startCreator");
+		LlmResponse response = llmconnection.callSmartCreatorAiAction(params, "improve");
+		
+		JSONObject result = response.getMessageStructured();
+		if(result != null)
+		{
+			String paragraph = (String) result.get("paragraph");
+			if(paragraph != null)
+			{
+				inReq.putPageValue("paragraph", paragraph);
+			}
+		}
+	}
+
+
+	public void generateContent(WebPageRequest inReq, String inComponentcontentid, String inPrompt) {
+		Data componentcontent = getMediaArchive().getCachedData("componentcontent", inComponentcontentid);
+		String content = componentcontent.get("content");
+		
+		if(content == null || content.isEmpty())
+		{
+			return;
+		}
+		
+		
+		Map params = new HashMap();
+		params.put("prompt", inPrompt);
+		
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("startCreator");
+		LlmResponse response = llmconnection.callSmartCreatorAiAction(params, "generate");
+		
+		JSONObject result = response.getMessageStructured();
+		if(result != null)
+		{
+			String paragraph = (String) result.get("paragraph");
+			if(paragraph != null)
+			{
+				inReq.putPageValue("paragraph", paragraph);
+			}
+		}
+		
+	}
+
+
+	public void createImage(WebPageRequest inReq, String inComponentcontentid, String inPrompt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void captionImage(WebPageRequest inReq, String inComponentcontentid, String inAssetid) {
+		// TODO Auto-generated method stub
+		
 	}
 }

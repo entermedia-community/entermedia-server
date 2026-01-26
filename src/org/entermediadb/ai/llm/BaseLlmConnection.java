@@ -441,12 +441,12 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			
 	}
 	@Override
-	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inEmbeddingPayload)
+	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inPayload)
 	{
 		log.info("Calling LLM Server at: " + getServerRoot() + inPath);
 		HttpRequestBase method = null;
 		
-		if (inEmbeddingPayload == null) 
+		if (inPayload == null) 
 		{
 			method = new HttpGet(getServerRoot() + inPath);
 		}
@@ -479,7 +479,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		
 		if (method instanceof HttpPost)
 		{
-			((HttpPost) method).setEntity(new StringEntity(inEmbeddingPayload.toJSONString(), StandardCharsets.UTF_8));
+			((HttpPost) method).setEntity(new StringEntity(inPayload.toJSONString(), StandardCharsets.UTF_8));
 		}
 		HttpSharedConnection connection = getConnection();
 		CloseableHttpResponse resp = connection.sharedExecute(method);
@@ -607,6 +607,12 @@ public abstract class BaseLlmConnection implements LlmConnection {
 
 	@Override
 	public LlmResponse callCreateFunction(Map inParams, String inFunction)
+	{
+		throw new OpenEditException("Call not supported");
+	}
+	
+	@Override
+	public LlmResponse callSmartCreatorAiAction(Map inParams, String inActionName)
 	{
 		throw new OpenEditException("Call not supported");
 	}
