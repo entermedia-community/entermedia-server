@@ -69,7 +69,7 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 		{
 			value = getChannel().get("dataid");
 		}
-		else if (value == null && inId.equals("moduleid"))
+		else if (value == null && inId.equals("entitymoduleid"))
 		{
 			value = getChannel().get("searchtype");
 		}

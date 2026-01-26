@@ -175,7 +175,7 @@ public class AgentModule extends BaseMediaModule {
 		
 		AgentContext context = loadAgentContext(inReq);
 		
-		String moduleid = context.get("moduleid");
+		String moduleid = context.get("entitymoduleid");
 		if (moduleid == null) {
 			moduleid = inReq.getRequestParameter("moduleid");
 		}
@@ -220,21 +220,17 @@ public class AgentModule extends BaseMediaModule {
 	
 	public void loadSuggestions(WebPageRequest inReq) throws Exception 
 	{
-		String functiongroup = (String) inReq.findValue("functiongroup");
-		if(functiongroup == null)
+		String toplevel = inReq.getRequestParameter("toplevelaifunctionid");
+		if(toplevel == null)
 		{
 			return;
 		}
 		
 		Searcher aifunctionsearcher = getMediaArchive(inReq).getSearcher("aifunction");
-		
-		HitTracker functionhits = aifunctionsearcher.query().exact("functiongroup", functiongroup).search();
-		Collection<String> functionids = functionhits.collectValues("id");
-		functionids.add("start" + functiongroup); //Also add self
-		
+				
 		Searcher aisuggestions = getMediaArchive(inReq).getSearcher("aisuggestion");
 		
-		HitTracker hits = aisuggestions.query().orgroup("aifunction", functionids).exact("featured", "true").search();
+		HitTracker hits = aisuggestions.query().orgroup("aifunction", toplevel).exact("featured", "true").search();
 		
 		Collection<Map<String, String>> suggestions = new ArrayList<Map<String, String>>();
 		
