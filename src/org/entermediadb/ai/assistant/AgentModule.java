@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.entermediadb.ai.creator.CreatorManager;
@@ -12,6 +13,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -158,9 +160,51 @@ public class AgentModule extends BaseMediaModule {
 		//manager.reinitClusters(inLog); //How to do this?
 	}
 
+	public void addModules(WebPageRequest inReq) throws Exception 
+	{
+		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
+		
+		
+		//Add toplevelfunctions
+		Collection<Data> modules =  getMediaArchive(inReq).getList("module");
+		List tosave = new ArrayList();
+		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+		{
+			MultiValued module = (MultiValued) iterator.next();
+			String method = module.get("aicreationmethod");
+			if( method != null)
+			{
+				String id = "welcome_" + module.getId();
+				Data found = getMediaArchive(inReq).getData("aifunction",id);
+				if( found != null)
+				{
+					continue;
+				}
+				if( method.equals("smartcreator"))
+				{
+					 found = getMediaArchive(inReq).getSearcher("aifunction").createNewData();
+					 found.setId(id);
+					 found.setValue("messagehandler","creatorManager");
+					 found.setValue("toplevel",true);
+					 found.setName("Create " + module.getName());
+					 tosave.add(found);
+					 
+					 //TODO: Add create
+					 found = getMediaArchive(inReq).getSearcher("aifunction").createNewData();
+					 found.setId("create_" + module.getId());
+					 found.setValue("messagehandler","creatorManager");
+					 tosave.add(found);
+				}
+			}
+		}
+		getMediaArchive(inReq).saveData("aifunction", tosave);
+	}
 	public void saveSuggestions(WebPageRequest inReq) throws Exception 
 	{
 		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
+		
+		//TODO: Loop over the toplevel functions only
+		
 //		getSearchingManager(inReq).savePossibleFunctionSuggestions(logger);
 		getCreationManager(inReq).savePossibleFunctionSuggestions(logger);
 		getQuestionsManager(inReq).savePossibleFunctionSuggestions(logger);
