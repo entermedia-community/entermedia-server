@@ -469,9 +469,6 @@ public class AgentModule extends BaseMediaModule {
 		inReq.putPageValue("agentcontext", context);
 		
 		//Now that Context is set. Let the chat respond
-		
-		assistantManager.sendSystemMessage(context,inReq.getUserName(),null);
-
 		//Refresh drop down area?
 	}
 	public void monitorChannels(WebPageRequest inReq) throws Exception
