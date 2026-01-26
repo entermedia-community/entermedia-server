@@ -17,10 +17,13 @@ public class TutorialsManager extends BaseAiManager implements ChatMessageHandle
 	{
 		Data channel = inAgentContext.getChannel();
 		String agentFn = inAgentContext.getFunctionName();
-		if("startTutorials".equals(agentFn))
+		if("welcomecreate_aitutorials".equals(agentFn))
 		{
 			
 		}
+		//Create with creator?
+		//create_aitutorials create_aitutorial ? where is it 
+		
 		return null;
 	}
 

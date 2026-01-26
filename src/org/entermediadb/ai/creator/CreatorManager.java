@@ -50,7 +50,7 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		String playbackentityid = channel.get("playbackentityid");
 		
 		String agentFn = inAgentContext.getFunctionName();
-		if(agentFn.startsWith("startCreator"))
+		if(agentFn.startsWith("startCreator"))  //create_aitutorial
 		{
 			inAgentContext.addContext("playbackentityid", playbackentityid);
 			inAgentContext.addContext("playbackentitymoduleid", playbackentitymoduleid);
