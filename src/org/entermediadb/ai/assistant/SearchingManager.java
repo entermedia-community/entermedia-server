@@ -602,7 +602,18 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
 	{
 		String agentFn = inAgentContext.getFunctionName();
-		if ("startSearching".equals(agentFn))
+		
+		if ("welcomeSearch".equals(agentFn))
+		{
+			inAgentMessage.setValue("chatmessagestatus", "completed");
+			
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay startSearch
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
+			inAgentContext.setFunctionName("startSearch");
+			return response;
+		}
+ 
+		if ("startSearch".equals(agentFn))
 		{
 			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
 			MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", agentFn);
