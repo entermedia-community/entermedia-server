@@ -78,7 +78,7 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 //				inAgentContext.setTopLevelFunctionName(next); //Switch modes
 //			}
 			
-			return response;
+			//return response;
 		}
 		
 		
