@@ -108,7 +108,7 @@
 	outline: 1px solid #888989 !important;
 }
 
-@media screen and (max-width: 1199px) {
+@media screen and (max-width: 1439px) {
 	.chatterbox-write {
 		padding: 8px 8px 0;
 	}
@@ -118,6 +118,7 @@
 		font-size: 0.88rem;
 	}
 	.chatterbox-messages {
+		height: calc(100% - 132px) !important;
 		min-height: 100px;
 	}
 	.chatterbox-messages .resultspositions {
@@ -371,8 +372,8 @@
 }
 .msg-bubble .msg-body {
 	flex: 1;
-	padding: 0.65rem 1rem;
-	border-radius: 1.2rem;
+	padding: 0.5rem 0.95rem;
+	border-radius: 0.70rem;
 	position: relative;
 	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
