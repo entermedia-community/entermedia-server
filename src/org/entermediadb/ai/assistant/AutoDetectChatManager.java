@@ -55,6 +55,7 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 			//TODO: Move to tools call
 			if( query.contains("question") )
 			{
+				inAgentContext.setTopLevelFunctionName("welcomeQuestions");
 				inAgentContext.setFunctionName("welcomeQuestions");
 				inAgentContext.setNextFunctionName("welcomeQuestions");
 			}
