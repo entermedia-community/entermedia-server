@@ -504,23 +504,28 @@ public class AgentModule extends BaseMediaModule {
 		//Get the contenxt and update it first
 		String channelid = inReq.getRequestParameter("channel");
 		AgentContext context = assistantManager.loadContext(channelid);
-		
 		String toplevel = inReq.getRequestParameter("toplevelaifunctionid");
-		if( toplevel != null )
+		
+		boolean changed = false;
+		if( toplevel != null && !toplevel.equals(context.getTopLevelFunctionName() ) )
 		{
 			context.setTopLevelFunctionName(toplevel);
+			changed = true;
 		}
 		String functionname = inReq.getRequestParameter("functionname");
-		if( functionname != null )
+		if( functionname != null && !functionname.equals(context.getFunctionName()))
 		{
 			context.setFunctionName(functionname);
+			changed = true;
 		}
-		getMediaArchive(inReq).saveData("agentcontext",context);
-		
-		//Now that Context is set. Let the chat respond
-		
-		assistantManager.sendSystemMessage(context,inReq.getUserName(),null);
-
+		if( changed )
+		{
+			getMediaArchive(inReq).saveData("agentcontext",context);
+			
+			//Now that Context is set. Let the chat respond
+			
+			assistantManager.sendSystemMessage(context,inReq.getUserName(),null);
+		}
 		//Refresh drop down area?
 	}
 	

@@ -385,19 +385,11 @@ public class AssistantManager extends BaseAiManager
 					log.info("Previous function requested to wait " + waittime + " milliseconds");
 					Thread.sleep(wait);
 				}
-				//TODO: Just sleep for a bit? and try again
 				agentContext.setFunctionName(agentNextFn);
 				agentContext.setNextFunctionName(null);
 				execCurrentFunctionFromChat(usermessage, agentmessage, agentContext);
-//				Runnable runnable = new Runnable() {
-//					public void run()
-//					{
-//						getMediaArchive().fireSharedMediaEvent("llm/monitorchats");
-//					}
-//				};
-//				archive.getExecutorManager().execLater(runnable, waittime);
+				//Save the current state
 			}
-			
 		}
 		catch (Exception e)
 		{
@@ -405,6 +397,10 @@ public class AssistantManager extends BaseAiManager
 			agentmessage.setValue("functionresponse", e.toString());
 			agentmessage.setValue("chatmessagestatus", "failed");
 			archive.saveData("chatterbox", agentmessage);
+		}
+		finally
+		{
+			getMediaArchive().saveData("agentcontext",agentContext);
 		}
 	}
 	
