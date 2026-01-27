@@ -603,7 +603,7 @@ public abstract class BaseAiManager extends BaseManager
 			HitTracker existing = suggestionsearcher.query().exact("aifunction", function.getId()).exact("aigenerated", true).search();
 			if( existing.size() >= 5)
 			{
-				inLog.info("Already found enough suggestions " + inFunctionGroup);
+				log.info("Already found enough suggestions " + inFunctionGroup);
 				continue;
 			}
 			
