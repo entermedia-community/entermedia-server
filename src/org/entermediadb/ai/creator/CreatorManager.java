@@ -352,16 +352,28 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		content = content.replaceAll("^\\s+", "");
 		content = content.replaceAll("\\s+$", "");
 		
+		Data componentSection = contentsearcher.createNewData();
+		
 		String componentcontentid = (String) inComponents.get("componentcontentid");
 		
 		if(componentcontentid != null)
 		{
-			Data existing = contentsearcher.loadData(componentcontentid);
-			existing.setValue("content", content);
-			existing.setValue("assetid", inComponents.get("assetid"));
-			existing.setValue("modificationdate", new Date());
-			contentsearcher.saveData(existing, null);
-			return existing;
+			componentSection = contentsearcher.loadData(componentcontentid);			
+		}
+		
+		componentSection.setValue("content", content);
+		componentSection.setValue("assetid", inComponents.get("assetid"));
+		componentSection.setValue("modificationdate", new Date());
+		
+		if(inComponents.get("question") != null)
+		{
+			createQuestionForContent(componentSection, inComponents);
+		}
+		
+		if(componentcontentid != null)
+		{
+			contentsearcher.saveData(componentSection, null);
+			return componentSection;
 		}
 		
 		Collection<MultiValued> allCompononets = contentsearcher.query().exact("componentsectionid", inSectionId).search();
@@ -383,15 +395,11 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		{
 			ordering = allCompononets.size();
 		}
-		
-		Data componentSection = contentsearcher.createNewData();
 
-		componentSection.setValue("content", content);
 		componentSection.setValue("componentsectionid", inSectionId);
 		componentSection.setValue("componenttype", inComponents.get("componenttype"));
 		componentSection.setValue("ordering", ordering);
 		componentSection.setValue("creationdate", new Date());
-		componentSection.setValue("modificationdate", new Date());
 		
 		
 		contentsearcher.saveData(componentSection, null);
@@ -418,6 +426,31 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		
 	}
 	
+	private void createQuestionForContent(Data inComponentSection, Map inComponents) {
+		Searcher questionsearcher = getMediaArchive().getSearcher("entityquestion");
+		Data question = questionsearcher.createNewData();
+		if(inComponentSection.get("questionid") != null)
+		{
+			question = questionsearcher.loadData(inComponentSection.get("questionid"));
+		}
+		question.setValue("question", inComponents.get("question"));
+
+		question.setValue("mcq", inComponents.get("mcq"));
+		question.setValue("option_a", inComponents.get("option_a"));
+		question.setValue("option_b", inComponents.get("option_b"));
+		question.setValue("option_c", inComponents.get("option_c"));
+		question.setValue("option_d", inComponents.get("option_d"));
+		question.setValue("mcqcognitivelevel", inComponents.get("mcqcognitivelevel"));
+		question.setValue("mcqoptions", inComponents.get("mcqoptions"));
+		question.setValue("rationale", inComponents.get("rationale"));
+		question.setValue("grade", inComponents.get("grade"));
+		
+		questionsearcher.saveData(question, null);
+		
+		inComponentSection.setValue("questionid", question.getId());
+	}
+
+
 	public Data duplicateCreatorSection(String inSearchType, String inId) {
 		Searcher sectionsearcher = getMediaArchive().getSearcher(inSearchType);
 		MultiValued section = (MultiValued) sectionsearcher.loadData(inId);
