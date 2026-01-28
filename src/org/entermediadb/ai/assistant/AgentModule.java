@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.creator.CreatorManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.MediaArchive;
@@ -210,15 +211,10 @@ public class AgentModule extends BaseMediaModule {
 		}
 		getMediaArchive(inReq).saveData("aifunction", tosave);
 	}
-	public void saveSuggestions(WebPageRequest inReq) throws Exception 
+	
+	public void createSuggestions(WebPageRequest inReq)
 	{
-		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
-		
-		//TODO: Loop over the toplevel functions only
-		
-//		getSearchingManager(inReq).savePossibleFunctionSuggestions(logger);
-		getCreationManager(inReq).savePossibleFunctionSuggestions(logger);
-		getQuestionsManager(inReq).savePossibleFunctionSuggestions(logger);
+		getMediaArchive(inReq).fireSharedMediaEvent("llm/autocreatesuggestions");
 	}
 
 	public void prepareDataForGuide(WebPageRequest inReq) throws Exception 

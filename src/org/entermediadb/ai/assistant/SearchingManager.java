@@ -39,7 +39,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 	@Override
 	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
 	{
-		savePossibleFunctionSuggestions(inLog, "Searching");
+		// Do nothing
 	}
 
 	

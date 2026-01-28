@@ -36,7 +36,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 	@Override
 	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
 	{
-		UserProfile profile = getMediaArchive().getUserProfileManager().getUserProfile(getMediaArchive().getCatalogId(), "admin");
+		UserProfile profile = getMediaArchive().getUserProfileManager().getUserProfile(getMediaArchive().getCatalogId(), "admin"); 
 		Collection<Data> moduleids = findEnabledModules(profile);
 
 		Collection<String> embeddedcontents = new ArrayList<String>();

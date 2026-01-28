@@ -30,7 +30,7 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 	@Override
 	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
 	{
-		savePossibleFunctionSuggestions(inLog, "Creation");
+		savePossibleFunctionSuggestions(inLog, "Creation"); 
 	}
 	
 	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog)

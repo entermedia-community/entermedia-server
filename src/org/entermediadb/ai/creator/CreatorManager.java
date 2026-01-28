@@ -39,8 +39,7 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 
 	@Override
 	public void savePossibleFunctionSuggestions(ScriptLogger inLog) {
-		// TODO Auto-generated method stub
-		
+		// Do Nothing
 	}
 	
 	@Override

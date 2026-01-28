@@ -7,7 +7,6 @@ import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.scripts.ScriptLogger;
-import org.openedit.Data;
 import org.openedit.MultiValued;
 
 public class TutorialsManager extends BaseAiManager implements ChatMessageHandler
@@ -15,14 +14,11 @@ public class TutorialsManager extends BaseAiManager implements ChatMessageHandle
 	@Override
 	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
 	{
-		Data channel = inAgentContext.getChannel();
 		String agentFn = inAgentContext.getFunctionName();
 		if("welcomecreate_aitutorials".equals(agentFn))
 		{
 			
 		}
-		//Create with creator?
-		//create_aitutorials create_aitutorial ? where is it 
 		
 		return null;
 	}
@@ -36,9 +32,7 @@ public class TutorialsManager extends BaseAiManager implements ChatMessageHandle
 	@Override
 	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
 	{
-		savePossibleFunctionSuggestions(inLog, "Tutorial");
+		savePossibleFunctionSuggestions(inLog, "Tutorial"); 
 	}
-	
-	
 
 }
