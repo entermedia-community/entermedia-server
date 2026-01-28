@@ -15,6 +15,7 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.QueryBuilder;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
 public class InformaticsManager extends BaseAiManager
@@ -138,21 +139,37 @@ public class InformaticsManager extends BaseAiManager
 
 	protected void processAssets(ScriptLogger inLog, Collection pageofhits)
 	{
-		for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
-		{
-			MultiValued config = (MultiValued) iterator2.next();
-			InformaticsProcessor processor = loadProcessor(config.get("bean"));
-			//inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" ); //Add Header Logs in each Bean
-			processor.processInformaticsOnAssets(inLog, config, pageofhits);
-			getMediaArchive().saveData("asset", pageofhits);
-		}
-		//Save Records here?
+		//Lock Assets
+		User agent = getMediaArchive().getUser("agent");
 		for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
 		{
-			Data data = (Data) iterator.next();
-			data.setValue("taggedbyllm", true);
+			Asset asset = (Asset) iterator.next();
+			asset.toggleLock(agent);
 		}
 		getMediaArchive().saveData("asset", pageofhits);
+		
+		try 
+		{
+			for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
+			{
+				MultiValued config = (MultiValued) iterator2.next();
+				InformaticsProcessor processor = loadProcessor(config.get("bean"));
+				//inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" ); //Add Header Logs in each Bean
+				processor.processInformaticsOnAssets(inLog, config, pageofhits);
+				getMediaArchive().saveData("asset", pageofhits);
+			}
+			
+		}
+		finally
+		{
+			for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
+			{
+				Asset asset = (Asset) iterator.next();
+				asset.setValue("taggedbyllm", true);
+				asset.toggleLock(agent);
+			}
+			getMediaArchive().saveData("asset", pageofhits);
+		}
 	}
 
 	public void processEntities(ScriptLogger inLog)

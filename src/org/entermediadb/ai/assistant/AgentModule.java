@@ -404,34 +404,61 @@ public class AgentModule extends BaseMediaModule {
 		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
 		String sectionid = inReq.getRequestParameter("sectionid");
 		
-		Map component = new HashMap();
+		Map componentfields = new HashMap();
 		
-		String content = inReq.getRequestParameter("content.value");
-		if(content == null)
+		String[] fields = inReq.getRequestParameters("field");
+		
+		Collection<String> fieldlist = new ArrayList<String>();
+		for (int i = 0; i < fields.length; i++)
 		{
-			content = inReq.getRequestParameter("content");
+			String fieldname = fields[i];
+			if( fieldname != null && fieldname.length() > 0)
+			{
+				fieldlist.add(fieldname);
+			}
 		}
-		component.put("content", content);
 		
-		String assetid = inReq.getRequestParameter("assetid.value");
-		if(assetid == null)
+		if(!fieldlist.contains("content"))
 		{
-			assetid = inReq.getRequestParameter("assetid");
+			fieldlist.add("content");
 		}
-		component.put("assetid", assetid);
+		if(!fieldlist.contains("componenttype"))
+		{
+			fieldlist.add("componenttype");
+		}
+		if(!fieldlist.contains("ordering"))
+		{
+			fieldlist.add("ordering");
+		}
+		if(!fieldlist.contains("componentcontentid"))
+		{
+			fieldlist.add("componentcontentid");
+		}
 		
-		String componenttype = inReq.getRequestParameter("componenttype");
-		component.put("componenttype", componenttype);
+		for (Iterator iterator = fieldlist.iterator(); iterator.hasNext();) 
+		{
+			String fieldname = (String) iterator.next();
+			
+			String fieldvalue = inReq.getRequestParameter(fieldname+".value");
+			if(fieldvalue == null)
+			{
+				fieldvalue = inReq.getRequestParameter(fieldname + "value");
+			}
+			if(fieldvalue == null)
+			{
+				fieldvalue = inReq.getRequestParameter(fieldname);
+			}
+			if(fieldvalue == null || fieldvalue.length() == 0)
+			{
+				continue;
+			}
+			componentfields.put(fieldname, fieldvalue);
+		}
 		
-		component.put("ordering", inReq.getRequestParameter("ordering"));
-		
-		String componentcontentid = inReq.getRequestParameter("componentcontentid");
-		component.put("componentcontentid", componentcontentid);
-		
-		Data componentcontent = creatorManager.createComponentContent(sectionid, component);
+		Data componentcontent = creatorManager.createComponentContent(sectionid, componentfields);
 		inReq.putPageValue("componentcontent", componentcontent);
 		
-		if(componentcontentid == null || componentcontentid.length() == 0)
+		if(componentfields.get("componentcontent") == null)
 		{
 			inReq.putPageValue("newcontent", true);
 		}
