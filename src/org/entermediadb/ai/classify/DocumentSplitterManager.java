@@ -90,20 +90,24 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			}
 			count++;
 			
-			String fulltext = getMediaArchive().getAssetSearcher().getFulltext(asset);
-			if( fulltext != null )
+			int pages = asset.getInt("pages");
+			
+			if (pages > 0)
 			{
-				//send to Lllamaindex another way
-				List<String> chunks = new OutputFiller().splitUtf8(fulltext, 18 * 1024	); //32766  Lucene hard coded max We do not overlap. We just need to see the text
-				entity.setValue("totalpages", chunks.size());
-				splitDocumentWithText(inLog,chunks, inConfig, entity, asset);
-			}
-			else  //Try making pages from images
-			{				
-				int pages = asset.getInt("pages");
 				inLog.info("Splitting " + pages + " pages in document " + asset.getName());
 				entity.setValue("totalpages", pages);
 				splitDocumentWithPages(inLog, inConfig, entity, asset);
+			}
+			else
+			{
+				String fulltext = getMediaArchive().getAssetSearcher().getFulltext(asset);
+				if( fulltext != null )
+				{
+					//send to Lllamaindex another way
+					List<String> chunks = new OutputFiller().splitUtf8(fulltext, 18 * 1024	); //32766  Lucene hard coded max We do not overlap. We just need to see the text
+					entity.setValue("totalpages", chunks.size());
+					splitDocumentWithText(inLog,chunks, inConfig, entity, asset);
+				}
 			}
 			String modtime = asset.get("assetmodificationdate");
 			entity.setValue("pagescreatedfor", assetid + "|" + modtime);
