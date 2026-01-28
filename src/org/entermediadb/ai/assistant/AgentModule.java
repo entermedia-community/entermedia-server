@@ -405,12 +405,15 @@ public class AgentModule extends BaseMediaModule {
 		String[] fields = inReq.getRequestParameters("field");
 		
 		Collection<String> fieldlist = new ArrayList<String>();
-		for (int i = 0; i < fields.length; i++)
+		if( fields != null)
 		{
-			String fieldname = fields[i];
-			if( fieldname != null && fieldname.length() > 0)
+			for (int i = 0; i < fields.length; i++)
 			{
-				fieldlist.add(fieldname);
+				String fieldname = fields[i];
+				if( fieldname != null && fieldname.length() > 0)
+				{
+					fieldlist.add(fieldname);
+				}
 			}
 		}
 		
