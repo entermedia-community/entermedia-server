@@ -553,19 +553,19 @@ public class AgentModule extends BaseMediaModule {
 			return context;
 		}
 		
-		if( toplevel != null )
-		{
-			context.setTopLevelFunctionName(toplevel);
-		}
-		String functionname = inReq.getRequestParameter("functionname");
-		if( functionname != null )
-		{
-			context.setFunctionName(functionname);
-		}
-		if( toplevel != null ||functionname != null )
-		{
-			getMediaArchive(inReq).saveData("agentcontext",context);
-		}
+//		if( toplevel != null )
+//		{
+//			context.setTopLevelFunctionName(toplevel);
+//		}
+//		String functionname = inReq.getRequestParameter("functionname");
+//		if( functionname != null )
+//		{
+//			context.setFunctionName(functionname);
+//		}
+//		if( toplevel != null ||functionname != null )
+//		{
+//			getMediaArchive(inReq).saveData("agentcontext",context);
+//		}
 		return context;
 		
 		//Now that Context is set. Let the chat respond

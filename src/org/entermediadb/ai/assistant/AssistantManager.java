@@ -48,9 +48,9 @@ public class AssistantManager extends BaseAiManager
 		if (agent == null)
 		{
 			agent = archive.getUserManager().createUser("agent", null);
-			agent.setFirstName("eMediaFinder");
-			agent.setLastName("AI Helper");
-			agent.setValue("screenname", "eMediaFinder AI Helper");
+			agent.setFirstName("AI");
+			agent.setLastName("Guide");
+			agent.setValue("screenname", "AI Guide");
 			archive.getUserManager().saveUser(agent);
 			archive.getUserProfileManager().setRoleOnUser(archive.getCatalogId(), agent, "guest");
 		}
