@@ -225,7 +225,7 @@ jQuery(document).ready(function () {
 			if (backLink.entityid !== undefined && backLink.entityid != "") {
 				link.data("entityid", backLink.entityid);
 				link.data("entitymoduleid", backLink.entitymoduleid);
-				link.data("entitymoduleviewid", backLink.entitymoduleviewid);
+				//link.data("entitymoduleviewid", backLink.entitymoduleviewid);
 				link.data("url", backLink.url);
 				link.attr("href", backLink.url);
 				link.show();
