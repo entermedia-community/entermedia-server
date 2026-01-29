@@ -40,43 +40,7 @@ public abstract class BaseAiManager extends BaseManager
 {
 	private static final Log log = LogFactory.getLog(BaseAiManager.class);
 	
-	/*
-	public Map<String, String> getModels()
-	{
-		Map<String, String> models = new HashMap<>();
-		String visionmodel = getMediaArchive().getCatalogSettingValue("llmvisionmodel");
-		if(visionmodel == null) {
-			visionmodel = "gpt-5-nano";
-		}
-		models.put("vision", visionmodel);
-		
-		String entityclassificationmodel = getMediaArchive().getCatalogSettingValue("llmentityclassificationmodel");
-		if(entityclassificationmodel == null) {
-			entityclassificationmodel = "qwen3_4b";
-		}
-		models.put("entityclassification", entityclassificationmodel);
-		
-		String metadatamodel = getMediaArchive().getCatalogSettingValue("llmmetadatamodel");
-		if(metadatamodel == null) {
-			metadatamodel = "gpt-5-nano";
-		}
-		models.put("metadata", metadatamodel);
-
-		String semanticmodel = getMediaArchive().getCatalogSettingValue("llmsemanticmodel");
-		if(semanticmodel == null) {
-			semanticmodel = "qwen3:4b";
-		}
-		models.put("semantic", semanticmodel);
-		
-		String ragmodel = getMediaArchive().getCatalogSettingValue("llmragmodel");
-		if(ragmodel == null) {
-			ragmodel = "qwen3:4b";
-		}
-		models.put("ragmodel", ragmodel);
-		
-		return models;
-	}
-	*/
+	
 	protected Collection<PropertyDetail> loadActiveDetails(String inModuleId)
 	{
 		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inModuleId).exact("systemdefined", false).cachedSearch();  //Cache this
@@ -587,12 +551,9 @@ public abstract class BaseAiManager extends BaseManager
 		inParams.put("schema", schema);
 		
 		
-		Collection functions = getMediaArchive().query("aifunction").exact("functiongroup", inFunctionGroup).exact("cratesuggestions", true).search();
+		Collection functions = getMediaArchive().query("aifunction").exact("toplevel", true).exact("cratesuggestions", true).search();
 		
-		if(functions.isEmpty())
-		{
-			functions = getMediaArchive().query("aifunction").id("start"+inFunctionGroup).exact("cratesuggestions", true).search();
-		}
+		
 
 		Searcher suggestionsearcher = getMediaArchive().getSearcher("aisuggestion");
 
@@ -667,9 +628,10 @@ public abstract class BaseAiManager extends BaseManager
 	public LlmResponse handleError(AgentContext inAgentContext, String inError)
 	{
 		inAgentContext.addContext("error", inError);
-		inAgentContext.setFunctionName("renderError");
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("renderError");
-		LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
+		LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "renderError");
+		inAgentContext.setFunctionName(null);
+		inAgentContext.setNextFunctionName(null);
 		return response;
 	}
 	

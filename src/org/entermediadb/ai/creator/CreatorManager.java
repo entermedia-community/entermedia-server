@@ -60,13 +60,22 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 			inAgentContext.setFunctionName("smartcreator_CreateNew");
 			return response;
 		}
-		else if(agentFn.equals("smartcreator_CreateNew"))  //create_
+		else if(agentFn.equals("smartcreator_CreateNew"))
 		{
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection("startCreator");
-			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
-			inAgentContext.addContext("usertopic", usermessage.get("message"));
-			//inAgentContext.addContext("entitymoduleid", usermessage.get("entitymoduleid"));
-			//inAgentContext.addContext("entityid", usermessage.get("entityid"));
+			
+			JSONObject arguments = (JSONObject) inAgentContext.getContextValue("arguments");
+			
+			if(arguments != null && arguments.get("name") != null)
+			{
+				inAgentContext.addContext("usertopic", arguments.get("name"));
+				inAgentContext.addContext("arguments", null);
+			}
+			else
+			{				
+				MultiValued usermessage = (MultiValued) getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
+				inAgentContext.addContext("usertopic", usermessage.get("message"));
+			}
 			
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
 			
@@ -172,6 +181,7 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		boolean featured = "on".equals(inReq.getRequestParameter("featured"));
 		
 		String playbackentitymoduleid = (String) inReq.getRequestParameter("playbackentitymoduleid");
+		
 		Searcher searcher = getMediaArchive().getSearcher(playbackentitymoduleid);
 		
 		Data playback = searcher.createNewData();

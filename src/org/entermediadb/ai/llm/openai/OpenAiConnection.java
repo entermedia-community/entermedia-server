@@ -239,6 +239,38 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	    return res;
 	}
 	
+	public LlmResponse callToolsFunction(Map params, String inFunction)
+	{
+		MediaArchive archive = getMediaArchive();
+		
+		params.put("model", getModelName());
+
+		String templatepath = "/" + archive.getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + inFunction + ".json";
+			
+		Page template = archive.getPageManager().getPage(templatepath);
+			
+		if (!template.exists())
+		{
+			templatepath = "/" + archive.getCatalogId() + "/ai/"+getLlmProtocol()+"/calls/" + inFunction + ".json";
+			template = archive.getPageManager().getPage(templatepath);
+		}
+		
+		if (!template.exists())
+		{
+			throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunction);
+		}
+			
+		String definition = loadInputFromTemplate(templatepath, params);
+
+		JSONParser parser = new JSONParser();
+		JSONObject payload = (JSONObject) parser.parse(definition);
+		
+		log.info(payload);
+
+		LlmResponse res = callJson("/chat/completions", payload);
+	    return res;
+	}
+	
 	public JSONObject attachImageMessage(JSONObject payload, String inBase64Image) {
 		if (inBase64Image != null && !inBase64Image.isEmpty())
 		{

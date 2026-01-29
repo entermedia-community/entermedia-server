@@ -93,7 +93,6 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	public void setTopLevelFunctionName(String inNextFunctionName) {
 		setValue("toplevelaifunctionid",inNextFunctionName);
 	}
-
 	
 	public Map<String,Object> getContext() {
 		return context;

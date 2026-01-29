@@ -21,7 +21,6 @@ import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
-import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;

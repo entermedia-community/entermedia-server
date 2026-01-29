@@ -26,8 +26,9 @@ public interface LlmResponse {
     void setMessagePlain(String inMessagePlain);
 
     String getFunctionName();
-
     void setFunctionName(String inFunction);
+    
+    JSONObject getFunctionArguments();
 
     boolean isSuccessful();
     

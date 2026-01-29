@@ -1,33 +1,18 @@
 package org.entermediadb.ai.assistant;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.ChatMessageHandler;
-import org.entermediadb.ai.Schema;
-import org.entermediadb.ai.classify.EmbeddingManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.markdown.MarkdownUtil;
 import org.entermediadb.scripts.ScriptLogger;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
-import org.openedit.data.PropertyDetail;
-import org.openedit.data.Searcher;
-import org.openedit.hittracker.FilterNode;
-import org.openedit.hittracker.HitTracker;
-import org.openedit.profile.UserProfile;
 
 public class AutoDetectChatManager extends BaseAiManager implements ChatMessageHandler
 {
@@ -52,44 +37,61 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 		}
 		if ("autoDetectConversation".equals(agentFn))
 		{
-			//TODO: Move to tools call
-			if( query.contains("question") )
+			JSONObject params = new JSONObject();
+			params.put("userquery", query);
+			
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("default");
+			
+			LlmResponse response = llmconnection.callToolsFunction(params, agentFn);
+			
+			log.info(response.getRawResponse());
+			
+			String functionName = response.getFunctionName();
+			JSONObject functionArgs = response.getFunctionArguments();
+			
+			if(functionName == null || "general_chat".equals(functionName))
+			{
+				inAgentContext.setFunctionName("autoDetectConversation");
+				String message = (String) functionArgs.get("friendly_response");
+				if(message != null)
+				{
+					response.setMessage(message);
+					response.setMessagePlain(message);
+				}
+				
+				return response;
+			}
+			
+			inAgentContext.addContext("arguments", functionArgs);
+			
+			if("create_tutorial".equals(functionName))
+			{
+				inAgentContext.addContext("playbackentitymoduleid", "aitutorials");
+				
+				inAgentContext.setTopLevelFunctionName("welcomecreate_aitutorials");
+				inAgentContext.setFunctionName("welcomecreate_aitutorials");
+				inAgentContext.setNextFunctionName("smartcreator_CreateNew");
+			}
+			else if("start_tutorial".equals(functionName))
+			{
+				inAgentContext.addContext("playbackentitymoduleid", "aitutorials");
+				
+				inAgentContext.setTopLevelFunctionName("welcomestart_aitutorials");
+				inAgentContext.setFunctionName("welcomestart_aitutorials");
+				inAgentContext.setNextFunctionName("welcomestart_aitutorials");
+			}
+			else if("image_creation".equals(functionName))
 			{
 				inAgentContext.setTopLevelFunctionName("welcomeQuestions");
 				inAgentContext.setFunctionName("welcomeQuestions");
 				inAgentContext.setNextFunctionName("welcomeQuestions");
 			}
-			else if( query.contains("tutor") )
+			else
 			{
-				inAgentContext.setFunctionName("welcomecreate_aitutorials");
-				inAgentContext.setNextFunctionName("welcomecreate_aitutorials");
-			}
-			else if( query.contains("blog") )
-			{
-				inAgentContext.setFunctionName("welcomecreate_aitutorials"); //?
-				inAgentContext.setNextFunctionName("welcomecreate_aitutorials");
-			}
-			else if( query.contains("search") )
-			{
-				inAgentContext.setFunctionName("welcomeSearch");
-				inAgentContext.setNextFunctionName("welcomeSearch");
-			}
-			else if( query.contains("chat") )
-			{
-				inAgentContext.setFunctionName("welcomeAutoDetectConversation");
+				inAgentContext.setFunctionName("autoDetectConversation");
 			}
 			
-//			MultiValued function = (MultiValued) getMediaArchive().getCachedData("aifunction", agentFn);
-//			LlmResponse response = startChat(inAgentContext, usermessage, inAgentMessage, function);
-//			
-//			//Set the new top level function
-//			String next = inAgentContext.getNextFunctionName();
-//			if( next != null)
-//			{
-//				inAgentContext.setTopLevelFunctionName(next); //Switch modes
-//			}
-			
-			//return response;
+			return response;
 		}
 		
 		
@@ -105,7 +107,7 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 	@Override
 	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
 	{
-		
+		// Nothing to do.
 	}	
 	
 

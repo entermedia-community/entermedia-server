@@ -13,6 +13,7 @@ public class BasicLlmResponse implements LlmResponse
 	protected String fieldMessage;
 	protected String fieldMessagePlain;
 	protected String fieldFunctionName;
+	protected JSONObject fieldFunctionArguments;
 	protected AiSearch fieldAiSearchParams;
 	Collection<RankedResult> fieldRankedSuggestions;
 	
@@ -167,6 +168,16 @@ public class BasicLlmResponse implements LlmResponse
 			return (Collection) obj;
 		}
 		return null;
+	}
+	
+	@Override
+	public JSONObject getFunctionArguments()
+	{
+		if(fieldFunctionArguments != null)
+		{
+			return fieldFunctionArguments;
+		}
+		return getMessageStructured();
 	}
 
 }
