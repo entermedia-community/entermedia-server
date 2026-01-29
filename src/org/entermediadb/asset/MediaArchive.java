@@ -3390,6 +3390,21 @@ public class MediaArchive implements CatalogEnabled
 		
 		return connection;
 	}
+	
+	
+	public boolean aiImageCreationAvailable(WebPageRequest inReq)
+	{
+		LlmConnection imagecreation = getLlmConnection("createImage");
+		if (imagecreation != null)
+		{
+			if (imagecreation.getApiKey() != null)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }
 
 
