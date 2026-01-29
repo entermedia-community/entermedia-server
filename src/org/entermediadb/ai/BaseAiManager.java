@@ -538,7 +538,7 @@ public abstract class BaseAiManager extends BaseManager
 	public void savePossibleFunctionSuggestions(ScriptLogger inLog, String inTopLevelFunction)
 	{
 		Map params = new HashMap();
-		savePossibleFunctionSuggestions(inLog, inFunctionGoup, params);
+		savePossibleFunctionSuggestions(inLog, inTopLevelFunction, params);
 	}
 
 	public void savePossibleFunctionSuggestions(ScriptLogger inLog, String inTopLevelFunction, Map inParams)
