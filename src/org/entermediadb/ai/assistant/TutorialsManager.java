@@ -15,7 +15,7 @@ public class TutorialsManager extends BaseAiManager implements ChatMessageHandle
 	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
 	{
 		String agentFn = inAgentContext.getFunctionName();
-		if("welcomecreate_aitutorials".equals(agentFn))
+		if("welcome_aitutorials".equals(agentFn))
 		{
 			
 		}
