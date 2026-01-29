@@ -27,6 +27,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.page.Page;
 
 public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 {
@@ -42,27 +43,42 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		// Do Nothing
 	}
 	
+	protected String getLocalActionName(AgentContext inAgentContext, String fallback)
+	{
+		String agentFn = inAgentContext.getFunctionName();
+		String apphome = (String) inAgentContext.getContextValue("apphome");
+
+		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/" + agentFn + ".html";
+		boolean pageexists = getMediaArchive().getPageManager().getPage(templatepath).exists();
+		if(!pageexists)
+		{
+			agentFn = "smartcreator_" + fallback;
+		}
+		return agentFn;
+	}
+	
 	@Override
 	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
 	{
-		Data channel = inAgentContext.getChannel();
-
 		
 		String agentFn = inAgentContext.getFunctionName();
 			
-		if(agentFn.startsWith("welcome_"))  
-		{
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("startCreator");
-			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "welcomeDefault");
+		if(agentFn.startsWith("smartcreator_welcome_"))  
+		{	
+			String function = getLocalActionName(inAgentContext, "welcome");
+			
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(function);
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, function);
 			
 			String playbackentitymoduleid = agentFn.substring("welcome_".length());
 			inAgentContext.addContext("playbackentitymoduleid", playbackentitymoduleid);
-			inAgentContext.setFunctionName("smartcreator_CreateNew");
+			inAgentContext.setFunctionName("create_" + playbackentitymoduleid);
 			return response;
 		}
-		else if(agentFn.equals("smartcreator_CreateNew"))
+		else if(agentFn.startsWith("smartcreator_create_"))
 		{
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("startCreator");
+			String playbackentitymoduleid = agentFn.substring("create_".length());
+			inAgentContext.addContext("playbackentitymoduleid", playbackentitymoduleid);
 			
 			JSONObject arguments = (JSONObject) inAgentContext.getContextValue("arguments");
 			
@@ -72,18 +88,23 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 				inAgentContext.addContext("arguments", null);
 			}
 			else
-			{				
-				MultiValued usermessage = (MultiValued) getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
-				inAgentContext.addContext("usertopic", usermessage.get("message"));
+			{	
+				// load name
 			}
 			
-			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
+			String function = getLocalActionName(inAgentContext, "create");
+			
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(function);
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, function);
 			
 			return response;
 		}
+		else if(agentFn.startsWith("smartcreator_play_"))
+		{
+			// TODO:
+		}
 		else if ("conversation".equals(agentFn))
 		{
-			// TODO
 			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
 			MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", agentFn);
 			LlmResponse response = startChat(inAgentContext, usermessage, inAgentMessage, function);

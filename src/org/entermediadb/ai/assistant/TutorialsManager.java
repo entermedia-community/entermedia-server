@@ -8,19 +8,14 @@ import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 
 public class TutorialsManager extends BaseAiManager implements ChatMessageHandler
 {
 	@Override
 	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
 	{
-		String agentFn = inAgentContext.getFunctionName();
-		if("welcome_aitutorials".equals(agentFn))
-		{
-			
-		}
-		
-		return null;
+		throw new OpenEditException("Not used.");
 	}
 
 	@Override

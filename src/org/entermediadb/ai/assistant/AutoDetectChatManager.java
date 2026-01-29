@@ -1,6 +1,7 @@
 package org.entermediadb.ai.assistant;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,6 +12,7 @@ import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
+import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 
@@ -39,6 +41,9 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 		{
 			JSONObject params = new JSONObject();
 			params.put("userquery", query);
+			
+			Collection<Data> toplevelfunctions = getMediaArchive().query("aifunctions").exact("toplevel", true).search();
+			params.put("toplevelfunctions", toplevelfunctions);
 			
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection("default");
 			
@@ -72,15 +77,15 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 				
 				inAgentContext.setTopLevelFunctionName("welcome_aitutorials");
 				inAgentContext.setFunctionName("welcome_aitutorials");
-				inAgentContext.setNextFunctionName("smartcreator_CreateNew");
+				inAgentContext.setNextFunctionName("create_aitutorials");
 			}
 			else if("start_tutorial".equals(functionName))
 			{
 				inAgentContext.addContext("playbackentitymoduleid", "aitutorials");
 				
-				inAgentContext.setTopLevelFunctionName("welcomestart_aitutorials");
-				inAgentContext.setFunctionName("welcomestart_aitutorials");
-				inAgentContext.setNextFunctionName("welcomestart_aitutorials");
+				inAgentContext.setTopLevelFunctionName("welcome_aitutorials");
+				inAgentContext.setFunctionName("welcome_aitutorials");
+				inAgentContext.setNextFunctionName("start_aitutorials");
 			}
 			else if("image_creation".equals(functionName))
 			{

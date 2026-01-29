@@ -36,7 +36,7 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog)
 	{
 		//List all functions
-		Collection creations = getMediaArchive().query("aifunction").exact("functiongroup", "Creation").search();
+		Collection creations = getMediaArchive().query("aifunction").exact("messagehandler", "contentManager").search();
 		
 		Searcher embedsearcher = getMediaArchive().getSearcher("aifunctionparameter");
 		
@@ -80,15 +80,7 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 				for (Iterator iterator2 = schema.getModules().iterator(); iterator2.hasNext();)
 				{
 					Data parentmodule = (Data) iterator2.next();
-					
-//					<data id="5" featured="true" functiongroup="Creation" shortname="Create Product Entity">
-//					  <name>
-//					     <language id="en"><![CDATA[Create a Product ]]></language>
-//					  </name>
-//					</data>
 
-					
-					
 					Collection existing = embedsearcher.query().exact("aifunction", function.getId()).exact("parentmodule",parentmodule.getId()).search();
 					if( !existing.isEmpty())
 					{
@@ -115,24 +107,6 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 					}
 					
 				}
-				
-//				Collection modules = getMediaArchive().query("module").exact("ismodule", true).search();
-//				for (Iterator iterator2 = modules.iterator(); iterator2.hasNext();)
-//				{
-//					module = (Data) iterator2.next();
-//					Collection morephrases = new ArrayList();
-//					morephrases.add("Create " + module.getName());
-//					morephrases.add("Make " + module.getName());
-//					for (Iterator iterator3 = morephrases.iterator(); iterator2.hasNext();)
-//					{
-//						String text = (String)iterator3.next();
-//						SemanticAction action = new SemanticAction();
-//						action.setAiFunction(function.getId());
-//						action.setSemanticText(text);
-//						action.setParentData(module);
-//						actions.add(action);
-//					}
-//				}
 			}
 		}
 		

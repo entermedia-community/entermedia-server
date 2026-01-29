@@ -464,8 +464,6 @@ public abstract class BaseAiManager extends BaseManager
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		//String functiongroup = inAgentContext.getChannel().get("functiongroup");
-		
 		LlmConnection llmconnection = archive.getLlmConnection(inAiFunction.getId()); //Should stay startSearch
 		
 		//inAgentContext.addContext("message", userMessage);
@@ -537,13 +535,13 @@ public abstract class BaseAiManager extends BaseManager
 		
 	}
 	
-	public void savePossibleFunctionSuggestions(ScriptLogger inLog, String inFunctionGoup)
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog, String inTopLevelFunction)
 	{
 		Map params = new HashMap();
 		savePossibleFunctionSuggestions(inLog, inFunctionGoup, params);
 	}
 
-	public void savePossibleFunctionSuggestions(ScriptLogger inLog, String inFunctionGroup, Map inParams)
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog, String inTopLevelFunction, Map inParams)
 	{
 		Schema schema = loadSchema();
 		
@@ -564,7 +562,7 @@ public abstract class BaseAiManager extends BaseManager
 			HitTracker existing = suggestionsearcher.query().exact("aifunction", function.getId()).exact("aigenerated", true).search();
 			if( existing.size() >= 5)
 			{
-				log.info("Already found enough suggestions " + inFunctionGroup);
+				log.info("Already found enough suggestions " + inTopLevelFunction);
 				continue;
 			}
 			
