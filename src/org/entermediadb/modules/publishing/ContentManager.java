@@ -21,7 +21,6 @@ import org.dom4j.Element;
 import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.assistant.AiCreation;
 import org.entermediadb.ai.assistant.SemanticAction;
-import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
@@ -1296,6 +1295,12 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 	@Override
 	public void savePossibleFunctionSuggestions(ScriptLogger inLog) {
 		// Do nothing
+	}
+
+	@Override
+	public void getDetectorParams(AgentContext inAgentContext, MultiValued inTopLevelFunction) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

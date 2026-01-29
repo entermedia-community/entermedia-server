@@ -115,6 +115,12 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
 	{
 		// Nothing to do.
+	}
+
+	@Override
+	public void getDetectorParams(AgentContext inAgentContext, MultiValued inTopLevelFunction) {
+		// TODO Auto-generated method stub
+		
 	}	
 	
 

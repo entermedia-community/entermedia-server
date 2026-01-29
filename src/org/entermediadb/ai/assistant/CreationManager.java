@@ -268,4 +268,10 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 		response.setFunctionName(creationFn);
 		return response;
 	}
+
+	@Override
+	public void getDetectorParams(AgentContext inAgentContext, MultiValued inTopLevelFunction) {
+		// TODO Auto-generated method stub
+		
+	}
 }

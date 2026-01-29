@@ -27,7 +27,6 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.page.Page;
 
 public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 {
@@ -844,6 +843,13 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 
 
 	public void captionImage(WebPageRequest inReq, String inComponentcontentid, String inAssetid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void getDetectorParams(AgentContext inAgentContext, MultiValued inTopLevelFunction) {
 		// TODO Auto-generated method stub
 		
 	}

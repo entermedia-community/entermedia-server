@@ -30,4 +30,10 @@ public class TutorialsManager extends BaseAiManager implements ChatMessageHandle
 		savePossibleFunctionSuggestions(inLog, "Tutorial"); 
 	}
 
+	@Override
+	public void getDetectorParams(AgentContext inAgentContext, MultiValued inTopLevelFunction) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -359,4 +359,10 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		return answer;
 	}
 
+	@Override
+	public void getDetectorParams(AgentContext inAgentContext, MultiValued inTopLevelFunction) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

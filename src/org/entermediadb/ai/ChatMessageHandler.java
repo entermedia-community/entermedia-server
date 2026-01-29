@@ -15,5 +15,7 @@ public interface ChatMessageHandler
 	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog);
 	
 	public void savePossibleFunctionSuggestions(ScriptLogger inLog);
+	
+	public void getDetectorParams(AgentContext inAgentContext, MultiValued inTopLevelFunction);
 
 }
