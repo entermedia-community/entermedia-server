@@ -68,6 +68,8 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 			{
 				inAgentContext.addContext("playbackentitymoduleid", "aitutorials");
 				
+				inAgentContext.addContext("processingtype", "Tutorial"); // shows up in processing message (i.e. Creating new Tutorial)
+				
 				inAgentContext.setTopLevelFunctionName("welcomecreate_aitutorials");
 				inAgentContext.setFunctionName("welcomecreate_aitutorials");
 				inAgentContext.setNextFunctionName("smartcreator_CreateNew");
