@@ -25,7 +25,6 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
-import org.openedit.entermedia.util.Inflector;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 
@@ -69,10 +68,6 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 			Data playbackmodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
 			inAgentContext.addContext("playbackmodule", playbackmodule);
 			
-			Inflector inflector = Inflector.getInstance();
-			
-			inAgentContext.addContext("playbackmodulename", inflector.pluralize(playbackmodule.getName()));
-			
 			String entityid = (String) inAgentContext.getValue("entityid");
 			String entitymoduleid = (String) inAgentContext.getValue("entitymoduleid");
 			
@@ -101,7 +96,8 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 			}
 			else
 			{	
-				// load name
+				Data usermessage = getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
+				inAgentContext.addContext("usertopic", usermessage.get("message"));
 			}
 			
 			String function = getLocalActionName(inAgentContext, "create");
@@ -211,7 +207,6 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		{
 			throw new IllegalArgumentException("Missing required parameters");
 		}
-		boolean featured = "on".equals(inReq.getRequestParameter("featured"));
 		
 		String playbackentitymoduleid = (String) inReq.getRequestParameter("playbackentitymoduleid");
 		
