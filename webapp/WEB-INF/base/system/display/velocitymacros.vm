@@ -10,6 +10,10 @@
 #macro(text $t)
 #set( $text = $context.getText($t) )
 $!{url_util.xmlEscape($text)}#end
+#macro(singular $t)
+#set( $text = $context.getText($t) )
+#set( $text = $inflector.singularize($text) )
+$!{url_util.xmlEscape($text)}#end
 #macro(datatext $data $field)
 #set( $text = $data.getText($field,$context))
 $!url_util.xmlEscape($text)
