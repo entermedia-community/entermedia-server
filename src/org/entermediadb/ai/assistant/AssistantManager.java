@@ -21,7 +21,6 @@ import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
-import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
@@ -294,10 +293,16 @@ public class AssistantManager extends BaseAiManager
 		
 		if( processingmessage == null )
 		{
-			processingmessage = "Analyzing...";
+			processingmessage = "Analyzing";
+		}
+
+		String processingtype = (String) agentContext.getContextValue("processingtype");
+		if( processingtype != null)
+		{
+			processingmessage += " " + processingtype;
 		}
 		
-		processingmessage = loader + processingmessage;
+		processingmessage = loader + processingmessage + "...";
 		
 		String message = agentContext.getMessagePrefix() + processingmessage;
 		agentmessage.setValue("message", message ); //setting status

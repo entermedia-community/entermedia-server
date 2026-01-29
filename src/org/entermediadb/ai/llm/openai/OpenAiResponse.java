@@ -24,8 +24,17 @@ public class OpenAiResponse extends BasicLlmResponse {
 
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
-
-        return message != null && message.get("function_call") != null;
+        
+        if(message == null || message.isEmpty()) 
+		{
+			return false;
+		}
+        JSONArray tool_calls = (JSONArray) message.get("tool_calls");
+        if (tool_calls != null)
+		{
+			return true;
+		}
+        return message.get("function_call") != null;
     }
 
     @Override
@@ -117,8 +126,16 @@ public class OpenAiResponse extends BasicLlmResponse {
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
         JSONObject functionCall = (JSONObject) message.get("function_call");
+        if( functionCall != null)
+		{
+        	return (String) functionCall.get("name");
+		}
+        JSONArray functionCalls = (JSONArray) message.get("tool_calls");
+        functionCall = (JSONObject) functionCalls.get(0);
+    	JSONObject function = (JSONObject) functionCall.get("function");
+    	
+    	return function != null ? (String) function.get("name") : null;
 
-        return functionCall != null ? (String) functionCall.get("name") : null;
     }
 
     @Override
@@ -220,4 +237,42 @@ public class OpenAiResponse extends BasicLlmResponse {
 		}
 		return filename;
 	}
+    
+    @Override
+    public JSONObject getFunctionArguments() 
+    {
+    	if( fieldFunctionArguments != null)
+    	{
+    		return fieldFunctionArguments;
+    	}
+    	
+        if (!isToolCall()) return null;
+        
+        try
+        {
+        	
+        	JSONArray choices = (JSONArray) rawResponse.get("choices");
+        	JSONObject choice = (JSONObject) choices.get(0);
+        	JSONObject message = (JSONObject) choice.get("message");
+        	JSONArray functionCalls = (JSONArray) message.get("tool_calls");
+        	
+        	JSONObject functionCall = (JSONObject) functionCalls.get(0);
+        	JSONObject function = (JSONObject) functionCall.get("function");
+        	
+        	String argumentString = (String) function.get("arguments");
+        	
+        	JSONParser parser = new JSONParser();
+        	
+			JSONObject arguments = parser.parse(argumentString);
+
+			return arguments;
+        }
+        catch( Exception ex)
+        {
+        	return null;
+        }
+
+    }
+    
+   
 }

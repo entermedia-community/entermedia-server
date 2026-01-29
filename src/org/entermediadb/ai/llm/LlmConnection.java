@@ -34,6 +34,8 @@ public interface LlmConnection {
     
     public LlmResponse callClassifyFunction(Map inParams, String inFunction, String inBase64Image);
     public LlmResponse callClassifyFunction(Map inParams, String inFunction, String inBase64Image, String textContent);
+    
+    public LlmResponse callToolsFunction(Map inParams, String inFunction);
 
     public LlmResponse runPageAsInput(AgentContext llmRequest, String inChattemplate);
 

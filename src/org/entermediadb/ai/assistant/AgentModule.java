@@ -405,6 +405,7 @@ public class AgentModule extends BaseMediaModule {
 		String[] fields = inReq.getRequestParameters("field");
 		
 		Collection<String> fieldlist = new ArrayList<String>();
+		
 		if( fields != null)
 		{
 			for (int i = 0; i < fields.length; i++)

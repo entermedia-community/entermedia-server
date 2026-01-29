@@ -658,5 +658,10 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	{
 		throw new OpenEditException("Call not supported");
 	}
+	
+	@Override
+	public LlmResponse callToolsFunction(Map inParams, String inFunction) {
+		throw new OpenEditException("Call not supported");
+	}
 
 }
