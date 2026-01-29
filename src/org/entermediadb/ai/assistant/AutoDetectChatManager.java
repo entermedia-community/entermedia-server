@@ -62,7 +62,6 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 					response.setMessage(message);
 					response.setMessagePlain(message);
 				}
-				
 				return response;
 			}
 			
@@ -71,18 +70,16 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 			if("create_tutorial".equals(functionName)) // TODO: sync with auto created function names
 			{
 				inAgentContext.addContext("playbackentitymoduleid", "aitutorials");
-
 				inAgentContext.setTopLevelFunctionName("welcome_aitutorials");
 				inAgentContext.setFunctionName("welcome_aitutorials");
 				inAgentContext.setNextFunctionName("create_aitutorials");
 			}
-			else if("start_tutorial".equals(functionName))
+			else if("play_tutorial".equals(functionName))
 			{
 				inAgentContext.addContext("playbackentitymoduleid", "aitutorials");
-				
 				inAgentContext.setTopLevelFunctionName("welcome_aitutorials");
-				inAgentContext.setFunctionName("welcome_aitutorials");
-				inAgentContext.setNextFunctionName("start_aitutorials");
+				inAgentContext.setFunctionName("play_tutorial");
+				inAgentContext.setNextFunctionName("play_tutorial");
 			}
 			else if("image_creation".equals(functionName))
 			{

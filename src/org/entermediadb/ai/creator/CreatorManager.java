@@ -109,7 +109,37 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		}
 		else if(agentFn.startsWith("smartcreator_play_"))
 		{
-			// TODO:
+			String playbackentitymoduleid = agentFn.substring("smartcreator_play_".length());
+			
+			String playbackentityid = (String) inAgentContext.getContextValue("playbackentityid");
+			String viewfallback = "play";
+			if(playbackentityid != null)
+			{
+				viewfallback = "play_on";
+				inAgentContext.addContext("playbackentityid", playbackentityid);
+				inAgentContext.addContext("playbackentitymoduleid", playbackentitymoduleid);
+			}
+			else
+			{				
+				
+				Data playbackmodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
+				inAgentContext.addContext("playbackmodule", playbackmodule);
+				
+				String entityid = (String) inAgentContext.getValue("entityid");
+				String entitymoduleid = (String) inAgentContext.getValue("entitymoduleid");
+				
+				Collection<Data> playables = getMediaArchive().query(playbackentitymoduleid).exact("entityid", entityid).exact("entitymoduleid", entitymoduleid).search();
+				
+				inAgentContext.addContext("playables", playables);
+			}
+			
+			
+			String function = getLocalActionName(inAgentContext, viewfallback);
+			
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(function);
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, function);
+			
+			return response;
 		}
 		else if ("conversation".equals(agentFn))
 		{
@@ -137,10 +167,16 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 
 		AgentContext agentContext =  (AgentContext) inReq.getPageValue("agentcontext");
 
-		if(playbackentityid == null)
+		if(playbackentityid == null && agentContext != null)
 		{
 			playbackentityid = (String) agentContext.getContextValue("playbackentityid");
 			playbackentitymoduleid = (String) agentContext.getContextValue("playbackentitymoduleid");
+		}
+		
+		if(playbackentityid == null)
+		{
+			playbackentityid = inReq.findValue("entityid");
+			playbackentitymoduleid = inReq.findValue("module");
 		}
 		
 		if(playbackentityid == null || playbackentitymoduleid == null)

@@ -223,9 +223,9 @@ public class AgentModule extends BaseMediaModule {
 				Data play_aifunction = getMediaArchive(inReq).getSearcher("aifunction").createNewData();
 				play_aifunction.setId(id);
 				play_aifunction.setValue("messagehandler", messagehandler);
-				play_aifunction.setValue("toplevel", false);
+				play_aifunction.setValue("toplevel", true);
 				play_aifunction.setValue("processingmessage", "Playing " + module.getName());
-				play_aifunction.setName("Play " + module.getName());
+				play_aifunction.setName("View " + module.getName());
 				tosave.add(play_aifunction);
 			}
 			
@@ -356,12 +356,6 @@ public class AgentModule extends BaseMediaModule {
 	
 	public void loadCreator(WebPageRequest inReq) throws Exception 
 	{
-		String module = inReq.findValue("module");
-		String entityid =  inReq.findValue("entityid");
-		
-		inReq.setRequestParameter("playbackentityid", entityid);
-		inReq.setRequestParameter("playbackentitymoduleid", module);
-
 		CreatorManager creatorManager = (CreatorManager) getMediaArchive(inReq).getBean("creatorManager");
 		creatorManager.getCreator(inReq);
 	}
@@ -526,28 +520,38 @@ public class AgentModule extends BaseMediaModule {
 		
 		//Get the contenxt and update it first
 		String channelid = inReq.getRequestParameter("channel");
-		AgentContext context = assistantManager.loadContext(channelid);
+		AgentContext agentContext = assistantManager.loadContext(channelid);
 		String toplevel = inReq.getRequestParameter("toplevelaifunctionid");
+		String previousTopLevel = agentContext.getTopLevelFunctionName();
 		
 		boolean changed = false;
-		if( toplevel != null && !toplevel.equals(context.getTopLevelFunctionName() ) )
+		if( toplevel != null && !toplevel.equals(previousTopLevel) )
 		{
-			context.setTopLevelFunctionName(toplevel);
+			agentContext.setTopLevelFunctionName(toplevel);
 			changed = true;
 		}
+
 		String functionname = inReq.getRequestParameter("functionname");
-		if( functionname != null && !functionname.equals(context.getFunctionName()))
+		if( functionname != null)
 		{
-			context.setFunctionName(functionname);
+			agentContext.setFunctionName(functionname);
 			changed = true;
+			
+			String playbackentityid = inReq.getRequestParameter("playbackentityid");
+			if(playbackentityid != null)
+			{
+				agentContext.addContext("playbackentityid", playbackentityid);
+				agentContext.addContext("playbacksection", inReq.getRequestParameter("playbacksection"));
+			}
 		}
+		
 		if( changed )
 		{
-			getMediaArchive(inReq).saveData("agentcontext",context);
+			getMediaArchive(inReq).saveData("agentcontext",agentContext);
 			
 			//Now that Context is set. Let the chat respond
 			
-			assistantManager.sendSystemMessage(context,inReq.getUserName(),null);
+			assistantManager.sendSystemMessage(agentContext,inReq.getUserName(),null);
 		}
 		//Refresh drop down area?
 	}
