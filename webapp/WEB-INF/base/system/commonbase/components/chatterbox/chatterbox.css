@@ -1096,16 +1096,9 @@ body.hidden-scroll {
 	box-shadow: none !important;
 }
 .dropdown-item.ai-func {
-	color: #32cd32;
-	background: #ffffff;
-	border-bottom: 1px solid #cfcfcf !important;
 	cursor: pointer;
 	padding: 0.25rem 0.5rem;
 	font-size: 0.9rem;
-}
-.dropdown-item.ai-func:hover {
-	background: #e6ffe6;
-	color: #32cd32;
 }
 .ai-func i {
 	transform: scale(1);
