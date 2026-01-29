@@ -207,7 +207,8 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 			searcher.saveData(playback, inReq.getUser());
 			
 			inReq.putPageValue("playbackentity", playback);
-			inReq.putPageValue("playbackentitymoduleid", playbackentitymoduleid);
+			Data playbackentitymodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
+			inReq.putPageValue("playbackentitymodule", playbackentitymodule);
 		}
 		
 		getMediaArchive().fireSharedMediaEvent("llm/creatorcomponentcontent");
