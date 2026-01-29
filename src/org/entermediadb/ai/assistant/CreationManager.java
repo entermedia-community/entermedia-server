@@ -68,7 +68,7 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 				}
 			}
 
-			if( function.getId().equals("createImage" ) )
+			if( function.getId().equals("image_creation_start" ) )
 			{
 				module = getMediaArchive().getCachedData("module", "asset");
 			}

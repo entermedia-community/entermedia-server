@@ -27,16 +27,16 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 		String query = usermessage.get("message");
 		
 		String agentFn = inAgentContext.getFunctionName();
-		if ("welcomeAutoDetectConversation".equals(agentFn))
+		if ("auto_detect_welcome".equals(agentFn))
 		{
 			inAgentMessage.setValue("chatmessagestatus", "completed");
 			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay startSearch
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
-			inAgentContext.setFunctionName("autoDetectConversation");
+			inAgentContext.setFunctionName("auto_detect_conversation");
 			return response;
 		}
-		if ("autoDetectConversation".equals(agentFn))
+		if ("auto_detect_conversation".equals(agentFn))
 		{
 			JSONObject params = new JSONObject();
 			params.put("userquery", query);
@@ -55,7 +55,7 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 			
 			if(functionName == null || "general_chat".equals(functionName))
 			{
-				inAgentContext.setFunctionName("autoDetectConversation");
+				inAgentContext.setFunctionName("auto_detect_conversation");
 				String message = (String) functionArgs.get("friendly_response");
 				if(message != null)
 				{
@@ -92,7 +92,7 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 			}
 			else
 			{
-				inAgentContext.setFunctionName("autoDetectConversation");
+				inAgentContext.setFunctionName("auto_detect_conversation");
 			}
 			
 			return response;

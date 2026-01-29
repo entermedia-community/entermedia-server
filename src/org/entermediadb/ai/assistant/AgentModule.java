@@ -571,11 +571,9 @@ public class AgentModule extends BaseMediaModule {
 
 		if( toplevel == null && context.getTopLevelFunctionName() == null)
 		{
-			//context.setTopLevelFunctionName("welcomeAutoDetectConversation");
-			//context.setFunctionName("welcomeAutoDetectConversation");
 			inReq.setRequestParameter("channel", channelid);
-			inReq.setRequestParameter("toplevelaifunctionid", "welcomeAutoDetectConversation");
-			inReq.setRequestParameter("functionname", "welcomeAutoDetectConversation");
+			inReq.setRequestParameter("toplevelaifunctionid", "auto_detect_welcome");
+			inReq.setRequestParameter("functionname", "auto_detect_welcome");
 			startFunction(inReq);
 			return context;
 		}

@@ -3394,7 +3394,7 @@ public class MediaArchive implements CatalogEnabled
 	
 	public boolean aiImageCreationAvailable(WebPageRequest inReq)
 	{
-		LlmConnection imagecreation = getLlmConnection("createImage");
+		LlmConnection imagecreation = getLlmConnection("image_creation_start");
 		if (imagecreation != null)
 		{
 			if (imagecreation.getApiKey() != null)

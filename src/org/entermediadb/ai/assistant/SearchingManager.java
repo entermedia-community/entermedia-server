@@ -367,7 +367,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		{
 			Data parentmodule = (Data) iterator.next();
 			
-			Collection existing = embedsearcher.query().exact("aifunction", "searchTables").exact("parentmodule",parentmodule.getId()).search();
+			Collection existing = embedsearcher.query().exact("aifunction", "search_tables").exact("parentmodule",parentmodule.getId()).search();
 			if( !existing.isEmpty())
 			{
 				log.info("Skipping " + parentmodule);
@@ -375,15 +375,8 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			}
 			
 			SemanticAction action = new SemanticAction();
-			/*
-			 * "search",
-							"creation",
-							"how-to",
-							"task",
-							"conversation",
-							"support request"
-							*/
-			action.setAiFunction("searchTables");
+
+			action.setAiFunction("search_tables");
 			action.setSemanticText("Search for " + parentmodule.getName());
 			action.setParentData(parentmodule);
 			actions.add(action);
@@ -402,7 +395,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 				action = new SemanticAction();
 				action.setParentData(parentmodule);
 				action.setChildData(childmodule);
-				action.setAiFunction("searchTables");
+				action.setAiFunction("search_tables");
 				action.setSemanticText("Search for " + childmodule.getName() + " in " + parentmodule.getName());
 				actions.add(action);
 			}
@@ -510,7 +503,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			
 //			if("all".equals(targetTable))
 //			{
-//				return "searchMultiple";
+//				return "search_multiple";
 //			}
 
 		}
@@ -525,7 +518,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		{
 			Data modulesearch = getMediaArchive().getCachedData("module", "modulesearch");
 			search.getStep1().setModule(modulesearch);
-			type = "searchTables";
+			type = "search_tables";
 		}
 		else
 		{
@@ -603,17 +596,17 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 	{
 		String agentFn = inAgentContext.getFunctionName();
 		
-		if ("welcomeSearch".equals(agentFn))
+		if ("search_welcome".equals(agentFn))
 		{
 			inAgentMessage.setValue("chatmessagestatus", "completed");
 			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay startSearch
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
-			inAgentContext.setFunctionName("startSearch");
+			inAgentContext.setFunctionName("search_start");
 			return response;
 		}
  
-		if ("startSearch".equals(agentFn))
+		if ("search_start".equals(agentFn))
 		{
 			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
 			MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", agentFn);
@@ -646,10 +639,10 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			}
 			return response;
 		}
-		else if ("searchTables".equals(agentFn))
+		else if ("search_tables".equals(agentFn))
 		{
 			//search
-			LlmConnection searcher = getMediaArchive().getLlmConnection("searchTables");
+			LlmConnection searcher = getMediaArchive().getLlmConnection("search_tables");
 			LlmResponse response =  searcher.renderLocalAction(inAgentContext);
 			
 			String message = response.getMessage();
@@ -661,30 +654,14 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			
 			return response;
 		}
-		else if ("searchSemantic".equals(agentFn))
-		{	
-			if("searchSemantic".equals(agentFn))
-			{
-				getMediaArchive().saveData("chatterbox",inAgentMessage); //TODO Why are we saving this?
-			}
-
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("searchSemantic");
+		else if ("search_semantic".equals(agentFn))
+		{
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("search_semantic");
 			LlmResponse result = llmconnection.renderLocalAction(inAgentContext);
 			return result;
 		}
 		
 		throw new OpenEditException("Function not supported " + agentFn);
-		
-				
-//		if(generalresponse != null)
-//		{
-//			MarkdownUtil md = new MarkdownUtil();
-//			response.setMessage(md.render(generalresponse));
-//		}
-		
-		//respond.setFunctionName(null);
-//		getMediaArchive().saveData("chatterbox",inMessage);
-//		server.broadcastMessage(getMediaArchive().getCatalogId(), inMessage);
 	}
 
 

@@ -464,7 +464,7 @@ public abstract class BaseAiManager extends BaseManager
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		LlmConnection llmconnection = archive.getLlmConnection(inAiFunction.getId()); //Should stay startSearch
+		LlmConnection llmconnection = archive.getLlmConnection(inAiFunction.getId()); //Should stay search_start
 		
 		//inAgentContext.addContext("message", userMessage);
 		
@@ -477,7 +477,7 @@ public abstract class BaseAiManager extends BaseManager
 		handleLlmResponse(inAgentContext, response);
 //		else if(toolname.equals("create_image"))
 //		{
-//			toolname = "createImage";
+//			toolname = "image_creation_start";
 //			
 //			AiCreation creation = inAgentContext.getAiCreationParams();					
 //			creation.setCreationType("image");
@@ -627,8 +627,8 @@ public abstract class BaseAiManager extends BaseManager
 	public LlmResponse handleError(AgentContext inAgentContext, String inError)
 	{
 		inAgentContext.addContext("error", inError);
-		LlmConnection llmconnection = getMediaArchive().getLlmConnection("renderError");
-		LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "renderError");
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("render_error");
+		LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "render_error");
 		inAgentContext.setFunctionName(null);
 		inAgentContext.setNextFunctionName(null);
 		return response;
