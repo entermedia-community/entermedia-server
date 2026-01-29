@@ -615,4 +615,11 @@ public class AgentModule extends BaseMediaModule {
 		}
 	}
 	
+	public void verifyRevisions(WebPageRequest inReq)
+	{
+		Data data = (Data)inReq.getPageValue("data");
+		
+		
+	}
+	
 }
