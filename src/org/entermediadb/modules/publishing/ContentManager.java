@@ -790,7 +790,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 
 		try 
 		{
-			LlmConnection llmconnection = archive.getLlmConnection("createImage");
+			LlmConnection llmconnection = archive.getLlmConnection("image_creation_start");
 			
 			LlmResponse results = llmconnection.createImage(prompt);
 
@@ -990,14 +990,14 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
 	{
 		
-		if("createImage".equals(inAgentContext.getFunctionName()))
+		if("image_creation_start".equals(inAgentContext.getFunctionName()))
 		{
 			
 			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
 			LlmResponse result = createImage(usermessage, inAgentContext);
 			return result;
 		}
-		else if("renderImage".equals(inAgentContext.getFunctionName()))
+		else if("image_creation_render".equals(inAgentContext.getFunctionName()))
 		{
 			String assetid = inAgentContext.get("assetid");
 			
@@ -1006,7 +1006,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 
 			inAgentContext.addContext("refreshing", "true");
 			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("renderImage");
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("image_creation_render");
 			
 			LlmResponse result = llmconnection.renderLocalAction(inAgentContext);
 			
@@ -1034,7 +1034,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 		
 		AiCreation aiCreation = inAgentContext.getAiCreationParams();
 
-		LlmConnection llmconnection = archive.getLlmConnection("createImage");
+		LlmConnection llmconnection = archive.getLlmConnection("image_creation_start");
 		
 		JSONObject imagefields = (JSONObject) aiCreation.getCreationFields();
 		
@@ -1108,9 +1108,9 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 				archive.saveAsset(asset);
 			}
 			
-//			inReq.putPageValue("asset", asset);
+			// inReq.putPageValue("asset", asset);
 			inAgentContext.addContext("asset", asset);
-			inAgentContext.setNextFunctionName("renderImage");
+			inAgentContext.setNextFunctionName("image_creation_render");
 			inAgentContext.setValue("assetid", asset.getId());
 			inAgentContext.setValue("wait", 1000);
 		}

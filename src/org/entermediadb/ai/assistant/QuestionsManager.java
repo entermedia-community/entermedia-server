@@ -134,16 +134,16 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		String query = usermessage.get("message");
 		
 		String agentFn = inAgentContext.getFunctionName();
-		if ("welcomeQuestions".equals(agentFn))
+		if ("question_welcome".equals(agentFn))
 		{
 			inAgentMessage.setValue("chatmessagestatus", "completed");
 			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay startSearch
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
 			inAgentContext.setFunctionName("askQuestion");
 			return response;
 		}
-		if ("askQuestion".equals(agentFn))
+		if ("question_ask".equals(agentFn))
 		{
 			
 			//Make sure they have already picked the documents
@@ -191,7 +191,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			}
 			return response;
 		}
-		else if("searchByKeywordForQuestioning".equals(agentFn))
+		else if("question_search".equals(agentFn))
 		{
 			//1 Do the search from keyword,
 			//2 grab the ids
@@ -286,7 +286,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			response.setMessage( generalresponse);
 //			response.setFunctionName("conversation");
 		}
-		else if( toolname.equals("searchByKeywordForQuestioning") )
+		else if( toolname.equals("question_search") )
 		{
 			JSONObject structure = (JSONObject) details.get(toolname);
 			if(structure == null)
