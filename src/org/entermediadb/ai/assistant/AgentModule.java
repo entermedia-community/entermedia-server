@@ -202,7 +202,7 @@ public class AgentModule extends BaseMediaModule {
 			welcome_aifunction.setId(id);
 			welcome_aifunction.setValue("messagehandler", messagehandler);
 			welcome_aifunction.setValue("toplevel", true);
-			welcome_aifunction.setName("Welcome to " + module.getName());
+			welcome_aifunction.setName("Create " + module.getName());
 			welcome_aifunction.setValue("icon", module.get("moduleicon"));
 			tosave.add(welcome_aifunction);
 			

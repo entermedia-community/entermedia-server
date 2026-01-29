@@ -25,6 +25,7 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.entermedia.util.Inflector;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 
@@ -63,20 +64,32 @@ public class CreatorManager extends BaseAiManager implements ChatMessageHandler
 		String agentFn = inAgentContext.getFunctionName();
 			
 		if(agentFn.startsWith("smartcreator_welcome_"))  
-		{	
-			String function = getLocalActionName(inAgentContext, "welcome");
+		{
+			String playbackentitymoduleid = agentFn.substring("smartcreator_welcome_".length());
+			Data playbackmodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
+			inAgentContext.addContext("playbackmodule", playbackmodule);
 			
+			Inflector inflector = Inflector.getInstance();
+			
+			inAgentContext.addContext("playbackmodulename", inflector.pluralize(playbackmodule.getName()));
+			
+			String entityid = (String) inAgentContext.getValue("entityid");
+			String entitymoduleid = (String) inAgentContext.getValue("entitymoduleid");
+			
+			Data entity = getMediaArchive().getCachedData(entitymoduleid, entityid);
+			inAgentContext.addContext("entity", entity);
+			
+			inAgentContext.setFunctionName("smartcreator_create_" + playbackentitymoduleid);
+			
+			String function = getLocalActionName(inAgentContext, "welcome");
+	
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(function);
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, function);
-			
-			String playbackentitymoduleid = agentFn.substring("welcome_".length());
-			inAgentContext.addContext("playbackentitymoduleid", playbackentitymoduleid);
-			inAgentContext.setFunctionName("create_" + playbackentitymoduleid);
 			return response;
 		}
 		else if(agentFn.startsWith("smartcreator_create_"))
 		{
-			String playbackentitymoduleid = agentFn.substring("create_".length());
+			String playbackentitymoduleid = agentFn.substring("smartcreator_create_".length());
 			inAgentContext.addContext("playbackentitymoduleid", playbackentitymoduleid);
 			
 			JSONObject arguments = (JSONObject) inAgentContext.getContextValue("arguments");

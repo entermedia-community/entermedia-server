@@ -543,82 +543,83 @@ public abstract class BaseAiManager extends BaseManager
 
 	public void savePossibleFunctionSuggestions(ScriptLogger inLog, String inTopLevelFunction, Map inParams)
 	{
-		Schema schema = loadSchema();
-		
-		inParams.put("model", "Qwen3:14B");
-		inParams.put("schema", schema);
-		
-		
-		Collection functions = getMediaArchive().query("aifunction").exact("toplevel", true).exact("cratesuggestions", true).search();
-		
-		
-
-		Searcher suggestionsearcher = getMediaArchive().getSearcher("aisuggestion");
-
-		for (Iterator iterator = functions.iterator(); iterator.hasNext();)
-		{
-			Data function = (Data) iterator.next();
-
-			HitTracker existing = suggestionsearcher.query().exact("aifunction", function.getId()).exact("aigenerated", true).search();
-			if( existing.size() >= 5)
-			{
-				log.info("Already found enough suggestions " + inTopLevelFunction);
-				continue;
-			}
-			
-			inParams.put("function", function);
-			
-			//Run AI to create a set of suggestions
-			String creatorFunctionName = "createSuggestionsFor" + function.getId();
-
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection(creatorFunctionName);
-			
-			inParams.put("jsonfilename", "suggestions/"+function.getId());
-
-			LlmResponse response = llmconnection.callStructuredOutputList(inParams);
-			
-			Collection<Map> suggestions = response.getCollection("suggestions");
-			Collection<Data> tosave = new ArrayList();
-			
-			int count = 0;
-			for (Iterator iterator2 = suggestions.iterator(); iterator2.hasNext();)
-			{
-				Object suggestion = iterator2.next();
-				
-				String title = null;
-				String prompt = null;
-				if(suggestion instanceof String)
-				{
-					title = (String) suggestion;
-					prompt = title;
-				}
-				else if(suggestion instanceof Map)
-				{
-					Map map = (Map)suggestion;
-					title = (String) map.get("title");
-					prompt = (String) map.get("prompt");
-				}
-				else
-				{
-					continue;
-				}
-				
-				Data newsuggestion = suggestionsearcher.createNewData();
-				newsuggestion.setValue("aifunction",function.getId());
-				LanguageMap lang = new LanguageMap();
-				lang.setText("en", title);
-				newsuggestion.setValue("name", lang);
-				newsuggestion.setValue("prompt", prompt);
-				if(count < 3) 
-				{
-					newsuggestion.setValue("featured", "true");
-				}
-				newsuggestion.setValue("aigenerated", true);
-				count++;
-				tosave.add(newsuggestion);
-			}
-			suggestionsearcher.saveAllData(tosave, null); 
-		}
+		return;
+//		Schema schema = loadSchema();
+//		
+//		inParams.put("model", "Qwen3:14B");
+//		inParams.put("schema", schema);
+//		
+//		
+//		Collection functions = getMediaArchive().query("aifunction").exact("toplevel", true).exact("cratesuggestions", true).search();
+//		
+//		
+//
+//		Searcher suggestionsearcher = getMediaArchive().getSearcher("aisuggestion");
+//
+//		for (Iterator iterator = functions.iterator(); iterator.hasNext();)
+//		{
+//			Data function = (Data) iterator.next();
+//
+//			HitTracker existing = suggestionsearcher.query().exact("aifunction", function.getId()).exact("aigenerated", true).search();
+//			if( existing.size() >= 5)
+//			{
+//				log.info("Already found enough suggestions " + inTopLevelFunction);
+//				continue;
+//			}
+//			
+//			inParams.put("function", function);
+//			
+//			//Run AI to create a set of suggestions
+//			String creatorFunctionName = "createSuggestionsFor" + function.getId();
+//
+//			LlmConnection llmconnection = getMediaArchive().getLlmConnection(creatorFunctionName);
+//			
+//			inParams.put("jsonfilename", "suggestions/"+function.getId());
+//
+//			LlmResponse response = llmconnection.callStructuredOutputList(inParams);
+//			
+//			Collection<Map> suggestions = response.getCollection("suggestions");
+//			Collection<Data> tosave = new ArrayList();
+//			
+//			int count = 0;
+//			for (Iterator iterator2 = suggestions.iterator(); iterator2.hasNext();)
+//			{
+//				Object suggestion = iterator2.next();
+//				
+//				String title = null;
+//				String prompt = null;
+//				if(suggestion instanceof String)
+//				{
+//					title = (String) suggestion;
+//					prompt = title;
+//				}
+//				else if(suggestion instanceof Map)
+//				{
+//					Map map = (Map)suggestion;
+//					title = (String) map.get("title");
+//					prompt = (String) map.get("prompt");
+//				}
+//				else
+//				{
+//					continue;
+//				}
+//				
+//				Data newsuggestion = suggestionsearcher.createNewData();
+//				newsuggestion.setValue("aifunction",function.getId());
+//				LanguageMap lang = new LanguageMap();
+//				lang.setText("en", title);
+//				newsuggestion.setValue("name", lang);
+//				newsuggestion.setValue("prompt", prompt);
+//				if(count < 3) 
+//				{
+//					newsuggestion.setValue("featured", "true");
+//				}
+//				newsuggestion.setValue("aigenerated", true);
+//				count++;
+//				tosave.add(newsuggestion);
+//			}
+//			suggestionsearcher.saveAllData(tosave, null); 
+//		}
 
 	}
 	

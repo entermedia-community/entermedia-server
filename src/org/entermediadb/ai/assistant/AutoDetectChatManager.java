@@ -1,7 +1,6 @@
 package org.entermediadb.ai.assistant;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -69,12 +68,10 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 			
 			inAgentContext.addContext("arguments", functionArgs);
 			
-			if("create_tutorial".equals(functionName))
+			if("create_tutorial".equals(functionName)) // TODO: sync with auto created function names
 			{
 				inAgentContext.addContext("playbackentitymoduleid", "aitutorials");
-				
-				inAgentContext.addContext("processingtype", "Tutorial"); // shows up in processing message (i.e. Creating new Tutorial)
-				
+
 				inAgentContext.setTopLevelFunctionName("welcome_aitutorials");
 				inAgentContext.setFunctionName("welcome_aitutorials");
 				inAgentContext.setNextFunctionName("create_aitutorials");

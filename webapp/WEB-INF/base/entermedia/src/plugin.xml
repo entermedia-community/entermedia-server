@@ -2827,5 +2827,6 @@
 	</bean>
 
 	<bean id="cssutils" class="org.openedit.util.CSSUtils" />
+	<bean id="inflector" class="org.openedit.entermedia.util.Inflector" />
 
 </beans>
