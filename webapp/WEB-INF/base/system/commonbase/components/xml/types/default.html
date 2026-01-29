@@ -69,7 +69,7 @@
 
 	</div>
 #else
-	#if( $val && $val.length() > 50)
+	#if( $val && $val.length() > 150)
 		<textarea name="$!{detailprefix}${detail.getId()}.value"
 		class="form-control autosubmitedX #if($detail.isRequired() && !$multiedit) required #end"
 		id="${detail.getId()}.value" cols="40" rows="5" placeholder="$!detail.getText($context)" >#escarea($val)</textarea>
