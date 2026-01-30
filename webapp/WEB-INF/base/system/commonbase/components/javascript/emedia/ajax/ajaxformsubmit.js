@@ -288,6 +288,11 @@
 				window.scrollTo(0, 0);
 			}
 		}
+		
+		var scrolltotop = form.data("scrolltotop");
+		if (scrolltotop) {
+			window.scrollTo(0, 0);
+		}
 		return this;
 	};
 })(jQuery);
