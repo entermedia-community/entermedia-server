@@ -69,20 +69,14 @@
 
 	</div>
 #else
-	#if( $val && $val.length() > 150)
-		<textarea name="$!{detailprefix}${detail.getId()}.value"
-		class="form-control autosubmitedX #if($detail.isRequired() && !$multiedit) required #end"
-		id="${detail.getId()}.value" cols="40" rows="5" placeholder="$!detail.getText($context)" >#escarea($val)</textarea>
-	#else
-		<input type="text"
-			autocomplete="off"
-			class="form-control detail_$detail.id textinput autosubmitedX #if($detail.isRequired() && !$multiedit) required #end"
-			#if( $autocomplete ) autocomplete="$autocomplete" #end
-			value="#esc($val)"
-			id="${detail.getId()}.value"
-			name="$!{detailprefix}${detail.getId()}.value"
-			placeholder="$!detail.getText($context)"  />
-	#end
+	<textarea 
+		autocomplete="off"
+		id="${detail.getId()}.value"
+		name="$!{detailprefix}${detail.getId()}.value"
+		class="autogrow form-control #if($detail.isRequired() && !$multiedit) required #end"
+		#if($detail.isRequired() && !$multiedit) required #end
+		placeholder="$!detail.getText($context)"
+		rows="1">$val</textarea>
 #end
 
 #set($fieldhint = $detail.hint)
