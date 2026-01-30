@@ -325,13 +325,10 @@ getDropdownParent = function (theinput) {
 			var $textarea = $(this);
 			var offset = this.offsetHeight - this.clientHeight;
 
-			// Store original rows attribute
 			var originalRows = $textarea.attr("rows") || 1;
 
-			// Calculate min height if specified
 			var minHeight = settings.minHeight;
 			if (minHeight === null && originalRows) {
-				// Use the initial row count as minimum if no minHeight specified
 				var lineHeight = parseInt($textarea.css("line-height"));
 				var padding =
 					parseInt($textarea.css("padding-top")) +
@@ -340,17 +337,14 @@ getDropdownParent = function (theinput) {
 			}
 
 			var resize = function () {
-				// Reset height to auto to get the correct scrollHeight
 				$textarea.css("height", "auto");
 
 				var newHeight = this.scrollHeight + offset + settings.extraSpace;
 
-				// Apply min height constraint
 				if (minHeight && newHeight < minHeight) {
 					newHeight = minHeight;
 				}
 
-				// Apply max height constraint
 				if (settings.maxHeight && newHeight > settings.maxHeight) {
 					newHeight = settings.maxHeight;
 					$textarea.css("overflow-y", "auto");
@@ -361,13 +355,14 @@ getDropdownParent = function (theinput) {
 				$textarea.css("height", newHeight + "px");
 			};
 
-			// Bind events
 			$textarea
 				.on("input change cut paste drop keydown", resize)
 				.on("focus", resize);
 
-			// Initial resize
-			resize.call(this);
+			// to ensure DOM is fully ready
+			setTimeout(function () {
+				resize.call($textarea[0]);
+			}, 0);
 		});
 	};
 })(jQuery);
