@@ -32,11 +32,11 @@ public class SmartCreatorModule extends BaseMediaModule {
 		return assistantManager;
 	}
 
-	public CreationManager getCreationManager(WebPageRequest inReq)
+	public SmartCreatorManager getSmartCreatorManager(WebPageRequest inReq)
 	{
 		String catalogid = inReq.findValue("catalogid");
-		CreationManager creationManager = (CreationManager) getMediaArchive(catalogid).getBean("creationManager");
-		return creationManager;
+		SmartCreatorManager smartCreatorManager = (SmartCreatorManager) getMediaArchive(catalogid).getBean("smartCreationManager");
+		return smartCreatorManager;
 	}
 
 	public QuestionsManager getQuestionsManager(WebPageRequest inReq)
@@ -64,21 +64,21 @@ public class SmartCreatorModule extends BaseMediaModule {
 	
 	public void populateSection(WebPageRequest inReq) throws Exception 
 	{
-		SmartCreatorManager creatorManager = (SmartCreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
 		creatorManager.createCreatorAndPopulateSection(inReq);
 	}
 	
 	
 	public void loadCreator(WebPageRequest inReq) throws Exception 
 	{
-		SmartCreatorManager creatorManager = (SmartCreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
 		creatorManager.getCreator(inReq);
 	}
 	
 	public void createCreatorSection(WebPageRequest inReq) throws Exception 
 	{
 		
-		SmartCreatorManager creatorManager = (SmartCreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
 		String playbackentityid = inReq.getRequestParameter("playbackentityid");
 		String playbackentitymoduleid = inReq.getRequestParameter("playbackentitymoduleid");
 		
@@ -123,13 +123,13 @@ public class SmartCreatorModule extends BaseMediaModule {
 		String searchtype = inReq.getRequestParameter("searchtype");
 		String dataid = inReq.getRequestParameter("id");
 		
-		SmartCreatorManager creatorManager = (SmartCreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
 		creatorManager.deleteCreatorSection(searchtype, dataid);
 	}
 	
 	public void createComponentContent(WebPageRequest inReq) throws Exception 
 	{
-		SmartCreatorManager creatorManager = (SmartCreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
 		String sectionid = inReq.getRequestParameter("sectionid");
 		
 		Map componentfields = new HashMap();
@@ -198,13 +198,13 @@ public class SmartCreatorModule extends BaseMediaModule {
 	
 	public void populateComponentContent(WebPageRequest inReq) throws Exception 
 	{
-		SmartCreatorManager creatorManager = (SmartCreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
 		creatorManager.autoPopulateComponentContent();
 	}
 	
 	public void orderCreatorSection(WebPageRequest inReq)
 	{
-		SmartCreatorManager creatorManager = (SmartCreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
 		creatorManager.orderCreatorSection(inReq);
 	}
 	
@@ -213,7 +213,7 @@ public class SmartCreatorModule extends BaseMediaModule {
 		String searchtype = inReq.getRequestParameter("searchtype");
 		String dataid = inReq.getRequestParameter("id");
 		
-		SmartCreatorManager creatorManager = (SmartCreatorManager) getMediaArchive(inReq).getBean("creatorManager");
+		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
 		Data duplicate = creatorManager.duplicateCreatorSection(searchtype, dataid);
 		
 		inReq.putPageValue("searchtype", searchtype);

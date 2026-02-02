@@ -188,7 +188,7 @@ public class AgentModule extends BaseMediaModule {
 			else if( method.equals("smartcreator"))
 			{
 				id = "smartcreator_welcome_" + module.getId();
-				messagehandler = "creatorManager";
+				messagehandler = "smartCreatorManager";
 			}
 			
 			Data exists = getMediaArchive(inReq).getData("aifunction", id);
