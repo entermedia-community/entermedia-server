@@ -2670,8 +2670,11 @@
 		</property>
 	</bean>
 	
+	<bean id="smartCreatorModule" class="org.entermediadb.ai.creator.SmartCreatorModule" >
+	</bean>
+
 	
-	<bean id="creatorManager" class="org.entermediadb.ai.creator.CreatorManager" scope="prototype">
+	<bean id="smartCreatorManager" class="org.entermediadb.ai.creator.SmartCreatorManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

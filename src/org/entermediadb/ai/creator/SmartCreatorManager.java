@@ -28,7 +28,7 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 
-public class CreatorManager extends BaseAiManager implements ChatMessageHandler
+public class SmartCreatorManager extends BaseAiManager implements ChatMessageHandler
 {
 	@Override
 	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog) {
