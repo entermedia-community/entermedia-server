@@ -259,9 +259,9 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		searcher.saveData(playback, inReq.getUser());
 
 		QuestionsManager questionsmanager = (QuestionsManager) getMediaArchive().getBean("questionsManager");
-		
-	
+
 		String command = "Create a simple list of index/outline for " + topicName;
+		
 		String sections = questionsmanager.getAnswerByEntity(entitymoduleid, entityid, command);
 		if(sections != null)
 		{

@@ -2670,7 +2670,7 @@
 		</property>
 	</bean>
 	
-	<bean id="smartCreatorModule" class="org.entermediadb.ai.creator.SmartCreatorModule" >
+	<bean id="SmartCreatorModule" class="org.entermediadb.ai.creator.SmartCreatorModule" >
 	</bean>
 
 	
