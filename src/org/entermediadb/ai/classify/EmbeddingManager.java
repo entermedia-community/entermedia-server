@@ -389,7 +389,7 @@ public class EmbeddingManager extends InformaticsProcessor
 	{  
 		JSONObject chatjson = new JSONObject();
 		chatjson.put("query", inQuery);
-		chatjson.put("doc_ids", docids);
+		chatjson.put("parent_ids", docids);
 		
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
 
@@ -417,7 +417,7 @@ public class EmbeddingManager extends InformaticsProcessor
 	{  
 		JSONObject chatjson = new JSONObject();
 		chatjson.put("query", inQuery);
-		chatjson.put("doc_ids", docids);
+		chatjson.put("parent_ids", docids);
 		
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
 
