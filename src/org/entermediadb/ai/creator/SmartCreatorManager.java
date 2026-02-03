@@ -788,9 +788,15 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				componentcontent.setValue("modificationdate", new Date());
 			}
 			
+			if (tosave.size() >= 5) {
+				contentearcher.saveAllData(tosave, null);
+				tosave.clear();
+			}
+			
 		}
-		
-		contentearcher.saveAllData(tosave, null);
+		if (!tosave.isEmpty()) {
+			contentearcher.saveAllData(tosave, null);
+		}
 	}
 
 

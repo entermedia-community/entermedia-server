@@ -35,7 +35,7 @@ public class SmartCreatorModule extends BaseMediaModule {
 	public SmartCreatorManager getSmartCreatorManager(WebPageRequest inReq)
 	{
 		String catalogid = inReq.findValue("catalogid");
-		SmartCreatorManager smartCreatorManager = (SmartCreatorManager) getMediaArchive(catalogid).getBean("smartCreationManager");
+		SmartCreatorManager smartCreatorManager = (SmartCreatorManager) getMediaArchive(catalogid).getBean("smartCreatorManager");
 		return smartCreatorManager;
 	}
 

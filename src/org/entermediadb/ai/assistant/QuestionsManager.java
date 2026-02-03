@@ -339,7 +339,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			{
 				String searchtype = stat.getSearchType();
 				Searcher searcher = archive.getSearcher(searchtype);
-				HitTracker hits = searcher.query().exact("entityembeddingstatus", "embedded").search();
+				HitTracker hits = searcher.query().exact(parentmoduleid, inEntityId).search();
 				for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 				{
 					MultiValued doc = (MultiValued) iterator.next();
