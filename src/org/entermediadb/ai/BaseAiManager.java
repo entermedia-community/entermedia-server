@@ -634,5 +634,18 @@ public abstract class BaseAiManager extends BaseManager
 		return response;
 	}
 	
-	
+	protected String findLocalActionName(AgentContext inAgentContext)
+	{
+		String agentFn = inAgentContext.getFunctionName();
+		String apphome = (String) inAgentContext.getContextValue("apphome");
+
+		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/" + agentFn + ".html";
+		boolean pageexists = getMediaArchive().getPageManager().getPage(templatepath).exists();
+		if(!pageexists)
+		{
+			int lastone = agentFn.lastIndexOf("_");
+			agentFn = agentFn.substring(0,lastone);
+		}
+		return agentFn;
+	}	
 }

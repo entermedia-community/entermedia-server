@@ -42,7 +42,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		// Do Nothing
 	}
 	
-	protected String getLocalActionName(AgentContext inAgentContext, String fallback)
+	protected String findLocalActionName(AgentContext inAgentContext)
 	{
 		String agentFn = inAgentContext.getFunctionName();
 		String apphome = (String) inAgentContext.getContextValue("apphome");
@@ -51,7 +51,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		boolean pageexists = getMediaArchive().getPageManager().getPage(templatepath).exists();
 		if(!pageexists)
 		{
-			agentFn = "smartcreator_" + fallback;
+			int lastone = agentFn.lastIndexOf("_");
+			agentFn = agentFn.substring(0,lastone);
 		}
 		return agentFn;
 	}
@@ -74,12 +75,11 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			Data entity = getMediaArchive().getCachedData(entitymoduleid, entityid);
 			inAgentContext.addContext("entity", entity);
 			
-			inAgentContext.setFunctionName("smartcreator_create_" + playbackentitymoduleid);
-			
-			String function = getLocalActionName(inAgentContext, "welcome");
+			String function = findLocalActionName(inAgentContext);
 	
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(function);
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, function);
+			inAgentContext.setNextFunctionName("smartcreator_create_" + playbackentitymoduleid);
 			return response;
 		}
 		else if(agentFn.startsWith("smartcreator_create_"))
@@ -100,7 +100,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				inAgentContext.addContext("usertopic", usermessage.get("message"));
 			}
 			
-			String function = getLocalActionName(inAgentContext, "create");
+			String function = findLocalActionName(inAgentContext);
 			
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(function);
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, function);
@@ -115,7 +115,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			String viewfallback = "play";
 			if(playbackentityid != null)
 			{
-				viewfallback = "play_on";
+				inAgentContext.setFunctionName( "smartcreator_playon_" + playbackentitymoduleid);
 				inAgentContext.addContext("playbackentityid", playbackentityid);
 				inAgentContext.addContext("playbackentitymoduleid", playbackentitymoduleid);
 			}
@@ -134,7 +134,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			}
 			
 			
-			String function = getLocalActionName(inAgentContext, viewfallback);
+			String function = findLocalActionName(inAgentContext);
 			
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(function);
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, function);
