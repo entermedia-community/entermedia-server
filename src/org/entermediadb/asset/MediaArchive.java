@@ -3366,13 +3366,13 @@ public class MediaArchive implements CatalogEnabled
 				log.info("Could not find AIFunction named " + inAiFunctionName + " using default");
 				aifunction = query("aifunction").id("default").searchOne();
 			}
-			Data serverinfo = query("aiserver").exact("aifunction", aifunction.getId()).sort("ordering").searchOne();
+			Data serverinfo = query("aiserver").exact("aifunctions", aifunction.getId()).sort("ordering").searchOne();
 			if( serverinfo == null)
 			{
-				serverinfo = query("aiserver").exact("aifunction", "default").sort("ordering").searchOne();
+				serverinfo = getCachedData("aiserver","localhost");
 				if( serverinfo == null)
 				{
-					throw new OpenEditException("Could not find Connector for aifunction " + inAiFunctionName);
+					throw new OpenEditException("Using localhost for aifunction " + inAiFunctionName);
 				}
 			}
 			String llm = serverinfo.get("connectionbean");
@@ -3394,7 +3394,7 @@ public class MediaArchive implements CatalogEnabled
 	
 	public boolean aiImageCreationAvailable(WebPageRequest inReq)
 	{
-		LlmConnection imagecreation = getLlmConnection("image_creation_start");
+		LlmConnection imagecreation = getLlmConnection("image_creation_create");
 		if (imagecreation != null)
 		{
 			if (imagecreation.getApiKey() != null)

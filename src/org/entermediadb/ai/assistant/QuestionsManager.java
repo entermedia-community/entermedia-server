@@ -163,8 +163,16 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			//Was president Obama effective?   //Pullout the keywords and search across all embedded data
 			//What product sold the most invoices? //Limit to products and invoices
 			MultiValued function = (MultiValued) getMediaArchive().getCachedData("aifunction", agentFn);
+			
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(function.getId()); //Should stay search_start
+			LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext()); //TODO: Replace with local API that is faster
+			if(response == null)
+			{
+				throw new OpenEditException("No results from AI for message: " + usermessage.get("message"));
+			}
+			
+			handleLlmResponse(inAgentContext, response);
 
-			LlmResponse response = startChat(inAgentContext, usermessage, inAgentMessage, function);
 			
 			//Handle right now
 			String responseFn = response.getFunctionName();

@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,6 +21,7 @@ import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.EntityManager;
+import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONObject;
@@ -691,6 +697,163 @@ public class AssistantManager extends BaseAiManager
 		//Fire monitor
 		archive.fireSharedMediaEvent("llm/monitorchats");
 
+	}
+
+	public void monitorAiServers(ScriptLogger inLog)
+	{
+		Collection<Data> currentservers = getMediaArchive().query("aiserver").exact("monitorspeed", true).search();
+		
+		Map<String,Integer> speeds = new HashMap();
+		ArrayList tosave = new ArrayList();
+		
+		for(Data server : currentservers)
+		{
+			String serverroot = server.get("serverroot");
+			String address = serverroot + "/health";
+			
+			Integer speed = speeds.get(serverroot);
+			if( speed == null || speed == 0)
+			{
+				HttpSharedConnection connection = new HttpSharedConnection();
+				String key = server.get("serverapikey");
+				if( key != null)
+				{
+					connection.addSharedHeader("Authorization", "Bearer " +  server);
+				}
+				long start = System.currentTimeMillis();
+				try
+				{
+					JSONObject got = connection.getJson(address);
+					if( got != null )
+					{
+						String ok = (String)got.get("status");
+						if( "ok".equals(ok))
+						{
+							long end =  System.currentTimeMillis();
+							Integer diff = Math.round(  end - start);
+							inLog.info(address + " ok run in " + diff + " milliseconds");
+							speeds.put(serverroot,diff);
+						}
+					}
+				}
+				catch( Exception ex)
+				{
+					inLog.info(address + " had error " + ex);
+					speeds.put(serverroot,Integer.MAX_VALUE); //Push back
+					//Ignore
+				}
+			}
+		}
+		if(!speeds.isEmpty())
+		{
+			inLog.info("Saving " + speeds);
+			for(Data server : currentservers)
+			{
+				String serverroot = server.get("serverroot");
+				Integer speed = speeds.get(serverroot);
+				server.setValue("ordering", speed);
+				tosave.add(server);
+			}
+			getMediaArchive().getSearcher("aiserver").saveAllData(tosave, null);
+			getMediaArchive().getCacheManager().clear("llmconnection");
+		}
+	}
+	
+
+	public void addMissingFunctions(ScriptLogger inLog)
+	{
+		Collection<Data> modules =  getMediaArchive().getList("module");
+		List tosave = new ArrayList();
+		
+		List usetext = new ArrayList();
+		
+		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+		{
+			MultiValued module = (MultiValued) iterator.next();
+			
+			String method = module.get("aicreationmethod");
+			
+			if( method == null)
+			{				
+				continue;
+			}
+			
+			String id = "";	
+			
+			String messagehandler = "";
+			
+			if( method.equals("fieldsonly"))
+			{
+				id = "fieldsonly_welcome_" + module.getId();
+				messagehandler = "entityCreationManager";
+			}
+			else if( method.equals("smartcreator"))
+			{
+				id = "smartcreator_welcome_" + module.getId();
+				messagehandler = "smartCreatorManager";
+			}
+			
+			Data exists = getMediaArchive().getData("aifunction", id);
+			if( exists != null)
+			{
+				continue;
+			}
+			
+			//Add all these to ollamat
+			Data welcome_aifunction = getMediaArchive().getSearcher("aifunction").createNewData();
+			welcome_aifunction.setId(id);
+			welcome_aifunction.setValue("messagehandler", messagehandler);
+			welcome_aifunction.setValue("toplevel", true);
+			welcome_aifunction.setName("Welcome " + module.getName());
+			welcome_aifunction.setValue("icon", module.get("moduleicon"));
+			tosave.add(welcome_aifunction);
+			
+			if(method.equals("smartcreator"))
+			{				
+				id = "smartcreator_create_" + module.getId();
+				
+				Data create_aifunction = getMediaArchive().getSearcher("aifunction").createNewData();
+				create_aifunction.setId(id);
+				create_aifunction.setValue("messagehandler", messagehandler);
+				create_aifunction.setValue("toplevel", false);
+				create_aifunction.setValue("processingmessage", "Creating new " + module.getName());
+				create_aifunction.setName("Create " + module.getName());
+				tosave.add(create_aifunction);
+				usetext.add(create_aifunction);
+				id = "smartcreator_play_" + module.getId();
+				
+				Data play_aifunction = getMediaArchive().getSearcher("aifunction").createNewData();
+				play_aifunction.setId(id);
+				play_aifunction.setValue("messagehandler", messagehandler);
+				play_aifunction.setValue("toplevel", true);
+				play_aifunction.setValue("processingmessage", "Playing " + module.getName());
+				play_aifunction.setName("View " + module.getName());
+				tosave.add(play_aifunction);
+			}
+			inLog.headline("AI functions created for " + module.getName());
+		}
+		getMediaArchive().saveData("aifunction", tosave);
+		
+		Set tosaveservers = new HashSet();
+		Collection servers = getMediaArchive().getList("aiserver");
+		for (Iterator iterator = servers.iterator(); iterator.hasNext();)
+		{
+			MultiValued server = (MultiValued) iterator.next();
+			if( server.getId().startsWith("llamat"))
+			{
+				for (Iterator iterator2 = usetext.iterator(); iterator2.hasNext();)
+				{
+					Data function = (Data) iterator2.next();
+					if( !server.hasValue(function.getId()))
+					{
+						server.addValue("aifunctions", function.getId());
+						tosaveservers.add(server);
+					}
+				}
+			}
+		}
+		getMediaArchive().saveData("aiserver", tosaveservers);
+		inLog.headline("Updated servers " + tosaveservers.size() );
 	}
 	
 }

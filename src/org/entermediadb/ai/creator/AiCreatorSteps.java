@@ -9,7 +9,7 @@ import org.openedit.Data;
 import org.openedit.data.BaseData;
 import org.openedit.util.JSONParser;
 
-public class AiCreation extends BaseData
+public class AiCreatorSteps extends BaseData
 {
 	protected Data fieldTargetModule;
 	

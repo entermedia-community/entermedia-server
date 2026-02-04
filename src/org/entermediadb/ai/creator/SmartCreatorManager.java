@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.assistant.QuestionsManager;
@@ -17,6 +19,7 @@ import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.inputloaders.ImageCacheLoader;
 import org.entermediadb.markdown.MarkdownUtil;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
@@ -30,6 +33,9 @@ import org.openedit.hittracker.SearchQuery;
 
 public class SmartCreatorManager extends BaseAiManager implements ChatMessageHandler
 {
+	private static final Log log = LogFactory.getLog(SmartCreatorManager.class);
+	
+	
 	@Override
 	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog) {
 		// TODO Auto-generated method stub
@@ -79,31 +85,56 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 	
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(function);
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, function);
-			inAgentContext.setNextFunctionName("smartcreator_create_" + playbackentitymoduleid);
+			//This is for the chat UI to pass it back
+			inAgentContext.setFunctionName("smartcreator_create_" + playbackentitymoduleid);
 			return response;
 		}
-		else if(agentFn.startsWith("smartcreator_create_"))
+		else if(agentFn.startsWith("smartcreator_parse_"))
+		{
+			String playbackentitymoduleid = agentFn.substring("smartcreator_parse_".length());
+			Data targetmodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
+			inAgentContext.addContext("playbackentitymoduleid", playbackentitymoduleid);
+
+			Data usermessage = getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
+			String prompt = usermessage.get("message");
+
+			inAgentContext.addContext("creationprompt", prompt);
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_parse");
+			LlmResponse res = llmconnection.callToolsFunction(inAgentContext.getContext(), "smartcreator_parse_");
+			
+			Collection<Map> steps = res.getCollection("steps");
+			AiCreatorSteps creationsteps = new AiCreatorSteps();
+			creationsteps.setTargetModule(targetmodule);
+			
+			LlmConnection confirmation = getMediaArchive().getLlmConnection("smartcreator_parsestatus");
+			LlmResponse confirmationresponse = llmconnection.renderLocalAction(inAgentContext, "smartcreator_parsestatus");
+
+			String status = confirmationresponse.getMessage();
+			inAgentContext.setValue("message", status); //Render locally
+			
+			inAgentContext.setNextFunctionName("smartcreator_create_" + playbackentitymoduleid);
+			//Show the user what we have thus far
+			return res;
+		}
+		else if(agentFn.startsWith("smartcreator_createoutline_"))
 		{
 			String playbackentitymoduleid = agentFn.substring("smartcreator_create_".length());
+			Data targetmodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
 			inAgentContext.addContext("playbackentitymoduleid", playbackentitymoduleid);
+
+			log.info("Passig in " + inAgentContext.getAiCreationParams());
 			
-			JSONObject arguments = (JSONObject) inAgentContext.getContextValue("arguments");
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_createoutline");
+			LlmResponse res = llmconnection.callToolsFunction(inAgentContext.getContext(), "smartcreator_createoutline");
 			
-			if(arguments != null && arguments.get("name") != null)
-			{
-				inAgentContext.addContext("usertopic", arguments.get("name"));
-				inAgentContext.addContext("arguments", null);
-			}
-			else
-			{	
-				Data usermessage = getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
-				inAgentContext.addContext("usertopic", usermessage.get("message"));
-			}
+			Collection<Map> steps = res.getCollection("steps");
+			AiCreatorSteps creationsteps = new AiCreatorSteps();
+			creationsteps.setTargetModule(targetmodule);
 			
 			String function = findLocalActionName(inAgentContext);
 			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection(function);
-			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, function);
+			LlmConnection llmconnection2 = getMediaArchive().getLlmConnection(function);
+			LlmResponse response = llmconnection2.renderLocalAction(inAgentContext, function);
 			
 			return response;
 		}
@@ -141,6 +172,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			return response;
 		}
+		/*
 		else if ("conversation".equals(agentFn))
 		{
 			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
@@ -156,7 +188,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			inAgentContext.setNextFunctionName(null);
 			return response;
 		}
-
+*/
 		throw new OpenEditException("Function not handled: " + agentFn);
 	}
 
