@@ -459,9 +459,10 @@ public abstract class BaseAiManager extends BaseManager
 		
 		return table;
 	}
-
+/*
 	protected LlmResponse startChat(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued userMessage, MultiValued inAiFunction )
 	{
+		
 		MediaArchive archive = getMediaArchive();
 		
 		LlmConnection llmconnection = archive.getLlmConnection(inAiFunction.getId()); //Should stay search_start
@@ -496,7 +497,7 @@ public abstract class BaseAiManager extends BaseManager
 		
 		return response;
 	}
-
+*/
 	protected void handleLlmResponse(AgentContext inAgentContext, LlmResponse response)
 	{
 		//Do nothin

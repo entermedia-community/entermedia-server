@@ -2525,7 +2525,7 @@
 	</bean>
 
 
-	<bean id="contentManager" class="org.entermediadb.modules.publishing.ContentManager" lazy-init="default" scope="prototype">
+	<bean id="contentPublishingManager" class="org.entermediadb.modules.publishing.ContentPublishingManager" lazy-init="default" scope="prototype">
 		<property name="xmlUtil">
 			<ref bean="xmlUtil" />
 		</property>

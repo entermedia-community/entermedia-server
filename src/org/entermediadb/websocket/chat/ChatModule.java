@@ -657,7 +657,7 @@ public class ChatModule extends BaseMediaModule
 				else
 				{
 					//By user
-					currentchannel =  (MultiValued)channelsearcher.query().exact("user",inReq.getUserName()).after("refreshdate",now.getTime()).sort("refreshdateDown").searchOne();
+					currentchannel =  (MultiValued)channelsearcher.query().exact("user",inReq.getUserName()).missing("dataid").after("refreshdate",now.getTime()).sort("refreshdateDown").searchOne();
 				}
 			}
 		}

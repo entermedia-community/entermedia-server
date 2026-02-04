@@ -53,12 +53,12 @@ import org.openedit.util.JSONParser;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.XmlUtil;
 
-public class ContentManager implements CatalogEnabled, ChatMessageHandler
+public class ContentPublishingManager implements CatalogEnabled, ChatMessageHandler
 {
 
 	private static final String INPUTDIR = "/DITA/"; // /Inputs/";
 	private static final String RENDERED = "/DITA/"; // Rendered/";
-	private static final Log log = LogFactory.getLog(ContentManager.class);
+	private static final Log log = LogFactory.getLog(ContentPublishingManager.class);
 	protected XmlUtil fieldXmlUtil;
 	protected ModuleManager fieldModuleManager;
 
@@ -986,11 +986,26 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 
 	}
 	
+	
 	@Override
 	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
 	{
-		
-		if("image_creation_start".equals(inAgentContext.getFunctionName()))
+		/*	
+		if("image_creation_welcome".equals(inAgentContext.getFunctionName()))
+		{
+			String entityid = (String) inAgentContext.getValue("entityid");
+			String entitymoduleid = (String) inAgentContext.getValue("entitymoduleid");
+			
+			Data entity = getMediaArchive().getCachedData(entitymoduleid, entityid);
+			inAgentContext.addContext("entity", entity);
+			
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAgentContext.getFunctionName());
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, inAgentContext.getFunctionName());
+			//This is for the chat UI to pass it back
+			inAgentContext.setFunctionName("image_creation_start");
+			return response;
+		}
+		else if("image_creation_start".equals(inAgentContext.getFunctionName()))
 		{
 			
 			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
@@ -1016,110 +1031,14 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 			return result;
 			
 		}
-		else if ("createRecord".equals(inAgentContext.getFunctionName()))
-		{
-			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
-			
-			LlmResponse result = createRecord(usermessage, inAgentContext);
-			
-			return result;
-		}
 		
+		*/
 		throw new OpenEditException("Unknown function name: " + inAgentContext.getFunctionName());
+		
 	}
 	
-	public LlmResponse createImage(MultiValued usermessage, AgentContext inAgentContext) 
-	{
-		MediaArchive archive = getMediaArchive();
-		
-		AiCreation aiCreation = inAgentContext.getAiCreationParams();
-
-		LlmConnection llmconnection = archive.getLlmConnection("image_creation_start");
-		
-		JSONObject imagefields = (JSONObject) aiCreation.getCreationFields();
-		
-		String prompt = (String) imagefields.get("prompt");
-
-		if (prompt == null)
-		{
-			return null;
-		}
-		
-		String filename = (String) imagefields.get("image_name");
-
-		LlmResponse results = llmconnection.createImage(prompt);
-		
-
-		for (Iterator iterator = results.getImageBase64s().iterator(); iterator.hasNext();)
-		{
-			String base64 = (String) iterator.next();
-
-			Asset asset = (Asset) archive.getAssetSearcher().createNewData();
-
-			asset.setValue("importstatus", "created");
-
-			if( filename == null || filename.length() == 0)
-			{
-				filename = "aiimage_" + System.currentTimeMillis() ;
-			}
-			
-			asset.setName(filename + ".png");
-			asset.setValue("assettitle", filename);
-			asset.setValue("assetaddeddate", new Date());
-			
-			String sourcepath = "Channels/" + usermessage.get("user") + "/" + DateStorageUtil.getStorageUtil().getTodayForDisplay() + "/" + filename;
-			asset.setSourcePath(sourcepath);
-
-			String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
-			ContentItem saveTo = archive.getPageManager().getPage(path).getContentItem();
-			
-			
-			try
-			{
-				InputStreamItem revision = new InputStreamItem();
-				
-				revision.setAbsolutePath(saveTo.getAbsolutePath());
-				revision.setPath(saveTo.getPath());
-				revision.setAuthor( usermessage.get("user") );
-				revision.setType( ContentItem.TYPE_ADDED );
-				revision.setMessage( saveTo.getMessage());
-				
-				revision.setPreviewImage(saveTo.getPreviewImage());
-				revision.setMakeVersion(false);
-				
-				log.info("Saving image -> " + path + "/" + filename);
-				
-				InputStream input = null;
-				
-				String code = base64.substring(base64.indexOf(",") +1, base64.length());
-				byte[] tosave = Base64.getDecoder().decode(code);
-				input = new ByteArrayInputStream(tosave);
-				
-				revision.setInputStream(input);
-				
-				archive.getPageManager().getRepository().put( revision );
-				asset.setProperty("importstatus", "created");
-				archive.saveAsset(asset);
-			}
-			catch (Exception ex)
-			{
-				asset.setProperty("importstatus", "error");
-				log.error(ex);
-				archive.saveAsset(asset);
-			}
-			
-			// inReq.putPageValue("asset", asset);
-			inAgentContext.addContext("asset", asset);
-			inAgentContext.setNextFunctionName("image_creation_render");
-			inAgentContext.setValue("assetid", asset.getId());
-			inAgentContext.setValue("wait", 1000);
-		}
-		
-		
-		archive.fireSharedMediaEvent("importing/assetscreated");
-		
-		return results;
-	}
+	
+	
 	
 	public LlmResponse createRecord(MultiValued usermessage, AgentContext inAgentContext) 
 	{
