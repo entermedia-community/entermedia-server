@@ -830,7 +830,6 @@ public class AssistantManager extends BaseAiManager
 				play_aifunction.setName("View " + module.getName());
 				tosave.add(play_aifunction);
 			}
-			 
 			inLog.headline("AI functions created for " + module.getName());
 		}
 		getMediaArchive().saveData("aifunction", tosave);
