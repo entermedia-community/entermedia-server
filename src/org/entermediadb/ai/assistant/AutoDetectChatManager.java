@@ -36,7 +36,7 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 			inAgentContext.setFunctionName("auto_detect_conversation");
 			return response;
 		}
-		if ("auto_detect_conversation".equals(agentFn))
+		if ("auto_detect_conversation".equals(agentFn))  //Todo: Rename to Parse
 		{
 			JSONObject params = new JSONObject();
 			params.put("userquery", query);
@@ -44,7 +44,7 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 			Collection<Data> toplevelfunctions = getMediaArchive().query("aifunctions").exact("toplevel", true).search();
 			params.put("toplevelfunctions", toplevelfunctions);
 			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("default");
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
 			
 			LlmResponse response = llmconnection.callToolsFunction(params, agentFn);
 			
@@ -64,10 +64,14 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 				}
 				return response;
 			}
-			
+			inAgentContext.addContext("messagestructured", response.getMessageStructured());
+			inAgentContext.addContext("userquery", query);
 			inAgentContext.addContext("arguments", functionArgs);
+			inAgentContext.setNextFunctionName(functionName);
 			
-			if("create_tutorial".equals(functionName)) // TODO: sync with auto created function names
+			/*
+			// TODO: sync with auto created function names
+			if("create_tutorial".equals(functionName)) 
 			{
 				inAgentContext.addContext("playbackentitymoduleid", "aitutorials");
 				inAgentContext.setTopLevelFunctionName("welcome_aitutorials");
@@ -91,8 +95,31 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 			{
 				inAgentContext.setFunctionName("auto_detect_conversation");
 			}
+			*/
+			
 			
 			return response;
+		}
+		else if ("auto_detect_sitewide_welcome".equals(agentFn))
+		{
+			inAgentMessage.setValue("chatmessagestatus", "completed");
+			
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
+			inAgentContext.setFunctionName("auto_detect_sitewide_parse");
+			return response;
+		}
+		else if ("auto_detect_sitewide_parse".equals(agentFn))
+		{
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
+			LlmResponse response = llmconnection.callToolsFunction(inAgentContext.getContext(), agentFn);
+			
+			log.info(response.getRawResponse());
+			
+			String functionName = response.getFunctionName();
+			JSONObject functionArgs = response.getFunctionArguments();
+			inAgentContext.addContext("arguments", functionArgs);
+			inAgentContext.setNextFunctionName(functionName);
 		}
 		
 		

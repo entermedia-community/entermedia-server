@@ -103,7 +103,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			LlmResponse res = llmconnection.callToolsFunction(inAgentContext.getContext(), "smartcreator_parse_");
 			
 			Collection<Map> steps = res.getCollection("steps");
-			AiCreation creationsteps = new AiCreation();
+			AiCreatorSteps creationsteps = new AiCreatorSteps();
 			creationsteps.setTargetModule(targetmodule);
 			
 			LlmConnection confirmation = getMediaArchive().getLlmConnection("smartcreator_parsestatus");
@@ -128,7 +128,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			LlmResponse res = llmconnection.callToolsFunction(inAgentContext.getContext(), "smartcreator_createoutline");
 			
 			Collection<Map> steps = res.getCollection("steps");
-			AiCreation creationsteps = new AiCreation();
+			AiCreatorSteps creationsteps = new AiCreatorSteps();
 			creationsteps.setTargetModule(targetmodule);
 			
 			String function = findLocalActionName(inAgentContext);
@@ -172,6 +172,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			return response;
 		}
+		/*
 		else if ("conversation".equals(agentFn))
 		{
 			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
@@ -187,7 +188,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			inAgentContext.setNextFunctionName(null);
 			return response;
 		}
-
+*/
 		throw new OpenEditException("Function not handled: " + agentFn);
 	}
 

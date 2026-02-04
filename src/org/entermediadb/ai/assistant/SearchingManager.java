@@ -22,6 +22,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.ResultsManager;
 import org.entermediadb.markdown.MarkdownUtil;
 import org.entermediadb.scripts.ScriptLogger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -412,9 +413,10 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 
 
 	
-	protected String parseSearchParts(AgentContext inAgentContext, JSONObject structure, String type, String messageText) 
+	protected String parseSearchParts(AgentContext inAgentContext, JSONObject structure, String messageText) 
 	{
 		ArrayList tables = (ArrayList) structure.get("tables");
+		String type = null;
 		
 		if( tables == null)
 		{
@@ -605,7 +607,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			inAgentContext.setFunctionName("search_start");
 			return response;
 		}
- 
+		/*
 		if ("search_start".equals(agentFn))
 		{
 			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
@@ -639,9 +641,13 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			}
 			return response;
 		}
+		*/
 		else if ("search_tables".equals(agentFn))
 		{
 			//search
+			JSONObject messagestructured = (JSONObject) inAgentContext.getContextValue("messagestructured");
+			String nextFunction = parseSearch(inAgentContext, messagestructured);
+			
 			LlmConnection searcher = getMediaArchive().getLlmConnection("search_tables");
 			LlmResponse response =  searcher.renderLocalAction(inAgentContext);
 			
@@ -665,40 +671,27 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 	}
 
 
-	protected void handleLlmResponse(AgentContext inAgentContext, LlmResponse response)
+	protected String parseSearch(AgentContext inAgentContext, JSONObject content)
 	{
 		//TODO: Use IF statements to sort what parsing we need to do. parseSearchParams parseWorkflowParams etc
-		JSONObject content = response.getMessageStructured();
 		
-		String toolname = (String) content.get("next_step");  //request_type
-		
-		if(toolname == null)
-		{
-			throw new OpenEditException("No type specified in results: " + content.toJSONString());
-		}
-
 		JSONObject details = (JSONObject) content.get("step_details");
 		
 		if(details == null)
 		{
 			throw new OpenEditException("No details specified in results: " + content.toJSONString());
 		}
-		if( toolname.equals("conversation"))
+		JSONObject parseSearchParts = (JSONObject) details.get("parseSearchParts");
+		if(parseSearchParts == null)
 		{
-			JSONObject conversation = (JSONObject) details.get("conversation");
-			String generalresponse = (String) conversation.get("friendly_response");
-			response.setMessage( generalresponse);
+			throw new OpenEditException("No structure found for: " + parseSearchParts);
 		}
-		else if( toolname.equals("parseSearchParts") )  //TODO Use other functions from aifunction table. Dont use tool ids
-		{
-			JSONObject structure = (JSONObject) details.get(toolname);
-			if(structure == null)
-			{
-				throw new OpenEditException("No structure found for type: " + toolname);
-			}
-			toolname = parseSearchParts(inAgentContext, structure, toolname, response.getMessage());
-		}
-		response.setFunctionName(toolname);
+	
+
+		String nextFunction = parseSearchParts(inAgentContext, parseSearchParts, (String)inAgentContext.getContextValue("userquery"));
+		return nextFunction;
+		
+		
 	}
 
 	public void semanticSearch(WebPageRequest inReq)

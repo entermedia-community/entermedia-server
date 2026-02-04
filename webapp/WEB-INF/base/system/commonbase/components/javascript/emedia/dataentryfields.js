@@ -320,7 +320,7 @@ $(document).ready(function () {
 
 		$.validator.methods.number = function (value, element) {
 			var globalizedValue = value.replace(/[$,]/g, "");
-			$(element).val(globalizedValue);
+			///$(element).val(globalizedValue);
 			return (
 				this.optional(element) ||
 				/^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\., ]\d+)?$/.test(
