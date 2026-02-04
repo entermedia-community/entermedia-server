@@ -449,4 +449,12 @@ public class AgentModule extends BaseMediaModule {
 		
 	}
 	
+	public void monitorAiServers(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		AssistantManager assistantManager = (AssistantManager) archive.getBean("assistantManager");
+		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
+		assistantManager.monitorAiServers(log);
+	}
+		
 }
