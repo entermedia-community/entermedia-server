@@ -162,76 +162,9 @@ public class AgentModule extends BaseMediaModule {
 	public void addModules(WebPageRequest inReq) throws Exception 
 	{
 		ScriptLogger log = (ScriptLogger)inReq.getPageValue("log");
+		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
+		assistant.addMissingFunctions(log);
 		
-		Collection<Data> modules =  getMediaArchive(inReq).getList("module");
-		List tosave = new ArrayList();
-		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
-		{
-			MultiValued module = (MultiValued) iterator.next();
-			
-			String method = module.get("aicreationmethod");
-			
-			if( method == null)
-			{				
-				continue;
-			}
-			
-			String id = "";	
-			
-			String messagehandler = "";
-			
-			if( method.equals("fieldsonly"))
-			{
-				id = "fieldsonly_welcome_" + module.getId();
-				messagehandler = "entityCreationManager";
-			}
-			else if( method.equals("smartcreator"))
-			{
-				id = "smartcreator_welcome_" + module.getId();
-				messagehandler = "smartCreatorManager";
-			}
-			
-			Data exists = getMediaArchive(inReq).getData("aifunction", id);
-			if( exists != null)
-			{
-				continue;
-			}
-			
-			Data welcome_aifunction = getMediaArchive(inReq).getSearcher("aifunction").createNewData();
-			welcome_aifunction.setId(id);
-			welcome_aifunction.setValue("messagehandler", messagehandler);
-			welcome_aifunction.setValue("toplevel", true);
-			welcome_aifunction.setName("Create " + module.getName());
-			welcome_aifunction.setValue("icon", module.get("moduleicon"));
-			tosave.add(welcome_aifunction);
-			
-			if(method.equals("smartcreator"))
-			{				
-				id = "smartcreator_create_" + module.getId();
-				
-				Data create_aifunction = getMediaArchive(inReq).getSearcher("aifunction").createNewData();
-				create_aifunction.setId(id);
-				create_aifunction.setValue("messagehandler", messagehandler);
-				create_aifunction.setValue("toplevel", false);
-				create_aifunction.setValue("processingmessage", "Creating new " + module.getName());
-				create_aifunction.setName("Create " + module.getName());
-				tosave.add(create_aifunction);
-				
-				id = "smartcreator_play_" + module.getId();
-				
-				Data play_aifunction = getMediaArchive(inReq).getSearcher("aifunction").createNewData();
-				play_aifunction.setId(id);
-				play_aifunction.setValue("messagehandler", messagehandler);
-				play_aifunction.setValue("toplevel", true);
-				play_aifunction.setValue("processingmessage", "Playing " + module.getName());
-				play_aifunction.setName("View " + module.getName());
-				tosave.add(play_aifunction);
-			}
-			
-			 
-			log.headline("AI functions created for " + module.getName());
-		}
-		getMediaArchive(inReq).saveData("aifunction", tosave);
 	}
 
 	public void createSuggestions(WebPageRequest inReq)
