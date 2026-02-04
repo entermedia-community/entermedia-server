@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,6 +18,7 @@ import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.EntityManager;
+import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONObject;
@@ -692,5 +695,67 @@ public class AssistantManager extends BaseAiManager
 		archive.fireSharedMediaEvent("llm/monitorchats");
 
 	}
+
+	public void monitorAiServers(ScriptLogger inLog)
+	{
+		Collection<Data> currentservers = getMediaArchive().query("aiserver").exact("monitorspeed", true).search();
+		
+		Map<String,Integer> speeds = new HashMap();
+		ArrayList tosave = new ArrayList();
+		
+		for(Data server : currentservers)
+		{
+			String serverroot = server.get("serverroot");
+			String address = serverroot + "/health";
+			
+			Integer speed = speeds.get(serverroot);
+			if( speed == null || speed == 0)
+			{
+				HttpSharedConnection connection = new HttpSharedConnection();
+				String key = server.get("serverapikey");
+				if( key != null)
+				{
+					connection.addSharedHeader("Authorization", "Bearer " +  server);
+				}
+				long start = System.currentTimeMillis();
+				try
+				{
+					JSONObject got = connection.getJson(address);
+					if( got != null )
+					{
+						String ok = (String)got.get("status");
+						if( "ok".equals(ok))
+						{
+							long end =  System.currentTimeMillis();
+							Integer diff = Math.round(  end - start);
+							inLog.info(address + " ok run in " + diff + " milliseconds");
+							speeds.put(serverroot,diff);
+						}
+					}
+				}
+				catch( Exception ex)
+				{
+					inLog.info(address + " had error " + ex);
+					speeds.put(serverroot,Integer.MAX_VALUE); //Push back
+					//Ignore
+				}
+			}
+		}
+		if(!speeds.isEmpty())
+		{
+			inLog.info("Saving " + speeds);
+			for(Data server : currentservers)
+			{
+				String serverroot = server.get("serverroot");
+				Integer speed = speeds.get(serverroot);
+				server.setValue("ordering", speed);
+				tosave.add(server);
+			}
+			getMediaArchive().getSearcher("aiserver").saveAllData(tosave, null);
+			getMediaArchive().getCacheManager().clear("llmconnection");
+		}
+	}
+	
+	
 	
 }
