@@ -232,11 +232,16 @@ public class AgentModule extends BaseMediaModule {
 			return;
 		}
 		
+		String entityid = inReq.getRequestParameter("entityid");
+		String entitymoduleid = inReq.getRequestParameter("entitymoduleid");
+		
 		Searcher aifunctionsearcher = getMediaArchive(inReq).getSearcher("aifunction");
 				
 		Searcher aisuggestions = getMediaArchive(inReq).getSearcher("aisuggestion");
 		
-		HitTracker hits = aisuggestions.query().orgroup("aifunction", toplevel).exact("featured", "true").search();
+		HitTracker hits = aisuggestions.query()
+					.exact("aifunction", toplevel)
+					.exact("entityid", entityid).search();
 		
 		Collection<Map<String, String>> suggestions = new ArrayList<Map<String, String>>();
 		
