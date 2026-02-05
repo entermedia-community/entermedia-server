@@ -42,18 +42,6 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	protected OpenEditEngine fieldEngine;
 	protected Data fieldAiServerData;
 	
-	protected Data aiFunctionData;
-	
-	public Data getAiFunctionData() {
-		return aiFunctionData;
-	}
-	public void setAiFunctionData(Data aiFunctionData) {
-		this.aiFunctionData = aiFunctionData;
-	}
-	public String getAiFunctionName() {
-		return getAiFunctionData().getId();
-	}
-
 	protected HttpSharedConnection fieldConnection;
 
 	protected HttpSharedConnection getConnection()
@@ -648,15 +636,15 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	}
 
 	@Override
-	public LlmResponse callStructuredOutputList(Map inParams)
+	public LlmResponse callStructuredOutputList(Map inParams, String inFunction)
 	{
-		throw new OpenEditException("Call not supported");
+		throw new OpenEditException(inFunction + " Call not supported");
 	}
 
 	@Override
-	public LlmResponse callOCRFunction(Map inParams, String inBase64Image)
+	public LlmResponse callOCRFunction(Map inParams, String inBase64Image, String inFunction)
 	{
-		throw new OpenEditException("Call not supported");
+		throw new OpenEditException(inFunction + " Call not supported");
 	}
 	
 	@Override

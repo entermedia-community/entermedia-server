@@ -135,11 +135,11 @@ public class OllamaConnection extends OpenAiConnection implements CatalogEnabled
 	}
 	
 	@Override
-	public LlmResponse callStructuredOutputList(Map inParams) 
+	public LlmResponse callStructuredOutputList(Map inParams, String inFuction) 
 	{
 		inParams.put("model", getModelName());
 		
-		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/ollama/classify/structures/" + getAiFunctionName() + ".json", inParams);
+		String inStructure = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/ollama/classify/structures/" + inFuction + ".json", inParams);
 
 		JSONObject req = new JSONParser().parse(inStructure);
 		
@@ -149,9 +149,4 @@ public class OllamaConnection extends OpenAiConnection implements CatalogEnabled
 		return res;
 	}
 	
-	@Override
-	public LlmResponse callOCRFunction(Map inParams, String inBase64Image)
-	{
-		throw new OpenEditException("Not implemented yet. Only available in Llama connection.");
-	}
 }

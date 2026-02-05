@@ -14,11 +14,6 @@ public interface LlmConnection {
 	public String getLlmProtocol();
 
 	public String getModelName();
-	
-	public String getAiFunctionName();
-	public Data getAiFunctionData();
-	public void setAiFunctionData(Data aiFunctionData);
-
 	public Boolean isReady();
 
     public LlmResponse createImage(String inPrompt);
@@ -43,9 +38,9 @@ public interface LlmConnection {
 	public Data getAiServerData();
 	public void setAiServerData(Data fieldMainServerUrl);
 
-    public LlmResponse callStructuredOutputList(Map inParams);
+    public LlmResponse callStructuredOutputList(Map inParams, String inFuction);
 	
-	public LlmResponse callOCRFunction(Map inParams, String inBase64Image);
+	public LlmResponse callOCRFunction(Map inParams, String inBase64Image, String inFunctioName);
 	
 	public LlmResponse callSmartCreatorAiAction(Map params, String inActionName);
 

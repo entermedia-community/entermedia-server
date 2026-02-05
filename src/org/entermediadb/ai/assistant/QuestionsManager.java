@@ -165,7 +165,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			MultiValued function = (MultiValued) getMediaArchive().getCachedData("aifunction", agentFn);
 			
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(function.getId()); //Should stay search_start
-			LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext()); //TODO: Replace with local API that is faster
+			LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext(),function.getId()); //TODO: Replace with local API that is faster
 			if(response == null)
 			{
 				throw new OpenEditException("No results from AI for message: " + usermessage.get("message"));

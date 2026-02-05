@@ -804,24 +804,33 @@ public class AssistantManager extends BaseAiManager
 			welcome_aifunction.setId(id);
 			welcome_aifunction.setValue("messagehandler", messagehandler);
 			welcome_aifunction.setValue("toplevel", true);
-			welcome_aifunction.setName("Welcome " + module.getName());
+			welcome_aifunction.setName("Create " + module.getName());
 			welcome_aifunction.setValue("icon", module.get("moduleicon"));
 			tosave.add(welcome_aifunction);
 			
 			if(method.equals("smartcreator"))
 			{				
-				id = "smartcreator_create_" + module.getId();
-				
+				id = "smartcreator_parse_" + module.getId();
 				Data create_aifunction = getMediaArchive().getSearcher("aifunction").createNewData();
 				create_aifunction.setId(id);
 				create_aifunction.setValue("messagehandler", messagehandler);
 				create_aifunction.setValue("toplevel", false);
-				create_aifunction.setValue("processingmessage", "Creating new " + module.getName());
-				create_aifunction.setName("Create " + module.getName());
+				create_aifunction.setValue("processingmessage", "Parsing new " + module.getName());
+				create_aifunction.setName("Parse " + module.getName());
 				tosave.add(create_aifunction);
 				usetext.add(create_aifunction);
-				id = "smartcreator_play_" + module.getId();
 				
+				id = "smartcreator_createoutline_" + module.getId();
+				create_aifunction = getMediaArchive().getSearcher("aifunction").createNewData();
+				create_aifunction.setId(id);
+				create_aifunction.setValue("messagehandler", messagehandler);
+				create_aifunction.setValue("toplevel", false);
+				create_aifunction.setValue("processingmessage", "Creating new " + module.getName());
+				create_aifunction.setName("Createing " + module.getName());
+				tosave.add(create_aifunction);
+				usetext.add(create_aifunction);
+				
+				id = "smartcreator_play_" + module.getId();
 				Data play_aifunction = getMediaArchive().getSearcher("aifunction").createNewData();
 				play_aifunction.setId(id);
 				play_aifunction.setValue("messagehandler", messagehandler);

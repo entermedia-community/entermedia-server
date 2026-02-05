@@ -298,18 +298,16 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	}
 
 	@Override
-	public LlmResponse callStructuredOutputList(Map inParams)
+	public LlmResponse callStructuredOutputList(Map inParams, String inFunctionName)
 	{
 		inParams.put("model", getModelName());
 		
-		String jsonfilename = getAiFunctionName();
-		
 		if(inParams.containsKey("jsonfilename"))
 		{
-			jsonfilename = (String) inParams.get("jsonfilename");
+			inFunctionName = (String) inParams.get("jsonfilename");
 		}
 		
-		String templatepath = "/" + getMediaArchive().getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + jsonfilename + ".json";
+		String templatepath = "/" + getMediaArchive().getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + inFunctionName + ".json";
 		
 		String inStructure = loadInputFromTemplate(templatepath, inParams);
 
@@ -479,12 +477,6 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 	}
 	
-	@Override
-	public LlmResponse callOCRFunction(Map inParams, String inBase64Image)
-	{
-		throw new OpenEditException("Not implemented yet. Only available in Llama connection.");
-	}
-
 	public LlmResponse createResponse()
 	{
 		return new OpenAiResponse();

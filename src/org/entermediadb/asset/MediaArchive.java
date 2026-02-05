@@ -3379,10 +3379,9 @@ public class MediaArchive implements CatalogEnabled
 			connection = (LlmConnection) getModuleManager().getBean(getCatalogId(),llm, false);
 			if("default".equals(aifunction.getId())) {
 				// setting the name and id to the requested function name if default was used
-				aifunction.setName(inAiFunctionName);
-				aifunction.setId(inAiFunctionName);
+				serverinfo.setName(inAiFunctionName);
+				serverinfo.setId(inAiFunctionName);
 			}
-			connection.setAiFunctionData(aifunction);
 			connection.setAiServerData(serverinfo);
 			getCacheManager().put(cacheName, inAiFunctionName, connection);
 			log.info(llm + " selected AI server: " + serverinfo.get("serverroot"));

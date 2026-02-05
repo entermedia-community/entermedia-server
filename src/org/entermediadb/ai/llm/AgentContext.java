@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.entermediadb.ai.assistant.AiCreation;
 import org.entermediadb.ai.assistant.AiSearch;
+import org.entermediadb.ai.creator.AiSmartCreatorSteps;
 import org.entermediadb.ai.knn.RankedResult;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
@@ -13,6 +14,7 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.data.BaseData;
 import org.openedit.profile.UserProfile;
+import org.openedit.users.User;
 
 public class AgentContext extends BaseData implements CatalogEnabled {
 	String functionName;
@@ -194,7 +196,18 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 		fieldAiCreationParams = inAiCreationParams;
 	}
 	
+	AiSmartCreatorSteps fieldAiSmartCreatorSteps;
 	
+
+	public AiSmartCreatorSteps getAiSmartCreatorSteps()
+	{
+		return fieldAiSmartCreatorSteps;
+	}
+
+	public void setAiSmartCreatorSteps(AiSmartCreatorSteps inAiCreatorSteps)
+	{
+		fieldAiSmartCreatorSteps = inAiCreatorSteps;
+	}
 
 	public String getFunctionName()
 	{
@@ -261,7 +274,11 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 		}
 		fieldExcludedAssetIds.add(inAssetid);
 	}
-	
+
+	public User getChatUser()
+	{
+		return getUserProfile().getUser();
+	}
 	
 	
 }

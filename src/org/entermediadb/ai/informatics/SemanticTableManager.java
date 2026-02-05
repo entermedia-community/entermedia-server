@@ -531,7 +531,7 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 			params.put("contextfields", contextfields);
 			params.put("data", inData);
 			
-			LlmResponse structure = llmconnection.callStructuredOutputList(params);
+			LlmResponse structure = llmconnection.callStructuredOutputList(params,"createSemanticTopics");
 			if (structure == null)
 			{
 				log.info("No structured data returned");

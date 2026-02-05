@@ -250,7 +250,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			return;
 		}
 			
-		LlmResponse result = (LlmResponse) llmconnection.callOCRFunction(new HashMap(), base64Img);
+		LlmResponse result = (LlmResponse) llmconnection.callOCRFunction(new HashMap(), base64Img, "generateMarkdown");
 		String markdown = result.getMessage();
 			
 		pageEntity.setValue("markdowncontent", markdown);

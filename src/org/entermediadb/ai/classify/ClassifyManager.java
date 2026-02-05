@@ -113,7 +113,7 @@ public class ClassifyManager extends InformaticsProcessor
 			
 			LlmConnection llmconnection = getLlmNamingServer();
 			
-			String functionname = llmconnection.getAiFunctionName();
+			String functionname = "classifyAsset";
 			
 			String base64EncodedString = null;
 			
@@ -372,9 +372,7 @@ public class ClassifyManager extends InformaticsProcessor
 			{
 				LlmConnection llmconnection = getEntityClassificationLlmConnection();
 
-				String functionname = llmconnection.getAiFunctionName();
-				
-				LlmResponse results = llmconnection.callClassifyFunction(params, functionname, null); 
+				LlmResponse results = llmconnection.callClassifyFunction(params, "classifyEntity", null); 
 				
 				if (results != null)
 				{

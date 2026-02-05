@@ -70,11 +70,11 @@ public class LlamaVisionConnection extends LlamaOpenAiConnection {
 	}
 	
 	@Override
-	public LlmResponse callStructuredOutputList(Map inParams)
+	public LlmResponse callStructuredOutputList(Map inParams, String inFunctionName)
 	{
 		inParams.put("model", getModelName());
 		
-		String templatepath = "/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/calls/" + getAiFunctionName() + ".json";
+		String templatepath = "/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/calls/" + inFunctionName + ".json";
 		String prompt = loadInputFromTemplate(templatepath, inParams);
 
 		JSONParser parser = new JSONParser();
@@ -89,20 +89,20 @@ public class LlamaVisionConnection extends LlamaOpenAiConnection {
 	}
 	
 	@Override
-	public LlmResponse callOCRFunction(Map inParams, String inBase64Image)
+	public LlmResponse callOCRFunction(Map inParams, String inBase64Image, String inFunctioName)
 	{
 		MediaArchive archive = getMediaArchive();
-		String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmProtocol() +"/calls/" + getAiFunctionName() + ".json";
+		String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmProtocol() +"/calls/" + inFunctioName + ".json";
 		Page defpage = archive.getPageManager().getPage(templatepath);
 		if (!defpage.exists())
 		{
-			templatepath = "/" + archive.getCatalogId() + "/ai/" + getLlmProtocol() +"/calls/" + getAiFunctionName() + ".json";
+			templatepath = "/" + archive.getCatalogId() + "/ai/" + getLlmProtocol() +"/calls/" + inFunctioName + ".json";
 			defpage = archive.getPageManager().getPage(templatepath);
 		}
 		
 		if (!defpage.exists())
 		{
-			throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + getAiFunctionName());
+			throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunctioName);
 		}
 
 		String template = loadInputFromTemplate(templatepath, inParams);

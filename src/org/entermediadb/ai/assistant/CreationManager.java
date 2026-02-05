@@ -287,7 +287,7 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 	protected LlmResponse loadCreationParameters(AgentContext inAgentContext)
 	{
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("image_creation_parse");
-		LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext());
+		LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext(),"image_creation_parse");
 		if(response == null)
 		{
 			throw new OpenEditException("No results from AI for function: " + inAgentContext.getFunctionName());
