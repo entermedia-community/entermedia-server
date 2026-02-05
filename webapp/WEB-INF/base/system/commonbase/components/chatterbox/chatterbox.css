@@ -145,13 +145,12 @@
 }
 .chatterbox-write .chatter-btn {
 	border-radius: var(--btn-radius, 8px);
-	background-color: #277371;
-	color: #fff;
+	background: var(--themed-btn-cta);
+	color: var(--themed-btn-cta-text);
 	font-size: 0.9rem;
 }
 .chatterbox-write .chatter-btn:hover {
-	background-color: #1a4c4a;
-	color: #fff;
+	background: var(--themed-btn-cta-hover);
 }
 .chatterbox-write .chatter-send {
 	width: 88px;

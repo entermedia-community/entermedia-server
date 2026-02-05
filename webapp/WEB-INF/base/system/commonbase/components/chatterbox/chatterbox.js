@@ -49,10 +49,11 @@ function chatterbox() {
 			//scroll down, delay a little?
 			scrollToChat();
 
-			var ais = $(".ai-suggestions");
+			/*var ais = $(".ai-suggestions");
 			if (ais.length > 0) {
 				ais.remove();
 			}
+			*/
 			var ses = $(".sessionhistory-item.active");
 			if (ses.length > 0) {
 				var span = ses.find(".item span");

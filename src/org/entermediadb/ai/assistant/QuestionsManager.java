@@ -16,6 +16,7 @@ import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.markdown.MarkdownUtil;
 import org.entermediadb.scripts.ScriptLogger;
@@ -62,7 +63,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
 			if( aisuggestions.isEmpty())
 			{
-				inAgentContext.setNextFunctionName("question_create_sugestions");
+				inAgentContext.setNextFunctionName("question_create_suggestions");
 			}
 			else
 			{
@@ -71,12 +72,13 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			}
 			return response;
 		}
-		else if ("question_create_sugestions".equals(agentFn))
+		else if ("question_create_suggestions".equals(agentFn))
 		{
 			Data entity= (Data) inAgentContext.getContextValue("entity");
 			Data entitymodule = (Data) inAgentContext.getContextValue("entitymodule");
 
 			String text = findSampleOfEmbeddedData(entitymodule,entity);
+			
 			inAgentContext.addContext("embeddedtext", text);
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
 			LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext(),agentFn);
@@ -94,6 +96,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 				suggestiondata.setValue("entitymoduleid", entitymodule.getId());
 				suggestiondata.setName( (String)airesponse.get("title"));
 				suggestiondata.setValue("prompt", airesponse.get("prompt"));
+				searcher.saveData(suggestiondata);
 			}
 			inAgentContext.setNextFunctionName("question_welcome");
 			return response;
@@ -195,15 +198,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		}
 		if(mystatus != null && "embedded".equals(mystatus))
 		{
-			String markdown = inEntity.get("markdowncontent");
-			if( markdown == null)
-			{
-				markdown = inEntity.get("maincontent");
-				if( markdown == null)
-				{
-					markdown = inEntity.get("longcaption");
-				}
-			}
+			String markdown = getMarkdown(inEntity);
 			if( markdown != null)
 			{
 				foundtext.append( markdown);
@@ -217,6 +212,11 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			String listid = view.get("rendertable");
 			if( listid != null)
 			{
+				if (getMediaArchive().getSearcher(listid).getDetail("entityembeddingstatus") == null)
+				{
+					continue;
+				}
+				
 				GuideStatus status = new GuideStatus();
 				status.setSearchType(listid);
 				status.setViewData(view);
@@ -235,19 +235,12 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 				for (Iterator iterator2 = found.iterator(); iterator2.hasNext();)
 				{
 					Data data = (Data) iterator2.next();
-					String markdown = data.get("markdowncontent");
-					if( markdown == null)
-					{
-						markdown = data.get("maincontent");
-						if( markdown == null)
-						{
-							markdown = data.get("longcaption");
-						}
-					}
+					String markdown = getMarkdown(data);
 					if( markdown != null)
 					{
 						foundtext.append( markdown);
 					}
+					
 					if( foundtext.length() > 2000)
 					{
 						return foundtext.toString();							
@@ -256,6 +249,34 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			}
 		}
 		return foundtext.toString();
+	}
+
+	protected String getMarkdown(Data data)
+	{
+		String markdown = data.get("markdowncontent");
+		if( markdown == null)
+		{
+			markdown = data.get("maincontent");
+			if( markdown == null)
+			{
+				markdown = data.get("longcaption");
+			}
+		}
+		if( markdown == null)
+		{
+			String assetid = data.get("primarymedia");
+			Asset asset = getMediaArchive().getEntityManager().getAsset(data);
+			if (asset != null)
+			{
+				markdown = asset.get("longcaption");
+			}
+		}
+		
+		if (markdown == null || markdown.isEmpty())
+		{
+			markdown = data.getName();
+		}
+		return markdown;
 	}
 	
 

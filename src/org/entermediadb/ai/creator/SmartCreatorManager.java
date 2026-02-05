@@ -104,7 +104,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			//TODO: Not regular AI > Delegate to LLama Index
 			inAgentContext.addContext("creationprompt", instructions.getStep1create());
-			LlmResponse res = llmconnection.callLlamaIndexStructuredOutputList(inAgentContext.getContext(), "smartcreator_createoutline");
+			LlmResponse res = llmconnection.callLlamaIndexStructured(inAgentContext.getContext(), "outline");
 			
 			JSONObject outlineJson = res.getMessageStructured();
 			
@@ -647,7 +647,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			params.put("creationprompt", step2CreatePrompt + section.getName());
 
-			LlmResponse res = llmconnection.callLlamaIndexStructuredOutputList(params, "smartcreator_populatesections");
+			LlmResponse res = llmconnection.callLlamaIndexStructured(params, "section_contents");
 			
 			JSONObject contentsJson = res.getMessageStructured();
 			

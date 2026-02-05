@@ -1611,4 +1611,16 @@ public class EntityManager implements CatalogEnabled
 		
 		searcher.saveData(entity);
 	}
+	
+	
+	public Asset getAsset(Data inEntity)
+	{
+		String assetid = inEntity.get("primarymedia");
+		if(  assetid == null )
+		{
+			assetid = inEntity.get("primaryimage");
+		}
+		return getMediaArchive().getAsset(assetid);
+	}
+	
 }
