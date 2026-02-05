@@ -79,14 +79,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 
 			String text = findSampleOfEmbeddedData(entitymodule,entity);
 			
-			if (text == null || text.isEmpty())
-			{
-				text = entity.getName();
-				if (entity.get("longcaption") != null)
-				{
-					text = text + " " +entity.get("longcaption");
-				}
-			}
+
 			
 			inAgentContext.addContext("embeddedtext", text);
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
@@ -207,15 +200,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		}
 		if(mystatus != null && "embedded".equals(mystatus))
 		{
-			String markdown = inEntity.get("markdowncontent");
-			if( markdown == null)
-			{
-				markdown = inEntity.get("maincontent");
-				if( markdown == null)
-				{
-					markdown = inEntity.get("longcaption");
-				}
-			}
+			String markdown = getMarkdown(inEntity);
 			if( markdown != null)
 			{
 				foundtext.append( markdown);
@@ -229,6 +214,11 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			String listid = view.get("rendertable");
 			if( listid != null)
 			{
+				if (getMediaArchive().getSearcher(listid).getDetail("entityembeddingstatus") == null)
+				{
+					continue;
+				}
+				
 				GuideStatus status = new GuideStatus();
 				status.setSearchType(listid);
 				status.setViewData(view);
@@ -247,24 +237,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 				for (Iterator iterator2 = found.iterator(); iterator2.hasNext();)
 				{
 					Data data = (Data) iterator2.next();
-					String markdown = data.get("markdowncontent");
-					if( markdown == null)
-					{
-						markdown = data.get("maincontent");
-						if( markdown == null)
-						{
-							markdown = data.get("longcaption");
-						}
-					}
-					if( markdown == null)
-					{
-						String assetid = data.get("primarymedia");
-						Asset asset = getMediaArchive().getEntityManager().getAsset(data);
-						if (asset != null)
-						{
-							markdown = asset.get("longcaption");
-						}
-					}
+					String markdown = getMarkdown(data);
 					if( markdown != null)
 					{
 						foundtext.append( markdown);
@@ -278,6 +251,34 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			}
 		}
 		return foundtext.toString();
+	}
+
+	protected String getMarkdown(Data data)
+	{
+		String markdown = data.get("markdowncontent");
+		if( markdown == null)
+		{
+			markdown = data.get("maincontent");
+			if( markdown == null)
+			{
+				markdown = data.get("longcaption");
+			}
+		}
+		if( markdown == null)
+		{
+			String assetid = data.get("primarymedia");
+			Asset asset = getMediaArchive().getEntityManager().getAsset(data);
+			if (asset != null)
+			{
+				markdown = asset.get("longcaption");
+			}
+		}
+		
+		if (markdown == null || markdown.isEmpty())
+		{
+			markdown = data.getName();
+		}
+		return markdown;
 	}
 	
 
