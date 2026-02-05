@@ -168,6 +168,10 @@ public class AssistantManager extends BaseAiManager
 				agentContext = (AgentContext) searcher.createNewData();
 			}
 			Data channel = getMediaArchive().getCachedData("channel", inChannelId);
+			if(channel == null)
+			{
+				channel = getMediaArchive().getSearcher("channel").createNewData();
+			}
 			agentContext.setChannel(channel);
 			agentContext.setValue("channel", inChannelId);
 			agentContext.setValue("entityid", channel.get("dataid"));
@@ -275,7 +279,7 @@ public class AssistantManager extends BaseAiManager
 		return agentmessage;
 	}
 	
-	protected void execCurrentFunctionFromChat(MultiValued usermessage, MultiValued agentmessage, AgentContext agentContext) 
+	public void execCurrentFunctionFromChat(MultiValued usermessage, MultiValued agentmessage, AgentContext agentContext) 
 	{
 		String functionName = agentContext.getFunctionName();
 		if( functionName == null)

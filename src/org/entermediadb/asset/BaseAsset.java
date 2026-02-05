@@ -178,7 +178,7 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 		if ("category".equals(inAttribute) || "category-exact".equals(inAttribute) )
 		{
 			
-			Collection categorylist = (Collection) getMap().getValue("category-exact");
+			Collection categorylist = (Collection) getProperties().getValue("category-exact");
 			if(categorylist == null)
 			{
 				categorylist = new ArrayList();
@@ -195,7 +195,7 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 						}
 					}
 				}
-				getMap().put("category-exact", categorylist);
+				getProperties().put("category-exact", categorylist);
 				return categorylist;
 			} 
 		}
@@ -272,11 +272,11 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 		if (found != null)
 		{
 			cats.remove(found);
-			getMap().put("category-exact",cats);
+			getProperties().put("category-exact",cats);
 		}
 		//Resave all the parents
 		Collection set = buildCategorySet();
-		getMap().put("category",set);
+		getProperties().put("category",set);
 		
 	}
 
@@ -491,7 +491,7 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	@Override
 	public Date getDate(String inField, String inDateFormat)
 	{
-		return getMap().getDate(inField, inDateFormat);
+		return getProperties().getDate(inField, inDateFormat);
 	}
 
 //	public Collection getObjects(String inField)
@@ -833,7 +833,7 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	@Override
 	public BigDecimal getBigDecimal(String inKey)
 	{
-		return getMap().getBigDecimal(inKey);
+		return getProperties().getBigDecimal(inKey);
 	}
 
 	
@@ -854,7 +854,7 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	@Override
 	public boolean isPropertyTrue(String inKey)
 	{
-		return getMap().getBoolean(inKey);
+		return getProperties().getBoolean(inKey);
 	}
 
 //	public void removeLibrary(String inLibraryid)
@@ -1066,10 +1066,10 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 		if (getSearchHit() == null)
 		{
 			JSONObject json = new JSONObject();
-			for(Iterator iterator = getMap().keySet().iterator(); iterator.hasNext();)
+			for(Iterator iterator = getProperties().keySet().iterator(); iterator.hasNext();)
 			{
 				String key = (String) iterator.next();
-				Object value = getMap().get(key);
+				Object value = getProperties().get(key);
 				if (value == null)
 				{
 					continue;
@@ -1092,10 +1092,10 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 			}
 			output.append(json.toJSONString());
 		}
-		else if(!getMap().isEmpty())
+		else if(!getProperties().isEmpty())
 		{
 			JSONObject json = new JSONObject(getSearchData());
-			json.putAll(getMap());
+			json.putAll(getProperties());
 			output.append(json.toJSONString());
 		}
 		else 

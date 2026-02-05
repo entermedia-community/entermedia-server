@@ -1233,5 +1233,10 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 	}
 
+	public void saveAiMediaDb(WebPageRequest inReq)
+	{
+		String catalogid = inReq.findValue("catalogid");
+		getWorkspaceManager().createMediaDbAiFunctionEndPoints(catalogid);
+	}
 	
 }

@@ -46,9 +46,5 @@ public class ElasticCategory extends BaseCategory
 		return fieldParentCategory;
 	}
 
-	public ValuesMap getMap() 
-	{
-		return super.getMap();
-	}
 	
 }

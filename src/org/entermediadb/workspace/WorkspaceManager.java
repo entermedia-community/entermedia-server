@@ -27,9 +27,11 @@ import org.elasticsearch.client.Requests;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
@@ -388,9 +390,69 @@ public class WorkspaceManager
 			homesettings.putProperty(prop);
 			getPageManager().getPageSettingsManager().saveSetting(homesettings);
 		}
+		
 		getPageManager().clearCache();
 	}
 
+	public void createMediaDbAiFunctionEndPoints(String inCatalogId)
+	{
+		Searcher endpointSearcher = getSearcherManager().getSearcher(inCatalogId, "endpoint");
+		Searcher functionsSearcher = getSearcherManager().getSearcher(inCatalogId, "aifunction");
+		
+		Data section = getMediaArchive(inCatalogId).getCachedData("docsection", "aifunctions");
+		if( section == null )
+		{
+			section = getMediaArchive(inCatalogId).getSearcher("docsection").createNewData();
+			section.setId("aifunctions");
+			section.setName("AI Functions");
+			getMediaArchive(inCatalogId).saveData("docsection",section);
+		}
+		
+		String mediadbhome = "/" + getMediaArchive(inCatalogId).getCatalogSettingValue("mediadbappid");
+		
+		JSONObject request = new JSONObject();
+		request.put("channel", "testchannel");
+		request.put("message", "Hello");
+		request.put("entityid","123");
+		request.put("entitymoduleid", "userpost");
+		
+		Collection tosave = new ArrayList();
+		
+		Collection all = functionsSearcher.query().all().search();
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			Data endpoint = endpointSearcher.createNewData();
+			endpoint.setName(data.getName());
+			endpoint.setId(data.getId());
+			endpoint.setValue("url", mediadbhome + "/services/ai/" +data.getId());
+			endpoint.setValue( "samplerequest", request.toJSONString() );
+			endpoint.setValue( "httpmethod","POST");
+			endpoint.setProperty( "docsection",section.getId() );
+			tosave.add(endpoint);
+
+		}
+		endpointSearcher.saveAllData(tosave, null);
+		/*
+		  <endpoint id="search" name="Search for ${modulename}" url="/${mediadbappid}/services/module/${moduleid}/search" httpmethod="POST"> 
+		    <samplerequest>
+		    	<![CDATA[{
+		    	    "page": "1", 
+		    	    "hitsperpage":"20",
+		            "query": 
+		            {
+		            	"terms":[{
+			            	"field": "id",
+							"operator": "matches",
+							"value": "*"
+						}]
+			         }
+			        } 
+			      ]]></samplerequest>
+		  </endpoint>  
+		*/
+	}
+	
 	protected void copyXml(String catalogid, String inTemplatePath, String inEndingPath, Data module)
 	{
 		if (!getPageManager().getPage(inEndingPath).exists())

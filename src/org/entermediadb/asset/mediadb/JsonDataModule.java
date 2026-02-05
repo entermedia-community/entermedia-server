@@ -8,6 +8,8 @@ import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.assistant.AssistantManager;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.scanner.AssetImporter;
@@ -17,6 +19,7 @@ import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.util.JsonUtil;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
@@ -79,6 +82,42 @@ public class JsonDataModule extends BaseJsonModule
 		log.info(search);
 	}
 	
+
+	public void handleAiFunction(WebPageRequest inReq)
+	{
+		//Could probably handle this generically, but I think they want tags, keywords etc.
+		String catalogid =  findCatalogId(inReq);
+		MediaArchive archive = getMediaArchive(inReq, catalogid);
+
+		Map request = inReq.getJsonRequest();
+		
+		AssistantManager assistantManager = (AssistantManager) getMediaArchive(catalogid).getBean("assistantManager");
+		
+		String channel = (String)request.get("channel");
+		AgentContext context = assistantManager.loadContext(channel);
+		
+		String pagename = inReq.getContentPage().getPageName();
+		context.setFunctionName(pagename);
+		
+		MultiValued usermessage = (MultiValued)archive.getSearcher("chatterbox").createNewData();
+		usermessage.setValue("user", "agent");
+		usermessage.setValue("channel",channel);
+		usermessage.setValue("date", new Date());
+		String message = (String)request.get("message");
+		usermessage.setValue("message", message);
+				
+		MultiValued agentmessage = assistantManager.newAgentMessage(usermessage,context);
+		
+		assistantManager.execCurrentFunctionFromChat(usermessage,agentmessage,context);
+		
+		inReq.putPageValue("agentmessage",agentmessage);
+		inReq.putPageValue("usermessage",usermessage);
+		inReq.putPageValue("agentcontext",context);
+		
+		inReq.putPageValue("chatterboxsearcher", archive.getSearcher("chatterbox") );
+		inReq.putPageValue("agentcontextsearcher", archive.getSearcher("agentcontext" ) );
+		
+	}
 
 	public Data createData(WebPageRequest inReq)
 	{

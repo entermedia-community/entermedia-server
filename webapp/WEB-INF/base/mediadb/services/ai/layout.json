@@ -1,0 +1,17 @@
+{
+	"request":
+		{
+		    "status":"ok",
+			"request":
+			{
+
+			}
+		},
+	"response": {
+		
+		"usermessage":#json($usermessage $chatterboxsearcher.getPropertyDetails()),
+		"agentmessage":#json($agentmessage $chatterboxsearcher.getPropertyDetails()),
+		"agentcontext":#json($agentmessage $agentcontextsearcher.getPropertyDetails())
+		
+	}
+}

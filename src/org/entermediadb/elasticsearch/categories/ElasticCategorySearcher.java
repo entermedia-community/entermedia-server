@@ -239,7 +239,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			category = (ElasticCategory)loadData(inData);
 		}
 		super.saveToElasticSearch(inDetails,inData, delete,inUser);
-		Collection values = (Collection)category.getMap().getValue("parents");
+		Collection values = (Collection)category.getProperties().getValue("parents");
 		boolean edited = false;
 		if( values == null)
 		{
@@ -247,7 +247,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			edited = true;
 		}	
 		
-		String path = (String)category.getMap().getValue("categorypath");
+		String path = (String)category.getProperties().getValue("categorypath");
 		if( path == null)
 		{
 			path = category.loadCategoryPath();

@@ -73,7 +73,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 
 	public Long getVersion() 
 	{
-		Long l = getMap().getLong(".version");
+		Long l = getProperties().getLong(".version");
 		return l;
 	}
 
@@ -153,13 +153,13 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 			values = new ArrayList();
 		}
 		values.remove(inOldValue);
-		getMap().put(inKey,values);
+		getProperties().put(inKey,values);
 	}
 	
 	@Override
 	public void removeValue(String inKey)
 	{
-		getMap().put(inKey,  ValuesMap.NULLVALUE);
+		getProperties().put(inKey,  ValuesMap.NULLVALUE);
 	}
 	
 	@Override
@@ -167,7 +167,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 	{
 		if( inValue == null)
 		{
-			getMap().put(inKey,  ValuesMap.NULLVALUE);
+			getProperties().put(inKey,  ValuesMap.NULLVALUE);
 		}
 		else
 		{
@@ -201,7 +201,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 			}
 		}
 
-		Object svalue = getMap().getObject(inId);
+		Object svalue = getProperties().getObject(inId);
 		if( svalue == ValuesMap.NULLVALUE || svalue == ValuesMap.NULLSTRING)
 		{
 			return null;
@@ -349,7 +349,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 				set.add(key);
 			}
 		}	
-		set.addAll( getMap().keySet() );
+		set.addAll( getProperties().keySet() );
 		//set.add(".version");
 		return set;
 	}
