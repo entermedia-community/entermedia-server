@@ -16,6 +16,7 @@ import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.markdown.MarkdownUtil;
 import org.entermediadb.scripts.ScriptLogger;
@@ -62,7 +63,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
 			if( aisuggestions.isEmpty())
 			{
-				inAgentContext.setNextFunctionName("question_create_sugestions");
+				inAgentContext.setNextFunctionName("question_create_suggestions");
 			}
 			else
 			{
@@ -71,12 +72,22 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			}
 			return response;
 		}
-		else if ("question_create_sugestions".equals(agentFn))
+		else if ("question_create_suggestions".equals(agentFn))
 		{
 			Data entity= (Data) inAgentContext.getContextValue("entity");
 			Data entitymodule = (Data) inAgentContext.getContextValue("entitymodule");
 
 			String text = findSampleOfEmbeddedData(entitymodule,entity);
+			
+			if (text == null || text.isEmpty())
+			{
+				text = entity.getName();
+				if (entity.get("longcaption") != null)
+				{
+					text = text + " " +entity.get("longcaption");
+				}
+			}
+			
 			inAgentContext.addContext("embeddedtext", text);
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
 			LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext(),agentFn);
@@ -94,6 +105,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 				suggestiondata.setValue("entitymoduleid", entitymodule.getId());
 				suggestiondata.setName( (String)airesponse.get("title"));
 				suggestiondata.setValue("prompt", airesponse.get("prompt"));
+				searcher.saveData(suggestiondata);
 			}
 			inAgentContext.setNextFunctionName("question_welcome");
 			return response;
@@ -244,10 +256,20 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 							markdown = data.get("longcaption");
 						}
 					}
+					if( markdown == null)
+					{
+						String assetid = data.get("primarymedia");
+						Asset asset = getMediaArchive().getEntityManager().getAsset(data);
+						if (asset != null)
+						{
+							markdown = asset.get("longcaption");
+						}
+					}
 					if( markdown != null)
 					{
 						foundtext.append( markdown);
 					}
+					
 					if( foundtext.length() > 2000)
 					{
 						return foundtext.toString();							
