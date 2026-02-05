@@ -41,7 +41,7 @@ public interface LlmConnection {
     public LlmResponse callStructuredOutputList(Map inParams, String inFuction);
     
     // This one is for llamaindex which has a different than or regular structured
-    public LlmResponse callLlamaIndexStructuredOutputList(Map inParams, String inFuction);
+    public LlmResponse callLlamaIndexStructured(Map inParams, String inFuction);
 	
 	public LlmResponse callOCRFunction(Map inParams, String inBase64Image, String inFunctioName);
 	
