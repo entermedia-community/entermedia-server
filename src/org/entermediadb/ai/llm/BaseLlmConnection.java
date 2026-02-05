@@ -642,7 +642,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	}
 	
 	@Override
-	public LlmResponse callLlamaIndexStructuredOutputList(Map inParams, String inFunction)
+	public LlmResponse callLlamaIndexStructured(Map inParams, String inFunction)
 	{
 		throw new OpenEditException(inFunction + " Call not supported");
 	}
