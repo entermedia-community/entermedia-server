@@ -78,7 +78,6 @@ public class EmbeddingManager extends InformaticsProcessor
 	@Override
 	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRandomEntities)
 	{
-		inLog.headline("Embedding " + inRandomEntities.size() + " entities");
 		
 		String searchtype = inConfig.get("searchtype");
 
@@ -121,11 +120,14 @@ public class EmbeddingManager extends InformaticsProcessor
 		{
 			return;
 		}
+
+		inLog.headline("Embedding " + inRandomEntities.size() + " entities");
+		
+		long start = System.currentTimeMillis();
+		
 		Searcher pageSearcher = getMediaArchive().getSearcher(searchtype);
 		
 		pageSearcher.saveAllData(toprecess, null);
-		
-		inLog.headline("Embedding " + inRandomEntities.size() + " documents");
 		
 		
 		if(searchtype.equals("userpost"))
@@ -148,6 +150,9 @@ public class EmbeddingManager extends InformaticsProcessor
 		{	
 			embedEntity(inLog, searchtype, toprecess, pageSearcher);
 		}
+		
+		long duration = System.currentTimeMillis() - start;
+		inLog.headline("Embedding " + inRandomEntities.size() + " documents, took " + duration + " ms");
 	}
 	
 	protected void embedDocuments(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
