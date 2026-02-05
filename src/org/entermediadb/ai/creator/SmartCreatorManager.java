@@ -12,14 +12,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.ChatMessageHandler;
-import org.entermediadb.ai.assistant.QuestionsManager;
 import org.entermediadb.ai.assistant.SearchingManager;
 import org.entermediadb.ai.assistant.SemanticAction;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.convert.inputloaders.ImageCacheLoader;
 import org.entermediadb.markdown.MarkdownUtil;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
@@ -29,7 +27,6 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.SearchQuery;
 
 public class SmartCreatorManager extends BaseAiManager implements ChatMessageHandler
 {
@@ -109,54 +106,66 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			//TODO: Show the user what they typed and say processing
 			
-			inAgentContext.setNextFunctionName("smartcreator_createsections");
+			inAgentContext.setNextFunctionName("smartcreator_createoutline");
 			//Show the user what we have thus far
 			return res;
 		}
-		else if(agentFn.startsWith("smartcreator_createsections"))
+		else if(agentFn.startsWith("smartcreator_createoutline"))
 		{
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_createsections");
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_createoutline");
 			
 			//TODO: Not regular AI > Delegate to LLama Index
 			inAgentContext.addContext("creationprompt", instructions.getStep1create());
-			LlmResponse res = llmconnection.callLlamaIndexStructuredOutputList(inAgentContext.getContext(), "smartcreator_createsections");
+			LlmResponse res = llmconnection.callLlamaIndexStructuredOutputList(inAgentContext.getContext(), "smartcreator_createoutline");
 			
-			JSONObject sectionsJson = res.getMessageStructured();
+			JSONObject outlineJson = res.getMessageStructured();
 			
-			Collection<String> sections = (Collection<String>) sectionsJson.get("sections");
+			Collection<String> outline = (Collection<String>) outlineJson.get("outline");
 			
-			instructions.setProposedSections(sections);
+			instructions.setProposedSections(outline);
 			
 			//Show the user
 			String function = findLocalActionName(inAgentContext);
 			LlmConnection llmconnection2 = getMediaArchive().getLlmConnection(function);
 			LlmResponse response = llmconnection2.renderLocalAction(inAgentContext, function);
 			
-			inAgentContext.setFunctionName("smartcreator_cconfirmsections");
+			inAgentContext.setFunctionName("smartcreator_cconfirmoutline");
 			
 			return response;
 		}
-		else if(agentFn.startsWith("smartcreator_confirmsections"))
+		else if(agentFn.startsWith("smartcreator_confirmoutline"))
 		{
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_confirmsections");
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_confirmoutline");
 			
 			// Adjust the outline as needed using regular AI
-			LlmResponse res = llmconnection.callStructuredOutputList(inAgentContext.getContext(), "smartcreator_confirmsections");
+			LlmResponse res = llmconnection.callStructuredOutputList(inAgentContext.getContext(), "smartcreator_confirmoutline");
 			
 			JSONObject updatedSectionsJson = res.getMessageStructured();
-			Collection<String> updatedSections = (Collection<String>)  updatedSectionsJson.get("updatedsections");
 			
+			Collection<String> updatedSections = (Collection<String>)  updatedSectionsJson.get("updatedoutline");
 			instructions.setProposedSections(updatedSections);
 			
-			createConfirmedSections(instructions); //Saving confirmed sections to DB
+			boolean confirmed = (boolean) updatedSectionsJson.get("confirmed");
+			
+			if(!confirmed)
+			{
+				inAgentContext.setNextFunctionName("smartcreator_confirmoutline");
+				return res; //Ask again
+			}
+			
+			
+			createConfirmedSections(instructions); //Saving confirmed outline to DB
 			
 			String function = findLocalActionName(inAgentContext);  //Ask again
 			LlmConnection llmconnection2 = getMediaArchive().getLlmConnection(function);
 			LlmResponse response = llmconnection2.renderLocalAction(inAgentContext, function);
+			
+			inAgentContext.setNextFunctionName("smartcreator_createsectioncontents");
+
 			return response;
 			
 		}
-		else if(agentFn.startsWith("smartcreator_populatesections"))
+		else if(agentFn.startsWith("smartcreator_createsectioncontents"))
 		{	
 			populateSectionsWithContents(instructions);
 	
@@ -647,6 +656,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			String sectionid = section.getId();
 			
 			Map params = new HashMap();
+			
 			params.put("creationprompt", step2CreatePrompt + section.getName());
 
 			LlmResponse res = llmconnection.callLlamaIndexStructuredOutputList(params, "smartcreator_populatesections");
@@ -737,7 +747,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				}
 			}
 
-		
+/*
+ * Improve speed
 			// try semantically matching an asset to the section
 			SearchingManager searchingmanager = (SearchingManager) getMediaArchive().getBean("searchingManager");
 			String playbackentityid = section.get("playbackentityid");
@@ -767,6 +778,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				componentcontent.setValue("creationdate", new Date());
 				componentcontent.setValue("modificationdate", new Date());
 			}
+*/
 			
 			if (tosave.size() >= 5) {
 				contentearcher.saveAllData(tosave, null);
