@@ -640,6 +640,12 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	{
 		throw new OpenEditException(inFunction + " Call not supported");
 	}
+	
+	@Override
+	public LlmResponse callLlamaIndexStructuredOutputList(Map inParams, String inFunction)
+	{
+		throw new OpenEditException(inFunction + " Call not supported");
+	}
 
 	@Override
 	public LlmResponse callOCRFunction(Map inParams, String inBase64Image, String inFunction)

@@ -65,7 +65,7 @@ public class SmartCreatorModule extends BaseMediaModule {
 	public void populateSection(WebPageRequest inReq) throws Exception 
 	{
 		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
-		creatorManager.createCreatorAndPopulateSection(inReq);
+//		creatorManager.createCreatorAndPopulateSection(inReq);
 	}
 	
 	
@@ -199,7 +199,7 @@ public class SmartCreatorModule extends BaseMediaModule {
 	public void populateComponentContent(WebPageRequest inReq) throws Exception 
 	{
 		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
-		creatorManager.autoPopulateComponentContent();
+//		creatorManager.autoPopulateComponentContent();
 	}
 	
 	public void orderCreatorSection(WebPageRequest inReq)
