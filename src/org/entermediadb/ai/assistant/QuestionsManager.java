@@ -33,7 +33,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 {
 	private static final Log log = LogFactory.getLog(QuestionsManager.class);
 
-	@Override
+	
 	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
 	{
 		UserProfile profile = getMediaArchive().getUserProfileManager().getUserProfile(getMediaArchive().getCatalogId(), "admin"); 
@@ -138,10 +138,22 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		{
 			inAgentMessage.setValue("chatmessagestatus", "completed");
 			
+			String entityid = (String) inAgentContext.getValue("entityid");
+			String entitymoduleid = (String) inAgentContext.getValue("entitymoduleid");
+			
+			Data entity = getMediaArchive().getCachedData(entitymoduleid, entityid);
+			inAgentContext.addContext("entity", entity);
+			
+			
+			
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
-			inAgentContext.setFunctionName("askQuestion");
+			inAgentContext.setFunctionName("question_ask");
 			return response;
+		}
+		else if ("question_create_sugestions".equals(agentFn))
+		{
+			
 		}
 		if ("question_ask".equals(agentFn))
 		{
