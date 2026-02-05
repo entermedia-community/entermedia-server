@@ -42,7 +42,7 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
 	{
 		String agentFn = inAgentContext.getFunctionName();
-		if("image_creation_welcome".equals(inAgentContext.getFunctionName()))
+		if("creation_image_welcome".equals(inAgentContext.getFunctionName()))
 		{
 			String entityid = (String) inAgentContext.getValue("entityid");
 			String entitymoduleid = (String) inAgentContext.getValue("entitymoduleid");
@@ -53,13 +53,13 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAgentContext.getFunctionName());
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, inAgentContext.getFunctionName());
 			//This is for the chat UI to pass it back
-			inAgentContext.setFunctionName("image_creation_parse");
+			inAgentContext.setFunctionName("creation_image_parse");
 			return response;
 		}
-		else if("image_creation_parse".equals(inAgentContext.getFunctionName()))
+		else if("creation_image_parse".equals(inAgentContext.getFunctionName()))
 		{
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("image_creation_parse");
-			LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext(),"image_creation_parse");
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("creation_image_parse");
+			LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext(),"creation_image_parse");
 			if(response == null)
 			{
 				throw new OpenEditException("No results from AI for function: " + inAgentContext.getFunctionName());
@@ -68,16 +68,16 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 			JSONObject content = response.getMessageStructured();
 			creation.setCreationFields( content );
 			response.setMessage("");
-			inAgentContext.setNextFunctionName("image_creation_create");
+			inAgentContext.setNextFunctionName("creation_image_create");
 			return response;
 		}
-		else if("image_creation_create".equals(inAgentContext.getFunctionName()))
+		else if("creation_image_create".equals(inAgentContext.getFunctionName()))
 		{
 			LlmResponse result = createImage(inAgentContext);
-			inAgentContext.setNextFunctionName("image_creation_render");
+			inAgentContext.setNextFunctionName("creation_image_render");
 			return result;
 		}
-		else if("image_creation_render".equals(inAgentContext.getFunctionName()))
+		else if("creation_image_render".equals(inAgentContext.getFunctionName()))
 		{
 			String assetid = inAgentContext.get("assetid");
 			
@@ -86,7 +86,7 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 
 			inAgentContext.addContext("refreshing", "true");
 			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("image_creation_render");
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("creation_image_render");
 			
 			LlmResponse result = llmconnection.renderLocalAction(inAgentContext);
 			
@@ -122,7 +122,7 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 	{
 		MediaArchive archive = getMediaArchive();
 		AiCreation aiCreation = inAgentContext.getAiCreationParams();
-		LlmConnection llmconnection = archive.getLlmConnection("image_creation_create");
+		LlmConnection llmconnection = archive.getLlmConnection("creation_image_create");
 		
 		JSONObject imagefields = (JSONObject) aiCreation.getCreationFields();
 		
@@ -203,7 +203,7 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 			
 			// inReq.putPageValue("asset", asset);
 			inAgentContext.addContext("asset", asset);
-			inAgentContext.setNextFunctionName("image_creation_render");
+			inAgentContext.setNextFunctionName("creation_image_render");
 			inAgentContext.setValue("assetid", asset.getId());
 			inAgentContext.setValue("wait", 1000);
 		}

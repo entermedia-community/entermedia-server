@@ -75,7 +75,7 @@ public class AssistantManager extends BaseAiManager
 		for (Iterator iterator = allchannels.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
-			log.info("Processing channel: " + data.getId());
+			//log.info("Processing channel: " + data.getId());
 			Data channel = (Data)archive.getCachedData("channel", data.getId());
 			if( channel.getName() == null)  //Make smarter
 			{
