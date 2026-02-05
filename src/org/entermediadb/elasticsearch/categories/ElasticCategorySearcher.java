@@ -20,6 +20,7 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
+import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
@@ -412,7 +413,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 				return null;
 			}
 			ElasticCategory data = (ElasticCategory) createNewData();
-			data.setProperties(source);
+			data.setProperties(new ValuesMap(source));
 			//data.
 			//copyData(data, typed);
 			data.setId(inValue);

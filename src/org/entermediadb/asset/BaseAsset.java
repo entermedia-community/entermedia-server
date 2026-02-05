@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +26,7 @@ import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
+import org.openedit.data.ValuesMap;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
@@ -553,7 +553,7 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 		asset.setName(getName());
 		asset.setOrdering(getOrdering());
 		asset.setKeywords(getKeywords());
-		asset.setProperties(new HashMap(getProperties()));
+		asset.setProperties(new ValuesMap(getProperties()));
 
 		Collection catalogs = getCategories();
 		for (Iterator iter = catalogs.iterator(); iter.hasNext();)

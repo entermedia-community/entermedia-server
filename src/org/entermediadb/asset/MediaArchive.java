@@ -69,6 +69,7 @@ import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.data.ValuesMap;
 import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
@@ -1564,7 +1565,7 @@ public class MediaArchive implements CatalogEnabled
 	public void fireMediaEvent(String inMetadataType, String operation, String inSourcePath, Map inParams, User inUser)
 	{
 		WebEvent event = new WebEvent();
-		event.setProperties(inParams);
+		event.setProperties(new ValuesMap(inParams));
 		event.setSearchType(inMetadataType);
 
 		event.setCatalogId(getCatalogId());
@@ -1592,7 +1593,7 @@ public class MediaArchive implements CatalogEnabled
 		WebEvent event = new WebEvent();
 		if( inParams != null)
 		{
-			event.setProperties(inParams);
+			event.setProperties(new ValuesMap(inParams));
 		}
 		event.setSearchType(inSearchType);
 
