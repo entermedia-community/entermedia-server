@@ -39,6 +39,9 @@ public interface LlmConnection {
 	public void setAiServerData(Data fieldMainServerUrl);
 
     public LlmResponse callStructuredOutputList(Map inParams, String inFuction);
+    
+    // This one is for llamaindex which has a different than or regular structured
+    public LlmResponse callLlamaIndexStructuredOutputList(Map inParams, String inFuction);
 	
 	public LlmResponse callOCRFunction(Map inParams, String inBase64Image, String inFunctioName);
 	

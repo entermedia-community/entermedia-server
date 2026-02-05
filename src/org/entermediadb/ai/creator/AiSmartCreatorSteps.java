@@ -41,6 +41,17 @@ public class AiSmartCreatorSteps extends BaseData
 	{
 		fieldProposedSections = inProposedSections;
 	}
+	
+	protected Collection<Data> fieldConfirmedSections;
+	public Collection<Data> getConfirmedSections()
+	{
+		return fieldConfirmedSections;
+	}
+
+	public void setConfirmedSections(Collection<Data> inConfirmedSections)
+	{
+		fieldConfirmedSections = inConfirmedSections;
+	}
 
 	public Map<Data, Collection<Data>> getSectionComponents()
 	{
@@ -130,13 +141,11 @@ public class AiSmartCreatorSteps extends BaseData
 		step1create = (String)first.get("text");//"Create a blog with a title of \"My trip to Guatemala\"";
 		
 		fieldNewTitleName = (String)first.get("topic");
-		JSONObject second = (JSONObject)iter.next();
+		JSONObject second = (JSONObject) iter.next();
 		if( second != null)
 		{
-			step2create = (String)second.get("text");//"write 3 paraphaphs that describe the best foods I ate";   //One component-section with 1 title and 3 paragraphs
+			step2create = (String) second.get("text"); //"write 3 paraphaphs that describe the best foods I ate";   //One component-section with 1 title and 3 paragraphs
 		}
-
-		
 	}
 
 	protected String fieldNewTitleName;
@@ -144,48 +153,6 @@ public class AiSmartCreatorSteps extends BaseData
 	public String getNewTitleName()
 	{
 		return fieldNewTitleName;
-	}
-
-	public void loadSections(String inOutlines)
-	{
-		Collection<String> outlineitems = new ArrayList<String>();
-		
-		String parentType = null;
-		
-		String[] lines = inOutlines.split("\n");
-		for (int i = 0; i < lines.length; i++)
-		{	
-			String line = lines[i];
-			
-			if(parentType == null)
-			{				
-				if(Pattern.matches("^\\s*\\- .*", line))
-				{
-					parentType = "^\\s*\\- .*";
-				}
-				else if(Pattern.matches("^\\d+\\. .*", line))
-				{
-					parentType = "^\\d+\\. .*";
-				}
-				else
-				{
-					continue;
-				}
-			}
-			if(!Pattern.matches(parentType, line))
-			{
-				continue;
-			}
-			String cleaned = line.trim();
-			cleaned = cleaned.replaceAll("^\\d+\\. ", "");
-			cleaned = cleaned.replaceAll("^\\- ", "");
-			cleaned = cleaned.replaceAll("^\\*+", "");
-			cleaned = cleaned.replaceAll("\\*+$", "");
-			cleaned = cleaned.trim();
-			
-			outlineitems.add(cleaned);
-		}
-		setProposedSections(outlineitems);
 	}
 	
 }
