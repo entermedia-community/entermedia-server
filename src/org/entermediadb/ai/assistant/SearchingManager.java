@@ -597,7 +597,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
-			inAgentContext.setFunctionName("search_start");
+			inAgentContext.setFunctionName("search_tables");
 			return response;
 		}
 		/*
