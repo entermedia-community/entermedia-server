@@ -36,188 +36,6 @@ import org.openedit.util.DateStorageUtil;
 public class CreationManager extends BaseAiManager implements ChatMessageHandler
 {
 	private static final Log log = LogFactory.getLog(CreationManager.class);
-
-	@Override
-	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
-	{
-		savePossibleFunctionSuggestions(inLog, "Creation"); 
-	}
-	
-	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog)
-	{
-		//List all functions
-		Collection creations = getMediaArchive().query("aifunction").exact("messagehandler", "contentManager").search();
-		
-		Searcher embedsearcher = getMediaArchive().getSearcher("aifunctionparameter");
-		
-		Collection<SemanticAction> actions = new ArrayList();
-
-		for (Iterator iterator = creations.iterator(); iterator.hasNext();)
-		{
-			Data function = (Data) iterator.next();
-			
-			Data module = null;
-
-			Collection phrases  = function.getValues("phrases");
-			if(phrases != null)
-			{
-				for (Iterator iterator2 = phrases.iterator(); iterator2.hasNext();)
-				{
-					String phrase = (String) iterator2.next();
-					Collection existing = embedsearcher.query().exact("aifunction", function.getId()).exact("name", phrase).search();
-					if( !existing.isEmpty())
-					{
-						log.info("Skipping existing: " + phrase);
-						continue;
-					}
-					SemanticAction action = new SemanticAction();
-					action.setAiFunction(function.getId());
-					action.setSemanticText(phrase);
-					action.setParentData(module);
-					actions.add(action);
-				}
-			}
-
-			if( function.getId().equals("image_creation_start" ) )
-			{
-				module = getMediaArchive().getCachedData("module", "asset");
-			}
-			
-			if( function.getId().equals("createRecord" ) )
-			{
-				Schema schema = loadSchema();
-				
-				for (Iterator iterator2 = schema.getModules().iterator(); iterator2.hasNext();)
-				{
-					Data parentmodule = (Data) iterator2.next();
-
-					Collection existing = embedsearcher.query().exact("aifunction", function.getId()).exact("parentmodule",parentmodule.getId()).search();
-					if( !existing.isEmpty())
-					{
-						log.info("Skipping existing: " + parentmodule);
-						continue;
-					}
-					SemanticAction action = new SemanticAction();
-					action.setAiFunction(function.getId());
-					action.setParentData(parentmodule);
-					action.setSemanticText("Create a record in " + parentmodule.getName());
-					actions.add(action);
-					
-					Collection<Data> children = schema.getChildrenOf(parentmodule.getId());
-					
-					for (Iterator iterator3 = children.iterator(); iterator3.hasNext();)
-					{
-						Data childmodule = (Data) iterator3.next();
-						action = new SemanticAction();
-						action.setParentData(parentmodule);
-						action.setChildData(childmodule);
-						action.setAiFunction(function.getId());
-						action.setSemanticText("Create a " + childmodule.getName() + " in " + parentmodule.getName());
-						actions.add(action);
-					}
-					
-				}
-			}
-		}
-		
-		SemanticTableManager manager = loadSemanticTableManager("aifunctionparameter");
-
-		populateVectors(manager, actions);
-
-		return actions;
-
-//		List<Double> tosearch = manager.makeVector("Find all records in US States in 2023");
-//		Collection<RankedResult> results = manager.searchNearestItems(tosearch);
-//		log.info(results);
-		
-		
-	}
-	
-	protected String parseCreationParts(AgentContext inAgentContext, JSONObject structure, String type, String messageText) 
-	{ 
-		String creationtask = (String) structure.get("creation_task");
-		if( creationtask == null)
-		{
-			throw new OpenEditException("No creation task specified in results: " + structure.toJSONString());
-		}
-		
-		AiCreation creation = inAgentContext.getAiCreationParams();
-		
-		SemanticTableManager manager = loadSemanticTableManager("aifunctionparameter"); 
-		List<Double> tosearch = manager.makeVector( sanitizeCreationTask(creationtask) );
-		Collection<RankedResult> suggestions = manager.searchNearestItems(tosearch);
-		
-		if( !suggestions.isEmpty())
-		{
-			inAgentContext.setRankedSuggestions(suggestions);
-			RankedResult top = (RankedResult) suggestions.iterator().next();
-			if ( top.getDistance() < .7 )
-			{
-				String creationFunction = top.getEmbedding().get("aifunction");
-				creation.setCreationFunction(creationFunction);
-				String parentmodule = top.getEmbedding().get("parentmodule");
-				creation.setCreationModule(parentmodule);
-				
-				type = "loadCreationFields";
-				
-			}
-			else
-			{
-				type = "conversation";
-			}
-		}
-		else
-		{
-			type = "conversation";
-		}
-		return type;
-	}
-	
-	private String sanitizeCreationTask(String inTask)
-	{
-		inTask = inTask.replaceAll("[\\n\\r]+", " ");
-		if(!inTask.contains("create"))
-		{
-			inTask = "create " + inTask;
-		}
-		return inTask;
-	}
-	
-	protected void handleLlmResponse(AgentContext inAgentContext, LlmResponse response)
-	{
-		JSONObject content = response.getMessageStructured();
-		
-		String toolname = (String) content.get("next_step");  //request_type
-		
-		if(toolname == null)
-		{
-			throw new OpenEditException("No type specified in results: " + content.toJSONString());
-		}
-
-		JSONObject details = (JSONObject) content.get("step_details");
-		
-		if(details == null)
-		{
-			throw new OpenEditException("No details specified in results: " + content.toJSONString());
-		}
-		if( toolname.equals("conversation"))
-		{
-			JSONObject conversation = (JSONObject) details.get("conversation");
-			String generalresponse = (String) conversation.get("friendly_response");
-			response.setMessage( generalresponse);
-		}
-		else if(toolname.equals("parseCreationParts"))  //One at a time until the cancel or finish
-		{
-			JSONObject structure = (JSONObject) details.get(toolname);		
-			if(structure == null)
-			{
-				throw new OpenEditException("No structure found for type: " + toolname);
-			}
-			toolname = parseCreationParts(inAgentContext, structure, toolname, response.getMessage());
-		}
-		response.setFunctionName(toolname);
-	}
-	
 	
 	
 	@Override
@@ -240,14 +58,23 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 		}
 		else if("image_creation_parse".equals(inAgentContext.getFunctionName()))
 		{
-			LlmResponse response = loadCreationParameters(inAgentContext);
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("image_creation_parse");
+			LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext(),"image_creation_parse");
+			if(response == null)
+			{
+				throw new OpenEditException("No results from AI for function: " + inAgentContext.getFunctionName());
+			}
+			AiCreation creation = inAgentContext.getAiCreationParams();
+			JSONObject content = response.getMessageStructured();
+			creation.setCreationFields( content );
+			response.setMessage("");
 			inAgentContext.setNextFunctionName("image_creation_create");
 			return response;
 		}
 		else if("image_creation_create".equals(inAgentContext.getFunctionName()))
 		{
 			LlmResponse result = createImage(inAgentContext);
-			//inAgentContext.setNextFunctionName("image_creation_render");
+			inAgentContext.setNextFunctionName("image_creation_render");
 			return result;
 		}
 		else if("image_creation_render".equals(inAgentContext.getFunctionName()))
@@ -265,9 +92,16 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 			
 			log.info("Next function: " + inAgentContext.getNextFunctionName());
 			
-			
 			return result;
 			
+		}
+		else if("creation_entity_create".equals(inAgentContext.getFunctionName()))
+		{
+			//This was parsed from AutoDetectManager so app params should be in agentcontext already
+			
+			//TODO: Save the new entity with any foreigh keys
+			
+			//SHow the link in the chat
 		}
 		/*
 		else if ("createRecord".equals(inAgentContext.getFunctionName()))
@@ -280,28 +114,6 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 		}
 		*/
 		throw new OpenEditException("Function not supported " + agentFn);
-		
-	}
-	
-	 
-	protected LlmResponse loadCreationParameters(AgentContext inAgentContext)
-	{
-		LlmConnection llmconnection = getMediaArchive().getLlmConnection("image_creation_parse");
-		LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext(),"image_creation_parse");
-		if(response == null)
-		{
-			throw new OpenEditException("No results from AI for function: " + inAgentContext.getFunctionName());
-		}
-		AiCreation creation = inAgentContext.getAiCreationParams();
-		JSONObject content = response.getMessageStructured();
-		creation.setCreationFields( content );
-		response.setMessage("");
-		return response;
-	}
-
-	@Override
-	public void getDetectorParams(AgentContext inAgentContext, MultiValued inTopLevelFunction) {
-		// TODO Auto-generated method stub
 		
 	}
 	

@@ -388,10 +388,10 @@ public class AssistantManager extends BaseAiManager
 			String agentNextFn = agentContext.getNextFunctionName();
 			if( agentNextFn != null)
 			{
-				Long wait = agentContext.getLong("wait");
+				Long wait = agentContext.getWaitTime();
 				if( wait != null && wait instanceof Long)
 				{
-					agentContext.setValue("wait", null);
+					agentContext.setWaitTime(null);
 					waittime = wait;
 					log.info("Previous function requested to wait " + waittime + " milliseconds");
 					Thread.sleep(wait);

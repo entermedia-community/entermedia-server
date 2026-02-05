@@ -102,69 +102,11 @@ public class AgentModule extends BaseMediaModule {
 		}
 	}
 
-	/*
-	public void mcpGenerateReport(WebPageRequest inReq) throws Exception {
-		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
-		String report = getSearchingManager(inReq).generateReport(arguments);
-		inReq.putPageValue("report", report);
-	}*/
-
-	public void indexActions(WebPageRequest inReq) throws Exception 
-	{
-		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
-		Collection<SemanticAction> actions = new ArrayList();
-		
-		Collection<SemanticAction> found = getSearchingManager(inReq).createPossibleFunctionParameters(logger);
-		actions.addAll(found);
-
-		found = getCreationManager(inReq).createPossibleFunctionParameters(logger);
-		actions.addAll(found);
-
-		found = getQuestionsManager(inReq).createPossibleFunctionParameters(logger);
-		actions.addAll(found);
-
-		Searcher embedsearcher = getMediaArchive(inReq).getSearcher("aifunctionparameter");
-
-		//TODO: Call the other ones
-		
-		//Save to db
-		Collection tosave = new ArrayList();
-		
-		for (Iterator iterator2 = actions.iterator(); iterator2.hasNext();)
-		{
-			SemanticAction semanticAction = (SemanticAction) iterator2.next();
-			Data data = embedsearcher.createNewData();
-			if(semanticAction.getParentData() != null)
-			{				
-				data.setValue("parentmodule",semanticAction.getParentData().getId());
-			}
-			if( semanticAction.getChildData() != null)
-			{
-				data.setValue("childmodule",semanticAction.getChildData().getId());
-			}
-			data.setValue("vectorarray",semanticAction.getVectors());
-			data.setValue("aifunction",semanticAction.getAiFunction());
-			data.setName(semanticAction.getSemanticText());
-			
-			tosave.add(data);
-		}
-		embedsearcher.saveAllData(tosave, null);
-		
-		
-		//Now save all the suggestions?
-		
-		//Test search
-		//populateVectors(manager,actions);
-
-		//manager.reinitClusters(inLog); //How to do this?
-	}
-
 	public void addModules(WebPageRequest inReq) throws Exception 
 	{
 		ScriptLogger log = (ScriptLogger)inReq.getPageValue("log");
 		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
 		assistant.addMissingFunctions(log);
-		
 	}
 
 	public void createSuggestions(WebPageRequest inReq)

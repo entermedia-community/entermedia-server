@@ -22,8 +22,20 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	Map<String, Object> context;
 //	JSONObject arguments;
 	
+	Long fieldWaitTime;
+	
 	//TODO: Cache history here for performance
 	
+	public Long getWaitTime()
+	{
+		return fieldWaitTime;
+	}
+
+	public void setWaitTime(Long inWaitTime)
+	{
+		fieldWaitTime = inWaitTime;
+	}
+
 	UserProfile fieldUserProfile;
 	
 	ModuleManager fieldModuleManager;

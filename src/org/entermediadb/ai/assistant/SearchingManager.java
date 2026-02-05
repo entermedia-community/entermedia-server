@@ -37,13 +37,6 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 {
 	private static final Log log = LogFactory.getLog(SearchingManager.class);
 
-	@Override
-	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
-	{
-		// Do nothing
-	}
-
-	
 	public void searchTables(WebPageRequest inReq, AiSearch inAiSearchParams)
 	{
 		AiSearchTable step1 = inAiSearchParams.getStep1();
@@ -837,12 +830,4 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		}
 		return suggestions;
 	}
-
-
-	@Override
-	public void getDetectorParams(AgentContext inAgentContext, MultiValued inTopLevelFunction) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }

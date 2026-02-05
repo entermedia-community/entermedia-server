@@ -33,18 +33,6 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 	private static final Log log = LogFactory.getLog(SmartCreatorManager.class);
 	
 	
-	@Override
-	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public void savePossibleFunctionSuggestions(ScriptLogger inLog) {
-		// Do Nothing
-	}
-	
 	protected String findLocalActionName(AgentContext inAgentContext)
 	{
 		String agentFn = inAgentContext.getFunctionName();
@@ -889,10 +877,4 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		
 	}
 
-
-	@Override
-	public void getDetectorParams(AgentContext inAgentContext, MultiValued inTopLevelFunction) {
-		// TODO Auto-generated method stub
-		
-	}
 }

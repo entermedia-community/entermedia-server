@@ -126,23 +126,6 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 		throw new OpenEditException("Function not supported " + agentFn);
 		
 	}
-
-	@Override
-	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog)
-	{
-		return null;
-	}
-	@Override
-	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
-	{
-		// Nothing to do.
-	}
-
-	@Override
-	public void getDetectorParams(AgentContext inAgentContext, MultiValued inTopLevelFunction) {
-		// TODO Auto-generated method stub
-		
-	}	
 	
 
 }

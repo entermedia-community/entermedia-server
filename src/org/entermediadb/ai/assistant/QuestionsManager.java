@@ -12,6 +12,7 @@ import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.Schema;
 import org.entermediadb.ai.classify.EmbeddingManager;
+import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
@@ -23,6 +24,7 @@ import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.FilterNode;
@@ -32,100 +34,6 @@ import org.openedit.profile.UserProfile;
 public class QuestionsManager extends BaseAiManager implements ChatMessageHandler
 {
 	private static final Log log = LogFactory.getLog(QuestionsManager.class);
-
-	
-	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
-	{
-		UserProfile profile = getMediaArchive().getUserProfileManager().getUserProfile(getMediaArchive().getCatalogId(), "admin"); 
-		Collection<Data> moduleids = findEnabledModules(profile);
-
-		Collection<String> embeddedcontents = new ArrayList<String>();
-		
-		for (Data module : moduleids)
-		{
-			String searchtype = module.getId();
-			HitTracker moduleentities = getMediaArchive().query(module.getId()).exact("entityembeddingstatus", "embedded").search();
-			if(!moduleentities.isEmpty())
-			{
-				for (Iterator iterator = moduleentities.iterator(); iterator.hasNext();)
-				{
-					MultiValued entity = (MultiValued) iterator.next();
-					String content = null;
-					
-					if(searchtype.equals("userpost"))
-					{			
-						content = entity.get("maincontent");
-					}
-					else if(searchtype.equals("entitydocument") || searchtype.equals("entityasset"))
-					{			
-						content = entity.get("markdowncontent");
-					}
-					else
-					{	
-						Collection<PropertyDetail> contextFields = new ArrayList<PropertyDetail>();
-						
-						Collection detailsfields = getMediaArchive().getSearcher(searchtype).getDetailsForView(searchtype+"general");
-						for (Iterator iterator3 = detailsfields.iterator(); iterator3.hasNext();)
-						{
-							PropertyDetail field = (PropertyDetail) iterator3.next();
-							if(entity.hasValue(field.getId()))
-							{
-								contextFields.add(field);
-							}
-						}
-						
-						Map<String, Object> inParams = new HashMap();
-						inParams.put("data", entity);
-						inParams.put("contextfields", contextFields);
-						
-						String templatepath = getMediaArchive().getMediaDbId() + "/ai/default/calls/commons/context_fields.json";
-						LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
-						content = llmconnection.loadInputFromTemplate(templatepath, inParams);
-
-					}
-					 
-					if( content == null || content.isEmpty())
-					{
-						continue;
-					}
-					String cleanText = content.replaceAll("<[^>]*>", "").trim();
-					if(cleanText.length() > 100)
-					{
-						embeddedcontents.add(cleanText);
-					}
-				}
-			}
-		}
-		
-		Collection pickedcontents = getRandomFromCollection(embeddedcontents, 5);
-		
-		Map params = new HashMap();
-		params.put("contents", pickedcontents);
-		
-		savePossibleFunctionSuggestions(inLog, "Questions", params);
-	}
-	
-	private Collection getRandomFromCollection(Collection inCollection, int inMax)
-	{
-		if(inCollection.size() <= inMax)
-		{
-			return inCollection;
-		}
-		
-		Collection picked = new ArrayList();
-		int count = 0;
-		for (Iterator iterator = inCollection.iterator(); iterator.hasNext();)
-		{
-			Object obj = (Object) iterator.next();
-			picked.add(obj);
-			count++;
-			if(count >= inMax)
-			{
-				break;
-			}
-		}
-		return picked;
-	}
 
 	@Override
 	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
@@ -138,22 +46,57 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		{
 			inAgentMessage.setValue("chatmessagestatus", "completed");
 			
-			String entityid = (String) inAgentContext.getValue("entityid");
-			String entitymoduleid = (String) inAgentContext.getValue("entitymoduleid");
+			String entityid = (String) inAgentContext.get("entityid");
+			String entitymoduleid = (String) inAgentContext.get("entitymoduleid");
 			
 			Data entity = getMediaArchive().getCachedData(entitymoduleid, entityid);
 			inAgentContext.addContext("entity", entity);
-			
-			
+
+			Data entitymodule = getMediaArchive().getCachedData("module", entitymoduleid);
+			inAgentContext.addContext("entitymodule", entitymodule);
+
+			Collection aisuggestions = getMediaArchive().query("aisuggestion").exact("entityid", entity).search();
+			inAgentContext.addContext("aisuggetions", aisuggestions);
 			
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
-			inAgentContext.setFunctionName("question_ask");
+			if( aisuggestions.isEmpty())
+			{
+				inAgentContext.setNextFunctionName("question_create_sugestions");
+			}
+			else
+			{
+				inAgentContext.setFunctionName("question_ask");
+				inAgentContext.setWaitTime(null);
+			}
 			return response;
 		}
 		else if ("question_create_sugestions".equals(agentFn))
 		{
+			Data entity= (Data) inAgentContext.getContextValue("entity");
+			Data entitymodule = (Data) inAgentContext.getContextValue("entitymodule");
+
+			String text = findSampleOfEmbeddedData(entitymodule,entity);
+			inAgentContext.addContext("embeddedtext", text);
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
+			LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext(),agentFn);
 			
+			Searcher searcher = getMediaArchive().getSearcher("aisuggestion");
+
+			JSONObject json = response.getMessageStructured();
+			Collection suggestions = (Collection)json.get("suggestions");
+			for (Iterator iterator = suggestions.iterator(); iterator.hasNext();)
+			{
+				Map	airesponse = (Map)iterator.next();
+				Data suggestiondata = searcher.createNewData();
+				suggestiondata.setValue("aifunction", "question_welcome");
+				suggestiondata.setValue("entityid", entity.getId());
+				suggestiondata.setValue("entitymoduleid", entitymodule.getId());
+				suggestiondata.setName( (String)airesponse.get("title"));
+				suggestiondata.setValue("prompt", airesponse.get("prompt"));
+			}
+			inAgentContext.setNextFunctionName("question_welcome");
+			return response;
 		}
 		if ("question_ask".equals(agentFn))
 		{
@@ -178,10 +121,6 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(function.getId()); //Should stay search_start
 			LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext(),function.getId()); //TODO: Replace with local API that is faster
-			if(response == null)
-			{
-				throw new OpenEditException("No results from AI for message: " + usermessage.get("message"));
-			}
 			
 			handleLlmResponse(inAgentContext, response);
 
@@ -240,46 +179,87 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			LlmResponse response = embeddings.findAnswer(inAgentContext,docids,query);
 			return response;
 		}
-		
-		
 		throw new OpenEditException("Function not supported " + agentFn);
 		
 	}
-	
-	public Collection<Data> findEnabledModules(UserProfile inProfile)
+
+	public String findSampleOfEmbeddedData(Data inEntityModule, Data inEntity)
 	{
-		Schema schema = loadSchema();
+		//Should we look for children...
+		StringBuffer foundtext = new StringBuffer();
 		
-		Collection<String> moduleids = schema.getModuleIds();
-		HitTracker tracker = getMediaArchive().query("modulesearch")
-			.put("searchtypes", moduleids)
-			.facet("entitysourcetype")
-			.all()
-			.exact("entityembeddingstatus", "embedded")
-			.search();
-		
-		Collection<Data> modules = new ArrayList();
-		
-		FilterNode nodes = tracker.findFilterValue("entitysourcetype");
-		if( nodes != null)
+		String mystatus = inEntity.get("entityembeddingstatus"); 
+		if(mystatus == null)
 		{
-			Collection<String> enabled = inProfile.getModuleIds();
-	
-			for (Iterator iterator = nodes.getChildren().iterator(); iterator.hasNext();)
+			mystatus = "notembedded";
+		}
+		if(mystatus != null && "embedded".equals(mystatus))
+		{
+			String markdown = inEntity.get("markdowncontent");
+			if( markdown == null)
 			{
-				FilterNode node = (FilterNode) iterator.next();
-				if( enabled.contains(node.getId()))
+				markdown = inEntity.get("maincontent");
+				if( markdown == null)
 				{
-					Data module = getMediaArchive().getCachedData("module", node.getId());
-					modules.add(module);
+					markdown = inEntity.get("longcaption");
+				}
+			}
+			if( markdown != null)
+			{
+				foundtext.append( markdown);
+			}
+		}
+		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inEntityModule.getId()).exact("systemdefined",false).cachedSearch(); 
+		for (Iterator iterator = detailsviews.iterator(); iterator.hasNext();)
+		{
+			Data view = (Data) iterator.next();
+			
+			String listid = view.get("rendertable");
+			if( listid != null)
+			{
+				GuideStatus status = new GuideStatus();
+				status.setSearchType(listid);
+				status.setViewData(view);
+				
+				HitTracker found = null;
+				try
+				{
+					found = getMediaArchive().query(listid).exact(inEntityModule.getId(),inEntity.getId()).facet("entityembeddingstatus").search();
+				}
+				catch (Exception e)
+				{
+					log.debug(inEntityModule + " search error " + inEntity);
+					continue;
+				}
+				
+				for (Iterator iterator2 = found.iterator(); iterator2.hasNext();)
+				{
+					Data data = (Data) iterator2.next();
+					String markdown = data.get("markdowncontent");
+					if( markdown == null)
+					{
+						markdown = data.get("maincontent");
+						if( markdown == null)
+						{
+							markdown = data.get("longcaption");
+						}
+					}
+					if( markdown != null)
+					{
+						foundtext.append( markdown);
+					}
+					if( foundtext.length() > 2000)
+					{
+						return foundtext.toString();							
+					}
 				}
 			}
 		}
-		return modules;
-		
+		return foundtext.toString();
 	}
-
 	
+
+/*
 	protected void handleLlmResponse(AgentContext inAgentContext, LlmResponse response)
 	{
 		//TODO: Use IF statements to sort what parsing we need to do. parseSearchParams parseWorkflowParams etc
@@ -320,20 +300,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 
 		response.setFunctionName(toolname);
 	}
-	/**
-	The UI needs to ask the user to limit his search to one data type. ie. documents or document pages or marketing assets or product xyz?
-	So the startFunction will just work
-	Othertimes we need to build a data search and find what we want to search across. Like "Search for political documents and tell me Who is the president of Mexico. 
 	*/
-	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog)
-	{
-		//Filter down to specific modules they might be asking about?
-		
-		//Or focus on the Entity we are on.
-		
-		
-		return new ArrayList();
-	}
 
 	public Collection<String> findDocIdsForEntity(String parentmoduleid, String inEntityId)
 	{
@@ -377,12 +344,6 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		EmbeddingManager embeddings = (EmbeddingManager) getMediaArchive().getBean("embeddingManager");
 		String answer = embeddings.findAnswer(docIds, inQuestion);
 		return answer;
-	}
-
-	@Override
-	public void getDetectorParams(AgentContext inAgentContext, MultiValued inTopLevelFunction) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

@@ -1205,22 +1205,5 @@ public class ContentPublishingManager implements CatalogEnabled, ChatMessageHand
 		inReq.putPageValue("module", module);
 	}
 
-	@Override
-	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void savePossibleFunctionSuggestions(ScriptLogger inLog) {
-		// Do nothing
-	}
-
-	@Override
-	public void getDetectorParams(AgentContext inAgentContext, MultiValued inTopLevelFunction) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 }
