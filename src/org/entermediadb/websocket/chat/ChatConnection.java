@@ -145,7 +145,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 //	        {
 //	        }
 //       }
-		log.info(session.getId());
+		//log.info(session.getId());
 		Map props = endpointConfig.getUserProperties();
 		//HttpSession current = (HttpSession) session.getUserProperties().get(HttpSession.class.getName());
 		//String key  = (String)session.getRequestParameterMap().get("entermedia.key");

@@ -79,8 +79,6 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 
 			String text = findSampleOfEmbeddedData(entitymodule,entity);
 			
-
-			
 			inAgentContext.addContext("embeddedtext", text);
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
 			LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext(),agentFn);
