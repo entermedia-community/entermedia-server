@@ -349,7 +349,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 				set.add(key);
 			}
 		}	
-		set.addAll( getProperties().keySet() );
+		set.addAll( super.getProperties().keySet() );
 		//set.add(".version");
 		return set;
 	}
