@@ -34,7 +34,10 @@ $pages.include("/${applicationid}/docs/theme/layouts/header.html")
     <div class="card">
       <div class="card-header" id="collapseListGroupHeading1${section.id}">
         <h5 class="mb-0">
-          <a class="" data-toggle="collapse" href="#collapseListGroup1${section.id}" data-target="#collapseListGroup1${section.id}" #if($sectionid == $sectionid) aria-expanded="true" #else aria-expanded="false" #end>
+          <a class="" 
+		     data-toggle="collapse"
+		  	 href="#collapseListGroup1${section.id}" data-target="#collapseListGroup1${section.id}" #if($sectionid == $sectionid) aria-expanded="true" #else aria-expanded="false" #end
+			 >
           	#set($sec = $!mediaarchive.getCachedData("docsection", $section.getId()))
             #text($sec, $context)
           </a>
@@ -47,7 +50,9 @@ $pages.include("/${applicationid}/docs/theme/layouts/header.html")
       		#set($endpoints = $searcher.query().exact("docsection",$section.id ).sort("name").search())
          	#foreach($endpoint in $endpoints)
           	<li class="list-group-item">
-          	<a href="$home$apphome/docs/showdoc.html?id=${endpoint.id}&section=${section.id}">#text($endpoint)</a></li>
+          	<a href="$home$apphome/docs/showdoc.html?id=${endpoint.id}&section=${section.id}">
+				#text($endpoint)
+			</a> #if($section.id == "aifunctions")<br>$endpoint.id#end</li>
           	#end
         
         </ul>
