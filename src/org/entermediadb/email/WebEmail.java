@@ -128,9 +128,9 @@ public abstract class WebEmail
 		getProperties().put(inKey, inValue);
 	}
 
-	public void setProperties(ValuesMap inProperties)
+	public void setProperties(Map inProperties)
 	{
-		fieldProperties = inProperties;
+		getProperties().putAll(inProperties);
 	}
 
 	public String getProperty(String inKey)

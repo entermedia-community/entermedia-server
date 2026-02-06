@@ -24,6 +24,7 @@ import org.entermediadb.find.EntityManager;
 import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.websocket.chat.ChatServer;
+import org.entermediadb.workspace.WorkspaceManager;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -777,18 +778,25 @@ public class AssistantManager extends BaseAiManager
 		Collection<Data> modules =  getMediaArchive().getList("module");
 		List tosave = new ArrayList();
 		
-		List usetext = new ArrayList();
+		//reset aifunctions table
+		Searcher aifunctionSearcher = getMediaArchive().getSearcher("aifunction");
+		aifunctionSearcher.restoreSettings();
 		
+		List usetext = new ArrayList();
+		int existing = 0;
+		int created = 0;
 		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
 		{
-			MultiValued module = (MultiValued) iterator.next();
 			
+			MultiValued module = (MultiValued) iterator.next();
 			String method = module.get("aicreationmethod");
 			
 			if( method == null)
 			{				
 				continue;
 			}
+			
+
 			
 			String id = "";	
 			
@@ -808,17 +816,22 @@ public class AssistantManager extends BaseAiManager
 			Data exists = getMediaArchive().getData("aifunction", id);
 			if( exists != null)
 			{
+				existing++;
+				inLog.info(id+" AI function exists" + module.getName());
 				continue;
 			}
 			
 			//Add all these to ollamat
-			Data welcome_aifunction = getMediaArchive().getSearcher("aifunction").createNewData();
+			Data welcome_aifunction = aifunctionSearcher.createNewData();
 			welcome_aifunction.setId(id);
 			welcome_aifunction.setValue("messagehandler", messagehandler);
 			welcome_aifunction.setValue("toplevel", true);
 			welcome_aifunction.setName("Create " + module.getName());
 			welcome_aifunction.setValue("icon", module.get("moduleicon"));
 			tosave.add(welcome_aifunction);
+			
+			created++;
+			inLog.info(id+" AI function created for " + module.getName());
 			
 			/* using generic from now on
 			if(method.equals("smartcreator"))
@@ -853,9 +866,12 @@ public class AssistantManager extends BaseAiManager
 				tosave.add(play_aifunction);
 			}
 			*/
-			inLog.headline("AI functions created for " + module.getName());
+			
+			
 		}
 		getMediaArchive().saveData("aifunction", tosave);
+		
+		inLog.info("Functions created: " + created + " Existing: " + existing);
 		
 		Set tosaveservers = new HashSet();
 		Collection servers = getMediaArchive().getList("aiserver");
@@ -876,7 +892,12 @@ public class AssistantManager extends BaseAiManager
 			}
 		}
 		getMediaArchive().saveData("aiserver", tosaveservers);
-		inLog.headline("Updated servers " + tosaveservers.size() );
+		inLog.info("Updated servers " + tosaveservers.size() );
+		
+		//Add AI functions to mediadb
+		WorkspaceManager workspaceManager =  (WorkspaceManager)getMediaArchive().getBean("workspaceManager");
+		workspaceManager.createMediaDbAiFunctionEndPoints(getMediaArchive().getCatalogId());
+		
 	}
 	
 }

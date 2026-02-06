@@ -117,7 +117,7 @@ public class LightBox implements Data
 	}
 
 	@Override
-	public void setProperties(ValuesMap inObjects)
+	public void setProperties(Map inObjects)
 	{
 		
 		
