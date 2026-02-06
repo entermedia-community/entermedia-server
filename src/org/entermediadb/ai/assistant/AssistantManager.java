@@ -928,6 +928,9 @@ public class AssistantManager extends BaseAiManager
 		WorkspaceManager workspaceManager =  (WorkspaceManager)getMediaArchive().getBean("workspaceManager");
 		workspaceManager.createMediaDbAiFunctionEndPoints(getMediaArchive().getCatalogId());
 		
+		//Clear Cache
+		getMediaArchive().clearAll();
+		
 	}
 	
 }
