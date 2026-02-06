@@ -91,9 +91,9 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 		}
 		else if ("auto_detect_showresponse".equals(agentFn))
 		{
-			inAgentContext.setFunctionName("auto_detect_conversation");
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn); //Should stay search_start
-			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "auto_detect_showresponse");
+			inAgentContext.setFunctionName("auto_detect_conversation");
 			return response;
 		}
 		else if ("auto_detect_sitewide_welcome".equals(agentFn))
