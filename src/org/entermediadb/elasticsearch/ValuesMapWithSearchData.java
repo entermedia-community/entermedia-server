@@ -1,15 +1,17 @@
 package org.entermediadb.elasticsearch;
 
-import java.util.AbstractMap;
+import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 
-import org.elasticsearch.common.recycler.Recycler.V;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.entermediadb.location.Position;
@@ -20,7 +22,7 @@ import org.openedit.data.ValuesMap;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.util.DateStorageUtil;
 
-public class ValuesMapWithSearchData extends ValuesMap
+public class ValuesMapWithSearchData<K, V> extends ValuesMap
 {
 	protected Map fieldSearchData;
 	protected SearchHit fieldSearchHit;
@@ -151,6 +153,13 @@ public class ValuesMapWithSearchData extends ValuesMap
 		fieldSearchData = inSearchHit;
 	}
 
+	@Override
+	public Object get(Object inKey)
+	{
+		Object val = getValue((String)inKey);
+		return val;
+	}
+	
 	public Object getValue(String inId)
 	{
 		Object val = super.getValue(inId);
@@ -222,21 +231,95 @@ public class ValuesMapWithSearchData extends ValuesMap
 		return set;
 	}
 	@Override
-	public Set<Map.Entry> entrySet() 
+	public int size()
 	{
-	    Set<Map.Entry> tosave = new HashSet<>();
+		int size = super.size();
+		size = size + getSearchData().size();
+		return size;
+	}
+	
+	@Override
+	public boolean isEmpty()
+	{
+		return false;
+	}
+	
+	 @Override
+	 public Set<Map.Entry<K, V>> entrySet() 
+	 {
+		 List keys = new ArrayList(keySet());
+		 
+	        return new AbstractSet<>() {
 
-	    Set set = keySet();
-	    for (Iterator iterator = set.iterator(); iterator.hasNext();)
-		{
-			Object key = (Object) iterator.next();
-	        Object value = get(key);
+	            @Override
+	            public Iterator<Map.Entry<K, V>> iterator() {
+	                return new Iterator<>() {
+	                    private int index = 0;
 
-	        tosave.add(new AbstractMap.SimpleEntry<>(key, value));
+	                    @Override
+	                    public boolean hasNext() {
+	                        return index < keys.size();
+	                    }
+
+	                    @Override
+	                    public Map.Entry<K, V> next() {
+	                        if (!hasNext()) {
+	                            throw new NoSuchElementException();
+	                        }
+	                        return new Entry(keys, index++);
+	                    }
+	                };
+	            }
+
+	            @Override
+	            public int size() {
+	                return keys.size();
+	            }
+	        };
 	    }
 
-	    return tosave;
-	}
+	    /* ---------------- Entry Implementation ---------------- */
+
+	    private class Entry implements Map.Entry<K, V> {
+	        private final int index;
+	        List keys = null;
+	        Entry(List inKeys, int index) {
+	            this.index = index;
+	            this.keys = inKeys;
+	        }
+
+	        @Override
+        @SuppressWarnings("unchecked")
+        public K getKey() {
+            return (K) this.keys.get(index);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public V getValue() {
+            return (V) ValuesMapWithSearchData.this.getValue((String) keys.get(index));
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public V setValue(V value) {
+            V oldValue = getValue();
+            ValuesMapWithSearchData.this.put((K) keys.get(index), value);
+            return oldValue;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(getKey(), getValue());
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Map.Entry<?, ?> entry)) return false;
+            return Objects.equals(getKey(), entry.getKey())
+                && Objects.equals(getValue(), entry.getValue());
+        }
+    }
 	
 	public SearchHit getSearchHit()
 	{
@@ -245,5 +328,11 @@ public class ValuesMapWithSearchData extends ValuesMap
 	public void setSearchHit(SearchHit inSearchHit)
 	{
 		fieldSearchHit = inSearchHit;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return super.toString();
 	}
 }
