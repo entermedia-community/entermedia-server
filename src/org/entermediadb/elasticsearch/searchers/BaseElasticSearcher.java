@@ -2979,6 +2979,15 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					{
 						value = null;
 					}
+					else if( detail.isMultiValue())
+					{
+						if( value instanceof String )
+						{
+							Collection values = new ArrayList(1);
+							values.add(value);
+							value = values;
+						}
+					}
 				}
 				else
 				{
