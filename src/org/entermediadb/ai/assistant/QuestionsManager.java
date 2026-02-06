@@ -38,8 +38,8 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		{
 			inAgentMessage.setValue("chatmessagestatus", "completed");
 			
-			String entityid = (String) inAgentContext.get("entityid");
-			String entitymoduleid = (String) inAgentContext.get("entitymoduleid");
+			String entityid = inAgentContext.get("entityid");
+			String entitymoduleid = inAgentContext.get("entitymoduleid");
 			
 			Data entity = getMediaArchive().getCachedData(entitymoduleid, entityid);
 			inAgentContext.addContext("entity", entity);
@@ -103,7 +103,8 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 				Data entity = getMediaArchive().getData(moduleid, entiyid);
 				if( entity != null)
 				{
-					Collection<String> docids = findDocIdsForEntity(moduleid,entiyid);
+					AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
+					Collection<String> docids = assistant.findDocIdsForEntity(moduleid,entiyid);
 					EmbeddingManager embeddings = (EmbeddingManager) getMediaArchive().getBean("embeddingManager");
 					LlmResponse response = embeddings.findAnswer(inAgentContext, docids, query);
 					return response;
@@ -284,46 +285,11 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		response.setFunctionName(toolname);
 	}
 	*/
-
-	public Collection<String> findDocIdsForEntity(String parentmoduleid, String inEntityId)
-	{
-		MediaArchive archive = getMediaArchive();
-		AssistantManager assistant = (AssistantManager) archive.getBean("assistantManager");
-		
-//		String parentmoduleid = inAgentContext.getChannel().get("searchtype"); 
-		Data module = archive.getCachedData("module", parentmoduleid);
-
-//		String entityid = inAgentContext.getChannel().get("dataid");
-		Data entity = archive.getCachedData(parentmoduleid, inEntityId);
-		
-		Collection<GuideStatus> statuses = assistant.prepareDataForGuide(module, entity);
-		JSONArray docids = new JSONArray();
-//		Data inDocument = getMediaArchive().getCachedData(entityid, moduleid);
-		
-//		MultiValued parent = (MultiValued)archive.getCachedData("chatterbox",message.get("replytoid"));
-//		String query = parent.get("message");
-//		chatjson.put("query",query);
-		for(GuideStatus stat : statuses)
-		{
-			if(stat.isReady())
-			{
-				String searchtype = stat.getSearchType();
-				Searcher searcher = archive.getSearcher(searchtype);
-				HitTracker hits = searcher.query().exact(parentmoduleid, inEntityId).search();
-				for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-				{
-					MultiValued doc = (MultiValued) iterator.next();
-					String docid = searchtype + "_" + doc.getId();
-					docids.add(docid);
-				}
-			}
-		}
-		return docids;
-	}
 	
 	public String getAnswerByEntity(String inModuleId, String inEntityid, String inQuestion)
 	{
-		Collection<String> docIds = findDocIdsForEntity(inModuleId, inEntityid);
+		AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
+		Collection<String> docIds = assistant.findDocIdsForEntity(inModuleId, inEntityid);
 		EmbeddingManager embeddings = (EmbeddingManager) getMediaArchive().getBean("embeddingManager");
 		String answer = embeddings.findAnswer(docIds, inQuestion);
 		return answer;

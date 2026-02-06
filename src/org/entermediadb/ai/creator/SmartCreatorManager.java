@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.ChatMessageHandler;
+import org.entermediadb.ai.assistant.AssistantManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
@@ -63,8 +64,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			instructions.setTargetModule(playbackmodule);
 			inAgentContext.setAiSmartCreatorSteps(instructions);
 			
-			String entityid = (String) inAgentContext.getValue("entityid");
-			String entitymoduleid = (String) inAgentContext.getValue("entitymoduleid");
+			String entityid = inAgentContext.get("entityid");
+			String entitymoduleid = inAgentContext.get("entitymoduleid");
 			
 			Data entity = getMediaArchive().getCachedData(entitymoduleid, entityid);
 			inAgentContext.addContext("entity", entity);
@@ -100,8 +101,17 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_createoutline");
 			
 			//TODO: Not regular AI > Delegate to LLama Index
-			inAgentContext.addContext("creationprompt", instructions.getStep1create());
-			LlmResponse res = llmconnection.callLlamaIndexStructured(inAgentContext.getContext(), "outline");
+			inAgentContext.addContext("query", instructions.getStep1create());
+			AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
+			
+			String entityid = inAgentContext.get("entityid");
+			String entitymoduleid = inAgentContext.get("entitymoduleid");
+			
+			Collection<String> parentIds = assistant.findDocIdsForEntity(entitymoduleid, entityid);
+			
+			inAgentContext.addContext("parent_ids", parentIds);
+			
+			LlmResponse res = llmconnection.callLlamaIndexStructured(inAgentContext.getContext(), "create_outline");
 			
 			JSONObject outlineJson = res.getMessageStructured();
 			
@@ -152,7 +162,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		}
 		else if(agentFn.startsWith("smartcreator_createsectioncontents"))
 		{	
-			populateSectionsWithContents(instructions);
+			populateSectionsWithContents(inAgentContext);
 	
 
 			String function = findLocalActionName(inAgentContext);
@@ -180,8 +190,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				Data playbackmodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
 				inAgentContext.addContext("playbackmodule", playbackmodule);
 				
-				String entityid = (String) inAgentContext.getValue("entityid");
-				String entitymoduleid = (String) inAgentContext.getValue("entitymoduleid");
+				String entityid = inAgentContext.get("entityid");
+				String entitymoduleid = inAgentContext.get("entitymoduleid");
 				
 				Collection<Data> playables = getMediaArchive().query(playbackentitymoduleid).exact("entityid", entityid).exact("entitymoduleid", entitymoduleid).search();
 				
@@ -621,8 +631,9 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		searcher.saveAllData(tosave, null);
 	}
 	
-	public void populateSectionsWithContents(AiSmartCreatorSteps instructions)
+	public void populateSectionsWithContents(AgentContext inAgentContext)
 	{
+		AiSmartCreatorSteps instructions = inAgentContext.getAiSmartCreatorSteps();
 		Searcher contentearcher = getMediaArchive().getSearcher("componentcontent");
 
 		Collection<Data> sections = instructions.getConfirmedSections();
@@ -642,9 +653,14 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			Map params = new HashMap();
 			
-			params.put("creationprompt", step2CreatePrompt + section.getName());
-
-			LlmResponse res = llmconnection.callLlamaIndexStructured(params, "section_contents");
+			params.put("query", step2CreatePrompt + section.getName());
+			
+			String entityid = inAgentContext.get("entityid");
+			String entitymoduleid = inAgentContext.get("entitymoduleid");
+			
+			AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
+			inAgentContext.addContext("parent_ids", assistant.findDocIdsForEntity(entitymoduleid, entityid));
+			LlmResponse res = llmconnection.callLlamaIndexStructured(params, "create_section_contents");
 			
 			JSONObject contentsJson = res.getMessageStructured();
 			

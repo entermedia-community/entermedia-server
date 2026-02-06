@@ -993,7 +993,7 @@ public class ContentPublishingManager implements CatalogEnabled, ChatMessageHand
 		/*	
 		if("image_creation_welcome".equals(inAgentContext.getFunctionName()))
 		{
-			String entityid = (String) inAgentContext.getValue("entityid");
+			String entityid = inAgentContext.get("entityid");
 			String entitymoduleid = (String) inAgentContext.getValue("entitymoduleid");
 			
 			Data entity = getMediaArchive().getCachedData(entitymoduleid, entityid);

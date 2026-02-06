@@ -25,6 +25,7 @@ import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.websocket.chat.ChatServer;
 import org.entermediadb.workspace.WorkspaceManager;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -682,7 +683,42 @@ public class AssistantManager extends BaseAiManager
 		
 		return statuses;
 		
-	}	
+	}
+	
+	public Collection<String> findDocIdsForEntity(String parentmoduleid, String inEntityId)
+	{
+		MediaArchive archive = getMediaArchive();
+		
+		
+		Data module = archive.getCachedData("module", parentmoduleid);
+
+		Data entity = archive.getCachedData(parentmoduleid, inEntityId);
+		
+		Collection<GuideStatus> statuses = prepareDataForGuide(module, entity);
+		JSONArray docids = new JSONArray();
+//		Data inDocument = getMediaArchive().getCachedData(entityid, moduleid);
+		
+//		MultiValued parent = (MultiValued)archive.getCachedData("chatterbox",message.get("replytoid"));
+//		String query = parent.get("message");
+//		chatjson.put("query",query);
+		for(GuideStatus stat : statuses)
+		{
+			if(stat.isReady())
+			{
+				String searchtype = stat.getSearchType();
+				Searcher searcher = archive.getSearcher(searchtype);
+				HitTracker hits = searcher.query().exact(parentmoduleid, inEntityId).search();
+				
+				for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+				{
+					MultiValued doc = (MultiValued) iterator.next();
+					String docid = searchtype + "_" + doc.getId();
+					docids.add(docid);
+				}
+			}
+		}
+		return docids;
+	}
 	
 	public InformaticsManager getInformaticManager()
 	{

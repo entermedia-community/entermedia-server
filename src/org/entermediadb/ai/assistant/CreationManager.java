@@ -2,32 +2,23 @@ package org.entermediadb.ai.assistant;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.ChatMessageHandler;
-import org.entermediadb.ai.Schema;
-import org.entermediadb.ai.informatics.SemanticTableManager;
-import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.markdown.MarkdownUtil;
-import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
-import org.openedit.data.Searcher;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.InputStreamItem;
 import org.openedit.users.User;
@@ -44,8 +35,8 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 		String agentFn = inAgentContext.getFunctionName();
 		if("creation_image_welcome".equals(inAgentContext.getFunctionName()))
 		{
-			String entityid = (String) inAgentContext.getValue("entityid");
-			String entitymoduleid = (String) inAgentContext.getValue("entitymoduleid");
+			String entityid = inAgentContext.get("entityid");
+			String entitymoduleid = inAgentContext.get("entitymoduleid");
 			
 			Data entity = getMediaArchive().getCachedData(entitymoduleid, entityid);
 			inAgentContext.addContext("entity", entity);
