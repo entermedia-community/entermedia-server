@@ -345,27 +345,6 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	}
 	
 	@Override
-	public LlmResponse callLlamaIndexStructured(Map inParams, String inFunctionName)
-	{
-// https://embed.emediaworkspace.com/create_outline
-//		{
-//			"query": "Create a title for a blog about Arthropods",
-//			"parent_ids":["Arthropod"]
-//		}
-		
-// https://embed.emediaworkspace.com/create_section_contents
-//		{
-//			"query": "Create 1 pragaraphs on Moulting Process",
-//			"parent_ids":["Arthropod"]
-//		}
-		
-		
-		
-		// TODO:
-		return null;
-	}
-	
-	@Override
 	public LlmResponse callSmartCreatorAiAction(Map inParams, String inActionName)
 	{
 		inParams.put("model", getModelName());

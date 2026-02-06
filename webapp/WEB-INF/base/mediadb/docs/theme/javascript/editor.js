@@ -39,12 +39,6 @@
 			return;
 		}
 
-		var existingInstance = container.data("jsonCodeEditor");
-		if (existingInstance && existingInstance.editor) {
-			existingInstance.editor.toTextArea();
-		}
-		container.removeData("jsonCodeEditor");
-
 		var editor = CodeMirror.fromTextArea(textArea, {
 			mode: settings.mode,
 			theme: settings.defaultTheme,
