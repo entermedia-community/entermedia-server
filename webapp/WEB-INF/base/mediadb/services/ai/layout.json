@@ -2,16 +2,13 @@
 	"request":
 		{
 		    "status":"ok",
-			"request":
-			{
+			"usermessage":#json($usermessage $chatterboxsearcher.getPropertyDetails()),
+			"aifunctionstart":#json($aifunctionstart $aifunctionsearcher.getPropertyDetails())
 
-			}
 		},
 	"response": {
-		
-		"usermessage":#json($usermessage $chatterboxsearcher.getPropertyDetails()),
 		"agentmessage":#json($agentmessage $chatterboxsearcher.getPropertyDetails()),
-		"agentcontext":#json($agentmessage $agentcontextsearcher.getPropertyDetails())
-		
+		"agentcontext":#json($agentcontext $agentcontextsearcher.getPropertyDetails()),
+		"aifunctionset":#json($aifunction $aifunctionsearcher.getPropertyDetails())
 	}
 }

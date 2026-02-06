@@ -103,87 +103,58 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		}
 		if ("question_ask".equals(agentFn))
 		{
-			
 			//Make sure they have already picked the documents
-			String entiyid = inAgentContext.getChannel().get("dataid");
-			String moduleid = inAgentContext.getChannel().get("searchtype");
+			String entiyid = inAgentContext.get("entityid");
+			String moduleid = inAgentContext.get("entitymoduleid");
 			
-			if(entiyid != null && moduleid != null && !"admin".equals(entiyid))
+			if(entiyid != null && moduleid != null)
 			{
-				Collection<String> docids = findDocIdsForEntity(moduleid,entiyid);
-				EmbeddingManager embeddings = (EmbeddingManager) getMediaArchive().getBean("embeddingManager");
-				LlmResponse response = embeddings.findAnswer(inAgentContext, docids, query);
-				return response;
-			}
-			
-			//Else DO a search first
-			//If we dont know what we are asking then run a search for related records and do a RAG on them. 
-			//Was president Obama effective?   //Pullout the keywords and search across all embedded data
-			//What product sold the most invoices? //Limit to products and invoices
-			MultiValued function = (MultiValued) getMediaArchive().getCachedData("aifunction", agentFn);
-			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection(function.getId()); //Should stay search_start
-			LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext(),function.getId()); //TODO: Replace with local API that is faster
-			
-			handleLlmResponse(inAgentContext, response);
-
-			
-			//Handle right now
-			String responseFn = response.getFunctionName();
-			if ("conversation".equals(responseFn))
-			{
-				inAgentMessage.setValue("chatmessagestatus", "completed");
-				
-				String generalresponse  = response.getMessage();
-				if(generalresponse != null)
+				Data entity = getMediaArchive().getData(moduleid, entiyid);
+				if( entity != null)
 				{
-					MarkdownUtil md = new MarkdownUtil();
-					generalresponse = md.render(generalresponse);
-					//inAgentMessage.setValue("message",generalresponse);
+					Collection<String> docids = findDocIdsForEntity(moduleid,entiyid);
+					EmbeddingManager embeddings = (EmbeddingManager) getMediaArchive().getBean("embeddingManager");
+					LlmResponse response = embeddings.findAnswer(inAgentContext, docids, query);
+					return response;
 				}
-				//LlmResponse respond = new EMediaAIResponse();
-				response.setMessage(generalresponse);
-				
-				inAgentContext.setNextFunctionName(null);
 			}
-			else
-			{
-				response.setMessage("");
-				inAgentContext.setNextFunctionName(responseFn);
-			}
-			return response;
+			return searchSystemWide(inAgentContext, query);
 		}
-		else if("question_search".equals(agentFn))
+		else if("question_search".equals(agentFn)) //TODO: Get this working
 		{
 			//1 Do the search from keyword,
 			//2 grab the ids
 			//Do an embedding search
-			String keyword = inAgentContext.get("search_keyword");
-			
-			Schema schema = loadSchema();
-			
-			Collection<String> moduleids = schema.getModuleIds();
-			
-			HitTracker hits = getMediaArchive().query("modulesearch")
-					.put("searchtypes", moduleids)
-					.freeform("description", keyword)
-					.exact("entityembeddingstatus", "embedded")
-					.search();
-			
-			Collection<String> docids = new JSONArray();
-			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-			{
-				MultiValued doc = (MultiValued) iterator.next();
-				String searchtype = doc.get("entitysourcetype");
-				String docid = searchtype + "_" + doc.getId();
-				docids.add(docid);
-			}
-			EmbeddingManager embeddings = (EmbeddingManager)getMediaArchive().getBean("embeddingManager");
-			LlmResponse response = embeddings.findAnswer(inAgentContext,docids,query);
-			return response;
+			return searchSystemWide(inAgentContext, query);
 		}
 		throw new OpenEditException("Function not supported " + agentFn);
 		
+	}
+
+	private LlmResponse searchSystemWide(AgentContext inAgentContext, String query)
+	{
+		Schema schema = loadSchema();
+		
+		Collection<String> moduleids = schema.getModuleIds();
+		
+		HitTracker hits = getMediaArchive().query("modulesearch")
+				.put("searchtypes", moduleids)
+				.freeform("description", query)
+				.exact("entityembeddingstatus", "embedded")
+				.search();
+		
+		Collection<String> docids = new JSONArray();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			MultiValued doc = (MultiValued) iterator.next();
+			String searchtype = doc.get("entitysourcetype");
+			String docid = searchtype + "_" + doc.getId();
+			docids.add(docid);
+		}
+		
+		EmbeddingManager embeddings = (EmbeddingManager)getMediaArchive().getBean("embeddingManager");
+		LlmResponse response = embeddings.findAnswer(inAgentContext,docids,query);
+		return response;
 	}
 
 	public String findSampleOfEmbeddedData(Data inEntityModule, Data inEntity)

@@ -392,11 +392,18 @@ public class EmbeddingManager extends InformaticsProcessor
 	*/
 	public LlmResponse findAnswer(AgentContext inAgentContext, Collection<String> docids, String inQuery)
 	{  
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
+		if( docids.isEmpty())
+		{
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "question_norecordsfound");
+			return response;
+		}
+		
+		
 		JSONObject chatjson = new JSONObject();
 		chatjson.put("query", inQuery);
 		chatjson.put("parent_ids", docids);
 		
-		LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
 
 		String customerkey = getMediaArchive().getCatalogSettingValue("catalog-storageid");
 		if( customerkey == null)
@@ -410,7 +417,7 @@ public class EmbeddingManager extends InformaticsProcessor
 		log.info(" sending to server: " +  chatjson.toJSONString());
 		
 		LlmResponse response = llmconnection.callJson("/query", headers, chatjson);
-		response.setFunctionName("ragresponse");
+		response.setFunctionName("ragresponse"); //Remove this?
 		
 		//TODO: Handle in second request?
 		processRagResponseWithSource(inAgentContext, response.getRawResponse(), response);

@@ -109,8 +109,19 @@ public class JsonDataModule extends BaseJsonModule
 		
 		AgentContext context = assistantManager.loadContext(channelid);
 		
+		String entitymoduleid = (String)request.get("entitymoduleid");
+		context.setValue("entitymoduleid",entitymoduleid);
+
+		String entityid = (String)request.get("entityid");
+		context.setValue("entityid",entityid);
+
 		String pagename = inReq.getContentPage().getPageName();
 		context.setFunctionName(pagename);
+		
+		Data aifunctionstart = archive.getCachedData("aifunction", pagename);
+		inReq.putPageValue("aifunctionstart",aifunctionstart);
+		inReq.putPageValue("aifunctionsearcher", archive.getSearcher("aifunction") );
+		
 		
 		MultiValued usermessage = (MultiValued)archive.getSearcher("chatterbox").createNewData();
 		usermessage.setValue("user", "agent");
@@ -129,10 +140,18 @@ public class JsonDataModule extends BaseJsonModule
 		inReq.putPageValue("agentmessage",agentmessage);
 		inReq.putPageValue("usermessage",usermessage);
 		inReq.putPageValue("agentcontext",context);
-
-		
 		inReq.putPageValue("chatterboxsearcher", archive.getSearcher("chatterbox") );
 		inReq.putPageValue("agentcontextsearcher", archive.getSearcher("agentcontext" ) );
+		
+		String function = context.getNextFunctionName();
+		if( function == null)
+		{
+			function = context.getFunctionName();
+		}
+		Data aifunction = archive.getCachedData("aifunction", function);
+		inReq.putPageValue("aifunction",aifunction);
+		
+
 		
 	}
 

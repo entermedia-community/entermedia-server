@@ -354,6 +354,7 @@ public class AssistantManager extends BaseAiManager
 		}
 		catch (Exception e) 
 		{
+			log.error("Error from " + bean + " running " + function.getId(),e);
 			response = handleError(agentContext, e.getMessage());
 		}
 		

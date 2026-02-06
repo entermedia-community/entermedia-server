@@ -1,6 +1,7 @@
 package org.entermediadb.ai.assistant;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -9,7 +10,6 @@ import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -53,17 +53,6 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 			String functionName = response.getFunctionName();
 			JSONObject functionArgs = response.getFunctionArguments();
 			
-			if(functionName == null || "general_chat".equals(functionName))
-			{
-				inAgentContext.setFunctionName("auto_detect_conversation");
-				String message = (String) functionArgs.get("friendly_response");
-				if(message != null)
-				{
-					response.setMessage(message);
-					response.setMessagePlain(message);
-				}
-				return response;
-			}
 			inAgentContext.addContext("messagestructured", response.getMessageStructured());
 			inAgentContext.addContext("userquery", query);
 			inAgentContext.addContext("arguments", functionArgs);
@@ -100,11 +89,18 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 			
 			return response;
 		}
+		else if ("auto_detect_showresponse".equals(agentFn))
+		{
+			inAgentContext.setFunctionName("auto_detect_conversation");
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn); //Should stay search_start
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
+			return response;
+		}
 		else if ("auto_detect_sitewide_welcome".equals(agentFn))
 		{
 			inAgentMessage.setValue("chatmessagestatus", "completed");
 			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn); //Should stay search_start
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
 			inAgentContext.setFunctionName("auto_detect_sitewide_parse");
 			return response;
