@@ -689,33 +689,45 @@ public class AssistantManager extends BaseAiManager
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		
-		Data module = archive.getCachedData("module", parentmoduleid);
+		Data inEntityModule = archive.getCachedData("module", parentmoduleid);
 
-		Data entity = archive.getCachedData(parentmoduleid, inEntityId);
-		
-		Collection<GuideStatus> statuses = prepareDataForGuide(module, entity);
+		Data inEntity = archive.getCachedData(parentmoduleid, inEntityId);
 		JSONArray docids = new JSONArray();
-//		Data inDocument = getMediaArchive().getCachedData(entityid, moduleid);
 		
-//		MultiValued parent = (MultiValued)archive.getCachedData("chatterbox",message.get("replytoid"));
-//		String query = parent.get("message");
-//		chatjson.put("query",query);
-		for(GuideStatus stat : statuses)
+		//Always Check itself first
+		PropertyDetail detail = getMediaArchive().getSearcher(parentmoduleid).getDetail("entityembeddingstatus");
+		if( detail != null)
 		{
-			if(stat.isReady())
+			String mystatus = inEntity.get("entityembeddingstatus"); 
+			if(mystatus != null && "embedded".equals(mystatus))
 			{
-				String searchtype = stat.getSearchType();
-				Searcher searcher = archive.getSearcher(searchtype);
-				HitTracker hits = searcher.query().exact(parentmoduleid, inEntityId).search();
-				
-				for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-				{
-					MultiValued doc = (MultiValued) iterator.next();
-					String docid = searchtype + "_" + doc.getId();
-					docids.add(docid);
-				}
+				String docid = parentmoduleid + "_" + inEntity.getId();
+				docids.add(docid);
 			}
+		}
+
+		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", parentmoduleid).exact("systemdefined",false).cachedSearch(); 
+
+		Collection<String> searchypes = new ArrayList();
+		
+		for (Iterator iterator = detailsviews.iterator(); iterator.hasNext();)
+		{
+			Data view = (Data) iterator.next();
+			
+			String listid = view.get("rendertable");
+			if( listid != null)
+			{
+				searchypes.add(listid);
+			}
+		}
+
+		HitTracker hits = getMediaArchive().query("modulesearch").put("searchtypes",searchypes).exact("entityembeddingstatus","embedded").search();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			MultiValued doc = (MultiValued) iterator.next();
+			String type = doc.get("entitysea");
+			String docid = type + "_" + doc.getId();
+			docids.add(docid);
 		}
 		return docids;
 	}
