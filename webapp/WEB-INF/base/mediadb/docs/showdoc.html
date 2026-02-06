@@ -16,13 +16,27 @@ $data.samplerequest
 #set($displayreq = true)
 #end
 <h2 class="mt-4">Request</h2>
-<textarea name="jsonrequest" 
+<div class="editor-wrapper codeEditor">
+	<div class="controls" style="display: none;">
+		<div class="d-flex">
+			<div class="status"><i class='bi bi-check-circle'></i></div>
+			<button class="copyJSON" type="button"><i class="bi bi-clipboard"></i></button>
+			<div class="d-flex flex-column">
+				<button class="theme-toggle" type="button" title="Toggle dark/light theme"><i class="bi bi-moon"></i></button>
+				<button class="formatJSON" type="button"><i class="bi bi-code-square"></i></button>
+				<button class="minifyJSON" type="button"><i class="bi bi-body-text"></i></button>
+			</div>
+		</div>
+	</div>
+				
+	<textarea name="jsonrequest" 
 	#if(!$displayreq) style="display: none;" #end 
-	id="request" 
-	##data-urlOLD="${data.url}" 
+	id="request"
 	class="form-control" data-method="${data.httpmethod}" 
-	rows="6">
-</textarea>
+	rows="6"></textarea>
+	<div class="error-message"></div>
+</div>
+
 
 #foreach( $toupload in $data.getValues("filefieldstoupload"))
 
@@ -33,102 +47,127 @@ $data.samplerequest
 </form>
 <input type="button" class="btn btn-primary" id="process" value="Execute">
 
-<h2 class="mt-4">[[Formatted and Raw Response]]:</h2>
+<div class="d-flex align-items-center mt-4">
+	<h2 class="my-0 mr-3">[[Response]]</h2>
+	<span class="text-success" id="timing"></span>
+</div>
+
 
 <div id="responsearea" class="row">
-	<div class="col-sm-6">
-		<textarea id="test" class="form-control" rows="20"></textarea>
+	<div class="col-sm-12">
+		<div class="editor-wrapper codeEditor">
+			<div class="controls" style="display: none;">
+				<div class="d-flex">
+					<div class="status"><i class='bi bi-check-circle'></i></div>
+					<button class="copyJSON" type="button"><i class="bi bi-clipboard"></i></button>
+					<div class="d-flex flex-column">
+						<button class="theme-toggle mt-0" type="button" title="Toggle dark/light theme"><i class="bi bi-moon"></i></button>
+						<button class="formatJSON" type="button"><i class="bi bi-code-square"></i></button>
+						<button class="minifyJSON" type="button"><i class="bi bi-body-text"></i></button>
+					</div>
+				</div>
+			</div>
+				
+			<textarea id="response" class="form-control" rows="20"></textarea>
+			<div class="error-message"></div>
+		</div>
 	</div>
-	<div class="col-sm-6">
-		<input id="timing" /><br>
-	<textarea id="testraw" class="form-control" disabled rows="20"></textarea>
+	<div class="col-sm-6 d-none">
+		<textarea id="testraw" class="form-control" disabled rows="20"></textarea>
 	</div>
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function(){
-	var original = jQuery("#jsontext").html().trim();
-	if (original) {
-		var data = jQuery.parseJSON(original);
-		var string  = JSON.stringify(data,undefined, 2);
-	    jQuery("#request").val(string);
+$(document).ready(function(){
+
+	function initEditor(target) {
+		target.jsonCodeEditor();
 	}
 
+	var original = $("#jsontext").html().trim();
+	if (original) {
+		var data = JSON.parse(original);
+		var string = JSON.stringify(data, undefined, 2);
+		$("#request").val(string);
+		initEditor($("#request").closest(".codeEditor"));
+	}
 
-jQuery("#process").on("click", function(){
-    var req = jQuery("#request").val();
-   	var url = jQuery("#url").val();
-    var method =  jQuery("#request").data("method");
-	const start = performance.now();
-    
-	var always = function()		{
-		const end = performance.now();
-		var logmsg = `Call took ${(end - start).toFixed(2)} ms`;
-		console.log(logmsg);
-		jQuery("#timing").val(logmsg);
-	};
+	var jsonResponse = false;
+
+	$("#process").on("click", function () {
+		var req = $("#request").val();
+		var url = $("#url").val();
+		var method = $("#request").data("method");
+		const start = performance.now();
+
+		var always = function () {
+			const end = performance.now();
+			var logmsg = `Took ${(end - start).toFixed(2)} ms`;
+			console.log(logmsg);
+			$("#timing").text(logmsg);
+		};
 
     #if( $data.getValues("filefieldstoupload") )
-        var data = new FormData(jQuery("#requestform")[0]);
+			var data = new FormData($("#requestform")[0]);
 
-
-        jQuery.ajax({
-        	url: url,
-            data: data,
-            cache: false,
-            contentType: false,
-            processData: false,
-            dataType:'text',
-            type: method,
-            error: function(data)
-    		{
-    			//errors are always objects
-           		var text  = JSON.stringify(data,undefined, 2);    
-           		jQuery("#test").val(text);
-    		},
-    		success: success
-		}).always(always);
-    #else
-	    jQuery.ajax({
-	        contentType: 'application/json',
-	    	type: method,
-			url: url,
-			data: req,
-			dataType:'text',
-			error: function(data)
+			$.ajax({
+				url: url,
+					data: data,
+					cache: false,
+					contentType: false,
+					processData: false,
+					dataType:'text',
+					type: method,
+					error: function(data)
 			{
 				//errors are always objects
-	       		var text  = JSON.stringify(data,undefined, 2);    
-	       		jQuery("#test").val(text);
+				var text  = JSON.stringify(data,undefined, 2);    
+				$("#response").val(text);
 			},
 			success: success
+		}).always(always);
+    #else
+
+			jsonResponse = true;
+	    jQuery.ajax({
+				contentType: 'application/json',
+	    	type: method,
+				url: url,
+				data: req,
+				dataType:'text',
+				error: function(data)
+				{
+					//errors are always objects
+					var text  = JSON.stringify(data,undefined, 2);    
+					$("#response").val(text);
+			 
+					initEditor($("#response").closest(".codeEditor"));
+				},
+				success: success
 	    }).always(always);
-	#end
+		#end
 });
 
 
-success = function(text) {
-    if(text)
-    {
-    	try
-    	{
-			jQuery("#testraw").val(text);
-			
-    	   	var data = JSON.parse(text);
-       		text  = JSON.stringify(data,undefined, 2);        
-    	}
-    	catch( ex )
-    	{
-    		text = ex;
-    	}
-    }
-    else
-    {
-    	text = "Nothing returned";	
-    }
-		jQuery("#test").val(text);
+success = function (text) {
+	if (text) {
+		try {
+			// $("#testraw").val(text);
+			var data = JSON.parse(text);
+			text = JSON.stringify(data, undefined, 2);
+		} catch (ex) {
+			text = JSON.stringify(ex);
+		}
+	} else {
+		text = JSON.stringify("Nothing returned");
+	}
+	$("#response").val(text);
+	if(jsonResponse)
+	{ 
+		initEditor($("#response").closest(".codeEditor"));
+	}
+};
 
-}
 	
 });
 

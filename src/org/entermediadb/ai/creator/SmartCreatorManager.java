@@ -12,14 +12,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.ChatMessageHandler;
-import org.entermediadb.ai.assistant.SearchingManager;
-import org.entermediadb.ai.assistant.SemanticAction;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.markdown.MarkdownUtil;
-import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -117,7 +114,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			LlmConnection llmconnection2 = getMediaArchive().getLlmConnection(function);
 			LlmResponse response = llmconnection2.renderLocalAction(inAgentContext, function);
 			
-			inAgentContext.setFunctionName("smartcreator_cconfirmoutline");
+			inAgentContext.setFunctionName("smartcreator_confirmoutline");
 			
 			return response;
 		}
