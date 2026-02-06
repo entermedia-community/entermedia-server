@@ -2983,9 +2983,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					{
 						if( value instanceof String )
 						{
-							Collection values = new ArrayList(1);
-							values.add(value);
-							value = values;
+							String[] values = MultiValued.VALUEDELMITER.split((String) value);
+							Collection objects = Arrays.asList(values);
+							value = objects;
 						}
 					}
 				}
