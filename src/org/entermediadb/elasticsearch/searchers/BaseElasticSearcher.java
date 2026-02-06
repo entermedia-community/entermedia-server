@@ -2979,15 +2979,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					{
 						value = null;
 					}
-					else if( detail.isMultiValue())
-					{
-						if( value instanceof String )
-						{
-							String[] values = MultiValued.VALUEDELMITER.split((String) value);
-							Collection objects = Arrays.asList(values);
-							value = objects;
-						}
-					}
 				}
 				else
 				{
@@ -3373,19 +3364,12 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 							}
 							inContent.field(key, ids);
 						}
-						else if (value instanceof String)
+						else if (detail.isMultiValue() && value instanceof String)
 						{
 							String vs = (String) value;
-							if (vs.contains("|"))
-							{
-								String[] vals = VALUEDELMITER.split(vs);
-								Collection values = Arrays.asList(vals);
-								inContent.field(key, values);
-							}
-							else
-							{
-								inContent.field(key, value);
-							}
+							String[] vals = VALUEDELMITER.split(vs);
+							Collection values = Arrays.asList(vals);
+							inContent.field(key, values);
 						}
 						else
 						{

@@ -102,7 +102,7 @@ public class AgentModule extends BaseMediaModule {
 		}
 	}
 
-	public void addModules(WebPageRequest inReq) throws Exception 
+	public void recreateFunctions(WebPageRequest inReq) throws Exception 
 	{
 		ScriptLogger log = (ScriptLogger)inReq.getPageValue("log");
 		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
