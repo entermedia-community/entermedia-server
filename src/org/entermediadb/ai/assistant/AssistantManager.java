@@ -36,6 +36,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.PathUtilities;
 
 public class AssistantManager extends BaseAiManager
 {
@@ -170,7 +171,15 @@ public class AssistantManager extends BaseAiManager
 			Data channel = getMediaArchive().getCachedData("channel", inChannelId);
 			if(channel == null)
 			{
+				log.error("Should not have to create new channel");
 				channel = getMediaArchive().getSearcher("channel").createNewData();
+				channel.setId(inChannelId);
+				channel.setValue("date",new Date());
+				channel.setValue("refreshdate",new Date());
+				String siteid = PathUtilities.extractDirectoryPath(getMediaArchive().getCatalogId());
+				channel.setValue("chatapplicationid",siteid + "/find");
+				getMediaArchive().saveData("channel",channel);
+				
 			}
 			agentContext.setChannel(channel);
 			agentContext.setValue("channel", inChannelId);
@@ -810,6 +819,7 @@ public class AssistantManager extends BaseAiManager
 			welcome_aifunction.setValue("icon", module.get("moduleicon"));
 			tosave.add(welcome_aifunction);
 			
+			/* using generic from now on
 			if(method.equals("smartcreator"))
 			{				
 				id = "smartcreator_parse_" + module.getId();
@@ -841,6 +851,7 @@ public class AssistantManager extends BaseAiManager
 				play_aifunction.setName("View " + module.getName());
 				tosave.add(play_aifunction);
 			}
+			*/
 			inLog.headline("AI functions created for " + module.getName());
 		}
 		getMediaArchive().saveData("aifunction", tosave);

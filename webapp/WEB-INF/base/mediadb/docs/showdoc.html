@@ -40,6 +40,7 @@ $data.samplerequest
 		<textarea id="test" class="form-control" rows="20"></textarea>
 	</div>
 	<div class="col-sm-6">
+		<input id="timing" /><br>
 	<textarea id="testraw" class="form-control" disabled rows="20"></textarea>
 	</div>
 </div>
@@ -58,10 +59,19 @@ jQuery("#process").on("click", function(){
     var req = jQuery("#request").val();
    	var url = jQuery("#url").val();
     var method =  jQuery("#request").data("method");
+	const start = performance.now();
     
+	var always = function()		{
+		const end = performance.now();
+		var logmsg = `Call took ${(end - start).toFixed(2)} ms`;
+		console.log(logmsg);
+		jQuery("#timing").val(logmsg);
+	};
+
     #if( $data.getValues("filefieldstoupload") )
         var data = new FormData(jQuery("#requestform")[0]);
-        
+
+
         jQuery.ajax({
         	url: url,
             data: data,
@@ -77,7 +87,7 @@ jQuery("#process").on("click", function(){
            		jQuery("#test").val(text);
     		},
     		success: success
-        });
+		}).always(always);
     #else
 	    jQuery.ajax({
 	        contentType: 'application/json',
@@ -92,8 +102,7 @@ jQuery("#process").on("click", function(){
 	       		jQuery("#test").val(text);
 			},
 			success: success
-	    	//  dataType: "JSON"
-	    });
+	    }).always(always);
 	#end
 });
 

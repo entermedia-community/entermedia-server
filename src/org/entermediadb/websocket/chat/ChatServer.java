@@ -164,7 +164,7 @@ public class ChatServer
 
 	public void broadcastMessage(String inCatalogId, Data inData)
 	{
-		JSONObject inMap = new JSONObject(inData.getProperties());
+		JSONObject inMap = new JSONObject(inData.getProperties().toMap() );
 		//Command
 		Date date = (Date)inData.getValue("date");
 		if(date != null) {
@@ -241,12 +241,15 @@ public class ChatServer
 				if (inMap.get("moduleid") != null) 
 				{
 					moduleid = (String) inMap.get("moduleid");
-					channel.setValue("searchtype", moduleid);
-					archive.getSearcher("channel").saveData(channel);
+					if( moduleid != null)
+					{
+						channel.setValue("searchtype", moduleid);
+						archive.getSearcher("channel").saveData(channel);
+					}
 				}
-				else {
-					throw new OpenEditException("No channel difined");
-				}
+//				else {
+//					throw new OpenEditException("No dataid defined");
+//				}
 			}
 			
 			if( moduleid != null)

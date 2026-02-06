@@ -411,8 +411,12 @@ public class WorkspaceManager
 		String mediadbhome = "/" + getMediaArchive(inCatalogId).getCatalogSettingValue("mediadbappid");
 		
 		JSONObject request = new JSONObject();
+		
 		request.put("channel", "testchannel");
 		request.put("message", "Hello");
+		
+		String siteid = PathUtilities.extractDirectoryPath(inCatalogId);
+		request.put("chatapplicationid",siteid + "/find");
 		request.put("entityid","123");
 		request.put("entitymoduleid", "userpost");
 		

@@ -91,28 +91,45 @@ public class JsonDataModule extends BaseJsonModule
 
 		Map request = inReq.getJsonRequest();
 		
+		String channelid = (String)request.get("channel");
+		
+		Data channel = archive.getCachedData("channel", channelid);
+		if(channel == null)
+		{
+			channel = archive.getSearcher("channel").createNewData();
+			channel.setId(channelid);
+			channel.setValue("date",new Date());
+			channel.setValue("refreshdate",new Date());
+			String siteid = PathUtilities.extractDirectoryPath(catalogid);
+			channel.setValue("chatapplicationid",siteid + "/find");
+			archive.saveData("channel",channel);
+		}
+		
 		AssistantManager assistantManager = (AssistantManager) getMediaArchive(catalogid).getBean("assistantManager");
 		
-		String channel = (String)request.get("channel");
-		AgentContext context = assistantManager.loadContext(channel);
+		AgentContext context = assistantManager.loadContext(channelid);
 		
 		String pagename = inReq.getContentPage().getPageName();
 		context.setFunctionName(pagename);
 		
 		MultiValued usermessage = (MultiValued)archive.getSearcher("chatterbox").createNewData();
 		usermessage.setValue("user", "agent");
-		usermessage.setValue("channel",channel);
+		usermessage.setValue("channel",channelid);
 		usermessage.setValue("date", new Date());
 		String message = (String)request.get("message");
 		usermessage.setValue("message", message);
-				
+		archive.saveData("chatterbox",usermessage);
 		MultiValued agentmessage = assistantManager.newAgentMessage(usermessage,context);
 		
 		assistantManager.execCurrentFunctionFromChat(usermessage,agentmessage,context);
-		
+
+		context.addContext("agentmessage",agentmessage);
+		context.addContext("usermessage",usermessage);
+
 		inReq.putPageValue("agentmessage",agentmessage);
 		inReq.putPageValue("usermessage",usermessage);
 		inReq.putPageValue("agentcontext",context);
+
 		
 		inReq.putPageValue("chatterboxsearcher", archive.getSearcher("chatterbox") );
 		inReq.putPageValue("agentcontextsearcher", archive.getSearcher("agentcontext" ) );
