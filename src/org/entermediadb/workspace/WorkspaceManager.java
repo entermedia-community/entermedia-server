@@ -24,6 +24,7 @@ import org.dom4j.Element;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Requests;
+import org.entermediadb.ai.Schema;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.SearchHitData;
@@ -399,37 +400,51 @@ public class WorkspaceManager
 		Searcher endpointSearcher = getSearcherManager().getSearcher(inCatalogId, "endpoint");
 		Searcher functionsSearcher = getSearcherManager().getSearcher(inCatalogId, "aifunction");
 		
-		Data section = getMediaArchive(inCatalogId).getCachedData("docsection", "aifunctions");
+		MediaArchive archive = getMediaArchive(inCatalogId);
+		Data section = archive.getCachedData("docsection", "aifunctions");
 		if( section == null )
 		{
-			section = getMediaArchive(inCatalogId).getSearcher("docsection").createNewData();
+			section = archive.getSearcher("docsection").createNewData();
 			section.setId("aifunctions");
 			section.setName("AI Functions");
-			getMediaArchive(inCatalogId).saveData("docsection",section);
+			archive.saveData("docsection",section);
 		}
 		
-		String mediadbhome = "/" + getMediaArchive(inCatalogId).getCatalogSettingValue("mediadbappid");
+		HitTracker<Data> moduleids =  archive.getList("module");
+		Data entity = archive.query("modulesearch")
+				.put("searchtypes", moduleids.collectValues("id"))
+				.exact("entityembeddingstatus", "embedded")
+				.searchOne();
+		Data entitymodule = archive.getCachedData("module",entity.get("entitysourcetype"));
 		
 		JSONObject request = new JSONObject();
 		
 		request.put("channel", "testchannel");
-		request.put("message", "Hello");
+		request.put("message", "What is this all about?");
 		
 		String siteid = PathUtilities.extractDirectoryPath(inCatalogId);
 		request.put("chatapplicationid",siteid + "/find");
-		request.put("entityid","123");
-		request.put("entitymoduleid", "userpost");
+		request.put("entityname",entity.getName());
+		request.put("entityid",entity.getId());
+		request.put("entitymoduleid", entitymodule.getId());
 		
 		Collection tosave = new ArrayList();
-		
+		String mediadbhome = "/" + archive.getCatalogSettingValue("mediadbappid");
+
 		Collection all = functionsSearcher.query().all().search();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
-			Data data = (Data) iterator.next();
+			Data function = (Data) iterator.next();
 			Data endpoint = endpointSearcher.createNewData();
-			endpoint.setName(data.getName());
-			endpoint.setId(data.getId());
-			endpoint.setValue("url", mediadbhome + "/services/ai/" +data.getId());
+			endpoint.setName(function.getName());
+			endpoint.setId(function.getId());
+			endpoint.setValue("url", mediadbhome + "/services/ai/" +function.getId());
+			
+			if( function.get("samplemesage") != null)
+			{
+				request.put("message", function.get("samplemesage"));
+			}
+			
 			endpoint.setValue( "samplerequest", request.toJSONString() );
 			endpoint.setValue( "httpmethod","POST");
 			endpoint.setProperty( "docsection",section.getId() );
