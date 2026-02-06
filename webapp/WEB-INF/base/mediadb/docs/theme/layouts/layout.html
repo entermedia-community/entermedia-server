@@ -1,7 +1,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   	<title>$content.title - $!data</title>
   	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 
@@ -16,60 +16,55 @@
 	  <link rel="Shortcut Icon" type="image/x-icon" href="$home$apphome/theme/images/em-favicon.ico" />
   
 		$pages.include("/${applicationid}/docs/theme/layouts/includes.html")
+  </head>
 
-</head>
-<body>
-	
-	
-$pages.include("/${applicationid}/docs/theme/layouts/header.html")
-
+  <body>
+    $pages.include("/${applicationid}/docs/theme/layouts/header.html")
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-2 sidebar">
-   #set($searcher = $mediaarchive.getSearcher("endpoint"))
-   #set($sections  = $mediaarchive.getList("docsection"))
-   #set($sectionid  = $context.getRequestParameter("section"))
+          #set($searcher = $mediaarchive.getSearcher("endpoint"))
+          #set($sections  = $mediaarchive.getList("docsection"))
+          #set($sectionid  = $context.getRequestParameter("section"))
    
-   #foreach($section in $sections)
-    <div class="card">
-      <div class="card-header" id="collapseListGroupHeading1${section.id}">
-        <h5 class="mb-0">
-          <a class="" 
-		     data-toggle="collapse"
-		  	 href="#collapseListGroup1${section.id}" data-target="#collapseListGroup1${section.id}" #if($sectionid == $sectionid) aria-expanded="true" #else aria-expanded="false" #end
-			 >
-          	#set($sec = $!mediaarchive.getCachedData("docsection", $section.getId()))
-            #text($sec, $context)
-          </a>
-        </h5>
-      </div>
-      
-      <div id="collapseListGroup1${section.id}" class="collapse #if($sectionid == $section.id) show #end " #if($sectionid == $sectionid) aria-expanded="true" #else aria-expanded="false" #end>
-      <div class="card-body" style="padding:0;">
-        <ul class="list-group">
-      		#set($endpoints = $searcher.query().exact("docsection",$section.id ).sort("name").search())
-         	#foreach($endpoint in $endpoints)
-          	<li class="list-group-item">
-          	<a href="$home$apphome/docs/showdoc.html?id=${endpoint.id}&section=${section.id}">
-				#text($endpoint)
-			</a> #if($section.id == "aifunctions")<br>$endpoint.id#end</li>
-          	#end
-        
-        </ul>
-        </div>
-      </div>
-  </div>
-  #end
+          #foreach($section in $sections)
+            <div class="card">
+              <div class="card-header" id="collapseListGroup${section.id}">
+                <h5 class="mb-0">
+                  <a data-toggle="collapse"
+                    href="#collapseListGroup${section.id}"
+                    data-target="#collapseListGroup${section.id}"
+                    #if($sectionid == $sectionid) aria-expanded="true" #else aria-expanded="false" #end
+                  >
+                    #set($sec = $!mediaarchive.getCachedData("docsection", $section.getId()))
+                    #text($sec, $context)
+                  </a>
+                </h5>
+              </div>
+              
+              <div id="collapseListGroup${section.id}" class="collapse #if($sectionid == $section.id) show #end " #if($sectionid == $sectionid) aria-expanded="true" #else aria-expanded="false" #end>
+                <div class="card-body" style="padding:0;">
+                  <ul class="list-group">
+                    #set($endpoints = $searcher.query().exact("docsection",$section.id ).sort("name").search())
+                    #foreach($endpoint in $endpoints)
+                      <li class="list-group-item">
+                        <a href="$home$apphome/docs/showdoc.html?id=${endpoint.id}&section=${section.id}">
+                          #text($endpoint)
+                        </a>
+                        #if($section.id == "aifunctions")<br><span class="text-muted">$endpoint.id</span>#end
+                      </li>
+                    #end
+                  </ul>
+                </div>
+              </div>
+            </div>
+          #end
         </div>
         <div class="col-md-10">
-			$pages.includeContent()          
-          </div>
+			    $pages.includeContent()          
         </div>
       </div>
+    </div>
  
-		
-		
-		
-  		
-</body>
+  </body>
 </html>
