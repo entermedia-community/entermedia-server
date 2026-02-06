@@ -1,5 +1,6 @@
 package org.entermediadb.elasticsearch;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,6 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.elasticsearch.common.recycler.Recycler.V;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.entermediadb.location.Position;
@@ -218,6 +220,22 @@ public class ValuesMapWithSearchData extends ValuesMap
 		set.addAll( super.keySet() );
 		//set.add(".version");
 		return set;
+	}
+	@Override
+	public Set<Map.Entry> entrySet() 
+	{
+	    Set<Map.Entry> tosave = new HashSet<>();
+
+	    Set set = keySet();
+	    for (Iterator iterator = set.iterator(); iterator.hasNext();)
+		{
+			Object key = (Object) iterator.next();
+	        Object value = get(key);
+
+	        tosave.add(new AbstractMap.SimpleEntry<>(key, value));
+	    }
+
+	    return tosave;
 	}
 	
 	public SearchHit getSearchHit()

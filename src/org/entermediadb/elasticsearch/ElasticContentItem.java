@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import org.openedit.Data;
@@ -105,7 +106,7 @@ class ElasticContentItem extends StringItem implements Data{
 	}
 
 	@Override
-	public void setProperties(ValuesMap inProperties) {
+	public void setProperties(Map inProperties) {
 		 getElasticData().setProperties(inProperties);
 	}
 
