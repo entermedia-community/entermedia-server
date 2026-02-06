@@ -55,6 +55,13 @@ public class ElasticViewSearcher extends ElasticListSearcher
 		return data;
 	}
 	
+	@Override
+	public boolean hasChanged(HitTracker inTracker)
+	{
+		boolean changed = super.hasChanged(inTracker);
+		return changed;
+	}
+	
 	public void saveData(Data inData, User inUser)
 	{
 		super.saveData(inData,inUser);
@@ -155,8 +162,9 @@ public class ElasticViewSearcher extends ElasticListSearcher
 				}
 			}
 		});
-		
-		return new ListHitTracker(finallist);
+		ListHitTracker combined = new ListHitTracker(finallist);
+		combined.setIndexId(getIndexId());
+		return combined;
 	}
 	
 	//TODO Save deleted with special flag
