@@ -301,12 +301,6 @@ public class ValuesMapWithSearchData<K, V> extends ValuesMap
             return Objects.hash(getKey(), getValue());
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (!(o instanceof Map.Entry<?, ?> entry)) return false;
-            return Objects.equals(getKey(), entry.getKey())
-                && Objects.equals(getValue(), entry.getValue());
-        }
     }
 	
 	public SearchHit getSearchHit()
