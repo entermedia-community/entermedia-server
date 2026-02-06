@@ -149,6 +149,25 @@ public class ValuesMapWithSearchData extends ValuesMap
 		fieldSearchData = inSearchHit;
 	}
 
+	public Object getValue(String inId)
+	{
+		Object val = super.getValue(inId);
+		if( val == NULLVALUE)
+		{
+			return null;
+		}
+		else if( val != null)
+		{
+			return val;
+		}
+		
+		val = getFromDb(inId);
+		
+		return val;
+		
+	}
+	
+	
 	@Override
 	public Collection<String> getValues(String inPreference) {
 		Object result =  getValue(inPreference);

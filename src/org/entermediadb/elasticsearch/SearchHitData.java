@@ -34,12 +34,11 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 {
 	private static final Log log = LogFactory.getLog(SearchHitData.class);
 
-	protected PropertyDetails fieldPropertyDetails;
 	protected Searcher fieldSearcher;
 
-	public SearchHitData()
-	{
-	}
+//	public SearchHitData()
+//	{
+//	}
 	public SearchHitData(SearchHit inHit, Searcher inSearcher) 
 	{
 		setSearcher(inSearcher);
@@ -57,6 +56,10 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 
 	public void setSearcher(Searcher inSearcher)
 	{
+		if( inSearcher == null)
+		{
+			throw new OpenEditException("Searcher cannot be null");
+		}
 		fieldSearcher = (Searcher)inSearcher;
 	}
 
@@ -66,18 +69,21 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 
 	public void setSearchHit(SearchHit inSearchHit) 
 	{
-		if( getPropertyDetails() == null)
+		if( inSearchHit == null)
 		{
-			throw new OpenEditException("Property Details Must be set");
+			throw new OpenEditException("inSearchHit cannot be null");
 		}
-		
-		getProperties().setPropertyDetails(getPropertyDetails());
 		getProperties().setSearchHit( inSearchHit );
 		setId(inSearchHit.getId());
 		setVersion(inSearchHit.getVersion());
 
 	}
-
+	@Override
+	public void setSearchData(Map inSearchHit)
+	{
+		getProperties().setSearchData(inSearchHit);
+	}
+	
 	public Long getVersion() 
 	{
 		Long l = getProperties().getLong(".version");
@@ -87,19 +93,6 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 	public void setVersion(long inVersion) 
 	{
 		setValue(".version", inVersion);
-	}
-
-	public PropertyDetails getPropertyDetails() 
-	{
-		if( fieldPropertyDetails == null && fieldSearcher != null)
-		{
-			return fieldSearcher.getPropertyDetails();
-		}
-		return fieldPropertyDetails;
-	}
-
-	public void setPropertyDetails(PropertyDetails inPropertyDetails) {
-		fieldPropertyDetails = inPropertyDetails;
 	}
 	
 	@Override
@@ -140,6 +133,8 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		if (fieldProperties == null)
 		{
 			fieldProperties = new ValuesMapWithSearchData();
+			getProperties().setPropertyDetails(getSearcher().getPropertyDetails());
+
 		}
 		return (ValuesMapWithSearchData)fieldProperties;
 	}
@@ -210,11 +205,6 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 	public Map getSearchData()
 	{
 		return getProperties().getSearchData();
-	}
-	@Override
-	public void setSearchData(Map inSearchHit)
-	{
-		getProperties().setSearchData(inSearchHit);
 	}
 	
 }

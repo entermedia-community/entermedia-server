@@ -3886,7 +3886,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					else
 					{
 						SearchHitData sdata = new SearchHitData(this);
-						sdata.setPropertyDetails(getPropertyDetails());
 						sdata.setSearchData(source);
 						data = sdata;
 						// data.setProperties(response.getSource());

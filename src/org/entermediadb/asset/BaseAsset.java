@@ -22,6 +22,7 @@ import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.projects.LibraryCollection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
@@ -43,10 +44,6 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	// be shown in a list
 	protected Collection fieldRelatedAssets;
 
-	public BaseAsset()
-	{
-	}
-	
 	
 	@Override
 	public boolean isLocked() {
@@ -177,27 +174,27 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 		}
 		if ("category".equals(inAttribute) || "category-exact".equals(inAttribute) )
 		{
-			
 			Collection categorylist = (Collection) getProperties().getValue("category-exact");
 			if(categorylist == null)
 			{
 				categorylist = new ArrayList();
-				Collection categories = (Collection) getFromDb("category-exact");
-				if (categories != null)
+			}
+			List<Data> categorydata = new ArrayList();
+
+			for (Iterator iterator = categorylist.iterator(); iterator.hasNext();)
+			{
+				Object category = (Object) iterator.next();
+				if( category instanceof String)
 				{
-					for (Iterator iterator = categories.iterator(); iterator.hasNext();)
-					{
-						String categoryid = (String) iterator.next();
-						Category category = getMediaArchive().getCategory(categoryid); //Cache this? Or lazy load em
-						if (category != null)
-						{
-							categorylist.add(category);
-						}
-					}
+					category = getMediaArchive().getCategory((String)category); //Cache this? Or lazy load em
 				}
-				getProperties().put("category-exact", categorylist);
-				return categorylist;
-			} 
+				if(category != null)
+				{
+					categorydata.add( (Data)category);
+				}
+			}
+			getProperties().put("category-exact", categorydata);
+			return categorydata;
 		}
 		if("islocked".equals(inAttribute)) {
 			return isLocked();
