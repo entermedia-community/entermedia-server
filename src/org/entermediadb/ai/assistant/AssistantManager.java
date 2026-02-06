@@ -772,11 +772,44 @@ public class AssistantManager extends BaseAiManager
 		}
 	}
 	
+	
+	public void resetAiServers(ScriptLogger inLog)
+	{
+		HashMap<String, String> keys = new HashMap();
+		Collection<Data> currentservers = getMediaArchive().query("aiserver").all().search();
+		for (Iterator iterator = currentservers.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			keys.put(data.getId(), data.get("serverapikey"));
+		}
+		
+		Searcher aiserverSearcher = getMediaArchive().getSearcher("aiserver");
+		aiserverSearcher.restoreSettings();
+		
+		List tosave = new ArrayList();
+		currentservers = getMediaArchive().query("aiserver").all().search();
+		for (Iterator iterator = currentservers.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			String key = keys.get(data.getId());
+			if (key != null && !key.equals(data.get("serverapikey")))
+			{
+				data.setValue("serverapikey", key);
+				tosave.add(data);
+				
+			}
+		}
+		aiserverSearcher.saveAllData(tosave, null);
+	}
 
 	public void addMissingFunctions(ScriptLogger inLog)
 	{
 		Collection<Data> modules =  getMediaArchive().getList("module");
 		List tosave = new ArrayList();
+		
+		
+		//reset ai servers
+		resetAiServers(inLog);
 		
 		//reset aifunctions table
 		Searcher aifunctionSearcher = getMediaArchive().getSearcher("aifunction");
@@ -796,10 +829,7 @@ public class AssistantManager extends BaseAiManager
 				continue;
 			}
 			
-
-			
 			String id = "";	
-			
 			String messagehandler = "";
 			
 			if( method.equals("fieldsonly"))
@@ -897,6 +927,9 @@ public class AssistantManager extends BaseAiManager
 		//Add AI functions to mediadb
 		WorkspaceManager workspaceManager =  (WorkspaceManager)getMediaArchive().getBean("workspaceManager");
 		workspaceManager.createMediaDbAiFunctionEndPoints(getMediaArchive().getCatalogId());
+		
+		//Clear Cache
+		getMediaArchive().clearAll();
 		
 	}
 	
