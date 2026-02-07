@@ -2,6 +2,7 @@ package org.entermediadb.ai.llm.http;
 
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -13,7 +14,6 @@ import org.entermediadb.ai.llm.BaseLlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.json.simple.JSONObject;
 import org.openedit.OpenEditException;
-import org.openedit.util.JSONParser;
 
 public class HttpConnection extends BaseLlmConnection 
 {
@@ -38,38 +38,21 @@ public class HttpConnection extends BaseLlmConnection
 		payload.put("query", inParams.get("query"));
 		payload.put("parent_ids", inParams.get("parent_ids"));
 		
-		log.info( "Sent: " + payload.toJSONString());
+		Map<String,String> header = new HashMap();
 		
-		HttpPost method = new HttpPost(getServerRoot() + "/" + inApiPath);
-		method.addHeader("Authorization", "Bearer " + getApiKey());
-		method.setHeader("Content-Type", "application/json");
-		method.setEntity(new StringEntity(payload.toJSONString(), StandardCharsets.UTF_8));
-
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-
-		try
+		String customerkey = getMediaArchive().getCatalogSettingValue("catalog-storageid");
+		if( customerkey == null)
 		{
-			if (resp.getStatusLine().getStatusCode() != 200)
-			{
-				throw new OpenEditException("OpenAI error: " + resp.getStatusLine());
-			}
-	
-			JSONObject json = (JSONObject)getConnection().parseMap(resp);
-
-			log.info("Returned: " + json.toJSONString());
+			customerkey = "demo";
+		}
+		header.put("x-customerkey", customerkey);
+		// Add API key
 		
-			LlmResponse response = createResponse();
-			response.setRawResponse(json);
-			return response;
-		}
-		catch (Exception ex)
-		{
-			throw new OpenEditException(ex);
-		}
-		finally
-		{
-			getConnection().release(resp);
-		}
+		log.info("Sent: " + payload.toJSONString());
+		
+		LlmResponse response = callJson( "/" + inApiPath,header, payload);
+		
+		return response;
 	}
 
 

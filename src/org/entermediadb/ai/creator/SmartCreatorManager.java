@@ -113,16 +113,18 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			LlmResponse res = llmconnection.callLlamaIndexStructured(inAgentContext.getContext(), "create_outline");
 			
-			JSONObject outlineJson = res.getMessageStructured();
+			JSONObject outlineJson = res.getRawResponse();
 			
 			Collection<String> outline = (Collection<String>) outlineJson.get("outline");
 			
 			instructions.setProposedSections(outline);
 			
+			inAgentContext.addContext("proposedoutline", instructions.getProposedSections());
+			
 			//Show the user
-			String function = findLocalActionName(inAgentContext);
-			LlmConnection llmconnection2 = getMediaArchive().getLlmConnection(function);
-			LlmResponse response = llmconnection2.renderLocalAction(inAgentContext, function);
+//			String function = findLocalActionName(inAgentContext);
+			LlmConnection llmconnection2 = getMediaArchive().getLlmConnection(agentFn);
+			LlmResponse response = llmconnection2.renderLocalAction(inAgentContext, agentFn);
 			
 			inAgentContext.setFunctionName("smartcreator_confirmoutline");
 			
@@ -133,31 +135,55 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_confirmoutline");
 			
 			// Adjust the outline as needed using regular AI
+			inAgentContext.addContext("proposedoutline", instructions.getProposedSections());
+			
+			Data usermessage = getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
+			String prompt = usermessage.get("message");
+			inAgentContext.addContext("confirmationprompt", prompt);
+			
 			LlmResponse res = llmconnection.callStructuredOutputList(inAgentContext.getContext(), "smartcreator_confirmoutline");
 			
 			JSONObject updatedSectionsJson = res.getMessageStructured();
 			
-			Collection<String> updatedSections = (Collection<String>)  updatedSectionsJson.get("updatedoutline");
+			Collection<String> updatedSections = (Collection<String>)  updatedSectionsJson.get("updated_outline");
 			instructions.setProposedSections(updatedSections);
 			
-			boolean confirmed = (boolean) updatedSectionsJson.get("confirmed");
+			boolean changed = (boolean) updatedSectionsJson.get("changed");
 			
-			if(!confirmed)
+			inAgentContext.addContext("changed", changed);
+			
+			if(changed)
 			{
-				inAgentContext.setNextFunctionName("smartcreator_confirmoutline");
-				return res; //Ask again
+				inAgentContext.addContext("proposedoutline", instructions.getProposedSections());
+				inAgentContext.setFunctionName("smartcreator_confirmoutline");
+				
+				
+				
+				String function = findLocalActionName(inAgentContext);  //Ask again
+				
+				LlmConnection llmconnection2 = getMediaArchive().getLlmConnection(function);
+				LlmResponse response = llmconnection2.renderLocalAction(inAgentContext, function);
+				
+				return response;
 			}
-			
-			
-			createConfirmedSections(instructions); //Saving confirmed outline to DB
-			
-			String function = findLocalActionName(inAgentContext);  //Ask again
-			LlmConnection llmconnection2 = getMediaArchive().getLlmConnection(function);
-			LlmResponse response = llmconnection2.renderLocalAction(inAgentContext, function);
-			
-			inAgentContext.setNextFunctionName("smartcreator_createsectioncontents");
-
-			return response;
+			else
+			{
+				Data playbackmodule = instructions.getTargetModule();
+				Data playbackentity = getMediaArchive().getSearcher(playbackmodule.getId()).createNewData();
+				
+				String name = instructions.getNewTitleName();
+				
+				playbackentity.setName(name);
+				playbackentity.setValue(inAgentContext.get("entitymoduleid"), inAgentContext.get("entityid"));
+				
+				getMediaArchive().saveData(playbackmodule.getId(), playbackentity);
+				
+				instructions.setTargetEntity(playbackentity);
+				
+				createConfirmedSections(instructions);
+				inAgentContext.setNextFunctionName("smartcreator_createsectioncontents");
+				return res;
+			}
 			
 		}
 		else if(agentFn.startsWith("smartcreator_createsectioncontents"))
@@ -308,8 +334,6 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		Collection<Data> tosave = new ArrayList<Data>();
 
 		Collection<String> sections = inInstructions.getProposedSections();
-
-		getMediaArchive().saveData(inInstructions.getTargetModule().getId(),inInstructions.getTargetEntity());
 		
 		int idx = 0;
 		for (Iterator iterator = sections.iterator(); iterator.hasNext();) {
@@ -320,8 +344,6 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			componentSection.setName(outline);
 			componentSection.setValue("playbackentityid", inInstructions.getTargetEntity().getId());
 			componentSection.setValue("playbackentitymoduleid", inInstructions.getTargetModule().getId());
-			componentSection.setValue("entitymoduleid", inInstructions.getTargetEntity().get("entitymoduleid"));
-			componentSection.setValue("entityid", inInstructions.getTargetEntity().get("entityid"));
 			componentSection.setValue("ordering", idx);
 			componentSection.setValue("creationdate", new Date());
 			componentSection.setValue("modificationdate", new Date());
