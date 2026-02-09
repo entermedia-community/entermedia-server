@@ -725,7 +725,7 @@ public class AssistantManager extends BaseAiManager
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			MultiValued doc = (MultiValued) iterator.next();
-			String type = doc.get("entitysea");
+			String type = doc.get("entitysourcetype");
 			String docid = type + "_" + doc.getId();
 			docids.add(docid);
 		}
