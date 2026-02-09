@@ -575,7 +575,7 @@ public class BaseCategory extends BaseData implements Category
 		for (Iterator iter = getChildren().iterator(); iter.hasNext();)
 		{
 			Category cat = (Category) iter.next();
-			if (cat.getName().equals(inCatName))
+			if ( inCatName.equals(cat.getName()))
 			{
 				return cat;
 			}

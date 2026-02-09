@@ -157,7 +157,11 @@ public class ValuesMapWithSearchData<K, V> extends ValuesMap
 	public Object getValue(String inId)
 	{
 		Object val = super.getObject(inId);
-		if( val != NULLVALUE && val == null)
+		if( val == NULLSTRING || val == NULLVALUE)
+		{
+			return null;
+		}
+		if( val == null)
 		{
 			val = getFromDb(inId);
 		}
@@ -198,7 +202,7 @@ public class ValuesMapWithSearchData<K, V> extends ValuesMap
 		return one;
 	}
 	
-
+	@Override
 	public Set keySet() 
 	{
 		Set set = new HashSet();
@@ -218,6 +222,7 @@ public class ValuesMapWithSearchData<K, V> extends ValuesMap
 		//set.add(".version");
 		return set;
 	}
+	
 	@Override
 	public int size()
 	{
@@ -232,76 +237,7 @@ public class ValuesMapWithSearchData<K, V> extends ValuesMap
 		return false;
 	}
 	
-	 @Override
-	 public Set<Map.Entry<K, V>> entrySet() 
-	 {
-		 List keys = new ArrayList(keySet());
-		 
-	        return new AbstractSet<>() {
-
-	            @Override
-	            public Iterator<Map.Entry<K, V>> iterator() {
-	                return new Iterator<>() {
-	                    private int index = 0;
-
-	                    @Override
-	                    public boolean hasNext() {
-	                        return index < keys.size();
-	                    }
-
-	                    @Override
-	                    public Map.Entry<K, V> next() {
-	                        if (!hasNext()) {
-	                            throw new NoSuchElementException();
-	                        }
-	                        return new Entry(keys, index++);
-	                    }
-	                };
-	            }
-
-	            @Override
-	            public int size() {
-	                return keys.size();
-	            }
-	        };
-	    }
-
-	    /* ---------------- Entry Implementation ---------------- */
-
-	    private class Entry implements Map.Entry<K, V> {
-	        private final int index;
-	        List keys = null;
-	        Entry(List inKeys, int index) {
-	            this.index = index;
-	            this.keys = inKeys;
-	        }
-
-	        @Override
-        @SuppressWarnings("unchecked")
-        public K getKey() {
-            return (K) this.keys.get(index);
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public V getValue() {
-            return (V) ValuesMapWithSearchData.this.getValue((String) keys.get(index));
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public V setValue(V value) {
-            V oldValue = getValue();
-            ValuesMapWithSearchData.this.put((K) keys.get(index), value);
-            return oldValue;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(getKey(), getValue());
-        }
-
-    }
+	
 	
 	public SearchHit getSearchHit()
 	{

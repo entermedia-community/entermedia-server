@@ -3894,6 +3894,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						data.setValue(".version", response.getVersion());
 					}
 					return loadData(data);
+					//return data;
 				}
 				return null;
 			}
