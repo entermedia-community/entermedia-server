@@ -154,10 +154,10 @@ public class ValuesMapWithSearchData<K, V> extends ValuesMap
 	}
 
 
-	public Object getObject(String inId)
+	public Object getValue(String inId)
 	{
 		Object val = super.getObject(inId);
-		if( val == null)
+		if( val != NULLVALUE && val == null)
 		{
 			val = getFromDb(inId);
 		}
