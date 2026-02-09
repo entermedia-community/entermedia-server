@@ -790,7 +790,7 @@ public class ContentPublishingManager implements CatalogEnabled, ChatMessageHand
 
 		try 
 		{
-			LlmConnection llmconnection = archive.getLlmConnection("image_creation_start");
+			LlmConnection llmconnection = archive.getLlmConnection("creation_image_create");
 			
 			LlmResponse results = llmconnection.createImage(prompt);
 
