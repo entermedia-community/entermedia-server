@@ -161,12 +161,12 @@ public class EmbeddingManager extends InformaticsProcessor
 		JSONObject documentdata = new JSONObject();
 		documentdata.put("doc_id", searchtype + "_" + document.getId());
 
-		String asset_id = document.get("primarymedia");
-		if(asset_id == null)
+		String assetid = document.get("primarymedia");
+		if(assetid == null)
 		{
-			asset_id = document.get("primaryimage");
+			assetid = document.get("primaryimage");
 		}
-		Asset documentAsset = getMediaArchive().getCachedAsset(asset_id);
+		Asset documentAsset = getMediaArchive().getCachedAsset(assetid);
 		if(documentAsset != null)
 		{
 			documentdata.put("file_name", documentAsset.getName());
@@ -201,7 +201,7 @@ public class EmbeddingManager extends InformaticsProcessor
 
 			allpages.add(pagedata);
 			
-		}		
+		}	
 		
 		documentdata.put("pages", allpages);
 		

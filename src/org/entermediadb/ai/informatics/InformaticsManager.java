@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.entermediadb.ai.BaseAiManager;
@@ -239,20 +240,26 @@ public class InformaticsManager extends BaseAiManager
 				pendingrecords.setPage(i+1);
 				Collection pageofhits = pendingrecords.getPageOfHits();
 				
+				Collection validhits = findValidRecords(pendingrecords.getPageOfHits());
+				
+				if (validhits.isEmpty())
+				{
+					continue;
+				}
 				for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
 				{
 					MultiValued config = (MultiValued) iterator2.next();
 					InformaticsProcessor processor = loadProcessor(config.get("bean"));
 					//inLog.info("Processing : " + config);
-					processor.processInformaticsOnEntities(inLog, config, pageofhits);
+					processor.processInformaticsOnEntities(inLog, config, validhits);
 				}
 				//Group them by type
-				for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
+				for (Iterator iterator = validhits.iterator(); iterator.hasNext();)
 				{
 					Data data = (Data) iterator.next();
 					data.setValue("taggedbyllm", true);
 				}
-				Map<String, Collection> groupbymodule = groupByModule(pageofhits);
+				Map<String, Collection> groupbymodule = groupByModule(validhits);
 				for (Iterator iterator = groupbymodule.keySet().iterator(); iterator.hasNext();)
 				{
 					String moduleid = (String) iterator.next();
@@ -263,6 +270,29 @@ public class InformaticsManager extends BaseAiManager
 			}
 		}
 	
+	}
+	
+	
+	
+
+	private Collection findValidRecords(List inPageOfHits)
+	{
+		// TODO Auto-generated method stub
+		Collection valid = new ArrayList();
+		for (Iterator iterator = inPageOfHits.iterator(); iterator.hasNext();)
+		{
+			MultiValued entity = (MultiValued) iterator.next();
+			String assetid = entity.get("primarymedia");
+			if(assetid == null)
+			{
+				assetid = entity.get("primaryimage");
+			}
+			if (assetid != null || entity.get("markdowncontent") != null || entity.get("longcaption") != null)
+			{
+				valid.add(entity);
+			}
+		}
+		return valid;
 	}
 
 	public InformaticsProcessor loadProcessor(String inName)
