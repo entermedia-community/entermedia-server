@@ -434,6 +434,13 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	}
 	
 	@Override
+	public LlmResponse callJson(String inPath, Map inPayload)
+	{
+		JSONObject json = new JSONObject(inPayload);
+		return callJson(inPath, json);
+			
+	}
+	@Override
 	public LlmResponse callJson(String inPath, JSONObject inPayload)
 	{
 		LlmResponse res = callJson(inPath, getSharedHeaders(), inPayload);
@@ -458,6 +465,15 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		
 		method.addHeader("Authorization", "Bearer " + getApiKey());
 		method.setHeader("Content-Type", "application/json");
+		
+		String customerkey = getMediaArchive().getCatalogSettingValue("catalog-storageid");
+		if( customerkey == null)
+		{
+			customerkey = "demo";
+		}
+		
+		method.setHeader("x-customerkey", customerkey); // standard eMedia header
+		
 
 		
 		for (Iterator iterator = getSharedHeaders().keySet().iterator(); iterator.hasNext();)
@@ -637,12 +653,6 @@ public abstract class BaseLlmConnection implements LlmConnection {
 
 	@Override
 	public LlmResponse callStructuredOutputList(Map inParams, String inFunction)
-	{
-		throw new OpenEditException(inFunction + " Call not supported");
-	}
-	
-	@Override
-	public LlmResponse callLlamaIndexStructured(Map inParams, String inFunction)
 	{
 		throw new OpenEditException(inFunction + " Call not supported");
 	}

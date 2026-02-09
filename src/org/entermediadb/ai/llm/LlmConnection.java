@@ -39,15 +39,13 @@ public interface LlmConnection {
 	public void setAiServerData(Data fieldMainServerUrl);
 
     public LlmResponse callStructuredOutputList(Map inParams, String inFuction);
-    
-    // This one is for llamaindex which has a different than or regular structured
-    public LlmResponse callLlamaIndexStructured(Map inParams, String inApiPath);
 	
 	public LlmResponse callOCRFunction(Map inParams, String inBase64Image, String inFunctioName);
 	
 	public LlmResponse callSmartCreatorAiAction(Map params, String inActionName);
 
-	public LlmResponse callJson(String inPath, JSONObject inPayload);	
+	public LlmResponse callJson(String inPath, Map inPayload);
+	public LlmResponse callJson(String inPath, JSONObject inPayload);
 	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, Map inMap);
 	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inEmbeddingPayload);
 	

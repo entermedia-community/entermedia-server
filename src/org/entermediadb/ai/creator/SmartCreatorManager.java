@@ -101,8 +101,9 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		{
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_createoutline");
 			
-			//TODO: Not regular AI > Delegate to LLama Index
-			inAgentContext.addContext("query", instructions.getStep1create());
+			Map payload = new HashMap();
+			payload.put("query", instructions.getOutlineCreatePrompt());
+			
 			AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
 			
 			String entityid = inAgentContext.get("entityid");
@@ -110,9 +111,9 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			Collection<String> parentIds = assistant.findDocIdsForEntity(entitymoduleid, entityid);
 			
-			inAgentContext.addContext("parent_ids", parentIds);
+			payload.put("parent_ids", parentIds);
 			
-			LlmResponse res = llmconnection.callLlamaIndexStructured(inAgentContext.getContext(), "create_outline");
+			LlmResponse res = llmconnection.callJson("/create_outline", payload);
 			
 			JSONObject outlineJson = res.getRawResponse();
 			
@@ -172,7 +173,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				Data playbackmodule = instructions.getTargetModule();
 				Data playbackentity = getMediaArchive().getSearcher(playbackmodule.getId()).createNewData();
 				
-				String name = instructions.getNewTitleName();
+				String name = instructions.getTitleName();
 				
 				playbackentity.setName(name);
 				playbackentity.setValue(inAgentContext.get("entitymoduleid"), inAgentContext.get("entityid"));
@@ -182,7 +183,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				instructions.setTargetEntity(playbackentity);
 				
 				createConfirmedSections(instructions);
-				String step2CreatePrompt = instructions.getStep2create();
+				String step2CreatePrompt = instructions.getStepContentCreate();
 				if(step2CreatePrompt != null && !step2CreatePrompt.isEmpty())
 				{
 					inAgentContext.setNextFunctionName("smartcreator_createsectioncontents");
@@ -667,10 +668,6 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 
 		Collection<Data> sections = instructions.getConfirmedSections();
 		
-		String step2CreatePrompt = instructions.getStep2create();
-
-		MarkdownUtil md = new MarkdownUtil();
-		
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_createsectioncontents");
 
 		Collection<Data> tosave = new ArrayList<Data>();
@@ -680,105 +677,48 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			Data section = (Data) iterator.next();
 			String sectionid = section.getId();
 			
-			JSONObject payload = new JSONObject();
+			Map payload = new HashMap();
 			
-			payload.put("query", step2CreatePrompt + section.getName());
+			payload.put("query", "For Section : " + section.getName() + instructions.getStepContentCreate());
 			
 			String entityid = inAgentContext.get("entityid");
 			String entitymoduleid = inAgentContext.get("entitymoduleid");
 			
 			AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
-			JSONArray parentIds = new JSONArray(); 
-			parentIds.addAll(assistant.findDocIdsForEntity(entitymoduleid, entityid));
+			Collection<String> parentIds = assistant.findDocIdsForEntity(entitymoduleid, entityid);
 			
 			payload.put("parent_ids", parentIds);
 			
-			LlmResponse res = llmconnection.callJson("create_section_contents", payload);
+			LlmResponse res = llmconnection.callJson("/create_section_contents", payload);
 			
-			JSONObject contentsJson = res.getMessageStructured();
+			JSONObject contentsJson = res.getRawResponse();
 			
-			String contents = (String) contentsJson.get("content");
+			Collection<String> contents = (Collection<String>) contentsJson.get("section_contents");
 			
-			if(contents == null)
+			if(contents == null || contents.isEmpty())
 			{
 				return;
 			}
 			
-			contents = contents.replace("\\n", "\n");
-			String[] lines = contents.split("\\n+");
-			
-			Collection<Map> boundaries = new ArrayList<Map>();
-			
-			Collection<String> listItems = new ArrayList<String>();
-			
 			int ordering = 0;
+				
+			MarkdownUtil md = new MarkdownUtil();
 			
-			for (int i = 0; i < lines.length; i++)
-			{
-				String line = lines[i];
-				line = line.replaceAll("^\\s+", "");
-				line = line.replaceAll("\\s+$", "");
-				
-				if(line.length() == 0)
-				{
-					continue;
-				}
-				boolean listEnded = false;
-				
-				if(line.startsWith("#"))
-				{
-					listEnded = true;
-					Map boundary = new HashMap();
-					boundary.put("componenttype", "heading");
-					
-					line = line.replaceAll("^#+", "");
-					line = md.renderPlain(line);
-					boundary.put("content", line);
-					boundaries.add(boundary);
-				}
-				else if(Pattern.matches("^\\s*\\- .*", line) ||	Pattern.matches("^\\d+\\. .*", line))
-				{
-					listItems.add(line);
-				}
-				else
-				{
-					listEnded = true;
-					Map boundary = new HashMap();
-					boundary.put("componenttype", "paragraph");
-					line = md.renderPlain(line);
-					boundary.put("content", line);
-					boundaries.add(boundary);
-				}
-				
-				if(listEnded && !listItems.isEmpty())
-				{
-					String listcontent = String.join("\n", listItems);
-					listcontent = md.renderPlain(listcontent);
-					Map boundary = new HashMap();
-					boundary.put("componenttype", "paragraph");
-					boundary.put("content", listcontent);
-					boundaries.add(boundary);
-					
-					listItems.clear();
-				}
+			for (Iterator iterator2 = contents.iterator(); iterator2.hasNext();) {
+				String content = (String) iterator2.next();
 				
 				
-				for (Iterator iterator2 = boundaries.iterator(); iterator2.hasNext();) {
-					Map boundary = (Map) iterator2.next();
-					
-					
-					Data componentcontent = contentearcher.createNewData();
-					componentcontent.setValue("componentsectionid", sectionid);
-					componentcontent.setValue("content", boundary.get("content"));
-					componentcontent.setValue("componenttype", boundary.get("componenttype"));
-					componentcontent.setValue("ordering", ordering);
-					componentcontent.setValue("creationdate", new Date());
-					componentcontent.setValue("modificationdate", new Date());
-					
-					tosave.add(componentcontent);
-					
-					ordering++;
-				}
+				Data componentcontent = contentearcher.createNewData();
+				componentcontent.setValue("componentsectionid", sectionid);
+				componentcontent.setValue("content", md.render(content));
+				componentcontent.setValue("componenttype", "paragraph");
+				componentcontent.setValue("ordering", ordering);
+				componentcontent.setValue("creationdate", new Date());
+				componentcontent.setValue("modificationdate", new Date());
+				
+				tosave.add(componentcontent);
+				
+				ordering++;
 			}
 
 /*
