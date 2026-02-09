@@ -1,11 +1,9 @@
 {
-	"request":
-		{
-		    "status":"ok",
-			"usermessage":#json($usermessage $chatterboxsearcher.getPropertyDetails()),
-			"aifunctionstart":#json($aifunctionstart $aifunctionsearcher.getPropertyDetails())
-
-		},
+	"request": {
+		"status":"ok",
+		"usermessage":#json($usermessage $chatterboxsearcher.getPropertyDetails()),
+		"aifunctionstart":#json($aifunctionstart $aifunctionsearcher.getPropertyDetails())
+	},
 	"response": {
 		"agentmessage":#json($agentmessage $chatterboxsearcher.getPropertyDetails()),
 		"agentcontext":#json($agentcontext $agentcontextsearcher.getPropertyDetails()),

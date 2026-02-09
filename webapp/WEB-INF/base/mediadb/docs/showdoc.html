@@ -1,7 +1,10 @@
 <div class="page-header">
-  <h1>$data </h1>
+  <h1>$data</h1>
   URL ($data.httpmethod): 
   <input id="url" class="form-control"  type="text" value="$content.replaceProperty( $data.url )" size="50"/> 
+
+	<input type="hidden" name="id" value="$data.id" id="dataid" />
+
 </div>
 <i>$!data.caption</i>
 <div id="jsontext" style="display: none;">
@@ -29,7 +32,8 @@ $data.samplerequest
 #end
 
 </form>
-<button class="btn btn-success" id="process">Execute</button>
+<button class="btn btn-primary" id="executeApiCall">Execute</button>
+<button class="btn btn-success" id="saveApiRequest">Save</button>
 
 <div class="d-flex align-items-center mt-4">
 	<h2 class="my-0 mr-3">[[Response]]</h2>
@@ -64,8 +68,7 @@ $(document).ready(function(){
 
 	var jsonResponse = false;
 
-	$("#process").on("click", function () {
-		var req = $("#request").val();
+	$("#executeApiCall").on("click", function () {
 		var url = $("#url").val();
 		var method = $("#request").closest("form").attr("method");
 		const start = performance.now();
@@ -97,8 +100,9 @@ $(document).ready(function(){
 			success: success
 		}).always(always);
     #else
-
+			var req = $("#request").val();
 			jsonResponse = true;
+
 	    jQuery.ajax({
 				contentType: 'application/json',
 	    	type: method,
@@ -118,7 +122,29 @@ $(document).ready(function(){
 		#end
 });
 
-
+$("#saveApiRequest").on("click", function () {
+	var url = "/${applicationid}/docs/save.html";
+	$.ajax({
+		url: url,
+		data: {
+			save: true,
+			id: $("#dataid").val(),
+			field: "samplerequest",
+			"samplerequest.value": $("#request").val()
+		}, 
+		type: "POST",
+		success: function() {
+			console.log("Saved");
+			$("#saveApiRequest").text("✓ Saved!");
+			setTimeout(function() {
+				$("#saveApiRequest").text("Save");
+			}, 3000);
+		},
+		error: function() {
+			alert("Error saving");
+		}
+	});
+})
 success = function (text) {
 	if (text) {
 		try {
