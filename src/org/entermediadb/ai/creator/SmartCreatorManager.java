@@ -18,6 +18,7 @@ import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.markdown.MarkdownUtil;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -181,7 +182,16 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				instructions.setTargetEntity(playbackentity);
 				
 				createConfirmedSections(instructions);
-				inAgentContext.setNextFunctionName("smartcreator_createsectioncontents");
+				String step2CreatePrompt = instructions.getStep2create();
+				if(step2CreatePrompt != null && !step2CreatePrompt.isEmpty())
+				{
+					inAgentContext.setNextFunctionName("smartcreator_createsectioncontents");
+				}
+				else
+				{
+					llmconnection = getMediaArchive().getLlmConnection("smartcreator_renderoutline");
+					res = llmconnection.renderLocalAction(inAgentContext, "smartcreator_renderoutline");
+				}
 				return res;
 			}
 			
@@ -189,12 +199,9 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		else if(agentFn.startsWith("smartcreator_createsectioncontents"))
 		{	
 			populateSectionsWithContents(inAgentContext);
-	
-
-			String function = findLocalActionName(inAgentContext);
 			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection(function);
-			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, function);
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_renderoutline");
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "smartcreator_renderoutline");
 			
 			return response;
 		}
@@ -664,7 +671,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 
 		MarkdownUtil md = new MarkdownUtil();
 		
-		LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_populatesections");
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_createsectioncontents");
 
 		Collection<Data> tosave = new ArrayList<Data>();
 
@@ -673,16 +680,20 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			Data section = (Data) iterator.next();
 			String sectionid = section.getId();
 			
-			Map params = new HashMap();
+			JSONObject payload = new JSONObject();
 			
-			params.put("query", step2CreatePrompt + section.getName());
+			payload.put("query", step2CreatePrompt + section.getName());
 			
 			String entityid = inAgentContext.get("entityid");
 			String entitymoduleid = inAgentContext.get("entitymoduleid");
 			
 			AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
-			inAgentContext.addContext("parent_ids", assistant.findDocIdsForEntity(entitymoduleid, entityid));
-			LlmResponse res = llmconnection.callLlamaIndexStructured(params, "create_section_contents");
+			JSONArray parentIds = new JSONArray(); 
+			parentIds.addAll(assistant.findDocIdsForEntity(entitymoduleid, entityid));
+			
+			payload.put("parent_ids", parentIds);
+			
+			LlmResponse res = llmconnection.callJson("create_section_contents", payload);
 			
 			JSONObject contentsJson = res.getMessageStructured();
 			
