@@ -157,7 +157,7 @@ public class RelatedAsset implements Data
 	@Override
 	public Object getValue(String inKey)
 	{
-		return getProperties().getObject(inKey);
+		return getProperties().getValue(inKey);
 	}
 	@Override
 	public void setValue(String inKey, Object inValue)
