@@ -53,18 +53,8 @@ public class EmbeddingManager extends InformaticsProcessor
 	public boolean embedData(ScriptLogger inLog, JSONObject embeddingPayload)
 	{
 		LlmConnection connection = getMediaArchive().getLlmConnection("documentEmbedding");
-
-		Map<String,String> header = new HashMap();
 		
-		String customerkey = getMediaArchive().getCatalogSettingValue("catalog-storageid");
-		if( customerkey == null)
-		{
-			customerkey = "demo";
-		}
-		
-		header.put("x-customerkey", customerkey);
-		
-		LlmResponse response = connection.callJson( "/save",header,embeddingPayload);
+		LlmResponse response = connection.callJson( "/save", embeddingPayload);
 		response.getMessage();
 		return true;
 	}

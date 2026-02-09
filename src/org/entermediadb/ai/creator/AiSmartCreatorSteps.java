@@ -23,10 +23,17 @@ public class AiSmartCreatorSteps extends BaseData
 	{
 		fieldTargetEntity = inPlayback;
 	}
+
+	protected String fieldTitleName;
 	
-	public void setNewTitleName(String inNewTitleName)
+	public String getTitleName()
 	{
-		fieldNewTitleName = inNewTitleName;
+		return fieldTitleName;
+	}
+
+	public void setTitleName(String inNewTitleName)
+	{
+		fieldTitleName = inNewTitleName;
 	}
 
 	protected Collection<String> fieldProposedSections;
@@ -83,78 +90,111 @@ public class AiSmartCreatorSteps extends BaseData
 		fieldCreatedEntity = inCreatedEntity;
 	}
 
-	public String getStep1create()
+	public String getStepOutlineCreate()
 	{
-		return step1create;
+		return stepOutlineCreate;
 	}
 
-	public void setStep1create(String inStep1create)
+	public void setStepOutlineCreate(String inStep1create)
 	{
-		step1create = inStep1create;
+		stepOutlineCreate = inStep1create;
 	}
 
-	public String getStep2create()
+	public String getStepContentCreate()
 	{
-		return step2create;
+		return stepContentCreate;
 	}
 
-	public void setStep2create(String inStep2create)
+	public void setStepContentCreate(String inStep2create)
 	{
-		step2create = inStep2create;
+		stepContentCreate = inStep2create;
+	}
+	
+	public String getStepOutlineStyle()
+	{
+		return stepOutlineStyle;
+	}
+	
+	public void setStepOutlineStyle(String inStepOutlineStyle)
+	{
+		stepOutlineStyle = inStepOutlineStyle;
+	}
+	
+	public String getStepContentStyle()
+	{
+		return stepContentStyle;
+	}
+	
+	public void setStepContentStyle(String inStepContentStyle)
+	{
+		stepContentStyle = inStepContentStyle;
 	}
 
 	protected Data fieldCreatedEntity;
 	
-	//Step 1 Create a simple list of index/outline for Theory of change instruction then in step 2 Create a detailed description of  each section that is relevant to the topic
+	String stepOutlineCreate = null;
+	String stepOutlineStyle = null;
 	
-	//Creating Web Site Content: Step 1 Create a home page hero section then popuplate a title and content
+	String stepContentCreate = null;
+	String stepContentStyle = null;
 
-	//Create a blog with a title of "My trip to Guatemala" then Step 2 describe the best foods I ate
-	String step1create = "Create a blog with a title of \"My trip to Guatemala\"";
-	String step2create = "write 3 paraphaphs that describe the best foods I ate";   //One component-section with 1 title and 3 paragraphs
-	
-//	public String toSemanticQuery() {
-//		return String.join(" ", fieldKeywords);
-//	}
-	public String toJson() 
-	{
-		JSONObject parent = new JSONObject();
-		parent.put("creationdetails",this);
-		
-		JSONArray parts  = new JSONArray();
-	
-		return parent.toJSONString();
-	}
 	
 	public void loadJsonParts(JSONObject inJson)
 	{
-		//Read the parts
-		JSONArray paragraphs = (JSONArray)inJson.get("instructions");
-		
-		Iterator iter = paragraphs.iterator();
-		JSONObject first = (JSONObject)iter.next();
+//		{
+//			"topic": "Employee Code of Conduct",
+//			"outline_section": {
+//				"instruction": "Create an outline for Employee Code of Conduct."
+//			},
+//			"section_content": {
+//				"instruction": "Make short and concise 2 or 3 paragraph for each section.",
+//				"style": "short and concise, 2 or 3 paragraphs"
+//			}
+//		}
 
-		//TOOD: Make this more general, Like one sentance with both instructions in it
+	
+		String title = (String) inJson.get("topic");
+		setTitleName(title);
 		
-		step1create = (String)first.get("text");//"Create a blog with a title of \"My trip to Guatemala\"";
-		
-		fieldNewTitleName = (String)first.get("topic");
-		
-		if(iter.hasNext())
+		JSONObject outline = (JSONObject) inJson.get("outline_section");
+		if( outline != null)
 		{
-			JSONObject second = (JSONObject) iter.next();
-			if( second != null)
-			{
-				step2create = (String) second.get("text"); //"write 3 paraphaphs that describe the best foods I ate";   //One component-section with 1 title and 3 paragraphs
-			}
+			String instruction = (String) outline.get("instruction");
+			setStepOutlineCreate(instruction);
+			
+			String style = (String) outline.get("style");
+			setStepOutlineStyle(style);
+		}
+		
+		JSONObject content = (JSONObject) inJson.get("section_content");
+		if( content != null)
+		{
+			String instruction = (String) content.get("instruction");
+			setStepContentCreate(instruction);
+			
+			String style = (String) content.get("style");
+			setStepContentStyle(style);
 		}
 	}
-
-	protected String fieldNewTitleName;
 	
-	public String getNewTitleName()
+	public String getOutlineCreatePrompt()
 	{
-		return fieldNewTitleName;
+		String prompt = getStepOutlineCreate();
+		if(getStepOutlineStyle() != null) 
+		{
+			prompt += " " + getStepOutlineStyle();
+		}
+		return prompt;
+	}
+	
+	public String getContentCreatePrompt()
+	{
+		String prompt = getStepContentCreate();
+		if(getStepContentStyle() != null) 
+		{
+			prompt += " " + getStepContentStyle();
+		}
+		return prompt;
 	}
 	
 }
