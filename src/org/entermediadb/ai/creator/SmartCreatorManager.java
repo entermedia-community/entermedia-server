@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,7 +17,6 @@ import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.markdown.MarkdownUtil;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -190,6 +188,9 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				}
 				else
 				{
+					inAgentContext.addContext("confirmedoutline", instructions.getConfirmedSections());
+					inAgentContext.addContext("playbackentity", instructions.getTargetEntity());
+					inAgentContext.addContext("playbackentitymodule", instructions.getTargetModule());
 					llmconnection = getMediaArchive().getLlmConnection("smartcreator_renderoutline");
 					res = llmconnection.renderLocalAction(inAgentContext, "smartcreator_renderoutline");
 				}
@@ -201,6 +202,9 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		{	
 			populateSectionsWithContents(inAgentContext);
 			
+			inAgentContext.addContext("confirmedoutline", instructions.getConfirmedSections());
+			inAgentContext.addContext("playbackentity", instructions.getTargetEntity());
+			inAgentContext.addContext("playbackentitymodule", instructions.getTargetModule());
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_renderoutline");
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "smartcreator_renderoutline");
 			
