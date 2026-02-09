@@ -139,10 +139,14 @@ public class AiSmartCreatorSteps extends BaseData
 		step1create = (String)first.get("text");//"Create a blog with a title of \"My trip to Guatemala\"";
 		
 		fieldNewTitleName = (String)first.get("topic");
-		JSONObject second = (JSONObject) iter.next();
-		if( second != null)
+		
+		if(iter.hasNext())
 		{
-			step2create = (String) second.get("text"); //"write 3 paraphaphs that describe the best foods I ate";   //One component-section with 1 title and 3 paragraphs
+			JSONObject second = (JSONObject) iter.next();
+			if( second != null)
+			{
+				step2create = (String) second.get("text"); //"write 3 paraphaphs that describe the best foods I ate";   //One component-section with 1 title and 3 paragraphs
+			}
 		}
 	}
 
