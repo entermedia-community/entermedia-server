@@ -53,6 +53,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		String agentFn = inAgentContext.getFunctionName();
 		
 		AiSmartCreatorSteps instructions = inAgentContext.getAiSmartCreatorSteps();
+		
+		String channelId = inAgentContext.get("channel");
 			
 		if(agentFn.startsWith("smartcreator_welcome_"))  
 		{
@@ -92,8 +94,18 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			//TODO: Show the user what they typed and say processing
 			
-			inAgentContext.setNextFunctionName("smartcreator_createoutline");
+			if("testchannel".equals(channelId))
+			{
+				inAgentContext.setFunctionName("smartcreator_createoutline");
+				// This allows manually running next function in mediadb test environment
+			}
+			else
+			{				
+				inAgentContext.setNextFunctionName("smartcreator_createoutline");
+			}
+			
 			//Show the user what we have thus far
+			
 			return res;
 		}
 		else if(agentFn.startsWith("smartcreator_createoutline"))
@@ -185,7 +197,15 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				String step2CreatePrompt = instructions.getStepContentCreate();
 				if(step2CreatePrompt != null && !step2CreatePrompt.isEmpty())
 				{
-					inAgentContext.setNextFunctionName("smartcreator_createsectioncontents");
+					if("testchannel".equals(channelId))
+					{
+						inAgentContext.setFunctionName("smartcreator_createsectioncontents");
+						// This allows manually running next function in mediadb test environment
+					}
+					else
+					{						
+						inAgentContext.setNextFunctionName("smartcreator_createsectioncontents");
+					}
 				}
 				else
 				{
