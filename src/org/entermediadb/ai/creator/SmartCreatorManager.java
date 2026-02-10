@@ -18,7 +18,6 @@ import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.markdown.MarkdownUtil;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -54,6 +53,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		String agentFn = inAgentContext.getFunctionName();
 		
 		AiSmartCreatorSteps instructions = inAgentContext.getAiSmartCreatorSteps();
+		
+		String channelId = inAgentContext.get("channel");
 			
 		if(agentFn.startsWith("smartcreator_welcome_"))  
 		{
@@ -93,8 +94,18 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			//TODO: Show the user what they typed and say processing
 			
-			inAgentContext.setNextFunctionName("smartcreator_createoutline");
+			if("testchannel".equals(channelId))
+			{
+				inAgentContext.setFunctionName("smartcreator_createoutline");
+				// This allows manually running next function in mediadb test environment
+			}
+			else
+			{				
+				inAgentContext.setNextFunctionName("smartcreator_createoutline");
+			}
+			
 			//Show the user what we have thus far
+			
 			return res;
 		}
 		else if(agentFn.startsWith("smartcreator_createoutline"))
@@ -186,10 +197,21 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				String step2CreatePrompt = instructions.getStepContentCreate();
 				if(step2CreatePrompt != null && !step2CreatePrompt.isEmpty())
 				{
-					inAgentContext.setNextFunctionName("smartcreator_createsectioncontents");
+					if("testchannel".equals(channelId))
+					{
+						inAgentContext.setFunctionName("smartcreator_createsectioncontents");
+						// This allows manually running next function in mediadb test environment
+					}
+					else
+					{						
+						inAgentContext.setNextFunctionName("smartcreator_createsectioncontents");
+					}
 				}
 				else
 				{
+					inAgentContext.addContext("confirmedoutline", instructions.getConfirmedSections());
+					inAgentContext.addContext("playbackentity", instructions.getTargetEntity());
+					inAgentContext.addContext("playbackentitymodule", instructions.getTargetModule());
 					llmconnection = getMediaArchive().getLlmConnection("smartcreator_renderoutline");
 					res = llmconnection.renderLocalAction(inAgentContext, "smartcreator_renderoutline");
 				}
@@ -201,6 +223,9 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		{	
 			populateSectionsWithContents(inAgentContext);
 			
+			inAgentContext.addContext("confirmedoutline", instructions.getConfirmedSections());
+			inAgentContext.addContext("playbackentity", instructions.getTargetEntity());
+			inAgentContext.addContext("playbackentitymodule", instructions.getTargetModule());
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_renderoutline");
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "smartcreator_renderoutline");
 			
@@ -678,8 +703,10 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			String sectionid = section.getId();
 			
 			Map payload = new HashMap();
+			String query = "For a section named: " + section.getName() + "\n\n" + instructions.getContentCreatePrompt();
+			payload.put("query", query);
 			
-			payload.put("query", "For Section : " + section.getName() + instructions.getStepContentCreate());
+			// log.info(query);
 			
 			String entityid = inAgentContext.get("entityid");
 			String entitymoduleid = inAgentContext.get("entitymoduleid");
@@ -689,29 +716,88 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			payload.put("parent_ids", parentIds);
 			
-			LlmResponse res = llmconnection.callJson("/create_section_contents", payload);
+			LlmResponse res = llmconnection.callJson("/query", payload);
 			
 			JSONObject contentsJson = res.getRawResponse();
 			
-			Collection<String> contents = (Collection<String>) contentsJson.get("section_contents");
+			String answer = (String) contentsJson.get("answer");
 			
-			if(contents == null || contents.isEmpty())
+			// log.info("Received contents: " + contents);
+			
+			if(answer == null)
 			{
 				return;
 			}
+
+			answer = answer.replace("\\n", "\n");
+			String[] lines = answer.split("\\n+");
+
+			Collection<Map> boundaries = new ArrayList<Map>();
+			Collection<String> listItems = new ArrayList<String>();
 			
 			int ordering = 0;
 				
 			MarkdownUtil md = new MarkdownUtil();
+
+			for (int i = 0; i < lines.length; i++)
+			{
+				String line = lines[i];
+				line = line.replaceAll("^\\s+", "");
+				line = line.replaceAll("\\s+$", "");
+				
+				if(line.length() == 0)
+				{
+					continue;
+				}
+				boolean listEnded = false;
+				
+				if(line.startsWith("#"))
+				{
+					listEnded = true;
+					Map boundary = new HashMap();
+					boundary.put("componenttype", "heading");
+					
+					line = line.replaceAll("^#+", "");
+					line = md.renderPlain(line);
+					boundary.put("content", line);
+					boundaries.add(boundary);
+				}
+				else if(Pattern.matches("^\\s*\\- .*", line) ||	Pattern.matches("^\\d+\\. .*", line))
+				{
+					listItems.add(line);
+				}
+				else
+				{
+					listEnded = true;
+					Map boundary = new HashMap();
+					boundary.put("componenttype", "paragraph");
+					line = md.renderPlain(line);
+					boundary.put("content", line);
+					boundaries.add(boundary);
+				}
+				
+				if(listEnded && !listItems.isEmpty())
+				{
+					String listcontent = String.join("\n", listItems);
+					listcontent = md.renderPlain(listcontent);
+					Map boundary = new HashMap();
+					boundary.put("componenttype", "paragraph");
+					boundary.put("content", listcontent);
+					boundaries.add(boundary);
+					
+					listItems.clear();
+				}
+			}
 			
-			for (Iterator iterator2 = contents.iterator(); iterator2.hasNext();) {
-				String content = (String) iterator2.next();
+			for (Iterator iterator2 = boundaries.iterator(); iterator2.hasNext();) 
+			{
+				Map boundary = (Map) iterator2.next();
 				
 				
 				Data componentcontent = contentearcher.createNewData();
 				componentcontent.setValue("componentsectionid", sectionid);
-				componentcontent.setValue("content", md.render(content));
-				componentcontent.setValue("componenttype", "paragraph");
+				componentcontent.setValue("content", boundary.get("content"));
+				componentcontent.setValue("componenttype", boundary.get("componenttype"));
 				componentcontent.setValue("ordering", ordering);
 				componentcontent.setValue("creationdate", new Date());
 				componentcontent.setValue("modificationdate", new Date());
@@ -754,13 +840,15 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			}
 */
 			
-			if (tosave.size() >= 5) {
+			if (tosave.size() >= 5) 
+			{
 				contentearcher.saveAllData(tosave, null);
 				tosave.clear();
 			}
 			
 		}
-		if (!tosave.isEmpty()) {
+		if (!tosave.isEmpty()) 
+		{
 			contentearcher.saveAllData(tosave, null);
 		}
 	}
