@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.entermediadb.ai.informatics.InformaticsManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
@@ -336,5 +337,20 @@ public class AgentModule extends BaseMediaModule {
 		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
 		assistantManager.monitorAiServers(log);
 	}
+	
+	
+	public void resetInformatics(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		InformaticsManager manager = (InformaticsManager) archive.getBean("informaticsManager");
+		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
+		
+		String moduleid = inReq.findValue("module");
+		
+		String hitsessionid = inReq.getRequestParameter("hitssessionid");
+		HitTracker hitsession = (HitTracker) inReq.getSessionValue(hitsessionid);
+		manager.resetInformatics(moduleid, hitsession.getSelectedHitracker());
+	}
+	 
 		
 }
