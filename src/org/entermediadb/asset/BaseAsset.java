@@ -358,7 +358,7 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 		for (Iterator iter = getCategories().iterator(); iter.hasNext();)
 		{
 			Category element = (Category) iter.next();
-			if (element.getCategoryPath().equals(inCategoryPath))
+			if (inCategoryPath.equals(element.getCategoryPath()))
 			{
 				removeCategory(element);
 				return true;

@@ -7,13 +7,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.openedit.MultiValued;
+import org.openedit.data.DataLoaded;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.RecordStatusEnabled;
 import org.openedit.data.SaveableData;
-import org.openedit.data.SearchData;
+import org.openedit.data.SearchDataEnabled;
 import org.openedit.users.User;
 
-public interface Asset  extends MultiValued, SaveableData, SearchData, RecordStatusEnabled
+public interface Asset  extends MultiValued, SaveableData, SearchDataEnabled, RecordStatusEnabled, DataLoaded
 {
 
 

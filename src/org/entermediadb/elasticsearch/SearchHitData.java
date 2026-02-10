@@ -1,36 +1,24 @@
 package org.entermediadb.elasticsearch;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.highlight.HighlightField;
 import org.entermediadb.data.FullTextLoader;
-import org.entermediadb.location.Position;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.BaseData;
-import org.openedit.data.PropertyDetail;
-import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
-import org.openedit.data.SearchData;
+import org.openedit.data.SearchDataEnabled;
 import org.openedit.data.Searcher;
-import org.openedit.data.ValuesMap;
-import org.openedit.modules.translations.LanguageMap;
-import org.openedit.util.DateStorageUtil;
 
-public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData,SearchData 
+public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData,SearchDataEnabled , org.openedit.data.SearchHitData
 {
 	private static final Log log = LogFactory.getLog(SearchHitData.class);
 

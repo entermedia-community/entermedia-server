@@ -100,7 +100,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.BaseSearcher;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
-import org.openedit.data.SearchData;
+import org.openedit.data.SearchDataEnabled;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.ChildFilter;
 import org.openedit.hittracker.GeoFilter;
@@ -3893,8 +3893,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					{
 						data.setValue(".version", response.getVersion());
 					}
-					return loadData(data);
-					//return data;
+					//return loadData(data);
+					return data;
 				}
 				return null;
 			}
@@ -4209,9 +4209,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 	public void updateData(Map inSource, Data inData)
 	{
-		if (inData instanceof SearchData)
+		if (inData instanceof SearchDataEnabled)
 		{
-			SearchData data = (SearchData) inData;
+			SearchDataEnabled data = (SearchDataEnabled) inData;
 			data.setSearchData(inSource);
 		}
 		else

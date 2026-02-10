@@ -20,9 +20,7 @@ import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.ResultsManager;
-import org.entermediadb.markdown.MarkdownUtil;
 import org.entermediadb.scripts.ScriptLogger;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -776,15 +774,24 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		return results;
 	}
 
-	public void rescanSearchCategories()
+	public void rescanSearchCategories(ScriptLogger inLogger)
 	{
 		//For each search category go look for relevent records. Reset old ones?
 		HitTracker tracker = getMediaArchive().query("searchcategory").exists("semantictopics").search();
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			MultiValued searchcategory = (MultiValued) iterator.next();
-			
+			Collection sumatics = searchcategory.getValues("semantictopics");
 			Map<String,Collection<String>> bytype = searchRelatedEntitiesBySearchCategory(searchcategory);
+			
+			if(bytype.isEmpty())
+			{
+				inLogger.info("Nothing found for " + searchcategory);
+			}
+			{
+				inLogger.info("Found hits " + sumatics);
+			}
+			
 			for (Iterator iterator2 = bytype.keySet().iterator(); iterator2.hasNext();)
 			{
 				String moduleid = (String)iterator2.next();
