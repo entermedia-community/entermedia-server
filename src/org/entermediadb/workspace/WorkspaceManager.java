@@ -431,10 +431,17 @@ public class WorkspaceManager
 		Collection tosave = new ArrayList();
 		String mediadbhome = "/" + archive.getCatalogSettingValue("mediadbappid");
 
+		HitTracker existing = endpointSearcher.query().exact("docsection",section.getId()).search();
+		Collection existids =existing.collectValues("id");
+		
 		Collection all = functionsSearcher.query().all().search();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
 			Data function = (Data) iterator.next();
+			if( existids.contains(function.getId() ) )
+			{
+				continue;
+			}
 			Data endpoint = endpointSearcher.createNewData();
 			endpoint.setName(function.getName());
 			endpoint.setId(function.getId());
@@ -444,12 +451,10 @@ public class WorkspaceManager
 			{
 				request.put("message", function.get("samplemesage"));
 			}
-			
 			endpoint.setValue( "samplerequest", request.toJSONString() );
 			endpoint.setValue( "httpmethod","POST");
 			endpoint.setProperty( "docsection",section.getId() );
 			tosave.add(endpoint);
-
 		}
 		endpointSearcher.saveAllData(tosave, null);
 		/*
