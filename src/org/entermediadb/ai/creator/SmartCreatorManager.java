@@ -24,6 +24,7 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.entermedia.util.Inflector;
 import org.openedit.hittracker.HitTracker;
 
 public class SmartCreatorManager extends BaseAiManager implements ChatMessageHandler
@@ -130,7 +131,20 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			Collection<String> outline = (Collection<String>) outlineJson.get("outline");
 			
-			instructions.setProposedSections(outline);
+			Collection<String> cleanedOutline = new ArrayList<String>();
+			
+			for (Iterator iterator = outline.iterator(); iterator.hasNext();) {
+				String section = (String) iterator.next();
+				section = section.replaceAll("^\\s+", "");
+				section = section.replaceAll("\\s+$", "");
+				section = section.replaceFirst("^\\d+\\.\\s+", "");
+				section = section.replaceFirst("^[A-Za-z].\\s+", "");
+				section = section.replaceFirst("^[IVX]+\\.\\s+", "");
+				
+				cleanedOutline.add(section);
+			}
+			
+			instructions.setProposedSections(cleanedOutline);
 			
 			inAgentContext.addContext("proposedoutline", instructions.getProposedSections());
 			
@@ -185,6 +199,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				Data playbackentity = getMediaArchive().getSearcher(playbackmodule.getId()).createNewData();
 				
 				String name = instructions.getTitleName();
+				
+				name = Inflector.getInstance().capitalize(name);
 				
 				playbackentity.setName(name);
 				playbackentity.setValue(inAgentContext.get("entitymoduleid"), inAgentContext.get("entityid"));
