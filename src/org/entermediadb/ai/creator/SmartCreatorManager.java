@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -24,6 +25,7 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.entermedia.util.Inflector;
 import org.openedit.hittracker.HitTracker;
 
 public class SmartCreatorManager extends BaseAiManager implements ChatMessageHandler
@@ -130,7 +132,20 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			Collection<String> outline = (Collection<String>) outlineJson.get("outline");
 			
-			instructions.setProposedSections(outline);
+			Collection<String> cleanedOutline = new ArrayList<String>();
+			
+			for (Iterator iterator = outline.iterator(); iterator.hasNext();) {
+				String section = (String) iterator.next();
+				section = section.replaceAll("^\\s+", "");
+				section = section.replaceAll("\\s+$", "");
+				section = section.replaceFirst("^\\d+\\.\\s+", "");
+				section = section.replaceFirst("^[A-Za-z].\\s+", "");
+				section = section.replaceFirst("^[IVX]+\\.\\s+", "");
+				
+				cleanedOutline.add(section);
+			}
+			
+			instructions.setProposedSections(cleanedOutline);
 			
 			inAgentContext.addContext("proposedoutline", instructions.getProposedSections());
 			
@@ -185,6 +200,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				Data playbackentity = getMediaArchive().getSearcher(playbackmodule.getId()).createNewData();
 				
 				String name = instructions.getTitleName();
+				
+				name = Inflector.getInstance().capitalize(name);
 				
 				playbackentity.setName(name);
 				playbackentity.setValue(inAgentContext.get("entitymoduleid"), inAgentContext.get("entityid"));
@@ -686,6 +703,14 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		searcher.saveAllData(tosave, null);
 	}
 	
+	protected boolean isListMd(String line) 
+	{
+		return Pattern.matches("^\\s*\\- .*", line) || 
+			Pattern.matches("^\\d+\\. .*", line) || 
+			Pattern.matches("^[A-Za-z]\\. .*", line) || 
+			Pattern.matches("^[IVX]+\\. .*", line);
+	}
+	
 	public void populateSectionsWithContents(AgentContext inAgentContext)
 	{
 		AiSmartCreatorSteps instructions = inAgentContext.getAiSmartCreatorSteps();
@@ -733,7 +758,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			String[] lines = answer.split("\\n+");
 
 			Collection<Map> boundaries = new ArrayList<Map>();
-			Collection<String> listItems = new ArrayList<String>();
+			List<String> listItems = new ArrayList<String>();
 			
 			int ordering = 0;
 				
@@ -750,6 +775,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 					continue;
 				}
 				boolean listEnded = false;
+				boolean appendCheck = false;
 				
 				if(line.startsWith("#"))
 				{
@@ -762,12 +788,23 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 					boundary.put("content", line);
 					boundaries.add(boundary);
 				}
-				else if(Pattern.matches("^\\s*\\- .*", line) ||	Pattern.matches("^\\d+\\. .*", line))
+				else if(isListMd(line))
 				{
 					listItems.add(line);
+					appendCheck = (line.startsWith("*") && line.endsWith("*")) || line.endsWith(":");
 				}
 				else
 				{
+					if(!listItems.isEmpty() && !listEnded && appendCheck)
+					{						
+						String nextline = (i < lines.length - 1) ? lines[i + 1] : null;
+						if(nextline != null && !isListMd(line))
+						{
+							String prevListItem = listItems.get(listItems.size() - 1);
+							listItems.set(listItems.size() - 1, prevListItem + "\n" + line);
+							continue;
+						}
+					}
 					listEnded = true;
 					Map boundary = new HashMap();
 					boundary.put("componenttype", "paragraph");

@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.assistant.QuestionsManager;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
@@ -21,6 +25,9 @@ import org.openedit.util.DateStorageUtil;
 
 public class InformaticsManager extends BaseAiManager
 {
+	
+	private static final Log log = LogFactory.getLog(InformaticsManager.class);
+	
 	public void processAll(ScriptLogger inLog)
 	{
 		processAssets(inLog);
@@ -268,6 +275,8 @@ public class InformaticsManager extends BaseAiManager
 					
 				}
 			}
+			
+			inLog.info("Processing Informatics Complete");
 		}
 	
 	}
@@ -322,5 +331,47 @@ public class InformaticsManager extends BaseAiManager
 			getMediaArchive().getCacheManager().put("ai", "informatics", records);
 		}
 		return records;
+	}
+	
+	
+	public void resetInformatics(String inEntityModuleId, Collection inEntities) 
+	{
+		
+		ArrayList saveAll = new ArrayList();
+		int count = 0;
+		Collection ids = new HashSet();
+		for (Iterator iterator = inEntities.iterator(); iterator.hasNext();)
+		{
+			Data entity = (Data) iterator.next();
+			
+			entity.setValue("taggedbyllm", false);
+			entity.setValue("llmerror", false);
+				
+			entity.setValue("semantictopics", null);
+			
+			entity.setValue("entityembeddingstatus", null);
+			entity.setValue("pagescreatedfor", null);
+			entity.setValue("totalpages", null);
+			
+			//entity.setValue("searchcategory", null);
+				
+			//entity.setValue("keywords", null);
+			//entity.setValue("longcaption", null);
+			ids.add(entity.getId());
+			saveAll.add(entity);
+				
+		}
+		getMediaArchive().saveData(inEntityModuleId, saveAll);
+		log.info("Saved " + saveAll.size() + " in " + inEntityModuleId);
+		
+		HitTracker todelete = getMediaArchive().query("semanticembedding").orgroup("dataid", ids).exact("moduleid", inEntityModuleId).search();
+		getMediaArchive().getSearcher("semanticembedding").deleteAll(todelete, null);
+		
+		
+		getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
+		
+		
+		
+		
 	}
 }
