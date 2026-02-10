@@ -6,10 +6,11 @@ import java.util.Date;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.data.BaseData;
+import org.openedit.data.DataLoaded;
 import org.openedit.data.SaveableData;
 import org.openedit.util.DateStorageUtil;
 
-public class Order extends BaseData implements SaveableData, CatalogEnabled
+public class Order extends BaseData implements SaveableData, DataLoaded, CatalogEnabled
 {
 	protected OrderManager fieldOrderManager;
 	protected String fieldCatalogId;
