@@ -267,7 +267,21 @@ function connect() {
 	};
 }
 
-function channelUpdateMessage(chatbox, message) {
+var messages = {};
+
+function channelUpdateMessage(chatbox, message)
+{
+	//Cancel an existing one
+	if (messages[message.messageid]) clearTimeout(messages[message.messageid]);
+	
+	messages[ message.messageid] = setTimeout(function () {
+		updageMessage(chatbox,message);
+	});
+ 
+}
+
+function updageMessage(chatbox, message)
+{
 	var existing = jQuery("#chatter-message-" + message.messageid);
 	if (existing.length) {
 		if (message.command === "messageremoved") {
