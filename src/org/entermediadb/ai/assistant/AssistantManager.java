@@ -330,7 +330,6 @@ public class AssistantManager extends BaseAiManager
 		getMediaArchive().saveData("chatterbox",agentmessage);	
 		server.broadcastMessage(getMediaArchive().getCatalogId(), agentmessage);
 	
-		
 		MediaArchive archive = getMediaArchive();
 
 		Data channel = archive.getCachedData("channel", agentmessage.get("channel"));
@@ -344,8 +343,6 @@ public class AssistantManager extends BaseAiManager
 		String apphome = "/"+ channel.get("chatapplicationid");
 		agentContext.addContext("apphome", apphome);
 		
-		
-				
 		String bean = function.get("messagehandler");
 		
 		ChatMessageHandler handler = (ChatMessageHandler) getMediaArchive().getBean( bean);

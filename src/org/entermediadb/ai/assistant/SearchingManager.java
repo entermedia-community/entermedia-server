@@ -35,12 +35,112 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 {
 	private static final Log log = LogFactory.getLog(SearchingManager.class);
 
+	
+	@Override
+	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
+	{
+		String agentFn = inAgentContext.getFunctionName();
+		
+		if ("search_welcome".equals(agentFn))
+		{
+			inAgentMessage.setValue("chatmessagestatus", "completed");
+			Schema  schema = loadSchema();
+			inAgentContext.addContext("schema", schema);
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
+			inAgentContext.setFunctionName("search_parse");
+			return response;
+		}
+		/*
+		if ("search_start".equals(agentFn))
+		{
+			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
+			MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", agentFn);
+
+			LlmResponse response = startChat(inAgentContext, usermessage, inAgentMessage, function);
+			
+			//Handle right now
+			String responseFn = response.getFunctionName();
+			if ("conversation".equals(responseFn))
+			{
+				inAgentMessage.setValue("chatmessagestatus", "completed");
+				
+				String generalresponse  = response.getMessage();
+				if(generalresponse != null)
+				{
+					MarkdownUtil md = new MarkdownUtil();
+					generalresponse = md.render(generalresponse);
+					//inAgentMessage.setValue("message",generalresponse);
+				}
+				//LlmResponse respond = new EMediaAIResponse();
+				response.setMessage(generalresponse);
+				
+				inAgentContext.setNextFunctionName(null);
+
+			}
+			else
+			{
+				response.setMessage("");
+				inAgentContext.setNextFunctionName(responseFn);
+			}
+			return response;
+		}
+		*/
+		
+		else if ("search_parse".equals(agentFn))
+		{
+			//parse the search first
+			//If no parts then keep talking
+			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
+
+			inAgentContext.addContext("userquery",usermessage.get("message"));
+			LlmConnection server = getMediaArchive().getLlmConnection(agentFn);
+			LlmResponse res = server.callStructure(inAgentContext.getContext(), agentFn);
+			JSONObject messagestructured = (JSONObject) res.getMessageStructured();
+			
+			loadSearchParts(inAgentContext, messagestructured);
+			if(inAgentContext.getAiSearchParams() == null)
+			{
+				Map details = (Map)messagestructured.get("step_details");
+				String friendly_response = (String)details.get("friendly_response"); 
+				res.setMessage( friendly_response );
+			}
+			else
+			{
+				inAgentContext.setNextFunctionName("search_tables");
+			}
+			return res;
+		}
+		
+		else if ("search_tables".equals(agentFn))
+		{
+			LlmConnection searcher = getMediaArchive().getLlmConnection("search_tables");
+			LlmResponse response =  searcher.renderLocalAction(inAgentContext);
+			
+			String message = response.getMessage();
+			
+			if(message != null)
+			{
+				inAgentContext.setMessagePrefix(message);
+			}
+			
+			return response;
+		}
+		else if ("search_semantic".equals(agentFn))
+		{
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("search_semantic");
+			LlmResponse result = llmconnection.renderLocalAction(inAgentContext);
+			return result;
+		}
+		
+		throw new OpenEditException("Function not supported " + agentFn);
+	}
+
+	
 	public void searchTables(WebPageRequest inReq, AiSearch inAiSearchParams)
 	{
 		AiSearchTable step1 = inAiSearchParams.getStep1();
 		AiSearchTable step2 = inAiSearchParams.getStep2();
-		
-
 		//		AiSearchPart part3 = inAiSearchParams.getPart3();
 		
 		HitTracker entityhits = null;
@@ -48,10 +148,9 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		
 		String step1Keyword = null;
 		String step2Keyword = null;
-		
+		//See if we should process
 		if(step1 != null && step2 != null)
 		{
-			
 			step1Keyword = step1.getParameterValues();
 			
 			HitTracker foundhits = getMediaArchive().query(step1.getModule().getId()).freeform("description", step1Keyword).search();
@@ -393,7 +492,25 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			}
 			populateVectors(manager,actions);
 		}
-
+		Collection tosave = new ArrayList();
+		
+		for (Iterator iterator = actions.iterator(); iterator.hasNext();)
+		{
+			SemanticAction semanticAction = (SemanticAction) iterator.next();
+			Data data = embedsearcher.createNewData();
+			data.setName(semanticAction.getSemanticText());
+			data.setValue("aifunction", "search_tables");
+			data.setValue("parentmodule",semanticAction.getParentData().getId());
+			if( semanticAction.getChildData() != null)
+			{
+				data.setValue("childmodule",semanticAction.getChildData().getId());
+			}
+			data.setValue("vectorarray",semanticAction.getVectors());
+			tosave.add(data);
+		}
+		embedsearcher.saveAllData(tosave, null);
+		manager.reBalance(inLog); ///Sorts em
+		
 		return actions;
 //		List<Double> tosearch = manager.makeVector("Find all records in US States in 2023");
 //		Collection<RankedResult> results = manager.searchNearestItems(tosearch);
@@ -404,14 +521,14 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 
 
 	
-	protected String parseSearchParts(AgentContext inAgentContext, JSONObject structure, String messageText) 
+	protected void loadSearchParts(AgentContext inAgentContext, JSONObject structure, String messageText) 
 	{
 		ArrayList tables = (ArrayList) structure.get("tables");
 		String type = null;
 		
 		if( tables == null)
 		{
-			return null;
+			return;
 		}
 		
 		log.info("AI Assistant Searching Tables: " + structure.toJSONString());
@@ -501,17 +618,10 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 
 		}
 		
-		if(search.getStep1() == null)
-		{
-			type = "conversation"; 
-			return type;
-		}
-
 		if( search.getStep1().getTargetTable() == null )
 		{
 			Data modulesearch = getMediaArchive().getCachedData("module", "modulesearch");
 			search.getStep1().setModule(modulesearch);
-			type = "search_tables";
 		}
 		else
 		{
@@ -550,12 +660,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 					inAgentContext.setAiSearchParams(aisearch);
 				}
 			}
-			else
-			{
-				type = "conversation";
-			}
 		}
-		return type;
 	}
 	public AiSearch processAISearchArgs(JSONObject airesults, Data inEmbeddingMatch, AgentContext inContext)
 	{
@@ -584,85 +689,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		return tables;
 	}
 
-	@Override
-	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
-	{
-		String agentFn = inAgentContext.getFunctionName();
-		
-		if ("search_welcome".equals(agentFn))
-		{
-			inAgentMessage.setValue("chatmessagestatus", "completed");
-			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
-			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
-			inAgentContext.setFunctionName("search_tables");
-			return response;
-		}
-		/*
-		if ("search_start".equals(agentFn))
-		{
-			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
-			MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", agentFn);
-
-			LlmResponse response = startChat(inAgentContext, usermessage, inAgentMessage, function);
-			
-			//Handle right now
-			String responseFn = response.getFunctionName();
-			if ("conversation".equals(responseFn))
-			{
-				inAgentMessage.setValue("chatmessagestatus", "completed");
-				
-				String generalresponse  = response.getMessage();
-				if(generalresponse != null)
-				{
-					MarkdownUtil md = new MarkdownUtil();
-					generalresponse = md.render(generalresponse);
-					//inAgentMessage.setValue("message",generalresponse);
-				}
-				//LlmResponse respond = new EMediaAIResponse();
-				response.setMessage(generalresponse);
-				
-				inAgentContext.setNextFunctionName(null);
-
-			}
-			else
-			{
-				response.setMessage("");
-				inAgentContext.setNextFunctionName(responseFn);
-			}
-			return response;
-		}
-		*/
-		else if ("search_tables".equals(agentFn))
-		{
-			//search
-			JSONObject messagestructured = (JSONObject) inAgentContext.getContextValue("messagestructured");
-			String nextFunction = parseSearch(inAgentContext, messagestructured);
-			
-			LlmConnection searcher = getMediaArchive().getLlmConnection("search_tables");
-			LlmResponse response =  searcher.renderLocalAction(inAgentContext);
-			
-			String message = response.getMessage();
-			
-			if(message != null)
-			{
-				inAgentContext.setMessagePrefix(message);
-			}
-			
-			return response;
-		}
-		else if ("search_semantic".equals(agentFn))
-		{
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("search_semantic");
-			LlmResponse result = llmconnection.renderLocalAction(inAgentContext);
-			return result;
-		}
-		
-		throw new OpenEditException("Function not supported " + agentFn);
-	}
-
-
-	protected String parseSearch(AgentContext inAgentContext, JSONObject content)
+	protected void loadSearchParts(AgentContext inAgentContext, JSONObject content)
 	{
 		//TODO: Use IF statements to sort what parsing we need to do. parseSearchParams parseWorkflowParams etc
 		
@@ -675,13 +702,11 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		JSONObject parseSearchParts = (JSONObject) details.get("parseSearchParts");
 		if(parseSearchParts == null)
 		{
-			throw new OpenEditException("No structure found for: " + parseSearchParts);
+			log.info("No structure found for: " + parseSearchParts);
+			return;
 		}
-	
 
-		String nextFunction = parseSearchParts(inAgentContext, parseSearchParts, (String)inAgentContext.getContextValue("userquery"));
-		return nextFunction;
-		
+		loadSearchParts(inAgentContext, parseSearchParts, (String)inAgentContext.getContextValue("userquery"));
 		
 	}
 

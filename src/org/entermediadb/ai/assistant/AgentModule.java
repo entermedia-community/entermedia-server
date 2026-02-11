@@ -108,11 +108,10 @@ public class AgentModule extends BaseMediaModule {
 		ScriptLogger log = (ScriptLogger)inReq.getPageValue("log");
 		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
 		assistant.addMissingFunctions(log);
-	}
+		
+		SearchingManager searchingManager = getSearchingManager(inReq);
+		searchingManager.createPossibleFunctionParameters(log);
 
-	public void createSuggestions(WebPageRequest inReq)
-	{
-		getMediaArchive(inReq).fireSharedMediaEvent("llm/autocreatesuggestions");
 	}
 
 	public void prepareDataForGuide(WebPageRequest inReq) throws Exception 
@@ -350,6 +349,7 @@ public class AgentModule extends BaseMediaModule {
 		String hitsessionid = inReq.getRequestParameter("hitssessionid");
 		HitTracker hitsession = (HitTracker) inReq.getSessionValue(hitsessionid);
 		manager.resetInformatics(moduleid, hitsession.getSelectedHitracker());
+
 	}
 	 
 		

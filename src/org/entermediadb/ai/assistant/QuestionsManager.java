@@ -72,7 +72,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			
 			inAgentContext.addContext("embeddedtext", text);
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
-			LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext(),agentFn);
+			LlmResponse response = llmconnection.callStructure(inAgentContext.getContext(),agentFn);
 			
 			Searcher searcher = getMediaArchive().getSearcher("aisuggestion");
 

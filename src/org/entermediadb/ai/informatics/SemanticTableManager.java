@@ -166,44 +166,6 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 	}
 
 	
-
-	
-	public void indexAll(ScriptLogger inLog)
-	{
-		//Check that we are not already scanning
-		if( isIndexingVectors() )
-		{
-			inLog.error("Already Indexing");
-			return;
-		}
-		setIndexingVectors(true);
-		try
-		{
-			HitTracker all = getMediaArchive().query("module").exact("semanticenabled", true).search();
-			if(all.isEmpty())
-			{
-				log.info("No modules enabled for semantics");
-				return;
-			}
-			Collection<String> ids = all.collectValues("id");
-			log.info("Scanning modules " + ids);
-			SemanticConfig instruction = getSemanticInstructions();
-			QueryBuilder query = getMediaArchive().query("modulesearch");
-			query.exists(instruction.getFieldName());
-			query.exact(instruction.getFieldName() + "indexed", false);
-			query.put("searchtypes", ids);
-			query.put("searchasset", true); //this is needed to include asset
-			
-			HitTracker hits = query.search();
-			hits.enableBulkOperations();
-			log.info("Indexing " + instruction.getFieldName() + " in: " + hits);
-			indexTracker(inLog, instruction, hits);
-		}
-		finally
-		{
-			setIndexingVectors(false);
-		}
-	}
 	public void indexData(ScriptLogger inLog, Collection<MultiValued> inRecords)
 	{
 		SemanticConfig instruction = getSemanticInstructions();
@@ -531,7 +493,7 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 			params.put("contextfields", contextfields);
 			params.put("data", inData);
 			
-			LlmResponse structure = llmconnection.callStructuredOutputList(params,"createSemanticTopics");
+			LlmResponse structure = llmconnection.callStructure(params,"createSemanticTopics");
 			if (structure == null)
 			{
 				log.info("No structured data returned");

@@ -89,7 +89,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 
 			inAgentContext.addContext("creationprompt", prompt);
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
-			LlmResponse res = llmconnection.callStructuredOutputList(inAgentContext.getContext(), "smartcreator_parse");
+			LlmResponse res = llmconnection.callStructure(inAgentContext.getContext(), "smartcreator_parse");
 			
 			JSONObject paragraphs = res.getMessageStructured();
 			instructions.loadJsonParts(paragraphs);
@@ -169,7 +169,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			String prompt = usermessage.get("message");
 			inAgentContext.addContext("confirmationprompt", prompt);
 			
-			LlmResponse res = llmconnection.callStructuredOutputList(inAgentContext.getContext(), "smartcreator_confirmoutline");
+			LlmResponse res = llmconnection.callStructure(inAgentContext.getContext(), "smartcreator_confirmoutline");
 			
 			JSONObject updatedSectionsJson = res.getMessageStructured();
 			

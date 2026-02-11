@@ -65,7 +65,7 @@ public class NamedEntityRecognitionManager extends ClassifyManager
  		
  		LlmConnection llmconnection = getLlmNamingServer();
  		
-		LlmResponse results = llmconnection.callStructuredOutputList(params,"namedEntityRecognition");
+		LlmResponse results = llmconnection.callStructure(params,"namedEntityRecognition");
 		Map categories = (Map) results.getMessageStructured().get("categories");
 		if(categories != null)
 		{			

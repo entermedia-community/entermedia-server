@@ -539,7 +539,7 @@ public abstract class BaseAiManager extends BaseManager
 		inAgentContext.addContext("error", inError);
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("render_error");
 		LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "render_error");
-		inAgentContext.setFunctionName(null);
+		//inAgentContext.setFunctionName(null);
 		inAgentContext.setNextFunctionName(null);
 		return response;
 	}

@@ -223,10 +223,5 @@ public class SemanticClassifier extends InformaticsProcessor implements CatalogE
 		//log.info("Found matching IDs:" + allIds);
 
 	}
-	
-	public void indexAll(ScriptLogger inLog)
-	{
-		setConfigurationId("semantictopics");
-		getSemanticTableManager().indexAll(inLog);
-	}
+
 }

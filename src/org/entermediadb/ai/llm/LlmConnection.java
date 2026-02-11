@@ -38,7 +38,7 @@ public interface LlmConnection {
 	public Data getAiServerData();
 	public void setAiServerData(Data fieldMainServerUrl);
 
-    public LlmResponse callStructuredOutputList(Map inParams, String inFuction);
+    public LlmResponse callStructure(Map inParams, String inFuction);
 	
 	public LlmResponse callOCRFunction(Map inParams, String inBase64Image, String inFunctioName);
 	

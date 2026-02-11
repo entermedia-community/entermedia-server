@@ -135,7 +135,7 @@ public class OllamaConnection extends OpenAiConnection implements CatalogEnabled
 	}
 	
 	@Override
-	public LlmResponse callStructuredOutputList(Map inParams, String inFuction) 
+	public LlmResponse callStructure(Map inParams, String inFuction) 
 	{
 		inParams.put("model", getModelName());
 		

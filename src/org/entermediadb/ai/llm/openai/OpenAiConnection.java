@@ -298,7 +298,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	}
 
 	@Override
-	public LlmResponse callStructuredOutputList(Map inParams, String inFunctionName)
+	public LlmResponse callStructure(Map inParams, String inFunctionName)
 	{
 		inParams.put("model", getModelName());
 		

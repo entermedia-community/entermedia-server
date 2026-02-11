@@ -70,7 +70,7 @@ public class LlamaVisionConnection extends LlamaOpenAiConnection {
 	}
 	
 	@Override
-	public LlmResponse callStructuredOutputList(Map inParams, String inFunctionName)
+	public LlmResponse callStructure(Map inParams, String inFunctionName)
 	{
 		inParams.put("model", getModelName());
 		
