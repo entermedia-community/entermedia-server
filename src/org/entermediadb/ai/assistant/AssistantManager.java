@@ -185,8 +185,13 @@ public class AssistantManager extends BaseAiManager
 			}
 			agentContext.setChannel(channel);
 			agentContext.setValue("channel", inChannelId);
-			agentContext.setValue("entityid", channel.get("dataid"));
-			agentContext.setValue("entitymoduleid", channel.get("searchtype"));
+			String entitymoduleid = channel.get("searchtype");
+			Data entity = archive.getCachedData(entitymoduleid, channel.get("dataid"));
+			Data entitymodule = archive.getCachedData("module", entitymoduleid);
+			agentContext.setValue("entityid", entity.getId());
+			agentContext.setValue("entitymoduleid", entitymoduleid);
+			agentContext.addContext("entity", entity);
+			agentContext.addContext("entitymodule", entitymodule);
 			searcher.saveData(agentContext);
 
 			archive.getCacheManager().put("agentcontext", inChannelId, agentContext);

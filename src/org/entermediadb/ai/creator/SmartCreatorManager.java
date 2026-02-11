@@ -185,8 +185,6 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				inAgentContext.addContext("proposedoutline", instructions.getProposedSections());
 				inAgentContext.setFunctionName("smartcreator_confirmoutline");
 				
-				
-				
 				String function = findLocalActionName(inAgentContext);  //Ask again
 				
 				LlmConnection llmconnection2 = getMediaArchive().getLlmConnection(function);
@@ -227,8 +225,11 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				else
 				{
 					inAgentContext.addContext("confirmedoutline", instructions.getConfirmedSections());
+					
 					inAgentContext.addContext("playbackentity", instructions.getTargetEntity());
 					inAgentContext.addContext("playbackentitymodule", instructions.getTargetModule());
+					
+					
 					llmconnection = getMediaArchive().getLlmConnection("smartcreator_renderoutline");
 					res = llmconnection.renderLocalAction(inAgentContext, "smartcreator_renderoutline");
 				}
