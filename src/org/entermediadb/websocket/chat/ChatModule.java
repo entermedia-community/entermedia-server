@@ -667,11 +667,7 @@ public class ChatModule extends BaseMediaModule
 			currentchannel = (MultiValued)channelsearcher.createNewData();
 			currentchannel.setName(channelname);
 			currentchannel.setValue("searchtype", module);
-			if ("agentchat".equals(channeltype))
-			{
-				currentchannel.setValue("dataid", inReq.getUser() );
-			}
-			else
+			if (!"agentchat".equals(channeltype))
 			{
 				currentchannel.setValue("dataid", entityid );
 			}
