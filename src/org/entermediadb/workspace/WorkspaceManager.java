@@ -415,6 +415,11 @@ public class WorkspaceManager
 				.put("searchtypes", moduleids.collectValues("id"))
 				.exact("entityembeddingstatus", "embedded")
 				.searchOne();
+		
+		if (entity == null)
+		{
+			return;
+		}
 		Data entitymodule = archive.getCachedData("module",entity.get("entitysourcetype"));
 		
 		JSONObject request = new JSONObject();
