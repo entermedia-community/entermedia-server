@@ -51,8 +51,8 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 	@Override
 	public boolean isLocked()
 	{
-		throw new OpenEditException("Unimplemented");
-		//return false;
+		//throw new OpenEditException("Unimplemented");
+		return false;
 	}
 
 	@Override
