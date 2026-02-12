@@ -212,18 +212,29 @@ public class EntityManager implements CatalogEnabled
 				if (!entitysourcepath.equals(cat.getCategoryPath()))
 				{
 					//TODO: move entire category to new	
-					log.info("Category should be moved " + cat.getCategoryPath() + " -> " + entitysourcepath);
-					cat.setName(entity.getName());
-					
 					String parent = PathUtilities.extractDirectoryPath(entity.getSourcePath());
 					Category parentCat = getMediaArchive().getCategorySearcher().createCategoryPath(parent);
-					
 					Category existing = parentCat.getChildByName(entity.getName());
+
+					/**
+					 * This is delicate. Category was reloaded from the DB when we called getChildBYName
+					 * So we need to set the name afterwards
+					 */
+					cat.setName(entity.getName());
+					log.info("Category should be moved " + cat.getCategoryPath() + " -> " + entitysourcepath);
+					
 					if( existing != null)
 					{
 						//Check for assets?
-						existing.setName(entity.getName() + " (old)"); //To manually merge together
-						existing.setValue("categorypath", null); //clear it
+						if( cat.getId().equals(existing.getId()))
+						{
+							existing = null;
+						}
+						else
+						{
+							existing.setName(entity.getName() + " (old)"); //To manually merge together
+							existing.setValue("categorypath", null); //clear it
+						}
 					}
 					cat.setValue("categorypath", null); //clear it
 					parentCat.addChild(cat);
