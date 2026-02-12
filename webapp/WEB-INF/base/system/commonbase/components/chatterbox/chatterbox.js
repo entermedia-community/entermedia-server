@@ -272,11 +272,20 @@ var messages = {};
 function channelUpdateMessage(chatbox, message)
 {
 	//Cancel an existing one
-	if (messages[message.messageid]) clearTimeout(messages[message.messageid]);
+	if (messages[message.messageid]) 
+	{
+		messages[ message.messageid] = setTimeout(function () {
+				updageMessage(chatbox,message);
+		}, 1000);	
+	}
+	else 
+	{
+		messages[ message.messageid] = setTimeout(function () {
+						updageMessage(chatbox,message);
+		});
+	}
 	
-	messages[ message.messageid] = setTimeout(function () {
-		updageMessage(chatbox,message);
-	});
+	
  
 }
 
