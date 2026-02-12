@@ -94,11 +94,11 @@ public class InformaticsManager extends BaseAiManager
 		
 		if (Boolean.valueOf(allowclassifyothernodes) ) 
 		{
-			inLog.info("Asset search query: " + pendingrecords + " " +date);
+			//inLog.info("Asset search query: " + pendingrecords + " " +date);
 		}
 		else 
 		{
-			inLog.info("Asset local search query: " + pendingrecords + " " +date);
+			//inLog.info("Asset local search query: " + pendingrecords + " " +date);
 		}
 
 		if (!pendingrecords.isEmpty())
@@ -141,7 +141,8 @@ public class InformaticsManager extends BaseAiManager
 		}
 		else
 		{
-			inLog.info("AI assets to tag:` " + pendingrecords.getFriendlyQuery());
+			inLog.info("No Assets to Process:` " + pendingrecords.getFriendlyQuery());
+			//inLog.info("AI assets to tag:` " + pendingrecords.getFriendlyQuery());
 		}
 	}
 
@@ -156,28 +157,44 @@ public class InformaticsManager extends BaseAiManager
 		}
 		getMediaArchive().saveData("asset", pageofhits);
 		
-		try 
+		Collection workinghits = new ArrayList(pageofhits);
+
+		for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
 		{
-			for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
-			{
-				MultiValued config = (MultiValued) iterator2.next();
-				InformaticsProcessor processor = loadProcessor(config.get("bean"));
-				//inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" ); //Add Header Logs in each Bean
-				processor.processInformaticsOnAssets(inLog, config, pageofhits);
-				getMediaArchive().saveData("asset", pageofhits);
-			}
+			MultiValued config = (MultiValued) iterator2.next();
+			InformaticsProcessor processor = loadProcessor(config.get("bean"));
+			//inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" ); //Add Header Logs in each Bean
+			processor.processInformaticsOnAssets(inLog, config, workinghits);
 			
-		}
-		finally
-		{
 			for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
 			{
-				Asset asset = (Asset) iterator.next();
-				asset.setValue("taggedbyllm", true);
-				asset.toggleLock(agent);
+				MultiValued data = (MultiValued) iterator.next();
+				if(data.getBoolean("llmerror"))
+				{
+					workinghits.remove(data); //We do not process more.
+				}
 			}
-			getMediaArchive().saveData("asset", pageofhits);
+			getMediaArchive().saveData("asset", pageofhits); //Not need it?
 		}
+		
+		for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
+		{
+			Asset asset = (Asset) iterator.next();
+			if(!asset.getBoolean("llmerror"))
+			{
+				asset.setValue("taggedbyllm", true);
+			}
+		}
+
+		for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
+		{
+			Asset asset = (Asset) iterator.next();
+			asset.toggleLock(agent); //Todo: Implement Release
+		}
+		getMediaArchive().saveData("asset", pageofhits);
+		
+		inLog.info("Processing Informatics on Assets Complete");
+
 	}
 
 	public void processEntities(ScriptLogger inLog)
@@ -253,19 +270,34 @@ public class InformaticsManager extends BaseAiManager
 				{
 					continue;
 				}
+
+				Collection workinghits = new ArrayList(validhits);
 				for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
 				{
 					MultiValued config = (MultiValued) iterator2.next();
 					InformaticsProcessor processor = loadProcessor(config.get("bean"));
 					//inLog.info("Processing : " + config);
-					processor.processInformaticsOnEntities(inLog, config, validhits);
+					processor.processInformaticsOnEntities(inLog, config, workinghits);
+					for (Iterator iterator = validhits.iterator(); iterator.hasNext();)
+					{
+						MultiValued data = (MultiValued) iterator.next();
+						if(data.getBoolean("llmerror"))
+						{
+							workinghits.remove(data); //We do not process more.
+						}
+					}
 				}
 				//Group them by type
+				
 				for (Iterator iterator = validhits.iterator(); iterator.hasNext();)
 				{
-					Data data = (Data) iterator.next();
-					data.setValue("taggedbyllm", true);
-				}
+					MultiValued data = (MultiValued) iterator.next();
+					if(!data.getBoolean("llmerror"))
+					{
+						data.setValue("taggedbyllm", true);
+					}
+				}		
+
 				Map<String, Collection> groupbymodule = groupByModule(validhits);
 				for (Iterator iterator = groupbymodule.keySet().iterator(); iterator.hasNext();)
 				{
@@ -274,6 +306,7 @@ public class InformaticsManager extends BaseAiManager
 					getMediaArchive().saveData(moduleid,tosave);
 					
 				}
+
 			}
 			
 			inLog.info("Processing Informatics Complete");

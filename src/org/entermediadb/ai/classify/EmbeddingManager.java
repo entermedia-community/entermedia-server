@@ -20,6 +20,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.page.manage.PageManager;
@@ -50,13 +51,25 @@ public class EmbeddingManager extends InformaticsProcessor
 		return fieldEngine;
 	}
 	
-	public boolean embedData(ScriptLogger inLog, JSONObject embeddingPayload)
+	public String embedData(ScriptLogger inLog, Data inEntity, JSONObject embeddingPayload)
 	{
-		LlmConnection connection = getMediaArchive().getLlmConnection("documentEmbedding");
-		
-		LlmResponse response = connection.callJson( "/save", embeddingPayload);
-		response.getMessage();
-		return true;
+		try
+		{
+			LlmConnection connection = getMediaArchive().getLlmConnection("documentEmbedding");
+			LlmResponse response = connection.callJson( "/save", embeddingPayload);
+			
+			inEntity.setValue("entityembeddingstatus", "embedded");
+			inEntity.setValue("entityembeddeddate", new Date());
+			
+			return response.getMessage();
+		}
+		catch (Exception e)
+		{
+			inEntity.setValue("llmerror", true);
+			inEntity.setValue("entityembeddingstatus", "failed");
+			inLog.error("Embed failed on " + inEntity +" "+ e.getMessage());
+		}
+		return null;
 	}
 
 	@Override
@@ -190,7 +203,7 @@ public class EmbeddingManager extends InformaticsProcessor
 			String markdowncontent = page.get("markdowncontent");     ///TODO: Support on the fly option
 			if( markdowncontent == null || markdowncontent.isEmpty())
 			{
-				log.info("No markdowncontent found "+ document);
+				log.info("No markdowncontent found for: "+ document);
 				continue;
 			}
 
@@ -203,26 +216,16 @@ public class EmbeddingManager extends InformaticsProcessor
 			
 		}	
 		
+		if (allpages.isEmpty())
+		{
+			log.info("No pages found for: "+ document);
+			return;
+		}
+		
 		documentdata.put("pages", allpages);
 		
-		boolean OK = embedData(inLog, documentdata);
-		String newstatus = "embedded";
-		if(OK)
-		{		
-			document.setValue("entityembeddeddate", new Date());
-		}
-		else
-		{
-			newstatus =  "failed";
-		}
-		document.setValue("entityembeddingstatus", newstatus);
-		
-		for (Iterator iterator2 = pages.iterator(); iterator2.hasNext();)
-		{
-			Data page = (Data) iterator2.next();
-			page.setValue("entityembeddingstatus", newstatus);
-		}
-		//Save pages
+		String message = embedData(inLog, document, documentdata);
+
 	}
 	
 	protected void embedEntity(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
@@ -298,16 +301,8 @@ public class EmbeddingManager extends InformaticsProcessor
 			
 			entitydata.put("pages", allpages);
 			
-			boolean OK = embedData(inLog, entitydata);
-			if(OK)
-			{
-				inEntity.setValue("entityembeddingstatus", "embedded");
-				inEntity.setValue("entityembeddeddate", new Date());
-			}
-			else
-			{
-				inEntity.setValue("entityembeddingstatus", "failed");
-			}
+			embedData(inLog, inEntity, entitydata);
+			
 		} 
 	}
 	
@@ -361,17 +356,7 @@ public class EmbeddingManager extends InformaticsProcessor
 			
 			blogdata.put("pages", allpages);
 			
-			boolean OK = embedData(inLog, blogdata);
-			
-			if(OK)
-			{
-				blog.setValue("entityembeddingstatus", "embedded");
-				blog.setValue("entityembeddeddate", new Date());
-			}
-			else
-			{
-				blog.setValue("entityembeddingstatus", "failed");
-			}
+			embedData(inLog, blog, blogdata);
 		}
 	}
 
