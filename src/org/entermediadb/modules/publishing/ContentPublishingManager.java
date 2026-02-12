@@ -858,7 +858,7 @@ public class ContentPublishingManager implements CatalogEnabled, ChatMessageHand
 
 	}
 
-	public Data createFromLLM(Map params, LlmConnection inLlm, Data inContentrequest) throws Exception
+	public Data createFromLLM(AgentContext params, LlmConnection inLlm, Data inContentrequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive();
 

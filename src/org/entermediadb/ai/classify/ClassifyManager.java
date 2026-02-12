@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
@@ -106,10 +107,10 @@ public class ClassifyManager extends InformaticsProcessor
 
 		if(!aifields.isEmpty())
 		{
-			Map params = new HashMap();
-			params.put("asset", asset);
-			params.put("data", asset);
-			params.put("aifields", aifields);
+			AgentContext agentcontext = new AgentContext();
+			agentcontext.addContext("asset", asset);
+			agentcontext.addContext("data", asset);
+			agentcontext.addContext("aifields", aifields);
 			
 			LlmConnection llmconnection = getLlmNamingServer();
 			
@@ -204,9 +205,9 @@ public class ClassifyManager extends InformaticsProcessor
 				textContent = textContent.substring(0, Math.min(4000, textContent.length()));
 			}
 			
-			params.put("contextfields", contextFields);
+			agentcontext.addContext("contextfields", contextFields);
 			
-			LlmResponse results = llmconnection.callClassifyFunction(params, functionname, base64EncodedString, textContent);
+			LlmResponse results = llmconnection.callClassifyFunction(agentcontext, functionname, base64EncodedString, textContent);
 
 			if (results != null)
 			{
@@ -318,7 +319,7 @@ public class ClassifyManager extends InformaticsProcessor
 			}
 		}
 		
-		Map params = new HashMap();
+		AgentContext agentcontext = new AgentContext();
 		
 		String assetid = inEntity.get("primarymedia");
 		if( assetid == null)
@@ -330,7 +331,7 @@ public class ClassifyManager extends InformaticsProcessor
 		
 		if (primaryasset != null)
 		{
-			params.put("primaryasset", primaryasset);
+			agentcontext.put("primaryasset", primaryasset);
 			
 			Searcher assetsearcher = getMediaArchive().getAssetSearcher();
 			
@@ -355,16 +356,16 @@ public class ClassifyManager extends InformaticsProcessor
 		else
 		{
 			
-			params.put("entity", inEntity);
-			params.put("data", inEntity);
-			params.put("contextfields", contextFields);
-			params.put("fieldstofill", fieldsToFill);
+			agentcontext.put("entity", inEntity);
+			agentcontext.put("data", inEntity);
+			agentcontext.put("contextfields", contextFields);
+			agentcontext.put("fieldstofill", fieldsToFill);
 			
 			
 			boolean isDocPage = inEntity.get("entitydocument") != null;
 			if(isDocPage)
 			{
-				params.put("docpage", isDocPage);
+				agentcontext.put("docpage", isDocPage);
 //				base64EncodedString = loadImageContent(inEntity);
 			}
 
@@ -372,7 +373,7 @@ public class ClassifyManager extends InformaticsProcessor
 			{
 				LlmConnection llmconnection = getEntityClassificationLlmConnection();
 
-				LlmResponse results = llmconnection.callClassifyFunction(params, "classifyEntity", null); 
+				LlmResponse results = llmconnection.callClassifyFunction(agentcontext, "classifyEntity", null); 
 				
 				if (results != null)
 				{

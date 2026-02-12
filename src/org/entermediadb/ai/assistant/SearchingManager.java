@@ -95,7 +95,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 
 			inAgentContext.addContext("userquery",usermessage.get("message"));
 			LlmConnection server = getMediaArchive().getLlmConnection(agentFn);
-			LlmResponse res = server.callStructure(inAgentContext.getContext(), agentFn);
+			LlmResponse res = server.callStructure(inAgentContext, agentFn);
 			JSONObject messagestructured = (JSONObject) res.getMessageStructured();
 			
 			loadSearchParts(inAgentContext, messagestructured);

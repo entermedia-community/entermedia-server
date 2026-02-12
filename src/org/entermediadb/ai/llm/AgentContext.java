@@ -24,6 +24,8 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	
 	Long fieldWaitTime;
 	
+	
+	
 	//TODO: Cache history here for performance
 	
 	public Long getWaitTime()
@@ -137,6 +139,11 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	
 	public void setContext(Map<String,Object> inContext) {
 		context = inContext;
+	}
+	
+	public void put(String inKey, Object inValue)
+	{
+		addContext(inKey, inValue);
 	}
 	
 	public void addContext(String inKey, Object inValue) {
@@ -292,5 +299,15 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 		return getUserProfile().getUser();
 	}
 	
+	public void setLocale(String inLocale)
+	{
+		setValue("locale",inLocale);
+	}
 	
+	
+	public String getLocale()
+	{
+		return get("locale");
+	}
+
 }

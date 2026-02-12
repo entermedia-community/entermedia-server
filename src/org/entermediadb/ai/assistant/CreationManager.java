@@ -50,7 +50,7 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 		else if("creation_image_parse".equals(inAgentContext.getFunctionName()))
 		{
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection("creation_image_parse");
-			LlmResponse response = llmconnection.callStructure(inAgentContext.getContext(),"creation_image_parse");
+			LlmResponse response = llmconnection.callStructure(inAgentContext,"creation_image_parse");
 			if(response == null)
 			{
 				throw new OpenEditException("No results from AI for function: " + inAgentContext.getFunctionName());

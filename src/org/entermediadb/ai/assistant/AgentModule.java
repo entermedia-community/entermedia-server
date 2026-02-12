@@ -113,7 +113,7 @@ public class AgentModule extends BaseMediaModule {
 		searchingManager.createPossibleFunctionParameters(log);
 
 	}
-
+/*
 	public void prepareDataForGuide(WebPageRequest inReq) throws Exception 
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -158,7 +158,7 @@ public class AgentModule extends BaseMediaModule {
 			context.setNextFunctionName(context.getFunctionName());
 		}
 	}
-	
+	*/
 	public void loadModuleSchemaForJson(WebPageRequest inReq) throws Exception 
 	{
 		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
@@ -166,41 +166,7 @@ public class AgentModule extends BaseMediaModule {
 		inReq.putPageValue("modulesenum", modulesenum);
 	}
 	
-	public void loadSuggestions(WebPageRequest inReq) throws Exception 
-	{
-		String toplevel = inReq.getRequestParameter("toplevelaifunctionid");
-		if(toplevel == null)
-		{
-			return;
-		}
 		
-		String entityid = inReq.getRequestParameter("entityid");
-		String entitymoduleid = inReq.getRequestParameter("entitymoduleid");
-		
-		Searcher aifunctionsearcher = getMediaArchive(inReq).getSearcher("aifunction");
-				
-		Searcher aisuggestions = getMediaArchive(inReq).getSearcher("aisuggestion");
-		
-		HitTracker hits = aisuggestions.query()
-					.exact("aifunction", toplevel)
-					.exact("entityid", entityid).search();
-		
-		Collection<Map<String, String>> suggestions = new ArrayList<Map<String, String>>();
-		
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-		{
-			Data data = (Data) iterator.next();
-			
-			Map<String, String> suggestion = new HashMap<String, String>();
-			suggestion.put("name", data.getName());
-			suggestion.put("prompt", data.get("prompt"));
-			
-			suggestions.add(suggestion);
-			
-		}
-		inReq.putPageValue("suggestions", suggestions);
-	}
-	
 	public void loadSearchSuggestions(WebPageRequest inReq) throws Exception 
 	{
 		SearchingManager searching = (SearchingManager) getMediaArchive(inReq).getBean("searchingManager");
@@ -281,6 +247,8 @@ public class AgentModule extends BaseMediaModule {
 			channelid = currentchannel.getId();
 		}
 		AgentContext context = assistantManager.loadContext(channelid);
+		
+		context.setLocale(inReq.getLocale()); //----
 		
 		inReq.putPageValue("agentcontext", context);
 		

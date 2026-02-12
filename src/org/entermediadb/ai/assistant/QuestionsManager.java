@@ -20,6 +20,7 @@ import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 
@@ -47,8 +48,25 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			Data entitymodule = getMediaArchive().getCachedData("module", entitymoduleid);
 			inAgentContext.addContext("entitymodule", entitymodule);
 
+			
+			Collection<GuideStatus> statuses  = getAssistantManager().prepareDataForGuide(entitymodule, entity);
+			inAgentContext.addContext("statuses", statuses);
+			
+			/*for(GuideStatus stat : statuses)
+			{
+				if(!stat.isReady())
+				{
+					inAgentContext.setValue("wait", 1000L);
+					inAgentContext.setNextFunctionName(inAgentContext.getFunctionName());
+					
+					return null;
+				}
+			}
+			*/
+			
 			Collection aisuggestions = getMediaArchive().query("aisuggestion").exact("entityid", entity).search();
-			inAgentContext.addContext("aisuggetions", aisuggestions);
+			inAgentContext.addContext("suggestions", aisuggestions);
+			
 			
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
@@ -72,7 +90,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			
 			inAgentContext.addContext("embeddedtext", text);
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
-			LlmResponse response = llmconnection.callStructure(inAgentContext.getContext(),agentFn);
+			LlmResponse response = llmconnection.callStructure(inAgentContext, agentFn);
 			
 			Searcher searcher = getMediaArchive().getSearcher("aisuggestion");
 
@@ -89,7 +107,15 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 				suggestiondata.setValue("prompt", airesponse.get("prompt"));
 				searcher.saveData(suggestiondata);
 			}
-			inAgentContext.setNextFunctionName("question_welcome");
+			if( suggestions.isEmpty())
+			{
+				LlmResponse response2 = llmconnection.renderLocalAction(inAgentContext, "question_nosuggestions");
+				return response2;
+			}
+			else
+			{
+				inAgentContext.setNextFunctionName("question_welcome");
+			}
 			return response;
 		}
 		if ("question_ask".equals(agentFn))
@@ -293,6 +319,13 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		EmbeddingManager embeddings = (EmbeddingManager) getMediaArchive().getBean("embeddingManager");
 		String answer = embeddings.findAnswer(docIds, inQuestion);
 		return answer;
+	}
+	
+	
+	public AssistantManager getAssistantManager()
+	{
+		AssistantManager assistantManager = (AssistantManager) getMediaArchive().getBean("assistantManager");
+		return assistantManager;
 	}
 
 }

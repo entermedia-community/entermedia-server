@@ -89,7 +89,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 
 			inAgentContext.addContext("creationprompt", prompt);
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
-			LlmResponse res = llmconnection.callStructure(inAgentContext.getContext(), "smartcreator_parse");
+			LlmResponse res = llmconnection.callStructure(inAgentContext, "smartcreator_parse");
 			
 			JSONObject paragraphs = res.getMessageStructured();
 			instructions.loadJsonParts(paragraphs);
@@ -169,7 +169,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			String prompt = usermessage.get("message");
 			inAgentContext.addContext("confirmationprompt", prompt);
 			
-			LlmResponse res = llmconnection.callStructure(inAgentContext.getContext(), "smartcreator_confirmoutline");
+			LlmResponse res = llmconnection.callStructure(inAgentContext, "smartcreator_confirmoutline");
 			
 			JSONObject updatedSectionsJson = res.getMessageStructured();
 			
@@ -901,12 +901,11 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			return;
 		}
 		
-		
-		Map params = new HashMap();
-		params.put("paragraph", content);
+		AgentContext agentcontext = new AgentContext();
+		agentcontext.put("paragraph", content);
 		
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("startCreator");
-		LlmResponse response = llmconnection.callSmartCreatorAiAction(params, "grammar");
+		LlmResponse response = llmconnection.callSmartCreatorAiAction(agentcontext, "grammar");
 		
 		JSONObject result = response.getMessageStructured();
 		if(result != null)
@@ -931,11 +930,11 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		}
 		
 		
-		Map params = new HashMap();
-		params.put("paragraph", content);
+		AgentContext agentcontext = new AgentContext();
+		agentcontext.put("paragraph", content);
 		
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("startCreator");
-		LlmResponse response = llmconnection.callSmartCreatorAiAction(params, "improve");
+		LlmResponse response = llmconnection.callSmartCreatorAiAction(agentcontext, "improve");
 		
 		JSONObject result = response.getMessageStructured();
 		if(result != null)
@@ -959,11 +958,11 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		}
 		
 		
-		Map params = new HashMap();
-		params.put("prompt", inPrompt);
+		AgentContext agentcontext = new AgentContext();
+		agentcontext.put("prompt", inPrompt);
 		
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("startCreator");
-		LlmResponse response = llmconnection.callSmartCreatorAiAction(params, "generate");
+		LlmResponse response = llmconnection.callSmartCreatorAiAction(agentcontext, "generate");
 		
 		JSONObject result = response.getMessageStructured();
 		if(result != null)

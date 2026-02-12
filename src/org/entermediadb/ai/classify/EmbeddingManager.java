@@ -281,14 +281,14 @@ public class EmbeddingManager extends InformaticsProcessor
 					}
 				}
 				
-				Map<String, Object> inParams = new HashMap();
-				inParams.put("data", inEntity);
-				inParams.put("contextfields", contextFields);
+				AgentContext agentcontext = new AgentContext();
+				agentcontext.put("data", inEntity);
+				agentcontext.put("contextfields", contextFields);
 				
 				String templatepath = getMediaArchive().getMediaDbId() + "/ai/default/calls/commons/context_fields.json";
 				
 				LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
-				String responsetext = llmconnection.loadInputFromTemplate(templatepath, inParams);
+				String responsetext = llmconnection.loadInputFromTemplate(agentcontext, templatepath);
 				
 				pagedata.put("text", responsetext);
 			}
@@ -539,7 +539,7 @@ public class EmbeddingManager extends InformaticsProcessor
 		Data channel = inAgentContext.getChannel();
 		String apphome = "/"+ channel.get("chatapplicationid");
 		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/ragresponse.html";
-		String responsetext = llmconnection.loadInputFromTemplate(templatepath, inAgentContext);
+		String responsetext = llmconnection.loadInputFromTemplate(inAgentContext, templatepath);
 		
 		response.setMessage(responsetext);
 		response.setMessagePlain(answer);

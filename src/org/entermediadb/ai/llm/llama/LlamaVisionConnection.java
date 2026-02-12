@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.ai.llm.openai.OpenAiResponse;
 import org.entermediadb.asset.MediaArchive;
@@ -30,7 +31,7 @@ public class LlamaVisionConnection extends LlamaOpenAiConnection {
 	}
 	
 	@Override
-	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image, String textContent)
+	public LlmResponse callClassifyFunction(AgentContext params, String inFunction, String inBase64Image, String textContent)
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -56,7 +57,7 @@ public class LlamaVisionConnection extends LlamaOpenAiConnection {
 			throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunction);
 		}
 			
-		String definition = loadInputFromTemplate(templatepath, params);
+		String definition = loadInputFromTemplate(params, templatepath);
 
 		JSONParser parser = new JSONParser();
 		JSONObject payload = (JSONObject) parser.parse(definition);
@@ -70,12 +71,12 @@ public class LlamaVisionConnection extends LlamaOpenAiConnection {
 	}
 	
 	@Override
-	public LlmResponse callStructure(Map inParams, String inFunctionName)
+	public LlmResponse callStructure(AgentContext inParams, String inFunctionName)
 	{
 		inParams.put("model", getModelName());
 		
 		String templatepath = "/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/calls/" + inFunctionName + ".json";
-		String prompt = loadInputFromTemplate(templatepath, inParams);
+		String prompt = loadInputFromTemplate(inParams, templatepath);
 
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(prompt);
@@ -89,7 +90,7 @@ public class LlamaVisionConnection extends LlamaOpenAiConnection {
 	}
 	
 	@Override
-	public LlmResponse callOCRFunction(Map inParams, String inBase64Image, String inFunctioName)
+	public LlmResponse callOCRFunction(AgentContext inParams, String inBase64Image, String inFunctioName)
 	{
 		MediaArchive archive = getMediaArchive();
 		String templatepath = "/" + archive.getMediaDbId() + "/ai/" + getLlmProtocol() +"/calls/" + inFunctioName + ".json";
@@ -105,7 +106,7 @@ public class LlamaVisionConnection extends LlamaOpenAiConnection {
 			throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunctioName);
 		}
 
-		String template = loadInputFromTemplate(templatepath, inParams);
+		String template = loadInputFromTemplate(inParams, templatepath);
 
 		JSONParser parser = new JSONParser();
 		JSONObject templateObject = (JSONObject) parser.parse(template);

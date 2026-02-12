@@ -313,6 +313,8 @@ public class AssistantManager extends BaseAiManager
 			return;
 		}
 		
+		agentContext.setNextFunctionName(null);
+		
 		ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
 
 		

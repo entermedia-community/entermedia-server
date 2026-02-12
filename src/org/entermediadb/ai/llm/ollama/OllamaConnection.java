@@ -25,13 +25,16 @@ import org.openedit.util.JSONParser;
 
 public class OllamaConnection extends OpenAiConnection implements CatalogEnabled, LlmConnection
 {
+	
 	private static Log log = LogFactory.getLog(OllamaConnection.class);
-
+	
 	@Override
 	public String getLlmProtocol()
 	{
 		return "ollama";
 	}
+	
+	/*
 	
 	public BasicLlmResponse runPageAsInput(AgentContext llmrequest, String inTemplate)
 	{
@@ -58,11 +61,13 @@ public class OllamaConnection extends OpenAiConnection implements CatalogEnabled
 
 	}
 	
+	@Override
 	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image)
 	{
 		return callClassifyFunction(params, inFunction, inBase64Image, null);
 	}
 
+	@Override
 	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image, String textContent)
 	{
 	    MediaArchive archive = getMediaArchive();
@@ -86,6 +91,7 @@ public class OllamaConnection extends OpenAiConnection implements CatalogEnabled
 		else
 		{
 			message.put("role", "system");
+			
 			String systemMessage = loadInputFromTemplate("/" +  getMediaArchive().getMediaDbId() + "/ai/default/systemmessage/"+inFunction+".html");
 			message.put("content", systemMessage);
 		}
@@ -148,5 +154,6 @@ public class OllamaConnection extends OpenAiConnection implements CatalogEnabled
 		log.info("Returned: " + res);
 		return res;
 	}
+	*/
 	
 }

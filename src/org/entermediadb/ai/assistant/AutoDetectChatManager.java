@@ -38,15 +38,15 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 		}
 		if ("auto_detect_conversation".equals(agentFn))  //Todo: Rename to Parse
 		{
-			JSONObject params = new JSONObject();
-			params.put("userquery", query);
+			
+			inAgentContext.put("userquery", query);
 			
 			Collection<Data> toplevelfunctions = getMediaArchive().query("aifunctions").exact("toplevel", true).search();
-			params.put("toplevelfunctions", toplevelfunctions);
+			inAgentContext.put("toplevelfunctions", toplevelfunctions);
 			
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
 			
-			LlmResponse response = llmconnection.callToolsFunction(params, agentFn);
+			LlmResponse response = llmconnection.callToolsFunction(inAgentContext, agentFn);
 			
 			log.info(response.getRawResponse());
 			
@@ -108,7 +108,7 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 		else if ("auto_detect_sitewide_parse".equals(agentFn))
 		{
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
-			LlmResponse response = llmconnection.callToolsFunction(inAgentContext.getContext(), agentFn);
+			LlmResponse response = llmconnection.callToolsFunction(inAgentContext, agentFn);
 			
 			log.info(response.getRawResponse());
 			

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.util.JsonUtil;
@@ -57,15 +58,15 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 		
 		
 
- 		Map params = new HashMap();
- 		params.put("data", inData);
- 		params.put("fieldparams", inConfig);
- 		params.put("contextfields", contextfields);
- 		params.put("autocreatefields", autocreatefields);
+		AgentContext agentcontext = new AgentContext();
+ 		agentcontext.put("data", inData);
+ 		agentcontext.put("fieldparams", inConfig);
+ 		agentcontext.put("contextfields", contextfields);
+ 		agentcontext.put("autocreatefields", autocreatefields);
  		
  		LlmConnection llmconnection = getLlmNamingServer();
  		
-		LlmResponse results = llmconnection.callStructure(params,"namedEntityRecognition");
+		LlmResponse results = llmconnection.callStructure(agentcontext,"namedEntityRecognition");
 		Map categories = (Map) results.getMessageStructured().get("categories");
 		if(categories != null)
 		{			

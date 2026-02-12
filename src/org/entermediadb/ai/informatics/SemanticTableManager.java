@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.knn.RankedResult;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
@@ -475,8 +476,8 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 				return null;
 			}
 			
-			Map params = new HashMap();
-			params.put("fieldparams", inConfig);
+			AgentContext agentcontext = new AgentContext();
+			agentcontext.put("fieldparams", inConfig);
 			
 			Collection<PropertyDetail> exclude = new ArrayList();
 			PropertyDetail fielddetail = getMediaArchive().getSearcher(inModuleId).getDetail(fieldname);
@@ -490,10 +491,10 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 				return null;
 			}
 			
-			params.put("contextfields", contextfields);
-			params.put("data", inData);
+			agentcontext.put("contextfields", contextfields);
+			agentcontext.put("data", inData);
 			
-			LlmResponse structure = llmconnection.callStructure(params,"createSemanticTopics");
+			LlmResponse structure = llmconnection.callStructure(agentcontext,"createSemanticTopics");
 			if (structure == null)
 			{
 				log.info("No structured data returned");
