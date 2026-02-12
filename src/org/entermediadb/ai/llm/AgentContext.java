@@ -111,6 +111,11 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	}
 	
 	public Map<String,Object> getContext() {
+		if (context == null)
+		{
+			context = new HashMap();
+			
+		}
 		return context;
 	}
 	
@@ -146,11 +151,9 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 		addContext(inKey, inValue);
 	}
 	
-	public void addContext(String inKey, Object inValue) {
-		if (context == null) {
-			context = new HashMap<String,Object>();
-		}
-		context.put(inKey, inValue);
+	public void addContext(String inKey, Object inValue) 
+	{
+		getContext().put(inKey, inValue);
 	}
 	
 //	public JSONObject getArguments() {

@@ -163,7 +163,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 				docpage.setValue("entity_date", new Date());
 			}
 			
-			if((!"embedded".equals(inEntity.get("entityembeddingstatus")) || docpage.get("markdowncontent") == null) && inConfig.getBoolean("generatemarkdown"))
+			if( docpage.get("markdowncontent") == null && inConfig.getBoolean("generatemarkdown"))
 			{
 				log.info("Generating markdown for page: " + docpage);
 				generateMarkdownFromImage(docpage);
