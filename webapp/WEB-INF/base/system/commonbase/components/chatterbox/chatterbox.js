@@ -275,14 +275,13 @@ function channelUpdateMessage(chatbox, message)
 	if (messages[message.messageid]) 
 	{
 		messages[ message.messageid] = setTimeout(function () {
-				updageMessage(chatbox,message);
+						updageMessage(chatbox,message);
 		}, 1000);	
 	}
 	else 
 	{
-		messages[ message.messageid] = setTimeout(function () {
-						updageMessage(chatbox,message);
-		});
+		messages[ message.messageid] = true;
+		updageMessage(chatbox,message);
 	}
 	
 	
