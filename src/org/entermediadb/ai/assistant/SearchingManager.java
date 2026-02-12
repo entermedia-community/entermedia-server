@@ -811,10 +811,10 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			
 			if(bytype.isEmpty())
 			{
-				inLogger.info("Nothing found for " + searchcategory);
+				//inLogger.info("Nothing found for " + searchcategory);
 			}
 			{
-				inLogger.info("Found hits " + sumatics);
+				inLogger.info("Found hits " + bytype.keySet() + " for: "+ searchcategory + " Sematics: " + sumatics);
 			}
 			
 			for (Iterator iterator2 = bytype.keySet().iterator(); iterator2.hasNext();)
@@ -822,6 +822,9 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 				String moduleid = (String)iterator2.next();
 				Collection<String> ids = bytype.get(moduleid);
 				Collection addedentites = getMediaArchive().query(moduleid).ids(ids).not("searchcategory",searchcategory.getId()).search();
+				if (ids.size() != addedentites.size()) {
+					//log.info("Mistmatch, missing records, recreate Semantics. " + ids.size() + " != "+ addedentites.size());
+				}
 				//Collection addedentites = getMediaArchive().query(moduleid).ids(ids).search();
 				Collection tosave = new ArrayList(addedentites.size());
 				for (Iterator iterator3 = addedentites.iterator(); iterator3.hasNext();)
@@ -830,8 +833,11 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 					entity.addValue("searchcategory",searchcategory.getId());
 					tosave.add(entity);
 				}
-				log.info("Added " + tosave.size() + " to category " + moduleid);
-				getMediaArchive().saveData(moduleid,tosave);
+				if (tosave.size() > 0)
+				{
+					inLogger.info("Added " + tosave.size() + " from module: " + moduleid + " to category " + searchcategory);
+					getMediaArchive().saveData(moduleid,tosave);
+				}
 			}
 		}
 	}
