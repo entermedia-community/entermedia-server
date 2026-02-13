@@ -94,11 +94,11 @@ public class InformaticsManager extends BaseAiManager
 		
 		if (Boolean.valueOf(allowclassifyothernodes) ) 
 		{
-			//inLog.info("Asset search query: " + pendingrecords + " " +date);
+			log.info("Asset search query: " + pendingrecords + " " +date);
 		}
 		else 
 		{
-			//inLog.info("Asset local search query: " + pendingrecords + " " +date);
+			log.info("Asset local search query: " + pendingrecords + " " +date);
 		}
 
 		if (!pendingrecords.isEmpty())

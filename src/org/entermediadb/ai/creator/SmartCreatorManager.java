@@ -82,7 +82,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			inAgentContext.setFunctionName("smartcreator_parse");
 			return response;
 		}
-		else if(agentFn.startsWith("smartcreator_parse"))
+		else if(agentFn.equals("smartcreator_parse"))
 		{
 			Data usermessage = getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
 			String prompt = usermessage.get("message");
@@ -248,6 +248,18 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "smartcreator_renderoutline");
 			
 			return response;
+		}
+		else if(agentFn.equals("smartcreator_parsecontent"))
+		{
+			
+			Data usermessage = getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
+			String sectiontext = usermessage.get("message");
+			inAgentContext.addContext("sectiontext", sectiontext);
+			//String sectiontext = (String)inAgentContext.getContextValue("sectiontext");
+			parseSection(inAgentContext, sectiontext);
+			
+			return null;
+			
 		}
 		else if(agentFn.startsWith("smartcreator_play"))
 		{
@@ -714,9 +726,9 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 	
 	public void populateSectionsWithContents(AgentContext inAgentContext)
 	{
-		AiSmartCreatorSteps instructions = inAgentContext.getAiSmartCreatorSteps();
 		Searcher contentearcher = getMediaArchive().getSearcher("componentcontent");
-
+		
+		AiSmartCreatorSteps instructions = inAgentContext.getAiSmartCreatorSteps();
 		Collection<Data> sections = instructions.getConfirmedSections();
 		
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_createsectioncontents");
@@ -754,88 +766,37 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			{
 				return;
 			}
-
-			answer = answer.replace("\\n", "\n");
-			String[] lines = answer.split("\\n+");
-
-			Collection<Map> boundaries = new ArrayList<Map>();
-			List<String> listItems = new ArrayList<String>();
+			
+			
+			//Call llamat to format into structures of Parapraphs, Numbered Lists, ...
+			Collection<Map> boundaries = parseSection(inAgentContext, answer);
 			
 			int ordering = 0;
-				
 			MarkdownUtil md = new MarkdownUtil();
-
-			for (int i = 0; i < lines.length; i++)
-			{
-				String line = lines[i];
-				line = line.replaceAll("^\\s+", "");
-				line = line.replaceAll("\\s+$", "");
-				
-				if(line.length() == 0)
-				{
-					continue;
-				}
-				boolean listEnded = false;
-				boolean appendCheck = false;
-				
-				if(line.startsWith("#"))
-				{
-					listEnded = true;
-					Map boundary = new HashMap();
-					boundary.put("componenttype", "heading");
-					
-					line = line.replaceAll("^#+", "");
-					line = md.renderPlain(line);
-					boundary.put("content", line);
-					boundaries.add(boundary);
-				}
-				else if(isListMd(line))
-				{
-					listItems.add(line);
-					appendCheck = (line.startsWith("*") && line.endsWith("*")) || line.endsWith(":");
-				}
-				else
-				{
-					if(!listItems.isEmpty() && !listEnded && appendCheck)
-					{						
-						String nextline = (i < lines.length - 1) ? lines[i + 1] : null;
-						if(nextline != null && !isListMd(line))
-						{
-							String prevListItem = listItems.get(listItems.size() - 1);
-							listItems.set(listItems.size() - 1, prevListItem + "\n" + line);
-							continue;
-						}
-					}
-					listEnded = true;
-					Map boundary = new HashMap();
-					boundary.put("componenttype", "paragraph");
-					line = md.renderPlain(line);
-					boundary.put("content", line);
-					boundaries.add(boundary);
-				}
-				
-				if(listEnded && !listItems.isEmpty())
-				{
-					String listcontent = String.join("\n", listItems);
-					listcontent = md.renderPlain(listcontent);
-					Map boundary = new HashMap();
-					boundary.put("componenttype", "paragraph");
-					boundary.put("content", listcontent);
-					boundaries.add(boundary);
-					
-					listItems.clear();
-				}
-			}
-			
+			StringBuffer output = new StringBuffer();
 			for (Iterator iterator2 = boundaries.iterator(); iterator2.hasNext();) 
 			{
 				Map boundary = (Map) iterator2.next();
 				
+				String contenttype = (String)boundary.get("componenttype");
+				String mdcontent = String.valueOf(boundary.get("content"));
+				String content = null;
+				if ("heading".equals(contenttype))
+				{
+					content = md.renderPlain(mdcontent);
+				}
+				else
+				{
+					content = md.render(mdcontent);
+				}
+				
+				output.append("contenttype:" + contenttype);
+				output.append("content:" + content);
 				
 				Data componentcontent = contentearcher.createNewData();
 				componentcontent.setValue("componentsectionid", sectionid);
-				componentcontent.setValue("content", boundary.get("content"));
-				componentcontent.setValue("componenttype", boundary.get("componenttype"));
+				componentcontent.setValue("content", content);
+				componentcontent.setValue("componenttype", contenttype);
 				componentcontent.setValue("ordering", ordering);
 				componentcontent.setValue("creationdate", new Date());
 				componentcontent.setValue("modificationdate", new Date());
@@ -844,6 +805,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				
 				ordering++;
 			}
+			
+			inAgentContext.addContext("output", output.toString());
 
 /*
  * Improve speed
@@ -889,6 +852,17 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		{
 			contentearcher.saveAllData(tosave, null);
 		}
+	}
+	
+	public Collection<Map> parseSection(AgentContext inAgentContext, String inSectionText)
+	{
+		
+		inAgentContext.addContext("sectiontext", inSectionText);
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_parsecontent");
+		LlmResponse response = llmconnection.callStructure(inAgentContext, "smartcreator_parsecontent");
+		JSONObject json = response.getMessageStructured();
+		Collection boundaries = (Collection)json.get("parsed_content");
+		return boundaries;
 	}
 
 

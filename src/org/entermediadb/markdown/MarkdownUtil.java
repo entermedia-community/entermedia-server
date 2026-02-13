@@ -33,6 +33,13 @@ public class MarkdownUtil
 	
 	public String renderPlain(String markdown) 
 	{
+		String rendered = renderPlainHtml(markdown);
+		// Remove any HTML elements
+		rendered = rendered.replaceAll("<[^>]+>", "");
+		return rendered;
+	}
+	public String renderPlainHtml(String markdown) 
+	{
 		Parser parser = Parser.builder()
 			.enabledBlockTypes(
 				Set.of(

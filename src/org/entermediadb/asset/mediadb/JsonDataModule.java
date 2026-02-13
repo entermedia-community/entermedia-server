@@ -140,6 +140,7 @@ public class JsonDataModule extends BaseJsonModule
 		inReq.putPageValue("agentmessage",agentmessage);
 		inReq.putPageValue("usermessage",usermessage);
 		inReq.putPageValue("agentcontext",context);
+		inReq.putPageValue("contextmap",context.getContext());
 		inReq.putPageValue("chatterboxsearcher", archive.getSearcher("chatterbox") );
 		inReq.putPageValue("agentcontextsearcher", archive.getSearcher("agentcontext" ) );
 		

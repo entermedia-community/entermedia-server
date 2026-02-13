@@ -1,5 +1,10 @@
 {
 	"status":"ok",
 	"agentmessage":#json($agentmessage $chatterboxsearcher.getPropertyDetails()),
-	"agentcontext":#json($agentcontext $agentcontextsearcher.getPropertyDetails())
+	"agentcontext":#json($agentcontext $agentcontextsearcher.getPropertyDetails()),
+	
+	"agentcontextvalues":#jesc("
+	#foreach($key in $contextmap.keySet())
+	$key = $contextmap.get($key)
+	#end")
 }
