@@ -809,7 +809,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			Collection sumatics = searchcategory.getValues("semantictopics");
 			Map<String,Collection<String>> bytype = searchRelatedEntitiesBySearchCategory(searchcategory);
 			
-			if(bytype.isEmpty())
+			if(bytype.keySet().isEmpty())
 			{
 				//inLogger.info("Nothing found for " + searchcategory);
 			}
