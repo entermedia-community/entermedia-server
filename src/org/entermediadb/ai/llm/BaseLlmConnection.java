@@ -443,7 +443,7 @@ public class BaseLlmConnection implements LlmConnection {
 	@Override
 	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inPayload)
 	{
-		log.info("Calling LLM Server at: " + getServerRoot() + inPath);
+		//log.info("Calling LLM Server at: " + getServerRoot() + inPath); //Log this from the function call
 		HttpRequestBase method = null;
 		
 		if (inPayload == null) 
@@ -455,7 +455,6 @@ public class BaseLlmConnection implements LlmConnection {
 			method = new HttpPost(getServerRoot() + inPath);
 		}
 		
-		
 		method.addHeader("Authorization", "Bearer " + getApiKey());
 		method.setHeader("Content-Type", "application/json");
 		
@@ -466,8 +465,6 @@ public class BaseLlmConnection implements LlmConnection {
 		}
 		
 		method.setHeader("x-customerkey", customerkey); // standard eMedia header
-		
-
 		
 		for (Iterator iterator = getSharedHeaders().keySet().iterator(); iterator.hasNext();)
 		{

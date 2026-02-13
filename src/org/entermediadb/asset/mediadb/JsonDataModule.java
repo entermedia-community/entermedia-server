@@ -136,6 +136,8 @@ public class JsonDataModule extends BaseJsonModule
 
 		context.addContext("agentmessage",agentmessage);
 		context.addContext("usermessage",usermessage);
+		
+		context.setUserProfile(archive.getUserProfile("admin") );
 
 		inReq.putPageValue("agentmessage",agentmessage);
 		inReq.putPageValue("usermessage",usermessage);

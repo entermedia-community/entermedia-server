@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -17,6 +16,7 @@ import org.entermediadb.ai.assistant.AssistantManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.markdown.MarkdownUtil;
 import org.json.simple.JSONObject;
@@ -27,6 +27,8 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.util.Inflector;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.repository.ContentItem;
+import org.openedit.repository.filesystem.StringItem;
 
 public class SmartCreatorManager extends BaseAiManager implements ChatMessageHandler
 {
@@ -744,8 +746,6 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			String query = "For a section named: " + section.getName() + "\n\n" + instructions.getContentCreatePrompt();
 			payload.put("query", query);
 			
-			// log.info(query);
-			
 			String entityid = inAgentContext.get("entityid");
 			String entitymoduleid = inAgentContext.get("entitymoduleid");
 			
@@ -760,20 +760,17 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			String answer = (String) contentsJson.get("answer");
 			
-			// log.info("Received contents: " + contents);
-			
 			if(answer == null)
 			{
 				return;
 			}
-			
 			
 			//Call llamat to format into structures of Parapraphs, Numbered Lists, ...
 			Collection<Map> boundaries = parseSection(inAgentContext, answer);
 			
 			int ordering = 0;
 			MarkdownUtil md = new MarkdownUtil();
-			StringBuffer output = new StringBuffer();
+			StringBuffer output = new StringBuffer(); //TODO: Replace with new renderHTML function
 			for (Iterator iterator2 = boundaries.iterator(); iterator2.hasNext();) 
 			{
 				Map boundary = (Map) iterator2.next();
@@ -803,10 +800,12 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				
 				tosave.add(componentcontent);
 				
-				ordering++;
+				ordering++;  
 			}
 			
-			inAgentContext.addContext("output", output.toString());
+			inAgentContext.addContext("output", output.toString());  
+			
+			exportAsAsset(inAgentContext, output.toString());
 
 /*
  * Improve speed
@@ -854,6 +853,33 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		}
 	}
 	
+	private void exportAsAsset(AgentContext inAgentContext, String inString)
+	{
+		
+		Data playbackmodule = inAgentContext.getAiSmartCreatorSteps().getTargetModule();
+		Data playbackentity = inAgentContext.getAiSmartCreatorSteps().getTargetEntity();
+				
+		String assetsourcepath = getMediaArchive().getEntityManager().loadUploadSourcepath(playbackmodule, playbackentity, null);
+		assetsourcepath = assetsourcepath + "/" + playbackentity.getName() + ".html";
+		Asset asset = (Asset)getMediaArchive().getAssetSearcher().createNewData();
+		asset.setSourcePath(assetsourcepath);
+		
+		ContentItem content = new StringItem("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/"+ assetsourcepath, inString, "UTF-8");
+		getMediaArchive().getPageManager().getRepository().put(content);
+		
+		asset = getMediaArchive().getAssetManager().findAssetSource(asset).createAsset(asset, content, new HashMap(), assetsourcepath, false, inAgentContext.getChatUser());
+		asset.setProperty("importstatus", "created");
+		getMediaArchive().saveAsset(asset);
+		
+		getMediaArchive().fireSharedMediaEvent("importing/assetscreated");
+		
+		playbackentity.setValue("primaryimage",asset.getId() );
+		getMediaArchive().getSearcher(playbackmodule.getId()).saveData(playbackentity); 
+		
+		getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
+		
+	}
+
 	public Collection<Map> parseSection(AgentContext inAgentContext, String inSectionText)
 	{
 		
