@@ -139,7 +139,12 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 		if (context == null) {
 			return null;
 		}
-		return context.get(inKey);
+		Object obj = context.get(inKey);
+		if( obj == null)
+		{
+			obj = get(inKey);
+		}
+		return obj;
 	}
 	
 	public void setContext(Map<String,Object> inContext) {
