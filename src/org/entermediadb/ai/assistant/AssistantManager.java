@@ -371,7 +371,7 @@ public class AssistantManager extends BaseAiManager
 		{	
 			String updatedMessage = agentContext.getMessagePrefix();
 			
-			if( response.getMessage() != null )
+			if(response != null && response.getMessage() != null )
 			{
 				updatedMessage += response.getMessage();
 			}
@@ -379,19 +379,22 @@ public class AssistantManager extends BaseAiManager
 			agentmessage.setValue("message", updatedMessage); //Final message
 
 			String messageplain = agentmessage.get("messageplain");
-			String newmessageplain = response.getMessagePlain();
-			
-			if(newmessageplain != null)
+			if(response != null) 
 			{
-				if(messageplain == null)
+				String newmessageplain = response.getMessagePlain();
+				
+				if(newmessageplain != null)
 				{
-					messageplain = newmessageplain;
+					if(messageplain == null)
+					{
+						messageplain = newmessageplain;
+					}
+					else
+					{
+						messageplain += " \n " + newmessageplain;
+					}
+					agentmessage.setValue("messageplain", messageplain);
 				}
-				else
-				{
-					messageplain += " \n " + newmessageplain;
-				}
-				agentmessage.setValue("messageplain", messageplain);
 			}
 			
 			agentmessage.setValue("chatmessagestatus", "completed");
