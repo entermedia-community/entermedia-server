@@ -162,7 +162,7 @@
 				try {
 					window.navigator.clipboard.writeText(content);
 				} catch (_) {
-					$(textArea).show().focus().select();
+					$(textArea).show().trigger("focus").trigger("select");
 					try {
 						document.execCommand("copy");
 					} catch (err) {

@@ -63,11 +63,11 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		if(agentFn.startsWith("smartcreator_welcome_"))  
 		{
 			String playbackentitymoduleid = agentFn.substring("smartcreator_welcome_".length());
-			Data playbackmodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
-			inAgentContext.addContext("playbackmodule", playbackmodule);
+			Data playbackentitymodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
+			inAgentContext.addContext("playbackentitymodule", playbackentitymodule);
 
 			instructions = new AiSmartCreatorSteps();
-			instructions.setTargetModule(playbackmodule);
+			instructions.setTargetModule(playbackentitymodule);
 			inAgentContext.setAiSmartCreatorSteps(instructions);
 			
 			String entityid = inAgentContext.get("entityid");
@@ -196,8 +196,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			}
 			else
 			{
-				Data playbackmodule = instructions.getTargetModule();
-				Data playbackentity = getMediaArchive().getSearcher(playbackmodule.getId()).createNewData();
+				Data playbackentitymodule = instructions.getTargetModule();
+				Data playbackentity = getMediaArchive().getSearcher(playbackentitymodule.getId()).createNewData();
 				
 				String name = instructions.getTitleName();
 				
@@ -206,7 +206,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				playbackentity.setName(name);
 				playbackentity.setValue(inAgentContext.get("entitymoduleid"), inAgentContext.get("entityid"));
 				
-				getMediaArchive().saveData(playbackmodule.getId(), playbackentity);
+				getMediaArchive().saveData(playbackentitymodule.getId(), playbackentity);
 				
 				instructions.setTargetEntity(playbackentity);
 				
@@ -278,8 +278,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			else
 			{				
 				
-				Data playbackmodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
-				inAgentContext.addContext("playbackmodule", playbackmodule);
+				Data playbackentitymodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
+				inAgentContext.addContext("playbackentitymodule", playbackentitymodule);
 				
 				String entityid = inAgentContext.get("entityid");
 				String entitymoduleid = inAgentContext.get("entitymoduleid");
@@ -341,8 +341,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			throw new IllegalArgumentException("Missing playbackentityid or playbackentitymoduleid parameter");
 		}
 		
-		Data playbackmodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
-		inReq.putPageValue("playbackentitymoduleid", playbackmodule);
+		Data playbackentitymodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
+		inReq.putPageValue("playbackentitymodule", playbackentitymodule);
 		
 		Data playbackentity = getMediaArchive().getCachedData(playbackentitymoduleid, playbackentityid);
 		inReq.putPageValue("playbackentity", playbackentity);
@@ -856,10 +856,10 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 	private void exportAsAsset(AgentContext inAgentContext, String inString)
 	{
 		
-		Data playbackmodule = inAgentContext.getAiSmartCreatorSteps().getTargetModule();
+		Data playbackentitymodule = inAgentContext.getAiSmartCreatorSteps().getTargetModule();
 		Data playbackentity = inAgentContext.getAiSmartCreatorSteps().getTargetEntity();
 				
-		String assetsourcepath = getMediaArchive().getEntityManager().loadUploadSourcepath(playbackmodule, playbackentity, null);
+		String assetsourcepath = getMediaArchive().getEntityManager().loadUploadSourcepath(playbackentitymodule, playbackentity, null);
 		assetsourcepath = assetsourcepath + "/" + playbackentity.getName() + ".html";
 		Asset asset = (Asset)getMediaArchive().getAssetSearcher().createNewData();
 		asset.setSourcePath(assetsourcepath);
@@ -874,7 +874,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		getMediaArchive().fireSharedMediaEvent("importing/assetscreated");
 		
 		playbackentity.setValue("primaryimage",asset.getId() );
-		getMediaArchive().getSearcher(playbackmodule.getId()).saveData(playbackentity); 
+		getMediaArchive().getSearcher(playbackentitymodule.getId()).saveData(playbackentity); 
 		
 		getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
 		
