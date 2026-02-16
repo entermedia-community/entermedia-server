@@ -156,9 +156,9 @@
 			submitButton.attr("disabled", "disabled");
 			var icon = submitButton.find("i");
 			if (icon.length == 0) {
-				submitButton.prepend("<i class='fas fa-spinner fa-spin mr-1'></i>");
+				submitButton.prepend("<i class='fas fa-spinner fa-spin me-1'></i>");
 			} else {
-				icon.replaceWith("<i class='fas fa-spinner fa-spin mr-1'></i>");
+				icon.replaceWith("<i class='fas fa-spinner fa-spin me-1'></i>");
 			}
 		}
 
@@ -287,6 +287,11 @@
 				history.pushState($("#application").html(), null, url);
 				window.scrollTo(0, 0);
 			}
+		}
+		
+		var scrolltotop = form.data("scrolltotop");
+		if (scrolltotop) {
+			window.scrollTo(0, 0);
 		}
 		return this;
 	};

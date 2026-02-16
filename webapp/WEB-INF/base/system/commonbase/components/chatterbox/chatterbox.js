@@ -3,7 +3,7 @@ var loadingmore = false;
 
 function chatterbox() {
 	console.log(
-		"Starting chat in channel: " + jQuery(".chatterbox").data("channel")
+		"Starting chat in channel: " + jQuery(".chatterbox").data("channel"),
 	);
 
 	cancelKeepAlive();
@@ -100,7 +100,7 @@ function chatterbox() {
 		"click",
 		function (e) {
 			//jQuery("#chatter-msg").val("");
-		}
+		},
 	);
 
 	lQuery(".chatter-save").livequery("click", function (e) {
@@ -120,15 +120,18 @@ function chatterbox() {
 		e.preventDefault();
 		var editbtn = $(this);
 		var targetDiv = editbtn.data("targetdiv");
-		var options = editbtn.data();
+		var options = editbtn.cleandata();
 		options.oemaxlevel = 1;
 		var nextpage = editbtn.attr("href");
-		$.get(nextpage, options, function (data) {
-			//var cell = findclosest($(this), "#" + targetDiv);
-			var cell = editbtn.closest("#" + targetDiv);
-			cell.replaceWith(data);
-			scrollToEdit(targetDiv);
-		});
+		$.get(
+			nextpage, 
+			options, 
+			function (data) {
+				//var cell = findclosest($(this), "#" + targetDiv);
+				var cell = editbtn.closest("#" + targetDiv);
+				cell.replaceWith(data);
+				scrollToEdit(targetDiv);
+			});
 	});
 
 	lQuery(".chatterbox-body-inside").livequery("scroll", function (e) {
@@ -156,7 +159,10 @@ function scrollToChat() {
 
 function scrollToEdit(targetDiv) {
 	var messagecontainer = $("#" + targetDiv);
-	messagecontainer.get(0).scrollIntoView();
+	if (messagecontainer.lenght)
+	{
+		messagecontainer.get(0).scrollIntoView();
+	}
 }
 
 function connect() {
@@ -199,112 +205,23 @@ function connect() {
 		var apphome = app.data("home") + app.data("apphome");
 		jQuery(window).trigger("ajaxsocketautoreload");
 		var message = JSON.parse(event.data);
-		var id = message.messageid;
-
 		var channel = message.channel;
 		var chatbox = jQuery('div.chatterbox[data-channel="' + channel + '"]');
-
-		if (chatbox.length == 0) {
-			//Channel Not on the screen
+		if (message && chatbox.length == 1) {
+			//Channel on the screen
+			channelUpdateMessage(chatbox, message);
 			return;
 		}
-
-		message.id = id;
-		var existing = jQuery("#chatter-message-" + id);
-		if (existing.length) {
-			if (message.command === "messageremoved") {
-				existing.remove();
-				return;
-			}
-			var chatMsg = $(existing).find(".chat-msg");
-			var msgBody = $(chatMsg).find(".msg-body-content");
-			if (msgBody.length) {
-				msgBody.html(message.message);
-			} else {
-				chatMsg.html(message.message);
-			}
-			scrollToChat();
-			return;
-		}
-
-		var listarea = chatbox.find(".chatterbox-message-list");
-		var url = chatbox.data("rendermessageurl");
-		if (!url) {
-			url = apphome + "/components/chatterbox/message.html";
-		}
-
-		scrollToChat();
-
-		var options = chatbox.cleandata();
-		if (!options) options = {};
-		var editdiv = chatbox.closest(".editdiv");
-		if (
-			chatbox.data("includeeditcontext") === undefined ||
-			chatbox.data("includeeditcontext") == true
-		) {
-			if (editdiv.length > 0) {
-				var otherdata = editdiv.cleandata();
-				options = {
-					...otherdata,
-					...options,
-				};
-			}
-		}
-
-		options.id = message.id;
-
-		/*
-		var params = {};
-		params.id = message.id;
-		params.channel = message.channel;
-		if (message.entityid != null) {
-			params.entityid = message.entityid;
-			params.collectionid = message.entityid;
-		} else {
-			params.entityid = message.collectionid;
-			params.collectionid = message.collectionid;
-		}*/
-
-		jQuery.get(url, options, function (data) {
-			var $div = jQuery("<div></div>");
-			$div.html(data);
-			var $data = $div.find("#chatter-message-" + message.id);
-			var inserted = false;
-			try {
-				var createddat = $data.data("createdat");
-				var timestamp = new Date(createddat).getTime();
-				if (!isNaN(timestamp)) {
-					var messages = listarea.find(".msg-bubble");
-					messages.each(function () {
-						var msgcreatedat = jQuery(this).data("createdat");
-						var msgtimestamp = new Date(msgcreatedat).getTime();
-						if (!isNaN(msgtimestamp)) {
-							if (timestamp < msgtimestamp) {
-								jQuery(this).before($data);
-								inserted = true;
-								return false;
-							}
-						}
-					});
-				}
-			} catch (e) {
-				// ignore
-			} finally {
-				if (!inserted) {
-					listarea.append($data);
-				}
-				scrollToChat();
-			}
-		});
 
 		registerServiceWorker();
 
 		/*Check if you are the sender, play sound and notify. "message.topic != message.user" checks for private chat*/
 		var user = app.data("user");
-
 		if (message.user != user && message.user != "agent") {
+			console.log("Got a message: " + document.hasFocus());
 			if (!document.hasFocus()) {
 				function showNotification() {
+					console.log("Showing notification...");
 					var header = "New Message";
 					if (message.name !== undefined) {
 						header = message.name;
@@ -326,7 +243,6 @@ function connect() {
 					notification.addEventListener("click", function (event) {
 						//window.open('http://www.mozilla.org', '_blank');
 					});
-					play();
 				}
 
 				/*Check para permissions and ask.*/
@@ -340,10 +256,108 @@ function connect() {
 							showNotification();
 						}
 					});
+				} else {
+					console.log(
+						"Notification Browser permission:" + Notification.permission,
+					);
 				}
 			}
 		}
 	};
+}
+
+function channelUpdateMessage(chatbox, message) {
+	var existing = jQuery("#chatter-message-" + message.messageid);
+	if (existing.length) {
+		if (message.command === "messageremoved") {
+			existing.remove();
+			return;
+		}
+		var chatMsg = $(existing).find(".chat-msg");
+		var msgBody = $(chatMsg).find(".msg-body-content");
+		if (msgBody.length) {
+			msgBody.html(message.message);
+		} else {
+			chatMsg.html(message.message);
+		}
+		scrollToChat();
+		return;
+	}
+
+	var listarea = chatbox.find(".chatterbox-message-list");
+	var url = chatbox.data("rendermessageurl");
+	if (!url) {
+		url = apphome + "/components/chatterbox/message.html";
+	}
+
+	scrollToChat();
+
+	var options = chatbox.cleandata();
+	if (!options) options = {};
+	var editdiv = chatbox.closest(".editdiv");
+	if (
+		chatbox.data("includeeditcontext") === undefined ||
+		chatbox.data("includeeditcontext") == true
+	) {
+		if (editdiv.length > 0) {
+			var otherdata = editdiv.cleandata();
+			options = {
+				...otherdata,
+				...options,
+			};
+		}
+	}
+
+	options.id = message.messageid;
+
+	/*
+	var params = {};
+	params.id = message.id;
+	params.channel = message.channel;
+	if (message.entityid != null) {
+		params.entityid = message.entityid;
+		params.collectionid = message.entityid;
+	} else {
+		params.entityid = message.collectionid;
+		params.collectionid = message.collectionid;
+	}*/
+
+	jQuery.get(url, options, function (data) {
+		var $div = jQuery("<div></div>");
+		$div.html(data);
+		var $data = $div.find("#chatter-message-" + message.messageid);
+		var inserted = false;
+		try {
+			var messagetype = $data.data("messagetype");
+			if (messagetype === "system") {
+				inserted = true;
+				return;
+			}
+			var createddat = $data.data("createdat");
+			var timestamp = new Date(createddat).getTime();
+			if (!isNaN(timestamp)) {
+				var messages = listarea.find(".msg-bubble");
+				messages.each(function () {
+					var msgcreatedat = jQuery(this).data("createdat");
+					var msgtimestamp = new Date(msgcreatedat).getTime();
+					if (!isNaN(msgtimestamp)) {
+						if (timestamp < msgtimestamp) {
+							jQuery(this).before($data);
+							inserted = true;
+							return false;
+						}
+					}
+				});
+			}
+		} catch (e) {
+			// ignore
+		} finally {
+			if (!inserted) {
+				listarea.append($data);
+			}
+			scrollToChat();
+		}
+	});
 }
 
 /*--------------Begin Functions List--------------*/
@@ -441,19 +455,6 @@ function cancelKeepAlive() {
 	if (keepAliveTimeoutID) {
 		clearTimeout(keepAliveTimeoutID);
 	}
-}
-
-function play() {
-	var app = jQuery("#application");
-	var apphome = app.data("apphome");
-	var home = app.data("home");
-	if (home !== undefined) {
-		apphome = home + apphome;
-	}
-	var urls = apphome + "/components/chatterbox/stairs.wav";
-
-	var snd = new Audio(urls); // buffers automatically when created
-	snd.play();
 }
 
 /*-------Start Push and Notification --------*/
@@ -656,7 +657,7 @@ jQuery(document).ready(function () {
 		"click",
 		function (e) {
 			$(this).runAjax();
-		}
+		},
 	);
 
 	lQuery("a.lightbox").livequery(function () {
@@ -691,18 +692,19 @@ jQuery(document).ready(function () {
 			var dl = $(this).data("downloadlink");
 			var al = $(this).data("assetlink");
 			if (dl || al) {
+				$(".simple-lightbox .sl-actions").remove();
 				$(".simple-lightbox").append("<div class='sl-actions'></div>");
 
 				if (dl) {
 					$(".simple-lightbox .sl-actions").append(
-						"<a class='sl-btn sl-dl' href='" + dl + "' target='_blank'></a>"
+						"<a class='sl-btn sl-dl' href='" + dl + "' target='_blank'></a>",
 					);
 				}
 				//Asset Link
 
 				if (al) {
 					$(".simple-lightbox .sl-actions").append(
-						"<a class='sl-btn sl-al' href='" + al + "' target='_blank'></a>"
+						"<a class='sl-btn sl-al' href='" + al + "' target='_blank'></a>",
 					);
 				}
 			}

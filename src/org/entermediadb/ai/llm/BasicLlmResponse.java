@@ -13,6 +13,7 @@ public class BasicLlmResponse implements LlmResponse
 	protected String fieldMessage;
 	protected String fieldMessagePlain;
 	protected String fieldFunctionName;
+	protected JSONObject fieldFunctionArguments;
 	protected AiSearch fieldAiSearchParams;
 	Collection<RankedResult> fieldRankedSuggestions;
 	
@@ -158,7 +159,25 @@ public class BasicLlmResponse implements LlmResponse
 	{
 		fieldRawCollection = inObj;
 	}
+
+	@Override
+	public Collection getCollection(String inKey) {
+		Object obj = getMessageStructured().get(inKey);
+		if( obj instanceof JSONArray || obj instanceof Collection)
+		{
+			return (Collection) obj;
+		}
+		return null;
+	}
 	
-	
+	@Override
+	public JSONObject getFunctionArguments()
+	{
+		if(fieldFunctionArguments != null)
+		{
+			return fieldFunctionArguments;
+		}
+		return getMessageStructured();
+	}
 
 }

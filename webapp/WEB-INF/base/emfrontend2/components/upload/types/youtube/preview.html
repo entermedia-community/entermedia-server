@@ -3,9 +3,9 @@
 		<input type="hidden" name="importurl" value="$context.getRequestParameter('youtubeurl')"/>
 		<input type="hidden" name="catalogid" value="$context.getRequestParameter('uploadcatalog')"/>
 		<div style="width: 100%;" id="previewcontainer">
-			<img src="$youtubedata.thumb" alt="[[Video Preview]]"/><br>
+			<img src="$youtubedata.getThumbnail()" alt="[[Video Preview]]"/><br>
 			<button id="importbutton" type="button" onclick="startImport();">[[Import video]]</button>
-			$!youtubedata.get("assettitle")
+			$!youtubedata.getTitle()
 		</div>
 	</form>
 

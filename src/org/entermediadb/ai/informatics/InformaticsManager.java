@@ -15,6 +15,7 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.QueryBuilder;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
 public class InformaticsManager extends BaseAiManager
@@ -35,20 +36,24 @@ public class InformaticsManager extends BaseAiManager
 	public void processAssets(ScriptLogger inLog)
 	{
 //		Map<String, String> models = getModels();
-		inLog.info("Assets");
+		//inLog.info("Assets");
 		QueryBuilder query = null;
 
 		String allowclassifyothernodes = getMediaArchive().getCatalogSettingValue("allowclassifyothernodes");
+		
 		if (Boolean.valueOf(allowclassifyothernodes) )
 		{
 			//Classify assets from other nodes
-			query = getMediaArchive().query("asset");	
+			query = getMediaArchive().query("asset");
 		}
 		else {
 			//Scan only local files
 			query = getMediaArchive().localQuery("asset");
 		}
-		query.exact("previewstatus", "2").
+		
+		QueryBuilder orquery = getMediaArchive().query("asset").or().exact("previewstatus", "2").exact("previewstatus", "mime");
+
+		query.addchild(orquery.getQuery()).
 				exact("taggedbyllm", false).
 				exact("llmerror", false);
 		
@@ -78,7 +83,15 @@ public class InformaticsManager extends BaseAiManager
 		HitTracker pendingrecords = query.search();
 		pendingrecords.enableBulkOperations();
 		pendingrecords.setHitsPerPage(25);
-		inLog.info("Asset search query: " + pendingrecords + " " +date);
+		
+		if (Boolean.valueOf(allowclassifyothernodes) ) 
+		{
+			inLog.info("Asset search query: " + pendingrecords + " " +date);
+		}
+		else 
+		{
+			inLog.info("Asset local search query: " + pendingrecords + " " +date);
+		}
 
 		if (!pendingrecords.isEmpty())
 		{
@@ -126,21 +139,37 @@ public class InformaticsManager extends BaseAiManager
 
 	protected void processAssets(ScriptLogger inLog, Collection pageofhits)
 	{
-		for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
-		{
-			MultiValued config = (MultiValued) iterator2.next();
-			InformaticsProcessor processor = loadProcessor(config.get("bean"));
-			//inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" ); //Add Header Logs in each Bean
-			processor.processInformaticsOnAssets(inLog, config, pageofhits);
-			getMediaArchive().saveData("asset", pageofhits);
-		}
-		//Save Records here?
+		//Lock Assets
+		User agent = getMediaArchive().getUser("agent");
 		for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
 		{
-			Data data = (Data) iterator.next();
-			data.setValue("taggedbyllm", true);
+			Asset asset = (Asset) iterator.next();
+			asset.toggleLock(agent);
 		}
 		getMediaArchive().saveData("asset", pageofhits);
+		
+		try 
+		{
+			for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
+			{
+				MultiValued config = (MultiValued) iterator2.next();
+				InformaticsProcessor processor = loadProcessor(config.get("bean"));
+				//inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" ); //Add Header Logs in each Bean
+				processor.processInformaticsOnAssets(inLog, config, pageofhits);
+				getMediaArchive().saveData("asset", pageofhits);
+			}
+			
+		}
+		finally
+		{
+			for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
+			{
+				Asset asset = (Asset) iterator.next();
+				asset.setValue("taggedbyllm", true);
+				asset.toggleLock(agent);
+			}
+			getMediaArchive().saveData("asset", pageofhits);
+		}
 	}
 
 	public void processEntities(ScriptLogger inLog)
@@ -236,7 +265,7 @@ public class InformaticsManager extends BaseAiManager
 	
 	}
 
-	protected InformaticsProcessor loadProcessor(String inName)
+	public InformaticsProcessor loadProcessor(String inName)
 	{
 		if(inName == null)
 		{

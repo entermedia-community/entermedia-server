@@ -1,0 +1,11 @@
+<page>
+
+	<path-action name="DataEditModule.saveData">
+		<property name="searchtype">projectgoal</property>
+		<property name ="pageval">goal</property>
+		<property name="embed">true</property>
+		<property name="embedcontent">details</property>
+	</path-action>
+
+
+</page>

@@ -234,7 +234,15 @@ findClosest = function (link, inid) {
 					} else if (targetappendtype == "insertbefore") {
 						onpage = targetdiv;
 						$(data).insertBefore(targetdiv);
-						newcell = onpage.children(":first");
+						newcell = findClosest(onpage, targetdivid).prev();
+					} else if (targetappendtype == "insertafter") {
+						onpage = targetdiv;
+						$(data).insertAfter(targetdiv);
+						newcell = findClosest(onpage, targetdivid).next();
+					} else if (targetappendtype == "append") {
+						onpage = targetdiv;
+						targetdiv.append(data);
+						newcell = onpage.children(":last");
 					}
 					if (newcell.length > 0) {
 						$(window).trigger("setPageTitle", [newcell]);
@@ -370,51 +378,46 @@ $(document).ready(function () {
 		console.error(errors);
 	});
 
-	var runAjaxOn = {};
+	var WARN_CAP = 20;
+	var runAjaxOn = {}; // queue of ajax status to run
 	var ajaxRunning = false;
 
-	var statusCallCount = {};
 	runAjaxStatus = function () {
 		//for each asset on the page reload it's status
 		//console.log(uid);
 
-		for (const [uid, enabled] of Object.entries(runAjaxOn)) {
-			if (uid) {
-				if (statusCallCount[uid] === undefined) {
-					statusCallCount[uid] = 0;
-				} else {
-					statusCallCount[uid]++;
-				}
-			}
-			if (!enabled || enabled === undefined) {
-				if (statusCallCount[uid]) {
-					delete statusCallCount[uid];
-				}
+		for (const [uid, config] of Object.entries(runAjaxOn)) {
+			var enabled = config.enabled;
+			var interval = config.interval || 1000;
+			var lastRun = config.lastRun || 0;
+			var totalRun = config.totalRun || 0;
+			if (!enabled) {
 				continue;
 			}
+
+			var now = new Date().getTime();
+			if (lastRun > 0 && now - lastRun < interval) {
+				continue;
+			}
+
+			config.lastRun = now;
+
 			var cell = $("#" + uid);
 
 			if (cell.length == 0 || !cell.hasClass("ajaxstatus")) {
-				delete statusCallCount[uid];
 				continue;
 			}
+
 			var alwaysrun = cell.data("runwhenhidden");
 			if (alwaysrun == undefined) {
 				if (!isInViewport(cell[0])) {
-					delete statusCallCount[uid];
 					continue;
 				}
 			}
 
 			// Warn if ajax status is called more than 10 times
-			var WARN_CAP = 20;
-			if (
-				statusCallCount[uid] >= WARN_CAP &&
-				statusCallCount[uid] % WARN_CAP == 0
-			) {
-				console.warn(
-					"Ajax Status for " + uid + " ran " + statusCallCount[uid] + " times"
-				);
+			if (totalRun >= WARN_CAP && totalRun % WARN_CAP == 0) {
+				console.warn("Ajax Status for " + uid + " ran " + totalRun + " times");
 			}
 
 			var path = cell.attr("ajaxpath");
@@ -429,6 +432,7 @@ $(document).ready(function () {
 						data.oemaxlevel = 1;
 					}
 				}
+				config.totalRun = totalRun + 1;
 				jQuery.ajax({
 					url: path,
 					async: false,
@@ -437,7 +441,6 @@ $(document).ready(function () {
 					},
 					success: function (data) {
 						cell.replaceWith(data);
-						//$(window).trigger("checkautoreload", [cell]);
 						$(window).trigger("resize");
 					},
 					xhrFields: {
@@ -447,24 +450,33 @@ $(document).ready(function () {
 				});
 			}
 		}
-		setTimeout("runAjaxStatus();", 1000); //Start checking any and all fields on the screeen that are saved in runAjaxOn
+		setTimeout(runAjaxStatus, 1000); //Start checking any and all fields on the screeen that are saved in runAjaxOn
 	};
 
 	lQuery(".ajaxstatus").livequery(function () {
 		var uid = $(this).attr("id");
+		var interval = $(this).data("interval");
+		if (!interval) {
+			interval = 1000;
+		}
 
 		var iscomplete = $(this).data("ajaxstatuscomplete");
 
 		if (iscomplete) {
-			runAjaxOn[uid] = false;
+			runAjaxOn[uid] = { enabled: false };
 		} else {
 			var inqueue = runAjaxOn[uid];
 			if (inqueue == undefined) {
-				runAjaxOn[uid] = true; //Only load once per id
+				runAjaxOn[uid] = {
+					enabled: true,
+					interval: interval,
+					lastRun: 0,
+					totalRun: 0,
+				};
 			}
 		}
 		if (!ajaxRunning) {
-			setTimeout("runAjaxStatus();", 500); //Start checking then runs every second on all status
+			setTimeout(runAjaxStatus, 500); //Start checking then runs every second on all status
 			ajaxRunning = true;
 		}
 	});
@@ -555,7 +567,7 @@ $(document).ready(function () {
 				div.data("oemaxlevel", 1);
 			}
 			div.data("no-toast", true);
-			
+
 			div.runAjax(function () {
 				if (callback !== undefined && callback != null) {
 					callback();
@@ -584,16 +596,14 @@ $(document).ready(function () {
 			$.each(splitnames, function (index, classname) {
 				classname = $.trim(classname);
 				$("." + classname).each(function (index, div) {
-					
 					autoreload($(div), null, classname);
 				});
 			});
 		} else {
 			var element = indiv.data("ajaxreloadtargetid"); //For single reload
-			if(element)
-				{
-					autoreload($("#"+element), null, null);
-				}
+			if (element) {
+				autoreload($("#" + element), null, null);
+			}
 		}
 	});
 

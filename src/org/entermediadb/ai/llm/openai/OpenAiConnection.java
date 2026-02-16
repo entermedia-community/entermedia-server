@@ -16,7 +16,6 @@ import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
-import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
 import org.openedit.util.JSONParser;
@@ -240,6 +239,38 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	    return res;
 	}
 	
+	public LlmResponse callToolsFunction(Map params, String inFunction)
+	{
+		MediaArchive archive = getMediaArchive();
+		
+		params.put("model", getModelName());
+
+		String templatepath = "/" + archive.getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + inFunction + ".json";
+			
+		Page template = archive.getPageManager().getPage(templatepath);
+			
+		if (!template.exists())
+		{
+			templatepath = "/" + archive.getCatalogId() + "/ai/"+getLlmProtocol()+"/calls/" + inFunction + ".json";
+			template = archive.getPageManager().getPage(templatepath);
+		}
+		
+		if (!template.exists())
+		{
+			throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunction);
+		}
+			
+		String definition = loadInputFromTemplate(templatepath, params);
+
+		JSONParser parser = new JSONParser();
+		JSONObject payload = (JSONObject) parser.parse(definition);
+		
+		log.info(payload);
+
+		LlmResponse res = callJson("/chat/completions", payload);
+	    return res;
+	}
+	
 	public JSONObject attachImageMessage(JSONObject payload, String inBase64Image) {
 		if (inBase64Image != null && !inBase64Image.isEmpty())
 		{
@@ -271,7 +302,14 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	{
 		inParams.put("model", getModelName());
 		
-		String templatepath = "/" + getMediaArchive().getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + getAiFunctionName() + ".json";
+		String jsonfilename = getAiFunctionName();
+		
+		if(inParams.containsKey("jsonfilename"))
+		{
+			jsonfilename = (String) inParams.get("jsonfilename");
+		}
+		
+		String templatepath = "/" + getMediaArchive().getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + jsonfilename + ".json";
 		
 		String inStructure = loadInputFromTemplate(templatepath, inParams);
 
@@ -359,6 +397,48 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 				results = (JSONObject) results.get("properties"); // gpt-4o-mini sometimes wraps in properties
 			}
 			*/
+		}
+		finally
+		{
+			getConnection().release(resp);
+		}
+	}
+	
+	@Override
+	public LlmResponse callSmartCreatorAiAction(Map inParams, String inActionName)
+	{
+		inParams.put("model", getModelName());
+		
+		String templatepath = "/" + getMediaArchive().getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/smartcreator/" + inActionName + ".json";
+		
+		String inStructure = loadInputFromTemplate(templatepath, inParams);
+
+		JSONParser parser = new JSONParser();
+		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
+		
+		log.info( "Sent: " + structureDef.toJSONString());
+		
+		HttpPost method = new HttpPost(getServerRoot() + "/chat/completions");
+		method.addHeader("authorization", "Bearer " + getApiKey());
+		method.setHeader("Content-Type", "application/json");
+		method.setEntity(new StringEntity(structureDef.toJSONString(), StandardCharsets.UTF_8));
+
+		CloseableHttpResponse resp = getConnection().sharedExecute(method);
+
+		try
+		{
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
+				throw new OpenEditException("OpenAI error: " + resp.getStatusLine());
+			}
+	
+			JSONObject json = (JSONObject)getConnection().parseMap(resp);
+
+			log.info("Returned: " + json.toJSONString());
+		
+			LlmResponse response = createResponse();
+			response.setRawResponse(json);
+			return response;
 		}
 		finally
 		{

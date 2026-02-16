@@ -18,6 +18,7 @@ package org.entermediadb.websocket.chat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -35,6 +36,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
@@ -247,6 +249,10 @@ public class ChatModule extends BaseMediaModule
 		{
 			Data data = (Data) iterator.next();
 			Data message = chats.loadData(data);
+			if("system".equals(message.get("messagetype"))) 
+			{
+				continue;
+			}
 			loaded.add(message);
 
 			lastdateloaded = message.get("date");
@@ -584,15 +590,105 @@ public class ChatModule extends BaseMediaModule
 //		return llmconnection;
 //	}
 
-	
-	public void monitorChannels(WebPageRequest inReq) throws Exception
+
+	public void loadChatChannel(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		AssistantManager assistantManager = (AssistantManager) archive.getBean("assistantManager");
-		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
-		assistantManager.monitorChannels(log);
+		Searcher channelsearcher = archive.getSearcher("channel");
+		boolean createnew = Boolean.parseBoolean(inReq.getRequestParameter("createnew"));
+		
+		String channel = inReq.findValue("channel");
+		String module = inReq.findValue("module");
+		
+		MultiValued currentchannel = null;
+		
+		if(channel != null && !createnew)
+		{
+			currentchannel = (MultiValued) archive.getCachedData("channel", channel);
+			if( currentchannel != null)
+			{
+				inReq.putPageValue("currentchannel", currentchannel);
+				return;
+			}
+		}
+		
+		String channeltype = inReq.findValue("channeltype");
+		if (channeltype == null)
+		{
+			throw new IllegalArgumentException("channeltype is required");
+		}
+		String entityid =  inReq.findValue("entityid");
+		if( entityid == null)
+		{
+			entityid = inReq.findValue("dataid");
+		}
+		String channelname = null;
+//		MultiValued entity  = (MultiValued) inReq.getPageValue("entity");
+//		switch(channeltype)  //TODO Remove this
+//		{
+//			case "agententitychat":
+//				dataid = entity.getId();
+//				channelname = "Guided Chat";
+//				break;
+//			case "entity":
+//				dataid = entity.getId();
+//				channelname = "Entity Chat";
+//				break;
+//			case "agentchat":
+//				dataid = inReq.getUserName();
+//				channelname = "AI Chat";
+//				break;
+//		}
+			
+		if( !createnew )
+		{
+			currentchannel =  (MultiValued)archive.getCachedData("channel", channel);
+			if (currentchannel == null )
+			{
+				Calendar now = DateStorageUtil.getStorageUtil().createCalendar();
+				now.add(Calendar.HOUR_OF_DAY,-1);
+
+				//TODO: Add flag for multi user
+				if( entityid != null)
+				{
+					//Shared chat. Like in OI 
+					currentchannel =  (MultiValued)channelsearcher.query().exact("dataid",entityid).exact("searchtype", module).after("refreshdate",now.getTime()).sort("refreshdateDown").searchOne();
+				}
+				else
+				{
+					//By user
+					currentchannel =  (MultiValued)channelsearcher.query().exact("user",inReq.getUserName()).after("refreshdate",now.getTime()).sort("refreshdateDown").searchOne();
+				}
+			}
+		}
+		
+		if (currentchannel == null) 
+		{
+			currentchannel = (MultiValued)channelsearcher.createNewData();
+			currentchannel.setName(channelname);
+			currentchannel.setValue("searchtype", module);
+			currentchannel.setValue("dataid", entityid );
+			currentchannel.setValue("user", inReq.getUser() );
+			String applicationid = inReq.findValue("applicationid");
+			currentchannel.setValue("chatapplicationid", applicationid);
+			currentchannel.setValue("channeltype", channeltype );
+		}
+		String toplevel = inReq.getRequestParameter("toplevelaifunctionid");
+		if( toplevel != null )
+		{
+			currentchannel.setValue("toplevelaifunctionid", toplevel);
+		}
+
+		currentchannel.setValue("refreshdate", new Date() );
+		channelsearcher.saveData(currentchannel);
+		
+		inReq.setRequestParameter("channel", currentchannel.getId());
+		
+		inReq.putPageValue("currentchannel", currentchannel);
+		
+		inReq.putPageValue("createnew", false);
 	}
 	
-	
+
 
 }

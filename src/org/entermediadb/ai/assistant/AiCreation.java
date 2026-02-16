@@ -5,37 +5,38 @@ import org.json.simple.JSONObject;
 public class AiCreation
 {
 	
-	String fieldCreationType;
+	String fieldCreationFunction;
 	
-	JSONObject fieldImageFields;
+	String fieldCreationModule; 
 	
-	JSONObject fieldEntityFields;
+	JSONObject fieldCreationFields;
 	
-	public String getCreationType()
+	public String getCreationFunction()
 	{
-		return fieldCreationType;
+		return fieldCreationFunction;
 	}
-	public void setCreationType(String inCreationType)
+	public void setCreationFunction(String inCreationType)
 	{
-		fieldCreationType = inCreationType;
-	}
-	
-	public JSONObject getImageFields()
-	{
-		return fieldImageFields;
-	}
-	public void setImageFields(JSONObject inImageFields)
-	{
-		fieldImageFields = inImageFields;
+		fieldCreationFunction = inCreationType;
 	}
 	
-	public JSONObject getEntityFields()
+	public String getCreationModule()
 	{
-		return fieldEntityFields;
+		return fieldCreationModule;
 	}
-	public void setEntityFields(JSONObject inEntityFields)
+	public void setCreationModule(String inCreationModule)
 	{
-		fieldEntityFields = inEntityFields;
+		fieldCreationModule = inCreationModule;
 	}
+	
+	public JSONObject getCreationFields()
+	{
+		return fieldCreationFields;
+	}
+	public void setCreationFields(JSONObject inCreationFields)
+	{
+		fieldCreationFields = inCreationFields;
+	}
+	
 	
 }

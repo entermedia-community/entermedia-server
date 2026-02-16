@@ -17,8 +17,8 @@ import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
+import org.openedit.Data;
 import org.openedit.MultiValued;
-import org.openedit.OpenEditException;
 
 public class SemanticClassifier extends InformaticsProcessor implements CatalogEnabled
 {
@@ -98,8 +98,17 @@ public class SemanticClassifier extends InformaticsProcessor implements CatalogE
 			{
 				continue;
 			}
-			Collection<String> newvalues = getSemanticTableManager().createSemanticValues(llmsemanticconnection, inConfig, moduleid,data);
-			data.setValue(fieldname,newvalues);
+			
+			try
+			{
+				Collection<String> newvalues = getSemanticTableManager().createSemanticValues(llmsemanticconnection, inConfig, moduleid,data);
+				data.setValue(fieldname,newvalues);
+			}
+			catch( Throwable ex)
+			{
+				log.error("Could not process " + moduleid + " -> " + data, ex);
+				data.setValue("llmerror", true);
+			}
 		}
 		if( getSemanticTableManager().isIndexingVectors() )
 		{
@@ -145,6 +154,33 @@ public class SemanticClassifier extends InformaticsProcessor implements CatalogE
 		Collection<String> values = new ArrayList(1);
 		values.add(text);
 		return search(values, excludedEntityIds, excludedAssetids);
+	}
+	
+	public Data searchOne(String textvalue, String inModuleId)
+	{
+		JSONObject response = getSemanticTableManager().execMakeVector(textvalue);
+	
+		JSONArray results = (JSONArray)response.get("results");
+		
+		Map hit = (Map)results.iterator().next();
+		
+		List vector = (List)hit.get("embedding");
+		
+		vector = getSemanticTableManager().collectDoubles(vector);
+		
+		Collection<RankedResult> found = getSemanticTableManager().searchNearestItems(vector);
+		
+		for (Iterator iterator = found.iterator(); iterator.hasNext();)
+		{
+			RankedResult rankedResult = (RankedResult) iterator.next();
+			
+			if(inModuleId.equals(rankedResult.getModuleId()))
+			{
+				Data data = getMediaArchive().getData(rankedResult.getModuleId(), rankedResult.getEntityId());
+				return data;
+			}
+		}
+		return null; //not found
 	}
 	
 	

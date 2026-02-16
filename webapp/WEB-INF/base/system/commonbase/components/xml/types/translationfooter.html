@@ -1,7 +1,7 @@
 #set($languages = $mediaarchive.getList("locale") )
 <div class="d-flex align-items-start justify-content-between mt-3 mb-1" id="languageaction_${detail.id}">
   <div class="dropdown">
-    <button type="button" class="dropdown-toggle btn btn-sm btn-primary mr-1" title="[[Add a Language]]">
+    <button type="button" class="dropdown-toggle btn btn-sm btn-primary me-1" title="[[Add a Language]]">
       <i class="bi bi-plus-lg"></i>
     </button>
     <div class="dropdown-menu">
@@ -27,7 +27,7 @@
 
   <div class="d-flex align-items-center">
     <button type="button" class="btn btn-sm btn-primary translate-ajax" title="[[Creates Translations for Missing Languages]]">
-      <i class="bi bi-translate mr-1"></i> [[Translate]]
+      <i class="bi bi-translate me-1"></i> [[Translate]]
     </button>
     <span class="mx-1">[[from]]</span>
     <select id="translate-dropdown-${detail.id}"

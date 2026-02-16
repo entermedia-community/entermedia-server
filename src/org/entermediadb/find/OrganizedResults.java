@@ -288,7 +288,7 @@ public class OrganizedResults
 			{
 				clearresults = true;
 			}
-			else if( getEntityResults().hasChanged( inUnsortedEntities ) )
+			else if( getEntityResults() != null && getEntityResults().hasChanged( inUnsortedEntities ) )
 			{
 				clearresults = true;
 			}

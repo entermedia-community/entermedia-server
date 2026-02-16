@@ -13,10 +13,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.classify.EmbeddingManager;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
+import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -663,6 +666,8 @@ public class DataEditModule extends BaseMediaModule
 
 				}
 			}
+
+			//TODO: embed
 			
 			String variablename = inReq.findValue("pageval");
 			if (variablename == null)
@@ -703,6 +708,33 @@ public class DataEditModule extends BaseMediaModule
 		if(entity_date != null && data.getValue("entity_date") == null) {
 			data.setValue("entity_date", new Date());
 		}
+		
+		String externalid = inReq.getRequestParameter("fieldexternalid");
+		if (externalid != null)
+		{
+			String externalvalue = inReq.getRequestParameter("fieldexternalvalue");
+			if (externalvalue != null)
+			{
+				if (data.getValue(externalid) == null)
+				{
+					data.setValue(externalid, externalvalue);
+				}
+			}
+		}
+		String externalid2 = inReq.getRequestParameter("fieldexternalid2");
+		if (externalid2!= null)
+		{
+			String externalvalue2 = inReq.getRequestParameter("fieldexternalvalue2");
+			if (externalvalue2 != null)
+			{
+				if (data.getValue(externalid2) == null)
+				{
+					data.setValue(externalid2, externalvalue2);
+				}
+			}
+		}
+		
+		
 	}
 
 	public EventManager getEventManager()

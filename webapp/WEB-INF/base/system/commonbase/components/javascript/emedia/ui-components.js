@@ -75,6 +75,63 @@ jQuery(document).ready(function () {
 			}
 		}
 	}
+	var defaultPopperConfig = {
+		strategy: "fixed",
+		modifiers: [
+			{
+				name: "computeStyles",
+				options: {
+					gpuAcceleration: true,
+					adaptive: false,
+				},
+			},
+			{
+				name: "preventOverflow",
+				options: {
+					boundary: "viewport",
+					altAxis: true,
+				},
+			},
+			{
+				name: "flip",
+				options: {
+					fallbackPlacements: ["bottom", "top", "right", "left"],
+					flipVariations: true,
+				},
+			},
+		],
+	};
+
+	var drops = [
+		".dropdown",
+		".dropup",
+		".dropstart",
+		".dropend",
+		".dropupstart",
+		".dropupend",
+		".dropdown-center",
+		".dropdown-submenu",
+	];
+
+	drops.forEach(function (drop) {
+		lQuery(drop).livequery("mouseenter", function () {
+			var dropdownToggleEl = $(this).find(
+				'[data-bs-toggle="dropdown"], .dropdown-toggle',
+			)[0];
+			var dropdown = new bootstrap.Dropdown(dropdownToggleEl, {
+				popperConfig: defaultPopperConfig,
+			});
+			dropdown.show();
+		});
+
+		lQuery(drop).livequery("mouseleave", function () {
+			var dropdownToggleEl = $(this).find(
+				'[data-bs-toggle="dropdown"], .dropdown-toggle',
+			)[0];
+			var dropdown = bootstrap.Dropdown.getOrCreateInstance(dropdownToggleEl);
+			dropdown.hide();
+		});
+	});
 
 	lQuery("form.checkCloseDialog").livequery(function () {
 		trackKeydown = true;
@@ -168,7 +225,7 @@ jQuery(document).ready(function () {
 			if (backLink.entityid !== undefined && backLink.entityid != "") {
 				link.data("entityid", backLink.entityid);
 				link.data("entitymoduleid", backLink.entitymoduleid);
-				link.data("entitymoduleviewid", backLink.entitymoduleviewid);
+				//link.data("entitymoduleviewid", backLink.entitymoduleviewid);
 				link.data("url", backLink.url);
 				link.attr("href", backLink.url);
 				link.show();
@@ -188,20 +245,17 @@ jQuery(document).ready(function () {
 		}
 	});
 
-	lQuery(".entity-tab-content.overflow-x").livequery(
-		"scroll",
-		function (event) {
-			if (event.shiftKey) {
-				if (event.originalEvent.deltaY > 0) {
-					event.preventDefault();
-					$(this).scrollLeft($(this).scrollLeft() - 100);
-				} else {
-					event.preventDefault();
-					$(this).scrollLeft($(this).scrollLeft() + 100);
-				}
+	lQuery(".entity-tab-content.overflow-x").livequery("scroll", function (e) {
+		if (e.shiftKey) {
+			if (e.originalEvent.deltaY > 0) {
+				e.preventDefault();
+				$(this).scrollLeft($(this).scrollLeft() - 100);
+			} else {
+				e.preventDefault();
+				$(this).scrollLeft($(this).scrollLeft() + 100);
 			}
 		}
-	);
+	});
 
 	lQuery(".indexDocPages").livequery("click", function (e) {
 		e.preventDefault();
@@ -324,9 +378,9 @@ jQuery(document).ready(function () {
 					data = targetEl.val();
 				}
 				navigator.clipboard.writeText(data);
-				$this.html('<i class="bi bi-check-lg mr-1"></i> Copied!');
+				$this.html('<i class="bi bi-check-lg me-1"></i> Copied!');
 				setTimeout(() => {
-					$this.html('<i class="bi bi-clipboard mr-1"></i> ' + btnText);
+					$this.html('<i class="bi bi-clipboard me-1"></i> ' + btnText);
 				}, 2000);
 			} else {
 				if (!targetEl.is("img")) {
@@ -541,7 +595,9 @@ jQuery(document).ready(function () {
 			jQuery.ajax({
 				url: url,
 				async: false,
-				data: options,
+				data: {
+					...options,
+				},
 				success: function (data) {
 					//data = $(data);
 					var cell = findClosest(toggler, "#" + targetdiv);
@@ -581,7 +637,9 @@ jQuery(document).ready(function () {
 				jQuery.ajax({
 					url: url,
 					async: false,
-					data: options,
+					data: {
+						...options,
+					},
 				});
 			});
 		} else {
@@ -614,7 +672,9 @@ jQuery(document).ready(function () {
 		jQuery.ajax({
 			url: url,
 			async: false,
-			data: options,
+			data: {
+				...options,
+			},
 			success: function (data) {
 				targetdiv.replaceWith(data); //Cant get a valid dom element
 				$(".pushcontent").removeClass("pushcontent-fullwidth");
@@ -806,24 +866,28 @@ jQuery(document).ready(function () {
 	lQuery("input.datepicker").livequery(function () {
 		if ($.datepicker) {
 			var dpicker = $(this);
+			var icontext = dpicker.data("alt");
+			if (!icontext) {
+				icontext = "Select Date";
+			}
 			$.datepicker.setDefaults($.datepicker.regional[browserlanguage]);
 			$.datepicker.setDefaults(
 				$.extend({
 					showOn: "button",
 					buttonImage:
 						"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='%23444444' class='bi bi-calendar-plus' viewBox='0 0 16 16'%3E%3Cpath d='M8 7a.5.5 0 0 1 .5.5V9H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V10H6a.5.5 0 0 1 0-1h1.5V7.5A.5.5 0 0 1 8 7'/%3E%3Cpath d='M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z'/%3E%3C/svg%3E",
+					buttonText: icontext,
 					buttonImageOnly: true,
 					changeMonth: true,
 					changeYear: true,
 					yearRange: "1900:2050",
-				})
+				}),
 			); // Move this to the Layouts?
 
 			var targetid = dpicker.data("targetid");
 			dpicker.datepicker({
 				altField: "#" + targetid,
 				altFormat: "yy-mm-dd",
-				yearRange: "1900:2050",
 				beforeShow: function (input, inst) {
 					setTimeout(function () {
 						$("#ui-datepicker-div").css("z-index", 100100);
@@ -868,8 +932,6 @@ jQuery(document).ready(function () {
 				$(this).datepicker("setDate", date);
 			}
 
-			var picker = $(this).parent().find(".ui-datepicker-trigger");
-
 			$(this).blur(function () {
 				var val = $(this).val();
 				if (val == "") {
@@ -880,18 +942,57 @@ jQuery(document).ready(function () {
 				if ($("#ui-datepicker-div").is(":visible")) {
 					return;
 				}
+				let picker = $(this).parent().find(".ui-datepicker-trigger");
 				picker.trigger("click");
 			});
+			/*
 			$(this).clickOutside({
 				event: "click",
 				handler: function () {
 					if (!$("#ui-datepicker-div").is(":visible")) {
 						return;
 					}
+					let picker = $(this).parent().find(".ui-datepicker-trigger");
 					picker.trigger("click");
 				},
 				exclude: [".ui-datepicker", ".ui-icon"],
 			});
+			*/
 		} //datepicker
+	});
+
+	function toggleAiSuggestions() {
+		var container = $(".ai-suggestions-container");
+		if (container.hasClass("expanded")) {
+			container.removeClass("expanded");
+			$(".ai-func-toggle").text("Show Examples");
+		} else {
+			container.addClass("expanded");
+			$(".ai-func-toggle").text("Hide Examples");
+		}
+	}
+
+	lQuery(".autoprefixchatmsg").livequery("click", function () {
+		var prefix = $(this).data("prefix");
+		var editorid = $(this).data("editorid");
+		if (!editorid) {
+			editorid = "chatter-msg";
+		}
+		var editor = $("#" + editorid);
+		setTimeout(() => {
+			toggleAiSuggestions();
+			editor.focus();
+			editor.val(prefix);
+		}, 100);
+	});
+
+	lQuery(".ai-func-toggle").livequery("click", toggleAiSuggestions);
+
+	lQuery(".ai-suggestion").livequery("click", function () {
+		var parent = $(this).closest(".ai-suggestions");
+		parent.find(".ai-suggestion").each(function () {
+			$(this).removeClass("selected");
+		});
+		$(this).addClass("selected");
 	});
 }); //on ready

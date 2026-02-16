@@ -21,6 +21,7 @@ import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.users.User;
+import org.openedit.util.PathUtilities;
 
 public class ClassifyManager extends InformaticsProcessor
 {
@@ -135,6 +136,22 @@ public class ClassifyManager extends InformaticsProcessor
 			
 			if( !aifields.isEmpty() )
 			{
+				if( mediatype.equals("text") )
+				{
+					String fulltext = getMediaArchive().getAssetSearcher().getFulltext(asset);
+					if( fulltext == null)
+					{
+						log.error("Text has no text: " + asset);
+						return false;
+					}
+					if( fulltext.length() > 4000)
+					{
+						fulltext = fulltext.substring(0,Math.min(fulltext.length(), 4000));
+					}
+					asset.setValue("markdowncontent",fulltext);
+					mediatype = "document";	
+				}
+				
 				if(mediatype.equals("image"))
 				{
 					base64EncodedString = loadBase64Image(asset, "image3000x3000");
@@ -176,12 +193,13 @@ public class ClassifyManager extends InformaticsProcessor
 				}
 				else
 				{
+					///Check for text type
 					log.info("Skipping media type: " + mediatype + " for asset: " + asset);
 					return false;
 				}
 			}
 
-			if( textContent != null)
+			if( textContent != null && textContent.length() > 4000)
 			{
 				textContent = textContent.substring(0, Math.min(4000, textContent.length()));
 			}
@@ -248,8 +266,6 @@ public class ClassifyManager extends InformaticsProcessor
 	{
 		inLog.headline("Classifying " + hits.size() + " entities");
 
-		Map<String, List<Data>> entitiestoprocess = new HashMap();
-
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) 
 		{
 			MultiValued entity = (MultiValued) iterator.next();
@@ -260,14 +276,6 @@ public class ClassifyManager extends InformaticsProcessor
 				log.info("Skipping entity with no source type: " + entity.getId() + " " + entity.getName());
 				continue;
 			}
-
-			List<Data> bytype = entitiestoprocess.get(moduleid);
-			if( bytype == null)
-			{
-				bytype = new ArrayList<Data>();
-				entitiestoprocess.put(moduleid, bytype);
-			}
-			bytype.add(entity);
 
 			try {
 				long startTime = System.currentTimeMillis();

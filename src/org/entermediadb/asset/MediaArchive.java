@@ -1236,7 +1236,7 @@ public class MediaArchive implements CatalogEnabled
 				if( everything)
 				{
 					getPageManager().getRepository().remove(inContent);
-					log.info("All images removed.");
+					//log.info("All images removed.");
 					return;
 				}
 				//getPageManager().removePage(page);
@@ -3356,7 +3356,6 @@ public class MediaArchive implements CatalogEnabled
 	public LlmConnection getLlmConnection(String inAiFunctionName)
 	{
 		String cacheName = "llmconnection";
-		
 		LlmConnection connection = (LlmConnection) getCacheManager().get(cacheName, inAiFunctionName);
 		
 		if(connection == null)
@@ -3364,15 +3363,25 @@ public class MediaArchive implements CatalogEnabled
 			Data aifunction = query("aifunction").id(inAiFunctionName).searchOne();
 			if( aifunction == null)
 			{
-				throw new OpenEditException("Could not find AIFunction named " + inAiFunctionName);
+				log.info("Could not find AIFunction named " + inAiFunctionName + " using default");
+				aifunction = query("aifunction").id("default").searchOne();
 			}
-			Data serverinfo = query("aiserver").exact("aifunction", inAiFunctionName).sort("ordering").searchOne();
+			Data serverinfo = query("aiserver").exact("aifunction", aifunction.getId()).sort("ordering").searchOne();
 			if( serverinfo == null)
 			{
-				throw new OpenEditException("Could not find Connector for aifunction " + inAiFunctionName);
+				serverinfo = query("aiserver").exact("aifunction", "default").sort("ordering").searchOne();
+				if( serverinfo == null)
+				{
+					throw new OpenEditException("Could not find Connector for aifunction " + inAiFunctionName);
+				}
 			}
 			String llm = serverinfo.get("connectionbean");
 			connection = (LlmConnection) getModuleManager().getBean(getCatalogId(),llm, false);
+			if("default".equals(aifunction.getId())) {
+				// setting the name and id to the requested function name if default was used
+				aifunction.setName(inAiFunctionName);
+				aifunction.setId(inAiFunctionName);
+			}
 			connection.setAiFunctionData(aifunction);
 			connection.setAiServerData(serverinfo);
 			getCacheManager().put(cacheName, inAiFunctionName, connection);
@@ -3381,6 +3390,21 @@ public class MediaArchive implements CatalogEnabled
 		
 		return connection;
 	}
+	
+	
+	public boolean aiImageCreationAvailable(WebPageRequest inReq)
+	{
+		LlmConnection imagecreation = getLlmConnection("image_creation_start");
+		if (imagecreation != null)
+		{
+			if (imagecreation.getApiKey() != null)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }
 
 

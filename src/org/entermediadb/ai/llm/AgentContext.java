@@ -58,6 +58,24 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	{
 		fieldUserProfile = inUserProfile;
 	}
+	
+	@Override
+	public String get(String inId)
+	{
+		// TODO Auto-generated method stub
+		String value = super.get(inId);
+		
+		if (value == null && inId.equals("entityid"))
+		{
+			value = getChannel().get("dataid");
+		}
+		else if (value == null && inId.equals("entitymoduleid"))
+		{
+			value = getChannel().get("searchtype");
+		}
+		
+		return value;
+	}
 
 	
 	public String getNextFunctionName() {
@@ -67,6 +85,14 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	public void setNextFunctionName(String inNextFunctionName) {
 		setValue("nextfunctionname",inNextFunctionName);
 	}
+
+	public String getTopLevelFunctionName() {
+		return get("toplevelaifunctionid");
+	}
+	
+	public void setTopLevelFunctionName(String inNextFunctionName) {
+		setValue("toplevelaifunctionid",inNextFunctionName);
+	}
 	
 	public Map<String,Object> getContext() {
 		return context;
@@ -74,7 +100,18 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	
 	public Data getChannel()
 	{
-		return (Data)getContextValue("channel");
+		Data channel = (Data)getContextValue("channel");
+		if( channel == null)
+		{
+			
+		}
+		return channel;
+	}
+	
+	public void setChannel(Data inChannel)
+	{
+		setValue("channel",inChannel.getId());
+		addContext("channel",inChannel);
 	}
 	
 	public Object getContextValue(String inKey) {
@@ -147,7 +184,7 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	{
 		if( fieldAiCreationParams == null)
 		{
-			fieldAiCreationParams  = new AiCreation();
+			fieldAiCreationParams = new AiCreation();
 		}
 		return fieldAiCreationParams;
 	}
@@ -224,4 +261,7 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 		}
 		fieldExcludedAssetIds.add(inAssetid);
 	}
+	
+	
+	
 }

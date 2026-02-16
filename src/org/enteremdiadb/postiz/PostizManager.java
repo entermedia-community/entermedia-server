@@ -21,11 +21,16 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+<<<<<<< HEAD
 import org.json.simple.parser.JSONParser;
+=======
+>>>>>>> refs/remotes/origin/main
 import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.repository.ContentItem;
+import org.openedit.util.JSONParser;
 
 public class PostizManager implements CatalogEnabled
 {
@@ -241,10 +246,51 @@ public class PostizManager implements CatalogEnabled
 		}
 	}
 
+<<<<<<< HEAD
 	@SuppressWarnings("unchecked")
 	public String loginAndGetCookie(String inUsername, String inPassword)
 	{
 		String baseUrl = getApiEndpoint();
+=======
+        } catch (Exception e) {
+            log.error("Error listing integrations in Postiz", e);
+            throw new OpenEditException("Failed to list integrations", e);
+        }
+    }
+    
+    
+    public JSONArray listsubReddits(WebPageRequest inReq) {
+        //String apiKey = getApiKey();
+        
+ 
+        try {
+            
+            JSONArray subreddits = (JSONArray) getMediaArchive().getCacheManager().get("postiz", "subreddits");
+            if(subreddits == null) {
+                String redditprofile = inReq.getRequestParameter("profile");
+                String term = inReq.getRequestParameter("term");
+                String endpoint = "https://oauth.reddit.com/subreddits/search?show=public&q="+term+"&sort=activity&show_users=false&limit=10";
+                HttpGet getMethod = new HttpGet(endpoint);
+                getMethod.addHeader("User-Agent", "Java:MySubredditFetcherApp:v1.0.0 (by /u/"+redditprofile+")");
+
+                CloseableHttpResponse response = getSharedClient().execute(getMethod);
+
+                String jsonResponse = EntityUtils.toString(response.getEntity(), "UTF-8");
+                subreddits = (JSONArray) new org.openedit.util.JSONParser().parseCollection(jsonResponse);
+                response.close();         
+                getMediaArchive().getCacheManager().put("postiz", "subreddits", subreddits);
+            }
+            
+            // Parse the response as JSON
+            
+            return subreddits;
+
+        } catch (Exception e) {
+            log.error("Error listing integrations in Postiz", e);
+            throw new OpenEditException("Failed to list integrations", e);
+        }
+    }
+>>>>>>> refs/remotes/origin/main
 
 		String cacheKey = "auth_cookie_" + inUsername;
 		String cached = (String) getMediaArchive().getCacheManager().get("postiz", cacheKey);

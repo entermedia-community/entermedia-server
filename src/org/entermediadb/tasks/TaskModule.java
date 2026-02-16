@@ -510,6 +510,53 @@ public class TaskModule extends BaseMediaModule
 		}
 	}
 	
+	public void loadTasksForUser(WebPageRequest inReq) {
+		String user = inReq.getRequestParameter("user");
+		if( user == null)
+		{
+			user = inReq.getUserName();
+		}
+		loadTasksForUser(inReq, user);
+	}
+	protected void loadTasksForUser(WebPageRequest inReq, String inUserId)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		
+		
+		Searcher goalsearcher = archive.getSearcher("projectgoal"); //Al Projects
+		QueryBuilder opengoalbuilder = goalsearcher.query();
+		opengoalbuilder.not("projectstatus", "closed").not("projectstatus", "completed").sort("projectstatus").sort("creationdateUp");
+		HitTracker opengoalresults = opengoalbuilder.search();
+		
+		List opentickets = new ArrayList();
+		Map tasklookup = new HashMap();
+		inReq.putPageValue("opentickets", opentickets);
+		inReq.putPageValue("searcher", opengoalresults.getSearcher());
+		
+		for (Iterator iterator = opengoalresults.iterator(); iterator.hasNext();)
+		{
+			//All tasks for Project Goal
+			Data goal = (Data) iterator.next();
+			Collection tasks = archive.query("goaltask")
+										.not("taskstatus", "3")
+										.match("projectgoal", goal.getId())
+										.exact("taskroles.roleuserid", inUserId)
+										.sort("creationdateDown")
+										.search();
+			
+			if (!tasks.isEmpty())
+			{
+			opentickets.add( goalsearcher.loadData(goal) );
+			tasklookup.put(goal.getId(),tasks);
+			inReq.putPageValue("tasksearcher",archive.getSearcher("goaltask"));
+			inReq.putPageValue("tasklookup",tasklookup);
+			}
+			
+		}
+		
+	}
+	
 	public void checkGoalCount(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -1494,10 +1541,11 @@ public class TaskModule extends BaseMediaModule
 			
 			if(allprojectsuser == null || allprojectsuser.isEmpty())
 			{
-				
+				//No Tickets
 				inReq.putPageValue("opentickets", new ListHitTracker());
 				return;
 			}
+			
 			for (Iterator iterator = allprojectsuser.iterator(); iterator.hasNext();)
 			{
 				Data librarycol = (Data)iterator.next();

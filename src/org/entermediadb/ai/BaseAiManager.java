@@ -7,70 +7,43 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.assistant.SemanticAction;
+import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.manager.BaseManager;
+import org.entermediadb.scripts.ScriptLogger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.modules.translations.LanguageMap;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
 
-public class BaseAiManager extends BaseManager implements ChatMessageHandler
+public abstract class BaseAiManager extends BaseManager 
 {
 	private static final Log log = LogFactory.getLog(BaseAiManager.class);
 	
-	/*
-	public Map<String, String> getModels()
-	{
-		Map<String, String> models = new HashMap<>();
-		String visionmodel = getMediaArchive().getCatalogSettingValue("llmvisionmodel");
-		if(visionmodel == null) {
-			visionmodel = "gpt-5-nano";
-		}
-		models.put("vision", visionmodel);
-		
-		String entityclassificationmodel = getMediaArchive().getCatalogSettingValue("llmentityclassificationmodel");
-		if(entityclassificationmodel == null) {
-			entityclassificationmodel = "qwen3_4b";
-		}
-		models.put("entityclassification", entityclassificationmodel);
-		
-		String metadatamodel = getMediaArchive().getCatalogSettingValue("llmmetadatamodel");
-		if(metadatamodel == null) {
-			metadatamodel = "gpt-5-nano";
-		}
-		models.put("metadata", metadatamodel);
-
-		String semanticmodel = getMediaArchive().getCatalogSettingValue("llmsemanticmodel");
-		if(semanticmodel == null) {
-			semanticmodel = "qwen3:4b";
-		}
-		models.put("semantic", semanticmodel);
-		
-		String ragmodel = getMediaArchive().getCatalogSettingValue("llmragmodel");
-		if(ragmodel == null) {
-			ragmodel = "qwen3:4b";
-		}
-		models.put("ragmodel", ragmodel);
-		
-		return models;
-	}
-	*/
+	
 	protected Collection<PropertyDetail> loadActiveDetails(String inModuleId)
 	{
-		//TODO: Cache these!!
-		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inModuleId).exact("systemdefined", false).search();  //Cache this
+		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inModuleId).exact("systemdefined", false).cachedSearch();  //Cache this
 
 		if( detailsviews == null)
 		{
@@ -368,10 +341,311 @@ public class BaseAiManager extends BaseManager implements ChatMessageHandler
 		}
 	}
 
-	@Override
-	public LlmResponse processMessage(MultiValued inMessage, AgentContext inAgentContext)
+	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inMessage, MultiValued inAiFunction)
 	{
 		throw new OpenEditException("Not implemented");
 	}
 
+	protected Schema loadSchema()
+	{
+		Schema schema = (Schema)getMediaArchive().getCacheManager().get("assitant","schema");
+		
+		if( schema == null)
+		{
+			schema = new Schema();
+			HitTracker allmodules = getMediaArchive().query("module").exact("showonsearch",true).search();
+			Collection<Data> modules = new ArrayList();
+			Collection<String> moduleids = new ArrayList();
+			
+			for (Iterator iterator = allmodules.iterator(); iterator.hasNext();)
+			{
+				Data module = (Data) iterator.next();
+				Data record = getMediaArchive().query(module.getId()).all().searchOne();
+				
+				if(record != null)
+				{
+					modules.add(module);
+					moduleids.add(module.getId());
+					
+					Collection detailsviews = getMediaArchive().query("view").exact("moduleid", module.getId()).exact("rendertype", "entitysubmodules").cachedSearch();  //Cache this
+
+					for (Iterator iterator2 = detailsviews.iterator(); iterator2.hasNext();)
+					{
+						Data view = (Data) iterator2.next();
+						String listid = view.get("rendertable");
+						if( moduleids.contains(listid) )
+						{
+							Data childmodule = getMediaArchive().getCachedData("module", listid);
+							schema.addChildOf(module.getId(),childmodule);
+						}
+					}
+				}
+			}
+			schema.setModules(modules);
+			schema.setModuleIds(moduleids);
+			getMediaArchive().getCacheManager().put("assitant", "schema", schema);
+			
+		}
+		
+		return schema;
+	}
+	
+	public Map<String, String> getModulesAsEnum()
+	{
+		Collection<String> nameenums = new ArrayList<String>();
+		Collection<String> idnameenums = new ArrayList<String>();
+		for (Data module : loadSchema().getModules())
+		{
+			String id = module.getId();
+			String name = module.getName();
+			if(id.equals("asset"))
+			{
+				continue;
+			}
+			// The 'search' in module name/id confuses AI
+			
+			if (id.toLowerCase().contains("search") && !name.toLowerCase().contains("search"))
+			{
+				nameenums.add("\"" + name + "\"");
+				continue;
+			}
+			if (!id.toLowerCase().contains("search") && name.toLowerCase().contains("search"))
+			{
+				idnameenums.add("\"" + id + "\"");
+				continue;
+			}
+			if((id+name).toLowerCase().contains("search"))
+			{
+				continue;
+			}
+			
+			idnameenums.add("\"" + id + "|" + name + "\"");
+			nameenums.add("\"" + name + "\"");
+		}
+		
+		Map<String, String> enums = new HashMap<>();
+		
+		if(idnameenums.isEmpty())
+		{
+			idnameenums = null;
+		}
+		else
+		{			
+			enums.put("idnames", String.join(",", idnameenums));
+		}
+		
+		if(nameenums.isEmpty())
+		{
+			nameenums = null;
+		}
+		else
+		{			
+			enums.put("names", String.join(",", nameenums));
+		}
+		
+		return enums;
+	}
+
+	
+	public SemanticTableManager loadSemanticTableManager(String inConfigId)
+	{
+		SemanticTableManager table = (SemanticTableManager)getMediaArchive().getCacheManager().get("semantictables",inConfigId);
+		if( table == null)
+		{
+			table = (SemanticTableManager)getModuleManager().getBean(getCatalogId(),"semanticTableManager",false);
+			table.setConfigurationId(inConfigId);
+			getMediaArchive().getCacheManager().put("semantictables",inConfigId,table);
+		}
+		
+		return table;
+	}
+
+	protected LlmResponse startChat(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued userMessage, MultiValued inAiFunction )
+	{
+		MediaArchive archive = getMediaArchive();
+		
+		LlmConnection llmconnection = archive.getLlmConnection(inAiFunction.getId()); //Should stay search_start
+		
+		//inAgentContext.addContext("message", userMessage);
+		
+		LlmResponse response = llmconnection.callStructuredOutputList(inAgentContext.getContext()); //TODO: Replace with local API that is faster
+		if(response == null)
+		{
+			throw new OpenEditException("No results from AI for message: " + userMessage.get("message"));
+		}
+		
+		handleLlmResponse(inAgentContext, response);
+//		else if(toolname.equals("create_image"))
+//		{
+//			toolname = "image_creation_start";
+//			
+//			AiCreation creation = inAgentContext.getAiCreationParams();					
+//			creation.setCreationType("image");
+//			JSONObject structure = (JSONObject) details.get("create_image");
+//			creation.setImageFields(structure);
+//		}
+//		else if(toolname.equals("create_record"))
+//		{
+//			toolname = "createRecord";
+//			
+//			AiCreation creation = inAgentContext.getAiCreationParams();
+//			creation.setCreationType("entity");
+//			JSONObject structure = (JSONObject) details.get("create_record");
+//			creation.setEntityFields(structure);
+//		}
+		
+		return response;
+	}
+
+	protected void handleLlmResponse(AgentContext inAgentContext, LlmResponse response)
+	{
+		//Do nothin
+	}
+
+	public void populateVectors(SemanticTableManager manager, Collection<SemanticAction> inActions)
+	{
+		Collection<String> textonly = new ArrayList(inActions.size());
+		Map<String,SemanticAction> actions = new HashMap();
+		Integer count = 0;
+		for (Iterator iterator = inActions.iterator(); iterator.hasNext();)
+		{
+			SemanticAction action = (SemanticAction) iterator.next();
+			textonly.add(action.getSemanticText());
+			actions.put( String.valueOf(count) , action);
+			count++;
+		}
+		
+		JSONObject response = manager.execMakeVector(textonly);
+		
+		JSONArray results = (JSONArray)response.get("results");
+		if( results == null)
+		{
+			return;
+		}
+		Collection<MultiValued> newrecords = new ArrayList(results.size());
+		for (int i = 0; i < results.size(); i++)
+		{
+			Map hit = (Map)results.get(i);
+			String countdone = (String)hit.get("id");
+			SemanticAction action = actions.get(countdone);
+			List vector = (List)hit.get("embedding");
+			vector = manager.collectDoubles(vector);
+			action.setVectors(vector);
+		}
+		
+	}
+	
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog, String inTopLevelFunction)
+	{
+		Map params = new HashMap();
+		savePossibleFunctionSuggestions(inLog, inTopLevelFunction, params);
+	}
+
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog, String inTopLevelFunction, Map inParams)
+	{
+		return;
+//		Schema schema = loadSchema();
+//		
+//		inParams.put("model", "Qwen3:14B");
+//		inParams.put("schema", schema);
+//		
+//		
+//		Collection functions = getMediaArchive().query("aifunction").exact("toplevel", true).exact("cratesuggestions", true).search();
+//		
+//		
+//
+//		Searcher suggestionsearcher = getMediaArchive().getSearcher("aisuggestion");
+//
+//		for (Iterator iterator = functions.iterator(); iterator.hasNext();)
+//		{
+//			Data function = (Data) iterator.next();
+//
+//			HitTracker existing = suggestionsearcher.query().exact("aifunction", function.getId()).exact("aigenerated", true).search();
+//			if( existing.size() >= 5)
+//			{
+//				log.info("Already found enough suggestions " + inTopLevelFunction);
+//				continue;
+//			}
+//			
+//			inParams.put("function", function);
+//			
+//			//Run AI to create a set of suggestions
+//			String creatorFunctionName = "createSuggestionsFor" + function.getId();
+//
+//			LlmConnection llmconnection = getMediaArchive().getLlmConnection(creatorFunctionName);
+//			
+//			inParams.put("jsonfilename", "suggestions/"+function.getId());
+//
+//			LlmResponse response = llmconnection.callStructuredOutputList(inParams);
+//			
+//			Collection<Map> suggestions = response.getCollection("suggestions");
+//			Collection<Data> tosave = new ArrayList();
+//			
+//			int count = 0;
+//			for (Iterator iterator2 = suggestions.iterator(); iterator2.hasNext();)
+//			{
+//				Object suggestion = iterator2.next();
+//				
+//				String title = null;
+//				String prompt = null;
+//				if(suggestion instanceof String)
+//				{
+//					title = (String) suggestion;
+//					prompt = title;
+//				}
+//				else if(suggestion instanceof Map)
+//				{
+//					Map map = (Map)suggestion;
+//					title = (String) map.get("title");
+//					prompt = (String) map.get("prompt");
+//				}
+//				else
+//				{
+//					continue;
+//				}
+//				
+//				Data newsuggestion = suggestionsearcher.createNewData();
+//				newsuggestion.setValue("aifunction",function.getId());
+//				LanguageMap lang = new LanguageMap();
+//				lang.setText("en", title);
+//				newsuggestion.setValue("name", lang);
+//				newsuggestion.setValue("prompt", prompt);
+//				if(count < 3) 
+//				{
+//					newsuggestion.setValue("featured", "true");
+//				}
+//				newsuggestion.setValue("aigenerated", true);
+//				count++;
+//				tosave.add(newsuggestion);
+//			}
+//			suggestionsearcher.saveAllData(tosave, null); 
+//		}
+
+	}
+	
+	
+	public LlmResponse handleError(AgentContext inAgentContext, String inError)
+	{
+		inAgentContext.addContext("error", inError);
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("render_error");
+		LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "render_error");
+		inAgentContext.setFunctionName(null);
+		inAgentContext.setNextFunctionName(null);
+		return response;
+	}
+	
+	protected String findLocalActionName(AgentContext inAgentContext)
+	{
+		String agentFn = inAgentContext.getFunctionName();
+		String apphome = (String) inAgentContext.getContextValue("apphome");
+
+		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/" + agentFn + ".html";
+		boolean pageexists = getMediaArchive().getPageManager().getPage(templatepath).exists();
+		if(!pageexists)
+		{
+			int lastone = agentFn.lastIndexOf("_");
+			agentFn = agentFn.substring(0,lastone);
+		}
+		return agentFn;
+	}	
 }

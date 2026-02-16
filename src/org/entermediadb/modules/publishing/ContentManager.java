@@ -20,6 +20,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.dom4j.Element;
 import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.assistant.AiCreation;
+import org.entermediadb.ai.assistant.SemanticAction;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
@@ -30,6 +31,7 @@ import org.entermediadb.asset.importer.DitaImporter;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.find.EntityManager;
 import org.entermediadb.net.HttpSharedConnection;
+import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
@@ -707,9 +709,9 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 	//	// access anything.
 	//	inReq.putPageValue("inputdata", inputdata);
 	//	String template = inManager.loadInputFromTemplate(inReq,
-	//		"/" + archive.getMediaDbId() + "/gpt/templates/create_entity.html");
+	//		"/" + archive.getMediaDbId() + "/gpt/templates/create_record.html");
 	//
-	//	JSONObject results = inManager.callFunction(inReq, "create_entity", template, 0, 5000);
+	//	JSONObject results = inManager.callFunction(inReq, "create_record", template, 0, 5000);
 	//
 	//	Data child = getMediaArchive().getSearcher(inTargetentity).createNewData();
 	//
@@ -788,7 +790,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 
 		try 
 		{
-			LlmConnection llmconnection = archive.getLlmConnection("createImage");
+			LlmConnection llmconnection = archive.getLlmConnection("image_creation_start");
 			
 			LlmResponse results = llmconnection.createImage(prompt);
 
@@ -884,7 +886,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 
 			params.put("contentrequest", inContentrequest);
 
-			LlmResponse results = inLlm.callCreateFunction(params, "create_entity");
+			LlmResponse results = inLlm.callCreateFunction(params, "create_record");
 
 			child = targetsearcher.createNewData();
 			JSONObject args = results.getMessageStructured();
@@ -939,7 +941,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 
 			params.put("contentrequest", inContentrequest);
 
-			LlmResponse results = inLlm.callCreateFunction(params, "create_entity");
+			LlmResponse results = inLlm.callCreateFunction(params, "create_record");
 			
 			JSONObject args = results.getMessageStructured();
 			for (Iterator iterator = args.keySet().iterator(); iterator.hasNext();) {
@@ -985,17 +987,17 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 	}
 	
 	@Override
-	public LlmResponse processMessage(MultiValued inAgentMessage, AgentContext inAgentContext)
+	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
 	{
 		
-		if("createImage".equals(inAgentContext.getFunctionName()))
+		if("image_creation_start".equals(inAgentContext.getFunctionName()))
 		{
 			
 			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
 			LlmResponse result = createImage(usermessage, inAgentContext);
 			return result;
 		}
-		else if("renderImage".equals(inAgentContext.getFunctionName()))
+		else if("image_creation_render".equals(inAgentContext.getFunctionName()))
 		{
 			String assetid = inAgentContext.get("assetid");
 			
@@ -1004,7 +1006,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 
 			inAgentContext.addContext("refreshing", "true");
 			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("renderImage");
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("image_creation_render");
 			
 			LlmResponse result = llmconnection.renderLocalAction(inAgentContext);
 			
@@ -1014,11 +1016,11 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 			return result;
 			
 		}
-		else if ("createEntity".equals(inAgentContext.getFunctionName()))
+		else if ("createRecord".equals(inAgentContext.getFunctionName()))
 		{
 			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
 			
-			LlmResponse result = createEntity(usermessage, inAgentContext);
+			LlmResponse result = createRecord(usermessage, inAgentContext);
 			
 			return result;
 		}
@@ -1032,18 +1034,18 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 		
 		AiCreation aiCreation = inAgentContext.getAiCreationParams();
 
-		LlmConnection llmconnection = archive.getLlmConnection("createImage");
+		LlmConnection llmconnection = archive.getLlmConnection("image_creation_start");
 		
-		JSONObject imageattr = (JSONObject) aiCreation.getImageFields();
+		JSONObject imagefields = (JSONObject) aiCreation.getCreationFields();
 		
-		String prompt = (String) imageattr.get("prompt");
+		String prompt = (String) imagefields.get("prompt");
 
 		if (prompt == null)
 		{
 			return null;
 		}
 		
-		String filename = (String) imageattr.get("image_name");
+		String filename = (String) imagefields.get("image_name");
 
 		LlmResponse results = llmconnection.createImage(prompt);
 		
@@ -1106,9 +1108,9 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 				archive.saveAsset(asset);
 			}
 			
-//			inReq.putPageValue("asset", asset);
+			// inReq.putPageValue("asset", asset);
 			inAgentContext.addContext("asset", asset);
-			inAgentContext.setNextFunctionName("renderImage");
+			inAgentContext.setNextFunctionName("image_creation_render");
 			inAgentContext.setValue("assetid", asset.getId());
 			inAgentContext.setValue("wait", 1000);
 		}
@@ -1119,14 +1121,14 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 		return results;
 	}
 	
-	public LlmResponse createEntity(MultiValued usermessage, AgentContext inAgentContext) 
+	public LlmResponse createRecord(MultiValued usermessage, AgentContext inAgentContext) 
 	{
 		MediaArchive archive = getMediaArchive();
 		
 		AiCreation aiCreation = inAgentContext.getAiCreationParams();
 		
-		JSONObject entityfields = (JSONObject) aiCreation.getEntityFields();
-		String entityname = (String) entityfields.get("entity_name");
+		JSONObject entityfields = (JSONObject) aiCreation.getCreationFields();
+		String entityname = (String) entityfields.get("name");
 
 		if (entityname == null)
 		{
@@ -1134,7 +1136,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 			return null;
 		}
 		
-		String moduleid = (String) entityfields.get("module_id");
+		String moduleid = (String) entityfields.get("module");
 		if(moduleid == null)
 		{
 			inAgentContext.addContext("error", "Could not find module. Please provide an existing module name or id");
@@ -1163,7 +1165,7 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 		inAgentContext.addContext("module", module);
 		
 		
-		LlmConnection llmconnection = getMediaArchive().getLlmConnection("createEntity");
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("createRecord");
 		
 		LlmResponse result = llmconnection.renderLocalAction(inAgentContext);
 		
@@ -1282,6 +1284,23 @@ public class ContentManager implements CatalogEnabled, ChatMessageHandler
 		
 		inReq.putPageValue("entity", entity);
 		inReq.putPageValue("module", module);
+	}
+
+	@Override
+	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void savePossibleFunctionSuggestions(ScriptLogger inLog) {
+		// Do nothing
+	}
+
+	@Override
+	public void getDetectorParams(AgentContext inAgentContext, MultiValued inTopLevelFunction) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

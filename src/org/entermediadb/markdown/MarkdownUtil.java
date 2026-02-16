@@ -30,4 +30,18 @@ public class MarkdownUtil
 		HtmlRenderer renderer = HtmlRenderer.builder().softbreak("<br>").build();
 		return renderer.render(document);
 	}
+	
+	public String renderPlain(String markdown) 
+	{
+		Parser parser = Parser.builder()
+			.enabledBlockTypes(
+				Set.of(
+					FencedCodeBlock.class,
+					ListBlock.class
+				)
+			).build();
+		Node document = parser.parse(markdown);
+		HtmlRenderer renderer = HtmlRenderer.builder().build();
+		return renderer.render(document);
+	}
 }

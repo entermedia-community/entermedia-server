@@ -99,7 +99,7 @@
 				// update handler & options
 				existing.options = $.extend({}, existing.options, options);
 				existing.options._excludes = normalizeExcludes(
-					existing.options.exclude
+					existing.options.exclude,
 				);
 				$el.data(pluginName, existing);
 				return;
@@ -185,7 +185,7 @@
 				callback: null, // Function to call after scroll completes
 				onlyIfNeeded: false, // Only scroll if element is not already visible
 			},
-			options
+			options,
 		);
 
 		return this.each(function () {
@@ -250,7 +250,7 @@
 					if (settings.callback) {
 						settings.callback.call($el[0]);
 					}
-				}
+				},
 			);
 		});
 	};
@@ -292,8 +292,7 @@ getDropdownParent = function (theinput) {
 	if (parent.length) {
 		return parent;
 	}
-	if(theinput.data("searchtype"))
-	{
+	if (theinput.data("searchtype")) {
 		var parent = $(".detail-" + theinput.data("searchtype"));
 		if (parent.length) {
 			return parent;
@@ -310,3 +309,73 @@ getDropdownParent = function (theinput) {
 
 	return undefined;
 };
+
+(function ($) {
+	$.fn.autoGrow = function (options) {
+		var settings = $.extend(
+			{
+				minHeight: null,
+				maxHeight: null,
+				extraSpace: 0,
+			},
+			options,
+		);
+
+		return this.each(function () {
+			var $textarea = $(this);
+			var offset = this.offsetHeight - this.clientHeight;
+
+			var originalRows = $textarea.attr("rows") || 1;
+
+			var minHeight = settings.minHeight;
+			if (minHeight === null && originalRows) {
+				var lineHeight = parseInt($textarea.css("line-height"));
+				var padding =
+					parseInt($textarea.css("padding-top")) +
+					parseInt($textarea.css("padding-bottom"));
+				minHeight = lineHeight * originalRows + padding;
+			}
+
+			var resize = function () {
+				$textarea.css("height", "auto");
+
+				var newHeight = this.scrollHeight + offset + settings.extraSpace;
+
+				if (minHeight && newHeight < minHeight) {
+					newHeight = minHeight;
+				}
+
+				if (settings.maxHeight && newHeight > settings.maxHeight) {
+					newHeight = settings.maxHeight;
+					$textarea.css("overflow-y", "auto");
+				} else {
+					$textarea.css("overflow-y", "hidden");
+				}
+
+				$textarea.css("height", newHeight + "px");
+			};
+
+			$textarea
+				.on("input change cut paste drop keydown", resize)
+				.on("focus", resize);
+
+			// to ensure DOM is fully ready
+			setTimeout(function () {
+				resize.call($textarea[0]);
+			}, 0);
+		});
+	};
+})(jQuery);
+
+$(document).ready(function () {
+	lQuery("textarea.form-control").livequery(function () {
+		var minHeight = $(this).data("minheight") || null;
+		var maxHeight = $(this).data("maxheight") || null;
+		var extraSpace = $(this).data("extraspace") || 0;
+		$(this).autoGrow({
+			minHeight: minHeight,
+			maxHeight: maxHeight,
+			extraSpace: extraSpace,
+		});
+	});
+});

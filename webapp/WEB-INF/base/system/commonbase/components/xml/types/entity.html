@@ -19,10 +19,16 @@ $context.putPageValue("detail",$detail)
 			#set( $row = $mediaarchive.getCachedData($entity_module, $type ))
 			
 		    #if( $row )
-	   		   #set($namefield = $mediaarchive.getSearcher($entity_module).getDetail("name"))
-			   #set($name = $searcherManager.getValue($row, $namefield, $context.getLocale()))
+				#set($namefield = $mediaarchive.getSearcher($entity_module).getDetail("name"))
+				#set($name = $searcherManager.getValue($row, $namefield, $context.getLocale()))
 			    #set($entityid = $row.id)
-			    #set($link = "${edithome}/tabs/index.html?entityid=$entityid")
+				#set($edithome = "$applink/views/modules/$!{entity_module}/editors/default")
+				#set($link = "${edithome}/tabs/index.html?entityid=$entityid&hitssessionid=$!hits.sessionId")
+				
+				#if($entity_module == "searchcategory")
+					#set($edithome = "$apphome/views/modules/$!{entity_module}/editors/listsearchcategoriesresults")
+					#set($link = "${edithome}/index.html?searchcategoryid=$entityid")
+				#end
 			    <li>
 			    <a href="$link" 
 			    	class="emdialog" 
@@ -68,7 +74,7 @@ $context.putPageValue("detail",$detail)
 		data-entityid="$!{id}"
 		data-entitymoduleid="${module.id}"
 		data-hidefooter="true"
-		title="[[Add]] #text($pickmodule)"><i class="bi bi-plus-lg mr-1"></i> $label</a>
+		title="[[Add]] #text($pickmodule)"><i class="bi bi-plus-lg me-1"></i> $label</a>
 
 	
 	

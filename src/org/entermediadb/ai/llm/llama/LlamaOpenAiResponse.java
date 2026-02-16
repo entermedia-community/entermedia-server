@@ -7,6 +7,24 @@ import org.openedit.util.JSONParser;
 
 public class LlamaOpenAiResponse extends OpenAiResponse {
 	
+	@Override
+    public boolean isToolCall() {
+        if (rawResponse == null) 
+    	{
+        	return false;
+    	}
+
+        JSONArray choices = (JSONArray) rawResponse.get("choices");
+        if (choices == null || choices.isEmpty()) 
+        {
+        	return false;
+        }
+
+        JSONObject choice = (JSONObject) choices.get(0);
+        JSONObject message = (JSONObject) choice.get("message");
+
+        return message != null && message.get("tool_calls") != null;
+    }
 	
     @Override
     public JSONObject getMessageStructured() {
@@ -37,5 +55,35 @@ public class LlamaOpenAiResponse extends OpenAiResponse {
         
         ocrResponse = (String) message.get("content");
 	}
+    
+    @Override
+    public String getFunctionName() 
+    {
+    	if( fieldFunctionName != null)
+    	{
+    		return fieldFunctionName;
+    	}
+    	
+        if (!isToolCall()) return null;
+        
+        try
+        {
+        	
+        	JSONArray choices = (JSONArray) rawResponse.get("choices");
+        	JSONObject choice = (JSONObject) choices.get(0);
+        	JSONObject message = (JSONObject) choice.get("message");
+        	JSONArray functionCalls = (JSONArray) message.get("tool_calls");
+        	
+        	JSONObject functionCall = (JSONObject) functionCalls.get(0);
+        	JSONObject function = (JSONObject) functionCall.get("function");
+        	
+        	return function != null ? (String) function.get("name") : null;
+        }
+        catch( Exception ex)
+        {
+        	return null;
+        }
+
+    }
 
 }

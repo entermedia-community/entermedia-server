@@ -1448,6 +1448,136 @@ function initializeUI() {
 			});
 		}
 	});
+	
+	
+	lQuery("select.customlistautocomplete").livequery(function () // select2
+		{
+			var theinput = $(this);
+			var url = theinput.data("url");
+			var defaulttext = theinput.data("showdefault");
+			if (!defaulttext) {
+				defaulttext = "Search";
+			}
+
+			var allowClear = theinput.data("allowclear");
+			if (allowClear == undefined) {
+				allowClear = true;
+			}
+			if ($.fn.select2) {
+				theinput.select2({
+					placeholder: defaulttext,
+					allowClear: allowClear,
+					minimumInputLength: 0,
+					dropdownParent: getDropdownParent(theinput),
+					ajax: {
+						url: url,
+						dataType: "json",
+						data: function (params) {
+							var search = {
+								page_limit: 15,
+								page: params.page,
+							};
+							search["term"] = params.term; // search
+							return search;
+						},
+						processResults: function (data, params) {
+							// parse the
+							// results into
+							// the format
+							// expected by
+							// Select2.
+							var rows = data.rows;
+							if (theinput.hasClass("selectaddnew")) {
+								if (params.page == 1 || !params.page) {
+									var addnewlabel = theinput.data("addnewlabel");
+									var addnewdata = {
+										name: addnewlabel,
+										id: "_addnew_",
+									};
+									rows.unshift(addnewdata);
+								}
+							}
+							// addnew
+							params.page = params.page || 1;
+							return {
+								results: rows,
+								pagination: {
+									more: false,
+									// (params.page * 30) <
+									// data.total_count
+								},
+							};
+						},
+					},
+					escapeMarkup: function (m) {
+						return m;
+					},
+					templateResult: select2formatResult,
+					templateSelection: select2Selected,
+				});
+				// TODO: Remove this?
+				theinput.on("change", function (e) {
+					if (e.val == "") {
+						// Work around for a bug
+						// with the select2 code
+						var id = "#list-" + theinput.attr("id");
+						$(id).val("");
+					} else {
+						// Check for "_addnew_" show ajax form
+						var selectedid = theinput.val();
+
+						if (selectedid == "_addnew_") {
+							var clicklink = $("#" + theinput.attr("id") + "add");
+							clicklink.trigger("click");
+
+							e.preventDefault();
+							theinput.select2("val", "");
+							return false;
+						}
+						if (theinput.hasClass("uifilterpicker")) {
+							//Not used?
+							//$entry.getId()${fieldname}_val
+							var fieldname = theinput.data("fieldname");
+							var targethidden = $("#" + selectedid + fieldname + "_val");
+							targethidden.prop("checked", true);
+						}
+						// Check for "_addnew_" show ajax form
+						if (theinput.hasClass("selectautosubmit")) {
+							if (selectedid) {
+								//var theform = $(this).closest("form");
+								var theform = $(this).parent("form");
+								if (theform.hasClass("autosubmitform")) {
+									theform.trigger("submit");
+								}
+							}
+						}
+					}
+				});
+
+				theinput.on("select2:open", function (e) {
+					var selectId = $(this).attr("id");
+					if (selectId) {
+						$(
+							".select2-search__field[aria-controls='select2-" +
+								selectId +
+								"-results']"
+						).each(function (key, value) {
+							value.focus();
+						});
+					} else {
+						document
+							.querySelector(".select2-container--open .select2-search__field")
+							.focus();
+					}
+					$(document).on("click", function (evt) {
+						if (!$(evt.target).closest(".select2-container").length) {
+							theinput.select2("close");
+							$(this).off(evt);
+						}
+					});
+				});
+			}
+		});
 
 	lQuery(".sidebarsubmenu").livequery("click", function (e) {
 		e.stopPropagation();
@@ -1731,37 +1861,8 @@ function initializeUI() {
 		});
 	});
 
-	lQuery(".dropdown").livequery(function (e) {
-		var dropdown = $(this);
 
-		dropdown.hover(function () {
-			dropdown.children(".dropdown-menu").addClass("show");
-		});
-	});
 
-	lQuery(".dropdown-menu a.dropdown-toggle").livequery("click", function (e) {
-		if (!$(this).next().hasClass("show")) {
-			$(this)
-				.parents(".dropdown-menu")
-				.first()
-				.find(".show")
-				.removeClass("show");
-		}
-		var $subMenu = $(this).next(".dropdown-menu");
-		$subMenu.toggleClass("show");
-
-		$(this)
-			.parents("li.nav-item.dropdown.show")
-			.on("hidden.bs.dropdown", function (e) {
-				$(".dropdown-submenu .show").removeClass("show");
-			});
-
-		return false;
-	});
-
-	lQuery(".dropdown-menu a.dropdown-item").livequery("click", function (e) {
-		$(this).parents(".dropdown-menu").removeClass("show");
-	});
 
 	//Sidebar Custom Width
 	lQuery(".sidebar-toggler-resize").livequery(function () {
@@ -2321,6 +2422,7 @@ function switchsubmodulebox(item) {
 }
 
 //Old not used
+/*
 replaceelement = function (url, div, options, callback) {
 	jQuery.ajax({
 		url: url,
@@ -2341,7 +2443,7 @@ replaceelement = function (url, div, options, callback) {
 		crossDomain: true,
 	});
 };
-
+*/
 lQuery(".changeimportmodule").livequery("change", function () {
 	var select = $(this);
 	var moduleid = select.val();

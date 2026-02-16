@@ -306,18 +306,23 @@ public class ChatServer
 			for (Iterator iterator = connections.iterator(); iterator.hasNext();)
 			{
 				ChatConnection chatConnection = (ChatConnection) iterator.next();
-				if(userids != null && userids.contains(chatConnection.getUserId() ) )
+				String connectionUser = chatConnection.getUserId();
+				//log.info("Sending message to: " + connectionUser);
+				if(userids != null && userids.contains(connectionUser ) )
 				{
+					//User is onTeam and connected, send message
 					chatConnection.sendMessage(inMap);
 				}
 				else
 				{
+					String connectionChanelId = chatConnection.getChannelId();
 					
 					UserProfile userprofile =  archive.getUserProfile(chatConnection.getUserId());
 					Permissions userpermissions = userprofile.getPermissions();
 					
-					if(userpermissions.canEntity(module, entity, "view"))
+					if(channelid.equals(connectionChanelId) &&  userpermissions.canEntity(module, entity, "view"))
 					{
+						//If connected user is navigating the channel and has permission to view
 						chatConnection.sendMessage(inMap);
 					}
 					
@@ -367,7 +372,7 @@ public class ChatServer
 		//log.info("Saving Message: " + inMap.toJSONString());
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		Searcher chats = archive.getSearcher("chatterbox");
-		Data channel = loadChannel(archive,inMap);
+		Data channel = loadChannel(archive, inMap);
 		
 		
 		String userid = (String)inMap.get("user").toString();
@@ -388,14 +393,26 @@ public class ChatServer
 		
 		String newmessage = values.getString("message");
 		chat.setValue("message", newmessage);
-		chat.setValue("messagetype", "message");
+		
+		String messagetype = (String) inMap.get("messagetype");
+		
+		if(messagetype == null)
+		{
+			messagetype = "message";
+		}
+		
+		chat.setValue("messagetype", messagetype);
 		
 		chat.setValue("replytoid", values.getString("replytoid"));
 		
 		chats.saveData(chat);
 		
 		User user = archive.getUser(userid);
-		archive.fireDataEvent(user,"chatterbox","saved", chat);
+		
+		
+		
+		archive.fireDataEvent(user,"chatterbox", "saved", chat);
+		
 		archive.fireSharedMediaEvent("llm/monitorchats"); //TODO: move to generic event
 
 		String messageid = chat.getId();
@@ -406,17 +423,38 @@ public class ChatServer
 
 	public Data loadChannel(MediaArchive inArchive, Map inChannelInfo)
 	{
-			Searcher chats = inArchive.getSearcher("channel");
-			String channelid = (String)inChannelInfo.get("channel");
-			Data channel = inArchive.getCachedData("channel", channelid);
-			if (channel == null) {
-				channel = chats.createNewData();
-				channel.setId(channelid);
-				String channeltype = (String) inChannelInfo.get("channeltype");
-				channel.setValue("channeltype", channeltype);
-				chats.saveData(channel);
+		Searcher chats = inArchive.getSearcher("channel");
+		String channelid = (String)inChannelInfo.get("channel");
+		Data channel = inArchive.getCachedData("channel", channelid);
+		
+		if (channel == null) {
+			channel = chats.createNewData();
+			channel.setId(channelid);
+			String channeltype = (String) inChannelInfo.get("channeltype");
+			channel.setValue("channeltype", channeltype);
+		}
+		
+		String playbackentityid = (String) inChannelInfo.get("playbackentityid");
+		String playbackentitymoduleid = (String) inChannelInfo.get("playbackentitymoduleid");
+		if(playbackentitymoduleid != null && playbackentityid != null) {
+			channel.setValue("playbackentityid", playbackentityid);
+			channel.setValue("playbackentitymoduleid", playbackentitymoduleid);
+		}
+		
+		Object pbsection = inChannelInfo.get("playbacksection");
+		if(pbsection != null)
+		{
+			Integer playbacksection = Integer.parseInt(String.valueOf(pbsection));
+			if(playbacksection != null)
+			{
+				channel.setValue("playbacksection", playbacksection);
+				inChannelInfo.put("messagetype", "system");
 			}
-			return channel;
+		}
+
+		chats.saveData(channel);
+		
+		return channel;
 	}
 
 	/* Desktop notificationsss */

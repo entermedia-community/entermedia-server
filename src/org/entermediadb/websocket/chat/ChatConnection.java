@@ -33,6 +33,17 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 	protected String fieldSessionID;
 	protected String fieldUserId;
 	protected String fieldChannelId;
+	
+	public String getChannelId()
+	{
+		return fieldChannelId;
+	}
+
+	public void setChannelId(String inChannelId)
+	{
+		fieldChannelId = inChannelId;
+	}
+
 	protected Collection fieldNotifyTopics;
 	
 	public Collection getNotifyTopics()

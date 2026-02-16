@@ -561,6 +561,13 @@
 			<ref bean="pageManager" />
 		</property>
 	</bean>
+	
+	<bean id="entityCreationManager" class="org.entermediadb.ai.assistant.EntityCreationManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
 
 	<bean id="originalDownloadGenerator" class="org.entermediadb.asset.generators.OriginalDocumentGenerator">
 		<property name="moduleManager">
@@ -2633,6 +2640,47 @@
 		</property>
 	</bean>
 
+	<bean id="searchingManager" class="org.entermediadb.ai.assistant.SearchingManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+	<bean id="creationManager" class="org.entermediadb.ai.assistant.CreationManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+	<bean id="questionsManager" class="org.entermediadb.ai.assistant.QuestionsManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+	
+	<bean id="tutorialsManager" class="org.entermediadb.ai.assistant.TutorialsManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+	
+	<bean id="autoDetectChatManager" class="org.entermediadb.ai.assistant.AutoDetectChatManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+	
+	<bean id="SmartCreatorModule" class="org.entermediadb.ai.creator.SmartCreatorModule" >
+	</bean>
+
+	
+	<bean id="smartCreatorManager" class="org.entermediadb.ai.creator.SmartCreatorManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+
 	<bean id="agentContext" class="org.entermediadb.ai.llm.AgentContext" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -2782,5 +2830,6 @@
 	</bean>
 
 	<bean id="cssutils" class="org.openedit.util.CSSUtils" />
+	<bean id="inflector" class="org.openedit.entermedia.util.Inflector" />
 
 </beans>

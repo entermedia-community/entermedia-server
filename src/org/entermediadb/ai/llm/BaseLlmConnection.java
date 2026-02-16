@@ -212,15 +212,16 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			StringWriter output = new StringWriter();
 			request.setWriter(output);
 			PageStreamer streamer = getEngine().createPageStreamer(template, request);
-				getEngine().executePathActions(request);
-				if( !request.hasRedirected())
-				{
-					getModuleManager().executePageActions( template,request );
-				}
-				if( request.hasRedirected())
-				{
-					log.info("action was redirected");
-				}
+			
+			getEngine().executePathActions(request);
+			if( !request.hasRedirected())
+			{
+				getModuleManager().executePageActions( template,request );
+			}
+			if( request.hasRedirected())
+			{
+				log.info("action was redirected");
+			}
 			
 			streamer.include(template, request);
 			String string = output.toString();
@@ -234,8 +235,6 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	protected void loadagentcontextParameters(AgentContext agentcontext, WebPageRequest request)
 	{
 		Map inParameters = agentcontext.getProperties();
-		if( inParameters != null)
-		{
 			for (Iterator iterator = inParameters.keySet().iterator(); iterator.hasNext();)
 			{
 				String key = (String) iterator.next();
@@ -260,10 +259,22 @@ public abstract class BaseLlmConnection implements LlmConnection {
 					request.setRequestParameter(key, (String[])obj);
 				}
 			}
-		}
+			Map pagevalues = agentcontext.getContext();
+			if (pagevalues != null)
+			{
+				for (Iterator iterator = pagevalues.keySet().iterator(); iterator.hasNext();)
+				{
+					String key = (String) iterator.next();
+					Object obj = pagevalues.get(key);
+					if( obj instanceof String)
+					{
+						request.setRequestParameter(key, (String)obj);
+					}
+				}
+			}
 	}
 	
-	public LlmResponse renderLocalAction(AgentContext agentcontext) 
+	public LlmResponse renderLocalAction(AgentContext agentcontext)
 	{
 		String functionName = agentcontext.getFunctionName();
 		if(functionName == null) 
@@ -271,16 +282,18 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			throw new OpenEditException("Cannot load function response, functionName is null");
 		}
 		
-		log.info("Loading response for function: " + functionName);
-		
+		return renderLocalAction(agentcontext,  functionName);
+	}
+	
+	
+	public LlmResponse renderLocalAction(AgentContext agentcontext, String inTemplateName)
+	{
 		String apphome = (String) agentcontext.getContextValue("apphome");
-		
-		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/" + functionName + ".html";
+		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/" + inTemplateName + ".html";
 		
 		try 
 		{
 			Page template = getPageManager().getPage(templatepath);
-			log.info("Loading response: " + functionName);
 			
 			User user = getMediaArchive().getUserManager().getUser("agent");
 			
@@ -306,7 +319,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			streamer.include(template, inReq);
 			
 			String string = output.toString();
-			log.info("Output: " + string);
+			log.info("Loading response for function: " + inTemplateName + " Output: " + string);
 			
 			BasicLlmResponse response = new BasicLlmResponse();
 			
@@ -406,37 +419,6 @@ public abstract class BaseLlmConnection implements LlmConnection {
 //			connection.release(resp);
 //		}
 //	}
-
-	public LlmResponse callMessageTemplate(AgentContext agentcontext, String inPageName)
-	{
-		agentcontext.addContext("mediaarchive", getMediaArchive());
-		String input = loadInputFromTemplate("/" + getMediaArchive().getMediaDbId() + "/ai/" + getLlmProtocol() +"/assistant/messages/" + inPageName + ".json", agentcontext.getContext());
-		log.info(inPageName + " process chat");
-		String endpoint = getServerRoot();
-
-		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("Authorization", "Bearer " + getApiKey());
-		method.setHeader("Content-Type", "application/json");
-
-		method.setEntity(new StringEntity(input, "UTF-8"));
-
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-
-		JSONObject json = (JSONObject) getConnection().parseMap(resp);
-
-		LlmResponse response = (LlmResponse) createResponse();
-		response.setRawResponse(json);
-		
-		String nextFunction = response.getFunctionName();
-		if( nextFunction != null)
-		{
-			agentcontext.setFunctionName(nextFunction);
-		}
-
-//		getMediaArchive().saveData("agentcontext",agentcontext);
-		return response;
-
-	}
 	
 	
 	@Override
@@ -471,12 +453,12 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			
 	}
 	@Override
-	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inEmbeddingPayload)
+	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inPayload)
 	{
 		log.info("Calling LLM Server at: " + getServerRoot() + inPath);
 		HttpRequestBase method = null;
 		
-		if (inEmbeddingPayload == null) 
+		if (inPayload == null) 
 		{
 			method = new HttpGet(getServerRoot() + inPath);
 		}
@@ -509,7 +491,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		
 		if (method instanceof HttpPost)
 		{
-			((HttpPost) method).setEntity(new StringEntity(inEmbeddingPayload.toJSONString(), StandardCharsets.UTF_8));
+			((HttpPost) method).setEntity(new StringEntity(inPayload.toJSONString(), StandardCharsets.UTF_8));
 		}
 		HttpSharedConnection connection = getConnection();
 		CloseableHttpResponse resp = connection.sharedExecute(method);
@@ -640,6 +622,12 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	{
 		throw new OpenEditException("Call not supported");
 	}
+	
+	@Override
+	public LlmResponse callSmartCreatorAiAction(Map inParams, String inActionName)
+	{
+		throw new OpenEditException("Call not supported");
+	}
 
 	@Override
 	public LlmResponse callClassifyFunction(Map inParams, String inFunction, String inBase64Image)
@@ -668,6 +656,11 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	@Override
 	public LlmResponse callOCRFunction(Map inParams, String inBase64Image)
 	{
+		throw new OpenEditException("Call not supported");
+	}
+	
+	@Override
+	public LlmResponse callToolsFunction(Map inParams, String inFunction) {
 		throw new OpenEditException("Call not supported");
 	}
 

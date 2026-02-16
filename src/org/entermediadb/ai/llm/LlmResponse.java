@@ -14,6 +14,8 @@ public interface LlmResponse {
     
     Collection getRawCollection();
 	void setRawCollection(Collection inObj);
+	
+	Collection getCollection(String inKey);
     
     boolean isToolCall();
     
@@ -24,8 +26,9 @@ public interface LlmResponse {
     void setMessagePlain(String inMessagePlain);
 
     String getFunctionName();
-
     void setFunctionName(String inFunction);
+    
+    JSONObject getFunctionArguments();
 
     boolean isSuccessful();
     

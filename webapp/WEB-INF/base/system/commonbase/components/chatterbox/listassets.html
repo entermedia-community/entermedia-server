@@ -23,7 +23,7 @@ $context.putPageValue("convertpreset", $convertpreset)
 	#end
 	
 	<div id="${entry.id}-preview" 
-	class="chat-msg-attachments-asset position-relative asset-rendertype-${rendertype}">
+		class="chat-msg-attachments-asset position-relative asset-rendertype-${rendertype}">
 		#if($chat.user == $user.id || $caneditcollection)
 		<a href="${chatterboxhome}/attachmentremove.html" 
 			class="removefieldassetvalue confirm ajax"
@@ -32,6 +32,7 @@ $context.putPageValue("convertpreset", $convertpreset)
 			data-assetid="${entry.id}"
 			data-messageid="${chat.id}"
 			data-id="${chat.id}"
+			data-confirm="[[Remove the attachment?]]"
 			#ifnotnull($entity)data-entityid="$!entity.id"#end
 			#ifnotnull($collectionid)data-collectionid="$!collectionid"#end  
 			><i class="bi bi-x"></i></a>
@@ -43,9 +44,14 @@ $context.putPageValue("convertpreset", $convertpreset)
 		#set($searchhome = "${finderhome}/views/modules/asset/results/chatterbox")
 		$context.putPageValue("searchhome", $searchhome) 
 		
-		$context.putPageValue("download_enabled", "true") 
-		$context.putPageValue("assetlink_enabled", "true")
+		#if($caneditcollection)
+			$context.putPageValue("download_enabled", "true")
+		#end 
+		#if($canviewsettings)
+			$context.putPageValue("assetlink_enabled", "true")
+		#end
 		$context.putPageValue("apphome", $finderhome)
+		
 		
 		$pages.include("${searchhome}/thumbnails/${rendertype}.html?assetid=${entry.id}", $context)
 		

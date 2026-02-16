@@ -2111,27 +2111,33 @@ public class ProjectModule extends BaseMediaModule
 		String collectionid = inReq.getRequestParameter("collectionid");
 		
 		String searchtype = "collectiveincome";
-		
+		HitTracker results = null;
 		SearchQuery query = archive.getSearcher(searchtype).addStandardSearchTerms(inReq);
-		if (query == null)
+		if( query == null)
 		{
 			query = archive.getSearcher(searchtype).createSearchQuery();
+			query.addExact("collectionid", collectionid);
+			
+			String sortby = inReq.getRequestParameter(searchtype+"sortby");
+			if(sortby == null)
+			{
+				sortby = "dateDown";
+			}
+			query.addSortBy(sortby);
 		}
-		query.addExact("collectionid", collectionid);
+		results = archive.getSearcher(searchtype).loadPageOfSearch(inReq);
 		
-		String sortby = inReq.getRequestParameter(searchtype+"sortby");
-		if(sortby == null)
+		
+		if( results == null)
 		{
-			sortby = "dateDown";
+			results = archive.getSearcher(searchtype).cachedSearch(inReq, query);	
 		}
-		query.addSortBy(sortby);
-		
-		HitTracker results = archive.getSearcher(searchtype).cachedSearch(inReq,query);
-		inReq.putPageValue("income", results);
+
 		
 		//Get Totals by Currency
 		if (results != null)
 		{
+			inReq.putPageValue("income", results);
 			HashMap<String, Double> totals = new HashMap<String,Double>();
 			for (Iterator iterator = results.iterator(); iterator.hasNext();)
 			{
@@ -2160,17 +2166,22 @@ public class ProjectModule extends BaseMediaModule
 		if (query == null)
 		{
 			query = archive.getSearcher(searchtype).createSearchQuery();
+			query.addExact("collectionid", collectionid);
+			
+			String sortby = inReq.getRequestParameter(searchtype+"sortby");
+			if(sortby == null)
+			{
+				sortby = "dateDown";
+			}
+			query.addSortBy(sortby);
 		}
-		query.addExact("collectionid", collectionid);
 		
-		String sortby = inReq.getRequestParameter(searchtype+"sortby");
-		if(sortby == null)
+		HitTracker results = archive.getSearcher(searchtype).loadPageOfSearch(inReq);
+		
+		if( results == null)
 		{
-			sortby = "dateDown";
+			results = archive.getSearcher(searchtype).cachedSearch(inReq, query);	
 		}
-		query.addSortBy(sortby);
-		
-		HitTracker results = archive.getSearcher(searchtype).cachedSearch(inReq,query);
 		inReq.putPageValue("expenses", results);
 		
 		//Get Totals by Currency

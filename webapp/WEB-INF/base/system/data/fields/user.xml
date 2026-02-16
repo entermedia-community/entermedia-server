@@ -33,6 +33,7 @@
 
 <!--  Custom fields -->
 
+	<property id="oe_edit_mode" index="true" stored="true" editable="true">OE Edit Mode</property>
 
 	
 </properties>
