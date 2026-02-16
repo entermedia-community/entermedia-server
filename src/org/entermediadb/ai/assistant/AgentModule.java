@@ -162,7 +162,7 @@ public class AgentModule extends BaseMediaModule {
 	public void loadModuleSchemaForJson(WebPageRequest inReq) throws Exception 
 	{
 		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
-		Map<String,String> modulesenum = assistant.getModulesAsEnum();
+		Collection<String> modulesenum = assistant.getModulesAsEnum();
 		inReq.putPageValue("modulesenum", modulesenum);
 	}
 	

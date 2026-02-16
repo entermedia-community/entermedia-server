@@ -194,10 +194,6 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 
 	public AiSearch getAiSearchParams()
 	{
-		if( fieldAiSearchParams == null)
-		{
-			fieldAiSearchParams  = new AiSearch();
-		}
 		return fieldAiSearchParams;
 	}
 

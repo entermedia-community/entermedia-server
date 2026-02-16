@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -387,60 +388,20 @@ public abstract class BaseAiManager extends BaseManager
 		return schema;
 	}
 	
-	public Map<String, String> getModulesAsEnum()
+	public Collection<String> getModulesAsEnum()
 	{
-		Collection<String> nameenums = new ArrayList<String>();
-		Collection<String> idnameenums = new ArrayList<String>();
+		Collection<String> nameenums = new HashSet<String>();
 		for (Data module : loadSchema().getModules())
 		{
-			String id = module.getId();
 			String name = module.getName();
-			if(id.equals("asset"))
-			{
-				continue;
-			}
-			// The 'search' in module name/id confuses AI
+			nameenums.add(name);
 			
-			if (id.toLowerCase().contains("search") && !name.toLowerCase().contains("search"))
-			{
-				nameenums.add("\"" + name + "\"");
-				continue;
-			}
-			if (!id.toLowerCase().contains("search") && name.toLowerCase().contains("search"))
-			{
-				idnameenums.add("\"" + id + "\"");
-				continue;
-			}
-			if((id+name).toLowerCase().contains("search"))
-			{
-				continue;
-			}
-			
-			idnameenums.add("\"" + id + "|" + name + "\"");
-			nameenums.add("\"" + name + "\"");
 		}
+		//add asset types
+		Collections.addAll(nameenums, "files", "images", "videos", "documents", "audio");
 		
-		Map<String, String> enums = new HashMap<>();
 		
-		if(idnameenums.isEmpty())
-		{
-			idnameenums = null;
-		}
-		else
-		{			
-			enums.put("idnames", String.join(",", idnameenums));
-		}
-		
-		if(nameenums.isEmpty())
-		{
-			nameenums = null;
-		}
-		else
-		{			
-			enums.put("names", String.join(",", nameenums));
-		}
-		
-		return enums;
+		return nameenums;
 	}
 
 	
