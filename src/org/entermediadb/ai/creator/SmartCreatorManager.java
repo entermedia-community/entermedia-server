@@ -340,7 +340,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		}
 		
 		Data playbackmodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
-		inReq.putPageValue("playbackmodule", playbackmodule);
+		inReq.putPageValue("playbackentitymoduleid", playbackmodule);
 		
 		Data playbackentity = getMediaArchive().getCachedData(playbackentitymoduleid, playbackentityid);
 		inReq.putPageValue("playbackentity", playbackentity);

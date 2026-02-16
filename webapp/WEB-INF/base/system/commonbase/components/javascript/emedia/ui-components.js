@@ -302,18 +302,24 @@ jQuery(document).ready(function () {
 		$(window).trigger("resize");
 	};
 
-	function copyTextToClipboard(text, cb) {
+	function copyTextToClipboard(elem, text, cb) {
 		try {
 			if ("clipboard" in navigator) {
 				navigator.clipboard.writeText(text);
 			} else {
-				var textArea = document.createElement("textarea");
-				textArea.value = text;
-				document.body.appendChild(textArea);
-				textArea.focus();
-				textArea.select();
+				var rm = false;
+				if (!elem) {
+					elem = document.createElement("textarea");
+					elem.value = text;
+					document.body.appendChild(elem);
+					rm = true;
+				}
+				elem.focus();
+				elem.select();
 				document.execCommand("copy");
-				document.body.removeChild(textArea);
+				if (rm) {
+					document.body.removeChild(elem);
+				}
 			}
 			if (cb) {
 				cb();
@@ -327,11 +333,13 @@ jQuery(document).ready(function () {
 		e.preventDefault();
 		e.stopPropagation();
 		var btn = $(this);
+		var textElement = null;
 		var textToCopy = btn.data("text");
 
 		if (!textToCopy) {
 			var selectid = btn.data("textsource");
 			textToCopy = $("#" + selectid).val();
+			textElement = $("#" + selectid);
 		}
 		if (!textToCopy) {
 			var copyTextTarget = btn.data("copytarget");
@@ -340,7 +348,7 @@ jQuery(document).ready(function () {
 				if (!textToCopy) {
 					textToCopy = $("#" + copyTextTarget).text();
 				} else {
-					$("#" + copyTextTarget).select();
+					textElement = $("#" + copyTextTarget);
 				}
 			}
 		}
@@ -349,7 +357,7 @@ jQuery(document).ready(function () {
 			return;
 		}
 
-		copyTextToClipboard(textToCopy, function () {
+		copyTextToClipboard(textElement, textToCopy, function () {
 			customToast("Copied to clipboard!");
 			var btnHtm = btn.html();
 			var _btnHtm = btnHtm;
@@ -361,6 +369,25 @@ jQuery(document).ready(function () {
 				btn.html(_btnHtm);
 			}, 2500);
 		});
+	});
+
+	lQuery(".downloadtext").livequery("click", function (e) {
+		var selectid = $(this).data("textsource");
+		var textToDownload = $("#" + selectid).val();
+		if (!textToDownload) {
+			return;
+		}
+		var mime = $(this).data("mime") || "text/plain";
+		var ext = $(this).data("ext") || "txt";
+		const blob = new Blob([textToDownload], { type: mime });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = selectid + "." + ext;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
 	});
 
 	lQuery(".copyFromTarget").livequery("click", function (e) {
