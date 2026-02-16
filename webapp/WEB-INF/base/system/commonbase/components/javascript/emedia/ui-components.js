@@ -411,9 +411,12 @@ jQuery(document).ready(function () {
 	lQuery(".downloadtext").livequery("click", function (e) {
 		var selectid = $(this).data("textsource");
 		var textElement = $("#" + selectid);
+		var mime = $(this).data("mime") || "text/plain";
 
 		var textToDownload = null;
-		if (isFormField(textElement)) {
+		if (mime.endsWith("/html")) {
+			textToDownload = removeAllClasses(textElement.html());
+		} else if (isFormField(textElement)) {
 			textToDownload = textElement.val();
 		} else {
 			textToDownload = textElement.text();
@@ -421,10 +424,7 @@ jQuery(document).ready(function () {
 		if (!textToDownload) {
 			return;
 		}
-		var mime = $(this).data("mime") || "text/plain";
-		if (mime.endsWith("/html")) {
-			textToDownload = removeAllClasses(textToDownload);
-		}
+
 		var ext = $(this).data("ext") || "txt";
 		const blob = new Blob([textToDownload], { type: mime });
 		const url = URL.createObjectURL(blob);
