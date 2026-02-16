@@ -322,7 +322,9 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		method.addHeader("authorization", "Bearer " + getApiKey());
 		method.setHeader("Content-Type", "application/json");
 		method.setEntity(new StringEntity(structureDef.toJSONString(), StandardCharsets.UTF_8));
-
+		
+		log.info("Calling: " + inFunctionName + " on: " + method.getURI());
+		
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 
 		try
