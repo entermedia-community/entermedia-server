@@ -16,6 +16,7 @@ import org.entermediadb.ai.classify.SemanticClassifier;
 import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.ai.llm.BasicLlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
@@ -94,6 +95,10 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
 
 			inAgentContext.addContext("userquery",usermessage.get("message"));
+			
+			inAgentContext.setMessagePrefix(null);
+			inAgentContext.setAiSearchParams(null);
+			
 			LlmConnection server = getMediaArchive().getLlmConnection(agentFn);
 			LlmResponse res = server.callStructure(inAgentContext, agentFn);
 			JSONObject messagestructured = (JSONObject) res.getMessageStructured();
@@ -114,22 +119,67 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		
 		else if ("search_tables".equals(agentFn))
 		{
-			LlmConnection searcher = getMediaArchive().getLlmConnection("search_tables");
-			LlmResponse response =  searcher.renderLocalAction(inAgentContext);
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("search_tables");
+			LlmResponse response =  llmconnection.renderLocalAction(inAgentContext); // TOREVIEW: This is rendering previous searches results first
 			
 			String message = response.getMessage();
+			inAgentContext.setMessagePrefix(message);
 			
-			if(message != null)
-			{
-				inAgentContext.setMessagePrefix(message);
-			}
+			inAgentContext.setNextFunctionName("search_semantic");	
 			
 			return response;
 		}
 		else if ("search_semantic".equals(agentFn))
 		{
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("search_semantic");
-			LlmResponse result = llmconnection.renderLocalAction(inAgentContext);
+			
+			String semanticquery = "";
+			
+			AiSearch searchParams = inAgentContext.getAiSearchParams();
+			AiSearchTable step1 = searchParams.getStep1();
+			
+			String step1Keyword = step1.getParameterValues();
+			
+			if(step1Keyword != null)
+			{
+				semanticquery = step1Keyword;
+			}
+			AiSearchTable step2 = searchParams.getStep2();
+			if(step2 != null)
+			{
+				String step2Keyword = step2.getParameterValues();
+				if(step2Keyword != null)
+				{
+					semanticquery = semanticquery + " " + step2Keyword;
+				}
+			}
+			if(semanticquery.isBlank())
+			{
+				String originalQuery = searchParams.getOriginalSearchString();
+				if( originalQuery != null)
+				{
+					originalQuery = originalQuery.replaceAll("search|find|look for|show me", "").trim();
+					semanticquery = originalQuery;
+				}
+			}
+			LlmResponse result = null;
+			if(!semanticquery.isBlank())
+			{			
+				inAgentContext.addContext("semanticquery", semanticquery.trim());
+				
+				LlmConnection llmconnection = getMediaArchive().getLlmConnection("search_semantic");
+				result = llmconnection.renderLocalAction(inAgentContext);
+			}
+			else
+			{
+				String messageprefix = inAgentContext.getMessagePrefix();
+				result = new BasicLlmResponse();
+				result.setMessage(messageprefix);
+				
+			}
+			inAgentContext.setMessagePrefix(null);
+			//Set next function to be able to search again
+			inAgentContext.setFunctionName("search_parse");
+			
 			return result;
 		}
 		
@@ -269,33 +319,12 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			inReq.putPageValue("hits", assethits);
 		}
 		
-		organizeResults(inReq, entityhits, assethits);
-		
-		String semanticquery = "";
-		
-		if(step1Keyword != null)
+		if(entityhits != null || assethits != null)
 		{
-			semanticquery = step1Keyword;
-		}
-		if(step2Keyword != null)
-		{
-			semanticquery = semanticquery + " " + step2Keyword;
+			organizeResults(inReq, entityhits, assethits);
 		}
 		
-		if(semanticquery.isBlank())
-		{
-			String originalQuery = inAiSearchParams.getOriginalSearchString();
-			if( originalQuery != null)
-			{
-				originalQuery = originalQuery.replaceAll("search|find|look for|show me", "").trim();
-				semanticquery = originalQuery;
-			}
-		}
 
-		if(!semanticquery.isBlank())
-		{			
-			inReq.putPageValue("semanticquery", semanticquery.trim());
-		}
 		
 	}
 
@@ -453,6 +482,9 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		
 		Searcher embedsearcher = getMediaArchive().getSearcher("aifunctionparameter");
 		Collection<SemanticAction> actions = new ArrayList();
+		
+		//Special case for asset table
+		addAssetTypes(actions);
 
 		for (Iterator iterator = schema.getModules().iterator(); iterator.hasNext();)
 		{
@@ -520,6 +552,34 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 	}
 
 
+	protected void addAssetTypes(Collection<SemanticAction> actions)
+	{
+		
+		Collection typesstring = new ArrayList();
+		
+		typesstring.add("files");
+		typesstring.add("assets");
+		typesstring.add("videos");
+		typesstring.add("documents");
+		typesstring.add("photos");
+		typesstring.add("audio");
+		
+		Data assetmodule = getMediaArchive().getCachedData("module", "asset");
+		typesstring.remove(assetmodule.getName().toLowerCase());
+		for (Iterator iterator = typesstring.iterator(); iterator.hasNext();)
+		{
+			String assettype = (String) iterator.next();
+			SemanticAction action = new SemanticAction();
+			action.setAiFunction("search_tables");
+			action.setSemanticText("Search for " + assettype);
+			action.setParentData(assetmodule);
+			actions.add(action);
+		}
+		
+		
+	}
+
+
 	
 	protected void loadSearchParts(AgentContext inAgentContext, JSONObject structure, String messageText) 
 	{
@@ -533,7 +593,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		
 		log.info("AI Assistant Searching Tables: " + structure.toJSONString());
 		
-		AiSearch search = inAgentContext.getAiSearchParams();
+		AiSearch search = new AiSearch();
 		search.setOriginalSearchString(messageText);
 		
 		search.setStep1(null);
@@ -656,17 +716,18 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 				{
 					type = top.getEmbedding().get("aifunction");  //More specific type of search
 				
-					AiSearch aisearch = processAISearchArgs(structure, top.getEmbedding(), inAgentContext);
-					inAgentContext.setAiSearchParams(aisearch);
+					processAISearchArgs(structure, top.getEmbedding(), inAgentContext, search);
+					
 				}
 			}
+			
 		}
+		inAgentContext.setAiSearchParams(search);
 	}
-	public AiSearch processAISearchArgs(JSONObject airesults, Data inEmbeddingMatch, AgentContext inContext)
+	public void processAISearchArgs(JSONObject airesults, Data inEmbeddingMatch, AgentContext inContext, AiSearch inAiSearch)
 	{
 		//Search for tomatoes in sales departments
 		//airesults
-		AiSearch tables = inContext.getAiSearchParams();
 		
 		if (inEmbeddingMatch != null)
 		{
@@ -674,19 +735,18 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			Data parentmodule = getMediaArchive().getCachedData("module", parentid);
 			if (parentmodule != null)
 			{
-				tables.getStep1().setModule(parentmodule);
+				inAiSearch.getStep1().setModule(parentmodule);
 			}
-			if (tables.getStep2() != null) //Not needed?
+			if (inAiSearch.getStep2() != null) //Not needed?
 			{
 				String childid = inEmbeddingMatch.get("childmodule");
 				Data childmodule = getMediaArchive().getCachedData("module", childid);
 				if (childmodule != null)
 				{
-					tables.getStep2().setModule(childmodule);
+					inAiSearch.getStep2().setModule(childmodule);
 				}
 			}
 		}
-		return tables;
 	}
 
 	protected void loadSearchParts(AgentContext inAgentContext, JSONObject content)
@@ -702,7 +762,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		JSONObject parseSearchParts = (JSONObject) details.get("parseSearchParts");
 		if(parseSearchParts == null)
 		{
-			log.info("No structure found for: " + parseSearchParts);
+			log.info("No structure found for parseSearchParts: " + parseSearchParts);
 			return;
 		}
 

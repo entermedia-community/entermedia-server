@@ -348,7 +348,7 @@ public class AssistantManager extends BaseAiManager
 		agentContext.addContext("usermessage", usermessage);
 		agentContext.addContext("agentmessage", agentmessage);
 		
-		agentContext.addContext("aisearchparams", agentContext.getAiSearchParams() ); // ??
+		//agentContext.addContext("aisearchparams", agentContext.getAiSearchParams() ); // ??
 		
 		String apphome = "/"+ channel.get("chatapplicationid");
 		agentContext.addContext("apphome", apphome);
@@ -357,6 +357,7 @@ public class AssistantManager extends BaseAiManager
 		
 		ChatMessageHandler handler = (ChatMessageHandler) getMediaArchive().getBean( bean);
 		LlmResponse response = null;
+		String messagePrefix = agentContext.getMessagePrefix();
 		try
 		{		
 			response = handler.processMessage(agentContext, agentmessage, function);
@@ -369,11 +370,18 @@ public class AssistantManager extends BaseAiManager
 		
 		try
 		{	
-			String updatedMessage = agentContext.getMessagePrefix();
+			String updatedMessage = null;		
 			
 			if(response != null && response.getMessage() != null )
 			{
-				updatedMessage += response.getMessage();
+				if (messagePrefix != null)
+				{
+					updatedMessage = messagePrefix + response.getMessage();
+				}
+				else
+				{
+					updatedMessage = response.getMessage();
+				}
 			}
 
 			agentmessage.setValue("message", updatedMessage); //Final message

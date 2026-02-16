@@ -41,7 +41,7 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 			
 			inAgentContext.put("userquery", query);
 			
-			Collection<Data> toplevelfunctions = getMediaArchive().query("aifunctions").exact("toplevel", true).search();
+			Collection<Data> toplevelfunctions = getMediaArchive().query("aifunction").exact("toplevel", true).search();
 			inAgentContext.put("toplevelfunctions", toplevelfunctions);
 			
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
