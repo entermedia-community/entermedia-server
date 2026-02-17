@@ -681,8 +681,11 @@ public class ChatModule extends BaseMediaModule
 		{
 			currentchannel.setValue("toplevelaifunctionid", toplevel);
 		}
-
-		currentchannel.setValue("refreshdate", new Date() );
+		
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.SECOND, -1);  
+		currentchannel.setValue("refreshdate", now.getTime());
+		
 		channelsearcher.saveData(currentchannel);
 		
 		inReq.setRequestParameter("channel", currentchannel.getId());
