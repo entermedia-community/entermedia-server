@@ -182,6 +182,12 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			
 			return result;
 		}
+		else if (agentFn.startsWith("view_related_record"))
+		{
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, agentFn);
+			return response;
+		}
 		
 		throw new OpenEditException("Function not supported " + agentFn);
 	}
@@ -927,5 +933,42 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			}
 		}
 		return suggestions;
+	}
+	
+	public Collection<Map> getRelatedRecords(String inEntityModuleId, String inEntityId)
+	{
+		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inEntityModuleId).exact("systemdefined",false).cachedSearch();
+		
+		Collection<Map> relatedrecords = new ArrayList();
+
+		for (Iterator iterator = detailsviews.iterator(); iterator.hasNext();)
+		{
+			Data view = (Data) iterator.next();
+			
+			String listid = view.get("rendertable");
+			if( listid != null)
+			{
+				
+				HitTracker found = getMediaArchive().query(listid).exact(inEntityModuleId, inEntityId).search();
+				if(found.size() > 0)
+				{
+					Map record = new HashMap();
+					record.put("name", view.getName());
+					record.put("moduleid", listid);
+					record.put("total", found.size());
+					
+					relatedrecords.add(record);
+				}
+			}
+		}
+		
+		return relatedrecords;
+	}
+	
+	public Collection<Data> getRelatedRecordList(String inEntityModuleId, String inEntityId, String inListId)
+	{
+		Collection<Data> recordlist = getMediaArchive().query(inListId).exact(inEntityModuleId, inEntityId).search();
+		//TODO pagination
+		return recordlist;
 	}
 }
