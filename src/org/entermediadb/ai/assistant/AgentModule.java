@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.entermediadb.ai.informatics.InformaticsManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
@@ -102,143 +103,17 @@ public class AgentModule extends BaseMediaModule {
 		}
 	}
 
-	/*
-	public void mcpGenerateReport(WebPageRequest inReq) throws Exception {
-		JSONObject arguments = (JSONObject) inReq.getPageValue("arguments");
-		String report = getSearchingManager(inReq).generateReport(arguments);
-		inReq.putPageValue("report", report);
-	}*/
-
-	public void indexActions(WebPageRequest inReq) throws Exception 
-	{
-		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
-		Collection<SemanticAction> actions = new ArrayList();
-		
-		Collection<SemanticAction> found = getSearchingManager(inReq).createPossibleFunctionParameters(logger);
-		actions.addAll(found);
-
-		found = getCreationManager(inReq).createPossibleFunctionParameters(logger);
-		actions.addAll(found);
-
-		found = getQuestionsManager(inReq).createPossibleFunctionParameters(logger);
-		actions.addAll(found);
-
-		Searcher embedsearcher = getMediaArchive(inReq).getSearcher("aifunctionparameter");
-
-		//TODO: Call the other ones
-		
-		//Save to db
-		Collection tosave = new ArrayList();
-		
-		for (Iterator iterator2 = actions.iterator(); iterator2.hasNext();)
-		{
-			SemanticAction semanticAction = (SemanticAction) iterator2.next();
-			Data data = embedsearcher.createNewData();
-			if(semanticAction.getParentData() != null)
-			{				
-				data.setValue("parentmodule",semanticAction.getParentData().getId());
-			}
-			if( semanticAction.getChildData() != null)
-			{
-				data.setValue("childmodule",semanticAction.getChildData().getId());
-			}
-			data.setValue("vectorarray",semanticAction.getVectors());
-			data.setValue("aifunction",semanticAction.getAiFunction());
-			data.setName(semanticAction.getSemanticText());
-			
-			tosave.add(data);
-		}
-		embedsearcher.saveAllData(tosave, null);
-		
-		
-		//Now save all the suggestions?
-		
-		//Test search
-		//populateVectors(manager,actions);
-
-		//manager.reinitClusters(inLog); //How to do this?
-	}
-
-	public void addModules(WebPageRequest inReq) throws Exception 
+	public void recreateFunctions(WebPageRequest inReq) throws Exception 
 	{
 		ScriptLogger log = (ScriptLogger)inReq.getPageValue("log");
+		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
+		assistant.addMissingFunctions(log);
 		
-		Collection<Data> modules =  getMediaArchive(inReq).getList("module");
-		List tosave = new ArrayList();
-		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
-		{
-			MultiValued module = (MultiValued) iterator.next();
-			
-			String method = module.get("aicreationmethod");
-			
-			if( method == null)
-			{				
-				continue;
-			}
-			
-			String id = "";	
-			
-			String messagehandler = "";
-			
-			if( method.equals("fieldsonly"))
-			{
-				id = "fieldsonly_welcome_" + module.getId();
-				messagehandler = "entityCreationManager";
-			}
-			else if( method.equals("smartcreator"))
-			{
-				id = "smartcreator_welcome_" + module.getId();
-				messagehandler = "smartCreatorManager";
-			}
-			
-			Data exists = getMediaArchive(inReq).getData("aifunction", id);
-			if( exists != null)
-			{
-				continue;
-			}
-			
-			Data welcome_aifunction = getMediaArchive(inReq).getSearcher("aifunction").createNewData();
-			welcome_aifunction.setId(id);
-			welcome_aifunction.setValue("messagehandler", messagehandler);
-			welcome_aifunction.setValue("toplevel", true);
-			welcome_aifunction.setName("Create " + module.getName());
-			welcome_aifunction.setValue("icon", module.get("moduleicon"));
-			tosave.add(welcome_aifunction);
-			
-			if(method.equals("smartcreator"))
-			{				
-				id = "smartcreator_create_" + module.getId();
-				
-				Data create_aifunction = getMediaArchive(inReq).getSearcher("aifunction").createNewData();
-				create_aifunction.setId(id);
-				create_aifunction.setValue("messagehandler", messagehandler);
-				create_aifunction.setValue("toplevel", false);
-				create_aifunction.setValue("processingmessage", "Creating new " + module.getName());
-				create_aifunction.setName("Create " + module.getName());
-				tosave.add(create_aifunction);
-				
-				id = "smartcreator_play_" + module.getId();
-				
-				Data play_aifunction = getMediaArchive(inReq).getSearcher("aifunction").createNewData();
-				play_aifunction.setId(id);
-				play_aifunction.setValue("messagehandler", messagehandler);
-				play_aifunction.setValue("toplevel", true);
-				play_aifunction.setValue("processingmessage", "Playing " + module.getName());
-				play_aifunction.setName("View " + module.getName());
-				tosave.add(play_aifunction);
-			}
-			
-			 
-			log.headline("AI functions created for " + module.getName());
-		}
-		getMediaArchive(inReq).saveData("aifunction", tosave);
-	}
+		SearchingManager searchingManager = getSearchingManager(inReq);
+		searchingManager.createPossibleFunctionParameters(log);
 
-	public void createSuggestions(WebPageRequest inReq)
-	{
-		getMediaArchive(inReq).fireSharedMediaEvent("llm/autocreatesuggestions");
 	}
-
+/*
 	public void prepareDataForGuide(WebPageRequest inReq) throws Exception 
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -283,44 +158,15 @@ public class AgentModule extends BaseMediaModule {
 			context.setNextFunctionName(context.getFunctionName());
 		}
 	}
-	
+	*/
 	public void loadModuleSchemaForJson(WebPageRequest inReq) throws Exception 
 	{
 		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
-		Map<String,String> modulesenum = assistant.getModulesAsEnum();
+		Collection<String> modulesenum = assistant.getModulesAsEnum();
 		inReq.putPageValue("modulesenum", modulesenum);
 	}
 	
-	public void loadSuggestions(WebPageRequest inReq) throws Exception 
-	{
-		String toplevel = inReq.getRequestParameter("toplevelaifunctionid");
-		if(toplevel == null)
-		{
-			return;
-		}
 		
-		Searcher aifunctionsearcher = getMediaArchive(inReq).getSearcher("aifunction");
-				
-		Searcher aisuggestions = getMediaArchive(inReq).getSearcher("aisuggestion");
-		
-		HitTracker hits = aisuggestions.query().orgroup("aifunction", toplevel).exact("featured", "true").search();
-		
-		Collection<Map<String, String>> suggestions = new ArrayList<Map<String, String>>();
-		
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-		{
-			Data data = (Data) iterator.next();
-			
-			Map<String, String> suggestion = new HashMap<String, String>();
-			suggestion.put("name", data.getName());
-			suggestion.put("prompt", data.get("prompt"));
-			
-			suggestions.add(suggestion);
-			
-		}
-		inReq.putPageValue("suggestions", suggestions);
-	}
-	
 	public void loadSearchSuggestions(WebPageRequest inReq) throws Exception 
 	{
 		SearchingManager searching = (SearchingManager) getMediaArchive(inReq).getBean("searchingManager");
@@ -402,6 +248,8 @@ public class AgentModule extends BaseMediaModule {
 		}
 		AgentContext context = assistantManager.loadContext(channelid);
 		
+		context.setLocale(inReq.getLocale()); //----
+		
 		inReq.putPageValue("agentcontext", context);
 		
 		String toplevel = inReq.getRequestParameter("toplevelaifunctionid");
@@ -449,4 +297,28 @@ public class AgentModule extends BaseMediaModule {
 		
 	}
 	
+	public void monitorAiServers(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		AssistantManager assistantManager = (AssistantManager) archive.getBean("assistantManager");
+		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
+		assistantManager.monitorAiServers(log);
+	}
+	
+	
+	public void resetInformatics(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		InformaticsManager manager = (InformaticsManager) archive.getBean("informaticsManager");
+		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
+		
+		String moduleid = inReq.findValue("module");
+		
+		String hitsessionid = inReq.getRequestParameter("hitssessionid");
+		HitTracker hitsession = (HitTracker) inReq.getSessionValue(hitsessionid);
+		manager.resetInformatics(moduleid, hitsession.getSelectedHitracker());
+
+	}
+	 
+		
 }

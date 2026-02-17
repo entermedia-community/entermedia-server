@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -23,10 +22,12 @@ import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.projects.LibraryCollection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
+import org.openedit.data.ValuesMap;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
@@ -43,10 +44,6 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	// be shown in a list
 	protected Collection fieldRelatedAssets;
 
-	public BaseAsset()
-	{
-	}
-	
 	
 	@Override
 	public boolean isLocked() {
@@ -177,27 +174,27 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 		}
 		if ("category".equals(inAttribute) || "category-exact".equals(inAttribute) )
 		{
-			
-			Collection categorylist = (Collection) getMap().getValue("category-exact");
+			Collection categorylist = (Collection) getProperties().getValue("category-exact");
 			if(categorylist == null)
 			{
 				categorylist = new ArrayList();
-				Collection categories = (Collection) getFromDb("category-exact");
-				if (categories != null)
+			}
+			List<Data> categorydata = new ArrayList();
+
+			for (Iterator iterator = categorylist.iterator(); iterator.hasNext();)
+			{
+				Object category = (Object) iterator.next();
+				if( category instanceof String)
 				{
-					for (Iterator iterator = categories.iterator(); iterator.hasNext();)
-					{
-						String categoryid = (String) iterator.next();
-						Category category = getMediaArchive().getCategory(categoryid); //Cache this? Or lazy load em
-						if (category != null)
-						{
-							categorylist.add(category);
-						}
-					}
+					category = getMediaArchive().getCategory((String)category); //Cache this? Or lazy load em
 				}
-				getMap().put("category-exact", categorylist);
-				return categorylist;
-			} 
+				if(category != null)
+				{
+					categorydata.add( (Data)category);
+				}
+			}
+			getProperties().put("category-exact", categorydata);
+			return categorydata;
 		}
 		if("islocked".equals(inAttribute)) {
 			return isLocked();
@@ -272,11 +269,11 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 		if (found != null)
 		{
 			cats.remove(found);
-			getMap().put("category-exact",cats);
+			getProperties().put("category-exact",cats);
 		}
 		//Resave all the parents
 		Collection set = buildCategorySet();
-		getMap().put("category",set);
+		getProperties().put("category",set);
 		
 	}
 
@@ -361,7 +358,7 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 		for (Iterator iter = getCategories().iterator(); iter.hasNext();)
 		{
 			Category element = (Category) iter.next();
-			if (element.getCategoryPath().equals(inCategoryPath))
+			if (inCategoryPath.equals(element.getCategoryPath()))
 			{
 				removeCategory(element);
 				return true;
@@ -491,7 +488,7 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	@Override
 	public Date getDate(String inField, String inDateFormat)
 	{
-		return getMap().getDate(inField, inDateFormat);
+		return getProperties().getDate(inField, inDateFormat);
 	}
 
 //	public Collection getObjects(String inField)
@@ -553,7 +550,7 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 		asset.setName(getName());
 		asset.setOrdering(getOrdering());
 		asset.setKeywords(getKeywords());
-		asset.setProperties(new HashMap(getProperties()));
+		asset.setProperties(new ValuesMap(getProperties()));
 
 		Collection catalogs = getCategories();
 		for (Iterator iter = catalogs.iterator(); iter.hasNext();)
@@ -833,7 +830,7 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	@Override
 	public BigDecimal getBigDecimal(String inKey)
 	{
-		return getMap().getBigDecimal(inKey);
+		return getProperties().getBigDecimal(inKey);
 	}
 
 	
@@ -854,7 +851,7 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	@Override
 	public boolean isPropertyTrue(String inKey)
 	{
-		return getMap().getBoolean(inKey);
+		return getProperties().getBoolean(inKey);
 	}
 
 //	public void removeLibrary(String inLibraryid)
@@ -1066,10 +1063,10 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 		if (getSearchHit() == null)
 		{
 			JSONObject json = new JSONObject();
-			for(Iterator iterator = getMap().keySet().iterator(); iterator.hasNext();)
+			for(Iterator iterator = getProperties().keySet().iterator(); iterator.hasNext();)
 			{
 				String key = (String) iterator.next();
-				Object value = getMap().get(key);
+				Object value = getProperties().get(key);
 				if (value == null)
 				{
 					continue;
@@ -1092,10 +1089,10 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 			}
 			output.append(json.toJSONString());
 		}
-		else if(!getMap().isEmpty())
+		else if(!getProperties().isEmpty())
 		{
 			JSONObject json = new JSONObject(getSearchData());
-			json.putAll(getMap());
+			json.putAll(getProperties());
 			output.append(json.toJSONString());
 		}
 		else 

@@ -8,6 +8,8 @@ import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.assistant.AssistantManager;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.scanner.AssetImporter;
@@ -17,6 +19,7 @@ import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.util.JsonUtil;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
@@ -79,6 +82,81 @@ public class JsonDataModule extends BaseJsonModule
 		log.info(search);
 	}
 	
+
+	public void handleAiFunction(WebPageRequest inReq)
+	{
+		//Could probably handle this generically, but I think they want tags, keywords etc.
+		String catalogid =  findCatalogId(inReq);
+		MediaArchive archive = getMediaArchive(inReq, catalogid);
+
+		Map request = inReq.getJsonRequest();
+		
+		String channelid = (String)request.get("channel");
+		
+		Data channel = archive.getCachedData("channel", channelid);
+		if(channel == null)
+		{
+			channel = archive.getSearcher("channel").createNewData();
+			channel.setId(channelid);
+			channel.setValue("date",new Date());
+			channel.setValue("refreshdate",new Date());
+			String siteid = PathUtilities.extractDirectoryPath(catalogid);
+			channel.setValue("chatapplicationid",siteid + "/find");
+			archive.saveData("channel",channel);
+		}
+		
+		AssistantManager assistantManager = (AssistantManager) getMediaArchive(catalogid).getBean("assistantManager");
+		
+		AgentContext context = assistantManager.loadContext(channelid);
+		
+		String entitymoduleid = (String)request.get("entitymoduleid");
+		context.setValue("entitymoduleid",entitymoduleid);
+
+		String entityid = (String)request.get("entityid");
+		context.setValue("entityid",entityid);
+
+		String pagename = inReq.getContentPage().getPageName();
+		context.setFunctionName(pagename);
+		
+		Data aifunctionstart = archive.getCachedData("aifunction", pagename);
+		inReq.putPageValue("aifunctionstart",aifunctionstart);
+		inReq.putPageValue("aifunctionsearcher", archive.getSearcher("aifunction") );
+		
+		
+		MultiValued usermessage = (MultiValued)archive.getSearcher("chatterbox").createNewData();
+		usermessage.setValue("user", "agent");
+		usermessage.setValue("channel",channelid);
+		usermessage.setValue("date", new Date());
+		String message = (String)request.get("message");
+		usermessage.setValue("message", message);
+		archive.saveData("chatterbox",usermessage);
+		MultiValued agentmessage = assistantManager.newAgentMessage(usermessage,context);
+		
+		assistantManager.execCurrentFunctionFromChat(usermessage,agentmessage,context);
+
+		context.addContext("agentmessage",agentmessage);
+		context.addContext("usermessage",usermessage);
+		
+		context.setUserProfile(archive.getUserProfile("admin") );
+
+		inReq.putPageValue("agentmessage",agentmessage);
+		inReq.putPageValue("usermessage",usermessage);
+		inReq.putPageValue("agentcontext",context);
+		inReq.putPageValue("contextmap",context.getContext());
+		inReq.putPageValue("chatterboxsearcher", archive.getSearcher("chatterbox") );
+		inReq.putPageValue("agentcontextsearcher", archive.getSearcher("agentcontext" ) );
+		
+		String function = context.getNextFunctionName();
+		if( function == null)
+		{
+			function = context.getFunctionName();
+		}
+		Data aifunction = archive.getCachedData("aifunction", function);
+		inReq.putPageValue("aifunction",aifunction);
+		
+
+		
+	}
 
 	public Data createData(WebPageRequest inReq)
 	{

@@ -6,12 +6,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.entermediadb.data.ViewData;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
+import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -53,6 +53,13 @@ public class ElasticViewSearcher extends ElasticListSearcher
 			}
 		}
 		return data;
+	}
+	
+	@Override
+	public boolean hasChanged(HitTracker inTracker)
+	{
+		boolean changed = super.hasChanged(inTracker);
+		return changed;
 	}
 	
 	public void saveData(Data inData, User inUser)
@@ -155,8 +162,9 @@ public class ElasticViewSearcher extends ElasticListSearcher
 				}
 			}
 		});
-		
-		return new ListHitTracker(finallist);
+		ListHitTracker combined = new ListHitTracker(finallist);
+		combined.setIndexId(getIndexId());
+		return combined;
 	}
 	
 	//TODO Save deleted with special flag
@@ -255,7 +263,7 @@ public class ElasticViewSearcher extends ElasticListSearcher
 		else
 		{
 			ViewData data = (ViewData) createNewData();
-			Map fields = inHit.getProperties();
+			ValuesMap fields = inHit.getProperties();
 			fields = checkTypes(fields);
 			data.setProperties(fields);
 			data.setId(inHit.getId());

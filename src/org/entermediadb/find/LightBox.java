@@ -7,6 +7,7 @@ import java.util.Set;
 import org.entermediadb.asset.Category;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.data.ValuesMap;
 
 public class LightBox implements Data
 {
@@ -109,7 +110,7 @@ public class LightBox implements Data
 	}
 
 	@Override
-	public Map getProperties()
+	public ValuesMap getProperties()
 	{
 		
 		return null;

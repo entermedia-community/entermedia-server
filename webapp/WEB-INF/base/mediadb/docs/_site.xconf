@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-  	
-  	 	<path-action name="MediaArchiveModule.loadApplicationId" />
-  	  
-  	  
-    <path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
-		<path-action name="Admin.loadPermissions"/>
-	<path-action name="Admin.allowViewing" />
-	
-	
 
- 	<style id="jquery" cancel="true" />
+	<path-action name="MediaArchiveModule.loadApplicationId" />
+
+
+	<path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
+	<path-action name="Admin.loadPermissions"/>
+	<path-action name="Admin.allowViewing" />
+
+
+
+	<style id="jquery" cancel="true" />
 	<!-- jQuery & jQueryUI JS is  included in includes.html  -->
 	<style id="jqueryui-css" href="/${applicationid}/components/javascript/jquery-ui/1.12/jquery-ui.css" />
- 
- 	<!-- Bootstrap CSS (JS included @ includes.html) -->
-	<style id="bootstrap-css" href="/${applicationid}/components/javascript/bootstrap/4.5.3/css/bootstrap.min.css" />
-	<style id="fontawesome-css"  href="/${applicationid}/components/javascript/bootstrap/fonts/css/fontawesome-all.min.css" />
-	
- 
- 	<script id="docs" src="/${applicationid}/docs/theme/javascript/docs.js" />
 
- <inner-layout>/${applicationid}/docs/theme/layouts/layout.html</inner-layout>
+	<!-- Bootstrap CSS (JS included @ includes.html) -->
+	<style id="bootstrap-css" href="/${applicationid}/components/javascript/bootstrap/4.5.3/css/bootstrap.min.css" />
+	<style id="fontawesome-css" href="/${applicationid}/components/javascript/bootstrap/fonts/css/fontawesome-all.min.css" />
+
+
+	<script id="codemirror" src="/${applicationid}/docs/theme/javascript/codemirror.min.js" />
+	<script id="codemirror-js" src="/${applicationid}/docs/theme/javascript/javascript.min.js" />
+	<script id="editor" src="/${applicationid}/docs/theme/javascript/editor.js" />
+	<script id="docs" src="/${applicationid}/docs/theme/javascript/docs.js" />
+
+	<inner-layout>/${applicationid}/docs/theme/layouts/layout.html</inner-layout>
 	<property name="title">EnterMedia MediaDB Documentation</property>
 </page>

@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.assistant.QuestionsManager;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
@@ -20,6 +25,9 @@ import org.openedit.util.DateStorageUtil;
 
 public class InformaticsManager extends BaseAiManager
 {
+	
+	private static final Log log = LogFactory.getLog(InformaticsManager.class);
+	
 	public void processAll(ScriptLogger inLog)
 	{
 		processAssets(inLog);
@@ -86,11 +94,11 @@ public class InformaticsManager extends BaseAiManager
 		
 		if (Boolean.valueOf(allowclassifyothernodes) ) 
 		{
-			inLog.info("Asset search query: " + pendingrecords + " " +date);
+			log.info("Asset search query: " + pendingrecords + " " +date);
 		}
 		else 
 		{
-			inLog.info("Asset local search query: " + pendingrecords + " " +date);
+			log.info("Asset local search query: " + pendingrecords + " " +date);
 		}
 
 		if (!pendingrecords.isEmpty())
@@ -133,7 +141,8 @@ public class InformaticsManager extends BaseAiManager
 		}
 		else
 		{
-			inLog.info("AI assets to tag:` " + pendingrecords.getFriendlyQuery());
+			inLog.info("No Assets to Process:` " + pendingrecords.getFriendlyQuery());
+			//inLog.info("AI assets to tag:` " + pendingrecords.getFriendlyQuery());
 		}
 	}
 
@@ -148,28 +157,44 @@ public class InformaticsManager extends BaseAiManager
 		}
 		getMediaArchive().saveData("asset", pageofhits);
 		
-		try 
+		Collection workinghits = new ArrayList(pageofhits);
+
+		for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
 		{
-			for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
-			{
-				MultiValued config = (MultiValued) iterator2.next();
-				InformaticsProcessor processor = loadProcessor(config.get("bean"));
-				//inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" ); //Add Header Logs in each Bean
-				processor.processInformaticsOnAssets(inLog, config, pageofhits);
-				getMediaArchive().saveData("asset", pageofhits);
-			}
+			MultiValued config = (MultiValued) iterator2.next();
+			InformaticsProcessor processor = loadProcessor(config.get("bean"));
+			//inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" ); //Add Header Logs in each Bean
+			processor.processInformaticsOnAssets(inLog, config, workinghits);
 			
-		}
-		finally
-		{
 			for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
 			{
-				Asset asset = (Asset) iterator.next();
-				asset.setValue("taggedbyllm", true);
-				asset.toggleLock(agent);
+				MultiValued data = (MultiValued) iterator.next();
+				if(data.getBoolean("llmerror"))
+				{
+					workinghits.remove(data); //We do not process more.
+				}
 			}
-			getMediaArchive().saveData("asset", pageofhits);
+			getMediaArchive().saveData("asset", pageofhits); //Not need it?
 		}
+		
+		for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
+		{
+			Asset asset = (Asset) iterator.next();
+			if(!asset.getBoolean("llmerror"))
+			{
+				asset.setValue("taggedbyllm", true);
+			}
+		}
+
+		for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
+		{
+			Asset asset = (Asset) iterator.next();
+			asset.toggleLock(agent); //Todo: Implement Release
+		}
+		getMediaArchive().saveData("asset", pageofhits);
+		
+		inLog.info("Processing Informatics on Assets Complete");
+
 	}
 
 	public void processEntities(ScriptLogger inLog)
@@ -239,20 +264,41 @@ public class InformaticsManager extends BaseAiManager
 				pendingrecords.setPage(i+1);
 				Collection pageofhits = pendingrecords.getPageOfHits();
 				
+				Collection validhits = findValidRecords(pendingrecords.getPageOfHits());
+				
+				if (validhits.isEmpty())
+				{
+					continue;
+				}
+
+				Collection workinghits = new ArrayList(validhits);
 				for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
 				{
 					MultiValued config = (MultiValued) iterator2.next();
 					InformaticsProcessor processor = loadProcessor(config.get("bean"));
 					//inLog.info("Processing : " + config);
-					processor.processInformaticsOnEntities(inLog, config, pageofhits);
+					processor.processInformaticsOnEntities(inLog, config, workinghits);
+					for (Iterator iterator = validhits.iterator(); iterator.hasNext();)
+					{
+						MultiValued data = (MultiValued) iterator.next();
+						if(data.getBoolean("llmerror"))
+						{
+							workinghits.remove(data); //We do not process more.
+						}
+					}
 				}
 				//Group them by type
-				for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
+				
+				for (Iterator iterator = validhits.iterator(); iterator.hasNext();)
 				{
-					Data data = (Data) iterator.next();
-					data.setValue("taggedbyllm", true);
-				}
-				Map<String, Collection> groupbymodule = groupByModule(pageofhits);
+					MultiValued data = (MultiValued) iterator.next();
+					if(!data.getBoolean("llmerror"))
+					{
+						data.setValue("taggedbyllm", true);
+					}
+				}		
+
+				Map<String, Collection> groupbymodule = groupByModule(validhits);
 				for (Iterator iterator = groupbymodule.keySet().iterator(); iterator.hasNext();)
 				{
 					String moduleid = (String) iterator.next();
@@ -260,9 +306,35 @@ public class InformaticsManager extends BaseAiManager
 					getMediaArchive().saveData(moduleid,tosave);
 					
 				}
+
 			}
+			
+			inLog.info("Processing Informatics Complete");
 		}
 	
+	}
+	
+	
+	
+
+	private Collection findValidRecords(List inPageOfHits)
+	{
+		// TODO Auto-generated method stub
+		Collection valid = new ArrayList();
+		for (Iterator iterator = inPageOfHits.iterator(); iterator.hasNext();)
+		{
+			MultiValued entity = (MultiValued) iterator.next();
+			String assetid = entity.get("primarymedia");
+			if(assetid == null)
+			{
+				assetid = entity.get("primaryimage");
+			}
+			if (assetid != null || entity.get("markdowncontent") != null || entity.get("longcaption") != null)
+			{
+				valid.add(entity);
+			}
+		}
+		return valid;
 	}
 
 	public InformaticsProcessor loadProcessor(String inName)
@@ -292,5 +364,47 @@ public class InformaticsManager extends BaseAiManager
 			getMediaArchive().getCacheManager().put("ai", "informatics", records);
 		}
 		return records;
+	}
+	
+	
+	public void resetInformatics(String inEntityModuleId, Collection inEntities) 
+	{
+		
+		ArrayList saveAll = new ArrayList();
+		int count = 0;
+		Collection ids = new HashSet();
+		for (Iterator iterator = inEntities.iterator(); iterator.hasNext();)
+		{
+			Data entity = (Data) iterator.next();
+			
+			entity.setValue("taggedbyllm", false);
+			entity.setValue("llmerror", false);
+				
+			entity.setValue("semantictopics", null);
+			
+			entity.setValue("entityembeddingstatus", null);
+			entity.setValue("pagescreatedfor", null);
+			entity.setValue("totalpages", null);
+			
+			//entity.setValue("searchcategory", null);
+				
+			//entity.setValue("keywords", null);
+			//entity.setValue("longcaption", null);
+			ids.add(entity.getId());
+			saveAll.add(entity);
+				
+		}
+		getMediaArchive().saveData(inEntityModuleId, saveAll);
+		log.info("Saved " + saveAll.size() + " in " + inEntityModuleId);
+		
+		HitTracker todelete = getMediaArchive().query("semanticembedding").orgroup("dataid", ids).exact("moduleid", inEntityModuleId).search();
+		getMediaArchive().getSearcher("semanticembedding").deleteAll(todelete, null);
+		
+		
+		getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
+		
+		
+		
+		
 	}
 }

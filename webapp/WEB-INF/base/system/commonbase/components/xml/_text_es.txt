@@ -1,10 +1,15 @@
 #
-#Tue Apr 07 17:58:11 CST 2020
-New=Nuevo
-No\ values\ found=No se encontraron valores
-No\ details\ available\ for\ this\ view.\ \ Please\ configure\ your\ view\ settings.=No hay datos disponibles para esta vista . Por favor configure las opciones
-Add\ New\ $detail=A\u00F1adir nuevo detalle de $
+#Wed Feb 11 14:52:00 CST 2026
 404\ on\ view=404 en la vista
-Edit=Editar
 Add\ New=Agregar nuevo
+Add\ New\ $detail=A\u00F1adir nuevo detalle de $
+Edit=Editar
+Hit=Golpear
+New=Nuevo
+No\ details\ available\ for\ this\ view.\ \ Please\ configure\ your\ view\ settings.=No hay datos disponibles para esta vista . Por favor configure las opciones
+No\ values\ found=No se encontraron valores
+enter=ingresar
+key\ after\ typing\ each\ tag=tecla despu\u00E9s de escribir cada etiqueta
+or=o
 required=requerido
+return=devolver

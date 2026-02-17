@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
@@ -18,6 +19,7 @@ import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.users.User;
@@ -57,18 +59,13 @@ public class ClassifyManager extends InformaticsProcessor
 				long startTime = System.currentTimeMillis();
 
 				//inLog.info(inConfig.get("bean") + " - Analyzing asset ("+count+"/"+assets.size()+")" + asset.getName());
-				count++;
+				count++;		
 
 				inLog.headline("Classifying asset: " + asset.getName());
-
-				boolean ok = processOneAsset(inConfig, asset);
-				if( !ok )
-				{
-					continue;
-				}
+				processOneAsset(inConfig, asset);
 
 				long duration = (System.currentTimeMillis() - startTime) / 1000L;
-				inLog.info("Classified successfully! Took "+duration +"s");
+				inLog.info("Classified "+ asset.getName() +" successfully! Took "+duration +"s");
 			}
 			catch(Exception e){
 				inLog.error("LLM Error", e);
@@ -78,7 +75,7 @@ public class ClassifyManager extends InformaticsProcessor
 		}
 	}
 
-	protected boolean processOneAsset(MultiValued inConfig, MultiValued asset) throws Exception
+	protected void processOneAsset(MultiValued inConfig, MultiValued asset) throws Exception
 	{
 		Collection allaifields = getMediaArchive().getAssetPropertyDetails().findAiCreationProperties();
 		Collection<PropertyDetail> aifields = new ArrayList();
@@ -106,14 +103,14 @@ public class ClassifyManager extends InformaticsProcessor
 
 		if(!aifields.isEmpty())
 		{
-			Map params = new HashMap();
-			params.put("asset", asset);
-			params.put("data", asset);
-			params.put("aifields", aifields);
+			AgentContext agentcontext = new AgentContext();
+			agentcontext.addContext("asset", asset);
+			agentcontext.addContext("data", asset);
+			agentcontext.addContext("aifields", aifields);
 			
 			LlmConnection llmconnection = getLlmNamingServer();
 			
-			String functionname = llmconnection.getAiFunctionName();
+			String functionname = "classifyAsset";
 			
 			String base64EncodedString = null;
 			
@@ -142,7 +139,8 @@ public class ClassifyManager extends InformaticsProcessor
 					if( fulltext == null)
 					{
 						log.error("Text has no text: " + asset);
-						return false;
+						asset.setValue("llmerror", true);
+						return;
 					}
 					if( fulltext.length() > 4000)
 					{
@@ -159,7 +157,8 @@ public class ClassifyManager extends InformaticsProcessor
 					if( base64EncodedString == null)
 					{
 						log.error("Image missing for asset: " + asset);
-						return false;
+						asset.setValue("llmerror", true);
+						return;
 					}
 					functionname = functionname + "_image";
 					
@@ -176,7 +175,8 @@ public class ClassifyManager extends InformaticsProcessor
 					if( textContent == null || textContent.trim().length() == 0)
 					{
 						log.error("Document has no text: " + asset);
-						return false;
+						asset.setValue("llmerror", true);
+						return;
 					}
 					functionname = functionname + "_document";
 				}
@@ -187,7 +187,8 @@ public class ClassifyManager extends InformaticsProcessor
 					if( textContent == null)
 					{
 						log.error("Video missing for asset: " + asset);
-						return false;
+						asset.setValue("llmerror", true);
+						return;
 					}
 					functionname = functionname + "_transcript";
 				}
@@ -195,7 +196,8 @@ public class ClassifyManager extends InformaticsProcessor
 				{
 					///Check for text type
 					log.info("Skipping media type: " + mediatype + " for asset: " + asset);
-					return false;
+					asset.setValue("llmerror", true);
+					return;
 				}
 			}
 
@@ -204,9 +206,9 @@ public class ClassifyManager extends InformaticsProcessor
 				textContent = textContent.substring(0, Math.min(4000, textContent.length()));
 			}
 			
-			params.put("contextfields", contextFields);
+			agentcontext.addContext("contextfields", contextFields);
 			
-			LlmResponse results = llmconnection.callClassifyFunction(params, functionname, base64EncodedString, textContent);
+			LlmResponse results = llmconnection.callClassifyFunction(agentcontext, functionname, base64EncodedString, textContent);
 
 			if (results != null)
 			{
@@ -216,7 +218,8 @@ public class ClassifyManager extends InformaticsProcessor
 					Map metadata =  (Map) arguments.get("metadata");
 					if (metadata == null || metadata.isEmpty())
 					{
-						return false;
+						log.error("No metadata return on asset: " + asset.getName());
+						return;
 					}
 					Map datachanges = new HashMap();
 					for (Iterator iterator2 = metadata.keySet().iterator(); iterator2.hasNext();)
@@ -258,7 +261,7 @@ public class ClassifyManager extends InformaticsProcessor
 				}
 			}
 		}
-		return true;
+		
 	}
 
 	@Override
@@ -282,11 +285,7 @@ public class ClassifyManager extends InformaticsProcessor
 
 				inLog.info("Classifying entity: " + entity.getName());
 
-				boolean complete = processOneEntity(inConfig, entity, moduleid);
-				if( !complete )
-				{
-					continue;
-				}
+				processOneEntity(inConfig, entity, moduleid);
 
 				long duration = (System.currentTimeMillis() - startTime) / 1000L;
 				inLog.info("Took "+duration +"s to process entity: " + entity.getId() + " " + entity.getName());
@@ -298,7 +297,7 @@ public class ClassifyManager extends InformaticsProcessor
 		}
 	}
 	
-	protected boolean processOneEntity(MultiValued inConfig, MultiValued inEntity, String inModuleId) throws Exception
+	protected void processOneEntity(MultiValued inConfig, MultiValued inEntity, String inModuleId) throws Exception
 	{
 		Collection detailsfields = getMediaArchive().getSearcher(inModuleId).getDetailsForView(inModuleId+"general");
 
@@ -318,7 +317,7 @@ public class ClassifyManager extends InformaticsProcessor
 			}
 		}
 		
-		Map params = new HashMap();
+		AgentContext agentcontext = new AgentContext();
 		
 		String assetid = inEntity.get("primarymedia");
 		if( assetid == null)
@@ -330,7 +329,7 @@ public class ClassifyManager extends InformaticsProcessor
 		
 		if (primaryasset != null)
 		{
-			params.put("primaryasset", primaryasset);
+			agentcontext.put("primaryasset", primaryasset);
 			
 			Searcher assetsearcher = getMediaArchive().getAssetSearcher();
 			
@@ -344,27 +343,28 @@ public class ClassifyManager extends InformaticsProcessor
 		if(contextFields.size() == 0)
 		{
 			log.info("No context fields found for entity: " + inEntity.getId() + " " + inEntity.getName());
-			return false;
+			return;
 		}
 
 		
 		if(fieldsToFill.isEmpty())
 		{
 			log.info("No fields to fill for entity: " + inEntity.getId() + " " + inEntity.getName());	
+			return;
 		}
 		else
 		{
 			
-			params.put("entity", inEntity);
-			params.put("data", inEntity);
-			params.put("contextfields", contextFields);
-			params.put("fieldstofill", fieldsToFill);
+			agentcontext.put("entity", inEntity);
+			agentcontext.put("data", inEntity);
+			agentcontext.put("contextfields", contextFields);
+			agentcontext.put("fieldstofill", fieldsToFill);
 			
 			
 			boolean isDocPage = inEntity.get("entitydocument") != null;
 			if(isDocPage)
 			{
-				params.put("docpage", isDocPage);
+				agentcontext.put("docpage", isDocPage);
 //				base64EncodedString = loadImageContent(inEntity);
 			}
 
@@ -372,9 +372,7 @@ public class ClassifyManager extends InformaticsProcessor
 			{
 				LlmConnection llmconnection = getEntityClassificationLlmConnection();
 
-				String functionname = llmconnection.getAiFunctionName();
-				
-				LlmResponse results = llmconnection.callClassifyFunction(params, functionname, null); 
+				LlmResponse results = llmconnection.callClassifyFunction(agentcontext, "classifyEntity", null); 
 				
 				if (results != null)
 				{
@@ -384,7 +382,8 @@ public class ClassifyManager extends InformaticsProcessor
 						Map metadata =  (Map) arguments.get("metadata");
 						if (metadata == null || metadata.isEmpty())
 						{
-							return false;
+							inEntity.setValue("llmerror", true);
+							return;
 						}
 						Map datachanges = new HashMap();
 						
@@ -426,17 +425,13 @@ public class ClassifyManager extends InformaticsProcessor
 						log.info("Entity "+inEntity.getId() +" "+inEntity.getName()+" - Nothing Detected.");
 					}
 				}
-				inEntity.setValue("taggedbyllm", true);
-				inEntity.setValue("llmerror", false);
 			}
 			catch (Exception e) 
 			{
 				log.error("Error generating metadata for entity "+ inEntity, e);
 				inEntity.setValue("llmerror", true);
-				return false;
 			}
 		}
-		return true;
 
 	}
 

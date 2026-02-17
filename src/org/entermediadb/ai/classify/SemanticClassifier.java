@@ -110,20 +110,7 @@ public class SemanticClassifier extends InformaticsProcessor implements CatalogE
 				data.setValue("llmerror", true);
 			}
 		}
-		if( getSemanticTableManager().isIndexingVectors() )
-		{
-			log.info("Skipping indexing vectors for now, event will handle it later");
-			return;
-		}
-		getSemanticTableManager().setIndexingVectors(true);
-		try
-		{
-			getSemanticTableManager().indexData(inLog,inRecords);
-		}
-		finally
-		{
-			getSemanticTableManager().setIndexingVectors(false);
-		}
+		getSemanticTableManager().indexData(inLog,inRecords);
 		long end = System.currentTimeMillis();
 		double seconds = end - start / 1000d;
 		inLog.info("SemanticClassifier Completed " + inRecords.size() + " records in " +  seconds + " seconds ");
@@ -223,10 +210,5 @@ public class SemanticClassifier extends InformaticsProcessor implements CatalogE
 		//log.info("Found matching IDs:" + allIds);
 
 	}
-	
-	public void indexAll(ScriptLogger inLog)
-	{
-		setConfigurationId("semantictopics");
-		getSemanticTableManager().indexAll(inLog);
-	}
+
 }

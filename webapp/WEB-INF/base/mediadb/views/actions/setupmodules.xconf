@@ -9,6 +9,8 @@
 	<path-action name="Script.run">
 		<script>./createmodules.groovy</script>
 	</path-action>
+	<path-action alltypes="true" name="MediaAdminModule.saveAiMediaDb"/>
+	
 	
 <script id="jquery" src="/${applicationid}/components/javascript/jquery-3.3.1.min.js"/>
 <style id="bootstrap-css" href="/${applicationid}/components/javascript/bootstrap/4/css/bootstrap.min.css" />

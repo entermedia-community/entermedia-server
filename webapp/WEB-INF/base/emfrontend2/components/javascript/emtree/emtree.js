@@ -5,7 +5,7 @@ $(document).ready(function () {
 		function (e) {
 			e.stopPropagation();
 			toggleExpandNode.call(this);
-		}
+		},
 	);
 	function toggleExpandNode(selecting = false) {
 		console.log($(this), selecting);
@@ -40,7 +40,7 @@ $(document).ready(function () {
 				(iscurrent ? "&currentnodeid=" + nodeid : ""),
 			function () {
 				$(window).trigger("resize");
-			}
+			},
 		);
 	}
 
@@ -83,7 +83,7 @@ $(document).ready(function () {
 			event.tree = tree;
 			event.nodeid = nodeid;
 			$(document).trigger(event);
-		}
+		},
 	);
 
 	lQuery(".scrolltocat").livequery(function () {
@@ -365,7 +365,7 @@ $(document).ready(function () {
 				.removeClass("categorydroparea");
 
 			return false;
-		}
+		},
 	);
 
 	lQuery(".addtomodule").livequery("click", function (event) {
@@ -441,8 +441,6 @@ $(document).ready(function () {
 			var theinput = $("#treeaddnodeinput");
 			if (theinput.length > 0) {
 				theinput.focus({ preventScroll: false });
-				//theinput.select();
-				//theinput.focus();
 			}
 			$(document).trigger("domchanged");
 		});

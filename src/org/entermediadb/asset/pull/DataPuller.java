@@ -589,9 +589,8 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				details.put("sourcepath", sourcepath);
 				JSONArray files = new JSONArray();
 				
-				
 				//Asset asset = archive.getAsset(data.getId());
-				data.setPropertyDetails(archive.getPropertyDetailsArchive().getPropertyDetailsCached(searchtype));
+				//data.setPropertyDetails(archive.getPropertyDetailsArchive().getPropertyDetailsCached(searchtype));
 				Map editstatus = data.getEmRecordStatus();
 				String mastereditclusterid = (String)editstatus.get("mastereditclusterid");
 				

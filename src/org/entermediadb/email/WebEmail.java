@@ -19,6 +19,7 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.data.ValuesMap;
 import org.openedit.page.Page;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.users.User;
@@ -36,7 +37,7 @@ public abstract class WebEmail
 	protected List<InternetAddress> fieldBCCRecipients;
 	protected String fieldFrom;
 	protected String fieldFromName;
-	protected Map fieldProperties;
+	protected ValuesMap fieldProperties;
 	protected String fieldSubject;
 	protected String fieldWebServerName;
 	protected WebPageRequest fieldWebPageContext;
@@ -111,11 +112,11 @@ public abstract class WebEmail
 		fieldFromName = inFromName;
 	}
 
-	public Map getProperties()
+	public ValuesMap getProperties()
 	{
 		if (fieldProperties == null)
 		{
-			fieldProperties = new HashMap();
+			fieldProperties = new ValuesMap();
 
 		}
 
@@ -129,7 +130,7 @@ public abstract class WebEmail
 
 	public void setProperties(Map inProperties)
 	{
-		fieldProperties = inProperties;
+		getProperties().putAll(inProperties);
 	}
 
 	public String getProperty(String inKey)

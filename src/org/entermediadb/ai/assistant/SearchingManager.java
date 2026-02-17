@@ -16,11 +16,11 @@ import org.entermediadb.ai.classify.SemanticClassifier;
 import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.ai.llm.BasicLlmResponse;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.ResultsManager;
-import org.entermediadb.markdown.MarkdownUtil;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
@@ -36,10 +36,154 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 {
 	private static final Log log = LogFactory.getLog(SearchingManager.class);
 
+	
 	@Override
-	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
+	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
 	{
-		// Do nothing
+		String agentFn = inAgentContext.getFunctionName();
+		
+		if ("search_welcome".equals(agentFn))
+		{
+			inAgentMessage.setValue("chatmessagestatus", "completed");
+			Schema  schema = loadSchema();
+			inAgentContext.addContext("schema", schema);
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
+			inAgentContext.setFunctionName("search_parse");
+			return response;
+		}
+		/*
+		if ("search_start".equals(agentFn))
+		{
+			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
+			MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", agentFn);
+
+			LlmResponse response = startChat(inAgentContext, usermessage, inAgentMessage, function);
+			
+			//Handle right now
+			String responseFn = response.getFunctionName();
+			if ("conversation".equals(responseFn))
+			{
+				inAgentMessage.setValue("chatmessagestatus", "completed");
+				
+				String generalresponse  = response.getMessage();
+				if(generalresponse != null)
+				{
+					MarkdownUtil md = new MarkdownUtil();
+					generalresponse = md.render(generalresponse);
+					//inAgentMessage.setValue("message",generalresponse);
+				}
+				//LlmResponse respond = new EMediaAIResponse();
+				response.setMessage(generalresponse);
+				
+				inAgentContext.setNextFunctionName(null);
+
+			}
+			else
+			{
+				response.setMessage("");
+				inAgentContext.setNextFunctionName(responseFn);
+			}
+			return response;
+		}
+		*/
+		
+		else if ("search_parse".equals(agentFn))
+		{
+			//parse the search first
+			//If no parts then keep talking
+			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
+
+			inAgentContext.addContext("userquery",usermessage.get("message"));
+			
+			inAgentContext.setMessagePrefix(null);
+			inAgentContext.setAiSearchParams(null);
+			
+			LlmConnection server = getMediaArchive().getLlmConnection(agentFn);
+			LlmResponse res = server.callStructure(inAgentContext, agentFn);
+			JSONObject messagestructured = (JSONObject) res.getMessageStructured();
+			
+			loadSearchParts(inAgentContext, messagestructured);
+			if(inAgentContext.getAiSearchParams() == null)
+			{
+				Map details = (Map)messagestructured.get("step_details");
+				String friendly_response = (String)details.get("friendly_response"); 
+				res.setMessage( friendly_response );
+			}
+			else
+			{
+				inAgentContext.setNextFunctionName("search_tables");
+			}
+			return res;
+		}
+		
+		else if ("search_tables".equals(agentFn))
+		{
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection("search_tables");
+			LlmResponse response =  llmconnection.renderLocalAction(inAgentContext); // TOREVIEW: This is rendering previous searches results first
+			
+			String message = response.getMessage();
+			inAgentContext.setMessagePrefix(message);
+			
+			inAgentContext.setNextFunctionName("search_semantic");	
+			
+			return response;
+		}
+		else if ("search_semantic".equals(agentFn))
+		{
+			
+			String semanticquery = "";
+			
+			AiSearch searchParams = inAgentContext.getAiSearchParams();
+			AiSearchTable step1 = searchParams.getStep1();
+			
+			String step1Keyword = step1.getParameterValues();
+			
+			if(step1Keyword != null)
+			{
+				semanticquery = step1Keyword;
+			}
+			AiSearchTable step2 = searchParams.getStep2();
+			if(step2 != null)
+			{
+				String step2Keyword = step2.getParameterValues();
+				if(step2Keyword != null)
+				{
+					semanticquery = semanticquery + " " + step2Keyword;
+				}
+			}
+			if(semanticquery.isBlank())
+			{
+				String originalQuery = searchParams.getOriginalSearchString();
+				if( originalQuery != null)
+				{
+					originalQuery = originalQuery.replaceAll("search|find|look for|show me", "").trim();
+					semanticquery = originalQuery;
+				}
+			}
+			LlmResponse result = null;
+			if(!semanticquery.isBlank())
+			{			
+				inAgentContext.addContext("semanticquery", semanticquery.trim());
+				
+				LlmConnection llmconnection = getMediaArchive().getLlmConnection("search_semantic");
+				result = llmconnection.renderLocalAction(inAgentContext);
+			}
+			else
+			{
+				String messageprefix = inAgentContext.getMessagePrefix();
+				result = new BasicLlmResponse();
+				result.setMessage(messageprefix);
+				
+			}
+			inAgentContext.setMessagePrefix(null);
+			//Set next function to be able to search again
+			inAgentContext.setFunctionName("search_parse");
+			
+			return result;
+		}
+		
+		throw new OpenEditException("Function not supported " + agentFn);
 	}
 
 	
@@ -47,8 +191,6 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 	{
 		AiSearchTable step1 = inAiSearchParams.getStep1();
 		AiSearchTable step2 = inAiSearchParams.getStep2();
-		
-
 		//		AiSearchPart part3 = inAiSearchParams.getPart3();
 		
 		HitTracker entityhits = null;
@@ -56,10 +198,9 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		
 		String step1Keyword = null;
 		String step2Keyword = null;
-		
+		//See if we should process
 		if(step1 != null && step2 != null)
 		{
-			
 			step1Keyword = step1.getParameterValues();
 			
 			HitTracker foundhits = getMediaArchive().query(step1.getModule().getId()).freeform("description", step1Keyword).search();
@@ -178,33 +319,12 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			inReq.putPageValue("hits", assethits);
 		}
 		
-		organizeResults(inReq, entityhits, assethits);
-		
-		String semanticquery = "";
-		
-		if(step1Keyword != null)
+		if(entityhits != null || assethits != null)
 		{
-			semanticquery = step1Keyword;
-		}
-		if(step2Keyword != null)
-		{
-			semanticquery = semanticquery + " " + step2Keyword;
+			organizeResults(inReq, entityhits, assethits);
 		}
 		
-		if(semanticquery.isBlank())
-		{
-			String originalQuery = inAiSearchParams.getOriginalSearchString();
-			if( originalQuery != null)
-			{
-				originalQuery = originalQuery.replaceAll("search|find|look for|show me", "").trim();
-				semanticquery = originalQuery;
-			}
-		}
 
-		if(!semanticquery.isBlank())
-		{			
-			inReq.putPageValue("semanticquery", semanticquery.trim());
-		}
 		
 	}
 
@@ -362,6 +482,9 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		
 		Searcher embedsearcher = getMediaArchive().getSearcher("aifunctionparameter");
 		Collection<SemanticAction> actions = new ArrayList();
+		
+		//Special case for asset table
+		addAssetTypes(actions);
 
 		for (Iterator iterator = schema.getModules().iterator(); iterator.hasNext();)
 		{
@@ -401,7 +524,25 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			}
 			populateVectors(manager,actions);
 		}
-
+		Collection tosave = new ArrayList();
+		
+		for (Iterator iterator = actions.iterator(); iterator.hasNext();)
+		{
+			SemanticAction semanticAction = (SemanticAction) iterator.next();
+			Data data = embedsearcher.createNewData();
+			data.setName(semanticAction.getSemanticText());
+			data.setValue("aifunction", "search_tables");
+			data.setValue("parentmodule",semanticAction.getParentData().getId());
+			if( semanticAction.getChildData() != null)
+			{
+				data.setValue("childmodule",semanticAction.getChildData().getId());
+			}
+			data.setValue("vectorarray",semanticAction.getVectors());
+			tosave.add(data);
+		}
+		embedsearcher.saveAllData(tosave, null);
+		manager.reBalance(inLog); ///Sorts em
+		
 		return actions;
 //		List<Double> tosearch = manager.makeVector("Find all records in US States in 2023");
 //		Collection<RankedResult> results = manager.searchNearestItems(tosearch);
@@ -411,19 +552,48 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 	}
 
 
+	protected void addAssetTypes(Collection<SemanticAction> actions)
+	{
+		
+		Collection typesstring = new ArrayList();
+		
+		typesstring.add("files");
+		typesstring.add("assets");
+		typesstring.add("videos");
+		typesstring.add("documents");
+		typesstring.add("photos");
+		typesstring.add("audio");
+		
+		Data assetmodule = getMediaArchive().getCachedData("module", "asset");
+		typesstring.remove(assetmodule.getName().toLowerCase());
+		for (Iterator iterator = typesstring.iterator(); iterator.hasNext();)
+		{
+			String assettype = (String) iterator.next();
+			SemanticAction action = new SemanticAction();
+			action.setAiFunction("search_tables");
+			action.setSemanticText("Search for " + assettype);
+			action.setParentData(assetmodule);
+			actions.add(action);
+		}
+		
+		
+	}
+
+
 	
-	protected String parseSearchParts(AgentContext inAgentContext, JSONObject structure, String type, String messageText) 
+	protected void loadSearchParts(AgentContext inAgentContext, JSONObject structure, String messageText) 
 	{
 		ArrayList tables = (ArrayList) structure.get("tables");
+		String type = null;
 		
 		if( tables == null)
 		{
-			return null;
+			return;
 		}
 		
 		log.info("AI Assistant Searching Tables: " + structure.toJSONString());
 		
-		AiSearch search = inAgentContext.getAiSearchParams();
+		AiSearch search = new AiSearch();
 		search.setOriginalSearchString(messageText);
 		
 		search.setStep1(null);
@@ -508,17 +678,10 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 
 		}
 		
-		if(search.getStep1() == null)
-		{
-			type = "conversation"; 
-			return type;
-		}
-
 		if( search.getStep1().getTargetTable() == null )
 		{
 			Data modulesearch = getMediaArchive().getCachedData("module", "modulesearch");
 			search.getStep1().setModule(modulesearch);
-			type = "search_tables";
 		}
 		else
 		{
@@ -553,22 +716,18 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 				{
 					type = top.getEmbedding().get("aifunction");  //More specific type of search
 				
-					AiSearch aisearch = processAISearchArgs(structure, top.getEmbedding(), inAgentContext);
-					inAgentContext.setAiSearchParams(aisearch);
+					processAISearchArgs(structure, top.getEmbedding(), inAgentContext, search);
+					
 				}
 			}
-			else
-			{
-				type = "conversation";
-			}
+			
 		}
-		return type;
+		inAgentContext.setAiSearchParams(search);
 	}
-	public AiSearch processAISearchArgs(JSONObject airesults, Data inEmbeddingMatch, AgentContext inContext)
+	public void processAISearchArgs(JSONObject airesults, Data inEmbeddingMatch, AgentContext inContext, AiSearch inAiSearch)
 	{
 		//Search for tomatoes in sales departments
 		//airesults
-		AiSearch tables = inContext.getAiSearchParams();
 		
 		if (inEmbeddingMatch != null)
 		{
@@ -576,129 +735,39 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			Data parentmodule = getMediaArchive().getCachedData("module", parentid);
 			if (parentmodule != null)
 			{
-				tables.getStep1().setModule(parentmodule);
+				inAiSearch.getStep1().setModule(parentmodule);
 			}
-			if (tables.getStep2() != null) //Not needed?
+			if (inAiSearch.getStep2() != null) //Not needed?
 			{
 				String childid = inEmbeddingMatch.get("childmodule");
 				Data childmodule = getMediaArchive().getCachedData("module", childid);
 				if (childmodule != null)
 				{
-					tables.getStep2().setModule(childmodule);
+					inAiSearch.getStep2().setModule(childmodule);
 				}
 			}
 		}
-		return tables;
 	}
 
-	@Override
-	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
-	{
-		String agentFn = inAgentContext.getFunctionName();
-		
-		if ("search_welcome".equals(agentFn))
-		{
-			inAgentMessage.setValue("chatmessagestatus", "completed");
-			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
-			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
-			inAgentContext.setFunctionName("search_start");
-			return response;
-		}
- 
-		if ("search_start".equals(agentFn))
-		{
-			MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
-			MultiValued function = (MultiValued)getMediaArchive().getCachedData("aifunction", agentFn);
-
-			LlmResponse response = startChat(inAgentContext, usermessage, inAgentMessage, function);
-			
-			//Handle right now
-			String responseFn = response.getFunctionName();
-			if ("conversation".equals(responseFn))
-			{
-				inAgentMessage.setValue("chatmessagestatus", "completed");
-				
-				String generalresponse  = response.getMessage();
-				if(generalresponse != null)
-				{
-					MarkdownUtil md = new MarkdownUtil();
-					generalresponse = md.render(generalresponse);
-					//inAgentMessage.setValue("message",generalresponse);
-				}
-				//LlmResponse respond = new EMediaAIResponse();
-				response.setMessage(generalresponse);
-				
-				inAgentContext.setNextFunctionName(null);
-
-			}
-			else
-			{
-				response.setMessage("");
-				inAgentContext.setNextFunctionName(responseFn);
-			}
-			return response;
-		}
-		else if ("search_tables".equals(agentFn))
-		{
-			//search
-			LlmConnection searcher = getMediaArchive().getLlmConnection("search_tables");
-			LlmResponse response =  searcher.renderLocalAction(inAgentContext);
-			
-			String message = response.getMessage();
-			
-			if(message != null)
-			{
-				inAgentContext.setMessagePrefix(message);
-			}
-			
-			return response;
-		}
-		else if ("search_semantic".equals(agentFn))
-		{
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("search_semantic");
-			LlmResponse result = llmconnection.renderLocalAction(inAgentContext);
-			return result;
-		}
-		
-		throw new OpenEditException("Function not supported " + agentFn);
-	}
-
-
-	protected void handleLlmResponse(AgentContext inAgentContext, LlmResponse response)
+	protected void loadSearchParts(AgentContext inAgentContext, JSONObject content)
 	{
 		//TODO: Use IF statements to sort what parsing we need to do. parseSearchParams parseWorkflowParams etc
-		JSONObject content = response.getMessageStructured();
 		
-		String toolname = (String) content.get("next_step");  //request_type
-		
-		if(toolname == null)
-		{
-			throw new OpenEditException("No type specified in results: " + content.toJSONString());
-		}
-
 		JSONObject details = (JSONObject) content.get("step_details");
 		
 		if(details == null)
 		{
 			throw new OpenEditException("No details specified in results: " + content.toJSONString());
 		}
-		if( toolname.equals("conversation"))
+		JSONObject parseSearchParts = (JSONObject) details.get("parseSearchParts");
+		if(parseSearchParts == null)
 		{
-			JSONObject conversation = (JSONObject) details.get("conversation");
-			String generalresponse = (String) conversation.get("friendly_response");
-			response.setMessage( generalresponse);
+			log.info("No structure found for parseSearchParts: " + parseSearchParts);
+			return;
 		}
-		else if( toolname.equals("parseSearchParts") )  //TODO Use other functions from aifunction table. Dont use tool ids
-		{
-			JSONObject structure = (JSONObject) details.get(toolname);
-			if(structure == null)
-			{
-				throw new OpenEditException("No structure found for type: " + toolname);
-			}
-			toolname = parseSearchParts(inAgentContext, structure, toolname, response.getMessage());
-		}
-		response.setFunctionName(toolname);
+
+		loadSearchParts(inAgentContext, parseSearchParts, (String)inAgentContext.getContextValue("userquery"));
+		
 	}
 
 	public void semanticSearch(WebPageRequest inReq)
@@ -790,20 +859,32 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		return results;
 	}
 
-	public void rescanSearchCategories()
+	public void rescanSearchCategories(ScriptLogger inLogger)
 	{
 		//For each search category go look for relevent records. Reset old ones?
 		HitTracker tracker = getMediaArchive().query("searchcategory").exists("semantictopics").search();
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			MultiValued searchcategory = (MultiValued) iterator.next();
-			
+			Collection sumatics = searchcategory.getValues("semantictopics");
 			Map<String,Collection<String>> bytype = searchRelatedEntitiesBySearchCategory(searchcategory);
+			
+			if(bytype.keySet().isEmpty())
+			{
+				//inLogger.info("Nothing found for " + searchcategory);
+			}
+			{
+				inLogger.info("Found hits " + bytype.keySet() + " for: "+ searchcategory + " Sematics: " + sumatics);
+			}
+			
 			for (Iterator iterator2 = bytype.keySet().iterator(); iterator2.hasNext();)
 			{
 				String moduleid = (String)iterator2.next();
 				Collection<String> ids = bytype.get(moduleid);
 				Collection addedentites = getMediaArchive().query(moduleid).ids(ids).not("searchcategory",searchcategory.getId()).search();
+				if (ids.size() != addedentites.size()) {
+					//log.info("Mistmatch, missing records, recreate Semantics. " + ids.size() + " != "+ addedentites.size());
+				}
 				//Collection addedentites = getMediaArchive().query(moduleid).ids(ids).search();
 				Collection tosave = new ArrayList(addedentites.size());
 				for (Iterator iterator3 = addedentites.iterator(); iterator3.hasNext();)
@@ -812,8 +893,11 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 					entity.addValue("searchcategory",searchcategory.getId());
 					tosave.add(entity);
 				}
-				log.info("Added " + tosave.size() + " to category " + moduleid);
-				getMediaArchive().saveData(moduleid,tosave);
+				if (tosave.size() > 0)
+				{
+					inLogger.info("Added " + tosave.size() + " from module: " + moduleid + " to category " + searchcategory);
+					getMediaArchive().saveData(moduleid,tosave);
+				}
 			}
 		}
 	}
@@ -844,12 +928,4 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		}
 		return suggestions;
 	}
-
-
-	@Override
-	public void getDetectorParams(AgentContext inAgentContext, MultiValued inTopLevelFunction) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }

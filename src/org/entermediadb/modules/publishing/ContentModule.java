@@ -15,6 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.enteremdiadb.postiz.PostizManager;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.BaseAsset;
@@ -76,12 +77,12 @@ public class ContentModule extends BaseMediaModule
 		// Add as child
 		MediaArchive archive = getMediaArchive(inReq);
 
-		ContentManager manager = getContentManager(inReq);
+		ContentPublishingManager manager = getContentManager(inReq);
 
 		HitTracker hits = archive.query("contentcreator").exact("status", "new").search();
 
-		Map params = new HashMap();
-		params.putAll(inReq.getParameterMap());
+		AgentContext params = new AgentContext();
+		//params.addContext(inReq.getParameterMap());  //TODO: Not implemented
 		
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
@@ -110,7 +111,7 @@ public class ContentModule extends BaseMediaModule
 		// Add as child
 		MediaArchive archive = getMediaArchive(inReq);
 
-		ContentManager manager = getContentManager(inReq);
+		ContentPublishingManager manager = getContentManager(inReq);
 
 		HitTracker hits = archive.query("contentcreator").exact("status", "newimage").search();
 		hits.enableBulkOperations();
@@ -269,7 +270,7 @@ public class ContentModule extends BaseMediaModule
 		String lastprompt = inReq.getRequestParameter("llmprompt.value");
 		entity.setValue("llmprompt", lastprompt);
 		getMediaArchive(inReq).saveData(entitymodule.getId(), entity);
-		ContentManager manager = getContentManager(inReq);
+		ContentPublishingManager manager = getContentManager(inReq);
 		String type = inReq.findValue("llmtype.value");
 		if (type == null)
 		{
@@ -281,7 +282,7 @@ public class ContentModule extends BaseMediaModule
 		}
 		LlmConnection llm = (LlmConnection) getMediaArchive(inReq).getBean(type);
 		String edithome = inReq.findPathValue("edithome");
-		String template = llm.loadInputFromTemplate(edithome + "/aitools/createnewasset.html", inReq.getPageMap());
+		String template = llm.loadInputFromTemplate(new AgentContext(), edithome + "/aitools/createnewasset.html");
 		
 //		manager.createAssetFromLLM(inReq, entitymodule.getId(), entity.getId(), template);
 
@@ -295,7 +296,7 @@ public class ContentModule extends BaseMediaModule
 		String assetid = inReq.getRequestParameter("assetid");
 		String renderformat = inReq.findValue("renderformat");
 		Asset asset = getMediaArchive(inReq).getAsset(assetid);
-		ContentManager manager = getContentManager(inReq);
+		ContentPublishingManager manager = getContentManager(inReq);
 
 		// Make sure file is still here?
 		ContentItem item = getMediaArchive(inReq).getOriginalContent(asset);
@@ -322,7 +323,7 @@ public class ContentModule extends BaseMediaModule
 		String assetid = inReq.getRequestParameter("assetid");
 		String renderformat = inReq.findValue("renderformat");
 		Asset asset = mediaArchive.getAsset(assetid);
-		ContentManager manager = getContentManager(inReq);
+		ContentPublishingManager manager = getContentManager(inReq);
 
 		// Make sure file is still here?
 		ContentItem item = mediaArchive.getOriginalContent(asset);
@@ -352,15 +353,15 @@ public class ContentModule extends BaseMediaModule
 		Data entity = getMediaArchive(inReq).getData(moduleid, entityid);
 		String assetid = inReq.getRequestParameter("assetid");
 		Asset asset = getMediaArchive(inReq).getAsset(assetid);
-		ContentManager manager = getContentManager(inReq);
+		ContentPublishingManager manager = getContentManager(inReq);
 		manager.loadTree(moduleid, entity, asset);
 		// inReq.putPageValue("components",components);
 	}
 
-	protected ContentManager getContentManager(WebPageRequest inReq)
+	protected ContentPublishingManager getContentManager(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		ContentManager manager = (ContentManager) archive.getBean("contentManager");
+		ContentPublishingManager manager = (ContentPublishingManager) archive.getBean("contentPublishingManager");
 		if (manager.getMediaArchive() == null)
 		{
 			manager.setMediaArchive(archive);
@@ -377,7 +378,7 @@ public class ContentModule extends BaseMediaModule
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 
 		Data entity = mediaArchive.getCachedData(entitymoduleid, entityid);
-		ContentManager manager = getContentManager(inReq);
+		ContentPublishingManager manager = getContentManager(inReq);
 		manager.renderDita(inReq, entitymoduleid, entity, targetmodule);
 
 	}
@@ -386,7 +387,7 @@ public class ContentModule extends BaseMediaModule
 	{
 		Data entity = (Data) inReq.getPageValue("entity");
 		Data asset = (Data) inReq.getPageValue("asset");
-		ContentManager manager = getContentManager(inReq);
+		ContentPublishingManager manager = getContentManager(inReq);
 		Collection menu = (Collection) manager.findDitaAssets(entity);
 		if (menu == null)
 		{

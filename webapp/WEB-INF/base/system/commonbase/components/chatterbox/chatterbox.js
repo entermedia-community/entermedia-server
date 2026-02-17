@@ -49,10 +49,11 @@ function chatterbox() {
 			//scroll down, delay a little?
 			scrollToChat();
 
-			var ais = $(".ai-suggestions");
+			/*var ais = $(".ai-suggestions");
 			if (ais.length > 0) {
 				ais.remove();
 			}
+			*/
 			var ses = $(".sessionhistory-item.active");
 			if (ses.length > 0) {
 				var span = ses.find(".item span");
@@ -266,7 +267,29 @@ function connect() {
 	};
 }
 
-function channelUpdateMessage(chatbox, message) {
+var messages = {};
+
+function channelUpdateMessage(chatbox, message)
+{
+	//Cancel an existing one
+	if (messages[message.messageid]) 
+	{
+		messages[ message.messageid] = setTimeout(function () {
+						updageMessage(chatbox,message);
+		}, 1000);	
+	}
+	else 
+	{
+		messages[ message.messageid] = true;
+		updageMessage(chatbox,message);
+	}
+	
+	
+ 
+}
+
+function updageMessage(chatbox, message)
+{
 	var existing = jQuery("#chatter-message-" + message.messageid);
 	if (existing.length) {
 		if (message.command === "messageremoved") {

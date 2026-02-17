@@ -563,11 +563,15 @@ public class AssetImporter
 		{
 			inReq.getUserProfile().setProperty("lastselectedcollection", currentcollection);
 		}
+
 		
 		//Update Primary Images in Collections and Entities
-		EntityManager entityManager = (EntityManager) inArchive.getEntityManager();
-		entityManager.updateCollection(tracker, currentcollection, user);
-		entityManager.updateEntities(tracker, metadata, user);
+		
+		//Nope, use the normal assignment tool
+		
+		//EntityManager entityManager = (EntityManager) inArchive.getEntityManager();
+		//entityManager.updateCollection(tracker, currentcollection, user);
+		//entityManager.updateEntities(tracker, metadata, user);
 		//inArchive.fireSharedMediaEvent("importing/assetscreated");
 	}
 	

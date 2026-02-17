@@ -20,6 +20,7 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
+import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
@@ -239,7 +240,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			category = (ElasticCategory)loadData(inData);
 		}
 		super.saveToElasticSearch(inDetails,inData, delete,inUser);
-		Collection values = (Collection)category.getMap().getValue("parents");
+		Collection values = (Collection)category.getProperties().getValue("parents");
 		boolean edited = false;
 		if( values == null)
 		{
@@ -247,7 +248,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			edited = true;
 		}	
 		
-		String path = (String)category.getMap().getValue("categorypath");
+		String path = (String)category.getProperties().getValue("categorypath");
 		if( path == null)
 		{
 			path = category.loadCategoryPath();
@@ -412,7 +413,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 				return null;
 			}
 			ElasticCategory data = (ElasticCategory) createNewData();
-			data.setProperties(source);
+			data.setProperties(new ValuesMap(source));
 			//data.
 			//copyData(data, typed);
 			data.setId(inValue);

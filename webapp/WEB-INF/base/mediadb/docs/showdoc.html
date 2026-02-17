@@ -1,7 +1,10 @@
 <div class="page-header">
-  <h1>$data </h1>
+  <h1>$data</h1>
   URL ($data.httpmethod): 
   <input id="url" class="form-control"  type="text" value="$content.replaceProperty( $data.url )" size="50"/> 
+
+	<input type="hidden" name="id" value="$data.id" id="dataid" />
+
 </div>
 <i>$!data.caption</i>
 <div id="jsontext" style="display: none;">
@@ -10,19 +13,17 @@ $data.samplerequest
 #end
 </div>
 
-<form name="requestform" id="requestform">
+<form name="requestform" id="requestform" method="${data.httpmethod}">
 
 #if($data.httpmethod=="POST" || $data.httpmethod=="PUT")
 #set($displayreq = true)
 #end
 <h2 class="mt-4">Request</h2>
-<textarea name="jsonrequest" 
-	#if(!$displayreq) style="display: none;" #end 
-	id="request" 
-	##data-urlOLD="${data.url}" 
-	class="form-control" data-method="${data.httpmethod}" 
-	rows="6">
-</textarea>
+<div class="#if(!$displayreq) d-none #end">
+	$context.putPageValue("textareaid", "request")
+	$pages.include("/${applicationid}/docs/codeeditor.html")
+</div>
+
 
 #foreach( $toupload in $data.getValues("filefieldstoupload"))
 
@@ -31,95 +32,150 @@ $data.samplerequest
 #end
 
 </form>
-<input type="button" class="btn btn-primary" id="process" value="Execute">
+<button class="btn btn-primary" id="executeApiCall">Execute</button>
+<button class="btn btn-success" id="saveApiRequest">Save</button>
 
-<h2 class="mt-4">[[Formatted and Raw Response]]:</h2>
+<div class="d-flex align-items-center mt-4">
+	<h2 class="my-0 mr-3">[[Response]]</h2>
+	<span class="text-success" id="timing"></span>
+</div>
+
 
 <div id="responsearea" class="row">
-	<div class="col-sm-6">
-		<textarea id="test" class="form-control" rows="20"></textarea>
+	<div class="col-sm-12">
+		$context.putPageValue("textareaid", "response")
+		$pages.include("/${applicationid}/docs/codeeditor.html")
 	</div>
-	<div class="col-sm-6">
-	<textarea id="testraw" class="form-control" disabled rows="20"></textarea>
+	<div class="col-sm-6 d-none">
+		<textarea id="testraw" class="form-control" disabled rows="20"></textarea>
 	</div>
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function(){
-	var original = jQuery("#jsontext").html().trim();
-	if (original) {
-		var data = jQuery.parseJSON(original);
-		var string  = JSON.stringify(data,undefined, 2);
-	    jQuery("#request").val(string);
+$(document).ready(function(){
+
+	function initEditor(target) {
+		target.jsonCodeEditor();
 	}
 
+	var original = $("#jsontext").html().trim();
+	if (original) {
+		var data = JSON.parse(original);
+		var string = JSON.stringify(data, undefined, 2);
+		$("#request").val(string);
+		initEditor($("#request").closest(".codeEditor"));
+	}
 
-jQuery("#process").on("click", function(){
-    var req = jQuery("#request").val();
-   	var url = jQuery("#url").val();
-    var method =  jQuery("#request").data("method");
-    
+	var jsonResponse = false;
+
+	$("#executeApiCall").on("click", function () {
+		var url = $("#url").val();
+		var method = $("#request").closest("form").attr("method");
+		const start = performance.now();
+
+		var always = function () {
+			const end = performance.now();
+			var logmsg = `Took ${(end - start).toFixed(2)} ms`;
+			console.log(logmsg);
+			$("#timing").text(logmsg);
+		};
+
     #if( $data.getValues("filefieldstoupload") )
-        var data = new FormData(jQuery("#requestform")[0]);
-        
-        jQuery.ajax({
-        	url: url,
-            data: data,
-            cache: false,
-            contentType: false,
-            processData: false,
-            dataType:'text',
-            type: method,
-            error: function(data)
-    		{
-    			//errors are always objects
-           		var text  = JSON.stringify(data,undefined, 2);    
-           		jQuery("#test").val(text);
-    		},
-    		success: success
-        });
-    #else
-	    jQuery.ajax({
-	        contentType: 'application/json',
-	    	type: method,
-			url: url,
-			data: req,
-			dataType:'text',
-			error: function(data)
+			var data = new FormData($("#requestform")[0]);
+
+			$.ajax({
+				url: url,
+					data: data,
+					cache: false,
+					contentType: false,
+					processData: false,
+					dataType:'text',
+					type: method,
+					error: function(data)
 			{
 				//errors are always objects
-	       		var text  = JSON.stringify(data,undefined, 2);    
-	       		jQuery("#test").val(text);
+				var text  = JSON.stringify(data,undefined, 2);    
+				$("#response").val(text);
 			},
 			success: success
-	    	//  dataType: "JSON"
-	    });
-	#end
+		}).always(always);
+    #else
+			var req = $("#request").val();
+			jsonResponse = true;
+
+	    jQuery.ajax({
+				contentType: 'application/json',
+	    	type: method,
+				url: url,
+				data: req,
+				dataType:'text',
+				error: function(data)
+				{
+					//errors are always objects
+					var text  = JSON.stringify(data,undefined, 2);    
+					$("#response").val(text);
+			 
+					initEditor($("#response").closest(".codeEditor"));
+				},
+				success: success
+	    }).always(always);
+		#end
 });
 
+$("#saveApiRequest").on("click", function () {
+	var url = "/${applicationid}/docs/save.html";
+	$.ajax({
+		url: url,
+		data: {
+			save: true,
+			id: $("#dataid").val(),
+			field: "samplerequest",
+			"samplerequest.value": $("#request").val()
+		}, 
+		type: "POST",
+		success: function() {
+			console.log("Saved");
+			$("#saveApiRequest").text("✓ Saved!");
+			setTimeout(function() {
+				$("#saveApiRequest").text("Save");
+			}, 3000);
+		},
+		error: function() {
+			alert("Error saving");
+		}
+	});
+})
+success = function (text) {
+	if (text) {
+		try {
+			// $("#testraw").val(text);
+			var data = JSON.parse(text);
+			text = JSON.stringify(data, undefined, 2);
+		} catch (ex) {
+			text = JSON.stringify(ex);
+		}
+	} else {
+		text = JSON.stringify("Nothing returned");
+	}
+	
+	if(jsonResponse)
+	{ 
+		var editor = $("#response").closest(".codeEditor");
+		console.log(editor);
+		$.ajax({
+			url:"/${applicationid}/docs/codeeditor.html?oemaxlevel=1&textareaid=response",
+			success: function(html){
+				editor.replaceWith(html);
+				editor = $("#response").closest(".codeEditor"); 
+				$("#response").val(text);
+				initEditor(editor);
+			}
+		})
+	} else {
+		$("#response").val(text);
+	}
+};
 
-success = function(text) {
-    if(text)
-    {
-    	try
-    	{
-			jQuery("#testraw").val(text);
-			
-    	   	var data = JSON.parse(text);
-       		text  = JSON.stringify(data,undefined, 2);        
-    	}
-    	catch( ex )
-    	{
-    		text = ex;
-    	}
-    }
-    else
-    {
-    	text = "Nothing returned";	
-    }
-		jQuery("#test").val(text);
-
-}
 	
 });
 

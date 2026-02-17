@@ -212,18 +212,29 @@ public class EntityManager implements CatalogEnabled
 				if (!entitysourcepath.equals(cat.getCategoryPath()))
 				{
 					//TODO: move entire category to new	
-					log.info("Category should be moved " + cat.getCategoryPath() + " -> " + entitysourcepath);
-					cat.setName(entity.getName());
-					
 					String parent = PathUtilities.extractDirectoryPath(entity.getSourcePath());
 					Category parentCat = getMediaArchive().getCategorySearcher().createCategoryPath(parent);
-					
 					Category existing = parentCat.getChildByName(entity.getName());
+
+					/**
+					 * This is delicate. Category was reloaded from the DB when we called getChildBYName
+					 * So we need to set the name afterwards
+					 */
+					cat.setName(entity.getName());
+					log.info("Category should be moved " + cat.getCategoryPath() + " -> " + entitysourcepath);
+					
 					if( existing != null)
 					{
 						//Check for assets?
-						existing.setName(entity.getName() + " (old)"); //To manually merge together
-						existing.setValue("categorypath", null); //clear it
+						if( cat.getId().equals(existing.getId()))
+						{
+							existing = null;
+						}
+						else
+						{
+							existing.setName(entity.getName() + " (old)"); //To manually merge together
+							existing.setValue("categorypath", null); //clear it
+						}
 					}
 					cat.setValue("categorypath", null); //clear it
 					parentCat.addChild(cat);
@@ -1347,67 +1358,72 @@ public class EntityManager implements CatalogEnabled
 		return found;
 	}
 	
-	public void updateCollection(Collection tracker, final String currentcollection,  final User inUser)
-	{
-		if (currentcollection != null) {
-			for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
-			{
-				//loop all assets and save them
-				Asset asset = (Asset)iterator2.next();
-				
-				Searcher s = getMediaArchive().getSearcher("librarycollection");
-				List tosave = new ArrayList();
-				
-				Data entity = s.query().exact("id", currentcollection).searchOne();
-				if( entity != null)
-				{
-					String pi = entity.get("primaryimage");
-					if (entity != null && pi == null) {
-						entity.setValue("primaryimage", asset.getId());
-						tosave.add(entity);
-					}
-					s.saveAllData(tosave, inUser);
-				}
-			}
-		}
-	}
-	
-	
-	public void updateEntities(Collection tracker, final Map inMetadata,  final User inUser)
-	{
-		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
-		{
-			String field  = (String)iterator.next();
-			if( field.startsWith("entity") ) {
-				for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
-				{
-					//loop all assets and save them
-					Asset asset = (Asset)iterator2.next();
-					Collection<String> values = asset.getValues(field);
-					if( values != null && !values.isEmpty())
-					{
-						Searcher s = getMediaArchive().getSearcher(field);
-						List tosave = new ArrayList();
-						for (Iterator iterator3 = values.iterator(); iterator3.hasNext();)
-						{
-							String entityid = (String) iterator3.next();
-							
-							Data entity = s.query().exact("id", entityid).searchOne();
-							if (entity != null) {
-								String pi = entity.get("primaryimage");
-								if (entity != null && pi == null) {
-									entity.setValue("primaryimage", asset.getId());
-									tosave.add(entity);
-								}
-							}
-						}
-						s.saveAllData(tosave, inUser);
-						
-					}
-				}
-			}
-		}
-	}
+//	public void updateCollection(Collection tracker, String currentcollection,  User inUser)
+//	{
+//		if (currentcollection != null) {
+//			for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+//			{
+//				//loop all assets and save them
+//				Asset asset = (Asset)iterator2.next();
+//				
+//				Searcher s = getMediaArchive().getSearcher("librarycollection");
+//				List tosave = new ArrayList();
+//				
+//				Data entity = s.query().exact("id", currentcollection).searchOne();
+//				if( entity != null)
+//				{
+//					String pi = entity.get("primaryimage");
+//					if (entity != null && pi == null) {
+//						entity.setValue("primaryimage", asset.getId());
+//						tosave.add(entity);
+//					}
+//					s.saveAllData(tosave, inUser);
+//				}
+//			}
+//		}
+//	}
+//	
+//	
+//	public void updateEntities(Collection tracker, Map inMetadata,  User inUser)
+//	{
+//		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
+//		{
+//			String field  = (String)iterator.next();
+//			
+//			//TODO: Change this
+//			if( field.startsWith("entity") ) 
+//			{
+//				for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+//				{
+//					//loop all assets and save them
+//					Asset asset = (Asset)iterator2.next();
+//					Collection<String> values = asset.getValues(field);
+//					if( values != null && !values.isEmpty())
+//					{
+//						Searcher s = getMediaArchive().getSearcher(field);
+//						List tosave = new ArrayList();
+//						for (Iterator iterator3 = values.iterator(); iterator3.hasNext();)
+//						{
+//							Object entityid = (Object) iterator3.next();
+//							if( entityid instanceof String)
+//							{
+//								Data entity = s.query().exact("id", (String)entityid).searchOne();
+//								if (entity != null) {
+//									String pi = entity.get("primaryimage");
+//									if (entity != null && pi == null) {
+//										entity.setValue("primaryimage", asset.getId());
+//										tosave.add(entity);
+//									}
+//								}
+//							}
+//						}
+//						s.saveAllData(tosave, inUser);
+//						
+//					}
+//				}
+//			}
+//		}
+//	}
 	
 	public void createEntitiesFromPages(WebPageRequest inReq, UploadRequest inUploadRequest,  Data inModule)
 	{
@@ -1416,11 +1432,11 @@ public class EntityManager implements CatalogEnabled
 		MediaArchive archive = getMediaArchive();
 		
 		final Map metadata = archive.getAssetImporter().readMetaData(inReq, archive, "");
-		final String currentcollection = (String) metadata.get("collectionid");
+		//final String currentcollection = (String) metadata.get("collectionid");
 
 		boolean assigncategory =  true;
 		
-		String inputsourcepath = inReq.findValue("sourcepath");
+		//String inputsourcepath = inReq.findValue("sourcepath");
 		
 		Searcher searcher = archive.getSearcher(inModule.getId());
 		
@@ -1446,7 +1462,7 @@ public class EntityManager implements CatalogEnabled
 		}
 		
 		EntityManager entityManager = archive.getEntityManager();
-		Collection tracker = new ArrayList();
+		Collection tosave = new ArrayList();
 		for (Iterator iterator = items.iterator(); iterator.hasNext();) 
 		{
 			FileUploadItem item = (FileUploadItem) iterator.next();
@@ -1493,13 +1509,12 @@ public class EntityManager implements CatalogEnabled
 			archive.saveAsset(asset);
 			
 			entity.setValue("primaryimage", asset.getId());
-			searcher.saveData(entity);
+			tosave.add(entity);
 			
-			tracker.add(asset);
 		}
-
-		updateCollection(tracker, currentcollection, inReq.getUser());
-		updateEntities(tracker, metadata, inReq.getUser());
+		searcher.saveAllData(tosave, inReq.getUser());
+		//updateCollection(tracker, currentcollection, inReq.getUser());
+		//updateEntities(tracker, metadata, inReq.getUser());
 		archive.fireSharedMediaEvent("importing/assetscreated");
 	}
 	
@@ -1611,4 +1626,16 @@ public class EntityManager implements CatalogEnabled
 		
 		searcher.saveData(entity);
 	}
+	
+	
+	public Asset getAsset(Data inEntity)
+	{
+		String assetid = inEntity.get("primarymedia");
+		if(  assetid == null )
+		{
+			assetid = inEntity.get("primaryimage");
+		}
+		return getMediaArchive().getAsset(assetid);
+	}
+	
 }

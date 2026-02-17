@@ -32,7 +32,7 @@ import org.openedit.users.User;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.RequestUtils;
 
-public abstract class BaseLlmConnection implements LlmConnection {
+public class BaseLlmConnection implements LlmConnection {
 	private static Log log = LogFactory.getLog(LlmConnection.class);
 
 	protected ModuleManager fieldModuleManager;
@@ -42,18 +42,6 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	protected OpenEditEngine fieldEngine;
 	protected Data fieldAiServerData;
 	
-	protected Data aiFunctionData;
-	
-	public Data getAiFunctionData() {
-		return aiFunctionData;
-	}
-	public void setAiFunctionData(Data aiFunctionData) {
-		this.aiFunctionData = aiFunctionData;
-	}
-	public String getAiFunctionName() {
-		return getAiFunctionData().getId();
-	}
-
 	protected HttpSharedConnection fieldConnection;
 
 	protected HttpSharedConnection getConnection()
@@ -177,18 +165,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 		return true;
 	}
 
-	public String loadInputFromTemplate(String inTemplate) {
-		return loadInputFromTemplate(inTemplate, new HashMap());
-	}
-
-	public String loadInputFromTemplate(String inTemplate, Map<String, Object> inContext) 
-	{
-		AgentContext agentcontext = new AgentContext();
-		agentcontext.setContext(inContext);
-		
-		return loadInputFromTemplate(inTemplate, agentcontext);
-	}
-	public String loadInputFromTemplate(String inTemplate, AgentContext agentcontext) 
+	public String loadInputFromTemplate(AgentContext agentcontext, String inTemplate) 
 	{
 		Map<String,Object> inContext = agentcontext.getContext();
 		if(inTemplate == null) {
@@ -206,6 +183,8 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			{				
 				loadagentcontextParameters(agentcontext, request);
 			}
+			
+			
 			
 			request.putPageValues(inContext);
 			
@@ -234,44 +213,46 @@ public abstract class BaseLlmConnection implements LlmConnection {
 
 	protected void loadagentcontextParameters(AgentContext agentcontext, WebPageRequest request)
 	{
+		request.putPageValue("sessionlocale", agentcontext.getLocale());
+		
 		Map inParameters = agentcontext.getProperties();
-			for (Iterator iterator = inParameters.keySet().iterator(); iterator.hasNext();)
+		for (Iterator iterator = inParameters.keySet().iterator(); iterator.hasNext();)
+		{
+			String key = (String) iterator.next();
+			Object obj = inParameters.get(key);
+			if( obj instanceof String)
+			{
+				request.setRequestParameter(key, (String)obj);
+			}
+			else if( obj instanceof JSONObject)
+			{
+				JSONObject json = (JSONObject)obj;
+				request.setRequestParameter(key, json.toJSONString());
+			}
+			else if( obj instanceof Collection)
+			{
+				Collection<String> col = (Collection<String>)obj;
+				obj = (String[])col.toArray(new String[col.size()]);
+				request.setRequestParameter(key, (String[])obj);
+			}
+			else if( obj instanceof String[])
+			{
+				request.setRequestParameter(key, (String[])obj);
+			}
+		}
+		Map pagevalues = agentcontext.getContext();
+		if (pagevalues != null)
+		{
+			for (Iterator iterator = pagevalues.keySet().iterator(); iterator.hasNext();)
 			{
 				String key = (String) iterator.next();
-				Object obj = inParameters.get(key);
+				Object obj = pagevalues.get(key);
 				if( obj instanceof String)
 				{
 					request.setRequestParameter(key, (String)obj);
 				}
-				else if( obj instanceof JSONObject)
-				{
-					JSONObject json = (JSONObject)obj;
-					request.setRequestParameter(key, json.toJSONString());
-				}
-				else if( obj instanceof Collection)
-				{
-					Collection<String> col = (Collection<String>)obj;
-					obj = (String[])col.toArray(new String[col.size()]);
-					request.setRequestParameter(key, (String[])obj);
-				}
-				else if( obj instanceof String[])
-				{
-					request.setRequestParameter(key, (String[])obj);
-				}
 			}
-			Map pagevalues = agentcontext.getContext();
-			if (pagevalues != null)
-			{
-				for (Iterator iterator = pagevalues.keySet().iterator(); iterator.hasNext();)
-				{
-					String key = (String) iterator.next();
-					Object obj = pagevalues.get(key);
-					if( obj instanceof String)
-					{
-						request.setRequestParameter(key, (String)obj);
-					}
-				}
-			}
+		}
 	}
 	
 	public LlmResponse renderLocalAction(AgentContext agentcontext)
@@ -446,6 +427,13 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	}
 	
 	@Override
+	public LlmResponse callJson(String inPath, Map inPayload)
+	{
+		JSONObject json = new JSONObject(inPayload);
+		return callJson(inPath, json);
+			
+	}
+	@Override
 	public LlmResponse callJson(String inPath, JSONObject inPayload)
 	{
 		LlmResponse res = callJson(inPath, getSharedHeaders(), inPayload);
@@ -455,7 +443,7 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	@Override
 	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inPayload)
 	{
-		log.info("Calling LLM Server at: " + getServerRoot() + inPath);
+		//log.info("Calling LLM Server at: " + getServerRoot() + inPath); //Log this from the function call
 		HttpRequestBase method = null;
 		
 		if (inPayload == null) 
@@ -467,10 +455,16 @@ public abstract class BaseLlmConnection implements LlmConnection {
 			method = new HttpPost(getServerRoot() + inPath);
 		}
 		
-		
 		method.addHeader("Authorization", "Bearer " + getApiKey());
 		method.setHeader("Content-Type", "application/json");
-
+		
+		String customerkey = getMediaArchive().getCatalogSettingValue("catalog-storageid");
+		if( customerkey == null)
+		{
+			customerkey = "demo";
+		}
+		
+		method.setHeader("x-customerkey", customerkey); // standard eMedia header
 		
 		for (Iterator iterator = getSharedHeaders().keySet().iterator(); iterator.hasNext();)
 		{
@@ -618,25 +612,31 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	}
 
 	@Override
-	public LlmResponse callCreateFunction(Map inParams, String inFunction)
-	{
-		throw new OpenEditException("Call not supported");
-	}
-	
-	@Override
-	public LlmResponse callSmartCreatorAiAction(Map inParams, String inActionName)
+	public String getLlmProtocol()
 	{
 		throw new OpenEditException("Call not supported");
 	}
 
 	@Override
-	public LlmResponse callClassifyFunction(Map inParams, String inFunction, String inBase64Image)
+	public LlmResponse callCreateFunction(AgentContext inAgentcontext, String inFunction)
 	{
 		throw new OpenEditException("Call not supported");
 	}
 
 	@Override
-	public LlmResponse callClassifyFunction(Map inParams, String inFunction, String inBase64Image, String inTextContent)
+	public LlmResponse callClassifyFunction(AgentContext inAgentcontext, String inFunction, String inBase64Image)
+	{
+		throw new OpenEditException("Call not supported");
+	}
+
+	@Override
+	public LlmResponse callClassifyFunction(AgentContext inAgentcontext, String inFunction, String inBase64Image, String inTextContent)
+	{
+		throw new OpenEditException("Call not supported");
+	}
+
+	@Override
+	public LlmResponse callToolsFunction(AgentContext inAgentContext, String inFunction)
 	{
 		throw new OpenEditException("Call not supported");
 	}
@@ -648,20 +648,29 @@ public abstract class BaseLlmConnection implements LlmConnection {
 	}
 
 	@Override
-	public LlmResponse callStructuredOutputList(Map inParams)
+	public LlmResponse callStructure(AgentContext inAgentcontext, String inFuction)
 	{
 		throw new OpenEditException("Call not supported");
 	}
 
 	@Override
-	public LlmResponse callOCRFunction(Map inParams, String inBase64Image)
+	public LlmResponse callOCRFunction(AgentContext inAgentcontext, String inBase64Image, String inFunctioName)
 	{
 		throw new OpenEditException("Call not supported");
 	}
-	
+
 	@Override
-	public LlmResponse callToolsFunction(Map inParams, String inFunction) {
+	public LlmResponse callSmartCreatorAiAction(AgentContext inAgentcontext, String inActionName)
+	{
 		throw new OpenEditException("Call not supported");
 	}
+
+	@Override
+	public LlmResponse createResponse()
+	{
+		throw new OpenEditException("Call not supported");
+	}
+
+	
 
 }

@@ -121,13 +121,13 @@ public class MetaDataReaderTest extends BaseEnterMediaTest {
 		MetaDataReader reader = (MetaDataReader) getBean("metaDataReader");
 	
 		File testFile = new File(testDir, "location.jpg");
-		p = new BaseAsset();
+		MediaArchive  archive = getMediaArchive();
+		p = new BaseAsset(archive);
 		FileItem item = new FileItem();
 		item.setPath(testFile.getName());
 		item.setFile(testFile);
 		
 	
-		MediaArchive  archive = getMediaArchive();
 		Searcher locations = archive.getSearcher("location");
 		locations.deleteAll(null);
 		

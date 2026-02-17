@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.knn.RankedResult;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
@@ -166,44 +167,6 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 	}
 
 	
-
-	
-	public void indexAll(ScriptLogger inLog)
-	{
-		//Check that we are not already scanning
-		if( isIndexingVectors() )
-		{
-			inLog.error("Already Indexing");
-			return;
-		}
-		setIndexingVectors(true);
-		try
-		{
-			HitTracker all = getMediaArchive().query("module").exact("semanticenabled", true).search();
-			if(all.isEmpty())
-			{
-				log.info("No modules enabled for semantics");
-				return;
-			}
-			Collection<String> ids = all.collectValues("id");
-			log.info("Scanning modules " + ids);
-			SemanticConfig instruction = getSemanticInstructions();
-			QueryBuilder query = getMediaArchive().query("modulesearch");
-			query.exists(instruction.getFieldName());
-			query.exact(instruction.getFieldName() + "indexed", false);
-			query.put("searchtypes", ids);
-			query.put("searchasset", true); //this is needed to include asset
-			
-			HitTracker hits = query.search();
-			hits.enableBulkOperations();
-			log.info("Indexing " + instruction.getFieldName() + " in: " + hits);
-			indexTracker(inLog, instruction, hits);
-		}
-		finally
-		{
-			setIndexingVectors(false);
-		}
-	}
 	public void indexData(ScriptLogger inLog, Collection<MultiValued> inRecords)
 	{
 		SemanticConfig instruction = getSemanticInstructions();
@@ -513,8 +476,8 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 				return null;
 			}
 			
-			Map params = new HashMap();
-			params.put("fieldparams", inConfig);
+			AgentContext agentcontext = new AgentContext();
+			agentcontext.put("fieldparams", inConfig);
 			
 			Collection<PropertyDetail> exclude = new ArrayList();
 			PropertyDetail fielddetail = getMediaArchive().getSearcher(inModuleId).getDetail(fieldname);
@@ -528,10 +491,10 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 				return null;
 			}
 			
-			params.put("contextfields", contextfields);
-			params.put("data", inData);
+			agentcontext.put("contextfields", contextfields);
+			agentcontext.put("data", inData);
 			
-			LlmResponse structure = llmconnection.callStructuredOutputList(params);
+			LlmResponse structure = llmconnection.callStructure(agentcontext,"createSemanticTopics");
 			if (structure == null)
 			{
 				log.info("No structured data returned");

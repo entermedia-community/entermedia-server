@@ -20,6 +20,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.page.manage.PageManager;
@@ -50,23 +51,25 @@ public class EmbeddingManager extends InformaticsProcessor
 		return fieldEngine;
 	}
 	
-	public boolean embedData(ScriptLogger inLog, JSONObject embeddingPayload)
+	public String embedData(ScriptLogger inLog, Data inEntity, JSONObject embeddingPayload)
 	{
-		LlmConnection connection = getMediaArchive().getLlmConnection("documentEmbedding");
-
-		Map<String,String> header = new HashMap();
-		
-		String customerkey = getMediaArchive().getCatalogSettingValue("catalog-storageid");
-		if( customerkey == null)
+		try
 		{
-			customerkey = "demo";
+			LlmConnection connection = getMediaArchive().getLlmConnection("documentEmbedding");
+			LlmResponse response = connection.callJson( "/save", embeddingPayload);
+			
+			inEntity.setValue("entityembeddingstatus", "embedded");
+			inEntity.setValue("entityembeddeddate", new Date());
+			
+			return response.getMessage();
 		}
-		
-		header.put("x-customerkey", customerkey);
-		
-		LlmResponse response = connection.callJson( "/save",header,embeddingPayload);
-		response.getMessage();
-		return true;
+		catch (Exception e)
+		{
+			inEntity.setValue("llmerror", true);
+			inEntity.setValue("entityembeddingstatus", "failed");
+			inLog.error("Embed failed on " + inEntity +" "+ e.getMessage());
+		}
+		return null;
 	}
 
 	@Override
@@ -78,7 +81,6 @@ public class EmbeddingManager extends InformaticsProcessor
 	@Override
 	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRandomEntities)
 	{
-		inLog.headline("Embedding " + inRandomEntities.size() + " entities");
 		
 		String searchtype = inConfig.get("searchtype");
 
@@ -121,11 +123,14 @@ public class EmbeddingManager extends InformaticsProcessor
 		{
 			return;
 		}
+
+		inLog.headline("Embedding " + inRandomEntities.size() + " entities");
+		
+		long start = System.currentTimeMillis();
+		
 		Searcher pageSearcher = getMediaArchive().getSearcher(searchtype);
 		
 		pageSearcher.saveAllData(toprecess, null);
-		
-		inLog.headline("Embedding " + inRandomEntities.size() + " documents");
 		
 		
 		if(searchtype.equals("userpost"))
@@ -148,6 +153,9 @@ public class EmbeddingManager extends InformaticsProcessor
 		{	
 			embedEntity(inLog, searchtype, toprecess, pageSearcher);
 		}
+		
+		long duration = System.currentTimeMillis() - start;
+		inLog.headline("Embedding " + inRandomEntities.size() + " documents, took " + duration + " ms");
 	}
 	
 	protected void embedDocuments(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
@@ -166,12 +174,12 @@ public class EmbeddingManager extends InformaticsProcessor
 		JSONObject documentdata = new JSONObject();
 		documentdata.put("doc_id", searchtype + "_" + document.getId());
 
-		String asset_id = document.get("primarymedia");
-		if(asset_id == null)
+		String assetid = document.get("primarymedia");
+		if(assetid == null)
 		{
-			asset_id = document.get("primaryimage");
+			assetid = document.get("primaryimage");
 		}
-		Asset documentAsset = getMediaArchive().getCachedAsset(asset_id);
+		Asset documentAsset = getMediaArchive().getCachedAsset(assetid);
 		if(documentAsset != null)
 		{
 			documentdata.put("file_name", documentAsset.getName());
@@ -195,7 +203,7 @@ public class EmbeddingManager extends InformaticsProcessor
 			String markdowncontent = page.get("markdowncontent");     ///TODO: Support on the fly option
 			if( markdowncontent == null || markdowncontent.isEmpty())
 			{
-				log.info("No markdowncontent found "+ document);
+				log.info("No markdowncontent found for: "+ document);
 				continue;
 			}
 
@@ -206,28 +214,18 @@ public class EmbeddingManager extends InformaticsProcessor
 
 			allpages.add(pagedata);
 			
-		}		
+		}	
+		
+		if (allpages.isEmpty())
+		{
+			log.info("No pages found for: "+ document);
+			return;
+		}
 		
 		documentdata.put("pages", allpages);
 		
-		boolean OK = embedData(inLog, documentdata);
-		String newstatus = "embedded";
-		if(OK)
-		{		
-			document.setValue("entityembeddeddate", new Date());
-		}
-		else
-		{
-			newstatus =  "failed";
-		}
-		document.setValue("entityembeddingstatus", newstatus);
-		
-		for (Iterator iterator2 = pages.iterator(); iterator2.hasNext();)
-		{
-			Data page = (Data) iterator2.next();
-			page.setValue("entityembeddingstatus", newstatus);
-		}
-		//Save pages
+		String message = embedData(inLog, document, documentdata);
+
 	}
 	
 	protected void embedEntity(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
@@ -286,14 +284,14 @@ public class EmbeddingManager extends InformaticsProcessor
 					}
 				}
 				
-				Map<String, Object> inParams = new HashMap();
-				inParams.put("data", inEntity);
-				inParams.put("contextfields", contextFields);
+				AgentContext agentcontext = new AgentContext();
+				agentcontext.put("data", inEntity);
+				agentcontext.put("contextfields", contextFields);
 				
 				String templatepath = getMediaArchive().getMediaDbId() + "/ai/default/calls/commons/context_fields.json";
 				
 				LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
-				String responsetext = llmconnection.loadInputFromTemplate(templatepath, inParams);
+				String responsetext = llmconnection.loadInputFromTemplate(agentcontext, templatepath);
 				
 				pagedata.put("text", responsetext);
 			}
@@ -303,16 +301,8 @@ public class EmbeddingManager extends InformaticsProcessor
 			
 			entitydata.put("pages", allpages);
 			
-			boolean OK = embedData(inLog, entitydata);
-			if(OK)
-			{
-				inEntity.setValue("entityembeddingstatus", "embedded");
-				inEntity.setValue("entityembeddeddate", new Date());
-			}
-			else
-			{
-				inEntity.setValue("entityembeddingstatus", "failed");
-			}
+			embedData(inLog, inEntity, entitydata);
+			
 		} 
 	}
 	
@@ -366,17 +356,7 @@ public class EmbeddingManager extends InformaticsProcessor
 			
 			blogdata.put("pages", allpages);
 			
-			boolean OK = embedData(inLog, blogdata);
-			
-			if(OK)
-			{
-				blog.setValue("entityembeddingstatus", "embedded");
-				blog.setValue("entityembeddeddate", new Date());
-			}
-			else
-			{
-				blog.setValue("entityembeddingstatus", "failed");
-			}
+			embedData(inLog, blog, blogdata);
 		}
 	}
 
@@ -387,11 +367,18 @@ public class EmbeddingManager extends InformaticsProcessor
 	*/
 	public LlmResponse findAnswer(AgentContext inAgentContext, Collection<String> docids, String inQuery)
 	{  
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
+		if( docids.isEmpty())
+		{
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "question_norecordsfound");
+			return response;
+		}
+		
+		
 		JSONObject chatjson = new JSONObject();
 		chatjson.put("query", inQuery);
 		chatjson.put("parent_ids", docids);
 		
-		LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
 
 		String customerkey = getMediaArchive().getCatalogSettingValue("catalog-storageid");
 		if( customerkey == null)
@@ -405,7 +392,7 @@ public class EmbeddingManager extends InformaticsProcessor
 		log.info(" sending to server: " +  chatjson.toJSONString());
 		
 		LlmResponse response = llmconnection.callJson("/query", headers, chatjson);
-		response.setFunctionName("ragresponse");
+		response.setFunctionName("ragresponse"); //Remove this?
 		
 		//TODO: Handle in second request?
 		processRagResponseWithSource(inAgentContext, response.getRawResponse(), response);
@@ -537,7 +524,7 @@ public class EmbeddingManager extends InformaticsProcessor
 		Data channel = inAgentContext.getChannel();
 		String apphome = "/"+ channel.get("chatapplicationid");
 		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/ragresponse.html";
-		String responsetext = llmconnection.loadInputFromTemplate(templatepath, inAgentContext);
+		String responsetext = llmconnection.loadInputFromTemplate(inAgentContext, templatepath);
 		
 		response.setMessage(responsetext);
 		response.setMessagePlain(answer);

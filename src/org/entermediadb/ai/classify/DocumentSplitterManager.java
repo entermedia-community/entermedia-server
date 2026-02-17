@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
@@ -162,7 +163,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 				docpage.setValue("entity_date", new Date());
 			}
 			
-			if((!"embedded".equals(inEntity.get("entityembeddingstatus")) || docpage.get("markdowncontent") == null) && inConfig.getBoolean("generatemarkdown"))
+			if( docpage.get("markdowncontent") == null && inConfig.getBoolean("generatemarkdown"))
 			{
 				log.info("Generating markdown for page: " + docpage);
 				generateMarkdownFromImage(docpage);
@@ -250,7 +251,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			return;
 		}
 			
-		LlmResponse result = (LlmResponse) llmconnection.callOCRFunction(new HashMap(), base64Img);
+		LlmResponse result = (LlmResponse) llmconnection.callOCRFunction(new AgentContext(), base64Img, "generateMarkdown");
 		String markdown = result.getMessage();
 			
 		pageEntity.setValue("markdowncontent", markdown);

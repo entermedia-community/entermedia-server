@@ -51,8 +51,8 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 	@Override
 	public boolean isLocked()
 	{
-		throw new OpenEditException("Unimplemented");
-		//return false;
+		//throw new OpenEditException("Unimplemented");
+		return false;
 	}
 
 	@Override
@@ -977,7 +977,7 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 	}
 
 	protected void addSafeValue(String field, Map safevalues) {
-		Object newval = getPropertiesSet().getObject(field); //set by the user since last save
+		Object newval = getPropertiesSet().getValue(field); //set by the user since last save
 		//See if the values changed
 		Object oldval = getValueFromResults(field); 
 		//A blank string means no common value.

@@ -1,6 +1,7 @@
 package org.entermediadb.ai.assistant;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -9,7 +10,6 @@ import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -36,38 +36,31 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 			inAgentContext.setFunctionName("auto_detect_conversation");
 			return response;
 		}
-		if ("auto_detect_conversation".equals(agentFn))
+		if ("auto_detect_conversation".equals(agentFn))  //Todo: Rename to Parse
 		{
-			JSONObject params = new JSONObject();
-			params.put("userquery", query);
 			
-			Collection<Data> toplevelfunctions = getMediaArchive().query("aifunctions").exact("toplevel", true).search();
-			params.put("toplevelfunctions", toplevelfunctions);
+			inAgentContext.put("userquery", query);
 			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("default");
+			Collection<Data> toplevelfunctions = getMediaArchive().query("aifunction").exact("toplevel", true).search();
+			inAgentContext.put("toplevelfunctions", toplevelfunctions);
 			
-			LlmResponse response = llmconnection.callToolsFunction(params, agentFn);
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
+			
+			LlmResponse response = llmconnection.callToolsFunction(inAgentContext, agentFn);
 			
 			log.info(response.getRawResponse());
 			
 			String functionName = response.getFunctionName();
 			JSONObject functionArgs = response.getFunctionArguments();
 			
-			if(functionName == null || "general_chat".equals(functionName))
-			{
-				inAgentContext.setFunctionName("auto_detect_conversation");
-				String message = (String) functionArgs.get("friendly_response");
-				if(message != null)
-				{
-					response.setMessage(message);
-					response.setMessagePlain(message);
-				}
-				return response;
-			}
-			
+			inAgentContext.addContext("messagestructured", response.getMessageStructured());
+			inAgentContext.addContext("userquery", query);
 			inAgentContext.addContext("arguments", functionArgs);
+			inAgentContext.setNextFunctionName(functionName);
 			
-			if("create_tutorial".equals(functionName)) // TODO: sync with auto created function names
+			/*
+			// TODO: sync with auto created function names
+			if("create_tutorial".equals(functionName)) 
 			{
 				inAgentContext.addContext("playbackentitymoduleid", "aitutorials");
 				inAgentContext.setTopLevelFunctionName("welcome_aitutorials");
@@ -91,31 +84,44 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 			{
 				inAgentContext.setFunctionName("auto_detect_conversation");
 			}
+			*/
+			
 			
 			return response;
+		}
+		else if ("auto_detect_showresponse".equals(agentFn))
+		{
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn); //Should stay search_start
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "auto_detect_showresponse");
+			inAgentContext.setFunctionName("auto_detect_conversation");
+			return response;
+		}
+		else if ("auto_detect_sitewide_welcome".equals(agentFn))
+		{
+			inAgentMessage.setValue("chatmessagestatus", "completed");
+			
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn); //Should stay search_start
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
+			inAgentContext.setFunctionName("auto_detect_sitewide_parse");
+			return response;
+		}
+		else if ("auto_detect_sitewide_parse".equals(agentFn))
+		{
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
+			LlmResponse response = llmconnection.callToolsFunction(inAgentContext, agentFn);
+			
+			log.info(response.getRawResponse());
+			
+			String functionName = response.getFunctionName();
+			JSONObject functionArgs = response.getFunctionArguments();
+			inAgentContext.addContext("arguments", functionArgs);
+			inAgentContext.setNextFunctionName(functionName);
 		}
 		
 		
 		throw new OpenEditException("Function not supported " + agentFn);
 		
 	}
-
-	@Override
-	public Collection<SemanticAction> createPossibleFunctionParameters(ScriptLogger inLog)
-	{
-		return null;
-	}
-	@Override
-	public void savePossibleFunctionSuggestions(ScriptLogger inLog)
-	{
-		// Nothing to do.
-	}
-
-	@Override
-	public void getDetectorParams(AgentContext inAgentContext, MultiValued inTopLevelFunction) {
-		// TODO Auto-generated method stub
-		
-	}	
 	
 
 }

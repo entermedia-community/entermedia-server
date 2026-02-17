@@ -1,0 +1,97 @@
+.editor-wrapper {
+	border-radius: 8px;
+	margin: 16px 0;
+	overflow: hidden;
+	position: relative;
+}
+.editor-wrapper.dark-theme {
+	background: #252526;
+}
+.editor-wrapper.light-theme {
+	background: #ffffff;
+	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.editor-wrapper .controls {
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	z-index: 999;
+}
+.editor-wrapper button {
+	background: #efefef;
+	color: #444444;
+	width: 32px;
+	height: 32px;
+	border-radius: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	cursor: pointer;
+	transition: background 0.2s;
+	margin: 4px;
+}
+.editor-wrapper button:hover {
+	background: #ddd;
+}
+.editor-wrapper button:active {
+	background: #ddd;
+}
+.editor-wrapper button:focus {
+	outline: none;
+}
+.editor-wrapper .status {
+	width: 32px;
+	height: 32px;
+	border-radius: 16px;
+	margin: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
+	color: #4caf50; 
+}
+.editor-wrapper .status.invalid {
+	background: rgba(244, 67, 54, 0.2);
+	color: #f44336;
+}
+
+.CodeMirror {
+	font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace !important;
+	font-size: 14px !important;
+	height: 400px !important;
+}
+.editor-wrapper .error-message {
+	padding: 15px;
+	background: rgba(244, 67, 54, 0.1);
+	color: #ffcdd2;
+	border-left: 4px solid #f44336;
+	display: none;
+}
+.editor-wrapper .error-message.show {
+	display: block;
+}
+.editor-wrapper .theme-toggle {
+	padding: 8px 12px;
+	background: #efefef;
+	font-size: 18px;
+}
+.editor-wrapper .theme-toggle:hover {
+	background: #ddd;
+}
+.editor-wrapper.light-theme .theme-toggle {
+	background: #efefef;
+	color: #333;
+}
+.editor-wrapper.light-theme .theme-toggle:hover {
+	background: #ddd;
+}
+.editor-wrapper.light-theme .error-message {
+	background: rgba(244, 67, 54, 0.15);
+	color: #c62828;
+}
+.CodeMirror-sizer {
+	padding-right: 164px !important;
+}

@@ -1,49 +1,36 @@
 package org.entermediadb.elasticsearch;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.highlight.HighlightField;
 import org.entermediadb.data.FullTextLoader;
-import org.entermediadb.location.Position;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.data.BaseData;
-import org.openedit.data.PropertyDetail;
-import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
-import org.openedit.data.SearchData;
+import org.openedit.data.SearchDataEnabled;
 import org.openedit.data.Searcher;
-import org.openedit.data.ValuesMap;
-import org.openedit.modules.translations.LanguageMap;
-import org.openedit.util.DateStorageUtil;
 
-public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData,SearchData 
+public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData,SearchDataEnabled , org.openedit.data.SearchHitData
 {
 	private static final Log log = LogFactory.getLog(SearchHitData.class);
 
-	protected Map fieldSearchData;
-	protected SearchHit fieldSearchHit;
-	protected PropertyDetails fieldPropertyDetails;
 	protected Searcher fieldSearcher;
 
-	public SearchHitData()
+//	public SearchHitData()
+//	{
+//	}
+	public SearchHitData(SearchHit inHit, Searcher inSearcher) 
 	{
-	}
-	public SearchHitData(SearchHit inHit, Searcher inSearcher) {
-		setSearchHit(inHit);
 		setSearcher(inSearcher);
+		setSearchHit(inHit);
 	}
 
 	public SearchHitData(Searcher inSearcher)
@@ -57,122 +44,43 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 
 	public void setSearcher(Searcher inSearcher)
 	{
+		if( inSearcher == null)
+		{
+			throw new OpenEditException("Searcher cannot be null");
+		}
 		fieldSearcher = (Searcher)inSearcher;
 	}
 
 	public SearchHit getSearchHit() {
-		return fieldSearchHit;
+		return getProperties().getSearchHit();
 	}
 
-	public void setSearchHit(SearchHit inSearchHit) {
-		fieldSearchHit = inSearchHit;
+	public void setSearchHit(SearchHit inSearchHit) 
+	{
+		if( inSearchHit == null)
+		{
+			throw new OpenEditException("inSearchHit cannot be null");
+		}
+		getProperties().setSearchHit( inSearchHit );
 		setId(inSearchHit.getId());
 		setVersion(inSearchHit.getVersion());
 
 	}
-
+	@Override
+	public void setSearchData(Map inSearchHit)
+	{
+		getProperties().setSearchData(inSearchHit);
+	}
+	
 	public Long getVersion() 
 	{
-		Long l = getMap().getLong(".version");
+		Long l = getProperties().getLong(".version");
 		return l;
 	}
 
 	public void setVersion(long inVersion) 
 	{
 		setValue(".version", inVersion);
-	}
-
-	public PropertyDetails getPropertyDetails() 
-	{
-		if( fieldPropertyDetails == null && fieldSearcher != null)
-		{
-			return fieldSearcher.getPropertyDetails();
-		}
-		return fieldPropertyDetails;
-	}
-
-	public void setPropertyDetails(PropertyDetails inPropertyDetails) {
-		fieldPropertyDetails = inPropertyDetails;
-	}
-
-	public Map getSearchData() {
-		if (fieldSearchData == null && getSearchHit() != null) {
-			fieldSearchData = getSearchHit().getSource();
-		}
-		return fieldSearchData;
-	}
-
-	public void setSearchData(Map inSearchHit) {
-		fieldSearchData = inSearchHit;
-	}
-
-	@Override
-	public void setProperty(String inId, String inValue) {
-		// TODO Auto-generated method stub
-		super.setProperty(inId, inValue);
-	}
-
-	@Override
-	public Collection<String> getValues(String inPreference) {
-		Object result =  getValue(inPreference);
-		if (result == null) {
-			return null;
-		}
-		if (result instanceof Collection) {
-			return new ArrayList((Collection) result);
-		}
-		if( result instanceof String)
-		{
-			String inVal = (String)result;
-			String[] vals;
-			if (inVal.contains("|"))
-			{
-				vals = MultiValued.VALUEDELMITER.split(inVal);
-			}
-			else
-			{
-				vals = new String[] { inVal };
-			}
-			Collection collection = new ArrayList(Arrays.asList(vals));
-			return collection;
-
-		}
-		
-		ArrayList one = new ArrayList(1);
-		one.add(result);
-		return one;
-	}
-
-	@Override
-	public void removeValue(String inKey, Object inOldValue)
-	{
-		Collection values = getValues(inKey);
-		
-		if( values == null )
-		{
-			values = new ArrayList();
-		}
-		values.remove(inOldValue);
-		getMap().put(inKey,values);
-	}
-	
-	@Override
-	public void removeValue(String inKey)
-	{
-		getMap().put(inKey,  ValuesMap.NULLVALUE);
-	}
-	
-	@Override
-	public void setValue(String inKey, Object inValue)
-	{
-		if( inValue == null)
-		{
-			getMap().put(inKey,  ValuesMap.NULLVALUE);
-		}
-		else
-		{
-			super.setValue(inKey, inValue);
-		}
 	}
 	
 	@Override
@@ -201,174 +109,39 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 			}
 		}
 
-		Object svalue = getMap().getObject(inId);
-		if( svalue == ValuesMap.NULLVALUE || svalue == ValuesMap.NULLSTRING)
-		{
-			return null;
-		}
-		if( svalue == null)
-		{
-			svalue = getFromDb(inId);
-		}
-//		if(svalue == null){
-//			svalue = 
-//		}
-//		
-		
+		Object svalue = super.getValue(inId);
 		
 		return svalue;
 	}
 
-	protected Object getFromDb(String inId) {
-//		if (inId.equals(".version")) {
-//			if (getVersion() > -1) {
-//				return String.valueOf(getVersion());
+
+//
+	public ValuesMapWithSearchData getProperties() 
+	{
+		if (fieldProperties == null)
+		{
+			fieldProperties = new ValuesMapWithSearchData();
+			getProperties().setPropertyDetails(getSearcher().getPropertyDetails());
+
+		}
+		return (ValuesMapWithSearchData)fieldProperties;
+	}
+//		if (fieldProperties == null)
+//		{
+//			fieldProperties = new ValuesMap();
+//			Set set = keySet();
+//			for (Iterator iterator = set.iterator(); iterator.hasNext();) 
+//			{
+//				String key = (String) iterator.next();
+//				Object val = getValue(key);
+//				if( val != null)
+//				{
+//					fieldProperties.put(key, val);
+//				}
 //			}
-//			return null;
 //		}
-		//log.info(getSearchHit().getSourceAsString());
-		String detailid = inId;
-		if( detailid.endsWith("_int"))
-		{
-			detailid = inId.substring(0, inId.length() - 4);
-		}
-		String key = detailid;
-		Object value = null;
-		PropertyDetail detail = getPropertyDetails().getDetail(detailid);
-		if (detail != null && detail.isMultiLanguage()) {
-			key = key + "_int";
-		}
-
-		if (getSearchHit() != null) 
-		{
-			if( key.equals("_score") )
-			{
-				return getSearchHit().getScore();
-			}
-			SearchHitField field = getSearchHit().field(key);
-			//Map fields = getSearchHit().getFields();
-			if (field != null) {
-				value = field.getValue();
-			}
-		}
-		
-		
-		
-		
-		
-		if (value == null && getSearchData() != null) {
-			value = getSearchData().get(key);
-			
-			
-			if (value instanceof Map) {
-				Map map = (Map)value;
-				if(map.isEmpty()){
-					value = null;
-				}
-			}
-			
-			if(detail != null && detail.isDate() && value instanceof String) {
-				return DateStorageUtil.getStorageUtil().parseFromStorage((String) value);
-			}
-			
-			
-			if( detail != null && detail.isGeoPoint() && value instanceof Map)
-			{
-				Position pos = new Position((Map)value);
-				value = pos;
-			}
-		}
-		if (value == null) {
-
-			if (detail != null && getSearchData() != null)
-			{
-				String legacy = detail.get("legacy");
-				if (legacy != null) 
-				{
-					value = getSearchData().get(legacy);
-				}
-				if (value == null && !inId.equals(key)) {
-					value = getSearchData().get(inId); //check without the _int if !inId.equals(key) ?
-				}
-			}
-			if(value ==null){
-				if(getSearchData() != null){
-					
-					//TODO: THis is redundant to above for internationaled fields
-					value = getSearchData().get(inId + "_int");
-					if(value != null && value instanceof Map){
-						LanguageMap map = new LanguageMap((Map) value);
-						if(map.keySet().size() == 1){  //TODO: Not needed
-							return map.get("en");
-						} else{
-							return map.toString();
-						}
-					}
-				}
-			}
-			
-			
-			
-		}
-
-		if (value != null && detail != null && detail.isMultiLanguage()) {
-			if (value instanceof Map) 
-			{
-				LanguageMap map = new LanguageMap((Map) value);
-				value = map;
-			}
-			else if (value instanceof String) 
-			{
-				LanguageMap map = new LanguageMap();
-				map.put("en", value);
-				value = map;
-			}
-		}
-
-		if (detail != null && "name".equals(inId) && !detail.isMultiLanguage() && value instanceof Map) {
-			LanguageMap map = new LanguageMap((Map) value);
-
-			value = map.get("en");
-		}
-
-		return value;
-	}
-
-	public Set keySet() 
-	{
-		Set set = new HashSet();
-		if( getSearchData() != null)
-		{
-			for (Iterator iterator = getSearchData().keySet().iterator(); iterator.hasNext();) 
-			{
-				String key = (String)iterator.next();
-				if( key.endsWith("_int"))
-				{
-					key = key.substring(0, key.length() - 4);
-				}
-				set.add(key);
-			}
-		}	
-		set.addAll( getMap().keySet() );
-		//set.add(".version");
-		return set;
-	}
-
-	public ValuesMap getProperties() 
-	{
-		Set set = keySet();
-		ValuesMap all = new ValuesMap();
-		for (Iterator iterator = set.iterator(); iterator.hasNext();) 
-		{
-			String key = (String) iterator.next();
-			Object val = getValue(key);
-			if( val != null)
-			{
-				all.put(key, val);
-			}
-		}
-		return all;
-	}
+//		return fieldProperties;
+//	}
 
 	public String toString() 
 	{
@@ -414,7 +187,12 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 	
 	public Map getEmRecordStatus()
 	{
-		return (Map)getFromDb("emrecordstatus");
+		return (Map)getProperties().getFromDb("emrecordstatus");
+	}
+	@Override
+	public Map getSearchData()
+	{
+		return getProperties().getSearchData();
 	}
 	
 }

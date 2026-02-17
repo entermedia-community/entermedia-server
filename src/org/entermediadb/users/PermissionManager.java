@@ -339,7 +339,7 @@ public class PermissionManager implements CatalogEnabled
 			target.setId(inPermission.getId());
 		}
 
-		for (Iterator iterator = inPermission.getMap().keySet().iterator(); iterator.hasNext();)
+		for (Iterator iterator = inPermission.getProperties().keySet().iterator(); iterator.hasNext();)
 		{
 			String key = (String) iterator.next();
 			Object val = (Object) inPermission.getValue(key);

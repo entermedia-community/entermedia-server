@@ -139,7 +139,7 @@ public class AssetEditor
 			{
 				asset.getKeywords().addAll(inAsset.getKeywords());
 			}
-			asset.setProperties(new HashMap(inAsset.getProperties()));
+			asset.setProperties(new ValuesMap(inAsset.getProperties()));
 			asset.setId(inId);
 		}
 		return asset;

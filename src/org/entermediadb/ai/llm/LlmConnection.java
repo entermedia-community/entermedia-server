@@ -14,28 +14,22 @@ public interface LlmConnection {
 	public String getLlmProtocol();
 
 	public String getModelName();
-	
-	public String getAiFunctionName();
-	public Data getAiFunctionData();
-	public void setAiFunctionData(Data aiFunctionData);
-
 	public Boolean isReady();
 
     public LlmResponse createImage(String inPrompt);
     public LlmResponse createImage(String inPrompt, int inCount, String inSize);
 
-    public String loadInputFromTemplate(String inString, Map<String, Object> inParams);
-    public String loadInputFromTemplate(String inTemplate, AgentContext agentcontext);
+    public String loadInputFromTemplate(AgentContext agentcontext, String inTemplate);
     
     public LlmResponse renderLocalAction(AgentContext llmreuest);
     public LlmResponse renderLocalAction(AgentContext llmreuest, String inTemplate);
     
-    public LlmResponse callCreateFunction(Map params, String inFunction);
+    public LlmResponse callCreateFunction(AgentContext agentcontext, String inFunction);
     
-    public LlmResponse callClassifyFunction(Map inParams, String inFunction, String inBase64Image);
-    public LlmResponse callClassifyFunction(Map inParams, String inFunction, String inBase64Image, String textContent);
+    public LlmResponse callClassifyFunction(AgentContext agentcontext, String inFunction, String inBase64Image);
+    public LlmResponse callClassifyFunction(AgentContext agentcontext, String inFunction, String inBase64Image, String textContent);
     
-    public LlmResponse callToolsFunction(Map inParams, String inFunction);
+    public LlmResponse callToolsFunction(AgentContext inAgentContext, String inFunction);
 
     public LlmResponse runPageAsInput(AgentContext llmRequest, String inChattemplate);
 
@@ -43,13 +37,14 @@ public interface LlmConnection {
 	public Data getAiServerData();
 	public void setAiServerData(Data fieldMainServerUrl);
 
-    public LlmResponse callStructuredOutputList(Map inParams);
+    public LlmResponse callStructure(AgentContext agentcontext, String inFuction);
 	
-	public LlmResponse callOCRFunction(Map inParams, String inBase64Image);
+	public LlmResponse callOCRFunction(AgentContext agentcontext, String inBase64Image, String inFunctioName);
 	
-	public LlmResponse callSmartCreatorAiAction(Map params, String inActionName);
+	public LlmResponse callSmartCreatorAiAction(AgentContext agentcontext, String inActionName);
 
-	public LlmResponse callJson(String inPath, JSONObject inPayload);	
+	public LlmResponse callJson(String inPath, Map inPayload);
+	public LlmResponse callJson(String inPath, JSONObject inPayload);
 	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, Map inMap);
 	public LlmResponse callJson(String inPath, Map<String, String> inHeaders, JSONObject inEmbeddingPayload);
 	

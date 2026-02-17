@@ -657,7 +657,7 @@ public class ChatModule extends BaseMediaModule
 				else
 				{
 					//By user
-					currentchannel =  (MultiValued)channelsearcher.query().exact("user",inReq.getUserName()).after("refreshdate",now.getTime()).sort("refreshdateDown").searchOne();
+					currentchannel =  (MultiValued)channelsearcher.query().exact("user",inReq.getUserName()).missing("dataid").after("refreshdate",now.getTime()).sort("refreshdateDown").searchOne();
 				}
 			}
 		}
@@ -667,7 +667,10 @@ public class ChatModule extends BaseMediaModule
 			currentchannel = (MultiValued)channelsearcher.createNewData();
 			currentchannel.setName(channelname);
 			currentchannel.setValue("searchtype", module);
-			currentchannel.setValue("dataid", entityid );
+			if (!"agentchat".equals(channeltype))
+			{
+				currentchannel.setValue("dataid", entityid );
+			}
 			currentchannel.setValue("user", inReq.getUser() );
 			String applicationid = inReq.findValue("applicationid");
 			currentchannel.setValue("chatapplicationid", applicationid);
@@ -678,8 +681,11 @@ public class ChatModule extends BaseMediaModule
 		{
 			currentchannel.setValue("toplevelaifunctionid", toplevel);
 		}
-
-		currentchannel.setValue("refreshdate", new Date() );
+		
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.SECOND, -1);  
+		currentchannel.setValue("refreshdate", now.getTime());
+		
 		channelsearcher.saveData(currentchannel);
 		
 		inReq.setRequestParameter("channel", currentchannel.getId());

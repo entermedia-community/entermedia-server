@@ -302,45 +302,74 @@ jQuery(document).ready(function () {
 		$(window).trigger("resize");
 	};
 
-	function copyTextToClipboard(text, cb) {
+	function copyTextToClipboard(elem, text, cb) {
 		try {
-			if ("clipboard" in navigator) {
-				navigator.clipboard.writeText(text);
-			} else {
-				var textArea = document.createElement("textarea");
-				textArea.value = text;
-				document.body.appendChild(textArea);
-				textArea.focus();
-				textArea.select();
-				document.execCommand("copy");
-				document.body.removeChild(textArea);
+			window.navigator.clipboard.writeText(text);
+		} catch (err) {
+			// console.warn("Failed to copy text: ", err);
+			var rm = false;
+			if (!isFormField(elem)) {
+				elem = $("<textarea name='tocopy' />");
+				elem.text(text);
+				// if in a modal
+				var modal = $(".modal").last();
+				if (modal.length) {
+					modal.append(elem);
+				} else {
+					$("body").append(elem);
+				}
+				rm = true;
 			}
+			elem.trigger("focus");
+			elem.trigger("select");
+			document.execCommand("copy");
+			if (rm) {
+				elem.remove();
+			}
+		} finally {
 			if (cb) {
 				cb();
 			}
-		} catch (err) {
-			console.log(err);
 		}
+	}
+
+	function isFormField(el) {
+		if (!el || !el.length) {
+			return false;
+		}
+		const tag = el[0].tagName;
+		return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
 	}
 
 	lQuery(".copytoclipboard").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
 		var btn = $(this);
+		var textElement = null;
 		var textToCopy = btn.data("text");
+		var mime = btn.data("mime") || "text/plain";
 
 		if (!textToCopy) {
 			var selectid = btn.data("textsource");
-			textToCopy = $("#" + selectid).val();
+			textElement = $("#" + selectid);
+			if (mime && mime.endsWith("/html")) {
+				textToCopy = removeAllClasses(textElement.html());
+			} else if (isFormField(textElement)) {
+				textToCopy = textElement.val();
+			} else {
+				textToCopy = textElement.text();
+			}
 		}
 		if (!textToCopy) {
 			var copyTextTarget = btn.data("copytarget");
 			if (copyTextTarget) {
-				textToCopy = $("#" + copyTextTarget).val();
-				if (!textToCopy) {
-					textToCopy = $("#" + copyTextTarget).text();
+				textElement = $("#" + copyTextTarget);
+				if (mime && mime.endsWith("/html")) {
+					textToCopy = removeAllClasses(textElement.html());
+				} else if (isFormField(textElement)) {
+					textToCopy = textElement.val();
 				} else {
-					$("#" + copyTextTarget).select();
+					textToCopy = textElement.text();
 				}
 			}
 		}
@@ -349,7 +378,7 @@ jQuery(document).ready(function () {
 			return;
 		}
 
-		copyTextToClipboard(textToCopy, function () {
+		copyTextToClipboard(textElement, textToCopy, function () {
 			customToast("Copied to clipboard!");
 			var btnHtm = btn.html();
 			var _btnHtm = btnHtm;
@@ -361,6 +390,51 @@ jQuery(document).ready(function () {
 				btn.html(_btnHtm);
 			}, 2500);
 		});
+	});
+
+	function removeAllClasses(html) {
+		if (!html) return html;
+		const doc = new DOMParser().parseFromString(html, "text/html");
+
+		const elements = doc.querySelectorAll("[class]");
+		for (let i = 0; i < elements.length; i++) {
+			const rmAttr = Array.from(elements[i].attributes).filter((attr) =>
+				attr.name.startsWith("data-"),
+			);
+			rmAttr.push({ name: "class" });
+			rmAttr.forEach((attr) => elements[i].removeAttribute(attr.name));
+		}
+
+		return doc.body.innerHTML;
+	}
+
+	lQuery(".downloadtext").livequery("click", function (e) {
+		var selectid = $(this).data("textsource");
+		var textElement = $("#" + selectid);
+		var mime = $(this).data("mime") || "text/plain";
+
+		var textToDownload = null;
+		if (mime.endsWith("/html")) {
+			textToDownload = removeAllClasses(textElement.html());
+		} else if (isFormField(textElement)) {
+			textToDownload = textElement.val();
+		} else {
+			textToDownload = textElement.text();
+		}
+		if (!textToDownload) {
+			return;
+		}
+
+		var ext = $(this).data("ext") || "txt";
+		const blob = new Blob([textToDownload], { type: mime });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = selectid + "." + ext;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
 	});
 
 	lQuery(".copyFromTarget").livequery("click", function (e) {

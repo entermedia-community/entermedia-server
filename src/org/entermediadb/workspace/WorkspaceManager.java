@@ -24,12 +24,15 @@ import org.dom4j.Element;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Requests;
+import org.entermediadb.ai.Schema;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
@@ -388,9 +391,97 @@ public class WorkspaceManager
 			homesettings.putProperty(prop);
 			getPageManager().getPageSettingsManager().saveSetting(homesettings);
 		}
+		
 		getPageManager().clearCache();
 	}
 
+	public void createMediaDbAiFunctionEndPoints(String inCatalogId)
+	{
+		Searcher endpointSearcher = getSearcherManager().getSearcher(inCatalogId, "endpoint");
+		Searcher functionsSearcher = getSearcherManager().getSearcher(inCatalogId, "aifunction");
+		
+		MediaArchive archive = getMediaArchive(inCatalogId);
+		Data section = archive.getCachedData("docsection", "aifunctions");
+		if( section == null )
+		{
+			section = archive.getSearcher("docsection").createNewData();
+			section.setId("aifunctions");
+			section.setName("AI Functions");
+			archive.saveData("docsection",section);
+		}
+		
+		HitTracker<Data> moduleids =  archive.getList("module");
+		Data entity = archive.query("modulesearch")
+				.put("searchtypes", moduleids.collectValues("id"))
+				.exact("entityembeddingstatus", "embedded")
+				.searchOne();
+		
+		if (entity == null)
+		{
+			return;
+		}
+		Data entitymodule = archive.getCachedData("module",entity.get("entitysourcetype"));
+		
+		JSONObject request = new JSONObject();
+		
+		request.put("channel", "testchannel");
+		request.put("message", "What is this all about?");
+		
+		String siteid = PathUtilities.extractDirectoryPath(inCatalogId);
+		request.put("chatapplicationid",siteid + "/find");
+		request.put("entityname",entity.getName());
+		request.put("entityid",entity.getId());
+		request.put("entitymoduleid", entitymodule.getId());
+		
+		Collection tosave = new ArrayList();
+		String mediadbhome = "/" + archive.getCatalogSettingValue("mediadbappid");
+
+		HitTracker existing = endpointSearcher.query().exact("docsection",section.getId()).search();
+		Collection existids =existing.collectValues("id");
+		
+		Collection all = functionsSearcher.query().all().search();
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Data function = (Data) iterator.next();
+			if( existids.contains(function.getId() ) )
+			{
+				continue;
+			}
+			Data endpoint = endpointSearcher.createNewData();
+			endpoint.setName(function.getName());
+			endpoint.setId(function.getId());
+			endpoint.setValue("url", mediadbhome + "/services/ai/" +function.getId());
+			
+			if( function.get("samplemesage") != null)
+			{
+				request.put("message", function.get("samplemesage"));
+			}
+			endpoint.setValue( "samplerequest", request.toJSONString() );
+			endpoint.setValue( "httpmethod","POST");
+			endpoint.setProperty( "docsection",section.getId() );
+			tosave.add(endpoint);
+		}
+		endpointSearcher.saveAllData(tosave, null);
+		/*
+		  <endpoint id="search" name="Search for ${modulename}" url="/${mediadbappid}/services/module/${moduleid}/search" httpmethod="POST"> 
+		    <samplerequest>
+		    	<![CDATA[{
+		    	    "page": "1", 
+		    	    "hitsperpage":"20",
+		            "query": 
+		            {
+		            	"terms":[{
+			            	"field": "id",
+							"operator": "matches",
+							"value": "*"
+						}]
+			         }
+			        } 
+			      ]]></samplerequest>
+		  </endpoint>  
+		*/
+	}
+	
 	protected void copyXml(String catalogid, String inTemplatePath, String inEndingPath, Data module)
 	{
 		if (!getPageManager().getPage(inEndingPath).exists())

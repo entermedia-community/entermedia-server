@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,10 +19,8 @@ import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.manager.BaseManager;
-import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
@@ -30,7 +29,6 @@ import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.modules.translations.LanguageMap;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
@@ -390,60 +388,20 @@ public abstract class BaseAiManager extends BaseManager
 		return schema;
 	}
 	
-	public Map<String, String> getModulesAsEnum()
+	public Collection<String> getModulesAsEnum()
 	{
-		Collection<String> nameenums = new ArrayList<String>();
-		Collection<String> idnameenums = new ArrayList<String>();
+		Collection<String> nameenums = new HashSet<String>();
 		for (Data module : loadSchema().getModules())
 		{
-			String id = module.getId();
 			String name = module.getName();
-			if(id.equals("asset"))
-			{
-				continue;
-			}
-			// The 'search' in module name/id confuses AI
+			nameenums.add(name);
 			
-			if (id.toLowerCase().contains("search") && !name.toLowerCase().contains("search"))
-			{
-				nameenums.add("\"" + name + "\"");
-				continue;
-			}
-			if (!id.toLowerCase().contains("search") && name.toLowerCase().contains("search"))
-			{
-				idnameenums.add("\"" + id + "\"");
-				continue;
-			}
-			if((id+name).toLowerCase().contains("search"))
-			{
-				continue;
-			}
-			
-			idnameenums.add("\"" + id + "|" + name + "\"");
-			nameenums.add("\"" + name + "\"");
 		}
+		//add asset types
+		Collections.addAll(nameenums, "files", "images", "videos", "documents", "audio");
 		
-		Map<String, String> enums = new HashMap<>();
 		
-		if(idnameenums.isEmpty())
-		{
-			idnameenums = null;
-		}
-		else
-		{			
-			enums.put("idnames", String.join(",", idnameenums));
-		}
-		
-		if(nameenums.isEmpty())
-		{
-			nameenums = null;
-		}
-		else
-		{			
-			enums.put("names", String.join(",", nameenums));
-		}
-		
-		return enums;
+		return nameenums;
 	}
 
 	
@@ -459,9 +417,10 @@ public abstract class BaseAiManager extends BaseManager
 		
 		return table;
 	}
-
+/*
 	protected LlmResponse startChat(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued userMessage, MultiValued inAiFunction )
 	{
+		
 		MediaArchive archive = getMediaArchive();
 		
 		LlmConnection llmconnection = archive.getLlmConnection(inAiFunction.getId()); //Should stay search_start
@@ -496,7 +455,7 @@ public abstract class BaseAiManager extends BaseManager
 		
 		return response;
 	}
-
+*/
 	protected void handleLlmResponse(AgentContext inAgentContext, LlmResponse response)
 	{
 		//Do nothin
@@ -535,101 +494,13 @@ public abstract class BaseAiManager extends BaseManager
 		
 	}
 	
-	public void savePossibleFunctionSuggestions(ScriptLogger inLog, String inTopLevelFunction)
-	{
-		Map params = new HashMap();
-		savePossibleFunctionSuggestions(inLog, inTopLevelFunction, params);
-	}
-
-	public void savePossibleFunctionSuggestions(ScriptLogger inLog, String inTopLevelFunction, Map inParams)
-	{
-		return;
-//		Schema schema = loadSchema();
-//		
-//		inParams.put("model", "Qwen3:14B");
-//		inParams.put("schema", schema);
-//		
-//		
-//		Collection functions = getMediaArchive().query("aifunction").exact("toplevel", true).exact("cratesuggestions", true).search();
-//		
-//		
-//
-//		Searcher suggestionsearcher = getMediaArchive().getSearcher("aisuggestion");
-//
-//		for (Iterator iterator = functions.iterator(); iterator.hasNext();)
-//		{
-//			Data function = (Data) iterator.next();
-//
-//			HitTracker existing = suggestionsearcher.query().exact("aifunction", function.getId()).exact("aigenerated", true).search();
-//			if( existing.size() >= 5)
-//			{
-//				log.info("Already found enough suggestions " + inTopLevelFunction);
-//				continue;
-//			}
-//			
-//			inParams.put("function", function);
-//			
-//			//Run AI to create a set of suggestions
-//			String creatorFunctionName = "createSuggestionsFor" + function.getId();
-//
-//			LlmConnection llmconnection = getMediaArchive().getLlmConnection(creatorFunctionName);
-//			
-//			inParams.put("jsonfilename", "suggestions/"+function.getId());
-//
-//			LlmResponse response = llmconnection.callStructuredOutputList(inParams);
-//			
-//			Collection<Map> suggestions = response.getCollection("suggestions");
-//			Collection<Data> tosave = new ArrayList();
-//			
-//			int count = 0;
-//			for (Iterator iterator2 = suggestions.iterator(); iterator2.hasNext();)
-//			{
-//				Object suggestion = iterator2.next();
-//				
-//				String title = null;
-//				String prompt = null;
-//				if(suggestion instanceof String)
-//				{
-//					title = (String) suggestion;
-//					prompt = title;
-//				}
-//				else if(suggestion instanceof Map)
-//				{
-//					Map map = (Map)suggestion;
-//					title = (String) map.get("title");
-//					prompt = (String) map.get("prompt");
-//				}
-//				else
-//				{
-//					continue;
-//				}
-//				
-//				Data newsuggestion = suggestionsearcher.createNewData();
-//				newsuggestion.setValue("aifunction",function.getId());
-//				LanguageMap lang = new LanguageMap();
-//				lang.setText("en", title);
-//				newsuggestion.setValue("name", lang);
-//				newsuggestion.setValue("prompt", prompt);
-//				if(count < 3) 
-//				{
-//					newsuggestion.setValue("featured", "true");
-//				}
-//				newsuggestion.setValue("aigenerated", true);
-//				count++;
-//				tosave.add(newsuggestion);
-//			}
-//			suggestionsearcher.saveAllData(tosave, null); 
-//		}
-
-	}
-	
 	
 	public LlmResponse handleError(AgentContext inAgentContext, String inError)
 	{
 		inAgentContext.addContext("error", inError);
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("render_error");
 		LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "render_error");
-		inAgentContext.setFunctionName(null);
+		//inAgentContext.setFunctionName(null);
 		inAgentContext.setNextFunctionName(null);
 		return response;
 	}
@@ -647,5 +518,5 @@ public abstract class BaseAiManager extends BaseManager
 			agentFn = agentFn.substring(0,lastone);
 		}
 		return agentFn;
-	}	
+	}
 }

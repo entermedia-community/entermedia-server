@@ -1,0 +1,19 @@
+#ifnull($textareaid)
+  #set($textareaid = $context.getRequestParameter("textareaid"))
+#end
+<div class="editor-wrapper codeEditor">
+  <div class="controls" style="display: none;">
+    <div class="d-flex">
+      <div class="status mt-0" title="Status"><i class='bi bi-check-circle'></i></div>
+      <button class="copyJSON mt-0" type="button" title="Copy JSON"><i class="bi bi-clipboard"></i></button>
+      <div class="d-flex flex-column">
+        <button class="theme-toggle mt-0" type="button" title="Toggle theme"><i class="bi bi-moon"></i></button>
+        <button class="formatJSON" type="button" title="Format JSON"><i class="bi bi-code"></i></button>
+        <button class="minifyJSON" type="button" title="Minify"><i class="bi bi-body-text"></i></button>
+      </div>
+    </div>
+  </div>
+    
+  <textarea id="$textareaid" class="form-control"></textarea>
+  <div class="error-message"></div>
+</div>

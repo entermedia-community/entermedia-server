@@ -76,7 +76,7 @@
 		class="autogrow form-control #if($detail.isRequired() && !$multiedit) required #end"
 		#if($detail.isRequired() && !$multiedit) required #end
 		placeholder="$!detail.getText($context)"
-		rows="1">$val</textarea>
+		rows="1">#esc($!val)</textarea>
 #end
 
 #set($fieldhint = $detail.hint)

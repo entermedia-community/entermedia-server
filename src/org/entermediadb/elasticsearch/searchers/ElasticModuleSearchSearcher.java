@@ -139,6 +139,7 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 	@Override
 	public void reindexInternal() throws OpenEditException
 	{
+		//Do nothing
 		//super.reindexInternal();
 	}
 	

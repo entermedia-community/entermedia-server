@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.entermediadb.ai.assistant.AiCreation;
 import org.entermediadb.ai.assistant.AiSearch;
+import org.entermediadb.ai.creator.AiSmartCreatorSteps;
 import org.entermediadb.ai.knn.RankedResult;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
@@ -13,6 +14,7 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.data.BaseData;
 import org.openedit.profile.UserProfile;
+import org.openedit.users.User;
 
 public class AgentContext extends BaseData implements CatalogEnabled {
 	String functionName;
@@ -20,8 +22,22 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	Map<String, Object> context;
 //	JSONObject arguments;
 	
+	Long fieldWaitTime;
+	
+	
+	
 	//TODO: Cache history here for performance
 	
+	public Long getWaitTime()
+	{
+		return fieldWaitTime;
+	}
+
+	public void setWaitTime(Long inWaitTime)
+	{
+		fieldWaitTime = inWaitTime;
+	}
+
 	UserProfile fieldUserProfile;
 	
 	ModuleManager fieldModuleManager;
@@ -95,6 +111,11 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	}
 	
 	public Map<String,Object> getContext() {
+		if (context == null)
+		{
+			context = new HashMap();
+			
+		}
 		return context;
 	}
 	
@@ -118,18 +139,26 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 		if (context == null) {
 			return null;
 		}
-		return context.get(inKey);
+		Object obj = context.get(inKey);
+		if( obj == null)
+		{
+			obj = get(inKey);
+		}
+		return obj;
 	}
 	
 	public void setContext(Map<String,Object> inContext) {
 		context = inContext;
 	}
 	
-	public void addContext(String inKey, Object inValue) {
-		if (context == null) {
-			context = new HashMap<String,Object>();
-		}
-		context.put(inKey, inValue);
+	public void put(String inKey, Object inValue)
+	{
+		addContext(inKey, inValue);
+	}
+	
+	public void addContext(String inKey, Object inValue) 
+	{
+		getContext().put(inKey, inValue);
 	}
 	
 //	public JSONObject getArguments() {
@@ -165,10 +194,6 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 
 	public AiSearch getAiSearchParams()
 	{
-		if( fieldAiSearchParams == null)
-		{
-			fieldAiSearchParams  = new AiSearch();
-		}
 		return fieldAiSearchParams;
 	}
 
@@ -194,7 +219,18 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 		fieldAiCreationParams = inAiCreationParams;
 	}
 	
+	AiSmartCreatorSteps fieldAiSmartCreatorSteps;
 	
+
+	public AiSmartCreatorSteps getAiSmartCreatorSteps()
+	{
+		return fieldAiSmartCreatorSteps;
+	}
+
+	public void setAiSmartCreatorSteps(AiSmartCreatorSteps inAiCreatorSteps)
+	{
+		fieldAiSmartCreatorSteps = inAiCreatorSteps;
+	}
 
 	public String getFunctionName()
 	{
@@ -261,7 +297,21 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 		}
 		fieldExcludedAssetIds.add(inAssetid);
 	}
+
+	public User getChatUser()
+	{
+		return getUserProfile().getUser();
+	}
+	
+	public void setLocale(String inLocale)
+	{
+		setValue("locale",inLocale);
+	}
 	
 	
-	
+	public String getLocale()
+	{
+		return get("locale");
+	}
+
 }

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.data.ValuesMap;
 import org.openedit.repository.RepositoryException;
 import org.openedit.repository.filesystem.StringItem;
 import org.openedit.util.ReaderInputStream;
@@ -100,7 +101,7 @@ class ElasticContentItem extends StringItem implements Data{
 	}
 
 	@Override
-	public Map getProperties() {
+	public ValuesMap getProperties() {
 		return getElasticData().getProperties();
 	}
 

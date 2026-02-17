@@ -145,13 +145,12 @@
 }
 .chatterbox-write .chatter-btn {
 	border-radius: var(--btn-radius, 8px);
-	background-color: #277371;
-	color: #fff;
+	background: var(--themed-btn-cta);
+	color: var(--themed-btn-cta-text);
 	font-size: 0.9rem;
 }
 .chatterbox-write .chatter-btn:hover {
-	background-color: #1a4c4a;
-	color: #fff;
+	background: var(--themed-btn-cta-hover);
 }
 .chatterbox-write .chatter-send {
 	width: 88px;
@@ -373,7 +372,7 @@
 .msg-bubble .msg-body {
 	flex: 1;
 	padding: 0.5rem 0.95rem;
-	border-radius: 0.70rem;
+	border-radius: 0.7rem;
 	position: relative;
 	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
@@ -390,7 +389,10 @@
 	margin-bottom: 0;
 }
 .msg-body-content a {
-	color: var(--bs-link-color, royalblue);
+	color: mediumseagreen;
+}
+.msg-body-content a:hover {
+	color: mediumaquamarine;
 }
 .msg-body-content img {
 	max-width: 400px;
@@ -1068,7 +1070,6 @@ body.hidden-scroll {
 	flex-wrap: wrap;
 	align-items: center;
 	gap: 8px;
-
 }
 .chatter-guide {
 	padding: 2px 8px;

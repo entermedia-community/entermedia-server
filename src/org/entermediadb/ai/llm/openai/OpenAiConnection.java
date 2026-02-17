@@ -35,7 +35,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	{
 		agentcontext.addContext("mediaarchive", getMediaArchive());
 
-		String input = loadInputFromTemplate(inTemplate, agentcontext.getContext());
+		String input = loadInputFromTemplate(agentcontext, inTemplate);
 		log.info(inTemplate + " process chat");
 		String endpoint = getServerRoot();
 
@@ -114,7 +114,8 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		filler = inFiller;
 	}
 	
-	public LlmResponse callCreateFunction(Map context, String inFunction) 
+	@Override
+	public LlmResponse callCreateFunction(AgentContext context, String inFunction) 
 	{
 		MediaArchive archive = getMediaArchive();
 		
@@ -134,7 +135,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			throw new OpenEditException("Requested Content Does Not Exist in MediaDB or Catalog:" + inFunction);
 		}
 		
-		String content = loadInputFromTemplate(contentPath, context);
+		String content = loadInputFromTemplate(context, contentPath);
 		
 		JSONArray messages = new JSONArray();
 		JSONObject message = new JSONObject();
@@ -159,7 +160,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 				throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunction);
 			}
 			
-			String definition = loadInputFromTemplate(functionPath, context);
+			String definition = loadInputFromTemplate(context, functionPath);
 
 			JSONParser parser = new JSONParser();
 			JSONObject functionDef = (JSONObject) parser.parse(definition);
@@ -195,20 +196,21 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 	}
 	
-	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image)
+	@Override
+	public LlmResponse callClassifyFunction(AgentContext params, String inFunction, String inBase64Image)
 	{
 		return callClassifyFunction(params, inFunction, inBase64Image, null);
 	}
 
-	public LlmResponse callClassifyFunction(Map params, String inFunction, String inBase64Image, String textContent)
+	public LlmResponse callClassifyFunction(AgentContext inAgentContext,  String inFunction, String inBase64Image, String textContent)
 	{
 		MediaArchive archive = getMediaArchive();
 		
-		params.put("model", getModelName());
+		inAgentContext.put("model", getModelName());
 		
 		if(textContent != null)
 		{
-			params.put("textcontent", textContent);
+			inAgentContext.put("textcontent", textContent);
 		}
 
 		String templatepath = "/" + archive.getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + inFunction + ".json";
@@ -226,7 +228,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunction);
 		}
 			
-		String definition = loadInputFromTemplate(templatepath, params);
+		String definition = loadInputFromTemplate(inAgentContext, templatepath);
 
 		JSONParser parser = new JSONParser();
 		JSONObject payload = (JSONObject) parser.parse(definition);
@@ -239,7 +241,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	    return res;
 	}
 	
-	public LlmResponse callToolsFunction(Map params, String inFunction)
+	public LlmResponse callToolsFunction(AgentContext params, String inFunction)
 	{
 		MediaArchive archive = getMediaArchive();
 		
@@ -260,7 +262,7 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunction);
 		}
 			
-		String definition = loadInputFromTemplate(templatepath, params);
+		String definition = loadInputFromTemplate(params, templatepath);
 
 		JSONParser parser = new JSONParser();
 		JSONObject payload = (JSONObject) parser.parse(definition);
@@ -298,20 +300,18 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	}
 
 	@Override
-	public LlmResponse callStructuredOutputList(Map inParams)
+	public LlmResponse callStructure(AgentContext inParams, String inFunctionName)
 	{
 		inParams.put("model", getModelName());
 		
-		String jsonfilename = getAiFunctionName();
-		
-		if(inParams.containsKey("jsonfilename"))
+		if(inParams.getContextValue("jsonfilename") != null)
 		{
-			jsonfilename = (String) inParams.get("jsonfilename");
+			inFunctionName = (String) inParams.getContextValue("jsonfilename");
 		}
 		
-		String templatepath = "/" + getMediaArchive().getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + jsonfilename + ".json";
+		String templatepath = "/" + getMediaArchive().getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/" + inFunctionName + ".json";
 		
-		String inStructure = loadInputFromTemplate(templatepath, inParams);
+		String inStructure = loadInputFromTemplate(inParams, templatepath);
 
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
@@ -322,10 +322,10 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 		method.addHeader("authorization", "Bearer " + getApiKey());
 		method.setHeader("Content-Type", "application/json");
 		method.setEntity(new StringEntity(structureDef.toJSONString(), StandardCharsets.UTF_8));
-
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 		
-//		JSONObject results = new JSONObject();
+		log.info("Calling: " + inFunctionName + " on: " + method.getURI());
+		
+		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 
 		try
 		{
@@ -341,62 +341,6 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 			LlmResponse response = createResponse();
 			response.setRawResponse(json);
 			return response;
-			
-			/*
-			JSONArray outputs = (JSONArray) json.get("output");
-			if (outputs == null || outputs.isEmpty())
-			{
-				log.info("No output found in OpenAI response");
-				return results;
-			}
-			
-			JSONObject output = null;
-			for (Object outputObj : outputs)
-			{
-				if (!(outputObj instanceof JSONObject))
-				{
-					log.info("Output is not a JSONObject: " + outputObj);
-					continue;
-				}
-				JSONObject obj = (JSONObject) outputObj;
-				String role = (String) obj.get("role");
-				if(role != null && role.equals("assistant"))
-				{
-					output = obj;
-					break;
-				}
-			}
-			if (output == null || !output.get("status").equals("completed"))
-			{
-				log.info("No completed output found in GPT response");
-				return results;
-			}
-			JSONArray contents = (JSONArray) output.get("content");
-			if (contents == null || contents.isEmpty())
-			{
-				log.info("No content found in GPT response");
-				return results;
-			}
-			JSONObject content = (JSONObject) contents.get(0);
-			
-			if (content == null || !content.containsKey("text"))
-			{
-				log.info("No structured data found in GPT response");
-				return results;
-			}
-			String text = (String) content.get("text");
-			if (text == null || text.isEmpty())
-			{
-				log.info("No text found in structured data");
-				return results;
-			}
-			results = (JSONObject) parser.parse(new StringReader(text));
-
-			if(results.containsKey("type") && results.get("type").equals("object") && results.containsKey("properties"))
-			{
-				results = (JSONObject) results.get("properties"); // gpt-4o-mini sometimes wraps in properties
-			}
-			*/
 		}
 		finally
 		{
@@ -405,13 +349,13 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 	}
 	
 	@Override
-	public LlmResponse callSmartCreatorAiAction(Map inParams, String inActionName)
+	public LlmResponse callSmartCreatorAiAction(AgentContext inParams, String inActionName)
 	{
 		inParams.put("model", getModelName());
 		
 		String templatepath = "/" + getMediaArchive().getMediaDbId() + "/ai/"+getLlmProtocol()+"/calls/smartcreator/" + inActionName + ".json";
 		
-		String inStructure = loadInputFromTemplate(templatepath, inParams);
+		String inStructure = loadInputFromTemplate(inParams, templatepath);
 
 		JSONParser parser = new JSONParser();
 		JSONObject structureDef = (JSONObject) parser.parse(inStructure);
@@ -479,12 +423,6 @@ public class OpenAiConnection extends BaseLlmConnection implements CatalogEnable
 
 	}
 	
-	@Override
-	public LlmResponse callOCRFunction(Map inParams, String inBase64Image)
-	{
-		throw new OpenEditException("Not implemented yet. Only available in Llama connection.");
-	}
-
 	public LlmResponse createResponse()
 	{
 		return new OpenAiResponse();

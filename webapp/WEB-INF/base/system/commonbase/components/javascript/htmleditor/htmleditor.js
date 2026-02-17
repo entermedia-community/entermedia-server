@@ -55,6 +55,7 @@ function disposeCKEditor(editor, callback = null) {
 		delete window.CK5EditorInline[uid];
 	}
 	$(editor.sourceElement).data("ck5Initialized", false);
+	$(editor.sourceElement).trigger("ckeditordestroyed");
 	editor.sourceElement = null;
 	editor.destroy().then(function () {
 		if (callback) callback();
@@ -675,7 +676,7 @@ function createInlineCK5(target, options = {}) {
 	}
 
 	function doCreate() {
-		InlineEditor.create(target, editorConfig(options, true))
+		ClassicEditor.create(target, editorConfig(options, true))
 			.then((editor) => {
 				const targetContainer = $(target).data("targetcontainer");
 				if (targetContainer) {

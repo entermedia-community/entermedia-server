@@ -69,6 +69,7 @@ import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.data.ValuesMap;
 import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
@@ -1564,7 +1565,7 @@ public class MediaArchive implements CatalogEnabled
 	public void fireMediaEvent(String inMetadataType, String operation, String inSourcePath, Map inParams, User inUser)
 	{
 		WebEvent event = new WebEvent();
-		event.setProperties(inParams);
+		event.setProperties(new ValuesMap(inParams));
 		event.setSearchType(inMetadataType);
 
 		event.setCatalogId(getCatalogId());
@@ -1592,7 +1593,7 @@ public class MediaArchive implements CatalogEnabled
 		WebEvent event = new WebEvent();
 		if( inParams != null)
 		{
-			event.setProperties(inParams);
+			event.setProperties(new ValuesMap(inParams));
 		}
 		event.setSearchType(inSearchType);
 
@@ -3366,26 +3367,25 @@ public class MediaArchive implements CatalogEnabled
 				log.info("Could not find AIFunction named " + inAiFunctionName + " using default");
 				aifunction = query("aifunction").id("default").searchOne();
 			}
-			Data serverinfo = query("aiserver").exact("aifunction", aifunction.getId()).sort("ordering").searchOne();
+			Data serverinfo = query("aiserver").exact("aifunctions", aifunction.getId()).sort("ordering").searchOne();
 			if( serverinfo == null)
 			{
-				serverinfo = query("aiserver").exact("aifunction", "default").sort("ordering").searchOne();
+				serverinfo = getCachedData("aiserver","localhost");
 				if( serverinfo == null)
 				{
-					throw new OpenEditException("Could not find Connector for aifunction " + inAiFunctionName);
+					throw new OpenEditException("Using localhost for aifunction " + inAiFunctionName);
 				}
 			}
 			String llm = serverinfo.get("connectionbean");
 			connection = (LlmConnection) getModuleManager().getBean(getCatalogId(),llm, false);
 			if("default".equals(aifunction.getId())) {
 				// setting the name and id to the requested function name if default was used
-				aifunction.setName(inAiFunctionName);
-				aifunction.setId(inAiFunctionName);
+				serverinfo.setName(inAiFunctionName);
+				serverinfo.setId(inAiFunctionName);
 			}
-			connection.setAiFunctionData(aifunction);
 			connection.setAiServerData(serverinfo);
 			getCacheManager().put(cacheName, inAiFunctionName, connection);
-			log.info(llm + " selected AI server: " + serverinfo.get("serverroot"));
+			log.info(inAiFunctionName + " picked llmconnection type:" + llm + " selected AI server URL: " + serverinfo.get("serverroot"));
 		}
 		
 		return connection;
@@ -3394,7 +3394,7 @@ public class MediaArchive implements CatalogEnabled
 	
 	public boolean aiImageCreationAvailable(WebPageRequest inReq)
 	{
-		LlmConnection imagecreation = getLlmConnection("image_creation_start");
+		LlmConnection imagecreation = getLlmConnection("creation_image_create");
 		if (imagecreation != null)
 		{
 			if (imagecreation.getApiKey() != null)

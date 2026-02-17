@@ -2,9 +2,10 @@ package org.entermediadb.modules;
 
 import org.entermediadb.asset.Category;
 import org.openedit.data.BaseData;
+import org.openedit.data.DataLoaded;
 import org.openedit.data.SaveableData;
 
-public class BaseDataEntity extends BaseData implements SaveableData
+public class BaseDataEntity extends BaseData implements SaveableData, DataLoaded
 {
 	protected Category fieldCategoryRoot;
 

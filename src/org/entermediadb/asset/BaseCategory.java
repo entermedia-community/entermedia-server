@@ -16,12 +16,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.openedit.data.BaseData;
+import org.openedit.data.DataLoaded;
 
 /**
  * @author cburkey
  * 
  */
-public class BaseCategory extends BaseData implements Category
+public class BaseCategory extends BaseData implements Category, DataLoaded
 {
 	private static final Log log = LogFactory.getLog(Category.class);
 
@@ -575,7 +576,7 @@ public class BaseCategory extends BaseData implements Category
 		for (Iterator iter = getChildren().iterator(); iter.hasNext();)
 		{
 			Category cat = (Category) iter.next();
-			if (cat.getName().equals(inCatName))
+			if ( inCatName != null && inCatName.equals(cat.getName()))
 			{
 				return cat;
 			}

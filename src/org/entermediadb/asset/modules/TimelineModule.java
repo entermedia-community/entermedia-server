@@ -571,7 +571,6 @@ public class TimelineModule extends BaseMediaModule
 		int sofar = 0;
 		int maxcount = 1;  //3900 char limit. Cant find any delimiters
 		StringBuffer tosend = new StringBuffer();
-		HttpClient client = URLUtilities.createTrustingHttpClient().setUserAgent("Mozilla/5.0 (Mobile; rv:14.0) Gecko/14.0 Firefox/14.0").build();
 		List<Map> finishedlist = new ArrayList(); //
 		
 		for (Iterator iterator = existingcaptions.iterator(); iterator.hasNext();)
@@ -586,7 +585,7 @@ public class TimelineModule extends BaseMediaModule
 			}
 			if( counter == maxcount && iterator.hasNext())
 			{
-				String response = server.webTranslate(client,tosend.toString(),selectedlang,targetlang);
+				String response = server.webTranslate(tosend.toString(),selectedlang,targetlang);
 				
 				parseTranslationResults(response,sofar, counter, finishedlist);
 				sofar = sofar + counter;
@@ -600,7 +599,7 @@ public class TimelineModule extends BaseMediaModule
 		}
 		if( counter > 0)
 		{
-			String response = server.webTranslate(client,tosend.toString(),selectedlang,targetlang);
+			String response = server.webTranslate(tosend.toString(),selectedlang,targetlang);
 			parseTranslationResults(response, sofar, counter, finishedlist);
 		}
 		return finishedlist;
