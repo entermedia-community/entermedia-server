@@ -15,5 +15,5 @@
     <property id="postal_code"  />
 	
 	<property id="notes" viewtype="textarea" header="blank"/>
-
+<property id="screenname"  />
 </properties> 
