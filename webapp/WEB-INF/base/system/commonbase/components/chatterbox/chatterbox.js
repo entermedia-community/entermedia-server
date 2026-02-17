@@ -365,7 +365,6 @@ lQuery(".chatterbox-message-list").livequery(function () {
 	if ($(this).hasClass("observing")) return;
 	$(this).addClass("observing");
 	var container = this.get(0);
-	console.log(container);
 	if (!container) return;
 	var observer = new MutationObserver(function () {
 		sortChatterbox(container);
