@@ -595,7 +595,7 @@ $(document).ready(function () {
 		$(".categorydroparea").removeClass("selected");
 	});
 
-	$(document).keydown(function (e) {
+	$(document).on("keydown", function (e) {
 		switch (e.which) {
 			case 27: // esc
 				var $contextMenu = $(".treecontext");

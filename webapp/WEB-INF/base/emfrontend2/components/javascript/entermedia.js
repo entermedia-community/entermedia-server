@@ -189,7 +189,9 @@ updatebasketmediaviewer = function (e) {
 	$("#" + targetDiv).load(nextpage, function () {
 		$("#basket-paint").load(apphome + "/components/basket/menuitem.html");
 		$("#mainmedianotifications").html(
-			'<div class="alert alert-success alert-save fader">' + alerttxt + "</div>"
+			'<div class="alert alert-success alert-save fader">' +
+				alerttxt +
+				"</div>",
 		);
 	});
 	if ($(this).closest(".dropdown-menu").length !== 0) {
@@ -238,7 +240,7 @@ onloadselectors = function () {
 	lQuery("a.updatebasket").livequery("click", updatebasket);
 	lQuery("a.updatebasketmediaviewer").livequery(
 		"click",
-		updatebasketmediaviewer
+		updatebasketmediaviewer,
 	);
 
 	//	$("a.updatebasketonasset").livequery('click', updatebasketonasset);
@@ -437,13 +439,13 @@ onloadselectors = function () {
 				},
 				function () {
 					image.removeClass("baseemshowonhovershow");
-				}
+				},
 			);
 	});
 
 	// Handles emdropdowns
 	lQuery("div[id='emdropdown']").livequery(function () {
-		$(this).mouseleave(function () {
+		$(this).on("mouseleave", function () {
 			var el = document.getElementById("emdropdowndiv");
 			if (el) {
 				$(el).attr("status", "hide"); // Beware this gets
@@ -454,7 +456,7 @@ onloadselectors = function () {
 
 		$(this).click(function () {
 			var el = $(this).find(".emdropdowncontent");
-			el.bind("mouseleave", function () {
+			el.on("mouseleave", function () {
 				$(this).attr("status", "hide");
 				$(this).hide();
 			});
@@ -634,7 +636,7 @@ onloadselectors = function () {
 							params,
 							function (data) {
 								tree.closest("#treeholder").replaceWith(data);
-							}
+							},
 						);
 					} else {
 						var assetid = ui.draggable.data("assetid");
@@ -661,11 +663,11 @@ onloadselectors = function () {
 							},
 							function (data) {
 								node.append(
-									"<span class='fader emnotify'>&nbsp;+" + data + "</span>"
+									"<span class='fader emnotify'>&nbsp;+" + data + "</span>",
 								);
 								node.find(".fader").fadeOut(3000);
 								node.removeClass("dragoverselected");
-							}
+							},
 						);
 					}
 				},
@@ -789,11 +791,11 @@ $(document).ready(function () {
 
 			fade($("#errordiv"));
 
-			$("#errordiv").mouseover(function () {
+			$("#errordiv").on("mouseover", function () {
 				$(this).stop(true, true).show().css("opacity", 1);
 			});
 
-			$("#errordiv p").mouseout(function () {
+			$("#errordiv p").on("mouseout", function () {
 				fade($("#errordiv"));
 			});
 		} else {
@@ -818,7 +820,7 @@ emcomponents = function () {
 
 					node.css(
 						"background-image",
-						'url("' + themeprefix + '/images/icons/loader.gif")'
+						'url("' + themeprefix + '/images/icons/loader.gif")',
 					);
 					var targetDiv = node.data("targetdiv");
 					var libraryid = node.data("libraryid");
@@ -837,7 +839,7 @@ emcomponents = function () {
 						function (data) {
 							var cell = $("#" + targetDiv);
 							cell.replaceWith(data);
-						}
+						},
 					);
 				},
 				tolerance: "pointer",
@@ -868,7 +870,7 @@ emcomponents = function () {
 				event.dataTransfer.setData("application/x-moz-file-promise-url", urls);
 				event.dataTransfer.setData(
 					"application/x-moz-file-promise-dest-filename",
-					filename
+					filename,
 				);
 				event.dataTransfer.effectAllowed = "all";
 			} else {

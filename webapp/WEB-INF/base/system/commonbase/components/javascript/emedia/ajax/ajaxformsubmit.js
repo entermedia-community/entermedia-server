@@ -16,10 +16,9 @@
 			return this;
 		}
 
-		if ("updateAllCK5" in window)
-		{
+		if ("updateAllCK5" in window) {
 			updateAllCK5();
-		} 
+		}
 
 		if (!form.hasClass("novalidate")) {
 			//
@@ -31,7 +30,8 @@
 						min: 1,
 					});
 					form.validate({
-						ignore: ".ignore,:hidden:not(.validatehidden),:hidden:not(.select2-hidden-accessible)",
+						ignore:
+							".ignore,:hidden:not(.validatehidden),:hidden:not(.select2-hidden-accessible)",
 					});
 					var isvalidate = form.valid();
 					if (!isvalidate) {
@@ -39,11 +39,11 @@
 						console.log("Form is not Valid");
 						var validator = form.validate();
 						var errors = validator.errorList;
-					    if (errors.length > 0) {
-					        console.log("Form is invalid. Errors found:", errors);
-					    } else {
-					        console.log("Form is truly valid now.");
-					    }
+						if (errors.length > 0) {
+							console.log("Form is invalid. Errors found:", errors);
+						} else {
+							console.log("Form is truly valid now.");
+						}
 						var submitbtn = form.find(".submitform");
 						if (submitbtn) {
 							submitbtn.prop("disabled", false);
@@ -90,7 +90,7 @@
 				showwaitingtarget = $("#" + $.escapeSelector(showwaitingtarget));
 			}
 			showwaitingtarget.html(
-				'<img src="' + apphome + '/theme/images/ajax-loader.gif">'
+				'<img src="' + apphome + '/theme/images/ajax-loader.gif">',
 			);
 			showwaitingtarget.show();
 		}
@@ -210,7 +210,7 @@
 				if (closedialogid !== undefined) {
 					let splitnames = closedialogid.split(",");
 					$.each(splitnames, function (index, modalid) {
-						modalid = $.trim(modalid);
+						modalid = modalid.trim();
 						$("#" + modalid).each(function (index, div) {
 							closeemdialog($(div).closest(".modal"));
 						});
@@ -288,7 +288,7 @@
 				window.scrollTo(0, 0);
 			}
 		}
-		
+
 		var scrolltotop = form.data("scrolltotop");
 		if (scrolltotop) {
 			window.scrollTo(0, 0);
