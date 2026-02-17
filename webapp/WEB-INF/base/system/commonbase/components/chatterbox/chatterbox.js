@@ -69,7 +69,7 @@ function chatterbox() {
 		var message = button.text();
 		var input = $("#chatter-msg");
 		input.val(message);
-		input.focus();
+		input.trigger("focus");
 		setTimeout(function () {
 			$(".chatter-send").trigger("click");
 			button.closest(".msg-bubble").remove();
@@ -548,7 +548,7 @@ jQuery(document).ready(function () {
 	lQuery("#chatter-msg").livequery(function () {
 		var $this = $(this);
 		setTimeout(function () {
-			$this.focus();
+			$this.trigger("focus");
 		});
 	});
 
@@ -648,7 +648,7 @@ jQuery(document).ready(function () {
 		textarea.val(prev);
 
 		$(".emoji-picker").fadeOut(function () {
-			textarea.focus();
+			textarea.trigger("focus");
 			$(this).remove();
 		});
 	});
