@@ -217,7 +217,7 @@ public class BaseMediaModule extends BaseModule
 	}
 	public SearcherManager getSearcherManager()
 	{
-		return (SearcherManager)getModuleManager().getBean("searcherManager");
+		return (SearcherManager) getModuleManager().getBean("searcherManager");
 	}
 	
 	
