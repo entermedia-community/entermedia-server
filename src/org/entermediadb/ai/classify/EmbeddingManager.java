@@ -217,9 +217,6 @@ public class EmbeddingManager extends InformaticsProcessor
 		}
 		documentdata.put("pages", allpages);
 		
-		
-		
-		
 		String message = embedData(inLog, inEntity, documentdata);
 	}
 	
@@ -229,15 +226,25 @@ public class EmbeddingManager extends InformaticsProcessor
 			long start = System.currentTimeMillis();
 			
 			MultiValued document = (MultiValued) iterator.next();
-			embedDocumentData(inLog, document, inSearchtype);	
+			
+			Collection pages = getMediaArchive().query(inSearchtype + "page").exact(inSearchtype, document.getId()).search();  //TODO: Check a view?
+			if (pages == null || pages.isEmpty())
+			{
+				//Process as regular entity without pages
+				embedEntityData(inLog, document, inSearchtype);
+			}
+			else
+			{
+				embedDocumentData(inLog, document, pages, inSearchtype);
+			}
 			inLog.info("Embedded "+ inSearchtype + " in " + (System.currentTimeMillis() - start) + " ms");
 		}
 	}
 
-	protected void embedDocumentData(ScriptLogger inLog, Data document, String searchtype)
+	protected void embedDocumentData(ScriptLogger inLog, Data document, Collection pages, String inSearchtype)
 	{
 		JSONObject documentdata = new JSONObject();
-		documentdata.put("doc_id", searchtype + "_" + document.getId());
+		documentdata.put("doc_id", inSearchtype + "_" + document.getId());
 
 		String assetid = document.get("primarymedia");
 		if(assetid == null)
@@ -254,9 +261,6 @@ public class EmbeddingManager extends InformaticsProcessor
 			
 			documentdata.put("creation_date", documentAsset.get("assetcreationdate"));
 		}
-
-		//Get all the pages
-		Collection pages = getMediaArchive().query(searchtype + "page").exact(searchtype, document.getId()).search();  //TODO: Check a view?
 		
 		inLog.info("Embedding document: " + document.getName() + " with " + pages.size() + " pages");
 		
@@ -273,7 +277,7 @@ public class EmbeddingManager extends InformaticsProcessor
 			}
 
 			JSONObject pagedata = new JSONObject();
-			pagedata.put("page_id", searchtype + "page_" + page.getId());
+			pagedata.put("page_id", inSearchtype + "page_" + page.getId());
 			pagedata.put("text", markdowncontent);
 			pagedata.put("page_label", page.get("pagenum"));
 
@@ -339,13 +343,24 @@ public class EmbeddingManager extends InformaticsProcessor
 				
 				Collection detailsfields = getMediaArchive().getSearcher(searchtype).getDetailsForView(searchtype+"general");
 				
-				
+				String entityassetfield = null;
 				for (Iterator iterator = detailsfields.iterator(); iterator.hasNext();)
 				{
 					PropertyDetail field = (PropertyDetail) iterator.next();
 					if(inEntity.hasValue(field.getId()))
 					{
-						contextFields.add(field);
+						if (field.getId().equals("primarymedia"))
+						{
+							entityassetfield = field.getId(); 
+						}
+						else if (entityassetfield== null && field.getId().equals("primaryimage"))
+						{
+							entityassetfield = field.getId(); 
+						}
+						else 
+						{
+							contextFields.add(field);
+						}
 					}
 				}
 				
@@ -353,11 +368,25 @@ public class EmbeddingManager extends InformaticsProcessor
 				agentcontext.put("data", inEntity);
 				agentcontext.put("contextfields", contextFields);
 				
+				if (entityassetfield != null)
+				{
+					String assetid = inEntity.get(entityassetfield);
+					if (assetid != null)
+					{
+						Asset entityAsset = getMediaArchive().getCachedAsset(assetid);
+						if(entityAsset != null)
+						{
+							agentcontext.put("primaryasset", entityAsset);
+						}
+					}
+				}
+				
+				
 				String templatepath = getMediaArchive().getMediaDbId() + "/ai/default/calls/commons/context_fields.json";
 				
 				LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentEmbedding");
 				String responsetext = llmconnection.loadInputFromTemplate(agentcontext, templatepath);
-				
+				log.info("Generated text for embedding: " + responsetext);
 				pagedata.put("text", responsetext);
 			}
 			
