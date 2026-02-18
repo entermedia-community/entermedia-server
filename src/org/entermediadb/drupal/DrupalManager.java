@@ -117,6 +117,22 @@ public class DrupalManager implements CatalogEnabled
 	}
 	
 	
+	/*
+	 * Get content items:
+	 * https://mediadb51.entermediadb.net/unnews-jsonapi/node/news_story?sort=-field_news_date&filter[status]=published
+	 * 
+	 * Get item:
+	 * https://mediadb51.entermediadb.net/unnews-jsonapi/node/news_story/b48759ed-7fed-4701-b196-19eb84e11812
+	 * 
+	 * Get subcontent (paragraph one_column_text):
+	 * https://mediadb51.entermediadb.net/unnews-jsonapi/paragraph/one_column_text/8bab6123-84eb-422d-b616-50394a012b93
+	 * 
+	 * Get subcontent (image):
+	 * https://mediadb51.entermediadb.net/unnews-jsonapi/media/entermedia_image/13cf13b7-0cfd-4de6-b7e3-660d1ee8d9d0
+	 * 
+	 * */
+	
+	
 	
 	public void syncContent(WebPageRequest inReq)
 	{
