@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.elasticsearch.search.aggregations.metrics.InternalNumericMetricsAggregation.MultiValue;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
@@ -123,65 +124,126 @@ public class DrupalManager implements CatalogEnabled
 		
 		for (Iterator iterator1= getSources().iterator(); iterator1.hasNext();)
 		{
-			Integer datacount = 0;
+			
 			MultiValued source = (MultiValued) iterator1.next();
-			Collection<JSONObject> content = listContent(source);
-			if (content != null) {
+			String nextpageurl = source.get("remoteroot") + 
+								"/" + source.get("remoteapipath") + 
+								"/" + source.get("structure") +
+								"/" + source.get("drupalcontenttype"); 
+			// Filters:
+			// inSource.get(startfrom)
+			String sortby = source.get("sortfield");
+			if (sortby != null)
+			{
+				nextpageurl += "?sort=" + sortby;
+			}
+			
+			Integer datapage = 1;
+			Integer datacount = 0;
+			do
+			{
 				
-				for (Iterator iterator = content.iterator(); iterator.hasNext();)
+				JSONObject sourcepage = getSourcePage(inLog, source, nextpageurl);
+				if (sourcepage == null)
 				{
-					JSONObject object = (JSONObject) iterator.next();
-					
-					if (createContent(source, object)) 
+					break;
+				}
+				//List all content by source/type ej: node/news_story
+				Collection<JSONArray> sourcecontents = getSourceContents((JSONArray) sourcepage.get("data")); 
+				if (!sourcecontents.isEmpty()) {
+					//Loop content
+					for (Iterator iterator = sourcecontents.iterator(); iterator.hasNext();)
+					{
+						JSONObject contentitem = (JSONObject) iterator.next();
+						
+						//Loop content items
+						if (createContent(source, contentitem)) 
 						{
 						datacount++;
 						};
-					
+						
+					}
 				}
-			}
-			if (datacount > 0)
-			{
-				log.info("Imported " + datacount  + " items from Drupal source: " + source.getName());
-				inLog.info("Imported " + datacount  + " items from Drupal source: " + source.getName());
-			}
+				if (datacount > 0)
+				{
+					log.info("Imported page: " + datapage + " / " + datacount  + " items total from Drupal source: " + source.getName());
+					inLog.info("Imported page: " + datapage + " / " + datacount  + " items total from Drupal source: " + source.getName());
+				}
+				
+				JSONObject sourcelinks = (JSONObject)sourcepage.get("links");
+				if (sourcelinks != null)
+				{
+					JSONObject nextpage = (JSONObject)sourcelinks.get("next");
+					nextpageurl = (String)nextpage.get("href");
+					if (datapage >1)
+					{
+						
+						nextpageurl = null;
+					}
+				}
+				datapage++;
+			}while(nextpageurl != null);
+			log.info("Imported Drupal finished");
 		}
 		
 		
 	}
 	
-	public Collection listContent(MultiValued inSource) {
+	public JSONObject getSourcePage(ScriptLogger inLog, MultiValued inSource, String inUrl) {
 		Collection results = new ArrayList();
-		
-		String url = inSource.get("remoteroot") + "/jsonapi/"+ inSource.get("structure")+"/" + inSource.get("drupalcontenttype"); 
-		// Filters:
-		// inSource.get(startfrom)
 		
 		if (getAccessToken() != null)
 		{
 			getConnection().putSharedHeader("Authorization", "Bearer " + getAccessToken());
 		}
-		JSONObject json = getConnection().getJson(url);
-		if( json != null)
-		{
-			JSONArray data = (JSONArray)json.get("data");
-			for (Iterator iterator = data.iterator(); iterator.hasNext();)
-			{
-				JSONObject object = (JSONObject) iterator.next();
-				String id = (String)object.get("id");
-				
-				JSONObject item = new JSONObject();
-				item.put("id", id);
-				JSONObject attributes = (JSONObject) object.get("attributes");
-				item.put("attributes", attributes);
-				JSONObject links = (JSONObject) object.get("links");
-				item.put("links", links);
-				results.add(item);
-			}
+		JSONObject sourcepage = getConnection().getJson(inUrl);
 		
+		return sourcepage;
+		
+	}
+	
+	public Collection getSourceContents(JSONArray inData) {
+		Collection results = new ArrayList();
+
+		for (Iterator iterator = inData.iterator(); iterator.hasNext();)
+		{
+			JSONObject object = (JSONObject) iterator.next();
+			String id = (String)object.get("id");
+			JSONObject item = new JSONObject();
+			item.put("id", id);
+			item.put("data", object);
+			//JSONObject links = (JSONObject) object.get("links");
+			//item.put("links", links);
+			results.add(item);
 		}
 		
 		
 		return results;
+	}
+	
+	
+	public JSONObject getSubContent(MultiValued inSource, String inContentType, String inContentId)
+	{
+		String subSource = inContentType.substring(0, inContentType.indexOf("--"));
+		String subContentId = inContentType.substring(inContentType.indexOf("--") + 2);
+		String url = inSource.get("remoteroot") + 
+							"/" + inSource.get("remoteapipath") +
+							"/" + subSource + 
+							"/" + subContentId +
+							"/" + inContentId; 
+
+		if (getAccessToken() != null)
+		{
+			getConnection().putSharedHeader("Authorization", "Bearer " + getAccessToken());
+		}
+		JSONObject response = getConnection().getJson(url);
+		if (response != null)
+		{
+			return (JSONObject) response.get("data"); 
+			
+		}
+		log.info("Subcontent doesnt exist: " +subSource +"/" + subContentId +"/" + inContentId);
+		return null;
 	}
 	
 	
@@ -190,120 +252,133 @@ public class DrupalManager implements CatalogEnabled
 	{
 		String contentSearchtype = inSource.get("moduleid");
 		Searcher contentSearcher = getMediaArchive().getSearcher(contentSearchtype); //entity
+		
 		//search if exists
-		String id = inContent.get("id").toString();
-		MultiValued contentData = (MultiValued) contentSearcher.searchById(id);
+		String contentid = inContent.get("id").toString();  //TODO: used different id field
+		MultiValued contentData = (MultiValued) contentSearcher.searchById(contentid);
 		if (contentData != null) {
 			//already exists, update?
 			return false;
 		}
 		
 		contentData = (MultiValued) contentSearcher.createNewData();
-		
 		contentData.setValue("entitysourcetype", contentSearchtype);
+		contentData.setValue("id", contentid );
 		
-		contentData.setValue("id", id );
-		
-		
-		JSONObject links = (JSONObject) inContent.get("links");
-		if (links != null)
-		{
-			String href = (String)((JSONObject) links.get("self")).get("href");
-			if (href != null)
-			{
-				contentData.setValue("contentlink", href );
-			}
-		}
-		
-		JSONObject attributes = (JSONObject) inContent.get("attributes");
+		JSONObject contentdata = (JSONObject) inContent.get("data");
 
-		
-		//drupal_internal__nid for node drupal_internal__id for entities
-		Long drupalinternalid = (Long)attributes.get("drupal_internal__id");
-		if (drupalinternalid == null)
-		{
-			drupalinternalid = (Long)attributes.get("drupal_internal__nid");
-		}
+		//Drupal internal nid
+		Long drupalinternalid = (Long)contentdata.get("drupal_internal__nid");
 		contentData.setValue("drupalinternalid",  drupalinternalid);
-		
-		String title = (String)attributes.get("title");
+		//news_story fields:
+		String title = (String)contentdata.get("title");
 		if (title == null)
 		{
 			title = inSource.get("drupalcontenttype") + " " + drupalinternalid.toString();
 		}
 		
 		contentData.setValue("name", title);
-		contentData.setValue("contentdate", attributes.get("created"));  //created || changed
+		contentData.setValue("contentdate", contentdata.get("field_news_date"));  //created || changed
+		
+		//path
+		JSONObject contentpath = (JSONObject)contentdata.get("path");
+		if (contentpath != null)
+		{
+			contentData.setValue("contentlink", inSource.get("remoteroot") + contentpath.get("alias"));
+		}
+		
+		contentSearcher.saveData(contentData);
+		
+		
+		//Save contents to SmartCreator
+		Searcher sectionsearcher = getMediaArchive().getSearcher("componentsection");
+		Searcher contentsearcher = getMediaArchive().getSearcher("componentcontent");
+		
+		Data section = sectionsearcher.query()
+									.exact("playbackentityid", contentData.getId())
+									.exact("playbackentitymoduleid", contentSearchtype).searchOne();
+		
+		if (section == null) 
+		{
+			//Create new
+			section = sectionsearcher.createNewData();
+			section.setValue("playbackentityid", contentid);
+			section.setValue("playbackentitymoduleid", contentSearchtype);
+		}
+		if (section != null) 
+		{
+			//remove section ??
+			//sectionsearcher.delete(exists, null);
+			
+			//remove old contents ??
+			//HitTracker oldcontents = contentsearcher.query().exact("componentsectionid", exists.getId()).search();
+			//contentsearcher.deleteAll(oldcontents, null);
+			
+		}
+		
+		section.setValue("name", title);
+		sectionsearcher.saveData(section);
+		
+		//Heading
+		//createOrUpdateComponent(contentsearcher, section, "heading", title, 1);
+		
+		JSONObject  field_news_story_lead = (JSONObject) contentdata.get("field_news_story_lead");
+		if (field_news_story_lead != null)
+		{
+			String storylead = (String)field_news_story_lead.get("processed");
+			//contentData.setValue("storylead", storylead);
+			//createOrUpdateComponent(contentsearcher, section, "paragraph", storylead);
+		}
 
-		JSONObject body = (JSONObject) attributes.get("body");
-		if (body != null)
+		JSONArray field_news_story = (JSONArray) contentdata.get("field_news_story");
+		if (!field_news_story.isEmpty())
 		{
-			contentData.setValue("longcaption", body.get("value"));
-		}
-		
-		
-		/*
-		//search asset fields
-		for (Iterator iterator = contentSearcher.getPropertyDetails().iterator(); iterator.hasNext();)
-		{
-			PropertyDetail detail = (PropertyDetail) iterator.next();
-			
-			JSONObject field = (JSONObject)attributes.get(detail.getId());
-			if (field != null)
+			for (Iterator iterator = field_news_story.iterator(); iterator.hasNext();)
 			{
-				String assetid = (String)field.get("asset_id");
-				if (assetid != null)
+				JSONObject object = (JSONObject) iterator.next();
+				String subcontenttype = (String)object.get("type");
+				String subcontentid = (String)object.get("id");
+				JSONObject paragraph = getSubContent(inSource, subcontenttype, subcontentid);
+				if (paragraph == null)
 				{
-					contentData.setValue(detail.getId(), assetid);
+					continue;
+				}
+				JSONObject textfield = (JSONObject)paragraph.get("field_text_column");  //TODO: use drupalstructure table to map fields
+				if (textfield == null)
+				{
+					continue;
+				}
+				String body = (String)textfield.get("processed");
+				if (body != null)
+				{
+					//contentData.setValue("longcaption", body);
+					createOrUpdateComponent(contentsearcher, section, "paragraph", body, 3);
 				}
 			}
-			
 		}
-		*/
 		
-		List entityassets = new ArrayList();
 		
-		//Dynamic create fields when asset_id exists
-		for (Iterator iterator = attributes.keySet().iterator(); iterator.hasNext();)
+		//Primary Asset
+		JSONObject field_image = (JSONObject)contentdata.get("field_image");
+		if (field_image != null)
 		{
-			String attributekey = (String)iterator.next();
-			if (attributes.get(attributekey) instanceof JSONObject)
+			String imagetype = (String)field_image.get("type");
+			if (imagetype != null && imagetype.equals("media--entermedia_image"))
 			{
-				JSONObject attribute = (JSONObject) attributes.get(attributekey);
-				String assetid = (String)attribute.get("asset_id");
-				if (assetid != null)
+				String imageid = (String)field_image.get("id");
+				JSONObject drupalimage = getSubContent(inSource, imagetype, imageid);
+				if (drupalimage != null)
 				{
-					entityassets.add(assetid);
-					contentData.setValue(attributekey, assetid);
-					
-					if (attributekey.endsWith("primary_media"))
+					JSONObject imagefield = (JSONObject) drupalimage.get("field_media_entermedia_image");
+					if (imagefield != null)
 					{
-						contentData.setValue("primarymedia", assetid);
-					}
-					
-				}
-			}
-		}
-				
-		
-		//1 to many
-		String parenttype = (String)attributes.get("parent_type");
-		String parentid = (String)attributes.get("parent_id");
-		if (parenttype != null && parentid != null)
-		{
-			for (Iterator iterator1= getSources().iterator(); iterator1.hasNext();)
-			{
-				MultiValued source = (MultiValued) iterator1.next();
-				if (source.get("structure").equals(parenttype))
-				{
-					//It is a entity?
-					String moduleid = source.get("moduleid");
-					if (moduleid != null)
-					{				
-						Data parent = getMediaArchive().getSearcher(moduleid).query().exact("drupalinternalid", parentid).searchOne() ;
-						if (parent != null)
+						String assetid = (String)imagefield.get("eid");
+						if (assetid != null)
 						{
-							contentData.setValue(moduleid, parent.get("id"));
+							contentData.setValue("primarymedia", assetid);
+							contentSearcher.saveData(contentData);
+							
+							createOrUpdateComponent(contentsearcher, section, "asset", assetid, 2);
 						}
 					}
 				}
@@ -311,9 +386,7 @@ public class DrupalManager implements CatalogEnabled
 			
 		}
 		
-			
-		contentSearcher.saveData(contentData);
-		
+		List entityassets = new ArrayList();	
 		if (entityassets.size()> 0)
 		{
 			//get entity Category
@@ -330,10 +403,33 @@ public class DrupalManager implements CatalogEnabled
 			}
 		}
 		
-		//get more data
-		//contentData.setValue("name", attributes.get("title") );
 		
 		return true;
+	}
+
+	protected void createOrUpdateComponent(Searcher contentsearcher, Data inComponentSection, String inCommponentType, String inContent, int inOrdering )
+	{
+		Data component = contentsearcher.query().exact("componenttype", inCommponentType)
+												.exact("componentsectionid", inComponentSection)
+												.searchOne();
+		if (component == null)
+		{
+			component = contentsearcher.createNewData();
+			component.setValue("componenttype", inCommponentType);
+			component.setValue("componentsectionid", inComponentSection);
+			
+		}
+		if (inCommponentType.equals("asset"))
+		{
+			component.setValue("assetid", inContent);
+		}
+		 else 
+		 {
+			 component.setValue("content", inContent);
+		 }
+		component.setValue("ordering", inOrdering);
+		contentsearcher.saveData(component);
+		
 	}
 	
 	
