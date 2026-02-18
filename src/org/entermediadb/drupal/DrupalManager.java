@@ -122,6 +122,14 @@ public class DrupalManager implements CatalogEnabled
 	{
 		ScriptLogger inLog = (ScriptLogger)inReq.getPageValue("log");
 		
+		HitTracker sources = getSources();
+		if (sources.isEmpty())
+		{
+			log.info("No Drupal sources configured");
+			inLog.info("No Drupal sources configured");
+			return;
+		}
+		inLog.info("Importing Drupal " +sources.size()+ " sources" );
 		for (Iterator iterator1= getSources().iterator(); iterator1.hasNext();)
 		{
 			
@@ -196,6 +204,7 @@ public class DrupalManager implements CatalogEnabled
 		{
 			getConnection().putSharedHeader("Authorization", "Bearer " + getAccessToken());
 		}
+		log.info("Getting source page: " + inUrl);
 		JSONObject sourcepage = getConnection().getJson(inUrl);
 		
 		return sourcepage;
