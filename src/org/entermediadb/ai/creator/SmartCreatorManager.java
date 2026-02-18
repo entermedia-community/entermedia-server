@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -58,9 +59,27 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		
 		AiSmartCreatorSteps instructions = inAgentContext.getAiSmartCreatorSteps();
 		
+		if(instructions == null)
+		{
+			String playbackentitymoduleid = (String) inAgentContext.getContextValue("playbackentitymoduleid");
+			if(playbackentitymoduleid != null)
+			{				
+				Data playbackentitymodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
+				
+				String playbackentityid = (String) inAgentContext.getContextValue("playbackentityid");
+				Data playbackentity = getMediaArchive().getCachedData(playbackentitymoduleid, playbackentityid);
+				
+				instructions = new AiSmartCreatorSteps();
+				instructions.setTargetModule(playbackentitymodule);
+				instructions.setTargetEntity(playbackentity);
+				
+				inAgentContext.setAiSmartCreatorSteps(instructions);
+			}
+		}
+		
 		String channelId = inAgentContext.get("channel");
 			
-		if(agentFn.startsWith("smartcreator_welcome_"))  
+		if(agentFn.startsWith("smartcreator_welcome_"))
 		{
 			String playbackentitymoduleid = agentFn.substring("smartcreator_welcome_".length());
 			Data playbackentitymodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
@@ -263,37 +282,20 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			return null;
 			
 		}
-		else if(agentFn.startsWith("smartcreator_play"))
+		else if("smartcreator_play".equals(agentFn))
 		{
-			String playbackentitymoduleid = agentFn.substring("smartcreator_play_".length());
 			
-			String playbackentityid = (String) inAgentContext.getContextValue("playbackentityid");
-			String viewfallback = "play";
-			if(playbackentityid != null)
-			{
-				inAgentContext.setFunctionName( "smartcreator_playon_" + playbackentitymoduleid);
-				inAgentContext.addContext("playbackentityid", playbackentityid);
-				inAgentContext.addContext("playbackentitymoduleid", playbackentitymoduleid);
-			}
-			else
-			{				
-				
-				Data playbackentitymodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
-				inAgentContext.addContext("playbackentitymodule", playbackentitymodule);
-				
-				String entityid = inAgentContext.get("entityid");
-				String entitymoduleid = inAgentContext.get("entitymoduleid");
-				
-				Collection<Data> playables = getMediaArchive().query(playbackentitymoduleid).exact("entityid", entityid).exact("entitymoduleid", entitymoduleid).search();
-				
-				inAgentContext.addContext("playables", playables);
-			}
+			Data playbackentity = instructions.getTargetEntity();
+			inAgentContext.addContext("playbackentity", playbackentity);
 			
+			Data playbackentitymodule = instructions.getTargetModule();
+			inAgentContext.addContext("playbackentitymodule", playbackentitymodule);			
 			
-			String function = findLocalActionName(inAgentContext);
+			String entityid = inAgentContext.get("entityid");
+			String entitymoduleid = inAgentContext.get("entitymoduleid");
 			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection(function);
-			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, function);
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, agentFn);
 			
 			return response;
 		}
@@ -365,23 +367,30 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		
 		if(playbacksection != null)
 		{
-			Data selectedsection = sectionsearcher.query().exact("playbackentityid", playbackentityid)
-					.exact("ordering", String.valueOf(playbacksection)).searchOne();
+			HitTracker allsections = sectionsearcher.query().exact("playbackentityid", playbackentity.getId()).sort("ordering").search();
+			Data selectedsection = allsections.get(playbacksection);
 			inReq.putPageValue("selectedsection", selectedsection);
 			
-			Data prevsection = sectionsearcher.query().exact("playbackentityid", playbackentityid)
-					.exact("ordering", String.valueOf(playbacksection - 1)).searchOne();
-			if(prevsection != null)
-			{				
-				inReq.putPageValue("prevsection", prevsection);
+			if(playbacksection - 1 >= 0)
+			{
+				Data prevsection = allsections.get(playbacksection - 1);
+				if(prevsection != null)
+				{				
+					inReq.putPageValue("prevsection", prevsection);
+					inReq.putPageValue("previndex", playbacksection - 1);
+				}
 			}
 			
-			Data nextsection = sectionsearcher.query().exact("playbackentityid", playbackentityid)
-					.exact("ordering", String.valueOf(playbacksection + 1)).searchOne();
-			if(nextsection != null)
-			{
-				inReq.putPageValue("nextsection", nextsection);
+			if(allsections.size() > playbacksection + 1)
+			{				
+				Data nextsection = allsections.get(playbacksection + 1);
+				if(nextsection != null)
+				{
+					inReq.putPageValue("nextsection", nextsection);
+					inReq.putPageValue("nextindex", playbacksection + 1);
+				}
 			}
+			
 		}
 		else
 		{

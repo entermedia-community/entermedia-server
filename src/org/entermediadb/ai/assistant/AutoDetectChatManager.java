@@ -1,8 +1,6 @@
 package org.entermediadb.ai.assistant;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,8 +13,6 @@ import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
-import org.openedit.data.PropertyDetail;
-import org.openedit.hittracker.HitTracker;
 
 public class AutoDetectChatManager extends BaseAiManager implements ChatMessageHandler
 {
