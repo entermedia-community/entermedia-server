@@ -9,6 +9,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.creator.SmartCreatorManager;
+import org.entermediadb.ai.creator.SmartCreatorSession;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
@@ -20,7 +22,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
-import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.page.manage.PageManager;
@@ -34,6 +35,11 @@ public class EmbeddingManager extends InformaticsProcessor
 	protected PageManager fieldPageManager;
 	public PageManager getPageManager() {
 		return fieldPageManager;
+	}
+	
+	
+	public SmartCreatorManager getSmartCreatorManager() {
+		return (SmartCreatorManager) getMediaArchive().getModuleManager().getBean(getCatalogId(),"smartCreatorManager",true);
 	}
 	
 	protected RequestUtils fieldRequestUtils;
@@ -132,8 +138,15 @@ public class EmbeddingManager extends InformaticsProcessor
 		
 		pageSearcher.saveAllData(toprecess, null);
 		
+		Data module = getMediaArchive().getData("module", searchtype);
 		
-		if(searchtype.equals("userpost"))
+		String method = module.get("aicreationmethod");
+		
+		if (method != null && method.equals("smartcreator") )
+		{
+			embedSections(inLog, searchtype, toprecess, pageSearcher);
+		}
+		else if(searchtype.equals("userpost"))
 		{			
 			embedBlogs(inLog, searchtype, toprecess, pageSearcher);
 		}
@@ -156,6 +169,58 @@ public class EmbeddingManager extends InformaticsProcessor
 		
 		long duration = System.currentTimeMillis() - start;
 		inLog.headline("Embedding " + inRandomEntities.size() + " documents, took " + duration + " ms");
+	}
+	
+	protected void embedSections(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
+		for (Iterator iterator = inToprecess.iterator(); iterator.hasNext();)
+		{
+			long start = System.currentTimeMillis();
+			
+			MultiValued parententity = (MultiValued) iterator.next();
+			
+			
+			embedSectionData(inLog, parententity, inSearchtype);	
+			inLog.info("Embedded "+ inSearchtype + " in " + (System.currentTimeMillis() - start) + " ms");
+		}
+	}
+	
+	protected void embedSectionData(ScriptLogger inLog, Data inEntity,String searchtype)
+	{
+		JSONObject documentdata = new JSONObject();
+		documentdata.put("doc_id", searchtype + "_" + inEntity.getId());
+		
+		SmartCreatorSession smartcreatorsession =  getSmartCreatorManager().loadSections(searchtype, inEntity.getId());
+		Collection allpages  = new ArrayList();
+		
+		
+		for (Data section : smartcreatorsession.getSections())
+		{
+			StringBuilder sectiontext = new StringBuilder();
+			Collection<Data> sectionComponents  = smartcreatorsession.getSectionComponents(section.getId());
+			for (Data component: sectionComponents)
+			{
+				if( "paragraph".equals(component.get("componenttype")))
+				{
+					String textcontent = component.get("content");
+					if (textcontent != null && !textcontent.isEmpty())
+					{
+						sectiontext.append(textcontent).append("\n");
+					}
+				}
+			}
+						
+			JSONObject pagedata = new JSONObject();
+			pagedata.put("page_id", searchtype + "page_" + section.getId());
+			pagedata.put("text", sectiontext.toString());
+			
+			allpages.add(pagedata);
+		}
+		documentdata.put("pages", allpages);
+		
+		
+		
+		
+		String message = embedData(inLog, inEntity, documentdata);
 	}
 	
 	protected void embedDocuments(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
