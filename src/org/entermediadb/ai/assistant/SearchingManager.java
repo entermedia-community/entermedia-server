@@ -971,4 +971,9 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 		//TODO pagination
 		return recordlist;
 	}
+	public Data getRecord(String inEntityModuleId, String inEntityId, String inListId, String inRecordId)
+	{
+		Data record = getMediaArchive().query(inListId).exact(inEntityModuleId, inEntityId).exact("id", inRecordId).searchOne();
+		return record;
+	}
 }

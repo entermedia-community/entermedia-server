@@ -187,7 +187,7 @@ jQuery(document).ready(function () {
 		}
 	});
 
-	$(document).keydown(function (e) {
+	$(document).on("keydown", function (e) {
 		switch (e.which) {
 			case 27: //esckey
 				var modal = $(".modal.onfront");
@@ -791,7 +791,7 @@ jQuery(document).ready(function () {
 					form.trigger("submit");
 				}
 			});
-			$("input[type=checkbox]", form).change(function () {
+			$("input[type=checkbox]", form).on("change", function () {
 				if ($(this).hasClass("filtercheck")) {
 					var fieldname = $(this).data("fieldname");
 					var fieldtype = $(this).data("fieldtype");
@@ -816,14 +816,14 @@ jQuery(document).ready(function () {
 				}
 				form.trigger("submit");
 			});
-			$("input[type=radio], .selectbox", form).change(function () {
+			$("input[type=radio], .selectbox", form).on("change", function () {
 				form.trigger("submit");
 			});
 
 			$("input[type=text]", form)
 				.not(".datepicker")
 				.not(".typeahead")
-				.change(function () {
+				.on("change", function () {
 					form.trigger("submit");
 				});
 

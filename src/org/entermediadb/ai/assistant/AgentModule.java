@@ -245,6 +245,10 @@ public class AgentModule extends BaseMediaModule {
 		if( channelid == null)
 		{
 			Data currentchannel = (Data)inReq.getPageValue("currentchannel");
+			if(currentchannel == null)
+			{
+				return null;
+			}
 			channelid = currentchannel.getId();
 		}
 		AgentContext context = assistantManager.loadContext(channelid);
@@ -337,13 +341,29 @@ public class AgentModule extends BaseMediaModule {
 		String entitymoduleid = inReq.findValue("entitymoduleid"); 
 		String listid = inReq.getRequestParameter("relatedmoduleid");
 		
-		Data relatedmodule = getMediaArchive(inReq).getCachedData("module", listid);
-		inReq.putPageValue("relatedmodule", relatedmodule);
+		Data recordmodule = getMediaArchive(inReq).getCachedData("module", listid);
+		inReq.putPageValue("recordmodule", recordmodule);
 		
 		
 		Collection<Data> recordlist = getSearchingManager(inReq).getRelatedRecordList(entitymoduleid, entityid, listid);
 		
 		inReq.putPageValue("recordlist", recordlist);
+	}
+	
+	public void loadRecord(WebPageRequest inReq) throws Exception
+	{
+		String entityid = inReq.findValue("entityid");
+		String entitymoduleid = inReq.findValue("entitymoduleid"); 
+		String listid = inReq.getRequestParameter("relatedmoduleid");
+		String recordid = inReq.getRequestParameter("recordid");
+		
+		Data recordmodule = getMediaArchive(inReq).getCachedData("module", listid);
+		inReq.putPageValue("recordmodule", recordmodule);
+		
+		
+		Data record = getSearchingManager(inReq).getRecord(entitymoduleid, entityid, listid, recordid);
+		
+		inReq.putPageValue("record", record);
 	}
 		
 }

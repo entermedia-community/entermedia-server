@@ -4208,7 +4208,7 @@ this.prependChild( 'info', 'myElement' );
             ret = [];
 
         $.each( str.split(','), function( i, elemId ) {
-            elemId = $.trim( elemId );
+            elemId = elemId.trim();
 
             if ( self.get( elemId ) ) {
                 ret.push( elemId );
