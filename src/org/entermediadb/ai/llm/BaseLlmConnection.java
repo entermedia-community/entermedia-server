@@ -93,7 +93,6 @@ public class BaseLlmConnection implements LlmConnection {
 	protected String fieldCatalogId;
 	protected MediaArchive fieldMediaArchive;
 
-		
 	public MediaArchive getMediaArchive()
 	{
 		if (fieldMediaArchive == null)
@@ -112,7 +111,6 @@ public class BaseLlmConnection implements LlmConnection {
 	{
 		fieldCatalogId = inCatalogId;
 	}
-	
 	
 	public String getApiKey()
 	{
@@ -183,8 +181,6 @@ public class BaseLlmConnection implements LlmConnection {
 			{				
 				loadagentcontextParameters(agentcontext, request);
 			}
-			
-			
 			
 			request.putPageValues(inContext);
 			
