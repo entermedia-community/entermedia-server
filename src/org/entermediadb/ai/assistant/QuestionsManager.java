@@ -49,7 +49,7 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 			inAgentContext.addContext("entitymodule", entitymodule);
 
 			
-			Collection<GuideStatus> statuses  = getAssistantManager().prepareDataForGuide(entitymodule, entity);
+			Collection<GuideStatus> statuses  = getAssistantManager().getGuideStatus(entitymodule, entity);
 			inAgentContext.addContext("statuses", statuses);
 			
 			/*for(GuideStatus stat : statuses)

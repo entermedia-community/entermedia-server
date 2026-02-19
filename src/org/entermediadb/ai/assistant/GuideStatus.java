@@ -22,14 +22,6 @@ public class GuideStatus
 	{
 		fieldSearchType = inSearchType;
 	}
-	public int getCountNotEmbedded()
-	{
-		return fieldCountNotEmbedded;
-	}
-	public void setCountNotEmbedded(int inCountNotEmbedded)
-	{
-		fieldCountNotEmbedded = inCountNotEmbedded;
-	}
 	public int getCountEmbedded()
 	{
 		return fieldCountEmbedded;
@@ -69,7 +61,6 @@ public class GuideStatus
 	}
 
 	protected String fieldSearchType;
-	protected int fieldCountNotEmbedded = 0;
 	protected int fieldCountEmbedded = 0;
 	protected int fieldCountPending = 0;
 	protected int fieldCountFailed = 0;

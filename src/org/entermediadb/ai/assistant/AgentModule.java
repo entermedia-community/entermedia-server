@@ -109,52 +109,7 @@ public class AgentModule extends BaseMediaModule {
 		searchingManager.createPossibleFunctionParameters(log);
 
 	}
-/*
-	public void prepareDataForGuide(WebPageRequest inReq) throws Exception 
-	{
-		MediaArchive archive = getMediaArchive(inReq);
 
-		String chatterboxhome = inReq.getRequestParameter("chatterboxhome");
-		inReq.putPageValue("chatterboxhome", chatterboxhome);
-		
-		AgentContext context = loadAgentContext(inReq);
-		
-		String moduleid = context.get("entitymoduleid");
-		if (moduleid == null) {
-			moduleid = inReq.getRequestParameter("moduleid");
-		}
-		Data module = archive.getCachedData("module", moduleid);
-		inReq.putPageValue("module", module);
-		
-		String entityid = context.get("entityid");
-		if (entityid == null) {
-			entityid = inReq.getRequestParameter("entityid");
-		}
-		
-		Data entity = archive.getCachedData(moduleid, entityid);
-		inReq.putPageValue("entity", entity);
-		
-		Collection<GuideStatus> statuses =  getAssistantManager(inReq).prepareDataForGuide(module, entity);
-		boolean refresh= false;
-		for(GuideStatus stat : statuses)
-		{
-			if(!stat.isReady())
-			{
-				refresh = true;
-				break;
-			}
-		}
-		inReq.putPageValue("refresh", refresh);
-		inReq.putPageValue("statuses", statuses);
-		
-		if (refresh)
-		{
-			
-			context.setValue("wait", 1000L);
-			context.setNextFunctionName(context.getFunctionName());
-		}
-	}
-	*/
 	public void loadModuleSchemaForJson(WebPageRequest inReq) throws Exception 
 	{
 		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
