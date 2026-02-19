@@ -272,6 +272,8 @@ public class InformaticsManager extends BaseAiManager
 				}
 
 				Collection workinghits = new ArrayList(validhits);
+				
+				//Loop each processor found on the informatics table
 				for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
 				{
 					MultiValued config = (MultiValued) iterator2.next();
@@ -317,7 +319,7 @@ public class InformaticsManager extends BaseAiManager
 		}
 		else
 		{
-			inLog.info("No Entities to Process:` " + pendingrecords.getFriendlyQuery());
+			inLog.info("No Entities to Process in modules: " + ids + "  | Search Query: "+ pendingrecords.getFriendlyQuery());
 		}
 	
 	}
@@ -332,6 +334,7 @@ public class InformaticsManager extends BaseAiManager
 		for (Iterator iterator = inPageOfHits.iterator(); iterator.hasNext();)
 		{
 			MultiValued entity = (MultiValued) iterator.next();
+			String searchtype = entity.get("entitysourcetype");
 			String assetid = entity.get("primarymedia");
 			if(assetid == null)
 			{
@@ -340,6 +343,20 @@ public class InformaticsManager extends BaseAiManager
 			if (assetid != null || entity.get("markdowncontent") != null || entity.get("longcaption") != null)
 			{
 				valid.add(entity);
+			}
+			else
+			{
+				//add Smart Creator enabled entities
+				
+				if(searchtype != null)
+				{
+					Data module = getMediaArchive().getCachedData("module", searchtype);
+					String method = module.get("aicreationmethod");
+					if(module != null && "smartcreator".equals(method))
+					{
+						valid.add(entity);
+					}
+				}
 			}
 		}
 		return valid;

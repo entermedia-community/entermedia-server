@@ -399,6 +399,43 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		}
 	}
 	
+	
+	
+	public SmartCreatorSession loadSections(String playbackentitymoduleid, String playbackentityid) {
+		
+		if(playbackentityid == null || playbackentitymoduleid == null)
+		{
+			throw new IllegalArgumentException("Missing playbackentityid or playbackentitymoduleid parameter");
+		}
+		
+		Data playbackentitymodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
+		
+		Data playbackentity = getMediaArchive().getCachedData(playbackentitymoduleid, playbackentityid);
+		
+		Searcher sectionsearcher = getMediaArchive().getSearcher("componentsection");
+		
+		SmartCreatorSession session = new SmartCreatorSession();
+		
+		HitTracker sections = sectionsearcher.query().exact("playbackentitymoduleid", playbackentitymoduleid)
+												.exact("playbackentityid", playbackentityid)
+												.sort("ordering")
+												.search();
+		for (Iterator iterator = sections.iterator(); iterator.hasNext();) {
+			Data section = (Data) iterator.next();
+			session.addSection(section);
+			
+			HitTracker components = getMediaArchive().getSearcher("componentcontent").query()
+					.exact("componentsectionid", section.getId())
+					.sort("ordering")
+					.search();
+			for (Iterator iterator2 = components.iterator(); iterator2.hasNext();) {
+				Data component = (Data) iterator2.next();
+				session.addComponent(section.getId(), component);
+			}
+		}
+		return session;
+	}
+	
 	protected Collection<Data> createConfirmedSections(AiSmartCreatorSteps inInstructions)
 	{
 		
@@ -996,5 +1033,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		// TODO Auto-generated method stub
 		
 	}
+	
+	
+	
 
 }

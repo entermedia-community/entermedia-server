@@ -47,7 +47,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			
 			String moduleid = entity.get("entitysourcetype");
 			
-			if( !searchtype.equals(moduleid) )
+			if( !searchtype.equals(moduleid) ) //Limits to the ones configured in the informatics db.
 			{
 				continue;
 			}
@@ -109,6 +109,9 @@ public class DocumentSplitterManager extends InformaticsProcessor
 					entity.setValue("totalpages", chunks.size());
 					splitDocumentWithText(inLog,chunks, inConfig, entity, asset);
 				}
+				
+
+				
 			}
 			String modtime = asset.get("assetmodificationdate");
 			entity.setValue("pagescreatedfor", assetid + "|" + modtime);
