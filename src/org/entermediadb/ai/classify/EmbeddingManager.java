@@ -322,7 +322,7 @@ public class EmbeddingManager extends InformaticsProcessor
 			entitydata.put("file_type", "text/plain");
 			
 			JSONObject pagedata = new JSONObject();
-			pagedata.put("page_id", searchtype + "page_" + inEntity.getId());
+			pagedata.put("page_id", searchtype + "_" + inEntity.getId());
 			pagedata.put("page_label", inEntity.getName());
 			
 			PropertyDetail detail = getMediaArchive().getSearcher(searchtype).getDetail("markdowncontent");
