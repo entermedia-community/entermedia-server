@@ -800,7 +800,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			payload.put("parent_ids", parentIds);
 			
-			log.info("sending to server: " +  payload.toJSONString());
+			log.info("sending to server: " +  payload);
 
 			LlmResponse res = llmconnection.callJson("/query", payload);
 			
