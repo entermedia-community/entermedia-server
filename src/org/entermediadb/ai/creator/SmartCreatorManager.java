@@ -5,9 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,6 +18,7 @@ import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.markdown.MarkdownUtil;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -762,16 +761,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			idx++;
 		}
 		searcher.saveAllData(tosave, null);
-	}
 	
-	protected boolean isListMd(String line) 
-	{
-		return Pattern.matches("^\\s*\\- .*", line) || 
-			Pattern.matches("^\\d+\\. .*", line) || 
-			Pattern.matches("^[A-Za-z]\\. .*", line) || 
-			Pattern.matches("^[IVX]+\\. .*", line);
 	}
-	
 	public void populateSectionsWithContents(AgentContext inAgentContext)
 	{
 		Searcher contentearcher = getMediaArchive().getSearcher("componentcontent");
@@ -813,30 +804,42 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				return;
 			}
 			
-			//Call llamat to format into structures of Parapraphs, Numbered Lists, ...
-			Collection<Map> boundaries = parseSection(inAgentContext, answer);
-			
 			int ordering = 0;
+			StringBuffer exportContent = new StringBuffer();
+
 			MarkdownUtil md = new MarkdownUtil();
-			StringBuffer output = new StringBuffer(); //TODO: Replace with new renderHTML function
-			for (Iterator iterator2 = boundaries.iterator(); iterator2.hasNext();) 
+			Collection<Map<String, String>> htmlMaps = md.getHtmlMaps(answer);
+
+			for (Iterator iterator2 = htmlMaps.iterator(); iterator2.hasNext();) 
 			{
-				Map boundary = (Map) iterator2.next();
+				Map<String, String> htmlMap = (Map) iterator2.next();
 				
-				String contenttype = (String)boundary.get("componenttype");
-				String mdcontent = String.valueOf(boundary.get("content"));
-				String content = null;
-				if ("heading".equals(contenttype))
+				String type = htmlMap.get("type");
+				String content = htmlMap.get("content");
+				
+				String contenttype = null;
+				
+				if(type.equals("Heading"))
 				{
-					content = md.renderPlain(mdcontent);
+					contenttype = "heading";
+				}
+				else if(type.equals("Paragraph") || type.equals("Text") || type.equals("HtmlBlock"))
+				{
+					contenttype = "paragraph";
+				}
+				else if(type.startsWith("List"))
+				{
+					contenttype = "list";
 				}
 				else
 				{
-					content = md.render(mdcontent);
+					log.info("Unknown content type: " + type);
+					log.info("Content: " + content);
+					continue;
 				}
 				
-				output.append("contenttype:" + contenttype);
-				output.append("content:" + content);
+				exportContent.append("<strong>" + contenttype + "</strong>\n");
+				exportContent.append("<div>" + content + "</div>\n\n");
 				
 				Data componentcontent = contentearcher.createNewData();
 				componentcontent.setValue("componentsectionid", sectionid);
@@ -851,9 +854,9 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				ordering++;  
 			}
 			
-			inAgentContext.addContext("output", output.toString());  
+			inAgentContext.addContext("output", exportContent.toString());  
 			
-			exportAsAsset(inAgentContext, output.toString());
+			exportAsAsset(inAgentContext, exportContent.toString());
 
 /*
  * Improve speed
