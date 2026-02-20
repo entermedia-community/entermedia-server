@@ -823,13 +823,9 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				{
 					contenttype = "heading";
 				}
-				else if(type.equals("Paragraph") || type.equals("Text") || type.equals("HtmlBlock"))
+				else if(type.equals("Paragraph") || type.equals("Text") || type.equals("HtmlBlock") || type.contains("List"))
 				{
 					contenttype = "paragraph";
-				}
-				else if(type.startsWith("List"))
-				{
-					contenttype = "list";
 				}
 				else
 				{
