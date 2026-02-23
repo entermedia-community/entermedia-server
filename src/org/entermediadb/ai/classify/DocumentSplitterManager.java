@@ -17,6 +17,7 @@ import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.scripts.ScriptLogger;
+import org.entermediadb.video.Timeline;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
@@ -117,6 +118,19 @@ public class DocumentSplitterManager extends InformaticsProcessor
 					
 					agentcontext.addContext("data", asset);
 					agentcontext.addContext("contextfields", contextFields);
+					
+					String assetrendertype = getMediaArchive().getMediaRenderType(asset);
+					if ("audio".equals(assetrendertype) || "video".equals(assetrendertype))
+					{
+						//Loockup Captions
+						Data assettracks = getMediaArchive().query("videotrack").exact("assetid", asset.getId()).searchOne();
+						if (assettracks != null) {
+							Timeline timeline = new Timeline();
+							timeline.loadClips((MultiValued) assettracks,"captions");
+							agentcontext.addContext("assettimeline", timeline);
+						}
+					}
+					
 					agentcontext.setFunctionName("documentsplitasset");
 					LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentsplitasset"); 
 					LlmResponse response = llmconnection.renderLocalAction(agentcontext);
