@@ -40,7 +40,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		String agentFn = inAgentContext.getFunctionName();
 		String apphome = (String) inAgentContext.getContextValue("apphome");
 
-		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/" + agentFn + ".html";
+		String templatepath = apphome + "/views/agentresponses/" + agentFn + ".html";
 		boolean pageexists = getMediaArchive().getPageManager().getPage(templatepath).exists();
 		if(!pageexists)
 		{
