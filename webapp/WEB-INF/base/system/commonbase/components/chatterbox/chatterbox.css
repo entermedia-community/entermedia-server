@@ -428,7 +428,7 @@
 .msg-citations a {
 	display: inline-block;
 	margin-left: 16px;
-	color: #4169e1 !important;
+	color: var(--text-color)!important;
 }
 .chat-icon {
 	position: absolute;
