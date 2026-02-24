@@ -528,7 +528,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		return section;
 	}
 	
-	public Data createComponentContent(String inSectionId, Map inComponents)
+	public Data saveComponentContent(String inSectionId, Map inComponents)
 	{
 		MediaArchive archive = getMediaArchive();
 		Searcher contentsearcher = archive.getSearcher("componentcontent");
