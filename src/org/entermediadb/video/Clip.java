@@ -29,7 +29,11 @@ public class Clip implements Comparable
 		}
 		return d;
 	}
-	
+	public String getSpeaker()
+	{
+		String speaker = (String)getData().get("speaker");
+		return speaker;
+	}
 	public String getLabel()
 	{
 		String cliplabel = (String)getData().get("cliplabel");
