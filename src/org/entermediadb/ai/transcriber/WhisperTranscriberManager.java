@@ -12,12 +12,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
@@ -37,7 +31,6 @@ import org.openedit.data.Searcher;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.RepositoryException;
-import org.openedit.util.JSONParser;
 
 public class WhisperTranscriberManager extends InformaticsProcessor {
 	
