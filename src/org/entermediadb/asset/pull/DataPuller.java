@@ -43,40 +43,40 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 	protected void downloadGeneratedFiles(MediaArchive inArchive, HttpSharedConnection inConnection, Data node, Map inParams, Map parsed, boolean skipgenerated)
 	{
 		String url = node.get("baseurl");
-			Map response = (Map) parsed.get("response");
+		Map response = (Map) parsed.get("response");
 
-			Collection generated = (Collection) parsed.get("generated");
-			if (generated == null || generated.isEmpty())
+		Collection generated = (Collection) parsed.get("generated");
+		if (generated == null || generated.isEmpty())
+		{
+			return;
+		}
+		for (Iterator iterator2 = generated.iterator(); iterator2.hasNext();)
+		{
+			Map changed = (Map) iterator2.next();
+			String sourcepath = (String) changed.get("sourcepath");
+			//List generated media and compare it
+							
+			if (!skipgenerated)
 			{
-				return;
-			}
-			for (Iterator iterator2 = generated.iterator(); iterator2.hasNext();)
-			{
-				Map changed = (Map) iterator2.next();
-				String sourcepath = (String) changed.get("sourcepath");
-				//List generated media and compare it
-								
-				if (!skipgenerated)
+				Collection files = (Collection) changed.get("files");
+				if (files != null)
 				{
-					Collection files = (Collection) changed.get("files");
-					if (files != null)
+					if (files.isEmpty())
 					{
-						if (files.isEmpty())
-						{
-							log.debug("No thumbs :" + sourcepath + " on " + parsed.toString());  //Maybe a deleted asset
-							continue;
-						}
-						for (Iterator iterator3 = files.iterator(); iterator3.hasNext();)
-						{
-							Map filelisting = (Map) iterator3.next();
-							//Compare timestamps
-							//String lastmodified = (String) filelisting.get("lastmodified");
-							downloadOneGeneratedFile(inArchive, inConnection, inParams, url, response, filelisting);
+						log.debug("No thumbs :" + sourcepath + " on " + parsed.toString());  //Maybe a deleted asset
+						continue;
+					}
+					for (Iterator iterator3 = files.iterator(); iterator3.hasNext();)
+					{
+						Map filelisting = (Map) iterator3.next();
+						//Compare timestamps
+						//String lastmodified = (String) filelisting.get("lastmodified");
+						downloadOneGeneratedFile(inArchive, inConnection, inParams, url, response, filelisting);
 
-						}
 					}
 				}
 			}
+		}
 	}
 	protected void downloadOneGeneratedFile(MediaArchive inArchive, HttpSharedConnection inConnection, Map inParams, String url, Map response, Map filelisting)
 	{
@@ -90,7 +90,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 
 		if (!found.exists() || !FileUtils.isSameDate(found.getLastModified(), datetime))
 		{
-			log.info("Found change: " + found.getLastModified() + " !=" + datetime + " on " + found.getAbsolutePath());
+			//log.info("Found change: " + found.getLastModified() + " !=" + datetime + " on " + found.getAbsolutePath());
 
 			//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
 			//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;

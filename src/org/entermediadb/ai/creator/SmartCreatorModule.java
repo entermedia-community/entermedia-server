@@ -4,21 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.entermediadb.ai.assistant.AssistantManager;
-import org.entermediadb.ai.assistant.CreationManager;
-import org.entermediadb.ai.assistant.GuideStatus;
 import org.entermediadb.ai.assistant.QuestionsManager;
 import org.entermediadb.ai.assistant.SearchingManager;
-import org.entermediadb.ai.assistant.SemanticAction;
-import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
-import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
-import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -127,7 +120,7 @@ public class SmartCreatorModule extends BaseMediaModule {
 		creatorManager.deleteCreatorSection(searchtype, dataid);
 	}
 	
-	public void createComponentContent(WebPageRequest inReq) throws Exception 
+	public void saveComponentContent(WebPageRequest inReq) throws Exception 
 	{
 		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
 		String sectionid = inReq.getRequestParameter("sectionid");
@@ -187,13 +180,42 @@ public class SmartCreatorModule extends BaseMediaModule {
 			componentfields.put(fieldname, fieldvalue);
 		}
 		
-		Data componentcontent = creatorManager.createComponentContent(sectionid, componentfields);
+		Data componentcontent = creatorManager.saveComponentContent(sectionid, componentfields);
 		inReq.putPageValue("componentcontent", componentcontent);
 		
 		if(componentfields.get("componentcontent") == null)
 		{
 			inReq.putPageValue("newcontent", true);
 		}
+	}
+	
+	public void saveContentRole(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String searchtype = inReq.getRequestParameter("searchtype");
+		
+		Searcher searcher = archive.getSearcher(searchtype);
+		
+		String id = inReq.getRequestParameter("id");
+		Data data = searcher.loadData(id);
+		if(data != null)
+		{
+			String contentrole = inReq.getRequestParameter("contentrole");
+			data.setValue("contentrole", contentrole);
+			searcher.saveData(data);
+		}
+		
+		inReq.putPageValue(searchtype, data);
+		
+		if("componentsection".equals(searchtype))
+		{			
+			String playbackentityid = inReq.getRequestParameter("playbackentityid");
+			String playbackentitymoduleid = inReq.getRequestParameter("playbackentitymoduleid");
+			Collection<Data> sections = searcher.query().exact("playbackentityid", playbackentityid).exact("playbackentitymoduleid", playbackentitymoduleid).sort("ordering").search();
+			inReq.putPageValue("componentsections", sections);
+		}
+		
+		inReq.putPageValue("searchtype", searchtype);
 	}
 	
 	public void populateComponentContent(WebPageRequest inReq) throws Exception 

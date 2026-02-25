@@ -13,6 +13,7 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.data.ViewFieldList;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
 
@@ -26,12 +27,12 @@ public class BaseExporter
 		HitTracker hits = (HitTracker) inReq.getPageValue(name);
 		if(hits == null)
 		{
-			log.error("No such hits: " + name);
+			//log.error("No such hits: " + name);
 			String sessionid = inReq.getRequestParameter("hitssessionid");
 			hits = (HitTracker)inReq.getSessionValue(sessionid);
 			if(hits == null)
 			{
-				log.error("No such sessions: " + sessionid);
+				log.error("Export failed, no such hits nor sessions: " + sessionid);
 				return;
 			}
 			// String moduleid = inReq.findPathValue("module");
@@ -41,21 +42,55 @@ public class BaseExporter
 			// 	log.error("No hittracker found");
 			// 	return;
 			// }
+			String exportselection = inReq.findValue("exportselection");
+			if ("true".equals(exportselection))
+			{
+				hits = hits.getSelectedHitracker();
+			}
+			
 		}
 		hits.enableBulkOperations();
 		SearcherManager searcherManager = (SearcherManager)inReq.getPageValue("searcherManager");
 		String searchtype = inReq.findValue("searchtype");
 		String catalogid = inReq.findValue("catalogid");
 		Searcher searcher = searcherManager.getSearcher(catalogid, searchtype);
+		PropertyDetails	details = new PropertyDetails();
 		String isfriendly = inReq.getRequestParameter("friendly");	
-
-		boolean friendly = true;
+		boolean friendly = Boolean.parseBoolean(isfriendly);
 	
-		if( isfriendly != null)
+		if( friendly )
 		{
-			friendly = Boolean.parseBoolean(isfriendly);
+			String view = inReq.findValue("view");
+			if (view != null)
+			{
+				//details = searcher.getPropertyDetails();
+				ViewFieldList viewlist = searcher.getDetailsForView(searchtype+"resultstable", inReq.getUserProfile());
+				if (viewlist == null)
+				{
+					searcher.getDetailsForView("resultstable",inReq.getUserProfile());
+				}
+				if (!viewlist.isEmpty())
+				{
+					for (Iterator iterator = viewlist.iterator(); iterator.hasNext();)
+					{
+						PropertyDetail viewdetail = (PropertyDetail) iterator.next();
+						details.add(viewdetail);
+						
+					}
+				}
+			}
 		}
-		PropertyDetails	details = searcher.getPropertyDetails();
+		else 
+		{
+			//if not friendly export all fields
+			details = searcher.getPropertyDetails();
+		}
+		
+		if (details == null)
+		{
+			log.error("No details to export");
+			return;
+		}
 	
 		int count = 0;
 		Writer output = inReq.getPageStreamer().getOutput().getWriter();
@@ -96,7 +131,7 @@ public class BaseExporter
 	
 		int rowcount = 0;
 		writer.writeNext(headers);
-			log.info("about to start: " + hits.size() );
+			log.info("Exporting: " + hits.size()  + " records from: " + searchtype);
 	
 			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 			{
@@ -190,7 +225,7 @@ public class BaseExporter
 			}
 	
 		writer.close();
-	
+		log.info("Export successfully");
 		//String finalout = output.toString();
 		//inReq.putPageValue("export", finalout);
 		inReq.setHasRedirected(true);

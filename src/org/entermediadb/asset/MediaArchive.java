@@ -183,6 +183,19 @@ public class MediaArchive implements CatalogEnabled
 
 	public String getMimeTypeIcon(String inFormat)
 	{
+		if("dmg".equals(inFormat))
+		{
+			return "apple";
+		}
+		if("deb".equals(inFormat))
+		{
+			return "tux";
+		}
+		if("exe".equals(inFormat))
+		{
+			return "windows";
+		}
+		
 		String mime = getMimeTypeMap().getMimeType(inFormat);
 		if (mime != null)
 		{

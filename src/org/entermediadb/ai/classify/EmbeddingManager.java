@@ -160,7 +160,7 @@ public class EmbeddingManager extends InformaticsProcessor
 		}
 		else if(searchtype.equals("entitydocument") || searchtype.equals("entityasset"))
 		{			
-			embedDocuments(inLog, searchtype, toprecess, pageSearcher);
+			embedEntityWithPages(inLog, searchtype, toprecess, pageSearcher);
 		}
 		else
 		{	
@@ -220,7 +220,7 @@ public class EmbeddingManager extends InformaticsProcessor
 		String message = embedData(inLog, inEntity, documentdata);
 	}
 	
-	protected void embedDocuments(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
+	protected void embedEntityWithPages(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
 		for (Iterator iterator = inToprecess.iterator(); iterator.hasNext();)
 		{
 			long start = System.currentTimeMillis();
@@ -228,15 +228,7 @@ public class EmbeddingManager extends InformaticsProcessor
 			MultiValued document = (MultiValued) iterator.next();
 			
 			Collection pages = getMediaArchive().query(inSearchtype + "page").exact(inSearchtype, document.getId()).search();  //TODO: Check a view?
-			if (pages == null || pages.isEmpty())
-			{
-				//Process as regular entity without pages
-				embedEntityData(inLog, document, inSearchtype);
-			}
-			else
-			{
-				embedDocumentData(inLog, document, pages, inSearchtype);
-			}
+			embedDocumentData(inLog, document, pages, inSearchtype);
 			inLog.info("Embedded "+ inSearchtype + " in " + (System.currentTimeMillis() - start) + " ms");
 		}
 	}
@@ -318,7 +310,7 @@ public class EmbeddingManager extends InformaticsProcessor
 			
 			entitydata.put("file_name", inEntity.getName());
 			entitydata.put("creation_date", inEntity.get("entity_date"));
-			entitydata.put("doc_id", searchtype + "_" + inEntity.getId());
+			entitydata.put("doc_id", searchtype + "page_" + inEntity.getId());
 			entitydata.put("file_type", "text/plain");
 			
 			JSONObject pagedata = new JSONObject();
@@ -617,7 +609,7 @@ public class EmbeddingManager extends InformaticsProcessor
 		
 		Data channel = inAgentContext.getChannel();
 		String apphome = "/"+ channel.get("chatapplicationid");
-		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/ragresponse.html";
+		String templatepath = apphome + "/views/agentresponses/ragresponse.html";
 		String responsetext = llmconnection.loadInputFromTemplate(inAgentContext, templatepath);
 		
 		response.setMessage(responsetext);
