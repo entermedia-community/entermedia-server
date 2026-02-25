@@ -188,10 +188,7 @@ public class DrupalManager implements CatalogEnabled
 						{
 						datacount++;
 						};
-						if (datacount > 10)
-						{
-							break;
-						}
+
 					}
 				}
 				if (datacount > 0)
@@ -205,7 +202,7 @@ public class DrupalManager implements CatalogEnabled
 				{
 					JSONObject nextpage = (JSONObject)sourcelinks.get("next");
 					nextpageurl = (String)nextpage.get("href");
-					if (datapage >0)
+					if (datapage >5)
 					{
 						
 						nextpageurl = null;
