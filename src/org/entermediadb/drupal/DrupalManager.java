@@ -145,11 +145,14 @@ public class DrupalManager implements CatalogEnabled
 			inLog.info("No Drupal sources configured");
 			return;
 		}
-		inLog.info("Importing Drupal " +sources.size()+ " sources" );
+		
 		for (Iterator iterator1= getSources().iterator(); iterator1.hasNext();)
 		{
 			
 			MultiValued source = (MultiValued) iterator1.next();
+			
+			inLog.info("Importing Drupal " +sources + "" );
+			
 			String nextpageurl = source.get("remoteroot") + 
 								"/" + source.get("remoteapipath") + 
 								"/" + source.get("structure") +
@@ -185,7 +188,10 @@ public class DrupalManager implements CatalogEnabled
 						{
 						datacount++;
 						};
-						
+						if (datacount > 10)
+						{
+							break;
+						}
 					}
 				}
 				if (datacount > 0)
@@ -193,19 +199,19 @@ public class DrupalManager implements CatalogEnabled
 					log.info("Imported page: " + datapage + " / " + datacount  + " items total from Drupal source: " + source.getName());
 					inLog.info("Imported page: " + datapage + " / " + datacount  + " items total from Drupal source: " + source.getName());
 				}
-				
+				datapage++;
 				JSONObject sourcelinks = (JSONObject)sourcepage.get("links");
 				if (sourcelinks != null)
 				{
 					JSONObject nextpage = (JSONObject)sourcelinks.get("next");
 					nextpageurl = (String)nextpage.get("href");
-					if (datapage >1)
+					if (datapage >0)
 					{
 						
 						nextpageurl = null;
 					}
 				}
-				datapage++;
+				
 			}while(nextpageurl != null);
 			log.info("Imported Drupal finished");
 		}
@@ -283,7 +289,7 @@ public class DrupalManager implements CatalogEnabled
 		String contentid = inContent.get("id").toString();  //TODO: used different id field
 		MultiValued contentData = (MultiValued) contentSearcher.searchById(contentid);
 		if (contentData != null) {
-			//already exists, update?
+			//TODO: Update existing
 			return false;
 		}
 		
@@ -315,12 +321,23 @@ public class DrupalManager implements CatalogEnabled
 		
 		contentSearcher.saveData(contentData);
 		
+		/*
+		 * Structure: 
+		 * - Section (body)
+		 *   - Headline
+		 *   - By Line
+		 *   - Lead
+		 *   - Feature Image
+		 *   - Image Right ?
+		 * */
+		
 		
 		//Save contents to SmartCreator
 		Searcher sectionsearcher = getMediaArchive().getSearcher("componentsection");
 		Searcher contentsearcher = getMediaArchive().getSearcher("componentcontent");
 		
 		Data section = sectionsearcher.query()
+									.exact("contentrole", "body")					
 									.exact("playbackentityid", contentData.getId())
 									.exact("playbackentitymoduleid", contentSearchtype).searchOne();
 		
@@ -328,6 +345,7 @@ public class DrupalManager implements CatalogEnabled
 		{
 			//Create new
 			section = sectionsearcher.createNewData();
+			section.setValue("contentrole","body");
 			section.setValue("playbackentityid", contentid);
 			section.setValue("playbackentitymoduleid", contentSearchtype);
 			section.setValue("creationdate", new Date());
@@ -347,16 +365,27 @@ public class DrupalManager implements CatalogEnabled
 		sectionsearcher.saveData(section);
 		
 		//Heading
-		//createOrUpdateComponent(contentsearcher, section, "heading", title, 1);
+		createOrUpdateComponent(contentsearcher, section, "headline", title, 1);
 		
+		
+		//By line
+		JSONObject  field_by = (JSONObject) contentdata.get("field_by");
+		if (field_by != null)
+		{
+			String byline = (String)field_by.get("processed");
+			createOrUpdateComponent(contentsearcher, section, "byline", byline, 2);
+		}
+		
+		//Lead
 		JSONObject  field_news_story_lead = (JSONObject) contentdata.get("field_news_story_lead");
 		if (field_news_story_lead != null)
 		{
 			String storylead = (String)field_news_story_lead.get("processed");
 			//contentData.setValue("storylead", storylead);
-			createOrUpdateComponent(contentsearcher, section, "storylead", storylead, 1);
+			createOrUpdateComponent(contentsearcher, section, "lead", storylead, 3);
 		}
-
+		
+		//Body
 		JSONArray field_news_story = (JSONArray) contentdata.get("field_news_story");
 		if (!field_news_story.isEmpty())
 		{
@@ -379,11 +408,10 @@ public class DrupalManager implements CatalogEnabled
 				if (body != null)
 				{
 					//contentData.setValue("longcaption", body);
-					createOrUpdateComponent(contentsearcher, section, "body", body, 3);
+					createOrUpdateComponent(contentsearcher, section, "imageright", body, 5);
 				}
 			}
 		}
-		
 		
 		//Primary Asset
 		JSONObject field_image = (JSONObject)contentdata.get("field_image");
@@ -405,7 +433,7 @@ public class DrupalManager implements CatalogEnabled
 							contentData.setValue("primarymedia", assetid);
 							contentSearcher.saveData(contentData);
 							
-							createOrUpdateComponent(contentsearcher, section, "primarymedia", assetid, 2);
+							createOrUpdateFeatureImage(contentsearcher, section, drupalimage, 4);
 						}
 					}
 				}
@@ -434,36 +462,71 @@ public class DrupalManager implements CatalogEnabled
 		return true;
 	}
 
-	protected void createOrUpdateComponent(Searcher contentsearcher, Data inComponentSection, String inCommponentGroup, String inContent, int inOrdering )
+	protected void createOrUpdateComponent(Searcher contentsearcher, Data inComponentSection, String inContentRole, String inContent, int inOrdering )
 	{
 		
-		Data component = contentsearcher.query().exact("componentgroup", inCommponentGroup)
+		Data component = contentsearcher.query().exact("contentrole", inContentRole)
 												.exact("componentsectionid", inComponentSection)
 												.searchOne();
 		if (component == null)
 		{
 			component = contentsearcher.createNewData();
-			component.setValue("componentgroup", inCommponentGroup);
-			//component.setValue("componenttype", inCommponentType);
+			component.setValue("contentrole", inContentRole);
 			component.setValue("componentsectionid", inComponentSection);
 			component.setValue("creationdate", new Date());
 		}
-		if (inCommponentGroup.equals("primarymedia"))
+		if (inContentRole.equals("headline"))
+		{
+			component.setValue("componenttype", "heading");
+			component.setValue("content", inContent);
+		}
+		else if (inContentRole.equals("featureimage"))
 		{
 			component.setValue("assetid", inContent);
 			component.setValue("componenttype", "asset");
 		}
-		else if (inCommponentGroup.equals("body"))
+		else if (inContentRole.equals("imageright"))
 		{
 			component.setValue("content", inContent);
 			component.setValue("componenttype", "paragraph");
 		}  
 		else 
 		{
-			component.setValue("componentgroup", inCommponentGroup);
+			component.setValue("contentrole", inContentRole);
 			component.setValue("componenttype", "paragraph"); 
 			component.setValue("content", inContent);
 		 }
+		component.setValue("ordering", inOrdering);
+		component.setValue("modificationdate", new Date());
+		contentsearcher.saveData(component);
+		
+	}
+	
+	protected void createOrUpdateFeatureImage(Searcher contentsearcher, Data inComponentSection, JSONObject inContent, int inOrdering )
+	{
+		
+		Data component = contentsearcher.query().exact("contentrole", "featureimage")
+												.exact("componentsectionid", inComponentSection)
+												.searchOne();
+		if (component == null)
+		{
+			component = contentsearcher.createNewData();
+			component.setValue("contentrole", "featureimage");
+			component.setValue("componentsectionid", inComponentSection);
+			component.setValue("creationdate", new Date());
+		}
+		
+		JSONObject imagefield = (JSONObject) inContent.get("field_media_entermedia_image");
+		String assetid = (String)imagefield.get("eid");
+		component.setValue("assetid", assetid);
+		
+		String imagecaption = (String) inContent.get("field_credit_original");
+		if (imagecaption != null)
+		{
+			component.setValue("content", imagecaption);
+		}
+		component.setValue("componenttype", "asset");
+	
 		component.setValue("ordering", inOrdering);
 		component.setValue("modificationdate", new Date());
 		contentsearcher.saveData(component);
