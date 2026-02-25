@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -18,7 +19,6 @@ import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.markdown.MarkdownUtil;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -808,8 +808,10 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			StringBuffer exportContent = new StringBuffer();
 
 			MarkdownUtil md = new MarkdownUtil();
-			Collection<Map<String, String>> htmlMaps = md.getHtmlMaps(answer);
-
+			List<Map<String, String>> htmlMaps = md.getHtmlMaps(answer);
+			
+			
+			
 			for (Iterator iterator2 = htmlMaps.iterator(); iterator2.hasNext();) 
 			{
 				Map<String, String> htmlMap = (Map) iterator2.next();
