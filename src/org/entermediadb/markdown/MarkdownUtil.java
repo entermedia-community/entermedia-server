@@ -141,25 +141,4 @@ public class MarkdownUtil
 		flattenDocument(nodes, first);
 	}
 	
-	public void test(WebPageRequest inReq)
-	{
-		String md ="""
-# hello world
-
-ABCD
-- x
-- y
-
-**Summary of \"What is an Arc Flash\":**
-*XYZ*
-An arc flash is a dangerous electrical event where current flows through the air between ungrounded conductors or between ungrounded and grounded conductors, releasing immense energy. This energy manifests as thermal heat, toxic fumes, pressure waves, blinding light, sound waves, and explosions. The phenomenon can cause severe injuries, including critical burns, lung damage, vision loss, hearing damage, and even death. According to the NFPA, arc flash temperatures can reach 35,000°F—three times hotter than the sun’s surface—leading to rapid expansion of air and metal, creating pressure waves as powerful as a dynamite blast. The section emphasizes the critical need for safety measures to mitigate these risks, as arc flash events pose significant threats to personnel, equipment, and operational continuity.
-""";
-		
-		Collection<Map<String, String>> maps = getHtmlMaps(md);
-		
-		log.info("Maps: " + maps);
-		
-	}
-	
-	
 }
