@@ -340,7 +340,7 @@ public class InformaticsManager extends BaseAiManager
 			{
 				assetid = entity.get("primaryimage");
 			}
-			if (assetid != null || entity.get("markdowncontent") != null || entity.get("longcaption") != null)
+			if (assetid != null || entity.get("markdowncontent") != null || entity.get("longcaption") != null || entity.get("collectivedescription") != null )
 			{
 				valid.add(entity);
 			}

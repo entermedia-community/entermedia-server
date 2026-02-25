@@ -35,6 +35,7 @@ import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
+import org.openedit.entermedia.util.Inflector;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
@@ -959,7 +960,10 @@ public class AssistantManager extends BaseAiManager
 			welcome_aifunction.setId(id);
 			welcome_aifunction.setValue("messagehandler", messagehandler);
 			welcome_aifunction.setValue("toplevel", true);
-			welcome_aifunction.setName("Create " + module.getName());
+			
+			String singular = module.getName();
+			singular = Inflector.getInstance().singularize(singular);
+			welcome_aifunction.setName("Create " + singular);
 			welcome_aifunction.setValue("icon", module.get("moduleicon"));
 			tosave.add(welcome_aifunction);
 			
