@@ -445,7 +445,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 
 		Collection<String> sections = inInstructions.getProposedSections();
 		
-		int idx = 0;
+		int ordering = 0;
 		for (Iterator iterator = sections.iterator(); iterator.hasNext();) {
 			String outline = (String) iterator.next();
 			
@@ -454,12 +454,25 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			componentSection.setName(outline);
 			componentSection.setValue("playbackentityid", inInstructions.getTargetEntity().getId());
 			componentSection.setValue("playbackentitymoduleid", inInstructions.getTargetModule().getId());
-			componentSection.setValue("ordering", idx);
+			componentSection.setValue("ordering", ordering);
 			componentSection.setValue("creationdate", new Date());
 			componentSection.setValue("modificationdate", new Date());
+			
+			if(ordering == 0)
+			{
+				componentSection.setValue("contentrole", "intro");
+			} 
+			else if(!iterator.hasNext())
+			{
+				componentSection.setValue("contentrole", "conclusion");
+			}
+			else
+			{
+				componentSection.setValue("contentrole", "body");
+			}
 
 			tosave.add(componentSection);
-			idx++;
+			ordering++;
 		}
 		
 		sectionsearcher.saveAllData(tosave, null);
@@ -780,7 +793,10 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			String sectionid = section.getId();
 			
 			Map payload = new HashMap();
-			String query = "For a section named: " + section.getName() + "\n\n" + instructions.getContentCreatePrompt();
+			
+			String query = "For \"" + section.getName() + "\" " + instructions.getContentCreatePrompt();
+			log.info("Query for section content: " + query);
+			
 			payload.put("query", query);
 			
 			String entityid = inAgentContext.get("entityid");
@@ -803,6 +819,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			{
 				return;
 			}
+			
+			log.info("Received answer for section content: " + answer);
 			
 			int ordering = 0;
 			StringBuffer exportContent = new StringBuffer();

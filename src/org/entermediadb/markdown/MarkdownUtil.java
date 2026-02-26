@@ -19,6 +19,7 @@ import org.entermediadb.markdown.node.Nodes;
 import org.entermediadb.markdown.node.ThematicBreak;
 import org.entermediadb.markdown.parser.Parser;
 import org.entermediadb.markdown.renderer.html.HtmlRenderer;
+import org.entermediadb.markdown.renderer.text.TextContentRenderer;
 import org.openedit.WebPageRequest;
 
 public class MarkdownUtil 
@@ -71,22 +72,41 @@ public class MarkdownUtil
 		List<Map<String, String>> maps = new ArrayList<Map<String, String>>();
 		
 		HtmlRenderer renderer = HtmlRenderer.builder().build();
+		
+		TextContentRenderer textRenderer = TextContentRenderer.builder().build();
 
 		List<Node> nodes = new ArrayList<Node>();
 		
 		
 		flattenDocument(nodes, document);
 		
+		boolean headerAdded = false;
 		
 		for (Iterator iterator = nodes.iterator(); iterator.hasNext();) 
 		{
 			Node node = (Node) iterator.next();
 			
 			Map<String, String> map = new HashMap<String, String>();
-			map.put("type", node.getClass().getSimpleName());
 			
-			String html = renderer.render(node);
-			map.put("content", html);
+			if( !headerAdded && isHeader(node))
+			{
+				map.put("type", "Heading");
+				String textContent = textRenderer.render(node);
+				map.put("content", textContent);
+				headerAdded = true;
+			}
+			else
+			{
+				String nodeName = node.getClass().getSimpleName();
+				if(nodeName.equals("Heading"))
+				{
+					headerAdded = true;
+				}
+				map.put("type", nodeName);
+				String html = renderer.render(node);
+				map.put("content", html);
+			}
+			
 			
 			maps.add(map);	
 		}
@@ -107,6 +127,11 @@ public class MarkdownUtil
 	
 	public void flattenDocument(List<Node> nodes, Node root)
 	{
+		if(root == null)
+		{
+			return;
+		}
+		
 		Node first = root.getFirstChild();
 		
 		if(first == null)
@@ -139,6 +164,39 @@ public class MarkdownUtil
 		}
 		
 		flattenDocument(nodes, first);
+	}
+	
+	public boolean isHeader(Node node)
+	{
+		String nodeName = node.getClass().getSimpleName();
+		if(nodeName.equals("Heading"))
+		{
+			return true;
+		}
+		if(nodeName.equals("Paragraph"))
+		{
+			Node firstChild = node.getFirstChild();
+			
+			if(firstChild != null && firstChild.getClass().getSimpleName().equals("StrongEmphasis"))
+			{
+				Node next = firstChild.getNext();
+				if(next != null)
+				{
+					TextContentRenderer textRenderer = TextContentRenderer.builder().build();
+					String textContent = textRenderer.render(next);
+					if(textContent == null || textContent.length() == 0)
+					{
+						return true;
+					}
+				}
+				else
+				{
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 	
 }
