@@ -190,27 +190,19 @@ public class MarkdownUtil
 	
 	
 	
-// 	public void test(WebPageRequest inReq)
-// 	{
-// 		String markdown = """
-// **Understanding Threats and Vulnerabilities in the Workplace**  
-
-// Threats and vulnerabilities in a workplace environment refer to risks that can compromise employee well-being, productivity, or organizational integrity. Threats often manifest as harmful behaviors or conditions, while vulnerabilities are gaps in policies, procedures, or safeguards that allow these threats to persist.  
-
-// **Breakdown of Threats:**  
-// - **Harassment:** Includes actions like spreading rumors, derogatory comments about personal attributes, or unwanted advances, which create hostile environments and undermine trust. For example, ridiculing an employee in front of peers or assigning unrelated tasks (e.g., fetching coffee) against their will can erode morale and safety.  
-// - **Workplace Violence:** Any intentional or unintentional act that threatens physical or psychological safety, such as sabotage or aggressive behavior, which can disrupt operations and harm relationships.  
-
-// **Breakdown of Vulnerabilities:**  
-// - **Lack of Clear Boundaries:** Ambiguity in defining unacceptable behavior may allow harassment or misconduct to go unaddressed. For instance, if policies do not explicitly prohibit spreading rumors, employees may perceive such actions as harmless.  
-// - **Inadequate Reporting Mechanisms:** If employees fear retaliation or lack confidence in reporting systems, vulnerabilities like harassment may persist unchecked.  
-
-// **Examples from Context:**  
-// The handbook emphasizes disciplinary actions for repeated policy violations, such as termination for sexual harassment or frequent breaches of conduct. This underscores the importance of addressing vulnerabilities through enforceable policies and fostering a culture of accountability.""";
+ 	public void test(WebPageRequest inReq)
+ 	{
+ 		String markdown = inReq.getRequestParameter("markdown");
+ 		
+ 		if(markdown == null)
+ 		{
+ 			return;
+ 		}
+ 		
+ 		List<Map<String, String>> maps = getHtmlMaps(markdown);
 		
-// 		List<Map<String, String>> maps = getHtmlMaps(markdown);
-		
-// 		inReq.putPageValue("maps", maps);
-// 	}
+ 		inReq.putPageValue("markdown", markdown);
+ 		inReq.putPageValue("maps", maps);
+ 	}
 	
 }
