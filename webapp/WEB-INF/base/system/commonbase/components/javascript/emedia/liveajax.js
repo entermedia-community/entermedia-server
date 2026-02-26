@@ -103,6 +103,7 @@ $.ajaxSetup({
 	};
 
 	var oldajaxSubmit = $.fn.ajaxSubmit;
+	console.log({ oldajaxSubmit });
 	$.fn.ajaxSubmit = function () {
 		var form = $(this);
 
@@ -137,6 +138,7 @@ $.ajaxSetup({
 				$(document).trigger("domchanged");
 			}
 		};
+
 		var returned = oldajaxSubmit.call(form, params);
 		params.success = oldsucess;
 		return returned;

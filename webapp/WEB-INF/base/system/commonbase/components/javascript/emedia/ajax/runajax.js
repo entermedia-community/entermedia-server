@@ -594,7 +594,7 @@ $(document).ready(function () {
 		if (classes) {
 			var splitnames = classes.split(",");
 			$.each(splitnames, function (index, classname) {
-				classname = $.trim(classname);
+				classname = classname.trim();
 				$("." + classname).each(function (index, div) {
 					autoreload($(div), null, classname);
 				});

@@ -17,8 +17,10 @@ import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.scripts.ScriptLogger;
+import org.entermediadb.video.Timeline;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
@@ -39,7 +41,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecords)
 	{
 		
-		String searchtype = inConfig.get("searchtype");
+		String searchtype = inConfig.get("searchtype"); 
 		int count = 0;
 		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
 		{
@@ -47,7 +49,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			
 			String moduleid = entity.get("entitysourcetype");
 			
-			if( !searchtype.equals(moduleid) )
+			if( !searchtype.equals(moduleid) ) //Limits to the ones configured in the informatics db.
 			{
 				continue;
 			}
@@ -67,14 +69,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			{
 				continue; //Do nada
 			}
-			String rendertype = getMediaArchive().getMediaRenderType(asset.getFileFormat());
-			if(rendertype != null)
-			{
-				if( !rendertype.equals("document") &&  !rendertype.equals("text"))
-				{
-					continue;
-				}
-			}
+			
 			String created = entity.get("pagescreatedfor");
 			if( created != null)
 			{
@@ -102,6 +97,48 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			else
 			{
 				String fulltext = getMediaArchive().getAssetSearcher().getFulltext(asset);
+				
+				if( fulltext == null )
+				{
+					//TODO: Create fulltext pulling from the PrimaryMedia description. 
+					//Call a local ai function to render fields
+					fulltext = asset.get("longcaption");
+					AgentContext agentcontext = new AgentContext();
+					Collection detailsfields = getMediaArchive().getSearcher("asset").getDetailsForView("assetgeneral");
+
+					Collection<PropertyDetail> contextFields = new ArrayList<PropertyDetail>();
+					for (Iterator iterator2 = detailsfields.iterator(); iterator2.hasNext();)
+					{
+						PropertyDetail field = (PropertyDetail) iterator2.next();
+						if(asset.hasValue(field.getId()))
+						{
+							contextFields.add(field);
+						}
+					}
+					
+					agentcontext.addContext("data", asset);
+					agentcontext.addContext("contextfields", contextFields);
+					
+					String assetrendertype = getMediaArchive().getMediaRenderType(asset);
+					if ("audio".equals(assetrendertype) || "video".equals(assetrendertype))
+					{
+						//Loockup Captions
+						Data assettracks = getMediaArchive().query("videotrack").exact("assetid", asset.getId()).searchOne();
+						if (assettracks != null) {
+							Timeline timeline = new Timeline();
+							timeline.loadClips((MultiValued) assettracks,"captions");
+							agentcontext.addContext("assettimeline", timeline);
+						}
+					}
+					
+					agentcontext.setFunctionName("documentsplitasset");
+					LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentsplitasset"); 
+					LlmResponse response = llmconnection.renderLocalAction(agentcontext);
+					if (response != null)
+					{
+						fulltext = response.getMessage();
+					}
+				}
 				if( fulltext != null )
 				{
 					//send to Lllamaindex another way
@@ -109,6 +146,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 					entity.setValue("totalpages", chunks.size());
 					splitDocumentWithText(inLog,chunks, inConfig, entity, asset);
 				}
+				
 			}
 			String modtime = asset.get("assetmodificationdate");
 			entity.setValue("pagescreatedfor", assetid + "|" + modtime);

@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,7 +40,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		String agentFn = inAgentContext.getFunctionName();
 		String apphome = (String) inAgentContext.getContextValue("apphome");
 
-		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/" + agentFn + ".html";
+		String templatepath = apphome + "/views/agentresponses/" + agentFn + ".html";
 		boolean pageexists = getMediaArchive().getPageManager().getPage(templatepath).exists();
 		if(!pageexists)
 		{
@@ -58,9 +58,27 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		
 		AiSmartCreatorSteps instructions = inAgentContext.getAiSmartCreatorSteps();
 		
+		if(instructions == null)
+		{
+			String playbackentitymoduleid = (String) inAgentContext.getContextValue("playbackentitymoduleid");
+			if(playbackentitymoduleid != null)
+			{				
+				Data playbackentitymodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
+				
+				String playbackentityid = (String) inAgentContext.getContextValue("playbackentityid");
+				Data playbackentity = getMediaArchive().getCachedData(playbackentitymoduleid, playbackentityid);
+				
+				instructions = new AiSmartCreatorSteps();
+				instructions.setTargetModule(playbackentitymodule);
+				instructions.setTargetEntity(playbackentity);
+				
+				inAgentContext.setAiSmartCreatorSteps(instructions);
+			}
+		}
+		
 		String channelId = inAgentContext.get("channel");
 			
-		if(agentFn.startsWith("smartcreator_welcome_"))  
+		if(agentFn.startsWith("smartcreator_welcome_"))
 		{
 			String playbackentitymoduleid = agentFn.substring("smartcreator_welcome_".length());
 			Data playbackentitymodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
@@ -263,37 +281,20 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			return null;
 			
 		}
-		else if(agentFn.startsWith("smartcreator_play"))
+		else if("smartcreator_play".equals(agentFn))
 		{
-			String playbackentitymoduleid = agentFn.substring("smartcreator_play_".length());
 			
-			String playbackentityid = (String) inAgentContext.getContextValue("playbackentityid");
-			String viewfallback = "play";
-			if(playbackentityid != null)
-			{
-				inAgentContext.setFunctionName( "smartcreator_playon_" + playbackentitymoduleid);
-				inAgentContext.addContext("playbackentityid", playbackentityid);
-				inAgentContext.addContext("playbackentitymoduleid", playbackentitymoduleid);
-			}
-			else
-			{				
-				
-				Data playbackentitymodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
-				inAgentContext.addContext("playbackentitymodule", playbackentitymodule);
-				
-				String entityid = inAgentContext.get("entityid");
-				String entitymoduleid = inAgentContext.get("entitymoduleid");
-				
-				Collection<Data> playables = getMediaArchive().query(playbackentitymoduleid).exact("entityid", entityid).exact("entitymoduleid", entitymoduleid).search();
-				
-				inAgentContext.addContext("playables", playables);
-			}
+			Data playbackentity = instructions.getTargetEntity();
+			inAgentContext.addContext("playbackentity", playbackentity);
 			
+			Data playbackentitymodule = instructions.getTargetModule();
+			inAgentContext.addContext("playbackentitymodule", playbackentitymodule);			
 			
-			String function = findLocalActionName(inAgentContext);
+			String entityid = inAgentContext.get("entityid");
+			String entitymoduleid = inAgentContext.get("entitymoduleid");
 			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection(function);
-			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, function);
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
+			LlmResponse response = llmconnection.renderLocalAction(inAgentContext, agentFn);
 			
 			return response;
 		}
@@ -365,29 +366,73 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		
 		if(playbacksection != null)
 		{
-			Data selectedsection = sectionsearcher.query().exact("playbackentityid", playbackentityid)
-					.exact("ordering", String.valueOf(playbacksection)).searchOne();
+			HitTracker allsections = sectionsearcher.query().exact("playbackentityid", playbackentity.getId()).sort("ordering").search();
+			Data selectedsection = allsections.get(playbacksection);
 			inReq.putPageValue("selectedsection", selectedsection);
 			
-			Data prevsection = sectionsearcher.query().exact("playbackentityid", playbackentityid)
-					.exact("ordering", String.valueOf(playbacksection - 1)).searchOne();
-			if(prevsection != null)
-			{				
-				inReq.putPageValue("prevsection", prevsection);
+			if(playbacksection - 1 >= 0)
+			{
+				Data prevsection = allsections.get(playbacksection - 1);
+				if(prevsection != null)
+				{				
+					inReq.putPageValue("prevsection", prevsection);
+					inReq.putPageValue("previndex", playbacksection - 1);
+				}
 			}
 			
-			Data nextsection = sectionsearcher.query().exact("playbackentityid", playbackentityid)
-					.exact("ordering", String.valueOf(playbacksection + 1)).searchOne();
-			if(nextsection != null)
-			{
-				inReq.putPageValue("nextsection", nextsection);
+			if(allsections.size() > playbacksection + 1)
+			{				
+				Data nextsection = allsections.get(playbacksection + 1);
+				if(nextsection != null)
+				{
+					inReq.putPageValue("nextsection", nextsection);
+					inReq.putPageValue("nextindex", playbacksection + 1);
+				}
 			}
+			
 		}
 		else
 		{
 			HitTracker hits = sectionsearcher.query().exact("playbackentityid", playbackentityid).sort("ordering").search();
 			inReq.putPageValue("componentsections", hits);
 		}
+	}
+	
+	
+	
+	public SmartCreatorSession loadSections(String playbackentitymoduleid, String playbackentityid) {
+		
+		if(playbackentityid == null || playbackentitymoduleid == null)
+		{
+			throw new IllegalArgumentException("Missing playbackentityid or playbackentitymoduleid parameter");
+		}
+		
+		Data playbackentitymodule = getMediaArchive().getCachedData("module", playbackentitymoduleid);
+		
+		Data playbackentity = getMediaArchive().getCachedData(playbackentitymoduleid, playbackentityid);
+		
+		Searcher sectionsearcher = getMediaArchive().getSearcher("componentsection");
+		
+		SmartCreatorSession session = new SmartCreatorSession();
+		
+		HitTracker sections = sectionsearcher.query().exact("playbackentitymoduleid", playbackentitymoduleid)
+												.exact("playbackentityid", playbackentityid)
+												.sort("ordering")
+												.search();
+		for (Iterator iterator = sections.iterator(); iterator.hasNext();) {
+			Data section = (Data) iterator.next();
+			session.addSection(section);
+			
+			HitTracker components = getMediaArchive().getSearcher("componentcontent").query()
+					.exact("componentsectionid", section.getId())
+					.sort("ordering")
+					.search();
+			for (Iterator iterator2 = components.iterator(); iterator2.hasNext();) {
+				Data component = (Data) iterator2.next();
+				session.addComponent(section.getId(), component);
+			}
+		}
+		return session;
 	}
 	
 	protected Collection<Data> createConfirmedSections(AiSmartCreatorSteps inInstructions)
@@ -483,7 +528,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		return section;
 	}
 	
-	public Data createComponentContent(String inSectionId, Map inComponents)
+	public Data saveComponentContent(String inSectionId, Map inComponents)
 	{
 		MediaArchive archive = getMediaArchive();
 		Searcher contentsearcher = archive.getSearcher("componentcontent");
@@ -716,16 +761,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			idx++;
 		}
 		searcher.saveAllData(tosave, null);
-	}
 	
-	protected boolean isListMd(String line) 
-	{
-		return Pattern.matches("^\\s*\\- .*", line) || 
-			Pattern.matches("^\\d+\\. .*", line) || 
-			Pattern.matches("^[A-Za-z]\\. .*", line) || 
-			Pattern.matches("^[IVX]+\\. .*", line);
 	}
-	
 	public void populateSectionsWithContents(AgentContext inAgentContext)
 	{
 		Searcher contentearcher = getMediaArchive().getSearcher("componentcontent");
@@ -754,6 +791,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			payload.put("parent_ids", parentIds);
 			
+			log.info("sending to server: " +  payload);
+
 			LlmResponse res = llmconnection.callJson("/query", payload);
 			
 			JSONObject contentsJson = res.getRawResponse();
@@ -765,30 +804,40 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				return;
 			}
 			
-			//Call llamat to format into structures of Parapraphs, Numbered Lists, ...
-			Collection<Map> boundaries = parseSection(inAgentContext, answer);
-			
 			int ordering = 0;
+			StringBuffer exportContent = new StringBuffer();
+
 			MarkdownUtil md = new MarkdownUtil();
-			StringBuffer output = new StringBuffer(); //TODO: Replace with new renderHTML function
-			for (Iterator iterator2 = boundaries.iterator(); iterator2.hasNext();) 
+			List<Map<String, String>> htmlMaps = md.getHtmlMaps(answer);
+			
+			
+			
+			for (Iterator iterator2 = htmlMaps.iterator(); iterator2.hasNext();) 
 			{
-				Map boundary = (Map) iterator2.next();
+				Map<String, String> htmlMap = (Map) iterator2.next();
 				
-				String contenttype = (String)boundary.get("componenttype");
-				String mdcontent = String.valueOf(boundary.get("content"));
-				String content = null;
-				if ("heading".equals(contenttype))
+				String type = htmlMap.get("type");
+				String content = htmlMap.get("content");
+				
+				String contenttype = null;
+				
+				if(type.equals("Heading"))
 				{
-					content = md.renderPlain(mdcontent);
+					contenttype = "heading";
+				}
+				else if(type.equals("Paragraph") || type.equals("Text") || type.equals("HtmlBlock") || type.contains("List"))
+				{
+					contenttype = "paragraph";
 				}
 				else
 				{
-					content = md.render(mdcontent);
+					log.info("Unknown content type: " + type);
+					log.info("Content: " + content);
+					continue;
 				}
 				
-				output.append("contenttype:" + contenttype);
-				output.append("content:" + content);
+				exportContent.append("<strong>" + contenttype + "</strong>\n");
+				exportContent.append("<div>" + content + "</div>\n\n");
 				
 				Data componentcontent = contentearcher.createNewData();
 				componentcontent.setValue("componentsectionid", sectionid);
@@ -803,9 +852,9 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				ordering++;  
 			}
 			
-			inAgentContext.addContext("output", output.toString());  
+			inAgentContext.addContext("output", exportContent.toString());  
 			
-			exportAsAsset(inAgentContext, output.toString());
+			exportAsAsset(inAgentContext, exportContent.toString());
 
 /*
  * Improve speed
@@ -987,5 +1036,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		// TODO Auto-generated method stub
 		
 	}
+	
+	
+	
 
 }

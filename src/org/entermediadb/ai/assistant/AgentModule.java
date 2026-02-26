@@ -1,10 +1,7 @@
 package org.entermediadb.ai.assistant;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.entermediadb.ai.informatics.InformaticsManager;
@@ -13,7 +10,6 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
-import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -113,52 +109,7 @@ public class AgentModule extends BaseMediaModule {
 		searchingManager.createPossibleFunctionParameters(log);
 
 	}
-/*
-	public void prepareDataForGuide(WebPageRequest inReq) throws Exception 
-	{
-		MediaArchive archive = getMediaArchive(inReq);
 
-		String chatterboxhome = inReq.getRequestParameter("chatterboxhome");
-		inReq.putPageValue("chatterboxhome", chatterboxhome);
-		
-		AgentContext context = loadAgentContext(inReq);
-		
-		String moduleid = context.get("entitymoduleid");
-		if (moduleid == null) {
-			moduleid = inReq.getRequestParameter("moduleid");
-		}
-		Data module = archive.getCachedData("module", moduleid);
-		inReq.putPageValue("module", module);
-		
-		String entityid = context.get("entityid");
-		if (entityid == null) {
-			entityid = inReq.getRequestParameter("entityid");
-		}
-		
-		Data entity = archive.getCachedData(moduleid, entityid);
-		inReq.putPageValue("entity", entity);
-		
-		Collection<GuideStatus> statuses =  getAssistantManager(inReq).prepareDataForGuide(module, entity);
-		boolean refresh= false;
-		for(GuideStatus stat : statuses)
-		{
-			if(!stat.isReady())
-			{
-				refresh = true;
-				break;
-			}
-		}
-		inReq.putPageValue("refresh", refresh);
-		inReq.putPageValue("statuses", statuses);
-		
-		if (refresh)
-		{
-			
-			context.setValue("wait", 1000L);
-			context.setNextFunctionName(context.getFunctionName());
-		}
-	}
-	*/
 	public void loadModuleSchemaForJson(WebPageRequest inReq) throws Exception 
 	{
 		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
@@ -194,7 +145,6 @@ public class AgentModule extends BaseMediaModule {
 	
 	public void startFunction(WebPageRequest inReq) throws Exception
 	{
-		
 		AssistantManager assistantManager = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
 		
 		//Get the contenxt and update it first
@@ -216,11 +166,17 @@ public class AgentModule extends BaseMediaModule {
 			agentContext.setFunctionName(functionname);
 			changed = true;
 			
-			String playbackentityid = inReq.getRequestParameter("playbackentityid");
-			if(playbackentityid != null)
-			{
-				agentContext.addContext("playbackentityid", playbackentityid);
-				agentContext.addContext("playbacksection", inReq.getRequestParameter("playbacksection"));
+			Collection<String> params = inReq.getParameterMap().keySet();
+			for (Iterator iterator = params.iterator(); iterator.hasNext();) {
+				String key = (String) iterator.next();
+				if(key.startsWith("context_"))
+				{
+					String value = inReq.getRequestParameter(key);
+					if(value != null)
+					{						
+						agentContext.addContext(key.substring("context_".length()), value);
+					}
+				}
 			}
 		}
 		
@@ -244,6 +200,10 @@ public class AgentModule extends BaseMediaModule {
 		if( channelid == null)
 		{
 			Data currentchannel = (Data)inReq.getPageValue("currentchannel");
+			if(currentchannel == null)
+			{
+				return null;
+			}
 			channelid = currentchannel.getId();
 		}
 		AgentContext context = assistantManager.loadContext(channelid);
@@ -319,6 +279,46 @@ public class AgentModule extends BaseMediaModule {
 		manager.resetInformatics(moduleid, hitsession.getSelectedHitracker());
 
 	}
-	 
+	
+	public void loadRelatedRecords(WebPageRequest inReq) throws Exception
+	{
+		String entityid = inReq.findValue("entityid");
+		String entitymoduleid = inReq.findValue("entitymoduleid");
+		
+		Collection<Map> related = getSearchingManager(inReq).getRelatedRecords(entitymoduleid, entityid);
+		
+		inReq.putPageValue("relatedrecords", related);
+	}
+	
+	public void loadRelatedRecordList(WebPageRequest inReq) throws Exception
+	{
+		String entityid = inReq.findValue("entityid");
+		String entitymoduleid = inReq.findValue("entitymoduleid"); 
+		String listid = inReq.getRequestParameter("relatedmoduleid");
+		
+		Data recordmodule = getMediaArchive(inReq).getCachedData("module", listid);
+		inReq.putPageValue("recordmodule", recordmodule);
+		
+		
+		Collection<Data> recordlist = getSearchingManager(inReq).getRelatedRecordList(entitymoduleid, entityid, listid);
+		
+		inReq.putPageValue("recordlist", recordlist);
+	}
+	
+	public void loadRecord(WebPageRequest inReq) throws Exception
+	{
+		String entityid = inReq.findValue("entityid");
+		String entitymoduleid = inReq.findValue("entitymoduleid"); 
+		String listid = inReq.getRequestParameter("relatedmoduleid");
+		String recordid = inReq.getRequestParameter("recordid");
+		
+		Data recordmodule = getMediaArchive(inReq).getCachedData("module", listid);
+		inReq.putPageValue("recordmodule", recordmodule);
+		
+		
+		Data record = getSearchingManager(inReq).getRecord(entitymoduleid, entityid, listid, recordid);
+		
+		inReq.putPageValue("record", record);
+	}
 		
 }

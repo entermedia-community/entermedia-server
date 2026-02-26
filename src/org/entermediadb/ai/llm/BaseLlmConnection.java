@@ -30,6 +30,7 @@ import org.openedit.page.manage.PageManager;
 import org.openedit.servlet.OpenEditEngine;
 import org.openedit.users.User;
 import org.openedit.util.OutputFiller;
+import org.openedit.util.PathUtilities;
 import org.openedit.util.RequestUtils;
 
 public class BaseLlmConnection implements LlmConnection {
@@ -93,7 +94,6 @@ public class BaseLlmConnection implements LlmConnection {
 	protected String fieldCatalogId;
 	protected MediaArchive fieldMediaArchive;
 
-		
 	public MediaArchive getMediaArchive()
 	{
 		if (fieldMediaArchive == null)
@@ -112,7 +112,6 @@ public class BaseLlmConnection implements LlmConnection {
 	{
 		fieldCatalogId = inCatalogId;
 	}
-	
 	
 	public String getApiKey()
 	{
@@ -183,8 +182,6 @@ public class BaseLlmConnection implements LlmConnection {
 			{				
 				loadagentcontextParameters(agentcontext, request);
 			}
-			
-			
 			
 			request.putPageValues(inContext);
 			
@@ -269,8 +266,8 @@ public class BaseLlmConnection implements LlmConnection {
 	
 	public LlmResponse renderLocalAction(AgentContext agentcontext, String inTemplateName)
 	{
-		String apphome = (String) agentcontext.getContextValue("apphome");
-		String templatepath = apphome + "/views/modules/modulesearch/results/agentresponses/" + inTemplateName + ".html";
+		String apphome = "/" + PathUtilities.extractDirectoryPath(getMediaArchive().getMediaDbId())+"/find";
+		String templatepath = apphome + "/views/agentresponses/" + inTemplateName + ".html";
 		
 		try 
 		{

@@ -43,8 +43,6 @@ public class InformaticsManager extends BaseAiManager
 	
 	public void processAssets(ScriptLogger inLog)
 	{
-//		Map<String, String> models = getModels();
-		//inLog.info("Assets");
 		QueryBuilder query = null;
 
 		String allowclassifyothernodes = getMediaArchive().getCatalogSettingValue("allowclassifyothernodes");
@@ -94,12 +92,14 @@ public class InformaticsManager extends BaseAiManager
 		
 		if (Boolean.valueOf(allowclassifyothernodes) ) 
 		{
-			log.info("Asset search query: " + pendingrecords + " " +date);
+			log.info("Asset search query: " + pendingrecords + " since:" +date);
 		}
 		else 
 		{
-			log.info("Asset local search query: " + pendingrecords + " " +date);
+			log.info("Asset local search query: " + pendingrecords + " since:" +date);
 		}
+		
+		inLog.info("Processing Assets Informatics");
 
 		if (!pendingrecords.isEmpty())
 		{
@@ -254,7 +254,7 @@ public class InformaticsManager extends BaseAiManager
 
 		//inLog.info("Entities  " + ids + " with " + pendingrecords + " from date: " + date );
 		
-
+		Collection validhits = new ArrayList();
 		if (!pendingrecords.isEmpty())
 		{
 			//inLog.info("Adding metadata to: " + pendingrecords);
@@ -264,7 +264,7 @@ public class InformaticsManager extends BaseAiManager
 				pendingrecords.setPage(i+1);
 				Collection pageofhits = pendingrecords.getPageOfHits();
 				
-				Collection validhits = findValidRecords(pendingrecords.getPageOfHits());
+				validhits = findValidRecords(pendingrecords.getPageOfHits());
 				
 				if (validhits.isEmpty())
 				{
@@ -272,6 +272,8 @@ public class InformaticsManager extends BaseAiManager
 				}
 
 				Collection workinghits = new ArrayList(validhits);
+				
+				//Loop each processor found on the informatics table
 				for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
 				{
 					MultiValued config = (MultiValued) iterator2.next();
@@ -309,7 +311,15 @@ public class InformaticsManager extends BaseAiManager
 
 			}
 			
-			inLog.info("Processing Informatics Complete");
+			
+		}
+		if (!validhits.isEmpty())
+		{
+			inLog.info("Processing " + validhits.size() +" Entities Informatics Complete.");
+		}
+		else
+		{
+			inLog.info("No Entities to Process in modules: " + ids + "  | Search Query: "+ pendingrecords.getFriendlyQuery());
 		}
 	
 	}
@@ -324,14 +334,29 @@ public class InformaticsManager extends BaseAiManager
 		for (Iterator iterator = inPageOfHits.iterator(); iterator.hasNext();)
 		{
 			MultiValued entity = (MultiValued) iterator.next();
+			String searchtype = entity.get("entitysourcetype");
 			String assetid = entity.get("primarymedia");
 			if(assetid == null)
 			{
 				assetid = entity.get("primaryimage");
 			}
-			if (assetid != null || entity.get("markdowncontent") != null || entity.get("longcaption") != null)
+			if (assetid != null || entity.get("markdowncontent") != null || entity.get("longcaption") != null || entity.get("collectivedescription") != null )
 			{
 				valid.add(entity);
+			}
+			else
+			{
+				//add Smart Creator enabled entities
+				
+				if(searchtype != null)
+				{
+					Data module = getMediaArchive().getCachedData("module", searchtype);
+					String method = module.get("aicreationmethod");
+					if(module != null && "smartcreator".equals(method))
+					{
+						valid.add(entity);
+					}
+				}
 			}
 		}
 		return valid;

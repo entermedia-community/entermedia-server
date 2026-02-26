@@ -187,7 +187,7 @@ jQuery(document).ready(function () {
 		}
 	});
 
-	$(document).keydown(function (e) {
+	$(document).on("keydown", function (e) {
 		switch (e.which) {
 			case 27: //esckey
 				var modal = $(".modal.onfront");
@@ -353,7 +353,7 @@ jQuery(document).ready(function () {
 			var selectid = btn.data("textsource");
 			textElement = $("#" + selectid);
 			if (mime && mime.endsWith("/html")) {
-				textToCopy = removeAllClasses(textElement.html());
+				textToCopy = textElement.html();
 			} else if (isFormField(textElement)) {
 				textToCopy = textElement.val();
 			} else {
@@ -365,7 +365,7 @@ jQuery(document).ready(function () {
 			if (copyTextTarget) {
 				textElement = $("#" + copyTextTarget);
 				if (mime && mime.endsWith("/html")) {
-					textToCopy = removeAllClasses(textElement.html());
+					textToCopy = textElement.html();
 				} else if (isFormField(textElement)) {
 					textToCopy = textElement.val();
 				} else {
@@ -392,22 +392,6 @@ jQuery(document).ready(function () {
 		});
 	});
 
-	function removeAllClasses(html) {
-		if (!html) return html;
-		const doc = new DOMParser().parseFromString(html, "text/html");
-
-		const elements = doc.querySelectorAll("[class]");
-		for (let i = 0; i < elements.length; i++) {
-			const rmAttr = Array.from(elements[i].attributes).filter((attr) =>
-				attr.name.startsWith("data-"),
-			);
-			rmAttr.push({ name: "class" });
-			rmAttr.forEach((attr) => elements[i].removeAttribute(attr.name));
-		}
-
-		return doc.body.innerHTML;
-	}
-
 	lQuery(".downloadtext").livequery("click", function (e) {
 		var selectid = $(this).data("textsource");
 		var textElement = $("#" + selectid);
@@ -415,7 +399,7 @@ jQuery(document).ready(function () {
 
 		var textToDownload = null;
 		if (mime.endsWith("/html")) {
-			textToDownload = removeAllClasses(textElement.html());
+			textToDownload = textElement.html();
 		} else if (isFormField(textElement)) {
 			textToDownload = textElement.val();
 		} else {
@@ -791,7 +775,7 @@ jQuery(document).ready(function () {
 					form.trigger("submit");
 				}
 			});
-			$("input[type=checkbox]", form).change(function () {
+			$("input[type=checkbox]", form).on("change", function () {
 				if ($(this).hasClass("filtercheck")) {
 					var fieldname = $(this).data("fieldname");
 					var fieldtype = $(this).data("fieldtype");
@@ -816,14 +800,14 @@ jQuery(document).ready(function () {
 				}
 				form.trigger("submit");
 			});
-			$("input[type=radio], .selectbox", form).change(function () {
+			$("input[type=radio], .selectbox", form).on("change", function () {
 				form.trigger("submit");
 			});
 
 			$("input[type=text]", form)
 				.not(".datepicker")
 				.not(".typeahead")
-				.change(function () {
+				.on("change", function () {
 					form.trigger("submit");
 				});
 

@@ -69,7 +69,7 @@ function chatterbox() {
 		var message = button.text();
 		var input = $("#chatter-msg");
 		input.val(message);
-		input.focus();
+		input.trigger("focus");
 		setTimeout(function () {
 			$(".chatter-send").trigger("click");
 			button.closest(".msg-bubble").remove();
@@ -124,15 +124,12 @@ function chatterbox() {
 		var options = editbtn.cleandata();
 		options.oemaxlevel = 1;
 		var nextpage = editbtn.attr("href");
-		$.get(
-			nextpage, 
-			options, 
-			function (data) {
-				//var cell = findclosest($(this), "#" + targetDiv);
-				var cell = editbtn.closest("#" + targetDiv);
-				cell.replaceWith(data);
-				scrollToEdit(targetDiv);
-			});
+		$.get(nextpage, options, function (data) {
+			//var cell = findclosest($(this), "#" + targetDiv);
+			var cell = editbtn.closest("#" + targetDiv);
+			cell.replaceWith(data);
+			scrollToEdit(targetDiv);
+		});
 	});
 
 	lQuery(".chatterbox-body-inside").livequery("scroll", function (e) {
@@ -160,8 +157,7 @@ function scrollToChat() {
 
 function scrollToEdit(targetDiv) {
 	var messagecontainer = $("#" + targetDiv);
-	if (messagecontainer.lenght)
-	{
+	if (messagecontainer.length) {
 		messagecontainer.get(0).scrollIntoView();
 	}
 }
@@ -269,27 +265,19 @@ function connect() {
 
 var messages = {};
 
-function channelUpdateMessage(chatbox, message)
-{
+function channelUpdateMessage(chatbox, message) {
 	//Cancel an existing one
-	if (messages[message.messageid]) 
-	{
-		messages[ message.messageid] = setTimeout(function () {
-						updageMessage(chatbox,message);
-		}, 1000);	
+	if (messages[message.messageid]) {
+		messages[message.messageid] = setTimeout(function () {
+			updageMessage(chatbox, message);
+		}, 1000);
+	} else {
+		messages[message.messageid] = true;
+		updageMessage(chatbox, message);
 	}
-	else 
-	{
-		messages[ message.messageid] = true;
-		updageMessage(chatbox,message);
-	}
-	
-	
- 
 }
 
-function updageMessage(chatbox, message)
-{
+function updageMessage(chatbox, message) {
 	var existing = jQuery("#chatter-message-" + message.messageid);
 	if (existing.length) {
 		if (message.command === "messageremoved") {
@@ -349,39 +337,42 @@ function updageMessage(chatbox, message)
 		var $div = jQuery("<div></div>");
 		$div.html(data);
 		var $data = $div.find("#chatter-message-" + message.messageid);
-		var inserted = false;
-		try {
-			var messagetype = $data.data("messagetype");
-			if (messagetype === "system") {
-				inserted = true;
-				return;
-			}
-			var createddat = $data.data("createdat");
-			var timestamp = new Date(createddat).getTime();
-			if (!isNaN(timestamp)) {
-				var messages = listarea.find(".msg-bubble");
-				messages.each(function () {
-					var msgcreatedat = jQuery(this).data("createdat");
-					var msgtimestamp = new Date(msgcreatedat).getTime();
-					if (!isNaN(msgtimestamp)) {
-						if (timestamp < msgtimestamp) {
-							jQuery(this).before($data);
-							inserted = true;
-							return false;
-						}
-					}
-				});
-			}
-		} catch (e) {
-			// ignore
-		} finally {
-			if (!inserted) {
-				listarea.append($data);
-			}
+		listarea.removeClass("sorted");
+		setTimeout(function () {
+			listarea.append($data);
 			scrollToChat();
-		}
+		});
 	});
 }
+
+function sortChatterbox(container) {
+	if ($(container).hasClass("sorted")) {
+		return;
+	}
+	var messages = Array.from(container.querySelectorAll(".msg-bubble"));
+
+	messages
+		.sort((a, b) => {
+			var dateA = new Date(a.dataset.createdat);
+			var dateB = new Date(b.dataset.createdat);
+			return dateA - dateB;
+		})
+		.forEach((el) => container.appendChild(el));
+	$(container).addClass("sorted");
+}
+
+lQuery(".chatterbox-message-list").livequery(function () {
+	if ($(this).hasClass("observing")) return;
+	$(this).addClass("observing");
+	var container = this.get(0);
+	if (!container) return;
+	var observer = new MutationObserver(function () {
+		sortChatterbox(container);
+	});
+	observer.observe(container, {
+		childList: true,
+	});
+});
 
 /*--------------Begin Functions List--------------*/
 function reloadAll() {
@@ -557,7 +548,7 @@ jQuery(document).ready(function () {
 	lQuery("#chatter-msg").livequery(function () {
 		var $this = $(this);
 		setTimeout(function () {
-			$this.focus();
+			$this.trigger("focus");
 		});
 	});
 
@@ -657,7 +648,7 @@ jQuery(document).ready(function () {
 		textarea.val(prev);
 
 		$(".emoji-picker").fadeOut(function () {
-			textarea.focus();
+			textarea.trigger("focus");
 			$(this).remove();
 		});
 	});

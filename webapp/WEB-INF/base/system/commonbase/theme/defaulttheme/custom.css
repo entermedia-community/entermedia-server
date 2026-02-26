@@ -7,7 +7,8 @@
 	--themed-sidebar: #252525;
 	--themed-sidebar-text: #ffffff;
 	--themed-navbar-primary: #252525;
-	--themed-navbar-primary-text: #ffffff;
+	--themed-navbar-primary-text: #f5f5f5;
+	--themed-navbar-primary-text-hover: #ffffff;
 	--themed-navbar-secondary: #444444;
 	--themed-navbar-secondary-text: #ffffff;
 	--themed-nav-btn: #444444;
