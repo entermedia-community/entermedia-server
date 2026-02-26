@@ -78,7 +78,7 @@ public class MarkdownUtil
 		List<Node> nodes = new ArrayList<Node>();
 		
 		
-		flattenDocument(nodes, document);
+		flattenDocument(nodes, document.getFirstChild());
 		
 		boolean headerAdded = false;
 		
@@ -132,41 +132,15 @@ public class MarkdownUtil
 			return;
 		}
 		
-		Node first = root.getFirstChild();
+		String nodeName = root.getClass().getSimpleName();
 		
-		if(first == null)
+		if(validTypes.contains(nodeName))
 		{
-			return;
+			nodes.add(root);
 		}
+
+		flattenDocument(nodes, root.getNext());
 		
-		if(validTypes.contains(first.getClass().getSimpleName()))
-		{
-			nodes.add(first);
-			
-			if (first.getNext() != null)
-			{
-				flattenDocument(nodes, first.getNext());
-			}
-		}
-		
-		for (Iterator<Node> iterator = Nodes.between(first, null).iterator(); iterator.hasNext();) {
-			Node node = (Node) iterator.next();
-			
-			if(node == null)
-			{
-				continue;
-			}
-			
-			if(validTypes.contains(node.getClass().getSimpleName()))
-			{
-				nodes.add(node);
-				continue;
-			}
-			
-			flattenDocument(nodes, node);
-		}
-		
-		flattenDocument(nodes, first);
 	}
 	
 	public boolean isHeader(Node node)
@@ -183,6 +157,18 @@ public class MarkdownUtil
 			if(firstChild != null && firstChild.getClass().getSimpleName().equals("StrongEmphasis"))
 			{
 				Node next = firstChild.getNext();
+				
+				while(next != null)
+				{
+					if(!"Text".equals(next.getClass().getSimpleName()))
+					{
+						return false;
+					}
+					next = next.getNext();
+				}
+				
+				next = firstChild.getNext();
+				
 				if(next != null)
 				{
 					TextContentRenderer textRenderer = TextContentRenderer.builder().build();
@@ -201,5 +187,22 @@ public class MarkdownUtil
 		
 		return false;
 	}
+	
+	
+	
+ 	public void test(WebPageRequest inReq)
+ 	{
+ 		String markdown = inReq.getRequestParameter("markdown");
+ 		
+ 		if(markdown == null)
+ 		{
+ 			return;
+ 		}
+ 		
+ 		List<Map<String, String>> maps = getHtmlMaps(markdown);
+		
+ 		inReq.putPageValue("markdown", markdown);
+ 		inReq.putPageValue("maps", maps);
+ 	}
 	
 }
