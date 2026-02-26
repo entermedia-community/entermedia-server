@@ -143,7 +143,10 @@ public class MarkdownUtil
 		{
 			nodes.add(first);
 			
-			flattenDocument(nodes, first.getNext());
+			if (first.getNext() != null)
+			{
+				flattenDocument(nodes, first.getNext());
+			}
 		}
 		
 		for (Iterator<Node> iterator = Nodes.between(first, null).iterator(); iterator.hasNext();) {

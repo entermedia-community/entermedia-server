@@ -2971,7 +2971,7 @@ public class MediaArchive implements CatalogEnabled
 	 */
 	public String asLinkToPreview(Data inAsset, String inGeneratedoutputfile, boolean isExternalLink)
 	{
-		if (inAsset == null)
+		if (inAsset == null || inGeneratedoutputfile == null)
 		{
 			return null;
 		}
