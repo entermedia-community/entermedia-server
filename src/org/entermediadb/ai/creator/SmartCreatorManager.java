@@ -828,7 +828,16 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			MarkdownUtil md = new MarkdownUtil();
 			List<Map<String, String>> htmlMaps = md.getHtmlMaps(answer);
 			
+			Map<String, String> firstMap = (Map) htmlMaps.getFirst();
 			
+			if(!"Heading".equals(firstMap.get("type")))
+			{
+				Map<String, String> introMap = new HashMap<String, String>();
+				introMap.put("type", "Heading");
+				introMap.put("content", section.getName());
+				
+				htmlMaps.add(0, introMap);
+			}
 			
 			for (Iterator iterator2 = htmlMaps.iterator(); iterator2.hasNext();) 
 			{

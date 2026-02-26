@@ -78,7 +78,7 @@ public class MarkdownUtil
 		List<Node> nodes = new ArrayList<Node>();
 		
 		
-		flattenDocument(nodes, document);
+		flattenDocument(nodes, document.getFirstChild());
 		
 		boolean headerAdded = false;
 		
@@ -132,41 +132,15 @@ public class MarkdownUtil
 			return;
 		}
 		
-		Node first = root.getFirstChild();
+		String nodeName = root.getClass().getSimpleName();
 		
-		if(first == null)
+		if(validTypes.contains(nodeName))
 		{
-			return;
+			nodes.add(root);
 		}
+
+		flattenDocument(nodes, root.getNext());
 		
-		if(validTypes.contains(first.getClass().getSimpleName()))
-		{
-			nodes.add(first);
-			
-			if (first.getNext() != null)
-			{
-				flattenDocument(nodes, first.getNext());
-			}
-		}
-		
-		for (Iterator<Node> iterator = Nodes.between(first, null).iterator(); iterator.hasNext();) {
-			Node node = (Node) iterator.next();
-			
-			if(node == null)
-			{
-				continue;
-			}
-			
-			if(validTypes.contains(node.getClass().getSimpleName()))
-			{
-				nodes.add(node);
-				continue;
-			}
-			
-			flattenDocument(nodes, node);
-		}
-		
-		flattenDocument(nodes, first);
 	}
 	
 	public boolean isHeader(Node node)
@@ -183,6 +157,18 @@ public class MarkdownUtil
 			if(firstChild != null && firstChild.getClass().getSimpleName().equals("StrongEmphasis"))
 			{
 				Node next = firstChild.getNext();
+				
+				while(next != null)
+				{
+					if(!"Text".equals(next.getClass().getSimpleName()))
+					{
+						return false;
+					}
+					next = next.getNext();
+				}
+				
+				next = firstChild.getNext();
+				
 				if(next != null)
 				{
 					TextContentRenderer textRenderer = TextContentRenderer.builder().build();
@@ -201,5 +187,30 @@ public class MarkdownUtil
 		
 		return false;
 	}
+	
+	
+	
+// 	public void test(WebPageRequest inReq)
+// 	{
+// 		String markdown = """
+// **Understanding Threats and Vulnerabilities in the Workplace**  
+
+// Threats and vulnerabilities in a workplace environment refer to risks that can compromise employee well-being, productivity, or organizational integrity. Threats often manifest as harmful behaviors or conditions, while vulnerabilities are gaps in policies, procedures, or safeguards that allow these threats to persist.  
+
+// **Breakdown of Threats:**  
+// - **Harassment:** Includes actions like spreading rumors, derogatory comments about personal attributes, or unwanted advances, which create hostile environments and undermine trust. For example, ridiculing an employee in front of peers or assigning unrelated tasks (e.g., fetching coffee) against their will can erode morale and safety.  
+// - **Workplace Violence:** Any intentional or unintentional act that threatens physical or psychological safety, such as sabotage or aggressive behavior, which can disrupt operations and harm relationships.  
+
+// **Breakdown of Vulnerabilities:**  
+// - **Lack of Clear Boundaries:** Ambiguity in defining unacceptable behavior may allow harassment or misconduct to go unaddressed. For instance, if policies do not explicitly prohibit spreading rumors, employees may perceive such actions as harmless.  
+// - **Inadequate Reporting Mechanisms:** If employees fear retaliation or lack confidence in reporting systems, vulnerabilities like harassment may persist unchecked.  
+
+// **Examples from Context:**  
+// The handbook emphasizes disciplinary actions for repeated policy violations, such as termination for sexual harassment or frequent breaches of conduct. This underscores the importance of addressing vulnerabilities through enforceable policies and fostering a culture of accountability.""";
+		
+// 		List<Map<String, String>> maps = getHtmlMaps(markdown);
+		
+// 		inReq.putPageValue("maps", maps);
+// 	}
 	
 }

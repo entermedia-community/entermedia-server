@@ -158,8 +158,8 @@ public class AiSmartCreatorSteps extends BaseData
 			String instruction = (String) outline.get("instruction");
 			setStepOutlineCreate(instruction);
 			
-			String style = (String) outline.get("style");
-			setStepOutlineStyle(style);
+//			String style = (String) outline.get("style");
+//			setStepOutlineStyle(style);
 		}
 		
 		JSONObject content = (JSONObject) inJson.get("section_content");
@@ -173,10 +173,10 @@ public class AiSmartCreatorSteps extends BaseData
 	public String getOutlineCreatePrompt()
 	{
 		String prompt = getStepOutlineCreate();
-		if(getStepOutlineStyle() != null) 
-		{
-			prompt += " " + getStepOutlineStyle();
-		}
+//		if(getStepOutlineStyle() != null) 
+//		{
+//			prompt += " " + getStepOutlineStyle();
+//		}
 		return prompt;
 	}
 	
