@@ -186,19 +186,36 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 			instructions.setOutputFile(tempfile);
 
 			ConvertResult result = manager.createOutput(instructions, true);
-			if (!result.isOk()) {
+			if (!result.isOk()) 
+			{
 				throw new OpenEditException("Could not transcode audio");
 			}
 			try {
 
 				JSONObject transcriptions = getTranscribedData(tempfile);
 				
-				if (transcriptions == null) {
+				if (transcriptions == null) 
+				{
 					log.error("Transcriber server error");
 					throw new OpenEditException("Transcriber server error");
 				}
+				
+				String language = (String) transcriptions.get("language");
+				if (language != null) 
+				{
+					inTrack.setValue("sourcelang", language);
+				}
+				
+				Long speakercount = (Long) transcriptions.get("num_speakers");
+				if (speakercount != null) 
+				{
+					inTrack.setValue("speakercount", speakercount);
+				}
+
+				JSONArray segments = (JSONArray) transcriptions.get("segments");
+				
 	
-				for (Iterator iterator2 = transcriptions.iterator(); iterator2.hasNext();) 
+				for (Iterator iterator2 = segments.iterator(); iterator2.hasNext();) 
 				{
 					Map cuemap = new HashMap();
 					JSONObject transcription = (JSONObject) iterator2.next();
@@ -209,7 +226,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 					String speaker = (String) transcription.get("speaker");
 					
 					if (speaker == null) {
-						speaker = "Speaker 1";
+						speaker = "Unknown";
 					}
 					
 					cuemap.put("cliplabel", text);
