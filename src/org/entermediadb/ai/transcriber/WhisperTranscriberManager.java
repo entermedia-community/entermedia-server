@@ -175,7 +175,8 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 
 			instructions.setProperty("timeoffset", String.valueOf(timeoffset));
 			instructions.setProperty("duration", "300");
-			instructions.setProperty("resample", "16000");
+			instructions.setProperty("bitrate", "128");
+			instructions.setProperty("resample", "48000");
 			
 			Page page = archive.getPageManager().getPage("/WEB-INF/temp/" + inAsset.getId() + "data.mp3");
 			archive.getPageManager().removePage(page);
