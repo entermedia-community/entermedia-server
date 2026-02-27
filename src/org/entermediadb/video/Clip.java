@@ -54,6 +54,11 @@ public class Clip implements Comparable
 		return MathUtils.toDuration(getStart());
 	}
 	
+	public String getEndSecondsAndHours()
+	{
+		return MathUtils.toDuration(getStart() + getLength());
+	}
+	
 	public Object getValue(String inKey)
 	{
 		return getData().get(inKey);
