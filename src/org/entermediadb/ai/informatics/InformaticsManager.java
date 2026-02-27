@@ -12,7 +12,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
-import org.entermediadb.ai.assistant.QuestionsManager;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
@@ -340,6 +339,17 @@ public class InformaticsManager extends BaseAiManager
 			{
 				assetid = entity.get("primaryimage");
 			}
+			Asset asset = getMediaArchive().getAsset(assetid);
+			
+			if(asset != null)
+			{
+				if(!asset.getBoolean("taggedbyllm"))
+				{
+					log.info("Skipping entity " + entity.getId() + " because primary asset " + assetid + " is not tagged by llm yet.");
+					continue; 
+				}
+			}
+			
 			if (assetid != null || entity.get("markdowncontent") != null || entity.get("longcaption") != null || entity.get("collectivedescription") != null )
 			{
 				valid.add(entity);
