@@ -206,8 +206,14 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 					double start = (double) transcription.get("start");
 					double end = (double) transcription.get("end");
 					String text = (String) transcription.get("text");
-
+					String speaker = (String) transcription.get("speaker");
+					
+					if (speaker == null) {
+						speaker = "Speaker 1";
+					}
+					
 					cuemap.put("cliplabel", text);
+					cuemap.put("speaker", speaker);
 					cuemap.put("timecodestart", Math.round((timeoffset + start) * 1000d));
 					cuemap.put("timecodelength", Math.round((end - start) * 1000d));
 					

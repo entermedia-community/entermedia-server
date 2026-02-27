@@ -2,10 +2,6 @@ var chatconnection;
 var loadingmore = false;
 
 function chatterbox() {
-	console.log(
-		"Starting chat in channel: " + jQuery(".chatterbox").data("channel"),
-	);
-
 	cancelKeepAlive();
 	connect();
 	keepAlive();
@@ -204,9 +200,12 @@ function connect() {
 		var message = JSON.parse(event.data);
 		var channel = message.channel;
 		var chatbox = jQuery('div.chatterbox[data-channel="' + channel + '"]');
+		
 		if (message && chatbox.length == 1) {
-			//Channel on the screen
-			channelUpdateMessage(chatbox, message);
+			//Channel on the screen no need to notify
+			
+	        channelUpdateMessage(chatbox, message);
+
 			return;
 		}
 
@@ -266,18 +265,20 @@ function connect() {
 var messages = {};
 
 function channelUpdateMessage(chatbox, message) {
+	
 	//Cancel an existing one
 	if (messages[message.messageid]) {
 		messages[message.messageid] = setTimeout(function () {
-			updageMessage(chatbox, message);
+			updateMessage(chatbox, message);
 		}, 1000);
 	} else {
 		messages[message.messageid] = true;
-		updageMessage(chatbox, message);
+		updateMessage(chatbox, message);
 	}
 }
 
-function updageMessage(chatbox, message) {
+function updateMessage(chatbox, message) {
+	updatingchannel = true;
 	var existing = jQuery("#chatter-message-" + message.messageid);
 	if (existing.length) {
 		if (message.command === "messageremoved") {
@@ -337,19 +338,19 @@ function updageMessage(chatbox, message) {
 		var $div = jQuery("<div></div>");
 		$div.html(data);
 		var $data = $div.find("#chatter-message-" + message.messageid);
-		listarea.removeClass("sorted");
-		setTimeout(function () {
+		//setTimeout(function () {
 			listarea.append($data);
 			scrollToChat();
-		});
+			
+			sortChatterbox(chatbox.find(".chatterbox-message-list"));
+		//});
 	});
 }
 
 function sortChatterbox(container) {
-	if ($(container).hasClass("sorted")) {
-		return;
-	}
-	var messages = Array.from(container.querySelectorAll(".msg-bubble"));
+
+	//var messages = Array.from(container.querySelectorAll(".msg-bubble"));
+	var messages = Array.from(container.find(".msg-bubble"));
 
 	messages
 		.sort((a, b) => {
@@ -357,10 +358,10 @@ function sortChatterbox(container) {
 			var dateB = new Date(b.dataset.createdat);
 			return dateA - dateB;
 		})
-		.forEach((el) => container.appendChild(el));
-	$(container).addClass("sorted");
+		.forEach((el) => container.append(el));
+		console.log("sorted...");
 }
-
+/*
 lQuery(".chatterbox-message-list").livequery(function () {
 	if ($(this).hasClass("observing")) return;
 	$(this).addClass("observing");
@@ -373,7 +374,7 @@ lQuery(".chatterbox-message-list").livequery(function () {
 		childList: true,
 	});
 });
-
+*/
 /*--------------Begin Functions List--------------*/
 function reloadAll() {
 	var app = jQuery("#application");
