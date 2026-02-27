@@ -191,7 +191,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 			}
 			try {
 
-				JSONArray transcriptions = getTranscribedData(tempfile);
+				JSONObject transcriptions = getTranscribedData(tempfile);
 				
 				if (transcriptions == null) {
 					log.error("Transcriber server error");
@@ -244,7 +244,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 	
 	
 	
-	public JSONArray getTranscribedData(ContentItem audio) throws FileNotFoundException, Exception {
+	public JSONObject getTranscribedData(ContentItem audio) throws FileNotFoundException, Exception {
 		
 		File audioFile = new File(audio.getAbsolutePath());
 		if(!audioFile.exists())
@@ -261,7 +261,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		
 		LlmResponse resp = connection.callJson("/transcribe", headers, params);
 		
-		JSONArray result = (JSONArray) resp.getRawCollection();  //TODO: Change server to return JSONOBject
+		JSONObject result = (JSONObject) resp.getRawResponse();  
 		return result;
 
 	}
