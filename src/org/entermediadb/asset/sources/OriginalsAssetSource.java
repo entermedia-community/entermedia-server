@@ -367,7 +367,7 @@ public class OriginalsAssetSource extends BaseAssetSource
 				List<String> list = EmStringUtils.split(excludes);
 //				for (int i = 0; i < list.size(); i++)
 //				{
-//					String row = list.get(i).trim();
+//		 			String row = list.get(i).trim();
 //					if( row.startsWith("/") &&  !row.startsWith(path))
 //					{
 //						row = path + row;

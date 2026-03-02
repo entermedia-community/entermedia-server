@@ -134,6 +134,47 @@ public class AssetSourceManager implements CatalogEnabled
 		return exists;
 	}
 	
+
+	/**
+	 * Resolves the correct AssetSource for a logical Category path,
+	 * handles the subfolder stripping, and triggers a targeted import.
+	 * * @param inCategoryPath Logical path (e.g., "Vault/by_date/Field1")
+	 * @return Number of assets found/updated
+	 */
+	public int importAssets(String inCategoryPath)
+	{
+	    // 1. Find the source that handles this specific path
+	    AssetSource source = findAssetSource(inCategoryPath);
+	    
+	    if (source == null || !source.isHotFolder())
+	    {
+	        log.warn("No valid hotfolder source found for path: " + inCategoryPath);
+	        return 0;
+	    }
+
+	    // 2. Resolve the relative path within that source
+	    String subfolder = source.getConfig().get("subfolder");
+	    String subPath = inCategoryPath;
+
+	    if (subfolder != null && inCategoryPath.startsWith(subfolder))
+	    {
+	        // Strip "Vault" from "Vault/by_date/..."
+	        subPath = inCategoryPath.substring(subfolder.length());
+	    }
+
+	    // 3. Clean up leading slashes for the Importer
+	    if (subPath.startsWith("/"))
+	    {
+	        subPath = subPath.substring(1);
+	    }
+
+	    log.info("Triggering targeted import on " + source.getName() + " for subpath: " + subPath);
+	    
+	    // 4. Delegate to the underlying source implementation
+	    return source.importAssets(subPath);
+	}
+	
+	
 	public AssetSource findAssetSource(String inPath)
 	{
 		for (Iterator iterator = getAssetSources().iterator(); iterator.hasNext();)
