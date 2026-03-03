@@ -490,7 +490,7 @@ jQuery(document).ready(function () {
 			$(this).html(text);
 			return;
 		}
-		$(this).click(function (e) {
+		$(this).on("click", function (e) {
 			if (
 				e.target.classList.contains("see-more") ||
 				e.target.classList.contains("see-less")
