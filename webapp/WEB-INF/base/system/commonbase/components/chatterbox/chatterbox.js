@@ -200,11 +200,11 @@ function connect() {
 		var message = JSON.parse(event.data);
 		var channel = message.channel;
 		var chatbox = jQuery('div.chatterbox[data-channel="' + channel + '"]');
-		
+
 		if (message && chatbox.length == 1) {
 			//Channel on the screen no need to notify
-			
-	        channelUpdateMessage(chatbox, message);
+
+			channelUpdateMessage(chatbox, message);
 
 			return;
 		}
@@ -265,7 +265,6 @@ function connect() {
 var messages = {};
 
 function channelUpdateMessage(chatbox, message) {
-	
 	//Cancel an existing one
 	if (messages[message.messageid]) {
 		messages[message.messageid] = setTimeout(function () {
@@ -337,18 +336,23 @@ function updateMessage(chatbox, message) {
 	jQuery.get(url, options, function (data) {
 		var $div = jQuery("<div></div>");
 		$div.html(data);
+
 		var $data = $div.find("#chatter-message-" + message.messageid);
-		//setTimeout(function () {
+
+		var exiting = listarea.find("#chatter-message-" + message.messageid);
+		if (exiting.length) {
+			exiting.replaceWith($data);
+		} else {
 			listarea.append($data);
-			scrollToChat();
-			
-			sortChatterbox(chatbox.find(".chatterbox-message-list"));
-		//});
+		}
+
+		sortChatterbox(chatbox.find(".chatterbox-message-list"));
+
+		scrollToChat();
 	});
 }
 
 function sortChatterbox(container) {
-
 	//var messages = Array.from(container.querySelectorAll(".msg-bubble"));
 	var messages = Array.from(container.find(".msg-bubble"));
 
@@ -359,7 +363,7 @@ function sortChatterbox(container) {
 			return dateA - dateB;
 		})
 		.forEach((el) => container.append(el));
-		console.log("sorted...");
+	console.log("sorted...");
 }
 /*
 lQuery(".chatterbox-message-list").livequery(function () {
