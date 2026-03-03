@@ -12,7 +12,7 @@ jQuery(document).ready(function () {
 	}
 	const userid = app.data("user");
 
-	function chatterbox() {
+	function initChatterbox() {
 		cancelKeepAlive();
 		connect();
 		keepAlive();
@@ -201,13 +201,13 @@ jQuery(document).ready(function () {
 
 			$(window).trigger("ajaxsocketautoreload");
 			const message = JSON.parse(event.data);
-			const channel = message.channel;
-			const chatbox = $(`div.chatterbox[data-channel="${channel}"]`);
+			const channelId = message.channel;
+			const chatterbox = $(`div.chatterbox[data-channel="${channelId}"]`);
 
-			if (message && chatbox.length === 1) {
+			if (message && chatterbox.length === 1) {
 				//Channel on the screen no need to notify
 
-				channelUpdateMessage(chatbox, message);
+				channelUpdateMessage(chatterbox, message);
 
 				return;
 			}
@@ -236,7 +236,7 @@ jQuery(document).ready(function () {
 							body: message.message,
 							renotify: false,
 							tag: messagebody,
-							icon: `${apphome}/theme/images/logo.png`,
+							icon: `${appHome}/theme/images/logo.png`,
 						});
 						notification.addEventListener("click", function (event) {
 							//window.open('http://www.mozilla.org', '_blank');
@@ -262,10 +262,21 @@ jQuery(document).ready(function () {
 				}
 			}
 		});
+
 		chatConnection.addEventListener("open", function () {
 			keepAlive();
-			// console.info(new Date().toISOString(), "Chat Connection Opened");
-			// console.log("Chat Connection Opened");
+			const chatterbox = $(`div.chatterbox[data-channel="${channel}"]`);
+			const chatterboxHome = chatterbox.data("chatterboxhome");
+			const messagesUrl = chatterboxHome + "/index.html";
+			let options = chatterbox.cleandata();
+			if (!options) options = {};
+			options.oemaxlevel = 1;
+			$.get(messagesUrl, options, function (data) {
+				chatterbox.replaceWith(data);
+				const listArea = chatterbox.find(".chatterbox-message-list");
+				sortChatterbox(listArea);
+				scrollToChat();
+			});
 		});
 		chatConnection.addEventListener("close", function () {
 			// console.info(new Date().toISOString(), "Chat Connection Closed");
@@ -278,28 +289,31 @@ jQuery(document).ready(function () {
 
 	const messages = {};
 
-	function channelUpdateMessage(chatbox, message) {
+	function channelUpdateMessage(chatterbox, message) {
 		//Cancel an existing one
 		if (messages[message.messageid]) {
 			messages[message.messageid] = setTimeout(function () {
-				updateMessage(chatbox, message);
+				updateMessage(chatterbox, message);
 			}, 1000);
 		} else {
 			messages[message.messageid] = true;
-			updateMessage(chatbox, message);
+			updateMessage(chatterbox, message);
 		}
 	}
 
-	function updateMessage(chatbox, message) {
+	function updateMessage(chatterbox, message) {
 		console.info(new Date().toISOString(), message);
 
-		const listarea = chatbox.find(".chatterbox-message-list");
-		let url = chatbox.data("rendermessageurl");
-		if (!url) {
-			url = apphome + "/components/chatterbox/message.html";
+		const listArea = chatterbox.find(".chatterbox-message-list");
+
+		const chatterboxHome = chatterbox.data("chatterboxhome");
+
+		let renderMessageUrl = appHome + "/components/chatterbox/message.html";
+		if (chatterboxHome.length) {
+			renderMessageUrl = chatterboxHome + "/message.html";
 		}
 
-		const existing = listarea.find("#chatter-message-" + message.messageid);
+		const existing = listArea.find("#chatter-message-" + message.messageid);
 		if (existing.length) {
 			if (message.command === "messageremoved") {
 				existing.remove();
@@ -319,12 +333,12 @@ jQuery(document).ready(function () {
 
 		scrollToChat();
 
-		let options = chatbox.cleandata();
+		let options = chatterbox.cleandata();
 		if (!options) options = {};
-		const editdiv = chatbox.closest(".editdiv");
+		const editdiv = chatterbox.closest(".editdiv");
 		if (
-			chatbox.data("includeeditcontext") === undefined ||
-			chatbox.data("includeeditcontext") === true
+			chatterbox.data("includeeditcontext") === undefined ||
+			chatterbox.data("includeeditcontext") === true
 		) {
 			if (editdiv.length > 0) {
 				const otherdata = editdiv.cleandata();
@@ -349,9 +363,9 @@ jQuery(document).ready(function () {
 		params.collectionid = message.collectionid;
 	}*/
 
-		$.get(url, options, function (data) {
-			listarea.append(data);
-			sortChatterbox(chatbox.find(".chatterbox-message-list"));
+		$.get(renderMessageUrl, options, function (data) {
+			listArea.append(data);
+			sortChatterbox(listArea);
 			scrollToChat();
 		});
 	}
@@ -551,7 +565,7 @@ lQuery(".chatterbox-message-list").livequery(function () {
 	});
 
 	lQuery(".chatterbox").livequery(function () {
-		chatterbox();
+		initChatterbox();
 		scrollToChat();
 	});
 
