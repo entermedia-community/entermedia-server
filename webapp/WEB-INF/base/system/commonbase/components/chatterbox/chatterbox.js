@@ -193,23 +193,14 @@ jQuery(document).ready(function () {
 			chatConnection = new WebSocket(`wss://${location.host}${url}`);
 		} else {
 			chatConnection = new WebSocket(`ws://${location.host}${url}`);
-			console.log("Chat Connected");
+			// console.log(new Date().toISOString(), "Chat initialized with ws");
 		}
 
-		chatConnection.addEventListener("open", function (event) {
-			console.log("Chat Connection Opened");
-		});
-		chatConnection.addEventListener("close", function (event) {
-			console.log("Chat Connection Closed");
-		});
-		chatConnection.addEventListener("error", function (event) {
-			console.error("Chat Connection Error", event);
-		});
-
 		chatConnection.addEventListener("message", function (event) {
+			// console.info(new Date().toISOString(), "Received message");
+
 			$(window).trigger("ajaxsocketautoreload");
 			const message = JSON.parse(event.data);
-			console.info(new Date().toISOString(), "Received message:", message);
 			const channel = message.channel;
 			const chatbox = $(`div.chatterbox[data-channel="${channel}"]`);
 
@@ -270,6 +261,18 @@ jQuery(document).ready(function () {
 					}
 				}
 			}
+		});
+		chatConnection.addEventListener("open", function () {
+			keepAlive();
+			// console.info(new Date().toISOString(), "Chat Connection Opened");
+			// console.log("Chat Connection Opened");
+		});
+		chatConnection.addEventListener("close", function () {
+			// console.info(new Date().toISOString(), "Chat Connection Closed");
+			// console.log("Chat Connection Closed");
+		});
+		chatConnection.addEventListener("error", function (event) {
+			// console.error(new Date().toISOString(), "Chat Connection Error", event);
 		});
 	}
 
