@@ -289,7 +289,6 @@ jQuery(document).ready(function () {
 
 	function updateMessage(chatbox, message) {
 		console.info(new Date().toISOString(), message);
-		updatingchannel = true;
 
 		const listarea = chatbox.find(".chatterbox-message-list");
 		let url = chatbox.data("rendermessageurl");
