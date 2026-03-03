@@ -2,10 +2,13 @@
 
 <page>
 
-	
+	<property name="searchtype">user</property>
+	<property name="hitsperpage">15</property>
 	<page-action name="User.loadPageOfResults" />
 	
 	<page-action name="ProfileModule.loadUserProfileManager"/>
+	
 	<property name="oemaxlevel">1</property>
 	<property name="showonly"></property>
+	
 </page>

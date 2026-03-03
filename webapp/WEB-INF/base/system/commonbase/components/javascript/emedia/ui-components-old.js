@@ -2018,6 +2018,42 @@ function initializeUI() {
 		);
 		e.stopPropagation();
 	});
+	
+	
+	lQuery("#usermanager-workarea th.sortable").livequery("click", function (e) {
+			var table = $("#main-results-table");
+			var edithome = $(this).closest("#usermanager-workarea").data("edithome");
+			var args = {
+				oemaxlevel: 1,
+				hitssessionid: table.data("hitssessionid"),
+				origURL: table.data("origURL"),
+				catalogid: table.data("catalogid"),
+				searchtype: table.data("searchtype"),
+			};
+			var column = $(this);
+			var fieldid = column.data("fieldid");
+
+			if (column.hasClass("currentsort")) {
+				if (column.hasClass("up")) {
+					args.sortby = fieldid + "Down";
+				} else {
+					args.sortby = fieldid + "Up";
+				}
+			} else {
+				$("#usermanager-workarea th.sortable").removeClass("currentsort");
+				column.addClass("currentsort");
+				column.addClass("up");
+				args.sortby = fieldid + "Up";
+			}
+			$("#usermanager-workarea").load(
+				edithome + "/columnsort.html",
+				args,
+				function (response, status, xhr) {
+					$(window).trigger("resize");
+				},
+			);
+			e.stopPropagation();
+		});
 
 	lQuery(".tabnav a").livequery("click", function () {
 		$(".tabnav a").removeClass("current");

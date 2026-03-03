@@ -13,9 +13,10 @@
 		<form class="ajaxform" id="usersearchform" name="search" 
 			data-targetdiv="usersearchresultspanel" 
 			action="$siteroot$usermanagerhome/users/fieldsearch.html">
-			<input type="hidden" name="hitsperpage" value="12"/>
-			<input type="hidden" name="sortby" value="enabledDown,lastNameUp"/>
+			<input type="hidden" name="hitsperpage" value="15"/>
+			<input type="hidden" name="sortby" value="$hits.getSearchQuery().getSortBy()"/>
 			<input type="hidden" name="search" value="true"/>
+			<input type="hidden" name="userhitssessionid" value="$hits.sessionId"/>
 			<div class="d-flex align-items-center justify-content-between mb-3">
 				<div class="me-auto">
 					
@@ -23,9 +24,6 @@
 						data-targetdivinner="settingssubtab"
 						data-updateurl="true"
 						href='$siteroot$usermanagerhome/users/adduser.html'>[[Create User]]</a>
-						<a class="btn btn-secondary ajax" 
-												href='$siteroot$usermanagerhome/users/reindex.html'
-												data-targetdivinner="settingssubtab">[[Reindex]]</a>
 					<a class="btn btn-secondary ajax"
 						data-targetdivinner="applicationmaincontent"
 						data-oemaxlevel="5"

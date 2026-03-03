@@ -1275,6 +1275,10 @@ public class UserManagerModule extends BaseMediaModule
 	public void loadPageOfResults(WebPageRequest inReq)
 	{
 		HitTracker hits = getUserSearcher(inReq).loadPageOfSearch(inReq);
+		if (hits == null)
+		{
+			hits = getUserSearcher(inReq).getAllHits();
+		}
 		inReq.putPageValue("hits", hits);
 	}
 	public void loadPageOfGroupResults(WebPageRequest inReq)
