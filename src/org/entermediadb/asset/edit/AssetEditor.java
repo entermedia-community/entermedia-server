@@ -431,6 +431,7 @@ public class AssetEditor
 		getPageManager().getRepository().put(inNewContent); //Or move?
 		
 		getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, inNewContent, current );
+		
 		getMediaArchive().saveAsset(current);
 		getMediaArchive().removeGeneratedImages(current, true);
 		
@@ -463,6 +464,7 @@ public class AssetEditor
 	        		
 		//Version the new one
 		getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(getMediaArchive(), original, current );
+		
 		getMediaArchive().saveAsset(current);
 		getMediaArchive().removeGeneratedImages(current, true);
 		createNewVersionData(current,original,inEditUser, Version.RESTORE, null );
