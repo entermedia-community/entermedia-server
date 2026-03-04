@@ -183,10 +183,10 @@ public class AssetImportModule  extends BaseMediaModule
 		*/
 		Asset asset = getAsset(inReq);
 		
-		
-		if(!asset.isLocked()) {
-		asset.toggleLock(inReq.getUser());
-		archive.saveAsset(asset);
+		if(!asset.isLocked()) 
+		{
+			asset.lock(true, inReq.getUser());
+			archive.saveAsset(asset);
 		}
 		
 	}

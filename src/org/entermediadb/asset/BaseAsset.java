@@ -1042,12 +1042,12 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 
 
 	@Override
-	public void toggleLock(User inUser)
+	public void lock(Boolean inLock, User inUser)
 	{
-		if(isLocked()) {
-			setValue("lockedby", null);
-		} else {
+		if(inLock) {
 			setValue("lockedby", inUser.getId());
+		} else {
+			setValue("lockedby", null);
 		}
 		
 	}
