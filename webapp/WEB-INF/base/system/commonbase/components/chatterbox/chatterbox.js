@@ -2,7 +2,6 @@ jQuery(document).ready(function () {
 	"use strict";
 
 	let chatConnection;
-	let loadingMore = false;
 
 	const app = $("#application");
 	let appHome = app.data("apphome");
@@ -135,12 +134,6 @@ jQuery(document).ready(function () {
 				scrollToEdit(targetDiv);
 			});
 		});
-
-		// lQuery(".chatterbox-body-inside").livequery("scroll", function (e) {
-		// 	if ($(this).scrollTop() < 50) {
-		// 		loadMoreChats();
-		// 	}
-		// });
 
 		lQuery("a.appendgoalbutton").livequery("click", function (e) {
 			const parent = $(this).closest(".goalstatusopen");
@@ -383,76 +376,6 @@ jQuery(document).ready(function () {
 			.forEach((el) => container.append(el));
 		console.log("sorted...");
 	}
-	/*
-lQuery(".chatterbox-message-list").livequery(function () {
-	if ($(this).hasClass("observing")) return;
-	$(this).addClass("observing");
-	var container = this.get(0);
-	if (!container) return;
-	var observer = new MutationObserver(function () {
-		sortChatterbox(container);
-	});
-	observer.observe(container, {
-		childList: true,
-	});
-});
-*/
-	/*--------------Begin Functions List--------------*/
-	function reloadAll() {
-		$(".chatterbox").each(function () {
-			const chatter = $(this);
-			let url = chatter.data("renderurl");
-			if (!url) {
-				url = appHome + "/components/chatterbox/index.html";
-			}
-			const chatterdiv = $(this);
-			const mydata = $(this).data();
-			$.get(url, mydata, function (data) {
-				chatterdiv.html(data);
-
-				scrollToChat();
-			});
-		});
-	}
-
-	function showSpinner() {
-		//TODO:  Shakil Add a spinner somewhere to let us know the chat bot is about to say something
-		console.log("AI about to respond");
-		$(".chatterspinner").show();
-		scrollToChat();
-	}
-
-	function hideSpinner() {
-		//TODO:  Shakil Add a spinner somewhere to let us know the chat bot is about to say something
-		console.log("AI done");
-		$(".chatterspinner").hide();
-	}
-
-	function loadMoreChats() {
-		//already loading
-		if (loadingMore) {
-			//console.log("already loading");
-			//skip
-			return;
-		}
-		loadingMore = true;
-
-		$(".chatterbox").each(function () {
-			const url = appHome + "/components/chatterbox/loadmessages.html";
-
-			const chatterdiv = $(this);
-			const mydata = $(this).data();
-			mydata.lastloaded = chatterdiv
-				.find(".chatterbox-messages")
-				.data("lastloaded");
-			$.get(url, mydata, function (data) {
-				chatterdiv.find(".chatterbox-message-list").prepend(data);
-				//scrollToChat();
-				loadingMore = false;
-				console.log("stop loading now");
-			});
-		});
-	}
 
 	let keepAliveTimeoutID = 0;
 
@@ -498,15 +421,6 @@ lQuery(".chatterbox-message-list").livequery(function () {
 				appHome + "/components/chatterbox/sw.js",
 			);
 		}
-	}
-
-	function initializePushNotifications() {
-		return Notification.requestPermission(function (result) {
-			return result;
-		});
-	}
-	function isPushNotificationSupported() {
-		return "serviceWorker" in navigator && "PushManager" in window;
 	}
 
 	function createNotificationSubscription() {
@@ -735,5 +649,17 @@ lQuery(".chatterbox-message-list").livequery(function () {
 				}
 			}
 		});
+	});
+
+	$(document).on("visibilitychange", function () {
+		if (document.visibilityState === "visible") {
+			if (chatConnection) {
+				keepAlive();
+			} else {
+				if ($(".chatterbox").length > 0) {
+					initChatterbox();
+				}
+			}
+		}
 	});
 });
