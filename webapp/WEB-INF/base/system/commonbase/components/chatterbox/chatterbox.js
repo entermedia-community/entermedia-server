@@ -266,8 +266,6 @@ jQuery(document).ready(function () {
 			options.oemaxlevel = 1;
 			$.get(messagesUrl, options, function (data) {
 				chatterbox.replaceWith(data);
-				const listArea = chatterbox.find(".chatterbox-message-list");
-				sortChatterbox(listArea);
 				scrollToChat();
 			});
 		});
@@ -321,6 +319,7 @@ jQuery(document).ready(function () {
 			}
 
 			scrollToChat();
+			sortChatterbox(listArea);
 			return;
 		}
 
