@@ -3,37 +3,25 @@
 	<div id="emcontainer" class="container">
 		<div id="header">
 			<div id="logo"><a class="ir" href="$home$apphome/index.html">EnterMedia Manager</a></div>
-			<div id="user-status">
+			<div id="user-status" class="p-3">
 				#if( $user )
 				<p class="welcome">Welcome, <span class="user">$user</span></p>
-				<a href="$home$apphome/authentication/logout.html">Logout</a>
+				<a href="$home$apphome/authentication/logout.html" class="" style="color:#fff; text-decoration:underline">Logout</a>
 				#end
 			</div>
 		</div>
 		<div id="nav">
-##                 #set( $searcher = $searcherManager.getSearcher($catalogid,"settingsmenumodule") )
-##                        #set( $query = $searcher.createSearchQuery() )
-##                        #set( $null = $query.addExact("type","toplevel") )
-##                        #set( $null = $query.addExact("module", "manager") )
-##                        $!query.addSort("ordering")
-##                        #set($screens =  $searcher.search($query))
-##                        #foreach($screen in $screens)
-##
-##                        <li id="$screen.id" #if( $tab == "$screen.id" ) class="current" #end>
-##                            <a href="$home$apphome${screen.path}">$screen</a>
-##                        </li>
-##                 #end
 			#if($user)
 		     <ul>
 		     #set( $app = $content.get("managersection"))
                  <li><a #if( $app == "sites") class="current" #end href="$home$apphome/views/sites/index.html">Sites</a></li>
 ##                 <li><a href="$home$apphome/views/applications/uploadapp.html">Import Application</a></li>
 		           <li><a href="$home$apphome/views/settings/translation/index.html">Translation</a></li>
-		         <li><a href="$home$apphome/views/settings/lists/datamanager/index.html">Database</a></li>
+		         <li><a href="$home$apphome/views/settings/lists/datamanager/list/index.html">Database</a></li>
 		           <li><a href="$home$apphome/views/settings/status/tools/index.html">Server</a></li>
-		         <li><a href="$home$apphome/views/settings/events/triggers/index.html">Scheduler</a></li>
-		         <li><a #if( $app == "update") class="current" #end  href="$home$apphome/views/update/index.html">Upgrade</a></li>
-		         <li><a #if( $app == "update") class="current" #end  href="$home$apphome/views/update/sync/sync.html">Merge Server Versions</a></li>
+		         ##<li><a href="$home$apphome/views/settings/events/triggers/index.html">Scheduler</a></li>
+		         ##<li><a #if( $app == "update") class="current" #end  href="$home$apphome/views/update/index.html">Upgrade</a></li>
+		         ##<li><a #if( $app == "update") class="current" #end  href="$home$apphome/views/update/sync/sync.html">Merge Server Versions</a></li>
 		         
 ##		         <li><a href="$home$apphome/views/update/upload/index.html">Uploads</a></li>
 
@@ -46,9 +34,12 @@
 		<div id="main-content" class="clearfix">
 		  $pages.includeContent()
 		</div>
-		<div id="footer" class="col12 clearfix">
-			<p>[[Powered by EnterMedia]] | <a href="http://entermediadb.org">entermediadb.org</a></p>
-		</div>
+		
 	</div>
+	<div id="footer">
+				<div class="container text-center">
+				<p>[[Powered by eMedia Library]] | <a href="http://emedialibrary.org">eMediaLibrary.org</a></p>
+				</div>
+			</div>
 </div>
 	

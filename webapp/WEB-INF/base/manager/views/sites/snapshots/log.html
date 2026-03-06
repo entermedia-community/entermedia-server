@@ -4,13 +4,13 @@
 	#if($content == $page)data-ajaxrunning="true"#end 
 	ajaxpath="$home$apphome/views/sites/snapshots/log.html">
 
-#if( $pathevent.isRunning() )
-<b>[[run started]]: $pathevent.getFormattedLastRun()</b>
-#else
- <b>[[event is complete. Logs:]]<br> </b>
-#end
-<pre>
-$!pathevent.getLastOutputHtml()
-</pre>
+	#if( $pathevent.isRunning() )
+		<b>[[Run started]]: $pathevent.getFormattedLastRun()</b>
+	#else
+	 	<b>[[Event is complete. Logs:]]<br> </b>
+	#end
+	<pre>
+	$!pathevent.getLastOutputHtml()
+	</pre>
 </div>
 

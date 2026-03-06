@@ -1,8 +1,7 @@
 <div id="sitedetails">
-#set( $siteid = $context.getRequestParameter("siteid") )
+#set( $siteid = $context.getRequestParameter("id") )
 #set ($site = $searcherManager.getData("system","site",$siteid))
-<div class="wizard clearfix">
-	<div class="wizard-body">
+
 
 #if(!$site.catalogid )
 <form name="catalogid">
@@ -13,43 +12,43 @@
 </form>
 #else
 
-<form action="./savesite.html" method="post" style="padding:20px;">
+<form action="./savesite.html" method="post" >
 	<h3>$site Properties</h3>
     #set($searcher = $searcherManager.getSearcher("system", "site"))
 	$context.putPageValue("searcher", $searcher)	 
 	$context.putPageValue("data", $site)	 
-	$context.putPageValue("view", "site/edit")	
-	<input type="hidden" name="view" value="site/edit"/>
+	$context.putPageValue("viewid", "siteedit")	
+	<input type="hidden" name="viewid" value="siteedit"/>
 	<input type="hidden" name="save" value="true"/>
 	<input type="hidden" name="id" value="$site.id"/>
 	<input type="hidden" name="siteid" value="$site.id"/>
 	<input type="hidden" name="searchtype" value="site"/>
 	
-	<div id="shares">
+	<div id="shares" style="max-width:500px;">
 	$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
-<br>
-#set( $appcatalogid = $site.get("catalogid"))
-#set( $admin = $searcherManager.getData($appcatalogid , "user", "admin"))
-<p><b>[[Admin Hash]]</b>: $admin.password
-##<p><b>[[Admin Password]]</b>: $userManager.decryptPassword($admin)
-
+	
+	#set( $appcatalogid = $site.get("catalogid"))
+	#set( $admin = $searcherManager.getData($appcatalogid , "user", "admin"))
+	<p class="my-3"><b>[[Admin Hash]]</b>: $admin.password
+	##<p><b>[[Admin Password]]</b>: $userManager.decryptPassword($admin)
+	
+		</div>
+	<div class="scan">
+		<button class="btn btn-primary me-1" href="#" > [[Save]] </button>
+		<a class="btn btn-secondary me-1" href="./apps/index.html?appcatalogid=$appcatalogid">[[View Apps]]</a>
+		<a class="btn btn-danger confirm"  href="./remove.html?searchtype=site&id=$site.id" data-confirm="[[Are you sure?]]">[[Delete Site]]</a>
 	</div>
-<div class="scan" style="margin-top: 10px;margin-right: 0;">
-	<button class="mbtn green" style="margin-right: 50px; width:100px;" href="#" > [[Save]] </button>
-	<a class="mbtn" href="./apps/index.html?appcatalogid=$appcatalogid">[[View Apps]]</a>
-	<a class="mbtn blue confirm" style="margin-left: 0px;" href="./remove.html?searchtype=site&id=$site.id" data-confirm="[[Are you sure?]]">[[Delete Site]]</a>
-</div>
 
 </form>
 
 
-<div style="padding-top: 60px;margin-right: 0; ">
+<div style="padding-top: 20px;">
 <hr>
 ##these shouod always be at least the initi snapshot
 	<h3>[[Site Snapshots]]</h3>
 
-	<div  style="margin-right: 0;padding:20px;">
-	
+	<div class="d-flex" >
+		<div>
 		<form class="ajaxform autosubmitform" data-targetdiv="snapshotdetails" action="$home$apphome/views/sites/snapshotdetails.html">
 			<input type="hidden" id="list-sitevalue" name="siteid" value="$site.id" />  
 			#set( $detail = $searcher.getDetail("name"))
@@ -62,12 +61,15 @@
 			  <option value="$snap.getId()" selected="selected">#esc($snap.getName($context))</option>
 #end				 
 			</select>
-		</form>	
-		<div style="margin-left: 300px; margin-top: -20px;">
-			<a class="mbtn emdialog"  title="[[Save Data]]" href="/manager/views/sites/snapshots/create.html?id=$site.id&targetcatalogid=$site.catalogid">[[Create With Data]]</a>
-			<a class="mbtn emdialog"  title="[[Save Config]]" href="/manager/views/sites/snapshots/create.html?id=$site.id&targetcatalogid=$site.catalogid&configonly=true">[[Create With Config]]</a><br><br><br>
-			<a class="mbtn emdialog"  title="Import Snapshot" href="/manager/views/sites/snapshots/importurl.html?siteid=$site.id&targetcatalogid=$site.catalogid">[[Import]]</a>
+		</form>
+		</div>	
+		<div class="ms-1">
+			<a class="btn btn-secondary emdialog me-1"  title="[[Save Data]]" href="/manager/views/sites/snapshots/create.html?id=$site.id&targetcatalogid=$site.catalogid">[[Create With Data]]</a>
+			<a class="btn btn-secondary emdialog me-1"  title="[[Save Config]]" href="/manager/views/sites/snapshots/create.html?id=$site.id&targetcatalogid=$site.catalogid&configonly=true">[[Create With Config]]</a>
+			<a class="btn btn-primary emdialog"  title="Import Snapshot" href="/manager/views/sites/snapshots/importurl.html?siteid=$site.id&targetcatalogid=$site.catalogid">[[Import]]</a>
 		</div>
+		</div>
+		
 		
 		$pages.include("/manager/views/sites/snapshotdetails.html")
 		
@@ -75,25 +77,5 @@
 	</div>	
 </div>
 #end
-</div>
-			<div class="wizard-bottom">
-			<!-- 
-				<a class="btn-blue build-your-own-app" href="#">Build Your Own App</a>
-			 -->
-			</div>
-		</div>
-
-<!-- 
-Deployed the first snapshot?
-//Add additional apps?
-
-
-
-List know versions locally
-
-Create new snapshot(version)
-
-List URL with last selected shown
--->
 
 </div>

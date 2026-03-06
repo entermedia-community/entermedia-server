@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="propertydetailedit" systemdefined="true" moduleid="propertydetail" >
+    <name><![CDATA[Property Detail Edit]]></name>
+  </property>
+  
+  
+  <property id="propertydetailadvancededit" systemdefined="true" moduleid="propertydetail">
+    <name><![CDATA[Property Detail Advanced Edit]]></name>
+  </property>  
+</properties>

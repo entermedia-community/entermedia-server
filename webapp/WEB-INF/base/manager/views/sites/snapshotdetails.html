@@ -1,13 +1,12 @@
-<div id="snapshotdetails">
+<div id="snapshotdetails" class="mt-4 pt-2">
 #set( $siteid = $context.getRequestParameter("siteid") )
 #set ($site = $searcherManager.getData("system","site",$siteid))
 #set( $selectedsitesnapshotid = $context.getRequestParameter("selectedsitesnapshot") )
 #set( $snapshot = $searcherManager.getData("system","sitesnapshot",$selectedsitesnapshotid))
 
 #if($snapshot)
-	<div style="margin:10px;">
 		##Show edit form with save
-		<form action="./savesite.html" method="post" style="padding:20px;">
+		<form action="./savesite.html" method="post" style="">
 		    #set($searcher = $searcherManager.getSearcher("system", "sitesnapshot"))
 			$context.putPageValue("searcher", $searcher)	 
 			$context.putPageValue("data", $snapshot)	 
@@ -24,16 +23,21 @@
 			#set( $folder = $snapshot.get("folder"))
 	
 			#set( $url = "${context.siteRoot}/manager/views/sites/snapshots/download/${snapshot.getId()}/${folder}.zip?entermedia.key=$key")
-			<a href="$url">URL:</a> <input size="50" value="$url"> <a href="$url">[[download]]</a>
-			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-			<div style="margin-top: 20px;margin-right: 0;">
-				<button class="mbtn green" style="margin-right: 50px; width:100px;" href="#" > [[Save]] </button>
-				<a class="mbtn" href="/openedit/views/filemanager/tab.html?path=/WEB-INF/data/exports/${site.catalogid}/${folder}">[[Preview Files]]</a>
-				<a class="mbtn emdialog" href="$home$apphome/views/sites/snapshots/restore.html?snapid=$snapshot.id">[[Restore]]</a>
-				<a class="mbtn emdialog" href="$home$apphome/views/sites/snapshots/restore.html?snapid=$snapshot.id&configonly=true">[[Restore Config]]</a><br><br>
-				<a class="mbtn blue confirm" style="margin-left: 0px;" href="$home$apphome/views/sites/remove.html?searchtype=sitesnapshot&id=$snapshot.id" data-confirm="[[Are you sure?]]">[[Delete Snapshot]]</a>
+			
+			<a href="$url">URL:</a> <br>
+			<input size="50" value="$url" class="form-control mb-2"> 
+			<a href="$url" class="btn btn-secondary">[[Download]]</a>
+			
+			
+			##$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+			
+			<div style="margin-top: 20px;">
+				<button class="btn btn-primary me-1"  href="#" >[[Save]]</button>
+				<a class="btn btn-secondary" href="/openedit/views/filemanager/tab.html?path=/WEB-INF/data/exports/${site.catalogid}/${folder}">[[Preview Files]]</a>
+				<a class="btn btn-secondary emdialog me-1" href="$home$apphome/views/sites/snapshots/restore.html?snapid=$snapshot.id">[[Restore]]</a>
+				<a class="btn btn-secondary emdialog me-1" href="$home$apphome/views/sites/snapshots/restore.html?snapid=$snapshot.id&configonly=true">[[Restore Config]]</a>
+				<a class="btn btn-danger confirm me-1" href="$home$apphome/views/sites/remove.html?searchtype=sitesnapshot&id=$snapshot.id" data-confirm="[[Are you sure?]]">[[Delete Snapshot]]</a>
 			</div>
 		</form>				
-	</div>
 #end
 </div>
