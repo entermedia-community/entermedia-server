@@ -82,33 +82,41 @@ public class MarkdownUtil
 		
 		boolean headerAdded = false;
 		
+		String headerContent = null;
+		StringBuffer bodyContent = new StringBuffer();
+		
 		for (Iterator iterator = nodes.iterator(); iterator.hasNext();) 
 		{
 			Node node = (Node) iterator.next();
 			
-			Map<String, String> map = new HashMap<String, String>();
+			
 			
 			if( !headerAdded && isHeader(node))
 			{
-				map.put("type", "Heading");
 				String textContent = textRenderer.render(node);
-				map.put("content", textContent);
 				headerAdded = true;
+				headerContent = textContent;
 			}
 			else
 			{
-				String nodeName = node.getClass().getSimpleName();
-				if(nodeName.equals("Heading"))
-				{
-					headerAdded = true;
-				}
-				map.put("type", nodeName);
 				String html = renderer.render(node);
-				map.put("content", html);
+				bodyContent.append(html);
 			}
-			
-			
-			maps.add(map);	
+		}
+		
+		if(headerContent != null)
+		{
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("type", "Heading");
+			map.put("content", headerContent);
+			maps.add(map);
+		}
+		if(bodyContent.length() > 0)
+		{
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("type", "Paragraph");
+			map.put("content", bodyContent.toString());
+			maps.add(map);
 		}
 		
 		return maps;
