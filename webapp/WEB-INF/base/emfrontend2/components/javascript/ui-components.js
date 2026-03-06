@@ -547,7 +547,7 @@ uiload = function () {
 		}
 	});
 
-	lQuery("#emselectable table td").livequery("click", function (event) {
+	lQuery("#emselectable table td, .emselectable table td").livequery("click", function (event) {
 		var clicked = $(this);
 		if (clicked.attr("noclick") == "true") {
 			return true;

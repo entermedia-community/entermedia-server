@@ -28,7 +28,7 @@
 			<th style="width:200px;">[[Field Type]]</th>
 		</tr>
 		</thead>	
-	#foreach( $detail in $properties)
+	#foreach( $detail in $details)
 	<tr rowid="$detail.id">
 	#set( $link = "catalogid=$catalogid&searchtype=$searchtype&id=$detail.id")
 		#if ($detail.getExternalId )
@@ -43,7 +43,7 @@
 	#end
 	</table>
 	##this will auto submit when they click
-	<form name="editlink" action="$home$dataroot/properties/edit.html" class="ajaxform" data-targetdiv="datamanager-workarea">
+	<form name="editlink" action="$home$dataroot/properties/edit.html?oemaxlevel=2" class="ajaxform" data-oemaxlevel="3" data-targetdiv="datamanager-workarea">
 		<input type="hidden" name="id" id="emselectedrow" value="" />
 		<input type="hidden" name="catalogid" value="$catalogid" />
 		<input type="hidden" name="searchtype" value="$searcher.getSearchType()" />
