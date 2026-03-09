@@ -4,7 +4,14 @@
   <property id="name" editable="true" index="true" stored="true">Name</property>
   <property id="path" editable="true" index="true" stored="true">Path</property>
   <property id="caption" stored="true"  index="true"  editable="true">Caption</property>
-  <property id="ordering" editable="true" index="true" stored="true">Ordering</property>
+  <property id="ordering" type="number" editable="true" index="true" stored="true" keyword="false" filter="false" >Ordering 
+    <name> 
+      <language id="de"><![CDATA[Bestellung]]></language>  
+      <language id="en"><![CDATA[Ordering]]></language>  
+      <language id="es"><![CDATA[Ordenando]]></language>  
+      <language id="fr"><![CDATA[Commande]]></language> 
+    </name> 
+  </property>
   <property id="longdescription" editable="true" index="true" stored="true">Description</property>
   <property id="initurl" editable="true" index="true" stored="true">Init Snapshot</property>
 </properties>
