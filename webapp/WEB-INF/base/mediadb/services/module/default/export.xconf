@@ -1,0 +1,7 @@
+<page>
+	<property name="virtual">true</property>
+	<path-action name="JsonDataModule.handleSearch" alltypes="true"/>
+	<permission name="view">
+			<userprofile property="api-search-data" equals="true" />
+	</permission>
+</page>
