@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -17,13 +16,10 @@ import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
-import org.openedit.Data;
 import org.openedit.MultiValued;
-import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.users.User;
-import org.openedit.util.PathUtilities;
 
 public class ClassifyManager extends InformaticsProcessor
 {
