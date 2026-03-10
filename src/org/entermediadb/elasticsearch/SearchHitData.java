@@ -18,6 +18,8 @@ import org.openedit.data.SaveableData;
 import org.openedit.data.SearchDataEnabled;
 import org.openedit.data.Searcher;
 
+import netscape.javascript.JSObject;
+
 public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData,SearchDataEnabled , org.openedit.data.SearchHitData
 {
 	private static final Log log = LogFactory.getLog(SearchHitData.class);
@@ -156,12 +158,14 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 	
 	public String toJsonString()
 	{
-		StringBuffer output = new StringBuffer();
-		output.append("{ \"_id\": \"" + getId() + "\",");
-		output.append(" \"_source\" :");
-		output.append(getSearchHit().getSourceAsString());
-		output.append(" \n}");
-		return output.toString();
+		//StringBuffer output = new StringBuffer();
+		//output.append("{ \"_id\": \"" + getId() + "\",");
+		//output.append(" \"_source\" :");
+		String source = getSearchHit().getSourceAsString();
+		//output.append(source);
+		//output.append(" \n}");
+		//return output.toString();
+		return source;
 	}
 	
 	
