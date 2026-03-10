@@ -1514,8 +1514,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		log.info(search.toString());
 		
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, date, 1000);
+		hits.setSearcher(archive.getSearcher("modulesearch"));
 		hits.enableBulkOperations();
-		
 		//hits.setHitsPerPage(100);
 		
 		
