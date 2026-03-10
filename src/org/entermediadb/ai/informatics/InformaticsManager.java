@@ -12,7 +12,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
-import org.entermediadb.ai.assistant.QuestionsManager;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
@@ -153,28 +152,36 @@ public class InformaticsManager extends BaseAiManager
 		for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
 		{
 			Asset asset = (Asset) iterator.next();
-			asset.toggleLock(agent);
+			asset.lock(true, agent);
 		}
 		getMediaArchive().saveData("asset", pageofhits);
 		
 		Collection workinghits = new ArrayList(pageofhits);
-
-		for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
+		try
 		{
-			MultiValued config = (MultiValued) iterator2.next();
-			InformaticsProcessor processor = loadProcessor(config.get("bean"));
-			//inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" ); //Add Header Logs in each Bean
-			processor.processInformaticsOnAssets(inLog, config, workinghits);
-			
-			for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
+			for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
 			{
-				MultiValued data = (MultiValued) iterator.next();
-				if(data.getBoolean("llmerror"))
+				MultiValued config = (MultiValued) iterator2.next();
+				InformaticsProcessor processor = loadProcessor(config.get("bean"));
+				//inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" ); //Add Header Logs in each Bean
+				processor.processInformaticsOnAssets(inLog, config, workinghits);
+				
+				for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
 				{
-					workinghits.remove(data); //We do not process more.
+					MultiValued data = (MultiValued) iterator.next();
+					if(data.getBoolean("llmerror"))
+					{
+						workinghits.remove(data); //We do not process more.
+					}
 				}
+				getMediaArchive().saveData("asset", pageofhits); //Not need it?
 			}
-			getMediaArchive().saveData("asset", pageofhits); //Not need it?
+		}
+		catch(Throwable e)
+		{
+			//This should never happen
+			inLog.error("Processing Informatics Error", e);
+			return;
 		}
 		
 		for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
@@ -184,15 +191,11 @@ public class InformaticsManager extends BaseAiManager
 			{
 				asset.setValue("taggedbyllm", true);
 			}
+			asset.lock(false, agent); //Todo: Implement Release
 		}
 
-		for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
-		{
-			Asset asset = (Asset) iterator.next();
-			asset.toggleLock(agent); //Todo: Implement Release
-		}
 		getMediaArchive().saveData("asset", pageofhits);
-		
+	
 		inLog.info("Processing Informatics on Assets Complete");
 
 	}
@@ -340,6 +343,17 @@ public class InformaticsManager extends BaseAiManager
 			{
 				assetid = entity.get("primaryimage");
 			}
+			Asset asset = getMediaArchive().getAsset(assetid);
+			
+			if(asset != null)
+			{
+				if(!asset.getBoolean("taggedbyllm"))
+				{
+					log.info("Skipping entity " + entity.getId() + " because primary asset " + assetid + " is not tagged by llm yet.");
+					continue; 
+				}
+			}
+			
 			if (assetid != null || entity.get("markdowncontent") != null || entity.get("longcaption") != null || entity.get("collectivedescription") != null )
 			{
 				valid.add(entity);

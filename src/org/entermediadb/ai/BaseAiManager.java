@@ -497,7 +497,13 @@ public abstract class BaseAiManager extends BaseManager
 	
 	public LlmResponse handleError(AgentContext inAgentContext, String inError)
 	{
+		return handleError(inAgentContext, inError, 200);
+	}
+	
+	public LlmResponse handleError(AgentContext inAgentContext, String inError, int inCode)
+	{
 		inAgentContext.addContext("error", inError);
+		inAgentContext.addContext("errorcode", inCode);
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("render_error");
 		LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "render_error");
 		//inAgentContext.setFunctionName(null);

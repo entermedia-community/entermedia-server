@@ -1,16 +1,12 @@
 <div id="eventeditpage">
-<div  class="ui-widget" style="overflow: hidden;">
-<div class="ui-widget-header">Running Export</div>
-<div  class="ui-widget-content" > 
- 
- <form name="okform"  id="okform" action="$home$apphome/views/sites/viewsitedetails.html">
-	<input name="siteid" value="$site.id" type="hidden"/>
-</form>
-
-</div>
-</div>
-
-<div style="overflow:auto;height:350px;">
-$pages.include("./log.html?targetcatalogid=$site.catalogid",$context)
-</div>
+	<h4>Running Export</h4>
+	<div class="py-2" > 
+	 
+	 <form name="okform"  id="okform" action="$home$apphome/views/sites/viewsitedetails.html">
+		<input name="id" value="$site.id" type="hidden"/>
+	</form>
+	<div style="overflow:auto; height:350px;">
+		$pages.include("./log.html?targetcatalogid=$site.catalogid",$context)
+	</div>
+	</div>
 </div>

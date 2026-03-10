@@ -39,7 +39,6 @@ import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
-import org.openedit.OpenEditException;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
@@ -184,8 +183,7 @@ public class ChatServer
 	}
 
 	public synchronized void broadcastMessage(String catalogid, JSONObject inMap)
-	{
-		
+	{	
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		
 		String channelid = (String)inMap.get("channel");

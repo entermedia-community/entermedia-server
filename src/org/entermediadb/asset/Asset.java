@@ -162,7 +162,9 @@ public interface Asset  extends MultiValued, SaveableData, SearchDataEnabled, Re
 
 	boolean clearParentCategories();
 
-	void toggleLock(User inUser);
+	//void toggleLock(User inUser);
+	
+	void lock(Boolean inLock, User inUser);
 
 
 }

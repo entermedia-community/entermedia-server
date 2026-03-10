@@ -28,6 +28,7 @@ import org.entermediadb.workspace.WorkspaceManager;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
+import org.openedit.HttpException;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -363,6 +364,11 @@ public class AssistantManager extends BaseAiManager
 		try
 		{		
 			response = handler.processMessage(agentContext, agentmessage, function);
+		}
+		catch (HttpException e) 
+		{
+			log.error("Error from " + bean + " running " + function.getId(),e);
+			response = handleError(agentContext, e.getMessage(), e.getErrorcode());
 		}
 		catch (Exception e) 
 		{

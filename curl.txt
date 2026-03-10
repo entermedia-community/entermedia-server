@@ -2,9 +2,34 @@ env GTK_IM_MODULE=ibus /home/shanti/eclipse/java-2024-09/eclipse/eclipse --launc
 
 
 ##Search Asset by Id
-curl -XGET 'http://localhost:9200/finder_catalog/asset/_search?q=id:AZXxrJ6vD5hAosRFNjDM' | python3 -mjson.tool
+curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:9091' | python3 -mjson.tool
 
 curl -XGET 'http://localhost:9200/system/user/_search?q=id:testuser' | python3 -mjson.tool
+
+2026-01-06T20:37:42.683Z
+
+2026-01-06T20:35:17.450Z
+2026-01-06T21:29:02.117Z
+
+
+curl -XGET http://localhost:9200/assets_catalog/asset/_search -d '{
+  "query" : {
+    "range" : {
+      "emrecordstatus.recordmodificationdate" : {
+        "from" : "2026-01-06T19:35:42.683Z",
+        "to" : "2026-01-06T21:39:42.683Z",
+        "include_lower" : true,
+        "include_upper" : true
+      }
+    }
+  },
+  "sort" : [ {
+    "emrecordstatus.recordmodificationdate" : {
+      "order" : "desc",
+      "ignore_unmapped" : true
+    }
+  } ]
+}'| python3 -mjson.tool
 
 
 

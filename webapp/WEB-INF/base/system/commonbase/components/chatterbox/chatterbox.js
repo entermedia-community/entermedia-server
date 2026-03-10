@@ -1,327 +1,349 @@
-var chatconnection;
-var loadingmore = false;
+jQuery(document).ready(function () {
+	"use strict";
 
-function chatterbox() {
-	console.log(
-		"Starting chat in channel: " + jQuery(".chatterbox").data("channel"),
-	);
+	let chatConnection;
 
-	cancelKeepAlive();
-	connect();
-	keepAlive();
+	const app = $("#application");
+	let appHome = app.data("apphome");
+	const home = app.data("home");
+	if (home !== undefined) {
+		appHome = home + appHome;
+	}
+	const userid = app.data("user");
 
-	lQuery(".chatter-send").livequery("click", function () {
-		var button = jQuery(this);
-		var chatter = button.closest(".chatterbox");
-		var data = chatter.data();
+	function initChatterbox() {
+		cancelKeepAlive();
+		connect();
+		keepAlive();
 
-		data = jQuery.extend({}, data); //So we can edit it
-		data.command = button.data("command");
+		lQuery(".chatter-send").livequery("click", function () {
+			const button = $(this);
+			const chatter = button.closest(".chatterbox");
+			let data = chatter.data();
 
-		var input = $("#chatter-msg");
-		var replytoid = input.data("replytoid");
-		if (replytoid) {
-			data.replytoid = replytoid;
-		}
-		var message = input.val();
-		data.message = message;
+			data = $.extend({}, data); //So we can edit it
+			data.command = button.data("command");
 
-		var json = JSON.stringify(data);
-
-		if (chatconnection.readyState == chatconnection.CLOSED) {
-			connect();
-			//IF we do a reconnect render the whole page
-		}
-		var toggle = button.data("toggle");
-		if (toggle == true) {
-			jQuery(".chatter-toggle").toggle();
-		}
-
-		if (jQuery("#chatter-msg").val() != "") {
-			chatconnection.send(json);
-
-			//Clear editing area
-			var area = jQuery("#chatterbox-write");
-			$("#chatter-msg", area).val("");
-			$("#chatter-msg").data("replytoid", "");
-			$(".chatterboxreplyto", area).hide();
-			//console.log($("#chatter-msg").data("replytoid"));
-			//scroll down, delay a little?
-			scrollToChat();
-
-			/*var ais = $(".ai-suggestions");
-			if (ais.length > 0) {
-				ais.remove();
+			const input = $("#chatter-msg");
+			const replytoid = input.data("replytoid");
+			if (replytoid) {
+				data.replytoid = replytoid;
 			}
-			*/
-			var ses = $(".sessionhistory-item.active");
-			if (ses.length > 0) {
-				var span = ses.find(".item span");
-				if (span.length > 0 && span.text() === "Current Session") {
-					span.text(message.substring(0, 25));
-				}
+			const message = input.val();
+			data.message = message;
+
+			const json = JSON.stringify(data);
+
+			if (chatConnection.readyState === chatConnection.CLOSED) {
+				connect();
+				//IF we do a reconnect render the whole page
 			}
-		}
-	});
+			const toggle = button.data("toggle");
+			if (toggle === true) {
+				$(".chatter-toggle").toggle();
+			}
 
-	lQuery(".ai-suggest").livequery("click", function () {
-		var button = jQuery(this);
-		var message = button.text();
-		var input = $("#chatter-msg");
-		input.val(message);
-		input.trigger("focus");
-		setTimeout(function () {
-			$(".chatter-send").trigger("click");
-			button.closest(".msg-bubble").remove();
-		});
-	});
+			if ($("#chatter-msg").val() !== "") {
+				chatConnection.send(json);
 
-	lQuery("#chatterboxreplycancel").livequery("click", function () {
-		var button = jQuery(this);
-		button.closest(".chatterboxreplyto").hide();
-	});
+				//Clear editing area
+				const area = $("#chatterbox-write");
+				$("#chatter-msg", area).val("");
+				$("#chatter-msg").data("replytoid", "");
+				$(".chatterboxreplyto", area).hide();
 
-	lQuery(".chatter-text").livequery("keydown", function (e) {
-		if (e.keyCode == 13 && !e.shiftKey) {
-			//jQuery("#chatter-msg").val("");
-			e.preventDefault();
-			var button = jQuery('button[data-command="messagereceived"]');
-			button.trigger("click");
-			return false;
-		} else {
-			var scroll_height = $(this).get(0).scrollHeight;
-			if (!$(".chatterbox").hasClass("chatterlongtext") && scroll_height > 30) {
-				$(".chatterbox").addClass("chatterlongtext");
 				scrollToChat();
+
+				const ses = $(".sessionhistory-item.active");
+				if (ses.length > 0) {
+					const span = ses.find(".item span");
+					if (span.length > 0 && span.text() === "Current Session") {
+						span.text(message.substring(0, 25));
+					}
+				}
 			}
-		}
-	});
-
-	lQuery('button[data-command="messagereceived"]').livequery(
-		"click",
-		function (e) {
-			//jQuery("#chatter-msg").val("");
-		},
-	);
-
-	lQuery(".chatter-save").livequery("click", function (e) {
-		e.preventDefault();
-		var button = jQuery(this);
-		var form = button.closest(".chatter-edit-form");
-		var chatdiv = form.find(".chatter-msg-edit");
-		var text = chatdiv.html();
-		form.find(".chatter-msg-input").val(text);
-		/*var button = jQuery('submit');		    	
-    	button.trigger("#submit");*/
-		form.trigger("submit");
-	});
-
-	lQuery("a.ajax-edit-msg").livequery("click", function (e) {
-		e.stopPropagation();
-		e.preventDefault();
-		var editbtn = $(this);
-		var targetDiv = editbtn.data("targetdiv");
-		var options = editbtn.cleandata();
-		options.oemaxlevel = 1;
-		var nextpage = editbtn.attr("href");
-		$.get(nextpage, options, function (data) {
-			//var cell = findclosest($(this), "#" + targetDiv);
-			var cell = editbtn.closest("#" + targetDiv);
-			cell.replaceWith(data);
-			scrollToEdit(targetDiv);
 		});
-	});
 
-	lQuery(".chatterbox-body-inside").livequery("scroll", function (e) {
-		if ($(this).scrollTop() < 50) {
-			//loadMoreChats();
-		}
-	});
+		lQuery(".ai-suggest").livequery("click", function () {
+			const button = $(this);
+			const message = button.text();
+			const input = $("#chatter-msg");
+			input.val(message);
+			input.trigger("focus");
+			setTimeout(() => {
+				$(".chatter-send").trigger("click");
+				button.closest(".msg-bubble").remove();
+			});
+		});
 
-	lQuery("a.appendgoalbutton").livequery("click", function (e) {
-		var parent = $(this).closest(".goalstatusopen");
-		if (parent) {
-			parent[0].scrollIntoView();
-		}
-	});
-}
+		lQuery("#chatterboxreplycancel").livequery("click", function () {
+			const button = $(this);
+			button.closest(".chatterboxreplyto").hide();
+		});
 
-function scrollToChat() {
-	setTimeout(function () {
-		var inside = $(".chatterbox-body-inside");
-		if (inside.length > 0) {
-			inside.animate({ scrollTop: inside.get(0).scrollHeight }, 30);
-		}
-	});
-}
-
-function scrollToEdit(targetDiv) {
-	var messagecontainer = $("#" + targetDiv);
-	if (messagecontainer.length) {
-		messagecontainer.get(0).scrollIntoView();
-	}
-}
-
-function connect() {
-	if (chatconnection && chatconnection.readyState != chatconnection.CLOSED) {
-		return;
-	}
-	var tabID =
-		sessionStorage.tabID && sessionStorage.closedLastTab !== "2"
-			? sessionStorage.tabID
-			: (sessionStorage.tabID = Math.random());
-	sessionStorage.closedLastTab = "2";
-	$(window).on("unload beforeunload", function () {
-		sessionStorage.closedLastTab = "1";
-	});
-
-	var app = jQuery("#application");
-	var userid = app.data("user");
-	var protocol = location.protocol;
-
-	var url =
-		"/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection?sessionid=" +
-		tabID +
-		"&userid=" +
-		userid;
-
-	//Get the channel
-	var channel = jQuery(".chatterbox").data("channel");
-	if (channel != null) {
-		url = url + "&channel=" + channel;
-	}
-
-	if (protocol === "https:") {
-		chatconnection = new WebSocket("wss://" + location.host + url);
-	} else {
-		chatconnection = new WebSocket("ws://" + location.host + url);
-	}
-
-	chatconnection.onmessage = function (event) {
-		var app = jQuery("#application");
-		var apphome = app.data("home") + app.data("apphome");
-		jQuery(window).trigger("ajaxsocketautoreload");
-		var message = JSON.parse(event.data);
-		var channel = message.channel;
-		var chatbox = jQuery('div.chatterbox[data-channel="' + channel + '"]');
-		if (message && chatbox.length == 1) {
-			//Channel on the screen
-			channelUpdateMessage(chatbox, message);
-			return;
-		}
-
-		registerServiceWorker();
-
-		/*Check if you are the sender, play sound and notify. "message.topic != message.user" checks for private chat*/
-		var user = app.data("user");
-		if (message.user != user && message.user != "agent") {
-			console.log("Got a message: " + document.hasFocus());
-			if (!document.hasFocus()) {
-				function showNotification() {
-					console.log("Showing notification...");
-					var header = "New Message";
-					if (message.name !== undefined) {
-						header = message.name;
-					}
-					if (message.topic != undefined) {
-						header += " in " + message.topic;
-					}
-					var messagebody = message.message;
-					if (messagebody != null) {
-						messagebody = "New message...";
-					}
-					var notification = new Notification(header, {
-						//TODO: URL?
-						body: message.message,
-						renotify: false,
-						tag: messagebody,
-						icon: apphome + "/theme/images/logo.png",
-					});
-					notification.addEventListener("click", function (event) {
-						//window.open('http://www.mozilla.org', '_blank');
-					});
-				}
-
-				/*Check para permissions and ask.*/
-				if (Notification.permission === "granted") {
-					showNotification();
-				} else if (Notification.permission !== "denied") {
-					createNotificationSubscription();
-
-					Notification.requestPermission().then((permission) => {
-						if (permission === "granted") {
-							showNotification();
-						}
-					});
-				} else {
-					console.log(
-						"Notification Browser permission:" + Notification.permission,
-					);
+		lQuery(".chatter-text").livequery("keydown", function (e) {
+			if (e.keyCode === 13 && !e.shiftKey) {
+				//$("#chatter-msg").val("");
+				e.preventDefault();
+				const button = $('button[data-command="messagereceived"]');
+				button.trigger("click");
+				return false;
+			} else {
+				const scrollHeight = $(this).get(0).scrollHeight;
+				if (
+					!$(".chatterbox").hasClass("chatterlongtext") &&
+					scrollHeight > 30
+				) {
+					$(".chatterbox").addClass("chatterlongtext");
+					scrollToChat();
 				}
 			}
-		}
-	};
-}
+		});
 
-var messages = {};
+		lQuery('button[data-command="messagereceived"]').livequery(
+			"click",
+			function (e) {
+				//$("#chatter-msg").val("");
+			},
+		);
 
-function channelUpdateMessage(chatbox, message) {
-	//Cancel an existing one
-	if (messages[message.messageid]) {
-		messages[message.messageid] = setTimeout(function () {
-			updageMessage(chatbox, message);
-		}, 1000);
-	} else {
-		messages[message.messageid] = true;
-		updageMessage(chatbox, message);
+		lQuery(".chatter-save").livequery("click", function (e) {
+			e.preventDefault();
+			const button = $(this);
+			const form = button.closest(".chatter-edit-form");
+			const chatdiv = form.find(".chatter-msg-edit");
+			const text = chatdiv.html();
+			form.find(".chatter-msg-input").val(text);
+			/*var button = $('submit');		    	
+    	button.trigger("#submit");*/
+			form.trigger("submit");
+		});
+
+		lQuery("a.ajax-edit-msg").livequery("click", function (e) {
+			e.stopPropagation();
+			e.preventDefault();
+			const editbtn = $(this);
+			const targetDiv = editbtn.data("targetdiv");
+			const options = editbtn.cleandata();
+			options.oemaxlevel = 1;
+			const nextpage = editbtn.attr("href");
+			$.get(nextpage, options, function (data) {
+				//var cell = findclosest($(this), "#" + targetDiv);
+				const cell = editbtn.closest("#" + targetDiv);
+				cell.replaceWith(data);
+				scrollToEdit(targetDiv);
+			});
+		});
+
+		lQuery("a.appendgoalbutton").livequery("click", function (e) {
+			const parent = $(this).closest(".goalstatusopen");
+			if (parent) {
+				parent[0].scrollIntoView();
+			}
+		});
 	}
-}
 
-function updageMessage(chatbox, message) {
-	var existing = jQuery("#chatter-message-" + message.messageid);
-	if (existing.length) {
-		if (message.command === "messageremoved") {
-			existing.remove();
+	function scrollToChat() {
+		setTimeout(function () {
+			const inside = $(".chatterbox-body-inside");
+			if (inside.length > 0) {
+				inside.animate({ scrollTop: inside.get(0).scrollHeight }, 30);
+			}
+		});
+	}
+
+	function scrollToEdit(targetDiv) {
+		const messagecontainer = $("#" + targetDiv);
+		if (messagecontainer.length) {
+			messagecontainer.get(0).scrollIntoView();
+		}
+	}
+
+	function connect() {
+		if (chatConnection && chatConnection.readyState !== chatConnection.CLOSED) {
 			return;
 		}
-		var chatMsg = $(existing).find(".chat-msg");
-		var msgBody = $(chatMsg).find(".msg-body-content");
-		if (msgBody.length) {
-			msgBody.html(message.message);
+		const tabID =
+			sessionStorage.tabID && sessionStorage.closedLastTab !== "2"
+				? sessionStorage.tabID
+				: (sessionStorage.tabID = Math.random());
+		sessionStorage.closedLastTab = "2";
+		$(window).on("unload beforeunload", function () {
+			sessionStorage.closedLastTab = "1";
+		});
+
+		const protocol = location.protocol;
+
+		let url = `/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection?sessionid=${tabID}&userid=${userid}`;
+
+		//Get the channel
+		const channel = $(".chatterbox").data("channel");
+		if (channel != null) {
+			url = `${url}&channel=${channel}`;
+		}
+
+		if (protocol === "https:") {
+			chatConnection = new WebSocket(`wss://${location.host}${url}`);
 		} else {
-			chatMsg.html(message.message);
+			chatConnection = new WebSocket(`ws://${location.host}${url}`);
+			// console.log(new Date().toISOString(), "Chat initialized with ws");
 		}
+
+		chatConnection.addEventListener("message", function (event) {
+			// console.info(new Date().toISOString(), "Received message");
+
+			$(window).trigger("ajaxsocketautoreload");
+			const message = JSON.parse(event.data);
+			const channelId = message.channel;
+			const chatterbox = $(`div.chatterbox[data-channel="${channelId}"]`);
+
+			if (message && chatterbox.length === 1) {
+				//Channel on the screen no need to notify
+
+				channelUpdateMessage(chatterbox, message);
+
+				return;
+			}
+
+			registerServiceWorker();
+
+			/*Check if you are the sender, play sound and notify. "message.topic != message.user" checks for private chat*/
+			if (message.user !== userid && message.user !== "agent") {
+				console.log(`Got a message: ${document.hasFocus()}`);
+				if (!document.hasFocus()) {
+					function showNotification() {
+						console.log("Showing notification...");
+						let header = "New Message";
+						if (message.name !== undefined) {
+							header = message.name;
+						}
+						if (message.topic !== undefined) {
+							header += ` in ${message.topic}`;
+						}
+						let messagebody = message.message;
+						if (messagebody !== null && messagebody !== undefined) {
+							messagebody = "New message...";
+						}
+						const notification = new Notification(header, {
+							//TODO: URL?
+							body: message.message,
+							renotify: false,
+							tag: messagebody,
+							icon: `${appHome}/theme/images/logo.png`,
+						});
+						notification.addEventListener("click", function (event) {
+							//window.open('http://www.mozilla.org', '_blank');
+						});
+					}
+
+					/*Check para permissions and ask.*/
+					if (Notification.permission === "granted") {
+						showNotification();
+					} else if (Notification.permission !== "denied") {
+						createNotificationSubscription();
+
+						Notification.requestPermission().then((permission) => {
+							if (permission === "granted") {
+								showNotification();
+							}
+						});
+					} else {
+						console.log(
+							`Notification Browser permission:${Notification.permission}`,
+						);
+					}
+				}
+			}
+		});
+
+		chatConnection.addEventListener("open", function () {
+			keepAlive();
+			const chatterbox = $(`div.chatterbox[data-channel="${channel}"]`);
+			const chatterboxHome = chatterbox.data("chatterboxhome");
+			const messagesUrl = chatterboxHome + "/index.html";
+			let options = chatterbox.cleandata();
+			if (!options) options = {};
+			options.oemaxlevel = 1;
+			$.get(messagesUrl, options, function (data) {
+				chatterbox.replaceWith(data);
+				scrollToChat();
+			});
+		});
+		chatConnection.addEventListener("close", function () {
+			// console.info(new Date().toISOString(), "Chat Connection Closed");
+			// console.log("Chat Connection Closed");
+		});
+		chatConnection.addEventListener("error", function (event) {
+			// console.error(new Date().toISOString(), "Chat Connection Error", event);
+		});
+	}
+
+	const messages = {};
+
+	function channelUpdateMessage(chatterbox, message) {
+		//Cancel an existing one
+		if (messages[message.messageid]) {
+			messages[message.messageid] = setTimeout(function () {
+				updateMessage(chatterbox, message);
+			}, 1000);
+		} else {
+			messages[message.messageid] = true;
+			updateMessage(chatterbox, message);
+		}
+	}
+
+	function updateMessage(chatterbox, message) {
+		console.info(new Date().toISOString(), message);
+
+		const listArea = chatterbox.find(".chatterbox-message-list");
+
+		const chatterboxHome = chatterbox.data("chatterboxhome");
+
+		let renderMessageUrl = appHome + "/components/chatterbox/message.html";
+		if (chatterboxHome.length) {
+			renderMessageUrl = chatterboxHome + "/message.html";
+		}
+
+		const existing = listArea.find("#chatter-message-" + message.messageid);
+		if (existing.length) {
+			if (message.command === "messageremoved") {
+				existing.remove();
+			} else {
+				const msgBody = $(existing).find(".msg-body-content");
+				if (msgBody.length) {
+					msgBody.html(message.message);
+				} else {
+					const chatMsg = $(existing).find(".chat-msg");
+					chatMsg.html(message.message);
+				}
+			}
+
+			scrollToChat();
+			sortChatterbox(listArea);
+			return;
+		}
+
 		scrollToChat();
-		return;
-	}
 
-	var listarea = chatbox.find(".chatterbox-message-list");
-	var url = chatbox.data("rendermessageurl");
-	if (!url) {
-		url = apphome + "/components/chatterbox/message.html";
-	}
-
-	scrollToChat();
-
-	var options = chatbox.cleandata();
-	if (!options) options = {};
-	var editdiv = chatbox.closest(".editdiv");
-	if (
-		chatbox.data("includeeditcontext") === undefined ||
-		chatbox.data("includeeditcontext") == true
-	) {
-		if (editdiv.length > 0) {
-			var otherdata = editdiv.cleandata();
-			options = {
-				...otherdata,
-				...options,
-			};
+		let options = chatterbox.cleandata();
+		if (!options) options = {};
+		const editdiv = chatterbox.closest(".editdiv");
+		if (
+			chatterbox.data("includeeditcontext") === undefined ||
+			chatterbox.data("includeeditcontext") === true
+		) {
+			if (editdiv.length > 0) {
+				const otherdata = editdiv.cleandata();
+				options = {
+					...otherdata,
+					...options,
+				};
+			}
 		}
-	}
 
-	options.id = message.messageid;
+		options.id = message.messageid;
 
-	/*
+		/*
 	var params = {};
 	params.id = message.id;
 	params.channel = message.channel;
@@ -333,206 +355,109 @@ function updageMessage(chatbox, message) {
 		params.collectionid = message.collectionid;
 	}*/
 
-	jQuery.get(url, options, function (data) {
-		var $div = jQuery("<div></div>");
-		$div.html(data);
-		var $data = $div.find("#chatter-message-" + message.messageid);
-		listarea.removeClass("sorted");
-		setTimeout(function () {
-			listarea.append($data);
+		$.get(renderMessageUrl, options, function (data) {
+			listArea.append(data);
+			sortChatterbox(listArea);
 			scrollToChat();
 		});
-	});
-}
-
-function sortChatterbox(container) {
-	if ($(container).hasClass("sorted")) {
-		return;
-	}
-	var messages = Array.from(container.querySelectorAll(".msg-bubble"));
-
-	messages
-		.sort((a, b) => {
-			var dateA = new Date(a.dataset.createdat);
-			var dateB = new Date(b.dataset.createdat);
-			return dateA - dateB;
-		})
-		.forEach((el) => container.appendChild(el));
-	$(container).addClass("sorted");
-}
-
-lQuery(".chatterbox-message-list").livequery(function () {
-	if ($(this).hasClass("observing")) return;
-	$(this).addClass("observing");
-	var container = this.get(0);
-	if (!container) return;
-	var observer = new MutationObserver(function () {
-		sortChatterbox(container);
-	});
-	observer.observe(container, {
-		childList: true,
-	});
-});
-
-/*--------------Begin Functions List--------------*/
-function reloadAll() {
-	var app = jQuery("#application");
-	var apphome = app.data("home") + app.data("apphome");
-
-	jQuery(".chatterbox").each(function () {
-		var chatter = $(this);
-		var url = chatter.data("renderurl");
-		if (!url) {
-			url = apphome + "/components/chatterbox/index.html";
-		}
-		var chatterdiv = $(this);
-		var mydata = $(this).data();
-		jQuery.get(url, mydata, function (data) {
-			chatterdiv.html(data);
-
-			scrollToChat();
-		});
-	});
-}
-
-function showSpinner() {
-	//TODO:  Shakil Add a spinner somewhere to let us know the chat bot is about to say something
-	console.log("AI about to respond");
-	jQuery(".chatterspinner").show();
-	scrollToChat();
-}
-
-function hideSpinner() {
-	//TODO:  Shakil Add a spinner somewhere to let us know the chat bot is about to say something
-	console.log("AI done");
-	jQuery(".chatterspinner").hide();
-}
-
-function loadMoreChats() {
-	//already loading
-	if (loadingmore) {
-		//console.log("already loading");
-		//skip
-		return;
-	}
-	loadingmore = true;
-	var app = jQuery("#application");
-	var apphome = app.data("home") + app.data("apphome");
-
-	jQuery(".chatterbox").each(function () {
-		var url = apphome + "/components/chatterbox/loadmessages.html";
-
-		var chatterdiv = $(this);
-		var mydata = $(this).data();
-		mydata.lastloaded = chatterdiv
-			.find(".chatterbox-messages")
-			.data("lastloaded");
-		jQuery.get(url, mydata, function (data) {
-			chatterdiv.find(".chatterbox-message-list").prepend(data);
-			//scrollToChat();
-			loadingmore = false;
-			console.log("stop loading now");
-		});
-	});
-}
-
-var keepAliveTimeoutID = 0;
-
-function keepAlive() {
-	if (!chatconnection) {
-		return;
-	}
-	var timeout = 20000;
-	if (chatconnection.readyState == chatconnection.OPEN) {
-		var command = new Object();
-		command.command = "keepalive";
-
-		var userid = jQuery(".chatterbox").data("user"); //TODO: Use app?
-		command.userid = userid;
-
-		var chatter = jQuery(".chatterbox").data("channel");
-		command.channel = chatter;
-
-		var json = JSON.stringify(command);
-		chatconnection.send(json);
 	}
 
-	if (chatconnection.readyState == chatconnection.CLOSED) {
-		connect();
-		//reloadAll();
-	}
+	function sortChatterbox(container) {
+		//var messages = Array.from(container.querySelectorAll(".msg-bubble"));
+		const messages = Array.from(container.find(".msg-bubble"));
 
-	keepAliveTimeoutID = setTimeout(keepAlive, timeout);
-}
-
-function cancelKeepAlive() {
-	if (keepAliveTimeoutID) {
-		clearTimeout(keepAliveTimeoutID);
-	}
-}
-
-/*-------Start Push and Notification --------*/
-var pushServerPublicKey =
-	"BIN2Jc5Vmkmy-S3AUrcMlpKxJpLeVRAfu9WBqUbJ70SJOCWGCGXKY-Xzyh7HDr6KbRDGYHjqZ06OcS3BjD7uAm8";
-
-function registerServiceWorker() {
-	var app = jQuery("#application");
-	var apphome = app.data("apphome");
-	var home = app.data("home");
-	if (home !== undefined) {
-		apphome = home + apphome;
-	}
-	if (navigator.serviceWorker !== undefined) {
-		navigator.serviceWorker.register(apphome + "/components/chatterbox/sw.js");
-	}
-}
-
-function initializePushNotifications() {
-	return Notification.requestPermission(function (result) {
-		return result;
-	});
-}
-function isPushNotificationSupported() {
-	return "serviceWorker" in navigator && "PushManager" in window;
-}
-
-function createNotificationSubscription() {
-	//wait for service worker installation to be ready, and then
-	return navigator.serviceWorker.ready.then(function (serviceWorker) {
-		// subscribe and return the subscription
-		return serviceWorker.pushManager
-			.subscribe({
-				userVisibleOnly: true,
-				applicationServerKey: pushServerPublicKey,
+		messages
+			.sort((a, b) => {
+				const dateA = new Date(a.dataset.createdat);
+				const dateB = new Date(b.dataset.createdat);
+				return dateA - dateB;
 			})
-			.then(function (subscription) {
-				// send this to Entermedia backend with a user id
-				// 'subscription' == PushSubscription (object)
-				console.log("User is subscribed.", subscription);
-				console.log(subscription.endpoint);
-				return subscription;
+			.forEach((el) => container.append(el));
+		console.log("sorted...");
+	}
+
+	let keepAliveTimeoutID = 0;
+
+	function keepAlive() {
+		if (!chatConnection) {
+			return;
+		}
+		const timeout = 20000;
+		if (chatConnection.readyState === chatConnection.OPEN) {
+			const command = {};
+			command.command = "keepalive";
+
+			command.userid = userid;
+
+			const chatter = $(".chatterbox").data("channel");
+			command.channel = chatter;
+
+			const json = JSON.stringify(command);
+			chatConnection.send(json);
+		}
+
+		if (chatConnection.readyState === chatConnection.CLOSED) {
+			connect();
+			//reloadAll();
+		}
+
+		keepAliveTimeoutID = setTimeout(keepAlive, timeout);
+	}
+
+	function cancelKeepAlive() {
+		if (keepAliveTimeoutID) {
+			clearTimeout(keepAliveTimeoutID);
+		}
+	}
+
+	/*-------Start Push and Notification --------*/
+	const pushServerPublicKey =
+		"BIN2Jc5Vmkmy-S3AUrcMlpKxJpLeVRAfu9WBqUbJ70SJOCWGCGXKY-Xzyh7HDr6KbRDGYHjqZ06OcS3BjD7uAm8";
+
+	function registerServiceWorker() {
+		if (navigator.serviceWorker !== undefined) {
+			navigator.serviceWorker.register(
+				appHome + "/components/chatterbox/sw.js",
+			);
+		}
+	}
+
+	function createNotificationSubscription() {
+		//wait for service worker installation to be ready, and then
+		return navigator.serviceWorker.ready.then(function (serviceWorker) {
+			// subscribe and return the subscription
+			return serviceWorker.pushManager
+				.subscribe({
+					userVisibleOnly: true,
+					applicationServerKey: pushServerPublicKey,
+				})
+				.then(function (subscription) {
+					// send this to Entermedia backend with a user id
+					// 'subscription' == PushSubscription (object)
+					console.log("User is subscribed.", subscription);
+					console.log(subscription.endpoint);
+					return subscription;
+				});
+		});
+	}
+
+	function hideAttachFile() {
+		if ($(".message-attach-box").is(":visible")) {
+			$(".message-attach-box").fadeOut(function () {
+				$(this).remove();
+				$(".chatter-attachfile").removeClass("active");
 			});
-	});
-}
-
-function hideAttachFile() {
-	if ($(".message-attach-box").is(":visible")) {
-		$(".message-attach-box").fadeOut(function () {
-			$(this).remove();
-			$(".chatter-attachfile").removeClass("active");
-		});
+		}
 	}
-}
-function hideEmojiPicker() {
-	if ($(".emoji-picker").is(":visible")) {
-		$(".emoji-picker").fadeOut(function () {
-			$(this).remove();
-			$(".chatter-emoji").removeClass("active");
-		});
+	function hideEmojiPicker() {
+		if ($(".emoji-picker").is(":visible")) {
+			$(".emoji-picker").fadeOut(function () {
+				$(this).remove();
+				$(".chatter-emoji").removeClass("active");
+			});
+		}
 	}
-}
 
-jQuery(document).ready(function () {
 	lQuery("a.chatEmDialog").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -546,14 +471,14 @@ jQuery(document).ready(function () {
 		scrollToChat();
 	});
 	lQuery("#chatter-msg").livequery(function () {
-		var $this = $(this);
+		const $this = $(this);
 		setTimeout(function () {
 			$this.trigger("focus");
 		});
 	});
 
 	lQuery(".chatterbox").livequery(function () {
-		chatterbox();
+		initChatterbox();
 		scrollToChat();
 	});
 
@@ -568,14 +493,14 @@ jQuery(document).ready(function () {
 	});
 
 	lQuery(".chat-msg").livequery(function () {
-		var emojiparsed = $(this).data("emojiparsed");
+		const emojiparsed = $(this).data("emojiparsed");
 		if (emojiparsed) {
 			return;
 		}
 		$(this).data("emojiparsed", true);
-		var msgContent = $(this).find(".msg-body-content");
-		var reacts = $(this).find("span.emote");
-		if (window.parseEmojis != undefined) {
+		const msgContent = $(this).find(".msg-body-content");
+		const reacts = $(this).find("span.emote");
+		if (window.parseEmojis !== undefined) {
 			if (msgContent.length > 0) {
 				window.parseEmojis(msgContent[0]);
 			}
@@ -585,12 +510,12 @@ jQuery(document).ready(function () {
 		}
 	});
 
-	var chatSelectionStart = null;
+	let chatSelectionStart = null;
 
 	lQuery(".chatter-emoji").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
-		var textarea = $("#emojipicker").data("textarea");
+		let textarea = $("#emojipicker").data("textarea");
 		if (textarea) {
 			textarea = $("#" + textarea);
 		} else {
@@ -612,13 +537,13 @@ jQuery(document).ready(function () {
 	lQuery("#emojinav a").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
-		var goTo = $(this).data("id");
-		if (goTo == "smileys") {
+		const goTo = $(this).data("id");
+		if (goTo === "smileys") {
 			$(".emoji-wrapper").animate({ scrollTop: 0 }, 500);
 			return;
 		}
 		$(".emoji-wrapper").scrollTop(0);
-		var dest =
+		const dest =
 			$("#" + goTo).offset().top -
 			$("#" + goTo)
 				.offsetParent()
@@ -627,15 +552,15 @@ jQuery(document).ready(function () {
 	});
 
 	lQuery(".emjbtn").livequery("click", function () {
-		var textarea = $("#emojipicker").data("textarea");
+		let textarea = $("#emojipicker").data("textarea");
 		if (textarea) {
 			textarea = $("#" + textarea);
 		} else {
 			textarea = $("#chatter-msg");
 		}
 
-		var emoji = $(this).text();
-		var prev = textarea.val() || "";
+		const emoji = $(this).text();
+		let prev = textarea.val() || "";
 		if (chatSelectionStart != null) {
 			prev =
 				prev.slice(0, chatSelectionStart) +
@@ -675,7 +600,7 @@ jQuery(document).ready(function () {
 	);
 
 	lQuery("a.lightbox").livequery(function () {
-		var slb = $(this).simpleLightbox({
+		const slb = $(this).simpleLightbox({
 			captionSelector: "self",
 			captionType: "data",
 			captionsData: "caption",
@@ -687,24 +612,24 @@ jQuery(document).ready(function () {
 		});
 
 		slb.on("shown.simplelightbox", function () {
-			var lang = document.documentElement.lang;
+			const lang = document.documentElement.lang;
 			if (lang) {
-				var locales = $(this).data("locales");
+				let locales = $(this).data("locales");
 				if (locales) {
 					if (typeof locales === "string") {
-						var txt = document.createElement("textarea");
+						const txt = document.createElement("textarea");
 						txt.innerHTML = locales;
 						locales = JSON.parse(txt.value);
 					}
-					var localeCaption = locales[lang];
+					const localeCaption = locales[lang];
 					if (localeCaption) {
 						$(".sl-caption").html(localeCaption);
 					}
 				}
 			}
 
-			var dl = $(this).data("downloadlink");
-			var al = $(this).data("assetlink");
+			const dl = $(this).data("downloadlink");
+			const al = $(this).data("assetlink");
 			if (dl || al) {
 				$(".simple-lightbox .sl-actions").remove();
 				$(".simple-lightbox").append("<div class='sl-actions'></div>");
@@ -723,5 +648,17 @@ jQuery(document).ready(function () {
 				}
 			}
 		});
+	});
+
+	$(document).on("visibilitychange", function () {
+		if (document.visibilityState === "visible") {
+			if (chatConnection) {
+				keepAlive();
+			} else {
+				if ($(".chatterbox").length > 0) {
+					initChatterbox();
+				}
+			}
+		}
 	});
 });

@@ -1746,8 +1746,15 @@ public class AssetEditModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-
-		asset.toggleLock(inReq.getUser());
+		
+		if (asset.get("lockedby") == null)
+		{
+			asset.lock(true, inReq.getUser());
+		}
+		else
+		{
+			asset.lock(false, inReq.getUser());
+		}
 		archive.saveAsset(asset);
 
 	}

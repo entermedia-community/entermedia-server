@@ -11,10 +11,12 @@ $!context.putPageValue("readonly", $readonly)
  
 #ifnull($details)
 	#set( $viewdata = $mediaarchive.getCachedData("view",$viewid) )
+	
 	#set ($details = $viewdata.getDetailsForView($context.getUserProfile()))
 #end	
 #ifnull($details)
 	#set ($details = $searcher.getDetailsForView($viewid, $context.getUserProfile()))
+	
 #end	
 
 #ifnull($details)

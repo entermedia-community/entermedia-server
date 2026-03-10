@@ -1,14 +1,12 @@
-<div id="datamanager-workarea">
+<div id="usermanager-workarea"
+	class="mb-3" 
+	data-edithome="$apphome/views/settings/users/usermanager/users">
 
 $pages.include("$apphome/views/settings/users/usermanager/users/search.html")
 
            
 <div id="" class="emselectable commentbox"  >
 
-#ifnull($userTracker)
-#set( $userTracker = $hits)
-#end
-$context.putPageValue("hits", $userTracker)
 
 #set ($userSearcher = $searcherManager.getSearcher($catalogid, "user"))
 #set($viewid = "userresultstable")
@@ -25,14 +23,18 @@ $context.putPageValue("hits", $userTracker)
 	No details for view: $viewid
 #end
 
-<table class="table table-striped table-hover emdata" id="main-results-table">
+<table class="table table-striped table-hover emdata" id="main-results-table" data-hitssessionid="$hits.sessionId">
 	#set( $origURL = $context.getRequestParameter("origURL" ) )				
 	#set( $selecteduser = $context.getRequestParameter("username" ) )
 	<thead>
 		<tr id="tableheader">
-			#set( $sortby = $userTracker.getSearchQuery().getSortBy() )
+			#set( $sortby = $hits.getSearchQuery().getSortBy() )
 			#foreach( $detail in $details )
-			<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">
+			<th align="left" nowrap 
+			class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" 
+			id="$detail.id"
+			data-fieldid="$detail.id"
+			title="[[Sort by]] $detail.getText($context)">
 				$detail.getText($context)
 				#if ($sortby.startsWith($detail.getId()))
 						#if($sortby.endsWith("Up"))
@@ -52,7 +54,9 @@ $context.putPageValue("hits", $userTracker)
 #set ($userProfileSearcher = $searcherManager.getSearcher($catalogid, "userprofile"))
 <tbody>
 
-#foreach ( $hit in $userTracker.getPageOfHits() )
+	$hits.setHitsPerPage(15)
+	
+#foreach ( $hit in $hits.getPageOfHits() )
 	<tr rowid="${hit.id}" #if ($hit.enabled != true) class="trdisabled" #end >
 
 	#foreach( $detail in $details ) 
@@ -79,7 +83,7 @@ $context.putPageValue("hits", $userTracker)
 		</td>
 	</tr>
 #end
-#if ($userTracker.size() == 0)
+#if ($hits.size() == 0)
 	<tr>
 		<!-- <td colspan="${details.size()}" align="center"> -->
 			<td colspan="7" align="center">
@@ -103,21 +107,29 @@ data-updateurl="true">
 
 
 ##$pages.include("$searchhome/pages.html",$context)
- 
-#if ( $userTracker.totalPages == 0 )
-#elseif( $userTracker.totalPages == 1 )
-#elseif( $userTracker )
+
+#if ($hits && $hits.totalPages > 0 )
 
 <div style="text-align: right; padding:10px 20px;">
-		#set($thispage = $userTracker.getPage())
+		#set($thispage = $hits.getPage())
 		
-		#if( $userTracker.prevPage() )
-            <a style="margin-right: 15px;" href="#" onclick="jQuery('#usersearchresultspanel').load('$home$usermanagerhome/users/results.html', {page:'$userTracker.prevPage()', oeview:'$oeview', hitssessionid:'$userTracker.sessionId', oemaxlevel:'1'}); return false;"><b>&lt;&lt; [[Previous]]</b></a>
+		#if( $hits.prevPage() )
+			<a class=" changepage ajax px-2" href="$apphome/views/settings/users/usermanager/users/results.html"
+			style="display: inline-block" 
+				data-page="$hits.prevPage()" 
+				data-hitssessionid="$hits.sessionId"
+				data-targetdiv="usermanager-workarea"
+				title="[[Previous]]" accesskey="p" > < </a>
         #end
         
-		[[Page]] <b>$thispage</b>/$userTracker.totalPages  
-		#if ( $userTracker.nextPage() )
-			<a style="margin-left: 15px;" href="#" onclick="jQuery('#usersearchresultspanel').load('$home$usermanagerhome/users/results.html', {page:'$userTracker.nextPage()', oeview:'$oeview', hitssessionid:'$userTracker.sessionId', oemaxlevel:'1'}); return false;"><b>[[Next]] &gt;&gt;</b></a>
+		[[Page]] <b>$thispage</b>/$hits.totalPages  
+		#if ( $hits.nextPage() )
+			<a  class=" changepage ajax px-2" href="$apphome/views/settings/users/usermanager/users/results.html"
+			style="display: inline-block"
+			data-page="$hits.nextPage()"
+			data-hitssessionid="$hits.sessionId"
+			data-targetdiv="usermanager-workarea"
+			title="[[Next]]" accesskey="n">></a>
 		#end
 </div>
 

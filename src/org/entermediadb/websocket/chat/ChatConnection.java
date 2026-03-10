@@ -331,11 +331,13 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 
 	public void sendMessage(JSONObject json) {
 		try {
-			//String command = (String) json.get("command");
+//			String command = (String) json.get("command");
+//			log.info("Sending message: " + json);
+//			json.put("timestamp", System.currentTimeMillis());
 			remoteEndpointBasic.sendText(json.toJSONString());
 		} catch (Exception e) {
 			log.error(e);
-//			throw new OpenEditException(e);
+//			 throw new OpenEditException(e);
 		}
 	}
 

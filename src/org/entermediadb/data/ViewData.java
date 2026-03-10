@@ -71,6 +71,10 @@ public class ViewData extends BaseData implements CatalogEnabled
 	public ViewFieldList getDetailsForView(UserProfile inProfile)
 	{
 		Searcher searcher = getSearcher();
+		if (searcher == null) {
+			
+			return null;
+		}
 		if( inProfile != null)
 		{
 			String saveforall = inProfile.get("view_saveforallenabled");

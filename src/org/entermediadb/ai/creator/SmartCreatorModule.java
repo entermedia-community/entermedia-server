@@ -194,6 +194,8 @@ public class SmartCreatorModule extends BaseMediaModule {
 		MediaArchive archive = getMediaArchive(inReq);
 		String searchtype = inReq.getRequestParameter("searchtype");
 		
+		String sectionid = inReq.getRequestParameter("sectionid");
+		
 		Searcher searcher = archive.getSearcher(searchtype);
 		
 		String id = inReq.getRequestParameter("id");
@@ -209,10 +211,12 @@ public class SmartCreatorModule extends BaseMediaModule {
 		
 		if("componentsection".equals(searchtype))
 		{			
-			String playbackentityid = inReq.getRequestParameter("playbackentityid");
-			String playbackentitymoduleid = inReq.getRequestParameter("playbackentitymoduleid");
-			Collection<Data> sections = searcher.query().exact("playbackentityid", playbackentityid).exact("playbackentitymoduleid", playbackentitymoduleid).sort("ordering").search();
-			inReq.putPageValue("componentsections", sections);
+			inReq.putPageValue("section", data);
+		}
+		else
+		{
+			Data section = archive.query("componentsection").exact("id", sectionid).searchOne();
+			inReq.putPageValue("section", section);
 		}
 		
 		inReq.putPageValue("searchtype", searchtype);

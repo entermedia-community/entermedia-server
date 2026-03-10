@@ -1,0 +1,14 @@
+<properties >
+	<property id="id" />
+	<property id="name" />
+		
+		
+	<property id="editable" />	
+	<property id="internalfield"  />	
+	<property id="defaultoperation"  />	
+	<property id="datatype"  />	
+	<property id="rendertype"   />	
+	<property id="required"   />	
+	<property id="index"  />	
+	<property id="searchcomponent"  />	
+</properties>

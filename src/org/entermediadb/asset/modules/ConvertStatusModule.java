@@ -301,6 +301,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		properties.saveFileAs(properties.getFirstItem(), original, inReq.getUser()); //Does not make a version
 
 		archive.getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, original, current );
+		current.setProperty("previewstatus", "converting");
 		archive.saveAsset(current);
 		archive.removeGeneratedImages(current, true);
 		archive.getAssetEditor().reloadThumbnails( current);

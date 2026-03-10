@@ -460,7 +460,7 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 	}
 
 	@Override
-	public void toggleLock(User inUser)
+	public void lock(Boolean inLock, User inUser)
 	{
 		throw new OpenEditException("Unimplemented");
 		

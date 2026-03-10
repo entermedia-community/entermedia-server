@@ -21,6 +21,7 @@ import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
+import org.openedit.HttpException;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -532,7 +533,9 @@ public class BaseLlmConnection implements LlmConnection {
 					error = "Could not call " + inPath + " - Status: " + resp.getStatusLine().toString();
 				}
 				log.info(error);
-				throw new OpenEditException(error);
+				
+				HttpException ex =  new HttpException(error, inPath, resp.getStatusLine().getStatusCode() );
+				
 			}
 			
 			object = connection.parseJson(resp);

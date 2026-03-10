@@ -808,7 +808,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 //		long start = System.currentTimeMillis();
 		//log.debug("Facial Profile Detection sending " + inAsset.getName() );
 		LlmConnection connection = getMediaArchive().getLlmConnection("faceDetect");
-		LlmResponse resp = connection.callJson("/represent", null, tosendparams);
+		LlmResponse resp = connection.callJson("/face", null, tosendparams);
 		
 		List<Map> results = (List<Map>) resp.getRawCollection();
 		

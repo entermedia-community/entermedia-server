@@ -12,12 +12,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.util.EntityUtils;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
@@ -37,7 +31,6 @@ import org.openedit.data.Searcher;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.RepositoryException;
-import org.openedit.util.JSONParser;
 
 public class WhisperTranscriberManager extends InformaticsProcessor {
 	
@@ -182,7 +175,8 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 
 			instructions.setProperty("timeoffset", String.valueOf(timeoffset));
 			instructions.setProperty("duration", "300");
-			instructions.setProperty("resample", "16000");
+			instructions.setProperty("bitrate", "128");
+			instructions.setProperty("resample", "48000");
 			
 			Page page = archive.getPageManager().getPage("/WEB-INF/temp/" + inAsset.getId() + "data.mp3");
 			archive.getPageManager().removePage(page);
@@ -193,19 +187,36 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 			instructions.setOutputFile(tempfile);
 
 			ConvertResult result = manager.createOutput(instructions, true);
-			if (!result.isOk()) {
+			if (!result.isOk()) 
+			{
 				throw new OpenEditException("Could not transcode audio");
 			}
 			try {
 
-				JSONArray transcriptions = getTranscribedData(tempfile);
+				JSONObject transcriptions = getTranscribedData(tempfile);
 				
-				if (transcriptions == null) {
+				if (transcriptions == null) 
+				{
 					log.error("Transcriber server error");
 					throw new OpenEditException("Transcriber server error");
 				}
+				
+				String language = (String) transcriptions.get("language");
+				if (language != null) 
+				{
+					inTrack.setValue("sourcelang", language);
+				}
+				
+				Long speakercount = (Long) transcriptions.get("num_speakers");
+				if (speakercount != null) 
+				{
+					inTrack.setValue("speakercount", speakercount);
+				}
+
+				JSONArray segments = (JSONArray) transcriptions.get("segments");
+				
 	
-				for (Iterator iterator2 = transcriptions.iterator(); iterator2.hasNext();) 
+				for (Iterator iterator2 = segments.iterator(); iterator2.hasNext();) 
 				{
 					Map cuemap = new HashMap();
 					JSONObject transcription = (JSONObject) iterator2.next();
@@ -213,8 +224,14 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 					double start = (double) transcription.get("start");
 					double end = (double) transcription.get("end");
 					String text = (String) transcription.get("text");
-
+					String speaker = (String) transcription.get("speaker");
+					
+					if (speaker == null) {
+						speaker = "Unknown";
+					}
+					
 					cuemap.put("cliplabel", text);
+					cuemap.put("speaker", speaker);
 					cuemap.put("timecodestart", Math.round((timeoffset + start) * 1000d));
 					cuemap.put("timecodelength", Math.round((end - start) * 1000d));
 					
@@ -245,7 +262,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 	
 	
 	
-	public JSONArray getTranscribedData(ContentItem audio) throws FileNotFoundException, Exception {
+	public JSONObject getTranscribedData(ContentItem audio) throws FileNotFoundException, Exception {
 		
 		File audioFile = new File(audio.getAbsolutePath());
 		if(!audioFile.exists())
@@ -262,7 +279,7 @@ public class WhisperTranscriberManager extends InformaticsProcessor {
 		
 		LlmResponse resp = connection.callJson("/transcribe", headers, params);
 		
-		JSONArray result = (JSONArray) resp.getRawCollection();  //TODO: Change server to return JSONOBject
+		JSONObject result = (JSONObject) resp.getRawResponse();  
 		return result;
 
 	}

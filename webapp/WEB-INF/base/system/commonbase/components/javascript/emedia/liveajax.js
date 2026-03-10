@@ -103,7 +103,7 @@ $.ajaxSetup({
 	};
 
 	var oldajaxSubmit = $.fn.ajaxSubmit;
-	console.log({ oldajaxSubmit });
+
 	$.fn.ajaxSubmit = function () {
 		var form = $(this);
 

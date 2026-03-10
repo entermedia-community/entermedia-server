@@ -1,17 +1,17 @@
 #set( $dataroot = $content.dataroot )
 <div class="tab-actions">
-	<h4 class="float-left">[[Editing Field]] $!property.name</h4>
+	<h4 class="float-left" style="margin:0;">[[Editing Field]] $!property.name</h4>
 	<div style="float:right">
-	#if($detail.isList() || $detail.isMultiValue())
-		<a class="btn btn-xs btn-primary" href="$apphome/views/settings/lists/datamanager/list/index.html?searchtype=$detail.listId">[[Edit Values]]</a>
-	#end
-[[Current Field]]:
-	<select id="proptomodify" 
-			name="id" 
-			class="form-control form-control-sm ajax"
-			data-href="$home${dataroot}/properties/edit.html?catalogid=${mediaarchive.getCatalogId()}&searchtype=$searcher.getSearchType()&" 
-			data-targetdiv="datamanager-workarea">
-		<option value="" ></option>
+		#if($detail.isList() || $detail.isMultiValue())
+			<a class="btn btn-xs btn-primary" href="$apphome/views/settings/lists/datamanager/list/index.html?searchtype=$detail.listId">[[Edit Values]]</a>
+		#end
+		[[Current Field]]:
+		<select id="proptomodify" 
+				name="id" 
+				class="form-control form-control-sm ajax"
+				data-href="$siteroot${dataroot}/properties/edit.html?oemaxlevel=1&catalogid=${mediaarchive.getCatalogId()}&searchtype=$searcher.getSearchType()&" 
+				data-targetdiv="datamanager-workarea">
+			<option value="" ></option>
 			#foreach( $detail in $searcher.getPropertyDetails())
 				<option value="$detail.id" #if($property.id == $detail.id)selected="selected"#end>$detail.text</option>
 			#end
@@ -19,77 +19,70 @@
 	</div>
 	<div class="clearfix"></div>
 </div>
-#set($viewid = $context.getRequestParameter("viewid"))
 
-#set ( $moduleid = $context.findValue("searchtype") )		
+#set( $viewid = $context.getRequestParameter("viewid") )
 
+#set ( $moduleid = $context.findValue("searchtype") )
 
-<div id="editlayout">
-#set( $origURL = $context.getRequestParameter("origURL" ) )		
-		
-<form id="dataeditor" name="dataeditor" method="post" 
-		action="$home$dataroot/properties/save.html?oemaxlevel=1"
+<div id="editlayout">	
+	<form id="dataeditor" name="dataeditor" method="post" 
+		action="$siteroot$dataroot/properties/save.html?oemaxlevel=1&catalogid=${mediaarchive.getCatalogId()}&searchtype=$searcher.getSearchType()"
 		data-targetdivinner="datamanager-workarea"
-		class="ajaxform" >
-	<input name="save" type="hidden" value="true" />
-	<input name="id" type="hidden" value="$!property.id" />
-	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
-	<input name="searchtype" type="hidden" value="$searcher.getSearchType()" />
-	#if($viewid)
-		<input name="viewpath" type="hidden" value="${moduleid}/${viewid}"/>
-	#end
+		class="ajaxform">
 
-<div id="edit-data" class="oeinputform validate-inputs">	
-$context.putPageValue("searchtype", "propertydetail")
-$context.putPageValue("view", "propertydetail/edit")
-$context.putPageValue("data", $property)
+		<input name="save" type="hidden" value="true" />
+		<input name="id" type="hidden" value="$!property.id" />
+		<input name="catalogid" type="hidden" value="$searcher.catalogId" />
+		<input name="searchtype" type="hidden" value="$searcher.getSearchType()" />
 
-$context.putPageValue("searcher",$mediaarchive.getSearcher("propertydetail"))
+		#if($viewid)
+			<input name="viewpath" type="hidden" value="${moduleid}/${viewid}"/>
+		#end
 
-$pages.include("$apphome/components/xml/detaileditor.html", $context)
+		<div id="edit-data" class="datamanager-editor oeinputform validate-inputs">	
+			$context.putPageValue("searchtype", "propertydetail")
+			$context.putPageValue("viewid", "propertydetailedit")
+			$context.putPageValue("data", $property)
 
-<div id="advanced" style="display: none;">
-<h3 class="settings-title">[[Advanced Options]]</h3>
-$context.putPageValue("view", "propertydetail/advanced")
-$pages.include("$apphome/components/xml/detaileditor.html", $context)
-<div class="clearfix"></div>
+			$context.putPageValue("searcher",$mediaarchive.getSearcher("propertydetail"))
+
+			$pages.include("$apphome/components/xml/detaileditor.html", $context)
+
+			<div id="advanced" style="display: none;">
+				<h4>[[Advanced Options]]</h4>
+				$context.putPageValue("viewid", "propertydetailadvancededit")
+				$pages.include("$apphome/components/xml/detaileditor.html", $context)
+				<div class="clearfix"></div>
+			</div>
+		</div>
+
+		<div class="" style="padding:0px 10px 10px;">
+			<a class="btn btn-sm btn-secondary"  id="viewadvanced">[[View Advanced Options]]</a>
+		</div>
+
+		<div class="" style="padding:10px 10px;">
+			<input class="btn btn-primary right" style="margin-right: 10px;" type="submit" value="[[Save]]" />
+			<a class="btn btn-secondary ajax" data-targetdivinner="datamanager-workarea" style="margin-right: 10px;" href="$siteroot$apphome/views/settings/lists/datamanager/properties/index.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()&oemaxlevel=1">[[Cancel]]</a>	
+			<a class="btn btn-danger ajax" data-targetdivinner="datamanager-workarea"href="$siteroot$apphome/views/settings/lists/datamanager/properties/remove.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()&oemaxlevel=1">[[Delete Field]]</a>
+		</div>
+	</form>
 </div>
-</div>
 
-
-
-<div class="" style="padding:10px 10px;">
-<a class="btn btn-sm btn-secondary"  id="viewadvanced">[[View Advanced Options]]</a>
-</div>
-
-
-<div class="" style="padding:10px 10px;">
-
-<input class="btn btn-sm btn-primary right" style="margin-right: 10px;" type="submit" value="[[Save]]" />
-<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="datamanager-workarea" style="margin-right: 10px;" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()">[[Cancel]]</a>	
-<a class="btn btn-sm btn-danger ajax" data-targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/properties/remove.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()">[[Delete Field]]</a>
-</div>
-
-</form>
-</div>
 <script>
-    $('#viewadvanced').click(function(){
-        if ( $(this).hasClass('show') ) {
-            $('#advanced').hide();
-            $(this).html('View Advanced Options');
-            $(this).removeClass('show');
-            
-        } else {
-            $('#advanced').show();
-            $(this).html('Hide Advanced Options');
-            $(this).addClass('show');
-        }
-        $(window).trigger("resize");
-    });
+	$('#viewadvanced').click(function(){
+		if ( $(this).hasClass('show') ) {
+			$('#advanced').hide();
+			$(this).html('View Advanced Options');
+			$(this).removeClass('show');
+		} else {
+			$('#advanced').show();
+			$(this).html('Hide Advanced Options');
+			$(this).addClass('show');
+		}
+		$(window).trigger("resize");
+	});
 
 	loadPropertyEdit = function(selectedid) {
-
-		jQuery("#propertyEditPanel").load("$home${dataroot}/properties/edit.html?id=" + selectedid + "&oemaxlevel=1&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
+		jQuery("#propertyEditPanel").load("$siteroot${dataroot}/properties/edit.html?id=" + selectedid + "&oemaxlevel=1&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
 	}
-
 </script>
