@@ -1511,7 +1511,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		//search.toString()
 		
-		log.info(search.toString());
+		//log.info(search.toString());
 		
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, date, 1000);
 		hits.setSearcher(archive.getSearcher("modulesearch"));
@@ -1524,7 +1524,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			String json = search.toString();
 			log.info(toId(inCatalogId) + "/_search' -d '" + json + "' \n");
 		}
-		log.info("Data-Sync Found these edited documents: " + hits.size() + " since " + inAfter);
+		log.info("Data-Sync " + hits.size() + " edited documents since " + inAfter);
 		//hits.setSearcherManager(getSearcherManager());
 		//hits.setSearcher(this);
 		//hits.setSearchQuery(inQuery);
