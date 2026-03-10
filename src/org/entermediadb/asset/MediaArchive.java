@@ -809,7 +809,7 @@ public class MediaArchive implements CatalogEnabled
 		//asset.setCatalogId(getCatalogId());
 		if (inId == null)
 		{
-			inId = getAssetSearcher().nextAssetNumber();
+			//inId = getAssetSearcher().nextAssetNumber();
 		}
 		asset.setId(inId);
 		asset.setSourcePath(inSourcePath);

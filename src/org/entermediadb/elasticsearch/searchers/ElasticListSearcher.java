@@ -29,6 +29,11 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	//protected XmlFile fieldXmlFile;
 	protected XmlSearcher fieldXmlSearcher;
 
+	protected boolean fieldXmlReadOnly = true; // default true
+
+	public boolean isXmlReadOnly() {
+	    return Boolean.parseBoolean(getPropertyDetails().getBaseSetting("xmlreadonly"));
+	}
 	
 	
 	public XmlSearcher getXmlSearcher() {
@@ -239,6 +244,8 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	//This is the main APU for saving and updates to the index
 	public void saveAllData(Collection<Data> inAll, User inUser)
 	{
+		
+		
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
 		
 		for (Object object: inAll)
@@ -265,7 +272,10 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 		try
 		{
 			saveToElasticSearch(details, inData, false, inUser);
-			getXmlSearcher().saveData(inData, inUser);
+			if(!isXmlReadOnly()) {
+				getXmlSearcher().saveData(inData, inUser);
+			}
+			
 			clearIndex();
 		}
 		catch(Throwable ex)

@@ -154,7 +154,7 @@ public class SendMailModule extends BaseModule
 		{
 			inWebmail.send();
 		}
-		catch (MessagingException e)
+		catch (Exception e)
 		{
 			log.info("failed to send email" +e);
 			log.error(e);

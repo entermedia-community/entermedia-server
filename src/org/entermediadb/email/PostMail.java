@@ -195,6 +195,16 @@ public class PostMail
 
 	public void postMail(List<InternetAddress> recipients, List<InternetAddress> blindrecipients, String subject, String inHtml, String inText, InternetAddress from, List inAttachments, Map inProperties) throws MessagingException
 	{
+		try {
+		    Class.forName("com.sun.mail.util.SharedByteArrayInputStream");
+		    // Safe to use JavaMail code
+		} catch (ClassNotFoundException e) {
+		    log.warn("JavaMail not available. Skipping mail processing.");
+		    log.info(inHtml);
+		    log.info(inText);
+		    return;
+		}
+		
 		// Set the host smtp address
 		Properties props = new Properties();
 		// create some properties and get the default Session

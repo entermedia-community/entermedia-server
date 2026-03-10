@@ -64,6 +64,7 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
+import org.elasticsearch.index.query.GeoPolygonQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.PrefixQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -1196,7 +1197,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		{
 			// "index" : "not_analyzed"
 			jsonproperties = jsonproperties.field("type", "binary");
-			jsonproperties = jsonproperties.field("doc_values", true);
+			jsonproperties = jsonproperties.field("doc_valaues", true);
 			return;
 		}
 
@@ -1919,18 +1920,46 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		else if (inDetail.isGeoPoint())
 		{
 			GeoFilter filter = (GeoFilter) inTerm;
-			if (filter.getLatitude() == 0)
+
+			if ("polygon".equals(filter.getType()))
 			{
-				find = QueryBuilders.termQuery("id", "-" + System.currentTimeMillis());
+			    GeoPolygonQueryBuilder polygon =
+			        QueryBuilders.geoPolygonQuery(inDetail.getId());
+
+			    for (Position p : filter.getPoints())
+			    {
+			        polygon.addPoint(p.getLatitude(), p.getLongitude());
+			    }
+
+			    find = polygon;
 			}
 			else
 			{
-				GeoDistanceQueryBuilder geoDistanceFilterBuilder = new GeoDistanceQueryBuilder(inDetail.getId());
-				geoDistanceFilterBuilder.point(filter.getLatitude(), filter.getLongitude());
-				geoDistanceFilterBuilder.distance(String.valueOf(filter.getDistance()));
-				geoDistanceFilterBuilder.optimizeBbox("memory"); // Can be also "indexed" or "none"
-				geoDistanceFilterBuilder.geoDistance(GeoDistance.ARC); // Or GeoDistance.PLANE
-				find = geoDistanceFilterBuilder;
+			    if (filter.getCenter() == null)
+			    {
+			        BoolQueryBuilder none = QueryBuilders.boolQuery();
+			        none.mustNot(QueryBuilders.matchAllQuery());
+			        find = none;
+			    }
+			    else
+			    {
+			        GeoDistanceQueryBuilder geoDistanceFilterBuilder =
+			            new GeoDistanceQueryBuilder(inDetail.getId());
+
+			        geoDistanceFilterBuilder.point(
+			            filter.getLatitude(),
+			            filter.getLongitude()
+			        );
+
+			        geoDistanceFilterBuilder.distance(
+			            String.valueOf(filter.getDistance())
+			        );
+
+			        geoDistanceFilterBuilder.optimizeBbox("memory");
+			        geoDistanceFilterBuilder.geoDistance(GeoDistance.ARC);
+
+			        find = geoDistanceFilterBuilder;
+			    }
 			}
 		}
 		// DO not use _all use _description
