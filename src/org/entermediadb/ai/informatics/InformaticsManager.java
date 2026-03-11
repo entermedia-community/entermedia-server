@@ -250,7 +250,7 @@ public class InformaticsManager extends BaseAiManager
 		else {
 			date = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
 		}
-		query.after("entity_date", date);
+		query.after("emrecordstatus.recordmodificationdate", date);
 
 		//inLog.info("Running entity search query: " + query);
 
