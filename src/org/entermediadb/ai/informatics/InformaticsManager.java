@@ -83,6 +83,9 @@ public class InformaticsManager extends BaseAiManager
 			date = DateStorageUtil.getStorageUtil().parseFromObject(startdate);
 		}
 		query.after("assetaddeddate", date);
+		
+		// Process smaller files first
+		query.sort("filesize");
 
 
 		HitTracker pendingrecords = query.search();
