@@ -457,6 +457,10 @@
 }
 .chat-msg-attachments-asset {
 	margin: 0.25rem;
+	
+}
+.chat-msg-attachments-asset img {
+	max-height:200px;
 }
 .chatterbox-write .chatterboxreplyto {
 	width: calc(100% - 22px);
