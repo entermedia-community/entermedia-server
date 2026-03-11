@@ -271,6 +271,10 @@
 				var elmnt = document.getElementById(focuselement);
 				elmnt.scrollIntoView();
 			}
+			else
+			{
+				$(this).find('input[type=text],textarea,select').filter(':visible:first').focus();
+			}
 		});
 
 		modaldialog.on("hide.bs.modal", () => {

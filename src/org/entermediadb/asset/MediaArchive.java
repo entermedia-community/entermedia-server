@@ -3418,6 +3418,12 @@ public class MediaArchive implements CatalogEnabled
 		return false;
 	}
 	
+	public boolean youtubeImporterAvaiable(WebPageRequest inReq)
+	{
+		String key = getCatalogSettingValue("youtube-data-api-key");
+		return key!=null;
+	}
+	
 }
 
 
