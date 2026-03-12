@@ -18,7 +18,6 @@ public class BaseAgent implements Agent {
         fieldAgentData = inAgentData;
     }
     
-    
 	protected String fieldCatalogId;
 
 	public String getCatalogId()
