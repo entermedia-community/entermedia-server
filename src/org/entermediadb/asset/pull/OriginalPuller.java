@@ -19,7 +19,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.elasticsearch.SearchHitData;
-import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -33,6 +32,7 @@ import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.FileUtils;
+import org.openedit.util.HttpSharedConnection;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
 
