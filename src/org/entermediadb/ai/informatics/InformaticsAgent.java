@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -11,8 +12,10 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.BaseAgent;
+import org.entermediadb.ai.BaseInformaticAgent;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.manager.BaseManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -22,10 +25,10 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
-public class InformaticsManager extends BaseAiManager
+public class InformaticsAgent extends BaseAgent
 {
 	
-	private static final Log log = LogFactory.getLog(InformaticsManager.class);
+	private static final Log log = LogFactory.getLog(InformaticsAgent.class);
 	
 	public void processAll(ScriptLogger inLog)
 	{
@@ -445,8 +448,25 @@ public class InformaticsManager extends BaseAiManager
 		
 		getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
 		
-		
-		
-		
 	}
+	
+	
+	protected Map<String, Collection> groupByModule(Collection<MultiValued> inPendingrecords)
+	{
+		Map<String,Collection> groupbymodule = new HashMap();
+		for (Iterator iterator = inPendingrecords.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			String moduleid = data.get("entitysourcetype");
+			Collection tosave = groupbymodule.get(moduleid);
+			if ( tosave ==  null)
+			{
+				tosave = new ArrayList();
+				groupbymodule.put(moduleid,tosave);
+			}
+			tosave.add(data);
+		}
+		return groupbymodule;
+	}
+	
 }

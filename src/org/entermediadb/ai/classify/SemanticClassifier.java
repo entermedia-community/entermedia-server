@@ -19,6 +19,7 @@ import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 
 public class SemanticClassifier extends InformaticsProcessor implements CatalogEnabled
 {
@@ -110,7 +111,19 @@ public class SemanticClassifier extends InformaticsProcessor implements CatalogE
 				data.setValue("llmerror", true);
 			}
 		}
-		getSemanticTableManager().indexData(inLog,inRecords);
+		try
+		{
+			getSemanticTableManager().indexData(inLog,inRecords);
+		}
+		catch( Throwable ex)
+		{
+			log.error("Could not process vectors. Stopping everything ", ex);
+			if( ex instanceof RuntimeException)
+			{
+				throw ex;
+			}
+			throw new OpenEditException(ex);
+		}
 		long end = System.currentTimeMillis();
 		double seconds = end - start / 1000d;
 		inLog.info("SemanticClassifier Completed " + inRecords.size() + " records in " +  seconds + " seconds ");

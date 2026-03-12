@@ -17,7 +17,6 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.assistant.SemanticAction;
 import org.entermediadb.ai.informatics.SemanticTableManager;
 import org.entermediadb.ai.llm.AgentContext;
-import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.manager.BaseManager;
@@ -34,9 +33,9 @@ import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
 
-public abstract class BaseAiManager extends BaseManager 
+public abstract class BaseInformaticAgent extends BaseAgent 
 {
-	private static final Log log = LogFactory.getLog(BaseAiManager.class);
+	private static final Log log = LogFactory.getLog(BaseInformaticAgent.class);
 	
 	
 	protected Collection<PropertyDetail> loadActiveDetails(String inModuleId)
@@ -250,25 +249,7 @@ public abstract class BaseAiManager extends BaseManager
 		}
 		return null;
 	}
-	
-	protected Map<String, Collection> groupByModule(Collection<MultiValued> inPendingrecords)
-	{
-		Map<String,Collection> groupbymodule = new HashMap();
-		for (Iterator iterator = inPendingrecords.iterator(); iterator.hasNext();)
-		{
-			Data data = (Data) iterator.next();
-			String moduleid = data.get("entitysourcetype");
-			Collection tosave = groupbymodule.get(moduleid);
-			if ( tosave ==  null)
-			{
-				tosave = new ArrayList();
-				groupbymodule.put(moduleid,tosave);
-			}
-			tosave.add(data);
-		}
-		return groupbymodule;
-	}
-	
+
 	protected Collection<PropertyDetail> populateFields(String inModuleId, MultiValued inData, Collection<PropertyDetail> inExcludeFields)
 	{
 		Collection<PropertyDetail> detailsfields = loadActiveDetails(inModuleId);
@@ -388,22 +369,6 @@ public abstract class BaseAiManager extends BaseManager
 		return schema;
 	}
 	
-	public Collection<String> getModulesAsEnum()
-	{
-		Collection<String> nameenums = new HashSet<String>();
-		for (Data module : loadSchema().getModules())
-		{
-			String name = module.getName();
-			nameenums.add(name);
-			
-		}
-		//add asset types
-		Collections.addAll(nameenums, "files", "images", "videos", "documents", "audio");
-		
-		
-		return nameenums;
-	}
-
 	
 	public SemanticTableManager loadSemanticTableManager(String inConfigId)
 	{
@@ -494,22 +459,6 @@ public abstract class BaseAiManager extends BaseManager
 		
 	}
 	
-	
-	public LlmResponse handleError(AgentContext inAgentContext, String inError)
-	{
-		return handleError(inAgentContext, inError, 200);
-	}
-	
-	public LlmResponse handleError(AgentContext inAgentContext, String inError, int inCode)
-	{
-		inAgentContext.addContext("error", inError);
-		inAgentContext.addContext("errorcode", inCode);
-		LlmConnection llmconnection = getMediaArchive().getLlmConnection("render_error");
-		LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "render_error");
-		//inAgentContext.setFunctionName(null);
-		inAgentContext.setNextFunctionName(null);
-		return response;
-	}
 	
 	protected String findLocalActionName(AgentContext inAgentContext)
 	{

@@ -358,8 +358,15 @@ public class EmbeddingManager extends InformaticsProcessor
 				
 				AgentContext agentcontext = new AgentContext();
 				agentcontext.put("data", inEntity);
+				RenderValues rendervalues = new RenderValues();
+				rendervalues.setMediaArchive(getMediaArchive());
+				rendervalues.setData(inEntity);
+				rendervalues.setInFields(contextFields);
+				agentcontext.put("rendervalues", rendervalues);
 				agentcontext.put("contextfields", contextFields);
-				
+
+				agentcontext.addContext("rendervalues", rendervalues);
+
 				if (entityassetfield != null)
 				{
 					String assetid = inEntity.get(entityassetfield);

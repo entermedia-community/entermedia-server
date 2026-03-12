@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.BaseInformaticAgent;
 import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.Schema;
 import org.entermediadb.ai.classify.EmbeddingManager;
@@ -24,7 +24,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 
-public class QuestionsManager extends BaseAiManager implements ChatMessageHandler
+public class QuestionsManager extends BaseInformaticAgent implements ChatMessageHandler
 {
 	private static final Log log = LogFactory.getLog(QuestionsManager.class);
 

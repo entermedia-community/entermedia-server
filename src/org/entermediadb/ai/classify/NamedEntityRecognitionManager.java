@@ -53,7 +53,14 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 		AgentContext agentcontext = new AgentContext();
  		agentcontext.put("data", inData);
  		agentcontext.put("fieldparams", inConfig);
- 		agentcontext.put("contextfields", contextfields);
+
+		RenderValues rendervalues = new RenderValues();
+		rendervalues.setMediaArchive(getMediaArchive());
+		rendervalues.setData(inData);
+		rendervalues.setInFields(contextfields);
+		agentcontext.put("rendervalues", rendervalues);
+		agentcontext.put("contextfields", contextfields);
+
  		agentcontext.put("autocreatefields", autocreatefields);
 
  		

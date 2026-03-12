@@ -202,6 +202,11 @@ public class ClassifyManager extends InformaticsProcessor
 				textContent = textContent.substring(0, Math.min(4000, textContent.length()));
 			}
 			
+			RenderValues rendervalues = new RenderValues();
+			rendervalues.setData(asset);
+			rendervalues.setInFields(contextFields);
+			rendervalues.setMediaArchive(getMediaArchive());
+			agentcontext.put("rendervalues", rendervalues);
 			agentcontext.addContext("contextfields", contextFields);
 			
 			LlmResponse results = llmconnection.callClassifyFunction(agentcontext, functionname, base64EncodedString, textContent);
@@ -315,27 +320,6 @@ public class ClassifyManager extends InformaticsProcessor
 		
 		AgentContext agentcontext = new AgentContext();
 		
-		String assetid = inEntity.get("primarymedia");
-		if( assetid == null)
-		{
-			assetid = inEntity.get("primaryimage");
-		}
-		
-		Asset primaryasset = getMediaArchive().getAsset(assetid);
-		
-		if (primaryasset != null)
-		{
-			agentcontext.put("primaryasset", primaryasset);
-			
-			Searcher assetsearcher = getMediaArchive().getAssetSearcher();
-			
-			contextFields.add(assetsearcher.getDetail("longcaption"));
-			contextFields.add(assetsearcher.getDetail("keywordsai"));
-			contextFields.add(assetsearcher.getDetail("semantictopics"));
-			contextFields.add(assetsearcher.getDetail("headline"));
-			
-		}
-		
 		if(contextFields.size() == 0)
 		{
 			log.info("No context fields found for entity: " + inEntity.getId() + " " + inEntity.getName());
@@ -350,12 +334,17 @@ public class ClassifyManager extends InformaticsProcessor
 		}
 		else
 		{
-			
 			agentcontext.put("entity", inEntity);
 			agentcontext.put("data", inEntity);
+
+			RenderValues rendervalues = new RenderValues();
+			rendervalues.setData(inEntity);
+			rendervalues.setInFields(contextFields);
+			rendervalues.setMediaArchive(getMediaArchive());
+			agentcontext.put("rendervalues", rendervalues);
 			agentcontext.put("contextfields", contextFields);
-			agentcontext.put("fieldstofill", fieldsToFill);
 			
+			agentcontext.put("fieldstofill", fieldsToFill);
 			
 			boolean isDocPage = inEntity.get("entitydocument") != null;
 			if(isDocPage)

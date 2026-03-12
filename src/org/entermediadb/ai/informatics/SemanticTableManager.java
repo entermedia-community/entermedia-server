@@ -11,7 +11,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.BaseInformaticAgent;
+import org.entermediadb.ai.classify.RenderValues;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
@@ -31,7 +32,7 @@ import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 
-public class SemanticTableManager extends BaseAiManager implements CatalogEnabled
+public class SemanticTableManager extends BaseInformaticAgent implements CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(SemanticTableManager.class);
 	
@@ -491,7 +492,14 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 				return null;
 			}
 			
+			RenderValues rendervalues = new RenderValues();
+			rendervalues.setMediaArchive(getMediaArchive());
+			rendervalues.setData(inData);
+			rendervalues.setInFields(contextfields);
+			agentcontext.put("rendervalues", rendervalues);
 			agentcontext.put("contextfields", contextfields);
+
+			
 			agentcontext.put("data", inData);
 			
 			LlmResponse structure = llmconnection.callStructure(agentcontext,"createSemanticTopics");
