@@ -81,17 +81,19 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 				Map params = new HashMap();
 				finalurl = finalurl.concat("?entermedia.key=" + node.get("entermediakey"));
 
-				HttpResponse genfile = connection.sharedPost(finalurl, params);
-				StatusLine filestatus = genfile.getStatusLine();
-				if (filestatus.getStatusCode() != 200)
-				{
-					log.error("Could not download original " + filestatus + " " + path + "Full URL: " + finalurl);
-					return null;
-				}
-
-				//Save to local file
+				
+				CloseableHttpResponse genfile = connection.sharedPost(finalurl, params);
 				try
 				{
+					StatusLine filestatus = genfile.getStatusLine();
+					if (filestatus.getStatusCode() != 200)
+					{
+						log.error("Could not download original " + filestatus + " " + path + "Full URL: " + finalurl);
+						return null;
+					}
+
+					//Save to local file
+				
 					log.info("Saving :" + inAsset.getSourcePath() + "/" + inAsset.getName() + " URL:" + path);
 					InputStream stream = genfile.getEntity().getContent();
 
@@ -106,6 +108,10 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 				{
 					// TODO Auto-generated catch block
 					throw new OpenEditException(e);
+				}
+				finally
+				{
+					connection.release(genfile);
 				}
 
 			}
