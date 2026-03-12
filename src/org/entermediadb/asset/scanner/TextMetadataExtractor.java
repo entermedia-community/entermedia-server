@@ -32,7 +32,11 @@ public class TextMetadataExtractor extends MetadataExtractor {
 	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset) {
 		String[] supportedTypes = new String[] { "text", "xml" };
 		String type = PathUtilities.extractPageType(inFile.getName());
-
+		
+		if (type == null) {
+			return false;
+		}
+		
 		if (type != null) {
 			String mediatype = inArchive.getMediaRenderType(type);
 			if (!Arrays.asList(supportedTypes).contains(mediatype)) {

@@ -30,7 +30,7 @@
 					$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$value", $context)
 					<a href="#" 
 						class="removefieldassetvalue"
-						title="[[Remove This Asset]]" 
+						title="[[Unassign this asset]]" 
 						data-targetdivinner="${detail.id}-preview"
 						data-detailid="${detail.id}">
 						<i class="bi bi-x"></i>
@@ -39,7 +39,7 @@
 			#end
 		#end
 		#ifnull($foundrow)
-			<span class="empty">No asset selected</span>
+			<span class="empty">[[No asset selected]]</span>
 		#end
 	</div>
 	<input type="hidden" name="${detail.id}.value" id="${detail.id}-value" data-detailid="${detail.id}" value="$!foundrow.id"/>

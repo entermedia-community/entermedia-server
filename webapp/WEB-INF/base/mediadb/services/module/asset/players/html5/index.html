@@ -7,7 +7,7 @@
 #set( $sourcemp4 = $mediaarchive.asLinkToGenerated($asset,"video.mp4")) 
 
 #set( $streams = $hit.getValues("hlsstreams")) 
-#set( $thumb = $mediaarchive.asLinkToPreview($hit,"image640x480")) 
+#set( $thumb = $mediaarchive.asLinkToPreview($hit,"image1900x1080")) 
 #set( $autoplay = $context.getRequestParameter("autoplay") ) 
 #set( $loop = $context.getRequestParameter("loop") )
 #set( $embed = $context.getRequestParameter("embed") ) 
@@ -25,7 +25,7 @@
 
 <link href="${applink}/components/javascript/videojs/8.20.0/video-js.min.css" rel="stylesheet">
 
-<div id="playarea-$hit.id" class="player">
+<div id="playarea-$hit.id" class="player" style="width:720px; margin: 0 auto;">
 	<video id="video-$hit.id" 
 		class="video-js vjs-default-skin vjs-big-play-centered" 
 		style="width: 100%!important; height: 100%!important;" 
@@ -136,8 +136,8 @@
 		        assetid: '$hit.id', // asset id
 		        app: navigator.userAgent,
 		        platform: navigator.platform,
-		        width: window.innerWidth,
-		        height: window.innerHeight,
+		        width: window.innerWidth - 10,
+		        height: window.innerHeight - 10,
 		        events: metrics
 		    }
 		    PostRequest(videoData, baseUrl + applink + "/services/module/asset/analytics/videolog");

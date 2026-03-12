@@ -18,9 +18,9 @@ $context.putPageValue("convertpreset", $convertpreset)
 	#set($rendertype = $mediaarchive.getMediaRenderType($entry.fileformat))
 	#if(!$rendertype || $type =="rendertype")
 		#set( $rendertype = "mime" )
-	#elseif( $rendertype =="video" || $rendertype =="documentX")
-		#set( $rendertype = "image" )
 	#end
+	
+	$context.putPageValue("rendertype", $rendertype)
 	
 	<div id="${entry.id}-preview" 
 		class="chat-msg-attachments-asset position-relative asset-rendertype-${rendertype}">
