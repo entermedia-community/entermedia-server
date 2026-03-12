@@ -1,4 +1,4 @@
-package org.entermediadb.ai.tasks;
+package org.entermediadb.ai.automation;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -7,25 +7,20 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
-import org.entermediadb.ai.assistant.QuestionsManager;
-import org.entermediadb.asset.Asset;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
-import org.openedit.OpenEditException;
 import org.openedit.data.QueryBuilder;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
 /**
- * My plan is to have a UI where each Task can be seen and assigned to a TaskProcessor. 
- * The TaskProcessor will be responsible for executing the task and updating the status of the task. 
+ * My plan is to have a UI where each Task can be seen and assigned to a Agent. 
+ * The Agent will be responsible for executing the task and updating the status of the task. 
  * The TaskManager will be responsible for scheduling the tasks and keeping track of the status of the tasks. 
  * The TaskManager will also be responsible for providing a UI for the tasks and allowing users to interact with the tasks.
  * A Task can be a big one or small ones. For example, a big task can be "Classify all assets in the system" and a small task can be "Classify asset 12345".
@@ -35,14 +30,14 @@ import org.openedit.util.DateStorageUtil;
  * 
  * Tasks will have Steps that are connected to AI Functions. The functions have their own configuration. The TaskManager will be responsible for executing the steps in order and passing the output of one step to the next step. The TaskManager will also be responsible for handling errors and retrying steps if they fail.
  * 
- * Once the Tasks are identified there will be a set of TaskProcessors that look over the tasks and execute them. The TaskProcessors will be responsible for executing the task and updating the status of the tasks.
+ * Once the Tasks are identified there will be a set of Agents that look over the tasks and execute them. The Agents will be responsible for executing the task and updating the status of the tasks.
  * 
  */
 
-public class SmartProcessManager extends BaseAiManager
+public class AutomationManager extends BaseAiManager
 {
 	
-	private static final Log log = LogFactory.getLog(SmartProcessManager.class);
+	private static final Log log = LogFactory.getLog(AutomationManager.class);
 	
 	public void processTasks(ScriptLogger inLog)
 	{		
@@ -141,30 +136,26 @@ public class SmartProcessManager extends BaseAiManager
 		return valid;
 	}
 
-	public TaskProcessor loadProcessor(String inName)
+	public Agent loadAgent(String inName)
 	{
 		if(inName == null)
 		{
 			throw new IllegalArgumentException("Bean name not provided");
 		}
-		TaskProcessor processor = (TaskProcessor) getMediaArchive().getCacheManager().get("ai", "taskprocessor" + inName);
-		if (processor == null)
+		Agent Agent = (Agent) getMediaArchive().getCacheManager().get("ai", "Agent" + inName);
+		if (Agent == null)
 		{
-			processor = (TaskProcessor) getModuleManager().getBean(getCatalogId(), inName );
-			getMediaArchive().getCacheManager().put("ai", "processor" + inName, processor);
+			Agent = (Agent) getModuleManager().getBean(getCatalogId(), inName );
+			getMediaArchive().getCacheManager().put("ai", "Agent" + inName, Agent);
 		}
-		return processor;
-		
+		return Agent;
 	}
-
-
 	
-	public Collection<MultiValued> getProcessorsData()
+	public Collection<MultiValued> getAgentsData()
 	{
-		Collection<MultiValued> records = getMediaArchive().query("taskprocessors").exact("enabled", true).sort("ordering").cachedSearch();
+		Collection<MultiValued> records = getMediaArchive().query("automationagent").exact("enabled", true).sort("ordering").cachedSearch();
 		return records;
 	}
-	
 	
 	public void resetInformatics(String inEntityModuleId, Collection inEntities) 
 	{
