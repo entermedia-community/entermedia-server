@@ -3,6 +3,8 @@ package org.entermediadb.ai.automation;
 import java.util.Collection;
 import java.util.List;
 
+import org.entermediadb.ai.Agent;
+
 public class ScenerioRunning
 {
     protected List<Agent> fieldAgents;

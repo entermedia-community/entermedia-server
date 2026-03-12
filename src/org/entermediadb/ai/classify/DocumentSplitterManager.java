@@ -117,7 +117,13 @@ public class DocumentSplitterManager extends InformaticsProcessor
 					}
 					
 					agentcontext.addContext("data", asset);
-					agentcontext.addContext("contextfields", contextFields);
+					RenderValues rendervalues = new RenderValues();
+					rendervalues.setMediaArchive(getMediaArchive());
+					rendervalues.setData(asset);
+					rendervalues.setInFields(contextFields);
+					agentcontext.put("rendervalues", rendervalues);
+					agentcontext.put("contextfields", contextFields);
+
 					
 					String assetrendertype = getMediaArchive().getMediaRenderType(asset);
 					if ("audio".equals(assetrendertype) || "video".equals(assetrendertype))

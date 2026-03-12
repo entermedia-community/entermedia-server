@@ -29,8 +29,19 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	//protected XmlFile fieldXmlFile;
 	protected XmlSearcher fieldXmlSearcher;
 
+	protected boolean fieldSaveToXml = true;
 	
 	
+	public boolean isSaveToXml()
+	{
+		return fieldSaveToXml;
+	}
+
+	public void setSaveToXml(boolean inSaveToXml)
+	{
+		fieldSaveToXml = inSaveToXml;
+	}
+
 	public XmlSearcher getXmlSearcher() {
 		
 		if(fieldXmlSearcher.getCatalogId() == null){
@@ -56,13 +67,24 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	}
 
 	@Override
-	public String getIndexId() {
-		return getXmlSearcher().getIndexId();
+	public String getIndexId() 
+	{
+		if( isSaveToXml())
+		{
+			return getXmlSearcher().getIndexId();
+		}
+		else
+		{
+			return super.getIndexId();
+		}
 	}
 	public void clearIndex() 
 	{
 		super.clearIndex();
-		getXmlSearcher().clearIndex();
+		if( isSaveToXml())
+		{
+			getXmlSearcher().clearIndex();
+		}
 	}
 	
 	
@@ -208,7 +230,10 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	public void deleteAll(Collection inBuffer, User inUser)
 	{
 		super.deleteAll(inBuffer, inUser);
-		getXmlSearcher().deleteAll(inUser);
+		if( isSaveToXml())
+		{
+			getXmlSearcher().deleteAll(inUser);
+		}
 
 	}
 
@@ -221,15 +246,18 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 		{
 			throw new OpenEditException("Cannot delete null data.");
 		}
-		Lock lock = getLockManager().lock(getSearchType() + "/" + inData.getSourcePath(),"admin");
-		try
+		if( isSaveToXml())
 		{
-			getXmlSearcher().delete(inData, inUser);
-			super.delete(inData, inUser);
-		}
-		finally
-		{
-			getLockManager().release(lock);
+			Lock lock = getLockManager().lock(getSearchType() + "/" + inData.getSourcePath(),"admin");
+			try
+			{
+				getXmlSearcher().delete(inData, inUser);
+				super.delete(inData, inUser);
+			}
+			finally
+			{
+				getLockManager().release(lock);
+			}
 		}
 		// Remove from Index
 	}
@@ -254,7 +282,10 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 				throw new OpenEditException(ex);
 			}
 		}
-		getXmlSearcher().saveAllData(inAll, inUser);
+		if( isSaveToXml())
+		{
+			getXmlSearcher().saveAllData(inAll, inUser);
+		}
 	}
 
 	public void saveData(Data inData, User inUser)
@@ -265,7 +296,10 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 		try
 		{
 			saveToElasticSearch(details, inData, false, inUser);
-			getXmlSearcher().saveData(inData, inUser);
+			if( isSaveToXml())
+			{
+				getXmlSearcher().saveData(inData, inUser);
+			}
 			clearIndex();
 		}
 		catch(Throwable ex)

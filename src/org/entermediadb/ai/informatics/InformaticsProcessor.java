@@ -5,12 +5,12 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.BaseInformaticAgent;
 import org.entermediadb.ai.classify.ClassifyManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.MultiValued;
 
-public abstract class InformaticsProcessor extends BaseAiManager 
+public abstract class InformaticsProcessor extends BaseInformaticAgent 
 {
 	private static final Log log = LogFactory.getLog(ClassifyManager.class);
 

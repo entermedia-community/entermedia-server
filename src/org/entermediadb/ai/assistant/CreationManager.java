@@ -8,7 +8,7 @@ import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
@@ -24,7 +24,7 @@ import org.openedit.repository.InputStreamItem;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
-public class CreationManager extends BaseAiManager implements ChatMessageHandler
+public class CreationManager extends BaseAgent implements ChatMessageHandler
 {
 	private static final Log log = LogFactory.getLog(CreationManager.class);
 	

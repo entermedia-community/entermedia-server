@@ -10,7 +10,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.Agent;
+import org.entermediadb.manager.BaseManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -34,7 +35,7 @@ import org.openedit.util.DateStorageUtil;
  * 
  */
 
-public class AutomationManager extends BaseAiManager
+public class AutomationManager extends BaseManager
 {
 	
 	private static final Log log = LogFactory.getLog(AutomationManager.class);

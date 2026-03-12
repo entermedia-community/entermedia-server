@@ -3,6 +3,7 @@ package org.entermediadb.ai.assistant;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,9 +14,10 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.BaseAgent;
+import org.entermediadb.ai.BaseInformaticAgent;
 import org.entermediadb.ai.ChatMessageHandler;
-import org.entermediadb.ai.informatics.InformaticsManager;
+import org.entermediadb.ai.informatics.InformaticsAgent;
 import org.entermediadb.ai.informatics.InformaticsProcessor;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmResponse;
@@ -43,7 +45,7 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 
-public class AssistantManager extends BaseAiManager
+public class AssistantManager extends BaseInformaticAgent
 {
 	private static final Log log = LogFactory.getLog(AssistantManager.class);
 	protected EntityManager getEntityManager() 
@@ -794,9 +796,9 @@ public class AssistantManager extends BaseAiManager
 		return docs;
 	}
 	
-	public InformaticsManager getInformaticManager()
+	public InformaticsAgent getInformaticManager()
 	{
-		InformaticsManager manager = (InformaticsManager)getMediaArchive().getBean("informaticsManager");
+		InformaticsAgent manager = (InformaticsAgent)getMediaArchive().getBean("informaticsManager");
 		return manager;
 	}
 
@@ -1045,5 +1047,21 @@ public class AssistantManager extends BaseAiManager
 		getMediaArchive().clearAll();
 		
 	}
-	
+
+	public Collection<String> getModulesAsEnum()
+	{
+		Collection<String> nameenums = new HashSet<String>();
+		for (Data module : loadSchema().getModules())
+		{
+			String name = module.getName();
+			nameenums.add(name);
+			
+		}
+		//add asset types
+		Collections.addAll(nameenums, "files", "images", "videos", "documents", "audio");
+		
+		
+		return nameenums;
+	}
+
 }

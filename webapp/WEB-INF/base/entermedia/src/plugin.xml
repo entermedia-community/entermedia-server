@@ -1584,6 +1584,23 @@
 		</property>
 	</bean>
 
+	<bean id="elasticFastFolderSearcher" class="org.entermediadb.elasticsearch.searchers.ElasticListSearcher" scope="prototype">
+	
+		<property name="saveToXml" value="false"/>
+		
+		<property name="xmlSearcher">
+			<ref bean="xmlFolderSearcher" />
+		</property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="elasticNodeManager">
+			<ref bean="elasticNodeManager" />
+		</property>
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+	</bean>
 
 	<bean id="elasticCategorySearcher" class="org.entermediadb.elasticsearch.categories.ElasticCategorySearcher" scope="prototype">
 		<property name="elasticNodeManager">
@@ -2765,7 +2782,7 @@
 		</property>
 	</bean>
 
-	<bean id="informaticsManager" class="org.entermediadb.ai.informatics.InformaticsManager" lazy-init="default" scope="prototype">
+	<bean id="informaticsAgent" class="org.entermediadb.ai.informatics.InformaticsAgent" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2831,5 +2848,18 @@
 
 	<bean id="cssutils" class="org.openedit.util.CSSUtils" />
 	<bean id="inflector" class="org.openedit.entermedia.util.Inflector" />
+
+	<bean id="automationModule" class="org.entermediadb.ai.automation.AutomationModule" lazy-init="default">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+	
+	<bean id="automationManager" class="org.entermediadb.ai.automation.AutomationManager" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
 
 </beans>

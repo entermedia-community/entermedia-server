@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.BaseInformaticAgent;
 import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.Schema;
 import org.entermediadb.ai.classify.SemanticClassifier;
@@ -32,7 +32,7 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 
-public class SearchingManager extends BaseAiManager  implements ChatMessageHandler
+public class SearchingManager extends BaseInformaticAgent  implements ChatMessageHandler
 {
 	private static final Log log = LogFactory.getLog(SearchingManager.class);
 
