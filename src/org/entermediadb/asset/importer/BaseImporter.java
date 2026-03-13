@@ -463,8 +463,21 @@ public class BaseImporter extends EnterMediaObject
 	protected PropertyDetail getDetailByColLabel(String inHeader) {
 		
 		PropertyDetails details = getSearcher().getPropertyDetails();
-		PropertyDetail detail = details.getDetailByName(inHeader);
-		String id = PathUtilities.extractId(inHeader, true);
+		PropertyDetail detail = details.getDetail(inHeader); 
+		if (detail == null)
+		{
+			detail = details.getDetailByName(inHeader);
+		}
+		String id = null;
+		if (detail != null)
+		{
+			id = detail.getId();
+		}
+		else
+		{
+			id = PathUtilities.extractId(inHeader, true);
+		}
+				
 		if(detail == null){
 			detail = details.getDetail(id);
 		}			
