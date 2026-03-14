@@ -7,6 +7,7 @@ import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
+import org.openedit.data.Searcher;
 
 public class AutomationModule extends BaseMediaModule {
     
@@ -29,10 +30,14 @@ public class AutomationModule extends BaseMediaModule {
 			return;
 		}
     	
+    	
     	Data scenario = archive.query("automationscenario").exact("id", scenarioid).searchOne();
     	inReq.putPageValue("scenario", scenario);
     	
-    	Collection<MultiValued> agents = archive.query("automationagentenabled").exact("automationscenario", scenario.getId()).search();
+    	Searcher agentEnabledSearcher = archive.getSearcher("automationagentenabled");
+    	inReq.putPageValue("agentenabledsearcher", agentEnabledSearcher);
+    	
+    	Collection<MultiValued> agents = agentEnabledSearcher.query().exact("automationscenario", scenario.getId()).search();
     	inReq.putPageValue("agents", agents);
 	}
 
