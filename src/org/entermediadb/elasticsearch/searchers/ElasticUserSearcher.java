@@ -162,9 +162,13 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		if (inEmail != null) {
 			inEmail = inEmail.trim();
 			//Data record = (Data)query().or().startsWith("email", inEmail).startsWith("email", inEmail.toLowerCase()).searchOne();
-			Data record = (Data)query().match("email", inEmail).searchOne();
+			Data record = (Data)query().match("email", inEmail).sort("enabledDown").searchOne();
 			if(record != null){
 				target = (User) loadData(record);
+			}
+			else 
+			{
+				log.info("User not found: " + inEmail);
 			}
 		}
 		return target;

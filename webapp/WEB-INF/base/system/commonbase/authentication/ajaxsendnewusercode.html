@@ -25,7 +25,7 @@
 		</div>
 		
 		<div class="col-lg-12 col-md-6 mb-3">
-			<input class="form-control  required" type="text" name="email" size="50" value="$!to" 
+			<input class="form-control  required" type="email" name="email" size="50" value="$!to" 
 				placeholder="[[Enter your Email Address]]" required /> 		
 		</div>
 				
@@ -38,5 +38,6 @@
 		#end
 		<input type="hidden" name="subject" value="[[Login Code]]" />
 	</form> 
+	<div class="my-4 text-center"><a href="$!{home}${content.loginroot}/login.html" class="loginoptions"  title="[[Try other login options]]">[[Other login options]]</a></div>
 </div>
 

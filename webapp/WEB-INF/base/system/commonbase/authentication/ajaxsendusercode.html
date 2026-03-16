@@ -5,61 +5,61 @@
 <div id ="ajaxloginformdiv">
 #set( $email = $context.getRequestParameter("email") )
 <div class="my-3 w-100">
-#if( $commandSucceeded == "ok")
-	<div class="mb-3 text-center text-contrast"><strong>[[Please check your email]]</strong></div>
-#else
-	<div class="alert alert-danger text-center m-5 w-100" role="alert">
-	##$error
-	<strong>[[Login Error]].</strong> [[Please contact and Administrator]]
-	</div>
-#end
-
-<form name="login" 
-	id="login"
-	class="ajaxform  row justify-content-md-center" 
-	data-targetdiv="ajaxloginformdiv"
-	action="$!{home}$!{loginroot}/ajaxlogin.html" 
-	method="POST" >
-			
-			
-		#if( $email )
-		<input  type="hidden" name="email" value="$email" />
-		#else
-		<div class="col-12 col-md-6 mb-3">
-		<input class="form-control required grabfocus" type="text" name="email" size="50" placeholder="[[Enter your Email Address]]" required />
-		</div>
-		#end
-		
-		<div class="col-12 col-md-6 mb-3">
-					<input class="form-control grabfocus required" id="entermediakey" name="templogincode" placeholder="[[Enter six digit login code]]" required />
-		</div>
-
-		<div class="col-12 col-md-auto">
-			<div class="d-flex justify-content-center">
-				<input class="btn themed-btn" name="submit" type="submit" id="login-submit" value="[[Login]]" />
-			</div>
-		</div>
-		#ifnull($loginok)
-			#set($loginok = $content.loginok)
-		#end
-		
-		#ifnotnull($loginok)
-			#set( $loginok = "$context.siteRoot" + "$loginok")
-			<input type="hidden" name="loginokpage" value="#esc($!loginok)"/>
-		#end
 	
-
-	#ifnotnull( $userCategory)
-			<input type="hidden" name="categoryid" value="$!userCategory.id" />
-	#end
-	
-</form>   
-
-<div class="my-4 text-center"><a href="$!{home}${content.loginroot}/login.html" style=""><i class="fas fa-sign-in"></i> [[Other login options]]</a></div>
-</div>
-#if ( $context.getPageValue("oe-exception") )
-		<div style="border: 1px solid black; width: 60%; text-align: center">$context.getPageValue("oe-exception")</div>
+	#set( $error = $context.getPageValue("oe-exception") )
+	#if ( $error ) 
+		<div class="alert alert-danger my-2" role="alert" style="min-width: 450px;">
+			<i class="bi bi-exclamation-triangle-fill me-1 ns"></i>
+			$error
+		</div>
 		$context.removeSessionValue("oe-exception")
-#end
+	#else		
+		<div class="mb-3 text-center text-contrast"><strong>[[Please check your email]]</strong></div>
+	
+		<form name="login" 
+			id="login"
+			class="ajaxform w-100" 
+			data-targetdiv="ajaxlogincontainer"
+			action="$!{home}$!{loginroot}/ajaxlogin.html" 
+			method="POST" >
+					
+				<div class="d-flex">	
+					#if( $email )
+						<input  type="hidden" name="email" value="$email" />
+					#else
+						<div class="flex-grow-1">
+						<input class="form-control required grabfocus" type="text" name="email" size="50" placeholder="[[Enter your Email Address]]" required />
+						</div>
+					#end
+					
+					<div class="flex-grow-1">
+						<input class="form-control grabfocus required" id="entermediakey" name="templogincode" placeholder="[[Enter six digit login code]]" required />
+					</div>
+			
+					<div class="" style="width:100px">
+						<div class="d-flex justify-content-center">
+							<input class="btn themed-btn" name="submit" type="submit" id="login-submit" value="[[Login]]" />
+						</div>
+					</div>
+				</div>
+				#ifnull($loginok)
+					#set($loginok = $content.loginok)
+				#end
+				
+				#ifnotnull($loginok)
+					#set( $loginok = "$context.siteRoot" + "$loginok")
+					<input type="hidden" name="loginokpage" value="#esc($!loginok)"/>
+				#end
+			
+		
+			#ifnotnull( $userCategory)
+					<input type="hidden" name="categoryid" value="$!userCategory.id" />
+			#end
+			
+		</form>   
+	#end
+	<div class="my-4 text-center"><a href="$!{home}${content.loginroot}/login.html" class="loginoptions" title="[[Try other login options]]">[[Other login options]]</a></div>
+	</div>
+
 
 </div>
