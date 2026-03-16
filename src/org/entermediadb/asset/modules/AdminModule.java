@@ -643,8 +643,16 @@ public class AdminModule extends BaseMediaModule
 			}
 			else
 			{
-				inReq.putPageValue("oe-exception", "Invalid Login");
-				inReq.putPageValue("commandSucceeded", "invalidlogin");
+				if (user != null && !user.isEnabled())
+				{
+					inReq.putPageValue("oe-exception", "User Disabled");
+					inReq.putPageValue("commandSucceeded", "invalidlogin");
+				}
+				else
+				{
+					inReq.putPageValue("oe-exception", "Invalid Login");
+					inReq.putPageValue("commandSucceeded", "invalidlogin");
+				}
 			}
 		}
 	}
