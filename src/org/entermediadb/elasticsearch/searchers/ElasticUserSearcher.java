@@ -166,6 +166,10 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 			if(record != null){
 				target = (User) loadData(record);
 			}
+			else 
+			{
+				log.info("User not found: " + inEmail);
+			}
 		}
 		return target;
 	}

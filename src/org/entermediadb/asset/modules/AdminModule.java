@@ -185,8 +185,6 @@ public class AdminModule extends BaseMediaModule
 			
 			String userCode = getUserManager(inReq).createNewTempLoginKey(username,emailaddress,firstName,lastName,false);
 			
-			
-			
 			if(userCategory != null)
 			{
 				foundUser.setValue("logincategoryid",userCategory.getId());
@@ -202,6 +200,7 @@ public class AdminModule extends BaseMediaModule
 		else
 		{
 			//Show error on page. Notify admin
+			log.error("User not found:" + foundUser);
 			inReq.putPageValue("emailaddress", emailaddress);
 			String userapproveremail = (String)inReq.getPageValue("userapproveremail");
 			if (userapproveremail != null) {
@@ -539,7 +538,7 @@ public class AdminModule extends BaseMediaModule
 			
 		if (entermediakey == null && account == null && email == null && inReq.getRequest() != null)
 		{
-			log.info("Missing parameters " + entermediakey + " and " + account + " email:" + email );
+			//log.info("Missing parameters " + entermediakey + " and " + account + " email:" + email );
 			return;
 		}
 		else
