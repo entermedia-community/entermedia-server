@@ -52,7 +52,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 							#ifnotnull( $userCategory)
 								<input type="hidden" name="categoryid" value="$!userCategory.id" />
 							#end
-							<input class="form-control py-3 required grabfocus mb-3 w-100" type="text" name="email" placeholder="[[Enter your email address]]" required />
+							<input class="form-control py-3 required grabfocus mb-3 w-100" type="email" name="email" placeholder="[[Enter your email address]]" required />
 							<input class="btn btn-primary align-self-center" name="submit" type="submit" value="[[Next]]" />
 							<input type="hidden" name="subject" value="[[Your Login Info]]"/>
 						</form>

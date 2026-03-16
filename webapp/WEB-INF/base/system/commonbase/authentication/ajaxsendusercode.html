@@ -16,27 +16,28 @@
 
 <form name="login" 
 	id="login"
-	class="ajaxform  row justify-content-md-center" 
+	class="ajaxform w-100" 
 	data-targetdiv="ajaxloginformdiv"
 	action="$!{home}$!{loginroot}/ajaxlogin.html" 
 	method="POST" >
 			
+		<div class="d-flex">	
+			#if( $email )
+				<input  type="hidden" name="email" value="$email" />
+			#else
+				<div class="flex-grow-1">
+				<input class="form-control required grabfocus" type="text" name="email" size="50" placeholder="[[Enter your Email Address]]" required />
+				</div>
+			#end
 			
-		#if( $email )
-		<input  type="hidden" name="email" value="$email" />
-		#else
-		<div class="col-12 col-md-6 mb-3">
-		<input class="form-control required grabfocus" type="text" name="email" size="50" placeholder="[[Enter your Email Address]]" required />
-		</div>
-		#end
-		
-		<div class="col-12 col-md-6 mb-3">
-					<input class="form-control grabfocus required" id="entermediakey" name="templogincode" placeholder="[[Enter six digit login code]]" required />
-		</div>
-
-		<div class="col-12 col-md-auto">
-			<div class="d-flex justify-content-center">
-				<input class="btn themed-btn" name="submit" type="submit" id="login-submit" value="[[Login]]" />
+			<div class="flex-grow-1">
+				<input class="form-control grabfocus required" id="entermediakey" name="templogincode" placeholder="[[Enter six digit login code]]" required />
+			</div>
+	
+			<div class="" style="width:100px">
+				<div class="d-flex justify-content-center">
+					<input class="btn themed-btn" name="submit" type="submit" id="login-submit" value="[[Login]]" />
+				</div>
 			</div>
 		</div>
 		#ifnull($loginok)
@@ -55,7 +56,7 @@
 	
 </form>   
 
-<div class="my-4 text-center"><a href="$!{home}${content.loginroot}/login.html" style=""><i class="fas fa-sign-in"></i> [[Other login options]]</a></div>
+<div class="my-4 text-center"><a href="$!{home}${content.loginroot}/login.html" class="loginoptions" title="[[Try other login options]]">[[Other login options]]</a></div>
 </div>
 #if ( $context.getPageValue("oe-exception") )
 		<div style="border: 1px solid black; width: 60%; text-align: center">$context.getPageValue("oe-exception")</div>
