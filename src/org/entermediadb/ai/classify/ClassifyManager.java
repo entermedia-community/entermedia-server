@@ -5,23 +5,24 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.informatics.InformaticsProcessor;
+import org.entermediadb.ai.BaseAgent;
+import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.entermediadb.asset.Asset;
-import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.users.User;
 
-public class ClassifyManager extends InformaticsProcessor
+public class ClassifyManager extends BaseAiManager
 {
 	private static final Log log = LogFactory.getLog(ClassifyManager.class);
 	
@@ -34,44 +35,45 @@ public class ClassifyManager extends InformaticsProcessor
 	{
 		return getMediaArchive().getLlmConnection("classifyEntity");
 	}
-	
-	@Override
-	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> assets)
+
+	//public void processInformaticsOnAssets(ScriptLogger inContext, MultiValued inConfig, Collection<MultiValued> assets)
+	public void processAssets(InformaticsContext inContext)
 	{
+		Collection pageofhits = inContext.getAssetsToProcess();
 		int count = 1;
 
-		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
+		for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
 		{
 			MultiValued asset = (MultiValued) iterator.next(); 
 
 			String mediatype = getMediaArchive().getMediaRenderType(asset);
 			if( mediatype.equals("default") )
 			{
-				//inLog.info(inConfig.get("bean") + " - Skipping asset " + asset);
+				//inContext.info(inConfig.get("bean") + " - Skipping asset " + asset);
 				continue;
 			}
 
 			try{
 				long startTime = System.currentTimeMillis();
 
-				//inLog.info(inConfig.get("bean") + " - Analyzing asset ("+count+"/"+assets.size()+")" + asset.getName());
+				//inContext.info(inConfig.get("bean") + " - Analyzing asset ("+count+"/"+assets.size()+")" + asset.getName());
 				count++;		
 
-				inLog.headline("Classifying asset: " + asset.getName());
-				processOneAsset(inConfig, asset);
+				inContext.headline("Classifying asset: " + asset.getName());
+				processOneAsset(inContext, asset);
 
 				long duration = (System.currentTimeMillis() - startTime) / 1000L;
-				inLog.info("Classified "+ asset.getName() +" successfully! Took "+duration +"s");
+				inContext.info("Classified "+ asset.getName() +" successfully! Took "+duration +"s");
 			}
 			catch(Exception e){
-				inLog.error("LLM Error", e);
+				inContext.error("LLM Error", e);
 				asset.setValue("llmerror", true);
 				continue;
 			}
 		}
 	}
 
-	protected void processOneAsset(MultiValued inConfig, MultiValued asset) throws Exception
+	protected void processOneAsset(InformaticsContext inContext, MultiValued asset) throws Exception
 	{
 		Collection allaifields = getMediaArchive().getAssetPropertyDetails().findAiCreationProperties();
 		Collection<PropertyDetail> aifields = new ArrayList();
@@ -99,7 +101,7 @@ public class ClassifyManager extends InformaticsProcessor
 
 		if(!aifields.isEmpty())
 		{
-			AgentContext agentcontext = new AgentContext();
+			InformaticsContext agentcontext = new InformaticsContext(inContext); 
 			agentcontext.addContext("asset", asset);
 			agentcontext.addContext("data", asset);
 			agentcontext.addContext("aifields", aifields);
@@ -134,7 +136,7 @@ public class ClassifyManager extends InformaticsProcessor
 					String fulltext = getMediaArchive().getAssetSearcher().getFulltext(asset);
 					if( fulltext == null)
 					{
-						log.error("Text has no text: " + asset);
+						inContext.error("Text has no text: " + asset);
 						asset.setValue("llmerror", true);
 						return;
 					}
@@ -152,7 +154,7 @@ public class ClassifyManager extends InformaticsProcessor
 	
 					if( base64EncodedString == null)
 					{
-						log.error("Image missing for asset: " + asset);
+						inContext.error("Image missing for asset: " + asset);
 						asset.setValue("llmerror", true);
 						return;
 					}
@@ -265,10 +267,10 @@ public class ClassifyManager extends InformaticsProcessor
 		
 	}
 
-	@Override
-	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> hits)
+	public void processRecords(InformaticsContext inContext)
 	{
-		inLog.headline("Classifying " + hits.size() + " entities");
+		Collection<MultiValued> hits = inContext.getRecordsToProcess();
+		inContext.headline("Classifying " + hits.size() + " entities");
 
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) 
 		{
@@ -277,28 +279,28 @@ public class ClassifyManager extends InformaticsProcessor
 			String moduleid = entity.get("entitysourcetype");
 			if( moduleid == null)
 			{
-				log.info("Skipping entity with no source type: " + entity.getId() + " " + entity.getName());
+				inContext.info("Skipping entity with no source type: " + entity.getId() + " " + entity.getName());
 				continue;
 			}
 
 			try {
 				long startTime = System.currentTimeMillis();
 
-				inLog.info("Classifying entity: " + entity.getName());
+				inContext.info("Classifying entity: " + entity.getName());
 
-				processOneEntity(inConfig, entity, moduleid);
+				processOneEntity(inContext, entity, moduleid);
 
 				long duration = (System.currentTimeMillis() - startTime) / 1000L;
-				inLog.info("Took "+duration +"s to process entity: " + entity.getId() + " " + entity.getName());
+				inContext.info("Took "+duration +"s to process entity: " + entity.getId() + " " + entity.getName());
 
 			} catch (Exception e) {
-				inLog.error("LLM Error for entity: " + entity.getName(), e);
+				inContext.error("LLM Error for entity: " + entity.getName(), e);
 				entity.setValue("llmerror", true);
 			}
 		}
 	}
 	
-	protected void processOneEntity(MultiValued inConfig, MultiValued inEntity, String inModuleId) throws Exception
+	protected void processOneEntity(InformaticsContext inContext, MultiValued inEntity, String inModuleId) throws Exception
 	{
 		Collection detailsfields = getMediaArchive().getSearcher(inModuleId).getDetailsForView(inModuleId+"general");
 
@@ -318,7 +320,7 @@ public class ClassifyManager extends InformaticsProcessor
 			}
 		}
 		
-		AgentContext agentcontext = new AgentContext();
+		InformaticsContext agentcontext = new InformaticsContext(inContext);
 		
 		if(contextFields.size() == 0)
 		{

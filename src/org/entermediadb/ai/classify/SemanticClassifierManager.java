@@ -9,19 +9,19 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.informatics.InformaticsProcessor;
-import org.entermediadb.ai.informatics.SemanticTableManager;
+import org.entermediadb.ai.BaseAgent;
+import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.knn.RankedResult;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
-import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 
-public class SemanticClassifier extends InformaticsProcessor implements CatalogEnabled
+public class SemanticClassifierManager extends BaseAiManager
 {
 	protected SemanticTableManager fieldSemanticTableManager;
 	protected String fieldConfigurationId;
@@ -41,36 +41,16 @@ public class SemanticClassifier extends InformaticsProcessor implements CatalogE
 	{
 		return loadSemanticTableManager(getConfigurationId()); //"semantictopics"
 	}
+	private static final Log log = LogFactory.getLog(SemanticClassifierManager.class);
 
-	public SemanticTableManager loadSemanticTableManager(String inConfigId)
-	{
-		SemanticTableManager table = (SemanticTableManager)getMediaArchive().getCacheManager().get("semantictables",inConfigId);
-		if( table == null)
-		{
-			table = (SemanticTableManager)getModuleManager().getBean(getCatalogId(),"semanticTableManager",false);
-			table.setConfigurationId(inConfigId);
-			getMediaArchive().getCacheManager().put("semantictables",inConfigId,table);
-		}
-		
-		return table;
-	}
 
-	private static final Log log = LogFactory.getLog(SemanticClassifier.class);
-
-	@Override
-	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
-	{
-		processInformaticsOnEntities(inLog,inConfig,inAssets);
-	}
-
-	@Override
-	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecords)
+	protected void processRecords(InformaticsContext informatic, MultiValued inConfig, Collection<MultiValued>  inRecords )
 	{
 		String fieldname = inConfig.get("fieldname");
 		
-		inLog.headline("Adding semantic topics to " + inRecords.size() + " records");
+		informatic.headline("Adding semantic topics to " + inRecords.size() + " records");
 
-		setConfigurationId(fieldname);
+		setConfigurationId(fieldname); //TODO: Read from config
 		
 		LlmConnection llmsemanticconnection = getMediaArchive().getLlmConnection("createSemanticTopics");
 
@@ -113,7 +93,8 @@ public class SemanticClassifier extends InformaticsProcessor implements CatalogE
 		}
 		try
 		{
-			getSemanticTableManager().indexData(inLog,inRecords);
+			getSemanticTableManager().indexData(informatic.getScriptLogger(),inRecords);
+			//getSemanticTableManager().process(informatic);
 		}
 		catch( Throwable ex)
 		{
@@ -126,7 +107,7 @@ public class SemanticClassifier extends InformaticsProcessor implements CatalogE
 		}
 		long end = System.currentTimeMillis();
 		double seconds = end - start / 1000d;
-		inLog.info("SemanticClassifier Completed " + inRecords.size() + " records in " +  seconds + " seconds ");
+		informatic.info("SemanticClassifierManager Completed " + inRecords.size() + " records in " +  seconds + " seconds ");
 	}
 	public Map<String,Collection<String>> search(Collection<String> textvalues, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
 	{

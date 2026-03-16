@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.informatics.InformaticsProcessor;
+import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
@@ -26,7 +26,7 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
 
-public class TranslationManager extends InformaticsProcessor implements CatalogEnabled {
+public class TranslationManager extends BaseAiManager implements CatalogEnabled {
 	
 	private static Log log = LogFactory.getLog(TranslationManager.class);
 
@@ -99,16 +99,6 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 		
 		return results;
 		
-	}
-	
-	public void translateAssets(WebPageRequest context, ScriptLogger inLog)
-	{
-		HitTracker assets = (HitTracker) context.getPageValue("assetsToTranslate");
-	
-		MultiValued config = (MultiValued)getMediaArchive().getCachedData("informatics", "autotranslate");
-		
-		Collection<MultiValued> records = new ArrayList(assets);
-		processInformaticsOnAssets(inLog, config, records);
 	}
 	
 	public LanguageMap translateField(String field, LanguageMap languageMap, String sourceLang, Collection<String> targetLangs)
@@ -232,16 +222,8 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 		
 		return sourceLangMap;
 	}
-	@Override
-	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
-	{
-		processInformaticsOnEntities(inLog,inConfig,inAssets);
-	}
-	
-	@Override
 	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecordsToTranslate)
 	{
-
 		HitTracker locales = getMediaArchive().query("locale").exact("translatemetadata", true).search();
 		
 		if (locales.size() == 1 && "en".equals(locales.get(0).getId())) 
@@ -335,6 +317,21 @@ public class TranslationManager extends InformaticsProcessor implements CatalogE
 		}
 		
 	}
+
+	public void translateAssets(WebPageRequest context, ScriptLogger inLog)
+	{
+		HitTracker assets = (HitTracker) context.getPageValue("assetsToTranslate");
+	
+		MultiValued config = (MultiValued)getMediaArchive().getCachedData("informatics", "autotranslate");
+		Collection<MultiValued> records = new ArrayList(assets);
+		
+//		InformaticsContext agentcontext = new InformaticsContext();
+//		agentcontext.setScriptLogger(inLog);
+//		agentcontext.setAssetsToProcess(records);
+		
+		processInformaticsOnEntities(inLog, config, records);
+	}
+	
 
   
 }

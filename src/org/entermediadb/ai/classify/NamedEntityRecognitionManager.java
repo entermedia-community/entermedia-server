@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
@@ -26,16 +27,19 @@ public class NamedEntityRecognitionManager extends ClassifyManager
 	}
 	
 	@Override
-	protected void processOneAsset(MultiValued inConfig, MultiValued inData)
+	protected void processOneAsset(InformaticsContext inContext, MultiValued inAsset) throws Exception
 	{
-		processOneEntity(inConfig, inData, "asset");
+		processOneEntity(inContext, inAsset, "asset");
 	}
 	 
 	@Override
-	protected void processOneEntity(MultiValued inConfig, MultiValued inData, String inModuleId)
+	//protected void processOneEntity(MultiValued inConfig, MultiValued inData, String inModuleId)
+	protected void processOneEntity(InformaticsContext inContext, MultiValued inData, String inModuleId)
 	{
 	 	Collection<PropertyDetail> autocreatefields = getMediaArchive().getSearcher(inModuleId).getPropertyDetails().findAiAutoCreatedProperties();
 	 	
+	 	//TODO: Load the right AgentEnabled and config for this context
+	 	MultiValued inConfig = inContext.getCurrentAgentEnable().getAgentConfig();
 	 	//Validate tables
 	 	if (autocreatefields.isEmpty())
 	 	{

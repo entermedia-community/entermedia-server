@@ -1,4 +1,4 @@
-package org.entermediadb.ai.informatics;
+package org.entermediadb.ai.classify;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,8 +11,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.BaseInformaticAgent;
-import org.entermediadb.ai.classify.RenderValues;
+import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
@@ -28,11 +27,10 @@ import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
-import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 
-public class SemanticTableManager extends BaseInformaticAgent implements CatalogEnabled
+public class SemanticTableManager extends BaseAiManager implements CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(SemanticTableManager.class);
 	

@@ -14,12 +14,13 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.BaseAgent;
-import org.entermediadb.ai.BaseInformaticAgent;
+import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.ChatMessageHandler;
-import org.entermediadb.ai.informatics.InformaticsAgent;
-import org.entermediadb.ai.informatics.InformaticsProcessor;
+import org.entermediadb.ai.automation.AutomationManager;
+import org.entermediadb.ai.classify.EmbeddingManager;
+import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.ai.llm.AgentEnabled;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.EntityManager;
@@ -45,7 +46,7 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 
-public class AssistantManager extends BaseInformaticAgent
+public class AssistantManager extends BaseAiManager
 {
 	private static final Log log = LogFactory.getLog(AssistantManager.class);
 	protected EntityManager getEntityManager() 
@@ -668,45 +669,12 @@ public class AssistantManager extends BaseInformaticAgent
 			
 		}
 		
-		queueMissingEmbeddings(missingEmbeddings);
+		getEmbeddingManager().queueMissingEmbeddings(missingEmbeddings);
 		
 		return statuses;
 	}
 	
-	public void queueMissingEmbeddings(Map<String, Collection<MultiValued>> missing)
-	{
-		
-		ScriptLogger inLog = new ScriptLogger();
-			
-		InformaticsProcessor processor = getInformaticManager().loadProcessor("embeddingManager");
-		
-		// immediately set to pending so we don't have multiple processes trying to embed the same records
-		for (Iterator<String> iterator = missing.keySet().iterator(); iterator.hasNext();)
-		{
-			String searchtype = iterator.next();
-			Collection<MultiValued> toEmbed = missing.get(searchtype);
-			
-			for (Iterator<MultiValued> iterator2 = toEmbed.iterator(); iterator2.hasNext();) {
-				MultiValued data = (MultiValued) iterator2.next();
-				data.setValue("entityembeddingstatus", "pending");
-			}
-			
-			getMediaArchive().saveData(searchtype, toEmbed);
-		}
-		
-		
-		for (Iterator<String> iterator = missing.keySet().iterator(); iterator.hasNext();)
-		{
-			String searchtype = iterator.next();
-			Collection<MultiValued> toEmbed = missing.get(searchtype);
-			
-			MultiValued config = new BaseData();
-			config.setValue("searchtype", searchtype);
-			processor.processInformaticsOnEntities(inLog, config, toEmbed);
-			
-			getMediaArchive().saveData(searchtype, toEmbed);
-		}
-	}
+
 	
 	public Collection<String> findDocIdsForEntity(String parentmoduleid, String inEntityId)
 	{
@@ -796,9 +764,15 @@ public class AssistantManager extends BaseInformaticAgent
 		return docs;
 	}
 	
-	public InformaticsAgent getInformaticManager()
+	public AutomationManager getAutomationManager()
 	{
-		InformaticsAgent manager = (InformaticsAgent)getMediaArchive().getBean("informaticsManager");
+		AutomationManager manager = (AutomationManager)getMediaArchive().getBean("automationManager");
+		return manager;
+	}
+
+	public EmbeddingManager getEmbeddingManager()
+	{
+		EmbeddingManager manager = (EmbeddingManager)getMediaArchive().getBean("embeddingManager");
 		return manager;
 	}
 

@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.BaseInformaticAgent;
+import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
@@ -14,7 +14,7 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 
-public class AutoDetectChatManager extends BaseInformaticAgent implements ChatMessageHandler
+public class AutoDetectChatManager extends BaseAiManager implements ChatMessageHandler
 {
 	private static final Log log = LogFactory.getLog(AutoDetectChatManager.class);
 

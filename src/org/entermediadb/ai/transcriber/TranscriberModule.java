@@ -22,10 +22,10 @@ public class TranscriberModule extends BaseMediaModule {
 	
 	private static final Log log = LogFactory.getLog(TranscriberModule.class);
 	
-	public WhisperTranscriberManager getTranscriberManager(WebPageRequest inReq)
+	public TranscriberManager getTranscriberManager(WebPageRequest inReq)
 	{
 		String catalogid = inReq.findValue("catalogid");
-		WhisperTranscriberManager transcriberManager = (WhisperTranscriberManager) getMediaArchive(catalogid).getBean("whisperTranscriberManager");
+		TranscriberManager transcriberManager = (TranscriberManager) getMediaArchive(catalogid).getBean("whisperTranscriberManager");
 		return transcriberManager;
 	}
 	

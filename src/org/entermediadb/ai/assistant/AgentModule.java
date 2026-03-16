@@ -4,7 +4,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.entermediadb.ai.informatics.InformaticsAgent;
+import org.entermediadb.ai.informatics.InformaticsProcessorAgent;
+import org.entermediadb.ai.informatics.InformaticsProcessorManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
@@ -269,7 +270,7 @@ public class AgentModule extends BaseMediaModule {
 	public void resetInformatics(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		InformaticsAgent manager = (InformaticsAgent) archive.getBean("informaticsAgent");
+		InformaticsProcessorManager manager = (InformaticsProcessorManager) archive.getBean("informaticsProcessorManager");
 		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
 		
 		String moduleid = inReq.findValue("module");
@@ -321,11 +322,11 @@ public class AgentModule extends BaseMediaModule {
 		inReq.putPageValue("record", record);
 	}
 
-	public void startInformatics(WebPageRequest inReq) throws Exception
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		InformaticsAgent informaticsManager = (InformaticsAgent)archive.getBean("informaticsAgent");
-		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
-		informaticsManager.processAll(logger);
-	}
+//	public void startInformatics(WebPageRequest inReq) throws Exception
+//	{
+//		MediaArchive archive = getMediaArchive(inReq);
+//		InformaticsProcessorAgent informaticsManager = (InformaticsProcessorAgent)archive.getBean("informaticsAgent");
+//		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
+//		informaticsManager.processAll(logger);
+//	}
 }

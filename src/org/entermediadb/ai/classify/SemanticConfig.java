@@ -1,4 +1,4 @@
-package org.entermediadb.ai.informatics;
+package org.entermediadb.ai.classify;
 
 import java.util.Set;
 

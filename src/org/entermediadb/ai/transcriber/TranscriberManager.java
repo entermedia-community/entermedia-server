@@ -12,7 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.informatics.InformaticsProcessor;
+import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
@@ -32,18 +32,12 @@ import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.RepositoryException;
 
-public class WhisperTranscriberManager extends InformaticsProcessor {
+public class TranscriberManager extends BaseAiManager {
 	
-	private static final Log log = LogFactory.getLog(WhisperTranscriberManager.class);
+	private static final Log log = LogFactory.getLog(TranscriberManager.class);
 	
-	@Override
-	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecords)
-	{
-		// Do nothing
-	}
 
-	@Override
-	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
+	public void transcribeAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
 	{
 		Collection<MultiValued> toprocess = new ArrayList<MultiValued>();
 

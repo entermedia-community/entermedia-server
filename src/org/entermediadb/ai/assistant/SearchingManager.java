@@ -9,11 +9,11 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.BaseInformaticAgent;
+import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.Schema;
-import org.entermediadb.ai.classify.SemanticClassifier;
-import org.entermediadb.ai.informatics.SemanticTableManager;
+import org.entermediadb.ai.classify.SemanticClassifierManager;
+import org.entermediadb.ai.classify.SemanticTableManager;
 import org.entermediadb.ai.knn.RankedResult;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.BasicLlmResponse;
@@ -32,7 +32,7 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 
-public class SearchingManager extends BaseInformaticAgent  implements ChatMessageHandler
+public class SearchingManager extends BaseAiManager  implements ChatMessageHandler
 {
 	private static final Log log = LogFactory.getLog(SearchingManager.class);
 
@@ -842,12 +842,12 @@ public class SearchingManager extends BaseInformaticAgent  implements ChatMessag
 		return relatedEntityId;
 	}
 	
-	protected SemanticClassifier fieldSemanticTopicManager;
-	public SemanticClassifier getSemanticTopicManager()
+	protected SemanticClassifierManager fieldSemanticTopicManager;
+	public SemanticClassifierManager getSemanticTopicManager()
 	{
 		if (fieldSemanticTopicManager == null)
 		{
-			fieldSemanticTopicManager = (SemanticClassifier)getModuleManager().getBean(getCatalogId(), "semanticClassifier",false);
+			fieldSemanticTopicManager = (SemanticClassifierManager)getModuleManager().getBean(getCatalogId(), "semanticClassifier",false);
 			fieldSemanticTopicManager.setConfigurationId("semantictopics");
 		}
 

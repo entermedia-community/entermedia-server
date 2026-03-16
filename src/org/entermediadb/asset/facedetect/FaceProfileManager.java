@@ -28,7 +28,7 @@ import javax.imageio.stream.ImageInputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.informatics.InformaticsProcessor;
+import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.knn.KMeansIndexer;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
@@ -57,7 +57,7 @@ import org.openedit.util.FileUtils;
 import org.openedit.util.MathUtils;
 
 
-public class FaceProfileManager extends InformaticsProcessor implements CatalogEnabled
+public class FaceProfileManager extends BaseAiManager implements CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(FaceProfileManager.class);
 
@@ -1128,8 +1128,7 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 
 	}
 
-	@Override
-	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
+	public void processAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
 	{
 		Collection validAssets = new ArrayList();
 		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {
@@ -1155,13 +1154,6 @@ public class FaceProfileManager extends InformaticsProcessor implements CatalogE
 			inLog.info("No faces found in " + validAssets.size() + " assets");
 		}
  
-		
-	}
-
-	@Override
-	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecords)
-	{
-		//Do nothing
 		
 	}
 	

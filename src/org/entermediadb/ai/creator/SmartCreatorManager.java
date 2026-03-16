@@ -10,7 +10,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.BaseInformaticAgent;
+import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.ChatMessageHandler;
 import org.entermediadb.ai.assistant.AssistantManager;
 import org.entermediadb.ai.llm.AgentContext;
@@ -30,7 +30,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.StringItem;
 
-public class SmartCreatorManager extends BaseInformaticAgent implements ChatMessageHandler
+public class SmartCreatorManager extends BaseAiManager implements ChatMessageHandler
 {
 	private static final Log log = LogFactory.getLog(SmartCreatorManager.class);
 	

@@ -13,37 +13,56 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAgent;
-import org.entermediadb.ai.BaseInformaticAgent;
+import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.ai.llm.AgentEnabled;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.manager.BaseManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
-public class InformaticsAgent extends BaseAgent
+/**
+ * My plan is to have a UI where each Task can be seen and assigned to a Agent. 
+ * The Agent will be responsible for executing the task and updating the status of the task. 
+ * The TaskManager will be responsible for scheduling the tasks and keeping track of the status of the tasks. 
+ * The TaskManager will also be responsible for providing a UI for the tasks and allowing users to interact with the tasks.
+ * A Task can be a big one or small ones. For example, a big task can be "Classify all assets in the system" and a small task can be "Classify asset 12345".
+ * The TaskManager will be responsible for breaking down big tasks into smaller tasks and scheduling them accordingly.
+ * 
+ * A task can retry a few times if it fails. It will have a retry count and a retry delay. The TaskManager will be responsible for retrying the task if it fails and updating the status of the task accordingly.
+ * 
+ * Tasks will have Steps that are connected to AI Functions. The functions have their own configuration. The TaskManager will be responsible for executing the steps in order and passing the output of one step to the next step. The TaskManager will also be responsible for handling errors and retrying steps if they fail.
+ * 
+ * Once the Tasks are identified there will be a set of Agents that look over the tasks and execute them. The Agents will be responsible for executing the task and updating the status of the tasks.
+ * 
+ */
+
+public class InformaticsProcessorManager extends BaseAiManager
 {
+	private static final Log log = LogFactory.getLog(InformaticsProcessorManager.class);
 	
-	private static final Log log = LogFactory.getLog(InformaticsAgent.class);
-	
-	public void processAll(ScriptLogger inLog)
-	{
-		processAssets(inLog);
-		processEntities(inLog);
-	}
-	
+
+	//TODO
 	public void processAsset(ScriptLogger inLog, Asset inAsset)
 	{
 		Collection pageofhits = new ArrayList();
 		pageofhits.add(inAsset);
-		processAssets(inLog, pageofhits);
+		
+		InformaticsContext inContext  = new InformaticsContext();
+		inContext.setScriptLogger(inLog);
+		inContext.setAssetsToProcess(pageofhits);
+		
+		getAutomationManager().runScenario("informatics", inContext);
 	}
 	
-	public void processAssets(ScriptLogger inLog)
+	public HitTracker findPendingAssets(AgentContext inContext)
 	{
 		QueryBuilder query = null;
 
@@ -103,112 +122,14 @@ public class InformaticsAgent extends BaseAgent
 		{
 			log.info("Asset local search query: " + pendingrecords + " since:" +date);
 		}
-		
-		inLog.info("Processing Assets Informatics");
+		return pendingrecords;
 
-		if (!pendingrecords.isEmpty())
-		{
-			//inLog.info("Adding metadata to: " + pendingrecords.size() + " assets in category: " + categoryid + ", added after: " + startdate);
-
-			for (int i = 0; i < pendingrecords.getTotalPages(); i++)
-			{
-				pendingrecords.setPage(i+1);
-				Collection pageofhits = new ArrayList();
-				try
-				{
-					long startTime = System.currentTimeMillis();
-					for (Iterator iterator = pendingrecords.getPageOfHits().iterator(); iterator.hasNext();)
-					{
-						Data data = (Data) iterator.next();
-						Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(data);
-						pageofhits.add(asset);
-						
-					}
-					
-					processAssets(inLog, pageofhits);
-					
-					long duration = (System.currentTimeMillis() - startTime) / 1000L;
-					inLog.info("Processing " + pageofhits.size() + " records took "+duration +"s");
-				}
-				catch(Exception e)
-				{
-					inLog.error(e);
-					getMediaArchive().saveData("asset", pageofhits);
-					
-					if (e instanceof OpenEditException) 
-					{
-						throw (OpenEditException) e;
-					}
-					throw new OpenEditException(e);
-					
-				}
-			}
-		}
-		else
-		{
-			inLog.info("No Assets to Process:` " + pendingrecords.getFriendlyQuery());
-			//inLog.info("AI assets to tag:` " + pendingrecords.getFriendlyQuery());
-		}
 	}
-
-	protected void processAssets(ScriptLogger inLog, Collection pageofhits)
-	{
-		//Lock Assets
-		User agent = getMediaArchive().getUser("agent");
-		for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
-		{
-			Asset asset = (Asset) iterator.next();
-			asset.lock(true, agent);
-		}
-		getMediaArchive().saveData("asset", pageofhits);
-		
-		Collection workinghits = new ArrayList(pageofhits);
-		try
-		{
-			for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
-			{
-				MultiValued config = (MultiValued) iterator2.next();
-				InformaticsProcessor processor = loadProcessor(config.get("bean"));
-				//inLog.info(config.get("bean") +  " Processing " + pageofhits.size() + " assets" ); //Add Header Logs in each Bean
-				processor.processInformaticsOnAssets(inLog, config, workinghits);
-				
-				for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
-				{
-					MultiValued data = (MultiValued) iterator.next();
-					if(data.getBoolean("llmerror"))
-					{
-						workinghits.remove(data); //We do not process more.
-					}
-				}
-				getMediaArchive().saveData("asset", pageofhits); //Not need it?
-			}
-		}
-		catch(Throwable e)
-		{
-			//This should never happen
-			inLog.error("Processing Informatics Error", e);
-			return;
-		}
-		
-		for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
-		{
-			Asset asset = (Asset) iterator.next();
-			if(!asset.getBoolean("llmerror"))
-			{
-				asset.setValue("taggedbyllm", true);
-			}
-			asset.lock(false, agent); //Todo: Implement Release
-		}
-
-		getMediaArchive().saveData("asset", pageofhits);
 	
-		inLog.info("Processing Informatics on Assets Complete");
+	
 
-	}
-
-	public void processEntities(ScriptLogger inLog)
+	public HitTracker findPendingRecords(AgentContext inContext)
 	{
-		
 		HitTracker allmodules = getMediaArchive().query("module").exact("semanticenabled", true).search();
 		Collection<String> ids = allmodules.collectValues("id");
 		
@@ -218,11 +139,11 @@ public class InformaticsAgent extends BaseAgent
 		}
 		if(ids.isEmpty())
 		{
-			inLog.info("No modules with semantic enabled found.");
-			return;
+			inContext.info("No modules with semantic enabled found.");
+			return null;
 		}
 		
-		inLog.info("Processing Entities Informatics");
+		inContext.info("Processing Entities Informatics");
 		
 		QueryBuilder query = null;
 		String allowclassifyothernodes = getMediaArchive().getCatalogSettingValue("allowclassifyothernodes");
@@ -263,80 +184,13 @@ public class InformaticsAgent extends BaseAgent
 
 		//inLog.info("Entities  " + ids + " with " + pendingrecords + " from date: " + date );
 		
-		Collection validhits = new ArrayList();
-		if (!pendingrecords.isEmpty())
-		{
-			//inLog.info("Adding metadata to: " + pendingrecords);
-
-			for (int i = 0; i < pendingrecords.getTotalPages(); i++)
-			{
-				pendingrecords.setPage(i+1);
-				Collection pageofhits = pendingrecords.getPageOfHits();
-				
-				validhits = findValidRecords(pendingrecords.getPageOfHits());
-				
-				if (validhits.isEmpty())
-				{
-					continue;
-				}
-
-				Collection workinghits = new ArrayList(validhits);
-				
-				//Loop each processor found on the informatics table
-				for (Iterator iterator2 = getInformatics().iterator(); iterator2.hasNext();)
-				{
-					MultiValued config = (MultiValued) iterator2.next();
-					InformaticsProcessor processor = loadProcessor(config.get("bean"));
-					//inLog.info("Processing : " + config);
-					processor.processInformaticsOnEntities(inLog, config, workinghits);
-					for (Iterator iterator = validhits.iterator(); iterator.hasNext();)
-					{
-						MultiValued data = (MultiValued) iterator.next();
-						if(data.getBoolean("llmerror"))
-						{
-							workinghits.remove(data); //We do not process more.
-						}
-					}
-				}
-				//Group them by type
-				
-				for (Iterator iterator = validhits.iterator(); iterator.hasNext();)
-				{
-					MultiValued data = (MultiValued) iterator.next();
-					if(!data.getBoolean("llmerror"))
-					{
-						data.setValue("taggedbyllm", true);
-					}
-				}		
-
-				Map<String, Collection> groupbymodule = groupByModule(validhits);
-				for (Iterator iterator = groupbymodule.keySet().iterator(); iterator.hasNext();)
-				{
-					String moduleid = (String) iterator.next();
-					Collection tosave = groupbymodule.get(moduleid);
-					getMediaArchive().saveData(moduleid,tosave);
-					
-				}
-
-			}
-			
-			
-		}
-		if (!validhits.isEmpty())
-		{
-			inLog.info("Processing " + validhits.size() +" Entities Informatics Complete.");
-		}
-		else
-		{
-			inLog.info("No Entities to Process in modules: " + ids + "  | Search Query: "+ pendingrecords.getFriendlyQuery());
-		}
+		return pendingrecords;
 	
 	}
 	
-	
-	
 
-	private Collection findValidRecords(List inPageOfHits)
+
+	protected Collection findValidRecords(List inPageOfHits)
 	{
 		// TODO Auto-generated method stub
 		Collection valid = new ArrayList();
@@ -382,34 +236,6 @@ public class InformaticsAgent extends BaseAgent
 		return valid;
 	}
 
-	public InformaticsProcessor loadProcessor(String inName)
-	{
-		if(inName == null)
-		{
-			throw new IllegalArgumentException("Bean name not provided");
-		}
-		InformaticsProcessor processor = (InformaticsProcessor) getMediaArchive().getCacheManager().get("ai", "processor" + inName);
-		if (processor == null)
-		{
-			processor = (InformaticsProcessor) getModuleManager().getBean(getCatalogId(), inName );
-			getMediaArchive().getCacheManager().put("ai", "processor" + inName, processor);
-		}
-		return processor;
-		
-	}
-
-
-	
-	public Collection<MultiValued> getInformatics()
-	{
-		Collection<MultiValued> records = (Collection<MultiValued>) getMediaArchive().getCacheManager().get("ai", "informatics");
-		if (records == null)
-		{
-			records = getMediaArchive().query("informatics").exact("enabled", true).sort("ordering").search();
-			getMediaArchive().getCacheManager().put("ai", "informatics", records);
-		}
-		return records;
-	}
 	
 	
 	public void resetInformatics(String inEntityModuleId, Collection inEntities) 
@@ -468,5 +294,6 @@ public class InformaticsAgent extends BaseAgent
 		}
 		return groupbymodule;
 	}
+
 	
 }

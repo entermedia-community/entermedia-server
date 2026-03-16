@@ -1,23 +1,18 @@
 package org.entermediadb.ai.automation;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.Agent;
-import org.entermediadb.manager.BaseManager;
+import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.ai.llm.AgentEnabled;
 import org.entermediadb.scripts.ScriptLogger;
-import org.openedit.Data;
 import org.openedit.MultiValued;
-import org.openedit.data.QueryBuilder;
-import org.openedit.hittracker.HitTracker;
-import org.openedit.util.DateStorageUtil;
 
 /**
  * My plan is to have a UI where each Task can be seen and assigned to a Agent. 
@@ -35,106 +30,71 @@ import org.openedit.util.DateStorageUtil;
  * 
  */
 
-public class AutomationManager extends BaseManager
+public class AutomationManager extends BaseAiManager
 {
-	
 	private static final Log log = LogFactory.getLog(AutomationManager.class);
+
+	public void runScenario(String inId, ScriptLogger inLogger)
+	{
+		AgentContext context = new AgentContext();
+		context.setScriptLogger(inLogger);
+		runScenario(inId,context);
+	}
+	public void runScenario(String inId, AgentContext inContext)
+	{
+		MultiValued scenerio = (MultiValued)getMediaArchive().getCachedData("automationscenario",inId);//query("automationscenerio").exact("enabled", true).sort("ordering").search();
+		
+		inContext.setCurrentScenerio(scenerio);
+		Collection<AgentEnabled> enabled = getEnabledAgents(inId);
+		inContext.setAgentsEnabled(enabled);
 	
-	public void processTasks(ScriptLogger inLog)
-	{		
-		HitTracker allmodules = getMediaArchive().query("module").exact("semanticenabled", true).search();
-		Collection<String> ids = allmodules.collectValues("id");
-		
-		if(!ids.isEmpty())
+		for (Iterator iterator = enabled.iterator(); iterator.hasNext();)
 		{
-			ids.remove("asset");
+			AgentEnabled agentEnabled = (AgentEnabled) iterator.next();
+			inContext.setCurrentAgentEnable(agentEnabled);
+			agentEnabled.getAgent().process(inContext);
 		}
-		if(ids.isEmpty())
-		{
-			inLog.info("No modules with semantic enabled found.");
-			return;
-		}
-		
-		inLog.info("Processing Entities Informatics");
-		
-		QueryBuilder query = null;
-		String allowclassifyothernodes = getMediaArchive().getCatalogSettingValue("allowclassifyothernodes");
-		if (Boolean.valueOf(allowclassifyothernodes) )
-		{
-			//Classify assets from other nodes
-			query = getMediaArchive().query("modulesearch");	
-		}
-		else {
-			//Scan only local entities
-			query = getMediaArchive().localQuery("modulesearch");
-		}
-				//.exact("semantictopicsindexed", false)
-				//.missing("semantictopics")
-		query.exact("taggedbyllm", false)
-				.exact("llmerror", false)
-				.put("searchtypes", ids);
-
-		String startdate = getMediaArchive().getCatalogSettingValue("ai_metadata_startdate");
-		Date date = null;
-		if (startdate == null || startdate.isEmpty())
-		{
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DAY_OF_YEAR, -30);
-			Date thirtyDaysAgo = cal.getTime();
-			date = DateStorageUtil.getStorageUtil().parseFromObject(thirtyDaysAgo);
-		}
-		else {
-			date = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
-		}
-		query.after("entity_date", date);
-
-		//inLog.info("Running entity search query: " + query);
-
-		HitTracker pendingrecords = query.search();
-		pendingrecords.enableBulkOperations();
-		pendingrecords.setHitsPerPage(5); //TODO:
-
-		//inLog.info("Entities  " + ids + " with " + pendingrecords + " from date: " + date );
-
-	
 	}
 	
-	
-	
-
-	private Collection findValidRecords(List inPageOfHits)
+	public Collection<AgentEnabled> getEnabledAgents(String inId)
 	{
-		// TODO Auto-generated method stub
-		Collection valid = new ArrayList();
-		for (Iterator iterator = inPageOfHits.iterator(); iterator.hasNext();)
+		Collection<AgentEnabled> cached = (Collection<AgentEnabled>)getMediaArchive().getCacheManager().get("agentsenabled", inId);
+		if( cached == null)
 		{
-			MultiValued entity = (MultiValued) iterator.next();
-			String searchtype = entity.get("entitysourcetype");
-			String assetid = entity.get("primarymedia");
-			if(assetid == null)
+			Collection found = getMediaArchive().query("automationagentenabled").exact("enabled", true).search();
+			Map<String,AgentEnabled> allparents = new HashMap();
+			for (Iterator iterator = found.iterator(); iterator.hasNext();)
 			{
-				assetid = entity.get("primaryimage");
+				MultiValued data = (MultiValued) iterator.next();
+				AgentEnabled enabled = new AgentEnabled();
+				enabled.setAutomationEnabledData(data);
+				String agentid = data.get("automationagent");
+				MultiValued agentconfig = (MultiValued)getMediaArchive().getCachedData("automationagent",agentid);
+				enabled.setAgentConfig(agentconfig);
+				Agent agent = loadAgent(agentid);
+				enabled.setAgent(agent);
+
+				allparents.put(data.getId(),enabled);
 			}
-			if (assetid != null || entity.get("markdowncontent") != null || entity.get("longcaption") != null || entity.get("collectivedescription") != null )
+			//Sort the list
+			for (Iterator iterator = found.iterator(); iterator.hasNext();)
 			{
-				valid.add(entity);
-			}
-			else
-			{
-				//add Smart Creator enabled entities
-				
-				if(searchtype != null)
+				AgentEnabled childAgent = (AgentEnabled) iterator.next();
+				String myparent = childAgent.getParentAgent();
+				AgentEnabled parentAgent = allparents.get(myparent);
+				if( parentAgent != null)
 				{
-					Data module = getMediaArchive().getCachedData("module", searchtype);
-					String method = module.get("aicreationmethod");
-					if(module != null && "smartcreator".equals(method))
-					{
-						valid.add(entity);
-					}
+					parentAgent.addChild(childAgent);
 				}
-			}
+			}				
+			getMediaArchive().getCacheManager().put("agentsenabled", inId,cached);
 		}
-		return valid;
+		return cached;
+	}
+	
+	public void saveAllScenerios()
+	{
+		//Save events xconfs
 	}
 
 	public Agent loadAgent(String inName)
@@ -158,44 +118,4 @@ public class AutomationManager extends BaseManager
 		return records;
 	}
 	
-	public void resetInformatics(String inEntityModuleId, Collection inEntities) 
-	{
-		
-		ArrayList saveAll = new ArrayList();
-		int count = 0;
-		Collection ids = new HashSet();
-		for (Iterator iterator = inEntities.iterator(); iterator.hasNext();)
-		{
-			Data entity = (Data) iterator.next();
-			
-			entity.setValue("taggedbyllm", false);
-			entity.setValue("llmerror", false);
-				
-			entity.setValue("semantictopics", null);
-			
-			entity.setValue("entityembeddingstatus", null);
-			entity.setValue("pagescreatedfor", null);
-			entity.setValue("totalpages", null);
-			
-			//entity.setValue("searchcategory", null);
-				
-			//entity.setValue("keywords", null);
-			//entity.setValue("longcaption", null);
-			ids.add(entity.getId());
-			saveAll.add(entity);
-				
-		}
-		getMediaArchive().saveData(inEntityModuleId, saveAll);
-		log.info("Saved " + saveAll.size() + " in " + inEntityModuleId);
-		
-		HitTracker todelete = getMediaArchive().query("semanticembedding").orgroup("dataid", ids).exact("moduleid", inEntityModuleId).search();
-		getMediaArchive().getSearcher("semanticembedding").deleteAll(todelete, null);
-		
-		
-		getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
-		
-		
-		
-		
-	}
 }

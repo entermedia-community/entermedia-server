@@ -10,37 +10,31 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.informatics.InformaticsProcessor;
+import org.entermediadb.ai.BaseAgent;
+import org.entermediadb.ai.BaseAiManager;
+import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.video.Timeline;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.repository.ContentItem;
 import org.openedit.util.OutputFiller;
-import org.openedit.util.PathUtilities;
 
-public class DocumentSplitterManager extends InformaticsProcessor 
+public class DocumentSplitterManager extends BaseAiManager 
 {
 	private static final Log log = LogFactory.getLog(DocumentSplitterManager.class);
-
-	@Override
-	public void processInformaticsOnAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
+	
+	public void splitStuff(InformaticsContext informatic )	
 	{
-		//Do nothing
-	}
-
-	@Override
-	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecords)
-	{
+		Collection<MultiValued>  inRecords  = informatic.getRecordsToProcess();
 		
+		MultiValued inConfig = informatic.getCurrentAgentEnable().getAgentConfig();
 		String searchtype = inConfig.get("searchtype"); 
 		int count = 0;
 		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
@@ -82,7 +76,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			}
 			if(count == 0)
 			{
-				inLog.headline("Splitting " + inRecords.size() + " documents"); 
+				informatic.headline("Splitting " + inRecords.size() + " documents"); 
 			}
 			count++;
 			
@@ -90,9 +84,9 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			
 			if (pages > 0)
 			{
-				inLog.info("Splitting " + pages + " pages in document " + asset.getName());
+				informatic.info("Splitting " + pages + " pages in document " + asset.getName());
 				entity.setValue("totalpages", pages);
-				splitDocumentWithPages(inLog, inConfig, entity, asset);
+				splitDocumentWithPages(informatic, inConfig, entity, asset);
 			}
 			else
 			{
@@ -150,7 +144,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 					//send to Lllamaindex another way
 					List<String> chunks = new OutputFiller().splitUtf8(fulltext, 18 * 1024	); //32766  Lucene hard coded max We do not overlap. We just need to see the text
 					entity.setValue("totalpages", chunks.size());
-					splitDocumentWithText(inLog,chunks, inConfig, entity, asset);
+					splitDocumentWithText(informatic,chunks, inConfig, entity, asset);
 				}
 				
 			}
@@ -163,7 +157,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 		//See if this has been indexed or not
 	}
 
-	public void splitDocumentWithPages(ScriptLogger inLog, MultiValued inConfig, MultiValued inEntity, Asset asset) 
+	public void splitDocumentWithPages(InformaticsContext inContext, MultiValued inConfig, MultiValued inEntity, Asset asset) 
 	{
 
 		String parentsearchtype = inConfig.get("searchtype");
@@ -222,11 +216,11 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			}
 		}
 		Long endtime = System.currentTimeMillis();
-		inLog.info("Generated: " + totalpages + " pages for:" + inEntity + " in: " + (endtime - starttime)/1000L + "s");
+		inContext.info("Generated: " + totalpages + " pages for:" + inEntity + " in: " + (endtime - starttime)/1000L + "s");
 		pageSearcher.saveAllData(tosave, null);
 	}
 	
-	public void splitDocumentWithText(ScriptLogger inLog, List<String> inPagesText, MultiValued inConfig, MultiValued inEntity, Asset asset) 
+	public void splitDocumentWithText(InformaticsContext inContext, List<String> inPagesText, MultiValued inConfig, MultiValued inEntity, Asset asset) 
 	{
 		String parentsearchtype = inConfig.get("searchtype");
 		String generatedsearchtype = inConfig.get("generatedsearchtype");
@@ -279,7 +273,7 @@ public class DocumentSplitterManager extends InformaticsProcessor
 			}
 		}
 		Long endtime = System.currentTimeMillis();
-		inLog.info("Generated: " + totalpages + " pages for:" + inEntity + " in: " + (endtime - starttime)/1000L + "s");
+		inContext.info("Generated: " + totalpages + " pages for:" + inEntity + " in: " + (endtime - starttime)/1000L + "s");
 		pageSearcher.saveAllData(tosave, null);
 	}
 	

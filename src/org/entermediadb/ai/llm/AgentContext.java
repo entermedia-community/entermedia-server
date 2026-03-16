@@ -8,21 +8,67 @@ import org.entermediadb.ai.assistant.AiCreation;
 import org.entermediadb.ai.assistant.AiSearch;
 import org.entermediadb.ai.creator.AiSmartCreatorSteps;
 import org.entermediadb.ai.knn.RankedResult;
+import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
+import org.openedit.OpenEditRuntimeException;
 import org.openedit.data.BaseData;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 
-public class AgentContext extends BaseData implements CatalogEnabled {
-	String functionName;
-	String nextFunctionName;
-	Map<String, Object> context;
+public class AgentContext extends BaseData implements CatalogEnabled
+{
+	protected ScriptLogger fieldScriptLogger;
+	
+	public ScriptLogger getScriptLogger()
+	{
+		if( fieldScriptLogger== null && getParentContext() != null)
+		{
+			return getParentContext().getScriptLogger();
+		}
+		return fieldScriptLogger;
+	}
+	public void setScriptLogger(ScriptLogger inScriptLogger)
+	{
+		fieldScriptLogger = inScriptLogger;
+	}
+
+	protected AgentContext fieldParentContext;
+	
+	public AgentContext getParentContext()
+	{
+		return fieldParentContext;
+	}
+	public void setParentContext(AgentContext inParentContext)
+	{
+		fieldParentContext = inParentContext;
+	}
+	public AgentContext()
+	{
+		
+	}
+	public AgentContext(AgentContext inParent)
+	{
+		while( inParent != null)
+		{
+			if (inParent == this)
+			{
+				throw new OpenEditRuntimeException("can't set parent to self");
+			}
+			inParent = inParent.getParentContext();
+		}
+		setParentContext(inParent);
+	}
+	
+	protected String functionName;
+	protected String nextFunctionName;
+	protected Map<String, Object> context;
 //	JSONObject arguments;
 	
-	Long fieldWaitTime;
+	protected Long fieldWaitTime;
 	
 	
 	
@@ -38,15 +84,64 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 		fieldWaitTime = inWaitTime;
 	}
 
-	UserProfile fieldUserProfile;
+	protected UserProfile fieldUserProfile;
 	
-	ModuleManager fieldModuleManager;
+	protected ModuleManager fieldModuleManager;
 	
-	String fieldCatalogId;
+	protected String fieldCatalogId;
+
+	protected Collection<AgentEnabled> fieldAgentsEnabled;
+
+	public Collection<AgentEnabled> getAgentsEnabled()
+	{
+		if( fieldAgentsEnabled== null && getParentContext() != null)
+		{
+			return getParentContext().getAgentsEnabled();
+		}
+
+		return fieldAgentsEnabled;
+	}
+	public void setAgentsEnabled(Collection<AgentEnabled> inAgentsEnabled)
+	{
+		fieldAgentsEnabled = inAgentsEnabled;
+	}
+
+	protected MultiValued fieldCurrentScenerio;
 	
+	public MultiValued getCurrentScenerio()
+	{
+		if( fieldCurrentScenerio== null && getParentContext() != null)
+		{
+			return getParentContext().getCurrentScenerio();
+		}
+		return fieldCurrentScenerio;
+	}
+	public void setCurrentScenerio(MultiValued inCurrentScenerio)
+	{
+		fieldCurrentScenerio = inCurrentScenerio;
+	}
+	
+	protected AgentEnabled fieldCurrentAgentEnable;
+
+	public AgentEnabled getCurrentAgentEnable()
+	{
+		if( fieldCurrentAgentEnable == null && getParentContext() != null)
+		{
+			return getParentContext().getCurrentAgentEnable();
+		}
+		return fieldCurrentAgentEnable;
+	}
+	public void setCurrentAgentEnable(AgentEnabled inCurrentAgentEnable)
+	{
+		fieldCurrentAgentEnable = inCurrentAgentEnable;
+	}
 	
 	public String getCatalogId()
 	{
+		if( fieldCatalogId == null && getParentContext() != null)
+		{
+			return getParentContext().getCatalogId();
+		}
 		return fieldCatalogId;
 	}
 
@@ -57,6 +152,10 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 
 	public ModuleManager getModuleManager()
 	{
+		if( fieldModuleManager == null && getParentContext() != null)
+		{
+			return getParentContext().getModuleManager();
+		}
 		return fieldModuleManager;
 	}
 
@@ -67,6 +166,10 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 
 	public UserProfile getUserProfile()
 	{
+		if( fieldUserProfile == null && getParentContext() != null)
+		{
+			return getParentContext().getUserProfile();
+		}
 		return fieldUserProfile;
 	}
 
@@ -89,7 +192,10 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 		{
 			value = getChannel().get("searchtype");
 		}
-		
+		if( value == null && getParentContext() != null)
+		{
+			return getParentContext().get(inId);
+		}
 		return value;
 	}
 
@@ -140,6 +246,10 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 			return null;
 		}
 		Object obj = context.get(inKey);
+		if( obj == null && getParentContext() != null)
+		{
+			return getParentContext().getContextValue(inKey);
+		}
 		if( obj == null)
 		{
 			obj = get(inKey);
@@ -183,6 +293,10 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	
 	public Collection<RankedResult> getRankedSuggestions()
 	{
+		if( fieldRankedSuggestions == null && getParentContext() != null)
+		{
+			return getParentContext().getRankedSuggestions();
+		}
 		return fieldRankedSuggestions;
 	}
 
@@ -194,6 +308,10 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 
 	public AiSearch getAiSearchParams()
 	{
+		if( fieldAiSearchParams == null && getParentContext() != null)
+		{
+			return getParentContext().getAiSearchParams();
+		}
 		return fieldAiSearchParams;
 	}
 
@@ -207,6 +325,10 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	
 	public AiCreation getAiCreationParams()
 	{
+		if( fieldAiCreationParams == null && getParentContext() != null)
+		{
+			return getParentContext().getAiCreationParams();
+		}
 		if( fieldAiCreationParams == null)
 		{
 			fieldAiCreationParams = new AiCreation();
@@ -224,6 +346,10 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 
 	public AiSmartCreatorSteps getAiSmartCreatorSteps()
 	{
+		if( fieldAiSmartCreatorSteps == null && getParentContext() != null)
+		{
+			return getParentContext().getAiSmartCreatorSteps();
+		}
 		return fieldAiSmartCreatorSteps;
 	}
 
@@ -262,6 +388,10 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 	
 	public Collection<String> getExcludedEntityIds()
 	{
+		if( fieldExcludedEntityIds == null && getParentContext() != null)
+		{
+			return getParentContext().getExcludedEntityIds();
+		}
 		return fieldExcludedEntityIds;
 	}
 	
@@ -314,4 +444,28 @@ public class AgentContext extends BaseData implements CatalogEnabled {
 		return get("locale");
 	}
 
+	public void info(String inLog)
+	{
+		//Use script logger if available
+	}
+
+
+	public void error(Exception inE)
+	{
+	}
+
+	public void error(String inString, Throwable inE)
+	{
+	}
+
+    public void headline(String string) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'headline'");
+    }
+
+    public void error(String string) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'error'");
+    }
+	
 }
