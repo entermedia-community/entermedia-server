@@ -1,5 +1,19 @@
 <div id="loginarea" class="login-area" >
-	$pages.include("loginwithcodeform.html", $context)	
+	#set( $error = $context.getPageValue("oe-exception") )
+	#if ( $error ) 
+		<div class="alert alert-danger my-2" role="alert" style="min-width: 450px;">
+			<i class="bi bi-exclamation-triangle-fill me-1 ns"></i>
+			$error
+		</div>
+		$context.removeSessionValue("oe-exception")
+		
+		$pages.include("loginform.html", $context)
+		
+		
+	#else
+		$pages.include("loginwithcodeform.html", $context)
+	#end
+		
 </div>
 					
 

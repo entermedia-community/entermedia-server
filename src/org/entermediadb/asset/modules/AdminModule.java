@@ -44,6 +44,7 @@ import org.openedit.users.Group;
 import org.openedit.users.Permissions;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
+import org.openedit.users.UserManagerException;
 import org.openedit.users.authenticate.AuthenticationRequest;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.StringEncryption;
@@ -183,18 +184,21 @@ public class AdminModule extends BaseMediaModule
 			lastName = foundUser.getLastName();
 			username = foundUser.getId();
 			
-			String userCode = getUserManager(inReq).createNewTempLoginKey(username,emailaddress,firstName,lastName,false);
-			
-			if(userCategory != null)
-			{
-				foundUser.setValue("logincategoryid",userCategory.getId());
-				getUserManager(inReq).saveUser(foundUser);
-			}
-			
 			if(foundUser.isEnabled() )
 			{
+				String userCode = getUserManager(inReq).createNewTempLoginKey(username,emailaddress,firstName,lastName,false);
 				
+				if(userCategory != null)
+				{
+					foundUser.setValue("logincategoryid",userCategory.getId());
+					getUserManager(inReq).saveUser(foundUser);
+				}
 				passwordHelper.emailPasswordReminder(inReq, getPageManager(), userCode, emailaddress);
+			}
+			else
+			{
+				inReq.putPageValue("oe-exception", "User Disabled");
+				inReq.putPageValue("commandSucceeded", "invalidlogin");
 			}
 		}
 		else
@@ -650,8 +654,11 @@ public class AdminModule extends BaseMediaModule
 				}
 				else
 				{
-					inReq.putPageValue("oe-exception", "Invalid Login");
-					inReq.putPageValue("commandSucceeded", "invalidlogin");
+					if(inReq.getPageValue("oe-exception") == null)
+					{
+						inReq.putPageValue("oe-exception", "Invalid Login");
+						inReq.putPageValue("commandSucceeded", "invalidlogin");
+					}
 				}
 			}
 		}
@@ -748,7 +755,15 @@ public class AdminModule extends BaseMediaModule
 			{
 				if (inUser.isEnabled())
 				{
-					userok = userManager.authenticate(inAReq); //<---- This is it!!!! we login
+					try
+					{
+						userok = userManager.authenticate(inAReq); //<---- This is it!!!! we login
+					}
+					catch (UserManagerException ue)
+					{
+						inReq.putSessionValue("oe-exception", "Invalid login code");
+						inReq.putPageValue("oe-exception", "Invalid login code");
+					}
 				}
 				else
 				{
@@ -845,6 +860,7 @@ public class AdminModule extends BaseMediaModule
 		}
 		else
 		{
+			//Disable user for repeated attempts 
 			if (disable)
 			{
 				String failedLoginCount = inUser.get("failedlogincount");
@@ -873,7 +889,7 @@ public class AdminModule extends BaseMediaModule
 			}
 
 			//	inReq.putSessionValue("oe-exception", "Invalid Logon");
-			inReq.putPageValue("oe-exception", "Invalid Logon");
+			//inReq.putPageValue("oe-exception", "Invalid Logon");
 			return false;
 		}
 

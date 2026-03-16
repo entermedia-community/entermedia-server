@@ -2,7 +2,7 @@
 #if(!$targetdiv)
 	#set($targetdiv = $context.findValue("targetdiv") )
 #end 
-<div class="container">
+<div class="container" id="ajaxlogincontainer">
 	
 	<div class="loginbox">
 	<h1 class="page-title text-center mb-4">[[Sign-up]]</h1>
@@ -18,8 +18,8 @@
 	 
 		#set( $error = $context.getPageValue("oe-exception") )
 		#if ( $error ) 
-			<div class="alert alert-danger m-5 w-100" role="alert">
-				[[Error please contact an Administrator]]
+			<div class="alert alert-danger mx-5 mb-5" role="alert">
+				$error
 			</div>
 			$context.removeSessionValue("oe-exception")
 		#end 
