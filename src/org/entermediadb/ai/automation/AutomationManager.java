@@ -1,5 +1,6 @@
 package org.entermediadb.ai.automation;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -61,7 +62,7 @@ public class AutomationManager extends BaseAiManager
 		Collection<AgentEnabled> cached = (Collection<AgentEnabled>)getMediaArchive().getCacheManager().get("agentsenabled", inId);
 		if( cached == null)
 		{
-			Collection found = getMediaArchive().query("automationagentenabled").exact("enabled", true).search();
+			Collection found = getMediaArchive().query("automationagentenabled").exact("automationscenario",inId).exact("enabled", true).search();
 			Map<String,AgentEnabled> allparents = new HashMap();
 			for (Iterator iterator = found.iterator(); iterator.hasNext();)
 			{
@@ -71,22 +72,28 @@ public class AutomationManager extends BaseAiManager
 				String agentid = data.get("automationagent");
 				MultiValued agentconfig = (MultiValued)getMediaArchive().getCachedData("automationagent",agentid);
 				enabled.setAgentConfig(agentconfig);
-				Agent agent = loadAgent(agentid);
+				String bean = agentconfig.get("bean");
+				Agent agent = loadAgent(bean);
 				enabled.setAgent(agent);
 
 				allparents.put(data.getId(),enabled);
 			}
 			//Sort the list
-			for (Iterator iterator = found.iterator(); iterator.hasNext();)
+			cached = new ArrayList();
+			for (Iterator iterator = allparents.values().iterator(); iterator.hasNext();)
 			{
 				AgentEnabled childAgent = (AgentEnabled) iterator.next();
 				String myparent = childAgent.getParentAgent();
 				AgentEnabled parentAgent = allparents.get(myparent);
-				if( parentAgent != null)
+				if( myparent == null|| parentAgent == null)
+				{
+					cached.add(childAgent);
+				}
+				else
 				{
 					parentAgent.addChild(childAgent);
 				}
-			}				
+			}	
 			getMediaArchive().getCacheManager().put("agentsenabled", inId,cached);
 		}
 		return cached;

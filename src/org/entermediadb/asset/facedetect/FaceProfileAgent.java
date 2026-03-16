@@ -8,6 +8,7 @@ import java.util.List;
 import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.asset.Asset;
 import org.openedit.MultiValued;
 
 public class FaceProfileAgent extends BaseAgent
@@ -22,14 +23,14 @@ public class FaceProfileAgent extends BaseAgent
 	{
 		InformaticsContext mycontext =  new InformaticsContext(inContext);
 		
-		Collection pageofhits = mycontext.getAssetsToProcess();
-		if( pageofhits != null && !pageofhits.isEmpty())
+		Collection<Asset> assets = mycontext.getAssetsToProcess();
+		if( assets != null && !assets.isEmpty())
 		{
-			List workinghits = new ArrayList(pageofhits);
+			Collection<Asset> workinghits = new ArrayList(assets);
 			
-			getFaceProfileManager().processAssets(inContext.getScriptLogger(),mycontext.getCurrentAgentEnable().getAgentConfig(),mycontext.getAssetsToProcess());
+			getFaceProfileManager().processAssets(inContext.getScriptLogger(),mycontext.getCurrentAgentEnable().getAgentConfig(),assets);
 
-			for (Iterator iterator2 = pageofhits.iterator(); iterator2.hasNext();)
+			for (Iterator iterator2 = assets.iterator(); iterator2.hasNext();)
 			{
 				MultiValued data = (MultiValued) iterator2.next();
 				if(data.getBoolean("llmerror"))
@@ -37,7 +38,7 @@ public class FaceProfileAgent extends BaseAgent
 					workinghits.remove(data); //We do not process more.
 				}
 			}
-			mycontext.setRecordsToProcess(workinghits);
+			mycontext.setAssetsToProcess(workinghits);
 		}
 		super.process(mycontext);
 	}

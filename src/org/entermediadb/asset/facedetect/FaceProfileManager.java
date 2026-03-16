@@ -1128,7 +1128,7 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled
 
 	}
 
-	public void processAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
+	public void processAssets(ScriptLogger inLog, MultiValued inConfig, Collection<Asset> inAssets)
 	{
 		Collection validAssets = new ArrayList();
 		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {

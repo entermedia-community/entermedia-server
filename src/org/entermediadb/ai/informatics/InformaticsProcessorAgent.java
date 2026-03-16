@@ -1,11 +1,8 @@
 package org.entermediadb.ai.informatics;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -13,20 +10,12 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAgent;
-import org.entermediadb.ai.classify.DocumentSplitterManager;
 import org.entermediadb.ai.llm.AgentContext;
-import org.entermediadb.ai.llm.AgentEnabled;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
-import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
-import org.openedit.WebPageRequest;
-import org.openedit.data.QueryBuilder;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.ListHitTracker;
 import org.openedit.users.User;
-import org.openedit.util.DateStorageUtil;
 
 /**
  * My plan is to have a UI where each Task can be seen and assigned to a Agent. 
@@ -65,6 +54,7 @@ public class InformaticsProcessorAgent extends BaseAgent
 		}
 		else
 		{
+			informatic = new InformaticsContext(inContext);
 			//TODO Just load up the assets first
 			HitTracker pendingassets = getInformaticsProcessorManager().findPendingAssets(informatic);
 			informatic.setAssetsToProcess(pendingassets);
@@ -80,54 +70,62 @@ public class InformaticsProcessorAgent extends BaseAgent
 	{
 		inContext.info("Processing Assets Informatics");
 
-		HitTracker inPendingAssets = (HitTracker)inContext.getAssetsToProcess();
+		Collection inPendingAssets = inContext.getAssetsToProcess();
 		if (!inPendingAssets.isEmpty())
 		{
 			//inLog.info("Adding metadata to: " + pendingrecords.size() + " assets in category: " + categoryid + ", added after: " + startdate);
 
-			for (int i = 0; i < inPendingAssets.getTotalPages(); i++)
+			if( inPendingAssets  instanceof HitTracker)
 			{
-				inPendingAssets.setPage(i+1);
-				List pageofhits = new ArrayList();
-				try
+				HitTracker hits = (HitTracker)inPendingAssets;
+				for (int i = 0; i < hits.getTotalPages(); i++)
 				{
-					long startTime = System.currentTimeMillis();
-					for (Iterator iterator = inPendingAssets.getPageOfHits().iterator(); iterator.hasNext();)
+					hits.setPage(i+1);
+					List<Asset> pageofhits = new ArrayList<>();
+					try
 					{
-						Data data = (Data) iterator.next();
-						Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(data);
-						pageofhits.add(asset);
+						long startTime = System.currentTimeMillis();
+						for (Iterator iterator = hits.getPageOfHits().iterator(); iterator.hasNext();)
+						{
+							Data data = (Data) iterator.next();
+							Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(data);
+							pageofhits.add(asset);
+						}
+						
+						processAssets(inContext, pageofhits);
+						
+						long duration = (System.currentTimeMillis() - startTime) / 1000L;
+						inContext.info("Processing " + pageofhits.size() + " records took "+duration +"s");
 					}
-					
-					processAssets(inContext, pageofhits);
-					
-					long duration = (System.currentTimeMillis() - startTime) / 1000L;
-					inContext.info("Processing " + pageofhits.size() + " records took "+duration +"s");
-				}
-				catch(Exception e)
-				{
-					inContext.error(e);
-					getMediaArchive().saveData("asset", pageofhits);
-					
-					if (e instanceof OpenEditException) 
+					catch(Exception e)
 					{
-						throw (OpenEditException) e;
+						inContext.error(e);
+						getMediaArchive().saveData("asset", pageofhits);
+						
+						if (e instanceof OpenEditException) 
+						{
+							throw (OpenEditException) e;
+						}
+						throw new OpenEditException(e);
+						
 					}
-					throw new OpenEditException(e);
-					
 				}
+			}
+			else
+			{
+				processAssets(inContext, (Collection<Asset>)inPendingAssets);
 			}
 		}
 		else
 		{
-			inContext.info("No Assets to Process:` " + inPendingAssets.getFriendlyQuery());
+			inContext.info("No Assets to Process:` " + inPendingAssets);
 			//inLog.info("AI assets to tag:` " + pendingrecords.getFriendlyQuery());
 		}
 	}
 
 
 	
-	protected void processAssets(InformaticsContext inContext, List pageofhits)
+	protected void processAssets(InformaticsContext inContext, Collection<Asset> pageofhits)
 	{
 		//Lock Assets
 		User agent = getMediaArchive().getUser("agent");
@@ -138,11 +136,11 @@ public class InformaticsProcessorAgent extends BaseAgent
 		}
 		getMediaArchive().saveData("asset", pageofhits);
 		
-		HitTracker workinghits = new ListHitTracker(pageofhits);
 		try
 		{
 			InformaticsContext subcontext = new InformaticsContext(inContext);
-			subcontext.setAssetsToProcess(workinghits);
+			subcontext.setAssetsToProcess(pageofhits);
+			subcontext.setRecordsToProcess(Collections.EMPTY_LIST);
 			super.process(subcontext);
 			
 			getMediaArchive().saveData("asset", pageofhits); //Not need it?
@@ -171,9 +169,15 @@ public class InformaticsProcessorAgent extends BaseAgent
 	}
 	protected void processPendingRecords(InformaticsContext inContext)
 	{
-		HitTracker pendingrecords = (HitTracker)inContext.getRecordsToProcess();
+		Collection records = inContext.getRecordsToProcess();
 		
-		Collection validhits = new ArrayList();
+		if( records == null || records.isEmpty())
+		{
+			return;
+		}
+		HitTracker pendingrecords = (HitTracker)records;
+		
+		Collection validhits = new ArrayList<>();
 		if (!pendingrecords.isEmpty())
 		{
 			//inLog.info("Adding metadata to: " + pendingrecords);
@@ -191,11 +195,13 @@ public class InformaticsProcessorAgent extends BaseAgent
 					continue;
 				}
 
-				Collection workinghits = new ArrayList(validhits);
+				Collection workinghits = new ArrayList<>(validhits);
 				try
 				{
 					InformaticsContext subcontext = new InformaticsContext(inContext);
 					subcontext.setRecordsToProcess(workinghits);
+					subcontext.setAssetsToProcess(Collections.EMPTY_LIST);
+
 					super.process(subcontext);
 					
 					getMediaArchive().saveData("asset", pageofhits); //Not need it?
@@ -215,7 +221,6 @@ public class InformaticsProcessorAgent extends BaseAgent
 					getMediaArchive().saveData(moduleid,tosave);
 					
 				}
-
 			}
 		}
 		if (validhits.isEmpty())

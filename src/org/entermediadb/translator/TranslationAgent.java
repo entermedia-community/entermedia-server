@@ -1,4 +1,4 @@
-package org.entermediadb.ai.classify;
+package org.entermediadb.translator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,11 +10,11 @@ import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.llm.AgentContext;
 import org.openedit.MultiValued;
 
-public class NamedEntityRecognitionAgent extends BaseAgent
+public class TranslationAgent extends BaseAgent
 {
-	public NamedEntityRecognitionManager getNamedEntityRecognitionManager()
+	public TranslationManager getTranslationManager()
 	{
-		NamedEntityRecognitionManager manager = (NamedEntityRecognitionManager)getMediaArchive().getBean("namedEntityRecognitionManager");
+		TranslationManager manager = (TranslationManager)getMediaArchive().getBean("translationManager");
 		return manager;
 	}
 	@Override
@@ -22,12 +22,13 @@ public class NamedEntityRecognitionAgent extends BaseAgent
 	{
 		InformaticsContext mycontext =  new InformaticsContext(inContext);
 		
-		Collection pageofhits = mycontext.getRecordsToProcess();
+		Collection<MultiValued> pageofhits = mycontext.getRecordsToProcess();
 		if( pageofhits != null && !pageofhits.isEmpty())
 		{
 			List workinghits = new ArrayList(pageofhits);
 			mycontext.setRecordsToProcess(workinghits);
-			getNamedEntityRecognitionManager().processRecords(mycontext);
+			MultiValued config = mycontext.getCurrentAgentEnable().getAgentConfig();
+			getTranslationManager().translateDataFields( inContext.getScriptLogger(), config, pageofhits);
 			for (Iterator iterator2 = pageofhits.iterator(); iterator2.hasNext();)
 			{
 				MultiValued data = (MultiValued) iterator2.next();

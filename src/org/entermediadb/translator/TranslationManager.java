@@ -222,7 +222,7 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled 
 		
 		return sourceLangMap;
 	}
-	public void processInformaticsOnEntities(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecordsToTranslate)
+	public void translateDataFields(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inRecordsToTranslate)
 	{
 		HitTracker locales = getMediaArchive().query("locale").exact("translatemetadata", true).search();
 		
@@ -318,19 +318,19 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled 
 		
 	}
 
-	public void translateAssets(WebPageRequest context, ScriptLogger inLog)
-	{
-		HitTracker assets = (HitTracker) context.getPageValue("assetsToTranslate");
-	
-		MultiValued config = (MultiValued)getMediaArchive().getCachedData("informatics", "autotranslate");
-		Collection<MultiValued> records = new ArrayList(assets);
-		
-//		InformaticsContext agentcontext = new InformaticsContext();
-//		agentcontext.setScriptLogger(inLog);
-//		agentcontext.setAssetsToProcess(records);
-		
-		processInformaticsOnEntities(inLog, config, records);
-	}
+//	public void translateAssets(WebPageRequest context, ScriptLogger inLog)
+//	{
+//		HitTracker assets = (HitTracker) context.getPageValue("assetsToTranslate");
+//	
+//		MultiValued config = (MultiValued)getMediaArchive().getCachedData("informatics", "autotranslate");
+//		Collection<MultiValued> records = new ArrayList(assets);
+//		
+////		InformaticsContext agentcontext = new InformaticsContext();
+////		agentcontext.setScriptLogger(inLog);
+////		agentcontext.setAssetsToProcess(records);
+//		
+//		translateDataFields(inLog, config, records);
+//	}
 	
 
   

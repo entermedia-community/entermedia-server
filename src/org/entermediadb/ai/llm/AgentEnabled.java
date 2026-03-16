@@ -72,4 +72,9 @@ public class AgentEnabled
 		getChildren().add(inChildAgent);
 		inChildAgent.setParentAgentEnabled(this);
 	}
+	@Override
+	public String toString()
+	{
+		return String.valueOf(getAgentConfig());
+	}
 }

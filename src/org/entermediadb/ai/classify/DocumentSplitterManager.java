@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.llm.AgentContext;

@@ -9,12 +9,10 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.BaseAiManager;
-import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.knn.RankedResult;
-import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
@@ -44,11 +42,11 @@ public class SemanticClassifierManager extends BaseAiManager
 	private static final Log log = LogFactory.getLog(SemanticClassifierManager.class);
 
 
-	protected void processRecords(InformaticsContext informatic, MultiValued inConfig, Collection<MultiValued>  inRecords )
+	protected void processRecords(ScriptLogger inLog, MultiValued inConfig,Collection<? extends MultiValued>  inRecords )
 	{
 		String fieldname = inConfig.get("fieldname");
 		
-		informatic.headline("Adding semantic topics to " + inRecords.size() + " records");
+		inLog.headline("Adding semantic topics to " + inRecords.size() + " records");
 
 		setConfigurationId(fieldname); //TODO: Read from config
 		
@@ -93,7 +91,7 @@ public class SemanticClassifierManager extends BaseAiManager
 		}
 		try
 		{
-			getSemanticTableManager().indexData(informatic.getScriptLogger(),inRecords);
+			getSemanticTableManager().indexData(inLog,inRecords);
 			//getSemanticTableManager().process(informatic);
 		}
 		catch( Throwable ex)
@@ -107,7 +105,7 @@ public class SemanticClassifierManager extends BaseAiManager
 		}
 		long end = System.currentTimeMillis();
 		double seconds = end - start / 1000d;
-		informatic.info("SemanticClassifierManager Completed " + inRecords.size() + " records in " +  seconds + " seconds ");
+		inLog.info("SemanticClassifierManager Completed " + inRecords.size() + " records in " +  seconds + " seconds ");
 	}
 	public Map<String,Collection<String>> search(Collection<String> textvalues, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
 	{

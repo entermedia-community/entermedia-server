@@ -6,7 +6,7 @@ import java.util.Collection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.llm.AgentContext;
-import org.entermediadb.ai.llm.AgentEnabled;
+import org.entermediadb.asset.Asset;
 import org.openedit.MultiValued;
 
 
@@ -53,7 +53,7 @@ public class InformaticsContext extends AgentContext
 		fieldRecordsToProcess = inRecordsToProcess;
 	}
 
-	public Collection<MultiValued> getAssetsToProcess()
+	public Collection<Asset> getAssetsToProcess()
 	{
 		if( fieldAssetsToProcess == null)
 		{
@@ -67,11 +67,11 @@ public class InformaticsContext extends AgentContext
 		return fieldAssetsToProcess;
 	}
 
-	public void setAssetsToProcess(Collection<MultiValued> inAssetsToProcess)
+	public void setAssetsToProcess(Collection<Asset> inAssetsToProcess)
 	{
 		fieldAssetsToProcess = inAssetsToProcess;
 	}
-	protected Collection<MultiValued> fieldAssetsToProcess;
+	protected Collection<Asset> fieldAssetsToProcess;
 
 	
 }

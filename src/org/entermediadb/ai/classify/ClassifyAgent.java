@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.entermediadb.ai.BaseAgent;
-import org.entermediadb.ai.automation.AutomationManager;
 import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.llm.AgentContext;
 import org.openedit.MultiValued;

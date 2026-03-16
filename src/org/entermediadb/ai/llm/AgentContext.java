@@ -25,9 +25,16 @@ public class AgentContext extends BaseData implements CatalogEnabled
 	
 	public ScriptLogger getScriptLogger()
 	{
-		if( fieldScriptLogger== null && getParentContext() != null)
+		if( fieldScriptLogger == null )
 		{
-			return getParentContext().getScriptLogger();
+			if( getParentContext() != null)
+			{
+				return getParentContext().getScriptLogger();
+			}
+			if( getParentContext() == null)
+			{
+				fieldScriptLogger = new ScriptLogger();
+			}
 		}
 		return fieldScriptLogger;
 	}
@@ -52,14 +59,6 @@ public class AgentContext extends BaseData implements CatalogEnabled
 	}
 	public AgentContext(AgentContext inParent)
 	{
-		while( inParent != null)
-		{
-			if (inParent == this)
-			{
-				throw new OpenEditRuntimeException("can't set parent to self");
-			}
-			inParent = inParent.getParentContext();
-		}
 		setParentContext(inParent);
 	}
 	
@@ -446,26 +445,28 @@ public class AgentContext extends BaseData implements CatalogEnabled
 
 	public void info(String inLog)
 	{
-		//Use script logger if available
+		getScriptLogger().error(inLog);
 	}
 
 
 	public void error(Exception inE)
 	{
+		getScriptLogger().error(inE);
 	}
 
 	public void error(String inString, Throwable inE)
 	{
+		getScriptLogger().error(inString,inE);
 	}
 
-    public void headline(String string) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'headline'");
+    public void headline(String string) 
+    {
+		getScriptLogger().headline(string);
     }
 
     public void error(String string) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'error'");
+		getScriptLogger().error(string);
+
     }
 	
 }

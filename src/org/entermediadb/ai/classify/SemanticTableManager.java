@@ -166,13 +166,13 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 	}
 
 	
-	public void indexData(ScriptLogger inLog, Collection<MultiValued> inRecords)
+	public void indexData(ScriptLogger inLog, Collection<? extends MultiValued> inRecords)
 	{
 		SemanticConfig instruction = getSemanticInstructions();
 		indexData(inLog, instruction, inRecords);
 	}
 	
-	protected void indexData(ScriptLogger inLog, SemanticConfig instruction, Collection<MultiValued> inRecords)
+	protected void indexData(ScriptLogger inLog, SemanticConfig instruction, Collection<? extends MultiValued> inRecords)
 	{
 		Collection<MultiValued> createdVectors = new ArrayList();
 		int indexed = index(instruction, inRecords, createdVectors);
@@ -180,7 +180,7 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 		
 		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
 		{
-			MultiValued data = (MultiValued) iterator.next();
+			MultiValued data = (MultiValued)iterator.next();
 			data.setValue(instruction.getFieldName()+ "indexed", true);
 		}
 		
@@ -209,7 +209,7 @@ public class SemanticTableManager extends BaseAiManager implements CatalogEnable
 
 	}
 	
-	public int index(SemanticConfig inStructions, Collection<MultiValued> inEntities, Collection<MultiValued> createdVectors)  //Page of data
+	public int index(SemanticConfig inStructions, Collection<? extends MultiValued> inEntities, Collection<MultiValued> createdVectors)  //Page of data
 	{
 		String url = getMediaArchive().getCatalogSettingValue("ai_vectorizer_server");
 		if( url == null)

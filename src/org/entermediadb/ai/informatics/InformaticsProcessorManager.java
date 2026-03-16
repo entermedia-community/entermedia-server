@@ -52,7 +52,7 @@ public class InformaticsProcessorManager extends BaseAiManager
 	//TODO
 	public void processAsset(ScriptLogger inLog, Asset inAsset)
 	{
-		Collection pageofhits = new ArrayList();
+		Collection<Asset> pageofhits = new ArrayList();
 		pageofhits.add(inAsset);
 		
 		InformaticsContext inContext  = new InformaticsContext();

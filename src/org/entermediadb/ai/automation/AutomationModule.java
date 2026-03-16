@@ -74,9 +74,14 @@ public class AutomationModule extends BaseMediaModule {
 
 	public void runScenerio(WebPageRequest inRequest)
 	{	
-		String id = inRequest.getPage().getPageName();
+		String id = inRequest.findActionValue("automationscenario");
+		if( id == null)
+		{
+			id = inRequest.getPage().getPageName();
+		}
 		AutomationManager manager = getAutomationManager(inRequest);
 		ScriptLogger logger =  (ScriptLogger)inRequest.getPageValue("log");
+		
 		manager.runScenario(id,logger);
 	}
 }

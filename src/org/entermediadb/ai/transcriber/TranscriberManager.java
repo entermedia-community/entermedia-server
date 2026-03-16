@@ -37,7 +37,7 @@ public class TranscriberManager extends BaseAiManager {
 	private static final Log log = LogFactory.getLog(TranscriberManager.class);
 	
 
-	public void transcribeAssets(ScriptLogger inLog, MultiValued inConfig, Collection<MultiValued> inAssets)
+	public void transcribeAssets(ScriptLogger inLog, MultiValued inConfig, Collection<Asset> inAssets)
 	{
 		Collection<MultiValued> toprocess = new ArrayList<MultiValued>();
 

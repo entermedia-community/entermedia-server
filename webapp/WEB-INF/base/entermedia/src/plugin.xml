@@ -2811,14 +2811,14 @@
 		</property>
 	</bean>
 
-	<bean id="semanticTableManager" class="org.entermediadb.ai.informatics.SemanticTableManager" lazy-init="default" scope="prototype">
+	<bean id="semanticTableManager" class="org.entermediadb.ai.classify.SemanticTableManager" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
 
 
-	<bean id="semanticConfig" class="org.entermediadb.ai.informatics.SemanticConfig" lazy-init="default" scope="prototype">
+	<bean id="semanticConfig" class="org.entermediadb.ai.classify.SemanticConfig" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2876,7 +2876,7 @@
 	<bean id="cssutils" class="org.openedit.util.CSSUtils" />
 	<bean id="inflector" class="org.openedit.entermedia.util.Inflector" />
 
-	<bean id="automationModule" class="org.entermediadb.ai.automation.AutomationModule" lazy-init="default">
+	<bean id="AutomationModule" class="org.entermediadb.ai.automation.AutomationModule" lazy-init="default">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

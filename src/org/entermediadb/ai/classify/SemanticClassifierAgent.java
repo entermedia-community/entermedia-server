@@ -1,13 +1,11 @@
 package org.entermediadb.ai.classify;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.asset.Asset;
 import org.openedit.MultiValued;
 
 public class SemanticClassifierAgent extends BaseAgent
@@ -24,15 +22,15 @@ public class SemanticClassifierAgent extends BaseAgent
 		InformaticsContext informatic = new InformaticsContext(inContext);
 		MultiValued inConfig = inContext.getCurrentAgentEnable().getAgentConfig();
 		//Try both assets and records
-		Collection<MultiValued>  inAssets = informatic.getAssetsToProcess();
+		Collection<Asset>  inAssets = informatic.getAssetsToProcess();
 		if( inAssets != null)
 		{
-			getSemanticClassifierManager().processRecords(informatic, inConfig, inAssets);
+			getSemanticClassifierManager().processRecords(informatic.getScriptLogger(), inConfig, inAssets);
 		}
 		Collection<MultiValued>  inRecords  = informatic.getRecordsToProcess();
 		if( inRecords != null)
 		{
-			getSemanticClassifierManager().processRecords(informatic, inConfig, inRecords);
+			getSemanticClassifierManager().processRecords(informatic.getScriptLogger(), inConfig, inRecords);
 		}
 		super.process(informatic);
 	}
