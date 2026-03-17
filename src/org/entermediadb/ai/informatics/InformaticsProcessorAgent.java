@@ -13,6 +13,7 @@ import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.Asset;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.users.User;
@@ -204,7 +205,7 @@ public class InformaticsProcessorAgent extends BaseAgent
 
 					super.process(subcontext);
 					
-					getMediaArchive().saveData("asset", pageofhits); //Not need it?
+					//getMediaArchive().saveData("asset", pageofhits); //Not need it?
 				}
 				catch(Throwable e)
 				{
@@ -212,8 +213,17 @@ public class InformaticsProcessorAgent extends BaseAgent
 					inContext.error("Processing Informatics Error", e);
 					return;
 				}
+				
+				for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
+				{
+					MultiValued data = (MultiValued) iterator.next();
+					if(!data.getBoolean("llmerror"))
+					{
+						data.setValue("taggedbyllm", true);
+					}
+				}
 
-				Map<String, Collection> groupbymodule = getInformaticsProcessorManager().groupByModule(validhits);
+				Map<String, Collection> groupbymodule = getInformaticsProcessorManager().groupByModule(pageofhits);
 				for (Iterator iterator = groupbymodule.keySet().iterator(); iterator.hasNext();)
 				{
 					String moduleid = (String) iterator.next();
@@ -221,6 +231,8 @@ public class InformaticsProcessorAgent extends BaseAgent
 					getMediaArchive().saveData(moduleid,tosave);
 					
 				}
+				
+				
 			}
 		}
 		if (validhits.isEmpty())
