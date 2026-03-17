@@ -349,6 +349,13 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		inReq.putPageValue("playbackentity", playbackentity);
 		
 		
+		//Get the Publish Tab View
+		Data publishtab = getMediaArchive().getSearcher("view").query()
+																.exact("moduleid", playbackentitymoduleid)
+																.exact("systemdefined","false")
+																.exact("rendertype","tabsmartcreatorpreview")
+																.searchOne();
+		inReq.putPageValue("publishtab", publishtab);
 		
 		Searcher sectionsearcher = getMediaArchive().getSearcher("componentsection");
 		
