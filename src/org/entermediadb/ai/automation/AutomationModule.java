@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
@@ -19,7 +20,7 @@ public class AutomationModule extends BaseMediaModule {
 
     }
     
-    public void loadAutomationScenarios(WebPageRequest inReq)
+    public void loadAutomationScenario(WebPageRequest inReq)
 	{
     	MediaArchive archive = getMediaArchive(inReq);
     	
