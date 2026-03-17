@@ -11,68 +11,71 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 
 public class AutomationModule extends BaseMediaModule {
-    
 
-    public void loadScenarios(WebPageRequest inRequest)
-    {
-        Collection list = getMediaArchive(inRequest).getList("automationscenario");
-        inRequest.putPageValue("scenarios", list);
-
-    }
-    
-    public void loadAutomationScenarios(WebPageRequest inReq)
-   	{
-       	MediaArchive archive = getMediaArchive(inReq);
-       	
-       	String scenarioid = inReq.getRequestParameter("scenarioid");
-       	
-       	if(scenarioid == null)
-   		{
-   			return;
-   		}
-       	
-       	
-       	Data scenario = archive.query("automationscenario").exact("id", scenarioid).searchOne();
-       	inReq.putPageValue("scenario", scenario);
-       	
-       	Searcher agentEnabledSearcher = archive.getSearcher("automationagentenabled");
-       	inReq.putPageValue("agentenabledsearcher", agentEnabledSearcher);
-       	
-       	Collection<MultiValued> agents = agentEnabledSearcher.query().exact("automationscenario", scenario.getId()).search();
-       	inReq.putPageValue("agents", agents);
-   	}
-    
-/*    
-    public void loadAutomationScenarios(WebPageRequest inReq)
+	public void loadScenarios(WebPageRequest inReq)
 	{
-    	MediaArchive archive = getMediaArchive(inReq);
-    	
-    	String scenarioid = inReq.getRequestParameter("scenarioid");
-    	
-    	if(scenarioid == null)
+		Collection list = getMediaArchive(inReq).getList("automationscenario");
+		inReq.putPageValue("scenarios", list);
+	}
+    
+	public void loadAutomationScenario(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String scenarioid = inReq.getRequestParameter("scenarioid");
+		
+		if(scenarioid == null)
+		{
+				scenarioid = (String) inReq.getPageValue("scenarioid");
+		}
+			
+		if(scenarioid == null)
+		{
+			return;
+		}
+		
+		
+		Data scenario = archive.query("automationscenario").exact("id", scenarioid).searchOne();
+		inReq.putPageValue("scenario", scenario);
+		
+		Searcher agentEnabledSearcher = archive.getSearcher("automationagentenabled");
+		inReq.putPageValue("agentenabledsearcher", agentEnabledSearcher);
+		
+		Collection<MultiValued> agents = agentEnabledSearcher.query().exact("automationscenario", scenario.getId()).search();
+		inReq.putPageValue("agents", agents);
+	} 
+
+	/*    
+  public void loadAutomationScenarios(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String scenarioid = inReq.getRequestParameter("scenarioid");
+		
+		if(scenarioid == null)
 		{
 			return;
 		}
     	
     	
-    	Data scenario = archive.query("automationscenario").exact("id", scenarioid).searchOne();
-    	inReq.putPageValue("scenario", scenario);
-    	
-    	Searcher agentEnabledSearcher = archive.getSearcher("automationagentenabled");
-    	inReq.putPageValue("agentenabledsearcher", agentEnabledSearcher);
-    	
-    	Collection<MultiValued> agents = agentEnabledSearcher.query().exact("automationscenario", scenario.getId()).search();
-    	inReq.putPageValue("agents", agents);
+		Data scenario = archive.query("automationscenario").exact("id", scenarioid).searchOne();
+		inReq.putPageValue("scenario", scenario);
+		
+		Searcher agentEnabledSearcher = archive.getSearcher("automationagentenabled");
+		inReq.putPageValue("agentenabledsearcher", agentEnabledSearcher);
+		
+		Collection<MultiValued> agents = agentEnabledSearcher.query().exact("automationscenario", scenario.getId()).search();
+		inReq.putPageValue("agents", agents);
 	}
 	*/
-    public AutomationManager getAutomationManager(WebPageRequest inRequest)
-    {
-    	AutomationManager manager = (AutomationManager)getMediaArchive(inRequest).getBean("automationManager");
-        inRequest.putPageValue("automationManager", manager);
-        return manager;
-    }
+	public AutomationManager getAutomationManager(WebPageRequest inRequest)
+	{
+		AutomationManager manager = (AutomationManager)getMediaArchive(inRequest).getBean("automationManager");
+		inRequest.putPageValue("automationManager", manager);
+		return manager;
+	}
 
-	public void runScenerio(WebPageRequest inRequest)
+	public void runScenario(WebPageRequest inRequest)
 	{	
 		String id = inRequest.findActionValue("automationscenario");
 		if( id == null)
@@ -84,4 +87,5 @@ public class AutomationModule extends BaseMediaModule {
 		
 		manager.runScenario(id,logger);
 	}
+
 }
