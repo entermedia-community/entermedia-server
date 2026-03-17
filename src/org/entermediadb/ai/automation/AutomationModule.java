@@ -2,6 +2,7 @@ package org.entermediadb.ai.automation;
 
 import java.util.Collection;
 
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.scripts.ScriptLogger;
@@ -85,7 +86,11 @@ public class AutomationModule extends BaseMediaModule {
 		AutomationManager manager = getAutomationManager(inRequest);
 		ScriptLogger logger =  (ScriptLogger)inRequest.getPageValue("log");
 		
-		manager.runScenario(id,logger);
+		AgentContext context = new AgentContext();
+		context.setScriptLogger(logger);
+		
+		
+		manager.runScenario(id,context);
 	}
 
 }

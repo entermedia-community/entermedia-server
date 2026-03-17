@@ -339,6 +339,7 @@ public class PathEvent implements Comparable, TextAppender
 	{		
 		WebPageRequest	request = inReq.copy(getPage());
 		request.putProtectedPageValue("content", getPage());
+		request.putProtectedPageValue("webpagerequest", request);
 		//		for (Iterator iterator = getProperties().keySet().iterator(); iterator.hasNext();) {
 		//			String key = (String) iterator.next();
 		//			request.setRequestParameter(key, getProperty(key));			
