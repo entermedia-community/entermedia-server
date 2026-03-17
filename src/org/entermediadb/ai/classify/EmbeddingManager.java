@@ -17,6 +17,7 @@ import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.markdown.MarkdownUtil;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
@@ -96,13 +97,13 @@ public class EmbeddingManager extends BaseAiManager
 				inLogger.info("Skipping entity with no source type: " + entity.getId() + " " + entity.getName());
 				continue;
 			}
-			if( !moduleid.equals(allowedtype))
+			
+			PropertyDetail embeddingstatus = getMediaArchive().getSearcher(moduleid).getDetail("entityembeddingstatus");
+			if (embeddingstatus == null)
 			{
-				//inContext.info("Skipping entity with no source type: " + entity.getId() + " " + entity.getName());
-				//skipping
 				continue;
 			}
-			
+		
 			if( "embedded".equals(entity.get("entityembeddingstatus")) )
 			{
 				inLogger.info("Already embedded " + entity.getName());
@@ -149,7 +150,7 @@ public class EmbeddingManager extends BaseAiManager
 		
 		if (method != null && method.equals("smartcreator") )
 		{
-			embedSectionData(inLogger, inEntity, inModuleId);
+			embedHtmlData(inLogger, inEntity, inModuleId);
 		}
 		else if(inModuleId.equals("userpost"))
 		{
@@ -176,7 +177,7 @@ public class EmbeddingManager extends BaseAiManager
 		// Save after successful embedding
 		searcher.saveData(inEntity, null);
 	}
-	
+	/*
 	protected void embedSections(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
 		for (Iterator iterator = inToprecess.iterator(); iterator.hasNext();)
 		{
@@ -188,8 +189,8 @@ public class EmbeddingManager extends BaseAiManager
 			embedSectionData(inLog, parententity, inSearchtype);	
 			inLog.info("Embedded "+ inSearchtype + " in " + (System.currentTimeMillis() - start) + " ms");
 		}
-	}
-	
+	}*/
+	/*
 	protected void embedSectionData(ScriptLogger inLogger, Data inEntity, String searchtype)
 	{
 		JSONObject documentdata = new JSONObject();
@@ -226,6 +227,54 @@ public class EmbeddingManager extends BaseAiManager
 		embedData(inLogger, inEntity, documentdata);
 	}
 	
+	*/
+	
+	protected void embedHtmlData(ScriptLogger inLogger, Data inEntity, String searchtype)
+	{
+		JSONObject documentdata = new JSONObject();
+		documentdata.put("doc_id", searchtype + "_" + inEntity.getId());
+		
+		String assetid = inEntity.get("primarymedia");
+		if(assetid == null)
+		{
+			assetid = inEntity.get("primaryimage");
+		}
+		Asset documentAsset = getMediaArchive().getCachedAsset(assetid);
+		if(documentAsset != null)
+		{
+			String fulltext = getMediaArchive().getAssetSearcher().getFulltext(documentAsset); 
+			
+			if (fulltext == null)
+			{
+				inLogger.info("Can't Embed, asset doesn't contain fulltext: " + inEntity.getName());
+				return;
+			}
+			
+			documentdata.put("file_name", documentAsset.getName());
+			
+			String mime_type = getMediaArchive().getMimeTypeMap().getMimeType(documentAsset.getFileFormat());
+			documentdata.put("file_type", mime_type);
+			
+			documentdata.put("creation_date", documentAsset.get("assetcreationdate"));
+			
+			
+			JSONObject pagedata = new JSONObject();
+			pagedata.put("page_id", searchtype);
+			pagedata.put("text", fulltext);//Todo: Convert HTML to Markdown
+			
+			Collection allpages  = new ArrayList();
+			allpages.add(pagedata);
+			
+			documentdata.put("pages", allpages);
+			
+			embedData(inLogger, inEntity, documentdata);
+			
+
+		}
+		
+		
+		
+	}
 	protected void embedEntityWithPages(ScriptLogger inLog, String inSearchtype, Collection<Data> inToprecess, Searcher inPageSearcher) {
 		for (Iterator iterator = inToprecess.iterator(); iterator.hasNext();)
 		{
