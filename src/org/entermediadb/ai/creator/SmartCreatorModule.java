@@ -99,8 +99,6 @@ public class SmartCreatorModule extends BaseMediaModule {
 				int orderingint = Integer.parseInt(ordering);
 				fields.put("ordering", orderingint + 1);				
 			}
-			
-			
 			Data section = creatorManager.createCreatorSection(playbackentity, playbackentitymoduleid, fields);
 			inReq.putPageValue("playbackentity", playbackentity);
 			inReq.putPageValue("section", section);

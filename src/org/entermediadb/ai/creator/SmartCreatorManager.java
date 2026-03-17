@@ -823,7 +823,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			log.info("Received answer for section content: " + answer);
 			
 			int ordering = 0;
-			StringBuffer exportContent = new StringBuffer();
+			//StringBuffer exportContent = new StringBuffer();
 
 			MarkdownUtil md = new MarkdownUtil();
 			List<Map<String, String>> htmlMaps = md.getHtmlMaps(answer);
@@ -863,8 +863,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 					continue;
 				}
 				
-				exportContent.append("<strong>" + contenttype + "</strong>\n");
-				exportContent.append("<div>" + content + "</div>\n\n");
+//				exportContent.append("<strong>" + contenttype + "</strong>\n");
+//				exportContent.append("<div>" + content + "</div>\n\n");
 				
 				Data componentcontent = contentearcher.createNewData();
 				componentcontent.setValue("componentsectionid", sectionid);
@@ -879,9 +879,9 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				ordering++;  
 			}
 			
-			inAgentContext.addContext("output", exportContent.toString());  
+			//inAgentContext.addContext("output", exportContent.toString());  
 			
-			exportAsAsset(inAgentContext, exportContent.toString());
+			//exportAsAsset(inAgentContext, exportContent.toString());
 
 /*
  * Improve speed
@@ -929,18 +929,44 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		}
 	}
 	
+	protected String renderToHtml(MultiValued inModule, MultiValued inEntityModule, MultiValued inEntity)
+	{
+		AgentContext context = new AgentContext();
+		context.setCurrentEntityModule(inEntityModule);
+		context.setCurrentEntity(inEntity);
+		context.put("playbackentityid",inEntity.getId());
+		context.put("playbackentitymoduleid",inEntityModule.getId());
+		
+		///views/agentresponses/smartcreator/index.html
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_renderhtml");
+		LlmResponse response = llmconnection.renderLocalAction(context, "smartcreator/renderhtml");
+		String got = response.getMessage();
+		return got;
+
+	}
+	
 	private void exportAsAsset(AgentContext inAgentContext, String inString)
 	{
 		
 		Data playbackentitymodule = inAgentContext.getAiSmartCreatorSteps().getTargetModule();
 		Data playbackentity = inAgentContext.getAiSmartCreatorSteps().getTargetEntity();
 				
+		exportAsAsset(inAgentContext, playbackentitymodule, playbackentity, inString);
+		
+	}
+
+	public void exportAsAsset(AgentContext inAgentContext, Data playbackentitymodule, Data playbackentity, String inHtml)
+	{
 		String assetsourcepath = getMediaArchive().getEntityManager().loadUploadSourcepath(playbackentitymodule, playbackentity, null);
 		assetsourcepath = assetsourcepath + "/" + playbackentity.getName() + ".html";
 		Asset asset = (Asset)getMediaArchive().getAssetSearcher().createNewData();
 		asset.setSourcePath(assetsourcepath);
 		
-		ContentItem content = new StringItem("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/"+ assetsourcepath, inString, "UTF-8");
+		ContentItem content = new StringItem("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/"+ assetsourcepath, inHtml, "UTF-8");
+		content.setMakeVersion(true);
+		
+		//Enable version control
+		
 		getMediaArchive().getPageManager().getRepository().put(content);
 		
 		asset = getMediaArchive().getAssetManager().findAssetSource(asset).createAsset(asset, content, new HashMap(), assetsourcepath, false, inAgentContext.getChatUser());
@@ -953,7 +979,6 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		getMediaArchive().getSearcher(playbackentitymodule.getId()).saveData(playbackentity); 
 		
 		getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
-		
 	}
 
 	public Collection<Map> parseSection(AgentContext inAgentContext, String inSectionText)

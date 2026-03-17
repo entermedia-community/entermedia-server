@@ -468,5 +468,22 @@ public class AgentContext extends BaseData implements CatalogEnabled
 		getScriptLogger().error(string);
 
     }
-	
+
+    public MultiValued getCurrentEntity()
+    {
+    	return (MultiValued)getContextValue("currententity");
+    }
+    public MultiValued getCurrentEntityModule()
+    {
+    	return (MultiValued)getContextValue("currententitymodule");
+    }
+    
+    public void setCurrentEntity(MultiValued inEntity)
+    {
+    	put("currententity",inEntity);
+    }
+    public void setCurrentEntityModule(MultiValued inEntityModule)
+    {
+    	put("currententitymodule",inEntityModule);
+    }
 }
