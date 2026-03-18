@@ -186,7 +186,7 @@ public class AutomationModule extends BaseMediaModule {
 		
 		MediaArchive archive = getMediaArchive(inReq);
 		
-		String apphome = inReq.findValue("apphome");
+		String apphome = (String) inReq.getPageValue("apphome");
 		
 		String sourcepath = apphome + "/components/smartautomation/thumbnails/" + filename + ".png" ;
 	 
@@ -214,14 +214,17 @@ public class AutomationModule extends BaseMediaModule {
 			revision.setInputStream(input);
 			
 			archive.getPageManager().getRepository().put( revision );
+			getPageManager().clearCache(revision.getPath());
+			log.info("Uploaded To " + revision.getAbsolutePath());
 		}
 		catch (Exception ex)
 		{
 			log.error(ex);
 		}
 		
-
+	
 	}
+	
 	
 
 }
