@@ -295,7 +295,6 @@ public class UploadRequest implements ProgressListener
 		revision.setMessage( saveTo.getMessage());
 		//revision.setInputStream(saveTo.getInputStream());
 		revision.setPreviewImage(saveTo.getPreviewImage());
-		revision.setMakeVersion(false); //Handled by AssetEditor
 		InputStream input = null;
 		try
 		{

@@ -170,7 +170,6 @@ public class CreationManager extends BaseAiManager implements ChatMessageHandler
 				revision.setMessage( saveTo.getMessage());
 				
 				revision.setPreviewImage(saveTo.getPreviewImage());
-				revision.setMakeVersion(false);
 				
 				log.info("Saving image -> " + path + "/" + filename);
 				
