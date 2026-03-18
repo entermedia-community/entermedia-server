@@ -188,7 +188,7 @@ public class AutomationModule extends BaseMediaModule {
 		
 		String apphome = (String) inReq.getPageValue("apphome");
 		
-		String sourcepath = apphome + "/components/smartautomation/thumbnails/" + filename + ".png" ;
+		String sourcepath = apphome + "/views/automations/" + filename + ".png" ;
 	 
 		ContentItem saveTo = archive.getPageManager().getPage(sourcepath).getContentItem();
 		
