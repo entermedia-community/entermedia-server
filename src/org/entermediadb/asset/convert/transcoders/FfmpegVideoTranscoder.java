@@ -366,7 +366,6 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 			boolean ok = runExec("qt-faststart", comm, timeout);
 			result.setOk(ok);
 			Page old = getPageManager().getPage(inStructions.getOutputFile().getPath() + "tmp.mp4");
-			old.getContentItem().setMakeVersion(false);
 			getPageManager().removePage(old);
 		}
 		result.setComplete(true);

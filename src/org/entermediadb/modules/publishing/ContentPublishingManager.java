@@ -526,7 +526,6 @@ public class ContentPublishingManager implements CatalogEnabled, ChatMessageHand
 
 		String outputpath = inputdirectory.getPath() + ending;
 		ContentItem outputcontent = getMediaArchive().getPageManager().getRepository().getStub(outputpath);
-		outputcontent.setMakeVersion(false);
 		getMediaArchive().getPageManager().getRepository().copy(inputpage, outputcontent);
 
 		String relativepath = "../" + ending;
@@ -817,7 +816,6 @@ public class ContentPublishingManager implements CatalogEnabled, ChatMessageHand
 					revision.setMessage( saveTo.getMessage());
 					
 					revision.setPreviewImage(saveTo.getPreviewImage());
-					revision.setMakeVersion(false);
 					
 					log.info("Saving image -> " + path + "/" + filename);
 					
