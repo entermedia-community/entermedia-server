@@ -2382,8 +2382,13 @@ Long count;  //Moved ot top selection
 	
 	public void loadSearchHome(WebPageRequest inReq)
 	{
-		String searchhome = inReq.findPathValue("searchhome");
+		String searchhome = (String) inReq.getPageValue("searchhome"); 
 		if( searchhome != null)
+		{
+			return;
+		}
+		searchhome = inReq.findPathValue("searchhome");
+		if( searchhome != null && !searchhome.contains("${module}"))
 		{
 			inReq.putPageValue("searchhome",searchhome);
 		}

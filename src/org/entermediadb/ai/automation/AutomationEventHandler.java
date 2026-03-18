@@ -34,8 +34,13 @@ public class AutomationEventHandler extends BaseAgent
 			inContext.put("currententity",entity);
 			
 			MultiValued entitymodule = (MultiValued)getMediaArchive().getCachedData("module",entitymoduleid);
-			inContext.put("currentmodule",entitymodule);
+			inContext.put("currententitymodule",entitymodule);
 			
+			String triggerapplicationid = (String) request.getPageValue("triggerapplicationid");
+			inContext.put("triggerapplicationid", triggerapplicationid);
+			inContext.put("triggersiteroot", request.getSiteRoot());
+			
+			inContext.setUserProfile(request.getUserProfile());
 		}
 		super.process(inContext);
 	}
