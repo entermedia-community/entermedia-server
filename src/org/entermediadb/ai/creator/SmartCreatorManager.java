@@ -996,6 +996,11 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		asset.setSourcePath(assetsourcepath);
 		
 		
+		ContentItem original = getMediaArchive().getOriginalContent(asset);
+		//ContentItem preview = getMediaArchive().getPresetManager().outPutForGenerated(archive, asset, "image3000x3000");
+		getMediaArchive().getAssetEditor().backUpFilesForLastVersion(asset,original,null );
+		
+				
 		ContentItem content = new StringItem("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/"+ assetsourcepath, inHtml, "UTF-8");
 		getMediaArchive().getPageManager().getRepository().put(content);
 		
@@ -1003,8 +1008,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		asset.setProperty("importstatus", "created");
 		getMediaArchive().saveAsset(asset);
 		
-		//Make version
-		getMediaArchive().getAssetEditor().createNewVersionData(asset, content, inAgentContext.getChatUser().getId(), Version.UIREPLACE, null);
+		getMediaArchive().getAssetEditor().createNewVersionData(asset,original, inAgentContext.getChatUser().getId(), Version.PUBLISHED, null );
 		
 		playbackentity.setValue("primarymedia",asset.getId() );
 		getMediaArchive().getSearcher(playbackentitymodule.getId()).saveData(playbackentity);
