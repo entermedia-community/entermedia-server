@@ -87,5 +87,14 @@ public class AutomationModule extends BaseMediaModule {
 		
 		manager.runScenario(id,logger);
 	}
+	
+	
+	public void saveLayout(WebPageRequest inRequest)
+	{
+		
+		
+	}
+	
+	
 
 }
