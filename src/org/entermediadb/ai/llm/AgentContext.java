@@ -471,7 +471,8 @@ public class AgentContext extends BaseData implements CatalogEnabled
 
     public MultiValued getCurrentEntity()
     {
-    	return (MultiValued)getContextValue("currententity");
+    	MultiValued entity = (MultiValued)getContextValue("currententity");
+    	return entity;
     }
     public MultiValued getCurrentEntityModule()
     {
