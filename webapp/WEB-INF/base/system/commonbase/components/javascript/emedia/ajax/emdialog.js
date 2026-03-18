@@ -270,10 +270,11 @@
 				//console.log(focuselement);
 				var elmnt = document.getElementById(focuselement);
 				elmnt.scrollIntoView();
-			}
-			else
-			{
-				$(this).find('input[type=text],textarea,select').filter(':visible:first').focus();
+			} else {
+				$(this)
+					.find("input[type=text],textarea,select")
+					.filter(":visible:first")
+					.focus();
 			}
 		});
 
@@ -321,10 +322,17 @@
 })(jQuery);
 
 closeemdialog = function (modaldialog) {
+	if (!modaldialog || modaldialog.length === 0) {
+		return;
+	}
+
 	var dialogid = modaldialog.attr("id");
 	var oldurlbar = modaldialog.data("oldurlbar");
 
 	var modalInstance = bootstrap.Modal.getInstance(modaldialog[0]);
+	if (!modalInstance) {
+		return;
+	}
 	modalInstance.hide();
 
 	//other modals?
