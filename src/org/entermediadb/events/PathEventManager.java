@@ -270,6 +270,9 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		//synchronized( event )
 		inReq.putPageValue("ranevent", event);
 //		String force = inReq.getRequestParameter("forcerun");
+		
+		String applicationid = inReq.findValue("applicationid"); 
+		inReq.putPageValue("triggerapplicationid", applicationid);
 				
 		if (event != null)
 		{ 

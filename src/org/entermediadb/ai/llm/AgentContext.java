@@ -429,6 +429,10 @@ public class AgentContext extends BaseData implements CatalogEnabled
 
 	public User getChatUser()
 	{
+		if (getUserProfile() == null)
+		{
+			return null;
+		}
 		return getUserProfile().getUser();
 	}
 	

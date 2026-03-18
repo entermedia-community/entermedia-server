@@ -347,7 +347,7 @@ public class AssetEditor
 			getPageManager().removePage(xconf);
 		}
 	}
-
+	//Todo: Move to generic version control
 	public Element createNewVersionData(Asset inCurrent, ContentItem inTosavePath, String inUserName, String inChangeType, String inUserMessage)
 	{
 		ContentItem inXmlFile = getVersionDataFile(inTosavePath.getPath());

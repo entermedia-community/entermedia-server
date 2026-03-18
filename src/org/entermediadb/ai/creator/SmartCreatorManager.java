@@ -18,6 +18,7 @@ import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.edit.Version;
 import org.entermediadb.markdown.MarkdownUtil;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
@@ -27,6 +28,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.util.Inflector;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.StringItem;
 
@@ -350,11 +352,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		
 		
 		//Get the Publish Tab View
-		Data publishtab = getMediaArchive().getSearcher("view").query()
-																.exact("moduleid", playbackentitymoduleid)
-																.exact("systemdefined","false")
-																.exact("rendertype","tabsmartcreatorpreview")
-																.searchOne();
+		Data publishtab = loadPublishView(playbackentitymoduleid);
 		inReq.putPageValue("publishtab", publishtab);
 		
 		Searcher sectionsearcher = getMediaArchive().getSearcher("componentsection");
@@ -400,9 +398,25 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		}
 		else
 		{
-			HitTracker hits = sectionsearcher.query().exact("playbackentityid", playbackentityid).sort("ordering").search();
+			HitTracker hits = loadAllSections(playbackentityid);
 			inReq.putPageValue("componentsections", hits);
 		}
+	}
+
+	public HitTracker loadAllSections(String playbackentityid)
+	{
+		HitTracker hits = getMediaArchive().query("componentsection").exact("playbackentityid", playbackentityid).sort("ordering").search();
+		return hits;
+	}
+
+	public Data loadPublishView(String playbackentitymoduleid)
+	{
+		Data publishtab = getMediaArchive().getSearcher("view").query()
+																.exact("moduleid", playbackentitymoduleid)
+																.exact("systemdefined","false")
+																.exact("rendertype","tabsmartcreatorpreview")
+																.searchOne();
+		return publishtab;
 	}
 	
 	
@@ -936,13 +950,25 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		}
 	}
 	
-	protected String renderToHtml(MultiValued inModule, MultiValued inEntityModule, MultiValued inEntity)
+	protected String renderToHtml(String inCdnPrefix, String inAppHome, MultiValued inEntityModule, MultiValued inEntity)
 	{
 		AgentContext context = new AgentContext();
 		context.setCurrentEntityModule(inEntityModule);
 		context.setCurrentEntity(inEntity);
 		context.put("playbackentityid",inEntity.getId());
 		context.put("playbackentitymoduleid",inEntityModule.getId());
+		
+		
+		HitTracker hits = loadAllSections(inEntity.getId());
+		context.put("componentsections", hits);
+		
+		Data publishtab = loadPublishView(inEntityModule.getId());
+		context.put("publishtab", publishtab);
+		
+		context.put("module",inEntityModule.getId());
+		context.put("searchhome", "/"+inAppHome+ "/views/modules/"+inEntityModule.getId()+"/results/default");
+		context.put("cdnprefix",inCdnPrefix);
+		
 		
 		///views/agentresponses/smartcreator/index.html
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_renderhtml");
@@ -969,23 +995,23 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		Asset asset = (Asset)getMediaArchive().getAssetSearcher().createNewData();
 		asset.setSourcePath(assetsourcepath);
 		
+		
 		ContentItem content = new StringItem("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/"+ assetsourcepath, inHtml, "UTF-8");
-		content.setMakeVersion(true);
-		
-		//Enable version control
-		
 		getMediaArchive().getPageManager().getRepository().put(content);
 		
 		asset = getMediaArchive().getAssetManager().findAssetSource(asset).createAsset(asset, content, new HashMap(), assetsourcepath, false, inAgentContext.getChatUser());
 		asset.setProperty("importstatus", "created");
 		getMediaArchive().saveAsset(asset);
 		
+		//Make version
+		getMediaArchive().getAssetEditor().createNewVersionData(asset, content, inAgentContext.getChatUser().getId(), Version.UIREPLACE, null);
+		
+		playbackentity.setValue("primarymedia",asset.getId() );
+		getMediaArchive().getSearcher(playbackentitymodule.getId()).saveData(playbackentity);
+		
 		getMediaArchive().fireSharedMediaEvent("importing/assetscreated");
 		
-		playbackentity.setValue("primaryimage",asset.getId() );
-		getMediaArchive().getSearcher(playbackentitymodule.getId()).saveData(playbackentity); 
-		
-		getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
+		//getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
 	}
 
 	public Collection<Map> parseSection(AgentContext inAgentContext, String inSectionText)

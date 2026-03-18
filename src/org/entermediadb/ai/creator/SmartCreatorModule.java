@@ -72,15 +72,24 @@ public class SmartCreatorModule extends BaseMediaModule {
 	{
 		
 		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
-		String playbackentityid = inReq.getRequestParameter("playbackentityid");
-		String playbackentitymoduleid = inReq.getRequestParameter("playbackentitymoduleid");
 		
-		Searcher searcher = getMediaArchive(inReq).getSearcher(playbackentitymoduleid);
-		Data playbackentity = searcher.loadData(playbackentityid);
 		
-		if( playbackentity == null)
+		Data playbackentity = (Data)inReq.getPageValue("currententity");
+		Data playbackentitymodule = (Data)inReq.getPageValue("currententitymodule");
+		
+		if (playbackentity == null)
 		{
-			throw new IllegalArgumentException("No creator entity found for id: " + playbackentityid);
+			String playbackentityid = inReq.getRequestParameter("playbackentityid");
+			String playbackentitymoduleid = inReq.getRequestParameter("playbackentitymoduleid");
+			
+			playbackentity = getMediaArchive(inReq).getCachedData(playbackentitymoduleid, playbackentityid);
+			
+			if( playbackentity == null)
+			{
+				throw new IllegalArgumentException("No creator entity found for id: " + playbackentityid);
+			}
+			
+			playbackentitymodule = getMediaArchive(inReq).getCachedData("module", playbackentitymoduleid);
 		}
 		
 		try
@@ -99,7 +108,7 @@ public class SmartCreatorModule extends BaseMediaModule {
 				int orderingint = Integer.parseInt(ordering);
 				fields.put("ordering", orderingint + 1);				
 			}
-			Data section = creatorManager.createCreatorSection(playbackentity, playbackentitymoduleid, fields);
+			Data section = creatorManager.createCreatorSection(playbackentity, playbackentitymodule.getId(), fields);
 			inReq.putPageValue("playbackentity", playbackentity);
 			inReq.putPageValue("section", section);
 		}

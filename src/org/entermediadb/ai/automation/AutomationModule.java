@@ -98,6 +98,7 @@ public class AutomationModule extends BaseMediaModule {
 		
 		AgentContext context = new AgentContext();
 		context.setScriptLogger(logger);
+		context.put("webpagerequest", inRequest);
 		
 		
 		manager.runScenario(id,context);

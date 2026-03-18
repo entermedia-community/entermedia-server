@@ -210,7 +210,7 @@ public class InformaticsProcessorManager extends BaseAiManager
 				if(!asset.getBoolean("taggedbyllm"))
 				{
 					log.info("Skipping entity " + entity.getId() + " because primary asset " + assetid + " is not tagged by llm yet.");
-					continue; 
+					//continue; 
 				}
 			}
 			

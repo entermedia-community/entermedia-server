@@ -69,7 +69,6 @@ public class ImageCrop
 			item.setMessage(inMessage);
 			item.setPath(inPath);
 			item.setInputStream(new FileInputStream(tmp));
-			item.setMakeVersion(true);
 			input.setContentItem(item);
 			getPageManager().putPage(input);
 			tmp.delete();
@@ -157,7 +156,6 @@ public class ImageCrop
 			item.setMessage(inMessage);
 			item.setPath(inEditPath);
 			item.setInputStream(new FileInputStream(tmp));
-			item.setMakeVersion(true);
 			input.setContentItem(item);
 			getPageManager().putPage(input);
 			tmp.delete();
