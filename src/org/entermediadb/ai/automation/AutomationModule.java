@@ -1,12 +1,17 @@
 package org.entermediadb.ai.automation;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Base64;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.upload.FileUpload;
@@ -19,6 +24,8 @@ import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.repository.ContentItem;
+import org.openedit.repository.InputStreamItem;
+import org.openedit.util.DateStorageUtil;
 
 public class AutomationModule extends BaseMediaModule {
 	private static final Log log = LogFactory.getLog(AutomationModule.class);
@@ -98,7 +105,7 @@ public class AutomationModule extends BaseMediaModule {
 		
 		AgentContext context = new AgentContext();
 		context.setScriptLogger(logger);
-		context.put("webpagerequest", inRequest);
+		context.put("webpagerequest", inReq);
 		
 		
 		manager.runScenario(id,context);
@@ -163,34 +170,56 @@ public class AutomationModule extends BaseMediaModule {
 			agentEnabledSearcher.saveData(agentEnabled);
 			
 		}
+		
+		String scenarioid = (String) layout.get("scenarioid");
+		String base64 = (String) layout.get("thumbnail");
+		saveAutomationSnapshot(inReq, scenarioid, base64);
 	}
 	
 
-	public void saveAutomationSnapshot(WebPageRequest inReq)
+	public void saveAutomationSnapshot(WebPageRequest inReq, String filename, String base64)
 	{
-		//Regular upload
-		MediaArchive archive = getMediaArchive(inReq);
-		FileUpload command = (FileUpload) archive.getBean("fileUpload");
-		UploadRequest properties = command.parseArguments(inReq);
-		
-		if (properties == null) {
-			return;
-		}
-		if (properties.getFirstItem() == null) 
+		if(base64 == null)
 		{
-			log.info("No upload found");
 			return;
-		}
+		} 
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		
 		String apphome = inReq.findValue("apphome");
-		String automationid = inReq.getRequestParameter("automationid");
-		String sourcepath = apphome + "/views/automations/" + automationid + ".png" ;
-		//TODO: Check for formats
 		
-		//Save to temp place to change format
-		String tmpplace = "/WEB-INF/trash/" + archive.getCatalogId()	+ "/originals/" + sourcepath;
-		ContentItem tosave = archive.getPageManager().getRepository().getStub(tmpplace);
+		String sourcepath = apphome + "/components/smartautomation/thumbnails/" + filename + ".png" ;
+	 
+		ContentItem saveTo = archive.getPageManager().getPage(sourcepath).getContentItem();
 		
-		ContentItem saved = properties.saveFileAs(properties.getFirstItem(), tosave, inReq.getUser());
+		
+		try
+		{
+			InputStreamItem revision = new InputStreamItem();
+			
+			revision.setAbsolutePath(saveTo.getAbsolutePath());
+			revision.setPath(saveTo.getPath());
+			revision.setAuthor( inReq.getUser().getId() );
+			revision.setType( ContentItem.TYPE_ADDED );
+			revision.setMessage( saveTo.getMessage());
+			
+			revision.setPreviewImage(saveTo.getPreviewImage());
+			
+			InputStream input = null;
+			
+			String code = base64.substring(base64.indexOf(",") +1, base64.length());
+			byte[] tosave = Base64.getDecoder().decode(code);
+			input = new ByteArrayInputStream(tosave);
+			
+			revision.setInputStream(input);
+			
+			archive.getPageManager().getRepository().put( revision );
+		}
+		catch (Exception ex)
+		{
+			log.error(ex);
+		}
+		
 
 	}
 	
