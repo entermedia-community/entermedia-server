@@ -37,13 +37,6 @@ public class ValuesMapWithSearchData<K, V> extends ValuesMap
 		fieldPropertyDetails = inPropertyDetails;
 	}
 	protected Object getFromDb(String inId) {
-//		if (inId.equals(".version")) {
-//			if (getVersion() > -1) {
-//				return String.valueOf(getVersion());
-//			}
-//			return null;
-//		}
-		//log.info(getSearchHit().getSourceAsString());
 		String detailid = inId;
 		if( detailid.endsWith("_int"))
 		{
@@ -68,78 +61,90 @@ public class ValuesMapWithSearchData<K, V> extends ValuesMap
 				value = field.getValue();
 			}
 		}
-		if (value == null && getSearchData() != null) {
+		if (value == null &&  detail != null && getSearchData() != null) {
 			value = getSearchData().get(key);
-			
-			
-			if (value instanceof Map) {
-				Map map = (Map)value;
-				if(map.isEmpty()){
-					value = null;
+		
+			if(value != null )
+			{
+				if(detail.isDate() && value instanceof String) {
+					return DateStorageUtil.getStorageUtil().parseFromStorage((String) value);
+				}
+				if(detail.isGeoPoint() && value instanceof Map)
+				{
+					Position pos = new Position((Map)value);
+					value = pos;
 				}
 			}
-			
-			if(detail != null && detail.isDate() && value instanceof String) {
-				return DateStorageUtil.getStorageUtil().parseFromStorage((String) value);
-			}
-			
-			
-			if( detail != null && detail.isGeoPoint() && value instanceof Map)
-			{
-				Position pos = new Position((Map)value);
-				value = pos;
-			}
-		}
-		if (value == null) {
-
-			if (detail != null && getSearchData() != null)
+			if(value == null )
 			{
 				String legacy = detail.get("legacy");
 				if (legacy != null) 
 				{
 					value = getSearchData().get(legacy);
 				}
-				if (value == null && !inId.equals(key)) {
-					value = getSearchData().get(inId); //check without the _int if !inId.equals(key) ?
+			}
+			if( value == null )
+			{
+				if (detail.isMultiLanguage()) 
+				{
+					value = getSearchData().get(inId); //check without the _int if !inId.equals(key)
+				}
+				else
+				{
+					value = getSearchData().get(inId + "_int");
 				}
 			}
-			if(value ==null){
-				if(getSearchData() != null){
-					
-					//TODO: THis is redundant to above for internationaled fields
-					value = getSearchData().get(inId + "_int");
-					if(value != null && value instanceof Map){
-						LanguageMap map = new LanguageMap((Map) value);
-						if(map.keySet().size() == 1){  //TODO: Not needed
-							return map.get("en");
-						} else{
-							return map.toString();
-						}
+		}
+
+		//fix objects
+		if (value != null && detail != null)
+		{
+			if( detail.isMultiLanguage() )
+			{
+				if (value instanceof String) 
+				{
+					if( value.toString().trim().isEmpty()  ) 
+					{
+						value = null;
+					}
+					else
+					{
+						LanguageMap map = new LanguageMap();
+						map.put("en", value);
+						value = map;
+					}
+				}
+				if (value instanceof Map) 
+				{
+					Map map = (Map)value;
+					if(map.isEmpty())
+					{
+						value = null;
+					}
+					else if (value instanceof LanguageMap)
+					{
+	//					map = (LanguageMap)value;
+	//					value = map;
+					}
+					else
+					{
+						value = new LanguageMap((Map) value);
 					}
 				}
 			}
-		}
-
-		if (value != null && detail != null && detail.isMultiLanguage()) {
-			if (value instanceof Map) 
+			if ("name".equals(inId) && value instanceof Map) 
 			{
 				LanguageMap map = new LanguageMap((Map) value);
-				value = map;
-			}
-			else if (value instanceof String) 
-			{
-				LanguageMap map = new LanguageMap();
-				map.put("en", value);
-				value = map;
+				if(map.keySet().size() == 1)
+				{ 
+					value = map.values().iterator().next();
+				} 
+				else
+				{
+					return map.toString();
+				}
 			}
 		}
-
-		if (detail != null && "name".equals(inId) && !detail.isMultiLanguage() && value instanceof Map) {
-			LanguageMap map = new LanguageMap((Map) value);
-
-			value = map.get("en");
-		}
-
 		return value;
 	}
 	public Map getSearchData() {
