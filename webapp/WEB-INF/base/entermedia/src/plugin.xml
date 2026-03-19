@@ -2704,6 +2704,11 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
+	<bean id="runSharedEventAgent" class="org.entermediadb.ai.automation.RunSharedEventAgent" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
 
 	
 	<bean id="smartCreatorManager" class="org.entermediadb.ai.creator.SmartCreatorManager" scope="prototype">
@@ -2906,6 +2911,13 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
+	
+		<bean id="runModuleAgent" class=" org.entermediadb.ai.automation.RunModuleAgent" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
 
+	
 
 </beans>

@@ -86,7 +86,36 @@ public class AssetImportModule  extends BaseMediaModule
 	public void importAssets(WebPageRequest inReq)
 	{
 		//remove event and replace with automation Call the agents event instead
+		MediaArchive archive = getMediaArchive(inReq);
+		Collection<Asset> hits = (Collection<Asset>)inReq.getPageValue("hits");
+		if( hits == null)
+		{
+			log.error("No hits found");
+			return;
+		}
+
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) 
+		{
+			Asset newasset = (Asset) iterator.next();
+			newasset.setValue("importstatus", "needsmetadata"); //Will be saved at bottom
+		}
+
 		
+		//Set the asset type
+		AssetTypeManager manager = new AssetTypeManager();
+		manager.setContext(inReq);
+		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
+		manager.setLog(logger);
+		manager.setAssetTypes(hits, true); 
+
+		//save everything
+		List tosave = new ArrayList(); //Might be a hit tracker
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+			Asset asset = (Asset) iterator.next();
+			tosave.add(asset);
+		}
+		archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
+		inReq.putPageValue("hits", tosave);
 
 		//TODO: Move this to AssetUtilities
 //		boolean assigncategory = mediaArchive.isCatalogSettingTrue("assigncategoryonupload");
