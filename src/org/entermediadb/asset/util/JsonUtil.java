@@ -272,6 +272,14 @@ public class JsonUtil
 		inReq.putPageValue("searchquery", squery.toString());
 		return squery;
 	}
+	public String toJson(String inValue)
+	{
+		if( inValue == null )
+		{
+			return "\"\""; 
+		}
+		return "\"" + inValue + "\"";
+	}
 
 	public String toJson(Map inMap)
 	{
