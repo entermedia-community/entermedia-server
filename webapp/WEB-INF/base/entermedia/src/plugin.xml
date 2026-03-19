@@ -2692,7 +2692,7 @@
 	<bean id="SmartCreatorModule" class="org.entermediadb.ai.creator.SmartCreatorModule" >
 	</bean>
 
-	<bean id="automationEventHandler" class="org.entermediadb.ai.automation.AutomationEventHandler" scope="prototype">
+	<bean id="runEventAgent" class="org.entermediadb.ai.automation.RunEventAgent" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

@@ -1,13 +1,17 @@
 package org.entermediadb.ai.automation;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.events.PathEventManager;
+import org.openedit.BaseWebPageRequest;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
+import org.openedit.page.PageRequestKeys;
 
-public class AutomationEventHandler extends BaseAgent
+public class RunEventAgent extends BaseAgent
 {
 	
 	/**
@@ -41,8 +45,27 @@ public class AutomationEventHandler extends BaseAgent
 			inContext.put("triggersiteroot", request.getSiteRoot());
 			
 			inContext.setUserProfile(request.getUserProfile());
+			
+			request.putPageValue("currentagentcontext",inContext);
+			
+			String operation = inContext.getCurrentAgentEnable().getAgentConfig().get("operation");
+			if( operation != null)
+			{
+				runPathEvent(inContext, operation, request);
+			}
 		}
 		super.process(inContext);
+	}
+
+	private void runPathEvent(AgentContext inContext, String operation, WebPageRequest inRequest)
+	{
+		String runpath = "/" + getCatalogId() + "/events/" + operation + ".html";
+		PathEventManager manager = (PathEventManager) getModuleManager().getBean(getCatalogId(), "pathEventManager");
+		WebPageRequest request = new BaseWebPageRequest(inRequest);
+
+		request.setRequestParameter("catalogid", getCatalogId());
+		manager.runPathEvent(runpath, request);
+		
 	}
 	
 }
