@@ -63,16 +63,18 @@ $!jsonUtil.toJsonArray($list)
 #macro(jesc $object)"$!jsonUtil.escape($object)"#end
 #macro(jrender $object)$!jsonUtil.escape($object)#end
 #macro(json $hit $details)
-{
-#set($rendercomma = false)
+{ 
+#set($foreachcount = 0)
 #foreach($detail in $details)
 #set($value = $searcherManager.getValue($hit, $detail, $context.locale))
 #ifnotnull($value)
-#if($rendercomma),#else #set($rendercomma = true)#end
+#if($foreachcount >= 1),#end
 #rendervalue($detail $value)
+#set($foreachcount = $foreachcount+1)
+#end
 #end
 }
-#end ##end of macro
+#end 
 
 #macro(rendervalue $detail $value)
 "${detail.id}":#if($detail.isMultiValue())[
@@ -87,9 +89,7 @@ $!jsonUtil.toJsonArray($list)
 #elseif($detail.isDate()||$detail.isDateTime())"$jsonUtil.formatDateObj($value)"
 #else#jesc($hit.get(${detail.id}))
 #end
-#end
-#end ##end macro
-
+#end 
 ##Just the fields, no { }
 #macro(jsonfields $hit $details)
 #set($rendercomma = false)
