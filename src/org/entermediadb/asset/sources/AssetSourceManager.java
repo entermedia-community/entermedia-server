@@ -13,7 +13,6 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.util.TimeParser;
-import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -106,6 +105,38 @@ public class AssetSourceManager implements CatalogEnabled
 		
 		}
 		return fieldAssetSources;
+	}
+	
+	public void saveAgents()
+	{
+//		HitTracker  existingagents =  getMediaArchive().query("automationagent").all().search();
+//		Collection existingids = existingagents.collectValues("id");
+		Collection tosave = new ArrayList();
+		for (Iterator iterator = getAssetSources().iterator(); iterator.hasNext();)
+		{
+			AssetSource source = (AssetSource) iterator.next();
+//			if( !existingids.contains(source.getId()))
+//			{
+			Data agent = getMediaArchive().getData("automationagent",source.getId());
+			if( agent == null)
+			{
+				agent = getMediaArchive().getSearcher("automationagent").createNewData();
+			}
+			agent.setId(source.getId());
+			String name = "HotFolder: " + source.getName();
+			String type = source.getConfig().get("hotfoldertype");
+			Data typedata = getMediaArchive().getCachedData("hotfoldertypes",type);
+			if( typedata != null)
+			{
+				name = name + " (" + typedata.getName() + ")";
+			}
+			agent.setName(name);
+			agent.setValue("bean","hotFolderSourceAgent");
+			agent.setValue("agenttype","hotfolder");
+			agent.setValue("folder","hotfolder");
+			tosave.add(agent);
+		}
+		getMediaArchive().saveData("automationagent",tosave);
 	}
 
 	public void setAssetSources(Collection inAssetSources)
@@ -515,6 +546,7 @@ public class AssetSourceManager implements CatalogEnabled
 			AssetSource source = (AssetSource) iterator.next();
 			source.saveConfig();
 		}
+		saveAgents();
 	}
 
 	public void createLinksTo(Collection<Asset> inTosave, String inCategoryPath)
