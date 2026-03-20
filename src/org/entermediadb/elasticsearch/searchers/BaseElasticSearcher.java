@@ -2975,6 +2975,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				value = inData.getValue(key);
 				if (value != null)
 				{
+					if (value instanceof LanguageMap && ((LanguageMap) value).isEmpty()) //Standarize
+					{
+						value = null;
+					}
 					if (value instanceof String && ((String) value).isEmpty()) //Standarize
 					{
 						value = null;
