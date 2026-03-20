@@ -1125,6 +1125,11 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void createContentFromSearchCategories(Collection inCategories)
+	{
+		
+	}
 	
 	
 	

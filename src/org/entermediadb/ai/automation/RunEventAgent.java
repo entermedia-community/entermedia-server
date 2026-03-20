@@ -14,9 +14,16 @@ public class RunEventAgent extends StartEventAgent
 	@Override
 	public void process(AgentContext inContext)
 	{
-		String operation = inContext.getCurrentAgentEnable().getAgentConfig().getId();
-		WebPageRequest request =  (WebPageRequest)inContext.getContextValue("webpagerequest");
-		runPathEvent(inContext, operation, request);
+		String operation = inContext.getCurrentAgentEnable().getAgentConfig().get("runoperation");
+		if( operation == null)
+		{
+			super.process(inContext);
+		}
+		else
+		{
+			WebPageRequest request =  (WebPageRequest)inContext.getContextValue("webpagerequest");
+			runPathEvent(inContext, operation, request);
+		}
 	}
 
 	

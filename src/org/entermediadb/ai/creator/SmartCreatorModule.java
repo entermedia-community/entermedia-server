@@ -294,6 +294,5 @@ public class SmartCreatorModule extends BaseMediaModule {
 			creatorManager.captionImage(inReq, componentcontentid, assetid);
 		}
 	}
-	
-	
+
 }
