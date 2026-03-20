@@ -132,7 +132,7 @@ public class ValuesMapWithSearchData<K, V> extends ValuesMap
 					}
 				}
 			}
-			if ("name".equals(inId) && value instanceof Map) 
+			else if ("name".equals(inId) && value instanceof Map) 
 			{
 				LanguageMap map = new LanguageMap((Map) value);
 				if(map.keySet().size() == 1)
