@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
@@ -26,7 +27,17 @@ public class LibraryCollection extends BaseDataEntity implements SaveableData, D
 	protected FilterReader fieldFilterReader;
 	protected List fieldPermissions;
 
+	public LibraryCollection()
+	{
+//		int i = 0;
+//		i++;
+	}
 	
+	@Override
+	public void setProperties(Map inProperties)
+	{
+		super.setProperties(inProperties);
+	}
 	public void setPermissions(List inPermissions)
 	{
 		fieldPermissions = inPermissions;

@@ -90,6 +90,7 @@ import org.entermediadb.elasticsearch.ElasticHitTracker;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.ElasticSearchQuery;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.entermediadb.elasticsearch.ValuesMapWithSearchData;
 import org.entermediadb.location.Position;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -3877,8 +3878,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					if (getNewDataName() != null)
 					{
 						data = createNewData();
+						
+						ValuesMapWithSearchData dbProperties = new ValuesMapWithSearchData();
+						dbProperties.setPropertyDetails(getPropertyDetails());
+						dbProperties.setSearchData(source);
+						data.setProperties(dbProperties);
 						// copyData(data, typed);
-						updateData(source, data);
+						//updateData(source, data);
 					}
 					else
 					{
