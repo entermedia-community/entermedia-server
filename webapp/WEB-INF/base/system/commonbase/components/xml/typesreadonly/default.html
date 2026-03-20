@@ -18,7 +18,7 @@
 					#end 
 				#end
 	        #else
-			 	$value 
+			 	$!{value} 
 			#end
 	#elseif( $detail.isKeywordMap() )
 		#set($map = $data.getValue($detail.getId()))
