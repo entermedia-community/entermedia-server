@@ -21,8 +21,8 @@ import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.workspace.WorkspaceManager;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.openedit.util.JSONParser;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
@@ -39,6 +39,7 @@ import org.openedit.page.PageSettings;
 import org.openedit.page.manage.PageManager;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.JSONParser;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.ZipUtil;
 
@@ -351,17 +352,24 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 		if( moduleid != null)
 		{
-			//TODO: Speed up loading
+			String method = inReq.getMethod();
 			String catalogid = inReq.findPathValue("catalogid");
-			Data module = getSearcherManager().getCachedData(catalogid, "module", moduleid);
+			MultiValued module = (MultiValued)getSearcherManager().getCachedData(catalogid, "module", moduleid);
 			if( module != null)
 			{
-				String appid = inReq.findValue("applicationid");
-				getWorkspaceManager().saveModule(catalogid, appid, module);
+				if( !module.getBoolean("moduleloaded"))
+				{
+					String appid = inReq.findValue("applicationid");
+					getWorkspaceManager().saveModule(catalogid, appid, module);
+					module.setValue("moduleloaded",true);
+					
+					//TODO: save this once we are sure its ok to not run often 
+					
 //				if( appid.contains("mediadb"))
 //				{
 //					getWorkspaceManager().createMediaDbModule(catalogid,module);
 //				}
+				}
 			}
 		}
 	}

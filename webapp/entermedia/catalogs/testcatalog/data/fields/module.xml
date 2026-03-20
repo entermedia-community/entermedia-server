@@ -87,6 +87,13 @@
       <language id="fr"><![CDATA[Rôles]]></language>
     </name>
   </property> 
+  <property id="moduleloaded" editable="true" index="true" stored="true" type="boolean" > 
+    <name> 
+      <language id="en"><![CDATA[Module Loaded]]></language>  
+    </name> 
+  </property> 
+  
+
   <property id="securityenabled" editable="true" index="true" stored="true" type="boolean" > 
     <name> 
       <language id="en"><![CDATA[Security Enabled]]></language>  

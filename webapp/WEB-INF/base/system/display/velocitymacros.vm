@@ -69,14 +69,14 @@ $!jsonUtil.toJsonArray($list)
 #set($value = $searcherManager.getValue($hit, $detail, $context.locale))
 #ifnotnull($value)
 #if($foreachcount >= 1),#end
-#rendervalue($detail $value)
+#rendervalue($hit $detail $value)
 #set($foreachcount = $foreachcount+1)
 #end
 #end
 }
 #end 
 
-#macro(rendervalue $detail $value)
+#macro(rendervalue $hit $detail $value)
 "${detail.id}":#if($detail.isMultiValue())[
 #foreach($mvalue in $hit.getValues($detail.id))
 #if(${foreach.count} > 1),#end
@@ -87,9 +87,10 @@ $!jsonUtil.toJsonArray($list)
 #elseif($detail.isMultiLanguage())
 #jsonmap($detail $value)
 #elseif($detail.isDate()||$detail.isDateTime())"$jsonUtil.formatDateObj($value)"
-#else#jesc($hit.get(${detail.id}))
+#else#jesc($context.getText($hit,$value))
 #end
 #end 
+
 ##Just the fields, no { }
 #macro(jsonfields $hit $details)
 #set($rendercomma = false)

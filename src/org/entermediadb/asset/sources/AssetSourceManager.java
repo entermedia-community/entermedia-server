@@ -132,11 +132,37 @@ public class AssetSourceManager implements CatalogEnabled
 			}
 			agent.setName(name);
 			agent.setValue("bean","hotFolderSourceAgent");
-			agent.setValue("agenttype","hotfolder");
 			agent.setValue("folder","hotfolder");
 			tosave.add(agent);
 		}
 		getMediaArchive().saveData("automationagent",tosave);
+		
+		//Now make sure they are on the ui. Enabled or not
+		String defaultscenerio = "asset_hotfolder_scanning";
+//		HitTracker  existingagentsenabled =  getMediaArchive().query("automationagentenabled").exact("automationscenario",defaultscenerio).search();
+//		Collection existingids = existingagentsenabled.collectValues("id");
+		Collection tosaveeanbled = new ArrayList();
+		String previousid = "asset_holfoder_scanning_start";
+		for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
+		{
+			MultiValued agent = (MultiValued) iterator.next();
+			String uid = "ahc_" + agent.getId();
+			MultiValued agentsenabled =  (MultiValued)getMediaArchive().getData("automationagentenabled",uid);
+			if( agentsenabled == null)
+			{
+				agentsenabled = (MultiValued)getMediaArchive().getSearcher("automationagentenabled").createNewData();
+				agentsenabled.setValue("enabled",true);
+				agentsenabled.setId(uid);
+			}
+			agentsenabled.setValue("automationagent",agent.getId());
+			agentsenabled.setValue("automationscenario",defaultscenerio);
+			agentsenabled.setValue("agenttype","hotfolder");
+			agentsenabled.setValue("runafter",previousid);
+			
+			tosaveeanbled.add(agentsenabled);
+			previousid = uid;
+		}
+		getMediaArchive().saveData("automationagentenabled",tosaveeanbled);
 	}
 
 	public void setAssetSources(Collection inAssetSources)

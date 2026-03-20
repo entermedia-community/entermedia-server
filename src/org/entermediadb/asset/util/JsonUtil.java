@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -272,6 +273,7 @@ public class JsonUtil
 		inReq.putPageValue("searchquery", squery.toString());
 		return squery;
 	}
+	
 	public String toJson(String inValue)
 	{
 		if( inValue == null )
