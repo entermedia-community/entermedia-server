@@ -215,7 +215,7 @@ public class AutomationModule extends BaseMediaModule {
 			
 			archive.getPageManager().getRepository().put( revision );
 			getPageManager().clearCache(revision.getPath());
-			log.info("Uploaded To " + revision.getAbsolutePath());
+			log.info("Saved To " + revision.getAbsolutePath());
 		}
 		catch (Exception ex)
 		{
