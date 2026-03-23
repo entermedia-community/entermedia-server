@@ -140,18 +140,19 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 				EventTrigger trigger = (EventTrigger)inEvent.getSource();
 				String path = operation.substring("running_".length());
 				Collection<String> ids  = findSceneriosForEvent(path);
-				
-				AgentContext context = new AgentContext();
-				context.setScriptLogger(trigger.getLogger());
-				context.put("webpagerequest",trigger.getWebPageRequest());
-				
-				for (Iterator iterator = ids.iterator(); iterator.hasNext();)
+				if( !ids.isEmpty())
 				{
-					String id = (String) iterator.next();
-					runScenario(id, context);
+					AgentContext context = new AgentContext();
+					context.setScriptLogger(trigger.getLogger());
+					context.put("webpagerequest",trigger.getWebPageRequest());
+					
+					for (Iterator iterator = ids.iterator(); iterator.hasNext();)
+					{
+						String id = (String) iterator.next();
+						runScenario(id, context);
+					}
 				}
 				//see if we have a handler enabled with that id then start that scenerio
-				
 			}
 		}
 	}
