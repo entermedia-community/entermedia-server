@@ -2717,7 +2717,27 @@
 		</property>
 	</bean>
 
-	<bean id="smartCreatorRenderAssetAgent" class="org.entermediadb.ai.creator.SmartCreatorRenderAssetAgent" scope="prototype">
+	<bean id="smartCreatorProcessPendingAgent" class="org.entermediadb.ai.creator.agents.SmartCreatorProcessPendingAgent" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+	<bean id="smartCreatorFindMemoryFiles" class="org.entermediadb.ai.creator.agents.SmartCreatorFindMemoryFilesAgent" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+	<bean id="smartCreatorCreateOutlineAgent" class="org.entermediadb.ai.creator.agents.SmartCreatorCreateOutlineAgent" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+	<bean id="smartCreatorMakeSectionsAgent" class="org.entermediadb.ai.creator.agents.SmartCreatorMakeSectionsAgent" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+	<bean id="smartCreatorRenderAssetAgent" class="org.entermediadb.ai.creator.agents.SmartCreatorRenderAssetAgent" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

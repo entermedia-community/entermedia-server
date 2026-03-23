@@ -70,6 +70,7 @@ public class AiSmartCreatorSteps extends BaseData
 
 	protected Map<Data,Collection<Data>> fieldSectionComponents;
 	
+	//Is the playbackentitymodule
 	public Data getTargetModule()
 	{
 		return fieldTargetModule;

@@ -109,15 +109,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			Data usermessage = getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
 			String prompt = usermessage.get("message");
 
-			inAgentContext.addContext("creationprompt", prompt);
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
-			LlmResponse res = llmconnection.callStructure(inAgentContext, "smartcreator_parse");
-			
-			JSONObject paragraphs = res.getMessageStructured();
-			instructions.loadJsonParts(paragraphs);
-			
+			LlmResponse res = parseCreationPrompt(inAgentContext, prompt);
 			//TODO: Show the user what they typed and say processing
-			
 			if("testchannel".equals(channelId))
 			{
 				inAgentContext.setFunctionName("smartcreator_createoutline");
@@ -134,42 +127,13 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		}
 		else if(agentFn.startsWith("smartcreator_createoutline"))
 		{
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_createoutline");
-			
-			Map payload = new HashMap();
-			payload.put("query", instructions.getOutlineCreatePrompt());
-			
-			AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
-			
 			String entityid = inAgentContext.get("entityid");
 			String entitymoduleid = inAgentContext.get("entitymoduleid");
 			
+			AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
 			Collection<String> parentIds = assistant.findDocIdsForEntity(entitymoduleid, entityid);
-			
-			payload.put("parent_ids", parentIds);
-			
-			LlmResponse res = llmconnection.callJson("/create_outline", payload);
-			
-			JSONObject outlineJson = res.getRawResponse();
-			
-			Collection<String> outline = (Collection<String>) outlineJson.get("outline");
-			
-			Collection<String> cleanedOutline = new ArrayList<String>();
-			
-			for (Iterator iterator = outline.iterator(); iterator.hasNext();) {
-				String section = (String) iterator.next();
-				section = section.replaceAll("^\\s+", "");
-				section = section.replaceAll("\\s+$", "");
-				section = section.replaceFirst("^\\d+\\.\\s+", "");
-				section = section.replaceFirst("^[A-Za-z].\\s+", "");
-				section = section.replaceFirst("^[IVX]+\\.\\s+", "");
-				
-				cleanedOutline.add(section);
-			}
-			
-			instructions.setProposedSections(cleanedOutline);
-			
-			inAgentContext.addContext("proposedoutline", instructions.getProposedSections());
+
+			createOutLine(inAgentContext, instructions, parentIds);
 			
 			//Show the user
 //			String function = findLocalActionName(inAgentContext);
@@ -216,18 +180,14 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			}
 			else
 			{
+				//Create new tutorial
 				Data playbackentitymodule = instructions.getTargetModule();
 				Data playbackentity = getMediaArchive().getSearcher(playbackentitymodule.getId()).createNewData();
-				
-				String name = instructions.getTitleName();
-				
-				name = Inflector.getInstance().capitalize(name);
-				
-				playbackentity.setName(name);
 				playbackentity.setValue(inAgentContext.get("entitymoduleid"), inAgentContext.get("entityid"));
-				
+				String name = instructions.getTitleName();
+				name = Inflector.getInstance().capitalize(name);
+				playbackentity.setName(name);
 				getMediaArchive().saveData(playbackentitymodule.getId(), playbackentity);
-				
 				instructions.setTargetEntity(playbackentity);
 				
 				createConfirmedSections(instructions);
@@ -318,6 +278,49 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		}
 */
 		throw new OpenEditException("Function not handled: " + agentFn);
+	}
+
+	public LlmResponse parseCreationPrompt(AgentContext inAgentContext, String prompt)
+	{
+		AiSmartCreatorSteps instructions = inAgentContext.getAiSmartCreatorSteps();
+		inAgentContext.addContext("creationprompt", prompt);
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_parse");
+		LlmResponse res = llmconnection.callStructure(inAgentContext, "smartcreator_parse");
+		
+		JSONObject paragraphs = res.getMessageStructured();
+		instructions.loadJsonParts(paragraphs);
+		return res;
+	}
+
+	public void createOutLine(AgentContext inAgentContext, AiSmartCreatorSteps instructions, Collection<String> parentIds)
+	{
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_createoutline");
+		Map payload = new HashMap();
+		payload.put("query", instructions.getOutlineCreatePrompt());
+		
+		payload.put("parent_ids", parentIds);
+		
+		LlmResponse res = llmconnection.callJson("/create_outline", payload);
+		
+		JSONObject outlineJson = res.getRawResponse();
+		
+		Collection<String> outline = (Collection<String>) outlineJson.get("outline");
+		
+		Collection<String> cleanedOutline = new ArrayList<String>();
+		
+		for (Iterator iterator = outline.iterator(); iterator.hasNext();) {
+			String section = (String) iterator.next();
+			section = section.replaceAll("^\\s+", "");
+			section = section.replaceAll("\\s+$", "");
+			section = section.replaceFirst("^\\d+\\.\\s+", "");
+			section = section.replaceFirst("^[A-Za-z].\\s+", "");
+			section = section.replaceFirst("^[IVX]+\\.\\s+", "");
+			
+			cleanedOutline.add(section);
+		}
+		
+		instructions.setProposedSections(cleanedOutline);
+		inAgentContext.addContext("proposedoutline", instructions.getProposedSections());
 	}
 
 	
@@ -456,7 +459,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		return session;
 	}
 	
-	protected Collection<Data> createConfirmedSections(AiSmartCreatorSteps inInstructions)
+	public Collection<Data> createConfirmedSections(AiSmartCreatorSteps inInstructions)
 	{
 		
 		MediaArchive archive = getMediaArchive();
@@ -806,8 +809,14 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_createsectioncontents");
 
+		String entityid = inAgentContext.get("entityid");
+		String entitymoduleid = inAgentContext.get("entitymoduleid");
+		
+		AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
+		Collection<String> parentIds = assistant.findDocIdsForEntity(entitymoduleid, entityid);
+		
+		
 		Collection<Data> tosave = new ArrayList<Data>();
-
 		for (Iterator iterator = sections.iterator(); iterator.hasNext();)
 		{
 			Data section = (Data) iterator.next();
@@ -819,12 +828,6 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			log.info("Query for section content: " + query);
 			
 			payload.put("query", query);
-			
-			String entityid = inAgentContext.get("entityid");
-			String entitymoduleid = inAgentContext.get("entitymoduleid");
-			
-			AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
-			Collection<String> parentIds = assistant.findDocIdsForEntity(entitymoduleid, entityid);
 			
 			payload.put("parent_ids", parentIds);
 			
@@ -950,7 +953,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		}
 	}
 	
-	protected String renderToHtml(String inCdnPrefix, String inAppHome, MultiValued inEntityModule, MultiValued inEntity)
+	public String renderToHtml(String inCdnPrefix, String inAppHome, MultiValued inEntityModule, MultiValued inEntity)
 	{
 		AgentContext context = new AgentContext();
 		context.setCurrentEntityModule(inEntityModule);

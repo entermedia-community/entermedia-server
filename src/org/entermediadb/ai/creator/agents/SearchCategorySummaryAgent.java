@@ -1,8 +1,9 @@
-package org.entermediadb.ai.creator;
+package org.entermediadb.ai.creator.agents;
 
 import java.util.Collection;
 
 import org.entermediadb.ai.BaseAgent;
+import org.entermediadb.ai.creator.SmartCreatorManager;
 import org.entermediadb.ai.llm.AgentContext;
 
 public class SearchCategorySummaryAgent extends BaseAgent
