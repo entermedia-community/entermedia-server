@@ -22,6 +22,7 @@ import org.openedit.Shutdownable;
 import org.openedit.WebPageRequest;
 import org.openedit.data.SearcherManager;
 import org.openedit.error.ErrorHandler;
+import org.openedit.event.EventManager;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.users.User;
@@ -56,8 +57,7 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 	protected Timer fieldTimer; // Should this be shared across the system?
 	protected TimeCalculator fieldTimeCalculator;
 	protected ExecutorManager fieldExecutorManager;
-	
-	
+
 	public ExecutorManager getExecutorManager()
 	{
 		if( fieldExecutorManager == null)
@@ -527,6 +527,8 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		Page eventpage = getPageManager().getPage(htmlpage, true);
 		PathEvent event = (PathEvent) getModuleManager().getBean("pathEvent");
 		event.setPage(eventpage);
+		String id = eventpage.getDirectoryName() + "." + eventpage.getPageName();
+		event.setId(  id );
 		//loadTask(event);
 //		User user = (User)getSearcherManager().getData(getCatalogId(), "user", "admin");
 //		event.setUser(user);

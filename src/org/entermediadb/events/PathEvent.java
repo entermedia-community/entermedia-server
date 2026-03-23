@@ -15,11 +15,14 @@ import org.entermediadb.scripts.TextAppender;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.WebServer;
+import org.openedit.data.BaseData;
+import org.openedit.event.EventManager;
+import org.openedit.event.WebEvent;
 import org.openedit.page.Page;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.RequestUtils;
 
-public class PathEvent implements Comparable, TextAppender
+public class PathEvent extends BaseData implements Comparable, TextAppender
 {
 	private static final Log log = LogFactory.getLog(PathEvent.class);
 	protected Page fieldPage;
@@ -216,13 +219,18 @@ public class PathEvent implements Comparable, TextAppender
 
 	public String getProperty(String key)
 	{
-		return (String) getProperties().get(key);
+		String val = (String) getPage().getProperties().get(key);
+		if( val == null)
+		{
+			val = super.get(key);
+		}
+		return val;
 	}
 
-	public void setProperty(String key, String value)
-	{
-		getProperties().put(key, value);
-	}
+//	public void setProperty(String key, String value)
+//	{
+//		getPage().getProperties().put(key, value);
+//	}
 
 	public boolean isSleeping()
 	{
@@ -335,6 +343,18 @@ public class PathEvent implements Comparable, TextAppender
 		}
 	}
 
+	protected EventManager fieldSystemEventManager;
+	
+	
+	public EventManager getSystemEventManager()
+	{
+		return fieldSystemEventManager;
+	}
+
+	public void setSystemEventManager(EventManager inSystemEventManager)
+	{
+		fieldSystemEventManager = inSystemEventManager;
+	}
 	protected boolean runNow(WebPageRequest inReq) 
 	{		
 		WebPageRequest	request = inReq.copy(getPage());
@@ -356,6 +376,7 @@ public class PathEvent implements Comparable, TextAppender
 		try
 		{
 			logs = new ScriptLogger();
+			
 			//thread.setContextClassLoader(getClassLoader());
 			Page page = request.getPage();
 			logs.setPrefix(page.getName());
@@ -366,6 +387,20 @@ public class PathEvent implements Comparable, TextAppender
 			
 			try
 			{
+				EventTrigger trigger = new EventTrigger();
+				trigger.setWebPageRequest(request);
+				trigger.setLogger(logs);
+				trigger.setPathEvent(this);
+				
+				WebEvent notifyevent = new WebEvent();
+				String catalogid = getPage().getProperty("catalogid");
+				notifyevent.setCatalogId(catalogid);
+				notifyevent.setSource(trigger);
+				//notifyevent.setId("running_" + event.getId());
+				notifyevent.setOperation( "running_" + getId());
+				getSystemEventManager().fireEvent(notifyevent);
+
+				
 				if( log.isDebugEnabled() )
 				{
 					log.info("running " + page.getPath());
@@ -440,12 +475,6 @@ public class PathEvent implements Comparable, TextAppender
 //		setLastRunTime((end - start) / 1000L); //minutes
 		//log.info(output);
 		return true;
-	}
-
-	protected Map getProperties()
-	{
-		return getPage().getProperties();
-
 	}
 
 	public WebServer getWebServer()

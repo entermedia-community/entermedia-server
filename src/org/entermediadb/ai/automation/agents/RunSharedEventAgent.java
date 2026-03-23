@@ -1,10 +1,9 @@
-package org.entermediadb.ai.automation;
+package org.entermediadb.ai.automation.agents;
 
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.events.PathEventManager;
-import org.openedit.WebPageRequest;
 
-public class RunSharedEventAgent extends StartEventAgent
+public class RunSharedEventAgent extends RunEventAgent
 {
 	
 	/**

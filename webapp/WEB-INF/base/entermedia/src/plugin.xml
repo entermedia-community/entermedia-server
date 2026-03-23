@@ -396,6 +396,10 @@
 		<property name="webServer">
 			<ref bean="WebServer" />
 		</property>
+		<property name="systemEventManager">
+			<ref bean="eventManager" />
+		</property>
+
 	</bean>
 
 	<bean id="pathEventHandler" class="org.entermediadb.events.PathEventHandler">
@@ -2692,25 +2696,24 @@
 	<bean id="SmartCreatorModule" class="org.entermediadb.ai.creator.SmartCreatorModule" >
 	</bean>
 
-	<bean id="startEventAgent" class="org.entermediadb.ai.automation.StartEventAgent" scope="prototype">
+	<bean id="handleWebEventAgent" class="org.entermediadb.ai.automation.agents.HandleWebEventAgent" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
 
-
-	<bean id="runEventAgent" class="org.entermediadb.ai.automation.RunEventAgent" scope="prototype">
+	<bean id="runEventAgent" class="org.entermediadb.ai.automation.agents.RunEventAgent" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	<bean id="runSharedEventAgent" class="org.entermediadb.ai.automation.RunSharedEventAgent" scope="prototype">
+	<bean id="runSharedEventAgent" class="org.entermediadb.ai.automation.agents.RunSharedEventAgent" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
 	
-	<bean id="smartCreatorManager" class="org.entermediadb.ai.creator.SmartCreatorManager" scope="prototype">
+	<bean id="smartCreatorManager" class="org.entermediadb.ai.creator.agents.SmartCreatorManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

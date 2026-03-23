@@ -3,6 +3,7 @@ package org.entermediadb.ai.automation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -12,8 +13,12 @@ import org.entermediadb.ai.Agent;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.AgentEnabled;
+import org.entermediadb.events.EventTrigger;
 import org.entermediadb.scripts.ScriptLogger;
+import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.event.WebEvent;
+import org.openedit.event.WebEventListener;
 
 /**
  * My plan is to have a UI where each Task can be seen and assigned to a Agent. 
@@ -31,7 +36,7 @@ import org.openedit.MultiValued;
  * 
  */
 
-public class AutomationManager extends BaseAiManager
+public class AutomationManager extends BaseAiManager implements WebEventListener
 {
 	private static final Log log = LogFactory.getLog(AutomationManager.class);
 
@@ -123,6 +128,53 @@ public class AutomationManager extends BaseAiManager
 	{
 		Collection<MultiValued> records = getMediaArchive().query("automationagent").exact("enabled", true).sort("ordering").cachedSearch();
 		return records;
+	}
+	@Override
+	public void eventFired(WebEvent inEvent)
+	{
+		if( inEvent.getSource() instanceof EventTrigger)
+		{
+			String operation = inEvent.getOperation();
+			if( operation.startsWith("running_") )
+			{
+				EventTrigger trigger = (EventTrigger)inEvent.getSource();
+				String path = operation.substring("running_".length());
+				Collection<String> ids  = findSceneriosForEvent(path);
+				
+				AgentContext context = new AgentContext();
+				context.setScriptLogger(trigger.getLogger());
+				context.put("webpagerequest",trigger.getWebPageRequest());
+				
+				for (Iterator iterator = ids.iterator(); iterator.hasNext();)
+				{
+					String id = (String) iterator.next();
+					runScenario(id, context);
+				}
+				//see if we have a handler enabled with that id then start that scenerio
+				
+			}
+		}
+	}
+	
+	public Collection<String> findSceneriosForEvent(String inEvent)
+	{
+		Collection<String> cached = (Collection<String>)getMediaArchive().getCacheManager().get("eventlookup", inEvent);
+		if( cached == null)
+		{
+			cached = new HashSet();
+			Collection found = getMediaArchive().query("automationagentenabled").exact("runoperation",inEvent).exact("enabled", true).search();
+			if( found != null)
+			{
+				for (Iterator iterator = found.iterator(); iterator.hasNext();)
+				{
+					Data enabled = (Data) iterator.next();
+					String automationscenario = enabled.get("automationscenario");
+					cached.add(automationscenario);
+				}
+			}
+			getMediaArchive().getCacheManager().put("eventlookup", inEvent, cached);
+		}
+		return cached;
 	}
 	
 }

@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.event.WebEvent;
 import org.openedit.users.User;
 
 public class TaskRunner extends java.util.TimerTask
@@ -108,9 +109,6 @@ public class TaskRunner extends java.util.TimerTask
 	{
 		if (fieldWebPageRequest == null)
 		{
-			
-			
-			
 			fieldWebPageRequest =  getEventManager().getRequestUtils().createPageRequest(getPathEvent().getPage().getPath(), getUser());
 			if( fieldParams != null)
 			{
