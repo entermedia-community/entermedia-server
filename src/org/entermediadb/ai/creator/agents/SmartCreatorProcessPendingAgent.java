@@ -43,6 +43,10 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 			AgentContext childcontext = new AgentContext(inContext);
 			childcontext.setCurrentEntity(entity);
 			super.process(childcontext); //To Create outline
+			
+			entity.setValue("processingstatus","complete");
+			getMediaArchive().saveData(module.getId(), entity);
+			
 		}
 	}
 }
