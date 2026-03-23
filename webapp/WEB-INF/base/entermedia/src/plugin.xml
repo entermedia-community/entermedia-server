@@ -2709,7 +2709,6 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-
 	
 	<bean id="smartCreatorManager" class="org.entermediadb.ai.creator.SmartCreatorManager" scope="prototype">
 		<property name="moduleManager">

@@ -132,8 +132,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
 			Collection<String> parentIds = assistant.findDocIdsForEntity(entitymoduleid, entityid);
-
-			createOutLine(inAgentContext, instructions, parentIds);
+			instructions.setEmbeddedParentIds(parentIds);
+			createOutLine(inAgentContext, instructions);
 			
 			//Show the user
 //			String function = findLocalActionName(inAgentContext);
@@ -190,7 +190,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				getMediaArchive().saveData(playbackentitymodule.getId(), playbackentity);
 				instructions.setTargetEntity(playbackentity);
 				
-				createConfirmedSections(instructions);
+				initConfirmedSections(instructions);
 				String step2CreatePrompt = instructions.getStepContentCreate();
 				if(step2CreatePrompt != null && !step2CreatePrompt.isEmpty())
 				{
@@ -292,8 +292,10 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		return res;
 	}
 
-	public void createOutLine(AgentContext inAgentContext, AiSmartCreatorSteps instructions, Collection<String> parentIds)
+	public void createOutLine(AgentContext inAgentContext, AiSmartCreatorSteps instructions)
 	{
+		Collection<String> parentIds = instructions.getEmbeddedParentIds();
+		
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_createoutline");
 		Map payload = new HashMap();
 		payload.put("query", instructions.getOutlineCreatePrompt());
@@ -459,7 +461,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		return session;
 	}
 	
-	public Collection<Data> createConfirmedSections(AiSmartCreatorSteps inInstructions)
+	public Collection<Data> initConfirmedSections(AiSmartCreatorSteps inInstructions)
 	{
 		
 		MediaArchive archive = getMediaArchive();
@@ -802,19 +804,27 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 	}
 	public void populateSectionsWithContents(AgentContext inAgentContext)
 	{
-		Searcher contentearcher = getMediaArchive().getSearcher("componentcontent");
 		
 		AiSmartCreatorSteps instructions = inAgentContext.getAiSmartCreatorSteps();
-		Collection<Data> sections = instructions.getConfirmedSections();
 		
-		LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_createsectioncontents");
 
 		String entityid = inAgentContext.get("entityid");
 		String entitymoduleid = inAgentContext.get("entitymoduleid");
 		
 		AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
 		Collection<String> parentIds = assistant.findDocIdsForEntity(entitymoduleid, entityid);
+		instructions.setEmbeddedParentIds(parentIds);
+		createSections(inAgentContext, instructions);
+	}
+
+	public void createSections(AgentContext inAgentContext, AiSmartCreatorSteps instructions)
+	{
+		Collection<Data> sections = instructions.getConfirmedSections();
 		
+		Collection<String> parentIds = instructions.getEmbeddedParentIds();
+		
+		LlmConnection llmconnection = getMediaArchive().getLlmConnection("smartcreator_createsectioncontents");
+		Searcher contentearcher = getMediaArchive().getSearcher("componentcontent");
 		
 		Collection<Data> tosave = new ArrayList<Data>();
 		for (Iterator iterator = sections.iterator(); iterator.hasNext();)
@@ -841,7 +851,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			
 			if(answer == null)
 			{
-				return;
+				inAgentContext.error("No answer found " + answer);
+				continue;
 			}
 			
 			log.info("Received answer for section content: " + answer);

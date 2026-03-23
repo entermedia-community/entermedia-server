@@ -1,16 +1,25 @@
 package org.entermediadb.ai.creator.agents;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.assistant.AssistantManager;
+import org.entermediadb.ai.assistant.SearchingManager;
 import org.entermediadb.ai.creator.SmartCreatorManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.openedit.Data;
+import org.openedit.hittracker.HitTracker;
 
 public class SmartCreatorFindMemoryFilesAgent extends BaseAgent
 {
 
+	public SearchingManager getSearchingManager()
+	{
+		SearchingManager searchingManager = (SearchingManager) getMediaArchive().getBean("searchingManager");
+		return searchingManager;
+	}
 	public SmartCreatorManager getSmartCreatorManager()
 	{
 		SmartCreatorManager smartCreatorManager = (SmartCreatorManager) getMediaArchive().getBean("smartCreatorManager");
@@ -23,8 +32,34 @@ public class SmartCreatorFindMemoryFilesAgent extends BaseAgent
 		Data entity = inContext.getCurrentEntity();
 
 		AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
-		Collection<String> parentIds = assistant.findDocIdsForEntity(module.getId(), entity.getId());
+		Collection<String> localparentIds = assistant.findDocIdsForEntity(module.getId(), entity.getId());
+		Set<String> parentIds = new HashSet();
+		if( localparentIds != null)
+		{
+			parentIds.addAll(localparentIds);
+		}
+		Collection<String> searchcats = entity.getValues("searchcategory");
+		if( searchcats != null && !searchcats.isEmpty())
+		{
+			HitTracker modules = getMediaArchive().query("module").exact("semanticenabled", true).cachedSearch();
+			Collection<String> moduleids = modules.collectValues("id");
+			HitTracker addedentites = getMediaArchive().query("modulesearch")
+					.addFacet("entitysourcetype")
+					.put("searchtypes", moduleids).includeDescription(true)
+					.orgroup("searchcategory",searchcats)
+					.exact("entityembeddingstatus", "embedded")
+					.search();
 	
+			Collection moreids = addedentites.collectValues("id");
+			parentIds.addAll(moreids);
+		}
+
+		if( parentIds.isEmpty())
+		{
+			inContext.error("Error state, dont process more"); //Mark as error?
+			return;
+		}
+		inContext.getAiSmartCreatorSteps().setEmbeddedParentIds(parentIds);
 		super.process(inContext);
 		
 	}

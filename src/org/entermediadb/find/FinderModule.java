@@ -334,7 +334,6 @@ public class FinderModule extends BaseMediaModule
 //			return;
 //		}
 		
-		
 		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").named("findersearchall").freeform("description",plainquery).hitsPerPage(30);
 		dq.getQuery().setIncludeDescription(true);
 		

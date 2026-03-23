@@ -11,6 +11,18 @@ import org.openedit.data.BaseData;
 
 public class AiSmartCreatorSteps extends BaseData
 {
+	Collection<String> fieldEmbeddedParentIds;
+	
+	public Collection<String> getEmbeddedParentIds()
+	{
+		return fieldEmbeddedParentIds;
+	}
+
+	public void setEmbeddedParentIds(Collection<String> inEmbeddedParentIds)
+	{
+		fieldEmbeddedParentIds = inEmbeddedParentIds;
+	}
+
 	protected Data fieldTargetModule;
 	protected Data fieldTargetEntity;
 	

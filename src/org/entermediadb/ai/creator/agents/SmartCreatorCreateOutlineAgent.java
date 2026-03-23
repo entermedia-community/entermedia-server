@@ -23,11 +23,8 @@ public class SmartCreatorCreateOutlineAgent extends BaseAgent
 		Data entity = inContext.getCurrentEntity();
 		
 		AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
-		Collection<String> parentIds = assistant.findDocIdsForEntity(module.getId(), entity.getId());
-
-		getSmartCreatorManager().createOutLine(inContext, inContext.getAiSmartCreatorSteps(), parentIds);
-
-		getSmartCreatorManager().createConfirmedSections( inContext.getAiSmartCreatorSteps());
+		getSmartCreatorManager().createOutLine(inContext, inContext.getAiSmartCreatorSteps());
+		getSmartCreatorManager().initConfirmedSections( inContext.getAiSmartCreatorSteps());
 
 		
 		super.process(inContext);
