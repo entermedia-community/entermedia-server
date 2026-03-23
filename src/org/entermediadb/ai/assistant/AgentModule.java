@@ -138,7 +138,7 @@ public class AgentModule extends BaseMediaModule {
 	
 	public void loadTutorials(WebPageRequest inReq) throws Exception 
 	{
-		Searcher tutorialsearcher = getMediaArchive(inReq).getSearcher("aitutorials");
+		Searcher tutorialsearcher = getMediaArchive(inReq).getSearcher("aitutorial");
 		HitTracker hits = tutorialsearcher.query().exact("featured", true).search();
 		
 		inReq.putPageValue("tutorials", hits);

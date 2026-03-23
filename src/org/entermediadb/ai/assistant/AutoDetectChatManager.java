@@ -61,14 +61,14 @@ public class AutoDetectChatManager extends BaseAiManager implements ChatMessageH
 			// TODO: sync with auto created function names
 			if("create_tutorial".equals(functionName)) 
 			{
-				inAgentContext.addContext("playbackentitymoduleid", "aitutorials");
+				inAgentContext.addContext("playbackentitymoduleid", "aitutorial");
 				inAgentContext.setTopLevelFunctionName("welcome_aitutorials");
 				inAgentContext.setFunctionName("welcome_aitutorials");
 				inAgentContext.setNextFunctionName("create_aitutorials");
 			}
 			else if("play_tutorial".equals(functionName))
 			{
-				inAgentContext.addContext("playbackentitymoduleid", "aitutorials");
+				inAgentContext.addContext("playbackentitymoduleid", "aitutorial");
 				inAgentContext.setTopLevelFunctionName("welcome_aitutorials");
 				inAgentContext.setFunctionName("play_tutorial");
 				inAgentContext.setNextFunctionName("play_tutorial");
