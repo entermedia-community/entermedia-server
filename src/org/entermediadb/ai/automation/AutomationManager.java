@@ -145,6 +145,8 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 					AgentContext context = new AgentContext();
 					context.setScriptLogger(trigger.getLogger());
 					context.put("webpagerequest",trigger.getWebPageRequest());
+					MultiValued module = (MultiValued)getMediaArchive().getCachedData("module", inEvent.getSearchType());
+					context.setCurrentEntityModule(module);
 					
 					for (Iterator iterator = ids.iterator(); iterator.hasNext();)
 					{

@@ -25,14 +25,24 @@ public class HandleWebEventAgent extends BaseAgent
 		//Map values = getRequestUtils().extractValueMap(request);
 		inContext.put("parameters", params);
 		
-		String entityid = request.getRequestParameter("entityid");
-		String entitymoduleid = request.getRequestParameter("entitymoduleid");
-
-		MultiValued entity = (MultiValued)getMediaArchive().getCachedData(entitymoduleid, entityid);
-		inContext.put("currententity",entity);
-		
-		MultiValued entitymodule = (MultiValued)getMediaArchive().getCachedData("module",entitymoduleid);
-		inContext.put("currententitymodule",entitymodule);
+		if (inContext.getCurrentEntityModule() == null)
+		{
+			String entityid = request.getRequestParameter("entityid");
+			String entitymoduleid = request.getRequestParameter("entitymoduleid");
+			if (entitymoduleid == null)
+			{
+				entitymoduleid = inContext.getCurrentAgentEnable().getAutomationEnabledData().getId();
+				int underscore = entitymoduleid.indexOf("_");
+				if (underscore > -1)
+				{
+					entitymoduleid = entitymoduleid.substring(0, underscore);
+				}
+			}
+			MultiValued entity = (MultiValued)getMediaArchive().getCachedData(entitymoduleid, entityid);
+			inContext.setCurrentEntity(entity);
+			MultiValued entitymodule = (MultiValued)getMediaArchive().getCachedData("module",entitymoduleid);
+			inContext.setCurrentEntityModule(entitymodule);
+		}
 		
 		String triggerapplicationid = (String) request.getPageValue("triggerapplicationid");
 		inContext.put("triggerapplicationid", triggerapplicationid);

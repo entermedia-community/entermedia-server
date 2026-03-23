@@ -2713,7 +2713,7 @@
 		</property>
 	</bean>
 	
-	<bean id="smartCreatorManager" class="org.entermediadb.ai.creator.agents.SmartCreatorManager" scope="prototype">
+	<bean id="smartCreatorManager" class="org.entermediadb.ai.creator.SmartCreatorManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2724,7 +2724,7 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	<bean id="smartCreatorFindMemoryFiles" class="org.entermediadb.ai.creator.agents.SmartCreatorFindMemoryFilesAgent" scope="prototype">
+	<bean id="smartCreatorFindMemoryFilesAgent" class="org.entermediadb.ai.creator.agents.SmartCreatorFindMemoryFilesAgent" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
