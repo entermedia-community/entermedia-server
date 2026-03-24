@@ -42,7 +42,7 @@ public class SemanticClassifierManager extends BaseAiManager
 	private static final Log log = LogFactory.getLog(SemanticClassifierManager.class);
 
 
-	protected void processRecords(ScriptLogger inLog, MultiValued inConfig,Collection<? extends MultiValued>  inRecords )
+	public void processRecords(ScriptLogger inLog, MultiValued inConfig,Collection<? extends MultiValued>  inRecords )
 	{
 		String fieldname = inConfig.get("fieldname");
 		

@@ -34,7 +34,7 @@ public class DocumentSplitterManager extends BaseAiManager
 		Collection<MultiValued>  inRecords  = informatic.getRecordsToProcess();
 		
 		MultiValued inConfig = informatic.getCurrentAgentEnable().getAgentConfig();
-		String searchtype = inConfig.get("searchtype"); 
+		Collection searchtypes = inConfig.getValues("searchtypes"); 
 		int count = 0;
 		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
 		{
@@ -42,7 +42,7 @@ public class DocumentSplitterManager extends BaseAiManager
 			
 			String moduleid = entity.get("entitysourcetype");
 			
-			if( !searchtype.equals(moduleid) ) //Limits to the ones configured in the informatics db.
+			if( !searchtypes.contains(moduleid) ) //Limits to the ones configured in the informatics db.
 			{
 				continue;
 			}

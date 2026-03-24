@@ -1,5 +1,6 @@
 package org.entermediadb.ai.automation.agents;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.entermediadb.ai.BaseAgent;
@@ -29,19 +30,13 @@ public class HandleWebEventAgent extends BaseAgent
 		{
 			String entityid = request.getRequestParameter("entityid");
 			String entitymoduleid = request.getRequestParameter("entitymoduleid");
-			if (entitymoduleid == null)
+			if (entitymoduleid != null)
 			{
-				entitymoduleid = inContext.getCurrentAgentEnable().getAutomationEnabledData().getId();
-				int underscore = entitymoduleid.indexOf("_");
-				if (underscore > -1)
-				{
-					entitymoduleid = entitymoduleid.substring(0, underscore);
-				}
+				MultiValued entity = (MultiValued)getMediaArchive().getCachedData(entitymoduleid, entityid);
+				inContext.setCurrentEntity(entity);
+				MultiValued entitymodule = (MultiValued)getMediaArchive().getCachedData("module",entitymoduleid);
+				inContext.setCurrentEntityModule(entitymodule);
 			}
-			MultiValued entity = (MultiValued)getMediaArchive().getCachedData(entitymoduleid, entityid);
-			inContext.setCurrentEntity(entity);
-			MultiValued entitymodule = (MultiValued)getMediaArchive().getCachedData("module",entitymoduleid);
-			inContext.setCurrentEntityModule(entitymodule);
 		}
 		
 		String triggerapplicationid = (String) request.getPageValue("triggerapplicationid");

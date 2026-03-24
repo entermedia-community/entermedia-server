@@ -84,9 +84,8 @@ public class EmbeddingManager extends BaseAiManager
 
 	public void processRecords(ScriptLogger inLogger, MultiValued inAgentConfig, Collection<MultiValued> hits )
 	{
-		String allowedtype = inAgentConfig.get("searchtype");
-		inLogger.headline("Embedding " + hits.size() + " records"); //We only handle entites. No assets
-
+		Collection<MultiValued> toembedd = new ArrayList();
+		
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			MultiValued entity = (MultiValued) iterator.next();
@@ -120,20 +119,31 @@ public class EmbeddingManager extends BaseAiManager
 			{
 				continue;
 			}
+			toembedd.add(entity);
+		}
 
-			try {
+		inLogger.headline("Embedding " + toembedd.size() + " records"); //We only handle entites. No assets
+
+		
+		for (Iterator iterator = toembedd.iterator(); iterator.hasNext();)
+		{
+			MultiValued entity = (MultiValued) iterator.next();
+			try 
+			{
 				long startTime = System.currentTimeMillis();
-
+	
 				inLogger.info("Embedding entity: " + entity.getName());
 				
 				entity.setValue("entityembeddingstatus", "pending");
-
+				
+				String moduleid = entity.get("entitysourcetype");
 				processOneEntity(inLogger, entity, moduleid);
-
+	
 				long duration = (System.currentTimeMillis() - startTime) / 1000L;
 				inLogger.info("Took "+duration +"s to process entity: " + entity.getId() + " " + entity.getName());
-
-			} catch (Exception e) {
+			}
+			catch (Exception e) 
+			{
 				inLogger.error("LLM Error for entity: " + entity.getName(), e);
 				entity.setValue("llmerror", true);
 				entity.setValue("entityembeddingstatus", "failed");

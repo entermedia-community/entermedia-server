@@ -1,8 +1,9 @@
-package org.entermediadb.ai.classify;
+package org.entermediadb.ai.classify.agents;
 
 import java.util.Collection;
 
 import org.entermediadb.ai.BaseAgent;
+import org.entermediadb.ai.classify.DocumentSplitterManager;
 import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.llm.AgentContext;
 import org.openedit.MultiValued;

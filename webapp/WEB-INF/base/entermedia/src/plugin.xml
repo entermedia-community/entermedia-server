@@ -2606,7 +2606,7 @@
 			<ref bean="requestUtils" />
 		</property>
 	</bean>
-	<bean id="classifyAgent" class="org.entermediadb.ai.classify.ClassifyAgent" scope="prototype">
+	<bean id="classifyAgent" class="org.entermediadb.ai.classify.agents.ClassifyAgent" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2640,7 +2640,7 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	<bean id="documentSplitterAgent" class="org.entermediadb.ai.classify.DocumentSplitterAgent" scope="prototype">
+	<bean id="documentSplitterAgent" class="org.entermediadb.ai.classify.agents.DocumentSplitterAgent" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2651,7 +2651,7 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	<bean id="embeddingAgent" class="org.entermediadb.ai.classify.EmbeddingAgent" scope="prototype">
+	<bean id="embeddingAgent" class="org.entermediadb.ai.classify.agents.EmbeddingAgent" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2851,7 +2851,7 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	<bean id="semanticClassifierAgent" class="org.entermediadb.ai.classify.SemanticClassifierAgent" lazy-init="default" scope="prototype">
+	<bean id="semanticClassifierAgent" class="org.entermediadb.ai.classify.agents.SemanticClassifierAgent" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2875,7 +2875,7 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	<bean id="namedEntityRecognitionAgent" class="org.entermediadb.ai.classify.NamedEntityRecognitionAgent" lazy-init="default" scope="prototype">
+	<bean id="namedEntityRecognitionAgent" class="org.entermediadb.ai.classify.agents.NamedEntityRecognitionAgent" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

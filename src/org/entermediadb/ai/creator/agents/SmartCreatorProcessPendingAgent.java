@@ -23,30 +23,42 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 	@Override
 	public void process(AgentContext inContext)
 	{
-		Data module = inContext.getCurrentEntityModule();
 		
-		//Find pending then process each one
-		Collection found = getMediaArchive().query(module.getId()).exact("processingstatus","new").search();
-		//Then save?
-		
-		String llmprompt = inContext.getCurrentAgentEnable().getAutomationEnabledData().get("llmprompt");
-		
-		AiSmartCreatorSteps instructions = new AiSmartCreatorSteps(); //Fresh
-		instructions.setTargetModule(module);
-		inContext.setAiSmartCreatorSteps(instructions);
-		
-		getSmartCreatorManager().parseCreationPrompt(inContext, llmprompt);
-		
-		for (Iterator iterator = found.iterator(); iterator.hasNext();)
+		Collection<String> values = inContext.getCurrentAgentEnable().getAutomationEnabledData().getValues("searchtypes");
+		for (Iterator iterator1 = values.iterator(); iterator1.hasNext();)
 		{
-			MultiValued entity = (MultiValued) iterator.next();
-			AgentContext childcontext = new AgentContext(inContext);
-			childcontext.setCurrentEntity(entity);
-			super.process(childcontext); //To Create outline
+			String moduleid = (String) iterator1.next();
 			
-			entity.setValue("processingstatus","complete");
-			getMediaArchive().saveData(module.getId(), entity);
+			MultiValued module = (MultiValued)getMediaArchive().getCachedData("module", moduleid);
 			
+			if (module == null)
+			{
+				inContext.error("No module found " + inContext.getCurrentAgentEnable().getAutomationEnabledData());
+				continue;
+			}
+			//Find pending then process each one
+			Collection found = getMediaArchive().query(module.getId()).exact("processingstatus","new").search();
+			//Then save?
+			
+			String llmprompt = inContext.getCurrentAgentEnable().getAutomationEnabledData().get("llmprompt");
+			
+			AiSmartCreatorSteps instructions = new AiSmartCreatorSteps(); //Fresh
+			instructions.setTargetModule(module);
+			inContext.setAiSmartCreatorSteps(instructions);
+			
+			getSmartCreatorManager().parseCreationPrompt(inContext, llmprompt);
+			
+			for (Iterator iterator = found.iterator(); iterator.hasNext();)
+			{
+				MultiValued entity = (MultiValued) iterator.next();
+				AgentContext childcontext = new AgentContext(inContext);
+				childcontext.setCurrentEntityModule( module );
+				childcontext.setCurrentEntity(entity);
+				super.process(childcontext); //To Create outline
+				
+				entity.setValue("processingstatus","complete");
+				getMediaArchive().saveData(module.getId(), entity);
+			}
 		}
 	}
 }

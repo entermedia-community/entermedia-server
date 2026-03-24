@@ -3,7 +3,7 @@ package org.entermediadb.ai.automation.agents;
 import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.llm.AgentContext;
 
-public class JavaLogicAgent extends BaseAgent
+public class ModuleFilterAgent extends BaseAgent
 {
 
 	@Override
