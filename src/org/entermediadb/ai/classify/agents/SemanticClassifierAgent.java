@@ -24,7 +24,7 @@ public class SemanticClassifierAgent extends BaseAgent
 		MultiValued inConfig = inContext.getCurrentAgentEnable().getAgentConfig();
 		//Try both assets and records
 		Collection<Asset>  inAssets = informatic.getAssetsToProcess();
-		if( inAssets != null)
+		if( inAssets != null && !inAssets.isEmpty())
 		{
 			getSemanticClassifierManager().processRecords(informatic.getScriptLogger(), inConfig, inAssets);
 		}

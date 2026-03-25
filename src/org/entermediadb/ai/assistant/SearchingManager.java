@@ -847,7 +847,7 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 	{
 		if (fieldSemanticTopicManager == null)
 		{
-			fieldSemanticTopicManager = (SemanticClassifierManager)getModuleManager().getBean(getCatalogId(), "semanticClassifier",false);
+			fieldSemanticTopicManager = (SemanticClassifierManager)getModuleManager().getBean(getCatalogId(), "semanticClassifierManager",false);
 			fieldSemanticTopicManager.setConfigurationId("semantictopics");
 		}
 
@@ -875,23 +875,23 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 			Collection sumatics = searchcategory.getValues("semantictopics");
 			Map<String,Collection<String>> bytype = searchRelatedEntitiesBySearchCategory(searchcategory);
 			
-			if(bytype.keySet().isEmpty())
-			{
-				//inLogger.info("Nothing found for " + searchcategory);
-			}
-			{
-				inLogger.info("Found hits " + bytype.keySet() + " for: "+ searchcategory + " Sematics: " + sumatics);
-			}
 			
 			for (Iterator iterator2 = bytype.keySet().iterator(); iterator2.hasNext();)
 			{
 				String moduleid = (String)iterator2.next();
+				if ("searchcategory". equals(moduleid))
+				{
+					continue;
+				}
 				Collection<String> ids = bytype.get(moduleid);
 				Collection addedentites = getMediaArchive().query(moduleid).ids(ids).not("searchcategory",searchcategory.getId()).search();
 				if (ids.size() != addedentites.size()) {
 					//log.info("Mistmatch, missing records, recreate Semantics. " + ids.size() + " != "+ addedentites.size());
 				}
 				//Collection addedentites = getMediaArchive().query(moduleid).ids(ids).search();
+				
+				inLogger.info("Found " + ids.size() + " " + moduleid + " for Category: "+ searchcategory);
+				
 				Collection tosave = new ArrayList(addedentites.size());
 				for (Iterator iterator3 = addedentites.iterator(); iterator3.hasNext();)
 				{
@@ -901,9 +901,9 @@ public class SearchingManager extends BaseAiManager  implements ChatMessageHandl
 				}
 				if (tosave.size() > 0)
 				{
-					inLogger.info("Added " + tosave.size() + " from module: " + moduleid + " to category " + searchcategory);
 					getMediaArchive().saveData(moduleid,tosave);
 				}
+				inLogger.info("Added " + tosave.size() + " out of " + ids.size());
 			}
 		}
 	}
