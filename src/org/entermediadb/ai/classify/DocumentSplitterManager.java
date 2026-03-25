@@ -33,7 +33,7 @@ public class DocumentSplitterManager extends BaseAiManager
 	{
 		Collection<MultiValued>  inRecords  = informatic.getRecordsToProcess();
 		
-		MultiValued inConfig = informatic.getCurrentAgentEnable().getAgentConfig();
+		MultiValued inConfig = informatic.getCurrentAgentEnable().getAgentConfig(); //Todo: This is getting the wrong Agent, also missing fields searchtype and generatedsearchtype, should we use searchtypes?
 		Collection searchtypes = inConfig.getValues("searchtypes"); 
 		int count = 0;
 		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
@@ -41,11 +41,11 @@ public class DocumentSplitterManager extends BaseAiManager
 			MultiValued entity = (MultiValued) iterator.next();
 			
 			String moduleid = entity.get("entitysourcetype");
-			
+			/*
 			if( !searchtypes.contains(moduleid) ) //Limits to the ones configured in the informatics db.
 			{
 				continue;
-			}
+			}*/
 			
 			String assetid = entity.get("primarymedia");
 			if( assetid == null)
@@ -222,7 +222,7 @@ public class DocumentSplitterManager extends BaseAiManager
 	public void splitDocumentWithText(InformaticsContext inContext, List<String> inPagesText, MultiValued inConfig, MultiValued inEntity, Asset asset) 
 	{
 		String parentsearchtype = inConfig.get("searchtype");
-		String generatedsearchtype = inConfig.get("generatedsearchtype");
+		String generatedsearchtype = inConfig.get("generatedsearchtype"); 
 		HitTracker existingPages = getMediaArchive().query(generatedsearchtype)
 				.exact(parentsearchtype, inEntity.getId())
 				.exact("parentasset", asset.getId()).search();
