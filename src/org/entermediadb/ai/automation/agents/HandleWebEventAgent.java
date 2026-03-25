@@ -19,7 +19,7 @@ public class HandleWebEventAgent extends BaseAgent
 		if(request == null)
 		{
 			//error
-			inContext.error("Requires webpagerequest ");
+			inContext.error("HadleWebEvent Agent Requires webpagerequest ");
 			return;
 		}
 		Map params = request.getParameterMap();

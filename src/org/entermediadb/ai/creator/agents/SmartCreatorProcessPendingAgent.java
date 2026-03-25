@@ -47,11 +47,9 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 			
 			String llmprompt = inContext.getCurrentAgentEnable().getAutomationEnabledData().get("llmprompt");
 			
-			AiSmartCreatorSteps instructions = new AiSmartCreatorSteps(); //Fresh
-			instructions.setTargetModule(module);
-			inContext.setAiSmartCreatorSteps(instructions);
+			AgentContext newagentcontext = new AgentContext(inContext);
 			
-			getSmartCreatorManager().parseCreationPrompt(inContext, llmprompt);
+			
 			
 			for (Iterator iterator = found.iterator(); iterator.hasNext();)
 			{
@@ -59,6 +57,16 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 				AgentContext childcontext = new AgentContext(inContext);
 				childcontext.setCurrentEntityModule( module );
 				childcontext.setCurrentEntity(entity);
+				
+				newagentcontext.put("data", entity);
+				llmprompt = getMediaArchive().getReplacer().replace(llmprompt, newagentcontext.getContext());
+				
+				AiSmartCreatorSteps instructions = new AiSmartCreatorSteps(); //Fresh
+				instructions.setTargetModule(module);
+				inContext.setAiSmartCreatorSteps(instructions);
+				
+				getSmartCreatorManager().parseCreationPrompt(inContext, llmprompt);
+				
 				super.process(childcontext); //To Create outline
 				
 				entity.setValue("processingstatus","complete");
