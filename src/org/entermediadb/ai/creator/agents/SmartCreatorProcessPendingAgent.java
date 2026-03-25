@@ -25,6 +25,11 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 	{
 		
 		Collection<String> values = inContext.getCurrentAgentEnable().getAutomationEnabledData().getValues("searchtypes");
+		if (values == null)
+		{
+			inContext.error("No Agents Enabled");
+			return;
+		}
 		for (Iterator iterator1 = values.iterator(); iterator1.hasNext();)
 		{
 			String moduleid = (String) iterator1.next();
