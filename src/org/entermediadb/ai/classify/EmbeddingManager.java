@@ -121,6 +121,11 @@ public class EmbeddingManager extends BaseAiManager
 			}
 			toembedd.add(entity);
 		}
+		
+		if (toembedd.size() < 1)
+		{
+			return;
+		}
 
 		inLogger.headline("Embedding " + toembedd.size() + " records"); //We only handle entites. No assets
 

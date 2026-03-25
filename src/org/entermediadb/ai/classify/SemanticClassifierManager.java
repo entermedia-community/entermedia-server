@@ -46,7 +46,7 @@ public class SemanticClassifierManager extends BaseAiManager
 	{
 		String fieldname = inConfig.get("fieldname");
 		
-		inLog.headline("Adding semantic topics to " + inRecords.size() + " records");
+		inLog.headline("Adding Semantic Topics to " + inRecords.size() + " records");
 
 		setConfigurationId(fieldname); //TODO: Read from config
 		
