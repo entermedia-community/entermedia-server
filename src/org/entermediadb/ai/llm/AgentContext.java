@@ -456,7 +456,7 @@ public class AgentContext extends BaseData implements CatalogEnabled
 
 	protected void addEntry(String inString, String inLog)
 	{
-		LogEntry entry = new LogEntry("info",inLog);
+		LogEntry entry = new LogEntry(inString,inLog);
 		entry.setDate(new Date());
 		if( getCurrentAgentEnable() != null)
 		{
