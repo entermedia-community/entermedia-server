@@ -334,7 +334,7 @@ public class EmbeddingManager extends BaseAiManager
 			String markdowncontent = page.get("markdowncontent");     ///TODO: Support on the fly option
 			if( markdowncontent == null || markdowncontent.isEmpty())
 			{
-				log.info("No markdowncontent found for: "+ document);
+				log.info("No markdowncontent found for page: "+ page);
 				continue;
 			}
 

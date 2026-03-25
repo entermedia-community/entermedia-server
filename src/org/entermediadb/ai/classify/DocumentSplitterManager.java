@@ -205,7 +205,8 @@ public class DocumentSplitterManager extends BaseAiManager
 				docpage.setValue("entity_date", new Date());
 			}
 			
-			if( docpage.get("markdowncontent") == null && inConfig.getBoolean("generatemarkdown"))
+			//if( docpage.get("markdowncontent") == null && inConfig.getBoolean("generatemarkdown"))
+			if( docpage.get("markdowncontent") == null)
 			{
 				log.info("Generating markdown for page: " + docpage);
 				generateMarkdownFromImage(docpage);
