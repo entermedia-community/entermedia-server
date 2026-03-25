@@ -16,40 +16,33 @@ public class HandleWebEventAgent extends BaseAgent
 		//String runoperation = inContext.getCurrentAgentEnable().getAutomationEnabledData().get("runoperation");
 		WebPageRequest request =  (WebPageRequest)inContext.getContextValue("webpagerequest");
 		
-		if(request == null)
+		if(request != null)
 		{
-			//error
-			inContext.error("HadleWebEvent Agent Requires webpagerequest ");
-			return;
-		}
-		Map params = request.getParameterMap();
-		//Map values = getRequestUtils().extractValueMap(request);
-		inContext.put("parameters", params);
-		
-		if (inContext.getCurrentEntityModule() == null)
-		{
-			String entityid = request.getRequestParameter("entityid");
-			String entitymoduleid = request.getRequestParameter("entitymoduleid");
-			if (entitymoduleid != null)
+			Map params = request.getParameterMap();
+			//Map values = getRequestUtils().extractValueMap(request);
+			inContext.put("parameters", params);
+			
+			if (inContext.getCurrentEntityModule() == null)
 			{
-				MultiValued entity = (MultiValued)getMediaArchive().getCachedData(entitymoduleid, entityid);
-				inContext.setCurrentEntity(entity);
-				MultiValued entitymodule = (MultiValued)getMediaArchive().getCachedData("module",entitymoduleid);
-				inContext.setCurrentEntityModule(entitymodule);
+				String entityid = request.getRequestParameter("entityid");
+				String entitymoduleid = request.getRequestParameter("entitymoduleid");
+				if (entitymoduleid != null)
+				{
+					MultiValued entity = (MultiValued)getMediaArchive().getCachedData(entitymoduleid, entityid);
+					inContext.setCurrentEntity(entity);
+					MultiValued entitymodule = (MultiValued)getMediaArchive().getCachedData("module",entitymoduleid);
+					inContext.setCurrentEntityModule(entitymodule);
+				}
 			}
+			
+			String triggerapplicationid = (String) request.getPageValue("triggerapplicationid");
+			inContext.put("triggerapplicationid", triggerapplicationid);
+			inContext.put("triggersiteroot", request.getSiteRoot());
+			
+			inContext.setUserProfile(request.getUserProfile());
+			
+			request.putPageValue("currentagentcontext",inContext);
 		}
-		
-		String triggerapplicationid = (String) request.getPageValue("triggerapplicationid");
-		inContext.put("triggerapplicationid", triggerapplicationid);
-		inContext.put("triggersiteroot", request.getSiteRoot());
-		
-		inContext.setUserProfile(request.getUserProfile());
-		
-		request.putPageValue("currentagentcontext",inContext);
-		
-		//String operation = inContext.getCurrentAgentEnable().getAgentConfig().getId();
-		//runPathEvent(inContext, operation, request);
-		//Filter by operation
 		super.process(inContext);
 	}
 }
