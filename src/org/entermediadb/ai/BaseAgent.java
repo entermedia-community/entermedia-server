@@ -9,6 +9,15 @@ import org.openedit.CatalogEnabled;
 
 public class BaseAgent extends BaseAiManager implements Agent, CatalogEnabled 
 {
+	public void processstart(AgentContext inContext)
+	{
+		//fire websocket event
+	}
+	
+	public void processend(AgentContext inContext)
+	{
+	}
+	
 	@Override
 	public void process(AgentContext inContext)
 	{
@@ -21,7 +30,9 @@ public class BaseAgent extends BaseAiManager implements Agent, CatalogEnabled
 			{
 				AgentEnabled agentEnabled = (AgentEnabled) iterator.next();
 				inContext.setCurrentAgentEnable(agentEnabled);
+				agentEnabled.getAgent().processstart(inContext);
 				agentEnabled.getAgent().process(inContext);
+				agentEnabled.getAgent().processend(inContext);
 			}
 		}
 	}

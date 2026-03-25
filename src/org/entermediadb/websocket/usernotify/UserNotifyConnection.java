@@ -12,10 +12,17 @@ import javax.websocket.Session;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.users.User;
+
+
+
+//let url = `/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection?sessionid=${tabID}&userid=${userid}`;
 
 public class UserNotifyConnection  extends Endpoint implements MessageHandler.Partial<String>
 {
@@ -138,7 +145,9 @@ public class UserNotifyConnection  extends Endpoint implements MessageHandler.Pa
 		return fieldBufferedMessage;
 	}
 		
-	
+	/**
+	 * Not used. We dont get messages from clients, we only send them out
+	 */
 	@Override
 	public synchronized void onMessage(String inData, boolean completed)
 	{		
@@ -154,8 +163,24 @@ public class UserNotifyConnection  extends Endpoint implements MessageHandler.Pa
 //		{
 //			return;
 //		}
-		JSONObject map = (JSONObject)getJSONParser().parse(new StringReader(message));
-		getUserNotifyManager().onMessage(this,map);
+		if(inData.length() == 0) {
+			return;
+		}
+		JSONObject map = (JSONObject) getJSONParser().parse(new StringReader(message));
+		String command = (String) map.get("command");
+		if ("keepalive".equals(command)) //Return all the annotation on this asset
+		{
+			//receiveLogin(map); 
+			//String userid = (String) map.get("userid");
+			String userid = String.valueOf(map.get("userid"));
+			setUserId(userid);
+			//String channelid = String.valueOf(map.get("channel"));
+			//setChannelId(channelid);
+		}
+		
+		//Relay this message to the others
+//		JSONObject map = (JSONObject)getJSONParser().parse(new StringReader(message));
+//		getUserNotifyManager().onMessage(this,map);
 
 	}
 

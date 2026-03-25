@@ -50,7 +50,6 @@ import org.entermediadb.find.FolderManager;
 import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.users.PermissionManager;
 import org.entermediadb.users.UserProfileManager;
-import org.entermediadb.websocket.usernotify.UserNotifyManager;
 import org.openedit.BaseWebPageRequest;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -3115,12 +3114,12 @@ public class MediaArchive implements CatalogEnabled
 	{
 		return getUserManager().getGroup(inGid);
 	}
-	public UserNotifyManager getUserNotifyManager()
-	{
-		UserNotifyManager manager = (UserNotifyManager) getModuleManager().getBean(getCatalogId(), "userNotifyManager");
-		return manager;
-	}
-	
+//	public WebEventSocketManager getUserNotifyManager()
+//	{
+//		WebEventSocketManager manager = (WebEventSocketManager) getModuleManager().getBean(getCatalogId(), "userNotifyManager");
+//		return manager;
+//	}
+//	
 	public int getCurrentYear() 
 	{
 		Date today = Calendar.getInstance().getTime();

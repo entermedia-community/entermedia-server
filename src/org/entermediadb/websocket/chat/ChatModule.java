@@ -47,7 +47,7 @@ import org.openedit.util.DateStorageUtil;
 
 public class ChatModule extends BaseMediaModule
 {
-	private static final Log log = LogFactory.getLog(ChatConnection.class);
+	private static final Log log = LogFactory.getLog(ChatModule.class);
 
 	public void loadMessage(WebPageRequest inReq)
 	{

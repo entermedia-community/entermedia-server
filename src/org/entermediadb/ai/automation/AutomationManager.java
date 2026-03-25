@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -39,7 +40,49 @@ import org.openedit.event.WebEventListener;
 public class AutomationManager extends BaseAiManager implements WebEventListener
 {
 	private static final Log log = LogFactory.getLog(AutomationManager.class);
-
+	
+	protected Map<String,List<AgentContext>> fieldRecentContextByAutomation = new HashMap();
+	
+	public Collection<AgentContext> getRecentScenerioContext(String inScenerio)
+	{
+		Collection<AgentContext> found = fieldRecentContextByAutomation.get(inScenerio);
+		return found;
+	}
+	
+	public AgentContext findContextForScenerio(String inScenerio, String inContextId)
+	{
+		Collection<AgentContext> found = fieldRecentContextByAutomation.get(inScenerio);
+		if( found == null)
+		{
+			return null;
+		}
+		for (Iterator iterator = found.iterator(); iterator.hasNext();)
+		{
+			AgentContext agentContext = (AgentContext) iterator.next();
+			if( agentContext.getId().equals(inContextId))
+			{
+				return agentContext;
+			}
+		}
+		
+		return null;
+	}
+	
+	public void addContext(String inScenerio, AgentContext inContext)
+	{
+		List<AgentContext> found = fieldRecentContextByAutomation.get(inScenerio);
+		if( found == null)
+		{
+			found = new ArrayList();
+			fieldRecentContextByAutomation.put(inScenerio, found);
+		}
+		found.add(inContext);
+		if( found.size() > 5)
+		{
+			found.remove(0);
+		}
+	}
+	
 	public void runScenario(String inId, ScriptLogger inLogger)
 	{
 		AgentContext context = new AgentContext();
@@ -49,8 +92,14 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 	public void runScenario(String inId, AgentContext inContext)
 	{
 		MultiValued scenerio = (MultiValued)getMediaArchive().getCachedData("automationscenario",inId);//query("automationscenerio").exact("enabled", true).sort("ordering").search();
-		
+
+		if( inContext.getId() == null)
+		{
+			inContext.setId(inCrementId());
+		}
+		addContext(inId,inContext);
 		inContext.setCurrentScenerio(scenerio);
+		
 		Collection<AgentEnabled> enabled = getEnabledAgents(inId);
 		inContext.setAgentsEnabled(enabled);
 	
@@ -178,6 +227,13 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 			getMediaArchive().getCacheManager().put("eventlookup", inEvent, cached);
 		}
 		return cached;
+	}
+
+	long fieldCounter = System.currentTimeMillis();
+	public String inCrementId()
+	{
+		fieldCounter++;
+		return String.valueOf(fieldCounter);
 	}
 	
 }
