@@ -12,7 +12,7 @@ public class RunModuleAgent extends RunEventAgent
 	public void process(AgentContext inContext)
 	{
 		//Use path-event style exec
-		String operation = inContext.getCurrentAgentEnable().getAgentConfig().getId();
+		String operation = inContext.getCurrentAgentEnable().getAgentConfig().get("runoperation");
 		
 		operation = operation.replaceFirst("_", ".");
 		
