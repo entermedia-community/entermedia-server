@@ -1,5 +1,6 @@
 package org.entermediadb.ai.llm;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +15,6 @@ import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
-import org.openedit.OpenEditRuntimeException;
 import org.openedit.data.BaseData;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
@@ -450,27 +450,40 @@ public class AgentContext extends BaseData implements CatalogEnabled
 	public void info(String inLog)
 	{
 		getScriptLogger().error(inLog);
+		addEntry("info",inLog);
 	}
 
+	protected void addEntry(String inString, String inLog)
+	{
+		LogEntry entry = new LogEntry("info",inLog);
+		if( getCurrentAgentEnable() != null)
+		{
+			entry.setCurrentAgentEnabledConfig( getCurrentAgentEnable().getAutomationEnabledData() );
+		}
+		getLogs().add(entry);
 
+	}
 	public void error(Exception inE)
 	{
 		getScriptLogger().error(inE);
+		addEntry("error",inE.getMessage());
 	}
 
 	public void error(String inString, Throwable inE)
 	{
 		getScriptLogger().error(inString,inE);
+		addEntry("error",inString + " " + inE.getMessage());
 	}
 
     public void headline(String string) 
     {
 		getScriptLogger().headline(string);
+		addEntry("headline",string);
     }
 
     public void error(String string) {
 		getScriptLogger().error(string);
-
+		addEntry("error",string);
     }
 
     public MultiValued getCurrentEntity()
@@ -491,4 +504,24 @@ public class AgentContext extends BaseData implements CatalogEnabled
     {
     	put("currententitymodule",inEntityModule);
     }
+    
+    protected Collection<LogEntry> fieldLogs;
+
+	public Collection<LogEntry> getLogs()
+	{
+		if( fieldLogs == null && getParentContext() != null)
+		{
+			return getParentContext().getLogs();
+		}
+		if( fieldLogs == null)
+		{
+			fieldLogs = new ArrayList(); //Just on the top parent
+		}
+		return fieldLogs;
+	}
+	public void setLogs(Collection<LogEntry> inLogs)
+	{
+		fieldLogs = inLogs;
+	}
+    
 }
