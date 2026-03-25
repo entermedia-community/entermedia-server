@@ -14,9 +14,11 @@ public class RunSharedEventAgent extends RunEventAgent
 	@Override
 	public void process(AgentContext inContext)
 	{
-		PathEventManager manager = (PathEventManager) getModuleManager().getBean(getCatalogId(), "pathEventManager");
-		String operation = inContext.getCurrentAgentEnable().getAgentConfig().getId();
-		manager.runSharedPathEvent(operation);
+	PathEventManager manager = (PathEventManager) getModuleManager().getBean(getCatalogId(), "pathEventManager");
+		String operation = inContext.getCurrentAgentEnable().getAgentConfig().get("runoperation");
+		
+		manager.runSharedPathEvent(getMediaArchive().getCatalogHome() + "/events/" + operation + ".html");
+		
 		super.process(inContext);
 	}
 
