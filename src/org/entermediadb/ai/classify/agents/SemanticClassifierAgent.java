@@ -29,7 +29,7 @@ public class SemanticClassifierAgent extends BaseAgent
 			getSemanticClassifierManager().processRecords(informatic.getScriptLogger(), inConfig, inAssets);
 		}
 		Collection<MultiValued>  inRecords  = informatic.getRecordsToProcess();
-		if( inRecords != null)
+		if( inRecords != null && !inRecords.isEmpty())
 		{
 			getSemanticClassifierManager().processRecords(informatic.getScriptLogger(), inConfig, inRecords);
 		}

@@ -16,6 +16,7 @@ import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.video.Timeline;
 import org.openedit.Data;
@@ -33,7 +34,7 @@ public class DocumentSplitterManager extends BaseAiManager
 	{
 		Collection<MultiValued>  inRecords  = informatic.getRecordsToProcess();
 		
-		MultiValued inConfig = informatic.getCurrentAgentEnable().getAgentConfig(); //Todo: This is getting the wrong Agent, also missing fields searchtype and generatedsearchtype, should we use searchtypes?
+		MultiValued inConfig = informatic.getCurrentAgentEnable().getAutomationEnabledData(); 
 		Collection searchtypes = inConfig.getValues("searchtypes"); 
 		int count = 0;
 		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
@@ -41,11 +42,11 @@ public class DocumentSplitterManager extends BaseAiManager
 			MultiValued entity = (MultiValued) iterator.next();
 			
 			String moduleid = entity.get("entitysourcetype");
-			/*
-			if( !searchtypes.contains(moduleid) ) //Limits to the ones configured in the informatics db.
+			
+			if(searchtypes == null || !searchtypes.contains(moduleid) ) //Limits to the ones configured in the informatics db.
 			{
 				continue;
-			}*/
+			}
 			
 			String assetid = entity.get("primarymedia");
 			if( assetid == null)
@@ -159,8 +160,14 @@ public class DocumentSplitterManager extends BaseAiManager
 	public void splitDocumentWithPages(InformaticsContext inContext, MultiValued inConfig, MultiValued inEntity, Asset asset) 
 	{
 
-		String parentsearchtype = inConfig.get("searchtype");
-		String generatedsearchtype = inConfig.get("generatedsearchtype");
+		String parentsearchtype = inEntity.get("entitysourcetype");
+		String generatedsearchtype = parentsearchtype+"page";
+		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
+		if (pageSearcher == null)
+		{
+			log.error("Generated (Pages) searchtype doesn't exist");
+			return;
+		}
 		HitTracker existingPages = getMediaArchive().query(generatedsearchtype)
 				.exact(parentsearchtype, inEntity.getId())
 				.exact("parentasset", asset.getId()).search();
@@ -174,8 +181,6 @@ public class DocumentSplitterManager extends BaseAiManager
 		}
 
 		List<Data> tosave = new ArrayList();
-		
-		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
 		
 		Long starttime = System.currentTimeMillis();
 		int totalpages = inEntity.getInt("totalpages");
@@ -221,8 +226,14 @@ public class DocumentSplitterManager extends BaseAiManager
 	
 	public void splitDocumentWithText(InformaticsContext inContext, List<String> inPagesText, MultiValued inConfig, MultiValued inEntity, Asset asset) 
 	{
-		String parentsearchtype = inConfig.get("searchtype");
-		String generatedsearchtype = inConfig.get("generatedsearchtype"); 
+		String parentsearchtype = inEntity.get("entitysourcetype");
+		String generatedsearchtype = parentsearchtype+"page"; 
+		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
+		if (pageSearcher == null)
+		{
+			log.error("Generated (Pages) searchtype doesn't exist");
+			return;
+		}
 		HitTracker existingPages = getMediaArchive().query(generatedsearchtype)
 				.exact(parentsearchtype, inEntity.getId())
 				.exact("parentasset", asset.getId()).search();
@@ -236,8 +247,6 @@ public class DocumentSplitterManager extends BaseAiManager
 		}
 
 		List<Data> tosave = new ArrayList();
-		
-		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
 		
 		Long starttime = System.currentTimeMillis();
 		int totalpages = inEntity.getInt("totalpages");

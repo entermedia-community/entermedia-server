@@ -35,7 +35,7 @@ public class TranscriberAgent extends BaseAgent
 					workinghits.remove(data); //We do not process more.
 				}
 			}
-			mycontext.setRecordsToProcess(workinghits);
+			mycontext.setAssetsToProcess(workinghits);
 		}
 		super.process(mycontext);
 	}

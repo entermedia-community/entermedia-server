@@ -124,7 +124,7 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 				AgentEnabled enabled = new AgentEnabled();
 				enabled.setAutomationEnabledData(data);
 				String agentid = data.get("automationagent");
-				MultiValued agentconfig = (MultiValued)getMediaArchive().getCachedData("automationagent",agentid);
+				MultiValued agentconfig = (MultiValued)getMediaArchive().getCachedData("automationagent",agentid);  //Todo: Here is finding the wrong document Splitter
 				enabled.setAgentConfig(agentconfig);
 				String bean = agentconfig.get("bean");
 				Agent agent = loadAgent(bean);

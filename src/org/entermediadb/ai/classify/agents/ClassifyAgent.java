@@ -2,6 +2,7 @@ package org.entermediadb.ai.classify.agents;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,16 +39,19 @@ public class ClassifyAgent extends BaseAgent
 				}
 			}
 			mycontext.setAssetsToProcess(workinghits);
-
+		}
+		else
+		{
+			mycontext.setAssetsToProcess(Collections.emptyList());
 		}
 
-		pageofhits = mycontext.getRecordsToProcess();
-		if( pageofhits != null && !pageofhits.isEmpty())
+		Collection recordspageofhits = mycontext.getRecordsToProcess();
+		if( recordspageofhits != null && !recordspageofhits.isEmpty())
 		{
-			List workinghits = new ArrayList(pageofhits); 
+			List workinghits = new ArrayList(recordspageofhits); 
 			mycontext.setRecordsToProcess(workinghits);
 			getClassifyManager().processRecords(mycontext);
-			for (Iterator iterator2 = pageofhits.iterator(); iterator2.hasNext();)
+			for (Iterator iterator2 = recordspageofhits.iterator(); iterator2.hasNext();)
 			{
 				MultiValued data = (MultiValued) iterator2.next();
 				if(data.getBoolean("llmerror"))
@@ -56,6 +60,10 @@ public class ClassifyAgent extends BaseAgent
 				}
 			}
 			mycontext.setRecordsToProcess(workinghits);
+		}
+		else
+		{
+			mycontext.setRecordsToProcess(Collections.emptyList());
 		}
 		super.process(mycontext);
 	}
