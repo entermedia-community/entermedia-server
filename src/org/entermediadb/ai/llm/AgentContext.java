@@ -2,6 +2,7 @@ package org.entermediadb.ai.llm;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -456,6 +457,7 @@ public class AgentContext extends BaseData implements CatalogEnabled
 	protected void addEntry(String inString, String inLog)
 	{
 		LogEntry entry = new LogEntry("info",inLog);
+		entry.setDate(new Date());
 		if( getCurrentAgentEnable() != null)
 		{
 			entry.setCurrentAgentEnabledConfig( getCurrentAgentEnable().getAutomationEnabledData() );

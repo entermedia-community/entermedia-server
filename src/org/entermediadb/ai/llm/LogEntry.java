@@ -1,5 +1,7 @@
 package org.entermediadb.ai.llm;
 
+import java.util.Date;
+
 import org.openedit.Data;
 
 public class LogEntry
@@ -10,6 +12,17 @@ public class LogEntry
 		setMessage(inMessage);		
 	}
 	
+	protected Date fieldDate;
+	
+	public Date getDate()
+	{
+		return fieldDate;
+	}
+	public void setDate(Date inDate)
+	{
+		fieldDate = inDate;
+	}
+
 	protected String fieldLogType;
 	public String getLogType()
 	{
