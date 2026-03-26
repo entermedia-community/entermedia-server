@@ -1,7 +1,9 @@
 package org.entermediadb.ai.creator.agents;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.entermediadb.ai.BaseAgent;
@@ -59,7 +61,13 @@ public class SmartCreatorFindMemoryFilesAgent extends BaseAgent
 			inContext.error("Error state, dont process more"); //Mark as error?
 			return;
 		}
-		inContext.getAiSmartCreatorSteps().setEmbeddedParentIds(parentIds);
+		Collection<String> finalparentIds = new ArrayList();
+		for (Iterator iterator = parentIds.iterator(); iterator.hasNext();)
+		{
+			String parentid = (String) iterator.next();
+			finalparentIds.add(parentid);
+		}
+		inContext.getAiSmartCreatorSteps().setEmbeddedParentIds(finalparentIds);
 		super.process(inContext);
 		
 	}
