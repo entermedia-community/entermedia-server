@@ -2,6 +2,7 @@ package org.entermediadb.ai.automation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -100,6 +101,10 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 		addContext(inId,inContext);
 		inContext.setCurrentScenerio(scenerio);
 		
+		//Lock it
+		scenerio.setValue("lastsranstart", new Date());
+		scenerio.setValue("isrunning", true);
+		
 		Collection<AgentEnabled> enabled = getEnabledAgents(inId);
 		inContext.setAgentsEnabled(enabled);
 	
@@ -109,6 +114,8 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 			inContext.setCurrentAgentEnable(agentEnabled);
 			agentEnabled.getAgent().process(inContext);
 		}
+		scenerio.setValue("isrunning", false);
+		getMediaArchive().saveData("automationscenario",scenerio);
 	}
 	
 	public Collection<AgentEnabled> getEnabledAgents(String inId)

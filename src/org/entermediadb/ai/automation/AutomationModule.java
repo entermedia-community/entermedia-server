@@ -32,7 +32,7 @@ public class AutomationModule extends BaseMediaModule {
 
 	public void loadScenarios(WebPageRequest inReq)
 	{
-		Collection list = getMediaArchive(inReq).getList("automationscenario");
+		Collection list = getMediaArchive(inReq).query("automationscenario").exact("isvisible",true).sort("ordering").search();
 		inReq.putPageValue("scenarios", list);
 	}
     
@@ -96,6 +96,10 @@ public class AutomationModule extends BaseMediaModule {
 	public void runScenario(WebPageRequest inReq)
 	{	
 		String id = inReq.findActionValue("automationscenario");
+		if( id == null)
+		{
+			id = inReq.getRequestParameter("scenarioid");
+		}
 		if( id == null)
 		{
 			id = inReq.getPage().getPageName();
