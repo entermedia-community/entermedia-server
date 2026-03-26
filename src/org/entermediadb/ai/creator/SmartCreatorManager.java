@@ -90,11 +90,18 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 			instructions.setTargetModule(playbackentitymodule);
 			inAgentContext.setAiSmartCreatorSteps(instructions);
 			
+			//oldway?
 			String entityid = inAgentContext.get("entityid");
 			String entitymoduleid = inAgentContext.get("entitymoduleid");
+			//--
 			
-			Data entity = getMediaArchive().getCachedData(entitymoduleid, entityid);
+			MultiValued entity = (MultiValued) getMediaArchive().getCachedData(entitymoduleid, entityid);
 			inAgentContext.addContext("entity", entity);
+						
+			inAgentContext.setCurrentEntity(entity);
+			
+			MultiValued module = (MultiValued) getMediaArchive().getCachedData("module", entitymoduleid);
+			inAgentContext.setCurrentEntityModule(module);
 			
 			String function = findLocalActionName(inAgentContext);
 	
@@ -301,7 +308,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		payload.put("query", instructions.getOutlineCreatePrompt());
 		
 		payload.put("parent_ids", parentIds);
-		
+		log.info("Sending: " + payload);
 		LlmResponse res = llmconnection.callJson("/create_outline", payload);
 		
 		JSONObject outlineJson = res.getRawResponse();
@@ -808,10 +815,11 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		AiSmartCreatorSteps instructions = inAgentContext.getAiSmartCreatorSteps();
 		
 
-		String entityid = inAgentContext.get("entityid");
-		String entitymoduleid = inAgentContext.get("entitymoduleid");
+		String entityid = inAgentContext.getCurrentEntity().getId();
+		String entitymoduleid = inAgentContext.getCurrentEntityModule().getId();
 		
 		AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
+		
 		Collection<String> parentIds = assistant.findDocIdsForEntity(entitymoduleid, entityid);
 		instructions.setEmbeddedParentIds(parentIds);
 		createSections(inAgentContext, instructions);
@@ -1011,9 +1019,11 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		
 		
 		ContentItem original = getMediaArchive().getOriginalContent(asset);
-		//ContentItem preview = getMediaArchive().getPresetManager().outPutForGenerated(archive, asset, "image3000x3000");
-		getMediaArchive().getAssetEditor().backUpFilesForLastVersion(asset,original,null );
-		
+		if (original.exists())
+		{
+			//ContentItem preview = getMediaArchive().getPresetManager().outPutForGenerated(archive, asset, "image3000x3000");
+			getMediaArchive().getAssetEditor().backUpFilesForLastVersion(asset,original,null );	
+		}
 				
 		ContentItem content = new StringItem("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/"+ assetsourcepath, inHtml, "UTF-8");
 		getMediaArchive().getPageManager().getRepository().put(content);
@@ -1022,7 +1032,13 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		asset.setProperty("importstatus", "created");
 		getMediaArchive().saveAsset(asset);
 		
-		getMediaArchive().getAssetEditor().createNewVersionData(asset,original, inAgentContext.getChatUser().getId(), Version.PUBLISHED, null );
+		String user = playbackentity.get("owner");
+		if (user == null && inAgentContext.getChatUser() != null)
+		{
+			user = inAgentContext.getChatUser().getId();
+		}
+		
+		getMediaArchive().getAssetEditor().createNewVersionData(asset,original, user, Version.PUBLISHED, null );
 		
 		playbackentity.setValue("primarymedia",asset.getId() );
 		getMediaArchive().getSearcher(playbackentitymodule.getId()).saveData(playbackentity);

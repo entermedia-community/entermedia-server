@@ -187,11 +187,17 @@ public class AgentContext extends BaseData implements CatalogEnabled
 		
 		if (value == null && inId.equals("entityid"))
 		{
-			value = getChannel().get("dataid");
+			if (!inId.equals("channel") && getChannel() != null)
+			{
+				value = getChannel().get("dataid");
+			}
 		}
 		else if (value == null && inId.equals("entitymoduleid"))
 		{
+			if (!inId.equals("channel") && getChannel() != null)
+			{
 			value = getChannel().get("searchtype");
+			}
 		}
 		if( value == null && getParentContext() != null)
 		{
