@@ -38,7 +38,7 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 			
 			if (module == null)
 			{
-				inContext.error("No module found " + inContext.getCurrentAgentEnable().getAutomationEnabledData());
+				//inContext.error("No module found " + inContext.getCurrentAgentEnable().getAutomationEnabledData());
 				continue;
 			}
 			//Find pending then process each one
@@ -49,7 +49,7 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 			
 			AgentContext newagentcontext = new AgentContext(inContext);
 			
-			
+			inContext.info("Found " + found.size() + " records in " +inContext.getCurrentAgentEnable().getAutomationEnabledData() );
 			
 			for (Iterator iterator = found.iterator(); iterator.hasNext();)
 			{
@@ -74,6 +74,7 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 				
 				entity.setValue("processingstatus","complete");
 				getMediaArchive().saveData(module.getId(), entity);
+				inContext.info("Finished processing: " + entity.getName());
 			}
 		}
 	}
