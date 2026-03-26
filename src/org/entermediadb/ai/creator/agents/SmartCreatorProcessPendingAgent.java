@@ -53,6 +53,7 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 			
 			for (Iterator iterator = found.iterator(); iterator.hasNext();)
 			{
+				long startTime = System.currentTimeMillis();
 				MultiValued entity = (MultiValued) iterator.next();
 				AgentContext childcontext = new AgentContext(inContext);
 				childcontext.setCurrentEntityModule( module );
@@ -61,9 +62,10 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 				newagentcontext.put("data", entity);
 				llmprompt = getMediaArchive().getReplacer().replace(llmprompt, newagentcontext.getContext());
 				
+				inContext.info("Processing: " + llmprompt);
+				
 				AiSmartCreatorSteps instructions = new AiSmartCreatorSteps(); //Fresh
 				instructions.setTargetModule(module);
-			
 				instructions.setTargetEntity(entity);
 				
 				inContext.setAiSmartCreatorSteps(instructions);
@@ -74,7 +76,8 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 				
 				entity.setValue("processingstatus","complete");
 				getMediaArchive().saveData(module.getId(), entity);
-				inContext.info("Finished processing: " + entity.getName());
+				long duration = (System.currentTimeMillis() - startTime) / 1000L;
+				inContext.info("Finished processing in "+duration+"s: " + entity.getName());
 			}
 		}
 	}

@@ -41,6 +41,7 @@ public class HotFolderSourceAgent extends BaseAgent
 				super.process(inContext);
 				return;
 			}
+			inContext.info("Checking: " + name);
 			if( assetSource.getConfig() != null)
 			{
 				String periodString = assetSource.getConfig().get("runwithinperiod");
