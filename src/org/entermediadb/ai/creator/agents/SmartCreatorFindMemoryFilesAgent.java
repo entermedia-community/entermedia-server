@@ -36,6 +36,7 @@ public class SmartCreatorFindMemoryFilesAgent extends BaseAgent
 		AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
 		Collection<String> localparentIds = assistant.findDocIdsForEntity(module.getId(), entity.getId());
 		Set<String> parentIds = new HashSet();
+		Collection<String> finalparentIds = new ArrayList();
 		if( localparentIds != null)
 		{
 			parentIds.addAll(localparentIds);
@@ -51,22 +52,26 @@ public class SmartCreatorFindMemoryFilesAgent extends BaseAgent
 					.orgroup("searchcategory",searchcats)
 					.exact("entityembeddingstatus", "embedded")
 					.search();
-	
-			Collection moreids = addedentites.collectValues("id");
-			parentIds.addAll(moreids);
+			for (Iterator iterator = addedentites.iterator(); iterator.hasNext();)
+			{
+				Data doc = (Data) iterator.next();
+				String type = doc.get("entitysourcetype");
+				String docid = type + "_" + doc.getId();
+				if (!finalparentIds.contains(docid))
+				{
+					finalparentIds.add(docid);
+				}
+				
+			}
+			
 		}
 
-		if( parentIds.isEmpty())
+		if( finalparentIds.isEmpty())
 		{
-			inContext.error("Error state, dont process more"); //Mark as error?
+			inContext.error("Error state, No embeded Documents to Process, dont process more"); //Mark as error?
 			return;
 		}
-		Collection<String> finalparentIds = new ArrayList();
-		for (Iterator iterator = parentIds.iterator(); iterator.hasNext();)
-		{
-			String parentid = (String) iterator.next();
-			finalparentIds.add(parentid);
-		}
+		
 		inContext.getAiSmartCreatorSteps().setEmbeddedParentIds(finalparentIds);
 		super.process(inContext);
 		
