@@ -2940,7 +2940,7 @@
 		</property>
 	</bean>
 
-	<bean id="hotFolderSourceAgent" class="org.entermediadb.asset.scanner.HotFolderSourceAgent" lazy-init="default" scope="prototype">
+	<bean id="hotFolderSourceAgent" class="org.entermediadb.asset.sources.agents.HotFolderSourceAgent" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

@@ -133,6 +133,8 @@ public class AssetSourceManager implements CatalogEnabled
 			agent.setName(name);
 			agent.setValue("bean","hotFolderSourceAgent");
 			agent.setValue("folder","hotfolder");
+			
+			agent.setValue("agenttype","hotfolder");
 			tosave.add(agent);
 		}
 		getMediaArchive().saveData("automationagent",tosave);
@@ -190,6 +192,20 @@ public class AssetSourceManager implements CatalogEnabled
 		boolean exists =  findAssetSource.existsOriginalContent(inAsset);
 		return exists;
 	}
+	
+	public AssetSource findAssetSourceById(String inId)
+	{
+		for (Iterator iterator = getAssetSources().iterator(); iterator.hasNext();)
+		{
+			AssetSource source = (AssetSource) iterator.next();
+			if( source.getId().equals(inId) )
+			{
+				return source;
+			}
+		}
+		return null;
+	}
+
 	
 	public AssetSource findAssetSource(String inPath)
 	{

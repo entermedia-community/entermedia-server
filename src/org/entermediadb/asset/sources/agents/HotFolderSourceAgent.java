@@ -1,4 +1,4 @@
-package org.entermediadb.asset.sources;
+package org.entermediadb.asset.sources.agents;
 
 import java.util.Date;
 
@@ -6,24 +6,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.ai.llm.AgentEnabled;
+import org.entermediadb.asset.sources.AssetSource;
 import org.entermediadb.asset.util.TimeParser;
 import org.openedit.locks.Lock;
 import org.openedit.util.DateStorageUtil;
 
+
+//One per source. Saved to the DB
 public class HotFolderSourceAgent extends BaseAgent
 {
 	private static final Log log = LogFactory.getLog(HotFolderSourceAgent.class);
-	protected AssetSource fieldAssetSource;
 	
-	public AssetSource getAssetSource()
-	{
-		return fieldAssetSource;
-	}
-
-	public void setAssetSource(AssetSource inAssetSource)
-	{
-		fieldAssetSource = inAssetSource;
-	}
 
 	@Override
 	public void process(AgentContext inContext)
@@ -35,21 +29,25 @@ public class HotFolderSourceAgent extends BaseAgent
 	{
 		//Loop over the children SourceAgents and check the time config
 		String base = "/WEB-INF/data/" + getCatalogId() + "/originals";
-			String name = getAssetSource().getName();
+		
+		String id = inContext.getCurrentAgentEnable().getAgentConfig().getId();
+		AssetSource assetSource = getMediaArchive().getAssetManager().findAssetSourceById(id);
+		
+			String name = assetSource.getName();
 //			String path = base + "/" + name ;
-			if( !getAssetSource().isEnabled() )
+			if( !assetSource.isEnabled() )
 			{
-				//inLog.info("Hot folder not enabled " + name);
+				inContext.info("Hot folder not enabled " + name);
 				super.process(inContext);
 				return;
 			}
-			if( getAssetSource().getConfig() != null)
+			if( assetSource.getConfig() != null)
 			{
-				String periodString = getAssetSource().getConfig().get("runwithinperiod");
+				String periodString = assetSource.getConfig().get("runwithinperiod");
 				if( periodString != null)
 				{
 					long period = new TimeParser().parse(periodString);
-					Date laststarted = DateStorageUtil.getStorageUtil().parseFromObject(getAssetSource().getConfig().getValue("lastscanstart"));
+					Date laststarted = DateStorageUtil.getStorageUtil().parseFromObject(assetSource.getConfig().getValue("lastscanstart"));
 					if( laststarted  != null)
 					{
 						if( laststarted.getTime() + period > System.currentTimeMillis())
@@ -62,7 +60,7 @@ public class HotFolderSourceAgent extends BaseAgent
 					}
 				}
 			}
-			Lock lock = getMediaArchive().getLockManager().lockIfPossible("scan-" + getAssetSource().getId(), "HotFolderManager");
+			Lock lock = getMediaArchive().getLockManager().lockIfPossible("scan-" + assetSource.getId(), "HotFolderManager");
 			if( lock == null)
 			{
 				inContext.info("Hot folder is already in lock table: " + name);
@@ -75,7 +73,7 @@ public class HotFolderSourceAgent extends BaseAgent
 			{
 				//pullGit(path,1);
 				long starttime = System.currentTimeMillis();
-				int found = getAssetSource().importAssets(null); 
+				int found = assetSource.importAssets(null); 
 				long timetook = System.currentTimeMillis() - starttime;
 				inContext.info("Hot folder: " + name + ", imported " + found + " assets within:" + timetook/1000D + " seconds");
 			}
