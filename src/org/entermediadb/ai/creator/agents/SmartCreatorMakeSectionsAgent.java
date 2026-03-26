@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.assistant.AssistantManager;
+import org.entermediadb.ai.creator.AiSmartCreatorSteps;
 import org.entermediadb.ai.creator.SmartCreatorManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.openedit.Data;
@@ -21,7 +22,9 @@ public class SmartCreatorMakeSectionsAgent extends BaseAgent
 	{
 		Data module = inContext.getCurrentEntityModule();
 		Data entity = inContext.getCurrentEntity();
-		getSmartCreatorManager().populateSectionsWithContents(inContext);
+		//getSmartCreatorManager().populateSectionsWithContents(inContext);
+		AiSmartCreatorSteps instructions = inContext.getAiSmartCreatorSteps();
+		getSmartCreatorManager().createSections(inContext, instructions);
 
 		super.process(inContext);
 		
