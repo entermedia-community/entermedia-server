@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.entermediadb.ai.assistant.AiCreation;
@@ -453,6 +454,15 @@ public class AgentContext extends BaseData implements CatalogEnabled
 		getScriptLogger().error(inLog);
 		addEntry("info",inLog);
 	}
+	
+	public Date getLastActive()
+	{
+		if(getLogs().size() > 0)
+		{
+			return getLogs().iterator().next().getDate();
+		}
+		return null;
+	}
 
 	protected void addEntry(String inString, String inLog)
 	{
@@ -463,8 +473,8 @@ public class AgentContext extends BaseData implements CatalogEnabled
 			entry.setCurrentAgentEnabledConfig( getCurrentAgentEnable().getAutomationEnabledData() );
 		}
 		getLogs().add(entry);
-
 	}
+	
 	public void error(Exception inE)
 	{
 		getScriptLogger().error(inE);
@@ -521,9 +531,25 @@ public class AgentContext extends BaseData implements CatalogEnabled
 		}
 		return fieldLogs;
 	}
+	
 	public void setLogs(Collection<LogEntry> inLogs)
 	{
 		fieldLogs = inLogs;
 	}
     
+	public int getTotalErrorLogs()
+	{
+		int count = 0;
+		for (Iterator<LogEntry> iterator = getLogs().iterator(); iterator.hasNext();) {
+			LogEntry logEntry = (LogEntry) iterator.next();
+			if("error".equals(logEntry.getLogType()))
+			{
+				count++;
+			}
+		}
+		
+		return count;
+	}
+	
+	
 }
