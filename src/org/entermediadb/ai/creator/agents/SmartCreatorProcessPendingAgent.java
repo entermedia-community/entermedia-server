@@ -63,6 +63,9 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 				
 				AiSmartCreatorSteps instructions = new AiSmartCreatorSteps(); //Fresh
 				instructions.setTargetModule(module);
+			
+				instructions.setTargetEntity(entity);
+				
 				inContext.setAiSmartCreatorSteps(instructions);
 				
 				getSmartCreatorManager().parseCreationPrompt(inContext, llmprompt);

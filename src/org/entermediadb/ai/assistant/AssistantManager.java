@@ -258,6 +258,9 @@ public class AssistantManager extends BaseAiManager
 		try
 		{
 			String functionName = null;
+			
+			
+			
 			String playbackentitymoduleid = inChannel.get("playbackentitymoduleid");
 			if( playbackentitymoduleid != null)
 			{
