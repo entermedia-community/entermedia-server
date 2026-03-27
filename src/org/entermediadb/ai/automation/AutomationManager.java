@@ -19,6 +19,7 @@ import org.entermediadb.events.EventTrigger;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.data.ValuesMap;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
 
@@ -116,6 +117,57 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 		}
 		scenerio.setValue("isrunning", false);
 		getMediaArchive().saveData("automationscenario",scenerio);
+	}
+	
+	public Map<String,MultiValued> getAllPositions()
+	{
+		Map<String,MultiValued> map = (Map<String,MultiValued>)getMediaArchive().getCacheManager().get("automationscenariopositionmap", "all");
+		if( map == null)
+		{
+			map = new HashMap();
+			
+			Collection positions = getMediaArchive().query("automationposition").all().search();
+			for (Iterator iterator = positions.iterator(); iterator.hasNext();)
+			{
+				MultiValued data = (MultiValued) iterator.next();
+				map.put( data.getId(), data);
+			}
+			getMediaArchive().getCacheManager().put("automationscenariopositionmap", "all",map);
+		}
+		return map;
+	}
+	public MultiValued getPosition(String inId)
+	{
+		MultiValued data = getAllPositions().get(inId);
+		return data;
+	}
+//	public Map<String,MultiValued> getEnabledPositions(String inScenario)
+//	{
+//		Collection<AgentEnabled> found = getEnabledAgents(inScenario);
+//		Map<String,MultiValued> map = new HashMap(found.size());
+//		for (Iterator iterator2 = found.iterator(); iterator2.hasNext();)
+//		{
+//			AgentEnabled agentEnabled = (AgentEnabled) iterator2.next();
+//			String enabledid = agentEnabled.getAutomationEnabledData().getId();
+//			MultiValued data = getAllPositions().get(enabledid);
+//			map.put(enabledid, data);
+//		}
+//		return map;
+//	}
+
+	public void savePositions(Collection<Map> inPositions)
+	{
+		Collection tosave = new ArrayList();
+		for (Iterator iterator = inPositions.iterator(); iterator.hasNext();)
+		{
+			Map map = (Map) iterator.next();
+			ValuesMap valuemap = new ValuesMap(map);
+			MultiValued data = getAllPositions().get(valuemap.get("id"));
+			data.setValue("posx", valuemap.getDouble("posx"));
+			data.setValue("posy", valuemap.getDouble("posy"));
+			tosave.add(data);
+		}
+		getMediaArchive().saveData("automationposition", tosave);
 	}
 	
 	public Collection<AgentEnabled> getEnabledAgents(String inId)

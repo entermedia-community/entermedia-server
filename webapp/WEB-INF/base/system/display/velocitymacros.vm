@@ -119,8 +119,7 @@ $!jsonUtil.toJsonArray($list)
 #set($rendercomma = false)
 #foreach($detail in $details)
 #if( ${detail.id} != "password" )
-
-#set($value = false)#set($value = $hit.getValue(${detail.id}))
+#set($value = $searcherManager.getValue($hit, $detail, $context.locale))
 #if($value)#if($rendercomma),#else
 #set($rendercomma = true)#end
 "${detail.id}":#if($detail.isMultiValue())[ 

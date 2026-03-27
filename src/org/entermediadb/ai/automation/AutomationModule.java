@@ -63,7 +63,10 @@ public class AutomationModule extends BaseMediaModule {
 		
 		Searcher agentEnabledSearcher = archive.getSearcher("automationagentenabled");
 		inReq.putPageValue("agentenabledsearcher", agentEnabledSearcher);
-		
+
+		Searcher automationpositionsearcher = archive.getSearcher("automationposition");
+		inReq.putPageValue("automationpositionsearcher", automationpositionsearcher);
+
 		Collection<MultiValued> agents = agentEnabledSearcher.query().exact("automationscenario", scenario.getId()).search();
 		inReq.putPageValue("agents", agents);
 	} 
