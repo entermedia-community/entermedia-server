@@ -38,7 +38,7 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 			
 			if (module == null)
 			{
-				inContext.error("No module found " + inContext.getCurrentAgentEnable().getAutomationEnabledData());
+				//inContext.error("No module found " + inContext.getCurrentAgentEnable().getAutomationEnabledData());
 				continue;
 			}
 			//Find pending then process each one
@@ -49,10 +49,11 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 			
 			AgentContext newagentcontext = new AgentContext(inContext);
 			
-			
+			inContext.info("Found " + found.size() + " records in " +inContext.getCurrentAgentEnable().getAutomationEnabledData() );
 			
 			for (Iterator iterator = found.iterator(); iterator.hasNext();)
 			{
+				long startTime = System.currentTimeMillis();
 				MultiValued entity = (MultiValued) iterator.next();
 				AgentContext childcontext = new AgentContext(inContext);
 				childcontext.setCurrentEntityModule( module );
@@ -61,8 +62,12 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 				newagentcontext.put("data", entity);
 				llmprompt = getMediaArchive().getReplacer().replace(llmprompt, newagentcontext.getContext());
 				
+				inContext.info("Processing: " + llmprompt);
+				
 				AiSmartCreatorSteps instructions = new AiSmartCreatorSteps(); //Fresh
 				instructions.setTargetModule(module);
+				instructions.setTargetEntity(entity);
+				
 				inContext.setAiSmartCreatorSteps(instructions);
 				
 				getSmartCreatorManager().parseCreationPrompt(inContext, llmprompt);
@@ -71,6 +76,8 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 				
 				entity.setValue("processingstatus","complete");
 				getMediaArchive().saveData(module.getId(), entity);
+				long duration = (System.currentTimeMillis() - startTime) / 1000L;
+				inContext.info("Finished processing in "+duration+"s: " + entity.getName());
 			}
 		}
 	}

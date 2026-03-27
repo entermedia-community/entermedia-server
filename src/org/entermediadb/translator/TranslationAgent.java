@@ -2,6 +2,7 @@ package org.entermediadb.translator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,7 +23,31 @@ public class TranslationAgent extends BaseAgent
 	{
 		InformaticsContext mycontext =  new InformaticsContext(inContext);
 		
-		Collection<MultiValued> pageofhits = mycontext.getRecordsToProcess();
+		
+		Collection pageofhits = mycontext.getAssetsToProcess();
+		if( pageofhits != null && !pageofhits.isEmpty())
+		{
+			List workinghits = new ArrayList(pageofhits); 
+			mycontext.setAssetsToProcess(workinghits);
+			MultiValued config = mycontext.getCurrentAgentEnable().getAgentConfig();
+			getTranslationManager().translateDataFields( inContext.getScriptLogger(), config, pageofhits);
+			for (Iterator iterator2 = pageofhits.iterator(); iterator2.hasNext();)
+			{
+				MultiValued data = (MultiValued) iterator2.next();
+				if(data.getBoolean("llmerror"))
+				{
+					workinghits.remove(data); //We do not process more.
+				}
+			}
+			mycontext.setAssetsToProcess(workinghits);
+		}
+		else
+		{
+			mycontext.setAssetsToProcess(Collections.emptyList());
+		}
+		
+		
+		pageofhits = mycontext.getRecordsToProcess();
 		if( pageofhits != null && !pageofhits.isEmpty())
 		{
 			List workinghits = new ArrayList(pageofhits);
@@ -37,7 +62,12 @@ public class TranslationAgent extends BaseAgent
 					workinghits.remove(data); //We do not process more.
 				}
 			}
+			
 			mycontext.setRecordsToProcess(workinghits);
+		}
+		else
+		{
+			mycontext.setRecordsToProcess(Collections.emptyList());
 		}
 		super.process(mycontext);
 	}
