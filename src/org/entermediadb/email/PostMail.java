@@ -196,7 +196,7 @@ public class PostMail
 	public void postMail(List<InternetAddress> recipients, List<InternetAddress> blindrecipients, String subject, String inHtml, String inText, InternetAddress from, List inAttachments, Map inProperties) throws MessagingException
 	{
 		try {
-		    Class.forName("com.sun.mail.util.SharedByteArrayInputStream");
+		    Class.forName("javax.mail.Session");
 		    // Safe to use JavaMail code
 		} catch (ClassNotFoundException e) {
 		    log.warn("JavaMail not available. Skipping mail processing.");
