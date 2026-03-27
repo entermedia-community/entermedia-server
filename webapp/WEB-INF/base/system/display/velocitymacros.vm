@@ -64,15 +64,7 @@ $!jsonUtil.toJsonArray($list)
 #macro(jrender $object)$!jsonUtil.escape($object)#end
 #macro(json $hit $details)
 { 
-#set($foreachcount = 0)
-#foreach($detail in $details)
-#set($value = $searcherManager.getValue($hit, $detail, $context.locale))
-#ifnotnull($value)
-#if($foreachcount >= 1),#end
-#rendervalue($hit $detail $value)
-#set($foreachcount = $foreachcount+1)
-#end
-#end
+#jsonpartial($hit, $details)
 }
 #end 
 
@@ -116,27 +108,13 @@ $!jsonUtil.toJsonArray($list)
 
 
 #macro(jsonpartial $hit $details)
-#set($rendercomma = false)
+#set($foreachcount = 0)
 #foreach($detail in $details)
-#if( ${detail.id} != "password" )
 #set($value = $searcherManager.getValue($hit, $detail, $context.locale))
-#if($value)#if($rendercomma),#else
-#set($rendercomma = true)#end
-"${detail.id}":#if($detail.isMultiValue())[ 
-#foreach($mvalue in $hit.getValues($detail.id))
-#if(${foreach.count} > 1),#end
-#datajsonmin($detail $mvalue)
-#end]
-#elseif($detail.isList()) 
-#datajsonmin($detail $value)
-#elseif($detail.isMultiLanguage()) 
-#jsonmap($detail $value)
-#elseif($detail.isDate()||$detail.isDateTime())"$jsonUtil.formatDateObj($value)"
-#elseif($detail.isDataType("nested"))
-$!jsonUtil.toJsonArray($value)
-#else #jesc($hit.getText($detail.id,$context.getLocale()))
-#end
-#end
+#ifnotnull($value)
+#if($foreachcount >= 1),#end
+#rendervalue($hit $detail $value)
+#set($foreachcount = $foreachcount+1)
 #end
 #end
 #end

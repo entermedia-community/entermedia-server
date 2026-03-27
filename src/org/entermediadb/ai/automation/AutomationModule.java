@@ -4,18 +4,14 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.llm.AgentContext;
-import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
-import org.entermediadb.asset.upload.FileUpload;
-import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -25,7 +21,6 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.InputStreamItem;
-import org.openedit.util.DateStorageUtil;
 
 public class AutomationModule extends BaseMediaModule {
 	private static final Log log = LogFactory.getLog(AutomationModule.class);
@@ -187,6 +182,17 @@ public class AutomationModule extends BaseMediaModule {
 		String scenarioid = (String) layout.get("scenarioid");
 		String base64 = (String) layout.get("thumbnail");
 		saveAutomationSnapshot(inReq, scenarioid, base64);
+	}
+	
+	public void savePositions(WebPageRequest inReq)
+	{
+		Map positions = inReq.getJsonRequest();
+		if(positions == null)
+		{
+			return;
+		}
+		Collection<Map> positionsmap = (Collection<Map>)positions.get("positions");
+		getAutomationManager(inReq).savePositions(positionsmap);
 	}
 	
 
