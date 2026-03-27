@@ -136,9 +136,28 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 		}
 		return map;
 	}
-	public MultiValued getPosition(String inId)
+	
+	public Map<String,MultiValued> getAllLabels()
 	{
-		MultiValued data = getAllPositions().get(inId);
+		Map<String,MultiValued> map = (Map<String,MultiValued>)getMediaArchive().getCacheManager().get("automationlabelsmap", "all");
+		if( map == null)
+		{
+			map = new HashMap();
+			
+			Collection positions = getMediaArchive().query("automationlabel").all().search();
+			for (Iterator iterator = positions.iterator(); iterator.hasNext();)
+			{
+				MultiValued data = (MultiValued) iterator.next();
+				map.put( data.getId(), data);
+			}
+			getMediaArchive().getCacheManager().put("automationlabelsmap", "all", map);
+		}
+		return map;
+	}
+	
+	public Data getPosition(String inId)
+	{
+		Data data = getAllPositions().get(inId);
 		return data;
 	}
 //	public Map<String,MultiValued> getEnabledPositions(String inScenario)
@@ -163,11 +182,80 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 			Map map = (Map) iterator.next();
 			ValuesMap valuemap = new ValuesMap(map);
 			MultiValued data = getAllPositions().get(valuemap.get("id"));
+			if( data == null)
+			{
+				data = (MultiValued)getMediaArchive().getSearcher("automationposition").createNewData();
+				data.setId((String) valuemap.get("id"));
+			}
 			data.setValue("posx", valuemap.getDouble("posx"));
 			data.setValue("posy", valuemap.getDouble("posy"));
 			tosave.add(data);
 		}
 		getMediaArchive().saveData("automationposition", tosave);
+		getMediaArchive().getCacheManager().remove("automationscenariopositionmap", "all");
+	}
+	
+	public void connectScenarios(Collection<Map> inConnections)
+	{
+		Collection ids = new ArrayList();
+		Map connections = new HashMap();
+		for (Iterator iterator = inConnections.iterator(); iterator.hasNext();)
+		{
+			Map map = (Map) iterator.next();
+			if(map.containsKey("connectedtop"))
+			{
+				ids.add(map.get("id"));
+
+				connections.put(map.get("id"), map.get("connectedtop"));
+			}
+		}
+		
+		Collection<Data> scenarios = getMediaArchive().query("automationscenario").all().search();
+		
+		Collection tosave = new ArrayList();
+		
+		for (Iterator iterator = scenarios.iterator(); iterator.hasNext();)
+		{
+			Data scenario = (Data) iterator.next();
+			String id = scenario.getId();
+			String connectedtop = (String) connections.get(id);
+			if( connectedtop != null)
+			{
+				scenario.setValue("connectedtop", connectedtop);
+				tosave.add(scenario);
+			}
+		}
+		
+		getMediaArchive().saveData("automationscenario", tosave);
+
+	}
+	
+	public void saveLabels(Collection<Map> inData)
+	{
+		Collection tosave = new ArrayList();
+
+		for (Iterator iterator = inData.iterator(); iterator.hasNext();)
+		{
+			Map map = (Map) iterator.next();
+			
+			String id = (String) map.get("id");
+			
+			Data label = getAllLabels().get(id);
+			if( label == null)
+			{
+				label = (Data)getMediaArchive().getSearcher("automationlabel").createNewData();
+				label.setId(id);
+			}
+			label.setValue("text", map.get("text"));
+			label.setValue("strokecolor", map.get("strokecolor"));
+			label.setValue("bgcolor", map.get("bgcolor"));
+			label.setValue("connectedbottom", map.get("connectedbottom"));
+			
+			tosave.add(label);
+		} 
+		
+		getMediaArchive().saveData("automationlabel", tosave);
+
 	}
 	
 	public Collection<AgentEnabled> getEnabledAgents(String inId)

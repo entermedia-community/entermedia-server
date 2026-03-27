@@ -35,6 +35,11 @@ public class AutomationModule extends BaseMediaModule {
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		
+		inReq.putPageValue("automationManager", getAutomationManager(inReq));
+		
+		Searcher automationpositionsearcher = archive.getSearcher("automationposition");
+		inReq.putPageValue("automationpositionsearcher", automationpositionsearcher);
+		
 		String scenarioid = inReq.getRequestParameter("scenarioid");
 		
 		if(scenarioid == null)
@@ -49,18 +54,20 @@ public class AutomationModule extends BaseMediaModule {
 			
 			Searcher scenarioSearcher = archive.getSearcher("automationscenario");
 			inReq.putPageValue("scenariosearcher", scenarioSearcher);
+			
+			Collection<Data> labels = archive.query("automationlabel").search();
+			inReq.putPageValue("labels", labels);
+			
+			Searcher labelSearcher = archive.getSearcher("automationlabel");
+			inReq.putPageValue("labelsearcher", labelSearcher);
 			return;
 		}
-		
 		
 		Data scenario = archive.query("automationscenario").exact("id", scenarioid).searchOne();
 		inReq.putPageValue("scenario", scenario);
 		
 		Searcher agentEnabledSearcher = archive.getSearcher("automationagentenabled");
 		inReq.putPageValue("agentenabledsearcher", agentEnabledSearcher);
-
-		Searcher automationpositionsearcher = archive.getSearcher("automationposition");
-		inReq.putPageValue("automationpositionsearcher", automationpositionsearcher);
 
 		Collection<MultiValued> agents = agentEnabledSearcher.query().exact("automationscenario", scenario.getId()).search();
 		inReq.putPageValue("agents", agents);
@@ -184,15 +191,22 @@ public class AutomationModule extends BaseMediaModule {
 		saveAutomationSnapshot(inReq, scenarioid, base64);
 	}
 	
-	public void savePositions(WebPageRequest inReq)
+	public void saveAutomationPreview(WebPageRequest inReq)
 	{
-		Map positions = inReq.getJsonRequest();
-		if(positions == null)
+		Map payload = inReq.getJsonRequest();
+		if(payload == null)
 		{
 			return;
 		}
-		Collection<Map> positionsmap = (Collection<Map>)positions.get("positions");
-		getAutomationManager(inReq).savePositions(positionsmap);
+		
+		Collection<Map> scenarios = (Collection<Map>) payload.get("scenarios");
+		getAutomationManager(inReq).savePositions(scenarios);
+		getAutomationManager(inReq).connectScenarios(scenarios);
+		
+		Collection<Map> labels = (Collection<Map>) payload.get("labels");
+		getAutomationManager(inReq).savePositions(labels);
+		getAutomationManager(inReq).saveLabels(labels);
+		
 	}
 	
 
