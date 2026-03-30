@@ -199,15 +199,16 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 	{
 		Collection ids = new ArrayList();
 		Map connections = new HashMap();
+
 		for (Iterator iterator = inConnections.iterator(); iterator.hasNext();)
 		{
 			Map map = (Map) iterator.next();
 			if(map.containsKey("connectedtop"))
 			{
 				ids.add(map.get("id"));
-
-				connections.put(map.get("id"), map.get("connectedtop"));
 			}
+			
+			connections.put(map.get("id"), map.get("connectedtop"));
 		}
 		
 		Collection<Data> scenarios = getMediaArchive().query("automationscenario").all().search();
@@ -219,11 +220,9 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 			Data scenario = (Data) iterator.next();
 			String id = scenario.getId();
 			String connectedtop = (String) connections.get(id);
-			if( connectedtop != null)
-			{
-				scenario.setValue("connectedtop", connectedtop);
-				tosave.add(scenario);
-			}
+			
+			scenario.setValue("connectedtop", connectedtop);
+			tosave.add(scenario);
 		}
 		
 		getMediaArchive().saveData("automationscenario", tosave);
