@@ -8,6 +8,12 @@
 		},
 		{
 			"path": "../extension-openinstitute"
+		},
+		{
+			"path": "../tomcat9"
+		},
+		{
+			"path": "../extension-openedit"
 		}
 	],
 	"settings": {}

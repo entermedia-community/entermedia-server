@@ -177,6 +177,7 @@ public class McpModule extends BaseMediaModule
 	}
 	 */
 	
+	//Remove all this
 	public void handleMcpHttpRequest(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);

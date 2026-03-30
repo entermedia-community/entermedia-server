@@ -2772,9 +2772,6 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-		<property name="render">
-			<ref bean="velocityRenderUtil" />
-		</property>
 	</bean>
 
 
@@ -2782,15 +2779,16 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-		<property name="renderUtil">
-			<ref bean="velocityRenderUtil" />
-		</property>
+		
 	</bean>
 
 
 	<bean id="mcpManager" class="org.entermediadb.mcp.McpManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
+		</property>
+		<property name="renderUtil">
+			<ref bean="velocityRenderUtil" />
 		</property>
 
 	</bean>

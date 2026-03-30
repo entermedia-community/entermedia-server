@@ -46,7 +46,7 @@ public class JsonRpcResponseBuilder {
         return this;
     }
     
-    public JsonRpcResponseBuilder withToolsList(String toolsStr) throws Exception  {
+    public JsonRpcResponseBuilder withToolsList(String toolsStr)  {
     	JSONObject result = new JSONObject();
     	
     	try {

@@ -23,6 +23,7 @@ public class McpConnection implements Runnable
 	private volatile boolean active = true;
 	protected User fieldUser;
 	protected String fieldKey;
+	protected String fieldSessionId;
 
 
 	public String getKey()
@@ -33,6 +34,16 @@ public class McpConnection implements Runnable
 	public void setKey(String inKey)
 	{
 		fieldKey = inKey;
+	}
+
+	public String getSessionId()
+	{
+		return fieldSessionId;
+	}
+
+	public void setSessionId(String inSessionId)
+	{
+		fieldSessionId = inSessionId;
 	}
 
 	public User getUser()
@@ -60,6 +71,7 @@ public class McpConnection implements Runnable
 		res.setCharacterEncoding("UTF-8");
 		res.setHeader("Cache-Control", "no-cache");
 		res.setHeader("Connection", "keep-alive");
+		res.setHeader("mcp-session-id", getSessionId());
 
 		req.setCancelActions(true);
 		req.setHasRedirected(true);
@@ -72,6 +84,7 @@ public class McpConnection implements Runnable
 		{
 			throw new OpenEditException("Failed to get SSE output stream", e);
 		}
+	
 	}
 	
 	public void openStream(String inEndpoint)
@@ -132,7 +145,7 @@ public class McpConnection implements Runnable
 		{
 			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(data);
-			String cleanJson = ((JSONObject) obj).toJSONString();
+			String cleanJson = ((JSONObject) obj).toJSONString();	
 
 			log.info("Session ID Was: + " + getSessionId() + " DATA: " + cleanJson);
 
@@ -188,8 +201,5 @@ public class McpConnection implements Runnable
 		return active;
 	}
 
-	private String getSessionId()
-	{
-		return req.getRequest().getSession().getId();
-	}
+
 }
