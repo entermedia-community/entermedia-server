@@ -2,6 +2,7 @@ package org.entermediadb.ai.automation;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Iterator;
@@ -206,6 +207,61 @@ public class AutomationModule extends BaseMediaModule {
 		Collection<Map> labels = (Collection<Map>) payload.get("labels");
 		getAutomationManager(inReq).savePositions(labels);
 		getAutomationManager(inReq).saveLabels(labels);
+		
+	}
+	
+	public void deletePreviewNodes(WebPageRequest inReq)
+	{
+		Map payload = inReq.getJsonRequest();
+		if(payload == null)
+		{
+			return;
+		}
+		
+		Collection<Map> deleteIds = (Collection<Map>) payload.get("deleteIds");
+		
+		Collection<String> scenarioIds = new ArrayList();
+		Collection<String> agentIds = new ArrayList();
+		Collection<String> labelIds = new ArrayList();
+		
+		for (Iterator iterator = deleteIds.iterator(); iterator.hasNext();) {
+			Map node = (Map) iterator.next();
+			if(node.get("type").equals("scenario"))
+			{
+				scenarioIds.add((String) node.get("id"));
+			}
+			else if(node.get("type").equals("agent"))
+			{
+				agentIds.add((String) node.get("id"));
+			}
+			else if(node.get("type").equals("label"))
+			{
+				labelIds.add((String) node.get("id"));
+			}
+		}
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		if(scenarioIds.size() > 0)
+		{
+			Searcher scenarioSearcher = archive.getSearcher("automationscenario");
+			Collection<Data> scenarios = scenarioSearcher.query().ids(scenarioIds).search();
+			scenarioSearcher.deleteAll(scenarios, inReq.getUser());
+		}
+		
+		if(agentIds.size() > 0)
+		{
+			Searcher agentSearcher = archive.getSearcher("automationagentenabled");
+			Collection<Data> agents = agentSearcher.query().ids(agentIds).search();
+			agentSearcher.deleteAll(agents, inReq.getUser());
+		}
+		
+		if(labelIds.size() > 0)
+		{
+			Searcher labelSearcher = archive.getSearcher("automationlabel");
+			Collection<Data> labels = labelSearcher.query().ids(labelIds).search();
+			labelSearcher.deleteAll(labels, inReq.getUser());
+		}
 		
 	}
 	
