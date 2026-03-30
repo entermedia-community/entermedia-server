@@ -81,6 +81,7 @@ public class McpManager implements CatalogEnabled {
         
         McpConnection conn = new McpConnection(inReq);
         connections.put(sessionId, conn);
+        conn.connect();
         conn.openStream(endpoint);
         conn.setKey(key);
         
