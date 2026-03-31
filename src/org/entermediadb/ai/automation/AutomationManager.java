@@ -103,7 +103,7 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 		inContext.setCurrentScenerio(scenerio);
 		
 		//Lock it
-		scenerio.setValue("lastsranstart", new Date());
+		scenerio.setValue("lastrunstart", new Date());
 		scenerio.setValue("isrunning", true);
 		
 		Collection<AgentEnabled> enabled = getEnabledAgents(inId);
