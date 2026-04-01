@@ -13,11 +13,15 @@
 			"path": "../tomcat9",
 		},
 		{
-			"path": "../extension-openedit"
+			"path": "../extension-openedit",
 		},
 		{
-			"path": "../app-emshare"
-		}
+			"path": "../app-emshare",
+		},
 	],
-	"settings": {},
+	"settings": {
+		"cSpell.words": ["isrunning"],
+		"java.autobuild.enabled": true,
+		"java.debug.settings.hotCodeReplace": "auto",
+	},
 }
