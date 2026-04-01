@@ -13,14 +13,11 @@
 			"path": "../tomcat9",
 		},
 		{
-			"path": "../extension-openedit",
+			"path": "../extension-openedit"
 		},
 		{
-			"path": "../entermedia-clients",
-		},
-		{
-			"path": "../app-emshare",
-		},
+			"path": "../app-emshare"
+		}
 	],
 	"settings": {},
 }

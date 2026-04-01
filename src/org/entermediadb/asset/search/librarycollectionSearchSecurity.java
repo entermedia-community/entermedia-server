@@ -60,7 +60,6 @@ public class librarycollectionSearchSecurity implements SearchSecurity
 		if (profile != null && profile.isInRole("administrator"))
 		{
 			SearchQuery child = inSearcher.query()
-					.all()
 					.notgroup("collectiontype", onlytypes)
 					.getQuery();
 			inQuery.addChildQuery(child);
