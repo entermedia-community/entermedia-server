@@ -21,19 +21,25 @@ public class ToolsCallAgent extends BaseAgent
 		LlmConnection llmConnection =	getMediaArchive().getLlmConnection("toolcallagent");
 		
 		Collection<AgentEnabled> children = inContext.getCurrentAgentEnable().getChildren();
-		subcontext.put("agentoptions",children);
-		LlmResponse res = llmConnection.callToolsFunction(subcontext,"toolcallagent");
-
-		String selectedagent = (String) res.getMessageStructured().get("selectedagent");
-		for (AgentEnabled agentEnabled : children)
+		if( children.size() > 1)
 		{
-			if( agentEnabled.getAgentConfig().getId().equals(selectedagent))
+			subcontext.put("agentoptions",children);
+			LlmResponse res = llmConnection.callToolsFunction(subcontext,"toolcallagent");
+
+			String selectedagent = (String) res.getMessageStructured().get("selectedagent");
+			for (AgentEnabled agentEnabled : children)
 			{
-				inContext.info("Selected agent: " + agentEnabled.getAgentConfig().getName());
-				subcontext.setCurrentAgentEnable(agentEnabled);
-				agentEnabled.getAgent().process(subcontext);
+				if( agentEnabled.getAgentConfig().getId().equals(selectedagent))
+				{
+					inContext.info("Selected agent: " + agentEnabled.getAgentConfig().getName());
+					subcontext.setCurrentAgentEnable(agentEnabled);
+					agentEnabled.getAgent().process(subcontext);
+				}
 			}
 		}
-		//super.process(inContext);
+		else
+		{
+			super.process(inContext);
+		}
 	}
 }
