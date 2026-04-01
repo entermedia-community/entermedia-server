@@ -48,6 +48,12 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 	public Collection<AgentContext> getRecentScenerioContext(String inScenerio)
 	{
 		Collection<AgentContext> found = fieldRecentContextByAutomation.get(inScenerio);
+		if( found != null)
+		{
+			List<AgentContext> list = new ArrayList<>(found);
+			java.util.Collections.reverse(list);
+			return list;
+		}
 		return found;
 	}
 	
@@ -103,6 +109,7 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 		inContext.setCurrentScenerio(scenerio);
 		
 		//Lock it
+		inContext.setValue("lastrunstart", new Date());
 		scenerio.setValue("lastrunstart", new Date());
 		scenerio.setValue("isrunning", true);
 		
