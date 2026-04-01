@@ -368,12 +368,11 @@ jQuery(document).ready(function () {
 
 		messages
 			.sort((a, b) => {
-				const dateA = new Date(a.dataset.createdat);
-				const dateB = new Date(b.dataset.createdat);
+				const dateA = parseInt(a.dataset.createdat);
+				const dateB = parseInt(b.dataset.createdat);
 				return dateA - dateB;
 			})
 			.forEach((el) => container.append(el));
-		console.log("sorted...");
 	}
 
 	let keepAliveTimeoutID = 0;

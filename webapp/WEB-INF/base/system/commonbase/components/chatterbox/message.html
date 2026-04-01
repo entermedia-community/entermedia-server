@@ -27,8 +27,8 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 #if($chat.messagetype && $pages.doesExist($messagetype))
 	$pages.include($messagetype, $context)
 #else
-
-<div id="chatter-message-$!{chat.id}" data-createdat="${chat.date}" data-messagetype="$!{chat.messagetype}" class="msg-bubble">
+#set($messagetime = $chat.getDate("date"))
+<div id="chatter-message-$!{chat.id}" data-createdat="$messagetime.getTime()" data-messagetype="$!{chat.messagetype}" class="msg-bubble">
 	<div class="chatterbox-chat" role="alert" >
 		<div class="chat-icon">
 			#if ($chat.user == "agent")
