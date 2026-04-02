@@ -2984,7 +2984,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						StringBuffer desc = new StringBuffer();
 						populateKeywords(desc, inData, inDetails);
 						//populateFullText(inData, desc);
-
+						if (desc.length() > getFullTextCap()) {
+				            log.warn("Truncating massive full-text for asset: " + inData.getId());
+				            desc.setLength(getFullTextCap()); // Default is 25000
+				        }
 						if (desc.length() > 0)
 						{
 							value = fixSpecialCharacters(desc);
