@@ -11,6 +11,7 @@ import org.entermediadb.ai.assistant.AssistantManager;
 import org.entermediadb.ai.assistant.SearchingManager;
 import org.entermediadb.ai.creator.SmartCreatorManager;
 import org.entermediadb.ai.llm.AgentContext;
+import org.json.simple.JSONArray;
 import org.openedit.Data;
 import org.openedit.hittracker.HitTracker;
 
@@ -35,11 +36,11 @@ public class SmartCreatorFindMemoryFilesAgent extends BaseAgent
 
 		AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
 		Collection<String> localparentIds = assistant.findDocIdsForEntity(module.getId(), entity.getId());
-		Set<String> parentIds = new HashSet();
-		Collection<String> finalparentIds = new ArrayList();
+		//Set<String> parentIds = new HashSet();
+		Set<String> finalparentIds = new HashSet<>();
 		if( localparentIds != null)
 		{
-			parentIds.addAll(localparentIds);
+			finalparentIds.addAll(localparentIds);
 		}
 		Collection<String> searchcats = entity.getValues("searchcategory");
 		if( searchcats != null && !searchcats.isEmpty())
@@ -71,8 +72,9 @@ public class SmartCreatorFindMemoryFilesAgent extends BaseAgent
 			inContext.error("Error state, No embeded Documents to Process, dont process more"); //Mark as error?
 			return;
 		}
-		
-		inContext.getAiSmartCreatorSteps().setEmbeddedParentIds(finalparentIds);
+		JSONArray array = new JSONArray();
+		array.addAll(finalparentIds);
+		inContext.getAiSmartCreatorSteps().setEmbeddedParentIds(array);
 		super.process(inContext);
 		
 	}
