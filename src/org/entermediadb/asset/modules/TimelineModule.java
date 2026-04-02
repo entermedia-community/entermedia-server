@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.HttpClient;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
@@ -40,7 +39,6 @@ import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.FileUtils;
 import org.openedit.util.MathUtils;
 import org.openedit.util.OutputFiller;
-import org.openedit.util.URLUtilities;
 
 public class TimelineModule extends BaseMediaModule
 {
