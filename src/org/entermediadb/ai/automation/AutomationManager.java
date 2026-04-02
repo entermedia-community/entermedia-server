@@ -181,6 +181,13 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 //		return map;
 //	}
 
+	public void savePositions(Map inPosition)
+	{
+		Collection<Map> tosave = new ArrayList<Map>(); 
+		tosave.add(inPosition);
+		savePositions(tosave);
+	}
+
 	public void savePositions(Collection<Map> inPositions)
 	{
 		Collection tosave = new ArrayList();
@@ -196,6 +203,11 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 			}
 			data.setValue("posx", valuemap.getDouble("posx"));
 			data.setValue("posy", valuemap.getDouble("posy"));
+			Double zoom = valuemap.getDouble("zoom");
+			if( zoom != null)
+			{
+				data.setValue("zoom", zoom);
+			}
 			tosave.add(data);
 		}
 		getMediaArchive().saveData("automationposition", tosave);
