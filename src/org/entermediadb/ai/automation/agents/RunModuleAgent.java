@@ -15,10 +15,14 @@ public class RunModuleAgent extends RunEventAgent
 		String operation = inContext.getCurrentAgentEnable().getAgentConfig().get("runoperation");
 		
 		operation = operation.replaceFirst("_", ".");
+
+		inContext.info("Running: " + operation);
 		
 		WebPageRequest request =  (WebPageRequest)inContext.getContextValue("webpagerequest");
-		runPathEvent(inContext, operation, request);
+		//runPathEvent(inContext, operation, request);
 		getModuleManager().execute(operation,request);
+
+		super.process(inContext);
 	}
 
 	

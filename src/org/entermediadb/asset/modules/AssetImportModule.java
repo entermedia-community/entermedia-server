@@ -53,9 +53,7 @@ public class AssetImportModule  extends BaseMediaModule
 		for (Iterator iterator = mhits.iterator(); iterator.hasNext();) {
 			Data hit = (Data) iterator.next();
 			Asset asset = (Asset)asssetsearcher.loadData(hit);
-			
 			archive.removeGeneratedImages(asset,true);
-			
 			massets.add(asset);
 		}
 		if(!massets.isEmpty()) {
@@ -63,8 +61,6 @@ public class AssetImportModule  extends BaseMediaModule
 			archive.firePathEvent("importing/importassets",inReq.getUser(),massets);
 		}
 
-		
-		
 		HitTracker hits = archive.query("asset").exact("importstatus", "created").search();
 		Collection<Asset> assets = new ArrayList(1000);
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
@@ -79,7 +75,7 @@ public class AssetImportModule  extends BaseMediaModule
 			}
 		}
 		inReq.putPageValue("hits", assets);
-		archive.firePathEvent("importing/importassets",inReq.getUser(),assets);
+		//archive.firePathEvent("importing/importassets",inReq.getUser(),assets);
 		
 	}
 	
@@ -87,10 +83,13 @@ public class AssetImportModule  extends BaseMediaModule
 	{
 		//remove event and replace with automation Call the agents event instead
 		MediaArchive archive = getMediaArchive(inReq);
+
+		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
 		Collection<Asset> hits = (Collection<Asset>)inReq.getPageValue("hits");
+
 		if( hits == null)
 		{
-			log.error("No hits found");
+			logger.error("No hits found");
 			return;
 		}
 
@@ -99,14 +98,14 @@ public class AssetImportModule  extends BaseMediaModule
 			Asset newasset = (Asset) iterator.next();
 			newasset.setValue("importstatus", "needsmetadata"); //Will be saved at bottom
 		}
-
+		
+		logger.info("Processing " + hits.size() + " imported assets");
 		
 		//Set the asset type
 		AssetTypeManager manager = new AssetTypeManager();
-		manager.setContext(inReq);
-		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
+	
 		manager.setLog(logger);
-		manager.setAssetTypes(hits, true); 
+		manager.setAssetTypes(archive, hits, true); 
 
 		//save everything
 		List tosave = new ArrayList(); //Might be a hit tracker
