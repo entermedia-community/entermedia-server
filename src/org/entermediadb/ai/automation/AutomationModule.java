@@ -152,6 +152,12 @@ public class AutomationModule extends BaseMediaModule {
 		{
 			return;
 		}
+
+		Map canvas = (Map) layout.get("canvas");
+		if(canvas != null) {
+			getAutomationManager(inReq).savePositions(canvas);
+		}
+
 		JSONArray data = (JSONArray) layout.get("data");
 		if(data == null)
 		{
@@ -198,6 +204,11 @@ public class AutomationModule extends BaseMediaModule {
 		if(payload == null)
 		{
 			return;
+		}
+
+		Map canvas = (Map) payload.get("canvas");
+		if(canvas != null) {
+			getAutomationManager(inReq).savePositions(canvas);
 		}
 		
 		Collection<Map> scenarios = (Collection<Map>) payload.get("scenarios");
