@@ -1,17 +1,14 @@
 package org.entermediadb.ai.automation.agents;
 
 import java.util.Collection;
-import java.util.Map;
 
 import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.AgentEnabled;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
-import org.openedit.MultiValued;
-import org.openedit.WebPageRequest;
 
-public class ToolsCallAgent extends BaseAgent
+public class ToolsCallingAgent extends BaseAgent
 {
 	@Override
 	public void process(AgentContext inContext)

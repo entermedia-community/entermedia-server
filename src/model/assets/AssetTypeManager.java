@@ -18,9 +18,9 @@ import org.openedit.util.PathUtilities;
 public class AssetTypeManager extends EnterMediaObject
 {
 
-	public void setAssetTypes(Collection<Asset> inAssets, boolean force)
+	public void setAssetTypes(MediaArchive mediaarchive, Collection<Asset> inAssets, boolean force)
 	{
-		MediaArchive mediaarchive = (MediaArchive) context.getPageValue("mediaarchive");//Search for all files looking for videos
+		//MediaArchive mediaarchive = (MediaArchive) context.getPageValue("mediaarchive");//Search for all files looking for videos
 
 		AssetSearcher searcher = mediaarchive.getAssetSearcher();
 
@@ -76,7 +76,7 @@ public class AssetTypeManager extends EnterMediaObject
 		String fileformat = hit.get("fileformat");
 		//First check to see if we have a path mask for the asset type
 
-		HitTracker types = typesearcher.query().all().sort("ordering").named("typehits").search(context);
+		HitTracker types = typesearcher.query().all().sort("ordering").named("typehits").search();
 		for (Iterator iterator = types.iterator(); iterator.hasNext();)
 		{
 			Data it = (Data) iterator.next();

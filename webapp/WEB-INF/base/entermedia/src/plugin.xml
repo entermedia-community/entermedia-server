@@ -2702,6 +2702,17 @@
 		</property>
 	</bean>
 
+	<bean id="assetImportCreated" class="org.entermediadb.ai.automation.agents.AssetImportCreated" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+	<bean id="assetImportImported" class="org.entermediadb.ai.automation.agents.AssetImportImported" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
 	<bean id="runEventAgent" class="org.entermediadb.ai.automation.agents.RunEventAgent" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -2782,7 +2793,6 @@
 		
 	</bean>
 
-
 	<bean id="mcpManager" class="org.entermediadb.mcp.McpManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -2792,10 +2802,6 @@
 		</property>
 
 	</bean>
-
-
-
-
 
 	<bean id="dropboxManager" class="org.entermediadb.dropbox.DropboxManager" scope="prototype">
 		<property name="moduleManager">

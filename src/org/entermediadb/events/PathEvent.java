@@ -371,11 +371,15 @@ public class PathEvent extends BaseData implements Comparable, TextAppender
 
 		//Thread thread = Thread.currentThread();
 		//ClassLoader oldLoader = thread.getContextClassLoader();
-		ScriptLogger logs = null;
+		ScriptLogger logs = (ScriptLogger)inReq.getPageValue("log");
+		if (logs == null)
+		{
+			logs = new ScriptLogger();
+			inReq.putPageValue("log", logs);
+		}
 		StringWriter output = new StringWriter();
 		try
 		{
-			logs = new ScriptLogger();
 			
 			//thread.setContextClassLoader(getClassLoader());
 			Page page = request.getPage();
