@@ -41,7 +41,7 @@ public class McpGenerator implements Generator
 	        	manager.createConnection(archive,inReq);
 	        	//manager.staConnection(archive,inReq);
 	        	//This won't ever return - it stays alive indefinitely
-	            return;    
+ 	            return;    
 
 	         }
 	        // Handle SSE connect (GET)	       
@@ -88,7 +88,7 @@ public class McpGenerator implements Generator
 	        		return;
 	        	}
 
-				McpConnection connection = manager.getConnection(mcpSessionId);
+									McpConnection connection = manager.getConnection(mcpSessionId);
 
 	        	if (mcpSessionId != null && !mcpSessionId.isEmpty()) {
 	        		inReq.getResponse().setHeader("mcp-session-id", mcpSessionId);

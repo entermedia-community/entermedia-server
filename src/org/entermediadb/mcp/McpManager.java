@@ -133,6 +133,13 @@ public class McpManager implements CatalogEnabled {
        	String appid = inReq.findPathValue("applicationid");
         UserProfile profile = inReq.getUserProfile();
         String response = null;
+        if(cmd.equals("logging/setLevel"))
+		{
+            //What is the log level?
+			response = new JsonRpcResponseBuilder(id)
+					.withServer("eMedia Live")
+					.build();
+		}
         if(cmd.equals("tools/list"))
 		{
 					String fp = "/" + appid + "/ai/mcp/method/tools/list.json";
