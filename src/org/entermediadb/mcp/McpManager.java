@@ -14,6 +14,7 @@ import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
@@ -126,52 +127,76 @@ public class McpManager implements CatalogEnabled {
     }
 
     public void handleCall(WebPageRequest inReq, McpConnection inConnection, String cmd, JSONObject payload) throws Exception{
-    
-        Object id = payload.get("id");
-		
-		inReq.putPageValue("id", id);
+        if (inConnection == null)
+        {
+            throw new OpenEditException("No active MCP connection for command: " + cmd);
+        }
+
+        Object id = payload != null ? payload.get("id") : null;
+
+        inReq.putPageValue("id", id);
        	String appid = inReq.findPathValue("applicationid");
         UserProfile profile = inReq.getUserProfile();
-        String response = null;
-        if(cmd.equals("logging/setLevel"))
-		{
-            //What is the log level?
-			response = new JsonRpcResponseBuilder(id)
-					.withServer("eMedia Live")
-					.build();
-		}
-        if(cmd.equals("tools/list"))
-		{
-					String fp = "/" + appid + "/ai/mcp/method/tools/list.json";
-					inReq.putPageValue("modules", profile.getEntities());
-					
-					String toolsArrString = getRenderUtil().loadInputFromTemplate(inReq, fp);
-					
-					 response = new JsonRpcResponseBuilder(id)
-							.withToolsList(toolsArrString)
-							.build();
-		}
-		else if(cmd.equals("tools/call"))
-		{
-					String siteid = inReq.findValue("siteid");
-					inReq.putPageValue("mcpapplicationid", siteid + "/find");
-					String fp = "/" + appid + "/ai/mcp/method/tools/list.json";
-					
-					String text =   getRenderUtil().loadInputFromTemplate(inReq, fp);
-					
-					text = text.replaceAll("(?m)^\\s*$\\n?", "");
-					text = text.replaceAll("(\\r?\\n){2,}", "\n");
-					
-					response = new JsonRpcResponseBuilder(id)
-							.withResponse(text, false)
-							.build();
-		}
+        JSONObject params = payload != null ? (JSONObject) payload.get("params") : null;
+        String response;
+
+        if ("logging/setLevel".equals(cmd))
+        {
+            response = new JsonRpcResponseBuilder(id)
+                    .withServer("eMedia Live")
+                    .build();
+        }
+        else if ("tools/list".equals(cmd))
+        {
+                    if (profile == null)
+                    {
+                        response = new JsonRpcResponseBuilder(id)
+                                .withResponse("Authentication failed! User profile not found.", true)
+                                .build();
+                    }
+                    else
+                    {
+                        String fp = "/" + appid + "/ai/mcp/method/tools/list.json";
+                        inReq.putPageValue("modules", profile.getEntities());
+
+                        String toolsArrString = getRenderUtil().loadInputFromTemplate(inReq, fp);
+
+                        response = new JsonRpcResponseBuilder(id)
+                                .withToolsList(toolsArrString)
+                                .build();
+                    }
+        }
+        else if ("tools/call".equals(cmd))
+        {
+                    String functionname = params != null ? (String) params.get("name") : null;
+                    if (functionname == null || functionname.isEmpty())
+                    {
+                        response = new JsonRpcResponseBuilder(id)
+                                .withResponse("Invalid tools/call request. Missing tool name.", true)
+                                .build();
+                    }
+                    else
+                    {
+                        String siteid = inReq.findValue("siteid");
+                        inReq.putPageValue("mcpapplicationid", siteid + "/find");
+                        String fp = "/" + appid + "/ai/mcp/functions/" + functionname + ".html";
+
+                        String text = getRenderUtil().loadInputFromTemplate(inReq, fp);
+
+                        text = text.replaceAll("(?m)^\\s*$\\n?", "");
+                        text = text.replaceAll("(\\r?\\n){2,}", "\n");
+
+                        response = new JsonRpcResponseBuilder(id)
+                                .withResponse(text, false)
+                                .build();
+                    }
+        }
         else
         {
             log.info("Called " + cmd); //"notifications/initialized"
             response = new JsonRpcResponseBuilder(id)
-					.withResponse("CMD Received " + cmd, false)
-					.build();
+                    .withResponse("CMD Received " + cmd, false)
+                    .build();
         }
 
         inConnection.sendMessage(response);

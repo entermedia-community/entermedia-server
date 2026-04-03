@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.ai.llm.AgentContext;
@@ -18,6 +19,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.OpenEditException;
 import org.openedit.util.HttpSharedConnection;
+import org.openedit.util.JSONParser;
 
 /**
  * Make a Java client that can call any compatible MCP REST Endpoints. This will be used by the MCP UI to get the list of tools and other information about the client.
@@ -33,6 +35,7 @@ public class McpClient
     protected String fieldApiKey;
     protected HttpSharedConnection fieldConnection;
     protected Collection<AvailableTool> fieldTools;
+    protected String fieldSessionId;
 
     public String getApiKey()
     {
@@ -73,9 +76,18 @@ public class McpClient
 
     public void connectToServer() throws Exception
     {
-        sendInit();
-        // Now the session is set in header and responses can be read asynchronously.
+        ensureSessionId();
         startListeningInBackground();
+        sendInit();
+    }
+
+    protected void ensureSessionId()
+    {
+        if (fieldSessionId == null || fieldSessionId.isEmpty())
+        {
+            fieldSessionId = UUID.randomUUID().toString();
+            getConnection().addSharedHeader("mcp-session-id", fieldSessionId);
+        }
     }
     
     public void startListeningInBackground()
@@ -132,7 +144,14 @@ public class McpClient
         {
             try
             {
-                listener.interrupt();
+                if (listener != null)
+                {
+                    listener.interrupt();
+                }
+                synchronized (fieldRecentResponses)
+                {
+                    fieldRecentResponses.notifyAll();
+                }
                 fieldConnection = null;
             }
             catch (Exception e)
@@ -145,6 +164,7 @@ public class McpClient
     @SuppressWarnings("unchecked")
     public void sendInit()
     {
+        ensureSessionId();
         String messageid = "init01";
         JSONObject body = new JSONObject();
         body.put("jsonrpc", "2.0");
@@ -154,13 +174,22 @@ public class McpClient
 
         //Post to get the Header back
         CloseableHttpResponse response = getConnection().sharedPostWithJson(getServerUrl(), body);
-        //Should just be AGNOLIGED
-        if( response.getStatusLine().getStatusCode() != 202)
+        try
         {
-            throw new OpenEditException("Unexpected response from MCP server: " + response.getStatusLine());
+            int status = response.getStatusLine().getStatusCode();
+            if (status != 202 && status != 200)
+            {
+                throw new OpenEditException("Unexpected response from MCP server: " + response.getStatusLine());
+            }
+            if (response.getFirstHeader("mcp-session-id") != null)
+            {
+                fieldSessionId = response.getFirstHeader("mcp-session-id").getValue();
+            }
         }
-        String sessionid = response.getFirstHeader("mcp-session-id").getValue();
-        getConnection().addSharedHeader("mcp-session-id", sessionid);
+        finally
+        {
+            getConnection().release(response);
+        }
 
     }
 
@@ -180,27 +209,38 @@ public class McpClient
         CloseableHttpResponse response = getConnection().sharedPostWithJson(getServerUrl(), body);
         try
         {
-            //Should just be AGNOLIGED
-            if( response.getStatusLine().getStatusCode() != 202)
+            int status = response.getStatusLine().getStatusCode();
+            if (status != 202 && status != 200)
             {
                 throw new OpenEditException("Unexpected response from MCP server: " + response.getStatusLine());
             }
 
             String result = getConnection().parseText(response);
-            // waitForData(messageid);
-            if (result == null)
-            {
-                //error
-                throw new OpenEditException("No result response from MCP server: " + response.getStatusLine());
-            }
             McpRequest mcpResponse = new McpRequest();
             mcpResponse.setMessageId(messageid);
-            mcpResponse.setTextReply(result);  
+            mcpResponse.setTextReply(result);
+            mcpResponse.setJsonReply(parseJson(result));
             return mcpResponse;
         }
         finally
         {
             getConnection().release(response);
+        }
+    }
+
+    protected JSONObject parseJson(String inText)
+    {
+        if (inText == null || inText.isEmpty())
+        {
+            return null;
+        }
+        try
+        {
+            return (JSONObject) new JSONParser().parse(inText);
+        }
+        catch (Exception ex)
+        {
+            return null;
         }
     }
 
@@ -284,8 +324,10 @@ public class McpClient
         }
         McpRequest request = sendRequest("tools/list", new HashMap<>());
         JSONObject response = waitForResponse(request);
-        if (response != null)        {
-            JSONArray toolsArray = (JSONArray) response.get("tools");
+        if (response != null)
+        {
+            JSONObject result = (JSONObject) response.get("result");
+            JSONArray toolsArray = result != null ? (JSONArray) result.get("tools") : (JSONArray) response.get("tools");
             if (toolsArray != null) {
                 List<AvailableTool> tools = new ArrayList<>();
                 for (Object toolObj : toolsArray) {
@@ -307,8 +349,9 @@ public class McpClient
          String callId = "async-" + fieldLastToolCallId++;
         Map<String, Object> params = new HashMap<>();
         params.put("operation", operation);
+        params.put("callId", callId);
         //Add more params from context as needed            
-        McpRequest request =sendRequest(operation, params);
+        sendRequest(operation, params);
 
     }
     int fieldLastToolCallId = 0;
@@ -318,6 +361,7 @@ public class McpClient
         String callId = "tool-" + fieldLastToolCallId++;
         Map<String, Object> params = new HashMap<>();
         params.put("operation", operation);
+        params.put("callId", callId);
         //Add more params from context as needed            
         McpRequest request =sendRequest(operation, params);
 

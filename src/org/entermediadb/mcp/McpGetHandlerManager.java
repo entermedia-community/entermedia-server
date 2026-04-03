@@ -1,22 +1,17 @@
 package org.entermediadb.mcp;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.openedit.WebPageRequest;
 
 public class McpGetHandlerManager
 {
-	protected Map fieldGetHandlers;
+	protected final Map<String, McpGetHandler> fieldGetHandlers = new ConcurrentHashMap<>();
 
 	public Map<String,McpGetHandler> getGetHandlers()
 	{
-		if (fieldGetHandlers == null)
-		{
-			fieldGetHandlers = new HashMap();
-		}
-
 		return fieldGetHandlers;
 	}
 

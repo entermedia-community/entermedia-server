@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.llm.VelocityRenderUtil;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.jsonrpc.JsonRpcResponseBuilder;
 import org.json.simple.JSONObject;
@@ -63,7 +62,7 @@ public class McpGenerator implements Generator
 	        		}
 	        		inReq.getResponse().setHeader("mcp-session-id", mcpSessionId);
 
-	        		Object id = payload.get("id");
+	        		Object id = payload != null ? payload.get("id") : null;
 	        		String response = new JsonRpcResponseBuilder(id)
 	        			.withServer("eMedia Live")
 	        			.build();
@@ -74,11 +73,8 @@ public class McpGenerator implements Generator
 	        			connection.sendMessage(response);
 	        			inReq.getResponse().setStatus(HttpServletResponse.SC_ACCEPTED);
 	        		} else {
-	        			// POST-first flow: return initialize payload directly.
-	        			inReq.getResponse().setStatus(HttpServletResponse.SC_OK);
-	        			inReq.getResponse().setContentType("application/json");
-	        			byte[] bytes = response.getBytes(StandardCharsets.UTF_8);
-	        			inReq.getResponse().getOutputStream().write(bytes);
+	        			// Allow POST-first handshake and let SSE connect follow with the same session id.
+	        			inReq.getResponse().setStatus(HttpServletResponse.SC_ACCEPTED);
 	        		}
 
 	        		inReq.getResponse().flushBuffer();
@@ -88,7 +84,24 @@ public class McpGenerator implements Generator
 	        		return;
 	        	}
 
-									McpConnection connection = manager.getConnection(mcpSessionId);
+	        	if (payload == null || cmd == null || cmd.isEmpty())
+	        	{
+	        		writeJsonError(inReq, HttpServletResponse.SC_BAD_REQUEST, null, "Missing JSON-RPC method.");
+	        		return;
+	        	}
+
+	        	if (mcpSessionId == null || mcpSessionId.isEmpty())
+	        	{
+	        		writeJsonError(inReq, HttpServletResponse.SC_BAD_REQUEST, payload.get("id"), "Missing MCP session id.");
+	        		return;
+	        	}
+
+					McpConnection connection = manager.getConnection(mcpSessionId);
+	        	if (connection == null)
+	        	{
+	        		writeJsonError(inReq, HttpServletResponse.SC_CONFLICT, payload.get("id"), "No active MCP connection for session.");
+	        		return;
+	        	}
 
 	        	if (mcpSessionId != null && !mcpSessionId.isEmpty()) {
 	        		inReq.getResponse().setHeader("mcp-session-id", mcpSessionId);
@@ -112,11 +125,22 @@ public class McpGenerator implements Generator
 
 	    }
 	    catch (Exception ex) {
-	        log.error("Error in MCP stream- Client likely closed" );
-	        ex.printStackTrace();
-	     
-	      //  throw new OpenEditException("Error in MCP stream", ex);
+	        log.error("Error in MCP stream", ex);
+	        throw new OpenEditException("Error in MCP stream", ex);
 	    }
+	}
+
+	protected void writeJsonError(WebPageRequest inReq, int inStatusCode, Object inId, String inMessage) throws Exception
+	{
+		String response = new JsonRpcResponseBuilder(inId)
+				.withResponse(inMessage, true)
+				.build();
+		inReq.getResponse().setStatus(inStatusCode);
+		inReq.getResponse().setContentType("application/json");
+		inReq.getResponse().getOutputStream().write(response.getBytes(StandardCharsets.UTF_8));
+		inReq.getResponse().flushBuffer();
+		inReq.setCancelActions(true);
+		inReq.setHasRedirected(true);
 	}
 
 	@Override

@@ -1,19 +1,13 @@
-import java.util.Collection;
+package org.entermediadb.mcp.agent;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.AgentEnabled;
-import org.entermediadb.ai.llm.LlmConnection;
-import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.mcp.client.McpClient;
 import org.openedit.Data;
 
 public class McpClientAgent extends BaseAgent
 {
-    private static final Log log = LogFactory.getLog(McpClientAgent.class);
-    
     protected McpClient fieldClient;
     
     public McpClientAgent()
