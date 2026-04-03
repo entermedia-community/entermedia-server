@@ -17,6 +17,7 @@ import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.edit.Version;
 import org.entermediadb.markdown.MarkdownUtil;
@@ -28,9 +29,9 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.util.Inflector;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.StringItem;
+import org.openedit.users.User;
 
 public class SmartCreatorManager extends BaseAiManager implements ChatMessageHandler
 {
@@ -1030,15 +1031,22 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		
 		asset = getMediaArchive().getAssetManager().findAssetSource(asset).createAsset(asset, content, new HashMap(), assetsourcepath, false, inAgentContext.getChatUser());
 		asset.setProperty("importstatus", "created");
+
+		String userid = playbackentity.get("owner");
+		if (userid == null && inAgentContext.getChatUser() != null)
+		{
+			userid = inAgentContext.getChatUser().getId();
+		}
+
+		User user = getMediaArchive().getUser(userid);
+
+		//add asset to entity
+		Category cat = getMediaArchive().getEntityManager().loadDefaultFolder(playbackentitymodule, playbackentity, user);
+		asset.addCategory(cat);
+
 		getMediaArchive().saveAsset(asset);
 		
-		String user = playbackentity.get("owner");
-		if (user == null && inAgentContext.getChatUser() != null)
-		{
-			user = inAgentContext.getChatUser().getId();
-		}
-		
-		getMediaArchive().getAssetEditor().createNewVersionData(asset,original, user, Version.PUBLISHED, null );
+		getMediaArchive().getAssetEditor().createNewVersionData(asset,original, userid, Version.PUBLISHED, null );
 		
 		playbackentity.setValue("primarymedia",asset.getId() );
 		getMediaArchive().getSearcher(playbackentitymodule.getId()).saveData(playbackentity);
