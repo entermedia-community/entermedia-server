@@ -2962,5 +2962,11 @@
 		</property>
 	</bean>
 
+	<bean id="goalManagerAgent" class="org.entermediadb.tasks.GoalManagerAgent" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
 
 </beans>
