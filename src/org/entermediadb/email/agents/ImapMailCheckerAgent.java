@@ -1,4 +1,4 @@
-package org.entermediadb.email;
+package org.entermediadb.email.agents;
 
 import java.util.Collection;
 
@@ -7,8 +7,9 @@ import javax.mail.Message;
 import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.AgentEnabled;
+import org.entermediadb.email.ImapInbox;
 
-public class ImapMailAgent extends BaseAgent
+public class ImapMailCheckerAgent extends BaseAgent
 {
     public void process(AgentContext inContext)
 	{
