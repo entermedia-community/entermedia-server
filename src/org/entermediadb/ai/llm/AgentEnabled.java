@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.entermediadb.ai.Agent;
+import org.json.simple.JSONObject;
 import org.openedit.MultiValued;
 
 public class AgentEnabled
@@ -76,5 +77,15 @@ public class AgentEnabled
 	public String toString()
 	{
 		return String.valueOf(getAgentConfig());
+	}
+
+	protected JSONObject fieldExtraContextValues;
+	public JSONObject getExtraContextValues()
+	{
+		return fieldExtraContextValues;
+	}
+	public void setExtraContextValues(JSONObject inExtraContextValues)
+	{
+		fieldExtraContextValues = inExtraContextValues;		
 	}
 }
