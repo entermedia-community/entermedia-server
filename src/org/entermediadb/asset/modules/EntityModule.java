@@ -1717,15 +1717,20 @@ public class EntityModule extends BaseMediaModule
 	public void loadDefaultFolder(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		Data entity = getEntity(inReq);
+		Data entity = (Data)inReq.getPageValue("entity");
+		if (entity == null)
+		{
+			getEntity(inReq);
+		}
 		if(entity == null)
 		{
 			entity = (Data) inReq.getPageValue("data");
 		}
-		
-		archive.getEntityManager().loadDefaultFolder(entity, inReq.getUser());
-
-		inReq.putPageValue("entity", entity);
+		if (entity != null)
+		{
+			archive.getEntityManager().loadDefaultFolder(entity, inReq.getUser());
+			inReq.putPageValue("entity", entity);
+		}
 	}
 	
 	public void createEntityFromFiles(WebPageRequest inReq) throws Exception

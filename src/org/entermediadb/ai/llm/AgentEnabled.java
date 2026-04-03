@@ -90,4 +90,16 @@ public class AgentEnabled
 	{		
 		fieldAgentParameterStructure = inAgentParameterStructure;
 	}
+
+	protected JSONObject fieldExtraContextValues;
+	
+	public JSONObject getExtraContextValues()
+	{
+		return fieldExtraContextValues;
+	}
+	
+	public void setExtraContextValues(JSONObject inExtraContextValues)
+	{
+		fieldExtraContextValues = inExtraContextValues;		
+	}
 }
