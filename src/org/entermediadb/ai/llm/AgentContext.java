@@ -135,6 +135,15 @@ public class AgentContext extends BaseData implements CatalogEnabled
 	public void setCurrentAgentEnable(AgentEnabled inCurrentAgentEnable)
 	{
 		fieldCurrentAgentEnable = inCurrentAgentEnable;
+		if( inCurrentAgentEnable != null && inCurrentAgentEnable.getExtraContextValues() != null)
+		{
+			JSONObject json = inCurrentAgentEnable.getExtraContextValues();
+			for (Object key : json.keySet())
+			{
+				Object value = json.get(key);
+				addContext(String.valueOf(key), value);
+			}
+		}
 	}
 	
 	public String getCatalogId()

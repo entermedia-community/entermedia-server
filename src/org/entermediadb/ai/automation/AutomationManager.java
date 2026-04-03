@@ -17,11 +17,13 @@ import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.AgentEnabled;
 import org.entermediadb.events.EventTrigger;
 import org.entermediadb.scripts.ScriptLogger;
+import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.ValuesMap;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
+import org.openedit.util.JSONParser;
 
 /**
  * My plan is to have a UI where each Task can be seen and assigned to a Agent. 
@@ -44,7 +46,7 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 	private static final Log log = LogFactory.getLog(AutomationManager.class);
 	
 	protected Map<String,List<AgentContext>> fieldRecentContextByAutomation = new HashMap();
-	
+	protected JSONParser fieldJsonParser = new JSONParser();
 	public Collection<AgentContext> getRecentScenerioContext(String inScenerio)
 	{
 		Collection<AgentContext> found = fieldRecentContextByAutomation.get(inScenerio);
@@ -126,6 +128,15 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 		getMediaArchive().saveData("automationscenario",scenerio);
 	}
 	
+	private void addContextValues(MultiValued automationEnabledData, AgentEnabled	inAgentEnabled) {
+		String text = automationEnabledData.get("contextvalues");
+		if( text != null)
+		{
+			JSONObject json = (JSONObject) fieldJsonParser.parse(text);
+			inAgentEnabled.setExtraContextValues(json);
+		}
+	}
+
 	public Map<String,MultiValued> getAllPositions()
 	{
 		Map<String,MultiValued> map = (Map<String,MultiValued>)getMediaArchive().getCacheManager().get("automationscenariopositionmap", "all");
@@ -291,6 +302,10 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 				String agentid = data.get("automationagent");
 				MultiValued agentconfig = (MultiValued)getMediaArchive().getCachedData("automationagent",agentid);  //Todo: Here is finding the wrong document Splitter
 				enabled.setAgentConfig(agentconfig);
+
+				addContextValues( agentconfig,enabled);					
+
+
 				String bean = agentconfig.get("bean");
 				Agent agent = loadAgent(bean);
 				enabled.setAgent(agent);
