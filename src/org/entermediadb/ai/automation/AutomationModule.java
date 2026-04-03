@@ -132,17 +132,20 @@ public class AutomationModule extends BaseMediaModule {
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		
-		Data agentEnabled = (Data) inReq.getPageValue("data");
+		Data agentEnabledData = (Data) inReq.getPageValue("data");
 		
-		inReq.putPageValue("agentid", agentEnabled.getId());
-		inReq.putPageValue("scenarioid", agentEnabled.get("automationscenario"));
+		inReq.putPageValue("agentid", agentEnabledData.getId());
+		inReq.putPageValue("scenarioid", agentEnabledData.get("automationscenario"));
+
 		
-		Data agent = archive.query("automationagent").exact("id", agentEnabled.get("automationagent")).searchOne();
+		Data agent = archive.query("automationagent").exact("id", agentEnabledData.get("automationagent")).searchOne();
 		
-		agentEnabled.setValue("agenttype", agent.get("agenttype"));
+		agentEnabledData.setValue("agenttype", agent.get("agenttype"));
 		
-		archive.saveData("automationagentenabled", agentEnabled);
+		archive.saveData("automationagentenabled", agentEnabledData);
 		
+		AutomationManager manager = getAutomationManager(inReq);
+		manager.generateParams(agentEnabledData);
 	}
 	
 	public void saveLayout(WebPageRequest inReq)

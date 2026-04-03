@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.entermediadb.ai.Agent;
+import org.json.simple.JSONObject;
 import org.openedit.MultiValued;
 
 public class AgentEnabled
@@ -76,5 +77,17 @@ public class AgentEnabled
 	public String toString()
 	{
 		return String.valueOf(getAgentConfig());
+	}
+
+	Collection<JSONObject> fieldAgentParameterStructure;
+	
+	public Collection<JSONObject> getAgentParameterStructure()
+	{		
+		return fieldAgentParameterStructure;
+	}
+
+	public void setAgentParameterStructure(Collection<JSONObject> inAgentParameterStructure)
+	{		
+		fieldAgentParameterStructure = inAgentParameterStructure;
 	}
 }

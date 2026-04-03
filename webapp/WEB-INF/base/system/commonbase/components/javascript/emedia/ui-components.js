@@ -1053,4 +1053,46 @@ jQuery(document).ready(function () {
 		});
 		$(this).addClass("selected");
 	});
-}); //on ready
+
+	lQuery(".jsonEditor").livequery(function () {
+		var textarea = $(this).find("textarea");
+		var errorMessage = $(this).find(".jsonErrorMessage");
+		var formatBtn = $(this).find(".jsonFormat");
+		var status = $(this).find(".jsonStatus");
+		formatBtn.on("click", function () {
+			var json = textarea.val();
+			if (json.length === 0) {
+				errorMessage.removeClass("show");
+				return;
+			}
+			try {
+				var obj = JSON.parse(json);
+				var formatted = JSON.stringify(obj, null, 2);
+				textarea.val(formatted);
+				errorMessage.removeClass("show");
+			} catch (e) {
+				errorMessage.text("Error: " + e.message);
+				errorMessage.addClass("show");
+			}
+		});
+		textarea.on("input", function () {
+			var json = textarea.val();
+			if (json.length === 0) {
+				errorMessage.removeClass("show");
+				return;
+			}
+			try {
+				JSON.parse(json);
+				status.html("<i class='bi bi-check-circle'></i>");
+				status.removeClass("invalid");
+				errorMessage.removeClass("show");
+			} catch (e) {
+				status.html("<i class='bi bi-exclamation-circle'></i>");
+				status.addClass("invalid");
+				errorMessage.text("Error: " + e.message);
+				errorMessage.addClass("show");
+			}
+		});
+		formatBtn.trigger("click");
+	});
+});

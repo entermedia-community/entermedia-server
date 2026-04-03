@@ -38,4 +38,4 @@ public class BaseAgent extends BaseAiManager implements Agent, CatalogEnabled
 	}
 	
 
-}   
+}

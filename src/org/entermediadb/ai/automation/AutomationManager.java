@@ -15,13 +15,18 @@ import org.entermediadb.ai.Agent;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.AgentEnabled;
+import org.entermediadb.ai.llm.LlmConnection;
+import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.events.EventTrigger;
 import org.entermediadb.scripts.ScriptLogger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.ValuesMap;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
+import org.openedit.util.JSONParser;
 
 /**
  * My plan is to have a UI where each Task can be seen and assigned to a Agent. 
@@ -315,6 +320,7 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 			}	
 			getMediaArchive().getCacheManager().put("agentsenabled", inId,cached);
 		}
+
 		return cached;
 	}
 	
@@ -322,6 +328,52 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 	{
 		//Save events xconfs
 	}
+
+	public void generateParams(Data inAgentEnabledConfig)
+	{
+		String argumentString = inAgentEnabledConfig.get("parameterstructure");
+
+		Collection agentArguments = null;
+		if( argumentString != null)
+		{
+			JSONParser parser = new JSONParser();
+			agentArguments = parser.parseCollection(argumentString);
+
+			if(agentArguments != null && agentArguments.size() > 0)
+			{
+				return;
+			}
+		}
+		
+		if( agentArguments == null)
+		{
+			String skilloverview = inAgentEnabledConfig.get("skilloverview");
+
+			if( skilloverview != null)
+			{
+				LlmConnection llmConnection = getMediaArchive().getLlmConnection("paramsfromskill");   
+
+				AgentContext context = new AgentContext();
+				context.addContext("skilloverview", skilloverview);
+
+				LlmResponse res = llmConnection.callStructure(context, "paramsfromskill");
+				
+				JSONObject rawresponse = res.getMessageStructured();
+				if( rawresponse != null)
+				{
+					JSONArray arguments = (JSONArray) rawresponse.get("arguments");
+
+					if( arguments != null)
+					{
+						argumentString = arguments.toJSONString();
+						inAgentEnabledConfig.setValue("parameterstructure", argumentString);
+						getMediaArchive().saveData("automationagentenabled", inAgentEnabledConfig);
+						getMediaArchive().getCacheManager().remove("agentsenabled", inAgentEnabledConfig.get("automationscenario"));
+					}
+				}
+			}
+		}
+	} 
 
 	public Agent loadAgent(String inName)
 	{
