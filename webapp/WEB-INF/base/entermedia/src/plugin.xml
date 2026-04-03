@@ -2949,6 +2949,18 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	
+
+	<bean id="imapMailCheckerAgent" class="org.entermediadb.email.agents.ImapMailCheckerAgent" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+	<bean id="imapMailSenderAgent" class="org.entermediadb.email.agents.ImapMailSenderAgent" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
 
 </beans>
