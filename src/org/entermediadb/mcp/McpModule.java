@@ -11,6 +11,8 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.jsonrpc.JsonRpcResponseBuilder;
+import org.entermediadb.mcp.server.McpGetHandler;
+import org.entermediadb.mcp.server.McpManager;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;

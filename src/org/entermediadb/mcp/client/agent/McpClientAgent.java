@@ -1,4 +1,4 @@
-package org.entermediadb.mcp.agent;
+package org.entermediadb.mcp.client.agent;
 
 import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.llm.AgentContext;

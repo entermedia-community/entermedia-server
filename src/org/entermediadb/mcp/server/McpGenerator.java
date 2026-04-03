@@ -1,4 +1,4 @@
-package org.entermediadb.mcp;
+package org.entermediadb.mcp.server;
 
 import java.nio.charset.StandardCharsets;
 
@@ -68,13 +68,10 @@ public class McpGenerator implements Generator
 	        			.build();
 
 					McpConnection connection = manager.getConnection(mcpSessionId);
+        			inReq.getResponse().setStatus(HttpServletResponse.SC_ACCEPTED);
 	        		if (connection != null) 
 					{
 	        			connection.sendMessage(response);
-	        			inReq.getResponse().setStatus(HttpServletResponse.SC_ACCEPTED);
-	        		} else {
-	        			// Allow POST-first handshake and let SSE connect follow with the same session id.
-	        			inReq.getResponse().setStatus(HttpServletResponse.SC_ACCEPTED);
 	        		}
 
 	        		inReq.getResponse().flushBuffer();

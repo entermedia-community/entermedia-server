@@ -1,8 +1,8 @@
-package org.entermediadb.mcp;
+package org.entermediadb.mcp.server;
 
 import org.json.simple.JSONObject;
 
-public class McpResponse {
+public class McpRequest {
     String fieldMessageId;
     JSONObject fieldJsonReply;
     String fieldTextReply;
@@ -26,5 +26,5 @@ public class McpResponse {
     public void setTextReply(String inTextReply) {
         fieldTextReply = inTextReply;
     }
-    
+
 }

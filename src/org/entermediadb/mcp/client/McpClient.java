@@ -14,7 +14,7 @@ import java.util.UUID;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.jsonrpc.JsonRpcScanner;
-import org.entermediadb.mcp.McpRequest;
+import org.entermediadb.mcp.server.McpRequest;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.OpenEditException;

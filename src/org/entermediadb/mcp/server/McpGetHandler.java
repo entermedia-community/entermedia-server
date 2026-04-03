@@ -1,4 +1,4 @@
-package org.entermediadb.mcp;
+package org.entermediadb.mcp.server;
 
 import java.io.Reader;
 import java.io.Writer;
