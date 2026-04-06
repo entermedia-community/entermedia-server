@@ -195,6 +195,7 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 				String name = instructions.getTitleName();
 				name = Inflector.getInstance().capitalize(name);
 				playbackentity.setName(name);
+				playbackentity.setValue("entity_date", new Date());
 				getMediaArchive().saveData(playbackentitymodule.getId(), playbackentity);
 				instructions.setTargetEntity(playbackentity);
 				
