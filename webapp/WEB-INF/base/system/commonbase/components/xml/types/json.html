@@ -1,8 +1,8 @@
 <div class="jsonEditor">
   <div class="controls">
     <div class="jsonStatus mt-0" title="Status"><i class='bi bi-check-circle'></i></div>
-    <button class="jsonFormat" type="button" title="Format JSON"><i class="bi bi-code"></i></button>
+    <button class="jsonFormat" type="button" title="[[Format JSON]]"><i class="bi bi-code"></i></button>
   </div>
-  <textarea id="${detail.getId()}" class="form-control" rows="4" data-maxheight="300">$!{value}</textarea>
+  <textarea id="${detail.getId()}" name="${detail.getId()}.value" class="form-control" rows="4" data-maxheight="300">$!{value}</textarea>
   <div class="jsonErrorMessage">&nbsp;</div>
 </div>
