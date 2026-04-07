@@ -24,76 +24,65 @@ public class ImapMailCheckerAgent extends ToolsCallingAgent
     String password = (String) inContext.getContextValue("mailpassword");
 
     ImapInbox inbox = new ImapInbox(); // TODO: Cache these?
-    Collection<ImapMessage> messages = inbox.checkForNewMessages(server, serverport, username, password, true);
-    if (messages != null && messages.size() > 0) {
-        inContext.put("newmessages", messages);
+    Collection<ImapMessage> messages =
+        inbox.checkForNewMessages(server, serverport, username, password, true);
+    if (messages != null && messages.size() > 0)
+    {
+      inContext.put("newmessages", messages);
 
-        inContext.info("Found " + messages.size() + " new messages");
+      inContext.info("Found " + messages.size() + " new messages");
 
-        inContext.info("Multiple child agents, invoking decision agent");
-        AgentContext subContext = new AgentContext(inContext);
-        subContext.put("previousagent", currentEnabled.getAgentData().getId());
-        try{
-            for (ImapMessage message : messages) {
-                String fromString = message.getFrom();
-                String subjectString = message.getSubject();
-                String contentString = message.getBody();
-                subContext.put(
-                "previousoutput",
-                "From: " + fromString +
-                    "\\nSubject: " + subjectString +
-                    "\\nMessage: " + contentString);
-                super.process(subContext);
-            }
-        }
-        catch (Exception e)
-        {
-            inContext.error("Error processing email messages: " + e.getMessage());
-        }
-    } else {
-    inContext.info("No messages found");
-    super.process(inContext);
-    }
-
-    // A fake message for testing
-    /* 
-    try {
-        
-      Message fakeMessage = new javax.mail.internet.MimeMessage((javax.mail.Session) null);
-      fakeMessage.setSubject("Hello!");
-      fakeMessage.setFrom(new InternetAddress("test@example.com"));
-
-      fakeMessage.setText("What is your opening hours?\\n\\n-Regards,\\nJohn Doe");
-      Collection<Message> messages = new ArrayList<Message>();
-      messages.add(fakeMessage);
-
-      // New messages
-      if (messages != null && messages.size() > 0)
+      inContext.info("Multiple child agents, invoking decision agent");
+      AgentContext subContext = new AgentContext(inContext);
+      subContext.put("previousagent", currentEnabled.getAgentData().getId());
+      try
       {
-        inContext.put("newmessages", messages);
-
-        inContext.info("Found " + messages.size() + " new messages");
-
-        inContext.info("Multiple child agents, invoking decision agent");
-        AgentContext subContext = new AgentContext(inContext);
-        subContext.put("previousagent", currentEnabled.getAgentData().getId());
-        for (Message message : messages)
+        for (ImapMessage message : messages)
         {
-          subContext.put("previousoutput",
-              "From: " + message.getFrom()[0].toString() + "\\nSubject: " + message.getSubject()
-                  + "\\nMessage: " + message.getContent().toString());
+          String fromString = message.getFrom();
+          String subjectString = message.getSubject();
+          String contentString = message.getBody();
+          subContext.put("previousoutput", "From: " + fromString + "\\nSubject: " + subjectString
+              + "\\nMessage: " + contentString + "\\nSentDate: " + message.getDate());
           super.process(subContext);
         }
       }
-      else
+      catch (Exception e)
       {
-        inContext.info("No messages found");
-        super.process(inContext);
+        inContext.error("Error processing email messages: " + e.getMessage());
       }
-    } catch (Exception e)
+    }
+    else
     {
-      inContext.error("Error processing email messages: " + e.getMessage());
-    }*/
+      inContext.info("No messages found");
+      super.process(inContext);
+    }
+
+    // A fake message for testing
+    /*
+     * try {
+     * 
+     * Message fakeMessage = new javax.mail.internet.MimeMessage((javax.mail.Session) null);
+     * fakeMessage.setSubject("Hello!"); fakeMessage.setFrom(new
+     * InternetAddress("test@example.com"));
+     * 
+     * fakeMessage.setText("What is your opening hours?\\n\\n-Regards,\\nJohn Doe");
+     * Collection<Message> messages = new ArrayList<Message>(); messages.add(fakeMessage);
+     * 
+     * // New messages if (messages != null && messages.size() > 0) { inContext.put("newmessages",
+     * messages);
+     * 
+     * inContext.info("Found " + messages.size() + " new messages");
+     * 
+     * inContext.info("Multiple child agents, invoking decision agent"); AgentContext subContext =
+     * new AgentContext(inContext); subContext.put("previousagent",
+     * currentEnabled.getAgentData().getId()); for (Message message : messages) {
+     * subContext.put("previousoutput", "From: " + message.getFrom()[0].toString() + "\\nSubject: "
+     * + message.getSubject() + "\\nMessage: " + message.getContent().toString());
+     * super.process(subContext); } } else { inContext.info("No messages found");
+     * super.process(inContext); } } catch (Exception e) {
+     * inContext.error("Error processing email messages: " + e.getMessage()); }
+     */
 
   }
 }
