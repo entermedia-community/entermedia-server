@@ -24,5 +24,8 @@
 		"java.autobuild.enabled": true,
 		"java.debug.settings.hotCodeReplace": "auto",
 		"java.debug.settings.showLogicalStructure": true,
+		"[java]": {
+			"editor.defaultFormatter": "redhat.java",
+		},
 	},
 }
