@@ -26,5 +26,9 @@
 		"java.debug.settings.hotCodeReplace": "auto",
 		"java.debug.settings.showLogicalStructure": true,
 		"java.format.settings.url": "./formatter.xml",
+		"[java]": {
+			"editor.insertSpaces": false,
+			"editor.tabSize": 4,
+		},
 	},
 }

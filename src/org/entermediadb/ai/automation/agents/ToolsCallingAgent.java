@@ -10,36 +10,45 @@ import org.entermediadb.ai.llm.LlmResponse;
 import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 
-public class ToolsCallingAgent extends BaseAgent {
+public class ToolsCallingAgent extends BaseAgent
+{
 	@Override
-	public void process(AgentContext inContext) {
+	public void process(AgentContext inContext)
+	{
 
 		JSONParser parser = new JSONParser();
 
 		AgentEnabled currentEnabled = inContext.getCurrentAgentEnable();
 		Collection<AgentEnabled> enabledChildren = currentEnabled.getChildren();
 
-		for (AgentEnabled enabled : enabledChildren) {
+		for (AgentEnabled enabled : enabledChildren)
+		{
 			String paramstructure = enabled.getAutomationEnabledData().get("parameterstructure");
-			if (paramstructure != null) {
+			if (paramstructure != null)
+			{
 				Collection paramstructurejson = parser.parseCollection(paramstructure);
 				enabled.setAgentParameterStructure(paramstructurejson);
 			}
 		}
 
-		if (enabledChildren.size() > 0) {
+		if (enabledChildren.size() > 0)
+		{
 			String function = "agentdecision";
-			if (enabledChildren.size() == 1) {
+			if (enabledChildren.size() == 1)
+			{
 				// check if a param call is necessary
 				AgentEnabled enabled = enabledChildren.iterator().next();
 				Collection<JSONObject> paramstructure = enabled.getAgentParameterStructure();
-				if (paramstructure == null || paramstructure.size() == 0) {
+				if (paramstructure == null || paramstructure.size() == 0)
+				{
 					super.process(inContext);
 					return;
 				}
 				function = "agentparams";
 				inContext.put("agentenabled", enabled);
-			} else {
+			}
+			else
+			{
 				inContext.info("Multiple child agents, invoking decision agent");
 				inContext.put("enabledchildren", enabledChildren);
 			}
