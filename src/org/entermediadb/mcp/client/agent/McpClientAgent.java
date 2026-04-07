@@ -6,20 +6,16 @@ import org.entermediadb.ai.llm.AgentEnabled;
 import org.entermediadb.mcp.client.McpClient;
 import org.openedit.Data;
 
-public class McpClientAgent extends BaseAgent
-{
+public class McpClientAgent extends BaseAgent {
     protected McpClient fieldClient;
-    
-    public McpClientAgent()
-    {
-       // fieldClient = new McpClient("un.org");
+
+    public McpClientAgent() {
+        // fieldClient = new McpClient("un.org");
     }
-    
-    public McpClient getClient(AgentEnabled inEnabledAgent)
-    {
-        if( fieldClient == null)
-        {
-            String serverid = inEnabledAgent.getAgentConfig().get("aiserver");
+
+    public McpClient getClient(AgentEnabled inEnabledAgent) {
+        if (fieldClient == null) {
+            String serverid = inEnabledAgent.getAgentData().get("aiserver");
 
             Data server = getMediaArchive().getData("aiservers", serverid);
 
@@ -29,15 +25,15 @@ public class McpClientAgent extends BaseAgent
         }
         return fieldClient;
     }
-@Override
-    public void process(AgentContext inContext) 
-    {
-        McpClient client  = getClient( inContext.getCurrentAgentEnable());
-        
-        String  operation = inContext.getCurrentAgentEnable().getAgentConfig().get("runoperation");
+
+    @Override
+    public void process(AgentContext inContext) {
+        McpClient client = getClient(inContext.getCurrentAgentEnable());
+
+        String operation = inContext.getCurrentAgentEnable().getAgentData().get("runoperation");
         client.calltool(operation, inContext);
 
-        //String operation = structure.get("operation");
+        // String operation = structure.get("operation");
 
         // Map response = fieldClient.sendRequest(operation, {keyword: dog});
 

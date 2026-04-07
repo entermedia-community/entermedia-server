@@ -43,7 +43,7 @@ public class ImapMailCheckerAgent extends ToolsCallingAgent {
 
         inContext.info("Multiple child agents, invoking decision agent");
         AgentContext subContext = new AgentContext(inContext);
-        subContext.put("previousagent", currentEnabled.getAgentConfig().getId());
+        subContext.put("previousagent", currentEnabled.getAgentData().getId());
         for (Message message : messages) {
           subContext.put(
               "previousoutput",
