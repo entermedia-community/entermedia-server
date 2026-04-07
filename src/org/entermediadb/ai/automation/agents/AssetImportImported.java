@@ -28,7 +28,7 @@ public class AssetImportImported extends BaseAgent {
 			newasset.setValue("importstatus", "needsmetadata"); //Will be saved at bottom
 		}
 		
-		inContext.info("Processing " + hits.size() + " imported assets");
+		inContext.info(hits.size() + " asset" + (hits.size() == 1 ? "" : "s") + " imported");
 		
 		//Set the asset type
 		AssetTypeManager manager = new AssetTypeManager();

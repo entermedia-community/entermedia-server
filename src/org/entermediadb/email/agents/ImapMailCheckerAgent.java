@@ -1,12 +1,14 @@
 package org.entermediadb.email.agents;
 
-import java.util.ArrayList;
 import java.util.Collection;
+
 import javax.mail.Message;
-import javax.mail.internet.InternetAddress;
+
 import org.entermediadb.ai.automation.agents.ToolsCallingAgent;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.AgentEnabled;
+import org.entermediadb.email.ImapInbox;
+import org.entermediadb.email.ImapMessage;
 
 public class ImapMailCheckerAgent extends ToolsCallingAgent
 {
@@ -16,15 +18,47 @@ public class ImapMailCheckerAgent extends ToolsCallingAgent
   {
     AgentEnabled currentEnabled = inContext.getCurrentAgentEnable();
 
-    // String server = (String) inContext.getContextValue("mailserver");
-    // String username = (String) inContext.getContextValue("mailusername");
-    // String password = (String) inContext.getContextValue("mailpassword");
-    // ImapInbox inbox = new ImapInbox(); // TODO: Cache these?
-    // Collection<Message> messages = inbox.checkForNewMessages(server, 0, username,
-    // password, true);
+    String server = (String) inContext.getContextValue("mailserver");
+    int serverport = ((Long) inContext.getContextValue("mailport")).intValue();
+    String username = (String) inContext.getContextValue("mailusername");
+    String password = (String) inContext.getContextValue("mailpassword");
+
+    ImapInbox inbox = new ImapInbox(); // TODO: Cache these?
+    Collection<ImapMessage> messages = inbox.checkForNewMessages(server, serverport, username, password, true);
+    if (messages != null && messages.size() > 0) {
+        inContext.put("newmessages", messages);
+
+        inContext.info("Found " + messages.size() + " new messages");
+
+        inContext.info("Multiple child agents, invoking decision agent");
+        AgentContext subContext = new AgentContext(inContext);
+        subContext.put("previousagent", currentEnabled.getAgentData().getId());
+        try{
+            for (ImapMessage message : messages) {
+                String fromString = message.getFrom();
+                String subjectString = message.getSubject();
+                String contentString = message.getBody();
+                subContext.put(
+                "previousoutput",
+                "From: " + fromString +
+                    "\\nSubject: " + subjectString +
+                    "\\nMessage: " + contentString);
+                super.process(subContext);
+            }
+        }
+        catch (Exception e)
+        {
+            inContext.error("Error processing email messages: " + e.getMessage());
+        }
+    } else {
+    inContext.info("No messages found");
+    super.process(inContext);
+    }
+
     // A fake message for testing
-    try
-    {
+    /* 
+    try {
+        
       Message fakeMessage = new javax.mail.internet.MimeMessage((javax.mail.Session) null);
       fakeMessage.setSubject("Hello!");
       fakeMessage.setFrom(new InternetAddress("test@example.com"));
@@ -59,6 +93,7 @@ public class ImapMailCheckerAgent extends ToolsCallingAgent
     } catch (Exception e)
     {
       inContext.error("Error processing email messages: " + e.getMessage());
-    }
+    }*/
+
   }
 }

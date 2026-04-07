@@ -286,14 +286,9 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 				MultiValued data = (MultiValued) iterator.next();
 				AgentEnabled enabled = new AgentEnabled();
 				enabled.setAutomationEnabledData(data);
+				
 				String agentid = data.get("automationagent");
-				MultiValued agentconfig = (MultiValued) getMediaArchive().getCachedData("automationagent", agentid); // Todo:
-																																																							// Here is
-																																																							// finding
-																																																							// the
-																																																							// wrong
-																																																							// document
-																																																							// Splitter
+				MultiValued agentconfig = (MultiValued) getMediaArchive().getCachedData("automationagent", agentid); 
 				enabled.setAgentData(agentconfig);
 
 				addContextValues(agentconfig, enabled);
