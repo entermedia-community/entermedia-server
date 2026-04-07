@@ -68,6 +68,9 @@
 				options.oemaxlevel = 1;
 			}
 		}
+		if (olddialog.length !== 0 && initiator.data("closedialog") == true) {
+			closeemdialog(olddialog);
+		}
 
 		//NOT USED. Delete
 		var param = initiator.data("parameterdata");
@@ -147,7 +150,7 @@
 				}
 
 				var modalOptions = {
-					closeExisting: false,
+					closeExisting: true,
 					show: true,
 					backdrop: modalbackdrop,
 					keyboard: false,
