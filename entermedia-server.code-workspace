@@ -20,12 +20,11 @@
 		},
 	],
 	"settings": {
-		"cSpell.words": ["isrunning"],
+		"files.autoSave": "onFocusChange",
+		"editor.formatOnSave": true,
 		"java.autobuild.enabled": true,
 		"java.debug.settings.hotCodeReplace": "auto",
 		"java.debug.settings.showLogicalStructure": true,
-		"[java]": {
-			"editor.defaultFormatter": "redhat.java",
-		},
+		"java.format.settings.url": "./formatter.xml",
 	},
 }
