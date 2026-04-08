@@ -595,9 +595,11 @@ $(document).ready(function () {
 			var splitnames = classes.split(",");
 			$.each(splitnames, function (index, classname) {
 				classname = classname.trim();
-				$("." + classname).each(function (index, div) {
-					autoreload($(div), null, classname);
-				});
+				if (classname) {
+					$("." + classname).each(function (index, div) {
+						autoreload($(div), null, classname);
+					});
+				}
 			});
 		} else {
 			var element = indiv.data("ajaxreloadtargetid"); //For single reload
