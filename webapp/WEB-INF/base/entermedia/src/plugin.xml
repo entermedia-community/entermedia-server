@@ -565,7 +565,7 @@
 			<ref bean="pageManager" />
 		</property>
 	</bean>
-	
+
 	<bean id="entityCreationManager" class="org.entermediadb.ai.assistant.EntityCreationManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -1589,9 +1589,9 @@
 	</bean>
 
 	<bean id="elasticFastFolderSearcher" class="org.entermediadb.elasticsearch.searchers.ElasticListSearcher" scope="prototype">
-	
+
 		<property name="saveToXml" value="false"/>
-		
+
 		<property name="xmlSearcher">
 			<ref bean="xmlFolderSearcher" />
 		</property>
@@ -2680,20 +2680,20 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	
+
 	<bean id="tutorialsManager" class="org.entermediadb.ai.assistant.TutorialsManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	
+
 	<bean id="autoDetectChatManager" class="org.entermediadb.ai.assistant.AutoDetectChatManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	
-	<bean id="SmartCreatorModule" class="org.entermediadb.ai.creator.SmartCreatorModule" >
+
+	<bean id="SmartCreatorModule" class="org.entermediadb.ai.creator.SmartCreatorModule">
 	</bean>
 
 	<bean id="handleWebEventAgent" class="org.entermediadb.ai.automation.agents.HandleWebEventAgent" scope="prototype">
@@ -2712,6 +2712,11 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
+	<bean id="processConversions" class="org.entermediadb.ai.automation.agents.ProcessConversions" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
 
 	<bean id="runEventAgent" class="org.entermediadb.ai.automation.agents.RunEventAgent" scope="prototype">
 		<property name="moduleManager">
@@ -2723,7 +2728,7 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	
+
 	<bean id="smartCreatorManager" class="org.entermediadb.ai.creator.SmartCreatorManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -2790,7 +2795,7 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-		
+
 	</bean>
 
 	<bean id="mcpManager" class="org.entermediadb.mcp.McpManager" scope="prototype">
@@ -2931,13 +2936,13 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	
+
 	<bean id="automationManager" class="org.entermediadb.ai.automation.AutomationManager" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	
+
 	<bean id="runModuleAgent" class="org.entermediadb.ai.automation.agents.RunModuleAgent" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />

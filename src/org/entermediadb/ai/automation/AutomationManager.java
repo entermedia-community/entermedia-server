@@ -147,7 +147,7 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 	{
 		MultiValued automationEnabledData = (MultiValued) inAgentEnabled.getAutomationEnabledData();
 		String text = automationEnabledData.get("contextvalues");
-		if (text == null)
+		if (text == null && inAgentEnabled.getAgentData() != null)
 		{
 			text = inAgentEnabled.getAgentData().get("contextvalues");
 		}
@@ -331,6 +331,13 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 				enabled.setAgentData(agentdata);
 
 				addContextValues(enabled);
+
+				if (agentdata == null)
+				{
+					log.error("Could not find agent data for enabled agent "
+							+ agentenableddata.getId() + " with agentid " + agentid);
+					continue;
+				}
 
 				String bean = agentdata.get("bean");
 				Agent agent = loadAgent(bean);
