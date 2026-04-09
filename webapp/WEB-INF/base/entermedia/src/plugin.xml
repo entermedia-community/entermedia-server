@@ -2922,6 +2922,12 @@
 		</property>
 	</bean>
 
+	<bean id="fieldTranslationAgent" class="org.entermediadb.translator.agents.FieldTranslationAgent" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
 	<bean id="translationModule" class="org.entermediadb.translator.TranslationModule" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
