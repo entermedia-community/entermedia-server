@@ -161,36 +161,33 @@ public class DocumentConversionManager extends BaseConversionManager
 
 		if (pdfFormats.contains(fileFormat))
 		{
-
-
-
 			ConvertInstructions instructions2 = inStructions;
 			if ("pdf".equals(fileFormat))
 			{
 				instructions2.setInputFile(inStructions.getOriginalDocument());
-				// instructions2.setOutputFile(inStructions.getOutputFile());
 			}
 			else
 				if (inStructions.getInputFile().getAbsolutePath().endsWith("document.pdf"))
 				{
+					// Already exists a document.pdf, we may be creating pages
 					// instructions2.setInputFile(inStructions.getInputFile());
-					// instructions2.setOutputFile(inStructions.getOutputFile());
 				}
 				else
 				{
-					// Lets always have a PDF version of all document formats?
+					// Always have a PDF version of all document formats
 					Data preset = getMediaArchive().getPresetManager().getPresetByOutputNameCached(
 							inStructions.getMediaArchive(), "document", "document.pdf");
-					instructions2 = inStructions.copy(preset);
-					instructions2.setInputFile(inStructions.getInputFile());
-					MediaTranscoder findTranscoder = findTranscoder(instructions2);
-					ConvertResult result = findTranscoder.convertIfNeeded(instructions2);
+					// Used to create the PDF version of the document only
+					ConvertInstructions instructions3 = inStructions.copy(preset);
+					instructions3.setInputFile(inStructions.getInputFile());
+					MediaTranscoder findTranscoder = findTranscoder(instructions3);
+					ConvertResult result = findTranscoder.convertIfNeeded(instructions3);
 					log.info("Created document.pdf");
 					if (inStructions.getOutputExtension().equals("pdf"))
 					{
-						return result; // Why shortcut?
+						return result; // Not expected to be here, but just in case
 					}
-					instructions2.setInputFile(instructions2.getOutputFile());
+					instructions2.setInputFile(instructions3.getOutputFile());
 				}
 
 
