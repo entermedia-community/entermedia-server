@@ -24,18 +24,19 @@ public abstract class BaseConversionManager implements ConversionManager
 	protected Collection fieldInputLoaders;
 	protected Collection fieldOutputFilters;
 	protected MediaTranscoder fieldDefaultTranscoder;
-	
+
 	public MediaTranscoder getDefaultTranscoder()
 	{
 		return fieldDefaultTranscoder;
 	}
-	
-	
+
+
 	public WaterMarkTranscoder getWaterMarkTranscoder()
 	{
 		if (fieldWaterMarkTranscoder == null)
 		{
-			fieldWaterMarkTranscoder = 	(WaterMarkTranscoder)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(),"waterMarkTranscoder");
+			fieldWaterMarkTranscoder = (WaterMarkTranscoder) getMediaArchive().getModuleManager()
+					.getBean(getMediaArchive().getCatalogId(), "waterMarkTranscoder");
 		}
 		return fieldWaterMarkTranscoder;
 	}
@@ -61,7 +62,7 @@ public abstract class BaseConversionManager implements ConversionManager
 	{
 		fieldOutputFilters = inOutputFilters;
 	}
-	
+
 	public Collection getInputLoaders()
 	{
 		return fieldInputLoaders;
@@ -82,39 +83,43 @@ public abstract class BaseConversionManager implements ConversionManager
 		fieldMediaArchive = inMediaArchive;
 	}
 
-	
+
 	public ConvertResult loadExistingOuput(Map inSettings, String inSourcePath, String exportName)
 	{
-		
+
 		ContentItem existing = null;
 		Object val = inSettings.get("canshowunwatermarkedassets");
-		if(val != null && !(Boolean)val)
+		if (val != null && !(Boolean) val)
 		{
-			ConvertInstructions instructions = createInstructions(inSourcePath,exportName,inSettings);
+			ConvertInstructions instructions =
+					createInstructions(inSourcePath, exportName, inSettings);
 			existing = instructions.getOutputFile();
 		}
 		else
 		{
-			existing= getMediaArchive().getContent( "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + inSourcePath + "/" + exportName);
-		}	
+			existing =
+					getMediaArchive().getContent("/WEB-INF/data/" + getMediaArchive().getCatalogId()
+							+ "/generated/" + inSourcePath + "/" + exportName);
+		}
 		ConvertResult result = new ConvertResult();
 		result.setOutput(existing);
 		result.setOk(true);
-		if( existing.exists() )
+		if (existing.exists())
 		{
 			result.setComplete(true);
 		}
 		else
 		{
-			String useoriginalmediawhenpossible = (String)inSettings.get("useoriginalmediawhenpossible");
-			if (Boolean.parseBoolean(useoriginalmediawhenpossible) )
+			String useoriginalmediawhenpossible =
+					(String) inSettings.get("useoriginalmediawhenpossible");
+			if (Boolean.parseBoolean(useoriginalmediawhenpossible))
 			{
 				Asset asset = getMediaArchive().getAssetBySourcePath(inSourcePath);
 				String type = PathUtilities.extractPageType(exportName);
-				if( asset.getFileFormat().equals(type) )
+				if (asset.getFileFormat().equals(type))
 				{
 					ContentItem original = getMediaArchive().getOriginalContent(asset);
-					if( original.exists() )
+					if (original.exists())
 					{
 						result.setComplete(true);
 						result.setOutput(original);
@@ -124,44 +129,52 @@ public abstract class BaseConversionManager implements ConversionManager
 
 		}
 		return result;
-		//Require export name to be set
-		
-//		String outputextension = PathUtilities.extractPageType( exportName );
-//		inSettings.put("outputextension", outputextension);
-//		if( exportName.startsWith("image") && exportName.length() > 10 && exportName.contains("x"))
-//		{
-//			//see if there is a with and height?
-//			String size = exportName.substring(5,exportName.length() - outputextension.length() - 1 );
-//			int cutoff= size.indexOf("x");
-//			String width = size.substring(0,cutoff);
-//			String height = size.substring(cutoff + 1,size.length());	
-//			inSettings.put("prefwidth", width);
-//			inSettings.put("prefheight", height);
-//		}
-//		Data preset = null;
-//		if( exportName.startsWith("image") || exportName.startsWith("video") || exportName.startsWith("document") || exportName.startsWith("audio") ) )
-//		{
-//			preset = getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(), getRenderType(), exportName);
-//		}
-//
-//		
-//		//First thing is first. We need to check out cache and make sure this file is not already in existence
-//		ConvertInstructions instructions = createInstructions(inSourcePath, inSettings);
-//		
-//
-//		
-//		return result;
-		
+		// Require export name to be set
+
+		// String outputextension = PathUtilities.extractPageType( exportName );
+		// inSettings.put("outputextension", outputextension);
+		// if( exportName.startsWith("image") && exportName.length() > 10 &&
+		// exportName.contains("x"))
+		// {
+		// //see if there is a with and height?
+		// String size = exportName.substring(5,exportName.length() - outputextension.length() - 1
+		// );
+		// int cutoff= size.indexOf("x");
+		// String width = size.substring(0,cutoff);
+		// String height = size.substring(cutoff + 1,size.length());
+		// inSettings.put("prefwidth", width);
+		// inSettings.put("prefheight", height);
+		// }
+		// Data preset = null;
+		// if( exportName.startsWith("image") || exportName.startsWith("video") ||
+		// exportName.startsWith("document") || exportName.startsWith("audio") ) )
+		// {
+		// preset = getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(),
+		// getRenderType(), exportName);
+		// }
+		//
+		//
+		// //First thing is first. We need to check out cache and make sure this file is not already
+		// in existence
+		// ConvertInstructions instructions = createInstructions(inSourcePath, inSettings);
+		//
+		//
+		//
+		// return result;
+
 	}
-	
-	//Come up with the expected output path based on the input parameters
-	//All image handlers will use a standard file saving conversion
+
+	// Come up with the expected output path based on the input parameters
+	// All image handlers will use a standard file saving conversion
 	@Override
-	public ConvertResult createOutputIfNeeded(Asset inAsset, String inSourcePath,String inExportName, Map inSettings)
+	public ConvertResult createOutputIfNeeded(Asset inAsset, String inSourcePath,
+			String inExportName, Map inSettings)
 	{
-		//First thing is first. We need to check out cache and make sure this file is not already in existence
-		ConvertInstructions instructions = createInstructions(inAsset, inSourcePath, inExportName, inSettings);
-		if( instructions.isStreaming() || instructions.getOutputFile().getLength() < 2 )
+		// First thing is first. We need to check out cache and make sure this file is not already
+		// in existence
+		ConvertInstructions instructions =
+				createInstructions(inAsset, inSourcePath, inExportName, inSettings);
+		if (instructions.isStreaming() || instructions.getOutputFile().getLength() < 2)
 		{
 			return createOutput(instructions);
 		}
@@ -172,6 +185,7 @@ public abstract class BaseConversionManager implements ConversionManager
 		result.setInstructions(instructions);
 		return result;
 	}
+
 	protected abstract String getRenderType();
 
 	@Override
@@ -179,39 +193,40 @@ public abstract class BaseConversionManager implements ConversionManager
 	{
 		ConvertInstructions instructions = createNewInstructions();
 		instructions.setAsset(inAsset);
-		return instructions;		
+		return instructions;
 	}
 
 
 	@Override
 	public ConvertInstructions createInstructions(Asset inAsset, String inExportName)
 	{
-		Data preset = getMediaArchive().getPresetManager().getPresetByOutputNameCached(getMediaArchive(), getRenderType(), inExportName);
+		Data preset = getMediaArchive().getPresetManager()
+				.getPresetByOutputNameCached(getMediaArchive(), getRenderType(), inExportName);
 		ConvertInstructions instructions = createNewInstructions();
 		instructions.setAsset(inAsset);
 		instructions.loadPreset(preset);
-//		ContentItem output = findOutputFile(instructions);
-//		instructions.setOutputFile(output);
-		return instructions;		
+		// ContentItem output = findOutputFile(instructions);
+		// instructions.setOutputFile(output);
+		return instructions;
 	}
 
 
 	public ConvertInstructions createInstructions(Asset inAsset, Data inPreset)
-	{ 
+	{
 		ConvertInstructions instructions = createNewInstructions();
 		instructions.loadPreset(inPreset);
 		instructions.setAsset(inAsset);
-		
-//		ContentItem output = findOutputFile(instructions);
-//		instructions.setOutputFile(output);
+
+		// ContentItem output = findOutputFile(instructions);
+		// instructions.setOutputFile(output);
 		return instructions;
-		
+
 	}
 
 	protected ConvertInstructions createNewInstructions()
 	{
 		ConvertInstructions ins = new ConvertInstructions(getMediaArchive());
-	
+
 		return ins;
 	}
 
@@ -220,97 +235,109 @@ public abstract class BaseConversionManager implements ConversionManager
 		ConvertInstructions instructions = createNewInstructions();
 		instructions.loadSettings(inSettings);
 		instructions.loadPreset(inPreset);
-		//instructions.setAssetSourcePath(inSourcePath);
+		// instructions.setAssetSourcePath(inSourcePath);
 		instructions.setAsset(inAsset);
-//		ContentItem output = findOutputFile(instructions);
-//		instructions.setOutputFile(output);
+		// ContentItem output = findOutputFile(instructions);
+		// instructions.setOutputFile(output);
 		return instructions;
 	}
-	public ConvertInstructions createInstructions(String inSourcePath, String inExportName, Map inSettings)
+
+	public ConvertInstructions createInstructions(String inSourcePath, String inExportName,
+			Map inSettings)
 	{
-		return createInstructions( null,inSourcePath,inExportName,inSettings);
+		return createInstructions(null, inSourcePath, inExportName, inSettings);
 	}
-	public ConvertInstructions createInstructions(Asset inAsset, String inSourcePath, String inExportName, Map inSettings)
-	{ 
+
+	public ConvertInstructions createInstructions(Asset inAsset, String inSourcePath,
+			String inExportName, Map inSettings)
+	{
 		ConvertInstructions instructions = createNewInstructions();
 		String generateName = inExportName;
 		if (inExportName.contains("offset"))
 		{
 			int offsetstart = inExportName.indexOf("offset");
-			String offset = inExportName.substring(offsetstart + 6, inExportName.lastIndexOf(".") );
+			String offset = inExportName.substring(offsetstart + 6, inExportName.lastIndexOf("."));
 			instructions.setProperty("timeoffset", offset);
-			//instructions.setProperty("outputname",);
+			// instructions.setProperty("outputname",);
 			String type = PathUtilities.extractPageType(inExportName);
 			generateName = inExportName.substring(0, offsetstart) + "." + type;
 		}
 		if (inExportName.contains("page"))
 		{
 			int offsetstart = inExportName.indexOf("page");
-			String pagenum = inExportName.substring(offsetstart + 4, inExportName.lastIndexOf(".") );
-			//instructions.setProperty("pagenum", pagenum);
+			String pagenum = inExportName.substring(offsetstart + 4, inExportName.lastIndexOf("."));
+			// instructions.setProperty("pagenum", pagenum);
 			instructions.setPageNumber(pagenum);
-			//instructions.setProperty("outputname",);
+			// instructions.setProperty("outputname",);
 			String type = PathUtilities.extractPageType(inExportName);
 			generateName = inExportName.substring(0, offsetstart) + "." + type;
 		}
-		
-		Data preset = getMediaArchive().getPresetManager().getPresetByOutputNameCached(getMediaArchive(), getRenderType(), generateName);
-		if( preset == null)
+
+		Data preset = getMediaArchive().getPresetManager()
+				.getPresetByOutputNameCached(getMediaArchive(), getRenderType(), generateName);
+		if (preset == null)
 		{
-			throw new OpenEditException("Preset not defined " +  getRenderType() + " "  + generateName);
+			throw new OpenEditException(
+					"Preset not defined " + getRenderType() + " " + generateName);
 		}
 		instructions.loadPreset(preset);
-		if( inAsset != null)
+		if (inAsset != null)
 		{
 			instructions.setAsset(inAsset);
 		}
-		
-		if( instructions.getPageNumber() > 1)
+
+		if (instructions.getPageNumber() > 1)
 		{
-			instructions.setProperty("outputfile", null); //Reset the output name
+			instructions.setProperty("outputfile", null); // Reset the output name
 			instructions.setOutputFile(null);
 		}
-		//log.error("No preset defined for export file name" + inExportName);
-		instructions.setOutputExtension(PathUtilities.extractPageType(generateName)); //For cases where the output is not configured
+		// log.error("No preset defined for export file name" + inExportName);
+		instructions.setOutputExtension(PathUtilities.extractPageType(generateName)); // For cases
+																						// where the
+																						// output is
+																						// not
+																						// configured
 		instructions.loadSettings(inSettings);
 		instructions.setAssetSourcePath(inSourcePath);
 		return instructions;
-		
+
 	}
 
-	
-    @Override
+
+	@Override
 	public ConvertResult createOutput(ConvertInstructions inStructions)
 	{
-    	if(inStructions.getConvertPreset() != null && inStructions.getConvertPreset().getId().equals("0")) {
-    		ConvertResult result = new ConvertResult();
+		if (inStructions.getConvertPreset() != null
+				&& inStructions.getConvertPreset().getId().equals("0"))
+		{
+			ConvertResult result = new ConvertResult();
 			result.setOutput(inStructions.getInputFile());
 			result.setOk(true);
 			result.setComplete(true);
 			result.setInstructions(inStructions);
 			return result;
-			//converting to original
-    	}
-    	ContentItem input = inStructions.getInputFile();
-    	if( input == null && getInputLoaders() != null)
-    	{
-	    	//Load input
-	    	input = findInput(inStructions);
-			inStructions.setInputFile(input);
-    	}	
-    	if(input == null || !input.exists())
-		{
-			//throw new OpenEditException("Input is " + input + " input loaders failed to load");
-    		ConvertResult result = new ConvertResult();
-    		result.setInstructions(inStructions);
-    		result.setError("Input is " + input + " input loaders failed to load");
-			result.setComplete(true);
-    		return result;
+			// converting to original
 		}
-    	if( !inStructions.isForce() && !inStructions.isStreaming() )
-    	{
-	    	ContentItem output = inStructions.getOutputFile();
-			if( output.getLength() > 0 )
+		ContentItem input = inStructions.getInputFile();
+		if (input == null && getInputLoaders() != null)
+		{
+			// Load input
+			input = findInput(inStructions);
+			inStructions.setInputFile(input);
+		}
+		if (input == null || !input.exists())
+		{
+			// throw new OpenEditException("Input is " + input + " input loaders failed to load");
+			ConvertResult result = new ConvertResult();
+			result.setInstructions(inStructions);
+			result.setError("Input is " + input + " input loaders failed to load");
+			result.setComplete(true);
+			return result;
+		}
+		if (!inStructions.isForce() && !inStructions.isStreaming())
+		{
+			ContentItem output = inStructions.getOutputFile();
+			if (output.getLength() > 0)
 			{
 				ConvertResult result = new ConvertResult();
 				result.setOutput(output);
@@ -319,59 +346,61 @@ public abstract class BaseConversionManager implements ConversionManager
 				result.setInstructions(inStructions);
 				return result;
 			}
-    	}
-    	ConvertResult result = transcode(inStructions);
+		}
+		ConvertResult result = transcode(inStructions);
 
-    	if( getOutputFilters() != null && result.isOk() && result.isComplete() )
-    	{
-    		for (Iterator iterator = getOutputFilters().iterator(); iterator.hasNext();)
+		if (getOutputFilters() != null && result.isOk() && result.isComplete())
+		{
+			for (Iterator iterator = getOutputFilters().iterator(); iterator.hasNext();)
 			{
 				OutputFilter filter = (OutputFilter) iterator.next();
 				ConvertResult tmpresult = filter.filterOutput(inStructions);
-				if( tmpresult != null)
+				if (tmpresult != null)
 				{
 					result = tmpresult;
 				}
 			}
-    	}
-    	return result;
+		}
+		return result;
 	}
 
-	public ContentItem findInput(ConvertInstructions inStructions) {
+	public ContentItem findInput(ConvertInstructions inStructions)
+	{
 		for (Iterator iterator = getInputLoaders().iterator(); iterator.hasNext();)
 		{
 			InputLoader loader = (InputLoader) iterator.next();
 			ContentItem input = loader.loadInput(inStructions);
-			if( input != null)
+			if (input != null)
 			{
 				return input;
 			}
 		}
 		return null;
 	}
-    
-    protected ConvertResult transcode(ConvertInstructions inStructions)
-    {
-    	MediaTranscoder transcoder = findTranscoder(inStructions);
-    	ConvertResult result = transcoder.convert(inStructions);
-    	return result;
-    }
-    
-    protected MediaTranscoder findTranscoder(ConvertInstructions inStructions)
-    {
-    	//look at the preset object or output filename and do a search
-    	Data preset = inStructions.getConvertPreset();
-    	if( preset != null)
-    	{
-    		return findTranscoderByPreset(preset);
-    	}
-    	return getDefaultTranscoder();
-    }
+
+	protected ConvertResult transcode(ConvertInstructions inStructions)
+	{
+		MediaTranscoder transcoder = findTranscoder(inStructions);
+		ConvertResult result = transcoder.convert(inStructions);
+		return result;
+	}
+
+	protected MediaTranscoder findTranscoder(ConvertInstructions inStructions)
+	{
+		// look at the preset object or output filename and do a search
+		Data preset = inStructions.getConvertPreset();
+		if (preset != null)
+		{
+			return findTranscoderByPreset(preset);
+		}
+		return getDefaultTranscoder();
+	}
 
 	protected MediaTranscoder findTranscoderByPreset(Data preset)
 	{
 		String creator = preset.get("transcoderid");
-		MediaTranscoder transcoder = (MediaTranscoder)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), creator + "Transcoder");
+		MediaTranscoder transcoder = (MediaTranscoder) getMediaArchive().getModuleManager()
+				.getBean(getMediaArchive().getCatalogId(), creator + "Transcoder");
 		return transcoder;
 	}
 
@@ -379,55 +408,65 @@ public abstract class BaseConversionManager implements ConversionManager
 	public ConvertResult updateStatus(Data inTask, ConvertInstructions inStructions)
 	{
 		MediaTranscoder transcoder = findTranscoder(inStructions);
-		return transcoder.updateStatus(inTask,inStructions);
+		return transcoder.updateStatus(inTask, inStructions);
 	}
-	protected ContentItem makeCustomInput(BaseTranscoder imTranscoder, String format, ConvertInstructions inStructions)
+
+	protected ContentItem makeCustomInput(BaseTranscoder imTranscoder, String format,
+			ConvertInstructions inStructions)
 	{
-		if(inStructions.getAsset() == null){
+		if (inStructions.getAsset() == null)
+		{
 			return null;
 		}
 		String colorspace = inStructions.getAsset().get("colorspace");
-		String profiledescip = inStructions.getAsset().get("colorprofiledescription"); 
-		if(profiledescip == null) {
+		String profiledescip = inStructions.getAsset().get("colorprofiledescription");
+		if (profiledescip == null)
+		{
 			profiledescip = "";
 		}
 		ContentItem originalDocument = inStructions.getOriginalDocument();
 		Asset asset = inStructions.getAsset();
 
-		if( "4".equals( colorspace ) ||  "5".equals(colorspace ) )
+		if ("4".equals(colorspace) || "5".equals(colorspace))
 		{
-			
+
 			boolean exists = originalDocument.exists();
-			if( inStructions.isCrop() || !exists ) //Let it use the standard 1020x768
+			if (inStructions.isCrop() || !exists) // Let it use the standard 1020x768
 			{
 				return null;
 			}
-//			if( !isCMYKProfile(inInputFile) )
-//			{
-				ContentItem custom = getMediaArchive().getContent( "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + asset.getSourcePath() + "/customthumb." + format);
-				if( !custom.exists() )
-				{
-					ConvertInstructions instructions = createInstructions(asset);
-					instructions.setForce(true);
-					instructions.setInputFile(originalDocument);
-					instructions.setProperty("skipprofile", "true");
-					instructions.setOutputFile(custom);
-
-					imTranscoder.convert(instructions);
-				}
-				return custom;
-//			}
-		}
-		
-		if( profiledescip.contains("ProPhoto") ) {
-			
-			ContentItem custom = getMediaArchive().getContent( "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + asset.getSourcePath() + "/customthumb." + format);
-
-			if( !custom.exists() )
+			// if( !isCMYKProfile(inInputFile) )
+			// {
+			ContentItem custom =
+					getMediaArchive().getContent("/WEB-INF/data/" + getMediaArchive().getCatalogId()
+							+ "/generated/" + asset.getSourcePath() + "/customthumb." + format);
+			if (!custom.exists())
 			{
 				ConvertInstructions instructions = createInstructions(asset);
 				instructions.setForce(true);
-				Page profile = getMediaArchive().getPageManager().getPage("/system/commonbase/components/conversions/ProPhoto.icc");
+				instructions.setInputFile(originalDocument);
+				instructions.setProperty("skipprofile", "true");
+				instructions.setOutputFile(custom);
+
+				imTranscoder.convert(instructions);
+			}
+			return custom;
+			// }
+		}
+
+		if (profiledescip.contains("ProPhoto"))
+		{
+
+			ContentItem custom =
+					getMediaArchive().getContent("/WEB-INF/data/" + getMediaArchive().getCatalogId()
+							+ "/generated/" + asset.getSourcePath() + "/customthumb." + format);
+
+			if (!custom.exists())
+			{
+				ConvertInstructions instructions = createInstructions(asset);
+				instructions.setForce(true);
+				Page profile = getMediaArchive().getPageManager()
+						.getPage("/system/commonbase/components/conversions/ProPhoto.icc");
 				instructions.setImageProfile(profile);
 				instructions.setInputFile(originalDocument);
 				instructions.setProperty("skipprofile", "true");
@@ -435,19 +474,10 @@ public abstract class BaseConversionManager implements ConversionManager
 				instructions.setOutputFile(custom);
 
 				transcoder.convert(instructions);
-			}    	
-			
+			}
+
 			return custom;
-
-			
-			
-			
 		}
-
-		
-		
-		
-		
 		return null;
 	}
 

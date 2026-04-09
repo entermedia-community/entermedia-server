@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.CatalogEnabled;
@@ -22,25 +23,28 @@ import org.openedit.util.ExecutorManager;
 public class QueueManager implements ConversionEventListener, CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(QueueManager.class);
-	//Runs every 5 minutes or when new uploads come in or when an asset finishes and we need the next one
-	//Synchnize the checking
-	//Search for all tasks that arfe not ones I am already working on
-	//Looks to see if there are any available runners, if so
-	//then Does a search on the queue sorted by assetid
-	//Locks the asset, Bundles an asset into a runnable and hands it off to a runner
-	//Each thread finishes, releases the lock and updates the tasks then fires shared event to run more conversions
+	// Runs every 5 minutes or when new uploads come in or when an asset finishes and we need the
+	// next one
+	// Synchnize the checking
+	// Search for all tasks that arfe not ones I am already working on
+	// Looks to see if there are any available runners, if so
+	// then Does a search on the queue sorted by assetid
+	// Locks the asset, Bundles an asset into a runnable and hands it off to a runner
+	// Each thread finishes, releases the lock and updates the tasks then fires shared event to run
+	// more conversions
 	protected AssetConversions ISLOCKED = new AssetConversions();
 	protected MediaArchive fieldMediaArchive;
 	protected ModuleManager fieldModuleManager;
 	protected Map fieldRunningAssetConversions = new ConcurrentHashMap();
 	protected String fieldCatalogId;
 	protected int fieldTotalPending;
+
 	public int getMaxProcessors()
 	{
-		if( fieldMaxProcessors == -1 )
+		if (fieldMaxProcessors == -1)
 		{
 			String max = getMediaArchive().getCatalogSettingValue("conversion_max_processors");
-			if( max != null)
+			if (max != null)
 			{
 				fieldMaxProcessors = Integer.parseInt(max);
 			}
@@ -48,7 +52,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 			{
 				fieldMaxProcessors = getThreads().getAvailableProcessors() - 1;
 			}
-			if( fieldMaxProcessors < 1 )
+			if (fieldMaxProcessors < 1)
 			{
 				fieldMaxProcessors = 1;
 			}
@@ -60,8 +64,9 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 	{
 		fieldMaxProcessors = inMaxProcessors;
 	}
+
 	protected int fieldMaxProcessors = -1;
-	
+
 	public int getTotalPending()
 	{
 		return fieldTotalPending;
@@ -96,7 +101,8 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 	{
 		if (fieldMediaArchive == null)
 		{
-			fieldMediaArchive = (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
+			fieldMediaArchive =
+					(MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		}
 		return fieldMediaArchive;
 	}
@@ -114,52 +120,59 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 			return;
 		}
 
-		//Lock searching for tasks
+		// Lock searching for tasks
 		try
 		{
 			Searcher tasksearcher = getMediaArchive().getSearcher("conversiontask");
-	
-			QueryBuilder query =  getMediaArchive().localQuery("conversiontask");
-			query.orgroup("status", "new submitted retry missinginput");    //TODO: Create multiple conversion queues to deal with videos and retry and uploads
-			//query.sort("status");
+
+			QueryBuilder query = getMediaArchive().localQuery("conversiontask");
+			query.orgroup("status", "new submitted retry missinginput"); // TODO: Create multiple
+																			// conversion queues to
+																			// deal with videos and
+																			// retry and uploads
+			// query.sort("status");
 			query.sort("submitteddateDown");
 			query.sort("assetidDown");
 			query.sort("ordering");
-			//TODO: Exclude any existing asseids we are already processing
+			// TODO: Exclude any existing asseids we are already processing
 			if (hasRunningConversions())
 			{
 				query.notgroup("assetid", getRunningAssetIds());
 			}
-	
+
 			HitTracker newtasks = tasksearcher.search(query.getQuery());
 			newtasks.enableBulkOperations();
-			newtasks.setHitsPerPage(500);  //Just enought to fill up the queue
-			//newtasks.enableBulkOperations();
-			//newtasks.setHitsPerPage(25); //We want to make sure scroll does not expire 
-			//newtasks.setHitsPerPage(20000);  //This is a problem. Since the data is being edited while we change pages we skip every other page. Only do one page at a time
+			newtasks.setHitsPerPage(500); // Just enought to fill up the queue
+			// newtasks.enableBulkOperations();
+			// newtasks.setHitsPerPage(25); //We want to make sure scroll does not expire
+			// newtasks.setHitsPerPage(20000); //This is a problem. Since the data is being edited
+			// while we change pages we skip every other page. Only do one page at a time
 			setTotalPending(newtasks.size());
 			if (newtasks.size() > 0)
 			{
-				log.info("processing " + newtasks.size() + " new submitted retry missinginput conversions");
+				log.info("processing " + newtasks.size()
+						+ " new submitted retry missinginput conversions");
 			}
 			else
 			{
 				return;
 			}
-			//log.info("Thread checking: " + Thread.currentThread().getName() + " class:" + hashCode() );
+			// log.info("Thread checking: " + Thread.currentThread().getName() + " class:" +
+			// hashCode() );
 			long count = 0;
 			Map assetstoprocess = new HashMap();
-			
+
 			Searcher itemsearcher = getMediaArchive().getSearcher("orderitem");
 			Searcher presetsearcher = getMediaArchive().getSearcher("convertpreset");
-			
+
 			for (Iterator iterator = newtasks.iterator(); iterator.hasNext();)
 			{
 				Data hit = (Data) iterator.next();
-				
-				//If locked skip it, someone is already processing it
-				String assetid = hit.get("assetid"); //Since each converter locks the asset we want to group these into one sublist
-	
+
+				// If locked skip it, someone is already processing it
+				String assetid = hit.get("assetid"); // Since each converter locks the asset we want
+														// to group these into one sublist
+
 				if (assetid == null)
 				{
 					log.info("No assetid set");
@@ -169,17 +182,17 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 					tasksearcher.saveData(missingdata, null);
 					continue;
 				}
-	
+
 				AssetConversions existing = (AssetConversions) assetstoprocess.get(assetid);
 				if (existing == null)
 				{
-					//lock and create
+					// lock and create
 					if (count >= availableProcessors())
 					{
 						break;
 					}
-					Asset asset = getMediaArchive().getAsset( assetid );
-					if( asset == null )
+					Asset asset = getMediaArchive().getAsset(assetid);
+					if (asset == null)
 					{
 						Data missingdata = tasksearcher.loadData(hit);
 						missingdata.setProperty("status", "error");
@@ -188,11 +201,13 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 						assetstoprocess.put(assetid, ISLOCKED);
 						continue;
 					}
-					Lock lock = fieldMediaArchive.getLockManager().lockIfPossible("assetconversions/" + assetid, "CompositeConvertRunner.run");
+					Lock lock = fieldMediaArchive.getLockManager().lockIfPossible(
+							"assetconversions/" + assetid, "CompositeConvertRunner.run");
 					if (lock == null)
 					{
 						assetstoprocess.put(assetid, ISLOCKED);
-						log.info("Asset is already being processed " + assetid + " in catalog " + getMediaArchive().getCatalogId());
+						log.info("Asset is already being processed " + assetid + " in catalog "
+								+ getMediaArchive().getCatalogId());
 						continue;
 					}
 					count++;
@@ -205,9 +220,10 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 				{
 					continue;
 				}
-				ConversionTask task = createRunnable(tasksearcher, presetsearcher, itemsearcher, hit);
+				ConversionTask task =
+						createRunnable(tasksearcher, presetsearcher, itemsearcher, hit);
 				existing.addTask(task);
-	
+
 			}
 			for (Iterator iterator = assetstoprocess.keySet().iterator(); iterator.hasNext();)
 			{
@@ -218,9 +234,9 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 					queueConversion(tasks);
 				}
 			}
-			//log.info("Thread finished: " + Thread.currentThread().getName() );
+			// log.info("Thread finished: " + Thread.currentThread().getName() );
 		}
-		catch ( Throwable ex)
+		catch (Throwable ex)
 		{
 			log.error("Could not process queue ", ex);
 		}
@@ -230,7 +246,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 	{
 		return fieldRunningAssetConversions;
 	}
-	
+
 	private boolean hasRunningConversions()
 	{
 		return fieldRunningAssetConversions.isEmpty() == false;
@@ -252,14 +268,17 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 		total = total - fieldRunningAssetConversions.size();
 		return total;
 	}
+
 	public int runningProcesses()
 	{
 		return fieldRunningAssetConversions.size();
 	}
 
-	protected ConversionTask createRunnable(Searcher tasksearcher, Searcher presetsearcher, Searcher itemsearcher, Data hit)
+	protected ConversionTask createRunnable(Searcher tasksearcher, Searcher presetsearcher,
+			Searcher itemsearcher, Data hit)
 	{
-		ConversionTask runner = (ConversionTask)getModuleManager().getBean(getCatalogId(),"conversionTask",false);
+		ConversionTask runner = (ConversionTask) getModuleManager().getBean(getCatalogId(),
+				"conversionTask", false);
 		runner.mediaarchive = getMediaArchive();
 		runner.tasksearcher = tasksearcher;
 		runner.presetsearcher = presetsearcher;
@@ -270,7 +289,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 
 	private void queueConversion(AssetConversions inAssetconversions)
 	{
-		//log.info("ADDING" + inAssetconversions.getAssetId());
+		// log.info("ADDING" + inAssetconversions.getAssetId());
 		fieldRunningAssetConversions.put(inAssetconversions.getAssetId(), inAssetconversions);
 		getThreads().execute("conversions", inAssetconversions);
 	}
@@ -281,30 +300,49 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 		{
 			fieldRunningAssetConversions.remove(inAssetconversions.getAssetId());
 			getMediaArchive().releaseLock(inAssetconversions.getLock());
-			log.info("RELEASED" + inAssetconversions.getAssetId());
+			log.info("RELEASED " + inAssetconversions.getAssetId());
+			if (getAgentContext() != null)
+			{
+				getAgentContext().info("Finisihed Conversions on asset");
+			}
+
 			getMediaArchive().conversionCompleted(inAssetconversions.getAsset());
-			//getMediaArchive().fireMediaEvent("conversions/conversioncomplete",null,inAssetconversions.getAsset());
-			//log.info("Thread complete: " + Thread.currentThread().getName() );
+			// getMediaArchive().fireMediaEvent("conversions/conversioncomplete",null,inAssetconversions.getAsset());
+			// log.info("Thread complete: " + Thread.currentThread().getName() );
 			checkQueue();
 		}
-		catch ( Exception ex)
+		catch (Exception ex)
 		{
-			log.error("Problem finishing conversions ",ex);
+			log.error("Problem finishing conversions ", ex);
 		}
 	}
+
 	public void ranConversions(AssetConversions inAssetConversions)
 	{
 		fieldRunningAssetConversions.remove(inAssetConversions.getAssetId());
 		getMediaArchive().releaseLock(inAssetConversions.getLock());
-		//log.info("RELEASED after run" + inAssetConversions.getAssetId());
+		// log.info("RELEASED after run" + inAssetConversions.getAssetId());
 
 	}
+
 	public ExecutorManager getThreads()
 	{
-		ExecutorManager queue = (ExecutorManager) getModuleManager().getBean(getMediaArchive().getCatalogId(), "executorManager");
+		ExecutorManager queue = (ExecutorManager) getModuleManager()
+				.getBean(getMediaArchive().getCatalogId(), "executorManager");
 		return queue;
 	}
 
+	public AgentContext fieldAgentContext;
 
+	public void setAgentContext(AgentContext agentcontext)
+	{
+
+		AgentContext fieldAgentContext = agentcontext;
+	}
+
+	public AgentContext getAgentContext()
+	{
+		return fieldAgentContext;
+	}
 
 }
