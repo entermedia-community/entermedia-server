@@ -2916,13 +2916,7 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	<bean id="translationAgent" class="org.entermediadb.translator.TranslationAgent" lazy-init="default" scope="prototype">
-		<property name="moduleManager">
-			<ref bean="moduleManager" />
-		</property>
-	</bean>
-
-	<bean id="fieldTranslationAgent" class="org.entermediadb.translator.agents.FieldTranslationAgent" lazy-init="default" scope="prototype">
+	<bean id="translationAgent" class="org.entermediadb.translator.agents.TranslationAgent" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
