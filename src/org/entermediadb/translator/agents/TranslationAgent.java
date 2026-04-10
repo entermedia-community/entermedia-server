@@ -49,6 +49,12 @@ public class TranslationAgent extends BaseAgent
 			Collection<String> targetLangs =
 				(Collection<String>) inContext.getContextValue("targetLangs");
 			String text = (String) inContext.getContextValue("text");
+
+			if (sourceLang == null || targetLangs == null || text == null)
+			{
+				inContext.info("Nothing to Translate");
+				return; // Missing required context values
+			}
 			Map<String, String> translations =
 				getTranslationManager().translatePlainText(sourceLang , targetLangs , text);
 

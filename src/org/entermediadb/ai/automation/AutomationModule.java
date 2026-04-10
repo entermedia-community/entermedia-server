@@ -30,18 +30,20 @@ public class AutomationModule extends BaseMediaModule
 	public void loadScenarios(WebPageRequest inReq)
 	{
 		Collection scenarios = getMediaArchive(inReq).query("automationscenario")
-				.exact("isvisible", true).sort("ordering").search();
-		inReq.putPageValue("scenarios", scenarios);
+			.exact("isvisible" , true)
+			.sort("ordering")
+			.search();
+		inReq.putPageValue("scenarios" , scenarios);
 	}
 
 	public void loadAutomationScenario(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 
-		inReq.putPageValue("automationManager", getAutomationManager(inReq));
+		inReq.putPageValue("automationManager" , getAutomationManager(inReq));
 
 		Searcher automationpositionsearcher = archive.getSearcher("automationposition");
-		inReq.putPageValue("automationpositionsearcher", automationpositionsearcher);
+		inReq.putPageValue("automationpositionsearcher" , automationpositionsearcher);
 
 		String scenarioid = inReq.getRequestParameter("scenarioid");
 
@@ -53,29 +55,31 @@ public class AutomationModule extends BaseMediaModule
 		if (scenarioid == null)
 		{
 			Collection<Data> scenarios = archive.query("automationscenario")
-					.exact("isvisible", true).sort("ordering").search();
-			inReq.putPageValue("scenarios", scenarios);
+				.exact("isvisible" , true)
+				.sort("ordering")
+				.search();
+			inReq.putPageValue("scenarios" , scenarios);
 
 			Searcher scenarioSearcher = archive.getSearcher("automationscenario");
-			inReq.putPageValue("scenariosearcher", scenarioSearcher);
+			inReq.putPageValue("scenariosearcher" , scenarioSearcher);
 
 			Collection<Data> labels = archive.query("automationlabel").search();
-			inReq.putPageValue("labels", labels);
+			inReq.putPageValue("labels" , labels);
 
 			Searcher labelSearcher = archive.getSearcher("automationlabel");
-			inReq.putPageValue("labelsearcher", labelSearcher);
+			inReq.putPageValue("labelsearcher" , labelSearcher);
 			return;
 		}
 
-		Data scenario = archive.query("automationscenario").exact("id", scenarioid).searchOne();
-		inReq.putPageValue("scenario", scenario);
+		Data scenario = archive.query("automationscenario").exact("id" , scenarioid).searchOne();
+		inReq.putPageValue("scenario" , scenario);
 
 		Searcher agentEnabledSearcher = archive.getSearcher("automationagentenabled");
-		inReq.putPageValue("agentenabledsearcher", agentEnabledSearcher);
+		inReq.putPageValue("agentenabledsearcher" , agentEnabledSearcher);
 
 		Collection<MultiValued> agents =
-				agentEnabledSearcher.query().exact("automationscenario", scenario.getId()).search();
-		inReq.putPageValue("agents", agents);
+			agentEnabledSearcher.query().exact("automationscenario" , scenario.getId()).search();
+		inReq.putPageValue("agents" , agents);
 	}
 
 	/*
@@ -99,8 +103,8 @@ public class AutomationModule extends BaseMediaModule
 	public AutomationManager getAutomationManager(WebPageRequest inReq)
 	{
 		AutomationManager manager =
-				(AutomationManager) getMediaArchive(inReq).getBean("automationManager");
-		inReq.putPageValue("automationManager", manager);
+			(AutomationManager) getMediaArchive(inReq).getBean("automationManager");
+		inReq.putPageValue("automationManager" , manager);
 		return manager;
 	}
 
@@ -120,12 +124,10 @@ public class AutomationModule extends BaseMediaModule
 
 		AgentContext context = new AgentContext();
 		context.setScriptLogger(logger);
-		context.put("webpagerequest", inReq);
+		context.put("webpagerequest" , inReq);
 
-		manager.runScenario(id, context);
+		manager.runScenario(id , context);
 	}
-
-
 
 	public void handleAgentSaved(WebPageRequest inReq)
 	{
@@ -133,16 +135,16 @@ public class AutomationModule extends BaseMediaModule
 
 		Data agentEnabledData = (Data) inReq.getPageValue("data");
 
-		inReq.putPageValue("agentid", agentEnabledData.getId());
-		inReq.putPageValue("scenarioid", agentEnabledData.get("automationscenario"));
-
+		inReq.putPageValue("agentid" , agentEnabledData.getId());
+		inReq.putPageValue("scenarioid" , agentEnabledData.get("automationscenario"));
 
 		Data agent = archive.query("automationagent")
-				.exact("id", agentEnabledData.get("automationagent")).searchOne();
+			.exact("id" , agentEnabledData.get("automationagent"))
+			.searchOne();
 
-		agentEnabledData.setValue("agenttype", agent.get("agenttype"));
+		agentEnabledData.setValue("agenttype" , agent.get("agenttype"));
 
-		archive.saveData("automationagentenabled", agentEnabledData);
+		archive.saveData("automationagentenabled" , agentEnabledData);
 
 		AutomationManager manager = getAutomationManager(inReq);
 		manager.generateParams(agentEnabledData);
@@ -169,31 +171,33 @@ public class AutomationModule extends BaseMediaModule
 		}
 
 		Searcher agentEnabledSearcher =
-				getMediaArchive(inReq).getSearcher("automationagentenabled");
+			getMediaArchive(inReq).getSearcher("automationagentenabled");
 		for (Iterator iterator = data.iterator(); iterator.hasNext();)
 		{
 			JSONObject agentdata = (JSONObject) iterator.next();
 
 			String id = (String) agentdata.get("id");
-			Data agentEnabled = agentEnabledSearcher.query().exact("id", id).searchOne();
+			Data agentEnabled = agentEnabledSearcher.query().exact("id" , id).searchOne();
 			if (agentEnabled == null)
 			{
 				agentEnabled = (Data) agentEnabledSearcher.createNewData();
 			}
 
-			Boolean enabled = Boolean.parseBoolean((String) agentdata.get("enabled"));
+			Boolean enabled =
+				agentdata.get("enabled") instanceof Boolean ? (Boolean) agentdata.get("enabled")
+					: Boolean.parseBoolean(String.valueOf(agentdata.get("enabled")));
 			Double offsetx = Double.parseDouble((String.valueOf(agentdata.get("offsetx"))));
 			Double offsety = Double.parseDouble((String.valueOf(agentdata.get("offsety"))));
 
 			String runafter = (String) agentdata.get("runafter");
 			if (runafter != null)
 			{
-				agentEnabled.setValue("runafter", runafter);
+				agentEnabled.setValue("runafter" , runafter);
 			}
 
-			agentEnabled.setValue("enabled", enabled);
-			agentEnabled.setValue("offsetx", offsetx);
-			agentEnabled.setValue("offsety", offsety);
+			agentEnabled.setValue("enabled" , enabled);
+			agentEnabled.setValue("offsetx" , offsetx);
+			agentEnabled.setValue("offsety" , offsety);
 
 			agentEnabledSearcher.saveData(agentEnabled);
 
@@ -201,7 +205,7 @@ public class AutomationModule extends BaseMediaModule
 
 		String scenarioid = (String) layout.get("scenarioid");
 		String base64 = (String) layout.get("thumbnail");
-		saveAutomationSnapshot(inReq, scenarioid, base64);
+		saveAutomationSnapshot(inReq , scenarioid , base64);
 	}
 
 	public void saveAutomationPreview(WebPageRequest inReq)
@@ -267,25 +271,24 @@ public class AutomationModule extends BaseMediaModule
 		{
 			Searcher scenarioSearcher = archive.getSearcher("automationscenario");
 			Collection<Data> scenarios = scenarioSearcher.query().ids(scenarioIds).search();
-			scenarioSearcher.deleteAll(scenarios, inReq.getUser());
+			scenarioSearcher.deleteAll(scenarios , inReq.getUser());
 		}
 
 		if (agentIds.size() > 0)
 		{
 			Searcher agentSearcher = archive.getSearcher("automationagentenabled");
 			Collection<Data> agents = agentSearcher.query().ids(agentIds).search();
-			agentSearcher.deleteAll(agents, inReq.getUser());
+			agentSearcher.deleteAll(agents , inReq.getUser());
 		}
 
 		if (labelIds.size() > 0)
 		{
 			Searcher labelSearcher = archive.getSearcher("automationlabel");
 			Collection<Data> labels = labelSearcher.query().ids(labelIds).search();
-			labelSearcher.deleteAll(labels, inReq.getUser());
+			labelSearcher.deleteAll(labels , inReq.getUser());
 		}
 
 	}
-
 
 	public void saveAutomationSnapshot(WebPageRequest inReq, String filename, String base64)
 	{
@@ -302,7 +305,6 @@ public class AutomationModule extends BaseMediaModule
 
 		ContentItem saveTo = archive.getPageManager().getPage(sourcepath).getContentItem();
 
-
 		try
 		{
 			InputStreamItem revision = new InputStreamItem();
@@ -317,7 +319,7 @@ public class AutomationModule extends BaseMediaModule
 
 			InputStream input = null;
 
-			String code = base64.substring(base64.indexOf(",") + 1, base64.length());
+			String code = base64.substring(base64.indexOf(",") + 1 , base64.length());
 			byte[] tosave = Base64.getDecoder().decode(code);
 			input = new ByteArrayInputStream(tosave);
 
@@ -332,9 +334,6 @@ public class AutomationModule extends BaseMediaModule
 			log.error(ex);
 		}
 
-
 	}
-
-
 
 }
