@@ -186,7 +186,7 @@ $(document).ready(function () {
 		}
 
 		if (targets.size == 0) {
-			customToast("No missing translation found!", { positive: false });
+			console.log("No missing translation found!");
 			return;
 		}
 
