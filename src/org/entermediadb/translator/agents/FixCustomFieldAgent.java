@@ -126,7 +126,7 @@ public class FixCustomFieldAgent extends BaseAgent
 				}
 				if (count > 0)
 				{
-					inContext.info("Fixed " + count + " translation(s) for Credit field of " + matchedText);
+					inContext.info("Fixed " + count + " translation(s) for custom field of " + matchedText);
 				}
 
 			}
