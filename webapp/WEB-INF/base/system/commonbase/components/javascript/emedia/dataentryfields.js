@@ -159,7 +159,8 @@ $(document).ready(function () {
 					targets.add(val);
 				}
 			});
-			targets.delete(target);
+			targets.delete("all");
+			targets.delete("missing");
 			targets.delete(source);
 		} else {
 			targets.add(target);
@@ -185,7 +186,7 @@ $(document).ready(function () {
 		}
 
 		if (targets.size == 0) {
-			customToast("No translation targets found!", { positive: false });
+			customToast("No missing translation found!", { positive: false });
 			return;
 		}
 
@@ -291,12 +292,12 @@ $(document).ready(function () {
 			var oFCKeditor = new FCKeditor( textname );
 			oFCKeditor.Config.StylesXmlPath		= '/system/tools/html/styles.xml';
 			oFCKeditor.BasePath	= "/system/tools/html/fckeditor/";
-		  	oFCKeditor.ToolbarSet = "Basic";
+				oFCKeditor.ToolbarSet = "Basic";
 			//oFCKeditor.Config.DefaultLanguage = "$context.getLanguage()";
 			oFCKeditor.Height = 300;
 			oFCKeditor.Width = 300;
-	        oFCKeditor.ReplaceTextarea();
-	    }
+			oFCKeditor.ReplaceTextarea();
+		}
 	    
 	});
 	*/
@@ -432,10 +433,10 @@ showPicker = function (detailid) {
 	if (!window.name) window.name = "admin_parent";
 	window.open(
 		home +
-			"/system/tools/newpicker/index.html?parentName=" +
-			window.name +
-			"&detailid=" +
-			detailid,
+		"/system/tools/newpicker/index.html?parentName=" +
+		window.name +
+		"&detailid=" +
+		detailid,
 		"pickerwindow",
 		"alwaysRaised=yes,menubar=no,scrollbars=yes,width=1000,x=100,y=100,height=600,resizable=yes"
 	);

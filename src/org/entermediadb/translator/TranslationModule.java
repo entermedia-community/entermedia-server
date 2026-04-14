@@ -48,16 +48,14 @@ public class TranslationModule extends BaseMediaModule
 	{
 		if (fieldMediaArchive == null)
 		{
-			fieldMediaArchive =
-				(MediaArchive) getModuleManager().getBean(getCatalogId() , "mediaArchive");
+			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId() , "mediaArchive");
 		}
 		return fieldMediaArchive;
 	}
 
 	public AutomationManager getAutomationManager(WebPageRequest inReq)
 	{
-		AutomationManager manager =
-			(AutomationManager) getMediaArchive(inReq).getBean("automationManager");
+		AutomationManager manager = (AutomationManager) getMediaArchive(inReq).getBean("automationManager");
 		inReq.putPageValue("automationManager" , manager);
 		return manager;
 	}
@@ -89,8 +87,7 @@ public class TranslationModule extends BaseMediaModule
 
 		MediaArchive archive = getMediaArchive(inReq);
 
-		TranslationManager manager = (TranslationManager) archive.getBean("translationManager");
-
+		// TranslationManager manager = (TranslationManager) archive.getBean("translationManager");
 		// Map<String, String> translations = manager.translatePlainText(sourceLang , targetLangs ,
 		// text);
 

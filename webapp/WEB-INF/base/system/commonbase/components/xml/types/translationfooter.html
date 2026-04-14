@@ -69,7 +69,10 @@
       data-detailid="${detail.id}"
       data-no-toast="true">
       <option value="missing" selected>
-        [[All Languages]]
+        [[Missing Languages]]
+      </option>
+      <option value="all">
+        [[Overwrite All]]
       </option>
       #foreach($locale in $languages)
         #if($locale.getBoolean("enabled") && $locale.getBoolean("translatemetadata"))
@@ -78,9 +81,7 @@
           </option>
         #end
       #end
-      <option value="all">
-        [[Overwrite All]]
-      </option>
+      
     </select>
   </div>
 </div>
