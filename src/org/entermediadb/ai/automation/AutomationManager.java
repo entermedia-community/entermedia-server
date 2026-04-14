@@ -114,9 +114,8 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 
 	public void runScenario(String inId, AgentContext inContext)
 	{
-		MultiValued scenerio =
-			(MultiValued) getMediaArchive().getCachedData("automationscenario" , inId);// query("automationscenerio").exact("enabled",
-																						// true).sort("ordering").search();
+		MultiValued scenerio = (MultiValued) getMediaArchive().getCachedData("automationscenario" , inId);// query("automationscenerio").exact("enabled",
+																											// true).sort("ordering").search();
 
 		if (scenerio == null)
 		{
@@ -172,9 +171,7 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 
 	public Map<String, MultiValued> getAllPositions()
 	{
-		Map<String, MultiValued> map =
-			(Map<String, MultiValued>) getMediaArchive().getCacheManager()
-				.get("automationscenariopositionmap" , "all");
+		Map<String, MultiValued> map = (Map<String, MultiValued>) getMediaArchive().getCacheManager().get("automationscenariopositionmap" , "all");
 		if (map == null)
 		{
 			map = new HashMap();
@@ -192,9 +189,7 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 
 	public Map<String, MultiValued> getAllLabels()
 	{
-		Map<String, MultiValued> map =
-			(Map<String, MultiValued>) getMediaArchive().getCacheManager()
-				.get("automationlabelsmap" , "all");
+		Map<String, MultiValued> map = (Map<String, MultiValued>) getMediaArchive().getCacheManager().get("automationlabelsmap" , "all");
 		if (map == null)
 		{
 			map = new HashMap();
@@ -246,8 +241,7 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 			MultiValued data = getAllPositions().get(valuemap.get("id"));
 			if (data == null)
 			{
-				data = (MultiValued) getMediaArchive().getSearcher("automationposition")
-					.createNewData();
+				data = (MultiValued) getMediaArchive().getSearcher("automationposition").createNewData();
 				data.setId((String) valuemap.get("id"));
 			}
 			data.setValue("posx" , valuemap.getDouble("posx"));
@@ -327,15 +321,10 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 
 	public Collection<AgentEnabled> getEnabledAgents(String inId)
 	{
-		Collection<AgentEnabled> cached =
-			(Collection<AgentEnabled>) getMediaArchive().getCacheManager()
-				.get("agentsenabled" , inId);
+		Collection<AgentEnabled> cached = (Collection<AgentEnabled>) getMediaArchive().getCacheManager().get("agentsenabled" , inId);
 		if (cached == null)
 		{
-			Collection found = getMediaArchive().query("automationagentenabled")
-				.exact("automationscenario" , inId)
-				.exact("enabled" , true)
-				.search();
+			Collection found = getMediaArchive().query("automationagentenabled").exact("automationscenario" , inId).exact("enabled" , true).search();
 			Map<String, AgentEnabled> allparents = new HashMap();
 			for (Iterator iterator = found.iterator(); iterator.hasNext();)
 			{
@@ -343,20 +332,23 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 				AgentEnabled enabled = new AgentEnabled();
 				enabled.setAutomationEnabledData(agentenableddata);
 				String agentid = agentenableddata.get("automationagent");
-				MultiValued agentdata =
-					(MultiValued) getMediaArchive().getCachedData("automationagent" , agentid);
+				MultiValued agentdata = (MultiValued) getMediaArchive().getCachedData("automationagent" , agentid);
 				enabled.setAgentData(agentdata);
 
 				addContextValues(enabled);
 
 				if (agentdata == null)
 				{
-					log.error("Could not find agent data for enabled agent "
-						+ agentenableddata.getId() + " with agentid " + agentid);
+					log.error("Could not find agent data for enabled agent " + agentenableddata.getId() + " with agentid " + agentid);
 					continue;
 				}
 
 				String bean = agentdata.get("bean");
+				if (bean == null)
+				{
+					log.error("No bean defined for agent " + agentenableddata.getId());
+					continue;
+				}
 				Agent agent = loadAgent(bean);
 				enabled.setAgent(agent);
 
@@ -428,9 +420,7 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 						argumentString = arguments.toJSONString();
 						inAgentEnabledConfig.setValue("parameterstructure" , argumentString);
 						getMediaArchive().saveData("automationagentenabled" , inAgentEnabledConfig);
-						getMediaArchive().getCacheManager()
-							.remove("agentsenabled" , inAgentEnabledConfig
-								.get("automationscenario"));
+						getMediaArchive().getCacheManager().remove("agentsenabled" , inAgentEnabledConfig.get("automationscenario"));
 					}
 				}
 			}
@@ -454,10 +444,7 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 
 	public Collection<MultiValued> getAgentsData()
 	{
-		Collection<MultiValued> records = getMediaArchive().query("automationagent")
-			.exact("enabled" , true)
-			.sort("ordering")
-			.cachedSearch();
+		Collection<MultiValued> records = getMediaArchive().query("automationagent").exact("enabled" , true).sort("ordering").cachedSearch();
 		return records;
 	}
 
@@ -477,8 +464,7 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 					AgentContext context = new AgentContext();
 					context.setScriptLogger(trigger.getLogger());
 					context.put("webpagerequest" , trigger.getWebPageRequest());
-					MultiValued module = (MultiValued) getMediaArchive()
-						.getCachedData("module" , inEvent.getSearchType());
+					MultiValued module = (MultiValued) getMediaArchive().getCachedData("module" , inEvent.getSearchType());
 					context.setCurrentEntityModule(module);
 
 					for (Iterator iterator = ids.iterator(); iterator.hasNext();)
@@ -494,15 +480,11 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 
 	public Collection<String> findSceneriosForEvent(String inEvent)
 	{
-		Collection<String> cached =
-			(Collection<String>) getMediaArchive().getCacheManager().get("eventlookup" , inEvent);
+		Collection<String> cached = (Collection<String>) getMediaArchive().getCacheManager().get("eventlookup" , inEvent);
 		if (cached == null)
 		{
 			cached = new HashSet();
-			Collection found = getMediaArchive().query("automationagentenabled")
-				.exact("runoperation" , inEvent)
-				.exact("enabled" , true)
-				.search();
+			Collection found = getMediaArchive().query("automationagentenabled").exact("runoperation" , inEvent).exact("enabled" , true).search();
 			if (found != null)
 			{
 				for (Iterator iterator = found.iterator(); iterator.hasNext();)
