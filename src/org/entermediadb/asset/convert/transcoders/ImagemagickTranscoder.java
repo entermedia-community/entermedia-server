@@ -23,18 +23,27 @@ public class ImagemagickTranscoder extends BaseTranscoder
 	private static final Log log = LogFactory.getLog(ImagemagickTranscoder.class);
 
 	protected String fieldPathToProfile;
+	protected String fieldPathToCMYKProfile;
 
 	public String getPathtoProfile()
 	{
 
-
 		if (fieldPathToProfile == null)
 		{
-			Page profile = getPageManager()
-					.getPage("/system/commonbase/components/conversions/tinysRGB.icc");
+			Page profile = getPageManager().getPage("/system/commonbase/components/conversions/tinysRGB.icc");
 			fieldPathToProfile = profile.getContentItem().getAbsolutePath();
 		}
 		return fieldPathToProfile;
+	}
+
+	public String getPathCMYKProfile()
+	{
+		if (fieldPathToCMYKProfile == null)
+		{
+			Page profile = getPageManager().getPage("/system/commonbase/components/conversions/USWebCoatedSWOP.icc");
+			fieldPathToCMYKProfile = profile.getContentItem().getAbsolutePath();
+		}
+		return fieldPathToCMYKProfile;
 	}
 
 	@Override
@@ -49,7 +58,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 
 		ContentItem inputFile = inStructions.getInputFile();
 
-		String ext = PathUtilities.extractPageType(inputFile.getPath(), true);
+		String ext = PathUtilities.extractPageType(inputFile.getPath() , true);
 
 		if (asset != null)
 		{
@@ -89,17 +98,31 @@ public class ImagemagickTranscoder extends BaseTranscoder
 					float aspect = (float) height / (float) width;
 					if (aspect > 1.3f) // portrait mode
 					{
-						String percent = emautoheight.substring(0, emautoheight.length() - 1);
+						String percent = emautoheight.substring(0 , emautoheight.length() - 1);
 						int percentint = Integer.parseInt(percent);
-						finalheight = Math.round((float) finalheight
-								+ ((float) finalheight * ((float) percentint / 100f)));
+						finalheight = Math.round((float) finalheight + ((float) finalheight * ((float) percentint / 100f)));
 					}
 				}
 			}
 
-			Collection needsDensity =
-					Arrays.asList("pdf", "gddoc", "gdsheet", "gdslide", "gddraw", "eps", "ai");
+			if ("pdf".equals(ext))
+			{
+				com.add(0 , "sRGB");
+				com.add(0 , "-colorspace");
+			}
+			else
+				if ("jpg".equals(ext)) // Found JPGS with incorrect profile for CMYK
+				{
+					if (asset.get("colorspace") != null && asset.get("colorspace").equals("4"))
+					{
+						com.add(0 , getPathCMYKProfile());
+						com.add(0 , "-profile");
 
+					}
+
+				}
+
+			Collection needsDensity = Arrays.asList("pdf" , "gddoc" , "gdsheet" , "gdslide" , "gddraw" , "eps" , "ai");
 
 			// be aware ImageMagick writes to a tmp file with a larger version of the file before it
 			// is finished
@@ -138,19 +161,22 @@ public class ImagemagickTranscoder extends BaseTranscoder
 					{
 						// for small input files we want to scale up the density
 						float density = ((float) outputw / (float) width) * 300f;
-						density = Math.max(density, defaultdensity);
-						density = Math.min(density, 900);
+						density = Math.max(density , defaultdensity);
+						density = Math.min(density , 900);
 						String val = String.valueOf(Math.round(density));
-						com.add(0, val);
-						com.add(0, "-density");
+						com.add(0 , val);
+						com.add(0 , "-density");
 					}
 					else
 					{
-						com.add(0, String.valueOf(defaultdensity));
-						com.add(0, "-density");
+						com.add(0 , String.valueOf(defaultdensity));
+						com.add(0 , "-density");
 					}
 				}
 			}
+
+			// Alawys strip profiles/metadata
+			com.add(0 , "-strip");
 
 			if (!inStructions.isCrop()) // not a crop!
 			{
@@ -194,7 +220,6 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			com.add(rotate);
 		}
 
-
 		if (inStructions.isCrop())
 		{
 			boolean croplast = Boolean.parseBoolean(inStructions.get("croplast"));
@@ -211,9 +236,9 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			}
 
 			// This gravity is the relative point of the crop marks
-			setValue("gravity", "NorthWest", inStructions, com);
+			setValue("gravity" , "NorthWest" , inStructions , com);
 
-			createBackground(inStructions, com, maintaintransparency, ext);
+			createBackground(inStructions , com , maintaintransparency , ext);
 
 			com.add("-crop");
 			StringBuffer cropString = new StringBuffer();
@@ -268,18 +293,17 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		}
 		else
 		{
-			createBackground(inStructions, com, maintaintransparency, ext);
+			createBackground(inStructions , com , maintaintransparency , ext);
 			Boolean extent = Boolean.parseBoolean(inStructions.get("extent"));
 			if (extent)
 			{
 				// This gravity is the relative point of the crop marks
-				setValue("gravity", "center", inStructions, com);
+				setValue("gravity" , "center" , inStructions , com);
 
 				String extentw = inStructions.get("extentwidth");
 				String extenth = inStructions.get("extentheight");
 				com.add("-extent");
 				com.add(extentw + "x" + extenth);
-
 
 			}
 		}
@@ -296,7 +320,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			com.add(dpi);
 		}
 
-		setValue("quality", "85", inStructions, com);
+		setValue("quality" , "85" , inStructions , com);
 		// add sampling-factor if specified
 		if (inStructions.get("sampling-factor") != null)
 		{
@@ -307,22 +331,21 @@ public class ImagemagickTranscoder extends BaseTranscoder
 
 		if (!maintaintransparency)
 		{
-			if ("eps".equals(ext) || "pdf".equals(ext) || "ps".equals(ext) || "psd".equals(ext)
-					|| "ai".equals(ext) || "tif".equals(ext) || "tiff".equals(ext))
+			if ("eps".equals(ext) || "pdf".equals(ext) || "ps".equals(ext) || "psd".equals(ext) || "ai".equals(ext) || "tif".equals(ext) || "tiff".equals(ext))
 			{
-				setValue("colorspace", "sRGB", inStructions, com);
+				setValue("colorspace" , "sRGB" , inStructions , com);
 				// Not compatible with profile at the same time with colorspace
 				// setValue("profile", getPathtoProfile(), inStructions, com);
 
 			}
 			else
 			{
-				com.add("-strip"); // This removes the extra profile info TODO: Get rid of this fix
+				// com.add("-strip"); // This removes the extra profile info TODO: Get rid of this fix
 				String profilepath = null;
 				if (inStructions.getImageProfile() != null)
 				{
 					profilepath = inStructions.getImageProfile().getContentItem().getAbsolutePath();
-					setValue("profile", profilepath, inStructions, com);
+					setValue("profile" , profilepath , inStructions , com);
 					Boolean websafecolors = Boolean.parseBoolean(inStructions.get("websafecolors"));
 					if (websafecolors)
 					{
@@ -334,9 +357,8 @@ public class ImagemagickTranscoder extends BaseTranscoder
 				else
 				{
 					profilepath = getPathtoProfile();
-					setValue("profile", profilepath, inStructions, com);
+					setValue("profile" , profilepath , inStructions , com);
 				}
-
 
 			}
 		}
@@ -358,12 +380,11 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			com.add(outputpath);
 		}
 
-
 		long start = System.currentTimeMillis();
 		new File(outputpath).getParentFile().mkdirs();
 
 		long timeout = inStructions.getConversionTimeout();
-		ExecResult execresult = getExec().runExec("convert", com, true, timeout);
+		ExecResult execresult = getExec().runExec("convert" , com , true , timeout);
 
 		boolean ok = execresult.isRunOk();
 		result.setOk(ok);
@@ -372,9 +393,8 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		{
 			result.setComplete(true);
 
-			log.info("Asset: " + asset.getId() + " Image Magick Convert complete in:"
-					+ (System.currentTimeMillis() - start) + " Preset:"
-					+ inStructions.getConvertPreset() + " " + inOutFile.getName());
+			log.info("Asset: " + asset.getId() + " Image Magick Convert complete in:" + (System.currentTimeMillis() - start) + " Preset:" + inStructions.getConvertPreset() + " "
+				+ inOutFile.getName());
 
 			return result;
 		}
@@ -390,20 +410,16 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			if (output != null && output.contains("warning/tiff.c"))
 			{
 				result.setComplete(true);
-				log.info("Asset: " + asset.getId() + " Convert complete in:"
-						+ (System.currentTimeMillis() - start) + " " + inOutFile.getName());
+				log.info("Asset: " + asset.getId() + " Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
 				result.setOk(true);
 			}
 			// Added as PDF was throwing an error like this but the images generated were fine.
 			if (output != null && output.contains("subimage specification returns no images"))
 			{
 				result.setComplete(true);
-				log.info("Asset: " + asset.getId() + " Convert complete in:"
-						+ (System.currentTimeMillis() - start) + " " + inOutFile.getName());
+				log.info("Asset: " + asset.getId() + " Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
 				result.setOk(true);
 			}
-
-
 
 			else
 			{
@@ -413,19 +429,15 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		return result;
 	}
 
-
-
-	protected void createBackground(ConvertInstructions inStructions, List<String> com,
-			boolean usepng, String ext)
+	protected void createBackground(ConvertInstructions inStructions, List<String> com, boolean usepng, String ext)
 	{
-		if (!usepng && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext)
-				|| "gif".equals(ext)))
+		if (!usepng && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) || "gif".equals(ext)))
 		{
 			String value = inStructions.get("background");
 
 			if (value != null)
 			{
-				setValue("background", null, inStructions, com);
+				setValue("background" , null , inStructions , com);
 			}
 			String layersvalue = inStructions.get("layers");
 			if (layersvalue != null)
@@ -447,8 +459,8 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			}
 			else
 			{
-				setValue("background", null, inStructions, com);
-				setValue("layers", null, inStructions, com);
+				setValue("background" , null , inStructions , com);
+				setValue("layers" , null , inStructions , com);
 			}
 	}
 
@@ -459,12 +471,11 @@ public class ImagemagickTranscoder extends BaseTranscoder
 
 		// ext = tmpinput;
 
-
 		List<String> com = new ArrayList<String>();
 
 		int page = inStructions.getPageNumber();
 		page--;
-		page = Math.max(0, page);
+		page = Math.max(0 , page);
 
 		String prefix = "";
 		String extension = "";
@@ -502,8 +513,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 	public ConvertResult updateStatus(Data inTask, ConvertInstructions inStructions)
 	{
 		// This should not happen
-		log.info("Should not need to check status on imagemagic... maybe use missinginput?"
-				+ inStructions.getAssetSourcePath() + " " + inStructions.getProperties());
+		log.info("Should not need to check status on imagemagic... maybe use missinginput?" + inStructions.getAssetSourcePath() + " " + inStructions.getProperties());
 		ConvertResult status = new ConvertResult();
 		status.setComplete(true);
 		status.setOk(true);
