@@ -16,12 +16,13 @@ public class ImapMailSenderAgent extends BaseAgent
         int serverport = ((Long) inContext.getContextValue("mailport")).intValue();
         String username = (String) inContext.getContextValue("mailusername");
         String password = (String) inContext.getContextValue("mailpassword");
+        boolean useSsl = (Boolean) inContext.getContextValue("ssl");
 
-        // TODO Send email
         String to = (String) inContext.getContextValue("email");
-        String subject = "Re: " + inContext.getContextValue("emailcontent");
-        String content = (String) inContext.getContextValue("reply");
-        if (content == null)
+        String reply_subject = (String) inContext.getContextValue("reply_subject");
+        String reply_body = (String) inContext.getContextValue("reply_body");
+
+        if (reply_body == null)
         {
             inContext.error("No reply content found in context for email response");
             return;
@@ -34,7 +35,11 @@ public class ImapMailSenderAgent extends BaseAgent
             postMail.setPort(serverport);
             postMail.setSmtpUsername(username);
             postMail.setSmtpPassword(password);
-            postMail.postMail(to, subject, content, username);
+            postMail.setSmtpSecured(useSsl);
+
+            postMail.postMail(to, reply_subject, reply_body, username);
+
+            inContext.info("Email response sent to " + to + " with subject: " + reply_subject);
         }
         catch (MessagingException e)
         {
