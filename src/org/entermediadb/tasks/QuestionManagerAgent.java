@@ -41,10 +41,21 @@ public class QuestionManagerAgent extends ToolsCallingAgent
                 EmbeddingManager embeddings = (EmbeddingManager) getMediaArchive().getBean("embeddingManager");
 
                 JSONArray embeddingids = (JSONArray) inContext.getParentContext().getContext().get("embeddings");
-                LlmResponse response = embeddings.findAnswer(inContext, embeddingids, content);
+                LlmResponse response = embeddings.findAnswer(inContext, embeddingids, content, false);
 
                 JSONObject answerraw = response.getRawResponse();
-                String answer = (String) answerraw.get("answer");
+
+                String answer = null;
+
+                if (answerraw != null)
+                {
+                    answer = (String) answerraw.get("answer");
+                }
+                if (answer == null)
+                {
+                    answer = "No answer found.";
+                }
+
                 inContext.addContext("answer", answer);
 
                 LlmConnection llmConnection = getMediaArchive().getLlmConnection("agentemailanswer");
