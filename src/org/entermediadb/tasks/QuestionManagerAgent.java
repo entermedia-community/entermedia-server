@@ -50,16 +50,18 @@ public class QuestionManagerAgent extends ToolsCallingAgent
                 LlmConnection llmConnection = getMediaArchive().getLlmConnection("agentemailanswer");
                 response = llmConnection.callStructure(inContext, "agentemailanswer");
                 JSONObject raw = response.getMessageStructured();
-                String reply = (String) raw.get("reply_email");
-                inContext.addContext("reply", reply);
+                JSONObject reply = (JSONObject) raw.get("reply_email");
+                inContext.addContext("reply_subject", reply.get("subject"));
+                inContext.addContext("reply_body", reply.get("body"));
             }
             else
             {
                 LlmConnection llmConnection = getMediaArchive().getLlmConnection("agentemailgreeting");
                 LlmResponse response = llmConnection.callToolsFunction(inContext, "agentemailgreeting");
                 JSONObject raw = response.getMessageStructured();
-                String reply = (String) raw.get("greeting_email");
-                inContext.addContext("reply", reply);
+                JSONObject reply = (JSONObject) raw.get("greeting_email");
+                inContext.addContext("reply_subject", reply.get("subject"));
+                inContext.addContext("reply_body", reply.get("body"));
             }
         }
 
