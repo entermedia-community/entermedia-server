@@ -82,7 +82,9 @@ public class FixCustomFieldAgent extends BaseAgent
 				fixedtranslations.put(lang, value);
 
 			}
-			inContext.addContext("translations", fixedtranslations);
+			inContext.getParentContext().addContext("translations", fixedtranslations);
+			// inContext.addContext("translations", fixedtranslations);
+
 		}
 
 		super.process(inContext);
