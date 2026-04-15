@@ -1,14 +1,20 @@
 package org.entermediadb.email.agents;
 
 import java.util.Collection;
+import java.util.Date;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.automation.agents.ToolsCallingAgent;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.AgentEnabled;
 import org.entermediadb.email.ImapInbox;
 import org.entermediadb.email.ImapMessage;
+import org.json.simple.JSONObject;
 
 public class ImapMailCheckerAgent extends ToolsCallingAgent
 {
+
+  private static final Log log = LogFactory.getLog(ImapMailCheckerAgent.class);
 
   @Override
   public void process(AgentContext inContext)
@@ -22,6 +28,9 @@ public class ImapMailCheckerAgent extends ToolsCallingAgent
 
     ImapInbox inbox = new ImapInbox(); // TODO: Cache these?
     Collection<ImapMessage> messages = inbox.checkForNewMessages(server, serverport, username, password, true);
+
+    log.info(messages);
+
     if (messages != null && messages.size() > 0)
     {
       inContext.put("newmessages", messages);
@@ -29,7 +38,8 @@ public class ImapMailCheckerAgent extends ToolsCallingAgent
       inContext.info("Found " + messages.size() + " new messages");
 
       AgentContext subContext = createAgentContext(inContext, currentEnabled);
-      subContext.put("previousagent", currentEnabled.getAgentData().getId());
+
+      String agentid = currentEnabled.getAgentData().getId();
       try
       {
         for (ImapMessage message : messages)
@@ -37,7 +47,19 @@ public class ImapMailCheckerAgent extends ToolsCallingAgent
           String fromString = message.getFrom();
           String subjectString = message.getSubject();
           String contentString = message.getBody();
-          subContext.put("previousoutput", "From: " + fromString + "\\nSubject: " + subjectString + "\\nMessage: " + contentString + "\\nSentDate: " + message.getDate());
+          String sentDate = message.getDate();
+
+          JSONObject params = new JSONObject();
+          params.put("from", fromString);
+          params.put("subject", subjectString);
+          params.put("content", contentString);
+          params.put("sentdate", sentDate);
+
+          currentEnabled.setAgentParameterValues(params);
+
+          subContext.put("agentid", agentid);
+          subContext.put("agentoutput", "From: " + fromString + "\\nSubject: " + subjectString + "\\nMessage: " + contentString + "\\nSentDate: " + sentDate);
+
           super.process(subContext);
         }
       }

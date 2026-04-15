@@ -5,12 +5,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import org.entermediadb.ai.BaseAgent;
+import org.entermediadb.ai.automation.agents.ToolsCallingAgent;
 import org.entermediadb.ai.llm.AgentContext;
 import org.json.simple.JSONArray;
 import org.openedit.Data;
 import org.openedit.hittracker.HitTracker;
 
-public class EmbeddingFinderAgent extends BaseAgent
+public class EmbeddingFinderAgent extends ToolsCallingAgent
 {
 	@Override
 	public void process(AgentContext inContext)
