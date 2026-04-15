@@ -16,6 +16,7 @@ public class ImapMailSenderAgent extends BaseAgent
         int serverport = ((Long) inContext.getContextValue("mailport")).intValue();
         String username = (String) inContext.getContextValue("mailusername");
         String password = (String) inContext.getContextValue("mailpassword");
+        boolean useSsl = (Boolean) inContext.getContextValue("ssl");
 
         // TODO Send email
         String to = (String) inContext.getContextValue("email");
@@ -34,6 +35,8 @@ public class ImapMailSenderAgent extends BaseAgent
             postMail.setPort(serverport);
             postMail.setSmtpUsername(username);
             postMail.setSmtpPassword(password);
+            postMail.setSmtpSecured(useSsl);
+
             postMail.postMail(to, subject, content, username);
         }
         catch (MessagingException e)
