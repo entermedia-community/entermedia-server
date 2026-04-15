@@ -61,18 +61,12 @@ public class InformaticsProcessorAgent extends BaseAgent
 
 	public void process(AgentContext inContext)
 	{
-		InformaticsContext informatic = null;
-		if (inContext instanceof InformaticsContext)
+		log.info("Processing Informatics Agent: " + inContext.getCurrentAgentEnable());
+		InformaticsContext informatic = (InformaticsContext) inContext;
+		if (informatic.getAssetsToProcess() == null && informatic.getRecordsToProcess() == null)
 		{
-			informatic = (InformaticsContext) inContext;
-		}
-		else
-		{
-			informatic = new InformaticsContext(inContext);
-			// TODO Just load up the assets first
 			HitTracker pendingassets = getInformaticsProcessorManager().findPendingAssets(informatic);
 			informatic.setAssetsToProcess(pendingassets);
-
 			HitTracker pendingrecords = getInformaticsProcessorManager().findPendingRecords(informatic);
 			informatic.setRecordsToProcess(pendingrecords);
 		}
@@ -278,6 +272,7 @@ public class InformaticsProcessorAgent extends BaseAgent
 		if (validhits.isEmpty())
 		{
 			inContext.info("No records found");
+
 		}
 		else
 		{

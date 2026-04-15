@@ -24,6 +24,14 @@ public class AgentContext extends BaseData implements CatalogEnabled
 {
 	protected ScriptLogger fieldScriptLogger;
 
+	public AgentContext() {
+
+	}
+
+	public AgentContext(AgentContext inParent) {
+		setParentContext(inParent);
+	}
+
 	public ScriptLogger getScriptLogger()
 	{
 		if (fieldScriptLogger == null)
@@ -55,14 +63,6 @@ public class AgentContext extends BaseData implements CatalogEnabled
 	public void setParentContext(AgentContext inParentContext)
 	{
 		fieldParentContext = inParentContext;
-	}
-
-	public AgentContext() {
-
-	}
-
-	public AgentContext(AgentContext inParent) {
-		setParentContext(inParent);
 	}
 
 	protected String functionName;
@@ -152,6 +152,10 @@ public class AgentContext extends BaseData implements CatalogEnabled
 
 	public Collection<AgentEnabled> getAgentEnableChildren()
 	{
+		if (fieldAgentEnableChildren == null && getParentContext() != null)
+		{
+			return getParentContext().getAgentEnableChildren();
+		}
 		return fieldAgentEnableChildren;
 	}
 
@@ -232,7 +236,7 @@ public class AgentContext extends BaseData implements CatalogEnabled
 
 	public void setNextFunctionName(String inNextFunctionName)
 	{
-		setValue("nextfunctionname" , inNextFunctionName);
+		setValue("nextfunctionname", inNextFunctionName);
 	}
 
 	public String getTopLevelFunctionName()
@@ -242,7 +246,7 @@ public class AgentContext extends BaseData implements CatalogEnabled
 
 	public void setTopLevelFunctionName(String inNextFunctionName)
 	{
-		setValue("toplevelaifunctionid" , inNextFunctionName);
+		setValue("toplevelaifunctionid", inNextFunctionName);
 	}
 
 	public Map<String, Object> getContext()
@@ -267,17 +271,17 @@ public class AgentContext extends BaseData implements CatalogEnabled
 
 	public void setChannel(Data inChannel)
 	{
-		setValue("channel" , inChannel.getId());
-		addContext("channel" , inChannel);
+		setValue("channel", inChannel.getId());
+		addContext("channel", inChannel);
 	}
 
 	public Object getContextValue(String inKey)
 	{
-		if (context == null)
+		Object obj = null;
+		if (context != null)
 		{
-			return null;
+			obj = context.get(inKey);
 		}
-		Object obj = context.get(inKey);
 		if (obj == null && getParentContext() != null)
 		{
 			return getParentContext().getContextValue(inKey);
@@ -296,12 +300,12 @@ public class AgentContext extends BaseData implements CatalogEnabled
 
 	public void put(String inKey, Object inValue)
 	{
-		addContext(inKey , inValue);
+		addContext(inKey, inValue);
 	}
 
 	public void addContext(String inKey, Object inValue)
 	{
-		getContext().put(inKey , inValue);
+		getContext().put(inKey, inValue);
 	}
 
 	// public JSONObject getArguments() {
@@ -315,8 +319,8 @@ public class AgentContext extends BaseData implements CatalogEnabled
 	public String toString()
 	{
 		JSONObject obj = new JSONObject();
-		obj.put("function" , functionName);
-		obj.put("nextfunction" , nextFunctionName);
+		obj.put("function", functionName);
+		obj.put("nextfunction", nextFunctionName);
 		return obj.toJSONString();
 	}
 
@@ -396,7 +400,7 @@ public class AgentContext extends BaseData implements CatalogEnabled
 
 	public void setFunctionName(String inFunctionName)
 	{
-		setValue("functionname" , inFunctionName);
+		setValue("functionname", inFunctionName);
 	}
 
 	public String getMessagePrefix()
@@ -411,7 +415,7 @@ public class AgentContext extends BaseData implements CatalogEnabled
 
 	public void setMessagePrefix(String inMessagePrefix)
 	{
-		setValue("messageprefix" , inMessagePrefix);
+		setValue("messageprefix", inMessagePrefix);
 	}
 
 	Collection<String> fieldExcludedEntityIds;
@@ -470,7 +474,7 @@ public class AgentContext extends BaseData implements CatalogEnabled
 
 	public void setLocale(String inLocale)
 	{
-		setValue("locale" , inLocale);
+		setValue("locale", inLocale);
 	}
 
 	public String getLocale()
@@ -481,7 +485,7 @@ public class AgentContext extends BaseData implements CatalogEnabled
 	public void info(String inLog)
 	{
 		getScriptLogger().info(inLog);
-		addEntry("info" , inLog);
+		addEntry("info", inLog);
 	}
 
 	public Date getLastActive()
@@ -508,25 +512,25 @@ public class AgentContext extends BaseData implements CatalogEnabled
 	public void error(Exception inE)
 	{
 		getScriptLogger().error(inE);
-		addEntry("error" , inE.getMessage());
+		addEntry("error", inE.getMessage());
 	}
 
 	public void error(String inString, Throwable inE)
 	{
-		getScriptLogger().error(inString , inE);
-		addEntry("error" , inString + " " + inE.getMessage());
+		getScriptLogger().error(inString, inE);
+		addEntry("error", inString + " " + inE.getMessage());
 	}
 
 	public void headline(String string)
 	{
 		getScriptLogger().headline(string);
-		addEntry("headline" , string);
+		addEntry("headline", string);
 	}
 
 	public void error(String string)
 	{
 		getScriptLogger().error(string);
-		addEntry("error" , string);
+		addEntry("error", string);
 	}
 
 	public MultiValued getCurrentEntity()
@@ -542,12 +546,12 @@ public class AgentContext extends BaseData implements CatalogEnabled
 
 	public void setCurrentEntity(MultiValued inEntity)
 	{
-		put("currententity" , inEntity);
+		put("currententity", inEntity);
 	}
 
 	public void setCurrentEntityModule(MultiValued inEntityModule)
 	{
-		put("currententitymodule" , inEntityModule);
+		put("currententitymodule", inEntityModule);
 	}
 
 	protected Collection<LogEntry> fieldLogs;

@@ -4,12 +4,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.assistant.AssistantManager;
 import org.entermediadb.ai.assistant.SearchingManager;
 import org.entermediadb.ai.creator.SmartCreatorManager;
 import org.entermediadb.ai.llm.AgentContext;
+import org.json.simple.JSONArray;
+import org.openedit.Data;
+import org.openedit.hittracker.HitTracker;
 
 public class SmartCreatorFindMemoryFilesAgent extends BaseAgent
 {
