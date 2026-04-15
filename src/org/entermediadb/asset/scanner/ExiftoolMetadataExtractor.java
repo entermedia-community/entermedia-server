@@ -71,7 +71,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 	{
 
 		// Make a temp file
-		File tmp = writeList(inArchive , inputFiles);
+		File tmp = writeList(inArchive, inputFiles);
 		if (tmp == null)
 		{
 			return false;
@@ -106,7 +106,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			// long inTimeout) throws OpenEditException
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-			ExecResult result = getExec().runExecStream("exiftool" , base , output , -1);
+			ExecResult result = getExec().runExecStream("exiftool", base, output, -1);
 			// This will write a bunch of lines out
 
 			String out = new String(output.toByteArray(), "UTF-8");
@@ -137,17 +137,17 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 			{
 				Asset asset = (Asset) iterator.next();
-				if (canProcess(inArchive , asset.getName()))
+				if (canProcess(inArchive, asset.getName()))
 				{
 					String numberinfo = eachresult[i++];// result.getStandardOut();
-					parseNumericValues(inArchive , asset , details , numberinfo);
+					parseNumericValues(inArchive, asset, details, numberinfo);
 					// log.debug("Exiftool found " + asset.getSourcePath() + " returned " + numberinfo.length());
 				}
 			}
 		}
 		catch (Exception e1)
 		{
-			log.error("Could not read metada from assets: " + e1 , e1);
+			log.error("Could not read metada from assets: " + e1, e1);
 		}
 
 		// extractThumb(inArchive, inputFile, inAsset);
@@ -159,12 +159,12 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 	{
 		try
 		{
-			File tmp = File.createTempFile("exiftool" , EMPTY_STRING);
+			File tmp = File.createTempFile("exiftool", EMPTY_STRING);
 
 			BufferedWriter writer = new BufferedWriter(new FileWriter(tmp));
 			for (ContentItem item : inputFiles)
 			{
-				if (canProcess(inArchive , item.getName()))
+				if (canProcess(inArchive, item.getName()))
 				{
 					writer.write(item.getAbsolutePath() + "\n");
 				}
@@ -174,7 +174,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		}
 		catch (Throwable ex)
 		{
-			log.error("Could not write" , ex);
+			log.error("Could not write", ex);
 		}
 		return null;
 	}
@@ -238,8 +238,8 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		base.add(inputFile.getAbsolutePath());
 		base.add("-n");
 
-		runExif(inArchive , inputFile , inAsset , base);
-		extractThumb(inArchive , inputFile , inAsset);
+		runExif(inArchive, inputFile, inAsset, base);
+		extractThumb(inArchive, inputFile, inAsset);
 
 		return true;
 
@@ -257,7 +257,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			long start = System.currentTimeMillis();
 			// log.info("Runnning identify");
 			// --
-			ExecResult result = getExec().runExec("exiftool" , comm , true);
+			ExecResult result = getExec().runExec("exiftool", comm, true);
 			// --
 			long end = System.currentTimeMillis();
 			double total = (end - start) / 1000.0;
@@ -282,7 +282,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			PropertyDetails details = inArchive.getAssetPropertyDetails();
 
 			// boolean foundtext =
-			parseNumericValues(inArchive , inAsset , details , numberinfo);
+			parseNumericValues(inArchive, inAsset, details, numberinfo);
 			// if (foundtext)
 			// {
 			// //Run it again TODO: Use text values all the time
@@ -299,7 +299,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		}
 		catch (Exception e1)
 		{
-			log.error("Could not read metada from asset: " + inAsset.getSourcePath() + e1 , e1);
+			log.error("Could not read metada from asset: " + inAsset.getSourcePath() + e1, e1);
 		}
 
 	}
@@ -353,8 +353,8 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 							Float fheight = Float.parseFloat(height);
 							height = String.valueOf(fheight.intValue());
 						}
-						inAsset.setProperty("width" , width);
-						inAsset.setProperty("height" , height);
+						inAsset.setProperty("width", width);
+						inAsset.setProperty("height", height);
 					}
 					catch (Exception e)
 					{
@@ -367,7 +367,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						if (inAsset.getInt("width") == 0 && StringUtils.isNumeric(value))
 						{
 							float wide = Float.parseFloat(value);
-							inAsset.setProperty("width" , String.valueOf(Math.round(wide)));
+							inAsset.setProperty("width", String.valueOf(Math.round(wide)));
 						}
 					}
 					else
@@ -377,7 +377,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 							if (inAsset.getInt("height") == 0 && StringUtils.isNumeric(value))
 							{
 								float height = Float.parseFloat(value);
-								inAsset.setProperty("height" , String.valueOf(Math.round(height)));
+								inAsset.setProperty("height", String.valueOf(Math.round(height)));
 							}
 						}
 						else
@@ -390,8 +390,8 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 									{
 										int wide = Integer.parseInt(dims[2]);
 										int height = Integer.parseInt(dims[3]);
-										inAsset.setValue("width" , wide);
-										inAsset.setValue("height" , height);
+										inAsset.setValue("width", wide);
+										inAsset.setValue("height", height);
 									}
 								}
 							}
@@ -402,7 +402,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 									{
 										float wide = Float.parseFloat(value);
 										wide = wide * 72f;
-										inAsset.setProperty("width" , String.valueOf(Math.round(wide)));
+										inAsset.setProperty("width", String.valueOf(Math.round(wide)));
 									}
 								}
 								else
@@ -412,22 +412,22 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 										{
 											float height = Float.parseFloat(value);
 											height = height * 72f;
-											inAsset.setProperty("height" , String.valueOf(Math.round(height)));
+											inAsset.setProperty("height", String.valueOf(Math.round(height)));
 										}
 									}
 									else
 										if ("PageCount".equals(key))
 										{
-											inAsset.setProperty("pages" , value);
+											inAsset.setProperty("pages", value);
 										}
 										else
 											if ("Duration".equals(key) || "SendDuration".equals(key))
 											{
 												try
 												{
-													inAsset.setProperty("duration" , value);
+													inAsset.setProperty("duration", value);
 													value = processDuration(value);
-													inAsset.setProperty("length" , value);
+													inAsset.setProperty("length", value);
 												}
 												catch (Exception e)
 												{
@@ -451,10 +451,10 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 
 														if (!mediatype.equals("default"))
 														{
-															inAsset.setProperty("fileformat" , value.toLowerCase());
+															inAsset.setProperty("fileformat", value.toLowerCase());
 														}
 													}
-													inAsset.setProperty("detectedfileformat" , value.toLowerCase());
+													inAsset.setProperty("detectedfileformat", value.toLowerCase());
 												}
 												else
 													if ("Subject".equals(key) || "Keyword".equals(key) || "Keywords".equals(key))
@@ -468,12 +468,12 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 													else
 														if ("ThumbnailImage".equals(key))
 														{
-															inAsset.setProperty("hasthumbnail" , "true");
+															inAsset.setProperty("hasthumbnail", "true");
 														}
 														else
 															if ("VideoFrameRate".equals(key))
 															{
-																inAsset.setProperty("framerate" , roundFrameRate(value));
+																inAsset.setProperty("framerate", roundFrameRate(value));
 															}
 															else
 																if ("ColorSpace".equals(key))
@@ -483,19 +483,19 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 																		// not valid
 																		continue;
 																	}
-																	inAsset.setProperty("colorspace" , value);
+																	inAsset.setProperty("colorspace", value);
 																}
 																else
 																	if ("ProfileDescription".equals(key))
 																	{
-																		inAsset.setProperty("colorprofiledescription" , value);
+																		inAsset.setProperty("colorprofiledescription", value);
 																	}
 																	else
 																		if ("PhotometricInterpretation".equals(key))
 																		{
 																			if ("5".equalsIgnoreCase(value))
 																			{
-																				inAsset.setProperty("colorspace" , "4");
+																				inAsset.setProperty("colorspace", "4");
 																			}
 																		}
 																		else
@@ -507,7 +507,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 																					value = value.toLowerCase();
 																					if ("CMYK".equalsIgnoreCase(value) || "4".equalsIgnoreCase(value) || value.contains("cmyk"))
 																					{
-																						inAsset.setProperty("colorspace" , "4");
+																						inAsset.setProperty("colorspace", "4");
 																					}
 																					else
 																						if ("ColorMode".equals(key))
@@ -549,7 +549,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 																								// TODO: Should we clean up dates on their way in? Right now it uses a close format but not the
 																								// perfect format
 																								value = DateStorageUtil.getStorageUtil().checkFormat(value);
-																								inAsset.setProperty(property.getId() , value);
+																								inAsset.setProperty(property.getId(), value);
 																							}
 																							else
 																								if (property.isList() || property.isMultiValue()) // || property.isDataType("number")
@@ -558,13 +558,13 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 																									if (m.find())
 																									{
 																										Searcher searcher = inArchive.getSearcherManager()
-																											.getSearcher(property.getListCatalogId() , property.getListId());
+																											.getSearcher(property.getListCatalogId(), property.getListId());
 																										HitTracker found =
-																											inArchive.getCachedSearch(searcher.query().exact("name" , value).hitsPerPage(1));
+																											inArchive.getCachedSearch(searcher.query().exact("name", value).hitsPerPage(1));
 																										Data lookup = (Data) found.first();
 																										if (lookup != null)
 																										{
-																											inAsset.setProperty(property.getId() , lookup.getId());
+																											inAsset.setProperty(property.getId(), lookup.getId());
 																											continue;
 																										}
 																										else
@@ -573,23 +573,23 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 																												lookup = searcher.createNewData();
 																												lookup.setName(value);
 																												// lookup.setId(searcher.nextId());
-																												searcher.saveData(lookup , null);
-																												inAsset.setProperty(property.getId() , lookup.getId());
+																												searcher.saveData(lookup, null);
+																												inAsset.setProperty(property.getId(), lookup.getId());
 																											}
 																											else
 																											{
-																												value = value.replace("]" , "");
-																												value = value.replace("[" , "");
+																												value = value.replace("]", "");
+																												value = value.replace("[", "");
 																												String[] values = value.split(",");
 																												if (values.length == 1)
 																												{
 
-																													inAsset.setProperty(property.getId() , value);
+																													inAsset.setProperty(property.getId(), value);
 																												}
 																												else
 																												{
 																													ArrayList arrayList = new ArrayList(Arrays.asList(values));
-																													inAsset.setValue(property.getId() , arrayList);
+																													inAsset.setValue(property.getId(), arrayList);
 																												}
 																											}
 																									}
@@ -605,13 +605,13 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 																										}
 																										else
 																										{
-																											map.setText("en" , value);
+																											map.setText("en", value);
 																										}
-																										inAsset.setValue(property.getId() , map);
+																										inAsset.setValue(property.getId(), map);
 																									}
 																									else
 																									{
-																										saveValue(inAsset , property.getId() , value);
+																										saveValue(inAsset, property.getId(), value);
 																									}
 																					}
 			}
@@ -620,7 +620,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		if (lat != null && lng != null && lat.contains(".") && lng.contains("."))
 		{
 			GeoPoint point = new GeoPoint(lat + " , " + lng);
-			inAsset.setValue("geo_point" , point); // TODO makesure we dont have junk in here
+			inAsset.setValue("geo_point", point); // TODO makesure we dont have junk in here
 		}
 	}
 
@@ -666,7 +666,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				return;
 			}
 		}
-		inAsset.setValue(inName , value);
+		inAsset.setValue(inName, value);
 	}
 
 	protected String processDuration(String value)
@@ -681,7 +681,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			double total = 0;
 			for (int j = 0; j < parts.length; j++)
 			{
-				total += Math.pow(60 , parts.length - 1 - j) * Double.parseDouble(parts[j]);
+				total += Math.pow(60, parts.length - 1 - j) * Double.parseDouble(parts[j]);
 			}
 			value = String.valueOf(Math.round(total));
 		}
@@ -739,7 +739,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		command.add("-G0");
 		command.add("-ICC_Profile:ColorSpaceData");
 		command.add(inOriginal.getAbsolutePath());
-		ExecResult result = getExec().runExec("exiftool" , command , true , 60000);
+		ExecResult result = getExec().runExec("exiftool", command, true, 60000);
 		String sout = result.getStandardOut();
 		if (sout.toLowerCase().contains("cmyk"))
 		{
@@ -761,7 +761,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		// long start = new Date().getTime();
 		// log.info("Runnning identify");
 		// --
-		ExecResult result = getExec().runExec("identify" , command , true , 60000);
+		ExecResult result = getExec().runExec("identify", command, true, 60000);
 		// --
 		// long end = new Date().getTime();
 		// double total = (end - start) / 1000.0;
@@ -802,7 +802,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		if (val == null || EMPTY_STRING.equals(val.trim()))
 			return EMPTY_STRING;
 		BigDecimal result = new BigDecimal(val);
-		result = result.setScale(2 , RoundingMode.HALF_UP);
+		result = result.setScale(2, RoundingMode.HALF_UP);
 		return result.toString();
 	}
 

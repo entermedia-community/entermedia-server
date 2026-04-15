@@ -18,7 +18,7 @@ public class DocumentConversionManager extends ImageConversionManager
 {
 	private static final Log log = LogFactory.getLog(DocumentConversionManager.class);
 
-	Collection pdfFormats = Arrays.asList("gddoc" , "gdsheet" , "gdslide" , "gddraw" , "doc" , "docx" , "rtf" , "ppt" , "pptx" , "wps" , "odt" , "xls" , "xlsx" , "odp");
+	Collection pdfFormats = Arrays.asList("gddoc", "gdsheet", "gdslide", "gddraw", "doc", "docx", "rtf", "ppt", "pptx", "wps", "odt", "xls", "xlsx", "odp");
 
 	public ConvertResult transcode(ConvertInstructions instructions)
 	{
@@ -27,8 +27,8 @@ public class DocumentConversionManager extends ImageConversionManager
 
 		if (pdfFormats.contains(fileFormat))
 		{
-			Data preset = getMediaArchive().getPresetManager().getPresetByOutputNameCached(instructions.getMediaArchive() , "document" , "document.pdf");
-			ConvertInstructions instructions2 = createInstructions(instructions.getAsset() , preset);
+			Data preset = getMediaArchive().getPresetManager().getPresetByOutputNameCached(instructions.getMediaArchive(), "document", "document.pdf");
+			ConvertInstructions instructions2 = createInstructions(instructions.getAsset(), preset);
 
 			// Always have a PDF version of all document formats
 			instructions2.setInputFile(instructions.getOriginalDocument());

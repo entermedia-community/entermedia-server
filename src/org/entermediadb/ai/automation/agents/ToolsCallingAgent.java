@@ -1,7 +1,8 @@
 package org.entermediadb.ai.automation.agents;
 
 import java.util.Collection;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.AgentEnabled;
@@ -12,6 +13,8 @@ import org.openedit.util.JSONParser;
 
 public class ToolsCallingAgent extends BaseAgent
 {
+	private static final Log log = LogFactory.getLog(ToolsCallingAgent.class);
+
 	@Override
 	public void process(AgentContext inContext)
 	{
@@ -33,7 +36,7 @@ public class ToolsCallingAgent extends BaseAgent
 
 		if (enabledChildren.size() > 0)
 		{
-			String function = "agentdecision";
+			String function;
 			if (enabledChildren.size() == 1)
 			{
 				// check if a param call is necessary
@@ -50,30 +53,34 @@ public class ToolsCallingAgent extends BaseAgent
 			else
 			{
 				inContext.info("Multiple child agents, invoking decision agent");
+				function = "agentdecision";
 				inContext.put("enabledchildren", enabledChildren);
 			}
+
+			String context_agentid = (String) inContext.getParentContext().getContext().get("agentid");
+			String context_agentoutput = (String) inContext.getParentContext().getContext().get("agentoutput");
+
+			inContext.put("agentid", context_agentid);
+			inContext.put("agentoutput", context_agentoutput);
 
 			LlmConnection llmConnection = getMediaArchive().getLlmConnection(function);
 			LlmResponse res = llmConnection.callToolsFunction(inContext, function);
 
-			String selectedagent = (String) res.getFunctionName();
-			JSONObject params = (JSONObject) res.getFunctionArguments();
+			String selectedagentid = (String) res.getFunctionName();
 
-			super.process(inContext);
+			AgentEnabled selectedenabled = currentEnabled.getChildren(selectedagentid);
+			if (selectedenabled != null)
+			{
+				JSONObject params = (JSONObject) res.getFunctionArguments();
+				selectedenabled.setAgentParameterValues(params);
+				inContext.setAgentEnableChildren(selectedenabled);
+			}
+			else
+			{
+				inContext.error("Couldn't decide next agent for " + currentEnabled.getAgentData().getId());
+			}
 		}
 
-		// for (Iterator<AgentEnabled> it = enabledChildren.iterator(); it.hasNext();) {
-		// AgentEnabled agentenabledchild = it.next();
-		// if( agentenabledchild.getAgentConfig().getId().equals(selectedagent))
-		// {
-		// // selected agent
-		// for (String key : params.keySet()) {
-		// Object value = params.get(key);
-		// subContext.put(key, value);
-		// }
-		// agentenabledchild.getAgent().process(subContext);
-		// }
-		// }
 		super.process(inContext);
 	}
 }

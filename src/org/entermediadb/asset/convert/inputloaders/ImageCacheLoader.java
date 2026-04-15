@@ -33,11 +33,11 @@ public class ImageCacheLoader implements InputLoader
 		}
 		ContentItem item = null;
 
-		item = loadFile(inStructions , page , "webp");
+		item = loadFile(inStructions, page, "webp");
 
 		if (item == null)
 		{
-			item = loadFile(inStructions , page , "jpg");
+			item = loadFile(inStructions, page, "jpg");
 		}
 
 		if (item == null && inStructions.isDocumentFormat())

@@ -66,15 +66,15 @@ public class ClassifyManager extends BaseAiManager
 				// asset.getName());
 				count++;
 
-				processOneAsset(inContext , asset);
+				processOneAsset(inContext, asset);
 
 				long duration = (System.currentTimeMillis() - startTime);
 				inContext.info("" + asset.getName() + ": took " + (duration > 1000L ? duration / 1000L + "s" : duration + "ms"));
 			}
 			catch (Exception e)
 			{
-				inContext.error("LLM Error" , e);
-				asset.setValue("llmerror" , true);
+				inContext.error("LLM Error", e);
+				asset.setValue("llmerror", true);
 				continue;
 			}
 		}
@@ -108,9 +108,9 @@ public class ClassifyManager extends BaseAiManager
 		if (!aifields.isEmpty())
 		{
 			InformaticsContext agentcontext = new InformaticsContext(inContext);
-			agentcontext.addContext("asset" , asset);
-			agentcontext.addContext("data" , asset);
-			agentcontext.addContext("aifields" , aifields);
+			agentcontext.addContext("asset", asset);
+			agentcontext.addContext("data", asset);
+			agentcontext.addContext("aifields", aifields);
 
 			LlmConnection llmconnection = getLlmNamingServer();
 
@@ -143,25 +143,25 @@ public class ClassifyManager extends BaseAiManager
 					if (fulltext == null)
 					{
 						inContext.error("Text has no text: " + asset);
-						asset.setValue("llmerror" , true);
+						asset.setValue("llmerror", true);
 						return;
 					}
 					if (fulltext.length() > 4000)
 					{
-						fulltext = fulltext.substring(0 , Math.min(fulltext.length() , 4000));
+						fulltext = fulltext.substring(0, Math.min(fulltext.length(), 4000));
 					}
-					asset.setValue("markdowncontent" , fulltext);
+					asset.setValue("markdowncontent", fulltext);
 					mediatype = "document";
 				}
 
 				if (mediatype.equals("image"))
 				{
-					base64EncodedString = loadBase64Image(asset , "image3000x3000");
+					base64EncodedString = loadBase64Image(asset, "image3000x3000");
 
 					if (base64EncodedString == null)
 					{
 						inContext.error("Image missing for asset: " + asset);
-						asset.setValue("llmerror" , true);
+						asset.setValue("llmerror", true);
 						return;
 					}
 					functionname = functionname + "_image";
@@ -180,7 +180,7 @@ public class ClassifyManager extends BaseAiManager
 						if (textContent == null || textContent.trim().length() == 0)
 						{
 							log.error("Document has no text: " + asset);
-							asset.setValue("llmerror" , true);
+							asset.setValue("llmerror", true);
 							return;
 						}
 						functionname = functionname + "_document";
@@ -193,7 +193,7 @@ public class ClassifyManager extends BaseAiManager
 							if (textContent == null)
 							{
 								log.error("Video missing for asset: " + asset);
-								asset.setValue("llmerror" , true);
+								asset.setValue("llmerror", true);
 								return;
 							}
 							functionname = functionname + "_transcript";
@@ -202,24 +202,24 @@ public class ClassifyManager extends BaseAiManager
 						{
 							/// Check for text type
 							log.info("Skipping media type: " + mediatype + " for asset: " + asset);
-							asset.setValue("llmerror" , true);
+							asset.setValue("llmerror", true);
 							return;
 						}
 			}
 
 			if (textContent != null && textContent.length() > 4000)
 			{
-				textContent = textContent.substring(0 , Math.min(4000 , textContent.length()));
+				textContent = textContent.substring(0, Math.min(4000, textContent.length()));
 			}
 
 			RenderValues rendervalues = new RenderValues();
 			rendervalues.setData(asset);
 			rendervalues.setInFields(contextFields);
 			rendervalues.setMediaArchive(getMediaArchive());
-			agentcontext.put("rendervalues" , rendervalues);
-			agentcontext.addContext("contextfields" , contextFields);
+			agentcontext.put("rendervalues", rendervalues);
+			agentcontext.addContext("contextfields", contextFields);
 
-			LlmResponse results = llmconnection.callClassifyFunction(agentcontext , functionname , base64EncodedString , textContent);
+			LlmResponse results = llmconnection.callClassifyFunction(agentcontext, functionname, base64EncodedString, textContent);
 
 			if (results != null)
 			{
@@ -244,20 +244,20 @@ public class ClassifyManager extends BaseAiManager
 							if (detail.isMultiValue())
 							{
 								Collection<String> values = Arrays.asList(value.split(","));
-								datachanges.put(detail.getId() , values);
-								asset.addValues(detail.getId() , values);
+								datachanges.put(detail.getId(), values);
+								asset.addValues(detail.getId(), values);
 							}
 							else
 								if (detail.isList())
 								{
 									String listId = value.split("\\|")[0];
-									datachanges.put(detail.getId() , listId);
-									asset.setValue(detail.getId() , listId);
+									datachanges.put(detail.getId(), listId);
+									asset.setValue(detail.getId(), listId);
 								}
 								else
 								{
-									datachanges.put(detail.getId() , value);
-									asset.setValue(detail.getId() , value);
+									datachanges.put(detail.getId(), value);
+									asset.setValue(detail.getId(), value);
 								}
 						}
 					}
@@ -266,7 +266,7 @@ public class ClassifyManager extends BaseAiManager
 					User agent = getMediaArchive().getUser("agent");
 					if (agent != null)
 					{
-						getMediaArchive().getEventManager().fireDataEditEvent(getMediaArchive().getAssetSearcher() , agent , "assetgeneral" , asset , datachanges);
+						getMediaArchive().getEventManager().fireDataEditEvent(getMediaArchive().getAssetSearcher(), agent, "assetgeneral", asset, datachanges);
 					}
 				}
 				else
@@ -300,7 +300,7 @@ public class ClassifyManager extends BaseAiManager
 
 				// inContext.info("Classiffying :" + entity.getName());
 
-				processOneEntity(inContext , entity , moduleid);
+				processOneEntity(inContext, entity, moduleid);
 
 				long duration = (System.currentTimeMillis() - startTime);
 				inContext.info(entity.getName() + ": took " + (duration > 1000L ? duration / 1000L + "s" : duration + "ms") + "ms");
@@ -308,8 +308,8 @@ public class ClassifyManager extends BaseAiManager
 			}
 			catch (Exception e)
 			{
-				inContext.error("LLM Error " , e);
-				entity.setValue("llmerror" , true);
+				inContext.error("LLM Error ", e);
+				entity.setValue("llmerror", true);
 			}
 		}
 	}
@@ -350,22 +350,22 @@ public class ClassifyManager extends BaseAiManager
 		}
 		else
 		{
-			agentcontext.put("entity" , inEntity);
-			agentcontext.put("data" , inEntity);
+			agentcontext.put("entity", inEntity);
+			agentcontext.put("data", inEntity);
 
 			RenderValues rendervalues = new RenderValues();
 			rendervalues.setData(inEntity);
 			rendervalues.setInFields(contextFields);
 			rendervalues.setMediaArchive(getMediaArchive());
-			agentcontext.put("rendervalues" , rendervalues);
-			agentcontext.put("contextfields" , contextFields);
+			agentcontext.put("rendervalues", rendervalues);
+			agentcontext.put("contextfields", contextFields);
 
-			agentcontext.put("fieldstofill" , fieldsToFill);
+			agentcontext.put("fieldstofill", fieldsToFill);
 
 			boolean isDocPage = inEntity.get("entitydocument") != null;
 			if (isDocPage)
 			{
-				agentcontext.put("docpage" , isDocPage);
+				agentcontext.put("docpage", isDocPage);
 				// base64EncodedString = loadImageContent(inEntity);
 			}
 
@@ -373,7 +373,7 @@ public class ClassifyManager extends BaseAiManager
 			{
 				LlmConnection llmconnection = getEntityClassificationLlmConnection();
 
-				LlmResponse results = llmconnection.callClassifyFunction(agentcontext , "classifyEntity" , null);
+				LlmResponse results = llmconnection.callClassifyFunction(agentcontext, "classifyEntity", null);
 
 				if (results != null)
 				{
@@ -384,7 +384,7 @@ public class ClassifyManager extends BaseAiManager
 						Map metadata = (Map) arguments.get("metadata");
 						if (metadata == null || metadata.isEmpty())
 						{
-							inEntity.setValue("llmerror" , true);
+							inEntity.setValue("llmerror", true);
 							return;
 						}
 						Map datachanges = new HashMap();
@@ -400,17 +400,17 @@ public class ClassifyManager extends BaseAiManager
 								if (detail.isList())
 								{
 									String listId = value.split("\\|")[0];
-									datachanges.put(detail.getId() , listId);
+									datachanges.put(detail.getId(), listId);
 								}
 								else
 									if (detail.isMultiValue())
 									{
 										Collection<String> values = Arrays.asList(value.split(","));
-										datachanges.put(detail.getId() , values);
+										datachanges.put(detail.getId(), values);
 									}
 									else
 									{
-										datachanges.put(detail.getId() , value);
+										datachanges.put(detail.getId(), value);
 									}
 							}
 						}
@@ -420,7 +420,7 @@ public class ClassifyManager extends BaseAiManager
 							String inKey = (String) iterator2.next();
 							Object value = datachanges.get(inKey);
 
-							inEntity.setValue(inKey , value);
+							inEntity.setValue(inKey, value);
 							log.info("AI updated field " + inKey + ": " + metadata.get(inKey));
 						}
 					}
@@ -432,8 +432,8 @@ public class ClassifyManager extends BaseAiManager
 			}
 			catch (Exception e)
 			{
-				log.error("Error generating metadata for entity " + inEntity , e);
-				inEntity.setValue("llmerror" , true);
+				log.error("Error generating metadata for entity " + inEntity, e);
+				inEntity.setValue("llmerror", true);
 			}
 		}
 

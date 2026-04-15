@@ -59,7 +59,7 @@ public class HotFolderSourceAgent extends BaseAgent
 				}
 			}
 		}
-		Lock lock = getMediaArchive().getLockManager().lockIfPossible("scan-" + assetSource.getId() , "HotFolderManager");
+		Lock lock = getMediaArchive().getLockManager().lockIfPossible("scan-" + assetSource.getId(), "HotFolderManager");
 		if (lock != null)
 		{
 			inContext.info("Hot folder is already in lock table: " + name);
@@ -78,8 +78,8 @@ public class HotFolderSourceAgent extends BaseAgent
 		}
 		catch (Exception ex)
 		{
-			inContext.error("Could not process Hot folder " + name , ex);
-			log.error("Could not process Hot folder " + name , ex);
+			inContext.error("Could not process Hot folder " + name, ex);
+			log.error("Could not process Hot folder " + name, ex);
 		}
 		finally
 		{

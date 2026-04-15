@@ -48,7 +48,7 @@ public class FixCustomFieldAgent extends BaseAgent
 				MultiValued data = (MultiValued) iterator.next();
 
 				LanguageMap credit = data.getLanguageMap("credit");
-				fixTranslation(mycontext , "en" , credit);
+				fixTranslation(mycontext, "en", credit);
 			}
 		}
 		else
@@ -63,13 +63,13 @@ public class FixCustomFieldAgent extends BaseAgent
 			}
 
 			LanguageMap field = new LanguageMap();
-			field.setText(sourceLang , text);
+			field.setText(sourceLang, text);
 			for (Iterator iterator = translations.keySet().iterator(); iterator.hasNext();)
 			{
 				String lang = (String) iterator.next();
-				field.setText(lang , translations.get(lang));
+				field.setText(lang, translations.get(lang));
 			}
-			fixTranslation(mycontext , sourceLang , field);
+			fixTranslation(mycontext, sourceLang, field);
 			Map<String, String> fixedtranslations = new HashMap<>();
 			for (Iterator iterator2 = field.keySet().iterator(); iterator2.hasNext();)
 			{
@@ -79,10 +79,10 @@ public class FixCustomFieldAgent extends BaseAgent
 				{
 					continue;
 				}
-				fixedtranslations.put(lang , value);
+				fixedtranslations.put(lang, value);
 
 			}
-			inContext.addContext("translations" , fixedtranslations);
+			inContext.addContext("translations", fixedtranslations);
 		}
 
 		super.process(inContext);
@@ -106,7 +106,7 @@ public class FixCustomFieldAgent extends BaseAgent
 				// matcher.group(1) gets the text inside the parentheses
 				String matchedText = matcher.group(1).trim();
 
-				LanguageMap orgMap = findOrgLanguageMap(inSourceLang , matchedText);
+				LanguageMap orgMap = findOrgLanguageMap(inSourceLang, matchedText);
 				int count = 0;
 				for (Iterator iterator2 = inField.keySet().iterator(); iterator2.hasNext();)
 				{
@@ -116,11 +116,11 @@ public class FixCustomFieldAgent extends BaseAgent
 					{
 						continue;
 					}
-					String fixedValue = fixOrganization(value , lang , orgMap);
+					String fixedValue = fixOrganization(value, lang, orgMap);
 
 					if (fixedValue != null)
 					{
-						inField.setText(lang , fixedValue);
+						inField.setText(lang, fixedValue);
 						count++;
 					}
 				}
@@ -157,7 +157,7 @@ public class FixCustomFieldAgent extends BaseAgent
 			String orgName = orgMap.getText(lang);
 			if (orgName != null)
 			{
-				String fixedValue = value.replaceAll("©(.*?)/" , "©" + orgName + " /");
+				String fixedValue = value.replaceAll("©(.*?)/", "©" + orgName + " /");
 				return fixedValue;
 			}
 		}

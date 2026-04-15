@@ -28,14 +28,14 @@ public class SemanticClassifierAgent extends BaseAgent
 		long startTime = System.currentTimeMillis();
 		if (inAssets != null && !inAssets.isEmpty())
 		{
-			getSemanticClassifierManager().processRecords(informatic.getScriptLogger() , inConfig , inAssets);
+			getSemanticClassifierManager().processRecords(informatic.getScriptLogger(), inConfig, inAssets);
 			long duration = System.currentTimeMillis() - startTime;
 			informatic.info("Classified: " + inAssets.size() + " assets took " + (duration > 1000L ? duration / 1000L + "s" : duration + " ms"));
 		}
 		Collection<MultiValued> inRecords = informatic.getRecordsToProcess();
 		if (inRecords != null && !inRecords.isEmpty())
 		{
-			getSemanticClassifierManager().processRecords(informatic.getScriptLogger() , inConfig , inRecords);
+			getSemanticClassifierManager().processRecords(informatic.getScriptLogger(), inConfig, inRecords);
 			long duration = System.currentTimeMillis() - startTime;
 			informatic.info("Classified: " + inRecords.size() + " records took " + (duration > 1000L ? duration / 1000L + "s" : duration + " ms"));
 		}

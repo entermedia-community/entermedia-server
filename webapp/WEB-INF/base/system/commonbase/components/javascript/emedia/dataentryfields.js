@@ -241,7 +241,7 @@ $(document).ready(function () {
 			end = this.selectionEnd;
 			$this = $(this);
 			$this.val(
-				$this.val().substring(0, start) + "\t" + $this.val().substring(end)
+				$this.val().substring(0, start) + "\t" + $this.val().substring(end),
 			);
 			this.selectionStart = this.selectionEnd = start + 1;
 			return false;
@@ -325,7 +325,7 @@ $(document).ready(function () {
 			return (
 				this.optional(element) ||
 				/^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\., ]\d+)?$/.test(
-					globalizedValue
+					globalizedValue,
 				)
 			);
 		};
@@ -344,7 +344,7 @@ $(document).ready(function () {
 				}
 				return false;
 			},
-			"This field is required."
+			"This field is required.",
 		);
 
 		$.validator.addClassRules("entityRequired", {
@@ -433,12 +433,12 @@ showPicker = function (detailid) {
 	if (!window.name) window.name = "admin_parent";
 	window.open(
 		home +
-		"/system/tools/newpicker/index.html?parentName=" +
-		window.name +
-		"&detailid=" +
-		detailid,
+			"/system/tools/newpicker/index.html?parentName=" +
+			window.name +
+			"&detailid=" +
+			detailid,
 		"pickerwindow",
-		"alwaysRaised=yes,menubar=no,scrollbars=yes,width=1000,x=100,y=100,height=600,resizable=yes"
+		"alwaysRaised=yes,menubar=no,scrollbars=yes,width=1000,x=100,y=100,height=600,resizable=yes",
 	);
 	return false;
 };
@@ -550,7 +550,7 @@ loadlist = function (
 	childfieldname,
 	foreignkeyid,
 	foreignkeyvalue,
-	value
+	value,
 ) {
 	//what is this?
 	$(indiv).load(apphome + "/components/xml/types/simplelist.html", {

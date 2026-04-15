@@ -101,7 +101,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 	{
 		if (fieldMediaArchive == null)
 		{
-			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId() , "mediaArchive");
+			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		}
 		return fieldMediaArchive;
 	}
@@ -125,7 +125,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 			Searcher tasksearcher = getMediaArchive().getSearcher("conversiontask");
 
 			QueryBuilder query = getMediaArchive().localQuery("conversiontask");
-			query.orgroup("status" , "new submitted retry missinginput"); // TODO: Create multiple
+			query.orgroup("status", "new submitted retry missinginput"); // TODO: Create multiple
 																			// conversion queues to
 																			// deal with videos and
 																			// retry and uploads
@@ -136,7 +136,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 			// TODO: Exclude any existing asseids we are already processing
 			if (hasRunningConversions())
 			{
-				query.notgroup("assetid" , getRunningAssetIds());
+				query.notgroup("assetid", getRunningAssetIds());
 			}
 
 			HitTracker newtasks = tasksearcher.search(query.getQuery());
@@ -175,9 +175,9 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 				{
 					log.info("No assetid set");
 					Data missingdata = tasksearcher.loadData(hit);
-					missingdata.setProperty("status" , "error");
-					missingdata.setProperty("errordetails" , "asset id is null");
-					tasksearcher.saveData(missingdata , null);
+					missingdata.setProperty("status", "error");
+					missingdata.setProperty("errordetails", "asset id is null");
+					tasksearcher.saveData(missingdata, null);
 					continue;
 				}
 
@@ -193,16 +193,16 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 					if (asset == null)
 					{
 						Data missingdata = tasksearcher.loadData(hit);
-						missingdata.setProperty("status" , "error");
-						missingdata.setProperty("errordetails" , "asset not found " + assetid);
-						tasksearcher.saveData(missingdata , null);
-						assetstoprocess.put(assetid , ISLOCKED);
+						missingdata.setProperty("status", "error");
+						missingdata.setProperty("errordetails", "asset not found " + assetid);
+						tasksearcher.saveData(missingdata, null);
+						assetstoprocess.put(assetid, ISLOCKED);
 						continue;
 					}
-					Lock lock = fieldMediaArchive.getLockManager().lockIfPossible("assetconversions/" + assetid , "CompositeConvertRunner.run");
+					Lock lock = fieldMediaArchive.getLockManager().lockIfPossible("assetconversions/" + assetid, "CompositeConvertRunner.run");
 					if (lock == null)
 					{
-						assetstoprocess.put(assetid , ISLOCKED);
+						assetstoprocess.put(assetid, ISLOCKED);
 						log.info("Asset is already being processed " + assetid + " in catalog " + getMediaArchive().getCatalogId());
 						continue;
 					}
@@ -210,13 +210,13 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 					existing = new AssetConversions(getMediaArchive(), lock);
 					existing.setAsset(asset);
 					existing.setEventListener(this);
-					assetstoprocess.put(assetid , existing);
+					assetstoprocess.put(assetid, existing);
 				}
 				if (existing == ISLOCKED)
 				{
 					continue;
 				}
-				ConversionTask task = createRunnable(tasksearcher , presetsearcher , itemsearcher , hit);
+				ConversionTask task = createRunnable(tasksearcher, presetsearcher, itemsearcher, hit);
 				existing.addTask(task);
 
 			}
@@ -233,7 +233,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 		}
 		catch (Throwable ex)
 		{
-			log.error("Could not process queue " , ex);
+			log.error("Could not process queue ", ex);
 		}
 	}
 
@@ -271,7 +271,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 
 	protected ConversionTask createRunnable(Searcher tasksearcher, Searcher presetsearcher, Searcher itemsearcher, Data hit)
 	{
-		ConversionTask runner = (ConversionTask) getModuleManager().getBean(getCatalogId() , "conversionTask" , false);
+		ConversionTask runner = (ConversionTask) getModuleManager().getBean(getCatalogId(), "conversionTask", false);
 		runner.mediaarchive = getMediaArchive();
 		runner.tasksearcher = tasksearcher;
 		runner.presetsearcher = presetsearcher;
@@ -283,8 +283,8 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 	private void queueConversion(AssetConversions inAssetconversions)
 	{
 		// log.info("ADDING" + inAssetconversions.getAssetId());
-		fieldRunningAssetConversions.put(inAssetconversions.getAssetId() , inAssetconversions);
-		getThreads().execute("conversions" , inAssetconversions);
+		fieldRunningAssetConversions.put(inAssetconversions.getAssetId(), inAssetconversions);
+		getThreads().execute("conversions", inAssetconversions);
 	}
 
 	public void finishedConversions(AssetConversions inAssetconversions)
@@ -306,7 +306,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 		}
 		catch (Exception ex)
 		{
-			log.error("Problem finishing conversions " , ex);
+			log.error("Problem finishing conversions ", ex);
 		}
 	}
 
@@ -320,7 +320,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 
 	public ExecutorManager getThreads()
 	{
-		ExecutorManager queue = (ExecutorManager) getModuleManager().getBean(getMediaArchive().getCatalogId() , "executorManager");
+		ExecutorManager queue = (ExecutorManager) getModuleManager().getBean(getMediaArchive().getCatalogId(), "executorManager");
 		return queue;
 	}
 

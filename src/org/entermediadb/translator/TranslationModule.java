@@ -48,7 +48,7 @@ public class TranslationModule extends BaseMediaModule
 	{
 		if (fieldMediaArchive == null)
 		{
-			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId() , "mediaArchive");
+			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		}
 		return fieldMediaArchive;
 	}
@@ -56,7 +56,7 @@ public class TranslationModule extends BaseMediaModule
 	public AutomationManager getAutomationManager(WebPageRequest inReq)
 	{
 		AutomationManager manager = (AutomationManager) getMediaArchive(inReq).getBean("automationManager");
-		inReq.putPageValue("automationManager" , manager);
+		inReq.putPageValue("automationManager", manager);
 		return manager;
 	}
 
@@ -66,7 +66,7 @@ public class TranslationModule extends BaseMediaModule
 		if (params == null)
 		{
 			log.info("No JSON parameters");
-			inReq.putPageValue("status" , "No JSON parameters");
+			inReq.putPageValue("status", "No JSON parameters");
 			return;
 		}
 		String sourceLang = (String) params.get("source");
@@ -92,14 +92,14 @@ public class TranslationModule extends BaseMediaModule
 		// text);
 
 		AgentContext context = new AgentContext();
-		context.put("sourceLang" , sourceLang);
-		context.put("targetLangs" , targetLangs);
-		context.put("text" , text);
+		context.put("sourceLang", sourceLang);
+		context.put("targetLangs", targetLangs);
+		context.put("text", text);
 
-		getAutomationManager(inReq).runScenario("informatics_translate" , context);
+		getAutomationManager(inReq).runScenario("informatics_translate", context);
 
-		inReq.putPageValue("sourcelang" , context.getContextValue("sourceLang"));
-		inReq.putPageValue("translations" , context.getContextValue("translations"));
+		inReq.putPageValue("sourcelang", context.getContextValue("sourceLang"));
+		inReq.putPageValue("translations", context.getContextValue("translations"));
 	}
 }
 // [headline, assettitle, keywords, longcaption,
