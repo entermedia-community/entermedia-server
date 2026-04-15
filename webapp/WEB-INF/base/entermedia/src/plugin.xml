@@ -2981,5 +2981,23 @@
 		</property>
 	</bean>
 
+	<bean id="questionManagerAgent" class="org.entermediadb.tasks.QuestionManagerAgent" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+	<bean id="embeddingFinderAgent" class="org.entermediadb.tasks.EmbeddingFinderAgent" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+	<bean id="informaticsContext" class="org.entermediadb.ai.informatics.InformaticsContext" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
 
 </beans>

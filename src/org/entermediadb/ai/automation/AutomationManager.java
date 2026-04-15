@@ -113,8 +113,8 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 
 	public void runScenario(String inId, AgentContext inContext)
 	{
-		MultiValued scenerio = (MultiValued) getMediaArchive().getCachedData("automationscenario", inId);// query("automationscenerio").exact("enabled",
-		// true).sort("ordering").search();
+		MultiValued scenerio = (MultiValued) getMediaArchive().getCachedData("automationscenario", inId);
+		// query("automationscenerio").exact("enabled", true).sort("ordering").search();
 
 		if (scenerio == null)
 		{
@@ -342,6 +342,11 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 				}
 
 				String bean = agentdata.get("bean");
+				if (bean == null)
+				{
+					log.error("No bean defined for agent " + agentenableddata.getId());
+					continue;
+				}
 				Agent agent = loadAgent(bean);
 				enabled.setAgent(agent);
 

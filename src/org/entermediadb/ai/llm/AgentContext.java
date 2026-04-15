@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.entermediadb.ai.assistant.AiCreation;
 import org.entermediadb.ai.assistant.AiSearch;
 import org.entermediadb.ai.creator.AiSmartCreatorSteps;
@@ -73,8 +72,6 @@ public class AgentContext extends BaseData implements CatalogEnabled
 
 	protected Long fieldWaitTime;
 
-
-
 	// TODO: Cache history here for performance
 
 	public Long getWaitTime()
@@ -92,23 +89,6 @@ public class AgentContext extends BaseData implements CatalogEnabled
 	protected ModuleManager fieldModuleManager;
 
 	protected String fieldCatalogId;
-
-	protected Collection<AgentEnabled> fieldAgentsEnabled;
-
-	public Collection<AgentEnabled> getAgentsEnabled()
-	{
-		if (fieldAgentsEnabled == null && getParentContext() != null)
-		{
-			return getParentContext().getAgentsEnabled();
-		}
-
-		return fieldAgentsEnabled;
-	}
-
-	public void setAgentsEnabled(Collection<AgentEnabled> inAgentsEnabled)
-	{
-		fieldAgentsEnabled = inAgentsEnabled;
-	}
 
 	protected MultiValued fieldCurrentScenerio;
 
@@ -140,15 +120,39 @@ public class AgentContext extends BaseData implements CatalogEnabled
 	public void setCurrentAgentEnable(AgentEnabled inCurrentAgentEnable)
 	{
 		fieldCurrentAgentEnable = inCurrentAgentEnable;
-		if (inCurrentAgentEnable != null && inCurrentAgentEnable.getExtraContextValues() != null)
+		if (inCurrentAgentEnable != null)
 		{
-			JSONObject json = inCurrentAgentEnable.getExtraContextValues();
-			for (Object key : json.keySet())
+			if (inCurrentAgentEnable.getExtraContextValues() != null)
 			{
-				Object value = json.get(key);
-				addContext(String.valueOf(key), value);
+				JSONObject json = inCurrentAgentEnable.getExtraContextValues();
+				for (Object key : json.keySet())
+				{
+					Object value = json.get(key);
+					addContext(String.valueOf(key), value);
+				}
 			}
+			Collection<AgentEnabled> children = inCurrentAgentEnable.getChildren();
+			setAgentEnableChildren(children);
 		}
+	}
+
+	protected Collection<AgentEnabled> fieldAgentEnableChildren;
+
+	public void setAgentEnableChildren(Collection<AgentEnabled> inAgentEnableChildren)
+	{
+		fieldAgentEnableChildren = inAgentEnableChildren;
+	}
+
+	public void setAgentEnableChildren(AgentEnabled inAgentEnableChildren)
+	{
+		Collection<AgentEnabled> children = new ArrayList<>();
+		children.add(inAgentEnableChildren);
+		setAgentEnableChildren(children);
+	}
+
+	public Collection<AgentEnabled> getAgentEnableChildren()
+	{
+		return fieldAgentEnableChildren;
 	}
 
 	public String getCatalogId()
@@ -220,7 +224,6 @@ public class AgentContext extends BaseData implements CatalogEnabled
 		}
 		return value;
 	}
-
 
 	public String getNextFunctionName()
 	{
@@ -336,7 +339,6 @@ public class AgentContext extends BaseData implements CatalogEnabled
 		fieldRankedSuggestions = inRankedSuggestions;
 	}
 
-
 	public AiSearch getAiSearchParams()
 	{
 		if (fieldAiSearchParams == null && getParentContext() != null)
@@ -350,7 +352,6 @@ public class AgentContext extends BaseData implements CatalogEnabled
 	{
 		fieldAiSearchParams = inAiSearchParams;
 	}
-
 
 	AiCreation fieldAiCreationParams;
 
@@ -373,7 +374,6 @@ public class AgentContext extends BaseData implements CatalogEnabled
 	}
 
 	AiSmartCreatorSteps fieldAiSmartCreatorSteps;
-
 
 	public AiSmartCreatorSteps getAiSmartCreatorSteps()
 	{
@@ -472,7 +472,6 @@ public class AgentContext extends BaseData implements CatalogEnabled
 	{
 		setValue("locale", inLocale);
 	}
-
 
 	public String getLocale()
 	{
@@ -584,6 +583,5 @@ public class AgentContext extends BaseData implements CatalogEnabled
 
 		return count;
 	}
-
 
 }

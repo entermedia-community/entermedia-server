@@ -23,18 +23,27 @@ public class ImagemagickTranscoder extends BaseTranscoder
 	private static final Log log = LogFactory.getLog(ImagemagickTranscoder.class);
 
 	protected String fieldPathToProfile;
+	protected String fieldPathToCMYKProfile;
 
 	public String getPathtoProfile()
 	{
 
-
 		if (fieldPathToProfile == null)
 		{
-			Page profile = getPageManager()
-					.getPage("/system/commonbase/components/conversions/tinysRGB.icc");
+			Page profile = getPageManager().getPage("/system/commonbase/components/conversions/tinysRGB.icc");
 			fieldPathToProfile = profile.getContentItem().getAbsolutePath();
 		}
 		return fieldPathToProfile;
+	}
+
+	public String getPathCMYKProfile()
+	{
+		if (fieldPathToCMYKProfile == null)
+		{
+			Page profile = getPageManager().getPage("/system/commonbase/components/conversions/USWebCoatedSWOP.icc");
+			fieldPathToCMYKProfile = profile.getContentItem().getAbsolutePath();
+		}
+		return fieldPathToCMYKProfile;
 	}
 
 	@Override
@@ -91,15 +100,29 @@ public class ImagemagickTranscoder extends BaseTranscoder
 					{
 						String percent = emautoheight.substring(0, emautoheight.length() - 1);
 						int percentint = Integer.parseInt(percent);
-						finalheight = Math.round((float) finalheight
-								+ ((float) finalheight * ((float) percentint / 100f)));
+						finalheight = Math.round((float) finalheight + ((float) finalheight * ((float) percentint / 100f)));
 					}
 				}
 			}
 
-			Collection needsDensity =
-					Arrays.asList("pdf", "gddoc", "gdsheet", "gdslide", "gddraw", "eps", "ai");
+			if ("pdf".equals(ext))
+			{
+				com.add(0, "sRGB");
+				com.add(0, "-colorspace");
+			}
+			else
+				if ("jpg".equals(ext)) // Found JPGS with incorrect profile for CMYK
+				{
+					if (asset.get("colorspace") != null && asset.get("colorspace").equals("4"))
+					{
+						com.add(0, getPathCMYKProfile());
+						com.add(0, "-profile");
 
+					}
+
+				}
+
+			Collection needsDensity = Arrays.asList("pdf", "gddoc", "gdsheet", "gdslide", "gddraw", "eps", "ai");
 
 			// be aware ImageMagick writes to a tmp file with a larger version of the file before it
 			// is finished
@@ -152,6 +175,9 @@ public class ImagemagickTranscoder extends BaseTranscoder
 				}
 			}
 
+			// Alawys strip profiles/metadata
+			com.add(0, "-strip");
+
 			if (!inStructions.isCrop()) // not a crop!
 			{
 				com.add("-resize");
@@ -193,7 +219,6 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			com.add("-rotate");
 			com.add(rotate);
 		}
-
 
 		if (inStructions.isCrop())
 		{
@@ -280,7 +305,6 @@ public class ImagemagickTranscoder extends BaseTranscoder
 				com.add("-extent");
 				com.add(extentw + "x" + extenth);
 
-
 			}
 		}
 		String dpi = inStructions.get("dpi");
@@ -307,8 +331,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 
 		if (!maintaintransparency)
 		{
-			if ("eps".equals(ext) || "pdf".equals(ext) || "ps".equals(ext) || "psd".equals(ext)
-					|| "ai".equals(ext) || "tif".equals(ext) || "tiff".equals(ext))
+			if ("eps".equals(ext) || "pdf".equals(ext) || "ps".equals(ext) || "psd".equals(ext) || "ai".equals(ext) || "tif".equals(ext) || "tiff".equals(ext))
 			{
 				setValue("colorspace", "sRGB", inStructions, com);
 				// Not compatible with profile at the same time with colorspace
@@ -317,7 +340,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			}
 			else
 			{
-				com.add("-strip"); // This removes the extra profile info TODO: Get rid of this fix
+				// com.add("-strip"); // This removes the extra profile info TODO: Get rid of this fix
 				String profilepath = null;
 				if (inStructions.getImageProfile() != null)
 				{
@@ -336,7 +359,6 @@ public class ImagemagickTranscoder extends BaseTranscoder
 					profilepath = getPathtoProfile();
 					setValue("profile", profilepath, inStructions, com);
 				}
-
 
 			}
 		}
@@ -358,7 +380,6 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			com.add(outputpath);
 		}
 
-
 		long start = System.currentTimeMillis();
 		new File(outputpath).getParentFile().mkdirs();
 
@@ -372,9 +393,8 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		{
 			result.setComplete(true);
 
-			log.info("Asset: " + asset.getId() + " Image Magick Convert complete in:"
-					+ (System.currentTimeMillis() - start) + " Preset:"
-					+ inStructions.getConvertPreset() + " " + inOutFile.getName());
+			log.info("Asset: " + asset.getId() + " Image Magick Convert complete in:" + (System.currentTimeMillis() - start) + " Preset:" + inStructions.getConvertPreset() + " "
+				+ inOutFile.getName());
 
 			return result;
 		}
@@ -390,20 +410,16 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			if (output != null && output.contains("warning/tiff.c"))
 			{
 				result.setComplete(true);
-				log.info("Asset: " + asset.getId() + " Convert complete in:"
-						+ (System.currentTimeMillis() - start) + " " + inOutFile.getName());
+				log.info("Asset: " + asset.getId() + " Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
 				result.setOk(true);
 			}
 			// Added as PDF was throwing an error like this but the images generated were fine.
 			if (output != null && output.contains("subimage specification returns no images"))
 			{
 				result.setComplete(true);
-				log.info("Asset: " + asset.getId() + " Convert complete in:"
-						+ (System.currentTimeMillis() - start) + " " + inOutFile.getName());
+				log.info("Asset: " + asset.getId() + " Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
 				result.setOk(true);
 			}
-
-
 
 			else
 			{
@@ -413,13 +429,9 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		return result;
 	}
 
-
-
-	protected void createBackground(ConvertInstructions inStructions, List<String> com,
-			boolean usepng, String ext)
+	protected void createBackground(ConvertInstructions inStructions, List<String> com, boolean usepng, String ext)
 	{
-		if (!usepng && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext)
-				|| "gif".equals(ext)))
+		if (!usepng && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) || "gif".equals(ext)))
 		{
 			String value = inStructions.get("background");
 
@@ -458,7 +470,6 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		String tmpinput = PathUtilities.extractPageType(inStructions.getInputFile().getPath());
 
 		// ext = tmpinput;
-
 
 		List<String> com = new ArrayList<String>();
 
@@ -502,8 +513,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 	public ConvertResult updateStatus(Data inTask, ConvertInstructions inStructions)
 	{
 		// This should not happen
-		log.info("Should not need to check status on imagemagic... maybe use missinginput?"
-				+ inStructions.getAssetSourcePath() + " " + inStructions.getProperties());
+		log.info("Should not need to check status on imagemagic... maybe use missinginput?" + inStructions.getAssetSourcePath() + " " + inStructions.getProperties());
 		ConvertResult status = new ConvertResult();
 		status.setComplete(true);
 		status.setOk(true);

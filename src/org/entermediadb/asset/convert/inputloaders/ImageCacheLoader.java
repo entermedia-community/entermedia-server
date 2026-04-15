@@ -34,12 +34,12 @@ public class ImageCacheLoader implements InputLoader
 		ContentItem item = null;
 
 		item = loadFile(inStructions, page, "webp");
-		
+
 		if (item == null)
 		{
 			item = loadFile(inStructions, page, "jpg");
 		}
-		
+
 		if (item == null && inStructions.isDocumentFormat())
 		{
 			item = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/document.pdf");
@@ -58,35 +58,36 @@ public class ImageCacheLoader implements InputLoader
 	{
 		ContentItem input = null;
 
-		if (inStructions.getPageNumber() == 1 && !inStructions.isCrop() ) //Can only crop jpg preview
-		{
-			input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/customthumb." + cachetype);
-			if (input != null && input.getLength() > 2)
-			{
-				//TODO: Save the fact that we used a cached file
-				return input;
-			}
-		}
-		if (inStructions.getMaxScaledSize() != null && inStructions.getTimeOffset() == null) //page numbers are 1 based
+		/*
+		 * if (inStructions.getPageNumber() == 1 && !inStructions.isCrop() ) //Can only crop jpg preview {
+		 * input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" +
+		 * inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath()
+		 * + "/customthumb." + cachetype); if (input != null && input.getLength() > 2) { //TODO: Save the
+		 * fact that we used a cached file return input; } }
+		 */
+		if (inStructions.getMaxScaledSize() != null && inStructions.getTimeOffset() == null) // page numbers are 1 based
 		{
 			Dimension box = inStructions.getMaxScaledSize();
 
-			if (box.getWidth() < 3001) //Make sure we dont use the same file as the input and output
+			if (box.getWidth() < 3001) // Make sure we dont use the same file as the input and output
 			{
-				input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image3000x3000" + page + "." + cachetype);
+				input = inStructions.getMediaArchive()
+					.getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image3000x3000" + page + "." + cachetype);
 				if (input.exists())
 				{
 					return input;
 				}
 			}
-			if (box.getWidth() < 1501) //Make sure we dont use the same file as the input and output
+			if (box.getWidth() < 1501) // Make sure we dont use the same file as the input and output
 			{
-				input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1500x1500" + page + "." + cachetype);
+				input = inStructions.getMediaArchive()
+					.getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1500x1500" + page + "." + cachetype);
 				if (input.exists())
 				{
 					return input;
 				}
-				input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1024x768" + page + "." + cachetype);
+				input = inStructions.getMediaArchive()
+					.getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1024x768" + page + "." + cachetype);
 				if (input.exists())
 				{
 					return input;
@@ -94,7 +95,7 @@ public class ImageCacheLoader implements InputLoader
 
 			}
 		}
-		
+
 		return null;
 	}
 

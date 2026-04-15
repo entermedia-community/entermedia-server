@@ -14,16 +14,16 @@ import org.openedit.WebPageRequest;
 public class SmartCreatorProcessPendingAgent extends BaseAgent
 {
 
-	
 	public SmartCreatorManager getSmartCreatorManager()
 	{
 		SmartCreatorManager smartCreatorManager = (SmartCreatorManager) getMediaArchive().getBean("smartCreatorManager");
 		return smartCreatorManager;
 	}
+
 	@Override
 	public void process(AgentContext inContext)
 	{
-		
+
 		Collection<String> values = inContext.getCurrentAgentEnable().getAutomationEnabledData().getValues("searchtypes");
 		if (values == null)
 		{
@@ -33,51 +33,49 @@ public class SmartCreatorProcessPendingAgent extends BaseAgent
 		for (Iterator iterator1 = values.iterator(); iterator1.hasNext();)
 		{
 			String moduleid = (String) iterator1.next();
-			
-			MultiValued module = (MultiValued)getMediaArchive().getCachedData("module", moduleid);
-			
+
+			MultiValued module = (MultiValued) getMediaArchive().getCachedData("module", moduleid);
+
 			if (module == null)
 			{
-				//inContext.error("No module found " + inContext.getCurrentAgentEnable().getAutomationEnabledData());
+				// inContext.error("No module found " +
+				// inContext.getCurrentAgentEnable().getAutomationEnabledData());
 				continue;
 			}
-			//Find pending then process each one
-			Collection found = getMediaArchive().query(module.getId()).exact("processingstatus","new").search();
-			//Then save?
-			
+			// Find pending then process each one
+			Collection found = getMediaArchive().query(module.getId()).exact("processingstatus", "new").search();
+			// Then save?
+
 			String llmprompt = inContext.getCurrentAgentEnable().getAutomationEnabledData().get("llmprompt");
-			
-			AgentContext newagentcontext = new AgentContext(inContext);
-			
-			inContext.info("Found " + found.size() + " records in " +inContext.getCurrentAgentEnable().getAutomationEnabledData() );
-			
+
+			inContext.info("Found " + found.size() + " records in " + inContext.getCurrentAgentEnable().getAutomationEnabledData());
+
 			for (Iterator iterator = found.iterator(); iterator.hasNext();)
 			{
 				long startTime = System.currentTimeMillis();
 				MultiValued entity = (MultiValued) iterator.next();
-				AgentContext childcontext = new AgentContext(inContext);
-				childcontext.setCurrentEntityModule( module );
-				childcontext.setCurrentEntity(entity);
-				
-				newagentcontext.put("data", entity);
-				llmprompt = getMediaArchive().getReplacer().replace(llmprompt, newagentcontext.getContext());
-				
+				inContext.setCurrentEntityModule(module);
+				inContext.setCurrentEntity(entity);
+
+				inContext.put("data", entity);
+				llmprompt = getMediaArchive().getReplacer().replace(llmprompt, inContext.getContext());
+
 				inContext.info("Processing: " + llmprompt);
-				
-				AiSmartCreatorSteps instructions = new AiSmartCreatorSteps(); //Fresh
+
+				AiSmartCreatorSteps instructions = new AiSmartCreatorSteps(); // Fresh
 				instructions.setTargetModule(module);
 				instructions.setTargetEntity(entity);
-				
+
 				inContext.setAiSmartCreatorSteps(instructions);
-				
+
 				getSmartCreatorManager().parseCreationPrompt(inContext, llmprompt);
-				
-				super.process(childcontext); //To Create outline
-				
-				entity.setValue("processingstatus","complete");
+
+				super.process(inContext); // To Create outline
+
+				entity.setValue("processingstatus", "complete");
 				getMediaArchive().saveData(module.getId(), entity);
 				long duration = (System.currentTimeMillis() - startTime) / 1000L;
-				inContext.info("Finished processing in "+duration+"s: " + entity.getName());
+				inContext.info("Finished processing in " + duration + "s: " + entity.getName());
 			}
 		}
 	}

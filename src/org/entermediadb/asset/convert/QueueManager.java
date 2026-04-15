@@ -101,8 +101,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 	{
 		if (fieldMediaArchive == null)
 		{
-			fieldMediaArchive =
-					(MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
+			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		}
 		return fieldMediaArchive;
 	}
@@ -150,8 +149,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 			setTotalPending(newtasks.size());
 			if (newtasks.size() > 0)
 			{
-				log.info("processing " + newtasks.size()
-						+ " new submitted retry missinginput conversions");
+				log.info("processing " + newtasks.size() + " conversions with statuses: new submitted retry missinginput");
 			}
 			else
 			{
@@ -201,13 +199,11 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 						assetstoprocess.put(assetid, ISLOCKED);
 						continue;
 					}
-					Lock lock = fieldMediaArchive.getLockManager().lockIfPossible(
-							"assetconversions/" + assetid, "CompositeConvertRunner.run");
+					Lock lock = fieldMediaArchive.getLockManager().lockIfPossible("assetconversions/" + assetid, "CompositeConvertRunner.run");
 					if (lock == null)
 					{
 						assetstoprocess.put(assetid, ISLOCKED);
-						log.info("Asset is already being processed " + assetid + " in catalog "
-								+ getMediaArchive().getCatalogId());
+						log.info("Asset is already being processed " + assetid + " in catalog " + getMediaArchive().getCatalogId());
 						continue;
 					}
 					count++;
@@ -220,8 +216,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 				{
 					continue;
 				}
-				ConversionTask task =
-						createRunnable(tasksearcher, presetsearcher, itemsearcher, hit);
+				ConversionTask task = createRunnable(tasksearcher, presetsearcher, itemsearcher, hit);
 				existing.addTask(task);
 
 			}
@@ -274,11 +269,9 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 		return fieldRunningAssetConversions.size();
 	}
 
-	protected ConversionTask createRunnable(Searcher tasksearcher, Searcher presetsearcher,
-			Searcher itemsearcher, Data hit)
+	protected ConversionTask createRunnable(Searcher tasksearcher, Searcher presetsearcher, Searcher itemsearcher, Data hit)
 	{
-		ConversionTask runner = (ConversionTask) getModuleManager().getBean(getCatalogId(),
-				"conversionTask", false);
+		ConversionTask runner = (ConversionTask) getModuleManager().getBean(getCatalogId(), "conversionTask", false);
 		runner.mediaarchive = getMediaArchive();
 		runner.tasksearcher = tasksearcher;
 		runner.presetsearcher = presetsearcher;
@@ -327,8 +320,7 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 
 	public ExecutorManager getThreads()
 	{
-		ExecutorManager queue = (ExecutorManager) getModuleManager()
-				.getBean(getMediaArchive().getCatalogId(), "executorManager");
+		ExecutorManager queue = (ExecutorManager) getModuleManager().getBean(getMediaArchive().getCatalogId(), "executorManager");
 		return queue;
 	}
 

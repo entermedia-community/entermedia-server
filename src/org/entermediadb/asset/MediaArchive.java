@@ -1139,6 +1139,7 @@ public class MediaArchive implements CatalogEnabled
 		if (fieldCategoryEditor == null)
 		{
 			fieldCategoryEditor = (CategoryEditor) getModuleManager().getBean(getCatalogId(), "categoryEditor");
+			fieldCategoryEditor = (CategoryEditor) getModuleManager().getBean(getCatalogId(), "categoryEditor");
 			fieldCategoryEditor.setMediaArchive(this);
 		}
 		return fieldCategoryEditor;
@@ -1153,6 +1154,7 @@ public class MediaArchive implements CatalogEnabled
 	{
 		if (fieldAssetEditor == null)
 		{
+			fieldAssetEditor = (AssetEditor) getModuleManager().getBean(getCatalogId(), "assetEditor");
 			fieldAssetEditor = (AssetEditor) getModuleManager().getBean(getCatalogId(), "assetEditor");
 			fieldAssetEditor.setMediaArchive(this);
 		}

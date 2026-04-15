@@ -1,7 +1,6 @@
 package org.entermediadb.ai.automation.agents;
 
 import java.util.Collection;
-
 import org.entermediadb.ai.BaseAgent;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.AgentEnabled;
@@ -56,24 +55,22 @@ public class ToolsCallingAgent extends BaseAgent
 			LlmConnection llmConnection = getMediaArchive().getLlmConnection(function);
 			LlmResponse res = llmConnection.callToolsFunction(inContext, function);
 
-			String selectedagent = (String) res.getFunctionName();
+			String selectedagentid = (String) res.getFunctionName();
 			JSONObject params = (JSONObject) res.getFunctionArguments();
 
-			super.process(inContext);
+			currentEnabled.setAgentParameterValues(params);
+
+			AgentEnabled selectedenabled = currentEnabled.getChildren(selectedagentid);
+			if (selectedenabled != null)
+			{
+				inContext.setAgentEnableChildren(selectedenabled);
+			}
+			else
+			{
+				inContext.error("Couldn't decide next agent for " + currentEnabled.getAgentData().getId());
+			}
 		}
 
-		// for (Iterator<AgentEnabled> it = enabledChildren.iterator(); it.hasNext();) {
-		// AgentEnabled agentenabledchild = it.next();
-		// if( agentenabledchild.getAgentConfig().getId().equals(selectedagent))
-		// {
-		// // selected agent
-		// for (String key : params.keySet()) {
-		// Object value = params.get(key);
-		// subContext.put(key, value);
-		// }
-		// agentenabledchild.getAgent().process(subContext);
-		// }
-		// }
 		super.process(inContext);
 	}
 }

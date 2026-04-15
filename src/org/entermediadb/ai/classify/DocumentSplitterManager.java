@@ -26,76 +26,76 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.util.OutputFiller;
 
-public class DocumentSplitterManager extends BaseAiManager 
+public class DocumentSplitterManager extends BaseAiManager
 {
 	private static final Log log = LogFactory.getLog(DocumentSplitterManager.class);
-	
-	public void splitStuff(InformaticsContext informatic )	
+
+	public void splitStuff(InformaticsContext informatic)
 	{
-		Collection<MultiValued>  inRecords  = informatic.getRecordsToProcess();
-		
-		MultiValued inConfig = informatic.getCurrentAgentEnable().getAutomationEnabledData(); 
-		Collection searchtypes = inConfig.getValues("searchtypes"); 
+		Collection<MultiValued> inRecords = informatic.getRecordsToProcess();
+
+		MultiValued inConfig = informatic.getCurrentAgentEnable().getAutomationEnabledData();
+		Collection searchtypes = inConfig.getValues("searchtypes");
 		int count = 0;
 		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
 		{
 			MultiValued entity = (MultiValued) iterator.next();
-			
+
 			String moduleid = entity.get("entitysourcetype");
-			
-			if(searchtypes == null || !searchtypes.contains(moduleid) ) //Limits to the ones configured in the informatics db.
+
+			if (searchtypes == null || !searchtypes.contains(moduleid)) // Limits to the ones configured in the informatics db.
 			{
 				continue;
 			}
-			
+
 			String assetid = entity.get("primarymedia");
-			if( assetid == null)
+			if (assetid == null)
 			{
 				assetid = entity.get("primaryimage");
 			}
-			if( assetid == null)
+			if (assetid == null)
 			{
 				continue;
 			}
-			
+
 			Asset asset = getMediaArchive().getAsset(assetid);
-			if( asset == null)
+			if (asset == null)
 			{
-				continue; //Do nada
+				continue; // Do nada
 			}
-			
+
 			String created = entity.get("pagescreatedfor");
-			if( created != null)
+			if (created != null)
 			{
-				//Check everything
+				// Check everything
 				String modtime = asset.get("assetmodificationdate");
-				if( created.equals( assetid + "|" + modtime) )
+				if (created.equals(assetid + "|" + modtime))
 				{
 					continue;
 				}
 			}
-			if(count == 0)
+			if (count == 0)
 			{
-				informatic.headline("Splitting " + inRecords.size() + " documents"); 
+				informatic.headline("Splitting " + inRecords.size() + " documents");
 			}
 			count++;
-			
+
 			int pages = asset.getInt("pages");
-			
+
 			if (pages > 0)
 			{
-				informatic.info("Splitting " + pages + " pages in document " + asset.getName());
+				// informatic.info("Splitting " + pages + " pages in document " + asset.getName());
 				entity.setValue("totalpages", pages);
 				splitDocumentWithPages(informatic, inConfig, entity, asset);
 			}
 			else
 			{
 				String fulltext = getMediaArchive().getAssetSearcher().getFulltext(asset);
-				
-				if( fulltext == null )
+
+				if (fulltext == null)
 				{
-					//TODO: Create fulltext pulling from the PrimaryMedia description. 
-					//Call a local ai function to render fields
+					// TODO: Create fulltext pulling from the PrimaryMedia description.
+					// Call a local ai function to render fields
 					fulltext = asset.get("longcaption");
 					AgentContext agentcontext = new AgentContext();
 					Collection detailsfields = getMediaArchive().getSearcher("asset").getDetailsForView("assetgeneral");
@@ -104,12 +104,12 @@ public class DocumentSplitterManager extends BaseAiManager
 					for (Iterator iterator2 = detailsfields.iterator(); iterator2.hasNext();)
 					{
 						PropertyDetail field = (PropertyDetail) iterator2.next();
-						if(asset.hasValue(field.getId()))
+						if (asset.hasValue(field.getId()))
 						{
 							contextFields.add(field);
 						}
 					}
-					
+
 					agentcontext.addContext("data", asset);
 					RenderValues rendervalues = new RenderValues();
 					rendervalues.setMediaArchive(getMediaArchive());
@@ -118,62 +118,60 @@ public class DocumentSplitterManager extends BaseAiManager
 					agentcontext.put("rendervalues", rendervalues);
 					agentcontext.put("contextfields", contextFields);
 
-					
 					String assetrendertype = getMediaArchive().getMediaRenderType(asset);
 					if ("audio".equals(assetrendertype) || "video".equals(assetrendertype))
 					{
-						//Loockup Captions
+						// Loockup Captions
 						Data assettracks = getMediaArchive().query("videotrack").exact("assetid", asset.getId()).searchOne();
-						if (assettracks != null) {
+						if (assettracks != null)
+						{
 							Timeline timeline = new Timeline();
-							timeline.loadClips((MultiValued) assettracks,"captions");
+							timeline.loadClips((MultiValued) assettracks, "captions");
 							agentcontext.addContext("assettimeline", timeline);
 						}
 					}
-					
+
 					agentcontext.setFunctionName("documentsplitasset");
-					LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentsplitasset"); 
+					LlmConnection llmconnection = getMediaArchive().getLlmConnection("documentsplitasset");
 					LlmResponse response = llmconnection.renderLocalAction(agentcontext);
 					if (response != null)
 					{
 						fulltext = response.getMessage();
 					}
 				}
-				if( fulltext != null )
+				if (fulltext != null)
 				{
-					//send to Lllamaindex another way
-					List<String> chunks = new OutputFiller().splitUtf8(fulltext, 18 * 1024	); //32766  Lucene hard coded max We do not overlap. We just need to see the text
+					// send to Lllamaindex another way
+					List<String> chunks = new OutputFiller().splitUtf8(fulltext, 18 * 1024); // 32766 Lucene hard coded max We do not overlap. We just need to see the text
 					entity.setValue("totalpages", chunks.size());
-					splitDocumentWithText(informatic,chunks, inConfig, entity, asset);
+					splitDocumentWithText(informatic, chunks, inConfig, entity, asset);
 				}
-				
+
 			}
 			String modtime = asset.get("assetmodificationdate");
 			entity.setValue("pagescreatedfor", assetid + "|" + modtime);
 
 			getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
 		}
-		//Check the primarymedia
-		//See if this has been indexed or not
+		// Check the primarymedia
+		// See if this has been indexed or not
 	}
 
-	public void splitDocumentWithPages(InformaticsContext inContext, MultiValued inConfig, MultiValued inEntity, Asset asset) 
+	public void splitDocumentWithPages(InformaticsContext inContext, MultiValued inConfig, MultiValued inEntity, Asset asset)
 	{
 
 		String parentsearchtype = inEntity.get("entitysourcetype");
-		String generatedsearchtype = parentsearchtype+"page";
+		String generatedsearchtype = parentsearchtype + "page";
 		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
 		if (pageSearcher == null)
 		{
 			log.error("Generated (Pages) searchtype doesn't exist");
 			return;
 		}
-		HitTracker existingPages = getMediaArchive().query(generatedsearchtype)
-				.exact(parentsearchtype, inEntity.getId())
-				.exact("parentasset", asset.getId()).search();
-		
+		HitTracker existingPages = getMediaArchive().query(generatedsearchtype).exact(parentsearchtype, inEntity.getId()).exact("parentasset", asset.getId()).search();
+
 		Map<Integer, MultiValued> pagenums = new HashMap();
-		
+
 		for (Iterator iterator = existingPages.iterator(); iterator.hasNext();)
 		{
 			MultiValued object = (MultiValued) iterator.next();
@@ -181,19 +179,19 @@ public class DocumentSplitterManager extends BaseAiManager
 		}
 
 		List<Data> tosave = new ArrayList();
-		
+
 		Long starttime = System.currentTimeMillis();
 		int totalpages = inEntity.getInt("totalpages");
-		if(inConfig.getBoolean("generatemarkdown"))
+		if (inConfig.getBoolean("generatemarkdown"))
 		{
 			log.info("Generating markdown for " + totalpages + " pages of " + inEntity);
 		}
-		for (int i = 0; i < totalpages; i++) 
+		for (int i = 0; i < totalpages; i++)
 		{
 			int pagenum = i + 1;
 			MultiValued docpage = pagenums.get(pagenum);
-			
-			if( docpage == null)
+
+			if (docpage == null)
 			{
 				docpage = (MultiValued) pageSearcher.createNewData();
 				String pagename = inEntity.getName() + " - Page " + pagenum;
@@ -204,9 +202,9 @@ public class DocumentSplitterManager extends BaseAiManager
 				docpage.setValue("parentasset", asset.getId());
 				docpage.setValue("entity_date", new Date());
 			}
-			
-			//if( docpage.get("markdowncontent") == null && inConfig.getBoolean("generatemarkdown"))
-			if( docpage.get("markdowncontent") == null)
+
+			// if( docpage.get("markdowncontent") == null && inConfig.getBoolean("generatemarkdown"))
+			if (docpage.get("markdowncontent") == null)
 			{
 				log.info("Generating markdown for page: " + docpage);
 				generateMarkdownFromImage(docpage);
@@ -214,33 +212,31 @@ public class DocumentSplitterManager extends BaseAiManager
 
 			tosave.add(docpage);
 
-			if(tosave.size() > 3)
+			if (tosave.size() > 3)
 			{
 				pageSearcher.saveAllData(tosave, null);
 				tosave.clear();
 			}
 		}
 		Long endtime = System.currentTimeMillis();
-		inContext.info("Generated: " + totalpages + " pages for:" + inEntity + " in: " + (endtime - starttime)/1000L + "s");
+		inContext.info("Generated: " + totalpages + " pages for:" + inEntity + " in: " + (endtime - starttime) / 1000L + "s");
 		pageSearcher.saveAllData(tosave, null);
 	}
-	
-	public void splitDocumentWithText(InformaticsContext inContext, List<String> inPagesText, MultiValued inConfig, MultiValued inEntity, Asset asset) 
+
+	public void splitDocumentWithText(InformaticsContext inContext, List<String> inPagesText, MultiValued inConfig, MultiValued inEntity, Asset asset)
 	{
 		String parentsearchtype = inEntity.get("entitysourcetype");
-		String generatedsearchtype = parentsearchtype+"page"; 
+		String generatedsearchtype = parentsearchtype + "page";
 		Searcher pageSearcher = getMediaArchive().getSearcher(generatedsearchtype);
 		if (pageSearcher == null)
 		{
 			log.error("Generated (Pages) searchtype doesn't exist");
 			return;
 		}
-		HitTracker existingPages = getMediaArchive().query(generatedsearchtype)
-				.exact(parentsearchtype, inEntity.getId())
-				.exact("parentasset", asset.getId()).search();
-		
+		HitTracker existingPages = getMediaArchive().query(generatedsearchtype).exact(parentsearchtype, inEntity.getId()).exact("parentasset", asset.getId()).search();
+
 		Map<Integer, MultiValued> pagenums = new HashMap();
-		
+
 		for (Iterator iterator = existingPages.iterator(); iterator.hasNext();)
 		{
 			MultiValued object = (MultiValued) iterator.next();
@@ -248,19 +244,19 @@ public class DocumentSplitterManager extends BaseAiManager
 		}
 
 		List<Data> tosave = new ArrayList();
-		
+
 		Long starttime = System.currentTimeMillis();
 		int totalpages = inEntity.getInt("totalpages");
-		if(inConfig.getBoolean("generatemarkdown"))
+		if (inConfig.getBoolean("generatemarkdown"))
 		{
 			log.info("Saving text markdown for " + totalpages + " pages of " + inEntity);
 		}
-		for (int i = 0; i < totalpages; i++) 
+		for (int i = 0; i < totalpages; i++)
 		{
 			int pagenum = i + 1;
 			MultiValued docpage = pagenums.get(pagenum);
-			
-			if( docpage == null)
+
+			if (docpage == null)
 			{
 				docpage = (MultiValued) pageSearcher.createNewData();
 				String pagename = inEntity.getName() + " - Page " + pagenum;
@@ -272,52 +268,52 @@ public class DocumentSplitterManager extends BaseAiManager
 				docpage.setValue("entity_date", new Date());
 			}
 			String chunk = inPagesText.get(i);
-			docpage.setValue("markdowncontent", chunk); //update it
+			docpage.setValue("markdowncontent", chunk); // update it
 			tosave.add(docpage);
 
-			if(tosave.size() > 30)
+			if (tosave.size() > 30)
 			{
 				pageSearcher.saveAllData(tosave, null);
 				tosave.clear();
 			}
 		}
 		Long endtime = System.currentTimeMillis();
-		inContext.info("Generated: " + totalpages + " pages for:" + inEntity + " in: " + (endtime - starttime)/1000L + "s");
+		inContext.info("Generated: " + totalpages + " pages for:" + inEntity + " in: " + (endtime - starttime) / 1000L + "s");
 		pageSearcher.saveAllData(tosave, null);
 	}
-	
-	public void generateMarkdownFromImage(MultiValued pageEntity) 
+
+	public void generateMarkdownFromImage(MultiValued pageEntity)
 	{
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("generateMarkdown");
 
 		String base64Img = loadDocumentContent(pageEntity);
-		
-		if(base64Img == null)
+
+		if (base64Img == null)
 		{
 			log.error("No image found for page: " + pageEntity);
 			return;
 		}
-			
+
 		LlmResponse result = (LlmResponse) llmconnection.callOCRFunction(new AgentContext(), base64Img, "generateMarkdown");
 		String markdown = result.getMessage();
-			
+
 		pageEntity.setValue("markdowncontent", markdown);
 	}
-	
+
 	protected String loadDocumentContent(MultiValued inEntity)
 	{
 		String base64EncodedString = null;
-		if(inEntity.hasValue("pagenum") )
+		if (inEntity.hasValue("pagenum"))
 		{
 			String parentasset = inEntity.get("parentasset");
-			if(parentasset != null)
+			if (parentasset != null)
 			{
 				Asset parentAsset = getMediaArchive().getAsset(parentasset);
-				//Do the conversion with page number in it
+				// Do the conversion with page number in it
 				Map params = new HashMap();
-				params.put("pagenum",inEntity.get("pagenum") );
-				ConvertResult result = getMediaArchive().getTranscodeTools().createOutputIfNeeded(null,params,parentAsset.getSourcePath(), "image3000x3000.webp"); 
-				if( result.isOk() )
+				params.put("pagenum", inEntity.get("pagenum"));
+				ConvertResult result = getMediaArchive().getTranscodeTools().createOutputIfNeeded(null, params, parentAsset.getSourcePath(), "image3000x3000.webp");
+				if (result.isOk())
 				{
 					base64EncodedString = loadBase64Png(result.getOutput());
 				}
@@ -331,12 +327,12 @@ public class DocumentSplitterManager extends BaseAiManager
 		{
 			String primarymedia = inEntity.get("primarymedia");
 			Asset inPrimaryAsset = getMediaArchive().getAsset(primarymedia);
-			if(inPrimaryAsset == null)
+			if (inPrimaryAsset == null)
 			{
 				primarymedia = inEntity.get("primaryimage");
 				inPrimaryAsset = getMediaArchive().getAsset(primarymedia);
 			}
-			if(inPrimaryAsset != null)
+			if (inPrimaryAsset != null)
 			{
 				base64EncodedString = loadBase64Png(inPrimaryAsset, "image3000x3000");
 			}
@@ -345,8 +341,8 @@ public class DocumentSplitterManager extends BaseAiManager
 				log.error("Could not find primary asset for entity: " + inEntity.getId());
 			}
 		}
-		
+
 		return base64EncodedString;
 	}
-	
+
 }

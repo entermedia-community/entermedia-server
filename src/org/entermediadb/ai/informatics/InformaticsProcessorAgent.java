@@ -26,6 +26,13 @@ import org.openedit.users.User;
  * interact with the tasks. A Task can be a big one or small ones. For example, a big task can be
  * "Classify all assets in the system" and a small task can be "Classify asset 12345". The
  * TaskManager will be responsible for breaking down big tasks into smaller tasks and scheduling
+ * them accordingly. My plan is to have a UI where each Task can be seen and assigned to a Agent.
+ * The Agent will be responsible for executing the task and updating the status of the task. The
+ * TaskManager will be responsible for scheduling the tasks and keeping track of the status of the
+ * tasks. The TaskManager will also be responsible for providing a UI for the tasks and allowing
+ * users to interact with the tasks. A Task can be a big one or small ones. For example, a big task
+ * can be "Classify all assets in the system" and a small task can be "Classify asset 12345". The
+ * TaskManager will be responsible for breaking down big tasks into smaller tasks and scheduling
  * them accordingly.
  * 
  * A task can retry a few times if it fails. It will have a retry count and a retry delay. The
@@ -75,7 +82,7 @@ public class InformaticsProcessorAgent extends BaseAgent
 
 	public void processPendingAssets(InformaticsContext inContext)
 	{
-		inContext.info("Processing Assets Informatics");
+		// inContext.info("Assets Informatics");
 
 		Collection inPendingAssets = inContext.getAssetsToProcess();
 		if (inPendingAssets != null && !inPendingAssets.isEmpty())
@@ -104,11 +111,15 @@ public class InformaticsProcessorAgent extends BaseAgent
 
 						long duration = (System.currentTimeMillis() - startTime) / 1000L;
 						inContext.info("Processing " + pageofhits.size() + " records took " + duration + "s");
+						inContext.info("Processing " + pageofhits.size() + " assets took " + duration + "s");
 					}
 					catch (Exception e)
 					{
 						inContext.error(e);
 						getMediaArchive().saveData("asset", pageofhits);
+
+						if (e instanceof OpenEditException)
+							getMediaArchive().saveData("asset", pageofhits);
 
 						if (e instanceof OpenEditException)
 						{
@@ -122,11 +133,15 @@ public class InformaticsProcessorAgent extends BaseAgent
 			else
 			{
 				processAssets(inContext, (Collection<Asset>) inPendingAssets);
+				processAssets(inContext, (Collection<Asset>) inPendingAssets);
 			}
 		}
 		else
 		{
 			inContext.info("No Assets to Process:` " + inPendingAssets);
+			// inLog.info("AI assets to tag:` " + pendingrecords.getFriendlyQuery());
+			inContext.info("No Assets to Process");
+			log.info("No Assets to Process: " + inPendingAssets);
 			// inLog.info("AI assets to tag:` " + pendingrecords.getFriendlyQuery());
 		}
 	}
@@ -142,6 +157,8 @@ public class InformaticsProcessorAgent extends BaseAgent
 		}
 		getMediaArchive().saveData("asset", pageofhits);
 
+		getMediaArchive().saveData("asset", pageofhits);
+
 		try
 		{
 			InformaticsContext subcontext = new InformaticsContext(inContext);
@@ -150,9 +167,13 @@ public class InformaticsProcessorAgent extends BaseAgent
 			super.process(subcontext);
 
 			getMediaArchive().saveData("asset", pageofhits); // Not need it?
+
+			getMediaArchive().saveData("asset", pageofhits); // Not need it?
 		}
 		catch (Throwable e)
 		{
+			// This should never happen
+			inContext.error("Processing Informatics Error", e);
 			// This should never happen
 			inContext.error("Processing Informatics Error", e);
 			return;
@@ -166,11 +187,15 @@ public class InformaticsProcessorAgent extends BaseAgent
 				asset.setValue("taggedbyllm", true);
 			}
 			asset.lock(false, agent); // Todo: Implement Release
+			asset.lock(false, agent); // Todo: Implement Release
 		}
 
 		getMediaArchive().saveData("asset", pageofhits);
 
 		inContext.info("Processing Informatics on Assets Complete");
+		getMediaArchive().saveData("asset", pageofhits);
+
+		// inContext.info("Processing Informatics on Assets Complete");
 
 	}
 
@@ -180,6 +205,7 @@ public class InformaticsProcessorAgent extends BaseAgent
 
 		if (records == null || records.isEmpty())
 		{
+			inContext.info("No Entities to Process");
 			return;
 		}
 		HitTracker pendingrecords = (HitTracker) records;
@@ -200,8 +226,12 @@ public class InformaticsProcessorAgent extends BaseAgent
 				{
 					// inContext.info("No Entities to Process in modules: " + ids + " | Search Query: "+
 					// pendingrecords.getFriendlyQuery());
+					inContext.info("No Valid Entities to Process");
+					// pendingrecords.getFriendlyQuery());
 					continue;
 				}
+
+				inContext.info("" + validhits.size() + " Records to Classify.");
 
 				Collection workinghits = new ArrayList<>(validhits);
 				try
@@ -216,6 +246,8 @@ public class InformaticsProcessorAgent extends BaseAgent
 				}
 				catch (Throwable e)
 				{
+					// This should never happen
+					inContext.error("Processing Informatics Error", e);
 					// This should never happen
 					inContext.error("Processing Informatics Error", e);
 					return;
@@ -237,6 +269,8 @@ public class InformaticsProcessorAgent extends BaseAgent
 					Collection tosave = groupbymodule.get(moduleid);
 					getMediaArchive().saveData(moduleid, tosave);
 
+					getMediaArchive().saveData(moduleid, tosave);
+
 				}
 
 			}
@@ -248,6 +282,7 @@ public class InformaticsProcessorAgent extends BaseAgent
 		else
 		{
 			inContext.info("Processing " + validhits.size() + " Entities Informatics Complete.");
+			// inContext.info("Processing " + validhits.size() + " Entities Informatics Complete.");
 		}
 	}
 

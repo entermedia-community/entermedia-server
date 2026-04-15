@@ -59,8 +59,7 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 	{
 		if (fieldMediaArchive == null)
 		{
-			fieldMediaArchive =
-				(MediaArchive) getModuleManager().getBean(getCatalogId() , "mediaArchive");
+			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		}
 		return fieldMediaArchive;
 	}
@@ -84,19 +83,21 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 
 		JSONArray q = new JSONArray();
 		q.add(text);
-		payload.put("q" , q);
+		payload.put("q", q);
 
-		payload.put("source" , sourceLang);
+		payload.put("source", sourceLang);
 
 		JSONArray targets = new JSONArray();
 		targets.addAll(targetLangs);
-		payload.put("target" , targets);
-
-		log.info("Translating " + q + " from " + sourceLang + " to " + targetLangs);
+		payload.put("target", targets);
 
 		LlmConnection connection = getMediaArchive().getLlmConnection("translateFields");
 
-		LlmResponse resp = connection.callJson("/translate" , payload);
+		log.info("Translating " + q + " from " + sourceLang + " to " + targetLangs + " in server: " + connection.getServerRoot());
+
+		log.debug(payload);
+
+		LlmResponse resp = connection.callJson("/translate", payload);
 
 		JSONObject translatedText = (JSONObject) resp.getRawResponse().get("translatedText");
 
@@ -106,7 +107,7 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 
 	public Map<String, String> translatePlainText(String sourceLang, Collection<String> targetLangs, String text)
 	{
-		JSONObject translations = translate(text , sourceLang , targetLangs);
+		JSONObject translations = translate(text, sourceLang, targetLangs);
 
 		Map<String, String> results = new HashMap<String, String>();
 		for (Iterator iterator = targetLangs.iterator(); iterator.hasNext();)
@@ -136,7 +137,7 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 				}
 			}
 			String tr = (String) fieldTranslations.get(0);
-			results.put(lang , tr);
+			results.put(lang, tr);
 		}
 
 		return results;
@@ -145,16 +146,14 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 
 	public void translateDataFields(Collection<MultiValued> inRecordsToTranslate)
 	{
-		HitTracker locales =
-			getMediaArchive().query("locale").exact("translatemetadata" , true).cachedSearch();
+		HitTracker locales = getMediaArchive().query("locale").exact("translatemetadata", true).cachedSearch();
 
 		if (locales.size() == 1 && "en".equals(locales.get(0).getId()))
 		{
 			return;
 		}
 
-		Collection<String> availableTargets =
-			Arrays.asList("en,es,fr,de,ar,pt,bn,hi,ur,ru,zh,zht,sw".split(","));
+		Collection<String> availableTargets = Arrays.asList("en,es,fr,de,ar,pt,bn,hi,ur,ru,zh,zht,sw".split(","));
 
 		Collection<String> targetLangs = new ArrayList();
 
@@ -210,12 +209,11 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 				if (detail != null && detail.isMultiLanguage())
 				{
 					LanguageMap value = data.getLanguageMap(inKey);
-					if (value != null && value.getText("en") != null
-						&& !value.getText("en").isEmpty())
+					if (value != null && value.getText("en") != null && !value.getText("en").isEmpty())
 					{
 						// inLog.info("Translating field: " + inKey);
-						LanguageMap translated = translateField(inKey , value , "en" , targetLangs);
-						results.put(inKey , translated);
+						LanguageMap translated = translateField(inKey, value, "en", targetLangs);
+						results.put(inKey, translated);
 					}
 				}
 			}
@@ -230,7 +228,7 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 						LanguageMap map = results.get(key);
 						LanguageMap value = data.getLanguageMap(key);
 						value.putAll(map);
-						data.setValue(key , value);
+						data.setValue(key, value);
 					}
 				}
 				long duration = System.currentTimeMillis() - startTime;
@@ -272,7 +270,7 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 			return languageMap;
 		}
 
-		JSONObject translations = translate(sourceText , sourceLang , validTargets);
+		JSONObject translations = translate(sourceText, sourceLang, validTargets);
 		if (translations == null)
 		{
 			return languageMap;
@@ -287,7 +285,7 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 				continue;
 			}
 			String value = (String) fieldTranslations.get(0);
-			languageMap.setText(lang , value);
+			languageMap.setText(lang, value);
 
 		}
 
@@ -295,19 +293,18 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 	}
 
 	/*
-	 * private Map<String, LanguageMap> processTranslations(JSONObject translations,
-	 * ArrayList<String> fieldNames, Map<String, LanguageMap> sourceLangMap, Collection<String>
-	 * targetLangs) {
+	 * private Map<String, LanguageMap> processTranslations(JSONObject translations, ArrayList<String>
+	 * fieldNames, Map<String, LanguageMap> sourceLangMap, Collection<String> targetLangs) {
 	 * 
-	 * // { // "es": [ "hola" ], // "fr": [ "bonjour" ] // } for (int i = 0; i < fieldNames.size();
-	 * i++) { String field = fieldNames.get(i); log.info("Translations for: " + field);
+	 * // { // "es": [ "hola" ], // "fr": [ "bonjour" ] // } for (int i = 0; i < fieldNames.size(); i++)
+	 * { String field = fieldNames.get(i); log.info("Translations for: " + field);
 	 * 
 	 * LanguageMap lm = new LanguageMap();
 	 * 
-	 * for (Iterator iterator = targetLangs.iterator(); iterator.hasNext();) { String lang =
-	 * (String) iterator.next(); JSONArray fieldTranslations = (JSONArray) translations.get(lang);
-	 * if (fieldTranslations == null || fieldTranslations.isEmpty()) { continue; } String value =
-	 * (String) fieldTranslations.get(i); if (value != null) { lm.setText(lang , value); } }
+	 * for (Iterator iterator = targetLangs.iterator(); iterator.hasNext();) { String lang = (String)
+	 * iterator.next(); JSONArray fieldTranslations = (JSONArray) translations.get(lang); if
+	 * (fieldTranslations == null || fieldTranslations.isEmpty()) { continue; } String value = (String)
+	 * fieldTranslations.get(i); if (value != null) { lm.setText(lang , value); } }
 	 * 
 	 * sourceLangMap.put(field , lm); }
 	 * 
