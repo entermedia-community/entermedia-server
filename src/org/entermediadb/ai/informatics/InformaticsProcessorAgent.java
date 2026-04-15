@@ -104,7 +104,7 @@ public class InformaticsProcessorAgent extends BaseAgent
 						processAssets(inContext, pageofhits);
 
 						long duration = (System.currentTimeMillis() - startTime) / 1000L;
-						inContext.info("Processing " + pageofhits.size() + " records took " + duration + "s");
+
 						inContext.info("Processing " + pageofhits.size() + " assets took " + duration + "s");
 					}
 					catch (Exception e)
@@ -127,12 +127,10 @@ public class InformaticsProcessorAgent extends BaseAgent
 			else
 			{
 				processAssets(inContext, (Collection<Asset>) inPendingAssets);
-				processAssets(inContext, (Collection<Asset>) inPendingAssets);
 			}
 		}
 		else
 		{
-			inContext.info("No Assets to Process:` " + inPendingAssets);
 			// inLog.info("AI assets to tag:` " + pendingrecords.getFriendlyQuery());
 			inContext.info("No Assets to Process");
 			log.info("No Assets to Process: " + inPendingAssets);
@@ -151,24 +149,16 @@ public class InformaticsProcessorAgent extends BaseAgent
 		}
 		getMediaArchive().saveData("asset", pageofhits);
 
-		getMediaArchive().saveData("asset", pageofhits);
-
 		try
 		{
 			InformaticsContext subcontext = new InformaticsContext(inContext);
 			subcontext.setAssetsToProcess(pageofhits);
 			subcontext.setRecordsToProcess(Collections.EMPTY_LIST);
 			super.process(subcontext);
-
-			getMediaArchive().saveData("asset", pageofhits); // Not need it?
-
 			getMediaArchive().saveData("asset", pageofhits); // Not need it?
 		}
 		catch (Throwable e)
 		{
-			// This should never happen
-			inContext.error("Processing Informatics Error", e);
-			// This should never happen
 			inContext.error("Processing Informatics Error", e);
 			return;
 		}
@@ -180,7 +170,6 @@ public class InformaticsProcessorAgent extends BaseAgent
 			{
 				asset.setValue("taggedbyllm", true);
 			}
-			asset.lock(false, agent); // Todo: Implement Release
 			asset.lock(false, agent); // Todo: Implement Release
 		}
 
@@ -242,8 +231,6 @@ public class InformaticsProcessorAgent extends BaseAgent
 				{
 					// This should never happen
 					inContext.error("Processing Informatics Error", e);
-					// This should never happen
-					inContext.error("Processing Informatics Error", e);
 					return;
 				}
 
@@ -261,8 +248,6 @@ public class InformaticsProcessorAgent extends BaseAgent
 				{
 					String moduleid = (String) iterator.next();
 					Collection tosave = groupbymodule.get(moduleid);
-					getMediaArchive().saveData(moduleid, tosave);
-
 					getMediaArchive().saveData(moduleid, tosave);
 
 				}
