@@ -322,21 +322,4 @@ public class AutomationModule extends BaseMediaModule
 
 	}
 
-	Data savedData = null;
-
-	public void checkData(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		String dataid = "informaticsagent";
-		MultiValued data = (MultiValued) archive.getCachedData("automationagent", dataid);
-		if (savedData == null)
-		{
-			savedData = (Data) data;
-
-		}
-		log.info("Saved Data: " + data.get("contextbean"));
-		log.info("Saved SavedData: " + savedData.get("contextbean"));
-
-	}
-
 }
