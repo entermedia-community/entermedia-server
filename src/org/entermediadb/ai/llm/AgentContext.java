@@ -482,6 +482,12 @@ public class AgentContext extends BaseData implements CatalogEnabled
 		return get("locale");
 	}
 
+	/* Log to console only */
+	public void log(String inLog)
+	{
+		getScriptLogger().info("[" + getCatalogId() + "] " + inLog);
+	}
+
 	public void info(String inLog)
 	{
 		getScriptLogger().info(inLog);
