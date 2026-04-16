@@ -63,10 +63,11 @@ public class InformaticsProcessorManager extends BaseAiManager
 		pageofhits.add(inAsset);
 
 		InformaticsContext inContext = new InformaticsContext();
+		inContext.setCatalogId(getMediaArchive().getCatalogId());
 		inContext.setScriptLogger(inLog);
 		inContext.setAssetsToProcess(pageofhits);
 
-		getAutomationManager().runScenario("informatics" , inContext);
+		getAutomationManager().runScenario("informatics", inContext);
 	}
 
 	public HitTracker findPendingAssets(AgentContext inContext)
@@ -86,15 +87,15 @@ public class InformaticsProcessorManager extends BaseAiManager
 			query = getMediaArchive().localQuery("asset");
 		}
 
-		QueryBuilder orquery = getMediaArchive().query("asset").or().exact("previewstatus" , "2").exact("previewstatus" , "mime");
+		QueryBuilder orquery = getMediaArchive().query("asset").or().exact("previewstatus", "2").exact("previewstatus", "mime");
 
-		query.addchild(orquery.getQuery()).exact("taggedbyllm" , false).exact("llmerror" , false);
+		query.addchild(orquery.getQuery()).exact("taggedbyllm", false).exact("llmerror", false);
 
 		String categoryid = getMediaArchive().getCatalogSettingValue("llmmetadatastartcategory");
 		if (categoryid != null)
 		{
 			// categoryid = "index";
-			query.exact("category" , categoryid);
+			query.exact("category", categoryid);
 		}
 
 		String startdate = getMediaArchive().getCatalogSettingValue("ai_metadata_startdate");
@@ -102,7 +103,7 @@ public class InformaticsProcessorManager extends BaseAiManager
 		if (startdate == null || startdate.isEmpty())
 		{
 			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DAY_OF_YEAR , -30);
+			cal.add(Calendar.DAY_OF_YEAR, -30);
 			Date thirtyDaysAgo = cal.getTime();
 			date = DateStorageUtil.getStorageUtil().parseFromObject(thirtyDaysAgo);
 		}
@@ -110,7 +111,7 @@ public class InformaticsProcessorManager extends BaseAiManager
 		{
 			date = DateStorageUtil.getStorageUtil().parseFromObject(startdate);
 		}
-		query.after("assetaddeddate" , date);
+		query.after("assetaddeddate", date);
 
 		// Process smaller files first
 		query.sort("filesize");
@@ -133,7 +134,7 @@ public class InformaticsProcessorManager extends BaseAiManager
 
 	public HitTracker findPendingRecords(AgentContext inContext)
 	{
-		HitTracker allmodules = getMediaArchive().query("module").exact("semanticenabled" , true).search();
+		HitTracker allmodules = getMediaArchive().query("module").exact("semanticenabled", true).search();
 		Collection<String> ids = allmodules.collectValues("id");
 
 		if (!ids.isEmpty())
@@ -162,14 +163,14 @@ public class InformaticsProcessorManager extends BaseAiManager
 		}
 		// .exact("semantictopicsindexed", false)
 		// .missing("semantictopics")
-		query.exact("taggedbyllm" , false).exact("llmerror" , false).put("searchtypes" , ids);
+		query.exact("taggedbyllm", false).exact("llmerror", false).put("searchtypes", ids);
 
 		String startdate = getMediaArchive().getCatalogSettingValue("ai_metadata_startdate");
 		Date date = null;
 		if (startdate == null || startdate.isEmpty())
 		{
 			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DAY_OF_YEAR , -30);
+			cal.add(Calendar.DAY_OF_YEAR, -30);
 			Date thirtyDaysAgo = cal.getTime();
 			date = DateStorageUtil.getStorageUtil().parseFromObject(thirtyDaysAgo);
 		}
@@ -177,7 +178,7 @@ public class InformaticsProcessorManager extends BaseAiManager
 		{
 			date = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
 		}
-		query.after("emrecordstatus.recordmodificationdate" , date);
+		query.after("emrecordstatus.recordmodificationdate", date);
 
 		// inLog.info("Running entity search query: " + query);
 
@@ -225,7 +226,7 @@ public class InformaticsProcessorManager extends BaseAiManager
 
 				if (searchtype != null)
 				{
-					Data module = getMediaArchive().getCachedData("module" , searchtype);
+					Data module = getMediaArchive().getCachedData("module", searchtype);
 					String method = module.get("aicreationmethod");
 					if (module != null && "smartcreator".equals(method))
 					{
@@ -247,14 +248,14 @@ public class InformaticsProcessorManager extends BaseAiManager
 		{
 			Data entity = (Data) iterator.next();
 
-			entity.setValue("taggedbyllm" , false);
-			entity.setValue("llmerror" , false);
+			entity.setValue("taggedbyllm", false);
+			entity.setValue("llmerror", false);
 
-			entity.setValue("semantictopics" , null);
+			entity.setValue("semantictopics", null);
 
-			entity.setValue("entityembeddingstatus" , null);
-			entity.setValue("pagescreatedfor" , null);
-			entity.setValue("totalpages" , null);
+			entity.setValue("entityembeddingstatus", null);
+			entity.setValue("pagescreatedfor", null);
+			entity.setValue("totalpages", null);
 
 			// entity.setValue("searchcategory", null);
 
@@ -264,11 +265,11 @@ public class InformaticsProcessorManager extends BaseAiManager
 			saveAll.add(entity);
 
 		}
-		getMediaArchive().saveData(inEntityModuleId , saveAll);
+		getMediaArchive().saveData(inEntityModuleId, saveAll);
 		log.info("Saved " + saveAll.size() + " in " + inEntityModuleId);
 
-		HitTracker todelete = getMediaArchive().query("semanticembedding").orgroup("dataid" , ids).exact("moduleid" , inEntityModuleId).search();
-		getMediaArchive().getSearcher("semanticembedding").deleteAll(todelete , null);
+		HitTracker todelete = getMediaArchive().query("semanticembedding").orgroup("dataid", ids).exact("moduleid", inEntityModuleId).search();
+		getMediaArchive().getSearcher("semanticembedding").deleteAll(todelete, null);
 
 		getMediaArchive().fireSharedMediaEvent("llm/addmetadata");
 
@@ -285,7 +286,7 @@ public class InformaticsProcessorManager extends BaseAiManager
 			if (tosave == null)
 			{
 				tosave = new ArrayList();
-				groupbymodule.put(moduleid , tosave);
+				groupbymodule.put(moduleid, tosave);
 			}
 			tosave.add(data);
 		}

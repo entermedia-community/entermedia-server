@@ -61,8 +61,16 @@ public class InformaticsProcessorAgent extends BaseAgent
 
 	public void process(AgentContext inContext)
 	{
-		log.info("Processing Informatics Agent: " + inContext.getCurrentAgentEnable());
+		if (!(inContext instanceof InformaticsContext))
+		{
+			log.error(inContext.getCatalogId() + " Can't process Agent: " + inContext.getCurrentAgentEnable() + " wrong context");
+			return;
+
+		}
 		InformaticsContext informatic = (InformaticsContext) inContext;
+
+		log.info(inContext.getCatalogId() + " Processing Informatics Agent: " + inContext.getCurrentAgentEnable() + " in Scenario: " + inContext.getCurrentScenerio());
+
 		if (informatic.getAssetsToProcess() == null && informatic.getRecordsToProcess() == null)
 		{
 			HitTracker pendingassets = getInformaticsProcessorManager().findPendingAssets(informatic);

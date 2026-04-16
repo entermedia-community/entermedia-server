@@ -19,11 +19,6 @@ public class BaseAgent extends BaseAiManager implements Agent, CatalogEnabled
 	{
 		String contextbeanname = inEnabled.getAgentData().get("contextbean");
 
-		if (inEnabled.getAgentData().getId().equals("informaticsagent"))
-		{
-			inParentContext.log("Creating Agent Context for: " + inEnabled.getAgentData().hashCode() + " with contextbean: " + contextbeanname + " properties: "
-				+ inEnabled.getAgentData().getProperties().hashCode());
-		}
 		if (contextbeanname == null)
 		{
 			contextbeanname = "agentContext";
