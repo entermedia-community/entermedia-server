@@ -16,19 +16,25 @@ public class EmbeddingFinderAgent extends ToolsCallingAgent
 	@Override
 	public void process(AgentContext inContext)
 	{
-		Collection<String> categories = getMediaArchive().query("searchcategory").cachedSearch().collectValues("id");
+		Collection<String> categories =
+			getMediaArchive().query("searchcategory").all().cachedSearch().collectValues("id");
+
+		// TODO: reduce this list by Passing all categories with their semantic topics and tools
+		// pick the categories
+
 		if (categories != null && !categories.isEmpty())
 		{
 			Set<String> finalParentIds = new HashSet<>();
 
-			HitTracker modules = getMediaArchive().query("module").exact("semanticenabled", true).cachedSearch();
+			HitTracker modules =
+				getMediaArchive().query("module").exact("semanticenabled" , true).cachedSearch();
 			Collection<String> moduleids = modules.collectValues("id");
 			HitTracker addedentites = getMediaArchive().query("modulesearch")
 				.addFacet("entitysourcetype")
-				.put("searchtypes", moduleids)
+				.put("searchtypes" , moduleids)
 				.includeDescription(true)
-				.orgroup("searchcategory", categories)
-				.exact("entityembeddingstatus", "embedded")
+				.orgroup("searchcategory" , categories)
+				.exact("entityembeddingstatus" , "embedded")
 				.search();
 			for (Iterator iterator = addedentites.iterator(); iterator.hasNext();)
 			{
@@ -49,7 +55,7 @@ public class EmbeddingFinderAgent extends ToolsCallingAgent
 			{
 				JSONArray embeddings = new JSONArray();
 				embeddings.addAll(finalParentIds);
-				inContext.addContext("embeddings", embeddings);
+				inContext.addContext("embeddings" , embeddings);
 			}
 
 			super.process(inContext);
