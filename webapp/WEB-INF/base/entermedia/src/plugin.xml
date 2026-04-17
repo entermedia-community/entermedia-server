@@ -2904,7 +2904,7 @@
 		</property>
 	</bean>
 
-	<bean id="postizManager" class="org.enteremdiadb.postiz.PostizManager" scope="prototype">
+	<bean id="postizManager" class="org.entermediadb.postiz.PostizManager" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

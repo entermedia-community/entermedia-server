@@ -1,4 +1,4 @@
-package org.openedit.entermedia.util;
+package org.entermediadb.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,23 +19,25 @@ public class ManyThreads
 		testRam();
 		testFiles();
 	}
+
 	private static void testRam()
 	{
-		//2000
+		// 2000
 		log("testing ram");
 		int i = 0;
 		Collection hold = new ArrayList();
 		String copythis = "This is some text that we want to copy and bunch of times";
-		
+
 		while (i < 50000)
 		{
 			hold.add(copythis + i++);
 		}
-		log("Added a bunch of ram (chars): " + (1 + copythis.length())  * hold.size());
-	}	
+		log("Added a bunch of ram (chars): " + (1 + copythis.length()) * hold.size());
+	}
+
 	private static void testFiles()
 	{
-		//2000
+		// 2000
 		log("testing files");
 
 		int i = 0;
@@ -46,7 +48,7 @@ public class ManyThreads
 			log("Open Files[{}]" + i++);
 			try
 			{
-				
+
 				File somefile = new File("/tmp/cburkey/junkem333" + i);
 				FileOutputStream saving = new FileOutputStream(somefile);
 				saving.write(1);
@@ -67,9 +69,9 @@ public class ManyThreads
 		{
 			e.printStackTrace();
 			return;
-		}	
+		}
 		log("Exiting sleepo");
-		
+
 	}
 
 	private static void testThreads()
@@ -90,7 +92,7 @@ public class ManyThreads
 		{
 			try
 			{
-				Thread.sleep(2L * 60L * 1000L); //2Minutes
+				Thread.sleep(2L * 60L * 1000L); // 2Minutes
 			}
 			catch (InterruptedException e)
 			{
