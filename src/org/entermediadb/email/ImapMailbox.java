@@ -9,7 +9,7 @@ import javax.mail.*;
 import javax.mail.search.FlagTerm;
 import org.openedit.OpenEditException;
 
-public class ImapInbox
+public class ImapMailbox
 {
     private String host;
     private int port;
@@ -21,9 +21,9 @@ public class ImapInbox
 
     private Store store;
 
-    public ImapInbox() {}
+    public ImapMailbox() {}
 
-    public ImapInbox(String inHost, int inPort, String inUsername, String inPassword, boolean inUseSsl) {
+    public ImapMailbox(String inHost, int inPort, String inUsername, String inPassword, boolean inUseSsl) {
         host = inHost;
         port = inPort;
         username = inUsername;
@@ -114,7 +114,7 @@ public class ImapInbox
         }
     }
 
-    public Collection<ImapMessage> moveInboxToInProgress(Collection<ImapMessage> messages)
+    public Collection<ImapMessage> moveToInProgress(Collection<ImapMessage> messages)
     {
         connect();
 
@@ -135,7 +135,7 @@ public class ImapInbox
 
     }
 
-    public Collection<ImapMessage> moveInProgressToResolved(Collection<ImapMessage> messages)
+    public Collection<ImapMessage> moveToResolved(Collection<ImapMessage> messages)
     {
         connect();
 
@@ -200,6 +200,8 @@ public class ImapInbox
         targetFolder.close(false);
 
         disconnect();
+
+        return messages;
     }
 
 }
