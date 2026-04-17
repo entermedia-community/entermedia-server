@@ -4,8 +4,6 @@ import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.Multipart;
 
-import org.entermediadb.websocket.chat.Message;
-
 public class ImapMessage
 {
     private Message message;
@@ -23,11 +21,19 @@ public class ImapMessage
     public String getMessageId()
     {
         String messageId = null;
-        String[] header = message.getHeader("Message-ID");
-        if (header != null && header.length > 0)
+        try
         {
-            messageId = header[0];
+            String[] header = message.getHeader("Message-ID");
+            if (header != null && header.length > 0)
+            {
+                messageId = header[0];
+            }
         }
+        catch (Exception ex)
+        {
+            // Ignore and return null
+        }
+
         return messageId;
     }
 
@@ -86,13 +92,14 @@ public class ImapMessage
         {
             return "";
         }
-        if (content instanceof String string)
+        if (content instanceof String)
         {
-            return string;
+            return (String) content;
         }
         else
-            if (content instanceof Multipart multipart)
+            if (content instanceof Multipart)
             {
+                Multipart multipart = (Multipart) content;
                 for (int i = 0; i < multipart.getCount(); i++)
                 {
                     BodyPart part = multipart.getBodyPart(i);

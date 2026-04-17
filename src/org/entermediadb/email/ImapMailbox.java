@@ -93,7 +93,7 @@ public class ImapMailbox
             Folder inbox = store.getFolder(inboxFolderName);
             inbox.open(Folder.READ_ONLY);
 
-            Collection<ImapMessage> messages = inbox.search(new FlagTerm(new Flags(Flags.Flag.SEEN), false));
+            Message[] messages = inbox.search(new FlagTerm(new Flags(Flags.Flag.SEEN), false));
 
             Collection<ImapMessage> results = new ArrayList<>();
 
@@ -178,7 +178,7 @@ public class ImapMailbox
             for (Message sourceMessage : sourceMessages)
             {
                 String sourceMessageId = null;
-                String[] header = message.getHeader("Message-ID");
+                String[] header = sourceMessage.getHeader("Message-ID");
                 if (header != null && header.length > 0)
                 {
                     sourceMessageId = header[0];
