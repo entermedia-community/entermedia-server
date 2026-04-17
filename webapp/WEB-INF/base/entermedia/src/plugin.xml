@@ -2937,7 +2937,7 @@
 
 
 	<bean id="cssutils" class="org.openedit.util.CSSUtils" />
-	<bean id="inflector" class="org.openedit.entermedia.util.Inflector" />
+	<bean id="inflector" class="org.entermediadb.util.Inflector" />
 
 	<bean id="AutomationModule" class="org.entermediadb.ai.automation.AutomationModule" lazy-init="default">
 		<property name="moduleManager">
