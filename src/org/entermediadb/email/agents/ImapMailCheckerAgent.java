@@ -26,8 +26,8 @@ public class ImapMailCheckerAgent extends ToolsCallingAgent
     String username = (String) inContext.getContextValue("mailusername");
     String password = (String) inContext.getContextValue("mailpassword");
 
-    ImapInbox inbox = new ImapInbox(); // TODO: Cache these?
-    Collection<ImapMessage> messages = inbox.checkForNewMessages(server, serverport, username, password, true);
+    ImapInbox inbox = new ImapInbox(server, serverport, username, password, true);
+    Collection<ImapMessage> messages = inbox.getInboxUnread();
 
     log.info(messages);
 

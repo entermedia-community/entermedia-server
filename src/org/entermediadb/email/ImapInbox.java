@@ -5,78 +5,107 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Properties;
 
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.Store;
+import javax.mail.*;
 import javax.mail.search.FlagTerm;
-
 import org.openedit.OpenEditException;
 
 public class ImapInbox
 {
+    private String host;
+    private int port;
+    private final String inboxFolderName = "INBOX";
+    public Date lastCheckedDate;
+    private boolean useSsl = true;
+    private String username;
+    private String password;
 
+    private Store store;
 
-    // TODO: Cache these values and only check for new messages after a certain time has passed
-    String host;
-    String port;
-    String inboxfoldername;
-    Date lastcheckdate;
-    boolean useSsl = true;
-    String username;
-    String password;
+    public ImapInbox() {}
 
-    public Collection<ImapMessage> checkForNewMessages(String host, int port, String username,
-            String password, boolean useSsl)
-    {
-        Properties props = new Properties();
-        String protocol = useSsl ? "imaps" : "imap";
-        props.put("mail." + protocol + ".host", host);
-        props.put("mail." + protocol + ".port", port);
+    public ImapInbox(String inHost, int inPort, String inUsername, String inPassword, boolean inUseSsl) {
+        host = inHost;
+        port = inPort;
+        username = inUsername;
+        password = inPassword;
+        useSsl = inUseSsl;
 
         try
         {
-            Session session = Session.getInstance(props);
-            Store store = session.getStore(protocol);
-            store.connect(host, port, username, password);
+            Properties props = new Properties();
+            String protocol = useSsl ? "imaps" : "imap";
+            props.put("mail." + protocol + ".host", host);
+            props.put("mail." + protocol + ".port", port);
 
-            Folder inbox = store.getFolder("INBOX");
+            Session session = Session.getInstance(props);
+            store = session.getStore(protocol);
+        }
+        catch (Exception ex)
+        {
+            throw new OpenEditException("Error checking email: " + ex.getMessage(), ex);
+        }
+    }
+
+    public void connect()
+    {
+        try
+        {
+            if (store == null || !store.isConnected())
+            {
+                Properties props = new Properties();
+                String protocol = useSsl ? "imaps" : "imap";
+                props.put("mail." + protocol + ".host", host);
+                props.put("mail." + protocol + ".port", port);
+
+                Session session = Session.getInstance(props);
+                store = session.getStore(protocol);
+                store.connect(host, port, username, password);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new OpenEditException("Error connecting to email server: " + ex.getMessage(), ex);
+        }
+    }
+
+    public void disconnect()
+    {
+        try
+        {
+            if (store != null && store.isConnected())
+            {
+                store.close();
+            }
+            store = null;
+        }
+        catch (Exception ex)
+        {
+            throw new OpenEditException("Error disconnecting from email server: " + ex.getMessage(), ex);
+        }
+    }
+
+    public Collection<ImapMessage> getInboxUnread()
+    {
+        try
+        {
+            connect();
+
+            Folder inbox = store.getFolder(inboxFolderName);
             inbox.open(Folder.READ_ONLY);
 
-            // Fetch only unseen (new) messages
-            Message[] messages = inbox.search(new FlagTerm(new Flags(Flags.Flag.SEEN), false));
+            Collection<ImapMessage> messages = inbox.search(new FlagTerm(new Flags(Flags.Flag.SEEN), false));
+
             Collection<ImapMessage> results = new ArrayList<>();
-            // Process messages here before closing...
+
             for (Message message : messages)
             {
-                String subject = message.getSubject();
-
-                String from = "";
-                if (message.getFrom() != null && message.getFrom().length > 0)
-                {
-                    from = message.getFrom()[0].toString();
-                }
-
-                String messageId = "";
-                String[] header = message.getHeader("Message-ID");
-                if (header != null && header.length > 0)
-                {
-                    messageId = header[0];
-                }
-
-                String body = getTextContent(message);
-
-                Date date = message.getSentDate();
-
-                results.add(new ImapMessage(messageId, subject, from, body, date.toString()));
+                results.add(new ImapMessage(message));
             }
 
-
-
             inbox.close(false);
-            store.close();
-            // return java.util.Arrays.asList(messages);
+            disconnect();
+            lastCheckedDate = new Date();
+
             return results;
         }
         catch (Exception ex)
@@ -85,28 +114,92 @@ public class ImapInbox
         }
     }
 
-    private String getTextContent(Message message) throws Exception
+    public Collection<ImapMessage> moveInboxToInProgress(Collection<ImapMessage> messages)
     {
-        Object content = message.getContent();
-        if (content instanceof String)
+        connect();
+
+        try
         {
-            return (String) content;
+            Collection<ImapMessage> movedMessages = moveEmail(messages, "INBOX", "InProgress");
+
+            return movedMessages;
         }
-        else
-            if (content instanceof javax.mail.Multipart)
+        catch (Exception ex)
+        {
+            throw new OpenEditException("Error moving email: " + ex.getMessage(), ex);
+        }
+        finally
+        {
+            disconnect();
+        }
+
+    }
+
+    public Collection<ImapMessage> moveInProgressToResolved(Collection<ImapMessage> messages)
+    {
+        connect();
+
+        try
+        {
+            Collection<ImapMessage> movedMessages = moveEmail(messages, "InProgress", "Resolved");
+
+            return movedMessages;
+        }
+        catch (Exception e)
+        {
+            throw new OpenEditException("Error moving email: " + e.getMessage(), e);
+        }
+        finally
+        {
+            disconnect();
+        }
+
+    }
+
+    public Collection<ImapMessage> moveEmail(Collection<ImapMessage> messages, String sourceFolderName, String targetFolderName) throws Exception
+    {
+        connect();
+
+        Folder sourceFolder = store.getFolder(sourceFolderName);
+        Folder targetFolder = store.getFolder(targetFolderName);
+
+        if (!targetFolder.exists())
+        {
+            throw new OpenEditException("Target folder does not exist: " + targetFolderName);
+        }
+
+        sourceFolder.open(Folder.READ_WRITE);
+        targetFolder.open(Folder.READ_WRITE);
+
+        Message[] sourceMessages = sourceFolder.getMessages();
+
+        for (ImapMessage message : messages)
+        {
+            for (Message sourceMessage : sourceMessages)
             {
-                javax.mail.Multipart multipart = (javax.mail.Multipart) content;
-                for (int i = 0; i < multipart.getCount(); i++)
+                String sourceMessageId = null;
+                String[] header = message.getHeader("Message-ID");
+                if (header != null && header.length > 0)
                 {
-                    javax.mail.BodyPart part = multipart.getBodyPart(i);
-                    if (part.isMimeType("text/plain"))
-                    {
-                        return (String) part.getContent();
-                    }
+                    sourceMessageId = header[0];
                 }
-                return "No text content found";
+                if (sourceMessageId == null)
+                {
+                    continue;
+                }
+                if (sourceMessageId.equals(message.getMessageId()))
+                {
+                    sourceMessage.setFlag(Flags.Flag.DELETED, true);
+                    targetFolder.appendMessages(new Message[] {sourceMessage});
+                }
             }
-        return content.toString();
+        }
+
+        sourceFolder.expunge();
+        sourceFolder.close(false);
+        targetFolder.close(false);
+
+        disconnect();
     }
 
 }

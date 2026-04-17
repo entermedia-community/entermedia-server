@@ -1,45 +1,116 @@
 package org.entermediadb.email;
 
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.Multipart;
+
+import org.entermediadb.websocket.chat.Message;
+
 public class ImapMessage
 {
-    private String messageId;
-    private String subject;
-    private String from;
-    private String body;
-    private String date;
+    private Message message;
 
-    public ImapMessage(String messageId, String subject, String from, String body, String date) {
-        this.messageId = messageId;
-        this.subject = subject;
-        this.from = from;
-        this.body = body;
-        this.date = date;
+    public ImapMessage(Message inMessage) {
+        message = inMessage;
+    }
+
+    public Message getMessage()
+    {
+        return message;
     }
 
     // Getters (or use Lombok if available)
     public String getMessageId()
     {
+        String messageId = null;
+        String[] header = message.getHeader("Message-ID");
+        if (header != null && header.length > 0)
+        {
+            messageId = header[0];
+        }
         return messageId;
     }
 
     public String getSubject()
     {
-        return subject;
+        try
+        {
+            return message.getSubject();
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
     }
 
     public String getFrom()
     {
-        return from;
+        try
+        {
+            return message.getFrom()[0].toString();
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
     }
 
     public String getBody()
     {
-        return body;
+        try
+        {
+            return getTextContent(message);
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
     }
 
     public String getDate()
     {
-        return date;
+        try
+        {
+            return message.getSentDate().toString();
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
+    }
+
+    private String getTextContent(Message message) throws Exception
+    {
+        Object content = message.getContent();
+        if (content == null)
+        {
+            return "";
+        }
+        if (content instanceof String string)
+        {
+            return string;
+        }
+        else
+            if (content instanceof Multipart multipart)
+            {
+                for (int i = 0; i < multipart.getCount(); i++)
+                {
+                    BodyPart part = multipart.getBodyPart(i);
+                    if (part.isMimeType("text/plain"))
+                    {
+                        try
+                        {
+                            return (String) part.getContent();
+                        }
+                        catch (Exception ex)
+                        {
+                            // Ignore and try next part
+                        }
+                    }
+                }
+                return "No text content found";
+            }
+        return content.toString();
     }
 
 }
