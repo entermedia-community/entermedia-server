@@ -139,8 +139,8 @@ public class UserProfileManager
 			}
 			userprofile = loadUserProfile(mediaArchive, appid, inUserName);
 			PermissionManager manager = (PermissionManager) mediaArchive.getBean("permissionManager");
-			//			EntityPermissions permissions = manager.loadEntityPermissions(userprofile.getSettingsGroup());
-			//			userprofile.setEntityPermissions(permissions);
+			// EntityPermissions permissions = manager.loadEntityPermissions(userprofile.getSettingsGroup());
+			// userprofile.setEntityPermissions(permissions);
 
 			if (inReq != null)
 			{
@@ -154,9 +154,9 @@ public class UserProfileManager
 			{
 				if (inReq != null)
 				{
-					inReq.putPageValue("userprofile", userprofile); //Better to grab something than nothing\
+					inReq.putPageValue("userprofile", userprofile); // Better to grab something than nothing\
 				}
-				//log.error("Could not lock user profile table " + inUserName);
+				// log.error("Could not lock user profile table " + inUserName);
 			}
 			log.error("Could load profile " + inUserName, ex);
 		}
@@ -179,25 +179,21 @@ public class UserProfileManager
 	}
 
 	/*
-	 * TODO: User module query filter to filter the list like we do libraries
-	 * protected void loadModules(UserProfile inProfile) { //Must be set before
-	 * we run actions below inReq.putPageValue("userprofile", userprofile);
+	 * TODO: User module query filter to filter the list like we do libraries protected void
+	 * loadModules(UserProfile inProfile) { //Must be set before we run actions below
+	 * inReq.putPageValue("userprofile", userprofile);
 	 * 
-	 * userprofile.setIndexId(
-	 * mediaArchive.getSearcher("settingsgroup").getIndexId() );
+	 * userprofile.setIndexId( mediaArchive.getSearcher("settingsgroup").getIndexId() );
 	 * 
-	 * log.info("Checking modules for " + inUserName + " catalog:" +
-	 * inCatalogId); List<Data> okmodules = new ArrayList<Data>(); if(
-	 * inUserName != null && !inUserName.equals("anonymous")) { Collection
-	 * modules = getSearcherManager().getSearcher(inCatalogId,
-	 * "module").query().match("id", "*").sort("name").search(inReq); if(
-	 * userprofile.isInRole("administrator")) { okmodules.addAll(modules); }
-	 * else { for (Iterator iterator = modules.iterator(); iterator.hasNext();)
-	 * { Data module = (Data) iterator.next(); // MediaArchive archive =
+	 * log.info("Checking modules for " + inUserName + " catalog:" + inCatalogId); List<Data> okmodules
+	 * = new ArrayList<Data>(); if( inUserName != null && !inUserName.equals("anonymous")) { Collection
+	 * modules = getSearcherManager().getSearcher(inCatalogId, "module").query().match("id",
+	 * "*").sort("name").search(inReq); if( userprofile.isInRole("administrator")) {
+	 * okmodules.addAll(modules); } else { for (Iterator iterator = modules.iterator();
+	 * iterator.hasNext();) { Data module = (Data) iterator.next(); // MediaArchive archive =
 	 * getMediaArchive(cat.getId()); WebPageRequest catcheck =
-	 * inReq.getPageStreamer().canDoPermissions("/" + appid + "/views/modules/"
-	 * + module.getId()); Boolean canview = (Boolean)
-	 * catcheck.getPageValue("canview"); if (canview != null && canview) {
+	 * inReq.getPageStreamer().canDoPermissions("/" + appid + "/views/modules/" + module.getId());
+	 * Boolean canview = (Boolean) catcheck.getPageValue("canview"); if (canview != null && canview) {
 	 * okmodules.add(module); } } } } userprofile.setModules(okmodules); }
 	 */
 	public UserProfile loadUserProfile(MediaArchive mediaArchive, String appid, String inUserName)
@@ -246,19 +242,20 @@ public class UserProfileManager
 			{
 				userprofile.setProperty("settingsgroup", "administrator");
 			}
-			else if (user != null && !"anonymous".equals(inUserName))
-			{
-				String profiletype = mediaArchive.getCatalogSettingValue("defaultrole");
-				if (profiletype == null)
-				{
-					profiletype = "users";
-				}
-				userprofile.setProperty("settingsgroup", profiletype);
-			}
 			else
-			{
-				userprofile.setProperty("settingsgroup", "guest"); //Anonymmous
-			}
+				if (user != null && !"anonymous".equals(inUserName))
+				{
+					String profiletype = mediaArchive.getCatalogSettingValue("defaultrole");
+					if (profiletype == null)
+					{
+						profiletype = "users";
+					}
+					userprofile.setProperty("settingsgroup", profiletype);
+				}
+				else
+				{
+					userprofile.setProperty("settingsgroup", "guest"); // Anonymmous
+				}
 			userprofile.setSourcePath(inUserName);
 			userprofile.setCatalogId(inCatalogId);
 
@@ -282,11 +279,11 @@ public class UserProfileManager
 		{
 			log.debug("No settings group defined");
 		}
-		//		if (fieldSettingsGroup != null)
-		//		{
-		//			Collection permissions = fieldSettingsGroup.getValues("permissions");
-		//			userprofile.getPermissions().setProfilePermissions(permissions);
-		//		}
+		// if (fieldSettingsGroup != null)
+		// {
+		// Collection permissions = fieldSettingsGroup.getValues("permissions");
+		// userprofile.getPermissions().setProfilePermissions(permissions);
+		// }
 		userprofile.setSettingsGroup(fieldSettingsGroup);
 		userprofile.setValue("userid", inUserName);
 		userprofile.setSourcePath(inUserName);
@@ -315,17 +312,23 @@ public class UserProfileManager
 			{
 				Searcher msearcher = mediaArchive.getSearcher("module");
 				SearchQuery mainquery = msearcher.query().all().sort("ordering").sort("name").getQuery();
-				SearchQuery securityfilter = msearcher.query().or().match("securityenabled", "false").orgroup("viewgroups", user.getGroups()).match("viewroles", userprofile.getSettingsGroup().getId()).match("owner", inUserName).match("viewusers", inUserName).getQuery();
+				SearchQuery securityfilter = msearcher.query()
+					.or()
+					.match("securityenabled", "false")
+					.orgroup("viewgroups", user.getGroups())
+					.match("viewroles", userprofile.getSettingsGroup().getId())
+					.match("owner", inUserName)
+					.match("viewusers", inUserName)
+					.getQuery();
 				mainquery.addChildQuery(securityfilter);
 
 				HitTracker modules = msearcher.search(mainquery);
 				/*
 				 * orgroup("viewgroups", user.getGroups()). match("viewroles",
-				 * userprofile.getSettingsGroup().getId()). match("viewusers",
-				 * inUserName)
+				 * userprofile.getSettingsGroup().getId()). match("viewusers", inUserName)
 				 */
 
-				///log.info(modules.size() + " for " + modules.getSearchQuery().toQuery());
+				log.info(modules.size() + " for " + modules.getSearchQuery().toQuery());
 				userprofile.setModules(new ArrayList(modules));
 
 			}
@@ -338,7 +341,7 @@ public class UserProfileManager
 				}
 				builder.sort("ordering");
 				HitTracker modules = builder.search();
-				//log.info(modules.size() + " for " + modules.getSearchQuery().toQuery());
+				// log.info(modules.size() + " for " + modules.getSearchQuery().toQuery());
 				userprofile.setModules(new ArrayList(modules));
 			}
 		}
@@ -386,23 +389,19 @@ public class UserProfileManager
 	{
 		Set<Category> okcategories = findCategoriesForUser(inCatalogId, inUserprofile);
 
-		//Load all the collections they have rights to based okcategories + their parents
-		//categories+parents
-		//lava loop over every collection and mesh 		
+		// Load all the collections they have rights to based okcategories + their parents
+		// categories+parents
+		// lava loop over every collection and mesh
 		inUserprofile.setViewCategories(okcategories);
-		//inUserprofile.setCollectionIds(new ArrayList());
+		// inUserprofile.setCollectionIds(new ArrayList());
 		/*
-		 * if( !inUserprofile.hasPermission("viewsettings")) { if(
-		 * !okcategories.isEmpty() ) { Collection<String> okcollectionids = new
-		 * ArrayList<String>(); HitTracker found =
-		 * mediaArchive.query("librarycollection").all().search();
-		 * found.enableBulkOperations(); for (Iterator iterator =
-		 * found.iterator(); iterator.hasNext();) { Data collection = (Data)
-		 * iterator.next(); Category root =
-		 * mediaArchive.getCategory(collection.get("rootcategory")); if( root !=
-		 * null && root.hasParentCategory(okcategories) ) {
-		 * okcollectionids.add(collection.getId()); } }
-		 * inUserprofile.setCollectionIds(okcollectionids); } }
+		 * if( !inUserprofile.hasPermission("viewsettings")) { if( !okcategories.isEmpty() ) {
+		 * Collection<String> okcollectionids = new ArrayList<String>(); HitTracker found =
+		 * mediaArchive.query("librarycollection").all().search(); found.enableBulkOperations(); for
+		 * (Iterator iterator = found.iterator(); iterator.hasNext();) { Data collection = (Data)
+		 * iterator.next(); Category root = mediaArchive.getCategory(collection.get("rootcategory")); if(
+		 * root != null && root.hasParentCategory(okcategories) ) { okcollectionids.add(collection.getId());
+		 * } } inUserprofile.setCollectionIds(okcollectionids); } }
 		 */
 	}
 
@@ -432,15 +431,29 @@ public class UserProfileManager
 		{
 			roleid = "anonymous";
 		}
-		//log.info("Searching categories");
+		// log.info("Searching categories");
 
-		QueryBuilder querybuilder = searcher.query().or()
-				//						match("securityenabled", "false"). ?
-				.match("ownerid", inUserprofile.getUserId()).orgroup("viewgroups", groupids).exact("viewroles", roleid).exact("viewusers", inUserprofile.getUserId());
+		if (groupids.isEmpty())
+		{
+			groupids.add("anonymous");
+		}
+		QueryBuilder querybuilder = searcher.query()
+			.or()
+			// match("securityenabled", "false"). ?
+			.match("ownerid", inUserprofile.getUserId())
+			.orgroup("viewgroups", groupids)
+			.exact("viewroles", roleid)
+			.exact("viewusers", inUserprofile.getUserId());
 
 		HitTracker categories = querybuilder.search();
 
-		//log.info("Checking modules found " + categories.size());
+		if (categories.size() > 5000)
+		{
+			log.warn("User " + inUserprofile.getUserId() + " has access to " + categories.size() + " categories.  This is a lot and may cause performance issues.");
+		}
+		categories.enableBulkOperations();
+
+		log.info("Checking modules found " + categories.size());
 
 		MediaArchive mediaArchive = getMediaArchive(inCatalogId);
 
@@ -470,15 +483,21 @@ public class UserProfileManager
 				String visible = entity.get("recordvisibility");
 				if (visible == null || visible.equals("showbydefault"))
 				{
+					// TODO: Not Correct, need to check the entity type and load the correct category
 					Category cat = inMediaArchive.getCategorySearcher().loadCategoryByPath(entity.getName());
 					if (cat != null)
 					{
 						inOkcategories.add(cat);
 					}
 				}
-				else //visible.equals("hiddenbydefault")
+				else // visible.equals("hiddenbydefault")
 				{
-					Collection userentities = inMediaArchive.query(entity.getId()).match("ownerid", inUserprofile.getUserId()).orgroup("viewgroups", groupids).exact("viewroles", inRoleId).exact("viewusers", inUserprofile.getUserId()).search();
+					Collection userentities = inMediaArchive.query(entity.getId())
+						.match("ownerid", inUserprofile.getUserId())
+						.orgroup("viewgroups", groupids)
+						.exact("viewroles", inRoleId)
+						.exact("viewusers", inUserprofile.getUserId())
+						.search();
 
 					for (Iterator iterator2 = userentities.iterator(); iterator2.hasNext();)
 					{
@@ -497,8 +516,8 @@ public class UserProfileManager
 	protected void loadUsers(MediaArchive mediaArchive, UserProfile inUserprofile, Set<Category> okcategories)
 	{
 		Collection editors = mediaArchive.query("librarycollectionusers").
-		//exact("ontheteam","true").
-				exact("followeruser", inUserprofile.getUserId()).search();
+		// exact("ontheteam","true").
+			exact("followeruser", inUserprofile.getUserId()).search();
 
 		Set collectionids = new HashSet();
 		for (Iterator iterator = editors.iterator(); iterator.hasNext();)
@@ -516,7 +535,7 @@ public class UserProfileManager
 				String rootid = collection.get("rootcategory");
 				if (rootid != null)
 				{
-					Category cat = mediaArchive.getCategory(rootid); //cached
+					Category cat = mediaArchive.getCategory(rootid); // cached
 					if (cat != null)
 					{
 						okcategories.add(cat);
@@ -543,10 +562,10 @@ public class UserProfileManager
 				throw new OpenEditException("user profile source path is null");
 			}
 			searcher.saveData(inUserProfile, null);
-			//archive.getCacheManager().remove("userprofile", inUserProfile.getUserId());
+			// archive.getCacheManager().remove("userprofile", inUserProfile.getUserId());
 			archive.getCacheManager().put("userprofile", inUserProfile.getUserId(), inUserProfile);
 
-			if (searcher instanceof BaseElasticSearcher) //TODO: Add method to Searcher
+			if (searcher instanceof BaseElasticSearcher) // TODO: Add method to Searcher
 			{
 				BaseElasticSearcher cachedsearcher = (BaseElasticSearcher) searcher;
 				cachedsearcher.setIndexId(Long.parseLong(oldindex));
@@ -603,7 +622,7 @@ public class UserProfileManager
 		Set tosave = new HashSet();
 		String propId = "view_" + inViewId;
 
-		//Loop over all the userprofiles
+		// Loop over all the userprofiles
 		for (Iterator iterator2 = userprofiles.iterator(); iterator2.hasNext();)
 		{
 			MultiValued profile = (MultiValued) iterator2.next();
