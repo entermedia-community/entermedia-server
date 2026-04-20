@@ -327,21 +327,24 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 				for (Category cat : exactcategories)
 				{
 
-					if (cat.findValue("owner").equals(inProfile.getId()))
+					if (cat != null && cat.findValue("owner").equals(inProfile.getId()))
 					{
 						return true;
 					}
-					if (cat.collectValues("viewuser").contains(inUser.getUserName()) || cat.collectValues("viewrole").contains(inProfile.getSettingsGroup().getId()))
+					if (cat != null && (cat.collectValues("viewuser").contains(inUser.getUserName()) || cat.collectValues("viewrole").contains(inProfile.getSettingsGroup().getId())))
 					{
 						return true;
 
 					}
 					Collection catgroups = cat.collectValues("viewgroup");
-					for (Group group : inUser.getGroups())
+					if (catgroups != null)
 					{
-						if (catgroups.contains(group.getId()))
+						for (Group group : inUser.getGroups())
 						{
-							return true;
+							if (catgroups.contains(group.getId()))
+							{
+								return true;
+							}
 						}
 					}
 
