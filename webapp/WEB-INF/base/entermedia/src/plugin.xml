@@ -2712,11 +2712,27 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	<bean id="processConversions" class="org.entermediadb.ai.automation.agents.ProcessConversions" scope="prototype">
+
+	<bean id="processNeedsMetadataAgent" class="org.entermediadb.ai.automation.agents.ProcessNeedsMetadataAgent" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
+
+	<bean id="queueConversionsAgent" class="org.entermediadb.ai.automation.agents.QueueConversionsAgent" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+	<!-- Not used yet-->
+	<bean id="runConversionsAgent" class="org.entermediadb.ai.automation.agents.RunConversionsAgent" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+
 
 	<bean id="runEventAgent" class="org.entermediadb.ai.automation.agents.RunEventAgent" scope="prototype">
 		<property name="moduleManager">
