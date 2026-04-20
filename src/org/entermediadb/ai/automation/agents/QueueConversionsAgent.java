@@ -1,6 +1,5 @@
 package org.entermediadb.ai.automation.agents;
 
-import static org.entermediadb.ai.BaseAiManager.log;
 import java.util.Collection;
 import java.util.Iterator;
 import org.entermediadb.ai.BaseAgent;
