@@ -763,7 +763,7 @@ public class ProjectModule extends BaseMediaModule
 		ProjectManager manager = getProjectManager(inReq);
 		LibraryCollection collection = loadCollection(inReq);
 
-		if (inReq.getUserProfile().getSettingsGroup().getId().equals("admin"))
+		if (inReq.getUserProfile().getSettingsGroup().getId().equals("administrator"))
 		{
 			inReq.putPageValue("librarycol", collection);
 			return true;
@@ -1123,10 +1123,12 @@ public class ProjectModule extends BaseMediaModule
 		return cache;
 	}
 
-	/*
-	 * public void loadUploads(WebPageRequest inReq) { ProjectManager manager =
-	 * getProjectManager(inReq); manager.loadUploads(inReq); }
-	 */
+	public void loadUploads(WebPageRequest inReq)
+	{
+		ProjectManager manager = getProjectManager(inReq);
+		manager.loadUploads(inReq);
+	}
+
 	public Boolean isOnTeam(WebPageRequest inReq)
 	{
 		if (inReq.getUser() == null)
