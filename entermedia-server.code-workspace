@@ -1,26 +1,28 @@
 {
 	"folders": [
 		{
-			"path": ".",
+			"path": "."
 		},
 		{
-			"path": "../entermedia-core",
+			"path": "../entermedia-core"
 		},
 		{
-			"path": "../extension-openinstitute",
+			"path": "../extension-openinstitute"
 		},
 		{
-			"path": "../tomcat9",
+			"path": "../tomcat9"
 		},
 		{
-			"path": "../extension-openedit",
+			"path": "../extension-openedit"
 		},
 		{
-			"path": "../app-emshare",
+			"path": "../app-emshare"
 		},
+		{
+			"path": "../../Documents/pod"
+		}
 	],
 	"settings": {
-		"files.autoSave": "onFocusChange",
 		"editor.formatOnSave": true,
 		"java.autobuild.enabled": true,
 		"java.debug.settings.hotCodeReplace": "auto",
