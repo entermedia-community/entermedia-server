@@ -1267,7 +1267,7 @@
 	</bean>
 
 
-	<bean id="OauthModule" class="org.openedit.entermedia.modules.OauthModule">
+	<bean id="OauthModule" class="org.entermediadb.modules.OauthModule">
 		<property name="cookieEncryption">
 			<ref bean="stringEncryption" />
 		</property>
