@@ -27,41 +27,39 @@ public class librarycollectionSearchSecurity implements SearchSecurity
 	public SearchQuery attachSecurity(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery)
 	{
 		boolean enabled = inQuery.isEndUserSearch();
-		//log.info( "security filer enabled "  + enabled );
+		// log.info( "security filer enabled " + enabled );
 		if (!enabled)
 		{
-			
+
 			return inQuery;
 		}
-		if( inQuery.isSecurityAttached() )
+		if (inQuery.isSecurityAttached())
 		{
-			
+
 			return inQuery;
 		}
-        String skipfilter = inPageRequest.getContentProperty("skipallsecurity");
-        if (Boolean.parseBoolean(skipfilter))
-        {
-            return inQuery;
-        }
-        Collection onlytypes = Arrays.asList("0","2","3");
-	
-        Term bytype = inQuery.getTermByDetailId("collectiontype");
-        if( bytype != null)
-        {
-        	Term ids = inQuery.getTermByDetailId("id");
-        	if( ids != null)
-        	{
-        		log.debug("Specified ids so allowing search without collectiontype");
-        		onlytypes = null;
-        	}
-        }
-        
+		String skipfilter = inPageRequest.getContentProperty("skipallsecurity");
+		if (Boolean.parseBoolean(skipfilter))
+		{
+			return inQuery;
+		}
+		Collection onlytypes = Arrays.asList("0", "2", "3");
+
+		Term bytype = inQuery.getTermByDetailId("collectiontype");
+		if (bytype != null)
+		{
+			Term ids = inQuery.getTermByDetailId("id");
+			if (ids != null)
+			{
+				log.debug("Specified ids so allowing search without collectiontype");
+				onlytypes = null;
+			}
+		}
+
 		UserProfile profile = inPageRequest.getUserProfile();
 		if (profile != null && profile.isInRole("administrator"))
 		{
-			SearchQuery child = inSearcher.query()
-					.notgroup("collectiontype", onlytypes)
-					.getQuery();
+			SearchQuery child = inSearcher.query().notgroup("collectiontype", onlytypes).getQuery();
 			inQuery.addChildQuery(child);
 			inQuery.setSecurityAttached(true);
 			return inQuery;
@@ -69,40 +67,31 @@ public class librarycollectionSearchSecurity implements SearchSecurity
 
 		MediaArchive archive = (MediaArchive) inPageRequest.getPageValue("mediaarchive");
 
-//		Collection<Category> catshidden = archive.listHiddenCategories(profile.getViewCategories()); //The ones I cant see
-//		HashSet toshow = new HashSet(profile.getCollectionIds());
-//		for (Iterator iterator = catshidden.iterator(); iterator.hasNext();)
-//		{
-//			Category hidden = (Category) iterator.next();
-//			toshow.remove(hidden.getId());
-//		}
-		
-		Set allowedcats = new HashSet(profile.getViewCategories());
+		// Collection<Category> catshidden = archive.listHiddenCategories(profile.getViewCategories());
+		// //The ones I cant see
+		// HashSet toshow = new HashSet(profile.getCollectionIds());
+		// for (Iterator iterator = catshidden.iterator(); iterator.hasNext();)
+		// {
+		// Category hidden = (Category) iterator.next();
+		// toshow.remove(hidden.getId());
+		// }
 
-		//@deprecate this code
-		for (Iterator iterator = archive.listPublicCategories().iterator(); iterator.hasNext();)
-		{
-			Category publiccat = (Category) iterator.next();
-			allowedcats.add(publiccat);
-		}
-		if( allowedcats.isEmpty() )
-		{
-			allowedcats.add("NONE");
-		}
-		SearchQuery child = inSearcher.query()
-				//.orgroup("parentcategories",allowedcats)
-				//.notgroup("parentcategories", catshidden)
-				.notgroup("collectiontype", onlytypes)
-				.getQuery();
-		inQuery.addChildQuery(child);
+		/*
+		 * Set allowedcats = new HashSet(profile.getViewCategories());
+		 * 
+		 * //@deprecate this code for (Iterator iterator = archive.listPublicCategories().iterator();
+		 * iterator.hasNext();) { Category publiccat = (Category) iterator.next();
+		 * allowedcats.add(publiccat); } if( allowedcats.isEmpty() ) { allowedcats.add("NONE"); }
+		 * SearchQuery child = inSearcher.query() //.orgroup("parentcategories",allowedcats)
+		 * //.notgroup("parentcategories", catshidden) .notgroup("collectiontype", onlytypes) .getQuery();
+		 * inQuery.addChildQuery(child);
+		 * 
+		 */
 
-		
-		
-		
 		Collection groupids = new ArrayList();
 		UserProfile inUserprofile = inPageRequest.getUserProfile();
-		
-		if( inUserprofile == null || inUserprofile.getUser() == null)
+
+		if (inUserprofile == null || inUserprofile.getUser() == null)
 		{
 			groupids.add("anonymous");
 		}
@@ -115,7 +104,7 @@ public class librarycollectionSearchSecurity implements SearchSecurity
 			}
 		}
 		String roleid = null;
-		if( inUserprofile != null && inUserprofile.getSettingsGroup() != null)
+		if (inUserprofile != null && inUserprofile.getSettingsGroup() != null)
 		{
 			roleid = inUserprofile.getSettingsGroup().getId();
 		}
@@ -123,32 +112,28 @@ public class librarycollectionSearchSecurity implements SearchSecurity
 		{
 			roleid = "anonymous";
 		}
-		
+
 		String userid = null;
-		if( inUserprofile != null)
+		if (inUserprofile != null)
 		{
 			userid = inUserprofile.getUserId();
 		}
 		else
 		{
-			userid  = "null";
+			userid = "null";
 		}
 
-		QueryBuilder builder = inSearcher.query().or().
-		orgroup("viewgroups", groupids).
-		match("viewroles", roleid).
-		match("owner", userid).
-		match("viewusers", userid);
+		QueryBuilder builder = inSearcher.query().or().orgroup("viewgroups", groupids).match("viewroles", roleid).match("owner", userid).match("viewusers", userid);
 		builder.match("securityenabled", "false");
 		inQuery.addChildQuery(builder.getQuery());
 
-		//Load all categories 1000
-		//Compare to the profile categories and parents
-		//run a securty fileter on collectionids
-		//inQuery.setSecurityIds(toshow);
+		// Load all categories 1000
+		// Compare to the profile categories and parents
+		// run a securty fileter on collectionids
+		// inQuery.setSecurityIds(toshow);
 		inQuery.setSecurityAttached(true);
-		
-		//log.info("Collection search " + inQuery.toQuery());
+
+		// log.info("Collection search " + inQuery.toQuery());
 		return inQuery;
 	}
 }

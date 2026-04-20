@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
@@ -19,6 +18,7 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.SearcherManager;
 import org.openedit.profile.UserProfile;
+import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.util.Replacer;
 
@@ -286,107 +286,103 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 	{
 		if (inAsset == null)
 		{
-			return true; //TODO: Deal with this better 
+			return true; // TODO: Deal with this better
 		}
-		
-		//This is done in the xconf now:
-		//<userprofile property="editallassets" equals="true" />
-//		if (inUser != null && inUser.isInGroup("administrators"))
-//		{
-//			return true;
-//		}
+
+		// This is done in the xconf now:
+		// <userprofile property="editallassets" equals="true" />
+		// if (inUser != null && inUser.isInGroup("administrators"))
+		// {
+		// return true;
+		// }
 		String owner = inAsset.get("owner");
-		if( owner != null && inUser != null && owner.equals(inUser.getId()))
+		if (owner != null && inUser != null && owner.equals(inUser.getId()))
 		{
 			return true;
 		}
-		
-		//View
-//		Collection<Category> exactcategories = inAsset.getCategories();
-//		if (inProfile != null)
-//		{
-//			Collection<Category> allowedcats = inProfile.getViewCategories();
-//			if( allowedcats != null)
-//			{
-//				for (Category cat : exactcategories)
-//				{
-//					if (cat.hasParentCategory(allowedcats))
-//					{
-//						//TODO: Check for "edit" as an option?
-//						return true;
-//					}
-//				}
-//			}	
-//		}
-	
-		
-		if( "view".equals(inType))
+
+		// View
+		// Collection<Category> exactcategories = inAsset.getCategories();
+		// if (inProfile != null)
+		// {
+		// Collection<Category> allowedcats = inProfile.getViewCategories();
+		// if( allowedcats != null)
+		// {
+		// for (Category cat : exactcategories)
+		// {
+		// if (cat.hasParentCategory(allowedcats))
+		// {
+		// //TODO: Check for "edit" as an option?
+		// return true;
+		// }
+		// }
+		// }
+		// }
+
+		if ("view".equals(inType))
 		{
 			Collection<Category> exactcategories = inAsset.getCategories();
-			if (inProfile != null)
+			if (exactcategories != null && inProfile != null)
 			{
-				Collection<Category> allowedcats = inProfile.getViewCategories();
-				if( allowedcats != null)
+				for (Category cat : exactcategories)
 				{
-					for (Category cat : exactcategories)
+
+					if (cat.findValue("owner").equals(inProfile.getId()))
 					{
-						if (cat.hasParentCategory(allowedcats))
+						return true;
+					}
+					if (cat.collectValues("viewuser").contains(inUser.getUserName()) || cat.collectValues("viewrole").contains(inProfile.getSettingsGroup().getId()))
+					{
+						return true;
+
+					}
+					Collection catgroups = cat.collectValues("viewgroup");
+					for (Group group : inUser.getGroups())
+					{
+						if (catgroups.contains(group.getId()))
 						{
-							//TODO: Check for "edit" as an option?
 							return true;
 						}
 					}
-				}	
+
+				}
 			}
 		}
 		return false;
 		/*
 		 * Collection allowed = getAccessList(inArchive, inType, inAsset);
 		 * 
-		 * if (allowed.size() == 0) { return Boolean.FALSE; } if
-		 * (allowed.contains("true")) { return Boolean.TRUE; } if (inUser !=
-		 * null) { for (Iterator iterator = inUser.getGroups().iterator();
-		 * iterator .hasNext();) { Group group = (Group) iterator.next(); if
-		 * (allowed.contains("group_" + group.getId())) { return Boolean.TRUE; }
-		 * } if (allowed.contains("user_" + inUser.getUserName())) { return
-		 * Boolean.TRUE; } }
+		 * if (allowed.size() == 0) { return Boolean.FALSE; } if (allowed.contains("true")) { return
+		 * Boolean.TRUE; } if (inUser != null) { for (Iterator iterator = inUser.getGroups().iterator();
+		 * iterator .hasNext();) { Group group = (Group) iterator.next(); if (allowed.contains("group_" +
+		 * group.getId())) { return Boolean.TRUE; } } if (allowed.contains("user_" + inUser.getUserName()))
+		 * { return Boolean.TRUE; } }
 		 * 
-		 * // TODO: Add libraries from user , profile and each group Collection
-		 * values = inAsset.getValues("libraries");
+		 * // TODO: Add libraries from user , profile and each group Collection values =
+		 * inAsset.getValues("libraries");
 		 * 
-		 * if( log.isDebugEnabled() ) { log.debug("Checking libraries " +
-		 * values); }
+		 * if( log.isDebugEnabled() ) { log.debug("Checking libraries " + values); }
 		 * 
-		 * if( values != null && inType.equals("view") && inProfile != null ) {
-		 * Searcher searcher =
-		 * getSearcherManager().getSearcher(inArchive.getCatalogId(),
-		 * "libraryroles"); if( inProfile.getSettingsGroup() != null ) {
-		 * SearchQuery query = searcher.createSearchQuery().append("roleid",
-		 * inProfile.getSettingsGroup().getId()); query.addOrsGroup("libraryid",
-		 * values); Data found = searcher.searchByQuery(query); if( found !=
-		 * null ) { return Boolean.TRUE; } if( inUser != null ) { //Search for
-		 * all the libraries defined then check groups searcher =
-		 * getSearcherManager().getSearcher(inArchive.getCatalogId(),
-		 * "librarygroups"); query = searcher.createSearchQuery();
-		 * query.addOrsGroup("libraryid", values);
+		 * if( values != null && inType.equals("view") && inProfile != null ) { Searcher searcher =
+		 * getSearcherManager().getSearcher(inArchive.getCatalogId(), "libraryroles"); if(
+		 * inProfile.getSettingsGroup() != null ) { SearchQuery query =
+		 * searcher.createSearchQuery().append("roleid", inProfile.getSettingsGroup().getId());
+		 * query.addOrsGroup("libraryid", values); Data found = searcher.searchByQuery(query); if( found !=
+		 * null ) { return Boolean.TRUE; } if( inUser != null ) { //Search for all the libraries defined
+		 * then check groups searcher = getSearcherManager().getSearcher(inArchive.getCatalogId(),
+		 * "librarygroups"); query = searcher.createSearchQuery(); query.addOrsGroup("libraryid", values);
 		 * 
-		 * List groupids = new ArrayList(); for (Iterator iterator2 =
-		 * inUser.getGroups().iterator(); iterator2.hasNext();) { Group group =
-		 * (Group)iterator2.next(); groupids.add(group.getId()); }
-		 * query.addOrsGroup("groupid", groupids); found =
-		 * searcher.searchByQuery(query); if( found != null ) { return
-		 * Boolean.TRUE; }
+		 * List groupids = new ArrayList(); for (Iterator iterator2 = inUser.getGroups().iterator();
+		 * iterator2.hasNext();) { Group group = (Group)iterator2.next(); groupids.add(group.getId()); }
+		 * query.addOrsGroup("groupid", groupids); found = searcher.searchByQuery(query); if( found != null
+		 * ) { return Boolean.TRUE; }
 		 * 
-		 * searcher = getSearcherManager().getSearcher(inArchive.getCatalogId(),
-		 * "libraryusers"); query =
-		 * searcher.createSearchQuery().append("userid",inUser.getId());
-		 * query.addOrsGroup("_parent", values); found =
-		 * searcher.searchByQuery(query); if( found != null ) { return
-		 * Boolean.TRUE; } } else if( log.isDebugEnabled() ) {
-		 * log.debug("No user found and profile has no libraries " +
-		 * inProfile.getSettingsGroup().getId() ); } } } if(
-		 * log.isDebugEnabled() ) { log.debug("No rights for " + inType + " on "
-		 * + inProfile ); }
+		 * searcher = getSearcherManager().getSearcher(inArchive.getCatalogId(), "libraryusers"); query =
+		 * searcher.createSearchQuery().append("userid",inUser.getId()); query.addOrsGroup("_parent",
+		 * values); found = searcher.searchByQuery(query); if( found != null ) { return Boolean.TRUE; } }
+		 * else if( log.isDebugEnabled() ) { log.debug("No user found and profile has no libraries " +
+		 * inProfile.getSettingsGroup().getId() ); } } } if( log.isDebugEnabled() ) {
+		 * log.debug("No rights for " + inType + " on " + inProfile ); }
 		 */
 	}
 

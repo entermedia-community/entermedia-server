@@ -349,7 +349,10 @@ public class UserProfileManager
 		{
 			userprofile.setModules(Collections.EMPTY_LIST);
 		}
-		loadLibraries(userprofile, inCatalogId);
+
+		// Do not load all categorires
+		// loadLibraries(userprofile, inCatalogId);
+
 		if (appid != null)
 		{
 			String lastviewedapp = userprofile.get("lastviewedapp");
@@ -392,7 +395,7 @@ public class UserProfileManager
 		// Load all the collections they have rights to based okcategories + their parents
 		// categories+parents
 		// lava loop over every collection and mesh
-		inUserprofile.setViewCategories(okcategories);
+		// inUserprofile.setViewCategories(okcategories);
 		// inUserprofile.setCollectionIds(new ArrayList());
 		/*
 		 * if( !inUserprofile.hasPermission("viewsettings")) { if( !okcategories.isEmpty() ) {
@@ -467,7 +470,7 @@ public class UserProfileManager
 				okcategories.add(cat);
 			}
 		}
-		addEntities(mediaArchive, inUserprofile, groupids, roleid, okcategories);
+		// addEntities(mediaArchive, inUserprofile, groupids, roleid, okcategories);
 		loadUsers(mediaArchive, inUserprofile, okcategories);
 		return okcategories;
 	}
