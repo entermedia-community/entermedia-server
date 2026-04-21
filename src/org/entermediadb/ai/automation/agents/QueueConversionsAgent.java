@@ -22,7 +22,7 @@ public class QueueConversionsAgent extends BaseAgent
 
 		if (hits.size() == 0)
 		{
-			inContext.error("No asset found. " + hits);
+			inContext.info("No assets found. " + hits);
 			return;
 		}
 		Searcher tasksearcher = getMediaArchive().getSearcher("conversiontask");
