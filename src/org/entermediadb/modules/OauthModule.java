@@ -1,7 +1,6 @@
 package org.entermediadb.modules;
 
 import java.util.Date;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.oltu.oauth2.client.OAuthClient;
@@ -17,7 +16,6 @@ import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.authenticate.BaseAutoLogin;
 import org.entermediadb.util.EmTokenResponse;
 import org.json.simple.JSONObject;
-import org.openedit.util.JSONParser;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -26,6 +24,7 @@ import org.openedit.event.WebEvent;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.users.User;
 import org.openedit.users.UserSearcher;
+import org.openedit.util.JSONParser;
 import org.openedit.util.StringEncryption;
 import org.openedit.util.URLUtilities;
 
@@ -352,40 +351,39 @@ public class OauthModule extends BaseMediaModule
 			OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(inReq.getRequest());
 			String code = oar.getCode();
 
-			log.info("Sending token request with code: " + code);
 			String tenantid = authinfo.get("tenantid");
+			String url = null;
 			OAuthClientRequest tokenRequest = null;
 			if (tenantid == null)
 			{
-				tokenRequest = OAuthClientRequest.tokenLocation("https://login.microsoftonline.com/common/oauth2/v2.0/token")
-					.setGrantType(GrantType.AUTHORIZATION_CODE)
-					.setClientId(clientid)
-					.setClientSecret(clientsecret)
-					.setRedirectURI(redirect)
-					.setCode(code)
-					.buildBodyMessage();
+				url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
 			}
 			else
 			{
 				// https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token
-				String url = "https://login.microsoftonline.com/" + tenantid + "/oauth2/v2.0/token";
+				url = "https://login.microsoftonline.com/" + tenantid + "/oauth2/v2.0/token";
 
-				tokenRequest = OAuthClientRequest.tokenLocation(url)
-					.setGrantType(GrantType.AUTHORIZATION_CODE)
-					.setClientId(clientid)
-					.setClientSecret(clientsecret)
-					.setRedirectURI(redirect)
-					.setCode(code)
-					.buildBodyMessage();
 			}
+			tokenRequest = OAuthClientRequest.tokenLocation(url)
+				.setGrantType(GrantType.AUTHORIZATION_CODE)
+				.setClientId(clientid)
+				.setClientSecret(clientsecret)
+				.setRedirectURI(redirect)
+				.setCode(code)
+				.buildBodyMessage();
+			tokenRequest.setHeader("Accept", "application/json");
+
+			log.info("Sending token request to: " + url + " With code: " + code);
+
 			OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+
 			EmTokenResponse tokenResponse = oAuthClient.accessToken(tokenRequest, EmTokenResponse.class);
 
 			String accessToken = tokenResponse.getAccessToken();
 			String refresh = tokenResponse.getRefreshToken();
 
-			OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://graph.microsoft.com/v1.0/me").setAccessToken(accessToken).buildHeaderMessage(); // required for Microsoft
-																																											// Graph
+			// required for Microsoft Graph
+			OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://graph.microsoft.com/v1.0/me").setAccessToken(accessToken).buildHeaderMessage();
 
 			OAuthResourceResponse resourceResponse = oAuthClient.resource(bearerClientRequest, "GET", OAuthResourceResponse.class);
 			String userinfoJSON = resourceResponse.getBody();
