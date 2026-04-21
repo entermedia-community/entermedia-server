@@ -393,8 +393,21 @@ public class OauthModule extends BaseMediaModule
 			JSONObject data = (JSONObject) parser.parse(userinfoJSON);
 
 			String email = (String) data.get("email");
+			if (email == null)
+			{
+				email = (String) data.get("mail");
+			}
 			String firstname = (String) data.get("given_name");
+			if (firstname == null)
+			{
+				firstname = (String) data.get("givenName");
+			}
 			String lastname = (String) data.get("family_name");
+			if (lastname == null)
+			{
+				lastname = (String) data.get("surname");
+			}
+
 			boolean autocreate = Boolean.parseBoolean(authinfo.get("autocreateusers"));
 
 			handleLogin(inReq, email, firstname, lastname, true, autocreate, authinfo, refresh, null);
@@ -779,12 +792,19 @@ public class OauthModule extends BaseMediaModule
 		if (email != null)
 		{
 			target = searcher.getUserByEmail(email);
-
+			if (target != null)
+			{
+				log.info("Found user by email: " + email);
+			}
 		}
 
 		if (target == null && userid != null)
 		{
 			target = searcher.getUser(userid);
+			if (target != null)
+			{
+				log.info("Found user by Id: " + userid);
+			}
 		}
 
 		if (autocreate && target == null)
@@ -796,12 +816,12 @@ public class OauthModule extends BaseMediaModule
 			target.setEnabled(true);
 			target.setId(userid);
 			searcher.saveData(target, null);
+			log.info("New user created: " + email + " - First Name: " + firstname + " - Last Name: " + lastname);
 			inReq.putPageValue("isnewuser", "true");
 		}
 
 		if (target != null)
 		{
-
 			inReq.putSessionValue(searcher.getCatalogId() + "user", target);
 			String md5 = getCookieEncryption().getPasswordMd5(target.getPassword());
 			String value = target.getUserName() + "md542" + md5;
