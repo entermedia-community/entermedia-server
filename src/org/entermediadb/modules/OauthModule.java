@@ -371,7 +371,6 @@ public class OauthModule extends BaseMediaModule
 				.setRedirectURI(redirect)
 				.setCode(code)
 				.buildBodyMessage();
-			tokenRequest.setHeader("Accept", "application/json");
 
 			log.info("Sending token request to: " + url + " With code: " + code);
 
@@ -384,6 +383,8 @@ public class OauthModule extends BaseMediaModule
 
 			// required for Microsoft Graph
 			OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://graph.microsoft.com/v1.0/me").setAccessToken(accessToken).buildHeaderMessage();
+
+			bearerClientRequest.setHeader("Accept", "application/json");
 
 			OAuthResourceResponse resourceResponse = oAuthClient.resource(bearerClientRequest, "GET", OAuthResourceResponse.class);
 			String userinfoJSON = resourceResponse.getBody();
