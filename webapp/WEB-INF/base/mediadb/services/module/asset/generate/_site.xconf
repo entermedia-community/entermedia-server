@@ -1,40 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-                                                                                                                                   
+
 <page>
 
 
 	<property name="virtual">true</property>
 	<generator name="generatedMediaGenerator"/>
 	<property name="assetrootfolder">/${applicationid}/services/module/asset/generate</property>
-	
-	<property name="ondemand">true</property> 
-	<property name="exportnameinpath">true</property> 
-	<property name="generatedfileinpath">true</property>	
+
+	<property name="ondemand">true</property>
+	<property name="exportnameinpath">true</property>
+	<property name="generatedfileinpath">true</property>
+
+
+	<property name="includemetadata">true</property>
 
 
 	<permission name="showunwatermarkedassets">
 		<userprofile property="showunwatermarkedassets" equals="true" />
 	</permission>
-	
+
 	<permission name="forcewatermarkasset">
 		<userprofile property="forcewatermarkasset" equals="true" />
 	</permission>
-	
-	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->	
+
+	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->
 	<permission name="viewasset">
 		<boolean value="true" />
-	</permission>	
-	
+	</permission>
+
 	<permission name="view">
 		<pagevalue name="canviewasset" equals="true"/>
 	</permission>
-	
+
 	<path-action name="Admin.allowViewing" alltypes="true" forbid="true"/>
 
 	<property name="oe.enableautologinparam">true</property>
 	<property name="watermarkplacement">tile</property>
 
-	
+
 </page>
 
 
