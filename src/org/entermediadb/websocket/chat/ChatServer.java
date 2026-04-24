@@ -292,8 +292,8 @@ public class ChatServer
 					 * }
 					 */
 				}
-
-				if (channel.get("channeltype").startsWith("agent"))
+				String channeltype = channel.get("channeltype");
+				if (channeltype != null && channeltype.startsWith("agent"))
 				{
 					userids.add("agent");
 				}
