@@ -294,7 +294,7 @@ findClosest = function (link, inid) {
 					window.scrollTo(0, 0);
 				}
 				//anchor.css("enabled",true);
-				anchor.removeAttr("disabled");
+				anchor.attr("disabled", false);
 
 				//Close All Dialogs
 				var closealldialogs = anchorData["closealldialogs"];
