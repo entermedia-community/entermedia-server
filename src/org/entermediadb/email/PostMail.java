@@ -210,8 +210,7 @@ public class PostMail
 		if( isEnableTls())
 		{
 			props.put("mail.smtp.starttls.enable", "true");
-			session = Session.getInstance(props,
-					new javax.mail.Authenticator() {
+			session = Session.getInstance(props, new javax.mail.Authenticator() {
 				protected PasswordAuthentication getPasswordAuthentication() {
 					return new PasswordAuthentication(getSmtpUsername(), getSmtpPassword());
 				}
@@ -324,8 +323,8 @@ public class PostMail
 		// tr.close();
 		// msg.setContent(msg, "text/plain");
 
+		log.info("Sending email from: " + Arrays.asList(msg.getFrom()) + " To: " + Arrays.asList(addressTo) + " Subject: "+ subject );
 		Transport.send(msg);
-		log.info("sent email from: " + Arrays.asList(msg.getFrom()) + " to: " + Arrays.asList(addressTo) + " subject: "+ subject );
 	}
 
 	public int getPort()
