@@ -23,7 +23,7 @@ findClosest = function (link, inid) {
 		if (confirmation && !confirm(confirmation)) {
 			return this;
 		}
-		anchor.attr("disabled", "disabled");
+		anchor.prop("disabled", true);
 
 		if (anchor.hasClass("activelistener")) {
 			$(".activelistener").removeClass("active");
@@ -294,7 +294,7 @@ findClosest = function (link, inid) {
 					window.scrollTo(0, 0);
 				}
 				//anchor.css("enabled",true);
-				anchor.attr("disabled", false);
+				anchor.prop("disabled", false);
 
 				//Close All Dialogs
 				var closealldialogs = anchorData["closealldialogs"];
