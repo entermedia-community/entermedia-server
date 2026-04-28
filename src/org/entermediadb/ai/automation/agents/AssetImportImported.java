@@ -5,13 +5,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.entermediadb.ai.BaseAgent;
+import org.entermediadb.ai.BaseSkill;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.Asset;
 
 import model.assets.AssetTypeManager;
 
-public class AssetImportImported extends BaseAgent {
+public class AssetImportImported extends BaseSkill {
      public void process(AgentContext inContext)
      {
         Collection<Asset> hits = (Collection<Asset>)inContext.getContextValue("hits");

@@ -31,7 +31,7 @@
 			"editor.insertSpaces": false,
 			"editor.tabSize": 4,
 			"files.autoSave": "onFocusChange",
-			"editor.formatOnSave": false,
+			"editor.formatOnSave": true,
 		},
 	},
 }

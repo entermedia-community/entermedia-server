@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.ai.Agent;
+import org.entermediadb.ai.Skill;
 import org.entermediadb.ai.BaseAiManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.AgentEnabled;
@@ -360,7 +360,7 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 					log.error("No bean defined for agent " + agentenableddata.getId());
 					continue;
 				}
-				Agent agent = loadAgent(bean);
+				Skill agent = loadAgent(bean);
 				enabled.setAgent(agent);
 
 				allparents.put(agentenableddata.getId() , enabled);
@@ -441,16 +441,16 @@ public class AutomationManager extends BaseAiManager implements WebEventListener
 		}
 	}
 
-	public Agent loadAgent(String inName)
+	public Skill loadAgent(String inName)
 	{
 		if (inName == null)
 		{
 			throw new IllegalArgumentException("Bean name not provided");
 		}
-		Agent Agent = (Agent) getMediaArchive().getCacheManager().get("ai" , "Agent" + inName);
+		Skill Agent = (Skill) getMediaArchive().getCacheManager().get("ai" , "Agent" + inName);
 		if (Agent == null)
 		{
-			Agent = (Agent) getModuleManager().getBean(getCatalogId() , inName);
+			Agent = (Skill) getModuleManager().getBean(getCatalogId() , inName);
 			getMediaArchive().getCacheManager().put("ai" , "Agent" + inName , Agent);
 		}
 		return Agent;

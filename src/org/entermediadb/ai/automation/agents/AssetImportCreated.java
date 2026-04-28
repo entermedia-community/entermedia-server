@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.entermediadb.ai.BaseAgent;
+import org.entermediadb.ai.BaseSkill;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.Asset;
 import org.openedit.Data;
@@ -12,7 +12,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 
-public  class AssetImportCreated extends BaseAgent {
+public  class AssetImportCreated extends BaseSkill {
     
     public void process(AgentContext inContext)
     {

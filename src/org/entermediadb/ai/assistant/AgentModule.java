@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.entermediadb.ai.informatics.InformaticsProcessorAgent;
+import org.entermediadb.ai.informatics.InformaticsProcessorSkill;
 import org.entermediadb.ai.informatics.InformaticsProcessorManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.MediaArchive;
