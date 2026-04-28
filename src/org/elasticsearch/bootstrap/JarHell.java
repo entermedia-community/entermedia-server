@@ -50,19 +50,23 @@ import org.elasticsearch.common.logging.Loggers;
  * <p>
  * This class checks for incompatibilities in the following ways:
  * <ul>
- *   <li>Checks that class files are not duplicated across jars.</li>
- *   <li>Checks any {@code X-Compile-Target-JDK} value in the jar
- *       manifest is compatible with current JRE</li>
- *   <li>Checks any {@code X-Compile-Elasticsearch-Version} value in
- *       the jar manifest is compatible with the current ES</li>
+ * <li>Checks that class files are not duplicated across jars.</li>
+ * <li>Checks any {@code X-Compile-Target-JDK} value in the jar
+ * manifest is compatible with current JRE</li>
+ * <li>Checks any {@code X-Compile-Elasticsearch-Version} value in
+ * the jar manifest is compatible with the current ES</li>
  * </ul>
  */
 public class JarHell {
 
     /** no instantiation */
-    private JarHell() {}
+    private JarHell() {
+    }
 
-    /** Simple driver class, can be used eg. from builds. Returns non-zero on jar-hell */
+    /**
+     * Simple driver class, can be used eg. from builds. Returns non-zero on
+     * jar-hell
+     */
     @SuppressForbidden(reason = "command line tool")
     public static void main(String args[]) throws Exception {
         System.out.println("checking for jar hell...");
@@ -72,6 +76,7 @@ public class JarHell {
 
     /**
      * Checks the current classpath for duplicate classes
+     * 
      * @throws IllegalStateException if jar hell was found
      */
     public static void checkJarHell() throws Exception {
@@ -80,25 +85,28 @@ public class JarHell {
         if (logger.isDebugEnabled()) {
             logger.debug("java.class.path: {}", System.getProperty("java.class.path"));
             logger.debug("sun.boot.class.path: {}", System.getProperty("sun.boot.class.path"));
-            if (loader instanceof URLClassLoader ) {
-                logger.debug("classloader urls: {}", Arrays.toString(((URLClassLoader)loader).getURLs()));
-             }
+            if (loader instanceof URLClassLoader) {
+                logger.debug("classloader urls: {}", Arrays.toString(((URLClassLoader) loader).getURLs()));
+            }
         }
         checkJarHell(parseClassPath());
     }
-    
+
     /**
      * Parses the classpath into an array of URLs
+     * 
      * @return array of URLs
      * @throws IllegalStateException if the classpath contains empty elements
      */
-    public static URL[] parseClassPath()  {
+    public static URL[] parseClassPath() {
         return parseClassPath(System.getProperty("java.class.path"));
     }
 
     /**
      * Parses the classpath into a set of URLs. For testing.
-     * @param classPath classpath to parse (typically the system property {@code java.class.path})
+     * 
+     * @param classPath classpath to parse (typically the system property
+     *                  {@code java.class.path})
      * @return array of URLs
      * @throws IllegalStateException if the classpath contains empty elements
      */
@@ -111,18 +119,24 @@ public class JarHell {
         for (int i = 0; i < elements.length; i++) {
             String element = elements[i];
             // Technically empty classpath element behaves like CWD.
-            // So below is the "correct" code, however in practice with ES, this is usually just a misconfiguration,
+            // So below is the "correct" code, however in practice with ES, this is usually
+            // just a misconfiguration,
             // from old shell scripts left behind or something:
-            //   if (element.isEmpty()) {
-            //      element = System.getProperty("user.dir");
-            //   }
+            // if (element.isEmpty()) {
+            // element = System.getProperty("user.dir");
+            // }
             // Instead we just throw an exception, and keep it clean.
             if (element.isEmpty()) {
-                throw new IllegalStateException("Classpath should not contain empty elements! (outdated shell script from a previous version?) classpath='" + classPath + "'");
+                throw new IllegalStateException(
+                        "Classpath should not contain empty elements! (outdated shell script from a previous version?) classpath='"
+                                + classPath + "'");
             }
-            // we should be able to just Paths.get() each element, but unfortunately this is not the
-            // whole story on how classpath parsing works: if you want to know, start at sun.misc.Launcher,
-            // be sure to stop before you tear out your eyes. we just handle the "alternative" filename
+            // we should be able to just Paths.get() each element, but unfortunately this is
+            // not the
+            // whole story on how classpath parsing works: if you want to know, start at
+            // sun.misc.Launcher,
+            // be sure to stop before you tear out your eyes. we just handle the
+            // "alternative" filename
             // specification which java seems to allow, explicitly, right here...
             if (element.startsWith("/") && "\\".equals(fileSeparator)) {
                 // "correct" the entry to become a normal entry
@@ -146,23 +160,23 @@ public class JarHell {
 
     /**
      * Checks the set of URLs for duplicate classes
+     * 
      * @throws IllegalStateException if jar hell was found
      */
     @SuppressForbidden(reason = "needs JarFile for speed, just reading entries")
     public static void checkJarHell(URL urls[]) throws Exception {
-    	
-    	if( true ) 
-    	{
-    		return;
-    	}
-    	
+
+        if (true) {
+            return;
+        }
+
         ESLogger logger = Loggers.getLogger(JarHell.class);
         // we don't try to be sneaky and use deprecated/internal/not portable stuff
         // like sun.boot.class.path, and with jigsaw we don't yet have a way to get
         // a "list" at all. So just exclude any elements underneath the java home
         String javaHome = System.getProperty("java.home");
         logger.debug("java.home: {}", javaHome);
-        final Map<String,Path> clazzes = new HashMap<>(32768);
+        final Map<String, Path> clazzes = new HashMap<>(32768);
         Set<Path> seenJars = new HashSet<>();
         for (final URL url : urls) {
             final Path path = PathUtils.get(url.toURI());
@@ -204,7 +218,7 @@ public class JarHell {
                         String entry = root.relativize(file).toString();
                         if (entry.endsWith(".class")) {
                             // normalize with the os separator
-                            entry = entry.replace(sep, ".").substring(0,  entry.length() - 6);
+                            entry = entry.replace(sep, ".").substring(0, entry.length() - 6);
                             checkClass(clazzes, entry, path);
                         }
                         return super.visitFile(file, attrs);
@@ -238,9 +252,7 @@ public class JarHell {
                     String.format(
                             Locale.ROOT,
                             "version string must be a sequence of nonnegative decimal integers separated by \".\"'s and may have leading zeros but was %s",
-                            targetVersion
-                    )
-            );
+                            targetVersion));
         }
     }
 
@@ -257,13 +269,11 @@ public class JarHell {
                             "%s requires Java %s:, your system: %s",
                             resource,
                             targetVersion,
-                            JavaVersion.current().toString()
-                    )
-            );
+                            JavaVersion.current().toString()));
         }
     }
 
-    static void checkClass(Map<String,Path> clazzes, String clazz, Path jarpath) {
+    static void checkClass(Map<String, Path> clazzes, String clazz, Path jarpath) {
         Path previous = clazzes.put(clazz, jarpath);
         if (previous != null) {
             if (previous.equals(jarpath)) {

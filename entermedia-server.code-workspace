@@ -18,9 +18,6 @@
 		{
 			"path": "../app-emshare",
 		},
-		{
-			"path": "../../Documents/pod",
-		},
 	],
 	"settings": {
 		"java.autobuild.enabled": true,
