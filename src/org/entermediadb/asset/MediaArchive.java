@@ -782,22 +782,24 @@ public class MediaArchive implements CatalogEnabled
 	// Only use on old style sourcepaths
 	public Asset createAsset(String inId, String inSourcePath)
 	{
-		Asset asset = new BaseAsset(this);
+		Asset asset = (Asset) getAssetSearcher().createNewData();
 		// asset.setCatalogId(getCatalogId());
-		if (inId == null)
+		if (inId != null)
 		{
-			inId = getAssetSearcher().nextAssetNumber();
+			asset.setId(inId);
 		}
-		asset.setId(inId);
-		asset.setSourcePath(inSourcePath);
-		String name = PathUtilities.extractFileName(inSourcePath);
-		asset.setName(name);
-		String ext = PathUtilities.extractPageType(name);
-		if (ext != null)
+		if(inSourcePath != null)
 		{
-			ext = ext.toLowerCase();
+			asset.setSourcePath(inSourcePath);
+			String name = PathUtilities.extractFileName(inSourcePath);
+			asset.setName(name);
+			String ext = PathUtilities.extractPageType(name);
+			if (ext != null)
+			{
+				ext = ext.toLowerCase();
+			}
+			asset.setProperty("fileformat", ext);
 		}
-		asset.setProperty("fileformat", ext);
 
 		return asset;
 	}

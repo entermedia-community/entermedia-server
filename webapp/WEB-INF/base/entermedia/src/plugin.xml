@@ -2790,6 +2790,12 @@
 		</property>
 	</bean>
 
+	<bean id="youtubeImporterAgent" class="org.entermediadb.asset.importer.YoutubeImporterAgent" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
 	<bean id="velocityRenderUtil" class="org.entermediadb.ai.llm.VelocityRenderUtil">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
