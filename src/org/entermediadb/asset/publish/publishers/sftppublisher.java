@@ -15,15 +15,18 @@ import org.openedit.page.Page;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 
-public class sftppublisher extends BasePublisher implements Publisher {
+public class sftppublisher extends BasePublisher implements Publisher
+{
 	private static final Log log = LogFactory.getLog(sftppublisher.class);
 
-	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination,
-			Data inPreset, Asset inAsset) {
+	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
+	{
 
-		try {
+		try
+		{
 			PublishResult result = checkOnConversion(mediaArchive, inOrderItem, inAsset, inPreset);
-			if (result != null) {
+			if (result != null)
+			{
 				return result;
 			}
 
@@ -40,7 +43,8 @@ public class sftppublisher extends BasePublisher implements Publisher {
 			sftp.setUsername(username);
 
 			// get password and login
-			if (password == null) {
+			if (password == null)
+			{
 				UserManager userManager = mediaArchive.getUserManager();
 				User user = userManager.getUser(username);
 				password = userManager.decryptPassword(user);
@@ -49,15 +53,19 @@ public class sftppublisher extends BasePublisher implements Publisher {
 			log.info("Publishing ${asset} to sftp server ${servername}, with username ${username}.");
 
 			// change paths if necessary
-			if (path != null && path.length() > 0) {
+			if (path != null && path.length() > 0)
+			{
 				sftp.makeDirs(path);
 				// sftp.cd(path);
-			} else {
+			}
+			else
+			{
 				path = "";
 			}
 			String exportname = inOrderItem.get("itemexportname");
 			// export name should have a leading /
-			if (!exportname.startsWith("/")) {
+			if (!exportname.startsWith("/"))
+			{
 				exportname = "/" + exportname;
 			}
 			sftp.sendFileToRemote(inputpage.getInputStream(), path + exportname);
@@ -66,7 +74,9 @@ public class sftppublisher extends BasePublisher implements Publisher {
 			log.info("publishished  ${asset} to sftp server ${servername}.");
 			sftp.disconnect();
 			return result;
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new OpenEditException(e);
 		}
 

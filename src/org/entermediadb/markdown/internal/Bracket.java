@@ -4,10 +4,10 @@ import org.entermediadb.markdown.node.Text;
 import org.entermediadb.markdown.parser.beta.Position;
 
 /**
- * Opening bracket for links ({@code [}), images ({@code ![}), or links with
- * other markers.
+ * Opening bracket for links ({@code [}), images ({@code ![}), or links with other markers.
  */
-public class Bracket {
+public class Bracket
+{
 
     /**
      * The node of a marker such as {@code !} if present, null otherwise.
@@ -45,30 +45,27 @@ public class Bracket {
     public final Delimiter previousDelimiter;
 
     /**
-     * Whether this bracket is allowed to form a link/image (also known as
-     * "active").
+     * Whether this bracket is allowed to form a link/image (also known as "active").
      */
     public boolean allowed = true;
 
     /**
-     * Whether there is an unescaped bracket (opening or closing) after this opening
-     * bracket in the text parsed so far.
+     * Whether there is an unescaped bracket (opening or closing) after this opening bracket in the text
+     * parsed so far.
      */
     public boolean bracketAfter = false;
 
-    static public Bracket link(Text bracketNode, Position bracketPosition, Position contentPosition, Bracket previous,
-            Delimiter previousDelimiter) {
+    static public Bracket link(Text bracketNode, Position bracketPosition, Position contentPosition, Bracket previous, Delimiter previousDelimiter)
+    {
         return new Bracket(null, null, bracketNode, bracketPosition, contentPosition, previous, previousDelimiter);
     }
 
-    static public Bracket withMarker(Text markerNode, Position markerPosition, Text bracketNode,
-            Position bracketPosition, Position contentPosition, Bracket previous, Delimiter previousDelimiter) {
-        return new Bracket(markerNode, markerPosition, bracketNode, bracketPosition, contentPosition, previous,
-                previousDelimiter);
+    static public Bracket withMarker(Text markerNode, Position markerPosition, Text bracketNode, Position bracketPosition, Position contentPosition, Bracket previous, Delimiter previousDelimiter)
+    {
+        return new Bracket(markerNode, markerPosition, bracketNode, bracketPosition, contentPosition, previous, previousDelimiter);
     }
 
-    private Bracket(Text markerNode, Position markerPosition, Text bracketNode, Position bracketPosition,
-            Position contentPosition, Bracket previous, Delimiter previousDelimiter) {
+    private Bracket(Text markerNode, Position markerPosition, Text bracketNode, Position bracketPosition, Position contentPosition, Bracket previous, Delimiter previousDelimiter) {
         this.markerNode = markerNode;
         this.markerPosition = markerPosition;
         this.bracketNode = bracketNode;

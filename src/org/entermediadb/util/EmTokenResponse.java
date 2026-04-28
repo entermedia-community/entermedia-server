@@ -31,60 +31,75 @@ import org.openedit.util.JSONParser;
  *
  *
  */
-public class EmTokenResponse extends OAuthAccessTokenResponse {
+public class EmTokenResponse extends OAuthAccessTokenResponse
+{
 
 	protected JSONObject fieldData;
 
-	public JSONObject getData() {
+	public JSONObject getData()
+	{
 		return fieldData;
 	}
 
-	public void setData(JSONObject inData) {
+	public void setData(JSONObject inData)
+	{
 		fieldData = inData;
 	}
 
-	public String getAccessToken() {
+	public String getAccessToken()
+	{
 		return (String) getData().get("access_token");
 	}
 
-	public Long getExpiresIn() {
+	public Long getExpiresIn()
+	{
 		Long value = (Long) getData().get("expires_in");
 		return value;
 	}
 
-	public String getRefreshToken() {
+	public String getRefreshToken()
+	{
 		return (String) getData().get("refresh_token");
 	}
 
-	public String getScope() {
+	public String getScope()
+	{
 		return (String) getData().get("scope");
 	}
 
-	public OAuthToken getOAuthToken() {
+	public OAuthToken getOAuthToken()
+	{
 		return new BasicOAuthToken(getAccessToken(), getExpiresIn(), getRefreshToken(), getScope());
 	}
 
-	protected void setBody(String body) {
+	protected void setBody(String body)
+	{
 		this.body = body;
 		JSONParser parser = new JSONParser();
-		try {
+		try
+		{
 			this.fieldData = (JSONObject) parser.parse(body);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new OpenEditException(e);
 		}
 
 	}
 
-	protected void setContentType(String contentType) {
+	protected void setContentType(String contentType)
+	{
 		this.contentType = contentType;
 	}
 
-	protected void setResponseCode(int code) {
+	protected void setResponseCode(int code)
+	{
 		this.responseCode = code;
 	}
 
 	@Override
-	public String getParam(String inParam) {
+	public String getParam(String inParam)
+	{
 
 		return (String) getData().get(inParam);
 	}

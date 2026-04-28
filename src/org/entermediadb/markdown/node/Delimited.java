@@ -3,7 +3,8 @@ package org.entermediadb.markdown.node;
 /**
  * A node that uses delimiters in the source form (e.g. <code>*bold*</code>).
  */
-public interface Delimited {
+public interface Delimited
+{
 
     /**
      * @return the opening (beginning) delimiter, e.g. <code>*</code>

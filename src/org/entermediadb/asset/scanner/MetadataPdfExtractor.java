@@ -16,45 +16,56 @@ import org.openedit.util.FileUtils;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 
-public class MetadataPdfExtractor extends MetadataExtractor {
+public class MetadataPdfExtractor extends MetadataExtractor
+{
 	private static final Log log = LogFactory.getLog(MetadataPdfExtractor.class);
 	protected PageManager fieldPageManager;
 	OutputFiller filler = new OutputFiller();
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		fieldPageManager = inPageManager;
 	}
 
-	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset) {
-		if (!inArchive.isCatalogSettingTrue("extractfulltext")) {
+	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset)
+	{
+		if (!inArchive.isCatalogSettingTrue("extractfulltext"))
+		{
 			return false;
 		}
 
 		String type = PathUtilities.extractPageType(inFile.getPath());
-		if (type == null || "data".equals(type.toLowerCase())) {
+		if (type == null || "data".equals(type.toLowerCase()))
+		{
 			type = inAsset.get("fileformat");
 		}
 
-		if (type != null) {
+		if (type != null)
+		{
 			type = type.toLowerCase();
-			if (inAsset.get("fileformat") == null) {
+			if (inAsset.get("fileformat") == null)
+			{
 				inAsset.setProperty("fileformat", type); // Should not happen
 			}
-			if (type.equals("pdf")) {
+			if (type.equals("pdf"))
+			{
 				// log.info("Extracting Metadata from PDF");
 				PdfParser parser = new PdfParser();
 				// ByteArrayOutputStream out = new ByteArrayOutputStream();
 				InputStream in = null;
-				try {
+				try
+				{
 					// PDDocument doc = PDDocument.load(inFile.getInputStream());
 
 					long maxsize = 100000000;
 					String sizeval = inArchive.getCatalogSettingValue("maxpdfsize");
-					if (sizeval != null) {
+					if (sizeval != null)
+					{
 						maxsize = Long.valueOf(sizeval);
 					}
 
@@ -71,10 +82,9 @@ public class MetadataPdfExtractor extends MetadataExtractor {
 
 					Parse results = parser.parse(in); // Do we deal with encoding?
 					// We need to limit this size
-					if (inFile.getLength() > maxsize) {
-						log.info(
-								"PDF was too large to extract metadata. Consider increasing max size: "
-										+ sizeval);
+					if (inFile.getLength() > maxsize)
+					{
+						log.info("PDF was too large to extract metadata. Consider increasing max size: " + sizeval);
 						// Lets still get page numbers, this is fast enough.
 						// PDFParser np = new PDFParser(new RandomAccessFile(new
 						// File(inFile.getAbsolutePath()), "r"));
@@ -85,14 +95,16 @@ public class MetadataPdfExtractor extends MetadataExtractor {
 						// inAsset.setValue("pages", pages);
 
 						// return false;
-					} else {
+					}
+					else
+					{
 						String fulltext = results.getText();
-						if (fulltext != null && fulltext.length() > 0) {
+						if (fulltext != null && fulltext.length() > 0)
+						{
 
-							ContentItem item = getPageManager().getRepository().getStub(
-									"/WEB-INF/data/" + inArchive.getCatalogId() + "/assets/"
-											+ inAsset.getSourcePath() + "/fulltext.txt");
-							if (item instanceof FileItem) {
+							ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId() + "/assets/" + inAsset.getSourcePath() + "/fulltext.txt");
+							if (item instanceof FileItem)
+							{
 								((FileItem) item).getFile().getParentFile().mkdirs();
 							}
 							PrintWriter output = new PrintWriter(item.getOutputStream());
@@ -103,26 +115,34 @@ public class MetadataPdfExtractor extends MetadataExtractor {
 					}
 					String pages = String.valueOf(results.getPages());
 					inAsset.setProperty("pages", pages);
-					if (inAsset.getInt("width") == 0) {
+					if (inAsset.getInt("width") == 0)
+					{
 						String val = results.get("width");
 						inAsset.setProperty("width", val);
 					}
-					if (inAsset.getInt("height") == 0) {
+					if (inAsset.getInt("height") == 0)
+					{
 						String val = results.get("height");
 						inAsset.setProperty("height", val);
 					}
 
-					if (inAsset.get("assettitle") == null) {
+					if (inAsset.get("assettitle") == null)
+					{
 						String title = results.getTitle();
-						if (title != null && title.length() < 300) {
+						if (title != null && title.length() < 300)
+						{
 							inAsset.setProperty("assettitle", title);
 						}
 					}
 
-				} catch (Exception ex) {
+				}
+				catch (Exception ex)
+				{
 					log.info("cant process", ex);
 					return false;
-				} finally {
+				}
+				finally
+				{
 					FileUtils.safeClose(in);
 				}
 

@@ -36,13 +36,15 @@ import org.openedit.util.HttpSharedConnection;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
 
-public class OriginalPuller extends BasePuller implements CatalogEnabled {
+public class OriginalPuller extends BasePuller implements CatalogEnabled
+{
 	private static final Log log = LogFactory.getLog(OriginalPuller.class);
 
-	public ContentItem downloadOriginalFromSource(MediaArchive inArchive, Asset inAsset, File inFile,
-			boolean ifneeded) {
+	public ContentItem downloadOriginalFromSource(MediaArchive inArchive, Asset inAsset, File inFile, boolean ifneeded)
+	{
 		Data node = loadMasterDataForAsset(inArchive, inAsset);
-		if (node == null) {
+		if (node == null)
+		{
 			return null;
 		}
 		HttpSharedConnection connection = createConnection(node);
@@ -52,8 +54,8 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 
 	}
 
-	public ContentItem downloadOriginalFromSource(MediaArchive inArchive, HttpSharedConnection connection, Data node,
-			Asset inAsset, File inFile, boolean ifneeded) {
+	public ContentItem downloadOriginalFromSource(MediaArchive inArchive, HttpSharedConnection connection, Data node, Asset inAsset, File inFile, boolean ifneeded)
+	{
 
 		String url = node.get("baseurl");
 		inFile.getParentFile().mkdirs();
@@ -63,24 +65,28 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 		path = path + inAsset.getSourcePath(); // Check archived?
 
 		String primaryname = inAsset.getPrimaryFile();
-		if (primaryname != null && inAsset.isFolder()) {
+		if (primaryname != null && inAsset.isFolder())
+		{
 			path = path + "/" + primaryname;
 		}
 		item.setPath(path);
-		if (ifneeded) {
+		if (ifneeded)
+		{
 			// Check it exists and it matches
 			long size = inAsset.getLong("filesize");
-			if (item.getLength() != size) {
-				String finalurl = url + "/mediadb/services/module/asset/downloads/originals/"
-						+ inArchive.asLinkToOriginal(inAsset);
+			if (item.getLength() != size)
+			{
+				String finalurl = url + "/mediadb/services/module/asset/downloads/originals/" + inArchive.asLinkToOriginal(inAsset);
 				finalurl = URLUtilities.urlEscape(finalurl);
 				Map params = new HashMap();
 				finalurl = finalurl.concat("?entermedia.key=" + node.get("entermediakey"));
 
 				CloseableHttpResponse genfile = connection.sharedPost(finalurl, params);
-				try {
+				try
+				{
 					StatusLine filestatus = genfile.getStatusLine();
-					if (filestatus.getStatusCode() != 200) {
+					if (filestatus.getStatusCode() != 200)
+					{
 						log.error("Could not download original " + filestatus + " " + path + "Full URL: " + finalurl);
 						return null;
 					}
@@ -96,10 +102,14 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 					filler.close(stream);
 					filler.close(fos);
 					// inFile.setLastModified(datetime);
-				} catch (Exception e) {
+				}
+				catch (Exception e)
+				{
 					// TODO Auto-generated catch block
 					throw new OpenEditException(e);
-				} finally {
+				}
+				finally
+				{
 					connection.release(genfile);
 				}
 
@@ -110,9 +120,11 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 
 	}
 
-	public InputStream getOriginalDocumentStream(MediaArchive inArchive, Asset inAsset) {
+	public InputStream getOriginalDocumentStream(MediaArchive inArchive, Asset inAsset)
+	{
 		Data masterData = loadMasterDataForAsset(inArchive, inAsset);
-		if (masterData == null) {
+		if (masterData == null)
+		{
 			return null;
 		}
 		HttpSharedConnection connection = createConnection(masterData);
@@ -121,33 +133,41 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 
 	}
 
-	protected InputStream getOriginalDocumentStream(MediaArchive inArchive, HttpSharedConnection connection,
-			Data inMasterData, Asset inAsset) {
-		try {
+	protected InputStream getOriginalDocumentStream(MediaArchive inArchive, HttpSharedConnection connection, Data inMasterData, Asset inAsset)
+	{
+		try
+		{
 			String url = inMasterData.get("baseurl");
 			String finalurl = url + inArchive.asLinkToOriginal(inAsset);
 			finalurl = URLUtilities.urlEscape(finalurl);
 			Map params = new HashMap();
 			HttpResponse genfile = connection.sharedPost(finalurl, params);
 			return genfile.getEntity().getContent();
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			// TODO Auto-generated catch block
 			throw new OpenEditException(e);
 		}
 
 	}
 
-	public void pull(MediaArchive inArchive, ScriptLogger inLog) {
+	public void pull(MediaArchive inArchive, ScriptLogger inLog)
+	{
 
 		Lock lock = inArchive.getLockManager().lockIfPossible("processPull", this.getClass().getCanonicalName());
-		if (lock == null) {
+		if (lock == null)
+		{
 			log.info("Pull is already running");
 			inLog.info("Pull is already running");
 			return;
 		}
-		try {
+		try
+		{
 			pullOriginalsQueue(inArchive, inLog);
-		} finally {
+		}
+		finally
+		{
 			inArchive.releaseLock(lock);
 		}
 
@@ -155,20 +175,25 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 
 	// Send in pages
 
-	protected void pullOriginalsQueue(MediaArchive inArchive, ScriptLogger inLog) {
+	protected void pullOriginalsQueue(MediaArchive inArchive, ScriptLogger inLog)
+	{
 
 		Collection nodes = getNodeManager().getRemoteEditClusters(inArchive.getCatalogId());
 		MultiValued node = null;
-		for (Iterator iterator = nodes.iterator(); iterator.hasNext();) {
-			try {
+		for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
+		{
+			try
+			{
 				node = (MultiValued) iterator.next();
 
-				if (node.get("entermediakey") == null) {
+				if (node.get("entermediakey") == null)
+				{
 					log.error("entermediakey is required");
 					continue;
 				}
 				String url = node.get("baseurl");
-				if (url == null || !Boolean.parseBoolean(node.get("enabled"))) {
+				if (url == null || !Boolean.parseBoolean(node.get("enabled")))
+				{
 					log.error(node + " not enabled " + node);
 					continue;
 				}
@@ -177,16 +202,21 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 				Object dateob = node.getValue("lastpulldateoriginals");
 				Date pulldate = null;
 
-				if (dateob instanceof String) {
+				if (dateob instanceof String)
+				{
 					pulldate = DateStorageUtil.getStorageUtil().parseFromStorage((String) dateob);
-				} else {
+				}
+				else
+				{
 					pulldate = (Date) dateob;
 				}
-				if (dateob == null) {
+				if (dateob == null)
+				{
 					pulldate = DateStorageUtil.getStorageUtil().substractDaysToDate(new Date(), 7);
 				}
 
-				if (pulldate.getTime() + (1000L * 20L) > System.currentTimeMillis()) {
+				if (pulldate.getTime() + (1000L * 20L) > System.currentTimeMillis())
+				{
 					inLog.info(node.getName() + " Orignals pulled within 20 seconds. Trying again later");
 					continue;
 				}
@@ -201,26 +231,31 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 
 				HttpSharedConnection connection = createConnection(node);
 
-				if (Boolean.parseBoolean(node.get("pulloriginals"))) {
+				if (Boolean.parseBoolean(node.get("pulloriginals")))
+				{
 					long totalcount = downloadOriginals(inArchive, connection, node, params, inLog);
 
-					if (node.getValue("lasterrormessageoriginals") != null) {
-						inLog.info(node.getName() + " originals download error "
-								+ node.getValue("lasterrormessageoriginals"));
+					if (node.getValue("lasterrormessageoriginals") != null)
+					{
+						inLog.info(node.getName() + " originals download error " + node.getValue("lasterrormessageoriginals"));
 						continue;
-					} else {
+					}
+					else
+					{
 						inLog.info(node.getName() + " originals downloaded: " + totalcount);
 					}
 				}
 
 				// Upload origianls
-				if (Boolean.parseBoolean(node.get("pushoriginals"))) {
+				if (Boolean.parseBoolean(node.get("pushoriginals")))
+				{
 					params.remove("hitssessionid");
 					params.remove("page");
 
 					syncUpLocalOriginals(inArchive, connection, node, pulldate, params, inLog);
 
-					if (node.getValue("lasterrormessageoriginals") != null) {
+					if (node.getValue("lasterrormessageoriginals") != null)
+					{
 						inLog.info(node.getName() + " error " + node.getValue("lasterrormessageoriginals"));
 						continue;
 					}
@@ -229,10 +264,13 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 				node.setValue("lastpulldateoriginals", now);
 				getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
 
-			} catch (Throwable ex) {
+			}
+			catch (Throwable ex)
+			{
 				log.error(inArchive.getCatalogId() + " Could not originals process sync files ", ex);
 				inLog.error(inArchive.getCatalogId() + " Could not originals process sync files " + ex);
-				if (node != null) {
+				if (node != null)
+				{
 					String message = URLUtilities.fixPath(ex.getMessage());
 					node.setValue("lasterrormessage", "Could not process sync files " + message);
 					node.setValue("lasterrordateoriginals", new Date());
@@ -243,8 +281,8 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 		}
 	}
 
-	protected long downloadOriginals(MediaArchive inArchive, HttpSharedConnection connection, Data node,
-			Map<String, String> params, ScriptLogger inLog) {
+	protected long downloadOriginals(MediaArchive inArchive, HttpSharedConnection connection, Data node, Map<String, String> params, ScriptLogger inLog)
+	{
 		String baseurl = node.get("baseurl");
 		String url = baseurl + "/mediadb/services/cluster/pullrecentuploads.json";
 		StringBuffer debugurl = new StringBuffer();
@@ -252,7 +290,8 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 		debugurl.append("lastpullago=");
 		String last = params.get("lastpullago");
 
-		if (params.get("lastpullago") != null) {
+		if (params.get("lastpullago") != null)
+		{
 			debugurl.append(last);
 		}
 
@@ -262,9 +301,9 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 		CloseableHttpResponse response2 = connection.sharedPost(url, params);
 
 		StatusLine sl = response2.getStatusLine();
-		if (sl.getStatusCode() != 200) {
-			node.setValue("lasterrormessageoriginals",
-					"Could not list originals " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+		if (sl.getStatusCode() != 200)
+		{
+			node.setValue("lasterrormessageoriginals", "Could not list originals " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 			node.setValue("lasterrordateoriginals", new Date());
 			getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
 			log.error("(" + inArchive.getCatalogId() + ") Initial originals server error " + sl);
@@ -274,21 +313,23 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 		long counted = 0;
 		Map response = (Map) remotechanges.get("response");
 		String ok = (String) response.get("status");
-		if (ok != null && ok.equals("ok")) {
+		if (ok != null && ok.equals("ok"))
+		{
 
 			String removecatalogid = (String) response.get("catalogid");
 
 			JSONArray jsonarray = (JSONArray) remotechanges.get("results"); // This comes from pullrecentuploads.json
 
-			counted = counted
-					+ downloadOriginalFiles(inArchive, inLog, connection, node, params, removecatalogid, jsonarray);
+			counted = counted + downloadOriginalFiles(inArchive, inLog, connection, node, params, removecatalogid, jsonarray);
 
 			int pages = Integer.parseInt(response.get("pages").toString());
 			// loop over pages
 			String hitssessionid = (String) response.get("hitssessionid");
 			params.put("hitssessionid", hitssessionid);
-			if (pages > 2) {
-				for (int page = 2; page <= pages; page++) {
+			if (pages > 2)
+			{
+				for (int page = 2; page <= pages; page++)
+				{
 					url = baseurl + "/mediadb/services/cluster/pullrecentuploads.json";
 
 					params.put("page", String.valueOf(page));
@@ -296,45 +337,53 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 					response2 = connection.sharedPost(url, params);
 
 					sl = response2.getStatusLine();
-					if (sl.getStatusCode() != 200) {
+					if (sl.getStatusCode() != 200)
+					{
 						connection.release(response2);
-						throw new OpenEditException(
-								"Could not load page of data " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+						throw new OpenEditException("Could not load page of data " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 					}
 					remotechanges = connection.parseMap(response2);
 					response = (Map) remotechanges.get("response");
 					ok = (String) response.get("status");
-					if (ok != null && !ok.equals("ok")) {
+					if (ok != null && !ok.equals("ok"))
+					{
 						throw new OpenEditException("Page could not be loaded " + remotechanges.toJSONString());
 					}
 
 					// JSONArray results = (JSONArray)remotechanges.get("results"); //records?
 
-					counted = counted + downloadOriginalFiles(inArchive, inLog, connection, node, params,
-							removecatalogid, jsonarray);
+					counted = counted + downloadOriginalFiles(inArchive, inLog, connection, node, params, removecatalogid, jsonarray);
 				}
 			}
 			return counted;
-		} else if (ok.equals("empty")) {
-			log.info("(" + inArchive.getCatalogId() + ") No changes found");
-			return 0;
-		} else {
-			throw new OpenEditException("Initial data could not be loaded " + remotechanges.toJSONString());
 		}
+		else
+			if (ok.equals("empty"))
+			{
+				log.info("(" + inArchive.getCatalogId() + ") No changes found");
+				return 0;
+			}
+			else
+			{
+				throw new OpenEditException("Initial data could not be loaded " + remotechanges.toJSONString());
+			}
 	}
 
-	protected int downloadOriginalFiles(MediaArchive inArchive, ScriptLogger inLog, HttpSharedConnection inConnection,
-			Data node, Map<String, String> params, String removecatalogid, JSONArray inJsonarray) {
+	protected int downloadOriginalFiles(MediaArchive inArchive, ScriptLogger inLog, HttpSharedConnection inConnection, Data node, Map<String, String> params, String removecatalogid, JSONArray inJsonarray)
+	{
 		int downloads = 0;
 		String url = node.get("baseurl");
-		try {
-			for (Iterator iterator2 = inJsonarray.iterator(); iterator2.hasNext();) {
+		try
+		{
+			for (Iterator iterator2 = inJsonarray.iterator(); iterator2.hasNext();)
+			{
 				Map assethits = (Map) iterator2.next();
 				// List generated media and compare it
 
 				Collection files = (Collection) assethits.get("files");
 
-				for (Iterator iteratorf = files.iterator(); iteratorf.hasNext();) {
+				for (Iterator iteratorf = files.iterator(); iteratorf.hasNext();)
+				{
 					Map filelisting = (Map) iteratorf.next();
 					// Compare timestamps
 					// String lastmodified = (String) filelisting.get("lastmodified");
@@ -346,7 +395,8 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 					String savepath = originalpath.replace(removecatalogid, inArchive.getCatalogId());
 					ContentItem found = inArchive.getContent(savepath);
 
-					if (!found.exists() || !FileUtils.isSameDate(found.getLastModified(), longedited)) {
+					if (!found.exists() || !FileUtils.isSameDate(found.getLastModified(), longedited))
+					{
 						// log.info("Found change: " + found.getLastModified() + " !=" + longedited + "
 						// on " + found.getAbsolutePath());
 						// http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
@@ -355,11 +405,11 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 						String sourcepath = (String) filelisting.get("originalspath");
 
 						// TODO: This does not seem right for folder based assets
-						String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/originals/"
-								+ sourcepath + "/" + found.getName());
+						String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/originals/" + sourcepath + "/" + found.getName());
 						HttpResponse genfile = inConnection.sharedGet(path);
 						StatusLine filestatus = genfile.getStatusLine();
-						if (filestatus.getStatusCode() != 200) {
+						if (filestatus.getStatusCode() != 200)
+						{
 							inLog.info("Could not download original file: " + filestatus + " " + path);
 							log.error("Could not download originals " + filestatus + " " + path);
 							continue;
@@ -369,7 +419,8 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 						downloads++;
 						// Save to local file
 						File tosave = new File(found.getAbsolutePath());
-						if (tosave.getParentFile().isFile()) {
+						if (tosave.getParentFile().isFile())
+						{
 							// delete it?
 							tosave.getParentFile().delete();
 						}
@@ -387,9 +438,12 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 					}
 				}
 			}
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			log.error("Could not download files " + url, ex);
-			if (ex instanceof OpenEditException) {
+			if (ex instanceof OpenEditException)
+			{
 				throw (OpenEditException) ex;
 			}
 			throw new OpenEditException(ex);
@@ -397,8 +451,8 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 		return downloads;
 	}
 
-	protected void syncUpLocalOriginals(MediaArchive inArchive, HttpSharedConnection inConnection, Data inRemoteNode,
-			Date inPulldate, Map<String, String> inParams, ScriptLogger inLog) {
+	protected void syncUpLocalOriginals(MediaArchive inArchive, HttpSharedConnection inConnection, Data inRemoteNode, Date inPulldate, Map<String, String> inParams, ScriptLogger inLog)
+	{
 		// Post a list of local orginals (less ones I have that belong to the server)
 
 		String mastereditid = inArchive.getNodeManager().getLocalClusterId();
@@ -406,19 +460,24 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 
 		// Only upload our own files. Because otherwise it might try and download stuff
 
-		HitTracker recentuploads = inArchive.query("asset").after("assetmodificationdate", inPulldate)
-				.exact("emrecordstatus.mastereditclusterid", mastereditid).not("emrecordstatus.deleted", "true")
-				.sort("sourcepath").search();
+		HitTracker recentuploads = inArchive.query("asset")
+			.after("assetmodificationdate", inPulldate)
+			.exact("emrecordstatus.mastereditclusterid", mastereditid)
+			.not("emrecordstatus.deleted", "true")
+			.sort("sourcepath")
+			.search();
 
 		recentuploads.enableBulkOperations();
 		recentuploads.setHitsPerPage(100); // No timeouts
 
 		log.info("Uploading " + recentuploads.size() + " locally edited files");
-		if (recentuploads.isEmpty()) {
+		if (recentuploads.isEmpty())
+		{
 			return;
 		}
 
-		try {
+		try
+		{
 			JSONObject finaldata = new JSONObject();
 
 			JSONObject response = new JSONObject();
@@ -432,13 +491,15 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 			response.put("sincedate", DateStorageUtil.getStorageUtil().formatForStorage(inPulldate));
 			finaldata.put("response", response);
 
-			for (int i = 0; i < recentuploads.getTotalPages(); i++) {
+			for (int i = 0; i < recentuploads.getTotalPages(); i++)
+			{
 				recentuploads.setPage(i + 1); // 1 based
 				response.put("page", recentuploads.getPage());
 
 				JSONArray results = new JSONArray();
 				Collection apage = recentuploads.getPageOfHits();
-				for (Iterator iterator2 = apage.iterator(); iterator2.hasNext();) {
+				for (Iterator iterator2 = apage.iterator(); iterator2.hasNext();)
+				{
 					Data data = (Data) iterator2.next();
 					Asset asset = inArchive.getAsset(data.getId());
 					JSONObject details = new JSONObject();
@@ -446,9 +507,12 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 					details.put("id", asset.getId());
 					details.put("sourcepath", asset.getSourcePath());
 					details.put("isfolder", asset.isFolder());
-					if (asset.isFolder()) {
+					if (asset.isFolder())
+					{
 						details.put("parentsourcepath", asset.getPath());
-					} else {
+					}
+					else
+					{
 						String parentsourcepath = PathUtilities.extractDirectoryPath(asset.getPath());
 						details.put("parentsourcepath", asset.getPath());
 					}
@@ -456,13 +520,17 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 					// Make an array of original files
 					JSONArray array = new JSONArray();
 					details.put("files", array);
-					if (asset.isFolder()) {
+					if (asset.isFolder())
+					{
 						Collection items = inArchive.listOriginalFiles(asset.getPath());
-						for (Iterator iterator = items.iterator(); iterator.hasNext();) {
+						for (Iterator iterator = items.iterator(); iterator.hasNext();)
+						{
 							ContentItem item = (ContentItem) iterator.next();
 							addFileToArray(inArchive, array, item);
 						}
-					} else {
+					}
+					else
+					{
 						ContentItem item = inArchive.getOriginalContent(asset);
 						addFileToArray(inArchive, array, item);
 					}
@@ -471,17 +539,14 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 				finaldata.put("results", results);
 
 				String url = inRemoteNode.get("baseurl");
-				CloseableHttpResponse response2 = inConnection.sharedPostWithJson(
-						url + "/mediadb/services/cluster/receive/receiveoriginalschanges.json", finaldata);
+				CloseableHttpResponse response2 = inConnection.sharedPostWithJson(url + "/mediadb/services/cluster/receive/receiveoriginalschanges.json", finaldata);
 				StatusLine sl = response2.getStatusLine();
-				if (sl.getStatusCode() != 200) {
-					inRemoteNode.setValue("lasterrormessageoriginals",
-							"Could not get originals list " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+				if (sl.getStatusCode() != 200)
+				{
+					inRemoteNode.setValue("lasterrormessageoriginals", "Could not get originals list " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 					inRemoteNode.setValue("lasterrordateoriginals", new Date());
 					getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(inRemoteNode);
-					log.error("Could not save changes to remote server " + url
-							+ "/mediadb/services/cluster/receive/receiveoriginalschanges.json " + sl.getStatusCode()
-							+ " " + sl.getReasonPhrase());
+					log.error("Could not save changes to remote server " + url + "/mediadb/services/cluster/receive/receiveoriginalschanges.json " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 					inConnection.release(response2);
 					return;
 				}
@@ -491,25 +556,25 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 				Map responseheader = (Map) json.get("response"); // These are files they want us to send them
 
 				String status = (String) responseheader.get("status");
-				if (status.equals("error")) {
-					inRemoteNode.setValue("lasterrormessageoriginals",
-							"Could not get list of originals from remote server");
+				if (status.equals("error"))
+				{
+					inRemoteNode.setValue("lasterrormessageoriginals", "Could not get list of originals from remote server");
 					inRemoteNode.setValue("lasterrordateoriginals", new Date());
 					getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(inRemoteNode);
-					log.error("Could not save changes to remote server " + url
-							+ "/mediadb/services/cluster/receive/receiveoriginalschanges.json " + sl.getStatusCode()
-							+ " " + sl.getReasonPhrase());
+					log.error("Could not save changes to remote server " + url + "/mediadb/services/cluster/receive/receiveoriginalschanges.json " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 					return;
 				}
 				String remotecatalogid = (String) responseheader.get("catalogid");
 				Collection toupload = (Collection) json.get("results");
-				if (toupload != null) {
+				if (toupload != null)
+				{
 					// TODO: Use pagination to do a few at a time
 					String urlpath = url + "/mediadb/services/module/asset/sync/uploadfile.json"; // TODO: This should
 																									// also include
 																									// asking for
 																									// Originals
-					for (Iterator iterator = toupload.iterator(); iterator.hasNext();) {
+					for (Iterator iterator = toupload.iterator(); iterator.hasNext();)
+					{
 						JSONObject fileinfo = (JSONObject) iterator.next();
 
 						String localpath = (String) fileinfo.get("path"); // Path on the remote machie
@@ -526,29 +591,35 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 						tosendparams.put("file.0", tosend);
 
 						CloseableHttpResponse resp = null;
-						try {
+						try
+						{
 							resp = inConnection.sharedMimePost(urlpath, tosendparams);
 
-							if (resp.getStatusLine().getStatusCode() != 200) {
+							if (resp.getStatusLine().getStatusCode() != 200)
+							{
 								// error
 								// reportError();
-								throw new RuntimeException(resp.getStatusLine().getStatusCode() + " Could not upload: "
-										+ localpath + " Error: " + resp.getStatusLine().getReasonPhrase());
+								throw new RuntimeException(resp.getStatusLine().getStatusCode() + " Could not upload: " + localpath + " Error: " + resp.getStatusLine().getReasonPhrase());
 							}
-						} finally {
+						}
+						finally
+						{
 							inConnection.release(resp);
 						}
 					}
 				}
 			}
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			throw new OpenEditException(ex);
 		}
 		// It will return a list of files I need to upload
 
 	}
 
-	protected void addFileToArray(MediaArchive inArchive, JSONArray inArray, ContentItem item) {
+	protected void addFileToArray(MediaArchive inArchive, JSONArray inArray, ContentItem item)
+	{
 		JSONObject detail = new JSONObject();
 		String originalspath = item.getPath();
 		detail.put("path", item.getPath());
@@ -568,7 +639,8 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 	 * @param inJsonRequest
 	 * @return
 	 */
-	public List receiveOriginalsChanges(MediaArchive inArchive, Map inJsonRequest) {
+	public List receiveOriginalsChanges(MediaArchive inArchive, Map inJsonRequest)
+	{
 
 		// Look for any assets and compare all the thunbnails
 		Map response = (Map) inJsonRequest.get("response");
@@ -578,7 +650,8 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 
 		List toupload = new ArrayList();
 
-		for (Iterator iterator = results.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = results.iterator(); iterator.hasNext();)
+		{
 			JSONObject originaldata = (JSONObject) iterator.next();
 			// String assetsouercepath = (String)originaldata.get("sourcepath");
 
@@ -595,17 +668,18 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 
 			// Make sure this is a folder. If its a file then move it
 			String parentsourcepath = (String) originaldata.get("parentsourcepath");
-			ContentItem folderfound = inArchive
-					.getContent("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + parentsourcepath);
-			if (folderfound.exists() && !folderfound.isFolder()) {
+			ContentItem folderfound = inArchive.getContent("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + parentsourcepath);
+			if (folderfound.exists() && !folderfound.isFolder())
+			{
 				String name = PathUtilities.extractFileName(parentsourcepath);
-				ContentItem dest = inArchive.getContent("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/"
-						+ parentsourcepath + "/" + name + "/");
+				ContentItem dest = inArchive.getContent("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + parentsourcepath + "/" + name + "/");
 				inArchive.getPageManager().getRepository().move(folderfound, dest);
 			}
 
-			if (files != null) {
-				for (Iterator iterator2 = files.iterator(); iterator2.hasNext();) {
+			if (files != null)
+			{
+				for (Iterator iterator2 = files.iterator(); iterator2.hasNext();)
+				{
 					JSONObject contentfile = (JSONObject) iterator2.next();
 					long size = Long.parseLong((String) contentfile.get("filesize"));
 					String originalpath = (String) contentfile.get("path");
@@ -628,23 +702,28 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 		return toupload;
 	}
 
-	public JSONArray listOriginalFiles(MediaArchive inArchive, HitTracker inHits) {
+	public JSONArray listOriginalFiles(MediaArchive inArchive, HitTracker inHits)
+	{
 		JSONArray array = new JSONArray();
 
-		for (Iterator iterator = inHits.getPageOfHits().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inHits.getPageOfHits().iterator(); iterator.hasNext();)
+		{
 			SearchHitData data = (SearchHitData) iterator.next();
 			String searchtype = data.getSearchHit().getType();
-			if (searchtype.equals("asset")) {
+			if (searchtype.equals("asset"))
+			{
 				// Data hit = (Data) iterator.next();
 				String importstatus = (String) data.getSearchData().get("importstatus");
-				if (importstatus != null && importstatus.equals("error")) {
+				if (importstatus != null && importstatus.equals("error"))
+				{
 					continue;
 				}
 
 				String sourcepath = (String) data.getSearchData().get("sourcepath");
 				String alternative = (String) data.getSearchData().get("archivesourcepath");
 
-				if (alternative != null) {
+				if (alternative != null)
+				{
 					// alternative = (String) data.getSearchData().get("archivesourcepath");
 					sourcepath = alternative;
 				}
@@ -655,19 +734,17 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled {
 
 				/*
 				 * 
-				 * "results":[
-				 * #foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
-				 * {#set($item = $mediaarchive.getOriginalContent($hit) )
-				 * "id":"$hit.getId()", "sourcepath":#jesc($hit.sourcepath),
-				 * "filename": #jesc($item.getName()),"path":#jesc($item.getPath()),
-				 * "lastmodified" : #jesc($item.getLastModified() )
-				 * }
-				 * #end
+				 * "results":[ #foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end {#set($item
+				 * = $mediaarchive.getOriginalContent($hit) ) "id":"$hit.getId()",
+				 * "sourcepath":#jesc($hit.sourcepath), "filename":
+				 * #jesc($item.getName()),"path":#jesc($item.getPath()), "lastmodified" :
+				 * #jesc($item.getLastModified() ) } #end
 				 * 
 				 */
 				JSONArray files = new JSONArray();
 				Collection items = inArchive.listOriginalFiles(sourcepath);
-				for (Iterator iterator2 = items.iterator(); iterator2.hasNext();) {
+				for (Iterator iterator2 = items.iterator(); iterator2.hasNext();)
+				{
 					ContentItem item = (ContentItem) iterator2.next();
 					addFileToArray(inArchive, files, item);
 				}

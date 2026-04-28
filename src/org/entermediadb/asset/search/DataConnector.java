@@ -14,7 +14,8 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.User;
 
-public interface DataConnector extends CatalogEnabled, FullTextLoader {
+public interface DataConnector extends CatalogEnabled, FullTextLoader
+{
 	public Data getDataBySourcePath(String inSourcePath);
 
 	public Data getDataBySourcePath(String inSourcePath, boolean inAutocreate);

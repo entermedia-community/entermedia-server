@@ -1,6 +1,7 @@
 package org.entermediadb.mcp.client;
 
-public class AvailableTool {
+public class AvailableTool
+{
 
     protected String toolId;
     protected String toolName;
@@ -11,19 +12,23 @@ public class AvailableTool {
         this.toolName = description;
     }
 
-    public String getToolId() {
+    public String getToolId()
+    {
         return toolId;
     }
 
-    public void setToolId(String toolId) {
+    public void setToolId(String toolId)
+    {
         this.toolId = toolId;
     }
 
-    public String getToolName() {
+    public String getToolName()
+    {
         return toolName;
     }
 
-    public void setToolName(String toolName) {
+    public void setToolName(String toolName)
+    {
         this.toolName = toolName;
     }
 

@@ -11,40 +11,47 @@ import org.json.simple.JSONArray;
 import org.openedit.Data;
 import org.openedit.hittracker.HitTracker;
 
-public class EmbeddingFinderSkill extends ToolsCallingSkill {
+public class EmbeddingFinderSkill extends ToolsCallingSkill
+{
 	@Override
-	public void process(AgentContext inContext) {
-		Collection<String> categories = getMediaArchive().query("searchcategory").all().cachedSearch()
-				.collectValues("id");
+	public void process(AgentContext inContext)
+	{
+		Collection<String> categories = getMediaArchive().query("searchcategory").all().cachedSearch().collectValues("id");
 
 		// TODO: reduce this list by Passing all categories with their semantic topics
 		// and tools
 		// pick the categories
 
-		if (categories != null && !categories.isEmpty()) {
+		if (categories != null && !categories.isEmpty())
+		{
 			Set<String> finalParentIds = new HashSet<>();
 
 			HitTracker modules = getMediaArchive().query("module").exact("semanticenabled", true).cachedSearch();
 			Collection<String> moduleids = modules.collectValues("id");
 			HitTracker addedentites = getMediaArchive().query("modulesearch")
-					.addFacet("entitysourcetype")
-					.put("searchtypes", moduleids)
-					.includeDescription(true)
-					.orgroup("searchcategory", categories)
-					.exact("entityembeddingstatus", "embedded")
-					.search();
-			for (Iterator iterator = addedentites.iterator(); iterator.hasNext();) {
+				.addFacet("entitysourcetype")
+				.put("searchtypes", moduleids)
+				.includeDescription(true)
+				.orgroup("searchcategory", categories)
+				.exact("entityembeddingstatus", "embedded")
+				.search();
+			for (Iterator iterator = addedentites.iterator(); iterator.hasNext();)
+			{
 				Data doc = (Data) iterator.next();
 				String type = doc.get("entitysourcetype");
 				String docid = type + "_" + doc.getId();
-				if (!finalParentIds.contains(docid)) {
+				if (!finalParentIds.contains(docid))
+				{
 					finalParentIds.add(docid);
 				}
 			}
 
-			if (finalParentIds.isEmpty()) {
+			if (finalParentIds.isEmpty())
+			{
 				inContext.error("Unable to find embedded documents to find answer");
-			} else {
+			}
+			else
+			{
 				JSONArray embeddings = new JSONArray();
 				embeddings.addAll(finalParentIds);
 				inContext.addContext("embeddings", embeddings);

@@ -11,11 +11,12 @@ import org.entermediadb.asset.publishing.Publisher;
 import org.openedit.Data;
 import org.openedit.page.Page;
 
-public class YoutubePublisher extends BasePublisher implements Publisher {
+public class YoutubePublisher extends BasePublisher implements Publisher
+{
 	private static final Log log = LogFactory.getLog(YoutubePublisher.class);
 
-	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination,
-			Data inPreset, Asset inAsset) {
+	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
+	{
 
 		// https://github.com/youtube/api-samples/blob/master/java/src/main/java/com/google/api/services/samples/youtube/cmdline/data/UploadVideo.java
 		// Could be a better way - see above, would support resuming?

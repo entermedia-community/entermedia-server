@@ -21,21 +21,25 @@ import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.filesystem.FileItem;
 
-public class CssGenerator extends TempFileGenerator {
+public class CssGenerator extends TempFileGenerator
+{
     private static Log log = LogFactory.getLog(CssGenerator.class);
     private PageManager pageManager;
     private Map<String, Long> cachedSizeCounts = new HashMap<>();
 
-    public PageManager getPageManager() {
+    public PageManager getPageManager()
+    {
         return pageManager;
     }
 
-    public void setPageManager(PageManager inPageManager) {
+    public void setPageManager(PageManager inPageManager)
+    {
         pageManager = inPageManager;
     }
 
     @Override
-    public void generate(WebPageRequest inContext, Page inPage, Output inOut) {
+    public void generate(WebPageRequest inContext, Page inPage, Output inOut)
+    {
         HttpServletResponse res = inContext.getResponse();
         HttpServletRequest req = inContext.getRequest();
 
@@ -43,7 +47,8 @@ public class CssGenerator extends TempFileGenerator {
         Page rootPage = getPageManager().getPage("/" + appId + "/", false);
         List<String> cssPaths = getPageManager().getStylePathsForApp(rootPage);
 
-        if (cssPaths == null || cssPaths.isEmpty()) {
+        if (cssPaths == null || cssPaths.isEmpty())
+        {
             log.warn("No CSS paths found for app: " + appId);
             return;
         }
@@ -51,34 +56,45 @@ public class CssGenerator extends TempFileGenerator {
         long mostRecentMod = 0;
         long totalSize = 0;
 
-        for (String path : cssPaths) {
+        for (String path : cssPaths)
+        {
             Page file = getPageManager().getPage(path);
-            if (file.exists()) {
+            if (file.exists())
+            {
                 totalSize += file.length();
-                if (file.lastModified() > mostRecentMod) {
+                if (file.lastModified() > mostRecentMod)
+                {
                     mostRecentMod = file.lastModified();
                 }
             }
         }
 
         boolean cached = checkCache(inContext, mostRecentMod, req, res);
-        if (cached) {
+        if (cached)
+        {
             return;
         }
 
         // Check if we need to regenerate
         Long cachedTotal = cachedSizeCounts.get(inPage.getPath());
-        if (cachedTotal == null || cachedTotal != totalSize || inPage.getLastModified().getTime() != mostRecentMod) {
-            try {
+        if (cachedTotal == null || cachedTotal != totalSize || inPage.getLastModified().getTime() != mostRecentMod)
+        {
+            try
+            {
                 saveLocally(cssPaths, inPage, inOut, mostRecentMod);
                 cachedSizeCounts.put(inPage.getPath(), totalSize);
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 log.error("Error generating CSS", e);
             }
         }
-        try {
+        try
+        {
             serveCss(inPage, mostRecentMod, inOut, res);
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             // TODO Auto-generated catch block
             log.error("Error serving CSS", e);
 
@@ -86,23 +102,27 @@ public class CssGenerator extends TempFileGenerator {
 
     }
 
-    protected void saveLocally(List<String> cssPaths, Page inPage, Output inOut, long mostRecentMod)
-            throws IOException {
-        synchronized (inPage) {
+    protected void saveLocally(List<String> cssPaths, Page inPage, Output inOut, long mostRecentMod) throws IOException
+    {
+        synchronized (inPage)
+        {
             Page tempFile = pageManager.getPage(inPage.getContentItem().getAbsolutePath() + ".tmp.css");
-            Writer writer = new OutputStreamWriter(tempFile.getContentItem().getOutputStream(),
-                    inPage.getCharacterEncoding());
+            Writer writer = new OutputStreamWriter(tempFile.getContentItem().getOutputStream(), inPage.getCharacterEncoding());
 
-            for (String path : cssPaths) {
+            for (String path : cssPaths)
+            {
                 Page cssFile = pageManager.getPage(path);
-                if (cssFile.exists()) {
-                    try (Reader reader = new InputStreamReader(cssFile.getInputStream(),
-                            cssFile.getCharacterEncoding())) {
+                if (cssFile.exists())
+                {
+                    try (Reader reader = new InputStreamReader(cssFile.getInputStream(), cssFile.getCharacterEncoding()))
+                    {
                         writer.write("/* CSS Source: " + path + " */\n");
                         getOutputFiller().fill(reader, writer);
                         writer.write("\n");
                     }
-                } else {
+                }
+                else
+                {
                     writer.write("/* CSS File Not Found: " + path + " */\n");
                 }
             }
@@ -111,19 +131,22 @@ public class CssGenerator extends TempFileGenerator {
             pageManager.removePage(inPage);
             pageManager.movePage(tempFile, inPage);
 
-            if (inPage.getContentItem() instanceof FileItem) {
+            if (inPage.getContentItem() instanceof FileItem)
+            {
                 FileItem fileItem = (FileItem) inPage.getContentItem();
                 fileItem.getFile().setLastModified(mostRecentMod);
             }
         }
     }
 
-    protected void serveCss(Page inPage, long mostRecentMod, Output inOut, HttpServletResponse res) throws IOException {
+    protected void serveCss(Page inPage, long mostRecentMod, Output inOut, HttpServletResponse res) throws IOException
+    {
         res.setContentType("text/css");
         // res.setDateHeader("Last-Modified", mostRecentMod);
         setHeaders(res, mostRecentMod);
 
-        try (Reader reader = new InputStreamReader(inPage.getInputStream(), inPage.getCharacterEncoding())) {
+        try (Reader reader = new InputStreamReader(inPage.getInputStream(), inPage.getCharacterEncoding()))
+        {
             getOutputFiller().fill(reader, inOut.getWriter());
         }
     }

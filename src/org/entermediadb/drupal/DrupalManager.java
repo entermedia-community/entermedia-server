@@ -32,7 +32,8 @@ import org.openedit.util.ExecutorManager;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.XmlUtil;
 
-public class DrupalManager implements CatalogEnabled {
+public class DrupalManager implements CatalogEnabled
+{
 	private static final Log log = LogFactory.getLog(DrupalManager.class);
 	protected String fieldCatalogId;
 	protected MediaArchive fieldMediaArchive;
@@ -46,140 +47,155 @@ public class DrupalManager implements CatalogEnabled {
 
 	protected MultiValued fieldConfig;
 
-	public Date getTokenTime() {
+	public Date getTokenTime()
+	{
 		return fieldTokenTime;
 	}
 
-	public void setTokenTime(Date inTokenTime) {
+	public void setTokenTime(Date inTokenTime)
+	{
 		fieldTokenTime = inTokenTime;
 	}
 
-	public String getCatalogId() {
+	public String getCatalogId()
+	{
 		return fieldCatalogId;
 	}
 
-	public void setCatalogId(String inCatalogId) {
+	public void setCatalogId(String inCatalogId)
+	{
 		fieldCatalogId = inCatalogId;
 	}
 
-	public HitTracker getSources() {
-		if (sourcesConfig == null) {
+	public HitTracker getSources()
+	{
+		if (sourcesConfig == null)
+		{
 			sourcesConfig = getMediaArchive().getSearcher("drupalsource").query().exact("enabled", "true").search();
 		}
 		return sourcesConfig;
 	}
 
-	public MultiValued getAuthConfig() {
-		if (fieldConfig == null) {
+	public MultiValued getAuthConfig()
+	{
+		if (fieldConfig == null)
+		{
 			fieldConfig = new BaseData();
 			fieldConfig.setValue("remoteroot", getMediaArchive().getCatalogSettingValue("drupal_remoteroot"));
 			fieldConfig.setValue("drupalcontenttype", getMediaArchive().getCatalogSettingValue("drupal_contenttype"));
-			fieldConfig.setValue("filter_created_startfrom",
-					getMediaArchive().getCatalogSettingValue("drupal_startfrom"));
+			fieldConfig.setValue("filter_created_startfrom", getMediaArchive().getCatalogSettingValue("drupal_startfrom"));
 		}
 		return fieldConfig;
 	}
 
-	public void setConfig(MultiValued inConfig) {
+	public void setConfig(MultiValued inConfig)
+	{
 		fieldConfig = inConfig;
 	}
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
-	protected MediaArchive getMediaArchive() {
-		if (fieldMediaArchive == null) {
+	protected MediaArchive getMediaArchive()
+	{
+		if (fieldMediaArchive == null)
+		{
 			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		}
 		return fieldMediaArchive;
 	}
 
 	/*
-	 * Get content items:
-	 * https://mediadb51.entermediadb.net/unnews-jsonapi/node/news_story?sort=-
+	 * Get content items: https://mediadb51.entermediadb.net/unnews-jsonapi/node/news_story?sort=-
 	 * field_news_date&filter[status]=published
 	 * 
-	 * Get item:
-	 * https://mediadb51.entermediadb.net/unnews-jsonapi/node/news_story/b48759ed-
+	 * Get item: https://mediadb51.entermediadb.net/unnews-jsonapi/node/news_story/b48759ed-
 	 * 7fed-4701-b196-19eb84e11812
 	 * 
 	 * Get subcontent (paragraph one_column_text):
 	 * https://mediadb51.entermediadb.net/unnews-jsonapi/paragraph/one_column_text/
 	 * 8bab6123-84eb-422d-b616-50394a012b93
 	 * 
-	 * Get subcontent (image):
-	 * https://mediadb51.entermediadb.net/unnews-jsonapi/media/entermedia_image/
+	 * Get subcontent (image): https://mediadb51.entermediadb.net/unnews-jsonapi/media/entermedia_image/
 	 * 13cf13b7-0cfd-4de6-b7e3-660d1ee8d9d0
 	 * 
 	 */
 
-	public void syncContent(WebPageRequest inReq) {
+	public void syncContent(WebPageRequest inReq)
+	{
 		ScriptLogger inLog = (ScriptLogger) inReq.getPageValue("log");
 
 		HitTracker sources = getSources();
-		if (sources.isEmpty()) {
+		if (sources.isEmpty())
+		{
 			log.info("No Drupal sources configured");
 			inLog.info("No Drupal sources configured");
 			return;
 		}
 
-		for (Iterator iterator1 = getSources().iterator(); iterator1.hasNext();) {
+		for (Iterator iterator1 = getSources().iterator(); iterator1.hasNext();)
+		{
 
 			MultiValued source = (MultiValued) iterator1.next();
 
 			inLog.info("Importing Drupal " + sources + "");
 
-			String nextpageurl = source.get("remoteroot") +
-					"/" + source.get("remoteapipath") +
-					"/" + source.get("structure") +
-					"/" + source.get("drupalcontenttype");
+			String nextpageurl = source.get("remoteroot") + "/" + source.get("remoteapipath") + "/" + source.get("structure") + "/" + source.get("drupalcontenttype");
 			// Filters:
 			// inSource.get(startfrom)
 			String sortby = source.get("sortfield");
-			if (sortby != null) {
+			if (sortby != null)
+			{
 				nextpageurl += "?sort=" + sortby;
 			}
 
 			Integer datapage = 1;
 			Integer datacount = 0;
-			do {
+			do
+			{
 
 				JSONObject sourcepage = getSourcePage(inLog, source, nextpageurl);
-				if (sourcepage == null) {
+				if (sourcepage == null)
+				{
 					break;
 				}
 				// List all content by source/type ej: node/news_story
 				Collection<JSONArray> sourcecontents = getSourceContents((JSONArray) sourcepage.get("data"));
-				if (!sourcecontents.isEmpty()) {
+				if (!sourcecontents.isEmpty())
+				{
 					// Loop content
-					for (Iterator iterator = sourcecontents.iterator(); iterator.hasNext();) {
+					for (Iterator iterator = sourcecontents.iterator(); iterator.hasNext();)
+					{
 						JSONObject contentitem = (JSONObject) iterator.next();
 
 						// Loop content items
-						if (createContent(source, contentitem)) {
+						if (createContent(source, contentitem))
+						{
 							datacount++;
-						}
-						;
+						} ;
 
 					}
 				}
-				if (datacount > 0) {
-					log.info("Imported page: " + datapage + " / " + datacount + " items total from Drupal source: "
-							+ source.getName());
-					inLog.info("Imported page: " + datapage + " / " + datacount + " items total from Drupal source: "
-							+ source.getName());
+				if (datacount > 0)
+				{
+					log.info("Imported page: " + datapage + " / " + datacount + " items total from Drupal source: " + source.getName());
+					inLog.info("Imported page: " + datapage + " / " + datacount + " items total from Drupal source: " + source.getName());
 				}
 				datapage++;
 				JSONObject sourcelinks = (JSONObject) sourcepage.get("links");
-				if (sourcelinks != null) {
+				if (sourcelinks != null)
+				{
 					JSONObject nextpage = (JSONObject) sourcelinks.get("next");
 					nextpageurl = (String) nextpage.get("href");
-					if (datapage > 5) {
+					if (datapage > 5)
+					{
 
 						nextpageurl = null;
 					}
@@ -191,10 +207,12 @@ public class DrupalManager implements CatalogEnabled {
 
 	}
 
-	public JSONObject getSourcePage(ScriptLogger inLog, MultiValued inSource, String inUrl) {
+	public JSONObject getSourcePage(ScriptLogger inLog, MultiValued inSource, String inUrl)
+	{
 		Collection results = new ArrayList();
 
-		if (getAccessToken() != null) {
+		if (getAccessToken() != null)
+		{
 			getConnection().putSharedHeader("Authorization", "Bearer " + getAccessToken());
 		}
 		log.info("Getting source page: " + inUrl);
@@ -204,10 +222,12 @@ public class DrupalManager implements CatalogEnabled {
 
 	}
 
-	public Collection getSourceContents(JSONArray inData) {
+	public Collection getSourceContents(JSONArray inData)
+	{
 		Collection results = new ArrayList();
 
-		for (Iterator iterator = inData.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inData.iterator(); iterator.hasNext();)
+		{
 			JSONObject object = (JSONObject) iterator.next();
 			String id = (String) object.get("id");
 			JSONObject item = new JSONObject();
@@ -221,20 +241,19 @@ public class DrupalManager implements CatalogEnabled {
 		return results;
 	}
 
-	public JSONObject getSubContent(MultiValued inSource, String inContentType, String inContentId) {
+	public JSONObject getSubContent(MultiValued inSource, String inContentType, String inContentId)
+	{
 		String subSource = inContentType.substring(0, inContentType.indexOf("--"));
 		String subContentId = inContentType.substring(inContentType.indexOf("--") + 2);
-		String url = inSource.get("remoteroot") +
-				"/" + inSource.get("remoteapipath") +
-				"/" + subSource +
-				"/" + subContentId +
-				"/" + inContentId;
+		String url = inSource.get("remoteroot") + "/" + inSource.get("remoteapipath") + "/" + subSource + "/" + subContentId + "/" + inContentId;
 
-		if (getAccessToken() != null) {
+		if (getAccessToken() != null)
+		{
 			getConnection().putSharedHeader("Authorization", "Bearer " + getAccessToken());
 		}
 		JSONObject response = getConnection().getJson(url);
-		if (response != null) {
+		if (response != null)
+		{
 			return (JSONObject) response.get("data");
 
 		}
@@ -242,7 +261,8 @@ public class DrupalManager implements CatalogEnabled {
 		return null;
 	}
 
-	public Boolean createContent(MultiValued inSource, JSONObject inContent) {
+	public Boolean createContent(MultiValued inSource, JSONObject inContent)
+	{
 		// The moduleid we are saving to
 		String contentSearchtype = inSource.get("moduleid");
 		Searcher contentSearcher = getMediaArchive().getSearcher(contentSearchtype); // entity
@@ -250,7 +270,8 @@ public class DrupalManager implements CatalogEnabled {
 		// search if exists
 		String contentid = inContent.get("id").toString(); // TODO: used different id field
 		MultiValued contentData = (MultiValued) contentSearcher.searchById(contentid);
-		if (contentData != null) {
+		if (contentData != null)
+		{
 			// TODO: Update existing
 			return false;
 		}
@@ -266,7 +287,8 @@ public class DrupalManager implements CatalogEnabled {
 		contentData.setValue("drupalinternalid", drupalinternalid);
 		// news_story fields:
 		String title = (String) contentdata.get("title");
-		if (title == null) {
+		if (title == null)
+		{
 			title = inSource.get("drupalcontenttype") + " " + drupalinternalid.toString();
 		}
 
@@ -275,32 +297,25 @@ public class DrupalManager implements CatalogEnabled {
 
 		// path
 		JSONObject contentpath = (JSONObject) contentdata.get("path");
-		if (contentpath != null) {
+		if (contentpath != null)
+		{
 			contentData.setValue("contentlink", inSource.get("remoteroot") + contentpath.get("alias"));
 		}
 
 		contentSearcher.saveData(contentData);
 
 		/*
-		 * Structure:
-		 * - Section (body)
-		 * - Headline
-		 * - By Line
-		 * - Lead
-		 * - Feature Image
-		 * - Image Right ?
+		 * Structure: - Section (body) - Headline - By Line - Lead - Feature Image - Image Right ?
 		 */
 
 		// Save contents to SmartCreator
 		Searcher sectionsearcher = getMediaArchive().getSearcher("componentsection");
 		Searcher contentsearcher = getMediaArchive().getSearcher("componentcontent");
 
-		Data section = sectionsearcher.query()
-				.exact("contentrole", "body")
-				.exact("playbackentityid", contentData.getId())
-				.exact("playbackentitymoduleid", contentSearchtype).searchOne();
+		Data section = sectionsearcher.query().exact("contentrole", "body").exact("playbackentityid", contentData.getId()).exact("playbackentitymoduleid", contentSearchtype).searchOne();
 
-		if (section == null) {
+		if (section == null)
+		{
 			// Create new
 			section = sectionsearcher.createNewData();
 			section.setValue("contentrole", "body");
@@ -308,7 +323,8 @@ public class DrupalManager implements CatalogEnabled {
 			section.setValue("playbackentitymoduleid", contentSearchtype);
 			section.setValue("creationdate", new Date());
 		}
-		if (section != null) {
+		if (section != null)
+		{
 			// remove section ??
 			// sectionsearcher.delete(exists, null);
 
@@ -327,14 +343,16 @@ public class DrupalManager implements CatalogEnabled {
 
 		// By line
 		JSONObject field_by = (JSONObject) contentdata.get("field_by");
-		if (field_by != null) {
+		if (field_by != null)
+		{
 			String byline = (String) field_by.get("processed");
 			createOrUpdateComponent(contentsearcher, section, "byline", byline, 2);
 		}
 
 		// Lead
 		JSONObject field_news_story_lead = (JSONObject) contentdata.get("field_news_story_lead");
-		if (field_news_story_lead != null) {
+		if (field_news_story_lead != null)
+		{
 			String storylead = (String) field_news_story_lead.get("processed");
 			// contentData.setValue("storylead", storylead);
 			createOrUpdateComponent(contentsearcher, section, "lead", storylead, 3);
@@ -342,22 +360,27 @@ public class DrupalManager implements CatalogEnabled {
 
 		// Body
 		JSONArray field_news_story = (JSONArray) contentdata.get("field_news_story");
-		if (!field_news_story.isEmpty()) {
-			for (Iterator iterator = field_news_story.iterator(); iterator.hasNext();) {
+		if (!field_news_story.isEmpty())
+		{
+			for (Iterator iterator = field_news_story.iterator(); iterator.hasNext();)
+			{
 				JSONObject object = (JSONObject) iterator.next();
 				String subcontenttype = (String) object.get("type");
 				String subcontentid = (String) object.get("id");
 				JSONObject paragraph = getSubContent(inSource, subcontenttype, subcontentid);
-				if (paragraph == null) {
+				if (paragraph == null)
+				{
 					continue;
 				}
 				JSONObject textfield = (JSONObject) paragraph.get("field_text_column"); // TODO: use drupalstructure
 																						// table to map fields
-				if (textfield == null) {
+				if (textfield == null)
+				{
 					continue;
 				}
 				String body = (String) textfield.get("processed");
-				if (body != null) {
+				if (body != null)
+				{
 					// contentData.setValue("longcaption", body);
 					createOrUpdateComponent(contentsearcher, section, "imageright", body, 5);
 				}
@@ -366,16 +389,21 @@ public class DrupalManager implements CatalogEnabled {
 
 		// Primary Asset
 		JSONObject field_image = (JSONObject) contentdata.get("field_image");
-		if (field_image != null) {
+		if (field_image != null)
+		{
 			String imagetype = (String) field_image.get("type");
-			if (imagetype != null && imagetype.equals("media--entermedia_image")) {
+			if (imagetype != null && imagetype.equals("media--entermedia_image"))
+			{
 				String imageid = (String) field_image.get("id");
 				JSONObject drupalimage = getSubContent(inSource, imagetype, imageid);
-				if (drupalimage != null) {
+				if (drupalimage != null)
+				{
 					JSONObject imagefield = (JSONObject) drupalimage.get("field_media_entermedia_image");
-					if (imagefield != null) {
+					if (imagefield != null)
+					{
 						String assetid = (String) imagefield.get("eid");
-						if (assetid != null) {
+						if (assetid != null)
+						{
 							contentData.setValue("primarymedia", assetid);
 							contentSearcher.saveData(contentData);
 
@@ -388,13 +416,16 @@ public class DrupalManager implements CatalogEnabled {
 		}
 
 		List entityassets = new ArrayList();
-		if (entityassets.size() > 0) {
+		if (entityassets.size() > 0)
+		{
 			// get entity Category
 			Category contentcategory = getMediaArchive().getEntityManager().createDefaultFolder(contentData, null);
-			for (Iterator iterator = entityassets.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = entityassets.iterator(); iterator.hasNext();)
+			{
 				String assetid = (String) iterator.next();
 				Asset asset = getMediaArchive().getAsset(assetid);
-				if (asset != null) {
+				if (asset != null)
+				{
 					asset.addCategory(contentcategory);
 					getMediaArchive().saveAsset(asset);
 				}
@@ -404,45 +435,52 @@ public class DrupalManager implements CatalogEnabled {
 		return true;
 	}
 
-	protected void createOrUpdateComponent(Searcher contentsearcher, Data inComponentSection, String inContentRole,
-			String inContent, int inOrdering) {
+	protected void createOrUpdateComponent(Searcher contentsearcher, Data inComponentSection, String inContentRole, String inContent, int inOrdering)
+	{
 
-		Data component = contentsearcher.query().exact("contentrole", inContentRole)
-				.exact("componentsectionid", inComponentSection)
-				.searchOne();
-		if (component == null) {
+		Data component = contentsearcher.query().exact("contentrole", inContentRole).exact("componentsectionid", inComponentSection).searchOne();
+		if (component == null)
+		{
 			component = contentsearcher.createNewData();
 			component.setValue("contentrole", inContentRole);
 			component.setValue("componentsectionid", inComponentSection);
 			component.setValue("creationdate", new Date());
 		}
-		if (inContentRole.equals("headline")) {
+		if (inContentRole.equals("headline"))
+		{
 			component.setValue("componenttype", "heading");
 			component.setValue("content", inContent);
-		} else if (inContentRole.equals("featureimage")) {
-			component.setValue("assetid", inContent);
-			component.setValue("componenttype", "asset");
-		} else if (inContentRole.equals("imageright")) {
-			component.setValue("content", inContent);
-			component.setValue("componenttype", "paragraph");
-		} else {
-			component.setValue("contentrole", inContentRole);
-			component.setValue("componenttype", "paragraph");
-			component.setValue("content", inContent);
 		}
+		else
+			if (inContentRole.equals("featureimage"))
+			{
+				component.setValue("assetid", inContent);
+				component.setValue("componenttype", "asset");
+			}
+			else
+				if (inContentRole.equals("imageright"))
+				{
+					component.setValue("content", inContent);
+					component.setValue("componenttype", "paragraph");
+				}
+				else
+				{
+					component.setValue("contentrole", inContentRole);
+					component.setValue("componenttype", "paragraph");
+					component.setValue("content", inContent);
+				}
 		component.setValue("ordering", inOrdering);
 		component.setValue("modificationdate", new Date());
 		contentsearcher.saveData(component);
 
 	}
 
-	protected void createOrUpdateFeatureImage(Searcher contentsearcher, Data inComponentSection, JSONObject inContent,
-			int inOrdering) {
+	protected void createOrUpdateFeatureImage(Searcher contentsearcher, Data inComponentSection, JSONObject inContent, int inOrdering)
+	{
 
-		Data component = contentsearcher.query().exact("contentrole", "featureimage")
-				.exact("componentsectionid", inComponentSection)
-				.searchOne();
-		if (component == null) {
+		Data component = contentsearcher.query().exact("contentrole", "featureimage").exact("componentsectionid", inComponentSection).searchOne();
+		if (component == null)
+		{
 			component = contentsearcher.createNewData();
 			component.setValue("contentrole", "featureimage");
 			component.setValue("componentsectionid", inComponentSection);
@@ -454,7 +492,8 @@ public class DrupalManager implements CatalogEnabled {
 		component.setValue("assetid", assetid);
 
 		String imagecaption = (String) inContent.get("field_credit_original");
-		if (imagecaption != null) {
+		if (imagecaption != null)
+		{
 			component.setValue("content", imagecaption);
 		}
 		component.setValue("componenttype", "asset");
@@ -466,12 +505,14 @@ public class DrupalManager implements CatalogEnabled {
 	}
 
 	// TODO: Validate this token before running any API. Cache results
-	public String getAccessToken() throws OpenEditException {
+	public String getAccessToken() throws OpenEditException
+	{
 		String accesstoken = getAuthConfig().get("httprequesttoken");
 		return accesstoken;
 	}
 
-	public void refreshToken() throws OpenEditException {
+	public void refreshToken() throws OpenEditException
+	{
 
 		Data authinfo = getAuthConfig();
 		String accesstoken = authinfo.get("httprequesttoken");
@@ -484,7 +525,8 @@ public class DrupalManager implements CatalogEnabled {
 		String accountsUrl = "https://accounts.zoho.com/oauth/v2/token";
 		String token = authinfo.get("refreshtoken");
 
-		if (token == null) {
+		if (token == null)
+		{
 			Map params = new HashMap();
 			params.put("client_id", clientid);
 			params.put("client_secret", clientsecret);
@@ -493,12 +535,14 @@ public class DrupalManager implements CatalogEnabled {
 
 			CloseableHttpResponse resp = getConnection().sharedPost(accountsUrl, params);
 
-			if (resp.getStatusLine().getStatusCode() != 200) {
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
 				log.info("Zoho Server error returned " + resp.getStatusLine().getStatusCode());
 			}
 
 			JSONObject json = getConnection().parseMap(resp);
-			if (json.get("access_token") != null) {
+			if (json.get("access_token") != null)
+			{
 				accesstoken = (String) json.get("access_token");
 				authinfo.setValue("httprequesttoken", json.get("access_token"));
 				authinfo.setValue("refreshtoken", json.get("refresh_token"));
@@ -506,13 +550,17 @@ public class DrupalManager implements CatalogEnabled {
 				authinfo.setValue("expiresin", json.get("expires_in"));
 				getMediaArchive().getSearcher("oauthprovider").saveData(authinfo);
 				log.info("Refresh token granted");
-			} else {
+			}
+			else
+			{
 				log.info(json);
 				throw new OpenEditException(
-						"Token Expired, manually provide new oauthproviders granttoken: https://api-console.zoho.com - Required SCOPES: ZohoProjects.projects.ALL,ZohoProjects.documents.ALL,ZohoPC.files.ALL,WorkDrive.teamfolders.ALL,WorkDrive.team.ALL,WorkDrive.files.ALL,ZohoFiles.files.READ");
+					"Token Expired, manually provide new oauthproviders granttoken: https://api-console.zoho.com - Required SCOPES: ZohoProjects.projects.ALL,ZohoProjects.documents.ALL,ZohoPC.files.ALL,WorkDrive.teamfolders.ALL,WorkDrive.team.ALL,WorkDrive.files.ALL,ZohoFiles.files.READ");
 			}
 
-		} else {
+		}
+		else
+		{
 			Map params = new HashMap();
 			params.put("client_id", clientid);
 			params.put("client_secret", clientsecret);
@@ -521,12 +569,14 @@ public class DrupalManager implements CatalogEnabled {
 
 			CloseableHttpResponse resp = getConnection().sharedPost(accountsUrl, params);
 
-			if (resp.getStatusLine().getStatusCode() != 200) {
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
 				log.info("Zoho Server error returned " + resp.getStatusLine().getStatusCode());
 			}
 
 			JSONObject json = getConnection().parseMap(resp);
-			if (json.get("access_token") != null) {
+			if (json.get("access_token") != null)
+			{
 				accesstoken = (String) json.get("access_token");
 				authinfo.setValue("httprequesttoken", json.get("access_token"));
 				authinfo.setValue("accesstokentime", new Date());
@@ -538,14 +588,16 @@ public class DrupalManager implements CatalogEnabled {
 
 	}
 
-	public ExecutorManager getExecutorManager() {
-		ExecutorManager queue = (ExecutorManager) getModuleManager().getBean(getMediaArchive().getCatalogId(),
-				"executorManager");
+	public ExecutorManager getExecutorManager()
+	{
+		ExecutorManager queue = (ExecutorManager) getModuleManager().getBean(getMediaArchive().getCatalogId(), "executorManager");
 		return queue;
 	}
 
-	protected HttpSharedConnection getConnection() {
-		if (connection == null) {
+	protected HttpSharedConnection getConnection()
+	{
+		if (connection == null)
+		{
 			connection = new HttpSharedConnection();
 			connection.putSharedHeader("Accept", "application/vnd.api+json");
 		}

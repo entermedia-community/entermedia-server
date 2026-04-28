@@ -20,9 +20,11 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.users.User;
 
-//let url = `/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection?sessionid=${tabID}&userid=${userid}`;
+// let url =
+// `/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection?sessionid=${tabID}&userid=${userid}`;
 
-public class UserNotifyConnection extends Endpoint implements MessageHandler.Partial<String> {
+public class UserNotifyConnection extends Endpoint implements MessageHandler.Partial<String>
+{
 	private static final Log log = LogFactory.getLog(UserNotifyConnection.class);
 	private RemoteEndpoint.Basic remoteEndpointBasic;
 	protected JSONParser fieldJSONParser;
@@ -31,55 +33,66 @@ public class UserNotifyConnection extends Endpoint implements MessageHandler.Par
 	protected String fieldCurrentConnectionId;
 	protected String fieldUserId;
 
-	public String getUserId() {
+	public String getUserId()
+	{
 		return fieldUserId;
 	}
 
-	public void setUserId(String inUserId) {
+	public void setUserId(String inUserId)
+	{
 		fieldUserId = inUserId;
 	}
 
-	public UserNotifyManager getUserNotifyManager() {
-		if (fieldUserNotifyManager == null) {
+	public UserNotifyManager getUserNotifyManager()
+	{
+		if (fieldUserNotifyManager == null)
+		{
 			fieldUserNotifyManager = (UserNotifyManager) getModuleManager().getBean("userNotifyManager");
 		}
 
 		return fieldUserNotifyManager;
 	}
 
-	public String getCurrentConnectionId() {
+	public String getCurrentConnectionId()
+	{
 		return fieldCurrentConnectionId;
 	}
 
-	public void setCurrentConnectionId(String inCurrentConnectionId) {
+	public void setCurrentConnectionId(String inCurrentConnectionId)
+	{
 		fieldCurrentConnectionId = inCurrentConnectionId;
 	}
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
 	protected StringBuffer fieldBufferedMessage;
 
 	@Override
-	public void onError(Session session, Throwable throwable) {
+	public void onError(Session session, Throwable throwable)
+	{
 		// TODO Auto-generated method stub
 		super.onError(session, throwable);
 	}
 
 	@Override
-	public void onClose(Session session, CloseReason closeReason) {
+	public void onClose(Session session, CloseReason closeReason)
+	{
 		super.onClose(session, closeReason);
 		getUserNotifyManager().removeConnection(this);
 
 	}
 
 	@Override
-	public void onOpen(Session session, EndpointConfig endpointConfig) {
+	public void onOpen(Session session, EndpointConfig endpointConfig)
+	{
 		// javax.servlet.http.HttpSession http =
 		// (javax.servlet.http.HttpSession)session.getUserProperties().get("javax.servlet.http.HttpSession");
 
@@ -98,7 +111,8 @@ public class UserNotifyConnection extends Endpoint implements MessageHandler.Par
 		// }
 		// }
 		ModuleManager modulemanager = (ModuleManager) session.getUserProperties().get("moduleManager");
-		if (modulemanager == null) {
+		if (modulemanager == null)
+		{
 			throw new RuntimeException("modulemanager did not get set, Web site must be accessed with a session");
 		}
 		setModuleManager(modulemanager);
@@ -114,15 +128,19 @@ public class UserNotifyConnection extends Endpoint implements MessageHandler.Par
 		// session.addMessageHandler(new EchoMessageHandlerBinary(remoteEndpointBasic));
 	}
 
-	public JSONParser getJSONParser() {
-		if (fieldJSONParser == null) {
+	public JSONParser getJSONParser()
+	{
+		if (fieldJSONParser == null)
+		{
 			fieldJSONParser = new JSONParser();
 		}
 		return fieldJSONParser;
 	}
 
-	protected StringBuffer getBufferedMessage() {
-		if (fieldBufferedMessage == null) {
+	protected StringBuffer getBufferedMessage()
+	{
+		if (fieldBufferedMessage == null)
+		{
 			fieldBufferedMessage = new StringBuffer();
 		}
 
@@ -133,9 +151,11 @@ public class UserNotifyConnection extends Endpoint implements MessageHandler.Par
 	 * Not used. We dont get messages from clients, we only send them out
 	 */
 	@Override
-	public synchronized void onMessage(String inData, boolean completed) {
+	public synchronized void onMessage(String inData, boolean completed)
+	{
 		getBufferedMessage().append(inData);
-		if (!completed) {
+		if (!completed)
+		{
 			return;
 		}
 		String message = getBufferedMessage().toString();
@@ -145,7 +165,8 @@ public class UserNotifyConnection extends Endpoint implements MessageHandler.Par
 		// {
 		// return;
 		// }
-		if (inData.length() == 0) {
+		if (inData.length() == 0)
+		{
 			return;
 		}
 		JSONObject map = (JSONObject) getJSONParser().parse(new StringReader(message));
@@ -167,13 +188,17 @@ public class UserNotifyConnection extends Endpoint implements MessageHandler.Par
 
 	}
 
-	public boolean sendMessage(JSONObject json) {
-		try {
+	public boolean sendMessage(JSONObject json)
+	{
+		try
+		{
 			String command = (String) json.get("command");
 			json.put("connectionid", getCurrentConnectionId());
 			remoteEndpointBasic.sendText(json.toJSONString());
 			log.info("sent " + command + " to  " + getCurrentConnectionId());
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			log.error(e);
 			// throw new OpenEditException(e);
 			return false;
@@ -181,7 +206,8 @@ public class UserNotifyConnection extends Endpoint implements MessageHandler.Par
 		return true;
 	}
 
-	public RemoteEndpoint.Basic getRemoteEndpointBasic() {
+	public RemoteEndpoint.Basic getRemoteEndpointBasic()
+	{
 		return remoteEndpointBasic;
 
 	}

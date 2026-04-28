@@ -22,16 +22,18 @@ import org.openedit.data.Searcher;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.InputStreamItem;
 
-public class AutomationModule extends BaseMediaModule {
+public class AutomationModule extends BaseMediaModule
+{
 	private static final Log log = LogFactory.getLog(AutomationModule.class);
 
-	public void loadScenarios(WebPageRequest inReq) {
-		Collection scenarios = getMediaArchive(inReq).query("automationscenario").exact("isvisible", true)
-				.sort("ordering").search();
+	public void loadScenarios(WebPageRequest inReq)
+	{
+		Collection scenarios = getMediaArchive(inReq).query("automationscenario").exact("isvisible", true).sort("ordering").search();
 		inReq.putPageValue("scenarios", scenarios);
 	}
 
-	public void loadAutomationScenario(WebPageRequest inReq) {
+	public void loadAutomationScenario(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 
 		inReq.putPageValue("automationManager", getAutomationManager(inReq));
@@ -41,13 +43,14 @@ public class AutomationModule extends BaseMediaModule {
 
 		String scenarioid = inReq.getRequestParameter("scenarioid");
 
-		if (scenarioid == null) {
+		if (scenarioid == null)
+		{
 			scenarioid = (String) inReq.getPageValue("scenarioid");
 		}
 
-		if (scenarioid == null) {
-			Collection<Data> scenarios = archive.query("automationscenario").exact("isvisible", true).sort("ordering")
-					.search();
+		if (scenarioid == null)
+		{
+			Collection<Data> scenarios = archive.query("automationscenario").exact("isvisible", true).sort("ordering").search();
 			inReq.putPageValue("scenarios", scenarios);
 
 			Searcher scenarioSearcher = archive.getSearcher("automationscenario");
@@ -67,14 +70,12 @@ public class AutomationModule extends BaseMediaModule {
 		Searcher agentEnabledSearcher = archive.getSearcher("automationagentenabled");
 		inReq.putPageValue("agentenabledsearcher", agentEnabledSearcher);
 
-		Collection<MultiValued> agents = agentEnabledSearcher.query().exact("automationscenario", scenario.getId())
-				.search();
+		Collection<MultiValued> agents = agentEnabledSearcher.query().exact("automationscenario", scenario.getId()).search();
 		inReq.putPageValue("agents", agents);
 	}
 
 	/*
-	 * public void loadAutomationScenarios(WebPageRequest inReq) { MediaArchive
-	 * archive =
+	 * public void loadAutomationScenarios(WebPageRequest inReq) { MediaArchive archive =
 	 * getMediaArchive(inReq);
 	 * 
 	 * String scenarioid = inReq.getRequestParameter("scenarioid");
@@ -82,30 +83,31 @@ public class AutomationModule extends BaseMediaModule {
 	 * if(scenarioid == null) { return; }
 	 * 
 	 * 
-	 * Data scenario = archive.query("automationscenario").exact("id",
-	 * scenarioid).searchOne();
+	 * Data scenario = archive.query("automationscenario").exact("id", scenarioid).searchOne();
 	 * inReq.putPageValue("scenario", scenario);
 	 * 
-	 * Searcher agentEnabledSearcher =
-	 * archive.getSearcher("automationagentenabled");
+	 * Searcher agentEnabledSearcher = archive.getSearcher("automationagentenabled");
 	 * inReq.putPageValue("agentenabledsearcher", agentEnabledSearcher);
 	 * 
-	 * Collection<MultiValued> agents =
-	 * agentEnabledSearcher.query().exact("automationscenario",
+	 * Collection<MultiValued> agents = agentEnabledSearcher.query().exact("automationscenario",
 	 * scenario.getId()).search(); inReq.putPageValue("agents", agents); }
 	 */
-	public AutomationManager getAutomationManager(WebPageRequest inReq) {
+	public AutomationManager getAutomationManager(WebPageRequest inReq)
+	{
 		AutomationManager manager = (AutomationManager) getMediaArchive(inReq).getBean("automationManager");
 		inReq.putPageValue("automationManager", manager);
 		return manager;
 	}
 
-	public void runScenario(WebPageRequest inReq) {
+	public void runScenario(WebPageRequest inReq)
+	{
 		String id = inReq.findActionValue("automationscenario");
-		if (id == null) {
+		if (id == null)
+		{
 			id = inReq.getRequestParameter("scenarioid");
 		}
-		if (id == null) {
+		if (id == null)
+		{
 			id = inReq.getPage().getPageName();
 		}
 		AutomationManager manager = getAutomationManager(inReq);
@@ -118,7 +120,8 @@ public class AutomationModule extends BaseMediaModule {
 		manager.runScenario(id, context);
 	}
 
-	public void handleAgentSaved(WebPageRequest inReq) {
+	public void handleAgentSaved(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Data agentEnabledData = (Data) inReq.getPageValue("data");
@@ -136,39 +139,45 @@ public class AutomationModule extends BaseMediaModule {
 		manager.generateParams(agentEnabledData);
 	}
 
-	public void saveLayout(WebPageRequest inReq) {
+	public void saveLayout(WebPageRequest inReq)
+	{
 		Map layout = inReq.getJsonRequest();
-		if (layout == null) {
+		if (layout == null)
+		{
 			return;
 		}
 
 		Map canvas = (Map) layout.get("canvas");
-		if (canvas != null) {
+		if (canvas != null)
+		{
 			getAutomationManager(inReq).savePositions(canvas);
 		}
 
 		JSONArray data = (JSONArray) layout.get("data");
-		if (data == null) {
+		if (data == null)
+		{
 			return;
 		}
 
 		Searcher agentEnabledSearcher = getMediaArchive(inReq).getSearcher("automationagentenabled");
-		for (Iterator iterator = data.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = data.iterator(); iterator.hasNext();)
+		{
 			JSONObject agentdata = (JSONObject) iterator.next();
 
 			String id = (String) agentdata.get("id");
 			Data agentEnabled = agentEnabledSearcher.query().exact("id", id).searchOne();
-			if (agentEnabled == null) {
+			if (agentEnabled == null)
+			{
 				agentEnabled = (Data) agentEnabledSearcher.createNewData();
 			}
 
-			Boolean enabled = agentdata.get("enabled") instanceof Boolean ? (Boolean) agentdata.get("enabled")
-					: Boolean.parseBoolean(String.valueOf(agentdata.get("enabled")));
+			Boolean enabled = agentdata.get("enabled") instanceof Boolean ? (Boolean) agentdata.get("enabled") : Boolean.parseBoolean(String.valueOf(agentdata.get("enabled")));
 			Double offsetx = Double.parseDouble((String.valueOf(agentdata.get("offsetx"))));
 			Double offsety = Double.parseDouble((String.valueOf(agentdata.get("offsety"))));
 
 			String runafter = (String) agentdata.get("runafter");
-			if (runafter != null) {
+			if (runafter != null)
+			{
 				agentEnabled.setValue("runafter", runafter);
 			}
 
@@ -185,14 +194,17 @@ public class AutomationModule extends BaseMediaModule {
 		saveAutomationSnapshot(inReq, scenarioid, base64);
 	}
 
-	public void saveAutomationPreview(WebPageRequest inReq) {
+	public void saveAutomationPreview(WebPageRequest inReq)
+	{
 		Map payload = inReq.getJsonRequest();
-		if (payload == null) {
+		if (payload == null)
+		{
 			return;
 		}
 
 		Map canvas = (Map) payload.get("canvas");
-		if (canvas != null) {
+		if (canvas != null)
+		{
 			getAutomationManager(inReq).savePositions(canvas);
 		}
 
@@ -206,9 +218,11 @@ public class AutomationModule extends BaseMediaModule {
 
 	}
 
-	public void deletePreviewNodes(WebPageRequest inReq) {
+	public void deletePreviewNodes(WebPageRequest inReq)
+	{
 		Map payload = inReq.getJsonRequest();
-		if (payload == null) {
+		if (payload == null)
+		{
 			return;
 		}
 
@@ -218,32 +232,43 @@ public class AutomationModule extends BaseMediaModule {
 		Collection<String> agentIds = new ArrayList();
 		Collection<String> labelIds = new ArrayList();
 
-		for (Iterator iterator = deleteIds.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = deleteIds.iterator(); iterator.hasNext();)
+		{
 			Map node = (Map) iterator.next();
-			if (node.get("type").equals("scenario")) {
+			if (node.get("type").equals("scenario"))
+			{
 				scenarioIds.add((String) node.get("id"));
-			} else if (node.get("type").equals("agent")) {
-				agentIds.add((String) node.get("id"));
-			} else if (node.get("type").equals("label")) {
-				labelIds.add((String) node.get("id"));
 			}
+			else
+				if (node.get("type").equals("agent"))
+				{
+					agentIds.add((String) node.get("id"));
+				}
+				else
+					if (node.get("type").equals("label"))
+					{
+						labelIds.add((String) node.get("id"));
+					}
 		}
 
 		MediaArchive archive = getMediaArchive(inReq);
 
-		if (scenarioIds.size() > 0) {
+		if (scenarioIds.size() > 0)
+		{
 			Searcher scenarioSearcher = archive.getSearcher("automationscenario");
 			Collection<Data> scenarios = scenarioSearcher.query().ids(scenarioIds).search();
 			scenarioSearcher.deleteAll(scenarios, inReq.getUser());
 		}
 
-		if (agentIds.size() > 0) {
+		if (agentIds.size() > 0)
+		{
 			Searcher agentSearcher = archive.getSearcher("automationagentenabled");
 			Collection<Data> agents = agentSearcher.query().ids(agentIds).search();
 			agentSearcher.deleteAll(agents, inReq.getUser());
 		}
 
-		if (labelIds.size() > 0) {
+		if (labelIds.size() > 0)
+		{
 			Searcher labelSearcher = archive.getSearcher("automationlabel");
 			Collection<Data> labels = labelSearcher.query().ids(labelIds).search();
 			labelSearcher.deleteAll(labels, inReq.getUser());
@@ -251,8 +276,10 @@ public class AutomationModule extends BaseMediaModule {
 
 	}
 
-	public void saveAutomationSnapshot(WebPageRequest inReq, String filename, String base64) {
-		if (base64 == null) {
+	public void saveAutomationSnapshot(WebPageRequest inReq, String filename, String base64)
+	{
+		if (base64 == null)
+		{
 			return;
 		}
 
@@ -264,7 +291,8 @@ public class AutomationModule extends BaseMediaModule {
 
 		ContentItem saveTo = archive.getPageManager().getPage(sourcepath).getContentItem();
 
-		try {
+		try
+		{
 			InputStreamItem revision = new InputStreamItem();
 
 			revision.setAbsolutePath(saveTo.getAbsolutePath());
@@ -286,7 +314,9 @@ public class AutomationModule extends BaseMediaModule {
 			archive.getPageManager().getRepository().put(revision);
 			getPageManager().clearCache(revision.getPath());
 			log.info("Saved To " + revision.getAbsolutePath());
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			log.error(ex);
 		}
 

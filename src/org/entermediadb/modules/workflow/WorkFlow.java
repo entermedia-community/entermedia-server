@@ -20,7 +20,8 @@ import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.util.XmlUtil;
 
-public class WorkFlow {
+public class WorkFlow
+{
 	protected File fieldRoot;
 	protected PageManager fieldPageManager;
 	protected UserManager fieldUserManager;
@@ -29,7 +30,8 @@ public class WorkFlow {
 	protected long fieldLastModified = -2;
 	protected ArrayList fieldWorkFlowListeners;
 
-	public List listAllDrafts() throws OpenEditException {
+	public List listAllDrafts() throws OpenEditException
+	{
 		FileFinder finder = new FileFinder();
 		finder.setRoot(getRoot());
 		finder.setPageManager(getPageManager());
@@ -39,18 +41,22 @@ public class WorkFlow {
 		return finder.findPages("*.draft.*");
 	}
 
-	public String getUserDescription(String inUserName) {
-		if (inUserName == null || inUserName.length() == 0) {
+	public String getUserDescription(String inUserName)
+	{
+		if (inUserName == null || inUserName.length() == 0)
+		{
 			return "";
 		}
 		User user = getUserManager().getUser(inUserName);
-		if (user != null) {
+		if (user != null)
+		{
 			return user.getShortDescription();
 		}
 		return "";
 	}
 
-	public Page getOriginalPage(Page inDraft) throws OpenEditException {
+	public Page getOriginalPage(Page inDraft) throws OpenEditException
+	{
 		String dpath = inDraft.getPath();
 		int index = dpath.indexOf(".draft.");
 		String path = dpath.substring(0, index);
@@ -60,31 +66,38 @@ public class WorkFlow {
 		return org;
 	}
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		fieldPageManager = inPageManager;
 	}
 
-	public File getRoot() {
+	public File getRoot()
+	{
 		return fieldRoot;
 	}
 
-	public void setRoot(File inRoot) {
+	public void setRoot(File inRoot)
+	{
 		fieldRoot = inRoot;
 	}
 
-	public UserManager getUserManager() {
+	public UserManager getUserManager()
+	{
 		return fieldUserManager;
 	}
 
-	public void setUserManager(UserManager inUserManager) {
+	public void setUserManager(UserManager inUserManager)
+	{
 		fieldUserManager = inUserManager;
 	}
 
-	private void saveLevel(Page draft, int newLevel) throws OpenEditException {
+	private void saveLevel(Page draft, int newLevel) throws OpenEditException
+	{
 		PageProperty property = new PageProperty("approve.level");
 		property.setValue(String.valueOf(newLevel));
 		draft.getPageSettings().putProperty(property);
@@ -92,66 +105,84 @@ public class WorkFlow {
 		getPageManager().getPageSettingsManager().saveSetting(draft.getPageSettings());
 	}
 
-	protected void loadLevelCount() throws OpenEditException {
+	protected void loadLevelCount() throws OpenEditException
+	{
 		Page level = getPageManager().getPage("/openedit/components/html/workflow/settings.xml");
-		if (level.getLastModified().getTime() != fieldLastModified) {
+		if (level.getLastModified().getTime() != fieldLastModified)
+		{
 			fieldLastModified = level.getLastModified().getTime();
 			Element root = new XmlUtil().getXml(level.getReader(), "UTF-8");
 			String text = root.elementText("levels");
-			if (text != null) {
+			if (text != null)
+			{
 				setLevelCount(Integer.parseInt(text));
 			}
 		}
 	}
 
-	public int findExistingLevel(Page inDraft) {
+	public int findExistingLevel(Page inDraft)
+	{
 		String existingLevel = inDraft.get("approve.level");
 		int oldLevel = 0;
-		if (existingLevel != null) {
+		if (existingLevel != null)
+		{
 			oldLevel = Integer.parseInt(existingLevel);
 		}
 		return oldLevel;
 	}
 
-	public boolean canApprove(User inUser, Page inDraft) throws OpenEditException {
-		if (inDraft.isDraft() && !inDraft.exists()) {
+	public boolean canApprove(User inUser, Page inDraft) throws OpenEditException
+	{
+		if (inDraft.isDraft() && !inDraft.exists())
+		{
 			return false;
 		}
 
-		if (inUser == null) {
+		if (inUser == null)
+		{
 			return false;
 		}
 
 		loadLevelCount();
-		if (getLevelCount() == 0) {
-			if (inUser.hasPermission("oe_edit_approves")) {
+		if (getLevelCount() == 0)
+		{
+			if (inUser.hasPermission("oe_edit_approves"))
+			{
 				return true;
-			} else {
+			}
+			else
+			{
 				return false;
 			}
 		}
 		int power = findHighestApproval(inUser);
-		if (power == 0) {
+		if (power == 0)
+		{
 			return false;
 		}
 		int existing = findExistingLevel(inDraft);
-		if (power > existing) {
+		if (power > existing)
+		{
 			return true;
 		}
 		return false;
 	}
 
-	public int findHighestApproval(User inUser) {
+	public int findHighestApproval(User inUser)
+	{
 		int level = 0;
-		for (int i = 1; i < getLevelCount() + 1; i++) {
-			if (inUser.hasPermission("oe_edit_approve_level" + i)) {
+		for (int i = 1; i < getLevelCount() + 1; i++)
+		{
+			if (inUser.hasPermission("oe_edit_approve_level" + i))
+			{
 				level = i;
 			}
 		}
 		return level;
 	}
 
-	public void deleteDraft(String inPath, User inUser) throws OpenEditException {
+	public void deleteDraft(String inPath, User inUser) throws OpenEditException
+	{
 		Page page = getPageManager().getPage(inPath);
 		page.getContentItem().setAuthor(inUser.getUserName());
 		page.getContentItem().setMessage("Deleted Draft");
@@ -159,16 +190,20 @@ public class WorkFlow {
 		firePageDeleted(page);
 	}
 
-	public int getLevelCount() {
+	public int getLevelCount()
+	{
 		return fieldLevelCount;
 	}
 
-	public void setLevelCount(int inLevelCount) {
+	public void setLevelCount(int inLevelCount)
+	{
 		fieldLevelCount = inLevelCount;
 	}
 
-	public ArrayList getWorkFlowListeners() {
-		if (fieldWorkFlowListeners == null) {
+	public ArrayList getWorkFlowListeners()
+	{
+		if (fieldWorkFlowListeners == null)
+		{
 			fieldWorkFlowListeners = new ArrayList();
 
 		}
@@ -176,25 +211,31 @@ public class WorkFlow {
 		return fieldWorkFlowListeners;
 	}
 
-	public void setWorkFlowListeners(ArrayList inWorkFlowListeners) {
+	public void setWorkFlowListeners(ArrayList inWorkFlowListeners)
+	{
 		fieldWorkFlowListeners = inWorkFlowListeners;
 	}
 
-	protected void firePageApproved(Page inPage) {
-		for (Iterator iter = getWorkFlowListeners().iterator(); iter.hasNext();) {
+	protected void firePageApproved(Page inPage)
+	{
+		for (Iterator iter = getWorkFlowListeners().iterator(); iter.hasNext();)
+		{
 			WorkFlowListener listener = (WorkFlowListener) iter.next();
 			listener.pageApproved(inPage);
 		}
 	}
 
-	protected void firePageDeleted(Page inPage) {
-		for (Iterator iter = getWorkFlowListeners().iterator(); iter.hasNext();) {
+	protected void firePageDeleted(Page inPage)
+	{
+		for (Iterator iter = getWorkFlowListeners().iterator(); iter.hasNext();)
+		{
 			WorkFlowListener listener = (WorkFlowListener) iter.next();
 			listener.pageDeleted(inPage);
 		}
 	}
 
-	public void addWorkFlowListener(WorkFlowListener inListener) {
+	public void addWorkFlowListener(WorkFlowListener inListener)
+	{
 		getWorkFlowListeners().add(inListener);
 	}
 }

@@ -9,22 +9,26 @@ import org.entermediadb.markdown.text.Characters;
 import java.util.Set;
 
 /**
- * Attempt to parse backticks, returning either a backtick code span or a
- * literal sequence of backticks.
+ * Attempt to parse backticks, returning either a backtick code span or a literal sequence of
+ * backticks.
  */
-public class BackticksInlineParser implements InlineContentParser {
+public class BackticksInlineParser implements InlineContentParser
+{
 
     @Override
-    public ParsedInline tryParse(InlineParserState inlineParserState) {
+    public ParsedInline tryParse(InlineParserState inlineParserState)
+    {
         Scanner scanner = inlineParserState.scanner();
         Position start = scanner.position();
         int openingTicks = scanner.matchMultiple('`');
         Position afterOpening = scanner.position();
 
-        while (scanner.find('`') > 0) {
+        while (scanner.find('`') > 0)
+        {
             Position beforeClosing = scanner.position();
             int count = scanner.matchMultiple('`');
-            if (count == openingTicks) {
+            if (count == openingTicks)
+            {
                 Code node = new Code();
 
                 String content = scanner.getSource(afterOpening, beforeClosing).getContent();
@@ -34,10 +38,8 @@ public class BackticksInlineParser implements InlineContentParser {
                 // but does not consist
                 // entirely of space characters, a single space character is removed from the
                 // front and back.
-                if (content.length() >= 3 &&
-                        content.charAt(0) == ' ' &&
-                        content.charAt(content.length() - 1) == ' ' &&
-                        Characters.hasNonSpace(content)) {
+                if (content.length() >= 3 && content.charAt(0) == ' ' && content.charAt(content.length() - 1) == ' ' && Characters.hasNonSpace(content))
+                {
                     content = content.substring(1, content.length() - 1);
                 }
 
@@ -52,14 +54,17 @@ public class BackticksInlineParser implements InlineContentParser {
         return ParsedInline.of(text, afterOpening);
     }
 
-    public static class Factory implements InlineContentParserFactory {
+    public static class Factory implements InlineContentParserFactory
+    {
         @Override
-        public Set<Character> getTriggerCharacters() {
+        public Set<Character> getTriggerCharacters()
+        {
             return Set.of('`');
         }
 
         @Override
-        public InlineContentParser create() {
+        public InlineContentParser create()
+        {
             return new BackticksInlineParser();
         }
     }

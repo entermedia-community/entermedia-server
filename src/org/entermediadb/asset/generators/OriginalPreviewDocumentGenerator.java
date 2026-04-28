@@ -13,19 +13,23 @@ import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.PageRequestKeys;
 
-public class OriginalPreviewDocumentGenerator extends FileGenerator {
+public class OriginalPreviewDocumentGenerator extends FileGenerator
+{
 	private static final Log log = LogFactory.getLog(OriginalPreviewDocumentGenerator.class);
 	protected ModuleManager moduleManager;
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return moduleManager;
 	}
 
-	public void setModuleManager(ModuleManager moduleManager) {
+	public void setModuleManager(ModuleManager moduleManager)
+	{
 		this.moduleManager = moduleManager;
 	}
 
-	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException {
+	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
+	{
 		String catalogid = inReq.findPathValue("catalogid");
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		String assetid = inReq.getRequestParameter("assetid");
@@ -33,7 +37,8 @@ public class OriginalPreviewDocumentGenerator extends FileGenerator {
 
 		Page content = archive.getOriginalDocument(asset);
 		String version = inReq.getRequestParameter("version");
-		if (version == null) {
+		if (version == null)
+		{
 			log.error("Version Not found");
 			return;
 			// error
@@ -41,7 +46,8 @@ public class OriginalPreviewDocumentGenerator extends FileGenerator {
 		Version revision = archive.getAssetEditor().getVersion(asset, version);
 		Page preview = archive.getPageManager().getPage(revision.getPreviewBackUpPath());
 
-		if (!preview.exists()) {
+		if (!preview.exists())
+		{
 			log.error("preview Not found " + preview.getPath());
 			return;
 			// error
@@ -52,7 +58,8 @@ public class OriginalPreviewDocumentGenerator extends FileGenerator {
 		// error?
 	}
 
-	public boolean canGenerate(WebPageRequest inReq) {
+	public boolean canGenerate(WebPageRequest inReq)
+	{
 		return true;
 	}
 

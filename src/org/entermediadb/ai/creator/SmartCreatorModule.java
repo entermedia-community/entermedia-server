@@ -16,78 +16,92 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 
-public class SmartCreatorModule extends BaseMediaModule {
+public class SmartCreatorModule extends BaseMediaModule
+{
 
-	public AssistantManager getAssistantManager(WebPageRequest inReq) {
+	public AssistantManager getAssistantManager(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findValue("catalogid");
 		AssistantManager assistantManager = (AssistantManager) getMediaArchive(catalogid).getBean("assistantManager");
 		return assistantManager;
 	}
 
-	public SmartCreatorManager getSmartCreatorManager(WebPageRequest inReq) {
+	public SmartCreatorManager getSmartCreatorManager(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findValue("catalogid");
-		SmartCreatorManager smartCreatorManager = (SmartCreatorManager) getMediaArchive(catalogid)
-				.getBean("smartCreatorManager");
+		SmartCreatorManager smartCreatorManager = (SmartCreatorManager) getMediaArchive(catalogid).getBean("smartCreatorManager");
 		return smartCreatorManager;
 	}
 
-	public QuestionsManager getQuestionsManager(WebPageRequest inReq) {
+	public QuestionsManager getQuestionsManager(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findValue("catalogid");
 		QuestionsManager questionsManager = (QuestionsManager) getMediaArchive(catalogid).getBean("questionsManager");
 		return questionsManager;
 	}
 
-	public SearchingManager getSearchingManager(WebPageRequest inReq) {
+	public SearchingManager getSearchingManager(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findValue("catalogid");
 		SearchingManager searchingManager = (SearchingManager) getMediaArchive(catalogid).getBean("searchingManager");
 		return searchingManager;
 	}
 
-	public void loadTutorials(WebPageRequest inReq) throws Exception {
+	public void loadTutorials(WebPageRequest inReq) throws Exception
+	{
 		Searcher tutorialsearcher = getMediaArchive(inReq).getSearcher("aitutorial");
 		HitTracker hits = tutorialsearcher.query().exact("featured", true).search();
 
 		inReq.putPageValue("tutorials", hits);
 	}
 
-	public void populateSection(WebPageRequest inReq) throws Exception {
+	public void populateSection(WebPageRequest inReq) throws Exception
+	{
 		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
 		// creatorManager.createCreatorAndPopulateSection(inReq);
 	}
 
-	public void loadCreator(WebPageRequest inReq) throws Exception {
+	public void loadCreator(WebPageRequest inReq) throws Exception
+	{
 		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
 		creatorManager.getCreator(inReq);
 	}
 
-	public void createCreatorSection(WebPageRequest inReq) throws Exception {
+	public void createCreatorSection(WebPageRequest inReq) throws Exception
+	{
 
 		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
 
 		Data playbackentity = (Data) inReq.getPageValue("currententity");
 		Data playbackentitymodule = (Data) inReq.getPageValue("currententitymodule");
 
-		if (playbackentity == null) {
+		if (playbackentity == null)
+		{
 			String playbackentityid = inReq.getRequestParameter("playbackentityid");
 			String playbackentitymoduleid = inReq.getRequestParameter("playbackentitymoduleid");
 
 			playbackentity = getMediaArchive(inReq).getCachedData(playbackentitymoduleid, playbackentityid);
 
-			if (playbackentity == null) {
+			if (playbackentity == null)
+			{
 				throw new IllegalArgumentException("No creator entity found for id: " + playbackentityid);
 			}
 
 			playbackentitymodule = getMediaArchive(inReq).getCachedData("module", playbackentitymoduleid);
 		}
 
-		try {
+		try
+		{
 			Map fields = new HashMap();
 			String sectionid = inReq.getRequestParameter("sectionid");
-			if (sectionid != null && sectionid.length() > 0) {
+			if (sectionid != null && sectionid.length() > 0)
+			{
 				fields.put("sectionid", sectionid);
 				String name = inReq.getRequestParameter("name");
 				fields.put("name", name);
-			} else {
+			}
+			else
+			{
 				String ordering = inReq.getRequestParameter("ordering");
 				int orderingint = Integer.parseInt(ordering);
 				fields.put("ordering", orderingint + 1);
@@ -95,12 +109,15 @@ public class SmartCreatorModule extends BaseMediaModule {
 			Data section = creatorManager.createCreatorSection(playbackentity, playbackentitymodule.getId(), fields);
 			inReq.putPageValue("playbackentity", playbackentity);
 			inReq.putPageValue("section", section);
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			throw new IllegalArgumentException("Ordering must be a number");
 		}
 	}
 
-	public void deleteCreatorSection(WebPageRequest inReq) throws Exception {
+	public void deleteCreatorSection(WebPageRequest inReq) throws Exception
+	{
 		String searchtype = inReq.getRequestParameter("searchtype");
 		String dataid = inReq.getRequestParameter("id");
 
@@ -108,7 +125,8 @@ public class SmartCreatorModule extends BaseMediaModule {
 		creatorManager.deleteCreatorSection(searchtype, dataid);
 	}
 
-	public void saveComponentContent(WebPageRequest inReq) throws Exception {
+	public void saveComponentContent(WebPageRequest inReq) throws Exception
+	{
 		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
 		String sectionid = inReq.getRequestParameter("sectionid");
 
@@ -118,39 +136,50 @@ public class SmartCreatorModule extends BaseMediaModule {
 
 		Collection<String> fieldlist = new ArrayList<String>();
 
-		if (fields != null) {
-			for (int i = 0; i < fields.length; i++) {
+		if (fields != null)
+		{
+			for (int i = 0; i < fields.length; i++)
+			{
 				String fieldname = fields[i];
-				if (fieldname != null && fieldname.length() > 0) {
+				if (fieldname != null && fieldname.length() > 0)
+				{
 					fieldlist.add(fieldname);
 				}
 			}
 		}
 
-		if (!fieldlist.contains("content")) {
+		if (!fieldlist.contains("content"))
+		{
 			fieldlist.add("content");
 		}
-		if (!fieldlist.contains("componenttype")) {
+		if (!fieldlist.contains("componenttype"))
+		{
 			fieldlist.add("componenttype");
 		}
-		if (!fieldlist.contains("ordering")) {
+		if (!fieldlist.contains("ordering"))
+		{
 			fieldlist.add("ordering");
 		}
-		if (!fieldlist.contains("componentcontentid")) {
+		if (!fieldlist.contains("componentcontentid"))
+		{
 			fieldlist.add("componentcontentid");
 		}
 
-		for (Iterator iterator = fieldlist.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = fieldlist.iterator(); iterator.hasNext();)
+		{
 			String fieldname = (String) iterator.next();
 
 			String fieldvalue = inReq.getRequestParameter(fieldname + ".value");
-			if (fieldvalue == null) {
+			if (fieldvalue == null)
+			{
 				fieldvalue = inReq.getRequestParameter(fieldname + "value");
 			}
-			if (fieldvalue == null) {
+			if (fieldvalue == null)
+			{
 				fieldvalue = inReq.getRequestParameter(fieldname);
 			}
-			if (fieldvalue == null || fieldvalue.length() == 0) {
+			if (fieldvalue == null || fieldvalue.length() == 0)
+			{
 				continue;
 			}
 			componentfields.put(fieldname, fieldvalue);
@@ -159,12 +188,14 @@ public class SmartCreatorModule extends BaseMediaModule {
 		Data componentcontent = creatorManager.saveComponentContent(sectionid, componentfields);
 		inReq.putPageValue("componentcontent", componentcontent);
 
-		if (componentfields.get("componentcontent") == null) {
+		if (componentfields.get("componentcontent") == null)
+		{
 			inReq.putPageValue("newcontent", true);
 		}
 	}
 
-	public void saveContentRole(WebPageRequest inReq) throws Exception {
+	public void saveContentRole(WebPageRequest inReq) throws Exception
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String searchtype = inReq.getRequestParameter("searchtype");
 
@@ -174,7 +205,8 @@ public class SmartCreatorModule extends BaseMediaModule {
 
 		String id = inReq.getRequestParameter("id");
 		Data data = searcher.loadData(id);
-		if (data != null) {
+		if (data != null)
+		{
 			String contentrole = inReq.getRequestParameter("contentrole");
 			data.setValue("contentrole", contentrole);
 			searcher.saveData(data);
@@ -182,9 +214,12 @@ public class SmartCreatorModule extends BaseMediaModule {
 
 		inReq.putPageValue(searchtype, data);
 
-		if ("componentsection".equals(searchtype)) {
+		if ("componentsection".equals(searchtype))
+		{
 			inReq.putPageValue("section", data);
-		} else {
+		}
+		else
+		{
 			Data section = archive.query("componentsection").exact("id", sectionid).searchOne();
 			inReq.putPageValue("section", section);
 		}
@@ -192,17 +227,20 @@ public class SmartCreatorModule extends BaseMediaModule {
 		inReq.putPageValue("searchtype", searchtype);
 	}
 
-	public void populateComponentContent(WebPageRequest inReq) throws Exception {
+	public void populateComponentContent(WebPageRequest inReq) throws Exception
+	{
 		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
 		// creatorManager.autoPopulateComponentContent();
 	}
 
-	public void orderCreatorSection(WebPageRequest inReq) {
+	public void orderCreatorSection(WebPageRequest inReq)
+	{
 		SmartCreatorManager creatorManager = getSmartCreatorManager(inReq);
 		creatorManager.orderCreatorSection(inReq);
 	}
 
-	public void duplicateCreatorSection(WebPageRequest inReq) {
+	public void duplicateCreatorSection(WebPageRequest inReq)
+	{
 		String searchtype = inReq.getRequestParameter("searchtype");
 		String dataid = inReq.getRequestParameter("id");
 
@@ -211,34 +249,51 @@ public class SmartCreatorModule extends BaseMediaModule {
 
 		inReq.putPageValue("searchtype", searchtype);
 
-		if ("componentcontent".equals(searchtype)) {
+		if ("componentcontent".equals(searchtype))
+		{
 			inReq.putPageValue("componentcontent", duplicate);
-		} else if ("componentsection".equals(searchtype)) {
-			inReq.putPageValue("section", duplicate);
 		}
+		else
+			if ("componentsection".equals(searchtype))
+			{
+				inReq.putPageValue("section", duplicate);
+			}
 	}
 
-	public void creatorAiAction(WebPageRequest inReq) {
+	public void creatorAiAction(WebPageRequest inReq)
+	{
 		String aiaction = inReq.getRequestParameter("aiaction");
 		String componentcontentid = inReq.getRequestParameter("componentcontentid");
 
-		SmartCreatorManager creatorManager = (SmartCreatorManager) getMediaArchive(inReq)
-				.getBean("smartCreatorManager");
+		SmartCreatorManager creatorManager = (SmartCreatorManager) getMediaArchive(inReq).getBean("smartCreatorManager");
 
-		if ("grammar".equals(aiaction)) {
+		if ("grammar".equals(aiaction))
+		{
 			creatorManager.correctGrammar(inReq, componentcontentid);
-		} else if ("improve".equals(aiaction)) {
-			creatorManager.improveContent(inReq, componentcontentid);
-		} else if ("generate".equals(aiaction)) {
-			String prompt = inReq.getRequestParameter("aiprompt");
-			creatorManager.generateContent(inReq, componentcontentid, prompt);
-		} else if ("image".equals(aiaction)) {
-			String prompt = inReq.getRequestParameter("aiprompt");
-			creatorManager.createImage(inReq, componentcontentid, prompt);
-		} else if ("caption".equals(aiaction)) {
-			String assetid = inReq.getRequestParameter("assetid");
-			creatorManager.captionImage(inReq, componentcontentid, assetid);
 		}
+		else
+			if ("improve".equals(aiaction))
+			{
+				creatorManager.improveContent(inReq, componentcontentid);
+			}
+			else
+				if ("generate".equals(aiaction))
+				{
+					String prompt = inReq.getRequestParameter("aiprompt");
+					creatorManager.generateContent(inReq, componentcontentid, prompt);
+				}
+				else
+					if ("image".equals(aiaction))
+					{
+						String prompt = inReq.getRequestParameter("aiprompt");
+						creatorManager.createImage(inReq, componentcontentid, prompt);
+					}
+					else
+						if ("caption".equals(aiaction))
+						{
+							String assetid = inReq.getRequestParameter("assetid");
+							creatorManager.captionImage(inReq, componentcontentid, assetid);
+						}
 	}
 
 }

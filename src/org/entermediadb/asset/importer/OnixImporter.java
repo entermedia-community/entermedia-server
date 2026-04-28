@@ -20,36 +20,43 @@ import org.openedit.page.Page;
 import org.openedit.page.PageStreamer;
 import org.openedit.util.XmlUtil;
 
-public class OnixImporter extends BaseImporter {
+public class OnixImporter extends BaseImporter
+{
 
 	protected Map<String, Page> foundtypes = new HashMap();
 	Map<Integer, Integer> levelheights = new HashMap();
 	protected Data fieldEntity;
 
-	public Data getEntity() {
+	public Data getEntity()
+	{
 		return fieldEntity;
 	}
 
-	public void setEntity(Data inEntity) {
+	public void setEntity(Data inEntity)
+	{
 		fieldEntity = inEntity;
 	}
 
-	public Data getModule() {
+	public Data getModule()
+	{
 		return fieldModule;
 	}
 
-	public void setModule(Data inModule) {
+	public void setModule(Data inModule)
+	{
 		fieldModule = inModule;
 	}
 
 	protected Data fieldModule;
 
 	@Override
-	public void importData() throws Exception {
+	public void importData() throws Exception
+	{
 		fieldSearcher = loadSearcher(context);
 
 		Page uploadedpage = (Page) context.getPageValue("uploadedpage");
-		if (uploadedpage == null) {
+		if (uploadedpage == null)
+		{
 			uploadedpage = getPageManager().getPage("/WEB-INF/import/onix-example.xml");
 		}
 		Reader reader = uploadedpage.getReader();
@@ -61,7 +68,8 @@ public class OnixImporter extends BaseImporter {
 
 	}
 
-	private void processXml(Element root) {
+	private void processXml(Element root)
+	{
 		PropertyDetail rootdetail = new PropertyDetail();
 		// detail.setId(detailid);
 		// detail.setDataType("list");
@@ -93,7 +101,8 @@ public class OnixImporter extends BaseImporter {
 		// Loop over main parents with Children ones
 
 		// Add Data to root?
-		if (rootjson.hasDataHolder()) {
+		if (rootjson.hasDataHolder())
+		{
 			// render more stuff? Save it in parent node
 			Page datarender = loadPage("databox");
 			String datajson = renderVelocity(datarender, rootjson.getDataHolder());
@@ -101,7 +110,8 @@ public class OnixImporter extends BaseImporter {
 		}
 
 		int y = 0;
-		for (Iterator iterator = rootjson.getChildren().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = rootjson.getChildren().iterator(); iterator.hasNext();)
+		{
 			JsonNode toplevel = (JsonNode) iterator.next();
 			toplevel.setAlwaysRender(true);
 			toplevel.setTopLevelParent(toplevel.getId());
@@ -128,33 +138,21 @@ public class OnixImporter extends BaseImporter {
 	// Hard code levels. 1 is root 2 is metadata 3 are children 2 is placeholder for
 	// dups
 	/*
-	 * protected void addTopChildren(JsonNode metadatanode, Element productelement)
-	 * {
-	 * for (Iterator iterator = productelement.elements().iterator();
-	 * iterator.hasNext();)
-	 * {
-	 * Element child = (Element) iterator.next();
-	 * JsonNode level2dupholder = level2dupnodes.get(child.getName());
+	 * protected void addTopChildren(JsonNode metadatanode, Element productelement) { for (Iterator
+	 * iterator = productelement.elements().iterator(); iterator.hasNext();) { Element child = (Element)
+	 * iterator.next(); JsonNode level2dupholder = level2dupnodes.get(child.getName());
 	 * 
-	 * //Need to make this recursive?
-	 * if( level2dupholder == null)
-	 * {
-	 * JsonNode level3child = createJsonNodes(child);
-	 * metadatanode.addChild(level3child);
-	 * }
-	 * else
-	 * {
-	 * JsonNode level3child = createJsonNodes(child);
-	 * level2dupholder.addChild(level3child);
-	 * }
-	 * }
-	 * }
+	 * //Need to make this recursive? if( level2dupholder == null) { JsonNode level3child =
+	 * createJsonNodes(child); metadatanode.addChild(level3child); } else { JsonNode level3child =
+	 * createJsonNodes(child); level2dupholder.addChild(level3child); } } }
 	 */
 
-	protected void defineDataView() {
+	protected void defineDataView()
+	{
 		Searcher searcher = getMediaArchive().getSearcher("view");
 		Data data = (Data) searcher.searchById(getModule().getId() + "onix");
-		if (data == null) {
+		if (data == null)
+		{
 			data = searcher.createNewData();
 			data.setValue("moduleid", getModule().getId());
 			data.setId(getModule().getId() + "onix");
@@ -164,16 +162,21 @@ public class OnixImporter extends BaseImporter {
 		}
 	}
 
-	protected void fixMath(JsonNode inRootjson) {
+	protected void fixMath(JsonNode inRootjson)
+	{
 		int row = 0;
-		if (inRootjson.hasDataHolder()) {
+		if (inRootjson.hasDataHolder())
+		{
 			row++;
 		}
-		for (Iterator iterator = inRootjson.getChildren().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inRootjson.getChildren().iterator(); iterator.hasNext();)
+		{
 			JsonNode node = (JsonNode) iterator.next();
 			node.setRow(row++);
-			if (node.hasDataHolder()) {
-				for (Iterator iterator2 = node.getDataHolder().getChildren().iterator(); iterator2.hasNext();) {
+			if (node.hasDataHolder())
+			{
+				for (Iterator iterator2 = node.getDataHolder().getChildren().iterator(); iterator2.hasNext();)
+				{
 					JsonNode datanode = (JsonNode) iterator2.next();
 					datanode.setRow(row++);
 				}
@@ -182,8 +185,10 @@ public class OnixImporter extends BaseImporter {
 		}
 	}
 
-	private void collectJson(Searcher inOnixSearcher, JsonNode inRootjson, List inCollectedjson) {
-		if (inRootjson.getJson() != null) {
+	private void collectJson(Searcher inOnixSearcher, JsonNode inRootjson, List inCollectedjson)
+	{
+		if (inRootjson.getJson() != null)
+		{
 			Data tosave = inOnixSearcher.createNewData();
 			tosave.setName(inRootjson.getName());
 			tosave.setValue("nodelevel", inRootjson.getLevel());
@@ -194,7 +199,8 @@ public class OnixImporter extends BaseImporter {
 			tosave.setValue("ordering", ordering++);
 			inCollectedjson.add(tosave);
 
-			if (inRootjson.hasDataHolder()) {
+			if (inRootjson.hasDataHolder())
+			{
 				Data databox = inOnixSearcher.createNewData();
 				JsonNode holder = inRootjson.getDataHolder();
 				databox.setName(inRootjson.getName() + " Data");
@@ -207,20 +213,23 @@ public class OnixImporter extends BaseImporter {
 			}
 
 		}
-		for (Iterator iterator = inRootjson.getChildren().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inRootjson.getChildren().iterator(); iterator.hasNext();)
+		{
 			JsonNode node = (JsonNode) iterator.next();
 			collectJson(inOnixSearcher, node, inCollectedjson);
 		}
 
 	}
 
-	private JsonNode createJsonNodes(Element inChildNode) {
+	private JsonNode createJsonNodes(Element inChildNode)
+	{
 		JsonNode datanode = new JsonNode();
 		datanode.setName(inChildNode.getName());
 		// datanode.setLevel(level);
 		datanode.setElement(inChildNode);
 
-		for (Iterator iterator = inChildNode.elementIterator(); iterator.hasNext();) {
+		for (Iterator iterator = inChildNode.elementIterator(); iterator.hasNext();)
+		{
 			Element child = (Element) iterator.next();
 			JsonNode node = createJsonNodes(child);
 			datanode.addChild(node);
@@ -228,50 +237,63 @@ public class OnixImporter extends BaseImporter {
 		return datanode;
 	}
 
-	protected Page getType(JsonNode inParent) {
+	protected Page getType(JsonNode inParent)
+	{
 		String type = null;
 
-		if (inParent.getLevel() == 1) {
+		if (inParent.getLevel() == 1)
+		{
 			type = "root";
-		} else if (inParent.getLevel() == 2) {
-			type = "connector";
 		}
+		else
+			if (inParent.getLevel() == 2)
+			{
+				type = "connector";
+			}
 
-		if (type == null) {
+		if (type == null)
+		{
 			type = inParent.getName();
 		}
 		Page found = loadPage(type);
 		return found;
 	}
 
-	protected Page loadPage(String type) {
+	protected Page loadPage(String type)
+	{
 		Page found = foundtypes.get(type);
 
-		if (found == null && !type.equals("connector") && !type.equals("root") && !type.equals("databox")) {
+		if (found == null && !type.equals("connector") && !type.equals("root") && !type.equals("databox"))
+		{
 			Data module = getMediaArchive().query("module").match("externalid", type).searchOne();
-			if (module != null) {
+			if (module != null)
+			{
 				type = module.get("onixrender");
-				if (type == null) {
+				if (type == null)
+				{
 					type = "entity";
 				}
-			} else {
+			}
+			else
+			{
 				type = "component";
 			}
 		}
-		String path = "/" + getContext().findPathValue("applicationid") + "/views/modules/"
-				+ getContext().findPathValue("searchtype") + "/components/renderonix/types/" + type + ".json";
+		String path = "/" + getContext().findPathValue("applicationid") + "/views/modules/" + getContext().findPathValue("searchtype") + "/components/renderonix/types/" + type + ".json";
 		found = getPageManager().getPage(path);
 		foundtypes.put(type, found);
 		return found;
 	}
 
-	protected void renderJson(JsonNode inNode) {
+	protected void renderJson(JsonNode inNode)
+	{
 		Page render = getType(inNode);
 		String json = renderVelocity(render, inNode);
 
 		inNode.setJson(json);
 
-		if (inNode.hasDataHolder()) {
+		if (inNode.hasDataHolder())
+		{
 			Page found = loadPage("databox");
 			int h = (inNode.getDataHolder().getChildren().size() + 1) * 30;
 			inNode.getDataHolder().setHeight(h);
@@ -280,26 +302,33 @@ public class OnixImporter extends BaseImporter {
 		}
 
 		List<JsonNode> children = inNode.getChildren();
-		if (children != null && !children.isEmpty()) {
-			for (Iterator iterator = children.iterator(); iterator.hasNext();) {
+		if (children != null && !children.isEmpty())
+		{
+			for (Iterator iterator = children.iterator(); iterator.hasNext();)
+			{
 				JsonNode jsonNode = (JsonNode) iterator.next();
 				renderJson(jsonNode);
 			}
-		} else {
+		}
+		else
+		{
 			// Create property?
 			saveValueIsPossible(inNode);
 
 		}
 	}
 
-	protected String renderVelocity(Page inRender, JsonNode inNode) {
-		if (!inRender.exists()) {
+	protected String renderVelocity(Page inRender, JsonNode inNode)
+	{
+		if (!inRender.exists())
+		{
 			return null;
 		}
 
 		// Increment the height at this level and set the Y
 		Integer y = levelheights.get(inNode.getLevel());
-		if (y == null) {
+		if (y == null)
+		{
 			y = 50;
 		}
 		inNode.setY(y);
@@ -325,24 +354,29 @@ public class OnixImporter extends BaseImporter {
 		return outtext.toString();
 	}
 
-	protected PropertyDetail saveValueIsPossible(JsonNode inMetadata) {
+	protected PropertyDetail saveValueIsPossible(JsonNode inMetadata)
+	{
 
-		if (inMetadata.getLevel() != 3 | inMetadata.getChildren().isEmpty()) {
+		if (inMetadata.getLevel() != 3 | inMetadata.getChildren().isEmpty())
+		{
 			return null;
 		}
 
 		String text = inMetadata.getTextTrim();
-		if (text != null) {
+		if (text != null)
+		{
 			// TODO: Make sure no children?
 			PropertyDetail detail = getSearcher().getDetail(inMetadata.getName());
-			if (detail == null) {
+			if (detail == null)
+			{
 				detail = new PropertyDetail();
 				detail.setId(inMetadata.getName());
 
 				// See if its a list or not
 				String path = "/" + getSearcher().getCatalogId() + "/lists/onix/" + inMetadata.getName() + ".xml";
 				boolean islist = getPageManager().getRepository().doesExist(text);
-				if (islist) {
+				if (islist)
+				{
 					detail.setDataType("list");
 					detail.setListId("onix/" + inMetadata.getName());
 				}
@@ -351,26 +385,28 @@ public class OnixImporter extends BaseImporter {
 				detail.setStored(true);
 				detail.setIndex(true);
 				detail.setKeyword(true);
-				getSearcher().getPropertyDetailsArchive().savePropertyDetail(detail, getSearcher().getSearchType(),
-						null);
+				getSearcher().getPropertyDetailsArchive().savePropertyDetail(detail, getSearcher().getSearchType(), null);
 			}
 			// Add to the view for this panel
 			String viewpath = getModule().getId() + "/" + getModule().getId() + "general";
-			ViewFieldList onixview = getSearcher().getPropertyDetailsArchive().getViewFields(getModule().getId(),
-					viewpath, null);
-			if (onixview == null) {
+			ViewFieldList onixview = getSearcher().getPropertyDetailsArchive().getViewFields(getModule().getId(), viewpath, null);
+			if (onixview == null)
+			{
 				onixview = new ViewFieldList();
 				onixview.setId(viewpath);
 			}
 			boolean findview = false;
-			for (Iterator iterator = onixview.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = onixview.iterator(); iterator.hasNext();)
+			{
 				PropertyDetail found = (PropertyDetail) iterator.next();
-				if (found.getId().equals(inMetadata.getName())) {
+				if (found.getId().equals(inMetadata.getName()))
+				{
 					findview = true;
 					break;
 				}
 			}
-			if (!findview) {
+			if (!findview)
+			{
 				onixview.add(detail);
 				getSearcher().getPropertyDetailsArchive().saveView(onixview, null);
 			}

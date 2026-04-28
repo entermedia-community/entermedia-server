@@ -16,27 +16,33 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.page.Page;
 
-public class ReportModule extends DataEditModule {
+public class ReportModule extends DataEditModule
+{
 
 	private static Log log = LogFactory.getLog(ScriptModule.class);
 	protected ScriptManager fieldScriptManager;
 
-	public ScriptManager getScriptManager() {
-		if (fieldScriptManager == null) {
+	public ScriptManager getScriptManager()
+	{
+		if (fieldScriptManager == null)
+		{
 			fieldScriptManager = (ScriptManager) getModuleManager().getBean("scriptManager");
 		}
 		return fieldScriptManager;
 	}
 
-	public void setScriptManager(ScriptManager inScriptManager) {
+	public void setScriptManager(ScriptManager inScriptManager)
+	{
 		fieldScriptManager = inScriptManager;
 	}
 
-	public Data loadReport(WebPageRequest inReq) {
+	public Data loadReport(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 
 		String reportid = inReq.findValue("reportid");
-		if (reportid == null) {
+		if (reportid == null)
+		{
 			return null;
 		}
 
@@ -45,43 +51,50 @@ public class ReportModule extends DataEditModule {
 
 		inReq.putPageValue("report", report);
 		inReq.putPageValue("data", report);
-		if (report == null) {
+		if (report == null)
+		{
 			return null;
 		}
 		String searchtype = report.get("searchtype");
 		// String catalogid = inReq.getUserProfileValue("reportcatalogid");
 		String catalogid = archive.getCatalogId();
-		if (catalogid == null) {
+		if (catalogid == null)
+		{
 			catalogid = "media/catalogs/public"; // Maybe should be last accessed catalog? I'll pass in the profile
 													// value from the emshare app...
 		}
 		inReq.putPageValue("reportcatalogid", catalogid);
 
-		if (searchtype != null) {
+		if (searchtype != null)
+		{
 			Searcher searcher = archive.getSearcher(searchtype);
 			inReq.putPageValue("reportsearcher", searcher);
 		}
 		return report;
 	}
 
-	public void runReport(WebPageRequest inReq) throws Exception {
+	public void runReport(WebPageRequest inReq) throws Exception
+	{
 
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Data report = loadReport(inReq);
-		if (report == null) {
+		if (report == null)
+		{
 			return;
 		}
 
 		String script = report.get("script");
 		String searchtype = report.get("searchtype");
 
-		if (script == null) {
+		if (script == null)
+		{
 			script = "reporting/" + searchtype + ".groovy";
 		}
 		Page page = getPageManager().getPage("/system/events/scripts/" + script);
 
-		if (!page.exists()) {
+		if (!page.exists())
+		{
 			log.info("No script, running standard search");
 			inReq.setRequestParameter("searchtype", searchtype);
 			// inReq.setRequestParameter(searchtype + "includefacets", "true");
@@ -92,10 +105,13 @@ public class ReportModule extends DataEditModule {
 			// inReq.setRequestParameter(searchtype + "includefacets", "true");
 
 			String runfilterview = report.get("runfilterview");
-			if (runfilterview != null) {
+			if (runfilterview != null)
+			{
 				inReq.setRequestParameter("runfilterview", runfilterview);
 
-			} else {
+			}
+			else
+			{
 				// throw new OpenEditException("runfilterview field required for each report");
 
 			}
@@ -110,7 +126,8 @@ public class ReportModule extends DataEditModule {
 
 		final StringBuffer output = new StringBuffer();
 		TextAppender appender = new TextAppender() {
-			public void appendText(String inText) {
+			public void appendText(String inText)
+			{
 				output.append(inText);
 				output.append("<br>");
 			}
@@ -119,28 +136,34 @@ public class ReportModule extends DataEditModule {
 		ScriptLogger logs = new ScriptLogger();
 		logs.setPrefix(reportscript.getType());
 		logs.setTextAppender(appender);
-		try {
+		try
+		{
 			logs.startCapture();
 			Map variableMap = inReq.getPageMap();
 			variableMap.put("context", inReq);
 			variableMap.put("log", logs);
 
 			Object returned = getScriptManager().execScript(variableMap, reportscript);
-			if (returned != null) {
+			if (returned != null)
+			{
 				output.append("returned: " + returned);
 			}
-		} finally {
+		}
+		finally
+		{
 			logs.stopCapture();
 		}
 		inReq.putPageValue("output", output);
 
 	}
 
-	public void selectCatalog(WebPageRequest inReq) {
+	public void selectCatalog(WebPageRequest inReq)
+	{
 		String catalogid = inReq.getRequestParameter("id");
 		MediaArchive archive = getMediaArchive(inReq);
 		log.info("why no breakpoint");
-		if (catalogid != null) {
+		if (catalogid != null)
+		{
 			inReq.getUserProfile().setValue("reportcatalogid", catalogid);
 			archive.getSearcher("userprofile").saveData(inReq.getUserProfile(), inReq.getUser());
 

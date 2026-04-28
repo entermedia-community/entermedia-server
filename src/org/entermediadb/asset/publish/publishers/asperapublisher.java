@@ -12,11 +12,12 @@ import org.openedit.Data;
 import org.openedit.page.Page;
 import org.openedit.repository.filesystem.StringItem;
 
-public class asperapublisher extends BasePublisher implements Publisher {
+public class asperapublisher extends BasePublisher implements Publisher
+{
 	private static final Log log = LogFactory.getLog(asperapublisher.class);
 
-	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inPublishRequest, Data inDestination,
-			Data inPreset, Asset inAsset) {
+	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inPublishRequest, Data inDestination, Data inPreset, Asset inAsset)
+	{
 		// log.info("Publish asset to aspera ${asset} for preset: ${presetid} on server:
 		// ${publishdestination}" );
 		PublishResult result = new PublishResult();
@@ -24,7 +25,8 @@ public class asperapublisher extends BasePublisher implements Publisher {
 		Page inputpage = findInputPage(mediaArchive, inAsset, inPreset);
 		String exportname = inPublishRequest.get("itemexportname");
 
-		if (!exportname.startsWith("/")) {
+		if (!exportname.startsWith("/"))
+		{
 			exportname = "/" + exportname;
 		}
 		StringItem item = new StringItem();

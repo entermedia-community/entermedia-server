@@ -17,17 +17,21 @@ import org.openedit.hittracker.CompositeHitTracker;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.users.User;
 
-public class RelatedAssetsModule extends BaseMediaModule {
-	public void addRelatedAsset(WebPageRequest inRequest) throws OpenEditException {
+public class RelatedAssetsModule extends BaseMediaModule
+{
+	public void addRelatedAsset(WebPageRequest inRequest) throws OpenEditException
+	{
 		MediaArchive mediaArchive = getMediaArchive(inRequest);
 
 		String[] relatedassetid = inRequest.getRequestParameters("relatedtoassetid");
-		if (relatedassetid == null) {
+		if (relatedassetid == null)
+		{
 			// someone created a new Asset
 			relatedassetid = inRequest.getRequestParameters("newassetid");
 		}
 
-		if (relatedassetid == null) {
+		if (relatedassetid == null)
+		{
 			return;
 		}
 		String type = inRequest.getRequestParameter("type");
@@ -37,13 +41,16 @@ public class RelatedAssetsModule extends BaseMediaModule {
 
 		String assetid = inRequest.getRequestParameter("assetid");
 		Asset source = mediaArchive.getAsset(assetid);
-		if (source == null) {
+		if (source == null)
+		{
 			throw new OpenEditException("Source is null");
 		}
 		String[] catalogs = inRequest.getRequestParameters("relatedtocatalogid");
 		String catalogid = mediaArchive.getCatalogId();
-		for (int i = 0; i < relatedassetid.length; i++) {
-			if (catalogs != null) {
+		for (int i = 0; i < relatedassetid.length; i++)
+		{
+			if (catalogs != null)
+			{
 				catalogid = catalogs[i];
 			}
 			MediaArchive savestore = getMediaArchive(catalogid);
@@ -52,23 +59,26 @@ public class RelatedAssetsModule extends BaseMediaModule {
 
 			createRelationship(savestore, type, parentrelationship, source, target, inRequest.getUser());
 		}
-		if (redirect) {
+		if (redirect)
+		{
 			String path = source.getSourcePath(); // TODO: Should go back to related Asset list
 			inRequest.redirect(mediaArchive.getLinkToAssetDetails(path));
 		}
 	}
 
-	private void createRelationship(MediaArchive MediaArchive, String type, String parentrelationship, Asset source,
-			Asset target, User inUser) {
-		if (target == null) {
+	private void createRelationship(MediaArchive MediaArchive, String type, String parentrelationship, Asset source, Asset target, User inUser)
+	{
+		if (target == null)
+		{
 			throw new OpenEditException("target is null");
 		}
 		List<RelatedAsset> relatives = (List) source.getRelatedAssets();
 		// Check to see if this relationship already exists.
-		for (Iterator iterator = relatives.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = relatives.iterator(); iterator.hasNext();)
+		{
 			RelatedAsset rel = (RelatedAsset) iterator.next();
-			if (rel.get("relatedtoassetid") == target.getId()
-					&& rel.get("relatedtocatalogid") == target.getCatalogId()) {
+			if (rel.get("relatedtoassetid") == target.getId() && rel.get("relatedtocatalogid") == target.getCatalogId())
+			{
 				return;
 			}
 		}
@@ -80,7 +90,8 @@ public class RelatedAssetsModule extends BaseMediaModule {
 		source.addRelatedAsset(related);
 		MediaArchive.saveAsset(source, null);
 
-		if (parentrelationship != null) {
+		if (parentrelationship != null)
+		{
 			RelatedAsset back = new RelatedAsset();
 			back.setAssetId(target.getId());
 			back.setRelatedToAssetId(source.getId());
@@ -92,7 +103,8 @@ public class RelatedAssetsModule extends BaseMediaModule {
 		}
 	}
 
-	public void loadRelatedAssets(WebPageRequest inRequest) throws OpenEditException {
+	public void loadRelatedAssets(WebPageRequest inRequest) throws OpenEditException
+	{
 
 		Asset asset = getAsset(inRequest);
 		MediaArchive archive = getMediaArchive(inRequest);
@@ -103,24 +115,28 @@ public class RelatedAssetsModule extends BaseMediaModule {
 	}
 
 	/*
-	 * This will load a tracker of all the assets that happen to be related to this
-	 * one, even transitively.
+	 * This will load a tracker of all the assets that happen to be related to this one, even
+	 * transitively.
 	 */
-	public RelatedAssetTracker loadAllRelatedAssets(WebPageRequest inRequest) throws OpenEditException {
+	public RelatedAssetTracker loadAllRelatedAssets(WebPageRequest inRequest) throws OpenEditException
+	{
 		RelatedAssetTracker list = (RelatedAssetTracker) inRequest.getPageValue("relatedhits");
-		if (list != null) {
+		if (list != null)
+		{
 			return list;
 		}
 		MediaArchive MediaArchive = getMediaArchive(inRequest);
 		Asset Asset = getAsset(inRequest);
-		if (Asset == null) {
+		if (Asset == null)
+		{
 			return null;
 		}
 		List all = new ArrayList();
 		all.addAll(Asset.getRelatedAssets()); // initial list
 		HashSet targets = new HashSet();
 		targets.add(Asset.getCatalogId() + ":::" + Asset.getId());
-		for (Iterator iterator = all.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
 			RelatedAsset rp = (RelatedAsset) iterator.next();
 			targets.add(rp.getRelatedToCatalogId() + ":::" + rp.getRelatedToAssetId());
 		}
@@ -130,22 +146,25 @@ public class RelatedAssetsModule extends BaseMediaModule {
 		{
 			RelatedAsset relatedAsset = (RelatedAsset) all.get(i);
 			String catalogid = relatedAsset.getRelatedToCatalogId();
-			if (catalogid == null) {
+			if (catalogid == null)
+			{
 				catalogid = MediaArchive.getCatalogId();
 			}
 			MediaArchive targetstore = getMediaArchive(catalogid);
 			Asset target = targetstore.getAsset(relatedAsset.getRelatedToAssetId());
-			if (target == null) {
+			if (target == null)
+			{
 				Asset.removeRelatedAsset(catalogid, relatedAsset.getRelatedToAssetId());
 				MediaArchive.saveAsset(Asset, inRequest.getUser());
 				continue;
 			}
 			// Go one level deeper
 			Collection newOnes = target.getRelatedAssets(); // for each item in the list, add all their relatives
-			for (Iterator iterator = newOnes.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = newOnes.iterator(); iterator.hasNext();)
+			{
 				RelatedAsset newRelated = (RelatedAsset) iterator.next();
-				if (!all.contains(newRelated) && !targets
-						.contains(newRelated.getRelatedToCatalogId() + ":::" + newRelated.getRelatedToAssetId())) {
+				if (!all.contains(newRelated) && !targets.contains(newRelated.getRelatedToCatalogId() + ":::" + newRelated.getRelatedToAssetId()))
+				{
 					targets.add(newRelated.getRelatedToCatalogId() + ":::" + newRelated.getRelatedToAssetId());
 					all.add(newRelated); // put this new one at the end of the list. we will check check its relations
 											// eventually
@@ -160,7 +179,8 @@ public class RelatedAssetsModule extends BaseMediaModule {
 		return tracker;
 	}
 
-	public CompositeHitTracker getAllTracker(WebPageRequest inReq) throws Exception {
+	public CompositeHitTracker getAllTracker(WebPageRequest inReq) throws Exception
+	{
 		MediaArchive MediaArchive = getMediaArchive(inReq);
 		Asset Asset = getAsset(inReq);
 
@@ -170,7 +190,8 @@ public class RelatedAssetsModule extends BaseMediaModule {
 
 		RelatedAssetTracker relatedtracker = loadAllRelatedAssets(inReq);
 
-		for (Iterator iterator = relatedtracker.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = relatedtracker.iterator(); iterator.hasNext();)
+		{
 			RelatedAsset item = (RelatedAsset) iterator.next();
 			String catalogid = item.getRelatedToCatalogId();
 			MediaArchive targetstore = getMediaArchive(catalogid);
@@ -187,13 +208,15 @@ public class RelatedAssetsModule extends BaseMediaModule {
 		return composite;
 	}
 
-	public void removeRelatedAsset(WebPageRequest inRequest) throws OpenEditException {
+	public void removeRelatedAsset(WebPageRequest inRequest) throws OpenEditException
+	{
 		String sourceid = inRequest.getRequestParameter("assetid");
 
 		String targetid = inRequest.getRequestParameter("targetid");
 		String catalogid = inRequest.getRequestParameter("targetcatalogid");
 		MediaArchive sourcestore = getMediaArchive(inRequest);
-		if (catalogid == null) {
+		if (catalogid == null)
+		{
 			catalogid = sourcestore.getCatalogId();
 		}
 		MediaArchive targetStore = getMediaArchive(catalogid);

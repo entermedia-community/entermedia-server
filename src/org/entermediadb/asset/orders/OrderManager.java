@@ -15,7 +15,8 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 
-public interface OrderManager {
+public interface OrderManager
+{
 
 	EventManager getEventManager();
 
@@ -74,8 +75,7 @@ public interface OrderManager {
 	// OrderHistory createNewHistory(String inCatId, Order inOrder, User inUser,
 	// String inStatus);
 
-	List<String> addConversionAndPublishRequest(WebPageRequest inReq, Order order, MediaArchive archive,
-			Map<String, String> properties, User inUser);
+	List<String> addConversionAndPublishRequest(WebPageRequest inReq, Order order, MediaArchive archive, Map<String, String> properties, User inUser);
 
 	String getPresetForOrderItem(String inCataId, Data inOrderItem);
 
@@ -85,8 +85,7 @@ public interface OrderManager {
 
 	void updatePendingOrders(MediaArchive archive);
 
-	int addItemsToBasket(WebPageRequest inReq, MediaArchive inArchive, Order inOrder, Collection inSelectedHits,
-			Map inProps);
+	int addItemsToBasket(WebPageRequest inReq, MediaArchive inArchive, Order inOrder, Collection inSelectedHits, Map inProps);
 
 	boolean isAssetInOrder(String inCatId, Order inOrder, String inAssetId);
 
@@ -98,8 +97,7 @@ public interface OrderManager {
 
 	void toggleItemInOrder(MediaArchive inArchive, Order inBasket, Asset inAsset);
 
-	void sendEmailForApproval(String inCatalogId, MediaArchive inArchive, UserManager userManager, String inAppId,
-			Order inOrder);
+	void sendEmailForApproval(String inCatalogId, MediaArchive inArchive, UserManager userManager, String inAppId, Order inOrder);
 
 	Order findOrderFromAssets(String inCatalogId, User inUser, List inAssetids);
 

@@ -5,16 +5,20 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 
-public class LlamaOpenAiResponse extends OpenAiResponse {
+public class LlamaOpenAiResponse extends OpenAiResponse
+{
 
     @Override
-    public boolean isToolCall() {
-        if (rawResponse == null) {
+    public boolean isToolCall()
+    {
+        if (rawResponse == null)
+        {
             return false;
         }
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
-        if (choices == null || choices.isEmpty()) {
+        if (choices == null || choices.isEmpty())
+        {
             return false;
         }
 
@@ -25,7 +29,8 @@ public class LlamaOpenAiResponse extends OpenAiResponse {
     }
 
     @Override
-    public JSONObject getMessageStructured() {
+    public JSONObject getMessageStructured()
+    {
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
         JSONObject choice = (JSONObject) choices.get(0);
@@ -42,11 +47,13 @@ public class LlamaOpenAiResponse extends OpenAiResponse {
 
     protected String ocrResponse;
 
-    public String getOcrResponse() {
+    public String getOcrResponse()
+    {
         return ocrResponse;
     }
 
-    public void setOcrResponse(JSONObject inRawResponse) {
+    public void setOcrResponse(JSONObject inRawResponse)
+    {
         JSONArray choices = (JSONArray) inRawResponse.get("choices");
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
@@ -55,15 +62,18 @@ public class LlamaOpenAiResponse extends OpenAiResponse {
     }
 
     @Override
-    public String getFunctionName() {
-        if (fieldFunctionName != null) {
+    public String getFunctionName()
+    {
+        if (fieldFunctionName != null)
+        {
             return fieldFunctionName;
         }
 
         if (!isToolCall())
             return null;
 
-        try {
+        try
+        {
 
             JSONArray choices = (JSONArray) rawResponse.get("choices");
             JSONObject choice = (JSONObject) choices.get(0);
@@ -74,7 +84,9 @@ public class LlamaOpenAiResponse extends OpenAiResponse {
             JSONObject function = (JSONObject) functionCall.get("function");
 
             return function != null ? (String) function.get("name") : null;
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             return null;
         }
 

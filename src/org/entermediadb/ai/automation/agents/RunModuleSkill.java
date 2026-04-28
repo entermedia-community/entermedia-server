@@ -3,12 +3,14 @@ package org.entermediadb.ai.automation.agents;
 import org.entermediadb.ai.llm.AgentContext;
 import org.openedit.WebPageRequest;
 
-public class RunModuleSkill extends RunEventSkill {
+public class RunModuleSkill extends RunEventSkill
+{
 
 	/**
 	 */
 	@Override
-	public void process(AgentContext inContext) {
+	public void process(AgentContext inContext)
+	{
 		// Use path-event style exec
 		String operation = inContext.getCurrentAgentEnable().getAgentData().get("runoperation");
 

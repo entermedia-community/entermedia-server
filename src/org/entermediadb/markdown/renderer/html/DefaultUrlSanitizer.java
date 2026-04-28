@@ -4,12 +4,12 @@ import java.util.*;
 
 /**
  *
- * Allows http, https, mailto, and data protocols for url.
- * Also allows protocol relative urls, and relative urls.
- * Implementation based on
+ * Allows http, https, mailto, and data protocols for url. Also allows protocol relative urls, and
+ * relative urls. Implementation based on
  * https://github.com/OWASP/java-html-sanitizer/blob/f07e44b034a45d94d6fd010279073c38b6933072/src/main/java/org/owasp/html/FilterUrlByProtocolAttributePolicy.java
  */
-public class DefaultUrlSanitizer implements UrlSanitizer {
+public class DefaultUrlSanitizer implements UrlSanitizer
+{
     private Set<String> protocols;
 
     public DefaultUrlSanitizer() {
@@ -21,17 +21,21 @@ public class DefaultUrlSanitizer implements UrlSanitizer {
     }
 
     @Override
-    public String sanitizeLinkUrl(String url) {
+    public String sanitizeLinkUrl(String url)
+    {
         url = stripHtmlSpaces(url);
-        protocol_loop: for (int i = 0, n = url.length(); i < n; ++i) {
-            switch (url.charAt(i)) {
+        protocol_loop: for (int i = 0, n = url.length(); i < n; ++i)
+        {
+            switch (url.charAt(i))
+            {
                 case '/':
                 case '#':
                 case '?': // No protocol.
                     break protocol_loop;
                 case ':':
                     String protocol = url.substring(0, i).toLowerCase();
-                    if (!protocols.contains(protocol)) {
+                    if (!protocols.contains(protocol))
+                    {
                         return "";
                     }
                     break protocol_loop;
@@ -41,30 +45,39 @@ public class DefaultUrlSanitizer implements UrlSanitizer {
     }
 
     @Override
-    public String sanitizeImageUrl(String url) {
+    public String sanitizeImageUrl(String url)
+    {
         return sanitizeLinkUrl(url);
     }
 
-    private String stripHtmlSpaces(String s) {
+    private String stripHtmlSpaces(String s)
+    {
         int i = 0, n = s.length();
-        for (; n > i; --n) {
-            if (!isHtmlSpace(s.charAt(n - 1))) {
+        for (; n > i; --n)
+        {
+            if (!isHtmlSpace(s.charAt(n - 1)))
+            {
                 break;
             }
         }
-        for (; i < n; ++i) {
-            if (!isHtmlSpace(s.charAt(i))) {
+        for (; i < n; ++i)
+        {
+            if (!isHtmlSpace(s.charAt(i)))
+            {
                 break;
             }
         }
-        if (i == 0 && n == s.length()) {
+        if (i == 0 && n == s.length())
+        {
             return s;
         }
         return s.substring(i, n);
     }
 
-    private boolean isHtmlSpace(int ch) {
-        switch (ch) {
+    private boolean isHtmlSpace(int ch)
+    {
+        switch (ch)
+        {
             case ' ':
             case '\t':
             case '\n':

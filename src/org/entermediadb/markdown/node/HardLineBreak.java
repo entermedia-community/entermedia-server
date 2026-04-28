@@ -9,14 +9,14 @@ package org.entermediadb.markdown.node;
  * </pre>
  * <p>
  *
- * @see <a href=
- *      "https://spec.commonmark.org/0.31.2/#hard-line-breaks">CommonMark
- *      Spec</a>
+ * @see <a href= "https://spec.commonmark.org/0.31.2/#hard-line-breaks">CommonMark Spec</a>
  */
-public class HardLineBreak extends Node {
+public class HardLineBreak extends Node
+{
 
     @Override
-    public void accept(Visitor visitor) {
+    public void accept(Visitor visitor)
+    {
         visitor.visit(this);
     }
 }

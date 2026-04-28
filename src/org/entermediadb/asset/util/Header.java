@@ -8,46 +8,57 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class Header {
+public class Header
+{
 	protected List fieldHeaderNames;
 
-	public List getHeaderNames() {
-		if (fieldHeaderNames == null) {
+	public List getHeaderNames()
+	{
+		if (fieldHeaderNames == null)
+		{
 			fieldHeaderNames = new ArrayList();
 		}
 		return fieldHeaderNames;
 	}
 
-	public void setHeaders(Collection inHeaders) {
+	public void setHeaders(Collection inHeaders)
+	{
 		getHeaderNames().clear();
-		for (Iterator iterator = inHeaders.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inHeaders.iterator(); iterator.hasNext();)
+		{
 			String heaader = (String) iterator.next();
 			getHeaderNames().add(heaader);
 		}
 	}
 
-	public void setHeaders(String[] inHeaders) {
+	public void setHeaders(String[] inHeaders)
+	{
 		getHeaderNames().clear();
-		for (int i = 0; i < inHeaders.length; i++) {
+		for (int i = 0; i < inHeaders.length; i++)
+		{
 			// Integer integer = new Integer(i);
 			getHeaderNames().add(inHeaders[i]);
 		}
 	}
 
-	public int getIndex(String inName) {
+	public int getIndex(String inName)
+	{
 		return getHeaderNames().indexOf(inName);
 	}
 
-	public String getColumn(int inIndex) {
+	public String getColumn(int inIndex)
+	{
 		String name = (String) getHeaderNames().get(inIndex);
 		return name;
 	}
 
-	public int getSize() {
+	public int getSize()
+	{
 		return getHeaderNames().size();
 	}
 
-	public void replaceLabel(String inHeaderName, String inNewHeaderName) {
+	public void replaceLabel(String inHeaderName, String inNewHeaderName)
+	{
 		int headerIndex = getIndex(inHeaderName);
 		getHeaderNames().set(headerIndex, inNewHeaderName);
 	}

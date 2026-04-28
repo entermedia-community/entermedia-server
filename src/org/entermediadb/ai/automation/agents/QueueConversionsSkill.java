@@ -11,24 +11,31 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 
-public class QueueConversionsSkill extends BaseSkill {
+public class QueueConversionsSkill extends BaseSkill
+{
 	@Override
-	public void process(AgentContext inContext) {
+	public void process(AgentContext inContext)
+	{
 		Collection<Asset> hits = (Collection<Asset>) inContext.getContextValue("hits");
 
 		Searcher assetsearcher = getMediaArchive().getAssetSearcher();
 
-		if (hits.size() == 0) {
+		if (hits.size() == 0)
+		{
 			inContext.info("No assets found. " + hits);
 			return;
 		}
 		Searcher tasksearcher = getMediaArchive().getSearcher("conversiontask");
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
 			Data hit = (Data) iterator.next();
-			try {
+			try
+			{
 				Asset asset = (Asset) assetsearcher.loadData(hit);
 				getMediaArchive().getPresetManager().queueConversions(getMediaArchive(), tasksearcher, asset);
-			} catch (Throwable ex) {
+			}
+			catch (Throwable ex)
+			{
 				inContext.error(hit.getId(), ex);
 			}
 		}

@@ -9,7 +9,8 @@ import java.util.List;
 import org.openedit.OpenEditException;
 import org.openedit.users.User;
 
-public class BaseTask extends PropertyContainer {
+public class BaseTask extends PropertyContainer
+{
 	protected User fieldUser;
 	protected String fieldId;
 	protected String fieldName;
@@ -25,150 +26,189 @@ public class BaseTask extends PropertyContainer {
 
 	}
 
-	public long getExpirationTime() {
+	public long getExpirationTime()
+	{
 		return fieldExpirationTime;
 	}
 
-	public void setExpirationTime(long inExpirationTime) {
+	public void setExpirationTime(long inExpirationTime)
+	{
 		fieldExpirationTime = inExpirationTime;
 	}
 
-	public List getActions() {
-		if (fieldActions == null) {
+	public List getActions()
+	{
+		if (fieldActions == null)
+		{
 			fieldActions = new ArrayList();
 		}
 		return fieldActions;
 	}
 
-	public Action getAction(int inIndex) {
-		if (inIndex < getActions().size()) {
+	public Action getAction(int inIndex)
+	{
+		if (inIndex < getActions().size())
+		{
 			return (Action) getActions().get(inIndex);
 		}
 		return null;
 	}
 
-	public User getUser() {
+	public User getUser()
+	{
 		return fieldUser;
 	}
 
-	public void setUser(User inUser) {
+	public void setUser(User inUser)
+	{
 		fieldUser = inUser;
 	}
 
-	public String getId() {
+	public String getId()
+	{
 		return fieldId;
 	}
 
-	public void setId(String inId) {
+	public void setId(String inId)
+	{
 		fieldId = inId;
 	}
 
-	public int getNumActions() {
+	public int getNumActions()
+	{
 		return getActions().size();
 	}
 
-	public void reset() {
+	public void reset()
+	{
 		setActionIndex(0);
 	}
 
-	public void fail() {
+	public void fail()
+	{
 		setActionIndex(-1);
 	}
 
-	public boolean hasFailed() {
+	public boolean hasFailed()
+	{
 		return (getActionIndex() == -1);
 	}
 
-	public boolean isFinished() {
+	public boolean isFinished()
+	{
 		return (getActionIndex() >= getNumActions());
 	}
 
-	public Action getCurrentAction() {
-		if (isFinished() || hasFailed()) {
+	public Action getCurrentAction()
+	{
+		if (isFinished() || hasFailed())
+		{
 			return null;
 		}
 
 		return getAction(getActionIndex());
 	}
 
-	public void nextAction() {
-		if (!hasFailed() && !isFinished()) {
+	public void nextAction()
+	{
+		if (!hasFailed() && !isFinished())
+		{
 			int newIndex = getActionIndex() + 1;
 			setActionIndex(newIndex);
 		}
 	}
 
-	public int getActionIndex() {
+	public int getActionIndex()
+	{
 		return fieldActionIndex;
 	}
 
-	public void setActionIndex(int inStepIndex) {
+	public void setActionIndex(int inStepIndex)
+	{
 		fieldActionIndex = inStepIndex;
 	}
 
-	public void executeCurrentAction() throws OpenEditException {
+	public void executeCurrentAction() throws OpenEditException
+	{
 		wakeup();
 		Action action = getCurrentAction();
-		if (action != null) {
+		if (action != null)
+		{
 			setLastRun(new Date());
-			if (action.execute(this)) {
+			if (action.execute(this))
+			{
 				nextAction();
-			} else {
+			}
+			else
+			{
 				sleep();
 			}
 		}
 	}
 
-	public String getWorkflowID() {
+	public String getWorkflowID()
+	{
 		return fieldWorkflowID;
 	}
 
-	public void setWorkflowID(String inWorkflowID) {
+	public void setWorkflowID(String inWorkflowID)
+	{
 		fieldWorkflowID = inWorkflowID;
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return fieldName;
 	}
 
-	public void setName(String inName) {
+	public void setName(String inName)
+	{
 		fieldName = inName;
 	}
 
-	public Iterator getPropertyNameIterator() {
+	public Iterator getPropertyNameIterator()
+	{
 		return getProperties().keySet().iterator();
 	}
 
-	public String getProperty(String key) {
+	public String getProperty(String key)
+	{
 		return (String) getProperties().get(key);
 	}
 
-	public void setProperty(String key, String value) {
+	public void setProperty(String key, String value)
+	{
 		getProperties().put(key, value);
 	}
 
-	public void clear() {
+	public void clear()
+	{
 		getActions().clear();
 	}
 
-	public void addAction(Action inAction) {
+	public void addAction(Action inAction)
+	{
 		getActions().add(inAction);
 		addPropertyChild(inAction);
 	}
 
-	public boolean isSleeping() {
+	public boolean isSleeping()
+	{
 		return fieldAsleep;
 	}
 
-	public void sleep() {
+	public void sleep()
+	{
 		fieldAsleep = true;
 	}
 
-	public void wakeup() {
+	public void wakeup()
+	{
 		fieldAsleep = false;
 	}
 
-	public BaseTask copy() {
+	public BaseTask copy()
+	{
 		BaseTask task = new BaseTask();
 
 		task.fieldUser = fieldUser;
@@ -177,7 +217,8 @@ public class BaseTask extends PropertyContainer {
 		task.fieldWorkflowID = fieldWorkflowID;
 		task.fieldActionIndex = fieldActionIndex;
 		task.fieldActions = fieldActions;
-		for (Iterator i = getPropertyNameIterator(); i.hasNext();) {
+		for (Iterator i = getPropertyNameIterator(); i.hasNext();)
+		{
 			String propertyName = (String) i.next();
 			task.putProperty(propertyName, getProperty(propertyName));
 		}
@@ -187,26 +228,32 @@ public class BaseTask extends PropertyContainer {
 		return task;
 	}
 
-	public String getFormattedLastRun() {
-		if (getLastRun() != null) {
+	public String getFormattedLastRun()
+	{
+		if (getLastRun() != null)
+		{
 			return DateFormat.getDateTimeInstance().format(getLastRun());
 		}
 		return null;
 	}
 
-	public Date getLastRun() {
+	public Date getLastRun()
+	{
 		return fieldLastRun;
 	}
 
-	public void setLastRun(Date inLastRun) {
+	public void setLastRun(Date inLastRun)
+	{
 		fieldLastRun = inLastRun;
 	}
 
-	public String getLastOutput() {
+	public String getLastOutput()
+	{
 		return fieldLastOutput;
 	}
 
-	public void setLastOutput(String inLastOutput) {
+	public void setLastOutput(String inLastOutput)
+	{
 		fieldLastOutput = inLastOutput;
 	}
 }

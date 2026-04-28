@@ -7,19 +7,21 @@ import java.util.Iterator;
  *
  * @since 0.16.0
  */
-public class Nodes {
+public class Nodes
+{
 
-    private Nodes() {
-    }
+    private Nodes() {}
 
     /**
      * The nodes between (not including) start and end.
      */
-    public static Iterable<Node> between(Node start, Node end) {
+    public static Iterable<Node> between(Node start, Node end)
+    {
         return new NodeIterable(start.getNext(), end);
     }
 
-    private static class NodeIterable implements Iterable<Node> {
+    private static class NodeIterable implements Iterable<Node>
+    {
 
         private final Node first;
         private final Node end;
@@ -30,12 +32,14 @@ public class Nodes {
         }
 
         @Override
-        public Iterator<Node> iterator() {
+        public Iterator<Node> iterator()
+        {
             return new NodeIterator(first, end);
         }
     }
 
-    private static class NodeIterator implements Iterator<Node> {
+    private static class NodeIterator implements Iterator<Node>
+    {
 
         private Node node;
         private final Node end;
@@ -46,19 +50,22 @@ public class Nodes {
         }
 
         @Override
-        public boolean hasNext() {
+        public boolean hasNext()
+        {
             return node != null && node != end;
         }
 
         @Override
-        public Node next() {
+        public Node next()
+        {
             Node result = node;
             node = node.getNext();
             return result;
         }
 
         @Override
-        public void remove() {
+        public void remove()
+        {
             throw new UnsupportedOperationException("remove");
         }
     }

@@ -6,7 +6,8 @@ import java.util.Set;
 import org.entermediadb.asset.Category;
 import org.openedit.data.Searcher;
 
-public interface CategorySearcher extends Searcher {
+public interface CategorySearcher extends Searcher
+{
 	Category getRootCategory();
 
 	Category getCategory(String inCatalog);

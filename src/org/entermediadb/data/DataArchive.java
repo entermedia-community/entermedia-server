@@ -7,7 +7,8 @@ import org.openedit.Data;
 import org.openedit.users.User;
 import org.openedit.xml.XmlArchive;
 
-public interface DataArchive extends CatalogEnabled {
+public interface DataArchive extends CatalogEnabled
+{
 
 	void setXmlArchive(XmlArchive inXmlArchive);
 

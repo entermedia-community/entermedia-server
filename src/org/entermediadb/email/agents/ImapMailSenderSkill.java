@@ -6,8 +6,10 @@ import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.AgentEnabled;
 import org.entermediadb.email.PostMail;
 
-public class ImapMailSenderSkill extends BaseSkill {
-    public void process(AgentContext inContext) {
+public class ImapMailSenderSkill extends BaseSkill
+{
+    public void process(AgentContext inContext)
+    {
         AgentEnabled currentEnabled = inContext.getCurrentAgentEnable();
 
         String server = (String) inContext.getContextValue("mailserver");
@@ -20,12 +22,14 @@ public class ImapMailSenderSkill extends BaseSkill {
         String reply_subject = (String) inContext.getContextValue("reply_subject");
         String reply_body = (String) inContext.getContextValue("reply_body");
 
-        if (reply_body == null) {
+        if (reply_body == null)
+        {
             inContext.error("No reply content found in context for email response");
             return;
         }
 
-        try {
+        try
+        {
             PostMail postMail = new PostMail();
             postMail.setSmtpServer(server);
             postMail.setPort(serverport);
@@ -36,7 +40,9 @@ public class ImapMailSenderSkill extends BaseSkill {
             postMail.postMail(to, reply_subject, reply_body, username);
 
             inContext.info("Email response sent to " + to + " with subject: " + reply_subject);
-        } catch (MessagingException e) {
+        }
+        catch (MessagingException e)
+        {
             inContext.error("Failed to send email response: " + e.getMessage());
         }
 

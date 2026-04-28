@@ -15,7 +15,8 @@ import org.openedit.data.SearcherManager;
 import org.openedit.users.User;
 import org.openedit.util.StringEncryption;
 
-public class UserNotifyManager {
+public class UserNotifyManager
+{
 	private static final Log log = LogFactory.getLog(UserNotifyManager.class);
 
 	protected StringEncryption fieldStringEncrytion;
@@ -24,32 +25,40 @@ public class UserNotifyManager {
 	protected ModuleManager fieldModuleManager;
 	protected Map<String, List> fieldUserAuthenticatedConnections;
 
-	public SearcherManager getSearcherManager() {
+	public SearcherManager getSearcherManager()
+	{
 		return fieldSearcherManager;
 	}
 
-	public void setSearcherManager(SearcherManager inSearcherManager) {
+	public void setSearcherManager(SearcherManager inSearcherManager)
+	{
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
-	public Map<String, List> getUserAuthenticatedConnections() {
-		if (fieldUserAuthenticatedConnections == null) {
+	public Map<String, List> getUserAuthenticatedConnections()
+	{
+		if (fieldUserAuthenticatedConnections == null)
+		{
 			fieldUserAuthenticatedConnections = new HashMap(); /// TODO: Remove unused ones on a loop
 		}
 		return fieldUserAuthenticatedConnections;
 	}
 
-	protected void receiveLogin(UserNotifyConnection inConnection, JSONObject map) {
+	protected void receiveLogin(UserNotifyConnection inConnection, JSONObject map)
+	{
 		String username = String.valueOf(map.get("userid"));
-		if (username == null) {
+		if (username == null)
+		{
 			return;
 		}
 		// setDesktop(getDesktop());
@@ -66,10 +75,12 @@ public class UserNotifyManager {
 		}
 		String key = getStringEncrytion().getEnterMediaKey(user);
 
-		if (!key.equals(keyorpasswordentered)) {
+		if (!key.equals(keyorpasswordentered))
+		{
 			// check password
 			String clearpassword = getStringEncrytion().decryptIfNeeded(user.getPassword());
-			if (!keyorpasswordentered.equals(clearpassword)) {
+			if (!keyorpasswordentered.equals(clearpassword))
+			{
 				JSONObject authenticated = new JSONObject();
 				authenticated.put("command", "authenticatefail");
 				authenticated.put("reason", "Password did not match");
@@ -80,10 +91,12 @@ public class UserNotifyManager {
 		inConnection.setUserId(username);
 
 		List connections = getUserAuthenticatedConnections().get(username);
-		if (connections == null) {
+		if (connections == null)
+		{
 			connections = new ArrayList();
 		}
-		synchronized (connections) {
+		synchronized (connections)
+		{
 			connections.add(inConnection);
 			getUserAuthenticatedConnections().put(username, connections);
 		}
@@ -97,19 +110,24 @@ public class UserNotifyManager {
 		inConnection.sendMessage(authenticated);
 	}
 
-	public StringEncryption getStringEncrytion() {
-		if (fieldStringEncrytion == null) {
+	public StringEncryption getStringEncrytion()
+	{
+		if (fieldStringEncrytion == null)
+		{
 			fieldStringEncrytion = (StringEncryption) getModuleManager().getBean("stringEncryption");
 		}
 		return fieldStringEncrytion;
 	}
 
-	public void setStringEncrytion(StringEncryption inStringEncrytion) {
+	public void setStringEncrytion(StringEncryption inStringEncrytion)
+	{
 		fieldStringEncrytion = inStringEncrytion;
 	}
 
-	public void onMessage(UserNotifyConnection inConnection, JSONObject map) {
-		try {
+	public void onMessage(UserNotifyConnection inConnection, JSONObject map)
+	{
+		try
+		{
 			// message = message.replaceAll("null", "\"null\"");
 			String command = (String) map.get("command");
 			// getDesktop().setLastCommand(command);
@@ -118,27 +136,17 @@ public class UserNotifyManager {
 				receiveLogin(inConnection, map);
 			}
 			/*
-			 * else if ("folderedited".equals(command)) //Return all the annotation on this
-			 * asset
-			 * {
-			 * String foldername = (String)map.get("foldername");
-			 * getDesktop().addEditedCollection(foldername);
-			 * }
-			 * else if ("busychanged".equals(command)) //Return all the annotation on this
-			 * asset
-			 * {
-			 * boolean busy = (boolean)map.get("isbusy");
-			 * getDesktop().setBusy(busy);
-			 * }
-			 * else if ("folderedited".equals(command)) //Return all the annotation on this
-			 * asset
-			 * {
-			 * String foldername = (String)map.get("foldername");
-			 * getDesktop().addEditedCollection(foldername);
-			 * }
+			 * else if ("folderedited".equals(command)) //Return all the annotation on this asset { String
+			 * foldername = (String)map.get("foldername"); getDesktop().addEditedCollection(foldername); } else
+			 * if ("busychanged".equals(command)) //Return all the annotation on this asset { boolean busy =
+			 * (boolean)map.get("isbusy"); getDesktop().setBusy(busy); } else if
+			 * ("folderedited".equals(command)) //Return all the annotation on this asset { String foldername =
+			 * (String)map.get("foldername"); getDesktop().addEditedCollection(foldername); }
 			 */
 
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			// TODO Auto-generated catch block
 			log.error(e);
 			e.printStackTrace();
@@ -146,28 +154,37 @@ public class UserNotifyManager {
 
 	}
 
-	public void removeConnection(UserNotifyConnection inUserNotifyConnection) {
+	public void removeConnection(UserNotifyConnection inUserNotifyConnection)
+	{
 		Collection connections = getUserAuthenticatedConnections().get(inUserNotifyConnection.getUserId());
-		if (connections != null) {
+		if (connections != null)
+		{
 			connections.remove(inUserNotifyConnection);
 		}
 
 	}
 
-	public void sentNotifications(String inUserId, JSONObject inMessage) {
+	public void sentNotifications(String inUserId, JSONObject inMessage)
+	{
 		List connections = getUserAuthenticatedConnections().get(inUserId);
-		if (connections != null) {
-			synchronized (connections) {
+		if (connections != null)
+		{
+			synchronized (connections)
+			{
 				Collection toremove = new ArrayList(connections.size());
-				for (Iterator iterator = connections.iterator(); iterator.hasNext();) {
+				for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+				{
 					UserNotifyConnection connection = (UserNotifyConnection) iterator.next();
-					if (!connection.sendMessage(inMessage)) {
+					if (!connection.sendMessage(inMessage))
+					{
 						toremove.add(connection);
 					}
 				}
 				connections.removeAll(toremove);
 			}
-		} else {
+		}
+		else
+		{
 			log.info("No authenticated connections to notify " + inUserId);
 		}
 	}

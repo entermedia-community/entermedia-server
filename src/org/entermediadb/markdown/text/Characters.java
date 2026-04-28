@@ -3,22 +3,29 @@ package org.entermediadb.markdown.text;
 /**
  * Functions for finding characters in strings or checking characters.
  */
-public class Characters {
+public class Characters
+{
 
-    public static int find(char c, CharSequence s, int startIndex) {
+    public static int find(char c, CharSequence s, int startIndex)
+    {
         int length = s.length();
-        for (int i = startIndex; i < length; i++) {
-            if (s.charAt(i) == c) {
+        for (int i = startIndex; i < length; i++)
+        {
+            if (s.charAt(i) == c)
+            {
                 return i;
             }
         }
         return -1;
     }
 
-    public static int findLineBreak(CharSequence s, int startIndex) {
+    public static int findLineBreak(CharSequence s, int startIndex)
+    {
         int length = s.length();
-        for (int i = startIndex; i < length; i++) {
-            switch (s.charAt(i)) {
+        for (int i = startIndex; i < length; i++)
+        {
+            switch (s.charAt(i))
+            {
                 case '\n':
                 case '\r':
                     return i;
@@ -30,24 +37,30 @@ public class Characters {
     /**
      * @see <a href="https://spec.commonmark.org/0.31.2/#blank-line">blank line</a>
      */
-    public static boolean isBlank(CharSequence s) {
+    public static boolean isBlank(CharSequence s)
+    {
         return skipSpaceTab(s, 0, s.length()) == s.length();
     }
 
-    public static boolean hasNonSpace(CharSequence s) {
+    public static boolean hasNonSpace(CharSequence s)
+    {
         int length = s.length();
         int skipped = skip(' ', s, 0, length);
         return skipped != length;
     }
 
-    public static boolean isLetter(CharSequence s, int index) {
+    public static boolean isLetter(CharSequence s, int index)
+    {
         int codePoint = Character.codePointAt(s, index);
         return Character.isLetter(codePoint);
     }
 
-    public static boolean isSpaceOrTab(CharSequence s, int index) {
-        if (index < s.length()) {
-            switch (s.charAt(index)) {
+    public static boolean isSpaceOrTab(CharSequence s, int index)
+    {
+        if (index < s.length())
+        {
+            switch (s.charAt(index))
+            {
                 case ' ':
                 case '\t':
                     return true;
@@ -57,12 +70,13 @@ public class Characters {
     }
 
     /**
-     * @see <a href=
-     *      "https://spec.commonmark.org/0.31.2/#unicode-punctuation-character">Unicode
+     * @see <a href= "https://spec.commonmark.org/0.31.2/#unicode-punctuation-character">Unicode
      *      punctuation character</a>
      */
-    public static boolean isPunctuationCodePoint(int codePoint) {
-        switch (Character.getType(codePoint)) {
+    public static boolean isPunctuationCodePoint(int codePoint)
+    {
+        switch (Character.getType(codePoint))
+        {
             // General category "P" (punctuation)
             case Character.DASH_PUNCTUATION:
             case Character.START_PUNCTUATION:
@@ -78,7 +92,8 @@ public class Characters {
             case Character.OTHER_SYMBOL:
                 return true;
             default:
-                switch (codePoint) {
+                switch (codePoint)
+                {
                     case '$':
                     case '+':
                     case '<':
@@ -96,15 +111,15 @@ public class Characters {
     }
 
     /**
-     * Check whether the provided code point is a Unicode whitespace character as
-     * defined in the spec.
+     * Check whether the provided code point is a Unicode whitespace character as defined in the spec.
      *
-     * @see <a href=
-     *      "https://spec.commonmark.org/0.31.2/#unicode-whitespace-character">Unicode
+     * @see <a href= "https://spec.commonmark.org/0.31.2/#unicode-whitespace-character">Unicode
      *      whitespace character</a>
      */
-    public static boolean isWhitespaceCodePoint(int codePoint) {
-        switch (codePoint) {
+    public static boolean isWhitespaceCodePoint(int codePoint)
+    {
+        switch (codePoint)
+        {
             case ' ':
             case '\t':
             case '\n':
@@ -116,27 +131,36 @@ public class Characters {
         }
     }
 
-    public static int skip(char skip, CharSequence s, int startIndex, int endIndex) {
-        for (int i = startIndex; i < endIndex; i++) {
-            if (s.charAt(i) != skip) {
+    public static int skip(char skip, CharSequence s, int startIndex, int endIndex)
+    {
+        for (int i = startIndex; i < endIndex; i++)
+        {
+            if (s.charAt(i) != skip)
+            {
                 return i;
             }
         }
         return endIndex;
     }
 
-    public static int skipBackwards(char skip, CharSequence s, int startIndex, int lastIndex) {
-        for (int i = startIndex; i >= lastIndex; i--) {
-            if (s.charAt(i) != skip) {
+    public static int skipBackwards(char skip, CharSequence s, int startIndex, int lastIndex)
+    {
+        for (int i = startIndex; i >= lastIndex; i--)
+        {
+            if (s.charAt(i) != skip)
+            {
                 return i;
             }
         }
         return lastIndex - 1;
     }
 
-    public static int skipSpaceTab(CharSequence s, int startIndex, int endIndex) {
-        for (int i = startIndex; i < endIndex; i++) {
-            switch (s.charAt(i)) {
+    public static int skipSpaceTab(CharSequence s, int startIndex, int endIndex)
+    {
+        for (int i = startIndex; i < endIndex; i++)
+        {
+            switch (s.charAt(i))
+            {
                 case ' ':
                 case '\t':
                     break;
@@ -147,9 +171,12 @@ public class Characters {
         return endIndex;
     }
 
-    public static int skipSpaceTabBackwards(CharSequence s, int startIndex, int lastIndex) {
-        for (int i = startIndex; i >= lastIndex; i--) {
-            switch (s.charAt(i)) {
+    public static int skipSpaceTabBackwards(CharSequence s, int startIndex, int lastIndex)
+    {
+        for (int i = startIndex; i >= lastIndex; i--)
+        {
+            switch (s.charAt(i))
+            {
                 case ' ':
                 case '\t':
                     break;

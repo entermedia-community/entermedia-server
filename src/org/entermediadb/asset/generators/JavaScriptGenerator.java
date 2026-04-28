@@ -26,21 +26,25 @@ import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.FileUtils;
 import org.openedit.util.Sizer;
 
-public class JavaScriptGenerator extends TempFileGenerator {
+public class JavaScriptGenerator extends TempFileGenerator
+{
 	private static Log log = LogFactory.getLog(JavaScriptGenerator.class);
 	protected PageManager fieldPageManager;
 	protected Map<String, Long> cachedSizeCounts = new HashMap();
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		fieldPageManager = inPageManager;
 	}
 
 	@Override
-	public void generate(WebPageRequest inContext, Page inPage, Output inOut) {
+	public void generate(WebPageRequest inContext, Page inPage, Output inOut)
+	{
 		HttpServletResponse res = inContext.getResponse();
 		HttpServletRequest req = inContext.getRequest();
 
@@ -60,79 +64,99 @@ public class JavaScriptGenerator extends TempFileGenerator {
 		// return appscripts;
 
 		List<Script> scripts = getPageManager().getScriptsForApp(rootpage);
-		if (scripts == null) {
+		if (scripts == null)
+		{
 			return;
 		}
 
 		boolean deferonly = Boolean.parseBoolean(inPage.getProperty("deferjs"));
-		for (Iterator iterator = scripts.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = scripts.iterator(); iterator.hasNext();)
+		{
 			Script script = (Script) iterator.next();
 
-			if (include(script, deferonly)) {
+			if (include(script, deferonly))
+			{
 				String path = inPage.replaceProperty(script.getSrc());
 				Page file = getPageManager().getPage(path); // Cached
 				totalsize = totalsize + file.length();
 				long modifield = file.lastModified();
-				if (modifield > mostrecentmod) {
+				if (modifield > mostrecentmod)
+				{
 					mostrecentmod = modifield;
 				}
 			}
 		}
 
 		boolean cached = checkCache(inContext, mostrecentmod, req, res);
-		if (cached) {
+		if (cached)
+		{
 			return;
 		}
 
 		// Something modified. Save file again
-		try {
+		try
+		{
 			Long oldtotal = cachedSizeCounts.get(inPage.getPath());
-			if (oldtotal == null) {
+			if (oldtotal == null)
+			{
 				oldtotal = -1L;
 			}
-			if (oldtotal != totalsize || mostrecentmod != inPage.getLastModified().getTime()) {
+			if (oldtotal != totalsize || mostrecentmod != inPage.getLastModified().getTime())
+			{
 				saveLocally(scripts, deferonly, inPage, inOut, mostrecentmod);
 				cachedSizeCounts.put(inPage.getPath(), totalsize); // TODO check count change or size change
 			}
 			sendBack(inPage, deferonly, mostrecentmod, inOut, res);
-		} catch (Throwable ex) {
+		}
+		catch (Throwable ex)
+		{
 			log.error("Could not save", ex);
 		}
 
 	}
 
-	protected boolean include(Script script, boolean deferonly) {
+	protected boolean include(Script script, boolean deferonly)
+	{
 		String html = script.getSrc();
 		boolean logic = html != null && !html.isEmpty() && !html.startsWith("http");
-		if (logic) {
-			if (script.isDefer() == deferonly) {
+		if (logic)
+		{
+			if (script.isDefer() == deferonly)
+			{
 				return true;
 			}
 		}
 		return false;
 	}
 
-	protected void sendBack(Page inPage, boolean deferonly, long mostrecentmod, Output inOut, HttpServletResponse res)
-			throws UnsupportedEncodingException, IOException {
+	protected void sendBack(Page inPage, boolean deferonly, long mostrecentmod, Output inOut, HttpServletResponse res) throws UnsupportedEncodingException, IOException
+	{
 		long length = inPage.length();
-		if (length > -1) {
+		if (length > -1)
+		{
 			res.setContentLength((int) length);
 		}
 
 		setHeaders(res, mostrecentmod);
 
 		InputStreamReader reader = null;
-		try {
-			if (inPage.getCharacterEncoding() != null) {
+		try
+		{
+			if (inPage.getCharacterEncoding() != null)
+			{
 				reader = new InputStreamReader(inPage.getInputStream(), inPage.getCharacterEncoding());
-			} else {
+			}
+			else
+			{
 				reader = new InputStreamReader(inPage.getInputStream());
 			}
 			// If you get an error about content length then your character encoding is not
 			// correct. Use UTF-8
 			// maybe we need to write with the correct encoding then the files should match
 			getOutputFiller().fill(reader, inOut.getWriter());
-		} finally {
+		}
+		finally
+		{
 			FileUtils.safeClose(reader);
 		}
 		// #foreach( $script in $content.getScriptPaths() )
@@ -146,47 +170,51 @@ public class JavaScriptGenerator extends TempFileGenerator {
 		// #end
 	}
 
-	protected void saveLocally(List<Script> scriptpaths, boolean deferonly, Page inPage, Output inOut,
-			long mostrecentmod) throws FileNotFoundException, IOException {
-		synchronized (inPage) {
+	protected void saveLocally(List<Script> scriptpaths, boolean deferonly, Page inPage, Output inOut, long mostrecentmod) throws FileNotFoundException, IOException
+	{
+		synchronized (inPage)
+		{
 			Page tmpfile = getPageManager().getPage(inPage.getPath() + ".tmp.js");
 
-			Writer out = new OutputStreamWriter(tmpfile.getContentItem().getOutputStream(),
-					inPage.getCharacterEncoding());
+			Writer out = new OutputStreamWriter(tmpfile.getContentItem().getOutputStream(), inPage.getCharacterEncoding());
 			Sizer sizer = new Sizer();
 
-			for (Iterator iterator = scriptpaths.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = scriptpaths.iterator(); iterator.hasNext();)
+			{
 				Script script = (Script) iterator.next();
 
-				if (include(script, deferonly)) {
+				if (include(script, deferonly))
+				{
 					String path = inPage.replaceProperty(script.getSrc());
 					Page infile = getPageManager().getPage(path);
 					InputStreamReader reader = null;
-					if (!infile.exists()) {
-						out.write(System.lineSeparator() + "/** " + System.lineSeparator()
-								+ " EnterMediaDB javascriptGenerator : 404 NOT FOUND" + script.getSrc()
-								+ System.lineSeparator() + script.getPath() + System.lineSeparator() + "  **/"
-								+ System.lineSeparator() + System.lineSeparator());
+					if (!infile.exists())
+					{
+						out.write(System.lineSeparator() + "/** " + System.lineSeparator() + " EnterMediaDB javascriptGenerator : 404 NOT FOUND" + script.getSrc() + System.lineSeparator()
+							+ script.getPath() + System.lineSeparator() + "  **/" + System.lineSeparator() + System.lineSeparator());
 						out.write(System.lineSeparator() + System.lineSeparator() + System.lineSeparator());
 						continue;
 					}
-					if (infile.getCharacterEncoding() != null) {
+					if (infile.getCharacterEncoding() != null)
+					{
 
 						reader = new InputStreamReader(infile.getInputStream(), infile.getCharacterEncoding());
-					} else {
+					}
+					else
+					{
 						reader = new InputStreamReader(infile.getInputStream());
 					}
-					try {
-						out.write(System.lineSeparator() + "/** " + System.lineSeparator()
-								+ " EnterMediaDB javascriptGenerator : " + script.getSrc() + System.lineSeparator()
-								+ script.getPath() + System.lineSeparator() + " Modified: " + infile.getLastModified()
-								+ " Size: " + sizer.inEnglish(infile.length()) + " **/" + System.lineSeparator()
-								+ System.lineSeparator());
+					try
+					{
+						out.write(System.lineSeparator() + "/** " + System.lineSeparator() + " EnterMediaDB javascriptGenerator : " + script.getSrc() + System.lineSeparator() + script.getPath()
+							+ System.lineSeparator() + " Modified: " + infile.getLastModified() + " Size: " + sizer.inEnglish(infile.length()) + " **/" + System.lineSeparator()
+							+ System.lineSeparator());
 						getOutputFiller().fill(reader, out);
 						out.write(System.lineSeparator() + System.lineSeparator() + System.lineSeparator());
-						out.write(System.lineSeparator() + "//Ended: " + script.getSrc() + " Size: "
-								+ sizer.inEnglish(infile.length()) + System.lineSeparator() + System.lineSeparator());
-					} finally {
+						out.write(System.lineSeparator() + "//Ended: " + script.getSrc() + " Size: " + sizer.inEnglish(infile.length()) + System.lineSeparator() + System.lineSeparator());
+					}
+					finally
+					{
 						FileUtils.safeClose(reader);
 					}
 				}
@@ -196,7 +224,8 @@ public class JavaScriptGenerator extends TempFileGenerator {
 			getPageManager().removePage(inPage);
 			// tmpfile.getContent().set
 			getPageManager().movePage(tmpfile, inPage);
-			if (inPage.getContentItem() instanceof FileItem) {
+			if (inPage.getContentItem() instanceof FileItem)
+			{
 				FileItem savedata = (FileItem) inPage.getContentItem();
 				savedata.getFile().setLastModified(mostrecentmod);
 			}

@@ -10,7 +10,8 @@ import org.entermediadb.asset.MediaArchive;
  * @author cburkey
  * 
  */
-public abstract class Scanner {
+public abstract class Scanner
+{
 	public abstract void importAssets(MediaArchive inStore, ConvertStatus inErrorLog) throws Exception;
 
 }

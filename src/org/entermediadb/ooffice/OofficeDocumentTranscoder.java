@@ -17,13 +17,15 @@ import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
 import org.openedit.util.PathUtilities;
 
-public class OofficeDocumentTranscoder extends BaseTranscoder {
+public class OofficeDocumentTranscoder extends BaseTranscoder
+{
 	// protected final def formats =
 	// ["doc","docx","rtf","ppt","pptx","wps","odt","html","xml","csv", "xls",
 	// "xlsx", "odp"];
 	private static final Log log = LogFactory.getLog(OofficeDocumentTranscoder.class);
 
-	public synchronized ConvertResult convert(ConvertInstructions inStructions) {
+	public synchronized ConvertResult convert(ConvertInstructions inStructions)
+	{
 		MediaArchive inArchive = inStructions.getMediaArchive();
 		Asset inAsset = inStructions.getAsset();
 		ContentItem inOut = inStructions.getOutputFile();
@@ -33,7 +35,8 @@ public class OofficeDocumentTranscoder extends BaseTranscoder {
 		result.setOk(false);
 
 		Page input = inArchive.findOriginalMediaByType("document", inAsset);
-		if (input == null) {
+		if (input == null)
+		{
 			return result;
 		}
 
@@ -68,20 +71,23 @@ public class OofficeDocumentTranscoder extends BaseTranscoder {
 		ExecResult done = getExec().runExec("soffice", command, timeout);
 
 		result.setOk(done.isRunOk());
-		if (done.isRunOk()) {
+		if (done.isRunOk())
+		{
 			String newname = PathUtilities.extractPageName(input.getName()) + ".pdf";
 
 			Page tmpfile = getPageManager().getPage(outfolder + "/" + newname);
-			if (!tmpfile.exists() || tmpfile.length() == 0) {
+			if (!tmpfile.exists() || tmpfile.length() == 0)
+			{
 				throw new OpenEditException("OpenOffice did not create output file " + tmpfile);
 			}
 			Page output = getPageManager().getPage(inOut.getPath());
 			inStructions.setOutputFile(output.getContentItem());
 			getPageManager().movePage(tmpfile, output);
 			log.info("Completed: " + input.getName());
-		} else {
-			log.error("Error running command on : " + input.getName() + " output:"
-					+ done.getStandardOut() + " returned: " + done.getReturnValue());
+		}
+		else
+		{
+			log.error("Error running command on : " + input.getName() + " output:" + done.getStandardOut() + " returned: " + done.getReturnValue());
 		}
 		return result;
 	}

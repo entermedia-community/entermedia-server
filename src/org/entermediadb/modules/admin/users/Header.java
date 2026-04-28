@@ -13,54 +13,67 @@ import java.util.Map;
 
 import org.openedit.util.FileUtils;
 
-public class Header {
+public class Header
+{
 	protected Map fieldHeaderNames;
 	protected BufferedReader fieldReader;
 
-	public Map getHeaderNames() {
-		if (fieldHeaderNames == null) {
+	public Map getHeaderNames()
+	{
+		if (fieldHeaderNames == null)
+		{
 			fieldHeaderNames = new HashMap();
 		}
 		return fieldHeaderNames;
 	}
 
-	public void setHeaders(String[] inHeaders) {
-		for (int i = 0; i < inHeaders.length; i++) {
+	public void setHeaders(String[] inHeaders)
+	{
+		for (int i = 0; i < inHeaders.length; i++)
+		{
 			Integer integer = new Integer(i);
 			getHeaderNames().put(integer, inHeaders[i]);
 		}
 	}
 
-	public int getIndex(String inName) {
+	public int getIndex(String inName)
+	{
 		Map headerNames = getHeaderNames();
-		for (Iterator iter = headerNames.keySet().iterator(); iter.hasNext();) {
+		for (Iterator iter = headerNames.keySet().iterator(); iter.hasNext();)
+		{
 			Integer index = (Integer) iter.next();
 			String name = (String) headerNames.get(index);
-			if (name.equalsIgnoreCase(inName)) {
+			if (name.equalsIgnoreCase(inName))
+			{
 				return index.intValue();
 			}
 		}
 		return -1;
 	}
 
-	public String getColumn(int inIndex) {
+	public String getColumn(int inIndex)
+	{
 		String name = (String) getHeaderNames().get(new Integer(inIndex));
-		if (name != null) {
+		if (name != null)
+		{
 			return name;
 		}
 		return null;
 	}
 
-	public int getSize() {
+	public int getSize()
+	{
 		return getHeaderNames().size();
 	}
 
-	public void loadColumns(File inFile) throws IOException {
+	public void loadColumns(File inFile) throws IOException
+	{
 		BufferedReader reader = new BufferedReader(new FileReader(inFile));
 		setReader(reader);
 
 		String line = getReader().readLine();
-		if (line == null) {
+		if (line == null)
+		{
 			FileUtils.safeClose(getReader());
 			return;
 		}
@@ -69,9 +82,11 @@ public class Header {
 		setHeaders(cells);
 	}
 
-	public Row getNextRow() throws IOException {
+	public Row getNextRow() throws IOException
+	{
 		String line = getReader().readLine();
-		if (line == null) {
+		if (line == null)
+		{
 			FileUtils.safeClose(getReader());
 			return null;
 		}
@@ -82,11 +97,13 @@ public class Header {
 		return row;
 	}
 
-	public BufferedReader getReader() {
+	public BufferedReader getReader()
+	{
 		return fieldReader;
 	}
 
-	public void setReader(BufferedReader inReader) {
+	public void setReader(BufferedReader inReader)
+	{
 		fieldReader = inReader;
 	}
 }

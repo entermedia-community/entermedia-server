@@ -56,40 +56,48 @@ import org.openedit.users.User;
 import org.openedit.util.FileUtils;
 import org.openedit.util.MathUtils;
 
-public class FaceProfileManager extends BaseAiManager implements CatalogEnabled {
+public class FaceProfileManager extends BaseAiManager implements CatalogEnabled
+{
 	private static final Log log = LogFactory.getLog(FaceProfileManager.class);
 
 	protected String fieldCatalogId;
 	protected String savedapikey = "";
 
-	public String getCatalogId() {
+	public String getCatalogId()
+	{
 		return fieldCatalogId;
 	}
 
-	public void setCatalogId(String inCatalogId) {
+	public void setCatalogId(String inCatalogId)
+	{
 		fieldCatalogId = inCatalogId;
 	}
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
 	protected ModuleManager fieldModuleManager;
 
-	protected MediaArchive getMediaArchive() {
+	protected MediaArchive getMediaArchive()
+	{
 		return (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 	}
 
-	public FaceScanInstructions createInstructions() {
+	public FaceScanInstructions createInstructions()
+	{
 		FaceScanInstructions instructions = new FaceScanInstructions();
 
 		double facedetect_detect_confidence = .7D;
 		String detectvalue = getMediaArchive().getCatalogSettingValue("facedetect_detect_confidence");
-		if (detectvalue != null) {
+		if (detectvalue != null)
+		{
 			facedetect_detect_confidence = Double.parseDouble(detectvalue);
 		}
 		instructions.setConfidenceLimit(facedetect_detect_confidence);
@@ -97,7 +105,8 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		int minfacesize = 250; // was 450
 
 		String minumfaceimagesize = getMediaArchive().getCatalogSettingValue("facedetect_minimum_face_size");
-		if (minumfaceimagesize != null) {
+		if (minumfaceimagesize != null)
+		{
 			minfacesize = Integer.parseInt(minumfaceimagesize);
 		}
 		instructions.setMinimumFaceSize(minfacesize);
@@ -121,10 +130,12 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		HashMap<String, Collection<MultiValued>> byassetid = new HashMap(existingfaces.size());
 
 		// log.error("Loading giant list of assetid");
-		for (Iterator iterator = existingfaces.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = existingfaces.iterator(); iterator.hasNext();)
+		{
 			MultiValued face = (MultiValued) iterator.next();
 			Collection<MultiValued> existing = byassetid.get(face.get("assetid"));
-			if (existing == null) {
+			if (existing == null)
+			{
 				existing = new ArrayList(2);
 			}
 			existing.add(face);
@@ -136,7 +147,8 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		List<MultiValued> foundfacestosave = new ArrayList();
 		List<Data> tosave = new ArrayList();
 
-		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
+		{
 			Asset asset = (Asset) iterator.next();
 
 			asset.setValue("facescancomplete", true); // ToDo: Remove this and relay in LLM Booleans
@@ -145,15 +157,19 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 			if (instructions.isSkipExistingFaces()) // This is the default, but when rescanning one asset dont skip
 			{
 				String assetid = asset.getId();
-				if (instructions.getExistingFacesByAssetId().containsKey(assetid)) {
+				if (instructions.getExistingFacesByAssetId().containsKey(assetid))
+				{
 					log.error("Skipping, Already have assetid " + assetid);
 					continue;
 				}
 			}
-			try {
+			try
+			{
 				asset.setValue("facehasprofile", false);
 				extractFaces(inLog, instructions, asset, foundfacestosave);
-			} catch (Throwable ex) {
+			}
+			catch (Throwable ex)
+			{
 				log.error("Marking Error on one asset: " + asset + " error:" + ex);
 				asset.setValue("facescanerror", true);
 				// throw new OpenEditException("Error on: " + inAssets.size(),ex);
@@ -163,27 +179,30 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		getMediaArchive().saveData("faceembedding", foundfacestosave);
 
 		log.info("Saved Assets " + tosave.size() + " added faces:  " + foundfacestosave.size());
-		if (inLog != null) {
+		if (inLog != null)
+		{
 			inLog.info(" Found " + foundfacestosave.size() + " faces");
 		}
 
 		getKMeansIndexer().checkReinit();
 
-		if (!foundfacestosave.isEmpty()) {
+		if (!foundfacestosave.isEmpty())
+		{
 			clearAllCaches();
 		}
 
 		return foundfacestosave.size();
 	}
 
-	protected int extractFaces(ScriptLogger inLog, FaceScanInstructions instructions, Asset inAsset,
-			List<MultiValued> inFoundfaces) throws Exception {
+	protected int extractFaces(ScriptLogger inLog, FaceScanInstructions instructions, Asset inAsset, List<MultiValued> inFoundfaces) throws Exception
+	{
 
 		String type = getMediaArchive().getMediaRenderType(inAsset);
 
 		inAsset.setValue("facescancomplete", "true");
 
-		if (!"image".equalsIgnoreCase(type) && !"video".equalsIgnoreCase(type)) {
+		if (!"image".equalsIgnoreCase(type) && !"video".equalsIgnoreCase(type))
+		{
 			log.info("Skipping non images: " + inAsset.getName());
 			return 0;
 		}
@@ -191,38 +210,53 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 
 		Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
 
-		if ("image".equalsIgnoreCase(type) && inAsset.getFileFormat() != null) {
+		if ("image".equalsIgnoreCase(type) && inAsset.getFileFormat() != null)
+		{
 			long filesize = inAsset.getLong("filesize");
 
 			long imagew = inAsset.getLong("width");
 			long imageh = inAsset.getLong("height");
 			long imagesize = imagew * imageh;
 
-			if (imagesize < 90000) {
+			if (imagesize < 90000)
+			{
 				return 0;
 			}
 
 			String fileformat = inAsset.getFileFormat();
 
 			Boolean useoriginal = true;
-			if (filesize > 600000) {
+			if (filesize > 600000)
+			{
 				useoriginal = false;
-			} else if (imagesize > 36000000) { // 4x 3000x0000 MAX: 178956970
-				// Default Copreface imagesize limit
-				useoriginal = false;
-			} else {
-				String colorpsace = inAsset.get("colorspace");
-				if ("4".equals(colorpsace) || "5".equals(colorpsace)) {
-					useoriginal = false;
-				} else if (inAsset.isPropertyTrue("hasthumbnail")) {
-					useoriginal = false; // deepface has a bug that it uses the image thumbnail for sizing
-				}
-				if (fileformat.equals("jpg") || fileformat.equals("jpeg") || fileformat.equals("webp")) {
-					// Its ok
-				} else {
-					useoriginal = false;
-				}
 			}
+			else
+				if (imagesize > 36000000)
+				{ // 4x 3000x0000 MAX: 178956970
+					// Default Copreface imagesize limit
+					useoriginal = false;
+				}
+				else
+				{
+					String colorpsace = inAsset.get("colorspace");
+					if ("4".equals(colorpsace) || "5".equals(colorpsace))
+					{
+						useoriginal = false;
+					}
+					else
+						if (inAsset.isPropertyTrue("hasthumbnail"))
+						{
+							useoriginal = false; // deepface has a bug that it uses the image thumbnail for sizing
+						}
+					if (fileformat.equals("jpg") || fileformat.equals("jpeg") || fileformat.equals("webp"))
+					{
+						// Its ok
+					}
+					else
+					{
+						useoriginal = false;
+					}
+				}
 
 			// ContentItem input = getMediaArchive().getContent("/WEB-INF/data" +
 			// getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath()
@@ -241,72 +275,83 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 
 			// Send orginal JPEG directly if they are small?
 			ContentItem input = null;
-			if (useoriginal) {
+			if (useoriginal)
+			{
 				input = getMediaArchive().getOriginalContent(inAsset);
-			} else {
+			}
+			else
+			{
 				String filename = "image3000x3000.webp";
-				input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome()
-						+ "/generated/" + inAsset.getSourcePath() + "/" + filename);
+				input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/" + filename);
 
-				if (!input.exists()) {
+				if (!input.exists())
+				{
 					filename = "image3000x3000.jpg";
-					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome()
-							+ "/generated/" + inAsset.getSourcePath() + "/" + filename);
+					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/" + filename);
 				}
 			}
-			if (!input.exists()) {
+			if (!input.exists())
+			{
 				throw new OpenEditException("Input not available " + input.getPath());
 			}
 
-			if (inLog != null) {
+			if (inLog != null)
+			{
 				inLog.headline("Scanning faces in: " + inAsset.getName());
 			}
 
 			List<Map> json = findFaces(inAsset, input);
-			if (json == null || json.isEmpty()) {
+			if (json == null || json.isEmpty())
+			{
 				return 0;
 			}
-			Collection<MultiValued> moreprofiles = makeDataForEachFace(instructions, faceembeddingsearcher, inAsset, 0L,
-					input, json);
-			if (moreprofiles != null) {
+			Collection<MultiValued> moreprofiles = makeDataForEachFace(instructions, faceembeddingsearcher, inAsset, 0L, input, json);
+			if (moreprofiles != null)
+			{
 				// saveNewFacesWithParents(moreprofiles);
 				inFoundfaces.addAll(moreprofiles);
 
-				if (!moreprofiles.isEmpty()) {
+				if (!moreprofiles.isEmpty())
+				{
 					inAsset.setValue("facehasprofile", true);
 				}
 			}
 
-		} else if ("video".equalsIgnoreCase(type)) {
-			// Look over them and save the timecode with it
-			Collection<MultiValued> allfacesinvideo = findAllFacesInVideo(instructions, inAsset);
-			Collection<MultiValued> moreprofiles = combineVideoMatches(allfacesinvideo);
-			if (moreprofiles != null) {
-				// saveNewFacesWithParents(moreprofiles);
-				inFoundfaces.addAll(moreprofiles);
-			}
-			// updateEndTimes(continuelooking,block.getStartOffset()); //Brings them up to
-			// date
-			// try
-			// {
-			// continuelooking = combineVideoMatches(continuelooking,more);
-			// }
-			// catch(IndexOutOfBoundsException ex)
-			// {
-			// log.info("Issue happened again on " + block.getSeconds());
-			// //ignoring...
-			// }
 		}
+		else
+			if ("video".equalsIgnoreCase(type))
+			{
+				// Look over them and save the timecode with it
+				Collection<MultiValued> allfacesinvideo = findAllFacesInVideo(instructions, inAsset);
+				Collection<MultiValued> moreprofiles = combineVideoMatches(allfacesinvideo);
+				if (moreprofiles != null)
+				{
+					// saveNewFacesWithParents(moreprofiles);
+					inFoundfaces.addAll(moreprofiles);
+				}
+				// updateEndTimes(continuelooking,block.getStartOffset()); //Brings them up to
+				// date
+				// try
+				// {
+				// continuelooking = combineVideoMatches(continuelooking,more);
+				// }
+				// catch(IndexOutOfBoundsException ex)
+				// {
+				// log.info("Issue happened again on " + block.getSeconds());
+				// //ignoring...
+				// }
+			}
 		// faceembeddingsearcher.saveAllData(tosave,null);
 		return inFoundfaces.size();
 	}
 
-	protected Collection<MultiValued> findAllFacesInVideo(FaceScanInstructions instructions, Asset inAsset)
-			throws Exception {
+	protected Collection<MultiValued> findAllFacesInVideo(FaceScanInstructions instructions, Asset inAsset) throws Exception
+	{
 		Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
 
 		Double videolength = (Double) inAsset.getDouble("length");
-		if (videolength == null) {
+		if (videolength == null)
+		{
 			// Log it
 			throw new OpenEditException("Invalid Video: " + inAsset.getName());
 		}
@@ -315,7 +360,8 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		timeline.setLength(mili);
 		timeline.setPxWidth(1200); // This divides in 10 or 20
 
-		if (videolength < 20) {
+		if (videolength < 20)
+		{
 			timeline.setTotalTickCount(10);
 		}
 		Collection<Block> ticks = timeline.getTicks();
@@ -328,9 +374,11 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		videoinstructions.setMinimumFaceSize(instructions.getMinimumFaceSize() * .75D);
 
 		Collection<MultiValued> allfacesinvideo = new ArrayList();
-		for (Iterator iterator = ticks.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = ticks.iterator(); iterator.hasNext();)
+		{
 			Block block = (Block) iterator.next();
-			if (block.getSeconds() >= videolength) {
+			if (block.getSeconds() >= videolength)
+			{
 				break;
 			}
 			// ContentItem input = inArchive.getContent("/WEB-INF/data" +
@@ -338,15 +386,17 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 			// "/image1500x1500.jpg");
 			// Convert quickly
 			ContentItem item = generateInputFile(inAsset, block);
-			if (item == null || !item.exists()) {
+			if (item == null || !item.exists())
+			{
 				// probblem
-				log.info("Faceprofile scan, no thumbnail found for : " + inAsset.getId() + " "
-						+ inAsset.getSourcePath());
-			} else {
+				log.info("Faceprofile scan, no thumbnail found for : " + inAsset.getId() + " " + inAsset.getSourcePath());
+			}
+			else
+			{
 				List<Map> json = findFaces(inAsset, item);
-				Collection<MultiValued> moreprofiles = makeDataForEachFace(videoinstructions, faceembeddingsearcher,
-						inAsset, block.getSeconds(), item, json);
-				if (moreprofiles != null) {
+				Collection<MultiValued> moreprofiles = makeDataForEachFace(videoinstructions, faceembeddingsearcher, inAsset, block.getSeconds(), item, json);
+				if (moreprofiles != null)
+				{
 					allfacesinvideo.addAll(moreprofiles);
 				}
 			}
@@ -354,18 +404,22 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		return allfacesinvideo;
 	}
 
-	protected Collection<MultiValued> combineVideoMatches(Collection<MultiValued> inAllfacesinvideo) {
+	protected Collection<MultiValued> combineVideoMatches(Collection<MultiValued> inAllfacesinvideo)
+	{
 		Collection<MultiValued> uniquefaces = new ArrayList();
 
 		Collection<MultiValued> remainingfaces = new ArrayList(inAllfacesinvideo);
 
-		for (Iterator iterator = inAllfacesinvideo.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inAllfacesinvideo.iterator(); iterator.hasNext();)
+		{
 			MultiValued embedded = (MultiValued) iterator.next();
 
 			if (!remainingfaces.contains(embedded)) // Might already got dropped
 			{
 				continue;
-			} else {
+			}
+			else
+			{
 				remainingfaces.remove(embedded);
 				uniquefaces.add(embedded);
 			}
@@ -373,12 +427,13 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 			List<Double> facedoubles = (List<Double>) embedded.getValue("facedatadoubles");
 
 			Collection<Data> remainingfacestmp = new ArrayList(remainingfaces);
-			for (Iterator iterator2 = remainingfacestmp.iterator(); iterator2.hasNext();) {
+			for (Iterator iterator2 = remainingfacestmp.iterator(); iterator2.hasNext();)
+			{
 				Data otherface = (Data) iterator2.next();
 				List<Double> othervalues = (List<Double>) otherface.getValue("facedatadoubles");
-				boolean same = getKMeansIndexer().compareVectors(facedoubles, othervalues,
-						getVectorScoreLimit() + 0.3D); // Be more flexible
-				if (same) {
+				boolean same = getKMeansIndexer().compareVectors(facedoubles, othervalues, getVectorScoreLimit() + 0.3D); // Be more flexible
+				if (same)
+				{
 					// TODO: Keep larger facebox
 					// TODO: Assign the endtime for the last time we saw the person
 					remainingfaces.remove(otherface);
@@ -388,17 +443,21 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		return uniquefaces;
 	}
 
-	private double getVectorScoreLimit() {
+	private double getVectorScoreLimit()
+	{
 		double similaritycheck = .5D;
 		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
-		if (value != null) {
+		if (value != null)
+		{
 			similaritycheck = Double.parseDouble(value);
 		}
 		return similaritycheck;
 	}
 
-	public void reinitClusters(ScriptLogger logger) {
-		if (true) {
+	public void reinitClusters(ScriptLogger logger)
+	{
+		if (true)
+		{
 			// return;
 		}
 
@@ -411,10 +470,11 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 
 	}
 
-	public KMeansIndexer getKMeansIndexer() {
-		KMeansIndexer fieldKMeansIndexer = (KMeansIndexer) getMediaArchive().getCacheManager().get("facedetect",
-				"facedetectindexer");
-		if (fieldKMeansIndexer == null) {
+	public KMeansIndexer getKMeansIndexer()
+	{
+		KMeansIndexer fieldKMeansIndexer = (KMeansIndexer) getMediaArchive().getCacheManager().get("facedetect", "facedetectindexer");
+		if (fieldKMeansIndexer == null)
+		{
 			fieldKMeansIndexer = (KMeansIndexer) getModuleManager().getBean(getCatalogId(), "kMeansIndexer", false);
 			MultiValued settings = (MultiValued) getMediaArchive().getData("informatics", "facedetect");
 			fieldKMeansIndexer.loadSettings(settings);
@@ -426,7 +486,8 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		return fieldKMeansIndexer;
 	}
 
-	public void disableFaceBox(User inUser, MultiValued inEmbedding) {
+	public void disableFaceBox(User inUser, MultiValued inEmbedding)
+	{
 		inEmbedding.setValue("isremoved", true);
 		inEmbedding.setValue("removedby", inUser.getId());
 		getMediaArchive().saveData("faceembedding", inEmbedding);
@@ -437,7 +498,8 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 
 		Collection<FaceBox> boxes = viewAllRelatedFaces(inEmbedding.getId());
 
-		if (boxes == null || boxes.isEmpty()) {
+		if (boxes == null || boxes.isEmpty())
+		{
 			getMediaArchive().saveData("faceembedding", inEmbedding);
 			return;
 		}
@@ -453,25 +515,33 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 
 	}
 
-	protected List<MultiValued> makeDataForEachFace(FaceScanInstructions instructions, Searcher facedb, Asset inAsset,
-			double timecodestart, ContentItem inInput, List<Map> inJsonOfFaces) throws Exception {
-		if (inJsonOfFaces.isEmpty()) {
+	protected List<MultiValued> makeDataForEachFace(FaceScanInstructions instructions, Searcher facedb, Asset inAsset, double timecodestart, ContentItem inInput, List<Map> inJsonOfFaces)
+		throws Exception
+	{
+		if (inJsonOfFaces.isEmpty())
+		{
 			return null;
 		}
 
 		int inputw = 0;
 		int inputh = 0;
 
-		if (inInput.getName().endsWith("webp")) {
+		if (inInput.getName().endsWith("webp"))
+		{
 			Dimension size = getImageDimensionWebP(inInput.getInputStream());
-			if (size == null) {
+			if (size == null)
+			{
 				// This is a bug... That is not the real image size
 				throw new OpenEditException("Can't get image size from Webp: " + inInput.getPath());
-			} else {
+			}
+			else
+			{
 				inputw = (int) Math.round(size.getWidth());
 				inputh = (int) Math.round(size.getHeight());
 			}
-		} else {
+		}
+		else
+		{
 			File inputfile = new File(inInput.getAbsolutePath());
 			Dimension size = getImageDimensionImageIO(inputfile); // This needed for originals?
 			inputw = (int) Math.round(size.getWidth());
@@ -483,7 +553,8 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 
 		List<MultiValued> tosave = new ArrayList();
 
-		for (Iterator iterator = inJsonOfFaces.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inJsonOfFaces.iterator(); iterator.hasNext();)
+		{
 			Map facejson = (Map) iterator.next(); // Each person in the picrture
 
 			ValuesMap box = new ValuesMap((Map) facejson.get("facial_area"));
@@ -498,7 +569,8 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 			// inAsset.getName());
 			// continue;
 			// }
-			if (confidence < instructions.getConfidenceLimit()) {
+			if (confidence < instructions.getConfidenceLimit())
+			{
 				log.info("Not enough confidence for " + confidence + " -> " + inAsset.getName());
 				continue;
 			}
@@ -509,9 +581,9 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 			// Save to DB
 			double h = box.getDouble("h");
 			double w = box.getDouble("w");
-			if (h < instructions.getMinimumFaceSize()) {
-				log.info("small face w:" + w + " h:" + h + " Min face size: " + instructions.getMinimumFaceSize() + " "
-						+ inAsset.getName());
+			if (h < instructions.getMinimumFaceSize())
+			{
+				log.info("small face w:" + w + " h:" + h + " Min face size: " + instructions.getMinimumFaceSize() + " " + inAsset.getName());
 				continue;
 			}
 			JSONArray collection = (JSONArray) facejson.get("embedding");
@@ -523,14 +595,18 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 
 			MultiValued addedface = null;
 
-			if (instructions.getExistingFacesByAssetId() != null) {
+			if (instructions.getExistingFacesByAssetId() != null)
+			{
 				String assetid = inAsset.getId();
 				Collection<MultiValued> existingfaces = instructions.getExistingFacesByAssetId().get(inAsset.getId());
-				if (existingfaces != null) {
-					for (Iterator iterator2 = existingfaces.iterator(); iterator2.hasNext();) {
+				if (existingfaces != null)
+				{
+					for (Iterator iterator2 = existingfaces.iterator(); iterator2.hasNext();)
+					{
 						MultiValued existing = (MultiValued) iterator2.next();
 						List<Double> othervalues = (List<Double>) existing.getValue("facedatadoubles"); // Manually done
-						if (othervalues != null && othervalues.equals(vector)) {
+						if (othervalues != null && othervalues.equals(vector))
+						{
 							addedface = existing;
 							log.info("Found existing embedding for asset " + inAsset.getName());
 							break;
@@ -538,7 +614,8 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 					}
 				}
 			}
-			if (addedface == null) {
+			if (addedface == null)
+			{
 				addedface = (MultiValued) facedb.createNewData(); // TODIO: Search by Vector first so we dont lose
 																	// assignments
 			}
@@ -573,18 +650,19 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 			Collection centroids = addedface.getValues("nearbycentroidids");
 
 			int size = 0;
-			if (centroids != null) {
+			if (centroids != null)
+			{
 				size = centroids.size();
 			}
 
-			log.info("added face with confidence: " + confidence + " centroids count: " + size + " "
-					+ inAsset.getName());
+			log.info("added face with confidence: " + confidence + " centroids count: " + size + " " + inAsset.getName());
 			tosave.add(addedface);
 		}
 		return tosave;
 	}
 
-	public Data addFaceEmbedded(User inUser, Asset inAsset, List<Integer> inBox) {
+	public Data addFaceEmbedded(User inUser, Asset inAsset, List<Integer> inBox)
+	{
 		Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
 		Data addedface = faceembeddingsearcher.createNewData();
 
@@ -633,13 +711,15 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 	/**
 	 * This is used in the asset UI to show the face a name
 	 */
-	public Collection<FaceBox> collectFaceBoxesAllPeople(Data inAsset) {
-		if (inAsset == null) {
+	public Collection<FaceBox> collectFaceBoxesAllPeople(Data inAsset)
+	{
+		if (inAsset == null)
+		{
 			return Collections.EMPTY_LIST;
 		}
-		Collection<FaceBox> boxes = (Collection<FaceBox>) getMediaArchive().getCacheManager().get("faceboxes",
-				inAsset.getId());
-		if (boxes != null) {
+		Collection<FaceBox> boxes = (Collection<FaceBox>) getMediaArchive().getCacheManager().get("faceboxes", inAsset.getId());
+		if (boxes != null)
+		{
 			return (Collection<FaceBox>) boxes;
 		}
 		boxes = new ArrayList();
@@ -647,7 +727,8 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		Searcher searcher = getMediaArchive().getSearcher("faceembedding");
 		HitTracker allthepeopleinasset = searcher.query().exact("assetid", inAsset).exact("isremoved", false).search();
 
-		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
+		{
 			MultiValued embedding = (MultiValued) iterator.next(); // One person
 
 			Data entityperson = loadPersonOfEmbedding(embedding);
@@ -658,38 +739,48 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		return boxes;
 	}
 
-	public Data loadPersonOfEmbedding(MultiValued embedding) {
+	public Data loadPersonOfEmbedding(MultiValued embedding)
+	{
 
 		Data entityperson = (Data) getMediaArchive().getCacheManager().get("aifacedetect", embedding.getId());
-		if (entityperson == CacheManager.NULLDATA) {
+		if (entityperson == CacheManager.NULLDATA)
+		{
 			return null;
 		}
 
 		String entitypersonid = embedding.get("entityperson");
-		if (entitypersonid == null) {
+		if (entitypersonid == null)
+		{
 			Collection<MultiValued> faces = getKMeansIndexer().searchNearestItems(embedding);
-			for (Iterator iterator = faces.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = faces.iterator(); iterator.hasNext();)
+			{
 				MultiValued face = (MultiValued) iterator.next();
 				entitypersonid = face.get("entityperson");
-				if (entitypersonid != null) {
+				if (entitypersonid != null)
+				{
 					break;
 				}
 			}
 		}
-		if (entitypersonid != null) {
+		if (entitypersonid != null)
+		{
 			entityperson = getMediaArchive().getCachedData("entityperson", entitypersonid); // Might be null
 		}
 
-		if (entityperson == null) {
+		if (entityperson == null)
+		{
 			getMediaArchive().getCacheManager().put("aifacedetect", embedding.getId(), CacheManager.NULLDATA);
-		} else {
+		}
+		else
+		{
 			getMediaArchive().getCacheManager().put("aifacedetect", embedding.getId(), entityperson);
 		}
 
 		return entityperson;
 	}
 
-	protected ContentItem generateInputFile(Asset inAsset, Block inBlock) {
+	protected ContentItem generateInputFile(Asset inAsset, Block inBlock)
+	{
 		ConversionManager manager = getMediaArchive().getTranscodeTools().getManagerByRenderType("video");
 		String filename = getMediaArchive().generatedOutputName(inAsset, "image1900x1080");
 		ConvertInstructions instructions = manager.createInstructions(inAsset, filename);
@@ -709,12 +800,14 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		return result.getOutput();
 	}
 
-	protected List<Map> findFaces(Asset inAsset, ContentItem inItem) throws Exception {
+	protected List<Map> findFaces(Asset inAsset, ContentItem inItem) throws Exception
+	{
 
 		String base64 = inputStreamToBase64(inItem.getInputStream());
 
 		String mime = "image/webp";
-		if (inItem.getName().endsWith("jpg")) {
+		if (inItem.getName().endsWith("jpg"))
+		{
 			mime = "image/jpeg";
 		}
 		String tosend = "data:" + mime + ";charset=utf-8;base64, " + base64;
@@ -740,11 +833,13 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		return results;
 	}
 
-	protected static String inputStreamToBase64(InputStream is) throws Exception {
+	protected static String inputStreamToBase64(InputStream is) throws Exception
+	{
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		byte[] buffer = new byte[8192];
 		int bytesRead;
-		while ((bytesRead = is.read(buffer)) != -1) {
+		while ((bytesRead = is.read(buffer)) != -1)
+		{
 			os.write(buffer, 0, bytesRead);
 		}
 		is.close();
@@ -762,24 +857,31 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 	 * @return dimensions of image
 	 * @throws IOException if the file is not a known image
 	 */
-	protected Dimension getImageDimensionImageIO(File imgFile) throws IOException {
+	protected Dimension getImageDimensionImageIO(File imgFile) throws IOException
+	{
 		int pos = imgFile.getName().lastIndexOf(".");
 		if (pos == -1)
 			throw new IOException("No extension for file: " + imgFile.getAbsolutePath());
 		String suffix = imgFile.getName().substring(pos + 1);
 		Iterator<ImageReader> iter = ImageIO.getImageReadersBySuffix(suffix);
-		while (iter.hasNext()) {
+		while (iter.hasNext())
+		{
 			ImageReader reader = iter.next();
 			ImageInputStream stream = null;
-			try {
+			try
+			{
 				stream = new FileImageInputStream(imgFile);
 				reader.setInput(stream);
 				int width = reader.getWidth(reader.getMinIndex());
 				int height = reader.getHeight(reader.getMinIndex());
 				return new Dimension(width, height);
-			} catch (IOException e) {
+			}
+			catch (IOException e)
+			{
 				log.warn("Error reading: " + imgFile.getAbsolutePath(), e);
-			} finally {
+			}
+			finally
+			{
 				reader.dispose();
 				FileUtils.safeClose(stream);
 			}
@@ -788,19 +890,23 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		throw new IOException("Not a known image file: " + imgFile.getAbsolutePath());
 	}
 
-	protected java.awt.Dimension getImageDimensionWebP(InputStream is) throws IOException {
+	protected java.awt.Dimension getImageDimensionWebP(InputStream is) throws IOException
+	{
 
-		try {
+		try
+		{
 			DataInputStream dis = new DataInputStream(new BufferedInputStream(is));
 
 			byte[] header = new byte[12];
 			dis.readFully(header);
 
-			if (!new String(header, 0, 4).equals("RIFF") || !new String(header, 8, 4).equals("WEBP")) {
+			if (!new String(header, 0, 4).equals("RIFF") || !new String(header, 8, 4).equals("WEBP"))
+			{
 				return null;
 			}
 
-			while (true) {
+			while (true)
+			{
 				byte[] chunkHeader = new byte[8];
 				int read = dis.read(chunkHeader);
 				if (read < 8)
@@ -812,7 +918,8 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 				byte[] chunkData = new byte[chunkSize + (chunkSize % 2)]; // padding if odd
 				dis.readFully(chunkData);
 
-				switch (chunkType) {
+				switch (chunkType)
+				{
 					case "VP8X":
 						return parseVP8X(chunkData);
 					case "VP8 ":
@@ -823,12 +930,15 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 			}
 
 			return null;
-		} finally {
+		}
+		finally
+		{
 			FileUtils.safeClose(is);
 		}
 	}
 
-	private static java.awt.Dimension parseVP8X(byte[] data) {
+	private static java.awt.Dimension parseVP8X(byte[] data)
+	{
 		ByteBuffer buffer = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
 		buffer.position(4);
 		int width = ((buffer.get() & 0xFF) | ((buffer.get() & 0xFF) << 8) | ((buffer.get() & 0xFF) << 16)) + 1;
@@ -836,13 +946,15 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		return new Dimension(width, height);
 	}
 
-	private static java.awt.Dimension parseVP8(byte[] data) {
+	private static java.awt.Dimension parseVP8(byte[] data)
+	{
 		int width = ((data[6] & 0xFF) | ((data[7] & 0xFF) << 8)) & 0x3FFF;
 		int height = ((data[8] & 0xFF) | ((data[9] & 0xFF) << 8)) & 0x3FFF;
 		return new Dimension(width, height);
 	}
 
-	private static java.awt.Dimension parseVP8L(byte[] data) {
+	private static java.awt.Dimension parseVP8L(byte[] data)
+	{
 		int b0 = data[1] & 0xFF;
 		int b1 = data[2] & 0xFF;
 		int b2 = data[3] & 0xFF;
@@ -852,7 +964,8 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		return new Dimension(width, height);
 	}
 
-	public Collection<FaceBox> viewAllRelatedFaces(String inFaceembeddedid) {
+	public Collection<FaceBox> viewAllRelatedFaces(String inFaceembeddedid)
+	{
 		MultiValued startdata = (MultiValued) getMediaArchive().getCachedData("faceembedding", inFaceembeddedid);
 		Collection<FaceBox> faces = viewAllRelatedFaces(startdata);
 		return faces;
@@ -861,7 +974,8 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 	/**
 	 * Used by UI to find all related people in the dialog
 	 */
-	public Collection<FaceBox> viewAllRelatedFaces(MultiValued startdata) {
+	public Collection<FaceBox> viewAllRelatedFaces(MultiValued startdata)
+	{
 		Collection<FaceBox> boxes = new ArrayList();
 
 		String entitypersonid = startdata.get("entityperson");
@@ -872,11 +986,12 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		if (vectorA == null) // Use selected face
 		{
 			MultiValued newdata = null;
-			if (entitypersonid != null) {
-				newdata = (MultiValued) getMediaArchive().getSearcher("faceembedding").query().exact("isremoved", false)
-						.exists("facedatadoubles").exact("entityperson", entitypersonid).searchOne();
+			if (entitypersonid != null)
+			{
+				newdata = (MultiValued) getMediaArchive().getSearcher("faceembedding").query().exact("isremoved", false).exists("facedatadoubles").exact("entityperson", entitypersonid).searchOne();
 			}
-			if (newdata == null) {
+			if (newdata == null)
+			{
 				log.info("No faceembedding found for " + startdata.getId());
 				FaceBox box = makeBox(startdata, entityperson);
 				boxes.add(box);
@@ -889,12 +1004,15 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		Collection<String> dedupids = new HashSet();
 
 		// Look for a personid anyplace
-		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
+		{
 			MultiValued hit = (MultiValued) iterator.next();
 			String foundentitypersonid = hit.get("entityperson");
-			if (foundentitypersonid != null) {
+			if (foundentitypersonid != null)
+			{
 				entityperson = getMediaArchive().getCachedData("entityperson", foundentitypersonid);
-				if (entityperson != null) {
+				if (entityperson != null)
+				{
 					entitypersonid = foundentitypersonid; // We have a person
 					break;
 				}
@@ -902,19 +1020,22 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		}
 		// What happens is another person is matched? We should have never allowed that
 		// in the UI
-		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = allthepeopleinasset.iterator(); iterator.hasNext();)
+		{
 			MultiValued embedding = (MultiValued) iterator.next(); // One person
 			dedupids.add(embedding.getId());
 			FaceBox box = makeBox(embedding, entityperson);
 			boxes.add(box);
 		}
 
-		if (entityperson != null) {
-			HitTracker morepeople = getMediaArchive().getSearcher("faceembedding").query().exact("isremoved", false)
-					.exact("entityperson", entityperson).search();
-			for (Iterator iterator = morepeople.iterator(); iterator.hasNext();) {
+		if (entityperson != null)
+		{
+			HitTracker morepeople = getMediaArchive().getSearcher("faceembedding").query().exact("isremoved", false).exact("entityperson", entityperson).search();
+			for (Iterator iterator = morepeople.iterator(); iterator.hasNext();)
+			{
 				MultiValued embedding = (MultiValued) iterator.next(); // One person
-				if (!dedupids.contains(embedding.getId())) {
+				if (!dedupids.contains(embedding.getId()))
+				{
 					FaceBox box = makeBox(embedding, entityperson);
 					boxes.add(box);
 				}
@@ -924,7 +1045,8 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		return boxes;
 	}
 
-	protected FaceBox makeBox(MultiValued inEmbedding, Data inPerson) {
+	protected FaceBox makeBox(MultiValued inEmbedding, Data inPerson)
+	{
 		FaceBox box = new FaceBox();
 		box.setEmbeddedData(inEmbedding);
 		box.setPerson(inPerson);
@@ -932,18 +1054,20 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		int y = inEmbedding.getInt("locationy");
 		int w = inEmbedding.getInt("locationw");
 		int h = inEmbedding.getInt("locationh");
-		Integer[] scaledxy = new Integer[] { x, y, w, h };
+		Integer[] scaledxy = new Integer[] {x, y, w, h};
 		List<Integer> points = Arrays.asList(scaledxy);
 		box.setBoxArea(points);
 
-		if (inEmbedding.get("timecodestart") != null) {
+		if (inEmbedding.get("timecodestart") != null)
+		{
 			double seconds = inEmbedding.getDouble("timecodestart");
 			box.setTimecodeStartSeconds(seconds);
 		}
 		return box;
 	}
 
-	public void rescanAsset(Asset inAsset) {
+	public void rescanAsset(Asset inAsset)
+	{
 		// Searcher faceembeddingsearcher =
 		// getMediaArchive().getSearcher("faceembedding");
 		// Collection others =
@@ -968,23 +1092,29 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 
 	}
 
-	protected void assignPerson(String faceembeddingid, String assetid, String personid, String inUserId) {
-		if (faceembeddingid != null && personid != null) {
+	protected void assignPerson(String faceembeddingid, String assetid, String personid, String inUserId)
+	{
+		if (faceembeddingid != null && personid != null)
+		{
 			// Should we go disconnect the previous face?
 
 			MultiValued face = (MultiValued) getMediaArchive().getData("faceembedding", faceembeddingid);
-			if (face != null) {
+			if (face != null)
+			{
 				Data personfacelookup = loadFaceMappingWithEnitityPerson(face); // Always update the old one
 
-				if (personfacelookup == null) {
+				if (personfacelookup == null)
+				{
 					personfacelookup = face;
 				}
 				String oldpersonid = personfacelookup.get("entityperson");
 
-				if (oldpersonid != null) {
+				if (oldpersonid != null)
+				{
 					Data oldperson = getMediaArchive().getData("entityperson", oldpersonid);
 					String previousassetid = oldperson.get("primaryimage");
-					if (previousassetid != null && previousassetid.equals(assetid)) {
+					if (previousassetid != null && previousassetid.equals(assetid))
+					{
 						oldperson.setValue("primaryimage", null);
 						getMediaArchive().saveData("entityperson", oldperson);
 					}
@@ -1004,46 +1134,58 @@ public class FaceProfileManager extends BaseAiManager implements CatalogEnabled 
 		}
 	}
 
-	protected Data loadFaceMappingWithEnitityPerson(MultiValued embedding) {
+	protected Data loadFaceMappingWithEnitityPerson(MultiValued embedding)
+	{
 		String entitypersonid = embedding.get("entityperson");
-		if (entitypersonid != null) {
+		if (entitypersonid != null)
+		{
 			return embedding;
 		}
 		Collection<MultiValued> faces = getKMeansIndexer().searchNearestItems(embedding);
-		for (Iterator iterator = faces.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = faces.iterator(); iterator.hasNext();)
+		{
 			MultiValued face = (MultiValued) iterator.next();
 			entitypersonid = face.get("entitypersonid");
-			if (entitypersonid != null) {
+			if (entitypersonid != null)
+			{
 				return face;
 			}
 		}
 		return null;
 	}
 
-	protected void clearAllCaches() {
+	protected void clearAllCaches()
+	{
 
 		getMediaArchive().getCacheManager().clear("aifacedetect"); // Standard cache for this fieldname
 		getMediaArchive().getCacheManager().clear("faceboxes"); // All related boxes. TODO: Limit to this record
 
 	}
 
-	public void processAssets(ScriptLogger inLog, MultiValued inConfig, Collection<Asset> inAssets) {
+	public void processAssets(ScriptLogger inLog, MultiValued inConfig, Collection<Asset> inAssets)
+	{
 		Collection validAssets = new ArrayList();
-		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
+		{
 			Asset asset = (Asset) iterator.next();
-			if (!asset.getBoolean("facescancomplete")) {
+			if (!asset.getBoolean("facescancomplete"))
+			{
 				validAssets.add(asset);
 			}
 		}
-		if (validAssets.isEmpty()) {
+		if (validAssets.isEmpty())
+		{
 			return;
 		}
 		inLog.headline("Scanning faces in " + validAssets.size() + " assets");
 		FaceScanInstructions instructions = createInstructions();
 		int found = extractFaces(inLog, instructions, validAssets);
-		if (found > 0) {
+		if (found > 0)
+		{
 			inLog.info("Found " + found + " faces in " + validAssets.size() + " assets");
-		} else {
+		}
+		else
+		{
 			inLog.info("No faces found in " + validAssets.size() + " assets");
 		}
 

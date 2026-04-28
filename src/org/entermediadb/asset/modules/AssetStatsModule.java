@@ -10,25 +10,31 @@ import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 
-public class AssetStatsModule extends BaseMediaModule {
+public class AssetStatsModule extends BaseMediaModule
+{
 
-	public void addPreViewEvent(WebPageRequest inReq) throws Exception {
+	public void addPreViewEvent(WebPageRequest inReq) throws Exception
+	{
 		// save to logger
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = (Asset) inReq.getPageValue("asset");
-		if (asset != null) {
+		if (asset != null)
+		{
 			archive.getAssetStatsManager().logAssetPreview(archive, asset, inReq.getUser());
 		}
 	}
 
-	public void saveVideoLog(WebPageRequest inReq) throws Exception {
+	public void saveVideoLog(WebPageRequest inReq) throws Exception
+	{
 		String logid = inReq.getRequestParameter("logid");
 		MediaArchive archive = getMediaArchive(inReq);
 		Data videolog = null;
-		if (logid != null) {
+		if (logid != null)
+		{
 			videolog = archive.getData("videoretention", logid);
 		}
-		if (videolog == null) {
+		if (videolog == null)
+		{
 			videolog = archive.getSearcher("videoretention").createNewData();
 		}
 
@@ -69,7 +75,8 @@ public class AssetStatsModule extends BaseMediaModule {
 		long ended = (long) lastone.get("datetime");
 		videolog.setValue("endviewingtime", new Date(ended));
 
-		if (inReq.getUser() != null) {
+		if (inReq.getUser() != null)
+		{
 			videolog.setValue("user", inReq.getUserName());
 		}
 
@@ -78,28 +85,12 @@ public class AssetStatsModule extends BaseMediaModule {
 
 		/*
 		 * 
-		 * {
-		 * "eventType": "playing",
-		 * "position": 0,
-		 * "videoType": "application/x-mpegURL",
-		 * "duration": 560.7815329999997,
-		 * "isEnd": false,
-		 * "isFullScreen": false,
-		 * "bufferPercent": 0.856804248580704,
-		 * "volume": 100,
-		 * "datetime": 1606159756553
-		 * },
-		 * {
-		 * "eventType": "pause",
-		 * "position": 0.9575,
-		 * "videoType": "application/x-mpegURL",
-		 * "duration": 560.7815329999997,
-		 * "isEnd": false,
-		 * "isFullScreen": false,
-		 * "bufferPercent": 3.71282233361276,
-		 * "volume": 100,
-		 * "datetime": 1606159757364
-		 * }
+		 * { "eventType": "playing", "position": 0, "videoType": "application/x-mpegURL", "duration":
+		 * 560.7815329999997, "isEnd": false, "isFullScreen": false, "bufferPercent": 0.856804248580704,
+		 * "volume": 100, "datetime": 1606159756553 }, { "eventType": "pause", "position": 0.9575,
+		 * "videoType": "application/x-mpegURL", "duration": 560.7815329999997, "isEnd": false,
+		 * "isFullScreen": false, "bufferPercent": 3.71282233361276, "volume": 100, "datetime":
+		 * 1606159757364 }
 		 * 
 		 */
 
@@ -112,11 +103,14 @@ public class AssetStatsModule extends BaseMediaModule {
 
 	}
 
-	protected boolean findTrue(List inEvents, String inString) {
-		for (Iterator iterator = inEvents.iterator(); iterator.hasNext();) {
+	protected boolean findTrue(List inEvents, String inString)
+	{
+		for (Iterator iterator = inEvents.iterator(); iterator.hasNext();)
+		{
 			Map event = (Map) iterator.next();
 			Object istrue = event.get(inString);
-			if (istrue != null && Boolean.parseBoolean(istrue.toString())) {
+			if (istrue != null && Boolean.parseBoolean(istrue.toString()))
+			{
 				return true;
 			}
 		}

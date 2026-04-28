@@ -11,61 +11,73 @@ import org.json.simple.JSONObject;
 import org.openedit.WebPageRequest;
 import org.openedit.util.OutputFiller;
 
-public class McpGetHandler {
+public class McpGetHandler
+{
 	private static final Log log = LogFactory.getLog(McpGetHandler.class);
 
 	OutputFiller filler = new OutputFiller();
 	protected WebPageRequest fieldReq;
 
-	public Writer getClientWriter() {
+	public Writer getClientWriter()
+	{
 		return fieldClientWriter;
 	}
 
-	public void setClientWriter(Writer inClientWriter) {
+	public void setClientWriter(Writer inClientWriter)
+	{
 		fieldClientWriter = inClientWriter;
 	}
 
-	public Reader getClientReader() {
+	public Reader getClientReader()
+	{
 		return fieldClientReader;
 	}
 
-	public void setClientReader(Reader inClientReader) {
+	public void setClientReader(Reader inClientReader)
+	{
 		fieldClientReader = inClientReader;
 	}
 
 	protected boolean fieldActive = true;
 
-	public boolean isActive() {
+	public boolean isActive()
+	{
 		return fieldActive;
 	}
 
-	public void setActive(boolean inActive) {
+	public void setActive(boolean inActive)
+	{
 		fieldActive = inActive;
 	}
 
 	protected String fieldMcpSessionId;
 
-	public String getMcpSessionId() {
+	public String getMcpSessionId()
+	{
 		return fieldMcpSessionId;
 	}
 
-	public void setMcpSessionId(String inRandomSessionId) {
+	public void setMcpSessionId(String inRandomSessionId)
+	{
 		fieldMcpSessionId = inRandomSessionId;
 	}
 
 	protected Writer fieldClientWriter;
 	protected Reader fieldClientReader;
 
-	public WebPageRequest getReq() {
+	public WebPageRequest getReq()
+	{
 		return fieldReq;
 	}
 
-	public void setReq(WebPageRequest inReq) {
+	public void setReq(WebPageRequest inReq)
+	{
 		fieldReq = inReq;
 	}
 
 	// Just wait and listen for stuff.. Handle reconnect?
-	public void listen() {
+	public void listen()
+	{
 		HttpServletResponse res = getReq().getResponse();
 
 		// res.resetBuffer(); //? Needed?
@@ -79,7 +91,8 @@ public class McpGetHandler {
 		// res.setHeader("Cache-Control", "no-cache");
 		// res.setHeader("Connection", "keep-alive");
 		// res.setContentLength(100);
-		try {
+		try
+		{
 			res.flushBuffer();
 			Thread.sleep(10000);
 			// for (int i = 0; i < 10; i++)
@@ -99,29 +112,23 @@ public class McpGetHandler {
 			// }
 
 			/*
-			 * //res.flushBuffer();
-			 * //setClientWriter(getReq().getPageStreamer().getOutput().getWriter()); //Send
-			 * stuff these
+			 * //res.flushBuffer(); //setClientWriter(getReq().getPageStreamer().getOutput().getWriter());
+			 * //Send stuff these
 			 * 
-			 * //Now block forever?
-			 * //getClientWriter().flush();
-			 * sendNothing(res);
-			 * //while (isActive())
-			 * for (int i = 0; i < 10; i++)
-			 * {
-			 * Thread.sleep(1000);
-			 * log.info("Sending");
-			 * sendNothing(res);
-			 * }
+			 * //Now block forever? //getClientWriter().flush(); sendNothing(res); //while (isActive()) for (int
+			 * i = 0; i < 10; i++) { Thread.sleep(1000); log.info("Sending"); sendNothing(res); }
 			 * log.info("Thread canceled");
 			 */
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			setActive(false);
 			log.warn("Ping loop interrupted for session: " + getMcpSessionId() + " " + e);
 		}
 	}
 
-	private void sendNothing(HttpServletResponse res) throws Exception {
+	private void sendNothing(HttpServletResponse res) throws Exception
+	{
 		// TODO Auto-generated method stub
 		JSONObject payload = new JSONObject();
 		// payload.put("method", "initialize");

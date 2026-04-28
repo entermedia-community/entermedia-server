@@ -8,7 +8,8 @@ import java.util.List;
 /**
  * Delimiter (emphasis, strong emphasis or custom emphasis).
  */
-public class Delimiter implements DelimiterRun {
+public class Delimiter implements DelimiterRun
+{
 
     public final List<Text> characters;
     public final char delimiterChar;
@@ -33,38 +34,46 @@ public class Delimiter implements DelimiterRun {
     }
 
     @Override
-    public boolean canOpen() {
+    public boolean canOpen()
+    {
         return canOpen;
     }
 
     @Override
-    public boolean canClose() {
+    public boolean canClose()
+    {
         return canClose;
     }
 
     @Override
-    public int length() {
+    public int length()
+    {
         return characters.size();
     }
 
     @Override
-    public int originalLength() {
+    public int originalLength()
+    {
         return originalLength;
     }
 
     @Override
-    public Text getOpener() {
+    public Text getOpener()
+    {
         return characters.get(characters.size() - 1);
     }
 
     @Override
-    public Text getCloser() {
+    public Text getCloser()
+    {
         return characters.get(0);
     }
 
     @Override
-    public Iterable<Text> getOpeners(int length) {
-        if (!(length >= 1 && length <= length())) {
+    public Iterable<Text> getOpeners(int length)
+    {
+        if (!(length >= 1 && length <= length()))
+        {
             throw new IllegalArgumentException("length must be between 1 and " + length() + ", was " + length);
         }
 
@@ -72,8 +81,10 @@ public class Delimiter implements DelimiterRun {
     }
 
     @Override
-    public Iterable<Text> getClosers(int length) {
-        if (!(length >= 1 && length <= length())) {
+    public Iterable<Text> getClosers(int length)
+    {
+        if (!(length >= 1 && length <= length()))
+        {
             throw new IllegalArgumentException("length must be between 1 and " + length() + ", was " + length);
         }
 

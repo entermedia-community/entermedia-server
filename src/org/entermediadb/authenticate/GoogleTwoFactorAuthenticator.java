@@ -8,26 +8,31 @@ import org.openedit.users.authenticate.AuthenticationRequest;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 
-public class GoogleTwoFactorAuthenticator implements Authenticator {
+public class GoogleTwoFactorAuthenticator implements Authenticator
+{
 
 	protected SearcherManager fieldSearcherManager;
 
-	public SearcherManager getSearcherManager() {
+	public SearcherManager getSearcherManager()
+	{
 		return fieldSearcherManager;
 	}
 
-	public void setSearcherManager(SearcherManager fieldSearcherManager) {
+	public void setSearcherManager(SearcherManager fieldSearcherManager)
+	{
 		this.fieldSearcherManager = fieldSearcherManager;
 	}
 
 	@Override
-	public boolean authenticate(String inCatalogId, User inUser, String inPassword) throws UserManagerException {
+	public boolean authenticate(String inCatalogId, User inUser, String inPassword) throws UserManagerException
+	{
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean authenticate(AuthenticationRequest inReq) throws UserManagerException {
+	public boolean authenticate(AuthenticationRequest inReq) throws UserManagerException
+	{
 
 		GoogleAuthenticator gAuth = new GoogleAuthenticator();
 		String keystring = inReq.get("googlekeystring");
@@ -35,18 +40,23 @@ public class GoogleTwoFactorAuthenticator implements Authenticator {
 
 		String secret = user.get("googlesecretkey");
 
-		if (secret == null) {
+		if (secret == null)
+		{
 			return false;
 		}
-		if (keystring == null) {
+		if (keystring == null)
+		{
 			return false;
 		}
 
 		// https://github.com/wstrange/GoogleAuth
 		Integer intval;
-		try {
+		try
+		{
 			intval = Integer.valueOf(keystring);
-		} catch (NumberFormatException e) {
+		}
+		catch (NumberFormatException e)
+		{
 			return false;
 		}
 		boolean isCodeValid = gAuth.authorize(secret, intval);

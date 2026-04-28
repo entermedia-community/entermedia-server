@@ -8,7 +8,8 @@ import org.entermediadb.asset.MediaArchive;
 import org.openedit.WebPageRequest;
 import org.openedit.users.User;
 
-public interface PushManager {
+public interface PushManager
+{
 
 	Collection getCompletedAssets(MediaArchive inArchive);
 

@@ -15,39 +15,46 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 
-public class AgentModule extends BaseMediaModule {
+public class AgentModule extends BaseMediaModule
+{
 
-	public AssistantManager getAssistantManager(WebPageRequest inReq) {
+	public AssistantManager getAssistantManager(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findValue("catalogid");
 		AssistantManager assistantManager = (AssistantManager) getMediaArchive(catalogid).getBean("assistantManager");
 		return assistantManager;
 	}
 
-	public CreationManager getCreationManager(WebPageRequest inReq) {
+	public CreationManager getCreationManager(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findValue("catalogid");
 		CreationManager creationManager = (CreationManager) getMediaArchive(catalogid).getBean("creationManager");
 		return creationManager;
 	}
 
-	public QuestionsManager getQuestionsManager(WebPageRequest inReq) {
+	public QuestionsManager getQuestionsManager(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findValue("catalogid");
 		QuestionsManager questionsManager = (QuestionsManager) getMediaArchive(catalogid).getBean("questionsManager");
 		return questionsManager;
 	}
 
-	public SearchingManager getSearchingManager(WebPageRequest inReq) {
+	public SearchingManager getSearchingManager(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findValue("catalogid");
 		SearchingManager searchingManager = (SearchingManager) getMediaArchive(catalogid).getBean("searchingManager");
 		return searchingManager;
 	}
 
-	public void searchTables(WebPageRequest inReq) throws Exception {
+	public void searchTables(WebPageRequest inReq) throws Exception
+	{
 		AgentContext agentContext = (AgentContext) inReq.getPageValue("agentcontext");
 
 		getSearchingManager(inReq).searchTables(inReq, agentContext.getAiSearchParams());
 	}
 
-	public void chatAgentSemanticSearch(WebPageRequest inReq) throws Exception {
+	public void chatAgentSemanticSearch(WebPageRequest inReq) throws Exception
+	{
 		AgentContext agentContext = (AgentContext) inReq.getPageValue("agentcontext");
 
 		String semanticquery = agentContext.get("semanticquery");
@@ -56,22 +63,26 @@ public class AgentModule extends BaseMediaModule {
 		agentContext.setNextFunctionName(null);
 
 		inReq.setRequestParameter("semanticquery", semanticquery);
-		if (agentContext.getExcludedEntityIds() != null) {
+		if (agentContext.getExcludedEntityIds() != null)
+		{
 			String[] excluded = agentContext.getExcludedEntityIds().toArray(new String[0]);
 			inReq.setRequestParameter("excludeentityids", excluded);
 		}
-		if (agentContext.getExcludedAssetIds() != null) {
+		if (agentContext.getExcludedAssetIds() != null)
+		{
 			String[] excluded = agentContext.getExcludedAssetIds().toArray(new String[0]);
 			inReq.setRequestParameter("excludeassetids", excluded);
 		}
 
-		if (semanticquery == null) {
+		if (semanticquery == null)
+		{
 			return;
 		}
 
 		String query = (String) semanticquery;
 
-		if (query != null && !"null".equals(query)) {
+		if (query != null && !"null".equals(query))
+		{
 			getSearchingManager(inReq).semanticSearch(inReq);
 		}
 	}
@@ -81,15 +92,18 @@ public class AgentModule extends BaseMediaModule {
 	// getAssistantManager(inReq).regularSearch(inReq, true);
 	// }
 
-	public void loadSemanticMatches(WebPageRequest inReq) throws Exception {
+	public void loadSemanticMatches(WebPageRequest inReq) throws Exception
+	{
 		String query = inReq.getRequestParameter("semanticquery");
 
-		if (query != null && !"null".equals(query)) {
+		if (query != null && !"null".equals(query))
+		{
 			getSearchingManager(inReq).semanticSearch(inReq);
 		}
 	}
 
-	public void recreateFunctions(WebPageRequest inReq) throws Exception {
+	public void recreateFunctions(WebPageRequest inReq) throws Exception
+	{
 		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
 		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
 		assistant.addMissingFunctions(log);
@@ -99,19 +113,22 @@ public class AgentModule extends BaseMediaModule {
 
 	}
 
-	public void loadModuleSchemaForJson(WebPageRequest inReq) throws Exception {
+	public void loadModuleSchemaForJson(WebPageRequest inReq) throws Exception
+	{
 		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
 		Collection<String> modulesenum = assistant.getModulesAsEnum();
 		inReq.putPageValue("modulesenum", modulesenum);
 	}
 
-	public void loadSearchSuggestions(WebPageRequest inReq) throws Exception {
+	public void loadSearchSuggestions(WebPageRequest inReq) throws Exception
+	{
 		SearchingManager searching = (SearchingManager) getMediaArchive(inReq).getBean("searchingManager");
 		Collection<String> suggestions = searching.makeSearchSuggestions(inReq.getUserProfile());
 		inReq.putPageValue("suggestions", suggestions);
 	}
 
-	public void saveAgentContextField(WebPageRequest inReq) throws Exception {
+	public void saveAgentContextField(WebPageRequest inReq) throws Exception
+	{
 		AgentContext agentContext = (AgentContext) inReq.getPageValue("agentcontext");
 		String fieldname = inReq.getRequestParameter("fieldname");
 		String fieldvalue = inReq.getRequestParameter("fieldvalue");
@@ -120,14 +137,16 @@ public class AgentModule extends BaseMediaModule {
 		searcher.saveData(agentContext, inReq.getUser());
 	}
 
-	public void loadTutorials(WebPageRequest inReq) throws Exception {
+	public void loadTutorials(WebPageRequest inReq) throws Exception
+	{
 		Searcher tutorialsearcher = getMediaArchive(inReq).getSearcher("aitutorial");
 		HitTracker hits = tutorialsearcher.query().exact("featured", true).search();
 
 		inReq.putPageValue("tutorials", hits);
 	}
 
-	public void startFunction(WebPageRequest inReq) throws Exception {
+	public void startFunction(WebPageRequest inReq) throws Exception
+	{
 		AssistantManager assistantManager = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
 
 		// Get the contenxt and update it first
@@ -137,29 +156,35 @@ public class AgentModule extends BaseMediaModule {
 		String previousTopLevel = agentContext.getTopLevelFunctionName();
 
 		boolean changed = false;
-		if (toplevel != null && !toplevel.equals(previousTopLevel)) {
+		if (toplevel != null && !toplevel.equals(previousTopLevel))
+		{
 			agentContext.setTopLevelFunctionName(toplevel);
 			changed = true;
 		}
 
 		String functionname = inReq.getRequestParameter("functionname");
-		if (functionname != null) {
+		if (functionname != null)
+		{
 			agentContext.setFunctionName(functionname);
 			changed = true;
 
 			Collection<String> params = inReq.getParameterMap().keySet();
-			for (Iterator iterator = params.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = params.iterator(); iterator.hasNext();)
+			{
 				String key = (String) iterator.next();
-				if (key.startsWith("context_")) {
+				if (key.startsWith("context_"))
+				{
 					String value = inReq.getRequestParameter(key);
-					if (value != null) {
+					if (value != null)
+					{
 						agentContext.addContext(key.substring("context_".length()), value);
 					}
 				}
 			}
 		}
 
-		if (changed) {
+		if (changed)
+		{
 			getMediaArchive(inReq).saveData("agentcontext", agentContext);
 
 			// Now that Context is set. Let the chat respond
@@ -169,14 +194,17 @@ public class AgentModule extends BaseMediaModule {
 		// Refresh drop down area?
 	}
 
-	public AgentContext loadAgentContext(WebPageRequest inReq) throws Exception {
+	public AgentContext loadAgentContext(WebPageRequest inReq) throws Exception
+	{
 		AssistantManager assistantManager = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
 
 		// Get the contenxt and update it first
 		String channelid = inReq.getRequestParameter("channel");
-		if (channelid == null) {
+		if (channelid == null)
+		{
 			Data currentchannel = (Data) inReq.getPageValue("currentchannel");
-			if (currentchannel == null) {
+			if (currentchannel == null)
+			{
 				return null;
 			}
 			channelid = currentchannel.getId();
@@ -189,7 +217,8 @@ public class AgentModule extends BaseMediaModule {
 
 		String toplevel = inReq.getRequestParameter("toplevelaifunctionid");
 
-		if (toplevel == null && context.getTopLevelFunctionName() == null) {
+		if (toplevel == null && context.getTopLevelFunctionName() == null)
+		{
 			inReq.setRequestParameter("channel", channelid);
 			inReq.setRequestParameter("toplevelaifunctionid", "auto_detect_welcome");
 			inReq.setRequestParameter("functionname", "auto_detect_welcome");
@@ -216,29 +245,32 @@ public class AgentModule extends BaseMediaModule {
 		// Refresh drop down area?
 	}
 
-	public void monitorChannels(WebPageRequest inReq) throws Exception {
+	public void monitorChannels(WebPageRequest inReq) throws Exception
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		AssistantManager assistantManager = (AssistantManager) archive.getBean("assistantManager");
 		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
 		assistantManager.monitorChannels(log);
 	}
 
-	public void verifyRevisions(WebPageRequest inReq) {
+	public void verifyRevisions(WebPageRequest inReq)
+	{
 		Data data = (Data) inReq.getPageValue("data");
 
 	}
 
-	public void monitorAiServers(WebPageRequest inReq) throws Exception {
+	public void monitorAiServers(WebPageRequest inReq) throws Exception
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		AssistantManager assistantManager = (AssistantManager) archive.getBean("assistantManager");
 		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
 		assistantManager.monitorAiServers(log);
 	}
 
-	public void resetInformatics(WebPageRequest inReq) throws Exception {
+	public void resetInformatics(WebPageRequest inReq) throws Exception
+	{
 		MediaArchive archive = getMediaArchive(inReq);
-		InformaticsProcessorManager manager = (InformaticsProcessorManager) archive
-				.getBean("informaticsProcessorManager");
+		InformaticsProcessorManager manager = (InformaticsProcessorManager) archive.getBean("informaticsProcessorManager");
 		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
 
 		String moduleid = inReq.findValue("module");
@@ -249,7 +281,8 @@ public class AgentModule extends BaseMediaModule {
 
 	}
 
-	public void loadRelatedRecords(WebPageRequest inReq) throws Exception {
+	public void loadRelatedRecords(WebPageRequest inReq) throws Exception
+	{
 		String entityid = inReq.findValue("entityid");
 		String entitymoduleid = inReq.findValue("entitymoduleid");
 
@@ -258,7 +291,8 @@ public class AgentModule extends BaseMediaModule {
 		inReq.putPageValue("relatedrecords", related);
 	}
 
-	public void loadRelatedRecordList(WebPageRequest inReq) throws Exception {
+	public void loadRelatedRecordList(WebPageRequest inReq) throws Exception
+	{
 		String entityid = inReq.findValue("entityid");
 		String entitymoduleid = inReq.findValue("entitymoduleid");
 		String listid = inReq.getRequestParameter("relatedmoduleid");
@@ -271,7 +305,8 @@ public class AgentModule extends BaseMediaModule {
 		inReq.putPageValue("recordlist", recordlist);
 	}
 
-	public void loadRecord(WebPageRequest inReq) throws Exception {
+	public void loadRecord(WebPageRequest inReq) throws Exception
+	{
 		String entityid = inReq.findValue("entityid");
 		String entitymoduleid = inReq.findValue("entitymoduleid");
 		String listid = inReq.getRequestParameter("relatedmoduleid");

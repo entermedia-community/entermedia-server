@@ -33,11 +33,13 @@ import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 
-public class ContentModule extends BaseMediaModule {
+public class ContentModule extends BaseMediaModule
+{
 
 	private static final Log log = LogFactory.getLog(ContentModule.class);
 
-	public void createHtmlView(WebPageRequest inReq) {
+	public void createHtmlView(WebPageRequest inReq)
+	{
 		// Check the type? Run the conversion
 		String moduleid = inReq.findPathValue("module");
 		String entityid = inReq.getRequestParameter("entityid");
@@ -53,7 +55,8 @@ public class ContentModule extends BaseMediaModule {
 		// PDF?
 	}
 
-	public void createNewRequest(WebPageRequest inReq) throws Exception {
+	public void createNewRequest(WebPageRequest inReq) throws Exception
+	{
 		// Add as child
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher requests = archive.getSearcher("contentcreator");
@@ -69,7 +72,8 @@ public class ContentModule extends BaseMediaModule {
 
 	}
 
-	public void processCreationQueue(WebPageRequest inReq) throws Exception {
+	public void processCreationQueue(WebPageRequest inReq) throws Exception
+	{
 		// Add as child
 		MediaArchive archive = getMediaArchive(inReq);
 
@@ -80,12 +84,16 @@ public class ContentModule extends BaseMediaModule {
 		AgentContext params = new AgentContext();
 		// params.addContext(inReq.getParameterMap()); //TODO: Not implemented
 
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
 			MultiValued contentrequest = (MultiValued) iterator.next();
 			LlmConnection llm = null;
-			if ("image".equals(contentrequest.get("contentcreatortype"))) {
+			if ("image".equals(contentrequest.get("contentcreatortype")))
+			{
 				llm = (LlmConnection) archive.getLlmConnection("createAsset");
-			} else {
+			}
+			else
+			{
 				llm = (LlmConnection) archive.getLlmConnection("createRecord");
 			}
 
@@ -96,7 +104,8 @@ public class ContentModule extends BaseMediaModule {
 
 	}
 
-	public void processAssetRequests(WebPageRequest inReq) throws Exception {
+	public void processAssetRequests(WebPageRequest inReq) throws Exception
+	{
 		// Add as child
 		MediaArchive archive = getMediaArchive(inReq);
 
@@ -108,13 +117,16 @@ public class ContentModule extends BaseMediaModule {
 		Map params = new HashMap();
 		params.putAll(inReq.getParameterMap());
 
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
 			MultiValued contentrequest = (MultiValued) iterator.next();
 			String entitymoduleid = contentrequest.get("entitymoduleid");
 			Data entity = archive.getCachedData(entitymoduleid, contentrequest.get("entityid"));
-			if (entity != null) {
+			if (entity != null)
+			{
 				Asset asset = manager.createAssetFromLLM(params, contentrequest);
-				if (asset != null) {
+				if (asset != null)
+				{
 					entity.setValue("primarymedia", asset.getId());
 					archive.saveData(entitymoduleid, entity);
 				}
@@ -123,7 +135,8 @@ public class ContentModule extends BaseMediaModule {
 
 	}
 
-	public void createNewImageRequest(WebPageRequest inReq) throws Exception {
+	public void createNewImageRequest(WebPageRequest inReq) throws Exception
+	{
 		// Add as child
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher requests = archive.getSearcher("contentcreator");
@@ -145,7 +158,8 @@ public class ContentModule extends BaseMediaModule {
 
 		String filename = info.get("aitarget");
 		String similarto = info.get("aiexamples");
-		if (similarto != null) {
+		if (similarto != null)
+		{
 			filename += "-";
 			filename += similarto;
 		}
@@ -158,7 +172,8 @@ public class ContentModule extends BaseMediaModule {
 
 		Asset asset = archive.getAssetBySourcePath(sourcePath);
 
-		if (asset == null) {
+		if (asset == null)
+		{
 			asset = new BaseAsset(archive);
 			asset.setSourcePath(sourcePath);
 			asset.setName(filename.toString());
@@ -251,7 +266,8 @@ public class ContentModule extends BaseMediaModule {
 	// }
 	// }
 
-	public void createNewAssetsWithAi(WebPageRequest inReq) throws Exception {
+	public void createNewAssetsWithAi(WebPageRequest inReq) throws Exception
+	{
 		// Add as child
 		Data entitypartentview = (Data) inReq.getPageValue("entitymoduleviewdata");
 		Data entity = (Data) inReq.getPageValue("entity");
@@ -262,9 +278,12 @@ public class ContentModule extends BaseMediaModule {
 		getMediaArchive(inReq).saveData(entitymodule.getId(), entity);
 		ContentPublishingManager manager = getContentManager(inReq);
 		String type = inReq.findValue("llmtype.value");
-		if (type == null) {
+		if (type == null)
+		{
 			type = "gptManager";
-		} else {
+		}
+		else
+		{
 			type = type + "Manager";
 		}
 		LlmConnection llm = (LlmConnection) getMediaArchive(inReq).getBean(type);
@@ -276,7 +295,8 @@ public class ContentModule extends BaseMediaModule {
 
 	}
 
-	public void loadDitaXml(WebPageRequest inReq) {
+	public void loadDitaXml(WebPageRequest inReq)
+	{
 		String moduleid = inReq.findPathValue("module");
 		String entityid = inReq.getRequestParameter("entityid");
 		Data entity = getMediaArchive(inReq).getData(moduleid, entityid);
@@ -301,7 +321,8 @@ public class ContentModule extends BaseMediaModule {
 		inReq.putPageValue("chapters", nodes);
 	}
 
-	public void loadVisual(WebPageRequest inReq) {
+	public void loadVisual(WebPageRequest inReq)
+	{
 		String moduleid = inReq.findPathValue("module");
 		String entityid = inReq.getRequestParameter("entityid");
 		MediaArchive mediaArchive = getMediaArchive(inReq);
@@ -313,14 +334,18 @@ public class ContentModule extends BaseMediaModule {
 
 		// Make sure file is still here?
 		ContentItem item = mediaArchive.getOriginalContent(asset);
-		if (!item.exists()) {
+		if (!item.exists())
+		{
 			asset.setValue("editstatus", "7");
 			mediaArchive.saveAsset(asset);
 			return;
-		} else if ("7".equals(asset.get("editstatus"))) {
-			asset.setValue("editstatus", "2"); // Undelete
-			mediaArchive.saveAsset(asset);
 		}
+		else
+			if ("7".equals(asset.get("editstatus")))
+			{
+				asset.setValue("editstatus", "2"); // Undelete
+				mediaArchive.saveAsset(asset);
+			}
 
 		String path = manager.loadVisual(entity, renderformat, asset);
 		inReq.putPageValue("renderedpath", path);
@@ -329,7 +354,8 @@ public class ContentModule extends BaseMediaModule {
 		inReq.putPageValue("renderedcategory", cat);
 	}
 
-	public void loadXml(WebPageRequest inReq) throws Exception {
+	public void loadXml(WebPageRequest inReq) throws Exception
+	{
 		String moduleid = inReq.findPathValue("module");
 		String entityid = inReq.getRequestParameter("entityid");
 		Data entity = getMediaArchive(inReq).getData(moduleid, entityid);
@@ -340,16 +366,19 @@ public class ContentModule extends BaseMediaModule {
 		// inReq.putPageValue("components",components);
 	}
 
-	protected ContentPublishingManager getContentManager(WebPageRequest inReq) {
+	protected ContentPublishingManager getContentManager(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		ContentPublishingManager manager = (ContentPublishingManager) archive.getBean("contentPublishingManager");
-		if (manager.getMediaArchive() == null) {
+		if (manager.getMediaArchive() == null)
+		{
 			manager.setMediaArchive(archive);
 		}
 		return manager;
 	}
 
-	public void renderDitaTable(WebPageRequest inReq) throws Exception {
+	public void renderDitaTable(WebPageRequest inReq) throws Exception
+	{
 		String entitymoduleid = inReq.getRequestParameter("entitymoduleid");
 		String entityid = inReq.getRequestParameter("entityid");
 		String targetmodule = inReq.findPathValue("submoduleid");
@@ -362,16 +391,19 @@ public class ContentModule extends BaseMediaModule {
 
 	}
 
-	public void loadDitaViewer(WebPageRequest inReq) throws Exception {
+	public void loadDitaViewer(WebPageRequest inReq) throws Exception
+	{
 		Data entity = (Data) inReq.getPageValue("entity");
 		Data asset = (Data) inReq.getPageValue("asset");
 		ContentPublishingManager manager = getContentManager(inReq);
 		Collection menu = (Collection) manager.findDitaAssets(entity);
-		if (menu == null) {
+		if (menu == null)
+		{
 			log.error("No menu");
 			return;
 		}
-		if (asset == null && !menu.isEmpty()) {
+		if (asset == null && !menu.isEmpty())
+		{
 			asset = (Data) menu.iterator().next();
 			inReq.putPageValue("asset", asset);
 			String path = manager.loadVisual(entity, "html", asset);
@@ -381,22 +413,28 @@ public class ContentModule extends BaseMediaModule {
 		inReq.putPageValue("found", menu);
 	}
 
-	public void postToPostiz(WebPageRequest inReq) {
-		try {
+	public void postToPostiz(WebPageRequest inReq)
+	{
+		try
+		{
 			PostizManager manager = (PostizManager) getMediaArchive(inReq).getBean("postizManager");
 
 			// Get and validate the post content
 			String postContent = inReq.findValue("postcontent");
-			if (postContent == null || postContent.trim().isEmpty()) {
+			if (postContent == null || postContent.trim().isEmpty())
+			{
 				throw new OpenEditException("Post content is required.");
 			}
 
 			// Parse the date from the form input directly
 			String dateStr = inReq.getRequestParameter("date.value");
 			Date postDate = null;
-			if (dateStr != null && !dateStr.isEmpty()) {
+			if (dateStr != null && !dateStr.isEmpty())
+			{
 				postDate = DateStorageUtil.getStorageUtil().parse(dateStr, "yyyy-MM-dd'T'HH:mm", inReq.getTimeZone());
-			} else {
+			}
+			else
+			{
 				postDate = new Date();
 			}
 
@@ -410,8 +448,7 @@ public class ContentModule extends BaseMediaModule {
 			String apiKey = getPostizKey(inReq);
 
 			// Call Postiz API
-			JSONObject result = manager.createPost(apiKey, postContent, postDate, PostizManager.POST_TYPE_SCHEDULE,
-					assets, siteList);
+			JSONObject result = manager.createPost(apiKey, postContent, postDate, PostizManager.POST_TYPE_SCHEDULE, assets, siteList);
 
 			Calendar cal = DateStorageUtil.getStorageUtil().getCalendar(postDate);
 			int dayofweek = cal.get(Calendar.DAY_OF_WEEK) - 2;
@@ -426,13 +463,16 @@ public class ContentModule extends BaseMediaModule {
 
 			log.info("Post created successfully: " + result.toJSONString());
 
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			log.error("Failed to create post with Postiz", e);
 			throw new OpenEditException("Error while posting to Postiz: " + e.getMessage(), e);
 		}
 	}
 
-	public void setSocialMediaProfile(WebPageRequest inReq) {
+	public void setSocialMediaProfile(WebPageRequest inReq)
+	{
 		String socialmediaprofile = inReq.getRequestParameter("socialmediaprofile");
 
 		inReq.getUserProfile().setProperty("socialmediaprofile", socialmediaprofile);
@@ -440,26 +480,32 @@ public class ContentModule extends BaseMediaModule {
 		inReq.putPageValue("socialmediaprofile", socialmediaprofile);
 	}
 
-	public void loadPostizIntegrations(WebPageRequest inReq) {
+	public void loadPostizIntegrations(WebPageRequest inReq)
+	{
 		PostizManager postiz = getPostizManager(inReq);
 
 		String apikey = getPostizKey(inReq);
-		if (apikey != null) {
+		if (apikey != null)
+		{
 			Collection postoptions = postiz.listIntegrations(apikey);
 			inReq.putPageValue("postoptions", postoptions);
 		}
 
 	}
 
-	protected String getPostizKey(WebPageRequest inReq) {
+	protected String getPostizKey(WebPageRequest inReq)
+	{
 		String smprofileid = inReq.getUserProfile().get("socialmediaprofile");
 
-		if (smprofileid != null) {
+		if (smprofileid != null)
+		{
 			MediaArchive archive = getMediaArchive(inReq);
 			Data profile = archive.getCachedData("socialmediaprofile", smprofileid);
-			if (profile != null) {
+			if (profile != null)
+			{
 				String apikey = profile.get("apikey");
-				if (apikey != null) {
+				if (apikey != null)
+				{
 					return apikey;
 				}
 			}
@@ -467,7 +513,8 @@ public class ContentModule extends BaseMediaModule {
 		return null;
 	}
 
-	protected PostizManager getPostizManager(WebPageRequest inReq) {
+	protected PostizManager getPostizManager(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		PostizManager manager = (PostizManager) archive.getBean("postizManager");
 		return manager;

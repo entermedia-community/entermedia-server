@@ -24,31 +24,38 @@ import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
-public class AutoCompleteModule extends DataEditModule {
+public class AutoCompleteModule extends DataEditModule
+{
 
 	private static final Log log = LogFactory.getLog(AutoCompleteModule.class);
 
-	public AutoCompleteSearcher getAutoCompleteSearcher(WebPageRequest inReq, boolean inSave) {
+	public AutoCompleteSearcher getAutoCompleteSearcher(WebPageRequest inReq, boolean inSave)
+	{
 		String catalogid = null;
 		String type = inReq.findPathValue("searchtype");
-		if (type == null || type.equals("compositeLucene")) {
+		if (type == null || type.equals("compositeLucene"))
+		{
 			type = "compositeLucene";
 			catalogid = inReq.findValue("applicationid");
-		} else {
+		}
+		else
+		{
 			catalogid = inReq.findPathValue("catalogid");
 		}
 
 		type = type + "AutoComplete";
 		AutoCompleteSearcher searcher = (AutoCompleteSearcher) getSearcherManager().getSearcher(catalogid, type); // e.g.
 		// "assetThesaurusSearcher"
-		if (inSave) {
+		if (inSave)
+		{
 			inReq.putPageValue("searcher", searcher);
 		}
 		return searcher;
 
 	}
 
-	public AutoCompleteSearcher getAutoCompleteSearcher(WebPageRequest inReq) {
+	public AutoCompleteSearcher getAutoCompleteSearcher(WebPageRequest inReq)
+	{
 		return getAutoCompleteSearcher(inReq, true);
 	}
 
@@ -58,30 +65,37 @@ public class AutoCompleteModule extends DataEditModule {
 	 * @param inReq
 	 * @throws Exception
 	 */
-	public void updateHits(WebPageRequest inReq) {
+	public void updateHits(WebPageRequest inReq)
+	{
 		String word = inReq.getRequestParameter("description.value");
-		if (word == null) {
+		if (word == null)
+		{
 			return;
 		}
 
 		Searcher searcher = getAutoCompleteSearcher(inReq);
-		if (searcher == null) {
+		if (searcher == null)
+		{
 			searcher = (Searcher) inReq.getPageValue("searcher");
-			if (searcher == null) {
+			if (searcher == null)
+			{
 				return;
 			}
 		}
 		HitTracker tracker = searcher.loadHits(inReq);
-		if (tracker == null) {
+		if (tracker == null)
+		{
 			tracker = (HitTracker) inReq.getPageValue("hits");
 		}
-		if (tracker == null) {
+		if (tracker == null)
+		{
 			return;
 		}
 		getAutoCompleteSearcher(inReq, false).updateHits(tracker, word);
 	}
 
-	public HitTracker userSearchSuggestions(WebPageRequest inReq) {
+	public HitTracker userSearchSuggestions(WebPageRequest inReq)
+	{
 		Searcher userSearcher = getSearcherManager().getSearcher("system", "user");
 		SearchQuery query = userSearcher.createSearchQuery();
 		query.setAndTogether(false);
@@ -89,21 +103,25 @@ public class AutoCompleteModule extends DataEditModule {
 		query.addStartsWith("description", searchString);
 
 		HitTracker hits = userSearcher.cachedSearch(inReq, query);
-		if (Boolean.parseBoolean(inReq.findValue("cancelactions"))) {
+		if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
+		{
 			inReq.setCancelActions(true);
 		}
 		inReq.putPageValue("suggestions", hits);
 		return hits;
 	}
 
-	public HitTracker myGroupUsersSuggestions(WebPageRequest inReq) {
+	public HitTracker myGroupUsersSuggestions(WebPageRequest inReq)
+	{
 		User currentUser = inReq.getUser();
 		Collection groups = currentUser.getGroups();
 		HashSet<String> ids = new HashSet<String>();
-		for (Iterator iterator = groups.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = groups.iterator(); iterator.hasNext();)
+		{
 			Group group = (Group) iterator.next();
 			Collection users = getUserManager(inReq).getUsersInGroup(group);
-			for (Iterator iterator2 = users.iterator(); iterator2.hasNext();) {
+			for (Iterator iterator2 = users.iterator(); iterator2.hasNext();)
+			{
 				User user = (User) iterator2.next();
 				ids.add(user.getId());
 			}
@@ -116,13 +134,18 @@ public class AutoCompleteModule extends DataEditModule {
 		ids.removeAll(userNames);
 
 		HitTracker hits = null;
-		if (ids.size() > 0) {
+		if (ids.size() > 0)
+		{
 			StringBuffer groupuserids = new StringBuffer();
-			for (Iterator iterator = ids.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = ids.iterator(); iterator.hasNext();)
+			{
 				String id = (String) iterator.next();
-				if (iterator.hasNext()) {
+				if (iterator.hasNext())
+				{
 					groupuserids.append(id + " ");
-				} else {
+				}
+				else
+				{
 					groupuserids.append(id);
 				}
 			}
@@ -143,7 +166,8 @@ public class AutoCompleteModule extends DataEditModule {
 			query.addSortBy("lastName");
 
 			hits = userSearcher.cachedSearch(inReq, query);
-			if (Boolean.parseBoolean(inReq.findValue("cancelactions"))) {
+			if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
+			{
 				inReq.setCancelActions(true);
 			}
 		}
@@ -157,12 +181,14 @@ public class AutoCompleteModule extends DataEditModule {
 	 * @param inReq
 	 * @return
 	 */
-	public HitTracker myGroupSuggestions(WebPageRequest inReq) {
+	public HitTracker myGroupSuggestions(WebPageRequest inReq)
+	{
 		User currentUser = inReq.getUser();
 		Collection<Group> groups = currentUser.getGroups();
 		Collection<String> groupidscol = new ArrayList<String>();
 		StringBuffer groupids = new StringBuffer();
-		for (Iterator iterator = groups.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = groups.iterator(); iterator.hasNext();)
+		{
 			Group group = (Group) iterator.next();
 			groupidscol.add(group.getId());
 		}
@@ -174,13 +200,18 @@ public class AutoCompleteModule extends DataEditModule {
 		groupidscol.removeAll(userNames);
 
 		HitTracker hits = null;
-		if (groupidscol.size() > 0) {
+		if (groupidscol.size() > 0)
+		{
 			// put them in something safe for a query
-			for (Iterator iterator = groupidscol.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = groupidscol.iterator(); iterator.hasNext();)
+			{
 				String group = (String) iterator.next();
-				if (iterator.hasNext()) {
+				if (iterator.hasNext())
+				{
 					groupids.append(group + " ");
-				} else {
+				}
+				else
+				{
 					groupids.append(group);
 				}
 			}
@@ -198,7 +229,8 @@ public class AutoCompleteModule extends DataEditModule {
 			query.addChildQuery(innerquery);
 
 			hits = groupSearcher.cachedSearch(inReq, query);
-			if (Boolean.parseBoolean(inReq.findValue("cancelactions"))) {
+			if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
+			{
 				inReq.setCancelActions(true);
 			}
 		}
@@ -206,7 +238,8 @@ public class AutoCompleteModule extends DataEditModule {
 		return hits;
 	}
 
-	public HitTracker groupSuggestions(WebPageRequest inReq) {
+	public HitTracker groupSuggestions(WebPageRequest inReq)
+	{
 		// make sure we exclude groups that are already in there
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
@@ -221,14 +254,16 @@ public class AutoCompleteModule extends DataEditModule {
 		query.addSortBy("namesorted");
 
 		Collection<String> alreadyhave = archive.getAssetSecurityArchive().getAccessList(archive, asset);
-		for (Iterator iterator = alreadyhave.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = alreadyhave.iterator(); iterator.hasNext();)
+		{
 			String existinggroup = (String) iterator.next();
 			query.addNot("id", existinggroup);
 		}
 		query.addNot("enabled", "false");
 
 		hits = groupSearcher.cachedSearch(inReq, query);
-		if (Boolean.parseBoolean(inReq.findValue("cancelactions"))) {
+		if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
+		{
 			inReq.setCancelActions(true);
 		}
 		inReq.putPageValue("suggestions", hits);
@@ -242,21 +277,26 @@ public class AutoCompleteModule extends DataEditModule {
 		return hits;
 	}
 
-	public HitTracker searchUserEmails(WebPageRequest inReq) throws Exception {
+	public HitTracker searchUserEmails(WebPageRequest inReq) throws Exception
+	{
 		Searcher userSearcher = getSearcherManager().getSearcher("system", "user");
 		String querystring = inReq.getRequestParameter("q");
 
 		// get what comes after the last semicolon
-		if (querystring == null) {
+		if (querystring == null)
+		{
 			return null;
 		}
 
 		int semicolon = querystring.lastIndexOf(";");
-		if (semicolon > -1) {
+		if (semicolon > -1)
+		{
 			String existingmail = querystring.substring(0, semicolon);
 			inReq.putPageValue("existingmail", existingmail + "; ");
 			querystring = querystring.substring(semicolon + 1);
-		} else {
+		}
+		else
+		{
 			inReq.putPageValue("existingmail", "");
 		}
 
@@ -269,21 +309,26 @@ public class AutoCompleteModule extends DataEditModule {
 		return hits;
 	}
 
-	public HitTracker searchFriendEmails(WebPageRequest inReq) throws Exception {
+	public HitTracker searchFriendEmails(WebPageRequest inReq) throws Exception
+	{
 		Searcher userSearcher = getSearcherManager().getSearcher("system", "user");
 		String querystring = inReq.getRequestParameter("q");
 
 		// get what comes after the last semicolon
-		if (querystring == null) {
+		if (querystring == null)
+		{
 			return null;
 		}
 
 		int semicolon = querystring.lastIndexOf(";");
-		if (semicolon > -1) {
+		if (semicolon > -1)
+		{
 			String existingmail = querystring.substring(0, semicolon);
 			inReq.putPageValue("existingmail", existingmail + "; ");
 			querystring = querystring.substring(semicolon + 1);
-		} else {
+		}
+		else
+		{
 			inReq.putPageValue("existingmail", "");
 		}
 
@@ -292,12 +337,15 @@ public class AutoCompleteModule extends DataEditModule {
 		query.addMatches("friend.friendid", inReq.getUserName());
 		HitTracker hits = userSearcher.cachedSearch(inReq, query);
 		ListHitTracker users = new ListHitTracker();
-		if (hits.size() > 0) {
+		if (hits.size() > 0)
+		{
 			// only show friends
-			for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+			{
 				Data user = (Data) iterator.next();
 				String email = user.get("email");
-				if (email != null) {
+				if (email != null)
+				{
 					users.add(user);
 				}
 			}
@@ -309,7 +357,8 @@ public class AutoCompleteModule extends DataEditModule {
 
 	// this searches for suggestions that are already in the index. used for
 	// autocomplete
-	public HitTracker searchSuggestions(WebPageRequest inReq) throws Exception {
+	public HitTracker searchSuggestions(WebPageRequest inReq) throws Exception
+	{
 		AutoCompleteSearcher searcher = (AutoCompleteSearcher) getAutoCompleteSearcher(inReq);
 		JsonUtil util = (JsonUtil) searcher.getSearcherManager().getModuleManager().getBean("jsonUtil");
 		inReq.putPageValue("jsonUtil", util);
@@ -317,13 +366,16 @@ public class AutoCompleteModule extends DataEditModule {
 		String field = inReq.getRequestParameter("field");
 
 		String searchString = inReq.getRequestParameter(field + ".value");
-		if (searchString == null) {
+		if (searchString == null)
+		{
 			searchString = inReq.getRequestParameter("q");
 		}
-		if (searchString == null) {
+		if (searchString == null)
+		{
 			searchString = inReq.getRequestParameter("term");
 		}
-		if (searchString != null) {
+		if (searchString != null)
+		{
 			SearchQuery query = searcher.createSearchQuery();
 			query.addStartsWith("synonymsenc", searchString);
 			query.setSortBy("hitsDown");
@@ -334,7 +386,8 @@ public class AutoCompleteModule extends DataEditModule {
 			// defaults to hits name of "$suggestions"
 
 			HitTracker wordsHits = searcher.cachedSearch(inReq, query);
-			if (Boolean.parseBoolean(inReq.findValue("cancelactions"))) {
+			if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
+			{
 				inReq.setCancelActions(true);
 			}
 			inReq.putPageValue("searchstring", searchString);
@@ -343,16 +396,19 @@ public class AutoCompleteModule extends DataEditModule {
 		return null;
 	}
 
-	public void autocomplete(WebPageRequest inReq) throws Exception {
+	public void autocomplete(WebPageRequest inReq) throws Exception
+	{
 		Searcher searcher = loadSearcher(inReq);
 		String field = inReq.getRequestParameter("field");
-		if (searcher != null) {
+		if (searcher != null)
+		{
 			SearchQuery query = searcher.createSearchQuery();
 			String term = inReq.getRequestParameter("term");
 			query.addStartsWith(field, term);
 			HitTracker hits = searcher.cachedSearch(inReq, query);
 
-			if (hits != null) {
+			if (hits != null)
+			{
 				String name = inReq.findValue("hitsname");
 				inReq.putPageValue(name, hits);
 				inReq.putSessionValue(hits.getSessionId(), hits);
@@ -361,7 +417,8 @@ public class AutoCompleteModule extends DataEditModule {
 		inReq.putPageValue("searcher", searcher);
 	}
 
-	public void expireSuggestions(WebPageRequest inReq) throws Exception {
+	public void expireSuggestions(WebPageRequest inReq) throws Exception
+	{
 		// Pass in search type
 		String searchtype = inReq.findPathValue("searchtype");
 		AutoCompleteSearcher searcher = (AutoCompleteSearcher) getAutoCompleteSearcher(inReq);
@@ -373,33 +430,41 @@ public class AutoCompleteModule extends DataEditModule {
 		Searcher finder = getSearcherManager().getSearcher(catalogid, searchtype);
 		List todelete = new ArrayList();
 		List tosave = new ArrayList();
-		for (Iterator iterator = all.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
 			Data term = (Data) iterator.next();
 			String searchby = term.getId();
 			String hitcount = term.get("hitcount");
 			int size = finder.query().freeform("description", searchby).hitsPerPage(1).search().size();
-			if (size == 0) {
+			if (size == 0)
+			{
 				todelete.add(term);
-			} else if (size != Integer.parseInt(hitcount)) {
-				term.setValue("hitcount", size);
-				term.setValue("timestamp", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-
-				tosave.add(term);
 			}
+			else
+				if (size != Integer.parseInt(hitcount))
+				{
+					term.setValue("hitcount", size);
+					term.setValue("timestamp", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+
+					tosave.add(term);
+				}
 		}
 		searcher.deleteAll(todelete, null);
 		searcher.saveAllData(tosave, null);
 		ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
-		if (logger != null) {
+		if (logger != null)
+		{
 			logger.info("Deleted " + todelete.size());
 			logger.info("Updated " + tosave.size());
 		}
 	}
 
-	public HitTracker suggestTopics(WebPageRequest inReq) {
+	public HitTracker suggestTopics(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String value = inReq.getRequestParameter("description.value");
-		if (value != null) {
+		if (value != null)
+		{
 			// Search trackedtopics and anything else that is a list within modulesearch
 			HitTracker hits = archive.query("modulesearchkeyword").startsWith("name", value).sort("name").search();
 			// HitTracker hits = archive.query("trackedtopics").contains("keywords", value

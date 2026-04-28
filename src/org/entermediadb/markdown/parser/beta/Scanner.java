@@ -7,15 +7,15 @@ import org.entermediadb.markdown.text.CharMatcher;
 
 import java.util.List;
 
-public class Scanner {
+public class Scanner
+{
 
     /**
-     * Character representing the end of input source (or outside of the text in
-     * case of the "previous" methods).
+     * Character representing the end of input source (or outside of the text in case of the "previous"
+     * methods).
      * <p>
-     * Note that we can use NULL to represent this because CommonMark does not allow
-     * those in the input (we replace them
-     * in the beginning of parsing).
+     * Note that we can use NULL to represent this because CommonMark does not allow those in the input
+     * (we replace them in the beginning of parsing).
      */
     public static final char END = '\0';
 
@@ -39,85 +39,121 @@ public class Scanner {
         this.lines = lines;
         this.lineIndex = lineIndex;
         this.index = index;
-        if (!lines.isEmpty()) {
+        if (!lines.isEmpty())
+        {
             checkPosition(lineIndex, index);
             setLine(lines.get(lineIndex));
         }
     }
 
-    public static Scanner of(SourceLines lines) {
+    public static Scanner of(SourceLines lines)
+    {
         return new Scanner(lines.getLines(), 0, 0);
     }
 
-    public char peek() {
-        if (index < lineLength) {
+    public char peek()
+    {
+        if (index < lineLength)
+        {
             return line.getContent().charAt(index);
-        } else {
-            if (lineIndex < lines.size() - 1) {
+        }
+        else
+        {
+            if (lineIndex < lines.size() - 1)
+            {
                 return '\n';
-            } else {
+            }
+            else
+            {
                 // Don't return newline for end of last line
                 return END;
             }
         }
     }
 
-    public int peekCodePoint() {
-        if (index < lineLength) {
+    public int peekCodePoint()
+    {
+        if (index < lineLength)
+        {
             char c = line.getContent().charAt(index);
-            if (Character.isHighSurrogate(c) && index + 1 < lineLength) {
+            if (Character.isHighSurrogate(c) && index + 1 < lineLength)
+            {
                 char low = line.getContent().charAt(index + 1);
-                if (Character.isLowSurrogate(low)) {
+                if (Character.isLowSurrogate(low))
+                {
                     return Character.toCodePoint(c, low);
                 }
             }
             return c;
-        } else {
-            if (lineIndex < lines.size() - 1) {
+        }
+        else
+        {
+            if (lineIndex < lines.size() - 1)
+            {
                 return '\n';
-            } else {
+            }
+            else
+            {
                 // Don't return newline for end of last line
                 return END;
             }
         }
     }
 
-    public int peekPreviousCodePoint() {
-        if (index > 0) {
+    public int peekPreviousCodePoint()
+    {
+        if (index > 0)
+        {
             int prev = index - 1;
             char c = line.getContent().charAt(prev);
-            if (Character.isLowSurrogate(c) && prev > 0) {
+            if (Character.isLowSurrogate(c) && prev > 0)
+            {
                 char high = line.getContent().charAt(prev - 1);
-                if (Character.isHighSurrogate(high)) {
+                if (Character.isHighSurrogate(high))
+                {
                     return Character.toCodePoint(high, c);
                 }
             }
             return c;
-        } else {
-            if (lineIndex > 0) {
+        }
+        else
+        {
+            if (lineIndex > 0)
+            {
                 return '\n';
-            } else {
+            }
+            else
+            {
                 return END;
             }
         }
     }
 
-    public boolean hasNext() {
-        if (index < lineLength) {
+    public boolean hasNext()
+    {
+        if (index < lineLength)
+        {
             return true;
-        } else {
+        }
+        else
+        {
             // No newline at end of last line
             return lineIndex < lines.size() - 1;
         }
     }
 
-    public void next() {
+    public void next()
+    {
         index++;
-        if (index > lineLength) {
+        if (index > lineLength)
+        {
             lineIndex++;
-            if (lineIndex < lines.size()) {
+            if (lineIndex < lines.size())
+            {
                 setLine(lines.get(lineIndex));
-            } else {
+            }
+            else
+            {
                 setLine(SourceLine.of("", null));
             }
             index = 0;
@@ -130,61 +166,76 @@ public class Scanner {
      * @param c the char to check (including newline characters)
      * @return true if matched and position was advanced, false otherwise
      */
-    public boolean next(char c) {
-        if (peek() == c) {
+    public boolean next(char c)
+    {
+        if (peek() == c)
+        {
             next();
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
 
     /**
-     * Check if we have the specified content on the line and advanced the position.
-     * Note that if you want to match
-     * newline characters, use {@link #next(char)}.
+     * Check if we have the specified content on the line and advanced the position. Note that if you
+     * want to match newline characters, use {@link #next(char)}.
      *
-     * @param content the text content to match on a single line (excluding newline
-     *                characters)
+     * @param content the text content to match on a single line (excluding newline characters)
      * @return true if matched and position was advanced, false otherwise
      */
-    public boolean next(String content) {
-        if (index < lineLength && index + content.length() <= lineLength) {
+    public boolean next(String content)
+    {
+        if (index < lineLength && index + content.length() <= lineLength)
+        {
             // Can't use startsWith because it's not available on CharSequence
-            for (int i = 0; i < content.length(); i++) {
-                if (line.getContent().charAt(index + i) != content.charAt(i)) {
+            for (int i = 0; i < content.length(); i++)
+            {
+                if (line.getContent().charAt(index + i) != content.charAt(i))
+                {
                     return false;
                 }
             }
             index += content.length();
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
 
-    public int matchMultiple(char c) {
+    public int matchMultiple(char c)
+    {
         int count = 0;
-        while (peek() == c) {
+        while (peek() == c)
+        {
             count++;
             next();
         }
         return count;
     }
 
-    public int match(CharMatcher matcher) {
+    public int match(CharMatcher matcher)
+    {
         int count = 0;
-        while (matcher.matches(peek())) {
+        while (matcher.matches(peek()))
+        {
             count++;
             next();
         }
         return count;
     }
 
-    public int whitespace() {
+    public int whitespace()
+    {
         int count = 0;
-        while (true) {
-            switch (peek()) {
+        while (true)
+        {
+            switch (peek())
+            {
                 case ' ':
                 case '\t':
                 case '\n':
@@ -200,29 +251,41 @@ public class Scanner {
         }
     }
 
-    public int find(char c) {
+    public int find(char c)
+    {
         int count = 0;
-        while (true) {
+        while (true)
+        {
             char cur = peek();
-            if (cur == Scanner.END) {
+            if (cur == Scanner.END)
+            {
                 return -1;
-            } else if (cur == c) {
-                return count;
             }
+            else
+                if (cur == c)
+                {
+                    return count;
+                }
             count++;
             next();
         }
     }
 
-    public int find(CharMatcher matcher) {
+    public int find(CharMatcher matcher)
+    {
         int count = 0;
-        while (true) {
+        while (true)
+        {
             char c = peek();
-            if (c == END) {
+            if (c == END)
+            {
                 return -1;
-            } else if (matcher.matches(c)) {
-                return count;
             }
+            else
+                if (matcher.matches(c))
+                {
+                    return count;
+                }
             count++;
             next();
         }
@@ -231,11 +294,13 @@ public class Scanner {
     // Don't expose the int index, because it would be good if we could switch input
     // to a List<String> of lines later
     // instead of one contiguous String.
-    public Position position() {
+    public Position position()
+    {
         return new Position(lineIndex, index);
     }
 
-    public void setPosition(Position position) {
+    public void setPosition(Position position)
+    {
         checkPosition(position.lineIndex, position.index);
         this.lineIndex = position.lineIndex;
         this.index = position.index;
@@ -245,25 +310,31 @@ public class Scanner {
     // For cases where the caller appends the result to a StringBuilder, we could
     // offer another method to avoid some
     // unnecessary copying.
-    public SourceLines getSource(Position begin, Position end) {
-        if (begin.lineIndex == end.lineIndex) {
+    public SourceLines getSource(Position begin, Position end)
+    {
+        if (begin.lineIndex == end.lineIndex)
+        {
             // Shortcut for common case of text from a single line
             SourceLine line = lines.get(begin.lineIndex);
             CharSequence newContent = line.getContent().subSequence(begin.index, end.index);
             SourceSpan newSourceSpan = null;
             SourceSpan sourceSpan = line.getSourceSpan();
-            if (sourceSpan != null) {
+            if (sourceSpan != null)
+            {
                 newSourceSpan = sourceSpan.subSpan(begin.index, end.index);
             }
             return SourceLines.of(SourceLine.of(newContent, newSourceSpan));
-        } else {
+        }
+        else
+        {
             SourceLines sourceLines = SourceLines.empty();
 
             SourceLine firstLine = lines.get(begin.lineIndex);
             sourceLines.addLine(firstLine.substring(begin.index, firstLine.getContent().length()));
 
             // Lines between begin and end (we are appending the full line)
-            for (int line = begin.lineIndex + 1; line < end.lineIndex; line++) {
+            for (int line = begin.lineIndex + 1; line < end.lineIndex; line++)
+            {
                 sourceLines.addLine(lines.get(line));
             }
 
@@ -273,20 +344,22 @@ public class Scanner {
         }
     }
 
-    private void setLine(SourceLine line) {
+    private void setLine(SourceLine line)
+    {
         this.line = line;
         this.lineLength = line.getContent().length();
     }
 
-    private void checkPosition(int lineIndex, int index) {
-        if (lineIndex < 0 || lineIndex >= lines.size()) {
-            throw new IllegalArgumentException(
-                    "Line index " + lineIndex + " out of range, number of lines: " + lines.size());
+    private void checkPosition(int lineIndex, int index)
+    {
+        if (lineIndex < 0 || lineIndex >= lines.size())
+        {
+            throw new IllegalArgumentException("Line index " + lineIndex + " out of range, number of lines: " + lines.size());
         }
         SourceLine line = lines.get(lineIndex);
-        if (index < 0 || index > line.getContent().length()) {
-            throw new IllegalArgumentException(
-                    "Index " + index + " out of range, line length: " + line.getContent().length());
+        if (index < 0 || index > line.getContent().length())
+        {
+            throw new IllegalArgumentException("Index " + index + " out of range, line length: " + line.getContent().length());
         }
     }
 }

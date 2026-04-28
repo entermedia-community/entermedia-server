@@ -25,79 +25,97 @@ import org.openedit.generators.Output;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 
-public class DownloadZipGenerator extends BaseGenerator {
+public class DownloadZipGenerator extends BaseGenerator
+{
 
 	private static final Log log = LogFactory.getLog(DownloadZipGenerator.class);
 	protected ModuleManager fieldModuleManager;
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager moduleManager) {
+	public void setModuleManager(ModuleManager moduleManager)
+	{
 		fieldModuleManager = moduleManager;
 	}
 
-	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException {
+	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
+	{
 		MediaArchiveModule archiveModule = (MediaArchiveModule) getModuleManager().getBean("MediaArchiveModule");
 		MediaArchive archive = archiveModule.getMediaArchive(inReq);
 
 		String type = inReq.findValue("sourcefile");
-		if ("attachments".equals(type)) {
+		if ("attachments".equals(type))
+		{
 			ZipGroup zip = new ZipGroup();
 			zip.setMediaArchive(archive);
 			zip.setUser(inReq.getUser());
 			Asset asset = archive.getAssetBySourcePath(inReq.getContentPage());
 			zip.zipAttachments(asset, inOut.getStream());
-		} else {
+		}
+		else
+		{
 			zipAssets(inReq, archive, archiveModule, inOut);
 		}
 
 	}
 
-	protected HitTracker loadHitTracker(WebPageRequest inReq, String moduleid) {
+	protected HitTracker loadHitTracker(WebPageRequest inReq, String moduleid)
+	{
 		String name = inReq.getRequestParameter(moduleid + "hitssessionid");
-		if (name == null) {
+		if (name == null)
+		{
 			name = inReq.getRequestParameter("hitssessionid");
 		}
 		HitTracker hits = (HitTracker) inReq.getPageValue(name);
 		return hits;
 	}
 
-	protected void zipAssets(WebPageRequest inReq, MediaArchive archive, MediaArchiveModule archiveModulex,
-			Output inOut) {
+	protected void zipAssets(WebPageRequest inReq, MediaArchive archive, MediaArchiveModule archiveModulex, Output inOut)
+	{
 		Map<Asset, ConvertInstructions> assets = new HashMap<Asset, ConvertInstructions>();
 		ArrayList downloaded = new ArrayList();
 		String catalogid = archive.getCatalogId();
 		String[] assetids = inReq.getRequestParameters("assetselect_" + catalogid);
-		if (assetids == null) {
+		if (assetids == null)
+		{
 			String moduleid = inReq.findPathValue("module");
 			HitTracker hits = loadHitTracker(inReq, moduleid);
-			for (Object object : hits) {
+			for (Object object : hits)
+			{
 				String id = null;
-				if (object instanceof Data) {
+				if (object instanceof Data)
+				{
 					id = ((Data) object).getId();
 				}
 
-				if (id == null) {
+				if (id == null)
+				{
 					continue;
 				}
 
 				Asset asset = archive.getAsset(id);
 				downloaded.add(asset);
 				ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat(asset.getFileFormat());
-				if (manager != null) {
+				if (manager != null)
+				{
 					ConvertInstructions ins = manager.createInstructions(asset, null, new HashMap());
 					populateInstructions(inReq, ins, catalogid, id);
 					assets.put(asset, ins);
 				}
 			}
 
-		} else {
+		}
+		else
+		{
 			// Todo use originals page request?
-			for (String assetid : assetids) {
+			for (String assetid : assetids)
+			{
 				Asset asset = archive.getAsset(assetid);
-				if (asset == null) {
+				if (asset == null)
+				{
 					log.warn("Cannot add asset with id '" + assetid + "': does not exist in catalog " + catalogid);
 					continue;
 				}
@@ -105,32 +123,19 @@ public class DownloadZipGenerator extends BaseGenerator {
 
 				inReq.putPageValue("asset", asset);
 				ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat(asset.getFileFormat());
-				if (manager != null) {
+				if (manager != null)
+				{
 					ConvertInstructions ins = manager.createInstructions(asset, null, new HashMap());
 					populateInstructions(inReq, ins, catalogid, assetid);
 					assets.put(asset, ins);
 				}
 				/*
-				 * Boolean watermark = (Boolean)inReq.getPageValue("canforcewatermark");
-				 * if (watermark)
-				 * {
-				 * ins.setWatermark(Boolean.valueOf(watermark));
-				 * ins.setOutputExtension("jpg");
-				 * }
-				 * String orginal = ins.getProperty("candownload");
-				 * if (!Boolean.parseBoolean(orginal))
-				 * {
-				 * if( ins.getMaxScaledSize() == null )
-				 * {
-				 * ins.setOutputExtension("jpg");
-				 * ins.setMaxScaledSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
-				 * }
-				 * }
-				 * // String watermark = inReq.getRequestParameter(catalogid + "." + assetid +
-				 * ".watermark");
-				 * // if(Boolean.parseBoolean(watermark)){
-				 * // ins.setWatermark(true);
-				 * // }
+				 * Boolean watermark = (Boolean)inReq.getPageValue("canforcewatermark"); if (watermark) {
+				 * ins.setWatermark(Boolean.valueOf(watermark)); ins.setOutputExtension("jpg"); } String orginal =
+				 * ins.getProperty("candownload"); if (!Boolean.parseBoolean(orginal)) { if( ins.getMaxScaledSize()
+				 * == null ) { ins.setOutputExtension("jpg"); ins.setMaxScaledSize(Integer.MAX_VALUE,
+				 * Integer.MAX_VALUE); } } // String watermark = inReq.getRequestParameter(catalogid + "." + assetid
+				 * + ".watermark"); // if(Boolean.parseBoolean(watermark)){ // ins.setWatermark(true); // }
 				 */
 			}
 		}
@@ -140,7 +145,8 @@ public class DownloadZipGenerator extends BaseGenerator {
 		zip.setUser(inReq.getUser());
 		zip.zipItems(assets, inOut.getStream());
 
-		for (Iterator iterator = downloaded.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = downloaded.iterator(); iterator.hasNext();)
+		{
 			Asset asset = (Asset) iterator.next();
 			archive.logDownload(asset.getSourcePath(), "success", inReq.getUser());
 
@@ -148,7 +154,8 @@ public class DownloadZipGenerator extends BaseGenerator {
 
 	}
 
-	private void populateInstructions(WebPageRequest inReq, ConvertInstructions ins, String catalogid, String assetid) {
+	private void populateInstructions(WebPageRequest inReq, ConvertInstructions ins, String catalogid, String assetid)
+	{
 		// TODO Auto-generated method stub
 		ins.addPageProperties(inReq.getPage());
 		ins.addPageValues(inReq.getPageMap());
@@ -157,24 +164,30 @@ public class DownloadZipGenerator extends BaseGenerator {
 		String height = inReq.getRequestParameter(catalogid + "." + assetid + ".height");
 		String width = inReq.getRequestParameter(catalogid + "." + assetid + ".width");
 
-		if (width != null) {
+		if (width != null)
+		{
 			int w = Integer.parseInt(width);
 			int h = -1;
-			if (height == null) {
+			if (height == null)
+			{
 				h = Integer.MAX_VALUE;
-			} else {
+			}
+			else
+			{
 				h = Integer.parseInt(height);
 			}
 			ins.setMaxScaledSize(w, h);
 		}
 		String extension = inReq.getRequestParameter(catalogid + "." + assetid + ".extension");
-		if (extension != null) {
+		if (extension != null)
+		{
 			ins.setOutputExtension(extension);
 		}
 
 	}
 
-	public boolean canGenerate(WebPageRequest inReq) {
+	public boolean canGenerate(WebPageRequest inReq)
+	{
 
 		boolean ok = inReq.getPage().getMimeType().equals("application/x-zip");
 		return ok;

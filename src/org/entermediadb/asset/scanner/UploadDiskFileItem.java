@@ -10,32 +10,38 @@ import java.io.OutputStream;
 
 import org.apache.commons.fileupload.disk.DiskFileItem;
 
-public class UploadDiskFileItem extends DiskFileItem {
+public class UploadDiskFileItem extends DiskFileItem
+{
 	protected File fieldTempFile;
 	protected String fieldDestinationPath;
 	protected long fieldSeek;
 
-	public UploadDiskFileItem(String inFieldName, String inContentType, boolean inIsFormField, String inFileName,
-			int inSizeThreshold, File inRepository) {
+	public UploadDiskFileItem(String inFieldName, String inContentType, boolean inIsFormField, String inFileName, int inSizeThreshold, File inRepository) {
 		super(inFieldName, inContentType, inIsFormField, inFileName, inSizeThreshold, inRepository);
 	}
 
-	public void setDestinationPath(String inDestinationPath) {
+	public void setDestinationPath(String inDestinationPath)
+	{
 		fieldDestinationPath = inDestinationPath;
 	}
 
-	public OutputStream getOutputStream() throws IOException {
+	public OutputStream getOutputStream() throws IOException
+	{
 		// item.putProperty("offset", inReq.getRequestParameter("offset"));
 		// log.info("Uploading from offset: " + item.get("offset"));
 		OutputStream fos;
 		File file = getTempFile();
-		if (fieldSeek > 0 && file.length() == fieldSeek) {
+		if (fieldSeek > 0 && file.length() == fieldSeek)
+		{
 			fos = new FileOutputStream(file, true);
-		} else {
+		}
+		else
+		{
 			fos = new FileOutputStream(getTempFile());
 		}
 		return new BufferedOutputStream(fos) {
-			public void write(byte[] bytes, int one, int two) throws IOException {
+			public void write(byte[] bytes, int one, int two) throws IOException
+			{
 				// Put breakpoint here to slow down progress SLOWDOWN
 				// try
 				// {
@@ -50,20 +56,25 @@ public class UploadDiskFileItem extends DiskFileItem {
 		};
 	}
 
-	public InputStream getInputStream() throws IOException {
+	public InputStream getInputStream() throws IOException
+	{
 		return new FileInputStream(getTempFile());
 	}
 
-	public boolean isInMemory() {
+	public boolean isInMemory()
+	{
 		return false;
 	}
 
-	public long getSize() {
+	public long getSize()
+	{
 		return getTempFile().length();
 	}
 
-	protected File getTempFile() {
-		if (fieldTempFile == null) {
+	protected File getTempFile()
+	{
+		if (fieldTempFile == null)
+		{
 			fieldTempFile = new File(fieldDestinationPath);
 			fieldTempFile.getParentFile().mkdirs();
 		}

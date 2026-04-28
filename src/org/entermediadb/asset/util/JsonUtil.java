@@ -16,9 +16,12 @@ import org.openedit.hittracker.SearchQuery;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.JSONParser;
 
-public class JsonUtil {
-	public String formatDateObj(Object inDate) {
-		if (inDate == null) {
+public class JsonUtil
+{
+	public String formatDateObj(Object inDate)
+	{
+		if (inDate == null)
+		{
 			return "";
 		}
 		inDate = DateStorageUtil.getStorageUtil().parseFromObject(inDate);
@@ -30,16 +33,20 @@ public class JsonUtil {
 		return json;
 	}
 
-	public String formatDate(String inDate) {
-		if (inDate == null) {
+	public String formatDate(String inDate)
+	{
+		if (inDate == null)
+		{
 			return "";
 		}
 		String json = DateStorageUtil.getStorageUtil().formatDate(inDate, "yyyy-MM-dd'T'HH:mm:ss");
 		return json;
 	}
 
-	public String escape(String inVal) {
-		if (inVal == null) {
+	public String escape(String inVal)
+	{
+		if (inVal == null)
+		{
 			return null;
 		}
 		String escape = JSONObject.escape(inVal);
@@ -50,33 +57,41 @@ public class JsonUtil {
 		return escape;
 	}
 
-	public Collection parseArray(String inName, String inJsonArray) {
+	public Collection parseArray(String inName, String inJsonArray)
+	{
 		Collection all = new ArrayList();
 		int name = inJsonArray.indexOf(inName);
-		if (name == -1) {
+		if (name == -1)
+		{
 			return all;
 		}
 		int startarray = inJsonArray.indexOf("[", name);
 		// int arrayopen = inJsonArray.indexOf("]",startarray);
 		String arraydata = inJsonArray;// inJsonArray.substring(startarray,endarray);
 		int objectindex = arraydata.indexOf("{", startarray);
-		while (objectindex > -1) {
+		while (objectindex > -1)
+		{
 			// Count up the { and }
 			int deep = 0;
 			int start = objectindex;
 			int end = 0;
-			for (int i = objectindex; i < arraydata.length(); i++) {
+			for (int i = objectindex; i < arraydata.length(); i++)
+			{
 				char c = arraydata.charAt(i);
-				if (c == '{') {
+				if (c == '{')
+				{
 					deep++;
 				}
-				if (c == '}') {
+				if (c == '}')
+				{
 					deep--;
 				}
-				if (deep == 0) {
+				if (deep == 0)
+				{
 					end = i + 1;
 					objectindex = arraydata.indexOf("{", end);
-					if (objectindex != -1) {
+					if (objectindex != -1)
+					{
 						int endarray = arraydata.indexOf("]", end);
 						if (endarray < objectindex) // the array ended and this is an invalid object so exit
 						{
@@ -93,27 +108,34 @@ public class JsonUtil {
 
 	}
 
-	public String findObject(String inName, String inJsonArray) {
+	public String findObject(String inName, String inJsonArray)
+	{
 		int name = inJsonArray.indexOf(inName);
-		if (name == -1) {
+		if (name == -1)
+		{
 			return null;
 		}
 
 		int objectindex = inJsonArray.indexOf("{", name);
-		if (objectindex > -1) {
+		if (objectindex > -1)
+		{
 			// Count up the { and }
 			int deep = 0;
 			int start = objectindex;
 			int end = 0;
-			for (int i = objectindex; i < inJsonArray.length(); i++) {
+			for (int i = objectindex; i < inJsonArray.length(); i++)
+			{
 				char c = inJsonArray.charAt(i);
-				if (c == '{') {
+				if (c == '{')
+				{
 					deep++;
 				}
-				if (c == '}') {
+				if (c == '}')
+				{
 					deep--;
 				}
-				if (deep == 0) {
+				if (deep == 0)
+				{
 					end = i + 1;
 					objectindex = inJsonArray.indexOf("{", end);
 					break;
@@ -125,7 +147,8 @@ public class JsonUtil {
 		return null;
 	}
 
-	public HitTracker searchByJson(Searcher inSearcher, WebPageRequest inReq) {
+	public HitTracker searchByJson(Searcher inSearcher, WebPageRequest inReq)
+	{
 		SearchQuery squery = parseJson(inSearcher, inReq);
 
 		HitTracker hits = inSearcher.cachedSearch(inReq, squery);
@@ -134,21 +157,25 @@ public class JsonUtil {
 
 		String hitsperpage = (String) request.get("hitsperpage");
 
-		if (hitsperpage != null) {
+		if (hitsperpage != null)
+		{
 			int pagesnum = Integer.parseInt(hitsperpage);
 			hits.setHitsPerPage(pagesnum);
 		}
 
 		String page = (String) request.get("page");
 
-		if (page != null) {
+		if (page != null)
+		{
 			int pagenumb = Integer.parseInt(page);
 			hits.setPage(pagenumb);
 		}
 
-		if ("true".equals(request.get("showfilters"))) {
+		if ("true".equals(request.get("showfilters")))
+		{
 			Map nodes = hits.getActiveFilterValues();
-			if (nodes != null) {
+			if (nodes != null)
+			{
 				inReq.putPageValue("filteroptions", nodes.values());
 			}
 		}
@@ -156,19 +183,24 @@ public class JsonUtil {
 		return hits;
 	}
 
-	public SearchQuery parseJson(Searcher inSearcher, WebPageRequest inReq) {
+	public SearchQuery parseJson(Searcher inSearcher, WebPageRequest inReq)
+	{
 		Map request = inReq.getJsonRequest();
 
 		SearchQuery squery = null;
 		Map query = (Map) request.get("query");
-		if (query != null) {
+		if (query != null)
+		{
 			squery = parseQuery(inReq, query, inSearcher);
-		} else {
+		}
+		else
+		{
 			Collection queries = (Collection) request.get("orqueries");
 			SearchQuery or = inSearcher.createSearchQuery();
 			or.setSortBy((String) request.get(inSearcher.getSearchType() + "sortby"));
 			or.setAndTogether(false);
-			for (Iterator iterator = queries.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = queries.iterator(); iterator.hasNext();)
+			{
 				Map childq = (Map) iterator.next();
 				WebPageRequest context = inReq.copy();
 				SearchQuery found = parseQuery(context, childq, inSearcher);
@@ -180,45 +212,56 @@ public class JsonUtil {
 		return squery;
 	}
 
-	protected SearchQuery parseQuery(WebPageRequest inReq, Map query, Searcher inSearcher) {
+	protected SearchQuery parseQuery(WebPageRequest inReq, Map query, Searcher inSearcher)
+	{
 
 		ArrayList<String> fields = new ArrayList();
 		ArrayList<String> operations = new ArrayList();
 
 		Collection terms = (Collection) query.get("terms");
 
-		for (Iterator iterator = terms.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = terms.iterator(); iterator.hasNext();)
+		{
 			Map it = (Map) iterator.next();
 			fields.add((String) it.get("field"));
 			String opr = (String) it.get("operation");
-			if (opr == null) {
+			if (opr == null)
+			{
 				opr = (String) it.get("operator"); // legacy
 			}
 			operations.add(opr.toLowerCase());
 			Collection values = (Collection) it.get("values");
-			if (values != null) {
+			if (values != null)
+			{
 				String[] svalues = (String[]) values.toArray(new String[values.size()]);
 				inReq.setRequestParameter(it.get("field") + ".values", svalues);
-			} else if (it.get("value") != null) {
-				inReq.setRequestParameter(it.get("field") + ".value", (String) it.get("value"));
 			}
+			else
+				if (it.get("value") != null)
+				{
+					inReq.setRequestParameter(it.get("field") + ".value", (String) it.get("value"));
+				}
 
 			// handle all other options here...
-			if (it.get("before") != null) {
+			if (it.get("before") != null)
+			{
 				inReq.setRequestParameter(it.get("field") + ".before", (String) it.get("before"));
 
 			}
-			if (it.get("after") != null) {
+			if (it.get("after") != null)
+			{
 				inReq.setRequestParameter(it.get("field") + ".after", (String) it.get("after"));
 
 			}
 
-			if (it.get("highval") != null) {
+			if (it.get("highval") != null)
+			{
 				inReq.setRequestParameter(it.get("field") + ".highval", (String) it.get("highval"));
 
 			}
 
-			if (it.get("lowval") != null) {
+			if (it.get("lowval") != null)
+			{
 				inReq.setRequestParameter(it.get("field") + ".lowval", (String) it.get("lowval"));
 
 			}
@@ -244,23 +287,29 @@ public class JsonUtil {
 		return squery;
 	}
 
-	public String toJson(String inValue) {
-		if (inValue == null) {
+	public String toJson(String inValue)
+	{
+		if (inValue == null)
+		{
 			return "\"\"";
 		}
 		return "\"" + inValue + "\"";
 	}
 
-	public String toJson(Map inMap) {
-		if (inMap == null) {
+	public String toJson(Map inMap)
+	{
+		if (inMap == null)
+		{
 			return "{}";
 		}
 		JSONObject obj = new JSONObject(inMap);
 		return obj.toJSONString();
 	}
 
-	public String toJsonArray(Collection inMap) {
-		if (inMap == null) {
+	public String toJsonArray(Collection inMap)
+	{
+		if (inMap == null)
+		{
 			return "[]";
 		}
 		JSONArray obj = new JSONArray();
@@ -268,7 +317,8 @@ public class JsonUtil {
 		return obj.toJSONString();
 	}
 
-	public JSONObject parseString(String inText) {
+	public JSONObject parseString(String inText)
+	{
 		JSONParser parser = new JSONParser();
 		JSONObject obj = null;
 		obj = (JSONObject) parser.parse(inText);

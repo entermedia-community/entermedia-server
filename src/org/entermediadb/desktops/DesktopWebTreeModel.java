@@ -12,13 +12,16 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.links.CategoryWebTreeModel;
 import org.openedit.CatalogEnabled;
 
-public class DesktopWebTreeModel extends CategoryWebTreeModel implements CatalogEnabled {
+public class DesktopWebTreeModel extends CategoryWebTreeModel implements CatalogEnabled
+{
 	private static final Log log = LogFactory.getLog(DesktopWebTreeModel.class);
 
 	protected Category fieldRoot;
 
-	public Object getRoot() {
-		if (fieldRoot == null) {
+	public Object getRoot()
+	{
+		if (fieldRoot == null)
+		{
 			fieldRoot = new BaseCategory("index", "My Computer");
 			fieldRoot.setProperty("categorypath", "/");
 		}
@@ -26,13 +29,16 @@ public class DesktopWebTreeModel extends CategoryWebTreeModel implements Catalog
 		return fieldRoot;
 	}
 
-	protected String getUserId() {
+	protected String getUserId()
+	{
 		return getUserProfile().getUserId();
 	}
 
-	protected List<Category> getCategoriesForPath(Category inCat) {
+	protected List<Category> getCategoriesForPath(Category inCat)
+	{
 		String inPath = inCat.getCategoryPath();
-		if (!inPath.startsWith("/")) {
+		if (!inPath.startsWith("/"))
+		{
 			inPath = ((BaseCategory) getRoot()).getCategoryPath() + inPath;
 		}
 		String id = getUserId() + "_" + inPath;
@@ -88,38 +94,47 @@ public class DesktopWebTreeModel extends CategoryWebTreeModel implements Catalog
 		return subfolders;
 	}
 
-	public Object findNodeById(Object inRoot, String inId) {
+	public Object findNodeById(Object inRoot, String inId)
+	{
 		String test = getId(inRoot);
-		if (test.equals(inId)) {
+		if (test.equals(inId))
+		{
 			return inRoot;
 		}
 		// check one level deep
-		for (Iterator iterator = getChildren(inRoot).iterator(); iterator.hasNext();) {
+		for (Iterator iterator = getChildren(inRoot).iterator(); iterator.hasNext();)
+		{
 			Object child = iterator.next();
 			String id = getId(child);
-			if (id.equals(inId)) {
+			if (id.equals(inId))
+			{
 				return child;
 			}
 		}
 		return null;
 	}
 
-	public List listChildren(Object inParent) {
-		if (inParent == null) {
+	public List listChildren(Object inParent)
+	{
+		if (inParent == null)
+		{
 			return Collections.EMPTY_LIST;
 		}
 		List ok = new ArrayList();
 
 		BaseCategory parent = (BaseCategory) inParent;
-		if (!parent.hasLoadedChildren()) {
+		if (!parent.hasLoadedChildren())
+		{
 			List children = getCategoriesForPath(parent);
 			parent.setChildren(children);
 		}
-		for (Iterator iter = parent.getChildren().iterator(); iter.hasNext();) {
+		for (Iterator iter = parent.getChildren().iterator(); iter.hasNext();)
+		{
 			// If this is slow then we might consider only checking the top
 			// cache the results in a cache map
 			Category cat = (Category) iter.next();
-			if (okToAdd(cat)) {
+			if (okToAdd(cat))
+			{
 				ok.add(cat);
 			}
 		}

@@ -23,26 +23,31 @@ import org.openedit.util.CSSUtils;
 import org.openedit.util.RequestUtils;
 import org.openedit.util.URLUtilities;
 
-public class ThemeModule extends BaseMediaModule {
+public class ThemeModule extends BaseMediaModule
+{
 
 	protected RequestUtils fieldRequestUtils;
 	protected SearcherManager fieldSearcherManager;
 
-	public RequestUtils getRequestUtils() {
+	public RequestUtils getRequestUtils()
+	{
 		return fieldRequestUtils;
 	}
 
-	public void setRequestUtils(RequestUtils inRequestUtils) {
+	public void setRequestUtils(RequestUtils inRequestUtils)
+	{
 		fieldRequestUtils = inRequestUtils;
 	}
 
-	public void saveCSS(WebPageRequest inReq) throws Exception {
+	public void saveCSS(WebPageRequest inReq) throws Exception
+	{
 		saveAllCustomThemes(inReq);
 
 		String appid = inReq.findValue("applicationid");
 		PageSettings xconf = getPageManager().getPageSettingsManager().getPageSettings("/" + appid + "/_site.xconf");
 		Data theme = loadTheme(inReq);
-		if (theme != null) {
+		if (theme != null)
+		{
 			xconf.setProperty("themeid", theme.getId()); // Default
 
 			getPageManager().getPageSettingsManager().saveSetting(xconf);
@@ -50,18 +55,21 @@ public class ThemeModule extends BaseMediaModule {
 		}
 	}
 
-	protected void saveAllCustomThemes(WebPageRequest inReq) throws UnsupportedEncodingException {
+	protected void saveAllCustomThemes(WebPageRequest inReq) throws UnsupportedEncodingException
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		// Process all the themes
 		String catalogid = inReq.findPathValue("catalogid");
 		Collection themes = getSearcherManager().query(catalogid, "theme").all().search();
 		String appid = inReq.findValue("applicationid");
 
-		for (Iterator iterator = themes.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = themes.iterator(); iterator.hasNext();)
+		{
 			Data theme = (Data) iterator.next();
 
 			String inputfile = theme.get("templatecss");
-			if (inputfile == null) {
+			if (inputfile == null)
+			{
 				inputfile = "/${applicationid}/theme/styles/overridestemplate.css";
 			}
 			inputfile = inReq.getContentPage().replaceProperty(inputfile);
@@ -70,13 +78,7 @@ public class ThemeModule extends BaseMediaModule {
 
 			Page page = getPageManager().getPage(inputfile);
 
-			WebPageRequest req = getRequestUtils().createPageRequest(
-					page,
-					inReq.getRequest(),
-					inReq.getResponse(),
-					inReq.getUser(),
-					(URLUtilities) inReq
-							.getPageValue(PageRequestKeys.URL_UTILITIES));
+			WebPageRequest req = getRequestUtils().createPageRequest(page, inReq.getRequest(), inReq.getResponse(), inReq.getUser(), (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES));
 			Page outputpage = getPageManager().getPage(outputfile);
 			getPageManager().putPage(outputpage);
 			// loadTheme(req);
@@ -88,18 +90,15 @@ public class ThemeModule extends BaseMediaModule {
 
 			URLUtilities urlUtil = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
 
-			req.putProtectedPageValue(PageRequestKeys.HOME,
-					urlUtil.relativeHomePrefix());
+			req.putProtectedPageValue(PageRequestKeys.HOME, urlUtil.relativeHomePrefix());
 			ByteArrayOutputStream scapture = new ByteArrayOutputStream();
 			Writer capture = null;
 			capture = new OutputStreamWriter(scapture, page.getCharacterEncoding());
-			Output out = new Output(capture, outputpage.getContentItem()
-					.getOutputStream());
+			Output out = new Output(capture, outputpage.getContentItem().getOutputStream());
 
 			page.generate(req, out);
 			String output = scapture.toString();
-			StringItem revision = new StringItem(outputpage.getPath(), output,
-					outputpage.getCharacterEncoding());
+			StringItem revision = new StringItem(outputpage.getPath(), output, outputpage.getCharacterEncoding());
 			revision.setAuthor(inReq.getUserName());
 
 			revision.setMessage("updated by  user");
@@ -108,29 +107,35 @@ public class ThemeModule extends BaseMediaModule {
 		}
 	}
 
-	public void saveLogo(WebPageRequest inReq) throws Exception {
+	public void saveLogo(WebPageRequest inReq) throws Exception
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String applicationid = inReq.findValue("applicationid");
 		Data theme = loadTheme(inReq);
-		if (theme == null) {
+		if (theme == null)
+		{
 			return;
 		}
 		String logoassetid = theme.get("logoasset");
-		if (logoassetid != null) {
+		if (logoassetid != null)
+		{
 			Asset logoasset = archive.getAsset(logoassetid);
-			if (logoasset != null) {
+			if (logoasset != null)
+			{
 				Page logopage = archive.getOriginalDocument(logoasset);
-				if (logopage != null) {
-					Page destpage = getPageManager()
-							.getPage("/" + applicationid + "/theme/" + theme.getId() + "/logo.png");
-					if (!destpage.getPath().equals(logopage.getPath())) {
+				if (logopage != null)
+				{
+					Page destpage = getPageManager().getPage("/" + applicationid + "/theme/" + theme.getId() + "/logo.png");
+					if (!destpage.getPath().equals(logopage.getPath()))
+					{
 						getPageManager().copyPage(logopage, destpage);
-						Dimension assetdimension = archive.getAssetImporter().getAssetUtilities()
-								.getImageDimensionImageIO(logopage.getContentItem());
-						if (assetdimension.width > 0) {
+						Dimension assetdimension = archive.getAssetImporter().getAssetUtilities().getImageDimensionImageIO(logopage.getContentItem());
+						if (assetdimension.width > 0)
+						{
 							theme.setValue("logowith", assetdimension.width);
 						}
-						if (assetdimension.height > 0) {
+						if (assetdimension.height > 0)
+						{
 							theme.setValue("logoheight", assetdimension.height);
 
 						}
@@ -142,15 +147,16 @@ public class ThemeModule extends BaseMediaModule {
 		}
 	}
 
-	public void saveTheme(WebPageRequest inReq) {
+	public void saveTheme(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findPathValue("catalogid");
-		Searcher themeSearcher = getSearcherManager().getSearcher(catalogid,
-				"theme");
+		Searcher themeSearcher = getSearcherManager().getSearcher(catalogid, "theme");
 		String owner = inReq.findValue("applicationid");
-		if (owner != null) {
-			Data theme = (Data) themeSearcher.searchById(owner
-					+ "theme");
-			if (theme == null) {
+		if (owner != null)
+		{
+			Data theme = (Data) themeSearcher.searchById(owner + "theme");
+			if (theme == null)
+			{
 				theme = themeSearcher.createNewData();
 				theme.setId(owner + "theme");
 				theme.setSourcePath("themes");
@@ -163,19 +169,21 @@ public class ThemeModule extends BaseMediaModule {
 		}
 	}
 
-	public Data loadTheme(WebPageRequest inReq) {
+	public Data loadTheme(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findPathValue("catalogid");
-		Searcher themeSearcher = getSearcherManager().getSearcher(catalogid,
-				"theme");
+		Searcher themeSearcher = getSearcherManager().getSearcher(catalogid, "theme");
 		String themeid = inReq.getRequestParameter("themeid");
 		Data theme = (Data) themeSearcher.searchById(themeid);
-		if (theme != null) {
+		if (theme != null)
+		{
 			inReq.putPageValue("theme", theme);
 		}
 		return theme;
 	}
 
-	public void changeTheme(WebPageRequest inReq) {
+	public void changeTheme(WebPageRequest inReq)
+	{
 		String appid = inReq.findValue("applicationid");
 		String themeid = inReq.getRequestParameter("themeid");
 		PageSettings xconf = getPageManager().getPageSettingsManager().getPageSettings("/" + appid + "/_site.xconf");
@@ -184,18 +192,21 @@ public class ThemeModule extends BaseMediaModule {
 		getPageManager().getPageSettingsManager().saveSetting(xconf);
 		getPageManager().clearCache();
 
-		try {
+		try
+		{
 			saveCSS(inReq);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public void resetThemes(WebPageRequest inReq) {
+	public void resetThemes(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findPathValue("catalogid");
-		Searcher themeSearcher = getSearcherManager().getSearcher(catalogid,
-				"theme");
+		Searcher themeSearcher = getSearcherManager().getSearcher(catalogid, "theme");
 		String themeid = inReq.getRequestParameter("themeid");
 		themeSearcher.restoreSettings();
 		themeSearcher.reindexInternal();

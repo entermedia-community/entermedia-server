@@ -21,11 +21,14 @@ import org.openedit.util.XmlUtil;
  * @author cburkey
  *
  */
-public class XmlLinkLoader {
+public class XmlLinkLoader
+{
 	protected XmlUtil fieldXmlUtil;
 
-	public XmlUtil getXmlUtil() {
-		if (fieldXmlUtil == null) {
+	public XmlUtil getXmlUtil()
+	{
+		if (fieldXmlUtil == null)
+		{
 			fieldXmlUtil = new XmlUtil();
 
 		}
@@ -33,13 +36,16 @@ public class XmlLinkLoader {
 		return fieldXmlUtil;
 	}
 
-	public void setXmlUtil(XmlUtil xmlUtil) {
+	public void setXmlUtil(XmlUtil xmlUtil)
+	{
 		fieldXmlUtil = xmlUtil;
 	}
 
-	public LinkTree loadLinks(Page inPage, LinkTree inTree) throws OpenEditException {
+	public LinkTree loadLinks(Page inPage, LinkTree inTree) throws OpenEditException
+	{
 		// take in this XML file and use it to sync up to root node and below
-		if (inTree == null) {
+		if (inTree == null)
+		{
 			inTree = new LinkTree();
 		}
 
@@ -53,8 +59,10 @@ public class XmlLinkLoader {
 	 * @param inTree
 	 * @throws OpenEditException
 	 */
-	protected void readElementsInto(Element element, LinkTree inTree, Page inPage) throws OpenEditException {
-		for (Iterator iter = element.elementIterator("a"); iter.hasNext();) {
+	protected void readElementsInto(Element element, LinkTree inTree, Page inPage) throws OpenEditException
+	{
+		for (Iterator iter = element.elementIterator("a"); iter.hasNext();)
+		{
 			Element child = (Element) iter.next();
 			String parentId = element.attributeValue("id");
 			Link link = readElement(child, inPage);
@@ -64,7 +72,8 @@ public class XmlLinkLoader {
 		}
 	}
 
-	protected Link readElement(Element element, Page inPage) throws OpenEditException {
+	protected Link readElement(Element element, Page inPage) throws OpenEditException
+	{
 		String id = element.attributeValue("id");
 		String userdata = element.attributeValue("userdata");
 		Link link = new Link();
@@ -84,45 +93,54 @@ public class XmlLinkLoader {
 		return link;
 	}
 
-	protected void checkLink(Element inElement, Link inLink) throws OpenEditException {
+	protected void checkLink(Element inElement, Link inLink) throws OpenEditException
+	{
 		// may be overriden
 	}
 
 	/**
 	 * Returns the link information as an XML string in the specified encoding.
 	 * 
-	 * @param inTree     The link tree
+	 * @param inTree The link tree
 	 * @param inEncoding The encoding
 	 * 
 	 * @return An XML document representing the link tree
 	 * 
 	 * @throws Exception
 	 */
-	public String saveLinks(LinkTree inTree, String inEncoding) throws Exception {
+	public String saveLinks(LinkTree inTree, String inEncoding) throws Exception
+	{
 		StringWriter out = new StringWriter();
 		saveLinks(inTree, out, inEncoding);
 		return out.toString();
 	}
 
-	public void saveLinks(LinkTree inTree, Writer inXmlOutput, String inEncoding) throws OpenEditException {
+	public void saveLinks(LinkTree inTree, Writer inXmlOutput, String inEncoding) throws OpenEditException
+	{
 		Document doc = DocumentHelper.createDocument();
 		Element root = DocumentHelper.createElement("linktree");
 		// root.addAttribute("textprefix", inTree.getTextPrefix());
 		// root.addAttribute("textpostfix", inTree.getTextPostfix());
 		// root.addAttribute("linkprefix", inTree.getLinkPrefix());
 		// root.addAttribute("linkpostfix", inTree.getLinkPostfix());
-		if (inTree.getRootLink() != null) {
+		if (inTree.getRootLink() != null)
+		{
 			readLinkInto(inTree.getRootLink(), root);
 		}
 		doc.setRootElement(root);
 
 		OutputFormat format = OutputFormat.createPrettyPrint();
 		format.setEncoding(inEncoding);
-		try {
+		try
+		{
 			new XMLWriter(inXmlOutput, format).write(doc);
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			throw new OpenEditException(ex);
-		} finally {
+		}
+		finally
+		{
 			FileUtils.safeClose(inXmlOutput);
 		}
 	}
@@ -131,18 +149,22 @@ public class XmlLinkLoader {
 	 * @param inTree
 	 * @param inRoot
 	 */
-	private void readLinkInto(Link inLink, Element inElement) {
+	private void readLinkInto(Link inLink, Element inElement)
+	{
 		Element element = inElement.addElement("a");
 		element.addAttribute("href", inLink.getHref());
 		element.addAttribute("userdata", inLink.getUserData());
 		element.addAttribute("id", inLink.getId());
 		element.addAttribute("text", inLink.getText());
 		element.addAttribute("redirectpath", inLink.getRedirectPath());
-		if (inLink.isAutoLoadChildren()) {
+		if (inLink.isAutoLoadChildren())
+		{
 			element.addAttribute("autoloadchildren", "true");
 		}
-		if (inLink.hasChildren()) {
-			for (Iterator iter = inLink.getChildren().iterator(); iter.hasNext();) {
+		if (inLink.hasChildren())
+		{
+			for (Iterator iter = inLink.getChildren().iterator(); iter.hasNext();)
+			{
 				Link link = (Link) iter.next();
 				readLinkInto(link, element);
 			}

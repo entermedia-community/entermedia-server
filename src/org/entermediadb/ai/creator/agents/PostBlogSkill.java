@@ -11,19 +11,20 @@ import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.llm.AgentContext;
 import org.openedit.MultiValued;
 
-public class PostBlogSkill extends BaseSkill {
-	public SmartCreatorManager getSmartCreatorManager() {
+public class PostBlogSkill extends BaseSkill
+{
+	public SmartCreatorManager getSmartCreatorManager()
+	{
 		SmartCreatorManager manager = (SmartCreatorManager) getMediaArchive().getBean("smartCreatorManager");
 		return manager;
 	}
 
 	/**
-	 * Calls render to html
-	 * Attaches and asset version
-	 * sends it to a blog?
+	 * Calls render to html Attaches and asset version sends it to a blog?
 	 */
 	@Override
-	public void process(AgentContext inContext) {
+	public void process(AgentContext inContext)
+	{
 		// MultiValued entity = inContext.getCurrentEntity();
 		//
 		// if(entity != null)

@@ -21,37 +21,44 @@ import org.openedit.data.Searcher;
 import org.openedit.users.Group;
 import org.openedit.users.User;
 
-public class GoalManager implements CatalogEnabled {
+public class GoalManager implements CatalogEnabled
+{
 	protected ModuleManager fieldModuleManager;
 
 	public GoalManager() {
 		// TODO Auto-generated constructor stub
 	}
 
-	protected ModuleManager getModuleManager() {
+	protected ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
-	protected String getCatalogId() {
+	protected String getCatalogId()
+	{
 		return fieldCatalogId;
 	}
 
-	public void setCatalogId(String inCatalogId) {
+	public void setCatalogId(String inCatalogId)
+	{
 		fieldCatalogId = inCatalogId;
 	}
 
 	protected String fieldCatalogId;
 
-	protected MediaArchive getMediaArchive() {
+	protected MediaArchive getMediaArchive()
+	{
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		return archive;
 	}
 
-	public Data addAction(String inOwner, String taskid, String collectiverole, String roleuserid) {
+	public Data addAction(String inOwner, String taskid, String collectiverole, String roleuserid)
+	{
 		MediaArchive archive = getMediaArchive();
 		Data task = (Data) archive.getData("goaltask", taskid);
 
@@ -69,26 +76,26 @@ public class GoalManager implements CatalogEnabled {
 		searcher.saveData(newpoints);
 
 		Map role = findRole(task, collectiverole, roleuserid);
-		Collection existing = searcher.query().exact("roleuserid", roleuserid).exact("collectiverole", collectiverole)
-				.exact("goaltaskid", taskid).search();
+		Collection existing = searcher.query().exact("roleuserid", roleuserid).exact("collectiverole", collectiverole).exact("goaltaskid", taskid).search();
 		role.put("actioncount", existing.size());
 		archive.saveData("goaltask", task);
 		return task;
 	}
 
-	public Data removeAction(String inActionId) {
+	public Data removeAction(String inActionId)
+	{
 		MediaArchive archive = getMediaArchive();
 
 		Searcher searcher = archive.getSearcher("goaltaskuserrole");
 
 		Data oneaction = (Data) searcher.searchById(inActionId);
-		if (oneaction != null) {
+		if (oneaction != null)
+		{
 			searcher.delete(oneaction, null);
 			Data task = (Data) archive.getData("goaltask", oneaction.get("goaltaskid"));
 			String roleuserid = oneaction.get("roleuserid");
 			String collectiverole = oneaction.get("collectiverole");
-			Collection existingroleactions = searcher.query().exact("roleuserid", roleuserid)
-					.exact("collectiverole", collectiverole).exact("goaltaskid", task.getId()).search();
+			Collection existingroleactions = searcher.query().exact("roleuserid", roleuserid).exact("collectiverole", collectiverole).exact("goaltaskid", task.getId()).search();
 			Map role = findRole(task, collectiverole, roleuserid);
 			role.put("actioncount", existingroleactions.size());
 			archive.saveData("goaltask", task);
@@ -97,9 +104,11 @@ public class GoalManager implements CatalogEnabled {
 		return null;
 	}
 
-	public Map findRole(String inTaskId, String collectiverole, String roleuserid) {
+	public Map findRole(String inTaskId, String collectiverole, String roleuserid)
+	{
 		Data task = (Data) getMediaArchive().getCachedData("goaltask", inTaskId);
-		if (task == null) {
+		if (task == null)
+		{
 			return null;
 		}
 		Collection roles = (Collection) task.getValue("taskroles");
@@ -107,8 +116,10 @@ public class GoalManager implements CatalogEnabled {
 		return role;
 	}
 
-	public Map findRole(Data inTask, String collectiverole, String roleuserid) {
-		if (inTask == null) {
+	public Map findRole(Data inTask, String collectiverole, String roleuserid)
+	{
+		if (inTask == null)
+		{
 			return null;
 		}
 		Collection roles = (Collection) inTask.getValue("taskroles");
@@ -116,47 +127,62 @@ public class GoalManager implements CatalogEnabled {
 		return role;
 	}
 
-	protected Map findRole(Collection<Map> inRows, String inCollectiverole, String inroleuserid) {
-		if (inRows == null || inRows.isEmpty()) {
+	protected Map findRole(Collection<Map> inRows, String inCollectiverole, String inroleuserid)
+	{
+		if (inRows == null || inRows.isEmpty())
+		{
 			return null;
 		}
-		if (inroleuserid != null) {
-			for (Map row : inRows) {
+		if (inroleuserid != null)
+		{
+			for (Map row : inRows)
+			{
 				String roleid = (String) row.get("collectiverole");
-				if (inCollectiverole.equals(roleid)) {
+				if (inCollectiverole.equals(roleid))
+				{
 					String roleuserid = (String) row.get("roleuserid");
-					if (roleuserid != null && roleuserid.equals(inroleuserid)) {
+					if (roleuserid != null && roleuserid.equals(inroleuserid))
+					{
 						return row;
 					}
 				}
 			}
 		}
-		for (Map row : inRows) {
+		for (Map row : inRows)
+		{
 			String roleid = (String) row.get("collectiverole");
-			if (inCollectiverole.equals(roleid)) {
+			if (inCollectiverole.equals(roleid))
+			{
 				String roleuserid = (String) row.get("roleuserid");
-				if (inroleuserid != null && roleuserid == null) {
+				if (inroleuserid != null && roleuserid == null)
+				{
 					return row;
 				}
 			}
 		}
 		// Now be less picky
-		for (Map row : inRows) {
+		for (Map row : inRows)
+		{
 			String roleid = (String) row.get("collectiverole");
-			if (inCollectiverole.equals(roleid)) {
+			if (inCollectiverole.equals(roleid))
+			{
 				String roleuserid = (String) row.get("roleuserid");
-				if (roleuserid == null) {
+				if (roleuserid == null)
+				{
 					return row;
 				}
 			}
 		}
 		// Super not picky
-		if (inroleuserid == null) {
+		if (inroleuserid == null)
+		{
 			Map foundone = null;
 			int count = 0;
-			for (Map row : inRows) {
+			for (Map row : inRows)
+			{
 				String roleid = (String) row.get("collectiverole");
-				if (inCollectiverole.equals(roleid)) {
+				if (inCollectiverole.equals(roleid))
+				{
 					foundone = row;
 					count++;
 				}
@@ -169,22 +195,25 @@ public class GoalManager implements CatalogEnabled {
 		return null;
 	}
 
-	public Collection listActions(String inTaskId, String inRoleId, String roleuserid) {
-		if (roleuserid == null) {
+	public Collection listActions(String inTaskId, String inRoleId, String roleuserid)
+	{
+		if (roleuserid == null)
+		{
 			return Collections.EMPTY_LIST;
 		}
 
 		Searcher searcher = getMediaArchive().getSearcher("goaltaskuserrole");
 
-		Collection points = searcher.query().exact("roleuserid", roleuserid).exact("collectiverole", inRoleId)
-				.exact("goaltaskid", inTaskId).sort("date").search();
+		Collection points = searcher.query().exact("roleuserid", roleuserid).exact("collectiverole", inRoleId).exact("goaltaskid", inTaskId).sort("date").search();
 
 		Data task = (Data) getMediaArchive().getCachedData("goaltask", inTaskId);
 
 		Map role = findRole(task, inRoleId, roleuserid);
-		if (role != null) {
+		if (role != null)
+		{
 			Object roleactioncount = role.get("actioncount");
-			if (roleactioncount == null || points.size() != Integer.parseInt(roleactioncount.toString())) {
+			if (roleactioncount == null || points.size() != Integer.parseInt(roleactioncount.toString()))
+			{
 				role.put("actioncount", points.size());
 				getMediaArchive().saveData("goaltask", task);
 			}
@@ -195,35 +224,41 @@ public class GoalManager implements CatalogEnabled {
 
 	}
 
-	public void addStatus(MediaArchive archive, MultiValued selectedgoal, String editedby) {
+	public void addStatus(MediaArchive archive, MultiValued selectedgoal, String editedby)
+	{
 
 		Collection userids = new HashSet();
 		Collection likes = selectedgoal.getValues("userlikes");
-		if (likes != null) {
+		if (likes != null)
+		{
 			userids.addAll(likes);
 		}
 		String owner = selectedgoal.get("owner");
-		if (owner != null) {
+		if (owner != null)
+		{
 			userids.add(owner);
 		}
 
 		String collectionid = selectedgoal.get("collectionid");
 		// Find all the users
-		Collection team = archive.query("librarycollectionusers").exact("collectionid", collectionid)
-				.exact("ontheteam", "true").search();
+		Collection team = archive.query("librarycollectionusers").exact("collectionid", collectionid).exact("ontheteam", "true").search();
 
-		for (Iterator iterator = team.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = team.iterator(); iterator.hasNext();)
+		{
 			Data follower = (Data) iterator.next();
 			String userid = follower.get("followeruser");
-			if (userid != null) {
+			if (userid != null)
+			{
 				userids.add(userid);
 			}
 		}
 
 		Group agents = archive.getGroup("agents");
-		if (agents != null) {
+		if (agents != null)
+		{
 			Collection users = archive.getUserManager().getUsersInGroup(agents);
-			for (Iterator iterator = users.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = users.iterator(); iterator.hasNext();)
+			{
 				Data auser = (Data) iterator.next();
 				userids.add(auser.getId());
 			}
@@ -231,18 +266,21 @@ public class GoalManager implements CatalogEnabled {
 
 		Collection tosave = new ArrayList();
 
-		for (Iterator iterator = userids.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = userids.iterator(); iterator.hasNext();)
+		{
 			String userid = (String) iterator.next();
-			MultiValued status = (MultiValued) archive.query("statuschanges").exact("goalid", selectedgoal.getId())
-					.exact("userid", userid).searchOne();
+			MultiValued status = (MultiValued) archive.query("statuschanges").exact("goalid", selectedgoal.getId()).exact("userid", userid).searchOne();
 
 			String existingstatus = (String) selectedgoal.get("projectstatus");
-			if (status == null) {
+			if (status == null)
+			{
 				status = (MultiValued) archive.getSearcher("statuschanges").createNewData();
 				status.setValue("goalid", selectedgoal.getId());
 				status.setValue("userid", userid);
 				status.setValue("previousstatus", existingstatus);
-			} else {
+			}
+			else
+			{
 				// String previous = status.get("previousstatus");
 				// if( !existingstatus.equals(previous))
 				// {
@@ -259,7 +297,8 @@ public class GoalManager implements CatalogEnabled {
 		archive.saveData("statuschanges", tosave);
 	}
 
-	public Data createGoal(WebPageRequest inReq, Data message, String intaskstatus) {
+	public Data createGoal(WebPageRequest inReq, Data message, String intaskstatus)
+	{
 		MediaArchive archive = getMediaArchive();
 		Searcher chatsearcher = archive.getSearcher("chatterbox");
 
@@ -269,7 +308,8 @@ public class GoalManager implements CatalogEnabled {
 
 		Searcher searcher = archive.getSearcher("projectgoal");
 		MultiValued goal = (MultiValued) searcher.query().exact("chatparentid", message.getId()).searchOne();
-		if (goal == null) {
+		if (goal == null)
+		{
 			goal = (MultiValued) searcher.createNewData();
 			goal.setValue("goaltrackercolumn", topic);
 			goal.setValue("tickettype", "chat");
@@ -281,10 +321,13 @@ public class GoalManager implements CatalogEnabled {
 			goal.addValue("userlikes", inReq.getUserName());
 			goal.setValue("owner", inReq.getUserName());
 			// goal.setValue("details",content);
-			try {
+			try
+			{
 				String firstline = new BufferedReader(new StringReader(content)).readLine();
 				goal.setName(firstline);
-			} catch (Exception ex) {
+			}
+			catch (Exception ex)
+			{
 				// ignore
 			}
 			searcher.saveData(goal);
@@ -295,7 +338,8 @@ public class GoalManager implements CatalogEnabled {
 		return goal;
 	}
 
-	public void createTask(MultiValued inGoal, Data inMessage, String intaskstatus) {
+	public void createTask(MultiValued inGoal, Data inMessage, String intaskstatus)
+	{
 		Searcher tasksearcher = (Searcher) getMediaArchive().getSearcher("goaltask");
 
 		String content = inMessage.get("message");
@@ -320,7 +364,8 @@ public class GoalManager implements CatalogEnabled {
 
 	}
 
-	public void createTasks(MultiValued inGoal, Data inMessage, String intaskstatus) {
+	public void createTasks(MultiValued inGoal, Data inMessage, String intaskstatus)
+	{
 		Searcher tasksearcher = (Searcher) getMediaArchive().getSearcher("goaltask");
 
 		String content = inMessage.get("message");
@@ -332,15 +377,18 @@ public class GoalManager implements CatalogEnabled {
 
 		long now = System.currentTimeMillis();
 
-		if (intaskstatus == null) {
+		if (intaskstatus == null)
+		{
 			intaskstatus = "0;"; // 6
 		}
 		int start = 0;
-		if (tasks.length > 1) {
+		if (tasks.length > 1)
+		{
 			start = 1;
 		}
 
-		for (int i = start; i < tasks.length; i++) {
+		for (int i = start; i < tasks.length; i++)
+		{
 			// TODO: Check for items with numbers?
 			// Spit out everything else back to chat?
 
@@ -365,15 +413,18 @@ public class GoalManager implements CatalogEnabled {
 
 	}
 
-	public Map saveRole(String inTaskid, String inCollectiverole, String inRoleuserid, String notes) {
+	public Map saveRole(String inTaskid, String inCollectiverole, String inRoleuserid, String notes)
+	{
 		MediaArchive archive = getMediaArchive();
 		Data task = (Data) archive.getData("goaltask", inTaskid);
 
 		Map role = findRole(task, inCollectiverole, inRoleuserid);
-		if (role == null) {
+		if (role == null)
+		{
 			role = findRole(task, inCollectiverole, null);
 		}
-		if (role == null) {
+		if (role == null)
+		{
 			throw new OpenEditException("No such role");
 		}
 		role.put("name", notes);
@@ -383,17 +434,20 @@ public class GoalManager implements CatalogEnabled {
 		return role;
 	}
 
-	public void removeRole(String inTaskid, String inCollectiverole, String inRoleuserid) {
+	public void removeRole(String inTaskid, String inCollectiverole, String inRoleuserid)
+	{
 		MediaArchive archive = getMediaArchive();
 		Data task = (Data) archive.getData("goaltask", inTaskid);
 
 		Collection roles = (Collection) task.getValue("taskroles");
 
 		Map role = findRole(task, inCollectiverole, inRoleuserid);
-		if (role == null) {
+		if (role == null)
+		{
 			role = findRole(task, inCollectiverole, null);
 		}
-		if (role == null) {
+		if (role == null)
+		{
 			throw new OpenEditException("No such role");
 		}
 		// TODO: Delete all the actions

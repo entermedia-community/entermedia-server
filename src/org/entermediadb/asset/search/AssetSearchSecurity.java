@@ -11,46 +11,55 @@ import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 
-public class AssetSearchSecurity extends BaseSearchSecurity implements SearchSecurity {
+public class AssetSearchSecurity extends BaseSearchSecurity implements SearchSecurity
+{
 	private static final Log log = LogFactory.getLog(AssetSearchSecurity.class);
 
 	protected ModuleManager fieldModuleManager;
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
 	/**
 	 * 
 	 * 
-	 * OR { Any files owned by them AND( any Approved Assets OR ( unless they
-	 * are explicidly on that collection NOT in Collections marked private ) )
+	 * OR { Any files owned by them AND( any Approved Assets OR ( unless they are explicidly on that
+	 * collection NOT in Collections marked private ) )
 	 * 
 	 */
-	public SearchQuery attachSecurity(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery) {
+	public SearchQuery attachSecurity(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery)
+	{
 
-		if (!inQuery.isEndUserSearch()) {
+		if (!inQuery.isEndUserSearch())
+		{
 			return inQuery;
 		}
 		String skipfilter = inPageRequest.getContentProperty("assetskipfilter");
-		if (Boolean.parseBoolean(skipfilter)) {
+		if (Boolean.parseBoolean(skipfilter))
+		{
 			return inQuery;
 		}
 
 		// log.info( "security filer enabled " + enabled );
 
 		// check for category joins
-		if (!inQuery.isSecurityAttached()) {
+		if (!inQuery.isSecurityAttached())
+		{
 
 			User user = inPageRequest.getUser();
 			UserProfile profile = inPageRequest.getUserProfile();
-			if (profile != null) {
+			if (profile != null)
+			{
 				String profilefilters = profile.get(inSearcher.getSearchType() + "showonly");
-				if (profilefilters != null && profilefilters.length() != 0) {
+				if (profilefilters != null && profilefilters.length() != 0)
+				{
 					inSearcher.addShowOnlyFilter(inPageRequest, profilefilters, inQuery); // TODO: Depregate this
 																							// approach
 				}
@@ -58,12 +67,15 @@ public class AssetSearchSecurity extends BaseSearchSecurity implements SearchSec
 			}
 			SearchQuery required = null;
 
-			if (inPageRequest.hasPermission("hidedeletedassets")) {
-				if (inQuery.getTermByDetailId("editstatus") == null) {
+			if (inPageRequest.hasPermission("hidedeletedassets"))
+			{
+				if (inQuery.getTermByDetailId("editstatus") == null)
+				{
 					required = inSearcher.createSearchQuery();
 					required.addNot("editstatus", "7");
 					// required.addNot("deleted", "true"); //Ian?
-					if (profile != null && profile.isInRole("administrator")) {
+					if (profile != null && profile.isInRole("administrator"))
+					{
 						inQuery.addChildQuery(required); // Short cut
 						// addJoins(inPageRequest,inSearcher,inQuery);
 						return inQuery;
@@ -78,7 +90,8 @@ public class AssetSearchSecurity extends BaseSearchSecurity implements SearchSec
 				return inQuery;
 			}
 
-			if (required == null) {
+			if (required == null)
+			{
 				required = inSearcher.createSearchQuery();
 			}
 
@@ -90,7 +103,8 @@ public class AssetSearchSecurity extends BaseSearchSecurity implements SearchSec
 
 			Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
 			String editstatus = null;
-			if (caneditdata == null || !caneditdata) {
+			if (caneditdata == null || !caneditdata)
+			{
 				Boolean showpendingassets = (Boolean) inPageRequest.getPageValue("canshowpendingassets");
 				if (showpendingassets == null || !showpendingassets) // False
 				{
@@ -99,7 +113,8 @@ public class AssetSearchSecurity extends BaseSearchSecurity implements SearchSec
 
 			}
 
-			if (editstatus != null) {
+			if (editstatus != null)
+			{
 
 				SearchQuery hidependingchild = inSearcher.createSearchQuery();
 				hidependingchild.addExact("editstatus", editstatus);
@@ -109,7 +124,8 @@ public class AssetSearchSecurity extends BaseSearchSecurity implements SearchSec
 			}
 
 			inQuery.setSecurityAttached(true);
-			if (!required.isEmpty()) {
+			if (!required.isEmpty())
+			{
 				inQuery.addChildQuery(required);
 			}
 			// addJoins(inPageRequest,inSearcher,inQuery);
@@ -186,7 +202,8 @@ public class AssetSearchSecurity extends BaseSearchSecurity implements SearchSec
 	// }
 	// }
 
-	protected MediaArchive getMediaArchive(String inCatalogId) {
+	protected MediaArchive getMediaArchive(String inCatalogId)
+	{
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(inCatalogId, "mediaArchive");
 		return archive;
 	}

@@ -5,7 +5,8 @@ import java.util.Collection;
 
 import org.json.simple.JSONObject;
 
-public interface LlmResponse {
+public interface LlmResponse
+{
 
     JSONObject getMessageStructured();
 

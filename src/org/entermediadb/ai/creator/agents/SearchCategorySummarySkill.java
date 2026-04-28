@@ -6,15 +6,18 @@ import org.entermediadb.ai.BaseSkill;
 import org.entermediadb.ai.creator.SmartCreatorManager;
 import org.entermediadb.ai.llm.AgentContext;
 
-public class SearchCategorySummarySkill extends BaseSkill {
+public class SearchCategorySummarySkill extends BaseSkill
+{
 	@Override
-	public void process(AgentContext inContext) {
+	public void process(AgentContext inContext)
+	{
 		summarizeLatestContentInSearchCategories(inContext);
 		super.process(inContext);
 	}
 
 	// Auto content creation
-	public void summarizeLatestContentInSearchCategories(AgentContext inReq) {
+	public void summarizeLatestContentInSearchCategories(AgentContext inReq)
+	{
 		// search for ones with an output type
 		// lastsummary_date
 		SmartCreatorManager creatorManager = (SmartCreatorManager) getMediaArchive().getBean("smartCreatorManager");

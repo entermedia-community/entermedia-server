@@ -14,53 +14,54 @@ import org.openedit.WebPageRequest;
 import org.openedit.users.User;
 import org.openedit.util.StringEncryption;
 
-public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider {
+public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider
+{
 	// http://www.imsglobal.org/wiki/step-2-valid-lti-launch-request
 	private static final Log log = LogFactory.getLog(AutoLoginLti.class);
 	protected StringEncryption fieldStringEncryption;
 	RFC3986 percent = new RFC3986();
 	boolean fieldAllowUnsecureLogin;
 
-	public boolean isAllowUnsecureLogin() {
+	public boolean isAllowUnsecureLogin()
+	{
 		return fieldAllowUnsecureLogin;
 	}
 
-	public void setAllowUnsecureLogin(boolean inAllowUnsecureLogin) {
+	public void setAllowUnsecureLogin(boolean inAllowUnsecureLogin)
+	{
 		fieldAllowUnsecureLogin = inAllowUnsecureLogin;
 	}
 
-	public StringEncryption getStringEncryption() {
+	public StringEncryption getStringEncryption()
+	{
 		return fieldStringEncryption;
 	}
 
-	public void setStringEncryption(StringEncryption inStringEncryption) {
+	public void setStringEncryption(StringEncryption inStringEncryption)
+	{
 		fieldStringEncryption = inStringEncryption;
 	}
 
-	public String encode(String inHtml) {
+	public String encode(String inHtml)
+	{
 
 		return percent.encode(inHtml);
 		/*
-		 * //urlencode_rfc3986 //String encoded =
-		 * MimeUtility.encodeText(inHtml,"UTF-8","Q"); //String
-		 * encoded = java.util.Base64.getUrlEncoder().encode(inHtml.getBytes()); String
-		 * encoded = null; try
-		 * { encoded = java.net.URLEncoder.encode(inHtml,"utf-8"); } catch
-		 * (UnsupportedEncodingException e)
-		 * { // TODO Auto-generated catch block e.printStackTrace(); } // OAuth encodes
-		 * some characters
-		 * differently: //encoded = encoded.replace("+", "%20").replace("*",
-		 * "%2A").replace("%7E", "~");
+		 * //urlencode_rfc3986 //String encoded = MimeUtility.encodeText(inHtml,"UTF-8","Q"); //String
+		 * encoded = java.util.Base64.getUrlEncoder().encode(inHtml.getBytes()); String encoded = null; try
+		 * { encoded = java.net.URLEncoder.encode(inHtml,"utf-8"); } catch (UnsupportedEncodingException e)
+		 * { // TODO Auto-generated catch block e.printStackTrace(); } // OAuth encodes some characters
+		 * differently: //encoded = encoded.replace("+", "%20").replace("*", "%2A").replace("%7E", "~");
 		 * 
-		 * encoded = encoded.replace("+", "%20").replace("*", "%2A").replace("=",
-		 * "%3D").replace("~",
+		 * encoded = encoded.replace("+", "%20").replace("*", "%2A").replace("=", "%3D").replace("~",
 		 * "%7e").replace(" ", "%20");
 		 * 
 		 * //We needed to encode everything in the values return encoded;
 		 */
 	}
 
-	public String createRequest(String inPrivateKey, String inUrl, String sha1expected, Map inParameters) {
+	public String createRequest(String inPrivateKey, String inUrl, String sha1expected, Map inParameters)
+	{
 		// https://lti.tools/test/tc.php
 		inParameters.remove("oauth_signature");
 
@@ -68,7 +69,8 @@ public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider {
 		Collections.sort(sorted);
 		// TODO: Sort array values
 		StringBuffer base = new StringBuffer();
-		for (Iterator iterator = sorted.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
+		{
 			String key = (String) iterator.next();
 			String value = (String) inParameters.get(key);
 			// if( value == null || value.isEmpty())
@@ -85,7 +87,8 @@ public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider {
 				log.info(key + ":" + value);
 			}
 
-			if (iterator.hasNext()) {
+			if (iterator.hasNext())
+			{
 				base.append("&");
 			}
 		}
@@ -107,70 +110,85 @@ public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider {
 	}
 
 	@Override
-	public AutoLoginResult autoLogin(WebPageRequest inReq) {
+	public AutoLoginResult autoLogin(WebPageRequest inReq)
+	{
 		// https://oauth.net/core/1.0/#nonce
 		// log.info("ecoding:" + inReq.getRequest().getCharacterEncoding() );
 		Map map = inReq.getParameterMap();
 		String expected = (String) map.get("oauth_signature");
 		String url = null;
-		if (expected != null) {
+		if (expected != null)
+		{
 			url = (String) inReq.getPageValue("originalurl");
-			if (url == null) {
+			if (url == null)
+			{
 				url = inReq.getSiteUrl();// "https://weatherfordcollege.entermediadb.net/lti/index.html";
 			}
 			String inPrivateKey = getStringEncryption().getEncryptionKey("ltiautologinkey"); // TODO: Cache this?
-			if (inPrivateKey == null) {
-				throw new OpenEditException(
-						"ltiautologinkey is not defined in WEB-INF/data/system/lists/systemsettings/custom.xml");
+			if (inPrivateKey == null)
+			{
+				throw new OpenEditException("ltiautologinkey is not defined in WEB-INF/data/system/lists/systemsettings/custom.xml");
 			}
 
 			String sha1 = createRequest(inPrivateKey, url, expected, map);
-			if (expected.equals(sha1) || unsecureLogin(map)) {
+			if (expected.equals(sha1) || unsecureLogin(map))
+			{
 				AutoLoginResult result = new AutoLoginResult();
 				String username = (String) map.get("ext_user_username");
 
 				String email = (String) map.get("lis_person_contact_email_primary");
-				if (username == null && email != null && email.contains("@")) {
+				if (username == null && email != null && email.contains("@"))
+				{
 					username = email;
 					username = email.substring(0, email.indexOf("@"));
 				}
 				User user = getUserManager(inReq).getUser(username);
-				if (user == null) {
+				if (user == null)
+				{
 					user = getUserManager(inReq).createUser(username, null);
 				}
-				if (email != null) {
+				if (email != null)
+				{
 					user.setEmail(email);
 				}
 				String given = (String) map.get("lis_person_name_given");
-				if (given != null) {
+				if (given != null)
+				{
 					user.setFirstName(given);
 					user.setLastName((String) map.get("lis_person_name_family"));
 				}
 				result.setUser(user);
 				return result;
-			} else {
-				log.info("Trying to login and failing expected: " + expected + " we got " + sha1
-						+ " using private key of " + inPrivateKey + " on url " + url);
+			}
+			else
+			{
+				log.info("Trying to login and failing expected: " + expected + " we got " + sha1 + " using private key of " + inPrivateKey + " on url " + url);
 			}
 		}
 		return null;
 	}
 
-	protected boolean unsecureLogin(Map inMap) {
-		if (!isAllowUnsecureLogin()) {
+	protected boolean unsecureLogin(Map inMap)
+	{
+		if (!isAllowUnsecureLogin())
+		{
 			return false;
 		}
 		String time = (String) inMap.get("oauth_timestamp");
-		if (time != null) {
+		if (time != null)
+		{
 			long timepassed = System.currentTimeMillis() - (Long.parseLong(time) * 1000L);
-			if (timepassed > 1000 * 60 * 5) {
+			if (timepassed > 1000 * 60 * 5)
+			{
 				return false;
 			}
 		}
 		String username = (String) inMap.get("ext_user_username");
-		if (username == null) {
+		if (username == null)
+		{
 			String email = (String) inMap.get("lis_person_contact_email_primary");
-			if (email == null) {
+			if (email == null)
+			{
 				log.error("No username found");
 				return false;
 			}

@@ -4,7 +4,8 @@ import org.entermediadb.markdown.node.Node;
 import org.entermediadb.markdown.parser.beta.ParsedInline;
 import org.entermediadb.markdown.parser.beta.Position;
 
-public class ParsedInlineImpl implements ParsedInline {
+public class ParsedInlineImpl implements ParsedInline
+{
     private final Node node;
     private final Position position;
 
@@ -13,11 +14,13 @@ public class ParsedInlineImpl implements ParsedInline {
         this.position = position;
     }
 
-    public Node getNode() {
+    public Node getNode()
+    {
         return node;
     }
 
-    public Position getPosition() {
+    public Position getPosition()
+    {
         return position;
     }
 }

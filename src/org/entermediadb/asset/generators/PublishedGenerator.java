@@ -16,34 +16,41 @@ import org.openedit.page.PageRequestKeys;
 import org.openedit.repository.ContentItem;
 
 /**
- * This generator generates original asset documents from an MediaArchive based
- * on paths of the form <tt>.../<var>assetid</var>/<var>filename.ext</var></tt>.
+ * This generator generates original asset documents from an MediaArchive based on paths of the form
+ * <tt>.../<var>assetid</var>/<var>filename.ext</var></tt>.
  */
-public class PublishedGenerator extends FileGenerator {
+public class PublishedGenerator extends FileGenerator
+{
 	protected ModuleManager fieldModuleManager;
 	protected SearcherManager fieldSearcherManager;
 
-	public Generator getVelocityGenerator() {
+	public Generator getVelocityGenerator()
+	{
 		return fieldVelocityGenerator;
 	}
 
-	public void setVelocityGenerator(Generator inVelocityGenerator) {
+	public void setVelocityGenerator(Generator inVelocityGenerator)
+	{
 		fieldVelocityGenerator = inVelocityGenerator;
 	}
 
-	public Generator getMp4Generator() {
+	public Generator getMp4Generator()
+	{
 		return fieldMp4Generator;
 	}
 
-	public void setMp4Generator(Generator inMp4Generator) {
+	public void setMp4Generator(Generator inMp4Generator)
+	{
 		fieldMp4Generator = inMp4Generator;
 	}
 
-	public Generator getConvertGenerator() {
+	public Generator getConvertGenerator()
+	{
 		return fieldConvertGenerator;
 	}
 
-	public void setConvertGenerator(Generator inConvertGenerator) {
+	public void setConvertGenerator(Generator inConvertGenerator)
+	{
 		fieldConvertGenerator = inConvertGenerator;
 	}
 
@@ -51,23 +58,28 @@ public class PublishedGenerator extends FileGenerator {
 	protected Generator fieldMp4Generator;
 	protected Generator fieldConvertGenerator;
 
-	public SearcherManager getSearcherManager() {
+	public SearcherManager getSearcherManager()
+	{
 		return fieldSearcherManager;
 	}
 
-	public void setSearcherManager(SearcherManager inSearcherManager) {
+	public void setSearcherManager(SearcherManager inSearcherManager)
+	{
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
-	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException {
+	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
+	{
 		String catalogid = inReq.findPathValue("catalogid");
 
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive", true);
@@ -81,78 +93,98 @@ public class PublishedGenerator extends FileGenerator {
 		String guid = paths[0];
 
 		String presetid = "0";
-		if (paths.length > 1) {
+		if (paths.length > 1)
+		{
 			presetid = paths[1];
 		}
 		Data dist = getSearcherManager().getCachedData(catalogid, "distribution", guid);
-		if (dist == null) {
+		if (dist == null)
+		{
 			throw new ContentNotAvailableException("Distribution Not Available", path);
 		}
 		// Asset asset = (Asset)getSearcherManager().getCachedData(catalogid, "asset",
 		// dist.get("assetid"));
 		Asset asset = archive.getAsset(dist.get("assetid"));
 
-		if (asset == null) {
+		if (asset == null)
+		{
 			throw new ContentNotAvailableException("Asset Not Available", path);
 		}
 		Data preset = getSearcherManager().getCachedData(catalogid, "convertpreset", presetid);
-		if (preset == null) {
+		if (preset == null)
+		{
 			throw new ContentNotAvailableException("Distribution Preset Not Available", path);
 		}
 
 		inReq.setRequestParameter("sourcepath", asset.getSourcePath());
-		if (presetid.equals("0")) {
-			if ((Boolean) dist.getValue("alloworiginal")) {
+		if (presetid.equals("0"))
+		{
+			if ((Boolean) dist.getValue("alloworiginal"))
+			{
 				renderOriginalFile(inReq, asset, catalogid, inPage, inOut);
 				return;
-			} else {
+			}
+			else
+			{
 				throw new ContentNotAvailableException("Distribution Orignal Not Enabled", path);
 			}
 		}
-		if (presetid.contains("videohls")) {
-			if (inPage.getName().endsWith("videohls")) {
+		if (presetid.contains("videohls"))
+		{
+			if (inPage.getName().endsWith("videohls"))
+			{
 				inReq.putPageValue("asset", asset);
 				inReq.putPageValue("mediaarchive", archive);
 				String applicationid = inReq.findValue("applicationid");
-				Page player = getPageManager()
-						.getPage("/" + applicationid + "/services/module/asset/players/embed/video.html");
+				Page player = getPageManager().getPage("/" + applicationid + "/services/module/asset/players/embed/video.html");
 				inReq.getResponse().setContentType("text/html");
 				getVelocityGenerator().generate(inReq, player, inOut);
 				return;
-			} else {
+			}
+			else
+			{
 				renderHlsFile(inReq, catalogid, asset, path, inPage, inOut);
 			}
-		} else if (presetid.contains("video")) {
-			String genpath = archive.asLinkToPreview(asset, preset.get("generatedoutputfile"));
-			Page mp4 = getPageManager().getPage(genpath);
-			getMp4Generator().generate(inReq, mp4, inOut);
-		} else {
-			String genpath = archive.asLinkToPreview(asset, preset.get("generatedoutputfile"));
-			Page gen = getPageManager().getPage(genpath);
-			inReq.getResponse().setContentType(gen.getMimeType());
-			getConvertGenerator().generate(inReq, gen, inOut);
 		}
+		else
+			if (presetid.contains("video"))
+			{
+				String genpath = archive.asLinkToPreview(asset, preset.get("generatedoutputfile"));
+				Page mp4 = getPageManager().getPage(genpath);
+				getMp4Generator().generate(inReq, mp4, inOut);
+			}
+			else
+			{
+				String genpath = archive.asLinkToPreview(asset, preset.get("generatedoutputfile"));
+				Page gen = getPageManager().getPage(genpath);
+				inReq.getResponse().setContentType(gen.getMimeType());
+				getConvertGenerator().generate(inReq, gen, inOut);
+			}
 	}
 
-	protected void renderHlsFile(WebPageRequest inReq, String catalogid, Data asset, String path, Page inPage,
-			Output inOut) {
-		ContentItem item = getPageManager().getRepository()
-				.getStub("/WEB-INF/data/" + catalogid + "/generated/" + asset.getSourcePath() + "/" + path);
+	protected void renderHlsFile(WebPageRequest inReq, String catalogid, Data asset, String path, Page inPage, Output inOut)
+	{
+		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + catalogid + "/generated/" + asset.getSourcePath() + "/" + path);
 		Page output = null;
 		boolean existed = item.exists();
-		if (existed) {
+		if (existed)
+		{
 
 			output = new Page() {
-				public boolean isHtml() {
+				public boolean isHtml()
+				{
 					return false;
 				}
 			};
 			output.setPageSettings(inPage.getPageSettings());
 			output.setContentItem(item);
 		}
-		if (!existed && !output.exists()) {
+		if (!existed && !output.exists())
+		{
 			throw new ContentNotAvailableException("Missing: " + output.getPath(), output.getPath());
-		} else {
+		}
+		else
+		{
 			WebPageRequest copy = inReq.copy(output);
 			copy.putProtectedPageValue("content", output);
 			super.generate(copy, output, inOut);
@@ -160,48 +192,54 @@ public class PublishedGenerator extends FileGenerator {
 		}
 	}
 
-	protected void renderOriginalFile(WebPageRequest inReq, Asset asset, String catalogid, Page inPage, Output inOut) {
-		ContentItem item = getPageManager().getRepository()
-				.getStub("/WEB-INF/data/" + catalogid + "/originals/" + asset.getSourcePath());
+	protected void renderOriginalFile(WebPageRequest inReq, Asset asset, String catalogid, Page inPage, Output inOut)
+	{
+		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + catalogid + "/originals/" + asset.getSourcePath());
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive", true);
 		Page output = null;
 		boolean exists = item.exists();
-		if (exists) {
+		if (exists)
+		{
 			output = new Page() {
-				public boolean isHtml() {
+				public boolean isHtml()
+				{
 					return false;
 				}
 			};
 			output.setPageSettings(inPage.getPageSettings());
 			output.setContentItem(item);
 		}
-		if (!exists && !output.exists()) {
+		if (!exists && !output.exists())
+		{
 			throw new ContentNotAvailableException("Missing: " + output.getPath(), output.getPath());
-		} else {
+		}
+		else
+		{
 			/*
-			 * inReq.getResponse().setHeader("Content-disposition",
-			 * "attachment; filename=\"" + asset.getName() + "\"");
-			 * WebPageRequest copy = inReq.copy(output);
-			 * copy.putProtectedPageValue("content", output);
-			 * super.generate(copy, output, inOut);
-			 * // archive.logDownload(sourcePath, "success", inReq.getUser());
+			 * inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\"" + asset.getName()
+			 * + "\""); WebPageRequest copy = inReq.copy(output); copy.putProtectedPageValue("content", output);
+			 * super.generate(copy, output, inOut); // archive.logDownload(sourcePath, "success",
+			 * inReq.getUser());
 			 * 
 			 */
 			String filename = asset.getSourcePath();
-			if (asset.isFolder() && asset.getPrimaryFile() != null) {
+			if (asset.isFolder() && asset.getPrimaryFile() != null)
+			{
 				filename = filename + "/" + asset.getPrimaryFile();
 			}
 			Page content = archive.getOriginalDocument(asset);
-			if (content.exists()) {
+			if (content.exists())
+			{
 				// its a regular file
-				inReq.getResponse().setHeader("Content-disposition",
-						"attachment; filename=\"" + asset.getName() + "\"");
+				inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\"" + asset.getName() + "\"");
 				WebPageRequest req = inReq.copy(content);
 				req.putProtectedPageValue(PageRequestKeys.CONTENT, content);
 				super.generate(req, content, inOut);
 				archive.logDownload(filename, "success", inReq.getUser());
 
-			} else {
+			}
+			else
+			{
 				// stream(inReq, archive, inOut, asset, filename); //see
 				// OriginalDocumentGenerator.java
 				throw new OpenEditException("Could not find original document path " + asset.getSourcePath());

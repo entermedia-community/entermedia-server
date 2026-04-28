@@ -6,54 +6,35 @@ import org.entermediadb.asset.convert.BaseConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 
-public class AudioConversionManager extends BaseConversionManager {
+public class AudioConversionManager extends BaseConversionManager
+{
 	private static final Log log = LogFactory.getLog(AudioConversionManager.class);
 
 	/*
-	 * public ConvertResult convert(ConvertInstructions inStructions)
-	 * {
-	 * ConvertResult result = new ConvertResult();
-	 * Asset asset = inStructions.getAsset();
-	 * Page inputpage = inStructions.getMediaArchive().getOriginalDocument(asset);
+	 * public ConvertResult convert(ConvertInstructions inStructions) { ConvertResult result = new
+	 * ConvertResult(); Asset asset = inStructions.getAsset(); Page inputpage =
+	 * inStructions.getMediaArchive().getOriginalDocument(asset);
 	 * 
-	 * if (inputpage == null || !inputpage.exists())
-	 * {
-	 * //no such original
-	 * log.info("Original does not exist: " + asset.getSourcePath());
-	 * result.setOk(false);
+	 * if (inputpage == null || !inputpage.exists()) { //no such original
+	 * log.info("Original does not exist: " + asset.getSourcePath()); result.setOk(false);
 	 * 
-	 * return result;
-	 * }
-	 * // *
-	 * // * <property id="flac" rendertype="audio"
-	 * // * synctags="false">Flac</property> <property id="m4a"
-	 * // * rendertype="audio" synctags="false">M4A</property> <property id="aac"
-	 * // * rendertype="audio" synctags="false">aac</property>
-	 * String inputExt =
-	 * PathUtilities.extractPageType(inputpage.getContentItem().getAbsolutePath());
-	 * String outputExt = inStructions.getOutputExtension();
-	 * // String useoriginalmediawhenpossible =
-	 * inStructions.getProperty("useoriginalmediawhenpossible");
-	 * // if (Boolean.parseBoolean(useoriginalmediawhenpossible) && outputExt !=
-	 * null && outputExt.equals(inputExt))
-	 * // {
-	 * // createFallBackContent(inputpage, inStructions.getOutputFile());
-	 * // result.setOk(true);
-	 * // }
-	 * // else
-	 * // {
-	 * long timeout = inStructions.getConversionTimeout();
-	 * String inOutputType = inStructions.getOutputExtension();
+	 * return result; } // * // * <property id="flac" rendertype="audio" // *
+	 * synctags="false">Flac</property> <property id="m4a" // * rendertype="audio"
+	 * synctags="false">M4A</property> <property id="aac" // * rendertype="audio"
+	 * synctags="false">aac</property> String inputExt =
+	 * PathUtilities.extractPageType(inputpage.getContentItem().getAbsolutePath()); String outputExt =
+	 * inStructions.getOutputExtension(); // String useoriginalmediawhenpossible =
+	 * inStructions.getProperty("useoriginalmediawhenpossible"); // if
+	 * (Boolean.parseBoolean(useoriginalmediawhenpossible) && outputExt != null &&
+	 * outputExt.equals(inputExt)) // { // createFallBackContent(inputpage,
+	 * inStructions.getOutputFile()); // result.setOk(true); // } // else // { long timeout =
+	 * inStructions.getConversionTimeout(); String inOutputType = inStructions.getOutputExtension();
 	 * 
 	 * //call transocder
 	 * 
-	 * if (result.isOk())
-	 * {
-	 * result.setComplete(true);
-	 * }
+	 * if (result.isOk()) { result.setComplete(true); }
 	 * 
-	 * return result;
-	 * }
+	 * return result; }
 	 */
 
 	// @Override
@@ -79,10 +60,13 @@ public class AudioConversionManager extends BaseConversionManager {
 	// }
 
 	@Override
-	public ConvertResult createOutput(ConvertInstructions inStructions) {
+	public ConvertResult createOutput(ConvertInstructions inStructions)
+	{
 
-		if ("mp3".equalsIgnoreCase(inStructions.getAsset().getFileFormat())) {
-			if (inStructions.getOutputExtension().equalsIgnoreCase("mp3")) {
+		if ("mp3".equalsIgnoreCase(inStructions.getAsset().getFileFormat()))
+		{
+			if (inStructions.getOutputExtension().equalsIgnoreCase("mp3"))
+			{
 
 				ConvertResult result = new ConvertResult();
 				result.setInstructions(inStructions);
@@ -98,8 +82,10 @@ public class AudioConversionManager extends BaseConversionManager {
 		return super.createOutput(inStructions);
 	}
 
-	public ConvertResult createOutput(ConvertInstructions inStructions, boolean allowSameFormat) {
-		if (allowSameFormat) {
+	public ConvertResult createOutput(ConvertInstructions inStructions, boolean allowSameFormat)
+	{
+		if (allowSameFormat)
+		{
 			return super.createOutput(inStructions);
 		}
 
@@ -107,7 +93,8 @@ public class AudioConversionManager extends BaseConversionManager {
 	}
 
 	@Override
-	protected String getRenderType() {
+	protected String getRenderType()
+	{
 		return "audio";
 	}
 

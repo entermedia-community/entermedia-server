@@ -2,32 +2,39 @@ package org.entermediadb.mcp.server;
 
 import org.json.simple.JSONObject;
 
-public class McpRequest {
+public class McpRequest
+{
     String fieldMessageId;
     JSONObject fieldJsonReply;
     String fieldTextReply;
 
-    public String getMessageId() {
+    public String getMessageId()
+    {
         return fieldMessageId;
     }
 
-    public void setMessageId(String inMessageId) {
+    public void setMessageId(String inMessageId)
+    {
         fieldMessageId = inMessageId;
     }
 
-    public JSONObject getJsonReply() {
+    public JSONObject getJsonReply()
+    {
         return fieldJsonReply;
     }
 
-    public void setJsonReply(JSONObject inJsonReply) {
+    public void setJsonReply(JSONObject inJsonReply)
+    {
         fieldJsonReply = inJsonReply;
     }
 
-    public String getTextReply() {
+    public String getTextReply()
+    {
         return fieldTextReply;
     }
 
-    public void setTextReply(String inTextReply) {
+    public void setTextReply(String inTextReply)
+    {
         fieldTextReply = inTextReply;
     }
 

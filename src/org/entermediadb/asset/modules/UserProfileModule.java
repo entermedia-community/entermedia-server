@@ -27,25 +27,31 @@ import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 import org.openedit.xml.XmlArchive;
 
-public class UserProfileModule extends BaseMediaModule {
+public class UserProfileModule extends BaseMediaModule
+{
 	protected XmlArchive fieldXmlArchive;
 	protected FileUpload fieldFileUpload;
 	private static final Log log = LogFactory.getLog(UserProfileModule.class);
 
-	public XmlArchive getXmlArchive() {
+	public XmlArchive getXmlArchive()
+	{
 		return fieldXmlArchive;
 	}
 
-	public void setXmlArchive(XmlArchive inXmlArchive) {
+	public void setXmlArchive(XmlArchive inXmlArchive)
+	{
 		fieldXmlArchive = inXmlArchive;
 	}
 
-	public User loadOwner(WebPageRequest inReq) {
+	public User loadOwner(WebPageRequest inReq)
+	{
 		String id = inReq.getRequestParameter("userid");
-		if (id == null) {
+		if (id == null)
+		{
 			id = inReq.getContentProperty("username");
 		}
-		if (id == null) {
+		if (id == null)
+		{
 			id = PathUtilities.extractDirectoryName(inReq.getPath());
 		}
 		User user = getUserManager(inReq).getUser(id);
@@ -53,7 +59,8 @@ public class UserProfileModule extends BaseMediaModule {
 		return user;
 	}
 
-	public User loadOwnerProfile(WebPageRequest inReq) {
+	public User loadOwnerProfile(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		User user = loadOwner(inReq);
 		Searcher profilesearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "profile");
@@ -62,9 +69,11 @@ public class UserProfileModule extends BaseMediaModule {
 		return user;
 	}
 
-	public User createOwnerHome(WebPageRequest inReq) {
+	public User createOwnerHome(WebPageRequest inReq)
+	{
 		String id = inReq.getContentProperty("username");
-		if (id == null) {
+		if (id == null)
+		{
 			id = inReq.getUser().getId();
 		}
 		User user = getUserManager(inReq).getUser(id);
@@ -95,7 +104,8 @@ public class UserProfileModule extends BaseMediaModule {
 		return user;
 	}
 
-	public void changeUserTemplate(WebPageRequest inReq) {
+	public void changeUserTemplate(WebPageRequest inReq)
+	{
 		String templateid = inReq.getRequestParameter("template.value");
 		String applicationid = inReq.getContentProperty("applicationid");
 		String folderPath = "/" + applicationid + "/users/" + inReq.getUserName();
@@ -112,10 +122,12 @@ public class UserProfileModule extends BaseMediaModule {
 
 	}
 
-	public void receivePortraitUpload(WebPageRequest inReq) {
+	public void receivePortraitUpload(WebPageRequest inReq)
+	{
 		// need to generate the correct path to save the file
 		UploadRequest map = getFileUpload().parseArguments(inReq);
-		if (map == null || map.getUploadItems().size() == 0) {
+		if (map == null || map.getUploadItems().size() == 0)
+		{
 			throw new OpenEditException("No upload included");
 		}
 		EnterMedia entermedia = getEnterMedia(inReq);
@@ -129,11 +141,11 @@ public class UserProfileModule extends BaseMediaModule {
 		MediaArchive archive = getMediaArchive("media/catalogs/public");
 		String sourcePath = "users/" + inReq.getUser().getId();
 		Asset asset = archive.getAssetBySourcePath(sourcePath);
-		if (asset == null) {
+		if (asset == null)
+		{
 			asset = archive.createAsset(sourcePath);
 		}
-		archive.getAssetImporter().getAssetUtilities().populateCategory(asset, archive,
-				"/WEB-INF/data/media/catalogs/public/originals", path, inReq.getUser());
+		archive.getAssetImporter().getAssetUtilities().populateCategory(asset, archive, "/WEB-INF/data/media/catalogs/public/originals", path, inReq.getUser());
 		asset.setPrimaryFile(item.getName());
 		archive.removeGeneratedImages(asset);
 		archive.saveAsset(asset, inReq.getUser());
@@ -144,41 +156,52 @@ public class UserProfileModule extends BaseMediaModule {
 
 	}
 
-	public FileUpload getFileUpload() {
+	public FileUpload getFileUpload()
+	{
 		return fieldFileUpload;
 	}
 
-	public void setFileUpload(FileUpload inFileUpload) {
+	public void setFileUpload(FileUpload inFileUpload)
+	{
 		fieldFileUpload = inFileUpload;
 	}
 
-	public void toggleDebug(WebPageRequest inReq) {
+	public void toggleDebug(WebPageRequest inReq)
+	{
 		String mode = inReq.getUser().get("oe_edit_mode");
-		if (mode == null || mode.equals("preview")) {
+		if (mode == null || mode.equals("preview"))
+		{
 			inReq.getUser().setValue("oe_edit_mode", "debug");
-		} else {
+		}
+		else
+		{
 			inReq.getUser().setValue("oe_edit_mode", "preview");
 		}
 		// redirectBack(inReq);
 	}
 
-	public void searchOwnerAssets(WebPageRequest inReq) {
+	public void searchOwnerAssets(WebPageRequest inReq)
+	{
 		User owner = loadOwner(inReq);
 		MediaArchive archive = getMediaArchive(inReq);
 		AssetSearcher searcher = archive.getAssetSearcher();
 
 	}
 
-	public void loadSideBarWidth(WebPageRequest inReq) {
+	public void loadSideBarWidth(WebPageRequest inReq)
+	{
 		String sidebarcomponent = inReq.getContentProperty("sidebarcomponent");
-		if (sidebarcomponent == null) {
+		if (sidebarcomponent == null)
+		{
 			sidebarcomponent = inReq.getRequestParameter("sidebarcomponent");
 		}
-		if (sidebarcomponent == null && inReq.getUserProfile() != null) {
+		if (sidebarcomponent == null && inReq.getUserProfile() != null)
+		{
 			sidebarcomponent = inReq.getUserProfile().get("sidebarcomponent");
 		}
 		String width = "200";
-		if (inReq.getUserProfile() != null) {
+		if (inReq.getUserProfile() != null)
+		{
 			width = inReq.getUserProfile().get("sidebarwidth");
 		}
 		inReq.putPageValue("sidebarcomponent", sidebarcomponent);
@@ -186,35 +209,38 @@ public class UserProfileModule extends BaseMediaModule {
 
 	}
 
-	public void changeTable(WebPageRequest inReq) {
+	public void changeTable(WebPageRequest inReq)
+	{
 		String searchtype = inReq.getRequestParameter("searchtype");
-		if (searchtype != null && inReq.getUserProfile() != null) {
+		if (searchtype != null && inReq.getUserProfile() != null)
+		{
 			inReq.getUserProfile().setValue("databasecurrentsearch", searchtype);
 			inReq.getUserProfile().save();
-		} else {
+		}
+		else
+		{
 			searchtype = inReq.getUserProfile().get("databasecurrentsearch");
 			inReq.setRequestParameter("searchtype", searchtype);
 		}
 
 	}
 
-	public void saveUserProfile(WebPageRequest inReq) {
+	public void saveUserProfile(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 
 		String userid = inReq.getRequestParameter("username");
 
 		User user = archive.getUser(userid);
 		/*
-		 * if( !user.getId().equals( inReq.getUser().getId() ) )
-		 * {
-		 * //checkAdminPermission(inReq);
-		 * }
+		 * if( !user.getId().equals( inReq.getUser().getId() ) ) { //checkAdminPermission(inReq); }
 		 */
 
 		Map params = inReq.getParameterMap();
 		String[] fieldsarray = (String[]) params.get("field");
 		Collection formfields = new ArrayList();
-		for (int i = 0; i < fieldsarray.length; i++) {
+		for (int i = 0; i < fieldsarray.length; i++)
+		{
 			formfields.add(fieldsarray[i]);
 		}
 
@@ -223,9 +249,11 @@ public class UserProfileModule extends BaseMediaModule {
 		// Save to profile
 		Collection userprofilefields = new ArrayList();
 		PropertyDetails updetails = archive.getSearcher("userprofile").getPropertyDetails();
-		for (Iterator iterator = updetails.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = updetails.iterator(); iterator.hasNext();)
+		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
-			if (detail.getId().equals("id") || !formfields.contains(detail.getId())) {
+			if (detail.getId().equals("id") || !formfields.contains(detail.getId()))
+			{
 				continue;
 			}
 			userprofilefields.add(detail.getId());
@@ -237,9 +265,11 @@ public class UserProfileModule extends BaseMediaModule {
 		// Save to user
 		Collection userfields = new ArrayList();
 		PropertyDetails udetails = archive.getSearcher("user").getPropertyDetails();
-		for (Iterator iterator = udetails.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = udetails.iterator(); iterator.hasNext();)
+		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
-			if (detail.getId().equals("id") || !formfields.contains(detail.getId())) {
+			if (detail.getId().equals("id") || !formfields.contains(detail.getId()))
+			{
 				continue;
 			}
 			userfields.add(detail.getId());
@@ -253,7 +283,8 @@ public class UserProfileModule extends BaseMediaModule {
 		inReq.putPageValue("status", "Saved");
 		inReq.putPageValue("saved", true);
 
-		if (user.getId().equals(inReq.getUser().getId())) {
+		if (user.getId().equals(inReq.getUser().getId()))
+		{
 			inReq.putSessionValue("systemuser", user);
 			inReq.putPageValue("user", user);
 		}

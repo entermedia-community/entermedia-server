@@ -10,42 +10,52 @@ import java.util.List;
  *
  * @since 0.16.0
  */
-public class SourceLines {
+public class SourceLines
+{
 
     private final List<SourceLine> lines = new ArrayList<>();
 
-    public static SourceLines empty() {
+    public static SourceLines empty()
+    {
         return new SourceLines();
     }
 
-    public static SourceLines of(SourceLine sourceLine) {
+    public static SourceLines of(SourceLine sourceLine)
+    {
         SourceLines sourceLines = new SourceLines();
         sourceLines.addLine(sourceLine);
         return sourceLines;
     }
 
-    public static SourceLines of(List<SourceLine> sourceLines) {
+    public static SourceLines of(List<SourceLine> sourceLines)
+    {
         SourceLines result = new SourceLines();
         result.lines.addAll(sourceLines);
         return result;
     }
 
-    public void addLine(SourceLine sourceLine) {
+    public void addLine(SourceLine sourceLine)
+    {
         lines.add(sourceLine);
     }
 
-    public List<SourceLine> getLines() {
+    public List<SourceLine> getLines()
+    {
         return lines;
     }
 
-    public boolean isEmpty() {
+    public boolean isEmpty()
+    {
         return lines.isEmpty();
     }
 
-    public String getContent() {
+    public String getContent()
+    {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < lines.size(); i++) {
-            if (i != 0) {
+        for (int i = 0; i < lines.size(); i++)
+        {
+            if (i != 0)
+            {
                 sb.append('\n');
             }
             sb.append(lines.get(i).getContent());
@@ -53,11 +63,14 @@ public class SourceLines {
         return sb.toString();
     }
 
-    public List<SourceSpan> getSourceSpans() {
+    public List<SourceSpan> getSourceSpans()
+    {
         List<SourceSpan> sourceSpans = new ArrayList<>();
-        for (SourceLine line : lines) {
+        for (SourceLine line : lines)
+        {
             SourceSpan sourceSpan = line.getSourceSpan();
-            if (sourceSpan != null) {
+            if (sourceSpan != null)
+            {
                 sourceSpans.add(sourceSpan);
             }
         }

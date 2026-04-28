@@ -9,7 +9,8 @@ import org.entermediadb.projects.LibraryCollection;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 
-public interface DesktopEventListener {
+public interface DesktopEventListener
+{
 	// public void downloadFiles(String inPath,Collection<String> inSubFolders,
 	// Collection inAssets);
 

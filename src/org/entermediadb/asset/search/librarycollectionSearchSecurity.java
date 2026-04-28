@@ -20,37 +20,45 @@ import org.openedit.hittracker.Term;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.Group;
 
-public class librarycollectionSearchSecurity implements SearchSecurity {
+public class librarycollectionSearchSecurity implements SearchSecurity
+{
 	private static final Log log = LogFactory.getLog(librarycollectionSearchSecurity.class);
 
-	public SearchQuery attachSecurity(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery) {
+	public SearchQuery attachSecurity(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery)
+	{
 		boolean enabled = inQuery.isEndUserSearch();
 		// log.info( "security filer enabled " + enabled );
-		if (!enabled) {
+		if (!enabled)
+		{
 
 			return inQuery;
 		}
-		if (inQuery.isSecurityAttached()) {
+		if (inQuery.isSecurityAttached())
+		{
 
 			return inQuery;
 		}
 		String skipfilter = inPageRequest.getContentProperty("skipallsecurity");
-		if (Boolean.parseBoolean(skipfilter)) {
+		if (Boolean.parseBoolean(skipfilter))
+		{
 			return inQuery;
 		}
 		Collection onlytypes = Arrays.asList("0", "2", "3");
 
 		Term bytype = inQuery.getTermByDetailId("collectiontype");
-		if (bytype != null) {
+		if (bytype != null)
+		{
 			Term ids = inQuery.getTermByDetailId("id");
-			if (ids != null) {
+			if (ids != null)
+			{
 				log.debug("Specified ids so allowing search without collectiontype");
 				onlytypes = null;
 			}
 		}
 
 		UserProfile profile = inPageRequest.getUserProfile();
-		if (profile != null && profile.isInRole("administrator")) {
+		if (profile != null && profile.isInRole("administrator"))
+		{
 			SearchQuery child = inSearcher.query().notgroup("collectiontype", onlytypes).getQuery();
 			inQuery.addChildQuery(child);
 			inQuery.setSecurityAttached(true);
@@ -72,15 +80,11 @@ public class librarycollectionSearchSecurity implements SearchSecurity {
 		/*
 		 * Set allowedcats = new HashSet(profile.getViewCategories());
 		 * 
-		 * //@deprecate this code for (Iterator iterator =
-		 * archive.listPublicCategories().iterator();
+		 * //@deprecate this code for (Iterator iterator = archive.listPublicCategories().iterator();
 		 * iterator.hasNext();) { Category publiccat = (Category) iterator.next();
-		 * allowedcats.add(publiccat); } if( allowedcats.isEmpty() ) {
-		 * allowedcats.add("NONE"); }
-		 * SearchQuery child = inSearcher.query()
-		 * //.orgroup("parentcategories",allowedcats)
-		 * //.notgroup("parentcategories", catshidden) .notgroup("collectiontype",
-		 * onlytypes) .getQuery();
+		 * allowedcats.add(publiccat); } if( allowedcats.isEmpty() ) { allowedcats.add("NONE"); }
+		 * SearchQuery child = inSearcher.query() //.orgroup("parentcategories",allowedcats)
+		 * //.notgroup("parentcategories", catshidden) .notgroup("collectiontype", onlytypes) .getQuery();
 		 * inQuery.addChildQuery(child);
 		 * 
 		 */
@@ -88,30 +92,39 @@ public class librarycollectionSearchSecurity implements SearchSecurity {
 		Collection groupids = new ArrayList();
 		UserProfile inUserprofile = inPageRequest.getUserProfile();
 
-		if (inUserprofile == null || inUserprofile.getUser() == null) {
+		if (inUserprofile == null || inUserprofile.getUser() == null)
+		{
 			groupids.add("anonymous");
-		} else {
-			for (Iterator iterator = inUserprofile.getUser().getGroups().iterator(); iterator.hasNext();) {
+		}
+		else
+		{
+			for (Iterator iterator = inUserprofile.getUser().getGroups().iterator(); iterator.hasNext();)
+			{
 				Group group = (Group) iterator.next();
 				groupids.add(group.getId());
 			}
 		}
 		String roleid = null;
-		if (inUserprofile != null && inUserprofile.getSettingsGroup() != null) {
+		if (inUserprofile != null && inUserprofile.getSettingsGroup() != null)
+		{
 			roleid = inUserprofile.getSettingsGroup().getId();
-		} else {
+		}
+		else
+		{
 			roleid = "anonymous";
 		}
 
 		String userid = null;
-		if (inUserprofile != null) {
+		if (inUserprofile != null)
+		{
 			userid = inUserprofile.getUserId();
-		} else {
+		}
+		else
+		{
 			userid = "null";
 		}
 
-		QueryBuilder builder = inSearcher.query().or().orgroup("viewgroups", groupids).match("viewroles", roleid)
-				.match("owner", userid).match("viewusers", userid);
+		QueryBuilder builder = inSearcher.query().or().orgroup("viewgroups", groupids).match("viewroles", roleid).match("owner", userid).match("viewusers", userid);
 		builder.match("securityenabled", "false");
 		inQuery.addChildQuery(builder.getQuery());
 

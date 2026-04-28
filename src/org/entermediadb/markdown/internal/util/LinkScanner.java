@@ -2,21 +2,24 @@ package org.entermediadb.markdown.internal.util;
 
 import org.entermediadb.markdown.parser.beta.Scanner;
 
-public class LinkScanner {
+public class LinkScanner
+{
 
     /**
-     * Attempt to scan the contents of a link label (inside the brackets), stopping
-     * after the content or returning false.
-     * The stopped position can bei either the closing {@code ]}, or the end of the
-     * line if the label continues on
-     * the next line.
+     * Attempt to scan the contents of a link label (inside the brackets), stopping after the content or
+     * returning false. The stopped position can bei either the closing {@code ]}, or the end of the
+     * line if the label continues on the next line.
      */
-    public static boolean scanLinkLabelContent(Scanner scanner) {
-        while (scanner.hasNext()) {
-            switch (scanner.peek()) {
+    public static boolean scanLinkLabelContent(Scanner scanner)
+    {
+        while (scanner.hasNext())
+        {
+            switch (scanner.peek())
+            {
                 case '\\':
                     scanner.next();
-                    if (isEscapable(scanner.peek())) {
+                    if (isEscapable(scanner.peek()))
+                    {
                         scanner.next();
                     }
                     break;
@@ -35,20 +38,25 @@ public class LinkScanner {
     }
 
     /**
-     * Attempt to scan a link destination, stopping after the destination or
-     * returning false.
+     * Attempt to scan a link destination, stopping after the destination or returning false.
      */
-    public static boolean scanLinkDestination(Scanner scanner) {
-        if (!scanner.hasNext()) {
+    public static boolean scanLinkDestination(Scanner scanner)
+    {
+        if (!scanner.hasNext())
+        {
             return false;
         }
 
-        if (scanner.next('<')) {
-            while (scanner.hasNext()) {
-                switch (scanner.peek()) {
+        if (scanner.next('<'))
+        {
+            while (scanner.hasNext())
+            {
+                switch (scanner.peek())
+                {
                     case '\\':
                         scanner.next();
-                        if (isEscapable(scanner.peek())) {
+                        if (isEscapable(scanner.peek()))
+                        {
                             scanner.next();
                         }
                         break;
@@ -63,18 +71,23 @@ public class LinkScanner {
                 }
             }
             return false;
-        } else {
+        }
+        else
+        {
             return scanLinkDestinationWithBalancedParens(scanner);
         }
     }
 
-    public static boolean scanLinkTitle(Scanner scanner) {
-        if (!scanner.hasNext()) {
+    public static boolean scanLinkTitle(Scanner scanner)
+    {
+        if (!scanner.hasNext())
+        {
             return false;
         }
 
         char endDelimiter;
-        switch (scanner.peek()) {
+        switch (scanner.peek())
+        {
             case '"':
                 endDelimiter = '"';
                 break;
@@ -89,32 +102,46 @@ public class LinkScanner {
         }
         scanner.next();
 
-        if (!scanLinkTitleContent(scanner, endDelimiter)) {
+        if (!scanLinkTitleContent(scanner, endDelimiter))
+        {
             return false;
         }
-        if (!scanner.hasNext()) {
+        if (!scanner.hasNext())
+        {
             return false;
         }
         scanner.next();
         return true;
     }
 
-    public static boolean scanLinkTitleContent(Scanner scanner, char endDelimiter) {
-        while (scanner.hasNext()) {
+    public static boolean scanLinkTitleContent(Scanner scanner, char endDelimiter)
+    {
+        while (scanner.hasNext())
+        {
             char c = scanner.peek();
-            if (c == '\\') {
+            if (c == '\\')
+            {
                 scanner.next();
-                if (isEscapable(scanner.peek())) {
+                if (isEscapable(scanner.peek()))
+                {
                     scanner.next();
                 }
-            } else if (c == endDelimiter) {
-                return true;
-            } else if (endDelimiter == ')' && c == '(') {
-                // unescaped '(' in title within parens is invalid
-                return false;
-            } else {
-                scanner.next();
             }
+            else
+                if (c == endDelimiter)
+                {
+                    return true;
+                }
+                else
+                    if (endDelimiter == ')' && c == '(')
+                    {
+                        // unescaped '(' in title within parens is invalid
+                        return false;
+                    }
+                    else
+                    {
+                        scanner.next();
+                    }
         }
         return true;
     }
@@ -124,39 +151,48 @@ public class LinkScanner {
     // characters, and includes parentheses only if (a) they are backslash-escaped
     // or (b) they are part of a balanced
     // pair of unescaped parentheses
-    private static boolean scanLinkDestinationWithBalancedParens(Scanner scanner) {
+    private static boolean scanLinkDestinationWithBalancedParens(Scanner scanner)
+    {
         int parens = 0;
         boolean empty = true;
-        while (scanner.hasNext()) {
+        while (scanner.hasNext())
+        {
             char c = scanner.peek();
-            switch (c) {
+            switch (c)
+            {
                 case ' ':
                     return !empty;
                 case '\\':
                     scanner.next();
-                    if (isEscapable(scanner.peek())) {
+                    if (isEscapable(scanner.peek()))
+                    {
                         scanner.next();
                     }
                     break;
                 case '(':
                     parens++;
                     // Limit to 32 nested parens for pathological cases
-                    if (parens > 32) {
+                    if (parens > 32)
+                    {
                         return false;
                     }
                     scanner.next();
                     break;
                 case ')':
-                    if (parens == 0) {
+                    if (parens == 0)
+                    {
                         return true;
-                    } else {
+                    }
+                    else
+                    {
                         parens--;
                     }
                     scanner.next();
                     break;
                 default:
                     // or control character
-                    if (Character.isISOControl(c)) {
+                    if (Character.isISOControl(c))
+                    {
                         return !empty;
                     }
                     scanner.next();
@@ -167,8 +203,10 @@ public class LinkScanner {
         return true;
     }
 
-    private static boolean isEscapable(char c) {
-        switch (c) {
+    private static boolean isEscapable(char c)
+    {
+        switch (c)
+        {
             case '!':
             case '"':
             case '#':

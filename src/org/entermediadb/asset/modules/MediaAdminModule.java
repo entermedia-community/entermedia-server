@@ -43,92 +43,114 @@ import org.openedit.util.JSONParser;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.ZipUtil;
 
-public class MediaAdminModule extends BaseMediaModule {
+public class MediaAdminModule extends BaseMediaModule
+{
 	private static final Log log = LogFactory.getLog(MediaAdminModule.class);
 	protected WorkspaceManager fieldWorkspaceManager;
 	protected PageManager fieldPageManager;
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		fieldPageManager = inPageManager;
 	}
 
-	public WorkspaceManager getWorkspaceManager() {
+	public WorkspaceManager getWorkspaceManager()
+	{
 		return fieldWorkspaceManager;
 	}
 
-	public void setWorkspaceManager(WorkspaceManager inWorkspaceManager) {
+	public void setWorkspaceManager(WorkspaceManager inWorkspaceManager)
+	{
 		fieldWorkspaceManager = inWorkspaceManager;
 	}
 
-	public void listThemes(WebPageRequest inReq) {
+	public void listThemes(WebPageRequest inReq)
+	{
 		String skinsPath = "/themes";
 		List children = getPageManager().getChildrenPaths(skinsPath, true);
 		Map skins = new HashMap();
 
-		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = children.iterator(); iterator.hasNext();)
+		{
 			String path = (String) iterator.next();
 			Page theme = getPageManager().getPage(path);
-			if (theme.isFolder() && theme.get("themename") != null) {
+			if (theme.isFolder() && theme.get("themename") != null)
+			{
 				skins.put("/themes/" + theme.getName(), theme.get("themename"));
 			}
 		}
 		inReq.putPageValue("themes", skins);
 	}
 
-	public void changeTheme(WebPageRequest inReq) throws Exception {
+	public void changeTheme(WebPageRequest inReq) throws Exception
+	{
 		String layout = inReq.getRequestParameter("theme");
-		if (layout == null) {
+		if (layout == null)
+		{
 			return;
 		}
 		String path = inReq.getRequestParameter("path");
-		if (path == null) {
+		if (path == null)
+		{
 			return;
 		}
 		// "/" + inReq.findValue("applicationid");
 		Page page = getPageManager().getPage(path); // This is the root level
 													// for this album
 		PageProperty skin = new PageProperty("themeprefix");
-		if ("default".equals(layout)) {
+		if ("default".equals(layout))
+		{
 			page.getPageSettings().removeProperty("themeprefix");
-		} else {
+		}
+		else
+		{
 			skin.setValue(layout);
 			page.getPageSettings().putProperty(skin);
 		}
 		getPageManager().saveSettings(page);
 	}
 
-	public void deployUploadedApp(WebPageRequest inReq) throws Exception {
+	public void deployUploadedApp(WebPageRequest inReq) throws Exception
+	{
 		Page uploaded = getPageManager().getPage("/WEB-INF/temp/importapp.zip");
 		String catid = inReq.getRequestParameter("appcatalogid");
 		String destinationid = inReq.getRequestParameter("destinationappid");
-		if (destinationid.startsWith("/")) {
+		if (destinationid.startsWith("/"))
+		{
 			destinationid = destinationid.substring(1);
 		}
 		getWorkspaceManager().deployUploadedApp(catid, destinationid, uploaded);
 	}
 
-	public void deleteCatalog(WebPageRequest inReq) throws Exception {
+	public void deleteCatalog(WebPageRequest inReq) throws Exception
+	{
 		Searcher searcher = getSearcherManager().getSearcher("system", "catalog");
 		// searchtype=catalog&id=$appcatalogid
 		String st = inReq.getRequestParameter("searchtype");
 		String id = inReq.getRequestParameter("id");
 
-		if (id.length() < 2) {
+		if (id.length() < 2)
+		{
 			throw new OpenEditException("Invalid ID");
 		}
 
 		Data catalog = (Data) searcher.searchById(id);
-		if (catalog != null) {
+		if (catalog != null)
+		{
 			searcher.delete(catalog, null);
 		}
-		if (id.endsWith("catalog")) {
+		if (id.endsWith("catalog"))
+		{
 			Page home = getPageManager().getPage("/" + id.substring(0, id.lastIndexOf("/catalog")), true);
 			getPageManager().removePage(home);
-		} else {
+		}
+		else
+		{
 			Page home = getPageManager().getPage("/" + id, true);
 			getPageManager().removePage(home);
 		}
@@ -141,23 +163,29 @@ public class MediaAdminModule extends BaseMediaModule {
 
 	}
 
-	public void deployApp(WebPageRequest inReq) throws Exception {
+	public void deployApp(WebPageRequest inReq) throws Exception
+	{
 		String appcatalogid = inReq.getRequestParameter("appcatalogid");
 		Searcher searcher = getSearcherManager().getSearcher(appcatalogid, "app");
 
 		Data site = null;
 		String id = inReq.getRequestParameter("id");
-		if (id == null) {
+		if (id == null)
+		{
 			site = searcher.createNewData();
-		} else {
+		}
+		else
+		{
 			site = (Data) searcher.searchById(id);
 		}
 		String frontendid = inReq.findValue("frontendid");
-		if (frontendid == null) {
+		if (frontendid == null)
+		{
 			throw new OpenEditException("frontendid was null");
 		}
 		String deploypath = inReq.findValue("deploypath");
-		if (!deploypath.startsWith("/")) {
+		if (!deploypath.startsWith("/"))
+		{
 			deploypath = "/" + deploypath;
 		}
 		site.setProperty("deploypath", deploypath);
@@ -177,7 +205,8 @@ public class MediaAdminModule extends BaseMediaModule {
 		// getPageManager().getPage("/WEB-INF/base/manager/components/newworkspace");
 
 		Page topage = getPageManager().getPage(deploypath);
-		if (!topage.exists()) {
+		if (!topage.exists())
+		{
 			getPageManager().copyPage(copyfrompage, topage);
 		}
 		topage = getPageManager().getPage(topage.getPath(), true);
@@ -185,10 +214,12 @@ public class MediaAdminModule extends BaseMediaModule {
 		topage.getPageSettings().setProperty("catalogid", appcatalogid);
 
 		String appid = deploypath;
-		if (appid.startsWith("/")) {
+		if (appid.startsWith("/"))
+		{
 			appid = appid.substring(1);
 		}
-		if (appid.endsWith("/")) {
+		if (appid.endsWith("/"))
+		{
 			appid = appid.substring(0, appid.length() - 1);
 		}
 		topage.getPageSettings().setProperty("applicationid", appid);
@@ -198,14 +229,17 @@ public class MediaAdminModule extends BaseMediaModule {
 
 	}
 
-	public void saveRows(WebPageRequest inReq) throws Exception {
+	public void saveRows(WebPageRequest inReq) throws Exception
+	{
 		String catalogid = inReq.findPathValue("catalogid");
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "catalogsettings");
 
 		String[] fields = inReq.getRequestParameters("field");
-		for (int i = 0; i < fields.length; i++) {
+		for (int i = 0; i < fields.length; i++)
+		{
 			Data existing = (Data) searcher.searchById(fields[i]);
-			if (existing == null) {
+			if (existing == null)
+			{
 				// log.error("No default value" + fields[i]);
 				// continue;
 				existing = searcher.createNewData();
@@ -213,30 +247,41 @@ public class MediaAdminModule extends BaseMediaModule {
 			}
 			boolean save = false;
 			String[] values = inReq.getRequestParameters(fields[i] + ".value");
-			if (values != null && values.length > 0) {
-				if (values.length == 1) {
-					if (!values[0].equals(existing.get("value"))) {
+			if (values != null && values.length > 0)
+			{
+				if (values.length == 1)
+				{
+					if (!values[0].equals(existing.get("value")))
+					{
 						save = true;
 						existing.setProperty("value", values[0]);
 					}
-				} else {
+				}
+				else
+				{
 					save = true;
 					StringBuffer buffer = new StringBuffer();
-					for (int j = 0; j < values.length; j++) {
+					for (int j = 0; j < values.length; j++)
+					{
 						buffer.append(values[j]);
-						if (j + 1 < values.length) {
+						if (j + 1 < values.length)
+						{
 							buffer.append(' ');
 						}
 					}
 					existing.setProperty("value", buffer.toString());
 				}
-			} else {
-				if (existing.get("value") != null) {
+			}
+			else
+			{
+				if (existing.get("value") != null)
+				{
 					save = true;
 					existing.setProperty("value", null);
 				}
 			}
-			if (save) {
+			if (save)
+			{
 				searcher.saveData(existing, inReq.getUser());
 				MediaArchive archive = getMediaArchive(inReq);
 				archive.getCacheManager().remove("catalogsettings", existing.getId());
@@ -244,15 +289,18 @@ public class MediaAdminModule extends BaseMediaModule {
 		}
 	}
 
-	public void saveModule(WebPageRequest inReq) {
+	public void saveModule(WebPageRequest inReq)
+	{
 
 		Data module = (Data) inReq.getPageValue("data");
-		if (module != null) {
+		if (module != null)
+		{
 			String newname = inReq.getRequestParameter("name.value");
-			if (newname != null) {
-				if (!newname.equals(module.getName())) {
-					Category cat = getMediaArchive(inReq).getEntityManager().loadDefaultFolderForModule(module,
-							inReq.getUser());
+			if (newname != null)
+			{
+				if (!newname.equals(module.getName()))
+				{
+					Category cat = getMediaArchive(inReq).getEntityManager().loadDefaultFolderForModule(module, inReq.getUser());
 					cat.setName(newname);
 					getMediaArchive(inReq).getCategorySearcher().saveCategoryTree(cat);
 
@@ -267,7 +315,8 @@ public class MediaAdminModule extends BaseMediaModule {
 
 	}
 
-	public void saveNewModule(WebPageRequest inReq) {
+	public void saveNewModule(WebPageRequest inReq)
+	{
 		String name = inReq.getRequestParameter("name.value");
 		String id = inReq.getRequestParameter("id");
 		MediaArchive archive = getMediaArchive(inReq);
@@ -285,24 +334,31 @@ public class MediaAdminModule extends BaseMediaModule {
 		getMediaArchive(inReq).clearAll();
 	}
 
-	public void checkModulePath(WebPageRequest inReq) throws Exception {
+	public void checkModulePath(WebPageRequest inReq) throws Exception
+	{
 		String moduleid = inReq.findValue("moduleid");
-		if (moduleid != null) {
+		if (moduleid != null)
+		{
 			return;
 		}
-		if (moduleid == null) {
+		if (moduleid == null)
+		{
 			int i = inReq.getPath().indexOf("/views/settings/modules/");
-			if (i > 0) {
+			if (i > 0)
+			{
 				moduleid = inReq.getPath().substring(i + "/views/settings/modules/".length());
 				moduleid = PathUtilities.extractRootDirectory(moduleid);
 			}
 		}
-		if (moduleid != null) {
+		if (moduleid != null)
+		{
 			String method = inReq.getMethod();
 			String catalogid = inReq.findPathValue("catalogid");
 			MultiValued module = (MultiValued) getSearcherManager().getCachedData(catalogid, "module", moduleid);
-			if (module != null) {
-				if (!module.getBoolean("moduleloaded")) {
+			if (module != null)
+			{
+				if (!module.getBoolean("moduleloaded"))
+				{
 					String appid = inReq.findValue("applicationid");
 					getWorkspaceManager().saveModule(catalogid, appid, module);
 					module.setValue("moduleloaded", true);
@@ -318,19 +374,22 @@ public class MediaAdminModule extends BaseMediaModule {
 		}
 	}
 
-	public void saveAllModules(WebPageRequest inReq) throws Exception {
+	public void saveAllModules(WebPageRequest inReq) throws Exception
+	{
 		String appid = inReq.findValue("applicationid");
 		String catalogid = inReq.findPathValue("catalogid");
 
 		MediaArchive archive = getMediaArchive(inReq);
 		Collection all = archive.getList("module");
-		for (Iterator iterator = all.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
 			Data module = (Data) iterator.next();
 			getWorkspaceManager().saveModule(catalogid, appid, module);
 		}
 	}
 
-	public void reloadLists(WebPageRequest inReq) throws Exception {
+	public void reloadLists(WebPageRequest inReq) throws Exception
+	{
 		String catalogid = inReq.findPathValue("catalogid");
 
 		Collection tables = getSearcherManager().reloadLists(catalogid);
@@ -339,7 +398,8 @@ public class MediaAdminModule extends BaseMediaModule {
 
 	}
 
-	public void reloadSettings(WebPageRequest inReq) throws Exception {
+	public void reloadSettings(WebPageRequest inReq) throws Exception
+	{
 		String catalogid = inReq.findPathValue("catalogid");
 
 		Collection tables = getSearcherManager().reloadLoadedSettings(catalogid);
@@ -348,18 +408,23 @@ public class MediaAdminModule extends BaseMediaModule {
 
 	}
 
-	public void toggleSearchLogs(WebPageRequest inReq) throws Exception {
+	public void toggleSearchLogs(WebPageRequest inReq) throws Exception
+	{
 		MediaArchive archive = getMediaArchive(inReq);
-		if (archive.getSearcherManager().getShowSearchLogs(archive.getCatalogId())) {
+		if (archive.getSearcherManager().getShowSearchLogs(archive.getCatalogId()))
+		{
 			archive.getSearcherManager().setShowSearchLogs(archive.getCatalogId(), false);
 			archive.setCatalogSettingValue("log_all_searches", "false");
-		} else {
+		}
+		else
+		{
 			archive.getSearcherManager().setShowSearchLogs(archive.getCatalogId(), true);
 			archive.setCatalogSettingValue("log_all_searches", "true");
 		}
 	}
 
-	public void initCatalogs(WebPageRequest inReq) {
+	public void initCatalogs(WebPageRequest inReq)
+	{
 		NodeManager nodemanager = (NodeManager) getModuleManager().getBean("system", "nodeManager");
 
 		nodemanager.connectoToDatabase();
@@ -368,8 +433,10 @@ public class MediaAdminModule extends BaseMediaModule {
 		manager.getPathEvents();
 
 		HitTracker catalogs = getSearcherManager().getList("system", "catalog");
-		for (Iterator iterator = catalogs.iterator(); iterator.hasNext();) {
-			try {
+		for (Iterator iterator = catalogs.iterator(); iterator.hasNext();)
+		{
+			try
+			{
 				Data data = (Data) iterator.next();
 				String catalogid = data.getId();
 
@@ -378,16 +445,17 @@ public class MediaAdminModule extends BaseMediaModule {
 				manager = (PathEventManager) getModuleManager().getBean(catalogid, "pathEventManager");
 				manager.getPathEvents();
 
-				if (!existed) {
+				if (!existed)
+				{
 					// import any data sitting there for importing
 					MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 
 					Page cat = getPageManager().getPage("/" + catalogid + "/_site.xconf");
-					if (!cat.exists()) {
+					if (!cat.exists())
+					{
 
 						PageManager pageManager = archive.getPageManager();
-						PageSettings homesettings = pageManager.getPageSettingsManager()
-								.getPageSettings("/" + catalogid + "/_site.xconf");
+						PageSettings homesettings = pageManager.getPageSettingsManager().getPageSettings("/" + catalogid + "/_site.xconf");
 						homesettings.setProperty("catalogid", catalogid);
 						String fallbackdirectory = "/WEB-INF/base/finder/catalog";
 						log.info("Creating catalog: " + catalogid + " Fallback: " + fallbackdirectory);
@@ -397,13 +465,16 @@ public class MediaAdminModule extends BaseMediaModule {
 					}
 
 				}
-			} catch (Exception ex) {
+			}
+			catch (Exception ex)
+			{
 				log.error(ex);
 			}
 		}
 	}
 
-	public void createSiteSnapshot(WebPageRequest inReq) {
+	public void createSiteSnapshot(WebPageRequest inReq)
+	{
 		// Use the archive
 		String siteid = inReq.getRequestParameter("id");
 		Data site = getSearcherManager().getData("system", "site", siteid);
@@ -413,7 +484,8 @@ public class MediaAdminModule extends BaseMediaModule {
 		PathEventManager manager = (PathEventManager) getModuleManager().getBean("system", "pathEventManager");
 
 		HitTracker exports = snaps.query().match("snapshotstatus", "pendingexport").search();
-		if (exports.size() > 0) {
+		if (exports.size() > 0)
+		{
 			inReq.putPageValue("status", "Snapshots are already pending");
 			manager.runSharedPathEvent("/system/events/snapshot/exportsite.html");
 			return;
@@ -424,7 +496,8 @@ public class MediaAdminModule extends BaseMediaModule {
 		String folder = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy-MM-dd-HH-mm-ss");
 		snapshot.setValue("folder", folder);
 		String name = folder;
-		if (configonly) {
+		if (configonly)
+		{
 			name = name + "config";
 		}
 		snapshot.setName(name);
@@ -445,7 +518,8 @@ public class MediaAdminModule extends BaseMediaModule {
 
 	}
 
-	public void restoreSiteSnapshot(WebPageRequest inReq) {
+	public void restoreSiteSnapshot(WebPageRequest inReq)
+	{
 		String snapid = inReq.getRequestParameter("snapid");
 		String configonly = inReq.getRequestParameter("configonly");
 
@@ -466,7 +540,8 @@ public class MediaAdminModule extends BaseMediaModule {
 
 	}
 
-	public void deploySite(WebPageRequest inReq) throws Exception {
+	public void deploySite(WebPageRequest inReq) throws Exception
+	{
 		// make us a catalog id
 		// Download a snapshot? no use snapshots by URL to do that. Show a URL and allow
 		// paste of URL
@@ -479,13 +554,15 @@ public class MediaAdminModule extends BaseMediaModule {
 
 		String siteid = rootpath.substring(1);
 		String catalogid = inReq.getRequestParameter("sitecatalogid");
-		if (catalogid == null) {
+		if (catalogid == null)
+		{
 			catalogid = siteid + "/catalog";
 		}
 		Searcher catsearcher = getSearcherManager().getSearcher("system", "catalog");
 
 		Data catalog = (Data) catsearcher.searchById(catalogid);
-		if (catalog == null) {
+		if (catalog == null)
+		{
 			catalog = catsearcher.createNewData();
 			catalog.setId(catalogid);
 			catalog.setName(sitename);
@@ -498,7 +575,8 @@ public class MediaAdminModule extends BaseMediaModule {
 		inReq.setRequestParameter("siteid", site.getId());
 
 		Page cat = getPageManager().getPage("/" + siteid + "/_site.xconf");
-		if (!cat.exists()) {
+		if (!cat.exists())
+		{
 			PageSettings settings = cat.getPageSettings();
 			settings.setProperty("catalogid", catalogid);
 			String fallbackdirectory = "/WEB-INF/base/eminstitute";
@@ -550,14 +628,16 @@ public class MediaAdminModule extends BaseMediaModule {
 
 	}
 
-	public void zipSnapshot(WebPageRequest inReq) throws Exception {
+	public void zipSnapshot(WebPageRequest inReq) throws Exception
+	{
 		// ZipGenerator
 		// Check on the path and user
 		// Cancel if not the right user. Otherwise put in as temp user varible
 		String key = inReq.getRequestParameter("entermedia.key");
 		User admin = getUserManager(inReq).getUser("admin");
 		String hash = getUserManager(inReq).getStringEncryption().getPasswordMd5(admin.getPassword());
-		if (!key.equals(hash)) {
+		if (!key.equals(hash))
+		{
 			inReq.redirect("/manager/");
 			log.error("Invalid key");
 			return;
@@ -566,7 +646,8 @@ public class MediaAdminModule extends BaseMediaModule {
 
 		String snapid = inReq.getContentPage().getDirectoryName();
 		Data snap = getSearcherManager().getData("system", "sitesnapshot", snapid);
-		if (snap == null) {
+		if (snap == null)
+		{
 			inReq.redirect("/manager/");
 			log.error("Site snapshot missing: " + snapid);
 			return;
@@ -581,13 +662,13 @@ public class MediaAdminModule extends BaseMediaModule {
 
 	}
 
-	public Data downloadSnapshot(WebPageRequest inReq) throws Exception {
+	public Data downloadSnapshot(WebPageRequest inReq) throws Exception
+	{
 		String zip = inReq.getRequestParameter("url");
 		String folder = PathUtilities.extractFileName(zip);
 
 		Page temp = getPageManager().getPage("/WEB-INF/temp/" + folder);
-		String foldername = temp.getPageName() + "D"
-				+ DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "HH-mm-ss");
+		String foldername = temp.getPageName() + "D" + DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "HH-mm-ss");
 
 		getPageManager().removePage(temp);
 		File outputFile = new File(temp.getContentItem().getAbsolutePath());
@@ -604,8 +685,7 @@ public class MediaAdminModule extends BaseMediaModule {
 		String siteid = inReq.getRequestParameter("siteid");
 		Data site = getSearcherManager().getData("system", "site", siteid);
 
-		Page source = getPageManager()
-				.getPage("/WEB-INF/temp/" + folder + "unzip/" + PathUtilities.extractPageName(folder));
+		Page source = getPageManager().getPage("/WEB-INF/temp/" + folder + "unzip/" + PathUtilities.extractPageName(folder));
 		String path = "/WEB-INF/data/exports/" + site.get("catalogid") + "/" + foldername;
 		Page dest = getPageManager().getPage(path);
 		getPageManager().movePage(source, dest);
@@ -625,7 +705,8 @@ public class MediaAdminModule extends BaseMediaModule {
 		return snapshot;
 	}
 
-	public Data uploadSnapshot(WebPageRequest inReq) throws Exception {
+	public Data uploadSnapshot(WebPageRequest inReq) throws Exception
+	{
 		String siteid = inReq.getRequestParameter("siteid");
 		Data site = getSearcherManager().getData("system", "site", siteid);
 		UploadRequest req = (UploadRequest) inReq.getPageValue("uploadrequest");
@@ -655,86 +736,111 @@ public class MediaAdminModule extends BaseMediaModule {
 
 	}
 
-	public boolean checkAcceptConnections(WebPageRequest inReq) throws Exception {
+	public boolean checkAcceptConnections(WebPageRequest inReq) throws Exception
+	{
 		// Look in DB to see if I am the primary server or not
 		// Primary domain
 		MediaArchive archive = getMediaArchive(inReq);
 		String primaryserverurl = archive.getCatalogSettingValue("primary-server-healthcheck-url");
 		Boolean acceptconnections = true;
-		if (primaryserverurl != null) {
+		if (primaryserverurl != null)
+		{
 			String me = archive.getNodeManager().getLocalNode().getNodeType();
 
-			if (!me.equals(Node.PRIMARY)) {
+			if (!me.equals(Node.PRIMARY))
+			{
 				// Connect to the remote server and make sure it's running ok
 				Downloader downloader = new Downloader();
-				try {
+				try
+				{
 					log.info("nodes is " + me + " Checking " + primaryserverurl + " from " + me);
 					String health = downloader.downloadToString(primaryserverurl);
-					if (health.contains("\"accepting\":\"true\"")) {
+					if (health.contains("\"accepting\":\"true\""))
+					{
 						acceptconnections = false;
 						inReq.putPageValue("message", "Primary Server is reachable " + primaryserverurl);
 						// Set the status
 						log.info("Primary Server is reachable " + primaryserverurl);
 						inReq.getResponse().sendError(503, "Primary Server is reachable " + primaryserverurl);
-					} else {
+					}
+					else
+					{
 						inReq.putPageValue("message", "Primary Server returned false " + health);
 					}
-				} catch (Exception ex) {
+				}
+				catch (Exception ex)
+				{
 					log.error("Server not reachable " + primaryserverurl, ex);
 					inReq.putPageValue("message", "Primary server not reachable " + primaryserverurl);
 				}
-			} else {
+			}
+			else
+			{
 				inReq.putPageValue("message", "this is the primary server");
 			}
-		} else {
+		}
+		else
+		{
 			inReq.putPageValue("message", "primary-server-healthcheck-url not set");
 		}
 		inReq.putPageValue("acceptconnections", acceptconnections);
 		return acceptconnections;
 	}
 
-	public void catalogSnapshot(WebPageRequest inReq) {
+	public void catalogSnapshot(WebPageRequest inReq)
+	{
 		String targetcatalogid = inReq.findPathValue("catalogid");
 
 		Data site = getSearcherManager().query("system", "site").exact("catalogid", targetcatalogid).searchOne();
-		if (site != null) {
+		if (site != null)
+		{
 			inReq.setRequestParameter("id", site.getId());
 			createSiteSnapshot(inReq);
 		}
 	}
 
-	public void clearCaches(WebPageRequest inReq) {
+	public void clearCaches(WebPageRequest inReq)
+	{
 		CacheManager cache = (CacheManager) getModuleManager().getBean("systemCacheManager"); // prototype
-		if (cache != null) {
+		if (cache != null)
+		{
 			cache.clearAll();
 		}
 		cache = (CacheManager) getModuleManager().getBean("systemExpireCacheManager"); // shared
-		if (cache != null) {
+		if (cache != null)
+		{
 			cache.clearAll();
 		}
 
 		// Bean stuff?
 		String catalogid = inReq.findPathValue("catalogid");
-		if (catalogid != null) {
+		if (catalogid != null)
+		{
 			cache = (CacheManager) getModuleManager().getBean(catalogid, "cacheManager");
-			if (cache != null) {
+			if (cache != null)
+			{
 				cache.clearAll();
 			}
 			getMediaArchive(catalogid).getNodeManager().flushDb();
 		}
 	}
 
-	public void reindexAll(WebPageRequest inReq) {
+	public void reindexAll(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findPathValue("catalogid");
 		NodeManager manager = (NodeManager) getModuleManager().getBean(catalogid, "nodeManager");
 
 		long start = System.currentTimeMillis();
 
-		try {
-			if (!manager.reindexInternal(catalogid)) {
+		try
+		{
+			if (!manager.reindexInternal(catalogid))
+			{
 				inReq.putPageValue("mappingerror", true);
 			}
-		} catch (Throwable ex) {
+		}
+		catch (Throwable ex)
+		{
 			inReq.putPageValue("exception", ex);
 		}
 
@@ -743,7 +849,8 @@ public class MediaAdminModule extends BaseMediaModule {
 		inReq.putPageValue("time", time);
 	}
 
-	public void listMappings(WebPageRequest inReq) {
+	public void listMappings(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findPathValue("catalogid");
 		ElasticNodeManager manager = (ElasticNodeManager) getModuleManager().getBean(catalogid, "nodeManager");
 		String map = manager.listAllExistingMapping(catalogid);
@@ -751,7 +858,8 @@ public class MediaAdminModule extends BaseMediaModule {
 
 	}
 
-	public void makeMaster(WebPageRequest inReq) {
+	public void makeMaster(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String localmaster = archive.getNodeManager().getLocalClusterId();
 
@@ -762,19 +870,22 @@ public class MediaAdminModule extends BaseMediaModule {
 		archive.getNodeManager().setForceSaveMasterCluster(false);
 	}
 
-	public void createModulePath(WebPageRequest inReq) throws Exception {
+	public void createModulePath(WebPageRequest inReq) throws Exception
+	{
 		String moduleid = inReq.findValue("moduleid");
-		if (moduleid == null) {
+		if (moduleid == null)
+		{
 			moduleid = PathUtilities.extractDirectoryName(inReq.getPath());
-			if (moduleid.equals("edit")) {
+			if (moduleid.equals("edit"))
+			{
 				moduleid = PathUtilities.extractDirectoryName(PathUtilities.extractDirectoryPath(inReq.getPath()));
 			}
-			if (inReq.getPath().endsWith("/views/modules/" + moduleid + "/index.html")
-					|| inReq.getPath().contains("/views/modules/" + moduleid + "/edit/addnew")) {
+			if (inReq.getPath().endsWith("/views/modules/" + moduleid + "/index.html") || inReq.getPath().contains("/views/modules/" + moduleid + "/edit/addnew"))
+			{
 				String applicationid = inReq.findValue("applicationid");
-				Page item = getPageManager()
-						.getPage("/" + applicationid + "/views/modules/" + moduleid + "/_site.xconf");
-				if (!item.exists()) {
+				Page item = getPageManager().getPage("/" + applicationid + "/views/modules/" + moduleid + "/_site.xconf");
+				if (!item.exists())
+				{
 					String catalogid = inReq.findPathValue("catalogid");
 					Data module = getSearcherManager().getData(catalogid, "module", moduleid);
 
@@ -790,41 +901,47 @@ public class MediaAdminModule extends BaseMediaModule {
 	}
 
 	// Not used. Delete this
-	public Data loadHomeModule(WebPageRequest inReq) {
+	public Data loadHomeModule(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findPathValue("catalogid");
 		String applicationid = inReq.findValue("applicationid");
-		Data module = getSearcherManager().getSearcher(catalogid, "module").query().match("showonnav", "true")
-				.sort("orderingUp").searchOne(inReq);
+		Data module = getSearcherManager().getSearcher(catalogid, "module").query().match("showonnav", "true").sort("orderingUp").searchOne(inReq);
 		String finalpath;
-		if (module == null) {
+		if (module == null)
+		{
 			return null;
 		}
-		if (module.getId().equals("librarycollection")) {
+		if (module.getId().equals("librarycollection"))
+		{
 			finalpath = "/" + applicationid + "/views/collections/index.html";
-		} else {
+		}
+		else
+		{
 			finalpath = "/" + applicationid + "/views/modules/" + module.getId() + "/index.html";
 		}
 		Page finalp = getMediaArchive(inReq).getPageManager().getPage(finalpath);
-		if (finalp.exists()) {
+		if (finalp.exists())
+		{
 			inReq.redirect(finalpath);
 		}
 		/*
 		 * Page requestedPage = inReq.getPage();
 		 * 
-		 * requestedPage.setInnerLayout("/" + applicationid +
-		 * "/theme/layouts/searchlayout2.html");
+		 * requestedPage.setInnerLayout("/" + applicationid + "/theme/layouts/searchlayout2.html");
 		 */
 		return module;
 	}
 
-	public void scanForCustomizations(WebPageRequest inReq) {
+	public void scanForCustomizations(WebPageRequest inReq)
+	{
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 		Collection modules = mediaArchive.query("module").all().sort("name").search();
 		getWorkspaceManager().scanModuleCustomizations(mediaArchive, modules);
 		// getWorkspaceManager().scanHtmlCustomizations(mediaArchive);
 	}
 
-	public void customizationsExportEntities(WebPageRequest inReq) {
+	public void customizationsExportEntities(WebPageRequest inReq)
+	{
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 		String[] moduleids = inReq.getRequestParameters("moduleid");
 		Collection modules = mediaArchive.query("module").orgroup("id", moduleids).sort("name").search();
@@ -832,16 +949,19 @@ public class MediaAdminModule extends BaseMediaModule {
 
 	}
 
-	public void importCustomization(WebPageRequest inReq) throws Exception {
+	public void importCustomization(WebPageRequest inReq) throws Exception
+	{
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 
 		FileUpload command = new FileUpload();
 		command.setPageManager(getPageManager());
 		UploadRequest properties = command.parseArguments(inReq);
-		if (properties == null) {
+		if (properties == null)
+		{
 			return;
 		}
-		if (properties.getFirstItem() == null) {
+		if (properties.getFirstItem() == null)
+		{
 			return;
 		}
 		Page temp = getPageManager().getPage("/WEB-INF/tmp/unzip");
@@ -857,7 +977,8 @@ public class MediaAdminModule extends BaseMediaModule {
 		// presets, users, orders, collections, libraries, divisions, permissionsapp,
 		// preset configuration
 		Collection all = mediaArchive.query("module").all().search();
-		for (Iterator iterator = all.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
 			Data module = (Data) iterator.next();
 			getWorkspaceManager().saveModule(mediaArchive.getCatalogId(), appid, module);
 		}
@@ -865,7 +986,8 @@ public class MediaAdminModule extends BaseMediaModule {
 		scanForCustomizations(inReq);
 	}
 
-	public void copySmartOrganizer(WebPageRequest inReq) {
+	public void copySmartOrganizer(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String id = inReq.getRequestParameter("id");
 		Data template = archive.getData("smartorganizer", id);
@@ -881,17 +1003,20 @@ public class MediaAdminModule extends BaseMediaModule {
 		s.saveData(copy);
 	}
 
-	public void smartOrganizerRestore(WebPageRequest inReq) {
+	public void smartOrganizerRestore(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String id = inReq.getRequestParameter("restoreid");
 
-		if (id == null) {
+		if (id == null)
+		{
 			return;
 		}
 
 		Searcher s = archive.getSearcher("smartorganizer");
 		Collection existing = s.query().exact("iscurrent", true).search();
-		for (Iterator iterator = existing.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = existing.iterator(); iterator.hasNext();)
+		{
 			Data data = (Data) iterator.next();
 			data.setValue("iscurrent", false);
 			s.saveData(data);
@@ -906,7 +1031,8 @@ public class MediaAdminModule extends BaseMediaModule {
 
 	}
 
-	public void smartOrganizerRename(WebPageRequest inReq) {
+	public void smartOrganizerRename(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String id = inReq.getRequestParameter("id");
 		Data template = archive.getData("smartorganizer", id);
@@ -918,26 +1044,31 @@ public class MediaAdminModule extends BaseMediaModule {
 		s.saveData(template);
 	}
 
-	public void deleteSmartOrganizer(WebPageRequest inReq) {
+	public void deleteSmartOrganizer(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String id = inReq.getRequestParameter("id");
 		Data template = archive.getData("smartorganizer", id);
-		if (template != null) {
+		if (template != null)
+		{
 			Searcher s = archive.getSearcher("smartorganizer");
 			s.delete(template, inReq.getUser());
 		}
 	}
 
-	public void deploySmartOrganizer(WebPageRequest inReq) throws Exception {
+	public void deploySmartOrganizer(WebPageRequest inReq) throws Exception
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String id = inReq.getRequestParameter("id");
 		Data template = archive.getData("smartorganizer", id);
-		if (template == null) {
+		if (template == null)
+		{
 			log.error("Template doesn't exists: " + id);
 			return;
 		}
 		String json = template.get("json");
-		if (json == null) {
+		if (json == null)
+		{
 			log.error("Template is empty: " + template);
 			return;
 		}
@@ -947,39 +1078,47 @@ public class MediaAdminModule extends BaseMediaModule {
 		JSONParser parser = new JSONParser();
 		JSONArray jsonarray = null;
 		jsonarray = (JSONArray) parser.parseCollection(json);
-		if (jsonarray != null) {
+		if (jsonarray != null)
+		{
 			Collection tosavemenu = new ArrayList();
 
 			// Map<String,Data> parents = new HashMap<String,Data>();
 			Collection<ParentChildPair> parentschilds = new ArrayList();
 
-			for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();)
+			{
 				ValuesMap map = new ValuesMap((Map) iterator.next());
-				if ("folderLabel".equals(map.get("cssClass"))) {
+				if ("folderLabel".equals(map.get("cssClass")))
+				{
 					JSONObject userdatamap = (JSONObject) parser.parse(map.getString("userData"));
 					ValuesMap userdata = new ValuesMap(userdatamap);
 					String moduleid = userdata.getString("moduleid"); // TODO: get initialmoduleid to rename
-					if (moduleid == null || moduleid.trim().isEmpty()) {
+					if (moduleid == null || moduleid.trim().isEmpty())
+					{
 						continue;
 					}
 					String modulename = map.getString("text");
 					Data module = archive.getData("module", moduleid);
 					boolean newrecord = false;
-					if (module == null) {
+					if (module == null)
+					{
 						newrecord = true;
 						module = archive.getSearcher("module").createNewData();
 						module.setId(moduleid);
 					}
 					module.setName(modulename.replaceAll("\n", "").trim());
 					String icon = userdata.getString("moduleicon");
-					if (icon != null) {
+					if (icon != null)
+					{
 						icon = PathUtilities.extractPageName(icon);
 						module.setValue("moduleicon", icon); // Clean this up on server
 					}
 					module.setValue("isentity", true); // Not used anymore?
 
-					if (!newrecord) {
-						if (!moduleid.equals("searchcategory")) {
+					if (!newrecord)
+					{
+						if (!moduleid.equals("searchcategory"))
+						{
 							module.setValue("enableuploading", true);
 						}
 						module.setValue("showonsearch", true);
@@ -987,13 +1126,18 @@ public class MediaAdminModule extends BaseMediaModule {
 					// Children
 					Collection<String> parentmoduleids = new ArrayList();
 					Object obj = userdatamap.get("parents");
-					if (obj != null) {
-						if (obj instanceof String) {
+					if (obj != null)
+					{
+						if (obj instanceof String)
+						{
 							parentmoduleids.add((String) obj);
-						} else {
+						}
+						else
+						{
 							parentmoduleids.addAll((Collection) obj);
 						}
-						for (Iterator iterator2 = parentmoduleids.iterator(); iterator2.hasNext();) {
+						for (Iterator iterator2 = parentmoduleids.iterator(); iterator2.hasNext();)
+						{
 							String parentmoduleid = (String) iterator2.next();
 							ParentChildPair pair = new ParentChildPair();
 							pair.setParentModuleId(parentmoduleid);
@@ -1005,9 +1149,11 @@ public class MediaAdminModule extends BaseMediaModule {
 					// Menu
 					String ordering = userdata.getString("ordering");
 
-					if (ordering != null && !ordering.equals("-1")) {
+					if (ordering != null && !ordering.equals("-1"))
+					{
 						Data existingmenu = archive.query("appsection").exact("toplevelentity", moduleid).searchOne();
-						if (existingmenu == null) {
+						if (existingmenu == null)
+						{
 							existingmenu = archive.getSearcher("appsection").createNewData();
 							existingmenu.setValue("toplevelentity", moduleid);
 						}
@@ -1024,7 +1170,8 @@ public class MediaAdminModule extends BaseMediaModule {
 			// archive.saveData("module", tosave); //Save children and parents
 
 			String appid = inReq.findValue("applicationid");
-			for (Iterator iterator = tosave.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
+			{
 				Data module = (Data) iterator.next();
 				getWorkspaceManager().saveModule(archive.getCatalogId(), appid, module); // Save views
 			}
@@ -1038,21 +1185,24 @@ public class MediaAdminModule extends BaseMediaModule {
 
 	}
 
-	private void checkParents(MediaArchive archive, Collection<ParentChildPair> parentschilds) {
-		for (Iterator<ParentChildPair> iterator = parentschilds.iterator(); iterator.hasNext();) {
+	private void checkParents(MediaArchive archive, Collection<ParentChildPair> parentschilds)
+	{
+		for (Iterator<ParentChildPair> iterator = parentschilds.iterator(); iterator.hasNext();)
+		{
 			ParentChildPair pair = iterator.next();
 
 			// Make field and a one to many view? Add all the "Add New" columns to the view
 			Searcher childsearcher = archive.getSearcher(pair.getChildModule().getId());
 			PropertyDetails details = childsearcher.getPropertyDetails();
 			Data parentmodule = archive.getData("module", pair.getParentModuleId());
-			if (parentmodule == null) {
+			if (parentmodule == null)
+			{
 				log.error("missing parent module");
 				continue;
 			}
-			if (details.getDetail(pair.getParentModuleId()) == null) {
-				PropertyDetail newprop = archive.getPropertyDetailsArchive().createDetail(childsearcher.getSearchType(),
-						pair.getParentModuleId(), parentmodule.getName());
+			if (details.getDetail(pair.getParentModuleId()) == null)
+			{
+				PropertyDetail newprop = archive.getPropertyDetailsArchive().createDetail(childsearcher.getSearchType(), pair.getParentModuleId(), parentmodule.getName());
 				newprop.setValue("name", parentmodule.getValue("name")); // Int?
 				newprop.setDataType("list");
 				newprop.setValue("viewtype", "entity");
@@ -1083,7 +1233,8 @@ public class MediaAdminModule extends BaseMediaModule {
 			// }
 			String viewid = parentmodule.getId() + pair.getChildModule().getId();
 			Data data = (Data) viewsearcher.searchById(viewid);
-			if (data == null) {
+			if (data == null)
+			{
 				data = viewsearcher.createNewData();
 				// Copy the add new
 				data.setId(viewid);
@@ -1115,7 +1266,8 @@ public class MediaAdminModule extends BaseMediaModule {
 		}
 	}
 
-	public void saveAiMediaDb(WebPageRequest inReq) {
+	public void saveAiMediaDb(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findValue("catalogid");
 		getWorkspaceManager().createMediaDbAiFunctionEndPoints(catalogid);
 	}

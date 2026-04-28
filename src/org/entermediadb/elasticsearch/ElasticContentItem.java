@@ -14,107 +14,130 @@ import org.openedit.repository.RepositoryException;
 import org.openedit.repository.filesystem.StringItem;
 import org.openedit.util.ReaderInputStream;
 
-class ElasticContentItem extends StringItem implements Data {
+class ElasticContentItem extends StringItem implements Data
+{
 
 	protected Boolean existed;
 
-	public Data getElasticData() {
+	public Data getElasticData()
+	{
 		return fieldElasticData;
 	}
 
-	public void setElasticData(Data inElasticData) {
+	public void setElasticData(Data inElasticData)
+	{
 		fieldElasticData = inElasticData;
 	}
 
 	protected Data fieldElasticData;
 
-	public InputStream getInputStream() throws RepositoryException {
-		if (getOutputEncoding() == null) {
+	public InputStream getInputStream() throws RepositoryException
+	{
+		if (getOutputEncoding() == null)
+		{
 			return new ByteArrayInputStream(getContent().getBytes());
 		}
-		try {
+		try
+		{
 			// BufferedReader reader = new BufferedReader ( new
 			// InputStreamReader ( in ) );
 			return new ReaderInputStream(new StringReader(getContent()), getOutputEncoding());
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			throw new RepositoryException(ex);
 		}
 	}
 
-	public Collection getValues(String inField) {
+	public Collection getValues(String inField)
+	{
 		Collection values = (Collection) getValue(inField);
 		return values;
 	}
 
-	public boolean exists() {
+	public boolean exists()
+	{
 		return true;
 	}
 
-	public void setId(String inNewid) {
+	public void setId(String inNewid)
+	{
 		getElasticData().setId(inNewid);
 
 	}
 
 	@Override
-	public String getName(String inLocale) {
+	public String getName(String inLocale)
+	{
 		return getElasticData().getName();
 	}
 
 	@Override
-	public void setName(String inName) {
+	public void setName(String inName)
+	{
 		getElasticData().setName(inName);
 
 	}
 
 	@Override
-	public void setSourcePath(String inSourcepath) {
+	public void setSourcePath(String inSourcepath)
+	{
 		getElasticData().setSourcePath(inSourcepath);
 
 	}
 
 	@Override
-	public String getSourcePath() {
+	public String getSourcePath()
+	{
 		return getElasticData().getSourcePath();
 	}
 
 	@Override
-	public void setProperty(String inId, String inValue) {
+	public void setProperty(String inId, String inValue)
+	{
 		getElasticData().setProperty(inId, inValue);
 
 	}
 
 	@Override
-	public String get(String inId) {
+	public String get(String inId)
+	{
 		return getElasticData().get(inId);
 	}
 
 	@Override
-	public Object getValue(String inKey) {
+	public Object getValue(String inKey)
+	{
 		return getElasticData().getValue(inKey);
 	}
 
 	@Override
-	public void setValue(String inKey, Object inValue) {
+	public void setValue(String inKey, Object inValue)
+	{
 		getElasticData().setValue(inKey, inValue);
 
 	}
 
 	@Override
-	public ValuesMap getProperties() {
+	public ValuesMap getProperties()
+	{
 		return getElasticData().getProperties();
 	}
 
 	@Override
-	public void setProperties(Map inProperties) {
+	public void setProperties(Map inProperties)
+	{
 		getElasticData().setProperties(inProperties);
 	}
 
 	@Override
-	public Set keySet() {
+	public Set keySet()
+	{
 		return getElasticData().keySet();
 	}
 
-	public String toJsonString() {
+	public String toJsonString()
+	{
 		throw new OpenEditException();
 	}
 

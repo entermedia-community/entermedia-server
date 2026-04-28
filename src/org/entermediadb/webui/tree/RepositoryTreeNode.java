@@ -1,14 +1,14 @@
 /*
-Copyright (c) 2003 eInnovation Inc. All rights reserved
-
-This library is free software; you can redistribute it and/or modify it under the terms
-of the GNU Lesser General Public License as published by the Free Software Foundation;
-either version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-*/
+ * Copyright (c) 2003 eInnovation Inc. All rights reserved
+ * 
+ * This library is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation; either version
+ * 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 
 package org.entermediadb.webui.tree;
 
@@ -34,7 +34,8 @@ import org.openedit.util.PathUtilities;
  *
  * @author Matt Avery, mavery@einnovation.com
  */
-public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable {
+public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
+{
 	// public static final DefaultWebTreeNode ERROR_NODE = new DefaultWebTreeNode(
 	// "Error accessing tree node." );
 	protected Repository fieldRepository;
@@ -63,9 +64,11 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 		setLeaf(!getContentItem().isFolder());
 	}
 
-	private static String extractName(ContentItem inItem) {
+	private static String extractName(ContentItem inItem)
+	{
 		String path = inItem.getPath();
-		if ("/".equals(path)) {
+		if ("/".equals(path))
+		{
 			return "Root";
 		}
 		String name = PathUtilities.extractFileName(path, false);
@@ -79,11 +82,14 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 	 *
 	 * @return The node, or <code>null</code> if no such child could be found
 	 */
-	public RepositoryTreeNode getChild(String inName) {
-		for (Iterator iter = getChildren().iterator(); iter.hasNext();) {
+	public RepositoryTreeNode getChild(String inName)
+	{
+		for (Iterator iter = getChildren().iterator(); iter.hasNext();)
+		{
 			RepositoryTreeNode child = (RepositoryTreeNode) iter.next();
 
-			if ((child.getName() != null) && child.getName().equals(inName)) {
+			if ((child.getName() != null) && child.getName().equals(inName))
+			{
 				return child;
 			}
 		}
@@ -96,8 +102,10 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 	 * 
 	 * @see DefaultWebTreeNode#getChildren()
 	 */
-	public List getChildren() {
-		if (fieldChildren == null) {
+	public List getChildren()
+	{
+		if (fieldChildren == null)
+		{
 			fieldChildren = new ArrayList();
 			reloadChildren();
 		}
@@ -110,21 +118,27 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 	 * 
 	 * @see java.lang.Comparable#compareTo(Object)
 	 */
-	public int compareTo(Object o) {
-		if (o == null) {
+	public int compareTo(Object o)
+	{
+		if (o == null)
+		{
 			return 1;
 		}
 
-		if (o instanceof RepositoryTreeNode) {
+		if (o instanceof RepositoryTreeNode)
+		{
 			RepositoryTreeNode node = (RepositoryTreeNode) o;
 
 			return getContentItem().getPath().toLowerCase().compareTo(node.getContentItem().getPath().toLowerCase());
-		} else {
+		}
+		else
+		{
 			return 0;
 		}
 	}
 
-	public String getFileFormat() {
+	public String getFileFormat()
+	{
 		String format = PathUtilities.extractPageType(getName());
 		return format;
 	}
@@ -134,28 +148,32 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 	 *
 	 * @param inPath The path to find
 	 *
-	 * @return The node at the given path, or <code>null</code> if it could not be
-	 *         found
+	 * @return The node at the given path, or <code>null</code> if it could not be found
 	 */
-	public RepositoryTreeNode findNode(String inPath) {
+	public RepositoryTreeNode findNode(String inPath)
+	{
 		// Quick initial checks...
-		if (!inPath.startsWith("/")) {
+		if (!inPath.startsWith("/"))
+		{
 			inPath = "/" + inPath;
 		}
 
-		if (inPath.equals("") || inPath.equals("/")) {
+		if (inPath.equals("") || inPath.equals("/"))
+		{
 			return this;
 		}
 
 		int beforeSlashIndex = 0;
 
-		if (inPath.startsWith("/")) {
+		if (inPath.startsWith("/"))
+		{
 			beforeSlashIndex = 1;
 		}
 
 		int nextSlashIndex = inPath.indexOf('/', beforeSlashIndex);
 
-		if (nextSlashIndex < 0) {
+		if (nextSlashIndex < 0)
+		{
 			nextSlashIndex = inPath.length();
 		}
 
@@ -163,9 +181,12 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 
 		RepositoryTreeNode child = getChild(childName);
 
-		if (child == null) {
+		if (child == null)
+		{
 			return null;
-		} else {
+		}
+		else
+		{
 			return child.findNode(inPath.substring(nextSlashIndex));
 		}
 	}
@@ -173,24 +194,28 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 	/**
 	 * Reload the children of this page tree node.
 	 */
-	public void reloadChildren() {
+	public void reloadChildren()
+	{
 		getChildren().clear();
 
 		List directories = new ArrayList();
 		List files = new ArrayList();
 
-		if (getContentItem().isFolder()) {
+		if (getContentItem().isFolder())
+		{
 			// TODO: Clean up this class with an archive class or some other class
 			Page thisdir = null;
 			String thisdirpath = getContentItem().getPath();
-			if (!thisdirpath.endsWith("/")) {
+			if (!thisdirpath.endsWith("/"))
+			{
 				thisdirpath = thisdirpath + "/";
 			}
 			thisdir = getPageManager().getPage(thisdirpath);
 			boolean checkpermissions = Boolean.parseBoolean(thisdir.getProperty("oecheckfilepermissions"));
 			boolean loadfallback = true;
 			String load = thisdir.getProperty("oeshowfallbackfiles");
-			if (load != null) {
+			if (load != null)
+			{
 				loadfallback = Boolean.parseBoolean(load);
 			}
 			Collection actualfiles = getChildPaths(false);
@@ -200,7 +225,8 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 			allfiles.addAll(getChildPaths(true));
 
 			Set addedfiles = new HashSet();
-			for (Iterator iterator = allfiles.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = allfiles.iterator(); iterator.hasNext();)
+			{
 				// Object obj = iterator.next();
 				// if ( !(obj instanceof ContentItem))
 				// {
@@ -211,12 +237,14 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 
 				String npath = (String) iterator.next();
 				String name = PathUtilities.extractFileName(npath, false);
-				if (addedfiles.contains(name)) {
+				if (addedfiles.contains(name))
+				{
 					continue;
 				}
 				addedfiles.add(name);
 				RepositoryTreeNode child = createNode(thisdirpath + name);
-				if (!actualfiles.contains(npath)) {
+				if (!actualfiles.contains(npath))
+				{
 					child.setVirtual(true);
 				}
 
@@ -227,7 +255,8 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 				// }
 				child.setParent(this);
 
-				if (child.isLeaf()) {
+				if (child.isLeaf())
+				{
 					// Make sure it's not a fallback folder
 					// String tmp = thisdirpath + name + "/";
 					// Page folderpage = getPageManager().getPage(tmp );
@@ -240,7 +269,9 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 					// {
 					files.add(child);
 					// }
-				} else {
+				}
+				else
+				{
 					directories.add(child);
 				}
 			}
@@ -316,8 +347,10 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 		}
 	}
 
-	protected Collection getChildPaths(boolean includefallback) {
-		if (getContentItem().isFolder()) {
+	protected Collection getChildPaths(boolean includefallback)
+	{
+		if (getContentItem().isFolder())
+		{
 			Collection paths = getPageManager().getChildrenPaths(getContentItem().getPath(), includefallback);
 			return paths;
 			// if ( getContentItem() instanceof FileItem)
@@ -352,7 +385,8 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 	 *
 	 * @return PageTreeNode
 	 */
-	protected RepositoryTreeNode createNode(String inPath) {
+	protected RepositoryTreeNode createNode(String inPath)
+	{
 		// //inPath may be the name of the fallback file. Rebuild the path
 		// String path = null;
 		// if( getParent() == null)
@@ -387,9 +421,11 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 		// }
 
 		Page folderpage = getPageManager().getPage(inPath);
-		if (!inPath.endsWith("/") && !folderpage.exists() && !folderpage.isFolder()) {
+		if (!inPath.endsWith("/") && !folderpage.exists() && !folderpage.isFolder())
+		{
 			Page isfolderpage = getPageManager().getPage(inPath + "/");
-			if (isfolderpage.isFolder()) {
+			if (isfolderpage.isFolder())
+			{
 				folderpage = isfolderpage;
 			}
 		}
@@ -405,78 +441,101 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 		return node;
 	}
 
-	public ContentItem getContentItem() {
+	public ContentItem getContentItem()
+	{
 		return fieldContentItem;
 	}
 
-	public void setContentItem(ContentItem contentItem) {
+	public void setContentItem(ContentItem contentItem)
+	{
 		fieldContentItem = contentItem;
 	}
 
-	public Repository getRepository() {
+	public Repository getRepository()
+	{
 		return fieldRepository;
 	}
 
-	public void setRepository(Repository repository) {
+	public void setRepository(Repository repository)
+	{
 		fieldRepository = repository;
 	}
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		fieldPageManager = inPageManager;
 	}
 
 	// This is really the path
-	public String getURL() {
-		if (fieldUrl != null) {
+	public String getURL()
+	{
+		if (fieldUrl != null)
+		{
 			return fieldUrl;
 		}
-		if (getParent() != null) {
+		if (getParent() != null)
+		{
 			String p = getParent().getURL();
-			if (p.endsWith("/")) {
+			if (p.endsWith("/"))
+			{
 				return p + getName();
-			} else {
+			}
+			else
+			{
 				return p + "/" + getName();
 			}
-		} else {
+		}
+		else
+		{
 			return getName(); // the root does not need a special URL since it is part of the base path
 		}
 	}
 
-	public void setParent(DefaultWebTreeNode inParent) {
+	public void setParent(DefaultWebTreeNode inParent)
+	{
 		super.setParent(inParent);
 		setUrl(getURL());
 	}
 
-	protected void setUrl(String inPath) {
+	protected void setUrl(String inPath)
+	{
 		fieldUrl = inPath;
 	}
 
-	public void setVirtual(boolean inVirtual) {
+	public void setVirtual(boolean inVirtual)
+	{
 		fieldVirtual = inVirtual;
 	}
 
-	public String getIconSet() {
-		if (isVirtual()) {
+	public String getIconSet()
+	{
+		if (isVirtual())
+		{
 			return "linked";
 		}
 		return super.getIconSet();
 	}
 
-	public boolean isVirtual() {
-		if (fieldVirtual) {
+	public boolean isVirtual()
+	{
+		if (fieldVirtual)
+		{
 			return true;
 		}
-		if (getParent() != null) {
+		if (getParent() != null)
+		{
 			return ((RepositoryTreeNode) getParent()).isVirtual();
 		}
 		return fieldVirtual;
 	}
 
-	public String toString() {
+	public String toString()
+	{
 		return getURL();
 	}
 

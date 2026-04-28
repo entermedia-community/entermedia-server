@@ -15,7 +15,8 @@ import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.util.StringEncryption;
 
-public abstract class BaseAutoLogin implements AutoLoginProvider {
+public abstract class BaseAutoLogin implements AutoLoginProvider
+{
 	static final Log log = LogFactory.getLog(BaseAutoLogin.class);
 
 	protected ModuleManager fieldModuleManager;
@@ -24,27 +25,33 @@ public abstract class BaseAutoLogin implements AutoLoginProvider {
 	protected long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 	protected StringEncryption fieldCookieEncryption;
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
-	protected SearcherManager getSearcherManager() {
+	protected SearcherManager getSearcherManager()
+	{
 		return (SearcherManager) getModuleManager().getBean("searcherManager");
 	}
 
-	protected UserManager getUserManager(WebPageRequest inReq) {
+	protected UserManager getUserManager(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findPathValue("catalogid");
-		if (catalogid == null) {
+		if (catalogid == null)
+		{
 			catalogid = "system";
 		}
 		return (UserManager) getModuleManager().getBean(catalogid, "userManager");
 	}
 
-	public StringEncryption getCookieEncryption() {
+	public StringEncryption getCookieEncryption()
+	{
 		// if (fieldCookieEncryption == null)
 		// {
 		// fieldCookieEncryption = new StringEncryption();
@@ -54,29 +61,36 @@ public abstract class BaseAutoLogin implements AutoLoginProvider {
 		return fieldCookieEncryption;
 	}
 
-	public void setCookieEncryption(StringEncryption inCookieEncryption) {
+	public void setCookieEncryption(StringEncryption inCookieEncryption)
+	{
 		fieldCookieEncryption = inCookieEncryption;
 	}
 
-	public void saveCookieForUser(WebPageRequest inReq, User inUser) {
+	public void saveCookieForUser(WebPageRequest inReq, User inUser)
+	{
 		HttpServletResponse res = inReq.getResponse();
-		if (res != null) {
+		if (res != null)
+		{
 			String name = getCookieEncryption().createMd5CookieName(inReq, ENTERMEDIAKEY, true);
-			try {
+			try
+			{
 				String value = getCookieEncryption().getEnterMediaKey(inUser); /// TODO Change expiration to be 30 days
 																				/// for keys?
 				javax.servlet.http.Cookie cookie = new javax.servlet.http.Cookie(name, value);
 
 				Data age = null;
 				String catalogid = inReq.findPathValue("catalogid");
-				if (catalogid != null) {
+				if (catalogid != null)
+				{
 					age = getSearcherManager().getCachedData(catalogid, "catalogsettings", "cookie_expiration_age");
 				}
-				if (age == null) {
+				if (age == null)
+				{
 					age = getSearcherManager().getCachedData("system", "systemsettings", "cookie_expiration_age");
 				}
 				int maxage = 34560000; // 400 days Chrome standard
-				if (age != null && age.get("value") != null && !age.get("value").isEmpty()) {
+				if (age != null && age.get("value") != null && !age.get("value").isEmpty())
+				{
 					// how many seconds a given cookie should be
 					maxage = Integer.parseInt(age.get("value"));
 				}
@@ -88,7 +102,9 @@ public abstract class BaseAutoLogin implements AutoLoginProvider {
 										// really work. It tends to not send the data
 				res.addCookie(cookie);
 				inReq.putPageValue("entermediakey", value);
-			} catch (Exception ex) {
+			}
+			catch (Exception ex)
+			{
 				throw new OpenEditException(ex);
 			}
 			// TODO: Add a new alternative cookie that will auto login the user by passing
@@ -98,76 +114,103 @@ public abstract class BaseAutoLogin implements AutoLoginProvider {
 		}
 	}
 
-	protected User autoLoginFromMd5Value(WebPageRequest inReq, String uandpass) {
+	protected User autoLoginFromMd5Value(WebPageRequest inReq, String uandpass)
+	{
 		// get the password expiry in days
 		int pwd_expiry_in_days = 1;
 		String str = inReq.findValue("temporary_password_expiry");
-		if (str != null && !str.isEmpty()) {
-			try {
+		if (str != null && !str.isEmpty())
+		{
+			try
+			{
 				pwd_expiry_in_days = Integer.parseInt(str);
-			} catch (NumberFormatException e) {
+			}
+			catch (NumberFormatException e)
+			{
 
 			}
-			if (pwd_expiry_in_days < 1) {
+			if (pwd_expiry_in_days < 1)
+			{
 				pwd_expiry_in_days = 30;// default if malformed
 			}
-			if (log.isDebugEnabled()) {
+			if (log.isDebugEnabled())
+			{
 				log.debug("Password is set to expire in " + pwd_expiry_in_days + " days");
 			}
 		}
 		// String uandpass = cook.getValue();
-		if (uandpass != null) {
+		if (uandpass != null)
+		{
 			int split = uandpass.indexOf("md542");
-			if (split == -1) {
+			if (split == -1)
+			{
 				log.info("invalid key " + uandpass);
 				return null;
 			}
 			String username = uandpass.substring(0, split);
 
 			User user = getUserManager(inReq).getUser(username);
-			if (user != null && user.getPassword() != null) {
+			if (user != null && user.getPassword() != null)
+			{
 				String md5 = uandpass.substring(split + 5);
 
 				// if timestamp included, check whether the autologin has expired
-				if ((split = md5.indexOf(TIMESTAMP)) != -1) {
+				if ((split = md5.indexOf(TIMESTAMP)) != -1)
+				{
 					String tsenc = md5.substring(split + TIMESTAMP.length());
 					md5 = md5.substring(0, split);
-					try {
+					try
+					{
 						String ctext = getCookieEncryption().decrypt(tsenc);
 						long ts = Long.parseLong(ctext);
 						long current = new Date().getTime();
-						if ((current - ts) > (pwd_expiry_in_days * MILLISECONDS_PER_DAY)) {
+						if ((current - ts) > (pwd_expiry_in_days * MILLISECONDS_PER_DAY))
+						{
 							log.debug("Autologin has expired, redirecting to login page");
 							return null;
-						} else {
-							if (log.isDebugEnabled()) {
+						}
+						else
+						{
+							if (log.isDebugEnabled())
+							{
 								log.debug("Autologin has not expired, processing md5 password");
 							}
 						}
-					} catch (Exception oex) {
+					}
+					catch (Exception oex)
+					{
 						log.error(oex.getMessage(), oex);
 						return null;
 					}
-				} else {
-					if (log.isDebugEnabled()) {
+				}
+				else
+				{
+					if (log.isDebugEnabled())
+					{
 						log.debug("Autologin does not have a timestamp");
 					}
 				}
 
-				try {
+				try
+				{
 					String hash = getCookieEncryption().getPasswordMd5(user.getPassword());
-					if (md5.equals(hash)) {
+					if (md5.equals(hash))
+					{
 						// String catalogid =user.get("catalogid");
 						// inReq.putSessionValue(catalogid + "user", user);
 
 						// Save cookie?
 
 						return user;
-					} else {
+					}
+					else
+					{
 						log.info("Auto login did not work " + username + " md5 " + md5);
 						return null;
 					}
-				} catch (Exception ex) {
+				}
+				catch (Exception ex)
+				{
 					// throw new OpenEditException(ex);
 					getCookieEncryption().removeCookie(inReq, ENTERMEDIAKEY);
 					getCookieEncryption().removeCookie(inReq, "entermedia.keyopenedit");

@@ -19,25 +19,30 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 
-public class SemanticClassifierManager extends BaseAiManager {
+public class SemanticClassifierManager extends BaseAiManager
+{
 	protected SemanticTableManager fieldSemanticTableManager;
 	protected String fieldConfigurationId;
 
-	public String getConfigurationId() {
+	public String getConfigurationId()
+	{
 		return fieldConfigurationId;
 	}
 
-	public void setConfigurationId(String inConfigurationId) {
+	public void setConfigurationId(String inConfigurationId)
+	{
 		fieldConfigurationId = inConfigurationId;
 	}
 
-	public SemanticTableManager getSemanticTableManager() {
+	public SemanticTableManager getSemanticTableManager()
+	{
 		return loadSemanticTableManager(getConfigurationId()); // "semantictopics"
 	}
 
 	private static final Log log = LogFactory.getLog(SemanticClassifierManager.class);
 
-	public void processRecords(ScriptLogger inLog, MultiValued inConfig, Collection<? extends MultiValued> inRecords) {
+	public void processRecords(ScriptLogger inLog, MultiValued inConfig, Collection<? extends MultiValued> inRecords)
+	{
 		String fieldname = inConfig.get("fieldname");
 
 		inLog.headline("Semantic Classifying " + inRecords.size() + " records");
@@ -48,10 +53,12 @@ public class SemanticClassifierManager extends BaseAiManager {
 
 		long start = System.currentTimeMillis();
 
-		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
+		{
 			MultiValued data = (MultiValued) iterator.next();
 			String moduleid = data.get("entitysourcetype");
-			if (moduleid == null) {
+			if (moduleid == null)
+			{
 				// throw new OpenEditException("Requires sourcetype be set " + data);
 
 				// Todo: Should we skip data with no sourcetype earlier?
@@ -59,30 +66,38 @@ public class SemanticClassifierManager extends BaseAiManager {
 				continue;
 			}
 			MultiValued module = (MultiValued) getMediaArchive().getCachedData("module", moduleid);
-			if (!module.getBoolean("semanticenabled")) {
+			if (!module.getBoolean("semanticenabled"))
+			{
 				continue;
 			}
 
 			Collection existing = data.getValues(fieldname);
-			if (existing != null && !existing.isEmpty()) {
+			if (existing != null && !existing.isEmpty())
+			{
 				continue;
 			}
 
-			try {
-				Collection<String> newvalues = getSemanticTableManager().createSemanticValues(llmsemanticconnection,
-						inConfig, moduleid, data);
+			try
+			{
+				Collection<String> newvalues = getSemanticTableManager().createSemanticValues(llmsemanticconnection, inConfig, moduleid, data);
 				data.setValue(fieldname, newvalues);
-			} catch (Throwable ex) {
+			}
+			catch (Throwable ex)
+			{
 				log.error("Could not process " + moduleid + " -> " + data, ex);
 				data.setValue("llmerror", true);
 			}
 		}
-		try {
+		try
+		{
 			getSemanticTableManager().indexData(inLog, inRecords);
 			// getSemanticTableManager().process(informatic);
-		} catch (Throwable ex) {
+		}
+		catch (Throwable ex)
+		{
 			log.error("Could not process vectors. Stopping everything ", ex);
-			if (ex instanceof RuntimeException) {
+			if (ex instanceof RuntimeException)
+			{
 				throw ex;
 			}
 			throw new OpenEditException(ex);
@@ -92,11 +107,12 @@ public class SemanticClassifierManager extends BaseAiManager {
 		inLog.info("SemanticClassifierManager Completed " + inRecords.size() + " records in " + seconds + " seconds ");
 	}
 
-	public Map<String, Collection<String>> search(Collection<String> textvalues, Collection<String> excludedEntityIds,
-			Collection<String> excludedAssetids) {
+	public Map<String, Collection<String>> search(Collection<String> textvalues, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
+	{
 		Map<String, Collection<String>> bytype = new HashMap();
 
-		for (Iterator iterator = textvalues.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = textvalues.iterator(); iterator.hasNext();)
+		{
 			String textsemantic = (String) iterator.next();
 
 			JSONObject response = getSemanticTableManager().execMakeVector(textsemantic);
@@ -112,14 +128,15 @@ public class SemanticClassifierManager extends BaseAiManager {
 		return bytype;
 	}
 
-	public Map<String, Collection<String>> search(String text, Collection<String> excludedEntityIds,
-			Collection<String> excludedAssetids) {
+	public Map<String, Collection<String>> search(String text, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
+	{
 		Collection<String> values = new ArrayList(1);
 		values.add(text);
 		return search(values, excludedEntityIds, excludedAssetids);
 	}
 
-	public Data searchOne(String textvalue, String inModuleId) {
+	public Data searchOne(String textvalue, String inModuleId)
+	{
 		JSONObject response = getSemanticTableManager().execMakeVector(textvalue);
 
 		JSONArray results = (JSONArray) response.get("results");
@@ -132,10 +149,12 @@ public class SemanticClassifierManager extends BaseAiManager {
 
 		Collection<RankedResult> found = getSemanticTableManager().searchNearestItems(vector);
 
-		for (Iterator iterator = found.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = found.iterator(); iterator.hasNext();)
+		{
 			RankedResult rankedResult = (RankedResult) iterator.next();
 
-			if (inModuleId.equals(rankedResult.getModuleId())) {
+			if (inModuleId.equals(rankedResult.getModuleId()))
+			{
 				Data data = getMediaArchive().getData(rankedResult.getModuleId(), rankedResult.getEntityId());
 				return data;
 			}
@@ -143,31 +162,39 @@ public class SemanticClassifierManager extends BaseAiManager {
 		return null; // not found
 	}
 
-	protected void searchForVector(List<Double> inVector, Map<String, Collection<String>> bytype,
-			Collection<String> excludedEntityIds, Collection<String> excludedAssetids) {
+	protected void searchForVector(List<Double> inVector, Map<String, Collection<String>> bytype, Collection<String> excludedEntityIds, Collection<String> excludedAssetids)
+	{
 		Collection<RankedResult> found = getSemanticTableManager().searchNearestItems(inVector);
 
 		// List allIdsX = new ArrayList(); //for debugging
 
-		for (Iterator iterator = found.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = found.iterator(); iterator.hasNext();)
+		{
 			RankedResult rankedResult = (RankedResult) iterator.next();
 
 			// allIds.add(rankedResult.getModuleId() + ":" + rankedResult.getEntityId());
 
-			if (rankedResult.getModuleId().equals("asset")) {
-				if (excludedAssetids != null && excludedAssetids.contains(rankedResult.getEntityId())) {
+			if (rankedResult.getModuleId().equals("asset"))
+			{
+				if (excludedAssetids != null && excludedAssetids.contains(rankedResult.getEntityId()))
+				{
 					continue;
 				}
-			} else if (excludedEntityIds != null && excludedEntityIds.contains(rankedResult.getEntityId())) {
-				continue;
 			}
+			else
+				if (excludedEntityIds != null && excludedEntityIds.contains(rankedResult.getEntityId()))
+				{
+					continue;
+				}
 
 			Collection hits = bytype.get(rankedResult.getModuleId());
-			if (hits == null) {
+			if (hits == null)
+			{
 				hits = new ArrayList();
 				bytype.put(rankedResult.getModuleId(), hits);
 			}
-			if (hits.size() < 1000) {
+			if (hits.size() < 1000)
+			{
 				hits.add(rankedResult.getEntityId());
 			}
 		}

@@ -13,16 +13,19 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 
-public class CachedAssetPathProcessor extends AssetPathProcessor {
+public class CachedAssetPathProcessor extends AssetPathProcessor
+{
 	private static final Log log = LogFactory.getLog(CachedAssetPathProcessor.class);
 	protected HashMap<String, Long> fieldSizeCache = new HashMap<String, Long>(100000); // So we dont have double in
 																						// memory at any given time
 	int cachesaves = 0;
 
 	// Starts here
-	public void processAssets(String inStartingPoint, User inUser) {
+	public void processAssets(String inStartingPoint, User inUser)
+	{
 		ContentItem item = getPageManager().getRepository().getStub(inStartingPoint);
-		if (!item.exists()) {
+		if (!item.exists())
+		{
 			log.info(item.getAbsolutePath() + " Did not exist");
 			return;
 		}
@@ -31,38 +34,45 @@ public class CachedAssetPathProcessor extends AssetPathProcessor {
 		String startsourcepath = getAssetUtilities().extractSourcePath(item, getMediaArchive());
 		String[] folderlist = startsourcepath.split("/");
 		String pathtocheck = "";
-		for (int i = 0; i < folderlist.length; i++) {
+		for (int i = 0; i < folderlist.length; i++)
+		{
 			String nextfolder = folderlist[i];
-			if (i > 0) {
+			if (i > 0)
+			{
 				pathtocheck = pathtocheck + "/" + nextfolder;
-			} else {
+			}
+			else
+			{
 				pathtocheck = folderlist[0];
 			}
 			Asset asset = getMediaArchive().getAssetSearcher().getAssetBySourcePath(pathtocheck);
-			if (asset != null) {
-				if (isShowLogs()) {
+			if (asset != null)
+			{
+				if (isShowLogs())
+				{
 					log.error("Found top level asset " + inStartingPoint + " " + "checked: " + pathtocheck);
-					getAssetImporter().fireHotFolderEvent(getMediaArchive(), "init", "error",
-							"Found top level asset " + pathtocheck, null);
+					getAssetImporter().fireHotFolderEvent(getMediaArchive(), "init", "error", "Found top level asset " + pathtocheck, null);
 				}
 				return;
 			}
 		}
 
 		// Start processing
-		if (item.isFolder()) {
-			List paths = getPageManager().getChildrenPaths(
-					item.getPath());
-			for (Iterator iterator = paths.iterator(); iterator.hasNext();) {
+		if (item.isFolder())
+		{
+			List paths = getPageManager().getChildrenPaths(item.getPath());
+			for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+			{
 				String path = (String) iterator.next();
-				ContentItem subitem = getPageManager().getRepository()
-						.getStub(path);
-				if (subitem.isFolder()) {
+				ContentItem subitem = getPageManager().getRepository().getStub(path);
+				if (subitem.isFolder())
+				{
 					String foldersourcepath = getAssetUtilities().extractSourcePath(subitem, getMediaArchive());
 					// Is this an asset itself?
 
 					Long sizeval = fieldSizeCache.get(foldersourcepath);
-					if (sizeval != null) {
+					if (sizeval != null)
+					{
 						// Has folder based asset with same name
 						cachesaves++;
 						log.info("Skipping folder based asset check " + foldersourcepath);
@@ -73,47 +83,58 @@ public class CachedAssetPathProcessor extends AssetPathProcessor {
 					// Ok if its a folder then do a search, cached asset results and start
 					// processing
 					process(subitem, inUser);
-				} else if (acceptFile(subitem)) {
-					processFile(subitem, inUser); // Old school way. This checks cache first. IF not found then do a
-													// search anyways to double check
 				}
+				else
+					if (acceptFile(subitem))
+					{
+						processFile(subitem, inUser); // Old school way. This checks cache first. IF not found then do a
+														// search anyways to double check
+					}
 			}
-		} else if (acceptFile(item)) {
-			processFile(item, inUser);
 		}
+		else
+			if (acceptFile(item))
+			{
+				processFile(item, inUser);
+			}
 		saveImportedAssets(inUser);
 		System.gc();
 
 	}
 
 	@Override
-	protected void processAssetFolder(ContentItem inInput, User inUser) {
+	protected void processAssetFolder(ContentItem inInput, User inUser)
+	{
 		String foldersourcepath = getAssetUtilities().extractSourcePath(inInput, getMediaArchive());
 
 		loadCache(foldersourcepath);
 		cachesaves = 0;
 		super.processAssetFolder(inInput, inUser);
-		if (log.isDebugEnabled()) {
+		if (log.isDebugEnabled())
+		{
 			log.debug("foldersourcepath complete. CacheSaves: " + cachesaves);
 		}
 		fieldSizeCache.clear();
 
 	}
 
-	protected void loadCache(String inFoldersourcepath) {
-		HitTracker allchildren = getMediaArchive().query("asset").exact("foldersourcepath", inFoldersourcepath)
-				.search();
+	protected void loadCache(String inFoldersourcepath)
+	{
+		HitTracker allchildren = getMediaArchive().query("asset").exact("foldersourcepath", inFoldersourcepath).search();
 		allchildren.setHitsPerPage(99999);
-		if (allchildren.size() > 5000) {
+		if (allchildren.size() > 5000)
+		{
 			log.info("Loading extra LARGE Cache: " + allchildren.size() + " on " + inFoldersourcepath);
 		}
 
-		for (Iterator iterator = allchildren.getPageOfHits().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = allchildren.getPageOfHits().iterator(); iterator.hasNext();)
+		{
 			MultiValued asset = (MultiValued) iterator.next();
 			long longval = asset.getLong("filesize");
 
 			String sp = asset.get("archivesourcepath");
-			if (sp == null) {
+			if (sp == null)
+			{
 				sp = asset.getSourcePath();
 			}
 			fieldSizeCache.put(sp, longval);
@@ -121,10 +142,12 @@ public class CachedAssetPathProcessor extends AssetPathProcessor {
 	}
 
 	@Override
-	protected Asset createAssetIfNeeded(ContentItem inContent, MediaArchive inMediaArchive, User inUser) {
+	protected Asset createAssetIfNeeded(ContentItem inContent, MediaArchive inMediaArchive, User inUser)
+	{
 		String foldersourcepath = getAssetUtilities().extractSourcePath(inContent, getMediaArchive());
 		Long sizeval = fieldSizeCache.get(foldersourcepath);
-		if (sizeval != null && sizeval == inContent.getLength()) {
+		if (sizeval != null && sizeval == inContent.getLength())
+		{
 			cachesaves++;
 			return null; // Not needed
 		}

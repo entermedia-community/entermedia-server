@@ -15,7 +15,8 @@ import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.ModuleManager;
 import org.openedit.WebPageRequest;
 
-public class TranslationModule extends BaseMediaModule {
+public class TranslationModule extends BaseMediaModule
+{
 
 	private static final Log log = LogFactory.getLog(TranslationModule.class);
 
@@ -23,38 +24,47 @@ public class TranslationModule extends BaseMediaModule {
 	protected MediaArchive fieldMediaArchive;
 	protected ModuleManager fieldModuleManager;
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public String getCatalogId() {
+	public String getCatalogId()
+	{
 		return fieldCatalogId;
 	}
 
-	public void setCatalogId(String catalogId) {
+	public void setCatalogId(String catalogId)
+	{
 		fieldCatalogId = catalogId;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
-	public MediaArchive getMediaArchive() {
-		if (fieldMediaArchive == null) {
+	public MediaArchive getMediaArchive()
+	{
+		if (fieldMediaArchive == null)
+		{
 			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		}
 		return fieldMediaArchive;
 	}
 
-	public AutomationManager getAutomationManager(WebPageRequest inReq) {
+	public AutomationManager getAutomationManager(WebPageRequest inReq)
+	{
 		AutomationManager manager = (AutomationManager) getMediaArchive(inReq).getBean("automationManager");
 		inReq.putPageValue("automationManager", manager);
 		return manager;
 	}
 
-	public void translateField(WebPageRequest inReq) {
+	public void translateField(WebPageRequest inReq)
+	{
 		Map params = inReq.getJsonRequest();
-		if (params == null) {
+		if (params == null)
+		{
 			log.info("No JSON parameters");
 			inReq.putPageValue("status", "No JSON parameters");
 			return;
@@ -64,9 +74,11 @@ public class TranslationModule extends BaseMediaModule {
 		Collection<String> targets = Arrays.asList(targetLangStr.split(","));
 		Collection<String> targetLangs = new ArrayList<String>();
 
-		for (Iterator iterator = targets.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = targets.iterator(); iterator.hasNext();)
+		{
 			String lang = (String) iterator.next();
-			if (lang != null && lang.length() > 1) {
+			if (lang != null && lang.length() > 1)
+			{
 				targetLangs.add(lang);
 			}
 		}

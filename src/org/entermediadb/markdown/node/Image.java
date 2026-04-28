@@ -9,13 +9,13 @@ package org.entermediadb.markdown.node;
  *
  * @see <a href="https://spec.commonmark.org/0.31.2/#images">CommonMark Spec</a>
  */
-public class Image extends Node {
+public class Image extends Node
+{
 
     private String destination;
     private String title;
 
-    public Image() {
-    }
+    public Image() {}
 
     public Image(String destination, String title) {
         this.destination = destination;
@@ -23,28 +23,34 @@ public class Image extends Node {
     }
 
     @Override
-    public void accept(Visitor visitor) {
+    public void accept(Visitor visitor)
+    {
         visitor.visit(this);
     }
 
-    public String getDestination() {
+    public String getDestination()
+    {
         return destination;
     }
 
-    public void setDestination(String destination) {
+    public void setDestination(String destination)
+    {
         this.destination = destination;
     }
 
-    public String getTitle() {
+    public String getTitle()
+    {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(String title)
+    {
         this.title = title;
     }
 
     @Override
-    protected String toStringAttributes() {
+    protected String toStringAttributes()
+    {
         return "destination=" + destination + ", title=" + title;
     }
 }

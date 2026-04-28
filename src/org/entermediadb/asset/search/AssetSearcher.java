@@ -11,7 +11,8 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 
-public interface AssetSearcher extends Searcher {
+public interface AssetSearcher extends Searcher
+{
 	public HitTracker search(SearchQuery inQuery);
 
 	/**

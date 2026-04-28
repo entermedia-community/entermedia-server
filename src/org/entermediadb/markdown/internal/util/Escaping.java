@@ -5,7 +5,8 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Escaping {
+public class Escaping
+{
 
     public static final String ESCAPABLE = "[!\"#$%&\'()*+,./:;<=>?@\\[\\\\\\]^_`{|}~-]";
 
@@ -13,16 +14,13 @@ public class Escaping {
 
     private static final Pattern BACKSLASH_OR_AMP = Pattern.compile("[\\\\&]");
 
-    private static final Pattern ENTITY_OR_ESCAPED_CHAR = Pattern.compile("\\\\" + ESCAPABLE + '|' + ENTITY,
-            Pattern.CASE_INSENSITIVE);
+    private static final Pattern ENTITY_OR_ESCAPED_CHAR = Pattern.compile("\\\\" + ESCAPABLE + '|' + ENTITY, Pattern.CASE_INSENSITIVE);
 
     // From RFC 3986 (see "reserved", "unreserved") except don't escape '[' or ']'
     // to be compatible with JS encodeURI
-    private static final Pattern ESCAPE_IN_URI = Pattern
-            .compile("(%[a-fA-F0-9]{0,2}|[^:/?#@!$&'()*+,;=a-zA-Z0-9\\-._~])");
+    private static final Pattern ESCAPE_IN_URI = Pattern.compile("(%[a-fA-F0-9]{0,2}|[^:/?#@!$&'()*+,;=a-zA-Z0-9\\-._~])");
 
-    private static final char[] HEX_DIGITS = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B',
-            'C', 'D', 'E', 'F' };
+    private static final char[] HEX_DIGITS = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
     private static final Pattern WHITESPACE = Pattern.compile("[ \t\r\n]+");
 
@@ -30,12 +28,17 @@ public class Escaping {
 
     private static final Replacer UNESCAPE_REPLACER = new Replacer() {
         @Override
-        public void replace(String input, StringBuilder sb) {
-            if (input.charAt(0) == '\\') {
+        public void replace(String input, StringBuilder sb)
+        {
+            if (input.charAt(0) == '\\')
+            {
                 sb.append(input, 1, input.length());
-            } else {
+            }
+            else
+            {
 
-                if (entities == null) {
+                if (entities == null)
+                {
                     entities = new Html5Entities();
                 }
 
@@ -46,19 +49,27 @@ public class Escaping {
 
     private static final Replacer URI_REPLACER = new Replacer() {
         @Override
-        public void replace(String input, StringBuilder sb) {
-            if (input.startsWith("%")) {
-                if (input.length() == 3) {
+        public void replace(String input, StringBuilder sb)
+        {
+            if (input.startsWith("%"))
+            {
+                if (input.length() == 3)
+                {
                     // Already percent-encoded, preserve
                     sb.append(input);
-                } else {
+                }
+                else
+                {
                     // %25 is the percent-encoding for %
                     sb.append("%25");
                     sb.append(input, 1, input.length());
                 }
-            } else {
+            }
+            else
+            {
                 byte[] bytes = input.getBytes(StandardCharsets.UTF_8);
-                for (byte b : bytes) {
+                for (byte b : bytes)
+                {
                     sb.append('%');
                     sb.append(HEX_DIGITS[(b >> 4) & 0xF]);
                     sb.append(HEX_DIGITS[b & 0xF]);
@@ -67,14 +78,17 @@ public class Escaping {
         }
     };
 
-    public static String escapeHtml(String input) {
+    public static String escapeHtml(String input)
+    {
         // Avoid building a new string in the majority of cases (nothing to escape)
         StringBuilder sb = null;
 
-        loop: for (int i = 0; i < input.length(); i++) {
+        loop: for (int i = 0; i < input.length(); i++)
+        {
             char c = input.charAt(i);
             String replacement;
-            switch (c) {
+            switch (c)
+            {
                 case '&':
                     replacement = "&amp;";
                     break;
@@ -88,12 +102,14 @@ public class Escaping {
                     replacement = "&quot;";
                     break;
                 default:
-                    if (sb != null) {
+                    if (sb != null)
+                    {
                         sb.append(c);
                     }
                     continue loop;
             }
-            if (sb == null) {
+            if (sb == null)
+            {
                 sb = new StringBuilder();
                 sb.append(input, 0, i);
             }
@@ -106,19 +122,25 @@ public class Escaping {
     /**
      * Replace entities and backslash escapes with literal characters.
      */
-    public static String unescapeString(String s) {
-        if (BACKSLASH_OR_AMP.matcher(s).find()) {
+    public static String unescapeString(String s)
+    {
+        if (BACKSLASH_OR_AMP.matcher(s).find())
+        {
             return replaceAll(ENTITY_OR_ESCAPED_CHAR, s, UNESCAPE_REPLACER);
-        } else {
+        }
+        else
+        {
             return s;
         }
     }
 
-    public static String percentEncodeUrl(String s) {
+    public static String percentEncodeUrl(String s)
+    {
         return replaceAll(ESCAPE_IN_URI, s, URI_REPLACER);
     }
 
-    public static String normalizeLabelContent(String input) {
+    public static String normalizeLabelContent(String input)
+    {
         String trimmed = input.trim();
 
         // This is necessary to correctly case fold "\u1E9E" (LATIN CAPITAL LETTER SHARP
@@ -133,28 +155,33 @@ public class Escaping {
         return WHITESPACE.matcher(caseFolded).replaceAll(" ");
     }
 
-    private static String replaceAll(Pattern p, String s, Replacer replacer) {
+    private static String replaceAll(Pattern p, String s, Replacer replacer)
+    {
         Matcher matcher = p.matcher(s);
 
-        if (!matcher.find()) {
+        if (!matcher.find())
+        {
             return s;
         }
 
         StringBuilder sb = new StringBuilder(s.length() + 16);
         int lastEnd = 0;
-        do {
+        do
+        {
             sb.append(s, lastEnd, matcher.start());
             replacer.replace(matcher.group(), sb);
             lastEnd = matcher.end();
         } while (matcher.find());
 
-        if (lastEnd != s.length()) {
+        if (lastEnd != s.length())
+        {
             sb.append(s, lastEnd, s.length());
         }
         return sb.toString();
     }
 
-    private interface Replacer {
+    private interface Replacer
+    {
         void replace(String input, StringBuilder sb);
     }
 }

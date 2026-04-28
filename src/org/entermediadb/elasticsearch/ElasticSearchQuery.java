@@ -7,24 +7,29 @@ import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.openedit.data.PropertyDetail;
 import org.openedit.hittracker.SearchQuery;
 
-public class ElasticSearchQuery extends SearchQuery {
+public class ElasticSearchQuery extends SearchQuery
+{
 
 	public AbstractAggregationBuilder fieldAggregationBuilder;
 	protected String fieldAggregationJson;
 
-	public String getAggregationJson() {
+	public String getAggregationJson()
+	{
 		return fieldAggregationJson;
 	}
 
-	public void setAggregationJson(String inAggregationJson) {
+	public void setAggregationJson(String inAggregationJson)
+	{
 		fieldAggregationJson = inAggregationJson;
 	}
 
-	public AbstractAggregationBuilder getAggregation() {
+	public AbstractAggregationBuilder getAggregation()
+	{
 		return fieldAggregationBuilder;
 	}
 
-	public void setAggregation(Object inAggregationBuilder) {
+	public void setAggregation(Object inAggregationBuilder)
+	{
 		fieldAggregationBuilder = (AbstractAggregationBuilder) inAggregationBuilder;
 		setEndUserSearch(true);
 	}
@@ -34,7 +39,8 @@ public class ElasticSearchQuery extends SearchQuery {
 	}
 
 	@Override
-	public void addFunction(PropertyDetail inDetail, Object inValues) {
+	public void addFunction(PropertyDetail inDetail, Object inValues)
+	{
 		// TODO Auto-generated method stub
 		super.addFunction(inDetail, inValues);
 	}

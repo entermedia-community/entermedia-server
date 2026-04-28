@@ -22,44 +22,36 @@ import org.entermediadb.markdown.renderer.html.HtmlRenderer;
 import org.entermediadb.markdown.renderer.text.TextContentRenderer;
 import org.openedit.WebPageRequest;
 
-public class MarkdownUtil {
+public class MarkdownUtil
+{
 	private static final Log log = LogFactory.getLog(MarkdownUtil.class);
 
-	public String render(String markdown) {
-		Parser parser = Parser.builder()
-				.enabledBlockTypes(
-						Set.of(
-								Heading.class,
-								HtmlBlock.class,
-								ThematicBreak.class,
-								FencedCodeBlock.class,
-								ListBlock.class))
-				.build();
+	public String render(String markdown)
+	{
+		Parser parser = Parser.builder().enabledBlockTypes(Set.of(Heading.class, HtmlBlock.class, ThematicBreak.class, FencedCodeBlock.class, ListBlock.class)).build();
 		Node document = parser.parse(markdown);
 		HtmlRenderer renderer = HtmlRenderer.builder().softbreak("<br>").build();
 		return renderer.render(document);
 	}
 
-	public String renderPlain(String markdown) {
+	public String renderPlain(String markdown)
+	{
 		String rendered = renderPlainHtml(markdown);
 		// Remove any HTML elements
 		rendered = rendered.replaceAll("<[^>]+>", "");
 		return rendered;
 	}
 
-	public String renderPlainHtml(String markdown) {
-		Parser parser = Parser.builder()
-				.enabledBlockTypes(
-						Set.of(
-								FencedCodeBlock.class,
-								ListBlock.class))
-				.build();
+	public String renderPlainHtml(String markdown)
+	{
+		Parser parser = Parser.builder().enabledBlockTypes(Set.of(FencedCodeBlock.class, ListBlock.class)).build();
 		Node document = parser.parse(markdown);
 		HtmlRenderer renderer = HtmlRenderer.builder().build();
 		return renderer.render(document);
 	}
 
-	public List<Map<String, String>> getHtmlMaps(String markdown) {
+	public List<Map<String, String>> getHtmlMaps(String markdown)
+	{
 		Parser parser = Parser.builder().build();
 		Node document = parser.parse(markdown);
 
@@ -78,26 +70,32 @@ public class MarkdownUtil {
 		String headerContent = null;
 		StringBuffer bodyContent = new StringBuffer();
 
-		for (Iterator iterator = nodes.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
+		{
 			Node node = (Node) iterator.next();
 
-			if (!headerAdded && isHeader(node)) {
+			if (!headerAdded && isHeader(node))
+			{
 				String textContent = textRenderer.render(node);
 				headerAdded = true;
 				headerContent = textContent;
-			} else {
+			}
+			else
+			{
 				String html = renderer.render(node);
 				bodyContent.append(html);
 			}
 		}
 
-		if (headerContent != null) {
+		if (headerContent != null)
+		{
 			Map<String, String> map = new HashMap<String, String>();
 			map.put("type", "Heading");
 			map.put("content", headerContent);
 			maps.add(map);
 		}
-		if (bodyContent.length() > 0) {
+		if (bodyContent.length() > 0)
+		{
 			Map<String, String> map = new HashMap<String, String>();
 			map.put("type", "Paragraph");
 			map.put("content", bodyContent.toString());
@@ -107,24 +105,19 @@ public class MarkdownUtil {
 		return maps;
 	}
 
-	private Collection<String> validTypes = Set.of(
-			"Block",
-			"BlockQuote",
-			"BulletList",
-			"Code",
-			"FencedCodeBlock",
-			"Heading",
-			"OrderedList",
-			"Paragraph");
+	private Collection<String> validTypes = Set.of("Block", "BlockQuote", "BulletList", "Code", "FencedCodeBlock", "Heading", "OrderedList", "Paragraph");
 
-	public void flattenDocument(List<Node> nodes, Node root) {
-		if (root == null) {
+	public void flattenDocument(List<Node> nodes, Node root)
+	{
+		if (root == null)
+		{
 			return;
 		}
 
 		String nodeName = root.getClass().getSimpleName();
 
-		if (validTypes.contains(nodeName)) {
+		if (validTypes.contains(nodeName))
+		{
 			nodes.add(root);
 		}
 
@@ -132,19 +125,25 @@ public class MarkdownUtil {
 
 	}
 
-	public boolean isHeader(Node node) {
+	public boolean isHeader(Node node)
+	{
 		String nodeName = node.getClass().getSimpleName();
-		if (nodeName.equals("Heading")) {
+		if (nodeName.equals("Heading"))
+		{
 			return true;
 		}
-		if (nodeName.equals("Paragraph")) {
+		if (nodeName.equals("Paragraph"))
+		{
 			Node firstChild = node.getFirstChild();
 
-			if (firstChild != null && firstChild.getClass().getSimpleName().equals("StrongEmphasis")) {
+			if (firstChild != null && firstChild.getClass().getSimpleName().equals("StrongEmphasis"))
+			{
 				Node next = firstChild.getNext();
 
-				while (next != null) {
-					if (!"Text".equals(next.getClass().getSimpleName())) {
+				while (next != null)
+				{
+					if (!"Text".equals(next.getClass().getSimpleName()))
+					{
 						return false;
 					}
 					next = next.getNext();
@@ -152,13 +151,17 @@ public class MarkdownUtil {
 
 				next = firstChild.getNext();
 
-				if (next != null) {
+				if (next != null)
+				{
 					TextContentRenderer textRenderer = TextContentRenderer.builder().build();
 					String textContent = textRenderer.render(next);
-					if (textContent == null || textContent.length() == 0) {
+					if (textContent == null || textContent.length() == 0)
+					{
 						return true;
 					}
-				} else {
+				}
+				else
+				{
 					return true;
 				}
 			}
@@ -167,10 +170,12 @@ public class MarkdownUtil {
 		return false;
 	}
 
-	public void test(WebPageRequest inReq) {
+	public void test(WebPageRequest inReq)
+	{
 		String markdown = inReq.getRequestParameter("markdown");
 
-		if (markdown == null) {
+		if (markdown == null)
+		{
 			return;
 		}
 

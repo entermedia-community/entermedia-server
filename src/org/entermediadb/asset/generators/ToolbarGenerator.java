@@ -11,15 +11,19 @@ import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.users.User;
 
-public class ToolbarGenerator extends BaseToolBarGenerator {
+public class ToolbarGenerator extends BaseToolBarGenerator
+{
 	private static final Log log = LogFactory.getLog(ToolbarGenerator.class);
 
-	public void generate(WebPageRequest inPageRequest, Page inPage, Output inOut) throws OpenEditException {
+	public void generate(WebPageRequest inPageRequest, Page inPage, Output inOut) throws OpenEditException
+	{
 		boolean added = addHeader(inPageRequest, inOut);
 
-		if (added) {
+		if (added)
+		{
 			Page header = getPageManager().getPage(getHeaderPath());
-			if (header.exists()) {
+			if (header.exists())
+			{
 				inPageRequest.putPageValue("editPage", inPage);
 				header.generate(inPageRequest, inOut);
 			}
@@ -27,42 +31,52 @@ public class ToolbarGenerator extends BaseToolBarGenerator {
 
 		getWraps().generate(inPageRequest, inPage, inOut);
 
-		if (added && getFooterPath() != null) {
+		if (added && getFooterPath() != null)
+		{
 			addFooter(inPageRequest, inOut);
 		}
 	}
 
-	public boolean addHeader(WebPageRequest inPageRequest, Output inOut) throws OpenEditException {
+	public boolean addHeader(WebPageRequest inPageRequest, Output inOut) throws OpenEditException
+	{
 		User user = inPageRequest.getUser();
 
-		if (user == null) {
+		if (user == null)
+		{
 			return false;
 		}
 		Page requestedPage = inPageRequest.getPage();
-		if (requestedPage.getPath().equals(getHeaderPath()) || requestedPage.getInnerLayout() == null) {
+		if (requestedPage.getPath().equals(getHeaderPath()) || requestedPage.getInnerLayout() == null)
+		{
 			return false;
 		}
-		if (requestedPage.getPath().equals(getFooterPath())) {
+		if (requestedPage.getPath().equals(getFooterPath()))
+		{
 			return false;
 		}
 		String val = (String) inPageRequest.getSessionValue("oe_edit_mode");
-		if (val == null) {
+		if (val == null)
+		{
 			val = user.get("oe_edit_mode");
 		}
 
-		if ("preview".equals(val)) {
+		if ("preview".equals(val))
+		{
 			return false;
 		}
 
-		if ("editing".equals(val) && !requestedPage.isBinary() && inPageRequest.isEditable()) {
+		if ("editing".equals(val) && !requestedPage.isBinary() && inPageRequest.isEditable())
+		{
 			return true;
 		}
 
 		// boolean debug = Boolean.parseBoolean(user.get("showdebug"));
 
-		if ("debug".equals(val) && requestedPage.isHtml()) {
+		if ("debug".equals(val) && requestedPage.isHtml())
+		{
 			String show = inPageRequest.getPageProperty("showdebug");
-			if (show != null) {
+			if (show != null)
+			{
 				return Boolean.parseBoolean(show);
 			}
 			return true; // we probably don't need to check for the header
@@ -77,9 +91,11 @@ public class ToolbarGenerator extends BaseToolBarGenerator {
 		return false;
 	}
 
-	public boolean addFooter(WebPageRequest inPageRequest, Output inOut) throws OpenEditException {
+	public boolean addFooter(WebPageRequest inPageRequest, Output inOut) throws OpenEditException
+	{
 		Page requestedPage = inPageRequest.getPage();
-		if (requestedPage.isBinary()) {
+		if (requestedPage.isBinary())
+		{
 			return false;
 		}
 		Page footer = getPageManager().getPage(getFooterPath());
@@ -95,48 +111,23 @@ public class ToolbarGenerator extends BaseToolBarGenerator {
 	 * @return
 	 * @throws OpenEditException
 	 * 
-	 *                           protected boolean checkFlags( WebPageRequest
-	 *                           inPageRequest ) throws OpenEditException
-	 *                           {
-	 *                           PageAction inAction =
-	 *                           inPageRequest.getCurrentAction();
+	 *         protected boolean checkFlags( WebPageRequest inPageRequest ) throws OpenEditException {
+	 *         PageAction inAction = inPageRequest.getCurrentAction();
 	 * 
-	 *                           String flagKey =
-	 *                           inAction.getConfig().getChildValue( "flag" );
+	 *         String flagKey = inAction.getConfig().getChildValue( "flag" );
 	 * 
-	 *                           Page requestedPage = (Page)inPageRequest.getPage();
-	 *                           String propertyFlag = requestedPage.getProperty(
-	 *                           flagKey );
-	 *                           String pageValueFlag =
-	 *                           (String)inPageRequest.getPageValue( flagKey );
-	 *                           String requestParameterFlag =
-	 *                           inPageRequest.getRequestParameter( flagKey );
-	 *                           log.debug( "Checking decoration flag " + flagKey +
-	 *                           " for page " + requestedPage );
-	 *                           if ( "false".equals( propertyFlag )
-	 *                           || "false".equals( pageValueFlag )
-	 *                           || "false".equals( requestParameterFlag ) )
-	 *                           {
-	 *                           return false;
-	 *                           }
+	 *         Page requestedPage = (Page)inPageRequest.getPage(); String propertyFlag =
+	 *         requestedPage.getProperty( flagKey ); String pageValueFlag =
+	 *         (String)inPageRequest.getPageValue( flagKey ); String requestParameterFlag =
+	 *         inPageRequest.getRequestParameter( flagKey ); log.debug( "Checking decoration flag " +
+	 *         flagKey + " for page " + requestedPage ); if ( "false".equals( propertyFlag ) ||
+	 *         "false".equals( pageValueFlag ) || "false".equals( requestParameterFlag ) ) { return
+	 *         false; }
 	 * 
-	 *                           String permission =
-	 *                           inAction.getConfig().getChildValue( "permission" );
-	 *                           if ( permission != null )
-	 *                           {
-	 *                           if ( inPageRequest.getUser() == null)
-	 *                           {
-	 *                           return false;
-	 *                           }
-	 *                           else
-	 *                           {
-	 *                           log.debug("Checking user");
-	 *                           return
-	 *                           inPageRequest.getUser().hasPermission(permission);
-	 *                           }
-	 *                           }
-	 *                           return true;
-	 *                           }
+	 *         String permission = inAction.getConfig().getChildValue( "permission" ); if ( permission
+	 *         != null ) { if ( inPageRequest.getUser() == null) { return false; } else {
+	 *         log.debug("Checking user"); return inPageRequest.getUser().hasPermission(permission); } }
+	 *         return true; }
 	 */
 
 }

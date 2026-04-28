@@ -30,23 +30,28 @@ import org.openedit.page.Page;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 
-public class JsonDataModule extends BaseJsonModule {
+public class JsonDataModule extends BaseJsonModule
+{
 	private static final Log log = LogFactory.getLog(JsonDataModule.class);
 
 	protected JsonUtil fieldJsonUtil;
 
-	public JsonUtil getJsonUtil() {
-		if (fieldJsonUtil == null) {
+	public JsonUtil getJsonUtil()
+	{
+		if (fieldJsonUtil == null)
+		{
 			fieldJsonUtil = (JsonUtil) getModuleManager().getBean("jsonUtil");
 		}
 		return fieldJsonUtil;
 	}
 
-	public void setJsonUtil(JsonUtil inJsonUtil) {
+	public void setJsonUtil(JsonUtil inJsonUtil)
+	{
 		fieldJsonUtil = inJsonUtil;
 	}
 
-	public void handleSearch(WebPageRequest inReq) {
+	public void handleSearch(WebPageRequest inReq)
+	{
 		// Could probably handle this generically, but I think they want tags, keywords
 		// etc.
 
@@ -62,7 +67,9 @@ public class JsonDataModule extends BaseJsonModule {
 		{
 			hits = searcher.getAllHits(inReq);
 			// Add sort
-		} else {
+		}
+		else
+		{
 			hits = getJsonUtil().searchByJson(searcher, inReq);
 		}
 		inReq.putPageValue("hits", hits);
@@ -72,7 +79,8 @@ public class JsonDataModule extends BaseJsonModule {
 		log.info(search);
 	}
 
-	public void handleAiFunction(WebPageRequest inReq) {
+	public void handleAiFunction(WebPageRequest inReq)
+	{
 		// Could probably handle this generically, but I think they want tags, keywords
 		// etc.
 		String catalogid = findCatalogId(inReq);
@@ -83,7 +91,8 @@ public class JsonDataModule extends BaseJsonModule {
 		String channelid = (String) request.get("channel");
 
 		Data channel = archive.getCachedData("channel", channelid);
-		if (channel == null) {
+		if (channel == null)
+		{
 			channel = archive.getSearcher("channel").createNewData();
 			channel.setId(channelid);
 			channel.setValue("date", new Date());
@@ -134,7 +143,8 @@ public class JsonDataModule extends BaseJsonModule {
 		inReq.putPageValue("agentcontextsearcher", archive.getSearcher("agentcontext"));
 
 		String function = context.getNextFunctionName();
-		if (function == null) {
+		if (function == null)
+		{
 			function = context.getFunctionName();
 		}
 		Data aifunction = archive.getCachedData("aifunction", function);
@@ -142,7 +152,8 @@ public class JsonDataModule extends BaseJsonModule {
 
 	}
 
-	public Data createData(WebPageRequest inReq) {
+	public Data createData(WebPageRequest inReq)
+	{
 		String catalogid = findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
 		String searchtype = resolveSearchType(inReq);
@@ -155,15 +166,20 @@ public class JsonDataModule extends BaseJsonModule {
 		String sourcepath = inReq.getRequestParameter("sourcepath");
 
 		JSONObject request = (JSONObject) inReq.getJsonRequest();
-		if (request == null) {
+		if (request == null)
+		{
 			request = new JSONObject();
 			String[] fields = inReq.getRequestParameters("field");
 			searcher.updateData(inReq, fields, newdata);
-		} else {
-			if (id == null) {
+		}
+		else
+		{
+			if (id == null)
+			{
 				id = (String) inReq.getPageValue("id");
 			}
-			if (id != null && id.isEmpty()) {
+			if (id != null && id.isEmpty())
+			{
 				id = null;
 			}
 			populateJsonData(request, searcher, newdata);
@@ -181,7 +197,8 @@ public class JsonDataModule extends BaseJsonModule {
 
 	}
 
-	public Data searchOrCreateData(WebPageRequest inReq) {
+	public Data searchOrCreateData(WebPageRequest inReq)
+	{
 
 		String catalogid = findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
@@ -192,13 +209,15 @@ public class JsonDataModule extends BaseJsonModule {
 		inReq.putPageValue("searcher", searcher);
 
 		String name = inReq.getRequestParameter("name");
-		if (name == null) {
+		if (name == null)
+		{
 			name = inReq.getRequestParameter("name.value");
 		}
 
 		Data data = (Data) searcher.searchByField("name", name);
 
-		if (data == null) {
+		if (data == null)
+		{
 			data = createData(inReq);
 		}
 
@@ -208,18 +227,22 @@ public class JsonDataModule extends BaseJsonModule {
 
 	}
 
-	protected void checkAssetUploads(WebPageRequest inReq, MediaArchive archive, Searcher searcher, Data newdata) {
-		if (inReq.getRequest() != null && inReq.getRequest().getContentType() != null
-				&& inReq.getRequest().getContentType().toLowerCase().contains("multipart/form-data")) {
+	protected void checkAssetUploads(WebPageRequest inReq, MediaArchive archive, Searcher searcher, Data newdata)
+	{
+		if (inReq.getRequest() != null && inReq.getRequest().getContentType() != null && inReq.getRequest().getContentType().toLowerCase().contains("multipart/form-data"))
+		{
 			FileUpload command = (FileUpload) archive.getBean("fileUpload");
 			UploadRequest properties = command.parseArguments(inReq);
 
-			for (Iterator iterator = searcher.getProperties().iterator(); iterator.hasNext();) {
+			for (Iterator iterator = searcher.getProperties().iterator(); iterator.hasNext();)
+			{
 				PropertyDetail detail = (PropertyDetail) iterator.next();
-				if ("asset".equals(detail.getListId())) {
+				if ("asset".equals(detail.getListId()))
+				{
 					// Save all the assets first
 					Asset asset = createAssetForFileField(inReq, properties, detail);
-					if (asset != null) {
+					if (asset != null)
+					{
 						newdata.setValue(detail.getId(), asset.getId());
 					}
 				}
@@ -227,7 +250,8 @@ public class JsonDataModule extends BaseJsonModule {
 		}
 	}
 
-	public Data loadData(WebPageRequest inReq) {
+	public Data loadData(WebPageRequest inReq)
+	{
 
 		String catalogid = findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
@@ -240,7 +264,8 @@ public class JsonDataModule extends BaseJsonModule {
 
 		Data data = (Data) searcher.searchById(id);
 
-		if (data == null) {
+		if (data == null)
+		{
 			// throw new OpenEditException("Asset was not found!");
 			return null;
 		}
@@ -251,7 +276,8 @@ public class JsonDataModule extends BaseJsonModule {
 
 	}
 
-	public void deleteData(WebPageRequest inReq) {
+	public void deleteData(WebPageRequest inReq)
+	{
 
 		String catalogid = findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
@@ -262,7 +288,8 @@ public class JsonDataModule extends BaseJsonModule {
 
 		Data data = (Data) searcher.searchById(id);
 
-		if (data == null) {
+		if (data == null)
+		{
 			// throw new OpenEditException("Asset was not found!");
 			// if( inReq.getResponse() != null)
 			// {
@@ -277,13 +304,17 @@ public class JsonDataModule extends BaseJsonModule {
 
 	}
 
-	public String resolveSearchType(WebPageRequest inReq) {
+	public String resolveSearchType(WebPageRequest inReq)
+	{
 		String searchtype = inReq.getContentProperty("searchtype");
-		if (searchtype == null) {
+		if (searchtype == null)
+		{
 			String root = inReq.getContentProperty("searchtyperoot");
-			if (root != null) {
+			if (root != null)
+			{
 				String url = inReq.getPath();
-				if (!url.endsWith("/")) {
+				if (!url.endsWith("/"))
+				{
 					url = url + "/";
 				}
 				String ending = url.substring(root.length(), url.length());
@@ -291,19 +322,22 @@ public class JsonDataModule extends BaseJsonModule {
 				searchtype = PathUtilities.extractPageName(searchtype);
 			}
 		}
-		if (searchtype == null) {
+		if (searchtype == null)
+		{
 			searchtype = inReq.findPathValue("searchtype");
 		}
 		return searchtype;
 	}
 
-	public void updateData(WebPageRequest inReq) {
+	public void updateData(WebPageRequest inReq)
+	{
 		String catalogid = findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
 		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = archive.getSearcher(searchtype);
 		Data newdata = loadData(inReq);
-		if (newdata == null) {
+		if (newdata == null)
+		{
 			newdata = searcher.createNewData();
 		}
 		checkAssetUploads(inReq, archive, searcher, newdata);
@@ -315,26 +349,31 @@ public class JsonDataModule extends BaseJsonModule {
 		inReq.putPageValue("data", newdata);
 	}
 
-	public void getUUID(WebPageRequest inReq) {
+	public void getUUID(WebPageRequest inReq)
+	{
 		Map request = inReq.getJsonRequest();
 		String id = null;
-		if (request != null) {
+		if (request != null)
+		{
 			id = (String) request.get("id");
 		}
-		if (id == null) {
+		if (id == null)
+		{
 			id = UUID.randomUUID().toString();
 		}
 		inReq.putPageValue("id", id);
 	}
 
-	public Asset createAssetForFileField(WebPageRequest inReq, UploadRequest properties, PropertyDetail inDetails) {
+	public Asset createAssetForFileField(WebPageRequest inReq, UploadRequest properties, PropertyDetail inDetails)
+	{
 		SearcherManager sm = (SearcherManager) inReq.getPageValue("searcherManager");
 
 		String catalogid = findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
 
 		FileUploadItem item = properties.getUploadItemByName(inDetails.getId());
-		if (item == null) {
+		if (item == null)
+		{
 			return null;
 		}
 		AssetImporter importer = archive.getAssetImporter();
@@ -342,7 +381,8 @@ public class JsonDataModule extends BaseJsonModule {
 		HashMap vals = new HashMap();
 		vals.putAll(inReq.getParameterMap()); // Includes json
 
-		if (inDetails.get("sourcepath") == null) {
+		if (inDetails.get("sourcepath") == null)
+		{
 			throw new OpenEditException("sourcepath must be set on " + inDetails);
 		}
 
@@ -353,16 +393,19 @@ public class JsonDataModule extends BaseJsonModule {
 
 		Asset asset = null;
 		String id = (String) vals.get("id");
-		if (id != null) {
+		if (id != null)
+		{
 			asset = archive.getAsset(id);
-			if (asset != null) {
+			if (asset != null)
+			{
 				sourcepath = asset.getSourcePath();
 			}
 		}
 
 		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath;
 		boolean foldrbased = false;
-		if (path.endsWith("/")) {
+		if (path.endsWith("/"))
+		{
 			path = path + "/" + item.getName();
 			foldrbased = true;
 		}
@@ -377,9 +420,11 @@ public class JsonDataModule extends BaseJsonModule {
 		return asset;
 	}
 
-	protected void extractVals(HashMap vals, MediaArchive archive, FileUploadItem item) {
+	protected void extractVals(HashMap vals, MediaArchive archive, FileUploadItem item)
+	{
 		String fileName = item.getName();
-		if (fileName != null) {
+		if (fileName != null)
+		{
 			vals.put("filename", fileName);
 			String ext = PathUtilities.extractPageType(fileName);
 			String render = archive.getMediaRenderType(ext);
@@ -399,7 +444,8 @@ public class JsonDataModule extends BaseJsonModule {
 		vals.put("formattedmonth", df);
 
 		String importpath = (String) vals.get("importpath");
-		if (importpath != null) {
+		if (importpath != null)
+		{
 			String filename = PathUtilities.extractFileName(importpath);
 			vals.put("filename", filename);
 		}

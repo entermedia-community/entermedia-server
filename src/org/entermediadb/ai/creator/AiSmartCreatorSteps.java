@@ -9,110 +9,134 @@ import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.data.BaseData;
 
-public class AiSmartCreatorSteps extends BaseData {
+public class AiSmartCreatorSteps extends BaseData
+{
 	Collection<String> fieldEmbeddedParentIds;
 
-	public Collection<String> getEmbeddedParentIds() {
+	public Collection<String> getEmbeddedParentIds()
+	{
 		return fieldEmbeddedParentIds;
 	}
 
-	public void setEmbeddedParentIds(Collection<String> inEmbeddedParentIds) {
+	public void setEmbeddedParentIds(Collection<String> inEmbeddedParentIds)
+	{
 		fieldEmbeddedParentIds = inEmbeddedParentIds;
 	}
 
 	protected Data fieldTargetModule;
 	protected Data fieldTargetEntity;
 
-	public Data getTargetEntity() {
+	public Data getTargetEntity()
+	{
 		return fieldTargetEntity;
 	}
 
-	public void setTargetEntity(Data inPlayback) {
+	public void setTargetEntity(Data inPlayback)
+	{
 		fieldTargetEntity = inPlayback;
 	}
 
 	protected String fieldTitleName;
 
-	public String getTitleName() {
+	public String getTitleName()
+	{
 		return fieldTitleName;
 	}
 
-	public void setTitleName(String inNewTitleName) {
+	public void setTitleName(String inNewTitleName)
+	{
 		fieldTitleName = inNewTitleName;
 	}
 
 	protected Collection<String> fieldProposedSections;
 
-	public Collection<String> getProposedSections() {
+	public Collection<String> getProposedSections()
+	{
 		return fieldProposedSections;
 	}
 
-	public void setProposedSections(Collection<String> inProposedSections) {
+	public void setProposedSections(Collection<String> inProposedSections)
+	{
 		fieldProposedSections = inProposedSections;
 	}
 
 	protected Collection<Data> fieldConfirmedSections;
 
-	public Collection<Data> getConfirmedSections() {
+	public Collection<Data> getConfirmedSections()
+	{
 		return fieldConfirmedSections;
 	}
 
-	public void setConfirmedSections(Collection<Data> inConfirmedSections) {
+	public void setConfirmedSections(Collection<Data> inConfirmedSections)
+	{
 		fieldConfirmedSections = inConfirmedSections;
 	}
 
-	public Map<Data, Collection<Data>> getSectionComponents() {
+	public Map<Data, Collection<Data>> getSectionComponents()
+	{
 		return fieldSectionComponents;
 	}
 
-	public void setSectionComponents(Map<Data, Collection<Data>> inSectionComponents) {
+	public void setSectionComponents(Map<Data, Collection<Data>> inSectionComponents)
+	{
 		fieldSectionComponents = inSectionComponents;
 	}
 
 	protected Map<Data, Collection<Data>> fieldSectionComponents;
 
 	// Is the playbackentitymodule
-	public Data getTargetModule() {
+	public Data getTargetModule()
+	{
 		return fieldTargetModule;
 	}
 
-	public void setTargetModule(Data inTargetModule) {
+	public void setTargetModule(Data inTargetModule)
+	{
 		fieldTargetModule = inTargetModule;
 	}
 
-	public Data getCreatedEntity() {
+	public Data getCreatedEntity()
+	{
 		return fieldCreatedEntity;
 	}
 
-	public void setCreatedEntity(Data inCreatedEntity) {
+	public void setCreatedEntity(Data inCreatedEntity)
+	{
 		fieldCreatedEntity = inCreatedEntity;
 	}
 
-	public String getStepOutlineCreate() {
+	public String getStepOutlineCreate()
+	{
 		return stepOutlineCreate;
 	}
 
-	public void setStepOutlineCreate(String inStep1create) {
+	public void setStepOutlineCreate(String inStep1create)
+	{
 		stepOutlineCreate = inStep1create;
 	}
 
-	public String getStepContentCreate() {
+	public String getStepContentCreate()
+	{
 		return stepContentCreate;
 	}
 
-	public void setStepContentCreate(String inStep2create) {
+	public void setStepContentCreate(String inStep2create)
+	{
 		stepContentCreate = inStep2create;
 	}
 
-	public String getStepOutlineStyle() {
+	public String getStepOutlineStyle()
+	{
 		return stepOutlineStyle;
 	}
 
-	public void setStepOutlineStyle(String inStepOutlineStyle) {
+	public void setStepOutlineStyle(String inStepOutlineStyle)
+	{
 		stepOutlineStyle = inStepOutlineStyle;
 	}
 
-	public void setStepContentStyle(String inStepContentStyle) {
+	public void setStepContentStyle(String inStepContentStyle)
+	{
 		stepContentStyle = inStepContentStyle;
 	}
 
@@ -124,7 +148,8 @@ public class AiSmartCreatorSteps extends BaseData {
 	String stepContentCreate = null;
 	String stepContentStyle = null;
 
-	public void loadJsonParts(JSONObject inJson) {
+	public void loadJsonParts(JSONObject inJson)
+	{
 		// {
 		// "topic": "Employee Code of Conduct",
 		// "outline_section": {
@@ -140,7 +165,8 @@ public class AiSmartCreatorSteps extends BaseData {
 		setTitleName(title);
 
 		JSONObject outline = (JSONObject) inJson.get("outline_section");
-		if (outline != null) {
+		if (outline != null)
+		{
 			String instruction = (String) outline.get("instruction");
 			setStepOutlineCreate(instruction);
 
@@ -149,13 +175,15 @@ public class AiSmartCreatorSteps extends BaseData {
 		}
 
 		JSONObject content = (JSONObject) inJson.get("section_content");
-		if (content != null) {
+		if (content != null)
+		{
 			String instruction = (String) content.get("instruction");
 			setStepContentCreate(instruction);
 		}
 	}
 
-	public String getOutlineCreatePrompt() {
+	public String getOutlineCreatePrompt()
+	{
 		String prompt = getStepOutlineCreate();
 		// if(getStepOutlineStyle() != null)
 		// {
@@ -164,7 +192,8 @@ public class AiSmartCreatorSteps extends BaseData {
 		return prompt;
 	}
 
-	public String getContentCreatePrompt() {
+	public String getContentCreatePrompt()
+	{
 		return getStepContentCreate();
 	}
 

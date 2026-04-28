@@ -5,7 +5,8 @@ import java.util.Map;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 
-public interface LlmConnection {
+public interface LlmConnection
+{
 
 	public String getApiKey();
 
@@ -31,8 +32,7 @@ public interface LlmConnection {
 
 	public LlmResponse callClassifyFunction(AgentContext agentcontext, String inFunction, String inBase64Image);
 
-	public LlmResponse callClassifyFunction(AgentContext agentcontext, String inFunction, String inBase64Image,
-			String textContent);
+	public LlmResponse callClassifyFunction(AgentContext agentcontext, String inFunction, String inBase64Image, String textContent);
 
 	public LlmResponse callToolsFunction(AgentContext inAgentContext, String inFunction);
 

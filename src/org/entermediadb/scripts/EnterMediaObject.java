@@ -17,7 +17,8 @@ import org.openedit.users.UserManager;
 import groovy.lang.GroovyClassLoader;
 import groovy.util.GroovyScriptEngine;
 
-public class EnterMediaObject {
+public class EnterMediaObject
+{
 	protected WebPageRequest context;
 
 	protected MediaArchive fieldMediaArchive;
@@ -28,139 +29,174 @@ public class EnterMediaObject {
 	// protected PageManager pageManager;
 	protected File root;
 
-	public MediaArchive getMediaArchive() {
-		if (fieldMediaArchive == null) {
+	public MediaArchive getMediaArchive()
+	{
+		if (fieldMediaArchive == null)
+		{
 			return (MediaArchive) context.getPageValue("mediaarchive");
 		}
 		return fieldMediaArchive;
 	}
 
-	public void setMediaArchive(MediaArchive inMediaArchive) {
+	public void setMediaArchive(MediaArchive inMediaArchive)
+	{
 		fieldMediaArchive = inMediaArchive;
 	}
 
-	public WebPageRequest getContext() {
+	public WebPageRequest getContext()
+	{
 		return context;
 	}
 
-	public void setContext(WebPageRequest inContext) {
+	public void setContext(WebPageRequest inContext)
+	{
 		context = inContext;
 	}
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return moduleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		moduleManager = inModuleManager;
 	}
 
-	public ScriptLogger getLog() {
+	public ScriptLogger getLog()
+	{
 		return log;
 	}
 
-	public void setLog(ScriptLogger inLog) {
+	public void setLog(ScriptLogger inLog)
+	{
 		log = inLog;
 	}
 
-	public GroovyScriptEngine getEngine() {
+	public GroovyScriptEngine getEngine()
+	{
 		return engine;
 	}
 
-	public void setEngine(GroovyScriptEngine inEngine) {
+	public void setEngine(GroovyScriptEngine inEngine)
+	{
 		engine = inEngine;
 	}
 
-	public UserManager getUserManager() {
+	public UserManager getUserManager()
+	{
 		return userManager;
 	}
 
-	public void setUserManager(UserManager inUserManager) {
+	public void setUserManager(UserManager inUserManager)
+	{
 		userManager = inUserManager;
 	}
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return (PageManager) getModuleManager().getBean("pageManager");
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		// pageManager = inPageManager;
 	}
 
-	public File getRoot() {
+	public File getRoot()
+	{
 		return root;
 	}
 
-	public void setRoot(File inRoot) {
+	public void setRoot(File inRoot)
+	{
 		root = inRoot;
 	}
 
 	// not needed just call new sdfdsfds()
-	protected Object getBean(String inName) {
-		try {
+	protected Object getBean(String inName)
+	{
+		try
+		{
 			GroovyClassLoader loader = getEngine().getGroovyClassLoader();
 			Class groovyClass = loader.loadClass(inName);
 
 			Object object = groovyClass.newInstance();
 			return object;
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new OpenEditException(e);
 		}
 	}
 
-	public boolean assertNotNull(Object inObj, String inMessage) {
-		if (inObj == null) {
+	public boolean assertNotNull(Object inObj, String inMessage)
+	{
+		if (inObj == null)
+		{
 			log.info(inMessage + " was null");
 			return false;
 		}
 		return true;
 	}
 
-	public boolean assertEquals(Object inWhat, Object inEquals, String inMessage) {
+	public boolean assertEquals(Object inWhat, Object inEquals, String inMessage)
+	{
 		boolean ok = assertEquals(inWhat, inEquals);
-		if (!ok) {
+		if (!ok)
+		{
 			log.info(inMessage);
 		}
 		return ok;
 	}
 
-	public boolean assertEquals(Object inWhat, Object inEquals) {
-		if (inWhat == null || !inWhat.equals(inEquals)) {
+	public boolean assertEquals(Object inWhat, Object inEquals)
+	{
+		if (inWhat == null || !inWhat.equals(inEquals))
+		{
 			log.error(inWhat + " != " + inEquals);
 			return false;
 		}
 		return true;
 	}
 
-	public boolean assertTrue(Object inCheck) {
-		if (!Boolean.parseBoolean(String.valueOf(inCheck))) {
+	public boolean assertTrue(Object inCheck)
+	{
+		if (!Boolean.parseBoolean(String.valueOf(inCheck)))
+		{
 			log.error("Not true: ${inCheck}");
 			return false;
 		}
 		return true;
 	}
 
-	public WebPageRequest createPageRequest(String inPath) {
+	public WebPageRequest createPageRequest(String inPath)
+	{
 		Page page = getPageManager().getPage(inPath);
 		return context.copy(page);
 	}
 
-	public OpenEditEngine getOpenEditEngine() {
+	public OpenEditEngine getOpenEditEngine()
+	{
 		return (OpenEditEngine) getModuleManager().getBean("OpenEditEngine");
 	}
 
-	public SearcherManager getSearcherManager() {
+	public SearcherManager getSearcherManager()
+	{
 		return (SearcherManager) getModuleManager().getBean("searcherManager");
 	}
 
-	public PathEventManager getPathEventManager() {
+	public PathEventManager getPathEventManager()
+	{
 		String catalogid = context.findPathValue("catalogid");
 		return (PathEventManager) getModuleManager().getBean(catalogid, "pathEventManager");
 	}
 
-	public Searcher loadSearcher(WebPageRequest inReq) throws Exception {
+	public Searcher loadSearcher(WebPageRequest inReq) throws Exception
+	{
 		String fieldname = inReq.findPathValue("searchtype");
-		if (fieldname == null) {
+		if (fieldname == null)
+		{
 			return null;
 		}
 		String catalogId = inReq.findPathValue("catalogid");

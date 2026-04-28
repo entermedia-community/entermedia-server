@@ -5,7 +5,8 @@ import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.openedit.repository.ContentItem;
 
-public class OriginalConversionManager extends BaseConversionManager {
+public class OriginalConversionManager extends BaseConversionManager
+{
 	// To create the file we need to Look for input in several places
 	// CR 1024x768
 	// Custom thumb
@@ -19,13 +20,15 @@ public class OriginalConversionManager extends BaseConversionManager {
 	// return page.getContentItem();
 	// }
 
-	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem input) {
+	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem input)
+	{
 		ContentItem page = getMediaArchive().getOriginalContent(inStructions.getAsset());
 		return page;
 	}
 
 	@Override
-	public ConvertResult createOutput(ConvertInstructions inStructions) {
+	public ConvertResult createOutput(ConvertInstructions inStructions)
+	{
 		// TODO Auto-generated method stub
 		ConvertResult result = new ConvertResult();
 		ContentItem page = getMediaArchive().getOriginalContent(inStructions.getAsset());
@@ -35,7 +38,8 @@ public class OriginalConversionManager extends BaseConversionManager {
 		return result;
 	}
 
-	protected String getRenderType() {
+	protected String getRenderType()
+	{
 		return "original";
 	}
 

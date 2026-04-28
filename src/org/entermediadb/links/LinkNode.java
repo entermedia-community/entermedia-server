@@ -1,14 +1,14 @@
 /*
-Copyright (c) 2003 eInnovation Inc. All rights reserved
-
-This library is free software; you can redistribute it and/or modify it under the terms
-of the GNU Lesser General Public License as published by the Free Software Foundation;
-either version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-*/
+ * Copyright (c) 2003 eInnovation Inc. All rights reserved
+ * 
+ * This library is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation; either version
+ * 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 
 package org.entermediadb.links;
 
@@ -29,7 +29,8 @@ import org.openedit.util.PathUtilities;
  *
  * @author Matt Avery, mavery@einnovation.com
  */
-public class LinkNode extends DefaultWebTreeNode implements Comparable {
+public class LinkNode extends DefaultWebTreeNode implements Comparable
+{
 	// public static final DefaultWebTreeNode ERROR_NODE = new DefaultWebTreeNode(
 	// "Error accessing tree node." );
 	protected Set fieldIgnoreTypes;
@@ -57,11 +58,14 @@ public class LinkNode extends DefaultWebTreeNode implements Comparable {
 	 *
 	 * @return The node, or <code>null</code> if no such child could be found
 	 */
-	public LinkNode getChild(String inName) {
-		for (Iterator iter = getChildren().iterator(); iter.hasNext();) {
+	public LinkNode getChild(String inName)
+	{
+		for (Iterator iter = getChildren().iterator(); iter.hasNext();)
+		{
 			LinkNode child = (LinkNode) iter.next();
 
-			if ((child.getName() != null) && child.getName().equals(inName)) {
+			if ((child.getName() != null) && child.getName().equals(inName))
+			{
 				return child;
 			}
 		}
@@ -74,8 +78,10 @@ public class LinkNode extends DefaultWebTreeNode implements Comparable {
 	 * 
 	 * @see DefaultWebTreeNode#getChildren()
 	 */
-	public List getChildren() {
-		if (fieldChildren == null) {
+	public List getChildren()
+	{
+		if (fieldChildren == null)
+		{
 			fieldChildren = new ArrayList();
 			reloadChildren();
 		}
@@ -88,16 +94,21 @@ public class LinkNode extends DefaultWebTreeNode implements Comparable {
 	 * 
 	 * @see java.lang.Comparable#compareTo(Object)
 	 */
-	public int compareTo(Object o) {
-		if (o == null) {
+	public int compareTo(Object o)
+	{
+		if (o == null)
+		{
 			return 1;
 		}
 
-		if (o instanceof LinkNode) {
+		if (o instanceof LinkNode)
+		{
 			LinkNode node = (LinkNode) o;
 
 			return getLink().getPath().compareTo(node.getLink().getPath());
-		} else {
+		}
+		else
+		{
 			return 0;
 		}
 	}
@@ -107,28 +118,32 @@ public class LinkNode extends DefaultWebTreeNode implements Comparable {
 	 *
 	 * @param inPath The path to find
 	 *
-	 * @return The node at the given path, or <code>null</code> if it could not be
-	 *         found
+	 * @return The node at the given path, or <code>null</code> if it could not be found
 	 */
-	public LinkNode findNode(String inPath) {
+	public LinkNode findNode(String inPath)
+	{
 		// Quick initial checks...
-		if (!inPath.startsWith("/")) {
+		if (!inPath.startsWith("/"))
+		{
 			inPath = "/" + inPath;
 		}
 
-		if (inPath.equals("") || inPath.equals("/")) {
+		if (inPath.equals("") || inPath.equals("/"))
+		{
 			return this;
 		}
 
 		int beforeSlashIndex = 0;
 
-		if (inPath.startsWith("/")) {
+		if (inPath.startsWith("/"))
+		{
 			beforeSlashIndex = 1;
 		}
 
 		int nextSlashIndex = inPath.indexOf('/', beforeSlashIndex);
 
-		if (nextSlashIndex < 0) {
+		if (nextSlashIndex < 0)
+		{
 			nextSlashIndex = inPath.length();
 		}
 
@@ -136,9 +151,12 @@ public class LinkNode extends DefaultWebTreeNode implements Comparable {
 
 		LinkNode child = getChild(childName);
 
-		if (child == null) {
+		if (child == null)
+		{
 			return null;
-		} else {
+		}
+		else
+		{
 			return child.findNode(inPath.substring(nextSlashIndex));
 		}
 	}
@@ -146,29 +164,36 @@ public class LinkNode extends DefaultWebTreeNode implements Comparable {
 	/**
 	 * Reload the children of this page tree node.
 	 */
-	public void reloadChildren() {
+	public void reloadChildren()
+	{
 		getChildren().clear();
 
-		if (getLink().hasChildren()) {
+		if (getLink().hasChildren())
+		{
 			List childItems = getLink().getChildren();
-			for (Iterator iterator = childItems.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = childItems.iterator(); iterator.hasNext();)
+			{
 				Link childItem = (Link) iterator.next();
 
 				String name = childItem.getPath();
 				boolean okToAdd = true;
 
-				if (getIgnoreTypes() != null) {
+				if (getIgnoreTypes() != null)
+				{
 					// we want to ignore some files in this directory ie. CVS
-					for (Iterator iter = getIgnoreTypes().iterator(); iter.hasNext();) {
+					for (Iterator iter = getIgnoreTypes().iterator(); iter.hasNext();)
+					{
 						String key = (String) iter.next();
 
-						if (PathUtilities.match(name, key)) {
+						if (PathUtilities.match(name, key))
+						{
 							okToAdd = false;
 							break;
 						}
 					}
 				}
-				if (okToAdd) {
+				if (okToAdd)
+				{
 
 					LinkNode child = createNode(childItem);
 					child.setParent(this);
@@ -182,11 +207,13 @@ public class LinkNode extends DefaultWebTreeNode implements Comparable {
 		}
 	}
 
-	protected void setIgnoreTypes(Set inIgnoreTypes) {
+	protected void setIgnoreTypes(Set inIgnoreTypes)
+	{
 		fieldIgnoreTypes = inIgnoreTypes;
 	}
 
-	protected Set getIgnoreTypes() {
+	protected Set getIgnoreTypes()
+	{
 		return fieldIgnoreTypes;
 	}
 
@@ -198,25 +225,30 @@ public class LinkNode extends DefaultWebTreeNode implements Comparable {
 	 *
 	 * @return PageTreeNode
 	 */
-	protected LinkNode createNode(Link childItem) {
+	protected LinkNode createNode(Link childItem)
+	{
 		LinkNode node = new LinkNode(childItem);
 		node.setIgnoreTypes(getIgnoreTypes());
 		return node;
 	}
 
-	public Link getLink() {
+	public Link getLink()
+	{
 		return fieldLink;
 	}
 
-	public void setLink(Link Link) {
+	public void setLink(Link Link)
+	{
 		fieldLink = Link;
 	}
 
-	public String getURL() {
+	public String getURL()
+	{
 		return getLink().getId();
 	}
 
-	public boolean hasLoadedChildren() {
+	public boolean hasLoadedChildren()
+	{
 		return getLink().getChildren() != null;
 	}
 

@@ -16,8 +16,9 @@ import org.openedit.util.JSONParser;
 import org.openedit.ModuleManager;
 import org.openedit.data.SearcherManager;
 
-//@ServerEndpoint(value = "/org/entermediadb/websocket/annotation/AnnotationConnection") 
-public class AnnotationConnection extends Endpoint implements MessageHandler.Partial<String> {
+// @ServerEndpoint(value = "/org/entermediadb/websocket/annotation/AnnotationConnection")
+public class AnnotationConnection extends Endpoint implements MessageHandler.Partial<String>
+{
 	private static final Log log = LogFactory.getLog(AnnotationConnection.class);
 	private RemoteEndpoint.Basic remoteEndpointBasic;
 	protected SearcherManager fieldSearcherManager;
@@ -27,30 +28,35 @@ public class AnnotationConnection extends Endpoint implements MessageHandler.Par
 	protected AnnotationManager fieldAnnotationManager;
 	protected ModuleManager fieldModuleManager;
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
 	protected StringBuffer fieldBufferedMessage;
 
 	@Override
-	public void onError(Session session, Throwable throwable) {
+	public void onError(Session session, Throwable throwable)
+	{
 		// TODO Auto-generated method stub
 		super.onError(session, throwable);
 	}
 
 	@Override
-	public void onClose(Session session, CloseReason closeReason) {
+	public void onClose(Session session, CloseReason closeReason)
+	{
 		getAnnotationManager().removeConnection(this);
 		super.onClose(session, closeReason);
 	}
 
 	@Override
-	public void onOpen(Session session, EndpointConfig endpointConfig) {
+	public void onOpen(Session session, EndpointConfig endpointConfig)
+	{
 		// javax.servlet.http.HttpSession http =
 		// (javax.servlet.http.HttpSession)session.getUserProperties().get("javax.servlet.http.HttpSession");
 
@@ -71,7 +77,8 @@ public class AnnotationConnection extends Endpoint implements MessageHandler.Par
 		// }
 
 		ModuleManager modulemanager = (ModuleManager) session.getUserProperties().get("moduleManager");
-		if (modulemanager == null) {
+		if (modulemanager == null)
+		{
 			throw new RuntimeException("modulemanager did not get set, lacking session?");
 		}
 		setModuleManager(modulemanager);
@@ -93,20 +100,25 @@ public class AnnotationConnection extends Endpoint implements MessageHandler.Par
 		// session.addMessageHandler(new EchoMessageHandlerBinary(remoteEndpointBasic));
 	}
 
-	public AnnotationManager getAnnotationManager() {
+	public AnnotationManager getAnnotationManager()
+	{
 
 		return fieldAnnotationManager;
 	}
 
-	public JSONParser getJSONParser() {
-		if (fieldJSONParser == null) {
+	public JSONParser getJSONParser()
+	{
+		if (fieldJSONParser == null)
+		{
 			fieldJSONParser = new JSONParser();
 		}
 		return fieldJSONParser;
 	}
 
-	protected StringBuffer getBufferedMessage() {
-		if (fieldBufferedMessage == null) {
+	protected StringBuffer getBufferedMessage()
+	{
+		if (fieldBufferedMessage == null)
+		{
 			fieldBufferedMessage = new StringBuffer();
 		}
 
@@ -114,13 +126,16 @@ public class AnnotationConnection extends Endpoint implements MessageHandler.Par
 	}
 
 	@Override
-	public synchronized void onMessage(String inData, boolean completed) {
+	public synchronized void onMessage(String inData, boolean completed)
+	{
 		getBufferedMessage().append(inData);
-		if (!completed) {
+		if (!completed)
+		{
 			return;
 		}
 		String message = getBufferedMessage().toString();
-		if (message != null && message.isEmpty()) {
+		if (message != null && message.isEmpty())
+		{
 			return; // Ping?
 		}
 		fieldBufferedMessage = null;
@@ -129,58 +144,73 @@ public class AnnotationConnection extends Endpoint implements MessageHandler.Par
 		// {
 		// return;
 		// }
-		try {
+		try
+		{
 			// message = message.replaceAll("null", "\"null\"");
 			JSONObject map = (JSONObject) getJSONParser().parse(new StringReader(message));
 			String command = (String) map.get("command");
 			String catalogid = (String) map.get("catalogid");
 			String assetid = (String) map.get("assetid");
 
-			if ("annotation.modified".equals(command)) {
+			if ("annotation.modified".equals(command))
+			{
 				// JSONObject obj = new JSONObject();
 				getAnnotationManager().annotationModified(this, map, message, catalogid, assetid);
-			} else if ("annotation.removed".equals(command)) {
-				// JSONObject obj = new JSONObject();
-				getAnnotationManager().annotationRemoved(this, map, message, catalogid, assetid);
-			} else if ("annotation.added".equals(command)) // Return all the annotation on this asset
-			{
-				// see if ID is set
-				// JSONObject json = new JSONObject();
-				// json.putAll(map);
-				// command.annotationdata
-				// obj.put("stuff", "array of annotations");
-				// remoteEndpointBasic.sendText(message);
-				getAnnotationManager().annotationAdded(this, map, message, catalogid, assetid);
-			} else if ("removeall".equals(command)) {
-				getAnnotationManager().annotationsRemoved(this, map, message, catalogid, assetid);
 			}
-		} catch (Exception e) {
+			else
+				if ("annotation.removed".equals(command))
+				{
+					// JSONObject obj = new JSONObject();
+					getAnnotationManager().annotationRemoved(this, map, message, catalogid, assetid);
+				}
+				else
+					if ("annotation.added".equals(command)) // Return all the annotation on this asset
+					{
+						// see if ID is set
+						// JSONObject json = new JSONObject();
+						// json.putAll(map);
+						// command.annotationdata
+						// obj.put("stuff", "array of annotations");
+						// remoteEndpointBasic.sendText(message);
+						getAnnotationManager().annotationAdded(this, map, message, catalogid, assetid);
+					}
+					else
+						if ("removeall".equals(command))
+						{
+							getAnnotationManager().annotationsRemoved(this, map, message, catalogid, assetid);
+						}
+		}
+		catch (Exception e)
+		{
 			// TODO Auto-generated catch block
 			log.error(e);
 			e.printStackTrace();
 		}
 	}
 	/*
-	 * private static void broadcast(String msg) { for (ChatAnnotation client :
-	 * connections) { try { synchronized (client) {
-	 * client.session.getBasicRemote().sendText(msg); } } catch (IOException e)
-	 * { log.debug("Chat Error: Failed to send message to client", e);
-	 * connections.remove(client); try { client.session.close(); } catch
-	 * (IOException e1) { // Ignore } String message = String.format("* %s %s",
-	 * client.nickname, "has been disconnected."); broadcast(message); } }
+	 * private static void broadcast(String msg) { for (ChatAnnotation client : connections) { try {
+	 * synchronized (client) { client.session.getBasicRemote().sendText(msg); } } catch (IOException e)
+	 * { log.debug("Chat Error: Failed to send message to client", e); connections.remove(client); try {
+	 * client.session.close(); } catch (IOException e1) { // Ignore } String message =
+	 * String.format("* %s %s", client.nickname, "has been disconnected."); broadcast(message); } }
 	 */
 
-	public void sendMessage(JSONObject json) {
-		try {
+	public void sendMessage(JSONObject json)
+	{
+		try
+		{
 			remoteEndpointBasic.sendText(json.toJSONString());
 			log.info("sent message");
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			log.error(e);
 			// throw new OpenEditException(e);
 		}
 	}
 
-	public RemoteEndpoint.Basic getRemoteEndpointBasic() {
+	public RemoteEndpoint.Basic getRemoteEndpointBasic()
+	{
 		return remoteEndpointBasic;
 
 	}

@@ -19,17 +19,19 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 
-public class ElasticModuleSearchKeywordSearcher extends BaseElasticSearcher {
+public class ElasticModuleSearchKeywordSearcher extends BaseElasticSearcher
+{
 	private static final Log log = LogFactory.getLog(ElasticModuleSearchKeywordSearcher.class);
 
 	// search only modules as specified on the search terms in the query
 	@Override
-	public HitTracker search(SearchQuery inQuery) {
+	public HitTracker search(SearchQuery inQuery)
+	{
 
-		Collection details = getSearcherManager().getSearcher(getCatalogId(), "modulesearch").getPropertyDetails()
-				.getDetailsByType("datatype", "list");
+		Collection details = getSearcherManager().getSearcher(getCatalogId(), "modulesearch").getPropertyDetails().getDetailsByType("datatype", "list");
 		List tables = new ArrayList();
-		for (Iterator iterator = details.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = details.iterator(); iterator.hasNext();)
+		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			String listd = detail.getListId();
 			tables.add(listd);
@@ -80,16 +82,20 @@ public class ElasticModuleSearchKeywordSearcher extends BaseElasticSearcher {
 	}
 
 	@Override
-	public void reindexInternal() throws OpenEditException {
+	public void reindexInternal() throws OpenEditException
+	{
 		// super.reindexInternal();
 	}
 
-	protected String[] listSearchModules() {
+	protected String[] listSearchModules()
+	{
 		String[] allmodules = (String[]) getCacheManager().get("modulesearch", "all");
-		if (allmodules == null) {
+		if (allmodules == null)
+		{
 			Collection<Data> modules = getSearcherManager().getList(getCatalogId(), "module");
 			Collection searchmodules = new ArrayList();
-			for (Iterator iterator = modules.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+			{
 				Data data = (Data) iterator.next();
 				String show = data.get("showonsearch");
 				if (!"modulesearch".equals(data.getId()) && Boolean.parseBoolean(show)) // Permission check?
@@ -103,12 +109,14 @@ public class ElasticModuleSearchKeywordSearcher extends BaseElasticSearcher {
 	}
 
 	@Override
-	public void reIndexAll() throws OpenEditException {
+	public void reIndexAll() throws OpenEditException
+	{
 		// super.reIndexAll();
 	}
 
 	@Override
-	public boolean initialize() {
+	public boolean initialize()
+	{
 		// return super.initialize();
 		return true;
 	}

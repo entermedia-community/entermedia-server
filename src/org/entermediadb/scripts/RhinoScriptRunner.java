@@ -1,14 +1,14 @@
 /*
-Copyright (c) 2003 eInnovation Inc. All rights reserved
-
-This library is free software; you can redistribute it and/or modify it under the terms
-of the GNU Lesser General Public License as published by the Free Software Foundation;
-either version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-*/
+ * Copyright (c) 2003 eInnovation Inc. All rights reserved
+ * 
+ * This library is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation; either version
+ * 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 
 package org.entermediadb.scripts;
 
@@ -25,12 +25,12 @@ import org.mozilla.javascript.Scriptable;
 import org.openedit.OpenEditException;
 
 /**
- * This implementation of {@link ScriptRunner} uses Mozilla's Rhino JavaScript
- * engine.
+ * This implementation of {@link ScriptRunner} uses Mozilla's Rhino JavaScript engine.
  *
  * @author Eric Galluzzo
  */
-public class RhinoScriptRunner implements ScriptRunner {
+public class RhinoScriptRunner implements ScriptRunner
+{
 	private static final Log LOGGER = LogFactory.getLog(RhinoScriptRunner.class);
 	protected Scriptable fieldGlobalScope;
 
@@ -39,76 +39,50 @@ public class RhinoScriptRunner implements ScriptRunner {
 	 *
 	 * @param inScripts DOCUMENT ME!
 	 */
-	public RhinoScriptRunner() {
-	}
+	public RhinoScriptRunner() {}
 
 	/**
-	 * @see ScriptRunner#execFunction(String, Object[])
-	 *      public Object execFunction(String inFuncName, Object[] inParameters)
-	 *      throws OpenEditException
-	 *      {
-	 *      try
-	 *      {
-	 *      Context context = Context.enter();
+	 * @see ScriptRunner#execFunction(String, Object[]) public Object execFunction(String inFuncName,
+	 *      Object[] inParameters) throws OpenEditException { try { Context context = Context.enter();
 	 * 
-	 *      // See comment above about the context class loader.
-	 *      ClassLoader loader = getClass().getClassLoader();
-	 *      if( loader == null)
-	 *      {
-	 *      loader = ClassLoader.getSystemClassLoader();
-	 *      }
+	 *      // See comment above about the context class loader. ClassLoader loader =
+	 *      getClass().getClassLoader(); if( loader == null) { loader =
+	 *      ClassLoader.getSystemClassLoader(); }
 	 * 
 	 *      Thread.currentThread().setContextClassLoader(loader);
 	 * 
 	 *      Object function = getScope().get(inFuncName, getScope());
 	 * 
-	 *      if (function instanceof Function)
-	 *      {
-	 *      LOGGER.debug(
-	 *      "Evaluating the " + inFuncName + "() function on " +
-	 *      getScript().getDescription());
+	 *      if (function instanceof Function) { LOGGER.debug( "Evaluating the " + inFuncName +
+	 *      "() function on " + getScript().getDescription());
 	 * 
-	 *      Object result = ((Function) function).call(context, getScope(), null,
-	 *      inParameters);
+	 *      Object result = ((Function) function).call(context, getScope(), null, inParameters);
 	 * 
-	 *      return unmarshal(result);
-	 *      }
-	 *      else
-	 *      {
-	 *      LOGGER.debug(
-	 *      "No " + inFuncName + "() function found on " +
-	 *      getScript().getDescription() +
-	 *      ", was " + function.toString());
-	 *      }
-	 *      }
-	 *      catch (Exception e)
-	 *      {
-	 *      LOGGER.error("execFunction(): Error during " + inFuncName + "(): " +
+	 *      return unmarshal(result); } else { LOGGER.debug( "No " + inFuncName +
+	 *      "() function found on " + getScript().getDescription() + ", was " + function.toString()); }
+	 *      } catch (Exception e) { LOGGER.error("execFunction(): Error during " + inFuncName + "(): " +
 	 *      e.getMessage());
 	 * 
-	 *      //e.printStackTrace();
-	 *      throw new OpenEditException(e);
-	 *      }
-	 *      finally
-	 *      {
-	 *      Context.exit();
-	 *      }
+	 *      //e.printStackTrace(); throw new OpenEditException(e); } finally { Context.exit(); }
 	 * 
-	 *      return null;
-	 *      }
+	 *      return null; }
 	 */
 
-	protected String makeStringFromCode(String inCode) {
-		if ((inCode.indexOf('"') < 0) && (inCode.indexOf('\\') < 0)) {
+	protected String makeStringFromCode(String inCode)
+	{
+		if ((inCode.indexOf('"') < 0) && (inCode.indexOf('\\') < 0))
+		{
 			return "\"" + inCode + "\"";
 		}
 
 		StringBuffer sb = new StringBuffer('"');
 
-		for (int i = 0; i < inCode.length(); i++) {
+		for (int i = 0; i < inCode.length(); i++)
+		{
 			char c = inCode.charAt(i);
 
-			switch (c) {
+			switch (c)
+			{
 				case '"':
 					sb.append("\\\"");
 
@@ -138,16 +112,20 @@ public class RhinoScriptRunner implements ScriptRunner {
 	 *
 	 * @return The Java object
 	 */
-	protected Object unmarshal(Object inObj) {
-		if (inObj instanceof NativeJavaObject) {
+	protected Object unmarshal(Object inObj)
+	{
+		if (inObj instanceof NativeJavaObject)
+		{
 			return ((NativeJavaObject) inObj).unwrap();
 		}
 
-		if (inObj instanceof NativeArray) {
+		if (inObj instanceof NativeArray)
+		{
 			NativeArray array = (NativeArray) inObj;
 			Object[] result = new Object[(int) array.jsGet_length()];
 
-			for (int i = 0; i < array.jsGet_length(); i++) {
+			for (int i = 0; i < array.jsGet_length(); i++)
+			{
 				result[i] = unmarshal(array.get(i, null));
 			}
 
@@ -158,11 +136,13 @@ public class RhinoScriptRunner implements ScriptRunner {
 	}
 
 	@Override
-	public Object exec(Script inScript, Map inContext) throws OpenEditException {
+	public Object exec(Script inScript, Map inContext) throws OpenEditException
+	{
 		// TODO Auto-generated method stub
 		// Run the main script, which contains the calculate() (and
 		// possibly init() ) function definitions.
-		try {
+		try
+		{
 			// We need to set the context class loader so that Rhino's
 			// DefiningClassLoader picks it up. In reality, we should
 			// probably set this elsewhere (i.e. where we create the
@@ -178,56 +158,73 @@ public class RhinoScriptRunner implements ScriptRunner {
 
 			Scriptable scope = createScope();
 
-			if (inContext != null) {
-				for (Iterator iter = inContext.keySet().iterator(); iter.hasNext();) {
+			if (inContext != null)
+			{
+				for (Iterator iter = inContext.keySet().iterator(); iter.hasNext();)
+				{
 					String name = (String) iter.next();
 					Object bean = inContext.get(name);
 					scope.put(name, scope, Context.toObject(bean, scope));
 					// runner.declareBean((String) element, );
 				}
 			}
-			Object returned = context.evaluateString(
-					scope, inScript.getScriptText(), inScript.getDescription(),
-					inScript.getStartLineNumber(), null);
+			Object returned = context.evaluateString(scope, inScript.getScriptText(), inScript.getDescription(), inScript.getStartLineNumber(), null);
 			return returned;
 
 			// LOGGER.info( "Javascript optimization level: " +
 			// context.getOptimizationLevel() );
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			LOGGER.error("init(): " + e.getMessage());
 
 			// LOGGER.error(bse);
 			throw new OpenEditException(e);
-		} finally {
+		}
+		finally
+		{
 			Context.exit();
 		}
 	}
 
-	public Scriptable getGlobalScope() {
-		if (fieldGlobalScope == null) {
-			try {
+	public Scriptable getGlobalScope()
+	{
+		if (fieldGlobalScope == null)
+		{
+			try
+			{
 				Context context = Context.enter();
 				fieldGlobalScope = new ImporterTopLevel(context);
-			} catch (Exception e) {
+			}
+			catch (Exception e)
+			{
 				throw new OpenEditException(e);
-			} finally {
+			}
+			finally
+			{
 				Context.exit();
 			}
 		}
 		return fieldGlobalScope;
 	}
 
-	public Scriptable createScope() {
-		try {
+	public Scriptable createScope()
+	{
+		try
+		{
 			Context context = Context.enter();
 
 			Scriptable scope = context.newObject(getGlobalScope());
 			scope.setPrototype(getGlobalScope());
 			scope.setParentScope(null);
 			return scope;
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new OpenEditException(e);
-		} finally {
+		}
+		finally
+		{
 			Context.exit();
 		}
 	}

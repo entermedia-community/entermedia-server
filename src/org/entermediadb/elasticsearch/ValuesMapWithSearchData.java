@@ -22,120 +22,164 @@ import org.openedit.data.ValuesMap;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.util.DateStorageUtil;
 
-public class ValuesMapWithSearchData<K, V> extends ValuesMap {
+public class ValuesMapWithSearchData<K, V> extends ValuesMap
+{
 	protected Map fieldSearchData;
 	protected SearchHit fieldSearchHit;
 	protected PropertyDetails fieldPropertyDetails;
 
-	public PropertyDetails getPropertyDetails() {
+	public PropertyDetails getPropertyDetails()
+	{
 		return fieldPropertyDetails;
 	}
 
-	public void setPropertyDetails(PropertyDetails inPropertyDetails) {
+	public void setPropertyDetails(PropertyDetails inPropertyDetails)
+	{
 		fieldPropertyDetails = inPropertyDetails;
 	}
 
-	protected Object getFromDb(String inId) {
+	protected Object getFromDb(String inId)
+	{
 		String detailid = inId;
-		if (detailid.endsWith("_int")) {
+		if (detailid.endsWith("_int"))
+		{
 			detailid = inId.substring(0, inId.length() - 4);
 		}
 		String key = detailid;
 		Object value = null;
 		PropertyDetail detail = getPropertyDetails().getDetail(detailid);
-		if (detail != null && detail.isMultiLanguage()) {
+		if (detail != null && detail.isMultiLanguage())
+		{
 			key = key + "_int";
 		}
 
-		if (getSearchHit() != null) {
-			if (key.equals("_score")) {
+		if (getSearchHit() != null)
+		{
+			if (key.equals("_score"))
+			{
 				return getSearchHit().getScore();
 			}
 			SearchHitField field = getSearchHit().field(key);
 			// Map fields = getSearchHit().getFields();
-			if (field != null) {
+			if (field != null)
+			{
 				value = field.getValue();
 			}
 		}
-		if (value == null && detail != null && getSearchData() != null) {
+		if (value == null && detail != null && getSearchData() != null)
+		{
 			value = getSearchData().get(key);
 
-			if (value != null) {
-				if (detail.isDate() && value instanceof String) {
+			if (value != null)
+			{
+				if (detail.isDate() && value instanceof String)
+				{
 					return DateStorageUtil.getStorageUtil().parseFromStorage((String) value);
 				}
-				if (detail.isGeoPoint() && value instanceof Map) {
+				if (detail.isGeoPoint() && value instanceof Map)
+				{
 					Position pos = new Position((Map) value);
 					value = pos;
 				}
 			}
-			if (value == null) {
+			if (value == null)
+			{
 				String legacy = detail.get("legacy");
-				if (legacy != null) {
+				if (legacy != null)
+				{
 					value = getSearchData().get(legacy);
 				}
 			}
-			if (value == null) {
-				if (detail.isMultiLanguage()) {
+			if (value == null)
+			{
+				if (detail.isMultiLanguage())
+				{
 					value = getSearchData().get(inId); // check without the _int if !inId.equals(key)
-				} else {
+				}
+				else
+				{
 					value = getSearchData().get(inId + "_int");
 				}
 			}
 		}
 
 		// fix objects
-		if (value != null && detail != null) {
-			if (detail.isMultiLanguage()) {
-				if (value instanceof String) {
-					if (value.toString().trim().isEmpty()) {
+		if (value != null && detail != null)
+		{
+			if (detail.isMultiLanguage())
+			{
+				if (value instanceof String)
+				{
+					if (value.toString().trim().isEmpty())
+					{
 						value = null;
-					} else {
+					}
+					else
+					{
 						LanguageMap map = new LanguageMap();
 						map.put("en", value);
 						value = map;
 					}
 				}
-				if (value instanceof Map) {
+				if (value instanceof Map)
+				{
 					Map map = (Map) value;
-					if (map.isEmpty()) {
+					if (map.isEmpty())
+					{
 						value = null;
-					} else if (value instanceof LanguageMap) {
-						// map = (LanguageMap)value;
-						// value = map;
-					} else {
-						value = new LanguageMap((Map) value);
 					}
-				}
-			} else if ("name".equals(inId) && value instanceof Map) {
-				LanguageMap map = new LanguageMap((Map) value);
-				if (map.keySet().size() == 1) {
-					value = map.values().iterator().next();
-				} else {
-					return map.toString();
+					else
+						if (value instanceof LanguageMap)
+						{
+							// map = (LanguageMap)value;
+							// value = map;
+						}
+						else
+						{
+							value = new LanguageMap((Map) value);
+						}
 				}
 			}
+			else
+				if ("name".equals(inId) && value instanceof Map)
+				{
+					LanguageMap map = new LanguageMap((Map) value);
+					if (map.keySet().size() == 1)
+					{
+						value = map.values().iterator().next();
+					}
+					else
+					{
+						return map.toString();
+					}
+				}
 		}
 		return value;
 	}
 
-	public Map getSearchData() {
-		if (fieldSearchData == null && getSearchHit() != null) {
+	public Map getSearchData()
+	{
+		if (fieldSearchData == null && getSearchHit() != null)
+		{
 			fieldSearchData = getSearchHit().getSource();
 		}
 		return fieldSearchData;
 	}
 
-	public void setSearchData(Map inSearchHit) {
+	public void setSearchData(Map inSearchHit)
+	{
 		fieldSearchData = inSearchHit;
 	}
 
-	public Object getValue(String inId) {
+	public Object getValue(String inId)
+	{
 		Object val = super.getObject(inId);
-		if (val == NULLSTRING || val == NULLVALUE) {
+		if (val == NULLSTRING || val == NULLVALUE)
+		{
 			return null;
 		}
-		if (val == null) {
+		if (val == null)
+		{
 			val = getFromDb(inId);
 		}
 
@@ -144,21 +188,28 @@ public class ValuesMapWithSearchData<K, V> extends ValuesMap {
 	}
 
 	@Override
-	public Collection<String> getValues(String inPreference) {
+	public Collection<String> getValues(String inPreference)
+	{
 		Object result = getValue(inPreference);
-		if (result == null) {
+		if (result == null)
+		{
 			return null;
 		}
-		if (result instanceof Collection) {
+		if (result instanceof Collection)
+		{
 			return new ArrayList((Collection) result);
 		}
-		if (result instanceof String) {
+		if (result instanceof String)
+		{
 			String inVal = (String) result;
 			String[] vals;
-			if (inVal.contains("|")) {
+			if (inVal.contains("|"))
+			{
 				vals = MultiValued.VALUEDELMITER.split(inVal);
-			} else {
-				vals = new String[] { inVal };
+			}
+			else
+			{
+				vals = new String[] {inVal};
 			}
 			Collection collection = new ArrayList(Arrays.asList(vals));
 			return collection;
@@ -171,12 +222,16 @@ public class ValuesMapWithSearchData<K, V> extends ValuesMap {
 	}
 
 	@Override
-	public Set keySet() {
+	public Set keySet()
+	{
 		Set set = new HashSet();
-		if (getSearchData() != null) {
-			for (Iterator iterator = getSearchData().keySet().iterator(); iterator.hasNext();) {
+		if (getSearchData() != null)
+		{
+			for (Iterator iterator = getSearchData().keySet().iterator(); iterator.hasNext();)
+			{
 				String key = (String) iterator.next();
-				if (key.endsWith("_int")) {
+				if (key.endsWith("_int"))
+				{
 					key = key.substring(0, key.length() - 4);
 				}
 				set.add(key);
@@ -188,27 +243,32 @@ public class ValuesMapWithSearchData<K, V> extends ValuesMap {
 	}
 
 	@Override
-	public int size() {
+	public int size()
+	{
 		int size = super.size();
 		size = size + getSearchData().size();
 		return size;
 	}
 
 	@Override
-	public boolean isEmpty() {
+	public boolean isEmpty()
+	{
 		return false;
 	}
 
-	public SearchHit getSearchHit() {
+	public SearchHit getSearchHit()
+	{
 		return fieldSearchHit;
 	}
 
-	public void setSearchHit(SearchHit inSearchHit) {
+	public void setSearchHit(SearchHit inSearchHit)
+	{
 		fieldSearchHit = inSearchHit;
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return super.toString();
 	}
 }

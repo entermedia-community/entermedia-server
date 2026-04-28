@@ -3,32 +3,27 @@ package org.entermediadb.email;
 /*
  * Copyright 1997-2009 Sun Microsystems, Inc. All Rights Reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
+ * Redistribution and use in source and binary forms, with or without modification, are permitted
+ * provided that the following conditions are met:
  *
- *   - Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
+ * - Redistributions of source code must retain the above copyright notice, this list of conditions
+ * and the following disclaimer.
  *
- *   - Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
+ * - Redistributions in binary form must reproduce the above copyright notice, this list of
+ * conditions and the following disclaimer in the documentation and/or other materials provided with
+ * the distribution.
  *
- *   - Neither the name of Sun Microsystems nor the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
+ * - Neither the name of Sun Microsystems nor the names of its contributors may be used to endorse
+ * or promote products derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+ * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 import java.io.BufferedInputStream;
@@ -59,14 +54,15 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.ParseException;
 
 /*
- * Demo app that exercises the Message interfaces.
- * Show information about and contents of messages.
+ * Demo app that exercises the Message interfaces. Show information about and contents of messages.
  *
  * @author John Mani
+ * 
  * @author Bill Shannon
  */
 
-public class MailCheck {
+public class MailCheck
+{
 
 	protected String protocol;
 	protected String host = null;
@@ -83,12 +79,14 @@ public class MailCheck {
 	protected boolean saveAttachments = false;
 	protected int attnum = 1;
 
-	public void test() {
+	public void test()
+	{
 		int msgnum = -1;
 		int optind;
 		InputStream msgStream = System.in;
 
-		try {
+		try
+		{
 			// Get a Properties object
 			Properties props = System.getProperties();
 
@@ -96,11 +94,11 @@ public class MailCheck {
 			Session session = Session.getInstance(props, null);
 			session.setDebug(debug);
 
-			if (showMessage) {
+			if (showMessage)
+			{
 				MimeMessage msg;
 				if (mbox != null)
-					msg = new MimeMessage(session, new BufferedInputStream(
-							new FileInputStream(mbox)));
+					msg = new MimeMessage(session, new BufferedInputStream(new FileInputStream(mbox)));
 				else
 					msg = new MimeMessage(session, msgStream);
 				dumpPart(msg);
@@ -109,12 +107,15 @@ public class MailCheck {
 
 			// Get a Store object
 			Store store = null;
-			if (url != null) {
+			if (url != null)
+			{
 				URLName urln = new URLName(url);
 				store = session.getStore(urln);
-				if (showAlert) {
+				if (showAlert)
+				{
 					store.addStoreListener(new StoreListener() {
-						public void notification(StoreEvent e) {
+						public void notification(StoreEvent e)
+						{
 							String s;
 							if (e.getMessageType() == StoreEvent.ALERT)
 								s = "ALERT: ";
@@ -125,7 +126,9 @@ public class MailCheck {
 					});
 				}
 				store.connect();
-			} else {
+			}
+			else
+			{
 				if (protocol != null)
 					store = session.getStore(protocol);
 				else
@@ -141,7 +144,8 @@ public class MailCheck {
 			// Open the Folder
 
 			Folder folder = store.getDefaultFolder();
-			if (folder == null) {
+			if (folder == null)
+			{
 				System.out.println("No default folder");
 				System.exit(1);
 			}
@@ -149,34 +153,41 @@ public class MailCheck {
 			if (mbox == null)
 				mbox = "INBOX";
 			folder = folder.getFolder(mbox);
-			if (folder == null) {
+			if (folder == null)
+			{
 				System.out.println("Invalid folder");
 				System.exit(1);
 			}
 
 			// try to open read/write and if that fails try read-only
-			try {
+			try
+			{
 				folder.open(Folder.READ_WRITE);
-			} catch (MessagingException ex) {
+			}
+			catch (MessagingException ex)
+			{
 				folder.open(Folder.READ_ONLY);
 			}
 			int totalMessages = folder.getMessageCount();
 
-			if (totalMessages == 0) {
+			if (totalMessages == 0)
+			{
 				System.out.println("Empty folder");
 				folder.close(false);
 				store.close();
 				System.exit(1);
 			}
 
-			if (verbose) {
+			if (verbose)
+			{
 				int newMessages = folder.getNewMessageCount();
 				System.out.println("Total messages = " + totalMessages);
 				System.out.println("New messages = " + newMessages);
 				System.out.println("-------------------------------");
 			}
 
-			if (msgnum == -1) {
+			if (msgnum == -1)
+			{
 				// Attributes & Flags for all messages ..
 				Message[] msgs = folder.getMessages();
 
@@ -187,27 +198,35 @@ public class MailCheck {
 				fp.add("X-Mailer");
 				folder.fetch(msgs, fp);
 
-				for (int i = 0; i < msgs.length; i++) {
+				for (int i = 0; i < msgs.length; i++)
+				{
 					System.out.println("--------------------------");
 					System.out.println("MESSAGE #" + (i + 1) + ":");
 					dumpEnvelope(msgs[i]);
 					dumpPart(msgs[i]);
 				}
-			} else {
+			}
+			else
+			{
 				System.out.println("Getting message number: " + msgnum);
 				Message m = null;
 
-				try {
+				try
+				{
 					m = folder.getMessage(msgnum);
 					dumpPart(m);
-				} catch (IndexOutOfBoundsException iex) {
+				}
+				catch (IndexOutOfBoundsException iex)
+				{
 					System.out.println("Message number out of range");
 				}
 			}
 
 			folder.close(false);
 			store.close();
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			System.out.println("Oops, got exception! " + ex.getMessage());
 			ex.printStackTrace();
 			System.exit(1);
@@ -215,23 +234,26 @@ public class MailCheck {
 		System.exit(0);
 	}
 
-	public void dumpPart(Part p) throws Exception {
+	public void dumpPart(Part p) throws Exception
+	{
 		if (p instanceof Message)
 			dumpEnvelope((Message) p);
 
 		/**
 		 * Dump input stream ..
 		 * 
-		 * InputStream is = p.getInputStream(); // If "is" is not already
-		 * buffered, wrap a BufferedInputStream // around it. if (!(is
-		 * instanceof BufferedInputStream)) is = new BufferedInputStream(is);
-		 * int c; while ((c = is.read()) != -1) System.out.write(c);
+		 * InputStream is = p.getInputStream(); // If "is" is not already buffered, wrap a
+		 * BufferedInputStream // around it. if (!(is instanceof BufferedInputStream)) is = new
+		 * BufferedInputStream(is); int c; while ((c = is.read()) != -1) System.out.write(c);
 		 **/
 
 		String ct = p.getContentType();
-		try {
+		try
+		{
 			pr("CONTENT-TYPE: " + (new ContentType(ct)).toString());
-		} catch (ParseException pex) {
+		}
+		catch (ParseException pex)
+		{
 			pr("BAD CONTENT-TYPE: " + ct);
 		}
 		String filename = p.getFileName();
@@ -239,77 +261,99 @@ public class MailCheck {
 			pr("FILENAME: " + filename);
 
 		/*
-		 * Using isMimeType to determine the content type avoids fetching the
-		 * actual content data until we need it.
+		 * Using isMimeType to determine the content type avoids fetching the actual content data until we
+		 * need it.
 		 */
-		if (p.isMimeType("text/plain")) {
+		if (p.isMimeType("text/plain"))
+		{
 			pr("This is plain text");
 			pr("---------------------------");
 			if (!showStructure && !saveAttachments)
 				System.out.println((String) p.getContent());
-		} else if (p.isMimeType("multipart/*")) {
-			pr("This is a Multipart");
-			pr("---------------------------");
-			Multipart mp = (Multipart) p.getContent();
-			level++;
-			int count = mp.getCount();
-			for (int i = 0; i < count; i++)
-				dumpPart(mp.getBodyPart(i));
-			level--;
-		} else if (p.isMimeType("message/rfc822")) {
-			pr("This is a Nested Message");
-			pr("---------------------------");
-			level++;
-			dumpPart((Part) p.getContent());
-			level--;
-		} else {
-			if (!showStructure && !saveAttachments) {
-				/*
-				 * If we actually want to see the data, and it's not a MIME type
-				 * we know, fetch it and check its Java type.
-				 */
-				Object o = p.getContent();
-				if (o instanceof String) {
-					pr("This is a string");
-					pr("---------------------------");
-					System.out.println((String) o);
-				} else if (o instanceof InputStream) {
-					pr("This is just an input stream");
-					pr("---------------------------");
-					InputStream is = (InputStream) o;
-					int c;
-					while ((c = is.read()) != -1)
-						System.out.write(c);
-				} else {
-					pr("This is an unknown type");
-					pr("---------------------------");
-					pr(o.toString());
-				}
-			} else {
-				// just a separator
-				pr("---------------------------");
-			}
 		}
+		else
+			if (p.isMimeType("multipart/*"))
+			{
+				pr("This is a Multipart");
+				pr("---------------------------");
+				Multipart mp = (Multipart) p.getContent();
+				level++;
+				int count = mp.getCount();
+				for (int i = 0; i < count; i++)
+					dumpPart(mp.getBodyPart(i));
+				level--;
+			}
+			else
+				if (p.isMimeType("message/rfc822"))
+				{
+					pr("This is a Nested Message");
+					pr("---------------------------");
+					level++;
+					dumpPart((Part) p.getContent());
+					level--;
+				}
+				else
+				{
+					if (!showStructure && !saveAttachments)
+					{
+						/*
+						 * If we actually want to see the data, and it's not a MIME type we know, fetch it and check its
+						 * Java type.
+						 */
+						Object o = p.getContent();
+						if (o instanceof String)
+						{
+							pr("This is a string");
+							pr("---------------------------");
+							System.out.println((String) o);
+						}
+						else
+							if (o instanceof InputStream)
+							{
+								pr("This is just an input stream");
+								pr("---------------------------");
+								InputStream is = (InputStream) o;
+								int c;
+								while ((c = is.read()) != -1)
+									System.out.write(c);
+							}
+							else
+							{
+								pr("This is an unknown type");
+								pr("---------------------------");
+								pr(o.toString());
+							}
+					}
+					else
+					{
+						// just a separator
+						pr("---------------------------");
+					}
+				}
 
 		/*
-		 * If we're saving attachments, write out anything that looks like an
-		 * attachment into an appropriately named file. Don't overwrite existing
-		 * files to prevent mistakes.
+		 * If we're saving attachments, write out anything that looks like an attachment into an
+		 * appropriately named file. Don't overwrite existing files to prevent mistakes.
 		 */
-		if (saveAttachments && level != 0 && !p.isMimeType("multipart/*")) {
+		if (saveAttachments && level != 0 && !p.isMimeType("multipart/*"))
+		{
 			String disp = p.getDisposition();
 			// many mailers don't include a Content-Disposition
-			if (disp == null || disp.equalsIgnoreCase(Part.ATTACHMENT)) {
+			if (disp == null || disp.equalsIgnoreCase(Part.ATTACHMENT))
+			{
 				if (filename == null)
 					filename = "Attachment" + attnum++;
 				pr("Saving attachment to file " + filename);
-				try {
+				try
+				{
 					File f = new File(filename);
 					if (f.exists())
 						// XXX - could try a series of names
 						throw new IOException("file exists");
 					((MimeBodyPart) p).saveFile(f);
-				} catch (IOException ex) {
+				}
+				catch (IOException ex)
+				{
 					pr("Failed to save attachment: " + ex);
 				}
 				pr("---------------------------");
@@ -317,156 +361,194 @@ public class MailCheck {
 		}
 	}
 
-	public String getProtocol() {
+	public String getProtocol()
+	{
 		return protocol;
 	}
 
-	public void setProtocol(String inProtocol) {
+	public void setProtocol(String inProtocol)
+	{
 		protocol = inProtocol;
 	}
 
-	public String getHost() {
+	public String getHost()
+	{
 		return host;
 	}
 
-	public void setHost(String inHost) {
+	public void setHost(String inHost)
+	{
 		host = inHost;
 	}
 
-	public String getUser() {
+	public String getUser()
+	{
 		return user;
 	}
 
-	public void setUser(String inUser) {
+	public void setUser(String inUser)
+	{
 		user = inUser;
 	}
 
-	public String getPassword() {
+	public String getPassword()
+	{
 		return password;
 	}
 
-	public void setPassword(String inPassword) {
+	public void setPassword(String inPassword)
+	{
 		password = inPassword;
 	}
 
-	public String getMbox() {
+	public String getMbox()
+	{
 		return mbox;
 	}
 
-	public void setMbox(String inMbox) {
+	public void setMbox(String inMbox)
+	{
 		mbox = inMbox;
 	}
 
-	public String getUrl() {
+	public String getUrl()
+	{
 		return url;
 	}
 
-	public void setUrl(String inUrl) {
+	public void setUrl(String inUrl)
+	{
 		url = inUrl;
 	}
 
-	public int getPort() {
+	public int getPort()
+	{
 		return port;
 	}
 
-	public void setPort(int inPort) {
+	public void setPort(int inPort)
+	{
 		port = inPort;
 	}
 
-	public boolean isVerbose() {
+	public boolean isVerbose()
+	{
 		return verbose;
 	}
 
-	public void setVerbose(boolean inVerbose) {
+	public void setVerbose(boolean inVerbose)
+	{
 		verbose = inVerbose;
 	}
 
-	public boolean isDebug() {
+	public boolean isDebug()
+	{
 		return debug;
 	}
 
-	public void setDebug(boolean inDebug) {
+	public void setDebug(boolean inDebug)
+	{
 		debug = inDebug;
 	}
 
-	public boolean isShowStructure() {
+	public boolean isShowStructure()
+	{
 		return showStructure;
 	}
 
-	public void setShowStructure(boolean inShowStructure) {
+	public void setShowStructure(boolean inShowStructure)
+	{
 		showStructure = inShowStructure;
 	}
 
-	public boolean isShowMessage() {
+	public boolean isShowMessage()
+	{
 		return showMessage;
 	}
 
-	public void setShowMessage(boolean inShowMessage) {
+	public void setShowMessage(boolean inShowMessage)
+	{
 		showMessage = inShowMessage;
 	}
 
-	public boolean isShowAlert() {
+	public boolean isShowAlert()
+	{
 		return showAlert;
 	}
 
-	public void setShowAlert(boolean inShowAlert) {
+	public void setShowAlert(boolean inShowAlert)
+	{
 		showAlert = inShowAlert;
 	}
 
-	public boolean isSaveAttachments() {
+	public boolean isSaveAttachments()
+	{
 		return saveAttachments;
 	}
 
-	public void setSaveAttachments(boolean inSaveAttachments) {
+	public void setSaveAttachments(boolean inSaveAttachments)
+	{
 		saveAttachments = inSaveAttachments;
 	}
 
-	public int getAttnum() {
+	public int getAttnum()
+	{
 		return attnum;
 	}
 
-	public void setAttnum(int inAttnum) {
+	public void setAttnum(int inAttnum)
+	{
 		attnum = inAttnum;
 	}
 
-	public static String getIndentStr() {
+	public static String getIndentStr()
+	{
 		return indentStr;
 	}
 
-	public static void setIndentStr(String inIndentStr) {
+	public static void setIndentStr(String inIndentStr)
+	{
 		indentStr = inIndentStr;
 	}
 
-	public static int getLevel() {
+	public static int getLevel()
+	{
 		return level;
 	}
 
-	public static void setLevel(int inLevel) {
+	public static void setLevel(int inLevel)
+	{
 		level = inLevel;
 	}
 
-	public void dumpEnvelope(Message m) throws Exception {
+	public void dumpEnvelope(Message m) throws Exception
+	{
 		pr("This is the message envelope");
 		pr("---------------------------");
 		Address[] a;
 		// FROM
-		if ((a = m.getFrom()) != null) {
+		if ((a = m.getFrom()) != null)
+		{
 			for (int j = 0; j < a.length; j++)
 				pr("FROM: " + a[j].toString());
 		}
 
 		// REPLY TO
-		if ((a = m.getReplyTo()) != null) {
+		if ((a = m.getReplyTo()) != null)
+		{
 			for (int j = 0; j < a.length; j++)
 				pr("REPLY TO: " + a[j].toString());
 		}
 
 		// TO
-		if ((a = m.getRecipients(Message.RecipientType.TO)) != null) {
-			for (int j = 0; j < a.length; j++) {
+		if ((a = m.getRecipients(Message.RecipientType.TO)) != null)
+		{
+			for (int j = 0; j < a.length; j++)
+			{
 				pr("TO: " + a[j].toString());
 				InternetAddress ia = (InternetAddress) a[j];
-				if (ia.isGroup()) {
+				if (ia.isGroup())
+				{
 					InternetAddress[] aa = ia.getGroup(false);
 					for (int k = 0; k < aa.length; k++)
 						pr("  GROUP: " + aa[k].toString());
@@ -487,23 +569,29 @@ public class MailCheck {
 		Flags.Flag[] sf = flags.getSystemFlags(); // get the system flags
 
 		boolean first = true;
-		for (int i = 0; i < sf.length; i++) {
+		for (int i = 0; i < sf.length; i++)
+		{
 			String s;
 			Flags.Flag f = sf[i];
 			if (f == Flags.Flag.ANSWERED)
 				s = "\\Answered";
-			else if (f == Flags.Flag.DELETED)
-				s = "\\Deleted";
-			else if (f == Flags.Flag.DRAFT)
-				s = "\\Draft";
-			else if (f == Flags.Flag.FLAGGED)
-				s = "\\Flagged";
-			else if (f == Flags.Flag.RECENT)
-				s = "\\Recent";
-			else if (f == Flags.Flag.SEEN)
-				s = "\\Seen";
 			else
-				continue; // skip it
+				if (f == Flags.Flag.DELETED)
+					s = "\\Deleted";
+				else
+					if (f == Flags.Flag.DRAFT)
+						s = "\\Draft";
+					else
+						if (f == Flags.Flag.FLAGGED)
+							s = "\\Flagged";
+						else
+							if (f == Flags.Flag.RECENT)
+								s = "\\Recent";
+							else
+								if (f == Flags.Flag.SEEN)
+									s = "\\Seen";
+								else
+									continue; // skip it
 			if (first)
 				first = false;
 			else
@@ -512,7 +600,8 @@ public class MailCheck {
 		}
 
 		String[] uf = flags.getUserFlags(); // get the user flag strings
-		for (int i = 0; i < uf.length; i++) {
+		for (int i = 0; i < uf.length; i++)
+		{
 			if (first)
 				first = false;
 			else
@@ -535,7 +624,8 @@ public class MailCheck {
 	/**
 	 * Print a, possibly indented, string.
 	 */
-	public void pr(String s) {
+	public void pr(String s)
+	{
 		if (showStructure)
 			System.out.print(indentStr.substring(0, level * 2));
 		System.out.println(s);

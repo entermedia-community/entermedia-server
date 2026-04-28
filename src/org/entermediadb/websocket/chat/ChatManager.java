@@ -18,36 +18,44 @@ import org.openedit.WebPageRequest;
 import org.openedit.users.User;
 import org.openedit.util.URLUtilities;
 
-public class ChatManager implements CatalogEnabled {
+public class ChatManager implements CatalogEnabled
+{
 	protected MediaArchive fieldMediaArchive;
 	protected ModuleManager fieldModuleManager;
 	protected String fieldCatalogId;
 
-	public String getCatalogId() {
+	public String getCatalogId()
+	{
 		return fieldCatalogId;
 	}
 
-	public void setCatalogId(String inCatalogId) {
+	public void setCatalogId(String inCatalogId)
+	{
 		fieldCatalogId = inCatalogId;
 	}
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
-	public MediaArchive getMediaArchive() {
-		if (fieldMediaArchive == null) {
+	public MediaArchive getMediaArchive()
+	{
+		if (fieldMediaArchive == null)
+		{
 			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		}
 
 		return fieldMediaArchive;
 	}
 
-	public void setMediaArchive(MediaArchive inMediaArchive) {
+	public void setMediaArchive(MediaArchive inMediaArchive)
+	{
 		fieldMediaArchive = inMediaArchive;
 	}
 
@@ -61,24 +69,28 @@ public class ChatManager implements CatalogEnabled {
 	// updateChatTopicLastModified(channelid, inUserId, "");
 	// }
 
-	public synchronized void updateChatTopicLastModified(String channelid, String inUserId, String inMessageId) {
-		MultiValued status = (MultiValued) getMediaArchive().query("chattopiclastmodified")
-				.exact("chattopicid", channelid).searchOne();
-		if (status == null) {
+	public synchronized void updateChatTopicLastModified(String channelid, String inUserId, String inMessageId)
+	{
+		MultiValued status = (MultiValued) getMediaArchive().query("chattopiclastmodified").exact("chattopicid", channelid).searchOne();
+		if (status == null)
+		{
 			status = (MultiValued) getMediaArchive().getSearcher("chattopiclastmodified").createNewData();
 			status.setValue("chattopicid", channelid);
 			// String collectionid,
 			MultiValued topic = (MultiValued) getMediaArchive().getCachedData("collectiveproject", channelid);
-			if (topic != null) {
+			if (topic != null)
+			{
 				Collection collections = topic.getValues("parentcollectionid");
 				status.setValue("collectionid", collections);
 			}
 		}
-		if (inUserId != null) {
+		if (inUserId != null)
+		{
 			// save user
 			status.setValue("userid", inUserId);
 		}
-		if (inMessageId != null) {
+		if (inMessageId != null)
+		{
 			// save Message
 			status.setValue("messageid", inMessageId);
 		}
@@ -87,15 +99,17 @@ public class ChatManager implements CatalogEnabled {
 	}
 
 	// TODO: Do this while messages are coming in
-	public synchronized void updateChatTopicLastChecked(String channelid, String inUserId) {
-		MultiValued status = (MultiValued) getMediaArchive().query("chattopiclastchecked")
-				.exact("chattopicid", channelid).match("userid", inUserId).searchOne();
-		if (status == null) {
+	public synchronized void updateChatTopicLastChecked(String channelid, String inUserId)
+	{
+		MultiValued status = (MultiValued) getMediaArchive().query("chattopiclastchecked").exact("chattopicid", channelid).match("userid", inUserId).searchOne();
+		if (status == null)
+		{
 			status = (MultiValued) getMediaArchive().getSearcher("chattopiclastchecked").createNewData();
 			status.setValue("chattopicid", channelid);
 			status.setValue("userid", inUserId);
 			MultiValued topic = (MultiValued) getMediaArchive().getData("collectiveproject", channelid);
-			if (topic != null) {
+			if (topic != null)
+			{
 				Collection collections = topic.getValues("parentcollectionid");
 				status.setValue("collectionid", collections);
 
@@ -107,32 +121,36 @@ public class ChatManager implements CatalogEnabled {
 
 	}
 
-	public Set loadChatTopicLastChecked(String inCollectionId, String inUserId) {
+	public Set loadChatTopicLastChecked(String inCollectionId, String inUserId)
+	{
 		// First get all the topics
-		if (inUserId == null || inCollectionId == null) {
+		if (inUserId == null || inCollectionId == null)
+		{
 			return Collections.EMPTY_SET;
 		}
 
-		Collection alltopicsmodified = getMediaArchive().query("chattopiclastmodified")
-				.exact("collectionid", inCollectionId).search();
+		Collection alltopicsmodified = getMediaArchive().query("chattopiclastmodified").exact("collectionid", inCollectionId).search();
 
 		HashMap<String, Data> modifiedtopics = new HashMap<String, Data>();
-		for (Iterator iterator = alltopicsmodified.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = alltopicsmodified.iterator(); iterator.hasNext();)
+		{
 			Data expiredcheck = (Data) iterator.next();
 			modifiedtopics.put(expiredcheck.get("chattopicid"), expiredcheck);
 		}
 
-		Collection lastchecks = getMediaArchive().query("chattopiclastchecked").exact("userid", inUserId)
-				.exact("collectionid", inCollectionId).search();
+		Collection lastchecks = getMediaArchive().query("chattopiclastchecked").exact("userid", inUserId).exact("collectionid", inCollectionId).search();
 
-		for (Iterator iterator = lastchecks.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = lastchecks.iterator(); iterator.hasNext();)
+		{
 			Data lastcheck = (Data) iterator.next();
 			String lastchecktopicid = lastcheck.get("chattopicid");
 			Data existingtopicmodified = modifiedtopics.get(lastchecktopicid);
-			if (existingtopicmodified != null) {
+			if (existingtopicmodified != null)
+			{
 				Date modifiedtopic = (Date) existingtopicmodified.getValue("datemodified");
 				Date checked = (Date) lastcheck.getValue("datechecked");
-				if (!modifiedtopic.after(checked)) {
+				if (!modifiedtopic.after(checked))
+				{
 					String topicid = lastcheck.get("chattopicid");
 					modifiedtopics.remove(topicid);
 				}
@@ -144,30 +162,34 @@ public class ChatManager implements CatalogEnabled {
 
 	}
 
-	public Collection loadCollectionsModified(Collection inCollections, String inUserId) {
-		if (inUserId == null) {
+	public Collection loadCollectionsModified(Collection inCollections, String inUserId)
+	{
+		if (inUserId == null)
+		{
 			return Collections.EMPTY_LIST;
 		}
-		Collection alltopicsmodified = getMediaArchive().query("chattopiclastmodified")
-				.orgroup("collectionid", inCollections).search();
+		Collection alltopicsmodified = getMediaArchive().query("chattopiclastmodified").orgroup("collectionid", inCollections).search();
 
 		HashMap<String, Data> modifiedtopics = new HashMap<String, Data>();
-		for (Iterator iterator = alltopicsmodified.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = alltopicsmodified.iterator(); iterator.hasNext();)
+		{
 			Data expiredcheck = (Data) iterator.next();
 			modifiedtopics.put(expiredcheck.get("chattopicid"), expiredcheck);
 		}
 
-		Collection lastchecks = getMediaArchive().query("chattopiclastchecked").exact("userid", inUserId)
-				.orgroup("collectionid", inCollections).search();
+		Collection lastchecks = getMediaArchive().query("chattopiclastchecked").exact("userid", inUserId).orgroup("collectionid", inCollections).search();
 
-		for (Iterator iterator = lastchecks.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = lastchecks.iterator(); iterator.hasNext();)
+		{
 			Data lastcheck = (Data) iterator.next();
 			String lastchecktopicid = lastcheck.get("chattopicid");
 			Data existingtopicmodified = modifiedtopics.get(lastchecktopicid);
-			if (existingtopicmodified != null) {
+			if (existingtopicmodified != null)
+			{
 				Date modifiedtopic = (Date) existingtopicmodified.getValue("datemodified");
 				Date checked = (Date) lastcheck.getValue("datechecked");
-				if (!modifiedtopic.after(checked)) {
+				if (!modifiedtopic.after(checked))
+				{
 					String topicid = lastcheck.get("chattopicid");
 					modifiedtopics.remove(topicid);
 				}
@@ -175,7 +197,8 @@ public class ChatManager implements CatalogEnabled {
 		}
 
 		Set collectionids = new HashSet();
-		for (Iterator iterator = modifiedtopics.values().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = modifiedtopics.values().iterator(); iterator.hasNext();)
+		{
 			Data expiredlastmod = (Data) iterator.next();
 			collectionids.add(expiredlastmod.get("collectionid"));
 		}
@@ -186,12 +209,14 @@ public class ChatManager implements CatalogEnabled {
 
 	}
 
-	public ChatServer getChatServer() {
+	public ChatServer getChatServer()
+	{
 		ChatServer server = (ChatServer) getModuleManager().getBean("system", "chatServer");
 		return server;
 	}
 
-	public String escapeMessage(String inMessage) {
+	public String escapeMessage(String inMessage)
+	{
 
 		String escaped = URLUtilities.xmlEscape(inMessage);
 		escaped = escaped.replaceAll("&lt;br&gt;", "<br>");
@@ -199,20 +224,26 @@ public class ChatManager implements CatalogEnabled {
 
 	}
 
-	public User getOtherChatUser(LibraryCollection inData, User myself) {
-		if (inData == null) {
+	public User getOtherChatUser(LibraryCollection inData, User myself)
+	{
+		if (inData == null)
+		{
 			return null;
 		}
-		if (!"3".equals(inData.get("collectiontype"))) {
+		if (!"3".equals(inData.get("collectiontype")))
+		{
 			return null;
 		}
 		String names = inData.getName();
-		if (names != null && names.startsWith("Messages [")) {
+		if (names != null && names.startsWith("Messages ["))
+		{
 			names = names.substring("Messages [".length(), names.length() - 1);
 			String[] both = names.split(",");
-			for (int i = 0; i < both.length; i++) {
+			for (int i = 0; i < both.length; i++)
+			{
 				String userid = both[i].trim();
-				if (!userid.equals(myself.getId())) {
+				if (!userid.equals(myself.getId()))
+				{
 					User user = getMediaArchive().getUser(userid);
 					return user;
 				}
@@ -221,6 +252,6 @@ public class ChatManager implements CatalogEnabled {
 		return null;
 	}
 
-	public void monitorChannels(WebPageRequest inReq) throws Exception {
-	}
+	public void monitorChannels(WebPageRequest inReq) throws Exception
+	{}
 }

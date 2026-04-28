@@ -4,7 +4,8 @@ import java.util.Date;
 
 import org.openedit.Data;
 
-public class LogEntry {
+public class LogEntry
+{
 	public LogEntry(String inType, String inMessage) {
 		setLogType(inType);
 		setMessage(inMessage);
@@ -12,37 +13,45 @@ public class LogEntry {
 
 	protected Date fieldDate;
 
-	public Date getDate() {
+	public Date getDate()
+	{
 		return fieldDate;
 	}
 
-	public void setDate(Date inDate) {
+	public void setDate(Date inDate)
+	{
 		fieldDate = inDate;
 	}
 
 	protected String fieldLogType;
 
-	public String getLogType() {
+	public String getLogType()
+	{
 		return fieldLogType;
 	}
 
-	public void setLogType(String inLogType) {
+	public void setLogType(String inLogType)
+	{
 		fieldLogType = inLogType;
 	}
 
-	public String getMessage() {
+	public String getMessage()
+	{
 		return fieldMessage;
 	}
 
-	public void setMessage(String inMessage) {
+	public void setMessage(String inMessage)
+	{
 		fieldMessage = inMessage;
 	}
 
-	public Data getCurrentAgentEnabledData() {
+	public Data getCurrentAgentEnabledData()
+	{
 		return fieldCurrentAgentEnabledData;
 	}
 
-	public void setCurrentAgentEnabledData(Data inCurrentAgentEnabledData) {
+	public void setCurrentAgentEnabledData(Data inCurrentAgentEnabledData)
+	{
 		fieldCurrentAgentEnabledData = inCurrentAgentEnabledData;
 	}
 
@@ -50,25 +59,31 @@ public class LogEntry {
 	protected Data fieldCurrentAgentEnabledData;
 	protected Data fieldCurrentAgentData;
 
-	public Object getValue(String inField) {
+	public Object getValue(String inField)
+	{
 		Object value = getCurrentAgentEnabledData().getValue(inField);
-		if (value == null) {
+		if (value == null)
+		{
 			value = getAgentData().getValue(inField);
 		}
 		return value;
 	}
 
-	private Data getAgentData() {
+	private Data getAgentData()
+	{
 		return fieldCurrentAgentData;
 	}
 
-	public void setAgentData(Data inAgentData) {
+	public void setAgentData(Data inAgentData)
+	{
 		fieldCurrentAgentData = inAgentData;
 	}
 
-	public String get(String inField) {
+	public String get(String inField)
+	{
 		String value = getCurrentAgentEnabledData().get(inField);
-		if (value == null) {
+		if (value == null)
+		{
 			value = getAgentData().get(inField);
 		}
 		return value;

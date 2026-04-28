@@ -6,28 +6,34 @@ import java.util.Map;
 
 import org.openedit.Data;
 
-public class UserRoleWithActions {
+public class UserRoleWithActions
+{
 	Map fieldUserRole;
 
-	protected Map getUserRole() {
+	protected Map getUserRole()
+	{
 		return fieldUserRole;
 	}
 
-	protected void setUserRole(Map inUserRole) {
+	protected void setUserRole(Map inUserRole)
+	{
 		fieldUserRole = inUserRole;
 	}
 
-	protected Collection getUserActions() {
+	protected Collection getUserActions()
+	{
 		return fieldUserActions;
 	}
 
-	protected void setUserActions(Collection inUserActions) {
+	protected void setUserActions(Collection inUserActions)
+	{
 		fieldUserActions = inUserActions;
 	}
 
 	Collection fieldUserActions = new ArrayList();
 
-	public void addRoleAction(Data inRoleAction) {
+	public void addRoleAction(Data inRoleAction)
+	{
 		fieldUserActions.add(inRoleAction);
 	}
 

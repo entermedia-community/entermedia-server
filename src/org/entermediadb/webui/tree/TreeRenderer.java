@@ -9,7 +9,8 @@ import java.util.Collection;
  * @author cburkey
  *
  */
-public interface TreeRenderer {
+public interface TreeRenderer
+{
 	String renderAsString();
 
 	String renderAsString(String inNodeId);

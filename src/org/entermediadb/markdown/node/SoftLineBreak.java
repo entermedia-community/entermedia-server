@@ -8,14 +8,14 @@ package org.entermediadb.markdown.node;
  * bar
  * </pre>
  *
- * @see <a href=
- *      "https://spec.commonmark.org/0.31.2/#soft-line-breaks">CommonMark
- *      Spec</a>
+ * @see <a href= "https://spec.commonmark.org/0.31.2/#soft-line-breaks">CommonMark Spec</a>
  */
-public class SoftLineBreak extends Node {
+public class SoftLineBreak extends Node
+{
 
     @Override
-    public void accept(Visitor visitor) {
+    public void accept(Visitor visitor)
+    {
         visitor.visit(this);
     }
 }

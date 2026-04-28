@@ -4,12 +4,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 
-public class JsonRpcResponseBuilder {
+public class JsonRpcResponseBuilder
+{
 	final private String version = "2.0";
 	private Object id;
 	private JSONObject result;
 
-	final private String[] capabilities = { "tools", "prompts", "resources" };
+	final private String[] capabilities = {"tools", "prompts", "resources"};
 
 	final JSONParser parser = new JSONParser();
 
@@ -17,7 +18,8 @@ public class JsonRpcResponseBuilder {
 		this.id = id;
 	}
 
-	public JsonRpcResponseBuilder withServer(String serverName) {
+	public JsonRpcResponseBuilder withServer(String serverName)
+	{
 		JSONObject result = new JSONObject();
 
 		result.put("protocolVersion", "2025-03-26");
@@ -31,7 +33,8 @@ public class JsonRpcResponseBuilder {
 
 		JSONObject capObj = new JSONObject();
 
-		for (String capability : this.capabilities) {
+		for (String capability : this.capabilities)
+		{
 			JSONObject innerObj = new JSONObject();
 			innerObj.put("listChanged", true);
 			capObj.put(capability, innerObj);
@@ -45,13 +48,17 @@ public class JsonRpcResponseBuilder {
 		return this;
 	}
 
-	public JsonRpcResponseBuilder withToolsList(String toolsStr) {
+	public JsonRpcResponseBuilder withToolsList(String toolsStr)
+	{
 		JSONObject result = new JSONObject();
 
-		try {
+		try
+		{
 			JSONArray toolsArray = (JSONArray) parser.parseCollection(toolsStr);
 			result.put("tools", toolsArray);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			result.put("text", "Invalid JSON Array in tools/list.html");
 			result.put("isError", true);
 		}
@@ -61,7 +68,8 @@ public class JsonRpcResponseBuilder {
 		return this;
 	}
 
-	public JsonRpcResponseBuilder withResponse(String text, Boolean isError) {
+	public JsonRpcResponseBuilder withResponse(String text, Boolean isError)
+	{
 		JSONObject result = new JSONObject();
 
 		JSONArray content = new JSONArray();
@@ -80,12 +88,14 @@ public class JsonRpcResponseBuilder {
 		return this;
 	}
 
-	public String build() {
+	public String build()
+	{
 		JSONObject json = new JSONObject();
 		json.put("jsonrpc", version);
 		json.put("id", id);
 
-		if (result != null) {
+		if (result != null)
+		{
 			json.put("result", result);
 		}
 

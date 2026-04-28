@@ -31,7 +31,8 @@ import org.openedit.util.PathUtilities;
 import org.openedit.util.RequestUtils;
 import org.openedit.util.XmlUtil;
 
-public class ElementalManager implements CatalogEnabled {
+public class ElementalManager implements CatalogEnabled
+{
 
 	private static final Log log = LogFactory.getLog(ElementalManager.class);
 
@@ -40,50 +41,62 @@ public class ElementalManager implements CatalogEnabled {
 	protected ModuleManager fieldModuleManager;
 	protected XmlUtil fieldXmlUtil;
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
-	public void setMediaArchive(MediaArchive inMediaArchive) {
+	public void setMediaArchive(MediaArchive inMediaArchive)
+	{
 		fieldMediaArchive = inMediaArchive;
 	}
 
-	public String getCatalogId() {
+	public String getCatalogId()
+	{
 		return fieldCatalogId;
 	}
 
-	public void setCatalogId(String inCatalogId) {
+	public void setCatalogId(String inCatalogId)
+	{
 		fieldCatalogId = inCatalogId;
 	}
 
-	protected MediaArchive getMediaArchive() {
-		if (fieldMediaArchive == null) {
+	protected MediaArchive getMediaArchive()
+	{
+		if (fieldMediaArchive == null)
+		{
 			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		}
 		return fieldMediaArchive;
 	}
 
-	public XmlUtil getXmlUtil() {
-		if (fieldXmlUtil == null) {
+	public XmlUtil getXmlUtil()
+	{
+		if (fieldXmlUtil == null)
+		{
 			fieldXmlUtil = new XmlUtil();
 		}
 		return fieldXmlUtil;
 	}
 
-	public void setXmlUtil(XmlUtil inXmlUtil) {
+	public void setXmlUtil(XmlUtil inXmlUtil)
+	{
 		fieldXmlUtil = inXmlUtil;
 	}
 
-	public HttpSharedConnection getClient() {
+	public HttpSharedConnection getClient()
+	{
 		HttpSharedConnection connection = new HttpSharedConnection();
 		return connection;
 	}
 
-	public void getJobs() {
+	public void getJobs()
+	{
 
 		String elementalroot = getMediaArchive().getCatalogSettingValue("elementalserver");
 		// curl -H "Accept: application/xml" http://<server_ip>/api/jobs
@@ -92,20 +105,24 @@ public class ElementalManager implements CatalogEnabled {
 		HttpGet method = new HttpGet(addr);
 		setHeaders(method, "/jobs");
 
-		try {
+		try
+		{
 			HttpResponse resp = getClient().sharedExecute(method);
 			String xml = EntityUtils.toString(resp.getEntity());
 
 			// Element elem = getXmlUtil().getXml(resp.getEntity().getContent(), "UTF-8");
 			log.info(resp.getStatusLine());
 
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new OpenEditException(e);
 		}
 
 	}
 
-	private void setHeaders(HttpRequestBase inMethod, String inUrl) {
+	private void setHeaders(HttpRequestBase inMethod, String inUrl)
+	{
 
 		inMethod.setHeader("Accept", "application/xml");
 		// inMethod.setHeader("Content-type", "application/xml");
@@ -135,13 +152,10 @@ public class ElementalManager implements CatalogEnabled {
 
 	}
 
-	public Element createJob(ConvertInstructions inStructions) {
+	public Element createJob(ConvertInstructions inStructions)
+	{
 		/*
-		 * Catalog Settings required:
-		 * elementalserver
-		 * elementalgeneratedroot
-		 * elementaluser
-		 * elementalkey
+		 * Catalog Settings required: elementalserver elementalgeneratedroot elementaluser elementalkey
 		 * 
 		 * Elemental Transcoder id: elemental
 		 * 
@@ -161,18 +175,15 @@ public class ElementalManager implements CatalogEnabled {
 		// String appid = "finder/find";//inStructions.get.get("applicationid"); //Not
 		// used for anything
 
-		UserProfile profile = (UserProfile) getMediaArchive().getProfileManager().loadUserProfile(getMediaArchive(),
-				null, "admin");
+		UserProfile profile = (UserProfile) getMediaArchive().getProfileManager().loadUserProfile(getMediaArchive(), null, "admin");
 
-		BaseWebPageRequest context = (BaseWebPageRequest) rutil.createVirtualPageRequest(
-				getMediaArchive().getCatalogHome() + "/configuration/elementaljob.xml", user, profile);
+		BaseWebPageRequest context = (BaseWebPageRequest) rutil.createVirtualPageRequest(getMediaArchive().getCatalogHome() + "/configuration/elementaljob.xml", user, profile);
 
 		String generatedroot = getMediaArchive().getCatalogSettingValue("elementalgeneratedroot");
 
 		String outputname = inStructions.getOutputFile().getName();
 
-		String outputpath = generatedroot + "/" + inStructions.getAssetSourcePath() + "/"
-				+ PathUtilities.extractPageName(outputname);
+		String outputpath = generatedroot + "/" + inStructions.getAssetSourcePath() + "/" + PathUtilities.extractPageName(outputname);
 
 		context.putPageValue("inputpath", item.getAbsolutePath());
 		context.putPageValue("outputpath", outputpath);
@@ -195,7 +206,8 @@ public class ElementalManager implements CatalogEnabled {
 		StringEntity params = new StringEntity(jobsubmit, "UTF-8");
 		params.setContentType("application/xml");
 		method.setEntity(params);
-		try {
+		try
+		{
 			HttpResponse response2 = getClient().sharedExecute(method);
 
 			// String xml = EntityUtils.toString(response2.getEntity());
@@ -203,7 +215,8 @@ public class ElementalManager implements CatalogEnabled {
 			log.info("Got this back:" + body);
 			StatusLine sl = response2.getStatusLine();
 			int status = sl.getStatusCode();
-			if (status >= 400) {
+			if (status >= 400)
+			{
 				log.error("error from server " + status + "  " + sl.getReasonPhrase());
 				return null;
 			}
@@ -227,22 +240,22 @@ public class ElementalManager implements CatalogEnabled {
 			String id = href.substring("/jobs/".length());
 			/**
 			 * 
-			 * <job href="/jobs/1362" product="Elemental Server + Audio Normalization
-			 * Package + HEVC Package" version="2.13.1.403404">
-			 * <input>
-			 * <active>false</active>
-			 * <filter_enable>Disable</filter_enable>
+			 * <job href="/jobs/1362" product="Elemental Server + Audio Normalization Package + HEVC Package"
+			 * version="2.13.1.403404"> <input> <active>false</active> <filter_enable>Disable</filter_enable>
 			 * <id>1363</id>
 			 **/
 			job.addAttribute("jobid", id);
 			return job;
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new OpenEditException(e);
 		}
 
 	}
 
-	public ConvertResult updateJobStatus(Data inTask) {
+	public ConvertResult updateJobStatus(Data inTask)
+	{
 		String elementalroot = getMediaArchive().getCatalogSettingValue("elementalserver");
 		String addr = elementalroot + "/api/jobs/" + inTask.get("externalid") + "/status";
 
@@ -253,7 +266,8 @@ public class ElementalManager implements CatalogEnabled {
 		setHeaders(method, "/jobs/" + jobid + "/status");
 		ConvertResult result = new ConvertResult();
 
-		try {
+		try
+		{
 			HttpResponse resp = getClient().sharedExecute(method);
 			log.info(resp.getStatusLine());
 			String xml = EntityUtils.toString(resp.getEntity());
@@ -262,57 +276,56 @@ public class ElementalManager implements CatalogEnabled {
 			String type = elem.getName();
 			// "errors" "complete"
 			boolean iserror = false;
-			if (type.equals("errors")) {
-				iserror = true;
-			} else if (elem.elementText("status").equals("error")) {
+			if (type.equals("errors"))
+			{
 				iserror = true;
 			}
-			if (iserror) {
+			else
+				if (elem.elementText("status").equals("error"))
+				{
+					iserror = true;
+				}
+			if (iserror)
+			{
 				// <errors>
 				// <error type="ActiveRecord::RecordNotFound">Couldn't find Job with
 				// id=1456</error>
 				// </errors>
 				result.setOk(false);
 				result.setError(xml);
-			} else {
+			}
+			else
+			{
 				result.setOk(true);
 				// If job is done?
-				if (elem.elementText("status").equals("complete")) {
+				if (elem.elementText("status").equals("complete"))
+				{
 					result.setComplete(true);
-				} else {
+				}
+				else
+				{
 					String percent = elem.elementText("pct_complete");
 					log.info("Job number: " + jobid + " is " + percent + "% complete");
 					result.setComplete(false);
 				}
 				/**
-				 * <job href="/jobs/1451">
-				 * <node>aes.metroeast.org</node>
-				 * <user_data/>
-				 * <active_input_id>0</active_input_id>
-				 * <submitted>2020-03-03 13:11:20 -0800</submitted>
-				 * <priority>33</priority>
-				 * <status>error</status>
-				 * <pct_complete>0</pct_complete>
-				 * <average_fps>0.0</average_fps>
-				 * <elapsed>0</elapsed>
-				 * <start_time>2020-03-03 13:11:21 -0800</start_time>
-				 * <errored_time>2020-03-03 13:11:24 -0800</errored_time>
-				 * <elapsed_time_in_words>00:00:00</elapsed_time_in_words>
-				 * <error_messages>
-				 * <error>
-				 * <code>1056</code>
-				 * <created_at>2020-03-03T13:11:24-08:00</created_at>
-				 * <message>Failed to initialize pipeline [Unable to create output directory
-				 * [/mnt/Meld/DAM/generated/Ingest]]. (IS)</message>
-				 * </error>
-				 * </error_messages>
-				 * </job>
+				 * <job href="/jobs/1451"> <node>aes.metroeast.org</node> <user_data/>
+				 * <active_input_id>0</active_input_id> <submitted>2020-03-03 13:11:20 -0800</submitted>
+				 * <priority>33</priority> <status>error</status> <pct_complete>0</pct_complete>
+				 * <average_fps>0.0</average_fps> <elapsed>0</elapsed> <start_time>2020-03-03 13:11:21
+				 * -0800</start_time> <errored_time>2020-03-03 13:11:24 -0800</errored_time>
+				 * <elapsed_time_in_words>00:00:00</elapsed_time_in_words> <error_messages> <error>
+				 * <code>1056</code> <created_at>2020-03-03T13:11:24-08:00</created_at> <message>Failed to
+				 * initialize pipeline [Unable to create output directory [/mnt/Meld/DAM/generated/Ingest]].
+				 * (IS)</message> </error> </error_messages> </job>
 				 * 
 				 */
 
 			}
 
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new OpenEditException(e);
 		}
 

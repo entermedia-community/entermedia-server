@@ -2,7 +2,8 @@ package org.entermediadb.asset.edit;
 
 import java.util.Date;
 
-public class Version {
+public class Version
+{
 
 	public static final String IMPORTED = "imported";
 	public static final String UPLOADED = "uploaded";
@@ -24,75 +25,93 @@ public class Version {
 	protected String fieldBackUpPath;
 	protected long fieldFileSize;
 
-	public long getFileSize() {
+	public long getFileSize()
+	{
 		return fieldFileSize;
 	}
 
-	public void setFileSize(long inFileSize) {
+	public void setFileSize(long inFileSize)
+	{
 		fieldFileSize = inFileSize;
 	}
 
-	public String getPreviewBackUpPath() {
+	public String getPreviewBackUpPath()
+	{
 		return fieldPreviewBackUpPath;
 	}
 
-	public void setPreviewBackUpPath(String inPreviewBackUpPath) {
+	public void setPreviewBackUpPath(String inPreviewBackUpPath)
+	{
 		fieldPreviewBackUpPath = inPreviewBackUpPath;
 	}
 
-	public String getBackUpPath() {
+	public String getBackUpPath()
+	{
 		return fieldBackUpPath;
 	}
 
-	public void setBackUpPath(String inBackUpPath) {
+	public void setBackUpPath(String inBackUpPath)
+	{
 		fieldBackUpPath = inBackUpPath;
 	}
 
-	public String getPreviewFileName() {
+	public String getPreviewFileName()
+	{
 		return fieldPreviewFileName;
 	}
 
-	public void setPreviewFileName(String inPreviewFileName) {
+	public void setPreviewFileName(String inPreviewFileName)
+	{
 		fieldPreviewFileName = inPreviewFileName;
 	}
 
-	public int getVersion() {
+	public int getVersion()
+	{
 		return fieldVersion;
 	}
 
-	public void setVersion(int inVersion) {
+	public void setVersion(int inVersion)
+	{
 		fieldVersion = inVersion;
 	}
 
-	public String getChangeType() {
+	public String getChangeType()
+	{
 		return fieldChangeType;
 	}
 
-	public void setChangeType(String inChangeType) {
+	public void setChangeType(String inChangeType)
+	{
 		fieldChangeType = inChangeType;
 	}
 
-	public String getUserMessage() {
+	public String getUserMessage()
+	{
 		return fieldUserMessage;
 	}
 
-	public void setUserMessage(String inUserMessage) {
+	public void setUserMessage(String inUserMessage)
+	{
 		fieldUserMessage = inUserMessage;
 	}
 
-	public String getEditUser() {
+	public String getEditUser()
+	{
 		return fieldEditUser;
 	}
 
-	public void setEditUser(String inEditUser) {
+	public void setEditUser(String inEditUser)
+	{
 		fieldEditUser = inEditUser;
 	}
 
-	public Date getEditDate() {
+	public Date getEditDate()
+	{
 		return fieldEditDate;
 	}
 
-	public void setEditDate(Date inEditDate) {
+	public void setEditDate(Date inEditDate)
+	{
 		fieldEditDate = inEditDate;
 	}
 

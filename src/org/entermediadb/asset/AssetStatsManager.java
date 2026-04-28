@@ -8,7 +8,8 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 
-public class AssetStatsManager {
+public class AssetStatsManager
+{
 	protected EventManager fieldEventManager;
 	protected SearcherManager fieldSearcherManager;
 	// protected Map fieldViewCache;
@@ -24,23 +25,28 @@ public class AssetStatsManager {
 	// fieldViewExpireTime = inViewExpireTime;
 	// }
 
-	public SearcherManager getSearcherManager() {
+	public SearcherManager getSearcherManager()
+	{
 		return fieldSearcherManager;
 	}
 
-	public void setSearcherManager(SearcherManager inSearcherManager) {
+	public void setSearcherManager(SearcherManager inSearcherManager)
+	{
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	public EventManager getEventManager() {
+	public EventManager getEventManager()
+	{
 		return fieldEventManager;
 	}
 
-	public void setEventManager(EventManager inEventManager) {
+	public void setEventManager(EventManager inEventManager)
+	{
 		fieldEventManager = inEventManager;
 	}
 
-	public void logAssetDownload(String inCatalogId, String inSourcePath, String inResult, User inUser) {
+	public void logAssetDownload(String inCatalogId, String inSourcePath, String inResult, User inUser)
+	{
 		WebEvent change = new WebEvent();
 		change.setOperation("download");
 		change.setSearchType("asset");
@@ -52,7 +58,8 @@ public class AssetStatsManager {
 		getEventManager().fireEvent(change);
 	}
 
-	public void logAssetPreview(MediaArchive inArchive, Asset inAsset, User inUser) {
+	public void logAssetPreview(MediaArchive inArchive, Asset inAsset, User inUser)
+	{
 		WebEvent change = new WebEvent();
 		change.setOperation("preview");
 		change.setSearchType("asset");
@@ -64,7 +71,8 @@ public class AssetStatsManager {
 
 		long assetviews = 0;
 		String views = inAsset.get("assetviews");
-		if (views != null) {
+		if (views != null)
+		{
 			assetviews = Long.parseLong(views);
 		}
 		assetviews++;
@@ -73,22 +81,27 @@ public class AssetStatsManager {
 		getEventManager().fireEvent(change);
 	}
 
-	public long getViewsForAsset(Asset inAsset) {
+	public long getViewsForAsset(Asset inAsset)
+	{
 		// check with the log files and cache the results?
-		if (inAsset == null || inAsset.getCatalogId() == null) {
+		if (inAsset == null || inAsset.getCatalogId() == null)
+		{
 			return 0L;
 		}
-		if (inAsset.getId().startsWith("multi")) {
+		if (inAsset.getId().startsWith("multi"))
+		{
 			return 0L;
 		}
 
 		long assetexpire = 0L;
 		String expires = inAsset.get("assetviewsexpires");
-		if (expires != null) {
+		if (expires != null)
+		{
 			assetexpire = Long.parseLong(expires);
 		}
 		long now = System.currentTimeMillis();
-		if (assetexpire == 0 || assetexpire > now) {
+		if (assetexpire == 0 || assetexpire > now)
+		{
 			assetexpire = now + 1000 * 60 * 60; // once an hour
 
 			Searcher logsearcher = getSearcherManager().getSearcher(inAsset.getCatalogId(), "assetpreviewLog");
@@ -97,26 +110,32 @@ public class AssetStatsManager {
 			inAsset.setProperty("assetviews", String.valueOf(views));
 			inAsset.setProperty("assetviewsexpires", String.valueOf(assetexpire));
 			return views.longValue();
-		} else {
+		}
+		else
+		{
 			String views = inAsset.get("assetviews");
-			if (views != null) {
+			if (views != null)
+			{
 				return Long.parseLong(views);
 			}
 			return -1;
 		}
 	}
 
-	protected void checkAssetSave(Asset inAsset, long newcount) {
+	protected void checkAssetSave(Asset inAsset, long newcount)
+	{
 		// save it to the asset index if it has not been updated within 10 hits or 24
 		// hours?
 		long oldcount = 0;
 		String views = inAsset.get("assetviews");
-		if (views != null) {
+		if (views != null)
+		{
 			oldcount = Long.parseLong(views);
 		}
 		inAsset.setProperty("assetviews", String.valueOf(newcount));
 
-		if (newcount - 10 > oldcount) {
+		if (newcount - 10 > oldcount)
+		{
 			WebEvent change = new WebEvent();
 			change.setOperation("assetsave");
 			change.setSearchType("asset");

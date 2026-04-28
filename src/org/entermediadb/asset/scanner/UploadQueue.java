@@ -17,37 +17,45 @@ import org.openedit.WebPageRequest;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 
-public class UploadQueue {
+public class UploadQueue
+{
 	protected static final Log log = LogFactory.getLog(UploadQueue.class);
 
 	protected Queue<Upload> fieldQueue;
 	protected PageManager fieldPageManager;
 	protected AssetImporter fieldAssetImporter;
 
-	protected AssetImporter getAssetImporter() {
+	protected AssetImporter getAssetImporter()
+	{
 		return fieldAssetImporter;
 	}
 
-	public void setAssetImporter(AssetImporter inAssetImporter) {
+	public void setAssetImporter(AssetImporter inAssetImporter)
+	{
 		fieldAssetImporter = inAssetImporter;
 	}
 
-	protected PageManager getPageManager() {
+	protected PageManager getPageManager()
+	{
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		fieldPageManager = inPageManager;
 	}
 
-	public Queue<Upload> getQueue() {
-		if (fieldQueue == null) {
+	public Queue<Upload> getQueue()
+	{
+		if (fieldQueue == null)
+		{
 			fieldQueue = new LinkedList<Upload>();
 		}
 		return fieldQueue;
 	}
 
-	public void add(String inApplet, Page inDestPath) {
+	public void add(String inApplet, Page inDestPath)
+	{
 		Upload up = new Upload();
 		up.fieldAppletName = inApplet;
 		up.fieldDestPath = inDestPath;
@@ -56,11 +64,15 @@ public class UploadQueue {
 		getQueue().add(up);
 	}
 
-	public boolean isLocked(String inApplet, String inSourcePath) {
+	public boolean isLocked(String inApplet, String inSourcePath)
+	{
 		expire();
-		for (Upload up : getQueue()) {
-			if (up.fieldDestPath.equals(inSourcePath)) {
-				if (!up.fieldAppletName.equals(inApplet)) {
+		for (Upload up : getQueue())
+		{
+			if (up.fieldDestPath.equals(inSourcePath))
+			{
+				if (!up.fieldAppletName.equals(inApplet))
+				{
 					return true;
 				}
 			}
@@ -68,9 +80,12 @@ public class UploadQueue {
 		return false;
 	}
 
-	public void remove(String inSourcePath) {
-		for (Upload up : getQueue()) {
-			if (up.fieldDestPath != null && up.fieldDestPath.equals(inSourcePath)) {
+	public void remove(String inSourcePath)
+	{
+		for (Upload up : getQueue())
+		{
+			if (up.fieldDestPath != null && up.fieldDestPath.equals(inSourcePath))
+			{
 				getQueue().remove(up);
 				return;
 			}
@@ -78,7 +93,8 @@ public class UploadQueue {
 	}
 
 	// called before each
-	public void expire() {
+	public void expire()
+	{
 		// 1. Upload starts 0:00 Applet is reloaded in browser. No error is
 		// throw on server it just hangs
 		// 2. Browse asked for list of uploads. Starts upload again with same
@@ -93,10 +109,13 @@ public class UploadQueue {
 		// If they hit refresh they can check the applet name and pass that back
 		// in
 		List<Upload> copy = new ArrayList<Upload>(getQueue());
-		for (Upload up : copy) {
-			if (up.fieldAddedTime < limit) {
+		for (Upload up : copy)
+		{
+			if (up.fieldAddedTime < limit)
+			{
 				// check the size change
-				if (up.fieldSize == up.fieldDestPath.getContentItem().getLength()) {
+				if (up.fieldSize == up.fieldDestPath.getContentItem().getLength())
+				{
 					getQueue().remove(up);
 				}
 			}
@@ -104,19 +123,21 @@ public class UploadQueue {
 
 	}
 
-	class Upload {
+	class Upload
+	{
 		String fieldAppletName;
 		long fieldAddedTime;
 		Page fieldDestPath;
 		long fieldSize;
 	}
 
-	public void processUpload(WebPageRequest inReq, FileUpload fileUpload, String inAppletname,
-			EnterMedia inEntermedia) {
+	public void processUpload(WebPageRequest inReq, FileUpload fileUpload, String inAppletname, EnterMedia inEntermedia)
+	{
 		UploadDiskFileItemFactory uploadfilefactory = new UploadDiskFileItemFactory();
 		String seek = inReq.getRequest().getHeader("x-seekrange");
 		long seekval = 0;
-		if (seek != null) {
+		if (seek != null)
+		{
 			seekval = Long.parseLong(seek);
 			uploadfilefactory.setSeek(seekval);
 		}
@@ -128,27 +149,36 @@ public class UploadQueue {
 
 		UploadRequest map = null;
 		String catid = null;
-		try {
+		try
+		{
 			map = fileUpload.parseArguments(inReq);
 			catid = inReq.getRequestParameter("catalogid");
-			if (destinationpath == null) {
+			if (destinationpath == null)
+			{
 				log.error("No destination path for upload");
 				return;
 			}
-			if (isLocked(inAppletname, destinationpath)) {
+			if (isLocked(inAppletname, destinationpath))
+			{
 				// dont let them upload
 				log.info("Tried to upload to locked sourcepath. Retry in 5 min");
 			}
 
 			log.info("saving to: " + destinationpath);
-			if (map == null || map.getUploadItems().size() == 0) {
+			if (map == null || map.getUploadItems().size() == 0)
+			{
 				throw new OpenEditException("No upload included");
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			log.error("Upload Interrupted", e);
 			return;
-		} finally {
-			if (map == null) {
+		}
+		finally
+		{
+			if (map == null)
+			{
 				return;
 			}
 			String sourcepath = inReq.getRequestParameter("sourcepath");
@@ -158,7 +188,8 @@ public class UploadQueue {
 			// we did move the file over
 			String total = inReq.getRequestParameter("totalsize");
 			MediaArchive archive = inEntermedia.getMediaArchive(catid);
-			if (absuploaded.length() == Long.parseLong(total)) {
+			if (absuploaded.length() == Long.parseLong(total))
+			{
 				asset.setProperty("importstatus", "uploaded");
 				String dest = "/WEB-INF/data/" + catid + "/originals/" + sourcepath;
 				Page destination = getPageManager().getPage(dest);
@@ -167,12 +198,13 @@ public class UploadQueue {
 				archive.saveAsset(asset, inReq.getUser());
 				asset.setProperty("uploadprogress", String.valueOf(destination.length()));
 
-				asset = getAssetImporter().getAssetUtilities().populateAsset(asset, destination.getContentItem(),
-						archive, sourcepath, inReq.getUser());
+				asset = getAssetImporter().getAssetUtilities().populateAsset(asset, destination.getContentItem(), archive, sourcepath, inReq.getUser());
 				asset.setProperty("importstatus", "imported");
 				archive.saveAsset(asset, inReq.getUser());
 				archive.fireMediaEvent("importing", "assetsuploaded", inReq.getUser(), asset);
-			} else {
+			}
+			else
+			{
 				log.error("Final size did not match asset");
 			}
 		}

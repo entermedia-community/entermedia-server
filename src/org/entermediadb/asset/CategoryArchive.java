@@ -11,7 +11,8 @@ import org.openedit.CatalogEnabled;
  * @author cburkey
  * 
  */
-public interface CategoryArchive extends CatalogEnabled {
+public interface CategoryArchive extends CatalogEnabled
+{
 	Category getCategory(String inCatalog);
 
 	Category getCategoryByName(String inCatalogName);

@@ -30,15 +30,15 @@ import org.entermediadb.markdown.node.Text;
  * [text]
  * </pre>
  * 
- * Images use the same syntax as links but with a {@code !} {@link #marker()}
- * front, e.g. {@code ![text](destination)}.
+ * Images use the same syntax as links but with a {@code !} {@link #marker()} front, e.g.
+ * {@code ![text](destination)}.
  */
-public interface LinkInfo {
+public interface LinkInfo
+{
 
     /**
-     * The marker if present, or null. A marker is e.g. {@code !} for an image, or a
-     * custom marker as specified in
-     * {@link org.entermediadb.markdown.parser.Parser.Builder#linkMarker}.
+     * The marker if present, or null. A marker is e.g. {@code !} for an image, or a custom marker as
+     * specified in {@link org.entermediadb.markdown.parser.Parser.Builder#linkMarker}.
      */
     Text marker();
 
@@ -53,8 +53,8 @@ public interface LinkInfo {
     String text();
 
     /**
-     * The label, or null for inline links or for shortcut links (in which case
-     * {@link #text()} should be used as the label).
+     * The label, or null for inline links or for shortcut links (in which case {@link #text()} should
+     * be used as the label).
      */
     String label();
 

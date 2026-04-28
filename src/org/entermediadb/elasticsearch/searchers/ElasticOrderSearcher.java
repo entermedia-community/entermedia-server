@@ -5,13 +5,16 @@ import org.entermediadb.asset.orders.OrderManager;
 import org.entermediadb.asset.orders.OrderSearcher;
 import org.openedit.Data;
 
-public class ElasticOrderSearcher extends BaseElasticSearcher implements OrderSearcher {
+public class ElasticOrderSearcher extends BaseElasticSearcher implements OrderSearcher
+{
 
-	public OrderManager getOrderManager() {
+	public OrderManager getOrderManager()
+	{
 		return (OrderManager) getModuleManager().getBean(getCatalogId(), "orderManager");
 	}
 
-	public Data createNewData() {
+	public Data createNewData()
+	{
 		Order order = (Order) super.createNewData();
 		order.setCatalogId(getCatalogId());
 		order.setOrderManager(getOrderManager());

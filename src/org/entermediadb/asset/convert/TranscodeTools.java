@@ -20,7 +20,8 @@ import org.openedit.util.PathUtilities;
  * @author shanti
  *
  */
-public class TranscodeTools {
+public class TranscodeTools
+{
 	private static final Log log = LogFactory.getLog(TranscodeTools.class);
 	protected SearcherManager fieldSearcherManager;
 	protected ModuleManager fieldModuleManager;
@@ -28,11 +29,13 @@ public class TranscodeTools {
 	// HashMap<String,String>(5);
 	protected String fieldCategoryId;
 
-	public String getCategoryId() {
+	public String getCategoryId()
+	{
 		return fieldCategoryId;
 	}
 
-	public void setCategoryId(String inCategoryId) {
+	public void setCategoryId(String inCategoryId)
+	{
 		fieldCategoryId = inCategoryId;
 	}
 
@@ -48,71 +51,67 @@ public class TranscodeTools {
 
 	// filetype is jpg asset.fileformat
 
-	public String getRenderTypeByFileFormat(String inFileType) {
-		if (inFileType == null) {
+	public String getRenderTypeByFileFormat(String inFileType)
+	{
+		if (inFileType == null)
+		{
 			return null;
 		}
 		inFileType = inFileType.toLowerCase();
 		String render = "default";
 		Data row = getMediaArchive().getCachedData("fileformat", inFileType);
-		if (row != null) {
+		if (row != null)
+		{
 			render = row.get("rendertype");
 		}
 		return render;
 	}
 
 	/*
-	 * public String getTranscoderByFileFormat(String inFileType)
-	 * {
-	 * if( inFileType == null)
-	 * {
-	 * return null;
-	 * }
-	 * inFileType = inFileType.toLowerCase();
-	 * String render = (String)getFileFormatCache().get(inFileType);
-	 * if( render == null)
-	 * {
-	 * Data row = (Data)
+	 * public String getTranscoderByFileFormat(String inFileType) { if( inFileType == null) { return
+	 * null; } inFileType = inFileType.toLowerCase(); String render =
+	 * (String)getFileFormatCache().get(inFileType); if( render == null) { Data row = (Data)
 	 * getSearcherManager().getSearcher(getMediaArchive().getCatalogId(),
-	 * "fileformat").searchById(inFileType);
-	 * if( row != null)
-	 * {
-	 * render = row.get("creator");
-	 * getFileFormatCache().put( inFileType, render);
-	 * }
-	 * }
-	 * return render;
-	 * }
+	 * "fileformat").searchById(inFileType); if( row != null) { render = row.get("creator");
+	 * getFileFormatCache().put( inFileType, render); } } return render; }
 	 */
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		fieldPageManager = inPageManager;
 	}
 
-	public MediaArchive getMediaArchive() {
+	public MediaArchive getMediaArchive()
+	{
 		return fieldMediaArchive;
 	}
 
-	public void setMediaArchive(MediaArchive inMediaArchive) {
+	public void setMediaArchive(MediaArchive inMediaArchive)
+	{
 		fieldMediaArchive = inMediaArchive;
 	}
 
-	public SearcherManager getSearcherManager() {
+	public SearcherManager getSearcherManager()
+	{
 		return fieldSearcherManager;
 	}
 
-	public void setSearcherManager(SearcherManager inSearcherManager) {
+	public void setSearcherManager(SearcherManager inSearcherManager)
+	{
 		fieldSearcherManager = inSearcherManager;
 	}
 
@@ -203,8 +202,10 @@ public class TranscodeTools {
 	// return failures;
 	// }
 
-	public ConversionManager getManagerByFileFormat(String inFileType) {
-		if (inFileType == null) {
+	public ConversionManager getManagerByFileFormat(String inFileType)
+	{
+		if (inFileType == null)
+		{
 			return null;
 		}
 		String type = getMediaArchive().getMediaRenderType(inFileType);
@@ -232,16 +233,17 @@ public class TranscodeTools {
 	// }
 	// return handler;
 	// }
-	public ConversionManager getManagerByRenderType(String inRenderType) {
-		ConversionManager handler = (ConversionManager) getMediaArchive().getCacheManager().get("conversionmanager",
-				inRenderType);
-		if (handler == null) {
-			synchronized (this) {
-				handler = (ConversionManager) getMediaArchive().getCacheManager().get("conversionmanager",
-						inRenderType);
-				if (handler == null) {
-					handler = (ConversionManager) getMediaArchive().getModuleManager()
-							.getBean(getMediaArchive().getCatalogId(), inRenderType + "ConversionManager");
+	public ConversionManager getManagerByRenderType(String inRenderType)
+	{
+		ConversionManager handler = (ConversionManager) getMediaArchive().getCacheManager().get("conversionmanager", inRenderType);
+		if (handler == null)
+		{
+			synchronized (this)
+			{
+				handler = (ConversionManager) getMediaArchive().getCacheManager().get("conversionmanager", inRenderType);
+				if (handler == null)
+				{
+					handler = (ConversionManager) getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), inRenderType + "ConversionManager");
 					handler.setMediaArchive(getMediaArchive());
 					getMediaArchive().getCacheManager().put("conversionmanager", inRenderType, handler);
 				}
@@ -250,37 +252,44 @@ public class TranscodeTools {
 		return handler;
 	}
 
-	public ConvertResult createOutputIfNeeded(Map inCreateProperties, Map inParameters, String inSourcePath,
-			String inGeneratedOutputName) {
+	public ConvertResult createOutputIfNeeded(Map inCreateProperties, Map inParameters, String inSourcePath, String inGeneratedOutputName)
+	{
 		// Minimal information here. We dont know what kind of input we have
 		ConversionManager manager = getManagerByFileFormat(PathUtilities.extractPageType(inGeneratedOutputName));
 
 		ConvertResult result = null;
-		if (inCreateProperties == null) {
+		if (inCreateProperties == null)
+		{
 			inCreateProperties = new HashMap();
 		}
 
-		if (inParameters == null || inParameters.isEmpty()) {
+		if (inParameters == null || inParameters.isEmpty())
+		{
 			result = manager.loadExistingOuput(inCreateProperties, inSourcePath, inGeneratedOutputName);
-			if (result.isComplete() && result.getOutput().getLength() > 2) {
-				if (result.getOutput() == null) {
+			if (result.isComplete() && result.getOutput().getLength() > 2)
+			{
+				if (result.getOutput() == null)
+				{
 					throw new OpenEditException("Output not found " + inSourcePath);
 				}
 				return result;
 			}
 		}
 		Asset asset = getMediaArchive().getAssetBySourcePath(inSourcePath);
-		if (asset == null) {
+		if (asset == null)
+		{
 			asset = getMediaArchive().getAssetImporter().createAsset(getMediaArchive(), inSourcePath);
 		}
-		if (asset == null) {
+		if (asset == null)
+		{
 			result = new ConvertResult();
 			result.setOk(false);
 			result.setError("No Asset Found " + inSourcePath);
 			result.setComplete(false);
 			return result;
 		}
-		if (asset.getFileFormat() == null) {
+		if (asset.getFileFormat() == null)
+		{
 			result = new ConvertResult();
 			result.setOk(false);
 			result.setError("No file format found on " + inSourcePath);
@@ -288,12 +297,15 @@ public class TranscodeTools {
 			return result;
 		}
 		manager = getManagerByFileFormat(asset.getFileFormat()); // video input?
-		if (inParameters != null) {
+		if (inParameters != null)
+		{
 			inCreateProperties.putAll(inParameters);
 		}
 		result = manager.createOutputIfNeeded(asset, inSourcePath, inGeneratedOutputName, inCreateProperties);
-		if (result.isComplete()) {
-			if (result.getOutput() == null) {
+		if (result.isComplete())
+		{
+			if (result.getOutput() == null)
+			{
 				throw new OpenEditException("Conversion is complete but output not set " + inSourcePath);
 			}
 		}

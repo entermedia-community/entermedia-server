@@ -21,44 +21,55 @@ import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
 
 /**
- * This generator generates original asset documents from an MediaArchive
- * based on paths of the form
+ * This generator generates original asset documents from an MediaArchive based on paths of the form
  * <tt>.../<var>assetid</var>/<var>filename.ext</var></tt>.
  * 
  * @author Eric Galluzzo
  */
-public class ConvertGenerator extends FileGenerator {
+public class ConvertGenerator extends FileGenerator
+{
 	private static final Log log = LogFactory.getLog(ConvertGenerator.class);
 
 	protected ModuleManager fieldModuleManager;
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
-	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException {
+	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
+	{
 		// TODO: Revamp all API to use ContentItem instead of Page
 		String catalogid = inReq.findPathValue("catalogid");
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		String sourcePath = inReq.getRequestParameter("sourcepath");
 		// sourcePath = inReq.getRequest().getRequestURL().toString();
-		if (sourcePath == null) {
+		if (sourcePath == null)
+		{
 			sourcePath = archive.getSourcePathForPage(inReq); // This already is decoded
-		} else {
-			try {
+		}
+		else
+		{
+			try
+			{
 				sourcePath = URLDecoder.decode(sourcePath, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
+			}
+			catch (UnsupportedEncodingException e)
+			{
 				throw new OpenEditException(e);
 			}
 		}
 		String collectionid = inReq.findValue("collectionid");
-		if (collectionid != null) {
+		if (collectionid != null)
+		{
 			sourcePath = sourcePath.substring(collectionid.length() + 1);
-			if (log.isDebugEnabled()) {
+			if (log.isDebugEnabled())
+			{
 				log.debug("Final Source Path: " + sourcePath);
 			}
 		}
@@ -78,8 +89,8 @@ public class ConvertGenerator extends FileGenerator {
 
 		// Find random params?
 		Map all = new HashMap(); // TODO: Get parent ones as well
-		for (Iterator iterator = inReq.getContentPage().getPageSettings().getAllProperties().iterator(); iterator
-				.hasNext();) {
+		for (Iterator iterator = inReq.getContentPage().getPageSettings().getAllProperties().iterator(); iterator.hasNext();)
+		{
 			PageProperty type = (PageProperty) iterator.next();
 			all.put(type.getName(), type.getValue());
 		}
@@ -88,8 +99,8 @@ public class ConvertGenerator extends FileGenerator {
 		extracted(inReq, archive, sourcePath, inPage, name, all, args, inOut);
 	}
 
-	protected void extracted(WebPageRequest inReq, MediaArchive archive, String sourcePath, Page inPage, String name,
-			Map all, Map args, Output inOut) {
+	protected void extracted(WebPageRequest inReq, MediaArchive archive, String sourcePath, Page inPage, String name, Map all, Map args, Output inOut)
+	{
 		String themeprefix = inReq.findValue("themeprefix");
 		all.put("themeprefix", themeprefix);
 		// log.info("canshowunwatermarkedassets" +
@@ -102,10 +113,12 @@ public class ConvertGenerator extends FileGenerator {
 																									// String
 																									// inOutputType);
 
-		if (result.isComplete()) {
+		if (result.isComplete())
+		{
 			Page output = new Page() // SPEED UP
 			{
-				public boolean isHtml() {
+				public boolean isHtml()
+				{
 					return false;
 				}
 			};
@@ -117,14 +130,17 @@ public class ConvertGenerator extends FileGenerator {
 			super.generate(copy, output, inOut);
 			ConvertInstructions instructions = result.getInstructions();
 			// TODO: Find a better way to do this
-			if (instructions != null && instructions.getMaxScaledSize() == null && !instructions.isWatermark()
-					&& instructions.getOutputExtension() == null) {
+			if (instructions != null && instructions.getMaxScaledSize() == null && !instructions.isWatermark() && instructions.getOutputExtension() == null)
+			{
 				archive.logDownload(sourcePath, "success", inReq.getUser()); // does this work?
 			}
-		} else {
+		}
+		else
+		{
 			log.info("Error " + result.getError());
 			String missingImage = inReq.getContentProperty("missingimagepath");
-			if (missingImage == null) {
+			if (missingImage == null)
+			{
 
 				missingImage = "/mediadb/views/images/missing150.jpg"; // would a 404 be better?
 			}

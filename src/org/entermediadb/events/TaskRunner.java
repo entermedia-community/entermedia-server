@@ -11,7 +11,8 @@ import org.openedit.WebPageRequest;
 import org.openedit.event.WebEvent;
 import org.openedit.users.User;
 
-public class TaskRunner extends java.util.TimerTask {
+public class TaskRunner extends java.util.TimerTask
+{
 	protected static final Log log = LogFactory.getLog(TaskRunner.class);
 	protected PathEvent fieldPathEvent;
 	protected PathEventManager fieldEventManager;
@@ -22,55 +23,67 @@ public class TaskRunner extends java.util.TimerTask {
 	protected boolean fieldQueuedToRun;
 	protected User fieldUser;
 
-	public User getUser() {
+	public User getUser()
+	{
 		return fieldUser;
 	}
 
-	public void setUser(User inUser) {
+	public void setUser(User inUser)
+	{
 		fieldUser = inUser;
 	}
 
-	public boolean isQueuedToRun() {
+	public boolean isQueuedToRun()
+	{
 		return fieldQueuedToRun;
 	}
 
-	public void setQueuedToRun(boolean inQueuedToRun) {
+	public void setQueuedToRun(boolean inQueuedToRun)
+	{
 		fieldQueuedToRun = inQueuedToRun;
 	}
 
 	protected Map fieldParams;
 
-	public Map getParams() {
+	public Map getParams()
+	{
 		return fieldParams;
 	}
 
-	public void setParams(Map inParams) {
+	public void setParams(Map inParams)
+	{
 		fieldParams = inParams;
 	}
 
-	public Map getPageValues() {
+	public Map getPageValues()
+	{
 		return fieldPageValues;
 	}
 
-	public void setPageValues(Map inPageValues) {
+	public void setPageValues(Map inPageValues)
+	{
 		fieldPageValues = inPageValues;
 	}
 
 	protected Map fieldPageValues;
 
-	public boolean isRunAgainSoon() {
+	public boolean isRunAgainSoon()
+	{
 		return fieldRunAgainSoon;
 	}
 
-	public void setRunAgainSoon(boolean inRunAgainSoon) {
+	public void setRunAgainSoon(boolean inRunAgainSoon)
+	{
 		fieldRunAgainSoon = inRunAgainSoon;
 	}
 
-	public boolean isWithParameters() {
+	public boolean isWithParameters()
+	{
 		return fieldWithParameters;
 	}
 
-	public void setWithParameters(boolean inWithParameters) {
+	public void setWithParameters(boolean inWithParameters)
+	{
 		fieldWithParameters = inWithParameters;
 	}
 
@@ -82,9 +95,12 @@ public class TaskRunner extends java.util.TimerTask {
 	public TaskRunner(PathEvent inPathEvent, Map inParams, Map inPageValues, PathEventManager inManager, User inUser) {
 		fieldPathEvent = inPathEvent;
 		fieldEventManager = inManager;
-		if (inUser == null) {
+		if (inUser == null)
+		{
 			fieldUser = inManager.getDefaultUser();
-		} else {
+		}
+		else
+		{
 			fieldUser = inUser;
 		}
 		setParams(inParams);
@@ -93,30 +109,39 @@ public class TaskRunner extends java.util.TimerTask {
 		setTimeToStart(new Date(System.currentTimeMillis() + inPathEvent.getPeriod()));
 	}
 
-	public Date getTimeToStart() {
+	public Date getTimeToStart()
+	{
 		return fieldTimeToStart;
 	}
 
-	public void setTimeToStart(Date inTimeToStart) {
+	public void setTimeToStart(Date inTimeToStart)
+	{
 		fieldTimeToStart = inTimeToStart;
 	}
 
-	protected WebPageRequest getWebPageRequest() {
-		if (fieldWebPageRequest == null) {
-			fieldWebPageRequest = getEventManager().getRequestUtils()
-					.createPageRequest(getPathEvent().getPage().getPath(), getUser());
-			if (fieldParams != null) {
-				for (Iterator iterator = fieldParams.keySet().iterator(); iterator.hasNext();) {
+	protected WebPageRequest getWebPageRequest()
+	{
+		if (fieldWebPageRequest == null)
+		{
+			fieldWebPageRequest = getEventManager().getRequestUtils().createPageRequest(getPathEvent().getPage().getPath(), getUser());
+			if (fieldParams != null)
+			{
+				for (Iterator iterator = fieldParams.keySet().iterator(); iterator.hasNext();)
+				{
 					String key = (String) iterator.next();
 					Object value = fieldParams.get(key);
-					if (value instanceof String[]) {
+					if (value instanceof String[])
+					{
 						fieldWebPageRequest.setRequestParameter(key, (String[]) value);
-					} else {
+					}
+					else
+					{
 						fieldWebPageRequest.setRequestParameter(key, (String) value);
 					}
 				}
 			}
-			if (fieldPageValues != null) {
+			if (fieldPageValues != null)
+			{
 				fieldWebPageRequest.putPageValues(fieldPageValues);
 				// for (Iterator iterator = fieldPageValues.keySet().iterator();
 				// iterator.hasNext();)
@@ -131,61 +156,80 @@ public class TaskRunner extends java.util.TimerTask {
 		return fieldWebPageRequest;
 	}
 
-	protected void setWebPageRequest(WebPageRequest inWebPageRequest) {
+	protected void setWebPageRequest(WebPageRequest inWebPageRequest)
+	{
 		fieldWebPageRequest = inWebPageRequest;
 	}
 
-	public PathEvent getPathEvent() {
+	public PathEvent getPathEvent()
+	{
 		return fieldPathEvent;
 	}
 
-	public void setPathEvent(PathEvent inPathEvent) {
+	public void setPathEvent(PathEvent inPathEvent)
+	{
 		fieldPathEvent = inPathEvent;
 	}
 
-	public PathEventManager getEventManager() {
+	public PathEventManager getEventManager()
+	{
 		return fieldEventManager;
 	}
 
-	public void setEventManager(PathEventManager inEventManager) {
+	public void setEventManager(PathEventManager inEventManager)
+	{
 		fieldEventManager = inEventManager;
 	}
 
 	/**
 	 * This is non blocking
 	 */
-	public void run() {
-		try {
+	public void run()
+	{
+		try
+		{
 			setQueuedToRun(true);
 			Runnable execrun = new Runnable() {
-				public void run() {
+				public void run()
+				{
 					runBlocking();
 				}
 			};
 			getEventManager().addToRunQueue(execrun);
 
-		} catch (Throwable ex) {
+		}
+		catch (Throwable ex)
+		{
 			log.error("Error from action ", ex);
 		}
 	}
 
-	public void runBlocking() {
+	public void runBlocking()
+	{
 		// before we run this make sure our event is still enabled
 		// make sure this event did not get reloaded
 		PathEvent event = getEventManager().getPathEvent(getPathEvent().getPage().getPath());
 
 		// make sure nobody is running this
-		try {
-			if (event.isEnabled()) {
+		try
+		{
+			if (event.isEnabled())
+			{
 				executeNow(getWebPageRequest(), event);
 			}
-		} finally {
-			if (event.isEnabled() && isRunAgainSoon()) {
+		}
+		finally
+		{
+			if (event.isEnabled() && isRunAgainSoon())
+			{
 				setRunAgainSoon(false);
 				setQueuedToRun(false);
 				getEventManager().runSharedPathEvent(getPathEvent().getPage().getPath());
-			} else {
-				if (!isRepeating()) {
+			}
+			else
+			{
+				if (!isRepeating())
+				{
 					getEventManager().getRunningTasks().remove(this);
 				}
 				setQueuedToRun(false);
@@ -212,12 +256,15 @@ public class TaskRunner extends java.util.TimerTask {
 
 	}
 
-	public boolean isRepeating() {
+	public boolean isRepeating()
+	{
 		return !isWithParameters() && getPathEvent().getPeriod() > 0 && getPathEvent().isEnabled();
 	}
 
-	protected void executeNow(WebPageRequest inReq, PathEvent event) {
-		if (inReq == null) {
+	protected void executeNow(WebPageRequest inReq, PathEvent event)
+	{
+		if (inReq == null)
+		{
 			throw new OpenEditException("Request must not be null");
 		}
 
@@ -227,36 +274,20 @@ public class TaskRunner extends java.util.TimerTask {
 		event.execute(inReq);
 
 		/*
-		 * if( getEventManager().isLogEvents())
-		 * {
-		 * //TODO: Capture error logs
-		 * String type = PathUtilities.extractPageName(event.getPage().getPath());
+		 * if( getEventManager().isLogEvents()) { //TODO: Capture error logs String type =
+		 * PathUtilities.extractPageName(event.getPage().getPath());
 		 * 
-		 * StringBuffer stdout = new StringBuffer();
-		 * WebEvent runevent = new WebEvent();
-		 * runevent.setUser(inReq.getUser());
-		 * runevent.setOperation(type);
-		 * runevent.setProperty("time", "" + event.getLastRun().getTime() /1000L);
-		 * WebEvent outsideevent = (WebEvent)inReq.getPageValue("webevent");
-		 * if( outsideevent != null)
-		 * {
+		 * StringBuffer stdout = new StringBuffer(); WebEvent runevent = new WebEvent();
+		 * runevent.setUser(inReq.getUser()); runevent.setOperation(type); runevent.setProperty("time", "" +
+		 * event.getLastRun().getTime() /1000L); WebEvent outsideevent =
+		 * (WebEvent)inReq.getPageValue("webevent"); if( outsideevent != null) {
 		 * stdout.append(outsideevent.getOperation() + " event fired. ");
-		 * stdout.append(outsideevent.getProperties().toString());
-		 * stdout.append("<br>\n");
-		 * }
-		 * String last = event.getLastOutput();
-		 * if( last != null && last.length() > 0)
-		 * {
-		 * int max = Math.min(1000, last.length());
-		 * //cut the end
-		 * stdout.append(last.substring(last.length() - max,last.length()));
-		 * }
-		 * runevent.setProperty("details", stdout.toString());
-		 * Searcher patheventseacher =
-		 * getEventManager().getSearcherManager().getSearcher(getEventManager().
-		 * getCatalogId(), "patheventLog");
-		 * patheventseacher.saveData(runevent,inReq.getUser());
-		 * }
+		 * stdout.append(outsideevent.getProperties().toString()); stdout.append("<br>\n"); } String last =
+		 * event.getLastOutput(); if( last != null && last.length() > 0) { int max = Math.min(1000,
+		 * last.length()); //cut the end stdout.append(last.substring(last.length() - max,last.length())); }
+		 * runevent.setProperty("details", stdout.toString()); Searcher patheventseacher =
+		 * getEventManager().getSearcherManager().getSearcher(getEventManager(). getCatalogId(),
+		 * "patheventLog"); patheventseacher.saveData(runevent,inReq.getUser()); }
 		 */
 	}
 }

@@ -6,11 +6,13 @@ import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.InputLoader;
 import org.openedit.repository.ContentItem;
 
-public class OriginalInputLoader implements InputLoader {
+public class OriginalInputLoader implements InputLoader
+{
 	private static final Log log = LogFactory.getLog(OriginalInputLoader.class);
 
 	@Override
-	public ContentItem loadInput(ConvertInstructions inStructions) {
+	public ContentItem loadInput(ConvertInstructions inStructions)
+	{
 		return inStructions.getOriginalDocument();
 	}
 }

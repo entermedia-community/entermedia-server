@@ -6,25 +6,31 @@ import java.util.List;
 
 import org.dom4j.Element;
 
-public class JsonNode {
+public class JsonNode
+{
 
-	public int getX() {
+	public int getX()
+	{
 		return (getLevel() - 1) * 300;
 	}
 
-	public int getY() {
+	public int getY()
+	{
 		return fieldY;
 	}
 
-	public void setY(int inY) {
+	public void setY(int inY)
+	{
 		fieldY = inY;
 	}
 
-	public int getHeight() {
+	public int getHeight()
+	{
 		return fieldHeight;
 	}
 
-	public void setHeight(int inHeight) {
+	public void setHeight(int inHeight)
+	{
 		fieldHeight = inHeight;
 	}
 
@@ -37,8 +43,10 @@ public class JsonNode {
 	protected JsonNode fieldParent;
 	protected JsonNode fieldDataHolder;
 
-	public JsonNode getDataHolder() {
-		if (fieldDataHolder == null) {
+	public JsonNode getDataHolder()
+	{
+		if (fieldDataHolder == null)
+		{
 			fieldDataHolder = new JsonNode();
 			fieldDataHolder.setParent(this);
 			fieldDataHolder.setName("Data");
@@ -46,7 +54,8 @@ public class JsonNode {
 		return fieldDataHolder;
 	}
 
-	public void setDataHolder(JsonNode inDataHolder) {
+	public void setDataHolder(JsonNode inDataHolder)
+	{
 		fieldDataHolder = inDataHolder;
 	}
 
@@ -57,44 +66,55 @@ public class JsonNode {
 	protected String fieldName;
 	protected String fieldJson;
 
-	public boolean isAlwaysRender() {
+	public boolean isAlwaysRender()
+	{
 		return fieldAlwaysRender;
 	}
 
-	public void setAlwaysRender(boolean inAlwaysRender) {
+	public void setAlwaysRender(boolean inAlwaysRender)
+	{
 		fieldAlwaysRender = inAlwaysRender;
 	}
 
-	public String getTopLevelParent() {
-		if (fieldTopLevelParent == null && fieldParent != null) {
+	public String getTopLevelParent()
+	{
+		if (fieldTopLevelParent == null && fieldParent != null)
+		{
 			return getParent().getTopLevelParent();
 		}
 
 		return fieldTopLevelParent;
 	}
 
-	public void setTopLevelParent(String inTopLevelParent) {
+	public void setTopLevelParent(String inTopLevelParent)
+	{
 		fieldTopLevelParent = inTopLevelParent;
 	}
 
-	public JsonNode getParent() {
+	public JsonNode getParent()
+	{
 		return fieldParent;
 	}
 
-	public void setParent(JsonNode inParent) {
+	public void setParent(JsonNode inParent)
+	{
 		fieldParent = inParent;
 	}
 
-	public int getRowPosition() {
+	public int getRowPosition()
+	{
 		return fieldRowPosition;
 	}
 
-	public void setRowPosition(int inRowPosition) {
+	public void setRowPosition(int inRowPosition)
+	{
 		fieldRowPosition = inRowPosition;
 	}
 
-	public String getSourceId() {
-		if (fieldParent != null) {
+	public String getSourceId()
+	{
+		if (fieldParent != null)
+		{
 			return getParent().getId();
 		}
 		return "0";
@@ -102,183 +122,226 @@ public class JsonNode {
 
 	protected String fieldTargetId;
 
-	public String getCode() {
+	public String getCode()
+	{
 		return fieldCode;
 	}
 
-	public void setCode(String inCode) {
+	public void setCode(String inCode)
+	{
 		fieldCode = inCode;
 	}
 
-	public String getText() {
+	public String getText()
+	{
 		return fieldText;
 	}
 
-	public void setText(String inText) {
+	public void setText(String inText)
+	{
 		fieldText = inText;
 	}
 
 	protected String fieldText;
 
-	public String getId() {
-		if (getParent() == null) {
+	public String getId()
+	{
+		if (getParent() == null)
+		{
 			return "0";
 		}
 		return getParent().getId() + "_" + getRow();
 	}
 
-	public void setId(String inId) {
+	public void setId(String inId)
+	{
 		fieldId = inId;
 	}
 
 	protected int fieldRow;
 
-	public int getRow() {
+	public int getRow()
+	{
 		return fieldRow;
 	}
 
-	public void setRow(int inRow) {
+	public void setRow(int inRow)
+	{
 		fieldRow = inRow;
 	}
 
-	public Element getElement() {
+	public Element getElement()
+	{
 		return fieldElement;
 	}
 
-	public void setElement(Element inElement) {
+	public void setElement(Element inElement)
+	{
 		fieldElement = inElement;
 	}
 
 	protected Element fieldElement;
 
-	public int getLevel() {
+	public int getLevel()
+	{
 		int level = 1;
 		JsonNode node = getParent();
-		while (node != null) {
+		while (node != null)
+		{
 			node = node.getParent();
 			level++;
 		}
 		return level;
 	}
 
-	public List getChildren() {
-		if (fieldChildren == null) {
+	public List getChildren()
+	{
+		if (fieldChildren == null)
+		{
 			fieldChildren = new ArrayList();
 		}
 
 		return fieldChildren;
 	}
 
-	public void setChildren(List inChildren) {
+	public void setChildren(List inChildren)
+	{
 		fieldChildren = inChildren;
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return fieldName;
 	}
 
-	public void setName(String inName) {
+	public void setName(String inName)
+	{
 		fieldName = inName;
 	}
 
-	public String getJson() {
+	public String getJson()
+	{
 		return fieldJson;
 	}
 
-	public void setJson(String inJson) {
+	public void setJson(String inJson)
+	{
 		fieldJson = inJson;
 	}
 
-	public void addChildToTop(JsonNode inChildNode) {
+	public void addChildToTop(JsonNode inChildNode)
+	{
 		inChildNode.setParent(this);
-		if (getChildren().isEmpty()) {
+		if (getChildren().isEmpty())
+		{
 			getChildren().add(inChildNode);
-		} else {
+		}
+		else
+		{
 			getChildren().add(0, inChildNode);
 		}
 
 	}
 
-	public void addChild(JsonNode inChildNode) {
+	public void addChild(JsonNode inChildNode)
+	{
 		inChildNode.setParent(this);
 		getChildren().add(inChildNode);
 	}
 
-	public boolean hasChildren() {
+	public boolean hasChildren()
+	{
 		return !getChildren().isEmpty();
 	}
 
-	public boolean hasDataHolder() {
+	public boolean hasDataHolder()
+	{
 		return fieldDataHolder != null && !fieldDataHolder.getChildren().isEmpty();
 	}
 
-	public String getTextTrim() {
+	public String getTextTrim()
+	{
 
-		if (getElement() == null) {
+		if (getElement() == null)
+		{
 			return getName();
 		}
 		String text = null;
-		if (getChildren().isEmpty()) {
+		if (getChildren().isEmpty())
+		{
 			text = getElement().getTextTrim();
 		}
-		if (text == null || text.isEmpty()) {
+		if (text == null || text.isEmpty())
+		{
 			text = getElement().getName();
 		}
 
-		if (text != null && text.length() > 20) {
+		if (text != null && text.length() > 20)
+		{
 			text = text.substring(0, 20) + "~";
 		}
 
 		return text;
 	}
 
-	public int offetX(int width) {
+	public int offetX(int width)
+	{
 		return offetX(width, 0);
 	}
 
-	public int offetX(int width, int offset) {
+	public int offetX(int width, int offset)
+	{
 		int total = (getLevel() - 1) * width + offset;
 		return total;
 	}
 
-	public int getHeight(int rowheight) {
+	public int getHeight(int rowheight)
+	{
 		int count = getChildren().size() * rowheight;
 		return count;
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		StringBuffer text = new StringBuffer();
 		renderTree(this, 0, text);
 		return text.toString();
 	}
 
-	protected void renderTree(JsonNode inRoot, int deep, StringBuffer inBuffer) {
-		for (int i = 0; i < inRoot.getLevel(); i++) {
+	protected void renderTree(JsonNode inRoot, int deep, StringBuffer inBuffer)
+	{
+		for (int i = 0; i < inRoot.getLevel(); i++)
+		{
 			inBuffer.append("  ");
 		}
-		inBuffer.append("L=" + inRoot.getLevel() + " x=" + inRoot.getX() + " y=" + inRoot.getY() + inRoot.getName()
-				+ inRoot.getId() + "\n");
-		if (inRoot.hasDataHolder()) {
-			for (int i = 0; i < inRoot.getDataHolder().getLevel(); i++) {
+		inBuffer.append("L=" + inRoot.getLevel() + " x=" + inRoot.getX() + " y=" + inRoot.getY() + inRoot.getName() + inRoot.getId() + "\n");
+		if (inRoot.hasDataHolder())
+		{
+			for (int i = 0; i < inRoot.getDataHolder().getLevel(); i++)
+			{
 				inBuffer.append("  ");
 			}
-			inBuffer.append("L=" + inRoot.getDataHolder().getLevel() + " x=" + inRoot.getDataHolder().getX() + " y="
-					+ inRoot.getDataHolder().getY() + " DATA (" + inRoot.getDataHolder().getChildren().size() + ")\n");
+			inBuffer.append("L=" + inRoot.getDataHolder().getLevel() + " x=" + inRoot.getDataHolder().getX() + " y=" + inRoot.getDataHolder().getY() + " DATA ("
+				+ inRoot.getDataHolder().getChildren().size() + ")\n");
 		}
 		deep++;
-		for (Iterator iterator = inRoot.getChildren().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inRoot.getChildren().iterator(); iterator.hasNext();)
+		{
 			JsonNode node = (JsonNode) iterator.next();
 			renderTree(node, deep, inBuffer);
 		}
 	}
 
-	public void optimizeData() {
+	public void optimizeData()
+	{
 		List children = new ArrayList(getChildren());
 		getDataHolder().setChildren(null);
-		for (int i = 0; i < getChildren().size(); i++) {
+		for (int i = 0; i < getChildren().size(); i++)
+		{
 			JsonNode node = (JsonNode) getChildren().get(i);
-			if (!node.hasChildren()) {
+			if (!node.hasChildren())
+			{
 				getDataHolder().addChild(node);
 				children.remove(node);
 			}

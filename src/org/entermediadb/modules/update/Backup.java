@@ -22,7 +22,8 @@ import org.openedit.util.FileUtils;
 import org.openedit.util.PageZipUtil;
 import org.openedit.util.ZipUtil;
 
-public class Backup {
+public class Backup
+{
 	protected PageManager fieldPageManager;
 	protected SimpleDateFormat fieldFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
 	protected File fieldRoot;
@@ -31,18 +32,22 @@ public class Backup {
 	protected List fieldExcludes = new ArrayList();
 	private static final Log log = LogFactory.getLog(Backup.class);
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		fieldPageManager = inPageManager;
 	}
 
-	protected File backupCurrentSite(String inName) throws OpenEditException {
+	protected File backupCurrentSite(String inName) throws OpenEditException
+	{
 		PageZipUtil zip = new PageZipUtil(getPageManager());
 		zip.setRoot(getRoot());
-		for (Iterator iter = getExcludes().iterator(); iter.hasNext();) {
+		for (Iterator iter = getExcludes().iterator(); iter.hasNext();)
+		{
 			String exclude = (String) iter.next();
 			zip.addExclude(exclude);
 		}
@@ -61,40 +66,52 @@ public class Backup {
 		zip.addExclude(outpath);
 		File out = new File(getRoot(), outpath);
 		log.info("Backing up " + out);
-		try {
+		try
+		{
 			out.getParentFile().mkdirs();
 			FileOutputStream stream = new FileOutputStream(out);
-			try {
+			try
+			{
 				zip.zipFile(getIncludePath(), stream);
-			} finally {
+			}
+			finally
+			{
 				FileUtils.safeClose(stream);
 			}
 			return out;
-		} catch (IOException ex) {
+		}
+		catch (IOException ex)
+		{
 			throw new OpenEditException(ex);
 		}
 	}
 
-	public File getRoot() {
+	public File getRoot()
+	{
 		return fieldRoot;
 	}
 
-	public void setRoot(File inRoot) {
+	public void setRoot(File inRoot)
+	{
 		fieldRoot = inRoot;
 	}
 
-	public List listSiteVersions() {
+	public List listSiteVersions()
+	{
 		File verdir = new File(getRoot(), "WEB-INF/versions");
 		verdir.mkdirs();
 
 		File[] children = verdir.listFiles(new FilenameFilter() {
-			public boolean accept(File inDir, String inName) {
+			public boolean accept(File inDir, String inName)
+			{
 				return inName.endsWith(".zip");
 			}
 		});
 		List list = new ArrayList();
-		if (children != null) {
-			for (int i = 0; i < children.length; i++) {
+		if (children != null)
+		{
+			for (int i = 0; i < children.length; i++)
+			{
 				File child = children[i];
 				list.add(child);
 			}
@@ -103,35 +120,45 @@ public class Backup {
 		return list;
 	}
 
-	public File loadVersion(String inName) {
+	public File loadVersion(String inName)
+	{
 		List list = listSiteVersions();
-		for (Iterator iter = list.iterator(); iter.hasNext();) {
+		for (Iterator iter = list.iterator(); iter.hasNext();)
+		{
 			File version = (File) iter.next();
-			if (version.getName().equals(inName)) {
+			if (version.getName().equals(inName))
+			{
 				return version;
 			}
 		}
 		return null;
 	}
 
-	protected void restoreBackup(File inVersion) throws OpenEditException {
+	protected void restoreBackup(File inVersion) throws OpenEditException
+	{
 		log.info("Restoring " + inVersion.getName());
 		File tmp = null;
-		try {
+		try
+		{
 			tmp = new File(getRoot(), "WEB-INF/trash/new" + fieldFormat.format(new Date()));
 			tmp.mkdirs();
 
 			ZipUtil utils = new ZipUtil();
 			// unzip the zip file in a tmp directory
 			utils.unzip(inVersion, tmp);
-		} catch (IOException ex) {
+		}
+		catch (IOException ex)
+		{
 			throw new OpenEditException("No harm done", ex);
 		}
 		File old = new File(getRoot(), "WEB-INF/trash/old" + fieldFormat.format(new Date()));
 
-		try {
+		try
+		{
 			replaceDirectories(tmp, getRoot(), old);
-		} catch (IOException ex) {
+		}
+		catch (IOException ex)
+		{
 			throw new OpenEditException(ex);
 		}
 
@@ -163,8 +190,8 @@ public class Backup {
 	}
 
 	/**
-	 * This method does a replacement of top level directories.
-	 * One exception is the WEB-INF directory that it will go into
+	 * This method does a replacement of top level directories. One exception is the WEB-INF directory
+	 * that it will go into
 	 * 
 	 * @param inNewDirs
 	 * @param inRoot
@@ -172,28 +199,38 @@ public class Backup {
 	 * @param inOldDirectory
 	 * @throws IOException
 	 */
-	protected void replaceDirectories(File inNewDirs, File inRoot, File inOldDirectory) throws IOException {
+	protected void replaceDirectories(File inNewDirs, File inRoot, File inOldDirectory) throws IOException
+	{
 		// move the existing content to tmp2
 		// tmpold = File.createTempFile("upgradeold", "");
 		// tmpold.delete();
 		// tmpold.mkdirs();
 		File[] children = inNewDirs.listFiles();
-		for (int i = 0; i < children.length; i++) {
+		for (int i = 0; i < children.length; i++)
+		{
 			File child = children[i];
 			File existing = new File(inRoot, child.getName());
-			if (existing.exists()) {
+			if (existing.exists())
+			{
 				// Then move it into away
 
-				if (child.getName().equals("WEB-INF")) {
+				if (child.getName().equals("WEB-INF"))
+				{
 					// replaceDirectories(child, existing, inOldDirectory);
 					continue;
-				} else {
-					if (existing.isDirectory()) {
+				}
+				else
+				{
+					if (existing.isDirectory())
+					{
 						fieldUtils.move(existing, new File(inOldDirectory, existing.getName()));
-					} else {
+					}
+					else
+					{
 						// this is an existing file in the inNewDirs directory
 						File backup = new File(inOldDirectory, child.getName());
-						if (!existing.renameTo(backup)) {
+						if (!existing.renameTo(backup))
+						{
 							throw new IOException("Could not move " + existing.getPath() + " to " + backup.getPath());
 						}
 					}
@@ -221,26 +258,32 @@ public class Backup {
 
 	}
 
-	public String getIncludePath() {
+	public String getIncludePath()
+	{
 		return fieldIncludePath;
 	}
 
-	public void setIncludePath(String inIncludePath) {
+	public void setIncludePath(String inIncludePath)
+	{
 		fieldIncludePath = inIncludePath;
 	}
 
-	public List getExcludes() {
-		if (fieldExcludes == null) {
+	public List getExcludes()
+	{
+		if (fieldExcludes == null)
+		{
 			fieldExcludes = new ArrayList();
 		}
 		return fieldExcludes;
 	}
 
-	public void setExcludes(List inExcludes) {
+	public void setExcludes(List inExcludes)
+	{
 		this.fieldExcludes = inExcludes;
 	}
 
-	public void addExclude(String inExclude) {
+	public void addExclude(String inExclude)
+	{
 		getExcludes().add(inExclude);
 	}
 

@@ -16,42 +16,51 @@ import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 
-public class TextMetadataExtractor extends MetadataExtractor {
+public class TextMetadataExtractor extends MetadataExtractor
+{
 	private static final Log log = LogFactory.getLog(TextMetadataExtractor.class);
 	protected PageManager fieldPageManager;
 	OutputFiller filler = new OutputFiller();
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		fieldPageManager = inPageManager;
 	}
 
-	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset) {
-		String[] supportedTypes = new String[] { "text", "xml" };
+	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset)
+	{
+		String[] supportedTypes = new String[] {"text", "xml"};
 		String type = PathUtilities.extractPageType(inFile.getName());
 
-		if (type == null) {
+		if (type == null)
+		{
 			return false;
 		}
 
-		if (type != null) {
+		if (type != null)
+		{
 			String mediatype = inArchive.getMediaRenderType(type);
-			if (!Arrays.asList(supportedTypes).contains(mediatype)) {
+			if (!Arrays.asList(supportedTypes).contains(mediatype))
+			{
 				return false;
 			}
 		}
 
-		try (InputStream input = inFile.getInputStream()) {
+		try (InputStream input = inFile.getInputStream())
+		{
 			String fulltext = Jsoup.parse(input, "UTF-8", "").text();
 
-			if (fulltext != null && fulltext.length() > 0) {
+			if (fulltext != null && fulltext.length() > 0)
+			{
 
-				ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId()
-						+ "/assets/" + inAsset.getSourcePath() + "/fulltext.txt");
-				if (item instanceof FileItem) {
+				ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId() + "/assets/" + inAsset.getSourcePath() + "/fulltext.txt");
+				if (item instanceof FileItem)
+				{
 					((FileItem) item).getFile().getParentFile().mkdirs();
 				}
 				PrintWriter output = new PrintWriter(item.getOutputStream());
@@ -64,7 +73,9 @@ public class TextMetadataExtractor extends MetadataExtractor {
 			log.info("Extracted text for asset: " + inAsset.getId());
 
 			return true; // Successfully extracted text
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 
 			log.error("Failed to extract text from file: " + inFile.getPath(), e);
 			return false; // Extraction failed

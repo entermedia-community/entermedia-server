@@ -5,17 +5,20 @@ import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramBuild
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
 import org.openedit.hittracker.SearchQuery;
 
-public class ElasticLogSearcher extends BaseElasticSearcher {
+public class ElasticLogSearcher extends BaseElasticSearcher
+{
 
 	/**
 	 * @override
 	 */
-	protected boolean isTrackEdits() {
+	protected boolean isTrackEdits()
+	{
 		return false;
 	}
 
 	@Override
-	protected void addSearcherTerms(SearchQuery inQuery, SearchRequestBuilder inSearch) {
+	protected void addSearcherTerms(SearchQuery inQuery, SearchRequestBuilder inSearch)
+	{
 		// TODO Auto-generated method stub
 		DateHistogramBuilder builder = new DateHistogramBuilder("event_breakdown_day");
 		builder.field("date");

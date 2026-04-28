@@ -3,23 +3,28 @@
  */
 package org.entermediadb.modules.workflow;
 
-public class Level {
+public class Level
+{
 	protected int fieldId;
 	protected String fieldName;
 
-	public int getId() {
+	public int getId()
+	{
 		return fieldId;
 	}
 
-	public void setId(int inId) {
+	public void setId(int inId)
+	{
 		fieldId = inId;
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return fieldName;
 	}
 
-	public void setName(String inName) {
+	public void setName(String inName)
+	{
 		fieldName = inName;
 	}
 }

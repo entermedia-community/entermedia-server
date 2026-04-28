@@ -1,5 +1,6 @@
 package org.entermediadb.asset.importer;
 
-public class DataHolder extends JsonNode {
+public class DataHolder extends JsonNode
+{
 
 }

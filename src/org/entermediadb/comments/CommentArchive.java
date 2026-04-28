@@ -1,6 +1,5 @@
 /*
- * This class needs to be re-created to be based on XmlFileSearcher
- * Created on Oct 18, 2006
+ * This class needs to be re-created to be based on XmlFileSearcher Created on Oct 18, 2006
  */
 package org.entermediadb.comments;
 
@@ -31,15 +30,18 @@ import org.openedit.util.GenericsUtil;
 import org.openedit.util.LocaleManager;
 import org.openedit.util.XmlUtil;
 
-public class CommentArchive {
+public class CommentArchive
+{
 	private static final Log log = LogFactory.getLog(CommentArchive.class);
 	protected UserManager fieldUserManager;
 	protected PageManager fieldPageManager;
 	protected XmlUtil fieldXmlUtil;
 	protected LocaleManager fieldLocaleManager;
 
-	public LocaleManager getLocaleManager() {
-		if (fieldLocaleManager == null) {
+	public LocaleManager getLocaleManager()
+	{
+		if (fieldLocaleManager == null)
+		{
 			fieldLocaleManager = new LocaleManager();
 
 		}
@@ -47,38 +49,47 @@ public class CommentArchive {
 		return fieldLocaleManager;
 	}
 
-	public void setLocaleManager(LocaleManager inLocaleManager) {
+	public void setLocaleManager(LocaleManager inLocaleManager)
+	{
 		fieldLocaleManager = inLocaleManager;
 	}
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		fieldPageManager = inPageManager;
 	}
 
-	public UserManager getUserManager() {
+	public UserManager getUserManager()
+	{
 		return fieldUserManager;
 	}
 
-	public XmlUtil getXmlUtil() {
-		if (fieldXmlUtil == null) {
+	public XmlUtil getXmlUtil()
+	{
+		if (fieldXmlUtil == null)
+		{
 			fieldXmlUtil = new XmlUtil();
 		}
 		return fieldXmlUtil;
 	}
 
-	public void setXmlUtil(XmlUtil inXmlUtil) {
+	public void setXmlUtil(XmlUtil inXmlUtil)
+	{
 		fieldXmlUtil = inXmlUtil;
 	}
 
-	protected Comment loadComment(Element inCommentElement) throws ParseException {
+	protected Comment loadComment(Element inCommentElement) throws ParseException
+	{
 		Comment comment = new Comment();
 		comment.setLocaleManager(getLocaleManager());
 		String username = inCommentElement.attributeValue("username");
-		if (username != null) {
+		if (username != null)
+		{
 			User user = getUserManager().getUser(username);
 			comment.setUser(user);
 		}
@@ -89,9 +100,11 @@ public class CommentArchive {
 		return comment;
 	}
 
-	public Set<User> loadUsersWhoCommented(String inCatalogId, String inPath) {
+	public Set<User> loadUsersWhoCommented(String inCatalogId, String inPath)
+	{
 		Set<User> usernames = GenericsUtil.createSet();
-		for (Iterator iterator = loadComments(inCatalogId, inPath).iterator(); iterator.hasNext();) {
+		for (Iterator iterator = loadComments(inCatalogId, inPath).iterator(); iterator.hasNext();)
+		{
 			Comment c = (Comment) iterator.next();
 
 			usernames.add(c.getUser());
@@ -99,10 +112,12 @@ public class CommentArchive {
 		return usernames;
 	}
 
-	public Collection loadComments(Asset inAsset) {
+	public Collection loadComments(Asset inAsset)
+	{
 		String path = findPath(inAsset.getCatalogId(), inAsset.getSourcePath());
 		Page page = getPageManager().getPage(path);
-		if (!page.exists()) {
+		if (!page.exists())
+		{
 			path = "/WEB-INF/data/" + inAsset.getCatalogId() + "/comments/" + inAsset.getSourcePath() + "/folder.xml";
 			page = getPageManager().getPage(path);
 		}
@@ -111,12 +126,14 @@ public class CommentArchive {
 
 	}
 
-	public Collection loadComments(String path) {
+	public Collection loadComments(String path)
+	{
 		Page page = getPageManager().getPage(path);
 		return loadComments(page);
 	}
 
-	public Collection loadComments(String inCatalogId, String inPath) {
+	public Collection loadComments(String inCatalogId, String inPath)
+	{
 		String path = findPath(inCatalogId, inPath);
 		Page page = getPageManager().getPage(path);
 		// if(!page.exists()){
@@ -127,27 +144,36 @@ public class CommentArchive {
 		return loadComments(page);
 	}
 
-	public String findPath(String inCatalogId, String inPath) {
+	public String findPath(String inCatalogId, String inPath)
+	{
 		String path = "/WEB-INF/data/" + inCatalogId + "/comments/" + inPath + ".xml";
 		return path;
 	}
 
-	protected Collection loadComments(Page inPage) throws OpenEditException {
+	protected Collection loadComments(Page inPage) throws OpenEditException
+	{
 		List<Comment> comments = GenericsUtil.createList();
 
-		if (inPage.exists()) {
+		if (inPage.exists())
+		{
 			log.debug("Loading comments for page " + inPage.getPath());
 			Reader reader = inPage.getReader();
-			try {
+			try
+			{
 				Element root = getXmlUtil().getXml(reader, inPage.getCharacterEncoding());
-				for (Object o : root.elements("comment")) {
+				for (Object o : root.elements("comment"))
+				{
 					Element element = (Element) o;
 					Comment comment = loadComment(element);
 					comments.add(comment);
 				}
-			} catch (Exception ex) {
+			}
+			catch (Exception ex)
+			{
 				throw new OpenEditException(ex);
-			} finally {
+			}
+			finally
+			{
 				FileUtils.safeClose(reader);
 			}
 		}
@@ -155,28 +181,35 @@ public class CommentArchive {
 		return new ListHitTracker(comments);
 	}
 
-	public void setUserManager(UserManager inUserManager) {
+	public void setUserManager(UserManager inUserManager)
+	{
 		fieldUserManager = inUserManager;
 	}
 
-	public void addComment(String inCatalogId, String inSourcePath, Comment inComment) {
+	public void addComment(String inCatalogId, String inSourcePath, Comment inComment)
+	{
 		String path = findPath(inCatalogId, inSourcePath);
 		Page page = getPageManager().getPage(path);
 		addComment(page, inComment);
 	}
 
-	public void removeComment(String inCatalogId, String inSourcePath, Comment inComment) {
+	public void removeComment(String inCatalogId, String inSourcePath, Comment inComment)
+	{
 		String path = findPath(inCatalogId, inSourcePath);
 		Page page = getPageManager().getPage(path);
 		removeComment(page, inComment);
 	}
 
-	protected void addComment(Page inPage, Comment inComment) {
+	protected void addComment(Page inPage, Comment inComment)
+	{
 		List comments = new ArrayList(loadComments(inPage));
 
-		if (comments.isEmpty()) {
+		if (comments.isEmpty())
+		{
 			comments.add(inComment);
-		} else {
+		}
+		else
+		{
 			comments.add(0, inComment);
 		}
 		saveComments(inPage, comments);
@@ -185,60 +218,73 @@ public class CommentArchive {
 		// inPage.getp
 	}
 
-	public Comment getLastComment(String inCatalogId, String inSourcePath) {
+	public Comment getLastComment(String inCatalogId, String inSourcePath)
+	{
 		Collection comments = loadComments(inCatalogId, inSourcePath);
-		if (comments.size() > 0) {
+		if (comments.size() > 0)
+		{
 			return (Comment) comments.toArray()[comments.size() - 1];
 		}
 		return null;
 	}
 
-	protected void removeComment(Page inPage, Comment inComment) {
+	protected void removeComment(Page inPage, Comment inComment)
+	{
 		Collection comments = loadComments(inPage);
 		Comment toremove = null;
-		for (Iterator iterator = comments.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = comments.iterator(); iterator.hasNext();)
+		{
 			Comment c = (Comment) iterator.next();
 			// Wow terrible code
-			if (c.getComment().equals(inComment.getComment())) {
-				if (c.getDate().equals(inComment.getDate())
-						&& c.getUser().getId().equals(inComment.getUser().getId())) {
+			if (c.getComment().equals(inComment.getComment()))
+			{
+				if (c.getDate().equals(inComment.getDate()) && c.getUser().getId().equals(inComment.getUser().getId()))
+				{
 					toremove = c;
 					break;
 				}
 			}
 		}
-		if (toremove != null) {
+		if (toremove != null)
+		{
 			comments.remove(toremove);
 		}
 		saveComments(inPage, comments);
 	}
 
-	public void saveComments(String inPath, Collection inComments) {
-		if (inPath.endsWith("/")) {
+	public void saveComments(String inPath, Collection inComments)
+	{
+		if (inPath.endsWith("/"))
+		{
 			inPath = inPath + "folder.xml";
 		}
-		if (!inPath.endsWith(".xml")) {
+		if (!inPath.endsWith(".xml"))
+		{
 			inPath = inPath + ".xml";
 		}
 		Page page = getPageManager().getPage(inPath);
 		saveComments(page, inComments);
 	}
 
-	public void saveComments(Page inPage, Collection inComments) throws OpenEditException {
+	public void saveComments(Page inPage, Collection inComments) throws OpenEditException
+	{
 		Element root = DocumentHelper.createDocument().addElement("comments");
-		for (Object o : inComments) {
+		for (Object o : inComments)
+		{
 			Comment com = (Comment) o; // <comment author="admin" date="Feb 18, 2005 2:42:29 PM">This is a snide
 										// remark</comment>
 
 			Element comment = root.addElement("comment");
-			if (com.getUser() != null) {
+			if (com.getUser() != null)
+			{
 				comment.addAttribute("username", com.getUser().getUserName());
 			}
 
 			comment.addAttribute("date", com.getCreationDate());
 			comment.setText(com.getComment());
 		}
-		try {
+		try
+		{
 			// TODO: Add locking
 			File tmp = File.createTempFile("comment", "junk");
 			getXmlUtil().saveXml(root.getDocument(), tmp);
@@ -250,7 +296,9 @@ public class CommentArchive {
 
 			getPageManager().copyPage(tmpPage, inPage); // Copy over as a tmp file in case there is a problem
 			tmp.delete();
-		} catch (IOException ex) {
+		}
+		catch (IOException ex)
+		{
 			throw new OpenEditException(ex);
 		}
 	}

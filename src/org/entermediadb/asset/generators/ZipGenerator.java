@@ -16,54 +16,67 @@ import org.openedit.page.manage.PageManager;
 import org.openedit.util.PageZipUtil;
 import org.openedit.util.PathUtilities;
 
-public class ZipGenerator extends BaseGenerator {
+public class ZipGenerator extends BaseGenerator
+{
 	protected File fieldRoot;
 	protected PageManager pageManager;
 	private static final Log log = LogFactory.getLog(ZipGenerator.class);
 
-	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException {
+	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
+	{
 		String path = inReq.getRequestParameter("path");
-		if (path.indexOf("..") > -1) {
+		if (path.indexOf("..") > -1)
+		{
 			throw new OpenEditException("Illegal path name");
 		}
 		// TODO: Add more security checks
-		if (inReq.getUser() == null) {
+		if (inReq.getUser() == null)
+		{
 			throw new OpenEditException("Illegal user");
 		}
 		path = PathUtilities.resolveRelativePath(path, "/");
 
 		// File root = new File( getRoot(), path);
-		try {
+		try
+		{
 			log.info("Zip up:" + path);
 			PageZipUtil pageZipUtil = new PageZipUtil(getPageManager());
 			String strip = inReq.getRequestParameter("stripfolders");
-			if (strip != null) {
+			if (strip != null)
+			{
 				pageZipUtil.setFolderToStripOnZip(strip);
 			}
 			pageZipUtil.setRoot(getRoot());
 			pageZipUtil.zipFile(path, inOut.getStream());
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			log.error(ex);
 		}
 	}
 
-	protected File getRoot() {
+	protected File getRoot()
+	{
 		return fieldRoot;
 	}
 
-	public void setRoot(File inRoot) {
+	public void setRoot(File inRoot)
+	{
 		fieldRoot = inRoot;
 	}
 
-	public boolean canGenerate(WebPageRequest inReq) {
+	public boolean canGenerate(WebPageRequest inReq)
+	{
 		return true;
 	}
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return pageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		pageManager = inPageManager;
 	}
 

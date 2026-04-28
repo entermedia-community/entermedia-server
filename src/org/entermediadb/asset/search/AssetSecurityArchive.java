@@ -9,34 +9,27 @@ import org.openedit.OpenEditException;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 
-public interface AssetSecurityArchive {
+public interface AssetSecurityArchive
+{
 
-	public abstract List getAccessList(MediaArchive inArchive, Asset inAsset)
-			throws OpenEditException;
+	public abstract List getAccessList(MediaArchive inArchive, Asset inAsset) throws OpenEditException;
 
-	public abstract void revokeViewAccess(MediaArchive inArchive,
-			String username, Asset inAsset);
+	public abstract void revokeViewAccess(MediaArchive inArchive, String username, Asset inAsset);
 
-	public abstract void revokeGroupViewAccess(MediaArchive inArchive,
-			String groupname, Asset inAsset);
+	public abstract void revokeGroupViewAccess(MediaArchive inArchive, String groupname, Asset inAsset);
 
-	public abstract void grantViewAccess(MediaArchive inArchive,
-			String username, Asset inAsset) throws OpenEditException;
+	public abstract void grantViewAccess(MediaArchive inArchive, String username, Asset inAsset) throws OpenEditException;
 
-	public abstract void grantGroupViewAccess(MediaArchive inArchive,
-			String groupname, Asset inAsset) throws OpenEditException;
+	public abstract void grantGroupViewAccess(MediaArchive inArchive, String groupname, Asset inAsset) throws OpenEditException;
 
-	public abstract void grantGroupViewAccess(MediaArchive inArchive,
-			Collection<String> groupnames, Asset inAsset)
-			throws OpenEditException;
+	public abstract void grantGroupViewAccess(MediaArchive inArchive, Collection<String> groupnames, Asset inAsset) throws OpenEditException;
 
 	public abstract void grantAllAccess(MediaArchive inArchive, Asset inAsset);
 
 	// This is for users?
 	public abstract void clearAssetPermissions(MediaArchive inArchive, Asset inAsset);
 
-	public abstract Boolean canDo(MediaArchive inArchive, User inUser, UserProfile inProfile, String inType,
-			Asset inAsset);
+	public abstract Boolean canDo(MediaArchive inArchive, User inUser, UserProfile inProfile, String inType, Asset inAsset);
 
 	// public abstract void grantAccess(MediaArchive inArchive, String username,
 	// Asset inAsset, String inView) throws OpenEditException;

@@ -7,16 +7,16 @@ package org.entermediadb.markdown.node;
  * &gt; Some quoted text
  * </pre>
  * <p>
- * Note that child nodes are themselves blocks, e.g. {@link Paragraph},
- * {@link ListBlock} etc.
+ * Note that child nodes are themselves blocks, e.g. {@link Paragraph}, {@link ListBlock} etc.
  *
- * @see <a href="https://spec.commonmark.org/0.31.2/#block-quotes">CommonMark
- *      Spec</a>
+ * @see <a href="https://spec.commonmark.org/0.31.2/#block-quotes">CommonMark Spec</a>
  */
-public class BlockQuote extends Block {
+public class BlockQuote extends Block
+{
 
     @Override
-    public void accept(Visitor visitor) {
+    public void accept(Visitor visitor)
+    {
         visitor.visit(this);
     }
 }

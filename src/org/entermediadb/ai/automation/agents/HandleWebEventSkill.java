@@ -7,22 +7,27 @@ import org.entermediadb.ai.llm.AgentContext;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 
-public class HandleWebEventSkill extends BaseSkill {
+public class HandleWebEventSkill extends BaseSkill
+{
 	@Override
-	public void process(AgentContext inContext) {
+	public void process(AgentContext inContext)
+	{
 		// String runoperation =
 		// inContext.getCurrentAgentEnable().getAutomationEnabledData().get("runoperation");
 		WebPageRequest request = (WebPageRequest) inContext.getContextValue("webpagerequest");
 
-		if (request != null) {
+		if (request != null)
+		{
 			Map params = request.getParameterMap();
 			// Map values = getRequestUtils().extractValueMap(request);
 			inContext.put("parameters", params);
 
-			if (inContext.getCurrentEntityModule() == null) {
+			if (inContext.getCurrentEntityModule() == null)
+			{
 				String entityid = request.getRequestParameter("entityid");
 				String entitymoduleid = request.getRequestParameter("entitymoduleid");
-				if (entitymoduleid != null) {
+				if (entitymoduleid != null)
+				{
 					MultiValued entity = (MultiValued) getMediaArchive().getCachedData(entitymoduleid, entityid);
 					inContext.setCurrentEntity(entity);
 					MultiValued entitymodule = (MultiValued) getMediaArchive().getCachedData("module", entitymoduleid);

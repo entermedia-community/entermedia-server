@@ -3,27 +3,30 @@ package org.entermediadb.markdown.parser.block;
 import org.entermediadb.markdown.internal.BlockContinueImpl;
 
 /**
- * Result object for continuing parsing of a block, see static methods for
- * constructors.
+ * Result object for continuing parsing of a block, see static methods for constructors.
  */
-public class BlockContinue {
+public class BlockContinue
+{
 
-    protected BlockContinue() {
-    }
+    protected BlockContinue() {}
 
-    public static BlockContinue none() {
+    public static BlockContinue none()
+    {
         return null;
     }
 
-    public static BlockContinue atIndex(int newIndex) {
+    public static BlockContinue atIndex(int newIndex)
+    {
         return new BlockContinueImpl(newIndex, -1, false);
     }
 
-    public static BlockContinue atColumn(int newColumn) {
+    public static BlockContinue atColumn(int newColumn)
+    {
         return new BlockContinueImpl(-1, newColumn, false);
     }
 
-    public static BlockContinue finished() {
+    public static BlockContinue finished()
+    {
         return new BlockContinueImpl(-1, -1, true);
     }
 

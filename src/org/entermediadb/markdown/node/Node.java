@@ -9,7 +9,8 @@ import java.util.List;
  * <p>
  * A node can have multiple children, and a parent (except for the root node).
  */
-public abstract class Node {
+public abstract class Node
+{
 
     private Node parent = null;
     private Node firstChild = null;
@@ -20,67 +21,90 @@ public abstract class Node {
 
     public abstract void accept(Visitor visitor);
 
-    public Node getNext() {
+    public Node getNext()
+    {
         return next;
     }
 
-    public Node getPrevious() {
+    public Node getPrevious()
+    {
         return prev;
     }
 
-    public Node getFirstChild() {
+    public Node getFirstChild()
+    {
         return firstChild;
     }
 
-    public Node getLastChild() {
+    public Node getLastChild()
+    {
         return lastChild;
     }
 
-    public Node getParent() {
+    public Node getParent()
+    {
         return parent;
     }
 
-    protected void setParent(Node parent) {
+    protected void setParent(Node parent)
+    {
         this.parent = parent;
     }
 
-    public void appendChild(Node child) {
+    public void appendChild(Node child)
+    {
         child.unlink();
         child.setParent(this);
-        if (this.lastChild != null) {
+        if (this.lastChild != null)
+        {
             this.lastChild.next = child;
             child.prev = this.lastChild;
             this.lastChild = child;
-        } else {
+        }
+        else
+        {
             this.firstChild = child;
             this.lastChild = child;
         }
     }
 
-    public void prependChild(Node child) {
+    public void prependChild(Node child)
+    {
         child.unlink();
         child.setParent(this);
-        if (this.firstChild != null) {
+        if (this.firstChild != null)
+        {
             this.firstChild.prev = child;
             child.next = this.firstChild;
             this.firstChild = child;
-        } else {
+        }
+        else
+        {
             this.firstChild = child;
             this.lastChild = child;
         }
     }
 
-    public void unlink() {
-        if (this.prev != null) {
+    public void unlink()
+    {
+        if (this.prev != null)
+        {
             this.prev.next = this.next;
-        } else if (this.parent != null) {
-            this.parent.firstChild = this.next;
         }
-        if (this.next != null) {
+        else
+            if (this.parent != null)
+            {
+                this.parent.firstChild = this.next;
+            }
+        if (this.next != null)
+        {
             this.next.prev = this.prev;
-        } else if (this.parent != null) {
-            this.parent.lastChild = this.prev;
         }
+        else
+            if (this.parent != null)
+            {
+                this.parent.lastChild = this.prev;
+            }
         this.parent = null;
         this.next = null;
         this.prev = null;
@@ -89,16 +113,19 @@ public abstract class Node {
     /**
      * Inserts the {@code sibling} node after {@code this} node.
      */
-    public void insertAfter(Node sibling) {
+    public void insertAfter(Node sibling)
+    {
         sibling.unlink();
         sibling.next = this.next;
-        if (sibling.next != null) {
+        if (sibling.next != null)
+        {
             sibling.next.prev = sibling;
         }
         sibling.prev = this;
         this.next = sibling;
         sibling.parent = this.parent;
-        if (sibling.next == null) {
+        if (sibling.next == null)
+        {
             sibling.parent.lastChild = sibling;
         }
     }
@@ -106,26 +133,29 @@ public abstract class Node {
     /**
      * Inserts the {@code sibling} node before {@code this} node.
      */
-    public void insertBefore(Node sibling) {
+    public void insertBefore(Node sibling)
+    {
         sibling.unlink();
         sibling.prev = this.prev;
-        if (sibling.prev != null) {
+        if (sibling.prev != null)
+        {
             sibling.prev.next = sibling;
         }
         sibling.next = this;
         this.prev = sibling;
         sibling.parent = this.parent;
-        if (sibling.prev == null) {
+        if (sibling.prev == null)
+        {
             sibling.parent.firstChild = sibling;
         }
     }
 
     /**
-     * @return the source spans of this node if included by the parser, an empty
-     *         list otherwise
+     * @return the source spans of this node if included by the parser, an empty list otherwise
      * @since 0.16.0
      */
-    public List<SourceSpan> getSourceSpans() {
+    public List<SourceSpan> getSourceSpans()
+    {
         return sourceSpans != null ? Collections.unmodifiableList(sourceSpans) : List.of();
     }
 
@@ -135,10 +165,14 @@ public abstract class Node {
      * @param sourceSpans the new source spans to set
      * @since 0.16.0
      */
-    public void setSourceSpans(List<SourceSpan> sourceSpans) {
-        if (sourceSpans.isEmpty()) {
+    public void setSourceSpans(List<SourceSpan> sourceSpans)
+    {
+        if (sourceSpans.isEmpty())
+        {
             this.sourceSpans = null;
-        } else {
+        }
+        else
+        {
             this.sourceSpans = new ArrayList<>(sourceSpans);
         }
     }
@@ -149,19 +183,23 @@ public abstract class Node {
      * @param sourceSpan the source span to add
      * @since 0.16.0
      */
-    public void addSourceSpan(SourceSpan sourceSpan) {
-        if (sourceSpans == null) {
+    public void addSourceSpan(SourceSpan sourceSpan)
+    {
+        if (sourceSpans == null)
+        {
             this.sourceSpans = new ArrayList<>();
         }
         this.sourceSpans.add(sourceSpan);
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return getClass().getSimpleName() + "{" + toStringAttributes() + "}";
     }
 
-    protected String toStringAttributes() {
+    protected String toStringAttributes()
+    {
         return "";
     }
 }

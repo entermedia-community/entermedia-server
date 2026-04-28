@@ -11,18 +11,22 @@ import java.util.HashMap;
 
 import org.openedit.WebPageRequest;
 
-public class PaypalUtil {
+public class PaypalUtil
+{
 
-	public String handleIPN(WebPageRequest inReq) throws Exception {
+	public String handleIPN(WebPageRequest inReq) throws Exception
+	{
 		String mode = inReq.findValue("usePaypalSandbox");
 
 		String url = "https://www.paypal.com/cgi-bin/webscr";
-		if (Boolean.parseBoolean(mode)) {
+		if (Boolean.parseBoolean(mode))
+		{
 			url = "https://www.sandbox.paypal.com/cgi-bin/webscr";
 		}
 		Enumeration en = inReq.getRequest().getParameterNames();
 		String str = "cmd=_notify-validate";
-		while (en.hasMoreElements()) {
+		while (en.hasMoreElements())
+		{
 			String paramName = (String) en.nextElement();
 			String paramValue = inReq.getRequest().getParameter(paramName);
 			str = str + "&" + paramName + "=" + URLEncoder.encode(paramValue);
@@ -43,36 +47,44 @@ public class PaypalUtil {
 		pw.println(str);
 		pw.close();
 
-		BufferedReader in = new BufferedReader(
-				new InputStreamReader(uc.getInputStream()));
+		BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
 		String res = in.readLine();
 		in.close();
 
 		// check notification validation
-		if (res.equals("VERIFIED")) {
+		if (res.equals("VERIFIED"))
+		{
 
 			// getStore().getOrderArchive().
 
-		} else if (res.equals("INVALID")) {
-
-			// log for investigation
-		} else {
-			// error
 		}
+		else
+			if (res.equals("INVALID"))
+			{
+
+				// log for investigation
+			}
+			else
+			{
+				// error
+			}
 		return res;
 	}
 
-	public String handlePDT(WebPageRequest inReq) throws Exception {
+	public String handlePDT(WebPageRequest inReq) throws Exception
+	{
 		String mode = inReq.findValue("usePaypalSandbox");
 
 		String url = "https://www.paypal.com/cgi-bin/webscr";
-		if (Boolean.parseBoolean(mode)) {
+		if (Boolean.parseBoolean(mode))
+		{
 			url = "https://www.sandbox.paypal.com/cgi-bin/webscr";
 		}
 		String token = inReq.findValue("pdtToken");
 		Enumeration en = inReq.getRequest().getParameterNames();
 		String str = "cmd=_notify-synch";
-		while (en.hasMoreElements()) {
+		while (en.hasMoreElements())
+		{
 			String paramName = (String) en.nextElement();
 			String paramValue = inReq.getRequest().getParameter(paramName);
 			str = str + "&" + paramName + "=" + URLEncoder.encode(paramValue);
@@ -86,16 +98,17 @@ public class PaypalUtil {
 		PrintWriter pw = new PrintWriter(uc.getOutputStream());
 		pw.println(str);
 		pw.close();
-		BufferedReader in = new BufferedReader(
-				new InputStreamReader(uc.getInputStream()));
+		BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
 		String res = in.readLine();
 		HashMap resultInfo = new HashMap();
 		String line = null;
 		int rowNum = 0;
 
-		while ((line = in.readLine()) != null) {
+		while ((line = in.readLine()) != null)
+		{
 			String[] param = line.split("=");
-			if (param.length == 2) {
+			if (param.length == 2)
+			{
 				resultInfo.put(param[0], param[1]);
 			}
 		}

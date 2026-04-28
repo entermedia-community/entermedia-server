@@ -20,25 +20,28 @@ import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 
 /**
- * This generator generates original asset documents from an MediaArchive
- * based on paths of the form
+ * This generator generates original asset documents from an MediaArchive based on paths of the form
  * <tt>.../<var>assetid</var>/<var>filename.ext</var></tt>.
  * 
  * @author Eric Galluzzo
  */
-public class OriginalDocumentGenerator extends FileGenerator {
+public class OriginalDocumentGenerator extends FileGenerator
+{
 	private static final Log log = LogFactory.getLog(OriginalDocumentGenerator.class);
 	protected ModuleManager moduleManager;
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return moduleManager;
 	}
 
-	public void setModuleManager(ModuleManager moduleManager) {
+	public void setModuleManager(ModuleManager moduleManager)
+	{
 		this.moduleManager = moduleManager;
 	}
 
-	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException {
+	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
+	{
 
 		// log.info("Downloading " + inPage.getPath());
 		// this depends on the URL path to be /stuff/1/2/3/abc.eps/abs.eps This
@@ -51,15 +54,19 @@ public class OriginalDocumentGenerator extends FileGenerator {
 		Boolean watermark = (Boolean) inReq.getPageValue("canforcewatermark");
 		String sourcePath = null;
 		String collectionidinpath = inPage.get("collectionidinpath");
-		if (Boolean.parseBoolean(collectionidinpath)) {
+		if (Boolean.parseBoolean(collectionidinpath))
+		{
 			sourcePath = inPage.getPath().substring(assetrootfolder.length() + 1);
 			int endslash = sourcePath.indexOf("/");
 			// String collectionid = sourcePath.substring(0, endslash); ignore it
 			sourcePath = sourcePath.substring(endslash + 1);
-		} else {
+		}
+		else
+		{
 			sourcePath = inPage.getPath().substring(assetrootfolder.length() + 1);
 		}
-		if (watermark != null && watermark.booleanValue()) {
+		if (watermark != null && watermark.booleanValue())
+		{
 			// ConvertGenerator generator = (ConvertGenerator)
 			// getModuleManager().getBean("convertArchiveDocument");
 			// generator.generate(inReq, inPage, inOut);
@@ -71,16 +78,18 @@ public class OriginalDocumentGenerator extends FileGenerator {
 		// source path cut off the beginning
 		// source path cut off the parent folder name. Put a / back in there?
 		String exactsourcepath = inPage.get("exactsourcepath");
-		if (!Boolean.parseBoolean(exactsourcepath)) {
+		if (!Boolean.parseBoolean(exactsourcepath))
+		{
 			sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
 		}
 		Asset asset = archive.getAssetBySourcePath(sourcePath);
 
-		if (asset == null) {
-			if (Boolean.parseBoolean(exactsourcepath)) {
+		if (asset == null)
+		{
+			if (Boolean.parseBoolean(exactsourcepath))
+			{
 				// use regular downloading?
-				Page realpage = archive.getPageManager()
-						.getPage("/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcePath);
+				Page realpage = archive.getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcePath);
 				super.generate(inReq, realpage, inOut);
 				return;
 			}
@@ -91,29 +100,36 @@ public class OriginalDocumentGenerator extends FileGenerator {
 		String fileName = asset.getName();
 
 		// String filename = asset.getSourcePath();
-		if (asset.isFolder() && asset.getPrimaryFile() != null) {
+		if (asset.isFolder() && asset.getPrimaryFile() != null)
+		{
 			fileName = asset.getPrimaryFile();
 		}
 
 		Page content = null;
 
 		String version = inReq.getRequestParameter("version");
-		if (version != null) {
+		if (version != null)
+		{
 			Version revision = archive.getAssetEditor().getVersion(asset, version);
-			if (version != null || revision.getBackUpPath() != null) {
+			if (version != null || revision.getBackUpPath() != null)
+			{
 				content = archive.getPageManager().getPage(revision.getBackUpPath());
 			}
 		}
-		if (content == null) {
+		if (content == null)
+		{
 			content = archive.getOriginalDocument(asset);
 		}
-		if (content.exists()) {
+		if (content.exists())
+		{
 			// its a regular file
 			boolean skipheader = Boolean.parseBoolean(inReq.findValue("skipheader"));
-			if (inReq.getResponse() != null && !skipheader) {
+			if (inReq.getResponse() != null && !skipheader)
+			{
 				inReq.getResponse().setHeader("Content-Type", "application/octet-stream; charset=utf-8");
 				String tweak = fileName;
-				if (version != null) {
+				if (version != null)
+				{
 					tweak = "version " + version + "~" + fileName;
 				}
 				inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\"" + tweak + "\""); // This
@@ -126,7 +142,8 @@ public class OriginalDocumentGenerator extends FileGenerator {
 				// filename*=utf-8''\""+ fileName +"\"");
 
 				String md5 = asset.get("md5hex");
-				if (md5 != null) {
+				if (md5 != null)
+				{
 					inReq.getResponse().setHeader("ETag", md5);
 				}
 			}
@@ -135,17 +152,21 @@ public class OriginalDocumentGenerator extends FileGenerator {
 			super.generate(req, content, inOut);
 			archive.logDownload(asset.getSourcePath(), "success", inReq.getUser());
 
-		} else {
+		}
+		else
+		{
 			stream(inReq, archive, inOut, asset, fileName);
 		}
 	}
 
-	private void stream(WebPageRequest inReq, MediaArchive archive, Output inOut, Asset asset, String filename) {
+	private void stream(WebPageRequest inReq, MediaArchive archive, Output inOut, Asset asset, String filename)
+	{
 		InputStream in = null;
 		// try
 		// {
 		in = archive.getOriginalDocumentStream(asset);
-		if (in == null) {
+		if (in == null)
+		{
 
 			throw new ContentNotAvailableException("Could not find original document path ", asset.getSourcePath());
 		}
@@ -168,7 +189,8 @@ public class OriginalDocumentGenerator extends FileGenerator {
 		// return;
 		// }
 		boolean skipheader = Boolean.parseBoolean(inReq.findValue("skipheader"));
-		if (inReq.getResponse() != null && !skipheader) {
+		if (inReq.getResponse() != null && !skipheader)
+		{
 			inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\"" + filename + "\""); // This
 																												// seems
 																												// to
@@ -177,26 +199,33 @@ public class OriginalDocumentGenerator extends FileGenerator {
 																												// firefox
 		}
 
-		try {
+		try
+		{
 			// FileInputStream fis = new FileInputStream( originalDocumentFile
 			// );
-			try {
+			try
+			{
 				OutputFiller filler = new OutputFiller();
 				// filler.setBufferSize(40000);
 				filler.fill(in, inOut.getStream());
-			} finally {
+			}
+			finally
+			{
 				in.close();
 				inOut.getStream().close();
 				log.info("Document sent");
 				archive.logDownload(filename, "success", inReq.getUser());
 			}
-		} catch (IOException ioe) {
+		}
+		catch (IOException ioe)
+		{
 			archive.logDownload(filename, "error", inReq.getUser());
 			throw new OpenEditException(ioe);
 		}
 	}
 
-	public boolean canGenerate(WebPageRequest inReq) {
+	public boolean canGenerate(WebPageRequest inReq)
+	{
 		return true;
 	}
 

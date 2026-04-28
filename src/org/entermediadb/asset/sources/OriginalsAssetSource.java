@@ -36,49 +36,52 @@ import org.openedit.util.DateStorageUtil;
 import org.openedit.util.EmStringUtils;
 import org.openedit.util.PathUtilities;
 
-public class OriginalsAssetSource extends BaseAssetSource {
+public class OriginalsAssetSource extends BaseAssetSource
+{
 	private static final Log log = LogFactory.getLog(OriginalsAssetSource.class);
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.entermediadb.asset.sources.AssetSource#getOriginalDocumentStream(org.
+	 * @see org.entermediadb.asset.sources.AssetSource#getOriginalDocumentStream(org.
 	 * entermediadb.asset.Asset)
 	 */
 	@Override
-	public InputStream getOriginalDocumentStream(Asset inAsset) throws OpenEditException {
+	public InputStream getOriginalDocumentStream(Asset inAsset) throws OpenEditException
+	{
 		ContentItem fullpath = getOriginalContent(inAsset);
-		if (fullpath == null) {
+		if (fullpath == null)
+		{
 			return null;
 		}
 		return fullpath.getInputStream();
 	}
 
-	public boolean isHotFolder() {
+	public boolean isHotFolder()
+	{
 		return true;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.entermediadb.asset.Bob#getOriginalContent(org.entermediadb.asset.Asset)
+	 * @see org.entermediadb.asset.Bob#getOriginalContent(org.entermediadb.asset.Asset)
 	 */
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.entermediadb.asset.sources.AssetSource#getOriginalContent(org.
-	 * entermediadb.asset.Asset)
+	 * @see org.entermediadb.asset.sources.AssetSource#getOriginalContent(org. entermediadb.asset.Asset)
 	 */
 	@Override
-	public ContentItem getOriginalContent(Asset inAsset) {
+	public ContentItem getOriginalContent(Asset inAsset)
+	{
 		String originalpath = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals";
 		String alternative = inAsset.getPath();
 		originalpath = originalpath + "/" + alternative;
 		String primaryname = inAsset.getPrimaryFile();
-		if (primaryname != null && inAsset.isFolder()) {
+		if (primaryname != null && inAsset.isFolder())
+		{
 			originalpath = originalpath + "/" + primaryname;
 		}
 
@@ -96,21 +99,22 @@ public class OriginalsAssetSource extends BaseAssetSource {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.entermediadb.asset.Bob#setPageManager(org.openedit.page.manage.
-	 * PageManager)
+	 * @see org.entermediadb.asset.Bob#setPageManager(org.openedit.page.manage. PageManager)
 	 */
 
 	@Override
-	public boolean removeOriginal(User inUser, Asset inAsset) {
+	public boolean removeOriginal(User inUser, Asset inAsset)
+	{
 		ContentItem item = getOriginalContent(inAsset);
-		if (inUser != null) {
+		if (inUser != null)
+		{
 			item.setAuthor(inUser.getId());
 		}
 		item.setMessage("deleted");
 
-		if (item.exists()) {
-			ContentItem preview = getMediaArchive().getPresetManager().outPutForGenerated(getMediaArchive(), inAsset,
-					"image3000x3000");
+		if (item.exists())
+		{
+			ContentItem preview = getMediaArchive().getPresetManager().outPutForGenerated(getMediaArchive(), inAsset, "image3000x3000");
 			item.setPreviewImage(preview.getPath());
 		}
 
@@ -118,17 +122,20 @@ public class OriginalsAssetSource extends BaseAssetSource {
 		return true;
 	}
 
-	public Asset addNewAsset(Asset asset, List<ContentItem> temppages) {
+	public Asset addNewAsset(Asset asset, List<ContentItem> temppages)
+	{
 		// move the pages
-		String destination = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/"
-				+ asset.getSourcePath();
+		String destination = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/" + asset.getSourcePath();
 		ContentItem dest = getPageManager().getContent(destination);
-		if (!dest.exists()) {
+		if (!dest.exists())
+		{
 			log.info("Could not attach file destination folder didn't exist: " + dest.getPath());
 		}
-		for (Iterator<ContentItem> iterator = temppages.iterator(); iterator.hasNext();) {
+		for (Iterator<ContentItem> iterator = temppages.iterator(); iterator.hasNext();)
+		{
 			ContentItem page = (ContentItem) iterator.next();
-			if (!page.exists()) {
+			if (!page.exists())
+			{
 				log.info("Could not attach file temp file doesn't exist: " + page.getPath());
 			}
 			getPageManager().getRepository().move(page, dest);
@@ -136,20 +143,21 @@ public class OriginalsAssetSource extends BaseAssetSource {
 		return asset;
 	}
 
-	public Asset replaceOriginal(Asset inAsset, List<ContentItem> inTemppages) {
-		String destination = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/"
-				+ inAsset.getSourcePath();
+	public Asset replaceOriginal(Asset inAsset, List<ContentItem> inTemppages)
+	{
+		String destination = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/" + inAsset.getSourcePath();
 		// copy the temppages in to the originals folder, but first check if this is a
 		// folder based asset
 		ContentItem dest = getPageManager().getContent(destination);
 
 		ContentItem page = (ContentItem) inTemppages.iterator().next();
-		if (!page.exists()) {
+		if (!page.exists())
+		{
 			log.info("Could not attach file temp file doesn't exist: " + page.getPath());
 		}
-		if (page.exists()) {
-			ContentItem preview = getMediaArchive().getPresetManager().outPutForGenerated(getMediaArchive(), inAsset,
-					"image3000x3000");
+		if (page.exists())
+		{
+			ContentItem preview = getMediaArchive().getPresetManager().outPutForGenerated(getMediaArchive(), inAsset, "image3000x3000");
 			page.setPreviewImage(preview.getPath());
 		}
 
@@ -168,7 +176,8 @@ public class OriginalsAssetSource extends BaseAssetSource {
 		return asset;
 	}
 
-	protected ContentItem checkLocation(Asset inAsset, ContentItem inUploaded, User inUser) {
+	protected ContentItem checkLocation(Asset inAsset, ContentItem inUploaded, User inUser)
+	{
 		ContentItem dest = getOriginalContent(inAsset);
 		if (!inUploaded.getPath().equals(dest.getPath()))// move from tmp location to final location
 		{
@@ -181,7 +190,8 @@ public class OriginalsAssetSource extends BaseAssetSource {
 		return dest;
 	}
 
-	class UploadedPage {
+	class UploadedPage
+	{
 		protected Page inUpload;
 		protected Page inDestPage;
 		protected String sourcePath;
@@ -190,19 +200,23 @@ public class OriginalsAssetSource extends BaseAssetSource {
 	}
 
 	@Override
-	public Asset assetOrginalSaved(Asset inAsset) {
+	public Asset assetOrginalSaved(Asset inAsset)
+	{
 		// Do nothing? The file is already in the oroiginasl folder
 		return inAsset;
 	}
 
 	@Override
-	public void detach() {
+	public void detach()
+	{
 		String external = getConfig().get("externalpath");
 		List configs = new ArrayList(getPageManager().getRepositoryManager().getRepositories());
 
-		for (Iterator iterator = configs.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = configs.iterator(); iterator.hasNext();)
+		{
 			Repository config = (Repository) iterator.next();
-			if (config.getExternalPath().equals(external)) {
+			if (config.getExternalPath().equals(external))
+			{
 				getPageManager().getRepositoryManager().removeRepository(config.getPath());
 			}
 		}
@@ -210,26 +224,32 @@ public class OriginalsAssetSource extends BaseAssetSource {
 	}
 
 	@Override
-	public void refresh() {
+	public void refresh()
+	{
 		MultiValued currentConfig = (MultiValued) getMediaArchive().getData("hotfolder", getConfig().getId());
 		setConfig(currentConfig);
 	}
 
 	@Override
-	public void saveConfig() {
+	public void saveConfig()
+	{
 		String toplevelfolder = getConfig().get("subfolder");
 		// save subfolder with the value of the end of externalpath
-		if (toplevelfolder == null) {
+		if (toplevelfolder == null)
+		{
 			String epath = getConfig().get("externalpath");
-			if (epath != null) {
+			if (epath != null)
+			{
 				epath = epath.trim();
 				epath = epath.replace('\\', '/');
-				if (epath.endsWith("/")) {
+				if (epath.endsWith("/"))
+				{
 					epath = epath.substring(0, epath.length() - 1);
 				}
 				toplevelfolder = PathUtilities.extractDirectoryName(epath + "/junk.html");
 			}
-			if (toplevelfolder == null) {
+			if (toplevelfolder == null)
+			{
 				toplevelfolder = getConfig().getName();
 			}
 			getConfig().setProperty("subfolder", toplevelfolder);
@@ -239,17 +259,21 @@ public class OriginalsAssetSource extends BaseAssetSource {
 
 	}
 
-	protected boolean skipModCheck() {
+	protected boolean skipModCheck()
+	{
 		long sincedate = 0;
 		String since = getConfig().get("lastscanstart");
-		if (since != null) {
+		if (since != null)
+		{
 			sincedate = DateStorageUtil.getStorageUtil().parseFromStorage(since).getTime();
 		}
 		boolean skipmodcheck = false;
-		if (since != null) {
+		if (since != null)
+		{
 			long now = System.currentTimeMillis();
 			String mod = getMediaArchive().getCatalogSettingValue("importing_modification_interval");
-			if (mod == null) {
+			if (mod == null)
+			{
 				mod = "1d";
 			}
 			long time = new TimeParser().parse(mod);
@@ -262,7 +286,8 @@ public class OriginalsAssetSource extends BaseAssetSource {
 		return skipmodcheck;
 	}
 
-	public int importAssets(String inSubChangePath) {
+	public int importAssets(String inSubChangePath)
+	{
 		refresh();
 
 		String base = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals";
@@ -274,25 +299,28 @@ public class OriginalsAssetSource extends BaseAssetSource {
 		Date started = new Date();
 
 		boolean checkformod = skipModCheck();
-		if (inSubChangePath != null) {
+		if (inSubChangePath != null)
+		{
 			path = path + "/" + inSubChangePath;
 			checkformod = true;
 		}
 
 		boolean makelogs = false;
 		String value = getMediaArchive().getCatalogSettingValue("show_hotfolder_status");
-		if (Boolean.valueOf(value)) {
+		if (Boolean.valueOf(value))
+		{
 			makelogs = true;
 		}
-		if (makelogs) {
+		if (makelogs)
+		{
 			importer.fireHotFolderEvent(getMediaArchive(), "scan", "start", "Scanning " + path, null);
 		}
 		log.info(path + " scan started. mod check = " + checkformod);
 
 		List<String> assetids = importer.processOn(base, path, checkformod, getMediaArchive(), null);
-		if (makelogs) {
-			importer.fireHotFolderEvent(getMediaArchive(), "scan", "finish",
-					"Found assets: " + String.valueOf(assetids.size()), null);
+		if (makelogs)
+		{
+			importer.fireHotFolderEvent(getMediaArchive(), "scan", "finish", "Found assets: " + String.valueOf(assetids.size()), null);
 		}
 		getConfig().setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(started));
 		getFolderSearcher().saveData(getConfig(), null);
@@ -301,27 +329,33 @@ public class OriginalsAssetSource extends BaseAssetSource {
 		log.info(getConfig() + " Imported " + assetids.size() + " assets in " + taken + " milli-seconds");
 
 		String monitor = getConfig().get("monitortree");
-		if (Boolean.valueOf(monitor)) {
+		if (Boolean.valueOf(monitor))
+		{
 			initMonitor();
 		}
 
 		return assetids.size();
 	}
 
-	protected void initMonitor() {
+	protected void initMonitor()
+	{
 		String base = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals";
 		String name = getConfig().get("subfolder");
 		String path = base + "/" + name;
 		Collection paths = getPageManager().getChildrenPaths(path, false);
-		for (Iterator iterator = paths.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+		{
 			String subdirectory = (String) iterator.next();
 			ContentItem item = getPageManager().getContent(subdirectory);
-			if (!item.getName().startsWith(".")) {
-				if (item.isFolder() && !getFolderMonitor().hasFolderTree(item.getAbsolutePath())) {
+			if (!item.getName().startsWith("."))
+			{
+				if (item.isFolder() && !getFolderMonitor().hasFolderTree(item.getAbsolutePath()))
+				{
 					// will scan each folder once then monitor it from now on
 					getFolderMonitor().addPathChangedListener(item.getAbsolutePath(), new PathChangedListener() {
 						@Override
-						public void pathChanged(String inType, String inAbsolutePath) {
+						public void pathChanged(String inType, String inAbsolutePath)
+						{
 							String ending = inAbsolutePath.substring(item.getAbsolutePath().length());
 							importAssets(ending);
 						}
@@ -332,13 +366,15 @@ public class OriginalsAssetSource extends BaseAssetSource {
 
 	}
 
-	protected AssetImporter createImporter() {
+	protected AssetImporter createImporter()
+	{
 		AssetImporter importer = (AssetImporter) getMediaArchive().getModuleManager().getBean("assetImporter"); // Dont
 																												// cache
 																												// bean
 
 		String excludes = getConfig().get("excludes");
-		if (excludes != null) {
+		if (excludes != null)
+		{
 			List<String> list = EmStringUtils.split(excludes);
 			// for (int i = 0; i < list.size(); i++)
 			// {
@@ -353,7 +389,8 @@ public class OriginalsAssetSource extends BaseAssetSource {
 		}
 		importer.setIncludeMatches(getConfig().get("includes"));
 		String attachments = getConfig().get("attachmenttrigger");
-		if (attachments != null) {
+		if (attachments != null)
+		{
 			Collection attachmentslist = EmStringUtils.split(attachments);
 			importer.setAttachmentFilters(attachmentslist);
 		}
@@ -361,14 +398,16 @@ public class OriginalsAssetSource extends BaseAssetSource {
 		return importer;
 	}
 
-	public void checkForDeleted() {
+	public void checkForDeleted()
+	{
 		MediaArchive archive = getMediaArchive();
 
 		String base = "/WEB-INF/data/" + archive.getCatalogId() + "/originals";
 		String name = getConfig().get("subfolder");
 		String path = base + "/" + name;
 		List paths = getPageManager().getChildrenPaths(path);
-		if (paths.size() == 0) {
+		if (paths.size() == 0)
+		{
 			log.error("Found hot folder with no files, canceled delete request " + path);
 			return;
 		}
@@ -397,7 +436,8 @@ public class OriginalsAssetSource extends BaseAssetSource {
 		int masterclusterskiped = 0;
 		List tosave = new ArrayList();
 		String localClusterId = archive.getNodeManager().getLocalClusterId();
-		for (Object obj : assets) {
+		for (Object obj : assets)
+		{
 			Data hit = (Data) obj;
 
 			Asset asset = (Asset) searcher.loadData(hit);
@@ -405,7 +445,8 @@ public class OriginalsAssetSource extends BaseAssetSource {
 			// verify we own this asset (cluster)
 			Map emEditStatus = asset.getEmRecordStatus();
 			String clusterid = (String) emEditStatus.get("mastereditclusterid");
-			if (!localClusterId.equals(clusterid)) {
+			if (!localClusterId.equals(clusterid))
+			{
 				// Skip it, We do not own this asset
 				masterclusterskiped++;
 				continue;
@@ -414,27 +455,33 @@ public class OriginalsAssetSource extends BaseAssetSource {
 			ContentItem item = getOriginalContent(asset);
 			boolean saveit = false;
 			// log.info(item.getPath());
-			if (!item.exists()) {
+			if (!item.exists())
+			{
 				removed++;
 				asset.setProperty("editstatus", "7"); // mark as deleted
 				saveit = true;
-			} else {
+			}
+			else
+			{
 				existed++;
-				if ("7".equals(asset.get("editstatus"))) {
+				if ("7".equals(asset.get("editstatus")))
+				{
 					asset.setProperty("editstatus", "6"); // restore files
 					saveit = true;
 				}
 				// TODO: Should we have locked the asset?
-				if (!asset.isEquals(item.getLastModified())) {
+				if (!asset.isEquals(item.getLastModified()))
+				{
 					archive.getAssetImporter().reImportAsset(archive, asset); // this saves it
 					modified++;
 				}
 			}
-			if (saveit) {
+			if (saveit)
+			{
 				tosave.add(asset);
-				if (tosave.size() == 100) {
-					log.info("Hotfolder: " + name + ", modified: " + modified + " deleted: " + removed + " modified:"
-							+ existed);
+				if (tosave.size() == 100)
+				{
+					log.info("Hotfolder: " + name + ", modified: " + modified + " deleted: " + removed + " modified:" + existed);
 					archive.saveAssets(tosave);
 					tosave.clear();
 				}
@@ -443,42 +490,46 @@ public class OriginalsAssetSource extends BaseAssetSource {
 		archive.saveAssets(tosave);
 		tosave.clear();
 		log.info("Hotfolder: " + name + ", modified: " + modified + " deleted: " + removed + " modified:" + existed);
-		if (modified > 0) {
+		if (modified > 0)
+		{
 			archive.fireSharedMediaEvent("conversions/runconversions");
 		}
 
 		// TODO: Clear empty hot folder if enabled
 		int remove = removeExtraCategories();
-		if (remove > 0) {
+		if (remove > 0)
+		{
 			log.info("Hot folder: " + name + ", removed categories " + remove);
 		}
 
-		if (masterclusterskiped > 0) {
-			log.info("Hotfolder: " + name + ", skipped " + masterclusterskiped
-					+ " assets that were not owned by this cluster.");
+		if (masterclusterskiped > 0)
+		{
+			log.info("Hotfolder: " + name + ", skipped " + masterclusterskiped + " assets that were not owned by this cluster.");
 		}
 
 	}
 
 	// Entity Deleting
 	@Override
-	public int removeExtraCategories() {
+	public int removeExtraCategories()
+	{
 		MediaArchive archive = getMediaArchive();
 
 		String base = "/WEB-INF/data/" + archive.getCatalogId() + "/originals";
 		String name = getConfig().get("subfolder");
 		String path = base + "/" + name;
 		List paths = getPageManager().getChildrenPaths(path);
-		if (paths.size() == 0) {
+		if (paths.size() == 0)
+		{
 			log.error("Found hot folder with no files, canceled delete request " + path);
 			return -1;
 		}
 		ContentItem item = getPageManager().getContent(path);
 		Category category = archive.getCategorySearcher().loadCategoryByPath(name);
 
-		HitTracker entities = getMediaArchive().query("module").exact("isentity", true)
-				.exact("autodeleteentities", true).search();
-		if (entities.isEmpty()) {
+		HitTracker entities = getMediaArchive().query("module").exact("isentity", true).exact("autodeleteentities", true).search();
+		if (entities.isEmpty())
+		{
 			return 0;
 		}
 		Collection ids = entities.collectValues("id");
@@ -487,36 +538,43 @@ public class OriginalsAssetSource extends BaseAssetSource {
 		return count;
 	}
 
-	protected int checkForExtraCategories(Collection entities, ContentItem inFolder, Category inParent) {
+	protected int checkForExtraCategories(Collection entities, ContentItem inFolder, Category inParent)
+	{
 		HashMap names = new HashMap();
-		if (inParent != null) {
-			for (Iterator iterator = inParent.getChildren().iterator(); iterator.hasNext();) {
+		if (inParent != null)
+		{
+			for (Iterator iterator = inParent.getChildren().iterator(); iterator.hasNext();)
+			{
 				Category cat = (Category) iterator.next();
 				names.put(cat.getName(), cat);
 			}
 		}
 
 		List paths = getPageManager().getChildrenPaths(inFolder.getPath());
-		for (Iterator iterator = paths.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+		{
 			String subdirectory = (String) iterator.next();
 			ContentItem item = getPageManager().getContent(subdirectory);
-			if (item.isFolder()) {
+			if (item.isFolder())
+			{
 				Category folder = (Category) names.get(item.getName());
 				names.remove(item.getName());
-				if (folder != null) {
+				if (folder != null)
+				{
 					checkForExtraCategories(entities, item, folder);
 				}
 			}
 		}
-		for (Iterator iterator = names.values().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = names.values().iterator(); iterator.hasNext();)
+		{
 			Category oldjunk = (Category) iterator.next();
 			// Look for entities with this exact path
-			QueryBuilder builder = getMediaArchive().query("modulesearch").exact("sourcepath",
-					oldjunk.getCategoryPath());
+			QueryBuilder builder = getMediaArchive().query("modulesearch").exact("sourcepath", oldjunk.getCategoryPath());
 			builder.getQuery().setSearchTypes(entities);
 
 			Collection hits = builder.search();
-			for (Iterator iterator2 = hits.iterator(); iterator2.hasNext();) {
+			for (Iterator iterator2 = hits.iterator(); iterator2.hasNext();)
+			{
 				Data data = (Data) iterator2.next();
 				String moduletype = data.get("entitysourcetype");
 				log.info("Deleting missing path " + new JSONObject(data.getProperties()).toJSONString());
@@ -525,7 +583,8 @@ public class OriginalsAssetSource extends BaseAssetSource {
 			inParent.removeChild(oldjunk);
 		}
 		int deleted = names.size();
-		if (deleted > 0) {
+		if (deleted > 0)
+		{
 			log.info("Removing: " + names.values());
 			getMediaArchive().getCategorySearcher().deleteAll(names.values(), null);
 		}
@@ -533,7 +592,8 @@ public class OriginalsAssetSource extends BaseAssetSource {
 	}
 
 	@Override
-	public void createSymbolicLink(Asset inAsset, String inCategoryPath) {
+	public void createSymbolicLink(Asset inAsset, String inCategoryPath)
+	{
 		// ContentItem item = getOriginalContent(inAsset);
 		// if( item.exists() )
 		// {
@@ -581,7 +641,8 @@ public class OriginalsAssetSource extends BaseAssetSource {
 	// }
 
 	@Override
-	public boolean existsOriginalContent(Asset inAsset) {
+	public boolean existsOriginalContent(Asset inAsset)
+	{
 		ContentItem item = getOriginalContent(inAsset);
 		return item.exists();
 	}

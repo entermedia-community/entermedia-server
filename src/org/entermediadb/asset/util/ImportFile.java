@@ -11,48 +11,59 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImportFile {
+public class ImportFile
+{
 	protected List fieldRows;
 	protected Header fieldHeader;
 	protected Parser fieldParser;
 
-	public ImportFile() {
-	}
+	public ImportFile() {}
 
 	public ImportFile(char delim) {
-		if (delim == '\t') {
+		if (delim == '\t')
+		{
 			fieldParser = new TabParser();
-		} else {
+		}
+		else
+		{
 			fieldParser = new CSVReader();
 		}
 	}
 
-	public void load(File inFile) throws Exception {
+	public void load(File inFile) throws Exception
+	{
 		BufferedReader reader = new BufferedReader(new FileReader(inFile));
 		load(reader);
 	}
 
-	public void read(Reader inFile) throws Exception {
+	public void read(Reader inFile) throws Exception
+	{
 		BufferedReader reader = new BufferedReader(inFile);
 		load(reader);
 	}
 
-	public void load(BufferedReader reader) throws Exception {
+	public void load(BufferedReader reader) throws Exception
+	{
 		// read in tabs or whatever into header object.
 		// foreach row add a row object
 		getParser().setBufferedReader(reader);
 
 		String[] cells = getParser().readNext();
-		if (cells == null) {
+		if (cells == null)
+		{
 			return;
 		}
 		setHeader(new Header());
 		List valid = new ArrayList();
-		for (int i = 0; i < cells.length; i++) {
+		for (int i = 0; i < cells.length; i++)
+		{
 			String cell = cells[i];
-			if (cell == null || cell.trim().isEmpty()) {
+			if (cell == null || cell.trim().isEmpty())
+			{
 				// throw new OpenEditException("Empty header is not allowed");
-			} else {
+			}
+			else
+			{
 				valid.add(cell.trim());
 			}
 		}
@@ -75,29 +86,32 @@ public class ImportFile {
 		// }
 	}
 
-	public List getAllRows() throws IOException {
+	public List getAllRows() throws IOException
+	{
 		List all = new ArrayList();
 		Row row = getNextRow();
-		while (row != null) {
+		while (row != null)
+		{
 			all.add(row);
 			row = getNextRow();
 		}
 		return all;
 	}
 
-	public Row getNextRow() throws IOException {
+	public Row getNextRow() throws IOException
+	{
 		String[] cells = getParser().readNext();
-		if (cells == null || cells.length == 0) {
+		if (cells == null || cells.length == 0)
+		{
 			// close(); Should not end if there is one empty row
 			return null;
 		}
 		// line = line.replace('\u001e',','); //get rid of junk chars
 		/*
-		 * line = line.replace('\u001e',' '); //get rid of junk chars
-		 * line = line.replace('\u0005',' '); //get rid of junk chars
-		 * line = line.replace('\u0010',' '); //get rid of junk chars
-		 * line = line.replace('\u001f',' '); //get rid of junk chars
-		 * line = line.replace('\u000f',' '); //get rid of junk chars
+		 * line = line.replace('\u001e',' '); //get rid of junk chars line = line.replace('\u0005',' ');
+		 * //get rid of junk chars line = line.replace('\u0010',' '); //get rid of junk chars line =
+		 * line.replace('\u001f',' '); //get rid of junk chars line = line.replace('\u000f',' '); //get rid
+		 * of junk chars
 		 */
 		Row row = new Row();
 		row.setHeader(getHeader());
@@ -106,27 +120,33 @@ public class ImportFile {
 		return row;
 	}
 
-	public Header getHeader() {
+	public Header getHeader()
+	{
 		return fieldHeader;
 	}
 
-	public void setHeader(Header inHeader) {
+	public void setHeader(Header inHeader)
+	{
 		fieldHeader = inHeader;
 	}
 
-	public Parser getParser() {
-		if (fieldParser == null) {
+	public Parser getParser()
+	{
+		if (fieldParser == null)
+		{
 			fieldParser = new TabParser('\t');
 
 		}
 		return fieldParser;
 	}
 
-	public void setParser(Parser inParser) {
+	public void setParser(Parser inParser)
+	{
 		fieldParser = inParser;
 	}
 
-	public void close() {
+	public void close()
+	{
 		getParser().close();
 	}
 

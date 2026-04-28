@@ -9,7 +9,8 @@ import org.openedit.util.ExecutorManager;
  * @Deprecated
  */
 
-public interface ConvertQueue {
+public interface ConvertQueue
+{
 	public ExecutorManager getExecutorManager();
 
 	public void setExecutorManager(ExecutorManager inExecutorManager);

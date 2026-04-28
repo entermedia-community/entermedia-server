@@ -21,28 +21,33 @@ import org.openedit.data.Searcher;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 
-public class McpModule extends BaseMediaModule {
+public class McpModule extends BaseMediaModule
+{
 	private static Log log = LogFactory.getLog(McpModule.class);
 
 	protected McpManager fieldMpcManager;
 	protected VelocityRenderUtil fieldRender;
 
-	public VelocityRenderUtil getRender() {
+	public VelocityRenderUtil getRender()
+	{
 		return fieldRender;
 	}
 
-	public void setRender(VelocityRenderUtil inRender) {
+	public void setRender(VelocityRenderUtil inRender)
+	{
 		fieldRender = inRender;
 	}
 
-	public void generateMcpKey(WebPageRequest inReq) {
+	public void generateMcpKey(WebPageRequest inReq)
+	{
 
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher keys = archive.getSearcher("appkeys");
 		User user = inReq.getUser();
 
 		Data keyinfo = keys.query().exact("user", user).searchOne();
-		if (keyinfo == null) {
+		if (keyinfo == null)
+		{
 			keyinfo = keys.createNewData();
 			keyinfo.setValue("user", user.getId());
 		}
@@ -53,111 +58,72 @@ public class McpModule extends BaseMediaModule {
 	}
 
 	/**
-	 * public void handleMcpRequest(WebPageRequest inReq) throws Exception
-	 * {
-	 * //This request is from some random client like copilot - we told it what
-	 * endpoint to use:
-	 * //client/key
+	 * public void handleMcpRequest(WebPageRequest inReq) throws Exception { //This request is from some
+	 * random client like copilot - we told it what endpoint to use: //client/key
 	 * 
-	 * ///http://172.17.0.1:8080/oneliveweb/mcp/test.json
-	 * MediaArchive archive = getMediaArchive(inReq);
+	 * ///http://172.17.0.1:8080/oneliveweb/mcp/test.json MediaArchive archive = getMediaArchive(inReq);
 	 * McpManager manager = (McpManager) archive.getBean("mcpManager");
 	 * 
 	 * String method = inReq.getRequest().getMethod();
 	 * 
-	 * if ("GET".equals(method))
-	 * {
-	 * // throw new OpenEditException("GET is handled by McpGenerator");
-	 * }
+	 * if ("GET".equals(method)) { // throw new OpenEditException("GET is handled by McpGenerator"); }
 	 * 
 	 * McpConnection currentconnnection = manager.getConnection(inReq);
 	 * 
 	 * 
 	 * 
-	 * JSONObject payload = (JSONObject) inReq.getJsonRequest();
-	 * if (payload == null)
-	 * {
-	 * payload = new JSONObject();
-	 * payload.put("method", "initialize");
-	 * payload.put("id", 0);
+	 * JSONObject payload = (JSONObject) inReq.getJsonRequest(); if (payload == null) { payload = new
+	 * JSONObject(); payload.put("method", "initialize"); payload.put("id", 0);
 	 * 
 	 * }
 	 * 
-	 * String cmd = (String) payload.get("method");
-	 * if(cmd == null) {
-	 * cmd = "initialize";
-	 * }
+	 * String cmd = (String) payload.get("method"); if(cmd == null) { cmd = "initialize"; }
 	 * inReq.putPageValue("currentconnection", currentconnnection);
 	 * 
 	 * String appid = inReq.findPathValue("applicationid");
 	 * 
-	 * inReq.putPageValue("payload", payload);
-	 * inReq.putPageValue("protocolVersion", "2025-03-26");
-	 * inReq.putPageValue("serverName", "EnterMedia MCP");
-	 * inReq.putPageValue("serverVersion", "1.0.0");
+	 * inReq.putPageValue("payload", payload); inReq.putPageValue("protocolVersion", "2025-03-26");
+	 * inReq.putPageValue("serverName", "EnterMedia MCP"); inReq.putPageValue("serverVersion", "1.0.0");
 	 * 
-	 * inReq.putPageValue("responsetext", "accepted");
-	 * inReq.putPageValue("render", getRender());
+	 * inReq.putPageValue("responsetext", "accepted"); inReq.putPageValue("render", getRender());
 	 * 
-	 * //This could be null if anonymous
-	 * User user = currentconnnection.getUser();
-	 * inReq.putPageValue("user", user);
-	 * inReq.putPageValue("userprofile", archive.getUserProfile(user.getId()));
+	 * //This could be null if anonymous User user = currentconnnection.getUser();
+	 * inReq.putPageValue("user", user); inReq.putPageValue("userprofile",
+	 * archive.getUserProfile(user.getId()));
 	 * 
 	 * JSONObject params = (JSONObject) payload.get("params");
 	 * 
 	 * String response = null;
 	 * 
-	 * if(cmd.equals("tools/call"))
-	 * {
-	 * String functionname = (String) params.get("name");
+	 * if(cmd.equals("tools/call")) { String functionname = (String) params.get("name");
 	 * 
 	 * 
-	 * //
-	 * // {
-	 * // "jsonrpc": "2.0",
-	 * // "id": $payload.id,
-	 * // "result": {
-	 * // "content": [
-	 * // {
-	 * // "type": "text",
-	 * // "text": #jesc($raw)
-	 * // }
-	 * // ],
-	 * // "isError": false
-	 * // }
-	 * // }
+	 * // // { // "jsonrpc": "2.0", // "id": $payload.id, // "result": { // "content": [ // { // "type":
+	 * "text", // "text": #jesc($raw) // } // ], // "isError": false // } // }
 	 * 
 	 * String responsetext = getRender().loadInputFromTemplate(inReq, appid +
 	 * "/ai/openai/mcp/functions/" + functionname + ".md");
 	 * 
-	 * JSONObject jsonresponse = new JSONObject();
-	 * jsonresponse.put("jsonrpc", "2.0");
+	 * JSONObject jsonresponse = new JSONObject(); jsonresponse.put("jsonrpc", "2.0");
 	 * jsonresponse.put("id", payload.get("id"));
 	 * 
 	 * JSONObject jsonresult = new JSONObject();
 	 * 
 	 * JSONArray jsoncontentarray = new JSONArray();
 	 * 
-	 * JSONObject jsoncontent = new JSONObject();
-	 * jsoncontent.put("type", "text");
+	 * JSONObject jsoncontent = new JSONObject(); jsoncontent.put("type", "text");
 	 * jsoncontent.put("text", getJsonUtil().escape(responsetext));
 	 * 
 	 * jsoncontentarray.add(jsoncontent);
 	 * 
-	 * jsonresult.put("content", jsoncontentarray);
-	 * jsonresult.put("isError", false);
+	 * jsonresult.put("content", jsoncontentarray); jsonresult.put("isError", false);
 	 * 
 	 * jsonresponse.put("result", jsonresult);
 	 * 
 	 * response = jsonresponse.toJSONString();
 	 * 
-	 * }
-	 * else
-	 * {
-	 * response = getRender().loadInputFromTemplate(inReq, appid +
-	 * "/ai/openai/mcp/method/" + cmd + ".json");
-	 * }
+	 * } else { response = getRender().loadInputFromTemplate(inReq, appid + "/ai/openai/mcp/method/" +
+	 * cmd + ".json"); }
 	 * 
 	 * 
 	 * 
@@ -165,19 +131,15 @@ public class McpModule extends BaseMediaModule {
 	 * 
 	 * inReq.getResponse().setStatus(202);
 	 * 
-	 * new Thread(() -> {
-	 * try {
-	 * currentconnnection.sendMessage(res);
-	 * } catch (Exception e) {
-	 * log.error("Failed to send SSE message", e);
-	 * }
-	 * }).start();
+	 * new Thread(() -> { try { currentconnnection.sendMessage(res); } catch (Exception e) {
+	 * log.error("Failed to send SSE message", e); } }).start();
 	 * 
 	 * }
 	 */
 
 	// Remove all this
-	public void handleMcpHttpRequest(WebPageRequest inReq) throws Exception {
+	public void handleMcpHttpRequest(WebPageRequest inReq) throws Exception
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		McpManager manager = (McpManager) archive.getBean("mcpManager");
 
@@ -185,7 +147,8 @@ public class McpModule extends BaseMediaModule {
 
 		McpGetHandler gethandler = manager.loadGetHandler(inReq);
 
-		if ("GET".equals(method)) {
+		if ("GET".equals(method))
+		{
 			inReq.setCancelActions(true);
 			inReq.setHasRedirected(true); // Dont render anything else after this
 
@@ -209,7 +172,8 @@ public class McpModule extends BaseMediaModule {
 
 		inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId());
 
-		if (cmd.equals("notifications/initialized")) {
+		if (cmd.equals("notifications/initialized"))
+		{
 			inReq.getResponse().setHeader("mcp-session-id", gethandler.getMcpSessionId());
 			inReq.getResponse().setStatus(HttpServletResponse.SC_ACCEPTED); // A blank response
 			inReq.setCancelActions(true);
@@ -228,12 +192,14 @@ public class McpModule extends BaseMediaModule {
 		String functionname = null;
 		JSONObject arguments = null;
 
-		if (params != null) {
+		if (params != null)
+		{
 			functionname = (String) params.get("name");
 			inReq.putPageValue("functionname", functionname);
 
 			arguments = (JSONObject) params.get("arguments");
-			if (arguments != null) {
+			if (arguments != null)
+			{
 				inReq.putPageValue("arguments", arguments);
 			}
 		}
@@ -244,73 +210,80 @@ public class McpModule extends BaseMediaModule {
 
 		String response = "";
 
-		if (cmd.equals("initialize")) {
-			response = new JsonRpcResponseBuilder(id)
-					.withServer("eMedia Live")
-					.build();
-		} else if (cmd.equals("logging/setLevel")) {
-			response = new JsonRpcResponseBuilder(id)
-					.withServer("eMedia Live")
-					.build();
-		} else if (cmd.startsWith("tools/")) {
-			// This could be null if anonymous
-			User user = inReq.getUser();
-			UserProfile profile = null;
-			if (user != null) {
-				profile = archive.getUserProfile(user.getId());
-			} else {
-				response = new JsonRpcResponseBuilder(id)
-						.withResponse("Authentication failed! User not found.", true)
-						.build();
+		if (cmd.equals("initialize"))
+		{
+			response = new JsonRpcResponseBuilder(id).withServer("eMedia Live").build();
+		}
+		else
+			if (cmd.equals("logging/setLevel"))
+			{
+				response = new JsonRpcResponseBuilder(id).withServer("eMedia Live").build();
 			}
-			if (profile == null) {
-				response = new JsonRpcResponseBuilder(id)
-						.withResponse("Authentication failed! User profile not found.", true)
-						.build();
-			} else {
-				inReq.putPageValue("user", user);
-				inReq.putPageValue("userprofile", profile);
+			else
+				if (cmd.startsWith("tools/"))
+				{
+					// This could be null if anonymous
+					User user = inReq.getUser();
+					UserProfile profile = null;
+					if (user != null)
+					{
+						profile = archive.getUserProfile(user.getId());
+					}
+					else
+					{
+						response = new JsonRpcResponseBuilder(id).withResponse("Authentication failed! User not found.", true).build();
+					}
+					if (profile == null)
+					{
+						response = new JsonRpcResponseBuilder(id).withResponse("Authentication failed! User profile not found.", true).build();
+					}
+					else
+					{
+						inReq.putPageValue("user", user);
+						inReq.putPageValue("userprofile", profile);
 
-				if (cmd.equals("tools/list")) {
-					String fp = "/" + appid + "/ai/openai/mcp/method/tools/list.json";
-					inReq.putPageValue("modules", profile.getEntities());
+						if (cmd.equals("tools/list"))
+						{
+							String fp = "/" + appid + "/ai/openai/mcp/method/tools/list.json";
+							inReq.putPageValue("modules", profile.getEntities());
 
-					String toolsArrString = getRender().loadInputFromTemplate(inReq, fp);
+							String toolsArrString = getRender().loadInputFromTemplate(inReq, fp);
 
-					response = new JsonRpcResponseBuilder(id)
-							.withToolsList(toolsArrString)
-							.build();
-				} else if (cmd.equals("tools/call")) {
-					String siteid = inReq.findValue("siteid");
-					inReq.putPageValue("mcpapplicationid", siteid + "/find");
+							response = new JsonRpcResponseBuilder(id).withToolsList(toolsArrString).build();
+						}
+						else
+							if (cmd.equals("tools/call"))
+							{
+								String siteid = inReq.findValue("siteid");
+								inReq.putPageValue("mcpapplicationid", siteid + "/find");
 
-					String fp = "/" + appid + "/ai/openai/mcp/functions/" + functionname + ".html";
+								String fp = "/" + appid + "/ai/openai/mcp/functions/" + functionname + ".html";
 
-					String text = getRender().loadInputFromTemplate(inReq, fp);
+								String text = getRender().loadInputFromTemplate(inReq, fp);
 
-					text = text.replaceAll("(?m)^\\s*$\\n?", "");
-					text = text.replaceAll("(\\r?\\n){2,}", "\n");
+								text = text.replaceAll("(?m)^\\s*$\\n?", "");
+								text = text.replaceAll("(\\r?\\n){2,}", "\n");
 
-					response = new JsonRpcResponseBuilder(id)
-							.withResponse(text, false)
-							.build();
+								response = new JsonRpcResponseBuilder(id).withResponse(text, false).build();
+							}
+					}
+
 				}
+				else
+				{
+					String fp = "/" + appid + "/ai/openai/mcp/method/" + cmd + ".json";
+					response = getRender().loadInputFromTemplate(inReq, fp);
+				}
+
+		if (response.length() == 0)
+		{
+			response = new JsonRpcResponseBuilder(id).withResponse("Server responded with nothing!", true).build();
+		}
+		else
+			if (response.startsWith("404:"))
+			{
+				response = new JsonRpcResponseBuilder(id).withResponse("MCP Server error, function undefined (404)!", true).build();
 			}
-
-		} else {
-			String fp = "/" + appid + "/ai/openai/mcp/method/" + cmd + ".json";
-			response = getRender().loadInputFromTemplate(inReq, fp);
-		}
-
-		if (response.length() == 0) {
-			response = new JsonRpcResponseBuilder(id)
-					.withResponse("Server responded with nothing!", true)
-					.build();
-		} else if (response.startsWith("404:")) {
-			response = new JsonRpcResponseBuilder(id)
-					.withResponse("MCP Server error, function undefined (404)!", true)
-					.build();
-		}
 
 		// inReq.getPageStreamer().include(fp);
 		// inReq.getResponse().setContentLength(response.length());
@@ -328,8 +301,10 @@ public class McpModule extends BaseMediaModule {
 
 	protected JsonUtil fieldJsonUtil;
 
-	public JsonUtil getJsonUtil() {
-		if (fieldJsonUtil == null) {
+	public JsonUtil getJsonUtil()
+	{
+		if (fieldJsonUtil == null)
+		{
 			fieldJsonUtil = (JsonUtil) getModuleManager().getBean("jsonUtil");
 		}
 		return fieldJsonUtil;

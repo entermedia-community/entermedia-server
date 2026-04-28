@@ -34,79 +34,34 @@ import org.openedit.OpenEditException;
 import org.openedit.page.Page;
 import org.openedit.users.UserManager;
 
-public class avidpublisher extends BasePublisher implements Publisher {
-	static String JSON_STR = "{\n" +
-			"    \"Attachments\": [],\n" +
-			"    \"JobName\": \"{Image_Name}\",\n" +
-			"    \"Labels\": [],\n" +
-			"    \"Medias\": [\n" +
-			"        {\n" +
-			"            \"Identifier\": \"abb3f7e5-8d7e-49ba-84c5-674a55edb700\",\n" +
-			"            \"Data\": \"{Data}\",\n" +
-			"            \"Description\": \"{Description}\",\n" +
-			"            \"Files\": [\n" +
-			"                \"{Image_Path}\"\n" +
-			"            ],\n" +
-			"            \"Name\": \"Original\"\n" +
-			"        }\n" +
-			"    ],\n" +
-			"    \"Priority\": 0,\n" +
-			"    \"Variables\": [\n" +
-			"                     {\n" +
-			"                        \"Identifier\":\"2972dbcb-d724-40c9-9a52-b13467a2983b\",\n" +
-			"                        \"DefaultValue\":\"\",\n" +
-			"                        \"Description\":\"The full path for XML metadata\",\n" +
-			"                        \"Name\":\"XML_Path\",\n" +
-			"                        \"TypeCode\":\"Uri\",\n" +
-			"                        \"Value\":\"{Xml_Path}\"\n" +
-			"                     }\n]\n" +
-			"}";
+public class avidpublisher extends BasePublisher implements Publisher
+{
+	static String JSON_STR = "{\n" + "    \"Attachments\": [],\n" + "    \"JobName\": \"{Image_Name}\",\n" + "    \"Labels\": [],\n" + "    \"Medias\": [\n" + "        {\n"
+		+ "            \"Identifier\": \"abb3f7e5-8d7e-49ba-84c5-674a55edb700\",\n" + "            \"Data\": \"{Data}\",\n" + "            \"Description\": \"{Description}\",\n"
+		+ "            \"Files\": [\n" + "                \"{Image_Path}\"\n" + "            ],\n" + "            \"Name\": \"Original\"\n" + "        }\n" + "    ],\n" + "    \"Priority\": 0,\n"
+		+ "    \"Variables\": [\n" + "                     {\n" + "                        \"Identifier\":\"2972dbcb-d724-40c9-9a52-b13467a2983b\",\n"
+		+ "                        \"DefaultValue\":\"\",\n" + "                        \"Description\":\"The full path for XML metadata\",\n" + "                        \"Name\":\"XML_Path\",\n"
+		+ "                        \"TypeCode\":\"Uri\",\n" + "                        \"Value\":\"{Xml_Path}\"\n" + "                     }\n]\n" + "}";
 
-	static String XML_STR = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-			+ "<Metadata>\n"
-			+ "<Entry>\n"
-			+ "<Tag>ClipName</Tag>\n"
-			+ "<Value>{ClipName}</Value>\n"
-			+ "</Entry>\n"
-			+ "<Entry>\n"
-			+ "<Tag>Comments</Tag>\n"
-			+ "<Value>{Comments}</Value>\n"
-			+ "</Entry>\n"
-			+ "<Locator>\n"
-			+ "<Label>{Label}</Label>\n"
-			+ "<Color>White</Color>\n"
-			+ "<Timecode>10:00:00:00</Timecode>\n"
-			+ "<Username>mtlvantagews</Username>\n"
-			+ "<Track>V1</Track>\n"
-			+ "</Locator>\n"
-			+ "</Metadata>\n"
-			+ "";
+	static String XML_STR = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<Metadata>\n" + "<Entry>\n" + "<Tag>ClipName</Tag>\n" + "<Value>{ClipName}</Value>\n" + "</Entry>\n" + "<Entry>\n"
+		+ "<Tag>Comments</Tag>\n" + "<Value>{Comments}</Value>\n" + "</Entry>\n" + "<Locator>\n" + "<Label>{Label}</Label>\n" + "<Color>White</Color>\n" + "<Timecode>10:00:00:00</Timecode>\n"
+		+ "<Username>mtlvantagews</Username>\n" + "<Track>V1</Track>\n" + "</Locator>\n" + "</Metadata>\n" + "";
 
 	static final String PREFIX_DEST = "IMG ";
 	/*
-	 * static String JSON_STR = "{\n" +
-	 * "    \"Attachments\": [{Attachments}],\n" +
-	 * "    \"JobName\": \"{JobName}\",\n" +
-	 * "    \"Labels\": [{Labels}],\n" +
-	 * "    \"Medias\": [\n" +
-	 * "        {\n" +
-	 * "            \"Identifier\": \"{Identifier}\",\n" +
-	 * "            \"Data\": \"{Data}\",\n" +
-	 * "            \"Description\": \"{Description}\",\n" +
-	 * "            \"Files\": [\n" +
-	 * "                \"{Files}\"\n" +
-	 * "            ],\n" +
-	 * "            \"Name\": \"{Name}\"\n" +
-	 * "        }\n" +
-	 * "    ],\n" +
-	 * "    \"Priority\": 0,\n" +
-	 * "    \"Variables\": [{},{}]\n" +
-	 * "}";
+	 * static String JSON_STR = "{\n" + "    \"Attachments\": [{Attachments}],\n" +
+	 * "    \"JobName\": \"{JobName}\",\n" + "    \"Labels\": [{Labels}],\n" + "    \"Medias\": [\n" +
+	 * "        {\n" + "            \"Identifier\": \"{Identifier}\",\n" +
+	 * "            \"Data\": \"{Data}\",\n" + "            \"Description\": \"{Description}\",\n" +
+	 * "            \"Files\": [\n" + "                \"{Files}\"\n" + "            ],\n" +
+	 * "            \"Name\": \"{Name}\"\n" + "        }\n" + "    ],\n" + "    \"Priority\": 0,\n" +
+	 * "    \"Variables\": [{},{}]\n" + "}";
 	 * 
 	 */
 	private static Map<String, String> UserRestrictions = new HashMap<String, String>(); // restrictions
 	private static Map<String, String> UserRestInstruction = new HashMap<String, String>(); // rightsusageinstructions
-	static {
+	static
+	{
 		UserRestInstruction.put("1", "Nouvelles seulement");
 		UserRestInstruction.put("2", "Utilisation unique");
 		UserRestInstruction.put("3", "Émission spécifique");
@@ -119,8 +74,8 @@ public class avidpublisher extends BasePublisher implements Publisher {
 	}
 	private static final Log log = LogFactory.getLog(avidpublisher.class);
 
-	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination,
-			Data inPreset, Asset inAsset) {
+	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
+	{
 		log.info("inPublishRequest inPublishRequest: " + inOrderItem.getProperties());
 		log.info("inPublishRequest inAsset: " + inAsset.getProperties());
 		log.info("inPublishRequest inDestination: " + inDestination.getProperties());
@@ -136,9 +91,11 @@ public class avidpublisher extends BasePublisher implements Publisher {
 		UserManager um = upmanager.getUserManager(catalogId);
 		log.info("inPublishRequest um.getUsers(): " + um.getUsers());
 
-		try {
+		try
+		{
 			PublishResult result = checkOnConversion(mediaArchive, inOrderItem, inAsset, inPreset);
-			if (!result.isReadyToPublish()) {
+			if (!result.isReadyToPublish())
+			{
 				return result;
 			}
 
@@ -150,7 +107,8 @@ public class avidpublisher extends BasePublisher implements Publisher {
 			String fullName = source.getName();
 
 			int idxP = fullName.lastIndexOf('.');
-			if (idxP == -1) {
+			if (idxP == -1)
+			{
 				throw new OpenEditException("Source file name error " + source.getAbsolutePath());
 			}
 			String fileName = fullName.substring(0, idxP);
@@ -170,16 +128,17 @@ public class avidpublisher extends BasePublisher implements Publisher {
 			String destFilename = null;
 			int MAX_FILENAME_LENGTH = 77;
 			int BUFFER_FILENAME = 72; // keep the last 5 characters (77-72)
-			try {
+			try
+			{
 				Path pathSource = FileSystems.getDefault().getPath(inputpage.getContentItem().getAbsolutePath());
 				destFilename = PREFIX_DEST + source.getName();
 
 				log.info("DEST FILENAME LENGTH IS " + Integer.toString(destFilename.length()));
-				if (destFilename.length() > MAX_FILENAME_LENGTH) {
+				if (destFilename.length() > MAX_FILENAME_LENGTH)
+				{
 					int removechar = destFilename.length() - MAX_FILENAME_LENGTH;
 
-					String truncdestFilename = destFilename.substring(0, BUFFER_FILENAME)
-							+ destFilename.substring(BUFFER_FILENAME + removechar);
+					String truncdestFilename = destFilename.substring(0, BUFFER_FILENAME) + destFilename.substring(BUFFER_FILENAME + removechar);
 					log.info("REDUCED FILENAME IS " + truncdestFilename);
 					destFilename = truncdestFilename;
 
@@ -187,24 +146,32 @@ public class avidpublisher extends BasePublisher implements Publisher {
 				Path pathDest = FileSystems.getDefault().getPath(vaultDirectory, destFilename);
 				log.info("publishAvid copy file " + pathSource + " dest " + pathDest);
 				Files.copy(pathSource, pathDest, StandardCopyOption.REPLACE_EXISTING);
-			} catch (IOException ioex) {
+			}
+			catch (IOException ioex)
+			{
 				log.error(ioex);
 				throw new OpenEditException(ioex);
 			}
 
 			// create XML
 			File xmlFile = new File(vaultDirectory, fileName + ".xml");
-			try {
+			try
+			{
 				createXmlFile(destFilename, xmlFile, inDestination, inAsset);
-			} catch (IOException ioex) {
+			}
+			catch (IOException ioex)
+			{
 				log.error(ioex);
 				throw new OpenEditException(ioex);
 			}
 
-			try {
+			try
+			{
 				// publish(vaultDirectory_vantage, xmlFile, inDestination, inAsset);
 				publish(vaultDirectory_vantage, destFilename, xmlFile.getName(), inDestination, inAsset);
-			} catch (OpenEditException ex) {
+			}
+			catch (OpenEditException ex)
+			{
 				log.error(ex);
 				throw ex;
 			}
@@ -212,14 +179,17 @@ public class avidpublisher extends BasePublisher implements Publisher {
 			log.info("publishAvid file " + source.getAbsolutePath() + " to Avid");
 			result.setComplete(true);
 			return result;
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 			throw new OpenEditException(e);
 		}
 
 	}
 
-	private void createXmlFile(String filename, File xmlFile, Data inDestination, Asset inAsset) throws IOException {
+	private void createXmlFile(String filename, File xmlFile, Data inDestination, Asset inAsset) throws IOException
+	{
 
 		String longcaption = getParam(inAsset, "longcaption");
 		String ville = getParam(inAsset, "city");
@@ -236,11 +206,9 @@ public class avidpublisher extends BasePublisher implements Publisher {
 		String conditionsUtilisation_autre = getParam(inAsset, "rightsusageterms");
 
 		/*
-		 * Document document = DocumentFactory.getInstance().createDocument();
-		 * // Create the root element of xml file
-		 * Element root = document.addElement("Metadata");
-		 * addEntry(root, "ClipName", "IMG "+filename);
-		 * addEntry(root, "Comments", longcaption);
+		 * Document document = DocumentFactory.getInstance().createDocument(); // Create the root element of
+		 * xml file Element root = document.addElement("Metadata"); addEntry(root, "ClipName",
+		 * "IMG "+filename); addEntry(root, "Comments", longcaption);
 		 */
 		String data = "Description : " + longcaption + System.lineSeparator();
 		data = data + "Ville : " + ville + System.lineSeparator();
@@ -252,31 +220,25 @@ public class avidpublisher extends BasePublisher implements Publisher {
 		data = data + "URL, nom Avid : " + url + System.lineSeparator();
 		data = data + "Auteur : " + auteur + System.lineSeparator();
 
-		if (restrictions != null) {
+		if (restrictions != null)
+		{
 			data = data + "Restrictions : " + restrictions + System.lineSeparator();
 		}
 
 		String restrictionValue = getRestrictionValue(inAsset);
-		if (restrictionValue != null) {
+		if (restrictionValue != null)
+		{
 			data = data + "Conditions d'utilisation : " + restrictionValue + System.lineSeparator();
 		}
 		data = data + "Autres conditions d'utilisation : " + conditionsUtilisation_autre + System.lineSeparator();
 		/*
-		 * Element locator = root.addElement("Locator");
-		 * Element label = locator.addElement("Label");
-		 * label.setText(data);
-		 * Element color = locator.addElement("Color");
-		 * color.setText("YELLOW");
-		 * Element timecode = locator.addElement("Timecode");
-		 * timecode.setText("10:00:00:00");
-		 * Element username = locator.addElement("Username");
-		 * username.setText("mtlvantagews");
-		 * Element track = locator.addElement("Track");
-		 * track.setText("V1");
+		 * Element locator = root.addElement("Locator"); Element label = locator.addElement("Label");
+		 * label.setText(data); Element color = locator.addElement("Color"); color.setText("YELLOW");
+		 * Element timecode = locator.addElement("Timecode"); timecode.setText("10:00:00:00"); Element
+		 * username = locator.addElement("Username"); username.setText("mtlvantagews"); Element track =
+		 * locator.addElement("Track"); track.setText("V1");
 		 */
-		String payload = XML_STR.replace("{ClipName}", "IMG " + filename)
-				.replace("{Comments}", longcaption)
-				.replace("{Label}", data);
+		String payload = XML_STR.replace("{ClipName}", "IMG " + filename).replace("{Comments}", longcaption).replace("{Label}", data);
 
 		log.info("publishAvid createXmlFile " + xmlFile.getAbsolutePath());
 
@@ -286,30 +248,28 @@ public class avidpublisher extends BasePublisher implements Publisher {
 		bos.close();
 		bos = null;
 		/*
-		 * // Create the pretty print of xml document.
-		 * OutputFormat format =
-		 * OutputFormat.createPrettyPrint();//createCompactFormat();
-		 * // Create the xml writer by passing outputstream and format
-		 * XMLWriter writer = new XMLWriter(fos, format);
-		 * // Write to the xml document
-		 * writer.write(document);
-		 * // Flush after done
-		 * writer.flush();
-		 * writer.close();
-		 * writer = null;
+		 * // Create the pretty print of xml document. OutputFormat format =
+		 * OutputFormat.createPrettyPrint();//createCompactFormat(); // Create the xml writer by passing
+		 * outputstream and format XMLWriter writer = new XMLWriter(fos, format); // Write to the xml
+		 * document writer.write(document); // Flush after done writer.flush(); writer.close(); writer =
+		 * null;
 		 */
 	}
 
-	private String getRestrictionValue(Asset inAsset) {
+	private String getRestrictionValue(Asset inAsset)
+	{
 		String right_val = "";
 		String rightsusageinstructions = inAsset.get("rightsusageinstructions");
-		if (rightsusageinstructions != null) {
+		if (rightsusageinstructions != null)
+		{
 			String[] rightsusageinstructionsList = rightsusageinstructions.split("\\|");
-			for (int idx = 0; idx < rightsusageinstructionsList.length; idx++) {
+			for (int idx = 0; idx < rightsusageinstructionsList.length; idx++)
+			{
 				String rightUsage = UserRestInstruction.get(rightsusageinstructionsList[idx]);
 				right_val = right_val + rightUsage + ",";
 			}
-			if (right_val.length() > 0) {
+			if (right_val.length() > 0)
+			{
 				right_val = right_val.substring(0, right_val.length() - 1);
 				return right_val;
 			}
@@ -318,44 +278,34 @@ public class avidpublisher extends BasePublisher implements Publisher {
 	}
 
 	/*
-	 * private void addEntry(Element root, String param, String val) {
-	 * Element entry = root.addElement("Entry");
-	 * Element tag = entry.addElement("Tag");
-	 * tag.setText(param);
-	 * Element value = entry.addElement("Value");
-	 * value.setText(val);
-	 * }
+	 * private void addEntry(Element root, String param, String val) { Element entry =
+	 * root.addElement("Entry"); Element tag = entry.addElement("Tag"); tag.setText(param); Element
+	 * value = entry.addElement("Value"); value.setText(val); }
 	 */
-	private void publish(String vault, String filename, String xmlFilename, Data inDestination, Asset inAsset)
-			throws ClientProtocolException, IOException, HttpException {
+	private void publish(String vault, String filename, String xmlFilename, Data inDestination, Asset inAsset) throws ClientProtocolException, IOException, HttpException
+	{
 		String tmp = inDestination.get("server");
-		if (tmp == null) {
+		if (tmp == null)
+		{
 			throw new OpenEditException("Avid - Vantage publishdestination.server is empty");
 		}
 		String[] servers = tmp.split(",");
-		if (servers.length == 0) {
+		if (servers.length == 0)
+		{
 			throw new OpenEditException("Avid - Vantage publishdestination.server Not found");
 		}
 		String url = servers[(int) (servers.length - 1 * Math.random())];
 		String profile = inDestination.get("refresh_token");
 		url = url + "/Rest/workflows/" + profile + "/Submit";
 
-		String payload = JSON_STR.replace("{Image_Name}", filename)
-				.replace("{Data}", "")
-				.replace("{Description}", "")
-				.replace("{Image_Path}", vault + filename)
-				.replace("{Xml_Path}", vault + xmlFilename);
+		String payload =
+			JSON_STR.replace("{Image_Name}", filename).replace("{Data}", "").replace("{Description}", "").replace("{Image_Path}", vault + filename).replace("{Xml_Path}", vault + xmlFilename);
 
 		log.info("Call Vantage workflow: " + url + "\n" + payload);
 		/*
-		 * String payload = JSON_STR.replace("{Attachments}", attachments)
-		 * .replace("{JobName}", filename)
-		 * .replace("{Labels}", labels)
-		 * .replace("{Identifier}", identifier)
-		 * .replace("{Data}", data)
-		 * .replace("{Description}", description)
-		 * .replace("{Files}", files)
-		 * .replace("{Name}", filename);
+		 * String payload = JSON_STR.replace("{Attachments}", attachments) .replace("{JobName}", filename)
+		 * .replace("{Labels}", labels) .replace("{Identifier}", identifier) .replace("{Data}", data)
+		 * .replace("{Description}", description) .replace("{Files}", files) .replace("{Name}", filename);
 		 */
 
 		HttpPost method = new HttpPost(url);
@@ -366,17 +316,20 @@ public class avidpublisher extends BasePublisher implements Publisher {
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		HttpResponse response = httpClient.execute(method);
 		log.info(response);
-		if (response.getStatusLine().getStatusCode() != 200) {
+		if (response.getStatusLine().getStatusCode() != 200)
+		{
 			throw new HttpException("Error " + response.getStatusLine().getReasonPhrase());
 		}
 
 	}
 
-	private static String replace(String source, String key, String value) {
+	private static String replace(String source, String key, String value)
+	{
 		return source.replaceFirst(key, value);
 	}
 
-	private String getParam(Asset inAsset, String id) {
+	private String getParam(Asset inAsset, String id)
+	{
 		String tmp = inAsset.get(id);
 		return tmp == null ? "N/A" : tmp;
 	}

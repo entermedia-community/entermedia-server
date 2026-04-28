@@ -9,7 +9,8 @@ import org.entermediadb.asset.convert.transcoders.WaterMarkTranscoder;
 import org.openedit.Data;
 import org.openedit.repository.ContentItem;
 
-public interface ConversionManager {
+public interface ConversionManager
+{
 	public ConvertInstructions createInstructions(Asset inAsset);
 
 	public ConvertInstructions createInstructions(Asset inAsset, Data inPreset);
@@ -25,8 +26,7 @@ public interface ConversionManager {
 
 	public ConvertResult createOutput(ConvertInstructions inStructions);
 
-	public ConvertResult createOutputIfNeeded(Asset inAsset, String inSourcePath, String inExportName,
-			Map inCreateProperties);
+	public ConvertResult createOutputIfNeeded(Asset inAsset, String inSourcePath, String inExportName, Map inCreateProperties);
 
 	public ConvertResult updateStatus(Data inTask, ConvertInstructions inStructions);
 

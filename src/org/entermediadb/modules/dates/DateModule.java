@@ -16,17 +16,22 @@ import org.openedit.util.DateStorageUtil;
  * @author cburkey
  *
  */
-public class DateModule extends BaseModule {
+public class DateModule extends BaseModule
+{
 	public static final String UNIVERSAL_DATE_FORMAT = "MM/dd/yyyy HH:mm:ss Z";
 
-	public void now(WebPageRequest inReq) throws Exception {
+	public void now(WebPageRequest inReq) throws Exception
+	{
 		TimeZone zone = inReq.getTimeZone();
 
 		Calendar now = null;
 
-		if (zone == null) {
+		if (zone == null)
+		{
 			now = Calendar.getInstance();
-		} else {
+		}
+		else
+		{
 			now = Calendar.getInstance(zone);
 		}
 		Date date = now.getTime();
@@ -36,7 +41,8 @@ public class DateModule extends BaseModule {
 
 		String format = inReq.findValue("format");
 
-		if (format != null) {
+		if (format != null)
+		{
 			SimpleDateFormat sformat = new SimpleDateFormat(format);
 			String fdate = sformat.format(date);
 			inReq.putPageValue("formatteddate", fdate);

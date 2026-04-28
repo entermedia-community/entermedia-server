@@ -13,12 +13,13 @@ import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONObject;
 import org.openedit.users.User;
 
-public class FireBase {
+public class FireBase
+{
 
 	private static final Log log = LogFactory.getLog(FireBase.class);
 
-	public void notifyTopic(String firebaseid, String inToken, String inChannel, User inUser, String inSubject,
-			String inMessage, Map extraData) {
+	public void notifyTopic(String firebaseid, String inToken, String inChannel, User inUser, String inSubject, String inMessage, Map extraData)
+	{
 		HttpSharedConnection connection = new HttpSharedConnection();
 
 		// https://console.firebase.google.com/u/2/project/openinstitute-27575/notification/reporting
@@ -55,12 +56,14 @@ public class FireBase {
 		// message.put("channel_id","my_channel_id");
 		JSONObject data = new JSONObject();
 		data.put("collectionid", inChannel); // TODO: This does not seem correct
-		if (inUser != null) {
+		if (inUser != null)
+		{
 			data.put("userid", inUser.getId());
 			data.put("useremail", inUser.getEmail());
 			data.put("userlabel", inUser.getScreenName());
 		}
-		for (Iterator iterator = extraData.keySet().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = extraData.keySet().iterator(); iterator.hasNext();)
+		{
 			String key = (String) iterator.next();
 			Object value = extraData.get(key);
 			// data.put("chattopic",inTopic);
@@ -85,23 +88,30 @@ public class FireBase {
 		post.setEntity(new StringEntity(tosend, "UTF-8"));
 
 		CloseableHttpResponse resp = null;
-		try {
+		try
+		{
 			resp = connection.sharedPost(post);
 
-			if (resp.getStatusLine().getStatusCode() != 200) {
-				log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":"
-						+ resp.getStatusLine().getReasonPhrase());
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
+				log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":" + resp.getStatusLine().getReasonPhrase());
 				String returned = EntityUtils.toString(resp.getEntity());
 				log.error(returned);
-			} else {
+			}
+			else
+			{
 				// String content = IOUtils.toString(resp.getEntity().getContent());
 				log.info("Google message sent " + message);
 			}
 			// JsonParser parser = new JsonParser();
 			// JsonElement elem = parser.parse(content);
-		} catch (Throwable ex) {
+		}
+		catch (Throwable ex)
+		{
 			log.error("Could not send", ex);
-		} finally {
+		}
+		finally
+		{
 			connection.release(resp);
 		}
 	}

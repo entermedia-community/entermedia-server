@@ -1,8 +1,8 @@
 /*
  * Created on Jun 14, 2004
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
+ * TODO To change the template for this generated file go to Window - Preferences - Java - Code
+ * Generation - Code and Comments
  */
 package org.entermediadb.users;
 
@@ -17,45 +17,52 @@ import org.openedit.page.manage.PageManager;
 /**
  * @author mcgaha_b
  *
- *         TODO To change the template for this generated type comment go to
- *         Window - Preferences - Java - Code Generation - Code and Comments
+ *         TODO To change the template for this generated type comment go to Window - Preferences -
+ *         Java - Code Generation - Code and Comments
  */
-public class PasswordHelper implements Serializable {
+public class PasswordHelper implements Serializable
+{
 
 	protected String fieldTo;
 	protected String fieldPassword;
 
 	protected SendMailModule sendMailModule;
 
-	public SendMailModule getSendMailModule() {
+	public SendMailModule getSendMailModule()
+	{
 		return sendMailModule;
 	}
 
-	public void setSendMailModule(SendMailModule sendMailModule) {
+	public void setSendMailModule(SendMailModule sendMailModule)
+	{
 		this.sendMailModule = sendMailModule;
 	}
 
-	public void emailPasswordReminder(WebPageRequest inContext, PageManager inManager, String inUserCode,
-			String inEmail) {
+	public void emailPasswordReminder(WebPageRequest inContext, PageManager inManager, String inUserCode, String inEmail)
+	{
 		emailPasswordReminder(inContext, inManager, inUserCode, null, inEmail);
 	}
 
-	public void emailPasswordReminder(WebPageRequest inContext, PageManager inManager, String inUserCode,
-			String inEnterMediaKey, String inEmail) {
+	public void emailPasswordReminder(WebPageRequest inContext, PageManager inManager, String inUserCode, String inEnterMediaKey, String inEmail)
+	{
 
 		// TO
 		inContext.setRequestParameter("to", inEmail);
 		String subject = inContext.findValue("subject");
-		if (subject == null) {
+		if (subject == null)
+		{
 			subject = "Forgotten Password";
 		}
 		inContext.setRequestParameter("subject", subject);
 
 		TemplateWebEmail email = sendMailModule.getPostMail().getTemplateWebEmail();
 		email.setPageManager(inManager);
-		try {
+		try
+		{
 			email.loadSettings(inContext);
-		} catch (OpenEditException e1) {
+		}
+		catch (OpenEditException e1)
+		{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -64,15 +71,20 @@ public class PasswordHelper implements Serializable {
 		inContext.putPageValue("templogincode", inUserCode);
 		inContext.putPageValue("entermediakey", inEnterMediaKey);
 
-		if (inEmail != null) {
+		if (inEmail != null)
+		{
 			inContext.putPageValue("mail", inEmail);
 		}
 		inContext.putPageValue("commandSucceeded", "didnotexecute");
-		if (inEmail != null) {
-			try {
+		if (inEmail != null)
+		{
+			try
+			{
 				sendMailModule.sendEmail(inContext);
 				inContext.putPageValue("commandSucceeded", "true");
-			} catch (OpenEditException e) {
+			}
+			catch (OpenEditException e)
+			{
 				inContext.putPageValue("commandSucceeded", "false");
 				inContext.putPageValue("error", e.getLocalizedMessage());
 			}
@@ -85,16 +97,19 @@ public class PasswordHelper implements Serializable {
 	 * @param password
 	 * @param email
 	 */
-	public void emailAdminAboutNewUser(WebPageRequest inContext, PageManager inManager, String emailaddress,
-			String inEmail) {
+	public void emailAdminAboutNewUser(WebPageRequest inContext, PageManager inManager, String emailaddress, String inEmail)
+	{
 		// TO
 		inContext.setRequestParameter("to", inEmail);
 
 		TemplateWebEmail email = sendMailModule.getPostMail().getTemplateWebEmail();
 		email.setPageManager(inManager);
-		try {
+		try
+		{
 			email.loadSettings(inContext);
-		} catch (OpenEditException e1) {
+		}
+		catch (OpenEditException e1)
+		{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -104,13 +119,18 @@ public class PasswordHelper implements Serializable {
 		inContext.putPageValue(SendMailModule.EMAIL_SETTINGS, email);
 		inContext.putPageValue("categorylogo", inContext.getPageValue("categorylogo"));
 
-		if (inEmail != null) {
+		if (inEmail != null)
+		{
 			inContext.putPageValue("mail", inEmail);
 		}
-		if (inEmail != null) {
-			try {
+		if (inEmail != null)
+		{
+			try
+			{
 				sendMailModule.sendEmail(inContext);
-			} catch (OpenEditException e) {
+			}
+			catch (OpenEditException e)
+			{
 				inContext.putPageValue("error", e.getLocalizedMessage());
 			}
 		}

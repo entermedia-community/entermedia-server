@@ -32,32 +32,39 @@ import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.RepositoryException;
 
-public class TranscriberManager extends BaseAiManager {
+public class TranscriberManager extends BaseAiManager
+{
 
 	private static final Log log = LogFactory.getLog(TranscriberManager.class);
 
-	public void transcribeAssets(ScriptLogger inLog, MultiValued inConfig, Collection<Asset> inAssets) {
+	public void transcribeAssets(ScriptLogger inLog, MultiValued inConfig, Collection<Asset> inAssets)
+	{
 		Collection<MultiValued> toprocess = new ArrayList<MultiValued>();
 
-		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
+		{
 			MultiValued inAsset = (MultiValued) iterator.next();
 
 			String mediatype = getMediaArchive().getMediaRenderType(inAsset);
 
-			if (!"video".equals(mediatype) && !"audio".equals(mediatype)) {
+			if (!"video".equals(mediatype) && !"audio".equals(mediatype))
+			{
 				continue;
 			}
 			toprocess.add(inAsset);
 
 		}
 
-		if (toprocess.size() > 0) {
+		if (toprocess.size() > 0)
+		{
 			inLog.headline("Transcribing " + toprocess.size() + " asset(s)");
 
-			for (Iterator iterator = toprocess.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = toprocess.iterator(); iterator.hasNext();)
+			{
 				MultiValued inAsset = (MultiValued) iterator.next();
 
-				if (inAsset.getValue("length") == null) {
+				if (inAsset.getValue("length") == null)
+				{
 					/// Can't process if no lenght defined
 					inAsset.setValue("llmerror", true);
 					getMediaArchive().saveData("asset", inAsset);
@@ -72,7 +79,8 @@ public class TranscriberManager extends BaseAiManager {
 				boolean ok = transcribeOneAsset(inLog, inAsset);
 				long duration = (System.currentTimeMillis() - starttime) / 1000L;
 
-				if (ok) {
+				if (ok)
+				{
 					inLog.info("Transcribed successfully! Took: " + duration + " seconds");
 				}
 
@@ -81,21 +89,25 @@ public class TranscriberManager extends BaseAiManager {
 
 	}
 
-	public boolean transcribeOneAsset(ScriptLogger inLog, MultiValued inAsset) {
+	public boolean transcribeOneAsset(ScriptLogger inLog, MultiValued inAsset)
+	{
 
 		Searcher captionSearcher = getMediaArchive().getSearcher("videotrack");
 
 		Data inTrack = captionSearcher.query().exact("assetid", inAsset.getId()).searchOne();
 
-		if (inTrack != null) {
+		if (inTrack != null)
+		{
 			String status = inTrack.get("transcribestatus");
-			if ("complete".equals(status) || "inprogress".equals(status)) {
+			if ("complete".equals(status) || "inprogress".equals(status))
+			{
 				inLog.info("Asset already assigned to a videotrack");
 				return false; // already done or in progress
 			}
 
 		}
-		if (inTrack == null) {
+		if (inTrack == null)
+		{
 			inTrack = captionSearcher.createNewData();
 			inTrack.setProperty("assetid", inAsset.getId());
 			inTrack.setValue("length", inAsset.getValue("length"));
@@ -104,24 +116,30 @@ public class TranscriberManager extends BaseAiManager {
 		inTrack.setValue("requesteddate", new Date());
 		inTrack.setValue("sourcelang", "en");
 
-		try {
+		try
+		{
 			inTrack.setValue("transcribestatus", "inprogress");
 			captionSearcher.saveData(inTrack);
 
 			transcribe(inAsset, inTrack);
 			inTrack.setValue("transcribestatus", "complete");
 			return true;
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			inLog.error("Could not transcribe " + inAsset, e);
 			inTrack.setValue("transcribestatus", "error");
 			return false;
-		} finally {
+		}
+		finally
+		{
 			inTrack.setValue("completeddate", new Date());
 			captionSearcher.saveData(inTrack);
 		}
 	}
 
-	public void transcribe(MultiValued inAsset, Data inTrack) throws RepositoryException, IOException {
+	public void transcribe(MultiValued inAsset, Data inTrack) throws RepositoryException, IOException
+	{
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 
 		TranscodeTools transcodetools = archive.getTranscodeTools();
@@ -129,13 +147,15 @@ public class TranscriberManager extends BaseAiManager {
 		ConvertInstructions instructions = manager.createInstructions((Asset) inAsset, "audio.mp3");
 		ContentItem item = manager.findInput(instructions);
 
-		if (item == null) {
+		if (item == null)
+		{
 			item = archive.getOriginalContent(inAsset);
 		}
 
 		instructions.setInputFile(item);
 
-		if (inAsset.getValue("length") == null) {
+		if (inAsset.getValue("length") == null)
+		{
 			log.info("Asset with no lenght, can't transcribe.");
 			return;
 		}
@@ -144,7 +164,8 @@ public class TranscriberManager extends BaseAiManager {
 
 		Collection captions = new ArrayList();
 
-		for (double timeoffset = 0; timeoffset < length; timeoffset += 300) {
+		for (double timeoffset = 0; timeoffset < length; timeoffset += 300)
+		{
 
 			instructions.setProperty("timeoffset", String.valueOf(timeoffset));
 			instructions.setProperty("duration", "300");
@@ -159,31 +180,37 @@ public class TranscriberManager extends BaseAiManager {
 			instructions.setOutputFile(tempfile);
 
 			ConvertResult result = manager.createOutput(instructions, true);
-			if (!result.isOk()) {
+			if (!result.isOk())
+			{
 				throw new OpenEditException("Could not transcode audio");
 			}
-			try {
+			try
+			{
 
 				JSONObject transcriptions = getTranscribedData(tempfile);
 
-				if (transcriptions == null) {
+				if (transcriptions == null)
+				{
 					log.error("Transcriber server error");
 					throw new OpenEditException("Transcriber server error");
 				}
 
 				String language = (String) transcriptions.get("language");
-				if (language != null) {
+				if (language != null)
+				{
 					inTrack.setValue("sourcelang", language);
 				}
 
 				Long speakercount = (Long) transcriptions.get("num_speakers");
-				if (speakercount != null) {
+				if (speakercount != null)
+				{
 					inTrack.setValue("speakercount", speakercount);
 				}
 
 				JSONArray segments = (JSONArray) transcriptions.get("segments");
 
-				for (Iterator iterator2 = segments.iterator(); iterator2.hasNext();) {
+				for (Iterator iterator2 = segments.iterator(); iterator2.hasNext();)
+				{
 					Map cuemap = new HashMap();
 					JSONObject transcription = (JSONObject) iterator2.next();
 
@@ -192,7 +219,8 @@ public class TranscriberManager extends BaseAiManager {
 					String text = (String) transcription.get("text");
 					String speaker = (String) transcription.get("speaker");
 
-					if (speaker == null) {
+					if (speaker == null)
+					{
 						speaker = "Unknown";
 					}
 
@@ -207,12 +235,17 @@ public class TranscriberManager extends BaseAiManager {
 
 				log.info("Transcribed " + (timeoffset - 300) + "s - " + timeoffset + "s of " + inAsset);
 
-			} catch (Exception e) {
-				if (e instanceof OpenEditException) {
+			}
+			catch (Exception e)
+			{
+				if (e instanceof OpenEditException)
+				{
 					throw (OpenEditException) e;
 				}
 				throw new OpenEditException(e);
-			} finally {
+			}
+			finally
+			{
 				archive.getPageManager().removePage(page);
 			}
 
@@ -221,10 +254,12 @@ public class TranscriberManager extends BaseAiManager {
 		inTrack.setValue("captions", captions);
 	}
 
-	public JSONObject getTranscribedData(ContentItem audio) throws FileNotFoundException, Exception {
+	public JSONObject getTranscribedData(ContentItem audio) throws FileNotFoundException, Exception
+	{
 
 		File audioFile = new File(audio.getAbsolutePath());
-		if (!audioFile.exists()) {
+		if (!audioFile.exists())
+		{
 			throw new FileNotFoundException("File not found: " + audioFile);
 		}
 		LlmConnection connection = getMediaArchive().getLlmConnection("transcribeFile");
@@ -243,46 +278,31 @@ public class TranscriberManager extends BaseAiManager {
 	}
 
 	/*
-	 * public JSONArray getTranscribedData_OLD(ContentItem audio) throws
-	 * FileNotFoundException, Exception {
-	 * String endpoint =
-	 * getMediaArchive().getCatalogSettingValue("ai_transcriber_server") +
+	 * public JSONArray getTranscribedData_OLD(ContentItem audio) throws FileNotFoundException,
+	 * Exception { String endpoint = getMediaArchive().getCatalogSettingValue("ai_transcriber_server") +
 	 * "/transcribe";
 	 * 
-	 * HttpPost method = new HttpPost(endpoint);
-	 * method.addHeader("Authorization", "Bearer YOUR_SECRET_TOKEN");
+	 * HttpPost method = new HttpPost(endpoint); method.addHeader("Authorization",
+	 * "Bearer YOUR_SECRET_TOKEN");
 	 * 
-	 * File audioFile = new File(audio.getAbsolutePath());
-	 * if(!audioFile.exists())
-	 * {
-	 * throw new FileNotFoundException("File not found: " + audioFile);
-	 * }
+	 * File audioFile = new File(audio.getAbsolutePath()); if(!audioFile.exists()) { throw new
+	 * FileNotFoundException("File not found: " + audioFile); }
 	 * 
-	 * HttpEntity entity = MultipartEntityBuilder.create()
-	 * .addBinaryBody("file", audioFile, ContentType.create("audio/mp3"),
-	 * audioFile.getName())
-	 * .build();
+	 * HttpEntity entity = MultipartEntityBuilder.create() .addBinaryBody("file", audioFile,
+	 * ContentType.create("audio/mp3"), audioFile.getName()) .build();
 	 * 
 	 * method.setEntity(entity);
 	 * 
 	 * CloseableHttpResponse resp = getSharedConnection().sharedExecute(method);
 	 * 
 	 * 
-	 * if (resp.getStatusLine().getStatusCode() != 200) {
-	 * log.info("Transcriber server error returned " +
-	 * resp.getStatusLine().getStatusCode() + ":"
-	 * + resp.getStatusLine().getReasonPhrase());
-	 * String returned = EntityUtils.toString(resp.getEntity());
-	 * log.info(returned);
-	 * return null;
-	 * }
+	 * if (resp.getStatusLine().getStatusCode() != 200) { log.info("Transcriber server error returned "
+	 * + resp.getStatusLine().getStatusCode() + ":" + resp.getStatusLine().getReasonPhrase()); String
+	 * returned = EntityUtils.toString(resp.getEntity()); log.info(returned); return null; }
 	 * 
-	 * else {
-	 * String returned = EntityUtils.toString(resp.getEntity());
-	 * JSONArray result = (JSONArray) new JSONParser().parseMapArray(returned);
-	 * return result;
+	 * else { String returned = EntityUtils.toString(resp.getEntity()); JSONArray result = (JSONArray)
+	 * new JSONParser().parseMapArray(returned); return result;
 	 * 
-	 * }
-	 * }
+	 * } }
 	 */
 }

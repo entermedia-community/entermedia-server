@@ -3,54 +3,66 @@
  */
 package org.entermediadb.modules.update;
 
-public class Site {
+public class Site
+{
 	protected String fieldId;
 	protected String fieldText;
 	protected String fieldHref;
 	protected String fieldUsername;
 	protected String fieldPassword;
 
-	public String getHref() {
+	public String getHref()
+	{
 		return fieldHref;
 	}
 
-	public void setHref(String inHref) {
+	public void setHref(String inHref)
+	{
 		fieldHref = inHref;
 	}
 
-	public String getId() {
+	public String getId()
+	{
 		return fieldId;
 	}
 
-	public void setId(String inId) {
+	public void setId(String inId)
+	{
 		fieldId = inId;
 	}
 
-	public String getText() {
+	public String getText()
+	{
 		return fieldText;
 	}
 
-	public void setText(String inText) {
+	public void setText(String inText)
+	{
 		fieldText = inText;
 	}
 
-	public String getPassword() {
+	public String getPassword()
+	{
 		return fieldPassword;
 	}
 
-	public void setPassword(String inPassword) {
+	public void setPassword(String inPassword)
+	{
 		fieldPassword = inPassword;
 	}
 
-	public String getUsername() {
+	public String getUsername()
+	{
 		return fieldUsername;
 	}
 
-	public void setUsername(String inUsername) {
+	public void setUsername(String inUsername)
+	{
 		fieldUsername = inUsername;
 	}
 
-	public String toString() {
+	public String toString()
+	{
 		return getText() + " " + getHref();
 	}
 }

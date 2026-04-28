@@ -14,7 +14,8 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.users.User;
 
-public class McpConnection implements Runnable {
+public class McpConnection implements Runnable
+{
 	private static final Log log = LogFactory.getLog(McpConnection.class);
 
 	private WebPageRequest req;
@@ -24,27 +25,33 @@ public class McpConnection implements Runnable {
 	protected String fieldKey;
 	protected String fieldSessionId;
 
-	public String getKey() {
+	public String getKey()
+	{
 		return fieldKey;
 	}
 
-	public void setKey(String inKey) {
+	public void setKey(String inKey)
+	{
 		fieldKey = inKey;
 	}
 
-	public String getSessionId() {
+	public String getSessionId()
+	{
 		return fieldSessionId;
 	}
 
-	public void setSessionId(String inSessionId) {
+	public void setSessionId(String inSessionId)
+	{
 		fieldSessionId = inSessionId;
 	}
 
-	public User getUser() {
+	public User getUser()
+	{
 		return fieldUser;
 	}
 
-	public void setUser(User inUser) {
+	public void setUser(User inUser)
+	{
 		fieldUser = inUser;
 	}
 
@@ -52,7 +59,8 @@ public class McpConnection implements Runnable {
 		this.req = inReq;
 	}
 
-	public void connect() {
+	public void connect()
+	{
 		HttpServletResponse res = req.getResponse();
 
 		res.resetBuffer();
@@ -66,19 +74,24 @@ public class McpConnection implements Runnable {
 		req.setCancelActions(true);
 		req.setHasRedirected(true);
 
-		try {
+		try
+		{
 			this.out = res.getOutputStream();
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			throw new OpenEditException("Failed to get SSE output stream", e);
 		}
 
 	}
 
-	public void openStream(String inEndpoint) {
+	public void openStream(String inEndpoint)
+	{
 		String sessionId = getSessionId();
 		log.info("Opening  ID Was: + " + sessionId);
 
-		try {
+		try
+		{
 			writeRaw(": connected\n\n");
 
 			String postUrl = inEndpoint + "?sessionId=" + sessionId;
@@ -87,7 +100,9 @@ public class McpConnection implements Runnable {
 
 			sendStatus("open");
 
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			active = false;
 			log.error("Failed to open SSE stream for session: " + sessionId, e);
 			throw new OpenEditException("Failed to open SSE stream", e);
@@ -95,28 +110,37 @@ public class McpConnection implements Runnable {
 	}
 
 	@Override
-	public void run() {
-		try {
-			while (active) {
+	public void run()
+	{
+		try
+		{
+			while (active)
+			{
 				Thread.sleep(15000);
 				sendPing();
 			}
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e)
+		{
 			active = false;
 			log.warn("Ping loop interrupted for session: " + getSessionId(), e);
 		}
 	}
 
-	public synchronized void sendMessage(String jsonPayload) {
+	public synchronized void sendMessage(String jsonPayload)
+	{
 		sendEvent("message", jsonPayload);
 	}
 
-	private synchronized void sendEvent(String eventName, String data) {
-		if (!active) {
+	private synchronized void sendEvent(String eventName, String data)
+	{
+		if (!active)
+		{
 			log.warn("Attempted to send on inactive connection for session: " + getSessionId());
 			return;
 		}
-		try {
+		try
+		{
 			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(data);
 			String cleanJson = ((JSONObject) obj).toJSONString();
@@ -125,41 +149,53 @@ public class McpConnection implements Runnable {
 
 			writeRaw("event: " + eventName + "\n");
 			writeRaw("data: " + cleanJson + "\n\n");
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			active = false;
 			log.error("Client disconnected or SSE send failed", e);
 			close();
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			log.error("Failed to send SSE event '" + eventName + "' for session: " + getSessionId(), e);
 		}
 	}
 
-	private void writeRaw(String text) throws IOException {
+	private void writeRaw(String text) throws IOException
+	{
 		byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
 		out.write(bytes);
 		out.flush(); // this will throw IOException if the client has disconnected
 	}
 
-	public void sendStatus(String status) {
+	public void sendStatus(String status)
+	{
 		String json = "{\"status\":\"" + status + "\"}";
 		sendEvent("status", json);
 	}
 
-	public void sendPing() {
+	public void sendPing()
+	{
 		// Optionally send keep-alive event
 		// writeRaw("event: ping\ndata: {}\n\n");
 	}
 
-	public void close() {
+	public void close()
+	{
 		active = false;
-		try {
+		try
+		{
 			out.close();
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			log.error("Error closing SSE stream for session: " + getSessionId(), e);
 		}
 	}
 
-	public boolean isActive() {
+	public boolean isActive()
+	{
 		return active;
 	}
 

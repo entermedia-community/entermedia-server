@@ -7,10 +7,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 
-public class GeminiResponse extends BasicLlmResponse {
+public class GeminiResponse extends BasicLlmResponse
+{
 
     @Override
-    public boolean isToolCall() {
+    public boolean isToolCall()
+    {
         if (rawResponse == null)
             return false;
 
@@ -25,7 +27,8 @@ public class GeminiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public JSONObject getMessageStructured() {
+    public JSONObject getMessageStructured()
+    {
         if (!isToolCall())
             return null;
 
@@ -40,7 +43,8 @@ public class GeminiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public String getMessage() {
+    public String getMessage()
+    {
         if (rawResponse == null)
             return null;
 
@@ -55,7 +59,8 @@ public class GeminiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public String getFunctionName() {
+    public String getFunctionName()
+    {
         if (!isToolCall())
             return null;
 
@@ -68,7 +73,8 @@ public class GeminiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public boolean isSuccessful() {
+    public boolean isSuccessful()
+    {
         if (rawResponse == null)
             return false;
 
@@ -77,7 +83,8 @@ public class GeminiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public int getTokensUsed() {
+    public int getTokensUsed()
+    {
         if (rawResponse == null)
             return 0;
 
@@ -86,37 +93,47 @@ public class GeminiResponse extends BasicLlmResponse {
             return 0;
 
         Object totalTokens = usage.get("total_tokens");
-        if (totalTokens instanceof Long) {
+        if (totalTokens instanceof Long)
+        {
             return ((Long) totalTokens).intValue();
-        } else if (totalTokens instanceof Integer) {
-            return (Integer) totalTokens;
         }
+        else
+            if (totalTokens instanceof Integer)
+            {
+                return (Integer) totalTokens;
+            }
         return 0;
     }
 
     @Override
-    public String getModel() {
+    public String getModel()
+    {
         if (rawResponse == null)
             return "unknown";
         return (String) rawResponse.get("model");
     }
 
     @Override
-    public ArrayList<String> getImageUrls() {
+    public ArrayList<String> getImageUrls()
+    {
         ArrayList<String> images = new ArrayList<String>();
-        if (rawResponse == null) {
+        if (rawResponse == null)
+        {
             return images;
         }
-        if (!rawResponse.containsKey("data")) {
+        if (!rawResponse.containsKey("data"))
+        {
             return images;
         }
 
         JSONArray dataArray = (JSONArray) rawResponse.get("data");
-        if (dataArray == null || dataArray.isEmpty()) {
+        if (dataArray == null || dataArray.isEmpty())
+        {
             return images;
         }
 
-        for (int i = 0; i < dataArray.size(); i++) {
+        for (int i = 0; i < dataArray.size(); i++)
+        {
             JSONObject imageObject = (JSONObject) dataArray.get(i);
             String url = (String) imageObject.get("url");
             images.add(url);
@@ -125,23 +142,28 @@ public class GeminiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public ArrayList<String> getImageBase64s() {
+    public ArrayList<String> getImageBase64s()
+    {
         ArrayList<String> images = new ArrayList<String>();
-        if (rawResponse == null) {
+        if (rawResponse == null)
+        {
             return images;
         }
 
-        if (!rawResponse.containsKey("data")) {
+        if (!rawResponse.containsKey("data"))
+        {
             return images;
         }
 
         JSONArray dataArray = (JSONArray) rawResponse.get("data");
 
-        if (dataArray == null || dataArray.isEmpty()) {
+        if (dataArray == null || dataArray.isEmpty())
+        {
             return images;
         }
 
-        for (int i = 0; i < dataArray.size(); i++) {
+        for (int i = 0; i < dataArray.size(); i++)
+        {
             JSONObject imageObject = (JSONObject) dataArray.get(i);
             String url = (String) imageObject.get("b64_json");
             images.add(url);

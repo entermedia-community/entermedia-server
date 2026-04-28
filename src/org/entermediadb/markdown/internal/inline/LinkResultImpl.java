@@ -4,16 +4,17 @@ import org.entermediadb.markdown.node.Node;
 import org.entermediadb.markdown.parser.beta.LinkResult;
 import org.entermediadb.markdown.parser.beta.Position;
 
-public class LinkResultImpl implements LinkResult {
+public class LinkResultImpl implements LinkResult
+{
     @Override
-    public LinkResult includeMarker() {
+    public LinkResult includeMarker()
+    {
         includeMarker = true;
         return this;
     }
 
     public enum Type {
-        WRAP,
-        REPLACE
+        WRAP, REPLACE
     }
 
     private final Type type;
@@ -28,19 +29,23 @@ public class LinkResultImpl implements LinkResult {
         this.position = position;
     }
 
-    public Type getType() {
+    public Type getType()
+    {
         return type;
     }
 
-    public Node getNode() {
+    public Node getNode()
+    {
         return node;
     }
 
-    public Position getPosition() {
+    public Position getPosition()
+    {
         return position;
     }
 
-    public boolean isIncludeMarker() {
+    public boolean isIncludeMarker()
+    {
         return includeMarker;
     }
 }

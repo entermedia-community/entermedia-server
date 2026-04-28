@@ -26,7 +26,8 @@ import org.openedit.WebPageRequest;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.JSONParser;
 
-public class PostizManager implements CatalogEnabled {
+public class PostizManager implements CatalogEnabled
+{
 
     private static Log log = LogFactory.getLog(PostizManager.class);
 
@@ -40,42 +41,53 @@ public class PostizManager implements CatalogEnabled {
 
     protected ModuleManager fieldModuleManager;
 
-    public CloseableHttpClient getSharedClient() {
-        if (fieldHttpClient == null || true) {
-            try {
+    public CloseableHttpClient getSharedClient()
+    {
+        if (fieldHttpClient == null || true)
+        {
+            try
+            {
                 fieldHttpClient = HttpClients.createDefault();
-            } catch (Throwable e) {
+            }
+            catch (Throwable e)
+            {
                 throw new OpenEditException(e);
             }
         }
         return fieldHttpClient;
     }
 
-    public ModuleManager getModuleManager() {
+    public ModuleManager getModuleManager()
+    {
         return fieldModuleManager;
     }
 
-    public void setModuleManager(ModuleManager inModuleManager) {
+    public void setModuleManager(ModuleManager inModuleManager)
+    {
         fieldModuleManager = inModuleManager;
     }
 
-    public MediaArchive getMediaArchive() {
-        if (fieldMediaArchive == null) {
+    public MediaArchive getMediaArchive()
+    {
+        if (fieldMediaArchive == null)
+        {
             fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
         }
         return fieldMediaArchive;
     }
 
-    public String getCatalogId() {
+    public String getCatalogId()
+    {
         return fieldCatalogId;
     }
 
-    public void setCatalogId(String inCatalogId) {
+    public void setCatalogId(String inCatalogId)
+    {
         fieldCatalogId = inCatalogId;
     }
 
-    public JSONObject createPost(String apiKey, String inPostContent, Date inPostDate, String postType,
-            List<String> inAssetIds, List<String> integrationIds) {
+    public JSONObject createPost(String apiKey, String inPostContent, Date inPostDate, String postType, List<String> inAssetIds, List<String> integrationIds)
+    {
         // String apiKey = getApiKey();
         assert apiKey != null : "API Key is required";
 
@@ -84,7 +96,8 @@ public class PostizManager implements CatalogEnabled {
         postMethod.addHeader("Authorization", apiKey); // per your requirements
         postMethod.setHeader("Content-Type", "application/json");
 
-        try {
+        try
+        {
             // Construct the main payload
             JSONObject payload = new JSONObject();
             payload.put("type", postType);
@@ -98,8 +111,10 @@ public class PostizManager implements CatalogEnabled {
             // Construct posts array
             JSONArray postsArray = new JSONArray();
 
-            if (integrationIds != null && !integrationIds.isEmpty()) {
-                for (String integrationId : integrationIds) {
+            if (integrationIds != null && !integrationIds.isEmpty())
+            {
+                for (String integrationId : integrationIds)
+                {
                     JSONObject postObject = new JSONObject();
 
                     // Add integration
@@ -115,14 +130,19 @@ public class PostizManager implements CatalogEnabled {
                     // Handle file uploads if provided
                     // Add images if any
                     JSONArray imagesArray = new JSONArray();
-                    if (inAssetIds != null && !inAssetIds.isEmpty()) {
-                        for (String assetid : inAssetIds) {
+                    if (inAssetIds != null && !inAssetIds.isEmpty())
+                    {
+                        for (String assetid : inAssetIds)
+                        {
                             Asset asset = getMediaArchive().getAsset(assetid);
-                            if (asset != null) {
+                            if (asset != null)
+                            {
                                 ContentItem item = getMediaArchive().getGeneratedContent(asset, "image3000x3000.jpg");
-                                if (item.exists()) {
+                                if (item.exists())
+                                {
                                     String fileId = uploadFile(item.getAbsolutePath());
-                                    if (fileId != null) {
+                                    if (fileId != null)
+                                    {
                                         JSONObject imageObject = new JSONObject();
                                         imageObject.put("id", fileId);
                                         imagesArray.add(imageObject);
@@ -146,7 +166,9 @@ public class PostizManager implements CatalogEnabled {
 
                     postsArray.add(postObject);
                 }
-            } else {
+            }
+            else
+            {
                 throw new OpenEditException("At least one integration ID is required.");
             }
 
@@ -169,13 +191,16 @@ public class PostizManager implements CatalogEnabled {
             response.close();
             return (JSONObject) result.get(0);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             log.error("Error creating post in Postiz", e);
             throw new OpenEditException("Failed to create post", e);
         }
     }
 
-    public JSONArray listIntegrations(String apiKey) {
+    public JSONArray listIntegrations(String apiKey)
+    {
         // String apiKey = getApiKey();
         assert apiKey != null : "API Key is required";
 
@@ -183,10 +208,12 @@ public class PostizManager implements CatalogEnabled {
         HttpGet getMethod = new HttpGet(endpoint);
         getMethod.addHeader("Authorization", apiKey);
 
-        try {
+        try
+        {
 
             JSONArray integrations = (JSONArray) getMediaArchive().getCacheManager().get("postiz", "integrations");
-            if (integrations == null) {
+            if (integrations == null)
+            {
                 CloseableHttpResponse response = getSharedClient().execute(getMethod);
 
                 String jsonResponse = EntityUtils.toString(response.getEntity(), "UTF-8");
@@ -199,23 +226,27 @@ public class PostizManager implements CatalogEnabled {
 
             return integrations;
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             log.error("Error listing integrations in Postiz", e);
             throw new OpenEditException("Failed to list integrations", e);
         }
     }
 
-    public JSONArray listsubReddits(WebPageRequest inReq) {
+    public JSONArray listsubReddits(WebPageRequest inReq)
+    {
         // String apiKey = getApiKey();
 
-        try {
+        try
+        {
 
             JSONArray subreddits = (JSONArray) getMediaArchive().getCacheManager().get("postiz", "subreddits");
-            if (subreddits == null) {
+            if (subreddits == null)
+            {
                 String redditprofile = inReq.getRequestParameter("profile");
                 String term = inReq.getRequestParameter("term");
-                String endpoint = "https://oauth.reddit.com/subreddits/search?show=public&q=" + term
-                        + "&sort=activity&show_users=false&limit=10";
+                String endpoint = "https://oauth.reddit.com/subreddits/search?show=public&q=" + term + "&sort=activity&show_users=false&limit=10";
                 HttpGet getMethod = new HttpGet(endpoint);
                 getMethod.addHeader("User-Agent", "Java:MySubredditFetcherApp:v1.0.0 (by /u/" + redditprofile + ")");
 
@@ -231,13 +262,16 @@ public class PostizManager implements CatalogEnabled {
 
             return subreddits;
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             log.error("Error listing integrations in Postiz", e);
             throw new OpenEditException("Failed to list integrations", e);
         }
     }
 
-    private String uploadFile(String filePath) {
+    private String uploadFile(String filePath)
+    {
         String apiKey = getApiKey();
         assert apiKey != null : "API Key is required";
 
@@ -245,10 +279,10 @@ public class PostizManager implements CatalogEnabled {
         HttpPost postMethod = new HttpPost(endpoint);
         postMethod.addHeader("Authorization", apiKey);
 
-        try {
+        try
+        {
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-            builder.addBinaryBody("file", new java.io.File(filePath), ContentType.DEFAULT_BINARY,
-                    new java.io.File(filePath).getName());
+            builder.addBinaryBody("file", new java.io.File(filePath), ContentType.DEFAULT_BINARY, new java.io.File(filePath).getName());
 
             postMethod.setEntity(builder.build());
 
@@ -261,17 +295,21 @@ public class PostizManager implements CatalogEnabled {
             response.close();
             return (String) result.get("id");
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             log.error("Error uploading file to Postiz", e);
             throw new OpenEditException("Failed to upload file", e);
         }
     }
 
-    public String getApiEndpoint() {
+    public String getApiEndpoint()
+    {
         return getMediaArchive().getCatalogSettingValue("postiz-url") + "/public/v1";
     }
 
-    public String getApiKey() {
+    public String getApiKey()
+    {
 
         // get it from socialmediaprofile userprofile.
         String apikey = "";

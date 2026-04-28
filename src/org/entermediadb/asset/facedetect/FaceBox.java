@@ -6,65 +6,79 @@ import org.json.simple.JSONArray;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 
-public class FaceBox {
-	public String toJsonArray() {
+public class FaceBox
+{
+	public String toJsonArray()
+	{
 		String json = JSONArray.toJSONString(getBoxArea());
 		return json;
 	}
 
-	public String getId() {
+	public String getId()
+	{
 		return getEmbeddedData().getId();
 	}
 
-	public String getAssetId() {
+	public String getAssetId()
+	{
 		return getEmbeddedData().get("assetid");
 	}
 
 	protected MultiValued fieldEmbeddedData;
 
-	public MultiValued getEmbeddedData() {
+	public MultiValued getEmbeddedData()
+	{
 		return fieldEmbeddedData;
 	}
 
-	public void setEmbeddedData(MultiValued inEmbeddedData) {
+	public void setEmbeddedData(MultiValued inEmbeddedData)
+	{
 		fieldEmbeddedData = inEmbeddedData;
 	}
 
-	public Data getPerson() {
+	public Data getPerson()
+	{
 		return fieldPerson;
 	}
 
-	public void setPerson(Data inPerson) {
+	public void setPerson(Data inPerson)
+	{
 		fieldPerson = inPerson;
 	}
 
-	public double getTimecodeStartSeconds() {
+	public double getTimecodeStartSeconds()
+	{
 		return fieldTimecodeStartSeconds;
 	}
 
-	public void setTimecodeStartSeconds(double inTimecodeStartSeconds) {
+	public void setTimecodeStartSeconds(double inTimecodeStartSeconds)
+	{
 		fieldTimecodeStartSeconds = inTimecodeStartSeconds;
 	}
 
 	protected Data fieldPerson;
 	protected List<Integer> fieldBoxArea;
 
-	public List<Integer> getBoxArea() {
+	public List<Integer> getBoxArea()
+	{
 		return fieldBoxArea;
 	}
 
-	public void setBoxArea(List<Integer> inBoxArea) {
+	public void setBoxArea(List<Integer> inBoxArea)
+	{
 		fieldBoxArea = inBoxArea;
 	}
 
 	protected double fieldTimecodeStartSeconds;
 
-	public Integer getOriginalWidth() {
+	public Integer getOriginalWidth()
+	{
 		Integer w = getEmbeddedData().getInt("originalwidth");
 		return w;
 	}
 
-	public Integer getOriginalHeight() {
+	public Integer getOriginalHeight()
+	{
 		Integer w = getEmbeddedData().getInt("originalheight");
 		return w;
 	}

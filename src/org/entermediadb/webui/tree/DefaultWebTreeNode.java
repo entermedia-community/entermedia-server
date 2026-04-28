@@ -1,14 +1,14 @@
 /*
-Copyright (c) 2003 eInnovation Inc. All rights reserved
-
-This library is free software; you can redistribute it and/or modify it under the terms
-of the GNU Lesser General Public License as published by the Free Software Foundation;
-either version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-*/
+ * Copyright (c) 2003 eInnovation Inc. All rights reserved
+ * 
+ * This library is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation; either version
+ * 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 
 package org.entermediadb.webui.tree;
 
@@ -19,15 +19,14 @@ import org.openedit.data.BaseData;
 import org.openedit.util.strainer.Filter;
 
 /**
- * This class represents a node in a <code>{@link DefaultWebTreeModel}</code>.
- * It has the
- * attributes most people will need: name, URL, and icon URL. Most of the
- * methods in
+ * This class represents a node in a <code>{@link DefaultWebTreeModel}</code>. It has the attributes
+ * most people will need: name, URL, and icon URL. Most of the methods in
  * <code>DefaultWebTreeModel</code> delegate to this class.
  *
  * @author Eric Galluzzo
  */
-public class DefaultWebTreeNode extends BaseData {
+public class DefaultWebTreeNode extends BaseData
+{
 	protected static int staticNextID = 0;
 	protected List fieldChildren;
 	protected String fieldIconURL;
@@ -58,7 +57,8 @@ public class DefaultWebTreeNode extends BaseData {
 	 *
 	 * @return
 	 */
-	public DefaultWebTreeNode getChild(int inIndex) {
+	public DefaultWebTreeNode getChild(int inIndex)
+	{
 		return (DefaultWebTreeNode) getChildren().get(inIndex);
 	}
 
@@ -67,7 +67,8 @@ public class DefaultWebTreeNode extends BaseData {
 	 *
 	 * @return
 	 */
-	public int getChildCount() {
+	public int getChildCount()
+	{
 		return getChildren().size();
 	}
 
@@ -76,8 +77,10 @@ public class DefaultWebTreeNode extends BaseData {
 	 *
 	 * @return Returns a List
 	 */
-	public List getChildren() {
-		if (fieldChildren == null) {
+	public List getChildren()
+	{
+		if (fieldChildren == null)
+		{
 			fieldChildren = new ArrayList();
 		}
 
@@ -85,9 +88,8 @@ public class DefaultWebTreeNode extends BaseData {
 	}
 
 	/**
-	 * Gets the ID of this node, which is unique within the VM for the life of the
-	 * VM (unless you
-	 * do weird things with classloaders).
+	 * Gets the ID of this node, which is unique within the VM for the life of the VM (unless you do
+	 * weird things with classloaders).
 	 *
 	 * @return Returns an int
 	 */
@@ -97,7 +99,8 @@ public class DefaultWebTreeNode extends BaseData {
 	 *
 	 * @param iconURL The icon URL to set
 	 */
-	public void setIconURL(String iconURL) {
+	public void setIconURL(String iconURL)
+	{
 		fieldIconURL = iconURL;
 	}
 
@@ -106,7 +109,8 @@ public class DefaultWebTreeNode extends BaseData {
 	 *
 	 * @return Returns a String
 	 */
-	public String getIconURL() {
+	public String getIconURL()
+	{
 		return fieldIconURL;
 	}
 
@@ -117,7 +121,8 @@ public class DefaultWebTreeNode extends BaseData {
 	 *
 	 * @return The index, or -1 if the child could not be found
 	 */
-	public int getIndexOfChild(DefaultWebTreeNode inChild) {
+	public int getIndexOfChild(DefaultWebTreeNode inChild)
+	{
 		return getChildren().indexOf(inChild);
 	}
 
@@ -126,7 +131,8 @@ public class DefaultWebTreeNode extends BaseData {
 	 *
 	 * @param inLeaf DOCUMENT ME!
 	 */
-	public void setLeaf(boolean inLeaf) {
+	public void setLeaf(boolean inLeaf)
+	{
 		fieldLeaf = inLeaf;
 	}
 
@@ -135,7 +141,8 @@ public class DefaultWebTreeNode extends BaseData {
 	 *
 	 * @return
 	 */
-	public boolean isLeaf() {
+	public boolean isLeaf()
+	{
 		return fieldLeaf;
 	}
 
@@ -144,15 +151,22 @@ public class DefaultWebTreeNode extends BaseData {
 	 *
 	 * @return Returns a String
 	 */
-	public String getURL() {
-		if (getParent() != null) {
+	public String getURL()
+	{
+		if (getParent() != null)
+		{
 			String p = getParent().getURL();
-			if (p.endsWith("/")) {
+			if (p.endsWith("/"))
+			{
 				return p + getName();
-			} else {
+			}
+			else
+			{
 				return p + "/" + getName();
 			}
-		} else {
+		}
+		else
+		{
 			return getName(); // the root does not need a special URL since it is part of the base path
 		}
 	}
@@ -162,7 +176,8 @@ public class DefaultWebTreeNode extends BaseData {
 	 *
 	 * @param inNode DOCUMENT ME!
 	 */
-	public void addChild(DefaultWebTreeNode inNode) {
+	public void addChild(DefaultWebTreeNode inNode)
+	{
 		getChildren().add(inNode);
 		inNode.setParent(this);
 	}
@@ -170,39 +185,48 @@ public class DefaultWebTreeNode extends BaseData {
 	/**
 	 * DOCME
 	 */
-	public void reloadChildren() {
+	public void reloadChildren()
+	{
 		// nothing to do?
 	}
 
-	public DefaultWebTreeNode getParent() {
+	public DefaultWebTreeNode getParent()
+	{
 		return fieldParent;
 	}
 
-	public void setParent(DefaultWebTreeNode inParent) {
+	public void setParent(DefaultWebTreeNode inParent)
+	{
 		fieldParent = inParent;
 	}
 
-	public Filter getFilter() {
+	public Filter getFilter()
+	{
 		return fieldFilter;
 	}
 
-	public void setFilter(Filter inFilter) {
+	public void setFilter(Filter inFilter)
+	{
 		fieldFilter = inFilter;
 	}
 
-	public boolean hasLoadedChildren() {
+	public boolean hasLoadedChildren()
+	{
 		return fieldChildren != null;
 	}
 
-	public String getIconSet() {
+	public String getIconSet()
+	{
 		return fieldIconSet;
 	}
 
-	public void setIconSet(String inIconSet) {
+	public void setIconSet(String inIconSet)
+	{
 		fieldIconSet = inIconSet;
 	}
 
-	public String getID() {
+	public String getID()
+	{
 		return getId();
 	}
 }

@@ -26,45 +26,55 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 
-public class AssetSyncModule extends BaseMediaModule {
+public class AssetSyncModule extends BaseMediaModule
+{
 	private static final Log log = LogFactory.getLog(AssetSyncModule.class);
 	protected FileUpload fieldFileUpload;
 	protected AssetImporter fieldAssetAssetImporter;
 	protected UploadQueue fieldUploadQueue; // map of assets being uploaded. clear out old oneson start, check owner,
 											// clear on error or completed
 
-	protected UploadQueue getUploadQueue() {
-		if (fieldUploadQueue == null) {
+	protected UploadQueue getUploadQueue()
+	{
+		if (fieldUploadQueue == null)
+		{
 			fieldUploadQueue = (UploadQueue) getModuleManager().getBean("uploadQueue");
 		}
 
 		return fieldUploadQueue;
 	}
 
-	protected void setUploadQueue(UploadQueue inUploadQueue) {
+	protected void setUploadQueue(UploadQueue inUploadQueue)
+	{
 		fieldUploadQueue = inUploadQueue;
 	}
 
-	public AssetImporter getAssetImporter() {
+	public AssetImporter getAssetImporter()
+	{
 		return fieldAssetAssetImporter;
 	}
 
-	public void setAssetImporter(AssetImporter inAssetAssetImporter) {
+	public void setAssetImporter(AssetImporter inAssetAssetImporter)
+	{
 		fieldAssetAssetImporter = inAssetAssetImporter;
 	}
 
-	public FileUpload getFileUpload() {
+	public FileUpload getFileUpload()
+	{
 		return fieldFileUpload;
 	}
 
-	public void setFileUpload(FileUpload inFileUpload) {
+	public void setFileUpload(FileUpload inFileUpload)
+	{
 		fieldFileUpload = inFileUpload;
 	}
 
-	public void createAssetFromLocalPaths(WebPageRequest inReq) throws Exception {
+	public void createAssetFromLocalPaths(WebPageRequest inReq) throws Exception
+	{
 		// TODO check for permissions
 		String[] localpaths = inReq.getRequestParameters("localfilepath");
-		if (localpaths != null) {
+		if (localpaths != null)
+		{
 			String[] names = inReq.getRequestParameters("name");
 			String[] parents = inReq.getRequestParameters("parentpath");
 			String[] sizes = inReq.getRequestParameters("filesize");
@@ -84,8 +94,10 @@ public class AssetSyncModule extends BaseMediaModule {
 
 			List<String> allids = new ArrayList();
 			ListHitTracker tracker = new ListHitTracker();
-			for (int i = 0; i < localpaths.length; i++) {
-				if (localpaths[i].trim().length() == 0) {
+			for (int i = 0; i < localpaths.length; i++)
+			{
+				if (localpaths[i].trim().length() == 0)
+				{
 					continue;
 				}
 
@@ -93,7 +105,8 @@ public class AssetSyncModule extends BaseMediaModule {
 				Asset existing = archive.getAssetBySourcePath(currentSourcePath);
 				Asset toadd = new BaseAsset(archive);
 				toadd.setId(archive.getAssetSearcher().nextAssetNumber());
-				if (existing != null) {
+				if (existing != null)
+				{
 					String startpart = PathUtilities.extractPagePath(currentSourcePath);
 					startpart = startpart + "_" + toadd.getId();
 
@@ -114,10 +127,13 @@ public class AssetSyncModule extends BaseMediaModule {
 				// NOOO. The file is not uploaded yet you dolt!
 				// Whoops, sorry.
 
-				if (fields != null) {
-					for (int f = 0; f < fields.length; f++) {
+				if (fields != null)
+				{
+					for (int f = 0; f < fields.length; f++)
+					{
 						String val = inReq.getRequestParameter(prefixs[i] + fields[f] + ".value");
-						if (val != null) {
+						if (val != null)
+						{
 							toadd.setProperty(fields[f], val);
 						}
 					}
@@ -126,7 +142,8 @@ public class AssetSyncModule extends BaseMediaModule {
 				tracker.add(toadd);
 			}
 			archive.saveAssets(tracker, inReq.getUser());
-			if (tracker.size() > 0) {
+			if (tracker.size() > 0)
+			{
 				// archive.fireMediaEvent("assetuploadpending",inReq.getUser(),(Asset)tracker.first(),allids);
 			}
 			// TODO: Replace with a cached search using the assetid's
@@ -140,7 +157,8 @@ public class AssetSyncModule extends BaseMediaModule {
 
 	}
 
-	public void searchForPendingAssets(WebPageRequest inReq) throws Exception {
+	public void searchForPendingAssets(WebPageRequest inReq) throws Exception
+	{
 		String applicationid = inReq.findValue("applicationid");
 
 		// String searchcurrentcatalogonly=inReq.findValue("searchcurrentcatalogonly");
@@ -148,7 +166,8 @@ public class AssetSyncModule extends BaseMediaModule {
 		// if (Boolean.parseBoolean(searchcurrentcatalogonly))
 		// {
 		String catalogid = inReq.findPathValue("catalogid");
-		if (catalogid == null) {
+		if (catalogid == null)
+		{
 			return;
 		}
 		searcher = getSearcherManager().getSearcher(catalogid, "asset");
@@ -164,9 +183,12 @@ public class AssetSyncModule extends BaseMediaModule {
 		query.addMatches("editstatus", "*"); // needed to override the filter
 
 		User user = inReq.getUser();
-		if (user != null) {
+		if (user != null)
+		{
 			query.addMatches("owner", user.getUserName());
-		} else {
+		}
+		else
+		{
 			log.debug("No user");
 			return;
 		}
@@ -180,8 +202,10 @@ public class AssetSyncModule extends BaseMediaModule {
 		HitTracker inprogress = searcher.cachedSearch(inReq, query);
 
 		EnterMedia entermedia = getEnterMedia(inReq);
-		if (inprogress != null && inprogress.size() > 0) {
-			for (Iterator iterator = inprogress.getPageOfHits().iterator(); iterator.hasNext();) {
+		if (inprogress != null && inprogress.size() > 0)
+		{
+			for (Iterator iterator = inprogress.getPageOfHits().iterator(); iterator.hasNext();)
+			{
 				Data data = (Data) iterator.next();
 				String localcatalogid = data.get("catalogid");
 				String sourcepath = data.getSourcePath();
@@ -193,7 +217,8 @@ public class AssetSyncModule extends BaseMediaModule {
 		inReq.putPageValue("pendingassets", assets);
 	}
 
-	public void searchForPendingAsset(WebPageRequest inReq) throws Exception {
+	public void searchForPendingAsset(WebPageRequest inReq) throws Exception
+	{
 		String assetid = inReq.getRequestParameter("assetid");
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = archive.getAsset(assetid);
@@ -201,7 +226,8 @@ public class AssetSyncModule extends BaseMediaModule {
 		inReq.putPageValue("asset", asset);
 	}
 
-	protected void updateUploadStatus(String catalogid, Asset existing) {
+	protected void updateUploadStatus(String catalogid, Asset existing)
+	{
 		String status = existing.get("importstatus");
 		if ("uploading".equals(status)) // may be moving
 		{
@@ -212,11 +238,13 @@ public class AssetSyncModule extends BaseMediaModule {
 		}
 	}
 
-	public void receiveData(WebPageRequest inReq) throws Exception {
+	public void receiveData(WebPageRequest inReq) throws Exception
+	{
 		// Why would you want to upload to the produts root directory?
 		EnterMedia entermedia = getEnterMedia(inReq);
 		String appletname = inReq.getRequest().getHeader("x-appletname");
-		if (appletname == null) {
+		if (appletname == null)
+		{
 			log.error("No applet name passed in");
 			return;
 		}

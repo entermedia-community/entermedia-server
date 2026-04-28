@@ -14,55 +14,74 @@ import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.util.PathUtilities;
 
-public class WikiGenerator extends BaseGenerator {
+public class WikiGenerator extends BaseGenerator
+{
 	PageManager fieldPageManager;
 
-	public void generate(WebPageRequest inContext, Page inPage, Output inOut) throws OpenEditException {
+	public void generate(WebPageRequest inContext, Page inPage, Output inOut) throws OpenEditException
+	{
 		String text = inPage.getContent();
 		String directory = PathUtilities.extractDirectoryPath(inPage.getPath());
 		String converted = parseWiki(text, directory);
 		Writer inOutput = inOut.getWriter();
-		try {
+		try
+		{
 			inOutput.write(converted);
-		} catch (IOException ex) {
+		}
+		catch (IOException ex)
+		{
 			throw new OpenEditException(ex);
 		}
 	}
 
-	public String parseWiki(String text, String directory) throws OpenEditException {
+	public String parseWiki(String text, String directory) throws OpenEditException
+	{
 		// first check for []
 		StringBuffer out = new StringBuffer(text.length() + 100);
 		StringBuffer link = new StringBuffer();
 		boolean inlink = false;
-		for (int i = 0; i < text.length(); i++) {
+		for (int i = 0; i < text.length(); i++)
+		{
 			char c = text.charAt(i);
-			if (c == '[') {
+			if (c == '[')
+			{
 				inlink = true;
 				out.append("<a href=\"");
-			} else if (c == ']') {
-				inlink = false;
-				String path = makelink(link.toString());
-				out.append(path);
-				out.append("\">");
-				out.append(link);
-				if (!path.startsWith("http")) {
-					Page page = getPageManager().getPage(directory + "/" + path);
-					if (!page.exists()) {
-						out.append("*");
-					}
-				}
-				out.append("</a>");
-				link = new StringBuffer();
-			} else if (inlink) {
-				link.append(c);
-			} else {
-				out.append(c);
 			}
+			else
+				if (c == ']')
+				{
+					inlink = false;
+					String path = makelink(link.toString());
+					out.append(path);
+					out.append("\">");
+					out.append(link);
+					if (!path.startsWith("http"))
+					{
+						Page page = getPageManager().getPage(directory + "/" + path);
+						if (!page.exists())
+						{
+							out.append("*");
+						}
+					}
+					out.append("</a>");
+					link = new StringBuffer();
+				}
+				else
+					if (inlink)
+					{
+						link.append(c);
+					}
+					else
+					{
+						out.append(c);
+					}
 		}
 		return out.toString();
 	}
 
-	private String makelink(String inString) {
+	private String makelink(String inString)
+	{
 		String lower = inString.toLowerCase();
 		{
 			if (lower.startsWith("http") || lower.startsWith("mailto"))
@@ -72,25 +91,33 @@ public class WikiGenerator extends BaseGenerator {
 		return shortname + ".html";
 	}
 
-	protected void markLinks(String[] words, Writer inOutput) throws IOException {
-		for (int i = 0; i < words.length; i++) {
+	protected void markLinks(String[] words, Writer inOutput) throws IOException
+	{
+		for (int i = 0; i < words.length; i++)
+		{
 			String word = words[i];
 
 			// break this into more parts based on html and other tags?
 			StringBuffer part = new StringBuffer();
-			for (int j = 0; j < word.length(); j++) {
+			for (int j = 0; j < word.length(); j++)
+			{
 				// build up a word
-				if (Character.isLetter(word.charAt(j))) {
+				if (Character.isLetter(word.charAt(j)))
+				{
 					part.append(word.charAt(j));
-				} else {
-					if (part.length() > 0) {
+				}
+				else
+				{
+					if (part.length() > 0)
+					{
 						dumpWord(inOutput, part.toString());
 						part = new StringBuffer();
 					}
 					inOutput.append(word.charAt(j));
 				}
 			}
-			if (part.length() > 0) {
+			if (part.length() > 0)
+			{
 				dumpWord(inOutput, part.toString());
 			}
 
@@ -98,8 +125,10 @@ public class WikiGenerator extends BaseGenerator {
 		}
 	}
 
-	private void dumpWord(Writer inOutput, String part) throws IOException {
-		if (isWiki(part)) {
+	private void dumpWord(Writer inOutput, String part) throws IOException
+	{
+		if (isWiki(part))
+		{
 
 			inOutput.write("<a href='");
 
@@ -108,14 +137,18 @@ public class WikiGenerator extends BaseGenerator {
 			if (part.indexOf("OpenEdit") > -1) // TODO: Read in ignore list
 			{
 				inOutput.write("http://www.openedit.org/'>");
-			} else {
+			}
+			else
+			{
 				inOutput.write(part);
 				inOutput.write(".html'>");
 			}
 			inOutput.write(part);
 			inOutput.write("</a>");
 
-		} else {
+		}
+		else
+		{
 			inOutput.write(part);
 		}
 	}
@@ -124,18 +157,23 @@ public class WikiGenerator extends BaseGenerator {
 	 * @param inWord
 	 * @return
 	 */
-	protected boolean isWiki(String inWord) {
+	protected boolean isWiki(String inWord)
+	{
 
-		if (inWord != null && inWord.length() > 4) {
+		if (inWord != null && inWord.length() > 4)
+		{
 			int start = 0;
 			int type = Character.getType(inWord.charAt(start));
 			int secondtype = Character.getType(inWord.charAt(start + 1));
 
-			if (type == Character.UPPERCASE_LETTER && secondtype == Character.LOWERCASE_LETTER) {
+			if (type == Character.UPPERCASE_LETTER && secondtype == Character.LOWERCASE_LETTER)
+			{
 				// make sure there is another upper case in here
-				for (int i = start + 2; i < inWord.length(); i++) {
+				for (int i = start + 2; i < inWord.length(); i++)
+				{
 					int ctype = Character.getType(inWord.charAt(i));
-					if (ctype == Character.UPPERCASE_LETTER) {
+					if (ctype == Character.UPPERCASE_LETTER)
+					{
 						return true;
 					}
 				}
@@ -144,11 +182,13 @@ public class WikiGenerator extends BaseGenerator {
 		return false;
 	}
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		fieldPageManager = inPageManager;
 	}
 

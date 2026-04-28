@@ -1,6 +1,7 @@
 package org.entermediadb.ai.knn;
 
-public class KMeansConfiguration {
+public class KMeansConfiguration
+{
 	protected int kcount;
 	protected int totalrecords;
 	protected double maxdistancetomatch = .52;

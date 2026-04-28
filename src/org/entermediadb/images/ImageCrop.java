@@ -22,38 +22,47 @@ import org.openedit.users.User;
 import org.openedit.util.FileUtils;
 import org.openedit.util.PathUtilities;
 
-public class ImageCrop {
+public class ImageCrop
+{
 	protected Rectangle fieldRange;
 	protected PageManager fieldPageManager;
 	protected float fieldScaleX;
 	protected float fieldScaleY;
 
-	public Rectangle getRange() {
+	public Rectangle getRange()
+	{
 		return fieldRange;
 	}
 
-	public void setRange(Rectangle inRange) {
+	public void setRange(Rectangle inRange)
+	{
 		fieldRange = inRange;
 	}
 
-	public void setRange(int inX, int inY, int inWidth, int inHeight) {
+	public void setRange(int inX, int inY, int inWidth, int inHeight)
+	{
 		setRange(new Rectangle(inX, inY, inWidth, inHeight));
 	}
 
-	public void crop(String inPath, User inUser, String inMessage) throws Exception {
+	public void crop(String inPath, User inUser, String inMessage) throws Exception
+	{
 		Page input = getPageManager().getPage(inPath);
-		if (input.exists()) {
+		if (input.exists())
+		{
 			InputStream in = null;
 			OutputStream out = null;
 			File tmp = File.createTempFile("crop", "image");
-			try {
+			try
+			{
 				in = input.getContentItem().getInputStream();
 				BufferedImage origImage = ImageIO.read(in);
 				BufferedImage done = crop(origImage);
 				String type = PathUtilities.extractPageType(inPath);
 				out = new FileOutputStream(tmp);
 				ImageIO.write(done, type, out);
-			} finally {
+			}
+			finally
+			{
 				FileUtils.safeClose(in);
 				FileUtils.safeClose(out);
 			}
@@ -68,18 +77,21 @@ public class ImageCrop {
 		}
 	}
 
-	public BufferedImage crop(BufferedImage inImage) {
+	public BufferedImage crop(BufferedImage inImage)
+	{
 		// BufferedImage origImage = ImageIO.read( inInImageFile );
 		int scaledX = (int) getRange().getX();
 		int scaledY = (int) getRange().getY();
 		int scaledWidth = (int) getRange().getWidth();
 		int scaledHeight = (int) getRange().getHeight();
 
-		if (getScaleX() > 0) {
+		if (getScaleX() > 0)
+		{
 			scaledX = (int) (scaledX * getScaleX());
 			scaledWidth = (int) (scaledWidth * getScaleX());
 		}
-		if (getScaleY() > 0) {
+		if (getScaleY() > 0)
+		{
 			scaledY = (int) (scaledY * getScaleY());
 			scaledHeight = (int) (scaledHeight * getScaleY());
 		}
@@ -97,40 +109,45 @@ public class ImageCrop {
 		return crop;
 	}
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		fieldPageManager = inPageManager;
 	}
 
-	public void setRange(String inX, String inY, String inWidth, String inHeight) {
+	public void setRange(String inX, String inY, String inWidth, String inHeight)
+	{
 		setRange(Integer.parseInt(inX), Integer.parseInt(inY), Integer.parseInt(inWidth), Integer.parseInt(inHeight));
 	}
 
-	public void resize(String inEditPath, User inUser, String inMessage) throws Exception {
+	public void resize(String inEditPath, User inUser, String inMessage) throws Exception
+	{
 		Page input = getPageManager().getPage(inEditPath);
-		if (input.exists()) {
+		if (input.exists())
+		{
 			InputStream in = null;
 			OutputStream out = null;
 			File tmp = File.createTempFile("resize", "image");
-			try {
+			try
+			{
 				in = input.getContentItem().getInputStream();
 				BufferedImage origImage = ImageIO.read(in);
 
-				BufferedImage scaledImage = new BufferedImage(getRange().width,
-						getRange().height, BufferedImage.TYPE_INT_RGB);
+				BufferedImage scaledImage = new BufferedImage(getRange().width, getRange().height, BufferedImage.TYPE_INT_RGB);
 				Graphics2D scaledGraphics = scaledImage.createGraphics();
-				scaledGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-						RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-				scaledGraphics.drawImage(origImage, 0, 0, getRange().width,
-						getRange().height, null);
+				scaledGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+				scaledGraphics.drawImage(origImage, 0, 0, getRange().width, getRange().height, null);
 
 				String type = PathUtilities.extractPageType(inEditPath);
 				out = new FileOutputStream(tmp);
 				ImageIO.write(scaledImage, type, out);
-			} finally {
+			}
+			finally
+			{
 				FileUtils.safeClose(in);
 				FileUtils.safeClose(out);
 			}
@@ -146,44 +163,58 @@ public class ImageCrop {
 
 	}
 
-	public float getScaleX() {
+	public float getScaleX()
+	{
 		return fieldScaleX;
 	}
 
-	public void setScaleX(float inScaleX) {
+	public void setScaleX(float inScaleX)
+	{
 		fieldScaleX = inScaleX;
 	}
 
-	public void setScaleX(String inScaleX) {
+	public void setScaleX(String inScaleX)
+	{
 		fieldScaleX = Float.parseFloat(inScaleX);
 	}
 
-	public Float getScaleY() {
+	public Float getScaleY()
+	{
 		return fieldScaleY;
 	}
 
-	public void setScaleY(float inScaleY) {
+	public void setScaleY(float inScaleY)
+	{
 		fieldScaleY = inScaleY;
 	}
 
-	public void setScaleY(String inScaleY) {
+	public void setScaleY(String inScaleY)
+	{
 		fieldScaleY = Float.parseFloat(inScaleY);
 	}
 
-	public int getScaledWidth() {
+	public int getScaledWidth()
+	{
 		float x = getScaleX();
-		if (x > 0) {
+		if (x > 0)
+		{
 			return (int) (getRange().width * x);
-		} else {
+		}
+		else
+		{
 			return (int) getRange().width;
 		}
 	}
 
-	public int getScaledHeight() {
+	public int getScaledHeight()
+	{
 		float y = getScaleY();
-		if (y > 0) {
+		if (y > 0)
+		{
 			return (int) (getRange().height * y);
-		} else {
+		}
+		else
+		{
 			return (int) getRange().height;
 		}
 	}

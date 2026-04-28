@@ -7,23 +7,28 @@ import java.util.Map;
 
 import org.openedit.Data;
 
-public class PresetOption {
+public class PresetOption
+{
 	protected Collection fieldOrderItems = new ArrayList();
 	protected Collection fieldDowloadPaths = new ArrayList();
 
-	public Collection getDowloadPaths() {
+	public Collection getDowloadPaths()
+	{
 		return fieldDowloadPaths;
 	}
 
-	public void setDowloadPaths(Collection inDowloadPaths) {
+	public void setDowloadPaths(Collection inDowloadPaths)
+	{
 		fieldDowloadPaths = inDowloadPaths;
 	}
 
-	public void addDownloadPath(String inPath) {
+	public void addDownloadPath(String inPath)
+	{
 		getDowloadPaths().add(inPath);
 	}
 
-	public void addDownloadPath(String inDownloadPath, String inSavePath, Data inAsset) {
+	public void addDownloadPath(String inDownloadPath, String inSavePath, Data inAsset)
+	{
 		Map<String, Object> object = new HashMap<String, Object>();
 		object.put("asset", inAsset);
 		object.put("downloadpath", inDownloadPath);
@@ -33,23 +38,28 @@ public class PresetOption {
 
 	protected Data fieldPreset; // render type
 
-	public Data getPreset() {
+	public Data getPreset()
+	{
 		return fieldPreset;
 	}
 
-	public void setPreset(Data inPreset) {
+	public void setPreset(Data inPreset)
+	{
 		fieldPreset = inPreset;
 	}
 
-	public Collection getOrderItems() {
+	public Collection getOrderItems()
+	{
 		return fieldOrderItems;
 	}
 
-	public void setOrderItems(Collection inItems) {
+	public void setOrderItems(Collection inItems)
+	{
 		fieldOrderItems = inItems;
 	}
 
-	public void addOrderItem(Data inItem) {
+	public void addOrderItem(Data inItem)
+	{
 		getOrderItems().add(inItem);
 	}
 

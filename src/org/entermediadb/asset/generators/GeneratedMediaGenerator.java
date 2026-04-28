@@ -17,22 +17,25 @@ import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
 
 /**
- * This generator generates original asset documents from an MediaArchive based
- * on paths of the form
+ * This generator generates original asset documents from an MediaArchive based on paths of the form
  * <tt>.../<var>assetid</var>/<var>filename.ext</var></tt>.
  */
-public class GeneratedMediaGenerator extends FileGenerator {
+public class GeneratedMediaGenerator extends FileGenerator
+{
 	protected ModuleManager fieldModuleManager;
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
-	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException {
+	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
+	{
 		String catalogid = inReq.findPathValue("catalogid");
 
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
@@ -44,9 +47,11 @@ public class GeneratedMediaGenerator extends FileGenerator {
 		String endingpath = inPage.getPath().substring(assetrootfolder.length());
 
 		String hasexportname = inPage.get("exportnameinpath");
-		if (Boolean.parseBoolean(hasexportname)) {
+		if (Boolean.parseBoolean(hasexportname))
+		{
 			String download = inReq.findValue("download");
-			if (Boolean.parseBoolean(download)) {
+			if (Boolean.parseBoolean(download))
+			{
 				String filename = PathUtilities.extractFileName(endingpath);
 				forceDownload(inReq, filename);
 			}
@@ -56,7 +61,8 @@ public class GeneratedMediaGenerator extends FileGenerator {
 		String ondemand = inReq.findValue("ondemand");
 
 		Boolean forcewatermark = inReq.hasPermission("forcewatermarkasset");
-		if (forcewatermark && endingpath.contains("image3000x3000.")) {
+		if (forcewatermark && endingpath.contains("image3000x3000."))
+		{
 			String filename = PathUtilities.extractPageName(endingpath);
 			String fileext = PathUtilities.extractPageType(endingpath);
 			String basepath = PathUtilities.extractDirectoryPath(endingpath);
@@ -70,17 +76,18 @@ public class GeneratedMediaGenerator extends FileGenerator {
 		// Try the contentitem first. If misssing try a fake page
 
 		// String sourcepath = archive.getSourcePathForPage(inPage);
-		ContentItem item = getPageManager().getRepository()
-				.getStub("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
+		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
 		// ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/"
 		// + catalogid +
 		// "/generated/" + sourcepath +"/" + outputfile);
 		Page output = null;
 		boolean existed = item.exists();
 		String sourcepath = archive.getSourcePathForPage(inPage);
-		if (!existed) {
+		if (!existed)
+		{
 
-			if (Boolean.parseBoolean(ondemand)) {
+			if (Boolean.parseBoolean(ondemand))
+			{
 				TranscodeTools transcodetools = archive.getTranscodeTools();
 
 				String outputfile = PathUtilities.extractFileName(endingpath); // image1200x1200.jpg
@@ -97,32 +104,43 @@ public class GeneratedMediaGenerator extends FileGenerator {
 		}
 
 		boolean addmetadata = Boolean.parseBoolean(inReq.findValue("includemetadata"));
-		if (existed && addmetadata) {
+		if (existed && addmetadata)
+		{
 			XmpWriter writer = (XmpWriter) getModuleManager().getBean("xmpWriter");
 			Asset asset = archive.getAssetBySourcePath(sourcepath);
-			if (asset != null) {
-				try {
+			if (asset != null)
+			{
+				try
+				{
 					writer.saveMetadata(archive, item, asset, new HashMap()); // This is slow and dumb.
-				} catch (Exception e) {
+				}
+				catch (Exception e)
+				{
 					throw new OpenEditException(e);
 				}
 			}
 		}
 
-		if (existed) {
+		if (existed)
+		{
 
 			output = new Page() {
-				public boolean isHtml() {
+				public boolean isHtml()
+				{
 					return false;
 				}
 			};
 			output.setPageSettings(inPage.getPageSettings());
 			output.setContentItem(item);
-		} else {
+		}
+		else
+		{
 			output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
 
-			if (!output.exists()) {
-				if (endingpath.contains("image550x350")) {
+			if (!output.exists())
+			{
+				if (endingpath.contains("image550x350"))
+				{
 					String fileext = PathUtilities.extractPageType(endingpath);
 					String basepath = PathUtilities.extractDirectoryPath(endingpath);
 
@@ -130,27 +148,32 @@ public class GeneratedMediaGenerator extends FileGenerator {
 
 					output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
 
-				} else if (endingpath.contains("image550x550")) {
-					String fileext = PathUtilities.extractPageType(endingpath);
-					String basepath = PathUtilities.extractDirectoryPath(endingpath);
-
-					endingpath = basepath + "/image550x350." + fileext;
-
-					output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
-
 				}
+				else
+					if (endingpath.contains("image550x550"))
+					{
+						String fileext = PathUtilities.extractPageType(endingpath);
+						String basepath = PathUtilities.extractDirectoryPath(endingpath);
+
+						endingpath = basepath + "/image550x350." + fileext;
+
+						output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
+
+					}
 			}
 		}
 
-		if (!existed && !output.exists()) {
+		if (!existed && !output.exists())
+		{
 			throw new ContentNotAvailableException("Missing: " + output.getPath(), output.getPath());
-		} else {
+		}
+		else
+		{
 			WebPageRequest copy = inReq.copy(output);
 			copy.putProtectedPageValue("content", output);
 
 			/*
-			 * if(existed && inReq.getResponse() != null ) {
-			 * inReq.getResponse().setHeader("ETag",
+			 * if(existed && inReq.getResponse() != null ) { inReq.getResponse().setHeader("ETag",
 			 * String.valueOf( output.lastModified() )); }
 			 */
 

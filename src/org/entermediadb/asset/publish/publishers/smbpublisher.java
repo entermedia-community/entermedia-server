@@ -10,13 +10,15 @@ import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
 import org.openedit.Data;
 
-public class smbpublisher extends BasePublisher implements Publisher {
+public class smbpublisher extends BasePublisher implements Publisher
+{
 	private static final Log log = LogFactory.getLog(smbpublisher.class);
 
-	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination,
-			Data inPreset, Asset inAsset) {
+	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
+	{
 		PublishResult result = checkOnConversion(mediaArchive, inOrderItem, inAsset, inPreset);
-		if (result != null) {
+		if (result != null)
+		{
 			return result;
 		}
 

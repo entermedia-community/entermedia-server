@@ -16,56 +16,68 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 
-public abstract class CompositeSearcher extends BaseSearcher {
+public abstract class CompositeSearcher extends BaseSearcher
+{
 
 	private static final Log log = LogFactory.getLog(CompositeSearcher.class);
 	protected UserProfileManager fieldProfileManager;
 
-	public UserProfileManager getUserProfileManager() {
+	public UserProfileManager getUserProfileManager()
+	{
 		return fieldProfileManager;
 	}
 
-	public void setUserProfileManager(UserProfileManager inProfileManager) {
+	public void setUserProfileManager(UserProfileManager inProfileManager)
+	{
 		fieldProfileManager = inProfileManager;
 	}
 
-	public List getSearchers() {
+	public List getSearchers()
+	{
 		Searcher catalogSearcher = getSearcherManager().getSearcher(getCatalogId(), "catalogs");
 		HitTracker catalogList = catalogSearcher.getAllHits();
 
 		List searchers = new ArrayList();
-		for (Iterator iterator = catalogList.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = catalogList.iterator(); iterator.hasNext();)
+		{
 			Data data = (Data) iterator.next();
 			String id = data.getId();
 			String type = data.get("searchtype");
 			Searcher searcher = getSearcherManager().getSearcher(id, type);
-			if (searcher != null) {
+			if (searcher != null)
+			{
 				searchers.add(searcher);
 			}
 		}
 		return searchers;
 	}
 
-	private List getSearchersByCatalogIds(String[] inCatalogids) {
+	private List getSearchersByCatalogIds(String[] inCatalogids)
+	{
 		List catids = new ArrayList();
-		if (inCatalogids != null) {
-			for (int i = 0; i < inCatalogids.length; i++) {
+		if (inCatalogids != null)
+		{
+			for (int i = 0; i < inCatalogids.length; i++)
+			{
 				catids.add(inCatalogids[i]);
 			}
 		}
 
 		List searchers = getSearchers();
 		List targetSearchers = new ArrayList();
-		for (Iterator iterator = searchers.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = searchers.iterator(); iterator.hasNext();)
+		{
 			Searcher searcher = (Searcher) iterator.next();
-			if (catids.contains(searcher.getCatalogId())) {
+			if (catids.contains(searcher.getCatalogId()))
+			{
 				targetSearchers.add(searcher);
 			}
 		}
 		return targetSearchers;
 	}
 
-	public HitTracker search(SearchQuery inQuery) {
+	public HitTracker search(SearchQuery inQuery)
+	{
 		List catalogs = inQuery.getCatalogs();
 
 		CompositeHitTracker allHits = new CompositeHitTracker();
@@ -75,14 +87,16 @@ public abstract class CompositeSearcher extends BaseSearcher {
 
 		List searchers = getSearchers(null, ids);
 
-		for (Iterator iterator = searchers.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = searchers.iterator(); iterator.hasNext();)
+		{
 			Searcher searcher = (Searcher) iterator.next();
 			String catalogid = searcher.getCatalogId();
 
 			SearchQuery subQuery = inQuery.copy();
 			subQuery.setCatalogId(catalogid);
 			HitTracker hits = searcher.search(subQuery);
-			if (hits != null) {
+			if (hits != null)
+			{
 				allHits.addSubTracker(catalogid, hits);
 			}
 		}
@@ -90,15 +104,19 @@ public abstract class CompositeSearcher extends BaseSearcher {
 
 	}
 
-	public HitTracker cachedSearch(WebPageRequest inReq, SearchQuery inQuery) {
+	public HitTracker cachedSearch(WebPageRequest inReq, SearchQuery inQuery)
+	{
 		String applicationid = inReq.findValue("applicationid");
 		String[] catalogids = inReq.getRequestParameters("catalogid");
-		if (inQuery.getHitsName() == null) {
+		if (inQuery.getHitsName() == null)
+		{
 			String hitsname = inReq.getRequestParameter("hitsname");
-			if (hitsname == null) {
+			if (hitsname == null)
+			{
 				hitsname = inReq.findValue("hitsname");
 			}
-			if (hitsname == null) {
+			if (hitsname == null)
+			{
 				hitsname = "hits";
 			}
 			inQuery.setHitsName(hitsname);
@@ -110,21 +128,25 @@ public abstract class CompositeSearcher extends BaseSearcher {
 		List searchers = getSearchers(pref, catalogids);
 		// PageStreamer pages = inReq.getPageStreamer();
 
-		for (Iterator iterator = searchers.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = searchers.iterator(); iterator.hasNext();)
+		{
 			Searcher searcher = (Searcher) iterator.next();
 			String catid = searcher.getCatalogId();
 			inQuery.addCatalog(catid);
 		}
-		if (inReq.getUser() != null && inQuery.getCatalogs().size() == 0) {
+		if (inReq.getUser() != null && inQuery.getCatalogs().size() == 0)
+		{
 			log.info(inReq.getUserName() + " has no permissions to view any catalogs");
 		}
 		// TODO: Move to standard term area?
 		String sort = inReq.findValue("sortby");
-		if (sort != null) {
+		if (sort != null)
+		{
 			inQuery.setSortBy(sort);
 		}
 
-		for (Iterator iterator = searchers.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = searchers.iterator(); iterator.hasNext();)
+		{
 			Searcher searcher = (Searcher) iterator.next();
 			String catalogid = searcher.getCatalogId();
 
@@ -132,7 +154,8 @@ public abstract class CompositeSearcher extends BaseSearcher {
 			subQuery.setCatalogId(catalogid);
 			getUserProfileManager().loadUserProfile(inReq, catalogid, inReq.getUserName());
 			HitTracker hits = searcher.cachedSearch(inReq, subQuery);
-			if (hits != null) {
+			if (hits != null)
+			{
 				allHits.addSubTracker(catalogid, hits);
 			}
 		}
@@ -143,8 +166,10 @@ public abstract class CompositeSearcher extends BaseSearcher {
 		return allHits;
 	}
 
-	private List getSearchers(UserProfile pref, String[] catalogids) {
-		if (catalogids != null && catalogids.length > 0) {
+	private List getSearchers(UserProfile pref, String[] catalogids)
+	{
+		if (catalogids != null && catalogids.length > 0)
+		{
 			return getSearchersByCatalogIds(catalogids);
 		}
 		// else if ( pref != null && pref.getCatalogs() != null)
@@ -157,7 +182,8 @@ public abstract class CompositeSearcher extends BaseSearcher {
 		// }
 		// return getSearchersByCatalogIds(catalogids);
 		// }
-		else {
+		else
+		{
 			return getSearchers(); // Is this an OK default? Seems insecure
 		}
 

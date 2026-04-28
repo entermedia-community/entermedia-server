@@ -26,28 +26,35 @@ import org.openedit.util.PathUtilities;
 import org.openedit.util.RequestUtils;
 import org.openedit.util.ZipUtil;
 
-public class CategoryModule extends BaseMediaModule {
+public class CategoryModule extends BaseMediaModule
+{
 
 	private static final Log log = LogFactory.getLog(CategoryModule.class);
 	private RequestUtils fieldRequestUtils;
 
-	public RequestUtils getRequestUtils() {
+	public RequestUtils getRequestUtils()
+	{
 		return fieldRequestUtils;
 	}
 
-	public void setRequestUtils(RequestUtils inRequestUtils) {
+	public void setRequestUtils(RequestUtils inRequestUtils)
+	{
 		fieldRequestUtils = inRequestUtils;
 	}
 
-	public void loadTreeParameters(WebPageRequest inReq) {
+	public void loadTreeParameters(WebPageRequest inReq)
+	{
 		PropertyDetail detail = (PropertyDetail) inReq.getPageValue("detail");
-		if (detail == null) {
+		if (detail == null)
+		{
 			String detailid = inReq.findValue("detailid");
-			if (detailid != null) {
+			if (detailid != null)
+			{
 				// TODO: we'd need other info, searchtytpe etc...
 			}
 		}
-		if (detail != null) {
+		if (detail != null)
+		{
 			String field = detail.getId();
 			String searchtype = detail.getSearchType();
 			String listid = detail.getListId();
@@ -58,11 +65,15 @@ public class CategoryModule extends BaseMediaModule {
 			inReq.setRequestParameter("tree-name", treename); // works for pageValue and findValue
 			inReq.putPageValue("treename", treename);
 			inReq.putPageValue("tree-name", treename);
-			if (listid != null) {
+			if (listid != null)
+			{
 				inReq.setRequestParameter("categorysearchtype", listid); // correct
-			} else if (searchtype != null) {
-				inReq.setRequestParameter("categorysearchtype", searchtype); // fallback
 			}
+			else
+				if (searchtype != null)
+				{
+					inReq.setRequestParameter("categorysearchtype", searchtype); // fallback
+				}
 
 			inReq.setRequestParameter("detailid", field); // helpful for downstream
 		}
@@ -70,66 +81,76 @@ public class CategoryModule extends BaseMediaModule {
 	}
 
 	/**
-	 * Installs a {@link WebTree} that shows the catalog tree from a specified
-	 * root catalog on down.
+	 * Installs a {@link WebTree} that shows the catalog tree from a specified root catalog on down.
 	 * 
-	 * @param inReq
-	 *              The web page request
+	 * @param inReq The web page request
 	 */
-	public WebTree getCatalogTree(WebPageRequest inReq) throws OpenEditException {
+	public WebTree getCatalogTree(WebPageRequest inReq) throws OpenEditException
+	{
 		MediaArchive archive = getMediaArchive(inReq);
-		if (archive == null) {
+		if (archive == null)
+		{
 			return null;
 		}
 		String name = null;
-		if (inReq.getCurrentAction() != null) {
+		if (inReq.getCurrentAction() != null)
+		{
 			name = inReq.getCurrentAction().getChildValue("tree-name");
 		}
-		if (name == null) {
+		if (name == null)
+		{
 			name = (String) inReq.getPageValue("tree-name");
 		}
 
-		if (name == null) {
+		if (name == null)
+		{
 			name = inReq.findValue("tree-name");
 		}
-		if (name == null) {
+		if (name == null)
+		{
 			name = inReq.findValue("treename");
 		}
 		String appid = inReq.findValue("applicationid");
 		String root = inReq.getRequestParameter(name + "root");
 
 		String treeid = inReq.getRequestParameter("treeid");
-		if (treeid == null) {
-			treeid = name + "_" + appid + "_" + archive.getCatalogId() + "_" + inReq.getUserName()
-					+ getCategorySearcher(inReq).getIndexId();
+		if (treeid == null)
+		{
+			treeid = name + "_" + appid + "_" + archive.getCatalogId() + "_" + inReq.getUserName() + getCategorySearcher(inReq).getIndexId();
 		}
 		WebTree webTree = (WebTree) archive.getCacheManager().get("category-tree", treeid);
 
-		if (root == null) {
+		if (root == null)
+		{
 			root = inReq.findValue(name + "root");
 		}
-		if (root == null) {
+		if (root == null)
+		{
 			root = inReq.findValue("root");
 		}
 
 		CategorySearcher searcher = getCategorySearcher(inReq);
 
 		Category main = searcher.getCategory(root);
-		if (main == null) {
+		if (main == null)
+		{
 			log.error("No such category named " + root);
 			main = searcher.getRootCategory();
 		}
 
 		CategoryWebTreeModel model;
-		if (webTree != null && webTree.getModel().getRoot() == main) {
+		if (webTree != null && webTree.getModel().getRoot() == main)
+		{
 			model = (CategoryWebTreeModel) webTree.getModel();
-		} else {
+		}
+		else
+		{
 			String treeModel = inReq.findValue("treemodel");
-			if (treeModel == null) {
+			if (treeModel == null)
+			{
 				treeModel = "categoryTreeModel";
 			}
-			CategoryWebTreeModel amodel = (CategoryWebTreeModel) getModuleManager().getBean(archive.getCatalogId(),
-					treeModel, false);
+			CategoryWebTreeModel amodel = (CategoryWebTreeModel) getModuleManager().getBean(archive.getCatalogId(), treeModel, false);
 			amodel.setMediaArchive(archive);
 			amodel.setCatalogId(archive.getCatalogId());
 			amodel.setRoot(main);
@@ -141,20 +162,25 @@ public class CategoryModule extends BaseMediaModule {
 
 		String reload = inReq.getRequestParameter("reloadtree");
 
-		if (root != null && webTree != null && !root.equals(webTree.getRootId())) {
+		if (root != null && webTree != null && !root.equals(webTree.getRootId()))
+		{
 			reload = "true";
 		}
 		Object needsreload = inReq.getSessionValue("reloadcategorytree");// Some other way?
-		if (needsreload != null) {
+		if (needsreload != null)
+		{
 			webTree = null;
 			inReq.removeSessionValue("reloadcategorytree");
 		}
 
-		if (Boolean.parseBoolean(reload)) {
+		if (Boolean.parseBoolean(reload))
+		{
 			webTree = null;
 		}
-		if (webTree == null) {
-			if (name == null) {
+		if (webTree == null)
+		{
+			if (name == null)
+			{
 				return null;
 			}
 			log.debug("No Category in Session, creating new " + treeid);
@@ -164,14 +190,15 @@ public class CategoryModule extends BaseMediaModule {
 			webTree.setId(treeid);
 
 			CatalogTreeRenderer renderer = null;
-			if (oldwebTree == null) {
+			if (oldwebTree == null)
+			{
 
 				String renderebean = inReq.findPathValue("treerenderer");
-				if (renderebean == null) {
+				if (renderebean == null)
+				{
 					renderebean = "category";
 				}
-				renderer = (CatalogTreeRenderer) getModuleManager().getBean(archive.getCatalogId(),
-						renderebean + "TreeRenderer", false); // archive.getBean(renderebean + "TreeRenderer");
+				renderer = (CatalogTreeRenderer) getModuleManager().getBean(archive.getCatalogId(), renderebean + "TreeRenderer", false); // archive.getBean(renderebean + "TreeRenderer");
 				renderer.setWebTree(webTree);
 				renderer.setFoldersLinked(true);
 				String prefix = inReq.findValue("url-prefix");
@@ -180,13 +207,16 @@ public class CategoryModule extends BaseMediaModule {
 				String postfix = inReq.findValue("url-postfix");
 				renderer.setUrlPostfix(postfix);
 
-			} else {
+			}
+			else
+			{
 				renderer = (CatalogTreeRenderer) oldwebTree.getTreeRenderer();
 			}
 			webTree.setTreeRenderer(renderer);
 
 			String autoexpand = inReq.findValue("autoexpand");
-			if (autoexpand == null || Boolean.parseBoolean(autoexpand)) {
+			if (autoexpand == null || Boolean.parseBoolean(autoexpand))
+			{
 				renderer.expandNode(webTree.getModel().getRoot());
 			}
 
@@ -198,20 +228,24 @@ public class CategoryModule extends BaseMediaModule {
 			renderer.setAllowSelections(Boolean.parseBoolean(allowselections));
 
 			String editable = inReq.findValue("editabletree");
-			if (editable == null || Boolean.parseBoolean(editable)) {
+			if (editable == null || Boolean.parseBoolean(editable))
+			{
 				Boolean val = (Boolean) inReq.getPageValue("caneditcategories");
-				if (val != null) {
+				if (val != null)
+				{
 					editable = val.toString();
 				}
 			}
 			renderer.setEditable(Boolean.parseBoolean(editable));
 
 			String iconwidth = (String) inReq.getPageProperty("iconwidth"); // must be saved to page path
-			if (iconwidth != null) {
+			if (iconwidth != null)
+			{
 				renderer.setIconWidth(Integer.parseInt(iconwidth));
 			}
 			String expandparents = inReq.findValue("expandroots");
-			if (expandparents != null) {
+			if (expandparents != null)
+			{
 				expandChildren(webTree, main, Integer.parseInt(expandparents));
 			}
 			archive.getCacheManager().put("category-tree", treeid, webTree);
@@ -220,69 +254,86 @@ public class CategoryModule extends BaseMediaModule {
 			inReq.putPageValue(webTree.getName(), webTree);
 			// inRequest.putPageValue("selectednodes",
 			// webTree.getTreeRenderer().getSelectedNodes());
-		} else {
+		}
+		else
+		{
 			inReq.putPageValue(webTree.getName(), webTree);
 			// inRequest.putPageValue("selectednodes",
 			// webTree.getTreeRenderer().getSelectedNodes());
 		}
 
 		String clear = inReq.getRequestParameter("clearselection");
-		if (Boolean.parseBoolean(clear)) {
+		if (Boolean.parseBoolean(clear))
+		{
 			webTree.getTreeRenderer().selectNodes(null);
 		}
 
 		return webTree;
 	}
 
-	public CategorySearcher getCategorySearcher(WebPageRequest inReq) {
+	public CategorySearcher getCategorySearcher(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 
 		PropertyDetail detail = (PropertyDetail) inReq.getPageValue("detail");
-		if (detail != null) {
+		if (detail != null)
+		{
 			String listid = detail.getListId();
 			return (CategorySearcher) archive.getSearcher(listid);
 
 		}
 
 		String categorysearchertype = inReq.findValue("categorysearchtype");
-		if (categorysearchertype == null) {
+		if (categorysearchertype == null)
+		{
 			categorysearchertype = "category";
 		}
 		return (CategorySearcher) archive.getSearcher(categorysearchertype);
 	}
 
-	private void expandChildren(WebTree inWebTree, Category inParent, int inParseInt) {
+	private void expandChildren(WebTree inWebTree, Category inParent, int inParseInt)
+	{
 		inWebTree.getTreeRenderer().expandNode(inParent);
 		inParseInt--;
-		if (inParseInt > 0 && inParent.hasChildren()) {
-			for (Iterator iterator = inParent.getChildren().iterator(); iterator.hasNext();) {
+		if (inParseInt > 0 && inParent.hasChildren())
+		{
+			for (Iterator iterator = inParent.getChildren().iterator(); iterator.hasNext();)
+			{
 				Category child = (Category) iterator.next();
 				expandChildren(inWebTree, child, inParseInt);
 			}
 		}
 	}
 
-	public void selectNodes(WebPageRequest inReq) {
+	public void selectNodes(WebPageRequest inReq)
+	{
 		String selecting = inReq.getRequestParameter("selecting");
-		if (!Boolean.parseBoolean(selecting)) {
+		if (!Boolean.parseBoolean(selecting))
+		{
 			return;
 		}
 
 		WebTree tree = getCatalogTree(inReq);
 		// check param data
 		String cats = inReq.getRequestParameter("categories");
-		if (cats != null) {
+		if (cats != null)
+		{
 			String[] selected = cats.replace(' ', '|').split("\\|");
 			MediaArchive archive = getMediaArchive(inReq);
-			for (int i = 0; i < selected.length; i++) {
+			for (int i = 0; i < selected.length; i++)
+			{
 				Category found = getCategorySearcher(inReq).getCategory(selected[i].trim());
-				if (found != null) {
+				if (found != null)
+				{
 					tree.getTreeRenderer().selectNode(found);
 				}
 			}
-		} else {
+		}
+		else
+		{
 			String catid = inReq.getRequestParameter("nodeID");
-			if (catid != null) {
+			if (catid != null)
+			{
 				Object target = tree.getModel().getChildById(catid);
 				// tree.getTreeRenderer().expandNode(target);
 				tree.getTreeRenderer().selectNode(target);
@@ -290,23 +341,28 @@ public class CategoryModule extends BaseMediaModule {
 		}
 
 		String clear = inReq.getRequestParameter("clearselection");
-		if (Boolean.parseBoolean(clear)) {
+		if (Boolean.parseBoolean(clear))
+		{
 			tree.getTreeRenderer().selectNodes(null);
 		}
 
 	}
 
-	public void deselectNodes(WebPageRequest inReq) {
+	public void deselectNodes(WebPageRequest inReq)
+	{
 		WebTree tree = getCatalogTree(inReq);
 
 		// check param data
 		String cats = inReq.getRequestParameter("categories");
-		if (cats != null) {
+		if (cats != null)
+		{
 			String[] selected = cats.replace(' ', '|').split("\\|");
 			MediaArchive archive = getMediaArchive(inReq);
-			for (int i = 0; i < selected.length; i++) {
+			for (int i = 0; i < selected.length; i++)
+			{
 				Category found = getCategorySearcher(inReq).getCategory(selected[i].trim());
-				if (found != null) {
+				if (found != null)
+				{
 					tree.getTreeRenderer().unSelectNode(found);
 				}
 			}
@@ -314,7 +370,8 @@ public class CategoryModule extends BaseMediaModule {
 
 	}
 
-	public void expandNode(WebPageRequest inReq) {
+	public void expandNode(WebPageRequest inReq)
+	{
 		WebTree tree = getCatalogTree(inReq);
 		String catid = inReq.getRequestParameter("nodeID");
 		Object target = tree.getModel().getChildById(catid);
@@ -322,7 +379,8 @@ public class CategoryModule extends BaseMediaModule {
 
 	}
 
-	public void collapseNode(WebPageRequest inReq) {
+	public void collapseNode(WebPageRequest inReq)
+	{
 		WebTree tree = getCatalogTree(inReq);
 		String catid = inReq.getRequestParameter("nodeID");
 		Object target = tree.getModel().getChildById(catid);
@@ -330,23 +388,27 @@ public class CategoryModule extends BaseMediaModule {
 
 	}
 
-	public void reloadTree(WebPageRequest inReq) throws OpenEditException {
+	public void reloadTree(WebPageRequest inReq) throws OpenEditException
+	{
 		WebTree tree = getCatalogTree(inReq);
 		getMediaArchive(inReq).getCategoryArchive().clearCategories();
-		if (tree != null) {
+		if (tree != null)
+		{
 			inReq.removeSessionValue(tree.getId());
 		}
 		getCatalogTree(inReq);
 	}
 
-	public void exportAllAssets(WebPageRequest inReq) throws OpenEditException {
+	public void exportAllAssets(WebPageRequest inReq) throws OpenEditException
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		StringWriter assets = new StringWriter(); // TODO: This is a memory hog
 		archive.getAssetExport().exportAllAssets(archive, assets);
 
 		ZipOutputStream finalZip = new ZipOutputStream(inReq.getOutputStream());
 
-		try {
+		try
+		{
 			new ZipUtil().addTozip(assets.toString(), "assets.xml", finalZip);
 			inReq.getOutputStream().flush();
 			StringWriter catalogs = new StringWriter();
@@ -354,40 +416,50 @@ public class CategoryModule extends BaseMediaModule {
 			new ZipUtil().addTozip(catalogs.toString(), "categories.xml", finalZip);
 			finalZip.close();
 			inReq.setHasRedirected(true);
-		} catch (IOException ex) {
+		}
+		catch (IOException ex)
+		{
 			throw new OpenEditException(ex);
 		}
 	}
 
-	public void loadCrumbs(WebPageRequest inReq) throws Exception {
+	public void loadCrumbs(WebPageRequest inReq) throws Exception
+	{
 		Category category = (Category) inReq.getPageValue("category");
-		if (category == null) {
+		if (category == null)
+		{
 			Asset asset = (Asset) inReq.getPageValue("asset");
-			if (asset != null) {
+			if (asset != null)
+			{
 				category = asset.getDefaultCategory();
 			}
 		}
-		if (category != null) {
+		if (category != null)
+		{
 			String name = inReq.findValue("linktreename");
-			if (name != null) {
+			if (name != null)
+			{
 				String treename = inReq.findValue("tree-name");
 				String root = inReq.findValue(treename + "root");
 				MediaArchive archive = getMediaArchive(inReq);
 				Category toplevel = getCategorySearcher(inReq).getCategory(root);
 				LinkTree tree = (LinkTree) inReq.getPageValue(name);
-				if (tree != null) {
+				if (tree != null)
+				{
 					tree.clearCrumbs();
-					for (Iterator iterator = category.listAncestorsAndSelf(0).iterator(); iterator.hasNext();) {
+					for (Iterator iterator = category.listAncestorsAndSelf(0).iterator(); iterator.hasNext();)
+					{
 						Category parent = (Category) iterator.next();
-						if (toplevel != null) {
-							if (!toplevel.hasCatalog(parent.getId())) {
+						if (toplevel != null)
+						{
+							if (!toplevel.hasCatalog(parent.getId()))
+							{
 								continue;
 							}
 						}
 
 						// TODO: Make generic
-						tree.addCrumb(archive.getCatalogHome() + "/categories/" + parent.getId() + ".html",
-								parent.getName());
+						tree.addCrumb(archive.getCatalogHome() + "/categories/" + parent.getId() + ".html", parent.getName());
 					}
 					tree.setSelectedLink((Link) null);
 				}
@@ -396,20 +468,23 @@ public class CategoryModule extends BaseMediaModule {
 
 	}
 
-	public void downloadSelected(WebPageRequest inReq) {
+	public void downloadSelected(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String path = "/" + archive.getCatalogHome() + "/download/convert/zip/results.zip";
 		// forward to zip generator
 		inReq.redirect(path);
 	}
 
-	public void listAssetsForUploading(WebPageRequest inReq) {
+	public void listAssetsForUploading(WebPageRequest inReq)
+	{
 		Searcher searcher = getMediaArchive(inReq).getAssetSearcher();
 		SearchQuery query = searcher.createSearchQuery();
 		query.addMatches("importstatus", "uploading");
 
 		String user = inReq.getRequestParameter("user");
-		if (user != null) {
+		if (user != null)
+		{
 			query.addMatches("owner", user);
 		}
 
@@ -417,37 +492,44 @@ public class CategoryModule extends BaseMediaModule {
 		inReq.putPageValue("hits", hits);
 	}
 
-	public void loadHomeCategory(WebPageRequest inReq) {
+	public void loadHomeCategory(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String catid = "index";
 		String username = inReq.getUserName();
-		if (username != null) {
+		if (username != null)
+		{
 			catid = "users_" + username;
 		}
 		Category cat = getCategorySearcher(inReq).getCategory(catid);
 		inReq.putPageValue("category", cat);
 	}
 
-	public void removeNode(WebPageRequest inReq) {
+	public void removeNode(WebPageRequest inReq)
+	{
 		String catid = inReq.getRequestParameter("nodeID");
 		MediaArchive archive = getMediaArchive(inReq);
 		Category child = getCategorySearcher(inReq).getCategory(catid);
-		if (child != null) {
+		if (child != null)
+		{
 			getCategorySearcher(inReq).deleteCategoryTree(child);
 		}
 		inReq.setRequestParameter("reload", "true");
 	}
 
-	public void addNode(WebPageRequest inReq) {
+	public void addNode(WebPageRequest inReq)
+	{
 		String catid = inReq.getRequestParameter("nodeID");
 		MediaArchive archive = getMediaArchive(inReq);
 		Category parent = getCategorySearcher(inReq).getCategory(catid);
-		if (parent != null) {
+		if (parent != null)
+		{
 			String text = inReq.getRequestParameter("addtext");
 			Category child = (Category) getCategorySearcher(inReq).createNewData();
 			// cat.setId(id);
 			child.setName(text);
-			if (child.getId() != null && getCategorySearcher(inReq).getCategory(child.getId()) != null) {
+			if (child.getId() != null && getCategorySearcher(inReq).getCategory(child.getId()) != null)
+			{
 				// fix duplicate id
 				child.setId(catid + "-" + child.getId());
 			}
@@ -463,42 +545,52 @@ public class CategoryModule extends BaseMediaModule {
 		// }
 	}
 
-	public void loadNode(WebPageRequest inReq) {
+	public void loadNode(WebPageRequest inReq)
+	{
 		String catid = inReq.getRequestParameter("nodeID");
 		MediaArchive archive = getMediaArchive(inReq);
 		Category parent = getCategorySearcher(inReq).getCategory(catid);
 		inReq.putPageValue("node", parent);
 	}
 
-	public void saveNode(WebPageRequest inReq) {
+	public void saveNode(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String catid = null;
 		Category tosave = null;
 		String action = inReq.getRequestParameter("action");
 
-		if (action != null && action.equals("rename")) {
+		if (action != null && action.equals("rename"))
+		{
 			catid = inReq.getRequestParameter("nodeID");
 		}
 
-		if (catid != null) {
+		if (catid != null)
+		{
 			tosave = getCategorySearcher(inReq).getCategory(catid);
-		} else {
+		}
+		else
+		{
 			String parentid = inReq.getRequestParameter("parentNodeID");
-			if (parentid == null) {
+			if (parentid == null)
+			{
 				parentid = "index";
 			}
 			Category parent = getCategorySearcher(inReq).getCategory(parentid);
 			tosave = (Category) getCategorySearcher(inReq).createNewData();
 			parent.addChild(tosave);
 		}
-		if (tosave != null) {
+		if (tosave != null)
+		{
 			String text = inReq.getRequestParameter("edittext");
-			if (text != null) {
+			if (text != null)
+			{
 				text = text.trim();
 			}
 			tosave.setName(text);
 			String[] fields = inReq.getRequestParameters("field");
-			if (fields != null) {
+			if (fields != null)
+			{
 				getCategorySearcher(inReq).updateData(inReq, fields, tosave);
 			}
 			getCategorySearcher(inReq).saveCategory(tosave);
@@ -507,27 +599,34 @@ public class CategoryModule extends BaseMediaModule {
 		// getCatalogTree(inReq);
 	}
 
-	public void loadCategory(WebPageRequest inContext) throws OpenEditException {
+	public void loadCategory(WebPageRequest inContext) throws OpenEditException
+	{
 		String catalogid = inContext.findValue("categoryid");
-		if (catalogid == null) {
+		if (catalogid == null)
+		{
 			catalogid = PathUtilities.extractPageName(inContext.getPath());
 		}
-		if (catalogid != null) {
+		if (catalogid != null)
+		{
 			// load up catalog and assets
 			Category catalog = getMediaArchive(inContext).getCategory(catalogid);
-			if (catalog != null) {
+			if (catalog != null)
+			{
 				inContext.putPageValue("category", catalog);
 			}
 		}
 	}
 
-	public void loadCategoryByPath(WebPageRequest inContext) throws OpenEditException {
+	public void loadCategoryByPath(WebPageRequest inContext) throws OpenEditException
+	{
 		String categorypath = inContext.getRequestParameter("categorypath");
 
-		if (categorypath != null) {
+		if (categorypath != null)
+		{
 			// load up catalog and assets
 			Category category = getMediaArchive(inContext).getCategorySearcher().loadCategoryByPath(categorypath);
-			if (category != null) {
+			if (category != null)
+			{
 				inContext.putPageValue("category", category);
 			}
 		}
@@ -541,9 +640,11 @@ public class CategoryModule extends BaseMediaModule {
 	// reloadTree(inReq);
 	// }
 
-	public void copyCategoriesToCategory(WebPageRequest inReq) throws OpenEditException {
+	public void copyCategoriesToCategory(WebPageRequest inReq) throws OpenEditException
+	{
 		String targetcategoryid = inReq.getRequestParameter("targetcategoryid");
-		if (targetcategoryid == null) {
+		if (targetcategoryid == null)
+		{
 			return;
 		}
 

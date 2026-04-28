@@ -10,9 +10,11 @@ import org.entermediadb.asset.convert.ConvertResult;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
 
-public class ExiftoolThumbTranscoder extends BaseTranscoder {
+public class ExiftoolThumbTranscoder extends BaseTranscoder
+{
 	@Override
-	public ConvertResult convert(ConvertInstructions inStructions) {
+	public ConvertResult convert(ConvertInstructions inStructions)
+	{
 
 		ConvertResult result = new ConvertResult();
 		result.setOutput(inStructions.getOutputFile());
@@ -33,14 +35,16 @@ public class ExiftoolThumbTranscoder extends BaseTranscoder {
 		command.add("PageImage");
 		long timeout = inStructions.getConversionTimeout();
 		ExecResult done = getExec().runExec("exiftoolthumb", command, timeout);
-		if (output.length() == 0) {
+		if (output.length() == 0)
+		{
 			command = new ArrayList(base);
 			command.add("ThumbnailImage");
 			done = getExec().runExec("exiftoolthumb", command, timeout);
 		}
 		result.setOk(done.isRunOk());
 
-		if (output.length() == 0) {
+		if (output.length() == 0)
+		{
 			output.delete();
 			result.setOk(false);
 			result.setError("no embeded thumbnail found in file");

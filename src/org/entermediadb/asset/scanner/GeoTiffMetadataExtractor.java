@@ -13,29 +13,37 @@ import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
 import org.openedit.util.PathUtilities;
 
-public class GeoTiffMetadataExtractor extends MetadataExtractor {
+public class GeoTiffMetadataExtractor extends MetadataExtractor
+{
 	private static final Log log = LogFactory.getLog(GeoTiffMetadataExtractor.class);
 	protected Exec fieldExec;
 
-	public Exec getExec() {
+	public Exec getExec()
+	{
 		return fieldExec;
 	}
 
-	public void setExec(Exec fieldExec) {
+	public void setExec(Exec fieldExec)
+	{
 		this.fieldExec = fieldExec;
 	}
 
-	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset) {
-		try {
+	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset)
+	{
+		try
+		{
 			// com.google.common.hash.Hashing;
 			String catalogSettingValue = inArchive.getCatalogSettingValue("extractgeotiff");
-			if (Boolean.parseBoolean(catalogSettingValue)) {
+			if (Boolean.parseBoolean(catalogSettingValue))
+			{
 
 				String type = PathUtilities.extractPageType(inFile.getPath());
-				if (type == null || "data".equals(type.toLowerCase())) {
+				if (type == null || "data".equals(type.toLowerCase()))
+				{
 					type = inAsset.get("fileformat");
 				}
-				if (!("tiff".equalsIgnoreCase(type) || "tif".equalsIgnoreCase(type))) {
+				if (!("tiff".equalsIgnoreCase(type) || "tif".equalsIgnoreCase(type)))
+				{
 					return false;
 				}
 
@@ -61,7 +69,9 @@ public class GeoTiffMetadataExtractor extends MetadataExtractor {
 
 				return true;
 			}
-		} catch (Throwable ex) {
+		}
+		catch (Throwable ex)
+		{
 			throw new OpenEditException("Error on: " + inAsset.getSourcePath(), ex);
 		}
 

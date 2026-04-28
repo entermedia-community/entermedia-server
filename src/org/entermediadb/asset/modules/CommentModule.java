@@ -13,18 +13,22 @@ import org.openedit.WebPageRequest;
 import org.openedit.event.WebEvent;
 import org.openedit.users.User;
 
-public class CommentModule extends BaseMediaModule {
+public class CommentModule extends BaseMediaModule
+{
 	protected CommentArchive fieldCommentArchive;
 
-	public CommentArchive getCommentArchive() {
+	public CommentArchive getCommentArchive()
+	{
 		return fieldCommentArchive;
 	}
 
-	public void setCommentArchive(CommentArchive inCommentArchive) {
+	public void setCommentArchive(CommentArchive inCommentArchive)
+	{
 		fieldCommentArchive = inCommentArchive;
 	}
 
-	public void loadComments(WebPageRequest inReq) {
+	public void loadComments(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String commentPath = findSourcePath(inReq);
 
@@ -32,9 +36,11 @@ public class CommentModule extends BaseMediaModule {
 		inReq.putPageValue("comments", comments);
 	}
 
-	public void loadComments(WebPageRequest inReq, String commentPath) {
+	public void loadComments(WebPageRequest inReq, String commentPath)
+	{
 		// MediaArchive arch/ive = getMediaArchive(inReq);
-		if (!commentPath.endsWith(".xml")) {
+		if (!commentPath.endsWith(".xml"))
+		{
 			commentPath = commentPath + ".xml";
 		}
 
@@ -42,25 +48,32 @@ public class CommentModule extends BaseMediaModule {
 		inReq.putPageValue("comments", comments);
 	}
 
-	protected String findSourcePath(WebPageRequest inReq) {
+	protected String findSourcePath(WebPageRequest inReq)
+	{
 		Data data = (Data) inReq.getPageValue("asset");
-		if (data == null) {
+		if (data == null)
+		{
 			data = (Data) inReq.getPageValue("data");
 		}
 		String sourcePath = null;
-		if (data != null) {
+		if (data != null)
+		{
 			sourcePath = data.getSourcePath();
-		} else {
+		}
+		else
+		{
 			sourcePath = inReq.getRequestParameter("sourcepath");
 		}
 
 		return sourcePath;
 	}
 
-	private WebEvent createEvent(Comment inComment, String inOperation, WebPageRequest inReq) {
+	private WebEvent createEvent(Comment inComment, String inOperation, WebPageRequest inReq)
+	{
 		String catalogid = inReq.findPathValue("catalogid");
 		WebEvent event = new WebEvent();
-		if (catalogid == null) {
+		if (catalogid == null)
+		{
 			catalogid = inReq.findValue("applicationid");
 		}
 		event.setCatalogId(catalogid);
@@ -73,7 +86,8 @@ public class CommentModule extends BaseMediaModule {
 		event.setProperty("siteRoot", inReq.getSiteRoot());
 
 		// add in extra info?
-		for (Iterator iterator = inComment.keySet().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inComment.keySet().iterator(); iterator.hasNext();)
+		{
 			String key = (String) iterator.next();
 			event.setProperty(key, inComment.get(key));
 		}
@@ -86,9 +100,11 @@ public class CommentModule extends BaseMediaModule {
 		return event;
 	}
 
-	public void addComment(WebPageRequest inReq) {
+	public void addComment(WebPageRequest inReq)
+	{
 		String text = inReq.getRequestParameter("comment");
-		if (text == null || text.length() == 0) {
+		if (text == null || text.length() == 0)
+		{
 			return;
 		}
 		Comment comment = new Comment();
@@ -97,13 +113,16 @@ public class CommentModule extends BaseMediaModule {
 		comment.setDate(new Date());
 
 		String type = inReq.findValue("commenttype");
-		if (type == null) {
+		if (type == null)
+		{
 			type = ""; // should be album, asset etc..
 		}
 		Map all = inReq.getParameterMap();
-		for (Iterator iterator = all.keySet().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = all.keySet().iterator(); iterator.hasNext();)
+		{
 			String key = (String) iterator.next();
-			if (key.startsWith("commentproperty.")) {
+			if (key.startsWith("commentproperty."))
+			{
 				String value = (String) all.get(key);
 				String akey = key.substring(key.indexOf(".") + 1, key.length());
 				comment.setProperty(akey, value);
@@ -118,7 +137,8 @@ public class CommentModule extends BaseMediaModule {
 		loadComments(inReq);
 	}
 
-	public void removeComment(WebPageRequest inReq) {
+	public void removeComment(WebPageRequest inReq)
+	{
 		String sourcepath = findSourcePath(inReq);
 		String text = inReq.getRequestParameter("commenttext");
 		// This is going to be the number from Date.getTime()

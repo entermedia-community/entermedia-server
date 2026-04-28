@@ -1,21 +1,20 @@
 /*
-Copyright (c) 2004 eInnovation Inc. All rights reserved
-
-This library is free software; you can redistribute it and/or modify it under the terms
-of the GNU Lesser General Public License as published by the Free Software Foundation;
-either version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
+ * Copyright (c) 2004 eInnovation Inc. All rights reserved
+ * 
+ * This library is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation; either version
+ * 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
  */
 
 /*
  * Created on Feb 17, 2004
  *
- * Updated by: 	Todd Fisher\Christopher Burke
- * Date:		6/27/2005
- * Comments:	updated updateProject to download and save install.xml and run ANT shell script
+ * Updated by: Todd Fisher\Christopher Burke Date: 6/27/2005 Comments: updated updateProject to
+ * download and save install.xml and run ANT shell script
  */
 package org.entermediadb.modules.update;
 
@@ -74,30 +73,36 @@ import org.openedit.util.ZipUtil;
  * 
  * @author dbrown
  */
-public class UpdateModule extends BaseMediaModule {
+public class UpdateModule extends BaseMediaModule
+{
 	protected Map fieldPlugInFinders;
 	protected PostMail fieldPostMail;
 	protected ScriptManager fieldScriptManager;
 
-	public ScriptManager getScriptManager() {
-		if (fieldScriptManager == null) {
+	public ScriptManager getScriptManager()
+	{
+		if (fieldScriptManager == null)
+		{
 			fieldScriptManager = (ScriptManager) getModuleManager().getBean("scriptManager");
 		}
 		return fieldScriptManager;
 	}
 
-	public void setScriptManager(ScriptManager inScriptManager) {
+	public void setScriptManager(ScriptManager inScriptManager)
+	{
 		fieldScriptManager = inScriptManager;
 	}
 
 	private static final Log log = LogFactory.getLog(UpdateModule.class);
 	protected WindowsUtil fieldWindowsUtil;
 
-	public WindowsUtil getWindowsUtil() {
+	public WindowsUtil getWindowsUtil()
+	{
 		return fieldWindowsUtil;
 	}
 
-	public void setWindowsUtil(WindowsUtil inWindowsUtil) {
+	public void setWindowsUtil(WindowsUtil inWindowsUtil)
+	{
 		fieldWindowsUtil = inWindowsUtil;
 	}
 
@@ -125,12 +130,13 @@ public class UpdateModule extends BaseMediaModule {
 	// inReq.putPageValue("allPageValues", allModules);
 	// }
 
-	public List loadSiteList(WebPageRequest inReq) throws Exception {
+	public List loadSiteList(WebPageRequest inReq) throws Exception
+	{
 		Page sites = getPageManager().getPage("/openedit/update/sites.xml");
-		Element root = new XmlUtil().getXml(sites.getReader(),
-				sites.getCharacterEncoding());
+		Element root = new XmlUtil().getXml(sites.getReader(), sites.getCharacterEncoding());
 		List all = new ArrayList();
-		for (Iterator iter = root.elementIterator("site"); iter.hasNext();) {
+		for (Iterator iter = root.elementIterator("site"); iter.hasNext();)
+		{
 			Element child = (Element) iter.next();
 			Site site = new Site();
 			site.setId(child.attributeValue("id"));
@@ -142,10 +148,12 @@ public class UpdateModule extends BaseMediaModule {
 		List dirs = new ArrayList();
 		dirs.add("/");
 		List names = getPageManager().getChildrenNames("/");
-		for (Iterator iterator = names.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = names.iterator(); iterator.hasNext();)
+		{
 			String path = (String) iterator.next();
 			Page dir = getPageManager().getPage(path);
-			if (dir.isFolder()) {
+			if (dir.isFolder())
+			{
 				dirs.add(path);
 			}
 		}
@@ -155,17 +163,20 @@ public class UpdateModule extends BaseMediaModule {
 		return all;
 	}
 
-	public Site selectSite(WebPageRequest inReq, Data inSync) throws Exception {
+	public Site selectSite(WebPageRequest inReq, Data inSync) throws Exception
+	{
 
 		String url = inSync.get("siteurl");
-		if (url == null) {
+		if (url == null)
+		{
 			return null;
 		}
 		Site selected = new Site();
 		selected.setHref(url);
 		selected.setId(url);
 		// set password
-		if (selected != null) {
+		if (selected != null)
+		{
 			String username = inSync.get("accountname");
 			String password = getUserManager(inReq).getUser(username).getPassword();
 			selected.setUsername(username);
@@ -213,10 +224,11 @@ public class UpdateModule extends BaseMediaModule {
 	// }
 	// }
 
-	public File backUpDirectory(WebPageRequest inReq) throws Exception {
+	public File backUpDirectory(WebPageRequest inReq) throws Exception
+	{
 		Backup backup = new Backup();
-		for (Iterator iter = inReq.getCurrentAction().getConfig()
-				.getChildIterator("exclude"); iter.hasNext();) {
+		for (Iterator iter = inReq.getCurrentAction().getConfig().getChildIterator("exclude"); iter.hasNext();)
+		{
 			Configuration exclude = (Configuration) iter.next();
 			backup.addExclude(exclude.getValue());
 		}
@@ -232,7 +244,8 @@ public class UpdateModule extends BaseMediaModule {
 		return results;
 	}
 
-	public List listVersions(WebPageRequest inReq) throws Exception {
+	public List listVersions(WebPageRequest inReq) throws Exception
+	{
 		Backup backup = new Backup();
 		backup.setRoot(getRoot());
 		backup.setPageManager(getPageManager());
@@ -241,32 +254,41 @@ public class UpdateModule extends BaseMediaModule {
 		return versions;
 	}
 
-	public void restoreVersion(WebPageRequest inReq) throws Exception {
+	public void restoreVersion(WebPageRequest inReq) throws Exception
+	{
 		String name = inReq.getRequestParameter("versionid");
-		if (name != null) {
+		if (name != null)
+		{
 			// check that we are logged in
 			Backup backup = new Backup();
 			backup.setRoot(getRoot());
 			backup.setPageManager(getPageManager());
 			File version = backup.loadVersion(name);
-			if (version == null) {
+			if (version == null)
+			{
 				log.error("No such backup found " + name);
 				inReq.putPageValue("error", "No such file");
-			} else {
+			}
+			else
+			{
 				backup.restoreBackup(version);
 			}
-		} else {
+		}
+		else
+		{
 			log.error("No versionid parameter");
 		}
 
 	}
 
-	public void receivePush(WebPageRequest inReq) throws Exception {
+	public void receivePush(WebPageRequest inReq) throws Exception
+	{
 		// this is an upload then a restore
 		FileUpload command = new FileUpload();
 		command.setPageManager(getPageManager());
 		UploadRequest properties = command.parseArguments(inReq);
-		if (properties == null) {
+		if (properties == null)
+		{
 			log.error("Nothing posted");
 			return;
 		}
@@ -274,34 +296,45 @@ public class UpdateModule extends BaseMediaModule {
 		String password = inReq.getRequestParameter("password");
 
 		User admin = getUserManager(inReq).getUser(username);
-		if (!getUserManager(inReq).authenticate(admin, password)) {
+		if (!getUserManager(inReq).authenticate(admin, password))
+		{
 			throw new OpenEditException("Did not authenticate: " + username);
-		} else {
+		}
+		else
+		{
 			inReq.setUser(admin);
 		}
 		String id = (String) inReq.getRequestParameter("savedas");
-		if (id != null && id.length() > 0) {
+		if (id != null && id.length() > 0)
+		{
 			String path = "/WEB-INF/versions/" + id;
 			Page page = properties.saveFirstFileAs(path, inReq.getUser());
-			if (page.exists() && page.getContentItem().getLength() > 5000) {
+			if (page.exists() && page.getContentItem().getLength() > 5000)
+			{
 				// TODO: Make sure we can unzip it
 				// backup
 				// backUpDirectory(inReq); //Restore now keeps old copies in the
 				// WEB-INF/trash directory
 				inReq.setRequestParameter("versionid", id);
 				restoreVersion(inReq);
-			} else {
+			}
+			else
+			{
 				log.error("Page did not save " + path);
 			}
-		} else {
+		}
+		else
+		{
 			log.error("No ID found");
 		}
 	}
 
-	public void changeLayout(WebPageRequest inReq) throws Exception {
+	public void changeLayout(WebPageRequest inReq) throws Exception
+	{
 		checkLogin(inReq);
 		String zip = inReq.getRequestParameter("ziplocation");
-		if (zip == null) {
+		if (zip == null)
+		{
 			return;
 		}
 		URL url = new URL(zip);
@@ -335,25 +368,25 @@ public class UpdateModule extends BaseMediaModule {
 		// getPageManager().getPageSettingsManager().saveSetting(settings);
 		// }
 		// CHANGE LAYOUT
-		PageSettings topsettings = getPageManager().getPageSettingsManager()
-				.getPageSettings("/_site.xconf");
+		PageSettings topsettings = getPageManager().getPageSettingsManager().getPageSettings("/_site.xconf");
 
 		topsettings.setInnerLayout("/layouts/" + name + "/layout.html");
 		getPageManager().getPageSettingsManager().saveSetting(topsettings);
 		inReq.putPageValue("layoutname", name);
 
 		// reload the content page settings
-		Page content = getPageManager().getPage(
-				inReq.getContentPage().getPath(), true);
+		Page content = getPageManager().getPage(inReq.getContentPage().getPath(), true);
 		inReq.getContentPage().setPageSettings(content.getPageSettings());
 		getPageManager().clearCache();
 		// TODO: Create the directory structure for them to change stuff
 	}
 
-	public void changeTheme(WebPageRequest inReq) throws Exception {
+	public void changeTheme(WebPageRequest inReq) throws Exception
+	{
 		checkLogin(inReq);
 		String zip = inReq.getRequestParameter("ziplocation");
-		if (zip == null) {
+		if (zip == null)
+		{
 			return;
 		}
 		URL url = new URL(zip);
@@ -376,8 +409,7 @@ public class UpdateModule extends BaseMediaModule {
 		ziputil.unzip(tmp, destination);
 
 		// CHANGE LAYOUT
-		PageSettings topsettings = getPageManager().getPageSettingsManager()
-				.getPageSettings("/_site.xconf");
+		PageSettings topsettings = getPageManager().getPageSettingsManager().getPageSettings("/_site.xconf");
 		// topsettings.
 		topsettings.removeProperty("themeprefix");
 		PageProperty skin = new PageProperty("themeprefix");
@@ -399,13 +431,14 @@ public class UpdateModule extends BaseMediaModule {
 		inReq.redirect("/openedit/editors/themes/finished.html");
 	}
 
-	public void saveSync(WebPageRequest inReq) {
+	public void saveSync(WebPageRequest inReq)
+	{
 		String applicationid = inReq.getRequestParameter("applicationid");
-		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid,
-				"sync");
+		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid, "sync");
 		String syncid = inReq.getRequestParameter("syncid");
 		Data existingsync = (Data) syncSearcher.searchById(syncid);
-		if (existingsync == null) {
+		if (existingsync == null)
+		{
 			existingsync = syncSearcher.createNewData();
 		}
 		String username = inReq.getRequestParameter("accountname");
@@ -423,17 +456,17 @@ public class UpdateModule extends BaseMediaModule {
 		saveSyncEvents(inReq);
 	}
 
-	public void saveSyncEvents(WebPageRequest inReq) {
+	public void saveSyncEvents(WebPageRequest inReq)
+	{
 		String applicationid = inReq.findValue("applicationid");
-		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid,
-				"sync");
-		for (Iterator iterator = syncSearcher.getAllHits().iterator(); iterator
-				.hasNext();) {
+		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid, "sync");
+		for (Iterator iterator = syncSearcher.getAllHits().iterator(); iterator.hasNext();)
+		{
 			Data inSync = (Data) iterator.next();
-			String path = "/" + applicationid + "/events/" + inSync.get("id")
-					+ ".xconf";
+			String path = "/" + applicationid + "/events/" + inSync.get("id") + ".xconf";
 			Page page = getPageManager().getPage(path);
-			if (!page.exists()) {
+			if (!page.exists())
+			{
 				String temppath = "/WEB-INF/base/entermedia/tools/sync/template.xconf";
 				Page template = getPageManager().getPage(temppath);
 				List bar = template.getPageSettings().getFieldPathActions();
@@ -444,23 +477,24 @@ public class UpdateModule extends BaseMediaModule {
 			// PageSettings eventpage =
 			// getPageManager().getPageSettingsManager().getPageSettings(path);
 			String nameval = page.getProperty("eventname");
-			if (nameval == null || !nameval.equals(inSync.get("name"))) {
+			if (nameval == null || !nameval.equals(inSync.get("name")))
+			{
 				PageProperty nameprop = new PageProperty("eventname");
 				nameprop.setValue(inSync.get("name"));
 				page.getPageSettings().putProperty(nameprop);
 			}
 
 			String syncidval = page.getProperty("syncid");
-			if (syncidval == null || !syncidval.equals(inSync.get("syncid"))) {
+			if (syncidval == null || !syncidval.equals(inSync.get("syncid")))
+			{
 				PageProperty syncprop = new PageProperty("syncid");
 				syncprop.setValue(inSync.get("id"));
 				page.getPageSettings().putProperty(syncprop);
 			}
 
 			/*
-			 * List pathactions = eventpage.getPathActions();
-			 * if(pathactions.size() != 1) { PageAction action = new
-			 * PageAction("UpdateModule.syncToServer"); pathactions.add(action);
+			 * List pathactions = eventpage.getPathActions(); if(pathactions.size() != 1) { PageAction action =
+			 * new PageAction("UpdateModule.syncToServer"); pathactions.add(action);
 			 * eventpage.setPathActions(pathactions); }
 			 */
 			getPageManager().saveSettings(page);
@@ -468,18 +502,19 @@ public class UpdateModule extends BaseMediaModule {
 		}
 	}
 
-	public void deleteSync(WebPageRequest inReq) {
+	public void deleteSync(WebPageRequest inReq)
+	{
 		String applicationid = inReq.findValue("applicationid");
-		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid,
-				"sync");
+		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid, "sync");
 		String syncid = inReq.getRequestParameter("syncid");
-		if (syncid == null) {
+		if (syncid == null)
+		{
 			return;
 		}
 		Data sync = (Data) syncSearcher.searchById(syncid);
-		String path = "/" + applicationid + "/events/" + sync.get("id")
-				+ ".xconf";
-		if (sync != null) {
+		String path = "/" + applicationid + "/events/" + sync.get("id") + ".xconf";
+		if (sync != null)
+		{
 			syncSearcher.delete(sync, inReq.getUser());
 		}
 		// delete event
@@ -487,59 +522,65 @@ public class UpdateModule extends BaseMediaModule {
 		getPageManager().removePage(page);
 	}
 
-	public void loadSync(WebPageRequest inReq) {
+	public void loadSync(WebPageRequest inReq)
+	{
 		String applicationid = inReq.findValue("applicationid");
-		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid,
-				"sync");
+		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid, "sync");
 		String syncid = inReq.findValue("syncid");
 		Data sync = (Data) syncSearcher.searchById(syncid);
 		inReq.putPageValue("sync", sync);
 	}
 
-	public void loadSyncs(WebPageRequest inReq) {
+	public void loadSyncs(WebPageRequest inReq)
+	{
 		String applicationid = inReq.findValue("applicationid");
-		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid,
-				"sync");
+		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid, "sync");
 		HitTracker synchits = syncSearcher.getAllHits();
 		inReq.putPageValue("synclist", synchits);
 	}
 
-	protected void checkLogin(WebPageRequest inReq) throws Exception {
-		if (inReq.getUser() == null) {
+	protected void checkLogin(WebPageRequest inReq) throws Exception
+	{
+		if (inReq.getUser() == null)
+		{
 			String username = inReq.getRequestParameter("accountname");
 			String password = inReq.getRequestParameter("password");
 
 			User admin = getUserManager(inReq).getUser(username);
-			if (!getUserManager(inReq).authenticate(admin, password)) {
+			if (!getUserManager(inReq).authenticate(admin, password))
+			{
 				throw new OpenEditException("Did not authenticate: " + username);
-			} else {
+			}
+			else
+			{
 				inReq.setUser(admin);
 			}
 		}
 	}
 
 	/**
-	 * This method should be removed. The normall email error handling should
-	 * send these out
+	 * This method should be removed. The normall email error handling should send these out
 	 * 
 	 * @param message
 	 * @param inReq
 	 * @throws Exception
 	 */
 
-	public void notify(String message, WebPageRequest inReq) throws Exception {
+	public void notify(String message, WebPageRequest inReq) throws Exception
+	{
 		log.info("sending notifications: " + message);
 		TemplateWebEmail mailer = getPostMail().getTemplateWebEmail();
-		Page template = getPageManager().getPage(
-				"/openedit/update/sync/syncnotification.html");
+		Page template = getPageManager().getPage("/openedit/update/sync/syncnotification.html");
 		mailer.loadSettings(inReq.copy(template));
 		mailer.setMailTemplatePage(template);
 
 		String subject = mailer.getWebPageContext().findValue("subject");
-		if (subject == null) {
+		if (subject == null)
+		{
 			subject = "Sync notification";
 		}
-		if (!template.exists()) {
+		if (!template.exists())
+		{
 			mailer.setAlternativeMessage("Sync Report \n" + message);
 		}
 		mailer.setSubject(subject);
@@ -547,16 +588,20 @@ public class UpdateModule extends BaseMediaModule {
 		mailer.getWebPageContext().putPageValue("message", message);
 		String from = mailer.getWebPageContext().findValue("from");
 		mailer.setFrom(from);
-		if (mailer.getFrom() == null) {
+		if (mailer.getFrom() == null)
+		{
 			mailer.setFrom("support@openedit.org");
 		}
 		Group notify = getUserManager(inReq).getGroup("notify");
-		if (notify != null) {
+		if (notify != null)
+		{
 			Collection list = getUserManager(inReq).getUsersInGroup(notify);
-			for (Iterator iter = list.iterator(); iter.hasNext();) {
+			for (Iterator iter = list.iterator(); iter.hasNext();)
+			{
 				User user = (User) iter.next();
 				String email = user.getEmail();
-				if (email != null) {
+				if (email != null)
+				{
 					Recipient recipient = new Recipient();
 					recipient.setEmailAddress(email);
 					recipient.setLastName(user.getLastName());
@@ -569,22 +614,26 @@ public class UpdateModule extends BaseMediaModule {
 		}
 	}
 
-	public PostMail getPostMail() {
+	public PostMail getPostMail()
+	{
 		return fieldPostMail;
 	}
 
-	public void setPostMail(PostMail inPostMail) {
+	public void setPostMail(PostMail inPostMail)
+	{
 		fieldPostMail = inPostMail;
 	}
 
-	public void listPlugins(WebPageRequest inReq) throws Exception {
+	public void listPlugins(WebPageRequest inReq) throws Exception
+	{
 		List all = getPlugInFinder(inReq).getPlugIns();
 
 		inReq.putPageValue("sortedlist", all);
 
 		HitTracker hits = getSearcherManager().getList("system", "installedplugin");
 		Set installed = new HashSet();
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
 			Data hit = (Data) iterator.next();
 			installed.add(hit.getId());
 		}
@@ -592,9 +641,11 @@ public class UpdateModule extends BaseMediaModule {
 
 	}
 
-	public PlugIn loadPlugIn(WebPageRequest inReq) throws Exception {
+	public PlugIn loadPlugIn(WebPageRequest inReq) throws Exception
+	{
 		String pluginid = inReq.findValue("pluginid");
-		if (pluginid != null) {
+		if (pluginid != null)
+		{
 			PlugIn found = getPlugInFinder(inReq).getPlugIn(pluginid);
 			inReq.putPageValue("plugin", found);
 			return found;
@@ -602,28 +653,35 @@ public class UpdateModule extends BaseMediaModule {
 		return null;
 	}
 
-	public void createNewApp(WebPageRequest inReq) throws Exception {
+	public void createNewApp(WebPageRequest inReq) throws Exception
+	{
 		String appfolder = inReq.findValue("appfolder");
 
 		appfolder = appfolder.replace('\\', '/');
 
-		if (!appfolder.startsWith("/")) {
+		if (!appfolder.startsWith("/"))
+		{
 			appfolder = "/" + appfolder;
 		}
-		if (!appfolder.endsWith("/")) {
+		if (!appfolder.endsWith("/"))
+		{
 			appfolder = appfolder + "/";
 		}
 		String prefix = inReq.findValue("appfolderprefix");
-		if (prefix == null) {
+		if (prefix == null)
+		{
 			prefix = "";
 		}
 		Page app = getPageManager().getPage(prefix + appfolder + "_site.xconf");
 		PageProperty prop = new PageProperty("fallbackdirectory");
 
 		PlugIn plugin = loadPlugIn(inReq);
-		if (plugin != null) {
+		if (plugin != null)
+		{
 			prop.setValue(plugin.getBasePath().getPath());
-		} else {
+		}
+		else
+		{
 			prop.setValue(inReq.findValue("fallbackfolder"));
 		}
 
@@ -676,11 +734,11 @@ public class UpdateModule extends BaseMediaModule {
 	// // redirect the user to a blank page
 	// }
 
-	public void updateDistribution(WebPageRequest inReq) throws Exception {
+	public void updateDistribution(WebPageRequest inReq) throws Exception
+	{
 		checkLogin(inReq);
-		if (inReq.getSessionValue("status") != null
-				&& !Boolean.parseBoolean(inReq
-						.getRequestParameter("forceupgrade"))) {
+		if (inReq.getSessionValue("status") != null && !Boolean.parseBoolean(inReq.getRequestParameter("forceupgrade")))
+		{
 			inReq.putPageValue("error", "Upgrade already in progress");
 			return;
 		}
@@ -689,7 +747,8 @@ public class UpdateModule extends BaseMediaModule {
 
 		// *** get root path of this object
 		String root = getRoot().getAbsolutePath();
-		if (root.endsWith("/")) {
+		if (root.endsWith("/"))
+		{
 			root = root.substring(0, root.length() - 1);
 		}
 		PluginUpgrader upgrader = new PluginUpgrader();
@@ -703,28 +762,30 @@ public class UpdateModule extends BaseMediaModule {
 
 	}
 
-	public void updateProjects(WebPageRequest inReq) throws Exception {
+	public void updateProjects(WebPageRequest inReq) throws Exception
+	{
 		checkLogin(inReq);
-		if (inReq.getSessionValue("status") != null
-				&& !Boolean.parseBoolean(inReq
-						.getRequestParameter("forceupgrade"))) {
+		if (inReq.getSessionValue("status") != null && !Boolean.parseBoolean(inReq.getRequestParameter("forceupgrade")))
+		{
 			inReq.putPageValue("error", "Upgrade already in progress");
 			return;
 		}
 		Upgrader upgrader = getUpgrader(inReq);
 		String[] toupdate = inReq.getRequestParameters("toupdate");
 		// *** get root path of this object
-		if (upgrader == null
-				|| ((upgrader.isCanceled() || upgrader.isComplete()) && toupdate != null)) {
+		if (upgrader == null || ((upgrader.isCanceled() || upgrader.isComplete()) && toupdate != null))
+		{
 			String root = getRoot().getAbsolutePath();
-			if (root.endsWith("/")) {
+			if (root.endsWith("/"))
+			{
 				root = root.substring(0, root.length() - 1);
 			}
 			// loop over each project. Keep a log
 			upgrader = new Upgrader();
 			upgrader.setPlugInFinder(getPlugInFinder(inReq));
 			upgrader.setRoot(getRoot());
-			if (toupdate == null) {
+			if (toupdate == null)
+			{
 				inReq.putPageValue("error", "No upgrades specified");
 				return;
 			}
@@ -738,7 +799,8 @@ public class UpdateModule extends BaseMediaModule {
 			Searcher searcher = getSearcherManager().getSearcher("system", "installedplugin");
 			searcher.deleteAll(null);
 			List all = new ArrayList();
-			for (int i = 0; i < toupdate.length; i++) {
+			for (int i = 0; i < toupdate.length; i++)
+			{
 				Data tosave = searcher.createNewData();
 				tosave.setId(toupdate[i]);
 				tosave.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
@@ -749,46 +811,52 @@ public class UpdateModule extends BaseMediaModule {
 		}
 	}
 
-	public void cancelUpdate(WebPageRequest inReq) {
+	public void cancelUpdate(WebPageRequest inReq)
+	{
 
 		Upgrader up = getUpgrader(inReq);
-		if (up != null) {
+		if (up != null)
+		{
 			up.cancel();
 			inReq.putPageValue("upgrader", up);
 		}
 		String serverid = inReq.getRequestParameter("serverid");
-		if (serverid == null) {
+		if (serverid == null)
+		{
 			serverid = "1";
 		}
 		inReq.removeSessionValue("upgrader" + serverid);
 
 	}
 
-	private Upgrader getUpgrader(WebPageRequest inReq) {
+	private Upgrader getUpgrader(WebPageRequest inReq)
+	{
 		String serverid = inReq.getRequestParameter("serverid");
-		if (serverid == null) {
+		if (serverid == null)
+		{
 			serverid = "1";
 		}
-		Upgrader upgrader = (Upgrader) inReq.getSessionValue("upgrader"
-				+ serverid);
+		Upgrader upgrader = (Upgrader) inReq.getSessionValue("upgrader" + serverid);
 
 		return upgrader;
 	}
 
-	public PlugInFinder getPlugInFinder(WebPageRequest inReq) {
-		Searcher searcher = getSearcherManager().getSearcher("system",
-				"extensionservers");
+	public PlugInFinder getPlugInFinder(WebPageRequest inReq)
+	{
+		Searcher searcher = getSearcherManager().getSearcher("system", "extensionservers");
 		String serverid = inReq.getRequestParameter("serverid");
 		// if (serverid == null) {
 		// serverid = "1";
 		// }
-		if (serverid == null) {
+		if (serverid == null)
+		{
 			serverid = inReq.getRequestParameter("id");
 
 		}
 		PlugInFinder finder = (PlugInFinder) getPluginFinders().get(serverid);
 
-		if (finder == null) {
+		if (finder == null)
+		{
 			Data data = (Data) searcher.searchById(serverid);
 			String path = data.get("listingurl");
 			finder = (PlugInFinder) getModuleManager().getBean("plugInFinder");
@@ -800,19 +868,23 @@ public class UpdateModule extends BaseMediaModule {
 		return finder;
 	}
 
-	protected Map getPluginFinders() {
-		if (fieldPlugInFinders == null) {
+	protected Map getPluginFinders()
+	{
+		if (fieldPlugInFinders == null)
+		{
 			fieldPlugInFinders = new HashMap();
 		}
 
 		return fieldPlugInFinders;
 	}
 
-	public void upgradeFromZip(WebPageRequest inReq) {
+	public void upgradeFromZip(WebPageRequest inReq)
+	{
 		FileUpload command = new FileUpload();
 		command.setPageManager(getPageManager());
 		UploadRequest properties = command.parseArguments(inReq);
-		if (properties.getFirstItem() == null) {
+		if (properties.getFirstItem() == null)
+		{
 			return;
 		}
 		FileUploadItem item = (FileUploadItem) properties.getFirstItem();
@@ -822,7 +894,8 @@ public class UpdateModule extends BaseMediaModule {
 		Page outputfolder = getPageManager().getPage("/WEB-INF/temp/upgrade/");
 		Page inputfile = getPageManager().getPage(path);
 
-		try {
+		try
+		{
 			ZipUtil util = new ZipUtil();
 
 			File in = new File(inputfile.getContentItem().getAbsolutePath());
@@ -831,11 +904,13 @@ public class UpdateModule extends BaseMediaModule {
 			util.unzip(in, out);
 
 			Page scriptpage = getPageManager().getPage("/WEB-INF/temp/upgrade/etc/install.js");
-			if (!scriptpage.exists()) {
+			if (!scriptpage.exists())
+			{
 				scriptpage = getPageManager().getPage("/WEB-INF/temp/upgrade/etc/zipinstall.js");
 
 			}
-			if (scriptpage.exists()) {
+			if (scriptpage.exists())
+			{
 				Map variables = new HashMap();
 				variables.put("context", inReq);
 				ScriptLogger logger = new ScriptLogger();
@@ -845,18 +920,22 @@ public class UpdateModule extends BaseMediaModule {
 				getScriptManager().execScript(variables, script);
 			}
 
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new OpenEditException(e);
 		}
 
-		finally {
+		finally
+		{
 			getPageManager().removePage(outputfolder);
 			getPageManager().removePage(inputfile);
 		}
 
 	}
 
-	public void restartDocker(WebPageRequest inReq) {
+	public void restartDocker(WebPageRequest inReq)
+	{
 		Exec exec = (Exec) getModuleManager().getBean("exec");
 		ExecResult res = exec.runExec("restartdocker", null, true);
 		log.info("Restarting site: " + res.getStandardOut());

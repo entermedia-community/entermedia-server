@@ -21,7 +21,8 @@ import java.util.*;
  * </code>
  * </pre>
  */
-public class HtmlRenderer implements Renderer {
+public class HtmlRenderer implements Renderer
+{
 
     private final String softbreak;
     private final boolean escapeHtml;
@@ -47,7 +48,8 @@ public class HtmlRenderer implements Renderer {
         // they want.
         this.nodeRendererFactories.add(new HtmlNodeRendererFactory() {
             @Override
-            public NodeRenderer create(HtmlNodeRendererContext context) {
+            public NodeRenderer create(HtmlNodeRendererContext context)
+            {
                 return new CoreHtmlNodeRenderer(context);
             }
         });
@@ -58,12 +60,14 @@ public class HtmlRenderer implements Renderer {
      *
      * @return a builder
      */
-    public static Builder builder() {
+    public static Builder builder()
+    {
         return new Builder();
     }
 
     @Override
-    public void render(Node node, Appendable output) {
+    public void render(Node node, Appendable output)
+    {
         Objects.requireNonNull(node, "node must not be null");
         RendererContext context = new RendererContext(new HtmlWriter(output));
         context.beforeRoot(node);
@@ -72,7 +76,8 @@ public class HtmlRenderer implements Renderer {
     }
 
     @Override
-    public String render(Node node) {
+    public String render(Node node)
+    {
         Objects.requireNonNull(node, "node must not be null");
         StringBuilder sb = new StringBuilder();
         render(node, sb);
@@ -80,10 +85,10 @@ public class HtmlRenderer implements Renderer {
     }
 
     /**
-     * Builder for configuring an {@link HtmlRenderer}. See methods for default
-     * configuration.
+     * Builder for configuring an {@link HtmlRenderer}. See methods for default configuration.
      */
-    public static class Builder {
+    public static class Builder
+    {
 
         private String softbreak = "\n";
         private boolean escapeHtml = false;
@@ -97,14 +102,14 @@ public class HtmlRenderer implements Renderer {
         /**
          * @return the configured {@link HtmlRenderer}
          */
-        public HtmlRenderer build() {
+        public HtmlRenderer build()
+        {
             return new HtmlRenderer(this);
         }
 
         /**
-         * The HTML to use for rendering a softbreak, defaults to {@code "\n"} (meaning
-         * the rendered result doesn't have
-         * a line break).
+         * The HTML to use for rendering a softbreak, defaults to {@code "\n"} (meaning the rendered result
+         * doesn't have a line break).
          * <p>
          * Set it to {@code "<br>
          * "} (or {@code "<br />
@@ -115,37 +120,36 @@ public class HtmlRenderer implements Renderer {
          * @param softbreak HTML for softbreak
          * @return {@code this}
          */
-        public Builder softbreak(String softbreak) {
+        public Builder softbreak(String softbreak)
+        {
             this.softbreak = softbreak;
             return this;
         }
 
         /**
-         * Whether {@link HtmlInline} and {@link HtmlBlock} should be escaped, defaults
-         * to {@code false}.
+         * Whether {@link HtmlInline} and {@link HtmlBlock} should be escaped, defaults to {@code false}.
          * <p>
-         * Note that {@link HtmlInline} is only a tag itself, not the text between an
-         * opening tag and a closing tag. So
-         * markup in the text will be parsed as normal and is not affected by this
-         * option.
+         * Note that {@link HtmlInline} is only a tag itself, not the text between an opening tag and a
+         * closing tag. So markup in the text will be parsed as normal and is not affected by this option.
          *
          * @param escapeHtml true for escaping, false for preserving raw HTML
          * @return {@code this}
          */
-        public Builder escapeHtml(boolean escapeHtml) {
+        public Builder escapeHtml(boolean escapeHtml)
+        {
             this.escapeHtml = escapeHtml;
             return this;
         }
 
         /**
-         * Whether {@link Image} src and {@link Link} href should be sanitized, defaults
-         * to {@code false}.
+         * Whether {@link Image} src and {@link Link} href should be sanitized, defaults to {@code false}.
          *
          * @param sanitizeUrls true for sanitization, false for preserving raw attribute
          * @return {@code this}
          * @since 0.14.0
          */
-        public Builder sanitizeUrls(boolean sanitizeUrls) {
+        public Builder sanitizeUrls(boolean sanitizeUrls)
+        {
             this.sanitizeUrls = sanitizeUrls;
             return this;
         }
@@ -153,26 +157,24 @@ public class HtmlRenderer implements Renderer {
         /**
          * {@link UrlSanitizer} used to filter URL's if {@link #sanitizeUrls} is true.
          *
-         * @param urlSanitizer Filterer used to filter {@link Image} src and
-         *                     {@link Link}.
+         * @param urlSanitizer Filterer used to filter {@link Image} src and {@link Link}.
          * @return {@code this}
          * @since 0.14.0
          */
-        public Builder urlSanitizer(UrlSanitizer urlSanitizer) {
+        public Builder urlSanitizer(UrlSanitizer urlSanitizer)
+        {
             this.urlSanitizer = urlSanitizer;
             return this;
         }
 
         /**
-         * Whether URLs of link or images should be percent-encoded, defaults to
-         * {@code false}.
+         * Whether URLs of link or images should be percent-encoded, defaults to {@code false}.
          * <p>
          * If enabled, the following is done:
          * <ul>
-         * <li>Existing percent-encoded parts are preserved (e.g. "%20" is kept as
-         * "%20")</li>
-         * <li>Reserved characters such as "/" are preserved, except for "[" and "]"
-         * (see encodeURI in JS)</li>
+         * <li>Existing percent-encoded parts are preserved (e.g. "%20" is kept as "%20")</li>
+         * <li>Reserved characters such as "/" are preserved, except for "[" and "]" (see encodeURI in
+         * JS)</li>
          * <li>Unreserved characters such as "a" are preserved</li>
          * <li>Other characters such umlauts are percent-encoded</li>
          * </ul>
@@ -180,54 +182,53 @@ public class HtmlRenderer implements Renderer {
          * @param percentEncodeUrls true to percent-encode, false for leaving as-is
          * @return {@code this}
          */
-        public Builder percentEncodeUrls(boolean percentEncodeUrls) {
+        public Builder percentEncodeUrls(boolean percentEncodeUrls)
+        {
             this.percentEncodeUrls = percentEncodeUrls;
             return this;
         }
 
         /**
-         * Whether documents that only contain a single paragraph should be rendered
-         * without the {@code 
+         * Whether documents that only contain a single paragraph should be rendered without the {@code 
          * 
         <p>
-         * } tag. Set to
-         * {@code true} to render without the tag; the default of {@code false} always
-         * renders the tag.
+         * } tag. Set to {@code true} to render without the tag; the default of {@code false} always renders
+         * the tag.
          *
          * @return {@code this}
          */
-        public Builder omitSingleParagraphP(boolean omitSingleParagraphP) {
+        public Builder omitSingleParagraphP(boolean omitSingleParagraphP)
+        {
             this.omitSingleParagraphP = omitSingleParagraphP;
             return this;
         }
 
         /**
-         * Add a factory for an attribute provider for adding/changing HTML attributes
-         * to the rendered tags.
+         * Add a factory for an attribute provider for adding/changing HTML attributes to the rendered tags.
          *
          * @param attributeProviderFactory the attribute provider factory to add
          * @return {@code this}
          */
-        public Builder attributeProviderFactory(AttributeProviderFactory attributeProviderFactory) {
+        public Builder attributeProviderFactory(AttributeProviderFactory attributeProviderFactory)
+        {
             Objects.requireNonNull(attributeProviderFactory, "attributeProviderFactory must not be null");
             this.attributeProviderFactories.add(attributeProviderFactory);
             return this;
         }
 
         /**
-         * Add a factory for instantiating a node renderer (done when rendering). This
-         * allows to override the rendering
-         * of node types or define rendering for custom node types.
+         * Add a factory for instantiating a node renderer (done when rendering). This allows to override
+         * the rendering of node types or define rendering for custom node types.
          * <p>
-         * If multiple node renderers for the same node type are created, the one from
-         * the factory that was added first
-         * "wins". (This is how the rendering for core node types can be overridden; the
-         * default rendering comes last.)
+         * If multiple node renderers for the same node type are created, the one from the factory that was
+         * added first "wins". (This is how the rendering for core node types can be overridden; the default
+         * rendering comes last.)
          *
          * @param nodeRendererFactory the factory for creating a node renderer
          * @return {@code this}
          */
-        public Builder nodeRendererFactory(HtmlNodeRendererFactory nodeRendererFactory) {
+        public Builder nodeRendererFactory(HtmlNodeRendererFactory nodeRendererFactory)
+        {
             Objects.requireNonNull(nodeRendererFactory, "nodeRendererFactory must not be null");
             this.nodeRendererFactories.add(nodeRendererFactory);
             return this;
@@ -237,10 +238,13 @@ public class HtmlRenderer implements Renderer {
          * @param extensions extensions to use on this HTML renderer
          * @return {@code this}
          */
-        public Builder extensions(Iterable<? extends Extension> extensions) {
+        public Builder extensions(Iterable<? extends Extension> extensions)
+        {
             Objects.requireNonNull(extensions, "extensions must not be null");
-            for (Extension extension : extensions) {
-                if (extension instanceof HtmlRendererExtension) {
+            for (Extension extension : extensions)
+            {
+                if (extension instanceof HtmlRendererExtension)
+                {
                     HtmlRendererExtension htmlRendererExtension = (HtmlRendererExtension) extension;
                     htmlRendererExtension.extend(this);
                 }
@@ -252,11 +256,13 @@ public class HtmlRenderer implements Renderer {
     /**
      * Extension for {@link HtmlRenderer}.
      */
-    public interface HtmlRendererExtension extends Extension {
+    public interface HtmlRendererExtension extends Extension
+    {
         void extend(Builder rendererBuilder);
     }
 
-    private class RendererContext implements HtmlNodeRendererContext, AttributeProviderContext {
+    private class RendererContext implements HtmlNodeRendererContext, AttributeProviderContext
+    {
 
         private final HtmlWriter htmlWriter;
         private final List<AttributeProvider> attributeProviders;
@@ -266,77 +272,95 @@ public class HtmlRenderer implements Renderer {
             this.htmlWriter = htmlWriter;
 
             attributeProviders = new ArrayList<>(attributeProviderFactories.size());
-            for (var attributeProviderFactory : attributeProviderFactories) {
+            for (var attributeProviderFactory : attributeProviderFactories)
+            {
                 attributeProviders.add(attributeProviderFactory.create(this));
             }
 
-            for (var factory : nodeRendererFactories) {
+            for (var factory : nodeRendererFactories)
+            {
                 var renderer = factory.create(this);
                 nodeRendererMap.add(renderer);
             }
         }
 
         @Override
-        public boolean shouldEscapeHtml() {
+        public boolean shouldEscapeHtml()
+        {
             return escapeHtml;
         }
 
         @Override
-        public boolean shouldOmitSingleParagraphP() {
+        public boolean shouldOmitSingleParagraphP()
+        {
             return omitSingleParagraphP;
         }
 
         @Override
-        public boolean shouldSanitizeUrls() {
+        public boolean shouldSanitizeUrls()
+        {
             return sanitizeUrls;
         }
 
         @Override
-        public UrlSanitizer urlSanitizer() {
+        public UrlSanitizer urlSanitizer()
+        {
             return urlSanitizer;
         }
 
         @Override
-        public String encodeUrl(String url) {
-            if (percentEncodeUrls) {
+        public String encodeUrl(String url)
+        {
+            if (percentEncodeUrls)
+            {
                 return Escaping.percentEncodeUrl(url);
-            } else {
+            }
+            else
+            {
                 return url;
             }
         }
 
         @Override
-        public Map<String, String> extendAttributes(Node node, String tagName, Map<String, String> attributes) {
+        public Map<String, String> extendAttributes(Node node, String tagName, Map<String, String> attributes)
+        {
             Map<String, String> attrs = new LinkedHashMap<>(attributes);
             setCustomAttributes(node, tagName, attrs);
             return attrs;
         }
 
         @Override
-        public HtmlWriter getWriter() {
+        public HtmlWriter getWriter()
+        {
             return htmlWriter;
         }
 
         @Override
-        public String getSoftbreak() {
+        public String getSoftbreak()
+        {
             return softbreak;
         }
 
         @Override
-        public void render(Node node) {
+        public void render(Node node)
+        {
             nodeRendererMap.render(node);
         }
 
-        public void beforeRoot(Node node) {
+        public void beforeRoot(Node node)
+        {
             nodeRendererMap.beforeRoot(node);
         }
 
-        public void afterRoot(Node node) {
+        public void afterRoot(Node node)
+        {
             nodeRendererMap.afterRoot(node);
         }
 
-        private void setCustomAttributes(Node node, String tagName, Map<String, String> attrs) {
-            for (AttributeProvider attributeProvider : attributeProviders) {
+        private void setCustomAttributes(Node node, String tagName, Map<String, String> attrs)
+        {
+            for (AttributeProvider attributeProvider : attributeProviders)
+            {
                 attributeProvider.setAttributes(node, tagName, attrs);
             }
         }

@@ -17,17 +17,21 @@ import org.openedit.data.ViewFieldList;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
 
-public class BaseExporter {
+public class BaseExporter
+{
 	private static final Log log = LogFactory.getLog(BaseExporter.class);
 
-	public void exportHits(WebPageRequest inReq) throws Exception {
+	public void exportHits(WebPageRequest inReq) throws Exception
+	{
 		String name = inReq.findActionValue("hitsname");
 		HitTracker hits = (HitTracker) inReq.getPageValue(name);
-		if (hits == null) {
+		if (hits == null)
+		{
 			// log.error("No such hits: " + name);
 			String sessionid = inReq.getRequestParameter("hitssessionid");
 			hits = (HitTracker) inReq.getSessionValue(sessionid);
-			if (hits == null) {
+			if (hits == null)
+			{
 				log.error("Export failed, no such hits nor sessions: " + sessionid);
 				return;
 			}
@@ -39,7 +43,8 @@ public class BaseExporter {
 			// return;
 			// }
 			String exportselection = inReq.findValue("exportselection");
-			if ("true".equals(exportselection)) {
+			if ("true".equals(exportselection))
+			{
 				hits = hits.getSelectedHitracker();
 			}
 
@@ -53,29 +58,36 @@ public class BaseExporter {
 		String isfriendly = inReq.getRequestParameter("friendly");
 		boolean friendly = Boolean.parseBoolean(isfriendly);
 
-		if (friendly) {
+		if (friendly)
+		{
 			String view = inReq.findValue("view");
-			if (view != null) {
+			if (view != null)
+			{
 				// details = searcher.getPropertyDetails();
-				ViewFieldList viewlist = searcher.getDetailsForView(searchtype + "resultstable",
-						inReq.getUserProfile());
-				if (viewlist == null) {
+				ViewFieldList viewlist = searcher.getDetailsForView(searchtype + "resultstable", inReq.getUserProfile());
+				if (viewlist == null)
+				{
 					searcher.getDetailsForView("resultstable", inReq.getUserProfile());
 				}
-				if (!viewlist.isEmpty()) {
-					for (Iterator iterator = viewlist.iterator(); iterator.hasNext();) {
+				if (!viewlist.isEmpty())
+				{
+					for (Iterator iterator = viewlist.iterator(); iterator.hasNext();)
+					{
 						PropertyDetail viewdetail = (PropertyDetail) iterator.next();
 						details.add(viewdetail);
 
 					}
 				}
 			}
-		} else {
+		}
+		else
+		{
 			// if not friendly export all fields
 			details = searcher.getPropertyDetails();
 		}
 
-		if (details == null) {
+		if (details == null)
+		{
 			log.error("No details to export");
 			return;
 		}
@@ -91,19 +103,27 @@ public class BaseExporter {
 		CSVWriter writer = new CSVWriter(output);
 
 		String[] headers = new String[details.size() + langcount];
-		for (Iterator iterator = details.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = details.iterator(); iterator.hasNext();)
+		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
-			if (detail.isMultiLanguage()) {
-				for (Iterator iterator2 = languages.iterator(); iterator2.hasNext();) {
+			if (detail.isMultiLanguage())
+			{
+				for (Iterator iterator2 = languages.iterator(); iterator2.hasNext();)
+				{
 					Data lang = (Data) iterator2.next();
 					String id = lang.getId();
 					headers[count] = detail.getId() + "." + id;
 					count++;
 				}
-			} else {
-				if (friendly) {
+			}
+			else
+			{
+				if (friendly)
+				{
 					headers[count] = detail.getText(inReq);
-				} else {
+				}
+				else
+				{
 					headers[count] = detail.getId();
 				}
 				count++;
@@ -114,16 +134,20 @@ public class BaseExporter {
 		writer.writeNext(headers);
 		log.info("Exporting: " + hits.size() + " records from: " + searchtype);
 
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
 			rowcount++;
 			MultiValued hit = null;
-			try {
+			try
+			{
 				hit = (MultiValued) iterator.next();
 				String[] nextrow = new String[details.size() + langcount];// make an extra spot for c
 				int fieldcount = 0;
-				for (Iterator detailiter = details.iterator(); detailiter.hasNext();) {
+				for (Iterator detailiter = details.iterator(); detailiter.hasNext();)
+				{
 					PropertyDetail detail = (PropertyDetail) detailiter.next();
-					if (detail.getBoolean("skipexport")) {
+					if (detail.getBoolean("skipexport"))
+					{
 						fieldcount++;
 						continue;
 					}
@@ -140,36 +164,49 @@ public class BaseExporter {
 					// }
 					// }
 
-					if (detail.isMultiLanguage()) {
+					if (detail.isMultiLanguage())
+					{
 						Object vals = hit.getValue(detail.getId());
-						if (vals != null && vals instanceof LanguageMap) {
-							for (Iterator iterator2 = languages.iterator(); iterator2.hasNext();) {
+						if (vals != null && vals instanceof LanguageMap)
+						{
+							for (Iterator iterator2 = languages.iterator(); iterator2.hasNext();)
+							{
 								Data lang = (Data) iterator2.next();
 								String label = (String) ((LanguageMap) vals).getText(lang.getId());
 								nextrow[fieldcount] = label;
 								fieldcount++;
 							}
-						} else {
+						}
+						else
+						{
 							nextrow[fieldcount] = hit.get(detail.getId());
 							fieldcount = fieldcount + languages.size();
 						}
-					} else {
+					}
+					else
+					{
 						Object value = null;
 						// do special logic here
-						if (detail.isList() && friendly) {
+						if (detail.isList() && friendly)
+						{
 							// detail.get
 							String val = hit.get(detail.getId());
 							Data remote = searcherManager.getData(detail.getListCatalogId(), detail.getListId(), val);
-							if (remote != null) {
+							if (remote != null)
+							{
 								value = remote.getName();
 							}
 						}
-						if (value == null && detail.get("rendermask") != null) {
+						if (value == null && detail.get("rendermask") != null)
+						{
 							value = searcherManager.getValue(hit, detail, inReq.getLocale());
-						} else {
+						}
+						else
+						{
 							value = hit.get(detail.getId());
 						}
-						if (value == null) {
+						if (value == null)
+						{
 							value = "";
 						}
 						nextrow[fieldcount] = value.toString();
@@ -177,7 +214,9 @@ public class BaseExporter {
 					}
 				}
 				writer.writeNext(nextrow);
-			} catch (Throwable ex) {
+			}
+			catch (Throwable ex)
+			{
 				log.error("Could not process row " + rowcount, ex);
 				writer.flush();
 				output.write("Could not process row " + rowcount + " " + ex);

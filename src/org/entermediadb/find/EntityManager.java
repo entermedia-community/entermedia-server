@@ -46,67 +46,79 @@ import org.openedit.util.DateStorageUtil;
 import org.openedit.util.JSONParser;
 import org.openedit.util.PathUtilities;
 
-public class EntityManager implements CatalogEnabled {
+public class EntityManager implements CatalogEnabled
+{
 	private static final Log log = LogFactory.getLog(EntityManager.class);
 	protected String fieldCatalogId;
 	protected ModuleManager fieldModuleManager;
 	protected CacheManager fieldCacheManager;
 
-	public CacheManager getCacheManager() {
+	public CacheManager getCacheManager()
+	{
 		return fieldCacheManager;
 	}
 
-	public void setCacheManager(CacheManager inCacheManager) {
+	public void setCacheManager(CacheManager inCacheManager)
+	{
 		fieldCacheManager = inCacheManager;
 	}
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
-	public String getCatalogId() {
+	public String getCatalogId()
+	{
 		return fieldCatalogId;
 	}
 
-	public void setCatalogId(String inCatalogId) {
+	public void setCatalogId(String inCatalogId)
+	{
 		fieldCatalogId = inCatalogId;
 	}
 
-	public Collection loadCategories(String inModule, Data entity, User inUser) {
+	public Collection loadCategories(String inModule, Data entity, User inUser)
+	{
 		Data module = getMediaArchive().getCachedData("module", inModule);
 		Collection categories = loadCategories(module, entity, inUser);
 		return categories;
 	}
 
-	public Collection loadCategories(Data inModule, Data entity, User inUser) {
+	public Collection loadCategories(Data inModule, Data entity, User inUser)
+	{
 		String inEntityType = inModule.getId();
 
-		Collection categories = (Collection) getCacheManager().get("searchercategory",
-				inEntityType + "/ " + entity.getId());
-		if (categories == null) {
+		Collection categories = (Collection) getCacheManager().get("searchercategory", inEntityType + "/ " + entity.getId());
+		if (categories == null)
+		{
 			loadDefaultFolder(inModule, entity, inUser);
-			categories = getMediaArchive().query("category").exact(inEntityType, entity.getId()).sort("categorypath")
-					.search();
+			categories = getMediaArchive().query("category").exact(inEntityType, entity.getId()).sort("categorypath").search();
 			getCacheManager().put("searchercategory", inEntityType + "/" + entity.getId(), categories);
 
 		}
 		return categories;
 	}
 
-	protected MediaArchive getMediaArchive() {
+	protected MediaArchive getMediaArchive()
+	{
 		return (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive", true);
 	}
 
-	public Category loadDefaultFolderForModule(Data module, User inUser) {
-		if (module == null) {
+	public Category loadDefaultFolderForModule(Data module, User inUser)
+	{
+		if (module == null)
+		{
 			return null;
 		}
 		String mask = (String) module.getValue("autocreatestartingpath");
-		if (mask == null) {
+		if (mask == null)
+		{
 			mask = module.getName();
 		}
 		Category cat = getMediaArchive().getCategorySearcher().createCategoryPath(mask);
@@ -114,56 +126,69 @@ public class EntityManager implements CatalogEnabled {
 
 	}
 
-	public Category createDefaultFolder(Data entity, User inUser) {
-		if (entity == null) {
+	public Category createDefaultFolder(Data entity, User inUser)
+	{
+		if (entity == null)
+		{
 			return null;
 		}
 		String type = entity.get("entitysourcetype");
 		Data module = getMediaArchive().getCachedData("module", type);
-		if (module == null) {
+		if (module == null)
+		{
 			return null;
 		}
 		Category cat = loadDefaultFolder(module, entity, inUser, true);
 		return cat;
 	}
 
-	public Category loadDefaultFolder(Data entity, User inUser) {
-		if (entity == null) {
+	public Category loadDefaultFolder(Data entity, User inUser)
+	{
+		if (entity == null)
+		{
 			return null;
 		}
 		String type = entity.get("entitysourcetype");
 		Data module = getMediaArchive().getCachedData("module", type);
-		if (module == null) {
+		if (module == null)
+		{
 			return null;
 		}
 		Category cat = loadDefaultFolder(module, entity, inUser);
 		return cat;
 	}
 
-	public Category loadDefaultFolder(Data module, Data entity, User inUser) {
-		if (module == null || entity == null || entity.getId() == null) {
+	public Category loadDefaultFolder(Data module, Data entity, User inUser)
+	{
+		if (module == null || entity == null || entity.getId() == null)
+		{
 			return null;
 		}
 
-		if (entity.getId().startsWith("multiedit:")) {
+		if (entity.getId().startsWith("multiedit:"))
+		{
 			return null;
 		}
 
 		boolean createcat = true;
 
 		Object val = module.getValue("enableuploading");
-		if (val == null || !Boolean.parseBoolean(val.toString())) {
+		if (val == null || !Boolean.parseBoolean(val.toString()))
+		{
 			createcat = false;
 		}
-		synchronized (entity) {
+		synchronized (entity)
+		{
 			Category cat = loadDefaultFolder(module, entity, inUser, createcat);
 			return cat;
 		}
 
 	}
 
-	public Category loadDefaultFolder(Data module, Data entity, User inUser, boolean create) {
-		if (entity == null || module == null) {
+	public Category loadDefaultFolder(Data module, Data entity, User inUser, boolean create)
+	{
+		if (entity == null || module == null)
+		{
 			return null;
 		}
 		// Should we track changing paths? Should we move to using sourcepath as the
@@ -171,7 +196,8 @@ public class EntityManager implements CatalogEnabled {
 		Category cat = null;
 		// entity.setValue("sourcepath", null); //Dynamic
 		String entitysourcepath = loadUploadSourcepath(module, entity, inUser, true);
-		if (entitysourcepath == null) {
+		if (entitysourcepath == null)
+		{
 			// throw new OpenEditException("Uploadsource empty " + entity.getId());
 			return null;
 
@@ -179,32 +205,38 @@ public class EntityManager implements CatalogEnabled {
 		// entity.setValue("sourcepath", entitysourcepath);
 
 		String categoryid = entity.get("rootcategory");
-		if (categoryid != null) {
+		if (categoryid != null)
+		{
 			cat = getMediaArchive().getCategory(categoryid);
-			if (cat != null) {
+			if (cat != null)
+			{
 				// TODO change the entire Category. Assets will have the old categoryid in
 				// them...
 
 				// if( entity.getName() == null || !entity.getName().equals(cat.getName()))
-				if (!entitysourcepath.equals(cat.getCategoryPath())) {
+				if (!entitysourcepath.equals(cat.getCategoryPath()))
+				{
 					// TODO: move entire category to new
 					String parent = PathUtilities.extractDirectoryPath(entity.getSourcePath());
 					Category parentCat = getMediaArchive().getCategorySearcher().createCategoryPath(parent);
 					Category existing = parentCat.getChildByName(entity.getName());
 
 					/**
-					 * This is delicate. Category was reloaded from the DB when we called
-					 * getChildBYName
-					 * So we need to set the name afterwards
+					 * This is delicate. Category was reloaded from the DB when we called getChildBYName So we need to
+					 * set the name afterwards
 					 */
 					cat.setName(entity.getName());
 					log.info("Category should be moved " + cat.getCategoryPath() + " -> " + entitysourcepath);
 
-					if (existing != null) {
+					if (existing != null)
+					{
 						// Check for assets?
-						if (cat.getId().equals(existing.getId())) {
+						if (cat.getId().equals(existing.getId()))
+						{
 							existing = null;
-						} else {
+						}
+						else
+						{
 							existing.setName(entity.getName() + " (old)"); // To manually merge together
 							existing.setValue("categorypath", null); // clear it
 						}
@@ -212,38 +244,41 @@ public class EntityManager implements CatalogEnabled {
 					cat.setValue("categorypath", null); // clear it
 					parentCat.addChild(cat);
 					// TODO: How can I move all the old content over?
-					if (existing != null) {
+					if (existing != null)
+					{
 						mergeCategoryTo(existing, cat);
 						getMediaArchive().getCategorySearcher().delete(existing, null);
 					}
 					getMediaArchive().getCategorySearcher().saveCategoryTree(cat);
 					/*
-					 * if (!cat.getCategoryPath().equals(entitysourcepath))
-					 * {
-					 * entity.setValue("sourcepath", cat.getCategoryPath());
-					 * getMediaArchive().saveData(module.getId(), entity);
-					 * }
+					 * if (!cat.getCategoryPath().equals(entitysourcepath)) { entity.setValue("sourcepath",
+					 * cat.getCategoryPath()); getMediaArchive().saveData(module.getId(), entity); }
 					 */
 
 				}
 			}
 		}
 
-		if (cat == null) {
+		if (cat == null)
+		{
 
 			cat = getMediaArchive().getCategorySearcher().createCategoryPath(entitysourcepath);
-			if (cat != null) {
+			if (cat != null)
+			{
 				boolean saveit = false;
 				String existing = entity.get("rootcategory");
-				if (!cat.getId().equals(existing)) {
+				if (!cat.getId().equals(existing))
+				{
 					saveit = true;
 				}
 				entity.setValue("rootcategory", cat.getId());
-				if (entity.getValue("sourcepath") == null || !entitysourcepath.equals(entity.getValue("sourcepath"))) {
+				if (entity.getValue("sourcepath") == null || !entitysourcepath.equals(entity.getValue("sourcepath")))
+				{
 					entity.setValue("sourcepath", entitysourcepath);
 					saveit = true;
 				}
-				if (saveit) {
+				if (saveit)
+				{
 					getMediaArchive().saveData(module.getId(), entity);
 				}
 			}
@@ -258,10 +293,12 @@ public class EntityManager implements CatalogEnabled {
 		return cat;
 	}
 
-	protected void mergeCategoryTo(Category inExisting, Category inGoodChild) {
+	protected void mergeCategoryTo(Category inExisting, Category inGoodChild)
+	{
 		HitTracker tracker = getMediaArchive().query("asset").exact("category-exact", inExisting.getId()).search();
 		Collection tosave = new ArrayList();
-		for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();) {
+		for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+		{
 			Data hit = (Data) iterator2.next();
 			Asset asset = (Asset) getMediaArchive().getAssetSearcher().loadData(hit);
 			asset.removeCategory(inExisting);
@@ -271,24 +308,29 @@ public class EntityManager implements CatalogEnabled {
 		// getMediaArchive().saveData("asset", tosave);
 		// Reindexing
 		tracker = getMediaArchive().query("asset").exact("category-exact", inGoodChild.getId()).search();
-		for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();) {
+		for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+		{
 			Data hit = (Data) iterator2.next();
 			Asset asset = (Asset) getMediaArchive().getAssetSearcher().loadData(hit);
 			tosave.add(asset);
 		}
 		getMediaArchive().saveData("asset", tosave);
-		if (inExisting.hasChildren()) {
+		if (inExisting.hasChildren())
+		{
 
-			for (Iterator iterator = new ArrayList(inExisting.getChildren()).iterator(); iterator.hasNext();) {
+			for (Iterator iterator = new ArrayList(inExisting.getChildren()).iterator(); iterator.hasNext();)
+			{
 				Category oldchild = (Category) iterator.next();
 				Category newchild = inGoodChild.getChildByName(oldchild.getName());
-				if (newchild == null) {
+				if (newchild == null)
+				{
 					oldchild.setValue("categorypath", null); // clear it
 					inGoodChild.addChild(oldchild);
 					// Reindex
 					tracker = getMediaArchive().query("asset").exact("category-exact", oldchild.getId()).search();
 					tosave = new ArrayList();
-					for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();) {
+					for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+					{
 						Data hit = (Data) iterator2.next();
 						Asset asset = (Asset) getMediaArchive().getAssetSearcher().loadData(hit);
 						asset.removeCategory(oldchild);
@@ -296,7 +338,9 @@ public class EntityManager implements CatalogEnabled {
 						tosave.add(asset);
 					}
 					getMediaArchive().saveData("asset", tosave);
-				} else {
+				}
+				else
+				{
 					// Move the assets
 					mergeCategoryTo(oldchild, newchild);
 					getMediaArchive().getCategorySearcher().delete(oldchild, null);
@@ -305,18 +349,23 @@ public class EntityManager implements CatalogEnabled {
 		}
 	}
 
-	public String loadUploadSourcepath(Data module, Data entity, User inUser, boolean inCreate) {
+	public String loadUploadSourcepath(Data module, Data entity, User inUser, boolean inCreate)
+	{
 		return loadUploadSourcepath(module, entity, inUser);
 	}
 
-	public String loadUploadSourcepath(Data module, Data entity, User inUser) {
-		if (entity == null || module == null) {
+	public String loadUploadSourcepath(Data module, Data entity, User inUser)
+	{
+		if (entity == null || module == null)
+		{
 			return null;
 		}
 		String sourcepath = entity.get("sourcepath"); // Dynamic current sourcepath
 		String archivesourcepath = entity.get("archivesourcepath"); // Dynamic current sourcepath
-		if (archivesourcepath != null) {
-			if (!archivesourcepath.equals(sourcepath)) {
+		if (archivesourcepath != null)
+		{
+			if (!archivesourcepath.equals(sourcepath))
+			{
 				entity.setValue("sourcepath", archivesourcepath);
 				// entity.setValue("rootcategory",null);
 				getMediaArchive().saveData(module.getId(), entity);
@@ -331,13 +380,13 @@ public class EntityManager implements CatalogEnabled {
 
 		String mask = (String) module.getValue("uploadsourcepath"); // Custom one that is saved forever
 
-		if (mask != null) {
+		if (mask != null)
+		{
 			Map values = new HashedMap();
 
 			values.put("module", module);
 
-			DataWithSearcher smartdata = new DataWithSearcher(getMediaArchive().getSearcherManager(), getCatalogId(),
-					module.getId(), entity);
+			DataWithSearcher smartdata = new DataWithSearcher(getMediaArchive().getSearcherManager(), getCatalogId(), module.getId(), entity);
 			values.put(module.getId(), smartdata);
 			values.put("data", smartdata);
 
@@ -345,40 +394,47 @@ public class EntityManager implements CatalogEnabled {
 																										// locale?
 			sourcepath = sourcepath.replace("//", "/");
 
-		} else {
-			if (entity.getName("en") != null) {
+		}
+		else
+		{
+			if (entity.getName("en") != null)
+			{
 				sourcepath = module.getName("en") + "/" + entity.getName("en");
 			}
 		}
 
-		if (sourcepath != null && !sourcepath.isEmpty() && !sourcepath.equals(entity.get("sourcepath"))) {
-			if (!sourcepath.contains("/")) {
+		if (sourcepath != null && !sourcepath.isEmpty() && !sourcepath.equals(entity.get("sourcepath")))
+		{
+			if (!sourcepath.contains("/"))
+			{
 				throw new OpenEditException("Must contain 1 folder deep");
 			}
 			entity.setValue("sourcepath", sourcepath);
 			getMediaArchive().saveData(module.getId(), entity);
 		}
 
-		if (sourcepath != null && sourcepath.isEmpty()) {
+		if (sourcepath != null && sourcepath.isEmpty())
+		{
 			return null;
 		}
 		return sourcepath;
 	}
 
-	public Collection loadChildren(String inEntityParentType, String inParentEntityId, String inChildEntityType) {
+	public Collection loadChildren(String inEntityParentType, String inParentEntityId, String inChildEntityType)
+	{
 		String cacheid = inEntityParentType + "/" + inParentEntityId + "/" + inChildEntityType;
 		Collection entities = (Collection) getCacheManager().get("entitymanager", cacheid);
-		if (entities == null) {
-			entities = getMediaArchive().query(inChildEntityType).exact(inEntityParentType, inParentEntityId)
-					.sort("name").search();
+		if (entities == null)
+		{
+			entities = getMediaArchive().query(inChildEntityType).exact(inEntityParentType, inParentEntityId).sort("name").search();
 			getCacheManager().put("entitymanager", cacheid, entities);
 		}
 		return entities;
 	}
 
-	public Map listTotalSize(String inCategoryId, WebPageRequest inContext) {
-		SearchQuery query = getMediaArchive().query("asset").named("sizecheck").exact("category", inCategoryId)
-				.getQuery();
+	public Map listTotalSize(String inCategoryId, WebPageRequest inContext)
+	{
+		SearchQuery query = getMediaArchive().query("asset").named("sizecheck").exact("category", inCategoryId).getQuery();
 		AggregationBuilder b = AggregationBuilders.terms("assettype_filesize").field("assettype");
 		SumBuilder sum = new SumBuilder("assettype_sum");
 		sum.field("filesize");
@@ -413,19 +469,22 @@ public class EntityManager implements CatalogEnabled {
 		return values;
 	}
 
-	public Integer addAssetsToEntity(User inUser, String pickedmoduleid, String pickedentityid, HitTracker hits) {
+	public Integer addAssetsToEntity(User inUser, String pickedmoduleid, String pickedentityid, HitTracker hits)
+	{
 		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
 		Data entity = getMediaArchive().getCachedData(pickedmoduleid, pickedentityid);
-		if (entity == null) {
+		if (entity == null)
+		{
 			return 0;
 		}
 		Category category = loadDefaultFolder(module, entity, inUser, true);
 
 		List<Asset> tosave = new ArrayList();
-		if (hits != null && hits.getSelectedHitracker() != null && module != null && entity != null
-				&& category != null) {
+		if (hits != null && hits.getSelectedHitracker() != null && module != null && entity != null && category != null)
+		{
 
-			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
+			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();)
+			{
 				Data hit = (Data) iterator.next();
 				Asset asset = (Asset) getMediaArchive().getAssetSearcher().loadData(hit);
 				asset.addCategory(category);
@@ -444,7 +503,8 @@ public class EntityManager implements CatalogEnabled {
 		return tosave.size();
 	}
 
-	public Boolean addAssetToEntity(User inUser, String pickedmoduleid, String pickedentityid, Asset asset) {
+	public Boolean addAssetToEntity(User inUser, String pickedmoduleid, String pickedentityid, Asset asset)
+	{
 		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
 		Data entity = getMediaArchive().getCachedData(pickedmoduleid, pickedentityid);
 		Category category = loadDefaultFolder(module, entity, inUser, true);
@@ -452,9 +512,11 @@ public class EntityManager implements CatalogEnabled {
 		return addAssetToEntity(inUser, module, entity, asset, category);
 	}
 
-	public Boolean addAssetToEntity(User inUser, Data module, Data entity, Asset asset, Category destinationCategory) {
+	public Boolean addAssetToEntity(User inUser, Data module, Data entity, Asset asset, Category destinationCategory)
+	{
 
-		if (destinationCategory != null) {
+		if (destinationCategory != null)
+		{
 			asset.addCategory(destinationCategory);
 		}
 		getMediaArchive().saveAsset(asset);
@@ -465,32 +527,36 @@ public class EntityManager implements CatalogEnabled {
 		return true;
 	}
 
-	public Integer removeAssetsFromEntity(User inUser, String pickedmoduleid, String pickedentityid, HitTracker hits) {
+	public Integer removeAssetsFromEntity(User inUser, String pickedmoduleid, String pickedentityid, HitTracker hits)
+	{
 		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
 		Data entity = getMediaArchive().getCachedData(pickedmoduleid, pickedentityid);
-		if (entity == null) {
+		if (entity == null)
+		{
 			return 0;
 		}
 		Category category = loadDefaultFolder(module, entity, inUser, true);
 
 		List tosave = new ArrayList();
-		if (hits != null && hits.getSelectedHitracker() != null && module != null && entity != null
-				&& category != null) {
+		if (hits != null && hits.getSelectedHitracker() != null && module != null && entity != null && category != null)
+		{
 
-			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
+			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();)
+			{
 				Data hit = (Data) iterator.next();
 				Asset asset = (Asset) getMediaArchive().getAssetSearcher().loadData(hit);
 				asset.removeCategory(category);
 
 				// Make sure its totally removed from any child categories
 				Set tokeep = new HashSet();
-				for (Iterator iterator2 = asset.getCategories().iterator(); iterator2.hasNext();) {
+				for (Iterator iterator2 = asset.getCategories().iterator(); iterator2.hasNext();)
+				{
 					Category exact = (Category) iterator2.next();
-					if (!category.hasCatalog(exact.getId())) {
+					if (!category.hasCatalog(exact.getId()))
+					{
 						tokeep.add(exact);
 					}
-				}
-				;
+				} ;
 				asset.setCategories(tokeep);
 
 				tosave.add(asset);
@@ -504,13 +570,15 @@ public class EntityManager implements CatalogEnabled {
 		return tosave.size();
 	}
 
-	public Boolean removeAssetFromEntity(User inUser, String pickedmoduleid, String pickedentityid, String assetid) {
+	public Boolean removeAssetFromEntity(User inUser, String pickedmoduleid, String pickedentityid, String assetid)
+	{
 		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
 		Data entity = getMediaArchive().getCachedData(pickedmoduleid, pickedentityid);
 		Category category = loadDefaultFolder(module, entity, inUser, true);
 
 		Asset asset = (Asset) getMediaArchive().getAsset(assetid);
-		if (category != null) {
+		if (category != null)
+		{
 			asset.removeCategory(category);
 		}
 		getMediaArchive().saveAsset(asset);
@@ -519,21 +587,26 @@ public class EntityManager implements CatalogEnabled {
 		return true;
 	}
 
-	public Integer removeRecordsFromEntity(User inUser, String pickedmoduleid, String pickedentityid, HitTracker hits) {
+	public Integer removeRecordsFromEntity(User inUser, String pickedmoduleid, String pickedentityid, HitTracker hits)
+	{
 		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
 		Data entity = getMediaArchive().getCachedData(pickedmoduleid, pickedentityid);
-		if (entity == null) {
+		if (entity == null)
+		{
 			return 0;
 		}
 
 		List tosave = new ArrayList();
-		if (hits != null && hits.getSelectedHitracker() != null && module != null && entity != null) {
+		if (hits != null && hits.getSelectedHitracker() != null && module != null && entity != null)
+		{
 
-			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
+			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();)
+			{
 				Data hit = (Data) iterator.next();
 
 				Collection entities = hit.getValues(pickedmoduleid);
-				if (entities != null) {
+				if (entities != null)
+				{
 					entities.remove(pickedentityid);
 					hit.setValue(pickedmoduleid, entities);
 					tosave.add(hit);
@@ -545,7 +618,8 @@ public class EntityManager implements CatalogEnabled {
 		return tosave.size();
 	}
 
-	public Boolean addCategoryToEntity(User inUser, String pickedmoduleid, String pickedentityid, String categoryid) {
+	public Boolean addCategoryToEntity(User inUser, String pickedmoduleid, String pickedentityid, String categoryid)
+	{
 		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
 		Data entity = getMediaArchive().getCachedData(pickedmoduleid, pickedentityid);
 
@@ -554,14 +628,16 @@ public class EntityManager implements CatalogEnabled {
 		return addCategoryToEntity(inUser, module, entity, categoryid, rootcategory);
 	}
 
-	public Boolean addCategoryToEntity(User inUser, Data module, Data entity, String categoryid,
-			Category destinationCategory) {
+	public Boolean addCategoryToEntity(User inUser, Data module, Data entity, String categoryid, Category destinationCategory)
+	{
 
 		Category copyingcategory = getMediaArchive().getCategory(categoryid);
 
-		if (copyingcategory != null) {
+		if (copyingcategory != null)
+		{
 			Category existing = destinationCategory.getChildByName(copyingcategory.getName());
-			if (existing == null) {
+			if (existing == null)
+			{
 				Searcher categorysearcher = getMediaArchive().getSearcher("category");
 				existing = (Category) categorysearcher.createNewData();
 				existing.setName(copyingcategory.getName());
@@ -569,21 +645,24 @@ public class EntityManager implements CatalogEnabled {
 				categorysearcher.saveData(existing);
 			}
 
-			String[] catids = new String[] { categoryid };
+			String[] catids = new String[] {categoryid};
 			getMediaArchive().getCategoryEditor().copyEverything(inUser, catids, existing.getId());
 		}
 
 		return true;
 	}
 
-	public Data copyEntity(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid, Data source) {
+	public Data copyEntity(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid, Data source)
+	{
 
 		Searcher entitysearcher = getMediaArchive().getSearcher(pickedmoduleid);
 		Data newchild = entitysearcher.createNewData();
 
-		for (Iterator iterator = source.getProperties().keySet().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = source.getProperties().keySet().iterator(); iterator.hasNext();)
+		{
 			String key = (String) iterator.next();
-			if (key.equals("rootcategory") || key.equals("sourcepath")) {
+			if (key.equals("rootcategory") || key.equals("sourcepath"))
+			{
 				continue;
 			}
 			Object val = source.getValue(key);
@@ -593,14 +672,18 @@ public class EntityManager implements CatalogEnabled {
 		String customname = inContext.getRequestParameter("nameoverwrite");
 		String name = customname;
 		String nameoriginal = source.getName();
-		if (name == null) {
+		if (name == null)
+		{
 			name = nameoriginal;
 		}
 		String action = inContext.getRequestParameter("action");
-		if (!"moveentity".equals(action)) {
+		if (!"moveentity".equals(action))
+		{
 			// It is a copy, if copying to same Module add (copy)
-			if (pickedmoduleid.equals(sourcemoduleid)) {
-				if (name.equals(nameoriginal)) {
+			if (pickedmoduleid.equals(sourcemoduleid))
+			{
+				if (name.equals(nameoriginal))
+				{
 					name = nameoriginal + " (copy)";
 				}
 			}
@@ -612,9 +695,12 @@ public class EntityManager implements CatalogEnabled {
 
 		Category targetcategory = createDefaultFolder(newchild, inContext.getUser());
 		Category sourcecategory = getMediaArchive().getCategory(source.get("rootcategory"));
-		if (sourcecategory == null) {
+		if (sourcecategory == null)
+		{
 			log.info("No source category to copy " + source);
-		} else {
+		}
+		else
+		{
 			getMediaArchive().getCategoryEditor().copyEverything(inContext.getUser(), sourcecategory, targetcategory);
 		}
 		newchild.setValue("sourcepath", targetcategory.getCategoryPath());
@@ -622,21 +708,25 @@ public class EntityManager implements CatalogEnabled {
 		// Make a path
 		String parenttype = source.get("entitysourcetype");
 		PropertyDetail detail = entitysearcher.getDetail(parenttype);
-		if (detail != null) {
+		if (detail != null)
+		{
 			newchild.setValue(parenttype, source.getId());
 		}
 		return newchild;
 	}
 
-	public Collection copyEntities(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid,
-			HitTracker hits) {
+	public Collection copyEntities(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid, HitTracker hits)
+	{
 		// Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
 		List tosave = new ArrayList();
-		if (hits != null && hits.getSelectedHitracker() != null) {
-			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
+		if (hits != null && hits.getSelectedHitracker() != null)
+		{
+			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();)
+			{
 				Data hit = (Data) iterator.next();
 				Data newchild = copyEntity(inContext, sourcemoduleid, pickedmoduleid, hit);
-				if (newchild != null) {
+				if (newchild != null)
+				{
 					tosave.add(newchild);
 				}
 			}
@@ -646,12 +736,14 @@ public class EntityManager implements CatalogEnabled {
 		return tosave;
 	}
 
-	public Data copyEntity(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid,
-			String sourceentityid) {
+	public Data copyEntity(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid, String sourceentityid)
+	{
 		Data source = getMediaArchive().getData(sourcemoduleid, sourceentityid);
-		if (source != null) {
+		if (source != null)
+		{
 			Data newchild = copyEntity(inContext, sourcemoduleid, pickedmoduleid, source);
-			if (newchild != null) {
+			if (newchild != null)
+			{
 				getMediaArchive().saveData(pickedmoduleid, newchild);
 				inContext.putPageValue("newentity", newchild);
 				return newchild;
@@ -660,17 +752,21 @@ public class EntityManager implements CatalogEnabled {
 		return null;
 	}
 
-	public Integer addToSearchCategory(WebPageRequest inContext, String entitymoduleid, HitTracker hits,
-			String searchcategoryid) {
+	public Integer addToSearchCategory(WebPageRequest inContext, String entitymoduleid, HitTracker hits, String searchcategoryid)
+	{
 		List tosave = new ArrayList();
-		if (hits != null && hits.hasSelections()) {
-			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
+		if (hits != null && hits.hasSelections())
+		{
+			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();)
+			{
 				MultiValued hit = (MultiValued) iterator.next();
 				hit.addValue("searchcategory", searchcategoryid);
 				tosave.add(hit);
 			}
 			getMediaArchive().saveData(entitymoduleid, tosave);
-		} else {
+		}
+		else
+		{
 			// selections missing
 			log.error("Sections missing");
 		}
@@ -678,52 +774,60 @@ public class EntityManager implements CatalogEnabled {
 		return tosave.size();
 	}
 
-	public Boolean deleteEntity(WebPageRequest inContext, String moduleid, String entityid) {
+	public Boolean deleteEntity(WebPageRequest inContext, String moduleid, String entityid)
+	{
 		Searcher entitysearcher = getMediaArchive().getSearcher(moduleid);
 		Data data = (Data) entitysearcher.searchById(entityid);
-		if (data != null) {
+		if (data != null)
+		{
 			entitysearcher.delete(data, inContext.getUser());
 			return true;
 		}
 		return false;
 	}
 
-	public Collection<Data> getEntitiesForCategories(WebPageRequest inReq, Collection<Category> inParentCategories) {
-		if (inParentCategories == null) {
+	public Collection<Data> getEntitiesForCategories(WebPageRequest inReq, Collection<Category> inParentCategories)
+	{
+		if (inParentCategories == null)
+		{
 			return null;
 		}
 
 		Collection<Data> categories = new HashSet();
 
-		for (Iterator iterator1 = inParentCategories.iterator(); iterator1.hasNext();) {
+		for (Iterator iterator1 = inParentCategories.iterator(); iterator1.hasNext();)
+		{
 			Category cat = (Category) iterator1.next();
 			categories.addAll(cat.listAncestorsAndSelf(1));
 		}
 
 		User user = inReq.getUser();
 		UserProfile userprofile = inReq.getUserProfile(); // empty userprofile?
-		if (userprofile == null) {
-			userprofile = getMediaArchive().getProfileManager().getUserProfile(getMediaArchive().getCatalogId(),
-					user.getUserName());
+		if (userprofile == null)
+		{
+			userprofile = getMediaArchive().getProfileManager().getUserProfile(getMediaArchive().getCatalogId(), user.getUserName());
 		}
 
 		Collection allowed = userprofile.getEntitiesIds();
 		allowed.remove("asset");
 
-		if (allowed.isEmpty()) {
+		if (allowed.isEmpty())
+		{
 			throw new OpenEditException("No permissions");
 		}
 
 		// always returns emtpy
-		HitTracker found = getMediaArchive().query("modulesearch").named("modulsearchcathits")
-				.orgroup("rootcategory", categories).put("searchtypes", allowed).search(inReq);
+		HitTracker found = getMediaArchive().query("modulesearch").named("modulsearchcathits").orgroup("rootcategory", categories).put("searchtypes", allowed).search(inReq);
 
 		List<Data> finallist = new ArrayList();
-		if (found != null) {
-			for (Iterator iterator = found.iterator(); iterator.hasNext();) {
+		if (found != null)
+		{
+			for (Iterator iterator = found.iterator(); iterator.hasNext();)
+			{
 				Data entity = (Data) iterator.next();
 				String moduleid = entity.get("entitysourcetype");
-				if (moduleid == null || allowed.contains(moduleid)) {
+				if (moduleid == null || allowed.contains(moduleid))
+				{
 					finallist.add(entity);
 				}
 			}
@@ -731,43 +835,49 @@ public class EntityManager implements CatalogEnabled {
 		return finallist;
 	}
 
-	public Collection loadHistoryForEntity(String applicationid, User inUser, Data inModule, Data inEntity) {
+	public Collection loadHistoryForEntity(String applicationid, User inUser, Data inModule, Data inEntity)
+	{
 
-		Collection history = getMediaArchive().query("entityactivityhistory").exact("entityid", inEntity.getId())
-				.sort("dateDown").search();
+		Collection history = getMediaArchive().query("entityactivityhistory").exact("entityid", inEntity.getId()).sort("dateDown").search();
 
-		if (history.isEmpty() && inEntity.get("rootcategory") != null) {
-			HitTracker hits = getMediaArchive().query("asset").named("sizecheck")
-					.exact("category", inEntity.get("rootcategory")).search();
-			if (!hits.isEmpty()) {
+		if (history.isEmpty() && inEntity.get("rootcategory") != null)
+		{
+			HitTracker hits = getMediaArchive().query("asset").named("sizecheck").exact("category", inEntity.get("rootcategory")).search();
+			if (!hits.isEmpty())
+			{
 				saveAssetActivity(applicationid, inUser, inEntity, hits, "assetsadded");
-				history = getMediaArchive().query("entityactivityhistory").exact("entityid", inEntity.getId())
-						.sort("dateDown").search();
+				history = getMediaArchive().query("entityactivityhistory").exact("entityid", inEntity.getId()).sort("dateDown").search();
 			}
 		}
 		return history;
 
 	}
 
-	public void fireAssetAddedToEntity(String applicationid, User inUser, Data inAsset, Data entity) {
+	public void fireAssetAddedToEntity(String applicationid, User inUser, Data inAsset, Data entity)
+	{
 		Collection<Data> assets = new ArrayList(1);
 		assets.add(inAsset);
 		saveAssetActivity(applicationid, inUser, entity, assets, "assetsadded");
 		checkPrimaryAsset(entity, assets);
 	}
 
-	public void fireAssetsAddedToEntity(String applicationid, User inUser, Collection<Data> inAssets, Data entity) {
+	public void fireAssetsAddedToEntity(String applicationid, User inUser, Collection<Data> inAssets, Data entity)
+	{
 		saveAssetActivity(applicationid, inUser, entity, inAssets, "assetsadded");
 		checkPrimaryAsset(entity, inAssets);
 	}
 
-	protected void checkPrimaryAsset(Data inEntity, Collection<Data> inAssets) {
-		if (inEntity.getValue("primarymedia") == null && inEntity.getValue("primaryimage") == null) {
-			for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {
+	protected void checkPrimaryAsset(Data inEntity, Collection<Data> inAssets)
+	{
+		if (inEntity.getValue("primarymedia") == null && inEntity.getValue("primaryimage") == null)
+		{
+			for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
+			{
 				Data data = (Data) iterator.next();
 				inEntity.setValue("primaryimage", data.getId());
 				String moduleid = inEntity.get("entitysourcetype");
-				if (moduleid != null) {
+				if (moduleid != null)
+				{
 					getMediaArchive().saveData(moduleid, inEntity);
 				}
 				break;
@@ -775,23 +885,26 @@ public class EntityManager implements CatalogEnabled {
 		}
 	}
 
-	public void fireAssetRemovedFromEntity(String applicationid, User inUser, Data inAsset, Data entity) {
+	public void fireAssetRemovedFromEntity(String applicationid, User inUser, Data inAsset, Data entity)
+	{
 		Collection<Data> assets = new ArrayList(1);
 		assets.add(inAsset);
 		saveAssetActivity(applicationid, inUser, entity, assets, "assetsremoved");
 
 	}
 
-	public void fireAssetsRemovedFromEntity(String applicationid, User inUser, Collection<Data> inAssets, Data entity) {
+	public void fireAssetsRemovedFromEntity(String applicationid, User inUser, Collection<Data> inAssets, Data entity)
+	{
 		saveAssetActivity(applicationid, inUser, entity, inAssets, "assetsremoved");
 	}
 
-	public void saveAssetActivity(String applicationid, User inUser, Data entity, Collection<Data> inAssets,
-			String inOperation) {
+	public void saveAssetActivity(String applicationid, User inUser, Data entity, Collection<Data> inAssets, String inOperation)
+	{
 		Searcher searcher = getMediaArchive().getSearcher("entityactivityhistory");
 		Data event = searcher.createNewData();
 		event.setProperty("applicationid", applicationid);
-		if (inUser != null) {
+		if (inUser != null)
+		{
 			event.setProperty("user", inUser.getId());
 		}
 
@@ -801,7 +914,8 @@ public class EntityManager implements CatalogEnabled {
 
 		Collection names = new ArrayList();
 		Collection ids = new ArrayList();
-		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
+		{
 			Data asset = (Data) iterator.next();
 			names.add(asset.getName());
 			ids.add(asset.getId());
@@ -815,7 +929,8 @@ public class EntityManager implements CatalogEnabled {
 
 	// Add API to restore deleted assets
 
-	public Map loadWorkStatusForPage(User inUser, String inModuleid, String inEntityid, HitTracker inAssethits) {
+	public Map loadWorkStatusForPage(User inUser, String inModuleid, String inEntityid, HitTracker inAssethits)
+	{
 		Searcher searcher = getMediaArchive().getSearcher("entityassetworkflow");
 
 		List page = inAssethits.getPageOfHits();
@@ -823,15 +938,16 @@ public class EntityManager implements CatalogEnabled {
 		tracker.setHitsPerPage(inAssethits.getHitsPerPage());
 		Collection ids = tracker.collectValues("id");
 
-		Collection existing = searcher.query().orgroup("primarymedia", ids).exact("parentmoduleid", inModuleid)
-				.exact("parententityid", inEntityid).search();
+		Collection existing = searcher.query().orgroup("primarymedia", ids).exact("parentmoduleid", inModuleid).exact("parententityid", inEntityid).search();
 
 		Map<String, Set> assetstatuses = new HashMap();
-		for (Iterator iterator = existing.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = existing.iterator(); iterator.hasNext();)
+		{
 			Data data = (Data) iterator.next();
 			String assetid = data.get("primarymedia");
 			Set<String> statuses = assetstatuses.get(assetid);
-			if (statuses == null) {
+			if (statuses == null)
+			{
 				statuses = new HashSet();
 			}
 			String workflowstatus = data.get("workflowstatus");
@@ -842,24 +958,26 @@ public class EntityManager implements CatalogEnabled {
 	}
 
 	// Not used?
-	public int addToWorkflowStatus(User inUser, String inModuleid, String inEntityid, HitTracker inAssethits,
-			String lightboxid) {
-		if (lightboxid == null) {
+	public int addToWorkflowStatus(User inUser, String inModuleid, String inEntityid, HitTracker inAssethits, String lightboxid)
+	{
+		if (lightboxid == null)
+		{
 			log.error("No box selected");
 			return 0;
 		}
 		Collection assetstoadd = null;
 
-		if (!inAssethits.getSearchType().equals("asset")) {
+		if (!inAssethits.getSearchType().equals("asset"))
+		{
 			throw new OpenEditException("Noting to add. Wrong Searchtype");
 		}
 		assetstoadd = inAssethits.collectValues("id");
-		if (assetstoadd.isEmpty()) {
+		if (assetstoadd.isEmpty())
+		{
 			throw new OpenEditException("Noting to add");
 		}
 		Searcher searcher = getMediaArchive().getSearcher("emedialightboxasset");
-		HitTracker existing = searcher.query().orgroup("primarymedia", assetstoadd).exact("parentmoduleid", inModuleid)
-				.exact("parententityid", inEntityid).exact("lightboxid", lightboxid).search();
+		HitTracker existing = searcher.query().orgroup("primarymedia", assetstoadd).exact("parentmoduleid", inModuleid).exact("parententityid", inEntityid).exact("lightboxid", lightboxid).search();
 
 		Set alreadyadded = new HashSet(existing.collectValues("primarymedia"));
 		// Map<String,Data> byassets = new HashMap();
@@ -875,16 +993,22 @@ public class EntityManager implements CatalogEnabled {
 		// Add more
 		long count = 0;// System.currentTimeMillis();
 
-		for (Iterator iterator = inAssethits.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inAssethits.iterator(); iterator.hasNext();)
+		{
 			Data data = (Data) iterator.next();
 			String assetid = null;
-			if (inAssethits.getSearchType().equals("asset")) {
+			if (inAssethits.getSearchType().equals("asset"))
+			{
 				assetid = data.getId();
-			} else if (inAssethits.getSearchType().equals("emedialightboxasset")) {
-				assetid = data.get("primarymedia");
 			}
+			else
+				if (inAssethits.getSearchType().equals("emedialightboxasset"))
+				{
+					assetid = data.get("primarymedia");
+				}
 			// Look for existing?
-			if (!alreadyadded.contains(assetid)) {
+			if (!alreadyadded.contains(assetid))
+			{
 				Data event = searcher.createNewData();
 				event.setProperty("lightboxid", lightboxid);
 				event.setProperty("parententityid", inEntityid);
@@ -903,37 +1027,33 @@ public class EntityManager implements CatalogEnabled {
 		return tosave.size();
 	}
 	/*
-	 * public Data createLightBoxForEntity(String lightboxtypeid, Data inModule,
-	 * Data inEntity, User inUser) {
+	 * public Data createLightBoxForEntity(String lightboxtypeid, Data inModule, Data inEntity, User
+	 * inUser) {
 	 * 
-	 * Data lightboxtype = getMediaArchive().getCachedData("emedialightboxtype",
-	 * lightboxtypeid);
+	 * Data lightboxtype = getMediaArchive().getCachedData("emedialightboxtype", lightboxtypeid);
 	 * 
-	 * Searcher searcher = getMediaArchive().getSearcher("emediaentitylightbox");
-	 * Data lightbox = searcher.createNewData();
-	 * lightbox.setValue("name", lightboxtype.getName());
-	 * lightbox.setValue("moduleid", inModule.getId());
-	 * lightbox.setValue("entityid", inEntity.getId());
-	 * lightbox.setValue("lightboxtype", lightboxtypeid);
-	 * Category entityrootcategory = createDefaultFolder(inEntity, inUser) ;
+	 * Searcher searcher = getMediaArchive().getSearcher("emediaentitylightbox"); Data lightbox =
+	 * searcher.createNewData(); lightbox.setValue("name", lightboxtype.getName());
+	 * lightbox.setValue("moduleid", inModule.getId()); lightbox.setValue("entityid", inEntity.getId());
+	 * lightbox.setValue("lightboxtype", lightboxtypeid); Category entityrootcategory =
+	 * createDefaultFolder(inEntity, inUser) ;
 	 * 
-	 * Category lightboxcategory =
-	 * (Category)getMediaArchive().getCategorySearcher().createCategoryPath(
+	 * Category lightboxcategory = (Category)getMediaArchive().getCategorySearcher().createCategoryPath(
 	 * entityrootcategory.getCategoryPath() + lightboxtype.getName());
 	 * 
-	 * lightbox.setValue("rootcategory", lightboxcategory.getId());
-	 * lightbox.setValue("owner", inUser.getName());
-	 * searcher.saveData(lightbox);
-	 * return lightbox;
-	 * }
+	 * lightbox.setValue("rootcategory", lightboxcategory.getId()); lightbox.setValue("owner",
+	 * inUser.getName()); searcher.saveData(lightbox); return lightbox; }
 	 */
 
 	// Not used?
 
-	public Data findLightBox(Collection<LightBox> inBoxes, String boxid) {
-		for (Iterator iterator = inBoxes.iterator(); iterator.hasNext();) {
+	public Data findLightBox(Collection<LightBox> inBoxes, String boxid)
+	{
+		for (Iterator iterator = inBoxes.iterator(); iterator.hasNext();)
+		{
 			Data lightBox = (Data) iterator.next();
-			if (lightBox.getId().equals(boxid)) {
+			if (lightBox.getId().equals(boxid))
+			{
 				return lightBox;
 			}
 		}
@@ -941,56 +1061,63 @@ public class EntityManager implements CatalogEnabled {
 	}
 
 	// Not used?
-	public Collection<LightBox> loadBoxesForModule(String inBoxModuleType, Data inEntityModule, Data inEntity,
-			User inUser) {
-		if (inEntityModule == null) {
+	public Collection<LightBox> loadBoxesForModule(String inBoxModuleType, Data inEntityModule, Data inEntity, User inUser)
+	{
+		if (inEntityModule == null)
+		{
 			log.error("No module");
 			return null;
 		}
-		if (inEntity == null) {
+		if (inEntity == null)
+		{
 			log.error("No entity");
 			return null;
 		}
 		// Search for all the boxes that match.
-		if (inBoxModuleType == null) {
+		if (inBoxModuleType == null)
+		{
 			return null;
 		}
 
 		Collection<LightBox> lighboxes = null;
 
-		if (inBoxModuleType.equals("emedialightbox")) {
-			QueryBuilder query = getMediaArchive().query("emedialightbox").or().exact("showonall", true)
-					.exact("parentmoduleid", inEntityModule.getId()).sort("orderingUp");
+		if (inBoxModuleType.equals("emedialightbox"))
+		{
+			QueryBuilder query = getMediaArchive().query("emedialightbox").or().exact("showonall", true).exact("parentmoduleid", inEntityModule.getId()).sort("orderingUp");
 			HitTracker boxes = getMediaArchive().getCachedSearch(query);
 			lighboxes = new ArrayList(boxes.size());
 			Category entityrootcategory = loadDefaultFolder(inEntityModule, inEntity, inUser);
-			if (entityrootcategory == null) {
+			if (entityrootcategory == null)
+			{
 				log.error("No  root cat" + inEntity);
 				return lighboxes;
 			}
-			for (Iterator iterator = boxes.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = boxes.iterator(); iterator.hasNext();)
+			{
 				Data box = (Data) iterator.next();
 				LightBox lightbox = new LightBox();
 				lightbox.setData(box);
-				Category rootcategory = (Category) getMediaArchive().getCategorySearcher()
-						.createCategoryPathFromParent(entityrootcategory, box.getName());
+				Category rootcategory = (Category) getMediaArchive().getCategorySearcher().createCategoryPathFromParent(entityrootcategory, box.getName());
 				lightbox.setRootCategory(rootcategory);
 				lighboxes.add(lightbox);
 			}
-		} else {
+		}
+		else
+		{
 			Data boxmodule = getMediaArchive().getCachedData("module", inBoxModuleType);
-			QueryBuilder query = getMediaArchive().query(inBoxModuleType).exact(inEntityModule.getId(),
-					inEntity.getId());
+			QueryBuilder query = getMediaArchive().query(inBoxModuleType).exact(inEntityModule.getId(), inEntity.getId());
 			HitTracker boxes = getMediaArchive().getCachedSearch(query);
 
 			// TODO: Optimize this with a cache based on boxes.getSearcher().getIndexId()
 			lighboxes = new ArrayList(boxes.size());
-			for (Iterator iterator = boxes.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = boxes.iterator(); iterator.hasNext();)
+			{
 				Data box = (Data) iterator.next();
 				LightBox lightbox = new LightBox();
 				lightbox.setData(box);
 				Category rootcategory = loadDefaultFolder(boxmodule, box, inUser, true); // Make em now or later?
-				if (rootcategory == null) {
+				if (rootcategory == null)
+				{
 					log.error("Could not create category for entity " + box);
 					continue;
 				}
@@ -1003,7 +1130,8 @@ public class EntityManager implements CatalogEnabled {
 		return lighboxes;
 	}
 
-	public Collection<LightBox> loadLightBoxesForModule(Data inModule, Data inEntity, User inUser) {
+	public Collection<LightBox> loadLightBoxesForModule(Data inModule, Data inEntity, User inUser)
+	{
 		Collection<LightBox> boxes = loadBoxesForModule("emedialightbox", inModule, inEntity, inUser);
 		return boxes;
 	}
@@ -1023,17 +1151,20 @@ public class EntityManager implements CatalogEnabled {
 	// return boxes;
 	// }
 
-	public Category loadLightboxCategory(Data inModule, Data inEntity, String inBoxTypeId, Data inSelectedBox,
-			User inUser) {
+	public Category loadLightboxCategory(Data inModule, Data inEntity, String inBoxTypeId, Data inSelectedBox, User inUser)
+	{
 
 		Category selectedcat = null;
-		if (inBoxTypeId.equals("emedialightbox")) {
+		if (inBoxTypeId.equals("emedialightbox"))
+		{
 			Category entityrootcategory = loadDefaultFolder(inModule, inEntity, inUser);
-			if (entityrootcategory == null) {
+			if (entityrootcategory == null)
+			{
 				log.error("No cat" + inEntity);
 				return null;
 			}
-			if (inSelectedBox == null) {
+			if (inSelectedBox == null)
+			{
 				return entityrootcategory;
 			}
 			// selectedcat = entityrootcategory.getChildByName(inSelectedBox.getName());
@@ -1041,7 +1172,9 @@ public class EntityManager implements CatalogEnabled {
 			// {
 			String catpath = entityrootcategory.getCategoryPath() + "/" + inSelectedBox.getName();
 			selectedcat = (Category) getMediaArchive().getCategorySearcher().createCategoryPath(catpath);
-		} else {
+		}
+		else
+		{
 			selectedcat = loadDefaultFolder(inSelectedBox, inUser);
 		}
 
@@ -1049,9 +1182,11 @@ public class EntityManager implements CatalogEnabled {
 
 	}
 
-	protected void setLightBoxCounts(Collection<LightBox> boxes) {
+	protected void setLightBoxCounts(Collection<LightBox> boxes)
+	{
 		Collection categories = new ArrayList();
-		for (Iterator iterator = boxes.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = boxes.iterator(); iterator.hasNext();)
+		{
 			LightBox box = (LightBox) iterator.next();
 			Category cat = box.getRootCategory();
 			categories.add(cat);
@@ -1065,10 +1200,12 @@ public class EntityManager implements CatalogEnabled {
 
 		Map categorycounts = new HashMap();
 
-		for (Iterator iterator = boxes.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = boxes.iterator(); iterator.hasNext();)
+		{
 			LightBox box = (LightBox) iterator.next();
 			FilterNode node = found.findFilterChildValue("category", box.getRootCategory().getId());
-			if (node != null) {
+			if (node != null)
+			{
 				box.setAssetCount(node.getCount());
 			}
 		}
@@ -1083,37 +1220,27 @@ public class EntityManager implements CatalogEnabled {
 	 * @param inLightboxid
 	 * @return
 	 * 
-	 *         public Map loadLightBoxResults(User inUser, String inModuleid, String
-	 *         inEntityid, String inLightboxid)
-	 *         {
-	 *         HitTracker lightboxassets =
+	 *         public Map loadLightBoxResults(User inUser, String inModuleid, String inEntityid, String
+	 *         inLightboxid) { HitTracker lightboxassets =
 	 *         getMediaArchive().query("emedialightboxasset").named("lightboxassets").exact("lightboxid",
-	 *         inLightboxid).
-	 *         exact("parentmoduleid", inModuleid).
+	 *         inLightboxid). exact("parentmoduleid", inModuleid).
 	 *         exact("parententityid",inEntityid).facet("lightboxid").sort("ordering").search();
 	 * 
-	 *         lightboxassets.enableBulkOperations();
-	 *         Map<String,Data> assetidlookup = new HashMap();
+	 *         lightboxassets.enableBulkOperations(); Map<String,Data> assetidlookup = new HashMap();
 	 *         Collection assetids = lightboxassets.collectValues("primarymedia");
 	 * 
 	 *         Map<String,Object> hitassetlookup = new HashMap();
 	 * 
-	 *         //TODO: only support up to 1000 assets. Break down into chunks?
-	 *         HitTracker assethits =
+	 *         //TODO: only support up to 1000 assets. Break down into chunks? HitTracker assethits =
 	 *         getMediaArchive().query("asset").ids(assetids).named("assethits").search();
-	 *         assethits.enableBulkOperations();
-	 *         for (Iterator iterator = assethits.iterator(); iterator.hasNext();) {
-	 *         Data asset = (Data) iterator.next();
-	 *         assetidlookup.put(asset.getId(),asset);
-	 *         }
-	 *         hitassetlookup.put("asset", assethits);
+	 *         assethits.enableBulkOperations(); for (Iterator iterator = assethits.iterator();
+	 *         iterator.hasNext();) { Data asset = (Data) iterator.next();
+	 *         assetidlookup.put(asset.getId(),asset); } hitassetlookup.put("asset", assethits);
 	 * 
-	 *         for (Iterator iterator = lightboxassets.iterator();
-	 *         iterator.hasNext();) {
-	 *         Data lightboxhit = (Data) iterator.next();
-	 *         Data asset = assetidlookup.get(lightboxhit.get("primarymedia"));
-	 *         hitassetlookup.put(lightboxhit.getId(),asset);
-	 *         }
+	 *         for (Iterator iterator = lightboxassets.iterator(); iterator.hasNext();) { Data
+	 *         lightboxhit = (Data) iterator.next(); Data asset =
+	 *         assetidlookup.get(lightboxhit.get("primarymedia"));
+	 *         hitassetlookup.put(lightboxhit.getId(),asset); }
 	 *         hitassetlookup.put("emedialightboxasset", lightboxassets);
 	 * 
 	 *         //Get the categories
@@ -1123,28 +1250,35 @@ public class EntityManager implements CatalogEnabled {
 	 *         }
 	 */
 
-	public Data findFirstSelectedLightBox(Collection<LightBox> boxes) {
-		if (boxes == null) {
+	public Data findFirstSelectedLightBox(Collection<LightBox> boxes)
+	{
+		if (boxes == null)
+		{
 			log.error("No lightboxs loaded");
 			return null;
 		}
 
-		for (Iterator iterator = boxes.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = boxes.iterator(); iterator.hasNext();)
+		{
 			LightBox lightbox = (LightBox) iterator.next();
 			Integer val = lightbox.getAssetCount();
 
-			if (val != null && val > 0) {
+			if (val != null && val > 0)
+			{
 				return lightbox;
 			}
 		}
 		return null;
 	}
 
-	public void lightBoxRemoveAssets(User inUser, String inCategoryid, HitTracker inAssethits) {
+	public void lightBoxRemoveAssets(User inUser, String inCategoryid, HitTracker inAssethits)
+	{
 		Category category = getMediaArchive().getCategory(inCategoryid);
-		if (category != null) {
+		if (category != null)
+		{
 			List tosave = new ArrayList();
-			for (Iterator iterator = inAssethits.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = inAssethits.iterator(); iterator.hasNext();)
+			{
 				Data data = (Data) iterator.next();
 				Asset asset = (Asset) getMediaArchive().getAssetSearcher().loadData(data);
 				asset.removeCategory(category);
@@ -1155,27 +1289,20 @@ public class EntityManager implements CatalogEnabled {
 	}
 
 	/*
-	 * // public HitTracker searchForAssetsInCategory(Data inModule, Data inEntity,
-	 * Data inSelectedBox, String sortby, User inUser)
-	 * public HitTracker searchForAssetsInCategory(Category selectedCategory, String
-	 * sortby, User inUser)
-	 * {
-	 * // Category parent = loadLightboxCategory(inModule, inEntity,inSelectedBox,
-	 * null);
-	 * // if( parent == null)
-	 * // {
-	 * // return null;
-	 * // }
-	 * HitTracker hits =
+	 * // public HitTracker searchForAssetsInCategory(Data inModule, Data inEntity, Data inSelectedBox,
+	 * String sortby, User inUser) public HitTracker searchForAssetsInCategory(Category
+	 * selectedCategory, String sortby, User inUser) { // Category parent =
+	 * loadLightboxCategory(inModule, inEntity,inSelectedBox, null); // if( parent == null) // { //
+	 * return null; // } HitTracker hits =
 	 * getMediaArchive().query("asset").exact("category",selectedCategory).sort(
-	 * sortby).named("catsearch").search();
-	 * return hits;
-	 * }
+	 * sortby).named("catsearch").search(); return hits; }
 	 */
 
-	public Integer addAssetsToCategory(MediaArchive archive, Category category, Collection assethits) {
+	public Integer addAssetsToCategory(MediaArchive archive, Category category, Collection assethits)
+	{
 		List<Asset> tosave = new ArrayList();
-		for (Iterator iterator = assethits.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = assethits.iterator(); iterator.hasNext();)
+		{
 			Data data = (Data) iterator.next();
 			Asset asset = (Asset) archive.getAssetSearcher().loadData(data); // Why reload?
 			asset.addCategory(category);
@@ -1186,12 +1313,14 @@ public class EntityManager implements CatalogEnabled {
 		return tosave.size();
 	}
 
-	public void createEntitySnapshot(User inUser, MultiValued inEntity, String changes) {
+	public void createEntitySnapshot(User inUser, MultiValued inEntity, String changes)
+	{
 
 		Searcher searcher = getMediaArchive().getSearcher("entityactivityhistory");
 
 		Data event = searcher.createNewData();
-		if (inUser != null) {
+		if (inUser != null)
+		{
 			event.setProperty("user", inUser.getId());
 		}
 		event.setProperty("operation", "entitysaved");
@@ -1207,7 +1336,8 @@ public class EntityManager implements CatalogEnabled {
 
 	}
 
-	public void restoreSnapshot(User inUser, String inHistoryid) {
+	public void restoreSnapshot(User inUser, String inHistoryid)
+	{
 
 		Data entityhistory = (Data) getMediaArchive().query("entityactivityhistory").id(inHistoryid).search().first();
 
@@ -1222,22 +1352,29 @@ public class EntityManager implements CatalogEnabled {
 
 		JSONParser parser = new JSONParser();
 		JSONObject sourceObject = null;
-		try {
+		try
+		{
 			sourceObject = (JSONObject) parser.parse(source);
-		} catch (Throwable e) {
+		}
+		catch (Throwable e)
+		{
 			throw new OpenEditException("Noting to save");
 
 		}
 		JSONObject sourceObj = (JSONObject) sourceObject.get("map");
-		if (sourceObj != null) {
+		if (sourceObj != null)
+		{
 			List<Object> keysToRemove = new ArrayList<>();
-			for (Object keyObj : sourceObj.keySet()) {
+			for (Object keyObj : sourceObj.keySet())
+			{
 				String key = keyObj == null ? null : keyObj.toString();
-				if (key != null && key.startsWith(".")) {
+				if (key != null && key.startsWith("."))
+				{
 					keysToRemove.add(key);
 				}
 			}
-			for (Object k : keysToRemove) {
+			for (Object k : keysToRemove)
+			{
 				sourceObj.remove(k);
 			}
 		}
@@ -1246,7 +1383,8 @@ public class EntityManager implements CatalogEnabled {
 		searcher.saveJson(entityid, sourceObj);
 	}
 
-	public Data findEntityByPath(String inModuleId, String sourcepath) {
+	public Data findEntityByPath(String inModuleId, String sourcepath)
+	{
 		Data found = getMediaArchive().query(inModuleId).exact("entitysourcetype", sourcepath).searchOne();
 		return found;
 	}
@@ -1319,7 +1457,8 @@ public class EntityManager implements CatalogEnabled {
 	// }
 	// }
 
-	public void createEntitiesFromPages(WebPageRequest inReq, UploadRequest inUploadRequest, Data inModule) {
+	public void createEntitiesFromPages(WebPageRequest inReq, UploadRequest inUploadRequest, Data inModule)
+	{
 		// final boolean createCategories = Boolean.parseBoolean(
 		// inReq.findValue("assetcreateuploadcategories"));
 
@@ -1335,7 +1474,8 @@ public class EntityManager implements CatalogEnabled {
 		Searcher searcher = archive.getSearcher(inModule.getId());
 
 		Collection items = inUploadRequest.getUploadItems();
-		if (items.size() == 0) {
+		if (items.size() == 0)
+		{
 			log.info("No files found");
 			return;
 		}
@@ -1343,23 +1483,27 @@ public class EntityManager implements CatalogEnabled {
 		Map commonfields = new HashMap();
 
 		String[] fields = inReq.getRequestParameters("field");
-		for (int i = 0; i < fields.length; i++) {
+		for (int i = 0; i < fields.length; i++)
+		{
 			String fieldname = fields[i];
 			String val = inReq.getRequestParameter(fieldname + ".value");
 
-			if (val != null && val.length() > 0) {
+			if (val != null && val.length() > 0)
+			{
 				commonfields.put(fields[i], val);
 			}
 		}
 
 		EntityManager entityManager = archive.getEntityManager();
 		Collection tosave = new ArrayList();
-		for (Iterator iterator = items.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = items.iterator(); iterator.hasNext();)
+		{
 			FileUploadItem item = (FileUploadItem) iterator.next();
 			String filename = item.getName();
 			String ext = PathUtilities.extractPageType(item.getName());
 
-			if (filename.startsWith("tmp") && filename.indexOf('_') > -1) {
+			if (filename.startsWith("tmp") && filename.indexOf('_') > -1)
+			{
 				filename = filename.substring(filename.indexOf('_') + 1);
 			}
 
@@ -1368,18 +1512,22 @@ public class EntityManager implements CatalogEnabled {
 			Data entity = searcher.query().exact("name", entityname).searchOne();
 
 			Category cat = null;
-			if (entity == null) {
+			if (entity == null)
+			{
 				entity = searcher.createNewData();
 				entity.setName(entityname);
 				entity.setValue("entitysourcetype", inModule.getId());
 				entity.setValue("entity_date", new Date());
-				for (Iterator iterator2 = commonfields.keySet().iterator(); iterator2.hasNext();) {
+				for (Iterator iterator2 = commonfields.keySet().iterator(); iterator2.hasNext();)
+				{
 					String key = (String) iterator2.next();
 					entity.setValue(key, commonfields.get(key));
 				}
 				cat = entityManager.createDefaultFolder(entity, inReq.getUser());
 				searcher.saveData(entity);
-			} else {
+			}
+			else
+			{
 				log.info("Entity already exists: " + entityname);
 				cat = entityManager.loadDefaultFolder(entity, inReq.getUser());
 			}
@@ -1403,15 +1551,16 @@ public class EntityManager implements CatalogEnabled {
 		archive.fireSharedMediaEvent("importing/assetscreated");
 	}
 
-	public Collection<PropertyDetail> getBulkEntityDetails(String inModuleId) {
-		Collection<PropertyDetail> details = getMediaArchive().getSearcher(inModuleId)
-				.getDetailsForView(inModuleId + "addnew");
+	public Collection<PropertyDetail> getBulkEntityDetails(String inModuleId)
+	{
+		Collection<PropertyDetail> details = getMediaArchive().getSearcher(inModuleId).getDetailsForView(inModuleId + "addnew");
 		Collection<PropertyDetail> bulkdetails = new ArrayList();
-		for (Iterator iterator = details.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = details.iterator(); iterator.hasNext();)
+		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			String id = detail.getId();
-			if (id.equals("name") || id.equals("longcaption") || id.equals("primaryimage")
-					|| id.equals("primarymedia")) {
+			if (id.equals("name") || id.equals("longcaption") || id.equals("primaryimage") || id.equals("primarymedia"))
+			{
 				continue;
 			}
 			bulkdetails.add(detail);
@@ -1419,10 +1568,12 @@ public class EntityManager implements CatalogEnabled {
 		return bulkdetails;
 	}
 
-	public Collection<CategoryWithEntity> loadCategoriesWithEntities(WebPageRequest inReq, Asset inAsset) {
+	public Collection<CategoryWithEntity> loadCategoriesWithEntities(WebPageRequest inReq, Asset inAsset)
+	{
 		Collection<Category> inParentCategories = inAsset.getCategories();
 
-		if (inParentCategories == null) {
+		if (inParentCategories == null)
+		{
 			return null;
 		}
 
@@ -1430,15 +1581,18 @@ public class EntityManager implements CatalogEnabled {
 
 		List<CategoryWithEntity> found = new ArrayList<CategoryWithEntity>();
 
-		for (Iterator iterator = inParentCategories.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inParentCategories.iterator(); iterator.hasNext();)
+		{
 			Category category = (Category) iterator.next();
 			CategoryWithEntity toadd = new CategoryWithEntity();
 			toadd.setCategory(category);
 
-			for (Iterator iterator2 = entities.iterator(); iterator2.hasNext();) {
+			for (Iterator iterator2 = entities.iterator(); iterator2.hasNext();)
+			{
 				Data entity = (Data) iterator2.next();
 				String rootid = entity.get("rootcategory");
-				if (rootid != null && category.hasCatalog(rootid)) {
+				if (rootid != null && category.hasCatalog(rootid))
+				{
 					toadd.setEntity(entity);
 					Data module = getMediaArchive().getCachedData("module", entity.get("entitysourcetype"));
 					toadd.setEntityModule(module);
@@ -1450,8 +1604,8 @@ public class EntityManager implements CatalogEnabled {
 		return found;
 	}
 
-	public void createEntityFromYoutubeMetadata(User inUser, Data inModule, YoutubeMetadataSnippet inMetadata,
-			String inParentmoduleid, String inParententityid, String sourcepath) {
+	public void createEntityFromYoutubeMetadata(User inUser, Data inModule, YoutubeMetadataSnippet inMetadata, String inParentmoduleid, String inParententityid, String sourcepath)
+	{
 		MediaArchive archive = getMediaArchive();
 		Searcher searcher = archive.getSearcher(inModule.getId());
 		Data entity = searcher.createNewData();
@@ -1463,7 +1617,8 @@ public class EntityManager implements CatalogEnabled {
 		entity.setValue("embeddedid", inMetadata.getVideoId());
 		entity.setValue("embeddedtype", "youtube");
 
-		if (inParentmoduleid != null && inParententityid != null) {
+		if (inParentmoduleid != null && inParententityid != null)
+		{
 			entity.setValue(inParentmoduleid, inParententityid);
 		}
 		searcher.saveData(entity);
@@ -1505,9 +1660,11 @@ public class EntityManager implements CatalogEnabled {
 		searcher.saveData(entity);
 	}
 
-	public Asset getAsset(Data inEntity) {
+	public Asset getAsset(Data inEntity)
+	{
 		String assetid = inEntity.get("primarymedia");
-		if (assetid == null) {
+		if (assetid == null)
+		{
 			assetid = inEntity.get("primaryimage");
 		}
 		return getMediaArchive().getAsset(assetid);

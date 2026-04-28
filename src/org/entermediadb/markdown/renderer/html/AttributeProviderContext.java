@@ -9,5 +9,6 @@ package org.entermediadb.markdown.renderer.html;
  * <em>This interface is not intended to be implemented by clients.</em>
  * </p>
  */
-public interface AttributeProviderContext {
+public interface AttributeProviderContext
+{
 }

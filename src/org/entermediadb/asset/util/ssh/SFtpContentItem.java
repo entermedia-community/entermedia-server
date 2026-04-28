@@ -34,8 +34,10 @@ class SFtpContentItem extends InputStreamItem
 	}
 
 	@Override
-	public long getLength() {
-		if (this.entry == null) {
+	public long getLength()
+	{
+		if (this.entry == null)
+		{
 			String path = getAbsolutePath().substring(1);
 			// return repository.doesExist(path);
 			String url = this.repository.getProperty("defaultremotepath") + "/" + path;
@@ -51,26 +53,34 @@ class SFtpContentItem extends InputStreamItem
 	// return (new Date()).getTime();
 	// }
 	// @Override
-	public Date lastModified() {
+	public Date lastModified()
+	{
 		if (this.entry != null)
 			this.setLastModified(new Date(this.entry.getAttrs().getMTime()));
 		return super.lastModified();
 	}
 
-	public InputStream getInputStream() throws RepositoryException {
-		if (isFolder()) {
+	public InputStream getInputStream() throws RepositoryException
+	{
+		if (isFolder())
+		{
 			return createFileListingStream();
 		}
-		try {
+		try
+		{
 			String path = getAbsolutePath().substring(1);
 			return repository.getInputStream(path);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new RepositoryException(e);
 		}
 	}
 
-	public boolean exists() {
-		try {
+	public boolean exists()
+	{
+		try
+		{
 			String path = getAbsolutePath().substring(1);
 			// return repository.doesExist(path);
 			String url = this.repository.getProperty("defaultremotepath") + "/" + path;
@@ -79,46 +89,59 @@ class SFtpContentItem extends InputStreamItem
 				return false;
 			return true;
 
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			return false;
 
 		}
 	}
 
-	public boolean isFolder() {
-		if (getAbsolutePath().endsWith("/")) {
+	public boolean isFolder()
+	{
+		if (getAbsolutePath().endsWith("/"))
+		{
 			return true;
 		}
 		return false;
 	}
 
-	public boolean isWritable() {
+	public boolean isWritable()
+	{
 		// TODO Auto-generated method stub
 		return true;
 	}
 
-	protected InputStream createFileListingStream() {
+	protected InputStream createFileListingStream()
+	{
 		SftpRepository sftp = null;
 		StringBuffer sb = null;
-		try {
+		try
+		{
 			List<String> files = repository.getChildrenNames(this.fieldAbsolutePath);
 			sb = new StringBuffer();
-			for (int i = 0; i < files.size(); i++) {
-				if (!files.get(i).equals(".versions")) {
+			for (int i = 0; i < files.size(); i++)
+			{
+				if (!files.get(i).equals(".versions"))
+				{
 					sb.append(files.get(i) + "\n");
 				}
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new RepositoryException(e);
 		}
 		return new ByteArrayInputStream(sb.toString().getBytes());
 	}
 
-	public SftpRepository getRepository() {
+	public SftpRepository getRepository()
+	{
 		return repository;
 	}
 
-	public void setRepository(SftpRepository repository) {
+	public void setRepository(SftpRepository repository)
+	{
 		this.repository = repository;
 	}
 

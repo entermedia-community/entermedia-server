@@ -29,26 +29,31 @@ import org.openedit.repository.ContentItem;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.ZipUtil;
 
-public class OrderZipGenerator extends BaseGenerator {
+public class OrderZipGenerator extends BaseGenerator
+{
 
 	private static final Log log = LogFactory.getLog(OrderZipGenerator.class);
 	protected ModuleManager fieldModuleManager;
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager moduleManager) {
+	public void setModuleManager(ModuleManager moduleManager)
+	{
 		fieldModuleManager = moduleManager;
 	}
 
-	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException {
+	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
+	{
 		MediaArchiveModule archiveModule = (MediaArchiveModule) getModuleManager().getBean("MediaArchiveModule");
 		MediaArchive archive = archiveModule.getMediaArchive(inReq);
 
 		ZipOutputStream zos = null;
 		Order order = null;
-		try {
+		try
+		{
 
 			String orderid = inReq.getRequestParameter("orderid");
 
@@ -56,12 +61,12 @@ public class OrderZipGenerator extends BaseGenerator {
 
 			String itemsstatus = null;
 
-			if (order.getValue("ordertype").equals("checkout")) {
+			if (order.getValue("ordertype").equals("checkout"))
+			{
 				itemsstatus = "approved";
 			}
 
-			HitTracker orderitems = archive.getOrderManager().findApprovedOrderItems(inReq, archive.getCatalogId(),
-					orderid, itemsstatus);
+			HitTracker orderitems = archive.getOrderManager().findApprovedOrderItems(inReq, archive.getCatalogId(), orderid, itemsstatus);
 			String catalogid = archive.getCatalogId();
 
 			ZipUtil util = new ZipUtil();
@@ -74,12 +79,13 @@ public class OrderZipGenerator extends BaseGenerator {
 			Set<String> fileset = new HashSet<String>();// set of unique filenames
 			StringBuilder buf = new StringBuilder();// some accounting of filenames that are renamed
 
-			for (Iterator iterator = orderitems.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = orderitems.iterator(); iterator.hasNext();)
+			{
 				Data orderitem = (Data) iterator.next();
 
-				Data preset = archive.getSearcherManager().getData(catalogid, "convertpreset",
-						orderitem.get("presetid"));
-				if (preset == null && "original".equals(orderitem.get("presetid"))) {
+				Data preset = archive.getSearcherManager().getData(catalogid, "convertpreset", orderitem.get("presetid"));
+				if (preset == null && "original".equals(orderitem.get("presetid")))
+				{
 					preset = archive.getSearcherManager().getData(catalogid, "convertpreset", "0");
 				}
 				//
@@ -95,39 +101,44 @@ public class OrderZipGenerator extends BaseGenerator {
 				ContentItem target = null;
 				String filename = orderitem.get("itemexportname");
 
-				if (filename == null) {
+				if (filename == null)
+				{
 					filename = orderitem.get("itemfilepath");
 				}
-				if (filename == null) {
+				if (filename == null)
+				{
 					filename = asset.getPrimaryFile();
 				}
-				if (filename == null) {
+				if (filename == null)
+				{
 					throw new OpenEditException("Filename was not set on publish task:  " + orderitem.getId());
 				}
 				// handle duplicate filenames
-				if (fileset.contains(filename)) {
+				if (fileset.contains(filename))
+				{
 					buf.append(filename).append("\t").append(asset.getSourcePath()).append("\t");
 					String filetype = "";
-					if (filename.contains(".")) {
+					if (filename.contains("."))
+					{
 						filetype = filename.substring(filename.lastIndexOf("."));
 						filename = filename.substring(0, filename.lastIndexOf("."));
 					}
-					filename = new StringBuilder()
-							.append(filename).append("_")
-							.append(String.valueOf((int) (Math.random() * 1000)))
-							.append(filetype)
-							.toString();
+					filename = new StringBuilder().append(filename).append("_").append(String.valueOf((int) (Math.random() * 1000))).append(filetype).toString();
 					buf.append(filename).append("\n");
 					fileset.add(filename);
-				} else {
+				}
+				else
+				{
 					fileset.add(filename);
 				}
-				if (preset.getId().equals("0")) {
+				if (preset.getId().equals("0"))
+				{
 					target = archive.getOriginalContent(asset);
 					util.addTozip(target, filename, zos);
-				} else {
-					String pathToFile = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/"
-							+ orderitem.get("assetsourcepath") + "/" + preset.get("generatedoutputfile");
+				}
+				else
+				{
+					String pathToFile = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + orderitem.get("assetsourcepath") + "/" + preset.get("generatedoutputfile");
 					target = archive.getPageManager().getContent(pathToFile);
 					util.addTozip(target, filename, zos);
 				}
@@ -136,16 +147,24 @@ public class OrderZipGenerator extends BaseGenerator {
 
 			}
 
-			if (!buf.toString().isEmpty()) {
+			if (!buf.toString().isEmpty())
+			{
 				util.addTozip("Original Name\tSource Path\tNew Name\n" + buf.toString(), "files.txt", zos);
 			}
 
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			throw new OpenEditException(e);
-		} finally {
-			try {
+		}
+		finally
+		{
+			try
+			{
 				zos.close();
-			} catch (IOException e) {
+			}
+			catch (IOException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -159,7 +178,8 @@ public class OrderZipGenerator extends BaseGenerator {
 
 	}
 
-	public boolean canGenerate(WebPageRequest inReq) {
+	public boolean canGenerate(WebPageRequest inReq)
+	{
 
 		boolean ok = inReq.getPage().getMimeType().equals("application/x-zip");
 		return ok;

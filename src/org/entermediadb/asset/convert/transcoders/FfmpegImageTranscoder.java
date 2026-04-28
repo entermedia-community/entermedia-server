@@ -15,7 +15,8 @@ import org.entermediadb.asset.convert.ConvertResult;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.MathUtils;
 
-public class FfmpegImageTranscoder extends BaseTranscoder {
+public class FfmpegImageTranscoder extends BaseTranscoder
+{
 	private static final Log log = LogFactory.getLog(FfmpegImageTranscoder.class);
 	protected String fieldCommandName = "avconv"; // ffmpeg -itsoffset 10
 
@@ -23,20 +24,24 @@ public class FfmpegImageTranscoder extends BaseTranscoder {
 	// -vframes 1 -f mjpeg
 	// $OUTPUT
 
-	public String getCommandName() {
+	public String getCommandName()
+	{
 		return fieldCommandName;
 	}
 
-	public void setCommandName(String inCommandName) {
+	public void setCommandName(String inCommandName)
+	{
 		fieldCommandName = inCommandName;
 	}
 
-	public ConvertResult convert(ConvertInstructions inStructions) {
+	public ConvertResult convert(ConvertInstructions inStructions)
+	{
 		ConvertResult result = new ConvertResult();
 		result.setOutput(inStructions.getOutputFile());
 
 		ContentItem outputFile = result.getOutput();
-		if (!inStructions.isForce() && outputFile.getLength() > 0) {
+		if (!inStructions.isForce() && outputFile.getLength() > 0)
+		{
 			result.setOk(true);
 			result.setComplete(true);
 			return result;
@@ -68,7 +73,8 @@ public class FfmpegImageTranscoder extends BaseTranscoder {
 		// Page input = getPageManager().getPage(ci.getOutputPath());
 
 		// Or the original file, if the flv does not exist
-		if (!input.exists() || input.getLength() == 0) {
+		if (!input.exists() || input.getLength() == 0)
+		{
 			result.setOk(false);
 			log.info("Input not ready yet" + input.getPath());
 			return result;
@@ -80,46 +86,61 @@ public class FfmpegImageTranscoder extends BaseTranscoder {
 		Double videolength = (Double) inStructions.getAsset().getDouble("length");
 		String offset = inStructions.getProperty("timeoffset");
 
-		if (offset == null) {
+		if (offset == null)
+		{
 			offset = "2";
 		}
 		double jumpoff = Double.parseDouble(offset); // Jump to within 2 seconds to speed up / more accurate creation
-		if (videolength != null) {
-			if ((int) jumpoff <= videolength.intValue()) {
-				if (videolength.intValue() < 3) { // fraction of seconds usually failing
+		if (videolength != null)
+		{
+			if ((int) jumpoff <= videolength.intValue())
+			{
+				if (videolength.intValue() < 3)
+				{ // fraction of seconds usually failing
 					jumpoff = 0;
 				}
 			}
 		}
 
-		try {
+		try
+		{
 			offset = String.valueOf(jumpoff);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			log.error(e);
 			offset = "0";
 		}
 
-		if (videolength != null) {
-			if (jumpoff > videolength) {
+		if (videolength != null)
+		{
+			if (jumpoff > videolength)
+			{
 				log.info("Video not long enough " + jumpoff);
 				jumpoff = videolength;
 			}
-		} else if (input.getLength() < 1000000) // too small of video.mp4
-		{
-			offset = "0";
 		}
+		else
+			if (input.getLength() < 1000000) // too small of video.mp4
+			{
+				offset = "0";
+			}
 
 		List<String> com = new ArrayList<String>();
 
 		int framewindow = 1;
 		int seconds = (int) jumpoff;
 
-		if (seconds > 1) { // only on custom offset
+		if (seconds > 1)
+		{ // only on custom offset
 			com.add("-ss");
 
-			if (seconds > framewindow) {
+			if (seconds > framewindow)
+			{
 				com.add(String.valueOf(seconds - framewindow)); // This is the whole number minus 1
-			} else {
+			}
+			else
+			{
 				com.add(String.valueOf(seconds)); // This is the whole number
 			}
 		}
@@ -134,13 +155,17 @@ public class FfmpegImageTranscoder extends BaseTranscoder {
 		com.add("1");
 		com.add("-f");
 
-		if (inStructions.getOutputExtension().equals("webp")) {
+		if (inStructions.getOutputExtension().equals("webp"))
+		{
 			com.add("webp");
-		} else {
+		}
+		else
+		{
 			com.add("mjpeg");
 		}
 
-		if (seconds > framewindow) {
+		if (seconds > framewindow)
+		{
 			com.add("-ss");
 			// https://ffmpeg.org/ffmpeg-utils.html#time-duration-syntax
 			String jumpoffs = MathUtils.toString(jumpoff - (double) seconds + (double) framewindow, 3); // Should be
@@ -157,12 +182,16 @@ public class FfmpegImageTranscoder extends BaseTranscoder {
 		new File(outputpath).getParentFile().mkdirs();
 		com.add(outputpath);
 		long start = System.currentTimeMillis();
-		if (runExec(getCommandName(), com, timeout)) {
+		if (runExec(getCommandName(), com, timeout))
+		{
 			log.info("Resize complete in:" + (System.currentTimeMillis() - start) + " " + outputFile.getName());
 			result.setComplete(true);
 			result.setOutput(outputFile);
-		} else {
-			if (!outputFile.exists() || outputFile.getLength() == 0) {
+		}
+		else
+		{
+			if (!outputFile.exists() || outputFile.getLength() == 0)
+			{
 				log.info("Thumbnail creation failed " + outputpath);
 				result.setOk(false);
 				result.setError("creation failed");

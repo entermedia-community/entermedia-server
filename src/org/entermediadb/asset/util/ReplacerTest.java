@@ -8,8 +8,10 @@ import org.openedit.data.SearcherManager;
 import org.openedit.users.User;
 import org.openedit.util.Replacer;
 
-public class ReplacerTest extends BaseTestCase {
-	public void testReplacer() throws Exception {
+public class ReplacerTest extends BaseTestCase
+{
+	public void testReplacer() throws Exception
+	{
 		SearcherManager manager = (SearcherManager) getBean("searcherManager");
 		Replacer replacer = new Replacer();
 

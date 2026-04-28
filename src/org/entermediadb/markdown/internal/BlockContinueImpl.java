@@ -2,7 +2,8 @@ package org.entermediadb.markdown.internal;
 
 import org.entermediadb.markdown.parser.block.BlockContinue;
 
-public class BlockContinueImpl extends BlockContinue {
+public class BlockContinueImpl extends BlockContinue
+{
 
     private final int newIndex;
     private final int newColumn;
@@ -14,15 +15,18 @@ public class BlockContinueImpl extends BlockContinue {
         this.finalize = finalize;
     }
 
-    public int getNewIndex() {
+    public int getNewIndex()
+    {
         return newIndex;
     }
 
-    public int getNewColumn() {
+    public int getNewColumn()
+    {
         return newColumn;
     }
 
-    public boolean isFinalize() {
+    public boolean isFinalize()
+    {
         return finalize;
     }
 

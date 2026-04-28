@@ -12,7 +12,8 @@ import org.openedit.OpenEditException;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 
-public interface AssetSource {
+public interface AssetSource
+{
 	InputStream getOriginalDocumentStream(Asset inAsset) throws OpenEditException;
 
 	ContentItem getOriginalContent(Asset inAsset);
@@ -33,8 +34,7 @@ public interface AssetSource {
 
 	// public Asset createAsset(final String currentcollection, final boolean
 	// createCategories, final Map metadata, final Map pages, final User user);
-	Asset createAsset(Asset inAsset, ContentItem inUploaded, Map inMetadata, String inSourcepath,
-			boolean inCreateCategories, User inUser);
+	Asset createAsset(Asset inAsset, ContentItem inUploaded, Map inMetadata, String inSourcepath, boolean inCreateCategories, User inUser);
 
 	Asset replaceOriginal(Asset inAsset, List<ContentItem> inTemppages);
 

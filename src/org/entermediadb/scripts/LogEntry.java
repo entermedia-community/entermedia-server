@@ -2,7 +2,8 @@ package org.entermediadb.scripts;
 
 import java.util.logging.LogRecord;
 
-public class LogEntry {
+public class LogEntry
+{
 	public LogEntry() {
 		// TODO Auto-generated constructor stub
 	}
@@ -13,29 +14,36 @@ public class LogEntry {
 
 	protected LogRecord fieldLogRecord;
 
-	public LogRecord getLogRecord() {
+	public LogRecord getLogRecord()
+	{
 		return fieldLogRecord;
 	}
 
-	public void setLogRecord(LogRecord inLogRecord) {
+	public void setLogRecord(LogRecord inLogRecord)
+	{
 		fieldLogRecord = inLogRecord;
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return getLogRecord().getSourceClassName();
 	}
 
-	public String getMethod() {
+	public String getMethod()
+	{
 		return getLogRecord().getSourceMethodName();
 	}
 
-	public String getMessage() {
+	public String getMessage()
+	{
 		return getLogRecord().getMessage();
 	}
 
-	public String toString() {
+	public String toString()
+	{
 		String prefix = "";
-		if (getLogRecord().getLevel().intValue() > 800) {
+		if (getLogRecord().getLevel().intValue() > 800)
+		{
 			prefix = "ERROR: ";
 		}
 		return prefix + getMessage() + " [" + getName() + "#" + getMethod() + "]";

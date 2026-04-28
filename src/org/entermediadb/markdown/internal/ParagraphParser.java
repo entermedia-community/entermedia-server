@@ -10,37 +10,46 @@ import org.entermediadb.markdown.parser.block.ParserState;
 
 import java.util.List;
 
-public class ParagraphParser extends AbstractBlockParser {
+public class ParagraphParser extends AbstractBlockParser
+{
 
     private final Paragraph block = new Paragraph();
     private final LinkReferenceDefinitionParser linkReferenceDefinitionParser = new LinkReferenceDefinitionParser();
 
     @Override
-    public boolean canHaveLazyContinuationLines() {
+    public boolean canHaveLazyContinuationLines()
+    {
         return true;
     }
 
     @Override
-    public Block getBlock() {
+    public Block getBlock()
+    {
         return block;
     }
 
     @Override
-    public BlockContinue tryContinue(ParserState state) {
-        if (!state.isBlank()) {
+    public BlockContinue tryContinue(ParserState state)
+    {
+        if (!state.isBlank())
+        {
             return BlockContinue.atIndex(state.getIndex());
-        } else {
+        }
+        else
+        {
             return BlockContinue.none();
         }
     }
 
     @Override
-    public void addLine(SourceLine line) {
+    public void addLine(SourceLine line)
+    {
         linkReferenceDefinitionParser.parse(line);
     }
 
     @Override
-    public void addSourceSpan(SourceSpan sourceSpan) {
+    public void addSourceSpan(SourceSpan sourceSpan)
+    {
         // Some source spans might belong to link reference definitions, others to the
         // paragraph.
         // The parser will handle that.
@@ -48,40 +57,51 @@ public class ParagraphParser extends AbstractBlockParser {
     }
 
     @Override
-    public List<DefinitionMap<?>> getDefinitions() {
+    public List<DefinitionMap<?>> getDefinitions()
+    {
         var map = new DefinitionMap<>(LinkReferenceDefinition.class);
-        for (var def : linkReferenceDefinitionParser.getDefinitions()) {
+        for (var def : linkReferenceDefinitionParser.getDefinitions())
+        {
             map.putIfAbsent(def.getLabel(), def);
         }
         return List.of(map);
     }
 
     @Override
-    public void closeBlock() {
-        for (var def : linkReferenceDefinitionParser.getDefinitions()) {
+    public void closeBlock()
+    {
+        for (var def : linkReferenceDefinitionParser.getDefinitions())
+        {
             block.insertBefore(def);
         }
 
-        if (linkReferenceDefinitionParser.getParagraphLines().isEmpty()) {
+        if (linkReferenceDefinitionParser.getParagraphLines().isEmpty())
+        {
             block.unlink();
-        } else {
+        }
+        else
+        {
             block.setSourceSpans(linkReferenceDefinitionParser.getParagraphSourceSpans());
         }
     }
 
     @Override
-    public void parseInlines(InlineParser inlineParser) {
+    public void parseInlines(InlineParser inlineParser)
+    {
         SourceLines lines = linkReferenceDefinitionParser.getParagraphLines();
-        if (!lines.isEmpty()) {
+        if (!lines.isEmpty())
+        {
             inlineParser.parse(lines, block);
         }
     }
 
-    public SourceLines getParagraphLines() {
+    public SourceLines getParagraphLines()
+    {
         return linkReferenceDefinitionParser.getParagraphLines();
     }
 
-    public List<SourceSpan> removeLines(int lines) {
+    public List<SourceSpan> removeLines(int lines)
+    {
         return linkReferenceDefinitionParser.removeLines(lines);
     }
 }

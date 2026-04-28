@@ -17,14 +17,16 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.util.DateStorageUtil;
 
-public class emailpublisher extends BasePublisher implements Publisher {
+public class emailpublisher extends BasePublisher implements Publisher
+{
 	private static final Log log = LogFactory.getLog(emailpublisher.class);
 
-	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination,
-			Data inPreset, Asset inAsset) {
+	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
+	{
 		PublishResult result = checkOnConversion(mediaArchive, inOrderItem, inAsset, inPreset);
 
-		if (!result.isReadyToPublish()) {
+		if (!result.isReadyToPublish())
+		{
 			return result;
 		}
 		// Make sure all items are ready then send the email
@@ -33,34 +35,44 @@ public class emailpublisher extends BasePublisher implements Publisher {
 		String emailto = inOrder.get("sharewithemail");
 		// String notes = inOrder.get("sharenote");
 
-		if (emailto != null && inOrder.getInt("itemerrorcount") == 0) {
+		if (emailto != null && inOrder.getInt("itemerrorcount") == 0)
+		{
 			String appid = inOrder.get("applicationid");
-			if (appid == null) {
+			if (appid == null)
+			{
 				throw new OpenEditException("applicationid is required");
 			}
 			String userid = inOrderItem.get("userid");
-			if (userid == null) {
+			if (userid == null)
+			{
 				throw new OpenEditException("userid is required");
 			}
 			String template = null;
 
-			if ("checkout".equals(inOrder.get("ordertype"))) {
+			if ("checkout".equals(inOrder.get("ordertype")))
+			{
 				template = "/" + appid + "/theme/emails/checkouttemplate.html";
-			} else {
+			}
+			else
+			{
 				template = "/" + appid + "/theme/emails/sharetemplate.html";
 			}
 			Map params = new HashMap();
 			params.put("order", inOrder);
 
 			String expireson = inOrder.get("expireson");
-			if ((expireson != null) && (expireson.trim().length() > 0)) {
+			if ((expireson != null) && (expireson.trim().length() > 0))
+			{
 				Date date = DateStorageUtil.getStorageUtil().parseFromStorage(expireson);
 				params.put("expiresondate", date);
 				params.put("expiresformat", new SimpleDateFormat("MMM dd, yyyy"));
 			}
-			try {
+			try
+			{
 				mediaArchive.sendEmail(userid, params, emailto, template);
-			} catch (Exception ex) {
+			}
+			catch (Exception ex)
+			{
 				result.setErrorMessage(ex.getMessage());
 				return result;
 			}

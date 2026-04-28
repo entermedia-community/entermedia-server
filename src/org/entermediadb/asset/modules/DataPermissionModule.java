@@ -23,33 +23,41 @@ import org.openedit.util.strainer.GroupFilter;
 import org.openedit.util.strainer.OrFilter;
 import org.openedit.util.strainer.SettingsGroupFilter;
 
-public class DataPermissionModule extends BaseMediaModule {
+public class DataPermissionModule extends BaseMediaModule
+{
 	private static final Log log = LogFactory.getLog(DataPermissionModule.class);
 
-	public void loadCustomModulePermissions(WebPageRequest inReq) {
+	public void loadCustomModulePermissions(WebPageRequest inReq)
+	{
 		String moduleid = inReq.findValue("module"); // librarycolleciton
-		if (moduleid == null) {
+		if (moduleid == null)
+		{
 			throw new OpenEditException("No module specified");
 		}
 		String catid = inReq.findPathValue("catalogid");
-		if (catid == null) {
+		if (catid == null)
+		{
 			catid = "system";
 		}
 		String parametername = inReq.findValue("parameterid"); // librarycolleciton
-		if (parametername != null) {
+		if (parametername != null)
+		{
 			String id = inReq.getRequestParameter(parametername);
 
 			PermissionManager manager = getPermissionManager(catid);
 			String parentparameterid = inReq.findValue("parentparameterid"); // librarycolleciton
 			String parentvalue = inReq.getRequestParameter(parentparameterid);
 			String parantparametertype = inReq.findValue("parametertype");
-			if (parantparametertype == null) {
+			if (parantparametertype == null)
+			{
 				parantparametertype = moduleid;
 			}
 
-			if (parentvalue == null && parentparameterid != null) {
+			if (parentvalue == null && parentparameterid != null)
+			{
 				Data target = getMediaArchive(catid).getData(parantparametertype, id);
-				if (target != null) {
+				if (target != null)
+				{
 					parentvalue = target.get(parentparameterid);
 				}
 			}
@@ -60,21 +68,25 @@ public class DataPermissionModule extends BaseMediaModule {
 
 	}
 
-	protected PermissionManager getPermissionManager(String catid) {
+	protected PermissionManager getPermissionManager(String catid)
+	{
 		PermissionManager manager = (PermissionManager) getModuleManager().getBean(catid, "permissionManager");
 		return manager;
 	}
 
-	public Permission loadPermission(WebPageRequest inReq) throws Exception {
+	public Permission loadPermission(WebPageRequest inReq) throws Exception
+	{
 		String id = inReq.getRequestParameter("currentpermission");
 		String datapermission = inReq.findValue("datapermission");
-		if (datapermission == null) {
+		if (datapermission == null)
+		{
 			datapermission = inReq.findValue("datapermission.value");
 		}
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Permission permission = loadOrCreatePermission(archive, id, null);
-		if (id != null && datapermission != null) {
+		if (id != null && datapermission != null)
+		{
 			permission.setValue("datapermission", datapermission);
 		}
 		inReq.putPageValue("permission", permission);
@@ -82,7 +94,8 @@ public class DataPermissionModule extends BaseMediaModule {
 
 	}
 
-	protected Permission loadOrCreatePermission(MediaArchive inArchive, String id, String inName) {
+	protected Permission loadOrCreatePermission(MediaArchive inArchive, String id, String inName)
+	{
 		// if( id == null)
 		// {
 		// throw new OpenEditException("permission id is required");
@@ -90,16 +103,21 @@ public class DataPermissionModule extends BaseMediaModule {
 		PermissionManager manager = getPermissionManager(inArchive.getCatalogId());
 
 		Permission permission = manager.getPermission(id);// need stuff here...
-		if (permission == null) {
+		if (permission == null)
+		{
 			Permission per = new Permission();
 			per.setName(inName);
-			if (permission != null && permission.getRootFilter() != null) {
+			if (permission != null && permission.getRootFilter() != null)
+			{
 				FilterReader reader = (FilterReader) getModuleManager().getBean("filterReader");
 				per.setRootFilter(permission.getRootFilter().copy(reader, inName));
-			} else {
+			}
+			else
+			{
 
 			}
-			if (id != null) {
+			if (id != null)
+			{
 				per.setId(id);
 			}
 			permission = per;
@@ -136,13 +154,17 @@ public class DataPermissionModule extends BaseMediaModule {
 	// inReq.putPageValue("editPath", path);
 	// }
 
-	private void resetValues(Filter inFilter) {
-		if (inFilter instanceof BooleanFilter) {
+	private void resetValues(Filter inFilter)
+	{
+		if (inFilter instanceof BooleanFilter)
+		{
 			inFilter.setValue("false");
 		}
 
-		if (inFilter.getFilters() != null) {
-			for (int i = 0; i < inFilter.getFilters().length; i++) {
+		if (inFilter.getFilters() != null)
+		{
+			for (int i = 0; i < inFilter.getFilters().length; i++)
+			{
 				resetValues(inFilter.getFilters()[i]);
 			}
 		}
@@ -154,36 +176,50 @@ public class DataPermissionModule extends BaseMediaModule {
 	 * @param inReq
 	 * @throws Exception
 	 */
-	public void savePermissions(WebPageRequest inReq) throws Exception {
+	public void savePermissions(WebPageRequest inReq) throws Exception
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Permission permission = loadPermission(inReq);
-		if (permission == null) {
+		if (permission == null)
+		{
 			return;
 		}
 		resetValues(permission.getRootFilter());
 
-		for (Iterator iterator = inReq.getParameterMap().keySet().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inReq.getParameterMap().keySet().iterator(); iterator.hasNext();)
+		{
 			String key = (String) iterator.next();
-			if (key.startsWith("condition")) {
+			if (key.startsWith("condition"))
+			{
 				int start = "condition.".length();
 				String traverse = key.substring(start, key.indexOf('.', start + 1));
 				String[] tree = traverse.split("/");
 				int[] list = makeInts(tree);
 				Filter target = permission.findCondition(list);
 				String value = inReq.getRequestParameter(key);
-				if (key.endsWith(".value")) {
+				if (key.endsWith(".value"))
+				{
 					target.setValue(value);
-				} else if (key.endsWith(".name")) {
-					target.setProperty("name", value);
-				} else if (key.endsWith(".property")) {
-					target.setProperty("property", value);
 				}
+				else
+					if (key.endsWith(".name"))
+					{
+						target.setProperty("name", value);
+					}
+					else
+						if (key.endsWith(".property"))
+						{
+							target.setProperty("property", value);
+						}
 				String fieldroot = "condition." + traverse + ".field";
 				String[] fields = inReq.getRequestParameters(fieldroot);
-				if (fields != null) {
-					for (String string : fields) {
+				if (fields != null)
+				{
+					for (String string : fields)
+					{
 						String extra = inReq.getRequestParameter("condition." + traverse + "." + string + ".value");
-						if (extra != null) {
+						if (extra != null)
+						{
 							target.setProperty(string, extra);
 						}
 					}
@@ -197,32 +233,41 @@ public class DataPermissionModule extends BaseMediaModule {
 
 	}
 
-	protected void savePermission(MediaArchive archive, Permission permission) throws OpenEditException {
+	protected void savePermission(MediaArchive archive, Permission permission) throws OpenEditException
+	{
 		PermissionManager manager = getPermissionManager(archive.getCatalogId());
 
 		manager.savePermission(permission);
 	}
 
-	public void removeCondition(WebPageRequest inReq) throws Exception {
+	public void removeCondition(WebPageRequest inReq) throws Exception
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String traverse = inReq.getRequestParameter("traverse");
-		if (traverse != null) {
+		if (traverse != null)
+		{
 			Permission permission = loadPermission(inReq);
-			if (permission != null) {
+			if (permission != null)
+			{
 				String[] tree = traverse.split("/");
-				if (tree.length > 1) {
+				if (tree.length > 1)
+				{
 					int[] list = makeInts(tree);
 					Filter parent = permission.findConditionParent(list);
-					if (parent == null) {
+					if (parent == null)
+					{
 						return;
 					}
 					int target = list[list.length - 1];
-					if (target > parent.getFilters().length) {
+					if (target > parent.getFilters().length)
+					{
 						return;
 					}
 					Filter node = parent.getFilters()[target];
 					parent.removeFilter(node);
-				} else {
+				}
+				else
+				{
 					permission.setRootFilter(null);
 				}
 			}
@@ -261,59 +306,79 @@ public class DataPermissionModule extends BaseMediaModule {
 	// }
 	// }
 	//
-	public void resetPermission(WebPageRequest inReq) throws Exception {
+	public void resetPermission(WebPageRequest inReq) throws Exception
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 
 		String id = inReq.getRequestParameter("currentpermission");
-		if (id != null) {
+		if (id != null)
+		{
 			Searcher searcher = archive.getSearcher("custompermissions");
 			Data perm = (Data) searcher.searchById(id);
-			if (perm != null) {
+			if (perm != null)
+			{
 				searcher.delete(perm, inReq.getUser());
 			}
 		}
 
 	}
 
-	public void addGroup(WebPageRequest inReq) throws Exception {
+	public void addGroup(WebPageRequest inReq) throws Exception
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 
 		String type = inReq.getRequestParameter("addgroup");
-		if (type != null) {
+		if (type != null)
+		{
 			String id = inReq.getRequestParameter("currentpermission");
 
 			Permission permission = loadOrCreatePermission(archive, id, null);
-			if (type.equals("false")) {
+			if (type.equals("false"))
+			{
 				BooleanFilter nope = new BooleanFilter();
 				nope.setTrue(false);
 				permission.setRootFilter(nope);
-			} else if (type.equals("true")) {
-				BooleanFilter yup = new BooleanFilter();
-				yup.setTrue(true);
-				permission.setRootFilter(yup);
-			} else if (type.equals("xml")) {
-				return;
-			} else if (type.startsWith("group.")) {
-				Filter root = permission.getRootFilter();
-				if (!(root instanceof OrFilter)) {
-					root = new OrFilter();
-					permission.setRootFilter(root);
-				}
-				GroupFilter gf = new GroupFilter();
-				String groupid = type.substring("group.".length());
-				gf.setGroupId(groupid);
-				root.addFilter(gf);
-			} else if (type.startsWith("settingsgroup.")) {
-				Filter root = permission.getRootFilter();
-				if (!(root instanceof OrFilter)) {
-					root = new OrFilter();
-					permission.setRootFilter(root);
-				}
-				SettingsGroupFilter gf = new SettingsGroupFilter();
-				String groupid = type.substring("settingsgroup.".length());
-				gf.setGroupId(groupid);
-				root.addFilter(gf);
 			}
+			else
+				if (type.equals("true"))
+				{
+					BooleanFilter yup = new BooleanFilter();
+					yup.setTrue(true);
+					permission.setRootFilter(yup);
+				}
+				else
+					if (type.equals("xml"))
+					{
+						return;
+					}
+					else
+						if (type.startsWith("group."))
+						{
+							Filter root = permission.getRootFilter();
+							if (!(root instanceof OrFilter))
+							{
+								root = new OrFilter();
+								permission.setRootFilter(root);
+							}
+							GroupFilter gf = new GroupFilter();
+							String groupid = type.substring("group.".length());
+							gf.setGroupId(groupid);
+							root.addFilter(gf);
+						}
+						else
+							if (type.startsWith("settingsgroup."))
+							{
+								Filter root = permission.getRootFilter();
+								if (!(root instanceof OrFilter))
+								{
+									root = new OrFilter();
+									permission.setRootFilter(root);
+								}
+								SettingsGroupFilter gf = new SettingsGroupFilter();
+								String groupid = type.substring("settingsgroup.".length());
+								gf.setGroupId(groupid);
+								root.addFilter(gf);
+							}
 			String fields[] = inReq.getRequestParameters("field");
 			archive.getSearcher("custompermissions").updateData(inReq, fields, permission);
 
@@ -380,52 +445,61 @@ public class DataPermissionModule extends BaseMediaModule {
 	// }
 	// }
 
-	private int[] makeInts(String[] tree) {
+	private int[] makeInts(String[] tree)
+	{
 		int[] list = new int[tree.length];
-		for (int i = 0; i < list.length; i++) {
+		for (int i = 0; i < list.length; i++)
+		{
 			list[i] = Integer.parseInt(tree[i]);
 		}
 		return list;
 	}
 
-	public void loadPermissionsByType(WebPageRequest inReq) {
+	public void loadPermissionsByType(WebPageRequest inReq)
+	{
 
 		String permissiontype = inReq.findValue("permissiontype");
-		if (permissiontype == null) {
+		if (permissiontype == null)
+		{
 			permissiontype = inReq.findPathValue("searchtype");
 
 		}
-		if (permissiontype == null) {
+		if (permissiontype == null)
+		{
 			permissiontype = inReq.findValue("moduleid");
 
 		}
 		MediaArchive archive = getMediaArchive(inReq);
 
 		// we are going to load a searcher and a list of permissions
-		HitTracker hits = archive.getSearcher("datapermissions").query().exact("permissiontype", permissiontype)
-				.sort("ordering").search();
+		HitTracker hits = archive.getSearcher("datapermissions").query().exact("permissiontype", permissiontype).sort("ordering").search();
 		inReq.putPageValue("permissions", hits);
 		// this will get shown with edit button
 
 	}
 
-	public void loadPermissionForEdit(WebPageRequest inReq) {
+	public void loadPermissionForEdit(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 
 		String permissiontype = inReq.findValue("permissiontype");
-		if (permissiontype == null) {
+		if (permissiontype == null)
+		{
 			permissiontype = inReq.findPathValue("searchtype");
 
 		}
-		if (permissiontype == null) {
+		if (permissiontype == null)
+		{
 			permissiontype = inReq.findValue("moduleid");
 
 		}
 
 		String dataid = inReq.findValue("dataid");
-		if (permissiontype != null && dataid != null) {
+		if (permissiontype != null && dataid != null)
+		{
 			Data data = archive.getData(permissiontype, dataid);
-			if (data != null) {
+			if (data != null)
+			{
 				inReq.putPageValue("data", data);
 			}
 		}
@@ -436,7 +510,8 @@ public class DataPermissionModule extends BaseMediaModule {
 
 		Permission perm = null;
 		String currentid = inReq.getRequestParameter("currentpermission");
-		if (currentid != null) {
+		if (currentid != null)
+		{
 			perm = loadOrCreatePermission(archive, currentid, currentid);
 			inReq.putPageValue("permission", perm);
 		}
@@ -446,31 +521,48 @@ public class DataPermissionModule extends BaseMediaModule {
 		Boolean simple = Boolean.TRUE;
 
 		String usexml = inReq.getRequestParameter("addgroup");
-		if ("xml".equals(usexml)) {
+		if ("xml".equals(usexml))
+		{
 			simple = Boolean.FALSE;
-		} else {
+		}
+		else
+		{
 			List selgroups = new ArrayList();
 			List selroles = new ArrayList();
 
-			if (perm != null) {
+			if (perm != null)
+			{
 				Filter top = perm.getRootFilter();
-				if (top != null) {
-					if (top instanceof OrFilter) {
+				if (top != null)
+				{
+					if (top instanceof OrFilter)
+					{
 						Filter[] filters = top.getFilters();
-						if (filters != null) {
-							for (int j = 0; j < filters.length; j++) {
-								if (filters[j] instanceof GroupFilter) {
+						if (filters != null)
+						{
+							for (int j = 0; j < filters.length; j++)
+							{
+								if (filters[j] instanceof GroupFilter)
+								{
 									selgroups.add(filters[j]);
-								} else if (filters[j] instanceof SettingsGroupFilter) {
-									selroles.add(filters[j]);
-								} else {
-									simple = Boolean.FALSE;
 								}
+								else
+									if (filters[j] instanceof SettingsGroupFilter)
+									{
+										selroles.add(filters[j]);
+									}
+									else
+									{
+										simple = Boolean.FALSE;
+									}
 							}
 						}
-					} else if (!(top instanceof BooleanFilter)) {
-						simple = Boolean.FALSE;
 					}
+					else
+						if (!(top instanceof BooleanFilter))
+						{
+							simple = Boolean.FALSE;
+						}
 				}
 			}
 			inReq.putPageValue("selgroups", selgroups);
@@ -483,7 +575,8 @@ public class DataPermissionModule extends BaseMediaModule {
 
 	}
 
-	public void addCondition(WebPageRequest inReq) throws Exception {
+	public void addCondition(WebPageRequest inReq) throws Exception
+	{
 		Permission permission = loadPermission(inReq);
 
 		String id = permission.getId();
@@ -492,7 +585,8 @@ public class DataPermissionModule extends BaseMediaModule {
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Data conditiondetail = getMediaArchive(inReq).getData("conditiontypes", type);
-		if (conditiondetail != null && conditiondetail.get("type") != null) {
+		if (conditiondetail != null && conditiondetail.get("type") != null)
+		{
 			id = type;
 			type = conditiondetail.get("type");
 
@@ -500,23 +594,32 @@ public class DataPermissionModule extends BaseMediaModule {
 
 		FilterReader reader = (FilterReader) getModuleManager().getBean("filterReader");
 
-		if (permission != null) {
-			if (permission != null) {
+		if (permission != null)
+		{
+			if (permission != null)
+			{
 				Configuration config = new XMLConfiguration();
 				config.addChild(new XMLConfiguration(type));
 
 				Filter newFilter = reader.readFilterCollection(config, id);
-				if (permission.getRootFilter() == null) {
+				if (permission.getRootFilter() == null)
+				{
 					permission.setRootFilter(newFilter);
-				} else if (traverse != null && traverse.length() > 0) {
-					String[] tree = traverse.split("/");
-					int[] list = makeInts(tree);
-					Filter parent = permission.findCondition(list);
-					parent.addFilter(newFilter);
-				} else {
-					permission.getRootFilter().addFilter(newFilter);
 				}
-				if ("action".equals(type)) {
+				else
+					if (traverse != null && traverse.length() > 0)
+					{
+						String[] tree = traverse.split("/");
+						int[] list = makeInts(tree);
+						Filter parent = permission.findCondition(list);
+						parent.addFilter(newFilter);
+					}
+					else
+					{
+						permission.getRootFilter().addFilter(newFilter);
+					}
+				if ("action".equals(type))
+				{
 					String action = conditiondetail.get("method");
 					newFilter.setProperty("name", action);
 					newFilter.setProperty("conditiontype", id);
@@ -530,7 +633,8 @@ public class DataPermissionModule extends BaseMediaModule {
 		}
 	}
 
-	public void loadPermissions(WebPageRequest inReq) {
+	public void loadPermissions(WebPageRequest inReq)
+	{
 		// String permissiontype = inReq.findValue("permissiontype");
 		// MediaArchive archive = getMediaArchive(inReq);
 		// HitTracker <Data> permissions =

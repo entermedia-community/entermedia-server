@@ -5,18 +5,22 @@ import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.ai.llm.AgentEnabled;
 import org.openedit.CatalogEnabled;
 
-public class BaseSkill extends BaseAiManager implements Skill, CatalogEnabled {
-	public void processstart(AgentContext inContext) {
+public class BaseSkill extends BaseAiManager implements Skill, CatalogEnabled
+{
+	public void processstart(AgentContext inContext)
+	{
 		// fire websocket event
 	}
 
-	public void processend(AgentContext inContext) {
-	}
+	public void processend(AgentContext inContext)
+	{}
 
-	public AgentContext createAgentContext(AgentContext inParentContext, AgentEnabled inEnabled) {
+	public AgentContext createAgentContext(AgentContext inParentContext, AgentEnabled inEnabled)
+	{
 		String contextbeanname = inEnabled.getAgentData().get("contextbean");
 
-		if (contextbeanname == null) {
+		if (contextbeanname == null)
+		{
 			contextbeanname = "agentContext";
 		}
 		AgentContext childContext = (AgentContext) getMediaArchive().getBean(contextbeanname, false);
@@ -26,9 +30,11 @@ public class BaseSkill extends BaseAiManager implements Skill, CatalogEnabled {
 	}
 
 	@Override
-	public void process(AgentContext inContext) {
+	public void process(AgentContext inContext)
+	{
 		Collection<AgentEnabled> children = inContext.getAgentEnableChildren();
-		for (AgentEnabled agentEnabled : children) {
+		for (AgentEnabled agentEnabled : children)
+		{
 			AgentContext childContext = createAgentContext(inContext, agentEnabled);
 
 			agentEnabled.getAgent().processstart(childContext);

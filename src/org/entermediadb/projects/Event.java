@@ -4,56 +4,69 @@ import java.util.Date;
 
 import org.openedit.Data;
 
-public class Event {
+public class Event
+{
 	protected Data fieldData;
 
-	public Data getData() {
+	public Data getData()
+	{
 		return fieldData;
 	}
 
-	public void setData(Data inData) {
+	public void setData(Data inData)
+	{
 		fieldData = inData;
 	}
 
 	protected String fieldLabel;
 
-	public String getLabel() {
+	public String getLabel()
+	{
 		return fieldLabel;
 	}
 
-	public void setLabel(String inLabel) {
+	public void setLabel(String inLabel)
+	{
 		fieldLabel = inLabel;
 	}
 
-	public Date getDate() {
+	public Date getDate()
+	{
 		return fieldDate;
 	}
 
-	public void setDate(Date inDate) {
+	public void setDate(Date inDate)
+	{
 		fieldDate = inDate;
 	}
 
-	public String getParentId() {
+	public String getParentId()
+	{
 		return fieldParentId;
 	}
 
-	public void setParentId(String inParentId) {
+	public void setParentId(String inParentId)
+	{
 		fieldParentId = inParentId;
 	}
 
-	public String getType() {
+	public String getType()
+	{
 		return fieldType;
 	}
 
-	public void setType(String inType) {
+	public void setType(String inType)
+	{
 		fieldType = inType;
 	}
 
-	public String getId() {
+	public String getId()
+	{
 		return fieldId;
 	}
 
-	public void setId(String inId) {
+	public void setId(String inId)
+	{
 		fieldId = inId;
 	}
 

@@ -3,7 +3,8 @@ package org.entermediadb.markdown.renderer.html;
 /**
  * Factory for instantiating new attribute providers when rendering is done.
  */
-public interface AttributeProviderFactory {
+public interface AttributeProviderFactory
+{
 
     /**
      * Create a new attribute provider.

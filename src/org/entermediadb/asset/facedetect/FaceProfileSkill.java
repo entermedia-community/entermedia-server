@@ -11,26 +11,31 @@ import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.Asset;
 import org.openedit.MultiValued;
 
-public class FaceProfileSkill extends BaseSkill {
-	public FaceProfileManager getFaceProfileManager() {
+public class FaceProfileSkill extends BaseSkill
+{
+	public FaceProfileManager getFaceProfileManager()
+	{
 		FaceProfileManager manager = (FaceProfileManager) getMediaArchive().getBean("faceProfileManager");
 		return manager;
 	}
 
 	@Override
-	public void process(AgentContext inContext) {
+	public void process(AgentContext inContext)
+	{
 		InformaticsContext mycontext = new InformaticsContext(inContext);
 
 		Collection<Asset> assets = mycontext.getAssetsToProcess();
-		if (assets != null && !assets.isEmpty()) {
+		if (assets != null && !assets.isEmpty())
+		{
 			Collection<Asset> workinghits = new ArrayList(assets);
 
-			getFaceProfileManager().processAssets(inContext.getScriptLogger(),
-					mycontext.getCurrentAgentEnable().getAgentData(), assets);
+			getFaceProfileManager().processAssets(inContext.getScriptLogger(), mycontext.getCurrentAgentEnable().getAgentData(), assets);
 
-			for (Iterator iterator2 = assets.iterator(); iterator2.hasNext();) {
+			for (Iterator iterator2 = assets.iterator(); iterator2.hasNext();)
+			{
 				MultiValued data = (MultiValued) iterator2.next();
-				if (data.getBoolean("llmerror")) {
+				if (data.getBoolean("llmerror"))
+				{
 					workinghits.remove(data); // We do not process more.
 				}
 			}

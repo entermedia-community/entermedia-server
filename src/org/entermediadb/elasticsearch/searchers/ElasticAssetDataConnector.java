@@ -44,7 +44,8 @@ import org.openedit.users.User;
 import org.openedit.util.IntCounter;
 import org.openedit.util.PathUtilities;
 
-public class ElasticAssetDataConnector extends BaseElasticSearcher implements DataConnector {
+public class ElasticAssetDataConnector extends BaseElasticSearcher implements DataConnector
+{
 
 	static final Log log = LogFactory.getLog(ElasticAssetDataConnector.class);
 
@@ -52,33 +53,41 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 	protected MediaArchive fieldMediaArchive;
 	protected IntCounter fieldIntCounter;
 
-	public Data createNewData() {
+	public Data createNewData()
+	{
 		return new BaseAsset(getMediaArchive());
 	}
 
-	public void deleteFromIndex(String inId) {
+	public void deleteFromIndex(String inId)
+	{
 		// TODO Auto-generated method stub
 		DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), inId);
 		delete.setRefresh(true).execute().actionGet();
 		// delete()
 	}
 
-	public void deleteFromIndex(HitTracker inOld) {
-		for (Iterator iterator = inOld.iterator(); iterator.hasNext();) {
+	public void deleteFromIndex(HitTracker inOld)
+	{
+		for (Iterator iterator = inOld.iterator(); iterator.hasNext();)
+		{
 			Data hit = (Data) iterator.next();
 			deleteFromIndex(hit.getId());
 		}
 
 	}
 
-	public void reIndexAll() throws OpenEditException {
-		try {
+	public void reIndexAll() throws OpenEditException
+	{
+		try
+		{
 			setOptimizeReindex(false);
 			putMappings();
 			getMediaArchive().getCategorySearcher().clearCategories();
 			super.reindexInternal();
 			log.info(getSearchType() + " Reindex complete");
-		} finally {
+		}
+		finally
+		{
 			setOptimizeReindex(true);
 		}
 	}
@@ -149,23 +158,27 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 	/**
 	 * @deprecated Need to simplify
 	 */
-	public void updateIndex(Data one) {
+	public void updateIndex(Data one)
+	{
 		List all = new ArrayList(1);
 		all.add(one);
 		updateIndex(all, null);
 	}
 
-	public boolean shoudSkipField(String inKey) {
-		if (inKey.equals("category-exact") || inKey.equals("category-featured") || inKey.equals("category")
-				|| inKey.equals("description") || inKey.equals("foldersourcepath")) {
+	public boolean shoudSkipField(String inKey)
+	{
+		if (inKey.equals("category-exact") || inKey.equals("category-featured") || inKey.equals("category") || inKey.equals("description") || inKey.equals("foldersourcepath"))
+		{
 			return true;
 		}
 		return super.shoudSkipField(inKey);
 	}
 
 	@Override
-	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails, User inUser) {
-		try {
+	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails, User inUser)
+	{
+		try
+		{
 			if (isOptimizeReindex() && !(inData instanceof Asset)) // Low level performance fix
 			{
 				MultiValued values = (MultiValued) inData;
@@ -181,11 +194,13 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 			Asset asset = (Asset) loadData(inData);
 
 			String fileformat = asset.getFileFormat();
-			if (fileformat != null) {
+			if (fileformat != null)
+			{
 				inContent.field("fileformat", fileformat);
 			}
 			Object folderval = asset.getValue("isfolder");
-			if (folderval == null) {
+			if (folderval == null)
+			{
 				ContentItem item = getMediaArchive().getAssetManager().getOriginalContent(asset);
 				asset.setFolder(item.isFolder());
 			}
@@ -203,11 +218,14 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 			saveArray(inContent, "category", categories);
 
 			Set<String> featured = new HashSet();
-			for (Iterator iterator = categories.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = categories.iterator(); iterator.hasNext();)
+			{
 				Category category = (Category) iterator.next();
-				for (Iterator iterator2 = category.getParentCategories().iterator(); iterator2.hasNext();) {
+				for (Iterator iterator2 = category.getParentCategories().iterator(); iterator2.hasNext();)
+				{
 					Category parent = (Category) iterator2.next();
-					if (parent.getBoolean("isfeatured")) {
+					if (parent.getBoolean("isfeatured"))
+					{
 						featured.add(parent.getId());
 					}
 				}
@@ -236,11 +254,14 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 			// }
 			// }
 
-			if (!featured.isEmpty()) {
+			if (!featured.isEmpty())
+			{
 				String[] array = new String[featured.size()];
 				Object oa = featured.toArray(array);
 				inContent.field("category-featured", oa);
-			} else {
+			}
+			else
+			{
 				inData.setValue("category-featured", null);
 				inContent.field("category-featured", new String[0]);
 			}
@@ -250,39 +271,51 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 			// populatePermission(inContent, asset, "viewasset");
 			setFolderPath(asset, inContent);
 
-		} catch (Exception ex) {
-			if (ex instanceof OpenEditException) {
+		}
+		catch (Exception ex)
+		{
+			if (ex instanceof OpenEditException)
+			{
 				throw (OpenEditException) ex;
 			}
 			throw new OpenEditException(ex);
 		}
 	}
 
-	protected void setFolderPath(Data asset, XContentBuilder inContent) throws IOException {
+	protected void setFolderPath(Data asset, XContentBuilder inContent) throws IOException
+	{
 		String archivesourcepath = asset.get("archivesourcepath");
-		if (archivesourcepath == null) {
+		if (archivesourcepath == null)
+		{
 			archivesourcepath = asset.getSourcePath();
 		}
 		String foldersourcepath = PathUtilities.extractDirectoryPath(archivesourcepath);
 		inContent.field("foldersourcepath", foldersourcepath);
 	}
 
-	protected void saveArray(XContentBuilder inContent, String inType, Collection inData) throws IOException {
-		if (inData == null) {
+	protected void saveArray(XContentBuilder inContent, String inType, Collection inData) throws IOException
+	{
+		if (inData == null)
+		{
 			return;
 		}
 		List ids = new ArrayList(inData.size());
-		for (Iterator iterator = inData.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inData.iterator(); iterator.hasNext();)
+		{
 			Object object = iterator.next();
 			String id = null;
-			if (object instanceof Data) {
+			if (object instanceof Data)
+			{
 				id = ((Data) object).getId();
-			} else {
+			}
+			else
+			{
 				id = String.valueOf(object);
 			}
 			ids.add(id);
 		}
-		if (ids.size() > 0) {
+		if (ids.size() > 0)
+		{
 			String[] array = new String[ids.size()];
 			Object oa = ids.toArray(array);
 			inContent.field(inType, oa);
@@ -290,16 +323,15 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 	}
 
 	/*
-	 * protected void hydrateData(ContentItem inContent, String sourcepath, List
-	 * buffer) { Asset data =
-	 * getMediaArchive().getAssetBySourcePath(sourcepath); if (data == null) {
-	 * return; } buffer.add(data); if (buffer.size() > 99) { updateIndex(buffer,
-	 * null); } }
+	 * protected void hydrateData(ContentItem inContent, String sourcepath, List buffer) { Asset data =
+	 * getMediaArchive().getAssetBySourcePath(sourcepath); if (data == null) { return; }
+	 * buffer.add(data); if (buffer.size() > 99) { updateIndex(buffer, null); } }
 	 */
-	protected void populatePermission(XContentBuilder inContent, Asset inAsset, String inPermission)
-			throws IOException {
+	protected void populatePermission(XContentBuilder inContent, Asset inAsset, String inPermission) throws IOException
+	{
 		List add = getAssetSecurityArchive().getAccessList(getMediaArchive(), inAsset);
-		if (add.size() == 0) {
+		if (add.size() == 0)
+		{
 			add.add("true");
 		}
 		inContent.array(inPermission, add.toArray());
@@ -307,7 +339,8 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 	}
 
 	// TODO: Migrate this into populateKeywords
-	protected String populateDescription(Asset asset, PropertyDetails inDetails, Set inCategories) {
+	protected String populateDescription(Asset asset, PropertyDetails inDetails, Set inCategories)
+	{
 		// Low level reading in of text
 		StringBuffer fullDesc = new StringBuffer();
 		// fullDesc.append(asset.getName());
@@ -331,10 +364,12 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 		// fullDesc.append(cat.getName());
 		// fullDesc.append(' ');
 		// }
-		if (asset.getSourcePath() != null) {
+		if (asset.getSourcePath() != null)
+		{
 			String[] dirs = asset.getSourcePath().split("/");
 
-			for (int i = 0; i < dirs.length; i++) {
+			for (int i = 0; i < dirs.length; i++)
+			{
 				fullDesc.append(dirs[i]);
 				fullDesc.append(' ');
 			}
@@ -351,12 +386,15 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 		return result;
 	}
 
-	protected String asTokens(Collection inList) {
+	protected String asTokens(Collection inList)
+	{
 		StringBuffer buffer = new StringBuffer();
-		for (Iterator iter = inList.iterator(); iter.hasNext();) {
+		for (Iterator iter = inList.iterator(); iter.hasNext();)
+		{
 			String desc = (String) iter.next();
 			buffer.append(desc);
-			if (iter.hasNext()) {
+			if (iter.hasNext())
+			{
 				buffer.append(' ');
 			}
 		}
@@ -371,54 +409,67 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 	// updateIndex(all, null);
 	// }
 
-	public AssetSecurityArchive getAssetSecurityArchive() {
+	public AssetSecurityArchive getAssetSecurityArchive()
+	{
 		return fieldAssetSecurityArchive;
 	}
 
-	public void setAssetSecurityArchive(AssetSecurityArchive inAssetSecurityArchive) {
+	public void setAssetSecurityArchive(AssetSecurityArchive inAssetSecurityArchive)
+	{
 		fieldAssetSecurityArchive = inAssetSecurityArchive;
 	}
 
-	public MediaArchive getMediaArchive() {
-		if (fieldMediaArchive == null) {
+	public MediaArchive getMediaArchive()
+	{
+		if (fieldMediaArchive == null)
+		{
 			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		}
 
 		return fieldMediaArchive;
 	}
 
-	public void flush() {
-	}
+	public void flush()
+	{}
 
-	public void setRootDirectory(File inRoot) {
-	}
+	public void setRootDirectory(File inRoot)
+	{}
 
-	protected IntCounter getIntCounter() {
-		if (fieldIntCounter == null) {
+	protected IntCounter getIntCounter()
+	{
+		if (fieldIntCounter == null)
+		{
 			fieldIntCounter = super.getIntCounter();
 			fieldIntCounter.setLabelName(getSearchType() + "IdCount");
 		}
 		return fieldIntCounter;
 	}
 
-	public synchronized String nextId() {
+	public synchronized String nextId()
+	{
 		Lock lock = getLockManager().lock(loadCounterPath(), "admin");
-		try {
+		try
+		{
 			return String.valueOf(getIntCounter().incrementCount());
-		} finally {
+		}
+		finally
+		{
 			getLockManager().release(lock);
 		}
 	}
 
-	public Object searchByField(String inField, String inValue) {
-		if (inField.equals("id") || inField.equals("_id")) {
-			GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute()
-					.actionGet();
-			if (!response.isExists()) {
+	public Object searchByField(String inField, String inValue)
+	{
+		if (inField.equals("id") || inField.equals("_id"))
+		{
+			GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute().actionGet();
+			if (!response.isExists())
+			{
 				return null;
 			}
 			Map source = response.getSource();
-			if (isDeleted(source)) {
+			if (isDeleted(source))
+			{
 				return null;
 			}
 			Asset asset = createAssetFromResponse(response.getId(), source);
@@ -427,7 +478,8 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 
 			// return getAssetArchive().getAssetBySourcePath(path);
 		}
-		if (inField.equals("sourcepath") || inField.equals("_sourcepath")) {
+		if (inField.equals("sourcepath") || inField.equals("_sourcepath"))
+		{
 
 			SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
 
@@ -438,7 +490,8 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 			search.setQuery(b);
 			SearchResponse response = search.execute().actionGet();
 			Iterator<SearchHit> responseiter = response.getHits().iterator();
-			if (responseiter.hasNext()) {
+			if (responseiter.hasNext())
+			{
 				SearchHit hit = responseiter.next();
 				return createAssetFromResponse(hit.getId(), hit.getSource());
 
@@ -448,10 +501,12 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 		return super.searchByField(inField, inValue);
 	}
 
-	protected Asset createAssetFromResponse(String inId, Map inSource) {
+	protected Asset createAssetFromResponse(String inId, Map inSource)
+	{
 		BaseAsset asset = (BaseAsset) createNewData();
 
-		if (inSource == null) {
+		if (inSource == null)
+		{
 			return null;
 		}
 		asset.setSearchData(inSource);
@@ -462,11 +517,14 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 
 	// TODO: Make an ElasticAsset bean type that can be searched and saved
 	@Override
-	public Data loadData(Data inHit) {
-		if (inHit == null) {
+	public Data loadData(Data inHit)
+	{
+		if (inHit == null)
+		{
 			return null;
 		}
-		if (inHit instanceof Asset) {
+		if (inHit instanceof Asset)
+		{
 			return inHit;
 		}
 		// Stuff might get out of date?
@@ -474,19 +532,24 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 		return createAssetFromResponse(inHit.getId(), db.getSearchData());
 	}
 
-	public Data loadData(WebPageRequest inReq, String dataid) {
+	public Data loadData(WebPageRequest inReq, String dataid)
+	{
 		Data data = null;
 
-		if (dataid.startsWith("multiedit")) {
+		if (dataid.startsWith("multiedit"))
+		{
 			CompositeData compositeasset = (CompositeData) inReq.getSessionValue(dataid);
 			String hitssessionid = dataid.substring("multiedit".length() + 1);
 			HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
-			if (compositeasset != null && !compositeasset.getSelectedResults().hasChanged(hits)) {
+			if (compositeasset != null && !compositeasset.getSelectedResults().hasChanged(hits))
+			{
 				data = compositeasset;
 			}
 
-			if (data == null) {
-				if (hits == null) {
+			if (data == null)
+			{
+				if (hits == null)
+				{
 					log.error("Could not find " + hitssessionid);
 					return null;
 				}
@@ -495,41 +558,49 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 				data = composite;
 				inReq.putSessionValue(dataid, data);
 			}
-		} else {
+		}
+		else
+		{
 			data = loadData(dataid);
 		}
 		return data;
 
 	}
 
-	public Data getDataBySourcePath(String inSourcePath) {
-		if (inSourcePath.endsWith("/")) {
+	public Data getDataBySourcePath(String inSourcePath)
+	{
+		if (inSourcePath.endsWith("/"))
+		{
 			inSourcePath = inSourcePath.substring(0, inSourcePath.length() - 1);
 		}
-		return (Data) query().or().exact("sourcepath", inSourcePath).exact("archivesourcepath", inSourcePath)
-				.searchOne();
+		return (Data) query().or().exact("sourcepath", inSourcePath).exact("archivesourcepath", inSourcePath).searchOne();
 	}
 
-	public Data getDataBySourcePath(String inSourcePath, boolean inAutocreate) {
-		if (inSourcePath.startsWith("/")) {
+	public Data getDataBySourcePath(String inSourcePath, boolean inAutocreate)
+	{
+		if (inSourcePath.startsWith("/"))
+		{
 			inSourcePath = inSourcePath.substring(1, inSourcePath.length());
 		}
 		return (Data) searchByField("sourcepath", inSourcePath);
 
 	}
 
-	public String getPathToData() {
+	public String getPathToData()
+	{
 		return "/WEB-INF/data/" + getCatalogId() + "/assets";
 	}
 
 	@Override
-	public void reindexInternal() throws OpenEditException {
+	public void reindexInternal() throws OpenEditException
+	{
 		log.info("Asset Reindex started optimized:" + isOptimizeReindex());
 		super.reindexInternal();
 	}
 
 	@Override
-	protected void addSecurity(XContentBuilder inContent, Data inData) throws Exception {
+	protected void addSecurity(XContentBuilder inContent, Data inData) throws Exception
+	{
 
 		// Check for security
 		PropertyDetail detail = getDetail("securityenabled");
@@ -540,61 +611,75 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 		Collection groups = new HashSet(3);
 		Collection roles = new HashSet(3);
 
-		if (detail == null) {
+		if (detail == null)
+		{
 			return;
 		}
 
 		String securityfield = (String) detail.getValue("securityfield");
-		if (securityfield != null) {
+		if (securityfield != null)
+		{
 
 			PropertyDetail securefield = getDetail(securityfield);
 			String fieldid = securefield.getId();
 			String categorysearchertype = securefield.getListId();// category
-			CategorySearcher searcher = (CategorySearcher) getSearcherManager().getSearcher(getCatalogId(),
-					categorysearchertype);
+			CategorySearcher searcher = (CategorySearcher) getSearcherManager().getSearcher(getCatalogId(), categorysearchertype);
 
 			Collection exact = inData.getValues("category-exact");
-			if (exact == null) {
+			if (exact == null)
+			{
 				return;
 			}
-			for (Iterator iterator = exact.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = exact.iterator(); iterator.hasNext();)
+			{
 				Object something = iterator.next();
 
 				Category cat = null;
-				if (something instanceof String) {
+				if (something instanceof String)
+				{
 					cat = (Category) searcher.getCategory((String) something);
-				} else if (something instanceof Category) {
-					cat = (Category) something;
 				}
+				else
+					if (something instanceof Category)
+					{
+						cat = (Category) something;
+					}
 
-				if (cat == null) {
+				if (cat == null)
+				{
 					continue;
 				}
 
 				Collection u = cat.collectValues("viewerusers");
 				Collection g = cat.collectValues("viewergroups");
 				Collection r = cat.collectValues("viewerroles");
-				if (u != null) {
+				if (u != null)
+				{
 					users.addAll(u);
 				}
-				if (g != null) {
+				if (g != null)
+				{
 					groups.addAll(g);
 				}
-				if (r != null) {
+				if (r != null)
+				{
 					roles.addAll(r);
 				}
 			}
 		}
 
-		if (users != null && !users.isEmpty()) {
+		if (users != null && !users.isEmpty())
+		{
 			inContent.field("viewusers", users);
 			securityenabled = true;
 		}
-		if (groups != null && !groups.isEmpty()) {
+		if (groups != null && !groups.isEmpty())
+		{
 			inContent.field("viewgroups", groups);
 			securityenabled = true;
 		}
-		if (roles != null && !roles.isEmpty()) {
+		if (roles != null && !roles.isEmpty())
+		{
 			inContent.field("viewroles", roles);
 			securityenabled = true;
 		}

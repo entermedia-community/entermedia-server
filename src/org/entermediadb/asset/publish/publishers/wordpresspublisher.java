@@ -25,15 +25,18 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.page.Page;
 import org.openedit.util.HttpRequestBuilder;
 
-public class wordpresspublisher extends BasePublisher implements Publisher {
+public class wordpresspublisher extends BasePublisher implements Publisher
+{
 	private static final Log log = LogFactory.getLog(wordpresspublisher.class);
 	protected ThreadLocal perThreadCache = new ThreadLocal();
 
-	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination,
-			Data inPreset, Asset inAsset) {
-		try {
+	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
+	{
+		try
+		{
 			PublishResult result = checkOnConversion(mediaArchive, inOrderItem, inAsset, inPreset);
-			if (!result.isReadyToPublish()) {
+			if (!result.isReadyToPublish())
+			{
 				return result;
 			}
 
@@ -63,48 +66,60 @@ public class wordpresspublisher extends BasePublisher implements Publisher {
 			// builder.addPart("description", asset.get("longcaption"));
 			builder.addPart("uploadby", "entermedia");
 
-			for (Iterator iterator = mediaArchive.getAssetSearcher().getPropertyDetails().iterator(); iterator
-					.hasNext();) {
+			for (Iterator iterator = mediaArchive.getAssetSearcher().getPropertyDetails().iterator(); iterator.hasNext();)
+			{
 				PropertyDetail detail = (PropertyDetail) iterator.next();
 
 				String wordpressfield = detail.get("wordpressfield");
-				if (wordpressfield != null) {
+				if (wordpressfield != null)
+				{
 					//
 					String assetvalue = inAsset.get(detail.getId());
-					if (assetvalue != null) {
-						if (detail.isList()) {
+					if (assetvalue != null)
+					{
+						if (detail.isList())
+						{
 							Data remote = mediaArchive.getData(detail.getListId(), assetvalue);
-							if (remote != null) {
+							if (remote != null)
+							{
 								assetvalue = remote.getName();
 							}
 						}
 					}
-					if (assetvalue != null) {
+					if (assetvalue != null)
+					{
 						builder.addPart(wordpressfield, assetvalue);
 					}
 
 				}
 			}
 
-			if (inAsset.getKeywords().size() > 0) {
+			if (inAsset.getKeywords().size() > 0)
+			{
 				StringBuffer buffer = new StringBuffer();
-				for (Iterator iterator = inAsset.getKeywords().iterator(); iterator.hasNext();) {
+				for (Iterator iterator = inAsset.getKeywords().iterator(); iterator.hasNext();)
+				{
 					String keyword = (String) iterator.next();
 					buffer.append(keyword);
-					if (iterator.hasNext()) {
+					if (iterator.hasNext())
+					{
 						buffer.append(',');
 					}
 				}
-				if (buffer.length() > 0) {
+				if (buffer.length() > 0)
+				{
 					builder.addPart("keywords", buffer.toString());
 				}
 			}
 			Collection collections = inAsset.getCollections();
-			if (collections != null && collections.size() > 0) {
-				for (Iterator iterator = collections.iterator(); iterator.hasNext();) {
+			if (collections != null && collections.size() > 0)
+			{
+				for (Iterator iterator = collections.iterator(); iterator.hasNext();)
+				{
 					LibraryCollection librarycollection = (LibraryCollection) iterator.next();
 					Data library = (Data) librarycollection.getLibrary();
-					if (library != null) {
+					if (library != null)
+					{
 						builder.addPart("library", library.getName());
 					}
 					builder.addPart("collection", librarycollection.getName());
@@ -112,7 +127,8 @@ public class wordpresspublisher extends BasePublisher implements Publisher {
 			}
 			Page inputpage = findInputPage(mediaArchive, inAsset, inPreset);
 			File file = new File(inputpage.getContentItem().getAbsolutePath());
-			if (!file.exists()) {
+			if (!file.exists())
+			{
 				throw new OpenEditException("Input file missing " + file.getPath());
 			}
 			builder.addPart("file", file);
@@ -122,24 +138,30 @@ public class wordpresspublisher extends BasePublisher implements Publisher {
 			CloseableHttpClient httpclient = HttpClients.createDefault(); // TODO: Cache this
 
 			CloseableHttpResponse response2 = httpclient.execute(method);
-			try {
-				if (response2.getStatusLine().getStatusCode() != 200) {
-					result.setErrorMessage(
-							"Wordpress Server error returned " + response2.getStatusLine().getStatusCode());
-				} else {
+			try
+			{
+				if (response2.getStatusLine().getStatusCode() != 200)
+				{
+					result.setErrorMessage("Wordpress Server error returned " + response2.getStatusLine().getStatusCode());
+				}
+				else
+				{
 					result.setComplete(true);
 				}
 				HttpEntity entity2 = response2.getEntity();
-				log.info("Wordpress Server response: " + response2.getStatusLine().getStatusCode() + " "
-						+ EntityUtils.toString(entity2));
+				log.info("Wordpress Server response: " + response2.getStatusLine().getStatusCode() + " " + EntityUtils.toString(entity2));
 				// do something useful with the response body
 				// and ensure it is fully consumed
 				EntityUtils.consume(entity2);
-			} finally {
+			}
+			finally
+			{
 				response2.close();
 			}
 			return result;
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			throw new OpenEditException(" Request failed: status code", ex);
 		}
 

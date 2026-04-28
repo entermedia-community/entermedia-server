@@ -23,23 +23,27 @@ import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 
-public class ElasticModuleSearchSearcher extends BaseElasticSearcher {
+public class ElasticModuleSearchSearcher extends BaseElasticSearcher
+{
 	private static final Log log = LogFactory.getLog(ElasticModuleSearchSearcher.class);
 
 	// search only modules as specified on the search terms in the query
 	@Override
-	public HitTracker search(SearchQuery inQuery) {
+	public HitTracker search(SearchQuery inQuery)
+	{
 		Collection searchmodules = inQuery.getValues("searchtypes");
-		if (searchmodules == null || searchmodules.isEmpty()) {
-			throw new OpenEditException(
-					"DataEditModule.loadOrSearchByTypes needs to be called on this search " + inQuery);
+		if (searchmodules == null || searchmodules.isEmpty())
+		{
+			throw new OpenEditException("DataEditModule.loadOrSearchByTypes needs to be called on this search " + inQuery);
 		}
-		if (!inQuery.getBoolean("searchasset") && searchmodules.contains("asset")) {
+		if (!inQuery.getBoolean("searchasset") && searchmodules.contains("asset"))
+		{
 			// We always skip assets
 			searchmodules = new ArrayList(searchmodules);
 			searchmodules.remove("asset"); // This is handled in organizeHits
 		}
-		if (searchmodules.isEmpty()) {
+		if (searchmodules.isEmpty())
+		{
 			return new ListHitTracker(); // empty
 		}
 		SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
@@ -48,38 +52,27 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher {
 		search.setTypes((String[]) searchmodules.toArray(new String[searchmodules.size()]));
 
 		/*
-		 * //TODO: Auto added from advancedfilter
-		 * AggregationBuilder b = AggregationBuilders.terms("keywords").field("keywords"
-		 * + ".exact").size(100);
+		 * //TODO: Auto added from advancedfilter AggregationBuilder b =
+		 * AggregationBuilders.terms("keywords").field("keywords" + ".exact").size(100);
 		 * search.addAggregation(b);
 		 * 
-		 * b =
-		 * AggregationBuilders.terms("ibmsdl_source_type").field("ibmsdl_source_type").
-		 * size(20);
+		 * b = AggregationBuilders.terms("ibmsdl_source_type").field("ibmsdl_source_type"). size(20);
 		 * search.addAggregation(b);
 		 * 
-		 * b =
-		 * AggregationBuilders.terms("ibmentitycompany").field("ibmentitycompany").size(
-		 * 20);
+		 * b = AggregationBuilders.terms("ibmentitycompany").field("ibmentitycompany").size( 20);
 		 * search.addAggregation(b);
 		 * 
-		 * b =
-		 * AggregationBuilders.terms("ibmentitypeople").field("ibmentitypeople").size(20
-		 * );
+		 * b = AggregationBuilders.terms("ibmentitypeople").field("ibmentitypeople").size(20 );
 		 * search.addAggregation(b);
 		 * 
 		 * 
-		 * b =
-		 * AggregationBuilders.terms("ibmfundingSource").field("ibmfundingSource").size(
-		 * 500);
+		 * b = AggregationBuilders.terms("ibmfundingSource").field("ibmfundingSource").size( 500);
 		 * search.addAggregation(b);
 		 * 
-		 * b = AggregationBuilders.terms("ibmfilename").field("ibmfilename" +
-		 * ".exact").size(100); //Used for type aheads
-		 * search.addAggregation(b);
+		 * b = AggregationBuilders.terms("ibmfilename").field("ibmfilename" + ".exact").size(100); //Used
+		 * for type aheads search.addAggregation(b);
 		 * 
-		 * b =
-		 * AggregationBuilders.terms("trackedtopics").field("trackedtopics").size(10);
+		 * b = AggregationBuilders.terms("trackedtopics").field("trackedtopics").size(10);
 		 * search.addAggregation(b);
 		 */
 
@@ -111,11 +104,13 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher {
 		// addHighlights(inQuery, search);
 		// search.setRequestCache(true);
 
-		if (inQuery.getMainInput() != null) {
+		if (inQuery.getMainInput() != null)
+		{
 			// TODO: If we are doing a simple search then add in the fav results first?
 		}
 
-		if (inQuery.getIncludeOnly() == null && inQuery.getExcludeFields() == null) {
+		if (inQuery.getIncludeOnly() == null && inQuery.getExcludeFields() == null)
+		{
 			search.setFetchSource(null, "description"); // Default
 		}
 		long start = System.currentTimeMillis();
@@ -127,12 +122,12 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher {
 		hits.setSearcher(this);
 		hits.setSearchQuery(inQuery);
 
-		if (getSearcherManager().getShowSearchLogs(getCatalogId())) {
+		if (getSearcherManager().getShowSearchLogs(getCatalogId()))
+		{
 			long size = hits.size(); // order is important
 			String json = search.toString();
 			long end = System.currentTimeMillis() - start;
-			log.info(toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json + "' \n" + size
-					+ " hits in: " + (double) end / 1000D + " seconds]");
+			log.info(toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json + "' \n" + size + " hits in: " + (double) end / 1000D + " seconds]");
 		}
 
 		// hits.size(); //load it up
@@ -144,7 +139,8 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher {
 	}
 
 	@Override
-	public void reindexInternal() throws OpenEditException {
+	public void reindexInternal() throws OpenEditException
+	{
 		// Do nothing
 		// super.reindexInternal();
 	}
@@ -153,21 +149,27 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher {
 	 * 
 	 * @override
 	 */
-	public Collection<PropertyDetail> findSummaryFields(SearchQuery inQuery, UserProfile userprofile) {
+	public Collection<PropertyDetail> findSummaryFields(SearchQuery inQuery, UserProfile userprofile)
+	{
 		Collection searchmodules = inQuery.getValues("searchtypes");
 		Map<String, PropertyDetail> details = new HashMap();
 
-		if (searchmodules == null) {
+		if (searchmodules == null)
+		{
 			return null;
 		}
 
-		for (Iterator iterator = searchmodules.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = searchmodules.iterator(); iterator.hasNext();)
+		{
 			String moduleid = (String) iterator.next();
-			if (!moduleid.equals("modulesearch")) {
+			if (!moduleid.equals("modulesearch"))
+			{
 				Searcher childsearcher = getSearcherManager().getSearcher(getCatalogId(), moduleid);
 				Collection<PropertyDetail> moredetails = childsearcher.findSummaryFields(inQuery, userprofile);
-				if (moredetails != null) {
-					for (Iterator iterator2 = moredetails.iterator(); iterator2.hasNext();) {
+				if (moredetails != null)
+				{
+					for (Iterator iterator2 = moredetails.iterator(); iterator2.hasNext();)
+					{
 						PropertyDetail propertyDetail = (PropertyDetail) iterator2.next();
 						details.put(propertyDetail.getId(), propertyDetail);
 					}
@@ -179,12 +181,15 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher {
 		return values;
 	}
 
-	protected String[] listSearchModules() {
+	protected String[] listSearchModules()
+	{
 		Collection<Data> modules = getSearcherManager().getList(getCatalogId(), "module");
 		Collection searchmodules = new ArrayList();
-		for (Iterator iterator = modules.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+		{
 			Data data = (Data) iterator.next();
-			if (data.getId().equals("asset")) {
+			if (data.getId().equals("asset"))
+			{
 				continue; // Too big
 			}
 			String show = data.get("showonsearch");
@@ -198,21 +203,25 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher {
 	}
 
 	@Override
-	public void reIndexAll() throws OpenEditException {
+	public void reIndexAll() throws OpenEditException
+	{
 		// super.reIndexAll();
 	}
 
 	@Override
-	public boolean initialize() {
+	public boolean initialize()
+	{
 		// return super.initialize();
 		return true;
 	}
 
 	@Override
-	public String getIndexId() {
+	public String getIndexId()
+	{
 		String[] searchmodules = listSearchModules();
 		StringBuffer buffer = new StringBuffer();
-		for (int i = 0; i < searchmodules.length; i++) {
+		for (int i = 0; i < searchmodules.length; i++)
+		{
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), searchmodules[i]);
 			buffer.append(searcher.getIndexId());
 		}

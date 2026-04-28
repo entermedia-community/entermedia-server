@@ -15,7 +15,8 @@ import org.openedit.WebServer;
 import org.openedit.page.manage.PageManager;
 import org.openedit.util.XmlUtil;
 
-public class PlugInFinder {
+public class PlugInFinder
+{
 	protected ModuleManager fieldModuleManager;
 	protected WebServer fieldWebServer;
 	protected PageManager fieldPageManager;
@@ -23,30 +24,37 @@ public class PlugInFinder {
 	protected String fieldAppServerPath;
 	protected String fieldId;
 
-	public String getId() {
+	public String getId()
+	{
 		return fieldId;
 	}
 
-	public void setId(String inId) {
+	public void setId(String inId)
+	{
 		fieldId = inId;
 	}
 
-	public String getAppServerPath() {
+	public String getAppServerPath()
+	{
 		return fieldAppServerPath;
 	}
 
-	public void setAppServerPath(String inAppServerPath) {
+	public void setAppServerPath(String inAppServerPath)
+	{
 		fieldAppServerPath = inAppServerPath;
 	}
 
-	public List getPlugIns() {
-		if (fieldPlugIns == null) {
+	public List getPlugIns()
+	{
+		if (fieldPlugIns == null)
+		{
 			loadPlugIns();
 		}
 		return fieldPlugIns;
 	}
 
-	public void loadPlugIns() {
+	public void loadPlugIns()
+	{
 		// List installed = getWebServer().getAllPlugIns();
 
 		Map installedmap = new HashMap();
@@ -58,11 +66,13 @@ public class PlugInFinder {
 
 		List available = listAvailablePlugIns();
 		List notinstalled = new ArrayList();
-		for (Iterator iterator = available.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = available.iterator(); iterator.hasNext();)
+		{
 			Element found = (Element) iterator.next();
 			String id = found.attributeValue("id");
 			PlugIn plugin = (PlugIn) installedmap.get(id);
-			if (plugin == null) {
+			if (plugin == null)
+			{
 				plugin = new PlugIn();
 				plugin.setId(id);
 				plugin.setInstalled(false);
@@ -77,23 +87,29 @@ public class PlugInFinder {
 
 	}
 
-	public List listAll() {
+	public List listAll()
+	{
 		List sorted = new ArrayList();
 		// sorted.addAll(getInstalledPlugIns());
 		sorted.addAll(getPlugIns());
 		return sorted;
 	}
 
-	protected void checkDepends(List inAvailable) {
-		for (Iterator iterator = inAvailable.iterator(); iterator.hasNext();) {
+	protected void checkDepends(List inAvailable)
+	{
+		for (Iterator iterator = inAvailable.iterator(); iterator.hasNext();)
+		{
 			Element found = (Element) iterator.next();
 			String depends = found.attributeValue("depends");
-			if (depends != null && depends.length() > 0) {
+			if (depends != null && depends.length() > 0)
+			{
 				String id = found.attributeValue("id");
 				PlugIn thisone = getPlugIn(id);
-				if (thisone != null) {
+				if (thisone != null)
+				{
 					String[] ids = depends.split(",");
-					for (int i = 0; i < ids.length; i++) {
+					for (int i = 0; i < ids.length; i++)
+					{
 						PlugIn dep = getPlugIn(ids[i]);
 						thisone.addDependsOn(dep);
 					}
@@ -102,7 +118,8 @@ public class PlugInFinder {
 		}
 	}
 
-	protected void populatePluginDetails(Element found, PlugIn plugin) {
+	protected void populatePluginDetails(Element found, PlugIn plugin)
+	{
 		plugin.setVendorLink(found.attributeValue("vendorlink"));
 		plugin.setAvailableVersion(found.attributeValue("currentversion"));
 		plugin.setAvailableVersionNotes(found.elementTextTrim("currentversionnotes"));
@@ -111,44 +128,55 @@ public class PlugInFinder {
 		plugin.setTitle(found.attributeValue("title"));
 	}
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
-	protected List listAvailablePlugIns() {
+	protected List listAvailablePlugIns()
+	{
 		XmlUtil util = new XmlUtil();
-		try {
+		try
+		{
 			// this does not seem to support redirects and some web servers don't support
 			// the Java user agent
 			URL link = new URL(getAppServerPath());
 			Element root = util.getXml(link.openStream(), "UTF-8");
 			return root.elements();
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			throw new OpenEditException(ex);
 		}
 	}
 
-	public WebServer getWebServer() {
+	public WebServer getWebServer()
+	{
 		return fieldWebServer;
 	}
 
-	public void setWebServer(WebServer inWebServer) {
+	public void setWebServer(WebServer inWebServer)
+	{
 		fieldWebServer = inWebServer;
 	}
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		fieldPageManager = inPageManager;
 	}
 
-	public PlugIn getPlugIn(String inPluginid) {
+	public PlugIn getPlugIn(String inPluginid)
+	{
 		// for (Iterator iterator = getInstalledPlugIns().iterator();
 		// iterator.hasNext();)
 		// {
@@ -158,9 +186,11 @@ public class PlugInFinder {
 		// return plugin;
 		// }
 		// }
-		for (Iterator iterator = getPlugIns().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = getPlugIns().iterator(); iterator.hasNext();)
+		{
 			PlugIn plugin = (PlugIn) iterator.next();
-			if (inPluginid.equals(plugin.getId())) {
+			if (inPluginid.equals(plugin.getId()))
+			{
 				return plugin;
 			}
 		}

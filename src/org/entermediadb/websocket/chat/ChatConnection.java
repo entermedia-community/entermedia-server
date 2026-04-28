@@ -22,7 +22,8 @@ import org.openedit.ModuleManager;
 import org.openedit.data.SearcherManager;
 import org.openedit.users.User;
 
-public class ChatConnection extends Endpoint implements MessageHandler.Partial<String> {
+public class ChatConnection extends Endpoint implements MessageHandler.Partial<String>
+{
 	private static final Log log = LogFactory.getLog(ChatConnection.class);
 	private RemoteEndpoint.Basic remoteEndpointBasic;
 	protected JSONParser fieldJSONParser;
@@ -34,84 +35,94 @@ public class ChatConnection extends Endpoint implements MessageHandler.Partial<S
 	protected String fieldUserId;
 	protected String fieldChannelId;
 
-	public String getChannelId() {
+	public String getChannelId()
+	{
 		return fieldChannelId;
 	}
 
-	public void setChannelId(String inChannelId) {
+	public void setChannelId(String inChannelId)
+	{
 		fieldChannelId = inChannelId;
 	}
 
 	protected Collection fieldNotifyTopics;
 
-	public Collection getNotifyTopics() {
+	public Collection getNotifyTopics()
+	{
 		return fieldNotifyTopics;
 	}
 
-	public void setNotifyTopics(Collection inNotifyTopics) {
+	public void setNotifyTopics(Collection inNotifyTopics)
+	{
 		fieldNotifyTopics = inNotifyTopics;
 	}
 
-	public String getUserId() {
+	public String getUserId()
+	{
 		return fieldUserId;
 	}
 	/*
-	 * public void setChannelId(String inChannelId)
-	 * {
-	 * fieldChannelId = inChannelId;
-	 * }
+	 * public void setChannelId(String inChannelId) { fieldChannelId = inChannelId; }
 	 * 
-	 * public String getChannelId()
-	 * {
-	 * return fieldChannelId;
-	 * }
+	 * public String getChannelId() { return fieldChannelId; }
 	 */
 
-	public void setUserId(String inUserId) {
+	public void setUserId(String inUserId)
+	{
 		fieldUserId = inUserId;
 	}
 
-	public ChatServer getChatServer() {
-		if (fieldChatServer == null) {
+	public ChatServer getChatServer()
+	{
+		if (fieldChatServer == null)
+		{
 			fieldChatServer = (ChatServer) getModuleManager().getBean("system", "chatServer");
 		}
 
 		return fieldChatServer;
 	}
 
-	public void setChatServer(ChatServer fieldChatServer) {
+	public void setChatServer(ChatServer fieldChatServer)
+	{
 		this.fieldChatServer = fieldChatServer;
 	}
 
-	public SearcherManager getSearcherManager() {
-		if (fieldSearcherManager == null) {
+	public SearcherManager getSearcherManager()
+	{
+		if (fieldSearcherManager == null)
+		{
 			fieldSearcherManager = (SearcherManager) getModuleManager().getBean("searcherManager");
 		}
 		return fieldSearcherManager;
 	}
 
-	public void setSearcherManager(SearcherManager inSearcherManager) {
+	public void setSearcherManager(SearcherManager inSearcherManager)
+	{
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
 	protected StringBuffer fieldBufferedMessage;
 
 	@Override
-	public void onError(Session session, Throwable throwable) {
+	public void onError(Session session, Throwable throwable)
+	{
 		// TODO Auto-generated method stub
 		super.onError(session, throwable);
 	}
 
 	@Override
-	public void onClose(Session session, CloseReason closeReason) {
+	public void onClose(Session session, CloseReason closeReason)
+	{
 
 		getChatServer().removeConnection(this);
 		super.onClose(session, closeReason);
@@ -119,7 +130,8 @@ public class ChatConnection extends Endpoint implements MessageHandler.Partial<S
 	}
 
 	@Override
-	public void onOpen(Session session, EndpointConfig endpointConfig) {
+	public void onOpen(Session session, EndpointConfig endpointConfig)
+	{
 		// javax.servlet.http.HttpSession http =
 		// (javax.servlet.http.HttpSession)session.getUserProperties().get("javax.servlet.http.HttpSession");
 
@@ -157,7 +169,8 @@ public class ChatConnection extends Endpoint implements MessageHandler.Partial<S
 		fieldChannelId = (String) params.get("channel");
 
 		ModuleManager modulemanager = (ModuleManager) session.getUserProperties().get("moduleManager");
-		if (modulemanager == null) {
+		if (modulemanager == null)
+		{
 			throw new RuntimeException("modulemanager did not get set, Web site must be accessed with a session");
 		}
 
@@ -176,23 +189,29 @@ public class ChatConnection extends Endpoint implements MessageHandler.Partial<S
 		// session.addMessageHandler(new EchoMessageHandlerBinary(remoteEndpointBasic));
 	}
 
-	public String getSessionId() {
+	public String getSessionId()
+	{
 		return fieldSessionID;
 	}
 
-	public void setSessionId(String inSessionID) {
+	public void setSessionId(String inSessionID)
+	{
 		fieldSessionID = inSessionID;
 	}
 
-	public JSONParser getJSONParser() {
-		if (fieldJSONParser == null) {
+	public JSONParser getJSONParser()
+	{
+		if (fieldJSONParser == null)
+		{
 			fieldJSONParser = new JSONParser();
 		}
 		return fieldJSONParser;
 	}
 
-	protected StringBuffer getBufferedMessage() {
-		if (fieldBufferedMessage == null) {
+	protected StringBuffer getBufferedMessage()
+	{
+		if (fieldBufferedMessage == null)
+		{
 			fieldBufferedMessage = new StringBuffer();
 		}
 
@@ -200,9 +219,11 @@ public class ChatConnection extends Endpoint implements MessageHandler.Partial<S
 	}
 
 	@Override
-	public synchronized void onMessage(String inData, boolean completed) {
+	public synchronized void onMessage(String inData, boolean completed)
+	{
 		getBufferedMessage().append(inData);
-		if (!completed) {
+		if (!completed)
+		{
 			return;
 		}
 		String message = getBufferedMessage().toString();
@@ -212,14 +233,17 @@ public class ChatConnection extends Endpoint implements MessageHandler.Partial<S
 		// {
 		// return;
 		// }
-		try {
+		try
+		{
 			// message = message.replaceAll("null", "\"null\"");
-			if (inData.length() == 0) {
+			if (inData.length() == 0)
+			{
 				return;
 			}
 			JSONObject map = (JSONObject) getJSONParser().parse(new StringReader(message));
 			String command = (String) map.get("command");
-			if (command != null && !command.equals("keepalive")) {
+			if (command != null && !command.equals("keepalive"))
+			{
 				// log.info("Command was: " + command);
 				// log.info(map);
 			}
@@ -231,108 +255,120 @@ public class ChatConnection extends Endpoint implements MessageHandler.Partial<S
 				setUserId(userid);
 				// String channelid = String.valueOf(map.get("channel"));
 				// setChannelId(channelid);
-			} else if ("messagereceived".equals(command) || "notify".equals(command)) {
-
-				Data chat = getChatServer().saveMessage(map); // <-----
-																// --------SAVE-----------------------------------SAVE!!!!
-
-				String content = chat.get("message");
-				String catalogid = (String) map.get("catalogid");
-				MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
-
-				/*
-				 * if(map.get("entityid")!=null) {
-				 * entityid = (String) map.get("entityid").toString();
-				 * }
-				 * if (entityid == null && map.get("collectionid") != null) {
-				 * entityid = (String) map.get("collectionid").toString();
-				 * }
-				 * 
-				 * String moduleid = null;
-				 * if(map.get("moduleid")!=null) {
-				 * moduleid = (String) map.get("moduleid").toString();
-				 * }
-				 * if (moduleid == null)
-				 * {
-				 * moduleid = "librarycollection"; //Legacy
-				 * }
-				 * 
-				 * // Get project name and save as topic for notification
-				 * if(moduleid != null)
-				 * {
-				 * Data entity = archive.getCachedData(moduleid, entityid);
-				 * if (entity != null)
-				 * {
-				 * String topic = entity.getName();
-				 * map.put("topic", topic);
-				 * 
-				 * }
-				 * }
-				 */
-
-				// Get first name
-				Object userval = map.get("user");
-				String userid = null;
-				if (userval != null) {
-					userid = userval.toString();
-				}
-				User auser = archive.getUser(userid);
-				String name = auser.getFirstName();
-				if (name == null) {
-					name = "";
-				}
-				map.put("name", name);
-				map.put("message", content);
-
-				getChatServer().broadcastMessage(catalogid, map);
-				archive.fireDataEvent(auser, "chatterbox", "messagereceived", chat);
-
-			} else if ("messageremoved".equals(command)) {
-				getChatServer().broadcastMessage(map);
-			} else if ("approveasset".equals(command)) {
-
-				getChatServer().approveAsset(map);
-				getChatServer().broadcastMessage(map);
-
-			} else if ("rejectasset".equals(command)) {
-
-				getChatServer().rejectAsset(map);
-				getChatServer().broadcastMessage(map);
-
-			} else {
-				getChatServer().broadcastMessage(map);
-
 			}
+			else
+				if ("messagereceived".equals(command) || "notify".equals(command))
+				{
 
-		} catch (Exception e) {
+					Data chat = getChatServer().saveMessage(map); // <-----
+																	// --------SAVE-----------------------------------SAVE!!!!
+
+					String content = chat.get("message");
+					String catalogid = (String) map.get("catalogid");
+					MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
+
+					/*
+					 * if(map.get("entityid")!=null) { entityid = (String) map.get("entityid").toString(); } if
+					 * (entityid == null && map.get("collectionid") != null) { entityid = (String)
+					 * map.get("collectionid").toString(); }
+					 * 
+					 * String moduleid = null; if(map.get("moduleid")!=null) { moduleid = (String)
+					 * map.get("moduleid").toString(); } if (moduleid == null) { moduleid = "librarycollection";
+					 * //Legacy }
+					 * 
+					 * // Get project name and save as topic for notification if(moduleid != null) { Data entity =
+					 * archive.getCachedData(moduleid, entityid); if (entity != null) { String topic = entity.getName();
+					 * map.put("topic", topic);
+					 * 
+					 * } }
+					 */
+
+					// Get first name
+					Object userval = map.get("user");
+					String userid = null;
+					if (userval != null)
+					{
+						userid = userval.toString();
+					}
+					User auser = archive.getUser(userid);
+					String name = auser.getFirstName();
+					if (name == null)
+					{
+						name = "";
+					}
+					map.put("name", name);
+					map.put("message", content);
+
+					getChatServer().broadcastMessage(catalogid, map);
+					archive.fireDataEvent(auser, "chatterbox", "messagereceived", chat);
+
+				}
+				else
+					if ("messageremoved".equals(command))
+					{
+						getChatServer().broadcastMessage(map);
+					}
+					else
+						if ("approveasset".equals(command))
+						{
+
+							getChatServer().approveAsset(map);
+							getChatServer().broadcastMessage(map);
+
+						}
+						else
+							if ("rejectasset".equals(command))
+							{
+
+								getChatServer().rejectAsset(map);
+								getChatServer().broadcastMessage(map);
+
+							}
+							else
+							{
+								getChatServer().broadcastMessage(map);
+
+							}
+
+		}
+		catch (Exception e)
+		{
 			log.error("Could not parse: ", e);
 
 		}
 	}
 
-	public void sendMessage(JSONObject json) {
-		try {
+	public void sendMessage(JSONObject json)
+	{
+		try
+		{
 			// String command = (String) json.get("command");
 			// log.info("Sending message: " + json);
 			// json.put("timestamp", System.currentTimeMillis());
 			remoteEndpointBasic.sendText(json.toJSONString());
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			log.error(e);
 			// throw new OpenEditException(e);
 		}
 	}
 
-	public RemoteEndpoint.Basic getRemoteEndpointBasic() {
+	public RemoteEndpoint.Basic getRemoteEndpointBasic()
+	{
 		return remoteEndpointBasic;
 
 	}
 
-	private Map<String, String> getQueryMap(String query) {
+	private Map<String, String> getQueryMap(String query)
+	{
 		String[] params = query.split("&");
 		Map<String, String> map = new HashMap<String, String>();
-		for (String param : params) {
+		for (String param : params)
+		{
 			String[] param_ = param.split("=");
-			if (param_.length == 2) {
+			if (param_.length == 2)
+			{
 				String name = param_[0];
 				String value = param_[1];
 				map.put(name, value);

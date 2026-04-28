@@ -17,16 +17,19 @@ import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
 
-//apt-get install libavcodec-extra-53
+// apt-get install libavcodec-extra-53
 
-public class FfmpegVideoTranscoder extends BaseTranscoder {
+public class FfmpegVideoTranscoder extends BaseTranscoder
+{
 	private static final Log log = LogFactory.getLog(FfmpegVideoTranscoder.class);
 
-	public ConvertResult convert(ConvertInstructions inStructions) {
+	public ConvertResult convert(ConvertInstructions inStructions)
+	{
 
 		ContentItem inputpage = inStructions.getInputFile();
 
-		if (inputpage == null || !inputpage.exists()) {
+		if (inputpage == null || !inputpage.exists())
+		{
 			// no such original
 			log.info("Original does not exist: " + inStructions.getAsset().getSourcePath());
 			ConvertResult result = new ConvertResult();
@@ -37,18 +40,22 @@ public class FfmpegVideoTranscoder extends BaseTranscoder {
 		ConvertResult result = null;
 		String streams = inStructions.get("hlsstreams");
 
-		if (streams != null) {
+		if (streams != null)
+		{
 			String[] vals = MultiValued.VALUEDELMITER.split(streams);
 			inStructions.getAsset().setValue("hlsstreams", Arrays.asList(vals));
 			inStructions.getMediaArchive().saveAsset(inStructions.getAsset());
 			result = createHlsOutput(inStructions, vals);
-		} else {
+		}
+		else
+		{
 			result = createVideoOutput(inStructions);
 		}
 		return result;
 	}
 
-	protected ConvertResult createHlsOutput(ConvertInstructions inStructions, String[] streams) {
+	protected ConvertResult createHlsOutput(ConvertInstructions inStructions, String[] streams)
+	{
 
 		long timeout = inStructions.getConversionTimeout();
 		ContentItem inputpage = inStructions.getInputFile();
@@ -70,12 +77,14 @@ public class FfmpegVideoTranscoder extends BaseTranscoder {
 		path.append("/video.m3u8");
 
 		boolean createdone = false;
-		for (int i = 0; i < streams.length; i++) {
+		for (int i = 0; i < streams.length; i++)
+		{
 			String height = streams[i];
 			String fullpath = path.toString() + "/" + height + "/video.m3u8";
 			ContentItem item = inStructions.getMediaArchive().getContent(fullpath);// inStructions.getOutputFile().getAbsolutePath();
 																					// //video.hls
-			if (!item.exists()) {
+			if (!item.exists())
+			{
 				new File(item.getAbsolutePath()).getParentFile().mkdirs();
 				append(comm, height, item.getAbsolutePath());
 				createdone = true;
@@ -85,10 +94,12 @@ public class FfmpegVideoTranscoder extends BaseTranscoder {
 		// Check the mod time of the video. If it is 0 and over an hour old then delete
 		// it?
 		ConvertResult result = new ConvertResult();
-		if (createdone) {
+		if (createdone)
+		{
 			ExecResult execresult = getExec().runExec("avconv", comm, true, timeout);
 			result.setOk(execresult.isRunOk());
-			if (!execresult.isRunOk()) {
+			if (!execresult.isRunOk())
+			{
 				String output = execresult.getStandardError();
 				result.setError("Error: " + output);
 				return result;
@@ -99,24 +110,23 @@ public class FfmpegVideoTranscoder extends BaseTranscoder {
 		return result;
 	}
 
-	protected void append(Collection comm, String inSize, String absoutputpath) {
+	protected void append(Collection comm, String inSize, String absoutputpath)
+	{
 		/*
-		 * ffmpeg -hide_banner -y -i input-file.ext\
-		 * -vf scale=w=-2:h=360:force_original_aspect_ratio=decrease -c:a aac -ar 48000
-		 * -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time
-		 * 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//360p/.m3u8 \
-		 * -vf scale=w=-2:h=480:force_original_aspect_ratio=decrease -c:a aac -ar 48000
-		 * -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time
-		 * 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//480p/.m3u8 \
-		 * -vf scale=w=-2:h=720:force_original_aspect_ratio=decrease -c:a aac -ar 48000
-		 * -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time
-		 * 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//720p/.m3u8 \
-		 * -vf scale=w=-2:h=1080:force_original_aspect_ratio=decrease -c:a aac -ar 48000
-		 * -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time
-		 * 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//1080p/.m3u8 \
+		 * ffmpeg -hide_banner -y -i input-file.ext\ -vf
+		 * scale=w=-2:h=360:force_original_aspect_ratio=decrease -c:a aac -ar 48000 -c:v h264 -profile:v
+		 * baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k
+		 * /mnt/hls//360p/.m3u8 \ -vf scale=w=-2:h=480:force_original_aspect_ratio=decrease -c:a aac -ar
+		 * 48000 -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4
+		 * -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//480p/.m3u8 \ -vf
+		 * scale=w=-2:h=720:force_original_aspect_ratio=decrease -c:a aac -ar 48000 -c:v h264 -profile:v
+		 * baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k
+		 * /mnt/hls//720p/.m3u8 \ -vf scale=w=-2:h=1080:force_original_aspect_ratio=decrease -c:a aac -ar
+		 * 48000 -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4
+		 * -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//1080p/.m3u8 \
 		 * 
-		 * :force_original_aspect_ratio=decrease removed because sometimes it gives odd
-		 * numbers. which isn't compatible with m3u8
+		 * :force_original_aspect_ratio=decrease removed because sometimes it gives odd numbers. which isn't
+		 * compatible with m3u8
 		 */
 		String command = "-preset veryfast -vf scale=w=-2:h=" + inSize;
 		// String command = "-vf scale=w=-2:h=" + inSize;
@@ -124,14 +134,14 @@ public class FfmpegVideoTranscoder extends BaseTranscoder {
 		// -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf
 		// 28 -b:a 96k";
 		// removing (-profile:v baseline) to let ffmpeg select one profile
-		command = command
-				+ " -c:a aac -ar 48000 -c:v h264 -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k";
+		command = command + " -c:a aac -ar 48000 -c:v h264 -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k";
 		comm.addAll(Arrays.asList(command.split("\\ ")));
 		// Add path
 		comm.add(absoutputpath);
 	}
 
-	public ConvertResult createVideoOutput(ConvertInstructions inStructions) {
+	public ConvertResult createVideoOutput(ConvertInstructions inStructions)
+	{
 		ConvertResult result = new ConvertResult();
 		result.setOutput(inStructions.getOutputFile());
 
@@ -142,7 +152,8 @@ public class FfmpegVideoTranscoder extends BaseTranscoder {
 		ContentItem inputpage = inStructions.getInputFile();
 
 		boolean mp4 = false;
-		if (outputExt != null && (outputExt.equalsIgnoreCase("mp4") || outputExt.equalsIgnoreCase("m4v"))) {
+		if (outputExt != null && (outputExt.equalsIgnoreCase("mp4") || outputExt.equalsIgnoreCase("m4v")))
+		{
 			mp4 = true;
 		}
 
@@ -161,7 +172,8 @@ public class FfmpegVideoTranscoder extends BaseTranscoder {
 
 		// audio
 		Collection audios = inAsset.getValues("audiostreamids");
-		if (audios != null && !audios.isEmpty()) {
+		if (audios != null && !audios.isEmpty())
+		{
 			setValue("map", "0:a", inStructions, comm); // Keep all audio tracks
 			setValue("c:a", "copy", inStructions, comm); // Keep all audio tracks
 		}
@@ -177,16 +189,21 @@ public class FfmpegVideoTranscoder extends BaseTranscoder {
 		{
 			setValue("ab", "96k", inStructions, comm); // legacy. audio bit rate, alias for 'b:a', see code below.
 			setValue("ar", "44100", inStructions, comm); // audio sample rate
-			if (inStructions.get("ac") != null) {
+			if (inStructions.get("ac") != null)
+			{
 				setValue("ac", "1", inStructions, comm); // audiochannels
 			}
-		} else {
+		}
+		else
+		{
 			comm.add("-pre");
 			comm.add(inStructions.get("pre"));
 		}
-		if ("mp4".equals(inAsset.getFileFormat())) {
+		if ("mp4".equals(inAsset.getFileFormat()))
+		{
 			String videodatastreamid = inAsset.get("videotimecodeid");
-			if (videodatastreamid != null) {
+			if (videodatastreamid != null)
+			{
 				setValue("map_metadata", "0:s:" + videodatastreamid, inStructions, comm); // audiofilters (channelmap,
 																							// volume, ...)
 			}
@@ -246,10 +263,12 @@ public class FfmpegVideoTranscoder extends BaseTranscoder {
 		// height = inStructions.getMaxScaledSize().height;
 		// }
 
-		if (width != 0) {
+		if (width != 0)
+		{
 			int aw = inAsset.getInt("width");
 			int ah = inAsset.getInt("height");
-			if (aw > width || ah > height) {
+			if (aw > width || ah > height)
+			{
 				float ratio = (float) aw / (float) ah;
 				float ratiodest = (float) width / (float) height;
 				if (ratiodest > ratio) // is dest wider than the input
@@ -257,36 +276,48 @@ public class FfmpegVideoTranscoder extends BaseTranscoder {
 					// original video has a wider ratio so we need to adjust height in proportion
 					float change = (float) height / (float) ah;
 					width = Math.round((float) aw * change);
-				} else if (ratiodest < ratio) {
-					// too wide, need to padd top
-					float change = (float) width / (float) aw;
-					height = Math.round((float) ah * change);
-				} else {
-					// no math needed
 				}
-			} else {
+				else
+					if (ratiodest < ratio)
+					{
+						// too wide, need to padd top
+						float change = (float) width / (float) aw;
+						height = Math.round((float) ah * change);
+					}
+					else
+					{
+						// no math needed
+					}
+			}
+			else
+			{
 				// Asset has smaller size than destination
 
 				boolean scaledownonly = true;
-				if (inStructions.get("scaledownonly") != null) {
+				if (inStructions.get("scaledownonly") != null)
+				{
 					scaledownonly = new Boolean(inStructions.get("scaledownonly"));
 				}
 
 				// log.info(scaledownonly);
 
-				if (scaledownonly) {
+				if (scaledownonly)
+				{
 					// Make destination size the same as original
 					width = aw;
 					height = ah;
 				}
 			}
 		}
-		if (width > 1 && height > 1) {
+		if (width > 1 && height > 1)
+		{
 			// must be even
-			if ((width % 2) != 0) {
+			if ((width % 2) != 0)
+			{
 				width++;
 			}
-			if ((height % 2) != 0) {
+			if ((height % 2) != 0)
+			{
 				height++;
 			}
 			// http://stackoverflow.com/questions/20847674/ffmpeg-libx264-height-not-divisible-by-2
@@ -296,41 +327,43 @@ public class FfmpegVideoTranscoder extends BaseTranscoder {
 
 		// 640x360 853x480 704x480 = 480p
 		/*
-		 * Here is a two pass mp4 convertion with mp3 audio The second pass
-		 * lets the bit rate be more constant for buffering downloads
+		 * Here is a two pass mp4 convertion with mp3 audio The second pass lets the bit rate be more
+		 * constant for buffering downloads
 		 * 
-		 * #ffmpeg -i smb_m48020080421.mov -vcodec mpeg4 -pass 1 -vtag xvid
-		 * -r 25 -b 2000k -acodec libmp3lame -s vga -ab 96k -ar 44100 -ac 1
-		 * bigmono2k960output2p.mp4 #ffmpeg -i smb_m48020080421.mov -vcodec
-		 * mpeg4 -pass 2 -vtag xvid -r 25 -b 2000k -acodec libmp3lame -s vga
+		 * #ffmpeg -i smb_m48020080421.mov -vcodec mpeg4 -pass 1 -vtag xvid -r 25 -b 2000k -acodec
+		 * libmp3lame -s vga -ab 96k -ar 44100 -ac 1 bigmono2k960output2p.mp4 #ffmpeg -i
+		 * smb_m48020080421.mov -vcodec mpeg4 -pass 2 -vtag xvid -r 25 -b 2000k -acodec libmp3lame -s vga
 		 * -ab 96k -ar 44100 -ac 1 bigmono2k960output2p.mp4
 		 * 
-		 * Here is a simple PCM audio format for low CPU devices // ffmpeg
-		 * -i smb_m48020080421.mov -vcodec mpeg4 -vtag xvid -r 25 -b 2000k
-		 * -acodec pcm_s16le -s vga -ar 44100 -ac 1 pcmmono2k960output2p.avi
+		 * Here is a simple PCM audio format for low CPU devices // ffmpeg -i smb_m48020080421.mov -vcodec
+		 * mpeg4 -vtag xvid -r 25 -b 2000k -acodec pcm_s16le -s vga -ar 44100 -ac 1 pcmmono2k960output2p.avi
 		 */
 		String outpath = null;
 
-		if (mp4) {
+		if (mp4)
+		{
 			outpath = inStructions.getOutputFile().getAbsolutePath() + "tmp.mp4";
 			File tmp = new File(outpath);
 			tmp.deleteOnExit();
-			if (tmp.exists()) {
+			if (tmp.exists())
+			{
 				long old = tmp.lastModified();
 				if (System.currentTimeMillis() - old < (1000 * 60 * 60)) // something is processing this within the last
 																			// hour
 				{
-					log.info("Existing video conversion trying again " + inStructions.getMediaArchive().getCatalogId()
-							+ " " + inStructions.getAssetId());
+					log.info("Existing video conversion trying again " + inStructions.getMediaArchive().getCatalogId() + " " + inStructions.getAssetId());
 					result.setComplete(false);
 					result.setOk(true);
 					return result;
-				} else {
-					throw new OpenEditException("Older video existing conversion found, marking as error "
-							+ inStructions.getMediaArchive().getCatalogId() + " " + inStructions.getAssetId());
+				}
+				else
+				{
+					throw new OpenEditException("Older video existing conversion found, marking as error " + inStructions.getMediaArchive().getCatalogId() + " " + inStructions.getAssetId());
 				}
 			}
-		} else {
+		}
+		else
+		{
 			outpath = inStructions.getOutputFile().getAbsolutePath();
 		}
 		comm.add(outpath);
@@ -340,12 +373,14 @@ public class FfmpegVideoTranscoder extends BaseTranscoder {
 
 		ExecResult execresult = getExec().runExec("avconv", comm, true, timeout);
 		result.setOk(execresult.isRunOk());
-		if (!execresult.isRunOk()) {
+		if (!execresult.isRunOk())
+		{
 			String output = execresult.getStandardError();
 			result.setError("Error: " + output);
 			return result;
 		}
-		if (mp4) {
+		if (mp4)
+		{
 			comm = new ArrayList();
 			comm.add(inStructions.getOutputFile().getAbsolutePath() + "tmp.mp4");
 			comm.add(inStructions.getOutputFile().getAbsolutePath());

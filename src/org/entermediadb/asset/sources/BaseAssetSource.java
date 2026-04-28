@@ -31,35 +31,47 @@ import org.openedit.util.DateStorageUtil;
 import org.openedit.util.EmStringUtils;
 import org.openedit.util.PathUtilities;
 
-public abstract class BaseAssetSource implements AssetSource {
+public abstract class BaseAssetSource implements AssetSource
+{
 	private static final Log log = LogFactory.getLog(BaseAssetSource.class);
 
 	protected List fieldImportLogs;
 	protected Searcher fieldFolderSearcher;
 	protected Collection fieldExcludes;
 
-	public Collection getExcludes() {
-		if (fieldExcludes == null) {
+	public Collection getExcludes()
+	{
+		if (fieldExcludes == null)
+		{
 			String value = getConfig().get("excludes");
-			if (value == null) {
+			if (value == null)
+			{
 				fieldExcludes = Collections.EMPTY_LIST;
-			} else {
+			}
+			else
+			{
 				fieldExcludes = EmStringUtils.split(value);
 			}
 		}
 		return fieldExcludes;
 	}
 
-	public void setExcludes(Collection inExcludes) {
+	public void setExcludes(Collection inExcludes)
+	{
 		fieldExcludes = inExcludes;
 	}
 
-	public Collection getIncludes() {
-		if (fieldIncludes == null) {
+	public Collection getIncludes()
+	{
+		if (fieldIncludes == null)
+		{
 			String value = getConfig().get("includes");
-			if (value == null) {
+			if (value == null)
+			{
 				fieldIncludes = Collections.EMPTY_LIST;
-			} else {
+			}
+			else
+			{
 				fieldIncludes = EmStringUtils.split(value);
 			}
 		}
@@ -67,24 +79,29 @@ public abstract class BaseAssetSource implements AssetSource {
 		return fieldIncludes;
 	}
 
-	public void setIncludes(Collection inIncludes) {
+	public void setIncludes(Collection inIncludes)
+	{
 		fieldIncludes = inIncludes;
 	}
 
 	protected Collection fieldIncludes;
 
-	public Searcher getFolderSearcher() {
+	public Searcher getFolderSearcher()
+	{
 		return getMediaArchive().getSearcher("hotfolder");
 	}
 
-	public List getImportLogs() {
-		if (fieldImportLogs == null) {
+	public List getImportLogs()
+	{
+		if (fieldImportLogs == null)
+		{
 			fieldImportLogs = new ArrayList();
 		}
 		return fieldImportLogs;
 	}
 
-	public void setImportLogs(List inImportLogs) {
+	public void setImportLogs(List inImportLogs)
+	{
 		fieldImportLogs = inImportLogs;
 	}
 
@@ -96,183 +113,214 @@ public abstract class BaseAssetSource implements AssetSource {
 
 	protected WebServer fieldWebServer;
 
-	public MultiValued getConfig() {
+	public MultiValued getConfig()
+	{
 		return fieldConfig;
 	}
 
-	public void setConfig(MultiValued inConfig) {
+	public void setConfig(MultiValued inConfig)
+	{
 		fieldConfig = inConfig;
 		fieldExcludes = null;
 		fieldIncludes = null;
 	}
 
-	public MediaArchive getMediaArchive() {
+	public MediaArchive getMediaArchive()
+	{
 		return fieldMediaArchive;
 	}
 
-	public void setMediaArchive(MediaArchive inMediaArchive) {
+	public void setMediaArchive(MediaArchive inMediaArchive)
+	{
 		fieldMediaArchive = inMediaArchive;
 	}
 
-	protected String getExternalPath() {
+	protected String getExternalPath()
+	{
 		return getConfig().get("externalpath");
 	}
 
-	protected String getFolderPath() {
+	protected String getFolderPath()
+	{
 		return getConfig().get("subfolder");
 	}
 
 	@Override
-	public boolean handles(Asset inAsset) {
-		if (inAsset == null) {
+	public boolean handles(Asset inAsset)
+	{
+		if (inAsset == null)
+		{
 			return false;
 		}
 		String name = getFolderPath();
-		if (name == null) {
+		if (name == null)
+		{
 			return false;
 		}
-		if (inAsset.getSourcePath() == null) {
+		if (inAsset.getSourcePath() == null)
+		{
 			return false;
 		}
-		if (inAsset.getSourcePath().startsWith(name)) {
+		if (inAsset.getSourcePath().startsWith(name))
+		{
 			return true;
 		}
 		return false;
 	}
 
-	public boolean handlesPath(String inPath) {
-		if (inPath == null) {
+	public boolean handlesPath(String inPath)
+	{
+		if (inPath == null)
+		{
 			return false;
 		}
 		String name = getFolderPath();
-		if (name != null && inPath.startsWith(name)) {
+		if (name != null && inPath.startsWith(name))
+		{
 			return true;
 		}
 		return false;
 	}
 
-	public FolderMonitor getFolderMonitor() {
+	public FolderMonitor getFolderMonitor()
+	{
 		return fieldFolderMonitor;
 	}
 
-	public void setFolderMonitor(FolderMonitor inFolderMonitor) {
+	public void setFolderMonitor(FolderMonitor inFolderMonitor)
+	{
 		fieldFolderMonitor = inFolderMonitor;
 	}
 
-	public Asset createAsset(Asset inAsset, ContentItem inUploaded, Map inMetadata, String inSourcepath,
-			boolean inCreateCategories, User inUser) {
+	public Asset createAsset(Asset inAsset, ContentItem inUploaded, Map inMetadata, String inSourcepath, boolean inCreateCategories, User inUser)
+	{
 		ContentItem dest = checkLocation(inAsset, inUploaded, inUser);
 		log.info("Destination:" + dest);
 		String sourcepath = inAsset.getSourcePath();
-		if (dest.exists()) {
+		if (dest.exists())
+		{
 			inAsset = getMediaArchive().getAssetBySourcePath(inAsset.getSourcePath());
 		}
-		Asset asset = getMediaArchive().getAssetImporter().getAssetUtilities().populateAsset(inAsset, dest,
-				getMediaArchive(), inCreateCategories, sourcepath, inUser);
+		Asset asset = getMediaArchive().getAssetImporter().getAssetUtilities().populateAsset(inAsset, dest, getMediaArchive(), inCreateCategories, sourcepath, inUser);
 
 		Collection<String> keywords = new ArrayList<String>();
 
-		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
+		{
 			String field = (String) iterator.next();
 			Object val = inMetadata.get(field);
-			if (field.equals("keywords")) {
-				if (val instanceof String) {
+			if (field.equals("keywords"))
+			{
+				if (val instanceof String)
+				{
 					String keywordstring = (String) val;
 					keywords.add(keywordstring);
-				} else if (val instanceof Collection) {
-					Collection vals = (Collection) val;
-					keywords.addAll(vals);
-				} else if (val instanceof String[]) {
-					String[] vals = (String[]) val;
-					for (int i = 0; i < vals.length; i++) {
-						keywords.add(vals[i]);
-					}
 				}
-			} else if (field.equals("categories")) {
-				for (Iterator citerator = ((Collection) val).iterator(); citerator.hasNext();) {
-					Category cat = (Category) citerator.next();
-					asset.addCategory(cat);
-				}
-			} else {
-				if (val instanceof String[]) {
-					String[] col = (String[]) val;
-					if (col.length == 0) {
-						continue;
+				else
+					if (val instanceof Collection)
+					{
+						Collection vals = (Collection) val;
+						keywords.addAll(vals);
 					}
-					if (col.length == 1) {
-						if (col[0] == null || col[0].isEmpty()) {
-							continue; // dont blank out the value
-						}
-						PropertyDetail detail = getMediaArchive().getAssetSearcher().getPropertyDetails()
-								.getDetail(field);
-						if (detail != null && detail.isDate()) {
-							String targetval = col[0];
-							String format = "yyyy-MM-dd";
-							if (targetval.matches("[0-9]{2}/[0-9]{2}/[0-9]{4}")) // TODO: clean this up
+					else
+						if (val instanceof String[])
+						{
+							String[] vals = (String[]) val;
+							for (int i = 0; i < vals.length; i++)
 							{
-								format = "MM/dd/yyyy";
+								keywords.add(vals[i]);
 							}
-							Date date = DateStorageUtil.getStorageUtil().parse(targetval, format);
-							asset.setValue(field, date);
-						} else {
-							String v = col[0];
-							asset.setValue(field, v);
 						}
-					} else {
-						asset.setValue(field, Arrays.asList((String[]) col));
-					}
-				} else {
-					asset.setValue(field, val);
-				}
-
-				/*
-				 * //Check for _auto
-				 * PropertyDetail detail =
-				 * getMediaArchive().getAssetSearcher().getPropertyDetails().getDetail(field);
-				 * if( detail != null && detail.isList() )
-				 * {
-				 * Collection<String> values = asset.getValues(field);
-				 * if( values != null && !values.isEmpty())
-				 * {
-				 * Collection<String> tosave = new ArrayList();
-				 * for (Iterator iterator2 = values.iterator(); iterator2.hasNext();)
-				 * {
-				 * String v = (String) iterator2.next();
-				 * if( "_auto".equals( v ) )
-				 * {
-				 * Searcher s = getMediaArchive().getSearcher(detail.getListId() );
-				 * Data newone = s.createNewData();
-				 * newone.setName(PathUtilities.extractPageName(asset.getName()));
-				 * s.saveData(newone);
-				 * v = newone.getId();
-				 * }
-				 * tosave.add(v);
-				 * }
-				 * asset.setValue(field,tosave);
-				 * }
-				 * }
-				 */
 			}
+			else
+				if (field.equals("categories"))
+				{
+					for (Iterator citerator = ((Collection) val).iterator(); citerator.hasNext();)
+					{
+						Category cat = (Category) citerator.next();
+						asset.addCategory(cat);
+					}
+				}
+				else
+				{
+					if (val instanceof String[])
+					{
+						String[] col = (String[]) val;
+						if (col.length == 0)
+						{
+							continue;
+						}
+						if (col.length == 1)
+						{
+							if (col[0] == null || col[0].isEmpty())
+							{
+								continue; // dont blank out the value
+							}
+							PropertyDetail detail = getMediaArchive().getAssetSearcher().getPropertyDetails().getDetail(field);
+							if (detail != null && detail.isDate())
+							{
+								String targetval = col[0];
+								String format = "yyyy-MM-dd";
+								if (targetval.matches("[0-9]{2}/[0-9]{2}/[0-9]{4}")) // TODO: clean this up
+								{
+									format = "MM/dd/yyyy";
+								}
+								Date date = DateStorageUtil.getStorageUtil().parse(targetval, format);
+								asset.setValue(field, date);
+							}
+							else
+							{
+								String v = col[0];
+								asset.setValue(field, v);
+							}
+						}
+						else
+						{
+							asset.setValue(field, Arrays.asList((String[]) col));
+						}
+					}
+					else
+					{
+						asset.setValue(field, val);
+					}
+
+					/*
+					 * //Check for _auto PropertyDetail detail =
+					 * getMediaArchive().getAssetSearcher().getPropertyDetails().getDetail(field); if( detail != null &&
+					 * detail.isList() ) { Collection<String> values = asset.getValues(field); if( values != null &&
+					 * !values.isEmpty()) { Collection<String> tosave = new ArrayList(); for (Iterator iterator2 =
+					 * values.iterator(); iterator2.hasNext();) { String v = (String) iterator2.next(); if(
+					 * "_auto".equals( v ) ) { Searcher s = getMediaArchive().getSearcher(detail.getListId() ); Data
+					 * newone = s.createNewData(); newone.setName(PathUtilities.extractPageName(asset.getName()));
+					 * s.saveData(newone); v = newone.getId(); } tosave.add(v); } asset.setValue(field,tosave); } }
+					 */
+				}
 		}
 
-		if (!keywords.isEmpty()) {
+		if (!keywords.isEmpty())
+		{
 			asset.setValue("keywords", keywords);
 		}
 
-		if (asset.get("editstatus") == null) {
+		if (asset.get("editstatus") == null)
+		{
 			asset.setProperty("editstatus", "1");
 		}
 		// asset.setProperty("importstatus", "uploading");
-		if (asset.get("importstatus") == null) {
+		if (asset.get("importstatus") == null)
+		{
 			asset.setProperty("importstatus", "imported");
 		}
-		if (asset.get("previewstatus") == null) {
+		if (asset.get("previewstatus") == null)
+		{
 			asset.setProperty("previewstatus", "0");
 		}
 
-		if (asset.get("assettype") == null) {
+		if (asset.get("assettype") == null)
+		{
 			Data type = getMediaArchive().getDefaultAssetTypeForFile(asset.getName());
-			if (type != null) {
+			if (type != null)
+			{
 				asset.setProperty("assettype", type.getId());
 			}
 		}
@@ -283,32 +331,42 @@ public abstract class BaseAssetSource implements AssetSource {
 
 	protected abstract ContentItem checkLocation(Asset inAsset, ContentItem inUploaded, User inUser);
 
-	public void assetUploaded(Asset inAsset) {
+	public void assetUploaded(Asset inAsset)
+	{
 		// Do nothing because asset is already in place?
 	}
 
 	@Override
-	public String getId() {
-		if (fieldConfig == null) {
+	public String getId()
+	{
+		if (fieldConfig == null)
+		{
 			return getClass().getName();
 		}
 		return getConfig().getId();
 	}
 
-	protected boolean okToAdd(String inSourcepath) {
-		if (inSourcepath == null) {
+	protected boolean okToAdd(String inSourcepath)
+	{
+		if (inSourcepath == null)
+		{
 			return false;
 		}
-		for (Iterator iterator = getExcludes().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = getExcludes().iterator(); iterator.hasNext();)
+		{
 			String key = (String) iterator.next();
-			if (PathUtilities.match(inSourcepath, key)) {
+			if (PathUtilities.match(inSourcepath, key))
+			{
 				return false;
 			}
 		}
-		if (!getIncludes().isEmpty()) {
-			for (Iterator iterator = getIncludes().iterator(); iterator.hasNext();) {
+		if (!getIncludes().isEmpty())
+		{
+			for (Iterator iterator = getIncludes().iterator(); iterator.hasNext();)
+			{
 				String key = (String) iterator.next();
-				if (PathUtilities.match(inSourcepath, key)) {
+				if (PathUtilities.match(inSourcepath, key))
+				{
 					return true;
 				}
 			}
@@ -318,60 +376,74 @@ public abstract class BaseAssetSource implements AssetSource {
 	}
 
 	@Override
-	public String getName() {
-		if (getConfig() == null) {
+	public String getName()
+	{
+		if (getConfig() == null)
+		{
 			return null;
 		}
 		return getConfig().getName();
 	}
 
 	@Override
-	public boolean isEnabled() {
+	public boolean isEnabled()
+	{
 		String enabled = getConfig().get("enabled");
 		return Boolean.parseBoolean(enabled);
 	}
 
-	public String getPathToOriginal(Asset inAsset) {
+	public String getPathToOriginal(Asset inAsset)
+	{
 		String path = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/";
 		path = path + inAsset.getSourcePath();
 		return path;
 	}
 
-	protected File getFile(Asset inAsset) {
+	protected File getFile(Asset inAsset)
+	{
 		String sp = inAsset.getPath();
 		sp = sp.substring(getFolderPath().length() + 1);
 		String abpath = sp;
 
-		if (getExternalPath() == null) {
+		if (getExternalPath() == null)
+		{
 			throw new OpenEditException("External Path is required!");
-		} else {
+		}
+		else
+		{
 			abpath = getExternalPath() + "/" + sp;
 		}
 		String primaryname = inAsset.getPrimaryFile();
-		if (primaryname != null && inAsset.isFolder()) {
+		if (primaryname != null && inAsset.isFolder())
+		{
 			abpath = abpath + "/" + primaryname;
 		}
 
 		return new File(abpath);
 	}
 
-	public WebServer getWebServer() {
+	public WebServer getWebServer()
+	{
 		return fieldWebServer;
 	}
 
-	public void setWebServer(WebServer inWebServer) {
+	public void setWebServer(WebServer inWebServer)
+	{
 		fieldWebServer = inWebServer;
 	}
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		fieldPageManager = inPageManager;
 	}
 
-	public void saveMount() {
+	public void saveMount()
+	{
 		// remove any old hot folders for this catalog
 		getWebServer().reloadMounts();
 
@@ -382,14 +454,17 @@ public abstract class BaseAssetSource implements AssetSource {
 		String fullpath = originalpath + "/" + toplevelfolder;
 
 		List configs = new ArrayList(getPageManager().getRepositoryManager().getRepositories());
-		for (Iterator iterator = configs.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = configs.iterator(); iterator.hasNext();)
+		{
 			Repository config = (Repository) iterator.next();
-			if (config.getPath().equals(fullpath)) {
+			if (config.getPath().equals(fullpath))
+			{
 				getPageManager().getRepositoryManager().removeRepository(config.getPath());
 			}
 		}
 		String external = getConfig().get("externalpath");
-		if (external != null) {
+		if (external != null)
+		{
 			// String versioncontrol = folder.get("versioncontrol");
 			Repository created = createRepo(type);
 			created.setPath(fullpath);
@@ -400,9 +475,7 @@ public abstract class BaseAssetSource implements AssetSource {
 			/*
 			 * for (Iterator iterator2 = folder.keySet().iterator(); iterator2.hasNext();) {
 			 * 
-			 * String key = (String) iterator2.next();
-			 * created.setProperty(key, (String) folder.get(key)); //
-			 * }
+			 * String key = (String) iterator2.next(); created.setProperty(key, (String) folder.get(key)); // }
 			 */
 			configs = getPageManager().getRepositoryManager().getRepositories();
 			configs.add(created);
@@ -412,26 +485,31 @@ public abstract class BaseAssetSource implements AssetSource {
 		getWebServer().saveMounts(configs);
 	}
 
-	public void refresh() {
+	public void refresh()
+	{
 
 	}
 
-	public boolean isHotFolder() {
+	public boolean isHotFolder()
+	{
 		return false;
 	}
 
-	protected Repository createRepo(String inType) {
+	protected Repository createRepo(String inType)
+	{
 		Repository repo = new FileRepository();
 		return repo;
 	}
 
 	@Override
-	public int removeExtraCategories() {
+	public int removeExtraCategories()
+	{
 		return -1;
 	}
 
 	@Override
-	public void createSymbolicLink(Asset inAsset, String inCategoryPath) {
+	public void createSymbolicLink(Asset inAsset, String inCategoryPath)
+	{
 		// do noting by default
 
 	}

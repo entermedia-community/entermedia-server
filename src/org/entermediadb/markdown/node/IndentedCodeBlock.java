@@ -13,24 +13,26 @@ package org.entermediadb.markdown.node;
  * </pre>
  * <p>
  *
- * @see <a href=
- *      "https://spec.commonmark.org/0.31.2/#indented-code-blocks">CommonMark
- *      Spec</a>
+ * @see <a href= "https://spec.commonmark.org/0.31.2/#indented-code-blocks">CommonMark Spec</a>
  */
-public class IndentedCodeBlock extends Block {
+public class IndentedCodeBlock extends Block
+{
 
     private String literal;
 
     @Override
-    public void accept(Visitor visitor) {
+    public void accept(Visitor visitor)
+    {
         visitor.visit(this);
     }
 
-    public String getLiteral() {
+    public String getLiteral()
+    {
         return literal;
     }
 
-    public void setLiteral(String literal) {
+    public void setLiteral(String literal)
+    {
         this.literal = literal;
     }
 }

@@ -32,23 +32,28 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	// protected Category fieldRootCategory;
 	protected String fieldSort = "name";
 
-	public String getSort() {
+	public String getSort()
+	{
 		return fieldSort;
 	}
 
-	public void setSort(String inSort) {
+	public void setSort(String inSort)
+	{
 		fieldSort = inSort;
 	}
 
-	protected String getCacheKey() {
+	protected String getCacheKey()
+	{
 		return getSearchType() + "category";
 	}
 
-	public Data createNewData() {
+	public Data createNewData()
+	{
 
 		String classname = getNewDataName();
 		// elastcCategory has no empty contructor
-		if (classname == null || classname.equals("elasticCategory")) {
+		if (classname == null || classname.equals("elasticCategory"))
+		{
 			return new ElasticCategory(this);
 		}
 		ElasticCategory cat = (ElasticCategory) getModuleManager().getBean(getCatalogId(), getNewDataName(), false);
@@ -64,18 +69,22 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	// return category;
 	// }
 
-	public List findChildren(Category inParent) {
-		if (inParent == null || inParent.getId() == null) {
+	public List findChildren(Category inParent)
+	{
+		if (inParent == null || inParent.getId() == null)
+		{
 			return new ArrayList();
 		}
 		HitTracker hits = query().exact("parentid", inParent.getId()).sort(getSort()).search();
 		hits.enableBulkOperations();
 		List children = new ArrayList(hits.size());
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
 			Data data = (Data) iterator.next();
 
 			ElasticCategory category = (ElasticCategory) getCacheManager().get(getCacheKey(), data.getId());
-			if (category == null) {
+			if (category == null)
+			{
 				category = (ElasticCategory) loadData(data);
 				getCacheManager().put(getCacheKey(), data.getId(), category);
 				children.add(category);
@@ -89,9 +98,11 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		return children;
 	}
 
-	public void reindexInternal() throws OpenEditException {
+	public void reindexInternal() throws OpenEditException
+	{
 		setReIndexing(true);
-		try {
+		try
+		{
 			// getXmlCategoryArchive().clearCategories();
 			getCacheManager().clear(getCacheKey());
 
@@ -99,12 +110,14 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			tracker.enableBulkOperations();
 
 			List tosave = new ArrayList();
-			for (Iterator iterator = tracker.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+			{
 				Data hit = (Data) iterator.next();
 				// log.info(hit.get("categorypath"));
 				ElasticCategory data = (ElasticCategory) loadData(hit);
 				tosave.add(data);
-				if (tosave.size() > 1000) {
+				if (tosave.size() > 1000)
+				{
 					updateIndex(tosave, null);
 					tosave.clear();
 					getCacheManager().clear(getCacheKey()); // TODO: Why do we do this?
@@ -115,18 +128,23 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			// Keep in mind that the index is about the clear so the cache will be invalid
 			// anyways since isDirty will be called
 			getCacheManager().clear(getCacheKey());
-		} finally {
+		}
+		finally
+		{
 			setReIndexing(false);
 		}
 	}
 
-	public void reIndexAll() throws OpenEditException {
+	public void reIndexAll() throws OpenEditException
+	{
 
 		// there is not reindex step since it is only in memory
-		if (isReIndexing()) {
+		if (isReIndexing())
+		{
 			return;
 		}
-		try {
+		try
+		{
 			setReIndexing(true);
 			setOptimizeReindex(false);
 			putMappings(); // We can only try to put mapping. If this failes then they will
@@ -136,28 +154,15 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			getCacheManager().clear(getCacheKey());
 
 			/*
-			 * HitTracker tracker = query().all().sort("categorypath").search();
-			 * tracker.enableBulkOperations();
+			 * HitTracker tracker = query().all().sort("categorypath").search(); tracker.enableBulkOperations();
 			 * 
-			 * List tosave = new ArrayList();
-			 * for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-			 * {
-			 * Data hit = (Data) iterator.next();
-			 * //log.info(hit.get("categorypath"));
-			 * ElasticCategory data = (ElasticCategory)loadData(hit);
-			 * String path = data.loadCategoryPath();
-			 * data.setValue("parents", data.getParentCategories());
-			 * data.setValue("categorypath", path);
+			 * List tosave = new ArrayList(); for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+			 * { Data hit = (Data) iterator.next(); //log.info(hit.get("categorypath")); ElasticCategory data =
+			 * (ElasticCategory)loadData(hit); String path = data.loadCategoryPath(); data.setValue("parents",
+			 * data.getParentCategories()); data.setValue("categorypath", path);
 			 * 
-			 * tosave.add(data);
-			 * if( tosave.size() > 1000)
-			 * {
-			 * updateIndex(tosave,null);
-			 * tosave.clear();
-			 * getCacheManager().clear(getCacheKey());
-			 * }
-			 * }
-			 * updateIndex(tosave,null);
+			 * tosave.add(data); if( tosave.size() > 1000) { updateIndex(tosave,null); tosave.clear();
+			 * getCacheManager().clear(getCacheKey()); } } updateIndex(tosave,null);
 			 */
 
 			saveCategory(getRootCategory());
@@ -169,20 +174,25 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			// anyways since isDirty will be called
 			getCacheManager().clear(getCacheKey());
 
-		} finally {
+		}
+		finally
+		{
 			setReIndexing(false);
 			setOptimizeReindex(true);
 		}
 	}
 
-	protected void updateChildren(Category inParent, List inTosave) {
+	protected void updateChildren(Category inParent, List inTosave)
+	{
 		// TODO Auto-generated method stub
 		inTosave.add(inParent);
-		if (inTosave.size() == 1000) {
+		if (inTosave.size() == 1000)
+		{
 			updateIndex(inTosave, null);
 			inTosave.clear();
 		}
-		for (Iterator iterator = inParent.getChildren().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inParent.getChildren().iterator(); iterator.hasNext();)
+		{
 			Category child = (Category) iterator.next();
 			updateChildren(child, inTosave);
 		}
@@ -200,46 +210,58 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	// }
 
 	@Override
-	protected void saveToElasticSearch(PropertyDetails inDetails, Data inData, boolean delete, User inUser) {
+	protected void saveToElasticSearch(PropertyDetails inDetails, Data inData, boolean delete, User inUser)
+	{
 		ElasticCategory category = null;
-		if (inData instanceof ElasticCategory) {
+		if (inData instanceof ElasticCategory)
+		{
 			category = (ElasticCategory) inData;
-		} else {
+		}
+		else
+		{
 			category = (ElasticCategory) loadData(inData);
 		}
 		super.saveToElasticSearch(inDetails, inData, delete, inUser);
 		Collection values = (Collection) category.getProperties().getValue("parents");
 		boolean edited = false;
-		if (values == null) {
+		if (values == null)
+		{
 			category.setValue("parents", category.getParentCategories()); // This requires the ID of the asset to be set
 																			// before saving
 			edited = true;
 		}
 
 		String path = (String) category.getProperties().getValue("categorypath");
-		if (path == null) {
+		if (path == null)
+		{
 			path = category.loadCategoryPath();
 			category.setValue("categorypath", path);
 			edited = true;
 		}
-		if (edited) {
+		if (edited)
+		{
 			super.saveToElasticSearch(inDetails, inData, delete, inUser);
 		}
 
 	}
 
 	@Override
-	public Category getRootCategory() {
+	public Category getRootCategory()
+	{
 		Category root = getCategory("index");
 
-		if (root == null) {
+		if (root == null)
+		{
 			// root = getXmlCategoryArchive().getRootCategory();
 			fieldXmlCategoryArchive = null;
-			if (root == null) {
+			if (root == null)
+			{
 				root = (Category) createNewData();
 				root.setId("index");
 				root.setName("All");
-			} else {
+			}
+			else
+			{
 				root = (Category) loadData(root);
 			}
 			List tosave = new ArrayList();
@@ -251,11 +273,11 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		return root;
 	}
 
-	public void saveCategoryTree(Category inRootCategory) {
+	public void saveCategoryTree(Category inRootCategory)
+	{
 		/*
 		 * 
-		 * HitTracker all = query().exact("parents", inRootCategory).search();
-		 * all.enableBulkOperations();
+		 * HitTracker all = query().exact("parents", inRootCategory).search(); all.enableBulkOperations();
 		 * saveAllData(all, null);
 		 */
 		saveCategory(inRootCategory);
@@ -264,7 +286,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		saveAllData(tosave, null);
 	}
 
-	protected void saveCategoryTree(Category inCategory, List toSave, Boolean inReloadChildren) {
+	protected void saveCategoryTree(Category inCategory, List toSave, Boolean inReloadChildren)
+	{
 		// saveData(inRootCategory, null);
 
 		String path = inCategory.loadCategoryPath();
@@ -272,13 +295,16 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		inCategory.setValue("categorypath", path);
 		getCacheManager().put(getCacheKey(), inCategory.getId(), inCategory); // Is this too many?
 		toSave.add(inCategory);
-		if (toSave.size() > 1000) {
+		if (toSave.size() > 1000)
+		{
 			saveAllData(toSave, null);
 			toSave.clear();
 		}
 		Collection children = inCategory.getChildren(inReloadChildren);
-		if (children != null) {
-			for (Iterator iterator = children.iterator(); iterator.hasNext();) {
+		if (children != null)
+		{
+			for (Iterator iterator = children.iterator(); iterator.hasNext();)
+			{
 				Category child = (Category) iterator.next();
 				saveCategoryTree(child, toSave, false);
 			}
@@ -299,20 +325,27 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	// inCategoryArchive.setCatalogId(getCatalogId());
 	// }
 	@Override
-	public Category getCategory(String inCategoryId) {
-		if (inCategoryId == null) {
+	public Category getCategory(String inCategoryId)
+	{
+		if (inCategoryId == null)
+		{
 			return null;
 		}
 		Category cat = null;
 		cat = (Category) getCacheManager().get(getCacheKey(), inCategoryId);
-		if (cat == null || cat.isDirty()) {
+		if (cat == null || cat.isDirty())
+		{
 			Category newcopy = searchCategory(inCategoryId);
-			if (newcopy == null) {
+			if (newcopy == null)
+			{
 				return null;
 			}
-			if (cat == null) {
+			if (cat == null)
+			{
 				cat = newcopy;
-			} else {
+			}
+			else
+			{
 				cat.setProperties(newcopy.getProperties());
 				cat.refresh();
 				// cat.setParentCategory(null); cant call this
@@ -323,37 +356,47 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			// }
 		}
 		// log.info("returning" + cat.hashCode() + " " + cat.getName());
-		if (cat != null && !cat.hasLoadedParent()) {
+		if (cat != null && !cat.hasLoadedParent())
+		{
 			String parentid = (String) cat.get("parentid");
-			if (parentid != null && !parentid.equals(inCategoryId)) {
+			if (parentid != null && !parentid.equals(inCategoryId))
+			{
 				Category parent = getCategory(parentid);
-				if (parent != null) {
+				if (parent != null)
+				{
 					cat.setParentCategory(parent);
-				} else {
+				}
+				else
+				{
 					log.error("Missing parent category " + parentid + " on child " + inCategoryId);
 				}
 			}
 		}
-		if (cat != null) {
+		if (cat != null)
+		{
 			getCacheManager().put(getCacheKey(), inCategoryId, cat);
 		}
 
 		return cat;
 	}
 
-	public Object searchByField(String inField, String inValue) {
-		if (inField.equals("id") || inField.equals("_id")) {
+	public Object searchByField(String inField, String inValue)
+	{
+		if (inField.equals("id") || inField.equals("_id"))
+		{
 			return getCategory(inValue);
 		}
 		return super.searchByField(inField, inValue);
 	}
 
-	protected Category searchCategory(String inValue) {
-		GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute()
-				.actionGet();
-		if (response.isExists()) {
+	protected Category searchCategory(String inValue)
+	{
+		GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute().actionGet();
+		if (response.isExists())
+		{
 			Map source = response.getSource();
-			if (isDeleted(source)) {
+			if (isDeleted(source))
+			{
 				return null;
 			}
 			ElasticCategory data = (ElasticCategory) createNewData();
@@ -361,7 +404,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			// data.
 			// copyData(data, typed);
 			data.setId(inValue);
-			if (response.getVersion() > -1) {
+			if (response.getVersion() > -1)
+			{
 				data.setProperty(".version", String.valueOf(response.getVersion()));
 			}
 			return data;
@@ -370,8 +414,10 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	}
 
 	@Override
-	public Data loadData(Data inHit) {
-		if (inHit == null || inHit instanceof ElasticCategory) {
+	public Data loadData(Data inHit)
+	{
+		if (inHit == null || inHit instanceof ElasticCategory)
+		{
 			return inHit;
 		}
 		ElasticCategory data = (ElasticCategory) createNewData();
@@ -383,7 +429,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	}
 
 	@Override
-	public void saveCategory(Category inCategory) {
+	public void saveCategory(Category inCategory)
+	{
 		String path = inCategory.loadCategoryPath();
 		inCategory.setValue("parents", inCategory.getParentCategories());
 		inCategory.setValue("categorypath", path);
@@ -393,7 +440,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		// log.info("saved" + inCategory.hashCode() + " " + inCategory.getName());
 	}
 
-	public void saveData(Data inData, User inUser) {
+	public void saveData(Data inData, User inUser)
+	{
 		// For the path to be saved we might need to force category?
 		super.saveData(inData, inUser);
 		setIndexId(-1);
@@ -405,20 +453,24 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	}
 
 	@Override
-	public void delete(Data inData, User inUser) {
+	public void delete(Data inData, User inUser)
+	{
 		// TODO Auto-generated method stub
 		super.delete(inData, inUser);
 		getCacheManager().remove(getCacheKey(), inData.getId());
 		setIndexId(-1);
 	}
 
-	protected String createCategoryId(String inPath) {
+	protected String createCategoryId(String inPath)
+	{
 		// subtract the start /store/assets/stuff/more -> stuff_more
-		if (inPath.length() < 0) {
+		if (inPath.length() < 0)
+		{
 			return "index";
 		}
 
-		if (inPath.startsWith("/")) {
+		if (inPath.startsWith("/"))
+		{
 			inPath = inPath.substring(1);
 		}
 		inPath = inPath.replace('/', '_');
@@ -427,12 +479,14 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	}
 
 	@Override
-	public Category createCategoryPathFromParent(Category inParent, String inChildPath) {
+	public Category createCategoryPathFromParent(Category inParent, String inChildPath)
+	{
 		String categorypath = inParent.get("categorypath");
 		if (categorypath != null && inParent.hasLoadedParent()) // Data error check
 		{
 			String existingcategorypath = inParent.loadCategoryPath();
-			if (!categorypath.equals(existingcategorypath)) {
+			if (!categorypath.equals(existingcategorypath))
+			{
 				throw new OpenEditException("Parent category needs to be reindex");
 			}
 		}
@@ -448,11 +502,13 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		Category childcategory = null;
 		String[] children = inChildPath.split("\\/");
 		Category currentparent = inParent;
-		for (int i = 0; i < children.length; i++) {
+		for (int i = 0; i < children.length; i++)
+		{
 			String catname = children[i];
 			childcategory = currentparent.getChildByName(catname); // speed up but children could be out of date if they
 																	// renamed it
-			if (childcategory == null) {
+			if (childcategory == null)
+			{
 				// Create it
 				childcategory = (Category) createNewData();
 				childcategory.setName(inChildPath);
@@ -470,17 +526,23 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	}
 
 	@Override
-	public synchronized Category createCategoryPath(String inPath) {
+	public synchronized Category createCategoryPath(String inPath)
+	{
 		Category found = loadCategoryByPath(inPath);
-		if (found == null) {
+		if (found == null)
+		{
 			// Was not in cache so create it
 			String cleanpath = null;
-			if (inPath.endsWith("/")) {
+			if (inPath.endsWith("/"))
+			{
 				cleanpath = inPath.substring(0, inPath.length() - 1);
-			} else {
+			}
+			else
+			{
 				cleanpath = inPath;
 			}
-			if (cleanpath.isEmpty()) {
+			if (cleanpath.isEmpty())
+			{
 				throw new OpenEditException("Blank path");
 			}
 			// log.info("Category not found: "+ inPath);
@@ -490,7 +552,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			// create parents and itself
 			String parent = PathUtilities.extractDirectoryPath(cleanpath);
 			Category parentcategory = createCategoryPath(parent);
-			if (parentcategory != null) {
+			if (parentcategory != null)
+			{
 				// log.info(parentcategory.isDirty());
 
 				// This could be slow to load on a big catalog
@@ -505,8 +568,10 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		return found;
 	}
 
-	public void deleteCategoryTree(Category root) {
-		for (Iterator iterator = root.getChildren().iterator(); iterator.hasNext();) {
+	public void deleteCategoryTree(Category root)
+	{
+		for (Iterator iterator = root.getChildren().iterator(); iterator.hasNext();)
+		{
 			Category child = (Category) iterator.next();
 			deleteCategoryTree(child);
 
@@ -515,42 +580,51 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	}
 
 	@Override
-	public void clearCategories() {
+	public void clearCategories()
+	{
 		clearIndex();
 		getCacheManager().clear(getCacheKey());
 
 	}
 
-	public Set buildCategorySet(Category inCategory) {
+	public Set buildCategorySet(Category inCategory)
+	{
 		List categories = new ArrayList();
 		categories.add(inCategory);
 
 		return buildCategorySet(categories);
 	}
 
-	public Set buildCategorySet(List inCategories) {
+	public Set buildCategorySet(List inCategories)
+	{
 		HashSet allCatalogs = new HashSet();
 		// allCatalogs.addAll(catalogs);
-		for (Iterator iter = inCategories.iterator(); iter.hasNext();) {
+		for (Iterator iter = inCategories.iterator(); iter.hasNext();)
+		{
 			Category catalog = (Category) iter.next();
 			buildCategorySet(catalog, allCatalogs);
 		}
 		return allCatalogs;
 	}
 
-	protected void buildCategorySet(Category inCategory, Set inCategorySet) {
-		if (inCategory == null) {
+	protected void buildCategorySet(Category inCategory, Set inCategorySet)
+	{
+		if (inCategory == null)
+		{
 			return;
 		}
 		inCategorySet.add(inCategory);
 		Category parent = inCategory.getParentCategory();
-		if (parent != null) {
+		if (parent != null)
+		{
 			buildCategorySet(parent, inCategorySet);
 		}
 	}
 
-	public Category loadCategoryByPath(String categorypath) {
-		if (categorypath.length() == 0 || categorypath.equals(getRootCategory().getName())) {
+	public Category loadCategoryByPath(String categorypath)
+	{
+		if (categorypath.length() == 0 || categorypath.equals(getRootCategory().getName()))
+		{
 			return getRootCategory();
 		}
 		// TODO: Cache these categories
@@ -560,15 +634,18 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 
 		categorypath = categorypath.replace("//", "/"); // Double Slash
 
-		if (categorypath.endsWith("/")) {
+		if (categorypath.endsWith("/"))
+		{
 			categorypath = categorypath.substring(0, categorypath.length() - 1);
 		}
 		Data hit = (Data) query().exact("categorypath", categorypath).sort("categorypathUp").searchOne();
-		if (hit == null) {
+		if (hit == null)
+		{
 			return null;
 		}
 		Category cached = (Category) getCacheManager().get(getCacheKey(), hit.getId());
-		if (cached != null) {
+		if (cached != null)
+		{
 			return cached;
 		}
 
@@ -577,8 +654,10 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		return found;
 	}
 
-	public List listAllCategories(Category inTopCategory) {
-		if (inTopCategory == null) {
+	public List listAllCategories(Category inTopCategory)
+	{
+		if (inTopCategory == null)
+		{
 			return null;
 		}
 		List all = new ArrayList(300);
@@ -586,29 +665,37 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		return all;
 	}
 
-	protected void addChildren(Category parent, List all) {
+	protected void addChildren(Category parent, List all)
+	{
 		all.add(parent);
-		if (parent.hasChildren()) {
-			for (Iterator iterator = parent.getChildren().iterator(); iterator.hasNext();) {
+		if (parent.hasChildren())
+		{
+			for (Iterator iterator = parent.getChildren().iterator(); iterator.hasNext();)
+			{
 				Category category = (Category) iterator.next();
 				addChildren(category, all);
 			}
 		}
 	}
 
-	protected void addSecurity(XContentBuilder inContent, Data inData) throws Exception {
+	protected void addSecurity(XContentBuilder inContent, Data inData) throws Exception
+	{
 		// Check for security
 		PropertyDetail detail = getDetail("securityenabled");
 
-		if (detail == null) {
+		if (detail == null)
+		{
 			return;
 		}
 
 		Category cat = null;
 
-		if (inData instanceof Category) {
+		if (inData instanceof Category)
+		{
 			cat = (Category) inData;
-		} else {
+		}
+		else
+		{
 			cat = (Category) loadData(inData);
 		}
 
@@ -616,29 +703,38 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		Collection viewgroups = cat.collectValues("viewergroups");
 		Collection viewroles = cat.collectValues("viewerroles");
 
-		if (cat.getValues("customusers") != null) {
+		if (cat.getValues("customusers") != null)
+		{
 			viewusers.addAll(cat.getValues("customusers"));
 		}
-		if (cat.getValues("customgroups") != null) {
+		if (cat.getValues("customgroups") != null)
+		{
 			viewgroups.addAll(cat.getValues("customgroups"));
 		}
-		if (cat.getValues("customroles") != null) {
+		if (cat.getValues("customroles") != null)
+		{
 			viewroles.addAll(cat.getValues("customroles"));
 		}
 
-		if (!viewusers.isEmpty()) {
+		if (!viewusers.isEmpty())
+		{
 			inContent.field("viewusers", viewusers);
 		}
-		if (!viewgroups.isEmpty()) {
+		if (!viewgroups.isEmpty())
+		{
 			inContent.field("viewgroups", viewgroups);
 		}
-		if (!viewroles.isEmpty()) {
+		if (!viewroles.isEmpty())
+		{
 			inContent.field("viewroles", viewroles);
 		}
 
-		if (!viewusers.isEmpty() || !viewgroups.isEmpty() || !viewroles.isEmpty()) {
+		if (!viewusers.isEmpty() || !viewgroups.isEmpty() || !viewroles.isEmpty())
+		{
 			inContent.field("securityenabled", true);
-		} else {
+		}
+		else
+		{
 			inContent.field("securityenabled", false);
 		}
 

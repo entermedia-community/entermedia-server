@@ -2,58 +2,72 @@ package org.entermediadb.ai.assistant;
 
 import org.openedit.Data;
 
-public class GuideStatus {
+public class GuideStatus
+{
 	protected Data fieldViewData;
 
-	public Data getViewData() {
+	public Data getViewData()
+	{
 		return fieldViewData;
 	}
 
-	public void setViewData(Data inViewData) {
+	public void setViewData(Data inViewData)
+	{
 		fieldViewData = inViewData;
 	}
 
-	public String getSearchType() {
+	public String getSearchType()
+	{
 		return fieldSearchType;
 	}
 
-	public void setSearchType(String inSearchType) {
+	public void setSearchType(String inSearchType)
+	{
 		fieldSearchType = inSearchType;
 	}
 
-	public int getCountEmbedded() {
+	public int getCountEmbedded()
+	{
 		return fieldCountEmbedded;
 	}
 
-	public void setCountEmbedded(int inCountEmbedded) {
+	public void setCountEmbedded(int inCountEmbedded)
+	{
 		fieldCountEmbedded = inCountEmbedded;
 	}
 
-	public int getCountPending() {
+	public int getCountPending()
+	{
 		return fieldCountPending;
 	}
 
-	public void setCountPending(int inCountPending) {
+	public void setCountPending(int inCountPending)
+	{
 		fieldCountPending = inCountPending;
 	}
 
-	public int getCountFailed() {
+	public int getCountFailed()
+	{
 		return fieldCountFailed;
 	}
 
-	public void setCountFailed(int inCountFailed) {
+	public void setCountFailed(int inCountFailed)
+	{
 		fieldCountFailed = inCountFailed;
 	}
 
-	public int getCountTotal() {
+	public int getCountTotal()
+	{
 		return fieldCountTotal;
 	}
 
-	public void setCountTotal(int inCountTotal) {
+	public void setCountTotal(int inCountTotal)
+	{
 		fieldCountTotal = inCountTotal;
 	}
 
-	public boolean isReady() {
+	public boolean isReady()
+	{
 		return getCountPending() == 0;
 	}
 

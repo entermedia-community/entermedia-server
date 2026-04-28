@@ -8,7 +8,8 @@ import org.entermediadb.ai.knn.RankedResult;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class BasicLlmResponse implements LlmResponse {
+public class BasicLlmResponse implements LlmResponse
+{
 	protected String fieldMessage;
 	protected String fieldMessagePlain;
 	protected String fieldFunctionName;
@@ -16,78 +17,94 @@ public class BasicLlmResponse implements LlmResponse {
 	protected AiSearch fieldAiSearchParams;
 	Collection<RankedResult> fieldRankedSuggestions;
 
-	public Collection<RankedResult> getRankedSuggestions() {
+	public Collection<RankedResult> getRankedSuggestions()
+	{
 		return fieldRankedSuggestions;
 	}
 
-	public void setRankedSuggestions(Collection<RankedResult> inRankedSuggestions) {
+	public void setRankedSuggestions(Collection<RankedResult> inRankedSuggestions)
+	{
 		fieldRankedSuggestions = inRankedSuggestions;
 	}
 
-	public AiSearch getAiSearchParams() {
+	public AiSearch getAiSearchParams()
+	{
 		return fieldAiSearchParams;
 	}
 
-	public void setAiSearchParams(AiSearch inAiSearchParams) {
+	public void setAiSearchParams(AiSearch inAiSearchParams)
+	{
 		fieldAiSearchParams = inAiSearchParams;
 	}
 
 	@Override
-	public String getMessage() {
+	public String getMessage()
+	{
 		return fieldMessage;
 	}
 
-	public void setMessagePlain(String inMessage) {
+	public void setMessagePlain(String inMessage)
+	{
 		fieldMessagePlain = inMessage;
 	}
 
 	@Override
-	public String getMessagePlain() {
+	public String getMessagePlain()
+	{
 		return fieldMessagePlain;
 	}
 
 	protected Collection fieldRawCollection;
 
-	public Collection getRawCollection() {
+	public Collection getRawCollection()
+	{
 		return fieldRawCollection;
 	}
 
-	public void setRawCollection(JSONArray inRawCollection) {
+	public void setRawCollection(JSONArray inRawCollection)
+	{
 		fieldRawCollection = inRawCollection;
 	}
 
 	protected JSONObject rawResponse;
 
-	public JSONObject getRawResponse() {
+	public JSONObject getRawResponse()
+	{
 		return rawResponse;
 	}
 
-	public void setRawResponse(JSONObject inRawResponse) {
+	public void setRawResponse(JSONObject inRawResponse)
+	{
 		rawResponse = inRawResponse;
 	}
 
 	@Override
-	public boolean isToolCall() {
+	public boolean isToolCall()
+	{
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public JSONObject getMessageStructured() {
+	public JSONObject getMessageStructured()
+	{
 		return getRawResponse();
 	}
 
 	@Override
-	public String getFunctionName() {
+	public String getFunctionName()
+	{
 		return fieldFunctionName;
 	}
 
-	public void setFunctionName(String inFunctionName) {
+	public void setFunctionName(String inFunctionName)
+	{
 		fieldFunctionName = inFunctionName;
 	}
 
 	@Override
-	public boolean isSuccessful() {
+	public boolean isSuccessful()
+	{
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -95,57 +112,68 @@ public class BasicLlmResponse implements LlmResponse {
 	// Are these needed?
 
 	@Override
-	public int getTokensUsed() {
+	public int getTokensUsed()
+	{
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public String getModel() {
+	public String getModel()
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ArrayList<String> getImageUrls() {
+	public ArrayList<String> getImageUrls()
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ArrayList<String> getImageBase64s() {
+	public ArrayList<String> getImageBase64s()
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String getFileName() {
+	public String getFileName()
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setMessage(String inMessage) {
+	public void setMessage(String inMessage)
+	{
 		fieldMessage = inMessage;
 	}
 
 	@Override
-	public void setRawCollection(Collection inObj) {
+	public void setRawCollection(Collection inObj)
+	{
 		fieldRawCollection = inObj;
 	}
 
 	@Override
-	public Collection getCollection(String inKey) {
+	public Collection getCollection(String inKey)
+	{
 		Object obj = getMessageStructured().get(inKey);
-		if (obj instanceof JSONArray || obj instanceof Collection) {
+		if (obj instanceof JSONArray || obj instanceof Collection)
+		{
 			return (Collection) obj;
 		}
 		return null;
 	}
 
 	@Override
-	public JSONObject getFunctionArguments() {
-		if (fieldFunctionArguments != null) {
+	public JSONObject getFunctionArguments()
+	{
+		if (fieldFunctionArguments != null)
+		{
 			return fieldFunctionArguments;
 		}
 		return getMessageStructured();

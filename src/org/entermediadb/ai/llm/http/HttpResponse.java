@@ -6,10 +6,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 
-public class HttpResponse extends BasicLlmResponse {
+public class HttpResponse extends BasicLlmResponse
+{
 
     @Override
-    public JSONObject getMessageStructured() {
+    public JSONObject getMessageStructured()
+    {
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
         JSONObject choice = (JSONObject) choices.get(0);
@@ -26,11 +28,13 @@ public class HttpResponse extends BasicLlmResponse {
 
     protected String ocrResponse;
 
-    public String getOcrResponse() {
+    public String getOcrResponse()
+    {
         return ocrResponse;
     }
 
-    public void setOcrResponse(JSONObject inRawResponse) {
+    public void setOcrResponse(JSONObject inRawResponse)
+    {
         JSONArray choices = (JSONArray) inRawResponse.get("choices");
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");

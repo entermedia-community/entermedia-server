@@ -7,57 +7,65 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 
-public class OpenAiResponse extends BasicLlmResponse {
+public class OpenAiResponse extends BasicLlmResponse
+{
 
     @Override
-    public boolean isToolCall() {
-        if (rawResponse == null) {
+    public boolean isToolCall()
+    {
+        if (rawResponse == null)
+        {
             return false;
         }
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
-        if (choices == null || choices.isEmpty()) {
+        if (choices == null || choices.isEmpty())
+        {
             return false;
         }
 
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
 
-        if (message == null || message.isEmpty()) {
+        if (message == null || message.isEmpty())
+        {
             return false;
         }
         JSONArray tool_calls = (JSONArray) message.get("tool_calls");
-        if (tool_calls != null) {
+        if (tool_calls != null)
+        {
             return true;
         }
         return message.get("function_call") != null;
     }
 
     @Override
-    public JSONObject getMessageStructured() {
+    public JSONObject getMessageStructured()
+    {
         /*
-         * if (!isToolCall())
-         * {
+         * if (!isToolCall()) {
          * 
-         * return null;
-         * }
+         * return null; }
          */
         JSONParser parser = new JSONParser();
         JSONObject arguments = null;
         JSONArray choices = (JSONArray) rawResponse.get("choices");
-        if (choices == null || choices.isEmpty()) {
+        if (choices == null || choices.isEmpty())
+        {
             return null;
         }
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
 
-        if (message == null || message.isEmpty()) {
+        if (message == null || message.isEmpty())
+        {
             return null;
         }
 
         JSONObject functionCall = (JSONObject) message.get("function_call");
 
-        if (functionCall != null) {
+        if (functionCall != null)
+        {
             String argumentsString = (String) functionCall.get("arguments");
 
             arguments = parser.parse(argumentsString);
@@ -66,7 +74,8 @@ public class OpenAiResponse extends BasicLlmResponse {
         }
 
         JSONArray tool_calls = (JSONArray) message.get("tool_calls");
-        if (tool_calls != null) {
+        if (tool_calls != null)
+        {
             JSONObject function = (JSONObject) tool_calls.get(0);
             JSONObject function0 = (JSONObject) function.get("function");
             // JSONObject functionarguments = (JSONObject) function0.get("arguments");
@@ -77,11 +86,14 @@ public class OpenAiResponse extends BasicLlmResponse {
             return arguments;
         }
 
-        try {
+        try
+        {
             String argumentsString = (String) message.get("content");
             arguments = parser.parse(argumentsString);
             return arguments;
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             // ignore
         }
 
@@ -89,8 +101,10 @@ public class OpenAiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public String getMessage() {
-        if (fieldMessage != null) {
+    public String getMessage()
+    {
+        if (fieldMessage != null)
+        {
             return fieldMessage;
         }
         if (rawResponse == null)
@@ -107,8 +121,10 @@ public class OpenAiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public String getFunctionName() {
-        if (fieldFunctionName != null) {
+    public String getFunctionName()
+    {
+        if (fieldFunctionName != null)
+        {
             return fieldFunctionName;
         }
 
@@ -119,7 +135,8 @@ public class OpenAiResponse extends BasicLlmResponse {
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
         JSONObject functionCall = (JSONObject) message.get("function_call");
-        if (functionCall != null) {
+        if (functionCall != null)
+        {
             return (String) functionCall.get("name");
         }
         JSONArray functionCalls = (JSONArray) message.get("tool_calls");
@@ -131,7 +148,8 @@ public class OpenAiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public boolean isSuccessful() {
+    public boolean isSuccessful()
+    {
         if (rawResponse == null)
             return false;
 
@@ -140,7 +158,8 @@ public class OpenAiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public int getTokensUsed() {
+    public int getTokensUsed()
+    {
         if (rawResponse == null)
             return 0;
 
@@ -149,37 +168,47 @@ public class OpenAiResponse extends BasicLlmResponse {
             return 0;
 
         Object totalTokens = usage.get("total_tokens");
-        if (totalTokens instanceof Long) {
+        if (totalTokens instanceof Long)
+        {
             return ((Long) totalTokens).intValue();
-        } else if (totalTokens instanceof Integer) {
-            return (Integer) totalTokens;
         }
+        else
+            if (totalTokens instanceof Integer)
+            {
+                return (Integer) totalTokens;
+            }
         return 0;
     }
 
     @Override
-    public String getModel() {
+    public String getModel()
+    {
         if (rawResponse == null)
             return "unknown";
         return (String) rawResponse.get("model");
     }
 
     @Override
-    public ArrayList<String> getImageUrls() {
+    public ArrayList<String> getImageUrls()
+    {
         ArrayList<String> images = new ArrayList<String>();
-        if (rawResponse == null) {
+        if (rawResponse == null)
+        {
             return images;
         }
-        if (!rawResponse.containsKey("data")) {
+        if (!rawResponse.containsKey("data"))
+        {
             return images;
         }
 
         JSONArray dataArray = (JSONArray) rawResponse.get("data");
-        if (dataArray == null || dataArray.isEmpty()) {
+        if (dataArray == null || dataArray.isEmpty())
+        {
             return images;
         }
 
-        for (int i = 0; i < dataArray.size(); i++) {
+        for (int i = 0; i < dataArray.size(); i++)
+        {
             JSONObject imageObject = (JSONObject) dataArray.get(i);
             String url = (String) imageObject.get("url");
             images.add(url);
@@ -188,23 +217,28 @@ public class OpenAiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public ArrayList<String> getImageBase64s() {
+    public ArrayList<String> getImageBase64s()
+    {
         ArrayList<String> images = new ArrayList<String>();
-        if (rawResponse == null) {
+        if (rawResponse == null)
+        {
             return images;
         }
 
-        if (!rawResponse.containsKey("data")) {
+        if (!rawResponse.containsKey("data"))
+        {
             return images;
         }
 
         JSONArray dataArray = (JSONArray) rawResponse.get("data");
 
-        if (dataArray == null || dataArray.isEmpty()) {
+        if (dataArray == null || dataArray.isEmpty())
+        {
             return images;
         }
 
-        for (int i = 0; i < dataArray.size(); i++) {
+        for (int i = 0; i < dataArray.size(); i++)
+        {
             JSONObject imageObject = (JSONObject) dataArray.get(i);
             String url = (String) imageObject.get("b64_json");
             images.add(url);
@@ -213,35 +247,45 @@ public class OpenAiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public String getFileName() {
+    public String getFileName()
+    {
         String filename = null;
-        if (rawResponse != null && rawResponse.containsKey("filename")) {
+        if (rawResponse != null && rawResponse.containsKey("filename"))
+        {
             filename = (String) rawResponse.get("filename");
-            if (filename != null) {
+            if (filename != null)
+            {
                 int rand = (int) (Math.random() * 10000);
-                if (filename.endsWith(".png")) {
+                if (filename.endsWith(".png"))
+                {
                     filename = filename.substring(0, filename.length() - 4) + "-" + rand + ".png";
-                } else {
+                }
+                else
+                {
                     filename = filename + "-" + rand + ".png";
                 }
             }
         }
-        if (filename == null) {
+        if (filename == null)
+        {
             filename = System.currentTimeMillis() + ".png";
         }
         return filename;
     }
 
     @Override
-    public JSONObject getFunctionArguments() {
-        if (fieldFunctionArguments != null) {
+    public JSONObject getFunctionArguments()
+    {
+        if (fieldFunctionArguments != null)
+        {
             return fieldFunctionArguments;
         }
 
         if (!isToolCall())
             return null;
 
-        try {
+        try
+        {
 
             JSONArray choices = (JSONArray) rawResponse.get("choices");
             JSONObject choice = (JSONObject) choices.get(0);
@@ -258,7 +302,9 @@ public class OpenAiResponse extends BasicLlmResponse {
             JSONObject arguments = parser.parse(argumentString);
 
             return arguments;
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             return null;
         }
 

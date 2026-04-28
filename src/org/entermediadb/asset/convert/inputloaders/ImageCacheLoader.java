@@ -8,37 +8,43 @@ import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.InputLoader;
 import org.openedit.repository.ContentItem;
 
-public class ImageCacheLoader implements InputLoader {
+public class ImageCacheLoader implements InputLoader
+{
 	private static final Log log = LogFactory.getLog(ImageCacheLoader.class);
 
 	@Override
-	public ContentItem loadInput(ConvertInstructions inStructions) {
+	public ContentItem loadInput(ConvertInstructions inStructions)
+	{
 		boolean useoriginal = Boolean.parseBoolean(inStructions.get("useoriginalasinput"));
-		if (useoriginal) {
+		if (useoriginal)
+		{
 			return null;
 		}
 
 		String page = null;
-		if (inStructions.getPageNumber() > 1) {
+		if (inStructions.getPageNumber() > 1)
+		{
 			page = "page" + inStructions.getPageNumber();
 		}
 
-		else {
+		else
+		{
 			page = "";
 		}
 		ContentItem item = null;
 
 		item = loadFile(inStructions, page, "webp");
 
-		if (item == null) {
+		if (item == null)
+		{
 			item = loadFile(inStructions, page, "jpg");
 		}
 
-		if (item == null && inStructions.isDocumentFormat()) {
-			item = inStructions.getMediaArchive()
-					.getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/"
-							+ inStructions.getAssetSourcePath() + "/document.pdf");
-			if (item.exists()) {
+		if (item == null && inStructions.isDocumentFormat())
+		{
+			item = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/document.pdf");
+			if (item.exists())
+			{
 				return item;
 			}
 			return null;
@@ -48,17 +54,15 @@ public class ImageCacheLoader implements InputLoader {
 
 	}
 
-	protected ContentItem loadFile(ConvertInstructions inStructions, String page, String cachetype) {
+	protected ContentItem loadFile(ConvertInstructions inStructions, String page, String cachetype)
+	{
 		ContentItem input = null;
 
 		/*
-		 * if (inStructions.getPageNumber() == 1 && !inStructions.isCrop() ) //Can only
-		 * crop jpg preview {
+		 * if (inStructions.getPageNumber() == 1 && !inStructions.isCrop() ) //Can only crop jpg preview {
 		 * input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" +
-		 * inStructions.getMediaArchive().getCatalogId() + "/generated/" +
-		 * inStructions.getAssetSourcePath()
-		 * + "/customthumb." + cachetype); if (input != null && input.getLength() > 2) {
-		 * //TODO: Save the
+		 * inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath()
+		 * + "/customthumb." + cachetype); if (input != null && input.getLength() > 2) { //TODO: Save the
 		 * fact that we used a cached file return input; } }
 		 */
 		if (inStructions.getMaxScaledSize() != null && inStructions.getTimeOffset() == null) // page numbers are 1 based
@@ -68,24 +72,24 @@ public class ImageCacheLoader implements InputLoader {
 			if (box.getWidth() < 3001) // Make sure we dont use the same file as the input and output
 			{
 				input = inStructions.getMediaArchive()
-						.getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/"
-								+ inStructions.getAssetSourcePath() + "/image3000x3000" + page + "." + cachetype);
-				if (input.exists()) {
+					.getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image3000x3000" + page + "." + cachetype);
+				if (input.exists())
+				{
 					return input;
 				}
 			}
 			if (box.getWidth() < 1501) // Make sure we dont use the same file as the input and output
 			{
 				input = inStructions.getMediaArchive()
-						.getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/"
-								+ inStructions.getAssetSourcePath() + "/image1500x1500" + page + "." + cachetype);
-				if (input.exists()) {
+					.getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1500x1500" + page + "." + cachetype);
+				if (input.exists())
+				{
 					return input;
 				}
 				input = inStructions.getMediaArchive()
-						.getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/"
-								+ inStructions.getAssetSourcePath() + "/image1024x768" + page + "." + cachetype);
-				if (input.exists()) {
+					.getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1024x768" + page + "." + cachetype);
+				if (input.exists())
+				{
 					return input;
 				}
 

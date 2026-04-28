@@ -8,14 +8,17 @@ import org.entermediadb.find.EntityManager;
 import org.openedit.Data;
 import org.openedit.users.Permissions;
 
-public class EntityPermissions extends Permissions {
+public class EntityPermissions extends Permissions
+{
 	protected EntityManager fieldEntityManager;
 
-	public EntityManager getEntityManager() {
+	public EntityManager getEntityManager()
+	{
 		return fieldEntityManager;
 	}
 
-	public void setEntityManager(EntityManager inEntityManager) {
+	public void setEntityManager(EntityManager inEntityManager)
+	{
 		fieldEntityManager = inEntityManager;
 	}
 

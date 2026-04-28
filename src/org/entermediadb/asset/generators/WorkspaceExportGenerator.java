@@ -15,47 +15,59 @@ import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 
-public class WorkspaceExportGenerator extends BaseGenerator {
+public class WorkspaceExportGenerator extends BaseGenerator
+{
 	protected File fieldRoot;
 	protected PageManager pageManager;
 	protected WorkspaceManager fieldWorkspaceManager;
 
-	public WorkspaceManager getWorkspaceManager() {
+	public WorkspaceManager getWorkspaceManager()
+	{
 		return fieldWorkspaceManager;
 	}
 
-	public void setWorkspaceManager(WorkspaceManager inWorkspaceManager) {
+	public void setWorkspaceManager(WorkspaceManager inWorkspaceManager)
+	{
 		fieldWorkspaceManager = inWorkspaceManager;
 	}
 
 	private static final Log log = LogFactory.getLog(WorkspaceExportGenerator.class);
 
-	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException {
-		try {
+	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
+	{
+		try
+		{
 			String apppath = inReq.getRequestParameter("apppath");
 			getWorkspaceManager().exportWorkspace(apppath, inOut.getStream());
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			log.error(ex);
 		}
 	}
 
-	protected File getRoot() {
+	protected File getRoot()
+	{
 		return fieldRoot;
 	}
 
-	public void setRoot(File inRoot) {
+	public void setRoot(File inRoot)
+	{
 		fieldRoot = inRoot;
 	}
 
-	public boolean canGenerate(WebPageRequest inReq) {
+	public boolean canGenerate(WebPageRequest inReq)
+	{
 		return true;
 	}
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return pageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		pageManager = inPageManager;
 	}
 

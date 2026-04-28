@@ -16,7 +16,8 @@ import org.openedit.util.PathUtilities;
  * @author cburkey
  * 
  */
-public class Link implements Serializable {
+public class Link implements Serializable
+{
 
 	private static final long serialVersionUID = 6696306680268063277L;
 
@@ -35,78 +36,96 @@ public class Link implements Serializable {
 	protected int fieldRank = 5000;
 	protected String fieldConfirmText;
 
-	public String getConfirmText() {
+	public String getConfirmText()
+	{
 		return fieldConfirmText;
 	}
 
-	public void setConfirmText(String inConfirmText) {
+	public void setConfirmText(String inConfirmText)
+	{
 		fieldConfirmText = inConfirmText;
 	}
 
-	public String getPrefix() {
+	public String getPrefix()
+	{
 		return fieldPrefix;
 	}
 
-	public void setPrefix(String fieldPrefix) {
+	public void setPrefix(String fieldPrefix)
+	{
 		this.fieldPrefix = fieldPrefix;
 	}
 
-	public String getPostfix() {
+	public String getPostfix()
+	{
 		return fieldPostfix;
 	}
 
-	public void setPostfix(String fieldPostfix) {
+	public void setPostfix(String fieldPostfix)
+	{
 		this.fieldPostfix = fieldPostfix;
 	}
 
-	public String getText() {
+	public String getText()
+	{
 		return fieldText;
 	}
 
-	public void setText(String inText) {
+	public void setText(String inText)
+	{
 		fieldText = inText;
 	}
 
 	/** I could not decide what to call this TODO: Remove URL */
-	public String getPath() {
+	public String getPath()
+	{
 		return fieldPath;
 	}
 
-	public String getHref() {
+	public String getHref()
+	{
 		return getPath();
 	}
 
-	public String getUrl() {
+	public String getUrl()
+	{
 		return getPath();
 	}
 
-	public String getPageName() {
+	public String getPageName()
+	{
 		return PathUtilities.extractPageName(getPath());
 	}
 
-	public void setPath(String inString) {
+	public void setPath(String inString)
+	{
 		fieldPath = inString;
 	}
 
-	public String getId() {
+	public String getId()
+	{
 		return fieldId;
 	}
 
-	public void setId(String inId) {
+	public void setId(String inId)
+	{
 		fieldId = inId;
 	}
 
-	public int getDepth() {
+	public int getDepth()
+	{
 		int i = 0;
 		Link parent = getParentLink();
-		while (parent != null) {
+		while (parent != null)
+		{
 			i++;
 			parent = parent.getParentLink();
 		}
 		return i;
 	}
 
-	public boolean hasChildren() {
+	public boolean hasChildren()
+	{
 		return fieldChildren != null && fieldChildren.size() > 0;
 	}
 
@@ -116,49 +135,57 @@ public class Link implements Serializable {
 	 * @param inRowCount
 	 * @return
 	 */
-	public List getChildrenInRows(int inColCount) {
+	public List getChildrenInRows(int inColCount)
+	{
 		double rowscount = (double) getChildren().size() / (double) inColCount;
 
 		List rows = new ArrayList();
-		for (int i = 0; i < rowscount; i++) {
+		for (int i = 0; i < rowscount; i++)
+		{
 			int start = i * inColCount;
 			int end = i * inColCount + inColCount;
 			// start = Math.min
-			List sublist = getChildren().subList(start,
-					Math.min(getChildren().size(), end));
+			List sublist = getChildren().subList(start, Math.min(getChildren().size(), end));
 			rows.add(sublist);
 		}
 		return rows;
 	}
 
-	public List getChildren() {
-		if (fieldChildren == null) {
+	public List getChildren()
+	{
+		if (fieldChildren == null)
+		{
 			fieldChildren = new ArrayList();
 		}
 		return fieldChildren;
 	}
 
-	public void setChildren(List inChildren) {
+	public void setChildren(List inChildren)
+	{
 		fieldChildren = inChildren;
 	}
 
-	public Link getParentLink() {
+	public Link getParentLink()
+	{
 		return fieldParentLink;
 	}
 
-	public void setParentLink(Link inParentLink) {
+	public void setParentLink(Link inParentLink)
+	{
 		fieldParentLink = inParentLink;
 	}
 
 	/**
 	 * @param inLink
 	 */
-	public void addChild(Link inLink) {
+	public void addChild(Link inLink)
+	{
 		inLink.setParentLink(this);
 		getChildren().add(inLink);
 	}
 
-	public void insertChild(Link inLink) {
+	public void insertChild(Link inLink)
+	{
 		inLink.setParentLink(this);
 		getChildren().add(0, inLink);
 	}
@@ -166,7 +193,8 @@ public class Link implements Serializable {
 	/**
 	 * @param inLink
 	 */
-	public void removeChild(Link inLink) {
+	public void removeChild(Link inLink)
+	{
 		getChildren().remove(inLink);
 		inLink.setParentLink(null);
 	}
@@ -174,9 +202,11 @@ public class Link implements Serializable {
 	/**
 	 * @param inLink
 	 */
-	public void moveUp(Link inLink) {
+	public void moveUp(Link inLink)
+	{
 		int index = getChildren().indexOf(inLink);
-		if (index != -1 && index != 0) {
+		if (index != -1 && index != 0)
+		{
 			getChildren().remove(index);
 			index--;
 			getChildren().add(index, inLink);
@@ -186,9 +216,11 @@ public class Link implements Serializable {
 	/**
 	 * @param inLink
 	 */
-	public void moveDown(Link inLink) {
+	public void moveDown(Link inLink)
+	{
 		int index = getChildren().indexOf(inLink);
-		if (index != -1 && index != getChildren().size() - 1) {
+		if (index != -1 && index != getChildren().size() - 1)
+		{
 			getChildren().remove(index);
 			index++;
 			getChildren().add(index, inLink);
@@ -199,9 +231,11 @@ public class Link implements Serializable {
 	 * @param inLink
 	 * @return
 	 */
-	public Link getChildAbove(Link inLink) {
+	public Link getChildAbove(Link inLink)
+	{
 		int count = getChildren().indexOf(inLink);
-		if (count != -1 && count != 0) {
+		if (count != -1 && count != 0)
+		{
 			count--;
 			Link brother = (Link) getChildren().get(count);
 			return brother;
@@ -209,9 +243,11 @@ public class Link implements Serializable {
 		return null;
 	}
 
-	public Link getChildBelow(Link inLink) {
+	public Link getChildBelow(Link inLink)
+	{
 		int count = getChildren().indexOf(inLink);
-		if (count != -1 && count != getChildren().size() - 1) {
+		if (count != -1 && count != getChildren().size() - 1)
+		{
 			count++;
 			Link brother = (Link) getChildren().get(count);
 			return brother;
@@ -219,14 +255,20 @@ public class Link implements Serializable {
 		return null;
 	}
 
-	public Link getDecendant(String inId) {
-		for (Iterator iter = getChildren().iterator(); iter.hasNext();) {
+	public Link getDecendant(String inId)
+	{
+		for (Iterator iter = getChildren().iterator(); iter.hasNext();)
+		{
 			Link child = (Link) iter.next();
-			if (child.getId().equals(inId)) {
+			if (child.getId().equals(inId))
+			{
 				return child;
-			} else {
+			}
+			else
+			{
 				Link decendant = child.getDecendant(inId);
-				if (decendant != null) {
+				if (decendant != null)
+				{
 					return decendant;
 				}
 			}
@@ -238,23 +280,27 @@ public class Link implements Serializable {
 	 * @param inLink
 	 * @param inParent1
 	 */
-	public void addChildNearLocation(Link inLink, Link inParent1) {
+	public void addChildNearLocation(Link inLink, Link inParent1)
+	{
 		int count = getChildren().indexOf(inParent1);
-		if (count != -1) {
+		if (count != -1)
+		{
 			getChildren().add(count + 1, inLink);
-		} else {
+		}
+		else
+		{
 			getChildren().add(inLink);
 		}
 		inLink.setParentLink(this);
 	}
 
 	/**
-	 * This is a flat list of links. Useful for generating menus or trees in
-	 * velocity
+	 * This is a flat list of links. Useful for generating menus or trees in velocity
 	 * 
 	 * @return
 	 */
-	public List list() {
+	public List list()
+	{
 		ArrayList fieldAllLinks = new ArrayList();
 		addLinksToList(this, fieldAllLinks);
 		return fieldAllLinks;
@@ -264,44 +310,55 @@ public class Link implements Serializable {
 	 * @param inRootLink
 	 * @param inAllLinks
 	 */
-	protected void addLinksToList(Link inRootLink, List inAllLinks) {
+	protected void addLinksToList(Link inRootLink, List inAllLinks)
+	{
 		inAllLinks.add(inRootLink);
-		if (inRootLink.hasChildren()) {
-			for (Iterator iter = inRootLink.getChildren().iterator(); iter
-					.hasNext();) {
+		if (inRootLink.hasChildren())
+		{
+			for (Iterator iter = inRootLink.getChildren().iterator(); iter.hasNext();)
+			{
 				Link element = (Link) iter.next();
 				addLinksToList(element, inAllLinks);
 			}
 		}
 	}
 
-	public String getUserData() {
+	public String getUserData()
+	{
 		return fieldUserData;
 	}
 
-	public void setUserData(String inUserData) {
+	public void setUserData(String inUserData)
+	{
 		fieldUserData = inUserData;
 	}
 
-	public boolean isSelected() {
+	public boolean isSelected()
+	{
 		return fieldSelected;
 	}
 
-	public void setSelected(boolean inSelected) {
+	public void setSelected(boolean inSelected)
+	{
 		fieldSelected = inSelected;
 	}
 
 	/**
 	 * @return
 	 */
-	public boolean isChildSelected() {
-		if (isSelected()) {
+	public boolean isChildSelected()
+	{
+		if (isSelected())
+		{
 			return true;
 		}
-		if (hasChildren()) {
-			for (Iterator iter = getChildren().iterator(); iter.hasNext();) {
+		if (hasChildren())
+		{
+			for (Iterator iter = getChildren().iterator(); iter.hasNext();)
+			{
 				Link child = (Link) iter.next();
-				if (child.isChildSelected()) {
+				if (child.isChildSelected())
+				{
 					return true;
 				}
 			}
@@ -313,13 +370,17 @@ public class Link implements Serializable {
 	 * @param inUrl
 	 * @return
 	 */
-	public boolean isChild(Link inUrl) {
-		for (Iterator iter = getChildren().iterator(); iter.hasNext();) {
+	public boolean isChild(Link inUrl)
+	{
+		for (Iterator iter = getChildren().iterator(); iter.hasNext();)
+		{
 			Link element = (Link) iter.next();
-			if (element == inUrl) {
+			if (element == inUrl)
+			{
 				return true;
 			}
-			if (element.isChild(inUrl)) {
+			if (element.isChild(inUrl))
+			{
 				return true;
 			}
 		}
@@ -329,52 +390,65 @@ public class Link implements Serializable {
 	/**
 	 * @return Returns the redirectPath.
 	 */
-	public String getRedirectPath() {
+	public String getRedirectPath()
+	{
 		return fieldRedirectPath;
 	}
 
 	/**
-	 * @param inRedirectPath
-	 *                       The redirectPath to set.
+	 * @param inRedirectPath The redirectPath to set.
 	 */
-	public void setRedirectPath(String inRedirectPath) {
+	public void setRedirectPath(String inRedirectPath)
+	{
 		fieldRedirectPath = inRedirectPath;
 	}
 
-	public String getAccessKey() {
+	public String getAccessKey()
+	{
 		return fieldAccessKey;
 	}
 
-	public void setAccessKey(String inAccessKey) {
+	public void setAccessKey(String inAccessKey)
+	{
 		fieldAccessKey = inAccessKey;
 	}
 
-	public boolean isAutoLoadChildren() {
+	public boolean isAutoLoadChildren()
+	{
 		return fieldAutoLoadChildren;
 	}
 
-	public void setAutoLoadChildren(boolean inAutoLoadChildren) {
+	public void setAutoLoadChildren(boolean inAutoLoadChildren)
+	{
 		fieldAutoLoadChildren = inAutoLoadChildren;
 	}
 
-	public String toString() {
+	public String toString()
+	{
 		return getHref();
 	}
 
-	public void sortChildren() {
+	public void sortChildren()
+	{
 		Collections.sort(getChildren(), new Comparator() {
-			public int compare(Object arg0, Object arg1) {
+			public int compare(Object arg0, Object arg1)
+			{
 				Link link1 = (Link) arg0;
 				Link link2 = (Link) arg1;
-				if (link1.getRank() == link2.getRank()) {
-					if (link1.getText() != null && link2.getText() != null) {
+				if (link1.getRank() == link2.getRank())
+				{
+					if (link1.getText() != null && link2.getText() != null)
+					{
 						return link1.getText().compareTo(link2.getText());
 					}
 					return 0;
 				}
-				if (link1.getRank() > link2.getRank()) {
+				if (link1.getRank() > link2.getRank())
+				{
 					return 1;
-				} else {
+				}
+				else
+				{
 					return -1;
 				}
 			}
@@ -382,27 +456,32 @@ public class Link implements Serializable {
 
 	}
 
-	public String getDirectory() {
+	public String getDirectory()
+	{
 		String path = PathUtilities.extractDirectoryPath(getPath());
 		// urlpath is the address the link came in on
 		return path;
 	}
 
-	public List getParents() {
+	public List getParents()
+	{
 		List parents = new ArrayList();
 		Link parent = this;
-		while (parent != null) {
+		while (parent != null)
+		{
 			parents.add(0, parent);
 			parent = parent.getParentLink();
 		}
 		return parents;
 	}
 
-	public int getRank() {
+	public int getRank()
+	{
 		return fieldRank;
 	}
 
-	public void setRank(int inRank) {
+	public void setRank(int inRank)
+	{
 		fieldRank = inRank;
 	}
 

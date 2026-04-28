@@ -12,7 +12,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONObject;
 
-public class TransactionQueue {
+public class TransactionQueue
+{
 	protected Object lockObject = new Object();
 	protected long transactionid;
 	protected Map fieldTransactions = null;
@@ -20,12 +21,15 @@ public class TransactionQueue {
 
 	private static final Log log = LogFactory.getLog(MediaBoatConnection.class);
 
-	public void onMessage(JSONObject map) {
+	public void onMessage(JSONObject map)
+	{
 		String transactionid = (String) map.get("transactionid");
-		if (transactionid != null) {
+		if (transactionid != null)
+		{
 			getTransactions().put(transactionid, map);
 			// log.info("Upload saved transaction " + transactionid);
-			synchronized (lockObject) {
+			synchronized (lockObject)
+			{
 				// log.info("notify.before " + transactionid);
 				lockObject.notifyAll();
 				// log.info("notify.done " + transactionid);
@@ -33,15 +37,19 @@ public class TransactionQueue {
 		}
 	}
 
-	protected Map getTransactions() {
-		if (fieldTransactions == null) {
+	protected Map getTransactions()
+	{
+		if (fieldTransactions == null)
+		{
 			fieldTransactions = new HashMap(); // expire this sometimes
 		}
 		return fieldTransactions;
 	}
 
-	public Map sendCommandAndWait(RemoteEndpoint.Basic remoteEndpointBasic, JSONObject inCommand) {
-		try {
+	public Map sendCommandAndWait(RemoteEndpoint.Basic remoteEndpointBasic, JSONObject inCommand)
+	{
+		try
+		{
 			String command = (String) inCommand.get("command");
 			transactionid++;
 			String thistransaction = System.currentTimeMillis() + "_" + String.valueOf(transactionid);
@@ -51,12 +59,16 @@ public class TransactionQueue {
 
 			long waittill = System.currentTimeMillis() + fieldMaxWait; // 1 minute max
 			Map response = null;
-			synchronized (lockObject) {
-				do {
+			synchronized (lockObject)
+			{
+				do
+				{
 					response = getTransctionsById(thistransaction); // TODO use notify with timeout
-					if (response == null) {
+					if (response == null)
+					{
 						long wait = waittill - System.currentTimeMillis();
-						if (wait > 0) {
+						if (wait > 0)
+						{
 							log.info("wait " + thistransaction);
 							lockObject.wait(wait);
 							log.info("continue from wait" + thistransaction);
@@ -65,9 +77,12 @@ public class TransactionQueue {
 					log.info((response != null) + " and " + (System.currentTimeMillis() < waittill));
 				} while (response == null && System.currentTimeMillis() < waittill);
 			}
-			if (response == null) {
+			if (response == null)
+			{
 				log.error("Never got back a transaction " + thistransaction);
-			} else {
+			}
+			else
+			{
 				getTransactions().remove(thistransaction);
 			}
 
@@ -75,24 +90,31 @@ public class TransactionQueue {
 			expireOldTransactions();
 
 			return response;
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			log.error(e);
 		}
 		return null;
 	}
 
-	protected void expireOldTransactions() {
-		if (!getTransactions().isEmpty()) {
+	protected void expireOldTransactions()
+	{
+		if (!getTransactions().isEmpty())
+		{
 			List toremove = new ArrayList();
 			long now = System.currentTimeMillis();
-			for (Iterator iterator = getTransactions().keySet().iterator(); iterator.hasNext();) {
+			for (Iterator iterator = getTransactions().keySet().iterator(); iterator.hasNext();)
+			{
 				String key = (String) iterator.next();
 				String time = key.substring(0, key.indexOf("_"));
-				if (now > Long.parseLong(time)) {
+				if (now > Long.parseLong(time))
+				{
 					toremove.add(key);
 				}
 			}
-			for (Iterator iterator = toremove.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = toremove.iterator(); iterator.hasNext();)
+			{
 				String key = (String) iterator.next();
 				log.error("Expired transation " + key);
 				getTransactions().remove(key);
@@ -102,7 +124,8 @@ public class TransactionQueue {
 
 	}
 
-	protected Map getTransctionsById(String inThistransaction) {
+	protected Map getTransctionsById(String inThistransaction)
+	{
 		Map res = (Map) getTransactions().get(inThistransaction);
 		return res;
 	}

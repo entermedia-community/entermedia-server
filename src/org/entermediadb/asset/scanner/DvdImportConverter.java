@@ -28,18 +28,22 @@ import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
 import org.openedit.util.XmlUtil;
 
-public class DvdImportConverter extends CatalogConverter {
+public class DvdImportConverter extends CatalogConverter
+{
 	// protected List fieldInputTypes;
 	private static final Log log = LogFactory.getLog(DvdImportConverter.class);
 
-	public void importAssets(MediaArchive inArchive, ConvertStatus inErrorLog) throws Exception {
+	public void importAssets(MediaArchive inArchive, ConvertStatus inErrorLog) throws Exception
+	{
 		File input = new File(inArchive.getCatalogHome(), "/scanner/dvdimport.xml");
-		if (input.exists()) {
+		if (input.exists())
+		{
 			Element root = new XmlUtil().getXml(input, "UTF-8");
 			// List all the chapters if any
 
 			File file = new File("/media/cdrom/video_ts");
-			if (file.exists()) {
+			if (file.exists())
+			{
 				Dvd dvd = new Dvd();
 				Exec exec = new Exec();
 				List usercomlist = new ArrayList();
@@ -56,7 +60,8 @@ public class DvdImportConverter extends CatalogConverter {
 				destination = destination + "/" + category.getId();
 				dvd.setPath(destination);
 				File exist = new File(dvd.getPath());
-				if (exist.exists()) {
+				if (exist.exists())
+				{
 					inErrorLog.add("Already exists" + dvd.getPath());
 					log.error("Already exists" + dvd.getPath());
 				}
@@ -66,10 +71,12 @@ public class DvdImportConverter extends CatalogConverter {
 		}
 	}
 
-	protected void loadChapters(Dvd indvd, File file, String done) throws Exception {
+	protected void loadChapters(Dvd indvd, File file, String done) throws Exception
+	{
 		// dvdbackup -I -i/dev/cdrom
 		// context.putPageValue("done",done);
-		if (done == null) {
+		if (done == null)
+		{
 			return;
 		}
 		List chapters = new ArrayList();
@@ -80,7 +87,8 @@ public class DvdImportConverter extends CatalogConverter {
 		{
 			int start = done.indexOf("Title set " + set);
 			log.info("Found " + set);
-			if (start == -1) {
+			if (start == -1)
+			{
 				log.info("Found up to " + set);
 				break;
 			}
@@ -91,7 +99,8 @@ public class DvdImportConverter extends CatalogConverter {
 
 			String count = done.substring(countstart + 11, countend);
 			int totalc = Integer.parseInt(count.trim());
-			for (int c = 0; c < totalc; c++) {
+			for (int c = 0; c < totalc; c++)
+			{
 				chapters.add(set + "." + (c + 1));
 			}
 			set = set + 1;
@@ -100,7 +109,8 @@ public class DvdImportConverter extends CatalogConverter {
 		// context.putPageValue("chapters" , chapters);
 	}
 
-	protected void loadTitle(File file, Dvd inDvd, String done) {
+	protected void loadTitle(File file, Dvd inDvd, String done)
+	{
 		// LAST MOD
 		Date dated = new Date(file.lastModified());
 		DateFormat formater = new SimpleDateFormat("yyyy_MM_dd");
@@ -111,7 +121,8 @@ public class DvdImportConverter extends CatalogConverter {
 		int titlestart = done.indexOf("with title");
 		int titleend = done.indexOf("\n", titlestart);
 		String title = done.substring(titlestart + 11, titleend);
-		if (title.length() < 5) {
+		if (title.length() < 5)
+		{
 			title = dirdate;
 		}
 		inDvd.setLastModified(dirdate);
@@ -119,11 +130,12 @@ public class DvdImportConverter extends CatalogConverter {
 		inDvd.setTitle(title);
 	}
 
-	protected void saveAssets(Dvd inDvd, Category inCategory, MediaArchive inArchive, ConvertStatus inStatus)
-			throws Exception {
+	protected void saveAssets(Dvd inDvd, Category inCategory, MediaArchive inArchive, ConvertStatus inStatus) throws Exception
+	{
 		NumberFormat format = new DecimalFormat("00");
 		List assets = new ArrayList();
-		for (int i = 0; i < inDvd.getChapterNames().size(); i++) {
+		for (int i = 0; i < inDvd.getChapterNames().size(); i++)
+		{
 			String chapter = (String) inDvd.getChapterNames().get(i);
 
 			Asset asset = new BaseAsset(inArchive);
@@ -143,7 +155,8 @@ public class DvdImportConverter extends CatalogConverter {
 			convertlist.add(chapter);
 
 			File out = new File(inDvd.getPath(), name);
-			if (out.exists()) {
+			if (out.exists())
+			{
 				continue;
 			}
 			out.getParentFile().mkdirs();
@@ -164,7 +177,8 @@ public class DvdImportConverter extends CatalogConverter {
 		inStatus.addConvertedAssets(assets);
 	}
 
-	protected String findScript(String inScript, MediaArchive inArchive) {
+	protected String findScript(String inScript, MediaArchive inArchive)
+	{
 		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/admin/convert/" + inScript);
 
 		// File script = new File(
@@ -179,10 +193,12 @@ public class DvdImportConverter extends CatalogConverter {
 		return page.getContentItem().getAbsolutePath();
 	}
 
-	private Category findCategory(MediaArchive inArchive, String inTitle) {
+	private Category findCategory(MediaArchive inArchive, String inTitle)
+	{
 		String catid = extractId(inTitle, true);
 		Category category = inArchive.getCategoryArchive().getCategory(catid);
-		if (category == null) {
+		if (category == null)
+		{
 			category = new BaseCategory();
 			// category.setProperty("dvddate", dirdate);
 			category.setName(inTitle);
@@ -191,14 +207,18 @@ public class DvdImportConverter extends CatalogConverter {
 		return category;
 	}
 
-	protected File[] findAssetXConfFiles(File inParent) {
+	protected File[] findAssetXConfFiles(File inParent)
+	{
 		FileFilter filter = new FileFilter() {
-			public boolean accept(File inDir) {
+			public boolean accept(File inDir)
+			{
 				String inName = inDir.getName().toLowerCase();
-				if (inName.endsWith(".jpg") || inName.endsWith(".avi")) {
+				if (inName.endsWith(".jpg") || inName.endsWith(".avi"))
+				{
 					return true;
 				}
-				if (inDir.isDirectory()) {
+				if (inDir.isDirectory())
+				{
 					return true;
 				}
 				return false;
@@ -207,14 +227,19 @@ public class DvdImportConverter extends CatalogConverter {
 		return inParent.listFiles(filter);
 	}
 
-	protected void findFiles(File inSearchDirectory, List inAll, FileFilter inFilter) {
+	protected void findFiles(File inSearchDirectory, List inAll, FileFilter inFilter)
+	{
 		File[] toadd = inSearchDirectory.listFiles(inFilter);
 
-		for (int i = 0; i < toadd.length; i++) {
+		for (int i = 0; i < toadd.length; i++)
+		{
 			File file = toadd[i];
-			if (file.isDirectory()) {
+			if (file.isDirectory())
+			{
 				findFiles(file, inAll, inFilter);
-			} else {
+			}
+			else
+			{
 				inAll.add(file);
 			}
 		}

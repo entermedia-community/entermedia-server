@@ -8,7 +8,8 @@ import org.openedit.OpenEditException;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.util.DateStorageUtil;
 
-public class ElasticAutoCompleteSearcher extends BaseElasticSearcher implements AutoCompleteSearcher {
+public class ElasticAutoCompleteSearcher extends BaseElasticSearcher implements AutoCompleteSearcher
+{
 
 	// @Override
 	// public HitTracker cachedSearch(WebPageRequest inPageRequest, SearchQuery
@@ -21,15 +22,17 @@ public class ElasticAutoCompleteSearcher extends BaseElasticSearcher implements 
 	// }
 
 	@Override
-	public void reIndexAll() throws OpenEditException {
-	}
+	public void reIndexAll() throws OpenEditException
+	{}
 
 	/**
 	 * TODO: Sort by timestamp, clean out old ones when they are deleted, stemming
 	 */
 	@Override
-	public void updateHits(HitTracker inTracker, String inWord) {
-		if (inTracker.size() > 0) {
+	public void updateHits(HitTracker inTracker, String inWord)
+	{
+		if (inTracker.size() > 0)
+		{
 			Data word = createNewData();
 			word.setId(inWord.toLowerCase()); // THIS makes them only save one copy
 			word.setProperty("synonyms", inWord);

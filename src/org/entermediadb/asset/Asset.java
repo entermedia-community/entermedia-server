@@ -14,7 +14,8 @@ import org.openedit.data.SaveableData;
 import org.openedit.data.SearchDataEnabled;
 import org.openedit.users.User;
 
-public interface Asset extends MultiValued, SaveableData, SearchDataEnabled, RecordStatusEnabled, DataLoaded {
+public interface Asset extends MultiValued, SaveableData, SearchDataEnabled, RecordStatusEnabled, DataLoaded
+{
 
 	boolean isLocked();
 

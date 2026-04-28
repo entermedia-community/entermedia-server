@@ -24,7 +24,8 @@ import org.openedit.util.FileUtils;
 import org.openedit.util.PathProcessor;
 import org.openedit.util.PathUtilities;
 
-public class AssetPathProcessor extends PathProcessor {
+public class AssetPathProcessor extends PathProcessor
+{
 	private static final Log log = LogFactory.getLog(AssetPathProcessor.class);
 
 	protected int fieldSaveSize = 1000;
@@ -34,27 +35,33 @@ public class AssetPathProcessor extends PathProcessor {
 	protected boolean fieldShowLogs;
 	protected AssetImporter fieldAssetImporter;
 
-	public AssetImporter getAssetImporter() {
+	public AssetImporter getAssetImporter()
+	{
 		return fieldAssetImporter;
 	}
 
-	public void setAssetImporter(AssetImporter inAssetImporter) {
+	public void setAssetImporter(AssetImporter inAssetImporter)
+	{
 		fieldAssetImporter = inAssetImporter;
 	}
 
-	public boolean isShowLogs() {
+	public boolean isShowLogs()
+	{
 		return fieldShowLogs;
 	}
 
-	public void setShowLogs(boolean inShowLogs) {
+	public void setShowLogs(boolean inShowLogs)
+	{
 		fieldShowLogs = inShowLogs;
 	}
 
-	public boolean isModificationCheck() {
+	public boolean isModificationCheck()
+	{
 		return fieldModificationCheck;
 	}
 
-	public void setModificationCheck(boolean inModificationCheck) {
+	public void setModificationCheck(boolean inModificationCheck)
+	{
 		fieldModificationCheck = inModificationCheck;
 	}
 
@@ -64,24 +71,30 @@ public class AssetPathProcessor extends PathProcessor {
 	final List<String> assetsids = new ArrayList<String>();
 	final List<Asset> fieldAssetsToSave = new ArrayList<Asset>();
 
-	protected List<Asset> getAssetsToSave() {
+	protected List<Asset> getAssetsToSave()
+	{
 		return fieldAssetsToSave;
 	}
 
-	public Collection getAttachmentFilters() {
+	public Collection getAttachmentFilters()
+	{
 		return fieldAttachmentFilters;
 	}
 
-	public void setAttachmentFilters(Collection inAttachmentFilters) {
+	public void setAttachmentFilters(Collection inAttachmentFilters)
+	{
 		fieldAttachmentFilters = inAttachmentFilters;
 	}
 
-	public MediaArchive getMediaArchive() {
+	public MediaArchive getMediaArchive()
+	{
 		return fieldMediaArchive;
 	}
 
-	public void saveImportedAssets(User inUser) throws OpenEditException {
-		if (getAssetsToSave().size() == 0) {
+	public void saveImportedAssets(User inUser) throws OpenEditException
+	{
+		if (getAssetsToSave().size() == 0)
+		{
 			return;
 		}
 
@@ -89,29 +102,37 @@ public class AssetPathProcessor extends PathProcessor {
 		// List<String> someids = new ArrayList();
 
 		List existingassets = new ArrayList();
-		for (Iterator iter = getAssetsToSave().iterator(); iter.hasNext();) {
+		for (Iterator iter = getAssetsToSave().iterator(); iter.hasNext();)
+		{
 			Asset asset = (Asset) iter.next();
-			if (asset.getId() != null) {
+			if (asset.getId() != null)
+			{
 				existingassets.add(asset);
 			}
 		}
-		if (isShowLogs()) {
-			getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "saveImportedAssets", "About to save "
-					+ getMediaArchive().getCatalogId() + " " + String.valueOf(getAssetsToSave().size()), null);
+		if (isShowLogs())
+		{
+			getAssetImporter()
+				.fireHotFolderEvent(getMediaArchive(), "update", "saveImportedAssets", "About to save " + getMediaArchive().getCatalogId() + " " + String.valueOf(getAssetsToSave().size()), null);
 		}
 
 		getMediaArchive().saveAssets(new ArrayList(getAssetsToSave()));
 
-		for (Iterator iter = getAssetsToSave().iterator(); iter.hasNext();) {
+		for (Iterator iter = getAssetsToSave().iterator(); iter.hasNext();)
+		{
 			Asset asset = (Asset) iter.next();
-			if (asset.getId() == null) {
+			if (asset.getId() == null)
+			{
 				throw new OpenEditException(getMediaArchive().getCatalogId() + asset.getProperties());
 			}
 			assetsids.add(asset.getId());
 
-			if (existingassets.contains(asset)) {
+			if (existingassets.contains(asset))
+			{
 				getMediaArchive().fireMediaEvent("originalmodified", inUser, asset);
-			} else {
+			}
+			else
+			{
 				getMediaArchive().fireMediaEvent("assetcreated", inUser, asset);
 			}
 		}
@@ -121,93 +142,115 @@ public class AssetPathProcessor extends PathProcessor {
 		// archive.fireMediaEvent("asset/assetcreated",inReq.getUser(),sample,listids);
 		// //This does not do much
 		getMediaArchive().firePathEvent("importing/assetscreated", inUser, getAssetsToSave());
-		if (isShowLogs()) {
-			getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "saveImportedAssets",
-					"Saved " + String.valueOf(getAssetsToSave().size()) + " asset ids: " + assetsids, null);
+		if (isShowLogs())
+		{
+			getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "saveImportedAssets", "Saved " + String.valueOf(getAssetsToSave().size()) + " asset ids: " + assetsids, null);
 		}
 		getAssetsToSave().clear();
 	}
 
-	public void setMediaArchive(MediaArchive inMediaArchive) {
+	public void setMediaArchive(MediaArchive inMediaArchive)
+	{
 		fieldMediaArchive = inMediaArchive;
 	}
 
 	@Override
-	public boolean acceptFile(ContentItem inItem) {
+	public boolean acceptFile(ContentItem inItem)
+	{
 		String path = inItem.getAbsolutePath();
-		if (isOnWindows()) {
+		if (isOnWindows())
+		{
 			int absolutepathlimit = 260;
-			if (path.length() > absolutepathlimit) {
+			if (path.length() > absolutepathlimit)
+			{
 				log.info("Path too long. Couldn't save " + path);
 				return false;
 			}
 		}
-		if (!fieldFileUtils.isLegalFilename(inItem.getPath())) {
+		if (!fieldFileUtils.isLegalFilename(inItem.getPath()))
+		{
 			if (log.isDebugEnabled())
 				log.debug("Path is not web friendly.  Will have archivepath set." + inItem.getPath());
 			// return true;
 		}
 		Path thepath = Paths.get(path);
 
-		if (Files.isSymbolicLink(thepath)) {
+		if (Files.isSymbolicLink(thepath))
+		{
 			return false;
 		}
 
 		return super.acceptFile(inItem);
 	}
 
-	public void process(ContentItem inInput, User inUser) {
-		if (inInput.isFolder()) {
-			if (acceptDir(inInput)) {
+	public void process(ContentItem inInput, User inUser)
+	{
+		if (inInput.isFolder())
+		{
+			if (acceptDir(inInput))
+			{
 				processAssetFolder(inInput, inUser);
 			}
-		} else if (acceptFile(inInput)) {
-			processFile(inInput, inUser);
 		}
+		else
+			if (acceptFile(inInput))
+			{
+				processFile(inInput, inUser);
+			}
 	}
 
-	protected void processAssetFolder(ContentItem inInput, User inUser) {
+	protected void processAssetFolder(ContentItem inInput, User inUser)
+	{
 		String sourcepath = getAssetUtilities().extractSourcePath(inInput, getMediaArchive());
 		Asset asset = getMediaArchive().getAssetSearcher().getAssetBySourcePath(sourcepath);
-		if (asset != null) {
+		if (asset != null)
+		{
 			// check this one primary asset to see if it changed
 			if (asset.getPrimaryFile() != null) // Attachments only
 			{
 				inInput = getPageManager().getRepository().getStub(inInput.getPath() + "/" + asset.getPrimaryFile());
 				asset = getAssetUtilities().populateAsset(asset, inInput, getMediaArchive(), sourcepath, inUser);
-				if (asset != null) {
+				if (asset != null)
+				{
 					getAssetsToSave().add(asset);
-					if (getAssetsToSave().size() > fieldSaveSize) {
+					if (getAssetsToSave().size() > fieldSaveSize)
+					{
 						saveImportedAssets(inUser);
 					}
 				}
 			}
 			// dont process sub-folders
-		} else {
+		}
+		else
+		{
 			// look deeper for assets
 			List paths = getPageManager().getChildrenPaths(inInput.getPath());
 
-			if (paths.size() == 0) {
-				if (isShowLogs()) {
-					getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "optimization",
-							"Empty folder: " + inInput.getAbsolutePath(), null);
+			if (paths.size() == 0)
+			{
+				if (isShowLogs())
+				{
+					getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "optimization", "Empty folder: " + inInput.getAbsolutePath(), null);
 
 				}
 				return;
 			}
 
-			if (isShowLogs()) {
-				if (paths.size() > 3000) {
-					getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "slowdown",
-							paths.size() + " files in one folder:" + inInput.getPath(), null);
+			if (isShowLogs())
+			{
+				if (paths.size() > 3000)
+				{
+					getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "slowdown", paths.size() + " files in one folder:" + inInput.getPath(), null);
 				}
 
 			}
 
 			boolean processchildren = true;
-			if (createAttachments(paths)) {
+			if (createAttachments(paths))
+			{
 				ContentItem found = findPrimary(paths);
-				if (found == null) {
+				if (found == null)
+				{
 					return; // no good files in here
 				}
 
@@ -215,7 +258,8 @@ public class AssetPathProcessor extends PathProcessor {
 				asset = getMediaArchive().createAsset(sourcepath);
 				asset.setFolder(true);
 				asset.setProperty("datatype", "original");
-				if (inUser != null) {
+				if (inUser != null)
+				{
 					asset.setProperty("owner", inUser.getUserName());
 				}
 				asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
@@ -230,49 +274,63 @@ public class AssetPathProcessor extends PathProcessor {
 				// inUser);
 				// set the primary file
 				getAssetsToSave().add(asset);
-				if (getAssetsToSave().size() > fieldSaveSize) {
+				if (getAssetsToSave().size() > fieldSaveSize)
+				{
 					saveImportedAssets(inUser);
 				}
 
 				processchildren = false;
-			} else {
+			}
+			else
+			{
 				processchildren = true;
 			}
 
-			if (processchildren && isRecursive()) {
+			if (processchildren && isRecursive())
+			{
 				// Set knownssourcepaths = loadGeneratedFolders(inInput, sourcepath);
 				int processedfiles = 0;
 				int acceptfolder = 0;
 				int rejectfolder = 0;
 				int skipfile = 0;
 				int rejectfile = 0;
-				for (Iterator iterator = paths.iterator(); iterator.hasNext();) {
+				for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+				{
 					String path = (String) iterator.next();
 					ContentItem item = getPageManager().getRepository().getStub(path);
-					if (item.isFolder()) {
-						if (acceptDir(item)) {
+					if (item.isFolder())
+					{
+						if (acceptDir(item))
+						{
 							acceptfolder++;
 							// if( deep > 2 )
 							// {
 							// ignoretime = true; //If we are deeper than 3 and still showed a mod stamp
 							// then check everything
 							// }
-							try {
+							try
+							{
 								processAssetFolder(item, inUser);
-							} catch (StackOverflowError e) {
+							}
+							catch (StackOverflowError e)
+							{
 
 								e.printStackTrace();
 
-								throw new OpenEditException("Error processing due to stack overflow: " + item.getName()
-										+ " : " + item.getAbsolutePath());
+								throw new OpenEditException("Error processing due to stack overflow: " + item.getName() + " : " + item.getAbsolutePath());
 
 							}
-						} else {
+						}
+						else
+						{
 							rejectfolder++;
 						}
 
-					} else {
-						if (acceptFile(item)) {
+					}
+					else
+					{
+						if (acceptFile(item))
+						{
 							if (isModificationCheck()) // Only set to true when importing a specific folder/file
 							{
 								processFile(item, inUser);
@@ -293,24 +351,22 @@ public class AssetPathProcessor extends PathProcessor {
 							// skipfile++;
 							// }
 							// }
-							else {
+							else
+							{
 								processFile(item, inUser);
 								processedfiles++;
 							}
-						} else {
+						}
+						else
+						{
 							rejectfile++;
 						}
 					}
 				}
-				if (isShowLogs()) {
-					getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "optimization",
-							"processedfiles:" + processedfiles +
-									" acceptfolder:" + acceptfolder +
-									" rejectfolder:" + rejectfolder +
-									" skipfile:" + skipfile +
-									" rejectfile:" + rejectfile +
-									" path:" + inInput.getPath(),
-							null);
+				if (isShowLogs())
+				{
+					getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "optimization", "processedfiles:" + processedfiles + " acceptfolder:" + acceptfolder + " rejectfolder:"
+						+ rejectfolder + " skipfile:" + skipfile + " rejectfile:" + rejectfile + " path:" + inInput.getPath(), null);
 					log.info("processAssetFolder folder:" + inInput.getPath());
 				}
 
@@ -318,12 +374,14 @@ public class AssetPathProcessor extends PathProcessor {
 		}
 	}
 
-	protected Set loadGeneratedFolders(ContentItem inInput, String inSourcepath) {
+	protected Set loadGeneratedFolders(ContentItem inInput, String inSourcepath)
+	{
 		Set set = new HashSet();
 		String filepath = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/";
 		Collection generatedfolders = getPageManager().getChildrenPaths(filepath + inSourcepath);
 
-		for (Iterator iterator = generatedfolders.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = generatedfolders.iterator(); iterator.hasNext();)
+		{
 			String path = (String) iterator.next();
 			String sourcepath = path.substring(filepath.length());
 			set.add(sourcepath);
@@ -332,11 +390,16 @@ public class AssetPathProcessor extends PathProcessor {
 		return set;
 	}
 
-	public Boolean isOnWindows() {
-		if (fieldOnWindows == null) {
-			if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")) {
+	public Boolean isOnWindows()
+	{
+		if (fieldOnWindows == null)
+		{
+			if (System.getProperty("os.name").toUpperCase().contains("WINDOWS"))
+			{
 				fieldOnWindows = Boolean.TRUE;
-			} else {
+			}
+			else
+			{
 				fieldOnWindows = Boolean.FALSE;
 			}
 
@@ -344,18 +407,23 @@ public class AssetPathProcessor extends PathProcessor {
 		return fieldOnWindows;
 	}
 
-	protected ContentItem findPrimary(List inPaths) {
+	protected ContentItem findPrimary(List inPaths)
+	{
 		ContentItem first = null;
-		for (Iterator iterator = inPaths.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inPaths.iterator(); iterator.hasNext();)
+		{
 			String path = (String) iterator.next();
 
 			ContentItem item = getPageManager().getRepository().getStub(path);
 			String format = PathUtilities.extractPageType(path);
-			if (!item.isFolder() && acceptFile(item)) {
-				if (first == null && format != null && !"txt".equals(format) && !"xml".equals(format)) {
+			if (!item.isFolder() && acceptFile(item))
+			{
+				if (first == null && format != null && !"txt".equals(format) && !"xml".equals(format))
+				{
 					first = item;
 				}
-				if ("indd".equals(format)) {
+				if ("indd".equals(format))
+				{
 					return item;
 				}
 			}
@@ -364,38 +432,49 @@ public class AssetPathProcessor extends PathProcessor {
 		return first;
 	}
 
-	public void processFile(ContentItem inContent, User inUser) {
+	public void processFile(ContentItem inContent, User inUser)
+	{
 		Asset asset = createAssetIfNeeded(inContent, getMediaArchive(), inUser);
-		if (asset != null) {
+		if (asset != null)
+		{
 			getAssetsToSave().add(asset);
-			if (getAssetsToSave().size() > fieldSaveSize) {
+			if (getAssetsToSave().size() > fieldSaveSize)
+			{
 				saveImportedAssets(inUser);
 			}
 		}
 	}
 
-	protected Asset createAssetIfNeeded(ContentItem inContent, MediaArchive inMediaArchive, User inUser) {
+	protected Asset createAssetIfNeeded(ContentItem inContent, MediaArchive inMediaArchive, User inUser)
+	{
 		Asset asset = getAssetUtilities().createAssetIfNeeded(inContent, inMediaArchive, inUser);
 		return asset;
 	}
 
-	public AssetUtilities getAssetUtilities() {
+	public AssetUtilities getAssetUtilities()
+	{
 		return fieldAssetUtilities;
 	}
 
-	public void setAssetUtilities(AssetUtilities inAssetUtilities) {
+	public void setAssetUtilities(AssetUtilities inAssetUtilities)
+	{
 		fieldAssetUtilities = inAssetUtilities;
 	}
 
-	protected boolean createAttachments(List inPaths) {
-		if (fieldAttachmentFilters == null) {
+	protected boolean createAttachments(List inPaths)
+	{
+		if (fieldAttachmentFilters == null)
+		{
 			return false;
 		}
-		for (Iterator iterator = getAttachmentFilters().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = getAttachmentFilters().iterator(); iterator.hasNext();)
+		{
 			String check = (String) iterator.next();
-			for (Iterator iterator2 = inPaths.iterator(); iterator2.hasNext();) {
+			for (Iterator iterator2 = inPaths.iterator(); iterator2.hasNext();)
+			{
 				String path = (String) iterator2.next();
-				if (PathUtilities.match(path, check)) {
+				if (PathUtilities.match(path, check))
+				{
 					return true;
 				}
 			}
@@ -404,29 +483,35 @@ public class AssetPathProcessor extends PathProcessor {
 		return false;
 	}
 
-	public void processAssets(String inStartingPoint, User inUser) {
+	public void processAssets(String inStartingPoint, User inUser)
+	{
 		ContentItem item = getMediaArchive().getPageManager().getRepository().getStub(inStartingPoint);
 		String sourcepath = getAssetUtilities().extractSourcePath(item, getMediaArchive());
 		String[] folderlist = sourcepath.split("/");
 		String pathtocheck = "";
-		for (int i = 0; i < folderlist.length; i++) {
+		for (int i = 0; i < folderlist.length; i++)
+		{
 			String nextfolder = folderlist[i];
-			if (i > 0) {
+			if (i > 0)
+			{
 				pathtocheck = pathtocheck + "/" + nextfolder;
-			} else {
+			}
+			else
+			{
 				pathtocheck = folderlist[0];
 			}
-			if (isShowLogs()) {
-				getAssetImporter().fireHotFolderEvent(getMediaArchive(), "init", "processAssets",
-						"Checking starting point of " + inStartingPoint + " Checking " + pathtocheck, null);
+			if (isShowLogs())
+			{
+				getAssetImporter().fireHotFolderEvent(getMediaArchive(), "init", "processAssets", "Checking starting point of " + inStartingPoint + " Checking " + pathtocheck, null);
 			}
 			// TODO: This is super slow....Cache it for top level assets?
 			Asset asset = getMediaArchive().getAssetSearcher().getAssetBySourcePath(pathtocheck);
-			if (asset != null) {
-				if (isShowLogs()) {
+			if (asset != null)
+			{
+				if (isShowLogs())
+				{
 					log.error("Found top level asset " + inStartingPoint + " " + "checked: " + pathtocheck);
-					getAssetImporter().fireHotFolderEvent(getMediaArchive(), "init", "error",
-							"Found top level asset " + pathtocheck, null);
+					getAssetImporter().fireHotFolderEvent(getMediaArchive(), "init", "error", "Found top level asset " + pathtocheck, null);
 				}
 				return;
 			}

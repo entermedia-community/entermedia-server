@@ -4,7 +4,8 @@ import org.entermediadb.markdown.node.Block;
 import org.entermediadb.markdown.node.ThematicBreak;
 import org.entermediadb.markdown.parser.block.*;
 
-public class ThematicBreakParser extends AbstractBlockParser {
+public class ThematicBreakParser extends AbstractBlockParser
+{
 
     private final ThematicBreak block = new ThematicBreak();
 
@@ -13,29 +14,37 @@ public class ThematicBreakParser extends AbstractBlockParser {
     }
 
     @Override
-    public Block getBlock() {
+    public Block getBlock()
+    {
         return block;
     }
 
     @Override
-    public BlockContinue tryContinue(ParserState state) {
+    public BlockContinue tryContinue(ParserState state)
+    {
         // a horizontal rule can never container > 1 line, so fail to match
         return BlockContinue.none();
     }
 
-    public static class Factory extends AbstractBlockParserFactory {
+    public static class Factory extends AbstractBlockParserFactory
+    {
 
         @Override
-        public BlockStart tryStart(ParserState state, MatchedBlockParser matchedBlockParser) {
-            if (state.getIndent() >= 4) {
+        public BlockStart tryStart(ParserState state, MatchedBlockParser matchedBlockParser)
+        {
+            if (state.getIndent() >= 4)
+            {
                 return BlockStart.none();
             }
             int nextNonSpace = state.getNextNonSpaceIndex();
             CharSequence line = state.getLine().getContent();
-            if (isThematicBreak(line, nextNonSpace)) {
+            if (isThematicBreak(line, nextNonSpace))
+            {
                 var literal = String.valueOf(line.subSequence(state.getIndex(), line.length()));
                 return BlockStart.of(new ThematicBreakParser(literal)).atIndex(line.length());
-            } else {
+            }
+            else
+            {
                 return BlockStart.none();
             }
         }
@@ -45,13 +54,16 @@ public class ThematicBreakParser extends AbstractBlockParser {
     // of three or more matching -, _, or *
     // characters, each followed optionally by any number of spaces, forms a
     // thematic break.
-    private static boolean isThematicBreak(CharSequence line, int index) {
+    private static boolean isThematicBreak(CharSequence line, int index)
+    {
         int dashes = 0;
         int underscores = 0;
         int asterisks = 0;
         int length = line.length();
-        for (int i = index; i < length; i++) {
-            switch (line.charAt(i)) {
+        for (int i = index; i < length; i++)
+        {
+            switch (line.charAt(i))
+            {
                 case '-':
                     dashes++;
                     break;
@@ -70,8 +82,6 @@ public class ThematicBreakParser extends AbstractBlockParser {
             }
         }
 
-        return ((dashes >= 3 && underscores == 0 && asterisks == 0) ||
-                (underscores >= 3 && dashes == 0 && asterisks == 0) ||
-                (asterisks >= 3 && dashes == 0 && underscores == 0));
+        return ((dashes >= 3 && underscores == 0 && asterisks == 0) || (underscores >= 3 && dashes == 0 && asterisks == 0) || (asterisks >= 3 && dashes == 0 && underscores == 0));
     }
 }

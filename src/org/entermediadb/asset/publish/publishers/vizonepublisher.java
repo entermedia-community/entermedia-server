@@ -47,7 +47,8 @@ import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.util.XmlUtil;
 
-public class vizonepublisher extends BasePublisher implements Publisher {
+public class vizonepublisher extends BasePublisher implements Publisher
+{
 
 	private static final Log log = LogFactory.getLog(vizonepublisher.class);
 	protected XmlUtil fieldXmlUtil;
@@ -60,7 +61,8 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 	private static Map<String, String> UserRestInstruction = new HashMap<String, String>(); // rightsusageinstructions
 	private static Map<String, String> UserRestrictions = new HashMap<String, String>(); // restrictions
 	private static Map<String, String> RightCodes = new HashMap<String, String>();
-	static {
+	static
+	{
 		UserRestInstruction.put("1", "Nouvelles seulement");
 		UserRestInstruction.put("2", "Utilisation unique");
 		UserRestInstruction.put("3", "Émission spécifique");
@@ -75,11 +77,13 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		RightCodes.put("2", "Y");
 	}
 
-	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination,
-			Data inPreset, Asset inAsset) {
-		try {
+	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
+	{
+		try
+		{
 			PublishResult result = checkOnConversion(mediaArchive, inOrderItem, inAsset, inPreset);
-			if (!result.isReadyToPublish()) {
+			if (!result.isReadyToPublish())
+			{
 				return result;
 			}
 
@@ -94,7 +98,8 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 
 			String password = inDestination.get("password");
 			// get password and login
-			if (password == null) {
+			if (password == null)
+			{
 				UserManager userManager = mediaArchive.getUserManager();
 				User user = userManager.getUser(username);
 				password = userManager.decryptPassword(user);
@@ -127,34 +132,40 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 			result.setComplete(true);
 			log.info("publishished  ${asset} to FTP server ${servername}");
 			return result;
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 			throw new OpenEditException(e);
 		}
 
 	}
 
-	private void storeCookies(MediaArchive inArchive, HttpResponse response) {
+	private void storeCookies(MediaArchive inArchive, HttpResponse response)
+	{
 		// log.info("*** storeCookies");
 		Header[] headers = response.getHeaders("Set-Cookie");
-		if (headers != null && headers[0].getValue() != null) {
+		if (headers != null && headers[0].getValue() != null)
+		{
 			inArchive.getCacheManager().put(CACHE, COOKIES, headers[0].getValue());
 			// log.info("*** storeCookies: "+headers[0].getValue());
 		}
 
 	}
 
-	private void setCookies(MediaArchive inArchive, HttpMessage method) {
+	private void setCookies(MediaArchive inArchive, HttpMessage method)
+	{
 		// log.info("*** setCookies");
 		Object header = inArchive.getCacheManager().get(CACHE, COOKIES);
-		if (header != null) {
+		if (header != null)
+		{
 			method.setHeader("Cookie", header.toString());
 			// log.info("*** setCookies: "+header.toString());
 		}
 	}
 
-	public void updateAsset(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString)
-			throws Exception {
+	public void updateAsset(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString) throws Exception
+	{
 
 		// curl --insecure --user "$VMEUSER:$VMEPASS" --include --header "Accept:
 		// application/opensearchdescription+xml"
@@ -181,22 +192,25 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 
 		StatusLine sl = response.getStatusLine();
 		int status = sl.getStatusCode();
-		if (status >= 400) {
+		if (status >= 400)
+		{
 			throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 		}
 
 		Element elem = getXmlUtil().getXml(response.getEntity().getContent(), "UTF-8");
 
-		for (Iterator iterator = elem.elementIterator("field"); iterator.hasNext();) {
+		for (Iterator iterator = elem.elementIterator("field"); iterator.hasNext();)
+		{
 			Element field = (Element) iterator.next();
 			String name = field.attributeValue("name");
 			Element value = field.element("value");
-			if (value != null) {
+			if (value != null)
+			{
 				String current = value.getText();
 
-				PropertyDetail detail = inArchive.getAssetSearcher().getPropertyDetails()
-						.getDetailByProperty("vizonefield", name);
-				if (detail != null) {
+				PropertyDetail detail = inArchive.getAssetSearcher().getPropertyDetails().getDetailByProperty("vizonefield", name);
+				if (detail != null)
+				{
 					inAsset.setValue(detail.getId(), current);
 				}
 			}
@@ -206,8 +220,8 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		// "https://vmeserver/thirdparty/asset/item?start=1&num=20&sort=-search.modificationDate&q=breakthrough
 	}
 
-	public Element setMetadata(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString)
-			throws Exception {
+	public Element setMetadata(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString) throws Exception
+	{
 
 		// curl --insecure --user "$VMEUSER:$VMEPASS" --include --header "Accept:
 		// application/opensearchdescription+xml"
@@ -216,7 +230,8 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		String addr = servername + "api/asset/item/" + inAsset.get("vizid") + "/metadata";
 		log.info("Updating metadata at " + addr);
 		String vizoneretention = inAsset.get("vizoneretention");
-		if (vizoneretention == null) {
+		if (vizoneretention == null)
+		{
 			vizoneretention = "oneweek";
 			inAsset.setValue("vizoneretention", vizoneretention);
 			inArchive.saveAsset(inAsset);
@@ -241,7 +256,8 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		HttpResponse response = getClient().execute(get);
 		StatusLine sl = response.getStatusLine();
 		int status = sl.getStatusCode();
-		if (status >= 400) {
+		if (status >= 400)
+		{
 			throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 		}
 		// Element elem = getXmlUtil().getXml(response.getEntity().getContent(),
@@ -251,23 +267,25 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		Element elem = getXmlUtil().getXml(response.getEntity().getContent(), "UTF-8");
 		ArrayList done = new ArrayList();
 		/**
-		 * or each element in the response, check for vizonefield locally and if it's
-		 * found then force its value instead
-		 * of the received one.
+		 * or each element in the response, check for vizonefield locally and if it's found then force its
+		 * value instead of the received one.
 		 */
-		for (Iterator iterator = elem.elementIterator("field"); iterator.hasNext();) {
+		for (Iterator iterator = elem.elementIterator("field"); iterator.hasNext();)
+		{
 			Element field = (Element) iterator.next();
 			String name = field.attributeValue("name");
 			Element value = field.element("value");
 
-			if (value != null) {
+			if (value != null)
+			{
 				String current = value.getText();
 
-				PropertyDetail detail = inArchive.getAssetSearcher().getPropertyDetails()
-						.getDetailByProperty("vizonefield", name);
-				if (detail != null) {
+				PropertyDetail detail = inArchive.getAssetSearcher().getPropertyDetails().getDetailByProperty("vizonefield", name);
+				if (detail != null)
+				{
 					String assetvalue = inAsset.get(detail.getId());
-					if (assetvalue != null) {
+					if (assetvalue != null)
+					{
 						log.info("***Already DONE assetvalue: " + assetvalue + " for " + name);
 						value.setText(assetvalue);
 						done.add(detail.getId());
@@ -276,15 +294,19 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 			}
 		}
 
-		for (Iterator iterator = inArchive.getAssetSearcher().getPropertyDetails().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inArchive.getAssetSearcher().getPropertyDetails().iterator(); iterator.hasNext();)
+		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
-			if (done.contains(detail.getId())) {
+			if (done.contains(detail.getId()))
+			{
 				continue;
 			}
 			String vizfield = detail.get("vizonefield");
-			if (vizfield != null) {
+			if (vizfield != null)
+			{
 				String assetvalue = inAsset.get(detail.getId());
-				if (assetvalue != null) {
+				if (assetvalue != null)
+				{
 					Element field = elem.addElement("field");
 					field.addAttribute("name", vizfield);
 					Element value = field.addElement("value");
@@ -300,17 +322,20 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		setField(inAsset, elem, "asset.owner", "Img");
 
 		String restrictionVal = getRestrictionValue(inAsset);
-		if (restrictionVal != null) {
+		if (restrictionVal != null)
+		{
 			setField(inAsset, elem, "vpm.restrictions", restrictionVal);
 		}
 
 		String rightsCode = (String) RightCodes.get(inAsset.get("restrictions"));
-		if (rightsCode != null) {
+		if (rightsCode != null)
+		{
 			setField(inAsset, elem, "asset.rightsCode", rightsCode);
 		}
 
 		String rightsComment = (String) getRightsComment(inAsset);
-		if (rightsComment != null) {
+		if (rightsComment != null)
+		{
 			setField(inAsset, elem, "asset.rightsComment", rightsComment);
 		}
 
@@ -337,7 +362,8 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		HttpResponse response2 = getClient().execute(method);
 		sl = response2.getStatusLine();
 		status = sl.getStatusCode();
-		if (status >= 400) {
+		if (status >= 400)
+		{
 			throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 		}
 		Element response3 = getXmlUtil().getXml(response2.getEntity().getContent(), "UTF-8");
@@ -348,17 +374,23 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		// "https://vmeserver/thirdparty/asset/item?start=1&num=20&sort=-search.modificationDate&q=breakthrough
 	}
 
-	private void setField(Asset inAsset, Element elem, String key, String val) {
+	private void setField(Asset inAsset, Element elem, String key, String val)
+	{
 		// check if key exists
 		boolean isKeyExists = false;
-		for (Iterator iterator = elem.elementIterator(); iterator.hasNext();) {
+		for (Iterator iterator = elem.elementIterator(); iterator.hasNext();)
+		{
 			Element _elem = (Element) iterator.next();
 			Attribute att_v = _elem.attribute("name");
-			if (att_v != null && att_v.getStringValue().equals(key)) {
+			if (att_v != null && att_v.getStringValue().equals(key))
+			{
 				Element _elem_value = _elem.element("value");
-				if (_elem_value != null) {
+				if (_elem_value != null)
+				{
 					_elem_value.setText(val);
-				} else {
+				}
+				else
+				{
 					// asset.owner present but empty
 					Element value = _elem.addElement("value");
 					value.setText(val);
@@ -367,7 +399,8 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 				isKeyExists = true;
 			}
 		}
-		if (!isKeyExists) {
+		if (!isKeyExists)
+		{
 			Element field = elem.addElement("field");
 			field.addAttribute("name", key);
 			Element value = field.addElement("value");
@@ -376,14 +409,18 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		}
 	}
 
-	private void setAssetDate(MediaArchive inArchive, Asset inAsset, Element elem) throws Exception {
-		for (Iterator iterator = inArchive.getAssetSearcher().getPropertyDetails().iterator(); iterator.hasNext();) {
+	private void setAssetDate(MediaArchive inArchive, Asset inAsset, Element elem) throws Exception
+	{
+		for (Iterator iterator = inArchive.getAssetSearcher().getPropertyDetails().iterator(); iterator.hasNext();)
+		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 
 			String vizfield = detail.get("vizonefield");
-			if (vizfield != null && vizfield.equals("news.eventDate")) {
+			if (vizfield != null && vizfield.equals("news.eventDate"))
+			{
 				String assetvalue = inAsset.get(detail.getId());
-				if (assetvalue != null) {
+				if (assetvalue != null)
+				{
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					Date date = sdf.parse(assetvalue);
 					assetvalue = sdf.format(date);
@@ -395,17 +432,21 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		}
 	}
 
-	private String getRestrictionValue(Asset inAsset) {
+	private String getRestrictionValue(Asset inAsset)
+	{
 		String rest_val = UserRestrictions.get(inAsset.get("restrictions"));
 		String right_val = "";
 		String rightsusageinstructions = inAsset.get("rightsusageinstructions");
-		if (rightsusageinstructions != null) {
+		if (rightsusageinstructions != null)
+		{
 			String[] rightsusageinstructionsList = rightsusageinstructions.split("\\|");
-			for (int idx = 0; idx < rightsusageinstructionsList.length; idx++) {
+			for (int idx = 0; idx < rightsusageinstructionsList.length; idx++)
+			{
 				String rightUsage = UserRestInstruction.get(rightsusageinstructionsList[idx]);
 				right_val = right_val + rightUsage + ",";
 			}
-			if (right_val.length() > 0) {
+			if (right_val.length() > 0)
+			{
 				right_val = right_val.substring(0, right_val.length() - 1);
 			}
 
@@ -422,23 +463,20 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		if (term_val != null)
 			ret = ret + term_val + "-";
 
-		if (ret.length() > 0) {
+		if (ret.length() > 0)
+		{
 			ret = ret.substring(0, ret.length() - 1);
 			return ret;
 		}
 		/*
-		 * if (rest_val != null && right_val != null) {
-		 * return rest_val + " - " + right_val;
-		 * } else if (rest_val != null) {
-		 * return rest_val;
-		 * } else if (right_val != null) {
-		 * return right_val;
-		 * }
+		 * if (rest_val != null && right_val != null) { return rest_val + " - " + right_val; } else if
+		 * (rest_val != null) { return rest_val; } else if (right_val != null) { return right_val; }
 		 */
 		return null;
 	}
 
-	private String getRightsComment(Asset inAsset) {
+	private String getRightsComment(Asset inAsset)
+	{
 		String cr_val = (String) inAsset.get("copyrightnotice");
 		String source_val = (String) inAsset.get("source");
 		log.info("*** getRightsComment cr_val: " + cr_val + " , source_val: " + source_val);
@@ -449,7 +487,8 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		if (source_val != null)
 			ret = ret + source_val + " - ";
 
-		if (ret.length() > 3) {
+		if (ret.length() > 3)
+		{
 			ret = ret.substring(0, ret.length() - 3);
 			return ret;
 		}
@@ -457,14 +496,16 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		return null;
 	}
 
-	private boolean updateAcl(Element elemRoot, QName qname) {
+	private boolean updateAcl(Element elemRoot, QName qname)
+	{
 		Element elemAcl = elemRoot.element(qname);
 		boolean ret = false;
-		if (elemAcl != null) {
+		if (elemAcl != null)
+		{
 
-			ret = updateAclElement(elemAcl, "External applications", new String[] { "1", "1", "0" });
-			ret = updateAclElement(elemAcl, "Newsroom Plug-In", new String[] { "1", "1", "0" }) || ret;
-			ret = updateAclElement(elemAcl, "Administrators", new String[] { "1", "1", "0" }) || ret;
+			ret = updateAclElement(elemAcl, "External applications", new String[] {"1", "1", "0"});
+			ret = updateAclElement(elemAcl, "Newsroom Plug-In", new String[] {"1", "1", "0"}) || ret;
+			ret = updateAclElement(elemAcl, "Administrators", new String[] {"1", "1", "0"}) || ret;
 			// ret = updateAclElement(elemAcl, "vizrtadmins", new String[] {"1","1","0"}) ||
 			// ret;
 
@@ -474,20 +515,24 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		return false;
 	}
 
-	private boolean updateAclElement(Element elemAcl, String elementName, String[] rra) {
+	private boolean updateAclElement(Element elemAcl, String elementName, String[] rra)
+	{
 		boolean externalAppElementFound = false;
 		// acl:media element found. search for "External applications" element
-		for (Iterator iterator = elemAcl.elementIterator(); iterator.hasNext();) {
+		for (Iterator iterator = elemAcl.elementIterator(); iterator.hasNext();)
+		{
 			Element _elem = (Element) iterator.next();
 			// System.out.println(_elem);
 			Attribute att_v = _elem.attribute("name");
 			// System.out.println(att_v);
-			if (att_v != null && att_v.getStringValue().equals(elementName)) {
+			if (att_v != null && att_v.getStringValue().equals(elementName))
+			{
 				externalAppElementFound = true;
 
 			}
 		}
-		if (!externalAppElementFound) {
+		if (!externalAppElementFound)
+		{
 			Element nElement = new DefaultElement("acl:group");
 			nElement.addAttribute("name", elementName);
 			nElement.addAttribute("read", rra[0]);
@@ -501,8 +546,8 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		return false;
 	}
 
-	public Element setAcl(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString)
-			throws Exception {
+	public Element setAcl(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString) throws Exception
+	{
 
 		// curl --insecure --user "$VMEUSER:$VMEPASS" --include --header "Accept:
 		// application/opensearchdescription+xml"
@@ -522,7 +567,8 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		HttpResponse response = getClient().execute(get);
 		StatusLine sl = response.getStatusLine();
 		int status = sl.getStatusCode();
-		if (status >= 400) {
+		if (status >= 400)
+		{
 			throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 		}
 
@@ -533,7 +579,8 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		qname = new QName("media", new Namespace("acl", "http://www.vizrt.com/2012/acl"), "acl:media");
 		doPut = updateAcl(elemRoot, qname) || doPut;
 
-		if (doPut) {
+		if (doPut)
+		{
 			HttpPut method = new HttpPut(addr);
 			method.setHeader("Content-Type", "application/atom+xml;type=entry;charset=utf-8");
 			method.setHeader("Authorization", "Basic " + inAuthString);
@@ -548,7 +595,8 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 			HttpResponse response2 = getClient().execute(method);
 			sl = response2.getStatusLine();
 			status = sl.getStatusCode();
-			if (status >= 400) {
+			if (status >= 400)
+			{
 				throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 			}
 			Element response3 = getXmlUtil().getXml(response2.getEntity().getContent(), "UTF-8");
@@ -558,8 +606,8 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		return null;
 	}
 
-	public Element createAsset(MediaArchive inArchive, Data inDestination, Asset inAsset, String inAuthString)
-			throws Exception {
+	public Element createAsset(MediaArchive inArchive, Data inDestination, Asset inAsset, String inAuthString) throws Exception
+	{
 
 		// curl --insecure --user "$VMEUSER:$VMEPASS" --include --header "Accept:
 		// application/opensearchdescription+xml"
@@ -569,10 +617,9 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		String addr = servername + "thirdparty/asset/item";
 		// urn:vme:default:dictionary:retentionpolicy:oneweek
 
-		String data = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'>  <atom:title>Title: ${title}</atom:title>"
-				+ "<identifier>${name}</identifier>"
+		String data = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'>  <atom:title>Title: ${title}</atom:title>" + "<identifier>${name}</identifier>"
 
-				+ "</atom:entry>";
+			+ "</atom:entry>";
 		Map metadata = inAsset.getProperties();
 		Calendar now = new GregorianCalendar();
 		now.add(now.DAY_OF_YEAR, 7);
@@ -607,7 +654,8 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 
 		StatusLine sl = response2.getStatusLine();
 		int status = sl.getStatusCode();
-		if (status >= 400) {
+		if (status >= 400)
+		{
 			throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 		}
 
@@ -619,9 +667,10 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		// "https://vmeserver/thirdparty/asset/item?start=1&num=20&sort=-search.modificationDate&q=breakthrough
 	}
 
-	public void uploadAsset(MediaArchive archive, PublishResult inResult, Asset inAsset, Data inDestination,
-			Data inPreset, String inAuthString) {
-		try {
+	public void uploadAsset(MediaArchive archive, PublishResult inResult, Asset inAsset, Data inDestination, Data inPreset, String inAuthString)
+	{
+		try
+		{
 			Page inputpage = findInputPage(archive, inAsset, inPreset);
 
 			String servername = inDestination.get("url");
@@ -650,18 +699,21 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 
 			StatusLine sl = response3.getStatusLine();
 			int status = sl.getStatusCode();
-			if (status >= 400) {
+			if (status >= 400)
+			{
 				throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 			}
 
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new OpenEditException(e);
 		}
 
 	}
 
-	public void deleteAsset(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString)
-			throws Exception {
+	public void deleteAsset(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString) throws Exception
+	{
 
 		// curl --insecure --user "$VMEUSER:$VMEPASS" --include --header "Accept:
 		// application/opensearchdescription+xml"
@@ -687,13 +739,15 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		HttpResponse response = getClient().execute(get);
 		StatusLine sl = response.getStatusLine();
 		int status = sl.getStatusCode();
-		if (status >= 400) {
+		if (status >= 400)
+		{
 			throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 		}
 
 	}
 
-	public HttpClient getClient() {
+	public HttpClient getClient()
+	{
 
 		RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
 		CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
@@ -701,14 +755,17 @@ public class vizonepublisher extends BasePublisher implements Publisher {
 		return httpClient;
 	}
 
-	public XmlUtil getXmlUtil() {
-		if (fieldXmlUtil == null) {
+	public XmlUtil getXmlUtil()
+	{
+		if (fieldXmlUtil == null)
+		{
 			fieldXmlUtil = new XmlUtil();
 		}
 		return fieldXmlUtil;
 	}
 
-	public void setXmlUtil(XmlUtil inXmlUtil) {
+	public void setXmlUtil(XmlUtil inXmlUtil)
+	{
 		fieldXmlUtil = inXmlUtil;
 	}
 

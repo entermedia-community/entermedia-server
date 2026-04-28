@@ -25,20 +25,24 @@ import org.openedit.repository.ContentItem;
 import org.openedit.util.FileUtils;
 import org.openedit.util.OutputFiller;
 
-public class CategoryZipGenerator extends BaseGenerator {
+public class CategoryZipGenerator extends BaseGenerator
+{
 	OutputFiller filler = new OutputFiller();
 	private static final Log log = LogFactory.getLog(CategoryZipGenerator.class);
 	protected ModuleManager fieldModuleManager;
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager moduleManager) {
+	public void setModuleManager(ModuleManager moduleManager)
+	{
 		fieldModuleManager = moduleManager;
 	}
 
-	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException {
+	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
+	{
 		MediaArchiveModule archiveModule = (MediaArchiveModule) getModuleManager().getBean("MediaArchiveModule");
 		MediaArchive archive = archiveModule.getMediaArchive(inReq);
 		String catid = inPage.getDirectoryName();
@@ -48,31 +52,39 @@ public class CategoryZipGenerator extends BaseGenerator {
 
 	}
 
-	protected void zipAssets(WebPageRequest inReq, MediaArchive archive, Category inRootCat, Output inOut) {
+	protected void zipAssets(WebPageRequest inReq, MediaArchive archive, Category inRootCat, Output inOut)
+	{
 		ZipOutputStream zos = null;
-		try {
+		try
+		{
 			zos = new ZipOutputStream(inOut.getStream());
 			zos.setLevel(1); // for speed since these are jpegs
 
 			addFolder(inReq, archive, inRootCat, "", zos);
 
-		} finally {
-			try {
+		}
+		finally
+		{
+			try
+			{
 				FileUtils.safeClose(zos); // This will fail if there was any
 
-			} catch (Exception ex2) {
+			}
+			catch (Exception ex2)
+			{
 				// nothing
 			}
 		}
 
 	}
 
-	protected void addFolder(WebPageRequest inReq, MediaArchive archive, Category inCat, String folderprefix,
-			ZipOutputStream zos) {
+	protected void addFolder(WebPageRequest inReq, MediaArchive archive, Category inCat, String folderprefix, ZipOutputStream zos)
+	{
 		Collection files = archive.query("asset").exact("category-exact", inCat).search(inReq);
 
 		String thispath = folderprefix + inCat.getName() + "/";
-		for (Iterator iterator = files.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = files.iterator(); iterator.hasNext();)
+		{
 			Data asset = (Data) iterator.next();
 
 			String filename = thispath + asset.getName("en");
@@ -80,27 +92,35 @@ public class CategoryZipGenerator extends BaseGenerator {
 			ContentItem inFile = archive.getOriginalContent(asset);
 			entry.setSize(inFile.getLength());
 			entry.setTime(inFile.getLastModified());
-			try {
+			try
+			{
 				InputStream fis = inFile.getInputStream();
 				zos.putNextEntry(entry);
-				try {
+				try
+				{
 					filler.fill(fis, zos);
-				} finally {
+				}
+				finally
+				{
 					fis.close();
 				}
 				zos.closeEntry();
-			} catch (Exception ex) {
+			}
+			catch (Exception ex)
+			{
 				log.error(ex);
 			}
 		}
-		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
+		{
 			Category child = (Category) iterator.next();
 			addFolder(inReq, archive, child, thispath, zos);
 		}
 
 	}
 
-	public boolean canGenerate(WebPageRequest inReq) {
+	public boolean canGenerate(WebPageRequest inReq)
+	{
 
 		boolean ok = inReq.getPage().getMimeType().equals("application/x-zip");
 		return ok;

@@ -13,11 +13,13 @@ import org.entermediadb.asset.convert.ConvertResult;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
 
-public class GsTranscoder extends BaseTranscoder {
+public class GsTranscoder extends BaseTranscoder
+{
 	private static final Log log = LogFactory.getLog(GsTranscoder.class);
 
 	@Override
-	public ConvertResult convert(ConvertInstructions inStructions) {
+	public ConvertResult convert(ConvertInstructions inStructions)
+	{
 		ConvertResult result = new ConvertResult();
 		result.setOutput(inStructions.getOutputFile());
 		// Asset asset = inStructions.getAsset();
@@ -39,25 +41,29 @@ public class GsTranscoder extends BaseTranscoder {
 		boolean ok = execresult.isRunOk();
 		result.setOk(ok);
 
-		if (ok) {
+		if (ok)
+		{
 			result.setComplete(true);
 
-			log.info("Convert complete in:" + (System.currentTimeMillis() - start) + " "
-					+ inOutFile.getName());
+			log.info("Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
 
 			return result;
 		}
 		// problems
 		log.info("Could not exec: " + com + execresult.getStandardOut());
-		if (execresult.getReturnValue() == 124) {
+		if (execresult.getReturnValue() == 124)
+		{
 			result.setError("Exec timed out after " + timeout);
-		} else {
+		}
+		else
+		{
 			result.setError(execresult.getStandardOut());
 		}
 		return result;
 	}
 
-	protected List<String> createCommand(ConvertInstructions inStructions) {
+	protected List<String> createCommand(ConvertInstructions inStructions)
+	{
 		List<String> com = new ArrayList<String>();
 
 		int page = inStructions.getPageNumber();

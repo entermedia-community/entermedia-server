@@ -4,7 +4,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.hittracker.HitTracker;
 
-public class LockSearcher extends BaseElasticSearcher {
+public class LockSearcher extends BaseElasticSearcher
+{
 	private static final Log log = LogFactory.getLog(LockSearcher.class);
 
 	protected boolean fieldClearIndexOnStart;
@@ -12,15 +13,18 @@ public class LockSearcher extends BaseElasticSearcher {
 	/**
 	 * @override
 	 */
-	protected boolean isTrackEdits() {
+	protected boolean isTrackEdits()
+	{
 		return false;
 	}
 
-	public boolean isClearIndexOnStart() {
+	public boolean isClearIndexOnStart()
+	{
 		return fieldClearIndexOnStart;
 	}
 
-	public void setClearIndexOnStart(boolean inClearIndexOnStart) {
+	public void setClearIndexOnStart(boolean inClearIndexOnStart)
+	{
 		fieldClearIndexOnStart = inClearIndexOnStart;
 	}
 
@@ -42,7 +46,8 @@ public class LockSearcher extends BaseElasticSearcher {
 	// }
 
 	// TODO: move this to the ClientPool shutdown ruitine
-	public void clearStaleLocks() {
+	public void clearStaleLocks()
+	{
 		String id = getElasticNodeManager().getLocalNodeId();
 
 		HitTracker hits = query().exact("nodeid", id).search();
@@ -52,7 +57,8 @@ public class LockSearcher extends BaseElasticSearcher {
 	}
 
 	@Override
-	public boolean initialize() {
+	public boolean initialize()
+	{
 		boolean init = super.initialize();
 		clearStaleLocks();
 		return init;

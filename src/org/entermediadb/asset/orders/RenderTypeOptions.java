@@ -5,34 +5,42 @@ import java.util.Collection;
 
 import org.openedit.Data;
 
-public class RenderTypeOptions {
+public class RenderTypeOptions
+{
 	protected Data fieldRenderType;
 	protected Collection fieldPresetOptions = new ArrayList();
 
-	public Collection getPresetOptions() {
+	public Collection getPresetOptions()
+	{
 		return fieldPresetOptions;
 	}
 
-	public void setPresetOptions(Collection inPresetOptions) {
+	public void setPresetOptions(Collection inPresetOptions)
+	{
 		fieldPresetOptions = inPresetOptions;
 	}
 
-	public Data getRenderType() {
+	public Data getRenderType()
+	{
 		return fieldRenderType;
 	}
 
-	public void setRenderType(Data inRenderType) {
+	public void setRenderType(Data inRenderType)
+	{
 		fieldRenderType = inRenderType;
 	}
 
-	public String getRenderTypeId() {
-		if (getRenderType() != null) {
+	public String getRenderTypeId()
+	{
+		if (getRenderType() != null)
+		{
 			return getRenderType().getId();
 		}
 		return "none";
 	}
 
-	public void addPresetOption(PresetOption inPresetoption) {
+	public void addPresetOption(PresetOption inPresetoption)
+	{
 		getPresetOptions().add(inPresetoption);
 	}
 

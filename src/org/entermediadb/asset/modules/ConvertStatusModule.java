@@ -24,48 +24,58 @@ import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
 
-public class ConvertStatusModule extends BaseMediaModule {
+public class ConvertStatusModule extends BaseMediaModule
+{
 
 	protected SearcherManager fieldSearcherManager;
 	protected EventManager fieldEventManager;
 
 	private static final Log log = LogFactory.getLog(ConvertStatusModule.class);
 
-	public SearcherManager getSearcherManager() {
+	public SearcherManager getSearcherManager()
+	{
 		return fieldSearcherManager;
 	}
 
-	public void setSearcherManager(SearcherManager searcherManager) {
+	public void setSearcherManager(SearcherManager searcherManager)
+	{
 		fieldSearcherManager = searcherManager;
 	}
 
-	public EventManager getEventManager() {
+	public EventManager getEventManager()
+	{
 		return fieldEventManager;
 	}
 
-	public void setEventManager(EventManager EventManager) {
+	public void setEventManager(EventManager EventManager)
+	{
 		fieldEventManager = EventManager;
 	}
 
 	// this should kick off the groovy event by firing a path event?
-	public void addConvertRequest(WebPageRequest inReq) {
+	public void addConvertRequest(WebPageRequest inReq)
+	{
 		// sourcepath=" + asset.getSourcePath() + "preset=" + preset.getId());
 		String assetid = inReq.getRequestParameter("assetid");
-		if (assetid == null) {
+		if (assetid == null)
+		{
 			return;
 		}
 		String presetId = inReq.getRequestParameter("preset");
 
-		if (presetId == null) {
+		if (presetId == null)
+		{
 			presetId = inReq.getRequestParameter("presetid.value");
 		}
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Asset asset = archive.getAsset(assetid);
-		if (presetId == null) {
+		if (presetId == null)
+		{
 			return;
 		}
-		if (asset == null) {
+		if (asset == null)
+		{
 			return;
 		}
 		Searcher presetSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
@@ -76,10 +86,12 @@ public class ConvertStatusModule extends BaseMediaModule {
 
 		String[] fields = inReq.getRequestParameters("field");
 
-		for (int i = 0; i < fields.length; i++) {
+		for (int i = 0; i < fields.length; i++)
+		{
 			String field = fields[i];
 			String val = inReq.getRequestParameter(field + ".value");
-			if (field != null && val != null) {
+			if (field != null && val != null)
+			{
 				settings.setValue(field, val);
 			}
 		}
@@ -96,8 +108,7 @@ public class ConvertStatusModule extends BaseMediaModule {
 
 		instructions.setForce(true);
 
-		ContentItem outputpage = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/"
-				+ asset.getSourcePath() + "/" + preset.get("generatedoutputfile"));
+		ContentItem outputpage = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + preset.get("generatedoutputfile"));
 
 		// //TODO: Re-enamble version control
 		// if(outputpage.exists()){
@@ -117,11 +128,13 @@ public class ConvertStatusModule extends BaseMediaModule {
 		Double scalefactor = 1d;
 		// if(hasheight != null && (instructions.getMaxScaledSize().getHeight() > 768 ||
 		// instructions.getMaxScaledSize().getWidth() > 1024)) {
-		if (hasheight != null && originalheight != null && originalwidth != null) {
+		if (hasheight != null && originalheight != null && originalwidth != null)
+		{
 			// input will be the original
 			boolean wide = true;
 			instructions.setInputFile(archive.getOriginalContent(asset));
-			if (originalheight > originalwidth) {
+			if (originalheight > originalwidth)
+			{
 				wide = false;
 			}
 
@@ -156,7 +169,8 @@ public class ConvertStatusModule extends BaseMediaModule {
 		Searcher tasks = archive.getSearcher("conversiontask");
 		Data task = tasks.query().exact("presetid", preset.getId()).exact("assetid", asset.getId()).searchOne();
 
-		if (task == null) {
+		if (task == null)
+		{
 			task = tasks.createNewData();
 			task.setProperty("presetid", preset.getId());
 			task.setProperty("assetid", asset.getId());
@@ -167,10 +181,10 @@ public class ConvertStatusModule extends BaseMediaModule {
 		tasks.saveData(task);
 
 		Searcher assetcrops = archive.getSearcher("assetcrop");
-		Data assetcrop = assetcrops.query().exact("presetid", preset.getId()).exact("assetid", asset.getId())
-				.searchOne();
+		Data assetcrop = assetcrops.query().exact("presetid", preset.getId()).exact("assetid", asset.getId()).searchOne();
 
-		if (assetcrop == null) {
+		if (assetcrop == null)
+		{
 			assetcrop = assetcrops.createNewData();
 			assetcrop.setProperty("presetid", preset.getId());
 			assetcrop.setProperty("assetid", asset.getId());
@@ -195,7 +209,8 @@ public class ConvertStatusModule extends BaseMediaModule {
 		archive.saveAsset(asset); // Updates the lastmoddate for push
 	}
 
-	public void processConversions(WebPageRequest inReq) {
+	public void processConversions(WebPageRequest inReq)
+	{
 
 		WebEvent event = new WebEvent();
 		event.setSource(this);
@@ -208,84 +223,58 @@ public class ConvertStatusModule extends BaseMediaModule {
 	}
 
 	/*
-	 * public void uploadConversionDocument(WebPageRequest inReq){
-	 * MediaArchive archive = getMediaArchive(inReq);
-	 * FileUpload command = (FileUpload)
-	 * archive.getSearcherManager().getModuleManager().getBean("fileUpload");
-	 * UploadRequest properties = command.parseArguments(inReq);
+	 * public void uploadConversionDocument(WebPageRequest inReq){ MediaArchive archive =
+	 * getMediaArchive(inReq); FileUpload command = (FileUpload)
+	 * archive.getSearcherManager().getModuleManager().getBean("fileUpload"); UploadRequest properties =
+	 * command.parseArguments(inReq);
 	 * 
-	 * if (properties == null) {
-	 * return;
-	 * }
-	 * if (properties.getFirstItem() == null)
-	 * {
-	 * log.info("No upload found");
-	 * return;
+	 * if (properties == null) { return; } if (properties.getFirstItem() == null) {
+	 * log.info("No upload found"); return;
 	 * 
-	 * }
-	 * String assetid = inReq.getRequestParameter("assetid");
-	 * Asset current = archive.getAsset(assetid);
+	 * } String assetid = inReq.getRequestParameter("assetid"); Asset current =
+	 * archive.getAsset(assetid);
 	 * 
 	 * String all = inReq.getRequestParameter("replaceall");
 	 * 
-	 * boolean createall = false;
-	 * String generated = "";
-	 * if( "true".equals(all))
-	 * {
-	 * //String fileFormat = current.getFileFormat();
+	 * boolean createall = false; String generated = ""; if( "true".equals(all)) { //String fileFormat =
+	 * current.getFileFormat();
 	 * 
-	 * generated = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" +
-	 * current.getSourcePath() + "/image3000x3000.jpg";
-	 * ContentItem saved = properties.saveFileAs(properties.getFirstItem(),
+	 * generated = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + current.getSourcePath() +
+	 * "/image3000x3000.jpg"; ContentItem saved = properties.saveFileAs(properties.getFirstItem(),
 	 * generated, inReq.getUser());
 	 * 
-	 * // String copytogenerated = "/WEB-INF/data/" + archive.getCatalogId() +
-	 * "/generated/" + current.getSourcePath() + "/image3000x3000.jpg";
-	 * // archive.getPageManager().getRepository().copy(saved,archive.getContent(
-	 * copytogenerated));
-	 * createall = true;
-	 * }
-	 * else
-	 * {
-	 * String presetid = inReq.getRequestParameter("presetid");
-	 * Data preset = null;
-	 * preset = getSearcherManager().getData(archive.getCatalogId(),
-	 * "convertpreset",presetid);
-	 * if(presetid.equals("0"))
-	 * {
-	 * generated = archive.getOriginalContent(current).getPath();
-	 * }
-	 * else {
-	 * generated = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" +
-	 * current.getSourcePath() + "/" + preset.get("generatedoutputfile");
-	 * }
-	 * properties.saveFileAs(properties.getFirstItem(), generated, inReq.getUser());
-	 * }
+	 * // String copytogenerated = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" +
+	 * current.getSourcePath() + "/image3000x3000.jpg"; //
+	 * archive.getPageManager().getRepository().copy(saved,archive.getContent( copytogenerated));
+	 * createall = true; } else { String presetid = inReq.getRequestParameter("presetid"); Data preset =
+	 * null; preset = getSearcherManager().getData(archive.getCatalogId(), "convertpreset",presetid);
+	 * if(presetid.equals("0")) { generated = archive.getOriginalContent(current).getPath(); } else {
+	 * generated = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + current.getSourcePath() +
+	 * "/" + preset.get("generatedoutputfile"); } properties.saveFileAs(properties.getFirstItem(),
+	 * generated, inReq.getUser()); }
 	 * 
-	 * log.info("Asset: " + assetid + " Replaced " + generated);
-	 * inReq.putPageValue("asset", current);
-	 * archive.saveAsset(current);
-	 * archive.fireMediaEvent("saved", inReq.getUser(), current);
+	 * log.info("Asset: " + assetid + " Replaced " + generated); inReq.putPageValue("asset", current);
+	 * archive.saveAsset(current); archive.fireMediaEvent("saved", inReq.getUser(), current);
 	 * 
-	 * if( createall)
-	 * {
-	 * rerunSmallerThumbnails(inReq);
-	 * }
+	 * if( createall) { rerunSmallerThumbnails(inReq); }
 	 * 
 	 * 
 	 * }
 	 */
 
-	public void replaceOriginal(WebPageRequest inReq) {
+	public void replaceOriginal(WebPageRequest inReq)
+	{
 
 		MediaArchive archive = getMediaArchive(inReq);
 		FileUpload command = (FileUpload) archive.getSearcherManager().getModuleManager().getBean("fileUpload");
 		UploadRequest properties = command.parseArguments(inReq);
 
-		if (properties == null) {
+		if (properties == null)
+		{
 			return;
 		}
-		if (properties.getFirstItem() == null) {
+		if (properties.getFirstItem() == null)
+		{
 			return;
 
 		}
@@ -309,15 +298,18 @@ public class ConvertStatusModule extends BaseMediaModule {
 
 	}
 
-	public void uploadSaveAsDocument(WebPageRequest inReq) {
+	public void uploadSaveAsDocument(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		FileUpload command = (FileUpload) archive.getSearcherManager().getModuleManager().getBean("fileUpload");
 		UploadRequest properties = command.parseArguments(inReq);
 
-		if (properties == null) {
+		if (properties == null)
+		{
 			return;
 		}
-		if (properties.getFirstItem() == null) {
+		if (properties.getFirstItem() == null)
+		{
 			log.info("No upload found");
 			return;
 		}
@@ -349,12 +341,11 @@ public class ConvertStatusModule extends BaseMediaModule {
 
 		archive.convertFile(instructions, finalpath);
 
-		Collection assetids = archive.getAssetImporter().processOn(finalpath.getPath(), finalpath.getPath(), true,
-				archive, null);
+		Collection assetids = archive.getAssetImporter().processOn(finalpath.getPath(), finalpath.getPath(), true, archive, null);
 		Asset newasset = archive.getAssetBySourcePath(sourcepath); // New file
-		if (newasset != null) {
-			archive.getAssetEditor().createNewVersionData(newasset, finalpath, inReq.getUserName(), Version.UIREPLACE,
-					null);
+		if (newasset != null)
+		{
+			archive.getAssetEditor().createNewVersionData(newasset, finalpath, inReq.getUserName(), Version.UIREPLACE, null);
 
 			newasset.setValue("parentid", assetid);
 			archive.saveAsset(newasset);
@@ -363,7 +354,8 @@ public class ConvertStatusModule extends BaseMediaModule {
 		inReq.putPageValue("asset", current);
 	}
 
-	public void restoreVersion(WebPageRequest inReq) {
+	public void restoreVersion(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String version = inReq.getRequestParameter("version");
 
@@ -373,22 +365,25 @@ public class ConvertStatusModule extends BaseMediaModule {
 		log.info("Original restored: " + current.getId());
 	}
 
-	public void handleCustomThumb(WebPageRequest inReq) {
+	public void handleCustomThumb(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		FileUpload command = (FileUpload) archive.getSearcherManager().getModuleManager().getBean("fileUpload");
 		UploadRequest properties = command.parseArguments(inReq);
 
-		if (properties == null) {
+		if (properties == null)
+		{
 			return;
 		}
-		if (properties.getFirstItem() == null) {
+		if (properties.getFirstItem() == null)
+		{
 			return;
 
 		}
 		Asset current = getAsset(inReq);
-		String input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + current.getSourcePath() + "/"
-				+ properties.getFirstItem().getName(); // TODO: Should run a conversion here first to ensure this is a
-														// large JPG
+		String input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + current.getSourcePath() + "/" + properties.getFirstItem().getName(); // TODO: Should run a conversion here first to
+																																						// ensure this is a
+																																						// large JPG
 		properties.saveFileAs(properties.getFirstItem(), input, inReq.getUser());
 
 		// String s1024 = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" +
@@ -404,8 +399,8 @@ public class ConvertStatusModule extends BaseMediaModule {
 		instructions.setInputFile(archive.getContent(input));
 		c.createOutput(instructions);
 
-		String png1024 = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + current.getSourcePath()
-				+ "/image3000x3000.png"; // TODO: Should run a conversion here first to ensure this is a large JPG
+		String png1024 = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + current.getSourcePath() + "/image3000x3000.png"; // TODO: Should run a conversion here first to ensure this is a
+																																		// large JPG
 		instructions.setOutputFile(archive.getContent(png1024));
 		c.createOutput(instructions);
 
@@ -414,16 +409,19 @@ public class ConvertStatusModule extends BaseMediaModule {
 
 	}
 
-	public void rerunSmallerThumbnails(WebPageRequest inReq) {
+	public void rerunSmallerThumbnails(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-		if (asset != null) {
+		if (asset != null)
+		{
 			archive.removeGeneratedImages(asset, false);
 			reloadThumbnails(inReq, archive, asset);
 		}
 	}
 
-	public void rerunAllThumbnails(WebPageRequest inReq) {
+	public void rerunAllThumbnails(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
 		archive.removeGeneratedImages(asset, true);
@@ -431,11 +429,13 @@ public class ConvertStatusModule extends BaseMediaModule {
 
 	}
 
-	protected void reloadThumbnails(WebPageRequest inReqX, MediaArchive archive, Asset inAsset) {
+	protected void reloadThumbnails(WebPageRequest inReqX, MediaArchive archive, Asset inAsset)
+	{
 		archive.getAssetEditor().reloadThumbnails(inAsset);
 	}
 
-	public void reloadIndex(WebPageRequest inReq) {
+	public void reloadIndex(WebPageRequest inReq)
+	{
 		Asset asset = getAsset(inReq);
 		String path = inReq.getContentPage().getDirectory();
 		inReq.redirect(path + "/index.html?assetid=" + asset.getId());

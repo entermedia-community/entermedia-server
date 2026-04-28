@@ -10,25 +10,28 @@ package org.entermediadb.markdown.node;
  * ## Another heading
  * </pre>
  *
- * @see <a href="https://spec.commonmark.org/0.31.2/#atx-headings">CommonMark
- *      Spec: ATX headings</a>
- * @see <a href="https://spec.commonmark.org/0.31.2/#setext-headings">CommonMark
- *      Spec: Setext headings</a>
+ * @see <a href="https://spec.commonmark.org/0.31.2/#atx-headings">CommonMark Spec: ATX headings</a>
+ * @see <a href="https://spec.commonmark.org/0.31.2/#setext-headings">CommonMark Spec: Setext
+ *      headings</a>
  */
-public class Heading extends Block {
+public class Heading extends Block
+{
 
     private int level;
 
     @Override
-    public void accept(Visitor visitor) {
+    public void accept(Visitor visitor)
+    {
         visitor.visit(this);
     }
 
-    public int getLevel() {
+    public int getLevel()
+    {
         return level;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(int level)
+    {
         this.level = level;
     }
 }

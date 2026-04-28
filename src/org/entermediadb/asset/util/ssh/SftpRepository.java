@@ -22,8 +22,9 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
-//public class SftpRepository extends BaseRepository {
-public class SftpRepository extends FileRepository {
+// public class SftpRepository extends BaseRepository {
+public class SftpRepository extends FileRepository
+{
 
 	protected SftpUtil fieldSftpUtil;
 
@@ -32,8 +33,10 @@ public class SftpRepository extends FileRepository {
 
 	private static final Log log = LogFactory.getLog(FtpRepository.class);
 
-	public SftpUtil getSftpUtil() {
-		if (fieldSftpUtil == null) {
+	public SftpUtil getSftpUtil()
+	{
+		if (fieldSftpUtil == null)
+		{
 			fieldSftpUtil = new SftpUtil();
 
 		}
@@ -41,24 +44,29 @@ public class SftpRepository extends FileRepository {
 		return fieldSftpUtil;
 	}
 
-	protected void checkConnection() throws Exception {
-		if (!isConnected()) {
+	protected void checkConnection() throws Exception
+	{
+		if (!isConnected())
+		{
 			boolean connect = connect();
 
-			if (!connect) {
-				throw new RepositoryException("Cannot connect to server: "
-						+ getExternalPath());
+			if (!connect)
+			{
+				throw new RepositoryException("Cannot connect to server: " + getExternalPath());
 			}
 		}
 	}
 
-	public void setSftpUtil(SftpUtil fieldSftpUtil) {
+	public void setSftpUtil(SftpUtil fieldSftpUtil)
+	{
 		this.fieldSftpUtil = fieldSftpUtil;
 	}
 
-	public ContentItem get(String inPath) throws RepositoryException {
+	public ContentItem get(String inPath) throws RepositoryException
+	{
 		String path = inPath.substring(getPath().length());
-		if (path.length() == 0) {
+		if (path.length() == 0)
+		{
 			path = "/";
 		}
 		String url = getProperty("defaultremotepath") + path;
@@ -75,9 +83,11 @@ public class SftpRepository extends FileRepository {
 		return item;
 	}
 
-	public InputStream getInputStream(String inPath) throws RepositoryException {
+	public InputStream getInputStream(String inPath) throws RepositoryException
+	{
 		String path = inPath.substring(getPath().length());
-		if (path.length() == 0) {
+		if (path.length() == 0)
+		{
 			// path = "/";
 			return null;
 		}
@@ -85,74 +95,100 @@ public class SftpRepository extends FileRepository {
 		// String path =this.getDefaultRemoteDirectory() + inContent.getName();
 		SFtpContentItem item = new SFtpContentItem();
 		InputStream is = null;
-		try {
+		try
+		{
 			is = getSftpUtil().getFileFromRemote(path);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new OpenEditException(e);
 		}
 		return is;
 	}
 
 	@Override
-	public ContentItem getStub(String inPath) throws RepositoryException {
+	public ContentItem getStub(String inPath) throws RepositoryException
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean doesExist(String inPath) throws RepositoryException {
-		try {
+	public boolean doesExist(String inPath) throws RepositoryException
+	{
+		try
+		{
 			return getSftpUtil().doesExist(inPath);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new RepositoryException(e);
 		}
 	}
 
-	public ChannelSftp.LsEntry getAttribute(String inPath) throws RepositoryException {
-		try {
+	public ChannelSftp.LsEntry getAttribute(String inPath) throws RepositoryException
+	{
+		try
+		{
 			List l = getSftpUtil().getChildNames(inPath);
 			if (l == null)
 				return null;
 			return (ChannelSftp.LsEntry) l.get(0);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new RepositoryException(e);
 		}
 	}
 
-	public boolean isFolder(String inPath) throws RepositoryException {
-		try {
+	public boolean isFolder(String inPath) throws RepositoryException
+	{
+		try
+		{
 			return getSftpUtil().isFolder(inPath);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new OpenEditException(e);
 		}
 	}
 
-	public void put(ContentItem inContent) throws RepositoryException {
+	public void put(ContentItem inContent) throws RepositoryException
+	{
 		// need to write the file to the webserver folder first
 		super.put(inContent);
 		String path = getProperty("defaultremotepath") + "/" + inContent.getName();
 		// File file = new File(inContent.getAbsolutePath());
 		File file = new File(inContent.getAbsolutePath());
-		try {
+		try
+		{
 			getSftpUtil().sendFileToRemote(file, path);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new OpenEditException(e);
 		}
 	}
 
-	public List<ContentItem> listFiles(String inPath) throws RepositoryException {
+	public List<ContentItem> listFiles(String inPath) throws RepositoryException
+	{
 		List<ChannelSftp.LsEntry> childNames;
-		try {
+		try
+		{
 			childNames = getSftpUtil().getChildNames(inPath);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new RepositoryException("Couldn't list file in: " + inPath);
 		}
 		String path = inPath.substring(getPath().length());
-		if (path.length() == 0) {
+		if (path.length() == 0)
+		{
 			path = "/";
 		}
 		List<ContentItem> contentItems = new ArrayList<ContentItem>();
-		for (int i = 0; i < childNames.size(); i++) {
+		for (int i = 0; i < childNames.size(); i++)
+		{
 			String url = getExternalPath() + childNames.get(i);
 			SFtpContentItem item = new SFtpContentItem(childNames.get(i));
 			item.setPath(inPath);
@@ -188,83 +224,103 @@ public class SftpRepository extends FileRepository {
 	// }
 
 	@Override
-	public void copy(ContentItem inSource, ContentItem inDestination)
-			throws RepositoryException {
+	public void copy(ContentItem inSource, ContentItem inDestination) throws RepositoryException
+	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void move(ContentItem inSource, ContentItem inDestination)
-			throws RepositoryException {
+	public void move(ContentItem inSource, ContentItem inDestination) throws RepositoryException
+	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void move(ContentItem inSource, Repository inSourceRepository,
-			ContentItem inDestination) throws RepositoryException {
+	public void move(ContentItem inSource, Repository inSourceRepository, ContentItem inDestination) throws RepositoryException
+	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void remove(ContentItem inPath) throws RepositoryException {
-		try {
+	public void remove(ContentItem inPath) throws RepositoryException
+	{
+		try
+		{
 			checkConnection();
 			String path = inPath.getAbsolutePath().substring(1);
 			boolean success = getSftpUtil().deleteFile(path);
-			if (!success) {
+			if (!success)
+			{
 				throw new RepositoryException("Couldn't put file: " + inPath.getPath());
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw new RepositoryException(e);
 		}
 
 	}
 
 	@Override
-	public List getVersions(String inPath) throws RepositoryException {
+	public List getVersions(String inPath) throws RepositoryException
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ContentItem getLastVersion(String inPath) throws RepositoryException {
+	public ContentItem getLastVersion(String inPath) throws RepositoryException
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List getChildrenNames(String inParent) throws RepositoryException {
-		try {
+	public List getChildrenNames(String inParent) throws RepositoryException
+	{
+		try
+		{
 
 			String path = inParent.substring(getPath().length());
-			if (path.length() == 0) {
+			if (path.length() == 0)
+			{
 				path = getProperty("defaultremotepath");
-			} else {
+			}
+			else
+			{
 				path = getProperty("defaultremotepath") + inParent.substring(getPath().length(), inParent.length());
 			}
 			return getSftpUtil().getStrChildNames(path);
-		} catch (JSchException e) {
+		}
+		catch (JSchException e)
+		{
 			throw new RepositoryException(e);
-		} catch (SftpException e) {
+		}
+		catch (SftpException e)
+		{
 			throw new RepositoryException(e);
 		}
 	}
 
 	@Override
-	public void deleteOldVersions(String inPath) throws RepositoryException {
+	public void deleteOldVersions(String inPath) throws RepositoryException
+	{
 		// TODO Auto-generated method stub
 
 	}
 
-	public boolean isConnected() {
+	public boolean isConnected()
+	{
 		return getSftpUtil().isConnected();
 	}
 
-	public boolean connect() throws Exception {
+	public boolean connect() throws Exception
+	{
 
-		if (isConnected()) {
+		if (isConnected())
+		{
 			return true;
 		}
 
@@ -274,12 +330,15 @@ public class SftpRepository extends FileRepository {
 		if (serverName == null)
 			return false;
 		String subdir = null;
-		if (serverName.indexOf(':') > -1) {
+		if (serverName.indexOf(':') > -1)
+		{
 			String[] parts = serverName.split(":");
-			if (parts.length > 0) {
+			if (parts.length > 0)
+			{
 				serverName = parts[0];
 			}
-			if (parts.length > 1) {
+			if (parts.length > 1)
+			{
 
 				subdir = parts[1];
 			}
@@ -300,33 +359,41 @@ public class SftpRepository extends FileRepository {
 
 	}
 
-	public void disconnect() throws IOException {
-		if (isConnected()) {
+	public void disconnect() throws IOException
+	{
+		if (isConnected())
+		{
 			getSftpUtil().disconnect();
 		}
 	}
 
-	public SearcherManager getSearcherManager() {
+	public SearcherManager getSearcherManager()
+	{
 		return fieldSearcherManager;
 	}
 
-	public void setSearcherManager(SearcherManager inSearcherManager) {
+	public void setSearcherManager(SearcherManager inSearcherManager)
+	{
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	public UserManager getUserManager() {
+	public UserManager getUserManager()
+	{
 		return fieldUserManager;
 	}
 
-	public void setUserManager(UserManager inUserManager) {
+	public void setUserManager(UserManager inUserManager)
+	{
 		fieldUserManager = inUserManager;
 	}
 
-	public String getUserName() {
+	public String getUserName()
+	{
 		return getProperty("username");
 	}
 
-	public void setUserName(String userName) {
+	public void setUserName(String userName)
+	{
 		setProperty("username", userName);
 	}
 

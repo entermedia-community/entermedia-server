@@ -13,20 +13,25 @@ import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.users.User;
 
-public class EnterMediaUploader implements MediaUploader {
+public class EnterMediaUploader implements MediaUploader
+{
 	protected HttpSharedConnection fieldHttpSharedConnection;
 
-	protected HttpSharedConnection getHttpSharedConnection() {
+	protected HttpSharedConnection getHttpSharedConnection()
+	{
 		return fieldHttpSharedConnection;
 	}
 
-	protected void setHttpSharedConnection(HttpSharedConnection inHttpSharedConnection) {
+	protected void setHttpSharedConnection(HttpSharedConnection inHttpSharedConnection)
+	{
 		fieldHttpSharedConnection = inHttpSharedConnection;
 	}
 
 	@Override
-	public boolean uploadOriginal(MediaArchive inArchive, Asset inAsset, Data inPublishDestination, User inUser) {
-		try {
+	public boolean uploadOriginal(MediaArchive inArchive, Asset inAsset, Data inPublishDestination, User inUser)
+	{
+		try
+		{
 			// String url = (String) inMap.get("uploadurl");
 
 			String mediadbid = (String) inPublishDestination.get("mediadb");
@@ -54,13 +59,16 @@ public class EnterMediaUploader implements MediaUploader {
 
 			CloseableHttpResponse resp = getHttpSharedConnection().sharedPost(method);
 
-			if (resp.getStatusLine().getStatusCode() != 200) {
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
 				String returned = EntityUtils.toString(resp.getEntity());
 				getHttpSharedConnection().release(resp);
 
 			}
 
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			// TODO Auto-generated catch block
 			throw new RuntimeException(e);
 		}
@@ -69,7 +77,8 @@ public class EnterMediaUploader implements MediaUploader {
 	}
 
 	@Override
-	public boolean uploadGenerated(MediaArchive inArchive, Asset inAsset, Data inPublishDestination, User inUser) {
+	public boolean uploadGenerated(MediaArchive inArchive, Asset inAsset, Data inPublishDestination, User inUser)
+	{
 		// TODO Auto-generated method stub
 		return false;
 	}

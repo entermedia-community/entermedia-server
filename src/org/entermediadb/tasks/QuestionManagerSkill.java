@@ -12,13 +12,16 @@ import org.entermediadb.ai.llm.LlmResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class QuestionManagerSkill extends ToolsCallingSkill {
+public class QuestionManagerSkill extends ToolsCallingSkill
+{
     @Override
-    public void process(AgentContext inContext) {
+    public void process(AgentContext inContext)
+    {
         AgentEnabled currentEnabled = inContext.getCurrentAgentEnable();
         JSONObject params = currentEnabled.getAgentParameterValues();
 
-        if (params != null) {
+        if (params != null)
+        {
 
             String name = (String) params.get("name");
             String email = (String) params.get("email");
@@ -30,7 +33,8 @@ public class QuestionManagerSkill extends ToolsCallingSkill {
             inContext.put("emailcontent", content);
             inContext.put("email_type", emailtype);
 
-            if ("question".equals(emailtype) || "query".equals(emailtype)) {
+            if ("question".equals(emailtype) || "query".equals(emailtype))
+            {
                 inContext.info("Processing query from " + name + " with email " + email);
 
                 inContext.put("query", content);
@@ -43,10 +47,12 @@ public class QuestionManagerSkill extends ToolsCallingSkill {
 
                 String answer = null;
 
-                if (answerraw != null) {
+                if (answerraw != null)
+                {
                     answer = (String) answerraw.get("answer");
                 }
-                if (answer == null) {
+                if (answer == null)
+                {
                     answer = "No answer found.";
                 }
 
@@ -58,7 +64,9 @@ public class QuestionManagerSkill extends ToolsCallingSkill {
                 JSONObject reply = (JSONObject) raw.get("reply_email");
                 inContext.addContext("reply_subject", reply.get("subject"));
                 inContext.addContext("reply_body", reply.get("body"));
-            } else {
+            }
+            else
+            {
                 LlmConnection llmConnection = getMediaArchive().getLlmConnection("agentemailgreeting");
                 LlmResponse response = llmConnection.callToolsFunction(inContext, "agentemailgreeting");
                 JSONObject raw = response.getMessageStructured();

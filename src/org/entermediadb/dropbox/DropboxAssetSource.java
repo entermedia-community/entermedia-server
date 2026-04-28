@@ -15,15 +15,17 @@ import org.openedit.OpenEditException;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 
-public class DropboxAssetSource extends BaseAssetSource {
+public class DropboxAssetSource extends BaseAssetSource
+{
 	private static final Log log = LogFactory.getLog(DropboxAssetSource.class);
 	protected DropboxManager fieldDropboxManager;
 
-	public DropboxManager getDropboxManager() {
+	public DropboxManager getDropboxManager()
+	{
 		// DropboxManager is not a singleton - one per source
-		if (fieldDropboxManager == null) {
-			fieldDropboxManager = (DropboxManager) getMediaArchive().getModuleManager()
-					.getBean(getMediaArchive().getCatalogId(), "dropboxManager");
+		if (fieldDropboxManager == null)
+		{
+			fieldDropboxManager = (DropboxManager) getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), "dropboxManager");
 			fieldDropboxManager.setAssetSource(this);
 
 		}
@@ -31,31 +33,37 @@ public class DropboxAssetSource extends BaseAssetSource {
 
 	}
 
-	public boolean isHotFolder() {
+	public boolean isHotFolder()
+	{
 		return true;
 	}
 
 	@Override
-	public InputStream getOriginalDocumentStream(Asset inAsset) {
+	public InputStream getOriginalDocumentStream(Asset inAsset)
+	{
 		ContentItem item = getOriginalContent(inAsset);
 		return item.getInputStream();
 	}
 
-	protected File download(Asset inAsset, File file) {
+	protected File download(Asset inAsset, File file)
+	{
 		throw new OpenEditException("On demand not implemented yet");
 	}
 
-	protected void upload(Asset inAsset, File file) {
+	protected void upload(Asset inAsset, File file)
+	{
 		// NOT IMPLEMEMTED
 	}
 
-	public ContentItem getOriginalContent(Asset inAsset) {
+	public ContentItem getOriginalContent(Asset inAsset)
+	{
 		// TODO: Implement download on demand
 		String originalpath = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals";
 		String alternative = inAsset.getPath();
 		originalpath = originalpath + "/" + alternative;
 		String primaryname = inAsset.getPrimaryFile();
-		if (primaryname != null && inAsset.isFolder()) {
+		if (primaryname != null && inAsset.isFolder())
+		{
 			originalpath = originalpath + "/" + primaryname;
 		}
 
@@ -65,19 +73,22 @@ public class DropboxAssetSource extends BaseAssetSource {
 	}
 
 	@Override
-	public boolean removeOriginal(User inUser, Asset inAsset) {
+	public boolean removeOriginal(User inUser, Asset inAsset)
+	{
 
 		return false;
 	}
 
 	@Override
-	public Asset addNewAsset(Asset inAsset, List<ContentItem> inTemppages) {
+	public Asset addNewAsset(Asset inAsset, List<ContentItem> inTemppages)
+	{
 
 		throw new OpenEditException("Not implemented");
 	}
 
 	@Override
-	public Asset replaceOriginal(Asset inAsset, List<ContentItem> inTemppages) {
+	public Asset replaceOriginal(Asset inAsset, List<ContentItem> inTemppages)
+	{
 		throw new OpenEditException("Not implemented");
 	}
 
@@ -85,35 +96,41 @@ public class DropboxAssetSource extends BaseAssetSource {
 	 * The move is already done for us
 	 */
 	@Override
-	public Asset assetOrginalSaved(Asset inAsset) {
+	public Asset assetOrginalSaved(Asset inAsset)
+	{
 		File file = getFile(inAsset);
 		upload(inAsset, file);
 		return inAsset;
 	}
 
 	@Override
-	public void detach() {
+	public void detach()
+	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void refresh() {
+	public void refresh()
+	{
 		MultiValued currentConfig = (MultiValued) getMediaArchive().getData("hotfolder", getConfig().getId());
 		setConfig(currentConfig);
 	}
 
 	@Override
-	public void saveConfig() {
+	public void saveConfig()
+	{
 		saveMount();
 
 	}
 
 	@Override
-	public int importAssets(String inBasepath) {
+	public int importAssets(String inBasepath)
+	{
 		refresh();
 		String syncroot = getConfig().get("syncroot");
-		if (syncroot == null) {
+		if (syncroot == null)
+		{
 			syncroot = "";
 		}
 		int count = getDropboxManager().syncAssets(syncroot);
@@ -121,13 +138,15 @@ public class DropboxAssetSource extends BaseAssetSource {
 	}
 
 	@Override
-	public void checkForDeleted() {
+	public void checkForDeleted()
+	{
 		// TODO: Do a search for versions that have been deleted and make sure they are
 		// marked as such
 
 	}
 
-	protected ContentItem checkLocation(Asset inAsset, ContentItem inUploaded, User inUser) {
+	protected ContentItem checkLocation(Asset inAsset, ContentItem inUploaded, User inUser)
+	{
 		ContentItem dest = getOriginalContent(inAsset);
 		if (!inUploaded.getPath().equals(dest.getPath()))// move from tmp location to final location
 		{
@@ -141,7 +160,8 @@ public class DropboxAssetSource extends BaseAssetSource {
 	}
 
 	@Override
-	public boolean existsOriginalContent(Asset inAsset) {
+	public boolean existsOriginalContent(Asset inAsset)
+	{
 		// TODO Auto-generated method stub
 		return true;
 	}

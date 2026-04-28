@@ -9,42 +9,52 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.ValuesMap;
 
-public class LightBox implements Data {
+public class LightBox implements Data
+{
 	protected Data fieldData;
 
-	public String getId() {
+	public String getId()
+	{
 		return getData().getId();
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return getData().getName();
 	}
 
-	public Object getValue(String inName) {
+	public Object getValue(String inName)
+	{
 		return getData().getValue(inName);
 	}
 
-	public Data getData() {
+	public Data getData()
+	{
 		return fieldData;
 	}
 
-	public void setData(Data inData) {
+	public void setData(Data inData)
+	{
 		fieldData = inData;
 	}
 
-	public int getAssetCount() {
+	public int getAssetCount()
+	{
 		return fieldAssetCount;
 	}
 
-	public void setAssetCount(int inAssetCount) {
+	public void setAssetCount(int inAssetCount)
+	{
 		fieldAssetCount = inAssetCount;
 	}
 
-	public Category getRootCategory() {
+	public Category getRootCategory()
+	{
 		return fieldRootCategory;
 	}
 
-	public void setRootCategory(Category inRootCategory) {
+	public void setRootCategory(Category inRootCategory)
+	{
 		fieldRootCategory = inRootCategory;
 	}
 
@@ -52,72 +62,85 @@ public class LightBox implements Data {
 	protected Category fieldRootCategory;
 
 	@Override
-	public void setId(String inNewid) {
+	public void setId(String inNewid)
+	{
 
 	}
 
 	@Override
-	public String getName(String inLocale) {
+	public String getName(String inLocale)
+	{
 
 		return getData().getName(inLocale);
 	}
 
 	@Override
-	public void setName(String inName) {
+	public void setName(String inName)
+	{
 
 	}
 
 	@Override
-	public void setSourcePath(String inSourcepath) {
+	public void setSourcePath(String inSourcepath)
+	{
 
 	}
 
 	@Override
-	public String getSourcePath() {
+	public String getSourcePath()
+	{
 
 		return null;
 	}
 
 	@Override
-	public void setProperty(String inId, String inValue) {
+	public void setProperty(String inId, String inValue)
+	{
 
 	}
 
 	@Override
-	public String get(String inId) {
+	public String get(String inId)
+	{
 
 		return null;
 	}
 
 	@Override
-	public void setValue(String inKey, Object inValue) {
+	public void setValue(String inKey, Object inValue)
+	{
 
 	}
 
 	@Override
-	public ValuesMap getProperties() {
+	public ValuesMap getProperties()
+	{
 
 		return null;
 	}
 
 	@Override
-	public void setProperties(Map inObjects) {
+	public void setProperties(Map inObjects)
+	{
 
 	}
 
 	@Override
-	public Set keySet() {
+	public Set keySet()
+	{
 
 		return null;
 	}
 
 	@Override
-	public Collection getValues(String inField) {
+	public Collection getValues(String inField)
+	{
 
 		return null;
 	}
 
-	public String toJsonString() {
+	public String toJsonString()
+	{
 		throw new OpenEditException();
 	}
 

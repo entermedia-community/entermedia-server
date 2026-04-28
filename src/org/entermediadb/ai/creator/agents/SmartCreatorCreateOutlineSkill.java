@@ -8,16 +8,18 @@ import org.entermediadb.ai.creator.SmartCreatorManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.openedit.Data;
 
-public class SmartCreatorCreateOutlineSkill extends BaseSkill {
+public class SmartCreatorCreateOutlineSkill extends BaseSkill
+{
 
-	public SmartCreatorManager getSmartCreatorManager() {
-		SmartCreatorManager smartCreatorManager = (SmartCreatorManager) getMediaArchive()
-				.getBean("smartCreatorManager");
+	public SmartCreatorManager getSmartCreatorManager()
+	{
+		SmartCreatorManager smartCreatorManager = (SmartCreatorManager) getMediaArchive().getBean("smartCreatorManager");
 		return smartCreatorManager;
 	}
 
 	@Override
-	public void process(AgentContext inContext) {
+	public void process(AgentContext inContext)
+	{
 		Data module = inContext.getCurrentEntityModule();
 		Data entity = inContext.getCurrentEntity();
 

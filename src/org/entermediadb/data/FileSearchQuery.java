@@ -2,42 +2,51 @@ package org.entermediadb.data;
 
 import org.openedit.hittracker.SearchQuery;
 
-public class FileSearchQuery extends SearchQuery {
+public class FileSearchQuery extends SearchQuery
+{
 
 	protected boolean fieldRecursive;
 	protected boolean fieldIncludeFallback;
 	protected String fieldRootFolder;
 	protected boolean includeVersions = false;
 
-	public boolean isIncludeVersions() {
+	public boolean isIncludeVersions()
+	{
 		return includeVersions;
 	}
 
-	public void setIncludeVersions(boolean inIncludeVersions) {
+	public void setIncludeVersions(boolean inIncludeVersions)
+	{
 		includeVersions = inIncludeVersions;
 	}
 
-	public String getRootFolder() {
+	public String getRootFolder()
+	{
 		return fieldRootFolder;
 	}
 
-	public void setRootFolder(String inRootFolder) {
+	public void setRootFolder(String inRootFolder)
+	{
 		fieldRootFolder = inRootFolder;
 	}
 
-	public boolean isIncludeFallback() {
+	public boolean isIncludeFallback()
+	{
 		return fieldIncludeFallback;
 	}
 
-	public void setIncludeFallback(boolean inIncludeFallback) {
+	public void setIncludeFallback(boolean inIncludeFallback)
+	{
 		fieldIncludeFallback = inIncludeFallback;
 	}
 
-	public boolean isRecursive() {
+	public boolean isRecursive()
+	{
 		return fieldRecursive;
 	}
 
-	public void setRecursive(boolean fieldRecursive) {
+	public void setRecursive(boolean fieldRecursive)
+	{
 		this.fieldRecursive = fieldRecursive;
 	}
 

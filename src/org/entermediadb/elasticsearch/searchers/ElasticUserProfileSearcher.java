@@ -15,17 +15,20 @@ import org.openedit.users.UserManager;
 /**
  *
  */
-public class ElasticUserProfileSearcher extends BaseElasticSearcher {
+public class ElasticUserProfileSearcher extends BaseElasticSearcher
+{
 	private static final Log log = LogFactory.getLog(ElasticUserProfileSearcher.class);
 	protected UserManager fieldUserManager;
 
 	@Override
-	public Data createNewData() {
+	public Data createNewData()
+	{
 		UserProfile user = (UserProfile) super.createNewData();
 		return user;
 	}
 
-	public void saveAllData(Collection<Data> inAll, User inUser) {
+	public void saveAllData(Collection<Data> inAll, User inUser)
+	{
 		// for (Iterator iterator = inAll.iterator(); iterator.hasNext();) {
 		// UserProfile user = (UserProfile) iterator.next();
 		// //getUserManager().saveUser(user);
@@ -34,7 +37,8 @@ public class ElasticUserProfileSearcher extends BaseElasticSearcher {
 
 	}
 
-	public void saveData(Data inData, User inUser) {
+	public void saveData(Data inData, User inUser)
+	{
 		// User tosave = (User)inData;
 		// if(tosave instanceof UserProfile)
 		// {

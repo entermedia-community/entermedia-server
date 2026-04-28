@@ -13,26 +13,35 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.CatalogEnabled;
 
-public class StatManager implements CatalogEnabled {
+public class StatManager implements CatalogEnabled
+{
 	protected String fieldCatalogId;
 	private static final Log log = LogFactory.getLog(StatManager.class);
 
-	private Stat buildStat(Stat stat, String inName, Object inValue, String error) {
+	private Stat buildStat(Stat stat, String inName, Object inValue, String error)
+	{
 		stat.setName(inName);
-		if (error != null) {
+		if (error != null)
+		{
 			stat.setValue(error);
-		} else {
-			if (!inName.contains("Cpu")) {
+		}
+		else
+		{
+			if (!inName.contains("Cpu"))
+			{
 				Long tmp = (Long) inValue / SiteMonitorModule.MEGABYTE;
 				stat.setValue((Object) tmp);
-			} else {
+			}
+			else
+			{
 				stat.setValue(inValue);
 			}
 		}
 		return stat;
 	}
 
-	private Stat getTotalAssetsCount(MediaArchive archive) {
+	private Stat getTotalAssetsCount(MediaArchive archive)
+	{
 		Stat stat = new Stat();
 
 		stat.setName("totalassets");
@@ -41,34 +50,45 @@ public class StatManager implements CatalogEnabled {
 		return stat;
 	}
 
-	private Stat getClusterStatusHealth(MediaArchive archive) {
+	private Stat getClusterStatusHealth(MediaArchive archive)
+	{
 		Stat stat = new Stat();
 
 		stat.setName("clusterhealth");
 		String health = archive.getNodeManager().getClusterHealth();
 
-		if (health != null) {
+		if (health != null)
+		{
 			stat.setValue(health);
-		} else {
+		}
+		else
+		{
 			stat.setValue("can't retrieve cluster health status");
 		}
 		return stat;
 	}
 
-	public List<Stat> getStats(MediaArchive archive) {
+	public List<Stat> getStats(MediaArchive archive)
+	{
 		List<Stat> stats = new ArrayList<Stat>();
 
-		try {
+		try
+		{
 			OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
-			for (Method method : operatingSystemMXBean.getClass().getDeclaredMethods()) {
+			for (Method method : operatingSystemMXBean.getClass().getDeclaredMethods())
+			{
 				method.setAccessible(true);
-				if (method.getName().startsWith("get") && Modifier.isPublic(method.getModifiers())) {
+				if (method.getName().startsWith("get") && Modifier.isPublic(method.getModifiers()))
+				{
 					Stat stat = new Stat();
 					String error = null;
 					Object value = null;
-					try {
+					try
+					{
 						value = method.invoke(operatingSystemMXBean);
-					} catch (Exception e) {
+					}
+					catch (Exception e)
+					{
 						log.error("Can't gather JVM hardware usage", e);
 					}
 					stat = buildStat(stat, method.getName(), value, error);
@@ -79,18 +99,22 @@ public class StatManager implements CatalogEnabled {
 			stats.add(getTotalAssetsCount(archive));
 			stats.add(getClusterStatusHealth(archive));
 			return stats;
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			log.error("Can't gather JVM hardware usage", e);
 		}
 		return new ArrayList<Stat>();
 	}
 
-	public String getCatalogId() {
+	public String getCatalogId()
+	{
 		return fieldCatalogId;
 	}
 
 	@Override
-	public void setCatalogId(String inId) {
+	public void setCatalogId(String inId)
+	{
 		this.fieldCatalogId = inId;
 	}
 }
