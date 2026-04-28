@@ -17,224 +17,185 @@ import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
 
-public class MetaDataReader
-{
+public class MetaDataReader {
 	private static final Log log = LogFactory.getLog(MetaDataReader.class);
 	protected List fieldMetadataExtractors;
 
-	public void updateAsset(MediaArchive archive, ContentItem itemFile, Asset target)
-	{
-		target.setValue("pages",1);
-		target.setValue("fileformat",null);
+	public void updateAsset(MediaArchive archive, ContentItem itemFile, Asset target) {
+		target.setValue("pages", 1);
+		target.setValue("fileformat", null);
 		PropertyDetails details = archive.getAssetSearcher().getPropertyDetails();
 		HashMap<String, String> externaldetails = new HashMap<String, String>();
-		for(Iterator i = details.iterator(); i.hasNext();)
-		{
+		for (Iterator i = details.iterator(); i.hasNext();) {
 			PropertyDetail detail = (PropertyDetail) i.next();
-			if(detail.getExternalId() != null)
-			{
+			if (detail.getExternalId() != null) {
 				externaldetails.put(detail.getId(), target.get(detail.getId()));
 				target.setProperty(detail.getId(), null);
 			}
 		}
-		
+
 		populateAsset(archive, itemFile, target);
-		
-		for(String detail: externaldetails.keySet())
-		{
-			if(target.get(detail) == null)
-			{
+
+		for (String detail : externaldetails.keySet()) {
+			if (target.get(detail) == null) {
 				target.setProperty(detail, externaldetails.get(detail));
 			}
 		}
 	}
-	public void populateAssets(MediaArchive inMediaArchive, Collection<Asset> inAssets)
-	{
-		try
-		{
-			//Make sure this is not a getStub so that S3 can cache it
-			//make sure it is fully loaded
-//			if( inputFile.isStub() )
-//			{
-//				inputFile = getPageManager().getRepository().get(inputFile.getPath());
-//			}	
-//			GregorianCalendar cal = new GregorianCalendar();
-//			cal.setTimeInMillis(inputFile.lastModified());
-//			cal.set(Calendar.MILLISECOND, 0);
+
+	public void populateAssets(MediaArchive inMediaArchive, Collection<Asset> inAssets) {
+		try {
+			// Make sure this is not a getStub so that S3 can cache it
+			// make sure it is fully loaded
+			// if( inputFile.isStub() )
+			// {
+			// inputFile = getPageManager().getRepository().get(inputFile.getPath());
+			// }
+			// GregorianCalendar cal = new GregorianCalendar();
+			// cal.setTimeInMillis(inputFile.lastModified());
+			// cal.set(Calendar.MILLISECOND, 0);
 			// Asset Modification Date">2005-03-04 08:28:57
 			Collection contentitems = new ArrayList();
-			for(Asset asset:inAssets)
-			{
+			for (Asset asset : inAssets) {
 				ContentItem inputFile = inMediaArchive.getOriginalContent(asset);
 				Date date = inputFile.lastModified();
-				asset.setValue("assetmodificationdate",date);
+				asset.setValue("assetmodificationdate", date);
 				// inAsset.setProperty("recordmodificationdate", format.format(
 				// new Date() ) );
 				asset.setProperty("filesize", String.valueOf(inputFile.getLength()));
 				asset.setName(inputFile.getName());
 				String ext = PathUtilities.extractPageType(inputFile.getName());
-				if (ext != null)
-				{
+				if (ext != null) {
 					ext = ext.toLowerCase();
 				}
 				asset.setProperty("fileformat", ext);
 				contentitems.add(inputFile);
 			}
-			
-			//Run Exiftool
+
+			// Run Exiftool
 			long start = System.currentTimeMillis();
 			boolean foundone = false;
 			Collection disabled = inMediaArchive.getCatalogSettingValues("metadata_readers_disabled");
-			for (Iterator iterator = getMetadataExtractors().iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = getMetadataExtractors().iterator(); iterator.hasNext();) {
 				MetadataExtractor extrac = (MetadataExtractor) iterator.next();
-				if( disabled == null || !disabled.contains(extrac.getClass().getName()) )
-				{
-					if( extrac.extractAll(inMediaArchive, contentitems, inAssets) )
-					{
+				if (disabled == null || !disabled.contains(extrac.getClass().getName())) {
+					if (extrac.extractAll(inMediaArchive, contentitems, inAssets)) {
 						foundone = true;
 					}
 				}
 			}
-			if( foundone )
-			{
+			if (foundone) {
 				long end = System.currentTimeMillis();
-				if( log.isDebugEnabled() )
-				{
+				if (log.isDebugEnabled()) {
 					log.debug("Got metadata in " + (end - start) + " mili seconds.");
 				}
-				for(Asset asset:inAssets)
-				{
-					//Defaults assettitle to filename if empty
-					if( asset.get("assettitle") == null)
-					{
+				for (Asset asset : inAssets) {
+					// Defaults assettitle to filename if empty
+					if (asset.get("assettitle") == null) {
 						String name = asset.getName();
 						int pos = name.lastIndexOf(".");
-						if( pos > 0)
-						{
-							name = name.substring(0,pos);
+						if (pos > 0) {
+							name = name.substring(0, pos);
 						}
 						asset.setProperty("assettitle", name);
 					}
 				}
-				
+
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			log.error("Could not read metadata", e);
 		}
-		
+
 	}
-	public void populateAsset(MediaArchive inArchive, ContentItem inputFile, Asset inAsset)
-	{
-		try
-		{
-			//Make sure this is not a getStub so that S3 can cache it
-			//make sure it is fully loaded
-//			if( inputFile.isStub() )
-//			{
-//				inputFile = getPageManager().getRepository().get(inputFile.getPath());
-//			}	
-//			GregorianCalendar cal = new GregorianCalendar();
-//			cal.setTimeInMillis(inputFile.lastModified());
-//			cal.set(Calendar.MILLISECOND, 0);
+
+	public void populateAsset(MediaArchive inArchive, ContentItem inputFile, Asset inAsset) {
+		try {
+			// Make sure this is not a getStub so that S3 can cache it
+			// make sure it is fully loaded
+			// if( inputFile.isStub() )
+			// {
+			// inputFile = getPageManager().getRepository().get(inputFile.getPath());
+			// }
+			// GregorianCalendar cal = new GregorianCalendar();
+			// cal.setTimeInMillis(inputFile.lastModified());
+			// cal.set(Calendar.MILLISECOND, 0);
 			// Asset Modification Date">2005-03-04 08:28:57
 
-			
 			Date date = inputFile.lastModified();
-			inAsset.setValue("assetmodificationdate",date);
+			inAsset.setValue("assetmodificationdate", date);
 			// inAsset.setProperty("recordmodificationdate", format.format(
 			// new Date() ) );
 			inAsset.setProperty("filesize", String.valueOf(inputFile.getLength()));
 			inAsset.setName(inputFile.getName());
 			String ext = PathUtilities.extractPageType(inputFile.getName());
-			if (ext != null)
-			{
+			if (ext != null) {
 				ext = ext.toLowerCase();
 			}
 			inAsset.setProperty("fileformat", ext);
-			if( !inputFile.exists() )
-			{
+			if (!inputFile.exists()) {
 				log.info("Original asset missing " + inAsset.getSourcePath());
 				return;
 			}
-			
-			if( inputFile.getLength() == 0 )
-			{
+
+			if (inputFile.getLength() == 0) {
 				log.info("Original file is empty " + inAsset.getSourcePath());
 				return;
 			}
 
 			long start = System.currentTimeMillis();
 			boolean foundone = false;
-			
+
 			Collection disabled = inArchive.getCatalogSettingValues("metadata_readers_disabled");
-			for (Iterator iterator = getMetadataExtractors().iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = getMetadataExtractors().iterator(); iterator.hasNext();) {
 				MetadataExtractor extrac = (MetadataExtractor) iterator.next();
-				if( disabled == null || !disabled.contains(extrac.getClass().getName()) )
-				{
-					if( extrac.extractData(inArchive, inputFile, inAsset) )
-					{
+				if (disabled == null || !disabled.contains(extrac.getClass().getName())) {
+					if (extrac.extractData(inArchive, inputFile, inAsset)) {
 						foundone = true;
 					}
 				}
 			}
-			if( foundone )
-			{
+			if (foundone) {
 				long end = System.currentTimeMillis();
-				if( log.isDebugEnabled() )
-				{
+				if (log.isDebugEnabled()) {
 					log.debug("Got metadata in " + (end - start) + " mili seconds.");
 				}
-				
-				//Defaults assettitle to filename if empty
-				if( inAsset.get("assettitle") == null)
-				{
+
+				// Defaults assettitle to filename if empty
+				if (inAsset.get("assettitle") == null) {
 					String name = inAsset.getName();
 					int pos = name.lastIndexOf(".");
-					if( pos > 0)
-					{
-						name = name.substring(0,pos);
+					if (pos > 0) {
+						name = name.substring(0, pos);
 					}
 					inAsset.setProperty("assettitle", name);
 				}
-				
+
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			log.error("Could not read metadata", e);
 		}
 	}
 
-	public List getMetadataExtractors()
-	{
-		if (fieldMetadataExtractors == null)
-		{
+	public List getMetadataExtractors() {
+		if (fieldMetadataExtractors == null) {
 			fieldMetadataExtractors = new ArrayList();
 		}
 
 		return fieldMetadataExtractors;
 	}
 
-	public void setMetadataExtractors(List inMetadataExtractors)
-	{
+	public void setMetadataExtractors(List inMetadataExtractors) {
 		fieldMetadataExtractors = inMetadataExtractors;
 	}
-	
+
 	protected PageManager fieldPageManager;
-	
-	public PageManager getPageManager()
-	{
+
+	public PageManager getPageManager() {
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager)
-	{
+	public void setPageManager(PageManager inPageManager) {
 		fieldPageManager = inPageManager;
 	}
 
-	
 }

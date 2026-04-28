@@ -15,26 +15,22 @@ import jcifs.UniAddress;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbSession;
 
-public class SPENGOAuthenticator extends BaseAuthenticator
-{
+public class SPENGOAuthenticator extends BaseAuthenticator {
 	private static final Log log = LogFactory.getLog(SPENGOAuthenticator.class);
 
-	public boolean authenticate(AuthenticationRequest inAReq) throws UserManagerException
-	{
+	public boolean authenticate(AuthenticationRequest inAReq) throws UserManagerException {
 		String inServer = inAReq.get("authenticationserver");
-		if (inServer == null)
-		{
+		if (inServer == null) {
 			return false;
 		}
 		// http://support.microsoft.com/default.aspx?scid=kb;EN-US;180548
 		String inDomainOrBlank = inAReq.get("domain");
-		if (inDomainOrBlank == null)
-		{
+		if (inDomainOrBlank == null) {
 			inDomainOrBlank = "";
 		}
-		NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(inDomainOrBlank, inAReq.getUser().getUserName(), inAReq.getPassword());
-		try
-		{
+		NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(inDomainOrBlank,
+				inAReq.getUser().getUserName(), inAReq.getPassword());
+		try {
 			InetAddress ip = null;
 			// if( inServer == null)
 			// {
@@ -50,13 +46,11 @@ public class SPENGOAuthenticator extends BaseAuthenticator
 			// }
 			UniAddress controller = new UniAddress(ip);
 			SmbSession.logon(controller, auth);
-			//password may be different than what's in the xml we should set it
-			//it will get encrypted and saved after login
+			// password may be different than what's in the xml we should set it
+			// it will get encrypted and saved after login
 			inAReq.getUser().setPassword(inAReq.getPassword());
 			return true;
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			log.error(ex + " " + inAReq.getUserName() + " could not log in ");
 			return false;
 		}

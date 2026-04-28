@@ -10,39 +10,31 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.links.Link;
 import org.openedit.util.OutputFiller;
 
-public class Content
-{
+public class Content {
 	private static final Log log = LogFactory.getLog(Content.class);
 	protected Link fieldUrl;
-	
-	public Link getUrl()
-	{
+
+	public Link getUrl() {
 		return fieldUrl;
 	}
 
-	public void setUrl(Link inUrl)
-	{
+	public void setUrl(Link inUrl) {
 		fieldUrl = inUrl;
 	}
 
-	public byte[] getContent() throws Exception
-	{
+	public byte[] getContent() throws Exception {
 		URL url = new URL(getUrl().getPath());
 		URLConnection connect = url.openConnection();
 		connect.connect();
-		if( connect.getContentLength() > 10000 * 1024 )
-		{
-			log.error(getUrl() +" is over 10 megs");
+		if (connect.getContentLength() > 10000 * 1024) {
+			log.error(getUrl() + " is over 10 megs");
 			return null;
 		}
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		InputStream in = connect.getInputStream();
-		try
-		{
+		try {
 			new OutputFiller().fill(in, out);
-		}
-		finally
-		{
+		} finally {
 			in.close();
 		}
 		return out.toByteArray();

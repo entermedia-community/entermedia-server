@@ -18,8 +18,7 @@ public class ElasticsearchRepository extends FileRepository {
 
 	protected SearcherManager fieldSearcherManager;
 	protected ElasticPageSearcher fieldElasticPageSearcher;
-	
-	
+
 	public SearcherManager getSearcherManager() {
 		return fieldSearcherManager;
 	}
@@ -40,34 +39,32 @@ public class ElasticsearchRepository extends FileRepository {
 	public ContentItem get(String inPath) throws RepositoryException {
 		Data page = (Data) getElasticPageSearcher().searchByField("sourcepath", inPath);
 		ElasticContentItem elasticitem = null;
-		if(page != null){
-			 elasticitem = new ElasticContentItem();
-			 elasticitem.setElasticData(elasticitem);
+		if (page != null) {
+			elasticitem = new ElasticContentItem();
+			elasticitem.setElasticData(elasticitem);
 		}
-		
-		
-		//get it from the super class and create one on the fly?  IE, if the pages already exist...
+
+		// get it from the super class and create one on the fly? IE, if the pages
+		// already exist...
 		if (page == null) {
 			ContentItem item = super.get(inPath);
 			if (item != null) {
-				
+
 				elasticitem = new ElasticContentItem();
 				page = getElasticPageSearcher().createNewData();
 				page.setSourcePath(inPath);
-				
+
 				elasticitem.setElasticData(page);
-				
+
 			}
-		} else{
+		} else {
 			elasticitem = new ElasticContentItem();
 			elasticitem.setElasticData(page);
-			
+
 		}
-		
+
 		return elasticitem;
 	}
-
-
 
 	@Override
 	public boolean doesExist(String inPath) throws RepositoryException {
@@ -82,14 +79,10 @@ public class ElasticsearchRepository extends FileRepository {
 	@Override
 	public void put(ContentItem inContent) throws RepositoryException {
 
-		if(inContent instanceof ElasticContentItem){
+		if (inContent instanceof ElasticContentItem) {
 			ElasticContentItem item = (ElasticContentItem) inContent;
 			getElasticPageSearcher().saveData(item);
 		}
-		
-		
-		
-		
 
 	}
 
@@ -114,7 +107,7 @@ public class ElasticsearchRepository extends FileRepository {
 
 	@Override
 	public void remove(ContentItem inPath) throws RepositoryException {
-		if(inPath instanceof ElasticContentItem){
+		if (inPath instanceof ElasticContentItem) {
 			ElasticContentItem item = (ElasticContentItem) inPath;
 			getElasticPageSearcher().delete(item, null);
 		}
@@ -144,16 +137,15 @@ public class ElasticsearchRepository extends FileRepository {
 
 	}
 
-	protected ContentItem createContentItem( String inPath )
-	{
+	protected ContentItem createContentItem(String inPath) {
 		ElasticContentItem contentItem = new ElasticContentItem();
-		contentItem.setPath( inPath );
-		contentItem.setAbsolutePath( getAbsolutePath(inPath ) );
+		contentItem.setPath(inPath);
+		contentItem.setAbsolutePath(getAbsolutePath(inPath));
 		return contentItem;
 	}
-	public ContentItem getStub( String inPath ) throws RepositoryException
-	{
+
+	public ContentItem getStub(String inPath) throws RepositoryException {
 		return createContentItem(inPath);
 	}
-	
+
 }

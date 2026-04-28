@@ -1,69 +1,59 @@
 package org.entermediadb.asset.publishing;
 
-public class PublishResult
-{
+public class PublishResult {
 	protected String fieldErrorMessage;
 	protected String fieldCompletedMessage;
 	protected boolean fieldComplete;
 	protected boolean fieldPending;
 
 	protected boolean fieldReadyToPublish;
-	
-	public boolean isReadyToPublish()
-	{
+
+	public boolean isReadyToPublish() {
 		return fieldReadyToPublish;
 	}
 
-	public void setReadyToPublish(boolean inReadyToPublish)
-	{
+	public void setReadyToPublish(boolean inReadyToPublish) {
 		fieldReadyToPublish = inReadyToPublish;
 	}
 
-	public boolean isPending()
-	{
+	public boolean isPending() {
 		return fieldPending;
 	}
 
-	public void setPending(boolean inPending)
-	{
+	public void setPending(boolean inPending) {
 		fieldPending = inPending;
 	}
 
-	public boolean isComplete()
-	{
+	public boolean isComplete() {
 		return fieldComplete;
 	}
 
-	public void setComplete(boolean inComplete)
-	{
+	public void setComplete(boolean inComplete) {
 		fieldComplete = inComplete;
 	}
-	
-	public void setCompleteMessage( String inCompleteMessage )
-	{
+
+	public void setCompleteMessage(String inCompleteMessage) {
 		fieldCompletedMessage = inCompleteMessage;
 	}
-	
-	public String getCompleteMessage()
-	{
+
+	public String getCompleteMessage() {
 		if (fieldCompletedMessage == null) {
 			fieldCompletedMessage = "";
 		}
 		return fieldCompletedMessage;
 	}
 
-	public String getErrorMessage()
-	{
+	public String getErrorMessage() {
 		if (fieldErrorMessage == null) {
 			fieldErrorMessage = "";
 		}
 		return fieldErrorMessage;
 	}
 
-	public void setErrorMessage(String inErrorMessage)
-	{
+	public void setErrorMessage(String inErrorMessage) {
 		fieldErrorMessage = inErrorMessage;
 	}
+
 	public void appendCompleteMessage(String inErrorMessage) {
 		if (fieldCompletedMessage != null) {
 			fieldCompletedMessage += inErrorMessage;
@@ -71,6 +61,7 @@ public class PublishResult
 			fieldCompletedMessage = inErrorMessage;
 		}
 	}
+
 	public void appendErrorMessage(String inErrorMessage) {
 		if (fieldErrorMessage != null) {
 			fieldErrorMessage += inErrorMessage;
@@ -78,8 +69,8 @@ public class PublishResult
 			fieldErrorMessage = inErrorMessage;
 		}
 	}
-	public boolean isError()
-	{
+
+	public boolean isError() {
 		if (fieldErrorMessage != null) {
 			return true;
 		} else {

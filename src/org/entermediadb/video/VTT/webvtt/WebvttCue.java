@@ -15,8 +15,6 @@
  */
 package org.entermediadb.video.VTT.webvtt;
 
-
-
 import org.entermediadb.video.VTT.Cue;
 
 /**
@@ -24,7 +22,6 @@ import org.entermediadb.video.VTT.Cue;
  */
 /* package */ final class WebvttCue extends Cue {
 
- 
   public WebvttCue(CharSequence text) {
     this(Cue.UNSET_VALUE, Cue.UNSET_VALUE, text);
   }
@@ -41,10 +38,12 @@ import org.entermediadb.video.VTT.Cue;
   }
 
   /**
-   * Returns whether or not this cue should be placed in the default position and rolled-up with
+   * Returns whether or not this cue should be placed in the default position and
+   * rolled-up with
    * the other "normal" cues.
    *
-   * @return True if this cue should be placed in the default position; false otherwise.
+   * @return True if this cue should be placed in the default position; false
+   *         otherwise.
    */
   public boolean isNormalCue() {
     return (getLine() == UNSET_VALUE && getPosition() == UNSET_VALUE);

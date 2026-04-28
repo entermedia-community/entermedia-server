@@ -21,15 +21,14 @@ import org.openedit.page.Page;
 import org.openedit.util.FileUtils;
 import org.openedit.util.OutputFiller;
 
-
 /**
- * This class represents a script.  It may be either a standalone JavaScript file or part of a
+ * This class represents a script. It may be either a standalone JavaScript file
+ * or part of a
  * form.
  *
  * @author Eric Galluzzo
  */
-public class Script
-{
+public class Script {
 	protected String fieldDescription;
 	protected String fieldScriptText;
 	protected int fieldStartCharNumber;
@@ -39,8 +38,7 @@ public class Script
 	protected String fieldMethod;
 	protected Configuration fieldConfiguration;
 	protected String fieldCatalogId;
-	
-	
+
 	public void setConfiguration(Configuration inConfiguration) {
 		fieldConfiguration = inConfiguration;
 	}
@@ -49,57 +47,48 @@ public class Script
 		return fieldConfiguration;
 	}
 
-	public String getMethod()
-	{
+	public String getMethod() {
 		return fieldMethod;
 	}
 
-	public void setMethod(String inMethod)
-	{
+	public void setMethod(String inMethod) {
 		fieldMethod = inMethod;
 	}
 
-	public String getType()
-	{
+	public String getType() {
 		return fieldType;
 	}
 
-	public void setType(String inType)
-	{
+	public void setType(String inType) {
 		fieldType = inType;
 	}
 
-	public Page getPage()
-	{
+	public Page getPage() {
 		return fieldPage;
 	}
 
-	public void setPage(Page inPage)
-	{
+	public void setPage(Page inPage) {
 		fieldPage = inPage;
 	}
 
 	/**
 	 * Create a new script, with parameters to be filled in later.
 	 */
-	public Script()
-	{
+	public Script() {
 	}
 
-
-
 	/**
-	 * Create a new script with the given script text, description, and starting position within
+	 * Create a new script with the given script text, description, and starting
+	 * position within
 	 * its file.
 	 *
-	 * @param inScriptText DOCUMENT ME!
-	 * @param inDescription DOCUMENT ME!
+	 * @param inScriptText      DOCUMENT ME!
+	 * @param inDescription     DOCUMENT ME!
 	 * @param inStartLineNumber DOCUMENT ME!
 	 * @param inStartCharNumber DOCUMENT ME!
 	 */
 	public Script(
-		String inScriptText, String inDescription, int inStartLineNumber, int inStartCharNumber)
-	{
+			String inScriptText, String inDescription, int inStartLineNumber, int inStartCharNumber) {
 		fieldScriptText = inScriptText;
 		fieldDescription = inDescription;
 		fieldStartLineNumber = inStartLineNumber;
@@ -107,22 +96,22 @@ public class Script
 	}
 
 	/**
-	 * Sets the description of this script, usually containing the file from which it came.
+	 * Sets the description of this script, usually containing the file from which
+	 * it came.
 	 *
 	 * @param description The description to set
 	 */
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 		fieldDescription = description;
 	}
 
 	/**
-	 * Returns the description of this script, usually containing the file from which it came.
+	 * Returns the description of this script, usually containing the file from
+	 * which it came.
 	 *
 	 * @return String
 	 */
-	public String getDescription()
-	{
+	public String getDescription() {
 		return fieldDescription;
 	}
 
@@ -131,8 +120,7 @@ public class Script
 	 *
 	 * @param scriptText The script to set
 	 */
-	public void setScriptText(String scriptText)
-	{
+	public void setScriptText(String scriptText) {
 		fieldScriptText = scriptText;
 	}
 
@@ -141,19 +129,14 @@ public class Script
 	 *
 	 * @return String
 	 */
-	public String getScriptText()
-	{
-		if( fieldScriptText == null)
-		{
+	public String getScriptText() {
+		if (fieldScriptText == null) {
 			Reader in = getPage().getReader();
 			StringWriter out = new StringWriter();
-			
-			try
-			{
-				new OutputFiller().fill(in,out);
-			}
-			catch (IOException e)
-			{
+
+			try {
+				new OutputFiller().fill(in, out);
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			FileUtils.safeClose(in);
@@ -164,47 +147,46 @@ public class Script
 	}
 
 	/**
-	 * Sets the character number within the file named in the description at which the script
+	 * Sets the character number within the file named in the description at which
+	 * the script
 	 * started.
 	 *
 	 * @param startCharNumber The starting character number
 	 */
-	public void setStartCharNumber(int startCharNumber)
-	{
+	public void setStartCharNumber(int startCharNumber) {
 		fieldStartCharNumber = startCharNumber;
 	}
 
 	/**
-	 * Returns the character number within the file named in the description at which the script
+	 * Returns the character number within the file named in the description at
+	 * which the script
 	 * started.
 	 *
 	 * @return int
 	 */
-	public int getStartCharNumber()
-	{
+	public int getStartCharNumber() {
 		return fieldStartCharNumber;
 	}
 
 	/**
-	 * Sets the line number within the file named in the description at which the script started.
+	 * Sets the line number within the file named in the description at which the
+	 * script started.
 	 *
 	 * @param startLineNumber The starting line number
 	 */
-	public void setStartLineNumber(int startLineNumber)
-	{
+	public void setStartLineNumber(int startLineNumber) {
 		fieldStartLineNumber = startLineNumber;
 	}
 
 	/**
-	 * Returns the line number within the file named in the description at which the script
+	 * Returns the line number within the file named in the description at which the
+	 * script
 	 * started.
 	 *
 	 * @return int
 	 */
-	public int getStartLineNumber()
-	{
+	public int getStartLineNumber() {
 		return fieldStartLineNumber;
 	}
 
-	
 }

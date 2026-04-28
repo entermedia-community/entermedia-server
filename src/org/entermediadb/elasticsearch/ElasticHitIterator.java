@@ -14,37 +14,30 @@ package org.entermediadb.elasticsearch;
 
 import java.util.Iterator;
 
-
 /**
  * @author cburkey
  */
-public class ElasticHitIterator implements Iterator
-{
+public class ElasticHitIterator implements Iterator {
 	protected ElasticHitTracker fieldElasticHitTracker;
 	int fieldCurrentLocation = 0;
-	
-	public ElasticHitIterator(ElasticHitTracker inTracker)
-	{
+
+	public ElasticHitIterator(ElasticHitTracker inTracker) {
 		setElasticHitTracker(inTracker);
 	}
 
-	protected ElasticHitTracker getElasticHitTracker()
-	{
+	protected ElasticHitTracker getElasticHitTracker() {
 		return fieldElasticHitTracker;
 	}
 
-	protected void setElasticHitTracker(ElasticHitTracker inElasticHitTracker)
-	{
+	protected void setElasticHitTracker(ElasticHitTracker inElasticHitTracker) {
 		fieldElasticHitTracker = inElasticHitTracker;
 	}
 
 	/**
 	 * @see java.util.Iterator#hasNext()
 	 */
-	public boolean hasNext()
-	{
-		if( fieldCurrentLocation < getElasticHitTracker().size() )
-		{
+	public boolean hasNext() {
+		if (fieldCurrentLocation < getElasticHitTracker().size()) {
 			return true;
 		}
 		return false;
@@ -53,8 +46,7 @@ public class ElasticHitIterator implements Iterator
 	/**
 	 * @see java.util.Iterator#next()
 	 */
-	public Object next()
-	{
+	public Object next() {
 		Object next = getElasticHitTracker().get(fieldCurrentLocation);
 		fieldCurrentLocation++;
 		return next;
@@ -63,8 +55,7 @@ public class ElasticHitIterator implements Iterator
 	/**
 	 * @see java.util.Iterator#remove()
 	 */
-	public void remove()
-	{
+	public void remove() {
 		throw new UnsupportedOperationException();
 	}
 }

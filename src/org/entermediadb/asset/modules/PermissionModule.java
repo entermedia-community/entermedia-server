@@ -26,47 +26,38 @@ import org.openedit.util.strainer.GroupFilter;
 import org.openedit.util.strainer.OrFilter;
 import org.openedit.util.strainer.SettingsGroupFilter;
 
-public class PermissionModule extends BaseMediaModule
-{
+public class PermissionModule extends BaseMediaModule {
 	private static final Log log = LogFactory.getLog(PermissionModule.class);
-	
-	public Permission loadPermission(WebPageRequest inReq) throws Exception
-	{
+
+	public Permission loadPermission(WebPageRequest inReq) throws Exception {
 		String path = inReq.getRequestParameter("editPath");
-		if(path == null){
-		
+		if (path == null) {
+
 		}
 		String name = inReq.getRequestParameter("id");
-		if( name == null)
-		{
+		if (name == null) {
 			name = inReq.getRequestParameter("name");
 		}
-		if( name != null)
-		{
+		if (name != null) {
 			PageSettings settings = getPageManager().getPageSettingsManager().getPageSettings(path);
-			Permission permission = loadOrCreatePermission(settings,path,name); 
-			inReq.putPageValue("editPath", path);			
+			Permission permission = loadOrCreatePermission(settings, path, name);
+			inReq.putPageValue("editPath", path);
 			inReq.putPageValue("permission", permission);
 			return permission;
 		}
 		return null;
 	}
-	
-	private Permission loadOrCreatePermission(PageSettings inSettings, String path, String inName)
-	{
-		Permission permission = inSettings.getPermission(inName, true);	
-		if( permission == null || !permission.getPath().equals(path))
-		{
+
+	private Permission loadOrCreatePermission(PageSettings inSettings, String path, String inName) {
+		Permission permission = inSettings.getPermission(inName, true);
+		if (permission == null || !permission.getPath().equals(path)) {
 			Permission per = new Permission();
 			per.setName(inName);
-			if( permission != null && permission.getRootFilter() != null)
-			{
+			if (permission != null && permission.getRootFilter() != null) {
 				FilterReader reader = (FilterReader) getModuleManager().getBean("filterReader");
 				per.setRootFilter(permission.getRootFilter().copy(reader, inName));
-			}
-			else
-			{
-				
+			} else {
+
 			}
 			per.setPath(path);
 			permission = per;
@@ -74,141 +65,118 @@ public class PermissionModule extends BaseMediaModule
 		return permission;
 	}
 
-	public void loadPermissions(WebPageRequest inReq) throws Exception
-	{
+	public void loadPermissions(WebPageRequest inReq) throws Exception {
 		String path = inReq.getRequestParameter("editPath");
-		if( path == null )
-		{
+		if (path == null) {
 			path = inReq.findValue("editPath");
 		}
-		//System.out.println(path);
+		// System.out.println(path);
 
 		PageSettings settings = getPageManager().getPageSettingsManager().getPageSettings(path);
 		List localPermissions = settings.getFieldPermissions();
 		List parentPermissions = settings.getPermissions(true);
 
 		List combined = new ArrayList();
-		if( localPermissions != null)
-		{
-			
+		if (localPermissions != null) {
+
 			Collections.sort(localPermissions);
 			combined.addAll(localPermissions);
 		}
 		Collections.sort(parentPermissions);
 		combined.addAll(parentPermissions);
-		//inReq.putPageValue("permissions", localPermissions);
+		// inReq.putPageValue("permissions", localPermissions);
 		inReq.putPageValue("permissions", combined);
 		inReq.putPageValue("settings", settings);
 		inReq.putPageValue("editPath", path);
 	}
-	
-	private void resetValues(Filter inFilter)
-	{
-		if (inFilter instanceof BooleanFilter)
-		{
+
+	private void resetValues(Filter inFilter) {
+		if (inFilter instanceof BooleanFilter) {
 			inFilter.setValue("false");
 		}
-		
-		if (inFilter.getFilters() != null)
-		{
-			for (int i = 0; i < inFilter.getFilters().length; i++)
-			{
+
+		if (inFilter.getFilters() != null) {
+			for (int i = 0; i < inFilter.getFilters().length; i++) {
 				resetValues(inFilter.getFilters()[i]);
 			}
 		}
 	}
+
 	/**
 	 * This saves a bunch of stuff all at once
+	 * 
 	 * @param inReq
 	 * @throws Exception
 	 */
-	public void savePermissions(WebPageRequest inReq) throws Exception
-	{
+	public void savePermissions(WebPageRequest inReq) throws Exception {
 		Permission permission = loadPermission(inReq);
-		if( permission == null)
-		{
+		if (permission == null) {
 			return;
 		}
 		resetValues(permission.getRootFilter());
-		
-		for (Iterator iterator = inReq.getParameterMap().keySet().iterator(); iterator.hasNext();)
-		{
-			String  key = (String ) iterator.next();
-			if( key.startsWith("condition"))
-			{
+
+		for (Iterator iterator = inReq.getParameterMap().keySet().iterator(); iterator.hasNext();) {
+			String key = (String) iterator.next();
+			if (key.startsWith("condition")) {
 				int start = "condition.".length();
-				String traverse = key.substring(start,key.indexOf('.', start+1));
+				String traverse = key.substring(start, key.indexOf('.', start + 1));
 				String[] tree = traverse.split("/");
 				int[] list = makeInts(tree);
 				Filter target = permission.findCondition(list);
 				String value = inReq.getRequestParameter(key);
-				if( key.endsWith(".value"))
-				{
+				if (key.endsWith(".value")) {
 					target.setValue(value);
-				}
-				else if( key.endsWith(".name"))
-				{
+				} else if (key.endsWith(".name")) {
 					target.setProperty("name", value);
-				}
-				else if( key.endsWith(".property"))
-				{
-					target.setProperty("property",value);
+				} else if (key.endsWith(".property")) {
+					target.setProperty("property", value);
 				}
 				String fieldroot = "condition." + traverse + ".field";
 				String[] fields = inReq.getRequestParameters(fieldroot);
-				if(fields != null){
+				if (fields != null) {
 					for (String string : fields) {
 						String extra = inReq.getRequestParameter("condition." + traverse + "." + string + ".value");
-						if(extra != null){
+						if (extra != null) {
 							target.setProperty(string, extra);
 						}
 					}
 				}
-				
-				//String fields = inReq.getRequestParameter(condtion.)
-				//TODO: Handle special filters
+
+				// String fields = inReq.getRequestParameter(condtion.)
+				// TODO: Handle special filters
 			}
 		}
 		savePermission(permission);
-		
+
 	}
 
-	protected void savePermission(Permission permission) throws OpenEditException
-	{
+	protected void savePermission(Permission permission) throws OpenEditException {
 		String path = permission.getPath();
-		Page page = getPageManager().getPage(path,true);
+		Page page = getPageManager().getPage(path, true);
 		page.getPageSettings().addPermission(permission);
 		getPageManager().saveSettings(page);
 		getPageManager().clearCache();
 	}
-	
-	public void removeCondition(WebPageRequest inReq) throws Exception
-	{
+
+	public void removeCondition(WebPageRequest inReq) throws Exception {
 		String traverse = inReq.getRequestParameter("traverse");
-		if( traverse != null)
-		{
+		if (traverse != null) {
 			Permission permission = loadPermission(inReq);
-			if( permission != null)
-			{
+			if (permission != null) {
 				String[] tree = traverse.split("/");
-				if (tree.length > 1)
-				{
+				if (tree.length > 1) {
 					int[] list = makeInts(tree);
 					Filter parent = permission.findConditionParent(list);
-					if( parent == null)
-					{
+					if (parent == null) {
 						return;
 					}
-					int target = list[list.length-1];
-					if( target > parent.getFilters().length)
-					{
+					int target = list[list.length - 1];
+					if (target > parent.getFilters().length) {
 						return;
 					}
 					Filter node = parent.getFilters()[target];
 					parent.removeFilter(node);
-				}
-				else
-				{
+				} else {
 					permission.setRootFilter(null);
 				}
 			}
@@ -216,14 +184,12 @@ public class PermissionModule extends BaseMediaModule
 		}
 	}
 
-	public void addPermission(WebPageRequest inReq) throws Exception
-	{
+	public void addPermission(WebPageRequest inReq) throws Exception {
 		String path = inReq.getRequestParameter("editPath");
 		String name = inReq.getRequestParameter("name");
 		Permission permission = new Permission();
 		permission.setName(name);
-		if (path != null)
-		{
+		if (path != null) {
 			permission.setPath(path);
 			savePermission(permission);
 		}
@@ -231,57 +197,46 @@ public class PermissionModule extends BaseMediaModule
 		inReq.putPageValue("permission", permission);
 		loadPermissions(inReq);
 	}
-	public void removePermission(WebPageRequest inReq) throws Exception
-	{
-		//String path = inReq.getRequestParameter("editPath");
+
+	public void removePermission(WebPageRequest inReq) throws Exception {
+		// String path = inReq.getRequestParameter("editPath");
 		Permission permission = loadPermission(inReq);
 
-		if ( permission != null)
-		{
-			Page page = getPageManager().getPage(permission.getPath(),true);
+		if (permission != null) {
+			Page page = getPageManager().getPage(permission.getPath(), true);
 			PageSettings settings = page.getPageSettings();
 			settings.removePermission(permission);
 			getPageManager().saveSettings(page);
 			getPageManager().clearCache(page);
 		}
 	}
-	
-	public void resetPermission(WebPageRequest inReq) throws Exception
-	{
+
+	public void resetPermission(WebPageRequest inReq) throws Exception {
 		String path = inReq.getRequestParameter("editPath");
 		Permission permission = loadPermission(inReq);
-		Page page = getPageManager().getPage(path,true);
-		page.getPageSettings().removePermission(permission);//may not be in here			
+		Page page = getPageManager().getPage(path, true);
+		page.getPageSettings().removePermission(permission);// may not be in here
 		getPageManager().saveSettings(page);
 		getPageManager().clearCache(page);
 	}
-	public void addGroup(WebPageRequest inReq) throws Exception
-	{
+
+	public void addGroup(WebPageRequest inReq) throws Exception {
 		String type = inReq.getRequestParameter("addgroup");
-		if( type != null)
-		{
+		if (type != null) {
 			Permission permission = loadPermission(inReq);
-			if( type.equals("false"))
-			{
+			if (type.equals("false")) {
 				BooleanFilter nope = new BooleanFilter();
 				nope.setTrue(false);
 				permission.setRootFilter(nope);
-			}
-			else if( type.equals("true"))
-			{
+			} else if (type.equals("true")) {
 				BooleanFilter yup = new BooleanFilter();
 				yup.setTrue(true);
-				permission.setRootFilter(yup);			
-			}
-			else if( type.equals("xml"))
-			{
+				permission.setRootFilter(yup);
+			} else if (type.equals("xml")) {
 				return;
-			}
-			else if ( type.startsWith("group."))
-			{
+			} else if (type.startsWith("group.")) {
 				Filter root = permission.getRootFilter();
-				if(!(root instanceof OrFilter))
-				{
+				if (!(root instanceof OrFilter)) {
 					root = new OrFilter();
 					permission.setRootFilter(root);
 				}
@@ -289,12 +244,9 @@ public class PermissionModule extends BaseMediaModule
 				String groupid = type.substring("group.".length());
 				gf.setGroupId(groupid);
 				root.addFilter(gf);
-			}
-			else if ( type.startsWith("settingsgroup."))
-			{
+			} else if (type.startsWith("settingsgroup.")) {
 				Filter root = permission.getRootFilter();
-				if(!(root instanceof OrFilter))
-				{
+				if (!(root instanceof OrFilter)) {
 					root = new OrFilter();
 					permission.setRootFilter(root);
 				}
@@ -305,205 +257,170 @@ public class PermissionModule extends BaseMediaModule
 			}
 			savePermission(permission);
 		}
-	}	
-	public void addCondition(WebPageRequest inReq) throws Exception
-	{
+	}
+
+	public void addCondition(WebPageRequest inReq) throws Exception {
 		String path = inReq.getRequestParameter("editPath");
 		String name = inReq.getRequestParameter("name");
 		String traverse = inReq.getRequestParameter("traverse");
 		String type = inReq.getRequestParameter("conditiontype");
 		String id = null;
-		
-		Data conditiondetail =  getMediaArchive(inReq).getData("conditiontypes" , type);
-		 if(conditiondetail !=  null && conditiondetail.get("type") != null){
-			 id=type;
-			 type = conditiondetail.get("type");
-			 
-		 }
-		
-		FilterReader reader = (FilterReader)getModuleManager().getBean("filterReader");
-		
-		if( name != null)
-		{
+
+		Data conditiondetail = getMediaArchive(inReq).getData("conditiontypes", type);
+		if (conditiondetail != null && conditiondetail.get("type") != null) {
+			id = type;
+			type = conditiondetail.get("type");
+
+		}
+
+		FilterReader reader = (FilterReader) getModuleManager().getBean("filterReader");
+
+		if (name != null) {
 			Permission permission = loadPermission(inReq);
-			if( permission != null)
-			{
+			if (permission != null) {
 				Configuration config = new XMLConfiguration();
 				config.addChild(new XMLConfiguration(type));
-				
+
 				Filter newFilter = reader.readFilterCollection(config, name);
-				if (permission.getRootFilter() == null)
-				{
+				if (permission.getRootFilter() == null) {
 					permission.setRootFilter(newFilter);
-				}
-				else if( traverse != null && traverse.length() > 0)
-				{
+				} else if (traverse != null && traverse.length() > 0) {
 					String[] tree = traverse.split("/");
 					int[] list = makeInts(tree);
 					Filter parent = permission.findCondition(list);
 					parent.addFilter(newFilter);
-				}
-				else
-				{
+				} else {
 					permission.getRootFilter().addFilter(newFilter);
 				}
-				if("action".equals(type)){
-					String action =  conditiondetail.get("method");
+				if ("action".equals(type)) {
+					String action = conditiondetail.get("method");
 					newFilter.setProperty("name", action);
-					newFilter.setProperty("conditiontype",id );
+					newFilter.setProperty("conditiontype", id);
 				}
-				Page page = getPageManager().getPage(path,true);
-				page.getPageSettings().setProperty("encoding","UTF-8");
+				Page page = getPageManager().getPage(path, true);
+				page.getPageSettings().setProperty("encoding", "UTF-8");
 				page.getPageSettings().addPermission(permission);
-				
+
 				getPageManager().saveSettings(page);
 				getPageManager().clearCache(page);
 			}
 		}
 	}
-	
-	private int[] makeInts(String[] tree)
-	{
+
+	private int[] makeInts(String[] tree) {
 		int[] list = new int[tree.length];
-		for (int i = 0; i < list.length; i++)
-		{
+		for (int i = 0; i < list.length; i++) {
 			list[i] = Integer.parseInt(tree[i]);
 		}
 		return list;
 	}
-	
-	public void loadPageProperties(WebPageRequest inReq) throws Exception
-	{
+
+	public void loadPageProperties(WebPageRequest inReq) throws Exception {
 		String path = inReq.getRequestParameter("editPath");
-		if( path == null)
-		{
+		if (path == null) {
 			log.error("editPath is required");
 			return;
 		}
 		PageSettings settings = getPageManager().getPageSettingsManager().getPageSettings(path);
 		List pageproperties = new ArrayList();
 		List props = settings.getAllProperties();
-		for (Iterator iterator = props.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = props.iterator(); iterator.hasNext();) {
 			PageProperty property = (PageProperty) iterator.next();
-			if( property.getValue() != null )
-			{
-				if( property.getValue().equals("true") || property.getValue().equals("false") )
-				{
-					pageproperties.add( property );
+			if (property.getValue() != null) {
+				if (property.getValue().equals("true") || property.getValue().equals("false")) {
+					pageproperties.add(property);
 				}
 			}
 		}
-		inReq.putPageValue("pageproperties", pageproperties );
+		inReq.putPageValue("pageproperties", pageproperties);
 
 	}
 
-	public void loadPermissionsByType(WebPageRequest inReq)
-	{
+	public void loadPermissionsByType(WebPageRequest inReq) {
 		String catalogid = inReq.findPathValue("catalogid");
-		if( catalogid == null )
-		{
+		if (catalogid == null) {
 			catalogid = inReq.findValue("applicationid");
 		}
 		String searchtype = inReq.findValue("permissiontype");
-		
-		//we are going to load a searcher and a list of permissions
-		HitTracker hits  = getSearcherManager().getList(catalogid, searchtype);
+
+		// we are going to load a searcher and a list of permissions
+		HitTracker hits = getSearcherManager().getList(catalogid, searchtype);
 		inReq.putPageValue("permissions", hits);
-		//this will get shown with edit button
+		// this will get shown with edit button
 
 		String permissionpath = inReq.findValue("editPath");
-		if( permissionpath == null)
-		{
+		if (permissionpath == null) {
 			permissionpath = "/" + catalogid + "/_site.xconf";
 		}
-		Page page = getPageManager().getPage(permissionpath,true);
+		Page page = getPageManager().getPage(permissionpath, true);
 		inReq.putPageValue("settingspage", page);
-	}	
-	
-	public void loadPermissionForEdit(WebPageRequest inReq)
-	{
+	}
+
+	public void loadPermissionForEdit(WebPageRequest inReq) {
 		String catalogid = inReq.findPathValue("catalogid");
-		if( catalogid == null )
-		{
+		if (catalogid == null) {
 			catalogid = inReq.findValue("applicationid");
 		}
-		if(catalogid== null)
-		{
+		if (catalogid == null) {
 			return;
 		}
-		//String group = inReq.getRequestParameter("groupid");
-		//List grouppermissions = new ArrayList();
+		// String group = inReq.getRequestParameter("groupid");
+		// List grouppermissions = new ArrayList();
 		String searchtype = inReq.findValue("permissiontype");
 
 		Searcher permsearcher = getSearcherManager().getSearcher(catalogid, searchtype);
-		
+
 		String id = inReq.getRequestParameter("id");
-		if(searchtype != null && id != null){
-		Data data = (Data)permsearcher.searchById(id);
-		inReq.putPageValue("permdata", data);
+		if (searchtype != null && id != null) {
+			Data data = (Data) permsearcher.searchById(id);
+			inReq.putPageValue("permdata", data);
 		}
 		String permissionpath = inReq.findValue("editPath");
-		if( permissionpath == null)
-		{
+		if (permissionpath == null) {
 			permissionpath = "/" + catalogid + "/_site.xconf";
 		}
 		Page page = getPageManager().getPage(permissionpath);
-		Permission perm = loadOrCreatePermission(page.getPageSettings(),permissionpath,id);
+		Permission perm = loadOrCreatePermission(page.getPageSettings(), permissionpath, id);
 		inReq.putPageValue("permission", perm);
 
-		HitTracker groups  = getUserManager(inReq).getGroups();
+		HitTracker groups = getUserManager(inReq).getGroups();
 		Boolean simple = Boolean.TRUE;
-		
+
 		String usexml = inReq.getRequestParameter("addgroup");
-		if( "xml".equals(usexml))
-		{
+		if ("xml".equals(usexml)) {
 			simple = Boolean.FALSE;
-		}
-		else
-		{
+		} else {
 			List selgroups = new ArrayList();
-			if( perm != null)
-			{
+			if (perm != null) {
 				Filter top = perm.getRootFilter();
-				if( top != null)
-				{
-					if( top instanceof OrFilter)
-					{
+				if (top != null) {
+					if (top instanceof OrFilter) {
 						Filter[] filters = top.getFilters();
-						if( filters != null)
-						{
-							for (int j = 0; j < filters.length; j++)
-							{
-								if( filters[j] instanceof GroupFilter)
-								{
-									String gid = ((GroupFilter)filters[j]).getGroupId();
-									Data group = (Group)getUserManager(inReq).getGroup(gid);
-									if( group != null)
-									{
+						if (filters != null) {
+							for (int j = 0; j < filters.length; j++) {
+								if (filters[j] instanceof GroupFilter) {
+									String gid = ((GroupFilter) filters[j]).getGroupId();
+									Data group = (Group) getUserManager(inReq).getGroup(gid);
+									if (group != null) {
 										selgroups.add(group);
 									}
-								}
-								else
-								{
+								} else {
 									simple = Boolean.FALSE;
 								}
 							}
 						}
-					} 
-					else if( !(top instanceof BooleanFilter))
-					{
+					} else if (!(top instanceof BooleanFilter)) {
 						simple = Boolean.FALSE;
 					}
-				}			
+				}
 			}
-			inReq.putPageValue("selgroups", selgroups );
+			inReq.putPageValue("selgroups", selgroups);
 			groups.removeAll(selgroups);
 		}
-		inReq.putPageValue("issimple", String.valueOf(simple ));
+		inReq.putPageValue("issimple", String.valueOf(simple));
 		inReq.putPageValue("editPath", page);
-		inReq.putPageValue("allgroups", groups );
-		
+		inReq.putPageValue("allgroups", groups);
+
 	}
 
 }

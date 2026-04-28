@@ -6,7 +6,8 @@ package org.entermediadb.markdown.parser;
 public interface InlineParserFactory {
 
     /**
-     * Create an {@link InlineParser} to use for parsing inlines. This is called once per parsed document.
+     * Create an {@link InlineParser} to use for parsing inlines. This is called
+     * once per parsed document.
      */
     InlineParser create(InlineParserContext inlineParserContext);
 }

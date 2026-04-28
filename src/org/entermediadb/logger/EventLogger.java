@@ -8,36 +8,31 @@ import org.openedit.data.SearcherManager;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
 
-public class EventLogger implements WebEventListener
-{
+public class EventLogger implements WebEventListener {
 	protected SearcherManager fieldSearcherManager;
-	
-	public void eventFired(WebEvent inEvent) 
-	{
-		Searcher searcher = getSearcherManager().getSearcher(inEvent.getCatalogId(), inEvent.getSearchType() + inEvent.getOperation() + "Log");
+
+	public void eventFired(WebEvent inEvent) {
+		Searcher searcher = getSearcherManager().getSearcher(inEvent.getCatalogId(),
+				inEvent.getSearchType() + inEvent.getOperation() + "Log");
 		Data entry = searcher.createNewData();
 		entry.setValue("operation", inEvent.getOperation());
 		entry.setValue("user", inEvent.getUsername());
 		for (Iterator iterator = inEvent.keySet().iterator(); iterator
 				.hasNext();) {
 			String key = (String) iterator.next();
-			if(!"id".equals(key)) {
+			if (!"id".equals(key)) {
 				entry.setValue(key, inEvent.get(key));
 			}
 		}
 		entry.setValue("date", inEvent.getDate());
 		searcher.saveData(entry, null);
 	}
-	
 
-	
-	public SearcherManager getSearcherManager()
-	{
+	public SearcherManager getSearcherManager() {
 		return fieldSearcherManager;
 	}
 
-	public void setSearcherManager(SearcherManager inSearcherManager)
-	{
+	public void setSearcherManager(SearcherManager inSearcherManager) {
 		fieldSearcherManager = inSearcherManager;
 	}
 

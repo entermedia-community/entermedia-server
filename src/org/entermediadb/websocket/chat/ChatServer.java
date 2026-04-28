@@ -48,8 +48,7 @@ import org.openedit.util.DateStorageUtil;
 import org.openedit.util.ExecutorManager;
 import org.openedit.util.JSONParser;
 
-public class ChatServer
-{
+public class ChatServer {
 
 	private static final Log log = LogFactory.getLog(ChatServer.class);
 
@@ -62,78 +61,62 @@ public class ChatServer
 	protected SearcherManager fieldSearcherManager;
 	protected JSONParser fieldJSONParser;
 
-	public JSONParser getJSONParser()
-	{
-		if (fieldJSONParser == null)
-		{
+	public JSONParser getJSONParser() {
+		if (fieldJSONParser == null) {
 			fieldJSONParser = new JSONParser();
 		}
 		return fieldJSONParser;
 	}
 
-	public SearcherManager getSearcherManager()
-	{
-		if (fieldSearcherManager == null)
-		{
+	public SearcherManager getSearcherManager() {
+		if (fieldSearcherManager == null) {
 			fieldSearcherManager = (SearcherManager) getModuleManager().getBean("searcherManager");
 		}
 		return fieldSearcherManager;
 	}
 
-	public void setSearcherManager(SearcherManager inSearcherManager)
-	{
+	public void setSearcherManager(SearcherManager inSearcherManager) {
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	public ModuleManager getModuleManager()
-	{
+	public ModuleManager getModuleManager() {
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager)
-	{
+	public void setModuleManager(ModuleManager inModuleManager) {
 		fieldModuleManager = inModuleManager;
 	}
 
-	public CacheManager getCacheManager()
-	{
-		if (fieldCacheManager == null)
-		{
+	public CacheManager getCacheManager() {
+		if (fieldCacheManager == null) {
 			fieldCacheManager = (CacheManager) getModuleManager().getBean("cacheManager");// new CacheManager();
 		}
 
 		return fieldCacheManager;
 	}
 
-	public void setCacheManager(CacheManager inCacheManager)
-	{
+	public void setCacheManager(CacheManager inCacheManager) {
 		fieldCacheManager = inCacheManager;
 	}
 
-	public void removeConnection(ChatConnection inChatConnection)
-	{
-		for (Iterator iterator = connections.iterator(); iterator.hasNext();)
-		{
+	public void removeConnection(ChatConnection inChatConnection) {
+		for (Iterator iterator = connections.iterator(); iterator.hasNext();) {
 			ChatConnection annotationConnection2 = (ChatConnection) iterator.next();
 
-			if (inChatConnection == annotationConnection2)
-			{
+			if (inChatConnection == annotationConnection2) {
 				connections.remove(annotationConnection2);
 				break;
 			}
 		}
 	}
 
-	public void addConnection(ChatConnection inConnection)
-	{
+	public void addConnection(ChatConnection inConnection) {
 		String sessionid = inConnection.getSessionId();
 		ArrayList toremove = new ArrayList();
-		for (Iterator iterator = connections.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = connections.iterator(); iterator.hasNext();) {
 			ChatConnection chatConnection = (ChatConnection) iterator.next();
 			String oldid = chatConnection.getSessionId();
-			if (oldid.equals(sessionid))
-			{
+			if (oldid.equals(sessionid)) {
 				toremove.add(chatConnection);
 			}
 		}
@@ -144,13 +127,11 @@ public class ChatServer
 		connections.add(inConnection);
 	}
 
-	public void broadcastRemovedMessage(String inCatalogId, Data inData)
-	{
+	public void broadcastRemovedMessage(String inCatalogId, Data inData) {
 		JSONObject inMap = new JSONObject(inData.getProperties());
 		// Command
 		Date date = (Date) inData.getValue("date");
-		if (date != null)
-		{
+		if (date != null) {
 			date = new Date();
 		}
 
@@ -161,13 +142,11 @@ public class ChatServer
 		broadcastMessage(inCatalogId, inMap);
 	}
 
-	public void broadcastMessage(String inCatalogId, Data inData)
-	{
+	public void broadcastMessage(String inCatalogId, Data inData) {
 		JSONObject inMap = new JSONObject(inData.getProperties().toMap());
 		// Command
 		Date date = (Date) inData.getValue("date");
-		if (date != null)
-		{
+		if (date != null) {
 			date = new Date();
 		}
 
@@ -178,51 +157,43 @@ public class ChatServer
 		broadcastMessage(inCatalogId, inMap);
 	}
 
-	public void broadcastMessage(JSONObject inMap)
-	{
+	public void broadcastMessage(JSONObject inMap) {
 		String inCatalogId = (String) inMap.get("catalogid");
 		broadcastMessage(inCatalogId, inMap);
 	}
 
-	public synchronized void broadcastMessage(String catalogid, JSONObject inMap)
-	{
+	public synchronized void broadcastMessage(String catalogid, JSONObject inMap) {
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 
 		String channelid = (String) inMap.get("channel");
 
-		if (catalogid != null && channelid != null)
-		{
+		if (catalogid != null && channelid != null) {
 			final ChatManager manager = getChatManager(catalogid);
 
-			// log.info("Sending " + inMap.toJSONString() +" to " + connections.size() + " Clients");
+			// log.info("Sending " + inMap.toJSONString() +" to " + connections.size() + "
+			// Clients");
 
 			String userid = null;
-			if (inMap.get("user") != null)
-			{
+			if (inMap.get("user") != null) {
 				userid = inMap.get("user").toString();
 			}
 			String messageid = (String) inMap.get("messageid");
-			if (channelid != null)
-			{
+			if (channelid != null) {
 				manager.updateChatTopicLastModified(channelid, userid, messageid);
 			}
 
 			ProjectManager projectmanager = getProjectManager(catalogid);
-			if (inMap.get("name") == null)
-			{
+			if (inMap.get("name") == null) {
 				User user = archive.getUser(userid);
-				if (user != null)
-				{
+				if (user != null) {
 					inMap.put("name", user.getScreenName());
 				}
 			}
 
 			Boolean broadcastAll = (Boolean) inMap.get("broadcastall");
 
-			if (broadcastAll != null && broadcastAll)
-			{
-				for (Iterator iterator = connections.iterator(); iterator.hasNext();)
-				{
+			if (broadcastAll != null && broadcastAll) {
+				for (Iterator iterator = connections.iterator(); iterator.hasNext();) {
 					ChatConnection chatConnection = (ChatConnection) iterator.next();
 					chatConnection.sendMessage(inMap);
 				}
@@ -236,14 +207,11 @@ public class ChatServer
 
 			String moduleid = channel.get("searchtype");
 
-			if (moduleid == null)
-			{
+			if (moduleid == null) {
 				// Legacy fix for OI
-				if (inMap.get("moduleid") != null)
-				{
+				if (inMap.get("moduleid") != null) {
 					moduleid = (String) inMap.get("moduleid");
-					if (moduleid != null)
-					{
+					if (moduleid != null) {
 						channel.setValue("searchtype", moduleid);
 						archive.getSearcher("channel").saveData(channel);
 					}
@@ -253,30 +221,23 @@ public class ChatServer
 				// }
 			}
 
-			if (moduleid != null)
-			{
+			if (moduleid != null) {
 				module = archive.getCachedData("module", moduleid);
 
 				String entityid = (String) inMap.get("entityid");
-				if (entityid == null || entityid.equals("") || entityid.equals("null"))
-				{
+				if (entityid == null || entityid.equals("") || entityid.equals("null")) {
 					entityid = (String) inMap.get("collectionid"); // For OI chats attached to a collectionid
 				}
-				if (entityid == null && channel != null)
-				{
+				if (entityid == null && channel != null) {
 					entityid = channel.get("dataid");
 				}
-				if (entityid != null)
-				{
+				if (entityid != null) {
 					entity = archive.getCachedData(moduleid, entityid);
 				}
 
-				if (moduleid.equals("librarycollection"))
-				{
+				if (moduleid.equals("librarycollection")) {
 					userids = projectmanager.listTeam(entity);
-				}
-				else
-				{
+				} else {
 					// Todo: other Entities
 
 					/*
@@ -284,7 +245,8 @@ public class ChatServer
 					 * archive.getPermissionManager().loadEntityPermissions(module, entity);
 					 * 
 					 * 
-					 * for (Iterator iterator = permissions.iterator(); iterator.hasNext();) { AddedPermission
+					 * for (Iterator iterator = permissions.iterator(); iterator.hasNext();) {
+					 * AddedPermission
 					 * addedPermission = (AddedPermission) iterator.next(); if
 					 * (addedPermission.getPermissionType().equals("users")) {
 					 * userids.add(addedPermission.getData().getId()); }
@@ -293,8 +255,7 @@ public class ChatServer
 					 */
 				}
 				String channeltype = channel.get("channeltype");
-				if (channeltype != null && channeltype.startsWith("agent"))
-				{
+				if (channeltype != null && channeltype.startsWith("agent")) {
 					userids.add("agent");
 				}
 
@@ -303,32 +264,28 @@ public class ChatServer
 				userids.add(channel.get("user"));
 			}
 
-			for (Iterator iterator = connections.iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = connections.iterator(); iterator.hasNext();) {
 				ChatConnection chatConnection = (ChatConnection) iterator.next();
 				String connectionUser = chatConnection.getUserId();
 				// log.info("Sending message to: " + connectionUser);
-				if (userids != null && userids.contains(connectionUser))
-				{
+				if (userids != null && userids.contains(connectionUser)) {
 					// User is onTeam and connected, send message
 					chatConnection.sendMessage(inMap);
-				}
-				else
-				{
+				} else {
 					String connectionChanelId = chatConnection.getChannelId();
 
 					UserProfile userprofile = archive.getUserProfile(chatConnection.getUserId());
 					Permissions userpermissions = userprofile.getPermissions();
 
-					if (channelid.equals(connectionChanelId) && userpermissions.canEntity(module, entity, "view"))
-					{
+					if (channelid.equals(connectionChanelId) && userpermissions.canEntity(module, entity, "view")) {
 						// If connected user is navigating the channel and has permission to view
 						chatConnection.sendMessage(inMap);
 					}
 
 					/*
 					 * String connectionChannel = chatConnection.getChannelId(); if
-					 * (channelid.equals(connectionChannel)) { //log.info("Other connection is not a team member: " +
+					 * (channelid.equals(connectionChannel)) {
+					 * //log.info("Other connection is not a team member: " +
 					 * chatConnection.getChannelId()); chatConnection.sendMessage(inMap); }
 					 */
 				}
@@ -337,20 +294,19 @@ public class ChatServer
 			// For people who are logged in, mark that they checked already
 			getExecutorManager(catalogid).execute(new Runnable() {
 				@Override
-				public void run()
-				{
+				public void run() {
 					String channelid = (String) inMap.get("channel");
 
-					for (Iterator iterator = connections.iterator(); iterator.hasNext();)
-					{
+					for (Iterator iterator = connections.iterator(); iterator.hasNext();) {
 						ChatConnection chatConnection = (ChatConnection) iterator.next();
 						String connectedUser = chatConnection.getUserId();
-						if (connectedUser != null)
-						{
+						if (connectedUser != null) {
 							/*
-							 * String connectionTopic = chatConnection.getChannelId(); //Current Connection Channel if(
+							 * String connectionTopic = chatConnection.getChannelId(); //Current Connection
+							 * Channel if(
 							 * channelid != null && channelid.equals(connectionTopic)) {
-							 * manager.updateChatTopicLastChecked(String.valueOf(channelid), connectedUser); }
+							 * manager.updateChatTopicLastChecked(String.valueOf(channelid), connectedUser);
+							 * }
 							 */
 							manager.updateChatTopicLastChecked(String.valueOf(channelid), connectedUser);
 						}
@@ -360,8 +316,7 @@ public class ChatServer
 		}
 	}
 
-	public Data saveMessage(final JSONObject inMap)
-	{
+	public Data saveMessage(final JSONObject inMap) {
 		String catalogid = (String) inMap.get("catalogid");
 		// log.info("Saving Message: " + inMap.toJSONString());
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
@@ -371,7 +326,8 @@ public class ChatServer
 		String userid = (String) inMap.get("user").toString();
 
 		// long now = System.currentTimeMillis() - 9*1000;
-		// Data lastOne = chats.query().exact("channel",channel.getId()).after("date",new
+		// Data lastOne =
+		// chats.query().exact("channel",channel.getId()).after("date",new
 		// Date(now)).sort("dateDown").searchOne();
 
 		ValuesMap values = new ValuesMap(inMap);
@@ -390,8 +346,7 @@ public class ChatServer
 
 		String messagetype = (String) inMap.get("messagetype");
 
-		if (messagetype == null)
-		{
+		if (messagetype == null) {
 			messagetype = "message";
 		}
 
@@ -413,14 +368,12 @@ public class ChatServer
 		return chat;
 	}
 
-	public Data loadChannel(MediaArchive inArchive, Map inChannelInfo)
-	{
+	public Data loadChannel(MediaArchive inArchive, Map inChannelInfo) {
 		Searcher chats = inArchive.getSearcher("channel");
 		String channelid = (String) inChannelInfo.get("channel");
 		Data channel = inArchive.getCachedData("channel", channelid);
 
-		if (channel == null)
-		{
+		if (channel == null) {
 			channel = chats.createNewData();
 			channel.setId(channelid);
 			String channeltype = (String) inChannelInfo.get("channeltype");
@@ -429,18 +382,15 @@ public class ChatServer
 
 		String playbackentityid = (String) inChannelInfo.get("playbackentityid");
 		String playbackentitymoduleid = (String) inChannelInfo.get("playbackentitymoduleid");
-		if (playbackentitymoduleid != null && playbackentityid != null)
-		{
+		if (playbackentitymoduleid != null && playbackentityid != null) {
 			channel.setValue("playbackentityid", playbackentityid);
 			channel.setValue("playbackentitymoduleid", playbackentitymoduleid);
 		}
 
 		Object pbsection = inChannelInfo.get("playbacksection");
-		if (pbsection != null)
-		{
+		if (pbsection != null) {
 			Integer playbacksection = Integer.parseInt(String.valueOf(pbsection));
-			if (playbacksection != null)
-			{
+			if (playbacksection != null) {
 				channel.setValue("playbacksection", playbacksection);
 				inChannelInfo.put("messagetype", "system");
 			}
@@ -453,16 +403,17 @@ public class ChatServer
 
 	/* Desktop notificationsss */
 
-	public void displayTray(String message) throws AWTException
-	{
+	public void displayTray(String message) throws AWTException {
 		// Obtain only one instance of the SystemTray object
 		SystemTray tray = SystemTray.getSystemTray();
 
 		String chatmessage = message;
 		// If the icon is a file
-		Image image = Toolkit.getDefaultToolkit().createImage("\"https://entermediadb.org/entermediadb/mediadb/services/module/asset/downloads/preset/2019/12/f0/94a/image200x200.png\"");
+		Image image = Toolkit.getDefaultToolkit().createImage(
+				"\"https://entermediadb.org/entermediadb/mediadb/services/module/asset/downloads/preset/2019/12/f0/94a/image200x200.png\"");
 		// Alternative (if the icon is on the classpath):
-		// Image image = Toolkit.getDefaultToolkit().createImage(getClass().getResource("icon.png"));
+		// Image image =
+		// Toolkit.getDefaultToolkit().createImage(getClass().getResource("icon.png"));
 
 		TrayIcon trayIcon = new TrayIcon(image, "Tray Demo");
 		// Let the system resize the image if needed
@@ -474,38 +425,32 @@ public class ChatServer
 		trayIcon.displayMessage("EntermediaDB", chatmessage, MessageType.NONE);
 	}
 
-	public ExecutorManager getExecutorManager(String inCatalogId)
-	{
+	public ExecutorManager getExecutorManager(String inCatalogId) {
 		ExecutorManager queue = (ExecutorManager) getModuleManager().getBean(inCatalogId, "executorManager");
 		return queue;
 	}
 
-	public ChatManager getChatManager(String inCatalogId)
-	{
+	public ChatManager getChatManager(String inCatalogId) {
 		ChatManager queue = (ChatManager) getModuleManager().getBean(inCatalogId, "chatManager");
 		return queue;
 	}
 
-	public ProjectManager getProjectManager(String inCatalogId)
-	{
+	public ProjectManager getProjectManager(String inCatalogId) {
 		ProjectManager queue = (ProjectManager) getModuleManager().getBean(inCatalogId, "projectManager");
 		return queue;
 	}
 
-	public void approveAsset(JSONObject inMap)
-	{
+	public void approveAsset(JSONObject inMap) {
 		String catalogid = (String) inMap.get("catalogid");
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		Asset asset = archive.getAsset((String) inMap.get("assetid"));
 		User user = archive.getUser((String) inMap.get("user"));
 		String entityid = (String) inMap.get("entityid");
-		if (entityid == null)
-		{
+		if (entityid == null) {
 			entityid = (String) inMap.get("collectionid");
 		}
 		String moduleid = String.valueOf(inMap.get("moduleid"));
-		if (moduleid == null)
-		{
+		if (moduleid == null) {
 			moduleid = "librarycollection";
 		}
 		String message = (String) inMap.get("message");
@@ -528,20 +473,17 @@ public class ChatServer
 
 	}
 
-	public void rejectAsset(JSONObject inMap)
-	{
+	public void rejectAsset(JSONObject inMap) {
 		String catalogid = (String) inMap.get("catalogid");
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		Asset asset = archive.getAsset((String) inMap.get("assetid"));
 		User user = archive.getUser((String) inMap.get("user"));
 		String entityid = (String) inMap.get("entityid");
-		if (entityid == null)
-		{
+		if (entityid == null) {
 			entityid = (String) inMap.get("collectionid");
 		}
 		String moduleid = String.valueOf(inMap.get("moduleid"));
-		if (moduleid == null)
-		{
+		if (moduleid == null) {
 			moduleid = "librarycollection";
 		}
 		String message = (String) inMap.get("message");

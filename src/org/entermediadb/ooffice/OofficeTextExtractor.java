@@ -15,66 +15,58 @@ import org.entermediadb.asset.scanner.MetadataPdfExtractor;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
 
-public class OofficeTextExtractor extends MetadataExtractor
-{
-	public static final Collection FORMATS = Arrays.asList(new String[] {"doc","docx","rtf","ppt","pptx","wps","odt"}); //,"html","xml","csv", "xls", "xlsx"
+public class OofficeTextExtractor extends MetadataExtractor {
+	public static final Collection FORMATS = Arrays
+			.asList(new String[] { "doc", "docx", "rtf", "ppt", "pptx", "wps", "odt" }); // ,"html","xml","csv", "xls",
+																							// "xlsx"
 
 	private static final Log log = LogFactory.getLog(OofficeTextExtractor.class);
-	
+
 	protected MetadataPdfExtractor fieldMetadataPdfExtractor;
 	protected ExiftoolMetadataExtractor fieldExiftoolMetadataExtractor;
 
-	public MetadataPdfExtractor getMetadataPdfExtractor()
-	{
+	public MetadataPdfExtractor getMetadataPdfExtractor() {
 		return fieldMetadataPdfExtractor;
 	}
-	
-	public ExiftoolMetadataExtractor getExiftoolMetadataExtractor()
-	{
+
+	public ExiftoolMetadataExtractor getExiftoolMetadataExtractor() {
 		return fieldExiftoolMetadataExtractor;
 	}
 
-	public void setMetadataPdfExtractor(MetadataPdfExtractor inMetadataPdfExtractor)
-	{
+	public void setMetadataPdfExtractor(MetadataPdfExtractor inMetadataPdfExtractor) {
 		fieldMetadataPdfExtractor = inMetadataPdfExtractor;
 	}
-	public void setExiftoolMetadataExtractor(ExiftoolMetadataExtractor inExiftoolMetadataExtractor)
-	{
+
+	public void setExiftoolMetadataExtractor(ExiftoolMetadataExtractor inExiftoolMetadataExtractor) {
 		fieldExiftoolMetadataExtractor = inExiftoolMetadataExtractor;
 	}
 
-	public boolean extractData(MediaArchive inArchive, ContentItem inputFile, Asset inAsset)
-	{
+	public boolean extractData(MediaArchive inArchive, ContentItem inputFile, Asset inAsset) {
 		String type = PathUtilities.extractPageType(inputFile.getPath());
-		if (type == null || "data".equals(type.toLowerCase()))
-		{
+		if (type == null || "data".equals(type.toLowerCase())) {
 			type = inAsset.getFileFormat();
 		}
 
-		if (type != null)
-		{
+		if (type != null) {
 			type = type.toLowerCase();
 		}
-		if( type == null )
-		{
+		if (type == null) {
 			return false;
 		}
-		if ( type.equals("pdf"))
-		{
-			return false; //PDF's are already being extracted
+		if (type.equals("pdf")) {
+			return false; // PDF's are already being extracted
 		}
-		
-		if( !FORMATS.contains(type) )
-		{
+
+		if (!FORMATS.contains(type)) {
 			return false;
 		}
-		
-		ContentItem custom = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/document.pdf");
-		if( !custom.exists() )
-		{
-	        ConversionManager c = inArchive.getTranscodeTools().getManagerByRenderType("document");
+
+		ContentItem custom = inArchive.getContent("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/"
+				+ inAsset.getSourcePath() + "/document.pdf");
+		if (!custom.exists()) {
+			ConversionManager c = inArchive.getTranscodeTools().getManagerByRenderType("document");
 			ConvertInstructions instructions = c.createInstructions(inAsset);
-			
+
 			instructions.setAssetSourcePath(inAsset.getSourcePath());
 			instructions.setAsset(inAsset);
 			instructions.setOutputExtension("pdf");
@@ -82,25 +74,23 @@ public class OofficeTextExtractor extends MetadataExtractor
 			instructions.setOutputFile(custom);
 			c.createOutput(instructions);
 		}
-	 	//c.(instructions);
+		// c.(instructions);
 
-		//ooffice can create a PDF then we can pull the size and text from it
-		
-		//String tmppath = getMediaCreator().populateOutputPath(inArchive, inst);
-		
-		//use exiftool to extract standard data
+		// ooffice can create a PDF then we can pull the size and text from it
+
+		// String tmppath = getMediaCreator().populateOutputPath(inArchive, inst);
+
+		// use exiftool to extract standard data
 		getExiftoolMetadataExtractor().extractData(inArchive, custom, inAsset);
-		//now use the PDF extractor
+		// now use the PDF extractor
 		getMetadataPdfExtractor().extractData(inArchive, custom, inAsset);
-		
 
-		
-//		//now get the page info out of the PDF?
-//		Asset tmp = inArchive.createAsset("tmp/" + inAsset.getSourcePath());
-//		getPdfMetadataExtractor().extractData(inArchive, pdf, tmp);
-//		
-//		inAsset.setProperty(type, tmppath)
-		
+		// //now get the page info out of the PDF?
+		// Asset tmp = inArchive.createAsset("tmp/" + inAsset.getSourcePath());
+		// getPdfMetadataExtractor().extractData(inArchive, pdf, tmp);
+		//
+		// inAsset.setProperty(type, tmppath)
+
 		return true;
 	}
 }

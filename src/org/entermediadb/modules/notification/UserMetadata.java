@@ -12,88 +12,71 @@ import org.entermediadb.asset.Asset;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 
-public class UserMetadata
-{
+public class UserMetadata {
 	String fieldUserId;
 
-	public String getUserId()
-	{
+	public String getUserId() {
 		return fieldUserId;
 	}
 
-	public void setUserId(String inUserId)
-	{
+	public void setUserId(String inUserId) {
 		fieldUserId = inUserId;
 	}
 
 	Map fieldAssetMetadata = new HashMap();
 	Map fieldAssets = new HashMap();
 
-	public Map getAssetMetadata()
-	{
+	public Map getAssetMetadata() {
 		return fieldAssetMetadata;
 	}
 
-	public void setAssetMetadata(Map inAssetMetadata)
-	{
+	public void setAssetMetadata(Map inAssetMetadata) {
 		fieldAssetMetadata = inAssetMetadata;
 	}
 
-	public Collection getAssets()
-	{
+	public Collection getAssets() {
 		return fieldAssets.values();
 	}
 
-	public void addAssetMetadata(Asset inAsset, Data inMetadata)
-	{
+	public void addAssetMetadata(Asset inAsset, Data inMetadata) {
 		Asset existing = (Asset) fieldAssets.get(inAsset.getId());
-		if (existing == null)
-		{
+		if (existing == null) {
 			existing = inAsset;
 			fieldAssets.put(inAsset.getId(), inAsset);
 		}
 		Collection existingmetadatas = (Collection) fieldAssetMetadata.get(existing.getId());
-		if (existingmetadatas == null)
-		{
+		if (existingmetadatas == null) {
 			existingmetadatas = new ArrayList();
 			fieldAssetMetadata.put(inAsset.getId(), existingmetadatas);
 		}
-		for (Iterator iterator = existingmetadatas.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = existingmetadatas.iterator(); iterator.hasNext();) {
 			Data message = (Data) iterator.next();
-			if (message.getId().equals(inMetadata.getId()))
-			{
+			if (message.getId().equals(inMetadata.getId())) {
 				return;
 			}
 		}
 		existingmetadatas.add(inMetadata);
 	}
 
-	public Collection getMetadatas(Data inAsset)
-	{
+	public Collection getMetadatas(Data inAsset) {
 		return getMetadatas(inAsset.getId());
 	}
 
-	public Collection getMetadatas(String inAssetId)
-	{
+	public Collection getMetadatas(String inAssetId) {
 		Collection existingmetadatas = (Collection) fieldAssetMetadata.get(inAssetId);
 		existingmetadatas = sort(existingmetadatas);
 		return existingmetadatas;
 	}
 
-	protected Collection sort(Collection messages)
-	{
+	protected Collection sort(Collection messages) {
 		ArrayList sorted = new ArrayList(messages);
-		sorted.sort(new Comparator<MultiValued>()
-		{
+		sorted.sort(new Comparator<MultiValued>() {
 			@Override
-			public int compare(MultiValued inO1, MultiValued inO2)
-			{
-				//sort by date
-				Date date1 = (Date)inO1.getDate("date");
-				Date date2 = (Date)inO2.getDate("date");
-				if( date1 != null && date2 != null)
-				{
+			public int compare(MultiValued inO1, MultiValued inO2) {
+				// sort by date
+				Date date1 = (Date) inO1.getDate("date");
+				Date date2 = (Date) inO2.getDate("date");
+				if (date1 != null && date2 != null) {
 					return date1.compareTo(date2);
 				}
 				return 0;

@@ -29,7 +29,8 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
     private int trailingSpaces;
 
     /**
-     * Top delimiter (emphasis, strong emphasis or custom emphasis). (Brackets are on a separate stack, different
+     * Top delimiter (emphasis, strong emphasis or custom emphasis). (Brackets are
+     * on a separate stack, different
      * from the algorithm described in the spec.)
      */
     private Delimiter lastDelimiter;
@@ -41,15 +42,19 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
 
     public InlineParserImpl(InlineParserContext context) {
         this.context = context;
-        this.inlineContentParserFactories = calculateInlineContentParserFactories(context.getCustomInlineContentParserFactories());
+        this.inlineContentParserFactories = calculateInlineContentParserFactories(
+                context.getCustomInlineContentParserFactories());
         this.delimiterProcessors = calculateDelimiterProcessors(context.getCustomDelimiterProcessors());
         this.linkProcessors = calculateLinkProcessors(context.getCustomLinkProcessors());
         this.linkMarkers = calculateLinkMarkers(context.getCustomLinkMarkers());
-        this.specialCharacters = calculateSpecialCharacters(linkMarkers, this.delimiterProcessors.keySet(), this.inlineContentParserFactories);
+        this.specialCharacters = calculateSpecialCharacters(linkMarkers, this.delimiterProcessors.keySet(),
+                this.inlineContentParserFactories);
     }
 
-    private List<InlineContentParserFactory> calculateInlineContentParserFactories(List<InlineContentParserFactory> customFactories) {
-        // Custom parsers can override built-in parsers if they want, so make sure they are tried first
+    private List<InlineContentParserFactory> calculateInlineContentParserFactories(
+            List<InlineContentParserFactory> customFactories) {
+        // Custom parsers can override built-in parsers if they want, so make sure they
+        // are tried first
         var list = new ArrayList<>(customFactories);
         list.add(new BackslashInlineParser.Factory());
         list.add(new BackticksInlineParser.Factory());
@@ -60,20 +65,23 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
     }
 
     private List<LinkProcessor> calculateLinkProcessors(List<LinkProcessor> linkProcessors) {
-        // Custom link processors can override the built-in behavior, so make sure they are tried first
+        // Custom link processors can override the built-in behavior, so make sure they
+        // are tried first
         var list = new ArrayList<>(linkProcessors);
         list.add(new CoreLinkProcessor());
         return list;
     }
 
-    private static Map<Character, DelimiterProcessor> calculateDelimiterProcessors(List<DelimiterProcessor> delimiterProcessors) {
+    private static Map<Character, DelimiterProcessor> calculateDelimiterProcessors(
+            List<DelimiterProcessor> delimiterProcessors) {
         var map = new HashMap<Character, DelimiterProcessor>();
         addDelimiterProcessors(List.of(new AsteriskDelimiterProcessor(), new UnderscoreDelimiterProcessor()), map);
         addDelimiterProcessors(delimiterProcessors, map);
         return map;
     }
 
-    private static void addDelimiterProcessors(Iterable<DelimiterProcessor> delimiterProcessors, Map<Character, DelimiterProcessor> map) {
+    private static void addDelimiterProcessors(Iterable<DelimiterProcessor> delimiterProcessors,
+            Map<Character, DelimiterProcessor> map) {
         for (DelimiterProcessor delimiterProcessor : delimiterProcessors) {
             char opening = delimiterProcessor.getOpeningCharacter();
             char closing = delimiterProcessor.getClosingCharacter();
@@ -99,10 +107,12 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
         }
     }
 
-    private static void addDelimiterProcessorForChar(char delimiterChar, DelimiterProcessor toAdd, Map<Character, DelimiterProcessor> delimiterProcessors) {
+    private static void addDelimiterProcessorForChar(char delimiterChar, DelimiterProcessor toAdd,
+            Map<Character, DelimiterProcessor> delimiterProcessors) {
         DelimiterProcessor existing = delimiterProcessors.put(delimiterChar, toAdd);
         if (existing != null) {
-            throw new IllegalArgumentException("Delimiter processor conflict with delimiter char '" + delimiterChar + "'");
+            throw new IllegalArgumentException(
+                    "Delimiter processor conflict with delimiter char '" + delimiterChar + "'");
         }
     }
 
@@ -116,8 +126,8 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
     }
 
     private static BitSet calculateSpecialCharacters(BitSet linkMarkers,
-                                                     Set<Character> delimiterCharacters,
-                                                     List<InlineContentParserFactory> inlineContentParserFactories) {
+            Set<Character> delimiterCharacters,
+            List<InlineContentParserFactory> inlineContentParserFactories) {
         BitSet bitSet = (BitSet) linkMarkers.clone();
         for (Character c : delimiterCharacters) {
             bitSet.set(c);
@@ -151,7 +161,8 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
     }
 
     /**
-     * Parse content in block into inline children, appending them to the block node.
+     * Parse content in block into inline children, appending them to the block
+     * node.
      */
     @Override
     public void parse(SourceLines lines, Node block) {
@@ -248,12 +259,14 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
             }
         }
 
-        // If we get here, even for a special/delimiter character, we will just treat it as text.
+        // If we get here, even for a special/delimiter character, we will just treat it
+        // as text.
         return List.of(parseText());
     }
 
     /**
-     * Attempt to parse delimiters like emphasis, strong emphasis or custom delimiters.
+     * Attempt to parse delimiters like emphasis, strong emphasis or custom
+     * delimiters.
      */
     private List<? extends Node> parseDelimiters(DelimiterProcessor delimiterProcessor, char delimiterChar) {
         DelimiterData res = scanDelimiters(delimiterProcessor, delimiterChar);
@@ -302,7 +315,8 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
             var bracketNode = text(scanner.getSource(bracketPosition, contentPosition));
 
             // Add entry to stack for this opener
-            addBracket(Bracket.withMarker(bangNode, markerPosition, bracketNode, bracketPosition, contentPosition, lastBracket, lastDelimiter));
+            addBracket(Bracket.withMarker(bangNode, markerPosition, bracketNode, bracketPosition, contentPosition,
+                    lastBracket, lastDelimiter));
             return List.of(bangNode, bracketNode);
         } else {
             return null;
@@ -310,8 +324,10 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
     }
 
     /**
-     * Try to match close bracket against an opening in the delimiter stack. Return either a link or image, or a
-     * plain [ character. If there is a matching delimiter, remove it from the delimiter stack.
+     * Try to match close bracket against an opening in the delimiter stack. Return
+     * either a link or image, or a
+     * plain [ character. If there is a matching delimiter, remove it from the
+     * delimiter stack.
      */
     private Node parseCloseBracket() {
         Position beforeClose = scanner.position();
@@ -352,7 +368,8 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
         for (var linkProcessor : linkProcessors) {
             var linkResult = linkProcessor.process(linkInfo, scanner, context);
             if (!(linkResult instanceof LinkResultImpl)) {
-                // Reset position in case the processor used the scanner, and it didn't work out.
+                // Reset position in case the processor used the scanner, and it didn't work
+                // out.
                 scanner.setPosition(processorStartPosition);
                 continue;
             }
@@ -376,12 +393,14 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
     }
 
     private LinkInfo parseLinkInfo(Bracket opener, Position beforeClose) {
-        // Check to see if we have a link (or image, with a ! in front). The different types:
-        // - Inline:       `[foo](/uri)` or with optional title `[foo](/uri "title")`
+        // Check to see if we have a link (or image, with a ! in front). The different
+        // types:
+        // - Inline: `[foo](/uri)` or with optional title `[foo](/uri "title")`
         // - Reference links
-        //   - Full:      `[foo][bar]` (foo is the text and bar is the label that needs to match a reference)
-        //   - Collapsed: `[foo][]`    (foo is both the text and label)
-        //   - Shortcut:  `[foo]`      (foo is both the text and label)
+        // - Full: `[foo][bar]` (foo is the text and bar is the label that needs to
+        // match a reference)
+        // - Collapsed: `[foo][]` (foo is both the text and label)
+        // - Shortcut: `[foo]` (foo is both the text and label)
 
         String text = scanner.getSource(opener.contentPosition, beforeClose).getContent();
 
@@ -391,13 +410,15 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
         // Maybe an inline link/image
         var destinationTitle = parseInlineDestinationTitle(scanner);
         if (destinationTitle != null) {
-            return new LinkInfoImpl(opener.markerNode, opener.bracketNode, text, null, destinationTitle.destination, destinationTitle.title, afterClose);
+            return new LinkInfoImpl(opener.markerNode, opener.bracketNode, text, null, destinationTitle.destination,
+                    destinationTitle.title, afterClose);
         }
         // Not an inline link/image, rewind back to after `]`.
         scanner.setPosition(afterClose);
 
         // Maybe a reference link/image like `[foo][bar]`, `[foo][]` or `[foo]`.
-        // Note that even `[foo](` could be a valid link if foo is a reference, which is why we try this even if the `(`
+        // Note that even `[foo](` could be a valid link if foo is a reference, which is
+        // why we try this even if the `(`
         // failed to be parsed as an inline link/image before.
 
         // See if there's a link label like `[bar]` or `[]`
@@ -408,8 +429,10 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
         }
         var textIsReference = label == null || label.isEmpty();
         if (opener.bracketAfter && textIsReference && opener.markerNode == null) {
-            // In case of shortcut or collapsed links, the text is used as the reference. But the reference is not allowed to
-            // contain an unescaped bracket, so if that's the case we don't need to continue. This is an optimization.
+            // In case of shortcut or collapsed links, the text is used as the reference.
+            // But the reference is not allowed to
+            // contain an unescaped bracket, so if that's the case we don't need to
+            // continue. This is an optimization.
             return null;
         }
 
@@ -417,7 +440,8 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
     }
 
     private Node wrapBracket(Bracket opener, Node wrapperNode, boolean includeMarker) {
-        // Add all nodes between the opening bracket and now (closing bracket) as child nodes of the link
+        // Add all nodes between the opening bracket and now (closing bracket) as child
+        // nodes of the link
         Node n = opener.bracketNode.getNext();
         while (n != null) {
             Node next = n.getNext();
@@ -426,21 +450,24 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
         }
 
         if (includeSourceSpans) {
-            var startPosition = includeMarker && opener.markerPosition != null ? opener.markerPosition : opener.bracketPosition;
+            var startPosition = includeMarker && opener.markerPosition != null ? opener.markerPosition
+                    : opener.bracketPosition;
             wrapperNode.setSourceSpans(scanner.getSource(startPosition, scanner.position()).getSourceSpans());
         }
 
         // Process delimiters such as emphasis inside link/image
         processDelimiters(opener.previousDelimiter);
         mergeChildTextNodes(wrapperNode);
-        // We don't need the corresponding text node anymore, we turned it into a link/image node
+        // We don't need the corresponding text node anymore, we turned it into a
+        // link/image node
         if (includeMarker && opener.markerNode != null) {
             opener.markerNode.unlink();
         }
         opener.bracketNode.unlink();
         removeLastBracket();
 
-        // Links within links are not allowed. We found this link, so there can be no other links around it.
+        // Links within links are not allowed. We found this link, so there can be no
+        // other links around it.
         if (opener.markerNode == null) {
             disallowPreviousLinks();
         }
@@ -455,7 +482,8 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
         }
 
         if (includeSourceSpans) {
-            var startPosition = includeMarker && opener.markerPosition != null ? opener.markerPosition : opener.bracketPosition;
+            var startPosition = includeMarker && opener.markerPosition != null ? opener.markerPosition
+                    : opener.bracketPosition;
             node.setSourceSpans(scanner.getSource(startPosition, scanner.position()).getSourceSpans());
         }
 
@@ -469,9 +497,12 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
             n = next;
         }
 
-        // Links within links are not allowed. We found this link, so there can be no other links around it.
-        // Note that this makes any syntax like `[foo]` behave the same as built-in links, which is probably a good
-        // default (it works for footnotes). It might be useful for a `LinkProcessor` to be able to specify the
+        // Links within links are not allowed. We found this link, so there can be no
+        // other links around it.
+        // Note that this makes any syntax like `[foo]` behave the same as built-in
+        // links, which is probably a good
+        // default (it works for footnotes). It might be useful for a `LinkProcessor` to
+        // be able to specify the
         // behavior; something we could add to `LinkResult` in the future if requested.
         if (opener.markerNode == null || !includeMarker) {
             disallowPreviousLinks();
@@ -495,7 +526,8 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
         Bracket bracket = lastBracket;
         while (bracket != null) {
             if (bracket.markerNode == null) {
-                // Disallow link opener. It will still get matched, but will not result in a link.
+                // Disallow link opener. It will still get matched, but will not result in a
+                // link.
                 bracket.allowed = false;
             }
             bracket = bracket.previous;
@@ -525,7 +557,8 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
         }
         if (!scanner.next(')')) {
             // Don't have a closing `)`, so it's not a destination and title.
-            // Note that something like `[foo](` could still be valid later, `(` will just be text.
+            // Note that something like `[foo](` could still be valid later, `(` will just
+            // be text.
             return null;
         }
         return new DestinationTitle(dest, title);
@@ -554,7 +587,8 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
     }
 
     /**
-     * Attempt to parse link title (sans quotes), returning the string or null if no match.
+     * Attempt to parse link title (sans quotes), returning the string or null if no
+     * match.
      */
     private static String parseLinkTitle(Scanner scanner) {
         Position start = scanner.position();
@@ -569,7 +603,8 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
     }
 
     /**
-     * Attempt to parse a link label, returning the label between the brackets or null.
+     * Attempt to parse a link label, returning the label between the brackets or
+     * null.
      */
     static String parseLinkLabel(Scanner scanner) {
         if (!scanner.next('[')) {
@@ -587,7 +622,8 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
         }
 
         String content = scanner.getSource(start, end).getContent();
-        // spec: A link label can have at most 999 characters inside the square brackets.
+        // spec: A link label can have at most 999 characters inside the square
+        // brackets.
         if (content.length() > 999) {
             return null;
         }
@@ -606,7 +642,8 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
     }
 
     /**
-     * Parse the next character as plain text, and possibly more if the following characters are non-special.
+     * Parse the next character as plain text, and possibly more if the following
+     * characters are non-special.
      */
     private Node parseText() {
         Position start = scanner.position();
@@ -624,12 +661,14 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
         String content = source.getContent();
 
         if (c == '\n') {
-            // We parsed until the end of the line. Trim any trailing spaces and remember them (for hard line breaks).
+            // We parsed until the end of the line. Trim any trailing spaces and remember
+            // them (for hard line breaks).
             int end = Characters.skipBackwards(' ', content, content.length() - 1, 0) + 1;
             trailingSpaces = content.length() - end;
             content = content.substring(0, end);
         } else if (c == Scanner.END) {
-            // For the last line, both tabs and spaces are trimmed for some reason (checked with commonmark.js).
+            // For the last line, both tabs and spaces are trimmed for some reason (checked
+            // with commonmark.js).
             int end = Characters.skipSpaceTabBackwards(content, content.length() - 1, 0) + 1;
             content = content.substring(0, end);
         }
@@ -640,8 +679,10 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
     }
 
     /**
-     * Scan a sequence of characters with code delimiterChar, and return information about the number of delimiters
-     * and whether they are positioned such that they can open and/or close emphasis or strong emphasis.
+     * Scan a sequence of characters with code delimiterChar, and return information
+     * about the number of delimiters
+     * and whether they are positioned such that they can open and/or close emphasis
+     * or strong emphasis.
      *
      * @return information about delimiter run, or {@code null}
      */
@@ -667,7 +708,8 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
 
         int after = scanner.peekCodePoint();
 
-        // We could be more lazy here, in most cases we don't need to do every match case.
+        // We could be more lazy here, in most cases we don't need to do every match
+        // case.
         boolean beforeIsPunctuation = before == Scanner.END || Characters.isPunctuationCodePoint(before);
         boolean beforeIsWhitespace = before == Scanner.END || Characters.isWhitespaceCodePoint(before);
         boolean afterIsPunctuation = after == Scanner.END || Characters.isPunctuationCodePoint(after);
@@ -760,7 +802,8 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
 
             removeDelimitersBetween(opener, closer);
 
-            // No delimiter characters left to process, so we can remove delimiter and the now empty node.
+            // No delimiter characters left to process, so we can remove delimiter and the
+            // now empty node.
             if (opener.length() == 0) {
                 removeDelimiterAndNodes(opener);
             }
@@ -788,14 +831,16 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
     }
 
     /**
-     * Remove the delimiter and the corresponding text node. For used delimiters, e.g. `*` in `*foo*`.
+     * Remove the delimiter and the corresponding text node. For used delimiters,
+     * e.g. `*` in `*foo*`.
      */
     private void removeDelimiterAndNodes(Delimiter delim) {
         removeDelimiter(delim);
     }
 
     /**
-     * Remove the delimiter but keep the corresponding node as text. For unused delimiters such as `_` in `foo_bar`.
+     * Remove the delimiter but keep the corresponding node as text. For unused
+     * delimiters such as `_` in `foo_bar`.
      */
     private void removeDelimiterKeepNode(Delimiter delim) {
         removeDelimiter(delim);
@@ -919,7 +964,7 @@ public class InlineParserImpl implements InlineParser, InlineParserState {
         private final Position afterTextBracket;
 
         private LinkInfoImpl(Text marker, Text openingBracket, String text, String label,
-                             String destination, String title, Position afterTextBracket) {
+                String destination, String title, Position afterTextBracket) {
             this.marker = marker;
             this.openingBracket = openingBracket;
             this.text = text;

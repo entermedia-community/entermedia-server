@@ -23,7 +23,8 @@ public class TextContentRenderer implements Renderer {
 
         this.nodeRendererFactories = new ArrayList<>(builder.nodeRendererFactories.size() + 1);
         this.nodeRendererFactories.addAll(builder.nodeRendererFactories);
-        // Add as last. This means clients can override the rendering of core nodes if they want.
+        // Add as last. This means clients can override the rendering of core nodes if
+        // they want.
         this.nodeRendererFactories.add(new TextContentNodeRendererFactory() {
             @Override
             public NodeRenderer create(TextContentNodeRendererContext context) {
@@ -55,7 +56,8 @@ public class TextContentRenderer implements Renderer {
     }
 
     /**
-     * Builder for configuring a {@link TextContentRenderer}. See methods for default configuration.
+     * Builder for configuring a {@link TextContentRenderer}. See methods for
+     * default configuration.
      */
     public static class Builder {
 
@@ -70,7 +72,8 @@ public class TextContentRenderer implements Renderer {
         }
 
         /**
-         * Configure how line breaks (newlines) are rendered, see {@link LineBreakRendering}.
+         * Configure how line breaks (newlines) are rendered, see
+         * {@link LineBreakRendering}.
          * The default is {@link LineBreakRendering#COMPACT}.
          *
          * @param lineBreakRendering the mode to use
@@ -84,10 +87,12 @@ public class TextContentRenderer implements Renderer {
         /**
          * Set the value of flag for stripping new lines.
          *
-         * @param stripNewlines true for stripping new lines and render text as "single line",
+         * @param stripNewlines true for stripping new lines and render text as "single
+         *                      line",
          *                      false for keeping all line breaks
          * @return {@code this}
-         * @deprecated Use {@link #lineBreakRendering(LineBreakRendering)} with {@link LineBreakRendering#STRIP} instead
+         * @deprecated Use {@link #lineBreakRendering(LineBreakRendering)} with
+         *             {@link LineBreakRendering#STRIP} instead
          */
         @Deprecated
         public Builder stripNewlines(boolean stripNewlines) {
@@ -96,11 +101,14 @@ public class TextContentRenderer implements Renderer {
         }
 
         /**
-         * Add a factory for instantiating a node renderer (done when rendering). This allows to override the rendering
+         * Add a factory for instantiating a node renderer (done when rendering). This
+         * allows to override the rendering
          * of node types or define rendering for custom node types.
          * <p>
-         * If multiple node renderers for the same node type are created, the one from the factory that was added first
-         * "wins". (This is how the rendering for core node types can be overridden; the default rendering comes last.)
+         * If multiple node renderers for the same node type are created, the one from
+         * the factory that was added first
+         * "wins". (This is how the rendering for core node types can be overridden; the
+         * default rendering comes last.)
          *
          * @param nodeRendererFactory the factory for creating a node renderer
          * @return {@code this}
@@ -117,8 +125,7 @@ public class TextContentRenderer implements Renderer {
         public Builder extensions(Iterable<? extends Extension> extensions) {
             for (Extension extension : extensions) {
                 if (extension instanceof TextContentRenderer.TextContentRendererExtension) {
-                    TextContentRenderer.TextContentRendererExtension textContentRendererExtension =
-                            (TextContentRenderer.TextContentRendererExtension) extension;
+                    TextContentRenderer.TextContentRendererExtension textContentRendererExtension = (TextContentRenderer.TextContentRendererExtension) extension;
                     textContentRendererExtension.extend(this);
                 }
             }

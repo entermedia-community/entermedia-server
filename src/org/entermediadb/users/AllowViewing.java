@@ -30,10 +30,12 @@ import org.openedit.page.manage.PageManager;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.strainer.Filter;
 
-
 /**
- * This action enforces that the currently logged-in user has a certain specified permission, and
- * redirects to the login page otherwise.  A sample configuration would look like this:
+ * This action enforces that the currently logged-in user has a certain
+ * specified permission, and
+ * redirects to the login page otherwise. A sample configuration would look like
+ * this:
+ * 
  * <pre>
  *   &lt;path-action path="/openedit/*" name="enforceAdminPrivilege"&gt;
  *     &lt;login-path&gt;/openedit/authentication/logon.html&lt;/login-path&gt;
@@ -46,8 +48,7 @@ import org.openedit.util.strainer.Filter;
  *
  * @author Eric Galluzzo
  */
-public class AllowViewing
-{
+public class AllowViewing {
 	protected static final String DEFAULT_LOGIN_PATH = "/system/commonbase/components/authentication/logon.html";
 	protected static final String DEFAULT_ADMIN_PERMISSION = "oe.administration";
 
@@ -57,74 +58,60 @@ public class AllowViewing
 	protected List fieldExcludes;
 	protected PageManager fieldPageManager;
 	protected boolean fieldForbid;
-	
 
-	public boolean isForbid()
-	{
+	public boolean isForbid() {
 		return fieldForbid;
 	}
 
-	public void setForbid(boolean inForbid)
-	{
+	public void setForbid(boolean inForbid) {
 		fieldForbid = inForbid;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.openedit.action.Command#execute(java.util.Map, java.util.Map)
 	 */
-	public void execute( WebPageRequest inReq ) throws OpenEditException
-	{
+	public void execute(WebPageRequest inReq) throws OpenEditException {
 		configure(inReq);
-		Page page = (Page) inReq.getPage(); //urlUtils.requestPath();
+		Page page = (Page) inReq.getPage(); // urlUtils.requestPath();
 		String requestPath = page.getPath();
 
-		if (!inExcludeList(requestPath))
-		{
-			Permission filter = inReq.getPage().getPermission("view"); 		
-			if ( (filter != null) )			
-			{
-				if ( !filter.passes( inReq ))
-				{
-					 if( isForbid() )
-					 {
-						if( inReq.getResponse() != null )
-						{
+		if (!inExcludeList(requestPath)) {
+			Permission filter = inReq.getPage().getPermission("view");
+			if ((filter != null)) {
+				if (!filter.passes(inReq)) {
+					if (isForbid()) {
+						if (inReq.getResponse() != null) {
 							inReq.getResponse().setStatus(HttpServletResponse.SC_FORBIDDEN);
 							inReq.setHasRedirected(true);
 						}
-					 }
-					 else
-					 {
-						log.error(inReq.getUserName() + " has no view permission" + filter + " for " + page.getPath() + " sending redirect to login. Profile ");
-						if(inReq.getUserProfile() != null)
-						{
-							log.error("Profile was " + inReq.getUserProfile() );
+					} else {
+						log.error(inReq.getUserName() + " has no view permission" + filter + " for " + page.getPath()
+								+ " sending redirect to login. Profile ");
+						if (inReq.getUserProfile() != null) {
+							log.error("Profile was " + inReq.getUserProfile());
 						}
-	
-						 //this is the original page someone might have been on. Used in login
-						 inReq.putSessionValue("originalEntryPage",inReq.getContentPage().getPath() );
-						 String fullOriginalEntryPage = (String)inReq.getSessionValue("fullOriginalEntryPage");
-						 if( fullOriginalEntryPage == null)
-						 {
-							 inReq.putSessionValue("fullOriginalEntryPage",inReq.getPathUrlWithoutContext() );
-						 }
-						 
-						 String showpageanyways = inReq.findActionValue("showpageanyways");
-						 
-						 if( Boolean.parseBoolean(showpageanyways))
-						 {
-							 inReq.setCancelActions(true);
-						 }
-						 else
-						 {
-							//inReq.putPageValue("oe-exception", "You do not have permission to view "+ page.getPath()  );
-							 inReq.redirect( getLoginPath() );
-						 }
-					 }
+
+						// this is the original page someone might have been on. Used in login
+						inReq.putSessionValue("originalEntryPage", inReq.getContentPage().getPath());
+						String fullOriginalEntryPage = (String) inReq.getSessionValue("fullOriginalEntryPage");
+						if (fullOriginalEntryPage == null) {
+							inReq.putSessionValue("fullOriginalEntryPage", inReq.getPathUrlWithoutContext());
+						}
+
+						String showpageanyways = inReq.findActionValue("showpageanyways");
+
+						if (Boolean.parseBoolean(showpageanyways)) {
+							inReq.setCancelActions(true);
+						} else {
+							// inReq.putPageValue("oe-exception", "You do not have permission to view "+
+							// page.getPath() );
+							inReq.redirect(getLoginPath());
+						}
+					}
 				}
-			}
-			else
-			{
+			} else {
 				log.info("No view restrictions have been set for " + requestPath);
 			}
 		}
@@ -132,98 +119,92 @@ public class AllowViewing
 	}
 
 	/**
-	 * Determine whether the request path is in the exclude list in the given configuration.
+	 * Determine whether the request path is in the exclude list in the given
+	 * configuration.
 	 *
 	 * @param inPath The request
 	 *
 	 * @return <code>true</code> if the path is excluded, <code>false</code> if not
 	 */
-	protected boolean inExcludeList(String inPath)
-	{
-		for (Iterator iter = getExcludes().iterator(); iter.hasNext();)
-		{
-			String path = (String)iter.next();
+	protected boolean inExcludeList(String inPath) {
+		for (Iterator iter = getExcludes().iterator(); iter.hasNext();) {
+			String path = (String) iter.next();
 
-			if (PathUtilities.match(inPath, path))
-			{
+			if (PathUtilities.match(inPath, path)) {
 				log.debug(
-					"Excluded path " + inPath + " from " + getClass().getName() +
-					" because it matched " + path);
+						"Excluded path " + inPath + " from " + getClass().getName() +
+								" because it matched " + path);
 
 				return true;
 			}
 		}
-		if ( inPath.equals( getLoginPath() ) )
-		{
+		if (inPath.equals(getLoginPath())) {
 			return true;
 		}
 		String relative = PathUtilities.resolveRelativePath(getLoginPath(), inPath);
-		if ( inPath.equals( relative ) )
-		{
+		if (inPath.equals(relative)) {
 			return true;
 		}
 		return false;
 	}
-	/* (non-Javadoc)
-	 * @see org.openedit.command.Command#load(com.anthonyeden.lib.config.Configuration)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.openedit.command.Command#load(com.anthonyeden.lib.config.Configuration)
 	 */
-	public void configure( WebPageRequest inReq )
-	{
-		fieldLoginPath = inReq.findValue( "login-path" );
-		
+	public void configure(WebPageRequest inReq) {
+		fieldLoginPath = inReq.findValue("login-path");
+
 		Configuration element = inReq.getCurrentAction().getConfig();
 		PageSettings settings = inReq.getPage().getPageSettings();
-		for (Iterator iter = element.getChildren("exclude").iterator(); iter.hasNext();)
-		{
+		for (Iterator iter = element.getChildren("exclude").iterator(); iter.hasNext();) {
 			Configuration excludeElem = (Configuration) iter.next();
 			String path = excludeElem.getValue();
 			path = settings.replaceProperty(path);
-			getExcludes().add( path );
+			getExcludes().add(path);
 		}
 		String forbid = element.getAttribute("forbid");
 		setForbid(Boolean.valueOf(forbid));
 	}
-	
-	protected String getLoginPath()
-	{
-		if (fieldLoginPath == null)
-		{
+
+	protected String getLoginPath() {
+		if (fieldLoginPath == null) {
 			fieldLoginPath = DEFAULT_LOGIN_PATH;
 		}
 		return fieldLoginPath;
 	}
-	
-	protected List getExcludes()
-	{
-		if (fieldExcludes == null)
-		{
+
+	protected List getExcludes() {
+		if (fieldExcludes == null) {
 			fieldExcludes = new ArrayList();
 		}
 		return fieldExcludes;
 	}
-	public PageManager getPageManager()
-	{
+
+	public PageManager getPageManager() {
 		return fieldPageManager;
 	}
-	public void setPageManager( PageManager pageManager )
-	{
+
+	public void setPageManager(PageManager pageManager) {
 		fieldPageManager = pageManager;
 	}
 
 	/**
 	 * Determine whether the given user passes the given filter.
 	 *
-	 * @param inReq The user to query
+	 * @param inReq    The user to query
 	 * @param inFilter The filter through which to pass the user
 	 *
-	 * @return boolean  <code>true</code> if the user passes, <code>false</code> if not
+	 * @return boolean <code>true</code> if the user passes, <code>false</code> if
+	 *         not
 	 *
 	 * @throws OpenEditException If the filter threw an exception
 	 */
-	protected boolean userPassesFilter( Filter inFilter )
-		throws OpenEditException
-	{
-		return ((inFilter == null) || inFilter.passes( this ));
+	protected boolean userPassesFilter(Filter inFilter)
+			throws OpenEditException {
+		return ((inFilter == null) || inFilter.passes(this));
 	}
 
 }

@@ -9,17 +9,17 @@ import org.entermediadb.projects.LibraryCollection;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 
-public interface DesktopEventListener
-{
-	//public void downloadFiles(String inPath,Collection<String> inSubFolders, Collection inAssets);
+public interface DesktopEventListener {
+	// public void downloadFiles(String inPath,Collection<String> inSubFolders,
+	// Collection inAssets);
 
-	public void importFiles(MediaArchive inArchive,LibraryCollection inCollection, String path);
+	public void importFiles(MediaArchive inArchive, LibraryCollection inCollection, String path);
 
 	public void uploadFile(String path, Map inVariables);
 
 	public void openRemoteFolder(String inPath);
 
-	public void downloadFolders(MediaArchive inArchive,LibraryCollection inCollection, Map inRoot);
+	public void downloadFolders(MediaArchive inArchive, LibraryCollection inCollection, Map inRoot);
 
 	public void replacedWithNewDesktop(Desktop inDesktop);
 
@@ -28,12 +28,11 @@ public interface DesktopEventListener
 	public void downloadCategory(MediaArchive inArchive, Category inCategory, Data inUserdownload, Map children);
 
 	public void openAsset(MediaArchive inArchive, Asset inAsset);
-	
+
 	public void sendCommand(MediaArchive inArchive, Map inCommandData);
 
 	public Map sendCommandAndWait(MediaArchive inArchive, JSONObject inCommand);
 
 	public void openCategoryPath(MediaArchive inArchive, String inCategoryPath);
-
 
 }

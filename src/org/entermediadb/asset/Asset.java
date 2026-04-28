@@ -14,9 +14,7 @@ import org.openedit.data.SaveableData;
 import org.openedit.data.SearchDataEnabled;
 import org.openedit.users.User;
 
-public interface Asset  extends MultiValued, SaveableData, SearchDataEnabled, RecordStatusEnabled, DataLoaded
-{
-
+public interface Asset extends MultiValued, SaveableData, SearchDataEnabled, RecordStatusEnabled, DataLoaded {
 
 	boolean isLocked();
 
@@ -48,7 +46,6 @@ public interface Asset  extends MultiValued, SaveableData, SearchDataEnabled, Re
 
 	String toString(String inLocale);
 
-
 	void removeProperty(String inKey);
 
 	void addCategory(Category inCatid);
@@ -72,7 +69,7 @@ public interface Asset  extends MultiValued, SaveableData, SearchDataEnabled, Re
 
 	Collection getCollections();
 
-	//Collection getLibraries();
+	// Collection getLibraries();
 
 	void clearCategories();
 
@@ -162,9 +159,8 @@ public interface Asset  extends MultiValued, SaveableData, SearchDataEnabled, Re
 
 	boolean clearParentCategories();
 
-	//void toggleLock(User inUser);
-	
-	void lock(Boolean inLock, User inUser);
+	// void toggleLock(User inUser);
 
+	void lock(Boolean inLock, User inUser);
 
 }

@@ -2,15 +2,20 @@ package org.entermediadb.markdown.node;
 
 /**
  * An indented code block, e.g.:
- * <pre><code>
+ * 
+ * <pre>
+ * <code>
  * Code follows:
  *
  *     foo
  *     bar
- * </code></pre>
+ * </code>
+ * </pre>
  * <p>
  *
- * @see <a href="https://spec.commonmark.org/0.31.2/#indented-code-blocks">CommonMark Spec</a>
+ * @see <a href=
+ *      "https://spec.commonmark.org/0.31.2/#indented-code-blocks">CommonMark
+ *      Spec</a>
  */
 public class IndentedCodeBlock extends Block {
 

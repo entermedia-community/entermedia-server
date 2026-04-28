@@ -19,31 +19,26 @@ import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.OutputFiller;
 
-public class ScriptMetadataExtractor extends MetadataExtractor
-{
+public class ScriptMetadataExtractor extends MetadataExtractor {
 	private static final Log log = LogFactory.getLog(ScriptMetadataExtractor.class);
 	protected PageManager fieldPageManager;
 
 	OutputFiller filler = new OutputFiller();
 
-	public PageManager getPageManager()
-	{
+	public PageManager getPageManager() {
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager)
-	{
+	public void setPageManager(PageManager inPageManager) {
 		fieldPageManager = inPageManager;
 	}
 
-	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset)
-	{
+	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset) {
 
 		HitTracker sidecarformats = (HitTracker) inArchive.getList("metadatascript");
 
 		ScriptManager manager = (ScriptManager) inArchive.getBean("scriptManager");
-		for (Iterator iterator = sidecarformats.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = sidecarformats.iterator(); iterator.hasNext();) {
 			Data sidecar = (Data) iterator.next();
 			String scriptpath = sidecar.get("script");
 
@@ -56,10 +51,8 @@ public class ScriptMetadataExtractor extends MetadataExtractor
 			Script reportscript = manager.loadScript(page.getPath());
 
 			final StringBuffer output = new StringBuffer();
-			TextAppender appender = new TextAppender()
-			{
-				public void appendText(String inText)
-				{
+			TextAppender appender = new TextAppender() {
+				public void appendText(String inText) {
 					output.append(inText);
 					output.append("<br>");
 				}
@@ -68,8 +61,7 @@ public class ScriptMetadataExtractor extends MetadataExtractor
 			ScriptLogger logs = new ScriptLogger();
 			logs.setPrefix(reportscript.getType());
 			logs.setTextAppender(appender);
-			try
-			{
+			try {
 				logs.startCapture();
 				Map variableMap = new HashMap();
 				variableMap.put("asset", inAsset);
@@ -78,22 +70,19 @@ public class ScriptMetadataExtractor extends MetadataExtractor
 				variableMap.put("log", logs);
 
 				Object returned = manager.execScript(variableMap, reportscript);
-				if (returned != null)
-				{
+				if (returned != null) {
 					output.append("returned: " + returned);
 				}
-			}
-			finally
-			{
+			} finally {
 				logs.stopCapture();
 			}
 
-			//detail ID
+			// detail ID
 
 		}
 
-		//Where do we store the sidecar files?  Generated?  Originals?
-		//Start by checking next to file, add a mask?  ${asset.name}.xls
+		// Where do we store the sidecar files? Generated? Originals?
+		// Start by checking next to file, add a mask? ${asset.name}.xls
 
 		return false;
 	}

@@ -14,96 +14,97 @@ import org.openedit.Data;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 
-public class entermediapublisher extends BasePublisher implements Publisher
-{
+public class entermediapublisher extends BasePublisher implements Publisher {
 	private static final Log log = LogFactory.getLog(entermediapublisher.class);
 	private SAXReader reader = new SAXReader();
-	
-	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
-	{
+
+	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination,
+			Data inPreset, Asset inAsset) {
 		PublishResult result = new PublishResult();
 
 		String servername = inDestination.get("server");
 		String username = inDestination.get("username");
-		//String url = destination.get("url");
-		
+		// String url = destination.get("url");
+
 		log.info("Publishing ${asset} to EnterMedia server ${servername}, with username ${username}.");
-		
+
 		UserManager userManager = (UserManager) mediaArchive.getModuleManager().getBean("userManager");
 		User user = userManager.getUser(username);
-		if(user == null)
-		{
+		if (user == null) {
 			result.setErrorMessage("Unknown user, ${username}");
 			return result;
 		}
-		
-		String password = userManager.decryptPassword(user);
-		
-		MediaUploader uploader = (MediaUploader)mediaArchive.getModuleManager().getBean("mediaUploader");
-		
-		//always send generated media. sometimes add in the original file as well
-		//if preset is original then send all the generated media as well
-		//if preset id is all generated then send all
-		//if preset is a specific generated then just send that
 
-		//upload original and all generated
-		
-		//upload one
-		
-		try
-		{
-			//MediaArchive archive, Asset inAsset, Data inPublishDestination, User inUser )
-			uploader.uploadOriginal(mediaArchive,inAsset, inDestination, user);
+		String password = userManager.decryptPassword(user);
+
+		MediaUploader uploader = (MediaUploader) mediaArchive.getModuleManager().getBean("mediaUploader");
+
+		// always send generated media. sometimes add in the original file as well
+		// if preset is original then send all the generated media as well
+		// if preset id is all generated then send all
+		// if preset is a specific generated then just send that
+
+		// upload original and all generated
+
+		// upload one
+
+		try {
+			// MediaArchive archive, Asset inAsset, Data inPublishDestination, User inUser )
+			uploader.uploadOriginal(mediaArchive, inAsset, inDestination, user);
 			result.setComplete(true);
 			log.info("publishished  ${asset} to EnterMedia server ${servername}");
-		}
-		catch ( Exception ex)
-		{
-			//inPublishDestination(searcher, savequeue, target, "complete", inUser);
+		} catch (Exception ex) {
+			// inPublishDestination(searcher, savequeue, target, "complete", inUser);
 			result.setErrorMessage(ex.toString());
 		}
 		return result;
 	}
-	
-	/*
-	 * public Map<String, String> upload(String server, String inCatalogId, String inSourcePath, File inFile)
-	 
-	{
-		String url =server + "/media/services/" + "/uploadfile.xml?catalogid=" + inCatalogId;
-		PostMethod method = new PostMethod(url);
 
-		try
-		{
-			 def parts =[new FilePart("file", inFile.getName(), inFile),	new StringPart("sourcepath", inSourcePath)] as Part[];
-			
-			method.setRequestEntity( new MultipartRequestEntity(parts, method.getParams()) );
-	
-			Element root = execute(method);
-			Map<String, String> result = new HashMap<String, String>();
-			for(Object o: root.elements("asset"))
-			{
-				Element asset = (Element)o;
-				result.put(asset.attributeValue("id"), asset.attributeValue("sourcepath"));
-			}
-			return result;
-		}
-		catch( Exception e )
-		{
-			return null;
-		}
-	}
-	*/
-	
 	/*
-	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, String presetid)
-	{
-		if( presetid == null)
-		{
-			return mediaArchive.getOriginalDocument(asset);
-		}
-		Data preset = mediaArchive.getSearcherManager().getData( mediaArchive.getCatalogId(), "convertpreset", presetid);
-		return findInputPage(mediaArchive,asset,(Data)preset);
-	}
-	*/
-	
+	 * public Map<String, String> upload(String server, String inCatalogId, String
+	 * inSourcePath, File inFile)
+	 * 
+	 * {
+	 * String url =server + "/media/services/" + "/uploadfile.xml?catalogid=" +
+	 * inCatalogId;
+	 * PostMethod method = new PostMethod(url);
+	 * 
+	 * try
+	 * {
+	 * def parts =[new FilePart("file", inFile.getName(), inFile), new
+	 * StringPart("sourcepath", inSourcePath)] as Part[];
+	 * 
+	 * method.setRequestEntity( new MultipartRequestEntity(parts,
+	 * method.getParams()) );
+	 * 
+	 * Element root = execute(method);
+	 * Map<String, String> result = new HashMap<String, String>();
+	 * for(Object o: root.elements("asset"))
+	 * {
+	 * Element asset = (Element)o;
+	 * result.put(asset.attributeValue("id"), asset.attributeValue("sourcepath"));
+	 * }
+	 * return result;
+	 * }
+	 * catch( Exception e )
+	 * {
+	 * return null;
+	 * }
+	 * }
+	 */
+
+	/*
+	 * protected Page findInputPage(MediaArchive mediaArchive, Asset asset, String
+	 * presetid)
+	 * {
+	 * if( presetid == null)
+	 * {
+	 * return mediaArchive.getOriginalDocument(asset);
+	 * }
+	 * Data preset = mediaArchive.getSearcherManager().getData(
+	 * mediaArchive.getCatalogId(), "convertpreset", presetid);
+	 * return findInputPage(mediaArchive,asset,(Data)preset);
+	 * }
+	 */
+
 }

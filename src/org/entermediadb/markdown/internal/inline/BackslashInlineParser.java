@@ -9,8 +9,10 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * Parse a backslash-escaped special character, adding either the escaped  character, a hard line break
- * (if the backslash is followed by a newline), or a literal backslash to the block's children.
+ * Parse a backslash-escaped special character, adding either the escaped
+ * character, a hard line break
+ * (if the backslash is followed by a newline), or a literal backslash to the
+ * block's children.
  */
 public class BackslashInlineParser implements InlineContentParser {
 

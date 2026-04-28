@@ -13,71 +13,54 @@ import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.Group;
 
-public class OrderSearchSecurity extends BaseSearchSecurity
-{
+public class OrderSearchSecurity extends BaseSearchSecurity {
 	private static final Log log = LogFactory.getLog(OrderSearchSecurity.class);
 
-	public SearchQuery attachSecurity(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery)
-	{
+	public SearchQuery attachSecurity(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery) {
 
-		if (inQuery.isSecurityAttached())
-		{
+		if (inQuery.isSecurityAttached()) {
 			return inQuery;
 		}
 
 		UserProfile profile = inPageRequest.getUserProfile();
-		
 
-		if (profile != null && profile.isInRole("administrator") )
-		{
+		if (profile != null && profile.isInRole("administrator")) {
 			return inQuery;
 		}
-		
-		if (inPageRequest.hasPermission("viewallorders") )
-		{
+
+		if (inPageRequest.hasPermission("viewallorders")) {
 			return inQuery;
 		}
-			
 
 		Collection groupids = new ArrayList();
 		UserProfile inUserprofile = inPageRequest.getUserProfile();
 
-		if (inUserprofile == null || inUserprofile.getUser() == null)
-		{
+		if (inUserprofile == null || inUserprofile.getUser() == null) {
 			groupids.add("anonymous");
-		}
-		else
-		{
-			for (Iterator iterator = inUserprofile.getUser().getGroups().iterator(); iterator.hasNext();)
-			{
+		} else {
+			for (Iterator iterator = inUserprofile.getUser().getGroups().iterator(); iterator.hasNext();) {
 				Group group = (Group) iterator.next();
 				groupids.add(group.getId());
 			}
 		}
 		String roleid = null;
-		if (inUserprofile != null && inUserprofile.getSettingsGroup() != null)
-		{
+		if (inUserprofile != null && inUserprofile.getSettingsGroup() != null) {
 			roleid = inUserprofile.getSettingsGroup().getId();
-		}
-		else
-		{
+		} else {
 			roleid = "anonymous";
 		}
 
 		String userid = inPageRequest.getUserName();
-		
-		
-		if (userid == null)
-		{
-		
+
+		if (userid == null) {
+
 			userid = "null";
 		}
-		
 
 		QueryBuilder builder = inSearcher.query().or().orgroup("viewgroups", groupids)
-					.exact("viewroles", roleid)
-					.exact("viewusers", userid)
-					.exact("userid", userid);
+				.exact("viewroles", roleid)
+				.exact("viewusers", userid)
+				.exact("userid", userid);
 		builder.exact("securityenabled", "false");
 		SearchQuery securityfilter = builder.getQuery();
 

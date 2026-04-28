@@ -2,6 +2,7 @@ package org.entermediadb.markdown.node;
 
 /**
  * An image, e.g.:
+ * 
  * <pre>
  * ![foo](/url "title")
  * </pre>

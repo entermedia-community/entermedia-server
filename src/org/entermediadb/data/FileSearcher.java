@@ -127,11 +127,11 @@ public class FileSearcher extends BaseSearcher implements PageAccessListener {
 
 	}
 
-	 public Object searchById(String inId){
-         
-         return getPageManager().getPage(inId);
-         
- }
+	public Object searchById(String inId) {
+
+		return getPageManager().getPage(inId);
+
+	}
 
 	public HitTracker search(SearchQuery inQuery) {
 
@@ -141,7 +141,7 @@ public class FileSearcher extends BaseSearcher implements PageAccessListener {
 
 			FileSearchQuery query = (FileSearchQuery) inQuery;
 			Page root = getPageManager().getPage(query.getRootFolder());
-			//getPageManager().clearCache();
+			// getPageManager().clearCache();
 
 			collectHits(root, results, (FileSearchQuery) inQuery);
 			sortResults(inQuery, results);
@@ -195,7 +195,7 @@ public class FileSearcher extends BaseSearcher implements PageAccessListener {
 
 			Term term = (Term) iterator.next();
 			if ("betweendates".equals(term.getOperation())) {
-				Date before = 	(Date) term.getValue("lowDate");
+				Date before = (Date) term.getValue("lowDate");
 				Date after = (Date) term.getValue("highDate");
 				String id = term.getDetail().getId();// effectivedate
 				String date = inPage.getProperty(id);

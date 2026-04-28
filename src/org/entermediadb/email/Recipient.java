@@ -20,75 +20,64 @@ import javax.mail.internet.InternetAddress;
  * @author Matt Avery, mavery@einnovation.com
  * @deprecated use InternetAddress
  */
-public class Recipient 
-{
+public class Recipient {
 	protected InternetAddress fieldInternetAddress;
 
 	protected String fieldEmailAddress;
 	protected String fieldFirstName;
 	protected String fieldLastName;
-	public String getEmailAddress()
-	{
+
+	public String getEmailAddress() {
 		return fieldEmailAddress;
 	}
 
-	public String getFirstName()
-	{
+	public String getFirstName() {
 		return fieldFirstName;
 	}
-	public InternetAddress getInternetAddress()
-	{
+
+	public InternetAddress getInternetAddress() {
 		return fieldInternetAddress;
 	}
 
-	public void setInternetAddress(InternetAddress inInternetAddress)
-	{
+	public void setInternetAddress(InternetAddress inInternetAddress) {
 		fieldInternetAddress = inInternetAddress;
 	}
-	public String getLastName()
-	{
+
+	public String getLastName() {
 		return fieldLastName;
 	}
 
-	public void setEmailAddress(String string)
-	{
+	public void setEmailAddress(String string) {
 		fieldEmailAddress = string;
 	}
 
-	public void setFirstName(String string)
-	{
+	public void setFirstName(String string) {
 		fieldFirstName = string;
 	}
 
-	public void setLastName(String string)
-	{
+	public void setLastName(String string) {
 		fieldLastName = string;
 	}
 
-	public String getFullName()
-	{
+	public String getFullName() {
 		StringBuffer name = new StringBuffer();
-		if ( getFirstName() != null)
-		{
+		if (getFirstName() != null) {
 			name.append(getFirstName());
 		}
-		if ( getLastName() != null)
-		{
-			if( name.length() > 0)
-			{
+		if (getLastName() != null) {
+			if (name.length() > 0) {
 				name.append(" ");
 			}
 			name.append(getLastName());
 		}
-		if ( name.indexOf(",") > -1 || name.indexOf(".") > -1 )
-		{
-			name.insert(0,"\"");
+		if (name.indexOf(",") > -1 || name.indexOf(".") > -1) {
+			name.insert(0, "\"");
 			name.append("\"");
 		}
 		return name.toString();
 	}
-	public String toString()
-	{
+
+	public String toString() {
 		return getFullName() + " <" + getEmailAddress() + ">";
 	}
 }

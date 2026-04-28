@@ -18,31 +18,28 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
 /**
- * This class is a Web tree, which can render a <code>{@link WebTreeModel}</code> to an XML
+ * This class is a Web tree, which can render a
+ * <code>{@link WebTreeModel}</code> to an XML
  * document.
  *
  * @author Eric Galluzzo
  */
-public class WebTree implements Serializable
-{
+public class WebTree implements Serializable {
 	private static final Log log = LogFactory.getLog(WebTree.class);
-	
+
 	protected transient String fieldName;
 	protected transient String fieldId;
-	
-	public String getRootId()
-	{
-		String id = getModel().getId( getModel().getRoot() );
+
+	public String getRootId() {
+		String id = getModel().getId(getModel().getRoot());
 		return id;
 	}
 
 	protected transient WebTreeModel fieldModel;
 	protected transient TreeRenderer fieldTreeRenderer;
 
-	public WebTree()
-	{
+	public WebTree() {
 	}
 
 	/**
@@ -50,20 +47,15 @@ public class WebTree implements Serializable
 	 *
 	 * @param inModel DOCUMENT ME!
 	 */
-	public WebTree(WebTreeModel inModel)
-	{
+	public WebTree(WebTreeModel inModel) {
 		setModel(inModel);
-		//expandNode(getModel().getRoot());
+		// expandNode(getModel().getRoot());
 	}
 
-	public boolean isEmpty()
-	{
-		if ((getModel() == null) || (getModel().getChildCount(getModel().getRoot()) == 0))
-		{
+	public boolean isEmpty() {
+		if ((getModel() == null) || (getModel().getChildCount(getModel().getRoot()) == 0)) {
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
@@ -73,12 +65,10 @@ public class WebTree implements Serializable
 	 *
 	 * @param model The model to set
 	 */
-	public void setModel(WebTreeModel model)
-	{
+	public void setModel(WebTreeModel model) {
 		fieldModel = model;
-		if ( fieldModel != null && fieldTreeRenderer != null)
-		{
-    		getTreeRenderer().expandNode( fieldModel.getRoot() );
+		if (fieldModel != null && fieldTreeRenderer != null) {
+			getTreeRenderer().expandNode(fieldModel.getRoot());
 		}
 	}
 
@@ -87,36 +77,29 @@ public class WebTree implements Serializable
 	 *
 	 * @return Returns a WebTreeModel
 	 */
-	public WebTreeModel getModel()
-	{
-		if (fieldModel == null)
-		{
+	public WebTreeModel getModel() {
+		if (fieldModel == null) {
 			fieldModel = new DefaultWebTreeModel();
 		}
 
 		return fieldModel;
 	}
 
-	public Object getChildChildren(int inCount)
-	{
-		List children = getModel().getChildren(getModel().getRoot() );
-		if( children.size() < inCount)
-		{
+	public Object getChildChildren(int inCount) {
+		List children = getModel().getChildren(getModel().getRoot());
+		if (children.size() < inCount) {
 			Object parent = children.get(inCount);
 			return getModel().getChildren(parent);
 		}
 		return null;
 	}
-	
-	
-	
+
 	/**
 	 * DOCUMENT ME!
 	 *
 	 * @param inName
 	 */
-	public void setName(String inName)
-	{
+	public void setName(String inName) {
 		fieldName = inName;
 	}
 
@@ -125,10 +108,8 @@ public class WebTree implements Serializable
 	 *
 	 * @return
 	 */
-	public String getName()
-	{
-		if (fieldName == null)
-		{
+	public String getName() {
+		if (fieldName == null) {
 			fieldName = "WebTree";
 		}
 
@@ -140,19 +121,17 @@ public class WebTree implements Serializable
 	 *
 	 * @return DOCME
 	 */
-	public String renderAsJavaScript()
-	{		
+	public String renderAsJavaScript() {
 		return render();
 	}
-	public String render()
-	{
+
+	public String render() {
 		TreeRenderer renderer = getTreeRenderer();
 		return renderer.renderAsString();
 	}
-	public String render(String inNodeId)
-	{
-		if( inNodeId == null)
-		{
+
+	public String render(String inNodeId) {
+		if (inNodeId == null) {
 			log.error(getName() + " was passed in a null node id ");
 			inNodeId = "_";
 		}
@@ -160,58 +139,47 @@ public class WebTree implements Serializable
 		return renderer.renderAsString(inNodeId);
 	}
 
-	public TreeRenderer getTreeRenderer()
-	{
-		if (fieldTreeRenderer == null)
-		{
+	public TreeRenderer getTreeRenderer() {
+		if (fieldTreeRenderer == null) {
 			fieldTreeRenderer = new WebTreeNodeTreeRenderer(this);
 		}
-		return fieldTreeRenderer;	
+		return fieldTreeRenderer;
 	}
 
-	public void setTreeRenderer(TreeRenderer inTreeRenderer)
-	{
+	public void setTreeRenderer(TreeRenderer inTreeRenderer) {
 		fieldTreeRenderer = inTreeRenderer;
 	}
 
-	public String toString()
-	{
+	public String toString() {
 		return getTreeRenderer().renderAsString();
 	}
 
-	public String getId()
-	{
+	public String getId() {
 		return fieldId;
 	}
 
-	public void setId(String inId)
-	{
+	public void setId(String inId) {
 		fieldId = inId;
 	}
-	
-	public boolean isChildSelected(Object inChild) 
-	{
+
+	public boolean isChildSelected(Object inChild) {
 		Object check = getTreeRenderer().getSelectedNode();
-		while( check != null)
-		{
-			if( check == inChild)
-			{
+		while (check != null) {
+			if (check == inChild) {
 				return true;
 			}
 			check = getModel().getParent(check);
 		}
 		return false;
 	}
-	
-	public Object selectNodeByUrl(String inURL)
-	{
+
+	public Object selectNodeByUrl(String inURL) {
 		Object node = getTreeRenderer().setSelectedNodeByUrl(inURL);
 		return node;
 	}
-	
-	
-	public boolean isExpanded(Object inNode){
+
+	public boolean isExpanded(Object inNode) {
 		return getTreeRenderer().hasBeenExpanded(inNode);
 	}
-	
+
 }

@@ -6,9 +6,9 @@ public class AvailableTool {
     protected String toolName;
 
     public AvailableTool(String name, String description) {
-        //TODO Auto-generated constructor stub
+        // TODO Auto-generated constructor stub
         this.toolId = name;
-        this.toolName = description;    
+        this.toolName = description;
     }
 
     public String getToolId() {

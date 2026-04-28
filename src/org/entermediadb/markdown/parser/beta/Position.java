@@ -1,7 +1,8 @@
 package org.entermediadb.markdown.parser.beta;
 
 /**
- * Position within a {@link Scanner}. This is intentionally kept opaque so as not to expose the internal structure of
+ * Position within a {@link Scanner}. This is intentionally kept opaque so as
+ * not to expose the internal structure of
  * the Scanner.
  */
 public class Position {

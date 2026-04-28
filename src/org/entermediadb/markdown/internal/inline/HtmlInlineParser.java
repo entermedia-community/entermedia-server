@@ -13,15 +13,20 @@ public class HtmlInlineParser implements InlineContentParser {
 
     private static final AsciiMatcher asciiLetter = AsciiMatcher.builder().range('A', 'Z').range('a', 'z').build();
 
-    // spec: A tag name consists of an ASCII letter followed by zero or more ASCII letters, digits, or hyphens (-).
+    // spec: A tag name consists of an ASCII letter followed by zero or more ASCII
+    // letters, digits, or hyphens (-).
     private static final AsciiMatcher tagNameStart = asciiLetter;
     private static final AsciiMatcher tagNameContinue = tagNameStart.newBuilder().range('0', '9').c('-').build();
 
-    // spec: An attribute name consists of an ASCII letter, _, or :, followed by zero or more ASCII letters, digits,
-    // _, ., :, or -. (Note: This is the XML specification restricted to ASCII. HTML5 is laxer.)
+    // spec: An attribute name consists of an ASCII letter, _, or :, followed by
+    // zero or more ASCII letters, digits,
+    // _, ., :, or -. (Note: This is the XML specification restricted to ASCII.
+    // HTML5 is laxer.)
     private static final AsciiMatcher attributeStart = asciiLetter.newBuilder().c('_').c(':').build();
-    private static final AsciiMatcher attributeContinue = attributeStart.newBuilder().range('0', '9').c('.').c('-').build();
-    // spec: An unquoted attribute value is a nonempty string of characters not including whitespace, ", ', =, <, >, or `.
+    private static final AsciiMatcher attributeContinue = attributeStart.newBuilder().range('0', '9').c('.').c('-')
+            .build();
+    // spec: An unquoted attribute value is a nonempty string of characters not
+    // including whitespace, ", ', =, <, >, or `.
     private static final AsciiMatcher attributeValueEnd = AsciiMatcher.builder()
             .c(' ').c('\t').c('\n').c('\u000B').c('\f').c('\r')
             .c('"').c('\'').c('=').c('<').c('>').c('`')
@@ -77,15 +82,18 @@ public class HtmlInlineParser implements InlineContentParser {
     }
 
     private static boolean tryOpenTag(Scanner scanner) {
-        // spec: An open tag consists of a < character, a tag name, zero or more attributes, optional whitespace,
+        // spec: An open tag consists of a < character, a tag name, zero or more
+        // attributes, optional whitespace,
         // an optional / character, and a > character.
         scanner.next();
         scanner.match(tagNameContinue);
         boolean whitespace = scanner.whitespace() >= 1;
-        // spec: An attribute consists of whitespace, an attribute name, and an optional attribute value specification.
+        // spec: An attribute consists of whitespace, an attribute name, and an optional
+        // attribute value specification.
         while (whitespace && scanner.match(attributeStart) >= 1) {
             scanner.match(attributeContinue);
-            // spec: An attribute value specification consists of optional whitespace, a = character,
+            // spec: An attribute value specification consists of optional whitespace, a =
+            // character,
             // optional whitespace, and an attribute value.
             whitespace = scanner.whitespace() >= 1;
             if (scanner.next('=')) {
@@ -119,7 +127,8 @@ public class HtmlInlineParser implements InlineContentParser {
     }
 
     private static boolean tryClosingTag(Scanner scanner) {
-        // spec: A closing tag consists of the string </, a tag name, optional whitespace, and the character >.
+        // spec: A closing tag consists of the string </, a tag name, optional
+        // whitespace, and the character >.
         scanner.next();
         if (scanner.match(tagNameStart) >= 1) {
             scanner.match(tagNameContinue);
@@ -130,7 +139,8 @@ public class HtmlInlineParser implements InlineContentParser {
     }
 
     private static boolean tryProcessingInstruction(Scanner scanner) {
-        // spec: A processing instruction consists of the string <?, a string of characters not including the string ?>,
+        // spec: A processing instruction consists of the string <?, a string of
+        // characters not including the string ?>,
         // and the string ?>.
         scanner.next();
         while (scanner.find('?') > 0) {
@@ -143,9 +153,11 @@ public class HtmlInlineParser implements InlineContentParser {
     }
 
     private static boolean tryComment(Scanner scanner) {
-        // spec: An [HTML comment](@) consists of `<!-->`, `<!--->`, or  `<!--`, a string of
+        // spec: An [HTML comment](@) consists of `<!-->`, `<!--->`, or `<!--`, a string
+        // of
         // characters not including the string `-->`, and `-->` (see the
-        // [HTML spec](https://html.spec.whatwg.org/multipage/parsing.html#markup-declaration-open-state)).
+        // [HTML
+        // spec](https://html.spec.whatwg.org/multipage/parsing.html#markup-declaration-open-state)).
 
         // Skip first `-`
         scanner.next();
@@ -169,7 +181,8 @@ public class HtmlInlineParser implements InlineContentParser {
     }
 
     private static boolean tryCdata(Scanner scanner) {
-        // spec: A CDATA section consists of the string <![CDATA[, a string of characters not including the string ]]>,
+        // spec: A CDATA section consists of the string <![CDATA[, a string of
+        // characters not including the string ]]>,
         // and the string ]]>.
 
         // Skip `[`
@@ -189,7 +202,8 @@ public class HtmlInlineParser implements InlineContentParser {
     }
 
     private static boolean tryDeclaration(Scanner scanner) {
-        // spec: A declaration consists of the string <!, an ASCII letter, zero or more characters not including
+        // spec: A declaration consists of the string <!, an ASCII letter, zero or more
+        // characters not including
         // the character >, and the character >.
         scanner.match(asciiLetter);
         if (scanner.whitespace() <= 0) {

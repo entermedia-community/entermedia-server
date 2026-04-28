@@ -8,7 +8,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The node renderer that renders all the core nodes (comes last in the order of node renderers).
+ * The node renderer that renders all the core nodes (comes last in the order of
+ * node renderers).
  */
 public class CoreHtmlNodeRenderer extends AbstractVisitor implements NodeRenderer {
 
@@ -42,8 +43,7 @@ public class CoreHtmlNodeRenderer extends AbstractVisitor implements NodeRendere
                 Code.class,
                 HtmlInline.class,
                 SoftLineBreak.class,
-                HardLineBreak.class
-        );
+                HardLineBreak.class);
     }
 
     @Override

@@ -52,7 +52,7 @@ public class CategoryEditModule extends BaseMediaModule {
 		categoryeditor.saveCategory(newcategory);
 		inContext.putPageValue("category", newcategory);
 	}
-	
+
 	public void renameCategory(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		String category1Id = inReq.getRequestParameter("categoryid");
@@ -65,8 +65,6 @@ public class CategoryEditModule extends BaseMediaModule {
 		searcher.saveData(cat);
 	}
 
-	
-	
 	public void handlePaste(WebPageRequest inContext) throws OpenEditException {
 		CategoryEditor editor = getCategoryEditor(inContext);
 		MediaArchive archive = editor.getMediaArchive();
@@ -77,7 +75,8 @@ public class CategoryEditModule extends BaseMediaModule {
 		String targetId = inContext.getRequestParameter("targetid");
 
 		if (sourceId == null || targetId == null || mode == null) {
-			log.warn("Missing required parameters for paste. mode=" + mode + " source=" + sourceId + " target=" + targetId);
+			log.warn("Missing required parameters for paste. mode=" + mode + " source=" + sourceId + " target="
+					+ targetId);
 			return;
 		}
 
@@ -99,8 +98,7 @@ public class CategoryEditModule extends BaseMediaModule {
 			List descendants = source.getChildren();
 			String sourceroot = source.getCategoryPath();
 			String destroot = target.getCategoryPath();
-			for (Iterator iterator = descendants.iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = descendants.iterator(); iterator.hasNext();) {
 				Category copyitem = (Category) iterator.next();
 				String currentPath = copyitem.getCategoryPath();
 				if (currentPath.startsWith(sourceroot)) {
@@ -118,21 +116,14 @@ public class CategoryEditModule extends BaseMediaModule {
 		}
 	}
 
-
-	
-	
-	public void moveCategory(WebPageRequest inContext) throws OpenEditException 
-	{
+	public void moveCategory(WebPageRequest inContext) throws OpenEditException {
 		CategoryEditor categoryeditor = getCategoryEditor(inContext);
 
 		String category1Id = inContext.getRequestParameter("categoryid");
 		Category category1 = null;
-		if( category1Id == null)
-		{
+		if (category1Id == null) {
 			category1 = categoryeditor.getCurrentCategory();
-		}
-		else
-		{
+		} else {
 			category1 = categoryeditor.getCategory(category1Id);
 		}
 		String category2Id = inContext.getRequestParameter("categoryid2");
@@ -149,8 +140,8 @@ public class CategoryEditModule extends BaseMediaModule {
 				category2.addChild(category1);
 
 				categoryeditor.saveCategory(category1, true);
-				//categoryeditor.saveCategory(category2);
-				
+				// categoryeditor.saveCategory(category2);
+
 			}
 		}
 	}
@@ -210,67 +201,64 @@ public class CategoryEditModule extends BaseMediaModule {
 		// check for a web tree?
 
 	}
-	
+
 	public void toggleFeatured(WebPageRequest inReq) throws OpenEditException {
 		String categoryid = inReq.getRequestParameter("categoryid");
 		CategoryEditor categoryEditor = getCategoryEditor(inReq);
 		Category cat = categoryEditor.getMediaArchive().getCategory(categoryid);
-		if(cat == null) {
+		if (cat == null) {
 			return;
 		}
-		if (cat.getBoolean("isfeatured")) 
-		{
+		if (cat.getBoolean("isfeatured")) {
 			cat.setProperty("isfeatured", "false");
-		}
-		else
-		{
+		} else {
 			cat.setProperty("isfeatured", "true");
 		}
 		categoryEditor.saveCategory(cat);
 		categoryEditor.getMediaArchive().clearCaches();
-		
-		HitTracker tracker = categoryEditor.getMediaArchive().query("asset").exact("category",cat).search();
+
+		HitTracker tracker = categoryEditor.getMediaArchive().query("asset").exact("category", cat).search();
 		tracker.enableBulkOperations();
-		if( tracker.size() < 10000 )
-		{
-			Searcher searcher = categoryEditor.getMediaArchive().getSearcher("asset");	
-			for (int i=0;i<tracker.getTotalPages();i++)
-			{
+		if (tracker.size() < 10000) {
+			Searcher searcher = categoryEditor.getMediaArchive().getSearcher("asset");
+			for (int i = 0; i < tracker.getTotalPages(); i++) {
 				Collection page = tracker.getPageOfHits();
 				searcher.saveAllData(page, null);
 			}
 		}
-		
-	}
-	
-	
-/*
-	public void resizeAllImages(WebPageRequest inContext) throws Exception {
-		CategoryEditor editor = getCategoryEditor(inContext);
 
-		boolean createthumb = !(inContext.getRequestParameter("createthumb") == null);
-		boolean createmedium = !(inContext.getRequestParameter("createmedium") == null);
-		boolean replacethumb = !(inContext.getRequestParameter("replacethumb") == null);
-		boolean replacemedium = !(inContext
-				.getRequestParameter("replacemedium") == null);
-		String cat = inContext.getRequestParameter("categoryid");
-		Searcher targetsearcher = editor.getMediaArchive().getAssetSearcher();
-		SearchQuery q = targetsearcher.createSearchQuery();
-		q.addMatches("categoryid", cat);
-
-		try {
-			List failures = editor
-					.getMediaArchive()
-					.getTranscodeTools()
-					.run(createthumb, createmedium, replacethumb,
-							replacemedium, targetsearcher.search(q));
-			inContext.putPageValue("failures", failures);
-		} catch (Exception e) {
-			inContext.putPageValue("error", e.getMessage());
-			log.error(e);
-		}
 	}
-*/
+
+	/*
+	 * public void resizeAllImages(WebPageRequest inContext) throws Exception {
+	 * CategoryEditor editor = getCategoryEditor(inContext);
+	 * 
+	 * boolean createthumb = !(inContext.getRequestParameter("createthumb") ==
+	 * null);
+	 * boolean createmedium = !(inContext.getRequestParameter("createmedium") ==
+	 * null);
+	 * boolean replacethumb = !(inContext.getRequestParameter("replacethumb") ==
+	 * null);
+	 * boolean replacemedium = !(inContext
+	 * .getRequestParameter("replacemedium") == null);
+	 * String cat = inContext.getRequestParameter("categoryid");
+	 * Searcher targetsearcher = editor.getMediaArchive().getAssetSearcher();
+	 * SearchQuery q = targetsearcher.createSearchQuery();
+	 * q.addMatches("categoryid", cat);
+	 * 
+	 * try {
+	 * List failures = editor
+	 * .getMediaArchive()
+	 * .getTranscodeTools()
+	 * .run(createthumb, createmedium, replacethumb,
+	 * replacemedium, targetsearcher.search(q));
+	 * inContext.putPageValue("failures", failures);
+	 * } catch (Exception e) {
+	 * inContext.putPageValue("error", e.getMessage());
+	 * log.error(e);
+	 * }
+	 * }
+	 */
 	public void saveCategory(WebPageRequest inContext) throws OpenEditException {
 		String id = inContext.getRequestParameter("id");
 		String name = inContext.getRequestParameter("name");
@@ -294,12 +282,12 @@ public class CategoryEditModule extends BaseMediaModule {
 
 		String sortfield = inContext.getRequestParameter("sortfield");
 		if (sortfield == null || sortfield.length() < 1) {
-			currentCatalog.setValue("sortfield",null);
+			currentCatalog.setValue("sortfield", null);
 		} else {
 			currentCatalog.setProperty("sortfield", sortfield);
 		}
 		editor.saveCategory(currentCatalog);
-		inContext.putSessionValue("reloadcategorytree","true");
+		inContext.putSessionValue("reloadcategorytree", "true");
 	}
 
 	public void saveCategoryProperties(WebPageRequest inReq)
@@ -339,18 +327,18 @@ public class CategoryEditModule extends BaseMediaModule {
 			throws OpenEditException {
 		MediaArchive mediaarchive = getMediaArchive(inContext);
 		String searchtype = inContext.findValue("categorysearchtype");
-		if(searchtype == null) {
-			searchtype= "category";
+		if (searchtype == null) {
+			searchtype = "category";
 		}
 		CategoryEditor editor = (CategoryEditor) inContext
-				.getSessionValue("CategoryEditor" +searchtype+ mediaarchive.getCatalogId());
+				.getSessionValue("CategoryEditor" + searchtype + mediaarchive.getCatalogId());
 		if (editor == null) {
 			editor = (CategoryEditor) getModuleManager().getBean(
 					"categoryEditor");
 			editor.setMediaArchive(mediaarchive);
 			editor.setSearchType(searchtype);
 			inContext.putSessionValue(
-					"CategoryEditor" +searchtype+ mediaarchive.getCatalogId(), editor);
+					"CategoryEditor" + searchtype + mediaarchive.getCatalogId(), editor);
 		}
 		inContext.putPageValue("CategoryEditor", editor);
 
@@ -369,28 +357,25 @@ public class CategoryEditModule extends BaseMediaModule {
 
 		String message = "Removed from category \"" + c.getName() + "\"";
 		/*
-		Asset asset = (Asset)archive.getAssetSearcher().loadData(inPageRequest,assetid);
-		asset.removeCategory(c);
-		archive.saveAsset(asset, inPageRequest.getUser());
-		archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
-		inPageRequest.putPageValue("asset", asset);*/
-		
-		
+		 * Asset asset =
+		 * (Asset)archive.getAssetSearcher().loadData(inPageRequest,assetid);
+		 * asset.removeCategory(c);
+		 * archive.saveAsset(asset, inPageRequest.getUser());
+		 * archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
+		 * inPageRequest.putPageValue("asset", asset);
+		 */
+
 		Asset asset;
-		
+
 		String[] assetIds = inPageRequest.getRequestParameters("assetid");
-		for (int i = 0; i < assetIds.length; i++)
-		{
-		
-			if (assetIds[i].startsWith("multiedit:"))
-			{
-				try
-				{
+		for (int i = 0; i < assetIds.length; i++) {
+
+			if (assetIds[i].startsWith("multiedit:")) {
+				try {
 					CompositeAsset assets = (CompositeAsset) inPageRequest.getSessionValue(assetIds[i]);
 					List tosave = new ArrayList();
 					Integer count = 0;
-					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
-					{
+					for (Iterator iterator = assets.iterator(); iterator.hasNext();) {
 						asset = (Asset) iterator.next();
 						if (asset == null) {
 							log.error("No asset id passed in");
@@ -398,28 +383,22 @@ public class CategoryEditModule extends BaseMediaModule {
 						}
 						asset.removeCategory(c);
 						tosave.add(asset);
-						if( tosave.size() > 100)
-						{
+						if (tosave.size() > 100) {
 							archive.getAssetSearcher().saveAllData(tosave, inPageRequest.getUser());
 							tosave.clear();
 						}
-						count = count +1;
-						//archive.saveAsset(asset, inPageRequest.getUser());
+						count = count + 1;
+						// archive.saveAsset(asset, inPageRequest.getUser());
 					}
-					if( tosave.size() > 0)
-					{
+					if (tosave.size() > 0) {
 						archive.getAssetSearcher().saveAllData(tosave, inPageRequest.getUser());
 						tosave.clear();
 					}
 					log.info("Removed category from assets: " + count);
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					continue;
 				}
-			}
-			else 
-			{
+			} else {
 				asset = getAsset(inPageRequest);
 				if (asset == null) {
 					log.error("No asset id passed in");
@@ -427,119 +406,101 @@ public class CategoryEditModule extends BaseMediaModule {
 				}
 				asset.removeCategory(c);
 				archive.saveAsset(asset);
-				inPageRequest.putPageValue("removed" , "1");
+				inPageRequest.putPageValue("removed", "1");
 				inPageRequest.putPageValue("asset", asset);
 			}
 		}
 		inPageRequest.setRequestParameter("assetid", assetid);
 	}
 
-	public void addCategoryToAsset(WebPageRequest inPageRequest) throws Exception 
-	{
-		
+	public void addCategoryToAsset(WebPageRequest inPageRequest) throws Exception {
+
 		String[] categories = inPageRequest.getRequestParameters("categoryid");
 		MediaArchive archive = getMediaArchive(inPageRequest);
-		if (categories == null) 
-		{
+		if (categories == null) {
 			return;
 		}
 		String moduleid = inPageRequest.findPathValue("module");
 		HitTracker tracker = loadHitTracker(inPageRequest, moduleid);
-		boolean movecategory = Boolean.parseBoolean( inPageRequest.getRequestParameter("moveasset") );
+		boolean movecategory = Boolean.parseBoolean(inPageRequest.getRequestParameter("moveasset"));
 		String rootcategoryid = inPageRequest.getRequestParameter("rootcategoryid");
-		if( tracker != null )
-		{
+		if (tracker != null) {
 			tracker = tracker.getSelectedHitracker();
 		}
-		if( tracker != null && tracker.size() > 0 )
-		{
+		if (tracker != null && tracker.size() > 0) {
 			int added = 0;
 			tracker.enableBulkOperations();
-			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = tracker.iterator(); iterator.hasNext();) {
 				Data data = (Data) iterator.next();
 				Asset asset = archive.getAsset(data.getId());
-				addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
+				addCategoryToAsset(inPageRequest, archive, categories, asset, movecategory, rootcategoryid);
 				archive.saveAsset(asset, inPageRequest.getUser());
 				archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
 				added++;
 			}
-			
-			inPageRequest.putPageValue("added" , String.valueOf( added ) );
+
+			inPageRequest.putPageValue("added", String.valueOf(added));
 			return;
 		}
-		
+
 		Asset asset;
-		
+
 		String[] assetIds = inPageRequest.getRequestParameters("assetid");
-		for (int i = 0; i < assetIds.length; i++)
-		{
-		
-			if (assetIds[i].startsWith("multiedit:"))
-			{
-				try
-				{
+		for (int i = 0; i < assetIds.length; i++) {
+
+			if (assetIds[i].startsWith("multiedit:")) {
+				try {
 					CompositeAsset assets = (CompositeAsset) inPageRequest.getSessionValue(assetIds[i]);
 					log.info("Saving assets: " + assets.size());
 					List tosave = new ArrayList();
 					Integer count = 0;
-					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
-					{
+					for (Iterator iterator = assets.iterator(); iterator.hasNext();) {
 						asset = (Asset) iterator.next();
 						if (asset == null) {
 							log.error("No asset id passed in");
 							continue;
 						}
-						addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
+						addCategoryToAsset(inPageRequest, archive, categories, asset, movecategory, rootcategoryid);
 						tosave.add(asset);
-						if( tosave.size() > 100)
-						{
+						if (tosave.size() > 100) {
 							archive.getAssetSearcher().saveAllData(tosave, inPageRequest.getUser());
 							tosave.clear();
 						}
-						count = count +1;
+						count = count + 1;
 					}
-					if( tosave.size() > 0)
-					{
+					if (tosave.size() > 0) {
 						archive.getAssetSearcher().saveAllData(tosave, inPageRequest.getUser());
 						tosave.clear();
 					}
 					log.info("Saved: " + count);
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					continue;
 				}
-			}
-			else 
-			{
+			} else {
 				asset = getAsset(inPageRequest);
 				if (asset == null) {
 					log.error("No asset id passed in");
 					return;
 				}
-				addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
+				addCategoryToAsset(inPageRequest, archive, categories, asset, movecategory, rootcategoryid);
 				archive.saveAsset(asset, inPageRequest.getUser());
 				archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
-				inPageRequest.putPageValue("added" , "1");
+				inPageRequest.putPageValue("added", "1");
 			}
 		}
 	}
 
-	protected void addCategoryToAsset(WebPageRequest inPageRequest, MediaArchive archive, String[] add, Asset asset, boolean moveasset, String rootcategoryid)
-	{
-		if( moveasset )
-		{
+	protected void addCategoryToAsset(WebPageRequest inPageRequest, MediaArchive archive, String[] add, Asset asset,
+			boolean moveasset, String rootcategoryid) {
+		if (moveasset) {
 			List<Category> cats = new ArrayList(asset.getCategories());
-			for(Category cat: cats)
-			{
-				if( cat.hasParent(rootcategoryid))
-				{
+			for (Category cat : cats) {
+				if (cat.hasParent(rootcategoryid)) {
 					asset.removeCategory(cat);
 				}
 			}
 		}
-		
+
 		for (int i = 0; i < add.length; i++) {
 			Category c = archive.getCategory(add[i]);
 			if (c == null) {
@@ -548,10 +509,10 @@ public class CategoryEditModule extends BaseMediaModule {
 			}
 			asset.addCategory(c);
 		}
-		
-		//Save externally
-		//archive.saveAsset(asset, inPageRequest.getUser());
-		//archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
+
+		// Save externally
+		// archive.saveAsset(asset, inPageRequest.getUser());
+		// archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
 	}
 
 	public void setAssetCategories(WebPageRequest inPageRequest)
@@ -559,7 +520,7 @@ public class CategoryEditModule extends BaseMediaModule {
 		Asset asset = getAsset(inPageRequest);
 		if (asset == null) {
 			log.error("No asset id passed in");
-			
+
 			return;
 		}
 		String[] add = inPageRequest.getRequestParameters("categoryid");
@@ -584,40 +545,32 @@ public class CategoryEditModule extends BaseMediaModule {
 		archive.saveAsset(asset, inPageRequest.getUser());
 		archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
 	}
-	
-	
-	public void addEntityToCategory(WebPageRequest inPageRequest) throws Exception 
-	{
-		
+
+	public void addEntityToCategory(WebPageRequest inPageRequest) throws Exception {
+
 		String categoryid = inPageRequest.getRequestParameter("categoryid");
 		String moduleid = inPageRequest.getRequestParameter("moduleid");
 		String entityid = inPageRequest.getRequestParameter("entityid");
 		MediaArchive archive = getMediaArchive(inPageRequest);
-		if (categoryid == null || moduleid == null || entityid == null) 
-		{
+		if (categoryid == null || moduleid == null || entityid == null) {
 			return;
 		}
-		
+
 		Category category = archive.getCategory(categoryid);
-		if(category == null) {
+		if (category == null) {
 			return;
 		}
 		category.addValue(moduleid, entityid);
 		archive.getCategorySearcher().saveData(category);
 	}
-	
-	
-	
-	
-	
 
 	/**
 	 * Removes generated images (medium, thumbs, etc) for a asset. TODO:
 	 * Shouldn't this go into AssetEditModule ?
 	 * 
 	 * @param inRequest
-	 *            The web request. Needs a <code>assetid</code> or
-	 *            <code>sourcePath</code> request parameter.
+	 *                  The web request. Needs a <code>assetid</code> or
+	 *                  <code>sourcePath</code> request parameter.
 	 */
 	public void removeAssetImages(WebPageRequest inRequest) {
 		Asset asset = getAsset(inRequest);
@@ -650,8 +603,6 @@ public class CategoryEditModule extends BaseMediaModule {
 			todelete[i].delete();
 		}
 	}
-
-	
 
 	public WebEventListener getWebEventListener() {
 		return fieldWebEventListener;

@@ -8,25 +8,22 @@ import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.llm.AgentContext;
 import org.openedit.MultiValued;
 
-public class DocumentSplitterSkill extends BaseSkill
-{
-	public DocumentSplitterManager getDocumentSplitterManager()
-	{
-		DocumentSplitterManager manager = (DocumentSplitterManager)getMediaArchive().getBean("documentSplitterManager");
+public class DocumentSplitterSkill extends BaseSkill {
+	public DocumentSplitterManager getDocumentSplitterManager() {
+		DocumentSplitterManager manager = (DocumentSplitterManager) getMediaArchive()
+				.getBean("documentSplitterManager");
 		return manager;
 	}
 
-	public void process(AgentContext inContext)	
-	{
+	public void process(AgentContext inContext) {
 		InformaticsContext informatic = new InformaticsContext(inContext);
-		Collection<MultiValued>  inRecords  = informatic.getRecordsToProcess();
-		
-		if(inRecords == null)
-		{
+		Collection<MultiValued> inRecords = informatic.getRecordsToProcess();
+
+		if (inRecords == null) {
 			super.process(informatic);
 			return;
 		}
-		getDocumentSplitterManager().splitStuff(informatic );
+		getDocumentSplitterManager().splitStuff(informatic);
 		super.process(informatic);
 	}
 }

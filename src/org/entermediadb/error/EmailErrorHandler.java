@@ -2,6 +2,7 @@
  * Created on Jul 1, 2004
  */
 package org.entermediadb.error;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.InetAddress;
@@ -31,60 +32,52 @@ import org.openedit.users.UserManager;
 /**
  * @author Matthew Avery, mavery@einnovation.com
  */
-public class EmailErrorHandler implements ErrorHandler
-{
+public class EmailErrorHandler implements ErrorHandler {
 	protected String fieldRecipientList;
 	protected String fieldServer;
 	protected String fieldFrom;
 	protected String fieldFromName;
-	
+
 	protected boolean fieldConsumeErrors;
 	protected PageManager fieldPageManager;
 	protected UserManager fieldUserManager;
 	protected PostMail postMail;
 	private static Log log = LogFactory.getLog(EmailErrorHandler.class);
-	
+
 	public boolean handleError(Throwable error, WebPageRequest inRequest)
-	//public boolean handleError( Exception error, String inPath, WebPageRequest inContext )
+	// public boolean handleError( Exception error, String inPath, WebPageRequest
+	// inContext )
 	{
-		try
-		{
-			if ( fieldRecipientList == null)
-			{
+		try {
+			if (fieldRecipientList == null) {
 				configure();
 			}
 			Set emails = findNotificationEmailAddresses();
-			if( emails.size() == 0)
-			{
+			if (emails.size() == 0) {
 				log.error("No users configured to receive email error notifications");
 				return false;
 			}
 			String server = (String) inRequest.getPageValue(PageRequestKeys.WEB_SERVER_PATH);
-			
-			if( server == null )
-			{
+
+			if (server == null) {
 				server = (String) inRequest.getPageValue("hostName");
 			}
 			String message = createMessage(error, inRequest, server);
 
 			String subject = "Open Edit error: ";
-			if ( server != null )
-			{
+			if (server != null) {
 				subject = "Open Edit error on " + server + ": ";
 			}
-			if ( error.getMessage() != null )
-			{
-				subject =  subject + error.getMessage();
+			if (error.getMessage() != null) {
+				subject = subject + error.getMessage();
 			}
-			//Loop over the groups and fill a list of users
-			
-			String[] recepients = (String[])emails.toArray(new String[emails.size()]);
-			
-			postMail.postMail(recepients,subject,null,message,getFrom(), getFromName());
-		}
-		catch (Exception e)
-		{
-			log.error( "Email Error Sender Failed: " + e );
+			// Loop over the groups and fill a list of users
+
+			String[] recepients = (String[]) emails.toArray(new String[emails.size()]);
+
+			postMail.postMail(recepients, subject, null, message, getFrom(), getFromName());
+		} catch (Exception e) {
+			log.error("Email Error Sender Failed: " + e);
 			return false;
 		}
 		return isConsumeErrors();
@@ -95,29 +88,24 @@ public class EmailErrorHandler implements ErrorHandler
 	 * user is in. TODO: Move this to a business object
 	 * 
 	 * @param inGroups
-	 *            The user for which to determine the email addresses
+	 *                 The user for which to determine the email addresses
 	 * 
 	 * @return All the email addresses
 	 */
-	public Set findNotificationEmailAddresses() throws OpenEditException
-	{
+	public Set findNotificationEmailAddresses() throws OpenEditException {
 		Set emailAddresses = new HashSet();
 
-		for (Iterator groupIter = getUserManager().getGroups().iterator(); groupIter.hasNext();)
-		{
+		for (Iterator groupIter = getUserManager().getGroups().iterator(); groupIter.hasNext();) {
 			Group group = (Group) groupIter.next();
 
-			if (group.hasPermission("oe.error.notify"))
-			{
+			if (group.hasPermission("oe.error.notify")) {
 				// Collect the email addresses of all the users in this group.
 				HitTracker list = getUserManager().getUsersInGroup(group);
-				for (Iterator userIter = list.iterator(); userIter.hasNext();)
-				{
+				for (Iterator userIter = list.iterator(); userIter.hasNext();) {
 					User user = (User) userIter.next();
 					String email = user.getEmail();
 
-					if ((email != null) && (email.length() > 0))
-					{
+					if ((email != null) && (email.length() > 0)) {
 						emailAddresses.add(email);
 					}
 				}
@@ -127,172 +115,143 @@ public class EmailErrorHandler implements ErrorHandler
 		return emailAddresses;
 	}
 
-	protected String createMessage(Throwable error, WebPageRequest inRequest, String server)
-	{
+	protected String createMessage(Throwable error, WebPageRequest inRequest, String server) {
 		StringWriter writer = new StringWriter();
 		writer.write("<pre>");
-		writer.write( "Requested Path: " + inRequest.getPath() + "\n\n");
+		writer.write("Requested Path: " + inRequest.getPath() + "\n\n");
 
 		HttpServletRequest req = inRequest.getRequest();
-		if ( req != null)
-		{
+		if (req != null) {
 			String header = req.getHeader("Referer");
-			if ( header != null)
-			{
-				writer.write( "Referer: "+ header);
-				writer.write( "\n");
+			if (header != null) {
+				writer.write("Referer: " + header);
+				writer.write("\n");
 			}
 			String ipaddress = req.getRemoteAddr();
-			if ( ipaddress != null)
-			{
-				writer.write( "Remote IP address: "+ ipaddress);
-				writer.write( "\n");
+			if (ipaddress != null) {
+				writer.write("Remote IP address: " + ipaddress);
+				writer.write("\n");
 			}
 			String userAgent = req.getHeader("User-Agent");
-			if ( userAgent != null)
-			{
-				writer.write( "User agent: "+ userAgent);
-				writer.write( "\n");
+			if (userAgent != null) {
+				writer.write("User agent: " + userAgent);
+				writer.write("\n");
 			}
 		}
 
-		if ( server == null && req != null )
-		{
+		if (server == null && req != null) {
 			server = req.getServerName();
-			if ( server != null)
-			{
-				writer.write( "Server: "+ server);
-				writer.write( "\n");
-			}
-			else
-			{
+			if (server != null) {
+				writer.write("Server: " + server);
+				writer.write("\n");
+			} else {
 				server = "unknown";
 			}
 		}
 
-		try
-		{
+		try {
 			String serverIP = InetAddress.getLocalHost().getHostAddress();
-			writer.write( "Server Id: " + serverIP );
-			writer.write( "\n");
-		} catch (UnknownHostException e)
-		{
+			writer.write("Server Id: " + serverIP);
+			writer.write("\n");
+		} catch (UnknownHostException e) {
 			log.error(e);
 		}
 
-		String version = (String)inRequest.getPageValue("version");
-		if ( version != null)
-		{
+		String version = (String) inRequest.getPageValue("version");
+		if (version != null) {
 			writer.write("OE Core Version: " + version);
 			writer.write("\n");
 		}
-		//writer.write( "Recipients: " + getRecipientList() + "\n\n");
+		// writer.write( "Recipients: " + getRecipientList() + "\n\n");
 		User user = inRequest.getUser();
-		if ( user != null )
-		{
-			writer.write( "User: " + user.getUserName() + "\n\n" );
+		if (user != null) {
+			writer.write("User: " + user.getUserName() + "\n\n");
+		} else {
+			writer.write("User: none\n\n");
 		}
-		else
-		{
-			writer.write( "User: none\n\n" );
+
+		if (error.getMessage() != null) {
+			writer.write("Error Message: " + error.getMessage() + "\n\n");
 		}
-		
-		if ( error.getMessage() != null )
-		{
-			writer.write( "Error Message: " + error.getMessage() + "\n\n" );
-		}
-		writer.write( "Detail:\n\n" );
-		error.printStackTrace( new PrintWriter( writer ) );
+		writer.write("Detail:\n\n");
+		error.printStackTrace(new PrintWriter(writer));
 		writer.write("<pre>");
 
-		
-		//String message =  URLUtilities.xmlEscape( writer.toString() ); //Dont allow HTML in here
+		// String message = URLUtilities.xmlEscape( writer.toString() ); //Dont allow
+		// HTML in here
 
 		return writer.toString();
 	}
 
-	protected boolean isConsumeErrors()
-	{
+	protected boolean isConsumeErrors() {
 		return fieldConsumeErrors;
 	}
-	public PageManager getPageManager()
-	{
+
+	public PageManager getPageManager() {
 		return fieldPageManager;
 	}
-	public void setPageManager(PageManager inPageManager)
-	{
+
+	public void setPageManager(PageManager inPageManager) {
 		fieldPageManager = inPageManager;
 	}
-	protected void configure() throws OpenEditException
-	{
-		//read in the configuration file
-		//TODO: Look for a config file on the root level first
+
+	protected void configure() throws OpenEditException {
+		// read in the configuration file
+		// TODO: Look for a config file on the root level first
 		Page config = getPageManager().getPage("/WEB-INF/errorsettings.xml");
-		if ( !config.exists() )
-		{
+		if (!config.exists()) {
 			config = getPageManager().getPage("/openedit/notification/errorsettings.xml");
 		}
-		if( config.exists() )
-		{
+		if (config.exists()) {
 			XMLConfiguration notificationConfig = new XMLConfiguration();
 			notificationConfig.readXML(config.getReader());
 			Configuration configuration = notificationConfig.getChild("emailsettings");
-			String sender = configuration.getChildValue( "from" );
-			//setsetsender );
+			String sender = configuration.getChildValue("from");
+			// setsetsender );
 			setFrom(sender);
-			setServer( configuration.getChildValue( "smtp-server" ) );
-			
+			setServer(configuration.getChildValue("smtp-server"));
+
 			/*
-			String consumeError = configuration.getChildValue("consume-error");
-			if ( consumeError != null )
-			{
-				setConsumeErrors( Boolean.valueOf( consumeError ).booleanValue() );
-			}
-			*/
-		}
-		else
-		{
-			log.error("No error settings page available " );
+			 * String consumeError = configuration.getChildValue("consume-error");
+			 * if ( consumeError != null )
+			 * {
+			 * setConsumeErrors( Boolean.valueOf( consumeError ).booleanValue() );
+			 * }
+			 */
+		} else {
+			log.error("No error settings page available ");
 		}
 	}
 
-	public String getServer()
-	{
+	public String getServer() {
 		return fieldServer;
 	}
 
-	public void setServer(String inServer)
-	{
+	public void setServer(String inServer) {
 		fieldServer = inServer;
 	}
 
-	public String getFrom()
-	{
+	public String getFrom() {
 		return fieldFrom;
 	}
-	
-	public void setFrom(String inFrom)
-	{
+
+	public void setFrom(String inFrom) {
 		fieldFrom = inFrom;
 	}
-	
-	public String getFromName()
-	{
+
+	public String getFromName() {
 		return fieldFromName;
 	}
-	
-	public void setFromName(String inFromName)
-	{
+
+	public void setFromName(String inFromName) {
 		fieldFromName = inFromName;
 	}
 
-	public UserManager getUserManager()
-	{
+	public UserManager getUserManager() {
 		return fieldUserManager;
 	}
 
-	public void setUserManager(UserManager inUserManager)
-	{
+	public void setUserManager(UserManager inUserManager) {
 		fieldUserManager = inUserManager;
 	}
 
@@ -305,31 +264,24 @@ public class EmailErrorHandler implements ErrorHandler
 	}
 
 	public void sendNotification(String inSubject, String inMessage) {
-		try
-		{
-			if ( fieldRecipientList == null)
-			{
+		try {
+			if (fieldRecipientList == null) {
 				configure();
 			}
 			Set emails = findNotificationEmailAddresses();
-			if( emails.size() == 0)
-			{
+			if (emails.size() == 0) {
 				log.error("No users configured to receive email error notifications");
 				return;
 			}
-			
-			
-			String[] recepients = (String[])emails.toArray(new String[emails.size()]);
-			
-			postMail.postMail(recepients,inSubject,null,inMessage,getFrom(), getFromName());
+
+			String[] recepients = (String[]) emails.toArray(new String[emails.size()]);
+
+			postMail.postMail(recepients, inSubject, null, inMessage, getFrom(), getFromName());
+		} catch (Exception e) {
+			log.error("Email Error Sender Failed: " + e);
+			return;
 		}
-		catch (Exception e)
-		{
-			log.error( "Email Error Sender Failed: " + e );
-			return ;
-		}
-		
-		
+
 	}
 
 }

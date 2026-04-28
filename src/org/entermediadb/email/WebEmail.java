@@ -25,8 +25,7 @@ import org.openedit.page.PageRequestKeys;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 
-public abstract class WebEmail
-{
+public abstract class WebEmail {
 
 	private static final Log log = LogFactory.getLog(WebEmail.class);
 
@@ -48,74 +47,59 @@ public abstract class WebEmail
 	protected PostMail fieldPostMail;
 
 	ModuleManager fieldModuleManager;
-	
-	
-	public ModuleManager getModuleManager()
-	{
+
+	public ModuleManager getModuleManager() {
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager)
-	{
+	public void setModuleManager(ModuleManager inModuleManager) {
 		fieldModuleManager = inModuleManager;
 	}
 
-	public List<InternetAddress> getBCCRecipients()
-	{
+	public List<InternetAddress> getBCCRecipients() {
 		return fieldBCCRecipients;
 	}
 
-	public void setBCCRecipients(List<InternetAddress> inBCCRecipients)
-	{
+	public void setBCCRecipients(List<InternetAddress> inBCCRecipients) {
 		fieldBCCRecipients = inBCCRecipients;
 	}
 
-
-	public void setBCC(String inEmails)
-	{
+	public void setBCC(String inEmails) {
 		ArrayList<InternetAddress> recipients = new ArrayList<InternetAddress>();
 		String[] list = MultiValued.VALUEDELMITER.split(inEmails);
-		for (String email : list)
-		{
+		for (String email : list) {
 			InternetAddress inet = parseRecipient(email);
 			recipients.add(inet);
 		}
 		setBCCRecipients(recipients);
 	}
-	public User getUser()
-	{
+
+	public User getUser() {
 		return fieldUser;
 	}
 
-	public void setUser(User inUser)
-	{
+	public void setUser(User inUser) {
 		fieldUser = inUser;
 	}
 
-	public String getId()
-	{
+	public String getId() {
 		return fieldId;
 	}
 
-	public void setId(String inId)
-	{
+	public void setId(String inId) {
 		fieldId = inId;
 	}
 
-	public String getFromName()
-	{
+	public String getFromName() {
 		return fieldFromName;
 	}
 
-	public void setFromName(String inFromName)
-	{
+	public void setFromName(String inFromName) {
 		fieldFromName = inFromName;
 	}
 
-	public ValuesMap getProperties()
-	{
-		if (fieldProperties == null)
-		{
+	public ValuesMap getProperties() {
+		if (fieldProperties == null) {
 			fieldProperties = new ValuesMap();
 
 		}
@@ -123,176 +107,143 @@ public abstract class WebEmail
 		return fieldProperties;
 	}
 
-	public void setProperty(String inKey, String inValue)
-	{
+	public void setProperty(String inKey, String inValue) {
 		getProperties().put(inKey, inValue);
 	}
 
-	public void setProperties(Map inProperties)
-	{
+	public void setProperties(Map inProperties) {
 		getProperties().putAll(inProperties);
 	}
 
-	public String getProperty(String inKey)
-	{
-		if ("from".equals(inKey))
-		{
+	public String getProperty(String inKey) {
+		if ("from".equals(inKey)) {
 			return getFrom();
 		}
-		if ("to".equals(inKey))
-		{
+		if ("to".equals(inKey)) {
 			StringBuffer prop = new StringBuffer();
-			for (int i = 0; i < getTo().length; i++)
-			{
+			for (int i = 0; i < getTo().length; i++) {
 				String to = getTo()[i];
 				prop.append(to);
 				prop.append(" ");
 
 			}
 		}
-		if ("fromname".equals(inKey))
-		{
+		if ("fromname".equals(inKey)) {
 			return getFromName();
 		}
-		if ("subject".equals(inKey))
-		{
+		if ("subject".equals(inKey)) {
 			return getSubject();
 		}
-		if ("user".equals(inKey))
-		{
+		if ("user".equals(inKey)) {
 			return getUser().getUserName();
 		}
 
 		return (String) getProperties().get(inKey);
 	}
 
-	public PostMail getPostMail()
-	{
+	public PostMail getPostMail() {
 		return fieldPostMail;
 	}
 
-	public void setPostMail(PostMail postMail)
-	{
+	public void setPostMail(PostMail postMail) {
 		this.fieldPostMail = postMail;
 	}
 
-	protected WebEmail()
-	{
+	protected WebEmail() {
 
 	}
 
-	public WebPageRequest getWebPageContext()
-	{
+	public WebPageRequest getWebPageContext() {
 		return fieldWebPageContext;
 	}
 
-	public void loadSettings(WebPageRequest inContext) throws OpenEditException
-	{
+	public void loadSettings(WebPageRequest inContext) throws OpenEditException {
 
 		String templatePath = inContext.findValue(EMAIL_TEMPLATE_REQUEST_PARAMETER);
-		if (templatePath == null)
-		{
+		if (templatePath == null) {
 			templatePath = inContext.findValue(OLDEMAIL_TEMPLATE_REQUEST_PARAMETER);
 		}
-		if (templatePath != null)
-		{
+		if (templatePath != null) {
 			templatePath = PathUtilities.buildRelative(templatePath, inContext.getPath());
 		}
-		if (templatePath != null)
-		{
+		if (templatePath != null) {
 			loadSettingsFromTemplate(inContext, templatePath);
 		}
 
-		if (getFrom() == null)
-		{
+		if (getFrom() == null) {
 			String from = inContext.findValue("from");
-			if( from == null)
-			{
-				from = (String)inContext.getPageValue("from");
+			if (from == null) {
+				from = (String) inContext.getPageValue("from");
 			}
 			setFrom(from);
 		}
-		if (getFrom() == null)
-		{
+		if (getFrom() == null) {
 			setFrom(inContext.getContentProperty("systemfromemail"));
 			setFromName(inContext.getContentProperty("systemfromemailname"));
 		}
 
-		if (getSubject() == null)
-		{
+		if (getSubject() == null) {
 			String subject = inContext.findValue("subject");
-			if (subject == null)
-			{
+			if (subject == null) {
 				subject = (String) inContext.getPageValue("subject");
 			}
 			String prefix = (String) inContext.getPageValue("subjectprefix");
-			if( prefix != null)
-			{
+			if (prefix != null) {
 				subject = prefix + " " + subject;
 			}
 			setSubject(subject);
 		}
-		if (getRecipients() == null || getRecipients().size() == 0)
-		{
+		if (getRecipients() == null || getRecipients().size() == 0) {
 			String to = inContext.findValue("to");
 			// If you set the property sendCustomerCopy to true, then the form
 			// will also be emailed to the value of property email
 			String copy = inContext.findValue("sendCustomerCopy");
-			if (Boolean.parseBoolean(copy) && inContext.findValue("email") != null)
-			{
+			if (Boolean.parseBoolean(copy) && inContext.findValue("email") != null) {
 				to = to + ", " + inContext.findValue("email");
 			}
 			setTo(to);
 		}
 
 		// TODO: remove this since you can get it from url_utils
-		if (getWebServerName() == null)
-		{
+		if (getWebServerName() == null) {
 			setWebServerName((String) inContext.getPageValue(PageRequestKeys.WEB_SERVER_PATH));
 		}
 
-		if (getWebPageContext() == null)
-		{
+		if (getWebPageContext() == null) {
 			setWebPageContext(inContext);
 		}
 	}
 
-	protected void loadSettingsFromTemplate(WebPageRequest inContext, String inTemplatePath)
-	{
+	protected void loadSettingsFromTemplate(WebPageRequest inContext, String inTemplatePath) {
 		MediaArchive archive = (MediaArchive) inContext.getPageValue("mediaarchive");
 		Page pg = archive.getPageManager().getPage(inTemplatePath);
-		if (pg == null)
-		{
+		if (pg == null) {
 			return;
 		}
 		String templateid = pg.getProperty("emailtemplateid");
-		if (templateid == null || templateid.isEmpty())
-		{
+		if (templateid == null || templateid.isEmpty()) {
 			return;
 		}
-		//load the template 
-		Searcher emailtemplateSearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "emailtemplate");
-		Searcher emailrecipientSearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "emailrecipient");
+		// load the template
+		Searcher emailtemplateSearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(),
+				"emailtemplate");
+		Searcher emailrecipientSearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(),
+				"emailrecipient");
 		Data template = (Data) emailtemplateSearcher.searchById(templateid);
 		String to = template.get("to");
-		if (to != null && !to.isEmpty())
-		{
+		if (to != null && !to.isEmpty()) {
 			setTo(to);
 		}
 		String bcc = template.get("bcc");
-		if (bcc != null && !bcc.isEmpty())
-		{
+		if (bcc != null && !bcc.isEmpty()) {
 			ArrayList<InternetAddress> recipients = new ArrayList<InternetAddress>();
 			String[] list = bcc.split(" | ");
-			for (String ls : list)
-			{
-				if (ls.isEmpty() || ls.trim().equals("|"))
-				{
+			for (String ls : list) {
+				if (ls.isEmpty() || ls.trim().equals("|")) {
 					continue;
 				}
 				Data recipient = (Data) emailrecipientSearcher.searchById(ls.trim());
-				if (recipient == null)
-				{
+				if (recipient == null) {
 					continue;
 				}
 				String email = recipient.getName();
@@ -302,48 +253,39 @@ public abstract class WebEmail
 			setBCCRecipients(recipients);
 		}
 		String from = template.get("from");
-		if (from != null && !from.isEmpty())
-		{
+		if (from != null && !from.isEmpty()) {
 			setFrom(from);
 		}
 		String subject = template.get("subject");
-		if (subject != null && !subject.isEmpty())
-		{
+		if (subject != null && !subject.isEmpty()) {
 			setSubject(subject);
 		}
 	}
 
-	public List<InternetAddress> getRecipients()
-	{
+	public List<InternetAddress> getRecipients() {
 
 		return fieldRecipients;
 	}
 
-	public String[] getTo()
-	{
-		if (getRecipients() == null)
-		{
+	public String[] getTo() {
+		if (getRecipients() == null) {
 			return null;
 		}
 		String[] tos = new String[getRecipients().size()];
-		for (int i = 0; i < getRecipients().size(); i++)
-		{
+		for (int i = 0; i < getRecipients().size(); i++) {
 			InternetAddress rec = (InternetAddress) getRecipients().get(i);
 			tos[i] = rec.getAddress();
 		}
 		return tos;
 	}
 
-	public void setTo(String inTo)
-	{
-		if (inTo == null)
-		{
+	public void setTo(String inTo) {
+		if (inTo == null) {
 			return;
 		}
 		List recipients = new ArrayList();
 		String[] emails = inTo.split(",");
-		for (int i = 0; i < emails.length; i++)
-		{
+		for (int i = 0; i < emails.length; i++) {
 			String value = emails[i].trim();
 			InternetAddress recipient = parseRecipient(value);
 
@@ -352,82 +294,65 @@ public abstract class WebEmail
 		setRecipients(recipients);
 	}
 
-	protected InternetAddress parseRecipient(String inValue)
-	{
-		//Recipient rec = new Recipient();
-		//inValue = inValue.trim();
-		//get the name out?
-		//rec.setEmailAddress(inValue);
+	protected InternetAddress parseRecipient(String inValue) {
+		// Recipient rec = new Recipient();
+		// inValue = inValue.trim();
+		// get the name out?
+		// rec.setEmailAddress(inValue);
 		return getPostMail().parseEmail(inValue);
 	}
 
-	public String getWebServerName()
-	{
+	public String getWebServerName() {
 		return fieldWebServerName;
 	}
 
-	public void setWebServerName(String inWebServerName)
-	{
+	public void setWebServerName(String inWebServerName) {
 		fieldWebServerName = inWebServerName;
 	}
 
-	public String getFrom()
-	{
+	public String getFrom() {
 		return fieldFrom;
 	}
 
-	public void setFrom(String inFrom)
-	{
+	public void setFrom(String inFrom) {
 		fieldFrom = inFrom;
 	}
 
-	public String getSubject()
-	{
+	public String getSubject() {
 		return fieldSubject;
 	}
 
-	public void setSubject(String inSubject)
-	{
+	public void setSubject(String inSubject) {
 		fieldSubject = inSubject;
 	}
 
-	public void setWebPageContext(WebPageRequest inWebPageContext)
-	{
+	public void setWebPageContext(WebPageRequest inWebPageContext) {
 		fieldWebPageContext = inWebPageContext;
 	}
 
-	public void setRecipients(List<InternetAddress> inList)
-	{
+	public void setRecipients(List<InternetAddress> inList) {
 		fieldRecipients = inList;
 	}
 
-	public List setRecipientsFromUnknown(String inAddresses)
-	{
+	public List setRecipientsFromUnknown(String inAddresses) {
 		String[] splitaddresses = null;
-		//check if the string contains a semicolon if so split on the semicolon
-		if (inAddresses.indexOf(";") > -1)
-		{
+		// check if the string contains a semicolon if so split on the semicolon
+		if (inAddresses.indexOf(";") > -1) {
 			splitaddresses = inAddresses.split(";");
 		}
 
-		//no semicolons treat as all comma seperated list
-		if (splitaddresses == null)
-		{
+		// no semicolons treat as all comma seperated list
+		if (splitaddresses == null) {
 			return setRecipientsFromCommas(inAddresses);
-		}
-		else
-		//check each split section for commas if so add split results to results
+		} else
+		// check each split section for commas if so add split results to results
 		{
 			ArrayList<InternetAddress> results = new ArrayList<InternetAddress>();
-			for (int i = 0; i < splitaddresses.length; i++)
-			{
+			for (int i = 0; i < splitaddresses.length; i++) {
 				String addresses = splitaddresses[i].trim();
-				if (addresses.indexOf(",") > -1)
-				{
+				if (addresses.indexOf(",") > -1) {
 					results.addAll(createRecipientsFromSplit(addresses, ","));
-				}
-				else if (addresses.length() > 0)
-				{
+				} else if (addresses.length() > 0) {
 					InternetAddress one = parseRecipient(addresses);
 					results.add(one);
 				}
@@ -437,28 +362,23 @@ public abstract class WebEmail
 		}
 	}
 
-	public List setRecipientsFromCommas(String inAddresses)
-	{
+	public List setRecipientsFromCommas(String inAddresses) {
 		List recipients = createRecipientsFromSplit(inAddresses, ",");
 		setRecipients(recipients);
 		return recipients;
 	}
 
-	public List setRecipientsFromSemicolon(String inAddresses)
-	{
+	public List setRecipientsFromSemicolon(String inAddresses) {
 		List recipients = createRecipientsFromSplit(inAddresses, ";");
 		setRecipients(recipients);
 		return recipients;
 	}
 
-	public List<InternetAddress> createRecipientsFromSplit(String inAddresses, String inSplit)
-	{
+	public List<InternetAddress> createRecipientsFromSplit(String inAddresses, String inSplit) {
 		ArrayList<InternetAddress> list = new ArrayList<InternetAddress>();
 		String[] all = inAddresses.split(inSplit);
-		for (int i = 0; i < all.length; i++)
-		{
-			if (all[i].length() > 0)
-			{
+		for (int i = 0; i < all.length; i++) {
+			if (all[i].length() > 0) {
 				InternetAddress one = parseRecipient(all[i]);
 				list.add(one);
 			}
@@ -466,12 +386,10 @@ public abstract class WebEmail
 		return list;
 	}
 
-	public void setRecipientsFromStrings(List<String> inToAddresses)
-	{
+	public void setRecipientsFromStrings(List<String> inToAddresses) {
 		List all = new ArrayList();
 
-		for (Iterator iter = inToAddresses.iterator(); iter.hasNext();)
-		{
+		for (Iterator iter = inToAddresses.iterator(); iter.hasNext();) {
 			String email = (String) iter.next();
 			InternetAddress inet = getPostMail().parseEmail(email);
 			all.add(inet);
@@ -479,69 +397,59 @@ public abstract class WebEmail
 		setRecipients(all);
 	}
 
-	public void setRecipientsFrom(InternetAddress[] recipients)
-	{
+	public void setRecipientsFrom(InternetAddress[] recipients) {
 		List tos = Arrays.asList(recipients);
 		setRecipients(tos);
 	}
+
 	/*
 	 * @deprecated use InternetAddress
 	 */
-	public void setRecipient(Recipient inRecipient)
-	{
+	public void setRecipient(Recipient inRecipient) {
 		List one = new ArrayList(1);
 		InternetAddress inet = getPostMail().parseEmail(inRecipient.toString());
 		one.add(inet);
 		setRecipients(one);
 	}
-	public void setRecipient(InternetAddress inRecipient)
-	{
+
+	public void setRecipient(InternetAddress inRecipient) {
 		List one = new ArrayList(1);
 		one.add(inRecipient);
 		setRecipients(one);
 	}
-	public String getMessage()
-	{
+
+	public String getMessage() {
 		return fieldMessage;
 	}
 
-	public void setMessage(String inMessage)
-	{
+	public void setMessage(String inMessage) {
 		fieldMessage = inMessage;
 	}
 
-	public String getAlternativeMessage()
-	{
+	public String getAlternativeMessage() {
 		return fieldAlternativeMessage;
 	}
 
-	public void setAlternativeMessage(String inAlternativeMessage)
-	{
+	public void setAlternativeMessage(String inAlternativeMessage) {
 		fieldAlternativeMessage = inAlternativeMessage;
 	}
 
 	public abstract void send() throws OpenEditException, MessagingException;
 
 	public abstract void send(Map inObjects);
-	
+
 	public abstract void send(String body);
 
-	
-	public PostMailStatus sendAndCollectStatus()
-	{
+	public PostMailStatus sendAndCollectStatus() {
 		PostMailStatus result = new PostMailStatus();
-		try
-		{
+		try {
 			send();
 			result.setSent(true);
 			result.setStatus("complete");
-			if (getProperties() != null && getProperties().containsKey(PostMailStatus.ID))
-			{
+			if (getProperties() != null && getProperties().containsKey(PostMailStatus.ID)) {
 				result.setId((String) getProperties().get(PostMailStatus.ID));
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 			result.setSent(false);
 			result.setId("unknown");

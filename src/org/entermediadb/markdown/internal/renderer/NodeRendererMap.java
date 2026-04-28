@@ -14,7 +14,8 @@ public class NodeRendererMap {
     private final Map<Class<? extends Node>, NodeRenderer> renderers = new HashMap<>(32);
 
     /**
-     * Set the renderer for each {@link NodeRenderer#getNodeTypes()}, unless there was already a renderer set (first wins).
+     * Set the renderer for each {@link NodeRenderer#getNodeTypes()}, unless there
+     * was already a renderer set (first wins).
      */
     public void add(NodeRenderer nodeRenderer) {
         nodeRenderers.add(nodeRenderer);

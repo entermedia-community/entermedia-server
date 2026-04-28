@@ -6,7 +6,8 @@ import org.entermediadb.markdown.node.Node;
 import java.util.Objects;
 
 /**
- * The result of a single inline parser. Use the static methods to create instances.
+ * The result of a single inline parser. Use the static methods to create
+ * instances.
  * <p>
  * <em>This interface is not intended to be implemented by clients.</em>
  */

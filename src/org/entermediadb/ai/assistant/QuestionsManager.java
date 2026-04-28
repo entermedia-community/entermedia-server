@@ -23,215 +23,188 @@ import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 
-public class QuestionsManager extends BaseAiManager implements ChatMessageHandler
-{
+public class QuestionsManager extends BaseAiManager implements ChatMessageHandler {
 	private static final Log log = LogFactory.getLog(QuestionsManager.class);
 
 	@Override
-	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage, MultiValued inAiFunction)
-	{
-		MultiValued usermessage = (MultiValued)getMediaArchive().getCachedData("chatterbox", inAgentMessage.get("replytoid"));
+	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inAgentMessage,
+			MultiValued inAiFunction) {
+		MultiValued usermessage = (MultiValued) getMediaArchive().getCachedData("chatterbox",
+				inAgentMessage.get("replytoid"));
 		String query = usermessage.get("message");
-		
+
 		String agentFn = inAgentContext.getFunctionName();
-		if ("question_welcome".equals(agentFn))
-		{
+		if ("question_welcome".equals(agentFn)) {
 			inAgentMessage.setValue("chatmessagestatus", "completed");
-			
+
 			String entityid = inAgentContext.get("entityid");
 			String entitymoduleid = inAgentContext.get("entitymoduleid");
-			
+
 			Data entity = getMediaArchive().getCachedData(entitymoduleid, entityid);
 			inAgentContext.addContext("entity", entity);
 
 			Data entitymodule = getMediaArchive().getCachedData("module", entitymoduleid);
 			inAgentContext.addContext("entitymodule", entitymodule);
 
-			
-			Collection<GuideStatus> statuses  = getAssistantManager().getGuideStatus(entitymodule, entity);
+			Collection<GuideStatus> statuses = getAssistantManager().getGuideStatus(entitymodule, entity);
 			inAgentContext.addContext("statuses", statuses);
-			
-			/*for(GuideStatus stat : statuses)
-			{
-				if(!stat.isReady())
-				{
-					inAgentContext.setValue("wait", 1000L);
-					inAgentContext.setNextFunctionName(inAgentContext.getFunctionName());
-					
-					return null;
-				}
-			}
-			*/
-			
+
+			/*
+			 * for(GuideStatus stat : statuses)
+			 * {
+			 * if(!stat.isReady())
+			 * {
+			 * inAgentContext.setValue("wait", 1000L);
+			 * inAgentContext.setNextFunctionName(inAgentContext.getFunctionName());
+			 * 
+			 * return null;
+			 * }
+			 * }
+			 */
+
 			Collection aisuggestions = getMediaArchive().query("aisuggestion").exact("entityid", entity).search();
 			inAgentContext.addContext("suggestions", aisuggestions);
-			
-			
-			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); //Should stay search_start
+
+			LlmConnection llmconnection = getMediaArchive().getLlmConnection(inAiFunction.getId()); // Should stay
+																									// search_start
 			LlmResponse response = llmconnection.renderLocalAction(inAgentContext);
-			if( aisuggestions.isEmpty())
-			{
+			if (aisuggestions.isEmpty()) {
 				inAgentContext.setNextFunctionName("question_create_suggestions");
-			}
-			else
-			{
+			} else {
 				inAgentContext.setFunctionName("question_ask");
 				inAgentContext.setWaitTime(null);
 			}
 			return response;
-		}
-		else if ("question_create_suggestions".equals(agentFn))
-		{
-			Data entity= (Data) inAgentContext.getContextValue("entity");
+		} else if ("question_create_suggestions".equals(agentFn)) {
+			Data entity = (Data) inAgentContext.getContextValue("entity");
 			Data entitymodule = (Data) inAgentContext.getContextValue("entitymodule");
 
-			String text = findSampleOfEmbeddedData(entitymodule,entity);
-			
+			String text = findSampleOfEmbeddedData(entitymodule, entity);
+
 			inAgentContext.addContext("embeddedtext", text);
 			LlmConnection llmconnection = getMediaArchive().getLlmConnection(agentFn);
 			LlmResponse response = llmconnection.callStructure(inAgentContext, agentFn);
-			
+
 			Searcher searcher = getMediaArchive().getSearcher("aisuggestion");
 
 			JSONObject json = response.getMessageStructured();
-			Collection suggestions = (Collection)json.get("suggestions");
-			for (Iterator iterator = suggestions.iterator(); iterator.hasNext();)
-			{
-				Map	airesponse = (Map)iterator.next();
+			Collection suggestions = (Collection) json.get("suggestions");
+			for (Iterator iterator = suggestions.iterator(); iterator.hasNext();) {
+				Map airesponse = (Map) iterator.next();
 				Data suggestiondata = searcher.createNewData();
 				suggestiondata.setValue("aifunction", "question_welcome");
 				suggestiondata.setValue("entityid", entity.getId());
 				suggestiondata.setValue("entitymoduleid", entitymodule.getId());
-				suggestiondata.setName( (String)airesponse.get("title"));
+				suggestiondata.setName((String) airesponse.get("title"));
 				suggestiondata.setValue("prompt", airesponse.get("prompt"));
 				searcher.saveData(suggestiondata);
 			}
-			if( suggestions.isEmpty())
-			{
+			if (suggestions.isEmpty()) {
 				LlmResponse response2 = llmconnection.renderLocalAction(inAgentContext, "question_nosuggestions");
 				return response2;
-			}
-			else
-			{
+			} else {
 				inAgentContext.setNextFunctionName("question_welcome");
 			}
 			return response;
 		}
-		if ("question_ask".equals(agentFn))
-		{
-			//Make sure they have already picked the documents
+		if ("question_ask".equals(agentFn)) {
+			// Make sure they have already picked the documents
 			String entiyid = inAgentContext.get("entityid");
 			String moduleid = inAgentContext.get("entitymoduleid");
-			
-			if(entiyid != null && moduleid != null)
-			{
+
+			if (entiyid != null && moduleid != null) {
 				Data entity = getMediaArchive().getData(moduleid, entiyid);
-				if( entity != null)
-				{
+				if (entity != null) {
 					AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
-					Collection<String> docids = assistant.findDocIdsForEntity(moduleid,entiyid);
+					Collection<String> docids = assistant.findDocIdsForEntity(moduleid, entiyid);
 					EmbeddingManager embeddings = (EmbeddingManager) getMediaArchive().getBean("embeddingManager");
 					LlmResponse response = embeddings.findAnswer(inAgentContext, docids, query);
 					return response;
 				}
 			}
 			return searchSystemWide(inAgentContext, query);
-		}
-		else if("question_search".equals(agentFn)) //TODO: Get this working
+		} else if ("question_search".equals(agentFn)) // TODO: Get this working
 		{
-			//1 Do the search from keyword,
-			//2 grab the ids
-			//Do an embedding search
+			// 1 Do the search from keyword,
+			// 2 grab the ids
+			// Do an embedding search
 			return searchSystemWide(inAgentContext, query);
 		}
 		throw new OpenEditException("Function not supported " + agentFn);
-		
+
 	}
 
-	private LlmResponse searchSystemWide(AgentContext inAgentContext, String query)
-	{
+	private LlmResponse searchSystemWide(AgentContext inAgentContext, String query) {
 		Schema schema = loadSchema();
-		
+
 		Collection<String> moduleids = schema.getModuleIds();
-		
+
 		HitTracker hits = getMediaArchive().query("modulesearch")
 				.put("searchtypes", moduleids)
 				.freeform("description", query)
 				.exact("entityembeddingstatus", "embedded")
 				.search();
-		
+
 		Collection<String> docids = new JSONArray();
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 			MultiValued doc = (MultiValued) iterator.next();
 			String searchtype = doc.get("entitysourcetype");
 			String docid = searchtype + "_" + doc.getId();
 			docids.add(docid);
 		}
-		
-		EmbeddingManager embeddings = (EmbeddingManager)getMediaArchive().getBean("embeddingManager");
-		LlmResponse response = embeddings.findAnswer(inAgentContext,docids,query);
+
+		EmbeddingManager embeddings = (EmbeddingManager) getMediaArchive().getBean("embeddingManager");
+		LlmResponse response = embeddings.findAnswer(inAgentContext, docids, query);
 		return response;
 	}
 
-	public String findSampleOfEmbeddedData(Data inEntityModule, Data inEntity)
-	{
-		//Should we look for children...
+	public String findSampleOfEmbeddedData(Data inEntityModule, Data inEntity) {
+		// Should we look for children...
 		StringBuffer foundtext = new StringBuffer();
-		
-		String mystatus = inEntity.get("entityembeddingstatus"); 
-		if(mystatus == null)
-		{
+
+		String mystatus = inEntity.get("entityembeddingstatus");
+		if (mystatus == null) {
 			mystatus = "notembedded";
 		}
-		if(mystatus != null && "embedded".equals(mystatus))
-		{
+		if (mystatus != null && "embedded".equals(mystatus)) {
 			String markdown = getMarkdown(inEntity);
-			if( markdown != null)
-			{
-				foundtext.append( markdown);
+			if (markdown != null) {
+				foundtext.append(markdown);
 			}
 		}
-		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inEntityModule.getId()).exact("systemdefined",false).cachedSearch(); 
-		for (Iterator iterator = detailsviews.iterator(); iterator.hasNext();)
-		{
+		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inEntityModule.getId())
+				.exact("systemdefined", false).cachedSearch();
+		for (Iterator iterator = detailsviews.iterator(); iterator.hasNext();) {
 			Data view = (Data) iterator.next();
-			
+
 			String listid = view.get("rendertable");
-			if( listid != null)
-			{
-				if (getMediaArchive().getSearcher(listid).getDetail("entityembeddingstatus") == null)
-				{
+			if (listid != null) {
+				if (getMediaArchive().getSearcher(listid).getDetail("entityembeddingstatus") == null) {
 					continue;
 				}
-				
+
 				GuideStatus status = new GuideStatus();
 				status.setSearchType(listid);
 				status.setViewData(view);
-				
+
 				HitTracker found = null;
-				try
-				{
-					found = getMediaArchive().query(listid).exact(inEntityModule.getId(),inEntity.getId()).facet("entityembeddingstatus").search();
-				}
-				catch (Exception e)
-				{
+				try {
+					found = getMediaArchive().query(listid).exact(inEntityModule.getId(), inEntity.getId())
+							.facet("entityembeddingstatus").search();
+				} catch (Exception e) {
 					log.debug(inEntityModule + " search error " + inEntity);
 					continue;
 				}
-				
-				for (Iterator iterator2 = found.iterator(); iterator2.hasNext();)
-				{
+
+				for (Iterator iterator2 = found.iterator(); iterator2.hasNext();) {
 					Data data = (Data) iterator2.next();
 					String markdown = getMarkdown(data);
-					if( markdown != null)
-					{
-						foundtext.append( markdown);
+					if (markdown != null) {
+						foundtext.append(markdown);
 					}
-					
-					if( foundtext.length() > 2000)
-					{
-						return foundtext.toString();							
+
+					if (foundtext.length() > 2000) {
+						return foundtext.toString();
 					}
 				}
 			}
@@ -239,90 +212,84 @@ public class QuestionsManager extends BaseAiManager implements ChatMessageHandle
 		return foundtext.toString();
 	}
 
-	protected String getMarkdown(Data data)
-	{
+	protected String getMarkdown(Data data) {
 		String markdown = data.get("markdowncontent");
-		if( markdown == null)
-		{
+		if (markdown == null) {
 			markdown = data.get("maincontent");
-			if( markdown == null)
-			{
+			if (markdown == null) {
 				markdown = data.get("longcaption");
 			}
 		}
-		if( markdown == null)
-		{
+		if (markdown == null) {
 			String assetid = data.get("primarymedia");
 			Asset asset = getMediaArchive().getEntityManager().getAsset(data);
-			if (asset != null)
-			{
+			if (asset != null) {
 				markdown = asset.get("longcaption");
 			}
 		}
-		
-		if (markdown == null || markdown.isEmpty())
-		{
+
+		if (markdown == null || markdown.isEmpty()) {
 			markdown = data.getName();
 		}
 		return markdown;
 	}
-	
 
-/*
-	protected void handleLlmResponse(AgentContext inAgentContext, LlmResponse response)
-	{
-		//TODO: Use IF statements to sort what parsing we need to do. parseSearchParams parseWorkflowParams etc
-		JSONObject content = response.getMessageStructured();
-		
-		String toolname = (String) content.get("next_step");  //request_type
-		
-		if(toolname == null)
-		{
-			throw new OpenEditException("No type specified in results: " + content.toJSONString());
-		}
+	/*
+	 * protected void handleLlmResponse(AgentContext inAgentContext, LlmResponse
+	 * response)
+	 * {
+	 * //TODO: Use IF statements to sort what parsing we need to do.
+	 * parseSearchParams parseWorkflowParams etc
+	 * JSONObject content = response.getMessageStructured();
+	 * 
+	 * String toolname = (String) content.get("next_step"); //request_type
+	 * 
+	 * if(toolname == null)
+	 * {
+	 * throw new OpenEditException("No type specified in results: " +
+	 * content.toJSONString());
+	 * }
+	 * 
+	 * JSONObject details = (JSONObject) content.get("step_details");
+	 * 
+	 * if(details == null)
+	 * {
+	 * throw new OpenEditException("No details specified in results: " +
+	 * content.toJSONString());
+	 * }
+	 * if( toolname.equals("conversation"))
+	 * {
+	 * JSONObject conversation = (JSONObject) details.get("conversation");
+	 * String generalresponse = (String) conversation.get("friendly_response");
+	 * 
+	 * response.setMessage( generalresponse);
+	 * // response.setFunctionName("conversation");
+	 * }
+	 * else if( toolname.equals("question_search") )
+	 * {
+	 * JSONObject structure = (JSONObject) details.get(toolname);
+	 * if(structure == null)
+	 * {
+	 * throw new OpenEditException("No structure found for type: " + toolname);
+	 * }
+	 * String search_keyword = (String) structure.get("search_keyword");
+	 * inAgentContext.setValue("search_keyword", search_keyword);
+	 * //Search system wise for keyword hits that are embedded
+	 * }
+	 * 
+	 * response.setFunctionName(toolname);
+	 * }
+	 */
 
-		JSONObject details = (JSONObject) content.get("step_details");
-		
-		if(details == null)
-		{
-			throw new OpenEditException("No details specified in results: " + content.toJSONString());
-		}
-		if( toolname.equals("conversation"))
-		{
-			JSONObject conversation = (JSONObject) details.get("conversation");
-			String generalresponse = (String) conversation.get("friendly_response");
-			
-			response.setMessage( generalresponse);
-//			response.setFunctionName("conversation");
-		}
-		else if( toolname.equals("question_search") )
-		{
-			JSONObject structure = (JSONObject) details.get(toolname);
-			if(structure == null)
-			{
-				throw new OpenEditException("No structure found for type: " + toolname);
-			}
-			String search_keyword = (String) structure.get("search_keyword");
-			inAgentContext.setValue("search_keyword", search_keyword);
-			//Search system wise for keyword hits that are embedded
-		}
-
-		response.setFunctionName(toolname);
-	}
-	*/
-	
-	public String getAnswerByEntity(String inModuleId, String inEntityid, String inQuestion)
-	{
+	public String getAnswerByEntity(String inModuleId, String inEntityid, String inQuestion) {
 		AssistantManager assistant = (AssistantManager) getMediaArchive().getBean("assistantManager");
 		Collection<String> docIds = assistant.findDocIdsForEntity(inModuleId, inEntityid);
 		EmbeddingManager embeddings = (EmbeddingManager) getMediaArchive().getBean("embeddingManager");
 		String answer = embeddings.findAnswer(docIds, inQuestion);
 		return answer;
 	}
-	
-	
-	public AssistantManager getAssistantManager()
-	{
+
+	public AssistantManager getAssistantManager() {
 		AssistantManager assistantManager = (AssistantManager) getMediaArchive().getBean("assistantManager");
 		return assistantManager;
 	}

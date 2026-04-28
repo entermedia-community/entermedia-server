@@ -23,321 +23,249 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.util.DateStorageUtil;
 
-
-
-
-public class BaseJsonModule extends BaseMediaModule 
-{
-//	private static String VALID_HEADERS = "x-csrf-token,x-file-name,x-file-size,x-requested-with,cache-control,access-control-allow-credentials,access-control-allow-origin,access-control-allow-headers,access-control-allow-method,content-type";
+public class BaseJsonModule extends BaseMediaModule {
+	// private static String VALID_HEADERS =
+	// "x-csrf-token,x-file-name,x-file-size,x-requested-with,cache-control,access-control-allow-credentials,access-control-allow-origin,access-control-allow-headers,access-control-allow-method,content-type";
 	private static final Log log = LogFactory.getLog(BaseJsonModule.class);
-	
-	public void preprocess(WebPageRequest inReq)
-	{
-		//upload.setProperties(inContext.getParameterMap());
-		if (inReq.getRequest() == null) //used in unit tests
+
+	public void preprocess(WebPageRequest inReq) {
+		// upload.setProperties(inContext.getParameterMap());
+		if (inReq.getRequest() == null) // used in unit tests
 		{
 			return;
 		}
-		
 
 		String type = inReq.getRequest().getContentType();
-		if (type != null && type.startsWith("application/json"))
-		{
-			inReq.getJsonRequest(); //This will read in the body and setup the parameters
-		}
-		else if (type != null && type.startsWith("multipart"))
-		{
+		if (type != null && type.startsWith("application/json")) {
+			inReq.getJsonRequest(); // This will read in the body and setup the parameters
+		} else if (type != null && type.startsWith("multipart")) {
 			final FileUpload uploadparser = new FileUpload();
 			uploadparser.parseArguments(inReq);
-			//Old Stuff addAlreadyUploaded(inContext, upload);
+			// Old Stuff addAlreadyUploaded(inContext, upload);
 		}
 	}
 
-
-	public String getId(WebPageRequest inReq)
-	{
-		String id = inReq.getRequestParameter("id"); 
-		if( id == null)
-		{
+	public String getId(WebPageRequest inReq) {
+		String id = inReq.getRequestParameter("id");
+		if (id == null) {
 			id = inReq.getPage().getName();
-			if (id.endsWith(".json"))
-			{
-				id = id.substring(0, id.length()-5);	
+			if (id.endsWith(".json")) {
+				id = id.substring(0, id.length() - 5);
 			}
 		}
 		return id;
 	}
 
-	public String findCatalogId(WebPageRequest inReq)
-	{
+	public String findCatalogId(WebPageRequest inReq) {
 		String catalogid = inReq.findPathValue("catalogid");
-		if(catalogid == null)
-		{
-			if(inReq.getRequest() != null)
-			{
+		if (catalogid == null) {
+			if (inReq.getRequest() != null) {
 				catalogid = inReq.getRequest().getHeader("catalogid");
 			}
 		}
-		
+
 		return catalogid;
 	}
-	
-	public void populateJsonObject(Searcher inSearcher, JSONObject inObject, Data inData)
-	{
-		for (Iterator iterator = inSearcher.getPropertyDetails().iterator(); iterator.hasNext();)
-		{
+
+	public void populateJsonObject(Searcher inSearcher, JSONObject inObject, Data inData) {
+		for (Iterator iterator = inSearcher.getPropertyDetails().iterator(); iterator.hasNext();) {
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			String key = detail.getId();
 			String value = inData.get(detail.getId());
-			if(key !=null && value != null)
-			{
-				if(detail.isList())
-				{
+			if (key != null && value != null) {
+				if (detail.isList()) {
 					inObject.put(key, value);
-				}
-				else if(detail.isBoolean())
-				{
+				} else if (detail.isBoolean()) {
 					inObject.put(key, Boolean.parseBoolean(value));
-				}
-				else 
-				{
+				} else {
 					inObject.put(key, value);
 				}
 			}
 		}
 	}
 
-	public JSONObject getOrderJson(SearcherManager sm, Searcher inSearcher, Data inOrder)
-	{
+	public JSONObject getOrderJson(SearcherManager sm, Searcher inSearcher, Data inOrder) {
 
 		JSONObject asset = new JSONObject();
 
-		populateJsonObject(inSearcher, asset,inOrder);
-		//need to add tags and categories, etc
-		//String tags = inAsset.get("keywords");
-		Searcher itemsearcher = sm.getSearcher(inSearcher.getCatalogId(),"orderitem" );
+		populateJsonObject(inSearcher, asset, inOrder);
+		// need to add tags and categories, etc
+		// String tags = inAsset.get("keywords");
+		Searcher itemsearcher = sm.getSearcher(inSearcher.getCatalogId(), "orderitem");
 		HitTracker items = itemsearcher.query().match("orderid", inOrder.getId()).search();
 
 		JSONArray array = new JSONArray();
-		for (Iterator iterator = items.iterator(); iterator.hasNext();)
-		{
-			Data it = (Data)iterator.next();
+		for (Iterator iterator = items.iterator(); iterator.hasNext();) {
+			Data it = (Data) iterator.next();
 			JSONObject item = new JSONObject();
-			populateJsonObject(itemsearcher, item,it);
+			populateJsonObject(itemsearcher, item, it);
 			array.add(item);
 		}
 		asset.put("items", array);
 
-
-
 		return asset;
 	}
 
-	public MediaArchive getMediaArchive(WebPageRequest inReq,  String inCatalogid)
-	{		
-		SearcherManager sm = (SearcherManager)inReq.getPageValue("searcherManager");
+	public MediaArchive getMediaArchive(WebPageRequest inReq, String inCatalogid) {
+		SearcherManager sm = (SearcherManager) inReq.getPageValue("searcherManager");
 
-		if (inCatalogid == null)
-		{
+		if (inCatalogid == null) {
 			return null;
 		}
 		MediaArchive archive = (MediaArchive) sm.getModuleManager().getBean(inCatalogid, "mediaArchive");
 		return archive;
 	}
-	public JSONObject getDataJson(SearcherManager sm, PropertyDetail inDetail, String inId)
-	{
+
+	public JSONObject getDataJson(SearcherManager sm, PropertyDetail inDetail, String inId) {
 		Searcher searcher = sm.getSearcher(inDetail.getListCatalogId(), inDetail.getListId());
-		Data data = (Data)searcher.searchById(inId);
-		if( data == null)
-		{
+		Data data = (Data) searcher.searchById(inId);
+		if (data == null) {
 			return null;
 		}
-		return getDataJson(sm,searcher,data);
+		return getDataJson(sm, searcher, data);
 	}
-	public JSONObject getDataJson(SearcherManager sm, Searcher inSearcher, Data inData)
-	{
+
+	public JSONObject getDataJson(SearcherManager sm, Searcher inSearcher, Data inData) {
 		JSONObject asset = new JSONObject();
 		asset.put("id", inData.getId());
 		asset.put("name", inData.getName());
-		for (Iterator iterator = inSearcher.getPropertyDetails().iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = inSearcher.getPropertyDetails().iterator(); iterator.hasNext();) {
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			String key = detail.getId();
 			String value = inData.get(key);
-			if(key != null && value != null)
-			{
-				if(detail.isList())
-				{
-					//friendly?
+			if (key != null && value != null) {
+				if (detail.isList()) {
+					// friendly?
 					asset.put(key, value);
-				}
-				else if(detail.isBoolean())
-				{
+				} else if (detail.isBoolean()) {
 					asset.put(key, Boolean.parseBoolean(value));
-				}
-				else
-				{
+				} else {
 					asset.put(key, value);
 				}
 			}
 		}
-		if( inSearcher.getSearchType() == "category")
-		{
+		if (inSearcher.getSearchType() == "category") {
 			MediaArchive archive = getMediaArchive(inSearcher.getCatalogId());
 			Category cat = archive.getCategory(inData.getId());
-			if( cat != null)
-			{
+			if (cat != null) {
 				StringBuffer out = new StringBuffer();
-				for (Iterator iterator = cat.getParentCategories().iterator(); iterator.hasNext();)
-				{
+				for (Iterator iterator = cat.getParentCategories().iterator(); iterator.hasNext();) {
 					Category parent = (Category) iterator.next();
 					out.append(parent.getName());
-					if( iterator.hasNext())
-					{
+					if (iterator.hasNext()) {
 						out.append("/");
 					}
 				}
-				asset.put("path",out.toString());
+				asset.put("path", out.toString());
 			}
 		}
 
 		return asset;
 	}
-	
-	
-	public void populateJsonData(Map inputdata, Searcher searcher, Data inData)
-	{
-		for (Iterator iterator = inputdata.keySet().iterator(); iterator.hasNext();)
-		{
+
+	public void populateJsonData(Map inputdata, Searcher searcher, Data inData) {
+		for (Iterator iterator = inputdata.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
 			Object value = inputdata.get(key);
-			//log.info("Got " + inputdata + " from JSON");
-			
+			// log.info("Got " + inputdata + " from JSON");
+
 			PropertyDetail detail = searcher.getDetail(key);
-			//only save valid fields?
-			if( detail == null) 
-			{
+			// only save valid fields?
+			if (detail == null) {
 				log.info("No such field:  " + key);
 				continue;
 			}
-			if( detail != null && detail.isMultiLanguage())
-			{
+			if (detail != null && detail.isMultiLanguage()) {
 				LanguageMap map = null;
 				Object oldval = inData.getValue(detail.getId());
-				if(oldval != null){
-					if(oldval instanceof LanguageMap){
-						map = (LanguageMap) oldval;										
-					} else{
+				if (oldval != null) {
+					if (oldval instanceof LanguageMap) {
+						map = (LanguageMap) oldval;
+					} else {
 						map = new LanguageMap();
-						map.setText("en",(String) oldval);
+						map.setText("en", (String) oldval);
 					}
 				}
-				if (map == null)
-				{
+				if (map == null) {
 					map = new LanguageMap();
 				}
-				if( value != null )
-				{
+				if (value != null) {
 					String lang = "en";
-					if( key.contains("."))
-					{
-						lang = key.substring(key.indexOf( ".") + 1);
+					if (key.contains(".")) {
+						lang = key.substring(key.indexOf(".") + 1);
 					}
-					map.setText(lang,String.valueOf( value) );
+					map.setText(lang, String.valueOf(value));
 				}
 				inData.setValue(detail.getId(), map);
-			}
-			else if(value instanceof Collection)
-			{
+			} else if (value instanceof Collection) {
 				Collection ids = new ArrayList();
-				Collection values = (Collection)value;
-				
-				//We have a list full of maps or strings
-				for (Iterator iterator2 = values.iterator(); iterator2.hasNext();)
-				{
+				Collection values = (Collection) value;
+
+				// We have a list full of maps or strings
+				for (Iterator iterator2 = values.iterator(); iterator2.hasNext();) {
 					Object it = (Object) iterator2.next();
-					if( it instanceof String)
-					{
+					if (it instanceof String) {
 						ids.add(it);
-					}
-					else
-					{
-						Map object = (Map)it;
-						String val = (String)object.get("id");
-						if( val == null)
-						{
+					} else {
+						Map object = (Map) it;
+						String val = (String) object.get("id");
+						if (val == null) {
 							ids.add(it);
 							continue;
 						}
-						//log.info("In VALUE: ${val}");
+						// log.info("In VALUE: ${val}");
 						ids.add(val);
-						if(detail != null)
-						{
-							Searcher rsearcher = searcher.getSearcherManager().getSearcher(searcher.getCatalogId(),key);
-							Data remote = (Data)rsearcher.searchById(val);
-							if(remote == null)
-							{
+						if (detail != null) {
+							Searcher rsearcher = searcher.getSearcherManager().getSearcher(searcher.getCatalogId(),
+									key);
+							Data remote = (Data) rsearcher.searchById(val);
+							if (remote == null) {
 								remote = rsearcher.createNewData();
-								remote.setId(val);							
+								remote.setId(val);
 							}
-							for (Iterator iterator3 = object.keySet().iterator(); iterator3.hasNext();)
-							{
+							for (Iterator iterator3 = object.keySet().iterator(); iterator3.hasNext();) {
 								String it2 = (String) iterator3.next();
-								remote.setProperty(it2, (String)object.get(it2));
+								remote.setProperty(it2, (String) object.get(it2));
 							}
 							rsearcher.saveData(remote, null);
 						}
 					}
-				} 
+				}
 				inData.setValue(key, ids);
-			}
-			else if(value instanceof Map )
-			{
-					Map values = (Map)value;
-					
-					Searcher rsearcher = searcher.getSearcherManager().getListSearcher(detail);
-					String targetid = (String)values.get("id");
-					Data remote = (Data)rsearcher.searchById(targetid);
-					if(remote == null)
-					{
-						remote = rsearcher.createNewData();
-						remote.setId(targetid);
+			} else if (value instanceof Map) {
+				Map values = (Map) value;
+
+				Searcher rsearcher = searcher.getSearcherManager().getListSearcher(detail);
+				String targetid = (String) values.get("id");
+				Data remote = (Data) rsearcher.searchById(targetid);
+				if (remote == null) {
+					remote = rsearcher.createNewData();
+					remote.setId(targetid);
+				}
+				for (Iterator iterator2 = values.keySet().iterator(); iterator2.hasNext();) {
+					String it = (String) iterator2.next();
+					Object test = values.get(it);
+					if (test instanceof String) {
+						remote.setProperty(it, (String) test);
 					}
-					for (Iterator iterator2 = values.keySet().iterator(); iterator2.hasNext();)
-					{
-						String it = (String) iterator2.next();
-						Object test = values.get(it);
-						if(test instanceof String)
-						{
-							remote.setProperty(it,(String)test );
-						}
-					}
-					rsearcher.saveData(remote, null);
-					if( detail.isMultiValue() )
-					{
-						((MultiValued)inData).addValue(key, targetid);
-					}
-					else
-					{
-						inData.setProperty(key, targetid);
-					}
-			}
-			else if(detail.isDate() && value != null )
-			{
+				}
+				rsearcher.saveData(remote, null);
+				if (detail.isMultiValue()) {
+					((MultiValued) inData).addValue(key, targetid);
+				} else {
+					inData.setProperty(key, targetid);
+				}
+			} else if (detail.isDate() && value != null) {
 				inData.setValue(key, DateStorageUtil.getStorageUtil().parseFromObject(value));
-			}
-			else
-			{
-				if (value instanceof String && ((String) value).isEmpty() ) 
-				{
+			} else {
+				if (value instanceof String && ((String) value).isEmpty()) {
 					value = null;
 				}
-				inData.setValue(key, value);				
+				inData.setValue(key, value);
 			}
 
 		}
-	
+
 	}
-	
-	
+
 }

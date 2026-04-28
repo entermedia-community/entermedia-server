@@ -12,81 +12,69 @@ import org.openedit.data.SearcherManager;
 import org.openedit.data.ViewFieldList;
 import org.openedit.profile.UserProfile;
 
-public class ViewData extends BaseData implements CatalogEnabled
-{
+public class ViewData extends BaseData implements CatalogEnabled {
 	protected SearcherManager fieldSearchManager;
 	protected Collection<ViewData> fieldChildren;
 
 	protected String fieldCatalogId;
-	
 
-	public String getCatalogId()
-	{
+	public String getCatalogId() {
 		return fieldCatalogId;
 	}
 
-	public void setCatalogId(String inCatalogId)
-	{
+	public void setCatalogId(String inCatalogId) {
 		fieldCatalogId = inCatalogId;
 	}
 
-	public SearcherManager getSearchManager()
-	{
+	public SearcherManager getSearchManager() {
 		return fieldSearchManager;
 	}
 
-	public void setSearchManager(SearcherManager inSearchManager)
-	{
+	public void setSearchManager(SearcherManager inSearchManager) {
 		fieldSearchManager = inSearchManager;
 	}
-	
-	public Collection<ViewData> getChildren()
-	{
-		if (fieldChildren == null)
-		{
+
+	public Collection<ViewData> getChildren() {
+		if (fieldChildren == null) {
 			Searcher viewsearcher = getSearchManager().getSearcher(getCatalogId(), "view");
 			Collection hits = getSearchManager().query(getCatalogId(), "view").exact("parentid", getId()).search();
 			fieldChildren = new ArrayList<ViewData>(hits.size());
-			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 				Data view = (Data) iterator.next();
-				ViewData data = (ViewData)viewsearcher.loadData(view);
+				ViewData data = (ViewData) viewsearcher.loadData(view);
 				fieldChildren.add(data);
 			}
 		}
 		return fieldChildren;
 	}
-	
-	public Searcher getSearcher()
-	{
+
+	public Searcher getSearcher() {
 		String moduleid = get("rendertable");
-		if( moduleid == null)
-		{
+		if (moduleid == null) {
 			moduleid = get("moduleid");
 		}
 		Searcher fieldsearcher = getSearchManager().getSearcher(getCatalogId(), moduleid);
 		return fieldsearcher;
 	}
-	
-	public ViewFieldList getDetailsForView(UserProfile inProfile)
-	{
+
+	public ViewFieldList getDetailsForView(UserProfile inProfile) {
 		Searcher searcher = getSearcher();
 		if (searcher == null) {
-			
+
 			return null;
 		}
-		if( inProfile != null)
-		{
+		if (inProfile != null) {
 			String saveforall = inProfile.get("view_saveforallenabled");
-			if( Boolean.parseBoolean(saveforall) )
-			{
-				ViewFieldList fields = searcher.getPropertyDetailsArchive().getViewFields(searcher.getPropertyDetails(), this, null);
+			if (Boolean.parseBoolean(saveforall)) {
+				ViewFieldList fields = searcher.getPropertyDetailsArchive().getViewFields(searcher.getPropertyDetails(),
+						this, null);
 				return fields;
 			}
 		}
-		
-		ViewFieldList fields = searcher.getPropertyDetailsArchive().getViewFields(searcher.getPropertyDetails(), this, inProfile);
+
+		ViewFieldList fields = searcher.getPropertyDetailsArchive().getViewFields(searcher.getPropertyDetails(), this,
+				inProfile);
 		return fields;
 	}
-	
+
 }

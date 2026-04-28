@@ -11,10 +11,12 @@ public class GeminiResponse extends BasicLlmResponse {
 
     @Override
     public boolean isToolCall() {
-        if (rawResponse == null) return false;
+        if (rawResponse == null)
+            return false;
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
-        if (choices == null || choices.isEmpty()) return false;
+        if (choices == null || choices.isEmpty())
+            return false;
 
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
@@ -24,7 +26,8 @@ public class GeminiResponse extends BasicLlmResponse {
 
     @Override
     public JSONObject getMessageStructured() {
-        if (!isToolCall()) return null;
+        if (!isToolCall())
+            return null;
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
         JSONObject choice = (JSONObject) choices.get(0);
@@ -38,10 +41,12 @@ public class GeminiResponse extends BasicLlmResponse {
 
     @Override
     public String getMessage() {
-        if (rawResponse == null) return null;
+        if (rawResponse == null)
+            return null;
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
-        if (choices == null || choices.isEmpty()) return null;
+        if (choices == null || choices.isEmpty())
+            return null;
 
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
@@ -51,7 +56,8 @@ public class GeminiResponse extends BasicLlmResponse {
 
     @Override
     public String getFunctionName() {
-        if (!isToolCall()) return null;
+        if (!isToolCall())
+            return null;
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
         JSONObject choice = (JSONObject) choices.get(0);
@@ -63,7 +69,8 @@ public class GeminiResponse extends BasicLlmResponse {
 
     @Override
     public boolean isSuccessful() {
-        if (rawResponse == null) return false;
+        if (rawResponse == null)
+            return false;
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
         return choices != null && !choices.isEmpty();
@@ -71,10 +78,12 @@ public class GeminiResponse extends BasicLlmResponse {
 
     @Override
     public int getTokensUsed() {
-        if (rawResponse == null) return 0;
+        if (rawResponse == null)
+            return 0;
 
         JSONObject usage = (JSONObject) rawResponse.get("usage");
-        if (usage == null) return 0;
+        if (usage == null)
+            return 0;
 
         Object totalTokens = usage.get("total_tokens");
         if (totalTokens instanceof Long) {
@@ -87,23 +96,24 @@ public class GeminiResponse extends BasicLlmResponse {
 
     @Override
     public String getModel() {
-        if (rawResponse == null) return "unknown";
+        if (rawResponse == null)
+            return "unknown";
         return (String) rawResponse.get("model");
     }
 
     @Override
     public ArrayList<String> getImageUrls() {
-    	ArrayList<String> images = new ArrayList<String>();
+        ArrayList<String> images = new ArrayList<String>();
         if (rawResponse == null) {
-        	return images;
+            return images;
         }
         if (!rawResponse.containsKey("data")) {
-        	return images;
+            return images;
         }
 
         JSONArray dataArray = (JSONArray) rawResponse.get("data");
         if (dataArray == null || dataArray.isEmpty()) {
-        	return images;
+            return images;
         }
 
         for (int i = 0; i < dataArray.size(); i++) {
@@ -113,22 +123,22 @@ public class GeminiResponse extends BasicLlmResponse {
         }
         return images;
     }
-    
+
     @Override
     public ArrayList<String> getImageBase64s() {
-    	ArrayList<String> images = new ArrayList<String>();
+        ArrayList<String> images = new ArrayList<String>();
         if (rawResponse == null) {
-        	return images;
+            return images;
         }
-        
+
         if (!rawResponse.containsKey("data")) {
-        	return images;
+            return images;
         }
-        
+
         JSONArray dataArray = (JSONArray) rawResponse.get("data");
-        
+
         if (dataArray == null || dataArray.isEmpty()) {
-        	return images;
+            return images;
         }
 
         for (int i = 0; i < dataArray.size(); i++) {
@@ -138,5 +148,5 @@ public class GeminiResponse extends BasicLlmResponse {
         }
         return images;
     }
-    
+
 }

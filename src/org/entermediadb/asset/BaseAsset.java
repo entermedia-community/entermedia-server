@@ -36,82 +36,71 @@ import org.openedit.util.PathUtilities;
  * @author cburkey
  * 
  */
-public class BaseAsset extends SearchHitData implements MultiValued, SaveableData, Asset
-{
+public class BaseAsset extends SearchHitData implements MultiValued, SaveableData, Asset {
 	private static final Log log = LogFactory.getLog(Asset.class);
 
 	protected MediaArchive fieldMediaArchive;
 	// be shown in a list
 	protected Collection fieldRelatedAssets;
 
-	
 	@Override
 	public boolean isLocked() {
-		if(get("lockedby") != null && get("lockedby").length() >0) {
+		if (get("lockedby") != null && get("lockedby").length() > 0) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public User getLockOwner() {
-		if(isLocked()) {
+		if (isLocked()) {
 			return getMediaArchive().getUser(get("lockedby"));
 		}
 		return null;
 	}
 
 	@Override
-	public boolean isDeleted()
-	{
+	public boolean isDeleted() {
 		String editstatus = get("editstatus");
-		if( "7".equals( editstatus) )
-		{
+		if ("7".equals(editstatus)) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	@Override
-	public boolean isFolder()
-	{
+	public boolean isFolder() {
 		return getBoolean("isfolder");
 	}
 
 	@Override
-	public void setFolder(boolean inIsFolder)
-	{
+	public void setFolder(boolean inIsFolder) {
 		setProperty("isfolder", String.valueOf(inIsFolder));
 	}
 
-	public BaseAsset(MediaArchive inMediaArchive)
-	{
+	public BaseAsset(MediaArchive inMediaArchive) {
 		super(inMediaArchive.getAssetSearcher());
 		setMediaArchive(inMediaArchive);
 	}
 
 	@Override
-	public MediaArchive getMediaArchive()
-	{
+	public MediaArchive getMediaArchive() {
 		return fieldMediaArchive;
 	}
 
 	@Override
-	public void setMediaArchive(MediaArchive inMediaArchive)
-	{
+	public void setMediaArchive(MediaArchive inMediaArchive) {
 		fieldMediaArchive = inMediaArchive;
 	}
 
 	@Override
-	public int getOrdering()
-	{
+	public int getOrdering() {
 		return (int) getValue("ordering");
 	}
 
 	@Override
-	public void setOrdering(int inOrdering)
-	{
+	public void setOrdering(int inOrdering) {
 		setValue("ordering", inOrdering);
 	}
 
@@ -122,81 +111,68 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	 */
 
 	@Override
-	public String getShortDescription()
-	{
+	public String getShortDescription() {
 
 		return get("shortdescription");
 	}
 
 	@Override
-	public void setShortDescription(String inDescription)
-	{
+	public void setShortDescription(String inDescription) {
 		setProperty("shortdescription", inDescription);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return toString("en");
 	}
+
 	@Override
-	public String toString(String inLocale)
-	{
+	public String toString(String inLocale) {
 		String text = getText("assettitle", inLocale);
-			if( text == null)
-			{
-				text = getText("assettitle","en");
-			}
-			if( text == null)
-			{
-				text = getName();
-			}	
-			if ( text == null)
-			{
-				text = getId();
-			}
-			return text;
+		if (text == null) {
+			text = getText("assettitle", "en");
+		}
+		if (text == null) {
+			text = getName();
+		}
+		if (text == null) {
+			text = getId();
+		}
+		return text;
 	}
+
 	/**
 	 * This will look in all the category objects if needed
 	 */
 	@Override
 
-	public Object getValue(String inAttribute)
-	{
+	public Object getValue(String inAttribute) {
 
-		if ("fulltext".equals(inAttribute))
-		{
-			if (getMediaArchive() != null)
-			{
+		if ("fulltext".equals(inAttribute)) {
+			if (getMediaArchive() != null) {
 				return getMediaArchive().getAssetSearcher().getFulltext(this);
 			}
 		}
-		if ("category".equals(inAttribute) || "category-exact".equals(inAttribute) )
-		{
+		if ("category".equals(inAttribute) || "category-exact".equals(inAttribute)) {
 			Collection categorylist = (Collection) getProperties().getValue("category-exact");
-			if(categorylist == null)
-			{
+			if (categorylist == null) {
 				categorylist = new ArrayList();
 			}
 			List<Data> categorydata = new ArrayList();
 
-			for (Iterator iterator = categorylist.iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = categorylist.iterator(); iterator.hasNext();) {
 				Object category = (Object) iterator.next();
-				if( category instanceof String)
-				{
-					category = getMediaArchive().getCategory((String)category); //Cache this? Or lazy load em
+				if (category instanceof String) {
+					category = getMediaArchive().getCategory((String) category); // Cache this? Or lazy load em
 				}
-				if(category != null)
-				{
-					categorydata.add( (Data)category);
+				if (category != null) {
+					categorydata.add((Data) category);
 				}
 			}
 			getProperties().put("category-exact", categorydata);
 			return categorydata;
 		}
-		if("islocked".equals(inAttribute)) {
+		if ("islocked".equals(inAttribute)) {
 			return isLocked();
 		}
 
@@ -205,106 +181,88 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	}
 
 	@Override
-	public void removeProperty(String inKey)
-	{
-		if (inKey != null && inKey.length() > 0)
-		{
+	public void removeProperty(String inKey) {
+		if (inKey != null && inKey.length() > 0) {
 			getProperties().remove(inKey);
 		}
-		if ("category".equals(inKey))
-		{
+		if ("category".equals(inKey)) {
 			getCategories().clear();
 		}
 	}
+
 	@Override
-	public void removeValue(String inKey, Object inNewValue)
-	{
-		if( inKey.equals("category"))
-		{
-			removeCategory((Category)inNewValue);
+	public void removeValue(String inKey, Object inNewValue) {
+		if (inKey.equals("category")) {
+			removeCategory((Category) inNewValue);
 			return;
 		}
 		super.removeValue(inKey, inNewValue);
 	}
+
 	@Override
-	public void addValue(String inKey, Object inNewValue)
-	{
-		if( inKey.equals("category"))
-		{
-			addCategory((Category)inNewValue);
+	public void addValue(String inKey, Object inNewValue) {
+		if (inKey.equals("category")) {
+			addCategory((Category) inNewValue);
 			return;
 		}
 		super.addValue(inKey, inNewValue);
 	}
-	
+
 	@Override
-	public void addCategory(Category inCat)
-	{
-		if (inCat == null)
-		{
+	public void addCategory(Category inCat) {
+		if (inCat == null) {
 			throw new IllegalArgumentException("Categories cannot be null");
 		}
 		removeCategoryByPath(inCat.getCategoryPath());
-		if (!isInCategory(inCat))
-		{
-			addValue("category-exact",inCat);
+		if (!isInCategory(inCat)) {
+			addValue("category-exact", inCat);
 		}
 	}
 
 	@Override
-	public void removeCategory(Category inCategory)
-	{
+	public void removeCategory(Category inCategory) {
 		Category found = null;
 		Collection cats = getCategories();
 
-		for (Iterator iter = cats.iterator(); iter.hasNext();)
-		{
+		for (Iterator iter = cats.iterator(); iter.hasNext();) {
 			Category element = (Category) iter.next();
-			if (element.getId().equals(inCategory.getId()))
-			{
+			if (element.getId().equals(inCategory.getId())) {
 				found = element;
 				break;
 			}
 		}
-		if (found != null)
-		{
+		if (found != null) {
 			cats.remove(found);
-			getProperties().put("category-exact",cats);
+			getProperties().put("category-exact", cats);
 		}
-		//Resave all the parents
+		// Resave all the parents
 		Collection set = buildCategorySet();
-		getProperties().put("category",set);
-		
+		getProperties().put("category", set);
+
 	}
 
 	@Override
-	public Set buildCategorySet()
-	{
+	public Set buildCategorySet() {
 		HashSet allCatalogs = new HashSet();
 		Collection catalogs = getCategories();
-		//allCatalogs.addAll(catalogs);
-		for (Iterator iter = catalogs.iterator(); iter.hasNext();)
-		{
+		// allCatalogs.addAll(catalogs);
+		for (Iterator iter = catalogs.iterator(); iter.hasNext();) {
 			Category catalog = (Category) iter.next();
 			buildCategorySet(catalog, allCatalogs);
 		}
 		return allCatalogs;
 	}
 
-	protected void buildCategorySet(Category inCatalog, Set inCatalogSet)
-	{
+	protected void buildCategorySet(Category inCatalog, Set inCatalogSet) {
 		inCatalogSet.add(inCatalog);
 		Category parent = inCatalog.getParentCategory();
-		if (parent != null)
-		{
+		if (parent != null) {
 			buildCategorySet(parent, inCatalogSet);
 		}
 	}
 
-	
 	@Override
-	public Collection<Category> getCategories()
-	{
+	public Collection<Category> getCategories() {
 		Collection values = (Collection<Category>) getValue("category-exact");
 		return values;
 	}
@@ -315,51 +273,40 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	 * @return
 	 */
 	@Override
-	public boolean isInCatalog(Category inCategory)
-	{
+	public boolean isInCatalog(Category inCategory) {
 		return isInCategory(inCategory);
 	}
 
 	@Override
-	public boolean isInCategory(Category inCat)
-	{
+	public boolean isInCategory(Category inCat) {
 		return isInCategory(inCat.getId());
 	}
 
 	@Override
-	public boolean isInCategory(String inCategoryId)
-	{
-		for (Iterator iter = getCategories().iterator(); iter.hasNext();)
-		{
+	public boolean isInCategory(String inCategoryId) {
+		for (Iterator iter = getCategories().iterator(); iter.hasNext();) {
 			Category element = (Category) iter.next();
-			if (element.getId().equals(inCategoryId))
-			{
+			if (element.getId().equals(inCategoryId)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	public boolean isInCategoryPath(String inCategoryPath)
-	{
-		for (Iterator iter = getCategories().iterator(); iter.hasNext();)
-		{
+
+	public boolean isInCategoryPath(String inCategoryPath) {
+		for (Iterator iter = getCategories().iterator(); iter.hasNext();) {
 			Category element = (Category) iter.next();
-			if (element.getCategoryPath().equals(inCategoryPath))
-			{
+			if (element.getCategoryPath().equals(inCategoryPath)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	public boolean removeCategoryByPath(String inCategoryPath)
-	{
-		for (Iterator iter = getCategories().iterator(); iter.hasNext();)
-		{
+
+	public boolean removeCategoryByPath(String inCategoryPath) {
+		for (Iterator iter = getCategories().iterator(); iter.hasNext();) {
 			Category element = (Category) iter.next();
-			if (inCategoryPath.equals(element.getCategoryPath()))
-			{
+			if (inCategoryPath.equals(element.getCategoryPath())) {
 				removeCategory(element);
 				return true;
 			}
@@ -368,46 +315,47 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	}
 
 	@Override
-	public Collection getCollections()
-	{
+	public Collection getCollections() {
 		Collection collections = new ArrayList();
-		for(Category cat: getCategories() )
-		{
+		for (Category cat : getCategories()) {
 			LibraryCollection collection = getMediaArchive().getProjectManager().findCollectionForCategory(cat);
-			if(collection != null)
-			{
-				// <a class="librarylabel" href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="collection">$collection</a>
+			if (collection != null) {
+				// <a class="librarylabel"
+				// href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html"
+				// class="collection">$collection</a>
 				collections.add(collection);
 			}
-		}	
+		}
 		return collections;
 	}
 
-/*
-	public Collection getLibraries()
-	{
-		Collection cats = getCategories();
-		if( cats == null || cats.isEmpty())
-		{
-			return Collections.emptyList();
-		}
-		Searcher librarysearcher = getMediaArchive().getSearcher("library");
-		HashSet ids = new HashSet();
-		for(Category cat: getCategories() )
-		{
-			for (Iterator iterator = cat.getParentCategories().iterator(); iterator.hasNext();)
-			{
-				Category parent = (Category) iterator.next();
-				ids.add(parent.getId());
-				
-			}
-			ids.add(cat.getId());
-		}
-		HitTracker hits = librarysearcher.query().orgroup("categoryid", ids).search();
-		return hits;
-	}
-*/
-	
+	/*
+	 * public Collection getLibraries()
+	 * {
+	 * Collection cats = getCategories();
+	 * if( cats == null || cats.isEmpty())
+	 * {
+	 * return Collections.emptyList();
+	 * }
+	 * Searcher librarysearcher = getMediaArchive().getSearcher("library");
+	 * HashSet ids = new HashSet();
+	 * for(Category cat: getCategories() )
+	 * {
+	 * for (Iterator iterator = cat.getParentCategories().iterator();
+	 * iterator.hasNext();)
+	 * {
+	 * Category parent = (Category) iterator.next();
+	 * ids.add(parent.getId());
+	 * 
+	 * }
+	 * ids.add(cat.getId());
+	 * }
+	 * HitTracker hits = librarysearcher.query().orgroup("categoryid",
+	 * ids).search();
+	 * return hits;
+	 * }
+	 */
+
 	/*
 	 * @deprecated
 	 * 
@@ -415,51 +363,40 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	 */
 
 	@Override
-	public void clearCategories()
-	{
+	public void clearCategories() {
 		getCategories().clear();
 	}
 
 	@Override
-	public boolean hasProperty(String inKey)
-	{
+	public boolean hasProperty(String inKey) {
 		return hasValue(inKey);
 	}
 
 	@Override
-	public void addKeyword(String inString)
-	{
-		if (inString == null)
-		{
+	public void addKeyword(String inString) {
+		if (inString == null) {
 			log.debug("Null keyword");
 		}
 		addValue("keywords", inString);
 	}
 
 	@Override
-	public void addKeywords(String inString)
-	{
-		if (inString == null)
-		{
+	public void addKeywords(String inString) {
+		if (inString == null) {
 			log.debug("Null keyword");
-		}
-		else
-		{
-			//grab the "" stuff first
+		} else {
+			// grab the "" stuff first
 			int start = inString.indexOf("\"");
-			while (start > -1)
-			{
+			while (start > -1) {
 				int end = inString.indexOf("\"", start + 1);
 				addKeyword(inString.substring(start + 1, end));
 				start = inString.indexOf("\"", end + 1);
 			}
 
 			String[] keywords = inString.split("\\s+");
-			for (int i = 0; i < keywords.length; i++)
-			{
+			for (int i = 0; i < keywords.length; i++) {
 				String key = keywords[i].trim();
-				if (key.length() == 0 || key.startsWith("\"") || key.endsWith("\""))
-				{
+				if (key.length() == 0 || key.startsWith("\"") || key.endsWith("\"")) {
 					continue;
 				}
 				addKeyword(key);
@@ -468,43 +405,36 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	}
 
 	@Override
-	public Collection<String> getKeywords()
-	{
+	public Collection<String> getKeywords() {
 		Collection<String> keywords = getValues("keywords");
-		if (keywords == null)
-		{
+		if (keywords == null) {
 			keywords = Collections.EMPTY_LIST;
 		}
 		return keywords;
 	}
 
 	@Override
-	public void removeKeyword(String inKey)
-	{
+	public void removeKeyword(String inKey) {
 		getKeywords().remove(inKey);
 	}
 
-
 	@Override
-	public Date getDate(String inField, String inDateFormat)
-	{
+	public Date getDate(String inField, String inDateFormat) {
 		return getProperties().getDate(inField, inDateFormat);
 	}
 
-//	public Collection getObjects(String inField)
-//	{
-//		Collection values = (Collection)getValue(inField);
-//		return values;
-//	}
-	
+	// public Collection getObjects(String inField)
+	// {
+	// Collection values = (Collection)getValue(inField);
+	// return values;
+	// }
+
 	@Override
-	public boolean isRelated(Asset inAsset)
-	{
-		for (Iterator i = getRelatedAssets().iterator(); i.hasNext();)
-		{
+	public boolean isRelated(Asset inAsset) {
+		for (Iterator i = getRelatedAssets().iterator(); i.hasNext();) {
 			RelatedAsset related = (RelatedAsset) i.next();
-			if (related.getRelatedToAssetId().equals(inAsset.getId()) && related.getRelatedToCatalogId().equals(inAsset.getCatalogId()))
-			{
+			if (related.getRelatedToAssetId().equals(inAsset.getId())
+					&& related.getRelatedToCatalogId().equals(inAsset.getCatalogId())) {
 				return true;
 			}
 		}
@@ -512,20 +442,17 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	}
 
 	@Override
-	public void setKeywords(Collection<String> inKeywords)
-	{
+	public void setKeywords(Collection<String> inKeywords) {
 		setValue("keywords", inKeywords);
 	}
 
 	@Override
-	public void clearKeywords()
-	{
+	public void clearKeywords() {
 		setValue("keywords", new ArrayList());
 	}
 
 	@Override
-	public void incrementProperty(String property, int delta) throws Exception
-	{
+	public void incrementProperty(String property, int delta) throws Exception {
 		String currentValue = get(property);
 		int current = Integer.parseInt(currentValue);
 		current = current + delta;
@@ -533,16 +460,13 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	}
 
 	@Override
-	public boolean hasRelatedAssets()
-	{
+	public boolean hasRelatedAssets() {
 		return getRelatedAssets().size() > 0;
 	}
 
 	@Override
-	public Asset copy(String newId)
-	{
-		if (newId == null)
-		{
+	public Asset copy(String newId) {
+		if (newId == null) {
 			newId = getId();
 		}
 		Asset asset = new BaseAsset(getMediaArchive());
@@ -553,21 +477,18 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 		asset.setProperties(new ValuesMap(getProperties()));
 
 		Collection catalogs = getCategories();
-		for (Iterator iter = catalogs.iterator(); iter.hasNext();)
-		{
+		for (Iterator iter = catalogs.iterator(); iter.hasNext();) {
 			Category element = (Category) iter.next();
 			asset.addCategory(element);
 		}
 
 		asset.setKeywords(null);
-		for (Iterator iterator = getKeywords().iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = getKeywords().iterator(); iterator.hasNext();) {
 			asset.addKeyword((String) iterator.next());
 		}
 
 		asset.getRelatedAssets().clear();
-		for (Iterator iterator = getRelatedAssets().iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = getRelatedAssets().iterator(); iterator.hasNext();) {
 			asset.addRelatedAsset((RelatedAsset) iterator.next());
 		}
 
@@ -575,48 +496,39 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	}
 
 	@Override
-	public Asset copy()
-	{
+	public Asset copy() {
 		return copy(null);
 	}
 
 	@Override
-	public void setCategories(Collection <Category> inCatalogs)
-	{
+	public void setCategories(Collection<Category> inCatalogs) {
 		setValue("category-exact", inCatalogs);
 	}
 
 	@Override
-	public void setOriginalImagePath(String inPath)
-	{
+	public void setOriginalImagePath(String inPath) {
 		setProperty("originalpath", inPath);
 	}
 
 	@Override
-	public String getSourcePath()
-	{
+	public String getSourcePath() {
 		return get("sourcepath");
 	}
 
 	@Override
-	public void setSourcePath(String inSourcePath)
-	{
+	public void setSourcePath(String inSourcePath) {
 		setProperty("sourcepath", inSourcePath);
 	}
 
 	@Override
-	public String getSaveAsName()
-	{
+	public String getSaveAsName() {
 		String name = getName();
-		if (name.indexOf(".") == -1)
-		{
+		if (name.indexOf(".") == -1) {
 			String ext = get("fileformat");
-			if (ext == null && getSourcePath().indexOf('.') != -1)
-			{
+			if (ext == null && getSourcePath().indexOf('.') != -1) {
 				ext = getSourcePath().substring(getSourcePath().lastIndexOf('.') + 1);
 			}
-			if (ext != null)
-			{
+			if (ext != null) {
 				name = name + "." + ext;
 			}
 		}
@@ -624,10 +536,9 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	}
 
 	@Override
-	public void addRelatedAsset(RelatedAsset inRelationship)
-	{
-		if (inRelationship.getRelatedToAssetId().equals(getId()) && inRelationship.getRelatedToCatalogId().equals(getCatalogId()))
-		{
+	public void addRelatedAsset(RelatedAsset inRelationship) {
+		if (inRelationship.getRelatedToAssetId().equals(getId())
+				&& inRelationship.getRelatedToCatalogId().equals(getCatalogId())) {
 			log.error("Can not relate asset to itself" + getId());
 			return;
 		}
@@ -636,48 +547,38 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	}
 
 	@Override
-	public Collection getRelatedAssets()
-	{
-		if (fieldRelatedAssets == null)
-		{
+	public Collection getRelatedAssets() {
+		if (fieldRelatedAssets == null) {
 			fieldRelatedAssets = new ArrayList();
 		}
 		return fieldRelatedAssets;
 	}
 
 	@Override
-	public void removeRelatedAsset(String inCatalogId, String inAssetId)
-	{
+	public void removeRelatedAsset(String inCatalogId, String inAssetId) {
 		RelatedAsset toRemove = null;
-		for (Iterator iterator = getRelatedAssets().iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = getRelatedAssets().iterator(); iterator.hasNext();) {
 			RelatedAsset related = (RelatedAsset) iterator.next();
-			if (related.getRelatedToAssetId().equals(inAssetId) && inCatalogId.equals(related.getRelatedToCatalogId()))
-			{
+			if (related.getRelatedToAssetId().equals(inAssetId)
+					&& inCatalogId.equals(related.getRelatedToCatalogId())) {
 				toRemove = related;
 				break;
 			}
 		}
-		if (toRemove != null)
-		{
+		if (toRemove != null) {
 			getRelatedAssets().remove(toRemove);
-		}
-		else
-		{
+		} else {
 			log.error("Could not find " + inAssetId);
 		}
 
 	}
 
 	@Override
-	public List getRelatedAssets(String inType)
-	{
+	public List getRelatedAssets(String inType) {
 		ArrayList list = new ArrayList();
-		for (Iterator iterator = getRelatedAssets().iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = getRelatedAssets().iterator(); iterator.hasNext();) {
 			RelatedAsset asset = (RelatedAsset) iterator.next();
-			if (inType.equals(asset.getType()))
-			{
+			if (inType.equals(asset.getType())) {
 				list.add(asset);
 			}
 		}
@@ -686,162 +587,129 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	}
 
 	@Override
-	public void clearRelatedAssets()
-	{
+	public void clearRelatedAssets() {
 		setRelatedAssets(null);
 	}
 
 	@Override
-	public void setRelatedAssets(Collection inRelatedAssets)
-	{
+	public void setRelatedAssets(Collection inRelatedAssets) {
 		fieldRelatedAssets = inRelatedAssets;
 	}
 
 	@Override
-	public String getMediaName()
-	{
+	public String getMediaName() {
 		String primaryImageName = getPrimaryFile();
-		if (primaryImageName == null)
-		{
+		if (primaryImageName == null) {
 			primaryImageName = getName();
 		}
 		return primaryImageName;
 	}
 
 	@Override
-	public String getPrimaryFile()
-	{
+	public String getPrimaryFile() {
 		String file = get("primaryfile");
 		return file;
 	}
 
 	@Override
-	public void setPrimaryFile(String inPath)
-	{
+	public void setPrimaryFile(String inPath) {
 		setProperty("primaryfile", inPath);
 	}
 
 	@Override
-	public String getCatalogId()
-	{
-		if( fieldMediaArchive == null)
-		{
+	public String getCatalogId() {
+		if (fieldMediaArchive == null) {
 			return null;
 		}
 		return getMediaArchive().getCatalogId();
 	}
 
 	@Override
-	public String getFileFormat()
-	{
+	public String getFileFormat() {
 		String format = get("fileformat");
-		if (format == null)
-		{
+		if (format == null) {
 			String orig = getPrimaryFile();
-			if (orig == null)
-			{
+			if (orig == null) {
 				orig = getName();
 			}
 			format = PathUtilities.extractPageType(orig);
 		}
-		if (format != null)
-		{
+		if (format != null) {
 			return format.toLowerCase();
 		}
 		return null;
 	}
-	
+
 	@Override
-	public String getDetectedFileFormat()
-	{
-		
-		
+	public String getDetectedFileFormat() {
+
 		String format = get("detectedfileformat");
-		if(format == null) {
+		if (format == null) {
 			format = getFileFormat();
 		}
 		return format;
 	}
 
-	
-	
-
 	@Override
-	public String getAttachmentByType(String inType)
-	{
+	public String getAttachmentByType(String inType) {
 		String filename = get(inType + "file");
 
 		return filename;
 	}
 
 	@Override
-	public void setAttachmentFileByType(String inType, String inName)
-	{
+	public void setAttachmentFileByType(String inType, String inName) {
 		setProperty(inType + "file", inName);
 	}
 
 	@Override
-	public boolean hasKeywords()
-	{
+	public boolean hasKeywords() {
 
 		return getKeywords() != null && getKeywords().size() > 0;
 	}
 
 	@Override
-	public Category getDefaultCategory()
-	{
-		if (getCategories() != null && getCategories().size() > 0)
-		{
+	public Category getDefaultCategory() {
+		if (getCategories() != null && getCategories().size() > 0) {
 			return (Category) getCategories().iterator().next();
 		}
 		return null;
 	}
 
 	@Override
-	public int getInt(String inKey)
-	{
+	public int getInt(String inKey) {
 		String val = get(inKey);
-		if (val == null)
-		{
+		if (val == null) {
 			return 0;
 		}
-		if (val.contains("."))
-		{
+		if (val.contains(".")) {
 			return 0;
 		}
 		return Integer.valueOf(val);
 	}
 
 	@Override
-	public long getLong(String inKey)
-	{
+	public long getLong(String inKey) {
 		String val = get(inKey);
-		if (val == null)
-		{
+		if (val == null) {
 			return 0;
 		}
-		if (val.contains("."))
-		{
+		if (val.contains(".")) {
 			return 0;
 		}
 		return Long.valueOf(val);
 	}
 
 	@Override
-	public BigDecimal getBigDecimal(String inKey)
-	{
+	public BigDecimal getBigDecimal(String inKey) {
 		return getProperties().getBigDecimal(inKey);
 	}
 
-	
-	
 	@Override
-	public float getUploadPercentage()
-	{
+	public float getUploadPercentage() {
 		BigDecimal now = getBigDecimal("uploadprogress");
 		BigDecimal total = getBigDecimal("filesize");
-		if (total.doubleValue() > 0)
-		{
+		if (total.doubleValue() > 0) {
 			BigDecimal percentage = now.divide(total, 2, RoundingMode.HALF_UP);
 			return percentage.floatValue();
 		}
@@ -849,265 +717,215 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	}
 
 	@Override
-	public boolean isPropertyTrue(String inKey)
-	{
+	public boolean isPropertyTrue(String inKey) {
 		return getProperties().getBoolean(inKey);
 	}
 
-//	public void removeLibrary(String inLibraryid)
-//	{
-//		Collection<String> values = new ArrayList(getLibraries());
-//		values.remove(inLibraryid);
-//		setValue("libraries", values);
-//
-//	}
+	// public void removeLibrary(String inLibraryid)
+	// {
+	// Collection<String> values = new ArrayList(getLibraries());
+	// values.remove(inLibraryid);
+	// setValue("libraries", values);
+	//
+	// }
 
 	@Override
-	public void setValue(String inKey, Object inValue)
-	{
-		if ("keywords".equals(inKey))
-		{
-			if (inValue instanceof String)
-			{
+	public void setValue(String inKey, Object inValue) {
+		if ("keywords".equals(inKey)) {
+			if (inValue instanceof String) {
 				String[] vals = VALUEDELMITER.split((String) inValue);
 				inValue = Arrays.asList(vals);
 			}
 			log.debug("saving keyword " + getId() + " " + inValue);
-		}
-		else if ("category-exact".equals(inKey) || "category".equals(inKey))
-		{
-			if (inValue != null)
-			{
-				//This is annoying. We will need to fix categories when we save this asset
+		} else if ("category-exact".equals(inKey) || "category".equals(inKey)) {
+			if (inValue != null) {
+				// This is annoying. We will need to fix categories when we save this asset
 				Collection catids = null;
-				if (inValue instanceof Collection)
-				{
+				if (inValue instanceof Collection) {
 					catids = (Collection) inValue;
-				}
-				else
-				{
-					
-					String ids = ((String) inValue).replaceAll(" " , "|");
+				} else {
+
+					String ids = ((String) inValue).replaceAll(" ", "|");
 					String[] vals = VALUEDELMITER.split(ids);
 					catids = Arrays.asList(vals);
 				}
 
 				Collection cats = new HashSet();
-				for (Iterator iterator = catids.iterator(); iterator.hasNext();)
-				{
+				for (Iterator iterator = catids.iterator(); iterator.hasNext();) {
 					Object row = iterator.next();
-					if( row instanceof Category)
-					{
+					if (row instanceof Category) {
 						cats.add(row);
-					}
-					else
-					{
-						String id = (String)row;
-						String[] ids = VALUEDELMITER.split(id.replaceAll(" " , "|"));
-						for (int i = 0; i < ids.length; i++)
-						{
+					} else {
+						String id = (String) row;
+						String[] ids = VALUEDELMITER.split(id.replaceAll(" ", "|"));
+						for (int i = 0; i < ids.length; i++) {
 							Category cat = getMediaArchive().getCategory(ids[i]);
-							if (cat != null)
-							{
+							if (cat != null) {
 								cats.add(cat);
-							}						
+							}
 						}
-					}	
+					}
 				}
 				inKey = "category-exact";
 				inValue = cats;
 			}
-		}
-		else if (inValue instanceof Map)
-		{
+		} else if (inValue instanceof Map) {
 			PropertyDetail detail = getMediaArchive().getAssetPropertyDetails().getDetail(inKey);
-			if (detail != null && detail.isMultiLanguage())
-			{
+			if (detail != null && detail.isMultiLanguage()) {
 				inValue = new LanguageMap((Map) inValue);
 			}
-		} 
-		
-		super.setValue(inKey, inValue);
-	}
-	
-	@Override
-	public void setTagsValue(String inKey, Object inValue)
-	{
-			if (inValue instanceof Collection)
-			{
-				Collection tagid = null;
-				Collection tags = new HashSet();
-				tagid = (Collection) inValue;
-				for (Iterator iterator = tagid.iterator(); iterator.hasNext();)
-				{
-					Object row = iterator.next();
-					tags.add((String)row);
-				}
-				inValue = tags;
-				//String[] vals = VALUEDELMITER.split((String) inValue);
-				//inValue = Arrays.asList(vals);
-			}
-			log.debug("saving tags field " + getId() + " " + inValue);
-		
+		}
+
 		super.setValue(inKey, inValue);
 	}
 
 	@Override
-	public PropertyDetails getPropertyDetails()
-	{
+	public void setTagsValue(String inKey, Object inValue) {
+		if (inValue instanceof Collection) {
+			Collection tagid = null;
+			Collection tags = new HashSet();
+			tagid = (Collection) inValue;
+			for (Iterator iterator = tagid.iterator(); iterator.hasNext();) {
+				Object row = iterator.next();
+				tags.add((String) row);
+			}
+			inValue = tags;
+			// String[] vals = VALUEDELMITER.split((String) inValue);
+			// inValue = Arrays.asList(vals);
+		}
+		log.debug("saving tags field " + getId() + " " + inValue);
+
+		super.setValue(inKey, inValue);
+	}
+
+	@Override
+	public PropertyDetails getPropertyDetails() {
 		// TODO Auto-generated method stub
 		return getMediaArchive().getAssetPropertyDetails();
 	}
 
 	@Override
-	public String getProperty(String inProperty)
-	{
+	public String getProperty(String inProperty) {
 		return get(inProperty);
 	}
 
 	@Override
-	public String getPath()
-	{
+	public String getPath() {
 		String alternative = get("archivesourcepath");
-		if( alternative == null)
-		{
+		if (alternative == null) {
 			alternative = getSourcePath();
 		}
 		return alternative;
 	}
 
 	@Override
-	public void removeChildCategory(Category inCatParent)
-	{
+	public void removeChildCategory(Category inCatParent) {
 		removeCategory(inCatParent);
 		Collection children = new ArrayList(getCategories());
-		for (Iterator iterator = children.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 			Category cat = (Category) iterator.next();
-			if( cat.hasParent(inCatParent.getId()) )
-			{
+			if (cat.hasParent(inCatParent.getId())) {
 				removeCategory(cat);
 			}
 		}
 	}
+
 	@Override
-	public boolean isEquals(long filemmod)
-	{
+	public boolean isEquals(long filemmod) {
 		Date existingdate = getDate("assetmodificationdate");
-		if (existingdate != null)
-		{
-			//We need to ignore milliseconds since our parsed date will not have them
-			if (existingdate != null)
-			{
+		if (existingdate != null) {
+			// We need to ignore milliseconds since our parsed date will not have them
+			if (existingdate != null) {
 				long oldtime = existingdate.getTime();
 				filemmod = filemmod / 1000;
 				oldtime = oldtime / 1000;
-				if (filemmod == oldtime)
-				{
+				if (filemmod == oldtime) {
 					return true;
 				}
 			}
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean clearParentCategories() {
-		
+
 		ArrayList toclear = new ArrayList();
-		
+
 		for (Iterator iterator = getCategories().iterator(); iterator.hasNext();) {
 			Category cat = (Category) iterator.next();
 			for (Iterator iterator2 = cat.getParentCategories().iterator(); iterator2.hasNext();) {
 				Category parent = (Category) iterator2.next();
-				if(parent.getId().equals(cat.getId())) {
+				if (parent.getId().equals(cat.getId())) {
 					continue;
 				}
-				if(isInCategory(parent)) {
+				if (isInCategory(parent)) {
 					toclear.add(parent);
 				}
 			}
-			
+
 		}
 		for (Iterator iterator = toclear.iterator(); iterator.hasNext();) {
 			Category cat = (Category) iterator.next();
 			removeCategory(cat);
 		}
-		if(toclear.size() > 0) {
+		if (toclear.size() > 0) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-
 	@Override
-	public void lock(Boolean inLock, User inUser)
-	{
-		if(inLock) {
+	public void lock(Boolean inLock, User inUser) {
+		if (inLock) {
 			setValue("lockedby", inUser.getId());
 		} else {
 			setValue("lockedby", null);
 		}
-		
+
 	}
-	
-	public String toJsonString()
-	{
+
+	public String toJsonString() {
 		StringBuffer output = new StringBuffer();
-		if (getId() != null)
-		{
+		if (getId() != null) {
 			output.append("{ \"_id\": \"" + getId() + "\",");
 		}
 		output.append(" \"_source\" :");
-		if (getSearchHit() == null)
-		{
+		if (getSearchHit() == null) {
 			JSONObject json = new JSONObject();
-			for(Iterator iterator = getProperties().keySet().iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = getProperties().keySet().iterator(); iterator.hasNext();) {
 				String key = (String) iterator.next();
 				Object value = getProperties().get(key);
-				if (value == null)
-				{
+				if (value == null) {
 					continue;
 				}
-				if (value instanceof Collection)
-				{
+				if (value instanceof Collection) {
 					JSONArray jsonarray = new JSONArray();
 					jsonarray.addAll((Collection) value);
 					json.put(key, jsonarray);
-				}
-				else if (value instanceof Map)
-				{
+				} else if (value instanceof Map) {
 					JSONObject jsonmap = new JSONObject((Map) value);
 					json.put(key, jsonmap);
-				}
-				else
-				{
+				} else {
 					json.put(key, value);
 				}
 			}
 			output.append(json.toJSONString());
-		}
-		else if(!getProperties().isEmpty())
-		{
+		} else if (!getProperties().isEmpty()) {
 			JSONObject json = new JSONObject(getSearchData());
 			json.putAll(getProperties());
 			output.append(json.toJSONString());
-		}
-		else 
-		{
+		} else {
 			output.append(getSearchHit().getSourceAsString());
 		}
 		output.append(" \n}");
 		return output.toString();
 	}
-	
-	public boolean hasValue(String inKey)
-	{
+
+	public boolean hasValue(String inKey) {
 		Object value = getValue(inKey);
-		if (value != null)
-		{
+		if (value != null) {
 			return true;
 		}
 		return false;

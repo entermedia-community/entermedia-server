@@ -16,14 +16,12 @@ import java.util.Map;
 
 import org.openedit.OpenEditException;
 
-
 /**
  * DOCUMENT ME!
  *
  * @author Eric and Matt
  */
-public interface ScriptRunner
-{
-	public Object exec(Script inScript,Map inContext) throws OpenEditException;
+public interface ScriptRunner {
+	public Object exec(Script inScript, Map inContext) throws OpenEditException;
 
 }

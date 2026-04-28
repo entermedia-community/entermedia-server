@@ -2,6 +2,7 @@ package org.entermediadb.markdown.node;
 
 /**
  * A thematic break, e.g. between text:
+ * 
  * <pre>
  * Some text
  *
@@ -10,7 +11,8 @@ package org.entermediadb.markdown.node;
  * Some other text.
  * </pre>
  *
- * @see <a href="https://spec.commonmark.org/0.31.2/#thematic-breaks">CommonMark Spec</a>
+ * @see <a href="https://spec.commonmark.org/0.31.2/#thematic-breaks">CommonMark
+ *      Spec</a>
  */
 public class ThematicBreak extends Block {
 

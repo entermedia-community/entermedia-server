@@ -18,102 +18,93 @@ import org.openedit.page.PageAction;
 import org.openedit.page.PageProperty;
 import org.openedit.page.PageSettings;
 
-public class PathEventModule extends BaseModule
-{
+public class PathEventModule extends BaseModule {
 	private static final Log log = LogFactory.getLog(PathEventModule.class);
 	public static long sleepcount;
-	
-	public boolean runEvent(WebPageRequest inReq)
-	{
+
+	public boolean runEvent(WebPageRequest inReq) {
 		String runpath = inReq.findValue("runpath");
-		//Page page  = getPageManager().getPage(runpath,true);
-		
-		//WebPageRequest child = inReq.copy(page);
-		
-		//TODO: First check with the 	PathEventManager and run that one instead
+		// Page page = getPageManager().getPage(runpath,true);
+
+		// WebPageRequest child = inReq.copy(page);
+
+		// TODO: First check with the PathEventManager and run that one instead
 		PathEventManager manager = getPathEventManager(inReq);
 		return manager.runPathEvent(runpath, inReq);
 	}
-	public void runSharedEvent(WebPageRequest inReq)
-	{
+
+	public void runSharedEvent(WebPageRequest inReq) {
 		String runpath = inReq.findValue("runpath");
-		//Page page  = getPageManager().getPage(runpath,true);
-		
-		//WebPageRequest child = inReq.copy(page);
-		
-		//TODO: First check with the 	PathEventManager and run that one instead
+		// Page page = getPageManager().getPage(runpath,true);
+
+		// WebPageRequest child = inReq.copy(page);
+
+		// TODO: First check with the PathEventManager and run that one instead
 		PathEventManager manager = getPathEventManager(inReq);
-	    manager.runSharedPathEvent(runpath);
-	    PathEvent event = manager.getPathEvent(runpath);
-	    inReq.putPageValue("ranevent", event);
-	    inReq.putPageValue("pathevent", event); 
+		manager.runSharedPathEvent(runpath);
+		PathEvent event = manager.getPathEvent(runpath);
+		inReq.putPageValue("ranevent", event);
+		inReq.putPageValue("pathevent", event);
 	}
 
-	public PathEventManager getPathEventManager(WebPageRequest inReq)
-	{
+	public PathEventManager getPathEventManager(WebPageRequest inReq) {
 		String catalogid = inReq.getRequestParameter("targetcatalogid");
-		if(catalogid == null)
-		{
+		if (catalogid == null) {
 			catalogid = inReq.getContentProperty("catalogid");
 		}
-		if(catalogid == null)
-		{
+		if (catalogid == null) {
 			catalogid = inReq.getContentProperty("applicationid");
 		}
-		PathEventManager manager = (PathEventManager)getModuleManager().getBean(catalogid, "pathEventManager");
+		PathEventManager manager = (PathEventManager) getModuleManager().getBean(catalogid, "pathEventManager");
 		inReq.putPageValue("patheventmanager", manager);
 
 		return manager;
 	}
-	
+
 	/**
 	 * This is run from path-events. Should include schedled and unscheduled events
+	 * 
 	 * @param inReq
 	 * @return
 	 */
-	public void enableLog(WebPageRequest inReq)
-	{
+	public void enableLog(WebPageRequest inReq) {
 		PathEventManager manager = getPathEventManager(inReq);
-		if( manager != null)
-		{
+		if (manager != null) {
 			String enabled = inReq.findValue("enableeventlogs");
 			manager.setLogEvents(Boolean.parseBoolean(enabled));
 		}
-	}	
-	
-	public void getPathEvents(WebPageRequest inReq)
-	{
+	}
+
+	public void getPathEvents(WebPageRequest inReq) {
 		PathEventManager manager = getPathEventManager(inReq);
-		List events = new ArrayList(manager.getPathEvents()); //Avoid concurrent mod
+		List events = new ArrayList(manager.getPathEvents()); // Avoid concurrent mod
 		Collections.sort(events);
 		inReq.putPageValue("pathevents", events);
 	}
-	
-	public PathEvent loadPathEvent(WebPageRequest inReq)
-	{
+
+	public PathEvent loadPathEvent(WebPageRequest inReq) {
 		PathEventManager manager = getPathEventManager(inReq);
 		String eventPath = inReq.getRequestParameter("eventpath");
 		PathEvent pathevent = manager.getPathEvent(eventPath);
 		inReq.putPageValue("pathevent", pathevent);
 		return pathevent;
 	}
-	public void removePathEvent(WebPageRequest inReq)
-	{
+
+	public void removePathEvent(WebPageRequest inReq) {
 		PathEventManager manager = getPathEventManager(inReq);
 		String eventPath = inReq.getRequestParameter("eventpath");
 		PageSettings settings = getPageManager().getPageSettingsManager().getPageSettings(eventPath);
 		Page todelete = getPageManager().getPage(settings.getPath());
 		getPageManager().removePage(todelete);
-		manager = getPathEventManager(inReq); 
+		manager = getPathEventManager(inReq);
 		manager.reload(eventPath);
-	}	
-	public void savePathEvent(WebPageRequest inReq)
-	{
+	}
+
+	public void savePathEvent(WebPageRequest inReq) {
 		PathEventManager manager = getPathEventManager(inReq);
 		String eventPath = inReq.getRequestParameter("eventpath");
 		PathEvent event = manager.getPathEvent(eventPath);
-		if( event == null)
-		{
+		if (event == null) {
 			event = manager.loadPathEvent(eventPath);
 		}
 		String period = inReq.getRequestParameter("period");
@@ -124,13 +115,13 @@ public class PathEventModule extends BaseModule
 
 		String startingfrommidnight = inReq.getRequestParameter("startingfrommidnight");
 		event.setStartingFromMidnight(startingfrommidnight);
-		
-//		Page eventpage = event.getPage();
-//		eventpage.setProperty("period", event.getFormattedPeriod());
-//		eventpage.setProperty("delay", event.getFormattedDelay());
-//		eventpage.setProperty("enabled", String.valueOf(event.isEnabled()));
-//		getPageManager().saveSettings(eventpage);
-		
+
+		// Page eventpage = event.getPage();
+		// eventpage.setProperty("period", event.getFormattedPeriod());
+		// eventpage.setProperty("delay", event.getFormattedDelay());
+		// eventpage.setProperty("enabled", String.valueOf(event.isEnabled()));
+		// getPageManager().saveSettings(eventpage);
+
 		PageSettings settings = getPageManager().getPageSettingsManager().getPageSettings(eventPath);
 		PageProperty prop = new PageProperty("period");
 		prop.setValue(event.getFormattedPeriod());
@@ -145,50 +136,47 @@ public class PathEventModule extends BaseModule
 		prop = new PageProperty("startingfrommidnight");
 		prop.setValue(event.getStartingFromMidnight());
 		settings.putProperty(prop);
-		
+
 		prop = new PageProperty("eventname");
 		prop.setValue(inReq.getRequestParameter("eventname"));
 		settings.putProperty(prop);
-		
+
 		getPageManager().getPageSettingsManager().saveSetting(settings);
 		getPageManager().clearCache(event.getPage());
-		manager = getPathEventManager(inReq); 
+		manager = getPathEventManager(inReq);
 		manager.reload(eventPath);
 		inReq.putPageValue("pathevent", event);
 	}
-	
-	public void restartEvents(WebPageRequest inReq)
-	{
-		PathEventManager manager = getPathEventManager(inReq); 
+
+	public void restartEvents(WebPageRequest inReq) {
+		PathEventManager manager = getPathEventManager(inReq);
 		manager.shutdown();
 		manager.loadTasks();
 	}
-	public void clearPathEventLog(WebPageRequest inReq)
-	{
+
+	public void clearPathEventLog(WebPageRequest inReq) {
 		PathEventManager manager = getPathEventManager(inReq);
 		String eventPath = inReq.getRequestParameter("eventpath");
 		PathEvent event = manager.getPathEvent(eventPath);
 		event.clearLog();
 	}
-	public void loadScriptForEvent(WebPageRequest inReq)
-	{
+
+	public void loadScriptForEvent(WebPageRequest inReq) {
 		PathEvent event = loadPathEvent(inReq);
 		String pathtoscript = findScriptName(event);
 		Page script = getPageManager().getPage(pathtoscript, true);
-		if( !script.exists() )
-		{
+		if (!script.exists()) {
 			String catalogid = event.getPage().get("catalogid");
 			script = getPageManager().getPage("/" + catalogid + "/events/scripts/template.groovy");
 		}
 		inReq.putPageValue("script", script);
 	}
-	public void deleteScriptForEvent(WebPageRequest inReq)
-	{
+
+	public void deleteScriptForEvent(WebPageRequest inReq) {
 		PathEvent event = loadPathEvent(inReq);
 		String pathtoscript = findScriptName(event);
 		Page script = getPageManager().getPage(pathtoscript);
-		if( script.exists() && !pathtoscript.startsWith("/WEB-INF/base") )
-		{
+		if (script.exists() && !pathtoscript.startsWith("/WEB-INF/base")) {
 			getPageManager().removePage(script);
 			getPageManager().clearCache(event.getPage());
 			getScriptManager().clearCache();
@@ -196,29 +184,30 @@ public class PathEventModule extends BaseModule
 		}
 		loadScriptForEvent(inReq);
 	}
+
 	private String findScriptName(PathEvent event) {
 		String eventname = event.getPage().getPageName();
 		eventname = eventname + ".groovy";
-		
+
 		String folder = event.getPage().getDirectoryName();
 		String catalogid = event.getPage().get("catalogid");
-		String pathtoscript = "/" + catalogid + "/events/scripts/" + folder +"/"+ eventname ;
+		String pathtoscript = "/" + catalogid + "/events/scripts/" + folder + "/" + eventname;
 
 		return pathtoscript;
 	}
-	public void saveScriptForEvent(WebPageRequest inReq)
-	{
+
+	public void saveScriptForEvent(WebPageRequest inReq) {
 		PathEvent event = loadPathEvent(inReq);
 		String pathtoscript = findScriptName(event);
 		Page script = getPageManager().getPage(pathtoscript);
-		String  code = inReq.getRequestParameter("scriptcode");
-		getPageManager().saveContent(script, null,code, null);
+		String code = inReq.getRequestParameter("scriptcode");
+		getPageManager().saveContent(script, null, code, null);
 		inReq.putPageValue("script", script);
-		
+
 		PageSettings settings = event.getPage().getPageSettings();
 		String catalogid = event.getPage().get("catalogid");
 		pathtoscript = pathtoscript.replace(catalogid, "${catalogid}");
-		if( !containsScript(settings,pathtoscript)) //Fix 
+		if (!containsScript(settings, pathtoscript)) // Fix
 		{
 			XMLConfiguration config = new XMLConfiguration("path-action");
 			config.setAttribute("name", "Script.run");
@@ -227,53 +216,46 @@ public class PathEventModule extends BaseModule
 			child.setValue(pathtoscript);
 			config.addChild(child);
 			PageAction action = new PageAction("Script.run");
-			
+
 			action.setConfig(config);
-			//settings.
+			// settings.
 			settings.addPathAction(action);
 			getPageManager().saveSettings(event.getPage());
 			getScriptManager().clearCache();
 		}
 		getPageManager().clearCache(event.getPage());
-		//getPageManager().clearCache();
-		
-		/**
-		 * 	<path-action name="Script.run"  allowduplicates="true">
-		<script>/${catalogid}/events/scripts/publishing/publishassets.groovy</script>
-	</path-action>
+		// getPageManager().clearCache();
 
+		/**
+		 * <path-action name="Script.run" allowduplicates="true">
+		 * <script>/${catalogid}/events/scripts/publishing/publishassets.groovy</script>
+		 * </path-action>
+		 * 
 		 */
 	}
-	
-	public ScriptManager getScriptManager()
-	{
-		ScriptManager fieldScriptManager = (ScriptManager)getModuleManager().getBean("scriptManager");
+
+	public ScriptManager getScriptManager() {
+		ScriptManager fieldScriptManager = (ScriptManager) getModuleManager().getBean("scriptManager");
 		return fieldScriptManager;
 	}
-	
-	protected boolean containsScript(PageSettings settings, String pathtoscript) 
-	{
-		for (Iterator iterator = settings.getPathActions().iterator(); iterator.hasNext();) 
-		{
+
+	protected boolean containsScript(PageSettings settings, String pathtoscript) {
+		for (Iterator iterator = settings.getPathActions().iterator(); iterator.hasNext();) {
 			PageAction action = (PageAction) iterator.next();
-			if( action.getActionName().equals("Script.run") )
-			{
+			if (action.getActionName().equals("Script.run")) {
 				String name = action.getConfig().getChildValue("script");
-				if( name != null && name.equals(pathtoscript))
-				{
+				if (name != null && name.equals(pathtoscript)) {
 					return true;
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
-	public void sleep(WebPageRequest inReq) throws Exception
-	{
+	public void sleep(WebPageRequest inReq) throws Exception {
 		String sleep = inReq.findValue("sleeptime");
-		if( sleep == null)
-		{
+		if (sleep == null) {
 			sleep = "1000";
 		}
 		long sleeptime = Long.parseLong(sleep);

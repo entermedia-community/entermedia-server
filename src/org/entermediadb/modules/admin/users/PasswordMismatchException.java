@@ -14,27 +14,23 @@ package org.entermediadb.modules.admin.users;
 
 import org.openedit.OpenEditException;
 
-
 /**
- * This exception is thrown when an end-user attempts to create a user or change a user's password,
+ * This exception is thrown when an end-user attempts to create a user or change
+ * a user's password,
  * when the original and new passwords do not match.
  *
  * @author Eric Galluzzo
  */
-public class PasswordMismatchException extends OpenEditException
-{
-	public PasswordMismatchException(String inMsg)
-	{
+public class PasswordMismatchException extends OpenEditException {
+	public PasswordMismatchException(String inMsg) {
 		super(inMsg);
 	}
 
-	public PasswordMismatchException(String inMsg, Throwable inRootCause)
-	{
+	public PasswordMismatchException(String inMsg, Throwable inRootCause) {
 		super(inMsg, inRootCause);
 	}
 
-	public PasswordMismatchException(Throwable inRootCause)
-	{
+	public PasswordMismatchException(Throwable inRootCause) {
 		super(inRootCause);
 	}
 }

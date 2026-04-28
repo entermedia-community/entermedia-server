@@ -10,23 +10,19 @@ import org.openedit.data.DataLoaded;
 import org.openedit.data.SaveableData;
 import org.openedit.util.DateStorageUtil;
 
-public class Order extends BaseData implements SaveableData, DataLoaded, CatalogEnabled
-{
+public class Order extends BaseData implements SaveableData, DataLoaded, CatalogEnabled {
 	protected OrderManager fieldOrderManager;
 	protected String fieldCatalogId;
-	
-	public String getCatalogId()
-	{
+
+	public String getCatalogId() {
 		return fieldCatalogId;
 	}
 
-	public void setCatalogId(String inCatalogId)
-	{
+	public void setCatalogId(String inCatalogId) {
 		fieldCatalogId = inCatalogId;
 	}
 
-	public OrderManager getOrderManager() 
-	{
+	public OrderManager getOrderManager() {
 		return fieldOrderManager;
 	}
 
@@ -34,52 +30,38 @@ public class Order extends BaseData implements SaveableData, DataLoaded, Catalog
 		this.fieldOrderManager = inOrderManager;
 	}
 
-
-
-	public String findValue(Data inChild, String inKey)
-	{
+	public String findValue(Data inChild, String inKey) {
 		String value = inChild.get(inKey);
-		if (value == null)
-		{
+		if (value == null) {
 			value = get(inKey);
 		}
 		return value;
 	}
 
-	public String getOrderStatus()
-	{
-		return get("orderstatus");  //open/closed/error
+	public String getOrderStatus() {
+		return get("orderstatus"); // open/closed/error
 	}
-	
-	public void setOrderStatus(String inStatus, String inDetails)
-	{
+
+	public void setOrderStatus(String inStatus, String inDetails) {
 		setProperty("orderstatus", inStatus);
 		setProperty("orderstatusdetails", inDetails);
 	}
 
-	public void setOrderStatus(String inStatus)
-	{
+	public void setOrderStatus(String inStatus) {
 		setProperty("orderstatus", inStatus);
 	}
 
-	public String toString()
-	{
+	public String toString() {
 		return getId();
 	}
-	
 
-	public boolean isExpired()
-	{
+	public boolean isExpired() {
 		String expiration = get("expireson");
-		if( expiration != null )
-		{
+		if (expiration != null) {
 			Date expires = DateStorageUtil.getStorageUtil().parseFromStorage(expiration);
-			if( expires.after(new Date() ) )
-			{
+			if (expires.after(new Date())) {
 				return false;
-			}
-			else
-			{
+			} else {
 				return true;
 			}
 		}
@@ -87,9 +69,8 @@ public class Order extends BaseData implements SaveableData, DataLoaded, Catalog
 
 	}
 
-	public Collection findOrderAssets()
-	{
+	public Collection findOrderAssets() {
 		return getOrderManager().findOrderAssets(getCatalogId(), getId());
 	}
-	
+
 }

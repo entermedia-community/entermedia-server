@@ -16,10 +16,9 @@ import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.PlugIn;
 import org.openedit.WebPageRequest;
 
-public class PluginUpgrader
-{
+public class PluginUpgrader {
 	private static final Log log = LogFactory.getLog(PluginUpgrader.class);
-	
+
 	protected ScriptModule fieldScriptModule;
 	protected File fieldRoot;
 	protected PlugInFinder fieldPlugInFinder;
@@ -27,145 +26,122 @@ public class PluginUpgrader
 	protected Set fieldCompleted;
 	protected Set fieldInProgress;
 	protected boolean cancel = false;
-	
-	
-	public Collection getList()
-	{
+
+	public Collection getList() {
 		return fieldToUpgrade;
 	}
-	public void setToUpgrade(Collection inList)
-	{
+
+	public void setToUpgrade(Collection inList) {
 		fieldToUpgrade = inList;
 	}
-	public List upgrade( PlugIn inPlugIn, WebPageRequest inContext )
-	{
+
+	public List upgrade(PlugIn inPlugIn, WebPageRequest inContext) {
 		ScriptLogger logger = new ScriptLogger();
 		logger.startCapture();
-		try
-		{
+		try {
 			doUpgrade(inPlugIn, inContext, logger);
-		}
-		finally
-		{
+		} finally {
 			logger.stopCapture();
 		}
 		return logger.listLogs();
 	}
-	
-	protected void doUpgrade( PlugIn plugin, WebPageRequest inContext,ScriptLogger inLogger )
-	{
-		if( getInProgress().contains(plugin.getId()))
-		{
+
+	protected void doUpgrade(PlugIn plugin, WebPageRequest inContext, ScriptLogger inLogger) {
+		if (getInProgress().contains(plugin.getId())) {
 			log.info(plugin + " is in progress");
 			return;
 		}
-		if( cancel)
-		{
+		if (cancel) {
 			log.info(plugin.getId() + " is canceled");
 			return;
 		}
 		getInProgress().add(plugin.getId());
-		
+
 		String strOutputFile = "/WEB-INF/install.js";
 		File out = new File(getRoot(), strOutputFile);
-		if( plugin.getInstallScript() == null)
-		{
+		if (plugin.getInstallScript() == null) {
 			log.info("No script configured");
-		}
-		else
-		{
+		} else {
 			try {
 				// *** connect to configured web site
 				log.info("Downloading " + plugin.getInstallScript());
 				new Downloader().download(plugin.getInstallScript(), out);
-		
+
 				Map variables = new HashMap();
 				variables.put("context", inContext);
 				variables.put("log", inLogger);
 				Script script = getScriptModule().getScriptManager().loadScript(strOutputFile);
 				getScriptModule().getScriptManager().execScript(variables, script);
-			} catch (Exception ex) 
-			{
+			} catch (Exception ex) {
 				log.error(ex);
 			}
 		}
 		getCompleted().add(plugin.getId());
 		getInProgress().remove(plugin.getId());
-		if( getCompleted().size() == getList().size())
-		{
+		if (getCompleted().size() == getList().size()) {
 			inContext.removeSessionValue("upgrader");
 		}
 		log.info(plugin.getId() + " is complete");
 	}
-	
-	
-	public ScriptModule getScriptModule()
-	{
+
+	public ScriptModule getScriptModule() {
 		return fieldScriptModule;
 	}
 
-	public void setScriptModule(ScriptModule inScriptModule)
-	{
+	public void setScriptModule(ScriptModule inScriptModule) {
 		fieldScriptModule = inScriptModule;
 	}
 
-
-	public File getRoot()
-	{
+	public File getRoot() {
 		return fieldRoot;
 	}
 
-	public void setRoot(File inRoot)
-	{
+	public void setRoot(File inRoot) {
 		fieldRoot = inRoot;
 	}
 
-	public PlugInFinder getPlugInFinder()
-	{
+	public PlugInFinder getPlugInFinder() {
 		return fieldPlugInFinder;
 	}
 
-	public void setPlugInFinder(PlugInFinder inAllPluginS)
-	{
+	public void setPlugInFinder(PlugInFinder inAllPluginS) {
 		fieldPlugInFinder = inAllPluginS;
 	}
-	public Set getCompleted()
-	{
-		if( fieldCompleted == null)
-		{
+
+	public Set getCompleted() {
+		if (fieldCompleted == null) {
 			fieldCompleted = new HashSet();
 		}
 		return fieldCompleted;
 	}
-	public Set getInProgress()
-	{
-		if (fieldInProgress == null)
-		{
+
+	public Set getInProgress() {
+		if (fieldInProgress == null) {
 			fieldInProgress = new HashSet();
 		}
 		return fieldInProgress;
 	}
-	public void cancel()
-	{
+
+	public void cancel() {
 		cancel = true;
 	}
-	public boolean isCanceled()
-	{
+
+	public boolean isCanceled() {
 		return cancel;
 	}
-	public boolean isComplete()
-	{
+
+	public boolean isComplete() {
 		return getCompleted().size() == getList().size();
 	}
-	public void shutdown()
-	{
-//		Shutdownable manager = (Shutdownable)getScriptModule().getModuleManager().getBean("elasticNodeManager");
-//		manager.shutdown();
-		
-		//Touch web.xml
-		File web = new File( getRoot(), "WEB-INF/web.xml");
+
+	public void shutdown() {
+		// Shutdownable manager =
+		// (Shutdownable)getScriptModule().getModuleManager().getBean("elasticNodeManager");
+		// manager.shutdown();
+
+		// Touch web.xml
+		File web = new File(getRoot(), "WEB-INF/web.xml");
 		web.setLastModified(System.currentTimeMillis());
-				
 
 	}
 }

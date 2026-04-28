@@ -8,9 +8,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.openedit.WebPageRequest;
 import org.openedit.users.User;
 
-public interface PushManager
-{
-
+public interface PushManager {
 
 	Collection getCompletedAssets(MediaArchive inArchive);
 
@@ -33,11 +31,11 @@ public interface PushManager
 	void processPushQueue(MediaArchive archive, String inAssetIds, User inUser);
 
 	void processDeletedAssets(MediaArchive archive, User inUser);
+
 	void resetPushStatus(MediaArchive inArchive, String oldStatus, String inNewStatus);
+
 	void acceptPush(WebPageRequest inReq, MediaArchive archive);
-	
+
 	public void pushAssets(MediaArchive inArchive, List<Asset> inAssetsSaved);
-
-
 
 }

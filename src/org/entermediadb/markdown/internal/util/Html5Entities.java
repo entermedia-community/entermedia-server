@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Html5Entities {
- 
+
     private final String ENTITY_PATH = "/org.entermediadb.markdown.internal/util/entities.txt";
 
     public String entityToString(String input) {

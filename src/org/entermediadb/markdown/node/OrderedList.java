@@ -2,15 +2,20 @@ package org.entermediadb.markdown.node;
 
 /**
  * An ordered list, e.g.:
- * <pre><code>
+ * 
+ * <pre>
+ * <code>
  * 1. One
  * 2. Two
  * 3. Three
- * </code></pre>
+ * </code>
+ * </pre>
  * <p>
- * The children are {@link ListItem} blocks, which contain other blocks (or nested lists).
+ * The children are {@link ListItem} blocks, which contain other blocks (or
+ * nested lists).
  *
- * @see <a href="https://spec.commonmark.org/0.31.2/#list-items">CommonMark Spec: List items</a>
+ * @see <a href="https://spec.commonmark.org/0.31.2/#list-items">CommonMark
+ *      Spec: List items</a>
  */
 public class OrderedList extends ListBlock {
 
@@ -23,7 +28,8 @@ public class OrderedList extends ListBlock {
     }
 
     /**
-     * @return the start number used in the marker, e.g. {@code 1}, if available, or null otherwise
+     * @return the start number used in the marker, e.g. {@code 1}, if available, or
+     *         null otherwise
      */
     public Integer getMarkerStartNumber() {
         return markerStartNumber;
@@ -34,7 +40,8 @@ public class OrderedList extends ListBlock {
     }
 
     /**
-     * @return the delimiter used in the marker, e.g. {@code .} or {@code )}, if available, or null otherwise
+     * @return the delimiter used in the marker, e.g. {@code .} or {@code )}, if
+     *         available, or null otherwise
      */
     public String getMarkerDelimiter() {
         return markerDelimiter;

@@ -22,8 +22,7 @@ import org.openedit.page.Page;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.RequestUtils;
 
-public class PathEvent extends BaseData implements Comparable, TextAppender
-{
+public class PathEvent extends BaseData implements Comparable, TextAppender {
 	private static final Log log = LogFactory.getLog(PathEvent.class);
 	protected Page fieldPage;
 	protected boolean fieldAsleep;
@@ -42,29 +41,24 @@ public class PathEvent extends BaseData implements Comparable, TextAppender
 	protected long fieldTotalRunCount;
 	protected String fieldStartingFromMidnight;
 	protected Throwable fieldException;
-	
-	
-	
-	public Throwable getException()
-	{
+
+	public Throwable getException() {
 		return fieldException;
 	}
-	public void setException(Throwable inException)
-	{
+
+	public void setException(Throwable inException) {
 		fieldException = inException;
 	}
-	
-	public String getStartingFromMidnight()
-	{
+
+	public String getStartingFromMidnight() {
 		return fieldStartingFromMidnight;
 	}
-	public int getStartingFromMidnightMilli()
-	{
-		return (int)parse(getStartingFromMidnight());
+
+	public int getStartingFromMidnightMilli() {
+		return (int) parse(getStartingFromMidnight());
 	}
-	
-	public String getStartingFromFormated()
-	{
+
+	public String getStartingFromFormated() {
 		int milli = getStartingFromMidnightMilli();
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.set(GregorianCalendar.HOUR_OF_DAY, 0);
@@ -74,81 +68,65 @@ public class PathEvent extends BaseData implements Comparable, TextAppender
 		String res = DateStorageUtil.getStorageUtil().formatDateObj(cal.getTime(), "h:mm a z");
 		return res;
 	}
-	
-	public void setStartingFromMidnight(String inStartingFromMidnight)
-	{
+
+	public void setStartingFromMidnight(String inStartingFromMidnight) {
 		fieldStartingFromMidnight = inStartingFromMidnight;
 	}
 
-	public long getTotalRunCount()
-	{
+	public long getTotalRunCount() {
 		return fieldTotalRunCount;
 	}
 
-	public void setTotalRunCount(long inTotalRunCount)
-	{
+	public void setTotalRunCount(long inTotalRunCount) {
 		fieldTotalRunCount = inTotalRunCount;
 	}
 
-	public PathEvent()
-	{
+	public PathEvent() {
 	}
 
-	
-	public boolean isRunning() 
-	{
+	public boolean isRunning() {
 		return fieldRunningCount > 0;
 	}
 
-	public int getRunningCount()
-	{
+	public int getRunningCount() {
 		return fieldRunningCount;
 	}
-	
-	public long getPeriod()
-	{
+
+	public long getPeriod() {
 		return fieldPeriod;
 	}
 
-	public void setPeriod(long inPeriod)
-	{
+	public void setPeriod(long inPeriod) {
 		fieldPeriod = inPeriod;
 	}
 
-	public void setPeriod(String inPeriod)
-	{
+	public void setPeriod(String inPeriod) {
 		fieldPeriod = parse(inPeriod);
 		fieldFormattedPeriod = inPeriod;
 	}
 
-	public String getFormattedPeriod()
-	{
+	public String getFormattedPeriod() {
 		return fieldFormattedPeriod;
 	}
 
-	private void setDefaults()
-	{
-		setPeriod(12 * 60 * 60 * 1000); //defaults to runing every 12 hours
-		setDelay(60000L); //defaults to one minute
+	private void setDefaults() {
+		setPeriod(12 * 60 * 60 * 1000); // defaults to runing every 12 hours
+		setDelay(60000L); // defaults to one minute
 	}
 
-	public long getDelay()
-	{
+	public long getDelay() {
 		return fieldDelay;
 	}
 
-	public String getFormattedDelay()
-	{
+	public String getFormattedDelay() {
 		return fieldFormattedDelay;
 	}
 
-	public void setDelay(long inDelay)
-	{
+	public void setDelay(long inDelay) {
 		fieldDelay = inDelay;
 	}
 
-	public void setDelay(String inDelay)
-	{
+	public void setDelay(String inDelay) {
 		fieldDelay = parse(inDelay);
 		fieldFormattedDelay = inDelay;
 	}
@@ -157,112 +135,85 @@ public class PathEvent extends BaseData implements Comparable, TextAppender
 	 * @param inPeriodString
 	 * @return
 	 */
-	private long parse(String inPeriodString)
-	{
-		if (inPeriodString == null)
-		{
+	private long parse(String inPeriodString) {
+		if (inPeriodString == null) {
 			return 0;
 		}
 		return new TimeParser().parse(inPeriodString);
 	}
 
-	public void putProperty(String key, String value)
-	{
-		if (key.equals("username"))
-		{
-			//This is3 handled in XMLSchedulerArchive.loadFromFile()
-		}
-		else if (key.equals("startdelay"))
-		{
+	public void putProperty(String key, String value) {
+		if (key.equals("username")) {
+			// This is3 handled in XMLSchedulerArchive.loadFromFile()
+		} else if (key.equals("startdelay")) {
 			setDelay(value);
-		}
-		else if (key.equals("startingfrommidnight"))
-		{
+		} else if (key.equals("startingfrommidnight")) {
 			setStartingFromMidnight(value);
-		}
-		else if (key.equals("period"))
-		{
+		} else if (key.equals("period")) {
 			setPeriod(value);
-		}
-		else if (key.equals("enabled"))
-		{
+		} else if (key.equals("enabled")) {
 			setEnabled(Boolean.parseBoolean(value));
 		}
 		getPage().setProperty(key, value);
 	}
 
-	public boolean isEnabled()
-	{
+	public boolean isEnabled() {
 		return fieldEnabled;
 	}
 
-	public void setEnabled(boolean inEnabled)
-	{
+	public void setEnabled(boolean inEnabled) {
 		fieldEnabled = inEnabled;
 	}
 
-	public long getExpirationTime()
-	{
+	public long getExpirationTime() {
 		return fieldExpirationTime;
 	}
 
-	public void setExpirationTime(long inExpirationTime)
-	{
+	public void setExpirationTime(long inExpirationTime) {
 		fieldExpirationTime = inExpirationTime;
 	}
 
-	
-	public boolean hasFailed()
-	{
+	public boolean hasFailed() {
 		return fieldHasFailed;
 	}
 
-	public String getProperty(String key)
-	{
+	public String getProperty(String key) {
 		String val = (String) getPage().getProperties().get(key);
-		if( val == null)
-		{
+		if (val == null) {
 			val = super.get(key);
 		}
 		return val;
 	}
 
-//	public void setProperty(String key, String value)
-//	{
-//		getPage().getProperties().put(key, value);
-//	}
+	// public void setProperty(String key, String value)
+	// {
+	// getPage().getProperties().put(key, value);
+	// }
 
-	public boolean isSleeping()
-	{
+	public boolean isSleeping() {
 		return fieldAsleep;
 	}
 
-	public void sleep()
-	{
+	public void sleep() {
 		fieldAsleep = true;
 	}
 
-	public void wakeup()
-	{
+	public void wakeup() {
 		fieldAsleep = false;
 	}
 
-	public String getFormattedLastRun()
-	{
-		if (getLastRun() != null)
-		{
+	public String getFormattedLastRun() {
+		if (getLastRun() != null) {
 			return DateFormat.getDateTimeInstance().format(getLastRun());
 		}
 		return null;
 	}
 
-	public Date getLastRun()
-	{
+	public Date getLastRun() {
 		return fieldLastRun;
 	}
 
-	public void setLastRun(Date inLastRun)
-	{
+	public void setLastRun(Date inLastRun) {
 		fieldLastRun = inLastRun;
 		getLastOutput().append("event started: ");
 		getLastOutput().append(DateFormat.getDateTimeInstance().format(fieldLastRun));
@@ -270,276 +221,240 @@ public class PathEvent extends BaseData implements Comparable, TextAppender
 
 	}
 
-	public StringBuffer getLastOutput()
-	{
-		if( fieldLastOutput == null )
-		{
+	public StringBuffer getLastOutput() {
+		if (fieldLastOutput == null) {
 			fieldLastOutput = new StringBuffer();
 		}
 		return fieldLastOutput;
 	}
-	public String getLastOutputHtml()
-	{
-		if( fieldLastOutput == null)
-		{
+
+	public String getLastOutputHtml() {
+		if (fieldLastOutput == null) {
 			return null;
 		}
 		StringBuffer out = new StringBuffer();
 		out.append("<div class='emoutput'>");
 		out.append("<div>");
-		out.append(	getLastOutput().toString().replace("\n", "</div><div>" ));
+		out.append(getLastOutput().toString().replace("\n", "</div><div>"));
 		out.append("</div></div>");
 		return out.toString();
 	}
 
-	public void appendText(String inLastOutput)
-	{
-//		getLastOutput().append("ran on: ");
-//		getLastOutput().append(DateFormat.getDateTimeInstance().format(getLastRun()));
-//		getLastOutput().append('\n');
+	public void appendText(String inLastOutput) {
+		// getLastOutput().append("ran on: ");
+		// getLastOutput().append(DateFormat.getDateTimeInstance().format(getLastRun()));
+		// getLastOutput().append('\n');
 		getLastOutput().append(inLastOutput);
 		getLastOutput().append('\n');
-		if( getLastOutput().length() > 10000 )
-		{
+		if (getLastOutput().length() > 10000) {
 			String cut = getLastOutput().substring(getLastOutput().length() - 7000, getLastOutput().length());
 			fieldLastOutput = new StringBuffer(cut);
 		}
 	}
 
-	public RequestUtils getRequestUtils()
-	{
+	public RequestUtils getRequestUtils() {
 		return fieldRequestUtils;
 	}
 
-	public void setRequestUtils(RequestUtils inRequestUtils)
-	{
+	public void setRequestUtils(RequestUtils inRequestUtils) {
 		fieldRequestUtils = inRequestUtils;
 	}
-	
+
 	/**
 	 * This should only be called from the TaskRunner.run() method
+	 * 
 	 * @param inReq
 	 * @return
 	 * @throws OpenEditException
 	 */
-	public boolean execute(WebPageRequest inReq) throws OpenEditException
-	{
-		//The task should make sure this does not run if it is a repeating type
-//		if( isRunning() )
-//		{
-//			log.info("Event is already running " + getPage().getName() );
-//			return false; //already running
-//		}
-		//Track if two parameterized events execute at the same moment. 
+	public boolean execute(WebPageRequest inReq) throws OpenEditException {
+		// The task should make sure this does not run if it is a repeating type
+		// if( isRunning() )
+		// {
+		// log.info("Event is already running " + getPage().getName() );
+		// return false; //already running
+		// }
+		// Track if two parameterized events execute at the same moment.
 		fieldRunningCount++;
 		fieldTotalRunCount++;
-		try
-		{
+		try {
 			return runNow(inReq);
-		}
-		finally
-		{
+		} finally {
 			fieldRunningCount--;
 		}
 	}
 
 	protected EventManager fieldSystemEventManager;
-	
-	
-	public EventManager getSystemEventManager()
-	{
+
+	public EventManager getSystemEventManager() {
 		return fieldSystemEventManager;
 	}
 
-	public void setSystemEventManager(EventManager inSystemEventManager)
-	{
+	public void setSystemEventManager(EventManager inSystemEventManager) {
 		fieldSystemEventManager = inSystemEventManager;
 	}
-	protected boolean runNow(WebPageRequest inReq) 
-	{		
-		WebPageRequest	request = inReq.copy(getPage());
+
+	protected boolean runNow(WebPageRequest inReq) {
+		WebPageRequest request = inReq.copy(getPage());
 		request.putProtectedPageValue("content", getPage());
 		request.putProtectedPageValue("webpagerequest", request);
-		//		for (Iterator iterator = getProperties().keySet().iterator(); iterator.hasNext();) {
-		//			String key = (String) iterator.next();
-		//			request.setRequestParameter(key, getProperty(key));			
-		//		}
-		//request.putPageValue("home", "");
+		// for (Iterator iterator = getProperties().keySet().iterator();
+		// iterator.hasNext();) {
+		// String key = (String) iterator.next();
+		// request.setRequestParameter(key, getProperty(key));
+		// }
+		// request.putPageValue("home", "");
 
-		//long start = System.currentTimeMillis();
+		// long start = System.currentTimeMillis();
 
-
-		//Thread thread = Thread.currentThread();
-		//ClassLoader oldLoader = thread.getContextClassLoader();
-		ScriptLogger logs = (ScriptLogger)inReq.getPageValue("log");
-		if (logs == null)
-		{
+		// Thread thread = Thread.currentThread();
+		// ClassLoader oldLoader = thread.getContextClassLoader();
+		ScriptLogger logs = (ScriptLogger) inReq.getPageValue("log");
+		if (logs == null) {
 			logs = new ScriptLogger();
 			inReq.putPageValue("log", logs);
 		}
 		StringWriter output = new StringWriter();
-		try
-		{
-			
-			//thread.setContextClassLoader(getClassLoader());
+		try {
+
+			// thread.setContextClassLoader(getClassLoader());
 			Page page = request.getPage();
 			logs.setPrefix(page.getName());
 			logs.setTextAppender(this);
-			
+
 			request.putPageValue("log", logs);
 			logs.startCapture();
-			
-			try
-			{
+
+			try {
 				EventTrigger trigger = new EventTrigger();
 				trigger.setWebPageRequest(request);
 				trigger.setLogger(logs);
 				trigger.setPathEvent(this);
-				
+
 				WebEvent notifyevent = new WebEvent();
 				String catalogid = getPage().getProperty("catalogid");
 				notifyevent.setCatalogId(catalogid);
 				notifyevent.setSource(trigger);
-				//notifyevent.setId("running_" + event.getId());
-				notifyevent.setOperation( "running_" + getId());
+				// notifyevent.setId("running_" + event.getId());
+				notifyevent.setOperation("running_" + getId());
 				getSystemEventManager().fireEvent(notifyevent);
 
-				
-				if( log.isDebugEnabled() )
-				{
+				if (log.isDebugEnabled()) {
 					log.info("running " + page.getPath());
 				}
 
-				//WebEvent event = (WebEvent)request.getPageValue("webevent");
+				// WebEvent event = (WebEvent)request.getPageValue("webevent");
 				request.setWriter(output);
 				getWebServer().getOpenEditEngine().createPageStreamer(page, request);
 				setLastRun(new Date());
 
-				if (getPage().getContentItem().exists())
-				{
+				if (getPage().getContentItem().exists()) {
 					getWebServer().getOpenEditEngine().beginRender(request);
-				}
-				else
-				{
+				} else {
 					getWebServer().getOpenEditEngine().executePathActions(request);
-					if( !request.hasRedirected())
-					{
-						getWebServer().getModuleManager().executePageActions( page,request );
+					if (!request.hasRedirected()) {
+						getWebServer().getModuleManager().executePageActions(page, request);
 					}
-					if( request.hasRedirected())
-					{
+					if (request.hasRedirected()) {
 						log.info("action was redirected");
 					}
 				}
-			}
-			catch( Throwable ex)
-			{
+			} catch (Throwable ex) {
 				setException(ex);
 				StringWriter ow = new StringWriter();
-				while( ex != null)
-				{
+				while (ex != null) {
 					ex.printStackTrace(new PrintWriter(ow));
 					ex = ex.getCause();
 				}
 				logs.error("\n" + ow.toString() + "\n");
 			}
-//			finally
-//			{
-//				for (Iterator iterator = logs.listLogs().iterator(); iterator.hasNext();)
-//				{
-//					String log = (String) iterator.next();
-//					output.append(log.toString());
-//					output.append("\n");
-//				}
-//				appendText(output.toString());
-//			}
-		}
-		finally
-		{
-			//thread.setContextClassLoader(oldLoader);
+			// finally
+			// {
+			// for (Iterator iterator = logs.listLogs().iterator(); iterator.hasNext();)
+			// {
+			// String log = (String) iterator.next();
+			// output.append(log.toString());
+			// output.append("\n");
+			// }
+			// appendText(output.toString());
+			// }
+		} finally {
+			// thread.setContextClassLoader(oldLoader);
 			logs.stopCapture();
 		}
 
-		if (request.hasCancelActions())
-		{
+		if (request.hasCancelActions()) {
 			appendText("Action may have failed to run. Check permissions.");
 		}
-		//appendText(output.toString());
-//		List oldlogs = (List)request.getPageValue("logs");
-//		if( oldlogs != null)
-//		{
-//			for (Iterator iterator = oldlogs.iterator(); iterator.hasNext();)
-//			{
-//				Object object = (Object) iterator.next();
-//				output.append(object.toString());			
-//				output.append("<br/>\n");
-//			}
-//		}
-//		long end = System.currentTimeMillis();
-//		setLastRunTime((end - start) / 1000L); //minutes
-		//log.info(output);
+		// appendText(output.toString());
+		// List oldlogs = (List)request.getPageValue("logs");
+		// if( oldlogs != null)
+		// {
+		// for (Iterator iterator = oldlogs.iterator(); iterator.hasNext();)
+		// {
+		// Object object = (Object) iterator.next();
+		// output.append(object.toString());
+		// output.append("<br/>\n");
+		// }
+		// }
+		// long end = System.currentTimeMillis();
+		// setLastRunTime((end - start) / 1000L); //minutes
+		// log.info(output);
 		return true;
 	}
 
-	public WebServer getWebServer()
-	{
+	public WebServer getWebServer() {
 		return fieldWebServer;
 	}
 
-	public void setWebServer(WebServer inWebServer)
-	{
+	public void setWebServer(WebServer inWebServer) {
 		fieldWebServer = inWebServer;
 	}
 
-//	public ClassLoader getClassLoader()
-//	{
-//		return fieldClassLoader;
-//	}
-//
-//	public void setClassLoader(ClassLoader inClassLoader)
-//	{
-//		fieldClassLoader = inClassLoader;
-//	}
-	public String getName()
-	{
+	// public ClassLoader getClassLoader()
+	// {
+	// return fieldClassLoader;
+	// }
+	//
+	// public void setClassLoader(ClassLoader inClassLoader)
+	// {
+	// fieldClassLoader = inClassLoader;
+	// }
+	public String getName() {
 		String name = getPage().getProperty("eventname");
-		if( name == null)
-		{
+		if (name == null) {
 			name = getPage().getName();
 		}
 		return name;
 	}
-	public Page getPage()
-	{
+
+	public Page getPage() {
 		return fieldPage;
 	}
 
-	public void setPage(Page inPage)
-	{
+	public void setPage(Page inPage) {
 		fieldPage = inPage;
 		setDelay(inPage.getProperty("delay"));
 		setEnabled(Boolean.parseBoolean(inPage.getProperty("enabled")));
 		setPeriod(inPage.getProperty("period"));
 		setStartingFromMidnight(inPage.getProperty("startingfrommidnight"));
 	}
-	public String toString()
-	{
-		if( getPage() != null)
-		{
+
+	public String toString() {
+		if (getPage() != null) {
 			return getPage().getDirectoryName() + "/" + getPage().getName();
 		}
 		return super.toString();
 	}
-	public int compareTo(Object inO)
-	{
+
+	public int compareTo(Object inO) {
 		PathEvent event = (PathEvent) inO;
 		String name = event.toString();
-		
+
 		return toString().compareTo(name);
 	}
 
-	public void clearLog()
-	{
+	public void clearLog() {
 		// TODO Auto-generated method stub
 		fieldLastOutput = null;
 	}

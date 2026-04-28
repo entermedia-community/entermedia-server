@@ -34,28 +34,26 @@ import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil;
 
-public class OrderModule extends BaseMediaModule
-{
+public class OrderModule extends BaseMediaModule {
 	private static final Log log = LogFactory.getLog(OrderModule.class);
-//	protected PostMail fieldPostMail;
-//
-//	public PostMail getPostMail()
-//	{
-//		return fieldPostMail;
-//	}
-//
-//	public void setPostMail(PostMail inPostMail)
-//	{
-//		fieldPostMail = inPostMail;
-//	}
+	// protected PostMail fieldPostMail;
+	//
+	// public PostMail getPostMail()
+	// {
+	// return fieldPostMail;
+	// }
+	//
+	// public void setPostMail(PostMail inPostMail)
+	// {
+	// fieldPostMail = inPostMail;
+	// }
 
-	public OrderManager getOrderManager(WebPageRequest inReq)
-	{
-		OrderManager manager = (OrderManager)getModuleManager().getBean(inReq.findPathValue("catalogid"),"orderManager");
-		inReq.putPageValue("ordermanager",manager);
+	public OrderManager getOrderManager(WebPageRequest inReq) {
+		OrderManager manager = (OrderManager) getModuleManager().getBean(inReq.findPathValue("catalogid"),
+				"orderManager");
+		inReq.putPageValue("ordermanager", manager);
 		return manager;
 	}
-
 
 	/*
 	 * public Data placeOrder(WebPageRequest req) { String catalogid =
@@ -89,121 +87,105 @@ public class OrderModule extends BaseMediaModule
 	 * 
 	 * return null; }
 	 */
-	public Data createNewOrder(WebPageRequest inReq)
-	{
+	public Data createNewOrder(WebPageRequest inReq) {
 		String catalogid = inReq.findPathValue("catalogid");
 		String applicationid = inReq.findValue("applicationid");
 
 		Order order = (Order) getOrderManager(inReq).createNewOrder(applicationid, catalogid, inReq.getUserName());
 		inReq.putPageValue("order", order);
 
-		//OrderHistory history = getOrderManager(inReq).createNewHistory(catalogid, order, inReq.getUser(), "newrecord");
-		
-		
-		String desktopid = inReq.findValue("desktop"); 
-		if(desktopid != null) {
+		// OrderHistory history = getOrderManager(inReq).createNewHistory(catalogid,
+		// order, inReq.getUser(), "newrecord");
+
+		String desktopid = inReq.findValue("desktop");
+		if (desktopid != null) {
 			order.setProperty("desktopid", desktopid);
 		}
-		
-		order.setProperty("downloadedstatus", "new"); 
-		
+
+		order.setProperty("downloadedstatus", "new");
+
 		getOrderManager(inReq).saveOrder(catalogid, inReq.getUser(), order);
 		inReq.setRequestParameter("orderid", order.getId());
 		return order;
 	}
 
-	public Order createOrderFromSelections(WebPageRequest inReq)
-	{
+	public Order createOrderFromSelections(WebPageRequest inReq) {
 		String catalogid = inReq.findPathValue("catalogid");
 
 		String moduleid = inReq.findPathValue("module");
 		HitTracker assets = loadHitTracker(inReq, moduleid);
-		
-		if (assets == null)
-		{
+
+		if (assets == null) {
 			assets = new ListHitTracker();
 			String[] sourcepaths = inReq.getRequestParameters("sourcepath");
-			if (sourcepaths == null)
-			{
+			if (sourcepaths == null) {
 				log.error("No assets passed in");
 				return null;
 			}
-			for (int i = 0; i < sourcepaths.length; i++)
-			{
+			for (int i = 0; i < sourcepaths.length; i++) {
 				Data hit = new BaseData();
 				hit.setSourcePath(sourcepaths[i]);
 				assets.add(hit);
 				assets.addSelection(hit.getId());
 			}
 		}
-		if (assets == null)
-		{
+		if (assets == null) {
 			return null;
 		}
 		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
 		List orderitems = new ArrayList();
-		
+
 		String selectall = inReq.getRequestParameter("selectall");
-		if (Boolean.parseBoolean(selectall)) 
-		{
+		if (Boolean.parseBoolean(selectall)) {
 			assets.selectAll();
 		}
 
-		if (assets.hasSelections())
-		{
+		if (assets.hasSelections()) {
 			Map props = new HashMap();
 			String applicationid = inReq.findValue("applicationid");
 			Order order = (Order) getOrderManager(inReq).createNewOrder(applicationid, catalogid, inReq.getUserName());
 			inReq.putPageValue("order", order);
 			inReq.setRequestParameter("orderid", order.getId());
 
-			for (Iterator iterator = assets.getSelectedHitracker().iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = assets.getSelectedHitracker().iterator(); iterator.hasNext();) {
 				Data hit = (Data) iterator.next();
 				Asset asset = getMediaArchive(catalogid).getAssetBySourcePath(hit.getSourcePath());
-				if( asset != null)
-				{
+				if (asset != null) {
 					getOrderManager(inReq).addItemToOrder(catalogid, order, asset, props);
 				}
 			}
-			if (order.get("expireson") == null)
-			{
+			if (order.get("expireson") == null) {
 				String days = getMediaArchive(catalogid).getCatalogSettingValue("orderexpiresdays");
-				if (days == null)
-				{
+				if (days == null) {
 					days = "30";
 				}
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
 				order.setProperty("expireson", DateStorageUtil.getStorageUtil().formatForStorage(cal.getTime()));
 			}
-			
-			String desktopid = inReq.findValue("desktop"); 
-			if(desktopid != null) {
+
+			String desktopid = inReq.findValue("desktop");
+			if (desktopid != null) {
 				order.setProperty("desktopid", desktopid);
 			}
-			
+
 			order.setProperty("downloadedstatus", "new");
-			
+
 			getOrderManager(inReq).saveOrder(catalogid, inReq.getUser(), order);
 
 			return order;
-		}
-		else
-		{
+		} else {
 			inReq.setCancelActions(true);
 		}
 
 		return null;
 	}
 
-	public Order createOrderFromData(WebPageRequest inReq)
-	{
+	public Order createOrderFromData(WebPageRequest inReq) {
 		String catalogid = inReq.findPathValue("catalogid");
 
 		String mergefield = inReq.getRequestParameter("mergefield");
-		if (mergefield == null)
-		{
+		if (mergefield == null) {
 			mergefield = "assetid";
 		}
 
@@ -213,8 +195,7 @@ public class OrderModule extends BaseMediaModule
 		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
 		List orderitems = new ArrayList();
 
-		if (datalist.getSelectedHitracker().size() > 0)
-		{
+		if (datalist.getSelectedHitracker().size() > 0) {
 			Map props = new HashMap();
 
 			String applicationid = inReq.findValue("applicationid");
@@ -222,49 +203,42 @@ public class OrderModule extends BaseMediaModule
 			inReq.putPageValue("order", order);
 			inReq.setRequestParameter("orderid", order.getId());
 
-			for (Iterator iterator = datalist.getSelectedHitracker().iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = datalist.getSelectedHitracker().iterator(); iterator.hasNext();) {
 				Data hit = (Data) iterator.next();
 				String targetid = hit.get(mergefield);
 				Asset asset = getMediaArchive(catalogid).getAsset(targetid);
 				getOrderManager(inReq).addItemToOrder(catalogid, order, asset, null);
 			}
-			if (order.get("expireson") == null)
-			{
+			if (order.get("expireson") == null) {
 				String days = getMediaArchive(catalogid).getCatalogSettingValue("orderexpiresdays");
-				if (days == null)
-				{
+				if (days == null) {
 					days = "30";
 				}
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
 				order.setProperty("expireson", DateStorageUtil.getStorageUtil().formatForStorage(cal.getTime()));
 			}
-			
-			String desktopid = inReq.findValue("desktop"); 
-			if(desktopid != null) {
+
+			String desktopid = inReq.findValue("desktop");
+			if (desktopid != null) {
 				order.setProperty("desktopid", desktopid);
 			}
-			
+
 			order.setProperty("downloadedstatus", "new");
 
 			getOrderManager(inReq).saveOrder(catalogid, inReq.getUser(), order);
 
 			return order;
-		}
-		else
-		{
+		} else {
 			inReq.setCancelActions(true);
 		}
 
 		return null;
 	}
 
-	public Collection saveItems(WebPageRequest inReq) throws Exception
-	{
+	public Collection saveItems(WebPageRequest inReq) throws Exception {
 		String[] items = inReq.getRequestParameters("itemid");
-		if (items != null)
-		{
+		if (items != null) {
 			String[] fields = inReq.getRequestParameters("field");
 			String catalogid = inReq.findPathValue("catalogid");
 			ArrayList toSave = getOrderManager(inReq).saveItems(catalogid, inReq, fields, items);
@@ -273,25 +247,20 @@ public class OrderModule extends BaseMediaModule
 		return null;
 	}
 
-	public Order loadOrder(WebPageRequest inReq)
-	{
+	public Order loadOrder(WebPageRequest inReq) {
 		Order order = (Order) inReq.getPageValue("order");
-		
+
 		String orderid = inReq.findValue("orderid");
-		if (orderid == null)
-		{
+		if (orderid == null) {
 			orderid = inReq.getRequestParameter("id");
 		}
 
-		
-		if (order != null && (order.getId().equals(orderid) || orderid == null))
-		{
+		if (order != null && (order.getId().equals(orderid) || orderid == null)) {
 			return order;
 		}
 
 		String catalogid = inReq.findPathValue("catalogid");
-				if (orderid == null)
-		{
+		if (orderid == null) {
 			return null;
 
 		}
@@ -300,30 +269,26 @@ public class OrderModule extends BaseMediaModule
 		return order;
 	}
 
-	public Order saveOrder(WebPageRequest inReq) throws Exception
-	{
+	public Order saveOrder(WebPageRequest inReq) throws Exception {
 		return saveOrder(inReq, false);
 	}
 
-	public Order createOrder(WebPageRequest inReq) throws Exception
-	{
+	public Order createOrder(WebPageRequest inReq) throws Exception {
 		return saveOrder(inReq, true);
 	}
 
-	public Order updateOrder(WebPageRequest inReq) throws Exception
-	{
+	public Order updateOrder(WebPageRequest inReq) throws Exception {
 		Order order = loadOrder(inReq);
 		String[] fields = inReq.getRequestParameters("field");
 		String catalogid = inReq.findPathValue("catalogid");
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
-		
+
 		String[] sharewithemail = inReq.getRequestParameters("sharewithemail.value");
 		String sharewithemail_plain = "";
 		if (sharewithemail != null) {
 			if (sharewithemail.length == 1) {
 				sharewithemail_plain = sharewithemail[0];
-			}
-			else {
+			} else {
 				for (int j = 0; j < sharewithemail.length; j++) {
 					sharewithemail_plain += sharewithemail[j] + ", ";
 				}
@@ -331,59 +296,51 @@ public class OrderModule extends BaseMediaModule
 			}
 			inReq.setRequestParameter("sharewithemail.values", sharewithemail_plain);
 		}
-		
 
 		Collection tosave = new ArrayList(Arrays.asList(fields));
 		tosave.remove("status");
-		
-		if(order.get("ordertype") != null && order.get("ordertype").equals("checkout"))
-		{
+
+		if (order.get("ordertype") != null && order.get("ordertype").equals("checkout")) {
 			order.setValue("checkoutstatus", "reviewed");
 		}
-		
-		fields = (String[])tosave.toArray(new String[tosave.size()]);
+
+		fields = (String[]) tosave.toArray(new String[tosave.size()]);
 		searcher.updateData(inReq, fields, order);
 		searcher.saveData(order, inReq.getUser());
 		return order;
 	}
-	
-	
-	public Order updateOrderLastNotified(WebPageRequest inReq) throws Exception
-	{
+
+	public Order updateOrderLastNotified(WebPageRequest inReq) throws Exception {
 		Order order = loadOrder(inReq);
 		if (order != null) {
 			String catalogid = inReq.findPathValue("catalogid");
 			Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
 			order.setValue("lastnotified", new Date());
 			searcher.saveData(order, inReq.getUser());
-			
+
 		}
 		return order;
 	}
-	
-	public Order rebuildShareOrder(WebPageRequest inReq) throws Exception
-	{
+
+	public Order rebuildShareOrder(WebPageRequest inReq) throws Exception {
 		Order order = loadOrder(inReq);
-		if (order != null)
-		{
+		if (order != null) {
 			String catalogid = inReq.findPathValue("catalogid");
-			//Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
-			
+			// Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
+
 			HitTracker items = findOrderItems(inReq);
 			Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
 			itemsearcher.deleteAll(items, inReq.getUser());
 
-			//TODO: Update existing items or/and delete old deleted records
+			// TODO: Update existing items or/and delete old deleted records
 
 		}
 		return order;
 	}
 
-	public Order saveOrder(WebPageRequest inReq, boolean saveitems) throws Exception
-	{
+	public Order saveOrder(WebPageRequest inReq, boolean saveitems) throws Exception {
 		Order order = loadOrder(inReq);
-		if (order != null)
-		{
+		if (order != null) {
 			String catalogid = inReq.findPathValue("catalogid");
 			order = getOrderManager(inReq).createOrder(catalogid, inReq, saveitems);
 			inReq.putPageValue("savedok", "true");
@@ -391,32 +348,26 @@ public class OrderModule extends BaseMediaModule
 		return order;
 	}
 
-	public HitTracker findOrdersForUser(WebPageRequest inReq)
-	{
+	public HitTracker findOrdersForUser(WebPageRequest inReq) {
 		String catalogid = inReq.findPathValue("catalogid");
 		User owner = (User) inReq.getPageValue("owner");
-		if (owner == null)
-		{
+		if (owner == null) {
 			owner = inReq.getUser();
 		}
 		HitTracker orders = getOrderManager(inReq).findOrdersForUser(catalogid, owner);
 		inReq.putPageValue("orders", orders);
 		inReq.putSessionValue(orders.getSessionId(), orders);
 		inReq.putPageValue("searcher", getSearcherManager().getSearcher(catalogid, "order"));
-		
+
 		return orders;
 	}
 
-	
-	public HitTracker findOrderItems(WebPageRequest inReq)
-	{
+	public HitTracker findOrderItems(WebPageRequest inReq) {
 		Order order = loadOrder(inReq);
-		if (order != null)
-		{
+		if (order != null) {
 			String catalogid = inReq.findPathValue("catalogid");
 			String orderid = order.getId();
-			if (orderid == null)
-			{
+			if (orderid == null) {
 				orderid = inReq.getRequestParameter("orderid");
 			}
 			HitTracker items = getOrderManager(inReq).findOrderItems(inReq, catalogid, order);
@@ -426,46 +377,42 @@ public class OrderModule extends BaseMediaModule
 		return null;
 	}
 
-	public void filterOrderItems(WebPageRequest inReq)
-	{
-		ArrayList<String> list = new ArrayList<String>(); //add omitted orders to a list
+	public void filterOrderItems(WebPageRequest inReq) {
+		ArrayList<String> list = new ArrayList<String>(); // add omitted orders to a list
 		String publishtype = inReq.getRequestParameter("publishdestination.value");
 		String catalogid = inReq.findPathValue("catalogid");
 		HitTracker items = (HitTracker) inReq.getPageValue("orderitems");
-		if (items == null)
-		{
+		if (items == null) {
 			Order order = loadOrder(inReq);
-			if (order != null)
-			{
+			if (order != null) {
 				String orderid = order.getId();
-				if (orderid == null)
-				{
+				if (orderid == null) {
 					orderid = inReq.getRequestParameter("orderid");
 				}
 				items = getOrderManager(inReq).findOrderItems(inReq, catalogid, order);
 			}
 		}
-		if (items != null)
-		{
-			//get searchers
-			Searcher publishdestsearcher = getMediaArchive(inReq).getSearcherManager().getSearcher(catalogid, "publishdestination");
+		if (items != null) {
+			// get searchers
+			Searcher publishdestsearcher = getMediaArchive(inReq).getSearcherManager().getSearcher(catalogid,
+					"publishdestination");
 			Data publisher = (Data) publishdestsearcher.searchById(publishtype);
 			String publishername = publisher.getName();
-			Searcher convertpresetsearcher = getMediaArchive(inReq).getSearcherManager().getSearcher(catalogid, "convertpreset");
-			//see if convertpreset has the appropriate field
+			Searcher convertpresetsearcher = getMediaArchive(inReq).getSearcherManager().getSearcher(catalogid,
+					"convertpreset");
+			// see if convertpreset has the appropriate field
 			String publishtofield = "publishto" + publishername.replace(" ", "").toLowerCase();
-			if (convertpresetsearcher.getDetail(publishtofield) != null)//field is present
+			if (convertpresetsearcher.getDetail(publishtofield) != null)// field is present
 			{
-				for (int i = 0; i < items.size(); i++)
-				{
+				for (int i = 0; i < items.size(); i++) {
 					Data data = items.get(i);
 					Asset asset = getMediaArchive(inReq).getAsset(data.get("assetid"));
 					String fileformat = asset.get("fileformat");
 					String rendertype = getMediaArchive(inReq).getMediaRenderType(fileformat);
-					//build query
+					// build query
 					SearchQuery presetquery = convertpresetsearcher.createSearchQuery();
 					presetquery.append(publishtofield, "true").append("inputtype", rendertype);
-					//execute query
+					// execute query
 					HitTracker hits = convertpresetsearcher.search(presetquery);
 					if (hits.size() > 0)
 						continue;
@@ -473,18 +420,15 @@ public class OrderModule extends BaseMediaModule
 				}
 			}
 		}
-		inReq.putPageValue("invaliditems", list);//process this in step2
+		inReq.putPageValue("invaliditems", list);// process this in step2
 	}
 
-	public HitTracker findOrderAssets(WebPageRequest inReq)
-	{
+	public HitTracker findOrderAssets(WebPageRequest inReq) {
 		Order order = loadOrder(inReq);
-		if (order != null)
-		{
+		if (order != null) {
 			String catalogid = inReq.findPathValue("catalogid");
 			String orderid = order.getId();
-			if (orderid == null)
-			{
+			if (orderid == null) {
 				orderid = inReq.getRequestParameter("orderid");
 			}
 			HitTracker items = getOrderManager(inReq).findAssets(inReq, catalogid, order);
@@ -496,75 +440,69 @@ public class OrderModule extends BaseMediaModule
 		return null;
 	}
 
-
-	public boolean checkItemApproval(WebPageRequest inReq) throws Exception
-	{
+	public boolean checkItemApproval(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
 		String orderid = inReq.getRequestParameter("orderid");
-		
+
 		Order order = getOrderManager(inReq).loadOrder(archive.getCatalogId(), orderid);
-		if( order == null)
-		{
+		if (order == null) {
 			return false;
 		}
-		
-		//Check expired
+
+		// Check expired
 		Date expireson = order.getDate("expireson");
-		if( expireson == null )
-		{
+		if (expireson == null) {
 			Date date = order.getDate("date");
 			expireson = new Date(date.getTime() + (1000L * 60L * 60L * 24L * 30L));
 		}
-		
+
 		Date today = new Date();
-		if( today.after( expireson) )
-		{
+		if (today.after(expireson)) {
 			log.error("Order is expired " + orderid);
 			return false;
 		}
 		String status = order.get("checkoutstatus");
-		if( status != null && status.equals("approved"))
-		{
+		if (status != null && status.equals("approved")) {
 			return true;
 		}
 		return false;
-//		Asset asset = (Asset) inReq.getPageValue("asset");
-//		String sourcepath = null;
-//		if (asset != null)
-//		{
-//			sourcepath = asset.getSourcePath();
-//		}
-//		else
-//		{
-//			sourcepath = archive.getSourcePathForPage(inReq);
-//		}
-//		if (sourcepath == null)
-//		{
-//			return false;
-//		}
-//		Searcher itemsearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
-//		SearchQuery search = itemsearcher.createSearchQuery();
-//		search.addExact("userid", inReq.getUser().getId());
-//		search.addExact("assetsourcepath", sourcepath);
-//		search.addMatches("status", "approved");
-//		HitTracker results = itemsearcher.search(search);
-//		if (results.size() > 0)
-//		{
-//			return true;
-//		}
-//		return false;
+		// Asset asset = (Asset) inReq.getPageValue("asset");
+		// String sourcepath = null;
+		// if (asset != null)
+		// {
+		// sourcepath = asset.getSourcePath();
+		// }
+		// else
+		// {
+		// sourcepath = archive.getSourcePathForPage(inReq);
+		// }
+		// if (sourcepath == null)
+		// {
+		// return false;
+		// }
+		// Searcher itemsearcher =
+		// archive.getSearcherManager().getSearcher(archive.getCatalogId(),
+		// "orderitem");
+		// SearchQuery search = itemsearcher.createSearchQuery();
+		// search.addExact("userid", inReq.getUser().getId());
+		// search.addExact("assetsourcepath", sourcepath);
+		// search.addMatches("status", "approved");
+		// HitTracker results = itemsearcher.search(search);
+		// if (results.size() > 0)
+		// {
+		// return true;
+		// }
+		// return false;
 	}
 
-	public void removeSelectionFromOrderBasket(WebPageRequest inReq)
-	{
+	public void removeSelectionFromOrderBasket(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		Order basket = loadOrderBasket(inReq);
 
 		String moduleid = inReq.findPathValue("module");
 		HitTracker assets = loadHitTracker(inReq, moduleid);
-		if(assets != null) {
-			for (Iterator iterator = assets.getSelectedHitracker().iterator(); iterator.hasNext();)
-			{
+		if (assets != null) {
+			for (Iterator iterator = assets.getSelectedHitracker().iterator(); iterator.hasNext();) {
 				Data hit = (Data) iterator.next();
 				Asset asset = getMediaArchive(archive.getCatalogId()).getAsset(hit.getId());
 				getOrderManager(inReq).removeItemFromOrder(archive.getCatalogId(), basket, asset);
@@ -575,8 +513,7 @@ public class OrderModule extends BaseMediaModule
 		}
 	}
 
-	public void toggleItemInOrderBasket(WebPageRequest inReq)
-	{
+	public void toggleItemInOrderBasket(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		Order basket = loadOrderBasket(inReq);
 		String assetid = inReq.getRequestParameter("assetid");
@@ -586,25 +523,21 @@ public class OrderModule extends BaseMediaModule
 		getOrderManager(inReq).toggleItemInOrder(archive, basket, asset);
 	}
 
-	public Data addItemToOrderBasket(WebPageRequest inReq)
-	{
+	public Data addItemToOrderBasket(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		Order basket = loadOrderBasket(inReq);
 		String[] assetids = inReq.getRequestParameters("assetid");
 		String[] fields = inReq.getRequestParameters("field");
 		Map props = new HashMap();
-		if (fields != null)
-		{
-			for (int i = 0; i < fields.length; i++)
-			{
+		if (fields != null) {
+			for (int i = 0; i < fields.length; i++) {
 				String key = fields[i];
 				String value = inReq.getRequestParameter(key + ".value");
 				props.put(key, value);
 			}
 		}
-		
-		for (int i = 0; i < assetids.length; i++)
-		{
+
+		for (int i = 0; i < assetids.length; i++) {
 			String assetid = assetids[i];
 			Asset asset = archive.getAsset(assetid);
 			getOrderManager(inReq).addItemToOrder(archive.getCatalogId(), basket, asset, props);
@@ -613,8 +546,7 @@ public class OrderModule extends BaseMediaModule
 		return basket;
 	}
 
-	public Data addSelectionsToOrderBasket(WebPageRequest inReq)
-	{
+	public Data addSelectionsToOrderBasket(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		Order basket = loadOrderBasket(inReq);
 		String moduleid = inReq.findPathValue("module");
@@ -622,78 +554,67 @@ public class OrderModule extends BaseMediaModule
 
 		String[] fields = inReq.getRequestParameters("field");
 		Map props = new HashMap();
-		if (fields != null)
-		{
-			for (int i = 0; i < fields.length; i++)
-			{
+		if (fields != null) {
+			for (int i = 0; i < fields.length; i++) {
 				String key = fields[i];
 				String value = inReq.getRequestParameter(key + ".value");
 				props.put(key, value);
 			}
 		}
 
-		int added = getOrderManager(inReq).addItemsToBasket(inReq, archive, basket, assets.getSelectedHitracker(), props);
+		int added = getOrderManager(inReq).addItemsToBasket(inReq, archive, basket, assets.getSelectedHitracker(),
+				props);
 		inReq.putPageValue("added", Integer.valueOf(added));
 		return basket;
 	}
 
-	public Order loadOrderBasket(WebPageRequest inReq)
-	{
+	public Order loadOrderBasket(WebPageRequest inReq) {
 		Order basket = null;
-		try
-		{
+		try {
 			MediaArchive archive = getMediaArchive(inReq);
 			basket = (Order) inReq.getPageValue("orderbasket");
-	
-			if (basket == null)
-			{
+
+			if (basket == null) {
 				String id = inReq.getUserName() + "_orderbasket";
 				String appid = inReq.findValue("applicationid");
 				Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(), "order");
-					basket = (Order) searcher.searchById(id);
-					if (basket == null)
-					{
-						basket = getOrderManager(inReq).createNewOrder(appid, archive.getCatalogId(), inReq.getUserName());
-						basket.setId(id);
-						basket.setProperty("ordertype", "basket");
-						getOrderManager(inReq).saveOrder(archive.getCatalogId(), inReq.getUser(), basket);
-					}
-					basket.setProperty("basket", "true");
+				basket = (Order) searcher.searchById(id);
+				if (basket == null) {
+					basket = getOrderManager(inReq).createNewOrder(appid, archive.getCatalogId(), inReq.getUserName());
+					basket.setId(id);
 					basket.setProperty("ordertype", "basket");
-		
-					inReq.putSessionValue("orderbasket", basket);
+					getOrderManager(inReq).saveOrder(archive.getCatalogId(), inReq.getUser(), basket);
+				}
+				basket.setProperty("basket", "true");
+				basket.setProperty("ordertype", "basket");
+
+				inReq.putSessionValue("orderbasket", basket);
 			}
 			inReq.putPageValue("order", basket);
 			inReq.putPageValue("orderbasket", basket);
-	
-			HitTracker items = (HitTracker)inReq.getPageValue("orderitems");
-			if( items == null)
-			{
+
+			HitTracker items = (HitTracker) inReq.getPageValue("orderitems");
+			if (items == null) {
 				items = loadOrderManager(inReq).findOrderItems(inReq, archive.getCatalogId(), basket);
 			}
-			if( items != null)
-			{
+			if (items != null) {
 				inReq.putPageValue("orderitems", items);
 				inReq.putSessionValue(items.getSessionId(), items);
-			}	
-		}
-		catch ( Throwable ex )
-		{
+			}
+		} catch (Throwable ex) {
 			log.error(ex);
 		}
 
 		return basket;
 	}
 
-	public HitTracker loadAssets(WebPageRequest inReq)
-	{
+	public HitTracker loadAssets(WebPageRequest inReq) {
 		String catalogid = inReq.findPathValue("catalogid");
 		Order order = loadOrder(inReq);
 		if (order != null) {
 			HitTracker re = getOrderManager(inReq).findAssets(inReq, catalogid, order);
-			
-			if( re != null)
-			{
+
+			if (re != null) {
 				re.setHitsPerPage(500);
 				inReq.putPageValue("orderassets", re);
 				inReq.putSessionValue(re.getSessionId(), re);
@@ -702,34 +623,35 @@ public class OrderModule extends BaseMediaModule
 		}
 		return null;
 	}
-	
-	public void preprocessOrder(WebPageRequest inReq)
-	{		
-//		String [] orderids = inReq.getRequestParameters("itemid");
-//		if( orderids != null)
-//		{
-//			for(String orderid:orderids)
-//			{
-//				String formatkey = new StringBuilder().append(orderid).append(".itemfiletype.value").toString();
-//				
-//				
-//				if (!inReq.getParameterMap().containsKey(formatkey)){
-//					continue;
-//				}
-//				String format = inReq.getParameterMap().get(formatkey).toString();
-//				String presetkey = new StringBuilder().append(format).append(".presetid.value").toString();
-//				if (!inReq.getParameterMap().containsKey(presetkey)){
-//					continue;
-//				}
-//				String preset = inReq.getParameterMap().get(presetkey).toString();
-//				String itempresetkey = new StringBuilder().append(orderid).append(".presetid.value").toString();
-//				inReq.setRequestParameter(itempresetkey, preset);
-//			}
-//		}
+
+	public void preprocessOrder(WebPageRequest inReq) {
+		// String [] orderids = inReq.getRequestParameters("itemid");
+		// if( orderids != null)
+		// {
+		// for(String orderid:orderids)
+		// {
+		// String formatkey = new
+		// StringBuilder().append(orderid).append(".itemfiletype.value").toString();
+		//
+		//
+		// if (!inReq.getParameterMap().containsKey(formatkey)){
+		// continue;
+		// }
+		// String format = inReq.getParameterMap().get(formatkey).toString();
+		// String presetkey = new
+		// StringBuilder().append(format).append(".presetid.value").toString();
+		// if (!inReq.getParameterMap().containsKey(presetkey)){
+		// continue;
+		// }
+		// String preset = inReq.getParameterMap().get(presetkey).toString();
+		// String itempresetkey = new
+		// StringBuilder().append(orderid).append(".presetid.value").toString();
+		// inReq.setRequestParameter(itempresetkey, preset);
+		// }
+		// }
 	}
 
-	public void createConversionAndPublishRequest(WebPageRequest inReq)
-	{
+	public void createConversionAndPublishRequest(WebPageRequest inReq) {
 
 		// Order and item should be created from previous step.
 		// now we get the items and update the destination information
@@ -738,65 +660,60 @@ public class OrderModule extends BaseMediaModule
 		OrderManager manager = getOrderManager(inReq);
 		String catalogid = inReq.findPathValue("catalogid");
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
-		if (order == null)
-		{
+		if (order == null) {
 			order = (Order) searcher.createNewData();
 		}
 		String[] fields = inReq.getRequestParameters("field");
-		
+
 		searcher.updateData(inReq, fields, order);
-		
-		if (order.get("ordertype") == null)
-		{
+
+		if (order.get("ordertype") == null) {
 			String ordertype = inReq.findValue("ordertype.value");
-			if (ordertype == null)
-			{
+			if (ordertype == null) {
 				ordertype = "download";
 			}
-			order.setProperty("ordertype", ordertype);  //Will be saved on manager
+			order.setProperty("ordertype", ordertype); // Will be saved on manager
 		}
 
 		MediaArchive archive = getMediaArchive(inReq);
 		Map params = inReq.getParameterMap();
-		if (order.get("publishdestination") == null)
-		{
+		if (order.get("publishdestination") == null) {
 			String publishdestination = inReq.findValue("publishdestination.value");
-			if(publishdestination != null){
-				order.setProperty("publishdestination", publishdestination);//assume 0 for most orders, 0 can be told to use Aspera
-			} else{
-				//do something? default it to browser?
+			if (publishdestination != null) {
+				order.setProperty("publishdestination", publishdestination);// assume 0 for most orders, 0 can be told
+																			// to use Aspera
+			} else {
+				// do something? default it to browser?
 				throw new OpenEditException("publishdestination is required");
 			}
 		}
 		List assetids = manager.addConversionAndPublishRequest(inReq, order, archive, params, inReq.getUser());
-		
+
 		// OrderHistory history =
 		// getOrderManager(inReq).createNewHistory(archive.getCatalogId(), order,
 		// inReq.getUser(), "pending");
 		// history.setAssetIds(assetids);
 		// manager.saveOrderWithHistory(archive.getCatalogId(), inReq.getUser(),
 		// order, history);
-//		if (assetids.size() > 0)
-//		{
-//			order.setProperty("orderstatus", "ordered"); //what is pendig
-//		}
-//		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
-		
+		// if (assetids.size() > 0)
+		// {
+		// order.setProperty("orderstatus", "ordered"); //what is pendig
+		// }
+		// manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
 
-		
 		log.info("Added conversion and publish requests for order id:" + order.getId());
 	}
+
 	/**
 	 * Is this needed?
+	 * 
 	 * @deprecated
 	 * @param inReq
 	 */
-	public void createQuickOrder(WebPageRequest inReq)
-	{
-
+	public void createQuickOrder(WebPageRequest inReq) {
 
 		MediaArchive archive = getMediaArchive(inReq);
-		
+
 		OrderManager manager = getOrderManager(inReq);
 		String catalogid = inReq.findPathValue("catalogid");
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
@@ -806,10 +723,12 @@ public class OrderModule extends BaseMediaModule
 		order.setProperty("userid", inReq.getUserName());
 		String quickpublishid = inReq.getRequestParameter("quickid");
 		Data publishtemplate = archive.getData("quickpublish", quickpublishid);
-		
-		order.setProperty("publishdestination", publishtemplate.get("publishdestination"));//assume 0 for most orders, 0 can be told to use Aspera
+
+		order.setProperty("publishdestination", publishtemplate.get("publishdestination"));// assume 0 for most orders,
+																							// 0 can be told to use
+																							// Aspera
 		searcher.saveData(order, inReq.getUser());
-		
+
 		String moduleid = inReq.findPathValue("module");
 		HitTracker hits = loadHitTracker(inReq, moduleid);
 		for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
@@ -820,11 +739,9 @@ public class OrderModule extends BaseMediaModule
 			item.setProperty("orderid", order.getId());
 
 			itemsearcher.saveData(item, inReq.getUser());
-					
+
 		}
-		
-		
-		
+
 		List assetids = manager.addConversionAndPublishRequest(inReq, order, archive, new HashMap(), inReq.getUser());
 		// OrderHistory history =
 		// getOrderManager(inReq).createNewHistory(archive.getCatalogId(), order,
@@ -832,21 +749,18 @@ public class OrderModule extends BaseMediaModule
 		// history.setAssetIds(assetids);
 		// manager.saveOrderWithHistory(archive.getCatalogId(), inReq.getUser(),
 		// order, history);
-//		if (assetids.size() > 0)
-//		{
-//			order.setProperty("orderstatus", "ordered");
-//		}
-//		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
+		// if (assetids.size() > 0)
+		// {
+		// order.setProperty("orderstatus", "ordered");
+		// }
+		// manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
 		inReq.putPageValue("order", order);
 		inReq.putPageValue("data", order);
 
 		log.info("Added conversion and publish requests for order id:" + order.getId());
 	}
-	
-	
 
-	public Order placeOrderById(WebPageRequest inReq)
-	{
+	public Order placeOrderById(WebPageRequest inReq) {
 		Order order = loadOrder(inReq);
 		getOrderManager(inReq).placeOrder(inReq, getMediaArchive(inReq), order, false);
 
@@ -855,24 +769,20 @@ public class OrderModule extends BaseMediaModule
 		return order;
 		// change the status of all the items and the order and save everything
 		// fire event
-		
 
 	}
 
-	public Order placeOrderFromBasket(WebPageRequest inReq)
-	{
+	public Order placeOrderFromBasket(WebPageRequest inReq) {
 		Order order = loadOrderBasket(inReq);
 		boolean resetid = Boolean.parseBoolean(inReq.findValue("resetid"));
 		String prefix = inReq.findValue("subjectprefix");
-		if (prefix == null)
-		{
+		if (prefix == null) {
 			prefix = "Order received:";
 		}
 		prefix = prefix + " " + order.getId();
 
 		String postfix = inReq.findValue("subjectpostfix");
-		if (postfix != null)
-		{
+		if (postfix != null) {
 			prefix = prefix + " " + postfix;
 		}
 		inReq.putPageValue("subject", prefix);
@@ -884,218 +794,200 @@ public class OrderModule extends BaseMediaModule
 		return order;
 	}
 
-	public Order createOrderWithItems(WebPageRequest inReq)
-	{
+	public Order createOrderWithItems(WebPageRequest inReq) {
 		String orderid = inReq.findValue("orderid");
-		if (orderid != null)
-		{
+		if (orderid != null) {
 			return loadOrder(inReq);
 		}
 		String[] assetids = inReq.getRequestParameters("assetid");
-		if (assetids != null && assetids.length > 0 && assetids[0].length() > 0 && !assetids[0].startsWith("multiedit:hits"))
-		{
+		if (assetids != null && assetids.length > 0 && assetids[0].length() > 0
+				&& !assetids[0].startsWith("multiedit:hits")) {
 			return createOrderFromAssets(inReq);
 		}
 		return createOrderFromSelections(inReq);
 	}
 
-	public Order loadOrderFromAssets(WebPageRequest inReq)
-	{
+	public Order loadOrderFromAssets(WebPageRequest inReq) {
 		String catalogId = inReq.findPathValue("catalogid");
 		MediaArchive archive = getMediaArchive(catalogId);
 		String[] selectedids = inReq.getRequestParameters("assetid");
 
 		List assetids = selectAssets(inReq, selectedids);
-		Order order = getOrderManager(inReq).findOrderFromAssets(catalogId,inReq.getUser(),assetids);
-		if( order == null)
-		{
+		Order order = getOrderManager(inReq).findOrderFromAssets(catalogId, inReq.getUser(), assetids);
+		if (order == null) {
 			order = createOrderFromAssets(inReq);
 		}
 		inReq.putPageValue("order", order);
 		return order;
-		
+
 	}
 
-	protected List selectAssets(WebPageRequest inReq, String[] selectedids)
-	{
+	protected List selectAssets(WebPageRequest inReq, String[] selectedids) {
 		List assetids = new ArrayList();
-		if(selectedids == null) {
+		if (selectedids == null) {
 			String moduleid = inReq.findPathValue("module");
 			HitTracker assets = loadHitTracker(inReq, moduleid);
-			if (assets != null && assets.hasSelections())
-			{
-				for (Iterator iterator = assets.getSelectedHitracker().iterator(); iterator.hasNext();)
-				{
+			if (assets != null && assets.hasSelections()) {
+				for (Iterator iterator = assets.getSelectedHitracker().iterator(); iterator.hasNext();) {
 					Data data = (Data) iterator.next();
 					assetids.add(data.getId());
 				}
-			} 
-		}
-		else {
-			for (int i = 0; i < selectedids.length; i++)
-			{
-				String id = selectedids	[i];
-				if (id.startsWith("multiedit:hits"))
-				{
+			}
+		} else {
+			for (int i = 0; i < selectedids.length; i++) {
+				String id = selectedids[i];
+				if (id.startsWith("multiedit:hits")) {
 					HitTracker hits = (HitTracker) inReq.getSessionValue(id.substring("multiedit:".length()));
-					if (hits != null)
-					{
-						for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-						{
+					if (hits != null) {
+						for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 							Data data = (Data) iterator.next();
 							assetids.add(data.getId());
 						}
 					}
-				}
-				else
-				{
+				} else {
 					assetids.add(id);
 				}
 			}
 		}
 		return assetids;
 	}
-	public Order createOrderFromAssets(WebPageRequest inReq)
-	{
+
+	public Order createOrderFromAssets(WebPageRequest inReq) {
 		String catalogId = inReq.findPathValue("catalogid");
 		MediaArchive archive = getMediaArchive(catalogId);
 		String[] selectedids = inReq.getRequestParameters("assetid");
-		
-		Order order = getOrderManager(inReq).createNewOrder(inReq.findValue("applicationid"), catalogId, inReq.getUserName());
+
+		Order order = getOrderManager(inReq).createNewOrder(inReq.findValue("applicationid"), catalogId,
+				inReq.getUserName());
 
 		List assetids = selectAssets(inReq, selectedids);
 
-		for (Iterator iterator = assetids.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = assetids.iterator(); iterator.hasNext();) {
 			String id = (String) iterator.next();
 			Asset asset = archive.getAsset(id);
 			getOrderManager(inReq).addItemToOrder(catalogId, order, asset, null);
 		}
-		order.setValue("orderassetids",assetids);
-		
+		order.setValue("orderassetids", assetids);
+
 		order.setProperty("downloadedstatus", "new");
-		
-		String desktopid = inReq.findValue("desktop"); 
-		if(desktopid != null) {
+
+		String desktopid = inReq.findValue("desktop");
+		if (desktopid != null) {
 			order.setProperty("desktopid", desktopid);
 		}
-		
+
 		getOrderManager(inReq).saveOrder(catalogId, inReq.getUser(), order);
-		
+
 		inReq.putPageValue("order", order);
 
 		return order;
 	}
 
-//	public Order createOrderFromUpload(WebPageRequest inReq)
-//	{
-//		String catalogId = inReq.findPathValue("catalogid");
-//		MediaArchive archive = getMediaArchive(catalogId);
-//		Collection assets = (Collection) inReq.getPageValue("uploadedassets");
-//
-//		Order order = getOrderManager(inReq).createNewOrderWithId(inReq.findValue("applicationid"), catalogId, inReq.getUserName());
-//		// order.setProperty("orderstatus", "newupload");
-//		List assetids = new ArrayList();
-//		for (Iterator iter = assets.iterator(); iter.hasNext();)
-//		{
-//			Asset asset = (Asset) iter.next();
-//			assetids.add(asset.getId());
-//			getOrderManager(inReq).addItemToOrder(catalogId, order, asset, null);
-//		}
-//		// Order history needs to be updated
-//		OrderHistory history = getOrderManager(inReq).createNewHistory(catalogId, order, inReq.getUser(), "newupload");
-//		history.setAssetIds(assetids);
-//		getOrderManager(inReq).saveOrderWithHistory(catalogId, inReq.getUser(), order, history);
-//
-//		// getOrderManager(inReq).saveOrder(catalogId, inReq.getUser(), order);
-//		inReq.putPageValue("order", order);
-//
-//		return order;
-//	}
+	// public Order createOrderFromUpload(WebPageRequest inReq)
+	// {
+	// String catalogId = inReq.findPathValue("catalogid");
+	// MediaArchive archive = getMediaArchive(catalogId);
+	// Collection assets = (Collection) inReq.getPageValue("uploadedassets");
+	//
+	// Order order =
+	// getOrderManager(inReq).createNewOrderWithId(inReq.findValue("applicationid"),
+	// catalogId, inReq.getUserName());
+	// // order.setProperty("orderstatus", "newupload");
+	// List assetids = new ArrayList();
+	// for (Iterator iter = assets.iterator(); iter.hasNext();)
+	// {
+	// Asset asset = (Asset) iter.next();
+	// assetids.add(asset.getId());
+	// getOrderManager(inReq).addItemToOrder(catalogId, order, asset, null);
+	// }
+	// // Order history needs to be updated
+	// OrderHistory history = getOrderManager(inReq).createNewHistory(catalogId,
+	// order, inReq.getUser(), "newupload");
+	// history.setAssetIds(assetids);
+	// getOrderManager(inReq).saveOrderWithHistory(catalogId, inReq.getUser(),
+	// order, history);
+	//
+	// // getOrderManager(inReq).saveOrder(catalogId, inReq.getUser(), order);
+	// inReq.putPageValue("order", order);
+	//
+	// return order;
+	// }
 
-	public OrderManager loadOrderManager(WebPageRequest inReq)
-	{
+	public OrderManager loadOrderManager(WebPageRequest inReq) {
 		inReq.putPageValue("orderManager", getOrderManager(inReq));
 		return getOrderManager(inReq);
 	}
 
-//	public Data addUserStatus(WebPageRequest inReq) throws Exception
-//	{
-//		Order order = loadOrder(inReq);
-//		if (order != null)
-//		{
-//			String catalogid = inReq.findPathValue("catalogid");
-//			String[] fields = inReq.getRequestParameters("field");
-//			String userstatus = inReq.findValue("userstatus.value");
-//			OrderHistory history = getOrderManager(inReq).createNewHistory(catalogid, order, inReq.getUser(), userstatus);
-//
-//			Searcher searcher = getSearcherManager().getSearcher(catalogid, "orderhistory");
-//			searcher.updateData(inReq, fields, history);
-//
-//			getOrderManager(inReq).saveOrderWithHistory(catalogid, inReq.getUser(), order, history);
-//
-//		}
-//		return order;
-//	}
+	// public Data addUserStatus(WebPageRequest inReq) throws Exception
+	// {
+	// Order order = loadOrder(inReq);
+	// if (order != null)
+	// {
+	// String catalogid = inReq.findPathValue("catalogid");
+	// String[] fields = inReq.getRequestParameters("field");
+	// String userstatus = inReq.findValue("userstatus.value");
+	// OrderHistory history = getOrderManager(inReq).createNewHistory(catalogid,
+	// order, inReq.getUser(), userstatus);
+	//
+	// Searcher searcher = getSearcherManager().getSearcher(catalogid,
+	// "orderhistory");
+	// searcher.updateData(inReq, fields, history);
+	//
+	// getOrderManager(inReq).saveOrderWithHistory(catalogid, inReq.getUser(),
+	// order, history);
+	//
+	// }
+	// return order;
+	// }
 	/**
 	 * Update the history of pending orders
+	 * 
 	 * @param inReq
 	 * @throws Exception
 	 */
-	public void updatePendingOrders(WebPageRequest inReq) throws Exception
-	{
+	public void updatePendingOrders(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
 		Order order = loadOrder(inReq);
-		if (order != null)
-		{
+		if (order != null) {
 			getOrderManager(inReq).updateStatus(archive, order);
-		}
-		else
-		{
+		} else {
 			getOrderManager(inReq).updatePendingOrders(archive);
 		}
 	}
-	
-	
-	public void updateReadyStatusOrder(WebPageRequest inReq) throws Exception
-	{
+
+	public void updateReadyStatusOrder(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
 		Order order = loadOrder(inReq);
-		if (order != null)
-		{
+		if (order != null) {
 			getOrderManager(inReq).updateReadyStatus(archive, order);
-		}
-		else
-		{
-			//getOrderManager(inReq).updatePendingOrders(archive);
+		} else {
+			// getOrderManager(inReq).updatePendingOrders(archive);
 		}
 	}
-	
-	/*
-	public void updateDownloadedStatus(WebPageRequest inReq) throws Exception
-	{
-		String catalogId = inReq.findPathValue("catalogid");
-		MediaArchive archive = getMediaArchive(catalogId);
-		Order order = loadOrder(inReq);
-		if (order != null)
-		{
-			order.setValue("downloadedstatus", "complete");
-			getOrderManager(inReq).saveOrder(catalogId, inReq.getUser(), order);
-		}
-		else
-		{
-			//getOrderManager(inReq).updatePendingOrders(archive);
-		}
-	}
-	*/
 
-	public void clearOrderItems(WebPageRequest inReq)
-	{
+	/*
+	 * public void updateDownloadedStatus(WebPageRequest inReq) throws Exception
+	 * {
+	 * String catalogId = inReq.findPathValue("catalogid");
+	 * MediaArchive archive = getMediaArchive(catalogId);
+	 * Order order = loadOrder(inReq);
+	 * if (order != null)
+	 * {
+	 * order.setValue("downloadedstatus", "complete");
+	 * getOrderManager(inReq).saveOrder(catalogId, inReq.getUser(), order);
+	 * }
+	 * else
+	 * {
+	 * //getOrderManager(inReq).updatePendingOrders(archive);
+	 * }
+	 * }
+	 */
+
+	public void clearOrderItems(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		HitTracker items = findOrderItems(inReq);
 		Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
-		for (Iterator iterator = items.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = items.iterator(); iterator.hasNext();) {
 			Data item = (Data) iterator.next();
 			searcher.delete(item, inReq.getUser());
 		}
@@ -1121,117 +1013,108 @@ public class OrderModule extends BaseMediaModule
 	 * return composite; }
 	 */
 	/*
-	public void sendOrderEmail(WebPageRequest inReq)
-	{
-		// just a basic email download
-		Order order = loadOrder(inReq);
-		MediaArchive archive = getMediaArchive(inReq);
-		String catalogid = archive.getCatalogId();
-		String[] emails = inReq.getRequestParameters("sharewithemail.value");
-		//String[] organizations = inReq.getRequestParameters("organization.value");
-		HitTracker orderItems = getOrderManager(inReq).findOrderItems(inReq, archive.getCatalogId(), order);
-		inReq.putPageValue("orderitems", orderItems);
-		inReq.putPageValue("order", order);
-
-		try
-		{
-
-			OrderHistory history = getOrderManager(inReq).createNewHistory(catalogid, order, inReq.getUser(), "created");
-			inReq.putPageValue("order", order);
-			TemplateWebEmail mailer = getPostMail().getTemplateWebEmail();
-			String templatepage = inReq.findValue("sharetemplate");
-			Page template = getPageManager().getPage(templatepage);
-			mailer.loadSettings(inReq.copy(template));
-			mailer.setMailTemplatePage(template);
-			String subject = mailer.getWebPageContext().findValue("subject");
-			if (subject == null)
-			{
-				subject = "Share notification";
-			}
-
-			mailer.setSubject(subject);
-			mailer.setRecipientsFromStrings(Arrays.asList(emails));
-			mailer.send();
-
-			getOrderManager(inReq).saveOrderWithHistory(catalogid, inReq.getUser(), order, history);
-
-		}
-		catch (Exception e)
-		{
-			throw new OpenEditException(e);
-		}
-
-	}
-	*/
-	public void deleteOrder(WebPageRequest inReq) throws Exception
-	{
+	 * public void sendOrderEmail(WebPageRequest inReq)
+	 * {
+	 * // just a basic email download
+	 * Order order = loadOrder(inReq);
+	 * MediaArchive archive = getMediaArchive(inReq);
+	 * String catalogid = archive.getCatalogId();
+	 * String[] emails = inReq.getRequestParameters("sharewithemail.value");
+	 * //String[] organizations = inReq.getRequestParameters("organization.value");
+	 * HitTracker orderItems = getOrderManager(inReq).findOrderItems(inReq,
+	 * archive.getCatalogId(), order);
+	 * inReq.putPageValue("orderitems", orderItems);
+	 * inReq.putPageValue("order", order);
+	 * 
+	 * try
+	 * {
+	 * 
+	 * OrderHistory history = getOrderManager(inReq).createNewHistory(catalogid,
+	 * order, inReq.getUser(), "created");
+	 * inReq.putPageValue("order", order);
+	 * TemplateWebEmail mailer = getPostMail().getTemplateWebEmail();
+	 * String templatepage = inReq.findValue("sharetemplate");
+	 * Page template = getPageManager().getPage(templatepage);
+	 * mailer.loadSettings(inReq.copy(template));
+	 * mailer.setMailTemplatePage(template);
+	 * String subject = mailer.getWebPageContext().findValue("subject");
+	 * if (subject == null)
+	 * {
+	 * subject = "Share notification";
+	 * }
+	 * 
+	 * mailer.setSubject(subject);
+	 * mailer.setRecipientsFromStrings(Arrays.asList(emails));
+	 * mailer.send();
+	 * 
+	 * getOrderManager(inReq).saveOrderWithHistory(catalogid, inReq.getUser(),
+	 * order, history);
+	 * 
+	 * }
+	 * catch (Exception e)
+	 * {
+	 * throw new OpenEditException(e);
+	 * }
+	 * 
+	 * }
+	 */
+	public void deleteOrder(WebPageRequest inReq) throws Exception {
 		Order order = loadOrder(inReq);
 		String catalogid = inReq.findPathValue("catalogid");
 		getOrderManager(inReq).delete(catalogid, order);
 	}
 
-	public void removeItem(WebPageRequest inReq) throws Exception
-	{
+	public void removeItem(WebPageRequest inReq) throws Exception {
 		String catalogid = inReq.findPathValue("catalogid");
 		String itemid = inReq.getRequestParameter("id");
 		getOrderManager(inReq).removeItem(catalogid, itemid);
 	}
 
-	public Order loadOrderForVisitor(WebPageRequest inReq)
-	{
+	public Order loadOrderForVisitor(WebPageRequest inReq) {
 		Order order = loadOrder(inReq);
-		//check the expriation
-		if (order.isExpired())
-		{
+		// check the expriation
+		if (order.isExpired()) {
 			inReq.putPageValue("expired", Boolean.TRUE);
-		}
-		else
-		{
+		} else {
 			inReq.putPageValue("expired", Boolean.FALSE);
 		}
-		//load up hits and select all the items. 
+		// load up hits and select all the items.
 		HitTracker hits = loadAssets(inReq);
 		hits.selectAll();
 		inReq.putPageValue("hits", hits);
 		inReq.putSessionValue("vieworder", order);
-		
+
 		return order;
 	}
 
-	public Boolean canViewAsset(WebPageRequest inReq)
-	{
-//		String orderid = inReq.getRequestParameter("orderid");
-//		if (orderid == null)
-//		{
-//			return false;
-//		}
+	public Boolean canViewAsset(WebPageRequest inReq) {
+		// String orderid = inReq.getRequestParameter("orderid");
+		// if (orderid == null)
+		// {
+		// return false;
+		// }
 		Order order = loadOrder(inReq);
-		if( order == null)
-		{
-			order = (Order)inReq.getSessionValue("vieworder");
+		if (order == null) {
+			order = (Order) inReq.getSessionValue("vieworder");
 		}
-		if( order == null )
-		{
+		if (order == null) {
 			return false;
 		}
 		Asset asset = getAsset(inReq);
-		if( asset == null)
-		{
+		if (asset == null) {
 			log.info("Asset not found");
 			return false;
 		}
 		String catalogid = inReq.findPathValue("catalogid");
 		HitTracker assets = getOrderManager(inReq).findOrderItems(inReq, catalogid, order);
 		int found = assets.findRow("assetid", asset.getId());
-		if( found > -1 && !order.isExpired() )
-		{
+		if (found > -1 && !order.isExpired()) {
 			return true;
 		}
 		return false;
 	}
-	
-	public Data checkoutCart(WebPageRequest inReq)
-	{
+
+	public Data checkoutCart(WebPageRequest inReq) {
 		String catalogid = inReq.findPathValue("catalogid");
 		String applicationid = inReq.findValue("applicationid");
 		MediaArchive archive = getMediaArchive(inReq);
@@ -1242,443 +1125,382 @@ public class OrderModule extends BaseMediaModule
 		order.setValue("ordertype", "checkout");
 		order.setValue("orderstatus", "processing");
 		order.setValue("checkoutstatus", "pending");
-		
-		if( inReq.getUser().getEmail() == null)
-		{
+
+		if (inReq.getUser().getEmail() == null) {
 			throw new OpenEditException("Please set an email address");
 		}
 		order.setValue("sharewithemail", inReq.getUser().getEmail());
-		
+
 		String[] fields = inReq.getRequestParameters("field");
 		archive.getSearcher("order").updateData(inReq, fields, order);
-		
+
 		order.setValue("date", new Date());
-		//Expiration
-		
+		// Expiration
+
 		inReq.putPageValue("order", order);
 
-		//OrderHistory history = getOrderManager(inReq).createNewHistory(catalogid, order, inReq.getUser(), "newrecord");
-		
+		// OrderHistory history = getOrderManager(inReq).createNewHistory(catalogid,
+		// order, inReq.getUser(), "newrecord");
+
 		String presetid = inReq.getRequestParameter("presetid");
-		if( presetid == null)
-		{
+		if (presetid == null) {
 			presetid = "0";
 		}
-		
+
 		inReq.setRequestParameter("orderid", order.getId());
-		
+
 		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
 		HitTracker basketitems = getOrderManager(inReq).findOrderItems(inReq, catalogid, basket);
 		List tosave = new ArrayList();
-		
-		for (Iterator iterator = basketitems.iterator(); iterator.hasNext();)
-		{
+
+		for (Iterator iterator = basketitems.iterator(); iterator.hasNext();) {
 			Data orderitem = (Data) iterator.next();
-			orderitem =  itemsearcher.loadData(orderitem);
+			orderitem = itemsearcher.loadData(orderitem);
 			orderitem.setValue("orderid", order.getId());
-			orderitem.setValue("presetid", presetid); //for now
+			orderitem.setValue("presetid", presetid); // for now
 			String assetid = orderitem.get("assetid");
 			Asset asset = archive.getAsset(assetid);
-			//Save the publishqueue
-			//Data publishqueue = getOrderManager(inReq).createPublishQueue(archive,inReq.getUser(),asset,"0","0");
-			
-			//orderitem.setValue("publishqueueid",publishqueue.getId());
-			
+			// Save the publishqueue
+			// Data publishqueue =
+			// getOrderManager(inReq).createPublishQueue(archive,inReq.getUser(),asset,"0","0");
+
+			// orderitem.setValue("publishqueueid",publishqueue.getId());
+
 			tosave.add(orderitem);
 		}
 		itemsearcher.saveAllData(tosave, null);
-		//order.setValue("emailsent", true);
+		// order.setValue("emailsent", true);
 		getOrderManager(inReq).saveOrder(catalogid, inReq.getUser(), order);
 
 		UserManager userManager = getUserManager(inReq);
 
-		//Send an email
+		// Send an email
 		getOrderManager(inReq).sendEmailForApproval(catalogid, archive, userManager, applicationid, order);
-		
+
 		return order;
 	}
-	
-	
-	
-	public void loadPresetOptionsForOrder(WebPageRequest inReq)
-	{
+
+	public void loadPresetOptionsForOrder(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		HitTracker items = findOrderItems(inReq);
-		Map<String,RenderTypeOptions> rendertypeoptions = new HashMap<String,RenderTypeOptions>();
-		
+		Map<String, RenderTypeOptions> rendertypeoptions = new HashMap<String, RenderTypeOptions>();
+
 		String categoryid = inReq.getRequestParameter("categoryid");
-		
+
 		Category startingpoint = archive.getCategory(categoryid);
-		
-		for (Iterator iterator = items.iterator(); iterator.hasNext();)
-		{
+
+		for (Iterator iterator = items.iterator(); iterator.hasNext();) {
 			Data item = (Data) iterator.next();
 			Asset asset = archive.getAsset(item.get("assetid"));
 			String fileformat = asset.getFileFormat();
 			String rendertypeid = null;
-			if(fileformat != null)
-			{
+			if (fileformat != null) {
 				rendertypeid = archive.getMediaRenderType(fileformat);
-			}
-			else
-			{
+			} else {
 				rendertypeid = "none";
-			}	
+			}
 			RenderTypeOptions option = rendertypeoptions.get(rendertypeid);
-			if( option == null)
-			{
+			if (option == null) {
 				option = new RenderTypeOptions();
-				Data rendertype = archive.getCachedData("rendertype",rendertypeid);
+				Data rendertype = archive.getCachedData("rendertype", rendertypeid);
 				option.setRenderType(rendertype);
-				rendertypeoptions.put(option.getRenderTypeId(),option);
+				rendertypeoptions.put(option.getRenderTypeId(), option);
 
-				Collection presets = archive.query("convertpreset").or().exact("inputtype",rendertypeid).exact("inputtype","all").sort("ordering").search();
-				for (Iterator iterator2 = presets.iterator(); iterator2.hasNext();)
-				{
+				Collection presets = archive.query("convertpreset").or().exact("inputtype", rendertypeid)
+						.exact("inputtype", "all").sort("ordering").search();
+				for (Iterator iterator2 = presets.iterator(); iterator2.hasNext();) {
 					Data preset = (Data) iterator2.next();
 					PresetOption presetoption = new PresetOption();
 					presetoption.setPreset(preset);
 					option.addPresetOption(presetoption);
 				}
 			}
-			for (Iterator iterator2 = option.getPresetOptions().iterator(); iterator2.hasNext();)
-			{
+			for (Iterator iterator2 = option.getPresetOptions().iterator(); iterator2.hasNext();) {
 				PresetOption presetoption = (PresetOption) iterator2.next();
-				presetoption.addOrderItem(item); 
+				presetoption.addOrderItem(item);
 				String downloadpath = archive.asLinkToDownload(asset, presetoption.getPreset());
 				String exportname = org.openedit.util.PathUtilities.extractFileName(downloadpath);
-						//archive.asExportFileName(inReq.getUser(), asset, presetoption.getPreset());
+				// archive.asExportFileName(inReq.getUser(), asset, presetoption.getPreset());
 
 				String savetopath = "";
-				
-				if( startingpoint != null)
-				{
-					for (Iterator iterator3 = asset.getCategories().iterator(); iterator3.hasNext();)
-					{
+
+				if (startingpoint != null) {
+					for (Iterator iterator3 = asset.getCategories().iterator(); iterator3.hasNext();) {
 						Category sub = (Category) iterator3.next();
-						if( startingpoint.getId().equals(sub.getId()) )
-						{
+						if (startingpoint.getId().equals(sub.getId())) {
 							savetopath = "";
-							break; //do nothing
-						}
-						else if(sub.hasParent(startingpoint.getId())) 
-						{
+							break; // do nothing
+						} else if (sub.hasParent(startingpoint.getId())) {
 							savetopath = sub.getCategoryPath().substring(startingpoint.getCategoryPath().length());
 							break;
 						}
 					}
 				}
-				if( presetoption.getPreset().getName().toLowerCase().contains("proxy") ) //Change to a setting 
+				if (presetoption.getPreset().getName().toLowerCase().contains("proxy")) // Change to a setting
 				{
 					savetopath = savetopath + "/proxy/" + exportname;
-				}
-				else
-				{
+				} else {
 					savetopath = savetopath + "/" + exportname;
 				}
 				//
-				
+
 				presetoption.addDownloadPath(downloadpath, savetopath, asset);
 			}
 		}
-		inReq.putPageValue("rendertypeoptions",rendertypeoptions);
-	}	
+		inReq.putPageValue("rendertypeoptions", rendertypeoptions);
+	}
 
-	public void refreshPendingOrders(WebPageRequest inReq) throws Exception
-	{
+	public void refreshPendingOrders(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
-		//If there are pending. fire publish,conversion and order status events
+		// If there are pending. fire publish,conversion and order status events
 		archive.fireSharedMediaEvent("conversions/runconversions");
-		archive.fireSharedMediaEvent("publishing/publishassets"); //This calls update order status
+		archive.fireSharedMediaEvent("publishing/publishassets"); // This calls update order status
 		updatePendingOrders(inReq);
 	}
 
-	public void updateOrderItem(WebPageRequest inReq)
-	{
-		//just a basic email download
+	public void updateOrderItem(WebPageRequest inReq) {
+		// just a basic email download
 		MediaArchive archive = getMediaArchive(inReq);
 		String orderitemid = inReq.getRequestParameter("orderitemid");
-		String publishstatus = inReq.getRequestParameter("publishstatus");   //new readytopublish publishing complete
+		String publishstatus = inReq.getRequestParameter("publishstatus"); // new readytopublish publishing complete
 		String downloaditemdownloadedfilesize = inReq.getRequestParameter("downloaditemdownloadedfilesize");
 		String publisheddate = inReq.getRequestParameter("publisheddate");
 		String downloadstartdate = inReq.getRequestParameter("downloadstartdate");
-		
+
 		Data data = archive.getData("orderitem", orderitemid);
-		Order order = (Order)archive.getData("order", data.get("orderid"));
-		inReq.putPageValue("order",order);
-		
-		if(order.getOrderStatus().equals("complete"))
-		{
+		Order order = (Order) archive.getData("order", data.get("orderid"));
+		inReq.putPageValue("order", order);
+
+		if (order.getOrderStatus().equals("complete")) {
 			return;
 		}
-		if( data != null)
-		{
-			data.setValue("publishstatus",publishstatus); //publishexternal or complete
-			if( downloaditemdownloadedfilesize != null)
-			{
-				data.setValue("downloaditemdownloadedfilesize",downloaditemdownloadedfilesize);
+		if (data != null) {
+			data.setValue("publishstatus", publishstatus); // publishexternal or complete
+			if (downloaditemdownloadedfilesize != null) {
+				data.setValue("downloaditemdownloadedfilesize", downloaditemdownloadedfilesize);
 			}
-			if(publisheddate != null)
-			{
-				data.setValue("publisheddate",DateStorageUtil.getStorageUtil().parseFromStorage(publisheddate));
+			if (publisheddate != null) {
+				data.setValue("publisheddate", DateStorageUtil.getStorageUtil().parseFromStorage(publisheddate));
 			}
-			if (downloadstartdate != null) 
-			{
-				data.setValue("downloadstartdate",DateStorageUtil.getStorageUtil().parseFromStorage(downloadstartdate));
+			if (downloadstartdate != null) {
+				data.setValue("downloadstartdate",
+						DateStorageUtil.getStorageUtil().parseFromStorage(downloadstartdate));
 			}
-			archive.saveData("orderitem",data);
-		}
-		else
-		{
+			archive.saveData("orderitem", data);
+		} else {
 			throw new OpenEditException("No such item");
 		}
-		
+
 		archive.getOrderManager().updateStatus(archive, order);
-		
-		//String[] organizations = inReq.getRequestParameters("organization.value");
+
+		// String[] organizations = inReq.getRequestParameters("organization.value");
 	}
 
-	
-	public void findActiveDownloadOrdersForUser(WebPageRequest inReq)
-	{
+	public void findActiveDownloadOrdersForUser(WebPageRequest inReq) {
 		String catalogid = inReq.findPathValue("catalogid");
 		User owner = (User) inReq.getPageValue("owner");
-		if (owner == null)
-		{
+		if (owner == null) {
 			owner = inReq.getUser();
 		}
-		
-		//Any pending orders?
+
+		// Any pending orders?
 		boolean yespending = getOrderManager(inReq).hasPendingDownloadForUser(inReq, catalogid, owner);
 		inReq.putPageValue("haspendingorders", yespending);
-		inReq.putPageValue("ordermananger",getOrderManager(inReq));
-//		//Any complete order not yet show
-//		HitTracker unshown = getOrderManager(inReq).findUnshownDownloadOrdersForUser(req, catalogid, owner);
-//		req.putPageValue("showorders", unshown);
-//		
-//		//Browser should have shown order so flip flag
-//		if (!unshown.isEmpty()) 
-//		{
-//			for (Iterator iterator = unshown.iterator(); iterator.hasNext();)
-//			{
-//				Data order = (Data) iterator.next();
-//				order.setValue("downloadedstatus","complete");
-//			}
-//			getMediaArchive(req).getSearcher("order").saveAllData(unshown,null);
-//			
-//			req.putPageValue("showorder", unshown.first());
-//		}
-////			//already tracking an order?
-////			Order order = (Order) req.getPageValue("order");
-////			if (order == null) {
-////				req.putPageValue("order", pendingorders.first());
-////				//order.setValue("downloadedstatus", "shown"); 
-////
-////			}
-////		}
-//		
-//		
-//		//req.putPageValue("activeorders", orders);
-//		//req.putPageValue("searcher", getSearcherManager().getSearcher(catalogid, "order"));
-		
-	}	
-	
-	public void findUserDownloadOrderItems(WebPageRequest inReq)
-	{
+		inReq.putPageValue("ordermananger", getOrderManager(inReq));
+		// //Any complete order not yet show
+		// HitTracker unshown =
+		// getOrderManager(inReq).findUnshownDownloadOrdersForUser(req, catalogid,
+		// owner);
+		// req.putPageValue("showorders", unshown);
+		//
+		// //Browser should have shown order so flip flag
+		// if (!unshown.isEmpty())
+		// {
+		// for (Iterator iterator = unshown.iterator(); iterator.hasNext();)
+		// {
+		// Data order = (Data) iterator.next();
+		// order.setValue("downloadedstatus","complete");
+		// }
+		// getMediaArchive(req).getSearcher("order").saveAllData(unshown,null);
+		//
+		// req.putPageValue("showorder", unshown.first());
+		// }
+		//// //already tracking an order?
+		//// Order order = (Order) req.getPageValue("order");
+		//// if (order == null) {
+		//// req.putPageValue("order", pendingorders.first());
+		//// //order.setValue("downloadedstatus", "shown");
+		////
+		//// }
+		//// }
+		//
+		//
+		// //req.putPageValue("activeorders", orders);
+		// //req.putPageValue("searcher", getSearcherManager().getSearcher(catalogid,
+		// "order"));
+
+	}
+
+	public void findUserDownloadOrderItems(WebPageRequest inReq) {
 		User owner = (User) inReq.getUser();
-		Collection<OrderDownload> orders = getOrderManager(inReq).findDownloadOrdersForUser( inReq,  owner);
-		//log.info("order download list " + orders.size());
+		Collection<OrderDownload> orders = getOrderManager(inReq).findDownloadOrdersForUser(inReq, owner);
+		// log.info("order download list " + orders.size());
 		int hitsperpage = 3;
-		if(inReq.getRequestParameter("hitsperpage") != null)
-		{
+		if (inReq.getRequestParameter("hitsperpage") != null) {
 			hitsperpage = Integer.parseInt(inReq.getRequestParameter("hitsperpage"));
 		}
 		Collection openitems = new ArrayList();
 		Collection openorders = new ArrayList();
-		for (Iterator iterator = orders.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = orders.iterator(); iterator.hasNext();) {
 			OrderDownload download = (OrderDownload) iterator.next();
-			if(download.getOrder().get("orderstatus").equals("complete") ) 
-			{
-				//log.info("Skipping " + download.getOrder().getId() );
-				continue; //skip complete orders
+			if (download.getOrder().get("orderstatus").equals("complete")) {
+				// log.info("Skipping " + download.getOrder().getId() );
+				continue; // skip complete orders
 			}
-			for (Iterator iterator2 = download.getItemList().iterator(); iterator2.hasNext();)
-			{
+			for (Iterator iterator2 = download.getItemList().iterator(); iterator2.hasNext();) {
 				Data orderitem = (Data) iterator2.next();
 				String status = orderitem.get("publishstatus");
-				if("readytopublish".equals(status) || "publishingexternal".equals(status))
-				{
-					//log.info("added " + orderitem.getName() );
+				if ("readytopublish".equals(status) || "publishingexternal".equals(status)) {
+					// log.info("added " + orderitem.getName() );
 					orderitem.setValue("orderstatus", download.getOrder().get("orderstatus"));
 					openitems.add(orderitem);
 				}
-				if( openitems.size() >= hitsperpage)
-				{
+				if (openitems.size() >= hitsperpage) {
 					break;
 				}
 			}
-			if( openitems.size() >= hitsperpage)
-			{
+			if (openitems.size() >= hitsperpage) {
 				break;
 			}
 		}
-		//log.info("found " + openitems.size() );
+		// log.info("found " + openitems.size() );
 		inReq.putPageValue("downloaditems", openitems);
-		
+
 	}
-	
+
 	public void searchPendingCheckoutOrders(WebPageRequest inReq) {
-		//?field=checkoutstatus&checkoutstatus.value=pending&operation=exact
+		// ?field=checkoutstatus&checkoutstatus.value=pending&operation=exact
 		HitTracker orders = getOrderManager(inReq).findPendingCheckoutOrders(inReq, inReq.findPathValue("catalogid"));
 		inReq.putPageValue("orders", orders);
-		
-	}
-	
 
-	public Order cancelOrder(WebPageRequest inReq) throws Exception
-	{
+	}
+
+	public Order cancelOrder(WebPageRequest inReq) throws Exception {
 		Order order = loadOrder(inReq);
-		if( order == null)
-		{
+		if (order == null) {
 			throw new OpenEditException("Order not found, check catalogid");
 		}
-		//getOrderManager(inReq).cancelOrder(order);
-		getOrderManager(inReq).changeStatus(order,"canceled", "canceled");
+		// getOrderManager(inReq).cancelOrder(order);
+		getOrderManager(inReq).changeStatus(order, "canceled", "canceled");
 		return order;
 	}
 
-	public Order changeOrderStatus(WebPageRequest inReq) throws Exception
-	{
+	public Order changeOrderStatus(WebPageRequest inReq) throws Exception {
 		Order order = loadOrder(inReq);
-		if( order == null)
-		{
+		if (order == null) {
 			throw new OpenEditException("Order not found, check catalogid");
 		}
 		boolean canedit = false;
 		Object canview = inReq.getPageValue("canviewsettings");
-		if( canview instanceof Boolean && ((Boolean)canview))
-		{
+		if (canview instanceof Boolean && ((Boolean) canview)) {
 			canedit = true;
-		}
-		else
-		{
-			if( inReq.getUser() != null && inReq.getUserName().equals(order.get("owner") ))
-			{
-				canedit= true;
+		} else {
+			if (inReq.getUser() != null && inReq.getUserName().equals(order.get("owner"))) {
+				canedit = true;
 			}
 		}
-		if( canedit)
-		{
+		if (canedit) {
 			String status = inReq.getRequestParameter("orderstatus");
 			String downloadedstatus = inReq.getRequestParameter("downloadedstatus");
-			getOrderManager(inReq).changeStatus(order,status, downloadedstatus);
-			
+			getOrderManager(inReq).changeStatus(order, status, downloadedstatus);
+
 		}
 		return order;
 	}
 
-	public void downloadQueue(WebPageRequest inReq)
-	{
+	public void downloadQueue(WebPageRequest inReq) {
 		User owner = (User) inReq.getUser();
-		Collection<OrderDownload> orders = getOrderManager(inReq).findDownloadOrdersForUser( inReq,  owner);
-		//log.info("order download list " + orders.size());
+		Collection<OrderDownload> orders = getOrderManager(inReq).findDownloadOrdersForUser(inReq, owner);
+		// log.info("order download list " + orders.size());
 		int hitsperpage = 10;
-		if(inReq.getRequestParameter("hitsperpage") != null)
-		{
+		if (inReq.getRequestParameter("hitsperpage") != null) {
 			hitsperpage = Integer.parseInt(inReq.getRequestParameter("hitsperpage"));
 		}
-		
+
 		Collection openitems = new ArrayList();
 		Collection openorders = new ArrayList();
 		Collection zipdownloads = new ArrayList();
-		
+
 		MediaArchive archive = getMediaArchive(inReq);
-		
+
 		int count = 0;
-		
+
 		Collection itemstosave = new ArrayList();
-		
-		for (Iterator iterator = orders.iterator(); iterator.hasNext();)
-		{
+
+		for (Iterator iterator = orders.iterator(); iterator.hasNext();) {
 			OrderDownload download = (OrderDownload) iterator.next();
-			
-			
-			if("canceled".equals( download.getOrder().getOrderStatus()  )) 
-			{
-				continue; //skip complete orders
-			}
-			
-			if("complete".equals( download.getOrder().getOrderStatus() ))
-			{
-				continue; //skip complete orders
+
+			if ("canceled".equals(download.getOrder().getOrderStatus())) {
+				continue; // skip complete orders
 			}
 
-			//Make sure this order is totally ready for download
-			
+			if ("complete".equals(download.getOrder().getOrderStatus())) {
+				continue; // skip complete orders
+			}
+
+			// Make sure this order is totally ready for download
+
 			Lock lock = archive.getLockManager().lock("orders" + download.getOrder().getId(), "BaseOrderManager");
-//			if( lock == null)
-//			{
-//				log.error("Could not get lock on order");
-//				continue;
-//			}
+			// if( lock == null)
+			// {
+			// log.error("Could not get lock on order");
+			// continue;
+			// }
 
-			try
-			{
-				
-				if(download.getItemCount() > 3 )
-				{
+			try {
+
+				if (download.getItemCount() > 3) {
 					if (download.allReadyForDownload()) {
-						//Add an order to the queue
+						// Add an order to the queue
 						zipdownloads.add(download);
 					}
-				}	
-				else
-				{
-					for (Iterator iterator2 = download.getItemList().iterator(); iterator2.hasNext();)
-					{
+				} else {
+					for (Iterator iterator2 = download.getItemList().iterator(); iterator2.hasNext();) {
 						Data orderitem = (Data) iterator2.next();
 						String status = orderitem.get("publishstatus");
-						if("readytopublish".equals(status) || "publishingexternal".equals(status))
-						{
-							//log.info("added " + orderitem.getName() );
-							//orderitem.setValue("orderstatus", download.getOrder().get("orderstatus"));
-							orderitem.setValue("publishstatus","complete");
+						if ("readytopublish".equals(status) || "publishingexternal".equals(status)) {
+							// log.info("added " + orderitem.getName() );
+							// orderitem.setValue("orderstatus", download.getOrder().get("orderstatus"));
+							orderitem.setValue("publishstatus", "complete");
 							openitems.add(orderitem);
 							itemstosave.add(orderitem);
 						}
-						if( openitems.size() >= hitsperpage)
-						{
+						if (openitems.size() >= hitsperpage) {
 							break;
 						}
 					}
 				}
 				archive.saveData("orderitem", itemstosave);
-				//Save order
+				// Save order
 				download.getOrder().setOrderStatus("complete");
-				download.getOrder().setValue("downloadedstatus","complete");
+				download.getOrder().setValue("downloadedstatus", "complete");
 				archive.getOrderManager().saveOrder(archive, download.getOrder());
-				log.info("Order saved: " + download.getOrder() + " - "+ download.getOrder().getOrderStatus());
-			}
-			finally
-			{
+				log.info("Order saved: " + download.getOrder() + " - " + download.getOrder().getOrderStatus());
+			} finally {
 				archive.getLockManager().release(lock);
 			}
 		}
-		
-		
-		
-		//log.info("found " + openitems.size() );
+
+		// log.info("found " + openitems.size() );
 		inReq.putPageValue("downloaditems", openitems);
 		inReq.putPageValue("downloadorderzip", zipdownloads);
-		inReq.putPageValue("queuesize",openitems.size() + zipdownloads.size() );
-		
-//		Calendar cal = Calendar.getInstance(inReq.getLocale());
-//
-//		inReq.putPageValue("storeddate",DateStorageUtil.getStorageUtil().formatForStorage(date));
+		inReq.putPageValue("queuesize", openitems.size() + zipdownloads.size());
 
-		
-//		inReq.putPageValue("formateddate",openitems.size() + zipdownloads.size() );
-		
-	}	
+		// Calendar cal = Calendar.getInstance(inReq.getLocale());
+		//
+		// inReq.putPageValue("storeddate",DateStorageUtil.getStorageUtil().formatForStorage(date));
+
+		// inReq.putPageValue("formateddate",openitems.size() + zipdownloads.size() );
+
+	}
 }

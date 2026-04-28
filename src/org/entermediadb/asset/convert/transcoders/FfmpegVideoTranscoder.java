@@ -19,18 +19,15 @@ import org.openedit.util.ExecResult;
 
 //apt-get install libavcodec-extra-53
 
-public class FfmpegVideoTranscoder extends BaseTranscoder
-{
+public class FfmpegVideoTranscoder extends BaseTranscoder {
 	private static final Log log = LogFactory.getLog(FfmpegVideoTranscoder.class);
 
-	public ConvertResult convert(ConvertInstructions inStructions)
-	{
+	public ConvertResult convert(ConvertInstructions inStructions) {
 
 		ContentItem inputpage = inStructions.getInputFile();
 
-		if (inputpage == null || !inputpage.exists())
-		{
-			//no such original
+		if (inputpage == null || !inputpage.exists()) {
+			// no such original
 			log.info("Original does not exist: " + inStructions.getAsset().getSourcePath());
 			ConvertResult result = new ConvertResult();
 			result.setOutput(inStructions.getOutputFile());
@@ -39,26 +36,20 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		}
 		ConvertResult result = null;
 		String streams = inStructions.get("hlsstreams");
-		
-		if( streams != null )
-		{
+
+		if (streams != null) {
 			String[] vals = MultiValued.VALUEDELMITER.split(streams);
 			inStructions.getAsset().setValue("hlsstreams", Arrays.asList(vals));
 			inStructions.getMediaArchive().saveAsset(inStructions.getAsset());
 			result = createHlsOutput(inStructions, vals);
-		}
-		else
-		{
+		} else {
 			result = createVideoOutput(inStructions);
 		}
 		return result;
 	}
 
+	protected ConvertResult createHlsOutput(ConvertInstructions inStructions, String[] streams) {
 
-	
-	protected ConvertResult createHlsOutput(ConvertInstructions inStructions, String[] streams)
-	{
-		
 		long timeout = inStructions.getConversionTimeout();
 		ContentItem inputpage = inStructions.getInputFile();
 		ArrayList<String> comm = new ArrayList<String>();
@@ -77,233 +68,233 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		path.append("/generated/");
 		path.append(inStructions.getAssetSourcePath());
 		path.append("/video.m3u8");
-		
+
 		boolean createdone = false;
-		for (int i = 0; i < streams.length; i++)
-		{
+		for (int i = 0; i < streams.length; i++) {
 			String height = streams[i];
 			String fullpath = path.toString() + "/" + height + "/video.m3u8";
-			ContentItem item = inStructions.getMediaArchive().getContent(fullpath);//inStructions.getOutputFile().getAbsolutePath(); //video.hls
-			if( !item.exists())
-			{
+			ContentItem item = inStructions.getMediaArchive().getContent(fullpath);// inStructions.getOutputFile().getAbsolutePath();
+																					// //video.hls
+			if (!item.exists()) {
 				new File(item.getAbsolutePath()).getParentFile().mkdirs();
-				append(comm,height, item.getAbsolutePath());
+				append(comm, height, item.getAbsolutePath());
 				createdone = true;
 			}
-			inStructions.setOutputFile(item);  //Keep going up
+			inStructions.setOutputFile(item); // Keep going up
 		}
-		//Check the mod time of the video. If it is 0 and over an hour old then delete it?
+		// Check the mod time of the video. If it is 0 and over an hour old then delete
+		// it?
 		ConvertResult result = new ConvertResult();
-		if(createdone)
-		{
-				ExecResult execresult = getExec().runExec("avconv", comm, true,timeout);
-				result.setOk(execresult.isRunOk());
-				if (!execresult.isRunOk())
-				{
-					String output = execresult.getStandardError();
-					result.setError("Error: " + output);
-					return result;
-				}
+		if (createdone) {
+			ExecResult execresult = getExec().runExec("avconv", comm, true, timeout);
+			result.setOk(execresult.isRunOk());
+			if (!execresult.isRunOk()) {
+				String output = execresult.getStandardError();
+				result.setError("Error: " + output);
+				return result;
+			}
 		}
 		result.setOk(true);
 		result.setComplete(true);
 		return result;
 	}
 
-	protected void append(Collection comm, String inSize, String absoutputpath)
-	{
+	protected void append(Collection comm, String inSize, String absoutputpath) {
 		/*
-		ffmpeg -hide_banner -y -i  input-file.ext\
-		-vf scale=w=-2:h=360:force_original_aspect_ratio=decrease -c:a aac -ar 48000 -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//360p/.m3u8 \
-		-vf scale=w=-2:h=480:force_original_aspect_ratio=decrease -c:a aac -ar 48000 -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//480p/.m3u8 \
-		-vf scale=w=-2:h=720:force_original_aspect_ratio=decrease -c:a aac -ar 48000 -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//720p/.m3u8 \
-		-vf scale=w=-2:h=1080:force_original_aspect_ratio=decrease -c:a aac -ar 48000 -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//1080p/.m3u8 \
-		
-		 :force_original_aspect_ratio=decrease removed because sometimes it gives odd numbers. which isn't compatible with m3u8
-		*/		
+		 * ffmpeg -hide_banner -y -i input-file.ext\
+		 * -vf scale=w=-2:h=360:force_original_aspect_ratio=decrease -c:a aac -ar 48000
+		 * -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time
+		 * 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//360p/.m3u8 \
+		 * -vf scale=w=-2:h=480:force_original_aspect_ratio=decrease -c:a aac -ar 48000
+		 * -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time
+		 * 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//480p/.m3u8 \
+		 * -vf scale=w=-2:h=720:force_original_aspect_ratio=decrease -c:a aac -ar 48000
+		 * -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time
+		 * 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//720p/.m3u8 \
+		 * -vf scale=w=-2:h=1080:force_original_aspect_ratio=decrease -c:a aac -ar 48000
+		 * -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time
+		 * 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//1080p/.m3u8 \
+		 * 
+		 * :force_original_aspect_ratio=decrease removed because sometimes it gives odd
+		 * numbers. which isn't compatible with m3u8
+		 */
 		String command = "-preset veryfast -vf scale=w=-2:h=" + inSize;
-		//String command = "-vf scale=w=-2:h=" + inSize;
-		//command = command + " -c:a aac -ar 48000 -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k";
-		//removing (-profile:v baseline) to let ffmpeg select one profile
-		command = command + " -c:a aac -ar 48000 -c:v h264 -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k";
+		// String command = "-vf scale=w=-2:h=" + inSize;
+		// command = command + " -c:a aac -ar 48000 -c:v h264 -profile:v baseline
+		// -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf
+		// 28 -b:a 96k";
+		// removing (-profile:v baseline) to let ffmpeg select one profile
+		command = command
+				+ " -c:a aac -ar 48000 -c:v h264 -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k";
 		comm.addAll(Arrays.asList(command.split("\\ ")));
-		//Add path
-		comm.add(absoutputpath); 
+		// Add path
+		comm.add(absoutputpath);
 	}
 
-
-	public ConvertResult createVideoOutput(ConvertInstructions inStructions)
-	{
+	public ConvertResult createVideoOutput(ConvertInstructions inStructions) {
 		ConvertResult result = new ConvertResult();
 		result.setOutput(inStructions.getOutputFile());
 
 		Asset inAsset = inStructions.getAsset();
-		
+
 		String outputExt = inStructions.getOutputExtension();
 		long timeout = inStructions.getConversionTimeout();
 		ContentItem inputpage = inStructions.getInputFile();
-		
+
 		boolean mp4 = false;
 		if (outputExt != null && (outputExt.equalsIgnoreCase("mp4") || outputExt.equalsIgnoreCase("m4v"))) {
 			mp4 = true;
 		}
 
-		
 		ArrayList<String> comm = new ArrayList<String>();
 		comm.add("-i");
 		comm.add(inputpage.getAbsolutePath());
 		comm.add("-y");
 
-//this option and it's attribute is probably unnecessary for aac now. the native aac codec is considered as stable (if avconv source is younger than Dec 5 2015).
+		// this option and it's attribute is probably unnecessary for aac now. the
+		// native aac codec is considered as stable (if avconv source is younger than
+		// Dec 5 2015).
 		comm.add("-strict");
 		comm.add("experimental");
 
-		setValue("map", "0:v", inStructions, comm); //Keep all audio tracks
-		
-		//audio
+		setValue("map", "0:v", inStructions, comm); // Keep all audio tracks
+
+		// audio
 		Collection audios = inAsset.getValues("audiostreamids");
-		if( audios != null && !audios.isEmpty())
-		{
-			setValue("map", "0:a", inStructions, comm); //Keep all audio tracks
-			setValue("c:a", "copy", inStructions, comm); //Keep all audio tracks
-		}		
-		setValue("c:s", "copy", inStructions, comm); //Keep sub-titles
-		
-//		Collection audiostreamids = inAsset.getValues("audiostreamids");
-//		if( audiostreamids == null)
-//		{
-		setValue("acodec", "aac", inStructions, comm); // libmp3lame libopus
-		if (inStructions.get("pre") == null)  // changed to 'pre' in avconv. presetname: 'foo' -> 'libx264-foo.avpreset' in '~/.avconv' / filename: [codec]-[presetname].avpreset / http://libav.org/avconv.html#Preset-files
-		{
-			setValue("ab", "96k", inStructions, comm); //legacy. audio bit rate, alias for 'b:a', see code below.
-			setValue("ar", "44100", inStructions, comm); //audio sample rate
-			if(inStructions.get("ac") != null)
-			{	
-				setValue("ac", "1", inStructions, comm); //audiochannels
-			}
+		if (audios != null && !audios.isEmpty()) {
+			setValue("map", "0:a", inStructions, comm); // Keep all audio tracks
+			setValue("c:a", "copy", inStructions, comm); // Keep all audio tracks
 		}
-		else
+		setValue("c:s", "copy", inStructions, comm); // Keep sub-titles
+
+		// Collection audiostreamids = inAsset.getValues("audiostreamids");
+		// if( audiostreamids == null)
+		// {
+		setValue("acodec", "aac", inStructions, comm); // libmp3lame libopus
+		if (inStructions.get("pre") == null) // changed to 'pre' in avconv. presetname: 'foo' -> 'libx264-foo.avpreset'
+												// in '~/.avconv' / filename: [codec]-[presetname].avpreset /
+												// http://libav.org/avconv.html#Preset-files
 		{
+			setValue("ab", "96k", inStructions, comm); // legacy. audio bit rate, alias for 'b:a', see code below.
+			setValue("ar", "44100", inStructions, comm); // audio sample rate
+			if (inStructions.get("ac") != null) {
+				setValue("ac", "1", inStructions, comm); // audiochannels
+			}
+		} else {
 			comm.add("-pre");
 			comm.add(inStructions.get("pre"));
 		}
-		if ("mp4".equals(inAsset.getFileFormat()))  
-		{
-			String videodatastreamid = inAsset.get("videotimecodeid"); 
-			if( videodatastreamid != null)
-			{
-				setValue("map_metadata", "0:s:" + videodatastreamid, inStructions, comm); //audiofilters (channelmap, volume, ...)
+		if ("mp4".equals(inAsset.getFileFormat())) {
+			String videodatastreamid = inAsset.get("videotimecodeid");
+			if (videodatastreamid != null) {
+				setValue("map_metadata", "0:s:" + videodatastreamid, inStructions, comm); // audiofilters (channelmap,
+																							// volume, ...)
 			}
-			//comm.add("--map_metadata 0:s:2");
+			// comm.add("--map_metadata 0:s:2");
 		}
 		comm.add("-nostats");
 
 		setValue("threads", "2", inStructions, comm); // 0=auto, but leave some cores for the server's workload
-		setValue("b", null, inStructions, comm); // Legacy. Overall bitrate of the file, it might be better to specify it individually for video and audio streams.
-//video
-		setValue("vcodec", "libx264", inStructions, comm); // libvpx libvpx-vp9 libx265 vaapi_h264/265 vaapi_vp8/9 hw codecs if supported
-		setValue("preset", null, inStructions, comm); // codec-specific preset (e.g. for x264: ultrafast, superfast, veryfast, faster, fast, medium (default), slow, slower, veryslow)
-//			setValue("vpre", null, inStructions, comm); // comes from ffmpeg, not supported in simplified avconv anymore. use 'pre' instead.
+		setValue("b", null, inStructions, comm); // Legacy. Overall bitrate of the file, it might be better to specify
+													// it individually for video and audio streams.
+		// video
+		setValue("vcodec", "libx264", inStructions, comm); // libvpx libvpx-vp9 libx265 vaapi_h264/265 vaapi_vp8/9 hw
+															// codecs if supported
+		setValue("preset", null, inStructions, comm); // codec-specific preset (e.g. for x264: ultrafast, superfast,
+														// veryfast, faster, fast, medium (default), slow, slower,
+														// veryslow)
+		// setValue("vpre", null, inStructions, comm); // comes from ffmpeg, not
+		// supported in simplified avconv anymore. use 'pre' instead.
 		setValue("b:v", null, inStructions, comm); // Bitrate video
-		setValue("crf", "28", inStructions, comm); //constant rate factor (constant quality mode). Lower numbers mean higher quality and a larger output file size. A sane range is 18 to 28. Defaults to 23. A change of ±6 should result in about half/double the file size.
+		setValue("crf", "28", inStructions, comm); // constant rate factor (constant quality mode). Lower numbers mean
+													// higher quality and a larger output file size. A sane range is 18
+													// to 28. Defaults to 23. A change of ±6 should result in about
+													// half/double the file size.
 		setValue("qscale", null, inStructions, comm); // Use fixed quality scale (VBR).
-		setValue("r", null, inStructions, comm); //the framerate setting. converts the video to the desired framerate, if set.
-		setValue("profile:v", null, inStructions, comm); // libx264: baseline, main, high, ... 
-		setValue("filter:v", null, inStructions, comm); //videofilters (yadif, hqn3d, ...) 
-//more audio / why here?
+		setValue("r", null, inStructions, comm); // the framerate setting. converts the video to the desired framerate,
+													// if set.
+		setValue("profile:v", null, inStructions, comm); // libx264: baseline, main, high, ...
+		setValue("filter:v", null, inStructions, comm); // videofilters (yadif, hqn3d, ...)
+		// more audio / why here?
 		setValue("b:a", null, inStructions, comm); // Bitrate Audio. same as 'ab' above.
-		
+
 		setValue("profile:a", null, inStructions, comm); // aac_low (default) aac_main
-		setValue("filter:a", null, inStructions, comm); //audiofilters (channelmap, volume, ...) 
+		setValue("filter:a", null, inStructions, comm); // audiofilters (channelmap, volume, ...)
 
-		setValue("max_muxing_queue_size", null, inStructions, comm); // 0=auto, but leave some cores for the server's workload
+		setValue("max_muxing_queue_size", null, inStructions, comm); // 0=auto, but leave some cores for the server's
+																		// workload
 
-		//comm.add("-aspect");
-		//comm.add("640:480");
+		// comm.add("-aspect");
+		// comm.add("640:480");
 
-
-		if (inStructions.get("setpts") != null) //what is this?!?
-//to slow down or speed up. this is actually an attribute to '-filter:v'.
-//there is 'setpts' (video) and also 'setapts' (audio) to change the presetation time of the mediastream.
+		if (inStructions.get("setpts") != null) // what is this?!?
+		// to slow down or speed up. this is actually an attribute to '-filter:v'.
+		// there is 'setpts' (video) and also 'setapts' (audio) to change the
+		// presetation time of the mediastream.
 		{
-			comm.add("-filter:v setpts=" + inStructions.get("setpts") + "*PTS"); //one block?
+			comm.add("-filter:v setpts=" + inStructions.get("setpts") + "*PTS"); // one block?
 		}
 
-		//add calculations to fix letterbox problems
-		//http://howto-pages.org/ffmpeg/
+		// add calculations to fix letterbox problems
+		// http://howto-pages.org/ffmpeg/
 		int width = inStructions.intValue("prefwidth", 0);
 		int height = inStructions.intValue("prefheight", 0);
 
-		//				if( inStructions.getMaxScaledSize() != null )
-		//				{
-		//					width = inStructions.getMaxScaledSize().width;
-		//					height = inStructions.getMaxScaledSize().height;
-		//				}
+		// if( inStructions.getMaxScaledSize() != null )
+		// {
+		// width = inStructions.getMaxScaledSize().width;
+		// height = inStructions.getMaxScaledSize().height;
+		// }
 
-		if( width != 0)
-		{
+		if (width != 0) {
 			int aw = inAsset.getInt("width");
 			int ah = inAsset.getInt("height");
-			if (aw > width || ah > height)
-			{
+			if (aw > width || ah > height) {
 				float ratio = (float) aw / (float) ah;
 				float ratiodest = (float) width / (float) height;
-				if (ratiodest > ratio) //is dest wider than the input
+				if (ratiodest > ratio) // is dest wider than the input
 				{
-					//original video has a wider ratio so we need to adjust height in proportion
+					// original video has a wider ratio so we need to adjust height in proportion
 					float change = (float) height / (float) ah;
 					width = Math.round((float) aw * change);
-				}
-				else if (ratiodest < ratio)
-				{
-					//too wide, need to padd top
+				} else if (ratiodest < ratio) {
+					// too wide, need to padd top
 					float change = (float) width / (float) aw;
 					height = Math.round((float) ah * change);
+				} else {
+					// no math needed
 				}
-				else
-				{
-					//no math needed
-				}
-			}
-			else
-			{
+			} else {
 				// Asset has smaller size than destination
-	
+
 				boolean scaledownonly = true;
-				if (inStructions.get("scaledownonly") != null)
-				{
+				if (inStructions.get("scaledownonly") != null) {
 					scaledownonly = new Boolean(inStructions.get("scaledownonly"));
 				}
-	
-				//log.info(scaledownonly);
-	
-				if (scaledownonly)
-				{
+
+				// log.info(scaledownonly);
+
+				if (scaledownonly) {
 					// Make destination size the same as original
 					width = aw;
 					height = ah;
 				}
 			}
 		}
-		if (width > 1 && height > 1)
-		{
-			//must be even
-			if ((width % 2) != 0)
-			{
+		if (width > 1 && height > 1) {
+			// must be even
+			if ((width % 2) != 0) {
 				width++;
 			}
-			if ((height % 2) != 0)
-			{
+			if ((height % 2) != 0) {
 				height++;
 			}
-			//http://stackoverflow.com/questions/20847674/ffmpeg-libx264-height-not-divisible-by-2
+			// http://stackoverflow.com/questions/20847674/ffmpeg-libx264-height-not-divisible-by-2
 			comm.add("-s");
 			comm.add(width + "x" + height);
 		}
 
-		
-		
-		//640x360 853x480 704x480 = 480p
+		// 640x360 853x480 704x480 = 480p
 		/*
 		 * Here is a two pass mp4 convertion with mp3 audio The second pass
 		 * lets the bit rate be more constant for buffering downloads
@@ -319,47 +310,42 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		 * -acodec pcm_s16le -s vga -ar 44100 -ac 1 pcmmono2k960output2p.avi
 		 */
 		String outpath = null;
-		
 
-		if (mp4)
-		{
+		if (mp4) {
 			outpath = inStructions.getOutputFile().getAbsolutePath() + "tmp.mp4";
 			File tmp = new File(outpath);
 			tmp.deleteOnExit();
-			if (tmp.exists())
-			{
+			if (tmp.exists()) {
 				long old = tmp.lastModified();
-				if (System.currentTimeMillis() - old < (1000 * 60 * 60)) //something is processing this within the last hour
+				if (System.currentTimeMillis() - old < (1000 * 60 * 60)) // something is processing this within the last
+																			// hour
 				{
-					log.info("Existing video conversion trying again " + inStructions.getMediaArchive().getCatalogId() + " " + inStructions.getAssetId());
+					log.info("Existing video conversion trying again " + inStructions.getMediaArchive().getCatalogId()
+							+ " " + inStructions.getAssetId());
 					result.setComplete(false);
 					result.setOk(true);
 					return result;
-				}
-				else
-				{
-					throw new OpenEditException("Older video existing conversion found, marking as error " + inStructions.getMediaArchive().getCatalogId() + " " + inStructions.getAssetId());
+				} else {
+					throw new OpenEditException("Older video existing conversion found, marking as error "
+							+ inStructions.getMediaArchive().getCatalogId() + " " + inStructions.getAssetId());
 				}
 			}
-		}
-		else
-		{
+		} else {
 			outpath = inStructions.getOutputFile().getAbsolutePath();
 		}
 		comm.add(outpath);
 		new File(outpath).getParentFile().mkdirs();
-		//Check the mod time of the video. If it is 0 and over an hour old then delete it?
+		// Check the mod time of the video. If it is 0 and over an hour old then delete
+		// it?
 
-		ExecResult execresult = getExec().runExec("avconv", comm, true,timeout);
+		ExecResult execresult = getExec().runExec("avconv", comm, true, timeout);
 		result.setOk(execresult.isRunOk());
-		if (!execresult.isRunOk())
-		{
+		if (!execresult.isRunOk()) {
 			String output = execresult.getStandardError();
 			result.setError("Error: " + output);
 			return result;
 		}
-		if (mp4)
-		{
+		if (mp4) {
 			comm = new ArrayList();
 			comm.add(inStructions.getOutputFile().getAbsolutePath() + "tmp.mp4");
 			comm.add(inStructions.getOutputFile().getAbsolutePath());
@@ -371,5 +357,5 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		result.setComplete(true);
 		return result;
 	}
-	
+
 }

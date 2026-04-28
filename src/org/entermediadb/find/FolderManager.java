@@ -26,36 +26,30 @@ import org.openedit.WebPageRequest;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
 
-public class FolderManager implements CatalogEnabled
-{
+public class FolderManager implements CatalogEnabled {
 	private static final Log log = LogFactory.getLog(FolderManager.class);
-	
+
 	protected String fieldCatalogId;
 	protected ModuleManager fieldModuleManager;
 	protected DesktopManager fieldDesktopManager;
 
-	public DesktopManager getDesktopManager()
-	{
-		if (fieldDesktopManager == null)
-		{
-			fieldDesktopManager = (DesktopManager) getModuleManager().getBean(getCatalogId(),"desktopManager");
+	public DesktopManager getDesktopManager() {
+		if (fieldDesktopManager == null) {
+			fieldDesktopManager = (DesktopManager) getModuleManager().getBean(getCatalogId(), "desktopManager");
 		}
 
 		return fieldDesktopManager;
 	}
 
-	public ModuleManager getModuleManager()
-	{
+	public ModuleManager getModuleManager() {
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager)
-	{
+	public void setModuleManager(ModuleManager inModuleManager) {
 		fieldModuleManager = inModuleManager;
 	}
 
-	public String getCatalogId()
-	{
+	public String getCatalogId() {
 		return fieldCatalogId;
 	}
 
@@ -65,191 +59,168 @@ public class FolderManager implements CatalogEnabled
 	 * @see model.projects.ProjectManager#setCatalogId(java.lang.String)
 	 */
 
-	public void setCatalogId(String inCatId)
-	{
+	public void setCatalogId(String inCatId) {
 		fieldCatalogId = inCatId;
 	}
-	protected MediaArchive getMediaArchive()
-	{
+
+	protected MediaArchive getMediaArchive() {
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		return archive;
 	}
-//	public void downloadRemoteFolder(S inReq)
-//	{
-//		Map params = inReq.getJsonRequest();
-//			
-//		MediaArchive archive = getMediaArchive();
-//		String categoryid = (String)params.get("categoryid");
-//		String collectionid = (String)params.get("collectionid");
-//		String server = (String)params.get("server");
-//	
-//		LibraryCollection collection = archive.getProjectManager().getLibraryCollection(archive,collectionid);
-//		
-//		Category cat = archive.getCategory(categoryid);
-//		
-//		Map assets = listAssetMap(archive, cat);
-//		inReq.putPageValue("assetmap", new JSONObject(assets));
-//		
-//	}
-	public void uploadRemoteFolder(WebPageRequest inReq)
-	{
-		
+
+	// public void downloadRemoteFolder(S inReq)
+	// {
+	// Map params = inReq.getJsonRequest();
+	//
+	// MediaArchive archive = getMediaArchive();
+	// String categoryid = (String)params.get("categoryid");
+	// String collectionid = (String)params.get("collectionid");
+	// String server = (String)params.get("server");
+	//
+	// LibraryCollection collection =
+	// archive.getProjectManager().getLibraryCollection(archive,collectionid);
+	//
+	// Category cat = archive.getCategory(categoryid);
+	//
+	// Map assets = listAssetMap(archive, cat);
+	// inReq.putPageValue("assetmap", new JSONObject(assets));
+	//
+	// }
+	public void uploadRemoteFolder(WebPageRequest inReq) {
+
 		Map params = inReq.getJsonRequest();
-		
-		String catalogid = (String)params.get("catalogid");
+
+		String catalogid = (String) params.get("catalogid");
 		MediaArchive archive = getMediaArchive();
-		Map folderdetails = (Map)params.get("folderdetails");
-		
-		//Loop over the existing files and diff it
-		String collectionid  = (String)params.get("collectionid");
+		Map folderdetails = (Map) params.get("folderdetails");
+
+		// Loop over the existing files and diff it
+		String collectionid = (String) params.get("collectionid");
 		LibraryCollection collection = archive.getProjectManager().getLibraryCollection(archive, collectionid);
 		String catpath = collection.getCategory().getCategoryPath();
-		String subfolder = (String)folderdetails.get("subfolder");
+		String subfolder = (String) folderdetails.get("subfolder");
 		Category subcat = null;
-		if( subfolder != null && !subfolder.isEmpty() )
-		{
+		if (subfolder != null && !subfolder.isEmpty()) {
 			catpath = catpath + subfolder;
 			subcat = archive.createCategoryPath(catpath);
-		}
-		else
-		{
+		} else {
 			subcat = collection.getCategory();
 		}
-		HitTracker tracker = archive.query("asset").exact("category-exact", subcat.getId() ).search();
+		HitTracker tracker = archive.query("asset").exact("category-exact", subcat.getId()).search();
 		Map existingassets = new HashMap(tracker.size());
-		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();) {
 			Data asset = (Data) iterator.next();
 			existingassets.put(asset.getName(), asset);
 		}
-		
+
 		Collection toupload = new ArrayList();
-		Collection files = (Collection)folderdetails.get("filelist");
+		Collection files = (Collection) folderdetails.get("filelist");
 		log.info("Keep these files: " + files);
-		for (Iterator iterator = files.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = files.iterator(); iterator.hasNext();) {
 			Map fileinfo = (Map) iterator.next();
-			String filename = (String)fileinfo.get("filename");
+			String filename = (String) fileinfo.get("filename");
 			long filesize = getLong(fileinfo.get("filesize"));
-			Data data = (Data)existingassets.get(filename);
+			Data data = (Data) existingassets.get(filename);
 			existingassets.remove(filename);
-			if( data == null)
-			{
-				data = (Asset)archive.getAssetSearcher().query().exact("name",filename ).exact("filesize", String.valueOf(filesize)).searchOne();
+			if (data == null) {
+				data = (Asset) archive.getAssetSearcher().query().exact("name", filename)
+						.exact("filesize", String.valueOf(filesize)).searchOne();
 			}
-			if( data != null)
-			{
+			if (data != null) {
 				fileinfo.put("assetid", data.getId());
 			}
-			
+
 			boolean addit = false;
-			if( data == null)
-			{
+			if (data == null) {
 				addit = true;
-			}
-			else if( filesize != -1)
-			{
-				Asset asset  = (Asset)archive.getAssetSearcher().loadData(data);
+			} else if (filesize != -1) {
+				Asset asset = (Asset) archive.getAssetSearcher().loadData(data);
 				ContentItem item = archive.getOriginalContent(asset);
-				if( item.getLength() != filesize)
-				{
+				if (item.getLength() != filesize) {
 					addit = true;
-				} else{
-					asset.addCategory(subcat);//make sure it's in the category!
+				} else {
+					asset.addCategory(subcat);// make sure it's in the category!
 					archive.saveAsset(asset);
 				}
 			}
-			//TODO: md5?
-			if( addit )
-			{
+			// TODO: md5?
+			if (addit) {
 				toupload.add(fileinfo);
-			} 
+			}
 		}
 		Collection toremove = new ArrayList();
-		for (Iterator iterator = existingassets.values().iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = existingassets.values().iterator(); iterator.hasNext();) {
 			Data data = (Data) iterator.next();
-			Asset asset  = (Asset)archive.getAssetSearcher().loadData(data);
+			Asset asset = (Asset) archive.getAssetSearcher().loadData(data);
 			log.info("removed old asset " + data.getName());
 			asset.removeCategory(subcat);
 			toremove.add(asset);
 		}
 		archive.getAssetSearcher().saveAllData(toremove, null);
-		
+
 		Map existingcats = new HashMap();
-		for (Iterator iterator = subcat.getChildren().iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = subcat.getChildren().iterator(); iterator.hasNext();) {
 			Category cat = (Category) iterator.next();
 			existingcats.put(cat.getName(), cat);
 		}
-		Collection childfolders = (Collection)folderdetails.get("childfolders");
-		for (Iterator iterator = childfolders.iterator(); iterator.hasNext();)
-		{
+		Collection childfolders = (Collection) folderdetails.get("childfolders");
+		for (Iterator iterator = childfolders.iterator(); iterator.hasNext();) {
 			Map clientfolder = (Map) iterator.next();
-			String foldername = (String)clientfolder.get("foldername");
-			if( existingcats.containsKey(foldername))
-			{
+			String foldername = (String) clientfolder.get("foldername");
+			if (existingcats.containsKey(foldername)) {
 				existingcats.remove(foldername);
-			}
-			else
-			{
-				//add child
-				Category newsub = (Category)archive.getCategorySearcher().createNewData();
+			} else {
+				// add child
+				Category newsub = (Category) archive.getCategorySearcher().createNewData();
 				newsub.setName(foldername);
 				subcat.addChild(newsub);
 				archive.getCategorySearcher().saveCategory(newsub);
 			}
 		}
-		for (Iterator iterator = existingcats.values().iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = existingcats.values().iterator(); iterator.hasNext();) {
 			Category child = (Category) iterator.next();
-			//TODO: Remove this form it's assets
-			HitTracker existingcatassets = archive.query("asset").exact("category-exact", child.getId() ).search();
+			// TODO: Remove this form it's assets
+			HitTracker existingcatassets = archive.query("asset").exact("category-exact", child.getId()).search();
 			Collection tosave = new ArrayList();
-			for (Iterator iterator2 = existingcatassets.iterator(); iterator2.hasNext();)
-			{
+			for (Iterator iterator2 = existingcatassets.iterator(); iterator2.hasNext();) {
 				Data data = (Data) iterator2.next();
-				Asset asset = (Asset)archive.getAssetSearcher().loadData(data);
+				Asset asset = (Asset) archive.getAssetSearcher().loadData(data);
 				asset.removeCategory(child);
 				tosave.add(asset);
 			}
 			archive.getAssetSearcher().saveAllData(tosave, null);
 			archive.getCategorySearcher().delete(child, null);
 		}
-		
+
 		params.remove("folderdetails");
-		params.put("toupload",toupload);
+		params.put("toupload", toupload);
 		log.info("Requesting to upload " + toupload);
-		inReq.putPageValue("params",new JSONObject(params));
-				
+		inReq.putPageValue("params", new JSONObject(params));
+
 	}
-	private long getLong(Object inObject)
-	{
-		if( inObject == null)
-		{
+
+	private long getLong(Object inObject) {
+		if (inObject == null) {
 			return -1;
 		}
-		if( inObject instanceof String)
-		{
-			return Long.parseLong((String)inObject);
+		if (inObject instanceof String) {
+			return Long.parseLong((String) inObject);
 		}
-		if( inObject instanceof Integer)
-		{
-			return Integer.valueOf((int)inObject);
+		if (inObject instanceof Integer) {
+			return Integer.valueOf((int) inObject);
 		}
-		return (long)inObject;
+		return (long) inObject;
 	}
-	public Map listAssetMap(MediaArchive inArchive, Category inCat)
-	{
+
+	public Map listAssetMap(MediaArchive inArchive, Category inCat) {
 		List tosend = new ArrayList();
 
 		HitTracker assets = inArchive.query("asset").exact("category-exact", inCat.getId()).search();
 		assets.enableBulkOperations();
-		
-		Long totalsize = 0l; 
-		
-		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
-		{
+
+		Long totalsize = 0l;
+
+		for (Iterator iterator = assets.iterator(); iterator.hasNext();) {
 			MultiValued asset = (MultiValued) iterator.next();
 			Map map = new HashMap();
 			map.put("id", asset.getId());
@@ -260,23 +231,21 @@ public class FolderManager implements CatalogEnabled
 			map.put("url", url);
 
 			String primaryImageName = asset.get("primaryfile");
-			if (primaryImageName == null)
-			{
+			if (primaryImageName == null) {
 				primaryImageName = asset.getName();
 			}
-			//String savepath = inCat.getCategoryPath() + "/" + primaryImageName;
+			// String savepath = inCat.getCategoryPath() + "/" + primaryImageName;
 			map.put("path", primaryImageName);
-			
+
 			Long size = asset.getLong("filesize");
-			
+
 			totalsize += size;
 
 			map.put("size", size);
 			Date assetmodificationdate = asset.getDate("assetmodificationdate");
-			if(assetmodificationdate != null) {
-			long time = assetmodificationdate.getTime();
-				if (time > 0)
-				{
+			if (assetmodificationdate != null) {
+				long time = assetmodificationdate.getTime();
+				if (time > 0) {
 					map.put("assetmodificationdate", String.valueOf(time));
 				}
 			}
@@ -284,8 +253,7 @@ public class FolderManager implements CatalogEnabled
 		}
 
 		Collection<Map> subfolders = new ArrayList();
-		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();) {
 			Category subcat = (Category) iterator.next();
 			Map map = new HashMap();
 			map.put("id", subcat.getId());
@@ -293,139 +261,128 @@ public class FolderManager implements CatalogEnabled
 			subfolders.add(map);
 		}
 		Map response = new HashMap();
-		//response.put("folder", inRootCategory.getName());
+		// response.put("folder", inRootCategory.getName());
 		response.put("categorypath", inCat.getCategoryPath());
 		response.put("folders", subfolders);
 		response.put("files", tosend);
 		response.put("totalsize", totalsize);
 		response.put("totalcount", assets.size());
 		return response;
-		//		getDesktopListener().downloadFiles(foldername,subfolders,tosend);
-		//		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
-		//		{
-		//			Category child = (Category) iterator.next();
-		//			downloadCat(inArchive, inCollection, child);
-		//		}
+		// getDesktopListener().downloadFiles(foldername,subfolders,tosend);
+		// for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
+		// {
+		// Category child = (Category) iterator.next();
+		// downloadCat(inArchive, inCollection, child);
+		// }
 
 	}
-//	public void importCollection(WebPageRequest inReq) {
-//		MediaArchive archive = getMediaArchive(inReq);
-//		ProjectManager manager = getProjectManager(inReq);
-//		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
-//		if( desktop.isBusy())
-//		{
-//			log.info("Desktop still busy");
-//			return;
-//		}
-//
-//		String collectionid = loadCollectionId(inReq);
-//		User user = inReq.getUser();
-//		if (user == null) 
-//		{
-//			throw new OpenEditException("User required ");
-//		}
-//
-//	}
+	// public void importCollection(WebPageRequest inReq) {
+	// MediaArchive archive = getMediaArchive(inReq);
+	// ProjectManager manager = getProjectManager(inReq);
+	// Desktop desktop =
+	// manager.getDesktopManager().getDesktop(inReq.getUserName());
+	// if( desktop.isBusy())
+	// {
+	// log.info("Desktop still busy");
+	// return;
+	// }
+	//
+	// String collectionid = loadCollectionId(inReq);
+	// User user = inReq.getUser();
+	// if (user == null)
+	// {
+	// throw new OpenEditException("User required ");
+	// }
+	//
+	// }
 
-	public Map removeDuplicateAssetsFrom(Map assetmap, Map inParams) 
-	{
-	
+	public Map removeDuplicateAssetsFrom(Map assetmap, Map inParams) {
+
 		Map response = new HashMap(assetmap);
 
 		/*
-		"entityid": "1234",
-		"moduleid": "entityactivimoduleid,
-		"rootpath": "/home/user/eMedia/",		
-		"categorypath": "Activities/Paris",
-        "files": [{path: filepath, size: 43232}], 
-			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
-		*/
-		
+		 * "entityid": "1234",
+		 * "moduleid": "entityactivimoduleid,
+		 * "rootpath": "/home/user/eMedia/",
+		 * "categorypath": "Activities/Paris",
+		 * "files": [{path: filepath, size: 43232}],
+		 * "folders": [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}]
+		 */
+
 		response.put("filedownloadpath", inParams.get("filedownloadpath"));
-		
-		//Remove all duplicate assets
-		List remotecopy = (List)inParams.get("files");
+
+		// Remove all duplicate assets
+		List remotecopy = (List) inParams.get("files");
 		Set alreadydownloaded = new HashSet();
-		if(remotecopy != null) { 
+		if (remotecopy != null) {
 			for (Iterator iterator2 = remotecopy.iterator(); iterator2.hasNext();) {
 				Map clientfile = (Map) iterator2.next();
-				String path = (String)clientfile.get("path");
-				long size = (Long)clientfile.get("size");
-				alreadydownloaded.add(path  + "|" +size);
+				String path = (String) clientfile.get("path");
+				long size = (Long) clientfile.get("size");
+				alreadydownloaded.add(path + "|" + size);
 			}
 		}
-		
 
-		List assetservercopy = (List)response.get("files");
+		List assetservercopy = (List) response.get("files");
 		List mixedcopy = new ArrayList();
-		
+
 		int totalskippedcount = 0;
 		Long totalskippedsize = 0l;
-		
+
 		for (Iterator iterator = assetservercopy.iterator(); iterator.hasNext();) {
-			Map	serverfile = (Map) iterator.next();
-			String path = (String)serverfile.get("path");
-			long size = (Long)serverfile.get("size");
-			if( !alreadydownloaded.contains(path  + "|" +size) )
-			{
-				mixedcopy.add(serverfile); 
-			}
-			else 
-			{
+			Map serverfile = (Map) iterator.next();
+			String path = (String) serverfile.get("path");
+			long size = (Long) serverfile.get("size");
+			if (!alreadydownloaded.contains(path + "|" + size)) {
+				mixedcopy.add(serverfile);
+			} else {
 				totalskippedcount++;
 				totalskippedsize += size;
 			}
 		}
-		
-		//Folders
+
+		// Folders
 		response.put("files", mixedcopy);
 		response.put("skippedcount", totalskippedcount);
 		response.put("skippedsize", totalskippedsize);
 		return response;
 	}
-	
-	
-	public Map findMissingAssetsToUpload(Map assetmap, Map inParams) 
-	{
-	
+
+	public Map findMissingAssetsToUpload(Map assetmap, Map inParams) {
+
 		Map response = new HashMap(assetmap);
 
 		response.put("filedownloadpath", inParams.get("filedownloadpath"));
-		
-		List assetservercopy = (List)response.get("files");
-		HashMap<String,Map> serverfiles = new HashMap();
-		if(assetservercopy != null) { 
+
+		List assetservercopy = (List) response.get("files");
+		HashMap<String, Map> serverfiles = new HashMap();
+		if (assetservercopy != null) {
 			for (Iterator iterator2 = assetservercopy.iterator(); iterator2.hasNext();) {
 				Map serverfile = (Map) iterator2.next();
-				String path = (String)serverfile.get("path");
+				String path = (String) serverfile.get("path");
 				serverfiles.put(path, serverfile);
 			}
 		}
-		
-		List remotecopy = (List)inParams.get("files");
+
+		List remotecopy = (List) inParams.get("files");
 		List mixedcopy = new ArrayList();
-		
+
 		int totaladdedcount = 0;
 		Long totaladdedsize = 0l;
-		
-		
-		if(remotecopy != null) 
-		{
+
+		if (remotecopy != null) {
 			for (Iterator iterator = remotecopy.iterator(); iterator.hasNext();) {
-				Map	clientfile = (Map) iterator.next();
-				String path = (String)clientfile.get("path");
-				long size = (Long)clientfile.get("size");
+				Map clientfile = (Map) iterator.next();
+				String path = (String) clientfile.get("path");
+				long size = (Long) clientfile.get("size");
 				Map existing = serverfiles.get(path);
-				if( existing == null)
-				{
+				if (existing == null) {
 					mixedcopy.add(clientfile);
 					totaladdedcount++;
 					totaladdedsize += size;
-				}
-				else
-				{
-					long existingsize = (Long)existing.get("size");
-					if(existingsize != size) {
+				} else {
+					long existingsize = (Long) existing.get("size");
+					if (existingsize != size) {
 						mixedcopy.add(existing);
 						totaladdedcount++;
 						totaladdedsize += size;
@@ -433,146 +390,138 @@ public class FolderManager implements CatalogEnabled
 				}
 			}
 		}
-		//Folders
-		response.put("files",mixedcopy);
+		// Folders
+		response.put("files", mixedcopy);
 		response.put("addedcount", totaladdedcount);
 		response.put("addedsize", totaladdedsize);
 		return response;
 	}
-	
-	
-	
-	public Map removeDuplicateAssetsPush(Map assetmap, Map inParams) 
-	{
-	
+
+	public Map removeDuplicateAssetsPush(Map assetmap, Map inParams) {
+
 		Map response = new HashMap(assetmap);
 
 		/*
-		"entityid": "1234",
-		"moduleid": "entityactivimoduleid,
-		"rootpath": "/home/user/eMedia/",		
-		"categorypath": "Activities/Paris",
-        "files": [{path: filepath, size: 43232}], 
-			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
-		*/
-		
+		 * "entityid": "1234",
+		 * "moduleid": "entityactivimoduleid,
+		 * "rootpath": "/home/user/eMedia/",
+		 * "categorypath": "Activities/Paris",
+		 * "files": [{path: filepath, size: 43232}],
+		 * "folders": [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}]
+		 */
+
 		response.put("filedownloadpath", inParams.get("filedownloadpath"));
-		
-		List assetservercopy = (List)response.get("files");
+
+		List assetservercopy = (List) response.get("files");
 		Set serverfiles = new HashSet();
 		for (Iterator iterator = assetservercopy.iterator(); iterator.hasNext();) {
-			Map	serverfile = (Map) iterator.next();
-			String path = (String)serverfile.get("path");
-			long size = (Long)serverfile.get("size");
-			serverfiles.add(path  + "|" +size);
+			Map serverfile = (Map) iterator.next();
+			String path = (String) serverfile.get("path");
+			long size = (Long) serverfile.get("size");
+			serverfiles.add(path + "|" + size);
 		}
-		
-		
-		//Remove all duplicate assets
-		List remotecopy = (List)inParams.get("files");
+
+		// Remove all duplicate assets
+		List remotecopy = (List) inParams.get("files");
 		List mixedcopy = new ArrayList();
-		if(remotecopy != null) { 
+		if (remotecopy != null) {
 			for (Iterator iterator2 = remotecopy.iterator(); iterator2.hasNext();) {
 				Map clientfile = (Map) iterator2.next();
-				String path = (String)clientfile.get("path");
-				long size = (Long)clientfile.get("size");
-				if( !serverfiles.contains(path  + "|" +size) )
-				{
+				String path = (String) clientfile.get("path");
+				long size = (Long) clientfile.get("size");
+				if (!serverfiles.contains(path + "|" + size)) {
 					mixedcopy.add(clientfile);
 				}
 			}
 		}
-	
-		//Folders
-		response.put("files",mixedcopy);
+
+		// Folders
+		response.put("files", mixedcopy);
 		return response;
 	}
-	
-	
 
-	public Map findMissingAssetsFromPush(Map assetmap, Map inParams) 
-	{
-	
+	public Map findMissingAssetsFromPush(Map assetmap, Map inParams) {
+
 		Map response = new HashMap(assetmap);
 
 		/*
-		"entityid": "1234",
-		"moduleid": "entityactivimoduleid,
-		"rootpath": "/home/user/eMedia/",		
-		"categorypath": "Activities/Paris",
-        "files": [{path: filepath, size: 43232}], 
-			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
-		*/
-		
+		 * "entityid": "1234",
+		 * "moduleid": "entityactivimoduleid,
+		 * "rootpath": "/home/user/eMedia/",
+		 * "categorypath": "Activities/Paris",
+		 * "files": [{path: filepath, size: 43232}],
+		 * "folders": [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}]
+		 */
+
 		response.put("filedownloadpath", inParams.get("filedownloadpath"));
-		
-		List remotecopy = (List)inParams.get("files");
+
+		List remotecopy = (List) inParams.get("files");
 		Set remotefiles = new HashSet();
-		if (remotecopy != null && !remotecopy.isEmpty()) 
-		{
+		if (remotecopy != null && !remotecopy.isEmpty()) {
 			for (Iterator iterator = remotecopy.iterator(); iterator.hasNext();) {
-				Map	serverfile = (Map) iterator.next();
-				String path = (String)serverfile.get("path");
-				long size = (Long)serverfile.get("size");
-				remotefiles.add(path  + "|" +size);
+				Map serverfile = (Map) iterator.next();
+				String path = (String) serverfile.get("path");
+				long size = (Long) serverfile.get("size");
+				remotefiles.add(path + "|" + size);
 			}
-			
-			//Remove all duplicate assets
-			List assetservercopy = (List)response.get("files");
+
+			// Remove all duplicate assets
+			List assetservercopy = (List) response.get("files");
 			List mixedcopy = new ArrayList();
-			if(remotecopy != null) { 
+			if (remotecopy != null) {
 				for (Iterator iterator2 = assetservercopy.iterator(); iterator2.hasNext();) {
 					Map clientfile = (Map) iterator2.next();
-					String path = (String)clientfile.get("path");
-					long size = (Long)clientfile.get("size");
-					if( !remotefiles.contains(path  + "|" +size) )
-					{
+					String path = (String) clientfile.get("path");
+					long size = (Long) clientfile.get("size");
+					if (!remotefiles.contains(path + "|" + size)) {
 						mixedcopy.add(clientfile);
 					}
 				}
 			}
-		
-			//Folders
-			response.put("files",mixedcopy);
+
+			// Folders
+			response.put("files", mixedcopy);
 		}
 		return response;
 	}
 
-	public void startCurrentFolder(MultiValued syncfolder, String inCategorypath, Long inFolderTotalsize, Integer inFolderTotalcount) {
+	public void startCurrentFolder(MultiValued syncfolder, String inCategorypath, Long inFolderTotalsize,
+			Integer inFolderTotalcount) {
 		// TODO Auto-generated method stub
-		MediaArchive archive = getMediaArchive();	
-		
+		MediaArchive archive = getMediaArchive();
+
 		Long currentfoldertotalcount = syncfolder.getLong("currentfoldertotalcount");
 		Long currentfoldertotalsize = syncfolder.getLong("currentfoldertotalsize");
 
 		syncfolder.setValue("currentfoldertotalsize", inFolderTotalsize);
 		syncfolder.setValue("currentfoldertotalcount", inFolderTotalcount);
 
-		syncfolder.setValue("desktopimportstatus", "sync-started"); 
-		
+		syncfolder.setValue("desktopimportstatus", "sync-started");
+
 		syncfolder.setValue("currentcategorypath", inCategorypath);
-		
+
 		archive.saveData("desktopsyncfolder", syncfolder);
-		
-		
+
 	}
-	
-	
-	
-	
+
 	/*
-	public void retrieveFilesFromClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid)
-	{
-		//Data collection = inMediaArchive.getData("librarycollection",inCollectionid);
-		LibraryCollection collection = getLibraryCollection(inMediaArchive, inCollectionid);
-		//ContentItem childtarget = inMediaArchive.getPageManager().getRepository().getStub(inFolder);
-		//utilities.exportCategoryTree(inMediaArchive, root, childtarget);
+	 * public void retrieveFilesFromClient(WebPageRequest inReq, MediaArchive
+	 * inMediaArchive, String inCollectionid)
+	 * {
+	 * //Data collection =
+	 * inMediaArchive.getData("librarycollection",inCollectionid);
+	 * LibraryCollection collection = getLibraryCollection(inMediaArchive,
+	 * inCollectionid);
+	 * //ContentItem childtarget =
+	 * inMediaArchive.getPageManager().getRepository().getStub(inFolder);
+	 * //utilities.exportCategoryTree(inMediaArchive, root, childtarget);
+	 * 
+	 * //Send the client a download request
+	 * Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName());
+	 * desktop.importCollection(inMediaArchive, collection); //This eventually will
+	 * cause saveCheckinRequest to get called by the desktop
+	 * 
+	 * }
+	 */
 
-		//Send the client a download request
-		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName());
-		desktop.importCollection(inMediaArchive, collection); //This eventually will cause saveCheckinRequest to get called by the desktop 
-
-	}
-	*/
-		
 }

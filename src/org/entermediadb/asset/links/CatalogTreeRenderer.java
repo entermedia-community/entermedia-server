@@ -11,25 +11,20 @@ import org.entermediadb.webui.tree.WebTree;
  * 
  * @author Eric Galluzzo
  */
-public class CatalogTreeRenderer extends HtmlTreeRenderer
-{
-	public CatalogTreeRenderer()
-	{
+public class CatalogTreeRenderer extends HtmlTreeRenderer {
+	public CatalogTreeRenderer() {
 		super();
 	}
 
-	public CatalogTreeRenderer( WebTree inWebTree )
-	{
-		super( inWebTree );
+	public CatalogTreeRenderer(WebTree inWebTree) {
+		super(inWebTree);
 	}
 
-	public String toName( Object inNode )
-	{
-		return ( (Category) inNode ).getName();
+	public String toName(Object inNode) {
+		return ((Category) inNode).getName();
 	}
 
-	public String toUrl( Object inNode )
-	{
+	public String toUrl(Object inNode) {
 		return getWebTree().getModel().getId(inNode);
 	}
 }

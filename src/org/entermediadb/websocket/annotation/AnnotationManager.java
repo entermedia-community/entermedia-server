@@ -37,303 +37,275 @@ import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.util.DateStorageUtil;
 
-public class AnnotationManager  {
+public class AnnotationManager {
 
 	private static final Log log = LogFactory.getLog(AnnotationManager.class);
 
-	 private static final Set<AnnotationConnection> connections =
-	            new CopyOnWriteArraySet<AnnotationConnection>();
-	 
-	 private static final String CACHENAME = "AnnotationServer";
-	 
-	 protected CacheManager fieldCacheManager;
-	 protected ModuleManager fieldModuleManager;
-	 protected SearcherManager fieldSearcherManager;
-	 protected JSONParser fieldJSONParser;
+	private static final Set<AnnotationConnection> connections = new CopyOnWriteArraySet<AnnotationConnection>();
 
-	 public JSONParser getJSONParser()
-	 {
+	private static final String CACHENAME = "AnnotationServer";
+
+	protected CacheManager fieldCacheManager;
+	protected ModuleManager fieldModuleManager;
+	protected SearcherManager fieldSearcherManager;
+	protected JSONParser fieldJSONParser;
+
+	public JSONParser getJSONParser() {
 		if (fieldJSONParser == null) {
 			fieldJSONParser = new JSONParser();
 		}
 		return fieldJSONParser;
-	 } 
+	}
 
-	 public SearcherManager getSearcherManager()
-	{
-		if (fieldSearcherManager == null)
-		{
-			fieldSearcherManager =  (SearcherManager)getModuleManager().getBean("searcherManager");
+	public SearcherManager getSearcherManager() {
+		if (fieldSearcherManager == null) {
+			fieldSearcherManager = (SearcherManager) getModuleManager().getBean("searcherManager");
 		}
 		return fieldSearcherManager;
 	}
-	public void setSearcherManager(SearcherManager inSearcherManager)
-	{
+
+	public void setSearcherManager(SearcherManager inSearcherManager) {
 		fieldSearcherManager = inSearcherManager;
 	}
-	public ModuleManager getModuleManager()
-	{
+
+	public ModuleManager getModuleManager() {
 		return fieldModuleManager;
 	}
-	public void setModuleManager(ModuleManager inModuleManager)
-	{
+
+	public void setModuleManager(ModuleManager inModuleManager) {
 		fieldModuleManager = inModuleManager;
 	}
-	public CacheManager getCacheManager()
-	{
-		if (fieldCacheManager == null)
-		{
-			fieldCacheManager = (CacheManager)getModuleManager().getBean("cacheManager");//new CacheManager();
+
+	public CacheManager getCacheManager() {
+		if (fieldCacheManager == null) {
+			fieldCacheManager = (CacheManager) getModuleManager().getBean("cacheManager");// new CacheManager();
 		}
 
 		return fieldCacheManager;
 	}
-	public void setCacheManager(CacheManager inCacheManager)
-	{
+
+	public void setCacheManager(CacheManager inCacheManager) {
 		fieldCacheManager = inCacheManager;
 	}
 
-    public void annotationModified(AnnotationConnection annotationConnection, JSONObject command, String message, String catalogid,  String inAssetId)
-	{
-    	//TODO: update our map
-    	JSONObject obj = loadAnnotatedAsset(catalogid,inAssetId);
-		List annotations = (List)obj.get("annotations");
-		JSONObject annotation = (JSONObject)command.get("annotationdata");
-		String id = (String)annotation.get("id");
-		for (Iterator iterator = annotations.iterator(); iterator.hasNext();)
-		{
+	public void annotationModified(AnnotationConnection annotationConnection, JSONObject command, String message,
+			String catalogid, String inAssetId) {
+		// TODO: update our map
+		JSONObject obj = loadAnnotatedAsset(catalogid, inAssetId);
+		List annotations = (List) obj.get("annotations");
+		JSONObject annotation = (JSONObject) command.get("annotationdata");
+		String id = (String) annotation.get("id");
+		for (Iterator iterator = annotations.iterator(); iterator.hasNext();) {
 			JSONObject existing = (JSONObject) iterator.next();
-			if( id.equals( existing.get("id") ) )
-			{
+			if (id.equals(existing.get("id"))) {
 				int loc = annotations.indexOf(existing);
 				annotations.remove(existing);
-				if( loc > -1)
-				{
+				if (loc > -1) {
 					annotations.add(loc, annotation);
-				}
-				else
-				{
+				} else {
 					annotations.add(annotation);
 				}
-				saveAnnotationData(catalogid,  inAssetId, annotation);
+				saveAnnotationData(catalogid, inAssetId, annotation);
 				break;
 			}
 		}
-    	//getCacheManager().put(CACHENAME, catalogid + inCollectionId + inAssetId, command.get("annotat"));
-		for (Iterator iterator = connections.iterator(); iterator.hasNext();)
-		{
+		// getCacheManager().put(CACHENAME, catalogid + inCollectionId + inAssetId,
+		// command.get("annotat"));
+		for (Iterator iterator = connections.iterator(); iterator.hasNext();) {
 			AnnotationConnection annotationConnection2 = (AnnotationConnection) iterator.next();
 			annotationConnection2.sendMessage(command);
 		}
 	}
-    
-	public void annotationAdded(AnnotationConnection annotationConnection, JSONObject command, String message, String catalogid,  String inAssetId)
-	{
-		JSONObject obj = loadAnnotatedAsset(catalogid,inAssetId);
-		Collection annotations = (Collection)obj.get("annotations");
-		
-		JSONObject annotation = (JSONObject)command.get("annotationdata");
+
+	public void annotationAdded(AnnotationConnection annotationConnection, JSONObject command, String message,
+			String catalogid, String inAssetId) {
+		JSONObject obj = loadAnnotatedAsset(catalogid, inAssetId);
+		Collection annotations = (Collection) obj.get("annotations");
+
+		JSONObject annotation = (JSONObject) command.get("annotationdata");
 		annotations.add(annotation);
-		
-		saveAnnotationData(catalogid,inAssetId, annotation);
-		
-		for (Iterator iterator = connections.iterator(); iterator.hasNext();)
-		{
+
+		saveAnnotationData(catalogid, inAssetId, annotation);
+
+		for (Iterator iterator = connections.iterator(); iterator.hasNext();) {
 			AnnotationConnection annotationConnection2 = (AnnotationConnection) iterator.next();
 			annotationConnection2.sendMessage(command);
 		}
 	}
-    
-	protected void saveAnnotationData(String inCatalogid,  String inAssetId, JSONObject inAnnotation)
-	{
-		String annotationid = (String)inAnnotation.get("id");
-		
+
+	protected void saveAnnotationData(String inCatalogid, String inAssetId, JSONObject inAnnotation) {
+		String annotationid = (String) inAnnotation.get("id");
+
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogid, "annotation");
-		Data data = (Data)searcher.searchById(annotationid);
-		if( data == null)
-		{
+		Data data = (Data) searcher.searchById(annotationid);
+		if (data == null) {
 			data = searcher.createNewData();
 		}
-		
+
 		data.setProperty("id", annotationid);
 		data.setProperty("assetid", inAssetId);
-		data.setProperty("date", (String)inAnnotation.get("date"));
-		data.setProperty("user", (String)inAnnotation.get("user"));
-		data.setProperty("comment", (String)inAnnotation.get("comment"));
-		data.setProperty("color", (String)inAnnotation.get("color"));
-		
-		JSONArray array = (JSONArray)inAnnotation.get("fabricObjects");
-		if( array != null)
-		{
+		data.setProperty("date", (String) inAnnotation.get("date"));
+		data.setProperty("user", (String) inAnnotation.get("user"));
+		data.setProperty("comment", (String) inAnnotation.get("comment"));
+		data.setProperty("color", (String) inAnnotation.get("color"));
+
+		JSONArray array = (JSONArray) inAnnotation.get("fabricObjects");
+		if (array != null) {
 			data.setProperty("fabricObjects", array.toJSONString());
 		}
-		//user: null,
-//		comment: "",
-//		date : [],
-//		fabricObjects: [], 
-//		assetid: null
+		// user: null,
+		// comment: "",
+		// date : [],
+		// fabricObjects: [],
+		// assetid: null
 		searcher.saveData(data, null);
-		
+
 	}
-	public void annotationRemoved(AnnotationConnection annotationConnection, JSONObject command, String message, String catalogid,  String inAssetId)
-	{
-		JSONObject obj = loadAnnotatedAsset(catalogid,inAssetId);
-		Collection annotations = (Collection)obj.get("annotations");
-		
-		String removed = (String)command.get("annotationid");
-		for (Iterator iterator = annotations.iterator(); iterator.hasNext();)
-		{
+
+	public void annotationRemoved(AnnotationConnection annotationConnection, JSONObject command, String message,
+			String catalogid, String inAssetId) {
+		JSONObject obj = loadAnnotatedAsset(catalogid, inAssetId);
+		Collection annotations = (Collection) obj.get("annotations");
+
+		String removed = (String) command.get("annotationid");
+		for (Iterator iterator = annotations.iterator(); iterator.hasNext();) {
 			JSONObject existing = (JSONObject) iterator.next();
-			String annotationid = (String)existing.get("id");
-			if( removed.equals( annotationid ) )
-			{
+			String annotationid = (String) existing.get("id");
+			if (removed.equals(annotationid)) {
 				annotations.remove(existing);
 				break;
 			}
 		}
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "annotation");
-		Data data = (Data)searcher.searchById(removed);
+		Data data = (Data) searcher.searchById(removed);
 		searcher.delete(data, null);
-		for (Iterator iterator = connections.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = connections.iterator(); iterator.hasNext();) {
 			AnnotationConnection annotationConnection2 = (AnnotationConnection) iterator.next();
 			annotationConnection2.sendMessage(command);
 		}
 	}
-	
-	
-	public void loadAnnotatedAsset(AnnotationConnection annotationConnection, String catalogid, String inAssetId)
-	{
-		JSONObject newcommand = new JSONObject(); //Get this from our map of annotatedAssets
+
+	public void loadAnnotatedAsset(AnnotationConnection annotationConnection, String catalogid, String inAssetId) {
+		JSONObject newcommand = new JSONObject(); // Get this from our map of annotatedAssets
 		newcommand.put("command", "asset.loaded");
-		
+
 		JSONObject asset = loadAnnotatedAsset(catalogid, inAssetId);
 		newcommand.put("annotatedAssetJson", asset);
-		
+
 		annotationConnection.sendMessage(newcommand);
 	}
-	public JSONObject loadAnnotatedAsset(String inCatalogId,  String inAssetId)
-	{
-    	JSONObject obj = (JSONObject)getCacheManager().get(CACHENAME, inCatalogId + inAssetId);
-		if( obj == null)
-		{
-			//Goto database and load it?
+
+	public JSONObject loadAnnotatedAsset(String inCatalogId, String inAssetId) {
+		JSONObject obj = (JSONObject) getCacheManager().get(CACHENAME, inCatalogId + inAssetId);
+		if (obj == null) {
+			// Goto database and load it?
 			obj = new JSONObject();
 			JSONObject assetData = new JSONObject();
-			assetData.put("id",inAssetId);
+			assetData.put("id", inAssetId);
 			Data asset = getSearcherManager().getData(inCatalogId, "asset", inAssetId);
-			if( asset == null)
-			{
+			if (asset == null) {
 				return null;
 			}
-			assetData.put("sourcepath",asset.getSourcePath());
+			assetData.put("sourcepath", asset.getSourcePath());
 			assetData.put("name", asset.getName());
-			obj.put("assetData",assetData);
-			List annotations = loadAnnotations(inCatalogId,inAssetId);
+			obj.put("assetData", assetData);
+			List annotations = loadAnnotations(inCatalogId, inAssetId);
 			obj.put("annotations", annotations);
-			
+
 			obj.put("users", new ArrayList());
 			obj.put("annotationIndex", new Integer(1));
 			getCacheManager().put(CACHENAME, inCatalogId + inAssetId, obj);
 		}
 		return obj;
 	}
-	protected List loadAnnotations(String inCatalogId,  String inAssetId)
-	{
+
+	protected List loadAnnotations(String inCatalogId, String inAssetId) {
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "annotation");
 		HitTracker hits = searcher.query().match("assetid", inAssetId).search();
-		
+
 		List list = new ArrayList();
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 			Data annotation = (Data) iterator.next();
 			JSONObject json = new JSONObject();
-			//json.put("id", annotation.getId() );
-			for (Iterator iterator2 = annotation.keySet().iterator(); iterator2.hasNext();)
-			{
+			// json.put("id", annotation.getId() );
+			for (Iterator iterator2 = annotation.keySet().iterator(); iterator2.hasNext();) {
 				String key = (String) iterator2.next();
 				String value = annotation.get(key);
-				if( value != null)
-				{
-					if( "date".equals(key) )
-					{
+				if (value != null) {
+					if ("date".equals(key)) {
 						value = DateStorageUtil.getStorageUtil().checkFormat(value);
 					}
 				}
-				json.put(key,value);
+				json.put(key, value);
 			}
-			String obj = (String)annotation.get("fabricObjects");
-			if( obj != null)
-			{
-				Collection parsed = (List)getJSONParser().parse(obj);
+			String obj = (String) annotation.get("fabricObjects");
+			if (obj != null) {
+				Collection parsed = (List) getJSONParser().parse(obj);
 				json.put("fabricObjects", parsed);
 			}
-//			json.put("comment", annotation.get("comment") );
-//			//indexCount: null,
-//			//user: null,
-//			comment: "",
-//			date : [],
-//			fabricObjects: [], 
-//			assetid: null
+			// json.put("comment", annotation.get("comment") );
+			// //indexCount: null,
+			// //user: null,
+			// comment: "",
+			// date : [],
+			// fabricObjects: [],
+			// assetid: null
 			list.add(json);
 		}
-		
+
 		return list;
 	}
-	public void removeConnection(AnnotationConnection inAnnotationConnection)
-	{
-		for (Iterator iterator = connections.iterator(); iterator.hasNext();)
-		{
+
+	public void removeConnection(AnnotationConnection inAnnotationConnection) {
+		for (Iterator iterator = connections.iterator(); iterator.hasNext();) {
 			AnnotationConnection annotationConnection2 = (AnnotationConnection) iterator.next();
-			
-			if (inAnnotationConnection == annotationConnection2)
-			{
+
+			if (inAnnotationConnection == annotationConnection2) {
 				connections.remove(annotationConnection2);
 				break;
 			}
 		}
 	}
-	public void addConnection(AnnotationConnection inConnection)
-	{
+
+	public void addConnection(AnnotationConnection inConnection) {
 		// TODO Auto-generated method stub
 		connections.add(inConnection);
 	}
 
-	public void annotationsRemoved(AnnotationConnection annotationConnection, JSONObject command, String message, String catalogid,  String inAssetId)
-	{
+	public void annotationsRemoved(AnnotationConnection annotationConnection, JSONObject command, String message,
+			String catalogid, String inAssetId) {
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "annotation");
 		HitTracker annotations = searcher.query().exact("assetid", inAssetId).search();
-		
+
 		searcher.deleteAll(annotations, null);
 		getCacheManager().remove(CACHENAME, catalogid + inAssetId);
-//		for (Iterator iterator = connections.iterator(); iterator.hasNext();)
-//		{
-//			AnnotationConnection annotationConnection2 = (AnnotationConnection) iterator.next();
-//			annotationConnection2.sendMessage(command);
-//		}
+		// for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+		// {
+		// AnnotationConnection annotationConnection2 = (AnnotationConnection)
+		// iterator.next();
+		// annotationConnection2.sendMessage(command);
+		// }
 	}
 
-	
-}    
-//    private static class EchoMessageHandlerBinary
-//            implements MessageHandler.Partial<ByteBuffer> {
+}
+// private static class EchoMessageHandlerBinary
+// implements MessageHandler.Partial<ByteBuffer> {
 //
-//        private final RemoteEndpoint.Basic remoteEndpointBasic;
+// private final RemoteEndpoint.Basic remoteEndpointBasic;
 //
-//        private EchoMessageHandlerBinary(RemoteEndpoint.Basic remoteEndpointBasic) {
-//            this.remoteEndpointBasic = remoteEndpointBasic;
-//        }
+// private EchoMessageHandlerBinary(RemoteEndpoint.Basic remoteEndpointBasic) {
+// this.remoteEndpointBasic = remoteEndpointBasic;
+// }
 //
-//        @Override
-//        public void onMessage(ByteBuffer message, boolean last) {
-//            try {
-//                if (remoteEndpointBasic != null) {
-//                    remoteEndpointBasic.sendBinary(message, last);
-//                }
-//            } catch (IOException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
+// @Override
+// public void onMessage(ByteBuffer message, boolean last) {
+// try {
+// if (remoteEndpointBasic != null) {
+// remoteEndpointBasic.sendBinary(message, last);
+// }
+// } catch (IOException e) {
+// // TODO Auto-generated catch block
+// e.printStackTrace();
+// }
+// }
+// }

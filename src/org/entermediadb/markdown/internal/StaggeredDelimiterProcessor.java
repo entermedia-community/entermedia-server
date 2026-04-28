@@ -7,9 +7,12 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 /**
- * An implementation of DelimiterProcessor that dispatches all calls to two or more other DelimiterProcessors
- * depending on the length of the delimiter run. All child DelimiterProcessors must have different minimum
- * lengths. A given delimiter run is dispatched to the child with the largest acceptable minimum length. If no
+ * An implementation of DelimiterProcessor that dispatches all calls to two or
+ * more other DelimiterProcessors
+ * depending on the length of the delimiter run. All child DelimiterProcessors
+ * must have different minimum
+ * lengths. A given delimiter run is dispatched to the child with the largest
+ * acceptable minimum length. If no
  * child is applicable, the one with the largest minimum length is chosen.
  */
 class StaggeredDelimiterProcessor implements DelimiterProcessor {
@@ -21,7 +24,6 @@ class StaggeredDelimiterProcessor implements DelimiterProcessor {
     StaggeredDelimiterProcessor(char delim) {
         this.delim = delim;
     }
-
 
     @Override
     public char getOpeningCharacter() {
@@ -51,7 +53,8 @@ class StaggeredDelimiterProcessor implements DelimiterProcessor {
                 added = true;
                 break;
             } else if (len == pLen) {
-                throw new IllegalArgumentException("Cannot add two delimiter processors for char '" + delim + "' and minimum length " + len + "; conflicting processors: " + p + ", " + dp);
+                throw new IllegalArgumentException("Cannot add two delimiter processors for char '" + delim
+                        + "' and minimum length " + len + "; conflicting processors: " + p + ", " + dp);
             }
         }
         if (!added) {

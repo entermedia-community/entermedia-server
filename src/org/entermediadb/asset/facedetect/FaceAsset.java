@@ -4,38 +4,37 @@ import org.entermediadb.asset.Asset;
 import org.openedit.Data;
 import org.openedit.data.ValuesMap;
 
-public class FaceAsset
-{
-	public Asset getAsset()
-	{
+public class FaceAsset {
+	public Asset getAsset() {
 		return fieldAsset;
 	}
-	protected void setAsset(Asset inAsset)
-	{
+
+	protected void setAsset(Asset inAsset) {
 		fieldAsset = inAsset;
 	}
+
 	protected Asset fieldAsset;
 	protected ValuesMap fieldFaceLocationData;
-	
-	public ValuesMap getFaceLocationData()
-	{
+
+	public ValuesMap getFaceLocationData() {
 		return fieldFaceLocationData;
 	}
-	protected void setFaceLocationData(ValuesMap inFaceLocationData)
-	{
+
+	protected void setFaceLocationData(ValuesMap inFaceLocationData) {
 		fieldFaceLocationData = inFaceLocationData;
 	}
+
 	protected Data fieldFaceProfileGroup;
-	public Data getFaceProfileGroup()
-	{
+
+	public Data getFaceProfileGroup() {
 		return fieldFaceProfileGroup;
 	}
-	protected void setFaceProfileGroup(Data inFaceProfileGroup)
-	{
+
+	protected void setFaceProfileGroup(Data inFaceProfileGroup) {
 		fieldFaceProfileGroup = inFaceProfileGroup;
 	}
-	public String getFaceProfileGroupId()
-	{
+
+	public String getFaceProfileGroupId() {
 		return getFaceProfileGroup().getId();
 	}
 

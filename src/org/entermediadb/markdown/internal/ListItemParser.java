@@ -13,7 +13,8 @@ public class ListItemParser extends AbstractBlockParser {
     private final ListItem block = new ListItem();
 
     /**
-     * Minimum number of columns that the content has to be indented (relative to the containing block) to be part of
+     * Minimum number of columns that the content has to be indented (relative to
+     * the containing block) to be part of
      * this list item.
      */
     private int contentIndent;
@@ -36,7 +37,8 @@ public class ListItemParser extends AbstractBlockParser {
         if (hadBlankLine) {
             // We saw a blank line in this list item, that means the list block is loose.
             //
-            // spec: if any of its constituent list items directly contain two block-level elements with a blank line
+            // spec: if any of its constituent list items directly contain two block-level
+            // elements with a blank line
             // between them
             Block parent = block.getParent();
             if (parent instanceof ListBlock) {
@@ -59,7 +61,8 @@ public class ListItemParser extends AbstractBlockParser {
                 return BlockContinue.none();
             } else {
                 Block activeBlock = state.getActiveBlockParser().getBlock();
-                // If the active block is a code block, blank lines in it should not affect if the list is tight.
+                // If the active block is a code block, blank lines in it should not affect if
+                // the list is tight.
                 hadBlankLine = activeBlock instanceof Paragraph || activeBlock instanceof ListItem;
                 return BlockContinue.atIndex(state.getNextNonSpaceIndex());
             }
@@ -68,7 +71,8 @@ public class ListItemParser extends AbstractBlockParser {
         if (state.getIndent() >= contentIndent) {
             return BlockContinue.atColumn(state.getColumn() + contentIndent);
         } else {
-            // Note: We'll hit this case for lazy continuation lines, they will get added later.
+            // Note: We'll hit this case for lazy continuation lines, they will get added
+            // later.
             return BlockContinue.none();
         }
     }

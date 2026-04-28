@@ -12,7 +12,8 @@ import java.util.Set;
  */
 public class EntityInlineParser implements InlineContentParser {
 
-    private static final AsciiMatcher hex = AsciiMatcher.builder().range('0', '9').range('A', 'F').range('a', 'f').build();
+    private static final AsciiMatcher hex = AsciiMatcher.builder().range('0', '9').range('A', 'F').range('a', 'f')
+            .build();
     private static final AsciiMatcher dec = AsciiMatcher.builder().range('0', '9').build();
     private static final AsciiMatcher entityStart = AsciiMatcher.builder().range('A', 'Z').range('a', 'z').build();
     private static final AsciiMatcher entityContinue = entityStart.newBuilder().range('0', '9').build();
@@ -53,12 +54,11 @@ public class EntityInlineParser implements InlineContentParser {
 
     private ParsedInline entity(Scanner scanner, Position start) {
         String text = scanner.getSource(start, scanner.position()).getContent();
-        
-        if( entities == null)
-    	{
-    		entities = new Html5Entities();
-    	}
-        
+
+        if (entities == null) {
+            entities = new Html5Entities();
+        }
+
         return ParsedInline.of(new Text(entities.entityToString(text)), scanner.position());
     }
 

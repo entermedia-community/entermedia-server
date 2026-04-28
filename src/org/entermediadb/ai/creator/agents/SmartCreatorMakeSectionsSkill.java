@@ -9,24 +9,23 @@ import org.entermediadb.ai.creator.SmartCreatorManager;
 import org.entermediadb.ai.llm.AgentContext;
 import org.openedit.Data;
 
-public class SmartCreatorMakeSectionsSkill extends BaseSkill
-{
+public class SmartCreatorMakeSectionsSkill extends BaseSkill {
 
-	public SmartCreatorManager getSmartCreatorManager()
-	{
-		SmartCreatorManager smartCreatorManager = (SmartCreatorManager) getMediaArchive().getBean("smartCreatorManager");
+	public SmartCreatorManager getSmartCreatorManager() {
+		SmartCreatorManager smartCreatorManager = (SmartCreatorManager) getMediaArchive()
+				.getBean("smartCreatorManager");
 		return smartCreatorManager;
 	}
+
 	@Override
-	public void process(AgentContext inContext)
-	{
+	public void process(AgentContext inContext) {
 		Data module = inContext.getCurrentEntityModule();
 		Data entity = inContext.getCurrentEntity();
-		//getSmartCreatorManager().populateSectionsWithContents(inContext);
+		// getSmartCreatorManager().populateSectionsWithContents(inContext);
 		AiSmartCreatorSteps instructions = inContext.getAiSmartCreatorSteps();
 		getSmartCreatorManager().createSections(inContext, instructions);
 
 		super.process(inContext);
-		
+
 	}
 }

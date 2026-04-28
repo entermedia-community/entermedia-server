@@ -21,7 +21,6 @@ import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.filesystem.FileItem;
 
-
 public class CssGenerator extends TempFileGenerator {
     private static Log log = LogFactory.getLog(CssGenerator.class);
     private PageManager pageManager;
@@ -62,11 +61,10 @@ public class CssGenerator extends TempFileGenerator {
             }
         }
 
-    	boolean cached = checkCache(inContext, mostRecentMod, req, res);
-		if( cached )
-		{
-			return;
-		}
+        boolean cached = checkCache(inContext, mostRecentMod, req, res);
+        if (cached) {
+            return;
+        }
 
         // Check if we need to regenerate
         Long cachedTotal = cachedSizeCounts.get(inPage.getPath());
@@ -78,29 +76,28 @@ public class CssGenerator extends TempFileGenerator {
                 log.error("Error generating CSS", e);
             }
         }
-        try
-		{
-			serveCss(inPage, mostRecentMod, inOut, res);
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
+        try {
+            serveCss(inPage, mostRecentMod, inOut, res);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
             log.error("Error serving CSS", e);
 
-		}
-
+        }
 
     }
 
-    protected void saveLocally(List<String> cssPaths, Page inPage, Output inOut, long mostRecentMod) throws IOException {
+    protected void saveLocally(List<String> cssPaths, Page inPage, Output inOut, long mostRecentMod)
+            throws IOException {
         synchronized (inPage) {
             Page tempFile = pageManager.getPage(inPage.getContentItem().getAbsolutePath() + ".tmp.css");
-            Writer writer = new OutputStreamWriter(tempFile.getContentItem().getOutputStream(), inPage.getCharacterEncoding());
+            Writer writer = new OutputStreamWriter(tempFile.getContentItem().getOutputStream(),
+                    inPage.getCharacterEncoding());
 
             for (String path : cssPaths) {
                 Page cssFile = pageManager.getPage(path);
                 if (cssFile.exists()) {
-                    try (Reader reader = new InputStreamReader(cssFile.getInputStream(), cssFile.getCharacterEncoding())) {
+                    try (Reader reader = new InputStreamReader(cssFile.getInputStream(),
+                            cssFile.getCharacterEncoding())) {
                         writer.write("/* CSS Source: " + path + " */\n");
                         getOutputFiller().fill(reader, writer);
                         writer.write("\n");
@@ -123,7 +120,7 @@ public class CssGenerator extends TempFileGenerator {
 
     protected void serveCss(Page inPage, long mostRecentMod, Output inOut, HttpServletResponse res) throws IOException {
         res.setContentType("text/css");
-        //res.setDateHeader("Last-Modified", mostRecentMod);
+        // res.setDateHeader("Last-Modified", mostRecentMod);
         setHeaders(res, mostRecentMod);
 
         try (Reader reader = new InputStreamReader(inPage.getInputStream(), inPage.getCharacterEncoding())) {

@@ -29,24 +29,20 @@ import org.openedit.repository.ContentItem;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.ZipUtil;
 
-public class OrderZipGenerator extends BaseGenerator
-{
+public class OrderZipGenerator extends BaseGenerator {
 
 	private static final Log log = LogFactory.getLog(OrderZipGenerator.class);
 	protected ModuleManager fieldModuleManager;
 
-	public ModuleManager getModuleManager()
-	{
+	public ModuleManager getModuleManager() {
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager moduleManager)
-	{
+	public void setModuleManager(ModuleManager moduleManager) {
 		fieldModuleManager = moduleManager;
 	}
 
-	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
-	{
+	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException {
 		MediaArchiveModule archiveModule = (MediaArchiveModule) getModuleManager().getBean("MediaArchiveModule");
 		MediaArchive archive = archiveModule.getMediaArchive(inReq);
 
@@ -54,101 +50,99 @@ public class OrderZipGenerator extends BaseGenerator
 		Order order = null;
 		try {
 
-			
 			String orderid = inReq.getRequestParameter("orderid");
-			
- 
-					
+
 			order = archive.getOrderManager().loadOrder(archive.getCatalogId(), orderid);
-			
+
 			String itemsstatus = null;
-			
-			if (order.getValue("ordertype").equals("checkout") )
-			{
+
+			if (order.getValue("ordertype").equals("checkout")) {
 				itemsstatus = "approved";
 			}
-			
-			HitTracker orderitems = archive.getOrderManager().findApprovedOrderItems(inReq, archive.getCatalogId(), orderid, itemsstatus);
+
+			HitTracker orderitems = archive.getOrderManager().findApprovedOrderItems(inReq, archive.getCatalogId(),
+					orderid, itemsstatus);
 			String catalogid = archive.getCatalogId();
-			
+
 			ZipUtil util = new ZipUtil();
 			zos = new ZipOutputStream(inOut.getStream());
 			zos.setLevel(1); // for speed since these are jpegs
 			OutputFiller filler = new OutputFiller();
 			List<Asset> missing = new ArrayList<Asset>();
 			List<Asset> okAssets = new ArrayList<Asset>();
-			
-			Set<String> fileset = new HashSet<String>();//set of unique filenames
-			StringBuilder buf = new StringBuilder();//some accounting of filenames that are renamed
-			
+
+			Set<String> fileset = new HashSet<String>();// set of unique filenames
+			StringBuilder buf = new StringBuilder();// some accounting of filenames that are renamed
+
 			for (Iterator iterator = orderitems.iterator(); iterator.hasNext();) {
 				Data orderitem = (Data) iterator.next();
-				
-				Data preset = archive.getSearcherManager().getData(catalogid, "convertpreset", orderitem.get("presetid"));
-				if(preset == null && "original".equals(orderitem.get("presetid"))){
+
+				Data preset = archive.getSearcherManager().getData(catalogid, "convertpreset",
+						orderitem.get("presetid"));
+				if (preset == null && "original".equals(orderitem.get("presetid"))) {
 					preset = archive.getSearcherManager().getData(catalogid, "convertpreset", "0");
 				}
-//				
-//				String queid = orderitem.get("publishqueueid");
-//				if( queid == null )
-//				{
-//					log.error("publishqueueid should never be null, 0 for browser");
-//					continue;
-//				}
-				
+				//
+				// String queid = orderitem.get("publishqueueid");
+				// if( queid == null )
+				// {
+				// log.error("publishqueueid should never be null, 0 for browser");
+				// continue;
+				// }
+
 				Asset asset = archive.getAssetBySourcePath(orderitem.get("assetsourcepath"));
-				
+
 				ContentItem target = null;
 				String filename = orderitem.get("itemexportname");
-				
-				if(filename == null){
+
+				if (filename == null) {
 					filename = orderitem.get("itemfilepath");
 				}
-				if(filename == null){
+				if (filename == null) {
 					filename = asset.getPrimaryFile();
 				}
-				if(filename == null){
-					throw new OpenEditException("Filename was not set on publish task:  " + orderitem.getId());					
+				if (filename == null) {
+					throw new OpenEditException("Filename was not set on publish task:  " + orderitem.getId());
 				}
-				//handle duplicate filenames
-				if (fileset.contains(filename)){
+				// handle duplicate filenames
+				if (fileset.contains(filename)) {
 					buf.append(filename).append("\t").append(asset.getSourcePath()).append("\t");
 					String filetype = "";
-					if (filename.contains(".")){
+					if (filename.contains(".")) {
 						filetype = filename.substring(filename.lastIndexOf("."));
-						filename = filename.substring(0,filename.lastIndexOf("."));
+						filename = filename.substring(0, filename.lastIndexOf("."));
 					}
 					filename = new StringBuilder()
-						.append(filename).append("_")
-						.append(String.valueOf( (int) (Math.random() * 1000)))
-						.append(filetype)
-						.toString();
+							.append(filename).append("_")
+							.append(String.valueOf((int) (Math.random() * 1000)))
+							.append(filetype)
+							.toString();
 					buf.append(filename).append("\n");
 					fileset.add(filename);
 				} else {
 					fileset.add(filename);
 				}
-				if(preset.getId().equals("0")){
-					 target = archive.getOriginalContent(asset);
-					 util.addTozip(target,filename , zos);
-				}
-				else{
-					String pathToFile = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + orderitem.get("assetsourcepath") + "/" + preset.get("generatedoutputfile");
+				if (preset.getId().equals("0")) {
+					target = archive.getOriginalContent(asset);
+					util.addTozip(target, filename, zos);
+				} else {
+					String pathToFile = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/"
+							+ orderitem.get("assetsourcepath") + "/" + preset.get("generatedoutputfile");
 					target = archive.getPageManager().getContent(pathToFile);
-					util.addTozip(target,filename , zos);
+					util.addTozip(target, filename, zos);
 				}
-			 	// <a class="btn small" href="$home/${applicationid}/views/modules/asset/downloads/generated/${asset.sourcepath}/${convertpreset.outputfile}/${publishqueue.exportname}">Download</a>
-				
+				// <a class="btn small"
+				// href="$home/${applicationid}/views/modules/asset/downloads/generated/${asset.sourcepath}/${convertpreset.outputfile}/${publishqueue.exportname}">Download</a>
+
 			}
-			
-			if (!buf.toString().isEmpty()){
-				util.addTozip("Original Name\tSource Path\tNew Name\n"+buf.toString(),"files.txt",zos);
+
+			if (!buf.toString().isEmpty()) {
+				util.addTozip("Original Name\tSource Path\tNew Name\n" + buf.toString(), "files.txt", zos);
 			}
-			
-			
+
 		} catch (IOException e) {
 			throw new OpenEditException(e);
-		} finally{
+		} finally {
 			try {
 				zos.close();
 			} catch (IOException e) {
@@ -156,21 +150,18 @@ public class OrderZipGenerator extends BaseGenerator
 				e.printStackTrace();
 			}
 		}
-		archive.getOrderManager().changeStatus(order,"complete","complete");
-		
-		
-		
-//		ZipGroup zip = new ZipGroup();
-//		zip.setEnterMedia(archiveModule.getEnterMedia(inReq.findValue("applicationid")));
-//		zip.setUser(inReq.getUser());
-//		zip.zipItems(assets, inOut.getStream());
+		archive.getOrderManager().changeStatus(order, "complete", "complete");
+
+		// ZipGroup zip = new ZipGroup();
+		// zip.setEnterMedia(archiveModule.getEnterMedia(inReq.findValue("applicationid")));
+		// zip.setUser(inReq.getUser());
+		// zip.zipItems(assets, inOut.getStream());
 
 	}
 
-	public boolean canGenerate(WebPageRequest inReq)
-	{
-	
-		boolean ok =  inReq.getPage().getMimeType().equals("application/x-zip");
+	public boolean canGenerate(WebPageRequest inReq) {
+
+		boolean ok = inReq.getPage().getMimeType().equals("application/x-zip");
 		return ok;
 	}
 

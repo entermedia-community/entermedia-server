@@ -18,16 +18,16 @@ import java.util.List;
 import org.openedit.data.BaseData;
 import org.openedit.util.strainer.Filter;
 
-
 /**
- * This class represents a node in a <code>{@link DefaultWebTreeModel}</code>. It has the
- * attributes most people will need: name, URL, and icon URL.  Most of the methods in
+ * This class represents a node in a <code>{@link DefaultWebTreeModel}</code>.
+ * It has the
+ * attributes most people will need: name, URL, and icon URL. Most of the
+ * methods in
  * <code>DefaultWebTreeModel</code> delegate to this class.
  *
  * @author Eric Galluzzo
  */
-public class DefaultWebTreeNode extends BaseData
-{
+public class DefaultWebTreeNode extends BaseData {
 	protected static int staticNextID = 0;
 	protected List fieldChildren;
 	protected String fieldIconURL;
@@ -35,20 +35,18 @@ public class DefaultWebTreeNode extends BaseData
 	protected Filter fieldFilter;
 	protected DefaultWebTreeNode fieldParent;
 	protected String fieldIconSet;
-	
+
 	/**
 	 * Create a tree node with the given name, without an icon or link.
 	 *
 	 * @param inName DOCUMENT ME!
 	 */
-	public DefaultWebTreeNode(String inName)
-	{
+	public DefaultWebTreeNode(String inName) {
 		setName(inName);
-		setId( String.valueOf(staticNextID++) );
+		setId(String.valueOf(staticNextID++));
 	}
 
-	public DefaultWebTreeNode(String inId, String inName)
-	{
+	public DefaultWebTreeNode(String inId, String inName) {
 		setName(inName);
 		setId(inId);
 	}
@@ -60,8 +58,7 @@ public class DefaultWebTreeNode extends BaseData
 	 *
 	 * @return
 	 */
-	public DefaultWebTreeNode getChild(int inIndex)
-	{
+	public DefaultWebTreeNode getChild(int inIndex) {
 		return (DefaultWebTreeNode) getChildren().get(inIndex);
 	}
 
@@ -70,8 +67,7 @@ public class DefaultWebTreeNode extends BaseData
 	 *
 	 * @return
 	 */
-	public int getChildCount()
-	{
+	public int getChildCount() {
 		return getChildren().size();
 	}
 
@@ -80,10 +76,8 @@ public class DefaultWebTreeNode extends BaseData
 	 *
 	 * @return Returns a List
 	 */
-	public List getChildren()
-	{
-		if (fieldChildren == null)
-		{
+	public List getChildren() {
+		if (fieldChildren == null) {
 			fieldChildren = new ArrayList();
 		}
 
@@ -91,20 +85,19 @@ public class DefaultWebTreeNode extends BaseData
 	}
 
 	/**
-	 * Gets the ID of this node, which is unique within the VM for the life of the VM (unless you
+	 * Gets the ID of this node, which is unique within the VM for the life of the
+	 * VM (unless you
 	 * do weird things with classloaders).
 	 *
 	 * @return Returns an int
 	 */
-
 
 	/**
 	 * Sets the icon URL.
 	 *
 	 * @param iconURL The icon URL to set
 	 */
-	public void setIconURL(String iconURL)
-	{
+	public void setIconURL(String iconURL) {
 		fieldIconURL = iconURL;
 	}
 
@@ -113,8 +106,7 @@ public class DefaultWebTreeNode extends BaseData
 	 *
 	 * @return Returns a String
 	 */
-	public String getIconURL()
-	{
+	public String getIconURL() {
 		return fieldIconURL;
 	}
 
@@ -125,8 +117,7 @@ public class DefaultWebTreeNode extends BaseData
 	 *
 	 * @return The index, or -1 if the child could not be found
 	 */
-	public int getIndexOfChild(DefaultWebTreeNode inChild)
-	{
+	public int getIndexOfChild(DefaultWebTreeNode inChild) {
 		return getChildren().indexOf(inChild);
 	}
 
@@ -135,8 +126,7 @@ public class DefaultWebTreeNode extends BaseData
 	 *
 	 * @param inLeaf DOCUMENT ME!
 	 */
-	public void setLeaf(boolean inLeaf)
-	{
+	public void setLeaf(boolean inLeaf) {
 		fieldLeaf = inLeaf;
 	}
 
@@ -145,34 +135,25 @@ public class DefaultWebTreeNode extends BaseData
 	 *
 	 * @return
 	 */
-	public boolean isLeaf()
-	{
+	public boolean isLeaf() {
 		return fieldLeaf;
 	}
-
 
 	/**
 	 * Gets the URL.
 	 *
 	 * @return Returns a String
 	 */
-	public String getURL()
-	{
-		if ( getParent() != null)
-		{
-			String p =getParent().getURL();
-			if ( p.endsWith("/"))
-			{
-				return  p + getName();
+	public String getURL() {
+		if (getParent() != null) {
+			String p = getParent().getURL();
+			if (p.endsWith("/")) {
+				return p + getName();
+			} else {
+				return p + "/" + getName();
 			}
-			else
-			{
-				return  p + "/" + getName();
-			}
-		}
-		else
-		{
-			return getName(); //the root does not need a special URL since it is part of the base path
+		} else {
+			return getName(); // the root does not need a special URL since it is part of the base path
 		}
 	}
 
@@ -181,8 +162,7 @@ public class DefaultWebTreeNode extends BaseData
 	 *
 	 * @param inNode DOCUMENT ME!
 	 */
-	public void addChild(DefaultWebTreeNode inNode)
-	{
+	public void addChild(DefaultWebTreeNode inNode) {
 		getChildren().add(inNode);
 		inNode.setParent(this);
 	}
@@ -190,40 +170,35 @@ public class DefaultWebTreeNode extends BaseData
 	/**
 	 * DOCME
 	 */
-	public void reloadChildren()
-	{
-		//nothing to do?
+	public void reloadChildren() {
+		// nothing to do?
 	}
-	public DefaultWebTreeNode getParent()
-	{
+
+	public DefaultWebTreeNode getParent() {
 		return fieldParent;
 	}
-	public void setParent(DefaultWebTreeNode inParent)
-	{
+
+	public void setParent(DefaultWebTreeNode inParent) {
 		fieldParent = inParent;
 	}
 
-	public Filter getFilter()
-	{
+	public Filter getFilter() {
 		return fieldFilter;
 	}
 
-	public void setFilter(Filter inFilter)
-	{
+	public void setFilter(Filter inFilter) {
 		fieldFilter = inFilter;
 	}
-	public boolean hasLoadedChildren()
-	{
+
+	public boolean hasLoadedChildren() {
 		return fieldChildren != null;
 	}
 
-	public String getIconSet()
-	{
+	public String getIconSet() {
 		return fieldIconSet;
 	}
 
-	public void setIconSet(String inIconSet)
-	{
+	public void setIconSet(String inIconSet) {
 		fieldIconSet = inIconSet;
 	}
 

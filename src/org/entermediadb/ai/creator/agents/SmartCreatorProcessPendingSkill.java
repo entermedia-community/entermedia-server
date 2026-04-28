@@ -11,33 +11,29 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 
-public class SmartCreatorProcessPendingSkill extends BaseSkill
-{
+public class SmartCreatorProcessPendingSkill extends BaseSkill {
 
-	public SmartCreatorManager getSmartCreatorManager()
-	{
-		SmartCreatorManager smartCreatorManager = (SmartCreatorManager) getMediaArchive().getBean("smartCreatorManager");
+	public SmartCreatorManager getSmartCreatorManager() {
+		SmartCreatorManager smartCreatorManager = (SmartCreatorManager) getMediaArchive()
+				.getBean("smartCreatorManager");
 		return smartCreatorManager;
 	}
 
 	@Override
-	public void process(AgentContext inContext)
-	{
+	public void process(AgentContext inContext) {
 
-		Collection<String> values = inContext.getCurrentAgentEnable().getAutomationEnabledData().getValues("searchtypes");
-		if (values == null)
-		{
+		Collection<String> values = inContext.getCurrentAgentEnable().getAutomationEnabledData()
+				.getValues("searchtypes");
+		if (values == null) {
 			inContext.error("No Agents Enabled");
 			return;
 		}
-		for (Iterator iterator1 = values.iterator(); iterator1.hasNext();)
-		{
+		for (Iterator iterator1 = values.iterator(); iterator1.hasNext();) {
 			String moduleid = (String) iterator1.next();
 
 			MultiValued module = (MultiValued) getMediaArchive().getCachedData("module", moduleid);
 
-			if (module == null)
-			{
+			if (module == null) {
 				// inContext.error("No module found " +
 				// inContext.getCurrentAgentEnable().getAutomationEnabledData());
 				continue;
@@ -48,10 +44,10 @@ public class SmartCreatorProcessPendingSkill extends BaseSkill
 
 			String llmprompt = inContext.getCurrentAgentEnable().getAutomationEnabledData().get("llmprompt");
 
-			inContext.info("Found " + found.size() + " records in " + inContext.getCurrentAgentEnable().getAutomationEnabledData());
+			inContext.info("Found " + found.size() + " records in "
+					+ inContext.getCurrentAgentEnable().getAutomationEnabledData());
 
-			for (Iterator iterator = found.iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = found.iterator(); iterator.hasNext();) {
 				long startTime = System.currentTimeMillis();
 				MultiValued entity = (MultiValued) iterator.next();
 				inContext.setCurrentEntityModule(module);

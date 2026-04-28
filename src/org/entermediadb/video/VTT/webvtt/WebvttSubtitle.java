@@ -15,32 +15,28 @@
  */
 package org.entermediadb.video.VTT.webvtt;
 
-
-
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * A representation of a WebVTT subtitle.
  */
-public final class WebvttSubtitle  {
+public final class WebvttSubtitle {
 
-  private  List<WebvttCue> cues;
-  private  int numCues;
-  private  long[] cueTimesUs;
-  private  long[] sortedCueTimesUs;
+  private List<WebvttCue> cues;
+  private int numCues;
+  private long[] cueTimesUs;
+  private long[] sortedCueTimesUs;
 
-  public List<WebvttCue> getCues()
-{
-	return cues;
-}
+  public List<WebvttCue> getCues() {
+    return cues;
+  }
 
-public void setCues(List<WebvttCue> inCues)
-{
-	cues = inCues;
-}
+  public void setCues(List<WebvttCue> inCues) {
+    cues = inCues;
+  }
 
-/**
+  /**
    * @param cues A list of the cues in this subtitle.
    */
   public WebvttSubtitle(List<WebvttCue> cues) {
@@ -57,52 +53,50 @@ public void setCues(List<WebvttCue> inCues)
     Arrays.sort(sortedCueTimesUs);
   }
 
- 
-
-  
-
-//  @Override
-//  public List<Cue> getCues(long timeUs) {
-//    ArrayList<Cue> list = null;
-//    WebvttCue firstNormalCue = null;
-//    SpannableStringBuilder normalCueTextBuilder = null;
-//
-//    for (int i = 0; i < numCues; i++) {
-//      if ((cueTimesUs[i * 2] <= timeUs) && (timeUs < cueTimesUs[i * 2 + 1])) {
-//        if (list == null) {
-//          list = new ArrayList<>();
-//        }
-//        WebvttCue cue = cues.get(i);
-//        if (cue.isNormalCue()) {
-//          // we want to merge all of the normal cues into a single cue to ensure they are drawn
-//          // correctly (i.e. don't overlap) and to emulate roll-up, but only if there are multiple
-//          // normal cues, otherwise we can just append the single normal cue
-//          if (firstNormalCue == null) {
-//            firstNormalCue = cue;
-//          } else if (normalCueTextBuilder == null) {
-//            normalCueTextBuilder = new SpannableStringBuilder();
-//            normalCueTextBuilder.append(firstNormalCue.text).append("\n").append(cue.text);
-//          } else {
-//            normalCueTextBuilder.append("\n").append(cue.text);
-//          }
-//        } else {
-//          list.add(cue);
-//        }
-//      }
-//    }
-//    if (normalCueTextBuilder != null) {
-//      // there were multiple normal cues, so create a new cue with all of the text
-//      list.add(new WebvttCue(normalCueTextBuilder));
-//    } else if (firstNormalCue != null) {
-//      // there was only a single normal cue, so just add it to the list
-//      list.add(firstNormalCue);
-//    }
-//
-//    if (list != null) {
-//      return list;
-//    } else {
-//      return Collections.<Cue>emptyList();
-//    }
-//  }
+  // @Override
+  // public List<Cue> getCues(long timeUs) {
+  // ArrayList<Cue> list = null;
+  // WebvttCue firstNormalCue = null;
+  // SpannableStringBuilder normalCueTextBuilder = null;
+  //
+  // for (int i = 0; i < numCues; i++) {
+  // if ((cueTimesUs[i * 2] <= timeUs) && (timeUs < cueTimesUs[i * 2 + 1])) {
+  // if (list == null) {
+  // list = new ArrayList<>();
+  // }
+  // WebvttCue cue = cues.get(i);
+  // if (cue.isNormalCue()) {
+  // // we want to merge all of the normal cues into a single cue to ensure they
+  // are drawn
+  // // correctly (i.e. don't overlap) and to emulate roll-up, but only if there
+  // are multiple
+  // // normal cues, otherwise we can just append the single normal cue
+  // if (firstNormalCue == null) {
+  // firstNormalCue = cue;
+  // } else if (normalCueTextBuilder == null) {
+  // normalCueTextBuilder = new SpannableStringBuilder();
+  // normalCueTextBuilder.append(firstNormalCue.text).append("\n").append(cue.text);
+  // } else {
+  // normalCueTextBuilder.append("\n").append(cue.text);
+  // }
+  // } else {
+  // list.add(cue);
+  // }
+  // }
+  // }
+  // if (normalCueTextBuilder != null) {
+  // // there were multiple normal cues, so create a new cue with all of the text
+  // list.add(new WebvttCue(normalCueTextBuilder));
+  // } else if (firstNormalCue != null) {
+  // // there was only a single normal cue, so just add it to the list
+  // list.add(firstNormalCue);
+  // }
+  //
+  // if (list != null) {
+  // return list;
+  // } else {
+  // return Collections.<Cue>emptyList();
+  // }
+  // }
 
 }

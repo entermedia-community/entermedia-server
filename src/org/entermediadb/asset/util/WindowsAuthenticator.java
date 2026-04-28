@@ -15,31 +15,27 @@ import jcifs.UniAddress;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbSession;
 
-public class WindowsAuthenticator extends BaseAuthenticator
-{
+public class WindowsAuthenticator extends BaseAuthenticator {
 	private static final Log log = LogFactory.getLog(WindowsAuthenticator.class);
 
-	public boolean authenticate(AuthenticationRequest inAReq) throws UserManagerException
-	{
+	public boolean authenticate(AuthenticationRequest inAReq) throws UserManagerException {
 		String inServer = inAReq.get("authenticationserver");
-		if (inServer == null)
-		{
+		if (inServer == null) {
 			return false;
 		}
 		// http://support.microsoft.com/default.aspx?scid=kb;EN-US;180548
 		String inDomainOrBlank = inAReq.get("domain");
-		if (inDomainOrBlank == null)
-		{
+		if (inDomainOrBlank == null) {
 			inDomainOrBlank = "";
 		}
-		//1433 
-		
+		// 1433
+
 		log.info("Authenticating server= " + inServer + " domain= " + inDomainOrBlank);
-		//I think 445 is the main port we need
-		
-		NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(inDomainOrBlank, inAReq.getUser().getUserName(), inAReq.getPassword());
-		try
-		{
+		// I think 445 is the main port we need
+
+		NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(inDomainOrBlank,
+				inAReq.getUser().getUserName(), inAReq.getPassword());
+		try {
 			InetAddress ip = null;
 			// if( inServer == null)
 			// {
@@ -55,24 +51,19 @@ public class WindowsAuthenticator extends BaseAuthenticator
 			// }
 			UniAddress controller = new UniAddress(ip);
 
-			//445 is the default port
+			// 445 is the default port
 			String port = inAReq.get("authenticationserverport");
-			if (port != null)
-			{
+			if (port != null) {
 				SmbSession.logon(controller, Integer.parseInt(port), auth);
-			}
-			else
-			{
+			} else {
 				SmbSession.logon(controller, auth);
 			}
-			//password may be different than what's in the xml we should set it
-			//it will get encrypted and saved after login
-			//Securrity issue inAReq.getUser().setPassword(inAReq.getPassword());
+			// password may be different than what's in the xml we should set it
+			// it will get encrypted and saved after login
+			// Securrity issue inAReq.getUser().setPassword(inAReq.getPassword());
 			inAReq.getUser().setEnabled(true);
 			return true;
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			log.error(ex + " " + inAReq.getUserName() + " could not log in ");
 			return false;
 		}

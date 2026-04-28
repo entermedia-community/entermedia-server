@@ -8,38 +8,43 @@ import org.json.simple.JSONObject;
 public interface LlmResponse {
 
     JSONObject getMessageStructured();
-	
+
     JSONObject getRawResponse();
-	void setRawResponse(JSONObject inObj);
-    
+
+    void setRawResponse(JSONObject inObj);
+
     Collection getRawCollection();
-	void setRawCollection(Collection inObj);
-	
-	Collection getCollection(String inKey);
-    
+
+    void setRawCollection(Collection inObj);
+
+    Collection getCollection(String inKey);
+
     boolean isToolCall();
-    
+
     String getMessage();
+
     void setMessage(String inMessage);
-    
-    String getMessagePlain();    
+
+    String getMessagePlain();
+
     void setMessagePlain(String inMessagePlain);
 
     String getFunctionName();
+
     void setFunctionName(String inFunction);
-    
+
     JSONObject getFunctionArguments();
 
     boolean isSuccessful();
-    
+
     int getTokensUsed();
-    
+
     String getModel();
-   
+
     ArrayList<String> getImageUrls();
-    
-    ArrayList<String> getImageBase64s();    
-    
+
+    ArrayList<String> getImageBase64s();
+
     String getFileName();
 
 }

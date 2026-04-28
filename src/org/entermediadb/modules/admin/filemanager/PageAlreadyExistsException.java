@@ -14,22 +14,20 @@ package org.entermediadb.modules.admin.filemanager;
 
 import org.openedit.OpenEditException;
 
-
 /**
- * This exception is thrown when attempting to add a new page that already exists, where the user
+ * This exception is thrown when attempting to add a new page that already
+ * exists, where the user
  * does not wish to overwrite existing pages.
  *
  * @author Eric Galluzzo
  */
-public class PageAlreadyExistsException extends OpenEditException
-{
+public class PageAlreadyExistsException extends OpenEditException {
 	/**
 	 * Constructor for PageAlreadyExistsException.
 	 *
 	 * @param inMsg
 	 */
-	public PageAlreadyExistsException(String inMsg)
-	{
+	public PageAlreadyExistsException(String inMsg) {
 		super(inMsg);
 	}
 
@@ -39,8 +37,7 @@ public class PageAlreadyExistsException extends OpenEditException
 	 * @param inMsg
 	 * @param inRootCause
 	 */
-	public PageAlreadyExistsException(String inMsg, Throwable inRootCause)
-	{
+	public PageAlreadyExistsException(String inMsg, Throwable inRootCause) {
 		super(inMsg, inRootCause);
 	}
 
@@ -49,8 +46,7 @@ public class PageAlreadyExistsException extends OpenEditException
 	 *
 	 * @param inRootCause
 	 */
-	public PageAlreadyExistsException(Throwable inRootCause)
-	{
+	public PageAlreadyExistsException(Throwable inRootCause) {
 		super(inRootCause);
 	}
 }

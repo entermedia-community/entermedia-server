@@ -22,29 +22,24 @@ import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.util.DateStorageUtil;
 
-public class SyncModule extends BaseMediaModule
-{
+public class SyncModule extends BaseMediaModule {
 	private static final Log log = LogFactory.getLog(SyncModule.class);
 	protected PushManager fieldPushManager;
 
-	public PushManager getPushManager(MediaArchive inArchive)
-	{
+	public PushManager getPushManager(MediaArchive inArchive) {
 		return (PushManager) getModuleManager().getBean(inArchive.getCatalogId(), "pushManager");
 	}
 
-	public PullManager getPullManager(String inCatalogId)
-	{
+	public PullManager getPullManager(String inCatalogId) {
 		return (PullManager) getModuleManager().getBean(inCatalogId, "pullManager");
 	}
 
-	public void acceptPush(WebPageRequest inReq)
-	{
+	public void acceptPush(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		getPushManager(archive).acceptPush(inReq, archive);
 	}
 
-	public void resetPushStatus(WebPageRequest inReq)
-	{
+	public void resetPushStatus(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 
 		String old = inReq.findValue("oldpushstatus");
@@ -53,99 +48,95 @@ public class SyncModule extends BaseMediaModule
 		getPushManager(archive).resetPushStatus(archive, old, newstatus);
 	}
 
-	public void processPushQueue(WebPageRequest inReq)
-	{
+	public void processPushQueue(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		String ids = inReq.getRequestParameter("assetids");
 		getPushManager(archive).processPushQueue(archive, ids, inReq.getUser());
 	}
 
-	public void processDeletedAssets(WebPageRequest inReq)
-	{
+	public void processDeletedAssets(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
-		//String ids = inReq.getRequestParameter("assetids");
+		// String ids = inReq.getRequestParameter("assetids");
 		getPushManager(archive).processDeletedAssets(archive, inReq.getUser());
 	}
 
-	//	private boolean isOkToSendX(Data inHotfolder)
-	//	{
-	//		boolean active = Boolean.parseBoolean(inHotfolder.get("auto"));
-	//		// TODO: check dates, times.
-	//		return active;
-	//	}
+	// private boolean isOkToSendX(Data inHotfolder)
+	// {
+	// boolean active = Boolean.parseBoolean(inHotfolder.get("auto"));
+	// // TODO: check dates, times.
+	// return active;
+	// }
 
-	public void togglePush(WebPageRequest inReq) throws Exception
-	{
+	public void togglePush(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(), "catalogsettings");
 		Data setting = (Data) searcher.searchById("push_masterswitch");
 
 		String switchvalue = setting.get("value");
 
-		if (Boolean.parseBoolean(switchvalue))
-		{
+		if (Boolean.parseBoolean(switchvalue)) {
 			switchvalue = "false";
-		}
-		else
-		{
+		} else {
 			switchvalue = "true";
 		}
 		setting.setProperty("value", switchvalue);
 		searcher.saveData(setting, inReq.getUser());
-		if ("true".equals(switchvalue))
-		{
+		if ("true".equals(switchvalue)) {
 			archive.fireSharedMediaEvent("push/pushassets");
 		}
 		getPushManager(archive).toggle(archive.getCatalogId());
 	}
 
-	public void clearQueue(WebPageRequest inReq) throws Exception
-	{
+	public void clearQueue(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher pushsearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "pushrequest");
 		pushsearcher.deleteAll(inReq.getUser());
 	}
-	//	public void addAssetToQueue(WebPageRequest inReq) throws Exception
-	//	{
-	//		MediaArchive archive = getMediaArchive(inReq);
-	//		
-	//		//String enabled = archive.getCatalogSettingValue("push_convertpresets");
-	//		
-	//		Searcher pushsearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "pushrequest");
-	//		//Searcher hot = archive.getSearcherManager().getSearcher( archive.getCatalogId(), "hotfolder");
+	// public void addAssetToQueue(WebPageRequest inReq) throws Exception
+	// {
+	// MediaArchive archive = getMediaArchive(inReq);
 	//
-	//		//SearchQuery query = pushsearcher.createSearchQuery();
+	// //String enabled = archive.getCatalogSettingValue("push_convertpresets");
 	//
-	//		boolean foundone = false;
-	//		String assetid = inReq.getRequestParameter("assetid");
-	//		if( assetid == null)
-	//		{
-	//			//TODO: Remove bad assets?
-	//			log.info("Warning: Checking all assets");
-	//			Collection hits = archive.getAssetSearcher().getAllHits();
-	//			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-	//			{
-	//				Data row = (Data)iterator.next();
-	//				boolean found = getPushManager().checkPublish(archive, pushsearcher, row.getId(), inReq.getUser());
-	//				if( found )
-	//				{
-	//					foundone = true;
-	//				}
-	//			}
-	//		}
-	//		else
-	//		{
-	//			foundone = getPushManager().checkPublish(archive, pushsearcher, assetid, inReq.getUser());
-	//		}
-	//		if( foundone )
-	//		{
-	//			archive.fireSharedMediaEvent("push/pushassets");
-	//		}
-	//		
-	//	}
+	// Searcher pushsearcher =
+	// archive.getSearcherManager().getSearcher(archive.getCatalogId(),
+	// "pushrequest");
+	// //Searcher hot = archive.getSearcherManager().getSearcher(
+	// archive.getCatalogId(), "hotfolder");
+	//
+	// //SearchQuery query = pushsearcher.createSearchQuery();
+	//
+	// boolean foundone = false;
+	// String assetid = inReq.getRequestParameter("assetid");
+	// if( assetid == null)
+	// {
+	// //TODO: Remove bad assets?
+	// log.info("Warning: Checking all assets");
+	// Collection hits = archive.getAssetSearcher().getAllHits();
+	// for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+	// {
+	// Data row = (Data)iterator.next();
+	// boolean found = getPushManager().checkPublish(archive, pushsearcher,
+	// row.getId(), inReq.getUser());
+	// if( found )
+	// {
+	// foundone = true;
+	// }
+	// }
+	// }
+	// else
+	// {
+	// foundone = getPushManager().checkPublish(archive, pushsearcher, assetid,
+	// inReq.getUser());
+	// }
+	// if( foundone )
+	// {
+	// archive.fireSharedMediaEvent("push/pushassets");
+	// }
+	//
+	// }
 
-	public void loadQueue(WebPageRequest inReq) throws Exception
-	{
+	public void loadQueue(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
 
 		SearchQuery q = archive.getAssetSearcher().createSearchQuery().append("category", "index");
@@ -177,46 +168,46 @@ public class SyncModule extends BaseMediaModule
 
 	}
 
-	public void pollRemotePublish(WebPageRequest inReq) throws Exception
-	{
+	public void pollRemotePublish(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
 		getPushManager(archive).pollRemotePublish(archive);
-		//getPublishChecker().addCatalogToMonitor(archive.getCatalogId());
-		//getPushManager().pollRemotePublish(archive); //search for publish tasks and complete them with a push
+		// getPublishChecker().addCatalogToMonitor(archive.getCatalogId());
+		// getPushManager().pollRemotePublish(archive); //search for publish tasks and
+		// complete them with a push
 	}
-/**
-	public void processPullQueue(WebPageRequest inReq)
-	{
-		//log.info("Starting pulling");
-		MediaArchive archive = getMediaArchive(inReq);
-		PullManager manager = getPullManager(archive.getCatalogId());
-		ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
 
-		//TODO Deprecated ?
-		//manager.processPull(archive, logger);
+	/**
+	 * public void processPullQueue(WebPageRequest inReq)
+	 * {
+	 * //log.info("Starting pulling");
+	 * MediaArchive archive = getMediaArchive(inReq);
+	 * PullManager manager = getPullManager(archive.getCatalogId());
+	 * ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
+	 * 
+	 * //TODO Deprecated ?
+	 * //manager.processPull(archive, logger);
+	 * 
+	 * }
+	 */
 
-	}
-*/
-	
-	/** 
+	/**
 	 * This is the main event
+	 * 
 	 * @param inReq
 	 */
-	public void pullRemoteChanges(WebPageRequest inReq)
-	{
-		//log.info("Starting pulling");
+	public void pullRemoteChanges(WebPageRequest inReq) {
+		// log.info("Starting pulling");
 		MediaArchive archive = getMediaArchive(inReq);
 		PullManager pullManager = getPullManager(archive.getCatalogId());
 		ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
 
 		pullManager.getDataPuller().pull(archive, logger);
 		archive.fireGeneralEvent(inReq.getUser(), "cluster", "pulloriginals", null);
-		
 
 	}
-	public void pullRecentUploads(WebPageRequest inReq)
-	{
-		//log.info("Starting pulling");
+
+	public void pullRecentUploads(WebPageRequest inReq) {
+		// log.info("Starting pulling");
 		MediaArchive archive = getMediaArchive(inReq);
 		PullManager pullManager = getPullManager(archive.getCatalogId());
 		ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
@@ -225,126 +216,113 @@ public class SyncModule extends BaseMediaModule
 
 	}
 
-	public void loadAllDataChanges(WebPageRequest inReq) throws Exception
-	{
+	public void loadAllDataChanges(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
 		String page = inReq.getRequestParameter("page");
 
-		String lastpullago = inReq.getRequestParameter("lastpullago"); //force them to pick a date
+		String lastpullago = inReq.getRequestParameter("lastpullago"); // force them to pick a date
 		Date ago = null;
-		if( lastpullago != null)
-		{
+		if (lastpullago != null) {
 			ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong(lastpullago));
 		}
 		String moduleid = inReq.findPathValue("module");
 		HitTracker hits = loadHitTracker(inReq, moduleid);
-		if (hits == null)
-		{
-			if( ago == null)
-			{
+		if (hits == null) {
+			if (ago == null) {
 				throw new OpenEditException("lastpull required");
 			}
 			ElasticNodeManager manager = (ElasticNodeManager) archive.getNodeManager();
 			hits = manager.getEditedDocuments(archive.getCatalogId(), ago);
 		}
-		if (page != null)
-		{
+		if (page != null) {
 			hits.setPage(Integer.parseInt(page));
 		}
 		hits.setSessionId("hitsallchanges");
-		
+
 		PullManager pullManager = getPullManager(archive.getCatalogId());
-		JSONObject finaldata = pullManager.getDataPuller().createJsonFromHits(archive,ago,hits);
+		JSONObject finaldata = pullManager.getDataPuller().createJsonFromHits(archive, ago, hits);
 
 		String jsonString = finaldata.toJSONString();
 		inReq.putPageValue("jsonString", jsonString);
 		inReq.putSessionValue(hits.getSessionId(), hits);
-		
+
 	}
-	
-	public void receiveDataChanges(WebPageRequest inReq)
-	{
+
+	public void receiveDataChanges(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		PullManager pullManager = getPullManager(archive.getCatalogId());
-		
+
 		JSONArray todownload = pullManager.getDataPuller().receiveDataChanges(archive, inReq.getJsonRequest());
-		
+
 		JSONObject finaldata = new JSONObject();
 		finaldata.put("catalogid", archive.getCatalogId());
 		finaldata.put("fileuploads", todownload);
-		
+
 		inReq.putPageValue("finaldata", finaldata);
 	}
-	public void receiveFile(WebPageRequest inReq)
-	{
+
+	public void receiveFile(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		PullManager pullManager = getPullManager(archive.getCatalogId());
 		pullManager.receiveFile(inReq, archive);
 	}
 
-	public void loadRecentUploads(WebPageRequest inReq) throws Exception
-	{
+	public void loadRecentUploads(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
 		String page = inReq.getRequestParameter("page");
 		ElasticNodeManager manager = (ElasticNodeManager) archive.getNodeManager();
-		String lastpullago = inReq.getRequiredParameter("lastpullago"); //force them to pick a date
+		String lastpullago = inReq.getRequiredParameter("lastpullago"); // force them to pick a date
 		Date ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong(lastpullago));
-		if( ago == null)
-		{
+		if (ago == null) {
 			throw new OpenEditException("lastpull required");
 		}
-		
+
 		String moduleid = inReq.findPathValue("module");
 		HitTracker hits = loadHitTracker(inReq, moduleid);
 
-		if (hits == null)
-		{
+		if (hits == null) {
 			String mastereditid = archive.getNodeManager().getLocalClusterId();
 			/*
-			SearchQuery basequery = archive.query("asset").exact("emrecordstatus.mastereditclusterid", mastereditid).sort("sourcepath").getQuery();
-			
-			SearchQuery orquery = archive.query("asset").or().after("assetaddeddate", ago).after("assetmodificationdate", ago).getQuery();
-			basequery.addChildQuery(orquery);
-			
-			hits = archive.getSearcher("asset").search(basequery);
-			hits.enableBulkOperations();
-			*/
+			 * SearchQuery basequery =
+			 * archive.query("asset").exact("emrecordstatus.mastereditclusterid",
+			 * mastereditid).sort("sourcepath").getQuery();
+			 * 
+			 * SearchQuery orquery = archive.query("asset").or().after("assetaddeddate",
+			 * ago).after("assetmodificationdate", ago).getQuery();
+			 * basequery.addChildQuery(orquery);
+			 * 
+			 * hits = archive.getSearcher("asset").search(basequery);
+			 * hits.enableBulkOperations();
+			 */
 			hits = manager.getEditedDocuments(archive.getCatalogId(), ago);
-			
+
 		}
-		if( !hits.isEmpty() )
-		{
-			log.info("Listed " + hits.size()  + " changes ");
+		if (!hits.isEmpty()) {
+			log.info("Listed " + hits.size() + " changes ");
 		}
-		if (page != null)
-		{
+		if (page != null) {
 			hits.setPage(Integer.parseInt(page));
 		}
 		JSONArray array = new JSONArray();
-		if (hits.size() > 0) 
-		{
+		if (hits.size() > 0) {
 			PullManager pullManager = getPullManager(archive.getCatalogId());
-			array = pullManager.getOriginalPuller().listOriginalFiles(archive,hits);	
+			array = pullManager.getOriginalPuller().listOriginalFiles(archive, hits);
 		}
-		inReq.putPageValue("searcher", archive.getAssetSearcher());		
+		inReq.putPageValue("searcher", archive.getAssetSearcher());
 		inReq.putPageValue("hits", hits);
 		inReq.putPageValue("results", array);
 	}
-	
-	public void receiveOriginalsChanges(WebPageRequest inReq)
-	{
+
+	public void receiveOriginalsChanges(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		PullManager pullManager = getPullManager(archive.getCatalogId());
-		inReq.putPageValue("searcher", archive.getAssetSearcher() );
-		try
-		{
+		inReq.putPageValue("searcher", archive.getAssetSearcher());
+		try {
 			List todownload = pullManager.getOriginalPuller().receiveOriginalsChanges(archive, inReq.getJsonRequest());
 			ListHitTracker hits = new ListHitTracker(todownload);
 			inReq.putPageValue("hits", hits);
-			
-		}
-		catch(Throwable ex)
-		{
+
+		} catch (Throwable ex) {
 			inReq.putPageValue("error", ex);
 		}
 	}

@@ -22,11 +22,9 @@ import org.openedit.data.DataLoaded;
  * @author cburkey
  * 
  */
-public class BaseCategory extends BaseData implements Category, DataLoaded
-{
+public class BaseCategory extends BaseData implements Category, DataLoaded {
 	private static final Log log = LogFactory.getLog(Category.class);
 
-	
 	protected String fieldDescription;
 	protected String fieldShortDecription;
 	protected int fieldItemCount;
@@ -37,181 +35,178 @@ public class BaseCategory extends BaseData implements Category, DataLoaded
 	protected String fieldIndexId;
 	protected CategorySearcher fieldCategorySearcher;
 
-	public BaseCategory()
-	{
+	public BaseCategory() {
 	}
-	
 
-	public BaseCategory(String inName)
-	{
+	public BaseCategory(String inName) {
 		setName(inName);
 	}
 
-	public BaseCategory(String inId, String inName)
-	{
+	public BaseCategory(String inId, String inName) {
 		setId(inId);
-		if (inName != null)
-		{
+		if (inName != null) {
 			setName(inName.trim());
 		}
 	}
-	
-	public BaseCategory(CategorySearcher inCategorySearcher)
-	{
+
+	public BaseCategory(CategorySearcher inCategorySearcher) {
 		setCategorySearcher(inCategorySearcher);
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#getIndexId()
 	 */
 	@Override
-	public String getIndexId()
-	{
+	public String getIndexId() {
 		return fieldIndexId;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#setIndexId(java.lang.String)
 	 */
 	@Override
-	public void setIndexId(String inIndexId)
-	{
+	public void setIndexId(String inIndexId) {
 		fieldIndexId = inIndexId;
 	}
-	
-	public CategorySearcher getCategorySearcher()
-	{
+
+	public CategorySearcher getCategorySearcher() {
 		return fieldCategorySearcher;
 	}
 
-	public void setCategorySearcher(CategorySearcher inCategorySearcher)
-	{
+	public void setCategorySearcher(CategorySearcher inCategorySearcher) {
 		fieldCategorySearcher = inCategorySearcher;
 	}
 
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#sortChildren(boolean)
 	 */
 	@Override
-	public void sortChildren(boolean inRecursive){
-		
+	public void sortChildren(boolean inRecursive) {
+
 		Collections.sort(getChildren());
-		if(inRecursive)
-		{
-			for (Iterator iterator = getChildren().iterator(); iterator.hasNext();) 
-			{
+		if (inRecursive) {
+			for (Iterator iterator = getChildren().iterator(); iterator.hasNext();) {
 				Category child = (Category) iterator.next();
 				child.sortChildren(inRecursive);
 			}
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#getRelatedCategoryIds()
 	 */
 	@Override
-	public List getRelatedCategoryIds()
-	{
-		if (fieldRelatedCategoryIds == null)
-		{
+	public List getRelatedCategoryIds() {
+		if (fieldRelatedCategoryIds == null) {
 			fieldRelatedCategoryIds = new ArrayList();
 		}
 		return fieldRelatedCategoryIds;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#setRelatedCategoryIds(java.util.List)
 	 */
 	@Override
-	public void setRelatedCategoryIds(List fieldRelatedCategoryIds)
-	{
+	public void setRelatedCategoryIds(List fieldRelatedCategoryIds) {
 		this.fieldRelatedCategoryIds = fieldRelatedCategoryIds;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#toString()
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getName();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#getItemCount()
 	 */
 	@Override
-	public int getItemCount()
-	{
+	public int getItemCount() {
 		return fieldItemCount;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#setItemCount(int)
 	 */
 	@Override
-	public void setItemCount(int inItemCount)
-	{
+	public void setItemCount(int inItemCount) {
 		fieldItemCount = inItemCount;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#isContainsItems()
 	 */
 	@Override
-	public boolean isContainsItems()
-	{
+	public boolean isContainsItems() {
 		return getItemCount() > 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#getChildren()
 	 */
 	@Override
-	public List getChildren()
-	{
-		if (fieldChildren == null)
-		{
+	public List getChildren() {
+		if (fieldChildren == null) {
 			fieldChildren = new ArrayList();
 		}
 		return fieldChildren;
 	}
-	
-	public List getChildren(boolean inReloadIfNeeded)
-	{
-		if( inReloadIfNeeded )
-		{
+
+	public List getChildren(boolean inReloadIfNeeded) {
+		if (inReloadIfNeeded) {
 			return getChildren();
 		}
 		return fieldChildren;
-	}	
-	
-	/* (non-Javadoc)
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#setChildren(java.util.List)
 	 */
 	@Override
-	public void setChildren(List inChildren)
-	{
+	public void setChildren(List inChildren) {
 		fieldChildren = inChildren;
-		if( inChildren != null)
-		{
-			for (Iterator iter = inChildren.iterator(); iter.hasNext();)
-			{
+		if (inChildren != null) {
+			for (Iterator iter = inChildren.iterator(); iter.hasNext();) {
 				Category cat = (Category) iter.next();
 				cat.setParentCategory(this);
 			}
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.entermediadb.asset.Category2#addChild(org.entermediadb.asset.Category)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.entermediadb.asset.Category2#addChild(org.entermediadb.asset.Category)
 	 */
 	@Override
-	public Category addChild(Category inNewChild)
-	{
+	public Category addChild(Category inNewChild) {
 		Category oldParent = inNewChild.getParentCategory();
-		if( oldParent != null)
-		{
+		if (oldParent != null) {
 			oldParent.removeChild(inNewChild);
 		}
 		inNewChild.setParentCategory(this);
@@ -229,56 +224,54 @@ public class BaseCategory extends BaseData implements Category, DataLoaded
 		return inNewChild;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#getChild(java.lang.String)
 	 */
 	@Override
-	public Category getChild(String inId)
-	{
-		for (Iterator iter = getChildren().iterator(); iter.hasNext();)
-		{
+	public Category getChild(String inId) {
+		for (Iterator iter = getChildren().iterator(); iter.hasNext();) {
 			Category element = (Category) iter.next();
-			if (element.getId().equals(inId))
-			{
+			if (element.getId().equals(inId)) {
 				return element;
 			}
 		}
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.entermediadb.asset.Category2#removeChild(org.entermediadb.asset.Category)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.entermediadb.asset.Category2#removeChild(org.entermediadb.asset.Category)
 	 */
 	@Override
-	public void removeChild(Category inChild)
-	{
+	public void removeChild(Category inChild) {
 		Category child = getChild(inChild.getId());
-		if (child != null )
-		{
+		if (child != null) {
 			getChildren().remove(child);
 			child.setParentCategory(null);
-			if( child != inChild)
-			{
-				//tell the old parent to remove itself?
-				
+			if (child != inChild) {
+				// tell the old parent to remove itself?
+
 			}
-			
+
 		}
 
 		inChild.setParentCategory(null);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#hasParent(java.lang.String)
 	 */
 	@Override
-	public boolean hasParent(String inId)
-	{
+	public boolean hasParent(String inId) {
 		Category parent = this;
-		while (parent != null)
-		{
-			if (parent.getId().equals(inId))
-			{
+		while (parent != null) {
+			if (parent.getId().equals(inId)) {
 				return true;
 			}
 			parent = parent.getParentCategory();
@@ -286,13 +279,10 @@ public class BaseCategory extends BaseData implements Category, DataLoaded
 		return false;
 	}
 
-	public boolean hasParentCategory(Category inId)
-	{
+	public boolean hasParentCategory(Category inId) {
 		Category parent = this;
-		while (parent != null)
-		{
-			if (parent.equals(inId))
-			{
+		while (parent != null) {
+			if (parent.equals(inId)) {
 				return true;
 			}
 			parent = parent.getParentCategory();
@@ -300,33 +290,31 @@ public class BaseCategory extends BaseData implements Category, DataLoaded
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#hasChildren()
 	 */
 	@Override
-	public boolean hasChildren()
-	{
-		boolean has =  fieldChildren != null && fieldChildren.size() > 0;
+	public boolean hasChildren() {
+		boolean has = fieldChildren != null && fieldChildren.size() > 0;
 		return has;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#hasCatalog(java.lang.String)
 	 */
 	@Override
-	public boolean hasCatalog(String inId)
-	{
-		if (getId().equals(inId))
-		{
+	public boolean hasCatalog(String inId) {
+		if (getId().equals(inId)) {
 			return true;
 		}
-		if (hasChildren())
-		{
-			for (Iterator iter = getChildren().iterator(); iter.hasNext();)
-			{
+		if (hasChildren()) {
+			for (Iterator iter = getChildren().iterator(); iter.hasNext();) {
 				Category child = (Category) iter.next();
-				if (child.hasCatalog(inId))
-				{
+				if (child.hasCatalog(inId)) {
 					return true;
 				}
 			}
@@ -334,19 +322,17 @@ public class BaseCategory extends BaseData implements Category, DataLoaded
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#hasChild(java.lang.String)
 	 */
 	@Override
-	public boolean hasChild(String inId)
-	{
-		if (hasChildren())
-		{
-			for (Iterator iter = getChildren().iterator(); iter.hasNext();)
-			{
+	public boolean hasChild(String inId) {
+		if (hasChildren()) {
+			for (Iterator iter = getChildren().iterator(); iter.hasNext();) {
 				Category child = (Category) iter.next();
-				if (child.getId().equals(inId))
-				{
+				if (child.getId().equals(inId)) {
 					return true;
 				}
 			}
@@ -354,112 +340,108 @@ public class BaseCategory extends BaseData implements Category, DataLoaded
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.entermediadb.asset.Category2#isAncestorOf(org.entermediadb.asset.Category)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.entermediadb.asset.Category2#isAncestorOf(org.entermediadb.asset.
+	 * Category)
 	 */
 	@Override
-	public boolean isAncestorOf(Category inCatalog)
-	{
-		if(inCatalog == null) {
+	public boolean isAncestorOf(Category inCatalog) {
+		if (inCatalog == null) {
 			return false;
 		}
-		if(inCatalog.getId() == null) {
+		if (inCatalog.getId() == null) {
 			return false;
 		}
-		for (Iterator children = getChildren().iterator(); children.hasNext();)
-		{
+		for (Iterator children = getChildren().iterator(); children.hasNext();) {
 			Category child = (Category) children.next();
-			
-			if (child.getId() != null && child.getId().equals(inCatalog.getId()))
-			{
+
+			if (child.getId() != null && child.getId().equals(inCatalog.getId())) {
 				return true;
-			}
-			else if (child.hasChildren() && child.isAncestorOf(inCatalog))
-			{
+			} else if (child.hasChildren() && child.isAncestorOf(inCatalog)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#getParentCategory()
 	 */
 	@Override
-	public Category getParentCategory()
-	{
-		if( fieldParentCategory == null)
-		{
-			//This is bad?
+	public Category getParentCategory() {
+		if (fieldParentCategory == null) {
+			// This is bad?
 			fieldParentCategory = getCategorySearcher().getCategory(getParentId());
 		}
 		return fieldParentCategory;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.entermediadb.asset.Category2#setParentCategory(org.entermediadb.asset.Category)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.entermediadb.asset.Category2#setParentCategory(org.entermediadb.asset.
+	 * Category)
 	 */
 	@Override
-	public void setParentCategory(Category parentCatalog)
-	{
-		if(parentCatalog != null && parentCatalog.hasParent(getId()))
-		{
+	public void setParentCategory(Category parentCatalog) {
+		if (parentCatalog != null && parentCatalog.hasParent(getId())) {
 			log.error("Called myself as a child");
 			return;
 		}
-		
-//		if( fieldParentCategory != null)
-//		{
-//			//remove
-//			fieldParentCategory.removeChild()
-//		}
+
+		// if( fieldParentCategory != null)
+		// {
+		// //remove
+		// fieldParentCategory.removeChild()
+		// }
 		fieldParentCategory = parentCatalog;
-		if (parentCatalog != null)
-		{
+		if (parentCatalog != null) {
 			setParentId(parentCatalog.getId());
-		}
-		else
-		{
+		} else {
 			setParentId(null);
 		}
-		
-		//These will be set in indexing
-		if( getId() != null)
-		{
+
+		// These will be set in indexing
+		if (getId() != null) {
 			setValue("categorypath", loadCategoryPath());
 			setValue("parents", getParentCategories());
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#listAncestorsAndSelf(int)
 	 */
 	@Override
-	public List listAncestorsAndSelf(int inStartLevel)
-	{
+	public List listAncestorsAndSelf(int inStartLevel) {
 		LinkedList result = new LinkedList();
 		Category catalog = this;
-		while (catalog != null)
-		{
+		while (catalog != null) {
 			result.addFirst(catalog);
 			catalog = catalog.getParentCategory();
 		}
 		return result.subList(inStartLevel, result.size());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#getChildrenInRows(int)
 	 */
 	@Override
-	public List getChildrenInRows(int inColCount)
-	{
+	public List getChildrenInRows(int inColCount) {
 		// Now break up the page into rows by dividing the count they wanted
 		List children = getChildren();
 		double rowscount = (double) children.size() / (double) inColCount;
 
 		List rows = new ArrayList();
-		for (int i = 0; i < rowscount; i++)
-		{
+		for (int i = 0; i < rowscount; i++) {
 			int start = i * inColCount;
 			int end = i * inColCount + inColCount;
 			List sublist = children.subList(start, Math.min(children.size(), end));
@@ -468,267 +450,273 @@ public class BaseCategory extends BaseData implements Category, DataLoaded
 		return rows;
 	}
 
-	public List getChildren(int inColCount)
-	{
+	public List getChildren(int inColCount) {
 		// Now break up the page into rows by dividing the count they wanted
 		List children = getChildren();
 		List rows = new ArrayList();
 		int inMax = Math.min(inColCount, children.size());
-		for (int i = 0; i < inMax; i++)
-		{
+		for (int i = 0; i < inMax; i++) {
 			rows.add(children.get(i));
 		}
 		return rows;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#getLevel()
 	 */
 	@Override
-	public int getLevel()
-	{
+	public int getLevel() {
 		int i = 1;
 		Category parent = this;
-		while (parent != null)
-		{
+		while (parent != null) {
 			parent = parent.getParentCategory();
 			i++;
 		}
 		return i;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#getDescription()
 	 */
 	@Override
-	public String getDescription()
-	{
+	public String getDescription() {
 		return fieldDescription;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#setDescription(java.lang.String)
 	 */
 	@Override
-	public void setDescription(String inDescription)
-	{
+	public void setDescription(String inDescription) {
 		fieldDescription = inDescription;
 	}
 
-//	public Object getValue(String inKey)
-//	{
-//		Object val = super.getValue(inKey);
-//		if (inKey.equals("categorypath"))
-//		{
-//			return getCategoryPath();
-//		}
-//		if (inKey.equals("parents"))
-//		{
-//			List paths = new ArrayList();
-//			Category parent = getParentCategory();
-//			while (parent != null)
-//			{
-//				paths.add(0, parent);
-//				parent = parent.getParentCategory();
-//			}
-//			return paths;
-//		}
-//		if (val != null)
-//		{
-//			return val;
-//		}
-//		return null;
-//	}
+	// public Object getValue(String inKey)
+	// {
+	// Object val = super.getValue(inKey);
+	// if (inKey.equals("categorypath"))
+	// {
+	// return getCategoryPath();
+	// }
+	// if (inKey.equals("parents"))
+	// {
+	// List paths = new ArrayList();
+	// Category parent = getParentCategory();
+	// while (parent != null)
+	// {
+	// paths.add(0, parent);
+	// parent = parent.getParentCategory();
+	// }
+	// return paths;
+	// }
+	// if (val != null)
+	// {
+	// return val;
+	// }
+	// return null;
+	// }
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#getShortDescription()
 	 */
 	@Override
-	public String getShortDescription()
-	{
+	public String getShortDescription() {
 		return fieldShortDecription;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#setShortDescription(java.lang.String)
 	 */
 	@Override
-	public void setShortDescription(String inShortDecription)
-	{
+	public void setShortDescription(String inShortDecription) {
 		fieldShortDecription = inShortDecription;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#clearChildren()
 	 */
 	@Override
-	public void clearChildren()
-	{
+	public void clearChildren() {
 		getChildren().clear();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#getChildByName(java.lang.String)
 	 */
 	@Override
-	public Category getChildByName(String inCatName)
-	{
-		for (Iterator iter = getChildren().iterator(); iter.hasNext();)
-		{
+	public Category getChildByName(String inCatName) {
+		for (Iterator iter = getChildren().iterator(); iter.hasNext();) {
 			Category cat = (Category) iter.next();
-			if ( inCatName != null && inCatName.equals(cat.getName()))
-			{
+			if (inCatName != null && inCatName.equals(cat.getName())) {
 				return cat;
 			}
 		}
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#getLink()
 	 */
 	@Override
-	public String getLink()
-	{
+	public String getLink() {
 		String path = get("path");
-		if (path != null)
-		{
+		if (path != null) {
 			return path;
 		}
 		String root = get("categoryhome");
-		if (root == null)
-		{
+		if (root == null) {
 			root = "/store/categories/";
 		}
 		return root + getId() + ".html";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#getParentCategories()
 	 */
 	@Override
-	public List getParentCategories()
-	{
+	public List getParentCategories() {
 		List paths = new ArrayList();
 		paths.add(this);
 		Category parent = getParentCategory();
-		while (parent != null)
-		{
+		while (parent != null) {
 			paths.add(0, parent);
 			parent = parent.getParentCategory();
 		}
-		return paths;
-	}
-	/* (non-Javadoc)
-	 * @see org.entermediadb.asset.Category2#getParentCategoriesFrom(int)
-	 */
-	@Override
-	public List getParentCategoriesFrom(int inStartFrom)
-	{
-		List paths = new ArrayList();
-		Category parent = getParentCategory();
-		paths.add(this);
-		while (parent != null)
-		{
-			paths.add(0, parent);
-			parent = parent.getParentCategory();
-		}
-		if( paths.size() == 1)
-		{
-			return paths;
-		}
-		//from top to end 1, 2, 3, 4 cuts 3 till 4
-		if( inStartFrom >= paths.size() )
-		{
-			return Collections.EMPTY_LIST;
-		}
-		paths = paths.subList(inStartFrom, paths.size());
-		
 		return paths;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.entermediadb.asset.Category2#getParentCategoriesFrom(int)
+	 */
+	@Override
+	public List getParentCategoriesFrom(int inStartFrom) {
+		List paths = new ArrayList();
+		Category parent = getParentCategory();
+		paths.add(this);
+		while (parent != null) {
+			paths.add(0, parent);
+			parent = parent.getParentCategory();
+		}
+		if (paths.size() == 1) {
+			return paths;
+		}
+		// from top to end 1, 2, 3, 4 cuts 3 till 4
+		if (inStartFrom >= paths.size()) {
+			return Collections.EMPTY_LIST;
+		}
+		paths = paths.subList(inStartFrom, paths.size());
+
+		return paths;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#clearRelatedCategoryIds()
 	 */
 	@Override
-	public void clearRelatedCategoryIds()
-	{
+	public void clearRelatedCategoryIds() {
 		fieldRelatedCategoryIds = new ArrayList();
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#addRelatedCategoryId(java.lang.String)
 	 */
 	@Override
-	public void addRelatedCategoryId(String inId)
-	{
+	public void addRelatedCategoryId(String inId) {
 		getRelatedCategoryIds().add(inId);
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#getLinkedToCategoryId()
 	 */
 	@Override
-	public String getLinkedToCategoryId()
-	{
+	public String getLinkedToCategoryId() {
 		return fieldLinkedToCategoryId;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#setLinkedToCategoryId(java.lang.String)
 	 */
 	@Override
-	public void setLinkedToCategoryId(String inLinkedToCategoryId)
-	{
+	public void setLinkedToCategoryId(String inLinkedToCategoryId) {
 		fieldLinkedToCategoryId = inLinkedToCategoryId;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#getParentId()
 	 */
 	@Override
-	public String getParentId()
-	{
+	public String getParentId() {
 		return get("parentid");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#setParentId(java.lang.String)
 	 */
 	@Override
-	public void setParentId(String inParentId)
-	{
+	public void setParentId(String inParentId) {
 		setValue("parentid", inParentId);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#getCategoryPath()
 	 */
 	@Override
-	public String getCategoryPath()
-	{
+	public String getCategoryPath() {
 		String path = get("categorypath");
-		if( path == null)
-		{
+		if (path == null) {
 			path = loadCategoryPath();
 		}
 		return path;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#loadCategoryPath()
 	 */
 	@Override
-	public String loadCategoryPath()
-	{
-		String vale  = null;//get("sourcepath");
+	public String loadCategoryPath() {
+		String vale = null;// get("sourcepath");
 		StringBuffer path = new StringBuffer();
 		boolean first = true;
-		for (Iterator iterator = getParentCategories().iterator(); iterator.hasNext();)
-		{
-			if( first ) //This takes off the index category
+		for (Iterator iterator = getParentCategories().iterator(); iterator.hasNext();) {
+			if (first) // This takes off the index category
 			{
 				iterator.next();
 				first = false;
@@ -736,50 +724,46 @@ public class BaseCategory extends BaseData implements Category, DataLoaded
 			}
 			Category aparent = (Category) iterator.next();
 			path.append(aparent.getName());
-			if( iterator.hasNext() )
-			{
+			if (iterator.hasNext()) {
 				path.append("/");
 			}
 		}
 		vale = path.toString();
-		if( vale.isEmpty())
-		{
+		if (vale.isEmpty()) {
 			return getName();
 		}
 		return vale;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.entermediadb.asset.Category2#compareTo(org.entermediadb.asset.Category)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.entermediadb.asset.Category2#compareTo(org.entermediadb.asset.Category)
 	 */
 	@Override
-	public int compareTo(Object c)
-	{
-		Category c2 = (Category)c;
-		if( getName() == null )
-		{
-			if( c2.getName() == null)
-			{
+	public int compareTo(Object c) {
+		Category c2 = (Category) c;
+		if (getName() == null) {
+			if (c2.getName() == null) {
 				return 0;
 			}
 			return -1;
-		}
-		else if( c2.getName() == null)
-		{
+		} else if (c2.getName() == null) {
 			return 1;
 		}
 		return getName().toLowerCase().compareTo(c2.getName().toLowerCase());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#refresh()
 	 */
 	@Override
-	public boolean refresh()
-	{
-		if( getCategorySearcher() != null)
-		{
-			setValue("categorypath",null); //reload it
+	public boolean refresh() {
+		if (getCategorySearcher() != null) {
+			setValue("categorypath", null); // reload it
 			fieldParentCategory = null;
 			fieldChildren = null;
 			setIndexId(getCategorySearcher().getIndexId());
@@ -788,64 +772,49 @@ public class BaseCategory extends BaseData implements Category, DataLoaded
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#isDirty()
 	 */
 	@Override
-	public boolean isDirty()
-	{
-		if( getCategorySearcher() != null && getCategorySearcher().getIndexId().equals(getIndexId()))
-		{
+	public boolean isDirty() {
+		if (getCategorySearcher() != null && getCategorySearcher().getIndexId().equals(getIndexId())) {
 			return false;
 		}
 		return true;
 	}
 
-	 /* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#equals(java.lang.Object)
 	 */
 	@Override
-	 public boolean equals(Object obj)
-	 {
-		 if( obj == this)
-		 {
-			 return true;
-		 }
-		 if(obj instanceof Category)
-		 {
-			 Category c = (Category)obj;
-			 String id = c.getId();
-			 if( id != null && id.equals(getId()))
-			 {
-				 return true;
-			 }
-		 }
-		 
-		 return false;
-	 }
+	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		}
+		if (obj instanceof Category) {
+			Category c = (Category) obj;
+			String id = c.getId();
+			if (id != null && id.equals(getId())) {
+				return true;
+			}
+		}
 
-	/* (non-Javadoc)
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#hasParent(java.util.Collection)
 	 */
 	@Override
-	public boolean hasParent(Collection<String> inCategorids)
-	{
-		for(String id : inCategorids)
-		{
-			if( hasParent(id) )
-			{
-				return true;
-			}
-		}
-		return false;
-
-	}
-	public boolean hasParentCategory(Collection<Category> inCategorids)
-	{
-		for(Category id : inCategorids)
-		{
-			if( hasParentCategory(id) )
-			{
+	public boolean hasParent(Collection<String> inCategorids) {
+		for (String id : inCategorids) {
+			if (hasParent(id)) {
 				return true;
 			}
 		}
@@ -853,119 +822,116 @@ public class BaseCategory extends BaseData implements Category, DataLoaded
 
 	}
 
-	/* (non-Javadoc)
+	public boolean hasParentCategory(Collection<Category> inCategorids) {
+		for (Category id : inCategorids) {
+			if (hasParentCategory(id)) {
+				return true;
+			}
+		}
+		return false;
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#hasSelf(java.util.Collection)
 	 */
 	@Override
-	public boolean hasSelf(Collection<String> inCategorids)
-	{
-		for(String id : inCategorids)
-		{
-			if( getId().equals( id) )
-			{
+	public boolean hasSelf(Collection<String> inCategorids) {
+		for (String id : inCategorids) {
+			if (getId().equals(id)) {
 				return true;
 			}
 		}
 		return false;
 
 	}
-	
-	public boolean hasSelfCategory(Collection<Category> inCategorids)
-	{
-		for(Category id : inCategorids)
-		{
-			if( equals( id) )
-			{
+
+	public boolean hasSelfCategory(Collection<Category> inCategorids) {
+		for (Category id : inCategorids) {
+			if (equals(id)) {
 				return true;
 			}
 		}
 		return false;
 
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#findValue(java.lang.String)
 	 */
 	@Override
-	public Object findValue(String inString)
-	{
+	public Object findValue(String inString) {
 		Object value = getValue(inString);
-		if(value != null){
+		if (value != null) {
 			return value;
 		}
-		
-		if(getParentCategory() != null){
+
+		if (getParentCategory() != null) {
 			value = getParentCategory().findValue(inString);
 		}
 		return value;
 	}
 
-	public Collection findValues(String inString)
-	{
+	public Collection findValues(String inString) {
 		Collection value = getValues(inString);
-		if(value != null)
-		{
+		if (value != null) {
 			return value;
 		}
-		
-		if(getParentCategory() != null)
-		{
+
+		if (getParentCategory() != null) {
 			value = getParentCategory().findValues(inString);
 		}
 		return value;
 	}
 
-	public Collection<String> collectValues(String inKey)
-	{
+	public Collection<String> collectValues(String inKey) {
 		Set<String> values = new HashSet<String>();
-		collectValues(inKey,values);
+		collectValues(inKey, values);
 		return values;
 	}
-	
-	public void collectValues(String inKey, Collection<String> values)
-	{
+
+	public void collectValues(String inKey, Collection<String> values) {
 		Collection morevalues = getValues(inKey);
-		if( morevalues != null)
-		{
+		if (morevalues != null) {
 			values.addAll(morevalues);
 		}
-		if( getParentCategory() != null)
-		{
-			getParentCategory().collectValues( inKey, values);
+		if (getParentCategory() != null) {
+			getParentCategory().collectValues(inKey, values);
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.entermediadb.asset.Category2#hasLoadedParent()
 	 */
 	@Override
-	public boolean hasLoadedParent()
-	{
+	public boolean hasLoadedParent() {
 		return fieldParentCategory != null;
 	}
-	public boolean hasLoadedChildren()
-	{
+
+	public boolean hasLoadedChildren() {
 		return fieldChildren != null;
 	}
-	
-	public boolean hasCountData()
-	{
-		if( getValue("countdata") == null )
-		{
+
+	public boolean hasCountData() {
+		if (getValue("countdata") == null) {
 			return false;
 		}
-		if( getValues("countdata").isEmpty() )
-		{
+		if (getValues("countdata").isEmpty()) {
 			return false;
 		}
 		return true;
 	}
-	public int getCounts()
-	{
-		if( hasCountData() )
-		{
+
+	public int getCounts() {
+		if (hasCountData()) {
 			int self = getCount();
-			for (Iterator iterator = getChildren().iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = getChildren().iterator(); iterator.hasNext();) {
 				BaseCategory child = (BaseCategory) iterator.next();
 				self = self + child.getCounts();
 			}
@@ -973,33 +939,26 @@ public class BaseCategory extends BaseData implements Category, DataLoaded
 		}
 		return 0;
 	}
-	
-	public int getCount()
-	{
+
+	public int getCount() {
 		Collection counted = getValues("countdata");
-		if( counted == null)
-		{
+		if (counted == null) {
 			return 0;
 		}
 		return counted.size();
 	}
-	
+
 	@Override
-	public List<Category> getDescendants()
-	{
+	public List<Category> getDescendants() {
 		List<Category> all = new ArrayList<>();
-		for (Iterator iterator = getChildren().iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = getChildren().iterator(); iterator.hasNext();) {
 			Category child = (Category) iterator.next();
 			all.add(child);
-			if (child.hasChildren())
-			{
+			if (child.hasChildren()) {
 				all.addAll(child.getDescendants());
 			}
 		}
 		return all;
 	}
 
-	
-	
 }

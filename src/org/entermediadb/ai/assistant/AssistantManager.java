@@ -46,22 +46,18 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 
-public class AssistantManager extends BaseAiManager
-{
+public class AssistantManager extends BaseAiManager {
 	private static final Log log = LogFactory.getLog(AssistantManager.class);
 
-	protected EntityManager getEntityManager()
-	{
+	protected EntityManager getEntityManager() {
 		return getMediaArchive().getEntityManager();
 	}
 
-	public void monitorChannels(ScriptLogger inLog) throws Exception
-	{
+	public void monitorChannels(ScriptLogger inLog) throws Exception {
 		MediaArchive archive = getMediaArchive();
 		User agent = archive.getUser("agent");
 		// TODO: REmove after a while, we checked in one for new installs
-		if (agent == null)
-		{
+		if (agent == null) {
 			agent = archive.getUserManager().createUser("agent", null);
 			agent.setFirstName("AI");
 			agent.setLastName("Guide");
@@ -77,27 +73,26 @@ public class AssistantManager extends BaseAiManager
 		Calendar now = DateStorageUtil.getStorageUtil().createCalendar();
 		now.add(Calendar.HOUR_OF_DAY, -1);
 
-		// TODO: Only process one "open" channel at a time. What ever the last one they clicked on
+		// TODO: Only process one "open" channel at a time. What ever the last one they
+		// clicked on
 
-		HitTracker allchannels = channels.query().orgroup("channeltype", "agentchat,agententitychat").after("refreshdate", now.getTime()).sort("refreshdateDown").search();
+		HitTracker allchannels = channels.query().orgroup("channeltype", "agentchat,agententitychat")
+				.after("refreshdate", now.getTime()).sort("refreshdateDown").search();
 
 		Searcher chats = archive.getSearcher("chatterbox");
-		for (Iterator iterator = allchannels.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = allchannels.iterator(); iterator.hasNext();) {
 			Data data = (Data) iterator.next();
 			// log.info("Processing channel: " + data.getId());
 			Data channel = (Data) archive.getCachedData("channel", data.getId());
 			if (channel.getName() == null) // Make smarter
 			{
-				Data lastusermessage = chats.query().exact("channel", channel.getId()).not("user", "agent").sort("dateDown").searchOne();
+				Data lastusermessage = chats.query().exact("channel", channel.getId()).not("user", "agent")
+						.sort("dateDown").searchOne();
 
-				if (lastusermessage != null)
-				{
+				if (lastusermessage != null) {
 					String message = lastusermessage.get("message");
-					if (message != null)
-					{
-						if (message.length() > 25)
-						{
+					if (message != null) {
+						if (message.length() > 25) {
 							message = message.substring(0, 25);
 						}
 						channel.setName(message.trim());
@@ -106,10 +101,10 @@ public class AssistantManager extends BaseAiManager
 				}
 			}
 
-			Collection mostrecents = chats.query().exact("channel", channel.getId()).orgroup("chatmessagestatus", "received refresh").sort("dateDown").search();
+			Collection mostrecents = chats.query().exact("channel", channel.getId())
+					.orgroup("chatmessagestatus", "received refresh").sort("dateDown").search();
 
-			if (mostrecents.isEmpty())
-			{
+			if (mostrecents.isEmpty()) {
 				continue;
 			}
 
@@ -117,29 +112,23 @@ public class AssistantManager extends BaseAiManager
 			// TODO: Use a local lock
 			Collection tosave = new ArrayList();
 
-			for (Iterator iterator2 = mostrecents.iterator(); iterator2.hasNext();)
-			{
+			for (Iterator iterator2 = mostrecents.iterator(); iterator2.hasNext();) {
 				Data lockdata = (Data) iterator2.next();
 				lockdata.setValue("chatmessagestatus", "processing");
 				tosave.add(lockdata);
 			}
 			archive.saveData("chatterbox", tosave);
 
-			for (Iterator iterator2 = mostrecents.iterator(); iterator2.hasNext();)
-			{
+			for (Iterator iterator2 = mostrecents.iterator(); iterator2.hasNext();) {
 				MultiValued mostrecent = (MultiValued) iterator2.next();
-				try
-				{
+				try {
 					Runnable runnable = new Runnable() { // Let the user broadcast finish
-						public void run()
-						{
+						public void run() {
 							respondToChannel(inLog, channel, mostrecent);
 						}
 					};
 					archive.getExecutorManager().execLater(runnable, 0);
-				}
-				catch (Throwable ex)
-				{
+				} catch (Throwable ex) {
 					log.error("Could not process message " + mostrecent, ex);
 				}
 			}
@@ -158,21 +147,19 @@ public class AssistantManager extends BaseAiManager
 	// return manager;
 	// }
 	//
-	public AgentContext loadContext(String inChannelId)
-	{
+	public AgentContext loadContext(String inChannelId) {
 		MediaArchive archive = getMediaArchive();
 		AgentContext agentContext = (AgentContext) archive.getCacheManager().get("agentcontext", inChannelId);
-		if (agentContext == null)
-		{
+		if (agentContext == null) {
 			Searcher searcher = archive.getSearcher("agentcontext");
-			agentContext = (AgentContext) searcher.query().exact("channel", inChannelId).searchOne(); // TODO Look in DB or cache from hitory?
-			if (agentContext == null)
-			{
+			agentContext = (AgentContext) searcher.query().exact("channel", inChannelId).searchOne(); // TODO Look in DB
+																										// or cache from
+																										// hitory?
+			if (agentContext == null) {
 				agentContext = (AgentContext) searcher.createNewData();
 			}
 			Data channel = getMediaArchive().getCachedData("channel", inChannelId);
-			if (channel == null)
-			{
+			if (channel == null) {
 				log.error("Should not have to create new channel");
 				channel = getMediaArchive().getSearcher("channel").createNewData();
 				channel.setId(inChannelId);
@@ -186,8 +173,7 @@ public class AssistantManager extends BaseAiManager
 			agentContext.setChannel(channel);
 			agentContext.setValue("channel", inChannelId);
 			String entitymoduleid = channel.get("searchtype");
-			if (channel.get("dataid") != null)
-			{
+			if (channel.get("dataid") != null) {
 				Data entity = archive.getCachedData(entitymoduleid, channel.get("dataid"));
 				Data entitymodule = archive.getCachedData("module", entitymoduleid);
 				agentContext.setValue("entityid", entity.getId());
@@ -202,8 +188,7 @@ public class AssistantManager extends BaseAiManager
 		return agentContext;
 	}
 
-	public void respondToChannel(ScriptLogger inLog, Data inChannel, MultiValued usermessage)
-	{
+	public void respondToChannel(ScriptLogger inLog, Data inChannel, MultiValued usermessage) {
 		MediaArchive archive = getMediaArchive();
 
 		AgentContext agentContext = loadContext(inChannel.getId());
@@ -215,14 +200,14 @@ public class AssistantManager extends BaseAiManager
 
 		// if (!llmconnection.isReady())
 		// {
-		// inLog.error("LLM Manager is not ready, check key for: " + llmconnection.getModelName() + ".
+		// inLog.error("LLM Manager is not ready, check key for: " +
+		// llmconnection.getModelName() + ".
 		// Cannot process channel: " + inChannel);
 		// return;
 		// }
 
 		String channeltype = inChannel.get("channeltype");
-		if (channeltype == null)
-		{
+		if (channeltype == null) {
 			channeltype = "agentchat";
 		}
 
@@ -250,46 +235,35 @@ public class AssistantManager extends BaseAiManager
 
 		// ChatServer server = (ChatServer) getMediaArchive().getBean("chatServer");
 		// Determine what will need to be processed
-		try
-		{
+		try {
 			String functionName = null;
 
 			String playbackentitymoduleid = inChannel.get("playbackentitymoduleid");
-			if (playbackentitymoduleid != null)
-			{
+			if (playbackentitymoduleid != null) {
 				functionName = "startCreator_" + playbackentitymoduleid;
 				Integer playbacksection = (Integer) inChannel.getValue("playbacksection");
-				if (playbacksection != null)
-				{
+				if (playbacksection != null) {
 					agentContext.addContext("playbacksection", playbacksection);
-				}
-				else
-				{
+				} else {
 					agentContext.addContext("playbacksection", 0);
 				}
-			}
-			else
-			{
+			} else {
 				String toplevelaifunctionid = agentContext.getTopLevelFunctionName();
-				if (toplevelaifunctionid == null)
-				{
+				if (toplevelaifunctionid == null) {
 					log.error("This should never happen");
 					return;
 				}
 			}
 			// agentContext.setFunctionName(functionName);
 			execCurrentFunctionFromChat(usermessage, agentmessage, agentContext);
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			agentmessage.setValue("message", ex.toString());
 			archive.saveData("chatterbox", agentmessage);
 			server.broadcastMessage(archive.getCatalogId(), agentmessage);
 		}
 	}
 
-	public MultiValued newAgentMessage(MultiValued usermessage, AgentContext agentContext)
-	{
+	public MultiValued newAgentMessage(MultiValued usermessage, AgentContext agentContext) {
 		MultiValued agentmessage = (MultiValued) getMediaArchive().getSearcher("chatterbox").createNewData();
 		agentmessage.setValue("user", "agent");
 		agentmessage.setValue("replytoid", usermessage.getId());
@@ -299,17 +273,15 @@ public class AssistantManager extends BaseAiManager
 		return agentmessage;
 	}
 
-	public void execCurrentFunctionFromChat(MultiValued usermessage, MultiValued agentmessage, AgentContext agentContext)
-	{
+	public void execCurrentFunctionFromChat(MultiValued usermessage, MultiValued agentmessage,
+			AgentContext agentContext) {
 		String functionName = agentContext.getFunctionName();
-		if (functionName == null)
-		{
+		if (functionName == null) {
 			functionName = agentContext.getNextFunctionName();
 		}
 		MultiValued function = (MultiValued) getMediaArchive().getCachedData("aifunction", functionName);
 
-		if (function == null)
-		{
+		if (function == null) {
 			log.info("No Ai function defined: " + functionName);
 			return;
 		}
@@ -322,14 +294,12 @@ public class AssistantManager extends BaseAiManager
 
 		String processingmessage = function.get("processingmessage");
 
-		if (processingmessage == null)
-		{
+		if (processingmessage == null) {
 			processingmessage = "Analyzing";
 		}
 
 		String processingtype = (String) agentContext.getContextValue("processingtype");
-		if (processingtype != null)
-		{
+		if (processingtype != null) {
 			processingmessage += " " + processingtype;
 		}
 
@@ -348,7 +318,8 @@ public class AssistantManager extends BaseAiManager
 		agentContext.addContext("usermessage", usermessage);
 		agentContext.addContext("agentmessage", agentmessage);
 
-		// agentContext.addContext("aisearchparams", agentContext.getAiSearchParams() ); // ??
+		// agentContext.addContext("aisearchparams", agentContext.getAiSearchParams() );
+		// // ??
 
 		String apphome = "/" + channel.get("chatapplicationid");
 		agentContext.addContext("apphome", apphome);
@@ -358,33 +329,23 @@ public class AssistantManager extends BaseAiManager
 		ChatMessageHandler handler = (ChatMessageHandler) getMediaArchive().getBean(bean);
 		LlmResponse response = null;
 		String messagePrefix = agentContext.getMessagePrefix();
-		try
-		{
+		try {
 			response = handler.processMessage(agentContext, agentmessage, function);
-		}
-		catch (HttpException e)
-		{
+		} catch (HttpException e) {
 			log.error("Error from " + bean + " running " + function.getId(), e);
 			response = handleError(agentContext, e.getMessage(), e.getErrorcode());
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			log.error("Error from " + bean + " running " + function.getId(), e);
 			response = handleError(agentContext, e.getMessage());
 		}
 
-		try
-		{
+		try {
 			String updatedMessage = null;
 
-			if (response != null && response.getMessage() != null)
-			{
-				if (messagePrefix != null)
-				{
+			if (response != null && response.getMessage() != null) {
+				if (messagePrefix != null) {
 					updatedMessage = messagePrefix + response.getMessage();
-				}
-				else
-				{
+				} else {
 					updatedMessage = response.getMessage();
 				}
 			}
@@ -392,18 +353,13 @@ public class AssistantManager extends BaseAiManager
 			agentmessage.setValue("message", updatedMessage); // Final message
 
 			String messageplain = agentmessage.get("messageplain");
-			if (response != null)
-			{
+			if (response != null) {
 				String newmessageplain = response.getMessagePlain();
 
-				if (newmessageplain != null)
-				{
-					if (messageplain == null)
-					{
+				if (newmessageplain != null) {
+					if (messageplain == null) {
 						messageplain = newmessageplain;
-					}
-					else
-					{
+					} else {
 						messageplain += " \n " + newmessageplain;
 					}
 					agentmessage.setValue("messageplain", messageplain);
@@ -425,11 +381,9 @@ public class AssistantManager extends BaseAiManager
 			Long waittime = 200l;
 
 			String agentNextFn = agentContext.getNextFunctionName();
-			if (agentNextFn != null)
-			{
+			if (agentNextFn != null) {
 				Long wait = agentContext.getWaitTime();
-				if (wait != null && wait instanceof Long)
-				{
+				if (wait != null && wait instanceof Long) {
 					agentContext.setWaitTime(null);
 					waittime = wait;
 					log.info("Previous function requested to wait " + waittime + " milliseconds");
@@ -440,38 +394,29 @@ public class AssistantManager extends BaseAiManager
 				execCurrentFunctionFromChat(usermessage, agentmessage, agentContext);
 				// Save the current state
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			log.error("Could not execute function: " + agentContext.getFunctionName(), e);
 			agentmessage.setValue("functionresponse", e.toString());
 			agentmessage.setValue("chatmessagestatus", "failed");
 			archive.saveData("chatterbox", agentmessage);
-		}
-		finally
-		{
+		} finally {
 			getMediaArchive().saveData("agentcontext", agentContext);
 		}
 	}
 
-	protected Collection<Data> loadChannelChatHistory(Data inChannel)
-	{
+	protected Collection<Data> loadChannelChatHistory(Data inChannel) {
 		HitTracker messages = getMediaArchive().query("chatterbox").exact("channel", inChannel).sort("dateUp").search();
 
 		Collection<Data> recent = new ArrayList<Data>();
 
-		for (Iterator iterator = messages.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = messages.iterator(); iterator.hasNext();) {
 			Data message = (Data) iterator.next();
-			if ("system".equals(message.get("messagetype")))
-			{
+			if ("system".equals(message.get("messagetype"))) {
 				continue;
 			}
-			if ("agent".equals(message.get("user")))
-			{
+			if ("agent".equals(message.get("user"))) {
 				String plainmessage = message.get("messageplain");
-				if (plainmessage == null || plainmessage.isEmpty())
-				{
+				if (plainmessage == null || plainmessage.isEmpty()) {
 					continue;
 				}
 			}
@@ -483,15 +428,16 @@ public class AssistantManager extends BaseAiManager
 
 	/*
 	 * public HitTracker getFunctions() { HitTracker hits =
-	 * getMediaArchive().query("aifunctions").exact("pipeline", "assistant").exact("enabled",
+	 * getMediaArchive().query("aifunctions").exact("pipeline",
+	 * "assistant").exact("enabled",
 	 * true).sort("ordering").cachedSearch(); return hits; }
 	 */
 
 	// TODO Not used?
-	public void addMcpVars(WebPageRequest inReq, AiSearch searchArgs)
-	{
+	public void addMcpVars(WebPageRequest inReq, AiSearch searchArgs) {
 		// Collection<String> keywords = searchArgs.getKeywords();
-		// inReq.putPageValue("keywordsstring", getResultsManager().joinWithAnd(keywords));
+		// inReq.putPageValue("keywordsstring",
+		// getResultsManager().joinWithAnd(keywords));
 		//
 		// Collection<Data> modules = searchArgs.getSelectedModules();
 		//
@@ -507,35 +453,43 @@ public class AssistantManager extends BaseAiManager
 		// }
 		// }
 		//
-		// inReq.putPageValue("modulenamestext", getResultsManager().joinWithAnd(moduleNames));
+		// inReq.putPageValue("modulenamestext",
+		// getResultsManager().joinWithAnd(moduleNames));
 
 	}
 
 	/*
-	 * public String generateReport(JSONObject arguments) throws Exception { Collection<String> keywords
+	 * public String generateReport(JSONObject arguments) throws Exception {
+	 * Collection<String> keywords
 	 * = getResultsManager().parseKeywords(arguments.get("keywords"));
 	 * 
 	 * MediaArchive archive = getMediaArchive();
 	 * 
-	 * HitTracker pdfs = archive.query("asset").freeform("description", String.join(" ",
+	 * HitTracker pdfs = archive.query("asset").freeform("description",
+	 * String.join(" ",
 	 * keywords)).search();
 	 * 
 	 * Collection<String> pdfTexts = new ArrayList<String>();
 	 * 
-	 * for (Iterator iterator = pdfs.iterator(); iterator.hasNext();) { Data pdf = (Data)
-	 * iterator.next(); String text = (String) pdf.getValue("fulltext"); if(text != null &&
+	 * for (Iterator iterator = pdfs.iterator(); iterator.hasNext();) { Data pdf =
+	 * (Data)
+	 * iterator.next(); String text = (String) pdf.getValue("fulltext"); if(text !=
+	 * null &&
 	 * text.length() > 0) { pdfTexts.add(text); } log.info(text); }
 	 * 
 	 * String fullText = String.join("\n\n", pdfTexts);
 	 * 
 	 * if(fullText.replaceAll("\\s|\\n", "").length() == 0) { return null; }
 	 * 
-	 * AgentContext agentcontext = new AgentContext(); agentcontext.addContext("fulltext", fullText);
+	 * AgentContext agentcontext = new AgentContext();
+	 * agentcontext.addContext("fulltext", fullText);
 	 * 
-	 * String model = archive.getCatalogSettingValue("llmmcpmodel"); if(model == null) { model =
+	 * String model = archive.getCatalogSettingValue("llmmcpmodel"); if(model ==
+	 * null) { model =
 	 * "gpt-5-nano"; } agentcontext.addContext("model", model);
 	 * 
-	 * LlmConnection llmconnection = (LlmConnection) archive.getBean("openaiConnection");
+	 * LlmConnection llmconnection = (LlmConnection)
+	 * archive.getBean("openaiConnection");
 	 * 
 	 * String chattemplate = "/" + archive.getMediaDbId() +
 	 * "/ai/openai/mcp/prompts/generate_report.json"; LlmResponse response =
@@ -547,11 +501,11 @@ public class AssistantManager extends BaseAiManager
 	 */
 
 	// TODO Not used?
-	public Collection<PropertyDetail> getCommonFields(String inSearchtype)
-	{
+	public Collection<PropertyDetail> getCommonFields(String inSearchtype) {
 		Collection<PropertyDetail> fields = new ArrayList();
 		PropertyDetail pd = getMediaArchive().getSearcher(inSearchtype).getPropertyDetails().createDetail("title");
-		// Collection<String> fieldids = Arrays.from("title","description","keywords","caption","date");
+		// Collection<String> fieldids =
+		// Arrays.from("title","description","keywords","caption","date");
 		fields.add(pd);
 
 		// fields.add("description");
@@ -576,14 +530,12 @@ public class AssistantManager extends BaseAiManager
 	//
 	// }
 
-	public Collection<GuideStatus> getGuideStatus(Data inEntityModule, Data inEntity)
-	{
+	public Collection<GuideStatus> getGuideStatus(Data inEntityModule, Data inEntity) {
 		Collection<GuideStatus> statuses = new ArrayList<GuideStatus>();
 
 		Collection<Data> found = findEmbeddingEnabledEntityIds(inEntityModule.getId(), inEntity.getId(), null);
 
-		if (found.isEmpty())
-		{
+		if (found.isEmpty()) {
 			return statuses;
 		}
 
@@ -591,14 +543,12 @@ public class AssistantManager extends BaseAiManager
 
 		Map<String, Collection<MultiValued>> missingEmbeddings = new HashMap();
 
-		for (Iterator iterator = found.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = found.iterator(); iterator.hasNext();) {
 			MultiValued data = (MultiValued) iterator.next();
 			String searchtype = data.get("entitysourcetype");
 
 			GuideStatus status = statusMap.get(searchtype);
-			if (status == null)
-			{
+			if (status == null) {
 				status = new GuideStatus();
 				status.setSearchType(searchtype);
 
@@ -608,21 +558,16 @@ public class AssistantManager extends BaseAiManager
 			}
 
 			String embeddingstatus = data.get("entityembeddingstatus");
-			if (embeddingstatus == null)
-			{
+			if (embeddingstatus == null) {
 				Collection<MultiValued> missing = missingEmbeddings.get(searchtype);
-				if (missing == null)
-				{
+				if (missing == null) {
 					missing = new ArrayList();
 					missingEmbeddings.put(searchtype, missing);
 				}
 				missing.add(data);
 				status.setCountPending(status.getCountPending() + 1);
-			}
-			else
-			{
-				switch (embeddingstatus)
-				{
+			} else {
+				switch (embeddingstatus) {
 					case "embedded":
 						status.setCountEmbedded(status.getCountEmbedded() + 1);
 						break;
@@ -647,19 +592,16 @@ public class AssistantManager extends BaseAiManager
 		return statuses;
 	}
 
-	public Collection<String> findDocIdsForEntity(String parentmoduleid, String inEntityId)
-	{
+	public Collection<String> findDocIdsForEntity(String parentmoduleid, String inEntityId) {
 		return findDocIdsForEntity(parentmoduleid, inEntityId, "embedded");
 	}
 
-	public Collection<String> findDocIdsForEntity(String parentmoduleid, String inEntityId, String embeddingType)
-	{
+	public Collection<String> findDocIdsForEntity(String parentmoduleid, String inEntityId, String embeddingType) {
 		Collection<Data> docs = findEmbeddingEnabledEntityIds(parentmoduleid, inEntityId, embeddingType);
 
 		JSONArray docids = new JSONArray();
 
-		for (Iterator iterator = docs.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = docs.iterator(); iterator.hasNext();) {
 			MultiValued doc = (MultiValued) iterator.next();
 			String type = doc.get("entitysourcetype");
 			String docid = type + "_" + doc.getId();
@@ -669,8 +611,8 @@ public class AssistantManager extends BaseAiManager
 		return docids;
 	}
 
-	public Collection<Data> findEmbeddingEnabledEntityIds(String parentmoduleid, String inEntityId, String embeddingType)
-	{
+	public Collection<Data> findEmbeddingEnabledEntityIds(String parentmoduleid, String inEntityId,
+			String embeddingType) {
 		MediaArchive archive = getMediaArchive();
 
 		// Data inEntityModule = archive.getCachedData("module", parentmoduleid);
@@ -680,52 +622,43 @@ public class AssistantManager extends BaseAiManager
 
 		// Always Check itself first
 		PropertyDetail detail = getMediaArchive().getSearcher(parentmoduleid).getDetail("entityembeddingstatus");
-		if (detail != null)
-		{
+		if (detail != null) {
 			String mystatus = inEntity.get("entityembeddingstatus");
 
-			if (embeddingType == null || embeddingType.equals(mystatus))
-			{
+			if (embeddingType == null || embeddingType.equals(mystatus)) {
 				docs.add(inEntity);
 			}
 		}
 
-		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", parentmoduleid).exact("systemdefined", false).cachedSearch();
+		Collection detailsviews = getMediaArchive().query("view").exact("moduleid", parentmoduleid)
+				.exact("systemdefined", false).cachedSearch();
 
-		for (Iterator iterator = detailsviews.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = detailsviews.iterator(); iterator.hasNext();) {
 			Data view = (Data) iterator.next();
 
 			String listid = view.get("rendertable");
-			if (listid != null)
-			{
+			if (listid != null) {
 				String renderexternalid = view.get("renderexternalid");
 				String renderinternalid = view.get("renderinternalid");
-				if (renderinternalid == null)
-				{
+				if (renderinternalid == null) {
 					renderinternalid = "id";
 				}
 				String parentid = inEntity.get(renderinternalid);
 
-				if (renderexternalid == null || parentid == null)
-				{
+				if (renderexternalid == null || parentid == null) {
 					continue;
 				}
 
 				QueryBuilder query = archive.query(listid).exact(renderexternalid, parentid);
-				if (embeddingType == null)
-				{
+				if (embeddingType == null) {
 					query.exists("entityembeddingstatus");
-				}
-				else
-				{
+				} else {
 					query.exact("entityembeddingstatus", embeddingType);
 				}
 
 				HitTracker hits = query.search();
 
-				for (Iterator iterator2 = hits.iterator(); iterator2.hasNext();)
-				{
+				for (Iterator iterator2 = hits.iterator(); iterator2.hasNext();) {
 					MultiValued doc = (MultiValued) iterator2.next();
 
 					docs.add(doc);
@@ -736,20 +669,17 @@ public class AssistantManager extends BaseAiManager
 		return docs;
 	}
 
-	public AutomationManager getAutomationManager()
-	{
+	public AutomationManager getAutomationManager() {
 		AutomationManager manager = (AutomationManager) getMediaArchive().getBean("automationManager");
 		return manager;
 	}
 
-	public EmbeddingManager getEmbeddingManager()
-	{
+	public EmbeddingManager getEmbeddingManager() {
 		EmbeddingManager manager = (EmbeddingManager) getMediaArchive().getBean("embeddingManager");
 		return manager;
 	}
 
-	public void sendSystemMessage(AgentContext inContext, String inUser, String message)
-	{
+	public void sendSystemMessage(AgentContext inContext, String inUser, String message) {
 		MediaArchive archive = getMediaArchive();
 
 		// currentchannel set next function
@@ -770,56 +700,45 @@ public class AssistantManager extends BaseAiManager
 
 	}
 
-	public void monitorAiServers(ScriptLogger inLog)
-	{
+	public void monitorAiServers(ScriptLogger inLog) {
 		Collection<Data> currentservers = getMediaArchive().query("aiserver").exact("monitorspeed", true).search();
 
 		Map<String, Integer> speeds = new HashMap();
 		ArrayList tosave = new ArrayList();
 
-		for (Data server : currentservers)
-		{
+		for (Data server : currentservers) {
 			String serverroot = server.get("serverroot");
 			String address = serverroot + "/health";
 
 			Integer speed = speeds.get(serverroot);
-			if (speed == null || speed == 0)
-			{
+			if (speed == null || speed == 0) {
 				HttpSharedConnection connection = new HttpSharedConnection();
 				String key = server.get("serverapikey");
-				if (key != null)
-				{
+				if (key != null) {
 					connection.addSharedHeader("Authorization", "Bearer " + server);
 				}
 				long start = System.currentTimeMillis();
-				try
-				{
+				try {
 					JSONObject got = connection.getJson(address);
-					if (got != null)
-					{
+					if (got != null) {
 						String ok = (String) got.get("status");
-						if ("ok".equals(ok))
-						{
+						if ("ok".equals(ok)) {
 							long end = System.currentTimeMillis();
 							Integer diff = Math.round(end - start);
 							inLog.info(address + " ok run in " + diff + " milliseconds");
 							speeds.put(serverroot, diff);
 						}
 					}
-				}
-				catch (Exception ex)
-				{
+				} catch (Exception ex) {
 					inLog.info(address + " had error " + ex);
 					speeds.put(serverroot, Integer.MAX_VALUE); // Push back
 					// Ignore
 				}
 			}
 		}
-		if (!speeds.isEmpty())
-		{
+		if (!speeds.isEmpty()) {
 			inLog.info("Saving " + speeds);
-			for (Data server : currentservers)
-			{
+			for (Data server : currentservers) {
 				String serverroot = server.get("serverroot");
 				Integer speed = speeds.get(serverroot);
 				server.setValue("ordering", speed);
@@ -830,12 +749,10 @@ public class AssistantManager extends BaseAiManager
 		}
 	}
 
-	public void resetAiServers(ScriptLogger inLog)
-	{
+	public void resetAiServers(ScriptLogger inLog) {
 		HashMap<String, String> keys = new HashMap();
 		Collection<Data> currentservers = getMediaArchive().query("aiserver").all().search();
-		for (Iterator iterator = currentservers.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = currentservers.iterator(); iterator.hasNext();) {
 			Data data = (Data) iterator.next();
 			keys.put(data.getId(), data.get("serverapikey"));
 		}
@@ -845,12 +762,10 @@ public class AssistantManager extends BaseAiManager
 
 		List tosave = new ArrayList();
 		currentservers = getMediaArchive().query("aiserver").all().search();
-		for (Iterator iterator = currentservers.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = currentservers.iterator(); iterator.hasNext();) {
 			Data data = (Data) iterator.next();
 			String key = keys.get(data.getId());
-			if (key != null && !key.equals(data.get("serverapikey")))
-			{
+			if (key != null && !key.equals(data.get("serverapikey"))) {
 				data.setValue("serverapikey", key);
 				tosave.add(data);
 
@@ -859,8 +774,7 @@ public class AssistantManager extends BaseAiManager
 		aiserverSearcher.saveAllData(tosave, null);
 	}
 
-	public void addMissingFunctions(ScriptLogger inLog)
-	{
+	public void addMissingFunctions(ScriptLogger inLog) {
 		Collection<Data> modules = getMediaArchive().getList("module");
 		List tosave = new ArrayList();
 
@@ -874,35 +788,28 @@ public class AssistantManager extends BaseAiManager
 		List usetext = new ArrayList();
 		int existing = 0;
 		int created = 0;
-		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = modules.iterator(); iterator.hasNext();) {
 
 			MultiValued module = (MultiValued) iterator.next();
 			String method = module.get("aicreationmethod");
 
-			if (method == null)
-			{
+			if (method == null) {
 				continue;
 			}
 
 			String id = "";
 			String messagehandler = "";
 
-			if (method.equals("fieldsonly"))
-			{
+			if (method.equals("fieldsonly")) {
 				id = "fieldsonly_welcome_" + module.getId();
 				messagehandler = "entityCreationManager";
+			} else if (method.equals("smartcreator")) {
+				id = "smartcreator_welcome_" + module.getId();
+				messagehandler = "smartCreatorManager";
 			}
-			else
-				if (method.equals("smartcreator"))
-				{
-					id = "smartcreator_welcome_" + module.getId();
-					messagehandler = "smartCreatorManager";
-				}
 
 			Data exists = getMediaArchive().getData("aifunction", id);
-			if (exists != null)
-			{
+			if (exists != null) {
 				existing++;
 				inLog.info(id + " AI function exists" + module.getName());
 				continue;
@@ -924,26 +831,37 @@ public class AssistantManager extends BaseAiManager
 			inLog.info(id + " AI function created for " + module.getName());
 
 			/*
-			 * using generic from now on if(method.equals("smartcreator")) { id = "smartcreator_parse_" +
+			 * using generic from now on if(method.equals("smartcreator")) { id =
+			 * "smartcreator_parse_" +
 			 * module.getId(); Data create_aifunction =
-			 * getMediaArchive().getSearcher("aifunction").createNewData(); create_aifunction.setId(id);
+			 * getMediaArchive().getSearcher("aifunction").createNewData();
+			 * create_aifunction.setId(id);
 			 * create_aifunction.setValue("messagehandler", messagehandler);
-			 * create_aifunction.setValue("toplevel", false); create_aifunction.setValue("processingmessage",
-			 * "Parsing new " + module.getName()); create_aifunction.setName("Parse " + module.getName());
+			 * create_aifunction.setValue("toplevel", false);
+			 * create_aifunction.setValue("processingmessage",
+			 * "Parsing new " + module.getName()); create_aifunction.setName("Parse " +
+			 * module.getName());
 			 * tosave.add(create_aifunction); usetext.add(create_aifunction);
 			 * 
 			 * id = "smartcreator_createoutline_" + module.getId(); create_aifunction =
-			 * getMediaArchive().getSearcher("aifunction").createNewData(); create_aifunction.setId(id);
+			 * getMediaArchive().getSearcher("aifunction").createNewData();
+			 * create_aifunction.setId(id);
 			 * create_aifunction.setValue("messagehandler", messagehandler);
-			 * create_aifunction.setValue("toplevel", false); create_aifunction.setValue("processingmessage",
-			 * "Creating new " + module.getName()); create_aifunction.setName("Createing " + module.getName());
+			 * create_aifunction.setValue("toplevel", false);
+			 * create_aifunction.setValue("processingmessage",
+			 * "Creating new " + module.getName()); create_aifunction.setName("Createing " +
+			 * module.getName());
 			 * tosave.add(create_aifunction); usetext.add(create_aifunction);
 			 * 
 			 * id = "smartcreator_play_" + module.getId(); Data play_aifunction =
-			 * getMediaArchive().getSearcher("aifunction").createNewData(); play_aifunction.setId(id);
-			 * play_aifunction.setValue("messagehandler", messagehandler); play_aifunction.setValue("toplevel",
-			 * true); play_aifunction.setValue("processingmessage", "Playing " + module.getName());
-			 * play_aifunction.setName("View " + module.getName()); tosave.add(play_aifunction); }
+			 * getMediaArchive().getSearcher("aifunction").createNewData();
+			 * play_aifunction.setId(id);
+			 * play_aifunction.setValue("messagehandler", messagehandler);
+			 * play_aifunction.setValue("toplevel",
+			 * true); play_aifunction.setValue("processingmessage", "Playing " +
+			 * module.getName());
+			 * play_aifunction.setName("View " + module.getName());
+			 * tosave.add(play_aifunction); }
 			 */
 
 		}
@@ -953,16 +871,12 @@ public class AssistantManager extends BaseAiManager
 
 		Set tosaveservers = new HashSet();
 		Collection servers = getMediaArchive().getList("aiserver");
-		for (Iterator iterator = servers.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = servers.iterator(); iterator.hasNext();) {
 			MultiValued server = (MultiValued) iterator.next();
-			if (server.getId().startsWith("llamat"))
-			{
-				for (Iterator iterator2 = usetext.iterator(); iterator2.hasNext();)
-				{
+			if (server.getId().startsWith("llamat")) {
+				for (Iterator iterator2 = usetext.iterator(); iterator2.hasNext();) {
 					Data function = (Data) iterator2.next();
-					if (!server.hasValue(function.getId()))
-					{
+					if (!server.hasValue(function.getId())) {
 						server.addValue("aifunctions", function.getId());
 						tosaveservers.add(server);
 					}
@@ -981,11 +895,9 @@ public class AssistantManager extends BaseAiManager
 
 	}
 
-	public Collection<String> getModulesAsEnum()
-	{
+	public Collection<String> getModulesAsEnum() {
 		Collection<String> nameenums = new HashSet<String>();
-		for (Data module : loadSchema().getModules())
-		{
+		for (Data module : loadSchema().getModules()) {
 			String name = module.getName();
 			nameenums.add(name);
 

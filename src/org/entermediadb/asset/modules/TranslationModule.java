@@ -37,7 +37,7 @@ public class TranslationModule extends BaseModule {
 			"uk", "vi", "cy-GB" };
 	Collection list = Arrays.asList(languages);
 
-	public void listFilesInBase(WebPageRequest inReq) throws Exception{
+	public void listFilesInBase(WebPageRequest inReq) throws Exception {
 		// get a list
 		String path = "/WEB-INF/base";
 		String lang = inReq.getRequestParameter("lang");
@@ -48,19 +48,17 @@ public class TranslationModule extends BaseModule {
 			Page page = getPageManager().getPage(path);
 			Properties props = new Properties();
 			String content = page.getContent();
-			
+
 			Reader reader = page.getReader();
-			try
-			{
+			try {
 				props.load(reader);
-			}
-			catch( Throwable ex)
-			{
+			} catch (Throwable ex) {
 				FileUtils.safeClose(reader);
 			}
 			out.append(path);
 			out.append("\n");
-			//props.list(new PrintWriter(out));  //This doesn't have the / in it - it needs the escape values.
+			// props.list(new PrintWriter(out)); //This doesn't have the / in it - it needs
+			// the escape values.
 			props.store(out, null);
 			out.append("\n===\n");
 		}
@@ -70,7 +68,7 @@ public class TranslationModule extends BaseModule {
 	}
 
 	public List gatherTranslations(String inPath, String inlang) {
-		
+
 		List translations = new ArrayList();
 		List children = getPageManager().getChildrenPaths(inPath);
 		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
@@ -117,7 +115,7 @@ public class TranslationModule extends BaseModule {
 						filepath = line;
 						continue;
 					}
-					
+
 					String existing = "";
 					if (page.exists()) {
 						Reader reader = page.getReader();
@@ -128,9 +126,7 @@ public class TranslationModule extends BaseModule {
 						existing = out.toString();
 					}
 					String newcontent = textout.toString();
-					
-					
-					
+
 					if (!newcontent.equals(existing)) {
 						if (addnew) {
 							// merge together old and new
@@ -164,7 +160,7 @@ public class TranslationModule extends BaseModule {
 
 	public Translation getTranslations(WebPageRequest inReq)
 			throws OpenEditException {
-		Translation trans = (Translation)getModuleManager().getBean("translator");
+		Translation trans = (Translation) getModuleManager().getBean("translator");
 
 		// get the languages
 		init(inReq, trans);
@@ -237,8 +233,7 @@ public class TranslationModule extends BaseModule {
 
 	public void changeLanguage(WebPageRequest inReq) throws Exception {
 		String newlang = inReq.getRequestParameter("newlang");
-		if( newlang != null)
-		{
+		if (newlang != null) {
 			getTranslations(inReq);
 			if (newlang != null) {
 				if (newlang.equals("locale_browser")) {
@@ -289,7 +284,7 @@ public class TranslationModule extends BaseModule {
 
 	public void loadBrowserLanguage(WebPageRequest inReq) {
 		HttpServletRequest req = inReq.getRequest();
-		
+
 		if (req != null) {
 			Browser browser = new Browser(req.getHeader("User-Agent"));
 			browser.setHttpServletRequest(req);

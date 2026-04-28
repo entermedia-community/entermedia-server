@@ -41,7 +41,8 @@ public class ParagraphParser extends AbstractBlockParser {
 
     @Override
     public void addSourceSpan(SourceSpan sourceSpan) {
-        // Some source spans might belong to link reference definitions, others to the paragraph.
+        // Some source spans might belong to link reference definitions, others to the
+        // paragraph.
         // The parser will handle that.
         linkReferenceDefinitionParser.addSourceSpan(sourceSpan);
     }

@@ -12,29 +12,33 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * The node renderer that renders all the core nodes (comes last in the order of node renderers).
+ * The node renderer that renders all the core nodes (comes last in the order of
+ * node renderers).
  * <p>
- * Note that while sometimes it would be easier to record what kind of syntax was used on parsing (e.g. ATX vs Setext
- * heading), this renderer is intended to also work for documents that were created by directly creating
- * {@link Node Nodes} instead. So in order to support that, it sometimes needs to do a bit more work.
+ * Note that while sometimes it would be easier to record what kind of syntax
+ * was used on parsing (e.g. ATX vs Setext
+ * heading), this renderer is intended to also work for documents that were
+ * created by directly creating
+ * {@link Node Nodes} instead. So in order to support that, it sometimes needs
+ * to do a bit more work.
  */
 public class CoreMarkdownNodeRenderer extends AbstractVisitor implements NodeRenderer {
 
     private final AsciiMatcher textEscape;
     private final CharMatcher textEscapeInHeading;
-    private final CharMatcher linkDestinationNeedsAngleBrackets =
-            AsciiMatcher.builder().c(' ').c('(').c(')').c('<').c('>').c('\n').c('\\').build();
-    private final CharMatcher linkDestinationEscapeInAngleBrackets =
-            AsciiMatcher.builder().c('<').c('>').c('\n').c('\\').build();
-    private final CharMatcher linkTitleEscapeInQuotes =
-            AsciiMatcher.builder().c('"').c('\n').c('\\').build();
+    private final CharMatcher linkDestinationNeedsAngleBrackets = AsciiMatcher.builder().c(' ').c('(').c(')').c('<')
+            .c('>').c('\n').c('\\').build();
+    private final CharMatcher linkDestinationEscapeInAngleBrackets = AsciiMatcher.builder().c('<').c('>').c('\n')
+            .c('\\').build();
+    private final CharMatcher linkTitleEscapeInQuotes = AsciiMatcher.builder().c('"').c('\n').c('\\').build();
 
     private final Pattern orderedListMarkerPattern = Pattern.compile("^([0-9]{1,9})([.)])");
 
     protected final MarkdownNodeRendererContext context;
     private final MarkdownWriter writer;
     /**
-     * If we're currently within a {@link BulletList} or {@link OrderedList}, this keeps the context of that list.
+     * If we're currently within a {@link BulletList} or {@link OrderedList}, this
+     * keeps the context of that list.
      * It has a parent field so that it can represent a stack (for nested lists).
      */
     private ListHolder listHolder;
@@ -69,8 +73,7 @@ public class CoreMarkdownNodeRenderer extends AbstractVisitor implements NodeRen
                 SoftLineBreak.class,
                 StrongEmphasis.class,
                 Text.class,
-                ThematicBreak.class
-        );
+                ThematicBreak.class);
     }
 
     @Override
@@ -108,7 +111,8 @@ public class CoreMarkdownNodeRenderer extends AbstractVisitor implements NodeRen
                 visitChildren(heading);
                 writer.line();
                 if (heading.getLevel() == 1) {
-                    // Note that it would be nice to match the length of the contents instead of just using 3, but that's
+                    // Note that it would be nice to match the length of the contents instead of
+                    // just using 3, but that's
                     // not easy.
                     writer.raw("===");
                 } else {
@@ -132,7 +136,8 @@ public class CoreMarkdownNodeRenderer extends AbstractVisitor implements NodeRen
     @Override
     public void visit(IndentedCodeBlock indentedCodeBlock) {
         String literal = indentedCodeBlock.getLiteral();
-        // We need to respect line prefixes which is why we need to write it line by line (e.g. an indented code block
+        // We need to respect line prefixes which is why we need to write it line by
+        // line (e.g. an indented code block
         // within a block quote)
         writer.writePrefix("    ");
         writer.pushPrefix("    ");
@@ -157,13 +162,17 @@ public class CoreMarkdownNodeRenderer extends AbstractVisitor implements NodeRen
             // If we have a known fence length, use it
             openingFenceLength = codeBlock.getOpeningFenceLength();
         } else {
-            // Otherwise, calculate the closing fence length pessimistically, e.g. if the code block itself contains a
-            // line with ```, we need to use a fence of length 4. If ``` occurs with non-whitespace characters on a
-            // line, we technically don't need a longer fence, but it's not incorrect to do so.
+            // Otherwise, calculate the closing fence length pessimistically, e.g. if the
+            // code block itself contains a
+            // line with ```, we need to use a fence of length 4. If ``` occurs with
+            // non-whitespace characters on a
+            // line, we technically don't need a longer fence, but it's not incorrect to do
+            // so.
             int fenceCharsInLiteral = findMaxRunLength(fenceChar, literal);
             openingFenceLength = Math.max(fenceCharsInLiteral + 1, 3);
         }
-        int closingFenceLength = codeBlock.getClosingFenceLength() != null ? codeBlock.getClosingFenceLength() : openingFenceLength;
+        int closingFenceLength = codeBlock.getClosingFenceLength() != null ? codeBlock.getClosingFenceLength()
+                : openingFenceLength;
 
         String openingFence = repeat(fenceChar, openingFenceLength);
         String closingFence = repeat(fenceChar, closingFenceLength);
@@ -275,13 +284,16 @@ public class CoreMarkdownNodeRenderer extends AbstractVisitor implements NodeRen
     @Override
     public void visit(Code code) {
         String literal = code.getLiteral();
-        // If the literal includes backticks, we can surround them by using one more backtick.
+        // If the literal includes backticks, we can surround them by using one more
+        // backtick.
         int backticks = findMaxRunLength("`", literal);
         for (int i = 0; i < backticks + 1; i++) {
             writer.raw('`');
         }
-        // If the literal starts or ends with a backtick, surround it with a single space.
-        // If it starts and ends with a space (but is not only spaces), add an additional space (otherwise they would
+        // If the literal starts or ends with a backtick, surround it with a single
+        // space.
+        // If it starts and ends with a space (but is not only spaces), add an
+        // additional space (otherwise they would
         // get removed on parsing).
         boolean addSpace = literal.startsWith("`") || literal.endsWith("`") ||
                 (literal.startsWith(" ") && literal.endsWith(" ") && Characters.hasNonSpace(literal));
@@ -345,13 +357,19 @@ public class CoreMarkdownNodeRenderer extends AbstractVisitor implements NodeRen
 
     @Override
     public void visit(Text text) {
-        // Text is tricky. In Markdown special characters (`-`, `#` etc.) can be escaped (`\-`, `\#` etc.) so that
-        // they're parsed as plain text. Currently, whether a character was escaped or not is not recorded in the Node,
-        // so here we don't know. If we just wrote out those characters unescaped, the resulting Markdown would change
+        // Text is tricky. In Markdown special characters (`-`, `#` etc.) can be escaped
+        // (`\-`, `\#` etc.) so that
+        // they're parsed as plain text. Currently, whether a character was escaped or
+        // not is not recorded in the Node,
+        // so here we don't know. If we just wrote out those characters unescaped, the
+        // resulting Markdown would change
         // meaning (turn into a list item, heading, etc.).
-        // You might say "Why not store that in the Node when parsing", but that wouldn't work for the use case where
-        // nodes are constructed directly instead of via parsing. This renderer needs to work for that too.
-        // So currently, when in doubt, we escape. For special characters only occurring at the beginning of a line,
+        // You might say "Why not store that in the Node when parsing", but that
+        // wouldn't work for the use case where
+        // nodes are constructed directly instead of via parsing. This renderer needs to
+        // work for that too.
+        // So currently, when in doubt, we escape. For special characters only occurring
+        // at the beginning of a line,
         // we only escape them then (we wouldn't want to escape every `.` for example).
         String literal = text.getLiteral();
         if (writer.isAtLineStart() && !literal.isEmpty()) {
@@ -370,7 +388,8 @@ public class CoreMarkdownNodeRenderer extends AbstractVisitor implements NodeRen
                     break;
                 }
                 case '=': {
-                    // Would be ambiguous with a Setext heading, escape unless it's the first line in the block
+                    // Would be ambiguous with a Setext heading, escape unless it's the first line
+                    // in the block
                     if (text.getPrevious() != null) {
                         writer.raw("\\=");
                         literal = literal.substring(1);
@@ -457,7 +476,8 @@ public class CoreMarkdownNodeRenderer extends AbstractVisitor implements NodeRen
         return false;
     }
 
-    // Keep for Android compat (String.repeat only available on Android 12 and later)
+    // Keep for Android compat (String.repeat only available on Android 12 and
+    // later)
     private static String repeat(String s, int count) {
         StringBuilder sb = new StringBuilder(s.length() * count);
         for (int i = 0; i < count; i++) {
@@ -467,12 +487,14 @@ public class CoreMarkdownNodeRenderer extends AbstractVisitor implements NodeRen
     }
 
     private static List<String> getLines(String literal) {
-        // Without -1, split would discard all trailing empty strings, which is not what we want, e.g. it would
+        // Without -1, split would discard all trailing empty strings, which is not what
+        // we want, e.g. it would
         // return the same result for "abc", "abc\n" and "abc\n\n".
         // With -1, it returns ["abc"], ["abc", ""] and ["abc", "", ""].
         String[] parts = literal.split("\n", -1);
         if (parts[parts.length - 1].isEmpty()) {
-            // But we don't want the last empty string, as "\n" is used as a line terminator (not a separator),
+            // But we don't want the last empty string, as "\n" is used as a line terminator
+            // (not a separator),
             // so return without the last element.
             return List.of(parts).subList(0, parts.length - 1);
         } else {

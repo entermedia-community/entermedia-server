@@ -9,13 +9,11 @@ import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.openedit.page.Page;
 
-public class DefaultConversionManager extends BaseConversionManager
-{
+public class DefaultConversionManager extends BaseConversionManager {
 	private static final Log log = LogFactory.getLog(DefaultConversionManager.class);
 
-	public ConvertResult transcode(ConvertInstructions inStructions)
-	{
-		//if output == jpg and no time offset - standard
+	public ConvertResult transcode(ConvertInstructions inStructions) {
+		// if output == jpg and no time offset - standard
 
 		String mime = getMediaArchive().getMimeTypeIcon(inStructions.getAsset().getFileFormat());
 		String thumbpath = inStructions.get("themeprefix") + "/images/mimetypes/" + mime + ".png";
@@ -27,11 +25,10 @@ public class DefaultConversionManager extends BaseConversionManager
 
 		String outputtarget = inStructions.getOutputFile().getName();
 		inStructions.setInputFile(page.getContentItem());
-		String outpath = inStructions.get("themeprefix") + "/images/mimetypes/" + mime +  outputtarget;
+		String outpath = inStructions.get("themeprefix") + "/images/mimetypes/" + mime + outputtarget;
 		Page out = getMediaArchive().getPageManager().getPage(outpath);
-				
-		if (!out.exists())
-		{
+
+		if (!out.exists()) {
 			inStructions.setOutputFile(out.getContentItem());
 			ConvertResult result = transcoder.createOutput(inStructions);
 			return result;
@@ -46,8 +43,7 @@ public class DefaultConversionManager extends BaseConversionManager
 	}
 
 	@Override
-	protected String getRenderType()
-	{
+	protected String getRenderType() {
 		return "default";
 	}
 

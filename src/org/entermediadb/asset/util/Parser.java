@@ -3,7 +3,6 @@
  */
 package org.entermediadb.asset.util;
 
-
 /*
  * Copyright (c) Ian F. Darwin, http://www.darwinsys.com/, 1996-2002.
  * All rights reserved. Software written by Ian F. Darwin and others.
@@ -42,7 +41,8 @@ import java.io.BufferedReader;
 
 /* Simple demo of CSV parser class.
  */
-/** Parse comma-separated values (CSV), a common Windows file format.
+/**
+ * Parse comma-separated values (CSV), a common Windows file format.
  * Sample input: "LU",86.25,"11/4/1998","2:19PM",+4.0625
  * <p>
  * Inner logic adapted from a C++ original that was
@@ -50,18 +50,19 @@ import java.io.BufferedReader;
  * Excerpted from 'The Practice of Programming'
  * by Brian W. Kernighan and Rob Pike.
  * <p>
- * Included by permission of the http://tpop.awl.com/ web site, 
+ * Included by permission of the http://tpop.awl.com/ web site,
  * which says:
- * "You may use this code for any purpose, as long as you leave 
+ * "You may use this code for any purpose, as long as you leave
  * the copyright notice and book citation attached." I have done so.
+ * 
  * @author Brian W. Kernighan and Rob Pike (C++ original)
  * @author Ian F. Darwin (translation into Java and removal of I/O)
  * @author Ben Ballard (rewrote advQuoted to handle '""' and for readability)
  */
-public interface Parser 
-{  
+public interface Parser {
 	public void setBufferedReader(BufferedReader inReader);
+
 	public String[] readNext();
+
 	public void close();
 }
-

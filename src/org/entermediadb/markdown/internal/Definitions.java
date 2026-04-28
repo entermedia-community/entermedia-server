@@ -27,7 +27,7 @@ public class Definitions {
     }
 
     private <V> DefinitionMap<V> getMap(Class<V> type) {
-        //noinspection unchecked
+        // noinspection unchecked
         return (DefinitionMap<V>) definitionsByType.get(type);
     }
 }

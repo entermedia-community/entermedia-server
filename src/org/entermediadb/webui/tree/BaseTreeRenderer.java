@@ -27,8 +27,7 @@ import org.openedit.util.PathUtilities;
  *
  * @author Matt Avery
  */
-public abstract class BaseTreeRenderer implements TreeRenderer
-{
+public abstract class BaseTreeRenderer implements TreeRenderer {
 	protected WebTree fieldWebTree;
 	protected String fieldHome;
 
@@ -45,13 +44,11 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	protected Set fieldSelectedNodes;
 	protected boolean fieldEditable;
 
-	public boolean isEditable()
-	{
+	public boolean isEditable() {
 		return fieldEditable;
 	}
 
-	public void setEditable(boolean inEditable)
-	{
+	public void setEditable(boolean inEditable) {
 		fieldEditable = inEditable;
 	}
 
@@ -59,102 +56,81 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 
 	}
 
-	public boolean isAllowSelections()
-	{
+	public boolean isAllowSelections() {
 		return fieldAllowSelections;
 	}
 
-	public void setAllowSelections(boolean inAllowSelections)
-	{
+	public void setAllowSelections(boolean inAllowSelections) {
 		fieldAllowSelections = inAllowSelections;
 	}
 
-	public Set getSelectedNodes()
-	{
-		if (fieldSelectedNodes == null)
-		{
+	public Set getSelectedNodes() {
+		if (fieldSelectedNodes == null) {
 			fieldSelectedNodes = new HashSet();
 		}
 		return fieldSelectedNodes;
 	}
 
-	public boolean isIdSelected(String inNodeId)
-	{
+	public boolean isIdSelected(String inNodeId) {
 		return getSelectedNodes().contains(inNodeId); // TODO: look at this
 	}
 
-	public boolean isNodeSelected(Object inNode)
-	{
-		if (inNode == getSelectedNode())
-		{
+	public boolean isNodeSelected(Object inNode) {
+		if (inNode == getSelectedNode()) {
 			return true;
 		}
 		String inId = getId(inNode);
 		return getSelectedNodes().contains(inId);
 	}
 
-	protected String getId(Object inNode)
-	{
+	protected String getId(Object inNode) {
 		return getWebTree().getModel().getId(inNode);
 	}
 
-	public void setSelectedNodes(Set inSelectedNodes)
-	{
+	public void setSelectedNodes(Set inSelectedNodes) {
 		fieldSelectedNodes = inSelectedNodes;
-		if (inSelectedNodes == null)
-		{
+		if (inSelectedNodes == null) {
 			setSelectedNode(null);
 		}
 	}
 
-	public void selectNode(Object inNode)
-	{
-		if (inNode != null)
-		{
+	public void selectNode(Object inNode) {
+		if (inNode != null) {
 			getSelectedNodes().clear();
 			getSelectedNodes().add(getId(inNode));
 
 			Object parent = getWebTree().getModel().getParent(inNode);
-			if (parent != null)
-			{
+			if (parent != null) {
 				expandNode(parent);
 			}
 		}
 		fieldSelectedNode = inNode;
 	}
 
-	public void unSelectNode(Object inNode)
-	{
+	public void unSelectNode(Object inNode) {
 		getSelectedNodes().remove(getId(inNode));
 	}
 
-	public void selectNodes(String inNode)
-	{
-		if (inNode == null)
-		{
+	public void selectNodes(String inNode) {
+		if (inNode == null) {
 			return;
 		}
 		Object target = getWebTree().getModel().getChildById(inNode);
-		if (target != null)
-		{
+		if (target != null) {
 			expandNode(target);
 			setSelectedNode(target);
 		}
 	}
 
-	public void selectNodes(Collection inNodes)
-	{
+	public void selectNodes(Collection inNodes) {
 		setSelectedNode(null);
 		Set newselection = new HashSet();
-		if (inNodes != null)
-		{
-			for (Iterator iterator = inNodes.iterator(); iterator.hasNext();)
-			{
+		if (inNodes != null) {
+			for (Iterator iterator = inNodes.iterator(); iterator.hasNext();) {
 				Object object = (Object) iterator.next();
 				newselection.add(getId(object));
 				Object parent = getWebTree().getModel().getParent(object);
-				if (parent != null)
-				{
+				if (parent != null) {
 					expandNode(parent);
 				}
 				setSelectedNode(object);
@@ -164,13 +140,11 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 
 	}
 
-	public boolean isRenderLeaves()
-	{
+	public boolean isRenderLeaves() {
 		return fieldRenderLeaves;
 	}
 
-	public void setRenderLeaves(boolean inRenderLeaves)
-	{
+	public void setRenderLeaves(boolean inRenderLeaves) {
 		fieldRenderLeaves = inRenderLeaves;
 	}
 
@@ -178,49 +152,39 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 		fieldWebTree = inWebTree;
 	}
 
-	public String getHome()
-	{
-		if (fieldHome == null)
-		{
+	public String getHome() {
+		if (fieldHome == null) {
 			fieldHome = "";
 		}
 		return fieldHome;
 	}
 
-	public void setHome(String inHome)
-	{
+	public void setHome(String inHome) {
 		fieldHome = inHome;
 	}
 
-	public String getExpandNodeCommand()
-	{
+	public String getExpandNodeCommand() {
 		return "WebTree.expandTreeNode";
 	}
 
-	public String getImageDir()
-	{
+	public String getImageDir() {
 		return fieldImageDir;
 	}
 
-	public void setImageDir(String inImageDir)
-	{
+	public void setImageDir(String inImageDir) {
 		fieldImageDir = inImageDir;
 	}
 
-	public void setWebTree(WebTree tree)
-	{
+	public void setWebTree(WebTree tree) {
 		fieldWebTree = tree;
 	}
 
-	public WebTree getWebTree()
-	{
+	public WebTree getWebTree() {
 		return fieldWebTree;
 	}
 
-	protected Set getExpandedNodes()
-	{
-		if (fieldExpandedNodes == null)
-		{
+	protected Set getExpandedNodes() {
+		if (fieldExpandedNodes == null) {
 			fieldExpandedNodes = new HashSet();
 		}
 
@@ -228,35 +192,26 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	}
 
 	@Override
-	public void toggleNode(Object inNode)
-	{
-		if (inNode != null)
-		{
-			if (hasBeenExpanded(inNode))
-			{
+	public void toggleNode(Object inNode) {
+		if (inNode != null) {
+			if (hasBeenExpanded(inNode)) {
 				collapseNode(inNode);
-			}
-			else
-			{
+			} else {
 				expandNode(inNode);
 			}
 		}
 	}
 
-	public void expandNode(Object inNode)
-	{
-		if (inNode == null)
-		{
+	public void expandNode(Object inNode) {
+		if (inNode == null) {
 			return;
 		}
 		String path = toUrl(inNode);
-		if (!getExpandedNodes().contains(path))
-		{
+		if (!getExpandedNodes().contains(path)) {
 			getExpandedNodes().add(path);
 			// get all the parents somehow
 			Object parent = getWebTree().getModel().getParent(inNode);
-			if (parent != null)
-			{
+			if (parent != null) {
 				expandNode(parent);
 			}
 		}
@@ -267,45 +222,36 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	 * 
 	 * @see org.entermediadb.webui.tree.TreeRenderer#collapseNode(java.lang.Object)
 	 */
-	public void collapseNode(Object inNode)
-	{
+	public void collapseNode(Object inNode) {
 		String path = toUrl(inNode);
 
 		getExpandedNodes().remove(path);
 	}
 
-	public boolean hasBeenExpanded(Object inNode)
-	{
+	public boolean hasBeenExpanded(Object inNode) {
 		// Make sure it is expanded
 		Object parent = inNode;
-		while (parent != null)
-		{
+		while (parent != null) {
 			String path = toUrl(inNode);
-			if (getExpandedNodes().contains(path))
-			{
+			if (getExpandedNodes().contains(path)) {
 				parent = getWebTree().getModel().getParent(parent);
 				// If we get to the root and it is selected still then we are ok!
-				if (parent == null)
-				{
+				if (parent == null) {
 					return true;
 				}
-			}
-			else
-			{
+			} else {
 				return false;
 			}
 		}
 		return false;
 	}
 
-	protected String quotes(String inString)
-	{
+	protected String quotes(String inString) {
 		inString = inString.replace("\"", "\\\"");
 		return "\"" + inString + "\"";
 	}
 
-	public String renderAsString()
-	{
+	public String renderAsString() {
 		StringBuffer js = new StringBuffer("var tree = new Tree( \n");
 
 		// Ensure the root node is always expanded.
@@ -317,17 +263,14 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 		js.append(", \"");
 		js.append(getHome());
 		js.append(getImageDir() + "/\" );\n");
-		if (getUrlPrefix() != null)
-		{
+		if (getUrlPrefix() != null) {
 			js.append("tree.setViewerUrl( '" + getHome() + getUrlPrefix() + "' );\n");
 		}
-		if (getUrlPostfix() != null)
-		{
+		if (getUrlPostfix() != null) {
 			js.append("tree.setViewerUrlEnding( '" + getUrlPostfix() + "' );\n");
 		}
 		js.append("tree.showFolderData= " + isFoldersLinked() + ";\n");
-		if (getSelectedNode() != null)
-		{
+		if (getSelectedNode() != null) {
 			js.append("tree.setSelectedNodeById(");
 			js.append(quotes(getWebTree().getModel().getId(getSelectedNode())));
 			js.append(");\n");
@@ -335,123 +278,97 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 		return js.toString();
 	}
 
-	public String renderAsString(String inNodeId)
-	{
+	public String renderAsString(String inNodeId) {
 		return null;
 	}
 
-	public Object setSelectedNodeByUrl(String inPath)
-	{
-		if (inPath == null)
-		{
+	public Object setSelectedNodeByUrl(String inPath) {
+		if (inPath == null) {
 			return null;
 		}
 
-		if (inPath.endsWith("/") && inPath.length() > 1)
-		{
+		if (inPath.endsWith("/") && inPath.length() > 1) {
 			inPath = inPath.substring(0, inPath.length() - 1);
 		}
 
 		Object node = null;
 
 		String root = toUrl(getWebTree().getModel().getRoot());
-		if (PathUtilities.match(root, inPath))
-		{
+		if (PathUtilities.match(root, inPath)) {
 			node = getWebTree().getModel().getRoot();
-		}
-		else
-		{
+		} else {
 			node = findNodeByUrl(getWebTree().getModel().getRoot(), inPath);
 		}
 		setSelectedNode(node);
-		if (node != null)
-		{
+		if (node != null) {
 			// expand the parent
 			Object parent = getWebTree().getModel().getParent(node);
-			if (parent != null)
-			{
+			if (parent != null) {
 				expandNode(parent);
 			}
 		}
 		return node;
 	}
 
-	public Object findNodeByUrl(Object inRoot, String inUrl)
-	{
-		if (inUrl == null)
-		{
+	public Object findNodeByUrl(Object inRoot, String inUrl) {
+		if (inUrl == null) {
 			return null;
 		}
 		int count = getWebTree().getModel().getChildCount(inRoot);
-		for (int i = 0; i < count; i++)
-		{
+		for (int i = 0; i < count; i++) {
 			Object child = getWebTree().getModel().getChild(inRoot, i);
 
 			String test = toUrl(child);
-			if (PathUtilities.match(test, inUrl))
-			{
+			if (PathUtilities.match(test, inUrl)) {
 				return child;
 			}
 
 			// this test must be a directory
-			if (!inUrl.startsWith(test))
-			{
+			if (!inUrl.startsWith(test)) {
 				continue;
 			}
 			child = findNodeByUrl(child, inUrl);
-			if (child != null)
-			{
+			if (child != null) {
 				return child;
 			}
 		}
 		return null;
 	}
 
-	public void setSelectedNodeById(String inId)
-	{
-		if (inId == null)
-		{
+	public void setSelectedNodeById(String inId) {
+		if (inId == null) {
 			return;
 		}
 		Object node = getWebTree().getModel().getChildById(inId);
 		setSelectedNode(node);
-		if (node != null)
-		{
+		if (node != null) {
 			// expand the parent
 			node = getWebTree().getModel().getParent(node);
-			if (node != null)
-			{
+			if (node != null) {
 				expandNode(node);
 			}
 		}
 
 	}
 
-	protected String renderNewFolder(Object inNode)
-	{
+	protected String renderNewFolder(Object inNode) {
 		StringBuffer js = new StringBuffer("new Node( " + quotes(toName(inNode)) + ", " + quotes(toUrl(inNode)) + ", ");
 
 		js.append(quotes(getWebTree().getModel().getId(inNode)));
 
-		if (getWebTree().getModel().isLeaf(inNode))
-		{
+		if (getWebTree().getModel().isLeaf(inNode)) {
 			js.append(",null");
-		}
-		else
-		{
+		} else {
 			js.append(renderChildren(inNode));
 		}
 
 		js.append("," + getWebTree().getModel().isLeaf(inNode));
 
 		String iconsset = customIconSet(inNode);
-		if (iconsset != null)
-		{
+		if (iconsset != null) {
 			js.append(',');
 			js.append("\"" + iconsset + "\")");
-		}
-		else
-		{
+		} else {
 			js.append(")");
 		}
 
@@ -459,35 +376,34 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	}
 
 	/**
-	 * Allows a certain node to have a custom icon set. Icon sets can be defined in the tree.js
+	 * Allows a certain node to have a custom icon set. Icon sets can be defined in
+	 * the tree.js
 	 * 
 	 * @param inNode
 	 * @return
 	 */
-	protected String customIconSet(Object inNode)
-	{
+	protected String customIconSet(Object inNode) {
 		return null;
 	}
 
-	protected String renderChildren(Object inNode)
-	{
-		// Use null for our folder icon, and the JavaScript tree will substitute either folder.gif or
+	protected String renderChildren(Object inNode) {
+		// Use null for our folder icon, and the JavaScript tree will substitute either
+		// folder.gif or
 		// folderopen.gif, depending on whether the node is open or closed.
 		StringBuffer js = new StringBuffer();
 
-		if (hasBeenExpanded(inNode))
-		{
-			// String collapseUrl = quotes("?" + "WebTreeName=" + getWebTree().getName() + "&oe-action=" +
-			// getCollapseNodeCommand() + "&nodeID=" + getWebTree().getModel().getId(inNode));
+		if (hasBeenExpanded(inNode)) {
+			// String collapseUrl = quotes("?" + "WebTreeName=" + getWebTree().getName() +
+			// "&oe-action=" +
+			// getCollapseNodeCommand() + "&nodeID=" +
+			// getWebTree().getModel().getId(inNode));
 			// js.append(collapseUrl +", new Array(\n");
 
 			js.append(", new Array(\n");
 
 			int c = getWebTree().getModel().getChildCount(inNode);
-			for (int i = 0; i < c; i++)
-			{
-				if (i > 0)
-				{
+			for (int i = 0; i < c; i++) {
+				if (i > 0) {
 					js.append(",\n");
 				}
 				Object childNode = getWebTree().getModel().getChild(inNode, i);
@@ -495,10 +411,9 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 			}
 
 			js.append(" ) ");
-		}
-		else
-		{
-			// String expandUrl = quotes("?" + "WebTreeName=" + getWebTree().getName() + "&oe-action=" +
+		} else {
+			// String expandUrl = quotes("?" + "WebTreeName=" + getWebTree().getName() +
+			// "&oe-action=" +
 			// getExpandNodeCommand() + "&nodeID=" + getWebTree().getModel().getId(inNode));
 
 			// Might need to make this configurable later on.
@@ -507,7 +422,8 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 
 			// js.append(
 			// quotes("?" + "WebTreeName=" + getWebTree().getName() + "&oe-action=" +
-			// getExpandNodeCommand() + "&nodeID=" + getWebTree().getModel().getId(inNode)) + ", null, ");
+			// getExpandNodeCommand() + "&nodeID=" + getWebTree().getModel().getId(inNode))
+			// + ", null, ");
 
 		}
 
@@ -530,105 +446,85 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	 */
 	public abstract String toUrl(Object inNode);
 
-	public String getCollapseNodeCommand()
-	{
+	public String getCollapseNodeCommand() {
 		return "WebTree.collapseTreeNode";
 	}
 
-	public String getUrlPrefix()
-	{
+	public String getUrlPrefix() {
 		return fieldUrlPrefix;
 	}
 
-	public void setUrlPrefix(String inUrlPrefix)
-	{
+	public void setUrlPrefix(String inUrlPrefix) {
 		fieldUrlPrefix = inUrlPrefix;
 	}
 
-	public boolean isFoldersLinked()
-	{
+	public boolean isFoldersLinked() {
 		return fieldFoldersLinked;
 	}
 
-	public void setFoldersLinked(boolean inFoldersLinked)
-	{
+	public void setFoldersLinked(boolean inFoldersLinked) {
 		fieldFoldersLinked = inFoldersLinked;
 	}
 
-	public Object getSelectedNode()
-	{
+	public Object getSelectedNode() {
 		return fieldSelectedNode;
 	}
 
-	public String getSelectedId()
-	{
+	public String getSelectedId() {
 		Object selected = getSelectedNode();
-		if (selected == null)
-		{
+		if (selected == null) {
 			return null;
 		}
 		return getWebTree().getModel().getId(selected);
 	}
 
-	public void setSelectedNode(Object inSelectedNode)
-	{
+	public void setSelectedNode(Object inSelectedNode) {
 		fieldSelectedNode = inSelectedNode;
 		getSelectedNodes().clear();
-		if (inSelectedNode != null)
-		{
+		if (inSelectedNode != null) {
 			getSelectedNodes().add(getId(inSelectedNode));
 			Object parent = getWebTree().getModel().getParent(inSelectedNode);
-			if (parent != null)
-			{
+			if (parent != null) {
 				expandNode(parent);
 			}
 		}
 
 	}
 
-	public String getUrlPostfix()
-	{
+	public String getUrlPostfix() {
 		return fieldUrlPostfix;
 	}
 
-	public void setUrlPostfix(String inUrlPostfix)
-	{
+	public void setUrlPostfix(String inUrlPostfix) {
 		fieldUrlPostfix = inUrlPostfix;
 	}
 
-	public Object getLastCutoffNode()
-	{
+	public Object getLastCutoffNode() {
 		return fieldLastCutoffNode;
 	}
 
-	public void setLastCutoffNode(Object inLastCutoffNode)
-	{
+	public void setLastCutoffNode(Object inLastCutoffNode) {
 		fieldLastCutoffNode = inLastCutoffNode;
 	}
 
-	public boolean isShowPathInfo(Object inNode)
-	{
+	public boolean isShowPathInfo(Object inNode) {
 		// inNode == /a/b/c.html
 		// Cutoff == /a
 		// First make sure it is not expanded
 
 		Object container = inNode;
-		if (getWebTree().getModel().isLeaf(container))
-		{
+		if (getWebTree().getModel().isLeaf(container)) {
 			container = getWebTree().getModel().getParent(container);
 		}
-		if (hasBeenExpanded(container))
-		{
+		if (hasBeenExpanded(container)) {
 			return false;
 		}
-		// See if we are below the cut off. If we are below or equal then show the node (return true)
-		if (fieldLastCutoffNode != null)
-		{
+		// See if we are below the cut off. If we are below or equal then show the node
+		// (return true)
+		if (fieldLastCutoffNode != null) {
 			Object parent = inNode;
-			while (parent != null)
-			{
-				if (parent == fieldLastCutoffNode)
-				{
+			while (parent != null) {
+				if (parent == fieldLastCutoffNode) {
 					return true;
 				}
 				parent = getWebTree().getModel().getParent(parent);

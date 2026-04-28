@@ -16,54 +16,52 @@ import org.openedit.page.Page;
 import org.openedit.util.FileUtils;
 import org.openedit.util.PathUtilities;
 
-public class filecopypublisher extends BasePublisher implements Publisher
-{
+public class filecopypublisher extends BasePublisher implements Publisher {
 	private static final Log log = LogFactory.getLog(filecopypublisher.class);
-	
-	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
-	{
-		
-		PublishResult result = checkOnConversion(mediaArchive,inOrderItem,inAsset,inPreset);  
-		if(!result.isReadyToPublish())
-		{
+
+	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination,
+			Data inPreset, Asset inAsset) {
+
+		PublishResult result = checkOnConversion(mediaArchive, inOrderItem, inAsset, inPreset);
+		if (!result.isReadyToPublish()) {
 			return result;
 		}
 
-		//result = new PublishResult();
+		// result = new PublishResult();
 
-		//Now publish it!		
-		Page inputpage = findInputPage(mediaArchive,inAsset,inPreset);
+		// Now publish it!
+		Page inputpage = findInputPage(mediaArchive, inAsset, inPreset);
 		String destinationpath = inDestination.get("url");
 		/*
-		if(!destinationpath.endsWith("/"))
-		{
-			destinationpath = destinationpath + "/";
-		}
-		*/
+		 * if(!destinationpath.endsWith("/"))
+		 * {
+		 * destinationpath = destinationpath + "/";
+		 * }
+		 */
 		destinationpath = mediaArchive.replaceFromMask(destinationpath, inAsset, "asset", null, null);
-		//destinationpath = mediaArchive.getSearcherManager().getValue(mediaArchive.getCatalogId(),destinationpath,inAsset.getProperties());
-		
+		// destinationpath =
+		// mediaArchive.getSearcherManager().getValue(mediaArchive.getCatalogId(),destinationpath,inAsset.getProperties());
+
 		String exportname = inOrderItem.get("itemexportname");
-		//String guid = inPreset.get("guid");
-		
-		if( destinationpath.endsWith(exportname))
-		{
+		// String guid = inPreset.get("guid");
+
+		if (destinationpath.endsWith(exportname)) {
 			destinationpath = PathUtilities.extractDirectoryPath(destinationpath);
 		}
-		
-		try{
+
+		try {
 			FileUtils utils = new FileUtils();
 			File destination = new File(destinationpath);
 			File source = new File(inputpage.getContentItem().getAbsolutePath());
 			File finalfile = new File(destination, exportname);
 			utils.copyFiles(source, finalfile);
 			result.setComplete(true);
-			
+
 			log.info("published ${finalfile}");
 			return result;
-		} catch(Exception e){
+		} catch (Exception e) {
 			throw new OpenEditException(e);
 		}
 	}
-	
+
 }

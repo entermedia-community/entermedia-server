@@ -12,7 +12,6 @@ See the GNU Lesser General Public License for more details.
 
 package org.entermediadb.email;
 
-
 /*
  * @(#)ByteArrayDataSource.java        1.2 00/05/24
  *
@@ -51,27 +50,24 @@ import java.io.UnsupportedEncodingException;
 
 import javax.activation.DataSource;
 
-
 /**
- * A simple DataSource for demonstration purposes. This class implements a DataSource from: an
- * InputStream     a byte array a String
+ * A simple DataSource for demonstration purposes. This class implements a
+ * DataSource from: an
+ * InputStream a byte array a String
  *
  * @author John Mani
  * @author Bill Shannon
  * @author Max Spivak
  */
-public class ByteArrayDataSource implements DataSource
-{
+public class ByteArrayDataSource implements DataSource {
 	private String type; // content-type
 	private byte[] data; // data
 
 	/* Create a DataSource from an input stream */
-	public ByteArrayDataSource(InputStream is, String type)
-	{
+	public ByteArrayDataSource(InputStream is, String type) {
 		this.type = type;
 
-		try
-		{
+		try {
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			int ch;
 
@@ -82,31 +78,24 @@ public class ByteArrayDataSource implements DataSource
 				os.write(ch);
 
 			data = os.toByteArray();
-		}
-		catch (IOException ioex)
-		{
+		} catch (IOException ioex) {
 		}
 	}
 
 	/* Create a DataSource from a byte array */
-	public ByteArrayDataSource(byte[] data, String type)
-	{
+	public ByteArrayDataSource(byte[] data, String type) {
 		this.data = data;
 		this.type = type;
 	}
 
 	/* Create a DataSource from a String */
-	public ByteArrayDataSource(String data, String type)
-	{
-		try
-		{
+	public ByteArrayDataSource(String data, String type) {
+		try {
 			// Assumption that the string contains only ASCII
-			// characters!  Otherwise just pass a charset into this
+			// characters! Otherwise just pass a charset into this
 			// constructor and use it in getBytes()
 			this.data = data.getBytes("iso-8859-1");
-		}
-		catch (UnsupportedEncodingException uex)
-		{
+		} catch (UnsupportedEncodingException uex) {
 		}
 
 		this.type = type;
@@ -117,22 +106,20 @@ public class ByteArrayDataSource implements DataSource
 	 *
 	 * @return
 	 */
-	public String getContentType()
-	{
+	public String getContentType() {
 		return type;
 	}
 
 	/**
-	 * Return an InputStream for the data. Note - a new stream must be returned each time.
+	 * Return an InputStream for the data. Note - a new stream must be returned each
+	 * time.
 	 *
 	 * @return
 	 *
 	 * @throws IOException DOCUMENT ME!
 	 */
-	public InputStream getInputStream() throws IOException
-	{
-		if (data == null)
-		{
+	public InputStream getInputStream() throws IOException {
+		if (data == null) {
 			throw new IOException("no data");
 		}
 
@@ -144,8 +131,7 @@ public class ByteArrayDataSource implements DataSource
 	 *
 	 * @return
 	 */
-	public String getName()
-	{
+	public String getName() {
 		return "dummy";
 	}
 
@@ -156,8 +142,7 @@ public class ByteArrayDataSource implements DataSource
 	 *
 	 * @throws IOException
 	 */
-	public OutputStream getOutputStream() throws IOException
-	{
+	public OutputStream getOutputStream() throws IOException {
 		throw new IOException("cannot do this");
 	}
 }

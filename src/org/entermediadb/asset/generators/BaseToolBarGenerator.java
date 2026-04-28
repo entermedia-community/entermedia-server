@@ -21,74 +21,65 @@ import org.openedit.page.manage.PageManager;
  * 
  * @author Matthew Avery, mavery@einnovation.com
  */
-public abstract class BaseToolBarGenerator extends BaseGenerator
-{
+public abstract class BaseToolBarGenerator extends BaseGenerator {
 	public static Log log = LogFactory.getLog(BaseToolBarGenerator.class);
 
 	protected Generator fieldWraps;
 	protected PageManager fieldPageManager;
 	protected String fieldHeaderPath;
 	protected String fieldFooterPath;
-	
-	public BaseToolBarGenerator()
-	{
+
+	public BaseToolBarGenerator() {
 	}
-	protected void debug( String inMessage )
-	{
-		//log.debug( inMessage );
+
+	protected void debug(String inMessage) {
+		// log.debug( inMessage );
 	}
-	protected void writePage( String pageContent, Output inOut ) throws OpenEditException
-	{
-		//write it out to wout
+
+	protected void writePage(String pageContent, Output inOut) throws OpenEditException {
+		// write it out to wout
 		Writer wout = inOut.getWriter();
-		try
-		{
-			wout.write(pageContent); //this content is actually just a string
+		try {
+			wout.write(pageContent); // this content is actually just a string
 			wout.flush();
-		}
-		catch (IOException ex)
-		{
+		} catch (IOException ex) {
 			throw new OpenEditException(ex);
 		}
 	}
-	public String getHeaderPath()
-	{
+
+	public String getHeaderPath() {
 		return fieldHeaderPath;
 	}
-	public void setHeaderPath(String inHeaderPath)
-	{
+
+	public void setHeaderPath(String inHeaderPath) {
 		fieldHeaderPath = inHeaderPath;
 	}
-	public PageManager getPageManager()
-	{
+
+	public PageManager getPageManager() {
 		return fieldPageManager;
 	}
-	public void setPageManager(PageManager inPageManager)
-	{
+
+	public void setPageManager(PageManager inPageManager) {
 		fieldPageManager = inPageManager;
 	}
 
-	public Generator getWraps()
-	{
+	public Generator getWraps() {
 		return fieldWraps;
 	}
 
-	public void setWraps(Generator inWraps)
-	{
+	public void setWraps(Generator inWraps) {
 		fieldWraps = inWraps;
 	}
 
-	public String getFooterPath()
-	{
+	public String getFooterPath() {
 		return fieldFooterPath;
 	}
 
-	public void setFooterPath(String inFooterPath)
-	{
+	public void setFooterPath(String inFooterPath) {
 		fieldFooterPath = inFooterPath;
 	}
-	public boolean canGenerate(WebPageRequest inReq)
-	{
+
+	public boolean canGenerate(WebPageRequest inReq) {
 		return getWraps().canGenerate(inReq);
 	}
 }

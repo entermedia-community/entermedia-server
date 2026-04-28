@@ -6,13 +6,15 @@ import java.util.concurrent.ExecutorService;
 import org.openedit.util.ExecutorManager;
 
 /**
-@Deprecated
-*/
+ * @Deprecated
+ */
 
-public interface ConvertQueue
-{
+public interface ConvertQueue {
 	public ExecutorManager getExecutorManager();
+
 	public void setExecutorManager(ExecutorManager inExecutorManager);
+
 	public ExecutorService getExecutor();
-	public void execute( List<Runnable> inTasks);
+
+	public void execute(List<Runnable> inTasks);
 }

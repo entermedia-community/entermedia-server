@@ -32,20 +32,26 @@ public interface AssetSecurityArchive {
 
 	public abstract void grantAllAccess(MediaArchive inArchive, Asset inAsset);
 
-	//This is for users?
+	// This is for users?
 	public abstract void clearAssetPermissions(MediaArchive inArchive, Asset inAsset);
 
-	public abstract Boolean canDo(MediaArchive inArchive, User inUser, UserProfile inProfile, String inType, Asset inAsset);
+	public abstract Boolean canDo(MediaArchive inArchive, User inUser, UserProfile inProfile, String inType,
+			Asset inAsset);
 
-	//public abstract void grantAccess(MediaArchive inArchive, String username, Asset inAsset, String inView) throws OpenEditException;
+	// public abstract void grantAccess(MediaArchive inArchive, String username,
+	// Asset inAsset, String inView) throws OpenEditException;
 
-	//public abstract void grantViewAccess(MediaArchive inArchive, User inUser, Category inCat) throws OpenEditException;
+	// public abstract void grantViewAccess(MediaArchive inArchive, User inUser,
+	// Category inCat) throws OpenEditException;
 
-	//public abstract Map checkAssetPermissions(User inUser, String inCatalogId, String sourcePath);
+	// public abstract Map checkAssetPermissions(User inUser, String inCatalogId,
+	// String sourcePath);
 
-	//public abstract void clearViewAccess(MediaArchive inArchive,	Asset inJobfolder);
+	// public abstract void clearViewAccess(MediaArchive inArchive, Asset
+	// inJobfolder);
 
-	//use asset.isPropertyTrue("public")
-	///public abstract boolean hasAnonymousViewAsset(Asset inAsset)		throws OpenEditException;
+	// use asset.isPropertyTrue("public")
+	/// public abstract boolean hasAnonymousViewAsset(Asset inAsset) throws
+	// OpenEditException;
 
 }

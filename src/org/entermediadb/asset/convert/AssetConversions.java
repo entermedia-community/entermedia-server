@@ -10,28 +10,24 @@ import org.entermediadb.asset.MediaArchive;
 import org.openedit.locks.Lock;
 import org.openedit.users.User;
 
-public class AssetConversions implements Runnable
-{
+public class AssetConversions implements Runnable {
 	private static final Log log = LogFactory.getLog(AssetConversions.class);
-	
+
 	Asset fieldAsset;
-	public Asset getAsset()
-	{
+
+	public Asset getAsset() {
 		return fieldAsset;
 	}
 
-	public void setAsset(Asset inAsset)
-	{
+	public void setAsset(Asset inAsset) {
 		fieldAsset = inAsset;
 	}
 
-	public List<ConversionTask> getRunners()
-	{
+	public List<ConversionTask> getRunners() {
 		return runners;
 	}
 
-	public void setRunners(List<ConversionTask> inRunners)
-	{
+	public void setRunners(List<ConversionTask> inRunners) {
 		runners = inRunners;
 	}
 
@@ -42,87 +38,68 @@ public class AssetConversions implements Runnable
 	Lock fieldLock;
 	ConversionEventListener fieldEventListener;
 
-	public ConversionEventListener getEventListener()
-	{
+	public ConversionEventListener getEventListener() {
 		return fieldEventListener;
 	}
 
-	public void setEventListener(ConversionEventListener fieldEventListener)
-	{
+	public void setEventListener(ConversionEventListener fieldEventListener) {
 		this.fieldEventListener = fieldEventListener;
 	}
 
-	public Lock getLock()
-	{
+	public Lock getLock() {
 		return fieldLock;
 	}
 
-	public void setLock(Lock inLock)
-	{
+	public void setLock(Lock inLock) {
 		fieldLock = inLock;
 	}
 
-	public boolean hasComplete()
-	{
+	public boolean hasComplete() {
 		return fieldCompleted;
 	}
 
-	public AssetConversions()
-	{
+	public AssetConversions() {
 	}
 
-	public AssetConversions(MediaArchive inArchive, Lock lock)
-	{
+	public AssetConversions(MediaArchive inArchive, Lock lock) {
 		fieldMediaArchive = inArchive;
 		fieldLock = lock;
 	}
 
-	public void run()
-	{
-		try
-		{
-			for (ConversionTask runner : runners)
-			{
+	public void run() {
+		try {
+			for (ConversionTask runner : runners) {
 				runner.asset = getAsset();
 				runner.convert();
-				if (runner.isComplete())
-				{
+				if (runner.isComplete()) {
 					fieldCompleted = true;
-					//Slow? fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
+					// Slow?
+					// fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
 				}
-				if (runner.isError())
-				{
+				if (runner.isError()) {
 					fieldCompleted = true;
-					//fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
+					// fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
 					break;
 				}
 			}
-		}
-		catch (Exception e)
-		{
-			log.error("ERRORS converting: " + getAssetId() ,e);
-		}
-		finally
-		{
-			if (hasComplete())
-			{
+		} catch (Exception e) {
+			log.error("ERRORS converting: " + getAssetId(), e);
+		} finally {
+			if (hasComplete()) {
 				getEventListener().finishedConversions(this);
-			}
-			else
-			{
+			} else {
 				getEventListener().ranConversions(this);
 			}
 		}
 	}
 
-	public String getAssetId()
-	{
+	public String getAssetId() {
 		return getAsset().getId();
 	}
 
-	public void addTask(ConversionTask task)
-	{
-		//log.info("Added assetid:" + task.hit.get("assetid") + " presetid:" + task.hit.get("presetid") + " status:" + task.hit.get("status"));
+	public void addTask(ConversionTask task) {
+		// log.info("Added assetid:" + task.hit.get("assetid") + " presetid:" +
+		// task.hit.get("presetid") + " status:" + task.hit.get("status"));
 		runners.add(task);
 	}
 }

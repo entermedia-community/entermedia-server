@@ -8,88 +8,76 @@ import java.util.Collection;
 
 import org.openedit.MultiValued;
 
-public class Row
-{
+public class Row {
 	protected Header fieldHeader;
 	protected String[] fieldData;
-	public String[] getData()
-	{
+
+	public String[] getData() {
 		return fieldData;
 	}
-	public void setData(String[] inData)
-	{
+
+	public void setData(String[] inData) {
 		fieldData = inData;
 	}
-	public String get(String inName)
-	{
+
+	public String get(String inName) {
 		int index = getHeader().getIndex(inName);
-		if ( index == -1)
-		{
+		if (index == -1) {
 			return null;
 		}
 		String data = getData(index);
-		
-		if( data != null)
-		{
-			
+
+		if (data != null) {
+
 			String timstring = data.trim();
-			if (timstring.isEmpty())
-			{
+			if (timstring.isEmpty()) {
 				return null;
 			}
 			return timstring;
 		}
 		return null;
 	}
-	
-	public Collection<String> getValues(String inPreference)
-	{
+
+	public Collection<String> getValues(String inPreference) {
 		String val = get(inPreference);
-		
-		if (val == null)
-		{
+
+		if (val == null) {
 			return null;
 		}
 		String[] vals = null;
-		if( val.contains("|") )
-		{
+		if (val.contains("|")) {
 			vals = MultiValued.VALUEDELMITER.split(val);
-		}
-		else
-		{
-			vals = new String[]{val};
+		} else {
+			vals = new String[] { val };
 		}
 		Collection collection = Arrays.asList(vals);
 		return collection;
 	}
-	
-	public String getData(int index)
-	{
+
+	public String getData(int index) {
 		return getData()[index];
 	}
-	public Header getHeader()
-	{
+
+	public Header getHeader() {
 		return fieldHeader;
 	}
-	public void setHeader(Header inHeader)
-	{
+
+	public void setHeader(Header inHeader) {
 		fieldHeader = inHeader;
 	}
-	public String[] getRemainder()
-	{
-		String[] rem = new String[getData().length - getHeader().getSize() ];
+
+	public String[] getRemainder() {
+		String[] rem = new String[getData().length - getHeader().getSize()];
 		int index = 0;
-		for (int i = getHeader().getSize(); i < getData().length; i++)
-		{
+		for (int i = getHeader().getSize(); i < getData().length; i++) {
 			rem[index++] = getData(i);
 		}
 		return rem;
 	}
-	public void set(String inName, String inValue)
-	{
+
+	public void set(String inName, String inValue) {
 		int index = getHeader().getIndex(inName);
-		if ( index == -1)
-		{
+		if (index == -1) {
 			return;
 		}
 		getData()[index] = inValue;

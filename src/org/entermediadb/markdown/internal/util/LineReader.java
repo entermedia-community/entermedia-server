@@ -5,11 +5,15 @@ import java.io.IOException;
 import java.io.Reader;
 
 /**
- * Reads lines from a reader like {@link java.io.BufferedReader} but also returns the line terminators.
+ * Reads lines from a reader like {@link java.io.BufferedReader} but also
+ * returns the line terminators.
  * <p>
- * Line terminators can be either a line feed {@code "\n"}, carriage return {@code "\r"}, or a carriage return followed
- * by a line feed {@code "\r\n"}. Call {@link #getLineTerminator()} after {@link #readLine()} to obtain the
- * corresponding line terminator. If a stream has a line at the end without a terminator, {@link #getLineTerminator()}
+ * Line terminators can be either a line feed {@code "\n"}, carriage return
+ * {@code "\r"}, or a carriage return followed
+ * by a line feed {@code "\r\n"}. Call {@link #getLineTerminator()} after
+ * {@link #readLine()} to obtain the
+ * corresponding line terminator. If a stream has a line at the end without a
+ * terminator, {@link #getLineTerminator()}
  * returns {@code null}.
  */
 public class LineReader implements Closeable {
@@ -34,7 +38,8 @@ public class LineReader implements Closeable {
     /**
      * Read a line of text.
      *
-     * @return the line, or {@code null} when the end of the stream has been reached and no more lines can be read
+     * @return the line, or {@code null} when the end of the stream has been reached
+     *         and no more lines can be read
      */
     public String readLine() throws IOException {
         StringBuilder sb = null;
@@ -56,7 +61,8 @@ public class LineReader implements Closeable {
             }
 
             if (position >= limit) {
-                // End of stream, return either the last line without terminator or null for end.
+                // End of stream, return either the last line without terminator or null for
+                // end.
                 return line(sb != null ? sb.toString() : null, null);
             }
 
@@ -91,7 +97,8 @@ public class LineReader implements Closeable {
                 position = i;
             }
 
-            // Haven't found a finished line yet, copy the data from the buffer so that we can fill
+            // Haven't found a finished line yet, copy the data from the buffer so that we
+            // can fill
             // the buffer again.
             if (sb == null) {
                 sb = new StringBuilder(EXPECTED_LINE_LENGTH);

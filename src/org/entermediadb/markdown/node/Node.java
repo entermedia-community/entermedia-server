@@ -121,7 +121,8 @@ public abstract class Node {
     }
 
     /**
-     * @return the source spans of this node if included by the parser, an empty list otherwise
+     * @return the source spans of this node if included by the parser, an empty
+     *         list otherwise
      * @since 0.16.0
      */
     public List<SourceSpan> getSourceSpans() {

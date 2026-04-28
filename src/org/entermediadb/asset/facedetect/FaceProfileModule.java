@@ -26,273 +26,247 @@ import org.openedit.hittracker.PaginatedIdHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.util.MathUtils;
 
-public class FaceProfileModule extends BaseMediaModule
-{
+public class FaceProfileModule extends BaseMediaModule {
 	private static final Log log = LogFactory.getLog(FaceProfileModule.class);
 
 	public FaceProfileManager getFaceProfileManager(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
-		FaceProfileManager manager = (FaceProfileManager) getModuleManager().getBean(archive.getCatalogId(), "faceProfileManager");
+		FaceProfileManager manager = (FaceProfileManager) getModuleManager().getBean(archive.getCatalogId(),
+				"faceProfileManager");
 		inReq.putPageValue("faceprofilemanager", manager);
 		return manager;
 	}
-	
-	
-	//OLD!
+
+	// OLD!
 	public void removeAsset(WebPageRequest inReq) {
-		
+
 		MediaArchive archive = getMediaArchive(inReq);
 		String assetid = inReq.getRequiredParameter("assetid");
 		String removeprofileid = inReq.getRequiredParameter("profileid");
-		
+
 		if (assetid != null && removeprofileid != null) {
-			
+
 			Asset asset = archive.getAsset(assetid);
 
 			if (asset != null) {
-				
+
 				List<Map> newfaceprofiles = new ArrayList();
-				Collection<Map> faceprofiles = (Collection)asset.getValue("faceprofiles");
-				for( Map facedata : faceprofiles)
-				{
-					String faceprofilegroupid = (String)facedata.get("faceprofilegroup");
+				Collection<Map> faceprofiles = (Collection) asset.getValue("faceprofiles");
+				for (Map facedata : faceprofiles) {
+					String faceprofilegroupid = (String) facedata.get("faceprofilegroup");
 					if (!faceprofilegroupid.equals(removeprofileid)) {
 						newfaceprofiles.add(facedata);
-					
-					}
-					else 
-					{
-						//add to removed faceprofiles
+
+					} else {
+						// add to removed faceprofiles
 						asset.addValue("removedfaceprofilegroups", removeprofileid);
-						
-						//add new faceprofile to preserve the detected face
+
+						// add new faceprofile to preserve the detected face
 						MultiValued newgroup = (MultiValued) archive.getSearcher("faceprofilegroup").createNewData();
 						newgroup.setValue("creationdate", new Date());
-						newgroup.setValue("samplecount",1);
+						newgroup.setValue("samplecount", 1);
 						newgroup.setValue("entity_date", new Date());
 						newgroup.setValue("primaryimage", asset.getId());
 						archive.getSearcher("faceprofilegroup").saveData(newgroup);
-						facedata.put("faceprofilegroup", newgroup.getId() );
+						facedata.put("faceprofilegroup", newgroup.getId());
 						newfaceprofiles.add(facedata);
-						
-						
-						//remove count from old profile and main image if is this asset.
-						MultiValued group = (MultiValued)archive.getData("faceprofilegroup",faceprofilegroupid);
+
+						// remove count from old profile and main image if is this asset.
+						MultiValued group = (MultiValued) archive.getData("faceprofilegroup", faceprofilegroupid);
 						if (group != null) {
 							Integer count = group.getInt("samplecount");
-							count = count -1;
+							count = count - 1;
 							group.setValue("samplecount", count.toString());
-							//remove as primary image if is
-							String primaryimage = (String)group.getValue("primaryimage");
-							if (primaryimage!= null && primaryimage.equals(assetid)) {
+							// remove as primary image if is
+							String primaryimage = (String) group.getValue("primaryimage");
+							if (primaryimage != null && primaryimage.equals(assetid)) {
 								group.setValue("primaryimage", "");
 							}
 							archive.getSearcher("faceprofilegroup").saveData(group);
 						}
 					}
 				}
-				asset.setValue("faceprofiles",newfaceprofiles);
+				asset.setValue("faceprofiles", newfaceprofiles);
 				archive.saveAsset(asset);
 				inReq.putPageValue("asset", asset);
 			}
 		}
-		
+
 	}
-	
-	
-	public void addPersonToEmbedding(WebPageRequest inReq)
-	{
+
+	public void addPersonToEmbedding(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
-		String personid = inReq.getRequestParameter("dataid"); //person
-		if (personid == null)
-		{
-			Data person= (Data)inReq.getPageValue("data"); //new person?
-			if (person != null)
-			{
+		String personid = inReq.getRequestParameter("dataid"); // person
+		if (personid == null) {
+			Data person = (Data) inReq.getPageValue("data"); // new person?
+			if (person != null) {
 				personid = person.getId();
 			}
 		}
-		String assetid = inReq.getRequestParameter("assetid"); 
-		String faceembeddingid =inReq.getRequestParameter("faceembeddingid");
-		
+		String assetid = inReq.getRequestParameter("assetid");
+		String faceembeddingid = inReq.getRequestParameter("faceembeddingid");
+
 		getFaceProfileManager(inReq).assignPerson(faceembeddingid, assetid, personid, inReq.getUser().getId());
 	}
 
-
-
-	
 	/*
-	public void addPersonToProfileGroup(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		String assetid = inReq.getRequestParameter("assetid");
-		String personid = inReq.getRequestParameter("dataid");
-		String faceprofilegroupid =inReq.getRequestParameter("faceprofilegroupid");
-		
-		if (faceprofilegroupid != null && personid != null)
-		{
-			MultiValued group = (MultiValued)archive.getData("faceprofilegroup",faceprofilegroupid);
-			if (group != null)
-			{
-				group.setValue("entityperson", personid);
-				archive.getSearcher("faceprofilegroup").saveData(group);
-			}
-		}
-		Asset asset = archive.getAsset(assetid);
-		inReq.putPageValue("asset", asset);
-	}
-	*/
-	
-	public void addManualFaceProfile(WebPageRequest inReq) throws Exception
-	{
+	 * public void addPersonToProfileGroup(WebPageRequest inReq)
+	 * {
+	 * MediaArchive archive = getMediaArchive(inReq);
+	 * String assetid = inReq.getRequestParameter("assetid");
+	 * String personid = inReq.getRequestParameter("dataid");
+	 * String faceprofilegroupid =inReq.getRequestParameter("faceprofilegroupid");
+	 * 
+	 * if (faceprofilegroupid != null && personid != null)
+	 * {
+	 * MultiValued group =
+	 * (MultiValued)archive.getData("faceprofilegroup",faceprofilegroupid);
+	 * if (group != null)
+	 * {
+	 * group.setValue("entityperson", personid);
+	 * archive.getSearcher("faceprofilegroup").saveData(group);
+	 * }
+	 * }
+	 * Asset asset = archive.getAsset(assetid);
+	 * inReq.putPageValue("asset", asset);
+	 * }
+	 */
+
+	public void addManualFaceProfile(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
 		String assetid = inReq.getRequestParameter("assetid");
 		String boxlocation = inReq.getRequestParameter("boxlocation");
-		
+
 		Asset asset = archive.getAsset(assetid);
-		
-		if (boxlocation == null || asset  == null)
-		{
+
+		if (boxlocation == null || asset == null) {
 			return;
 		}
-		
+
 		JSONParser parser = new JSONParser();
 		JSONObject locationarray = (JSONObject) parser.parse(boxlocation);
-		
+
 		String inputw = inReq.getRequestParameter("assetwidth");
 		String thumbwidth = inReq.getRequestParameter("thumbwidth");
 
 		Double scale = MathUtils.divide(inputw, thumbwidth);
-		
-		Number left = (Number)locationarray.get("left");
+
+		Number left = (Number) locationarray.get("left");
 		Double x = left.doubleValue() * scale;
-		
-		Number top = (Number)locationarray.get("top");
+
+		Number top = (Number) locationarray.get("top");
 		Double y = top.doubleValue() * scale;
-		
-		Number width = (Number)locationarray.get("width");
+
+		Number width = (Number) locationarray.get("width");
 		Double w = width.doubleValue() * scale;
-		
-		Number height = (Number)locationarray.get("height");
+
+		Number height = (Number) locationarray.get("height");
 		Double h = height.doubleValue() * scale;
-		
+
 		List<Integer> values = new ArrayList();
-		values.add( (int)Math.round(x));
-		values.add( (int)Math.round(y));
-		values.add( (int)Math.round(w));
-		values.add( (int)Math.round(h));	
-			
+		values.add((int) Math.round(x));
+		values.add((int) Math.round(y));
+		values.add((int) Math.round(w));
+		values.add((int) Math.round(h));
+
 		FaceProfileManager manager = archive.getFaceProfileManager();
 		manager.addFaceEmbedded(inReq.getUser(), asset, values);
-		
+
 	}
-	
-	public void viewAllRelatedFaces(WebPageRequest inReq)
-	{
+
+	public void viewAllRelatedFaces(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		FaceProfileManager manager = archive.getFaceProfileManager();
-		
+
 		String faceembeddedid = inReq.getRequestParameter("faceembeddingid");
-		
+
 		Collection<FaceBox> boxes = manager.viewAllRelatedFaces(faceembeddedid);
-		
-		if( boxes == null || boxes.isEmpty())
-		{
+
+		if (boxes == null || boxes.isEmpty()) {
 			return;
 		}
-		
+
 		Map boxlookup = new HashMap(boxes.size());
-		
-		//Do some searching
+
+		// Do some searching
 		Data entityperson = null;
-		
-		for (Iterator iterator = boxes.iterator(); iterator.hasNext();)
-		{
+
+		for (Iterator iterator = boxes.iterator(); iterator.hasNext();) {
 			FaceBox box = (FaceBox) iterator.next();
-			boxlookup.put(box.getAssetId(),box);
-			if (entityperson == null)
-			{
+			boxlookup.put(box.getAssetId(), box);
+			if (entityperson == null) {
 				entityperson = box.getPerson();
 			}
 		}
-		inReq.putPageValue("boxlookup",boxlookup);
-		inReq.putPageValue("entityperson",entityperson);
-		
+		inReq.putPageValue("boxlookup", boxlookup);
+		inReq.putPageValue("entityperson", entityperson);
+
 		String hitsname = inReq.findValue("hitsname");
 		PaginatedIdHitTracker tracker = new PaginatedIdHitTracker();
 		tracker.setHitsName(hitsname);
 		tracker.setSearcher(archive.getSearcher("asset"));
-		
+
 		SearchQuery query = tracker.getSearcher().createSearchQuery();
 		query.setHitsName(hitsname);
-		query.addOrsGroup("id",boxlookup.keySet());
+		query.addOrsGroup("id", boxlookup.keySet());
 		query.setValue("boxlookup", boxlookup);
 		tracker.addAll(boxlookup.keySet());
 		tracker.setSearchQuery(query);
-		
+
 		tracker.setHitsPerPage(40);
 
 		inReq.putPageValue(hitsname, tracker);
-		inReq.putSessionValue(tracker.getSessionId(), tracker);  //Fake asset tracker
+		inReq.putSessionValue(tracker.getSessionId(), tracker); // Fake asset tracker
 	}
-	
-	public void loadFaceBoxes(WebPageRequest inReq)
-	{
+
+	public void loadFaceBoxes(WebPageRequest inReq) {
 		String assethitssessionid = inReq.getRequestParameter("assethitssessionid");
-		
-		HitTracker faceassets = (HitTracker)inReq.getSessionValue(assethitssessionid);
-		if( faceassets != null)
-		{
+
+		HitTracker faceassets = (HitTracker) inReq.getSessionValue(assethitssessionid);
+		if (faceassets != null) {
 			Object boxlookup = faceassets.getSearchQuery().getValue("boxlookup");
-			inReq.putPageValue("boxlookup",boxlookup);
+			inReq.putPageValue("boxlookup", boxlookup);
 			inReq.putPageValue("showfaceboxes", "true");
 
 		}
 	}
-	
-	public void rescanAsset(WebPageRequest inReq)
-	{
+
+	public void rescanAsset(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Asset asset = getAsset(inReq);
-		
+
 		FaceProfileManager manager = archive.getFaceProfileManager();
 		manager.rescanAsset(asset);
-	
-		
+
 	}
-	
-	public void searchPersonAssets(WebPageRequest inPageRequest) throws Exception
-	{
+
+	public void searchPersonAssets(WebPageRequest inPageRequest) throws Exception {
 		MediaArchive archive = getMediaArchive(inPageRequest);
-		String entityid = (String)inPageRequest.getPageValue("entityid");
-		if( entityid == null)
-		{
-			entityid = (String)inPageRequest.findValue("entityid");
+		String entityid = (String) inPageRequest.getPageValue("entityid");
+		if (entityid == null) {
+			entityid = (String) inPageRequest.findValue("entityid");
 		}
-		if( entityid == null)
-		{
+		if (entityid == null) {
 			return;
 		}
 		Data found = archive.query("faceembedding").exact("entityperson", entityid).searchOne();
-		
-		if( found != null)
-		{
-			inPageRequest.setRequestParameter("faceembeddingid",found.getId());
+
+		if (found != null) {
+			inPageRequest.setRequestParameter("faceembeddingid", found.getId());
 			viewAllRelatedFaces(inPageRequest);
 		}
 	}
 
-	public void disableFace(WebPageRequest inReq)
-	{
+	public void disableFace(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 
 		FaceProfileManager manager = archive.getFaceProfileManager();
-		
+
 		String faceembeddedid = inReq.getRequestParameter("faceembeddingid");
-		MultiValued data = (MultiValued)archive.getData("faceembedding",faceembeddedid);
-		manager.disableFaceBox(inReq.getUser(),data);
-		
+		MultiValued data = (MultiValued) archive.getData("faceembedding", faceembeddedid);
+		manager.disableFaceBox(inReq.getUser(), data);
+
 	}
-	
+
 }

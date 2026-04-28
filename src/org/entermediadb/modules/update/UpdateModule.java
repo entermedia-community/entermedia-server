@@ -78,16 +78,15 @@ public class UpdateModule extends BaseMediaModule {
 	protected Map fieldPlugInFinders;
 	protected PostMail fieldPostMail;
 	protected ScriptManager fieldScriptManager;
-	public ScriptManager getScriptManager()
-	{
-		if( fieldScriptManager == null)
-		{
-			fieldScriptManager = (ScriptManager)getModuleManager().getBean("scriptManager");
+
+	public ScriptManager getScriptManager() {
+		if (fieldScriptManager == null) {
+			fieldScriptManager = (ScriptManager) getModuleManager().getBean("scriptManager");
 		}
 		return fieldScriptManager;
 	}
-	public void setScriptManager(ScriptManager inScriptManager)
-	{
+
+	public void setScriptManager(ScriptManager inScriptManager) {
 		fieldScriptManager = inScriptManager;
 	}
 
@@ -400,7 +399,6 @@ public class UpdateModule extends BaseMediaModule {
 		inReq.redirect("/openedit/editors/themes/finished.html");
 	}
 
-	
 	public void saveSync(WebPageRequest inReq) {
 		String applicationid = inReq.getRequestParameter("applicationid");
 		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid,
@@ -506,7 +504,6 @@ public class UpdateModule extends BaseMediaModule {
 		inReq.putPageValue("synclist", synchits);
 	}
 
-	
 	protected void checkLogin(WebPageRequest inReq) throws Exception {
 		if (inReq.getUser() == null) {
 			String username = inReq.getRequestParameter("accountname");
@@ -585,10 +582,9 @@ public class UpdateModule extends BaseMediaModule {
 
 		inReq.putPageValue("sortedlist", all);
 
-		HitTracker hits = getSearcherManager().getList("system","installedplugin");
+		HitTracker hits = getSearcherManager().getList("system", "installedplugin");
 		Set installed = new HashSet();
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 			Data hit = (Data) iterator.next();
 			installed.add(hit.getId());
 		}
@@ -688,9 +684,9 @@ public class UpdateModule extends BaseMediaModule {
 			inReq.putPageValue("error", "Upgrade already in progress");
 			return;
 		}
-		
+
 		List all = getPlugInFinder(inReq).getPlugIns();
-		
+
 		// *** get root path of this object
 		String root = getRoot().getAbsolutePath();
 		if (root.endsWith("/")) {
@@ -704,10 +700,9 @@ public class UpdateModule extends BaseMediaModule {
 		String serverid = inReq.findValue("serverid");
 		inReq.putSessionValue("upgrader" + serverid, upgrader);
 		inReq.putPageValue("upgrader", upgrader);
-	
+
 	}
 
-	
 	public void updateProjects(WebPageRequest inReq) throws Exception {
 		checkLogin(inReq);
 		if (inReq.getSessionValue("status") != null
@@ -738,20 +733,19 @@ public class UpdateModule extends BaseMediaModule {
 			String serverid = inReq.findValue("serverid");
 			inReq.putSessionValue("upgrader" + serverid, upgrader);
 			inReq.putPageValue("upgrader", upgrader);
-			
-			//save these before the server crashes
+
+			// save these before the server crashes
 			Searcher searcher = getSearcherManager().getSearcher("system", "installedplugin");
 			searcher.deleteAll(null);
 			List all = new ArrayList();
-			for (int i = 0; i < toupdate.length; i++)
-			{
+			for (int i = 0; i < toupdate.length; i++) {
 				Data tosave = searcher.createNewData();
 				tosave.setId(toupdate[i]);
 				tosave.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 				all.add(tosave);
 			}
 			searcher.saveAllData(all, null);
-			
+
 		}
 	}
 
@@ -785,11 +779,11 @@ public class UpdateModule extends BaseMediaModule {
 		Searcher searcher = getSearcherManager().getSearcher("system",
 				"extensionservers");
 		String serverid = inReq.getRequestParameter("serverid");
-//		if (serverid == null) {
-//			serverid = "1";
-//		}
-		if(serverid == null){
-			 serverid = inReq.getRequestParameter("id");
+		// if (serverid == null) {
+		// serverid = "1";
+		// }
+		if (serverid == null) {
+			serverid = inReq.getRequestParameter("id");
 
 		}
 		PlugInFinder finder = (PlugInFinder) getPluginFinders().get(serverid);
@@ -827,7 +821,7 @@ public class UpdateModule extends BaseMediaModule {
 		properties.saveFileAs(item, path, inReq.getUser());
 		Page outputfolder = getPageManager().getPage("/WEB-INF/temp/upgrade/");
 		Page inputfile = getPageManager().getPage(path);
-		
+
 		try {
 			ZipUtil util = new ZipUtil();
 
@@ -837,8 +831,8 @@ public class UpdateModule extends BaseMediaModule {
 			util.unzip(in, out);
 
 			Page scriptpage = getPageManager().getPage("/WEB-INF/temp/upgrade/etc/install.js");
-			if(!scriptpage.exists()){
-				 scriptpage = getPageManager().getPage("/WEB-INF/temp/upgrade/etc/zipinstall.js");
+			if (!scriptpage.exists()) {
+				scriptpage = getPageManager().getPage("/WEB-INF/temp/upgrade/etc/zipinstall.js");
 
 			}
 			if (scriptpage.exists()) {
@@ -852,7 +846,7 @@ public class UpdateModule extends BaseMediaModule {
 			}
 
 		} catch (Exception e) {
-				throw new OpenEditException(e);
+			throw new OpenEditException(e);
 		}
 
 		finally {
@@ -862,12 +856,11 @@ public class UpdateModule extends BaseMediaModule {
 
 	}
 
-	public void restartDocker(WebPageRequest inReq) 
-	{
-		Exec exec = (Exec)getModuleManager().getBean("exec");
+	public void restartDocker(WebPageRequest inReq) {
+		Exec exec = (Exec) getModuleManager().getBean("exec");
 		ExecResult res = exec.runExec("restartdocker", null, true);
-		log.info( "Restarting site: " + res.getStandardOut() );
+		log.info("Restarting site: " + res.getStandardOut());
 		inReq.putPageValue("result", res);
 	}
-	
+
 }

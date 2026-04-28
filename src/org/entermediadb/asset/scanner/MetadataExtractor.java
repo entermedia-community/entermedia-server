@@ -9,26 +9,22 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.repository.ContentItem;
 
-public abstract class MetadataExtractor
-{
+public abstract class MetadataExtractor {
 	private static final Log log = LogFactory.getLog(MetadataExtractor.class);
 
 	public abstract boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset);
 
-	public boolean extractAll(MediaArchive inMediaArchive, Collection<ContentItem> inContentitems, Collection<Asset> inAssets)
-	{
+	public boolean extractAll(MediaArchive inMediaArchive, Collection<ContentItem> inContentitems,
+			Collection<Asset> inAssets) {
 		boolean foundone = false;
 		Iterator<ContentItem> next = inContentitems.iterator();
-		for(Asset inAsset:inAssets)
-		{
+		for (Asset inAsset : inAssets) {
 			ContentItem inputFile = next.next();
-			if( !inputFile.exists() )
-			{
+			if (!inputFile.exists()) {
 				log.info("Original asset missing " + inAsset.getSourcePath());
 				continue;
 			}
-			if( extractData(inMediaArchive, inputFile, inAsset) )
-			{
+			if (extractData(inMediaArchive, inputFile, inAsset)) {
 				foundone = true;
 			}
 		}

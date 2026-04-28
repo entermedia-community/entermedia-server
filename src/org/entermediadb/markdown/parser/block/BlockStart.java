@@ -3,7 +3,8 @@ package org.entermediadb.markdown.parser.block;
 import org.entermediadb.markdown.internal.BlockStartImpl;
 
 /**
- * Result object for starting parsing of a block, see static methods for constructors.
+ * Result object for starting parsing of a block, see static methods for
+ * constructors.
  */
 public abstract class BlockStart {
 
@@ -39,8 +40,9 @@ public abstract class BlockStart {
     public abstract BlockStart atColumn(int newColumn);
 
     /**
-     * @deprecated use {@link #replaceParagraphLines(int)} instead; please raise an issue if that doesn't work for you
-     * for some reason.
+     * @deprecated use {@link #replaceParagraphLines(int)} instead; please raise an
+     *             issue if that doesn't work for you
+     *             for some reason.
      */
     @Deprecated
     public abstract BlockStart replaceActiveBlockParser();
@@ -49,18 +51,25 @@ public abstract class BlockStart {
      * Replace a number of lines from the current paragraph (as returned by
      * {@link MatchedBlockParser#getParagraphLines()}) with the new block.
      * <p>
-     * This is useful for parsing blocks that start with normal paragraphs and only have special marker syntax in later
+     * This is useful for parsing blocks that start with normal paragraphs and only
+     * have special marker syntax in later
      * lines, e.g. in this:
+     * 
      * <pre>
      * Foo
      * ===
      * </pre>
-     * The <code>Foo</code> line is initially parsed as a normal paragraph, then <code>===</code> is parsed as a heading
-     * marker, replacing the 1 paragraph line before. The end result is a single Heading block.
+     * 
+     * The <code>Foo</code> line is initially parsed as a normal paragraph, then
+     * <code>===</code> is parsed as a heading
+     * marker, replacing the 1 paragraph line before. The end result is a single
+     * Heading block.
      * <p>
-     * Note that source spans from the replaced lines are automatically added to the new block.
+     * Note that source spans from the replaced lines are automatically added to the
+     * new block.
      *
-     * @param lines the number of lines to replace (at least 1); use {@link Integer#MAX_VALUE} to replace the whole
+     * @param lines the number of lines to replace (at least 1); use
+     *              {@link Integer#MAX_VALUE} to replace the whole
      *              paragraph
      */
     public abstract BlockStart replaceParagraphLines(int lines);

@@ -15,10 +15,9 @@
  */
 package org.entermediadb.video.VTT;
 
-
-
 /**
- * Contains information about a specific cue, including textual content and formatting data.
+ * Contains information about a specific cue, including textual content and
+ * formatting data.
  */
 public class Cue {
 
@@ -27,89 +26,71 @@ public class Cue {
    */
   public static final int UNSET_VALUE = -1;
 
-  public  CharSequence text;
-  public  int fieldLine;
-  public  int fieldPosition;  //percentage of the width of the video viewpoint
-  public  long fieldStartTime;
-  public  long fieldEndTime;
-  public  String fieldAlignment;  //Text aligment
-  public  int fieldSize; //How big of a font to use
-  
-  
-  
-  public long getStartTime()
-{
-	return fieldStartTime;
-}
+  public CharSequence text;
+  public int fieldLine;
+  public int fieldPosition; // percentage of the width of the video viewpoint
+  public long fieldStartTime;
+  public long fieldEndTime;
+  public String fieldAlignment; // Text aligment
+  public int fieldSize; // How big of a font to use
 
-public void setStartTime(long inStartTime)
-{
-	fieldStartTime = inStartTime;
-}
+  public long getStartTime() {
+    return fieldStartTime;
+  }
 
-public long getEndTime()
-{
-	return fieldEndTime;
-}
+  public void setStartTime(long inStartTime) {
+    fieldStartTime = inStartTime;
+  }
 
-public void setEndTime(long inEndTime)
-{
-	fieldEndTime = inEndTime;
-}
+  public long getEndTime() {
+    return fieldEndTime;
+  }
 
-  
-  public String getAlignment()
-{
-	return fieldAlignment;
-}
+  public void setEndTime(long inEndTime) {
+    fieldEndTime = inEndTime;
+  }
 
-public void setAlignment(String inAlignment)
-{
-		fieldAlignment = inAlignment;
-	}
+  public String getAlignment() {
+    return fieldAlignment;
+  }
 
+  public void setAlignment(String inAlignment) {
+    fieldAlignment = inAlignment;
+  }
 
-  public CharSequence getText()
-{
-	return text;
-}
+  public CharSequence getText() {
+    return text;
+  }
 
-public void setText(CharSequence inText)
-{
-	text = inText;
-}
+  public void setText(CharSequence inText) {
+    text = inText;
+  }
 
-public int getLine()
-{
-	return fieldLine;
-}
+  public int getLine() {
+    return fieldLine;
+  }
 
-public void setLine(int inLine)
-{
-	fieldLine = inLine;
-}
+  public void setLine(int inLine) {
+    fieldLine = inLine;
+  }
 
-public int getPosition()
-{
-	return fieldPosition;
-}
+  public int getPosition() {
+    return fieldPosition;
+  }
 
-public void setPosition(int inPosition)
-{
-	fieldPosition = inPosition;
-}
+  public void setPosition(int inPosition) {
+    fieldPosition = inPosition;
+  }
 
-public int getSize()
-{
-	return fieldSize;
-}
+  public int getSize() {
+    return fieldSize;
+  }
 
-public void setSize(int inSize)
-{
-	fieldSize = inSize;
-}
+  public void setSize(int inSize) {
+    fieldSize = inSize;
+  }
 
-public Cue() {
+  public Cue() {
     this(null);
   }
 

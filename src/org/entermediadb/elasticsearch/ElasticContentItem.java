@@ -14,10 +14,10 @@ import org.openedit.repository.RepositoryException;
 import org.openedit.repository.filesystem.StringItem;
 import org.openedit.util.ReaderInputStream;
 
-class ElasticContentItem extends StringItem implements Data{
-	
-	
+class ElasticContentItem extends StringItem implements Data {
+
 	protected Boolean existed;
+
 	public Data getElasticData() {
 		return fieldElasticData;
 	}
@@ -26,7 +26,7 @@ class ElasticContentItem extends StringItem implements Data{
 		fieldElasticData = inElasticData;
 	}
 
-	protected Data fieldElasticData;	
+	protected Data fieldElasticData;
 
 	public InputStream getInputStream() throws RepositoryException {
 		if (getOutputEncoding() == null) {
@@ -40,20 +40,19 @@ class ElasticContentItem extends StringItem implements Data{
 			throw new RepositoryException(ex);
 		}
 	}
-	public Collection getValues(String inField)
-	{
-		Collection values = (Collection)getValue(inField);
+
+	public Collection getValues(String inField) {
+		Collection values = (Collection) getValue(inField);
 		return values;
 	}
+
 	public boolean exists() {
 		return true;
 	}
 
-
 	public void setId(String inNewid) {
-		 getElasticData().setId(inNewid);
+		getElasticData().setId(inNewid);
 
-		
 	}
 
 	@Override
@@ -64,24 +63,24 @@ class ElasticContentItem extends StringItem implements Data{
 	@Override
 	public void setName(String inName) {
 		getElasticData().setName(inName);
-		
+
 	}
 
 	@Override
 	public void setSourcePath(String inSourcepath) {
 		getElasticData().setSourcePath(inSourcepath);
-		
+
 	}
 
 	@Override
 	public String getSourcePath() {
-	 return getElasticData().getSourcePath();
+		return getElasticData().getSourcePath();
 	}
 
 	@Override
 	public void setProperty(String inId, String inValue) {
 		getElasticData().setProperty(inId, inValue);
-		
+
 	}
 
 	@Override
@@ -91,13 +90,13 @@ class ElasticContentItem extends StringItem implements Data{
 
 	@Override
 	public Object getValue(String inKey) {
-	return getElasticData().getValue(inKey);
+		return getElasticData().getValue(inKey);
 	}
 
 	@Override
 	public void setValue(String inKey, Object inValue) {
 		getElasticData().setValue(inKey, inValue);
-		
+
 	}
 
 	@Override
@@ -107,19 +106,15 @@ class ElasticContentItem extends StringItem implements Data{
 
 	@Override
 	public void setProperties(Map inProperties) {
-		 getElasticData().setProperties(inProperties);
+		getElasticData().setProperties(inProperties);
 	}
 
 	@Override
-	public Set keySet()
-	{
+	public Set keySet() {
 		return getElasticData().keySet();
 	}
-	
-	
-	
-	public String toJsonString()
-	{		
+
+	public String toJsonString() {
 		throw new OpenEditException();
 	}
 

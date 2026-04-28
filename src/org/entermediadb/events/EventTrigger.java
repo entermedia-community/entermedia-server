@@ -3,34 +3,33 @@ package org.entermediadb.events;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.WebPageRequest;
 
-public class EventTrigger
-{
-	public PathEvent getPathEvent()
-	{
+public class EventTrigger {
+	public PathEvent getPathEvent() {
 		return fieldPathEvent;
 	}
-	public void setPathEvent(PathEvent inPathEvent)
-	{
+
+	public void setPathEvent(PathEvent inPathEvent) {
 		fieldPathEvent = inPathEvent;
 	}
-	public WebPageRequest getWebPageRequest()
-	{
+
+	public WebPageRequest getWebPageRequest() {
 		return fieldWebPageRequest;
 	}
-	public void setWebPageRequest(WebPageRequest inWebPageRequest)
-	{
+
+	public void setWebPageRequest(WebPageRequest inWebPageRequest) {
 		fieldWebPageRequest = inWebPageRequest;
 	}
-	public ScriptLogger getLogger()
-	{
+
+	public ScriptLogger getLogger() {
 		return fieldLogger;
 	}
-	public void setLogger(ScriptLogger inLogger)
-	{
+
+	public void setLogger(ScriptLogger inLogger) {
 		fieldLogger = inLogger;
 	}
+
 	PathEvent fieldPathEvent;
 	WebPageRequest fieldWebPageRequest;
 	ScriptLogger fieldLogger;
-	
+
 }

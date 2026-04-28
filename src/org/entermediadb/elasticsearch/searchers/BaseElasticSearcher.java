@@ -123,8 +123,7 @@ import org.openedit.xml.XmlSearcher;
 import groovy.json.JsonOutput;
 import groovy.json.JsonSlurper;
 
-public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
-{
+public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader {
 
 	private static final Log log = LogFactory.getLog(BaseElasticSearcher.class);
 	public static final Pattern VALUEDELMITER = Pattern.compile("\\s*\\|\\s*");
@@ -152,63 +151,49 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	protected PageManager fieldPageManager;
 	protected Replacer fieldReplacer;
 
-	
-	
-	public boolean isCheckLegacy()
-	{
+	public boolean isCheckLegacy() {
 		return fieldCheckLegacy;
 	}
 
-	public void setCheckLegacy(boolean inCheckLegacy)
-	{
+	public void setCheckLegacy(boolean inCheckLegacy) {
 		fieldCheckLegacy = inCheckLegacy;
 	}
 
-	protected Replacer getReplacer()
-	{
-		if (fieldReplacer == null)
-		{
+	protected Replacer getReplacer() {
+		if (fieldReplacer == null) {
 			fieldReplacer = (Replacer) getModuleManager().getBean(getCatalogId(), "replacer");
 		}
 
 		return fieldReplacer;
 	}
 
-	protected void setReplacer(Replacer inReplacer)
-	{
+	protected void setReplacer(Replacer inReplacer) {
 		fieldReplacer = inReplacer;
 	}
 
 	protected boolean fieldOptimizeReindex = false;
 
-	public boolean isOptimizeReindex()
-	{
+	public boolean isOptimizeReindex() {
 		return fieldOptimizeReindex;
 	}
 
-	public void setOptimizeReindex(boolean inOptimizeReindex)
-	{
+	public void setOptimizeReindex(boolean inOptimizeReindex) {
 		fieldOptimizeReindex = inOptimizeReindex;
 	}
 
-	public PageManager getPageManager()
-	{
-		if (fieldPageManager == null)
-		{
+	public PageManager getPageManager() {
+		if (fieldPageManager == null) {
 			fieldPageManager = (PageManager) getModuleManager().getBean("pageManager");
 		}
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager pageManager)
-	{
+	public void setPageManager(PageManager pageManager) {
 		fieldPageManager = pageManager;
 	}
 
-	protected OutputFiller getFiller()
-	{
-		if (fieldFiller == null)
-		{
+	protected OutputFiller getFiller() {
+		if (fieldFiller == null) {
 			fieldFiller = new OutputFiller();
 		}
 		return fieldFiller;
@@ -216,30 +201,24 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 	protected int fieldFullTextCap = 25000;
 
-	public int getFullTextCap()
-	{
+	public int getFullTextCap() {
 		return fieldFullTextCap;
 	}
 
-	public void setFullTextCap(int inFullTextCap)
-	{
+	public void setFullTextCap(int inFullTextCap) {
 		fieldFullTextCap = inFullTextCap;
 	}
 
-	public boolean isIncludeFullText()
-	{
+	public boolean isIncludeFullText() {
 		return fieldIncludeFullText;
 	}
 
-	public void setIncludeFullText(boolean inIncludeFullText)
-	{
+	public void setIncludeFullText(boolean inIncludeFullText) {
 		fieldIncludeFullText = inIncludeFullText;
 	}
 
-	public ArrayList<String> getSearchTypes()
-	{
-		if (fieldSearchTypes == null)
-		{
+	public ArrayList<String> getSearchTypes() {
+		if (fieldSearchTypes == null) {
 			fieldSearchTypes = new ArrayList();
 
 		}
@@ -247,48 +226,39 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		return fieldSearchTypes;
 	}
 
-	public void setSearchTypes(ArrayList<String> inSearchTypes)
-	{
+	public void setSearchTypes(ArrayList<String> inSearchTypes) {
 		fieldSearchTypes = inSearchTypes;
 	}
 
-	public boolean isRefreshSaves()
-	{
+	public boolean isRefreshSaves() {
 		return fieldRefreshSaves;
 	}
 
-	public void setRefreshSaves(boolean inRefreshSaves)
-	{
+	public void setRefreshSaves(boolean inRefreshSaves) {
 		fieldRefreshSaves = inRefreshSaves;
 	}
 
-	public ElasticNodeManager getElasticNodeManager()
-	{
+	public ElasticNodeManager getElasticNodeManager() {
 		return fieldElasticNodeManager;
 	}
 
-	public void setElasticNodeManager(ElasticNodeManager inElasticNodeManager)
-	{
+	public void setElasticNodeManager(ElasticNodeManager inElasticNodeManager) {
 		fieldElasticNodeManager = inElasticNodeManager;
 	}
 
-	public boolean isCheckVersions()
-	{
+	public boolean isCheckVersions() {
 		return fieldCheckVersions;
 	}
 
-	public void setCheckVersions(boolean inCheckVersions)
-	{
+	public void setCheckVersions(boolean inCheckVersions) {
 		fieldCheckVersions = inCheckVersions;
 	}
 
-	public boolean isReIndexing()
-	{
+	public boolean isReIndexing() {
 		return fieldReIndexing;
 	}
 
-	public void setReIndexing(boolean inReIndexing)
-	{
+	public void setReIndexing(boolean inReIndexing) {
 		fieldReIndexing = inReIndexing;
 	}
 
@@ -296,18 +266,15 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	 * @deprecated not used
 	 * @return
 	 */
-	public boolean isAutoIncrementId()
-	{
+	public boolean isAutoIncrementId() {
 		return fieldAutoIncrementId;
 	}
 
-	public void setAutoIncrementId(boolean inAutoIncrementId)
-	{
+	public void setAutoIncrementId(boolean inAutoIncrementId) {
 		fieldAutoIncrementId = inAutoIncrementId;
 	}
 
-	public SearchQuery createSearchQuery()
-	{
+	public SearchQuery createSearchQuery() {
 		SearchQuery query = new ElasticSearchQuery();
 		query.setPropertyDetails(getPropertyDetails());
 		query.setCatalogId(getCatalogId());
@@ -316,19 +283,16 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		return query;
 	}
 
-	protected Client getClient()
-	{
+	protected Client getClient() {
 		return getElasticNodeManager().getClient();
 	}
 
-	protected String toId(String inId)
-	{
+	protected String toId(String inId) {
 		String id = inId.replace('/', '_');
 		return id;
 	}
 
-	public HitTracker search(SearchQuery inQuery)
-	{
+	public HitTracker search(SearchQuery inQuery) {
 		// if (isReIndexing())
 		// {
 		// int timeout = 0;
@@ -352,54 +316,43 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// }
 		// Think this is lucene junk
 		String json = null;
-		try
-		{
-			if (!(inQuery instanceof ElasticSearchQuery))
-			{
+		try {
+			if (!(inQuery instanceof ElasticSearchQuery)) {
 				throw new OpenEditException("Elastic search requires elastic query");
 			}
-			
+
 			HitTracker lowlevel = checkForJson(inQuery);
-			if( lowlevel != null)
-			{
+			if (lowlevel != null) {
 				return lowlevel;
 			}
-				
-			
+
 			long start = System.currentTimeMillis();
 			boolean showSearchLogs = getSearcherManager().getShowSearchLogs(getCatalogId());
 
 			SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
 			search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
-			if (showSearchLogs)
-			{
+			if (showSearchLogs) {
 				search.setExplain(true);
 				search.setRequestCache(false);
 
 			}
-			//search.setExplain(true); //Really?
+			// search.setExplain(true); //Really?
 
-			if (getPropertyDetails().getSearchTypes() != null)
-			{
+			if (getPropertyDetails().getSearchTypes() != null) {
 				search.setTypes(getPropertyDetails().getSearchTypes().split(","));
-			}
-			else
-			{
+			} else {
 				search.setTypes(getSearchType());
 			}
 
-			if (isCheckVersions())
-			{
+			if (isCheckVersions()) {
 				search.setVersion(true);
 			}
 
 			BoolQueryBuilder terms = buildTerms(inQuery);
 
-			//function_score
-			
-			
-			if (!inQuery.isIncludeDeleted())
-			{
+			// function_score
+
+			if (!inQuery.isIncludeDeleted()) {
 				TermQueryBuilder deleted = QueryBuilders.termQuery("emrecordstatus.recorddeleted", true);
 				terms.mustNot(deleted);
 			}
@@ -412,267 +365,271 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			addHighlights(inQuery, search);
 			search.setRequestCache(true);
 
-			if (inQuery.getIncludeOnly() != null || inQuery.getExcludeFields() != null)
-			{
+			if (inQuery.getIncludeOnly() != null || inQuery.getExcludeFields() != null) {
 				String[] includes = null;
 				String[] excludescludes = null;
-				if( inQuery.getIncludeOnly() != null && !inQuery.getIncludeOnly().isEmpty())
-				{
-					includes = (String[])inQuery.getIncludeOnly().toArray( new String[inQuery.getIncludeOnly().size()]);
-				} 
-				if (inQuery.getExcludeFields() != null && !inQuery.getExcludeFields().isEmpty())
-				{
-					excludescludes = (String[])inQuery.getExcludeFields().toArray( new String[inQuery.getExcludeFields().size()]);
+				if (inQuery.getIncludeOnly() != null && !inQuery.getIncludeOnly().isEmpty()) {
+					includes = (String[]) inQuery.getIncludeOnly().toArray(new String[inQuery.getIncludeOnly().size()]);
+				}
+				if (inQuery.getExcludeFields() != null && !inQuery.getExcludeFields().isEmpty()) {
+					excludescludes = (String[]) inQuery.getExcludeFields()
+							.toArray(new String[inQuery.getExcludeFields().size()]);
 				}
 				search.setFetchSource(includes, excludescludes);
-			} 
-			else  if( !inQuery.isIncludeDescription() )
-			{
-				search.setFetchSource(null,"description");
+			} else if (!inQuery.isIncludeDescription()) {
+				search.setFetchSource(null, "description");
 			}
 			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, inQuery.getHitsPerPage());
 			hits.setSearcherManager(getSearcherManager());
 			hits.setIndexId(getIndexId());
 			hits.setSearcher(this);
 			hits.setSearchQuery(inQuery);
-			if (showSearchLogs)
-			{
+			if (showSearchLogs) {
 				long size = hits.size(); // order is important
 				json = search.toString();
 				long end = System.currentTimeMillis() - start;
-				log.info(toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json + "' \n" + size + " hits in: " + (double) end / 1000D + " seconds]");
+				log.info(toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json + "' \n" + size
+						+ " hits in: " + (double) end / 1000D + " seconds]");
 			}
 			return hits;
-		}
-		catch (Exception ex)
-		{
-			if (json != null)
-			{
-				log.error("Could not query: " + toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json + "' sort by " + inQuery.getSorts(), ex);
+		} catch (Exception ex) {
+			if (json != null) {
+				log.error("Could not query: " + toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json
+						+ "' sort by " + inQuery.getSorts(), ex);
 			}
 
-			if (ex instanceof OpenEditException)
-			{
+			if (ex instanceof OpenEditException) {
 				throw (OpenEditException) ex;
 			}
 			throw new OpenEditException(ex);
 		}
 	}
 
-	private HitTracker checkForJson(SearchQuery inQuery)
-	{
-		for (Iterator iterator = inQuery.getTerms().iterator(); iterator.hasNext();)
-		{
+	private HitTracker checkForJson(SearchQuery inQuery) {
+		for (Iterator iterator = inQuery.getTerms().iterator(); iterator.hasNext();) {
 			Term term = (Term) iterator.next();
-			if( term.getDetail() != null && term.getDetail().isDataType("stringvector") )
-			{
-				double[] d = (double[])term.getParameters().getValue("value");
-				if( d != null)
-				{
+			if (term.getDetail() != null && term.getDetail().isDataType("stringvector")) {
+				double[] d = (double[]) term.getParameters().getValue("value");
+				if (d != null) {
 					JSONObject query = new JSONObject();
-					
+
 					JSONObject function_score = new JSONObject();
 					function_score.put("boost_mode", "replace");
-					Double min = (Double)term.getParameters().getValue("min_score");
-					function_score.put("min_score", min);  
-					
-					query.put("function_score",function_score);
-					
-					//.setMinScore(minScore)
-					
+					Double min = (Double) term.getParameters().getValue("min_score");
+					function_score.put("min_score", min);
+
+					query.put("function_score", function_score);
+
+					// .setMinScore(minScore)
+
 					JSONObject script_score = new JSONObject();
 					script_score.put("lang", "knn");
 					script_score.put("script", "binary_vector_score");
 					function_score.put("script_score", script_score);
-					
+
 					JSONObject params = new JSONObject();
 					params.put("cosine", true);
-					params.put("field",  term.getDetail().getId() );
-					//double[] d = { -0.09217305481433868d, 0.010635560378432274d, -0.02878434956073761d, 0.06988169997930527d};
+					params.put("field", term.getDetail().getId());
+					// double[] d = { -0.09217305481433868d, 0.010635560378432274d,
+					// -0.02878434956073761d, 0.06988169997930527d};
 					List<Double> list = Arrays.stream(d).boxed().collect(Collectors.toList());
 					JSONArray vector = new JSONArray();
 					vector.addAll(list);
-					params.put("vector",vector);
-					script_score.put("params",params);
-					//log.info("req: " + response);
+					params.put("vector", vector);
+					script_score.put("params", params);
+					// log.info("req: " + response);
 					JSONObject root = new JSONObject();
-					root.put("query",query);
-					String source =  root.toJSONString();
-					
-					//log.info(source);
-					
-					//SearchResponse searchResponse = getClient().prepareSearch(toId(getCatalogId())).setSize(3).setTypes(getSearchType()).setSource(source).get();
-					SearchResponse searchResponse = getClient().prepareSearch(toId(getCatalogId())).setTypes(getSearchType()).setSource(source).get();
-					//log.info("req: " + searchResponse);
-					
+					root.put("query", query);
+					String source = root.toJSONString();
+
+					// log.info(source);
+
+					// SearchResponse searchResponse =
+					// getClient().prepareSearch(toId(getCatalogId())).setSize(3).setTypes(getSearchType()).setSource(source).get();
+					SearchResponse searchResponse = getClient().prepareSearch(toId(getCatalogId()))
+							.setTypes(getSearchType()).setSource(source).get();
+					// log.info("req: " + searchResponse);
+
 					SearchHit[] hits = searchResponse.getHits().getHits();
 					ListHitTracker tracker = new ListHitTracker();
 					tracker.setSearchQuery(inQuery);
-					for (int i = 0; i < hits.length; i++)
-					{
+					for (int i = 0; i < hits.length; i++) {
 						SearchHit hit = hits[i];
 						SearchHitData data = new SearchHitData(hit, this);
 						tracker.add(data);
 					}
-					
-					return tracker;
-					
-//					SearchRequest searchRequest = new SearchRequest(toId(getCatalogId()) );
-		//
-//					//String testquery = "{'bool': {'must': [{'match_phrase': {'countryName': 'Spain'}}], 'must_not': [], 'should': []}}".replace("'","\"");
-//					//QueryBuilder qb = QueryBuilders.wrapperQuery(testquery);
-		//
-//					// Create your base query
-//					QueryBuilder baseQuery = QueryBuilders.matchQuery("field", "value");
-		//
-//					// Create a function score query
-//					
-//					ScriptScoreFunctionBuilder scriptbuilder = ScoreFunctionBuilders.scriptFunction("binary_vector_score");
-//					scriptbuilder.
-//					FunctionScoreQueryBuilder functionScoreQuery = QueryBuilders.functionScoreQuery(
-//					    baseQuery,
-//					    scriptbuilder // Example: multiply score by 2
-//					).boostMode( "replace");
-//					
-//					
-//					// Use the functionScoreQuery in your search request
-//					SearchResponse response = getClient().prepareSearch(toId(getCatalogId()))
-//						.setTypes(getSearchType())
-//					    .setQuery(functionScoreQuery)
-//					    .get();
-//					log.info("req: " + response);
-//					FunctionScoreQueryBuilder(matchQuery("party_id", "12"))
-//					.add(termsFilter("course_cd",
-//					
-//					SearchSourceBuilder searchSourceBuilder1 = SearchSourceBuilder.searchSource();
-//					searchSourceBuilder1.query(source);
-//					
-//					.source(SearchSourceBuilder.searchSsearcherource()
-//		                    .query(new QueryStringQueryBuilder("foo").field("query")));
-//					
-//					searchRequest.source(searchSourceBuilder1);
-//					searchRequest.types(getSearchType());
-//					//SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
-//					ActionFuture<SearchResponse> res = getClient().search(searchRequest);
-//					SearchResponse scrollResp1 = res.actionGet();
 
-			//		log.info("req: " + scrollResp1);
-					//String query = "{"bool": {"must": [{"match_phrase": {"countryName": "Spain"}}], "must_not": [], "should": []}}";
-//					QueryBuilder qb = QueryBuilders.wrapperQuery(source);
-//					SearchSourceBuilder searchSourceBuilder1 = new SearchSourceBuilder();
-//					searchSourceBuilder1.query(qb);
-//					SearchRequest searchRequest = new SearchRequest("index_name");
-//					searchRequest.source(searchSourceBuilder1);
-//					SearchResponse scrollResp1 = client.search(searchRequest, RequestOptions.DEFAULT);
-//					System.out.println(scrollResp1);
-					
-//					MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("nationality", "italian");
-//					  SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-//					  searchSourceBuilder.query(matchQueryBuilder);
-		//
-//					  search.setSource(searchSourceBuilder);
-//					  
-					
-//					SearchModule searchModule= new SearchModule(Settings.EMPTY, false, Collections.emptyList());
-//					try (XContentParser parser = XContentFactory.xContent(XContentType.JSON).createParser(new NamedXContentRegistry(searchModule
-//					            .getNamedXContents()), source)) {
-//					    searchSourceBuilder.parseXContent(parser);
-//					}
-//					
-//					log.info("searchby: " + search.toString());
-					
+					return tracker;
+
+					// SearchRequest searchRequest = new SearchRequest(toId(getCatalogId()) );
+					//
+					// //String testquery = "{'bool': {'must': [{'match_phrase': {'countryName':
+					// 'Spain'}}], 'must_not': [], 'should': []}}".replace("'","\"");
+					// //QueryBuilder qb = QueryBuilders.wrapperQuery(testquery);
+					//
+					// // Create your base query
+					// QueryBuilder baseQuery = QueryBuilders.matchQuery("field", "value");
+					//
+					// // Create a function score query
+					//
+					// ScriptScoreFunctionBuilder scriptbuilder =
+					// ScoreFunctionBuilders.scriptFunction("binary_vector_score");
+					// scriptbuilder.
+					// FunctionScoreQueryBuilder functionScoreQuery =
+					// QueryBuilders.functionScoreQuery(
+					// baseQuery,
+					// scriptbuilder // Example: multiply score by 2
+					// ).boostMode( "replace");
+					//
+					//
+					// // Use the functionScoreQuery in your search request
+					// SearchResponse response = getClient().prepareSearch(toId(getCatalogId()))
+					// .setTypes(getSearchType())
+					// .setQuery(functionScoreQuery)
+					// .get();
+					// log.info("req: " + response);
+					// FunctionScoreQueryBuilder(matchQuery("party_id", "12"))
+					// .add(termsFilter("course_cd",
+					//
+					// SearchSourceBuilder searchSourceBuilder1 =
+					// SearchSourceBuilder.searchSource();
+					// searchSourceBuilder1.query(source);
+					//
+					// .source(SearchSourceBuilder.searchSsearcherource()
+					// .query(new QueryStringQueryBuilder("foo").field("query")));
+					//
+					// searchRequest.source(searchSourceBuilder1);
+					// searchRequest.types(getSearchType());
+					// //SearchRequestBuilder search =
+					// getClient().prepareSearch(toId(getCatalogId()));
+					// ActionFuture<SearchResponse> res = getClient().search(searchRequest);
+					// SearchResponse scrollResp1 = res.actionGet();
+
+					// log.info("req: " + scrollResp1);
+					// String query = "{"bool": {"must": [{"match_phrase": {"countryName":
+					// "Spain"}}], "must_not": [], "should": []}}";
+					// QueryBuilder qb = QueryBuilders.wrapperQuery(source);
+					// SearchSourceBuilder searchSourceBuilder1 = new SearchSourceBuilder();
+					// searchSourceBuilder1.query(qb);
+					// SearchRequest searchRequest = new SearchRequest("index_name");
+					// searchRequest.source(searchSourceBuilder1);
+					// SearchResponse scrollResp1 = client.search(searchRequest,
+					// RequestOptions.DEFAULT);
+					// System.out.println(scrollResp1);
+
+					// MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("nationality",
+					// "italian");
+					// SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+					// searchSourceBuilder.query(matchQueryBuilder);
+					//
+					// search.setSource(searchSourceBuilder);
+					//
+
+					// SearchModule searchModule= new SearchModule(Settings.EMPTY, false,
+					// Collections.emptyList());
+					// try (XContentParser parser =
+					// XContentFactory.xContent(XContentType.JSON).createParser(new
+					// NamedXContentRegistry(searchModule
+					// .getNamedXContents()), source)) {
+					// searchSourceBuilder.parseXContent(parser);
+					// }
+					//
+					// log.info("searchby: " + search.toString());
+
 				}
 			}
 		}
-		
-		
 
 		/**
-
-
-"function_score": {
-      "boost_mode": "replace",
-      "script_score": {
-        "lang": "knn",
-        "params": {
-          "cosine": false,
-          "field": "facedata",
-          "vector": [
-               -0.09217305481433868, 0.010635560378432274, -0.02878434956073761, 0.06988169997930527
-             ]
-        },
-        "script": "binary_vector_score"
-      }
-    }
-
-		 
-		//https://stackoverflow.com/questions/36589645/how-to-use-elasticsearch-functionscore-query-using-java-api
-		 final FunctionScoreQueryBuilder queryBuilder = new FunctionScoreQueryBuilder(inTerms);
-		 
-		 Script script = new Script();
-		 
-		 
-	        final ScoreFunctionBuilder scoreFunctionBuilder = new ScriptScoreFunctionBuilder(script);
-	        queryBuilder.add(scoreFunctionBuilder);
-	        return queryBuilder;
-	        
-		ScriptScoreFunctionBuilder scoreFunction = ScoreFunctionBuilders
-			    .scriptFunction("_score * doc['calc_feild'].value");
-		
-		scoreFunction.setWeight(fieldFullTextCap);
-		//new FunctionScoreQueryBuilder(search).add(scoreFunction).boostMode("replace")
-
-		FunctionScoreQueryBuilder fqBuilder = new FunctionScoreQueryBuilder.FilterFunctionBuilder(
-                ScoreFunctionBuilders.scriptFunction(format("doc['%s'].value", FIELD_COUNT))
-        );
-
-//		 QueryBuilders.functionScoreQuery(inTerms);
-//		    fqBuilder.boostMode("replace");
-//		    fqBuilder.scoreMode("script_score");
-		    
-		    
-		    ScriptScoreFunctionBuilder scoreFunction = ScoreFunctionBuilders
-		    	    .scriptFunction("binary_vector_score");
-		    
-		    new FunctionScoreQueryBuilder.FilterFunctionBuilder(
-                    inTerms,
-                    ScoreFunctionBuilders.weightFactorFunction(3)
-            );
-		    /*
-		    FunctionScoreQueryBuilder fqBuilder = new FunctionScoreQueryBuilder(inTerms, scoreFunction).boostMode("replace"));
-		    
-		    QueryBuilders.functionScoreQuery(
-		    		inTerms,
-                    new FunctionScoreQueryBuilder.FilterFunctionBuilder[]{
-                            new FunctionScoreQueryBuilder.FilterFunctionBuilder(
-                                    QueryBuilders.matchQuery(FIELD_TYPE, fieldType),
-                                    ScoreFunctionBuilders.weightFactorFunction(3.0F)
-                            )
-                    }), ScoreMode.None));
-		    
-		    FunctionScoreQueryBuilder.FilterFunctionBuilder[] filterFunctionBuilders = new FunctionScoreQueryBuilder.FilterFunctionBuilder[]{
-	                new FunctionScoreQueryBuilder.FilterFunctionBuilder(
-	                        QueryBuilders.matchQuery(FIELD_TYPE, fieldType),
-	                        ScoreFunctionBuilders.weightFactorFunction(3)
-	                ),
-	                new FunctionScoreQueryBuilder.FilterFunctionBuilder(
-	                        ScoreFunctionBuilders.scriptFunction(format("doc['%s'].value", FIELD_COUNT))
-	                )
-	        };
-		    fqBuilder.add(sfb2);
-		
-		return inTerms;
-		*/
+		 * 
+		 * 
+		 * "function_score": {
+		 * "boost_mode": "replace",
+		 * "script_score": {
+		 * "lang": "knn",
+		 * "params": {
+		 * "cosine": false,
+		 * "field": "facedata",
+		 * "vector": [
+		 * -0.09217305481433868, 0.010635560378432274, -0.02878434956073761,
+		 * 0.06988169997930527
+		 * ]
+		 * },
+		 * "script": "binary_vector_score"
+		 * }
+		 * }
+		 * 
+		 * 
+		 * //https://stackoverflow.com/questions/36589645/how-to-use-elasticsearch-functionscore-query-using-java-api
+		 * final FunctionScoreQueryBuilder queryBuilder = new
+		 * FunctionScoreQueryBuilder(inTerms);
+		 * 
+		 * Script script = new Script();
+		 * 
+		 * 
+		 * final ScoreFunctionBuilder scoreFunctionBuilder = new
+		 * ScriptScoreFunctionBuilder(script);
+		 * queryBuilder.add(scoreFunctionBuilder);
+		 * return queryBuilder;
+		 * 
+		 * ScriptScoreFunctionBuilder scoreFunction = ScoreFunctionBuilders
+		 * .scriptFunction("_score * doc['calc_feild'].value");
+		 * 
+		 * scoreFunction.setWeight(fieldFullTextCap);
+		 * //new
+		 * FunctionScoreQueryBuilder(search).add(scoreFunction).boostMode("replace")
+		 * 
+		 * FunctionScoreQueryBuilder fqBuilder = new
+		 * FunctionScoreQueryBuilder.FilterFunctionBuilder(
+		 * ScoreFunctionBuilders.scriptFunction(format("doc['%s'].value", FIELD_COUNT))
+		 * );
+		 * 
+		 * // QueryBuilders.functionScoreQuery(inTerms);
+		 * // fqBuilder.boostMode("replace");
+		 * // fqBuilder.scoreMode("script_score");
+		 * 
+		 * 
+		 * ScriptScoreFunctionBuilder scoreFunction = ScoreFunctionBuilders
+		 * .scriptFunction("binary_vector_score");
+		 * 
+		 * new FunctionScoreQueryBuilder.FilterFunctionBuilder(
+		 * inTerms,
+		 * ScoreFunctionBuilders.weightFactorFunction(3)
+		 * );
+		 * /*
+		 * FunctionScoreQueryBuilder fqBuilder = new FunctionScoreQueryBuilder(inTerms,
+		 * scoreFunction).boostMode("replace"));
+		 * 
+		 * QueryBuilders.functionScoreQuery(
+		 * inTerms,
+		 * new FunctionScoreQueryBuilder.FilterFunctionBuilder[]{
+		 * new FunctionScoreQueryBuilder.FilterFunctionBuilder(
+		 * QueryBuilders.matchQuery(FIELD_TYPE, fieldType),
+		 * ScoreFunctionBuilders.weightFactorFunction(3.0F)
+		 * )
+		 * }), ScoreMode.None));
+		 * 
+		 * FunctionScoreQueryBuilder.FilterFunctionBuilder[] filterFunctionBuilders =
+		 * new FunctionScoreQueryBuilder.FilterFunctionBuilder[]{
+		 * new FunctionScoreQueryBuilder.FilterFunctionBuilder(
+		 * QueryBuilders.matchQuery(FIELD_TYPE, fieldType),
+		 * ScoreFunctionBuilders.weightFactorFunction(3)
+		 * ),
+		 * new FunctionScoreQueryBuilder.FilterFunctionBuilder(
+		 * ScoreFunctionBuilders.scriptFunction(format("doc['%s'].value", FIELD_COUNT))
+		 * )
+		 * };
+		 * fqBuilder.add(sfb2);
+		 * 
+		 * return inTerms;
+		 */
 		return null;
 	}
 
-	public void addHighlights(SearchQuery inQuery, SearchRequestBuilder search)
-	{
-		for (Iterator iterator = getPropertyDetails().iterator(); iterator.hasNext();)
-		{
+	public void addHighlights(SearchQuery inQuery, SearchRequestBuilder search) {
+		for (Iterator iterator = getPropertyDetails().iterator(); iterator.hasNext();) {
 			PropertyDetail detail = (PropertyDetail) iterator.next();
-			if (detail.isHighlight())
-			{
+			if (detail.isHighlight()) {
 				search.addHighlightedField(detail.getId(), 180);
 
 			}
@@ -689,24 +646,22 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	 * @return
 	 */
 
-	public boolean addFacets(SearchQuery inQuery, SearchRequestBuilder inSearch)
-	{
+	public boolean addFacets(SearchQuery inQuery, SearchRequestBuilder inSearch) {
 		Collection facets = inQuery.getFacets();
-//		if( getSearchType().equals("modulesearch") )
-//		{
-//			log.info( getSearchType() + " Adding Facets for " + inQuery.toQuery() + " with "  + facets);
-//		}
-		if (facets == null || facets.isEmpty()) //We might want the real facets just in case
+		// if( getSearchType().equals("modulesearch") )
+		// {
+		// log.info( getSearchType() + " Adding Facets for " + inQuery.toQuery() + "
+		// with " + facets);
+		// }
+		if (facets == null || facets.isEmpty()) // We might want the real facets just in case
 		{
 			boolean added = false;
-			if (inQuery.getAggregation() != null)
-			{
+			if (inQuery.getAggregation() != null) {
 				inSearch.addAggregation((AbstractAggregationBuilder) inQuery.getAggregation());
 				added = true;
 			}
 			ElasticSearchQuery q = (ElasticSearchQuery) inQuery;
-			if (q.getAggregationJson() != null)
-			{
+			if (q.getAggregationJson() != null) {
 				inSearch.setAggregations(q.getAggregationJson().getBytes());
 				added = true;
 			}
@@ -714,38 +669,34 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 		List added = new ArrayList();
 
-
-		for (Iterator iterator = facets.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = facets.iterator(); iterator.hasNext();) {
 			PropertyDetail detail = (PropertyDetail) iterator.next();
-			if (added.contains(detail.getId()))
-			{
+			if (added.contains(detail.getId())) {
 				continue;
 			}
-			if (detail.isDate())
-			{
-				//TODO: Is this slow? seems kinda like a waste of CPU Use Groovy
-				//				DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
-				//				builder.field(detail.getId());
-				//				builder.interval(DateHistogramInterval.DAY);
-				//				builder.order(Order.KEY_DESC);
-				//				//	String timezone = TimeZone.getDefault().getID();
-				//				//		builder.timeZone(timezone);
-				//				inSearch.addAggregation(builder);
+			if (detail.isDate()) {
+				// TODO: Is this slow? seems kinda like a waste of CPU Use Groovy
+				// DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() +
+				// "_breakdown_day");
+				// builder.field(detail.getId());
+				// builder.interval(DateHistogramInterval.DAY);
+				// builder.order(Order.KEY_DESC);
+				// // String timezone = TimeZone.getDefault().getID();
+				// // builder.timeZone(timezone);
+				// inSearch.addAggregation(builder);
 				//
-				//				builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
-				//				builder.field(detail.getId());
-				//				//	builder.timeZone(timezone);
+				// builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
+				// builder.field(detail.getId());
+				// // builder.timeZone(timezone);
 				//
-				//				builder.interval(DateHistogramInterval.WEEK);
-				//				builder.order(Order.COUNT_DESC);
+				// builder.interval(DateHistogramInterval.WEEK);
+				// builder.order(Order.COUNT_DESC);
 				//
-				//				inSearch.addAggregation(builder);
+				// inSearch.addAggregation(builder);
 				continue;
 			}
 
-			else if (detail.isNumber())
-			{
+			else if (detail.isNumber()) {
 				SumBuilder b = new SumBuilder(detail.getId() + "_sum");
 				b.field(detail.getId());
 				inSearch.addAggregation(b);
@@ -753,25 +704,24 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				AvgBuilder avg = new AvgBuilder(detail.getId() + "_avg");
 				avg.field(detail.getId());
 
-			}
-			else if (detail.isList() || detail.isBoolean() || detail.isMultiValue())
-			{
+			} else if (detail.isList() || detail.isBoolean() || detail.isMultiValue()) {
 				AggregationBuilder b = null;
-				//				if (detail.isViewType("tageditor"))
-				//				{
-				//					//b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(100);
-				//					b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
-				//				}
-				//				else
-				//				{
+				// if (detail.isViewType("tageditor"))
+				// {
+				// //b = AggregationBuilders.terms(detail.getId()).field(detail.getId() +
+				// ".exact").size(100);
+				// b =
+				// AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
+				// }
+				// else
+				// {
 				//
 				b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(50);
-				//				}
+				// }
 				inSearch.addAggregation(b);
-			}
-			else
-			{
-				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(50);
+			} else {
+				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact")
+						.size(50);
 				inSearch.addAggregation(b);
 			}
 			added.add(detail.getId());
@@ -781,23 +731,20 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// For reports, we can pass in a custom aggregation from a script or
 		// somewhere
 
-		if (inQuery.getAggregation() != null)
-		{
-			
+		if (inQuery.getAggregation() != null) {
+
 			AbstractAggregationBuilder builder = (AbstractAggregationBuilder) inQuery.getAggregation();
 			inSearch.addAggregation(builder);
 		}
 		ElasticSearchQuery q = (ElasticSearchQuery) inQuery;
-		if (q.getAggregationJson() != null)
-		{
+		if (q.getAggregationJson() != null) {
 			inSearch.setAggregations(q.getAggregationJson().getBytes());
 		}
 		return true;
 	}
 
-	protected void addSearcherTerms(SearchQuery inQuery, SearchRequestBuilder inSearch)
-	{
-		//For custom overries
+	protected void addSearcherTerms(SearchQuery inQuery, SearchRequestBuilder inSearch) {
+		// For custom overries
 
 	}
 
@@ -826,31 +773,26 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	@SuppressWarnings("rawtypes")
 
 	@Override
-	public boolean initialize()
-	{
-		try
-		{
-			boolean alreadyin = getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { getElasticIndexId() }, getSearchType())).actionGet().isExists();
-			if (!alreadyin)
-			{
+	public boolean initialize() {
+		try {
+			boolean alreadyin = getClient().admin().indices()
+					.typesExists(new TypesExistsRequest(new String[] { getElasticIndexId() }, getSearchType()))
+					.actionGet().isExists();
+			if (!alreadyin) {
 				log.info("initi mapping " + getCatalogId() + "/" + getSearchType());
 				putMappings();
 			}
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			log.error("index could not be created ", ex);
 			return false;
 		}
 		return true;
 	}
 
-	protected String getElasticIndexId()
-	{
+	protected String getElasticIndexId() {
 		String indexid = getAlternativeIndex();
 
-		if (indexid == null)
-		{
+		if (indexid == null) {
 			indexid = toId(getCatalogId());
 		}
 		return indexid;
@@ -883,19 +825,16 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	// log.error(ex);
 	// }
 	// }
-	public boolean putMappings()
-	{
+	public boolean putMappings() {
 		AdminClient admin = getElasticNodeManager().getClient().admin();
 
 		String indexid = getElasticIndexId();
 
 		List<PropertyDetails> dependson = getPropertyDetailsArchive().findChildTables();
-		for (Iterator iterator = dependson.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = dependson.iterator(); iterator.hasNext();) {
 			PropertyDetails details = (PropertyDetails) iterator.next();
 			PropertyDetail parent = details.getDetail("_parent");
-			if (parent.getListId().equals(getSearchType()))
-			{
+			if (parent.getListId().equals(getSearchType())) {
 				Searcher child = getSearcherManager().getSearcher(getCatalogId(), details.getId());
 				child.setAlternativeIndex(getAlternativeIndex());
 				child.reloadSettings();
@@ -904,12 +843,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 
 		XContentBuilder source = buildMapping();
-		try
-		{
+		try {
 			log.info(indexid + "/" + getSearchType() + "/_mapping' -d '" + source.string() + "'");
-		}
-		catch (IOException ex)
-		{
+		} catch (IOException ex) {
 			log.error(ex);
 		}
 		// GetMappingsRequest find = new
@@ -917,21 +853,19 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// GetMappingsResponse found =
 		// admin.indices().getMappings(find).actionGet();
 		// if( !found.isContextEmpty())
-		try
-		{
+		try {
 			putMapping(admin, indexid, source);
 			admin.cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 
 			// Remove error warning
 			getElasticNodeManager().removeMappingError(getSearchType());
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			// https://www.elastic.co/guide/en/elasticsearch/guide/current/scan-scroll.html
 			// https://github.com/jprante/elasticsearch-knapsack
-			log.info("Could not put mapping over existing mapping on catalog: " + getCatalogId() + " Searchtype: " + getSearchType(), ex);
+			log.info("Could not put mapping over existing mapping on catalog: " + getCatalogId() + " Searchtype: "
+					+ getSearchType(), ex);
 			getElasticNodeManager().addMappingError(getSearchType(), ex.getMessage());
-			//throw new OpenEditException("Mapping was not saved " + getSearchType(),ex);
+			// throw new OpenEditException("Mapping was not saved " + getSearchType(),ex);
 			return false;
 			// you will need to export data");
 		}
@@ -960,39 +894,34 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// }
 	}
 
-	public void putMapping(AdminClient admin, String indexid, XContentBuilder source)
-	{
+	public void putMapping(AdminClient admin, String indexid, XContentBuilder source) {
 		PutMappingRequest req = Requests.putMappingRequest(indexid).updateAllTypes(true).type(getSearchType());
 		req = req.source(source);
 
 		req.validate();
 		PutMappingResponse pres = admin.indices().putMapping(req).actionGet();
 
-		if (pres.isAcknowledged())
-		{
+		if (pres.isAcknowledged()) {
 			// log.info("mapping applied " + getSearchType());
-			//	admin.cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+			// admin.cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 		}
 
 	}
 
-	public XContentBuilder buildMapping()
-	{
-		try
-		{
+	public XContentBuilder buildMapping() {
+		try {
 			XContentBuilder jsonBuilder = XContentFactory.jsonBuilder();
 			XContentBuilder jsonproperties = jsonBuilder.startObject().startObject(getSearchType());
 			jsonproperties.field("date_detection", "false");
 
-			//"_all" : {"enabled" : false},
+			// "_all" : {"enabled" : false},
 			jsonproperties.startObject("_all").field("enabled", "false").endObject();
 
 			jsonproperties = jsonproperties.startObject("properties");
 
 			List props = getPropertyDetails().findIndexProperties();
-			//List objectarrays = new ArrayList();
-			if (props.size() == 0)
-			{
+			// List objectarrays = new ArrayList();
+			if (props.size() == 0) {
 				log.error("No fields defined for " + getSearchType());
 			}
 			// https://github.com/elasticsearch/elasticsearch/pull/606
@@ -1013,31 +942,28 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			// props.add(detail);
 			// }
 
-			//			jsonproperties = jsonproperties.startObject("mastereditclusterid");
-			//			jsonproperties = jsonproperties.field("type", "string");
-			//			jsonproperties = jsonproperties.field("index", "not_analyzed");
-			//			jsonproperties = jsonproperties.field("include_in_all", "false");
-			//			jsonproperties = jsonproperties.field("store", "false");
+			// jsonproperties = jsonproperties.startObject("mastereditclusterid");
+			// jsonproperties = jsonproperties.field("type", "string");
+			// jsonproperties = jsonproperties.field("index", "not_analyzed");
+			// jsonproperties = jsonproperties.field("include_in_all", "false");
+			// jsonproperties = jsonproperties.field("store", "false");
 			//
-			//			jsonproperties = jsonproperties.endObject();
+			// jsonproperties = jsonproperties.endObject();
 			//
-			//			jsonproperties = jsonproperties.startObject("recordmodificationdate");
-			//			jsonproperties = jsonproperties.field("include_in_all", "false");
-			//			jsonproperties = jsonproperties.field("type", "date");
-			//			jsonproperties = jsonproperties.field("store", "true");
-			//			jsonproperties = jsonproperties.endObject();
+			// jsonproperties = jsonproperties.startObject("recordmodificationdate");
+			// jsonproperties = jsonproperties.field("include_in_all", "false");
+			// jsonproperties = jsonproperties.field("type", "date");
+			// jsonproperties = jsonproperties.field("store", "true");
+			// jsonproperties = jsonproperties.endObject();
 
 			jsonproperties = buildClusterSyncMappings(jsonproperties);
 
-			for (Iterator i = props.iterator(); i.hasNext();)
-			{
+			for (Iterator i = props.iterator(); i.hasNext();) {
 				PropertyDetail detail = (PropertyDetail) i.next();
-				if (detail.isDeleted())
-				{
+				if (detail.isDeleted()) {
 					continue;
 				}
-				if (detail.getId() == null || "_id".equals(detail.getId()) || "id".equals(detail.getId()))
-				{
+				if (detail.getId() == null || "_id".equals(detail.getId()) || "id".equals(detail.getId())) {
 					// jsonproperties = jsonproperties.startObject("_id");
 					// jsonproperties = jsonproperties.field("index",
 					// "not_analyzed");
@@ -1045,40 +971,38 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					// jsonproperties = jsonproperties.endObject();
 					continue;
 				}
-				if ("_parent".equals(detail.getId()) || detail.getId().contains(".") || "emrecordstatus".equals(detail.getId()) || "recordmodificationdate".equals(detail.getId()) || "mastereditclusterid".equals(detail.getId()) || detail.getId().startsWith("_")) //TODO: Check search type instead?
+				if ("_parent".equals(detail.getId()) || detail.getId().contains(".")
+						|| "emrecordstatus".equals(detail.getId()) || "recordmodificationdate".equals(detail.getId())
+						|| "mastereditclusterid".equals(detail.getId()) || detail.getId().startsWith("_")) // TODO:
+																											// Check
+																											// search
+																											// type
+																											// instead?
 				{
 					continue;
 				}
-				
-				
-				
-				if (detail.isMultiLanguage())
-				{
+
+				if (detail.isMultiLanguage()) {
 					jsonproperties = jsonproperties.startObject(detail.getId() + "_int");
 					jsonproperties = jsonproperties.field("type", "object");
 
 					jsonproperties.startObject("properties");
 					HitTracker languages = getSearcherManager().getList(getCatalogId(), "locale");
-					for (Iterator iterator = languages.iterator(); iterator.hasNext();)
-					{
+					for (Iterator iterator = languages.iterator(); iterator.hasNext();) {
 						Data locale = (Data) iterator.next();
 						String id = locale.getId();
 
 						jsonproperties.startObject(id);
 						String analyzer = locale.get("analyzer");
 						jsonproperties.field("type", "string");
-						if (detail.isAnalyzed())
-						{
+						if (detail.isAnalyzed()) {
 							jsonproperties = createExactEnabledField(detail, jsonproperties);
 
 						}
 
-						if (analyzer != null)
-						{
+						if (analyzer != null) {
 							jsonproperties.field("analyzer", analyzer);
-						}
-						else
-						{
+						} else {
 							jsonproperties.field("analyzer", "lowersnowball");
 
 						}
@@ -1103,40 +1027,43 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			jsonproperties = jsonproperties.endObject();
 			PropertyDetail _parent = getPropertyDetails().getDetail("_parent");
-			if (_parent != null)
-			{
+			if (_parent != null) {
 				jsonproperties = jsonproperties.startObject("_parent");
 				jsonproperties = jsonproperties.field("type", _parent.getListId());
 				jsonproperties = jsonproperties.endObject();
 			}
 			jsonBuilder = jsonproperties.endObject();
 			String content = jsonproperties.string();
-			//	log.info(getSearchType() + " " + content);
+			// log.info(getSearchType() + " " + content);
 			return jsonproperties;
-		}
-		catch (Throwable ex)
-		{
+		} catch (Throwable ex) {
 			ex.printStackTrace();
 			throw new OpenEditException(ex);
 		}
 
 	}
 
-	private XContentBuilder buildClusterSyncMappings(XContentBuilder jsonproperties) throws Exception
-	{
+	private XContentBuilder buildClusterSyncMappings(XContentBuilder jsonproperties) throws Exception {
 
-		//		What about an object called asset.recordstatus.deleted = true
-		//				asset.recordstatus.lastmodified and asset.recordstatus.lastmodifiedclusterid and asset.recordstatus.masternodeid and asset.recordstatus.masterlastmodified (edited) 
+		// What about an object called asset.recordstatus.deleted = true
+		// asset.recordstatus.lastmodified and asset.recordstatus.lastmodifiedclusterid
+		// and asset.recordstatus.masternodeid and asset.recordstatus.masterlastmodified
+		// (edited)
 
 		jsonproperties.startObject("emrecordstatus").field("type", "object");
 		jsonproperties.startObject("properties");
 
-		jsonproperties.startObject("mastereditclusterid").field("type", "string").field("index", "not_analyzed").field("include_in_all", "false").field("store", "false").endObject();
-		jsonproperties.startObject("masterrecordmodificationdate").field("include_in_all", "false").field("type", "date").field("store", "true").endObject();
+		jsonproperties.startObject("mastereditclusterid").field("type", "string").field("index", "not_analyzed")
+				.field("include_in_all", "false").field("store", "false").endObject();
+		jsonproperties.startObject("masterrecordmodificationdate").field("include_in_all", "false")
+				.field("type", "date").field("store", "true").endObject();
 
-		jsonproperties.startObject("lastmodifiedclusterid").field("type", "string").field("index", "not_analyzed").field("include_in_all", "false").field("store", "false").endObject();
-		jsonproperties.startObject("recordmodificationdate").field("include_in_all", "false").field("type", "date").field("store", "true").endObject();
-		jsonproperties.startObject("recorddeleted").field("include_in_all", "false").field("type", "boolean").field("store", "false").endObject();
+		jsonproperties.startObject("lastmodifiedclusterid").field("type", "string").field("index", "not_analyzed")
+				.field("include_in_all", "false").field("store", "false").endObject();
+		jsonproperties.startObject("recordmodificationdate").field("include_in_all", "false").field("type", "date")
+				.field("store", "true").endObject();
+		jsonproperties.startObject("recorddeleted").field("include_in_all", "false").field("type", "boolean")
+				.field("store", "false").endObject();
 
 		jsonproperties.endObject();
 		jsonproperties.endObject();
@@ -1144,11 +1071,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		return jsonproperties;
 	}
 
-	protected void configureDetail(PropertyDetail detail, XContentBuilder jsonproperties) throws Exception
-	{
+	protected void configureDetail(PropertyDetail detail, XContentBuilder jsonproperties) throws Exception {
 
-		if ("description".equals(detail.getId()))
-		{
+		if ("description".equals(detail.getId())) {
 			String analyzer = "lowersnowball";
 			jsonproperties = jsonproperties.field("analyzer", analyzer);
 			jsonproperties = jsonproperties.field("type", "string");
@@ -1157,15 +1082,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			return;
 		}
 
-		//CHECK TIMECODE
-		if (detail.isDataType("objectarray") || detail.isDataType("object"))
-		{
+		// CHECK TIMECODE
+		if (detail.isDataType("objectarray") || detail.isDataType("object")) {
 			jsonproperties = jsonproperties.field("type", "object");
-			//"type": "nested",
+			// "type": "nested",
 
 			jsonproperties.startObject("properties");
-			for (Iterator iterator = detail.getObjectDetails().iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = detail.getObjectDetails().iterator(); iterator.hasNext();) {
 				PropertyDetail child = (PropertyDetail) iterator.next();
 				jsonproperties = jsonproperties.startObject(child.getId());
 				configureDetail(child, jsonproperties);
@@ -1176,13 +1099,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			return;
 
 		}
-		
-		else if (detail.isDataType("nested"))
-		{
+
+		else if (detail.isDataType("nested")) {
 			jsonproperties = jsonproperties.field("type", "nested");
 			jsonproperties.startObject("properties");
-			for (Iterator iterator = detail.getObjectDetails().iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = detail.getObjectDetails().iterator(); iterator.hasNext();) {
 				PropertyDetail child = (PropertyDetail) iterator.next();
 				jsonproperties = jsonproperties.startObject(child.getId());
 				configureDetail(child, jsonproperties);
@@ -1192,9 +1113,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 			return;
 
-		}
-		else if (detail.isDataType("stringvector"))
-		{
+		} else if (detail.isDataType("stringvector")) {
 			// "index" : "not_analyzed"
 			jsonproperties = jsonproperties.field("type", "binary");
 			jsonproperties = jsonproperties.field("doc_values", true);
@@ -1202,53 +1121,37 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 
 		// First determine type
-		if (detail.isDate())
-		{
+		if (detail.isDate()) {
 			jsonproperties = jsonproperties.field("type", "date");
 			jsonproperties = jsonproperties.field("store", "true");
 
 			// "date_detection" : 0
 			// jsonproperties = jsonproperties.field("format",
 			// "yyyy-MM-dd HH:mm:ss Z");
-		}
-		else if (detail.isBoolean())
-		{
+		} else if (detail.isBoolean()) {
 			jsonproperties = jsonproperties.field("type", "boolean");
-		}
-		else if (detail.isDataType("number") || detail.isDataType("long"))
-		{
+		} else if (detail.isDataType("number") || detail.isDataType("long")) {
 			jsonproperties = jsonproperties.field("type", "long");
-		}
-		else if (detail.isDataType("float"))
-		{
+		} else if (detail.isDataType("float")) {
 			jsonproperties = jsonproperties.field("type", "float");
-		}
-		else if (detail.isDataType("double"))
-		{
+		} else if (detail.isDataType("double")) {
 			jsonproperties = jsonproperties.field("type", "double");
-		}
-		else if (detail.isDataType("geo_point"))
-		{
+		} else if (detail.isDataType("geo_point")) {
 			jsonproperties = jsonproperties.field("type", "geo_point");
 		}
 
 		else if (detail.isList()) // Or multi valued?
 		{
-			if (Boolean.parseBoolean(detail.get("nested")))
-			{
+			if (Boolean.parseBoolean(detail.get("nested"))) {
 				jsonproperties = jsonproperties.field("type", "nested");
-			}
-			else
-			{
+			} else {
 				jsonproperties = jsonproperties.field("type", "string");
 			}
-			//TODO: enable sort on list fields. if exact field is sortable add sort subfield with the actual lookedup name value?
-		}
-		else
-		{
+			// TODO: enable sort on list fields. if exact field is sortable add sort
+			// subfield with the actual lookedup name value?
+		} else {
 			jsonproperties = jsonproperties.field("type", "string");
-			if (detail.isAnalyzed())
-			{
+			if (detail.isAnalyzed()) {
 				jsonproperties = createExactEnabledField(detail, jsonproperties);
 			}
 
@@ -1257,15 +1160,12 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// Now determine index
 		String indextype = detail.get("indextype");
 
-		if (indextype == null)
-		{
-			if (!detail.isAnalyzed())
-			{
+		if (indextype == null) {
+			if (!detail.isAnalyzed()) {
 				indextype = "not_analyzed";
 			}
 		}
-		if (indextype != null)
-		{
+		if (indextype != null) {
 			jsonproperties = jsonproperties.field("index", indextype);
 		}
 
@@ -1276,27 +1176,23 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 																			// _description
 
 		String analyzer = detail.get("analyzer");
-		if (analyzer != null)
-		{
+		if (analyzer != null) {
 			jsonproperties.field("analyzer", analyzer);
-		}
-		else
-		{
-			//			if (detail.isAnalyzed()) //&& !("name".equals(detail.getId()))) 
-			//			{
-			//				jsonproperties.field("analyzer", "lowersnowball");
-			//			}
+		} else {
+			// if (detail.isAnalyzed()) //&& !("name".equals(detail.getId())))
+			// {
+			// jsonproperties.field("analyzer", "lowersnowball");
+			// }
 		}
 	}
 
-	protected XContentBuilder createExactEnabledField(PropertyDetail detail, XContentBuilder jsonproperties) throws IOException
-	{
+	protected XContentBuilder createExactEnabledField(PropertyDetail detail, XContentBuilder jsonproperties)
+			throws IOException {
 		jsonproperties.startObject("fields");
 		jsonproperties.startObject("exact");
 		jsonproperties = jsonproperties.field("type", "string");
 		jsonproperties = jsonproperties.field("index", "not_analyzed");
-		if (!detail.getId().contains("path"))
-		{
+		if (!detail.getId().contains("path")) {
 			jsonproperties = jsonproperties.field("ignore_above", 256);
 		}
 		jsonproperties.endObject();
@@ -1312,8 +1208,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		return jsonproperties;
 	}
 
-	public BoolQueryBuilder buildTerms(SearchQuery inQuery)
-	{
+	public BoolQueryBuilder buildTerms(SearchQuery inQuery) {
 
 		// if (inQuery.getTerms().size() == 1 && inQuery.getChildren().size() ==
 		// 0 ) //Shortcut for common cases
@@ -1356,18 +1251,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// }
 		// }
 
-		if (inQuery.getChildren().size() > 0)
-		{
-			for (Iterator iterator = inQuery.getChildren().iterator(); iterator.hasNext();)
-			{
+		if (inQuery.getChildren().size() > 0) {
+			for (Iterator iterator = inQuery.getChildren().iterator(); iterator.hasNext();) {
 				SearchQuery query = (SearchQuery) iterator.next();
 				QueryBuilder builder = buildTerms(query);
-				if (inQuery.isAndTogether())
-				{
+				if (inQuery.isAndTogether()) {
 					bool.must(builder);
-				}
-				else
-				{
+				} else {
 					bool.should(builder);
 				}
 			}
@@ -1376,36 +1266,27 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 	}
 
-	protected void buildBoolTerm(SearchQuery inQuery, BoolQueryBuilder bool, boolean inAnd)
-	{
-		for (Iterator iterator = inQuery.getTerms().iterator(); iterator.hasNext();)
-		{
+	protected void buildBoolTerm(SearchQuery inQuery, BoolQueryBuilder bool, boolean inAnd) {
+		for (Iterator iterator = inQuery.getTerms().iterator(); iterator.hasNext();) {
 			Term term = (Term) iterator.next();
 			PropertyDetail detail = term.getDetail();
-			//We handle joins with SearchQueryFilter.java
+			// We handle joins with SearchQueryFilter.java
 			String ignoretypes = inQuery.get("ignoresearchttype");
-			if (ignoretypes == null || !Boolean.parseBoolean(ignoretypes))
-			{
-				if (detail.getSearchType() != null && !getSearchType().equals(detail.getSearchType()))
-				{
+			if (ignoretypes == null || !Boolean.parseBoolean(ignoretypes)) {
+				if (detail.getSearchType() != null && !getSearchType().equals(detail.getSearchType())) {
 					continue;
 				}
 			}
 			Object value = term.getValue();
-			if (value == null)
-			{
+			if (value == null) {
 				value = term.getValues();
 			}
 
 			QueryBuilder find = buildTerm(inQuery, detail, term, value);
-			if (find != null)
-			{
-				if (inAnd)
-				{
+			if (find != null) {
+				if (inAnd) {
 					bool.must(find);
-				}
-				else
-				{
+				} else {
 					bool.should(find);
 				}
 			}
@@ -1435,23 +1316,18 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	// return null;
 	// }
 
-	protected QueryBuilder buildTerm(SearchQuery inQuery, PropertyDetail inDetail, Term inTerm, Object inValue)
-	{
+	protected QueryBuilder buildTerm(SearchQuery inQuery, PropertyDetail inDetail, Term inTerm, Object inValue) {
 
 		QueryBuilder find = buildNewTerm(inQuery, inDetail, inTerm, inValue);
 
-		if ("not".equals(inTerm.getOperation()) || "notgroup".equals(inTerm.getOperation()))
-		{
+		if ("not".equals(inTerm.getOperation()) || "notgroup".equals(inTerm.getOperation())) {
 			BoolQueryBuilder or = QueryBuilders.boolQuery();
 			or.mustNot(find);
 			return or;
-		}
-		else if (inDetail.getId().contains("."))
-		{
+		} else if (inDetail.getId().contains(".")) {
 			String[] ids = inDetail.getId().split("\\.");
 			PropertyDetail parent = getDetail(ids[0]);
-			if (parent != null && "nested".equals(parent.getDataType()))
-			{
+			if (parent != null && "nested".equals(parent.getDataType())) {
 				find = QueryBuilders.nestedQuery(ids[0], find);
 			}
 			/*
@@ -1465,33 +1341,26 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		return find;
 	}
 
-	protected QueryBuilder buildNewTerm(SearchQuery inQuery, PropertyDetail inDetail, Term inTerm, Object inValue)
-	{
+	protected QueryBuilder buildNewTerm(SearchQuery inQuery, PropertyDetail inDetail, Term inTerm, Object inValue) {
 		// Check for quick date object
 		QueryBuilder find = null;
 		String valueof = null;
 		Date valuedate = null;
-		if (inValue instanceof Date)
-		{
+		if (inValue instanceof Date) {
 			valuedate = (Date) inValue;
 			valueof = DateStorageUtil.getStorageUtil().formatForStorage((Date) inValue);
-		}
-		else
-		{
-			valueof = String.valueOf(inValue); //Value is never null
+		} else {
+			valueof = String.valueOf(inValue); // Value is never null
 		}
 
 		String fieldid = inDetail.getId();
-		if (inDetail.isMultiLanguage())
-		{
-			if (!fieldid.endsWith("_int"))
-			{
-				fieldid = fieldid + "_int.en";//default to search the english
+		if (inDetail.isMultiLanguage()) {
+			if (!fieldid.endsWith("_int")) {
+				fieldid = fieldid + "_int.en";// default to search the english
 			}
 		}
 
-		if ("searchjoin".equals(inDetail.getDataType()))
-		{
+		if ("searchjoin".equals(inDetail.getDataType())) {
 			// contact.state
 			String fieldname = fieldid.substring(0, fieldid.indexOf(".")); // contact
 			String path = fieldid.substring(fieldid.indexOf(".") + 1); // state
@@ -1502,28 +1371,23 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			// joinquery.lookupIndex(toId( inDetail.getListCatalogId()));
 			// joinquery.lookupPath(path);
 			// return joinquery;
-			org.openedit.data.QueryBuilder builder = getSearcherManager().getSearcher(inDetail.getListCatalogId(), inDetail.getListId()).query();
+			org.openedit.data.QueryBuilder builder = getSearcherManager()
+					.getSearcher(inDetail.getListCatalogId(), inDetail.getListId()).query();
 			HitTracker hits = builder.match(path, valueof).search();
 
 			hits.setHitsPerPage(1000);
 			Collection ids = new ArrayList(hits.size());
-			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 				Data data = (Data) iterator.next();
 				ids.add(data.getId());
 			}
-			if (ids.size() > 0)
-			{
+			if (ids.size() > 0) {
 				find = QueryBuilders.termsQuery(fieldname, ids);
 				return find;
-			}
-			else
-			{
+			} else {
 				return null;
 			}
-		}
-		else if ("childfilter".equals(inTerm.getOperation()))
-		{
+		} else if ("childfilter".equals(inTerm.getOperation())) {
 			ChildFilter filter = (ChildFilter) inTerm;
 			QueryBuilder parent = QueryBuilders.termQuery(filter.getChildColumn(), filter.getValue());
 			QueryBuilder haschild = QueryBuilders.hasChildQuery(filter.getChildTable(), parent);
@@ -1537,30 +1401,22 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// find = QueryBuilders.textQuery(fieldid, valueof);
 		// return find;
 		// }
-		if (fieldid != null && fieldid.equals("id"))
-		{
+		if (fieldid != null && fieldid.equals("id")) {
 			// valueof = valueof.toLowerCase();
-			if (valueof.equals("*"))
-			{
+			if (valueof.equals("*")) {
 				find = QueryBuilders.matchAllQuery();
-			}
-			else if (!"orgroup".equals(inTerm.getOperation()))
-			{
+			} else if (!"orgroup".equals(inTerm.getOperation())) {
 				find = QueryBuilders.termQuery("_id", valueof);
-			}
-			else if (inTerm.getValues() != null)
-			{
+			} else if (inTerm.getValues() != null) {
 				find = QueryBuilders.termsQuery("_id", inTerm.getValues());
 			}
-			if (find != null)
-			{
+			if (find != null) {
 				return find;
 			}
 		}
 
-		if (valueof.equals("*"))
-		{
-			//find = QueryBuilders.wildcardQuery(fieldid, "*");
+		if (valueof.equals("*")) {
+			// find = QueryBuilders.wildcardQuery(fieldid, "*");
 			find = QueryBuilders.matchAllQuery();
 			// ExistsFilterBuilder filter =
 			// FilterBuilders.existsFilter(fieldid);
@@ -1568,20 +1424,17 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 		}
 
-		else if ("contains".equals(inTerm.getOperation()))
-		{
+		else if ("contains".equals(inTerm.getOperation())) {
 			// MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(fieldid,
 			// valueof);
 			// QueryBuilder text = QueryBuilders.queryString("*" + valueof +
 			// "*").field(fieldid);
 			String wildcard = valueof;
 
-			if (!wildcard.startsWith("*"))
-			{
+			if (!wildcard.startsWith("*")) {
 				wildcard = "*" + wildcard;
 			}
-			if (!wildcard.endsWith("*"))
-			{
+			if (!wildcard.endsWith("*")) {
 				wildcard = wildcard + "*";
 			}
 			wildcard = wildcard.toLowerCase(); // Some reason wildcard searches
@@ -1589,12 +1442,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 												// MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(fieldid,
 												// valueof);
 			String altid = null;
-			if (inDetail.isAnalyzed() && !inDetail.getId().equals("description"))
-			{
+			if (inDetail.isAnalyzed() && !inDetail.getId().equals("description")) {
 				altid = fieldid + ".sort";
-			}
-			else
-			{
+			} else {
 				altid = fieldid;
 			}
 
@@ -1608,53 +1458,44 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			phrase.maxExpansions(75);
 			or.should(phrase);
 			find = or;
-		}
-		else if ("missing".equals(inTerm.getOperation()))
-		{
+		} else if ("missing".equals(inTerm.getOperation())) {
 			find = QueryBuilders.missingQuery(inTerm.getId());
-		}
-		else if ("exists".equals(inTerm.getOperation()))
-		{
+		} else if ("exists".equals(inTerm.getOperation())) {
 			find = QueryBuilders.existsQuery(inTerm.getId());
 		}
 
-		else if ("startswith".equals(inTerm.getOperation()))
-		{
-			//TODO: Should startswith be exact or analysed phrases? 
-			//find = QueryBuilders.prefixQuery(fieldid, valueof);
-			//Left this in for now...
+		else if ("startswith".equals(inTerm.getOperation())) {
+			// TODO: Should startswith be exact or analysed phrases?
+			// find = QueryBuilders.prefixQuery(fieldid, valueof);
+			// Left this in for now...
 
-			if (inDetail.isAnalyzed())
-			{
+			if (inDetail.isAnalyzed()) {
 
 				MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
 				text.maxExpansions(10);
 				find = text;
-			}
-			else
-			{
+			} else {
 				PrefixQueryBuilder text = QueryBuilders.prefixQuery(fieldid, valueof);
 				find = text;
 			}
 		}
-//		else if ("freeform".equals(inTerm.getOperation()))
-//		{
-//			List fields = getKeywordProperties();
-//			for (Iterator iterator = fields.iterator(); iterator.hasNext();)
-//			{
-//				PropertyDetail detail = (PropertyDetail) iterator.next();
-//				
-//			}
-//		}
-		else if ("freeform".equals(inTerm.getOperation()))
-		{
-			//Pattern pattern = Pattern.compile("(?<=\\s)\\w(?=\\s)");
+		// else if ("freeform".equals(inTerm.getOperation()))
+		// {
+		// List fields = getKeywordProperties();
+		// for (Iterator iterator = fields.iterator(); iterator.hasNext();)
+		// {
+		// PropertyDetail detail = (PropertyDetail) iterator.next();
+		//
+		// }
+		// }
+		else if ("freeform".equals(inTerm.getOperation())) {
+			// Pattern pattern = Pattern.compile("(?<=\\s)\\w(?=\\s)");
 
-			if ((valueof.startsWith("\"") && valueof.endsWith("\""))) //This seems wrong
+			if ((valueof.startsWith("\"") && valueof.endsWith("\""))) // This seems wrong
 			{
 				Pattern pattern = Pattern.compile("(?<=\\s)[^a-zA-Z\\\\d\\\\s](?=\\s)");
 				Matcher matcher = pattern.matcher(valueof);
-				//String oldvalueof = valueof;
+				// String oldvalueof = valueof;
 				valueof = matcher.replaceAll("");
 
 				valueof = valueof.replace("\"", "");
@@ -1663,41 +1504,42 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), query);
 				text.analyzer("lowersnowball");
 				find = text;
-			}
-			else
-			{
-				//String uppercase = valueof.replace(" and ", " AND ").replace(" And ", " AND ").replace(" Or ", " OR ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO ");//.replace(", ", " AND "); //Babson uses lots of commas
-				//We no longer allow + or - notation
+			} else {
+				// String uppercase = valueof.replace(" and ", " AND ").replace(" And ", " AND
+				// ").replace(" Or ", " OR ").replace(" or ", " OR ").replace(" not ", " NOT
+				// ").replace(" to ", " TO ");//.replace(", ", " AND "); //Babson uses lots of
+				// commas
+				// We no longer allow + or - notation
 				// Parse by Operator
 				// Add wildcards
 				// Look for Quotes
 
-				//				Matcher customlogic = operators.matcher(uppercase);
-				//				if (!customlogic.find()) //This somehow ignores things in " " .. ie. "Some things" Cool
-				//				{
-				//					uppercase = uppercase.replaceAll(" ", " AND "); //All spaces
-				//				}
+				// Matcher customlogic = operators.matcher(uppercase);
+				// if (!customlogic.find()) //This somehow ignores things in " " .. ie. "Some
+				// things" Cool
+				// {
+				// uppercase = uppercase.replaceAll(" ", " AND "); //All spaces
+				// }
 				// tom and nancy == *tom* AND *nancy*
 				// tom or nancy == *tom* OR *nancy*
 				// tom nancy => *tom* AND *nancy*
 				// tom*nancy => tom*nancy
 				// tom AND "Nancy Druew" => *tom* AND "Nancy Druew"
 				// "Big Deal" => "Big Deal"
-				//valueof = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO "); // Why do this again?
+				// valueof = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace("
+				// not ", " NOT ").replace(" to ", " TO "); // Why do this again?
 
-				
-				//..protected static final Pattern orpattern = Pattern.compile("(.*?)\\s+(OR?|AND?|NOT?)+");
-				
-				
+				// ..protected static final Pattern orpattern =
+				// Pattern.compile("(.*?)\\s+(OR?|AND?|NOT?)+");
+
 				Matcher andors = orpattern.matcher(valueof);
 
 				Collection searchpairs = new ArrayList();
 
-				//String regex = "(.*?)\\s+(AND|OR)\\s)+";
+				// String regex = "(.*?)\\s+(AND|OR)\\s)+";
 				BoolQueryBuilder booleans = QueryBuilders.boolQuery();
 				int lastterm = 0;
-				while (andors.find())
-				{
+				while (andors.find()) {
 					// Get the matched character
 					Map pair = new HashMap();
 					pair.put("word", andors.group(1));
@@ -1711,60 +1553,49 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 				String currentoperator = null;
 
-				for (Iterator iterator = searchpairs.iterator(); iterator.hasNext();)
-				{
+				for (Iterator iterator = searchpairs.iterator(); iterator.hasNext();) {
 					Map<String, String> pair = (Map) iterator.next();
 					String orword = pair.get("word");
-					//If there are tokens then treat a one word with quotes
-					//Check for quotes..
+					// If there are tokens then treat a one word with quotes
+					// Check for quotes..
 					// Create a Matcher object
 					Matcher matcher = separatorchars.matcher(orword);
 					currentoperator = pair.get("operator");
 					String previousoperator = null;
 
-					//Bill_Clinton_official.jpg  break it down =  Bill_Clinton_official AND jpg
-					while (matcher.find()) //sEPARATE ON spaces and weird characters
+					// Bill_Clinton_official.jpg break it down = Bill_Clinton_official AND jpg
+					while (matcher.find()) // sEPARATE ON spaces and weird characters
 					{
 						// Get the matched character
 						String partialword = matcher.group();
 						previousoperator = currentoperator;
 						boolean lastword = orword.endsWith(partialword);
-						String nextoperator = addSearchTerms(inTerm, lastword, partialword, previousoperator, currentoperator, booleans);
+						String nextoperator = addSearchTerms(inTerm, lastword, partialword, previousoperator,
+								currentoperator, booleans);
 						currentoperator = nextoperator;
 					}
 				}
 
 				find = booleans;
 			}
-		}
-		else if (valueof.endsWith("*"))
-		{
+		} else if (valueof.endsWith("*")) {
 			valueof = valueof.substring(0, valueof.length() - 1);
 
 			MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
 			text.maxExpansions(10);
 			find = text;
-		}
-		else if (valueof.contains("*"))
-		{
-			if (inDetail.isAnalyzed())
-			{
+		} else if (valueof.contains("*")) {
+			if (inDetail.isAnalyzed()) {
 				find = QueryBuilders.wildcardQuery(fieldid + ".sort", valueof);
-			}
-			else
-			{
+			} else {
 				find = QueryBuilders.wildcardQuery(fieldid, valueof);
 			}
-		}
-		else if (inDetail.isBoolean())
-		{
+		} else if (inDetail.isBoolean()) {
 			find = QueryBuilders.termQuery(fieldid, Boolean.parseBoolean(valueof));
 		}
 
-		else if (inDetail.isDate())
-		{
-			if ("beforedate".equals(inTerm.getOperation()))
-			{
+		else if (inDetail.isDate()) {
+			if ("beforedate".equals(inTerm.getOperation())) {
 				// Date after = new Date(0);
 				Date before = DateStorageUtil.getStorageUtil().parseFromStorage(valueof);
 				Calendar c = new GregorianCalendar();
@@ -1778,14 +1609,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 				find = QueryBuilders.rangeQuery(inDetail.getId()).to(before);
 
-			}
-			else if ("afterdate".equals(inTerm.getOperation()))
-			{
+			} else if ("afterdate".equals(inTerm.getOperation())) {
 				Date after = DateStorageUtil.getStorageUtil().parseFromStorage(valueof);
 				find = QueryBuilders.rangeQuery(fieldid).from(after);// .to(before);
-			}
-			else if ("betweendates".equals(inTerm.getOperation()))
-			{
+			} else if ("betweendates".equals(inTerm.getOperation())) {
 				// String end =
 				// DateStorageUtil.getStorageUtil().formatForStorage(new
 				// Date(Long.MAX_VALUE));
@@ -1795,11 +1622,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				// inTerm.getParameter("beforeDate");
 
 				// String before
-				//TODO: Use gte ?
+				// TODO: Use gte ?
 				find = QueryBuilders.rangeQuery(fieldid).from(after).to(before).includeUpper(true).includeLower(true);
-			}
-			else if ("ondate".equals(inTerm.getOperation()))
-			{
+			} else if ("ondate".equals(inTerm.getOperation())) {
 				Date target = DateStorageUtil.getStorageUtil().parseFromStorage(valueof);
 
 				Calendar c = new GregorianCalendar();
@@ -1818,10 +1643,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				// inTerm.getParameter("beforeDate");
 
 				// String before
-				find = QueryBuilders.rangeQuery(fieldid).includeLower(true).includeLower(true).from(fromtime).to(c.getTime()).includeUpper(true).includeLower(true);
-			}
-			else
-			{
+				find = QueryBuilders.rangeQuery(fieldid).includeLower(true).includeLower(true).from(fromtime)
+						.to(c.getTime()).includeUpper(true).includeLower(true);
+			} else {
 				// Think this doesn't ever run. I think we use betweendates.
 				Date target = DateStorageUtil.getStorageUtil().parseFromStorage(valueof);
 				Calendar calendar = Calendar.getInstance();
@@ -1844,88 +1668,65 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				// it a range query? from 0-24 hours
 			}
 			RangeQueryBuilder finalquery = (RangeQueryBuilder) find;
-			if (inQuery.getTimeZone() != null)
-			{
+			if (inQuery.getTimeZone() != null) {
 				finalquery.timeZone(inQuery.getTimeZone());
 			}
 
-		}
-		else if (inDetail.isNumber())
-		{
-			if ("betweennumbers".equals(inTerm.getOperation()))
-			{
+		} else if (inDetail.isNumber()) {
+			if ("betweennumbers".equals(inTerm.getOperation())) {
 
-				if (inDetail.isDataType("double"))
-				{
+				if (inDetail.isDataType("double")) {
 					Double lowval = (Double) inTerm.getValue("lowval");
 					Double highval = (Double) inTerm.getValue("highval");
 					find = QueryBuilders.rangeQuery(fieldid).from(lowval).to(highval);
 				}
-				if (inDetail.isDataType("long") || inDetail.isDataType("number"))
-				{
+				if (inDetail.isDataType("long") || inDetail.isDataType("number")) {
 					Long lowval = (Long) inTerm.getValue("lowval");
 					Long highval = (Long) inTerm.getValue("highval");
 					find = QueryBuilders.rangeQuery(fieldid).from(lowval).to(highval);
 				}
 			}
 
-			else if ("lessthannumber".equals(inTerm.getOperation()))
-			{
-				if (inDetail.isDataType("double"))
-				{
+			else if ("lessthannumber".equals(inTerm.getOperation())) {
+				if (inDetail.isDataType("double")) {
 					Double val = Double.valueOf(inTerm.getValue());
 					find = QueryBuilders.rangeQuery(fieldid).lt(val);
 				}
-				if (inDetail.isDataType("long") || inDetail.isDataType("number"))
-				{
+				if (inDetail.isDataType("long") || inDetail.isDataType("number")) {
 					Long val = Long.valueOf(inTerm.getValue());
 					find = QueryBuilders.rangeQuery(fieldid).lt(val);
 				}
 
 			}
 
-			else if ("greaterthannumber".equals(inTerm.getOperation()))
-			{
-				if (inDetail.isDataType("double"))
-				{
+			else if ("greaterthannumber".equals(inTerm.getOperation())) {
+				if (inDetail.isDataType("double")) {
 					Double val = Double.valueOf(inTerm.getValue());
 					find = QueryBuilders.rangeQuery(fieldid).gt(val);
 				}
-				if (inDetail.isDataType("long") || inDetail.isDataType("number"))
-				{
+				if (inDetail.isDataType("long") || inDetail.isDataType("number")) {
 					Long val = Long.valueOf(inTerm.getValue());
 					find = QueryBuilders.rangeQuery(fieldid).gt(val);
 				}
 
 			}
 
-			else
-			{
-				if (inDetail.isDataType("double"))
-				{
+			else {
+				if (inDetail.isDataType("double")) {
 					find = QueryBuilders.termQuery(fieldid, Double.parseDouble(valueof));
 
-				}
-				else if (inDetail.isDataType("float"))
-				{
+				} else if (inDetail.isDataType("float")) {
 					find = QueryBuilders.termQuery(fieldid, Float.parseFloat(valueof));
-				}
-				else
-				{
+				} else {
 					find = QueryBuilders.termQuery(fieldid, Long.parseLong(valueof));
 				}
 			}
 
-		}
-		else if (inDetail.isGeoPoint())
-		{
+		} else if (inDetail.isGeoPoint()) {
 			GeoFilter filter = (GeoFilter) inTerm;
-			if (filter.getLatitude() == 0)
-			{
+			if (filter.getLatitude() == 0) {
 				find = QueryBuilders.termQuery("id", "-" + System.currentTimeMillis());
-			}
-			else
-			{
+			} else {
 				GeoDistanceQueryBuilder geoDistanceFilterBuilder = new GeoDistanceQueryBuilder(inDetail.getId());
 				geoDistanceFilterBuilder.point(filter.getLatitude(), filter.getLongitude());
 				geoDistanceFilterBuilder.distance(String.valueOf(filter.getDistance()));
@@ -1945,86 +1746,62 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// text.maxExpansions(10);
 		// find = text;
 		// }
-		else
-		{
-			if ("exact".equals(inTerm.getOperation()))
-			{
-				if (inDetail.isAnalyzed())
-				{
+		else {
+			if ("exact".equals(inTerm.getOperation())) {
+				if (inDetail.isAnalyzed()) {
 					find = QueryBuilders.termQuery(fieldid + ".exact", valueof);
-				}
-				else
-				{
+				} else {
 					find = QueryBuilders.termQuery(fieldid, valueof);
 				}
-			}
-			else if ("orgroup".equals(inTerm.getOperation()) || "notgroup".equals(inTerm.getOperation()))
-			{
-				if (inDetail.isList() || !inDetail.isAnalyzed())
-				{
-					find = QueryBuilders.termsQuery(fieldid, inTerm.getValues()); //This is an OR
-				}
-				else
-				{
+			} else if ("orgroup".equals(inTerm.getOperation()) || "notgroup".equals(inTerm.getOperation())) {
+				if (inDetail.isList() || !inDetail.isAnalyzed()) {
+					find = QueryBuilders.termsQuery(fieldid, inTerm.getValues()); // This is an OR
+				} else {
 					String altid = fieldid + ".exact";
 
-					find = QueryBuilders.termsQuery(altid, inTerm.getValues()); //This is an OR
-					//find = createMatchQuery(fieldid, inTerm.getValues()); //This is an OR
+					find = QueryBuilders.termsQuery(altid, inTerm.getValues()); // This is an OR
+					// find = createMatchQuery(fieldid, inTerm.getValues()); //This is an OR
 				}
-				//				BoolQueryBuilder or  = QueryBuilders.boolQuery();
-				//				Object[] values = inTerm.getValues();
-				//				for (int i = 0; i < values.length; i++)
-				//				{
-				//					Object val = values[i];
+				// BoolQueryBuilder or = QueryBuilders.boolQuery();
+				// Object[] values = inTerm.getValues();
+				// for (int i = 0; i < values.length; i++)
+				// {
+				// Object val = values[i];
 				//
-				//					TermQueryBuilder item = QueryBuilders.termQuery(fieldid, val);
-				//					if("notgroup".equals(inTerm.getOperation()))
-				//					{
-				//						or.mustNot(item);
-				//					}
-				//					else
-				//					{
-				//						or.should(item);						
-				//					}
-				//				}
-				//				find = or;
-			}
-			else if ("andgroup".equals(inTerm.getOperation()))
-			{
+				// TermQueryBuilder item = QueryBuilders.termQuery(fieldid, val);
+				// if("notgroup".equals(inTerm.getOperation()))
+				// {
+				// or.mustNot(item);
+				// }
+				// else
+				// {
+				// or.should(item);
+				// }
+				// }
+				// find = or;
+			} else if ("andgroup".equals(inTerm.getOperation())) {
 				Object[] values = inTerm.getValues();
 				BoolQueryBuilder or = QueryBuilders.boolQuery();
 
-				for (int i = 0; i < values.length; i++)
-				{
+				for (int i = 0; i < values.length; i++) {
 					Object val = values[i];
-					if (inDetail.isAnalyzed() || "keywords".equals(fieldid))
-					{
+					if (inDetail.isAnalyzed() || "keywords".equals(fieldid)) {
 						MatchQueryBuilder item = QueryBuilders.matchQuery(fieldid, val);
 						or.must(item);
-					}
-					else
-					{
+					} else {
 						TermQueryBuilder item = QueryBuilders.termQuery(fieldid, val);
 						or.must(item);
 
 					}
 				}
 				find = or;
-			}
-			else if ("matches".equals(inTerm.getOperation()))
-			{
+			} else if ("matches".equals(inTerm.getOperation())) {
 				find = createMatchQuery(inDetail, fieldid, valueof);
-			}
-			else if ("contains".equals(inTerm.getOperation()))
-			{
+			} else if ("contains".equals(inTerm.getOperation())) {
 				find = createMatchQuery(inDetail, fieldid, valueof);
-			}
-			else if (inDetail.isList())
-			{
+			} else if (inDetail.isList()) {
 				find = QueryBuilders.termQuery(fieldid, valueof);
-			}
-			else
-			{
+			} else {
 				find = createMatchQuery(inDetail, fieldid, valueof);
 			}
 		}
@@ -2036,88 +1813,84 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	 * But for other keyword fields it searches for exact matches
 	 * 
 	 */
-	protected String addSearchTerms(Term inDescriptionTerm, boolean lastword, String partofword, String previousoperator, String currentoperator, BoolQueryBuilder booleans)
-	{
-		//For freeform we want to have pairs of words. lowersnoball does not work well with prefix phrase queries
+	protected String addSearchTerms(Term inDescriptionTerm, boolean lastword, String partofword,
+			String previousoperator, String currentoperator, BoolQueryBuilder booleans) {
+		// For freeform we want to have pairs of words. lowersnoball does not work well
+		// with prefix phrase queries
 
-		//Bill_Clinton_official.jpg
-		//So MYFILE.JPG will search for MYFILE and JPG and AND toghether the results?
-		String escaped = QueryParser.escape(partofword);	
-	
-		MatchQueryBuilder oneword = null; //Desription always included
+		// Bill_Clinton_official.jpg
+		// So MYFILE.JPG will search for MYFILE and JPG and AND toghether the results?
+		String escaped = QueryParser.escape(partofword);
+
+		MatchQueryBuilder oneword = null; // Desription always included
 		oneword = QueryBuilders.matchPhrasePrefixQuery(inDescriptionTerm.getDetail().getId(), escaped);
 		oneword.analyzer("lowersnowball");
-		//booleans.must(oneword);
+		// booleans.must(oneword);
 
-		//CB: I removed this because instead I just collected all the special characters and put them at the end of description field so they will be ANDed in
-		
-		//This does not apply for description that should be handled above
-		//The other text fields can be searched directly
-		
-//		for (Iterator iterator = getKeywordProperties().iterator(); iterator.hasNext();)
-//		{
-//			PropertyDetail detail = (PropertyDetail) iterator.next();
-//			if( detail.isList() || detail.isDate() || detail.isMultiLanguage() || detail.isDataType("objectarray") || detail.isDataType("nested") || detail.getId().equals("description") )   //				else if (det.isDataType("objectarray") || det.isDataType("nested"))
-//			{
-//				continue;
-//			}
-//			String altid = detail.getId();
-//			if (detail.isAnalyzed())
-//			{
-//				altid = altid + ".sort";
-//			}
-//			
-//			if (lastword)
-//			{
-//				oneword = QueryBuilders.matchPhraseQuery(altid, escaped);
-//			}
-//			else
-//			{
-//				oneword = QueryBuilders.matchPhrasePrefixQuery(altid, escaped);
-//			}
-//			either.should(oneword);
-//		}
-//		
-		if (currentoperator == null && (previousoperator != null && previousoperator.equals("OR")))  //Start using OR operator
+		// CB: I removed this because instead I just collected all the special
+		// characters and put them at the end of description field so they will be ANDed
+		// in
+
+		// This does not apply for description that should be handled above
+		// The other text fields can be searched directly
+
+		// for (Iterator iterator = getKeywordProperties().iterator();
+		// iterator.hasNext();)
+		// {
+		// PropertyDetail detail = (PropertyDetail) iterator.next();
+		// if( detail.isList() || detail.isDate() || detail.isMultiLanguage() ||
+		// detail.isDataType("objectarray") || detail.isDataType("nested") ||
+		// detail.getId().equals("description") ) // else if
+		// (det.isDataType("objectarray") || det.isDataType("nested"))
+		// {
+		// continue;
+		// }
+		// String altid = detail.getId();
+		// if (detail.isAnalyzed())
+		// {
+		// altid = altid + ".sort";
+		// }
+		//
+		// if (lastword)
+		// {
+		// oneword = QueryBuilders.matchPhraseQuery(altid, escaped);
+		// }
+		// else
+		// {
+		// oneword = QueryBuilders.matchPhrasePrefixQuery(altid, escaped);
+		// }
+		// either.should(oneword);
+		// }
+		//
+		if (currentoperator == null && (previousoperator != null && previousoperator.equals("OR"))) // Start using OR
+																									// operator
 		{
 			currentoperator = "OR";
-		}
-		else if (currentoperator == null)
-		{
+		} else if (currentoperator == null) {
 			currentoperator = "AND";
 		}
 
-		if (currentoperator.equals("NOT"))
-		{
+		if (currentoperator.equals("NOT")) {
 			booleans.mustNot(oneword);
-		}
-		else if (currentoperator.equals("OR"))
-		{
+		} else if (currentoperator.equals("OR")) {
 			booleans.should(oneword);
-		}
-		else
-		{
+		} else {
 			booleans.must(oneword);
 		}
 		return currentoperator;
 	}
 
-	protected QueryBuilder createMatchQuery(PropertyDetail inDetail, String fieldid, String valueof)
-	{
+	protected QueryBuilder createMatchQuery(PropertyDetail inDetail, String fieldid, String valueof) {
 		QueryBuilder find;
-		if (inDetail.isAnalyzed() && !inDetail.getId().equals("description"))
-		{
+		if (inDetail.isAnalyzed() && !inDetail.getId().equals("description")) {
 			find = QueryBuilders.matchQuery(fieldid + ".sort", valueof);
-		}
-		else
-		{
+		} else {
 			find = QueryBuilders.matchQuery(fieldid, valueof);
 		}
 		return find;
 	}
 
-	private void wildcard(StringBuffer output, String word)
-	{
+	private void wildcard(StringBuffer output, String word) {
 		String escaped = QueryParser.escape(word);
 
 		output.append("*");
@@ -2125,39 +1898,28 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		output.append("*");
 	}
 
-	protected void addSorts(SearchQuery inQuery, SearchRequestBuilder search)
-	{
-		if (inQuery.getSorts() == null)
-		{
+	protected void addSorts(SearchQuery inQuery, SearchRequestBuilder search) {
+		if (inQuery.getSorts() == null) {
 			return;
 		}
-		for (Iterator iterator = inQuery.getSorts().iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = inQuery.getSorts().iterator(); iterator.hasNext();) {
 			String field = (String) iterator.next();
 			boolean direction = false;
-			if (field.endsWith("Down"))
-			{
+			if (field.endsWith("Down")) {
 				direction = true;
 				field = field.substring(0, field.length() - 4);
-			}
-			else if (field.endsWith("Up"))
-			{
+			} else if (field.endsWith("Up")) {
 				direction = false;
 				field = field.substring(0, field.length() - 2);
 			}
 			PropertyDetail detail = getDetail(field);
 			FieldSortBuilder sort = null;
 
-			if (detail != null)
-			{
-				if (detail.isMultiLanguage())
-				{
-					if (detail.isAnalyzed())
-					{
+			if (detail != null) {
+				if (detail.isMultiLanguage()) {
+					if (detail.isAnalyzed()) {
 						sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage() + ".sort");
-					}
-					else
-					{
+					} else {
 						sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage());
 					}
 				}
@@ -2167,41 +1929,30 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				 * "distance_type": "arc", "ignore_unmapped": true }
 				 */
 
-				else if (detail.isDataType("objectarray") && detail.getObjectDetails() != null && !detail.getObjectDetails().isEmpty())
-				{
+				else if (detail.isDataType("objectarray") && detail.getObjectDetails() != null
+						&& !detail.getObjectDetails().isEmpty()) {
 					PropertyDetail first = (PropertyDetail) detail.getObjectDetails().iterator().next();
-					if (first.isAnalyzed())
-					{
+					if (first.isAnalyzed()) {
 						sort = SortBuilders.fieldSort(field + "." + first.getId() + ".sort");
-					}
-					else
-					{
+					} else {
 						sort = SortBuilders.fieldSort(field + "." + first.getId());
 					}
-				}
-				else if (detail.isAnalyzed())
-				{
+				} else if (detail.isAnalyzed()) {
 					sort = SortBuilders.fieldSort(field + ".sort");
-				}
-				else
-				{
+				} else {
 					sort = SortBuilders.fieldSort(field);
 				}
 			}
 
-			if (sort == null)
-			{
+			if (sort == null) {
 				sort = SortBuilders.fieldSort(field);
 
 			}
 
 			sort.ignoreUnmapped(true);
-			if (direction)
-			{
+			if (direction) {
 				sort.order(SortOrder.DESC);
-			}
-			else
-			{
+			} else {
 				sort.order(SortOrder.ASC);
 			}
 			search.addSort(sort);
@@ -2209,22 +1960,18 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 	}
 
-	public String getIndexId()
-	{
-		if (fieldIndexId == -1)
-		{
+	public String getIndexId() {
+		if (fieldIndexId == -1) {
 			fieldIndexId = System.currentTimeMillis();
 		}
 		return String.valueOf(fieldIndexId);
 	}
 
-	public void clearIndex()
-	{
+	public void clearIndex() {
 		fieldIndexId = -1;
 	}
 
-	public void saveData(Data inData, User inUser)
-	{
+	public void saveData(Data inData, User inUser) {
 		// update the index
 		// List<Data> list = new ArrayList(1);
 		// list.add((Data) inData);
@@ -2269,26 +2016,20 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	 * getSearchType()); } catch (Exception e) { throw new OpenEditException(e);
 	 * } }
 	 */
-	public void updateIndex(Collection<Data> inBuffer, User inUser)
-	{
-		if( inBuffer.isEmpty() )
-		{
+	public void updateIndex(Collection<Data> inBuffer, User inUser) {
+		if (inBuffer.isEmpty()) {
 			return;
 		}
-		
+
 		if (inBuffer.size() > 2 || fieldForceBulk) // 100 was too low - caused shard exceptions
 		// due to thread pool size on large
 		// ingests..
 		{
 			updateInBatch(inBuffer, inUser); // This is asynchronous
-		}
-		else
-		{
+		} else {
 			PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
-			for (Data data : inBuffer)
-			{
-				if (data == null)
-				{
+			for (Data data : inBuffer) {
+				if (data == null) {
 					throw new OpenEditException("Data was null!");
 				}
 				saveToElasticSearch(details, data, false, inUser);
@@ -2299,8 +2040,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// inBuffer.clear();
 	}
 
-	public void updateInBatch(Collection<Data> inBuffer, User inUser)
-	{
+	public void updateInBatch(Collection<Data> inBuffer, User inUser) {
 		String catid = getElasticIndexId();
 		long start = new Date().getTime();
 		// We cant use this for normal updates since we do not get back the id
@@ -2312,89 +2052,72 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// Make this not return till it is finished?
 		int currentordering = -1;
 
-		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
-		{
+		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener() {
 			@Override
-			public void beforeBulk(long executionId, BulkRequest request)
-			{
+			public void beforeBulk(long executionId, BulkRequest request) {
 
 			}
 
 			@Override
-			public void afterBulk(long executionId, BulkRequest request, BulkResponse response)
-			{
-				for (int i = 0; i < response.getItems().length; i++)
-				{
+			public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
+				for (int i = 0; i < response.getItems().length; i++) {
 					// request.getFromContext(key)
 					BulkItemResponse res = response.getItems()[i];
-					if (res.isFailed())
-					{
+					if (res.isFailed()) {
 						log.info(res.getFailureMessage());
 						errors.add(res.getFailureMessage());
 
 					}
 					// Data toupdate = toversion.get(res.getId());
 					Data toupdate = toprocess.get(res.getItemId());
-					if (toupdate == null)
-					{
+					if (toupdate == null) {
 						errors.add("Data [" + i + "] was null: " + res.getItemId());
-					}
-					else
-					{
-						if (isCheckVersions())
-						{
+					} else {
+						if (isCheckVersions()) {
 							toupdate.setProperty(".version", String.valueOf(res.getVersion()));
 						}
 						toupdate.setId(res.getId());
 						getCacheManager().remove("data" + getSearchType(), res.getId());
 					}
 				}
-				//	request.refresh(true);
+				// request.refresh(true);
 			}
 
 			@Override
-			public void afterBulk(long executionId, BulkRequest request, Throwable failure)
-			{
+			public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
 				log.info(failure);
 				errors.add(failure);
 			}
-		}).setBulkActions(-1).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueMinutes(4)).setConcurrentRequests(1).setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10)).build();
+		}).setBulkActions(-1).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB))
+				.setFlushInterval(TimeValue.timeValueMinutes(4)).setConcurrentRequests(1)
+				.setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10)).build();
 
-		//setConcurrentRequests = 1 sets concurrentRequests to 1, which means an asynchronous execution of the flush operation.
+		// setConcurrentRequests = 1 sets concurrentRequests to 1, which means an
+		// asynchronous execution of the flush operation.
 
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
 
 		PropertyDetail ordering = details.getDetail("ordering");
 		boolean fixordering = false;
-		if (ordering != null && ordering.isAutoIncrement() && ordering.isIndex())
-		{
+		if (ordering != null && ordering.isAutoIncrement() && ordering.isIndex()) {
 			fixordering = true;
 		}
 
-		for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();)
-		{
-			try
-			{
+		for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();) {
+			try {
 				Data data2 = (Data) iterator.next();
-				if (fixordering)
-				{
+				if (fixordering) {
 					Object order = data2.getValue("ordering");
-					if (order != null)
-					{
-						if (Long.parseLong(order.toString()) == 0)
-						{
+					if (order != null) {
+						if (Long.parseLong(order.toString()) == 0) {
 							order = null;
 						}
 					}
-					if (order == null)
-					{
-						if (currentordering == -1)
-						{
+					if (order == null) {
+						if (currentordering == -1) {
 							IdManager manager = (IdManager) getModuleManager().getBean(getCatalogId(), "idManager");
 							currentordering = manager.nextNumber(getSearchType() + "_ordering").intValue();
-						}
-						else
-						{
+						} else {
 							currentordering = currentordering + 10;
 						}
 						data2.setValue("ordering", currentordering);
@@ -2407,17 +2130,14 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				content.endObject();
 				IndexRequest req = Requests.indexRequest(catid).type(getSearchType());
 				PropertyDetail parent = details.getDetail("_parent");
-				if (parent != null)
-				{
+				if (parent != null) {
 					// String _parent = data.get(parent.getListId());
 					String _parent = data2.get(parent.getId());
-					if (_parent != null)
-					{
+					if (_parent != null) {
 						req.parent(_parent);
 					}
 				}
-				if (data2.getId() != null)
-				{
+				if (data2.getId() != null) {
 					req = req.id(data2.getId());
 
 				}
@@ -2426,22 +2146,19 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				// {
 				// req = req.refresh(true);
 				// }
-				//				try
-				//				{
+				// try
+				// {
 				bulkProcessor.add(req);
-				//				}
-				//				catch( RemoteTransportException ex)
-				//				{
-				//					if( ex.getCause() instanceof EsRejectedExecutionException)
-				//					{
-				//						
-				//					}
-				//				}
-			}
-			catch (Throwable ex)
-			{
-				if (ex instanceof OpenEditException)
-				{
+				// }
+				// catch( RemoteTransportException ex)
+				// {
+				// if( ex.getCause() instanceof EsRejectedExecutionException)
+				// {
+				//
+				// }
+				// }
+			} catch (Throwable ex) {
+				if (ex instanceof OpenEditException) {
 					throw (OpenEditException) ex;
 				}
 				throw new OpenEditException(ex);
@@ -2449,32 +2166,28 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 		}
 
-		//		bulkProcessor.close();
-		try
-		{
+		// bulkProcessor.close();
+		try {
 			bulkProcessor.flush();
 			bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
 
-			//This is in memory only flush
+			// This is in memory only flush
 			RefreshResponse actionGet = getClient().admin().indices().prepareRefresh(catid).execute().actionGet();
 
-		}
-		catch (InterruptedException e)
-		{
+		} catch (InterruptedException e) {
 			throw new OpenEditException(e);
 		}
 
-		if (errors.size() > 0)
-		{
+		if (errors.size() > 0) {
 			throw new OpenEditException((String) errors.get(0).toString());
 
 		}
 		long end = new Date().getTime();
 		double total = (end - start) / 1000.0;
-		log.info("processed bulk save  " + inBuffer.size() + " records in " + total + " seconds (" + getSearchType() + ")");
+		log.info("processed bulk save  " + inBuffer.size() + " records in " + total + " seconds (" + getSearchType()
+				+ ")");
 
-		if (currentordering != -1)
-		{
+		if (currentordering != -1) {
 			IdManager manager = (IdManager) getModuleManager().getBean(getCatalogId(), "idManager");
 			manager.setNumber(getSearchType() + "_ordering", currentordering);
 		}
@@ -2487,16 +2200,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// }
 		// if (brb.numberOfActions() > 0) brb.execute().actionGet();
 
-		//getClient().admin().cluster().prepareHealth().setWaitForGreenStatus().execute().actionGet();
+		// getClient().admin().cluster().prepareHealth().setWaitForGreenStatus().execute().actionGet();
 
 	}
 
-	protected void presave(PropertyDetails details, Data inData, XContentBuilder content, boolean delete)
-	{
-		try
-		{
-			if(!isTrackEdits())
-			{
+	protected void presave(PropertyDetails details, Data inData, XContentBuilder content, boolean delete) {
+		try {
+			if (!isTrackEdits()) {
 				return;
 			}
 
@@ -2507,65 +2217,50 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			 * return; }
 			 */
 			String localClusterId = getElasticNodeManager().getLocalClusterId();
-			if (isReIndexing())
-			{
-				if (status != null )
-				{
-					if (getElasticNodeManager().isForceSaveMasterCluster())
-					{
+			if (isReIndexing()) {
+				if (status != null) {
+					if (getElasticNodeManager().isForceSaveMasterCluster()) {
 						String oldClusterId = (String) status.get("mastereditclusterid");
 						String lastModifiedClusterId = (String) status.get("lastmodifiedclusterid");
-						if (oldClusterId != null && oldClusterId.equals(lastModifiedClusterId))
-						{
+						if (oldClusterId != null && oldClusterId.equals(lastModifiedClusterId)) {
 							status.put("lastmodifiedclusterid", localClusterId);
 						}
-						
+
 						status.put("mastereditclusterid", localClusterId);
-						
+
 					}
 					content.field("emrecordstatus", status);
-					return;				
+					return;
 				}
-				
-				if (isOptimizeReindex())
-				{
-					return; //Dont worry if its not created already
+
+				if (isOptimizeReindex()) {
+					return; // Dont worry if its not created already
 				}
 			}
 
-			if (status == null)
-			{
+			if (status == null) {
 				status = new HashMap();
 			}
 
-			
 			String currentid = null;
-			
-			
-			if (status != null)
-			{
+
+			if (status != null) {
 				currentid = (String) status.get("mastereditclusterid");
 			}
-			if (currentid == null)
-			{
+			if (currentid == null) {
 				currentid = localClusterId;
 			}
-			
 
 			status.put("recorddeleted", delete);
 			status.put("mastereditclusterid", currentid);
-			if (isReIndexing() && status.get("lastmodifiedclusterid") != null)
-			{
-				//Do nothing. Will copy old value
-			}
-			else
-			{
-				status.put("lastmodifiedclusterid", localClusterId); //reset				
+			if (isReIndexing() && status.get("lastmodifiedclusterid") != null) {
+				// Do nothing. Will copy old value
+			} else {
+				status.put("lastmodifiedclusterid", localClusterId); // reset
 			}
 
 			Object currentmod = status.get("recordmodificationdate");
-			if (currentmod instanceof String)
-			{
+			if (currentmod instanceof String) {
 				currentmod = DateStorageUtil.getStorageUtil().parseFromStorage((String) currentmod);
 			}
 
@@ -2574,39 +2269,31 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			status.put("recordmodificationdate", currentmod);
 
 			Object currentmastermod = null;
-			if (status != null)
-			{
+			if (status != null) {
 
 				currentmastermod = status.get("masterrecordmodificationdate");
 			}
-			if (currentmastermod instanceof String)
-			{
+			if (currentmastermod instanceof String) {
 				currentmastermod = DateStorageUtil.getStorageUtil().parseFromStorage((String) currentmastermod);
 			}
-			if (currentid.equals(localClusterId))
-			{
+			if (currentid.equals(localClusterId)) {
 				currentmastermod = currentmod;
 			}
 			status.put("masterrecordmodificationdate", currentmastermod);
 
 			content.field("emrecordstatus", status);
 
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			throw new OpenEditException(ex);
 		}
 	}
 
-	protected boolean isTrackEdits()
-	{
+	protected boolean isTrackEdits() {
 		return true;
 	}
 
-	public void deleteAll(Collection inBuffer, User inUser)
-	{
-		if (inBuffer instanceof HitTracker)
-		{
+	public void deleteAll(Collection inBuffer, User inUser) {
+		if (inBuffer instanceof HitTracker) {
 			HitTracker htracker = (HitTracker) inBuffer;
 			htracker.enableBulkOperations();
 
@@ -2617,15 +2304,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// due to thread pool size on large
 		// ingests..
 		{
-			for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();) {
 				Data object = (Data) iterator.next();
-				try
-				{
+				try {
 					delete(object, inUser);
-				}
-				catch (Exception ex)
-				{
+				} catch (Exception ex) {
 					log.error("Could not delete " + object, ex);
 				}
 			}
@@ -2634,23 +2317,18 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 		final List errors = new ArrayList();
 		// Make this not return till it is finished?
-		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
-		{
+		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener() {
 			@Override
-			public void beforeBulk(long executionId, BulkRequest request)
-			{
+			public void beforeBulk(long executionId, BulkRequest request) {
 
 			}
 
 			@Override
-			public void afterBulk(long executionId, BulkRequest request, BulkResponse response)
-			{
-				for (int i = 0; i < response.getItems().length; i++)
-				{
+			public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
+				for (int i = 0; i < response.getItems().length; i++) {
 					// request.getFromContext(key)
 					BulkItemResponse res = response.getItems()[i];
-					if (res.isFailed())
-					{
+					if (res.isFailed()) {
 						log.info(res.getFailureMessage());
 						errors.add(res.getFailureMessage());
 
@@ -2659,130 +2337,101 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 
 			@Override
-			public void afterBulk(long executionId, BulkRequest request, Throwable failure)
-			{
+			public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
 				log.info(failure);
 				errors.add(failure);
 			}
-		}).setBulkActions(inBuffer.size()).setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB)).setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(2).build();
+		}).setBulkActions(inBuffer.size()).setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB))
+				.setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(2).build();
 
-		for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();)
-		{
-			try
-			{
+		for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();) {
+			try {
 				Data data2 = (Data) iterator.next();
 
 				DeleteRequest req = Requests.deleteRequest(catid).type(getSearchType());
 
-				if (data2.getId() != null)
-				{
+				if (data2.getId() != null) {
 					req = req.id(data2.getId());
 
 				}
 				bulkProcessor.add(req);
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 				log.error(ex);
 			}
 		}
-		try
-		{
+		try {
 			bulkProcessor.flush();
 			bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
 			clearIndex();
-			//This is in memory only flush
+			// This is in memory only flush
 			RefreshResponse actionGet = getClient().admin().indices().prepareRefresh(catid).execute().actionGet();
 
-		}
-		catch (InterruptedException e)
-		{
+		} catch (InterruptedException e) {
 			throw new OpenEditException(e);
 		}
 
-		if (errors.size() > 0)
-		{
+		if (errors.size() > 0) {
 			log.error("Bulk delete errors" + errors);
-			//TODO: Throw exception?
+			// TODO: Throw exception?
 		}
 		clearIndex();
 	}
 
-	protected void saveToElasticSearch(PropertyDetails details, Data data, boolean delete, User inUser)
-	{
-		try
-		{
+	protected void saveToElasticSearch(PropertyDetails details, Data data, boolean delete, User inUser) {
+		try {
 			String catid = getElasticIndexId();
 			XContentBuilder content = XContentFactory.jsonBuilder().startObject();
 
 			IndexRequestBuilder builder = null;
-			if (data.getId() == null)
-			{
-				builder = getClient().prepareIndex(catid, getSearchType()); //Should we preface the id?
-			}
-			else
-			{
+			if (data.getId() == null) {
+				builder = getClient().prepareIndex(catid, getSearchType()); // Should we preface the id?
+			} else {
 				builder = getClient().prepareIndex(catid, getSearchType(), data.getId());
 			}
 
 			PropertyDetail parent = details.getDetail("_parent");
-			if (parent != null)
-			{
+			if (parent != null) {
 				// String _parent = data.get(parent.getListId());
 				String _parent = data.get(parent.getId());
-				if (_parent != null)
-				{
+				if (_parent != null) {
 					builder = builder.setParent(_parent);
-				}
-				else
-				{
+				} else {
 					return; // Can't save data that doesn't have a parent!
 				}
 			}
 			presave(details, data, content, delete);
 			updateIndex(content, data, details, inUser);
 			content.endObject();
-			if (log.isDebugEnabled())
-			{
+			if (log.isDebugEnabled()) {
 				log.info("Saving " + getSearchType() + " " + data.getId() + " = " + content.string());
 			}
 
 			builder = builder.setSource(content);
-			//log.info("Saving " + getSearchType() + " " + data.getId() + " = " + content.string());
+			// log.info("Saving " + getSearchType() + " " + data.getId() + " = " +
+			// content.string());
 
-			if (isRefreshSaves())
-			{
+			if (isRefreshSaves()) {
 				builder = builder.setRefresh(true);
 			}
-			if (isCheckVersions())
-			{
+			if (isCheckVersions()) {
 				updateVersion(data, builder);
 			}
 			IndexResponse response = null;
 
 			response = builder.execute().actionGet();
-			if (response.getId() != null)
-			{
+			if (response.getId() != null) {
 				data.setId(response.getId());
 			}
 			data.setValue(".version", response.getVersion());
-		}
-		catch (RemoteTransportException ex)
-		{
-			if (ex.getCause() instanceof VersionConflictEngineException)
-			{
+		} catch (RemoteTransportException ex) {
+			if (ex.getCause() instanceof VersionConflictEngineException) {
 				throw new ConcurrentModificationException(ex.getMessage());
 			}
-		}
-		catch (VersionConflictEngineException ex)
-		{
+		} catch (VersionConflictEngineException ex) {
 			throw new ConcurrentModificationException(ex.getMessage());
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			log.error("Problem saving data in " + getCatalogId() + " " + getSearchType() + " " + data.getId());
-			if (ex instanceof OpenEditException)
-			{
+			if (ex instanceof OpenEditException) {
 				throw (OpenEditException) ex;
 			}
 			throw new OpenEditException(ex);
@@ -2791,269 +2440,218 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		getCacheManager().remove("data" + getSearchType(), data.getId());
 	}
 
-	public void setIndexId(long inIndexId)
-	{
+	public void setIndexId(long inIndexId) {
 		fieldIndexId = inIndexId;
 	}
 
-	private void updateVersion(Data data, IndexRequestBuilder builder)
-	{
-		if (isCheckVersions())
-		{
+	private void updateVersion(Data data, IndexRequestBuilder builder) {
+		if (isCheckVersions()) {
 			Long version = (Long) data.getValue(".version");
-			if (version != null)
-			{
-				if (version.longValue() > -1)
-				{
+			if (version != null) {
+				if (version.longValue() > -1) {
 					builder.setVersion(version);
 				}
 			}
 		}
 	}
 
-	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
-	{
+	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails) {
 		updateIndex(inContent, inData, inDetails, null);
 	}
 
-	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails, User inUser)
-	{
-		if (inData == null)
-		{
+	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails, User inUser) {
+		if (inData == null) {
 			log.error("Null Data");
 			return;
 		}
-		try
-		{
-			//Map props = inData.getProperties();
-			
+		try {
+			// Map props = inData.getProperties();
+
 			HashSet allprops = new HashSet();
-			
-			if( inDetails.isAllowDynamicFields() )
-			{
-				allprops.addAll(inData.getProperties().keySet()); //Needed for legacy field handling below
-			} 
-			else if( isCheckLegacy() )
-			{
-				for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
-				{
+
+			if (inDetails.isAllowDynamicFields()) {
+				allprops.addAll(inData.getProperties().keySet()); // Needed for legacy field handling below
+			} else if (isCheckLegacy()) {
+				for (Iterator iterator = inDetails.iterator(); iterator.hasNext();) {
 					PropertyDetail detail = (PropertyDetail) iterator.next();
 					String legacyfield = detail.get("legacy");
-					if (legacyfield != null )
-					{
-						allprops.add(legacyfield); //We need to make a copy anyways
+					if (legacyfield != null) {
+						allprops.add(legacyfield); // We need to make a copy anyways
 					}
 				}
 			}
-			//allprops.addAll(props.keySet());
-			for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
-			{
+			// allprops.addAll(props.keySet());
+			for (Iterator iterator = inDetails.iterator(); iterator.hasNext();) {
 				PropertyDetail detail = (PropertyDetail) iterator.next();
-				if (!detail.isDeleted()) //TODO: Dont pass in deleted to begin with
+				if (!detail.isDeleted()) // TODO: Dont pass in deleted to begin with
 				{
-					allprops.add(detail.getId()); //We need to make a copy anyways
+					allprops.add(detail.getId()); // We need to make a copy anyways
 				}
 			}
-			if (!allprops.contains("description"))
-			{
+			if (!allprops.contains("description")) {
 				allprops.add("description");
 			}
-			if (!allprops.contains("id"))
-			{
+			if (!allprops.contains("id")) {
 				allprops.add("id");
 			}
-			if (!allprops.contains("entitysourcetype"))
-			{
-				if (getDetail("entitysourcetype") != null)
-				{
+			if (!allprops.contains("entitysourcetype")) {
+				if (getDetail("entitysourcetype") != null) {
 					allprops.add("entitysourcetype");
 				}
 			}
 			List badges = new ArrayList();
 
-			for (Iterator iterator = allprops.iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = allprops.iterator(); iterator.hasNext();) {
 				String propid = (String) iterator.next();
-				if (propid == null)
-				{
+				if (propid == null) {
 					continue;
 				}
-				if (propid.contains("."))
-				{
+				if (propid.contains(".")) {
 					continue;
 				}
-				if (propid.equals("entitysourcetype"))
-				{
-					inContent.field(propid, getSearchType()); //Cheap workaround for emfinder
+				if (propid.equals("entitysourcetype")) {
+					inContent.field(propid, getSearchType()); // Cheap workaround for emfinder
 					continue;
 				}
-				if (propid.equals("recordmodificationdate") || propid.equals("mastereditclusterid") || propid.equals("masterrecordmodificationdate") || propid.equals("emrecordstatus"))
-				{
+				if (propid.equals("recordmodificationdate") || propid.equals("mastereditclusterid")
+						|| propid.equals("masterrecordmodificationdate") || propid.equals("emrecordstatus")) {
 					continue;
 				}
-				if (propid.contains("recorddeleted"))
-				{
+				if (propid.contains("recorddeleted")) {
 					continue;
 				}
 
 				PropertyDetail detail = (PropertyDetail) inDetails.getDetail(propid);
-				if (detail == null)
-				{
+				if (detail == null) {
 					detail = inDetails.getLegacyDetail(propid);
 				}
-				if (detail != null && detail.isDeleted())
-				{
-					if( !inDetails.isAllowDynamicFields() )
-					{
+				if (detail != null && detail.isDeleted()) {
+					if (!inDetails.isAllowDynamicFields()) {
 						continue;
 					}
 				}
-				if (detail != null && detail.get("stored") != null && "false".equals(detail.get("stored")))
-				{
+				if (detail != null && detail.get("stored") != null && "false".equals(detail.get("stored"))) {
 					continue;
 				}
-				
-				
-				if (detail == null && !propid.equals("description") && !propid.contains("_int") && !propid.equals("emrecordstatus") && !propid.equals("recordmodificationdate") && !propid.equals("mastereditclusterid"))
-				{
-					if (isReIndexing())
-					{
+
+				if (detail == null && !propid.equals("description") && !propid.contains("_int")
+						&& !propid.equals("emrecordstatus") && !propid.equals("recordmodificationdate")
+						&& !propid.equals("mastereditclusterid")) {
+					if (isReIndexing()) {
 						continue;
 					}
 					detail = getPropertyDetailsArchive().createDetail(getSearchType(), propid, propid);
 					detail.setDeleted(false);
-					//setType(detail);
+					// setType(detail);
 					getPropertyDetailsArchive().savePropertyDetail(detail, getSearchType(), null);
 					inDetails.addDetail(detail);
 
-					if (!putMappings())
-					{
-						throw new OpenEditException(getSearchType() + " could not put mapping on data " + propid + " rowid=" + inData.getId());
-					}
-					else
-					{
-						log.info("Added new detail " + propid + " to " + getSearchType() + " as " + detail.getDataType());
+					if (!putMappings()) {
+						throw new OpenEditException(getSearchType() + " could not put mapping on data " + propid
+								+ " rowid=" + inData.getId());
+					} else {
+						log.info("Added new detail " + propid + " to " + getSearchType() + " as "
+								+ detail.getDataType());
 					}
 				}
-				if (detail == null || !detail.isIndex()) //&& !propid.contains("sourcepath")
+				if (detail == null || !detail.isIndex()) // && !propid.contains("sourcepath")
 				{
 					continue;
 				}
 				String key = detail.getId();
-				if (key == null)
-				{
+				if (key == null) {
 					continue;
 				}
-				if (shoudSkipField(key))
-				{
+				if (shoudSkipField(key)) {
 					continue;
 				}
-				if (propid.equals("description")) //This field must be defined by user first. or it will continue above
+				if (propid.equals("description")) // This field must be defined by user first. or it will continue above
 				{
 					Object value = inData.getValue(propid);
-					if (value == null || !isReIndexing() || !isOptimizeReindex()) 
-					{
+					if (value == null || !isReIndexing() || !isOptimizeReindex()) {
 						StringBuffer desc = new StringBuffer();
 						populateKeywords(desc, inData, inDetails);
-						//populateFullText(inData, desc);
+						// populateFullText(inData, desc);
 
-						if (desc.length() > 0)
-						{
+						if (desc.length() > 0) {
 							value = fixSpecialCharacters(desc);
-							//value = desc.toString();
+							// value = desc.toString();
 						}
 					}
-					//?inData.setValue("description",value);
+					// ?inData.setValue("description",value);
 					inContent.field(propid, value);
 					continue;
 				}
 				Object value = null;
-				//				String mask = detail.get("rendermask");
-				//				if( mask != null && Boolean.parseBoolean(detail.get("index")) )
-				//				{
-				//					value = getReplacer().replace(mask, inData);
-				//				}
+				// String mask = detail.get("rendermask");
+				// if( mask != null && Boolean.parseBoolean(detail.get("index")) )
+				// {
+				// value = getReplacer().replace(mask, inData);
+				// }
 				value = inData.getValue(key);
-				if (value != null)
-				{
-					if (value instanceof LanguageMap && ((LanguageMap) value).isEmpty()) //Standarize
+				if (value != null) {
+					if (value instanceof LanguageMap && ((LanguageMap) value).isEmpty()) // Standarize
 					{
 						value = null;
 					}
-					if (value instanceof String && ((String) value).isEmpty()) //Standarize
+					if (value instanceof String && ((String) value).isEmpty()) // Standarize
 					{
 						value = null;
 					}
-				}
-				else
-				{
-					if (!isReIndexing() && detail.isAutoIncrement())
-					{
+				} else {
+					if (!isReIndexing() && detail.isAutoIncrement()) {
 						IdManager manager = (IdManager) getModuleManager().getBean(getCatalogId(), "idManager");
 						value = manager.nextNumber(getSearchType() + "_" + detail.getId());
 					}
 				}
-				//				if( isReIndexing() ) //When reindexing dont mess with this data
-				//				{
-				//					if (key.equals("recordmodificationdate"))
-				//					{
-				//						inContent.field(key, value);
-				//						continue;
-				//					}
-				//					if (key.equals("mastereditclusterid"))
-				//					{
-				//						inContent.field(key, value); //Copy over existing values
-				//						continue;
-				//					}
-				//				}	
+				// if( isReIndexing() ) //When reindexing dont mess with this data
+				// {
+				// if (key.equals("recordmodificationdate"))
+				// {
+				// inContent.field(key, value);
+				// continue;
+				// }
+				// if (key.equals("mastereditclusterid"))
+				// {
+				// inContent.field(key, value); //Copy over existing values
+				// continue;
+				// }
+				// }
 
-				if (detail.isBadge() && value != null)
-				{
+				if (detail.isBadge() && value != null) {
 					badges.add(getSearchType() + "_" + detail.getId() + "_" + value);
 				}
 
-				if (value != null && (detail.isDataType("object")))
-				{
-					 if (value instanceof String)
-					    {
-					        // parse JSON string → Map
-					        value = new JsonSlurper().parseText((String) value);
-					    }
-					    else if (!(value instanceof Map))
-					    {
-					        throw new OpenEditException(inData.getId() + " / " + detail.getId()
-					                + " Data was not a Map or JSON string " + value.getClass());
-					    }
-					    inContent.field(key, value); // accept single object
+				if (value != null && (detail.isDataType("object"))) {
+					if (value instanceof String) {
+						// parse JSON string → Map
+						value = new JsonSlurper().parseText((String) value);
+					} else if (!(value instanceof Map)) {
+						throw new OpenEditException(inData.getId() + " / " + detail.getId()
+								+ " Data was not a Map or JSON string " + value.getClass());
+					}
+					inContent.field(key, value); // accept single object
 				}
-				
 
-				if (value != null && (detail.isDataType("objectarray") || detail.isDataType("nested")))
-				{
-					if (!(value instanceof Collection))
-					{
-						if (value instanceof String)
-						{
+				if (value != null && (detail.isDataType("objectarray") || detail.isDataType("nested"))) {
+					if (!(value instanceof Collection)) {
+						if (value instanceof String) {
 							String[] values = MultiValued.VALUEDELMITER.split((String) value);
 							Collection objects = new ArrayList(values.length);
-							//JsonSlurper slurper = new JsonSlurper();
-							for (int i = 0; i < values.length; i++)
-							{
-								//{cliplabel=New Clip, timecodelength=114863, timecodestart=108276}
+							// JsonSlurper slurper = new JsonSlurper();
+							for (int i = 0; i < values.length; i++) {
+								// {cliplabel=New Clip, timecodelength=114863, timecodestart=108276}
 								String text = values[i];
-								if (text.length() < 2)
-								{
+								if (text.length() < 2) {
 									continue;
 								}
 								text = text.substring(1, text.length() - 1);
 								String[] parts = text.split(",");
 								Map chunk = new HashMap();
-								for (int j = 0; j < parts.length; j++)
-								{
+								for (int j = 0; j < parts.length; j++) {
 									String ptext = parts[j];
 									int eq = ptext.indexOf("=");
-									if (eq > 0)
-									{
+									if (eq > 0) {
 										String id = ptext.substring(0, eq);
 										String valtext = ptext.substring(eq + 1, ptext.length());
 										chunk.put(id.trim(), valtext.trim());
@@ -3062,53 +2660,46 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 								objects.add(chunk);
 							}
 							value = objects;
-						}
-						else
-						{
-							throw new OpenEditException(inData.getId() + " / " + detail.getId() + " Data was not a collection or a string " + value.getClass());
+						} else {
+							throw new OpenEditException(inData.getId() + " / " + detail.getId()
+									+ " Data was not a collection or a string " + value.getClass());
 						}
 					}
-					inContent.field(key, value); //This seems to map Long data types to Integer when they are read again
+					inContent.field(key, value); // This seems to map Long data types to Integer when they are read
+													// again
 				}
-				
-				else if (detail.isDate())
-				{
-					if (value != null)
-					{
+
+				else if (detail.isDate()) {
+					if (value != null) {
 						Date date = null;
-						if (value instanceof Date)
-						{
+						if (value instanceof Date) {
 							date = (Date) value;
-						}
-						else if (value instanceof String)
-						{
+						} else if (value instanceof String) {
 							date = DateStorageUtil.getStorageUtil().parseFromStorage((String) value);
 						}
-						if (date != null)
-						{
+						if (date != null) {
 							inContent.field(key, date);
 						}
 					}
-				} 
-				else if (detail.isCategory())
-				{
-					//Lets assume this detail is the EXACT one, not the set.  the matching detail should have 
-					//TODO:  add this optimization
-//					if (isOptimizeReindex() && !(inData instanceof Asset)) //Low level performance fix
-//					{
-//						MultiValued values = (MultiValued) inData;
-//						saveArray(inContent, "category", values.getValues("category"));
-//						saveArray(inContent, "category-exact", values.getValues("category-exact"));
-//						String desc = values.get("description");
-//						inContent.field("description", desc);
-//						setFolderPath(inData, inContent);
-//						super.updateIndex(inContent, inData, inDetails, inUser);
-//
-//						return;
-//					}
-					
-					if (value != null)
-					{
+				} else if (detail.isCategory()) {
+					// Lets assume this detail is the EXACT one, not the set. the matching detail
+					// should have
+					// TODO: add this optimization
+					// if (isOptimizeReindex() && !(inData instanceof Asset)) //Low level
+					// performance fix
+					// {
+					// MultiValued values = (MultiValued) inData;
+					// saveArray(inContent, "category", values.getValues("category"));
+					// saveArray(inContent, "category-exact", values.getValues("category-exact"));
+					// String desc = values.get("description");
+					// inContent.field("description", desc);
+					// setFolderPath(inData, inContent);
+					// super.updateIndex(inContent, inData, inDetails, inUser);
+					//
+					// return;
+					// }
+
+					if (value != null) {
 
 						String fullsetdetail = detail.get("categorypath");
 						List categories = null;
@@ -3116,27 +2707,22 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						String searchtype = detail.getListId();
 						String catalog = detail.getListCatalogId();
 
-						CategorySearcher catsearcher = (CategorySearcher) getSearcherManager().getSearcher(catalog, searchtype);
-						if (value instanceof Collection)
-						{
+						CategorySearcher catsearcher = (CategorySearcher) getSearcherManager().getSearcher(catalog,
+								searchtype);
+						if (value instanceof Collection) {
 							categories = new ArrayList();
 							Collection vals = (Collection) value;
-							for (Iterator iterator2 = vals.iterator(); iterator2.hasNext();)
-							{
+							for (Iterator iterator2 = vals.iterator(); iterator2.hasNext();) {
 								String catid = (String) iterator2.next();
 								Category cat = catsearcher.getCategory(catid);
-								if (cat != null)
-								{
+								if (cat != null) {
 									categories.add(cat);
 								}
 							}
-						}
-						else
-						{
+						} else {
 							categories = new ArrayList();
 							Category cat = catsearcher.getCategory((String) value);
-							if (cat != null)
-							{
+							if (cat != null) {
 								categories.add(cat);
 							}
 						}
@@ -3145,70 +2731,51 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 						String[] catids = new String[categories.size()];
 						int i = 0;
-						for (Iterator iterator3 = categories.iterator(); iterator3.hasNext();)
-						{
+						for (Iterator iterator3 = categories.iterator(); iterator3.hasNext();) {
 							Category cat = (Category) iterator3.next();
 							catids[i++] = cat.getId();
 						}
-						if (i > 0)
-						{
+						if (i > 0) {
 							inContent.field(detail.getId(), catids);
 						}
 
 						List ids = new ArrayList(fulltree.size());
-						for (Iterator iterator2 = fulltree.iterator(); iterator2.hasNext();)
-						{
+						for (Iterator iterator2 = fulltree.iterator(); iterator2.hasNext();) {
 							Object object = iterator2.next();
 							String id = null;
-							if (object instanceof Data)
-							{
+							if (object instanceof Data) {
 								id = ((Data) object).getId();
-							}
-							else
-							{
+							} else {
 								id = String.valueOf(object);
 							}
 							ids.add(id);
 						}
-						if (ids.size() > 0)
-						{
+						if (ids.size() > 0) {
 							String[] array = new String[ids.size()];
 							Object oa = ids.toArray(array);
 							inContent.field(fullsetdetail, oa);
 						}
-					}
-					else
-					{
+					} else {
 						inContent.field(key, value);
 
 					}
 
-				}
-				else if (detail.isBoolean())
-				{
+				} else if (detail.isBoolean()) {
 					boolean val = false;
-					if (value instanceof Boolean)
-					{
+					if (value instanceof Boolean) {
 						val = (Boolean) value;
-					}
-					else if (value != null)
-					{
+					} else if (value != null) {
 						val = Boolean.valueOf((String) value);
 					}
 					inContent.field(key, val);
-				}
-				else if (detail.isDataType("double"))
-				{
-					if( detail.isMultiValue() )
-					{
-						if (value instanceof double[] )
-						{
+				} else if (detail.isDataType("double")) {
+					if (detail.isMultiValue()) {
+						if (value instanceof double[]) {
 							double[] values = (double[]) value;
 							inContent.field(key, values);
 							continue;
 						}
-						if (value instanceof List )
-						{
+						if (value instanceof List) {
 							List<Double> values = (List<Double>) value;
 							inContent.field(key, values);
 							continue;
@@ -3216,45 +2783,30 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 					Double val = null;
 
-					if (value instanceof Double)
-					{
+					if (value instanceof Double) {
 						val = (Double) value;
-					}
-					else if (value instanceof Integer)
-					{
+					} else if (value instanceof Integer) {
 						val = Double.valueOf((int) value);
-					}
-					else if (value instanceof Long)
-					{
+					} else if (value instanceof Long) {
 						val = Double.valueOf((long) value);
-					}
-					else if (value != null)
-					{
-						try
-						{
+					} else if (value != null) {
+						try {
 							val = Double.valueOf((String) value);
-						}
-						catch (Exception ef)
-						{
+						} catch (Exception ef) {
 							log.error("Cant format " + getSearchType() + " " + detail.getId() + " " + value, ef);
 							continue;
 						}
 
 					}
 					inContent.field(key, val);
-				}
-				else if (detail.isDataType("float"))
-				{
-					if( detail.isMultiValue() )
-					{
-						if (value instanceof float[] )
-						{
+				} else if (detail.isDataType("float")) {
+					if (detail.isMultiValue()) {
+						if (value instanceof float[]) {
 							float[] values = (float[]) value;
 							inContent.field(key, values);
 							continue;
 						}
-						if (value instanceof List )
-						{
+						if (value instanceof List) {
 							List<Float> values = (List<Float>) value;
 							inContent.field(key, values);
 							continue;
@@ -3262,171 +2814,113 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 					Float val = null;
 
-					if (value instanceof Float)
-					{
+					if (value instanceof Float) {
 						val = (Float) value;
-					}
-					else if (value instanceof Integer)
-					{
+					} else if (value instanceof Integer) {
 						val = Float.valueOf((int) value);
-					}
-					else if (value instanceof Long)
-					{
+					} else if (value instanceof Long) {
 						val = Float.valueOf((long) value);
-					}
-					else if (value != null)
-					{
-						try
-						{
+					} else if (value != null) {
+						try {
 							val = Float.valueOf((String) value);
-						}
-						catch (Exception ef)
-						{
+						} catch (Exception ef) {
 							log.error("Cant format " + getSearchType() + " " + detail.getId() + " " + value, ef);
 							continue;
 						}
 
 					}
 					inContent.field(key, val);
-				}
-				else if (detail.isDataType("long"))
-				{
+				} else if (detail.isDataType("long")) {
 					Long val = null;
-					if (value instanceof Double && detail.getId().contains("timecode"))
-					{
+					if (value instanceof Double && detail.getId().contains("timecode")) {
 						Double d = (Double) value;
 						val = Math.round(d * 1000d);
-					}
-					else if (value instanceof Double)
-					{
-						val = Math.round((Double) value); //Throw exception?
-					}
-					else if (value instanceof Integer)
-					{
+					} else if (value instanceof Double) {
+						val = Math.round((Double) value); // Throw exception?
+					} else if (value instanceof Integer) {
 						val = ((Integer) value).longValue();
-					}
-					else if (value != null)
-					{
+					} else if (value != null) {
 						val = Long.valueOf(value.toString());
 					}
 					inContent.field(key, val);
-				}
-				else if (detail.isDataType("number"))
-				{
+				} else if (detail.isDataType("number")) {
 					Object val = 0;
 
-					if (value instanceof Collection)
-					{
+					if (value instanceof Collection) {
 						val = value;
-					}
-					else if (value instanceof Number)
-					{
+					} else if (value instanceof Number) {
 						val = (Number) value;
-					}
-					else if (value instanceof Integer)
-					{
+					} else if (value instanceof Integer) {
 						val = (Integer) value;
-					}
-					else if (value != null)
-					{
-						try
-						{
+					} else if (value != null) {
+						try {
 							val = Long.valueOf((String) value);
-						}
-						catch (Exception e)
-						{
-							//						throw new OpenEditException("Bad Value for Number:  " + val + " trying to set: " + key);
+						} catch (Exception e) {
+							// throw new OpenEditException("Bad Value for Number: " + val + " trying to set:
+							// " + key);
 							log.info("Bad Value for Number:  " + val + " trying to set: " + key);
 
 						}
 					}
 					inContent.field(key, val);
-				}
-				else if (detail.isMultiValue() || detail.isList())
-				{
-					if (value != null)
-					{
-						if (value instanceof Data)
-						{
+				} else if (detail.isMultiValue() || detail.isList()) {
+					if (value != null) {
+						if (value instanceof Data) {
 							String id = ((Data) value).getId();
 							inContent.field(key, id);
-						}
-						else if (value instanceof Collection)
-						{
+						} else if (value instanceof Collection) {
 							Collection values = (Collection) value;
 							Collection ids = new ArrayList(values.size());
-							for (Iterator iterator2 = values.iterator(); iterator2.hasNext();)
-							{
+							for (Iterator iterator2 = values.iterator(); iterator2.hasNext();) {
 								Object object = (Object) iterator2.next();
-								if (object instanceof Data)
-								{
+								if (object instanceof Data) {
 									ids.add(((Data) object).getId());
-								}
-								else
-								{
+								} else {
 									ids.add(String.valueOf(object));
 								}
 							}
 							inContent.field(key, ids);
-						}
-						else if (detail.isMultiValue() && value instanceof String)
-						{
+						} else if (detail.isMultiValue() && value instanceof String) {
 							String vs = (String) value;
 							String[] vals = VALUEDELMITER.split(vs);
 							Collection values = Arrays.asList(vals);
 							inContent.field(key, values);
-						}
-						else
-						{
+						} else {
 							inContent.field(key, value);
 						}
 					}
-				}
-				else if (value != null && detail.isGeoPoint())
-				{
-					//Saved it as two fields?
-					if (value instanceof Position)
-					{
+				} else if (value != null && detail.isGeoPoint()) {
+					// Saved it as two fields?
+					if (value instanceof Position) {
 						Position pos = (Position) value;
 						GeoPoint point = new GeoPoint(pos.getLatitude(), pos.getLongitude());
 						inContent.field(key, point);
-					}
-					else if (value instanceof String)
-					{
+					} else if (value instanceof String) {
 						String geopoint = (String) value;
-						if( geopoint.startsWith("{") )
-						{
-							if( !geopoint.contains("\""))
-							{
+						if (geopoint.startsWith("{")) {
+							if (!geopoint.contains("\"")) {
 								geopoint = geopoint.substring(6, geopoint.length() - 1);
 								geopoint = geopoint.replace("lng: ", "");
-							}
-							else
-							{
+							} else {
 								Map points = new JSONParser().parse(geopoint);
-								geopoint = points.get("lat") + "," + points.get("lng");	
+								geopoint = points.get("lat") + "," + points.get("lng");
 							}
-							
+
 						}
 						GeoPoint point = new GeoPoint(geopoint);
-						inContent.field(key, point); 
+						inContent.field(key, point);
 						Position position = new Position(point.getLat(), point.getLon());
-						 
-						inData.setValue(key, position); //For next time?
-					}
-					else if (value instanceof GeoPoint)
-					{
+
+						inData.setValue(key, position); // For next time?
+					} else if (value instanceof GeoPoint) {
 						GeoPoint point = (GeoPoint) value;
 						inContent.field(key, point);
 						Position position = new Position(point.getLat(), point.getLon());
-						inData.setValue(key, position); //For next time?
+						inData.setValue(key, position); // For next time?
 					}
-				}
-				else if (detail.isMultiLanguage())
-				{
+				} else if (detail.isMultiLanguage()) {
 					// This is a nested document
-					if (value == null)
-					{
+					if (value == null) {
 						continue;
 					}
 					key = key + "_int";
@@ -3437,68 +2931,52 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 					HitTracker locales = getSearcherManager().getList(getCatalogId(), "locale");
 
-					if (value instanceof String)
-					{
+					if (value instanceof String) {
 						String target = (String) value;
 						LanguageMap map = new LanguageMap();
 						map.setText("en", target);
 						value = map;
 					}
-					if (value instanceof LanguageMap)
-					{
+					if (value instanceof LanguageMap) {
 						// all good
-					}
-					else if (value instanceof Map)
-					{
+					} else if (value instanceof Map) {
 						value = new LanguageMap((Map) value);
 					}
-					if (!(value instanceof LanguageMap))
-					{
-						throw new OpenEditException("Unexpexted value for MultiLanguage enabled field : " + value + " detail: " + detail.getId() + "Data Was: " + inData.getId() + " searchtype " + getSearchType());
+					if (!(value instanceof LanguageMap)) {
+						throw new OpenEditException("Unexpexted value for MultiLanguage enabled field : " + value
+								+ " detail: " + detail.getId() + "Data Was: " + inData.getId() + " searchtype "
+								+ getSearchType());
 					}
 					LanguageMap map = (LanguageMap) value;
-					for (Iterator iterator2 = locales.iterator(); iterator2.hasNext();)
-					{
+					for (Iterator iterator2 = locales.iterator(); iterator2.hasNext();) {
 						Data locale = (Data) iterator2.next();
 						String id = locale.getId();
 						String localeval = map.getText(id); // get value
-						if (localeval != null)
-						{
+						if (localeval != null) {
 							lanobj.field(id, localeval);
 						}
 					}
 					lanobj.endObject();
-				}
-				else
-				{
-					if (value == null)
-					{
+				} else {
+					if (value == null) {
 						// log.info( getSearchType() + "Had null value " + key);
-					}
-					else
-					{
-						if (value instanceof LanguageMap)
-						{
+					} else {
+						if (value instanceof LanguageMap) {
 							value = ((LanguageMap) value).toString();
-						}
-						else if (!(value instanceof String))
-						{
+						} else if (!(value instanceof String)) {
 							String svalue = String.valueOf(value);
-							if (svalue.isEmpty())
-							{
+							if (svalue.isEmpty()) {
 								value = null;
 							}
 						}
-						if (value != null)
-						{
+						if (value != null) {
 							inContent.field(key, value);
 						}
 					}
 				}
 				// log.info("Saved" + key + "=" + value );
 			}
-			if (!badges.isEmpty())
-			{
+			if (!badges.isEmpty()) {
 				inContent.field("badge", badges);
 			}
 
@@ -3507,10 +2985,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			addCustomFields(inContent, inData);
 		}
 
-		catch (Exception ex)
-		{
-			if (ex instanceof OpenEditException)
-			{
+		catch (Exception ex) {
+			if (ex instanceof OpenEditException) {
 				throw (OpenEditException) ex;
 			}
 			throw new OpenEditException(ex);
@@ -3518,37 +2994,31 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 	}
 
-	protected String fixSpecialCharacters(StringBuffer inDesc)
-	{
+	protected String fixSpecialCharacters(StringBuffer inDesc) {
 		String[] vals = MultiValued.VALUEDELMITER.split(inDesc.toString());
 		StringBuffer out = new StringBuffer();
 		String pipe = "|";
 		Set allwords = new HashSet();
-		
+
 		Set extras = new HashSet();
-		
-		for (int i = 0; i < vals.length; i++)
-		{
+
+		for (int i = 0; i < vals.length; i++) {
 			String chunk = vals[i].trim();
 			out.append(chunk);
-			if( i < vals.length)
-			{
+			if (i < vals.length) {
 				out.append(pipe);
 			}
 			String[] spaces = spacepattern.split(chunk);
-			for (int j = 0; j < spaces.length; j++)
-			{
+			for (int j = 0; j < spaces.length; j++) {
 				String word = spaces[j];
 				allwords.add(word);
 				Matcher matcher = separatorchars.matcher(word);
-				//Matcher matcher = Pattern.compile("([a-zA-Z0-9]+)").matcher(spaces[j]);
-				//matcher.find(); //Skip first one, this is ok in the main text
-				while (matcher.find())
-				{
+				// Matcher matcher = Pattern.compile("([a-zA-Z0-9]+)").matcher(spaces[j]);
+				// matcher.find(); //Skip first one, this is ok in the main text
+				while (matcher.find()) {
 					// Get the matched character
 					String partialword = matcher.group();
-					if(!allwords.contains(partialword) && partialword.length() > 1)
-					{
+					if (!allwords.contains(partialword) && partialword.length() > 1) {
 						extras.add(partialword);
 					}
 				}
@@ -3556,101 +3026,87 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 
 		StringBuffer special = new StringBuffer();
-		for (Iterator iterator = extras.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = extras.iterator(); iterator.hasNext();) {
 			String word = (String) iterator.next();
 			special.append(word);
 			special.append(pipe);
 		}
 		String finalout = out.toString() + special;
-		
+
 		return finalout;
 	}
 
-	protected void addSecurity(XContentBuilder inContent, Data inData) throws Exception
-	{
-		//Check for security
+	protected void addSecurity(XContentBuilder inContent, Data inData) throws Exception {
+		// Check for security
 		PropertyDetail detail = getDetail("securityenabled");
 
-		if (detail == null)
-		{
+		if (detail == null) {
 			return;
 		}
-		
+
 		PropertyDetail alwaysvisible = getDetail("securityalwaysvisible");
 
-		if (alwaysvisible != null)
-		{
-			if(  Boolean.parseBoolean( inData.get("securityalwaysvisible") ) )
-			{
-				inContent.field("securityenabled", false); //Everyone
+		if (alwaysvisible != null) {
+			if (Boolean.parseBoolean(inData.get("securityalwaysvisible"))) {
+				inContent.field("securityenabled", false); // Everyone
 				return;
 			}
 		}
-		
+
 		Collection combinedusers = new HashSet();
 		Collection combinedgroups = new HashSet();
 		Collection combinedroles = new HashSet();
-		
+
 		boolean securityenabled = false;
-				
+
 		String securityfield = (String) detail.getValue("securityfield");
-		
-		PropertyDetail securefield = getDetail(securityfield);;
-		
-		if (securefield == null)
-		{
+
+		PropertyDetail securefield = getDetail(securityfield);
+		;
+
+		if (securefield == null) {
 			combinedusers = inData.getValues("viewusers");
 			combinedgroups = inData.getValues("viewgroups");
 			combinedroles = inData.getValues("viewroles");
 
-		}
-		else
-		{
-			
-			String fieldid = securefield.getId();
-			String categorysearchertype = securefield.getListId();//category 
-			CategorySearcher searcher = (CategorySearcher) getSearcherManager().getSearcher(getCatalogId(), categorysearchertype);
+		} else {
 
-			if ("category".equals(securefield.getViewType()))  //View type can be rootcategory OR category-exact
+			String fieldid = securefield.getId();
+			String categorysearchertype = securefield.getListId();// category
+			CategorySearcher searcher = (CategorySearcher) getSearcherManager().getSearcher(getCatalogId(),
+					categorysearchertype);
+
+			if ("category".equals(securefield.getViewType())) // View type can be rootcategory OR category-exact
 			{
-				Collection exact = inData.getValues(securityfield); 
-				if (exact != null)
-				{
-						
-					
-					for (Iterator iterator = exact.iterator(); iterator.hasNext();)
-					{
+				Collection exact = inData.getValues(securityfield);
+				if (exact != null) {
+
+					for (Iterator iterator = exact.iterator(); iterator.hasNext();) {
 						Object obj = iterator.next();
 						Category c = null;
-						if( obj instanceof Category )
-						{
-							c = (Category)obj;
+						if (obj instanceof Category) {
+							c = (Category) obj;
+						} else {
+							c = (Category) searcher.getCategory((String) obj);
 						}
-						else
-						{
-							c= (Category) searcher.getCategory((String)obj);
-						}
-						if (c == null)
-						{
-							log.info("Category missing: "+ obj + " Searchtype: " + getSearchType() + " Data: " + inData);
+						if (c == null) {
+							log.info("Category missing: " + obj + " Searchtype: " + getSearchType() + " Data: "
+									+ inData);
 							continue;
 						}
-						
-						Collection moreusers = c.collectValues("viewerusers"); //These are already combined from customusers
+
+						Collection moreusers = c.collectValues("viewerusers"); // These are already combined from
+																				// customusers
 						Collection moregroups = c.collectValues("viewergroups");
 						Collection moreroles = c.collectValues("viewerroles");
-						
-						if (moreusers != null)
-						{
+
+						if (moreusers != null) {
 							combinedusers.addAll(moreusers);
 						}
-						if (moregroups != null)
-						{
+						if (moregroups != null) {
 							combinedgroups.addAll(moregroups);
 						}
-						if (moreroles != null)
-						{
+						if (moreroles != null) {
 							combinedroles.addAll(moreroles);
 						}
 
@@ -3659,55 +3115,51 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 			}
 		}
-		if (combinedusers != null && !combinedusers.isEmpty())
-		{
+		if (combinedusers != null && !combinedusers.isEmpty()) {
 			inContent.field("viewusers", combinedusers);
 			securityenabled = true;
 		}
-		if (combinedgroups != null && !combinedgroups.isEmpty())
-		{
+		if (combinedgroups != null && !combinedgroups.isEmpty()) {
 			inContent.field("viewgroups", combinedgroups);
 			securityenabled = true;
 		}
-		if (combinedroles != null && !combinedroles.isEmpty())
-		{
+		if (combinedroles != null && !combinedroles.isEmpty()) {
 			inContent.field("viewroles", combinedroles);
 			securityenabled = true;
 		}
-		
+
 		inContent.field("securityenabled", securityenabled);
 
 	}
 
-	public void addCustomFields(XContentBuilder inContent, Data inData)
-	{
-		// TODO Auto-generated method stub  Override this for custom searchers
+	public void addCustomFields(XContentBuilder inContent, Data inData) {
+		// TODO Auto-generated method stub Override this for custom searchers
 
 	}
 
-	//	private void setType(PropertyDetail detail) {
-	//	
-	//		
-	//		
-	//		String catid = getElasticIndexId();
-	//		GetFieldMappingsRequest	 req = new GetFieldMappingsRequest().indices(catid).fields(detail.getId());
-	//		GetFieldMappingsResponse resp = getClient().admin().indices().getFieldMappings(req).actionGet();
-	//		Map data = resp.mappings();
-	//		Object mappings = data.get(catid);
-	//		if(mappings != null){
-	//			Map types = (Map) data.get("blah");
-	//		}
-	//	}
+	// private void setType(PropertyDetail detail) {
+	//
+	//
+	//
+	// String catid = getElasticIndexId();
+	// GetFieldMappingsRequest req = new
+	// GetFieldMappingsRequest().indices(catid).fields(detail.getId());
+	// GetFieldMappingsResponse resp =
+	// getClient().admin().indices().getFieldMappings(req).actionGet();
+	// Map data = resp.mappings();
+	// Object mappings = data.get(catid);
+	// if(mappings != null){
+	// Map types = (Map) data.get("blah");
+	// }
+	// }
 
-	private void checkMapping(String inKey) throws Exception
-	{
+	private void checkMapping(String inKey) throws Exception {
 		String catid = getElasticIndexId();
 
 		GetMappingsRequest req = new GetMappingsRequest().indices(catid).types(getSearchType());
 		GetMappingsResponse resp = getClient().admin().indices().getMappings(req).actionGet();
 		String indexname = getElasticNodeManager().getIndexNameFromAliasName(catid);
-		if (indexname != null)
-		{
+		if (indexname != null) {
 			ImmutableOpenMap typeMappings = resp.getMappings().get(indexname);
 			MappingMetaData mapping = (MappingMetaData) typeMappings.get(getSearchType());
 
@@ -3715,43 +3167,41 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			Map properties = (Map) data.get("properties");
 			Object prop = properties.get(inKey);
 
-			if (prop == null)
-			{
+			if (prop == null) {
 
 				XContentBuilder jsonBuilder = XContentFactory.jsonBuilder();
 				jsonBuilder.startObject("properties");
 				jsonBuilder.startObject(inKey);
 				jsonBuilder.endObject();
 				jsonBuilder.endObject();
-				PutMappingRequest putreq = new PutMappingRequest().indices(new String[] { catid }).type(getSearchType()).source(jsonBuilder);
+				PutMappingRequest putreq = new PutMappingRequest().indices(new String[] { catid }).type(getSearchType())
+						.source(jsonBuilder);
 				getClient().admin().indices().putMapping(putreq);
 			}
 		}
 	}
 
-	public boolean shoudSkipField(String inKey)
-	{
-		//skip description?
-		if ("_id".equals(inKey) || "_parent".equals(inKey) || "_all".equals(inKey) || inKey.contains(".") || inKey.contains("viewusers") || inKey.contains("viewgroups") || inKey.contains("viewroles") || inKey.contains("securityenabled"))
-		{
+	public boolean shoudSkipField(String inKey) {
+		// skip description?
+		if ("_id".equals(inKey) || "_parent".equals(inKey) || "_all".equals(inKey) || inKey.contains(".")
+				|| inKey.contains("viewusers") || inKey.contains("viewgroups") || inKey.contains("viewroles")
+				|| inKey.contains("securityenabled")) {
 			return true;
 		}
 		return false;
 	}
 
-	public void deleteAll(User inUser)
-	{
+	public void deleteAll(User inUser) {
 
 		// https://github.com/elastic/elasticsearch/blob/master/plugins/delete-by-query/src/main/java/org/elasticsearch/action/deletebyquery/TransportDeleteByQueryAction.java#L104
 
-		if (inUser != null)
-		{
+		if (inUser != null) {
 			log.info("Deleted all records database " + getSearchType() + " by user:" + inUser.getId());
 		}
-		//		 DeleteByQueryRequestBuilder delete =
-		//		 getClient().prepareDeleteByQuery(toId(getCatalogId()));
-		//		 delete.setTypes(getSearchType());
-		//		 delete.setQuery(new MatchAllQueryBuilder()).execute().actionGet();
+		// DeleteByQueryRequestBuilder delete =
+		// getClient().prepareDeleteByQuery(toId(getCatalogId()));
+		// delete.setTypes(getSearchType());
+		// delete.setQuery(new MatchAllQueryBuilder()).execute().actionGet();
 
 		org.openedit.data.QueryBuilder q = query().all();
 
@@ -3764,27 +3214,23 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 	}
 
-	public void delete(Data inData, User inUser)
-	{
+	public void delete(Data inData, User inUser) {
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
 
 		Map recordstatus = (Map) inData.getValue("emrecordstatus");
 
-		if (recordstatus != null)
-		{
-			if (inUser != null)
-			{
+		if (recordstatus != null) {
+			if (inUser != null) {
 				saveToElasticSearch(details, inData, true, inUser);
 				clearIndex();
 				return;
 			}
 		}
-		//We should not do this as much for some tables
+		// We should not do this as much for some tables
 		String id = inData.getId();
-		//log.info(id.length());
+		// log.info(id.length());
 		DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), id);
-		if (inData.get("_parent") != null)
-		{
+		if (inData.get("_parent") != null) {
 			delete.setParent(inData.get("_parent"));
 		}
 		delete.setRefresh(true).execute().actionGet();
@@ -3793,13 +3239,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	}
 
 	// Base class only updated the index in bulk
-	public void saveAllData(Collection<Data> inAll, User inUser)
-	{
+	public void saveAllData(Collection<Data> inAll, User inUser) {
 		updateIndex(inAll, inUser);
 	}
 
-	public synchronized String nextId()
-	{
+	public synchronized String nextId() {
 		// Lock lock = getLockManager().lock(getCatalogId(), loadCounterPath(),
 		// "admin");
 		// try
@@ -3813,8 +3257,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		throw new OpenEditException("Should not call next ID");
 	}
 
-	protected IntCounter getIntCounter()
-	{
+	protected IntCounter getIntCounter() {
 		// if (fieldIntCounter == null)
 		// {
 		// fieldIntCounter = new IntCounter();
@@ -3829,8 +3272,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	}
 
 	/** TODO: Update this location to match the new standard location */
-	protected String loadCounterPath()
-	{
+	protected String loadCounterPath() {
 		return "/WEB-INF/data/" + getCatalogId() + "/" + getSearchType() + "s/idcounter.properties";
 	}
 
@@ -3848,62 +3290,53 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	// return inTracker;
 	// }
 
-	protected boolean flushChanges()
-	{
-		FlushRequest req = Requests.flushRequest(toId(getCatalogId())); //To The disk drive
+	protected boolean flushChanges() {
+		FlushRequest req = Requests.flushRequest(toId(getCatalogId())); // To The disk drive
 		FlushResponse res = getClient().admin().indices().flush(req).actionGet();
-		if (res.getSuccessfulShards() > 0)
-		{
+		if (res.getSuccessfulShards() > 0) {
 			return true;
 		}
 		return false;
 	}
 
-	public Object searchByField(String inField, String inValue)
-	{
-		if (inField.equals("id") || inField.equals("_id"))
-		{
-			if (getPropertyDetails().getDetail("_parent") == null) //? what is this for? routing?
+	public Object searchByField(String inField, String inValue) {
+		if (inField.equals("id") || inField.equals("_id")) {
+			if (getPropertyDetails().getDetail("_parent") == null) // ? what is this for? routing?
 			{
-				GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute().actionGet();
-				if (response.isExists())
-				{
+				GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute()
+						.actionGet();
+				if (response.isExists()) {
 					Map source = response.getSource();
-					if (isDeleted(source))
-					{
+					if (isDeleted(source)) {
 						return null;
 					}
 
 					Data data = null;
-					if (getNewDataName() != null)
-					{
+					if (getNewDataName() != null) {
 						data = createNewData();
-						
+
 						ValuesMapWithSearchData dbProperties = new ValuesMapWithSearchData();
 						dbProperties.setPropertyDetails(getPropertyDetails());
 						dbProperties.setSearchData(source);
 						data.setProperties(dbProperties);
 						// copyData(data, typed);
-						//updateData(source, data);
-					}
-					else
-					{
+						// updateData(source, data);
+					} else {
 						SearchHitData sdata = new SearchHitData(this);
 						sdata.setSearchData(source);
 						data = sdata;
 						// data.setProperties(response.getSource());
-						//updateData(response.getSource(), data);
+						// updateData(response.getSource(), data);
 					}
 					// log.info(response.getSourceAsString());
 					data.setId(inValue);
 					// data.setName(data.getName());
 					// data.setSourcePath(data.getSourcePath());
 
-					if (response.getVersion() > -1)
-					{
+					if (response.getVersion() > -1) {
 						data.setValue(".version", response.getVersion());
 					}
-					//return loadData(data);
+					// return loadData(data);
 					return data;
 				}
 				return null;
@@ -3912,22 +3345,18 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		return super.searchByField(inField, inValue);
 	}
 
-	protected boolean isDeleted(Map source)
-	{
+	protected boolean isDeleted(Map source) {
 		Map status = (Map) source.get("emrecordstatus");
-		if (status != null)
-		{
+		if (status != null) {
 			Object deleted = status.get("recorddeleted");
-			if (deleted != null && Boolean.parseBoolean(String.valueOf(deleted)))
-			{
+			if (deleted != null && Boolean.parseBoolean(String.valueOf(deleted))) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	protected void copyData(Data data, Data typed)
-	{
+	protected void copyData(Data data, Data typed) {
 		typed.setId(data.getId());
 		typed.setName(data.getName());
 		typed.setSourcePath(data.getSourcePath());
@@ -3942,58 +3371,42 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// }
 	}
 
-	
-	protected void populateKeywords(StringBuffer inFullDesc, Data inData, PropertyDetails inDetails)
-	{
+	protected void populateKeywords(StringBuffer inFullDesc, Data inData, PropertyDetails inDetails) {
 		Collection keywordFields = inDetails.findKeywordProperties();
-		for (Iterator iter = keywordFields.iterator(); iter.hasNext();)
-		{
+		for (Iterator iter = keywordFields.iterator(); iter.hasNext();) {
 			PropertyDetail det = (PropertyDetail) iter.next();
-			if (det.isList())
-			{
+			if (det.isList()) {
 				Object prop = inData.getValue(det.getId());
-				if (prop != null)
-				{
-					if (prop instanceof Collection)
-					{
+				if (prop != null) {
+					if (prop instanceof Collection) {
 						Collection values = (Collection) prop;
-						for (Iterator iterator = values.iterator(); iterator.hasNext();)
-						{
+						for (Iterator iterator = values.iterator(); iterator.hasNext();) {
 							Object object = (Object) iterator.next();
-							if (object instanceof String)
-							{
-								Data data = (Data) getSearcherManager().getCachedData(det.getListCatalogId(), det.getListId(), (String) object);
-								if (data != null && data.getName() != null)
-								{
+							if (object instanceof String) {
+								Data data = (Data) getSearcherManager().getCachedData(det.getListCatalogId(),
+										det.getListId(), (String) object);
+								if (data != null && data.getName() != null) {
 									inFullDesc.append(data.getName());
 								}
-							}
-							else
-							{
+							} else {
 								inFullDesc.append(String.valueOf(object));
 							}
 							inFullDesc.append("|");
 						}
-					}
-					else if (prop instanceof String)
-					{
-						Data data = (Data) getSearcherManager().getCachedData(det.getListCatalogId(), det.getListId(), (String) prop);
-						if (data != null && data.getName() != null)
-						{
+					} else if (prop instanceof String) {
+						Data data = (Data) getSearcherManager().getCachedData(det.getListCatalogId(), det.getListId(),
+								(String) prop);
+						if (data != null && data.getName() != null) {
 							inFullDesc.append(data.getName());
 							inFullDesc.append("|");
 						}
 					}
 				}
-			}
-			else
-			{
-				if (det.isMultiLanguage())
-				{
+			} else {
+				if (det.isMultiLanguage()) {
 
 					Object value = inData.getValue(det.getId());
-					if (value instanceof String)
-					{
+					if (value instanceof String) {
 						String target = (String) value;
 						LanguageMap map = new LanguageMap();
 						map.setText("en", target);
@@ -4002,20 +3415,17 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 					LanguageMap map = (LanguageMap) value;
 
-					if (map != null)
-					{
+					if (map != null) {
 						HitTracker locales = getSearcherManager().getList(getCatalogId(), "locale");
 
-						for (Iterator iterator2 = locales.iterator(); iterator2.hasNext();)
-						{
+						for (Iterator iterator2 = locales.iterator(); iterator2.hasNext();) {
 							Data locale = (Data) iterator2.next();
 							String id = locale.getId();
 							String localeval = map.getText(id); // get a
 																// location
 																// specific
 																// value
-							if (localeval != null)
-							{
+							if (localeval != null) {
 
 								inFullDesc.append(localeval);
 								inFullDesc.append("|");
@@ -4024,76 +3434,58 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						}
 					}
 				}
-				
+
 				else if (det.isDataType("object")) {
 					Object values = inData.getValue(det.getId());
-					if (values != null && values instanceof String)
-					{
-						
+					if (values != null && values instanceof String) {
+
 					}
-				}	
-					
-				
-				else if (det.isDataType("objectarray") || det.isDataType("nested"))
-				{
+				}
+
+				else if (det.isDataType("objectarray") || det.isDataType("nested")) {
 					Object values = inData.getValue(det.getId());
-					if (values != null && values instanceof String)
-					{
-						//Spreadsheet import
+					if (values != null && values instanceof String) {
+						// Spreadsheet import
 						inFullDesc.append(values);
 						inFullDesc.append("|");
 						return;
 					}
 
-					if (values != null && det.getObjectDetails() != null)
-					{
+					if (values != null && det.getObjectDetails() != null) {
 						Collection maps = (Collection) values;
-						for (Iterator iterator = maps.iterator(); iterator.hasNext();)
-						{
+						for (Iterator iterator = maps.iterator(); iterator.hasNext();) {
 							Map map = (Map) iterator.next();
-							for (Iterator miterator = det.getObjectDetails().iterator(); miterator.hasNext();)
-							{
+							for (Iterator miterator = det.getObjectDetails().iterator(); miterator.hasNext();) {
 								PropertyDetail detal = (PropertyDetail) miterator.next();
-								if (detal.isKeyword())
-								{
+								if (detal.isKeyword()) {
 									Object val = map.get(detal.getId());
-									if (val != null)
-									{
-										if (detal.isMultiValue())
-										{
+									if (val != null) {
+										if (detal.isMultiValue()) {
 											Collection colvalues = null;
-											if (val instanceof Collection)
-											{
+											if (val instanceof Collection) {
 												colvalues = (Collection) val;
-											}
-											else
-											{
+											} else {
 												colvalues = new ArrayList();
 												colvalues.add(val);
 											}
-											//Could  be an collection
-											for (Iterator iterator2 = colvalues.iterator(); iterator2.hasNext();)
-											{
+											// Could be an collection
+											for (Iterator iterator2 = colvalues.iterator(); iterator2.hasNext();) {
 												String string = (String) String.valueOf(iterator2.next());
 
-												if (detal.isList())
-												{
-													Data data = (Data) getSearcherManager().getCachedData(detal.getListCatalogId(), detal.getListId(), (String) string);
-													if (data != null && data.getName() != null)
-													{
+												if (detal.isList()) {
+													Data data = (Data) getSearcherManager().getCachedData(
+															detal.getListCatalogId(), detal.getListId(),
+															(String) string);
+													if (data != null && data.getName() != null) {
 														inFullDesc.append(data.getName());
 														inFullDesc.append(' ');
 													}
-												}
-												else
-												{
+												} else {
 													inFullDesc.append(string);
 													inFullDesc.append(' ');
 												}
 											}
-										}
-										else
-										{
+										} else {
 											inFullDesc.append(String.valueOf(val));
 											inFullDesc.append(' ');
 										}
@@ -4103,27 +3495,24 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 							}
 						}
 					}
-				}
-				else if (det.isMultiValue()) //But not a list
+				} else if (det.isMultiValue()) // But not a list
 				{
 					Collection values = inData.getValues(det.getId());
-					if (values != null && !values.isEmpty())
-					{
-						for (Iterator iterator = values.iterator(); iterator.hasNext();)
-						{
+					if (values != null && !values.isEmpty()) {
+						for (Iterator iterator = values.iterator(); iterator.hasNext();) {
 							String oneval = (String) iterator.next();
 							inFullDesc.append(oneval);
 							inFullDesc.append("|");
 						}
 					}
-				}
-				else
-				{
-					//Skip dates and lists? if( detail.isList() || detail.isDate() || detail.isMultiLanguage() || detail.isDataType("objectarray") || detail.isDataType("nested") || detail.getId().equals("description") )   //				else if (det.isDataType("objectarray") || det.isDataType("nested"))
-					
+				} else {
+					// Skip dates and lists? if( detail.isList() || detail.isDate() ||
+					// detail.isMultiLanguage() || detail.isDataType("objectarray") ||
+					// detail.isDataType("nested") || detail.getId().equals("description") ) // else
+					// if (det.isDataType("objectarray") || det.isDataType("nested"))
+
 					String val = inData.get(det.getId());
-					if (val != null)
-					{
+					if (val != null) {
 						inFullDesc.append(val);
 						inFullDesc.append("|");
 					}
@@ -4131,31 +3520,30 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 		}
 	}
-	public void reIndexAll() throws OpenEditException
-	{
+
+	public void reIndexAll() throws OpenEditException {
 		// there is not reindex step since it is only in memory
-		if (isReIndexing())
-		{
+		if (isReIndexing()) {
 			return;
 		}
-		synchronized (this)
-		{
-			try
-			{
+		synchronized (this) {
+			try {
 				setReIndexing(true);
 				setOptimizeReindex(false);
 
 				// putMappings(); //We can only try to put mapping. If this
 				// failes then they will
-				
-				//TODO:  This is really bad code - this should be a ElasticListSearcher if it needs this, or we need some kind of
-				//loadDefaults - I feel like if I specifically called my searcher a dataSearcher it would still potentially index old junk
-				
+
+				// TODO: This is really bad code - this should be a ElasticListSearcher if it
+				// needs this, or we need some kind of
+				// loadDefaults - I feel like if I specifically called my searcher a
+				// dataSearcher it would still potentially index old junk
+
 				HitTracker allhits = (ElasticHitTracker) getAllHits();
-				if (allhits.isEmpty())
-				{
-					//get them from XML as a backup
-					XmlSearcher fieldXmlSearcher = (XmlSearcher) getModuleManager().getBean(getCatalogId(), "xmlSearcher");
+				if (allhits.isEmpty()) {
+					// get them from XML as a backup
+					XmlSearcher fieldXmlSearcher = (XmlSearcher) getModuleManager().getBean(getCatalogId(),
+							"xmlSearcher");
 					fieldXmlSearcher.setCatalogId(getCatalogId());
 					fieldXmlSearcher.setSearchType(getSearchType());
 					fieldXmlSearcher.setPropertyDetailsArchive(getPropertyDetailsArchive());
@@ -4164,35 +3552,29 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				}
 				allhits.enableBulkOperations();
 				ArrayList tosave = new ArrayList();
-				for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
-				{
+				for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();) {
 					Data hit = (Data) iterator2.next();
-					if (hit.getId() == null || hit.getId().trim().isEmpty())
-					{
+					if (hit.getId() == null || hit.getId().trim().isEmpty()) {
 						continue;
 					}
 					Data real = (Data) loadData(hit);
 
 					tosave.add(real);
-					if (tosave.size() > 1000)
-					{
+					if (tosave.size() > 1000) {
 						updateIndex(tosave, null);
 						tosave.clear();
 					}
 				}
 				updateIndex(tosave, null);
-				if (allhits instanceof ElasticHitTracker)
-				{
-					//Save memory
+				if (allhits instanceof ElasticHitTracker) {
+					// Save memory
 					ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
 					clearScrollRequest.addScrollId(((ElasticHitTracker) allhits).getLastScrollId());
 					getClient().clearScroll(clearScrollRequest).actionGet();
 				}
-				//System.gc();
+				// System.gc();
 
-			}
-			finally
-			{
+			} finally {
 				setReIndexing(false);
 				setOptimizeReindex(true);
 			}
@@ -4200,8 +3582,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	}
 
 	@Override
-	public void restoreSettings()
-	{
+	public void restoreSettings() {
 		getPropertyDetailsArchive().clearCustomSettings(getSearchType());
 		// deleteOldMapping(); //you will lose your data!
 		// reIndexAll();
@@ -4209,30 +3590,23 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	}
 
 	@Override
-	public void reloadSettings()
-	{
+	public void reloadSettings() {
 		// deleteOldMapping(); //you will lose your data!
 		// reIndexAll();
 		putMappings();
 
 	}
 
-	public void updateData(Map inSource, Data inData)
-	{
-		if (inData instanceof SearchDataEnabled)
-		{
+	public void updateData(Map inSource, Data inData) {
+		if (inData instanceof SearchDataEnabled) {
 			SearchDataEnabled data = (SearchDataEnabled) inData;
 			data.setSearchData(inSource);
-		}
-		else
-		{
+		} else {
 
-			for (Iterator iterator = inSource.keySet().iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = inSource.keySet().iterator(); iterator.hasNext();) {
 				String key = (String) iterator.next();
 				Object object = inSource.get(key);
-				if (key.equals("name_int") && object != null && object instanceof HashMap)
-				{
+				if (key.equals("name_int") && object != null && object instanceof HashMap) {
 					object = new LanguageMap((Map) object);
 				}
 				inData.setValue(key, object);
@@ -4241,46 +3615,40 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 	}
 
-	public boolean tableExists()
-	{
-		boolean used = getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { toId(getCatalogId()) }, getSearchType())).actionGet().isExists();
+	public boolean tableExists() {
+		boolean used = getClient().admin().indices()
+				.typesExists(new TypesExistsRequest(new String[] { toId(getCatalogId()) }, getSearchType())).actionGet()
+				.isExists();
 		return used;
 
 	}
 
 	@Override
-	public void reindexInternal() throws OpenEditException
-	{
-		//Manual Reindex
-		
+	public void reindexInternal() throws OpenEditException {
+		// Manual Reindex
+
 		HitTracker allhits = getAllIndexed();
 		setReIndexing(true);
-		try
-		{
+		try {
 			int SIZE = 3000;
 
 			allhits.enableBulkOperations();
 			allhits.setHitsPerPage(SIZE);
 			ArrayList tosave = new ArrayList();
-			for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
-			{
+			for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();) {
 				Data hit = (Data) iterator2.next();
-				if (hit.getId() == null || hit.getId().trim().isEmpty())
-				{
+				if (hit.getId() == null || hit.getId().trim().isEmpty()) {
 					continue;
 				}
 				tosave.add(hit);
-				if (tosave.size() > SIZE)
-				{
+				if (tosave.size() > SIZE) {
 					updateInBatch(tosave, null);
 
 					tosave.clear();
 				}
 			}
 			updateInBatch(tosave, null);
-		}
-		finally
-		{
+		} finally {
 			setReIndexing(false);
 		}
 
@@ -4289,35 +3657,31 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	/**
 	 * @override
 	 */
-	public String getConfigValue(String inKey)
-	{
+	public String getConfigValue(String inKey) {
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		return archive.getCatalogSettingValue(inKey);
 	}
 
-	public String getExistingMapping()
-	{
+	public String getExistingMapping() {
 		String cat = getCatalogId().replace("/", "_");
 		String indexid = getElasticNodeManager().getIndexNameFromAliasName(cat);
 
-		GetMappingsResponse getMappingsResponse = getElasticNodeManager().getClient().admin().indices().getMappings(new GetMappingsRequest().indices(indexid)).actionGet();
-		ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexToMappings = getMappingsResponse.getMappings();
+		GetMappingsResponse getMappingsResponse = getElasticNodeManager().getClient().admin().indices()
+				.getMappings(new GetMappingsRequest().indices(indexid)).actionGet();
+		ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexToMappings = getMappingsResponse
+				.getMappings();
 
 		MappingMetaData actualMapping = indexToMappings.get(indexid).get(getSearchType());
-		if (actualMapping != null)
-		{
+		if (actualMapping != null) {
 			String jsonString;
-			try
-			{
+			try {
 				jsonString = actualMapping.source().string();
-				//				JSONObject config = (JSONObject) new JSONParser().parse(returned);
+				// JSONObject config = (JSONObject) new JSONParser().parse(returned);
 				jsonString = JsonOutput.prettyPrint(jsonString);
-				//				JSONObject json = new JSONObject(jsonString); // Convert text to object
-				//				SjsonString = json.toString(4);
+				// JSONObject json = new JSONObject(jsonString); // Convert text to object
+				// SjsonString = json.toString(4);
 				return jsonString;
-			}
-			catch (IOException e)
-			{
+			} catch (IOException e) {
 				new OpenEditException(e);
 			}
 
@@ -4325,33 +3689,24 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		return null;
 	}
 
-	protected Map checkTypes(Map inData)
-	{
-		for (Iterator iterator = inData.keySet().iterator(); iterator.hasNext();)
-		{
+	protected Map checkTypes(Map inData) {
+		for (Iterator iterator = inData.keySet().iterator(); iterator.hasNext();) {
 			String type = (String) iterator.next();
 			PropertyDetail detail = getDetail(type);
-			if (detail != null)
-			{
-				if (detail.isDataType("objectarray") || detail.isDataType("nested"))
-				{
+			if (detail != null) {
+				if (detail.isDataType("objectarray") || detail.isDataType("nested")) {
 					Object childdata = inData.get(type);
-					if (childdata instanceof List)
-					{
+					if (childdata instanceof List) {
 						Collection childdatalist = (List) childdata;
-						for (Iterator iterator2 = childdatalist.iterator(); iterator2.hasNext();)
-						{
+						for (Iterator iterator2 = childdatalist.iterator(); iterator2.hasNext();) {
 							Map map = (Map) iterator2.next();
-							for (Iterator iterator3 = detail.getObjectDetails().iterator(); iterator3.hasNext();)
-							{
+							for (Iterator iterator3 = detail.getObjectDetails().iterator(); iterator3.hasNext();) {
 								PropertyDetail childdetail = (PropertyDetail) iterator3.next();
 								fixTypes(map, childdetail);
 							}
 						}
 					}
-				}
-				else
-				{
+				} else {
 					fixTypes(inData, detail);
 				}
 			}
@@ -4359,19 +3714,14 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		return inData;
 	}
 
-	protected void fixTypes(Map inFields, PropertyDetail detail)
-	{
-		if (detail.isDataType("long"))
-		{
+	protected void fixTypes(Map inFields, PropertyDetail detail) {
+		if (detail.isDataType("long")) {
 			Object num = inFields.get(detail.getId());
-			if (num != null)
-			{
-				if (num instanceof String)
-				{
+			if (num != null) {
+				if (num instanceof String) {
 					num = Long.parseLong((String) num);
 				}
-				if (num instanceof Integer)
-				{
+				if (num instanceof Integer) {
 					num = ((Integer) num).longValue();
 				}
 			}
@@ -4379,83 +3729,65 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 	}
 
-	public void saveJson(Collection inJsonArray)
-	{
+	public void saveJson(Collection inJsonArray) {
 		BulkProcessor processor = getElasticNodeManager().getBulkProcessor();
 
-		try
-		{
-			for (Iterator iterator = inJsonArray.iterator(); iterator.hasNext();)
-			{
+		try {
+			for (Iterator iterator = inJsonArray.iterator(); iterator.hasNext();) {
 				JSONObject json = (JSONObject) iterator.next();
 
 				IndexRequest req = Requests.indexRequest(getElasticIndexId()).type(getSearchType());
 				req.source(json.toJSONString());
-				//log.info("savinng " + json);
-				//Parse the json and save it with id
+				// log.info("savinng " + json);
+				// Parse the json and save it with id
 
 				String id = (String) json.get("id");
-				if (id != null)
-				{
+				if (id != null) {
 					req.id(id);
 				}
 				processor.add(req);
 			}
-			//processor.awaitClose(5, TimeUnit.MINUTES);  do in flushBulk
-		}
-		catch (Exception e)
-		{
+			// processor.awaitClose(5, TimeUnit.MINUTES); do in flushBulk
+		} catch (Exception e) {
 			throw new OpenEditException("Errors saving bulk data ", e);
-		}
-		finally
-		{
+		} finally {
 			getElasticNodeManager().flushBulk();
 		}
 	}
 
-	public void saveJson(String inID, JSONObject json)
-	{
+	public void saveJson(String inID, JSONObject json) {
 
 		BulkProcessor processor = getElasticNodeManager().getBulkProcessor();
-		
-		try
-		{
+
+		try {
 			IndexRequest req = Requests.indexRequest(getElasticIndexId()).type(getSearchType());
 			req.source(json.toJSONString());
 			req.id(inID);
 
 			processor.add(req);
-			//processor.awaitClose(5, TimeUnit.MINUTES);  do in flushBulk
-		}
-		catch (Exception e)
-		{
+			// processor.awaitClose(5, TimeUnit.MINUTES); do in flushBulk
+		} catch (Exception e) {
 			throw new OpenEditException("Errors saving bulk data ", e);
-		}
-		finally
-		{
+		} finally {
 			getElasticNodeManager().flushBulk();
-			
+
 		}
-		
+
 		getCacheManager().remove("data" + getSearchType(), inID);
 
 	}
 
-	public HitTracker getAllIndexed()
-	{
+	public HitTracker getAllIndexed() {
 		SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
 		search.setTypes(getSearchType());
 		search.setRequestCache(true);
 		QueryBuilder findall = QueryBuilders.matchAllQuery();
 
-		//TODO: Dont include deleted...
-		if (getDetail("emrecordstatus") == null)
-		{
+		// TODO: Dont include deleted...
+		if (getDetail("emrecordstatus") == null) {
 			search.setQuery(findall);
-		}
-		else
-		{
+		} else {
 			BoolQueryBuilder bool = QueryBuilders.boolQuery();
 			TermQueryBuilder deleted = QueryBuilders.termQuery("emrecordstatus.recorddeleted", true);
 			bool.must(findall);
@@ -4466,95 +3798,86 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, findall, 1000);
 		hits.enableBulkOperations();
 		hits.setSearcherManager(getSearcherManager());
-		//String inIndexId = toId(getCatalogId());
+		// String inIndexId = toId(getCatalogId());
 		hits.setIndexId(getIndexId());
 		hits.setCatalogId(getCatalogId());
 		return hits;
 	}
 
 	@Override
-	public String getFulltext(Data inSearchHitData)
-	{
+	public String getFulltext(Data inSearchHitData) {
 		return getFulltext(inSearchHitData, getSearchType());
 	}
 
-	public String getFulltext(Data inSearchHitData, String type)
-	{
+	public String getFulltext(Data inSearchHitData, String type) {
 		StringBuffer out = new StringBuffer();
 		populateFullText(inSearchHitData, type, out);
 		return out.toString();
 	}
 
-	protected void populateFullText(Data data, String datatype, StringBuffer fullDesc)
-	{
-		if (isIncludeFullText() && Boolean.parseBoolean(data.get("hasfulltext")))
-		{
-			//Legacy support 
-			if (datatype.equals("asset"))
-			{
-				datatype = "assets"; //TODO: Move everyone over
+	protected void populateFullText(Data data, String datatype, StringBuffer fullDesc) {
+		if (isIncludeFullText() && Boolean.parseBoolean(data.get("hasfulltext"))) {
+			// Legacy support
+			if (datatype.equals("asset")) {
+				datatype = "assets"; // TODO: Move everyone over
 			}
 
-			String path = "/WEB-INF/data/" + getCatalogId() + "/" + datatype + "/" + data.getSourcePath() + "/fulltext.txt";
+			String path = "/WEB-INF/data/" + getCatalogId() + "/" + datatype + "/" + data.getSourcePath()
+					+ "/fulltext.txt";
 			ContentItem item = getPageManager().getRepository().getStub(path);
-			if (item.exists())
-			{
+			if (item.exists()) {
 				Reader input = null;
-				try
-				{
+				try {
 					input = new InputStreamReader(item.getInputStream(), "UTF-8");
 					StringWriter output = new StringWriter();
 					getFiller().setMaxSize(getFullTextCap());
 					getFiller().fill(input, output);
 					fullDesc.append(output.toString());
-				}
-				catch (IOException ex)
-				{
+				} catch (IOException ex) {
 					log.error(ex);
-				}
-				finally
-				{
+				} finally {
 					getFiller().close(input);
 				}
 			}
 		}
 	}
 
-	protected void addAggregations(WebPageRequest inPageRequest, SearchQuery inSearch)
-	{
+	protected void addAggregations(WebPageRequest inPageRequest, SearchQuery inSearch) {
 
 		String aggs = inPageRequest.findValue("aggs");
-		if (aggs == null)
-		{
+		if (aggs == null) {
 			aggs = (String) inPageRequest.getPageValue("aggs");
 		}
-		if (aggs != null)
-		{
+		if (aggs != null) {
 			ElasticSearchQuery search = (ElasticSearchQuery) inSearch;
 			search.setAggregationJson(aggs);
 		}
 	}
 
-	//	protected void assignCategoryPermissions(Set inCategories, Data inAsset) {
-	//	   //Search 
-	//		
-	//		HashSet viewusers = new HashSet();
-	//	    HashSet viewgroups = new HashSet();
-	//	    HashSet viewroles = new HashSet();
+	// protected void assignCategoryPermissions(Set inCategories, Data inAsset) {
+	// //Search
 	//
-	//	    
-	//	    
-	//	    for (Iterator iterator = inAsset.getCategories().iterator(); iterator.hasNext();) {
-	//	        Category cat = (Category) iterator.next();
+	// HashSet viewusers = new HashSet();
+	// HashSet viewgroups = new HashSet();
+	// HashSet viewroles = new HashSet();
 	//
-	//	        viewusers.addAll(cat.findValues("viewusers") != null ? cat.findValues("viewusers") : Collections.emptySet());
-	//	        viewgroups.addAll(cat.findValues("viewgroups") != null ? cat.findValues("viewgroups") : Collections.emptySet());
-	//	        viewroles.addAll(cat.findValues("viewroles") != null ? cat.findValues("viewroles") : Collections.emptySet());
-	//	    }
 	//
-	//	    inAsset.setValue("viewusers", viewusers);
-	//	    inAsset.setValue("viewgroups", viewgroups);
-	//	    inAsset.setValue("viewroles", viewroles);
-	//	}
+	//
+	// for (Iterator iterator = inAsset.getCategories().iterator();
+	// iterator.hasNext();) {
+	// Category cat = (Category) iterator.next();
+	//
+	// viewusers.addAll(cat.findValues("viewusers") != null ?
+	// cat.findValues("viewusers") : Collections.emptySet());
+	// viewgroups.addAll(cat.findValues("viewgroups") != null ?
+	// cat.findValues("viewgroups") : Collections.emptySet());
+	// viewroles.addAll(cat.findValues("viewroles") != null ?
+	// cat.findValues("viewroles") : Collections.emptySet());
+	// }
+	//
+	// inAsset.setValue("viewusers", viewusers);
+	// inAsset.setValue("viewgroups", viewgroups);
+	// inAsset.setValue("viewroles", viewroles);
+	// }
 
 }

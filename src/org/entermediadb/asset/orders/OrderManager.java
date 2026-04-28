@@ -15,8 +15,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 
-public interface OrderManager
-{
+public interface OrderManager {
 
 	EventManager getEventManager();
 
@@ -32,16 +31,16 @@ public interface OrderManager
 
 	HitTracker findDownloadOrdersForUser(WebPageRequest inReq, String inCatlogId, User inUser);
 
-	
 	HitTracker findUnshownDownloadOrdersForUser(WebPageRequest inReq, String inCatlogId, User inUser);
 
 	HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid, Order inOrder);
 
 	HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid, String inOrderId);
-	
+
 	HitTracker findApprovedOrderItems(WebPageRequest inReq, String inCatalogid, String inOrderId, String inStatus);
 
-	//public Data createPublishQueue(MediaArchive archive, User inUser, Asset inAsset, String inPresetId, String inPublishDestination);
+	// public Data createPublishQueue(MediaArchive archive, User inUser, Asset
+	// inAsset, String inPresetId, String inPublishDestination);
 
 	/**
 	 * @deprecated Use {@link WebPageRequest}
@@ -52,7 +51,6 @@ public interface OrderManager
 	HitTracker findOrderAssets(String inCatalogid, String inOrderId);
 
 	HitTracker findAssets(WebPageRequest inReq, String inCatalogid, Order inOrder);
-
 
 	Order loadOrder(String catalogid, String orderid);
 
@@ -70,11 +68,14 @@ public interface OrderManager
 
 	void placeOrder(WebPageRequest inReq, MediaArchive inArchive, Order inOrder, boolean inResetId);
 
-	//void saveOrderWithHistory(String inCatalogId, User inUser, Order inOrder, OrderHistory inHistory);
+	// void saveOrderWithHistory(String inCatalogId, User inUser, Order inOrder,
+	// OrderHistory inHistory);
 
-	//OrderHistory createNewHistory(String inCatId, Order inOrder, User inUser, String inStatus);
+	// OrderHistory createNewHistory(String inCatId, Order inOrder, User inUser,
+	// String inStatus);
 
-	List<String> addConversionAndPublishRequest(WebPageRequest inReq, Order order, MediaArchive archive, Map<String, String> properties, User inUser);
+	List<String> addConversionAndPublishRequest(WebPageRequest inReq, Order order, MediaArchive archive,
+			Map<String, String> properties, User inUser);
 
 	String getPresetForOrderItem(String inCataId, Data inOrderItem);
 
@@ -84,7 +85,8 @@ public interface OrderManager
 
 	void updatePendingOrders(MediaArchive archive);
 
-	int addItemsToBasket(WebPageRequest inReq, MediaArchive inArchive, Order inOrder, Collection inSelectedHits, Map inProps);
+	int addItemsToBasket(WebPageRequest inReq, MediaArchive inArchive, Order inOrder, Collection inSelectedHits,
+			Map inProps);
 
 	boolean isAssetInOrder(String inCatId, Order inOrder, String inAssetId);
 
@@ -95,22 +97,22 @@ public interface OrderManager
 	void removeMissingAssets(WebPageRequest inReq, MediaArchive archive, Order basket, Collection items);
 
 	void toggleItemInOrder(MediaArchive inArchive, Order inBasket, Asset inAsset);
-	
-	void sendEmailForApproval(String inCatalogId, MediaArchive inArchive, UserManager userManager, String inAppId, Order inOrder);
+
+	void sendEmailForApproval(String inCatalogId, MediaArchive inArchive, UserManager userManager, String inAppId,
+			Order inOrder);
 
 	Order findOrderFromAssets(String inCatalogId, User inUser, List inAssetids);
 
 	void updateReadyStatus(MediaArchive archive, Order order);
 
 	boolean hasPendingDownloadForUser(WebPageRequest inReq, String inCatalogid, User inOwner);
-	
+
 	public Collection<OrderDownload> findDownloadOrdersForUser(WebPageRequest inReq, User inUser);
-	
+
 	public HitTracker findPendingCheckoutOrders(WebPageRequest inReq, String inCatlogId);
 
 	void changeStatus(Order inOrder, String inStatus, String downloadedstatus);
 
 	void saveOrder(MediaArchive inArchive, Order inOrder);
 
-	
 }

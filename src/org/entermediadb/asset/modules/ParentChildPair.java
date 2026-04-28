@@ -2,25 +2,25 @@ package org.entermediadb.asset.modules;
 
 import org.openedit.Data;
 
-public class ParentChildPair
-{
+public class ParentChildPair {
 	String fieldParentModuleId;
-	public String getParentModuleId()
-	{
+
+	public String getParentModuleId() {
 		return fieldParentModuleId;
 	}
-	public void setParentModuleId(String inParentModuleId)
-	{
+
+	public void setParentModuleId(String inParentModuleId) {
 		fieldParentModuleId = inParentModuleId;
 	}
-	public Data getChildModule()
-	{
+
+	public Data getChildModule() {
 		return fieldChildModule;
 	}
-	public void setChildModule(Data inChildModule)
-	{
+
+	public void setChildModule(Data inChildModule) {
 		fieldChildModule = inChildModule;
 	}
+
 	Data fieldChildModule;
-	
+
 }

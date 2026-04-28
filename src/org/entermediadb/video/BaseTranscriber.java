@@ -9,7 +9,6 @@ public class BaseTranscriber implements CatalogEnabled {
 	protected ModuleManager fieldModuleManager;
 	protected MediaArchive fieldMediaArchive;
 
-
 	public MediaArchive getMediaArchive() {
 		if (fieldMediaArchive == null) {
 			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");

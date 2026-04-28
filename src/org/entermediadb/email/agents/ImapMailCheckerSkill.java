@@ -11,13 +11,11 @@ import org.entermediadb.email.ImapMailbox;
 import org.entermediadb.email.ImapMessage;
 import org.json.simple.JSONObject;
 
-public class ImapMailCheckerSkill extends ToolsCallingSkill
-{
+public class ImapMailCheckerSkill extends ToolsCallingSkill {
   private static final Log log = LogFactory.getLog(ImapMailCheckerSkill.class);
 
   @Override
-  public void process(AgentContext inContext)
-  {
+  public void process(AgentContext inContext) {
     AgentEnabled currentEnabled = inContext.getCurrentAgentEnable();
 
     String server = (String) inContext.getContextValue("mailserver");
@@ -30,8 +28,7 @@ public class ImapMailCheckerSkill extends ToolsCallingSkill
 
     log.info(messages);
 
-    if (messages != null && messages.size() > 0)
-    {
+    if (messages != null && messages.size() > 0) {
       inContext.put("newmessages", messages);
 
       inContext.info("Found " + messages.size() + " new messages");
@@ -39,10 +36,8 @@ public class ImapMailCheckerSkill extends ToolsCallingSkill
       AgentContext subContext = createAgentContext(inContext, currentEnabled);
 
       String agentid = currentEnabled.getAgentData().getId();
-      try
-      {
-        for (ImapMessage message : messages)
-        {
+      try {
+        for (ImapMessage message : messages) {
           String fromString = message.getFrom();
           String subjectString = message.getSubject();
           String contentString = message.getBody();
@@ -57,20 +52,17 @@ public class ImapMailCheckerSkill extends ToolsCallingSkill
           currentEnabled.setAgentParameterValues(params);
 
           subContext.put("agentid", agentid);
-          subContext.put("agentoutput", "From: " + fromString + "\\nSubject: " + subjectString + "\\nMessage: " + contentString + "\\nSentDate: " + sentDate);
+          subContext.put("agentoutput", "From: " + fromString + "\\nSubject: " + subjectString + "\\nMessage: "
+              + contentString + "\\nSentDate: " + sentDate);
 
           super.process(subContext);
         }
 
         mailbox.moveToInProgress(messages);
-      }
-      catch (Exception e)
-      {
+      } catch (Exception e) {
         inContext.error("Error processing email messages: " + e.getMessage());
       }
-    }
-    else
-    {
+    } else {
       inContext.info("No messages found");
       super.process(inContext);
     }

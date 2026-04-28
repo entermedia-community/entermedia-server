@@ -6,10 +6,9 @@ public class FileSearchQuery extends SearchQuery {
 
 	protected boolean fieldRecursive;
 	protected boolean fieldIncludeFallback;
-    protected String fieldRootFolder;
-    protected boolean includeVersions = false;
-    
-    
+	protected String fieldRootFolder;
+	protected boolean includeVersions = false;
+
 	public boolean isIncludeVersions() {
 		return includeVersions;
 	}
@@ -41,7 +40,5 @@ public class FileSearchQuery extends SearchQuery {
 	public void setRecursive(boolean fieldRecursive) {
 		this.fieldRecursive = fieldRecursive;
 	}
-	
-	
-	
+
 }

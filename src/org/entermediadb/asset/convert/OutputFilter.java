@@ -1,7 +1,6 @@
 package org.entermediadb.asset.convert;
 
-public interface OutputFilter
-{
+public interface OutputFilter {
 	ConvertResult filterOutput(ConvertInstructions inStructions);
 
 }

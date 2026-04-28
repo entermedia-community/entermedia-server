@@ -13,32 +13,32 @@ public class Escaping {
 
     private static final Pattern BACKSLASH_OR_AMP = Pattern.compile("[\\\\&]");
 
-    private static final Pattern ENTITY_OR_ESCAPED_CHAR =
-            Pattern.compile("\\\\" + ESCAPABLE + '|' + ENTITY, Pattern.CASE_INSENSITIVE);
+    private static final Pattern ENTITY_OR_ESCAPED_CHAR = Pattern.compile("\\\\" + ESCAPABLE + '|' + ENTITY,
+            Pattern.CASE_INSENSITIVE);
 
-    // From RFC 3986 (see "reserved", "unreserved") except don't escape '[' or ']' to be compatible with JS encodeURI
-    private static final Pattern ESCAPE_IN_URI =
-            Pattern.compile("(%[a-fA-F0-9]{0,2}|[^:/?#@!$&'()*+,;=a-zA-Z0-9\\-._~])");
+    // From RFC 3986 (see "reserved", "unreserved") except don't escape '[' or ']'
+    // to be compatible with JS encodeURI
+    private static final Pattern ESCAPE_IN_URI = Pattern
+            .compile("(%[a-fA-F0-9]{0,2}|[^:/?#@!$&'()*+,;=a-zA-Z0-9\\-._~])");
 
-    private static final char[] HEX_DIGITS =
-            new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    private static final char[] HEX_DIGITS = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B',
+            'C', 'D', 'E', 'F' };
 
     private static final Pattern WHITESPACE = Pattern.compile("[ \t\r\n]+");
 
     private static Html5Entities entities = null;
-    
+
     private static final Replacer UNESCAPE_REPLACER = new Replacer() {
         @Override
         public void replace(String input, StringBuilder sb) {
             if (input.charAt(0) == '\\') {
                 sb.append(input, 1, input.length());
             } else {
-            	
-            	if( entities == null)
-            	{
-            		entities = new Html5Entities();
-            	}
-            	
+
+                if (entities == null) {
+                    entities = new Html5Entities();
+                }
+
                 sb.append(entities.entityToString(input));
             }
         }
@@ -71,8 +71,7 @@ public class Escaping {
         // Avoid building a new string in the majority of cases (nothing to escape)
         StringBuilder sb = null;
 
-        loop:
-        for (int i = 0; i < input.length(); i++) {
+        loop: for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
             String replacement;
             switch (c) {
@@ -122,11 +121,13 @@ public class Escaping {
     public static String normalizeLabelContent(String input) {
         String trimmed = input.trim();
 
-        // This is necessary to correctly case fold "\u1E9E" (LATIN CAPITAL LETTER SHARP S) to "SS":
-        // "\u1E9E".toLowerCase(Locale.ROOT)  -> "\u00DF" (LATIN SMALL LETTER SHARP S)
-        // "\u00DF".toUpperCase(Locale.ROOT)  -> "SS"
-        // Note that doing upper first (or only upper without lower) wouldn't work because:
-        // "\u1E9E".toUpperCase(Locale.ROOT)  -> "\u1E9E"
+        // This is necessary to correctly case fold "\u1E9E" (LATIN CAPITAL LETTER SHARP
+        // S) to "SS":
+        // "\u1E9E".toLowerCase(Locale.ROOT) -> "\u00DF" (LATIN SMALL LETTER SHARP S)
+        // "\u00DF".toUpperCase(Locale.ROOT) -> "SS"
+        // Note that doing upper first (or only upper without lower) wouldn't work
+        // because:
+        // "\u1E9E".toUpperCase(Locale.ROOT) -> "\u1E9E"
         String caseFolded = trimmed.toLowerCase(Locale.ROOT).toUpperCase(Locale.ROOT);
 
         return WHITESPACE.matcher(caseFolded).replaceAll(" ");

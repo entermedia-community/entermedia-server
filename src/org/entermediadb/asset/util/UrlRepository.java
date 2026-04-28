@@ -17,153 +17,123 @@ import org.openedit.repository.InputStreamItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
 
-public class UrlRepository extends  BaseRepository
-{
+public class UrlRepository extends BaseRepository {
 	protected HttpClient fieldHttpClient;
 
-	public HttpClient getHttpClient()
-	{
-		if (fieldHttpClient == null)
-		{
-			  RequestConfig globalConfig = RequestConfig.custom()
-		                .setCookieSpec(CookieSpecs.DEFAULT)
-		                .build();
-			  fieldHttpClient = HttpClients.custom()
-		                .setDefaultRequestConfig(globalConfig)
-		                .build();
+	public HttpClient getHttpClient() {
+		if (fieldHttpClient == null) {
+			RequestConfig globalConfig = RequestConfig.custom()
+					.setCookieSpec(CookieSpecs.DEFAULT)
+					.build();
+			fieldHttpClient = HttpClients.custom()
+					.setDefaultRequestConfig(globalConfig)
+					.build();
 		}
 
 		return fieldHttpClient;
 	}
 
-	public void setHttpClient(HttpClient inHttpClient)
-	{
+	public void setHttpClient(HttpClient inHttpClient) {
 		fieldHttpClient = inHttpClient;
 	}
 
-
-	public ContentItem get(String inPath) throws RepositoryException
-	{
+	public ContentItem get(String inPath) throws RepositoryException {
 		String path = inPath.substring(getPath().length());
 		String url = getExternalPath() + path;
-		UrlContentItem item = new UrlContentItem(); 
-			item.setPath(inPath);
-			item.setAbsolutePath(url);
+		UrlContentItem item = new UrlContentItem();
+		item.setPath(inPath);
+		item.setAbsolutePath(url);
 		return item;
 	}
 
-	
-	public void copy(ContentItem inSource, ContentItem inDestination) throws RepositoryException
-	{
+	public void copy(ContentItem inSource, ContentItem inDestination) throws RepositoryException {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void deleteOldVersions(String inPath) throws RepositoryException
-	{
+	public void deleteOldVersions(String inPath) throws RepositoryException {
 		// TODO Auto-generated method stub
 
 	}
 
-	public boolean doesExist(String inPath) throws RepositoryException
-	{
+	public boolean doesExist(String inPath) throws RepositoryException {
 		return true;
 	}
 
-	public List getChildrenNames(String inParent) throws RepositoryException
-	{
+	public List getChildrenNames(String inParent) throws RepositoryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public ContentItem getLastVersion(String inPath) throws RepositoryException
-	{
+	public ContentItem getLastVersion(String inPath) throws RepositoryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public ContentItem getStub(String inPath) throws RepositoryException
-	{
+	public ContentItem getStub(String inPath) throws RepositoryException {
 		return get(inPath);
 	}
 
-	public List getVersions(String inPath) throws RepositoryException
-	{
+	public List getVersions(String inPath) throws RepositoryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void move(ContentItem inSource, ContentItem inDestination) throws RepositoryException
-	{
+	public void move(ContentItem inSource, ContentItem inDestination) throws RepositoryException {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void move(ContentItem inSource, Repository inSourceRepository, ContentItem inDestination) throws RepositoryException
-	{
+	public void move(ContentItem inSource, Repository inSourceRepository, ContentItem inDestination)
+			throws RepositoryException {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void put(ContentItem inContent) throws RepositoryException
-	{
+	public void put(ContentItem inContent) throws RepositoryException {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void remove(ContentItem inPath) throws RepositoryException
-	{
+	public void remove(ContentItem inPath) throws RepositoryException {
 		// TODO Auto-generated method stub
 
 	}
 
-	class UrlContentItem extends InputStreamItem
-	{
+	class UrlContentItem extends InputStreamItem {
 		protected Boolean existed = null;
-		
-		public InputStream getInputStream() throws RepositoryException 
-		{
-			try
-			{
+
+		public InputStream getInputStream() throws RepositoryException {
+			try {
 				String fullpath = getAbsolutePath().replace(" ", "%20");
-				//fullpath = fullpath.replace(";", "%3b");
+				// fullpath = fullpath.replace(";", "%3b");
 				HttpGet postMethod = new HttpGet(fullpath);
 				HttpResponse res = getHttpClient().execute(postMethod);
-				if (res.getStatusLine().getStatusCode() == 200)
-				{
+				if (res.getStatusLine().getStatusCode() == 200) {
 					fieldInputStream = res.getEntity().getContent();
 				}
-			}
-			catch ( IOException ex)
-			{
+			} catch (IOException ex) {
 				throw new RepositoryException(ex);
 			}
 			return fieldInputStream;
 		}
-		public boolean exists()
-		{
-			if( existed == null)
-			{
-				try
-				{
+
+		public boolean exists() {
+			if (existed == null) {
+				try {
 					String fullpath = getAbsolutePath().replace(" ", "%20");
 					HttpHead postMethod = new HttpHead(fullpath);
-					//HeadMethod postMethod = new HeadMethod(fullpath);
+					// HeadMethod postMethod = new HeadMethod(fullpath);
 					HttpResponse res = getHttpClient().execute(postMethod);
-					if (res.getStatusLine().getStatusCode() == 200)
-					{
+					if (res.getStatusLine().getStatusCode() == 200) {
 						existed = Boolean.TRUE;
-					}
-					else
-					{
+					} else {
 						existed = Boolean.FALSE;
 					}
-				}
-				catch ( IOException ex)
-				{
+				} catch (IOException ex) {
 					throw new RepositoryException(ex);
 				}
-				
+
 			}
 			return existed.booleanValue();
 		}

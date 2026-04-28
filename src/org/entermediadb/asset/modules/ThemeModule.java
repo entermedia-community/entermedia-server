@@ -35,47 +35,41 @@ public class ThemeModule extends BaseMediaModule {
 	public void setRequestUtils(RequestUtils inRequestUtils) {
 		fieldRequestUtils = inRequestUtils;
 	}
-	
-	public void saveCSS(WebPageRequest inReq) throws Exception 
-	{
-		saveAllCustomThemes(inReq);	
+
+	public void saveCSS(WebPageRequest inReq) throws Exception {
+		saveAllCustomThemes(inReq);
 
 		String appid = inReq.findValue("applicationid");
 		PageSettings xconf = getPageManager().getPageSettingsManager().getPageSettings("/" + appid + "/_site.xconf");
 		Data theme = loadTheme(inReq);
-		if (theme != null) 
-		{
-			xconf.setProperty("themeid",theme.getId()); //Default
-				
+		if (theme != null) {
+			xconf.setProperty("themeid", theme.getId()); // Default
+
 			getPageManager().getPageSettingsManager().saveSetting(xconf);
 			getPageManager().clearCache();
 		}
 	}
 
-	protected void saveAllCustomThemes(WebPageRequest inReq) throws UnsupportedEncodingException
-	{
+	protected void saveAllCustomThemes(WebPageRequest inReq) throws UnsupportedEncodingException {
 		MediaArchive archive = getMediaArchive(inReq);
-		//Process all the themes
+		// Process all the themes
 		String catalogid = inReq.findPathValue("catalogid");
 		Collection themes = getSearcherManager().query(catalogid, "theme").all().search();
 		String appid = inReq.findValue("applicationid");
 
-		for (Iterator iterator = themes.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = themes.iterator(); iterator.hasNext();) {
 			Data theme = (Data) iterator.next();
-			
+
 			String inputfile = theme.get("templatecss");
-			if( inputfile == null)
-			{
-				inputfile="/${applicationid}/theme/styles/overridestemplate.css";
+			if (inputfile == null) {
+				inputfile = "/${applicationid}/theme/styles/overridestemplate.css";
 			}
 			inputfile = inReq.getContentPage().replaceProperty(inputfile);
-			
+
 			String outputfile = "/" + appid + "/theme/" + theme.getId() + "/custom.css";
-	
+
 			Page page = getPageManager().getPage(inputfile);
-			
-	
+
 			WebPageRequest req = getRequestUtils().createPageRequest(
 					page,
 					inReq.getRequest(),
@@ -85,15 +79,15 @@ public class ThemeModule extends BaseMediaModule {
 							.getPageValue(PageRequestKeys.URL_UTILITIES));
 			Page outputpage = getPageManager().getPage(outputfile);
 			getPageManager().putPage(outputpage);
-			//loadTheme(req);
+			// loadTheme(req);
 			req.putPageValue("theme", theme);
 			req.putPageValue("mediaarchive", archive);
-			//req.putPageValue("numberutils", new NumberUtils());
+			// req.putPageValue("numberutils", new NumberUtils());
 			CSSUtils cssutils = (CSSUtils) archive.getBean("cssutils");
 			req.putPageValue("cssutils", cssutils);
-			
+
 			URLUtilities urlUtil = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
-			
+
 			req.putProtectedPageValue(PageRequestKeys.HOME,
 					urlUtil.relativeHomePrefix());
 			ByteArrayOutputStream scapture = new ByteArrayOutputStream();
@@ -101,49 +95,48 @@ public class ThemeModule extends BaseMediaModule {
 			capture = new OutputStreamWriter(scapture, page.getCharacterEncoding());
 			Output out = new Output(capture, outputpage.getContentItem()
 					.getOutputStream());
-			
+
 			page.generate(req, out);
 			String output = scapture.toString();
 			StringItem revision = new StringItem(outputpage.getPath(), output,
 					outputpage.getCharacterEncoding());
 			revision.setAuthor(inReq.getUserName());
-			
+
 			revision.setMessage("updated by  user");
 			outputpage.setContentItem(revision);
 			getPageManager().putPage(outputpage);
 		}
 	}
-	
+
 	public void saveLogo(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
 		String applicationid = inReq.findValue("applicationid");
 		Data theme = loadTheme(inReq);
-		if(theme == null) {
+		if (theme == null) {
 			return;
 		}
 		String logoassetid = theme.get("logoasset");
 		if (logoassetid != null) {
 			Asset logoasset = archive.getAsset(logoassetid);
-			if(logoasset != null) {
+			if (logoasset != null) {
 				Page logopage = archive.getOriginalDocument(logoasset);
-				if(logopage != null) {
-					Page destpage = getPageManager().getPage("/"+ applicationid + "/theme/" + theme.getId() + "/logo.png");
-					if( !destpage.getPath().equals(logopage.getPath()) )
-					{
+				if (logopage != null) {
+					Page destpage = getPageManager()
+							.getPage("/" + applicationid + "/theme/" + theme.getId() + "/logo.png");
+					if (!destpage.getPath().equals(logopage.getPath())) {
 						getPageManager().copyPage(logopage, destpage);
-						Dimension assetdimension = archive.getAssetImporter().getAssetUtilities().getImageDimensionImageIO(logopage.getContentItem());
-						if( assetdimension.width > 0)
-						{
+						Dimension assetdimension = archive.getAssetImporter().getAssetUtilities()
+								.getImageDimensionImageIO(logopage.getContentItem());
+						if (assetdimension.width > 0) {
 							theme.setValue("logowith", assetdimension.width);
 						}
-						if (assetdimension.height > 0)
-						{
+						if (assetdimension.height > 0) {
 							theme.setValue("logoheight", assetdimension.height);
-							
+
 						}
-						archive.saveData("theme",theme);
+						archive.saveData("theme", theme);
 					}
-					
+
 				}
 			}
 		}
@@ -160,7 +153,7 @@ public class ThemeModule extends BaseMediaModule {
 			if (theme == null) {
 				theme = themeSearcher.createNewData();
 				theme.setId(owner + "theme");
-				theme.setSourcePath("themes" );
+				theme.setSourcePath("themes");
 			}
 			String[] fields = inReq.getRequestParameters("field");
 			themeSearcher.updateData(inReq, fields, theme);
@@ -176,9 +169,9 @@ public class ThemeModule extends BaseMediaModule {
 				"theme");
 		String themeid = inReq.getRequestParameter("themeid");
 		Data theme = (Data) themeSearcher.searchById(themeid);
-			if (theme != null) {
-				inReq.putPageValue("theme", theme);
-			}
+		if (theme != null) {
+			inReq.putPageValue("theme", theme);
+		}
 		return theme;
 	}
 
@@ -186,11 +179,11 @@ public class ThemeModule extends BaseMediaModule {
 		String appid = inReq.findValue("applicationid");
 		String themeid = inReq.getRequestParameter("themeid");
 		PageSettings xconf = getPageManager().getPageSettingsManager().getPageSettings("/" + appid + "/_site.xconf");
-		
-		xconf.setProperty("themeid",themeid);
+
+		xconf.setProperty("themeid", themeid);
 		getPageManager().getPageSettingsManager().saveSetting(xconf);
 		getPageManager().clearCache();
-		
+
 		try {
 			saveCSS(inReq);
 		} catch (Exception e) {
@@ -198,7 +191,7 @@ public class ThemeModule extends BaseMediaModule {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void resetThemes(WebPageRequest inReq) {
 		String catalogid = inReq.findPathValue("catalogid");
 		Searcher themeSearcher = getSearcherManager().getSearcher(catalogid,
@@ -206,13 +199,13 @@ public class ThemeModule extends BaseMediaModule {
 		String themeid = inReq.getRequestParameter("themeid");
 		themeSearcher.restoreSettings();
 		themeSearcher.reindexInternal();
-		inReq.putPageValue("message","Theme reset");
+		inReq.putPageValue("message", "Theme reset");
 		changeTheme(inReq);
-//		Data theme = (Data) themeSearcher.searchById(themeid);
-//			if (theme != null) {
-//				inReq.putPageValue("theme", theme);
-//			}
-//		return theme;
+		// Data theme = (Data) themeSearcher.searchById(themeid);
+		// if (theme != null) {
+		// inReq.putPageValue("theme", theme);
+		// }
+		// return theme;
 	}
 
 }

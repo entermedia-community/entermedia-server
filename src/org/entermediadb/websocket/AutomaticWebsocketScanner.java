@@ -28,51 +28,49 @@ import javax.websocket.server.ServerEndpointConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class AutomaticWebsocketScanner implements ServerApplicationConfig
-{
+public class AutomaticWebsocketScanner implements ServerApplicationConfig {
 	private static final Log log = LogFactory.getLog(AutomaticWebsocketScanner.class);
 	ModuleManagerLoader configurator = new ModuleManagerLoader();
-	//This file is in jasper.jar META-INF/services/javax.servlet.ServletContainerInitializer
-	public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> scanned)
-	{
+
+	// This file is in jasper.jar
+	// META-INF/services/javax.servlet.ServletContainerInitializer
+	public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> scanned) {
 		log.info("loading endpoints " + scanned.size());
 		Set<ServerEndpointConfig> result = new HashSet<ServerEndpointConfig>();
-		
-		for (Iterator iterator = scanned.iterator(); iterator.hasNext();)
-		{
+
+		for (Iterator iterator = scanned.iterator(); iterator.hasNext();) {
 			Class endpoint = (Class) iterator.next();
 			String path = endpoint.getTypeName();
-			if (path.startsWith("org.entermediadb") || path.startsWith("org.netevolved") || path.startsWith("org.thoughtframe"))
-			{
+			if (path.startsWith("org.entermediadb") || path.startsWith("org.netevolved")
+					|| path.startsWith("org.thoughtframe")) {
 				path = "/entermedia/services/websocket/" + path.replace(".", "/");
 				ServerEndpointConfig conf = ServerEndpointConfig.Builder.create(
-						endpoint, path)  //FYI: Path Configured in OpenEditFilter
+						endpoint, path) // FYI: Path Configured in OpenEditFilter
 						.configurator(configurator).build();
 				result.add(conf);
 				log.info("configured " + path);
-			}	
+			}
 		}
 		return result;
 	}
 
-	public Set<Class<?>> getAnnotatedEndpointClasses(Set<Class<?>> scanned)
-	{
+	public Set<Class<?>> getAnnotatedEndpointClasses(Set<Class<?>> scanned) {
 		/*
-		log.info("loading classes " + scanned.size());
-		Set<Class<?>> results = new HashSet<Class<?>>();
-		for (Class<?> clazz : scanned)
-		{
-			if (clazz.getPackage().getName().startsWith("org.entermediadb"))
-			{
-				if(  javax.websocket.Endpoint.class.isAssignableFrom(clazz) )
-				{
-					results.add(clazz);
-					log.info("configured " + clazz.getPackage().getName());
-				}
-			}
-		}
-		return results;
-		*/
+		 * log.info("loading classes " + scanned.size());
+		 * Set<Class<?>> results = new HashSet<Class<?>>();
+		 * for (Class<?> clazz : scanned)
+		 * {
+		 * if (clazz.getPackage().getName().startsWith("org.entermediadb"))
+		 * {
+		 * if( javax.websocket.Endpoint.class.isAssignableFrom(clazz) )
+		 * {
+		 * results.add(clazz);
+		 * log.info("configured " + clazz.getPackage().getName());
+		 * }
+		 * }
+		 * }
+		 * return results;
+		 */
 		return Collections.emptySet();
 	}
 }

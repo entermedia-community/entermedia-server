@@ -1,7 +1,6 @@
 package org.entermediadb.asset.convert;
 
-public interface ConversionEventListener
-{
+public interface ConversionEventListener {
 
 	public void finishedConversions(AssetConversions inAssetconversions);
 

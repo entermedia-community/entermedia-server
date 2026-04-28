@@ -11,140 +11,123 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImportFile
-{
+public class ImportFile {
 	protected List fieldRows;
 	protected Header fieldHeader;
 	protected Parser fieldParser;
-	
-	public ImportFile()
-	{
+
+	public ImportFile() {
 	}
-	
-	public ImportFile(char delim) 
-	{
-		if( delim == '\t')
-		{
+
+	public ImportFile(char delim) {
+		if (delim == '\t') {
 			fieldParser = new TabParser();
-		}
-		else
-		{
+		} else {
 			fieldParser = new CSVReader();
 		}
 	}
-	public void load(File inFile) throws Exception
-	{
+
+	public void load(File inFile) throws Exception {
 		BufferedReader reader = new BufferedReader(new FileReader(inFile));
-		load( reader);
+		load(reader);
 	}
-	public void read(Reader inFile) throws Exception
-	{
+
+	public void read(Reader inFile) throws Exception {
 		BufferedReader reader = new BufferedReader(inFile);
-		load( reader);
+		load(reader);
 	}
-	
-	public void load(BufferedReader reader) throws Exception
-	{
-		//read in tabs or whatever into header object.
-		//foreach row add a row object
+
+	public void load(BufferedReader reader) throws Exception {
+		// read in tabs or whatever into header object.
+		// foreach row add a row object
 		getParser().setBufferedReader(reader);
-		
+
 		String[] cells = getParser().readNext();
 		if (cells == null) {
 			return;
 		}
 		setHeader(new Header());
 		List valid = new ArrayList();
-		for (int i = 0; i < cells.length; i++)
-		{
+		for (int i = 0; i < cells.length; i++) {
 			String cell = cells[i];
-			if( cell == null || cell.trim().isEmpty() )
-			{
-				//throw new OpenEditException("Empty header is not allowed");
-			}
-			else
-			{
+			if (cell == null || cell.trim().isEmpty()) {
+				// throw new OpenEditException("Empty header is not allowed");
+			} else {
 				valid.add(cell.trim());
 			}
 		}
 		getHeader().setHeaders((String[]) valid.toArray(new String[valid.size()]));
 
-		//		while( line != null)
-//		{
-//			if( line.startsWith("%Fieldnames"))
-//			{
-//				String row = reader.readLine(); //header
-//				List cells = getParser().parse(row);
-//				setHeader(new Header());
-//				getHeader().setHeaders((String[]) cells.toArray(new String[cells.size()]));
-//			}
-//			else if( line.startsWith("%Data"))
-//			{
-//				break;
-//			}
-//			line = reader.readLine(); 
-//		}
+		// while( line != null)
+		// {
+		// if( line.startsWith("%Fieldnames"))
+		// {
+		// String row = reader.readLine(); //header
+		// List cells = getParser().parse(row);
+		// setHeader(new Header());
+		// getHeader().setHeaders((String[]) cells.toArray(new String[cells.size()]));
+		// }
+		// else if( line.startsWith("%Data"))
+		// {
+		// break;
+		// }
+		// line = reader.readLine();
+		// }
 	}
-	public List getAllRows() throws IOException
-	{
+
+	public List getAllRows() throws IOException {
 		List all = new ArrayList();
 		Row row = getNextRow();
-        while (row != null)
-        {
-        	all.add(row);
-        	row = getNextRow();
-        }
-        return all;
+		while (row != null) {
+			all.add(row);
+			row = getNextRow();
+		}
+		return all;
 	}
-	
-	public Row getNextRow() throws IOException
-	{
+
+	public Row getNextRow() throws IOException {
 		String[] cells = getParser().readNext();
-		if ( cells == null || cells.length == 0)
-		{
-			//close(); Should not end if there is one empty row
+		if (cells == null || cells.length == 0) {
+			// close(); Should not end if there is one empty row
 			return null;
 		}
-		//line = line.replace('\u001e',','); //get rid of junk chars
+		// line = line.replace('\u001e',','); //get rid of junk chars
 		/*
-		line = line.replace('\u001e',' '); //get rid of junk chars
-		line = line.replace('\u0005',' '); //get rid of junk chars
-		line = line.replace('\u0010',' '); //get rid of junk chars
-		line = line.replace('\u001f',' '); //get rid of junk chars
-		line = line.replace('\u000f',' '); //get rid of junk chars
-		*/
+		 * line = line.replace('\u001e',' '); //get rid of junk chars
+		 * line = line.replace('\u0005',' '); //get rid of junk chars
+		 * line = line.replace('\u0010',' '); //get rid of junk chars
+		 * line = line.replace('\u001f',' '); //get rid of junk chars
+		 * line = line.replace('\u000f',' '); //get rid of junk chars
+		 */
 		Row row = new Row();
 		row.setHeader(getHeader());
-		//row.setData((String[])cells.toArray(new String[cells.size()]));
-		row.setData( cells );
+		// row.setData((String[])cells.toArray(new String[cells.size()]));
+		row.setData(cells);
 		return row;
 	}
 
-	public Header getHeader()
-	{
+	public Header getHeader() {
 		return fieldHeader;
 	}
 
-	public void setHeader(Header inHeader)
-	{
+	public void setHeader(Header inHeader) {
 		fieldHeader = inHeader;
 	}
-	public Parser getParser()
-	{
-		if ( fieldParser == null)
-		{
+
+	public Parser getParser() {
+		if (fieldParser == null) {
 			fieldParser = new TabParser('\t');
-			
+
 		}
 		return fieldParser;
 	}
-	public void setParser(Parser inParser)
-	{
+
+	public void setParser(Parser inParser) {
 		fieldParser = inParser;
 	}
-	public void close()
-	{
+
+	public void close() {
 		getParser().close();
 	}
-	
+
 }

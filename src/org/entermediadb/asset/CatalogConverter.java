@@ -14,8 +14,7 @@ import org.openedit.util.PathUtilities;
  * @author cburkey
  * 
  */
-public abstract class CatalogConverter extends Scanner
-{
+public abstract class CatalogConverter extends Scanner {
 	protected ModuleManager fieldModuleManager;
 	protected PageManager fieldPageManager;
 
@@ -29,14 +28,11 @@ public abstract class CatalogConverter extends Scanner
 	 * 
 	 * @param inOutputAllAssets
 	 */
-	protected void saveOutput(MediaArchive inStore, List inOutputAllAssets) throws Exception
-	{
-		for (int i = 0; i < inOutputAllAssets.size(); i++)
-		{
+	protected void saveOutput(MediaArchive inStore, List inOutputAllAssets) throws Exception {
+		for (int i = 0; i < inOutputAllAssets.size(); i++) {
 			Asset asset = (Asset) inOutputAllAssets.get(i);
 			// asset
-			if (asset.getOrdering() == -1)
-			{
+			if (asset.getOrdering() == -1) {
 				asset.setOrdering(i);
 			}
 			inStore.saveAsset(asset);
@@ -46,44 +42,34 @@ public abstract class CatalogConverter extends Scanner
 
 	// This was used to break up a description into two parts
 	// this it is not used anymore
-	public String parseDescription(String inString)
-	{
+	public String parseDescription(String inString) {
 		int start = inString.indexOf("[[");
 		int end = inString.indexOf("]]");
-		if (start == -1 || end == -1)
-		{
+		if (start == -1 || end == -1) {
 			return inString;
-		}
-		else
-		{
+		} else {
 			StringBuffer out = new StringBuffer(inString.substring(0, start));
 			out.append(inString.substring(end + 2, inString.length()));
 			return out.toString().trim();
 		}
 	}
 
-	public String parseKeywords(String inString)
-	{
+	public String parseKeywords(String inString) {
 		int start = inString.indexOf("[[");
 		int end = inString.indexOf("]]");
-		if (start == -1 || end == -1)
-		{
+		if (start == -1 || end == -1) {
 			return null;
-		}
-		else
-		{
+		} else {
 			return inString.substring(start + 2, end).trim();
 		}
 	}
 
-	public String extractId(String inName, boolean inAllowUnderstores)
-	{
+	public String extractId(String inName, boolean inAllowUnderstores) {
 		inName = inName.trim();
 		return PathUtilities.extractId(inName, inAllowUnderstores);
 	}
 
-	public String extractAssetId(String name)
-	{
+	public String extractAssetId(String name) {
 		name = name.replace(" ", "sp");
 		name = name.replace("&", "amp");
 		name = name.replace("(", "lp");
@@ -96,23 +82,19 @@ public abstract class CatalogConverter extends Scanner
 		return name;
 	}
 
-	public ModuleManager getModuleManager()
-	{
+	public ModuleManager getModuleManager() {
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager)
-	{
+	public void setModuleManager(ModuleManager inModuleManager) {
 		fieldModuleManager = inModuleManager;
 	}
 
-	public PageManager getPageManager()
-	{
+	public PageManager getPageManager() {
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager)
-	{
+	public void setPageManager(PageManager inPageManager) {
 		fieldPageManager = inPageManager;
 	}
 

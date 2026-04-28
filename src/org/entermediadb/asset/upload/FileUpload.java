@@ -50,21 +50,18 @@ import groovy.json.JsonSlurper;
  *
  * @author cnelson
  */
-public class FileUpload
-{
+public class FileUpload {
 	protected PageManager fieldPageManager;
 	protected File fieldRoot;
 	/** Defaults to 1MB */
 	public static final int BUFFER_SIZE = 1000000;
 	protected SearcherManager fieldSearcherManager;
 
-	public SearcherManager getSearcherManager()
-	{
+	public SearcherManager getSearcherManager() {
 		return fieldSearcherManager;
 	}
 
-	public void setSearcherManager(SearcherManager inSearcherManager)
-	{
+	public void setSearcherManager(SearcherManager inSearcherManager) {
 		fieldSearcherManager = inSearcherManager;
 	}
 
@@ -75,147 +72,130 @@ public class FileUpload
 	 * 
 	 * @see org.openedit.action.Command#execute(java.util.Map, java.util.Map)
 	 */
-	public UploadRequest uploadFiles(WebPageRequest inContext) throws OpenEditException
-	{
+	public UploadRequest uploadFiles(WebPageRequest inContext) throws OpenEditException {
 
-		if (inContext.getUser() == null)
-		{
+		if (inContext.getUser() == null) {
 			throw new OpenEditException("You must be logged in to upload files");
 		}
 
-		//		Object canUpload = inContext.getPageValue("canupload");
-		//		if (!Boolean.parseBoolean(String.valueOf(canUpload)))
-		//		{
-		//			throw new OpenEditException("You don't have enough permissions to upload files");
-		//		}
-		//		
+		// Object canUpload = inContext.getPageValue("canupload");
+		// if (!Boolean.parseBoolean(String.valueOf(canUpload)))
+		// {
+		// throw new OpenEditException("You don't have enough permissions to upload
+		// files");
+		// }
+		//
 		UploadRequest props = parseArguments(inContext);
-		if (props == null)
-		{
+		if (props == null) {
 			return null;
 		}
 		saveFiles(inContext, props);
 		return props;
 	}
 
-	public void saveFiles(WebPageRequest inContext, UploadRequest props) throws OpenEditException
-	{
+	public void saveFiles(WebPageRequest inContext, UploadRequest props) throws OpenEditException {
 		String home = (String) inContext.getPageValue("home");
 
-		for (Iterator iterator = props.getUploadItems().iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = props.getUploadItems().iterator(); iterator.hasNext();) {
 			FileUploadItem item = (FileUploadItem) iterator.next();
-			if (item.getSavedPage() == null)
-			{
+			if (item.getSavedPage() == null) {
 				props.saveFile(item, home, inContext);
 			}
-			//Page page = saveFile( props, finalpath, inContext );
+			// Page page = saveFile( props, finalpath, inContext );
 		}
 		inContext.putPageValue("uploadrequest", props);
-		//inContext.setRequestParameter("path", page.getPath());			
+		// inContext.setRequestParameter("path", page.getPath());
 	}
 
 	/**
 	 * @param inContext
 	 * @return
 	 */
-	public UploadRequest parseArguments(WebPageRequest inContext) throws OpenEditException
-	{
+	public UploadRequest parseArguments(WebPageRequest inContext) throws OpenEditException {
 		final UploadRequest upload = new UploadRequest();
 		upload.setPageManager(getPageManager());
 		upload.setRoot(getRoot());
 
-		//upload.setProperties(inContext.getParameterMap());
-		if (inContext.getRequest() == null) //used in unit tests
+		// upload.setProperties(inContext.getParameterMap());
+		if (inContext.getRequest() == null) // used in unit tests
 		{
 			return upload;
 		}
 
 		String type = inContext.getRequest().getContentType();
-		if (type != null && type.startsWith("application/json"))
-		{
-			inContext.getJsonRequest(); //This will read in the body and setup the parameters
+		if (type != null && type.startsWith("application/json")) {
+			inContext.getJsonRequest(); // This will read in the body and setup the parameters
 			return upload;
-		}
-		else if (type == null || !type.startsWith("multipart"))
-		{
-			//Old Stuff addAlreadyUploaded(inContext, upload);
+		} else if (type == null || !type.startsWith("multipart")) {
+			// Old Stuff addAlreadyUploaded(inContext, upload);
 			return upload;
 		}
 		String uploadid = inContext.getRequestParameter("uploadid");
 
 		String catalogid = inContext.findPathValue("catalogid");
-		if (uploadid != null && catalogid != null)
-		{
+		if (uploadid != null && catalogid != null) {
 			upload.setUploadId(uploadid);
 			upload.setCatalogId(catalogid);
 			upload.setUserName(inContext.getUserName());
 			upload.setUploadQueueSearcher(loadQueueSearcher(catalogid));
 		}
 
-		//Our factory will track these items as they are made. Each time some data comes in look over all the files and update the size		
+		// Our factory will track these items as they are made. Each time some data
+		// comes in look over all the files and update the size
 		FileItemFactory factory = (FileItemFactory) inContext.getPageValue("uploadfilefactory");
-		if (factory == null)
-		{
+		if (factory == null) {
 			DiskFileItemFactory dfactory = new DiskFileItemFactory();
-			//			{
-			//				public org.apache.commons.fileupload.FileItem createItem(String fieldName, String contentType, boolean isFormField, String fileName) 
-			//				{
-			//					if( !isFormField )
-			//					{
-			//						upload.track(fieldName, contentType, isFormField, fileName);
-			//					}
-			//					return super.createItem(fieldName, contentType, isFormField, fileName);
-			//				};
-			//			}
+			// {
+			// public org.apache.commons.fileupload.FileItem createItem(String fieldName,
+			// String contentType, boolean isFormField, String fileName)
+			// {
+			// if( !isFormField )
+			// {
+			// upload.track(fieldName, contentType, isFormField, fileName);
+			// }
+			// return super.createItem(fieldName, contentType, isFormField, fileName);
+			// };
+			// }
 			factory = dfactory;
 
 		}
 
 		ServletFileUpload uploadreader = new ServletFileUpload(factory);
-		//upload.setSizeThreshold(BUFFER_SIZE);
-		if (uploadid != null)
-		{
+		// upload.setSizeThreshold(BUFFER_SIZE);
+		if (uploadid != null) {
 			uploadreader.setProgressListener(upload);
 		}
 		HttpServletRequest req = inContext.getRequest();
 		String encode = req.getCharacterEncoding();
-		if (encode == null)
-		{
-			//log.info("Encoding not set.");
+		if (encode == null) {
+			// log.info("Encoding not set.");
 			encode = "UTF-8";
 		}
-		//log.info("Encoding is set to " + encode);
+		// log.info("Encoding is set to " + encode);
 		uploadreader.setHeaderEncoding(encode);
 
-		//upload.setHeaderEncoding()
-		//Content-Transfer-Encoding: binary
-		//upload.setRepositoryPath(repository.pathToFile("admin
+		// upload.setHeaderEncoding()
+		// Content-Transfer-Encoding: binary
+		// upload.setRepositoryPath(repository.pathToFile("admin
 		uploadreader.setSizeMax(-1);
 
-		try
-		{
+		try {
 			readParameters(inContext, uploadreader, upload, encode);
-		}
-		catch (UnsupportedEncodingException e)
-		{
+		} catch (UnsupportedEncodingException e) {
 			throw new OpenEditException(e);
 		}
-		if (uploadid != null)
-		{
+		if (uploadid != null) {
 			expireOldUploads(catalogid);
 		}
 
 		return upload;
 	}
 
-	protected Searcher loadQueueSearcher(String catalogid)
-	{
+	protected Searcher loadQueueSearcher(String catalogid) {
 		return getSearcherManager().getSearcher(catalogid, "uploadqueue");
 	}
 
-	protected void expireOldUploads(String inCatalogId)
-	{
+	protected void expireOldUploads(String inCatalogId) {
 		Searcher searcher = loadQueueSearcher(inCatalogId);
 
 		SearchQuery q = searcher.createSearchQuery();
@@ -223,23 +203,21 @@ public class FileUpload
 		Calendar cal = new GregorianCalendar();
 		cal.add(Calendar.HOUR, -48);
 		q.addBefore("date", cal.getTime());
-		//child.addMatches("status", "complete");
+		// child.addMatches("status", "complete");
 
 		HitTracker hits = searcher.search(q);
 
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 			Data queue = (Data) iterator.next();
 			searcher.delete(queue, null);
 		}
 	}
 
-	protected void readParameters(WebPageRequest inContext, ServletFileUpload uploadreader, UploadRequest upload, String encoding) throws UnsupportedEncodingException
-	{
+	protected void readParameters(WebPageRequest inContext, ServletFileUpload uploadreader, UploadRequest upload,
+			String encoding) throws UnsupportedEncodingException {
 		List fileItems;
 		FileItemIterator itemIterator;
-		try
-		{
+		try {
 			fileItems = uploadreader.parseRequest(inContext.getRequest());
 
 			// This is a multipart MIME-encoded request, so the request
@@ -248,59 +226,50 @@ public class FileUpload
 
 			String type = inContext.getRequest().getContentType();
 			boolean uploadingfile = false;
-			if (type != null && type.startsWith("multipart"))
-			{
+			if (type != null && type.startsWith("multipart")) {
 				uploadingfile = true;
 			}
-			
-			for (int i = 0; i < fileItems.size(); i++)
-			{
+
+			for (int i = 0; i < fileItems.size(); i++) {
 				org.apache.commons.fileupload.FileItem tmp = (org.apache.commons.fileupload.FileItem) fileItems.get(i);
 				int count = 0;
-				if (!tmp.isFormField())
-				{
-					if (!uploadingfile && tmp.getContentType() != null && tmp.getContentType().toLowerCase().contains("json"))
-					{
+				if (!tmp.isFormField()) {
+					if (!uploadingfile && tmp.getContentType() != null
+							&& tmp.getContentType().toLowerCase().contains("json")) {
 						try {
 							JsonSlurper slurper = new JsonSlurper();
 							String content = tmp.getString(encoding).trim();
 							Object target = slurper.parseText(content);
-							if (target instanceof Map)
-							{
+							if (target instanceof Map) {
 								Map jsonRequest = (Map) target;
 								inContext.setJsonRequest(jsonRequest);
 								continue;
 							}
 						} catch (Exception e) {
-							//Let the file be uploaded even if it's corrupt.
+							// Let the file be uploaded even if it's corrupt.
 							continue;
 						}
-					}
-					else
-					{
+					} else {
 						String name = tmp.getName();
-						if( name.startsWith(".") )
-						{
-							continue; //ignore .DS Store
+						if (name.startsWith(".")) {
+							continue; // ignore .DS Store
 						}
-						if( name.contains("./") || name.contains(".\\") )
-						{
+						if (name.contains("./") || name.contains(".\\")) {
 							log.info("Skipping " + name);
-							continue; //ignore .DS Store
+							continue; // ignore .DS Store
 						}
 						FileUploadItem foundUpload = new FileUploadItem();
 						foundUpload.setFileItem(tmp);
-						if (name != null && name.contains("\\"))
-						{
+						if (name != null && name.contains("\\")) {
 							name = name.substring(name.lastIndexOf("\\") + 1);
 						}
 						foundUpload.setName(name);
-						//String num = "0";
-						//int index = tmp.getFieldName().indexOf(".");
-						//					if(  index > -1)
-						//					{
-						//						num = tmp.getFieldName().substring(index+1);
-						//					}
+						// String num = "0";
+						// int index = tmp.getFieldName().indexOf(".");
+						// if( index > -1)
+						// {
+						// num = tmp.getFieldName().substring(index+1);
+						// }
 
 						foundUpload.setCount(count);
 						count++;
@@ -308,80 +277,62 @@ public class FileUpload
 					}
 				}
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			throw new OpenEditException(e);
 		}
-		//TODO: Find out why Apache creates tmp files for each parameter attached to the body of the upload
+		// TODO: Find out why Apache creates tmp files for each parameter attached to
+		// the body of the upload
 		Map arguments = inContext.getParameterMap();
-		for (int i = 0; i < fileItems.size(); i++)
-		{
+		for (int i = 0; i < fileItems.size(); i++) {
 			org.apache.commons.fileupload.FileItem tmp = (org.apache.commons.fileupload.FileItem) fileItems.get(i);
-			if (tmp.isFormField())
-			{
+			if (tmp.isFormField()) {
 				Object vals = arguments.get(tmp.getFieldName());
-				String[] values = null;//(String[])
+				String[] values = null;// (String[])
 
-				if (vals instanceof String)
-				{
+				if (vals instanceof String) {
 
 					values = new String[1];
 
-					values[0] = (String) vals; //the old value?
-				}
-				else if (vals != null)
-				{
+					values[0] = (String) vals; // the old value?
+				} else if (vals != null) {
 					values = (String[]) vals;
 				}
 				String tval = tmp.getString(encoding).trim();
-				if (!tval.isEmpty())
-				{
-					if (values == null)
-					{
+				if (!tval.isEmpty()) {
+					if (values == null) {
 						values = new String[1];
-					}
-					else
-					{
-						//grow by one
+					} else {
+						// grow by one
 						String[] newvalues = new String[values.length + 1];
 						System.arraycopy(values, 0, newvalues, 0, values.length);
 						values = newvalues;
 					}
 					values[values.length - 1] = tval;
 				}
-				if (values != null)
-				{
-					if( values.length == 1 && tmp.getFieldName().equals("image") && values[0].startsWith("data:"))
-					{
+				if (values != null) {
+					if (values.length == 1 && tmp.getFieldName().equals("image") && values[0].startsWith("data:")) {
 						FileUploadItem foundUpload = new FileUploadItem();
 						foundUpload.setBase64(true);
 						foundUpload.setFileItem(tmp);
 						foundUpload.setName(tmp.getFieldName());
 						upload.addUploadItem(foundUpload);
-					}
-					else
-					{
+					} else {
 						arguments.put(tmp.getFieldName(), values);
 					}
 				}
 			}
 		}
-		for (Iterator iterator = arguments.keySet().iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = arguments.keySet().iterator(); iterator.hasNext();) {
 			String param = (String) iterator.next();
 			Object vals = arguments.get(param);
-			if (vals instanceof String[])
-			{
+			if (vals instanceof String[]) {
 				String[] existing = (String[]) vals;
 				inContext.setRequestParameter(param, existing);
-				if (param.equals("jsonrequest") && existing.length > 0)
-				{
+				if (param.equals("jsonrequest") && existing.length > 0) {
 					JsonSlurper slurper = new JsonSlurper();
 					String content = existing[0];
 					Object target = slurper.parseText(content);
-					if (target instanceof Map)
-					{
+					if (target instanceof Map) {
 						Map jsonRequest = (Map) target;
 						inContext.setJsonRequest(jsonRequest);
 					}
@@ -392,14 +343,11 @@ public class FileUpload
 
 	}
 
-	private void addAlreadyUploaded(WebPageRequest inContext, UploadRequest upload)
-	{
+	private void addAlreadyUploaded(WebPageRequest inContext, UploadRequest upload) {
 		// These file where already uploaded recently using the applet.
 		String[] paths = inContext.getRequestParameters("uploadpath");
-		if (paths != null)
-		{
-			for (int i = 0; i < paths.length; i++)
-			{
+		if (paths != null) {
+			for (int i = 0; i < paths.length; i++) {
 				String name = paths[i].replace('\\', '/');
 				Page page = getPageManager().getPage(name);
 				FileUploadItem item = new FileUploadItem();
@@ -411,23 +359,19 @@ public class FileUpload
 		}
 	}
 
-	public PageManager getPageManager()
-	{
+	public PageManager getPageManager() {
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager pageManager)
-	{
+	public void setPageManager(PageManager pageManager) {
 		fieldPageManager = pageManager;
 	}
 
-	public File getRoot()
-	{
+	public File getRoot() {
 		return fieldRoot;
 	}
 
-	public void setRoot(File inRoot)
-	{
+	public void setRoot(File inRoot) {
 		fieldRoot = inRoot;
 	}
 }

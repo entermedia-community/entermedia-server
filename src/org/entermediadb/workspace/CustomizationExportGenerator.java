@@ -14,57 +14,48 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 
-public class CustomizationExportGenerator extends BaseGenerator
-{
+public class CustomizationExportGenerator extends BaseGenerator {
 	protected PageManager pageManager;
 	protected WorkspaceManager fieldWorkspaceManager;
-	
-	public WorkspaceManager getWorkspaceManager()
-	{
+
+	public WorkspaceManager getWorkspaceManager() {
 		return fieldWorkspaceManager;
 	}
 
-	public void setWorkspaceManager(WorkspaceManager inWorkspaceManager)
-	{
+	public void setWorkspaceManager(WorkspaceManager inWorkspaceManager) {
 		fieldWorkspaceManager = inWorkspaceManager;
 	}
 
 	private static final Log log = LogFactory.getLog(CustomizationExportGenerator.class);
-	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
-	{
-		try
-		{
+
+	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException {
+		try {
 			String catalogid = inReq.findPathValue("catalogid");
 			String[] configids = inReq.getRequestParameters("configid");
-			if( configids == null )
-			{
+			if (configids == null) {
 				String[] moduleids = inReq.getRequestParameters("moduleid");
-				MediaArchive archive  = (MediaArchive)getWorkspaceManager().getSearcherManager().getModuleManager().getBean(catalogid,"mediaArchive");
+				MediaArchive archive = (MediaArchive) getWorkspaceManager().getSearcherManager().getModuleManager()
+						.getBean(catalogid, "mediaArchive");
 
-				HitTracker hits = archive.query("customization").or().orgroup("targetid",moduleids).orgroup("moduleids",moduleids).search();
+				HitTracker hits = archive.query("customization").or().orgroup("targetid", moduleids)
+						.orgroup("moduleids", moduleids).search();
 				configids = (String[]) hits.collectValues("id").toArray(new String[hits.size()]);
 			}
 			getWorkspaceManager().exportCustomizations(catalogid, configids, inOut.getStream());
-		}
-		catch ( Exception ex)
-		{
+		} catch (Exception ex) {
 			log.error(ex);
 		}
 	}
 
-
-	public boolean canGenerate(WebPageRequest inReq)
-	{
+	public boolean canGenerate(WebPageRequest inReq) {
 		return true;
 	}
 
-	public PageManager getPageManager()
-	{
+	public PageManager getPageManager() {
 		return pageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager)
-	{
+	public void setPageManager(PageManager inPageManager) {
 		pageManager = inPageManager;
 	}
 

@@ -3,39 +3,37 @@
  */
 package org.entermediadb.modules.admin.users;
 
-public class Question
-{	
+public class Question {
 	protected String fieldDescription;
 	protected String fieldId;
 	protected String fieldAnswer;
-	public String getAnswer()
-	{
+
+	public String getAnswer() {
 		return fieldAnswer;
 	}
-	public void setAnswer(String inAnswer)
-	{
+
+	public void setAnswer(String inAnswer) {
 		fieldAnswer = inAnswer;
 	}
-	public String getDescription()
-	{
+
+	public String getDescription() {
 		return fieldDescription;
 	}
-	public void setDescription(String inDescription)
-	{
+
+	public void setDescription(String inDescription) {
 		fieldDescription = inDescription;
 	}
-	public String getId()
-	{
+
+	public String getId() {
 		return fieldId;
 	}
-	public void setId(String inId)
-	{
+
+	public void setId(String inId) {
 		fieldId = inId;
 	}
-	public boolean checkAnswer(String inAnswer)
-	{
-		if ( getAnswer().equalsIgnoreCase( inAnswer) )
-		{
+
+	public boolean checkAnswer(String inAnswer) {
+		if (getAnswer().equalsIgnoreCase(inAnswer)) {
 			return true;
 		}
 		return false;

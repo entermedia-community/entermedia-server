@@ -16,14 +16,12 @@ import org.openedit.page.PageProperty;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
 
-public class ConvertInstructions
-{
+public class ConvertInstructions {
 	protected MediaArchive fieldMediaArchive;
 	protected Data fieldConvertPreset;
 	protected Data fieldConversionTask;
-	
 
-	protected int fieldPageNumber = 1; //This is 1 based
+	protected int fieldPageNumber = 1; // This is 1 based
 	protected int fieldRotation = 360;
 	protected Map<String, String> fieldProperties;
 	protected Collection<Data> fieldPresetParameters;
@@ -35,16 +33,12 @@ public class ConvertInstructions
 	protected OutputStream fieldOutputStream;
 	protected Page fieldImageProfile;
 	protected boolean forceoutputfile = false;
-	
-	
-	
-	public Page getImageProfile()
-	{
+
+	public Page getImageProfile() {
 		return fieldImageProfile;
 	}
 
-	public void setImageProfile(Page inImageProfile)
-	{
+	public void setImageProfile(Page inImageProfile) {
 		fieldImageProfile = inImageProfile;
 	}
 
@@ -64,18 +58,17 @@ public class ConvertInstructions
 	}
 
 	public void setStreaming(boolean inStreaming) {
-		setProperty("streaming",String.valueOf( inStreaming));
+		setProperty("streaming", String.valueOf(inStreaming));
 	}
 
-	public ConvertInstructions copy(Data inNewPreset)
-	{
+	public ConvertInstructions copy(Data inNewPreset) {
 		ConvertInstructions copy = new ConvertInstructions(fieldMediaArchive);
 		copy.fieldPageNumber = fieldPageNumber;
-		//copy.fieldRotation = fieldRotation;
-		//copy.fieldProperties = fieldProperties;
-		//copy.fieldPresetParameters = fieldPresetParameters;
+		// copy.fieldRotation = fieldRotation;
+		// copy.fieldProperties = fieldProperties;
+		// copy.fieldPresetParameters = fieldPresetParameters;
 		copy.fieldAsset = fieldAsset;
-		//copy.fieldOutputFile = fieldOutputFile;
+		// copy.fieldOutputFile = fieldOutputFile;
 		copy.fieldInputFile = fieldInputFile;
 		copy.setAssetSourcePath(getAssetSourcePath());
 		copy.setAssetId(getAssetId());
@@ -83,95 +76,78 @@ public class ConvertInstructions
 		copy.setProperty("timeoffset", getTimeOffset());
 		return copy;
 	}
-	
-	public Collection<Data> getPresetParameters()
-	{
+
+	public Collection<Data> getPresetParameters() {
 		return fieldPresetParameters;
 	}
 
-	public void setPresetParameters(Collection<Data> inPresetParameters)
-	{
+	public void setPresetParameters(Collection<Data> inPresetParameters) {
 		fieldPresetParameters = inPresetParameters;
 	}
-	
-	public Data getConvertPreset()
-	{
-		if( fieldConvertPreset == null)
-		{
+
+	public Data getConvertPreset() {
+		if (fieldConvertPreset == null) {
 			String presetdataid = get("presetdataid");
-			if( presetdataid != null)
-			{
-				fieldConvertPreset = getMediaArchive().getData("convertpreset",presetdataid);
+			if (presetdataid != null) {
+				fieldConvertPreset = getMediaArchive().getData("convertpreset", presetdataid);
 				loadPreset(fieldConvertPreset);
 			}
-//			if( fieldConvertPreset == null)
-//			{
-//				throw new OpenEditException("Convert preset not set");
-//			}
-//			else
-//			{
-//				String name = PathUtilities.extractFileName(getOutputPath()); 
-//				fieldConvertPreset = getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(),name);
-//			}
+			// if( fieldConvertPreset == null)
+			// {
+			// throw new OpenEditException("Convert preset not set");
+			// }
+			// else
+			// {
+			// String name = PathUtilities.extractFileName(getOutputPath());
+			// fieldConvertPreset =
+			// getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(),name);
+			// }
 		}
 		return fieldConvertPreset;
 	}
 
-	public void setConvertPreset(Data inConvertPreset)
-	{
+	public void setConvertPreset(Data inConvertPreset) {
 		fieldConvertPreset = inConvertPreset;
 	}
 
-	public ConvertInstructions(MediaArchive inArchive)
-	{
+	public ConvertInstructions(MediaArchive inArchive) {
 		setMediaArchive(inArchive);
 	}
 
-	public MediaArchive getMediaArchive()
-	{
+	public MediaArchive getMediaArchive() {
 		return fieldMediaArchive;
 	}
 
-	public void setMediaArchive(MediaArchive inMediaArchive)
-	{
+	public void setMediaArchive(MediaArchive inMediaArchive) {
 		fieldMediaArchive = inMediaArchive;
 	}
 
-	public ContentItem findOutputFile()
-	{
+	public ContentItem findOutputFile() {
 		StringBuffer path = new StringBuffer();
-		//legacy for people who want to keep their images in the old location
+		// legacy for people who want to keep their images in the old location
 		String prefix = getProperty("pathprefix");
-		if( prefix != null)
-		{
+		if (prefix != null) {
 			path.append(prefix);
-		}
-		else
-		{
+		} else {
 			path.append("/WEB-INF/data");
 			path.append(getMediaArchive().getCatalogHome());
 			path.append("/generated/");
 		}
 		path.append(getAssetSourcePath());
 		path.append("/");
-	
+
 		String postfix = getProperty("pathpostfix");
-		if( postfix != null)
-		{
+		if (postfix != null) {
 			path.append(postfix);
 		}
-			
+
 		String output = getProperty("outputfile");
-		if( output != null && !output.isEmpty())
-		{
-			path.append( output );
-		}
-		else if( !isStreaming())
-		{
+		if (output != null && !output.isEmpty()) {
+			path.append(output);
+		} else if (!isStreaming()) {
 			String rendertype = getOutputRenderType();
-			path.append( rendertype );				
-			if( rendertype.equals("image") || rendertype.equals("document") || rendertype.equals("video"))
-			{
+			path.append(rendertype);
+			if (rendertype.equals("image") || rendertype.equals("document") || rendertype.equals("video")) {
 				Dimension maxScaledSize = getMaxScaledSize();
 				if (maxScaledSize != null) // If either is set then
 				{
@@ -179,121 +155,98 @@ public class ConvertInstructions
 					path.append("x");
 					path.append(Math.round(maxScaledSize.getHeight()));
 				}
-				if (getPageNumber() > 1)
-				{
+				if (getPageNumber() > 1) {
 					path.append("page");
 					path.append(getPageNumber());
 				}
 			}
-			if(isWatermark())
-			{				
-				if( rendertype.equals("image") || rendertype.equals("document"))
-				{						
+			if (isWatermark()) {
+				if (rendertype.equals("image") || rendertype.equals("document")) {
 					path.append("wm");
 				}
 			}
 			String frame = getProperty("frame");
-			if( frame != null)
-			{
-				path.append("frame" + frame );
+			if (frame != null) {
+				path.append("frame" + frame);
 			}
-	
-			if(getProperty("colorspace") != null){
+
+			if (getProperty("colorspace") != null) {
 				path.append(getProperty("colorspace"));
 			}
-			if(isCrop() || Boolean.parseBoolean( getProperty("extent") ) )
-			{
+			if (isCrop() || Boolean.parseBoolean(getProperty("extent"))) {
 				path.append("cropped");
 			}
-			if(getProperty("timeoffset") != null)
-			{
+			if (getProperty("timeoffset") != null) {
 				path.append("offset");
 				path.append(getProperty("timeoffset"));
 			}
-			if (getOutputExtension() != null)
-			{
+			if (getOutputExtension() != null) {
 				path.append("." + getOutputExtension());
 			}
-		}
-		else
-		{
+		} else {
 			String name = get("generatedoutputfile");
-			if( name == null)
-			{
+			if (name == null) {
 				name = "streaming.bin";
 			}
 			path.append(name);
 		}
-		return getMediaArchive().getContent( path.toString() );
+		return getMediaArchive().getContent(path.toString());
 	}
-	
-	public ContentItem getOutputFile()
-	{
-		if( fieldOutputFile == null)
-		{
+
+	public ContentItem getOutputFile() {
+		if (fieldOutputFile == null) {
 			fieldOutputFile = findOutputFile();
 		}
 		return fieldOutputFile;
 	}
 
-	public void setOutputFile(ContentItem inOutputFile)
-	{
-		
+	public void setOutputFile(ContentItem inOutputFile) {
+
 		fieldOutputFile = inOutputFile;
 	}
 
-
-	//Should this be a stack?
-	public ContentItem getInputFile()
-	{
+	// Should this be a stack?
+	public ContentItem getInputFile() {
 		return fieldInputFile;
 	}
 
-	public void setInputFile(ContentItem inInputFile)
-	{
+	public void setInputFile(ContentItem inInputFile) {
 		fieldInputFile = inInputFile;
 	}
 
-	public Asset getAsset()
-	{
-		if (fieldAsset == null)
-		{
+	public Asset getAsset() {
+		if (fieldAsset == null) {
 			String assetid = getProperty("assetid");
-			if (assetid != null)
-			{
+			if (assetid != null) {
 				fieldAsset = getMediaArchive().getAsset(assetid);
 			}
-			if (fieldAsset == null && getAssetSourcePath() != null)
-			{
+			if (fieldAsset == null && getAssetSourcePath() != null) {
 				fieldAsset = getMediaArchive().getAssetBySourcePath(getAssetSourcePath());
 			}
 		}
 		return fieldAsset;
 	}
 
-	public void setAsset(Asset inAsset)
-	{
+	public void setAsset(Asset inAsset) {
 		fieldAsset = inAsset;
 	}
 
-//	public Collection<Data> getParameters()
-//	{
-//		return fieldParameters;
-//	}
-//
-//	public void setParameters(Collection<Data> inParameters)
-//	{
-//		fieldParameters = inParameters;
-//	}
+	// public Collection<Data> getParameters()
+	// {
+	// return fieldParameters;
+	// }
+	//
+	// public void setParameters(Collection<Data> inParameters)
+	// {
+	// fieldParameters = inParameters;
+	// }
 
-	public boolean isForce()
-	{
+	public boolean isForce() {
 		return Boolean.parseBoolean(getProperty("isforced"));
 	}
 
-	public void setProperty(String inName, String inValue)
-	{
-		if(inValue == null){
+	public void setProperty(String inName, String inValue) {
+		if (inValue == null) {
 			inValue = NULL;
 
 		}
@@ -301,93 +254,75 @@ public class ConvertInstructions
 		fieldOutputFile = null;
 	}
 
-	public int intValue(String inName, int inDefault)
-	{
+	public int intValue(String inName, int inDefault) {
 		String val = get(inName);
-		if (val == null)
-		{
+		if (val == null) {
 			return inDefault;
 		}
 		return Integer.parseInt(val);
 	}
 
-	public String get(String inName)
-	{
+	public String get(String inName) {
 		return getProperty(inName);
 	}
 
-	public String getProperty(String inName)
-	{
-		
-		
-		
-		if (fieldProperties != null)
-		{
+	public String getProperty(String inName) {
+
+		if (fieldProperties != null) {
 			String value = getProperties().get(inName);
-			if(value == NULL){
+			if (value == NULL) {
 				return null;
 			}
-			if( value != null)
-			{
+			if (value != null) {
 				return value;
 			}
 		}
-		if( getPresetParameters() != null )
-		{
-			for (Iterator iterator = fieldPresetParameters.iterator(); iterator.hasNext();)
-			{
+		if (getPresetParameters() != null) {
+			for (Iterator iterator = fieldPresetParameters.iterator(); iterator.hasNext();) {
 				Data data = (Data) iterator.next();
-				String id = data.getName(); 
-				if( id.equals(inName))
-				{
+				String id = data.getName();
+				if (id.equals(inName)) {
 					String value = data.get("value");
-					if( value != null)
-					{
+					if (value != null) {
 						return value;
 					}
 				}
 			}
 		}
-		if( fieldConvertPreset != null)
-		{
+		if (fieldConvertPreset != null) {
 			return getConvertPreset().get(inName);
 		}
 		return null;
 
 	}
 
-	public void setForce(boolean force)
-	{
+	public void setForce(boolean force) {
 		setProperty("isforced", String.valueOf(force));
 	}
 
-	public Dimension getMaxScaledSize()
-	{
+	public Dimension getMaxScaledSize() {
 		String w = getProperty("prefwidth");
 		String h = getProperty("prefheight");
 
-		if (w != null && h != null) //both must be set
+		if (w != null && h != null) // both must be set
 		{
 			return new Dimension(Integer.parseInt(w), Integer.parseInt(h));
 		}
 		return null;
 	}
 
-	public void setMaxScaledSize(Dimension inMaxScaledSize)
-	{
-		if(inMaxScaledSize != null){
-		setProperty("prefwidth", inMaxScaledSize.width);
-		setProperty("prefheight", inMaxScaledSize.height);
+	public void setMaxScaledSize(Dimension inMaxScaledSize) {
+		if (inMaxScaledSize != null) {
+			setProperty("prefwidth", inMaxScaledSize.width);
+			setProperty("prefheight", inMaxScaledSize.height);
 		}
 	}
 
-	private void setProperty(String inName, int inVal)
-	{
+	private void setProperty(String inName, int inVal) {
 		setProperty(inName, String.valueOf(inVal));
 	}
 
-	public void setMaxScaledSize(int width, int height)
-	{
+	public void setMaxScaledSize(int width, int height) {
 		setProperty("prefwidth", width);
 		setProperty("prefheight", height);
 	}
@@ -397,231 +332,188 @@ public class ConvertInstructions
 	 * 
 	 * @return
 	 */
-	public int getPageNumber()
-	{
+	public int getPageNumber() {
 		return fieldPageNumber;
 	}
 
-	public void setPageNumber(int inPageNumber)
-	{
+	public void setPageNumber(int inPageNumber) {
 		fieldPageNumber = inPageNumber;
 	}
 
-	public void setPageNumber(String inProperty)
-	{
-		if (inProperty != null)
-		{
+	public void setPageNumber(String inProperty) {
+		if (inProperty != null) {
 			setPageNumber(Integer.parseInt(inProperty));
 		}
 	}
 
-	public boolean isWatermark()
-	{
+	public boolean isWatermark() {
 		return Boolean.valueOf(getProperty("watermark"));
 	}
 
-	public void setWatermark(boolean inWatermark)
-	{
+	public void setWatermark(boolean inWatermark) {
 		setProperty("watermark", String.valueOf(inWatermark));
 	}
 
-	public boolean isTransparencyMaintained(String inputtype)
-	{
+	public boolean isTransparencyMaintained(String inputtype) {
 		String type = getOutputExtension();
-		if (type == null || inputtype == null)
-		{
+		if (type == null || inputtype == null) {
 			return false;
 		}
-		if ((type.equals("png") || type.equals("gif")) && (inputtype.equals("gif") || inputtype.equals("png")))
-		{
+		if ((type.equals("png") || type.equals("gif")) && (inputtype.equals("gif") || inputtype.equals("png"))) {
 			return true;
 		}
 		return false;
 	}
 
-	public String getOutputExtension()
-	{
+	public String getOutputExtension() {
 		String ext = getProperty("outputextension");
 		return ext;
 	}
 
-	public String getOutputPath()
-	{
+	public String getOutputPath() {
 		return getOutputFile().getPath();
 	}
 
-	public boolean doesConvert()
-	{
+	public boolean doesConvert() {
 		return (getMaxScaledSize() != null || getPageNumber() > 1 || getOutputExtension() != null);
 	}
 
-	//	public String getInputExtension()
-	//	{
-	//		return getProperty("inputextension");
-	//	}
+	// public String getInputExtension()
+	// {
+	// return getProperty("inputextension");
+	// }
 	//
-	//	public void setInputExtension(String inInputExtension)
-	//	{
-	//		addProperty("inputextension", inInputExtension);
-	//	}
+	// public void setInputExtension(String inInputExtension)
+	// {
+	// addProperty("inputextension", inInputExtension);
+	// }
 
-	public String getWatermarkPlacement()
-	{
+	public String getWatermarkPlacement() {
 		return getProperty("watermarkplacement");
 	}
 
-	public void setWatermarkPlacement(String inWatermarkPlacement)
-	{
+	public void setWatermarkPlacement(String inWatermarkPlacement) {
 		setProperty("watermarkplacement", inWatermarkPlacement);
 	}
 
-	public boolean isCrop()
-	{
+	public boolean isCrop() {
 		return Boolean.parseBoolean(getProperty("crop"));
 	}
 
-	public void setCrop(boolean inFieldCrop)
-	{
+	public void setCrop(boolean inFieldCrop) {
 		setProperty("crop", String.valueOf(inFieldCrop));
 
 	}
 
-	public int getRotation()
-	{
+	public int getRotation() {
 		return fieldRotation;
 	}
 
-	public void setRotation(int inRotation)
-	{
+	public void setRotation(int inRotation) {
 		fieldRotation = inRotation;
 	}
 
-	public String getAssetId()
-	{
-		if (getAsset() != null)
-		{
+	public String getAssetId() {
+		if (getAsset() != null) {
 			return getAsset().getId();
 		}
 		return getProperty("assetid");
 	}
 
-	public void setAssetId(String inInd)
-	{
+	public void setAssetId(String inInd) {
 		setProperty("assetid", inInd);
 	}
 
-	public String getAssetSourcePath()
-	{
-		if (fieldAsset != null)
-		{
+	public String getAssetSourcePath() {
+		if (fieldAsset != null) {
 			return fieldAsset.getSourcePath();
 		}
 		return getProperty("assetsourcepath");
 	}
 
-	public void setAssetSourcePath(String inInputSourcePath)
-	{
+	public void setAssetSourcePath(String inInputSourcePath) {
 		setProperty("assetsourcepath", inInputSourcePath);
 	}
 
-	public String getInputPath()
-	{
+	public String getInputPath() {
 		return getProperty("inputpath");
 	}
 
-	public void setInputPath(String inInputPath)
-	{
+	public void setInputPath(String inInputPath) {
 		setProperty("inputpath", inInputPath);
 	}
 
-	public Map<String, String> getProperties()
-	{
-		if (fieldProperties == null)
-		{
+	public Map<String, String> getProperties() {
+		if (fieldProperties == null) {
 			fieldProperties = new HashMap<String, String>();
 		}
 		return fieldProperties;
 	}
 
-	public void setProperties(Map<String, String> inProperties)
-	{
+	public void setProperties(Map<String, String> inProperties) {
 		fieldProperties = inProperties;
 	}
 
-	public void addPageProperties(Page inPage)
-	{
-		for (Iterator iterator = inPage.getPageSettings().getAllProperties().iterator(); iterator.hasNext();)
-		{
+	public void addPageProperties(Page inPage) {
+		for (Iterator iterator = inPage.getPageSettings().getAllProperties().iterator(); iterator.hasNext();) {
 			PageProperty type = (PageProperty) iterator.next();
 			getProperties().put(type.getName(), type.getValue());
 		}
 	}
 
-	public void addPageValues(Map inPageMap)
-	{
-		for (Iterator iterator = inPageMap.keySet().iterator(); iterator.hasNext();)
-		{
+	public void addPageValues(Map inPageMap) {
+		for (Iterator iterator = inPageMap.keySet().iterator(); iterator.hasNext();) {
 			String key = iterator.next().toString();
 			Object value = inPageMap.get(key);
-			if (value instanceof String || value instanceof Boolean)
-			{
+			if (value instanceof String || value instanceof Boolean) {
 				getProperties().put(key, value.toString());
 			}
 		}
 	}
 
-	public void loadSettings(Map inSettings, Data inPreset)
-	{
+	public void loadSettings(Map inSettings, Data inPreset) {
 		loadSettings(inSettings);
 		loadPreset(inPreset);
 	}
 
-	protected void loadPreset(Data inPreset)
-	{
+	protected void loadPreset(Data inPreset) {
 		setConvertPreset(inPreset);
 		setPresetParameters(null);
-		if( inPreset == null)
-		{
+		if (inPreset == null) {
 			return;
 		}
 		String outputext = inPreset.get("outputextension");
 		setOutputExtension(outputext);
 		String presetdataid = get("presetdataid");
-		if (presetdataid == null && inPreset != null)
-		{
+		if (presetdataid == null && inPreset != null) {
 			presetdataid = inPreset.get("guid");
 		}
 
-		if (presetdataid != null)
-		{
-			Searcher paramsearcher = getMediaArchive().getSearcherManager().getSearcher(getMediaArchive().getCatalogId(), "presetparameter");
+		if (presetdataid != null) {
+			Searcher paramsearcher = getMediaArchive().getSearcherManager()
+					.getSearcher(getMediaArchive().getCatalogId(), "presetparameter");
 			Collection params = paramsearcher.query().exact("parameterdata", presetdataid).sort("id").search();
-			if (params.size() > 0)
-			{
+			if (params.size() > 0) {
 				setPresetParameters(params);
 			}
 		}
-		String exportname = inPreset.get("generatedoutputfile");		
-		setProperty("cachefilename", exportname); //TODO: remove this
-		//setProperty("cachefilename", inPreset.get("outputfile")); //TODO: remove this
-		
-		if( getOutputExtension() == null)
-		{
+		String exportname = inPreset.get("generatedoutputfile");
+		setProperty("cachefilename", exportname); // TODO: remove this
+		// setProperty("cachefilename", inPreset.get("outputfile")); //TODO: remove this
+
+		if (getOutputExtension() == null) {
 			setOutputExtension(PathUtilities.extractPageType(exportname));
-		}	
+		}
 	}
 
-	public void loadSettings(Map inSettings)
-	{
+	public void loadSettings(Map inSettings) {
 		setSettings(inSettings);
 		String pageString = getProperty("pagenum");
 		// changed to take a request parameter.
-		if (pageString != null && pageString.length() == 0)
-		{
+		if (pageString != null && pageString.length() == 0) {
 			pageString = null;
 		}
-		if (pageString != null)
-		{
+		if (pageString != null) {
 			setPageNumber(Integer.parseInt(pageString));
 		}
 
@@ -631,69 +523,54 @@ public class ConvertInstructions
 
 		if (w != null || h != null) // If either is set then set both
 		{
-			if (w == null || "".equals(w))
-			{
+			if (w == null || "".equals(w)) {
 				w = "10000";
 			}
-			if (h == null || "".equals(h))
-			{
+			if (h == null || "".equals(h)) {
 				h = "10000";
 			}
 			setMaxScaledSize(new Dimension(Integer.parseInt(w), Integer.parseInt(h)));
 		}
 
 		String crop = getProperty("crop");
-		if (crop != null && Boolean.parseBoolean(crop))
-		{
+		if (crop != null && Boolean.parseBoolean(crop)) {
 			setCrop(Boolean.parseBoolean(crop));
 		}
 
 		String watermark = getProperty("canforcewatermarkasset");
-		if (watermark != null)
-		{
+		if (watermark != null) {
 			setWatermark(Boolean.valueOf(watermark));
 		}
-        
+
 		watermark = getProperty("canshowunwatermarkedassets");
-		if (watermark != null)
-		{
-			
+		if (watermark != null) {
+
 			boolean showunwatermarked = Boolean.parseBoolean(watermark);
-			if(showunwatermarked) {
+			if (showunwatermarked) {
 				setWatermark(false);
-			} 
+			}
 		} else {
-			//setWatermark(false);
+			// setWatermark(false);
 		}
 
-		
-		
 		String watermarkselected = getProperty("watermark");
-		if (watermarkselected != null)
-		{
+		if (watermarkselected != null) {
 			setWatermark(Boolean.valueOf(watermarkselected));
 		}
 
 	}
 
-	protected void setSettings(Map inSettings)
-	{
-		if (inSettings != null)
-		{
+	protected void setSettings(Map inSettings) {
+		if (inSettings != null) {
 			Map settings = new HashMap();
-			for (Iterator iterator = inSettings.keySet().iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = inSettings.keySet().iterator(); iterator.hasNext();) {
 				String key = iterator.next().toString();
 				Object value = inSettings.get(key);
-				if (value instanceof String || value instanceof Boolean)
-				{
+				if (value instanceof String || value instanceof Boolean) {
 					settings.put(key, String.valueOf(value));
-				}
-				else if( value instanceof String[] )
-				{
-					String[] vals = (String[])value;
-					if( vals.length > 0)
-					{
+				} else if (value instanceof String[]) {
+					String[] vals = (String[]) value;
+					if (vals.length > 0) {
 						settings.put(key, vals[0]);
 					}
 				}
@@ -702,74 +579,58 @@ public class ConvertInstructions
 		}
 	}
 
-	public long getConversionTimeout()
-	{
+	public long getConversionTimeout() {
 		long timeout = -1;
-		if (getAsset() != null)
-		{
+		if (getAsset() != null) {
 			String fileformat = getAsset().get("fileformat");
-			if (fileformat != null && !fileformat.isEmpty())
-			{
+			if (fileformat != null && !fileformat.isEmpty()) {
 				Data format = getMediaArchive().getData("fileformat", fileformat);
-				if (format != null && format.get("conversiontimeout") != null)
-				{
-					try
-					{
+				if (format != null && format.get("conversiontimeout") != null) {
+					try {
 						timeout = Long.parseLong(format.get("conversiontimeout"));
-					}
-					catch (Exception e)
-					{
-					} //not handled
+					} catch (Exception e) {
+					} // not handled
 				}
 			}
 		}
 		return timeout;
 	}
 
-	public ContentItem getOriginalDocument()
-	{
+	public ContentItem getOriginalDocument() {
 		return getMediaArchive().getOriginalContent(getAsset());
 	}
 
-	public boolean isDocumentFormat()
-	{
+	public boolean isDocumentFormat() {
 		String type = getMediaArchive().getMediaRenderType(getAsset());
 		return "document".equals(type);
 	}
 
-	public String getTimeOffset()
-	{
+	public String getTimeOffset() {
 		return get("timeoffset");
 	}
 
-	public void setOutputExtension(String inType)
-	{
+	public void setOutputExtension(String inType) {
 		setProperty("outputextension", inType);
 	}
 
-	public String getOutputRenderType()
-	{
-		String type =  get("outputrendertype");
-		if( type == null)
-		{
+	public String getOutputRenderType() {
+		String type = get("outputrendertype");
+		if (type == null) {
 			type = getMediaArchive().getMediaRenderType(getOutputExtension());
-		}	
+		}
 		return type;
 	}
-	public void setOutputRenderType(String inType)
-	{
+
+	public void setOutputRenderType(String inType) {
 		setProperty("outputrendertype", inType);
 	}
 
-	public Data getConversionTask()
-	{
+	public Data getConversionTask() {
 		return fieldConversionTask;
 	}
 
-	public void setConversionTask(Data inConversionTask)
-	{
+	public void setConversionTask(Data inConversionTask) {
 		fieldConversionTask = inConversionTask;
-	}	
+	}
 
-	
 }

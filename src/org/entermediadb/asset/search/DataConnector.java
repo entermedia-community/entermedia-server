@@ -14,11 +14,11 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.User;
 
-public interface DataConnector extends CatalogEnabled, FullTextLoader
-{
+public interface DataConnector extends CatalogEnabled, FullTextLoader {
 	public Data getDataBySourcePath(String inSourcePath);
+
 	public Data getDataBySourcePath(String inSourcePath, boolean inAutocreate);
-	
+
 	Data createNewData();
 
 	SearchQuery createSearchQuery();
@@ -26,7 +26,7 @@ public interface DataConnector extends CatalogEnabled, FullTextLoader
 	HitTracker search(SearchQuery inQuery);
 
 	Object searchByField(String inField, String inValue);
-	
+
 	void delete(Data inData, User inUser);
 
 	void deleteFromIndex(String inId);
@@ -44,7 +44,7 @@ public interface DataConnector extends CatalogEnabled, FullTextLoader
 	public void updateIndex(Collection<Data> inBuffer, User inUser);
 
 	void reIndexAll();
-	
+
 	void reindexInternal();
 
 	String getIndexId();
@@ -66,13 +66,18 @@ public interface DataConnector extends CatalogEnabled, FullTextLoader
 	boolean hasChanged(HitTracker inTracker);
 
 	String nextId();
-	//public void updateFilters(WebPageRequest inReq);
-	public Data loadData(Data inHit);
-	public HitTracker loadHits(WebPageRequest inReq);
-	public HitTracker checkCurrent(WebPageRequest inReq, HitTracker inTracker);
-	public boolean initialize();
-	public void saveJson(Collection inJsonArray);
-	public void saveJson(String inId, JSONObject inObject);
 
+	// public void updateFilters(WebPageRequest inReq);
+	public Data loadData(Data inHit);
+
+	public HitTracker loadHits(WebPageRequest inReq);
+
+	public HitTracker checkCurrent(WebPageRequest inReq, HitTracker inTracker);
+
+	public boolean initialize();
+
+	public void saveJson(Collection inJsonArray);
+
+	public void saveJson(String inId, JSONObject inObject);
 
 }

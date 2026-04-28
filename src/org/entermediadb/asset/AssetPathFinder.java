@@ -5,14 +5,13 @@ package org.entermediadb.asset;
  * 
  * @author Eric Galluzzo
  */
-public interface AssetPathFinder
-{
+public interface AssetPathFinder {
 	/**
 	 * Converts the given ID to a relative path, not including any file
 	 * extension.
 	 * 
 	 * @param inAssetId
-	 *            The asset ID
+	 *                  The asset ID
 	 * 
 	 * @return The full path
 	 */

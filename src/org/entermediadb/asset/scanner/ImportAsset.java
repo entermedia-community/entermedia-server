@@ -2,15 +2,13 @@ package org.entermediadb.asset.scanner;
 
 import java.io.File;
 
-public class ImportAsset
-{
-	protected String fieldSourcePath; // 
+public class ImportAsset {
+	protected String fieldSourcePath; //
 	protected String fieldImportDirectoryRoot;
-	protected String fieldCategoryDirectoryRoot; //  
+	protected String fieldCategoryDirectoryRoot; //
 	protected File fieldFile;
 
-	public String getSourcePath()
-	{
+	public String getSourcePath() {
 		return fieldSourcePath;
 	}
 
@@ -19,13 +17,11 @@ public class ImportAsset
 	 * 
 	 * @param inSourcePath
 	 */
-	public void setSourcePath(String inSourcePath)
-	{
+	public void setSourcePath(String inSourcePath) {
 		fieldSourcePath = inSourcePath;
 	}
 
-	public String getImportDirectoryRoot()
-	{
+	public String getImportDirectoryRoot() {
 		return fieldImportDirectoryRoot;
 	}
 
@@ -34,13 +30,11 @@ public class ImportAsset
 	 * 
 	 * @param inImportDirectoryRoot
 	 */
-	public void setImportDirectoryRoot(String inImportDirectoryRoot)
-	{
+	public void setImportDirectoryRoot(String inImportDirectoryRoot) {
 		fieldImportDirectoryRoot = inImportDirectoryRoot;
 	}
 
-	public String getCategoryDirectoryRoot()
-	{
+	public String getCategoryDirectoryRoot() {
 		return fieldCategoryDirectoryRoot;
 	}
 
@@ -49,18 +43,15 @@ public class ImportAsset
 	 * 
 	 * @param inCategoryDirectoryRoot
 	 */
-	public void setCategoryDirectoryRoot(String inCategoryDirectoryRoot)
-	{
+	public void setCategoryDirectoryRoot(String inCategoryDirectoryRoot) {
 		fieldCategoryDirectoryRoot = inCategoryDirectoryRoot;
 	}
 
-	public File getFile()
-	{
+	public File getFile() {
 		return fieldFile;
 	}
 
-	public void setFile(File inFile)
-	{
+	public void setFile(File inFile) {
 		fieldFile = inFile;
 	}
 

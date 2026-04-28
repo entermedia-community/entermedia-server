@@ -5,29 +5,24 @@ import org.entermediadb.asset.orders.OrderManager;
 import org.entermediadb.asset.orders.OrderSearcher;
 import org.openedit.Data;
 
-public class ElasticOrderSearcher extends BaseElasticSearcher implements OrderSearcher
-{
-	
-	public OrderManager getOrderManager()
-	{
-		return (OrderManager)getModuleManager().getBean(getCatalogId(),"orderManager");
+public class ElasticOrderSearcher extends BaseElasticSearcher implements OrderSearcher {
+
+	public OrderManager getOrderManager() {
+		return (OrderManager) getModuleManager().getBean(getCatalogId(), "orderManager");
 	}
 
-	public Data createNewData()
-	{
-		Order order = (Order)super.createNewData();
+	public Data createNewData() {
+		Order order = (Order) super.createNewData();
 		order.setCatalogId(getCatalogId());
 		order.setOrderManager(getOrderManager());
 		return order;
 	}
-	
-//	protected void updateIndex(Data inData, Document doc, PropertyDetails inDetails) 
-//	{
-//		getOrderManager().loadOrderHistory(getCatalogId(),(Order)inData);
-//		super.updateIndex(inData, doc, getPropertyDetails());
-//	}
-	
-	
-	
-	
+
+	// protected void updateIndex(Data inData, Document doc, PropertyDetails
+	// inDetails)
+	// {
+	// getOrderManager().loadOrderHistory(getCatalogId(),(Order)inData);
+	// super.updateIndex(inData, doc, getPropertyDetails());
+	// }
+
 }

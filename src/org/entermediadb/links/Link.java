@@ -34,14 +34,12 @@ public class Link implements Serializable {
 	protected String fieldPostfix;
 	protected int fieldRank = 5000;
 	protected String fieldConfirmText;
-	
-	public String getConfirmText()
-	{
+
+	public String getConfirmText() {
 		return fieldConfirmText;
 	}
 
-	public void setConfirmText(String inConfirmText)
-	{
+	public void setConfirmText(String inConfirmText) {
 		fieldConfirmText = inConfirmText;
 	}
 
@@ -337,7 +335,7 @@ public class Link implements Serializable {
 
 	/**
 	 * @param inRedirectPath
-	 *            The redirectPath to set.
+	 *                       The redirectPath to set.
 	 */
 	public void setRedirectPath(String inRedirectPath) {
 		fieldRedirectPath = inRedirectPath;
@@ -363,61 +361,49 @@ public class Link implements Serializable {
 		return getHref();
 	}
 
-	public void sortChildren()
-	{
-		Collections.sort(getChildren(), new Comparator() 
-		{
-			public int compare(Object arg0, Object arg1)
-			{
-				Link link1 = (Link)arg0;
-				Link link2 = (Link)arg1;
-				if( link1.getRank() == link2.getRank())
-				{
-					if( link1.getText() != null && link2.getText() != null)
-					{
+	public void sortChildren() {
+		Collections.sort(getChildren(), new Comparator() {
+			public int compare(Object arg0, Object arg1) {
+				Link link1 = (Link) arg0;
+				Link link2 = (Link) arg1;
+				if (link1.getRank() == link2.getRank()) {
+					if (link1.getText() != null && link2.getText() != null) {
 						return link1.getText().compareTo(link2.getText());
 					}
 					return 0;
 				}
-				if( link1.getRank() > link2.getRank()) 
-				{
+				if (link1.getRank() > link2.getRank()) {
 					return 1;
-				}
-				else
-				{
+				} else {
 					return -1;
 				}
 			}
 		});
-		
+
 	}
-	public String getDirectory()
-	{
+
+	public String getDirectory() {
 		String path = PathUtilities.extractDirectoryPath(getPath());
 		// urlpath is the address the link came in on
 		return path;
 	}
 
-	public List getParents()
-	{
+	public List getParents() {
 		List parents = new ArrayList();
 		Link parent = this;
-		while(parent != null )
-		{
+		while (parent != null) {
 			parents.add(0, parent);
 			parent = parent.getParentLink();
 		}
 		return parents;
 	}
 
-	public int getRank()
-	{
+	public int getRank() {
 		return fieldRank;
 	}
 
-	public void setRank(int inRank)
-	{
+	public void setRank(int inRank) {
 		fieldRank = inRank;
 	}
-	
+
 }

@@ -9,7 +9,8 @@ import org.entermediadb.markdown.renderer.NodeRenderer;
 import java.util.Set;
 
 /**
- * The node renderer that renders all the core nodes (comes last in the order of node renderers).
+ * The node renderer that renders all the core nodes (comes last in the order of
+ * node renderers).
  */
 public class CoreTextContentNodeRenderer extends AbstractVisitor implements NodeRenderer {
 
@@ -45,8 +46,7 @@ public class CoreTextContentNodeRenderer extends AbstractVisitor implements Node
                 Code.class,
                 HtmlInline.class,
                 SoftLineBreak.class,
-                HardLineBreak.class
-        );
+                HardLineBreak.class);
     }
 
     @Override

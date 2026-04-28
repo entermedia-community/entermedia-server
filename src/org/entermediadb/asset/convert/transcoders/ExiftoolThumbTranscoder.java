@@ -10,41 +10,37 @@ import org.entermediadb.asset.convert.ConvertResult;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
 
-public class ExiftoolThumbTranscoder extends BaseTranscoder
-{
+public class ExiftoolThumbTranscoder extends BaseTranscoder {
 	@Override
-	public ConvertResult convert(ConvertInstructions inStructions)
-	{
-
+	public ConvertResult convert(ConvertInstructions inStructions) {
 
 		ConvertResult result = new ConvertResult();
 		result.setOutput(inStructions.getOutputFile());
 
 		result.setOk(false);
-		
+
 		ContentItem item = inStructions.getOutputFile();
-		File output = new File( item.getAbsolutePath() );
+		File output = new File(item.getAbsolutePath());
 		output.getParentFile().mkdirs();
 		List base = new ArrayList();
-		//command.add("-b");
-		//command.add("-ThumbnailImage");
+		// command.add("-b");
+		// command.add("-ThumbnailImage");
 		base.add(inStructions.getInputFile().getAbsolutePath());
-		//command.add("-o");
+		// command.add("-o");
 		base.add(item.getAbsolutePath());
 
-		List command = new ArrayList(base);			
+		List command = new ArrayList(base);
 		command.add("PageImage");
 		long timeout = inStructions.getConversionTimeout();
-		ExecResult done = getExec().runExec("exiftoolthumb",command,timeout);
-		if(output.length() == 0)
-		{
+		ExecResult done = getExec().runExec("exiftoolthumb", command, timeout);
+		if (output.length() == 0) {
 			command = new ArrayList(base);
 			command.add("ThumbnailImage");
-			done = getExec().runExec("exiftoolthumb",command,timeout);
-		}	
+			done = getExec().runExec("exiftoolthumb", command, timeout);
+		}
 		result.setOk(done.isRunOk());
-		
-		if(output.length() == 0){
+
+		if (output.length() == 0) {
 			output.delete();
 			result.setOk(false);
 			result.setError("no embeded thumbnail found in file");
@@ -52,6 +48,4 @@ public class ExiftoolThumbTranscoder extends BaseTranscoder
 		return result;
 	}
 
-
-	
 }

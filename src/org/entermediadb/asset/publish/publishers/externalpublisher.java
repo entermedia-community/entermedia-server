@@ -15,15 +15,14 @@ import org.openedit.Data;
  *
  */
 
-public class externalpublisher extends BasePublisher implements Publisher
-{
+public class externalpublisher extends BasePublisher implements Publisher {
 	private static final Log log = LogFactory.getLog(externalpublisher.class);
-	
-	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
-	{
+
+	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination,
+			Data inPreset, Asset inAsset) {
 		PublishResult result = new PublishResult();
 		result.setPending(true);
 		return result;
 	}
-	
+
 }

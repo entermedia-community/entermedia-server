@@ -22,44 +22,36 @@ import org.openedit.page.Page;
 import org.openedit.util.FileUtils;
 import org.openedit.util.URLUtilities;
 
-public class DataImportModule extends DataEditModule
-{
+public class DataImportModule extends DataEditModule {
 	protected ScriptManager fieldScriptManager;
 	protected WorkspaceManager fieldWorkspaceManager;
-	public WorkspaceManager getWorkspaceManager()
-	{
+
+	public WorkspaceManager getWorkspaceManager() {
 		return fieldWorkspaceManager;
 	}
 
-	public void setWorkspaceManager(WorkspaceManager inWorkspaceManager)
-	{
+	public void setWorkspaceManager(WorkspaceManager inWorkspaceManager) {
 		fieldWorkspaceManager = inWorkspaceManager;
 	}
 
-	public ScriptManager getScriptManager()
-	{
+	public ScriptManager getScriptManager() {
 		return fieldScriptManager;
 	}
 
-	public void setScriptManager(ScriptManager inScriptManager)
-	{
+	public void setScriptManager(ScriptManager inScriptManager) {
 		fieldScriptManager = inScriptManager;
 	}
 
-	public List listImportScripts(WebPageRequest inReq) throws Exception
-	{
+	public List listImportScripts(WebPageRequest inReq) throws Exception {
 		String dataroot = inReq.findValue("dataroot");
 		List scripts = getPageManager().getChildrenPaths(dataroot + "/import/scripts/", true);
 		List pages = new ArrayList();
 		Set dups = new HashSet();
-		for (Iterator iterator = scripts.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = scripts.iterator(); iterator.hasNext();) {
 			String path = (String) iterator.next();
-			if (!path.endsWith(".xconf"))
-			{
+			if (!path.endsWith(".xconf")) {
 				Page page = getPageManager().getPage(path);
-				if (!dups.contains(page.getName()))
-				{
+				if (!dups.contains(page.getName())) {
 					pages.add(page);
 					dups.add(page.getName());
 				}
@@ -69,8 +61,7 @@ public class DataImportModule extends DataEditModule
 		return scripts;
 	}
 
-	public void importDataWithScript(WebPageRequest inReq) throws Exception
-	{
+	public void importDataWithScript(WebPageRequest inReq) throws Exception {
 		String dataroot = inReq.findValue("dataroot");
 
 		String filename = inReq.findValue("scriptname");
@@ -84,29 +75,25 @@ public class DataImportModule extends DataEditModule
 		logger.startCapture();
 		logger.info("Running script: " + script.getPage().getPath());
 		variables.put("log", logger);
-		try
-		{
+		try {
 			getScriptManager().execScript(variables, script);
-		}
-		finally
-		{
+		} finally {
 			logger.stopCapture();
 		}
 	}
+
 	/**
 	 * @deprecated use @importDataWithScript
 	 * @param inReq
 	 * @throws Exception
 	 */
-	public void importData(WebPageRequest inReq) throws Exception
-	{
+	public void importData(WebPageRequest inReq) throws Exception {
 		Searcher searcher = loadSearcher(inReq);
 
 		List data = new ArrayList();
 		Page upload = getPageManager().getPage("/WEB-INF/temp/import/import.csv");
 		Reader reader = upload.getReader();
-		try
-		{
+		try {
 			boolean done = false;
 			CSVReader read = new CSVReader(reader, ',', '\"');
 
@@ -119,36 +106,29 @@ public class DataImportModule extends DataEditModule
 			Data question = null;
 			List questions = new ArrayList();
 			String[] tabs;
-			while ((tabs = read.readNext()) != null)
-			{
+			while ((tabs = read.readNext()) != null) {
 
 				rowNum++;
 
 				String idCell = tabs[idcolumn];
 
 				// This means we have moved on to a new product
-				//natasha 18584
-				if (idCell != null)
-				{
-					if (question == null || !question.getId().equals(idCell))
-					{
+				// natasha 18584
+				if (idCell != null) {
+					if (question == null || !question.getId().equals(idCell)) {
 
 						Data target = (Data) searcher.searchById(idCell);
-						//Data target = null;
-						if (target == null)
-						{
-							for (Iterator iterator = data.iterator(); iterator.hasNext();)
-							{
+						// Data target = null;
+						if (target == null) {
+							for (Iterator iterator = data.iterator(); iterator.hasNext();) {
 								Data one = (Data) iterator.next();
-								if (idCell.equals(one.getId()))
-								{
+								if (idCell.equals(one.getId())) {
 									target = one;
 								}
 							}
 
 						}
-						if (target == null)
-						{
+						if (target == null) {
 
 							target = searcher.createNewData();
 							target.setId(idCell);
@@ -156,8 +136,7 @@ public class DataImportModule extends DataEditModule
 						}
 
 						addProperties(searcher, headers, tabs, target);
-						if (target.getSourcePath() == null)
-						{
+						if (target.getSourcePath() == null) {
 							target.setSourcePath(target.getId());
 						}
 						data.add(target);
@@ -171,14 +150,13 @@ public class DataImportModule extends DataEditModule
 			// inSearcher.clear();
 			// input.delete();
 
-		}
-		finally
-		{
+		} finally {
 			FileUtils.safeClose(reader);
 		}
 		searcher.saveAllData(data, inReq.getUser());
 		searcher.reIndexAll();
 	}
+
 	/**
 	 * @deprecated use @importDataWithScript
 	 */
@@ -187,28 +165,26 @@ public class DataImportModule extends DataEditModule
 
 		for (int i = 0; i < inHeaders.length; i++) {
 			String header = inHeaders[i];
-			
-			
+
 			PropertyDetail detail = inSearcher.getPropertyDetails().getDetail(
 					header);
-			
+
 			String val = inInTabs[i].trim();
 			val = URLUtilities.xmlEscape(val);
-			if("sourcepath".equals(header)){
+			if ("sourcepath".equals(header)) {
 				inProduct.setSourcePath(val);
 			}
 			if (detail != null && val != null && val.length() > 0) {
-				
+
 				inProduct.setProperty(detail.getId(), val);
-			} else if(val != null && val.length() >0){
+			} else if (val != null && val.length() > 0) {
 				inProduct.setProperty(header, val);
 			}
 		}
 
 	}
-	
-	public void saveScript(WebPageRequest inReq) throws Exception
-	{
+
+	public void saveScript(WebPageRequest inReq) throws Exception {
 		String dataroot = inReq.findValue("dataroot");
 		String filename = inReq.findValue("filename");
 		String code = inReq.findValue("scriptcode");
@@ -217,8 +193,8 @@ public class DataImportModule extends DataEditModule
 		getPageManager().saveContent(page, inReq.getUser(), code, "web edit");
 
 	}
-	public void deleteScript(WebPageRequest inReq) throws Exception
-	{
+
+	public void deleteScript(WebPageRequest inReq) throws Exception {
 		String dataroot = inReq.findValue("dataroot");
 		String filename = inReq.findValue("filename");
 		String code = inReq.findValue("scriptcode");
@@ -228,26 +204,25 @@ public class DataImportModule extends DataEditModule
 
 	}
 
-	public void createTable(WebPageRequest inReq) throws Exception
-	{
+	public void createTable(WebPageRequest inReq) throws Exception {
 		String tablename = inReq.findValue("tablename");
 		String catalogid = inReq.findPathValue("catalogid");
 
 		String prefix = inReq.findValue("prefix");
 		String searchtype = getWorkspaceManager().createTable(catalogid, tablename, prefix);
 		inReq.setRequestParameter("searchtype", searchtype);
-	}	
-	public void deleteTable(WebPageRequest inReq) throws Exception
-	{
+	}
+
+	public void deleteTable(WebPageRequest inReq) throws Exception {
 		String catalogid = inReq.findPathValue("catalogid");
 		String searchtype = inReq.getRequestParameter("searchtype");
-		Page xml = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + searchtype +".xml" );
+		Page xml = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml");
 		getPageManager().removePage(xml);
 
-		Page folder = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + searchtype +"/" );
+		Page folder = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + searchtype + "/");
 		getPageManager().removePage(folder);
 
-		Page list = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/lists/" + searchtype +".xml" );
+		Page list = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/lists/" + searchtype + ".xml");
 		getPageManager().removePage(list);
 
 	}

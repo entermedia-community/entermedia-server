@@ -2,6 +2,7 @@ package org.entermediadb.markdown.node;
 
 /**
  * A fenced code block, e.g.:
+ * 
  * <pre>
  * ```
  * foo
@@ -10,7 +11,9 @@ package org.entermediadb.markdown.node;
  * </pre>
  * <p>
  *
- * @see <a href="https://spec.commonmark.org/0.31.2/#fenced-code-blocks">CommonMark Spec</a>
+ * @see <a href=
+ *      "https://spec.commonmark.org/0.31.2/#fenced-code-blocks">CommonMark
+ *      Spec</a>
  */
 public class FencedCodeBlock extends Block {
 
@@ -28,7 +31,8 @@ public class FencedCodeBlock extends Block {
     }
 
     /**
-     * @return the fence character that was used, e.g. {@code `} or {@code ~}, if available, or null otherwise
+     * @return the fence character that was used, e.g. {@code `} or {@code ~}, if
+     *         available, or null otherwise
      */
     public String getFenceCharacter() {
         return fenceCharacter;
@@ -39,8 +43,9 @@ public class FencedCodeBlock extends Block {
     }
 
     /**
-     * @return the length of the opening fence (how many of {{@link #getFenceCharacter()}} were used to start the code
-     * block) if available, or null otherwise
+     * @return the length of the opening fence (how many of
+     *         {{@link #getFenceCharacter()}} were used to start the code
+     *         block) if available, or null otherwise
      */
     public Integer getOpeningFenceLength() {
         return openingFenceLength;
@@ -55,8 +60,9 @@ public class FencedCodeBlock extends Block {
     }
 
     /**
-     * @return the length of the closing fence (how many of {@link #getFenceCharacter()} were used to end the code
-     * block) if available, or null otherwise
+     * @return the length of the closing fence (how many of
+     *         {@link #getFenceCharacter()} were used to end the code
+     *         block) if available, or null otherwise
      */
     public Integer getClosingFenceLength() {
         return closingFenceLength;
@@ -79,7 +85,8 @@ public class FencedCodeBlock extends Block {
     }
 
     /**
-     * @see <a href="http://spec.commonmark.org/0.31.2/#info-string">CommonMark spec</a>
+     * @see <a href="http://spec.commonmark.org/0.31.2/#info-string">CommonMark
+     *      spec</a>
      */
     public String getInfo() {
         return info;
@@ -132,7 +139,8 @@ public class FencedCodeBlock extends Block {
     private static void checkFenceLengths(Integer openingFenceLength, Integer closingFenceLength) {
         if (openingFenceLength != null && closingFenceLength != null) {
             if (closingFenceLength < openingFenceLength) {
-                throw new IllegalArgumentException("fence lengths required to be: closingFenceLength >= openingFenceLength");
+                throw new IllegalArgumentException(
+                        "fence lengths required to be: closingFenceLength >= openingFenceLength");
             }
         }
     }

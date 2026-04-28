@@ -7,87 +7,67 @@ import javax.mail.MessagingException;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 
-public class FormWebEmail extends WebEmail
-{
+public class FormWebEmail extends WebEmail {
 	protected String fieldBody;
 
-	
-	public void send(Map inObjects)
-	{
-	throw new OpenEditException("Not Implemented for FormWebEmail");
+	public void send(Map inObjects) {
+		throw new OpenEditException("Not Implemented for FormWebEmail");
 	}
-	
-	public void send() throws OpenEditException
-	{
-		send( getBody().toString() );
+
+	public void send() throws OpenEditException {
+		send(getBody().toString());
 	}
-	public void send(String body) throws OpenEditException
-	{
-		
-		if (isValidMessage())
-		{
-			try
-			{
+
+	public void send(String body) throws OpenEditException {
+
+		if (isValidMessage()) {
+			try {
 				String from = getFrom();
 				String fromname = getFromName();
-				fieldPostMail.postMail(getTo(),getSubject(),null,body,from, fromname);
-			}
-			catch (MessagingException ex)
-			{
+				fieldPostMail.postMail(getTo(), getSubject(), null, body, from, fromname);
+			} catch (MessagingException ex) {
 				throw new OpenEditException(ex);
 			}
-		}
-		else
-		{
+		} else {
 			throw new OpenEditException("Invalid message");
 		}
 	}
 
-	public String getBody()
-	{
+	public String getBody() {
 		return fieldBody;
 	}
 
-	public void setBody(String inBody)
-	{
+	public void setBody(String inBody) {
 		fieldBody = inBody;
 	}
 
-	public void loadSettings( WebPageRequest inReq ) throws OpenEditException
-	{
+	public void loadSettings(WebPageRequest inReq) throws OpenEditException {
 		super.loadSettings(inReq);
-		
+
 		String body = inReq.getRequestParameter("body");
 		setBody(body);
 	}
-	
-	private boolean isValidMessage()
-	{
-		return (isValidField(getTo()) && isValidField(getBody()) 
-				&& isValidField(getFrom()) );
+
+	private boolean isValidMessage() {
+		return (isValidField(getTo()) && isValidField(getBody())
+				&& isValidField(getFrom()));
 	}
-	
-	private boolean isValidField(String field[])
-	{
-		if (field.length <= 0)
-		{
+
+	private boolean isValidField(String field[]) {
+		if (field.length <= 0) {
 			return false;
 		}
-		
-		for (int i = 0; i < field.length; i++)
-		{
-			if (field[i] == null || field[i].length() <= 0)
-			{
+
+		for (int i = 0; i < field.length; i++) {
+			if (field[i] == null || field[i].length() <= 0) {
 				return false;
 			}
 		}
 		return true;
 	}
-	
-	private boolean isValidField(String field)
-	{
+
+	private boolean isValidField(String field) {
 		return (field != null && field.length() > 0);
 	}
-
 
 }

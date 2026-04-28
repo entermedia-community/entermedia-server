@@ -36,7 +36,8 @@ public class FencedCodeBlockParser extends AbstractBlockParser {
         int nextNonSpace = state.getNextNonSpaceIndex();
         int newIndex = state.getIndex();
         CharSequence line = state.getLine().getContent();
-        if (state.getIndent() < Parsing.CODE_BLOCK_INDENT && nextNonSpace < line.length() && tryClosing(line, nextNonSpace)) {
+        if (state.getIndent() < Parsing.CODE_BLOCK_INDENT && nextNonSpace < line.length()
+                && tryClosing(line, nextNonSpace)) {
             // closing fence - we're at end of line, so we can finalize now
             return BlockContinue.finished();
         } else {
@@ -87,14 +88,14 @@ public class FencedCodeBlockParser extends AbstractBlockParser {
         }
     }
 
-    // spec: A code fence is a sequence of at least three consecutive backtick characters (`) or tildes (~). (Tildes and
+    // spec: A code fence is a sequence of at least three consecutive backtick
+    // characters (`) or tildes (~). (Tildes and
     // backticks cannot be mixed.)
     private static FencedCodeBlockParser checkOpener(CharSequence line, int index, int indent) {
         int backticks = 0;
         int tildes = 0;
         int length = line.length();
-        loop:
-        for (int i = index; i < length; i++) {
+        loop: for (int i = index; i < length; i++) {
             switch (line.charAt(i)) {
                 case '`':
                     backticks++;
@@ -107,7 +108,8 @@ public class FencedCodeBlockParser extends AbstractBlockParser {
             }
         }
         if (backticks >= 3 && tildes == 0) {
-            // spec: If the info string comes after a backtick fence, it may not contain any backtick characters.
+            // spec: If the info string comes after a backtick fence, it may not contain any
+            // backtick characters.
             if (Characters.find('`', line, index + backticks) != -1) {
                 return null;
             }
@@ -120,15 +122,18 @@ public class FencedCodeBlockParser extends AbstractBlockParser {
         }
     }
 
-    // spec: The content of the code block consists of all subsequent lines, until a closing code fence of the same type
-    // as the code block began with (backticks or tildes), and with at least as many backticks or tildes as the opening
+    // spec: The content of the code block consists of all subsequent lines, until a
+    // closing code fence of the same type
+    // as the code block began with (backticks or tildes), and with at least as many
+    // backticks or tildes as the opening
     // code fence.
     private boolean tryClosing(CharSequence line, int index) {
         int fences = Characters.skip(fenceChar, line, index, line.length()) - index;
         if (fences < openingFenceLength) {
             return false;
         }
-        // spec: The closing code fence [...] may be followed only by spaces, which are ignored.
+        // spec: The closing code fence [...] may be followed only by spaces, which are
+        // ignored.
         int after = Characters.skipSpaceTab(line, index + fences, line.length());
         if (after == line.length()) {
             block.setClosingFenceLength(fences);

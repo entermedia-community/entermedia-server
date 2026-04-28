@@ -30,81 +30,64 @@ import org.openedit.OpenEditException;
 import org.openedit.util.FileUtils;
 import org.openedit.util.OutputFiller;
 
-public class Downloader
-{
+public class Downloader {
 	private static final Log log = LogFactory.getLog(Downloader.class);
 
 	HttpSharedConnection fieldSharedConnections;
-	
-	public HttpSharedConnection getSharedConnections()
-	{
-		if (fieldSharedConnections == null)
-		{
+
+	public HttpSharedConnection getSharedConnections() {
+		if (fieldSharedConnections == null) {
 			fieldSharedConnections = new HttpSharedConnection();
 		}
 
 		return fieldSharedConnections;
 	}
 
-	public void setSharedConnections(HttpSharedConnection inSharedConnections)
-	{
+	public void setSharedConnections(HttpSharedConnection inSharedConnections) {
 		fieldSharedConnections = inSharedConnections;
 	}
 
-	public void download(String inUrl, String inAbsoluteFilePath) throws OpenEditException
-	{
+	public void download(String inUrl, String inAbsoluteFilePath) throws OpenEditException {
 		download(inUrl, new File(inAbsoluteFilePath));
 	}
 
-	public void ftpDownload(String inServer,String path,String filename, String downloadfilename, String inUsername, String inPassword)
-	{
+	public void ftpDownload(String inServer, String path, String filename, String downloadfilename, String inUsername,
+			String inPassword) {
 		FTPClient client = new FTPClient();
 		FileOutputStream fos = null;
-		try
-		{
+		try {
 
 			client.connect(inServer);
-			if(inUsername != null && inUsername.length() != 0) {
+			if (inUsername != null && inUsername.length() != 0) {
 				client.login(inUsername, inPassword);
 			} else {
 				client.login("anonymous", "");
 
 			}
-            client.enterLocalPassiveMode();
+			client.enterLocalPassiveMode();
 
 			fos = new FileOutputStream(downloadfilename);
 			client.changeWorkingDirectory(path);
-			// Fetch file from server 
-			
+			// Fetch file from server
 
-			
-			boolean success = client.retrieveFile( filename, fos);
-			 if (success) {
-	               log.info("Ftp file successfully download.");
-	            }
-			 else {
-				 log.info("Download failed" + 				 client.getReplyString());
-			 }
+			boolean success = client.retrieveFile(filename, fos);
+			if (success) {
+				log.info("Ftp file successfully download.");
+			} else {
+				log.info("Download failed" + client.getReplyString());
+			}
 
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 
 			throw new OpenEditException(e);
 
-		}
-		finally
-		{
-			try
-			{
-				if (fos != null)
-				{
+		} finally {
+			try {
+				if (fos != null) {
 					fos.close();
 				}
 				client.disconnect();
-			}
-			catch (IOException e)
-			{
+			} catch (IOException e) {
 
 				throw new OpenEditException(e);
 
@@ -112,140 +95,132 @@ public class Downloader
 
 		}
 
-	
-
 	}
 
-	public void download(String inStrUrl, File outputFile) throws OpenEditException
-	{
+	public void download(String inStrUrl, File outputFile) throws OpenEditException {
 		FileOutputStream out = null;
 		InputStream in = null;
 		HttpGet method = null;
-		try
-		{
+		try {
 
 			RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
 			HttpClient client = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
 
 			method = new HttpGet(inStrUrl);
 
-			//  HttpRequestBuilder builder = new HttpRequestBuilder();
+			// HttpRequestBuilder builder = new HttpRequestBuilder();
 
 			// method.setEntity(builder.build());
 
 			HttpResponse response2 = client.execute(method);
 			StatusLine sl = response2.getStatusLine();
-			//int status = client.executeMethod(method);
-			if (sl.getStatusCode() != 200)
-			{
+			// int status = client.executeMethod(method);
+			if (sl.getStatusCode() != 200) {
 				throw new Exception(method + " Request failed: status code " + sl.getStatusCode());
 			}
 
-			//this helps prevent 403 errors.
-			//			con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB;     rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)");
+			// this helps prevent 403 errors.
+			// con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT
+			// 6.1; en-GB; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR
+			// 3.5.30729)");
 
-			//*** create new output file
-			//*** make a growable storage area to read into 
+			// *** create new output file
+			// *** make a growable storage area to read into
 			outputFile.getParentFile().mkdirs();
 			out = new FileOutputStream(outputFile);
-			//*** read in url connection stream into input stream
+			// *** read in url connection stream into input stream
 			HttpEntity httpentity = response2.getEntity();
 			in = httpentity.getContent();
-			//*** fill output stream
-			//log.info("downloading " + inStrUrl);
+			// *** fill output stream
+			// log.info("downloading " + inStrUrl);
 			new OutputFiller().fill(in, out);
-			//EntityUtils.consume(httpentity);
-		}
-		catch (Throwable ex)
-		{
+			// EntityUtils.consume(httpentity);
+		} catch (Throwable ex) {
 			throw new OpenEditException(ex);
-		}
-		finally
-		{
-			//*** close output stream
+		} finally {
+			// *** close output stream
 			FileUtils.safeClose(out);
-			//*** close input stream
+			// *** close input stream
 			FileUtils.safeClose(in);
-			if (method != null)
-			{
+			if (method != null) {
 				method.releaseConnection();
 			}
 		}
 	}
 
-	public String downloadToString(String inUrl)
-	{
-//		StringWriter out = null;
-//		InputStream in = null;
-//		try
-//		{
-			CloseableHttpResponse response = getSharedConnections().sharedGet(inUrl);
-			String text = getSharedConnections().parseText(response);
-			
-//			URL url = new URL(inUrl);
-//			URLConnection con = url.openConnection();
-//			con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB;     rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)");
-//
-//			con.setConnectTimeout(15 * 1000);
-//			con.setReadTimeout(15 * 1000);
-//			con.setUseCaches(false);
-//			con.connect();
+	public String downloadToString(String inUrl) {
+		// StringWriter out = null;
+		// InputStream in = null;
+		// try
+		// {
+		CloseableHttpResponse response = getSharedConnections().sharedGet(inUrl);
+		String text = getSharedConnections().parseText(response);
 
-			//*** create new output file
-			//*** make a growable storage area to read into 
-//			out = new StringWriter();
-//			//*** read in url connection stream into input stream
-//			in = con.getInputStream();
-//			//*** fill output stream
-//			new OutputFiller().fill(new InputStreamReader(in), out);
-			return text;
-//		}
-//		catch (Exception ex)
-//		{
-//			throw new OpenEditException(ex);
-//		}
-//		finally
-//		{
-//			//*** close output stream
-//			FileUtils.safeClose(out);
-//			//*** close input stream
-//			FileUtils.safeClose(in);
-//		}
+		// URL url = new URL(inUrl);
+		// URLConnection con = url.openConnection();
+		// con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT
+		// 6.1; en-GB; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR
+		// 3.5.30729)");
+		//
+		// con.setConnectTimeout(15 * 1000);
+		// con.setReadTimeout(15 * 1000);
+		// con.setUseCaches(false);
+		// con.connect();
+
+		// *** create new output file
+		// *** make a growable storage area to read into
+		// out = new StringWriter();
+		// //*** read in url connection stream into input stream
+		// in = con.getInputStream();
+		// //*** fill output stream
+		// new OutputFiller().fill(new InputStreamReader(in), out);
+		return text;
+		// }
+		// catch (Exception ex)
+		// {
+		// throw new OpenEditException(ex);
+		// }
+		// finally
+		// {
+		// //*** close output stream
+		// FileUtils.safeClose(out);
+		// //*** close input stream
+		// FileUtils.safeClose(in);
+		// }
 	}
 
-	public File download(URL url, File dstFile)
-	{
-		CloseableHttpClient httpclient = HttpClients.custom().setRedirectStrategy(new LaxRedirectStrategy()) // adds HTTP REDIRECT support to GET and POST methods 
+	public File download(URL url, File dstFile) {
+		CloseableHttpClient httpclient = HttpClients.custom().setRedirectStrategy(new LaxRedirectStrategy()) // adds
+																												// HTTP
+																												// REDIRECT
+																												// support
+																												// to
+																												// GET
+																												// and
+																												// POST
+																												// methods
 				.build();
-		try
-		{
+		try {
 			HttpGet get = new HttpGet(url.toURI()); // we're using GET but it could be via POST as well
 			File downloaded = httpclient.execute(get, new FileDownloadResponseHandler(dstFile));
 			return downloaded;
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			throw new IllegalStateException(e);
-		}
-		finally
-		{
-			//IOUtils.closeQuietly(httpclient);
+		} finally {
+			// IOUtils.closeQuietly(httpclient);
 		}
 	}
 
-	static class FileDownloadResponseHandler implements ResponseHandler<File>
-	{
+	static class FileDownloadResponseHandler implements ResponseHandler<File> {
 
 		private final File target;
 
-		public FileDownloadResponseHandler(File target)
-		{
+		public FileDownloadResponseHandler(File target) {
 			this.target = target;
 		}
 
 		@Override
-		public File handleResponse(HttpResponse response) throws ClientProtocolException, IOException
-		{
+		public File handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
 			InputStream source = response.getEntity().getContent();
 
 			org.apache.commons.io.FileUtils.copyInputStreamToFile(source, this.target);

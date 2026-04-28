@@ -8,20 +8,15 @@ import org.openedit.users.authenticate.AuthenticationRequest;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 
-public class GoogleTwoFactorAuthenticator implements Authenticator{
+public class GoogleTwoFactorAuthenticator implements Authenticator {
 
 	protected SearcherManager fieldSearcherManager;
-	
-	
-	
-	
-	public SearcherManager getSearcherManager()
-	{
+
+	public SearcherManager getSearcherManager() {
 		return fieldSearcherManager;
 	}
 
-	public void setSearcherManager(SearcherManager fieldSearcherManager)
-	{
+	public void setSearcherManager(SearcherManager fieldSearcherManager) {
 		this.fieldSearcherManager = fieldSearcherManager;
 	}
 
@@ -33,39 +28,30 @@ public class GoogleTwoFactorAuthenticator implements Authenticator{
 
 	@Override
 	public boolean authenticate(AuthenticationRequest inReq) throws UserManagerException {
-		
+
 		GoogleAuthenticator gAuth = new GoogleAuthenticator();
-		String keystring =  inReq.get("googlekeystring");
+		String keystring = inReq.get("googlekeystring");
 		User user = inReq.getUser();
 
 		String secret = user.get("googlesecretkey");
-				
-		if(secret == null) 
-		{
+
+		if (secret == null) {
 			return false;
 		}
-		if(keystring == null) {
+		if (keystring == null) {
 			return false;
 		}
-	
-		//https://github.com/wstrange/GoogleAuth
+
+		// https://github.com/wstrange/GoogleAuth
 		Integer intval;
-		try
-		{
+		try {
 			intval = Integer.valueOf(keystring);
-		}
-		catch (NumberFormatException e)
-		{
+		} catch (NumberFormatException e) {
 			return false;
 		}
 		boolean isCodeValid = gAuth.authorize(secret, intval);
 		return isCodeValid;
-		
+
 	}
 
-	
-	
-	
-	
-	
 }

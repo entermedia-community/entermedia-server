@@ -11,22 +11,26 @@ import java.util.List;
 /**
  * Parser for a specific block node.
  * <p>
- * Implementations should subclass {@link AbstractBlockParser} instead of implementing this directly.
+ * Implementations should subclass {@link AbstractBlockParser} instead of
+ * implementing this directly.
  */
 public interface BlockParser {
 
     /**
-     * Return true if the block that is parsed is a container (contains other blocks), or false if it's a leaf.
+     * Return true if the block that is parsed is a container (contains other
+     * blocks), or false if it's a leaf.
      */
     boolean isContainer();
 
     /**
      * Return true if the block can have lazy continuation lines.
      * <p>
-     * Lazy continuation lines are lines that were rejected by this {@link #tryContinue(ParserState)} but didn't match
+     * Lazy continuation lines are lines that were rejected by this
+     * {@link #tryContinue(ParserState)} but didn't match
      * any other block parsers either.
      * <p>
-     * If true is returned here, those lines will get added via {@link #addLine(SourceLine)}. For false, the block is
+     * If true is returned here, those lines will get added via
+     * {@link #addLine(SourceLine)}. For false, the block is
      * closed instead.
      */
     boolean canHaveLazyContinuationLines();
@@ -38,14 +42,18 @@ public interface BlockParser {
     BlockContinue tryContinue(ParserState parserState);
 
     /**
-     * Add the part of a line that belongs to this block parser to parse (i.e. without any container block markers).
-     * Note that the line will only include a {@link SourceLine#getSourceSpan()} if source spans are enabled for inlines.
+     * Add the part of a line that belongs to this block parser to parse (i.e.
+     * without any container block markers).
+     * Note that the line will only include a {@link SourceLine#getSourceSpan()} if
+     * source spans are enabled for inlines.
      */
     void addLine(SourceLine line);
 
     /**
-     * Add a source span of the currently parsed block. The default implementation in {@link AbstractBlockParser} adds
-     * it to the block. Unless you have some complicated parsing where you need to check source positions, you don't
+     * Add a source span of the currently parsed block. The default implementation
+     * in {@link AbstractBlockParser} adds
+     * it to the block. Unless you have some complicated parsing where you need to
+     * check source positions, you don't
      * need to override this.
      *
      * @since 0.16.0
@@ -53,8 +61,10 @@ public interface BlockParser {
     void addSourceSpan(SourceSpan sourceSpan);
 
     /**
-     * Return definitions parsed by this parser. The definitions returned here can later be accessed during inline
-     * parsing via {@link org.entermediadb.markdown.parser.InlineParserContext#getDefinition}.
+     * Return definitions parsed by this parser. The definitions returned here can
+     * later be accessed during inline
+     * parsing via
+     * {@link org.entermediadb.markdown.parser.InlineParserContext#getDefinition}.
      */
     List<DefinitionMap<?>> getDefinitions();
 

@@ -13,76 +13,63 @@ import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
 import org.openedit.util.Replacer;
 
-public class ShellScriptRunner implements ScriptRunner
-{
+public class ShellScriptRunner implements ScriptRunner {
 	private static final Log log = LogFactory.getLog(ShellScriptRunner.class);
 
-	
 	protected Exec fieldExec;
 	protected SearcherManager fieldSearcherManager;
 	protected ModuleManager fieldModuleManager;
-	
-	public ModuleManager getModuleManager()
-	{
+
+	public ModuleManager getModuleManager() {
 		return fieldModuleManager;
 	}
-	
-	/*
-	public SearcherManager getSearcherManager() {
-		return fieldSearcherManager;
-	}
-	 */
 
+	/*
+	 * public SearcherManager getSearcherManager() {
+	 * return fieldSearcherManager;
+	 * }
+	 */
 
 	public void setSearcherManager(SearcherManager inSearcherManager) {
 		fieldSearcherManager = inSearcherManager;
 	}
 
-
-
 	public Exec getExec() {
 		return fieldExec;
 	}
-
-
 
 	public void setExec(Exec inExec) {
 		fieldExec = inExec;
 	}
 
-
-
 	@Override
-	public Object exec(Script inScript, Map variableMap) throws OpenEditException
-	{
+	public Object exec(Script inScript, Map variableMap) throws OpenEditException {
 		String path = inScript.getPage().getContentItem().getAbsolutePath();
 		ArrayList args = new ArrayList();
 		WebPageRequest req = (WebPageRequest) variableMap.get("context");
 		String catalogid = req.findPathValue("catalogid");
 		String mask = req.findValue("scriptargs");
-		if(catalogid != null && mask != null) {
-			
-			//String value =  getSearcherManager().getValue(catalogid, mask, variableMap);
+		if (catalogid != null && mask != null) {
+
+			// String value = getSearcherManager().getValue(catalogid, mask, variableMap);
 			Replacer replacer = getReplacer(catalogid);
 			String value = replacer.replace(mask, variableMap);
-			
-			if(value != null) {
+
+			if (value != null) {
 				args.add(value);
 			}
 		}
 		ExecResult result = getExec().runExec(path, args, true);
-		if(result.isRunOk()) {
+		if (result.isRunOk()) {
 			log.info("ran " + inScript.getPage());
 			log.info(result.getStandardOut());
 		}
-		
+
 		return result;
 	}
-	
-	public Replacer getReplacer(String inCatalogId)
-	{
-		return (Replacer)getModuleManager().getBean(inCatalogId, "replacer");
-	}		
 
+	public Replacer getReplacer(String inCatalogId) {
+		return (Replacer) getModuleManager().getBean(inCatalogId, "replacer");
+	}
 
 }

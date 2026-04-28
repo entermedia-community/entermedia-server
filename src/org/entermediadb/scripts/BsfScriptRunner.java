@@ -7,47 +7,37 @@ import org.apache.bsf.BSFException;
 import org.apache.bsf.BSFManager;
 import org.openedit.OpenEditException;
 
-public class BsfScriptRunner implements ScriptRunner
-{
+public class BsfScriptRunner implements ScriptRunner {
 
 	@Override
-	public Object exec(Script inScript, Map context) throws OpenEditException
-	{
+	public Object exec(Script inScript, Map context) throws OpenEditException {
 		BSFManager bsfManager = new BSFManager();
 
-		try
-		{
+		try {
 			// expose standard items in the context
-			for (Iterator iter = context.keySet().iterator(); iter.hasNext();)
-			{
+			for (Iterator iter = context.keySet().iterator(); iter.hasNext();) {
 				String element = (String) iter.next();
 				Object val = context.get(element);
-				if( val != null)
-				{
+				if (val != null) {
 					bsfManager.declareBean(element, val, val.getClass());
 				}
 			}
-	
+
 			bsfManager.exec(
-				BSFManager.getLangFromFilename(inScript.getDescription()),
-				inScript.getDescription(),
-				0,
-				0,
-				inScript.getScriptText());
-		}
-		catch( BSFException ex)
-		{
+					BSFManager.getLangFromFilename(inScript.getDescription()),
+					inScript.getDescription(),
+					0,
+					0,
+					inScript.getScriptText());
+		} catch (BSFException ex) {
 			Throwable ext = ex.getTargetException();
-			if( ext instanceof OpenEditException)
-			{
-				throw (OpenEditException)ext;
+			if (ext instanceof OpenEditException) {
+				throw (OpenEditException) ext;
 			}
 			throw new OpenEditException(ext);
 		}
 		return null;
-		
-		
-	}
 
+	}
 
 }

@@ -3,7 +3,8 @@ package org.entermediadb.markdown.parser.block;
 import org.entermediadb.markdown.internal.BlockContinueImpl;
 
 /**
- * Result object for continuing parsing of a block, see static methods for constructors.
+ * Result object for continuing parsing of a block, see static methods for
+ * constructors.
  */
 public class BlockContinue {
 

@@ -19,102 +19,91 @@ import org.openedit.OpenEditException;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 
-public class modulesearchAutoCompleteSearcher extends BaseElasticSearcher
-{
+public class modulesearchAutoCompleteSearcher extends BaseElasticSearcher {
 	private static final Log log = LogFactory.getLog(modulesearchAutoCompleteSearcher.class);
 
-	//search only modules as specified on the search terms in the query
+	// search only modules as specified on the search terms in the query
 	@Override
-	public HitTracker search(SearchQuery inQuery)
-	{
+	public HitTracker search(SearchQuery inQuery) {
 		String[] searchmodules = listSearchModules();
-		
+
 		SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
-		
+
 		search.setTypes(searchmodules);
 
-		//TODO: Auto added from advancedfilter
+		// TODO: Auto added from advancedfilter
 		AggregationBuilder b = AggregationBuilders.terms("keywords").field("keywords" + ".exact").size(100);
 		search.addAggregation(b);
 
 		b = AggregationBuilders.terms("ibmfilename").field("ibmfilename" + ".exact").size(100);
 		search.addAggregation(b);
 
-		
-		//b = AggregationBuilders.terms("ibmfundingSource").field("ibmfundingSource").size(100);
-		//search.addAggregation(b);
+		// b =
+		// AggregationBuilders.terms("ibmfundingSource").field("ibmfundingSource").size(100);
+		// search.addAggregation(b);
 
-		search.setRequestCache(false);  //What does this do?
+		search.setRequestCache(false); // What does this do?
 
 		BoolQueryBuilder terms = buildTerms(inQuery);
-		
+
 		TermQueryBuilder deleted = QueryBuilders.termQuery("emrecordstatus.recorddeleted", true);
 		terms.mustNot(deleted);
-		
+
 		search.setQuery(terms);
 		// search.
 		addSorts(inQuery, search);
-		//addFacets(inQuery, search);
+		// addFacets(inQuery, search);
 
 		addSearcherTerms(inQuery, search);
-		//addHighlights(inQuery, search);
+		// addHighlights(inQuery, search);
 		search.setRequestCache(true);
 
-		//search.toString()
+		// search.toString()
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, 80);
 		hits.setSearcherManager(getSearcherManager());
 		hits.setIndexId(getIndexId());
 		hits.setSearcher(this);
 		hits.setSearchQuery(inQuery);
-		
-		log.info("Found " + hits.size() + " for " + inQuery.toFriendly()) ;
-		
-		
+
+		log.info("Found " + hits.size() + " for " + inQuery.toFriendly());
+
 		hits.getActiveFilterValues();
-		
-		
-		
+
 		return hits;
 	}
-	
+
 	@Override
-	public void reindexInternal() throws OpenEditException
-	{
-		//super.reindexInternal();
+	public void reindexInternal() throws OpenEditException {
+		// super.reindexInternal();
 	}
-	
-	
-	protected String[] listSearchModules()
-	{
-		String[] allmodules = (String[])getCacheManager().get("modulesearch","all");
-		if( allmodules == null)
-		{
+
+	protected String[] listSearchModules() {
+		String[] allmodules = (String[]) getCacheManager().get("modulesearch", "all");
+		if (allmodules == null) {
 			Collection<Data> modules = getSearcherManager().getList(getCatalogId(), "module");
 			Collection searchmodules = new ArrayList();
-			for (Iterator iterator = modules.iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = modules.iterator(); iterator.hasNext();) {
 				Data data = (Data) iterator.next();
 				String show = data.get("showonsearch");
-				if( !"modulesearch".equals(data.getId() ) && Boolean.parseBoolean(show)) //Permission check?
+				if (!"modulesearch".equals(data.getId()) && Boolean.parseBoolean(show)) // Permission check?
 				{
 					searchmodules.add(data.getId());
 				}
 			}
-			allmodules = (String[])searchmodules.toArray(new String[searchmodules.size()]);
+			allmodules = (String[]) searchmodules.toArray(new String[searchmodules.size()]);
 		}
 		return allmodules;
 	}
+
 	@Override
-	public void reIndexAll() throws OpenEditException
-	{
-		//super.reIndexAll();
+	public void reIndexAll() throws OpenEditException {
+		// super.reIndexAll();
 	}
-	
+
 	@Override
-	public boolean initialize()
-	{
-		//return super.initialize();
+	public boolean initialize() {
+		// return super.initialize();
 		return true;
 	}
 }

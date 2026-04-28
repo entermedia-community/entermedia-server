@@ -23,8 +23,7 @@ public class Results {
 		return fieldFolders;
 	}
 
-	public void setFolders(Collection inFolders)
-	{
+	public void setFolders(Collection inFolders) {
 		fieldFolders = inFolders;
 	}
 

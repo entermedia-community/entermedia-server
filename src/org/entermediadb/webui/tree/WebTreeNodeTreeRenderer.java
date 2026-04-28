@@ -25,73 +25,67 @@ import java.util.List;
  *
  * @author Matt Avery
  */
-public class WebTreeNodeTreeRenderer extends HtmlTreeRenderer
-{
+public class WebTreeNodeTreeRenderer extends HtmlTreeRenderer {
 	protected boolean fieldFriendlyNames = false;
-	
-	public WebTreeNodeTreeRenderer(WebTree inWebTree)
-	{
-		super( inWebTree );
+
+	public WebTreeNodeTreeRenderer(WebTree inWebTree) {
+		super(inWebTree);
 	}
 
-	public boolean isFriendlyNames()
-	{
+	public boolean isFriendlyNames() {
 		return fieldFriendlyNames;
 	}
 
-	public void setFriendlyNames(boolean inFriendlyNames)
-	{
+	public void setFriendlyNames(boolean inFriendlyNames) {
 		fieldFriendlyNames = inFriendlyNames;
 	}
 
-	/* (non-javadoc)
+	/*
+	 * (non-javadoc)
+	 * 
 	 * @see org.entermediadb.webui.tree.BaseTreeRenderer#toName(java.lang.Object)
 	 */
-	public String toName(Object inNode)
-	{
-		DefaultWebTreeNode node = (DefaultWebTreeNode)inNode;
+	public String toName(Object inNode) {
+		DefaultWebTreeNode node = (DefaultWebTreeNode) inNode;
 		String name = node.getName();
-		if( isFriendlyNames())
-		{
+		if (isFriendlyNames()) {
 			name = name.replace('_', ' ');
-			name = name.substring(0,1).toUpperCase() + name.substring(1);
-				
+			name = name.substring(0, 1).toUpperCase() + name.substring(1);
+
 			int p = name.lastIndexOf('.');
-			if ( p > 0 )
-			{
-				name = name.substring(0,p);
-			}			
+			if (p > 0) {
+				name = name.substring(0, p);
+			}
 		}
 		return name;
 	}
-	protected String customIconSet(Object inNode)
-	{
-		DefaultWebTreeNode node = (DefaultWebTreeNode)inNode;
+
+	protected String customIconSet(Object inNode) {
+		DefaultWebTreeNode node = (DefaultWebTreeNode) inNode;
 		return node.getIconSet();
 	}
-	public String toUrl(Object inNode)
-	{
-		DefaultWebTreeNode node = (DefaultWebTreeNode)inNode;
+
+	public String toUrl(Object inNode) {
+		DefaultWebTreeNode node = (DefaultWebTreeNode) inNode;
 
 		return node.getURL();
 	}
 
-	/* (non-javadoc)
+	/*
+	 * (non-javadoc)
+	 * 
 	 * @see org.entermediadb.webui.tree.BaseTreeRenderer#toId(java.lang.Object)
 	 */
-	public String toId(Object inNode)
-	{
-		DefaultWebTreeNode node = (DefaultWebTreeNode)inNode;
+	public String toId(Object inNode) {
+		DefaultWebTreeNode node = (DefaultWebTreeNode) inNode;
 
 		return node.getId();
 	}
 
-	public void expandAll(Object inRoot)
-	{
+	public void expandAll(Object inRoot) {
 		expandNode(inRoot);
 		List children = getWebTree().getModel().getChildren(inRoot);
-		for (Iterator iterator = children.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 			Object object = (Object) iterator.next();
 			expandAll(object);
 		}

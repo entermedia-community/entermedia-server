@@ -62,11 +62,14 @@ public class TextContentWriter {
     }
 
     /**
-     * Change whether blocks are tight or loose. Loose is the default where blocks are separated by a blank line. Tight
-     * is where blocks are not separated by a blank line. Tight blocks are used in lists, if there are no blank lines
+     * Change whether blocks are tight or loose. Loose is the default where blocks
+     * are separated by a blank line. Tight
+     * is where blocks are not separated by a blank line. Tight blocks are used in
+     * lists, if there are no blank lines
      * within the list.
      * <p>
-     * Note that changing this does not affect block separators that have already been enqueued with {@link #block()},
+     * Note that changing this does not affect block separators that have already
+     * been enqueued with {@link #block()},
      * only future ones.
      */
     public void pushTight(boolean tight) {
@@ -85,7 +88,8 @@ public class TextContentWriter {
     }
 
     /**
-     * If a block separator has been enqueued with {@link #block()} but not yet written, write it now.
+     * If a block separator has been enqueued with {@link #block()} but not yet
+     * written, write it now.
      */
     private void flushBlockSeparator() {
         if (blockSeparator != null) {

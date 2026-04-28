@@ -2,6 +2,7 @@ package org.entermediadb.markdown.node;
 
 /**
  * A heading, e.g.:
+ * 
  * <pre>
  * First heading
  * =============
@@ -9,8 +10,10 @@ package org.entermediadb.markdown.node;
  * ## Another heading
  * </pre>
  *
- * @see <a href="https://spec.commonmark.org/0.31.2/#atx-headings">CommonMark Spec: ATX headings</a>
- * @see <a href="https://spec.commonmark.org/0.31.2/#setext-headings">CommonMark Spec: Setext headings</a>
+ * @see <a href="https://spec.commonmark.org/0.31.2/#atx-headings">CommonMark
+ *      Spec: ATX headings</a>
+ * @see <a href="https://spec.commonmark.org/0.31.2/#setext-headings">CommonMark
+ *      Spec: Setext headings</a>
  */
 public class Heading extends Block {
 

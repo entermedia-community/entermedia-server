@@ -9,18 +9,24 @@ import org.entermediadb.markdown.renderer.Renderer;
 import java.util.*;
 
 /**
- * Renders nodes to Markdown (CommonMark syntax); use {@link #builder()} to create a renderer.
+ * Renders nodes to Markdown (CommonMark syntax); use {@link #builder()} to
+ * create a renderer.
  * <p>
- * Note that it doesn't currently preserve the exact syntax of the original input Markdown (if any):
+ * Note that it doesn't currently preserve the exact syntax of the original
+ * input Markdown (if any):
  * <ul>
- *     <li>Headings are output as ATX headings if possible (multi-line headings need Setext headings)</li>
- *     <li>Links are always rendered as inline links (no support for reference links yet)</li>
- *     <li>Escaping might be over-eager, e.g. a plain {@code *} might be escaped
- *     even though it doesn't need to be in that particular context</li>
- *     <li>Leading whitespace in paragraphs is not preserved</li>
+ * <li>Headings are output as ATX headings if possible (multi-line headings need
+ * Setext headings)</li>
+ * <li>Links are always rendered as inline links (no support for reference links
+ * yet)</li>
+ * <li>Escaping might be over-eager, e.g. a plain {@code *} might be escaped
+ * even though it doesn't need to be in that particular context</li>
+ * <li>Leading whitespace in paragraphs is not preserved</li>
  * </ul>
- * However, it should produce Markdown that is semantically equivalent to the input, i.e. if the Markdown was parsed
- * again and compared against the original AST, it should be the same (minus bugs).
+ * However, it should produce Markdown that is semantically equivalent to the
+ * input, i.e. if the Markdown was parsed
+ * again and compared against the original AST, it should be the same (minus
+ * bugs).
  */
 public class MarkdownRenderer implements Renderer {
 
@@ -29,7 +35,8 @@ public class MarkdownRenderer implements Renderer {
     private MarkdownRenderer(Builder builder) {
         this.nodeRendererFactories = new ArrayList<>(builder.nodeRendererFactories.size() + 1);
         this.nodeRendererFactories.addAll(builder.nodeRendererFactories);
-        // Add as last. This means clients can override the rendering of core nodes if they want.
+        // Add as last. This means clients can override the rendering of core nodes if
+        // they want.
         this.nodeRendererFactories.add(new MarkdownNodeRendererFactory() {
             @Override
             public NodeRenderer create(MarkdownNodeRendererContext context) {
@@ -66,7 +73,8 @@ public class MarkdownRenderer implements Renderer {
     }
 
     /**
-     * Builder for configuring a {@link MarkdownRenderer}. See methods for default configuration.
+     * Builder for configuring a {@link MarkdownRenderer}. See methods for default
+     * configuration.
      */
     public static class Builder {
 
@@ -80,11 +88,14 @@ public class MarkdownRenderer implements Renderer {
         }
 
         /**
-         * Add a factory for instantiating a node renderer (done when rendering). This allows to override the rendering
+         * Add a factory for instantiating a node renderer (done when rendering). This
+         * allows to override the rendering
          * of node types or define rendering for custom node types.
          * <p>
-         * If multiple node renderers for the same node type are created, the one from the factory that was added first
-         * "wins". (This is how the rendering for core node types can be overridden; the default rendering comes last.)
+         * If multiple node renderers for the same node type are created, the one from
+         * the factory that was added first
+         * "wins". (This is how the rendering for core node types can be overridden; the
+         * default rendering comes last.)
          *
          * @param nodeRendererFactory the factory for creating a node renderer
          * @return {@code this}
@@ -115,7 +126,8 @@ public class MarkdownRenderer implements Renderer {
     public interface MarkdownRendererExtension extends Extension {
 
         /**
-         * Extend Markdown rendering, usually by registering custom node renderers using {@link Builder#nodeRendererFactory}.
+         * Extend Markdown rendering, usually by registering custom node renderers using
+         * {@link Builder#nodeRendererFactory}.
          *
          * @param rendererBuilder the renderer builder to extend
          */

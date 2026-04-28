@@ -26,24 +26,21 @@ public class McpManager implements CatalogEnabled {
     protected VelocityRenderUtil fieldRender;
     protected String fieldCatalogId;
     protected Map<String, McpConnection> connections = new ConcurrentHashMap<>();
-   
+
     protected McpGetHandlerManager fieldMcpGetHandlerManager;
 
-	public McpGetHandlerManager getMcpGetHandlerManager()
-	{
-		if (fieldMcpGetHandlerManager == null)
-		{
-			fieldMcpGetHandlerManager = new McpGetHandlerManager();
-		}
-		return fieldMcpGetHandlerManager;
-	}
+    public McpGetHandlerManager getMcpGetHandlerManager() {
+        if (fieldMcpGetHandlerManager == null) {
+            fieldMcpGetHandlerManager = new McpGetHandlerManager();
+        }
+        return fieldMcpGetHandlerManager;
+    }
 
-	public void setMcpGetHandlerManager(McpGetHandlerManager inMcpGetHandlerManager)
-	{
-		fieldMcpGetHandlerManager = inMcpGetHandlerManager;
-	}
+    public void setMcpGetHandlerManager(McpGetHandlerManager inMcpGetHandlerManager) {
+        fieldMcpGetHandlerManager = inMcpGetHandlerManager;
+    }
 
-	public ModuleManager getModuleManager() {
+    public ModuleManager getModuleManager() {
         return fieldModuleManager;
     }
 
@@ -70,20 +67,19 @@ public class McpManager implements CatalogEnabled {
     /**
      * Opens a new SSE connection for the session in inReq if none exists.
      */
-    public McpConnection createConnection(MediaArchive inArchive,WebPageRequest inReq) {
+    public McpConnection createConnection(MediaArchive inArchive, WebPageRequest inReq) {
         String requestedSessionId = inReq.getRequest().getHeader("mcp-session-id");
-        if (requestedSessionId == null || requestedSessionId.isEmpty())
-        {
+        if (requestedSessionId == null || requestedSessionId.isEmpty()) {
             requestedSessionId = inReq.getRequest().getParameter("sessionId");
         }
 
-        String sessionId = (requestedSessionId != null && !requestedSessionId.isEmpty()) ? requestedSessionId : createSessionId();
+        String sessionId = (requestedSessionId != null && !requestedSessionId.isEmpty()) ? requestedSessionId
+                : createSessionId();
         String endpoint = inReq.findPathValue("mcp-endpoint");
-        //This is something like /sse/userkey
+        // This is something like /sse/userkey
         String key = inReq.getPage().getPageName();
         McpConnection stale = connections.remove(sessionId);
-        if (stale != null)
-        {
+        if (stale != null) {
             stale.close();
             log.info("Replacing stale MCP connection for session: " + sessionId);
         }
@@ -95,136 +91,117 @@ public class McpManager implements CatalogEnabled {
         conn.openStream(endpoint);
 
         conn.setKey(key);
-        
+
         Data row = inArchive.query("appkeys").exact("key", key).searchOne();
-        if(row != null) {
-    		String userid = row.get("user");
-    		User user = inArchive.getUser(userid);	        	
-    		conn.setUser(user);
-    	}
+        if (row != null) {
+            String userid = row.get("user");
+            User user = inArchive.getUser(userid);
+            conn.setUser(user);
+        }
 
         log.info("Created MCP connection for session: " + sessionId);
 
-        try
-        {
+        try {
             // this blocks until conn.active == false
             conn.run();
-        }
-        finally
-        {
+        } finally {
             // guarantee we remove it—even on exceptions
             connections.remove(sessionId);
             log.info("Cleaned up MCP connection for session: " + sessionId);
             // ensure the socket is closed if not already
-            if (conn.isActive())
-            {
+            if (conn.isActive()) {
                 conn.close();
             }
         }
 
         return conn;
-        
+
     }
 
-    public void handleCall(WebPageRequest inReq, McpConnection inConnection, String cmd, JSONObject payload) throws Exception{
-        if (inConnection == null)
-        {
+    public void handleCall(WebPageRequest inReq, McpConnection inConnection, String cmd, JSONObject payload)
+            throws Exception {
+        if (inConnection == null) {
             throw new OpenEditException("No active MCP connection for command: " + cmd);
         }
 
         Object id = payload != null ? payload.get("id") : null;
 
         inReq.putPageValue("id", id);
-       	String appid = inReq.findPathValue("applicationid");
+        String appid = inReq.findPathValue("applicationid");
         UserProfile profile = inReq.getUserProfile();
         JSONObject params = payload != null ? (JSONObject) payload.get("params") : null;
         String response;
 
-        if ("logging/setLevel".equals(cmd))
-        {
+        if ("logging/setLevel".equals(cmd)) {
             response = new JsonRpcResponseBuilder(id)
                     .withServer("eMedia Live")
                     .build();
-        }
-        else if ("tools/list".equals(cmd))
-        {
-                    if (profile == null)
-                    {
-                        response = new JsonRpcResponseBuilder(id)
-                                .withResponse("Authentication failed! User profile not found.", true)
-                                .build();
-                    }
-                    else
-                    {
-                        String fp = "/" + appid + "/ai/mcp/method/tools/list.json";
-                        inReq.putPageValue("modules", profile.getEntities());
+        } else if ("tools/list".equals(cmd)) {
+            if (profile == null) {
+                response = new JsonRpcResponseBuilder(id)
+                        .withResponse("Authentication failed! User profile not found.", true)
+                        .build();
+            } else {
+                String fp = "/" + appid + "/ai/mcp/method/tools/list.json";
+                inReq.putPageValue("modules", profile.getEntities());
 
-                        String toolsArrString = getRenderUtil().loadInputFromTemplate(inReq, fp);
+                String toolsArrString = getRenderUtil().loadInputFromTemplate(inReq, fp);
 
-                        response = new JsonRpcResponseBuilder(id)
-                                .withToolsList(toolsArrString)
-                                .build();
-                    }
-        }
-        else if ("tools/call".equals(cmd))
-        {
-                    String functionname = params != null ? (String) params.get("name") : null;
-                    if (functionname == null || functionname.isEmpty())
-                    {
-                        response = new JsonRpcResponseBuilder(id)
-                                .withResponse("Invalid tools/call request. Missing tool name.", true)
-                                .build();
-                    }
-                    else
-                    {
-                        String siteid = inReq.findValue("siteid");
-                        inReq.putPageValue("mcpapplicationid", siteid + "/find");
-                        String fp = "/" + appid + "/ai/mcp/functions/" + functionname + ".html";
+                response = new JsonRpcResponseBuilder(id)
+                        .withToolsList(toolsArrString)
+                        .build();
+            }
+        } else if ("tools/call".equals(cmd)) {
+            String functionname = params != null ? (String) params.get("name") : null;
+            if (functionname == null || functionname.isEmpty()) {
+                response = new JsonRpcResponseBuilder(id)
+                        .withResponse("Invalid tools/call request. Missing tool name.", true)
+                        .build();
+            } else {
+                String siteid = inReq.findValue("siteid");
+                inReq.putPageValue("mcpapplicationid", siteid + "/find");
+                String fp = "/" + appid + "/ai/mcp/functions/" + functionname + ".html";
 
-                        String text = getRenderUtil().loadInputFromTemplate(inReq, fp);
+                String text = getRenderUtil().loadInputFromTemplate(inReq, fp);
 
-                        text = text.replaceAll("(?m)^\\s*$\\n?", "");
-                        text = text.replaceAll("(\\r?\\n){2,}", "\n");
+                text = text.replaceAll("(?m)^\\s*$\\n?", "");
+                text = text.replaceAll("(\\r?\\n){2,}", "\n");
 
-                        response = new JsonRpcResponseBuilder(id)
-                                .withResponse(text, false)
-                                .build();
-                    }
-        }
-        else
-        {
-            log.info("Called " + cmd); //"notifications/initialized"
+                response = new JsonRpcResponseBuilder(id)
+                        .withResponse(text, false)
+                        .build();
+            }
+        } else {
+            log.info("Called " + cmd); // "notifications/initialized"
             response = new JsonRpcResponseBuilder(id)
                     .withResponse("CMD Received " + cmd, false)
                     .build();
         }
 
         inConnection.sendMessage(response);
-		//inReq.getResponse().getOutputStream().write(response.getBytes());  //This should chunk it up
-		
-		//inReq.getPageStreamer().getOutput().getWriter().write(response);
-		//inReq.getResponse().flushBuffer();
+        // inReq.getResponse().getOutputStream().write(response.getBytes()); //This
+        // should chunk it up
+
+        // inReq.getPageStreamer().getOutput().getWriter().write(response);
+        // inReq.getResponse().flushBuffer();
     }
 
-    public String createSessionId()
-    {
+    public String createSessionId() {
         return UUID.randomUUID().toString();
     }
 
     /**
      * Retrieves the existing connection for the session in inReq, or null if none.
      */
-    public McpConnection getConnection(String sessionId) 
-    {
-    	
-        //String sessionId = inReq.findValue("sessionId");
+    public McpConnection getConnection(String sessionId) {
+
+        // String sessionId = inReq.findValue("sessionId");
         return connections.get(sessionId);
     }
 
-    public McpGetHandler loadGetHandler(WebPageRequest inReq) 
-    {
-    	McpGetHandler handler = getMcpGetHandlerManager().loadGetHandler(inReq);
-    	return handler;
+    public McpGetHandler loadGetHandler(WebPageRequest inReq) {
+        McpGetHandler handler = getMcpGetHandlerManager().loadGetHandler(inReq);
+        return handler;
     }
 
     /**

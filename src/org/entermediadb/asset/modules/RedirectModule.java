@@ -38,11 +38,11 @@ public class RedirectModule extends BaseMediaModule {
 	// little virtual hosting trick
 	public void hostRedirect(WebPageRequest inReq) {
 		String page = inReq.getPage().getName();
-		if(page.length() == 0){
+		if (page.length() == 0) {
 			return;
 		}
-		if(page.indexOf(".") != -1){
-			if(!page.endsWith(".html")){
+		if (page.indexOf(".") != -1) {
+			if (!page.endsWith(".html")) {
 				return;
 			}
 		}
@@ -56,15 +56,15 @@ public class RedirectModule extends BaseMediaModule {
 			log.info("normalized base was " + base);
 			String root = inReq.findValue("redirectroot");
 			log.info("redirect root was" + root);
-		
-			if(root == null) {
+
+			if (root == null) {
 				return;
 			}
-			
+
 			if (!root.equals(base)) {
 				return;
 			}
-			
+
 			Searcher searcher = getHostSearcher(catalogid);
 			SearchQuery query = searcher.createSearchQuery();
 			query.addMatches("key", page);
@@ -84,13 +84,10 @@ public class RedirectModule extends BaseMediaModule {
 			}
 		}
 	}
-	
-	
-	
-	
+
 	public void virtualHost(WebPageRequest inReq) {
 		String skipredirect = inReq.findValue("skipvirtualhost");
-		if(Boolean.parseBoolean(skipredirect)){
+		if (Boolean.parseBoolean(skipredirect)) {
 			return;
 		}
 		URLUtilities utils = (URLUtilities) inReq
@@ -99,7 +96,7 @@ public class RedirectModule extends BaseMediaModule {
 
 			String base = utils.siteRoot() + utils.relativeHomePrefix();
 			base = toSubdomain(base);
-			//log.info("normalized base was" + base);
+			// log.info("normalized base was" + base);
 			String catalogid = inReq.findPathValue("catalogid");
 
 			Searcher searcher = getHostSearcher(catalogid);
@@ -123,26 +120,25 @@ public class RedirectModule extends BaseMediaModule {
 			}
 		}
 	}
-	
-	
+
 	private String toSubdomain(String base) {
-			// string off start
+		// string off start
 
-			String basestring = base.substring(base.lastIndexOf("//") + 1,
-					base.length());
-			// strip of any subdomains (including www)
+		String basestring = base.substring(base.lastIndexOf("//") + 1,
+				base.length());
+		// strip of any subdomains (including www)
 
-			// remove any slashes
-			basestring = basestring.replaceAll("/", "");
-//			while (basestring.lastIndexOf('.') != basestring.indexOf(".")) {
-//				basestring = basestring.substring(basestring.indexOf(".") + 1,
-//						basestring.length());
-//			}
-			if (basestring.indexOf(":") != -1) {
-				basestring = basestring.substring(0, basestring.lastIndexOf(':'));
-			}
-			basestring = basestring.toLowerCase();
-			return basestring;
+		// remove any slashes
+		basestring = basestring.replaceAll("/", "");
+		// while (basestring.lastIndexOf('.') != basestring.indexOf(".")) {
+		// basestring = basestring.substring(basestring.indexOf(".") + 1,
+		// basestring.length());
+		// }
+		if (basestring.indexOf(":") != -1) {
+			basestring = basestring.substring(0, basestring.lastIndexOf(':'));
+		}
+		basestring = basestring.toLowerCase();
+		return basestring;
 	}
 
 	public String toNormalizedBase(String base) {

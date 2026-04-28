@@ -21,14 +21,12 @@ import org.openedit.repository.ContentItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
 
-
 /**
  * This model represents a tree of site content.
  *
  * @author Matt Avery, mavery@einnovation.com
  */
-public class RepositoryTreeModel extends DefaultWebTreeModel implements PageAccessListener
-{
+public class RepositoryTreeModel extends DefaultWebTreeModel implements PageAccessListener {
 	protected Repository fieldRepository;
 	protected String fieldRootPath;
 	protected PageManager fieldPageManager;
@@ -38,89 +36,81 @@ public class RepositoryTreeModel extends DefaultWebTreeModel implements PageAcce
 	 *
 	 * @param inSiteContext DOCUMENT ME!
 	 */
-	public RepositoryTreeModel(Repository inRepository)
-	{
-		this( inRepository, "/");
+	public RepositoryTreeModel(Repository inRepository) {
+		this(inRepository, "/");
 	}
 
-	public RepositoryTreeModel( Repository inRepository, String inRootPath )
-	{
+	public RepositoryTreeModel(Repository inRepository, String inRootPath) {
 		super();
 		fieldRepository = inRepository;
 		fieldRootPath = inRootPath;
 	}
 
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see TreeModel#getRoot()
 	 */
-	public Object getRoot()
-	{
-		if (fieldRoot == null)
-		{
+	public Object getRoot() {
+		if (fieldRoot == null) {
 			reload();
 		}
 
 		return fieldRoot;
 	}
 
-
 	/**
-	 * Find the page tree node at the given path.  This method will not automatically expand any
+	 * Find the page tree node at the given path. This method will not automatically
+	 * expand any
 	 * node in the tree if it is not already expanded.
 	 *
 	 * @param inPath The path (e.g. "abc/def/ghi.html")
 	 *
-	 * @return The node at the given path, or <code>null</code> if no node could be found that
-	 * 		   matched the given path
+	 * @return The node at the given path, or <code>null</code> if no node could be
+	 *         found that
+	 *         matched the given path
 	 */
-	public RepositoryTreeNode findNode(String inPath)
-	{
+	public RepositoryTreeNode findNode(String inPath) {
 		return ((RepositoryTreeNode) getRoot()).findNode(inPath);
 	}
 
 	/**
 		 *
 		 */
-	public void reload()
-	{
+	public void reload() {
 		ContentItem rootItem;
-		try
-		{
-			rootItem = getRepository().get( getRootPath() );
-			//TODO: Add all the ignore paths depending on permissions
-			//At least handle directory level permissions _site.xconf
-			//TODO: Add user, page manager create basewebrequests
+		try {
+			rootItem = getRepository().get(getRootPath());
+			// TODO: Add all the ignore paths depending on permissions
+			// At least handle directory level permissions _site.xconf
+			// TODO: Add user, page manager create basewebrequests
+		} catch (RepositoryException e) {
+			throw new OpenEditRuntimeException(e);
 		}
-		catch( RepositoryException e )
-		{
-			 throw new OpenEditRuntimeException(e);
-		}
-		RepositoryTreeNode newRoot = new RepositoryTreeNode( getRepository(), rootItem, "_");
+		RepositoryTreeNode newRoot = new RepositoryTreeNode(getRepository(), rootItem, "_");
 		newRoot.fieldFilter = getFilter();
 		newRoot.fieldPageManager = getPageManager();
 		newRoot.setUrl(getRootPath());
 		fieldRoot = newRoot;
-		
+
 	}
-	public Repository getRepository()
-	{
+
+	public Repository getRepository() {
 		return fieldRepository;
 	}
-	public void setRepository( Repository repository )
-	{
+
+	public void setRepository(Repository repository) {
 		fieldRepository = repository;
 	}
-	public String getRootPath()
-	{
+
+	public String getRootPath() {
 		return fieldRootPath;
 	}
-	public void setRootPath( String rootPath )
-	{
+
+	public void setRootPath(String rootPath) {
 		fieldRootPath = rootPath;
 	}
 
-
 	/**
 	 * DOCUMENT ME!
 	 *
@@ -129,8 +119,7 @@ public class RepositoryTreeModel extends DefaultWebTreeModel implements PageAcce
 	 *
 	 * @throws OpenEditException
 	 */
-	public void pageAdded(Page inPage)
-	{
+	public void pageAdded(Page inPage) {
 		reload();
 	}
 
@@ -142,8 +131,7 @@ public class RepositoryTreeModel extends DefaultWebTreeModel implements PageAcce
 	 *
 	 * @throws OpenEditException
 	 */
-	public void pageModified(Page inPage)
-	{
+	public void pageModified(Page inPage) {
 		reload();
 	}
 
@@ -155,8 +143,7 @@ public class RepositoryTreeModel extends DefaultWebTreeModel implements PageAcce
 	 *
 	 * @throws OpenEditException
 	 */
-	public void pageRemoved(Page inPage)
-	{
+	public void pageRemoved(Page inPage) {
 		reload();
 	}
 
@@ -167,30 +154,25 @@ public class RepositoryTreeModel extends DefaultWebTreeModel implements PageAcce
 	 *
 	 * @throws OpenEditException
 	 */
-	public void pageRequested(Page inPage)
-	{
+	public void pageRequested(Page inPage) {
 		// do nothing
 	}
-	
-	protected boolean hasLoadedChildren(Object inRoot)
-	{
-		//Only look in nodes with already loaded children
-		RepositoryTreeNode parent = (RepositoryTreeNode)inRoot;
-		if( parent.fieldChildren == null)
-		{
+
+	protected boolean hasLoadedChildren(Object inRoot) {
+		// Only look in nodes with already loaded children
+		RepositoryTreeNode parent = (RepositoryTreeNode) inRoot;
+		if (parent.fieldChildren == null) {
 			return false;
 		}
 
 		return true;
 	}
 
-	public PageManager getPageManager()
-	{
+	public PageManager getPageManager() {
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager)
-	{
+	public void setPageManager(PageManager inPageManager) {
 		fieldPageManager = inPageManager;
 	}
 }

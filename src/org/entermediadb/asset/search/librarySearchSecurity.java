@@ -13,117 +13,102 @@ import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.Group;
 
-public class librarySearchSecurity implements SearchSecurity
-{
+public class librarySearchSecurity implements SearchSecurity {
 	private static final Log log = LogFactory.getLog(librarySearchSecurity.class);
 
-	public SearchQuery  attachSecurity(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery) 
-	{
-		if( inQuery.isSecurityAttached())
-		{
+	public SearchQuery attachSecurity(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery) {
+		if (inQuery.isSecurityAttached()) {
 			return inQuery;
 		}
-		
+
 		UserProfile profile = inPageRequest.getUserProfile();
-		if (profile != null && profile.isInRole("administrator"))
-		{
-			return inQuery;					
+		if (profile != null && profile.isInRole("administrator")) {
+			return inQuery;
 		}
-		
-		//TODO: Add Hidden Libraries
+
+		// TODO: Add Hidden Libraries
 		Collection groupids = new ArrayList();
 		UserProfile inUserprofile = inPageRequest.getUserProfile();
-		
-		if( inUserprofile == null || inUserprofile.getUser() == null)
-		{
+
+		if (inUserprofile == null || inUserprofile.getUser() == null) {
 			groupids.add("anonymous");
-		}
-		else
-		{
-			for (Iterator iterator = inUserprofile.getUser().getGroups().iterator(); iterator.hasNext();)
-			{
+		} else {
+			for (Iterator iterator = inUserprofile.getUser().getGroups().iterator(); iterator.hasNext();) {
 				Group group = (Group) iterator.next();
 				groupids.add(group.getId());
 			}
 		}
 		String roleid = null;
-		if( inUserprofile != null && inUserprofile.getSettingsGroup() != null)
-		{
+		if (inUserprofile != null && inUserprofile.getSettingsGroup() != null) {
 			roleid = inUserprofile.getSettingsGroup().getId();
-		}
-		else
-		{
+		} else {
 			roleid = "anonymous";
 		}
-		
+
 		String userid = null;
-		if( inUserprofile != null)
-		{
+		if (inUserprofile != null) {
 			userid = inUserprofile.getUserId();
-		}
-		else
-		{
-			userid  = "null";
-		}
-		
-		SearchQuery securityfilter = inSearcher.query().or().
-			match("privatelibrary", "false").
-			orgroup("viewgroups", groupids).
-			match("viewroles", roleid).
-			match("owner", userid).
-			match("viewusers", userid).getQuery();
-		
-		inQuery.addChildQuery(securityfilter);
-		
-		inQuery.setSecurityAttached(true);
-		
-		
-		return inQuery;
-		
-		/*
-		boolean enabled = inQuery.isEndUserSearch();
-		//log.info( "security filer enabled "  + enabled );
-		if (!enabled)
-		{
-			return inQuery;
+		} else {
+			userid = "null";
 		}
 
-		
-		User user = inPageRequest.getUser();
-		//log.info( "found filer user  "  + user + " " + user.isInGroup("administrators"));
-		if (user != null && user.isInGroup("administrators"))
-		{
-			//dont filter since its the admin
-			return inQuery;
-		}
-		MediaArchive archive = (MediaArchive) inPageRequest.getPageValue("mediaarchive");
-//		if(archive != null){
-//			boolean publiclibs = Boolean.parseBoolean(archive.getCatalogSettingValue("publiclibraries"));
-//			if(publiclibs){
-//				return inQuery;
-//			}
-//		}
-//		
-		
-		//Run a search on another table, find a list of id's, add them to the query
-		UserProfile profile = inPageRequest.getUserProfile();
-		if (profile != null)
-		{
-			Collection<String> viewcategories = profile.getViewCategories();
-			if (log.isDebugEnabled())
-			{
-				log.debug("added security filer for " + inPageRequest.getUserProfile());
-			}
-			if (viewcategories.size() == 0)
-			{
-				viewcategories = new ArrayList();
-				viewcategories.add("-1");
-			}
-			//inQuery.setSecurityIds(libraryids);
-			inQuery.addOrsGroup("categoryid", viewcategories);
-			inQuery.setSecurityAttached(true);
-		}
+		SearchQuery securityfilter = inSearcher.query().or().match("privatelibrary", "false")
+				.orgroup("viewgroups", groupids).match("viewroles", roleid).match("owner", userid)
+				.match("viewusers", userid).getQuery();
+
+		inQuery.addChildQuery(securityfilter);
+
+		inQuery.setSecurityAttached(true);
+
 		return inQuery;
-		*/
+
+		/*
+		 * boolean enabled = inQuery.isEndUserSearch();
+		 * //log.info( "security filer enabled " + enabled );
+		 * if (!enabled)
+		 * {
+		 * return inQuery;
+		 * }
+		 * 
+		 * 
+		 * User user = inPageRequest.getUser();
+		 * //log.info( "found filer user  " + user + " " +
+		 * user.isInGroup("administrators"));
+		 * if (user != null && user.isInGroup("administrators"))
+		 * {
+		 * //dont filter since its the admin
+		 * return inQuery;
+		 * }
+		 * MediaArchive archive = (MediaArchive)
+		 * inPageRequest.getPageValue("mediaarchive");
+		 * // if(archive != null){
+		 * // boolean publiclibs =
+		 * Boolean.parseBoolean(archive.getCatalogSettingValue("publiclibraries"));
+		 * // if(publiclibs){
+		 * // return inQuery;
+		 * // }
+		 * // }
+		 * //
+		 * 
+		 * //Run a search on another table, find a list of id's, add them to the query
+		 * UserProfile profile = inPageRequest.getUserProfile();
+		 * if (profile != null)
+		 * {
+		 * Collection<String> viewcategories = profile.getViewCategories();
+		 * if (log.isDebugEnabled())
+		 * {
+		 * log.debug("added security filer for " + inPageRequest.getUserProfile());
+		 * }
+		 * if (viewcategories.size() == 0)
+		 * {
+		 * viewcategories = new ArrayList();
+		 * viewcategories.add("-1");
+		 * }
+		 * //inQuery.setSecurityIds(libraryids);
+		 * inQuery.addOrsGroup("categoryid", viewcategories);
+		 * inQuery.setSecurityAttached(true);
+		 * }
+		 * return inQuery;
+		 */
 	}
 }

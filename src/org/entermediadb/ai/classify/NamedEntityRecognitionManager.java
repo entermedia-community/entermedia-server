@@ -44,7 +44,8 @@ public class NamedEntityRecognitionManager extends ClassifyManager {
 		Collection<PropertyDetail> contextfields = populateFields(inModuleId, inData, autocreatefields);
 
 		if (contextfields.isEmpty()) {
-			log.info(inConfig.get("bean") + " No fields to check for names in " + inData.getId() + " " + inData.getName());
+			log.info(inConfig.get("bean") + " No fields to check for names in " + inData.getId() + " "
+					+ inData.getName());
 			return;
 		}
 

@@ -16,317 +16,281 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 
 public class AgentModule extends BaseMediaModule {
-	
-	public AssistantManager getAssistantManager(WebPageRequest inReq)
-	{
+
+	public AssistantManager getAssistantManager(WebPageRequest inReq) {
 		String catalogid = inReq.findValue("catalogid");
 		AssistantManager assistantManager = (AssistantManager) getMediaArchive(catalogid).getBean("assistantManager");
 		return assistantManager;
 	}
 
-	public CreationManager getCreationManager(WebPageRequest inReq)
-	{
+	public CreationManager getCreationManager(WebPageRequest inReq) {
 		String catalogid = inReq.findValue("catalogid");
 		CreationManager creationManager = (CreationManager) getMediaArchive(catalogid).getBean("creationManager");
 		return creationManager;
 	}
 
-	public QuestionsManager getQuestionsManager(WebPageRequest inReq)
-	{
+	public QuestionsManager getQuestionsManager(WebPageRequest inReq) {
 		String catalogid = inReq.findValue("catalogid");
 		QuestionsManager questionsManager = (QuestionsManager) getMediaArchive(catalogid).getBean("questionsManager");
 		return questionsManager;
 	}
-	
-	public SearchingManager getSearchingManager(WebPageRequest inReq)
-	{
+
+	public SearchingManager getSearchingManager(WebPageRequest inReq) {
 		String catalogid = inReq.findValue("catalogid");
 		SearchingManager searchingManager = (SearchingManager) getMediaArchive(catalogid).getBean("searchingManager");
 		return searchingManager;
 	}
-	public void searchTables(WebPageRequest inReq) throws Exception 
-	{	
-		AgentContext agentContext =  (AgentContext)inReq.getPageValue("agentcontext");
-		
+
+	public void searchTables(WebPageRequest inReq) throws Exception {
+		AgentContext agentContext = (AgentContext) inReq.getPageValue("agentcontext");
+
 		getSearchingManager(inReq).searchTables(inReq, agentContext.getAiSearchParams());
 	}
-	
-	public void chatAgentSemanticSearch(WebPageRequest inReq) throws Exception 
-	{	
-		AgentContext agentContext =  (AgentContext) inReq.getPageValue("agentcontext");
-		
+
+	public void chatAgentSemanticSearch(WebPageRequest inReq) throws Exception {
+		AgentContext agentContext = (AgentContext) inReq.getPageValue("agentcontext");
+
 		String semanticquery = agentContext.get("semanticquery");
 
 		agentContext.setValue("semanticquery", null);
 		agentContext.setNextFunctionName(null);
-		
+
 		inReq.setRequestParameter("semanticquery", semanticquery);
-		if (agentContext.getExcludedEntityIds() != null)
-		{
+		if (agentContext.getExcludedEntityIds() != null) {
 			String[] excluded = agentContext.getExcludedEntityIds().toArray(new String[0]);
 			inReq.setRequestParameter("excludeentityids", excluded);
 		}
-		if (agentContext.getExcludedAssetIds() != null)
-		{
+		if (agentContext.getExcludedAssetIds() != null) {
 			String[] excluded = agentContext.getExcludedAssetIds().toArray(new String[0]);
 			inReq.setRequestParameter("excludeassetids", excluded);
 		}
-		
-		if( semanticquery == null)
-		{
+
+		if (semanticquery == null) {
 			return;
 		}
-		
+
 		String query = (String) semanticquery;
-		
-		if(query != null && !"null".equals(query))
-		{		
-			getSearchingManager(inReq).semanticSearch(inReq);
-		}
-	}
-	
-//	public void mcpSearch(WebPageRequest inReq) throws Exception
-//	{
-//		getAssistantManager(inReq).regularSearch(inReq, true);
-//	}
-	
-	public void loadSemanticMatches(WebPageRequest inReq) throws Exception
-	{
-		String query = inReq.getRequestParameter("semanticquery");
-		
-		if(query != null && !"null".equals(query))
-		{
+
+		if (query != null && !"null".equals(query)) {
 			getSearchingManager(inReq).semanticSearch(inReq);
 		}
 	}
 
-	public void recreateFunctions(WebPageRequest inReq) throws Exception 
-	{
-		ScriptLogger log = (ScriptLogger)inReq.getPageValue("log");
+	// public void mcpSearch(WebPageRequest inReq) throws Exception
+	// {
+	// getAssistantManager(inReq).regularSearch(inReq, true);
+	// }
+
+	public void loadSemanticMatches(WebPageRequest inReq) throws Exception {
+		String query = inReq.getRequestParameter("semanticquery");
+
+		if (query != null && !"null".equals(query)) {
+			getSearchingManager(inReq).semanticSearch(inReq);
+		}
+	}
+
+	public void recreateFunctions(WebPageRequest inReq) throws Exception {
+		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
 		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
 		assistant.addMissingFunctions(log);
-		
+
 		SearchingManager searchingManager = getSearchingManager(inReq);
 		searchingManager.createPossibleFunctionParameters(log);
 
 	}
 
-	public void loadModuleSchemaForJson(WebPageRequest inReq) throws Exception 
-	{
+	public void loadModuleSchemaForJson(WebPageRequest inReq) throws Exception {
 		AssistantManager assistant = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
 		Collection<String> modulesenum = assistant.getModulesAsEnum();
 		inReq.putPageValue("modulesenum", modulesenum);
 	}
-	
-		
-	public void loadSearchSuggestions(WebPageRequest inReq) throws Exception 
-	{
+
+	public void loadSearchSuggestions(WebPageRequest inReq) throws Exception {
 		SearchingManager searching = (SearchingManager) getMediaArchive(inReq).getBean("searchingManager");
 		Collection<String> suggestions = searching.makeSearchSuggestions(inReq.getUserProfile());
 		inReq.putPageValue("suggestions", suggestions);
 	}
-	
-	public void saveAgentContextField(WebPageRequest inReq) throws Exception 
-	{
-		AgentContext agentContext =  (AgentContext) inReq.getPageValue("agentcontext");
+
+	public void saveAgentContextField(WebPageRequest inReq) throws Exception {
+		AgentContext agentContext = (AgentContext) inReq.getPageValue("agentcontext");
 		String fieldname = inReq.getRequestParameter("fieldname");
 		String fieldvalue = inReq.getRequestParameter("fieldvalue");
 		agentContext.setValue(fieldname, fieldvalue);
-		Searcher searcher =  getMediaArchive(inReq).getSearcher("agentcontext");
+		Searcher searcher = getMediaArchive(inReq).getSearcher("agentcontext");
 		searcher.saveData(agentContext, inReq.getUser());
 	}
-	
-	public void loadTutorials(WebPageRequest inReq) throws Exception 
-	{
+
+	public void loadTutorials(WebPageRequest inReq) throws Exception {
 		Searcher tutorialsearcher = getMediaArchive(inReq).getSearcher("aitutorial");
 		HitTracker hits = tutorialsearcher.query().exact("featured", true).search();
-		
+
 		inReq.putPageValue("tutorials", hits);
 	}
-	
-	public void startFunction(WebPageRequest inReq) throws Exception
-	{
+
+	public void startFunction(WebPageRequest inReq) throws Exception {
 		AssistantManager assistantManager = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
-		
-		//Get the contenxt and update it first
+
+		// Get the contenxt and update it first
 		String channelid = inReq.getRequestParameter("channel");
 		AgentContext agentContext = assistantManager.loadContext(channelid);
 		String toplevel = inReq.getRequestParameter("toplevelaifunctionid");
 		String previousTopLevel = agentContext.getTopLevelFunctionName();
-		
+
 		boolean changed = false;
-		if( toplevel != null && !toplevel.equals(previousTopLevel) )
-		{
+		if (toplevel != null && !toplevel.equals(previousTopLevel)) {
 			agentContext.setTopLevelFunctionName(toplevel);
 			changed = true;
 		}
 
 		String functionname = inReq.getRequestParameter("functionname");
-		if( functionname != null)
-		{
+		if (functionname != null) {
 			agentContext.setFunctionName(functionname);
 			changed = true;
-			
+
 			Collection<String> params = inReq.getParameterMap().keySet();
 			for (Iterator iterator = params.iterator(); iterator.hasNext();) {
 				String key = (String) iterator.next();
-				if(key.startsWith("context_"))
-				{
+				if (key.startsWith("context_")) {
 					String value = inReq.getRequestParameter(key);
-					if(value != null)
-					{						
+					if (value != null) {
 						agentContext.addContext(key.substring("context_".length()), value);
 					}
 				}
 			}
 		}
-		
-		if( changed )
-		{
-			getMediaArchive(inReq).saveData("agentcontext",agentContext);
-			
-			//Now that Context is set. Let the chat respond
-			
-			assistantManager.sendSystemMessage(agentContext,inReq.getUserName(),null);
+
+		if (changed) {
+			getMediaArchive(inReq).saveData("agentcontext", agentContext);
+
+			// Now that Context is set. Let the chat respond
+
+			assistantManager.sendSystemMessage(agentContext, inReq.getUserName(), null);
 		}
-		//Refresh drop down area?
+		// Refresh drop down area?
 	}
-	
-	public AgentContext loadAgentContext(WebPageRequest inReq) throws Exception
-	{
+
+	public AgentContext loadAgentContext(WebPageRequest inReq) throws Exception {
 		AssistantManager assistantManager = (AssistantManager) getMediaArchive(inReq).getBean("assistantManager");
-		
-		//Get the contenxt and update it first
+
+		// Get the contenxt and update it first
 		String channelid = inReq.getRequestParameter("channel");
-		if( channelid == null)
-		{
-			Data currentchannel = (Data)inReq.getPageValue("currentchannel");
-			if(currentchannel == null)
-			{
+		if (channelid == null) {
+			Data currentchannel = (Data) inReq.getPageValue("currentchannel");
+			if (currentchannel == null) {
 				return null;
 			}
 			channelid = currentchannel.getId();
 		}
 		AgentContext context = assistantManager.loadContext(channelid);
-		
-		context.setLocale(inReq.getLocale()); //----
-		
+
+		context.setLocale(inReq.getLocale()); // ----
+
 		inReq.putPageValue("agentcontext", context);
-		
+
 		String toplevel = inReq.getRequestParameter("toplevelaifunctionid");
 
-		if( toplevel == null && context.getTopLevelFunctionName() == null)
-		{
+		if (toplevel == null && context.getTopLevelFunctionName() == null) {
 			inReq.setRequestParameter("channel", channelid);
 			inReq.setRequestParameter("toplevelaifunctionid", "auto_detect_welcome");
 			inReq.setRequestParameter("functionname", "auto_detect_welcome");
 			startFunction(inReq);
 			return context;
 		}
-		
-//		if( toplevel != null )
-//		{
-//			context.setTopLevelFunctionName(toplevel);
-//		}
-//		String functionname = inReq.getRequestParameter("functionname");
-//		if( functionname != null )
-//		{
-//			context.setFunctionName(functionname);
-//		}
-//		if( toplevel != null ||functionname != null )
-//		{
-//			getMediaArchive(inReq).saveData("agentcontext",context);
-//		}
+
+		// if( toplevel != null )
+		// {
+		// context.setTopLevelFunctionName(toplevel);
+		// }
+		// String functionname = inReq.getRequestParameter("functionname");
+		// if( functionname != null )
+		// {
+		// context.setFunctionName(functionname);
+		// }
+		// if( toplevel != null ||functionname != null )
+		// {
+		// getMediaArchive(inReq).saveData("agentcontext",context);
+		// }
 		return context;
-		
-		//Now that Context is set. Let the chat respond
-		//Refresh drop down area?
+
+		// Now that Context is set. Let the chat respond
+		// Refresh drop down area?
 	}
-	public void monitorChannels(WebPageRequest inReq) throws Exception
-	{
+
+	public void monitorChannels(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
 		AssistantManager assistantManager = (AssistantManager) archive.getBean("assistantManager");
 		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
 		assistantManager.monitorChannels(log);
 	}
-	
-	
-	public void verifyRevisions(WebPageRequest inReq)
-	{
-		Data data = (Data)inReq.getPageValue("data");
-		
-		
+
+	public void verifyRevisions(WebPageRequest inReq) {
+		Data data = (Data) inReq.getPageValue("data");
+
 	}
-	
-	public void monitorAiServers(WebPageRequest inReq) throws Exception
-	{
+
+	public void monitorAiServers(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
 		AssistantManager assistantManager = (AssistantManager) archive.getBean("assistantManager");
 		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
 		assistantManager.monitorAiServers(log);
 	}
-	
-	
-	public void resetInformatics(WebPageRequest inReq) throws Exception
-	{
+
+	public void resetInformatics(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
-		InformaticsProcessorManager manager = (InformaticsProcessorManager) archive.getBean("informaticsProcessorManager");
+		InformaticsProcessorManager manager = (InformaticsProcessorManager) archive
+				.getBean("informaticsProcessorManager");
 		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
-		
+
 		String moduleid = inReq.findValue("module");
-		
+
 		String hitsessionid = inReq.getRequestParameter("hitssessionid");
 		HitTracker hitsession = (HitTracker) inReq.getSessionValue(hitsessionid);
 		manager.resetInformatics(moduleid, hitsession.getSelectedHitracker());
 
 	}
-	
-	public void loadRelatedRecords(WebPageRequest inReq) throws Exception
-	{
+
+	public void loadRelatedRecords(WebPageRequest inReq) throws Exception {
 		String entityid = inReq.findValue("entityid");
 		String entitymoduleid = inReq.findValue("entitymoduleid");
-		
+
 		Collection<Map> related = getSearchingManager(inReq).getRelatedRecords(entitymoduleid, entityid);
-		
+
 		inReq.putPageValue("relatedrecords", related);
 	}
-	
-	public void loadRelatedRecordList(WebPageRequest inReq) throws Exception
-	{
+
+	public void loadRelatedRecordList(WebPageRequest inReq) throws Exception {
 		String entityid = inReq.findValue("entityid");
-		String entitymoduleid = inReq.findValue("entitymoduleid"); 
+		String entitymoduleid = inReq.findValue("entitymoduleid");
 		String listid = inReq.getRequestParameter("relatedmoduleid");
-		
+
 		Data recordmodule = getMediaArchive(inReq).getCachedData("module", listid);
 		inReq.putPageValue("recordmodule", recordmodule);
-		
-		
+
 		Collection<Data> recordlist = getSearchingManager(inReq).getRelatedRecordList(entitymoduleid, entityid, listid);
-		
+
 		inReq.putPageValue("recordlist", recordlist);
 	}
-	
-	public void loadRecord(WebPageRequest inReq) throws Exception
-	{
+
+	public void loadRecord(WebPageRequest inReq) throws Exception {
 		String entityid = inReq.findValue("entityid");
-		String entitymoduleid = inReq.findValue("entitymoduleid"); 
+		String entitymoduleid = inReq.findValue("entitymoduleid");
 		String listid = inReq.getRequestParameter("relatedmoduleid");
 		String recordid = inReq.getRequestParameter("recordid");
-		
+
 		Data recordmodule = getMediaArchive(inReq).getCachedData("module", listid);
 		inReq.putPageValue("recordmodule", recordmodule);
-		
-		
+
 		Data record = getSearchingManager(inReq).getRecord(entitymoduleid, entityid, listid, recordid);
-		
+
 		inReq.putPageValue("record", record);
 	}
 
-//	public void startInformatics(WebPageRequest inReq) throws Exception
-//	{
-//		MediaArchive archive = getMediaArchive(inReq);
-//		InformaticsProcessorAgent informaticsManager = (InformaticsProcessorAgent)archive.getBean("informaticsAgent");
-//		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
-//		informaticsManager.processAll(logger);
-//	}
+	// public void startInformatics(WebPageRequest inReq) throws Exception
+	// {
+	// MediaArchive archive = getMediaArchive(inReq);
+	// InformaticsProcessorAgent informaticsManager =
+	// (InformaticsProcessorAgent)archive.getBean("informaticsAgent");
+	// ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
+	// informaticsManager.processAll(logger);
+	// }
 }

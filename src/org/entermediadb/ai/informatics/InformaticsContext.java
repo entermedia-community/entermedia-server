@@ -7,8 +7,7 @@ import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.asset.Asset;
 import org.openedit.MultiValued;
 
-public class InformaticsContext extends AgentContext
-{
+public class InformaticsContext extends AgentContext {
 	private static final Log log = LogFactory.getLog(InformaticsContext.class);
 
 	public InformaticsContext(AgentContext inContext) {
@@ -19,10 +18,8 @@ public class InformaticsContext extends AgentContext
 		// TODO Auto-generated constructor stub
 	}
 
-	public InformaticsContext getParentInformaticContext()
-	{
-		if (fieldParentContext != null && fieldParentContext instanceof InformaticsContext)
-		{
+	public InformaticsContext getParentInformaticContext() {
+		if (fieldParentContext != null && fieldParentContext instanceof InformaticsContext) {
 			return (InformaticsContext) fieldParentContext;
 		}
 		return null;
@@ -30,31 +27,24 @@ public class InformaticsContext extends AgentContext
 
 	protected Collection<MultiValued> fieldRecordsToProcess;
 
-	public Collection<MultiValued> getRecordsToProcess()
-	{
-		if (fieldRecordsToProcess == null)
-		{
+	public Collection<MultiValued> getRecordsToProcess() {
+		if (fieldRecordsToProcess == null) {
 			InformaticsContext parent = getParentInformaticContext();
-			if (parent != null)
-			{
+			if (parent != null) {
 				return parent.getRecordsToProcess();
 			}
 		}
 		return fieldRecordsToProcess;
 	}
 
-	public void setRecordsToProcess(Collection<MultiValued> inRecordsToProcess)
-	{
+	public void setRecordsToProcess(Collection<MultiValued> inRecordsToProcess) {
 		fieldRecordsToProcess = inRecordsToProcess;
 	}
 
-	public Collection<Asset> getAssetsToProcess()
-	{
-		if (fieldAssetsToProcess == null)
-		{
+	public Collection<Asset> getAssetsToProcess() {
+		if (fieldAssetsToProcess == null) {
 			InformaticsContext parent = getParentInformaticContext();
-			if (parent != null)
-			{
+			if (parent != null) {
 				return parent.getAssetsToProcess();
 			}
 		}
@@ -62,8 +52,7 @@ public class InformaticsContext extends AgentContext
 		return fieldAssetsToProcess;
 	}
 
-	public void setAssetsToProcess(Collection<Asset> inAssetsToProcess)
-	{
+	public void setAssetsToProcess(Collection<Asset> inAssetsToProcess) {
 		fieldAssetsToProcess = inAssetsToProcess;
 	}
 

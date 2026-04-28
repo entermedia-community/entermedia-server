@@ -3,7 +3,8 @@ package org.entermediadb.markdown.node;
 /**
  * Inline HTML element.
  *
- * @see <a href="http://spec.commonmark.org/0.31.2/#raw-html">CommonMark Spec</a>
+ * @see <a href="http://spec.commonmark.org/0.31.2/#raw-html">CommonMark
+ *      Spec</a>
  */
 public class HtmlInline extends Node {
 

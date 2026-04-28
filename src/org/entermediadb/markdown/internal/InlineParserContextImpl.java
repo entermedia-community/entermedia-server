@@ -18,10 +18,10 @@ public class InlineParserContextImpl implements InlineParserContext {
     private final Definitions definitions;
 
     public InlineParserContextImpl(List<InlineContentParserFactory> inlineContentParserFactories,
-                                   List<DelimiterProcessor> delimiterProcessors,
-                                   List<LinkProcessor> linkProcessors,
-                                   Set<Character> linkMarkers,
-                                   Definitions definitions) {
+            List<DelimiterProcessor> delimiterProcessors,
+            List<LinkProcessor> linkProcessors,
+            Set<Character> linkMarkers,
+            Definitions definitions) {
         this.inlineContentParserFactories = inlineContentParserFactories;
         this.delimiterProcessors = delimiterProcessors;
         this.linkProcessors = linkProcessors;

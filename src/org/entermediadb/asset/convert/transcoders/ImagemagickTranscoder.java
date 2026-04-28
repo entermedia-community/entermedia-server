@@ -18,28 +18,23 @@ import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
 import org.openedit.util.PathUtilities;
 
-public class ImagemagickTranscoder extends BaseTranscoder
-{
+public class ImagemagickTranscoder extends BaseTranscoder {
 	private static final Log log = LogFactory.getLog(ImagemagickTranscoder.class);
 
 	protected String fieldPathToProfile;
 	protected String fieldPathToCMYKProfile;
 
-	public String getPathtoProfile()
-	{
+	public String getPathtoProfile() {
 
-		if (fieldPathToProfile == null)
-		{
+		if (fieldPathToProfile == null) {
 			Page profile = getPageManager().getPage("/system/commonbase/components/conversions/tinysRGB.icc");
 			fieldPathToProfile = profile.getContentItem().getAbsolutePath();
 		}
 		return fieldPathToProfile;
 	}
 
-	public String getPathCMYKProfile()
-	{
-		if (fieldPathToCMYKProfile == null)
-		{
+	public String getPathCMYKProfile() {
+		if (fieldPathToCMYKProfile == null) {
 			Page profile = getPageManager().getPage("/system/commonbase/components/conversions/USWebCoatedSWOP.icc");
 			fieldPathToCMYKProfile = profile.getContentItem().getAbsolutePath();
 		}
@@ -47,8 +42,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 	}
 
 	@Override
-	public ConvertResult convert(ConvertInstructions inStructions)
-	{
+	public ConvertResult convert(ConvertInstructions inStructions) {
 		ConvertResult result = new ConvertResult();
 		result.setOutput(inStructions.getOutputFile());
 		// MediaArchive archive = inStructions.getMediaArchive();
@@ -60,14 +54,11 @@ public class ImagemagickTranscoder extends BaseTranscoder
 
 		String ext = PathUtilities.extractPageType(inputFile.getPath(), true);
 
-		if (asset != null)
-		{
-			if (ext == null)
-			{
+		if (asset != null) {
+			if (ext == null) {
 				ext = asset.getFileFormat();
 			}
-			if (ext == null)
-			{
+			if (ext == null) {
 				ext = asset.getDetectedFileFormat();
 			}
 		}
@@ -84,54 +75,47 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		int finalwidth = -1;
 		int finalheight = -1;
 
-		if (inStructions.getMaxScaledSize() != null)
-		{
+		if (inStructions.getMaxScaledSize() != null) {
 			finalwidth = inStructions.getMaxScaledSize().width;
 			finalheight = inStructions.getMaxScaledSize().height;
 			String emautoheight = inStructions.get("emautoheight");
-			if (emautoheight != null)
-			{
+			if (emautoheight != null) {
 				int width = asset.getInt("width");
 				int height = asset.getInt("height");
-				if (width > 0 && height > 0 && height > width)
-				{
+				if (width > 0 && height > 0 && height > width) {
 					float aspect = (float) height / (float) width;
 					if (aspect > 1.3f) // portrait mode
 					{
 						String percent = emautoheight.substring(0, emautoheight.length() - 1);
 						int percentint = Integer.parseInt(percent);
-						finalheight = Math.round((float) finalheight + ((float) finalheight * ((float) percentint / 100f)));
+						finalheight = Math
+								.round((float) finalheight + ((float) finalheight * ((float) percentint / 100f)));
 					}
 				}
 			}
 
-			if ("pdf".equals(ext))
-			{
+			if ("pdf".equals(ext)) {
 				com.add(0, "sRGB");
 				com.add(0, "-colorspace");
-			}
-			else
-				if ("jpg".equals(ext)) // Found JPGS with incorrect profile for CMYK
-				{
-					if (asset.get("colorspace") != null && asset.get("colorspace").equals("4"))
-					{
-						com.add(0, getPathCMYKProfile());
-						com.add(0, "-profile");
-
-					}
+			} else if ("jpg".equals(ext)) // Found JPGS with incorrect profile for CMYK
+			{
+				if (asset.get("colorspace") != null && asset.get("colorspace").equals("4")) {
+					com.add(0, getPathCMYKProfile());
+					com.add(0, "-profile");
 
 				}
+
+			}
 
 			Collection needsDensity = Arrays.asList("pdf", "gddoc", "gdsheet", "gdslide", "gddraw", "eps", "ai");
 
-			// be aware ImageMagick writes to a tmp file with a larger version of the file before it
+			// be aware ImageMagick writes to a tmp file with a larger version of the file
+			// before it
 			// is finished
-			if (needsDensity.contains(ext))
-			{
+			if (needsDensity.contains(ext)) {
 				// check input width
 				int width = asset.getInt("width");
-				if (width > 0)
-				{
+				if (width > 0) {
 					// calculate output width
 					int height = asset.getInt("height");
 					// double ratio = height / width;
@@ -143,22 +127,17 @@ public class ImagemagickTranscoder extends BaseTranscoder
 					int disth = Math.abs(prefh - height);
 
 					int outputw;
-					if (disth < distw)
-					{
+					if (disth < distw) {
 						outputw = width * (prefh / height);
-					}
-					else
-					{
+					} else {
 						outputw = prefw;
 					}
 
 					float defaultdensity = 300;
-					if (width > 100000 || height > 100000)
-					{
+					if (width > 100000 || height > 100000) {
 						defaultdensity = 100;
 					}
-					if (width < outputw)
-					{
+					if (width < outputw) {
 						// for small input files we want to scale up the density
 						float density = ((float) outputw / (float) width) * 300f;
 						density = Math.max(density, defaultdensity);
@@ -166,9 +145,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 						String val = String.valueOf(Math.round(density));
 						com.add(0, val);
 						com.add(0, "-density");
-					}
-					else
-					{
+					} else {
 						com.add(0, String.valueOf(defaultdensity));
 						com.add(0, "-density");
 					}
@@ -188,25 +165,18 @@ public class ImagemagickTranscoder extends BaseTranscoder
 
 				String resizestring = prefix + "x" + postfix;
 				Boolean fillarea = Boolean.parseBoolean(inStructions.get("minsize"));
-				if (fillarea)
-				{
+				if (fillarea) {
 					resizestring = resizestring + "^";
-				}
-				else
-				{
+				} else {
 					Boolean scaleup = Boolean.parseBoolean(inStructions.get("scaleup"));
-					if (scaleup == false)
-					{
+					if (scaleup == false) {
 						resizestring = resizestring + ">"; // Default behavior
 					}
 				}
 
-				if (isOnWindows())
-				{
+				if (isOnWindows()) {
 					com.add("\"" + resizestring + "\"");
-				}
-				else
-				{
+				} else {
 					com.add(resizestring);
 				}
 			}
@@ -214,18 +184,15 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		}
 
 		String rotate = inStructions.get("rotate");
-		if (rotate != null)
-		{
+		if (rotate != null) {
 			com.add("-rotate");
 			com.add(rotate);
 		}
 
-		if (inStructions.isCrop())
-		{
+		if (inStructions.isCrop()) {
 			boolean croplast = Boolean.parseBoolean(inStructions.get("croplast"));
 
-			if (!croplast)
-			{
+			if (!croplast) {
 				com.add("-resize");
 				StringBuffer resizestring = new StringBuffer();
 				resizestring.append(finalwidth);
@@ -243,16 +210,14 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			com.add("-crop");
 			StringBuffer cropString = new StringBuffer();
 			String cropwidth = inStructions.get("cropwidth");
-			if (cropwidth == null)
-			{
+			if (cropwidth == null) {
 				cropwidth = String.valueOf(finalwidth);
 			}
 			cropString.append(cropwidth);
 			cropString.append("x");
 			String cropheight = inStructions.get("cropheight");
 
-			if (cropheight == null)
-			{
+			if (cropheight == null) {
 				cropheight = String.valueOf(finalheight);
 			}
 			cropString.append(cropheight);
@@ -261,27 +226,20 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			String y1 = inStructions.get("y1");
 
 			cropString.append("+");
-			if (x1 == null)
-			{
+			if (x1 == null) {
 				cropString.append("0");
-			}
-			else
-			{
+			} else {
 				cropString.append(x1);
 			}
 			cropString.append("+");
-			if (y1 == null)
-			{
+			if (y1 == null) {
 				cropString.append("0");
-			}
-			else
-			{
+			} else {
 				cropString.append(y1);
 			}
 			com.add(cropString.toString());
 			com.add("+repage");
-			if (croplast)
-			{
+			if (croplast) {
 				com.add("-resize");
 				StringBuffer resizestring = new StringBuffer();
 				resizestring.append(inStructions.getMaxScaledSize().width);
@@ -290,13 +248,10 @@ public class ImagemagickTranscoder extends BaseTranscoder
 				resizestring.append("^");
 				com.add(resizestring.toString());
 			}
-		}
-		else
-		{
+		} else {
 			createBackground(inStructions, com, maintaintransparency, ext);
 			Boolean extent = Boolean.parseBoolean(inStructions.get("extent"));
-			if (extent)
-			{
+			if (extent) {
 				// This gravity is the relative point of the crop marks
 				setValue("gravity", "center", inStructions, com);
 
@@ -308,8 +263,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			}
 		}
 		String dpi = inStructions.get("dpi");
-		if (dpi != null)
-		{
+		if (dpi != null) {
 			// -set units PixelsPerInch -density 300
 			com.add("-set");
 			com.add("units");
@@ -322,40 +276,33 @@ public class ImagemagickTranscoder extends BaseTranscoder
 
 		setValue("quality", "85", inStructions, com);
 		// add sampling-factor if specified
-		if (inStructions.get("sampling-factor") != null)
-		{
+		if (inStructions.get("sampling-factor") != null) {
 			// -sampling-factor 4:2:0
 			com.add("-sampling-factor");
 			com.add(inStructions.get("sampling-factor"));
 		}
 
-		if (!maintaintransparency)
-		{
-			if ("eps".equals(ext) || "pdf".equals(ext) || "ps".equals(ext) || "psd".equals(ext) || "ai".equals(ext) || "tif".equals(ext) || "tiff".equals(ext))
-			{
+		if (!maintaintransparency) {
+			if ("eps".equals(ext) || "pdf".equals(ext) || "ps".equals(ext) || "psd".equals(ext) || "ai".equals(ext)
+					|| "tif".equals(ext) || "tiff".equals(ext)) {
 				setValue("colorspace", "sRGB", inStructions, com);
 				// Not compatible with profile at the same time with colorspace
 				// setValue("profile", getPathtoProfile(), inStructions, com);
 
-			}
-			else
-			{
-				// com.add("-strip"); // This removes the extra profile info TODO: Get rid of this fix
+			} else {
+				// com.add("-strip"); // This removes the extra profile info TODO: Get rid of
+				// this fix
 				String profilepath = null;
-				if (inStructions.getImageProfile() != null)
-				{
+				if (inStructions.getImageProfile() != null) {
 					profilepath = inStructions.getImageProfile().getContentItem().getAbsolutePath();
 					setValue("profile", profilepath, inStructions, com);
 					Boolean websafecolors = Boolean.parseBoolean(inStructions.get("websafecolors"));
-					if (websafecolors)
-					{
+					if (websafecolors) {
 						// forces tinyRGB profile for websafecolors
 						com.add("-profile");
 						com.add(getPathtoProfile());
 					}
-				}
-				else
-				{
+				} else {
 					profilepath = getPathtoProfile();
 					setValue("profile", profilepath, inStructions, com);
 				}
@@ -364,19 +311,15 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		}
 		com.add("-auto-orient");
 
-		if (inStructions.get("sepia-tone") != null)
-		{
+		if (inStructions.get("sepia-tone") != null) {
 			com.add("-sepia-tone");
 			com.add(inStructions.get("sepia-tone") + "%");
 		}
 
-		if (isOnWindows())
-		{
+		if (isOnWindows()) {
 			// windows needs quotes if paths have a space
 			com.add("\"" + outputpath + "\"");
-		}
-		else
-		{
+		} else {
 			com.add(outputpath);
 		}
 
@@ -389,59 +332,52 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		boolean ok = execresult.isRunOk();
 		result.setOk(ok);
 
-		if (ok)
-		{
+		if (ok) {
 			result.setComplete(true);
 
-			log.info("Asset: " + asset.getId() + " Image Magick Convert complete in:" + (System.currentTimeMillis() - start) + " Preset:" + inStructions.getConvertPreset() + " "
-				+ inOutFile.getName());
+			log.info("Asset: " + asset.getId() + " Image Magick Convert complete in:"
+					+ (System.currentTimeMillis() - start) + " Preset:" + inStructions.getConvertPreset() + " "
+					+ inOutFile.getName());
 
 			return result;
 		}
 		// problems
 		log.info("Could not exec: " + execresult.getStandardOut());
-		if (execresult.getReturnValue() == 124)
-		{
+		if (execresult.getReturnValue() == 124) {
 			result.setError("Exec timed out after " + timeout);
-		}
-		else
-		{
+		} else {
 			String output = execresult.getStandardOut();
-			if (output != null && output.contains("warning/tiff.c"))
-			{
+			if (output != null && output.contains("warning/tiff.c")) {
 				result.setComplete(true);
-				log.info("Asset: " + asset.getId() + " Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
+				log.info("Asset: " + asset.getId() + " Convert complete in:" + (System.currentTimeMillis() - start)
+						+ " " + inOutFile.getName());
 				result.setOk(true);
 			}
-			// Added as PDF was throwing an error like this but the images generated were fine.
-			if (output != null && output.contains("subimage specification returns no images"))
-			{
+			// Added as PDF was throwing an error like this but the images generated were
+			// fine.
+			if (output != null && output.contains("subimage specification returns no images")) {
 				result.setComplete(true);
-				log.info("Asset: " + asset.getId() + " Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
+				log.info("Asset: " + asset.getId() + " Convert complete in:" + (System.currentTimeMillis() - start)
+						+ " " + inOutFile.getName());
 				result.setOk(true);
 			}
 
-			else
-			{
+			else {
 				result.setError(execresult.getStandardOut());
 			}
 		}
 		return result;
 	}
 
-	protected void createBackground(ConvertInstructions inStructions, List<String> com, boolean usepng, String ext)
-	{
-		if (!usepng && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) || "gif".equals(ext)))
-		{
+	protected void createBackground(ConvertInstructions inStructions, List<String> com, boolean usepng, String ext) {
+		if (!usepng && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) || "gif".equals(ext))) {
 			String value = inStructions.get("background");
 
-			if (value != null)
-			{
+			if (value != null) {
 				setValue("background", null, inStructions, com);
 			}
 			String layersvalue = inStructions.get("layers");
-			if (layersvalue != null)
-			{
+			if (layersvalue != null) {
 				com.add("-" + layersvalue);
 			}
 			/*
@@ -449,23 +385,18 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			 * 
 			 */
 
+		} else if ("svg".equals(ext)) // add svg support; include transparency
+		{
+			com.add("-background");
+			com.add("transparent");
+			com.add("-flatten");
+		} else {
+			setValue("background", null, inStructions, com);
+			setValue("layers", null, inStructions, com);
 		}
-		else
-			if ("svg".equals(ext)) // add svg support; include transparency
-			{
-				com.add("-background");
-				com.add("transparent");
-				com.add("-flatten");
-			}
-			else
-			{
-				setValue("background", null, inStructions, com);
-				setValue("layers", null, inStructions, com);
-			}
 	}
 
-	protected List<String> createCommand(ConvertInstructions inStructions)
-	{
+	protected List<String> createCommand(ConvertInstructions inStructions) {
 
 		String tmpinput = PathUtilities.extractPageType(inStructions.getInputFile().getPath());
 
@@ -481,27 +412,21 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		String extension = "";
 		String filename = inStructions.getInputFile().getName(); // TODO: Remove this old crud?
 		int dotIndex = filename.lastIndexOf('.');
-		if (dotIndex > 0)
-		{
+		if (dotIndex > 0) {
 			extension = filename.substring(dotIndex + 1);
 		}
-		if ("dng".equalsIgnoreCase(extension))
-		{
+		if ("dng".equalsIgnoreCase(extension)) {
 			prefix = "dng:";
 		}
 		String absolutePath = inStructions.getInputFile().getAbsolutePath();
 
 		String pages = "";
-		if (page >= 0)
-		{
+		if (page >= 0) {
 			pages = "[" + page + "]";
 		}
-		if (isOnWindows())
-		{
+		if (isOnWindows()) {
 			com.add("\"" + prefix + absolutePath + pages + "\"");
-		}
-		else
-		{
+		} else {
 			com.add(prefix + absolutePath + pages);
 		}
 		com.add("-limit");
@@ -510,10 +435,10 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		return com;
 	}
 
-	public ConvertResult updateStatus(Data inTask, ConvertInstructions inStructions)
-	{
+	public ConvertResult updateStatus(Data inTask, ConvertInstructions inStructions) {
 		// This should not happen
-		log.info("Should not need to check status on imagemagic... maybe use missinginput?" + inStructions.getAssetSourcePath() + " " + inStructions.getProperties());
+		log.info("Should not need to check status on imagemagic... maybe use missinginput?"
+				+ inStructions.getAssetSourcePath() + " " + inStructions.getProperties());
 		ConvertResult status = new ConvertResult();
 		status.setComplete(true);
 		status.setOk(true);

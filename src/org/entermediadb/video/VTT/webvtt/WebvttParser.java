@@ -15,7 +15,6 @@
  */
 package org.entermediadb.video.VTT.webvtt;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,27 +31,23 @@ import org.openedit.OpenEditException;
 /**
  * A simple WebVTT parser.
  * <p>
+ * 
  * @see <a href="http://dev.w3.org/html5/webvtt">WebVTT specification</a>
  */
 public final class WebvttParser {
 
-	private static final Log log = LogFactory.getLog(WebvttParser.class);
+  private static final Log log = LogFactory.getLog(WebvttParser.class);
 
-	
-	
   private static final String TAG = "WebvttParser";
 
   private static final String WEBVTT_FILE_HEADER_STRING = "^\uFEFF?WEBVTT((\\u0020|\u0009).*)?$";
-  private static final Pattern WEBVTT_FILE_HEADER =
-      Pattern.compile(WEBVTT_FILE_HEADER_STRING);
+  private static final Pattern WEBVTT_FILE_HEADER = Pattern.compile(WEBVTT_FILE_HEADER_STRING);
 
   private static final String WEBVTT_METADATA_HEADER_STRING = "\\S*[:=]\\S*";
-  private static final Pattern WEBVTT_METADATA_HEADER =
-      Pattern.compile(WEBVTT_METADATA_HEADER_STRING);
+  private static final Pattern WEBVTT_METADATA_HEADER = Pattern.compile(WEBVTT_METADATA_HEADER_STRING);
 
   private static final String WEBVTT_CUE_IDENTIFIER_STRING = "^(?!.*(-->)).*$";
-  private static final Pattern WEBVTT_CUE_IDENTIFIER =
-      Pattern.compile(WEBVTT_CUE_IDENTIFIER_STRING);
+  private static final Pattern WEBVTT_CUE_IDENTIFIER = Pattern.compile(WEBVTT_CUE_IDENTIFIER_STRING);
 
   private static final String WEBVTT_TIMESTAMP_STRING = "(\\d+:)?[0-5]\\d:[0-5]\\d\\.\\d{3}";
   private static final Pattern WEBVTT_TIMESTAMP = Pattern.compile(WEBVTT_TIMESTAMP_STRING);
@@ -74,17 +69,19 @@ public final class WebvttParser {
   }
 
   /**
-   * @param strictParsing If true, {@link #parse(InputStream)} will throw a {@link OpenEditException}
-   *     if the stream contains invalid data. If false, the parser will make a best effort to ignore
-   *     minor errors in the stream. Note however that a {@link OpenEditException} will still be
-   *     thrown when this is not possible.
+   * @param strictParsing If true, {@link #parse(InputStream)} will throw a
+   *                      {@link OpenEditException}
+   *                      if the stream contains invalid data. If false, the
+   *                      parser will make a best effort to ignore
+   *                      minor errors in the stream. Note however that a
+   *                      {@link OpenEditException} will still be
+   *                      thrown when this is not possible.
    */
   public WebvttParser(boolean strictParsing) {
     this.strictParsing = strictParsing;
     textBuilder = new StringBuilder();
   }
 
-  
   public final WebvttSubtitle parse(InputStream inputStream) throws IOException {
     ArrayList<WebvttCue> subtitles = new ArrayList<>();
 
@@ -167,7 +164,7 @@ public final class WebvttParser {
             if (value.endsWith("%")) {
               lineNum = parseIntPercentage(value);
             } else if (value.matches(NON_NUMERIC_STRING)) {
-              log.info( "Invalid line value: " + value);
+              log.info("Invalid line value: " + value);
             } else {
               lineNum = Integer.parseInt(value);
             }
@@ -176,7 +173,7 @@ public final class WebvttParser {
             if ("start".equals(value)) {
               alignment = "start";
             } else if ("middle".equals(value)) {
-              alignment ="middle";
+              alignment = "middle";
             } else if ("end".equals(value)) {
               alignment = "end";
             } else if ("left".equals(value)) {
@@ -184,7 +181,7 @@ public final class WebvttParser {
             } else if ("right".equals(value)) {
               alignment = "right";
             } else {
-              log.info( "Invalid align value: " + value);
+              log.info("Invalid align value: " + value);
             }
           } else if ("position".equals(name)) {
             position = parseIntPercentage(value);
@@ -194,7 +191,7 @@ public final class WebvttParser {
             log.info("Unknown cue setting " + name + ":" + value);
           }
         } catch (NumberFormatException e) {
-          log.info( " contains an invalid value " + value, e);
+          log.info(" contains an invalid value " + value, e);
         }
       }
 
@@ -206,7 +203,7 @@ public final class WebvttParser {
         }
         textBuilder.append(line.trim());
       }
-      text =textBuilder.toString();
+      text = textBuilder.toString();
 
       WebvttCue cue = new WebvttCue(startTime, endTime, text, lineNum, position, alignment, size);
       subtitles.add(cue);
@@ -214,9 +211,6 @@ public final class WebvttParser {
 
     return new WebvttSubtitle(subtitles);
   }
-
-  
-  
 
   private static int parseIntPercentage(String s) throws NumberFormatException {
     if (!s.endsWith("%")) {
@@ -245,7 +239,7 @@ public final class WebvttParser {
     for (String group : parts[0].split(":")) {
       value = (value * 60L) + Long.parseLong(group);
     }
-    //long finalval = (value + Long.parseLong(parts[1])) * 1000l;
+    // long finalval = (value + Long.parseLong(parts[1])) * 1000l;
     long finalval = (value * 1000l) + Long.parseLong(parts[1]);
     return finalval;
   }

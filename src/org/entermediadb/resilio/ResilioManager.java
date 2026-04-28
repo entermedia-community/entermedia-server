@@ -22,14 +22,10 @@ import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 import org.openedit.OpenEditException;
 
-public class ResilioManager
-{
+public class ResilioManager {
 	private static final Log log = LogFactory.getLog(ResilioManager.class);
 
-	
-	
-	public HttpClient getClient()
-	{
+	public HttpClient getClient() {
 
 		RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
 		CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
@@ -37,12 +33,9 @@ public class ResilioManager
 		return httpClient;
 	}
 
-	
-	public Collection<ResilioFolder> getFolders(MediaArchive inArchive) throws OpenEditException
-	{
+	public Collection<ResilioFolder> getFolders(MediaArchive inArchive) throws OpenEditException {
 
-		try
-		{
+		try {
 			ArrayList folders = new ArrayList();
 			String authString = getAuthString(inArchive);
 
@@ -57,11 +50,11 @@ public class ResilioManager
 
 			StatusLine sl = response.getStatusLine();
 			int status = sl.getStatusCode();
-			if (status >= 400)
-			{
+			if (status >= 400) {
 				log.info("Resilio API unavailable at " + fullpath);
 				return folders;
-				//throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
+				// throw new OpenEditException("error from server " + status + " " +
+				// sl.getReasonPhrase());
 			}
 			String val = EntityUtils.toString(response.getEntity());
 
@@ -69,11 +62,10 @@ public class ResilioManager
 			log.info("Got : " + val);
 			JSONObject data = (JSONObject) config.get("data");
 			JSONArray folderlist = (JSONArray) data.get("folders");
-			for (Iterator iterator = folderlist.iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = folderlist.iterator(); iterator.hasNext();) {
 				JSONObject folderinfo = (JSONObject) iterator.next();
 				ResilioFolder folder = new ResilioFolder();
-				folder.setId((String)folderinfo.get("id"));
+				folder.setId((String) folderinfo.get("id"));
 				folder.setValue("secretkey", folderinfo.get("secretkey"));
 				folder.setValue("folderpath", folderinfo.get("path"));
 				refreshFolder(inArchive, folder);
@@ -81,32 +73,29 @@ public class ResilioManager
 
 			}
 			return folders;
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			throw new OpenEditException(e);
 
 		}
 
 	}
 
-	private String getAuthString(MediaArchive inArchive)
-	{
-		String enc = inArchive.getCatalogSettingValue("resilio_username") + ":" + inArchive.getCatalogSettingValue("resilio_password");
+	private String getAuthString(MediaArchive inArchive) {
+		String enc = inArchive.getCatalogSettingValue("resilio_username") + ":"
+				+ inArchive.getCatalogSettingValue("resilio_password");
 		byte[] encodedBytes = Base64.encodeBase64(enc.getBytes());
 		String authString = new String(encodedBytes);
 		return authString;
 	}
 
-	public  String refreshFolder(MediaArchive inArchive, ResilioFolder inFolder) throws OpenEditException
-	{
+	public String refreshFolder(MediaArchive inArchive, ResilioFolder inFolder) throws OpenEditException {
 
-		try
-		{
+		try {
 			String authString = getAuthString(inArchive);
 
 			HttpGet method = null;
-			String fullpath = inArchive.getCatalogSettingValue("resilio_url") + "/api/v2/folders/"+inFolder.getId()+"/activity";
+			String fullpath = inArchive.getCatalogSettingValue("resilio_url") + "/api/v2/folders/" + inFolder.getId()
+					+ "/activity";
 			method = new HttpGet(fullpath);
 			method.setHeader("Authorization", "Basic " + authString);
 
@@ -116,71 +105,56 @@ public class ResilioManager
 
 			StatusLine sl = response.getStatusLine();
 			int status = sl.getStatusCode();
-			if (status >= 400)
-			{
+			if (status >= 400) {
 				throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 			}
 			String val = EntityUtils.toString(response.getEntity());
 			JSONObject config = (JSONObject) new JSONParser().parse(val);
 			JSONObject data = (JSONObject) config.get("data");
-			for (Iterator iterator = data.keySet().iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = data.keySet().iterator(); iterator.hasNext();) {
 				String key = (String) iterator.next();
-				if("id".equals(key)){
+				if ("id".equals(key)) {
 					continue;
 				}
 				Object value = data.get(key);
-				log.info("Key: " + key + "value: " + value );
+				log.info("Key: " + key + "value: " + value);
 				inFolder.setValue(key, value);
 			}
 			return val;
+		} catch (Exception e) {
+			throw new OpenEditException(e);
 		}
-		catch (Exception e)
-		{
-		throw new OpenEditException(e);
-		}
-		
-		
-		
+
 	}
-	
-	public ResilioFolder getFolderByPath(MediaArchive inArchive, String inPath){
+
+	public ResilioFolder getFolderByPath(MediaArchive inArchive, String inPath) {
 		Collection folders = getFolders(inArchive);
 		inArchive.getPageManager().getPage(inPath).getContentItem().getAbsolutePath();
-		for (Iterator iterator = folders.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = folders.iterator(); iterator.hasNext();) {
 			ResilioFolder folder = (ResilioFolder) iterator.next();
-			if(inPath.equals(folder.get("folderpath"))){
+			if (inPath.equals(folder.get("folderpath"))) {
 				refreshFolder(inArchive, folder);
 				return folder;
 			}
 		}
-	return null;
+		return null;
 	}
-	
-	public ResilioFolder getWorkingFolder(MediaArchive inArchive,  String inUserName){
+
+	public ResilioFolder getWorkingFolder(MediaArchive inArchive, String inUserName) {
 		Collection folders = getFolders(inArchive);
-		for (Iterator iterator = folders.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = folders.iterator(); iterator.hasNext();) {
 			ResilioFolder folder = (ResilioFolder) iterator.next();
 			String folderpath = folder.get("folderpath");
-			if(folderpath == null){
+			if (folderpath == null) {
 				continue;
 			}
-			if(folderpath.contains("workingfolders/" + inUserName )){
+			if (folderpath.contains("workingfolders/" + inUserName)) {
 				refreshFolder(inArchive, folder);
 				return folder;
 			}
-			
-			
-		
+
 		}
-	return null;
+		return null;
 	}
-	
-	
-	
-	
-	
 
 }

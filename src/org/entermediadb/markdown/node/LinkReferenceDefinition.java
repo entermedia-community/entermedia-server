@@ -2,14 +2,20 @@ package org.entermediadb.markdown.node;
 
 /**
  * A link reference definition, e.g.:
- * <pre><code>
+ * 
+ * <pre>
+ * <code>
  * [foo]: /url "title"
- * </code></pre>
+ * </code>
+ * </pre>
  * <p>
- * They can be referenced anywhere else in the document to produce a link using <code>[foo]</code>. The definitions
+ * They can be referenced anywhere else in the document to produce a link using
+ * <code>[foo]</code>. The definitions
  * themselves are usually not rendered in the final output.
  *
- * @see <a href="https://spec.commonmark.org/0.31.2/#link-reference-definition">CommonMark Spec</a>
+ * @see <a href=
+ *      "https://spec.commonmark.org/0.31.2/#link-reference-definition">CommonMark
+ *      Spec</a>
  */
 public class LinkReferenceDefinition extends Block {
 

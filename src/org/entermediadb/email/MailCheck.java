@@ -83,9 +83,6 @@ public class MailCheck {
 	protected boolean saveAttachments = false;
 	protected int attnum = 1;
 
-	
-	
-	
 	public void test() {
 		int msgnum = -1;
 		int optind;
@@ -194,7 +191,7 @@ public class MailCheck {
 					System.out.println("--------------------------");
 					System.out.println("MESSAGE #" + (i + 1) + ":");
 					dumpEnvelope(msgs[i]);
-					 dumpPart(msgs[i]);
+					dumpPart(msgs[i]);
 				}
 			} else {
 				System.out.println("Getting message number: " + msgnum);

@@ -32,11 +32,11 @@ public class TextMetadataExtractor extends MetadataExtractor {
 	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset) {
 		String[] supportedTypes = new String[] { "text", "xml" };
 		String type = PathUtilities.extractPageType(inFile.getName());
-		
+
 		if (type == null) {
 			return false;
 		}
-		
+
 		if (type != null) {
 			String mediatype = inArchive.getMediaRenderType(type);
 			if (!Arrays.asList(supportedTypes).contains(mediatype)) {
@@ -47,23 +47,18 @@ public class TextMetadataExtractor extends MetadataExtractor {
 		try (InputStream input = inFile.getInputStream()) {
 			String fulltext = Jsoup.parse(input, "UTF-8", "").text();
 
-			if( fulltext != null && fulltext.length() > 0)
-			{
-				
-				ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId() +"/assets/" + inAsset.getSourcePath() + "/fulltext.txt");
-				if( item instanceof FileItem)
-				{
-					((FileItem)item).getFile().getParentFile().mkdirs();
+			if (fulltext != null && fulltext.length() > 0) {
+
+				ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId()
+						+ "/assets/" + inAsset.getSourcePath() + "/fulltext.txt");
+				if (item instanceof FileItem) {
+					((FileItem) item).getFile().getParentFile().mkdirs();
 				}
 				PrintWriter output = new PrintWriter(item.getOutputStream());
-				filler.fill(new StringReader(fulltext), output );
+				filler.fill(new StringReader(fulltext), output);
 				filler.close(output);
 				inAsset.setProperty("hasfulltext", "true");
 			}
-			
-			
-			
-			
 
 			// Optionally save the stripped text to a file or log it
 			log.info("Extracted text for asset: " + inAsset.getId());

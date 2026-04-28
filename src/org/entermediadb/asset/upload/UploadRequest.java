@@ -33,10 +33,7 @@ import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.ZipUtil;
 
-
-
-public class UploadRequest implements ProgressListener
-{
+public class UploadRequest implements ProgressListener {
 	private static final Log log = LogFactory.getLog(UploadRequest.class);
 	protected List fieldUploadItems;
 
@@ -48,118 +45,105 @@ public class UploadRequest implements ProgressListener
 	protected String fieldCatalogId;
 	protected String fieldUserName;
 	protected long fieldSoFar;
-	protected Map<String,String> rootPathPerSavedFile = new HashMap();
-	
-	public UploadRequest()
-	{
+	protected Map<String, String> rootPathPerSavedFile = new HashMap();
+
+	public UploadRequest() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	public String getRootPath(String inSavedPath)
-	{
+
+	public String getRootPath(String inSavedPath) {
 		String rootpath = rootPathPerSavedFile.get(inSavedPath);
 		return rootpath;
 	}
-	
-	public long getSoFar()
-	{
+
+	public long getSoFar() {
 		return fieldSoFar;
 	}
-	public void setSoFar(long inSoFar)
-	{
+
+	public void setSoFar(long inSoFar) {
 		fieldSoFar = inSoFar;
 	}
-	public String getUserName()
-	{
+
+	public String getUserName() {
 		return fieldUserName;
 	}
-	public void setUserName(String inUserName)
-	{
+
+	public void setUserName(String inUserName) {
 		fieldUserName = inUserName;
 	}
-	public String getCatalogId()
-	{
+
+	public String getCatalogId() {
 		return fieldCatalogId;
 	}
-	public void setCatalogId(String inCatalogId)
-	{
+
+	public void setCatalogId(String inCatalogId) {
 		fieldCatalogId = inCatalogId;
 	}
-	public String getUploadId()
-	{
+
+	public String getUploadId() {
 		return fieldUploadId;
 	}
-	public void setUploadId(String inUploadId)
-	{
+
+	public void setUploadId(String inUploadId) {
 		fieldUploadId = inUploadId;
 	}
-	public Map getUploadCache()
-	{
-		if (fieldUploadCache == null)
-		{
+
+	public Map getUploadCache() {
+		if (fieldUploadCache == null) {
 			fieldUploadCache = new HashMap();
 		}
 
 		return fieldUploadCache;
 
 	}
-	public void setUploadCache(Map inUploadCache)
-	{
+
+	public void setUploadCache(Map inUploadCache) {
 		fieldUploadCache = inUploadCache;
 	}
 
-
-
 	protected Map fieldUploadCache;
 
-
 	protected Searcher fieldUploadQueueSearcher;
-	
-	public Searcher getUploadQueueSearcher()
-	{
+
+	public Searcher getUploadQueueSearcher() {
 		return fieldUploadQueueSearcher;
 	}
-	public void setUploadQueueSearcher(Searcher inUploadQueueSearcher)
-	{
+
+	public void setUploadQueueSearcher(Searcher inUploadQueueSearcher) {
 		fieldUploadQueueSearcher = inUploadQueueSearcher;
 	}
-	public OutputFiller getFiller()
-	{
-		if (fieldFiller == null)
-		{
+
+	public OutputFiller getFiller() {
+		if (fieldFiller == null) {
 			fieldFiller = new OutputFiller();
 		}
 		return fieldFiller;
 	}
-	public void setFiller(OutputFiller inFiller)
-	{
+
+	public void setFiller(OutputFiller inFiller) {
 		fieldFiller = inFiller;
 	}
-	public void addUploadItem(FileUploadItem inItem)
-	{
+
+	public void addUploadItem(FileUploadItem inItem) {
 		getUploadItems().add(inItem);
 	}
-	public List getUploadItems()
-	{
-		if (fieldUploadItems == null)
-		{
+
+	public List getUploadItems() {
+		if (fieldUploadItems == null) {
 			fieldUploadItems = new ArrayList();
 		}
 		return fieldUploadItems;
 	}
-	public void setUploadItems(List inUploadItems)
-	{
+
+	public void setUploadItems(List inUploadItems) {
 		fieldUploadItems = inUploadItems;
 	}
-	
-	public List<ContentItem>  getSavedContentItems()
-	{
+
+	public List<ContentItem> getSavedContentItems() {
 		List<ContentItem> contentitems = new ArrayList<ContentItem>();
 		List uploadItems = getUploadItems();
-		if (uploadItems != null)
-		{
-			for (Iterator iterator = uploadItems.iterator(); iterator.hasNext();)
-			{
+		if (uploadItems != null) {
+			for (Iterator iterator = uploadItems.iterator(); iterator.hasNext();) {
 				FileUploadItem uploadItem = (FileUploadItem) iterator.next();
 				Page uploaded = uploadItem.getSavedPage();
 				contentitems.add(uploaded.getContentItem());
@@ -167,219 +151,188 @@ public class UploadRequest implements ProgressListener
 		}
 		return contentitems;
 	}
-	
-	public String getPathFor(String home, FileUploadItem inItem, WebPageRequest inReq) throws OpenEditException
-	{
+
+	public String getPathFor(String home, FileUploadItem inItem, WebPageRequest inReq) throws OpenEditException {
 		String rootpath = getRootPath(home, inReq);
-				
-		String finalpath =  null;
-		//TODO: Ok so on Windows we get passed in \\ in the file name
+
+		String finalpath = null;
+		// TODO: Ok so on Windows we get passed in \\ in the file name
 		String name = inItem.getName();
-		name = name.replace('\\','/');		
-		name = name.replaceAll("[.][.]",""); //hack check
-//		name = PathUtilities.extractFileName(name);
-//		name = name.replaceAll(" ","");
+		name = name.replace('\\', '/');
+		name = name.replaceAll("[.][.]", ""); // hack check
+		// name = PathUtilities.extractFileName(name);
+		// name = name.replaceAll(" ","");
 		String targetname = inReq.getRequestParameter("targetname");
-		if(targetname != null)
-		{
-			targetname = targetname.replace('\\', '/'); //Not sure I need to do this
+		if (targetname != null) {
+			targetname = targetname.replace('\\', '/'); // Not sure I need to do this
 			name = targetname;
 		}
-		
-		if( rootpath.endsWith("/"))
-		{
+
+		if (rootpath.endsWith("/")) {
 			finalpath = rootpath + name;
-		}
-		else
-		{
+		} else {
 			Page page = getPageManager().getPage(rootpath);
-			if ( page.isFolder() ) //upload to an existing folder
+			if (page.isFolder()) // upload to an existing folder
 			{
 				finalpath = rootpath + "/" + name;
-			}
-			else
-			{
+			} else {
 				finalpath = rootpath;
 			}
 		}
-		rootPathPerSavedFile.put(finalpath,rootpath);
+		rootPathPerSavedFile.put(finalpath, rootpath);
 		return finalpath;
 	}
-	protected String getRootPath(String home, WebPageRequest inReq) 
-	{
-		String path  = inReq.getContentProperty("path");
-		if( path == null )
-		{
+
+	protected String getRootPath(String home, WebPageRequest inReq) {
+		String path = inReq.getContentProperty("path");
+		if (path == null) {
 			String allow = inReq.findValue("allowspecifiedpath");
-			if( Boolean.parseBoolean(allow))
-			{
+			if (Boolean.parseBoolean(allow)) {
 				path = inReq.getRequestParameter("path");
-				if( path == null)
-				{
-					//path = inItem.get("path");
+				if (path == null) {
+					// path = inItem.get("path");
 				}
-			}		
+			}
 		}
-		if (path == null )
-		{
+		if (path == null) {
 			long utime = System.currentTimeMillis();
-			path = "/WEB-INF/temp/uploading/" + inReq.getUserName() + "/tmp" + utime + "/" ;//+ inItem.getName();
-			//throw new OpenEditException("No path passed in with the upload");
+			path = "/WEB-INF/temp/uploading/" + inReq.getUserName() + "/tmp" + utime + "/";// + inItem.getName();
+			// throw new OpenEditException("No path passed in with the upload");
 		}
-		if( home != null && home.length() > 0 && path.startsWith(home))
-		{
+		if (home != null && home.length() > 0 && path.startsWith(home)) {
 			path = path.substring(home.length());
 		}
 		return path;
 	}
-	public PageManager getPageManager()
-	{
+
+	public PageManager getPageManager() {
 		return fieldPageManager;
 	}
-	public void setPageManager(PageManager inPageManager)
-	{
+
+	public void setPageManager(PageManager inPageManager) {
 		fieldPageManager = inPageManager;
 	}
-	public void saveFile(FileUploadItem inItem, String inHome, WebPageRequest inReq) throws OpenEditException
-	{
+
+	public void saveFile(FileUploadItem inItem, String inHome, WebPageRequest inReq) throws OpenEditException {
 		/**
 		 * inPath is full filename
+		 * 
 		 * @param inProps
 		 */
-			//From now on we are going to assume people always upload to a directory
-			String inPath = getPathFor(inHome, inItem, inReq);
-			if( inPath == null)
-			{
-				return; //already saved?
-			}
-			if (inPath.indexOf("..") > -1)
-			{
-				throw new OpenEditException("Illegal path name");
-			}
-			final String path = PathUtilities.resolveRelativePath( inPath, "/");
-			saveFileAs(inItem, path, inReq.getUser());
+		// From now on we are going to assume people always upload to a directory
+		String inPath = getPathFor(inHome, inItem, inReq);
+		if (inPath == null) {
+			return; // already saved?
+		}
+		if (inPath.indexOf("..") > -1) {
+			throw new OpenEditException("Illegal path name");
+		}
+		final String path = PathUtilities.resolveRelativePath(inPath, "/");
+		saveFileAs(inItem, path, inReq.getUser());
 	}
-	
+
 	/**
 	 * 
 	 * Is this needed? Call the ContentItem One
-	 * */
-	
+	 */
+
 	public ContentItem saveFileAs(FileUploadItem inItem, final String path, User inUser)
-			throws OpenEditException
-	{
-		Page page = getPageManager().getPage( path, true );
+			throws OpenEditException {
+		Page page = getPageManager().getPage(path, true);
 		ContentItem item = page.getContentItem();
-		item.setMessage( "Uploaded file");
+		item.setMessage("Uploaded file");
 		ContentItem saved = saveFileAs(inItem, item, inUser);
 		page.setContentItem(saved);
 		inItem.setSavedPage(page);
 		return page.getContentItem();
 	}
-	
-	
-	
+
 	public ContentItem saveFileAs(FileUploadItem inUploadedField, ContentItem saveTo, User inUser)
-			throws OpenEditException
-	{
+			throws OpenEditException {
 		InputStreamItem revision = new InputStreamItem();
-//	final Date lastModified = new Date();
-		if ( inUser == null)
-		{
+		// final Date lastModified = new Date();
+		if (inUser == null) {
 			throw new IllegalArgumentException("No user logged in");
 		}
 		revision.setAbsolutePath(saveTo.getAbsolutePath());
 		revision.setPath(saveTo.getPath());
-		revision.setAuthor( inUser.getUserName() );
-		revision.setType( ContentItem.TYPE_ADDED );
-		revision.setMessage( saveTo.getMessage());
-		//revision.setInputStream(saveTo.getInputStream());
+		revision.setAuthor(inUser.getUserName());
+		revision.setType(ContentItem.TYPE_ADDED);
+		revision.setMessage(saveTo.getMessage());
+		// revision.setInputStream(saveTo.getInputStream());
 		revision.setPreviewImage(saveTo.getPreviewImage());
 		InputStream input = null;
-		try
-		{
+		try {
 			FileItem uploadeditem = inUploadedField.getFileItem();
-			if (uploadeditem instanceof DiskFileItem)
-			{
+			if (uploadeditem instanceof DiskFileItem) {
 				DiskFileItem fileItem = (DiskFileItem) uploadeditem;
-				if( fileItem.getHeaders() != null )
-				{
-					if ("gzip".equals(fileItem.getHeaders().getHeader("Content-Encoding")))
-					{
+				if (fileItem.getHeaders() != null) {
+					if ("gzip".equals(fileItem.getHeaders().getHeader("Content-Encoding"))) {
 						input = new GZIPInputStream(fileItem.getInputStream());
 					}
 				}
 			}
-			if (input == null)
-			{
-				//TODO: For Base 64 use string value
-				
-				if( inUploadedField.isBase64())
-				{
-					//TODO: Write a class to streamthis
+			if (input == null) {
+				// TODO: For Base 64 use string value
+
+				if (inUploadedField.isBase64()) {
+					// TODO: Write a class to streamthis
 					byte[] all = IOUtils.toByteArray(uploadeditem.getInputStream());
-					//byte[] all = item.getInputStream().readAllBytes();
-					String code = new String(all,"UTF-8");
-					code = code.substring(code.indexOf(",") +1,code.length());
+					// byte[] all = item.getInputStream().readAllBytes();
+					String code = new String(all, "UTF-8");
+					code = code.substring(code.indexOf(",") + 1, code.length());
 					byte[] tosave = Base64.getDecoder().decode(code);
 					input = new ByteArrayInputStream(tosave);
-					
-				}
-				else
-				{
+
+				} else {
 					input = uploadeditem.getInputStream();
 				}
 			}
-		}
-		catch ( IOException ex)
-		{
+		} catch (IOException ex) {
 			throw new OpenEditException(ex);
 		}
 		revision.setInputStream(input);
-		//log.info("Saved " + page);
-		
-		//OutputStreamItem item = new OutputStreamItem(page.getPath());
-//		String offset = inItem.get("offset");
-//		if( offset != null)
-//		{getUploadItems
-//			item.setSeek(Long.parseLong(offset));
-//		}
-		//page.setContentItem(item);
-		
-		getPageManager().getRepository().put( revision );
+		// log.info("Saved " + page);
+
+		// OutputStreamItem item = new OutputStreamItem(page.getPath());
+		// String offset = inItem.get("offset");
+		// if( offset != null)
+		// {getUploadItems
+		// item.setSeek(Long.parseLong(offset));
+		// }
+		// page.setContentItem(item);
+
+		getPageManager().getRepository().put(revision);
 		getPageManager().clearCache(revision.getPath());
 		log.info("Uploaded To " + revision.getAbsolutePath());
-//		
-//		Page page = getPageManager().getPage(saveTo.getPath());
-//		page.setContentItem(revision);
-//		getPageManager().putPage(page);  //FileReposityory will set the item.setOutputstream for us
-//		inUploadedField.setSavedPage(page);
+		//
+		// Page page = getPageManager().getPage(saveTo.getPath());
+		// page.setContentItem(revision);
+		// getPageManager().putPage(page); //FileReposityory will set the
+		// item.setOutputstream for us
+		// inUploadedField.setSavedPage(page);
 		return revision;
 	}
-	public List unzipFiles(boolean inForceUnzip) throws OpenEditException
-	{
+
+	public List unzipFiles(boolean inForceUnzip) throws OpenEditException {
 		List allpages = new ArrayList();
 		PageManager pm = getPageManager();
-		for (Iterator iterator = getUploadItems().iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = getUploadItems().iterator(); iterator.hasNext();) {
 			FileUploadItem item = (FileUploadItem) iterator.next();
 			Page page = pm.getPage(item.getSavedPage().getPath());
-			if ( page.getPath().toLowerCase().endsWith(".zip"))
-			{
+			if (page.getPath().toLowerCase().endsWith(".zip")) {
 				List unzippedFiles = new ArrayList();
-				String ok = (String)item.get("unzip");
-				if ( inForceUnzip || "checked".equals(ok) || Boolean.parseBoolean(ok))
-				{
+				String ok = (String) item.get("unzip");
+				if (inForceUnzip || "checked".equals(ok) || Boolean.parseBoolean(ok)) {
 					log.info("Unzipping " + page.getPath());
-					File in = new File( page.getContentItem().getAbsolutePath() );//getPageManager().getRepository().getStub(inPath)//new File( getRoot(), page.getContentItem().getPath() );
-					try
-					{
+					File in = new File(page.getContentItem().getAbsolutePath());// getPageManager().getRepository().getStub(inPath)//new
+																				// File( getRoot(),
+																				// page.getContentItem().getPath() );
+					try {
 						unzippedFiles.addAll(getZipUtil().unzip(in, in.getParentFile()));
-					}
-					catch (Exception ex)
-					{
+					} catch (Exception ex) {
 						log.error("Could not unzip : " + in.getAbsolutePath());
-						log.error( ex );
+						log.error(ex);
 						return allpages;
 					}
 					getPageManager().removePage(page);
@@ -389,148 +342,128 @@ public class UploadRequest implements ProgressListener
 						upath = upath.substring(in.getParentFile().getAbsolutePath().length() + 1);
 						upath = page.getDirectory() + "/" + upath;
 						Page unz = getPageManager().getPage(upath);
-						
+
 						allpages.add(unz);
 					}
 				}
-			}
-			else
-			{
+			} else {
 				allpages.add(page);
 			}
 		}
 		return allpages;
 	}
-	public File getRoot()
-	{
+
+	public File getRoot() {
 		return fieldRoot;
 	}
-	public void setRoot(File inRoot)
-	{
+
+	public void setRoot(File inRoot) {
 		fieldRoot = inRoot;
 	}
-	public ZipUtil getZipUtil()
-	{
-		if( fieldZipUtil == null)
-		{
+
+	public ZipUtil getZipUtil() {
+		if (fieldZipUtil == null) {
 			fieldZipUtil = new ZipUtil();
 		}
 		return fieldZipUtil;
 	}
-	public void setZipUtil(ZipUtil inZipUtil)
-	{
+
+	public void setZipUtil(ZipUtil inZipUtil) {
 		fieldZipUtil = inZipUtil;
 	}
-	public Page saveFirstFileAs(String inPath, User inUser) throws OpenEditException
-	{
+
+	public Page saveFirstFileAs(String inPath, User inUser) throws OpenEditException {
 		FileUploadItem item = getFirstItem();
 		saveFileAs(item, inPath, inUser);
 		return item.getSavedPage();
 	}
 
-	public FileUploadItem getFirstItem()
-	{
-		for (Iterator iterator = getUploadItems().iterator(); iterator.hasNext();)
-		{
+	public FileUploadItem getFirstItem() {
+		for (Iterator iterator = getUploadItems().iterator(); iterator.hasNext();) {
 			FileUploadItem item = (FileUploadItem) iterator.next();
 			return item;
 		}
 		return null;
 	}
-	public FileUploadItem getUploadItem(int inI) 
-	{
-		for (Iterator iterator = getUploadItems().iterator(); iterator.hasNext();)
-		{
-			FileUploadItem item = (FileUploadItem) iterator.next();
-			if( item.getCount() == inI)
-			{
-				return item;
-			}
-		}
-		return null;
-	}
-	public FileUploadItem getUploadItemByName(String inName) 
-	{
-		for (Iterator iterator = getUploadItems().iterator(); iterator.hasNext();)
-		{
-			FileUploadItem item = (FileUploadItem) iterator.next();
-			if( inName.equals(item.getFileItem().getFieldName()))
-			{
-				return item;
-			}
-		}
-		return null;
-	}
-	
 
-	
-	/**   
+	public FileUploadItem getUploadItem(int inI) {
+		for (Iterator iterator = getUploadItems().iterator(); iterator.hasNext();) {
+			FileUploadItem item = (FileUploadItem) iterator.next();
+			if (item.getCount() == inI) {
+				return item;
+			}
+		}
+		return null;
+	}
+
+	public FileUploadItem getUploadItemByName(String inName) {
+		for (Iterator iterator = getUploadItems().iterator(); iterator.hasNext();) {
+			FileUploadItem item = (FileUploadItem) iterator.next();
+			if (inName.equals(item.getFileItem().getFieldName())) {
+				return item;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Put breakpoints here to slow down the upload
 	 * 
 	 */
-	public void update(long inBytesRead, long inContentLength, int inItemNumber)
-	{
-		if( getUploadId() == null )
-		{
+	public void update(long inBytesRead, long inContentLength, int inItemNumber) {
+		if (getUploadId() == null) {
 			return;
 		}
-		//inItemNumber = inItemNumber - 1;
+		// inItemNumber = inItemNumber - 1;
 		Data uploaddata = loadUploadData(inItemNumber);
 		String existing = uploaddata.get("date");
 		boolean update = true;
-		if( existing != null)
-		{
+		if (existing != null) {
 			Date saved = DateStorageUtil.getStorageUtil().parseFromStorage(existing);
 			Date recently = new Date(System.currentTimeMillis() - 2000);
-			if( saved.before(recently))
-			{
+			if (saved.before(recently)) {
 				update = true;
-			}
-			else
-			{
+			} else {
 				update = false;
 			}
 		}
-		//track on a per file basis
-		//long thechange = inBytesRead - fieldSoFar;
-		
-		//fieldSoFar = inBytesRead;
-		
+		// track on a per file basis
+		// long thechange = inBytesRead - fieldSoFar;
+
+		// fieldSoFar = inBytesRead;
+
 		String sofar = uploaddata.get("filesizeuploaded");
-		if( sofar == null )
-		{
+		if (sofar == null) {
 			sofar = "0";
 		}
-		//long saved = Long.parseLong( sofar ) + thechange; 
-				
-		uploaddata.setProperty("filesize", String.valueOf( inContentLength));
-		uploaddata.setProperty("filesizeuploaded", String.valueOf( inBytesRead ));
+		// long saved = Long.parseLong( sofar ) + thechange;
+
+		uploaddata.setProperty("filesize", String.valueOf(inContentLength));
+		uploaddata.setProperty("filesizeuploaded", String.valueOf(inBytesRead));
 
 		uploaddata.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-		if( inBytesRead == inContentLength)
-		{
+		if (inBytesRead == inContentLength) {
 			uploaddata.setProperty("status", "complete");
 			update = true;
 		}
 
-		if(update)
-		{
-			//PRO tip: Put breakpoint here to slow down uploads 
+		if (update) {
+			// PRO tip: Put breakpoint here to slow down uploads
 			getUploadQueueSearcher().saveData(uploaddata, null);
-			log.info("updated: " + uploaddata.getId()  + " " + uploaddata.get("filesizeuploaded") + " hash:" + uploaddata.hashCode() );
-//			try
-//			{
-//				Thread.sleep(1000);
-//			}
-//			catch(Exception ewx)
-//			{}
+			log.info("updated: " + uploaddata.getId() + " " + uploaddata.get("filesizeuploaded") + " hash:"
+					+ uploaddata.hashCode());
+			// try
+			// {
+			// Thread.sleep(1000);
+			// }
+			// catch(Exception ewx)
+			// {}
 		}
 	}
-	protected Data loadUploadData(int inItemNumber)
-	{
-		Data task = (Data)getUploadCache().get(inItemNumber);
-		if( task == null )
-		{
+
+	protected Data loadUploadData(int inItemNumber) {
+		Data task = (Data) getUploadCache().get(inItemNumber);
+		if (task == null) {
 			task = addRecentUpload(getCatalogId(), getUploadId() + "_" + inItemNumber);
 			task.setSourcePath("users/" + getUserName());
 			task.setName(getUploadId());
@@ -539,24 +472,20 @@ public class UploadRequest implements ProgressListener
 
 		return task;
 	}
-	
-	protected Data addRecentUpload(String inCatId, String inUploadId)
-	{
+
+	protected Data addRecentUpload(String inCatId, String inUploadId) {
 		Searcher searcher = getUploadQueueSearcher();
-		Data req = (Data)searcher.searchById(inUploadId);
-		if( req == null)
-		{
-			req= searcher.createNewData();
+		Data req = (Data) searcher.searchById(inUploadId);
+		if (req == null) {
+			req = searcher.createNewData();
 			req.setId(inUploadId);
 		}
 		return req;
 	}
-	public void track(String inFieldName, String inContentType,String inFileName)
-	{
-		//create a record and loop over the records each time an update happens
-		
+
+	public void track(String inFieldName, String inContentType, String inFileName) {
+		// create a record and loop over the records each time an update happens
 
 	}
-
 
 }

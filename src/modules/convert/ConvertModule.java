@@ -28,13 +28,11 @@ public class ConvertModule extends BaseMediaModule
 			return;// nothing to do, missing asset
 		}
 
-
 		Searcher presetsearcher = archive.getSearcher("convertpreset");
 		Searcher tasksearcher = archive.getSearcher("conversiontask");
 		Data preset = (Data) archive.getSearcher("convertpreset").searchById(presetid);
 
-		Data one = tasksearcher.query().match("assetid", asset.getId()).match("presetid", presetid)
-				.searchOne();
+		Data one = tasksearcher.query().match("assetid", asset.getId()).match("presetid", presetid).searchOne();
 
 		if (one == null)
 		{
@@ -77,15 +75,13 @@ public class ConvertModule extends BaseMediaModule
 	public void checkQueue(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		QueueManager manager =
-				(QueueManager) getModuleManager().getBean(archive.getCatalogId(), "queueManager");
+		QueueManager manager = (QueueManager) getModuleManager().getBean(archive.getCatalogId(), "queueManager");
 		manager.checkQueue();
 		ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
 		if (logger != null)
 		{
 			logger.info("Total Pending Tasks: " + manager.getTotalPending());
-			logger.info("Threads running: " + manager.runningProcesses() + " of "
-					+ manager.getMaxProcessors() + " processors");
+			logger.info("Threads running: " + manager.runningProcesses() + " of " + manager.getMaxProcessors() + " processors");
 
 			if (manager.getRunningAssetIds().size() > 1)
 			{

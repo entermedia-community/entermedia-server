@@ -111,7 +111,7 @@ public class JsonAssetModule extends BaseJsonModule {
 		AssetImporter importer = archive.getAssetImporter();
 		HashMap vals = new HashMap();
 		vals.putAll(inReq.getParameterMap());
-		if (properties.getFirstItem()  != null) {
+		if (properties.getFirstItem() != null) {
 			String fileName = properties.getFirstItem().getName();
 			if (fileName != null) {
 				vals.put("filename", fileName);
@@ -136,88 +136,81 @@ public class JsonAssetModule extends BaseJsonModule {
 		df = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy/MM");
 		vals.put("formattedmonth", df);
 
-		String importpath = (String)vals.get("importpath");
-		if( importpath != null)
-		{
+		String importpath = (String) vals.get("importpath");
+		if (importpath != null) {
 			String filename = PathUtilities.extractFileName(importpath);
 			vals.put("filename", filename);
 		}
-		
+
 		Asset asset = null;
 		String id = null;
 		String sourcepath = inReq.getRequiredParameter("sourcepath");
 
-		if( request == null)
-		{
-			//throw new OpenEditException("JSON not parsed ");
-		}
-		else {
+		if (request == null) {
+			// throw new OpenEditException("JSON not parsed ");
+		} else {
 			id = (String) request.get("id");
-			if( id != null && !id.isEmpty())
-			{
+			if (id != null && !id.isEmpty()) {
 				asset = archive.getAsset(id);
 			}
 		}
-		if( asset == null)
-		{
-	
+		if (asset == null) {
+
 			if (sourcepath == null) {
 				sourcepath = archive.getCatalogSettingValue("catalogassetupload"); // ${division.uploadpath}/${user.userName}/${formateddate}
 			}
 			if (sourcepath == null || sourcepath.length() == 0) {
 				sourcepath = "receivedfiles/${id}";
 			}
-			//sourcepath = sm.getValue(catalogid, sourcepath, vals);
-			sourcepath = archive.getAssetImporter().getAssetUtilities().createSourcePathFromMask(archive, inReq.getUser(), (String) vals.get("filename"), sourcepath, vals);
+			// sourcepath = sm.getValue(catalogid, sourcepath, vals);
+			sourcepath = archive.getAssetImporter().getAssetUtilities().createSourcePathFromMask(archive,
+					inReq.getUser(), (String) vals.get("filename"), sourcepath, vals);
 		}
-		
+
 		boolean replaceasset = false;
-		
-		//String legacysourcepath = archive.getCatalogSettingValue("catalogassetuploadalwaysappend"); //PRN? ${division.uploadpath}/${user.userName}/${formateddate}
-		if (properties.getFirstItem() != null) 
-		{
-			String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath ;
-			
-			//if( legacysourcepath != null && "true".equalsIgnoreCase(legacysourcepath))
+
+		// String legacysourcepath =
+		// archive.getCatalogSettingValue("catalogassetuploadalwaysappend"); //PRN?
+		// ${division.uploadpath}/${user.userName}/${formateddate}
+		if (properties.getFirstItem() != null) {
+			String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath;
+
+			// if( legacysourcepath != null && "true".equalsIgnoreCase(legacysourcepath))
 			boolean foldrbased = false;
-			if( path.endsWith("/"))
-			{
+			if (path.endsWith("/")) {
 				path = path + "/" + properties.getFirstItem().getName();
 				foldrbased = true;
 			}
 			path = path.replace("//", "/");
 
 			Page originalfile = archive.getPageManager().getPage(path);
-			if( originalfile.exists() )
-			{
+			if (originalfile.exists()) {
 				Asset existingasset = archive.getAssetBySourcePath(sourcepath);
-				if( existingasset != null)
-				{
-					ContentItem preview = archive.getPresetManager().outPutForGenerated(archive, existingasset, "image3000x3000");
-					archive.getAssetEditor().backUpFilesForLastVersion(existingasset,originalfile.getContentItem(),preview );
+				if (existingasset != null) {
+					ContentItem preview = archive.getPresetManager().outPutForGenerated(archive, existingasset,
+							"image3000x3000");
+					archive.getAssetEditor().backUpFilesForLastVersion(existingasset, originalfile.getContentItem(),
+							preview);
 					replaceasset = true;
 				}
 			}
 			properties.saveFileAs(properties.getFirstItem(), path, inReq.getUser());
-			if( asset == null)
-			{
+			if (asset == null) {
 				asset = importer.createAssetFromPage(archive, foldrbased, inReq.getUser(), originalfile, id);
 				sourcepath = asset.getSourcePath();
-			}
-			else
-			{
-				//If the sourcepath does not match then we have to create a new asset and set parentid
-				if(asset.getSourcePath().equals(sourcepath) )
-				{
-					asset = importer.getAssetUtilities().populateAsset(asset, originalfile.getContentItem(), archive, sourcepath, inReq.getUser());
-				}
-				else
-				{
-					//Remove old asset from new asset categories
-					Asset assetcopy = importer.createAssetFromPage(archive, foldrbased, inReq.getUser(), originalfile, null);
-					Category parentcat = archive.getCategorySearcher().loadCategoryByPath(PathUtilities.extractDirectoryPath(sourcepath));
-					if( parentcat  != null)
-					{
+			} else {
+				// If the sourcepath does not match then we have to create a new asset and set
+				// parentid
+				if (asset.getSourcePath().equals(sourcepath)) {
+					asset = importer.getAssetUtilities().populateAsset(asset, originalfile.getContentItem(), archive,
+							sourcepath, inReq.getUser());
+				} else {
+					// Remove old asset from new asset categories
+					Asset assetcopy = importer.createAssetFromPage(archive, foldrbased, inReq.getUser(), originalfile,
+							null);
+					Category parentcat = archive.getCategorySearcher()
+							.loadCategoryByPath(PathUtilities.extractDirectoryPath(sourcepath));
+					if (parentcat != null) {
 						asset.removeCategory(parentcat);
 						archive.saveAsset(asset);
 					}
@@ -226,33 +219,27 @@ public class JsonAssetModule extends BaseJsonModule {
 					request.remove("id");
 					asset = assetcopy;
 				}
-				
+
 			}
-		}
-		else if (asset == null && vals.get("fetchURL") != null) {
+		} else if (asset == null && vals.get("fetchURL") != null) {
 			asset = importer.createAssetFromFetchUrl(archive, (String) vals.get("fetchURL"), inReq.getUser(),
 					sourcepath, (String) vals.get("importfilename"), id);
-			
-		} 
-		else if ( importpath != null)
-		{
-			//Create a page for this path
+
+		} else if (importpath != null) {
+			// Create a page for this path
 			File checkfile = new File(importpath);
-			if( !checkfile.exists())
-			{
+			if (!checkfile.exists()) {
 				throw new OpenEditException("Could not find or did not have access to " + importpath);
 			}
 			Collection hotfolders = archive.getList("hotfolder");
 			boolean foundmatch = false;
-			for (Iterator iterator = hotfolders.iterator(); iterator.hasNext();)
-			{
+			for (Iterator iterator = hotfolders.iterator(); iterator.hasNext();) {
 				Data hotfolder = (Data) iterator.next();
 				String path = hotfolder.get("externalpath");
-				if(path != null && importpath.startsWith(path))
-				{
+				if (path != null && importpath.startsWith(path)) {
 					String ending = importpath.substring(path.length());
 					String subfolder = hotfolder.get("subfolder");
-					sourcepath = subfolder +  ending;
+					sourcepath = subfolder + ending;
 					String contentpath = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath;
 					Page item = archive.getPageManager().getPage(contentpath);
 					asset = importer.createAssetFromPage(archive, false, inReq.getUser(), item, id);
@@ -260,21 +247,19 @@ public class JsonAssetModule extends BaseJsonModule {
 					break;
 				}
 			}
-			if( !foundmatch)
-			{
+			if (!foundmatch) {
 				ContentItem item = new FileItem(new File(importpath));
 				boolean folderbased = sourcepath.endsWith("/");
 				String postfix = sourcepath;
-				if( folderbased )
-				{
-					postfix = postfix + PathUtilities.extractFileName(importpath); //Add a filename
+				if (folderbased) {
+					postfix = postfix + PathUtilities.extractFileName(importpath); // Add a filename
 				}
-				String destpath = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + postfix;  
+				String destpath = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + postfix;
 				destpath = destpath.replace("//", "/");
 
 				Page destitem = archive.getPageManager().getPage(destpath);
 				archive.getPageManager().getRepository().copy(item, destitem.getContentItem());
-				
+
 				asset = importer.createAssetFromPage(archive, folderbased, inReq.getUser(), destitem, id);
 			}
 		}
@@ -292,9 +277,9 @@ public class JsonAssetModule extends BaseJsonModule {
 				target.getParentFile().mkdirs();
 				if (file.renameTo(new File(realpath))) {
 					asset = importer.createAssetFromPage(archive, false, inReq.getUser(), newfile, id);
-					if(id != null){
+					if (id != null) {
 						asset.setId(id);
-					
+
 					}
 				} else {
 					throw new OpenEditException("Error moving file: " + realpath);
@@ -307,53 +292,48 @@ public class JsonAssetModule extends BaseJsonModule {
 			asset.setProperty("sourcepath", sourcepath);
 			asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		}
-		if (request!=null) 
-		{
+		if (request != null) {
 			Map remaining = new HashMap(request);
 			remaining.remove("categorypath");
 			remaining.remove("category-exact");
 			remaining.remove("category");
 			remaining.remove("sourcepath");
 			populateJsonData(remaining, searcher, asset);
-			
-			Map categories = (Map)request.get("category");
-			if( categories != null)
-			{
-				log.info("Ignoring category ids, use categorypath " + categories );
+
+			Map categories = (Map) request.get("category");
+			if (categories != null) {
+				log.info("Ignoring category ids, use categorypath " + categories);
 			}
 		}
 
-		
 		Object categorypaths = vals.get("categorypath");
-		if(categorypaths instanceof Collection){
-			Collection <String> paths = (Collection) categorypaths;
+		if (categorypaths instanceof Collection) {
+			Collection<String> paths = (Collection) categorypaths;
 			for (String path : paths) {
 				Category cat = archive.createCategoryPath(path);
 				asset.addCategory(cat);
-				
+
 			}
-		} 
-		if(categorypaths instanceof String){
+		}
+		if (categorypaths instanceof String) {
 			String path = (String) categorypaths;
-			
+
 			Category cat = archive.createCategoryPath(path);
 			asset.addCategory(cat);
 		}
-		
-		if( asset != null)
-		{
-			ContentItem original = archive.getOriginalContent(asset);  //May not exist?
-			if( replaceasset )
-			{
-				archive.getAssetEditor().createNewVersionData(asset, original, inReq.getUserName(), Version.SYNCED, null);
+
+		if (asset != null) {
+			ContentItem original = archive.getOriginalContent(asset); // May not exist?
+			if (replaceasset) {
+				archive.getAssetEditor().createNewVersionData(asset, original, inReq.getUserName(), Version.SYNCED,
+						null);
+			} else {
+				archive.getAssetEditor().createNewVersionData(asset, original, inReq.getUserName(), Version.UPLOADED,
+						null);
 			}
-			else
-			{
-				archive.getAssetEditor().createNewVersionData(asset, original, inReq.getUserName(), Version.UPLOADED, null);
-			}
-			//archive.fireMediaEvent("saved", inReq.getUser(), current);
-		}	
-		
+			// archive.fireMediaEvent("saved", inReq.getUser(), current);
+		}
+
 		importer.saveAsset(archive, inReq.getUser(), asset);
 
 		// JSONObject result = getAssetJson(sm, searcher, asset);
@@ -363,8 +343,7 @@ public class JsonAssetModule extends BaseJsonModule {
 		inReq.putPageValue("data", asset);
 		// inReq.putPageValue("json", jsondata);
 		// return result;
-		archive.fireSharedMediaEvent("importing/assetscreated");  //Kicks off an async saving
-
+		archive.fireSharedMediaEvent("importing/assetscreated"); // Kicks off an async saving
 
 	}
 
@@ -404,7 +383,7 @@ public class JsonAssetModule extends BaseJsonModule {
 		// return result;
 
 	}
-	
+
 	public void cloneAsset(WebPageRequest inReq) {
 
 		SearcherManager sm = (SearcherManager) inReq.getPageValue("searcherManager");
@@ -422,40 +401,37 @@ public class JsonAssetModule extends BaseJsonModule {
 		}
 
 		Asset asset = archive.getAsset(assetid);
-		
+
 		if (asset == null) {
 			return;
 		}
-		//populateJsonData(inputdata, searcher, asset);
-		
-		//asset.setId(inNewid);
+		// populateJsonData(inputdata, searcher, asset);
+
+		// asset.setId(inNewid);
 		String originalSourcepath = asset.getSourcePath();
 		String basepath = "/WEB-INF/data/" + catalogid + "/originals/";
-		
+
 		ContentItem dest = getPageManager().getContent(basepath + originalSourcepath);
 		int i = 2;
 		String newSourcepath = originalSourcepath;
-		
-		while (dest.exists())
-		{
+
+		while (dest.exists()) {
 			String pagename = PathUtilities.extractPageName(originalSourcepath);
 			String tmppath = originalSourcepath.replace(pagename, pagename + "_" + i);
 			dest = getPageManager().getContent(basepath + tmppath);
-			if (!dest.exists())
-			{
+			if (!dest.exists()) {
 				newSourcepath = tmppath;
 				break;
 			}
 			i++;
 		}
-		//asset.setSourcePath(originalSourcepath);
-		
-		
+		// asset.setSourcePath(originalSourcepath);
+
 		Asset newasset = archive.getAssetEditor().copyAsset(archive, asset, newSourcepath);
-		
-		//asset.setSourcePath(originalSourcepath);
-		//asset.setId(null);
-		
+
+		// asset.setSourcePath(originalSourcepath);
+		// asset.setId(null);
+
 		searcher.saveData(newasset, inReq.getUser());
 		archive.fireMediaEvent("assetedited", inReq.getUser(), newasset);
 
@@ -567,8 +543,9 @@ public class JsonAssetModule extends BaseJsonModule {
 		HitTracker conversions = util.getActivePresetList(inArchive, inAsset);
 		for (Iterator iterator = conversions.iterator(); iterator.hasNext();) {
 			Data preset = (Data) iterator.next();
-			if (util.doesConvertedFileExist(inArchive, inAsset,preset) ){
-				Dimension dimension = (Dimension) util.getConvertPresetDimension(inArchive.getCatalogId(), preset.getId());
+			if (util.doesConvertedFileExist(inArchive, inAsset, preset)) {
+				Dimension dimension = (Dimension) util.getConvertPresetDimension(inArchive.getCatalogId(),
+						preset.getId());
 				JSONObject data = new JSONObject();
 				// <a class="thickbox btn"
 				// href="$home$apphome/views/modules/asset/downloads/generatedpreview/${asset.sourcepath}/${presetdata.outputfile}/$mediaarchive.asExportFileName($asset,
@@ -644,136 +621,139 @@ public class JsonAssetModule extends BaseJsonModule {
 		return result;
 
 	}
-	
+
 	/**
 	 * @deprecated only works within app. Use createAsset
 	 * @param inReq
 	 */
-/*
-	public void importAssetJson(WebPageRequest inReq) {
-		SearcherManager sm = (SearcherManager) inReq.getPageValue("searcherManager");
+	/*
+	 * public void importAssetJson(WebPageRequest inReq) {
+	 * SearcherManager sm = (SearcherManager) inReq.getPageValue("searcherManager");
+	 * 
+	 * MediaArchive archive = (MediaArchive) inReq.getPageValue("mediaarchive");
+	 * AssetSearcher searcher = archive.getAssetSearcher();
+	 * // We will need to handle this differently depending on whether or not
+	 * // this asset has a real file attached to it.
+	 * // if it does, we should move it and use the asset importer to create it
+	 * // so metadata gets read, etc.
+	 * 
+	 * String importpath = inReq.findValue("importpath");
+	 * Page upload = archive.getPageManager().getPage(importpath);
+	 * 
+	 * 
+	 * 
+	 * AssetImporter importer = archive.getAssetImporter();
+	 * 
+	 * 
+	 * JsonSlurper slurper = new JsonSlurper();
+	 * Collection array = (Collection) slurper.parse(upload.getReader());
+	 * 
+	 * 
+	 * for (Iterator iterator = array.iterator(); iterator.hasNext();)
+	 * {
+	 * Map asstdata = (Map) iterator.next();
+	 * 
+	 * HashMap vals = new HashMap();
+	 * vals.putAll(inReq.getParameterMap());
+	 * 
+	 * String guid = UUID.randomUUID().toString();
+	 * String sguid = guid.substring(0, Math.min(guid.length(), 13));
+	 * vals.put("guid", sguid);
+	 * vals.put("splitguid", sguid.substring(0, 2) + "/" +
+	 * sguid.substring(3).replace("-", ""));
+	 * String df = DateStorageUtil.getStorageUtil().formatDateObj(new Date(),
+	 * "yyyyMM");
+	 * vals.put("formatteddate", df);
+	 * df = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy/MM");
+	 * vals.put("formattedmonth", df);
+	 * Asset asset = null;
+	 * String id = (String) asstdata.get("id");
+	 * String sourcepath = null;
+	 * if (id == null) {
+	 * // id = searcher.nextAssetNumber();
+	 * //vals.put("id", id);
+	 * }
+	 * else
+	 * {
+	 * asset = archive.getAsset(id);
+	 * if(asset != null ){
+	 * sourcepath = asset.getSourcePath();
+	 * }
+	 * }
+	 * if( asset == null)
+	 * {
+	 * sourcepath = (String) vals.get("sourcepath");
+	 * 
+	 * if (sourcepath == null) {
+	 * sourcepath = archive.getCatalogSettingValue("catalogassetupload"); //
+	 * ${division.uploadpath}/${user.userName}/${formateddate}
+	 * }
+	 * if (sourcepath == null || sourcepath.length() == 0) {
+	 * sourcepath = "receivedfiles/${id}";
+	 * }
+	 * sourcepath = sm.getValue(archive.getCatalogId(), sourcepath, vals);
+	 * }
+	 * 
+	 * 
+	 * if (asset == null && vals.get("fetchURL") != null) {
+	 * asset = importer.createAssetFromFetchUrl(archive, (String)
+	 * vals.get("fetchURL"), inReq.getUser(),
+	 * sourcepath, (String) vals.get("importfilename"), id);
+	 * 
+	 * }
+	 * 
+	 * 
+	 * if (asset == null) {
+	 * asset = new BaseAsset(archive);// Empty Record
+	 * asset.setId(id);
+	 * asset.setProperty("sourcepath", sourcepath);
+	 * asset.setProperty("assetaddeddate",
+	 * DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+	 * }
+	 * 
+	 * populateJsonData(asstdata, searcher, asset);
+	 * 
+	 * importer.saveAsset(archive, inReq.getUser(), asset);
+	 * 
+	 * // JSONObject result = getAssetJson(sm, searcher, asset);
+	 * // String jsondata = result.toString();
+	 * inReq.putPageValue("searcher", searcher);
+	 * inReq.putPageValue("asset", asset);
+	 * inReq.putPageValue("data", asset);
+	 * 
+	 * 
+	 * 
+	 * }
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * }
+	 * 
+	 */
 
-		MediaArchive archive = (MediaArchive) inReq.getPageValue("mediaarchive");
-		AssetSearcher searcher = archive.getAssetSearcher();
-		// We will need to handle this differently depending on whether or not
-		// this asset has a real file attached to it.
-		// if it does, we should move it and use the asset importer to create it
-		// so metadata gets read, etc.
-
-		String importpath = inReq.findValue("importpath");
-		Page upload = archive.getPageManager().getPage(importpath);
-			
-		
-
-		AssetImporter importer = archive.getAssetImporter();
-
-		
-		JsonSlurper slurper = new JsonSlurper();
-		Collection array = (Collection) slurper.parse(upload.getReader());
-		
-		
-		for (Iterator iterator = array.iterator(); iterator.hasNext();)
-		{
-			Map asstdata = (Map) iterator.next();
-						
-			HashMap vals = new HashMap();
-			vals.putAll(inReq.getParameterMap());
-			
-			String guid = UUID.randomUUID().toString();
-			String sguid = guid.substring(0, Math.min(guid.length(), 13));
-			vals.put("guid", sguid);
-			vals.put("splitguid", sguid.substring(0, 2) + "/" + sguid.substring(3).replace("-", ""));
-			String df = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyyMM");
-			vals.put("formatteddate", df);
-			df = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy/MM");
-			vals.put("formattedmonth", df);
-			Asset asset = null;
-			String id = (String) asstdata.get("id");
-			String sourcepath = null;
-			if (id == null) {
-				// id = searcher.nextAssetNumber();
-				//vals.put("id", id);
-			}
-			else
-			{
-				asset = archive.getAsset(id);
-				if(asset != null ){
-					sourcepath = asset.getSourcePath();
-				}
-			}
-			if( asset == null)
-			{
-				sourcepath = (String) vals.get("sourcepath");
-		
-				if (sourcepath == null) {
-					sourcepath = archive.getCatalogSettingValue("catalogassetupload"); // ${division.uploadpath}/${user.userName}/${formateddate}
-				}
-				if (sourcepath == null || sourcepath.length() == 0) {
-					sourcepath = "receivedfiles/${id}";
-				}
-				sourcepath = sm.getValue(archive.getCatalogId(), sourcepath, vals);
-			}
-			
-
-			if (asset == null && vals.get("fetchURL") != null) {
-				asset = importer.createAssetFromFetchUrl(archive, (String) vals.get("fetchURL"), inReq.getUser(),
-						sourcepath, (String) vals.get("importfilename"), id);
-				
-			}
-
-		
-			if (asset == null) {
-				asset = new BaseAsset(archive);// Empty Record
-				asset.setId(id);
-				asset.setProperty("sourcepath", sourcepath);
-				asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-			}
-
-			populateJsonData(asstdata, searcher, asset);
-
-			importer.saveAsset(archive, inReq.getUser(), asset);
-
-			// JSONObject result = getAssetJson(sm, searcher, asset);
-			// String jsondata = result.toString();
-			inReq.putPageValue("searcher", searcher);
-			inReq.putPageValue("asset", asset);
-			inReq.putPageValue("data", asset);
-			
-			
-			
-		}
-		
-		
-		
-		
-
-
-	}
-	
-*/
-	
 	public void createCategoryTree(WebPageRequest inReq) {
 		JSONObject object = new JSONObject();
-		
-		
+
 		MediaArchive archive = getMediaArchive(inReq);
 		Map request = inReq.getJsonRequest();
-		
+
 		String categoryid = (String) request.get("categoryid");
-		if(categoryid == null) {
+		if (categoryid == null) {
 			categoryid = "index";
 		}
 		Category root = archive.getCategory(categoryid);
-		
+
 		populateCategoryJson(object, root);
 		String jsondata = object.toString();
 		inReq.putPageValue("json", jsondata);
-		
-		
+
 	}
 
 	protected void populateCategoryJson(JSONObject inObject, Category inRoot) {
-		if(inRoot.hasChildren()) {
+		if (inRoot.hasChildren()) {
 			JSONArray children = new JSONArray();
 			inObject.put("children", children);
 
@@ -783,16 +763,12 @@ public class JsonAssetModule extends BaseJsonModule {
 				children.add(nextchild);
 				populateCategoryJson(nextchild, child);
 			}
-			
+
 		}
 		inObject.put("id", inRoot.getId());
 		inObject.put("name", inRoot.getName());
 		inObject.put("categorypath", inRoot.getCategoryPath());
-		
-		
-		
+
 	}
-	
-	
 
 }

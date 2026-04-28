@@ -11,8 +11,7 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 
-public interface AssetSearcher extends Searcher
-{
+public interface AssetSearcher extends Searcher {
 	public HitTracker search(SearchQuery inQuery);
 
 	/**
@@ -43,14 +42,15 @@ public interface AssetSearcher extends Searcher
 	public abstract void flush();
 
 	String nextAssetNumber();
-	
+
 	public HitTracker searchByIds(Collection<String> inIds);
+
 	public Asset getAssetBySourcePath(String inSourcepath, boolean autocreate);
+
 	public Asset getAssetBySourcePath(String inSourcepath);
 
 	public String getFulltext(Asset asset);
 
 	public void saveJson(Collection inJsonArray);
-
 
 }

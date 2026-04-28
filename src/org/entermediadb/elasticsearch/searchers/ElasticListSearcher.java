@@ -20,37 +20,34 @@ import org.openedit.xml.ElementData;
 import org.openedit.xml.XmlFile;
 import org.openedit.xml.XmlSearcher;
 
-public class ElasticListSearcher extends BaseElasticSearcher implements Reloadable
-{
+public class ElasticListSearcher extends BaseElasticSearcher implements Reloadable {
 	protected Log log = LogFactory.getLog(ElasticListSearcher.class);
-	protected DataArchive fieldDataArchive; //lazy loaded
+	protected DataArchive fieldDataArchive; // lazy loaded
 	protected String fieldPrefix;
 	protected String fieldDataFileName;
-	//protected XmlFile fieldXmlFile;
+	// protected XmlFile fieldXmlFile;
 	protected XmlSearcher fieldXmlSearcher;
 
 	protected boolean fieldSaveToXml = true;
-	
-	
-	public boolean isSaveToXml()
-	{
+
+	public boolean isSaveToXml() {
 		return fieldSaveToXml;
 	}
 
-	public void setSaveToXml(boolean inSaveToXml)
-	{
+	public void setSaveToXml(boolean inSaveToXml) {
 		fieldSaveToXml = inSaveToXml;
 	}
 
 	public XmlSearcher getXmlSearcher() {
-		
-		if(fieldXmlSearcher.getCatalogId() == null){
+
+		if (fieldXmlSearcher.getCatalogId() == null) {
 			fieldXmlSearcher.setCatalogId(getCatalogId());
 			fieldXmlSearcher.setSearchType(getSearchType());
 			PropertyDetailsArchive newarchive = getSearcherManager().getPropertyDetailsArchive(getCatalogId());
 			fieldXmlSearcher.setPropertyDetailsArchive(newarchive);
 		}
-		//fieldXmlSearcher.setCacheManager(null);//Important cb: Why in the world would you want always create new caches? 
+		// fieldXmlSearcher.setCacheManager(null);//Important cb: Why in the world would
+		// you want always create new caches?
 		return fieldXmlSearcher;
 	}
 
@@ -61,279 +58,218 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	/**
 	 * @override
 	 */
-	protected boolean isTrackEdits()
-	{
+	protected boolean isTrackEdits() {
 		return false;
 	}
 
 	@Override
-	public String getIndexId() 
-	{
-		if( isSaveToXml())
-		{
+	public String getIndexId() {
+		if (isSaveToXml()) {
 			return getXmlSearcher().getIndexId();
-		}
-		else
-		{
+		} else {
 			return super.getIndexId();
 		}
 	}
-	public void clearIndex() 
-	{
+
+	public void clearIndex() {
 		super.clearIndex();
-		if( isSaveToXml())
-		{
+		if (isSaveToXml()) {
 			getXmlSearcher().clearIndex();
 		}
 	}
-	
-	
-	public String getDataFileName()
-	{
-		if (fieldDataFileName == null)
-		{
+
+	public String getDataFileName() {
+		if (fieldDataFileName == null) {
 			fieldDataFileName = getSearchType() + ".xml";
 		}
 		return fieldDataFileName;
 	}
-	public void setDataFileName(String inName)
-	{
+
+	public void setDataFileName(String inName) {
 		fieldDataFileName = inName;
 	}
-	
-	
-	public Data createNewData()
-	{
-		if( getNewDataName() == null)
-		{
+
+	public Data createNewData() {
+		if (getNewDataName() == null) {
 			ElementData data = new ElementData();
-			
+
 			return data;
 		}
-		return (Data)getModuleManager().getBean(getNewDataName());
+		return (Data) getModuleManager().getBean(getNewDataName());
 	}
+
 	@Override
-	public void reindexInternal() throws OpenEditException
-	{
+	public void reindexInternal() throws OpenEditException {
 		setReIndexing(true);
-		try
-		{
+		try {
 			getXmlSearcher().clearIndex();
 			HitTracker allhits = getXmlSearcher().getAllHits();
 			allhits.enableBulkOperations();
 			ArrayList tosave = new ArrayList();
-			for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
-			{
+			for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();) {
 				Data hit = (Data) iterator2.next();
-				if( hit.getId() == null || hit.getId().isEmpty())
-				{
+				if (hit.getId() == null || hit.getId().isEmpty()) {
 					continue;
 				}
 				Data real = (Data) loadData(hit);
 				tosave.add(real);
-				if(tosave.size() > 1000)
-				{
+				if (tosave.size() > 1000) {
 					updateInBatch(tosave, null);
-		
+
 					tosave.clear();
 				}
 			}
 			updateInBatch(tosave, null);
-		}	
-		finally
-		{
+		} finally {
 			setReIndexing(false);
 			clearIndex();
 		}
 	}
 
-	public synchronized void reIndexAll() throws OpenEditException
-	{		
-		//setReIndexing(false);
-		if( isReIndexing())
-		{
+	public synchronized void reIndexAll() throws OpenEditException {
+		// setReIndexing(false);
+		if (isReIndexing()) {
 			log.info("Reaready reindexing" + getSearchType());
 			return;
 		}
 		setReIndexing(true);
-		try
-		{
-			//TODO: delete all before reindexing 
-			
-			
-			//Someone is forcing a reindex
-			//deleteOldMapping();
-			putMappings(); 
+		try {
+			// TODO: delete all before reindexing
+
+			// Someone is forcing a reindex
+			// deleteOldMapping();
+			putMappings();
 
 			getXmlSearcher().reIndexAll();
 			HitTracker settings = getXmlSearcher().getAllHits();
-			
+
 			log.info("settings " + settings.size() + " " + getSearchType());
 			Collection toindex = new ArrayList();
-			for (Iterator iterator = settings.iterator(); iterator.hasNext();) 
-			{
-				ElementData data = (ElementData)iterator.next();	
-				if( data.getId() == null || data.getId().isEmpty())
-				{
+			for (Iterator iterator = settings.iterator(); iterator.hasNext();) {
+				ElementData data = (ElementData) iterator.next();
+				if (data.getId() == null || data.getId().isEmpty()) {
 					continue;
 				}
-				toindex.add(data); //loadData? nah
-				//log.info(data.getName());
-				if( toindex.size() > 1000)
-				{
-					updateIndex(toindex,null);
+				toindex.add(data); // loadData? nah
+				// log.info(data.getName());
+				if (toindex.size() > 1000) {
+					updateIndex(toindex, null);
 					toindex.clear();
 				}
 			}
-			updateIndex(toindex,null);
-			
-			flushChanges();			
-			
-		}
-		finally
-		{
+			updateIndex(toindex, null);
+
+			flushChanges();
+
+		} finally {
 			setReIndexing(false);
 		}
 	}
 
-	public void restoreSettings()
-	{
+	public void restoreSettings() {
 		getPropertyDetailsArchive().clearCustomSettings(getSearchType());
-		super.deleteAll(null); //removes the index
+		super.deleteAll(null); // removes the index
 
 		String rootpath = "/WEB-INF/data/" + getCatalogId() + "/lists/" + getSearchType() + ".xml";
 		XmlFile file = getXmlSearcher().getXmlArchive().getXml(rootpath);
-		if( file.isExist() )
-		{
+		if (file.isExist()) {
 			getXmlSearcher().getXmlArchive().deleteXmlFile(file);
 		}
 
 		rootpath = "/WEB-INF/data/" + getCatalogId() + "/lists/" + getSearchType() + "/custom.xml";
 		file = getXmlSearcher().getXmlArchive().getXml(rootpath);
-		if( file.isExist() )
-		{
+		if (file.isExist()) {
 			getXmlSearcher().getXmlArchive().deleteXmlFile(file);
 		}
-		
-		reIndexAll(); //this will go back
+
+		reIndexAll(); // this will go back
 	}
 
-	
 	@Override
-	public void reloadSettings()
-	{
+	public void reloadSettings() {
 		super.reloadSettings();
 		reIndexAll();
-	} 
+	}
 
 	@Override
-	public void deleteAll(Collection inBuffer, User inUser)
-	{
+	public void deleteAll(Collection inBuffer, User inUser) {
 		super.deleteAll(inBuffer, inUser);
-		if( isSaveToXml())
-		{
+		if (isSaveToXml()) {
 			getXmlSearcher().deleteAll(inUser);
 		}
 
 	}
 
-	public void delete(Data inData, User inUser)
-	{
-		if(inData instanceof SearchHitData){
+	public void delete(Data inData, User inUser) {
+		if (inData instanceof SearchHitData) {
 			inData = (Data) searchById(inData.getId());
 		}
-		if( inData == null ||  inData.getId() == null )
-		{
+		if (inData == null || inData.getId() == null) {
 			throw new OpenEditException("Cannot delete null data.");
 		}
-		if( isSaveToXml())
-		{
-			Lock lock = getLockManager().lock(getSearchType() + "/" + inData.getSourcePath(),"admin");
-			try
-			{
+		if (isSaveToXml()) {
+			Lock lock = getLockManager().lock(getSearchType() + "/" + inData.getSourcePath(), "admin");
+			try {
 				getXmlSearcher().delete(inData, inUser);
 				super.delete(inData, inUser);
-			}
-			finally
-			{
+			} finally {
 				getLockManager().release(lock);
 			}
 		}
 		// Remove from Index
 	}
 
-	
-
-	//This is the main APU for saving and updates to the index
-	public void saveAllData(Collection<Data> inAll, User inUser)
-	{
+	// This is the main APU for saving and updates to the index
+	public void saveAllData(Collection<Data> inAll, User inUser) {
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
-		
-		for (Object object: inAll)
-		{
-			Data data = (Data)object;
-			try
-			{
-				saveToElasticSearch(details, data, false,inUser); //Cant use bulk operations because id wont be set
-			}
-			catch(Throwable ex)
-			{
-				log.error("problem saving " + data.getId() , ex);
+
+		for (Object object : inAll) {
+			Data data = (Data) object;
+			try {
+				saveToElasticSearch(details, data, false, inUser); // Cant use bulk operations because id wont be set
+			} catch (Throwable ex) {
+				log.error("problem saving " + data.getId(), ex);
 				throw new OpenEditException(ex);
 			}
 		}
-		if( isSaveToXml())
-		{
+		if (isSaveToXml()) {
 			getXmlSearcher().saveAllData(inAll, inUser);
 		}
 	}
 
-	public void saveData(Data inData, User inUser)
-	{
-		//update the index
+	public void saveData(Data inData, User inUser) {
+		// update the index
 		PropertyDetails details = getPropertyDetails();
 
-		try
-		{
+		try {
 			saveToElasticSearch(details, inData, false, inUser);
-			if( isSaveToXml())
-			{
+			if (isSaveToXml()) {
 				getXmlSearcher().saveData(inData, inUser);
 			}
 			clearIndex();
-		}
-		catch(Throwable ex)
-		{
-			log.error("problem saving " + inData.getId() + " searchtype:" + getSearchType() + " "+ ex.getMessage());
+		} catch (Throwable ex) {
+			log.error("problem saving " + inData.getId() + " searchtype:" + getSearchType() + " " + ex.getMessage());
 			throw new OpenEditException(ex);
 		}
 	}
-	
-	
-	public Object searchById(String inId)
-	{
-		//return getXmlSearcher().searchById(inId);
-		return super.searchById(inId); //Dont ever read from XML, just write
+
+	public Object searchById(String inId) {
+		// return getXmlSearcher().searchById(inId);
+		return super.searchById(inId); // Dont ever read from XML, just write
 	}
-	
-	
-//	public PropertyDetails getPropertyDetails() {
-//		return getXmlSearcher().getPropertyDetails();
-//		
-//	}
-	
+
+	// public PropertyDetails getPropertyDetails() {
+	// return getXmlSearcher().getPropertyDetails();
+	//
+	// }
+
 	@Override
-	public boolean initialize()
-	{
-		if( !tableExists() )
-		{
+	public boolean initialize() {
+		if (!tableExists()) {
 			reIndexAll();
 			return true;
-		}				
+		}
 		return false;
 	}
-	
-	
-	
-	
+
 }
