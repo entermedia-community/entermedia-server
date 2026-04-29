@@ -1733,7 +1733,7 @@ public class EntityModule extends BaseMediaModule
 		}
 	}
 
-	public void createAssetFromUploads(final WebPageRequest inReq) throws Exception
+	public void createAssetFromUploads(WebPageRequest inReq) throws Exception
 	{
 		UploadRequest pages = (UploadRequest) inReq.getPageValue("uploadrequest");
 
