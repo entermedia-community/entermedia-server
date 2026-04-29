@@ -1597,7 +1597,11 @@ public class AssetEditModule extends BaseMediaModule
 				variables.put("data", target);
 
 				Data module = archive.getCachedData("module", moduleid);
-				sourcepath = archive.getEntityManager().calculateAssetSourcepath(module, target, variables, item.getName(), inReq.getUser());
+				Category cat = archive.getEntityManager().calculateUploadCategory(module, target, variables, inReq.getUser());
+				if (cat != null)
+				{
+					sourcepath = cat.getCategoryPath();
+				}	
 		
 			}
 			String path = "";
