@@ -1605,16 +1605,12 @@ public class AssetEditModule extends BaseMediaModule
 		
 			}
 			String path = "";
-			if (sourcepath != null)
-			{
-				path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath;
-			}
-			else 
+			if (sourcepath == null)
 			{
 				sourcepath = getAssetImporter().getAssetUtilities().createSourcePath(inReq, archive, item.getName()); 
 				//Todo: Remove the iten.getName
-				path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/" + item.getName();
 			}
+			path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/" + item.getName();
 			
 			sourcepath = sourcepath.replace("//", "/"); //in case of missing data
 			path = path.replace("//", "/");

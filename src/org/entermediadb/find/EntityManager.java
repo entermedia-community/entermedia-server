@@ -433,19 +433,21 @@ public class EntityManager implements CatalogEnabled
 		if (entity.getSourcePath() == null)
 		{
 			log.error("Entity " + entity.getId() + " does not have a sourcepath. Cannot calculate asset sourcepath");
-			
+			return null;
 		}
-		return null;
-		/*
+		
+		
 
-		String sourcepath = getMediaArchive().getAssetImporter().getAssetUtilities().createSourcePathFromMask(getMediaArchive(), null, inUser, inFilename, assetuploadmask, variables);
-		if( sourcepath.endsWith("/"))
+		String categorypath = getMediaArchive().getAssetImporter().getAssetUtilities().createSourcePathFromMask(getMediaArchive(), null, inUser, null, assetuploadmask, variables);
+
+		if (categorypath != null)
 		{
-			sourcepath = sourcepath + inFilename;
+			cat = getMediaArchive().createCategoryPath(categorypath);
 		}
 
-		return sourcepath;
-		*/
+
+		return cat;
+		
 	}
 
 	public Collection loadChildren(String inEntityParentType, String inParentEntityId, String inChildEntityType)
