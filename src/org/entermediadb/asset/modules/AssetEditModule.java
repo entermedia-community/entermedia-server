@@ -579,6 +579,8 @@ public class AssetEditModule extends BaseMediaModule
 	public void createAssetFromUploads(final WebPageRequest inReq) throws Exception
 	{
 		UploadRequest pages = getUploadedPages(inReq);
+
+		UploadRequest map = (UploadRequest) inReq.getPageValue("uploadrequest");
 		getAssetImporter().createAssetsFromPages(getMediaArchive(inReq), pages, inReq);
 	}
 
@@ -1478,6 +1480,7 @@ public class AssetEditModule extends BaseMediaModule
 
 	}
 
+	/* Only used for Field Uploads */
 	public void handleUploads(WebPageRequest inReq)
 	{
 
@@ -1587,56 +1590,15 @@ public class AssetEditModule extends BaseMediaModule
 			String sourcepath = null;
 			if (target != null)
 			{							
-				PropertyDetail detail = searcher.getDetail(detailid);
-				if (detail != null)
-				{
-					String sourcemask = detail.get("sourcepath");					
-//					//Legacy work around
-//					if( sourcemask != null && sourcemask.contains("uploadsourcepath") && target.get("sourcepath") == null) 
-//					{
-//						log.error("Remove ${data.sourcepath}/${filename} from entities");
-//						sourcemask = null; 
-//					}
-					if( sourcemask == null)
-					{
-						if(searcher.getDetail("sourcepath") != null )
-						{
-							Data entitmodule = archive.getCachedData("module",moduleid);
-							Category cat = archive.getEntityManager().loadDefaultFolder(entitmodule,target, inReq.getUser());
-							if( cat != null)
-							{
-								sourcepath = cat.getCategoryPath() + "/" + item.getName();
-							}
-						}
-					}
-					if( sourcepath == null && sourcemask != null)
-					{
-						//String sourcepath = inReq.getRequestParameter(detailid + ".sourcepath"); //Is this risky?
-						
-						Map variables = inReq.getParameterMap();
-						variables.put("userid", inReq.getUser().getId());
-						variables.put("id", id);
-						variables.put("filename", item.getName());
-						if (target != null)
-						{
-							variables.put("data", target);
-						}
+				Map variables = inReq.getParameterMap();
+				variables.put("userid", inReq.getUser().getId());
+				variables.put("id", id);
+				variables.put("filename", item.getName());
+				variables.put("data", target);
 
-						sourcepath = getAssetImporter().getAssetUtilities().createSourcePathFromMask(archive, null, inReq.getUser(), item.getName(), sourcemask, variables);
-						if( sourcepath.endsWith("/"))
-						{
-							sourcepath = sourcepath + item.getName();
-						}
-					}
-				} else {
-					Data entitmodule = archive.getCachedData("module",moduleid);
-					Category cat = archive.getEntityManager().loadDefaultFolder(entitmodule,target, inReq.getUser());
-					if( cat != null)
-					{
-						sourcepath = cat.getCategoryPath() + "/chat/" +  inReq.getUserName() + "/" + item.getName();
-					}
-				}
-				
+				Data module = archive.getCachedData("module", moduleid);
+				sourcepath = archive.getEntityManager().calculateAssetSourcepath(module, target, variables, item.getName(), inReq.getUser());
+		
 			}
 			String path = "";
 			if (sourcepath != null)

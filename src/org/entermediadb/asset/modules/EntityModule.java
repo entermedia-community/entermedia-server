@@ -1732,6 +1732,38 @@ public class EntityModule extends BaseMediaModule
 			inReq.putPageValue("entity", entity);
 		}
 	}
+
+	public void createAssetFromUploads(final WebPageRequest inReq) throws Exception
+	{
+		UploadRequest pages = (UploadRequest) inReq.getPageValue("uploadrequest");
+
+		Data entity = getEntity(inReq);
+		Data entitymodule = getMediaArchive(inReq).getCachedData("module", entity.get("entitysourcetype"));
+
+		//getMediaArchive(inReq).getEntityManager().calculateAssetSourcepath(module, entity, filename, inReq.getUser());
+
+		String mask = entitymodule.get("assetuploadmask");
+		Category category = null;
+		if (mask != null)
+		{
+			Map variables = inReq.getParameterMap();
+			variables.put("userid", inReq.getUser().getId());
+			variables.put("data", entity);
+
+			String categorypath = getMediaArchive(inReq).replaceFromMask(mask, variables, inReq.getLocale());	
+			category = getMediaArchive(inReq).createCategoryPath(categorypath);
+		}
+		else{
+			category = getMediaArchive(inReq).getEntityManager().loadDefaultFolder(entitymodule, entity, inReq.getUser());
+		}
+		inReq.putPageValue("category", category);
+		inReq.putPageValue("uploadsourcepath", category.getCategoryPath() + "/");
+		inReq.putPageValue("entity", entity);
+		inReq.putPageValue("entitymodule", entitymodule);
+
+		getMediaArchive(inReq).getAssetImporter().createAssetsFromPages(getMediaArchive(inReq), pages, inReq);
+	}
+
 	
 	public void createEntityFromFiles(WebPageRequest inReq) throws Exception
 	{	

@@ -497,6 +497,8 @@ $.fn.initUpload = function () {
 					$(this).removeAttr("id");
 				});
 
+				//Find if needs to reload something	
+
 				//Go to the editor and submit its ajax
 				var editdiv = startb.closest(".uploadshowuploads");
 				if (editdiv.length) {

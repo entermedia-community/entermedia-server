@@ -370,6 +370,10 @@ public class AssetImporter
 		Boolean incollection = inReq.findValue("currentcollection") != null;
 
 		String inputsourcepath = inReq.findValue("sourcepath");
+		if (inputsourcepath == null)
+		{
+			inputsourcepath = (String) inReq.getPageValue("uploadsourcepath");
+		}
 		
 		Map pages = new HashMap();
 		for (Iterator iterator = inUploadRequest.getSavedContentItems().iterator(); iterator.hasNext();)
@@ -487,10 +491,10 @@ public class AssetImporter
 		//final boolean createCategories = Boolean.parseBoolean( inReq.findValue("assetcreateuploadcategories"));
 
 		final Map metadata = readMetaData(inReq, inArchive, "");
-		final String currentcollection = (String) metadata.get("collectionid");
-
+		
 		boolean assigncategory =  true;
 		
+		/*
 		String inputsourcepath = inReq.findValue("sourcepath");
 		if( inputsourcepath != null && Boolean.parseBoolean(inReq.getRequestParameter("createentityfolder")))
 		{
@@ -525,6 +529,8 @@ public class AssetImporter
 			metadata.put("category.value", topcat.getId());
 			assigncategory = true;
 		}
+		*/
+
 
 		
 		final Map<String, ContentItem> pages = savePages(inReq, inArchive, inUploadRequest);
@@ -556,23 +562,10 @@ public class AssetImporter
 //		else
 //		{
 			//The uploader sends one at a time anyways
-			Collection tracker = saveFilesAndImport(inArchive, currentcollection, assigncategory, metadata, pages, user);
+			Collection tracker = saveFilesAndImport(inArchive, null, assigncategory, metadata, pages, user);
 			inReq.putPageValue("assets", tracker);
 //		}
-		if( currentcollection != null && inReq.getUserProfile() != null)
-		{
-			inReq.getUserProfile().setProperty("lastselectedcollection", currentcollection);
-		}
 
-		
-		//Update Primary Images in Collections and Entities
-		
-		//Nope, use the normal assignment tool
-		
-		//EntityManager entityManager = (EntityManager) inArchive.getEntityManager();
-		//entityManager.updateCollection(tracker, currentcollection, user);
-		//entityManager.updateEntities(tracker, metadata, user);
-		//inArchive.fireSharedMediaEvent("importing/assetscreated");
 	}
 	
 	
@@ -642,6 +635,12 @@ public class AssetImporter
 					cats.add(cat);
 				}
 			}
+		}
+
+		Category cat = (Category) inReq.getPageValue("category");
+		if (cat != null)
+		{
+			cats.add(cat);
 		}
 		vals.put("categories", cats);
 		

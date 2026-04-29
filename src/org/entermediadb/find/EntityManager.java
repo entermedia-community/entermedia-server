@@ -375,7 +375,8 @@ public class EntityManager implements CatalogEnabled
 //			return sourcepath;
 //		}
 
-		String mask = (String) module.getValue("uploadsourcepath"); //Custom one that is saved forever
+		String 	mask = (String) module.getValue("uploadsourcepath");  //legacy, current field is sourcepath 
+		
 		
 		if(mask != null)
 		{
@@ -414,6 +415,38 @@ public class EntityManager implements CatalogEnabled
 		}
 		return sourcepath;
 	}	
+
+
+	public Category calculateUploadCategory(Data module, Data entity, Map variables, User inUser )
+	{
+		
+		
+		Category cat = getMediaArchive().getEntityManager().loadDefaultFolder(module, entity, inUser);
+		
+
+		String assetuploadmask = (String) module.getValue("assetuploadmask");
+		if (assetuploadmask == null)
+		{
+			return cat;
+		}
+
+		if (entity.getSourcePath() == null)
+		{
+			log.error("Entity " + entity.getId() + " does not have a sourcepath. Cannot calculate asset sourcepath");
+			return null;
+		}
+
+		
+
+		String sourcepath = getMediaArchive().getAssetImporter().getAssetUtilities().createSourcePathFromMask(getMediaArchive(), null, inUser, inFilename, assetuploadmask, variables);
+		if( sourcepath.endsWith("/"))
+		{
+			sourcepath = sourcepath + inFilename;
+		}
+
+		return sourcepath;
+		
+	}
 
 	public Collection loadChildren(String inEntityParentType, String inParentEntityId, String inChildEntityType)
 	{
@@ -1637,5 +1670,16 @@ public class EntityManager implements CatalogEnabled
 		}
 		return getMediaArchive().getAsset(assetid);
 	}
+
+	public String findFilesView(Data inModule) {
+		Collection<String> viewTypes = List.of("tablightboxes","tablightboxboxes", "entitymedia");
+		HitTracker views =  getMediaArchive().query("view").exact("moduleid", inModule.getId()).exact("systemdefined","false").orgroup("rendertype", viewTypes).sort("orderingUp").named("view").cachedSearch();
+		if (views.isEmpty()) {
+			return inModule.getId() + "entityimports";
+		}
+		Data view = (Data) views.first();
+		return view.getId();
+		
+	}	
 	
 }
