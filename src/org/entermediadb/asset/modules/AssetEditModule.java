@@ -1588,6 +1588,8 @@ public class AssetEditModule extends BaseMediaModule
 			String[] splits = name.split("\\.");
 			String detailid = splits[1];
 			String sourcepath = null;
+			String absolutesourcepath = null;
+			String categoryuploadpath = null;
 			if (target != null)
 			{							
 				Map variables = inReq.getParameterMap();
@@ -1600,22 +1602,24 @@ public class AssetEditModule extends BaseMediaModule
 				Category cat = archive.getEntityManager().calculateUploadCategory(module, target, variables, inReq.getUser());
 				if (cat != null)
 				{
-					sourcepath = cat.getCategoryPath();
+					categoryuploadpath = cat.getCategoryPath();
+					sourcepath = categoryuploadpath + "/" + item.getName();
 				}	
 		
 			}
-			String path = "";
+			
 			if (sourcepath == null)
 			{
 				sourcepath = getAssetImporter().getAssetUtilities().createSourcePath(inReq, archive, item.getName()); 
 				//Todo: Remove the iten.getName
 			}
-			path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/" + item.getName();
-			
-			sourcepath = sourcepath.replace("//", "/"); //in case of missing data
-			path = path.replace("//", "/");
 
-			Page originalfile = archive.getPageManager().getPage(path);
+			absolutesourcepath = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath;
+			
+			sourcepath = sourcepath.replace("//", "/"); 
+			absolutesourcepath = absolutesourcepath.replace("//", "/");
+
+			Page originalfile = archive.getPageManager().getPage(absolutesourcepath);
 			if( originalfile.exists() )
 			{
 				Asset existingasset = archive.getAssetBySourcePath(sourcepath);
@@ -1625,7 +1629,7 @@ public class AssetEditModule extends BaseMediaModule
 					archive.getAssetEditor().backUpFilesForLastVersion(existingasset,originalfile.getContentItem(),preview );
 				}
 			}
-			properties.saveFileAs(item, path, inReq.getUser());
+			properties.saveFileAs(item, absolutesourcepath, inReq.getUser());
 
 			boolean assigncategory = archive.isCatalogSettingTrue("assigncategoryonupload");
 
@@ -1637,17 +1641,16 @@ public class AssetEditModule extends BaseMediaModule
 
 			//MediaArchive inArchive, User inUser, Page inAssetPage)
 			Asset current = archive.getAssetBySourcePath(sourcepath);
-			//log.info(current.getId());
 			//This will create a new one if current was null.
-			current = getAssetImporter().getAssetUtilities().populateAsset(null, item.getSavedPage().getContentItem(), archive, sourcepath, inReq.getUser());
+			current = getAssetImporter().getAssetUtilities().populateAsset(current, item.getSavedPage().getContentItem(), archive, sourcepath, inReq.getUser());
 			
 			
-			current.setPrimaryFile(item.getName());
-			current.setProperty("name", item.getName());
+			//current.setPrimaryFile(item.getName());
+			//current.setProperty("name", item.getName());
 
-			if (assigncategory)
+			if (categoryuploadpath!= null && assigncategory)
 			{
-				Category defaultcat = archive.getCategorySearcher().createCategoryPath(sourcepath);
+				Category defaultcat = archive.getCategorySearcher().createCategoryPath(categoryuploadpath);
 				current.clearCategories();
 				current.addCategory(defaultcat);
 			}

@@ -156,7 +156,7 @@ public class MetaDataReader
 			inAsset.setProperty("fileformat", ext);
 			if( !inputFile.exists() )
 			{
-				log.info("Original asset missing " + inAsset.getSourcePath());
+				log.error("Original asset missing " + inAsset.getSourcePath());
 				return;
 			}
 			

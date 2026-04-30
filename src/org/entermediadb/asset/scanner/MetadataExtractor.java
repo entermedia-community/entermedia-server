@@ -24,7 +24,7 @@ public abstract class MetadataExtractor
 			ContentItem inputFile = next.next();
 			if( !inputFile.exists() )
 			{
-				log.info("Original asset missing " + inAsset.getSourcePath());
+				log.error("Original asset missing " + inAsset.getSourcePath());
 				continue;
 			}
 			if( extractData(inMediaArchive, inputFile, inAsset) )
