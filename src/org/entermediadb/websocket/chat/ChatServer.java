@@ -230,6 +230,11 @@ public class ChatServer
 			}
 
 			MultiValued channel = (MultiValued) archive.getCachedData("channel", channelid);
+			if( channel == null)
+			{
+				log.error("Channel not found trying to broadcast message: " + channelid + " Message: " + inMap.toJSONString()); //should not happen
+				return;
+			}
 			Data module = null;
 			Data entity = null;
 			Set userids = new HashSet();
@@ -419,7 +424,7 @@ public class ChatServer
 	{
 		Searcher channelSearcher = inArchive.getSearcher("channel");
 		String channelid = (String) inChannelInfo.get("channel");
-		
+
 		Data channel = inArchive.getCachedData("channel", channelid);
 
 		if (channel == null)
