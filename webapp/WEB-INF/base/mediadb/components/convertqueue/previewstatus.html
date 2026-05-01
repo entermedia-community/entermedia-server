@@ -16,10 +16,11 @@ $context.putPageValue("thumbsize", $thumbsize)
 	$!context.putPageValue("searchhome", $searchhome)
 #end
 
+#ifnull($pickerenabled)
+	#set($pickerenabled = $context.getRequestParameter("pickerenabled"))
+#end
 
 #set($prefixid = $context.getRequestParameter("prefixid") )
-
-
 #if( $hit.previewstatus && $hit.previewstatus == "2")  
     
 	#set($rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
@@ -33,41 +34,41 @@ $context.putPageValue("thumbsize", $thumbsize)
 #elseif($hit.importstatus == "error")
 	<span class="text-muted">[[Import Error]]</span>       
 #else
-	
-    <div id="status$!{prefixid}$!{hit.id}" 
-			class="ajaxstatus"
-	    data-firstrun="500" 
-			ajaxpath="$!{siteroot}$!{searchhome}/convertqueue/previewstatus.html?assetid=$!{hit.id}&thumbsize=$!{thumbsize}&prefixid=$!{prefixid}" >
-			#if($hit.importstatus && $hit.importstatus == "created")
-				#set($label = "[[Created]]")
-				#set($progress = 5)
-			#elseif($hit.importstatus == "imported")
-				#set($label = "[[Converting]]")
-				#set($progress = 70)
-			#elseif($hit.importstatus == "needsmetadata")
-				#set($label = "[[Awaiting Metadata]]")
-				#set($progress = 25)
-			#elseif($hit.importstatus == "needsdownload")
-				#set($label = "[[Awaiting Download]]")
-				#set($progress = 25)
-			###elseif($hit.importstatus == "error")
-			##	#set($label = "[[Import Error]]")
-			##	#set($progress = 0)
-			#else
-    			#set($label = "[[Converting]]")
-				#set($progress = 50)
-			#end
-	        <div class="uiinfo proxythumb" title="${label}">
 
-	        	<div class="loadingbarout" style="padding:2rem 1rem;">
-					<span class="text-muted">${label}</span>
-					#if($progress > 0)
-						<div class="loadingbarfull" style="margin: 0.5rem; border:1px solid #e5ae2d"  title="${progress}% [[Imported]]">
-						<div class="loadingbar" style="width:${progress}%; background-color:#e5ae2d; height:12px"></div>
-						</div>
-					#end
-	        	</div>
-	        </div>
+	<div id="status$!{prefixid}$!{hit.id}" 
+		class="ajaxstatus"
+		data-firstrun="500" 
+		ajaxpath="$!{siteroot}$!{searchhome}/convertqueue/previewstatus.html?assetid=$!{hit.id}&thumbsize=$!{thumbsize}&prefixid=$!{prefixid}" >
+		#if($hit.importstatus && $hit.importstatus == "created")
+			#set($label = "[[Created]]")
+			#set($progress = 5)
+		#elseif($hit.importstatus == "imported")
+			#set($label = "[[Converting]]")
+			#set($progress = 70)
+		#elseif($hit.importstatus == "needsmetadata")
+			#set($label = "[[Awaiting Metadata]]")
+			#set($progress = 25)
+		#elseif($hit.importstatus == "needsdownload")
+			#set($label = "[[Awaiting Download]]")
+			#set($progress = 25)
+		###elseif($hit.importstatus == "error")
+		##	#set($label = "[[Import Error]]")
+		##	#set($progress = 0)
+		#else
+			#set($label = "[[Converting]]")
+			#set($progress = 50)
+		#end
+		<div class="uiinfo proxythumb" title="${label}">
+
+			<div class="loadingbarout" style="padding:2rem 1rem;">
+				<span class="text-muted">${label}</span>
+				#if($progress > 0)
+					<div class="loadingbarfull" style="margin: 0.5rem; border:1px solid #e5ae2d"  title="${progress}% [[Imported]]">
+					<div class="loadingbar" style="width:${progress}%; background-color:#e5ae2d; height:12px"></div>
+					</div>
+				#end
+			</div>
+		</div>
     </div>
 
 #end
