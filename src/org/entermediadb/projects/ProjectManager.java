@@ -1,8 +1,7 @@
 package org.entermediadb.projects;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,25 +15,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.AssetUtilities;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.util.JsonUtil;
-import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.users.UserProfileManager;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
-import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
-import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
@@ -45,12 +38,9 @@ import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
 import org.openedit.profile.UserProfile;
-import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.users.authenticate.PasswordGenerator;
 import org.openedit.util.DateStorageUtil;
-import org.openedit.util.FileUtils;
-import org.openedit.util.PathUtilities;
 
 public class ProjectManager implements CatalogEnabled
 {
@@ -1296,10 +1286,19 @@ public class ProjectManager implements CatalogEnabled
 			{
 				collectionquery = getMediaArchive().getSearcher("librarycollection").createSearchQuery();
 
-				String communitytagcategory = inReq.findPathValue("communitytagcategory");
-				if (communitytagcategory != null)
+				String communitytagcategories = inReq.findPathValue("communitytagcategories");
+				if (communitytagcategories != null)
 				{
-					collectionquery.addExact("communitytagcategory", communitytagcategory);
+					Collection comunities = Arrays.asList(communitytagcategories.split(","));
+					collectionquery.addOrsGroup("communitytagcategory", comunities	);
+				}
+				else 
+				{
+					String communitytagcategory = inReq.findPathValue("communitytagcategory");
+					if (communitytagcategory != null)
+					{
+						collectionquery.addExact("communitytagcategory", communitytagcategory);
+					}
 				}
 
 			}
