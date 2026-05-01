@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
@@ -368,6 +367,50 @@ public class ProjectModule extends BaseMediaModule
 		Data userpost = getMediaArchive(inReq).query("userpost").exact("urlname", params.get("slug")).searchOne();
 
 		inReq.putPageValue("userpost", userpost);
+
+		//Metadata
+		String title = userpost.getName();
+		Data project = getMediaArchive(inReq).getCachedData("librarycollection", userpost.get("librarycollection"));
+		if (project != null)
+		{
+			title = title + " - " + project.getName();
+		}	
+		inReq.putPageValue("meta_title", title);
+
+		String postimage = userpost.get("primarymedia");
+		if (postimage != null)
+		{
+			Asset postasset = getMediaArchive(inReq).getAsset(postimage);
+			String imageurl = getMediaArchive(inReq).asLinkToGenerated(postasset, "image600x314");
+			inReq.putPageValue("meta_image", imageurl);
+		}
+
+		String posturl = userpost.get("urlname");
+		if (posturl != null) {
+			Data community = getMediaArchive(inReq).getCachedData("communitytagcategory", project.get("communitytagcategory"));
+			if (community != null) {
+				posturl = community.get("externaldomain") + 
+							"/" + 
+							project.get("urlname") + 
+							"/blog/" + 
+							posturl;
+				inReq.putPageValue("meta_url", posturl);
+			} 
+			
+		}
+
+		//Todo: Better use a excerpt or summary field for clean text.
+		String postdescription = userpost.get("maincontent");
+		if (postdescription != null)
+		{
+			postdescription = URLUtilities.xmlPlainText(postdescription);
+			if (postdescription.length() > 100)
+			{
+				postdescription = postdescription.substring(0, 100) + "...";
+			}
+			inReq.putPageValue("meta_description", postdescription);
+		}
+		
 
 	}
 
