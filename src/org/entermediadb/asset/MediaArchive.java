@@ -1134,6 +1134,41 @@ public class MediaArchive implements CatalogEnabled
 		return assets;
 	}
 
+	public List getAssetsInExactCategory(Category inCategory) throws OpenEditException
+	{
+		if (inCategory == null)
+		{
+			return null;
+		}
+		List assets = new ArrayList();
+		SearchQuery q = getAssetSearcher().createSearchQuery();
+		q.addMatches("category-exact", inCategory.getId());
+
+		HitTracker hits = getAssetSearcher().search(q);
+		if (hits != null)
+		{
+			for (Iterator it = hits.iterator(); it.hasNext();)
+			{
+				Data doc = (Data) it.next();
+				String id = doc.get("id");
+				Asset asset = getAsset(id);
+				if (id == null || asset.getId() == null)
+				{
+					throw new OpenEditException("ID cant be null");
+				}
+				if (asset != null)
+				{
+					assets.add(asset);
+				}
+				else
+				{
+					log.info("Cannot find asset with id " + id);
+				}
+			}
+		}
+		return assets;
+	}
+
 	public CategoryEditor getCategoryEditor()
 	{
 		if (fieldCategoryEditor == null)
