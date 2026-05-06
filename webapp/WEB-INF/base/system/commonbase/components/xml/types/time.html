@@ -1,1 +1,4 @@
+#if( !$xmledithome)
+	#set( $xmledithome = $context.getPageProperty("xmledithome"))
+#end
 $pages.include("$xmledithome/types/datetime.html", $context)

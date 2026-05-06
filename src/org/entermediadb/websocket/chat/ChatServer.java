@@ -231,6 +231,11 @@ public class ChatServer
 			}
 
 			MultiValued channel = (MultiValued) archive.getCachedData("channel", channelid);
+			if( channel == null)
+			{
+				log.error("Channel not found trying to broadcast message: " + channelid + " Message: " + inMap.toJSONString()); //should not happen
+				return;
+			}
 			Data module = null;
 			Data entity = null;
 			Set userids = new HashSet();
@@ -364,8 +369,8 @@ public class ChatServer
 	public Data saveMessage(final JSONObject inMap)
 	{
 		String catalogid = (String) inMap.get("catalogid");
-		// log.info("Saving Message: " + inMap.toJSONString());
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
+
 		Searcher chats = archive.getSearcher("chatterbox");
 		Data channel = loadChannel(archive, inMap);
 
@@ -398,10 +403,12 @@ public class ChatServer
 		}
 
 		chat.setValue("messagetype", messagetype);
-
 		chat.setValue("replytoid", values.getString("replytoid"));
 
 		chats.saveData(chat);
+
+		channel.setValue("refreshdate", new Date());
+		archive.saveData("channel",channel);
 
 		User user = archive.getUser(userid);
 
@@ -417,16 +424,18 @@ public class ChatServer
 
 	public Data loadChannel(MediaArchive inArchive, Map inChannelInfo)
 	{
-		Searcher chats = inArchive.getSearcher("channel");
+		Searcher channelSearcher = inArchive.getSearcher("channel");
 		String channelid = (String) inChannelInfo.get("channel");
+
 		Data channel = inArchive.getCachedData("channel", channelid);
 
 		if (channel == null)
 		{
-			channel = chats.createNewData();
+			channel = channelSearcher.createNewData();
 			channel.setId(channelid);
 			String channeltype = (String) inChannelInfo.get("channeltype");
 			channel.setValue("channeltype", channeltype);
+			log.info("Channel not found, creating channel: " + channelid);
 		}
 
 		String playbackentityid = (String) inChannelInfo.get("playbackentityid");
@@ -448,7 +457,7 @@ public class ChatServer
 			}
 		}
 
-		chats.saveData(channel);
+		channelSearcher.saveData(channel);
 
 		return channel;
 	}

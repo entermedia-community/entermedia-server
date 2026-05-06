@@ -14,7 +14,7 @@
 <input name="$!{detailprefix}${detail.getId()}.value" id="${detail.id}${idcount}value" value="#esc($!formateddate)"  type="hidden" />
 <input type="text" 
 	id="date${detail.id}${idcount}value"
-	class="datepicker form-control #if($detail.isRequired()  && !$multiedit) required #end " 
+	class="datepicker datepicker-${detail.id} form-control #if($detail.isRequired()  && !$multiedit) required #end " 
 	data-targetid="${detail.id}${idcount}value"
 	data-alt="[[Select]] $!detail.getText($context)" /> 
 

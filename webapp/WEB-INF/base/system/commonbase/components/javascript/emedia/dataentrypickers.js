@@ -29,7 +29,7 @@ $(document).ready(function () {
 			}
 
 			preview.append(
-				`<div class="p-1"><span class="mr-2">${assetName}</span><a href="#" class="removefieldassetvalue" title="Remove Selected Asset" data-detailid="${detailId}"><i class="bi bi-x"></i> Remove</a></div>`,
+				`<div class="p-1"><span class="mr-2">${assetName}</span><a href="#" class="removefieldassetvalue" title="Remove Selected Asset" data-detailid="${detailId}"><i class="bi bi-x"></i></a></div>`,
 			);
 		};
 		fileReader.readAsDataURL(asset);
