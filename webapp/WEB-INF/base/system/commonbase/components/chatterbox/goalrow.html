@@ -9,7 +9,7 @@
 				data-hidefooter="true" 
 				href="${goallink}"
 				title="[[Ticket]] #$!goal.ticketnumber" 
-				class="emdialog goalticket-level float-left" 
+				class="emdialog goalticket-level" 
 				data-urlbar="${communityhome}/project/goals/priorities/index.html?collectionid=$goal.collectionid&opengoalid=${goal.id}" 
 				data-width="900">
 				#if( $goal.ticketnumber ) 
@@ -21,8 +21,9 @@
 				<span>$goal.name</span>
 			</a>
 			<a href="${goallink}" 
-				title="[[Edit Goal]]" 
+				title="[[Edit Goal]]"
 				class="emdialog goal-title text-primary"
+				style="width: 24px;"
 				data-hidefooter="true"
 				data-width="900">
 				<I class="bi bi-pencil-square"></I>
