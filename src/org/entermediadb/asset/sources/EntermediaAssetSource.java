@@ -18,10 +18,10 @@ import org.openedit.users.User;
 public class EntermediaAssetSource extends BaseAssetSource
 {
 
-	public EntermediaAssetSource()
-	{
+	public EntermediaAssetSource() {
 		// TODO Auto-generated constructor stub
 	}
+
 	protected ModuleManager fieldModuleManager;
 	protected PullManager fieldPullManager;
 	private static final Log log = LogFactory.getLog(EntermediaAssetSource.class);
@@ -46,7 +46,7 @@ public class EntermediaAssetSource extends BaseAssetSource
 	{
 		return new BaseData();
 	}
-	
+
 	@Override
 	public String getName()
 	{
@@ -62,7 +62,8 @@ public class EntermediaAssetSource extends BaseAssetSource
 
 	public ContentItem getOriginalContent(Asset inAsset, boolean downloadifNeeded)
 	{
-		//log.info("Trying to get content from : " + inAsset.get("mastereditclusterid") + "For Asset: " + inAsset.getId());
+		// log.info("Trying to get content from : " + inAsset.get("mastereditclusterid")
+		// + "For Asset: " + inAsset.getId());
 		return getPullManager().getOriginalPuller().downloadOriginalFromSource(getMediaArchive(), inAsset, getFile(inAsset), downloadifNeeded);
 	}
 
@@ -70,15 +71,16 @@ public class EntermediaAssetSource extends BaseAssetSource
 	public boolean handles(Asset inAsset)
 	{
 		return false;
-//		String localid = getMediaArchive().getNodeManager().getLocalClusterId();
-//		String clusterid = inAsset.get("mastereditclusterid");
-//
-//		if (clusterid != null && !clusterid.equals(localid))
-//		{
-//			log.info("Asset : " + inAsset.getId() + " is from cluster: " + clusterid + " Handling it.");
-//			return true;
-//		}
-//		return false;
+		// String localid = getMediaArchive().getNodeManager().getLocalClusterId();
+		// String clusterid = inAsset.get("mastereditclusterid");
+		//
+		// if (clusterid != null && !clusterid.equals(localid))
+		// {
+		// log.info("Asset : " + inAsset.getId() + " is from cluster: " + clusterid + "
+		// Handling it.");
+		// return true;
+		// }
+		// return false;
 	}
 
 	@Override
@@ -127,7 +129,8 @@ public class EntermediaAssetSource extends BaseAssetSource
 	@Deprecated
 	public int importAssets(String inBasepath)
 	{
-		//return (int) getPullManager().processPullQueue(getMediaArchive(), "asset", true,null);
+		// return (int) getPullManager().processPullQueue(getMediaArchive(), "asset",
+		// true,null);
 		throw new OpenEditException("Not impletmented");
 	}
 
@@ -155,7 +158,7 @@ public class EntermediaAssetSource extends BaseAssetSource
 	protected File getFile(Asset inAsset)
 	{
 		String path = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/";
-		path = path + inAsset.getSourcePath(); //Check archived?
+		path = path + inAsset.getSourcePath(); // Check archived?
 
 		String primaryname = inAsset.getPrimaryFile();
 		if (primaryname != null && inAsset.isFolder())

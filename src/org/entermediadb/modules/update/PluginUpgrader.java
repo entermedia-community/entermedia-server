@@ -19,7 +19,7 @@ import org.openedit.WebPageRequest;
 public class PluginUpgrader
 {
 	private static final Log log = LogFactory.getLog(PluginUpgrader.class);
-	
+
 	protected ScriptModule fieldScriptModule;
 	protected File fieldRoot;
 	protected PlugInFinder fieldPlugInFinder;
@@ -27,17 +27,18 @@ public class PluginUpgrader
 	protected Set fieldCompleted;
 	protected Set fieldInProgress;
 	protected boolean cancel = false;
-	
-	
+
 	public Collection getList()
 	{
 		return fieldToUpgrade;
 	}
+
 	public void setToUpgrade(Collection inList)
 	{
 		fieldToUpgrade = inList;
 	}
-	public List upgrade( PlugIn inPlugIn, WebPageRequest inContext )
+
+	public List upgrade(PlugIn inPlugIn, WebPageRequest inContext)
 	{
 		ScriptLogger logger = new ScriptLogger();
 		logger.startCapture();
@@ -51,54 +52,55 @@ public class PluginUpgrader
 		}
 		return logger.listLogs();
 	}
-	
-	protected void doUpgrade( PlugIn plugin, WebPageRequest inContext,ScriptLogger inLogger )
+
+	protected void doUpgrade(PlugIn plugin, WebPageRequest inContext, ScriptLogger inLogger)
 	{
-		if( getInProgress().contains(plugin.getId()))
+		if (getInProgress().contains(plugin.getId()))
 		{
 			log.info(plugin + " is in progress");
 			return;
 		}
-		if( cancel)
+		if (cancel)
 		{
 			log.info(plugin.getId() + " is canceled");
 			return;
 		}
 		getInProgress().add(plugin.getId());
-		
+
 		String strOutputFile = "/WEB-INF/install.js";
 		File out = new File(getRoot(), strOutputFile);
-		if( plugin.getInstallScript() == null)
+		if (plugin.getInstallScript() == null)
 		{
 			log.info("No script configured");
 		}
 		else
 		{
-			try {
+			try
+			{
 				// *** connect to configured web site
 				log.info("Downloading " + plugin.getInstallScript());
 				new Downloader().download(plugin.getInstallScript(), out);
-		
+
 				Map variables = new HashMap();
 				variables.put("context", inContext);
 				variables.put("log", inLogger);
 				Script script = getScriptModule().getScriptManager().loadScript(strOutputFile);
 				getScriptModule().getScriptManager().execScript(variables, script);
-			} catch (Exception ex) 
+			}
+			catch (Exception ex)
 			{
 				log.error(ex);
 			}
 		}
 		getCompleted().add(plugin.getId());
 		getInProgress().remove(plugin.getId());
-		if( getCompleted().size() == getList().size())
+		if (getCompleted().size() == getList().size())
 		{
 			inContext.removeSessionValue("upgrader");
 		}
 		log.info(plugin.getId() + " is complete");
 	}
-	
-	
+
 	public ScriptModule getScriptModule()
 	{
 		return fieldScriptModule;
@@ -108,7 +110,6 @@ public class PluginUpgrader
 	{
 		fieldScriptModule = inScriptModule;
 	}
-
 
 	public File getRoot()
 	{
@@ -129,14 +130,16 @@ public class PluginUpgrader
 	{
 		fieldPlugInFinder = inAllPluginS;
 	}
+
 	public Set getCompleted()
 	{
-		if( fieldCompleted == null)
+		if (fieldCompleted == null)
 		{
 			fieldCompleted = new HashSet();
 		}
 		return fieldCompleted;
 	}
+
 	public Set getInProgress()
 	{
 		if (fieldInProgress == null)
@@ -145,27 +148,31 @@ public class PluginUpgrader
 		}
 		return fieldInProgress;
 	}
+
 	public void cancel()
 	{
 		cancel = true;
 	}
+
 	public boolean isCanceled()
 	{
 		return cancel;
 	}
+
 	public boolean isComplete()
 	{
 		return getCompleted().size() == getList().size();
 	}
+
 	public void shutdown()
 	{
-//		Shutdownable manager = (Shutdownable)getScriptModule().getModuleManager().getBean("elasticNodeManager");
-//		manager.shutdown();
-		
-		//Touch web.xml
-		File web = new File( getRoot(), "WEB-INF/web.xml");
+		// Shutdownable manager =
+		// (Shutdownable)getScriptModule().getModuleManager().getBean("elasticNodeManager");
+		// manager.shutdown();
+
+		// Touch web.xml
+		File web = new File(getRoot(), "WEB-INF/web.xml");
 		web.setLastModified(System.currentTimeMillis());
-				
 
 	}
 }

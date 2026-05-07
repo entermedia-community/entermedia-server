@@ -16,19 +16,19 @@ public class AutoLoginByHeader extends BaseAutoLogin implements AutoLoginProvide
 	protected AutoLoginResult autoLoginFromRequest(WebPageRequest inRequest)
 	{
 		String header = inRequest.getContentProperty("autologinheader");
-		//log.info("Found: " + header);
-		if( header == null)
+		// log.info("Found: " + header);
+		if (header == null)
 		{
 			return null;
 		}
-		
+
 		String username = inRequest.getRequest().getHeader(header);
-		//log.info("Found user: " + username);
+		// log.info("Found user: " + username);
 		if (username == null)
 		{
 			return null;
 		}
-		
+
 		UserManager userManager = getUserManager(inRequest);
 		User user = userManager.getUser(username);
 		String catalogid = inRequest.findPathValue("catalogid");
@@ -39,14 +39,16 @@ public class AutoLoginByHeader extends BaseAutoLogin implements AutoLoginProvide
 			String groupname = inRequest.getContentProperty("autologingroup");
 			if (role != null)
 			{
-				user = createNewUserInRole(catalogid, username,role);
-				if( groupname != null)
+				user = createNewUserInRole(catalogid, username, role);
+				if (groupname != null)
 				{
 					Group group = userManager.getGroup(groupname);
 					if (group == null)
 					{
 						log.error("No such auto login group " + groupname);
-					} else {
+					}
+					else
+					{
 						user.addGroup(group);
 					}
 				}
@@ -55,41 +57,41 @@ public class AutoLoginByHeader extends BaseAutoLogin implements AutoLoginProvide
 			{
 				user = userManager.createGuestUser(username, null, groupname);
 				user.setVirtual(true);
-				//user.setEnbled(true);
+				// user.setEnbled(true);
 			}
 		}
-		
+
 		if (user == null)
 		{
 			log.error("No auto login group or role configured");
 		}
-		//Not for headers? saveCookieForUser(inRequest,user); //For next time
+		// Not for headers? saveCookieForUser(inRequest,user); //For next time
 		AutoLoginResult result = new AutoLoginResult();
 		result.setUser(user);
 		return result;
 	}
-	
+
 	protected User createNewUserInRole(String catalogid, String inUserName, String inRole)
 	{
-		if( catalogid == null)
+		if (catalogid == null)
 		{
 			catalogid = "system";
 		}
 		Searcher usersearcher = getSearcherManager().getSearcher(catalogid, "user");
-		User newuser = (User)usersearcher.createNewData();
+		User newuser = (User) usersearcher.createNewData();
 		newuser.setUserName(inUserName);
 		newuser.setEnabled(true);
 		usersearcher.saveData(newuser);
-		UserProfileManager profilemanager = (UserProfileManager)getModuleManager().getBean(catalogid,"userProfileManager");
-		profilemanager.setRoleOnUser(catalogid,newuser,inRole);
+		UserProfileManager profilemanager = (UserProfileManager) getModuleManager().getBean(catalogid, "userProfileManager");
+		profilemanager.setRoleOnUser(catalogid, newuser, inRole);
 		return newuser;
-		
+
 	}
 
 	@Override
 	public AutoLoginResult autoLogin(WebPageRequest inReq)
 	{
-		//This is not used often. Used with Proxies
+		// This is not used often. Used with Proxies
 		if (Boolean.parseBoolean(inReq.getContentProperty("oe.usernameinheader")))
 		{
 			return autoLoginFromRequest(inReq);

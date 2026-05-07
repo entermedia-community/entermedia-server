@@ -23,7 +23,7 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
-		if(!inStructions.isStreaming()) 
+		if (!inStructions.isStreaming())
 		{
 			result.setOutput(inStructions.getOutputFile());
 		}
@@ -31,7 +31,7 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		ContentItem input = inStructions.getInputFile();
 		if (input == null || !input.exists())
 		{
-			//no such original
+			// no such original
 			log.info("Original does not exist: " + asset.getSourcePath());
 			result.setOk(false);
 
@@ -39,17 +39,17 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		}
 		/*
 		 * 
-		 * <property id="flac" rendertype="audio"
-		 * synctags="false">Flac</property> <property id="m4a"
-		 * rendertype="audio" synctags="false">M4A</property> <property id="aac"
-		 * rendertype="audio" synctags="false">aac</property>
+		 * <property id="flac" rendertype="audio" synctags="false">Flac</property> <property id="m4a"
+		 * rendertype="audio" synctags="false">M4A</property> <property id="aac" rendertype="audio"
+		 * synctags="false">aac</property>
 		 */
 		String inputExt = PathUtilities.extractPageType(input.getAbsolutePath());
 		String outputExt = inStructions.getOutputExtension();
-		
+
 		long timeout = inStructions.getConversionTimeout();
-		if(timeout < 0) {
-			
+		if (timeout < 0)
+		{
+
 		}
 		String inOutputType = inStructions.getOutputExtension();
 		runFfmpeg(input, inStructions, result, timeout);
@@ -57,7 +57,7 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		{
 			result.setComplete(true);
 		}
-		
+
 		return result;
 	}
 
@@ -66,10 +66,10 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		String inputExt = PathUtilities.extractPageType(input.getAbsolutePath());
 		long start = System.currentTimeMillis();
 
-		//InputStream inputstream = null;
+		// InputStream inputstream = null;
 		try
 		{
-			//inputstream = input.getInputStream();
+			// inputstream = input.getInputStream();
 			List args = new ArrayList();
 			String bitRate = inStructions.getProperty("bitrate");
 			if (bitRate == null)
@@ -79,7 +79,7 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 			args.add("-b");
 			args.add(bitRate);
 
-			//11.025 kHz 22.050 kHz or 44.100 kHz.
+			// 11.025 kHz 22.050 kHz or 44.100 kHz.
 			String resample = inStructions.getProperty("resample");
 			if (resample == null)
 			{
@@ -98,7 +98,7 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 				args.add("--mp3input");
 			}
 			args.add("--silent");
-			//args.add("-");
+			// args.add("-");
 			ContentItem output = inStructions.getOutputFile();
 			if (isOnWindows())
 			{
@@ -110,7 +110,7 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 				args.add(input.getAbsolutePath());
 				args.add(output.getAbsolutePath());
 			}
-			//make sure this folder exists
+			// make sure this folder exists
 			new File(output.getAbsolutePath()).getParentFile().mkdirs();
 
 			ExecResult res = getExec().runExec("lame", args, inTimeout);
@@ -124,10 +124,10 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 			result.setError(out.toString());
 			result.setOk(false);
 		}
-		//		finally
-		//		{
-		//			FileUtils.safeClose(inputstream);
-		//		}
+		// finally
+		// {
+		// FileUtils.safeClose(inputstream);
+		// }
 		String message = "mp3 created";
 		if (!result.isOk())
 		{
@@ -144,10 +144,10 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		comm.add("-i");
 		comm.add(input.getAbsolutePath());
 		comm.add("-y");
-		//audio
+		// audio
 		setValue("acodec", "libmp3lame", inStructions, comm); // libmp3lame libopus
 
-		//comm.add("libfaac"); //libfaac  libmp3lame
+		// comm.add("libfaac"); //libfaac libmp3lame
 		comm.add("-ab");
 		String bitRate = inStructions.getProperty("bitrate");
 		if (bitRate == null)
@@ -155,49 +155,52 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 			bitRate = "96";
 		}
 		comm.add(bitRate + "k");
-		
-		String resample = inStructions.getProperty("resample"); 
-		
-		if(resample != null)
+
+		String resample = inStructions.getProperty("resample");
+
+		if (resample != null)
 		{
 			comm.add("-ar");
 			comm.add(resample);
 		}
-		
+
 		comm.add("-ac");
-		comm.add("1"); //mono
+		comm.add("1"); // mono
 
 		comm.add("-vn");
 		String outpath = null;
 
-//		ffmpeg -ss 10 -t 6 -i input.mp3 output.mp3
+		// ffmpeg -ss 10 -t 6 -i input.mp3 output.mp3
 
-		if(inStructions.getTimeOffset() != null) {
+		if (inStructions.getTimeOffset() != null)
+		{
 			comm.add("-ss");
 			comm.add(inStructions.getTimeOffset());
-			
+
 		}
-		if( inStructions.get("compressionlevel")!= null) {
+		if (inStructions.get("compressionlevel") != null)
+		{
 			comm.add("-compression_level");
 			comm.add(inStructions.get("compressionlevel"));
-			
-			
+
 		}
-		if(inStructions.get("duration") != null) {
-			
+		if (inStructions.get("duration") != null)
+		{
+
 			comm.add("-t");
 			comm.add(inStructions.get("duration"));
-			
+
 		}
-		//Check the mod time of the video. If it is 0 and over an hour old then delete it?
+		// Check the mod time of the video. If it is 0 and over an hour old then delete
+		// it?
 		ExecResult exec = null;
-		if( inStructions.isStreaming() )
+		if (inStructions.isStreaming())
 		{
 			comm.add("-f");
 			comm.add(inStructions.getOutputExtension());
 			comm.add("pipe:1");
-			
-			exec = getExec().runExecStream("avconv", comm,inStructions.getOutputStream(), inTimeout);
+
+			exec = getExec().runExecStream("avconv", comm, inStructions.getOutputStream(), inTimeout);
 		}
 		else
 		{
@@ -209,12 +212,10 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		}
 		log.info(exec.isRunOk() + " in " + (System.currentTimeMillis() - start) / 1000D + " seconds");
 		result.setOk(exec.isRunOk());
-		if( !exec.isRunOk() )
+		if (!exec.isRunOk())
 		{
 			result.setError("Error creating audio " + exec.getStandardError());
 		}
 	}
-
-
 
 }

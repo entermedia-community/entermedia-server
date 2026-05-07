@@ -1,13 +1,13 @@
 /*
- Copyright (c) 2003 eInnovation Inc. All rights reserved
-
- This library is free software; you can redistribute it and/or modify it under the terms
- of the GNU Lesser General Public License as published by the Free Software Foundation;
- either version 2.1 of the License, or (at your option) any later version.
-
- This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- See the GNU Lesser General Public License for more details.
+ * Copyright (c) 2003 eInnovation Inc. All rights reserved
+ * 
+ * This library is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation; either version
+ * 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
  */
 
 /*
@@ -83,12 +83,13 @@ public class FileUpload
 			throw new OpenEditException("You must be logged in to upload files");
 		}
 
-		//		Object canUpload = inContext.getPageValue("canupload");
-		//		if (!Boolean.parseBoolean(String.valueOf(canUpload)))
-		//		{
-		//			throw new OpenEditException("You don't have enough permissions to upload files");
-		//		}
-		//		
+		// Object canUpload = inContext.getPageValue("canupload");
+		// if (!Boolean.parseBoolean(String.valueOf(canUpload)))
+		// {
+		// throw new OpenEditException("You don't have enough permissions to upload
+		// files");
+		// }
+		//
 		UploadRequest props = parseArguments(inContext);
 		if (props == null)
 		{
@@ -109,10 +110,10 @@ public class FileUpload
 			{
 				props.saveFile(item, home, inContext);
 			}
-			//Page page = saveFile( props, finalpath, inContext );
+			// Page page = saveFile( props, finalpath, inContext );
 		}
 		inContext.putPageValue("uploadrequest", props);
-		//inContext.setRequestParameter("path", page.getPath());			
+		// inContext.setRequestParameter("path", page.getPath());
 	}
 
 	/**
@@ -125,8 +126,8 @@ public class FileUpload
 		upload.setPageManager(getPageManager());
 		upload.setRoot(getRoot());
 
-		//upload.setProperties(inContext.getParameterMap());
-		if (inContext.getRequest() == null) //used in unit tests
+		// upload.setProperties(inContext.getParameterMap());
+		if (inContext.getRequest() == null) // used in unit tests
 		{
 			return upload;
 		}
@@ -134,14 +135,15 @@ public class FileUpload
 		String type = inContext.getRequest().getContentType();
 		if (type != null && type.startsWith("application/json"))
 		{
-			inContext.getJsonRequest(); //This will read in the body and setup the parameters
+			inContext.getJsonRequest(); // This will read in the body and setup the parameters
 			return upload;
 		}
-		else if (type == null || !type.startsWith("multipart"))
-		{
-			//Old Stuff addAlreadyUploaded(inContext, upload);
-			return upload;
-		}
+		else
+			if (type == null || !type.startsWith("multipart"))
+			{
+				// Old Stuff addAlreadyUploaded(inContext, upload);
+				return upload;
+			}
 		String uploadid = inContext.getRequestParameter("uploadid");
 
 		String catalogid = inContext.findPathValue("catalogid");
@@ -153,27 +155,29 @@ public class FileUpload
 			upload.setUploadQueueSearcher(loadQueueSearcher(catalogid));
 		}
 
-		//Our factory will track these items as they are made. Each time some data comes in look over all the files and update the size		
+		// Our factory will track these items as they are made. Each time some data
+		// comes in look over all the files and update the size
 		FileItemFactory factory = (FileItemFactory) inContext.getPageValue("uploadfilefactory");
 		if (factory == null)
 		{
 			DiskFileItemFactory dfactory = new DiskFileItemFactory();
-			//			{
-			//				public org.apache.commons.fileupload.FileItem createItem(String fieldName, String contentType, boolean isFormField, String fileName) 
-			//				{
-			//					if( !isFormField )
-			//					{
-			//						upload.track(fieldName, contentType, isFormField, fileName);
-			//					}
-			//					return super.createItem(fieldName, contentType, isFormField, fileName);
-			//				};
-			//			}
+			// {
+			// public org.apache.commons.fileupload.FileItem createItem(String fieldName,
+			// String contentType, boolean isFormField, String fileName)
+			// {
+			// if( !isFormField )
+			// {
+			// upload.track(fieldName, contentType, isFormField, fileName);
+			// }
+			// return super.createItem(fieldName, contentType, isFormField, fileName);
+			// };
+			// }
 			factory = dfactory;
 
 		}
 
 		ServletFileUpload uploadreader = new ServletFileUpload(factory);
-		//upload.setSizeThreshold(BUFFER_SIZE);
+		// upload.setSizeThreshold(BUFFER_SIZE);
 		if (uploadid != null)
 		{
 			uploadreader.setProgressListener(upload);
@@ -182,15 +186,15 @@ public class FileUpload
 		String encode = req.getCharacterEncoding();
 		if (encode == null)
 		{
-			//log.info("Encoding not set.");
+			// log.info("Encoding not set.");
 			encode = "UTF-8";
 		}
-		//log.info("Encoding is set to " + encode);
+		// log.info("Encoding is set to " + encode);
 		uploadreader.setHeaderEncoding(encode);
 
-		//upload.setHeaderEncoding()
-		//Content-Transfer-Encoding: binary
-		//upload.setRepositoryPath(repository.pathToFile("admin
+		// upload.setHeaderEncoding()
+		// Content-Transfer-Encoding: binary
+		// upload.setRepositoryPath(repository.pathToFile("admin
 		uploadreader.setSizeMax(-1);
 
 		try
@@ -223,7 +227,7 @@ public class FileUpload
 		Calendar cal = new GregorianCalendar();
 		cal.add(Calendar.HOUR, -48);
 		q.addBefore("date", cal.getTime());
-		//child.addMatches("status", "complete");
+		// child.addMatches("status", "complete");
 
 		HitTracker hits = searcher.search(q);
 
@@ -252,7 +256,7 @@ public class FileUpload
 			{
 				uploadingfile = true;
 			}
-			
+
 			for (int i = 0; i < fileItems.size(); i++)
 			{
 				org.apache.commons.fileupload.FileItem tmp = (org.apache.commons.fileupload.FileItem) fileItems.get(i);
@@ -261,7 +265,8 @@ public class FileUpload
 				{
 					if (!uploadingfile && tmp.getContentType() != null && tmp.getContentType().toLowerCase().contains("json"))
 					{
-						try {
+						try
+						{
 							JsonSlurper slurper = new JsonSlurper();
 							String content = tmp.getString(encoding).trim();
 							Object target = slurper.parseText(content);
@@ -271,22 +276,24 @@ public class FileUpload
 								inContext.setJsonRequest(jsonRequest);
 								continue;
 							}
-						} catch (Exception e) {
-							//Let the file be uploaded even if it's corrupt.
+						}
+						catch (Exception e)
+						{
+							// Let the file be uploaded even if it's corrupt.
 							continue;
 						}
 					}
 					else
 					{
 						String name = tmp.getName();
-						if( name.startsWith(".") )
+						if (name.startsWith("."))
 						{
-							continue; //ignore .DS Store
+							continue; // ignore .DS Store
 						}
-						if( name.contains("./") || name.contains(".\\") )
+						if (name.contains("./") || name.contains(".\\"))
 						{
 							log.info("Skipping " + name);
-							continue; //ignore .DS Store
+							continue; // ignore .DS Store
 						}
 						FileUploadItem foundUpload = new FileUploadItem();
 						foundUpload.setFileItem(tmp);
@@ -295,12 +302,12 @@ public class FileUpload
 							name = name.substring(name.lastIndexOf("\\") + 1);
 						}
 						foundUpload.setName(name);
-						//String num = "0";
-						//int index = tmp.getFieldName().indexOf(".");
-						//					if(  index > -1)
-						//					{
-						//						num = tmp.getFieldName().substring(index+1);
-						//					}
+						// String num = "0";
+						// int index = tmp.getFieldName().indexOf(".");
+						// if( index > -1)
+						// {
+						// num = tmp.getFieldName().substring(index+1);
+						// }
 
 						foundUpload.setCount(count);
 						count++;
@@ -313,7 +320,8 @@ public class FileUpload
 		{
 			throw new OpenEditException(e);
 		}
-		//TODO: Find out why Apache creates tmp files for each parameter attached to the body of the upload
+		// TODO: Find out why Apache creates tmp files for each parameter attached to
+		// the body of the upload
 		Map arguments = inContext.getParameterMap();
 		for (int i = 0; i < fileItems.size(); i++)
 		{
@@ -321,19 +329,20 @@ public class FileUpload
 			if (tmp.isFormField())
 			{
 				Object vals = arguments.get(tmp.getFieldName());
-				String[] values = null;//(String[])
+				String[] values = null;// (String[])
 
 				if (vals instanceof String)
 				{
 
 					values = new String[1];
 
-					values[0] = (String) vals; //the old value?
+					values[0] = (String) vals; // the old value?
 				}
-				else if (vals != null)
-				{
-					values = (String[]) vals;
-				}
+				else
+					if (vals != null)
+					{
+						values = (String[]) vals;
+					}
 				String tval = tmp.getString(encoding).trim();
 				if (!tval.isEmpty())
 				{
@@ -343,7 +352,7 @@ public class FileUpload
 					}
 					else
 					{
-						//grow by one
+						// grow by one
 						String[] newvalues = new String[values.length + 1];
 						System.arraycopy(values, 0, newvalues, 0, values.length);
 						values = newvalues;
@@ -352,7 +361,7 @@ public class FileUpload
 				}
 				if (values != null)
 				{
-					if( values.length == 1 && tmp.getFieldName().equals("image") && values[0].startsWith("data:"))
+					if (values.length == 1 && tmp.getFieldName().equals("image") && values[0].startsWith("data:"))
 					{
 						FileUploadItem foundUpload = new FileUploadItem();
 						foundUpload.setBase64(true);

@@ -11,82 +11,85 @@ import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 import org.openedit.OpenEditException;
 
-public class GoogleCaptcha {
+public class GoogleCaptcha
+{
 
-	
 	private static final String RECAPTCHA_SERVICE_URL = "https://www.google.com/recaptcha/api/siteverify";
-	public static String secretKey = "x123"; //Move to Catalog Settings?
-	
-	public static String getSecretKey() {
+	public static String secretKey = "x123"; // Move to Catalog Settings?
+
+	public static String getSecretKey()
+	{
 		return secretKey;
 	}
 
-	public static void setSecretKey(String secretKey) {
+	public static void setSecretKey(String secretKey)
+	{
 		GoogleCaptcha.secretKey = secretKey;
 	}
 
-	public static boolean isValid(String clientRecaptchaResponse) throws OpenEditException {
-		if (clientRecaptchaResponse == null || "".equals(clientRecaptchaResponse)) {
+	public static boolean isValid(String clientRecaptchaResponse) throws OpenEditException
+	{
+		if (clientRecaptchaResponse == null || "".equals(clientRecaptchaResponse))
+		{
 			return false;
 		}
-		
+
 		Boolean success = false;
 		Double score = 0.0;
-		
-		try {
-		URL obj = new URL(RECAPTCHA_SERVICE_URL);
-		HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
 
-		con.setRequestMethod("POST");
-		con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+		try
+		{
+			URL obj = new URL(RECAPTCHA_SERVICE_URL);
+			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
 
-		//add client result as post parameter
-		String postParams =
-				"secret=" + getSecretKey() +
-				"&response=" + clientRecaptchaResponse;
+			con.setRequestMethod("POST");
+			con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 
-		// send post request to google recaptcha server
-		con.setDoOutput(true);
-		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-		wr.writeBytes(postParams);
-		wr.flush();
-		wr.close();
+			// add client result as post parameter
+			String postParams = "secret=" + getSecretKey() + "&response=" + clientRecaptchaResponse;
 
-		int responseCode = con.getResponseCode();
+			// send post request to google recaptcha server
+			con.setDoOutput(true);
+			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+			wr.writeBytes(postParams);
+			wr.flush();
+			wr.close();
 
-		//System.out.println("Post parameters: " + postParams);
-		//System.out.println("Response Code: " + responseCode);
+			int responseCode = con.getResponseCode();
 
-		BufferedReader in = new BufferedReader(new InputStreamReader(
-				con.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
+			// System.out.println("Post parameters: " + postParams);
+			// System.out.println("Response Code: " + responseCode);
 
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null)
+			{
+				response.append(inputLine);
+			}
+			in.close();
+
+			System.out.println(response.toString());
+
+			// Parse JSON-response
+			JSONParser parser = new JSONParser();
+			JSONObject json = (JSONObject) parser.parse(response.toString());
+
+			success = (Boolean) json.get("success");
+			score = (Double) json.get("score");
+
+			// System.out.println("success : " + success);
+			// System.out.println("score : " + score);
+
+			// result should be sucessfull and spam score above 0.5
+
 		}
-		in.close();
-
-		System.out.println(response.toString());
-
-		//Parse JSON-response
-		JSONParser parser = new JSONParser();
-		JSONObject json = (JSONObject) parser.parse(response.toString());
-
-
-		success = (Boolean) json.get("success");
-		score = (Double) json.get("score");
-
-		//System.out.println("success : " + success);
-		//System.out.println("score : " + score);
-
-		//result should be sucessfull and spam score above 0.5
-		
-		}catch (Exception e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
-		//return (success && score >= 0.5); //score is for v3
+		// return (success && score >= 0.5); //score is for v3
 		return (success);
 	}
 }

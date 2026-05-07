@@ -12,18 +12,18 @@ public class AssetStatsManager
 {
 	protected EventManager fieldEventManager;
 	protected SearcherManager fieldSearcherManager;
-//	protected Map fieldViewCache;
-//	protected long fieldViewExpireTime;
-//	
-//	public long getViewExpireTime()
-//	{
-//		return fieldViewExpireTime;
-//	}
-//
-//	public void setViewExpireTime(long inViewExpireTime)
-//	{
-//		fieldViewExpireTime = inViewExpireTime;
-//	}
+	// protected Map fieldViewCache;
+	// protected long fieldViewExpireTime;
+	//
+	// public long getViewExpireTime()
+	// {
+	// return fieldViewExpireTime;
+	// }
+	//
+	// public void setViewExpireTime(long inViewExpireTime)
+	// {
+	// fieldViewExpireTime = inViewExpireTime;
+	// }
 
 	public SearcherManager getSearcherManager()
 	{
@@ -50,13 +50,14 @@ public class AssetStatsManager
 		WebEvent change = new WebEvent();
 		change.setOperation("download");
 		change.setSearchType("asset");
-		change.setProperty("filename", PathUtilities.extractFileName(inSourcePath ));
+		change.setProperty("filename", PathUtilities.extractFileName(inSourcePath));
 		change.setSourcePath(inSourcePath);
 		change.setUser(inUser);
 		change.setProperty("result", inResult);
 		change.setCatalogId(inCatalogId);
 		getEventManager().fireEvent(change);
 	}
+
 	public void logAssetPreview(MediaArchive inArchive, Asset inAsset, User inUser)
 	{
 		WebEvent change = new WebEvent();
@@ -66,53 +67,54 @@ public class AssetStatsManager
 		change.setUser(inUser);
 		change.setCatalogId(inArchive.getCatalogId());
 
-		change.setProperty("assetid",inAsset.getId());
-	
+		change.setProperty("assetid", inAsset.getId());
+
 		long assetviews = 0;
 		String views = inAsset.get("assetviews");
-		if( views != null )
+		if (views != null)
 		{
 			assetviews = Long.parseLong(views);
-		}	
+		}
 		assetviews++;
-		inAsset.setProperty("assetviews",String.valueOf(assetviews)); //this will be overridden later
+		inAsset.setProperty("assetviews", String.valueOf(assetviews)); // this will be overridden later
 
 		getEventManager().fireEvent(change);
 	}
-	
+
 	public long getViewsForAsset(Asset inAsset)
 	{
-		//check with the log files and cache the results?
-		if( inAsset == null || inAsset.getCatalogId() == null)
+		// check with the log files and cache the results?
+		if (inAsset == null || inAsset.getCatalogId() == null)
 		{
 			return 0L;
 		}
-		if(inAsset.getId().startsWith("multi")){
+		if (inAsset.getId().startsWith("multi"))
+		{
 			return 0L;
 		}
-		
+
 		long assetexpire = 0L;
 		String expires = inAsset.get("assetviewsexpires");
-		if( expires != null )
+		if (expires != null)
 		{
 			assetexpire = Long.parseLong(expires);
 		}
 		long now = System.currentTimeMillis();
-		if( assetexpire == 0 || assetexpire > now)
+		if (assetexpire == 0 || assetexpire > now)
 		{
-			assetexpire = now + 1000*60*60; //once an hour
-			
+			assetexpire = now + 1000 * 60 * 60; // once an hour
+
 			Searcher logsearcher = getSearcherManager().getSearcher(inAsset.getCatalogId(), "assetpreviewLog");
 			HitTracker all = logsearcher.fieldSearch("sourcepath", inAsset.getSourcePath());
 			Long views = Long.valueOf(all.size());
-			inAsset.setProperty("assetviews",String.valueOf(views));
-			inAsset.setProperty("assetviewsexpires",String.valueOf(assetexpire));
+			inAsset.setProperty("assetviews", String.valueOf(views));
+			inAsset.setProperty("assetviewsexpires", String.valueOf(assetexpire));
 			return views.longValue();
 		}
 		else
 		{
 			String views = inAsset.get("assetviews");
-			if( views != null )
+			if (views != null)
 			{
 				return Long.parseLong(views);
 			}
@@ -122,16 +124,17 @@ public class AssetStatsManager
 
 	protected void checkAssetSave(Asset inAsset, long newcount)
 	{
-		//save it to the asset index if it has not been updated within 10 hits or 24 hours?
+		// save it to the asset index if it has not been updated within 10 hits or 24
+		// hours?
 		long oldcount = 0;
 		String views = inAsset.get("assetviews");
-		if( views != null)
+		if (views != null)
 		{
 			oldcount = Long.parseLong(views);
 		}
-		inAsset.setProperty("assetviews",String.valueOf(newcount));
+		inAsset.setProperty("assetviews", String.valueOf(newcount));
 
-		if( newcount - 10 >  oldcount)
+		if (newcount - 10 > oldcount)
 		{
 			WebEvent change = new WebEvent();
 			change.setOperation("assetsave");

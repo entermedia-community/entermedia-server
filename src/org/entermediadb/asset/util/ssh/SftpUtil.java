@@ -64,17 +64,16 @@ public class SftpUtil
 		}
 
 		fieldSession = jsch.getSession(getUsername(), getHost(), getPort());
-		//session.setUserInfo(this);
+		// session.setUserInfo(this);
 		fieldSession.setPassword(getPassword());
-		fieldSession.setConfig("StrictHostKeyChecking", "no"); // 
+		fieldSession.setConfig("StrictHostKeyChecking", "no"); //
 		fieldSession.setConfig("PreferredAuthentications", "password,gssapi-with-mic,publickey");
 		log.info("Connecting to " + getHost() + ":" + getPort());
 		fieldSession.connect();
-		//log.info("connected");
+		// log.info("connected");
 
 		return fieldSession;
 	}
-
 
 	public String getPassword()
 	{
@@ -277,7 +276,7 @@ public class SftpUtil
 		String remotePath = "/home/tuan";
 		sftp.sendFileToRemote(localFile, remotePath);
 
-		//InputStream is = sftp.retrieveFileStream("/home/tuan/test.txt");
+		// InputStream is = sftp.retrieveFileStream("/home/tuan/test.txt");
 		sftp.disconnect();
 	}
 
@@ -308,21 +307,21 @@ public class SftpUtil
 		return true;
 	}
 
-	public void sendFileToRemote(InputStream inStream, String remotePath)  
+	public void sendFileToRemote(InputStream inStream, String remotePath)
 	{
 		try
 		{
 			ChannelSftp channel = (ChannelSftp) openSftpChannel();
 			String dir = PathUtilities.extractDirectoryPath(remotePath);
-			if( dir.length() > 0 )
+			if (dir.length() > 0)
 			{
 				channel.cd(dir);
 			}
-			
+
 			String name = PathUtilities.extractFileName(remotePath);
 			channel.put(inStream, name);
 		}
-		catch( Exception ex )
+		catch (Exception ex)
 		{
 			throw new OpenEditException(ex);
 		}

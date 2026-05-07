@@ -9,7 +9,7 @@ import org.openedit.ModuleManager;
 public class BaseManager implements CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(BaseManager.class);
-	
+
 	protected String fieldCatalogId;
 
 	public String getCatalogId()
@@ -21,8 +21,8 @@ public class BaseManager implements CatalogEnabled
 	{
 		fieldCatalogId = inCatalogId;
 	}
+
 	protected ModuleManager fieldModuleManager;
-	
 
 	public ModuleManager getModuleManager()
 	{
@@ -33,9 +33,10 @@ public class BaseManager implements CatalogEnabled
 	{
 		fieldModuleManager = inModuleManager;
 	}
+
 	protected MediaArchive getMediaArchive()
 	{
-		return (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
+		return (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 	}
 
 }

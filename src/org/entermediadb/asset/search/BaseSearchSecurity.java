@@ -23,8 +23,7 @@ public class BaseSearchSecurity implements SearchSecurity
 	private static final Log log = LogFactory.getLog(BaseSearchSecurity.class);
 	protected SearcherManager fieldSearcherManager;
 	protected CacheManager fieldCacheManager;
-	private static final SearchSecurity NULL = new SearchSecurity()
-	{
+	private static final SearchSecurity NULL = new SearchSecurity() {
 		@Override
 		public SearchQuery attachSecurity(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery)
 		{
@@ -57,13 +56,13 @@ public class BaseSearchSecurity implements SearchSecurity
 		SearchSecurity filter = (SearchSecurity) getCacheManager().get("searchfilters", inSearcher.getCatalogId() + inSearcher.getSearchType());
 		if (filter == null)
 		{
-			//Look up in the database a cache for this filter type
+			// Look up in the database a cache for this filter type
 			Data config = getSearcherManager().getData(inSearcher.getCatalogId(), "searchsecurity", inSearcher.getSearchType());
 			if (config != null)
 			{
 				String beanname = config.get("beanname");
 
-				//Legacy fix
+				// Legacy fix
 				beanname = beanname.replace("QueryFilter", "Security");
 				filter = (SearchSecurity) getSearcherManager().getModuleManager().getBean(inSearcher.getCatalogId(), beanname);
 			}
@@ -104,7 +103,6 @@ public class BaseSearchSecurity implements SearchSecurity
 		}
 
 		UserProfile profile = inPageRequest.getUserProfile();
-		
 
 		if (profile != null && profile.isInRole("administrator"))
 		{
@@ -137,14 +135,12 @@ public class BaseSearchSecurity implements SearchSecurity
 		}
 
 		String userid = inPageRequest.getUserName();
-		
-		
+
 		if (userid == null)
 		{
-		
+
 			userid = "null";
 		}
-		
 
 		QueryBuilder builder = inSearcher.query().or().orgroup("viewgroups", groupids).exact("viewroles", roleid).exact("owner", userid).exact("viewusers", userid);
 		builder.exact("securityenabled", "false");

@@ -17,7 +17,6 @@ public class GsTranscoder extends BaseTranscoder
 {
 	private static final Log log = LogFactory.getLog(GsTranscoder.class);
 
-
 	@Override
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
@@ -46,8 +45,7 @@ public class GsTranscoder extends BaseTranscoder
 		{
 			result.setComplete(true);
 
-			log.info("Convert complete in:" + (System.currentTimeMillis() - start) + " "
-					+ inOutFile.getName());
+			log.info("Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
 
 			return result;
 		}
@@ -63,7 +61,6 @@ public class GsTranscoder extends BaseTranscoder
 		}
 		return result;
 	}
-
 
 	protected List<String> createCommand(ConvertInstructions inStructions)
 	{
@@ -97,15 +94,17 @@ public class GsTranscoder extends BaseTranscoder
 
 		// com.add("-dNOTRANSPARENCY");
 
-		// gs -sDEVICE=pngalpha -sPageList=1 -q -dQUIET -dBATCH -dSAFER -dNOPAUSE -dNOPROMPT
-		// -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 -dTextAlphaBits=4 -r72x72
+		// gs -sDEVICE=pngalpha -sPageList=1 -q -dQUIET -dBATCH -dSAFER -dNOPAUSE
+		// -dNOPROMPT
+		// -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 -dTextAlphaBits=4
+		// -r72x72
 		// -sOutputFile="/home/shanti/git/demoall/webapp/WEB-INF/data/assets/catalog/generated/2017/11/34/49934288d/Villages
 		// in the Sky (1).pdf/image1500x1500.png"
 		// "/home/shanti/git/demoall/webapp/WEB-INF/data/assets/catalog/originals/2017/11/34/49934288d/Villages
 		// in the Sky (1).pdf"
 
-
-		// -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0
+		// -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000
+		// -dAlignToPixels=0
 		// -dGridFitTT=2 "-sDEVICE=pngalpha"
 		// -dTextAlphaBits=4 -dGraphicsAlphaBits=4 "-r72x72"
 		// com.add("-r300");

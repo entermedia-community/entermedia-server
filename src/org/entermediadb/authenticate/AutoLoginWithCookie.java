@@ -12,9 +12,6 @@ import org.openedit.users.User;
 public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvider
 {
 	static final Log log = LogFactory.getLog(AutoLoginWithCookie.class);
-	
-	
-	
 
 	protected User readPasswordFromCookie(WebPageRequest inReq) throws OpenEditException
 	{
@@ -27,17 +24,17 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 
 			if (cookies != null)
 			{
-				String id = getCookieEncryption().createMd5CookieName(inReq,ENTERMEDIAKEY,true);
-				String idold =  getCookieEncryption().createMd5CookieName(inReq,ENTERMEDIAKEY,false);
+				String id = getCookieEncryption().createMd5CookieName(inReq, ENTERMEDIAKEY, true);
+				String idold = getCookieEncryption().createMd5CookieName(inReq, ENTERMEDIAKEY, false);
 				for (int i = 0; i < cookies.length; i++)
 				{
 					Cookie cook = cookies[i];
 					if (cook.getName() != null)
 					{
-						if( id.equals(cook.getName() ) || idold.equals(cook.getName() )  )
+						if (id.equals(cook.getName()) || idold.equals(cook.getName()))
 						{
 							User user = autoLoginFromMd5Value(inReq, cook.getValue());
-							if( user != null)
+							if (user != null)
 							{
 								return user;
 							}
@@ -54,11 +51,10 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 		return null;
 	}
 
-
 	@Override
 	public AutoLoginResult autoLogin(WebPageRequest inReq)
 	{
-		//log.info("Auto Login check");
+		// log.info("Auto Login check");
 
 		User ok = null;
 		if (inReq.getSessionValue("autologindone") == null)
@@ -67,49 +63,48 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 		}
 		if (ok == null)
 		{
-			
-			if( inReq.getRequest() != null)
+
+			if (inReq.getRequest() != null)
 			{
 				String ct = inReq.getRequest().getContentType();
-				//"application/json; charset=utf-8", //This causes CORS to preflight
-				if(ct != null && ct.contains("application/json") )
+				// "application/json; charset=utf-8", //This causes CORS to preflight
+				if (ct != null && ct.contains("application/json"))
 				{
 					inReq.getJsonRequest();
 				}
 			}
-			
+
 			String md5 = inReq.getRequestParameter(ENTERMEDIAKEY);
 			if (md5 != null)
 			{
 				ok = autoLoginFromMd5Value(inReq, md5);
 			}
-			if( ok == null && inReq.getRequest() != null)
+			if (ok == null && inReq.getRequest() != null)
 			{
-				md5 = inReq.getRequest().getHeader("X-" + ENTERMEDIAKEY); //If you get null headers in JSON make sure the user is logged in first
-				//Otherwise you might be getting the HTTP Method == settings that is checking for CORS crap see https://www.codeproject.com/Questions/1211743/Send-custom-header-with-jquery-not-working
+				md5 = inReq.getRequest().getHeader("X-" + ENTERMEDIAKEY); // If you get null headers in JSON make sure
+																			// the user is logged in first
+				// Otherwise you might be getting the HTTP Method == settings that is checking
+				// for CORS crap see
+				// https://www.codeproject.com/Questions/1211743/Send-custom-header-with-jquery-not-working
 				if (md5 != null)
 				{
-					//log.info("Looking for key in " + inReq.getPathUrl() + " found " +md5);
-					
+					// log.info("Looking for key in " + inReq.getPathUrl() + " found " +md5);
+
 					log.info("Found MD5 in Header" + md5);
 					ok = autoLoginFromMd5Value(inReq, md5);
 				}
 			}
 		}
-		
-		if( ok != null)
+
+		if (ok != null)
 		{
-			saveCookieForUser(inReq,ok); //For next time
+			saveCookieForUser(inReq, ok); // For next time
 			AutoLoginResult result = new AutoLoginResult();
 			result.setUser(ok);
 			return result;
 		}
-		
+
 		return null;
 	}
 
-
-
-
-	
 }

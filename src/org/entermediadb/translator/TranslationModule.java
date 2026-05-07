@@ -87,8 +87,10 @@ public class TranslationModule extends BaseMediaModule
 
 		MediaArchive archive = getMediaArchive(inReq);
 
-		// TranslationManager manager = (TranslationManager) archive.getBean("translationManager");
-		// Map<String, String> translations = manager.translatePlainText(sourceLang , targetLangs ,
+		// TranslationManager manager = (TranslationManager)
+		// archive.getBean("translationManager");
+		// Map<String, String> translations = manager.translatePlainText(sourceLang ,
+		// targetLangs ,
 		// text);
 
 		AgentContext context = new AgentContext();

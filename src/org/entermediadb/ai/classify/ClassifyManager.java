@@ -33,7 +33,8 @@ public class ClassifyManager extends BaseAiManager
 		return getMediaArchive().getLlmConnection("classifyEntity");
 	}
 
-	// public void processInformaticsOnAssets(ScriptLogger inContext, MultiValued inConfig,
+	// public void processInformaticsOnAssets(ScriptLogger inContext, MultiValued
+	// inConfig,
 	// Collection<MultiValued> assets)
 	public void processAssets(InformaticsContext inContext)
 	{
@@ -62,7 +63,8 @@ public class ClassifyManager extends BaseAiManager
 			{
 				long startTime = System.currentTimeMillis();
 
-				// inContext.info(inConfig.get("bean") + " - Analyzing asset ("+count+"/"+assets.size()+")" +
+				// inContext.info(inConfig.get("bean") + " - Analyzing asset
+				// ("+count+"/"+assets.size()+")" +
 				// asset.getName());
 				count++;
 

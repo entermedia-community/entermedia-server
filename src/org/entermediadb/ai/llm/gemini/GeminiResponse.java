@@ -7,14 +7,18 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 
-public class GeminiResponse extends BasicLlmResponse {
+public class GeminiResponse extends BasicLlmResponse
+{
 
     @Override
-    public boolean isToolCall() {
-        if (rawResponse == null) return false;
+    public boolean isToolCall()
+    {
+        if (rawResponse == null)
+            return false;
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
-        if (choices == null || choices.isEmpty()) return false;
+        if (choices == null || choices.isEmpty())
+            return false;
 
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
@@ -23,8 +27,10 @@ public class GeminiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public JSONObject getMessageStructured() {
-        if (!isToolCall()) return null;
+    public JSONObject getMessageStructured()
+    {
+        if (!isToolCall())
+            return null;
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
         JSONObject choice = (JSONObject) choices.get(0);
@@ -37,11 +43,14 @@ public class GeminiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public String getMessage() {
-        if (rawResponse == null) return null;
+    public String getMessage()
+    {
+        if (rawResponse == null)
+            return null;
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
-        if (choices == null || choices.isEmpty()) return null;
+        if (choices == null || choices.isEmpty())
+            return null;
 
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
@@ -50,8 +59,10 @@ public class GeminiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public String getFunctionName() {
-        if (!isToolCall()) return null;
+    public String getFunctionName()
+    {
+        if (!isToolCall())
+            return null;
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
         JSONObject choice = (JSONObject) choices.get(0);
@@ -62,81 +73,102 @@ public class GeminiResponse extends BasicLlmResponse {
     }
 
     @Override
-    public boolean isSuccessful() {
-        if (rawResponse == null) return false;
+    public boolean isSuccessful()
+    {
+        if (rawResponse == null)
+            return false;
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
         return choices != null && !choices.isEmpty();
     }
 
     @Override
-    public int getTokensUsed() {
-        if (rawResponse == null) return 0;
+    public int getTokensUsed()
+    {
+        if (rawResponse == null)
+            return 0;
 
         JSONObject usage = (JSONObject) rawResponse.get("usage");
-        if (usage == null) return 0;
+        if (usage == null)
+            return 0;
 
         Object totalTokens = usage.get("total_tokens");
-        if (totalTokens instanceof Long) {
+        if (totalTokens instanceof Long)
+        {
             return ((Long) totalTokens).intValue();
-        } else if (totalTokens instanceof Integer) {
-            return (Integer) totalTokens;
         }
+        else
+            if (totalTokens instanceof Integer)
+            {
+                return (Integer) totalTokens;
+            }
         return 0;
     }
 
     @Override
-    public String getModel() {
-        if (rawResponse == null) return "unknown";
+    public String getModel()
+    {
+        if (rawResponse == null)
+            return "unknown";
         return (String) rawResponse.get("model");
     }
 
     @Override
-    public ArrayList<String> getImageUrls() {
-    	ArrayList<String> images = new ArrayList<String>();
-        if (rawResponse == null) {
-        	return images;
+    public ArrayList<String> getImageUrls()
+    {
+        ArrayList<String> images = new ArrayList<String>();
+        if (rawResponse == null)
+        {
+            return images;
         }
-        if (!rawResponse.containsKey("data")) {
-        	return images;
+        if (!rawResponse.containsKey("data"))
+        {
+            return images;
         }
 
         JSONArray dataArray = (JSONArray) rawResponse.get("data");
-        if (dataArray == null || dataArray.isEmpty()) {
-        	return images;
+        if (dataArray == null || dataArray.isEmpty())
+        {
+            return images;
         }
 
-        for (int i = 0; i < dataArray.size(); i++) {
+        for (int i = 0; i < dataArray.size(); i++)
+        {
             JSONObject imageObject = (JSONObject) dataArray.get(i);
             String url = (String) imageObject.get("url");
             images.add(url);
         }
         return images;
     }
-    
+
     @Override
-    public ArrayList<String> getImageBase64s() {
-    	ArrayList<String> images = new ArrayList<String>();
-        if (rawResponse == null) {
-        	return images;
-        }
-        
-        if (!rawResponse.containsKey("data")) {
-        	return images;
-        }
-        
-        JSONArray dataArray = (JSONArray) rawResponse.get("data");
-        
-        if (dataArray == null || dataArray.isEmpty()) {
-        	return images;
+    public ArrayList<String> getImageBase64s()
+    {
+        ArrayList<String> images = new ArrayList<String>();
+        if (rawResponse == null)
+        {
+            return images;
         }
 
-        for (int i = 0; i < dataArray.size(); i++) {
+        if (!rawResponse.containsKey("data"))
+        {
+            return images;
+        }
+
+        JSONArray dataArray = (JSONArray) rawResponse.get("data");
+
+        if (dataArray == null || dataArray.isEmpty())
+        {
+            return images;
+        }
+
+        for (int i = 0; i < dataArray.size(); i++)
+        {
             JSONObject imageObject = (JSONObject) dataArray.get(i);
             String url = (String) imageObject.get("b64_json");
             images.add(url);
         }
         return images;
     }
-    
+
 }

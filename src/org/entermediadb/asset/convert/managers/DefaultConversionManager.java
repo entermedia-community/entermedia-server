@@ -15,7 +15,7 @@ public class DefaultConversionManager extends BaseConversionManager
 
 	public ConvertResult transcode(ConvertInstructions inStructions)
 	{
-		//if output == jpg and no time offset - standard
+		// if output == jpg and no time offset - standard
 
 		String mime = getMediaArchive().getMimeTypeIcon(inStructions.getAsset().getFileFormat());
 		String thumbpath = inStructions.get("themeprefix") + "/images/mimetypes/" + mime + ".png";
@@ -27,9 +27,9 @@ public class DefaultConversionManager extends BaseConversionManager
 
 		String outputtarget = inStructions.getOutputFile().getName();
 		inStructions.setInputFile(page.getContentItem());
-		String outpath = inStructions.get("themeprefix") + "/images/mimetypes/" + mime +  outputtarget;
+		String outpath = inStructions.get("themeprefix") + "/images/mimetypes/" + mime + outputtarget;
 		Page out = getMediaArchive().getPageManager().getPage(outpath);
-				
+
 		if (!out.exists())
 		{
 			inStructions.setOutputFile(out.getContentItem());

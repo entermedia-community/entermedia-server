@@ -128,7 +128,8 @@ public abstract class BaseConversionManager implements ConversionManager
 		// exportName.contains("x"))
 		// {
 		// //see if there is a with and height?
-		// String size = exportName.substring(5,exportName.length() - outputextension.length() - 1
+		// String size = exportName.substring(5,exportName.length() -
+		// outputextension.length() - 1
 		// );
 		// int cutoff= size.indexOf("x");
 		// String width = size.substring(0,cutoff);
@@ -140,14 +141,17 @@ public abstract class BaseConversionManager implements ConversionManager
 		// if( exportName.startsWith("image") || exportName.startsWith("video") ||
 		// exportName.startsWith("document") || exportName.startsWith("audio") ) )
 		// {
-		// preset = getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(),
+		// preset =
+		// getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(),
 		// getRenderType(), exportName);
 		// }
 		//
 		//
-		// //First thing is first. We need to check out cache and make sure this file is not already
+		// //First thing is first. We need to check out cache and make sure this file is
+		// not already
 		// in existence
-		// ConvertInstructions instructions = createInstructions(inSourcePath, inSettings);
+		// ConvertInstructions instructions = createInstructions(inSourcePath,
+		// inSettings);
 		//
 		//
 		//
@@ -160,7 +164,8 @@ public abstract class BaseConversionManager implements ConversionManager
 	@Override
 	public ConvertResult createOutputIfNeeded(Asset inAsset, String inSourcePath, String inExportName, Map inSettings)
 	{
-		// First thing is first. We need to check out cache and make sure this file is not already
+		// First thing is first. We need to check out cache and make sure this file is
+		// not already
 		// in existence
 		ConvertInstructions instructions = createInstructions(inAsset, inSourcePath, inExportName, inSettings);
 		if (instructions.isStreaming() || instructions.getOutputFile().getLength() < 2)
@@ -307,7 +312,8 @@ public abstract class BaseConversionManager implements ConversionManager
 		}
 		if (input == null || !input.exists())
 		{
-			// throw new OpenEditException("Input is " + input + " input loaders failed to load");
+			// throw new OpenEditException("Input is " + input + " input loaders failed to
+			// load");
 			ConvertResult result = new ConvertResult();
 			result.setInstructions(inStructions);
 			result.setError("Input is " + input + " input loaders failed to load");

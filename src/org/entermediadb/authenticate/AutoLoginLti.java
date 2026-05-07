@@ -96,7 +96,8 @@ public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider
 		// HMAC-SHA1
 		String encoded = encode(base.toString());
 		// String encoded = base.toString();
-		String basestring = "POST&" + encode(inUrl) + "&" + encoded; // Double encoded $parts = OAuthUtil::urlencode_rfc3986($parts);
+		String basestring = "POST&" + encode(inUrl) + "&" + encoded; // Double encoded $parts =
+																		// OAuthUtil::urlencode_rfc3986($parts);
 
 		String sha1 = getStringEncryption().calculateRFC2104HMAC(inPrivateKey, basestring);
 		// if(log.isDebugEnabled())

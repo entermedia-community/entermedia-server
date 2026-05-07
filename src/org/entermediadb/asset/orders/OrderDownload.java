@@ -17,6 +17,7 @@ public class OrderDownload
 	{
 		return fieldOrder;
 	}
+
 	public void setOrder(Order inOrder)
 	{
 		fieldOrder = inOrder;
@@ -24,53 +25,58 @@ public class OrderDownload
 
 	public MultiValued getCurrentItem()
 	{
-		if( fieldCurrentItem == null)
+		if (fieldCurrentItem == null)
 		{
-			fieldCurrentItem = (MultiValued)getItemList().first();
+			fieldCurrentItem = (MultiValued) getItemList().first();
 		}
 		return fieldCurrentItem;
 	}
+
 	public void setCurrentItem(MultiValued inCurrentItem)
 	{
 		fieldCurrentItem = inCurrentItem;
 	}
+
 	protected Order fieldOrder;
 	protected HitTracker fieldItemList;
+
 	public HitTracker getItemList()
 	{
 		return fieldItemList;
 	}
-	
+
 	public Collection<Data> getPendingItemList()
 	{
 		Collection<Data> pending = new ArrayList();
-		for (Iterator iterator = getItemList().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = getItemList().iterator(); iterator.hasNext();)
+		{
 			Data item = (Data) iterator.next();
 			String publishstatus = item.get("publishstatus");
-			if( "readytopublish".equals(publishstatus))
+			if ("readytopublish".equals(publishstatus))
 			{
 				pending.add(item);
 			}
 		}
-		
+
 		return pending;
 	}
-	
-	
+
 	public int getItemCount()
 	{
 		return getItemList().size();
 	}
+
 	public void setItemList(HitTracker inItemList)
 	{
 		fieldItemList = inItemList;
 	}
+
 	protected MultiValued fieldCurrentItem;
-	
+
 	public long totalBytes()
 	{
 		long downloaditemtotalfilesize = 0;
-		//TODO: replace with agregation of downloaditemtotalfilesize
+		// TODO: replace with agregation of downloaditemtotalfilesize
 		for (Iterator iterator = getItemList().iterator(); iterator.hasNext();)
 		{
 			MultiValued item = (MultiValued) iterator.next();
@@ -82,7 +88,7 @@ public class OrderDownload
 	public long totalBytesDownloaded()
 	{
 		long downloaditemdownloadedfilesize = 0;
-		//TODO: replace with agregation of downloaditemdownloadedfilesize
+		// TODO: replace with agregation of downloaditemdownloadedfilesize
 		for (Iterator iterator = getItemList().iterator(); iterator.hasNext();)
 		{
 			MultiValued item = (MultiValued) iterator.next();
@@ -93,49 +99,47 @@ public class OrderDownload
 
 	public double percentageRemaining()
 	{
-		double per = MathUtils.divide(totalBytesDownloaded(),totalBytes());
+		double per = MathUtils.divide(totalBytesDownloaded(), totalBytes());
 		return per;
 	}
 
 	public Date getEstimatedEndDate()
 	{
-		if( getCurrentItem() == null)
+		if (getCurrentItem() == null)
 		{
 			return null;
 		}
 		Date start = getCurrentItem().getDate("downloadstartdate");
-		if( start == null)
+		if (start == null)
 		{
 			return null;
 		}
 		Date now = new Date();
 		float difference = now.getTime() - start.getTime();
 		double percent = percentageRemaining();
-		if( percent == 0)
+		if (percent == 0)
 		{
 			return null;
 		}
 		/*
-		 
-		 Spent time         Downloaded size
-		 ----------     =    ---------------
-		 Total Time         Total Size 
-		 
-		 
-		 Total Time =  Spent time  /ratio		 
+		 * 
+		 * Spent time Downloaded size ---------- = --------------- Total Time Total Size
+		 * 
+		 * 
+		 * Total Time = Spent time /ratio
 		 */
-		
-		double totaltime = MathUtils.divide(difference , percent);
-		long remainingtime = MathUtils.roundUp( totaltime - difference);
-		
+
+		double totaltime = MathUtils.divide(difference, percent);
+		long remainingtime = MathUtils.roundUp(totaltime - difference);
+
 		Date future = new Date(now.getTime() + remainingtime);
 		return future;
 	}
-	
+
 	public Date getPublishedDate()
 	{
 		Date date = getCurrentItem().getDate("publisheddate");
-		if( date == null)
+		if (date == null)
 		{
 			return null;
 		}
@@ -144,17 +148,15 @@ public class OrderDownload
 
 	public boolean allReadyForDownload()
 	{
-		//TODO: replace with agregation of downloaditemtotalfilesize
+		// TODO: replace with agregation of downloaditemtotalfilesize
 		for (Iterator iterator = getItemList().iterator(); iterator.hasNext();)
 		{
 			MultiValued item = (MultiValued) iterator.next();
-			if(
-					"readytopublish".equals(item.get("publishstatus") ) ||
-					"complete".equals(item.get("publishstatus") )
-		
+			if ("readytopublish".equals(item.get("publishstatus")) || "complete".equals(item.get("publishstatus"))
+
 			)
 			{
-				//done
+				// done
 			}
 			else
 			{
@@ -164,5 +166,4 @@ public class OrderDownload
 		return true;
 	}
 
-	
 }

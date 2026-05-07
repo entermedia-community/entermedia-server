@@ -26,6 +26,7 @@ public class DataImportModule extends DataEditModule
 {
 	protected ScriptManager fieldScriptManager;
 	protected WorkspaceManager fieldWorkspaceManager;
+
 	public WorkspaceManager getWorkspaceManager()
 	{
 		return fieldWorkspaceManager;
@@ -93,6 +94,7 @@ public class DataImportModule extends DataEditModule
 			logger.stopCapture();
 		}
 	}
+
 	/**
 	 * @deprecated use @importDataWithScript
 	 * @param inReq
@@ -127,14 +129,14 @@ public class DataImportModule extends DataEditModule
 				String idCell = tabs[idcolumn];
 
 				// This means we have moved on to a new product
-				//natasha 18584
+				// natasha 18584
 				if (idCell != null)
 				{
 					if (question == null || !question.getId().equals(idCell))
 					{
 
 						Data target = (Data) searcher.searchById(idCell);
-						//Data target = null;
+						// Data target = null;
 						if (target == null)
 						{
 							for (Iterator iterator = data.iterator(); iterator.hasNext();)
@@ -179,34 +181,39 @@ public class DataImportModule extends DataEditModule
 		searcher.saveAllData(data, inReq.getUser());
 		searcher.reIndexAll();
 	}
+
 	/**
 	 * @deprecated use @importDataWithScript
 	 */
-	protected void addProperties(Searcher inSearcher, String[] inHeaders,
-			String[] inInTabs, Data inProduct) {
+	protected void addProperties(Searcher inSearcher, String[] inHeaders, String[] inInTabs, Data inProduct)
+	{
 
-		for (int i = 0; i < inHeaders.length; i++) {
+		for (int i = 0; i < inHeaders.length; i++)
+		{
 			String header = inHeaders[i];
-			
-			
-			PropertyDetail detail = inSearcher.getPropertyDetails().getDetail(
-					header);
-			
+
+			PropertyDetail detail = inSearcher.getPropertyDetails().getDetail(header);
+
 			String val = inInTabs[i].trim();
 			val = URLUtilities.xmlEscape(val);
-			if("sourcepath".equals(header)){
+			if ("sourcepath".equals(header))
+			{
 				inProduct.setSourcePath(val);
 			}
-			if (detail != null && val != null && val.length() > 0) {
-				
+			if (detail != null && val != null && val.length() > 0)
+			{
+
 				inProduct.setProperty(detail.getId(), val);
-			} else if(val != null && val.length() >0){
-				inProduct.setProperty(header, val);
 			}
+			else
+				if (val != null && val.length() > 0)
+				{
+					inProduct.setProperty(header, val);
+				}
 		}
 
 	}
-	
+
 	public void saveScript(WebPageRequest inReq) throws Exception
 	{
 		String dataroot = inReq.findValue("dataroot");
@@ -217,6 +224,7 @@ public class DataImportModule extends DataEditModule
 		getPageManager().saveContent(page, inReq.getUser(), code, "web edit");
 
 	}
+
 	public void deleteScript(WebPageRequest inReq) throws Exception
 	{
 		String dataroot = inReq.findValue("dataroot");
@@ -236,18 +244,19 @@ public class DataImportModule extends DataEditModule
 		String prefix = inReq.findValue("prefix");
 		String searchtype = getWorkspaceManager().createTable(catalogid, tablename, prefix);
 		inReq.setRequestParameter("searchtype", searchtype);
-	}	
+	}
+
 	public void deleteTable(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = inReq.findPathValue("catalogid");
 		String searchtype = inReq.getRequestParameter("searchtype");
-		Page xml = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + searchtype +".xml" );
+		Page xml = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml");
 		getPageManager().removePage(xml);
 
-		Page folder = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + searchtype +"/" );
+		Page folder = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + searchtype + "/");
 		getPageManager().removePage(folder);
 
-		Page list = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/lists/" + searchtype +".xml" );
+		Page list = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/lists/" + searchtype + ".xml");
 		getPageManager().removePage(list);
 
 	}

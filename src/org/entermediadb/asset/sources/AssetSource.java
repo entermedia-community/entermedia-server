@@ -31,8 +31,10 @@ public interface AssetSource
 	void setMediaArchive(MediaArchive inMediaArchive);
 
 	Asset addNewAsset(Asset inAsset, List<ContentItem> inTemppages);
-	//public Asset createAsset(final String currentcollection, final boolean createCategories, final Map metadata, final Map pages, final User user);
-	Asset createAsset(Asset inAsset, ContentItem inUploaded, Map inMetadata, String inSourcepath, boolean inCreateCategories, User inUser);	
+
+	// public Asset createAsset(final String currentcollection, final boolean
+	// createCategories, final Map metadata, final Map pages, final User user);
+	Asset createAsset(Asset inAsset, ContentItem inUploaded, Map inMetadata, String inSourcepath, boolean inCreateCategories, User inUser);
 
 	Asset replaceOriginal(Asset inAsset, List<ContentItem> inTemppages);
 

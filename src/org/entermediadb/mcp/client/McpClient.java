@@ -22,14 +22,17 @@ import org.openedit.util.HttpSharedConnection;
 import org.openedit.util.JSONParser;
 
 /**
- * Make a Java client that can call any compatible MCP REST Endpoints. This will be used by the MCP UI to get the list of tools and other information about the client.
+ * Make a Java client that can call any compatible MCP REST Endpoints. This will be used by the MCP
+ * UI to get the list of tools and other information about the client.
  */
 
 public class McpClient
 {
     protected static final long DEFAULT_RESPONSE_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(30);
     protected final Map<String, JSONObject> fieldRecentResponses = new HashMap<>();
-    protected final List<JSONObject> fieldRecentEvents = new ArrayList<>();  //Use a thread-safe list if you expect concurrent access, or synchronize access to this list.
+    protected final List<JSONObject> fieldRecentEvents = new ArrayList<>(); // Use a thread-safe list if you expect
+                                                                            // concurrent access, or synchronize access
+                                                                            // to this list.
     protected final AtomicLong fieldRequestCounter = new AtomicLong();
     protected String fieldServerUrl;
     protected String fieldApiKey;
@@ -89,12 +92,13 @@ public class McpClient
             getConnection().addSharedHeader("mcp-session-id", fieldSessionId);
         }
     }
-    
+
     public void startListeningInBackground()
     {
-       listener = new Thread("mcp-client-listener") {
-            public void run() {
-                   startListening();
+        listener = new Thread("mcp-client-listener") {
+            public void run()
+            {
+                startListening();
             }
         };
         listener.setDaemon(true);
@@ -103,10 +107,13 @@ public class McpClient
 
     public void startListening()
     {
-        //This is a simple client that just sends a request and waits for the response. It doesn't maintain a persistent connection like the server does.
-        //In a real implementation, you might want to use WebSockets or Server-Sent Events to maintain a live connection and receive asynchronous notifications from the server.
-        //getConnection().sharedGet(getServerUrl() ,);
-        //Loop over in a thread 
+        // This is a simple client that just sends a request and waits for the response.
+        // It doesn't maintain a persistent connection like the server does.
+        // In a real implementation, you might want to use WebSockets or Server-Sent
+        // Events to maintain a live connection and receive asynchronous notifications
+        // from the server.
+        // getConnection().sharedGet(getServerUrl() ,);
+        // Loop over in a thread
         CloseableHttpResponse response = getConnection().sharedGet(getServerUrl());
         try
         {
@@ -115,22 +122,27 @@ public class McpClient
                 throw new OpenEditException("Failed to connect to MCP server: " + response.getStatusLine());
             }
             InputStream input = response.getEntity().getContent();
-            // Read from the input stream and process events as they come in. This is a simplified example and doesn't handle all edge cases or the full SSE protocol.
-            // In a real implementation, you would want to handle reconnection logic, parse the SSE format properly, and manage the lifecycle of the connection more robustly.
+            // Read from the input stream and process events as they come in. This is a
+            // simplified example and doesn't handle all edge cases or the full SSE
+            // protocol.
+            // In a real implementation, you would want to handle reconnection logic, parse
+            // the SSE format properly, and manage the lifecycle of the connection more
+            // robustly.
             JsonRpcScanner scanner = new JsonRpcScanner(input, "UTF-8");
-                while (true)
-                {
-                    JSONObject event = scanner.nextEvent();
-                    eventReceived(event);
-                }
+            while (true)
+            {
+                JSONObject event = scanner.nextEvent();
+                eventReceived(event);
+            }
         }
-         catch (Exception e)
+        catch (Exception e)
         {
             throw new OpenEditException("Error while listening to MCP server", e);
         }
-        finally 
-        {     
-            getConnection().release(response); // Close the response to free resources. In a real implementation, you would keep the connection open and listen for events.  
+        finally
+        {
+            getConnection().release(response); // Close the response to free resources. In a real implementation, you
+                                               // would keep the connection open and listen for events.
 
         }
 
@@ -170,9 +182,9 @@ public class McpClient
         body.put("jsonrpc", "2.0");
         body.put("id", messageid);
         body.put("method", "initialize");
-        //body.put("params", new JSONObject(inParams));
+        // body.put("params", new JSONObject(inParams));
 
-        //Post to get the Header back
+        // Post to get the Header back
         CloseableHttpResponse response = getConnection().sharedPostWithJson(getServerUrl(), body);
         try
         {
@@ -314,11 +326,12 @@ public class McpClient
             return Collections.unmodifiableList(new ArrayList<>(fieldRecentEvents));
         }
     }
+
     Collection<AvailableTool> fieldAvailableTools = null;
 
-    public Collection<AvailableTool> getAvailableTools() 
+    public Collection<AvailableTool> getAvailableTools()
     {
-        if( fieldAvailableTools != null)
+        if (fieldAvailableTools != null)
         {
             return fieldAvailableTools;
         }
@@ -328,9 +341,11 @@ public class McpClient
         {
             JSONObject result = (JSONObject) response.get("result");
             JSONArray toolsArray = result != null ? (JSONArray) result.get("tools") : (JSONArray) response.get("tools");
-            if (toolsArray != null) {
+            if (toolsArray != null)
+            {
                 List<AvailableTool> tools = new ArrayList<>();
-                for (Object toolObj : toolsArray) {
+                for (Object toolObj : toolsArray)
+                {
                     JSONObject toolJson = (JSONObject) toolObj;
                     String name = (String) toolJson.get("name");
                     String description = (String) toolJson.get("description");
@@ -343,17 +358,18 @@ public class McpClient
         return Collections.emptyList();
     }
 
-     public void callAsyncTool(String operation, AgentContext inContext)
+    public void callAsyncTool(String operation, AgentContext inContext)
     {
-        //Send a call, no response
-         String callId = "async-" + fieldLastToolCallId++;
+        // Send a call, no response
+        String callId = "async-" + fieldLastToolCallId++;
         Map<String, Object> params = new HashMap<>();
         params.put("operation", operation);
         params.put("callId", callId);
-        //Add more params from context as needed            
+        // Add more params from context as needed
         sendRequest(operation, params);
 
     }
+
     int fieldLastToolCallId = 0;
 
     public JSONObject calltool(String operation, AgentContext inContext)
@@ -362,11 +378,11 @@ public class McpClient
         Map<String, Object> params = new HashMap<>();
         params.put("operation", operation);
         params.put("callId", callId);
-        //Add more params from context as needed            
-        McpRequest request =sendRequest(operation, params);
+        // Add more params from context as needed
+        McpRequest request = sendRequest(operation, params);
 
         JSONObject response = waitForResponse(request);
-        //Send a call, wait for response?
+        // Send a call, wait for response?
         return response;
     }
 }

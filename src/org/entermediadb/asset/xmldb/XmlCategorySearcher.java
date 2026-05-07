@@ -22,12 +22,12 @@ import org.openedit.users.User;
 public class XmlCategorySearcher extends BaseSearcher implements CategorySearcher
 {
 	protected CategoryArchive fieldCategoryArchive;
-	
+
 	public CategoryArchive getCategoryArchive()
 	{
-		if( fieldCategoryArchive == null)
+		if (fieldCategoryArchive == null)
 		{
-			fieldCategoryArchive = (CategoryArchive)getModuleManager().getBean(getCatalogId(),"categoryArchive");
+			fieldCategoryArchive = (CategoryArchive) getModuleManager().getBean(getCatalogId(), "categoryArchive");
 		}
 		return fieldCategoryArchive;
 	}
@@ -36,17 +36,19 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	{
 		fieldCategoryArchive = inCategoryArchive;
 	}
-	
+
 	@Override
 	public void reIndexAll() throws OpenEditException
 	{
 		getCategoryArchive().reloadCategories();
 	}
+
 	@Override
 	public Data createNewData()
 	{
 		return new BaseCategory();
 	}
+
 	@Override
 	public SearchQuery createSearchQuery()
 	{
@@ -57,53 +59,53 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	public HitTracker search(SearchQuery inQuery)
 	{
 		ListHitTracker hits = new ListHitTracker();
-		//load them all up?
+		// load them all up?
 		Term desc = inQuery.getTermByDetailId("description");
-		if( desc == null)
+		if (desc == null)
 		{
 			desc = inQuery.getTermByDetailId("id");
 		}
-		if( desc != null && "*".equals( desc.getValue() ) ) 
+		if (desc != null && "*".equals(desc.getValue()))
 		{
-			hits.setList( getCategoryArchive().listAllCategories() );
+			hits.setList(getCategoryArchive().listAllCategories());
 			return hits;
 		}
-		
+
 		Term id = inQuery.getTermByDetailId("id");
-		if( id != null)
+		if (id != null)
 		{
 			Category category = getCategoryArchive().getCategory(id.getValue());
-			if( category != null)
+			if (category != null)
 			{
 				hits.getList().add(category);
 			}
 		}
-		
+
 		Term name = inQuery.getTermByDetailId("name");
-		if( name != null)
+		if (name != null)
 		{
 			Category category = getCategoryArchive().getCategoryByName(name.getValue());
-			if( category != null)
+			if (category != null)
 			{
 				hits.getList().add(category);
 			}
 		}
-		
+
 		Term parentterm = inQuery.getTermByDetailId("parentid");
-		if( parentterm != null)
+		if (parentterm != null)
 		{
 			Category category = getCategoryArchive().getCategory(parentterm.getValue());
-			if( category != null)
+			if (category != null)
 			{
 				hits.getList().addAll(category.getChildren());
 			}
 		}
 
 		Term path = inQuery.getTermByTermId("path");
-		if( path != null)
+		if (path != null)
 		{
 			String paths = path.getValue();
-			if( paths != null)
+			if (paths != null)
 			{
 				String[] parents = paths.split("/");
 				Category hit = getCategoryArchive().getRootCategory();
@@ -111,32 +113,31 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 				for (; i < parents.length; i++)
 				{
 					hit = hit.getChildByName(parents[i]);
-					if( hit == null)
+					if (hit == null)
 					{
 						break;
 					}
 				}
-				if( i == parents.length && hit != null)
+				if (i == parents.length && hit != null)
 				{
 					hits.getList().add(hit);
 				}
 			}
 		}
 
-		
 		return hits;
 	}
 
 	@Override
 	public String getIndexId()
 	{
-		return String.valueOf( getCategoryArchive().getRootCategory().hashCode() );
+		return String.valueOf(getCategoryArchive().getRootCategory().hashCode());
 	}
 
 	@Override
 	public void clearIndex()
 	{
-		
+
 	}
 
 	@Override
@@ -157,48 +158,49 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	@Override
 	public void saveCategory(Category inCategory)
 	{
-		saveData(inCategory,null);
+		saveData(inCategory, null);
 
 	}
-	
+
 	@Override
 	public Category getCategory(String inCatalog)
 	{
 		Category category = getCategoryArchive().getCategory(inCatalog);
 		return category;
 	}
-	
+
 	@Override
 	public void saveData(Data inData, User inUser)
 	{
 		Collection<Data> list = new ArrayList<Data>(1);
 		list.add(inData);
-		saveAllData(list,inUser);
-	}	
+		saveAllData(list, inUser);
+	}
+
 	@Override
 	public void saveAllData(Collection<Data> inAll, User inUser)
 	{
-		//TODO: Remove all this. Categories are hard to maintain 
+		// TODO: Remove all this. Categories are hard to maintain
 		for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
 		{
 			Category cat = (Category) iterator.next();
-			//this might be a temporary copy of a category
-			if( cat.getParentCategory() == null)
+			// this might be a temporary copy of a category
+			if (cat.getParentCategory() == null)
 			{
 				Category existingcat = getCategoryArchive().getCategory(cat.getId());
-				if( existingcat != null )
+				if (existingcat != null)
 				{
 					existingcat.getProperties().putAll(cat.getProperties());
 					cat = existingcat;
 				}
 				else
 				{
-					//new one
+					// new one
 					String parentid = cat.get("parentid");
-					if( parentid != null)
+					if (parentid != null)
 					{
 						Category parent = getCategoryArchive().getCategory(parentid);
-						if( parent != null)
+						if (parent != null)
 						{
 							cat.setParentCategory(parent);
 							parent.addChild(cat);
@@ -215,12 +217,12 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	{
 		return getCategoryArchive().getRootCategory();
 	}
-//	@Override
-//	public void setCatalogId(String inCatalogId)
-//	{
-//		getCategoryArchive().setCatalogId(inCatalogId);
-//		super.setCatalogId(inCatalogId);
-//	}
+	// @Override
+	// public void setCatalogId(String inCatalogId)
+	// {
+	// getCategoryArchive().setCatalogId(inCatalogId);
+	// super.setCatalogId(inCatalogId);
+	// }
 
 	@Override
 	public Category createCategoryPath(String inPath)
@@ -230,17 +232,16 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	}
 
 	@Override
-	public void deleteCategoryTree(Category root){
+	public void deleteCategoryTree(Category root)
+	{
 		for (Iterator iterator = root.getChildren().iterator(); iterator.hasNext();)
 		{
 			Category child = (Category) iterator.next();
 			deleteCategoryTree(child);
-			
+
 		}
 		delete(root, null);
-		
-		
-		
+
 	}
 
 	@Override
@@ -253,29 +254,35 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	public void clearCategories()
 	{
 		getCategoryArchive().clearCategories();
-		
+
 	}
-	
-	public Set buildCategorySet(Category inCategory) {
+
+	public Set buildCategorySet(Category inCategory)
+	{
 		List categories = new ArrayList();
 		categories.add(inCategory);
-		
+
 		return buildCategorySet(categories);
 	}
-	public Set buildCategorySet(List inCategories) {
+
+	public Set buildCategorySet(List inCategories)
+	{
 		HashSet allCatalogs = new HashSet();
 		// allCatalogs.addAll(catalogs);
-		for (Iterator iter = inCategories.iterator(); iter.hasNext();) {
+		for (Iterator iter = inCategories.iterator(); iter.hasNext();)
+		{
 			Category catalog = (Category) iter.next();
 			buildCategorySet(catalog, allCatalogs);
 		}
 		return allCatalogs;
 	}
 
-	protected void buildCategorySet(Category inCatalog, Set inCatalogSet) {
+	protected void buildCategorySet(Category inCatalog, Set inCatalogSet)
+	{
 		inCatalogSet.add(inCatalog);
 		Category parent = inCatalog.getParentCategory();
-		if (parent != null) {
+		if (parent != null)
+		{
 			buildCategorySet(parent, inCatalogSet);
 		}
 	}
@@ -286,31 +293,32 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
+
 	public List listAllCategories(Category inTopCategory)
 	{
 		List all = new ArrayList(300);
-		addChildren(inTopCategory,all);
+		addChildren(inTopCategory, all);
 		return all;
 	}
-	
-	protected void addChildren(Category parent,List all)
+
+	protected void addChildren(Category parent, List all)
 	{
 		all.add(parent);
-		if( parent.hasChildren())
+		if (parent.hasChildren())
 		{
-			for (Iterator iterator = parent.getChildren().iterator(); iterator.hasNext();) {
-				Category category = (Category ) iterator.next();
-				addChildren(category,all);
+			for (Iterator iterator = parent.getChildren().iterator(); iterator.hasNext();)
+			{
+				Category category = (Category) iterator.next();
+				addChildren(category, all);
 			}
 		}
 	}
 
 	@Override
-	public void saveCategoryTree(Category inRootCategory) {
+	public void saveCategoryTree(Category inRootCategory)
+	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -319,5 +327,5 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 }

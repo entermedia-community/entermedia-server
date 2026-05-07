@@ -10,13 +10,16 @@ import java.util.Objects;
  * <p>
  * <em>This interface is not intended to be implemented by clients.</em>
  */
-public interface ParsedInline {
+public interface ParsedInline
+{
 
-    static ParsedInline none() {
+    static ParsedInline none()
+    {
         return null;
     }
 
-    static ParsedInline of(Node node, Position position) {
+    static ParsedInline of(Node node, Position position)
+    {
         Objects.requireNonNull(node, "node must not be null");
         Objects.requireNonNull(position, "position must not be null");
         return new ParsedInlineImpl(node, position);

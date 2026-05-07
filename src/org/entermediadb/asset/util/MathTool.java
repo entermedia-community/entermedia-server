@@ -5,6 +5,6 @@ public class MathTool
 	public int toInteger(double inVal)
 	{
 		long val = Math.round(inVal);
-		return (int)val;
+		return (int) val;
 	}
 }

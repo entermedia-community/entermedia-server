@@ -12,25 +12,29 @@ import org.openedit.modules.BaseModule;
 import org.openedit.repository.Repository;
 import org.openedit.repository.filesystem.FileRepository;
 
-public class MountModule extends BaseModule {
+public class MountModule extends BaseModule
+{
 	protected WebServer fieldWebServer;
 
-	public List loadMounts(WebPageRequest inReq) {
-		List configs = getPageManager().getRepositoryManager()
-				.getRepositories();
+	public List loadMounts(WebPageRequest inReq)
+	{
+		List configs = getPageManager().getRepositoryManager().getRepositories();
 		inReq.putPageValue("mounts", configs);
 		return configs;
 	}
 
-	public Repository loadDefaultMountForPath(WebPageRequest inReq) {
+	public Repository loadDefaultMountForPath(WebPageRequest inReq)
+	{
 		String path = inReq.getRequestParameter("path");
 
-		List configs = getPageManager().getRepositoryManager()
-				.getRepositories();
-		for (Iterator iterator = configs.iterator(); iterator.hasNext();) {
+		List configs = getPageManager().getRepositoryManager().getRepositories();
+		for (Iterator iterator = configs.iterator(); iterator.hasNext();)
+		{
 			Repository config = (Repository) iterator.next();
-			if (config.getPath().equals(path)) {
-				if (config.getFilterOut() == null) {
+			if (config.getPath().equals(path))
+			{
+				if (config.getFilterOut() == null)
+				{
 					inReq.putPageValue("mount", config);
 					return config;
 				}
@@ -39,16 +43,18 @@ public class MountModule extends BaseModule {
 		return null;
 	}
 
-	public List loadMountsForPath(WebPageRequest inReq) {
+	public List loadMountsForPath(WebPageRequest inReq)
+	{
 		String path = inReq.getRequestParameter("path");
 
-		List configs = getPageManager().getRepositoryManager()
-				.getRepositories();
+		List configs = getPageManager().getRepositoryManager().getRepositories();
 		List matching = new ArrayList();
 
-		for (Iterator iterator = configs.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = configs.iterator(); iterator.hasNext();)
+		{
 			Repository config = (Repository) iterator.next();
-			if (config.getPath().equals(path)) {
+			if (config.getPath().equals(path))
+			{
 				matching.add(config);
 			}
 		}
@@ -57,12 +63,15 @@ public class MountModule extends BaseModule {
 		return matching;
 	}
 
-	public Repository loadMount(WebPageRequest inReq) {
+	public Repository loadMount(WebPageRequest inReq)
+	{
 		String matches = inReq.findValue("mountid");
 		List configs = loadMounts(inReq);
-		for (Iterator iterator = configs.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = configs.iterator(); iterator.hasNext();)
+		{
 			Repository config = (Repository) iterator.next();
-			if (config.getPath().equals(matches)) {
+			if (config.getPath().equals(matches))
+			{
 				inReq.putPageValue("mount", config);
 				return config;
 			}
@@ -70,13 +79,16 @@ public class MountModule extends BaseModule {
 		return null;
 	}
 
-	public void removeMount(WebPageRequest inReq) {
+	public void removeMount(WebPageRequest inReq)
+	{
 		List mounts = loadMounts(inReq);
 		// Save all the mounts but some of them might not load on startup?
 		Repository existing = loadMount(inReq);
-		for (Iterator iterator = mounts.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = mounts.iterator(); iterator.hasNext();)
+		{
 			Repository config = (Repository) iterator.next();
-			if (config.equals(existing)) {
+			if (config.equals(existing))
+			{
 				mounts.remove(config);
 				break;
 			}
@@ -84,33 +96,48 @@ public class MountModule extends BaseModule {
 		saveMounts(mounts);
 	}
 
-	public void saveMount(WebPageRequest inReq) {
+	public void saveMount(WebPageRequest inReq)
+	{
 		List mounts = loadMounts(inReq);
 		// Save all the mounts but some of them might not load on startup?
 		// update data and save all
 		String path = inReq.getRequestParameter("path");
-		if (path == null) {
+		if (path == null)
+		{
 			path = "/";
 		}
-		if (path.length() > 1 && path.endsWith("/")) {
+		if (path.length() > 1 && path.endsWith("/"))
+		{
 			path = path.substring(0, path.length() - 1);
 		}
 
 		Repository repo = loadMount(inReq);
 		String repotype = inReq.getRequestParameter("repositorytype");
-		if (repo == null) {
+		if (repo == null)
+		{
 			if (repotype == null || repotype.trim().equals("")) // file
 			{
 				repo = new FileRepository();
-			} else if ("versionRepository".equals(repotype)) {
-				repo = new FileRepository();
-			} else if ("urlRepository".equals(repotype)) {
-				repo = new UrlRepository();
-			} else if ("sftpRepository".equals(repotype)) {
-				repo = new UrlRepository();
-			} else {
-				throw new OpenEditRuntimeException("Invalid repository type.");
 			}
+			else
+				if ("versionRepository".equals(repotype))
+				{
+					repo = new FileRepository();
+				}
+				else
+					if ("urlRepository".equals(repotype))
+					{
+						repo = new UrlRepository();
+					}
+					else
+						if ("sftpRepository".equals(repotype))
+						{
+							repo = new UrlRepository();
+						}
+						else
+						{
+							throw new OpenEditRuntimeException("Invalid repository type.");
+						}
 			mounts.add(repo);
 		}
 
@@ -118,11 +145,14 @@ public class MountModule extends BaseModule {
 		repo.setExternalPath(inReq.getRequestParameter("externalpath"));
 
 		String[] fields = inReq.getRequestParameters("field");
-		if (fields != null) {
-			for (int i = 0; i < fields.length; i++) {
+		if (fields != null)
+		{
+			for (int i = 0; i < fields.length; i++)
+			{
 				String field = fields[i];
 				String value = inReq.getRequestParameter(field + ".value");
-				if (value != null) {
+				if (value != null)
+				{
 					repo.setProperty(field, value);
 
 				}
@@ -137,19 +167,23 @@ public class MountModule extends BaseModule {
 		saveMounts(mounts);
 	}
 
-	protected void saveMounts(List mounts) {
+	protected void saveMounts(List mounts)
+	{
 		getWebServer().saveMounts(mounts);
 	}
 
-	public void reloadMounts(WebPageRequest inReq) {
+	public void reloadMounts(WebPageRequest inReq)
+	{
 		getWebServer().reloadMounts();
 	}
 
-	public WebServer getWebServer() {
+	public WebServer getWebServer()
+	{
 		return fieldWebServer;
 	}
 
-	public void setWebServer(WebServer inWebServer) {
+	public void setWebServer(WebServer inWebServer)
+	{
 		fieldWebServer = inWebServer;
 	}
 }

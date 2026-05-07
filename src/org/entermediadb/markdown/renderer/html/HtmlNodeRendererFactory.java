@@ -5,7 +5,8 @@ import org.entermediadb.markdown.renderer.NodeRenderer;
 /**
  * Factory for instantiating new node renderers when rendering is done.
  */
-public interface HtmlNodeRendererFactory {
+public interface HtmlNodeRendererFactory
+{
 
     /**
      * Create a new node renderer for the specified rendering context.

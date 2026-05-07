@@ -21,11 +21,12 @@ public class PresetOption
 	{
 		fieldDowloadPaths = inDowloadPaths;
 	}
+
 	public void addDownloadPath(String inPath)
 	{
 		getDowloadPaths().add(inPath);
 	}
-	
+
 	public void addDownloadPath(String inDownloadPath, String inSavePath, Data inAsset)
 	{
 		Map<String, Object> object = new HashMap<String, Object>();
@@ -34,9 +35,9 @@ public class PresetOption
 		object.put("savetopath", inSavePath);
 		getDowloadPaths().add(object);
 	}
-	
-	
-	protected Data fieldPreset; //render type
+
+	protected Data fieldPreset; // render type
+
 	public Data getPreset()
 	{
 		return fieldPreset;
@@ -46,6 +47,7 @@ public class PresetOption
 	{
 		fieldPreset = inPreset;
 	}
+
 	public Collection getOrderItems()
 	{
 		return fieldOrderItems;
@@ -55,6 +57,7 @@ public class PresetOption
 	{
 		fieldOrderItems = inItems;
 	}
+
 	public void addOrderItem(Data inItem)
 	{
 		getOrderItems().add(inItem);

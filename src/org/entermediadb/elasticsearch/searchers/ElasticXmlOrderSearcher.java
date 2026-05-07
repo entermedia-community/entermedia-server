@@ -7,10 +7,9 @@ import org.openedit.users.User;
 
 public class ElasticXmlOrderSearcher extends ElasticXmlFileSearcher
 {
-	
+
 	protected OrderManager fieldOrderManager;
-	
-	
+
 	public OrderManager getOrderManager()
 	{
 		return fieldOrderManager;
@@ -21,18 +20,18 @@ public class ElasticXmlOrderSearcher extends ElasticXmlFileSearcher
 		fieldOrderManager = inOrderManager;
 	}
 
-//	protected void updateIndex(Data inData, Document doc, PropertyDetails inDetails) 
-//	{
-//		getOrderManager().loadOrderHistory(getCatalogId(),(Order)inData);
-//		super.updateIndex(inData, doc, getPropertyDetails());
-//	}
-	
-	
+	// protected void updateIndex(Data inData, Document doc, PropertyDetails
+	// inDetails)
+	// {
+	// getOrderManager().loadOrderHistory(getCatalogId(),(Order)inData);
+	// super.updateIndex(inData, doc, getPropertyDetails());
+	// }
+
 	@Override
 	protected void saveToElasticSearch(PropertyDetails inDetails, Data inData, boolean delete, User inUser)
 	{
-		//getOrderManager().loadOrderHistory(getCatalogId(),(Order)inData);
+		// getOrderManager().loadOrderHistory(getCatalogId(),(Order)inData);
 		super.saveToElasticSearch(inDetails, inData, delete, inUser);
 	}
-	
+
 }

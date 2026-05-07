@@ -286,7 +286,8 @@ public class Inflector
         if (uppercaseFirstLetter)
         {
             String result = lowerCaseAndUnderscoredWord;
-            // Replace any extra delimiters with underscores (before the underscores are converted in the next
+            // Replace any extra delimiters with underscores (before the underscores are
+            // converted in the next
             // step)...
             if (delimiterChars != null)
             {

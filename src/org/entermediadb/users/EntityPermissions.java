@@ -21,34 +21,39 @@ public class EntityPermissions extends Permissions
 	{
 		fieldEntityManager = inEntityManager;
 	}
-	
-//	@Override
-//	protected boolean isEditorFor(Data inModule, Data inEntity)
-//	{
-//		Category entiytycategory = getEntityManager().loadDefaultFolder(inModule, inEntity, null);
-//		if( entiytycategory == null )
-//		{
-//			return false;
-//		}
-//		Collection<String> editorusers = entiytycategory.collectValues("editorusers");
-//		if( editorusers.contains( getUserProfile().getId() ) )
-//		{
-//			return true;
-//		}
-//		
-//		Collection<String> editorroles = entiytycategory.collectValues("editorroles");
-//		if( editorroles.contains( getUserProfile().getSettingsGroupIndexId() ) )
-//		{
-//			return true;
-//		}
-//
-//		Collection<String> editorgroups = entiytycategory.collectValues("editorgroups");
-//		if( editorgroups.contains( getUserProfile().getUser().isInGroup(editorgroups) ) )
-//		{
-//			return true;
-//		}
-//		
-//		return false;
-//		
-//	}
+
+	// @Override
+	// protected boolean isEditorFor(Data inModule, Data inEntity)
+	// {
+	// Category entiytycategory = getEntityManager().loadDefaultFolder(inModule,
+	// inEntity, null);
+	// if( entiytycategory == null )
+	// {
+	// return false;
+	// }
+	// Collection<String> editorusers =
+	// entiytycategory.collectValues("editorusers");
+	// if( editorusers.contains( getUserProfile().getId() ) )
+	// {
+	// return true;
+	// }
+	//
+	// Collection<String> editorroles =
+	// entiytycategory.collectValues("editorroles");
+	// if( editorroles.contains( getUserProfile().getSettingsGroupIndexId() ) )
+	// {
+	// return true;
+	// }
+	//
+	// Collection<String> editorgroups =
+	// entiytycategory.collectValues("editorgroups");
+	// if( editorgroups.contains( getUserProfile().getUser().isInGroup(editorgroups)
+	// ) )
+	// {
+	// return true;
+	// }
+	//
+	// return false;
+	//
+	// }
 }

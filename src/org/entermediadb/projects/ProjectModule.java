@@ -502,7 +502,8 @@ public class ProjectModule extends BaseMediaModule
 		if (collectionid != null)
 		{
 
-			inReq.setRequestParameter("collectionid", collectionid); // This was breaking redirects. Not sure it's needed?
+			inReq.setRequestParameter("collectionid", collectionid); // This was breaking redirects. Not sure it's
+																		// needed?
 
 		}
 		return collectionid;
@@ -540,8 +541,10 @@ public class ProjectModule extends BaseMediaModule
 		librarysearcher.updateData(inReq, inReq.getRequestParameters("field"), saved);
 		saved.setValue("creationdate", new Date());
 		saved.setValue("owner", inReq.getUserName());
-		// saved.setValue("library", inReq.getRequestParameter("library.value")); //optional
-		// Data userlibrary = manager.loadUserLibrary(mediaArchive, inReq.getUserProfile());
+		// saved.setValue("library", inReq.getRequestParameter("library.value"));
+		// //optional
+		// Data userlibrary = manager.loadUserLibrary(mediaArchive,
+		// inReq.getUserProfile());
 
 		librarysearcher.saveData(saved, null); // this fires event ProjectManager.configureCollection
 
@@ -714,11 +717,13 @@ public class ProjectModule extends BaseMediaModule
 	// MediaArchive archive = getMediaArchive(inReq);
 	// ProjectManager manager = getProjectManager(inReq);
 	// String collectionid = loadCollectionId(inReq);
-	// LibraryCollection collection = (LibraryCollection) archive.getData("librarycollection",
+	// LibraryCollection collection = (LibraryCollection)
+	// archive.getData("librarycollection",
 	// collectionid);
 	//
 	// User user = inReq.getUser();
-	// String outfolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/" + user.getId()
+	// String outfolder = "/WEB-INF/data/" + archive.getCatalogId() +
+	// "/workingfolders/" + user.getId()
 	// + "/"
 	// + collection.getName() + "/";
 	//
@@ -735,7 +740,8 @@ public class ProjectModule extends BaseMediaModule
 	// if (note == null) {
 	// note = "Auto Created Revision on Import";
 	// }
-	// manager.importCollection(inReq, inReq.getUser(), archive, collectionid, latest, note);
+	// manager.importCollection(inReq, inReq.getUser(), archive, collectionid,
+	// latest, note);
 	// inReq.putPageValue("importstatus", "completed");
 	//
 	// }
@@ -1021,8 +1027,10 @@ public class ProjectModule extends BaseMediaModule
 	// String savepath = inReq.getRequestParameter("savepath");
 	// FileUploadItem item = properties.getFirstItem();
 	//
-	// //String savepath = "/WEB-INF/data/" + catalogid +"/origin//als/" + sourcepath;
-	// ContentItem contentitem = properties.saveFileAs(item, savepath, inReq.getUser());
+	// //String savepath = "/WEB-INF/data/" + catalogid +"/origin//als/" +
+	// sourcepath;
+	// ContentItem contentitem = properties.saveFileAs(item, savepath,
+	// inReq.getUser());
 	//
 	// }
 
@@ -1072,7 +1080,8 @@ public class ProjectModule extends BaseMediaModule
 			asset.setSourcePath(sourcepath);
 		}
 		asset.setProperty("importstatus", "needsmetadata");
-		asset.setValue("assetmodificationdate", contentitem.lastModified()); // This needs to be set or it will keep thinking it's changed
+		asset.setValue("assetmodificationdate", contentitem.lastModified()); // This needs to be set or it will keep
+																				// thinking it's changed
 		asset.setProperty("editstatus", "1"); // pending
 
 		// Category use ID?
@@ -1127,7 +1136,8 @@ public class ProjectModule extends BaseMediaModule
 			// LibraryCollection librarycol = loadCollection(inPageRequest);
 
 			QueryBuilder q = archive.getAssetSearcher().query().enduser(true);
-			// if( Boolean.parseBoolean( inPageRequest.getRequestParameter("showchildassets") ) )
+			// if( Boolean.parseBoolean(
+			// inPageRequest.getRequestParameter("showchildassets") ) )
 			// {
 			q.exact("category", category.getId());
 			// }
@@ -1135,7 +1145,8 @@ public class ProjectModule extends BaseMediaModule
 			// {
 			// q.exact("category-exact",category.getId());
 			// }
-			// Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
+			// Boolean caneditdata = (Boolean)
+			// inPageRequest.getPageValue("caneditcollection");
 			//
 			// if (!caneditdata)
 			// {
@@ -1688,10 +1699,12 @@ public class ProjectModule extends BaseMediaModule
 				exists = (Data) mediaArchive.getSearcher("collectivelinkreferralcode").createNewData();
 				exists.setId(referralcode);
 				exists.setName("Auto Created");
-				exists.setValue("collectionid", referralcode); // Assume this is a project could be OI from community area tho
+				exists.setValue("collectionid", referralcode); // Assume this is a project could be OI from community
+																// area tho
 				mediaArchive.saveData("collectivelinkreferralcode", exists);
 
-				// Data collection = (Data) mediaArchive.getCachedData("librarycollection", referralcode);
+				// Data collection = (Data) mediaArchive.getCachedData("librarycollection",
+				// referralcode);
 				// if (collection == null)
 				// {
 				// Searcher searcher = mediaArchive.getSearcher("librarycollection");

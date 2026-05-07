@@ -15,8 +15,8 @@ import org.openedit.data.Searcher;
 public class RenderValues
 {
 	protected MediaArchive fieldMediaArchive;
-	
-	 public MultiValued getData()
+
+	public MultiValued getData()
 	{
 		return inData;
 	}
@@ -46,10 +46,10 @@ public class RenderValues
 		includeasset = inIncludeasset;
 	}
 
-	 MultiValued inData;
-	 Collection<PropertyDetail> inFields;
-	 boolean includeasset; 
-	
+	MultiValued inData;
+	Collection<PropertyDetail> inFields;
+	boolean includeasset;
+
 	public MediaArchive getMediaArchive()
 	{
 		return fieldMediaArchive;
@@ -59,57 +59,58 @@ public class RenderValues
 	{
 		fieldMediaArchive = inMediaArchive;
 	}
+
 	public String renderAll()
 	{
 		String render = render(true);
 		return render;
 	}
-	
+
 	public String render(boolean includeasset)
 	{
 		StringBuilder output = new StringBuilder();
 		for (Iterator iterator = getInFields().iterator(); iterator.hasNext();)
 		{
 			PropertyDetail field = (PropertyDetail) iterator.next();
-			
-			if( field.isDate() || !getData().hasValue(field.getId()))
+
+			if (field.isDate() || !getData().hasValue(field.getId()))
 			{
 				continue;
 			}
 			output.append(field.getName());
 			output.append(": ");
 			renderField(field, getData(), output);
-			if( iterator.hasNext() )
+			if (iterator.hasNext())
 			{
 				output.append(",");
 			}
 			output.append("\n");
 		}
-		if( includeasset && !(getData() instanceof Asset) )
+		if (includeasset && !(getData() instanceof Asset))
 		{
 			String assetid = inData.get("primarymedia");
-			if( assetid == null)
+			if (assetid == null)
 			{
 				assetid = inData.get("primaryimage");
 			}
-			
+
 			Asset primaryasset = getMediaArchive().getAsset(assetid);
 			if (primaryasset != null)
 			{
-				List<String> fields = Arrays.asList("longcaption", "keywordsai", "semantictopics","headline");
+				List<String> fields = Arrays.asList("longcaption", "keywordsai", "semantictopics", "headline");
 				Searcher assetsearcher = getMediaArchive().getAssetSearcher();
 				for (Iterator iterator = fields.iterator(); iterator.hasNext();)
 				{
 					String prop = (String) iterator.next();
-					PropertyDetail field = assetsearcher.getDetail(prop); 
-					if( !primaryasset.hasValue(field.getId()))
+					PropertyDetail field = assetsearcher.getDetail(prop);
+					if (!primaryasset.hasValue(field.getId()))
 					{
 						continue;
 					}
 					output.append(field.getName());
 					output.append(": ");
 					renderField(field, primaryasset, output);
-					if( iterator.hasNext() )
+					if (iterator.hasNext())
 					{
 						output.append(",");
 					}
@@ -122,37 +123,39 @@ public class RenderValues
 
 	protected void renderField(PropertyDetail field, MultiValued inData, StringBuilder output)
 	{
-		if(field.isList())
+		if (field.isList())
 		{
-			for (Iterator iterator2 = getMediaArchive().getValueList(field, inData ).iterator(); iterator2.hasNext();)
+			for (Iterator iterator2 = getMediaArchive().getValueList(field, inData).iterator(); iterator2.hasNext();)
 			{
-				Data type = (Data)iterator2.next();
+				Data type = (Data) iterator2.next();
 				output.append(type.getName());
-				if(iterator2.hasNext() )
+				if (iterator2.hasNext())
 				{
 					output.append(",");
 				}
 			}
 		}
-		else if(field.isBoolean())
-		{
-			if(getData().getBoolean(field.getId()))
+		else
+			if (field.isBoolean())
 			{
-				output.append("Yes");
+				if (getData().getBoolean(field.getId()))
+				{
+					output.append("Yes");
+				}
+				else
+				{
+					output.append("No");
+				}
 			}
 			else
-			{
-				output.append("No");
-			}
-		}
-		else if(field.isDate())
-		{
-			// SKIP
-		}
-		else
-		{
-			String value = inData.get(field.getId());
-			output.append(value);
-		}
+				if (field.isDate())
+				{
+					// SKIP
+				}
+				else
+				{
+					String value = inData.get(field.getId());
+					output.append(value);
+				}
 	}
 }

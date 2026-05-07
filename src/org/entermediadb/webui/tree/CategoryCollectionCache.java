@@ -23,6 +23,7 @@ public class CategoryCollectionCache implements CatalogEnabled
 	protected String fieldCatalogId;
 	protected CacheManager fieldCacheManager;
 	protected CacheManager fieldTimedCacheManager;
+
 	public CacheManager getTimedCacheManager()
 	{
 		return fieldTimedCacheManager;
@@ -32,7 +33,7 @@ public class CategoryCollectionCache implements CatalogEnabled
 	{
 		fieldTimedCacheManager = inTimedCacheManager;
 	}
-	
+
 	public String getCatalogId()
 	{
 		return fieldCatalogId;
@@ -57,59 +58,59 @@ public class CategoryCollectionCache implements CatalogEnabled
 	{
 		return fieldCacheManager;
 	}
-	
+
 	public void setCacheManager(CacheManager inCacheManager)
 	{
 		fieldCacheManager = inCacheManager;
 	}
-	
-	protected Map<String,LibraryCollection> getCategoryLookup()
+
+	protected Map<String, LibraryCollection> getCategoryLookup()
 	{
-		Map<String,LibraryCollection> lookup = (Map<String,LibraryCollection>)getTimedCacheManager().get(getCatalogId(),"collectioncache");
-		if( lookup == null)
+		Map<String, LibraryCollection> lookup = (Map<String, LibraryCollection>) getTimedCacheManager().get(getCatalogId(), "collectioncache");
+		if (lookup == null)
 		{
 			lookup = new HashMap();
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
 			HitTracker all = searcher.query().exists("rootcategory").search();
 			all.setHitsPerPage(2000);
-			
+
 			for (Iterator iterator = all.getPageOfHits().iterator(); iterator.hasNext();)
 			{
 				Data collection = (Data) iterator.next();
 				String rootid = collection.get("rootcategory");
-				if( rootid != null)
+				if (rootid != null)
 				{
-					LibraryCollection librarycollection = (LibraryCollection)searcher.loadData(collection);
+					LibraryCollection librarycollection = (LibraryCollection) searcher.loadData(collection);
 					lookup.put(rootid, librarycollection);
 				}
 			}
-			getTimedCacheManager().put(getCatalogId(),"collectioncache",lookup);
+			getTimedCacheManager().put(getCatalogId(), "collectioncache", lookup);
 		}
 		return lookup;
 	}
-	
+
 	public String getCollectionId(Category inRoot)
 	{
-		if( inRoot == null)
+		if (inRoot == null)
 		{
 			return null;
 		}
 		LibraryCollection exists = getCategoryLookup().get(inRoot.getId());
-		if( exists == null )
+		if (exists == null)
 		{
 			return null;
 		}
 		return exists.getId();
 	}
-	
+
 	public String findCollectionId(Category inRoot)
 	{
-		if( inRoot == null)
+		if (inRoot == null)
 		{
 			return null;
 		}
 		LibraryCollection collection = findCollection(inRoot);
-		if( collection != null)
+		if (collection != null)
 		{
 			return collection.getId();
 		}
@@ -118,24 +119,23 @@ public class CategoryCollectionCache implements CatalogEnabled
 
 	public boolean isCollectionRoot(Category inRoot)
 	{
-		if( inRoot == null)
+		if (inRoot == null)
 		{
 			return false;
 		}
 		String collectionid = getCollectionId(inRoot);
-		if( collectionid == null)
+		if (collectionid == null)
 		{
 			return false;
 		}
 		return true;
-					
+
 	}
 
-	
 	public LibraryCollection findCollection(Category inRoot)
 	{
-		List parents  = inRoot.getParentCategories();
-		if( parents != null)
+		List parents = inRoot.getParentCategories();
+		if (parents != null)
 		{
 			parents = new ArrayList(parents);
 			Collections.reverse(parents);
@@ -144,14 +144,15 @@ public class CategoryCollectionCache implements CatalogEnabled
 		{
 			Category parent = (Category) iterator.next();
 			LibraryCollection exists = getCategoryLookup().get(parent.getId());
-			if( exists != null)
+			if (exists != null)
 			{
-				return exists;  //Loaded on boot up once time and cached heaviliy
+				return exists; // Loaded on boot up once time and cached heaviliy
 			}
 		}
 		return null;
-		
-	}	
+
+	}
+
 	public boolean isPartOfCollection(Category inRoot)
 	{
 		return findCollectionId(inRoot) != null;
@@ -160,10 +161,10 @@ public class CategoryCollectionCache implements CatalogEnabled
 	public void addCollection(LibraryCollection inSaved)
 	{
 		String rootcat = inSaved.getRootCategoryId();
-		if( rootcat!= null)
+		if (rootcat != null)
 		{
-			getCategoryLookup().put(rootcat,inSaved);
+			getCategoryLookup().put(rootcat, inSaved);
 		}
 	}
-	
+
 }

@@ -25,7 +25,7 @@ public class TaskTreeModel extends BaseTreeModel implements CatalogEnabled
 	protected RequestUtils fieldRequestUtils;
 	protected String fieldRootId;
 	protected MediaArchive fieldMediaArchive;
-	
+
 	public MediaArchive getMediaArchive()
 	{
 		return fieldMediaArchive;
@@ -35,7 +35,6 @@ public class TaskTreeModel extends BaseTreeModel implements CatalogEnabled
 	{
 		fieldMediaArchive = inMediaArchive;
 	}
-
 
 	public CategorySearcher getCategorySearcher()
 	{
@@ -67,8 +66,7 @@ public class TaskTreeModel extends BaseTreeModel implements CatalogEnabled
 		fieldPageManager = inPageManager;
 	}
 
-	public TaskTreeModel()
-	{
+	public TaskTreeModel() {
 		setRoot(null);
 	}
 
@@ -105,7 +103,6 @@ public class TaskTreeModel extends BaseTreeModel implements CatalogEnabled
 	{
 		return true;
 	}
-
 
 	public List getChildren(Object inParent)
 	{
@@ -146,7 +143,7 @@ public class TaskTreeModel extends BaseTreeModel implements CatalogEnabled
 
 	public void setRoot(Category inCategory)
 	{
-		if( inCategory != null)
+		if (inCategory != null)
 		{
 			fieldRootId = inCategory.getId();
 		}
@@ -157,7 +154,7 @@ public class TaskTreeModel extends BaseTreeModel implements CatalogEnabled
 		if (fieldRootId == null)
 		{
 			return getCategorySearcher().getRootCategory();
-		}	
+		}
 		Category cat = getCategorySearcher().getCategory(fieldRootId);
 
 		return cat;
@@ -177,7 +174,6 @@ public class TaskTreeModel extends BaseTreeModel implements CatalogEnabled
 		Category child = (Category) inNode;
 		return child.getParentCategory();
 	}
-
 
 	public Category getRootCatalog()
 	{

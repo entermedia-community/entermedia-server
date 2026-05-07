@@ -2,7 +2,8 @@ package org.entermediadb.markdown.renderer;
 
 import org.entermediadb.markdown.node.Node;
 
-public interface Renderer {
+public interface Renderer
+{
 
     /**
      * Render the tree of nodes to output.

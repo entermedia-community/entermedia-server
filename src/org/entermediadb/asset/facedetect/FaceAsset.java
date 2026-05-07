@@ -10,30 +10,37 @@ public class FaceAsset
 	{
 		return fieldAsset;
 	}
+
 	protected void setAsset(Asset inAsset)
 	{
 		fieldAsset = inAsset;
 	}
+
 	protected Asset fieldAsset;
 	protected ValuesMap fieldFaceLocationData;
-	
+
 	public ValuesMap getFaceLocationData()
 	{
 		return fieldFaceLocationData;
 	}
+
 	protected void setFaceLocationData(ValuesMap inFaceLocationData)
 	{
 		fieldFaceLocationData = inFaceLocationData;
 	}
+
 	protected Data fieldFaceProfileGroup;
+
 	public Data getFaceProfileGroup()
 	{
 		return fieldFaceProfileGroup;
 	}
+
 	protected void setFaceProfileGroup(Data inFaceProfileGroup)
 	{
 		fieldFaceProfileGroup = inFaceProfileGroup;
 	}
+
 	public String getFaceProfileGroupId()
 	{
 		return getFaceProfileGroup().getId();

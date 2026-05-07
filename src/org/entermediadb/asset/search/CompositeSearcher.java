@@ -21,7 +21,7 @@ public abstract class CompositeSearcher extends BaseSearcher
 
 	private static final Log log = LogFactory.getLog(CompositeSearcher.class);
 	protected UserProfileManager fieldProfileManager;
-	
+
 	public UserProfileManager getUserProfileManager()
 	{
 		return fieldProfileManager;
@@ -76,22 +76,22 @@ public abstract class CompositeSearcher extends BaseSearcher
 		return targetSearchers;
 	}
 
-	
-	public HitTracker search(SearchQuery inQuery){
+	public HitTracker search(SearchQuery inQuery)
+	{
 		List catalogs = inQuery.getCatalogs();
-		
+
 		CompositeHitTracker allHits = new CompositeHitTracker();
 		allHits.setSearchQuery(inQuery);
 		List catalogids = inQuery.getCatalogs();
-		String[] ids = (String[]) catalogids.toArray(new String[]{});
-		
-		List searchers = getSearchers(null,ids);
-				
+		String[] ids = (String[]) catalogids.toArray(new String[] {});
+
+		List searchers = getSearchers(null, ids);
+
 		for (Iterator iterator = searchers.iterator(); iterator.hasNext();)
 		{
 			Searcher searcher = (Searcher) iterator.next();
 			String catalogid = searcher.getCatalogId();
-			
+
 			SearchQuery subQuery = inQuery.copy();
 			subQuery.setCatalogId(catalogid);
 			HitTracker hits = searcher.search(subQuery);
@@ -101,21 +101,21 @@ public abstract class CompositeSearcher extends BaseSearcher
 			}
 		}
 		return allHits;
-		
+
 	}
-	
+
 	public HitTracker cachedSearch(WebPageRequest inReq, SearchQuery inQuery)
 	{
 		String applicationid = inReq.findValue("applicationid");
 		String[] catalogids = inReq.getRequestParameters("catalogid");
-		if( inQuery.getHitsName() == null)
+		if (inQuery.getHitsName() == null)
 		{
 			String hitsname = inReq.getRequestParameter("hitsname");
-			if(hitsname == null)
+			if (hitsname == null)
 			{
 				hitsname = inReq.findValue("hitsname");
 			}
-			if (hitsname == null )
+			if (hitsname == null)
 			{
 				hitsname = "hits";
 			}
@@ -124,33 +124,32 @@ public abstract class CompositeSearcher extends BaseSearcher
 
 		CompositeHitTracker allHits = new CompositeHitTracker();
 
-		UserProfile pref = (UserProfile)inReq.getUserProfile();
+		UserProfile pref = (UserProfile) inReq.getUserProfile();
 		List searchers = getSearchers(pref, catalogids);
-//		PageStreamer pages = inReq.getPageStreamer();
-		
+		// PageStreamer pages = inReq.getPageStreamer();
+
 		for (Iterator iterator = searchers.iterator(); iterator.hasNext();)
 		{
 			Searcher searcher = (Searcher) iterator.next();
-			String catid =  searcher.getCatalogId();
+			String catid = searcher.getCatalogId();
 			inQuery.addCatalog(catid);
 		}
-		if( inReq.getUser() != null && inQuery.getCatalogs().size() == 0)
+		if (inReq.getUser() != null && inQuery.getCatalogs().size() == 0)
 		{
 			log.info(inReq.getUserName() + " has no permissions to view any catalogs");
 		}
-		//TODO: Move to standard term area?
+		// TODO: Move to standard term area?
 		String sort = inReq.findValue("sortby");
 		if (sort != null)
 		{
 			inQuery.setSortBy(sort);
 		}
 
-		
 		for (Iterator iterator = searchers.iterator(); iterator.hasNext();)
 		{
 			Searcher searcher = (Searcher) iterator.next();
 			String catalogid = searcher.getCatalogId();
-			
+
 			SearchQuery subQuery = inQuery.copy();
 			subQuery.setCatalogId(catalogid);
 			getUserProfileManager().loadUserProfile(inReq, catalogid, inReq.getUserName());
@@ -173,21 +172,21 @@ public abstract class CompositeSearcher extends BaseSearcher
 		{
 			return getSearchersByCatalogIds(catalogids);
 		}
-//		else if ( pref != null && pref.getCatalogs() != null)
-//		{
-//			catalogids = new String[pref.getCatalogs().size()];
-//			for (int i = 0; i < pref.getCatalogs().size(); i++)
-//			{
-//				Data catalog = (Data)pref.getCatalogs().get(i);
-//				catalogids[i] = catalog.getId();
-//			}
-//			return getSearchersByCatalogIds(catalogids);
-//		}
+		// else if ( pref != null && pref.getCatalogs() != null)
+		// {
+		// catalogids = new String[pref.getCatalogs().size()];
+		// for (int i = 0; i < pref.getCatalogs().size(); i++)
+		// {
+		// Data catalog = (Data)pref.getCatalogs().get(i);
+		// catalogids[i] = catalog.getId();
+		// }
+		// return getSearchersByCatalogIds(catalogids);
+		// }
 		else
 		{
-			return getSearchers(); //Is this an OK default? Seems insecure
+			return getSearchers(); // Is this an OK default? Seems insecure
 		}
-		
+
 	}
 
 }

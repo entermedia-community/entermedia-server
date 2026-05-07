@@ -13,24 +13,26 @@ public interface CategorySearcher extends Searcher
 	Category getCategory(String inCatalog);
 
 	void saveCategory(Category inCategory);
-	//CategoryArchive getCategoryArchive(); //TODO: Remove this API, legacy support
+	// CategoryArchive getCategoryArchive(); //TODO: Remove this API, legacy support
 
 	Category createCategoryPath(String inPath);
-	Category createCategoryPathFromParent(Category parent,String inChildPath);
+
+	Category createCategoryPathFromParent(Category parent, String inChildPath);
+
 	void deleteCategoryTree(Category inChild);
 
 	List findChildren(Category inElasticCategory);
-	
+
 	void clearCategories();
-	
+
 	public Set buildCategorySet(List inCategories);
+
 	public Set buildCategorySet(Category inCategory);
 
 	public Category loadCategoryByPath(String categorypath);
 
 	public List listAllCategories(Category inTopCategory);
-    public void saveCategoryTree(Category inRootCategory);
 
-	
-	
+	public void saveCategoryTree(Category inRootCategory);
+
 }

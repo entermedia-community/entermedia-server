@@ -26,8 +26,6 @@ public class ResilioManager
 {
 	private static final Log log = LogFactory.getLog(ResilioManager.class);
 
-	
-	
 	public HttpClient getClient()
 	{
 
@@ -37,7 +35,6 @@ public class ResilioManager
 		return httpClient;
 	}
 
-	
 	public Collection<ResilioFolder> getFolders(MediaArchive inArchive) throws OpenEditException
 	{
 
@@ -61,7 +58,8 @@ public class ResilioManager
 			{
 				log.info("Resilio API unavailable at " + fullpath);
 				return folders;
-				//throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
+				// throw new OpenEditException("error from server " + status + " " +
+				// sl.getReasonPhrase());
 			}
 			String val = EntityUtils.toString(response.getEntity());
 
@@ -73,7 +71,7 @@ public class ResilioManager
 			{
 				JSONObject folderinfo = (JSONObject) iterator.next();
 				ResilioFolder folder = new ResilioFolder();
-				folder.setId((String)folderinfo.get("id"));
+				folder.setId((String) folderinfo.get("id"));
 				folder.setValue("secretkey", folderinfo.get("secretkey"));
 				folder.setValue("folderpath", folderinfo.get("path"));
 				refreshFolder(inArchive, folder);
@@ -98,7 +96,7 @@ public class ResilioManager
 		return authString;
 	}
 
-	public  String refreshFolder(MediaArchive inArchive, ResilioFolder inFolder) throws OpenEditException
+	public String refreshFolder(MediaArchive inArchive, ResilioFolder inFolder) throws OpenEditException
 	{
 
 		try
@@ -106,7 +104,7 @@ public class ResilioManager
 			String authString = getAuthString(inArchive);
 
 			HttpGet method = null;
-			String fullpath = inArchive.getCatalogSettingValue("resilio_url") + "/api/v2/folders/"+inFolder.getId()+"/activity";
+			String fullpath = inArchive.getCatalogSettingValue("resilio_url") + "/api/v2/folders/" + inFolder.getId() + "/activity";
 			method = new HttpGet(fullpath);
 			method.setHeader("Authorization", "Basic " + authString);
 
@@ -126,61 +124,58 @@ public class ResilioManager
 			for (Iterator iterator = data.keySet().iterator(); iterator.hasNext();)
 			{
 				String key = (String) iterator.next();
-				if("id".equals(key)){
+				if ("id".equals(key))
+				{
 					continue;
 				}
 				Object value = data.get(key);
-				log.info("Key: " + key + "value: " + value );
+				log.info("Key: " + key + "value: " + value);
 				inFolder.setValue(key, value);
 			}
 			return val;
 		}
 		catch (Exception e)
 		{
-		throw new OpenEditException(e);
+			throw new OpenEditException(e);
 		}
-		
-		
-		
+
 	}
-	
-	public ResilioFolder getFolderByPath(MediaArchive inArchive, String inPath){
+
+	public ResilioFolder getFolderByPath(MediaArchive inArchive, String inPath)
+	{
 		Collection folders = getFolders(inArchive);
 		inArchive.getPageManager().getPage(inPath).getContentItem().getAbsolutePath();
 		for (Iterator iterator = folders.iterator(); iterator.hasNext();)
 		{
 			ResilioFolder folder = (ResilioFolder) iterator.next();
-			if(inPath.equals(folder.get("folderpath"))){
+			if (inPath.equals(folder.get("folderpath")))
+			{
 				refreshFolder(inArchive, folder);
 				return folder;
 			}
 		}
-	return null;
+		return null;
 	}
-	
-	public ResilioFolder getWorkingFolder(MediaArchive inArchive,  String inUserName){
+
+	public ResilioFolder getWorkingFolder(MediaArchive inArchive, String inUserName)
+	{
 		Collection folders = getFolders(inArchive);
 		for (Iterator iterator = folders.iterator(); iterator.hasNext();)
 		{
 			ResilioFolder folder = (ResilioFolder) iterator.next();
 			String folderpath = folder.get("folderpath");
-			if(folderpath == null){
+			if (folderpath == null)
+			{
 				continue;
 			}
-			if(folderpath.contains("workingfolders/" + inUserName )){
+			if (folderpath.contains("workingfolders/" + inUserName))
+			{
 				refreshFolder(inArchive, folder);
 				return folder;
 			}
-			
-			
-		
+
 		}
-	return null;
+		return null;
 	}
-	
-	
-	
-	
-	
 
 }

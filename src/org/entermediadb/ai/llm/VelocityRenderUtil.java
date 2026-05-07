@@ -26,7 +26,6 @@ public class VelocityRenderUtil
 	protected RequestUtils fieldRequestUtils;
 	protected OpenEditEngine fieldEngine;
 	private static Log log = LogFactory.getLog(VelocityRenderUtil.class);
-	
 
 	public ModuleManager getModuleManager()
 	{
@@ -58,8 +57,10 @@ public class VelocityRenderUtil
 		fieldRequestUtils = inRequestUtils;
 	}
 
-	public OpenEditEngine getEngine() {
-		if (fieldEngine == null) {
+	public OpenEditEngine getEngine()
+	{
+		if (fieldEngine == null)
+		{
 			fieldEngine = (OpenEditEngine) getModuleManager().getBean("OpenEditEngine");
 
 		}
@@ -67,46 +68,49 @@ public class VelocityRenderUtil
 		return fieldEngine;
 	}
 
-	
-
-	public String loadInputFromTemplate(WebPageRequest inReq, String inTemplate) {
+	public String loadInputFromTemplate(WebPageRequest inReq, String inTemplate)
+	{
 		return loadInputFromTemplate(inReq, inTemplate, new HashMap());
 	}
 
-	public String loadInputFromTemplate(WebPageRequest inReq, String inTemplate, Map inMap) {
-		if(inTemplate == null) {
+	public String loadInputFromTemplate(WebPageRequest inReq, String inTemplate, Map inMap)
+	{
+		if (inTemplate == null)
+		{
 			throw new OpenEditException("Cannot load input, template is null" + inReq);
 		}
-		try {
+		try
+		{
 			URLUtilities urlUtil = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
 
 			User user = inReq.getUser();
 			Page template = getPageManager().getPage(inTemplate);
 			log.info("Loading input: " + inTemplate);
-			WebPageRequest	request = inReq.copy(template);
-			PathEventManager manager = (PathEventManager) getModuleManager().getBean( "pathEventManager");
-			
+			WebPageRequest request = inReq.copy(template);
+			PathEventManager manager = (PathEventManager) getModuleManager().getBean("pathEventManager");
+
 			StringWriter output = new StringWriter();
 			request.setWriter(output);
 			PageStreamer streamer = getEngine().createPageStreamer(template, request);
-				getEngine().executePathActions(request);
-				if( !request.hasRedirected())
-				{
-					getModuleManager().executePageActions( template,request );
-				}
-				if( request.hasRedirected())
-				{
-					log.info("action was redirected");
-				}
-			
+			getEngine().executePathActions(request);
+			if (!request.hasRedirected())
+			{
+				getModuleManager().executePageActions(template, request);
+			}
+			if (request.hasRedirected())
+			{
+				log.info("action was redirected");
+			}
+
 			streamer.include(template, request);
 			String string = output.toString();
-			//log.info(inTemplate +" Output: " + string);
+			// log.info(inTemplate +" Output: " + string);
 			return string;
-		} catch (OpenEditException e) {
+		}
+		catch (OpenEditException e)
+		{
 			throw e;
-		} 
+		}
 	}
-	
-	
+
 }

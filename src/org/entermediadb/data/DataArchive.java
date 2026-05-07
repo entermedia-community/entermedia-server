@@ -23,11 +23,11 @@ public interface DataArchive extends CatalogEnabled
 	void delete(Data inData, User inUser);
 
 	void saveData(Data inData, User inUser);
-	
+
 	public void saveAllData(Collection<Data> inAll, User inUser);
 
 	void setCatalogId(String inId);
-	String getCatalogId();
 
+	String getCatalogId();
 
 }

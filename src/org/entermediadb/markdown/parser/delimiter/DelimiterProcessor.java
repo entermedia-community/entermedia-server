@@ -5,21 +5,24 @@ import org.entermediadb.markdown.node.Text;
 /**
  * Custom delimiter processor for additional delimiters besides {@code _} and {@code *}.
  * <p>
- * Note that implementations of this need to be thread-safe, the same instance may be used by multiple parsers.
+ * Note that implementations of this need to be thread-safe, the same instance may be used by
+ * multiple parsers.
  *
  * @see org.entermediadb.markdown.parser.beta.InlineContentParserFactory
  */
-public interface DelimiterProcessor {
+public interface DelimiterProcessor
+{
 
     /**
-     * @return the character that marks the beginning of a delimited node, must not clash with any built-in special
-     * characters
+     * @return the character that marks the beginning of a delimited node, must not clash with any
+     *         built-in special characters
      */
     char getOpeningCharacter();
 
     /**
-     * @return the character that marks the the ending of a delimited node, must not clash with any built-in special
-     * characters. Note that for a symmetric delimiter such as "*", this is the same as the opening.
+     * @return the character that marks the the ending of a delimited node, must not clash with any
+     *         built-in special characters. Note that for a symmetric delimiter such as "*", this is the
+     *         same as the opening.
      */
     char getClosingCharacter();
 
@@ -31,9 +34,9 @@ public interface DelimiterProcessor {
     /**
      * Process the delimiter runs.
      * <p>
-     * The processor can examine the runs and the nodes and decide if it wants to process or not. If not, it should not
-     * change any nodes and return 0. If yes, it should do the processing (wrapping nodes, etc) and then return how many
-     * delimiters were used.
+     * The processor can examine the runs and the nodes and decide if it wants to process or not. If
+     * not, it should not change any nodes and return 0. If yes, it should do the processing (wrapping
+     * nodes, etc) and then return how many delimiters were used.
      * <p>
      * Note that removal (unlinking) of the used delimiter {@link Text} nodes is done by the caller.
      *

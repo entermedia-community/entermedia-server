@@ -8,43 +8,49 @@ import org.entermediadb.markdown.parser.SourceLine;
 
 import java.util.List;
 
-public abstract class AbstractBlockParser implements BlockParser {
+public abstract class AbstractBlockParser implements BlockParser
+{
 
     @Override
-    public boolean isContainer() {
+    public boolean isContainer()
+    {
         return false;
     }
 
     @Override
-    public boolean canHaveLazyContinuationLines() {
+    public boolean canHaveLazyContinuationLines()
+    {
         return false;
     }
 
     @Override
-    public boolean canContain(Block childBlock) {
+    public boolean canContain(Block childBlock)
+    {
         return false;
     }
 
     @Override
-    public void addLine(SourceLine line) {
-    }
+    public void addLine(SourceLine line)
+    {}
 
     @Override
-    public void addSourceSpan(SourceSpan sourceSpan) {
+    public void addSourceSpan(SourceSpan sourceSpan)
+    {
         getBlock().addSourceSpan(sourceSpan);
     }
 
     @Override
-    public List<DefinitionMap<?>> getDefinitions() {
+    public List<DefinitionMap<?>> getDefinitions()
+    {
         return List.of();
     }
 
     @Override
-    public void closeBlock() {
-    }
+    public void closeBlock()
+    {}
 
     @Override
-    public void parseInlines(InlineParser inlineParser) {
-    }
+    public void parseInlines(InlineParser inlineParser)
+    {}
 
 }

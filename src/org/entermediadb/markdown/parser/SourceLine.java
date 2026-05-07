@@ -9,12 +9,14 @@ import java.util.Objects;
  *
  * @since 0.16.0
  */
-public class SourceLine {
+public class SourceLine
+{
 
     private final CharSequence content;
     private final SourceSpan sourceSpan;
 
-    public static SourceLine of(CharSequence content, SourceSpan sourceSpan) {
+    public static SourceLine of(CharSequence content, SourceSpan sourceSpan)
+    {
         return new SourceLine(content, sourceSpan);
     }
 
@@ -23,20 +25,25 @@ public class SourceLine {
         this.sourceSpan = sourceSpan;
     }
 
-    public CharSequence getContent() {
+    public CharSequence getContent()
+    {
         return content;
     }
 
-    public SourceSpan getSourceSpan() {
+    public SourceSpan getSourceSpan()
+    {
         return sourceSpan;
     }
 
-    public SourceLine substring(int beginIndex, int endIndex) {
+    public SourceLine substring(int beginIndex, int endIndex)
+    {
         CharSequence newContent = content.subSequence(beginIndex, endIndex);
         SourceSpan newSourceSpan = null;
-        if (sourceSpan != null) {
+        if (sourceSpan != null)
+        {
             int length = endIndex - beginIndex;
-            if (length != 0) {
+            if (length != 0)
+            {
                 int columnIndex = sourceSpan.getColumnIndex() + beginIndex;
                 int inputIndex = sourceSpan.getInputIndex() + beginIndex;
                 newSourceSpan = SourceSpan.of(sourceSpan.getLineIndex(), columnIndex, inputIndex, length);

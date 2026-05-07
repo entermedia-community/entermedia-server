@@ -11,7 +11,8 @@ import org.entermediadb.asset.publishing.Publisher;
 import org.openedit.Data;
 
 /**
- * This is a poorly named browser download publisher. 
+ * This is a poorly named browser download publisher.
+ * 
  * @author shanti
  *
  */
@@ -19,17 +20,17 @@ import org.openedit.Data;
 public class httppublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(httppublisher.class);
-	
-	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
-	{
-		PublishResult result = 	checkOnConversion(mediaArchive,inOrderItem,inAsset,inPreset); 
 
-		if( result.isReadyToPublish() )
+	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
+	{
+		PublishResult result = checkOnConversion(mediaArchive, inOrderItem, inAsset, inPreset);
+
+		if (result.isReadyToPublish())
 		{
-			//The browser javascript will now mark is as complete
+			// The browser javascript will now mark is as complete
 		}
-		
+
 		return result;
 	}
-	
+
 }

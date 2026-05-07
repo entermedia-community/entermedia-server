@@ -67,7 +67,7 @@ public class UploadQueue
 	public boolean isLocked(String inApplet, String inSourcePath)
 	{
 		expire();
-		for (Upload up: getQueue())
+		for (Upload up : getQueue())
 		{
 			if (up.fieldDestPath.equals(inSourcePath))
 			{
@@ -82,7 +82,7 @@ public class UploadQueue
 
 	public void remove(String inSourcePath)
 	{
-		for (Upload up: getQueue())
+		for (Upload up : getQueue())
 		{
 			if (up.fieldDestPath != null && up.fieldDestPath.equals(inSourcePath))
 			{
@@ -109,12 +109,12 @@ public class UploadQueue
 		// If they hit refresh they can check the applet name and pass that back
 		// in
 		List<Upload> copy = new ArrayList<Upload>(getQueue());
-		for (Upload up: copy)
+		for (Upload up : copy)
 		{
 			if (up.fieldAddedTime < limit)
 			{
-				//check the size change
-				if( up.fieldSize  == up.fieldDestPath.getContentItem().getLength())
+				// check the size change
+				if (up.fieldSize == up.fieldDestPath.getContentItem().getLength())
 				{
 					getQueue().remove(up);
 				}
@@ -135,8 +135,8 @@ public class UploadQueue
 	{
 		UploadDiskFileItemFactory uploadfilefactory = new UploadDiskFileItemFactory();
 		String seek = inReq.getRequest().getHeader("x-seekrange");
-		long  seekval = 0;
-		if ( seek != null)
+		long seekval = 0;
+		if (seek != null)
 		{
 			seekval = Long.parseLong(seek);
 			uploadfilefactory.setSeek(seekval);
@@ -146,14 +146,14 @@ public class UploadQueue
 		add(inAppletname, absuploaded);
 		uploadfilefactory.setDestinationPath(absuploaded.getContentItem().getAbsolutePath());
 		inReq.putPageValue("uploadfilefactory", uploadfilefactory);
-				
+
 		UploadRequest map = null;
 		String catid = null;
 		try
 		{
 			map = fileUpload.parseArguments(inReq);
 			catid = inReq.getRequestParameter("catalogid");
-			if( destinationpath == null )
+			if (destinationpath == null)
 			{
 				log.error("No destination path for upload");
 				return;
@@ -177,13 +177,13 @@ public class UploadQueue
 		}
 		finally
 		{
-			if(map == null)
+			if (map == null)
 			{
 				return;
 			}
 			String sourcepath = inReq.getRequestParameter("sourcepath");
 			Asset asset = inEntermedia.getAssetBySourcePath(catid, sourcepath);
-			
+
 			// Now check if we got the end of the expected file size. If
 			// we did move the file over
 			String total = inReq.getRequestParameter("totalsize");
@@ -196,12 +196,12 @@ public class UploadQueue
 				log.info("Saved Asset to Originals " + dest);
 				getPageManager().movePage(absuploaded, destination);
 				archive.saveAsset(asset, inReq.getUser());
-				asset.setProperty("uploadprogress", String.valueOf(destination.length())); 
-				
+				asset.setProperty("uploadprogress", String.valueOf(destination.length()));
+
 				asset = getAssetImporter().getAssetUtilities().populateAsset(asset, destination.getContentItem(), archive, sourcepath, inReq.getUser());
 				asset.setProperty("importstatus", "imported");
 				archive.saveAsset(asset, inReq.getUser());
-				archive.fireMediaEvent("importing","assetsuploaded", inReq.getUser(), asset);
+				archive.fireMediaEvent("importing", "assetsuploaded", inReq.getUser(), asset);
 			}
 			else
 			{

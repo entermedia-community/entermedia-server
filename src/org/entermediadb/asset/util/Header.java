@@ -20,6 +20,7 @@ public class Header
 		}
 		return fieldHeaderNames;
 	}
+
 	public void setHeaders(Collection inHeaders)
 	{
 		getHeaderNames().clear();
@@ -29,12 +30,13 @@ public class Header
 			getHeaderNames().add(heaader);
 		}
 	}
+
 	public void setHeaders(String[] inHeaders)
 	{
 		getHeaderNames().clear();
 		for (int i = 0; i < inHeaders.length; i++)
 		{
-			//Integer integer = new Integer(i);
+			// Integer integer = new Integer(i);
 			getHeaderNames().add(inHeaders[i]);
 		}
 	}
@@ -43,19 +45,21 @@ public class Header
 	{
 		return getHeaderNames().indexOf(inName);
 	}
+
 	public String getColumn(int inIndex)
 	{
-		String name = (String)getHeaderNames().get(inIndex);
+		String name = (String) getHeaderNames().get(inIndex);
 		return name;
 	}
+
 	public int getSize()
 	{
 		return getHeaderNames().size();
 	}
-	
+
 	public void replaceLabel(String inHeaderName, String inNewHeaderName)
 	{
-		int  headerIndex = getIndex(inHeaderName);
+		int headerIndex = getIndex(inHeaderName);
 		getHeaderNames().set(headerIndex, inNewHeaderName);
 	}
 

@@ -56,8 +56,7 @@ public class ScriptMetadataExtractor extends MetadataExtractor
 			Script reportscript = manager.loadScript(page.getPath());
 
 			final StringBuffer output = new StringBuffer();
-			TextAppender appender = new TextAppender()
-			{
+			TextAppender appender = new TextAppender() {
 				public void appendText(String inText)
 				{
 					output.append(inText);
@@ -88,12 +87,12 @@ public class ScriptMetadataExtractor extends MetadataExtractor
 				logs.stopCapture();
 			}
 
-			//detail ID
+			// detail ID
 
 		}
 
-		//Where do we store the sidecar files?  Generated?  Originals?
-		//Start by checking next to file, add a mask?  ${asset.name}.xls
+		// Where do we store the sidecar files? Generated? Originals?
+		// Start by checking next to file, add a mask? ${asset.name}.xls
 
 		return false;
 	}

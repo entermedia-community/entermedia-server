@@ -15,50 +15,52 @@ import org.openedit.page.PageRequestKeys;
 
 public class OriginalPreviewDocumentGenerator extends FileGenerator
 {
-		private static final Log log = LogFactory.getLog(OriginalPreviewDocumentGenerator.class);
-		protected ModuleManager moduleManager;
+	private static final Log log = LogFactory.getLog(OriginalPreviewDocumentGenerator.class);
+	protected ModuleManager moduleManager;
 
-		public ModuleManager getModuleManager()
-		{
-			return moduleManager;
-		}
+	public ModuleManager getModuleManager()
+	{
+		return moduleManager;
+	}
 
-		public void setModuleManager(ModuleManager moduleManager)
-		{
-			this.moduleManager = moduleManager;
-		}
+	public void setModuleManager(ModuleManager moduleManager)
+	{
+		this.moduleManager = moduleManager;
+	}
 
-		public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
-		{
-			String catalogid = inReq.findPathValue("catalogid");
-			MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
-			String assetid = inReq.getRequestParameter("assetid");
-			Asset asset = archive.getAsset(assetid, inReq);
-			
-			Page content = archive.getOriginalDocument(asset);
-			String version = inReq.getRequestParameter("version");
-			if (version == null) {
-				log.error("Version Not found");
-				return;
-				//error
-			}
-			Version revision = archive.getAssetEditor().getVersion(asset, version);
-			Page preview = archive.getPageManager().getPage( revision.getPreviewBackUpPath());
-			
-			if (!preview.exists()) {
-				log.error("preview Not found " + preview.getPath());
-				return;
-				//error
-			}
-			WebPageRequest req = inReq.copy(preview);
-			req.putProtectedPageValue(PageRequestKeys.CONTENT, preview);
-			super.generate(req, preview, inOut);
-			//error?
-		}
+	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
+	{
+		String catalogid = inReq.findPathValue("catalogid");
+		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
+		String assetid = inReq.getRequestParameter("assetid");
+		Asset asset = archive.getAsset(assetid, inReq);
 
-		public boolean canGenerate(WebPageRequest inReq)
+		Page content = archive.getOriginalDocument(asset);
+		String version = inReq.getRequestParameter("version");
+		if (version == null)
 		{
-			return true;
+			log.error("Version Not found");
+			return;
+			// error
 		}
+		Version revision = archive.getAssetEditor().getVersion(asset, version);
+		Page preview = archive.getPageManager().getPage(revision.getPreviewBackUpPath());
+
+		if (!preview.exists())
+		{
+			log.error("preview Not found " + preview.getPath());
+			return;
+			// error
+		}
+		WebPageRequest req = inReq.copy(preview);
+		req.putProtectedPageValue(PageRequestKeys.CONTENT, preview);
+		super.generate(req, preview, inOut);
+		// error?
+	}
+
+	public boolean canGenerate(WebPageRequest inReq)
+	{
+		return true;
+	}
 
 }

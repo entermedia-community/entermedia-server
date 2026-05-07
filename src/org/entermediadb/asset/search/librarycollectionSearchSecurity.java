@@ -67,7 +67,8 @@ public class librarycollectionSearchSecurity implements SearchSecurity
 
 		MediaArchive archive = (MediaArchive) inPageRequest.getPageValue("mediaarchive");
 
-		// Collection<Category> catshidden = archive.listHiddenCategories(profile.getViewCategories());
+		// Collection<Category> catshidden =
+		// archive.listHiddenCategories(profile.getViewCategories());
 		// //The ones I cant see
 		// HashSet toshow = new HashSet(profile.getCollectionIds());
 		// for (Iterator iterator = catshidden.iterator(); iterator.hasNext();)

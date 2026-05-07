@@ -8,11 +8,11 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.hittracker.SearchQuery;
 
 public class ElasticSearchQuery extends SearchQuery
-{	
-	
+{
+
 	public AbstractAggregationBuilder fieldAggregationBuilder;
 	protected String fieldAggregationJson;
-	
+
 	public String getAggregationJson()
 	{
 		return fieldAggregationJson;
@@ -34,11 +34,10 @@ public class ElasticSearchQuery extends SearchQuery
 		setEndUserSearch(true);
 	}
 
-	public ElasticSearchQuery()
-	{
+	public ElasticSearchQuery() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Override
 	public void addFunction(PropertyDetail inDetail, Object inValues)
 	{

@@ -11,15 +11,17 @@ public class TabList
 	protected String fieldId;
 	protected List fieldTabs;
 	protected Tab fieldLastSelected;
-	
+
 	public String getId()
 	{
 		return fieldId;
 	}
+
 	public void setId(String inId)
 	{
 		fieldId = inId;
 	}
+
 	public List getTabs()
 	{
 		if (fieldTabs == null)
@@ -28,23 +30,27 @@ public class TabList
 		}
 		return fieldTabs;
 	}
+
 	public int size()
 	{
 		return getTabs().size();
 
 	}
+
 	public void setTabs(List inTabs)
 	{
 		fieldTabs = inTabs;
 	}
-	public void addNewTab(String inId, String inName, String inPath )
+
+	public void addNewTab(String inId, String inName, String inPath)
 	{
-		addNewTab( inId, inName, inPath,100);
+		addNewTab(inId, inName, inPath, 100);
 	}
+
 	public void addNewTab(String inId, String inName, String inPath, int inMaxLevel)
 	{
 		Tab tab = new Tab();
-		//tab.setLink(inPath);
+		// tab.setLink(inPath);
 		tab.setName(inName);
 		tab.setId(inId);
 		tab.setPath(inPath);
@@ -52,67 +58,73 @@ public class TabList
 		tab.setTimeAdded(new Date());
 		getTabs().add(tab);
 	}
+
 	public void removeTabById(String inId)
 	{
 		for (Iterator iterator = getTabs().iterator(); iterator.hasNext();)
 		{
 			Tab tab = (Tab) iterator.next();
-			if( tab.getId() == null || tab.getId().equals(inId))
+			if (tab.getId() == null || tab.getId().equals(inId))
 			{
 				getTabs().remove(tab);
 				break;
 			}
 		}
 	}
+
 	public Tab getLastSelected()
 	{
 		return fieldLastSelected;
 	}
+
 	public void setLastSelected(Tab inLastSelected)
 	{
 		fieldLastSelected = inLastSelected;
 	}
-	
-	public void setLastSelectedById( String inTabId )
+
+	public void setLastSelectedById(String inTabId)
 	{
 		for (Iterator iterator = getTabs().iterator(); iterator.hasNext();)
 		{
 			Tab tab = (Tab) iterator.next();
-			if( tab.getId() !=  null && tab.getId().equals(inTabId))
+			if (tab.getId() != null && tab.getId().equals(inTabId))
 			{
 				setLastSelected(tab);
 				return;
 			}
 		}
-		setLastSelected((Tab)null);
+		setLastSelected((Tab) null);
 	}
+
 	public String getSelectedPath()
 	{
-		if( fieldLastSelected != null)
+		if (fieldLastSelected != null)
 		{
 			return getLastSelected().getPath();
 		}
 		return null;
 	}
+
 	public Tab getTabById(String inId)
 	{
 		for (Iterator iterator = getTabs().iterator(); iterator.hasNext();)
 		{
-			Tab	tab = (Tab) iterator.next();
-			if( tab.getId() != null && tab.getId().equals(inId))
+			Tab tab = (Tab) iterator.next();
+			if (tab.getId() != null && tab.getId().equals(inId))
 			{
 				return tab;
 			}
 		}
 		return null;
 	}
+
 	public void removeOldestTab()
 	{
 		Tab oldest = null;
 		for (Iterator iterator = getTabs().iterator(); iterator.hasNext();)
 		{
 			Tab tab = (Tab) iterator.next();
-			if (oldest == null || tab.getTimeAdded().before(oldest.getTimeAdded()) )
+			if (oldest == null || tab.getTimeAdded().before(oldest.getTimeAdded()))
 			{
 				oldest = tab;
 			}
@@ -122,14 +134,17 @@ public class TabList
 			removeTabById(oldest.getId());
 		}
 	}
+
 	public void sortTabs()
 	{
 		Collections.sort(getTabs());
 	}
+
 	public void clearTabs()
 	{
 		getTabs().clear();
 	}
+
 	public void addTab(Tab inTab)
 	{
 		getTabs().add(inTab);

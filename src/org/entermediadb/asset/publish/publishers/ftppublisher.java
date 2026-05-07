@@ -19,84 +19,84 @@ import org.openedit.users.UserManager;
 public class ftppublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(ftppublisher.class);
-	
-	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
+
+	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
 	{
 		try
 		{
-			PublishResult result = checkOnConversion(mediaArchive,inOrderItem,inAsset,inPreset);
-			if( result != null)
+			PublishResult result = checkOnConversion(mediaArchive, inOrderItem, inAsset, inPreset);
+			if (result != null)
 			{
 				return result;
 			}
-			
+
 			result = new PublishResult();
 
-			Page inputpage = findInputPage(mediaArchive,inAsset,inPreset);
+			Page inputpage = findInputPage(mediaArchive, inAsset, inPreset);
 			String servername = inDestination.get("server");
 			String username = inDestination.get("username");
 			String url = inDestination.get("url");
-			
+
 			log.info("Publishing ${asset} to ftp server ${servername}, with username ${username}.");
-			
+
 			FTPClient ftp = new FTPClient();
-			
+
 			ftp.connect(servername);
 			ftp.enterLocalPassiveMode();
-			
-			//check to see if connected
+
+			// check to see if connected
 			int reply = ftp.getReplyCode();
-			if(!FTPReply.isPositiveCompletion(reply))
+			if (!FTPReply.isPositiveCompletion(reply))
 			{
 				result.setErrorMessage("Unable to connect to ${servername}, error code: ${reply}");
 				ftp.disconnect();
 				return result;
 			}
 			String password = inDestination.get("password");
-			//get password and login
-			if(password == null)
+			// get password and login
+			if (password == null)
 			{
 				UserManager userManager = mediaArchive.getUserManager();
 				User user = userManager.getUser(username);
 				password = userManager.decryptPassword(user);
 			}
-				
+
 			ftp.login(username, password);
 			reply = ftp.getReplyCode();
-			if(!FTPReply.isPositiveCompletion(reply))
+			if (!FTPReply.isPositiveCompletion(reply))
 			{
 				result.setErrorMessage("Unable to login to ${servername}, error code: ${reply}");
 				ftp.disconnect();
 				return result;
 			}
 			ftp.setFileTransferMode(FTPClient.BINARY_FILE_TYPE);
-			
-			//change paths if necessary
-			if(url != null && url.length() > 0)
+
+			// change paths if necessary
+			if (url != null && url.length() > 0)
 			{
 				ftp.makeDirectory(url);
 				ftp.changeWorkingDirectory(url);
 				reply = ftp.getReplyCode();
-				if(!FTPReply.isPositiveCompletion(reply))
+				if (!FTPReply.isPositiveCompletion(reply))
 				{
 					result.setErrorMessage("Unable to to cd to ${url}, error code: ${reply}");
 					ftp.disconnect();
 					return result;
 				}
 			}
-			
+
 			String exportname = inOrderItem.get("itemexportname");
 
 			ftp.storeFile(exportname, inputpage.getInputStream());
 			reply = ftp.getReplyCode();
-			if(!FTPReply.isPositiveCompletion(reply))
+			if (!FTPReply.isPositiveCompletion(reply))
 			{
 				result.setErrorMessage("Unable to to send file, error code: ${reply}");
 				ftp.disconnect();
 				return result;
 			}
-			
-			if(ftp.isConnected())
+
+			if (ftp.isConnected())
 			{
 				ftp.disconnect();
 			}
@@ -108,6 +108,6 @@ public class ftppublisher extends BasePublisher implements Publisher
 		{
 			throw new OpenEditException(e);
 		}
-		
+
 	}
 }

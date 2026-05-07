@@ -23,7 +23,7 @@ public class PlugInFinder
 	protected List fieldPlugIns;
 	protected String fieldAppServerPath;
 	protected String fieldId;
-	
+
 	public String getId()
 	{
 		return fieldId;
@@ -46,7 +46,7 @@ public class PlugInFinder
 
 	public List getPlugIns()
 	{
-		if( fieldPlugIns == null)
+		if (fieldPlugIns == null)
 		{
 			loadPlugIns();
 		}
@@ -55,15 +55,15 @@ public class PlugInFinder
 
 	public void loadPlugIns()
 	{
-		//List installed = getWebServer().getAllPlugIns();
+		// List installed = getWebServer().getAllPlugIns();
 
 		Map installedmap = new HashMap();
-//		for (Iterator iterator = installed.iterator(); iterator.hasNext();)
-//		{
-//			PlugIn plugin = (PlugIn) iterator.next();
-//			installedmap.put( plugin.getId(), plugin);
-//		}
-		
+		// for (Iterator iterator = installed.iterator(); iterator.hasNext();)
+		// {
+		// PlugIn plugin = (PlugIn) iterator.next();
+		// installedmap.put( plugin.getId(), plugin);
+		// }
+
 		List available = listAvailablePlugIns();
 		List notinstalled = new ArrayList();
 		for (Iterator iterator = available.iterator(); iterator.hasNext();)
@@ -80,31 +80,32 @@ public class PlugInFinder
 			}
 			populatePluginDetails(found, plugin);
 		}
-		
-		//fieldInstalledPlugIns = installed;
+
+		// fieldInstalledPlugIns = installed;
 		fieldPlugIns = notinstalled;
 		checkDepends(available);
 
 	}
+
 	public List listAll()
 	{
 		List sorted = new ArrayList();
-		//sorted.addAll(getInstalledPlugIns());
+		// sorted.addAll(getInstalledPlugIns());
 		sorted.addAll(getPlugIns());
 		return sorted;
 	}
-	
+
 	protected void checkDepends(List inAvailable)
 	{
 		for (Iterator iterator = inAvailable.iterator(); iterator.hasNext();)
 		{
 			Element found = (Element) iterator.next();
 			String depends = found.attributeValue("depends");
-			if( depends != null && depends.length() > 0)
+			if (depends != null && depends.length() > 0)
 			{
 				String id = found.attributeValue("id");
 				PlugIn thisone = getPlugIn(id);
-				if( thisone != null)
+				if (thisone != null)
 				{
 					String[] ids = depends.split(",");
 					for (int i = 0; i < ids.length; i++)
@@ -114,8 +115,9 @@ public class PlugInFinder
 					}
 				}
 			}
-		}	
+		}
 	}
+
 	protected void populatePluginDetails(Element found, PlugIn plugin)
 	{
 		plugin.setVendorLink(found.attributeValue("vendorlink"));
@@ -125,7 +127,7 @@ public class PlugInFinder
 		plugin.setInstallScript(found.attributeValue("installscript"));
 		plugin.setTitle(found.attributeValue("title"));
 	}
-	
+
 	public ModuleManager getModuleManager()
 	{
 		return fieldModuleManager;
@@ -136,17 +138,18 @@ public class PlugInFinder
 		fieldModuleManager = inModuleManager;
 	}
 
-	protected List listAvailablePlugIns() 
+	protected List listAvailablePlugIns()
 	{
 		XmlUtil util = new XmlUtil();
 		try
 		{
-			//this does not seem to support redirects and some web servers don't support the Java user agent
+			// this does not seem to support redirects and some web servers don't support
+			// the Java user agent
 			URL link = new URL(getAppServerPath());
 			Element root = util.getXml(link.openStream(), "UTF-8");
 			return root.elements();
 		}
-		catch( Exception ex)
+		catch (Exception ex)
 		{
 			throw new OpenEditException(ex);
 		}
@@ -174,18 +177,19 @@ public class PlugInFinder
 
 	public PlugIn getPlugIn(String inPluginid)
 	{
-//		for (Iterator iterator = getInstalledPlugIns().iterator(); iterator.hasNext();)
-//		{
-//			PlugIn plugin = (PlugIn) iterator.next();
-//			if( inPluginid.equals(plugin.getId()) )
-//			{
-//				return plugin;
-//			}
-//		}
+		// for (Iterator iterator = getInstalledPlugIns().iterator();
+		// iterator.hasNext();)
+		// {
+		// PlugIn plugin = (PlugIn) iterator.next();
+		// if( inPluginid.equals(plugin.getId()) )
+		// {
+		// return plugin;
+		// }
+		// }
 		for (Iterator iterator = getPlugIns().iterator(); iterator.hasNext();)
 		{
 			PlugIn plugin = (PlugIn) iterator.next();
-			if( inPluginid.equals(plugin.getId()) )
+			if (inPluginid.equals(plugin.getId()))
 			{
 				return plugin;
 			}

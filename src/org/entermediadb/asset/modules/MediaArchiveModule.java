@@ -30,17 +30,16 @@ public class MediaArchiveModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(MediaArchiveModule.class);
 	protected EmailErrorHandler fieldEmailErrorHandler;
-	//protected FileUpload fieldFileUpload;
-	
-	public MediaArchiveModule()
-	{
-	}
+	// protected FileUpload fieldFileUpload;
 
-//	public void createThumbAndMedium(WebPageRequest inReq) throws Exception
-//	{
-//		MediaArchive archive = getMediaArchive(inReq);
-//		archive.getTranscodeTools().run(true, true, false, false, archive.getAssetSearcher().getAllHits());
-//	}
+	public MediaArchiveModule() {}
+
+	// public void createThumbAndMedium(WebPageRequest inReq) throws Exception
+	// {
+	// MediaArchive archive = getMediaArchive(inReq);
+	// archive.getTranscodeTools().run(true, true, false, false,
+	// archive.getAssetSearcher().getAllHits());
+	// }
 
 	public void voteUp(WebPageRequest inReq) throws Exception
 	{
@@ -115,7 +114,8 @@ public class MediaArchiveModule extends BaseMediaModule
 						if (detail.isDataType("date"))
 						{
 							// try the date format from the picker
-							DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy"); //TODO: Pass in the format from the picker
+							DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy"); // TODO: Pass in the format from
+																						// the picker
 							try
 							{
 								Date date = dateFormat.parse(value);
@@ -199,7 +199,7 @@ public class MediaArchiveModule extends BaseMediaModule
 				boolean has = user.hasProperty(id);
 				if (has)
 				{
-					user.setValue(id,null);
+					user.setValue(id, null);
 				}
 				else
 				{
@@ -212,68 +212,64 @@ public class MediaArchiveModule extends BaseMediaModule
 
 	/**
 	 * Requires catalog on the URL and sourcepath
+	 * 
 	 * @param inReq
 	 * @throws OpenEditException
 	 */
 	/*
-	public void uploadAsset( WebPageRequest inReq ) throws OpenEditException
-	{
-		UploadRequest map = getFileUpload().parseArguments(inReq);
-		MediaArchive archive = getMediaArchive(inReq);
-		if ( map == null || map.getUploadItems().size() == 0)
-		{
-			log.info("no assets found, reloading page");
-			return;
-		}
-		long utime = System.currentTimeMillis();
-//		String temppath = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/tmp" + utime + "_" + map.getFirstItem().getName();
-//		map.saveFirstFileAs(temppath, inReq.getUser());
-		
-		List unzipped = map.unzipFiles(false);
-		inReq.putPageValue("uploadrequest", map);
-		if( map.getFirstItem() != null)
-		{
-			Page first = map.getFirstItem().getSavedPage();
-			inReq.putPageValue("firstfilepath", first.getPath());
-		}
-		inReq.putPageValue("unzippedfiles", unzipped);
-		inReq.putPageValue("pageManager", getPageManager());
-	}
-	*/
+	 * public void uploadAsset( WebPageRequest inReq ) throws OpenEditException { UploadRequest map =
+	 * getFileUpload().parseArguments(inReq); MediaArchive archive = getMediaArchive(inReq); if ( map ==
+	 * null || map.getUploadItems().size() == 0) { log.info("no assets found, reloading page"); return;
+	 * } long utime = System.currentTimeMillis(); // String temppath = "/WEB-INF/data" +
+	 * archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/tmp" + utime + "_" +
+	 * map.getFirstItem().getName(); // map.saveFirstFileAs(temppath, inReq.getUser());
+	 * 
+	 * List unzipped = map.unzipFiles(false); inReq.putPageValue("uploadrequest", map); if(
+	 * map.getFirstItem() != null) { Page first = map.getFirstItem().getSavedPage();
+	 * inReq.putPageValue("firstfilepath", first.getPath()); } inReq.putPageValue("unzippedfiles",
+	 * unzipped); inReq.putPageValue("pageManager", getPageManager()); }
+	 */
 
-//	public FileUpload getFileUpload()
-//	{
-//		return fieldFileUpload;
-//	}
-//
-//	public void setFileUpload(FileUpload fileUpload)
-//	{
-//		fieldFileUpload = fileUpload;
-//	}
+	// public FileUpload getFileUpload()
+	// {
+	// return fieldFileUpload;
+	// }
+	//
+	// public void setFileUpload(FileUpload fileUpload)
+	// {
+	// fieldFileUpload = fileUpload;
+	// }
 
 	/**
 	 * This must be called as a path-action
+	 * 
 	 * @param inReq
 	 * @throws Exception
 	 */
 	public void forceDownload(WebPageRequest inReq) throws Exception
 	{
-		if( inReq.getResponse() != null)
+		if (inReq.getResponse() != null)
 		{
 			String embedded = inReq.findValue("embedded");
-			if( !Boolean.parseBoolean(embedded))
+			if (!Boolean.parseBoolean(embedded))
 			{
 				Page content = inReq.getContentPage();
 				String filename = (String) inReq.getPageValue("downloadfilename");
-				if(filename == null) {
-				 filename = content.getName(); 
+				if (filename == null)
+				{
+					filename = content.getName();
 				}
 				filename.replace("\"", "/\"");
 
-				if(inReq.getResponse() != null)
-					{
-						inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\""+ filename +"\"");  //This seems to work on firefox
-					}
+				if (inReq.getResponse() != null)
+				{
+					inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\"" + filename + "\""); // This
+																														// seems
+																														// to
+																														// work
+																														// on
+																														// firefox
+				}
 			}
 		}
 	}
@@ -284,52 +280,51 @@ public class MediaArchiveModule extends BaseMediaModule
 		archive.clearCaches();
 		archive.clearAll();
 	}
+
 	public Asset getAssetAndPage(WebPageRequest inReq)
 	{
 		Asset asset = getAsset(inReq);
 		String moduleid = inReq.findPathValue("module");
 		HitTracker tracker = loadHitTracker(inReq, moduleid);
-		//Find this on this tracker and match up the page
-		if( tracker != null)
+		// Find this on this tracker and match up the page
+		if (tracker != null)
 		{
-			//Asset could be deleted
-			if( asset == null)
+			// Asset could be deleted
+			if (asset == null)
 			{
 				MediaArchive archive = getMediaArchive(inReq);
 				String assetid = tracker.idOnThisPage();
 				asset = archive.getAsset(assetid);
 			}
-			
+
 			int index = tracker.indexOfId(asset.getId());
-			if( index < 1)
+			if (index < 1)
 			{
 				index = 1;
 			}
-			double page = (double)(index + 1) / (double)tracker.getHitsPerPage();
+			double page = (double) (index + 1) / (double) tracker.getHitsPerPage();
 			int gotopage = MathUtils.roundUp(page);
-			if( gotopage > tracker.getTotalPages() )
+			if (gotopage > tracker.getTotalPages())
 			{
 				gotopage = tracker.getTotalPages() - 1;
 			}
 			tracker.setPage(gotopage);
-			
-			//Setup Multi-Edit?
-			
-			
+
+			// Setup Multi-Edit?
+
 		}
 		return asset;
 	}
-	
-	
-	public void reindexLegacyAssets(WebPageRequest inReq) {
-		
-		//this is for legacy support
+
+	public void reindexLegacyAssets(WebPageRequest inReq)
+	{
+
+		// this is for legacy support
 		final List tosave = new ArrayList(500);
 		MediaArchive archive = getMediaArchive(inReq);
 		String datapath = "/WEB-INF/data/" + archive.getCatalogId() + "/assets";
-		
-		PathProcessor processor = new PathProcessor()
-		{
+
+		PathProcessor processor = new PathProcessor() {
 			public void processFile(ContentItem inContent, User inUser)
 			{
 				if (!inContent.getName().equals("data.xml"))
@@ -357,10 +352,6 @@ public class MediaArchiveModule extends BaseMediaModule
 		archive.getAssetSearcher().updateIndex(tosave);
 		log.info("reindexed " + processor.getExecCount());
 
-	
 	}
-	
 
-	
 }
-

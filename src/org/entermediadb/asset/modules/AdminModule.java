@@ -1,13 +1,13 @@
 /*
-Copyright (c) 2003 eInnovation Inc. All rights reserved
-
-This library is free software; you can redistribute it and/or modify it under the terms
-of the GNU Lesser General Public License as published by the Free Software Foundation;
-either version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
+ * Copyright (c) 2003 eInnovation Inc. All rights reserved
+ * 
+ * This library is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation; either version
+ * 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
  */
 
 package org.entermediadb.asset.modules;
@@ -72,7 +72,7 @@ public class AdminModule extends BaseMediaModule
 	protected SendMailModule sendMailModule;
 	protected List fieldWelcomeFiles;
 	protected List fieldAutoLoginProviders;
-	
+
 	public List getAutoLoginProviders()
 	{
 		return fieldAutoLoginProviders;
@@ -93,8 +93,7 @@ public class AdminModule extends BaseMediaModule
 		fieldWelcomeFiles = inWelcomeFiles;
 	}
 
-	public AdminModule()
-	{
+	public AdminModule() {
 		super();
 	}
 
@@ -106,8 +105,7 @@ public class AdminModule extends BaseMediaModule
 	/**
 	 * Sets the root FTP URL.
 	 * 
-	 * @param rootFTPURL
-	 *            The root FTP URL to set
+	 * @param rootFTPURL The root FTP URL to set
 	 */
 	public void setRootFTPURL(String rootFTPURL)
 	{
@@ -124,15 +122,15 @@ public class AdminModule extends BaseMediaModule
 	/**
 	 * Returns the root FTP URL.
 	 * 
-	 * @return A string, which will not end in a slash, or <code>null</code> if
-	 *         FTP support has not been configured.
+	 * @return A string, which will not end in a slash, or <code>null</code> if FTP support has not been
+	 *         configured.
 	 */
 	public String getRootFTPURL()
 	{
 		return fieldRootFTPURL;
 	}
 
-	//TODO: Use Spring
+	// TODO: Use Spring
 	protected PasswordHelper getPasswordHelper(WebPageRequest inReq) throws OpenEditException
 	{
 		PasswordHelper passwordHelper = (PasswordHelper) inReq.getSessionValue("passwordHelper");
@@ -145,16 +143,13 @@ public class AdminModule extends BaseMediaModule
 
 		return passwordHelper;
 	}
-	
-	
-	
-	
+
 	public void emailUserLoginCode(WebPageRequest inReq) throws Exception
 	{
 		String emailaddress = inReq.getRequestParameter(EMAIL);
-		if( emailaddress == null)
+		if (emailaddress == null)
 		{
-			emailaddress = inReq.getRequestParameter("email"); //Move to using this
+			emailaddress = inReq.getRequestParameter("email"); // Move to using this
 		}
 		String u = inReq.getRequestParameter(UNAME);
 		if (emailaddress == null && u == null)
@@ -168,9 +163,9 @@ public class AdminModule extends BaseMediaModule
 		String username = null;
 		String firstName = "";
 		String lastName = "";
-		
-		Category userCategory = (Category)inReq.getPageValue("userCategory"); 
-		
+
+		Category userCategory = (Category) inReq.getPageValue("userCategory");
+
 		PasswordHelper passwordHelper = getPasswordHelper(inReq);
 
 		if (emailaddress != null && emailaddress.length() > 0)
@@ -183,14 +178,14 @@ public class AdminModule extends BaseMediaModule
 			firstName = foundUser.getFirstName();
 			lastName = foundUser.getLastName();
 			username = foundUser.getId();
-			
-			if(foundUser.isEnabled() )
+
+			if (foundUser.isEnabled())
 			{
-				String userCode = getUserManager(inReq).createNewTempLoginKey(username,emailaddress,firstName,lastName,false);
-				
-				if(userCategory != null)
+				String userCode = getUserManager(inReq).createNewTempLoginKey(username, emailaddress, firstName, lastName, false);
+
+				if (userCategory != null)
 				{
-					foundUser.setValue("logincategoryid",userCategory.getId());
+					foundUser.setValue("logincategoryid", userCategory.getId());
 					getUserManager(inReq).saveUser(foundUser);
 				}
 				passwordHelper.emailPasswordReminder(inReq, getPageManager(), userCode, emailaddress);
@@ -203,43 +198,43 @@ public class AdminModule extends BaseMediaModule
 		}
 		else
 		{
-			//Show error on page. Notify admin
+			// Show error on page. Notify admin
 			log.error("User not found:" + foundUser);
 			inReq.putPageValue("emailaddress", emailaddress);
-			String userapproveremail = (String)inReq.getPageValue("userapproveremail");
-			if (userapproveremail != null) {
+			String userapproveremail = (String) inReq.getPageValue("userapproveremail");
+			if (userapproveremail != null)
+			{
 				passwordHelper.emailAdminAboutNewUser(inReq, getPageManager(), emailaddress, userapproveremail);
 			}
-			else {
+			else
+			{
 				firstName = inReq.getRequestParameter("firstName");
 				lastName = inReq.getRequestParameter("lastName");
-				String userCode = getUserManager(inReq).createNewTempLoginKey(null,emailaddress,firstName,lastName,false);
+				String userCode = getUserManager(inReq).createNewTempLoginKey(null, emailaddress, firstName, lastName, false);
 				String subject = inReq.getRequestParameter("subject");
 				inReq.putPageValue("subject", subject);
 				passwordHelper.emailPasswordReminder(inReq, getPageManager(), userCode, emailaddress);
-				
+
 			}
 		}
-		if(inReq.getPageValue("error") != null) {
+		if (inReq.getPageValue("error") != null)
+		{
 			log.info("Error sending Email. " + inReq.getPageValue("error"));
 			inReq.putPageValue("commandSucceeded", "error");
-			
+
 		}
 		else
 		{
 			inReq.putPageValue("commandSucceeded", "ok");
 		}
 	}
-	
-	
-	
 
 	public void emailPasswordReminder(WebPageRequest inReq) throws Exception
 	{
 		String emailaddress = inReq.getRequestParameter(EMAIL);
-		if( emailaddress == null)
+		if (emailaddress == null)
 		{
-			emailaddress = inReq.getRequestParameter("email"); //Move to using this
+			emailaddress = inReq.getRequestParameter("email"); // Move to using this
 		}
 		String u = inReq.getRequestParameter(UNAME);
 		if (emailaddress == null && u == null)
@@ -267,86 +262,85 @@ public class AdminModule extends BaseMediaModule
 				foundUser = (User) getUserManager(inReq).getUser(username);
 			}
 		}
-		if( foundUser != null)
+		if (foundUser != null)
 		{
 			emailaddress = foundUser.getEmail();
 			firstName = foundUser.getFirstName();
 			lastName = foundUser.getLastName();
 			username = foundUser.getId();
 		}
-		
-		Boolean allowguestregistration =  Boolean.parseBoolean( inReq.findPathValue("allowguestregistration"));
-		if (foundUser == null && !allowguestregistration) {
-			
+
+		Boolean allowguestregistration = Boolean.parseBoolean(inReq.findPathValue("allowguestregistration"));
+		if (foundUser == null && !allowguestregistration)
+		{
+
 			inReq.putPageValue("commandSucceeded", "nouser");
 			return;
 		}
-		//Different email template for desktopapp
+		// Different email template for desktopapp
 		String launchersource = inReq.getRequestParameter("launchersource");
 		inReq.putPageValue("launchersource", launchersource);
 
 		try
 		{
-			//firstName = inReq.getRequestParameter("firstName");
-			//lastName = inReq.getRequestParameter("lastName");
+			// firstName = inReq.getRequestParameter("firstName");
+			// lastName = inReq.getRequestParameter("lastName");
 			if (foundUser == null && firstName == null && lastName == null)
 			{
 				inReq.putPageValue("commandSucceeded", "nouser");
 				return;
 			}
-			
-			 
-			
-			String tempsecuritykey = getUserManager(inReq).createNewTempLoginKey(username,emailaddress,firstName,lastName,false);
-			
+
+			String tempsecuritykey = getUserManager(inReq).createNewTempLoginKey(username, emailaddress, firstName, lastName, false);
+
 			PasswordHelper passwordHelper = getPasswordHelper(inReq);
 			String key = null;
-			if( foundUser != null )
+			if (foundUser != null)
 			{
-				key = getUserManager(inReq).getStringEncryption().getTempEnterMediaKey(foundUser); //Optional
+				key = getUserManager(inReq).getStringEncryption().getTempEnterMediaKey(foundUser); // Optional
 			}
-			
-			if(foundUser != null &&  foundUser.isEnabled() )
+
+			if (foundUser != null && foundUser.isEnabled())
 			{
 				/*
-				if(userCategory != null)
-				{
-					foundUser.setValue("logincategoryid",userCategory.getId());
-					getUserManager(inReq).saveUser(foundUser);
-				}
-				*/
+				 * if(userCategory != null) { foundUser.setValue("logincategoryid",userCategory.getId());
+				 * getUserManager(inReq).saveUser(foundUser); }
+				 */
 				passwordHelper.emailPasswordReminder(inReq, getPageManager(), tempsecuritykey, key, emailaddress);
 			}
 			else
 			{
-				//Show error on page. Notify admin
+				// Show error on page. Notify admin
 				inReq.putPageValue("emailaddress", emailaddress);
-				Category userCategory = (Category)inReq.getPageValue("userCategory");
-				String  userapproveremail = null;
-				if( userCategory != null)
+				Category userCategory = (Category) inReq.getPageValue("userCategory");
+				String userapproveremail = null;
+				if (userCategory != null)
 				{
-					userapproveremail = (String)userCategory.findValue("categoryadminemail");
+					userapproveremail = (String) userCategory.findValue("categoryadminemail");
 				}
-				if( userapproveremail == null)
+				if (userapproveremail == null)
 				{
 					userapproveremail = getMediaArchive(inReq).getCatalogSettingValue("userapproveremail");
 				}
-				if (userapproveremail != null) {
+				if (userapproveremail != null)
+				{
 					inReq.putPageValue("userapproveremail", userapproveremail);
 					passwordHelper.emailAdminAboutNewUser(inReq, getPageManager(), emailaddress, userapproveremail);
 				}
-				else {
+				else
+				{
 					inReq.putPageValue("commandSucceeded", "nouser");
 					return;
 				}
 			}
-			
-			if(inReq.getPageValue("error") != null) {
+
+			if (inReq.getPageValue("error") != null)
+			{
 				log.info("Error sending Email. " + inReq.getPageValue("error"));
 			}
 			inReq.putPageValue("commandSucceeded", "ok");
-			//inReq.putPageValue("founduserid", foundUser.getUserName());
-			
+			// inReq.putPageValue("founduserid", foundUser.getUserName());
+
 		}
 		catch (OpenEditException oex)
 		{
@@ -354,17 +348,19 @@ public class AdminModule extends BaseMediaModule
 			log.error(oex.getMessage(), oex);
 			log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
 		}
-		
-		
+
 	}
-		
+
 	/**
-	 * @deprecated use 		String passenc = getUserManager(inReq).getStringEncryption().getPasswordMd5(foundUser.getPassword());
+	 * @deprecated use String passenc =
+	 *             getUserManager(inReq).getStringEncryption().getPasswordMd5(foundUser.getPassword());
 	 * @param inReq
 	 */
-	public void getKey(WebPageRequest inReq) {
+	public void getKey(WebPageRequest inReq)
+	{
 		User foundUser = inReq.getUser();
-		if (foundUser == null ) {
+		if (foundUser == null)
+		{
 			return;
 		}
 		String passenc = getUserManager(inReq).getStringEncryption().getPasswordMd5(foundUser.getPassword());
@@ -378,17 +374,17 @@ public class AdminModule extends BaseMediaModule
 			}
 			else
 			{
-					String tsenc = getUserManager(inReq).getStringEncryption().encrypt(String.valueOf(new Date().getTime()));
-					if (tsenc != null && !tsenc.isEmpty())
-					{
-						if (tsenc.startsWith("DES:"))
-							tsenc = tsenc.substring("DES:".length());//kloog: remove DES: prefix since appended to URL
-						passenc += StringEncryption.TIMESTAMP + tsenc;
-					}
-					else
-					{
-						log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
-					}
+				String tsenc = getUserManager(inReq).getStringEncryption().encrypt(String.valueOf(new Date().getTime()));
+				if (tsenc != null && !tsenc.isEmpty())
+				{
+					if (tsenc.startsWith("DES:"))
+						tsenc = tsenc.substring("DES:".length());// kloog: remove DES: prefix since appended to URL
+					passenc += StringEncryption.TIMESTAMP + tsenc;
+				}
+				else
+				{
+					log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
+				}
 			}
 			inReq.putPageValue("userKey", passenc);
 		}
@@ -414,20 +410,20 @@ public class AdminModule extends BaseMediaModule
 		}
 		manager.loadPermissions(inReq, inReq.getContentPage(), limited);
 	}
-	
+
 	public void loadPermissionFinder(WebPageRequest inReq) throws Exception
 	{
 		UserProfile profile = inReq.getUserProfile();
-		if( profile != null)
+		if (profile != null)
 		{
 			Permissions permissions = profile.getPermissions();
 			inReq.putPageValue("permissions", permissions);
-			
-			//$permissions.can("viewsettings") $permissions.can("asset","upload")
+
+			// $permissions.can("viewsettings") $permissions.can("asset","upload")
 		}
 	}
-	
-	//We will see if we use this or not. Actions may want to handle it themself
+
+	// We will see if we use this or not. Actions may want to handle it themself
 	public void permissionRedirect(WebPageRequest inReq) throws OpenEditException
 	{
 		String name = inReq.findValue("permission");
@@ -444,15 +440,14 @@ public class AdminModule extends BaseMediaModule
 
 	/**
 	 * 
-	 * @deprecated Use Admin.loadPermissions then check for the "canedit" page
-	 *             property
+	 * @deprecated Use Admin.loadPermissions then check for the "canedit" page property
 	 * @throws Exception
 	 */
 
 	public void allowEditing(WebPageRequest inReq) throws Exception
 	{
-		//		if( inReq.getPageValue("canedit") == null)
-		//		{
+		// if( inReq.getPageValue("canedit") == null)
+		// {
 		createUserSession(inReq);
 		boolean value = false;
 		if (inReq.getUser() != null)
@@ -461,7 +456,7 @@ public class AdminModule extends BaseMediaModule
 			value = ((filter == null) || filter.passes(inReq));
 		}
 		inReq.setEditable(value);
-		//		}
+		// }
 	}
 
 	public void allowViewing(WebPageRequest inReq) throws OpenEditException
@@ -494,70 +489,75 @@ public class AdminModule extends BaseMediaModule
 	}
 
 	/*
-	 * public void loginByEmail( WebPageRequest inReq ) throws Exception {
-	 * String account = inReq.getRequestParameter("email");
+	 * public void loginByEmail( WebPageRequest inReq ) throws Exception { String account =
+	 * inReq.getRequestParameter("email");
 	 * 
-	 * if ( account != null ) { User user = getUserManager(inReq).getUserByEmail(
-	 * account ); loginAndRedirect(user,inReq); } else { String referrer =
-	 * inReq.getRequest().getHeader("REFERER"); if ( referrer != null ) { //this
-	 * is the original page someone might have been on
+	 * if ( account != null ) { User user = getUserManager(inReq).getUserByEmail( account );
+	 * loginAndRedirect(user,inReq); } else { String referrer = inReq.getRequest().getHeader("REFERER");
+	 * if ( referrer != null ) { //this is the original page someone might have been on
 	 * inReq.putSessionValue("originalEntryPage",referrer ); } } }
 	 */
 	public void login(WebPageRequest inReq) throws Exception
 	{
 		String entermediakey = inReq.getRequestParameter("entermedia.key");
-		if( entermediakey == null)
+		if (entermediakey == null)
 		{
 			entermediakey = inReq.getRequestParameter("entermediakey");
 		}
 		String account = inReq.getRequestParameter("accountname");
-		if( account == null)
+		if (account == null)
 		{
 			account = inReq.getRequestParameter("id");
 		}
 		String email = inReq.getRequestParameter("email");
-		
+
 		String password = inReq.getRequestParameter("password");
 
-		if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
-			if(account != null) {
+		if (Boolean.parseBoolean(inReq.findValue("forcelowercaseusername")))
+		{
+			if (account != null)
+			{
 				account = account.toLowerCase();
 			}
 		}
 		String sendTo = (String) inReq.getSessionValue("fullOriginalEntryPage");
-		
-		if(sendTo == null){
-			
+
+		if (sendTo == null)
+		{
+
 			sendTo = inReq.getRequestParameter("loginokpage");
-			
-			if( sendTo == null)
+
+			if (sendTo == null)
 			{
 				sendTo = inReq.getRequest().getHeader("REFERER");
 			}
-			if (sendTo != null && !sendTo.contains("authentication") && sendTo.startsWith(inReq.getSiteRoot()) && (sendTo.endsWith("html") || sendTo.endsWith("jpg")) )
-			{ //the original page someone might have been on
+			if (sendTo != null && !sendTo.contains("authentication") && sendTo.startsWith(inReq.getSiteRoot()) && (sendTo.endsWith("html") || sendTo.endsWith("jpg")))
+			{ // the original page someone might have
+				// been on
 				inReq.putSessionValue("fullOriginalEntryPage", sendTo);
 			}
 		}
-			
+
 		if (entermediakey == null && account == null && email == null && inReq.getRequest() != null)
 		{
-			//log.info("Missing parameters " + entermediakey + " and " + account + " email:" + email );
+			// log.info("Missing parameters " + entermediakey + " and " + account + "
+			// email:" + email );
 			return;
 		}
 		else
 		{
-			if( entermediakey != null)
+			if (entermediakey != null)
 			{
-				if (entermediakey.indexOf("md5") != -1) {
+				if (entermediakey.indexOf("md5") != -1)
+				{
 					account = entermediakey.substring(0, entermediakey.indexOf("md5"));
 				}
 			}
 			UserManager userManager = getUserManager(inReq);
 			User user = null;
-			if( account == null)
+			if (account == null)
 			{
-				if( email == null)
+				if (email == null)
 				{
 					log.info("No user id or email found " + account);
 					inReq.putPageValue("oe-exception", "No user id or email found");
@@ -569,15 +569,15 @@ public class AdminModule extends BaseMediaModule
 			else
 			{
 				user = userManager.getUser(account);
-				if( user == null)
+				if (user == null)
 				{
-					if( !"system".equals( userManager.getUserSearcher().getCatalogId() ) )
+					if (!"system".equals(userManager.getUserSearcher().getCatalogId()))
 					{
-						log.error("Catalog has customized searchtypes table for user and group database. "
-								+ "Make sure users exist in: WEB-INF/data/" + userManager.getUserSearcher().getCatalogId() + "/users");
+						log.error("Catalog has customized searchtypes table for user and group database. " + "Make sure users exist in: WEB-INF/data/" + userManager.getUserSearcher().getCatalogId()
+							+ "/users");
 					}
 				}
-				if( user == null && account.contains("@"))
+				if (user == null && account.contains("@"))
 				{
 					user = userManager.getUserByEmail(account);
 				}
@@ -586,29 +586,29 @@ public class AdminModule extends BaseMediaModule
 			if (user == null && templogincode != null) // Allow guest user?
 			{
 				String allow = inReq.getPage().get("allowguestregistration");
-				if( allow == null)
+				if (allow == null)
 				{
 					log.error("allowguestregistration must be set to login with temp codes");
 				}
 				else
 				{
 					String groupid = inReq.getPage().get("autologingroup");
-					user = userManager.checkForNewUser(email,templogincode, groupid);
+					user = userManager.checkForNewUser(email, templogincode, groupid);
 				}
 
-//				if (groupname != null)
-//				{
-//					//we dont want to save the real password since it might be NT based
-//					String tmppassword = new PasswordGenerator().generate();
-//					user = userManager.createGuestUser(account, tmppassword, groupname);
-//					log.info("Username not found. Creating guest user.");
-//				}
+				// if (groupname != null)
+				// {
+				// //we dont want to save the real password since it might be NT based
+				// String tmppassword = new PasswordGenerator().generate();
+				// user = userManager.createGuestUser(account, tmppassword, groupname);
+				// log.info("Username not found. Creating guest user.");
+				// }
 			}
-			if( password == null)
+			if (password == null)
 			{
 				password = entermediakey;
 			}
-			
+
 			if (password == null && templogincode == null)
 			{
 				inReq.putPageValue("oe-exception", "Password cannot be blank " + account);
@@ -616,11 +616,11 @@ public class AdminModule extends BaseMediaModule
 				inReq.putPageValue("commandSucceeded", "nopassword");
 				return;
 			}
-			if (user == null )
+			if (user == null)
 			{
 				String server = inReq.getPage().get("authenticationserver");
-				if( server != null)
-				{	
+				if (server != null)
+				{
 					log.info("Checking server for user " + server);
 					String groupid = inReq.getPage().get("autologingroup");
 					user = userManager.createGuestUser(account, null, groupid);
@@ -631,14 +631,14 @@ public class AdminModule extends BaseMediaModule
 					inReq.putPageValue("oe-exception", "Invalid Login");
 					inReq.putPageValue("commandSucceeded", "nouser");
 					log.info("No user found " + account);
-					
+
 					return;
 				}
 			}
 			AuthenticationRequest aReq = userManager.createAuthenticationRequest(inReq, password, user);
 
 			aReq.putProperty("templogincode", templogincode);
-			
+
 			if (loginAndRedirect(aReq, inReq))
 			{
 				user.setVirtual(false);
@@ -654,7 +654,7 @@ public class AdminModule extends BaseMediaModule
 				}
 				else
 				{
-					if(inReq.getPageValue("oe-exception") == null)
+					if (inReq.getPageValue("oe-exception") == null)
 					{
 						inReq.putPageValue("oe-exception", "Invalid Login");
 						inReq.putPageValue("commandSucceeded", "invalidlogin");
@@ -664,41 +664,42 @@ public class AdminModule extends BaseMediaModule
 		}
 	}
 
-	
-	//TODO: Remove this, its duplicates login
+	// TODO: Remove this, its duplicates login
 	public boolean authenticate(WebPageRequest inReq) throws Exception
 	{
 		String account = inReq.getRequestParameter("id");
 		String email = inReq.getRequestParameter("email");
-		
-		if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
+
+		if (Boolean.parseBoolean(inReq.findValue("forcelowercaseusername")))
+		{
 			account = account.toLowerCase();
 		}
 		String password = inReq.getRequestParameter("password");
 		UserManager userManager = getUserManager(inReq);
 		User user = null;
-		if( account != null )
+		if (account != null)
 		{
 			user = userManager.getUser(account);
 		}
-		else if( email != null)
-		{
-			userManager.getUserByEmail(email);
-		}
+		else
+			if (email != null)
+			{
+				userManager.getUserByEmail(email);
+			}
 		Boolean ok = false;
 		if (user != null)
 		{
 			AuthenticationRequest aReq = userManager.createAuthenticationRequest(inReq, password, user);
-			
+
 			String templogincode = inReq.getRequestParameter("templogincode");
 			aReq.putProperty("templogincode", templogincode);
-			
+
 			if (userManager.authenticate(aReq))
 			{
 				ok = true;
 				String md5 = getCookieEncryption().getPasswordMd5(user.getPassword());
 				String value = user.getUserName() + "md542" + md5;
-				inReq.putPageValue("entermediakey", value); //TODO: Remove this, its slow
+				inReq.putPageValue("entermediakey", value); // TODO: Remove this, its slow
 				inReq.putSessionValue(aReq.getCatalogId() + "user", user);
 				inReq.putPageValue("user", user);
 				inReq.putPageValue("commandSucceeded", "ok");
@@ -713,8 +714,8 @@ public class AdminModule extends BaseMediaModule
 		{
 			log.info("No such user" + account);
 			inReq.putPageValue("commandSucceeded", "nouser");
-//			String catalogid =user.get("catalogid");
-//			inReq.putSessionValue(catalogid + "user", null);
+			// String catalogid =user.get("catalogid");
+			// inReq.putSessionValue(catalogid + "user", null);
 		}
 
 		inReq.putPageValue("id", account);
@@ -757,7 +758,7 @@ public class AdminModule extends BaseMediaModule
 				{
 					try
 					{
-						userok = userManager.authenticate(inAReq); //<---- This is it!!!! we login
+						userok = userManager.authenticate(inAReq); // <---- This is it!!!! we login
 					}
 					catch (UserManagerException ue)
 					{
@@ -773,17 +774,17 @@ public class AdminModule extends BaseMediaModule
 					inReq.putPageValue("invaliduser", inUser);
 					getUserManager(inReq).fireUserEvent(inUser, "disabled");
 					log.info("User disabled");
-					
+
 					String categoryid = inReq.getRequestParameter("categoryid");
-					if(categoryid != null) 
+					if (categoryid != null)
 					{
 						Data category = getMediaArchive(inReq).getCachedData("category", categoryid);
-						if(category != null)
+						if (category != null)
 						{
 							inReq.putPageValue("category", category);
 						}
 					}
-					
+
 					return false;
 				}
 			}
@@ -793,50 +794,52 @@ public class AdminModule extends BaseMediaModule
 		{
 			if (disable)
 			{
-				//This resets the "failed attemps" to 0.
+				// This resets the "failed attemps" to 0.
 				inUser.setProperty("failedlogincount", "0");
 				userManager.saveUser(inUser);
 
 			}
 
-			//			// check validation
-			//			String lastTime= inUser.getLastLoginTime(); 
-			//			if(lastTime != null){
-			//				int duration= Integer.parseInt(inReq.getPageProperty("active-duration"));
-			//				if(duration >-1){
-			//					//Date lastDateTime = DateStorageUtil.getStorageUtil().parseFromStorage(lastTime);
-			//					double eslapsedPeriod =DateStorageUtil.getStorageUtil().compareStorateDateWithCurrentTime(lastTime);
-			//					if( eslapsedPeriod > duration){
-			//						inReq.putPageValue("inactive", true);
-			//						inReq.putSessionValue("inactive", true);
-			//						inReq.putPageValue("inactiveuser", inUser);
-			//						inReq.putSessionValue("active-duration", String.valueOf(duration));
-			//						return false;
-			//					}
-			//					
-			//				}
-			//			}
-			
-			//LastLogin set
+			// // check validation
+			// String lastTime= inUser.getLastLoginTime();
+			// if(lastTime != null){
+			// int duration= Integer.parseInt(inReq.getPageProperty("active-duration"));
+			// if(duration >-1){
+			// //Date lastDateTime =
+			// DateStorageUtil.getStorageUtil().parseFromStorage(lastTime);
+			// double eslapsedPeriod
+			// =DateStorageUtil.getStorageUtil().compareStorateDateWithCurrentTime(lastTime);
+			// if( eslapsedPeriod > duration){
+			// inReq.putPageValue("inactive", true);
+			// inReq.putSessionValue("inactive", true);
+			// inReq.putPageValue("inactiveuser", inUser);
+			// inReq.putSessionValue("active-duration", String.valueOf(duration));
+			// return false;
+			// }
+			//
+			// }
+			// }
+
+			// LastLogin set
 			String time = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
 			inUser.setProperty("lastlogin", String.valueOf(time));
 
 			inReq.removeSessionValue("userprofile");
-			//inReq.putSessionValue("user", inUser);
-			
-			//TODO: Move this into the manager
+			// inReq.putSessionValue("user", inUser);
+
+			// TODO: Move this into the manager
 			String catalogid = userManager.getUserSearcher().getCatalogId();
 			inUser.setProperty("catalogid", catalogid);
 			inReq.putSessionValue(catalogid + "user", inUser);
-			
+
 			String realcatalog = inReq.findPathValue("catalogid");
 			inReq.putSessionValue(realcatalog + "user", inUser);
-			
+
 			createUserSession(inReq);
 			// user is now logged in
 			log.info("User logged in " + inReq.getUser());
 			savePasswordAsCookie(inUser, inReq);
-			
+
 			String cancelredirect = inReq.findValue("cancelredirect");
 			if (!Boolean.parseBoolean(cancelredirect))
 			{
@@ -860,7 +863,7 @@ public class AdminModule extends BaseMediaModule
 		}
 		else
 		{
-			//Disable user for repeated attempts 
+			// Disable user for repeated attempts
 			if (disable)
 			{
 				String failedLoginCount = inUser.get("failedlogincount");
@@ -888,22 +891,24 @@ public class AdminModule extends BaseMediaModule
 
 			}
 
-			//	inReq.putSessionValue("oe-exception", "Invalid Logon");
-			//inReq.putPageValue("oe-exception", "Invalid Logon");
+			// inReq.putSessionValue("oe-exception", "Invalid Logon");
+			// inReq.putPageValue("oe-exception", "Invalid Logon");
 			return false;
 		}
 
 	}
+
 	public void savePasswordAsCookie(WebPageRequest inReq)
 	{
 		User user = getUserSearcher(inReq).getUser(inReq.getUserName());
-		//Latest one
+		// Latest one
 		savePasswordAsCookie(user, inReq);
 		String catalogid = getUserManager(inReq).getUserSearcher().getCatalogId();
 		inReq.putSessionValue(catalogid + "user", user);
-		inReq.putPageValue( "user", user);
-		
+		inReq.putPageValue("user", user);
+
 	}
+
 	public void savePasswordAsCookie(User user, WebPageRequest inReq) throws OpenEditException
 	{
 		if (user.isVirtual())
@@ -911,14 +916,15 @@ public class AdminModule extends BaseMediaModule
 			log.debug("User is virtual. Not saving cookie");
 			return;
 		}
-		BaseAutoLogin autologin = (BaseAutoLogin)getModuleManager().getBean(inReq.findPathValue("catalogid"),"autoLoginWithCookie");
+		BaseAutoLogin autologin = (BaseAutoLogin) getModuleManager().getBean(inReq.findPathValue("catalogid"), "autoLoginWithCookie");
 		autologin.saveCookieForUser(inReq, user);
 	}
 
 	public void loadEnterMediaKey(WebPageRequest inReq)
 	{
 		String account = inReq.getRequestParameter("id");
-		if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
+		if (Boolean.parseBoolean(inReq.findValue("forcelowercaseusername")))
+		{
 			account = account.toLowerCase();
 		}
 		String password = inReq.getRequestParameter("password");
@@ -943,12 +949,13 @@ public class AdminModule extends BaseMediaModule
 		UserManager usermanager = getUserManager(inReq);
 		String catalogid = usermanager.getUserSearcher().getCatalogId();
 		User user = (User) inReq.getSessionValue(catalogid + "user");
-		if(user == null) {
+		if (user == null)
+		{
 			user = (User) inReq.getPageValue("user");
 		}
 		if (user == null)
 		{
-			//this user is already logged out
+			// this user is already logged out
 			return;
 		}
 		usermanager.logout(user);
@@ -972,10 +979,9 @@ public class AdminModule extends BaseMediaModule
 
 		inReq.removePageValue("user");
 		inReq.removePageValue("userprofile");
-		getCookieEncryption().removeCookie(inReq,AutoLoginProvider.ENTERMEDIAKEY);
-		getCookieEncryption().removeCookie(inReq,"entermedia.keyopenedit");
-		getCookieEncryption().removeCookie(inReq,"JSESSIONID"); //Added this to try and logout of all the sub-domains
-		
+		getCookieEncryption().removeCookie(inReq, AutoLoginProvider.ENTERMEDIAKEY);
+		getCookieEncryption().removeCookie(inReq, "entermedia.keyopenedit");
+		getCookieEncryption().removeCookie(inReq, "JSESSIONID"); // Added this to try and logout of all the sub-domains
 
 		String referrer = inReq.getRequestParameter("editingPath");
 		if (referrer != null && !referrer.startsWith("http"))
@@ -996,7 +1002,7 @@ public class AdminModule extends BaseMediaModule
 	{
 		createUserSession(inReq);
 		String forceAuto = inReq.findValue("forceautologin");
-		
+
 		if (inReq.getUser() != null && !Boolean.parseBoolean(forceAuto))
 		{
 			return;
@@ -1005,32 +1011,31 @@ public class AdminModule extends BaseMediaModule
 		{
 			AutoLoginProvider login = (AutoLoginProvider) iterator.next();
 			AutoLoginResult result = login.autoLogin(inReq);
-			if( result != null)
+			if (result != null)
 			{
 				UserManager userManager = getUserManager(inReq);
 				String catalogid = userManager.getUserSearcher().getCatalogId();
 				inReq.putSessionValue(catalogid + "user", result.getUser());
-				inReq.putPageValue( "user", result.getUser());
-				//userManager.fireUserEvent(result.getUser(), "autologin");
+				inReq.putPageValue("user", result.getUser());
+				// userManager.fireUserEvent(result.getUser(), "autologin");
 				return;
 			}
 		}
 	}
 
-	
 	public User createUserSession(WebPageRequest inReq)
 	{
 
-		User user = (User)inReq.getPageValue("user");
-		if( user == null)
+		User user = (User) inReq.getPageValue("user");
+		if (user == null)
 		{
 			String catalogid = inReq.findPathValue("catalogid");
 			user = (User) inReq.getSessionValue(catalogid + "user");
-			inReq.putPageValue( "user", user);
+			inReq.putPageValue("user", user);
 		}
 
 		return user;
-		
+
 	}
 
 	protected void quickLogin(WebPageRequest inReq) throws OpenEditException
@@ -1038,7 +1043,8 @@ public class AdminModule extends BaseMediaModule
 		if (inReq.getUser() == null)
 		{
 			String username = inReq.getRequestParameter("accountname");
-			if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
+			if (Boolean.parseBoolean(inReq.findValue("forcelowercaseusername")))
+			{
 				username = username.toLowerCase();
 			}
 			String password = inReq.getRequestParameter("password");
@@ -1066,10 +1072,6 @@ public class AdminModule extends BaseMediaModule
 			}
 		}
 	}
-
-	
-
-
 
 	public void forwardToSecureSocketsLayer(WebPageRequest inReq)
 	{
@@ -1100,8 +1102,8 @@ public class AdminModule extends BaseMediaModule
 	}
 
 	/**
-	 * This is deprecated because it can't handle directory redirects and is
-	 * buggy and hard to read. Use redirectHost and redirectInternal instead.
+	 * This is deprecated because it can't handle directory redirects and is buggy and hard to read. Use
+	 * redirectHost and redirectInternal instead.
 	 * 
 	 * @param inReq
 	 * @throws OpenEditException
@@ -1109,7 +1111,7 @@ public class AdminModule extends BaseMediaModule
 	public void redirect(WebPageRequest inReq) throws OpenEditException
 	{
 		String path = inReq.getCurrentAction().getChildValue("redirectpath");
-		if( path != null)
+		if (path != null)
 		{
 			path = inReq.getContentPage().getPageSettings().replaceProperty(path);
 		}
@@ -1120,24 +1122,25 @@ public class AdminModule extends BaseMediaModule
 		if (path == null)
 		{
 			path = inReq.getPage().get("redirectpath");
-		}		
+		}
 		if (path != null && inReq.getRequest() != null)
 		{
 			if (path.endsWith("/"))
 			{
 				path = path.substring(0, path.length() - 1);
 			}
-			else if (!inReq.getPath().equals(path))
-			{
-				inReq.redirect(path);
-			}
+			else
+				if (!inReq.getPath().equals(path))
+				{
+					inReq.redirect(path);
+				}
 		}
 	}
 
 	/**
-	 * This is used to direct to a different host. I can be used in conjunction
-	 * with redirectInternal(). <path-action name="Admin.redirectHost">
-	 * <redirecthost>http://xyz.com/</redirecthost> </path-action>
+	 * This is used to direct to a different host. I can be used in conjunction with redirectInternal().
+	 * <path-action name="Admin.redirectHost"> <redirecthost>http://xyz.com/</redirecthost>
+	 * </path-action>
 	 * 
 	 * @param inReq
 	 * @throws OpenEditException
@@ -1168,7 +1171,7 @@ public class AdminModule extends BaseMediaModule
 		if (!host.equals(server))
 		{
 			String redirectPath = host + ending;
-			//log.info("Redirecting " + host + " AND " + server);
+			// log.info("Redirecting " + host + " AND " + server);
 			inReq.redirectPermanently(redirectPath);
 		}
 		else
@@ -1178,15 +1181,12 @@ public class AdminModule extends BaseMediaModule
 	}
 
 	/**
-	 * This is used to redirect between pages on the same server. It may be used
-	 * in conjunction with redirectHost(). This should be used instead of the
-	 * old Admin.redirect <path-action name="Admin.redirectInternal"> <!--This
-	 * is an example of directory substitution-->
-	 * <redirectpath>/newpath/</redirectpath>
-	 * <redirectroot>/oldpath/</redirectroot> </path-action> <path-action
-	 * name="Admin.redirectInternal"> <!--This is an example of absolute
-	 * substitution--> <redirectpath>/newpath/index.html</redirectpath>
-	 * <redirectroot>*</redirectroot> </path-action>
+	 * This is used to redirect between pages on the same server. It may be used in conjunction with
+	 * redirectHost(). This should be used instead of the old Admin.redirect
+	 * <path-action name="Admin.redirectInternal"> <!--This is an example of directory substitution-->
+	 * <redirectpath>/newpath/</redirectpath> <redirectroot>/oldpath/</redirectroot> </path-action>
+	 * <path-action name="Admin.redirectInternal"> <!--This is an example of absolute substitution-->
+	 * <redirectpath>/newpath/index.html</redirectpath> <redirectroot>*</redirectroot> </path-action>
 	 * 
 	 * @param inReq
 	 * @throws OpenEditException
@@ -1198,11 +1198,11 @@ public class AdminModule extends BaseMediaModule
 		String rootdir = inReq.getCurrentAction().get("redirectroot");
 		rootdir = inReq.getPage().getPageSettings().replaceProperty(rootdir);
 		URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
-//		String server = utils.buildRoot();
-//		if (server.endsWith("/"))
-//		{
-//			server = server.substring(0, server.length() - 1);
-//		}
+		// String server = utils.buildRoot();
+		// if (server.endsWith("/"))
+		// {
+		// server = server.substring(0, server.length() - 1);
+		// }
 		String ending = utils.requestPathWithArgumentsNoContext();
 		String redirectPath;
 
@@ -1229,25 +1229,25 @@ public class AdminModule extends BaseMediaModule
 	{
 		String orig = inReq.findValue("origURL");
 		String editPath = inReq.getRequestParameter("editPath");
-//		if (orig == null)
-//		{
-//			orig = inReq.getRequestParameter("origURL");
-//		}	
-			
-//		if(orig == null)
-//		{
-//			orig = inReq.getReferringPage();
-//		}
-		
-		if (orig != null )
+		// if (orig == null)
+		// {
+		// orig = inReq.getRequestParameter("origURL");
+		// }
+
+		// if(orig == null)
+		// {
+		// orig = inReq.getReferringPage();
+		// }
+
+		if (orig != null)
 		{
-			if( orig.startsWith("http") )
+			if (orig.startsWith("http"))
 			{
 				log.error("Orig starts with " + orig);
 				inReq.redirect("/index.html");
 				return;
 			}
-			
+
 			if (orig.indexOf("?") == -1 && editPath != null)
 			{
 				inReq.redirect(orig + "?path=" + editPath + "&cache=false");
@@ -1259,7 +1259,7 @@ public class AdminModule extends BaseMediaModule
 		}
 		else
 		{
-			//log.error("No origURL specified");
+			// log.error("No origURL specified");
 		}
 	}
 
@@ -1297,12 +1297,12 @@ public class AdminModule extends BaseMediaModule
 
 	public StringEncryption getCookieEncryption()
 	{
-		//		if (fieldCookieEncryption == null)
-		//		{
-		//			fieldCookieEncryption = new StringEncryption();
-		////			String KEY = "SomeWeirdReallyLongStringYUITYGFNERDF343dfdGDFGSDGGD";
-		////			fieldCookieEncryption.setEncryptionKey(KEY);
-		//		}
+		// if (fieldCookieEncryption == null)
+		// {
+		// fieldCookieEncryption = new StringEncryption();
+		//// String KEY = "SomeWeirdReallyLongStringYUITYGFNERDF343dfdGDFGSDGGD";
+		//// fieldCookieEncryption.setEncryptionKey(KEY);
+		// }
 		return fieldCookieEncryption;
 	}
 
@@ -1326,7 +1326,7 @@ public class AdminModule extends BaseMediaModule
 				boolean has = user.hasProperty(id);
 				if (has)
 				{
-					user.setValue(id,null);
+					user.setValue(id, null);
 				}
 				else
 				{
@@ -1390,7 +1390,7 @@ public class AdminModule extends BaseMediaModule
 
 		if (utils != null)
 		{
-			//redirecting only works relative to a webapp
+			// redirecting only works relative to a webapp
 			if (streamer != null)
 			{
 				streamer.getWebPageRequest().putPageValue("forcedDestinationPath", utils.requestPathWithArgumentsNoContext());
@@ -1420,7 +1420,8 @@ public class AdminModule extends BaseMediaModule
 
 		if (inReq.getContentPage().getPath().equals(inReq.getPath()))
 		{
-			//log.info( "Could not use  add page wizard. 404 error on: " + inReq.getPath() );
+			// log.info( "Could not use add page wizard. 404 error on: " + inReq.getPath()
+			// );
 			Page p404 = pageManager.getPage("/error404.html");
 			if (p404.exists())
 			{
@@ -1430,13 +1431,13 @@ public class AdminModule extends BaseMediaModule
 					response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 				}
 				inReq.putProtectedPageValue("content", p404);
-				//inReq.forward(p404.getPath());
+				// inReq.forward(p404.getPath());
 				return;
 			}
 			else
 			{
 				log.error("Could not report full 404 error on: " + inReq.getPath() + ". Make sure the 404 error page exists " + p404.getPath());
-				//other users will get the standard file not found error
+				// other users will get the standard file not found error
 				HttpServletResponse response = inReq.getResponse();
 				if (response != null)
 				{
@@ -1470,47 +1471,47 @@ public class AdminModule extends BaseMediaModule
 			user.setVirtual(true);
 			user.setProperty("catalogid", catalogid);
 			user.setEnabled(false);
-			//getUserManager(inReq).saveUser(user);
+			// getUserManager(inReq).saveUser(user);
 			inReq.putSessionValue(catalogid + "user", user);
 			inReq.putPageValue("user", user);
 
 		}
 
 	}
-	
+
 	public void createTempUser(WebPageRequest inReq)
 	{
 		String email = inReq.getRequestParameter(EMAIL);
-		if (email != null) {
-			
-			User user =  getUserManager(inReq).createTempUserFromEmail(email);
+		if (email != null)
+		{
+
+			User user = getUserManager(inReq).createTempUserFromEmail(email);
 			inReq.putSessionValue(inReq.findPathValue("catalogid") + "user", user);
 			inReq.putPageValue("user", user);
 		}
 
 	}
-	
 
 	public void switchToUser(WebPageRequest inReq)
 	{
 		User user = inReq.getUser();
 		if (!user.isInGroup("administrators"))
 		{
-			log.info("Only administrators can switch users" );
+			log.info("Only administrators can switch users");
 			return;
 		}
 
 		String userid = inReq.getRequestParameter("userid");
 		User target = getUserManager(inReq).getUser(userid);
-		
+
 		if (target != null)
 		{
-			clearSession(inReq);		
+			clearSession(inReq);
 			inReq.putSessionValue("realuser", user);
 			String catid = inReq.findPathValue("catalogid");
 			inReq.putSessionValue(catid + "user", target);
 			inReq.putSessionValue("system" + "user", target);
-			inReq.putPageValue( "user", target);
+			inReq.putPageValue("user", target);
 			String appid = inReq.findValue("applicationid");
 			inReq.redirect("/" + appid + "/");
 		}
@@ -1523,21 +1524,22 @@ public class AdminModule extends BaseMediaModule
 		User olduser = (User) inReq.getSessionValue("realuser");
 		if (olduser != null)
 		{
-			clearSession(inReq);		
+			clearSession(inReq);
 
 			inReq.putSessionValue("realuser", null);
 			inReq.putSessionValue(olduser.get("catalogid") + "user", olduser);
 			createUserSession(inReq);
 		}
 
-	} 
-	
-	public void clearSession(WebPageRequest inReq){
-		
+	}
+
+	public void clearSession(WebPageRequest inReq)
+	{
+
 		Enumeration keys = inReq.getSession().getAttributeNames();
 		while (keys.hasMoreElements())
 		{
-			  String key = (String)keys.nextElement();
+			String key = (String) keys.nextElement();
 
 			inReq.putSessionValue(key, null);
 		}
@@ -1546,36 +1548,40 @@ public class AdminModule extends BaseMediaModule
 	public void allowAccesControl(WebPageRequest inReq)
 	{
 		HttpServletResponse req = inReq.getResponse();
-		if( req != null)
+		if (req != null)
 		{
 			String domain = inReq.getSiteRoot();
-			req.setHeader("Access-Control-Allow-Origin",domain);
-			req.setHeader("Access-Control-Allow-Credentials","true");
-		}	
-	}	
-	
-	public void generateKey(WebPageRequest inReq) {
-		
+			req.setHeader("Access-Control-Allow-Origin", domain);
+			req.setHeader("Access-Control-Allow-Credentials", "true");
+		}
+	}
+
+	public void generateKey(WebPageRequest inReq)
+	{
+
 		String account = inReq.getRequestParameter("accountname");
 		String password = inReq.getRequestParameter("password");
 
-		if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
-			if(account != null) {
+		if (Boolean.parseBoolean(inReq.findValue("forcelowercaseusername")))
+		{
+			if (account != null)
+			{
 				account = account.toLowerCase();
 			}
 		}
 		UserManager userManager = getUserManager(inReq);
 
 		User user = userManager.getUser(account);
-		if(user.get("googlesecretkey") != null) {
+		if (user.get("googlesecretkey") != null)
+		{
 			inReq.putPageValue("error", "Sorry, your code has already been generated.  IF you need it reset contact your administrator");
 			return;
 		}
-		
+
 		AuthenticationRequest aReq = getUserManager(inReq).createAuthenticationRequest(inReq, password, user);
 		if (userManager.getAuthenticator().authenticate(aReq))
 		{
-			
+
 			GoogleAuthenticator gAuth = new GoogleAuthenticator();
 			final GoogleAuthenticatorKey key = gAuth.createCredentials();
 			String secret = key.getKey();
@@ -1583,120 +1589,121 @@ public class AdminModule extends BaseMediaModule
 			getSearcherManager().getSearcher(aReq.getCatalogId(), "user").saveData(user);
 			inReq.putPageValue("googlesecret", secret);
 			String sitename = getMediaArchive(inReq).getCatalogSettingValue("sitename");
-//			if(sitename == null) {
-//				sitename = inReq.findValue("siteroot");
-//			}
-//			if(sitename == null) {
-//				sitename = inReq.getSiteRoot();
-//			}
-			if(sitename == null) 
+			// if(sitename == null) {
+			// sitename = inReq.findValue("siteroot");
+			// }
+			// if(sitename == null) {
+			// sitename = inReq.getSiteRoot();
+			// }
+			if (sitename == null)
 			{
-				sitename="Entermedia";
+				sitename = "Entermedia";
 			}
-			
+
 			String qr = GoogleAuthenticatorQRGenerator.getOtpAuthURL(sitename, user.getEmail(), key);
 			inReq.putPageValue("qrcode", qr);
 		}
-		else 
+		else
 		{
 			inReq.putPageValue("invalid", "Sorry, couldn't login.  Please try again.");
 		}
 	}
-	
-	public void resetKey(WebPageRequest inReq) {
+
+	public void resetKey(WebPageRequest inReq)
+	{
 		String foruser = inReq.getRequestParameter("username");
 		UserManager userManager = getUserManager(inReq);
 		User user = userManager.getUser(foruser);
-		if (user != null) {
+		if (user != null)
+		{
 			user.setValue("googlesecretkey", "");
 		}
 		userManager.saveUser(user);
 		return;
 
 	}
+
 	public void loadTemporaryKey(WebPageRequest inReq)
 	{
 		StringEncryption encoder = getUserManager(inReq).getStringEncryption();
 
 		String foruser = inReq.getRequestParameter("username");
-		if( foruser != null)
+		if (foruser != null)
 		{
 			Object canUpload = inReq.getPageValue("caneditusersgroups");
-			if( !Boolean.parseBoolean(String.valueOf(canUpload)))
+			if (!Boolean.parseBoolean(String.valueOf(canUpload)))
 			{
 				throw new OpenEditException("No permissions to view keys of other users");
 			}
 		}
-		if( foruser == null)
+		if (foruser == null)
 		{
 			foruser = inReq.getUserName();
 		}
 		User user = getUserManager(inReq).getUser(foruser);
 		String entermediakey = "";
-		if( user != null)
+		if (user != null)
 		{
 			entermediakey = encoder.getTempEnterMediaKey(user);
 		}
 
-		inReq.putPageValue("tempentermediakey",entermediakey);
+		inReq.putPageValue("tempentermediakey", entermediakey);
 	}
 
 	public static String VALID_METHODS = "DELETE, HEAD, GET, OPTIONS, POST, PUT";
 	public static String VALID_HEADERS = "x-csrf-token,x-file-name,x-file-size,x-requested-with,cache-control,access-control-allow-credentials,"
-	                                   + "authorization,origin,content-type,accept,x-email,x-token,x-tokentype,access-control-allow-headers,access-control-allow-method,"
-	                                   + "access-control-allow-origin";
+		+ "authorization,origin,content-type,accept,x-email,x-token,x-tokentype,access-control-allow-headers,access-control-allow-method," + "access-control-allow-origin";
 
 	public void allowCorsHeaders(WebPageRequest inReq)
 	{
 		HttpServletResponse request = inReq.getResponse();
 		HttpServletRequest httpRequest = (HttpServletRequest) inReq.getRequest();
-		if( httpRequest != null)
+		if (httpRequest != null)
 		{
 			String method = inReq.getRequest().getMethod();
-			if(method == null) {
+			if (method == null)
+			{
 				return;
 			}
 			boolean isoptions = method.equals("OPTIONS");
-			//see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+			// see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 			String origin = httpRequest.getHeader("Origin");
-			
-			
+
 			boolean forcealloworigin = Boolean.parseBoolean(inReq.findValue("forcealloworigin"));
-			if (origin != null && ( forcealloworigin || isoptions || inReq.getUser() != null) )
+			if (origin != null && (forcealloworigin || isoptions || inReq.getUser() != null))
 			{
-				request.setHeader("Access-Control-Allow-Origin",origin);
+				request.setHeader("Access-Control-Allow-Origin", origin);
 			}
 			else
 			{
-				request.setHeader("Access-Control-Allow-Origin","*");  //This is not useful
+				request.setHeader("Access-Control-Allow-Origin", "*"); // This is not useful
 			}
-			request.setHeader("Access-Control-Allow-Credentials","true");
-			request.setHeader("Access-Control-Allow-Methods",VALID_METHODS);
+			request.setHeader("Access-Control-Allow-Credentials", "true");
+			request.setHeader("Access-Control-Allow-Methods", VALID_METHODS);
 			request.setHeader("Access-Control-Allow-Headers", VALID_HEADERS);
-          	request.setHeader("Access-Control-Max-Age", "3600");
-			if( isoptions )
+			request.setHeader("Access-Control-Max-Age", "3600");
+			if (isoptions)
 			{
 				inReq.setHasRedirected(true);
 				inReq.setCancelActions(true);
 				request.setStatus(200);
 			}
-			
-			
-			
-			//Allow be in a Frame only from specific domains. 
-			//Also Review Nginx conf, it may be overwrithing this setting.
-			if(Boolean.parseBoolean(inReq.findValue("allowframes"))) {
+
+			// Allow be in a Frame only from specific domains.
+			// Also Review Nginx conf, it may be overwrithing this setting.
+			if (Boolean.parseBoolean(inReq.findValue("allowframes")))
+			{
 				String frameancestors = (String) inReq.findValue("allowframesfrom");
-				if (frameancestors != null) {
-					//frameancestors expected: frame-ancestors 'self' https://domain.com https://domain2.com
+				if (frameancestors != null)
+				{
+					// frameancestors expected: frame-ancestors 'self' https://domain.com
+					// https://domain2.com
 					request.setHeader("Content-Security-Policy", frameancestors);
 				}
 			}
-          	
-		}	
-		
-	}
-	 
 
-	
+		}
+
+	}
+
 }

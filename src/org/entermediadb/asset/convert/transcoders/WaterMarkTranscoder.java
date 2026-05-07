@@ -16,47 +16,35 @@ public class WaterMarkTranscoder extends BaseTranscoder
 {
 
 	protected PageManager fieldPageManager;
+
 	public PageManager getPageManager()
 	{
 		return fieldPageManager;
 	}
 
-
-
 	protected Exec fieldExec;
-	
-	
-	
+
 	public Exec getExec()
 	{
 		return fieldExec;
 	}
-
-
 
 	public void setExec(Exec inExec)
 	{
 		fieldExec = inExec;
 	}
 
-
-
-
 	public void setPageManager(PageManager inPageManager)
 	{
 		fieldPageManager = inPageManager;
 	}
 
-
-
 	public String getWaterMarkPath(String inThemePrefix)
 	{
-		Page water = getPageManager().getPage(inThemePrefix );
+		Page water = getPageManager().getPage(inThemePrefix);
 		String fieldWatermarkPath = water.getContentItem().getAbsolutePath(); // Strings for performance
 		return fieldWatermarkPath;
 	}
-
-
 
 	@Override
 	public ConvertResult convert(ConvertInstructions inStructions)
@@ -68,9 +56,9 @@ public class WaterMarkTranscoder extends BaseTranscoder
 		setValue("dissolve", "100", inStructions, com);
 
 		String placement = inStructions.getWatermarkPlacement();
-		if(placement == null)
+		if (placement == null)
 		{
-			placement = "tile";//"SouthWest";
+			placement = "tile";// "SouthWest";
 		}
 
 		if (placement.equals("tile"))
@@ -83,18 +71,18 @@ public class WaterMarkTranscoder extends BaseTranscoder
 			com.add("-gravity");
 			com.add(placement);
 		}
-		
-		String watermarkfile = inStructions.get("watermarkpath");  //Can be anyplace in the webapp
-		
-		if( watermarkfile == null)
+
+		String watermarkfile = inStructions.get("watermarkpath"); // Can be anyplace in the webapp
+
+		if (watermarkfile == null)
 		{
 			watermarkfile = inStructions.getMediaArchive().getCatalogSettingValue("watermarkpath");
 		}
-		
-		if( watermarkfile == null)
+
+		if (watermarkfile == null)
 		{
-			watermarkfile =  inStructions.getMediaArchive().getCatalogHome() + "/images/watermark.png";
-		}		
+			watermarkfile = inStructions.getMediaArchive().getCatalogHome() + "/images/watermark.png";
+		}
 		String abs = getWaterMarkPath(watermarkfile);
 		com.add(abs);
 		com.add(newinput.getAbsolutePath());

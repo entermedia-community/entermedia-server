@@ -58,17 +58,18 @@ public class FtpRepository extends BaseRepository
 
 		return item;
 	}
-	
+
 	protected String makeRemotePath(String inPath)
 	{
 		String path = inPath.toString();
 		if (path.startsWith(getPath()))
 		{
-			//chop off the repo path. add 1 b/c repo path doesn't include trailing slash
-			path = path.substring(getPath().length() + 1);				
+			// chop off the repo path. add 1 b/c repo path doesn't include trailing slash
+			path = path.substring(getPath().length() + 1);
 		}
 		return path;
 	}
+
 	protected void checkConnection() throws Exception
 	{
 		if (!isConnected())
@@ -82,18 +83,18 @@ public class FtpRepository extends BaseRepository
 		}
 	}
 
-	public void copy(ContentItem inSource, ContentItem inDestination)
-			throws RepositoryException
+	public void copy(ContentItem inSource, ContentItem inDestination) throws RepositoryException
 	{
 		try
 		{
-			checkConnection();			
+			checkConnection();
 			String path = inDestination.getAbsolutePath().substring(1);
 			makeDirs(path);
 			boolean success = getFTPClient().storeFile(path, inSource.getInputStream());
 			if (!success)
 				log.info("Failed to store " + path);
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			throw new RepositoryException(e);
 		}
@@ -110,27 +111,13 @@ public class FtpRepository extends BaseRepository
 	{
 		return false;
 		/*
-		try
-		{
-			checkConnection();
-			String path = makeRemotePath(inPath);
-			FTPFile[] files = getFTPClient().listFiles(path);
-			int num = files.length;
-			
-			if (num == 0)
-				return false;
-			else if (num == 1)
-				return true;
-			else
-			{
-				throw new Exception("Individual file list returned multiple matches:" + inPath);
-			}
-		}
-		catch (Exception e)
-		{
-			throw new RepositoryException(e);
-		}	
-		*/	
+		 * try { checkConnection(); String path = makeRemotePath(inPath); FTPFile[] files =
+		 * getFTPClient().listFiles(path); int num = files.length;
+		 * 
+		 * if (num == 0) return false; else if (num == 1) return true; else { throw new
+		 * Exception("Individual file list returned multiple matches:" + inPath); } } catch (Exception e) {
+		 * throw new RepositoryException(e); }
+		 */
 	}
 
 	public List getChildrenNames(String inParent) throws RepositoryException
@@ -144,8 +131,7 @@ public class FtpRepository extends BaseRepository
 
 				if (!connect)
 				{
-					log.info("unable to connect to server: "
-							+ getExternalPath());
+					log.info("unable to connect to server: " + getExternalPath());
 					return null;
 				}
 			}
@@ -161,7 +147,8 @@ public class FtpRepository extends BaseRepository
 				filenames.add(filename);
 			}
 			return filenames;
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			throw new RepositoryException(e);
 		}
@@ -185,21 +172,20 @@ public class FtpRepository extends BaseRepository
 		return null;
 	}
 
-	public void move(ContentItem inSource, ContentItem inDestination)
-			throws RepositoryException
+	public void move(ContentItem inSource, ContentItem inDestination) throws RepositoryException
 	{
 		// TODO Auto-generated method stub
 
 	}
 
-	public void move(ContentItem inSource, Repository inSourceRepository,
-			ContentItem inDestination) throws RepositoryException
+	public void move(ContentItem inSource, Repository inSourceRepository, ContentItem inDestination) throws RepositoryException
 	{
 		// TODO Auto-generated method stub
 
 	}
-	
-	/* Given a path to a file, make all the intermediate directories
+
+	/*
+	 * Given a path to a file, make all the intermediate directories
 	 * 
 	 */
 	protected void makeDirs(String inPath) throws IOException
@@ -208,14 +194,14 @@ public class FtpRepository extends BaseRepository
 		{
 			String[] components = inPath.split("/");
 			String path = components[0];
-			
+
 			for (int i = 1; i < components.length; i++)
 			{
 				getFTPClient().makeDirectory(path);
 				path += "/" + components[i];
-			}	
+			}
 		}
-		
+
 	}
 
 	public void remove(ContentItem inPath) throws RepositoryException
@@ -229,7 +215,7 @@ public class FtpRepository extends BaseRepository
 			{
 				throw new RepositoryException("Couldn't put file: " + inPath.getPath());
 			}
-		} 
+		}
 		catch (Exception e)
 		{
 			throw new RepositoryException(e);
@@ -246,7 +232,8 @@ public class FtpRepository extends BaseRepository
 			try
 			{
 				return getFTPClient().retrieveFileStream(getAbsolutePath().substring(1));
-			} catch (IOException e)
+			}
+			catch (IOException e)
 			{
 				throw new RepositoryException(e);
 			}
@@ -259,13 +246,14 @@ public class FtpRepository extends BaseRepository
 				checkConnection();
 				String path = getAbsolutePath().substring(1);
 				FTPFile[] files = getFTPClient().listFiles(path);
-	
+
 				if (files == null || files.length == 0)
 				{
 					return false;
 				}
 				return true;
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 				throw new RepositoryException(e);
 			}
@@ -308,21 +296,13 @@ public class FtpRepository extends BaseRepository
 	}
 
 	/*
-	public Data getConfiguration()
-	{
-		Searcher configsearcher = getSearcherManager().getSearcher("system",
-				"ftp");
-		Data config = (Data) configsearcher.searchById(getPath());
-		if (config == null)
-		{
-			config = configsearcher.createNewData();
-			config.setId(getPath());
-			configsearcher.saveData(config, null);
-		}
-		return config;
-	}
-	*/
-	
+	 * public Data getConfiguration() { Searcher configsearcher =
+	 * getSearcherManager().getSearcher("system", "ftp"); Data config = (Data)
+	 * configsearcher.searchById(getPath()); if (config == null) { config =
+	 * configsearcher.createNewData(); config.setId(getPath()); configsearcher.saveData(config, null); }
+	 * return config; }
+	 */
+
 	public void disconnect() throws IOException
 	{
 		if (isConnected())
@@ -340,7 +320,7 @@ public class FtpRepository extends BaseRepository
 				return true;
 			}
 			boolean connected = false;
-			
+
 			String serverName = getExternalPath();
 			String subdir = null;
 			if (serverName.indexOf(':') > -1)
@@ -352,17 +332,16 @@ public class FtpRepository extends BaseRepository
 				}
 				if (parts.length > 1)
 				{
-					
+
 					subdir = parts[1];
 				}
 			}
 
 			getFTPClient().connect(serverName);
 			log.info("trying to connect to : " + serverName);
-			
-			
+
 			String ftpuser = getUserName();
-			
+
 			User user = getUserManager().getUser(ftpuser);
 
 			if (user == null)
@@ -373,12 +352,11 @@ public class FtpRepository extends BaseRepository
 			}
 			else
 			{
-				connected = getFTPClient().login(ftpuser,
-						getUserManager().decryptPassword(user));	
+				connected = getFTPClient().login(ftpuser, getUserManager().decryptPassword(user));
 			}
 			if (connected)
 			{
-				//getFTPClient().enterLocalPassiveMode();
+				// getFTPClient().enterLocalPassiveMode();
 				log.info("Connected to " + serverName);
 				if (subdir != null)
 				{
@@ -387,8 +365,7 @@ public class FtpRepository extends BaseRepository
 				}
 				getFTPClient().setFileType(FTP.BINARY_FILE_TYPE);
 			}
-				
-			
+
 			log.info(getFTPClient().getReplyString());
 			return connected;
 		}
@@ -413,6 +390,6 @@ public class FtpRepository extends BaseRepository
 	public void put(ContentItem inContent) throws RepositoryException
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 }

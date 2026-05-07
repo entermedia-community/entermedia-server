@@ -147,7 +147,8 @@ public class MediaArchive implements CatalogEnabled
 		if (fieldCacheManager == null)
 		{
 			fieldCacheManager = (CacheManager) getModuleManager().getBean(getCatalogId(), "cacheManager", true);
-			// slog.info(getCatalogId() + "/fieldCacheManager" + fieldCacheManager.hashCode());
+			// slog.info(getCatalogId() + "/fieldCacheManager" +
+			// fieldCacheManager.hashCode());
 		}
 		return fieldCacheManager;
 	}
@@ -331,7 +332,8 @@ public class MediaArchive implements CatalogEnabled
 		{
 			return "";
 		}
-		// String val = getSearcherManager().getValue(getCatalogId(), inMask, inSearchType, inData,
+		// String val = getSearcherManager().getValue(getCatalogId(), inMask,
+		// inSearchType, inData,
 		// extraVals, locale);
 		return val;
 	}
@@ -396,7 +398,8 @@ public class MediaArchive implements CatalogEnabled
 		return asLinkToOriginal(asset.getSourcePath(), asset.get("primaryfile"));
 	}
 
-	// TODO: Remove the inName option since that should be the same as the originalattachment
+	// TODO: Remove the inName option since that should be the same as the
+	// originalattachment
 	public String asLinkToOriginal(String inSourcePath, String inPrimaryImageName)
 	{
 		if (inSourcePath == null)
@@ -782,22 +785,24 @@ public class MediaArchive implements CatalogEnabled
 	// Only use on old style sourcepaths
 	public Asset createAsset(String inId, String inSourcePath)
 	{
-		Asset asset = new BaseAsset(this);
+		Asset asset = (Asset) getAssetSearcher().createNewData();
 		// asset.setCatalogId(getCatalogId());
-		if (inId == null)
+		if (inId != null)
 		{
-			inId = getAssetSearcher().nextAssetNumber();
+			asset.setId(inId);
 		}
-		asset.setId(inId);
-		asset.setSourcePath(inSourcePath);
-		String name = PathUtilities.extractFileName(inSourcePath);
-		asset.setName(name);
-		String ext = PathUtilities.extractPageType(name);
-		if (ext != null)
+		if (inSourcePath != null)
 		{
-			ext = ext.toLowerCase();
+			asset.setSourcePath(inSourcePath);
+			String name = PathUtilities.extractFileName(inSourcePath);
+			asset.setName(name);
+			String ext = PathUtilities.extractPageType(name);
+			if (ext != null)
+			{
+				ext = ext.toLowerCase();
+			}
+			asset.setProperty("fileformat", ext);
 		}
-		asset.setProperty("fileformat", ext);
 
 		return asset;
 	}
@@ -2460,11 +2465,13 @@ public class MediaArchive implements CatalogEnabled
 	// public Collection<Data> listHiddenCollections()
 	// {
 	// Searcher search = getSearcher("librarycollection");
-	// Collection visibility = (Collection) getCacheManager().get("hiddencollection",
+	// Collection visibility = (Collection)
+	// getCacheManager().get("hiddencollection",
 	// search.getIndexId()); //Expires after 5 min
 	// if (visibility == null)
 	// {
-	// visibility = getSearcher("librarycollection").query().exact("visibility", "3").search();
+	// visibility = getSearcher("librarycollection").query().exact("visibility",
+	// "3").search();
 	// getCacheManager().put("hiddencollection", search.getIndexId(), visibility);
 	// }
 	// return visibility;
@@ -2570,7 +2577,8 @@ public class MediaArchive implements CatalogEnabled
 	public Collection getBadges(MultiValued inRow)
 	{
 		Collection badges = inRow.getValues("badge");
-		// HitTracker chats = getSearcher("chatterbox").query().match("channel", "asset"+
+		// HitTracker chats = getSearcher("chatterbox").query().match("channel",
+		// "asset"+
 		// inRow.getId()).match("type","message").search();
 		// if(chats.size() > 0) {
 		// badges.add("haschats");
@@ -3000,7 +3008,8 @@ public class MediaArchive implements CatalogEnabled
 		if (inGeneratedoutputfile.endsWith("video.m3u8"))
 		{
 			downloadroot = "/services/module/asset/downloads/";
-			// finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" +
+			// finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot +
+			// "generatedpreview/" +
 			// sourcepath + "/" + inGeneratedoutputfile + "/360/" + usefile;
 			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedoutputfile;
 		}
@@ -3008,7 +3017,12 @@ public class MediaArchive implements CatalogEnabled
 		{
 			downloadroot = "/services/module/asset/";
 			String finalname = PathUtilities.extractPageName(inAsset.getName());
-			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generated/" + sourcepath + "/" + usefile; // + "/" + finalname + usefile;
+			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generated/" + sourcepath + "/" + usefile; // +
+																														// "/"
+																														// +
+																														// finalname
+																														// +
+																														// usefile;
 
 		}
 		finalroot = URLUtilities.urlEscape(finalroot);

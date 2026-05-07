@@ -16,5 +16,5 @@ public class Member extends ElementData
 	{
 		fieldUserManager = inUserManager;
 	}
-	
+
 }

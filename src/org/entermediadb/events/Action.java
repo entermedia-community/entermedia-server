@@ -20,15 +20,16 @@ public abstract class Action extends PropertyContainer
 	{
 		return fieldName;
 	}
+
 	public void setName(String inName)
 	{
 		fieldName = inName;
 	}
-	
-	public abstract boolean execute(BaseTask inTask) throws OpenEditException;
-	//public abstract boolean isComplete(VideoTask inTask) throws OpenEditException;
 
-	
+	public abstract boolean execute(BaseTask inTask) throws OpenEditException;
+	// public abstract boolean isComplete(VideoTask inTask) throws
+	// OpenEditException;
+
 	public String getType()
 	{
 		return fieldType;
@@ -38,7 +39,7 @@ public abstract class Action extends PropertyContainer
 	{
 		fieldType = inType;
 	}
-	
+
 	/*
 	 * Substitutes properties in for any variables in the String
 	 */

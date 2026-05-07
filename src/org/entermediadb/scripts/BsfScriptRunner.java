@@ -22,32 +22,25 @@ public class BsfScriptRunner implements ScriptRunner
 			{
 				String element = (String) iter.next();
 				Object val = context.get(element);
-				if( val != null)
+				if (val != null)
 				{
 					bsfManager.declareBean(element, val, val.getClass());
 				}
 			}
-	
-			bsfManager.exec(
-				BSFManager.getLangFromFilename(inScript.getDescription()),
-				inScript.getDescription(),
-				0,
-				0,
-				inScript.getScriptText());
+
+			bsfManager.exec(BSFManager.getLangFromFilename(inScript.getDescription()), inScript.getDescription(), 0, 0, inScript.getScriptText());
 		}
-		catch( BSFException ex)
+		catch (BSFException ex)
 		{
 			Throwable ext = ex.getTargetException();
-			if( ext instanceof OpenEditException)
+			if (ext instanceof OpenEditException)
 			{
-				throw (OpenEditException)ext;
+				throw (OpenEditException) ext;
 			}
 			throw new OpenEditException(ext);
 		}
 		return null;
-		
-		
-	}
 
+	}
 
 }

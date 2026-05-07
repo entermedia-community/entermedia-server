@@ -8,7 +8,7 @@ public class UploadDiskFileItemFactory extends DiskFileItemFactory
 {
 	protected String fieldDestinationPath;
 	protected long fieldSeek;
-	
+
 	public void setDestinationPath(String inPath)
 	{
 		fieldDestinationPath = inPath;

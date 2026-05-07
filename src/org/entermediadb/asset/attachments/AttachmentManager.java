@@ -22,7 +22,7 @@ import org.openedit.page.manage.PageManager;
 
 public class AttachmentManager
 {
-	private static final Log	log = LogFactory.getLog(AttachmentManager.class);
+	private static final Log log = LogFactory.getLog(AttachmentManager.class);
 	protected SearcherManager fieldSearcherManager;
 	protected PageManager fieldPageManager;
 	protected MetaDataReader fieldMetaDataReader;
@@ -81,18 +81,18 @@ public class AttachmentManager
 
 	public int countAttachments(WebPageRequest inReq, MediaArchive inArchive, Asset inAsset)
 	{
-		if( inAsset == null || inAsset.getSourcePath() == null)
+		if (inAsset == null || inAsset.getSourcePath() == null)
 		{
 			return 0;
 		}
-		HitTracker tracker = listChildren(inReq, inArchive, inAsset.getSourcePath() );
+		HitTracker tracker = listChildren(inReq, inArchive, inAsset.getSourcePath());
 		int count = 0;
-		if( tracker != null)
+		if (tracker != null)
 		{
 			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 			{
 				Data child = (Data) iterator.next();
-				if( !"attachments.txt".equals( child.getName() ) && !child.getName().equals( inAsset.getPrimaryFile()) )
+				if (!"attachments.txt".equals(child.getName()) && !child.getName().equals(inAsset.getPrimaryFile()))
 				{
 					count++;
 				}
@@ -100,16 +100,17 @@ public class AttachmentManager
 		}
 		return count;
 	}
+
 	protected void syncFolder(Searcher attachmentSearcher, MediaArchive inArchive, String inAssetId, String inRootFolder, String inFolderSourcePath, String inAssetSourcePath, boolean inReprocess)
 	{
 		SearchQuery query = attachmentSearcher.createSearchQuery();
 		query.addExact("assetid", inAssetId);
 		query.addExact("parentsourcepath", inFolderSourcePath);
 
-		//List known data children for this one folder
+		// List known data children for this one folder
 		HitTracker hits = attachmentSearcher.search(query);
 
-		if (inReprocess || hits.size() == 0) //Could not find any existing children, add a child
+		if (inReprocess || hits.size() == 0) // Could not find any existing children, add a child
 		{
 			Map alreadyhave = new HashMap();
 			if (inReprocess)
@@ -120,18 +121,17 @@ public class AttachmentManager
 					alreadyhave.put(data.get("name"), data);
 				}
 			}
-			//see what files are already there
+			// see what files are already there
 			List files = getPageManager().getChildrenPaths(inRootFolder + inFolderSourcePath);
 			for (Iterator iterator = files.iterator(); iterator.hasNext();)
 			{
 				String file = (String) iterator.next();
 				Page page = getPageManager().getPage(file);
-				if( page.getName().startsWith(".") )
+				if (page.getName().startsWith("."))
 				{
 					continue;
 				}
 
-				
 				if (!alreadyhave.containsKey(page.getName()))
 				{
 					// need a new entry
@@ -149,8 +149,9 @@ public class AttachmentManager
 					{
 						String key = (String) iterator2.next();
 						Object value = asset.getValue(key);
-						if(!"id".equals(key)){
-						attachment.setValue(key, value);
+						if (!"id".equals(key))
+						{
+							attachment.setValue(key, value);
 						}
 					}
 					attachmentSearcher.saveData(attachment, null);
@@ -164,11 +165,11 @@ public class AttachmentManager
 					syncFolder(attachmentSearcher, inArchive, inAssetId, inRootFolder, inFolderSourcePath + "/" + page.getName(), inAssetSourcePath, inReprocess);
 				}
 			}
-			//delete old records
+			// delete old records
 			for (Iterator iterextra = alreadyhave.values().iterator(); iterextra.hasNext();)
 			{
 				Data data = (Data) iterextra.next();
-				attachmentSearcher.delete(data, null);				
+				attachmentSearcher.delete(data, null);
 			}
 		}
 	}
@@ -203,7 +204,8 @@ public class AttachmentManager
 				processAttachments(inArchive, inAsset, inReload);
 			}
 		}
-		//log.info("Found " + summary.getCount() + " attachments for asset " + inAsset.getId() );
+		// log.info("Found " + summary.getCount() + " attachments for asset " +
+		// inAsset.getId() );
 	}
 
 	public void createFolder(WebPageRequest inReq, MediaArchive inArchive, Asset inAsset, String inParentid, String inName)
@@ -213,7 +215,7 @@ public class AttachmentManager
 		if (inParentid != null)
 		{
 			Data parent = (Data) attachmentSearcher.searchById(inParentid);
-			if( parent == null)
+			if (parent == null)
 			{
 				sourcepath = inAsset.getSourcePath();
 			}
@@ -229,25 +231,26 @@ public class AttachmentManager
 		// parentsourcepath
 		String root = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/";
 		String parentsourcepath = root + sourcepath + "/" + inName;
-		Page folder = getPageManager().getPage( parentsourcepath + "/");
+		Page folder = getPageManager().getPage(parentsourcepath + "/");
 		getPageManager().putPage(folder);
 
-		//syncFolder(attachmentSearcher, inArchive, inAsset.getId(), root, inAsset.getSourcePath(), inAsset.getSourcePath(), true);
-		processAttachments(inArchive,inAsset,true);
+		// syncFolder(attachmentSearcher, inArchive, inAsset.getId(), root,
+		// inAsset.getSourcePath(), inAsset.getSourcePath(), true);
+		processAttachments(inArchive, inAsset, true);
 	}
 
 	public void delete(WebPageRequest inReq, MediaArchive inArchive, Asset inAsset, String inFileid)
 	{
 		Searcher attachmentSearcher = getAttachmentSearcher(inArchive.getCatalogId());
 		Data file = (Data) attachmentSearcher.searchById(inFileid);
-		if( file != null)
+		if (file != null)
 		{
 			String root = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/";
 			String sourcepath = file.get("parentsourcepath") + "/" + file.getName();
-	
+
 			Page page = getPageManager().getPage(root + sourcepath);
 			getPageManager().removePage(page);
-	
+
 			attachmentSearcher.delete(file, inReq.getUser());
 		}
 	}
@@ -281,7 +284,7 @@ public class AttachmentManager
 
 		SearchQuery query = attachmentSearcher.createSearchQuery();
 		query.addMatches("assetid", inAsset.getId());
-		//query.addMatches("parentsourcepath", inAsset.getSourcePath());
+		// query.addMatches("parentsourcepath", inAsset.getSourcePath());
 		HitTracker hits = attachmentSearcher.search(query);
 		if (hits.size() > 0)
 		{
@@ -292,14 +295,15 @@ public class AttachmentManager
 			}
 		}
 	}
+
 	public String parseFileSubPath(String inAssetSourcePath, String inParentSourcePath, String inFilename)
 	{
-		if( inParentSourcePath == null)
+		if (inParentSourcePath == null)
 		{
 			return null;
 		}
 		String folder = inParentSourcePath.substring(inAssetSourcePath.length());
-		if( folder.length() > 0)
+		if (folder.length() > 0)
 		{
 			folder = folder + "/";
 		}

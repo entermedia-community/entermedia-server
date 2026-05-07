@@ -191,7 +191,8 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 			{
 				moduleid = "asset";
 			}
-			// inLog.info("Translating (" + count + "/" + inRecordsToTranslate.size() + ") type: " +
+			// inLog.info("Translating (" + count + "/" + inRecordsToTranslate.size() + ")
+			// type: " +
 			// moduleid + ", " + data.getName());
 			count++;
 
@@ -315,7 +316,8 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 	// {
 	// HitTracker assets = (HitTracker) context.getPageValue("assetsToTranslate");
 	//
-	// MultiValued config = (MultiValued)getMediaArchive().getCachedData("informatics",
+	// MultiValued config =
+	// (MultiValued)getMediaArchive().getCachedData("informatics",
 	// "autotranslate");
 	// Collection<MultiValued> records = new ArrayList(assets);
 	//

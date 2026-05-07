@@ -11,54 +11,58 @@ import org.openedit.repository.RepositoryException;
 import com.jcraft.jsch.ChannelSftp;
 
 class SFtpContentItem extends InputStreamItem
-//class SFtpContentItem extends ContentItem
+// class SFtpContentItem extends ContentItem
 {
 	protected Boolean existed;
 	ChannelSftp.LsEntry entry;
 	private SftpRepository repository;
-	public SFtpContentItem(){
-		
+
+	public SFtpContentItem() {
+
 	}
-	
-	public SFtpContentItem(ChannelSftp.LsEntry entry){
+
+	public SFtpContentItem(ChannelSftp.LsEntry entry) {
 		this.entry = entry;
-		this.fieldLength= this.entry.getAttrs().getSize();
+		this.fieldLength = this.entry.getAttrs().getSize();
 		this.setLastModified(new Date(this.entry.getAttrs().getMTime()));
 		this.fieldActualPath = this.entry.getLongname();
-		//this.fieldPath = this.entry.getFilename();
+		// this.fieldPath = this.entry.getFilename();
 		this.fieldPath = this.entry.getFilename();
-		//item.setPath(inPath);
-		//item.setAbsolutePath(path);
-		
+		// item.setPath(inPath);
+		// item.setAbsolutePath(path);
+
 	}
-	
+
 	@Override
-	public long getLength() {
-		if(this.entry == null){
+	public long getLength()
+	{
+		if (this.entry == null)
+		{
 			String path = getAbsolutePath().substring(1);
-			//return repository.doesExist(path);
+			// return repository.doesExist(path);
 			String url = this.repository.getProperty("defaultremotepath") + "/" + path;
 			this.entry = repository.getAttribute(url);
 		}
-		if(this.entry != null)
-			this.fieldLength= this.entry.getAttrs().getSize();
+		if (this.entry != null)
+			this.fieldLength = this.entry.getAttrs().getSize();
 		return this.fieldLength;
 	}
-//	@Override
-//	public long getLastModified(){
-//		return (new Date()).getTime();
-//	}
-	//@Override
+
+	// @Override
+	// public long getLastModified(){
+	// return (new Date()).getTime();
+	// }
+	// @Override
 	public Date lastModified()
 	{
-		if(this.entry != null)
+		if (this.entry != null)
 			this.setLastModified(new Date(this.entry.getAttrs().getMTime()));
 		return super.lastModified();
 	}
-	
+
 	public InputStream getInputStream() throws RepositoryException
 	{
-		if ( isFolder() )
+		if (isFolder())
 		{
 			return createFileListingStream();
 		}
@@ -67,9 +71,9 @@ class SFtpContentItem extends InputStreamItem
 			String path = getAbsolutePath().substring(1);
 			return repository.getInputStream(path);
 		}
-		catch(Exception e )
+		catch (Exception e)
 		{
-			throw new RepositoryException( e );
+			throw new RepositoryException(e);
 		}
 	}
 
@@ -78,20 +82,20 @@ class SFtpContentItem extends InputStreamItem
 		try
 		{
 			String path = getAbsolutePath().substring(1);
-			//return repository.doesExist(path);
+			// return repository.doesExist(path);
 			String url = this.repository.getProperty("defaultremotepath") + "/" + path;
 			this.entry = repository.getAttribute(url);
-			if(this.entry == null) return false;
+			if (this.entry == null)
+				return false;
 			return true;
-			
+
 		}
-		catch(Exception e )
+		catch (Exception e)
 		{
 			return false;
-			
+
 		}
 	}
-	
 
 	public boolean isFolder()
 	{
@@ -102,8 +106,8 @@ class SFtpContentItem extends InputStreamItem
 		return false;
 	}
 
-
-	public boolean isWritable() {
+	public boolean isWritable()
+	{
 		// TODO Auto-generated method stub
 		return true;
 	}
@@ -116,27 +120,29 @@ class SFtpContentItem extends InputStreamItem
 		{
 			List<String> files = repository.getChildrenNames(this.fieldAbsolutePath);
 			sb = new StringBuffer();
-			for ( int i = 0; i < files.size(); i++ )
+			for (int i = 0; i < files.size(); i++)
 			{
-				if ( !files.get(i).equals(".versions") )
+				if (!files.get(i).equals(".versions"))
 				{
-					sb.append( files.get(i) + "\n" );
+					sb.append(files.get(i) + "\n");
 				}
 			}
 		}
-		catch(Exception e )
+		catch (Exception e)
 		{
-			throw new RepositoryException( e );
+			throw new RepositoryException(e);
 		}
-		return new ByteArrayInputStream( sb.toString().getBytes() );
+		return new ByteArrayInputStream(sb.toString().getBytes());
 	}
 
-	public SftpRepository getRepository() {
+	public SftpRepository getRepository()
+	{
 		return repository;
 	}
 
-	public void setRepository(SftpRepository repository) {
+	public void setRepository(SftpRepository repository)
+	{
 		this.repository = repository;
 	}
-	
+
 }

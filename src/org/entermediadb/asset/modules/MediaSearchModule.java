@@ -22,97 +22,99 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 
-
-
-//Use DataEditModule for searching asset data
+// Use DataEditModule for searching asset data
 public class MediaSearchModule extends BaseMediaModule
 {
 	protected GeoCoder fieldGeoCoder;
 	private static final Log log = LogFactory.getLog(MediaSearchModule.class);
-	
 
-	public GeoCoder getGeoCoder() {
-		if (fieldGeoCoder == null) {
+	public GeoCoder getGeoCoder()
+	{
+		if (fieldGeoCoder == null)
+		{
 			fieldGeoCoder = new GeoCoder();
-			
+
 		}
 
 		return fieldGeoCoder;
 	}
 
-	public void setGeoCoder(GeoCoder fieldGeoCoder) {
+	public void setGeoCoder(GeoCoder fieldGeoCoder)
+	{
 		this.fieldGeoCoder = fieldGeoCoder;
 	}
+
 	public void searchLibrary(WebPageRequest inPageRequest) throws Exception
 	{
-		Data selectedlibrary = (Data)inPageRequest.getPageValue("selectedlibrary");
-		if( selectedlibrary != null)
+		Data selectedlibrary = (Data) inPageRequest.getPageValue("selectedlibrary");
+		if (selectedlibrary != null)
 		{
 			MediaArchive archive = getMediaArchive(inPageRequest);
 			String catid = selectedlibrary.get("categoryid");
 			inPageRequest.setRequestParameter("nodeID", catid);
-			HitTracker tracker = archive.getAssetSearcher().query().enduser(true).exact("category",catid).search(inPageRequest);
+			HitTracker tracker = archive.getAssetSearcher().query().enduser(true).exact("category", catid).search(inPageRequest);
 			tracker.getSearchQuery().setProperty("categoryid", catid);
 		}
 	}
+
 	public void showCategory(WebPageRequest inReq) throws Exception
 	{
-		//Look for a hitsessionid and make sure this category is in there
+		// Look for a hitsessionid and make sure this category is in there
 		MediaArchive archive = getMediaArchive(inReq);
 		Category category = archive.getCategory(inReq);
-		if(category == null) {
+		if (category == null)
+		{
 			return;
 		}
-		inReq.putPageValue("category",category);
-		inReq.putPageValue("selectedcategory",category);
-		
+		inReq.putPageValue("category", category);
+		inReq.putPageValue("selectedcategory", category);
+
 		String searchtype = resolveSearchType(inReq);
-		if( searchtype == null)
+		if (searchtype == null)
 		{
 			searchtype = "asset";
 		}
-		
+
 		HitTracker hits = archive.getSearcher(searchtype).loadHits(inReq);
 		if (hits == null)
 		{
-			if( searchtype.equals("asset"))
+			if (searchtype.equals("asset"))
 			{
 				hits = archive.getAssetSearcher().searchCategories(inReq, category);
 			}
 			else
 			{
-				hits  = archive.query( searchtype).match("catagory",category.getId()).search(inReq);
+				hits = archive.query(searchtype).match("catagory", category.getId()).search(inReq);
 			}
-			hits.getSearchQuery().setProperty("userinputsearch", "true"); //So it caches
+			hits.getSearchQuery().setProperty("userinputsearch", "true"); // So it caches
 		}
-		else if( hits.getSearchQuery().getDetail("category") == null)
-		{
-			hits.getSearchQuery().addExact("category",category.getId());
-			hits.invalidate();
-			hits = archive.getAssetSearcher().cachedSearch(inReq, hits.getSearchQuery());
-		}
+		else
+			if (hits.getSearchQuery().getDetail("category") == null)
+			{
+				hits.getSearchQuery().addExact("category", category.getId());
+				hits.invalidate();
+				hits = archive.getAssetSearcher().cachedSearch(inReq, hits.getSearchQuery());
+			}
 		hits.getSearchQuery().setProperty("selectedcategory", category.getId());
 	}
-	
-	
+
 	public void loadHitsCategory(WebPageRequest inReq) throws Exception
 	{
-		//Look for a hitsessionid and make sure this category is in there
+		// Look for a hitsessionid and make sure this category is in there
 		MediaArchive archive = getMediaArchive(inReq);
 		HitTracker hits = (HitTracker) inReq.getPageValue("hits");
-		
-		
+
 		String catid = hits.getInput("selectedcategory");
-		if(catid != null) {
+		if (catid != null)
+		{
 			Category category = archive.getCategory(catid);
 			inReq.putPageValue("category", category);
 		}
-		
+
 		inReq.setRequestParameter("nodeID", catid);
 
 	}
-	
-	
+
 	public void searchCategoryTree(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
@@ -121,143 +123,143 @@ public class MediaSearchModule extends BaseMediaModule
 		HitTracker all = archive.getCategorySearcher().loadPageOfSearch(inPageRequest);;
 		if (all == null)
 		{
-		
+
 			SearchQuery search = archive.getCategorySearcher().addStandardSearchTerms(inPageRequest);
-			if(search == null) {
+			if (search == null)
+			{
 				search = archive.getCategorySearcher().createSearchQuery();
 			}
-			
+
 			if (category != null)
 			{
 				search.addExact("parents", category.getId());
 			}
-			
-			String	sort = inPageRequest.getRequestParameter("categorysortby");
+
+			String sort = inPageRequest.getRequestParameter("categorysortby");
 			if (sort == null)
 			{
 				sort = "categorypathUp";
 			}
 			search.addSortBy(sort);
-			
-			if( search.getHitsName() == null)
+
+			if (search.getHitsName() == null)
 			{
 				String hitsname = inPageRequest.getRequestParameter("hitsname");
-				if(hitsname == null)
+				if (hitsname == null)
 				{
 					hitsname = inPageRequest.findValue("hitsname");
 				}
-				if (hitsname != null )
+				if (hitsname != null)
 				{
 					search.setHitsName(hitsname);
 				}
 			}
-			
+
 			all = archive.getCategorySearcher().cachedSearch(inPageRequest, search);
 		}
-		inPageRequest.putPageValue("hits",all);
-		if (all != null) 
+		inPageRequest.putPageValue("hits", all);
+		if (all != null)
 		{
 			inPageRequest.putSessionValue(all.getSessionId(), all);
 		}
-		inPageRequest.putPageValue("category",category);
-		inPageRequest.putPageValue("selectedcategory",category);
+		inPageRequest.putPageValue("category", category);
+		inPageRequest.putPageValue("selectedcategory", category);
 	}
-	
-	
+
 	/**
 	 * @param inPageRequest
 	 * @throws Exception
 	 */
-	
+
 	public void searchCategories(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		Category category = archive.getCategory(inPageRequest);
-		if (category == null) {
+		if (category == null)
+		{
 			log.error("No category found");
 			return;
 		}
-		inPageRequest.putPageValue("category",category);
-		inPageRequest.putPageValue("selectedcategory",category);
-		
+		inPageRequest.putPageValue("category", category);
+		inPageRequest.putPageValue("selectedcategory", category);
+
 		String exact = inPageRequest.findValue("exactsearch");
-		inPageRequest.putPageValue("exactsearch",exact);
-		
+		inPageRequest.putPageValue("exactsearch", exact);
+
 		HitTracker tracker = null;
-		
-		
+
 		String searchtype = resolveSearchType(inPageRequest);
-		if( searchtype == null)
+		if (searchtype == null)
 		{
 			searchtype = "asset";
 		}
-		
+
 		Searcher assetsearcher = archive.getSearcher(searchtype);
 		SearchQuery search = assetsearcher.addStandardSearchTerms(inPageRequest);
-		
-		if(search == null) {
+
+		if (search == null)
+		{
 			search = assetsearcher.createSearchQuery();
-			String	sort = inPageRequest.getRequestParameter(searchtype +"sortby");
+			String sort = inPageRequest.getRequestParameter(searchtype + "sortby");
 			search.addSortBy(sort);
 		}
-		
+
 		search.setIncludeDescription(false);
-		
-		if( exact != null && Boolean.parseBoolean(exact))
+
+		if (exact != null && Boolean.parseBoolean(exact))
 		{
-			search.addExact("category-exact",category.getId());
+			search.addExact("category-exact", category.getId());
 		}
 		else
 		{
-			search.addExact("category",category.getId());
+			search.addExact("category", category.getId());
 		}
-		
-		if( search.getHitsName() == null)
+
+		if (search.getHitsName() == null)
 		{
 			String hitsname = inPageRequest.getRequestParameter("hitsname");
-			if(hitsname == null)
+			if (hitsname == null)
 			{
 				hitsname = inPageRequest.findValue("hitsname");
 			}
-			if (hitsname != null )
+			if (hitsname != null)
 			{
 				search.setHitsName(hitsname);
 			}
 		}
-			
-		
+
 		tracker = assetsearcher.cachedSearch(inPageRequest, search);
 
-		if( tracker != null)
+		if (tracker != null)
 		{
-				//TODO: Seems like this could be done within the searcher or something
-				tracker.setDataSource(archive.getCatalogId() + "/categories/" + category.getId());
-				Data librarycol = (Data) inPageRequest.getPageValue("librarycol");
-				if(librarycol != null){
-					tracker.getSearchQuery().setProperty("collectionid", librarycol.getId());
-				}
-				tracker.getSearchQuery().setProperty("categoryid", category.getId());
-				//tracker.setPage(1);  //<---why?
+			// TODO: Seems like this could be done within the searcher or something
+			tracker.setDataSource(archive.getCatalogId() + "/categories/" + category.getId());
+			Data librarycol = (Data) inPageRequest.getPageValue("librarycol");
+			if (librarycol != null)
+			{
+				tracker.getSearchQuery().setProperty("collectionid", librarycol.getId());
+			}
+			tracker.getSearchQuery().setProperty("categoryid", category.getId());
+			// tracker.setPage(1); //<---why?
 
 		}
-			
-		UserProfile prefs = (UserProfile)inPageRequest.getUserProfile();
-		if( prefs != null)
+
+		UserProfile prefs = (UserProfile) inPageRequest.getUserProfile();
+		if (prefs != null)
 		{
 			prefs.setProperty("lastcatalog", archive.getCatalogId());
-			//prefs.save();
+			// prefs.save();
 		}
-		if(category != null && tracker != null) 
+		if (category != null && tracker != null)
 		{
 			tracker.getSearchQuery().setProperty("selectedcategory", category.getId());
 		}
 
 	}
-	
-	
-	
+
 	/**
 	 * not used
+	 * 
 	 * @param inPageRequest
 	 * @throws Exception
 	 */
@@ -268,11 +270,12 @@ public class MediaSearchModule extends BaseMediaModule
 
 		archive.getAssetSearcher().searchExactCategories(inPageRequest, category);
 	}
-	
+
 	public void searchFavories(WebPageRequest inPageRequest) throws Exception
 	{
 		String userid = inPageRequest.findValue("userid");
-		if(userid == null){
+		if (userid == null)
+		{
 			return;
 		}
 		MediaArchive archive = getMediaArchive(inPageRequest);
@@ -282,9 +285,9 @@ public class MediaSearchModule extends BaseMediaModule
 		query.addExact("username", userid);
 		query.addSortBy("timeDown");
 		HitTracker assets = searcher.cachedSearch(inPageRequest, query);
-		if( assets.size() > 0)
+		if (assets.size() > 0)
 		{
-			//Now do a big OR statement
+			// Now do a big OR statement
 			SearchQuery aquery = archive.getAssetSearcher().createSearchQuery();
 			aquery.setSortBy(inPageRequest.findValue("sortby"));
 			SearchQuery orquery = archive.getAssetSearcher().createSearchQuery();
@@ -293,12 +296,13 @@ public class MediaSearchModule extends BaseMediaModule
 			{
 				Data data = (Data) iterator.next();
 				String assetid = data.get("assetid");
-				if(assetid != null){
+				if (assetid != null)
+				{
 					orquery.addExact("id", data.get("assetid"));
 				}
 			}
 			aquery.addChildQuery(orquery);
-			
+
 			HitTracker tracker = archive.getAssetSearcher().cachedSearch(inPageRequest, aquery);
 		}
 	}
@@ -306,7 +310,7 @@ public class MediaSearchModule extends BaseMediaModule
 	public void searchUploads(WebPageRequest inPageRequest) throws Exception
 	{
 		String userid = inPageRequest.findValue("userid");
-		
+
 		MediaArchive archive = getMediaArchive(inPageRequest);
 
 		SearchQuery aquery = archive.getAssetSearcher().createSearchQuery();
@@ -314,51 +318,51 @@ public class MediaSearchModule extends BaseMediaModule
 		aquery.addExact("owner", userid);
 		archive.getAssetSearcher().cachedSearch(inPageRequest, aquery);
 	}
-	
 
-	public void rangeSearch(WebPageRequest inReq) throws Exception {
-		
-			//This does a search in a square for the range (+/- the range in both directions from the point
+	public void rangeSearch(WebPageRequest inReq) throws Exception
+	{
+
+		// This does a search in a square for the range (+/- the range in both
+		// directions from the point
 		MediaArchive archive = getMediaArchive(inReq);
 
 		String target = inReq.getRequestParameter("target");
 		String rangeString = inReq.findValue("range");
 		String detailid = inReq.findValue("field");
-		
-		
+
 		double range = Double.parseDouble(rangeString);
-	    range = range / 157253.2964;//convert to decimal degrees (FROM Meters)
-		
-	    List positions = getGeoCoder().getPositions(target);
-		if(positions != null && positions.size() > 0){
-			Position p = (Position)positions.get(0);
+		range = range / 157253.2964;// convert to decimal degrees (FROM Meters)
+
+		List positions = getGeoCoder().getPositions(target);
+		if (positions != null && positions.size() > 0)
+		{
+			Position p = (Position) positions.get(0);
 			Double latitude = p.getLatitude();
 			Double longitude = p.getLongitude();
 			Double maxlat = latitude + range;
 			Double minlat = latitude - range;
 			Double maxlong = longitude + range;
-			Double minlong = longitude - range; 
+			Double minlong = longitude - range;
 			Searcher searcher = archive.getAssetSearcher();
-			
+
 			SearchQuery query = searcher.addStandardSearchTerms(inReq);
-			if(query == null){
+			if (query == null)
+			{
 				query = searcher.createSearchQuery();
 			}
-			
-			
+
 			query.addBetween(detailid + "_lat_sortable", minlat, maxlat);
-			query.addBetween(detailid + "_lng_sortable", minlong, maxlong );
+			query.addBetween(detailid + "_lng_sortable", minlong, maxlong);
 			searcher.cachedSearch(inReq, query);
-			
+
 		}
-	
+
 	}
 
-	
-	
-	public void findMappableAssets(WebPageRequest inReq){
+	public void findMappableAssets(WebPageRequest inReq)
+	{
 		String detailid = inReq.findValue("detailid");
-		
+
 		MediaArchive archive = getMediaArchive(inReq);
 
 		SearchQuery aquery = archive.getAssetSearcher().createSearchQuery();
@@ -366,11 +370,12 @@ public class MediaSearchModule extends BaseMediaModule
 		aquery.addExact(detailid + "_available", "true");
 		archive.getAssetSearcher().cachedSearch(inReq, aquery);
 	}
-	
-	//Delete
-	public HitTracker showFaceProfileGroupAssets(WebPageRequest inReq){
+
+	// Delete
+	public HitTracker showFaceProfileGroupAssets(WebPageRequest inReq)
+	{
 		String faceprofilegroupid = inReq.findValue("faceprofilegroupid");
-		
+
 		MediaArchive archive = getMediaArchive(inReq);
 		HitTracker tracker = archive.query("asset").exact("faceprofiles.faceprofilegroup", faceprofilegroupid).sort("assetaddeddate").search(inReq);
 		return tracker;
@@ -381,154 +386,129 @@ public class MediaSearchModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		Category category = archive.getCategory(inPageRequest);
-		if (category == null) {
+		if (category == null)
+		{
 			return;
 		}
-		inPageRequest.putPageValue("category",category);
+		inPageRequest.putPageValue("category", category);
 
 	}
 
 	/*
-	public void searchProfiles(WebPageRequest inPageRequest) throws Exception
-	{
-		Data person = (Data)inPageRequest.getPageValue("entity");
-		if( person == null)
-		{
-			log.info("No entity");
-			return;
-		}
-		MediaArchive archive = getMediaArchive(inPageRequest);
-		FaceProfileManager manager = (FaceProfileManager)archive.getBean("faceProfileManager");
-		Collection assets = manager.findAssetsForPerson(inPageRequest, person);
-		inPageRequest.putPageValue("faceassets", assets);
-
-	}
-	*/
-/*	
-	public void searchProfileAssets(WebPageRequest inPageRequest) throws Exception
-	{
-		String faceprofileid = (String)inPageRequest.getPageValue("entityid");
-		if( faceprofileid == null)
-		{
-			faceprofileid = (String)inPageRequest.findValue("entityid");
-		}
-		if( faceprofileid == null)
-		{
-			log.info("No Face profile");
-			return;
-		}
-		MediaArchive archive = getMediaArchive(inPageRequest);
-		FaceProfileManager manager = (FaceProfileManager)archive.getBean("faceProfileManager");
-		Collection assets = manager.findAssetsForProfile(faceprofileid,1000);
-//		HitTracker hits = (HitTracker) assets;
-		inPageRequest.putPageValue("faceassets", assets);
-
-
-	}
-	
-	*/
+	 * public void searchProfiles(WebPageRequest inPageRequest) throws Exception { Data person =
+	 * (Data)inPageRequest.getPageValue("entity"); if( person == null) { log.info("No entity"); return;
+	 * } MediaArchive archive = getMediaArchive(inPageRequest); FaceProfileManager manager =
+	 * (FaceProfileManager)archive.getBean("faceProfileManager"); Collection assets =
+	 * manager.findAssetsForPerson(inPageRequest, person); inPageRequest.putPageValue("faceassets",
+	 * assets);
+	 * 
+	 * }
+	 */
+	/*
+	 * public void searchProfileAssets(WebPageRequest inPageRequest) throws Exception { String
+	 * faceprofileid = (String)inPageRequest.getPageValue("entityid"); if( faceprofileid == null) {
+	 * faceprofileid = (String)inPageRequest.findValue("entityid"); } if( faceprofileid == null) {
+	 * log.info("No Face profile"); return; } MediaArchive archive = getMediaArchive(inPageRequest);
+	 * FaceProfileManager manager = (FaceProfileManager)archive.getBean("faceProfileManager");
+	 * Collection assets = manager.findAssetsForProfile(faceprofileid,1000); // HitTracker hits =
+	 * (HitTracker) assets; inPageRequest.putPageValue("faceassets", assets);
+	 * 
+	 * 
+	 * }
+	 * 
+	 */
 	public void searchProfileAssets(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
-		String entityid = (String)inPageRequest.getPageValue("entityid");
-		if( entityid == null)
+		String entityid = (String) inPageRequest.getPageValue("entityid");
+		if (entityid == null)
 		{
-			entityid = (String)inPageRequest.findValue("entityid");
+			entityid = (String) inPageRequest.findValue("entityid");
 		}
-		if( entityid == null)
+		if (entityid == null)
 		{
 			return;
 		}
-		
-		String moduleid = (String)inPageRequest.findPathValue("module");
+
+		String moduleid = (String) inPageRequest.findPathValue("module");
 
 		SearchQuery aquery = archive.getAssetSearcher().addStandardSearchTerms(inPageRequest);
-		
-		if(aquery == null) {
+
+		if (aquery == null)
+		{
 			aquery = archive.getAssetSearcher().createSearchQuery();
 		}
-		
+
 		Collection faceprofilegroups = new ArrayList();
 
 		aquery.addExact("faceprofiles.faceprofilegroup", entityid);
-		//faceprofilegroups
+		// faceprofilegroups
 		Data entity = archive.getCachedData(moduleid, entityid);
 		faceprofilegroups.add(entity);
 		aquery.setValue("faceprofilegroups", faceprofilegroups);
 		aquery.setValue("showfacebox", true);
-		
+
 		String hitsname = inPageRequest.getRequestParameter("hitsname");
-		if(hitsname == null)
+		if (hitsname == null)
 		{
 			hitsname = inPageRequest.findValue("hitsname");
 		}
-		if(hitsname == null)
+		if (hitsname == null)
 		{
 			hitsname = "faceassets";
 		}
 		archive.getAssetSearcher().cachedSearch(inPageRequest, aquery);
 	}
-	
-	//Delete this
+
+	// Delete this
 	public void searchPersonAssets(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
-		String entityid = (String)inPageRequest.getPageValue("entityid");
-		if( entityid == null)
+		String entityid = (String) inPageRequest.getPageValue("entityid");
+		if (entityid == null)
 		{
-			entityid = (String)inPageRequest.findValue("entityid");
+			entityid = (String) inPageRequest.findValue("entityid");
 		}
-		if( entityid == null)
+		if (entityid == null)
 		{
 			return;
 		}
-		
-
 
 		/*
-		Collection faceprofilegroups = new ArrayList();
-		Collection<Data> profiles = archive.query("faceprofilegroup").exact("entityperson", entityid).search();
-		if (!profiles.isEmpty()) {
-			//assets = archive.query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).search();
-			aquery.addOrsGroup("faceprofiles.faceprofilegroup", profiles);
-			faceprofilegroups = profiles;
-		}
+		 * Collection faceprofilegroups = new ArrayList(); Collection<Data> profiles =
+		 * archive.query("faceprofilegroup").exact("entityperson", entityid).search(); if
+		 * (!profiles.isEmpty()) { //assets =
+		 * archive.query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).search();
+		 * aquery.addOrsGroup("faceprofiles.faceprofilegroup", profiles); faceprofilegroups = profiles; }
+		 * 
+		 * aquery.setValue("faceprofilegroups", faceprofilegroups); aquery.setValue("showfacebox", true);
+		 */
 
-		aquery.setValue("faceprofilegroups", faceprofilegroups);
-		aquery.setValue("showfacebox", true);
-		*/
-		
-		
-		Searcher faceembeddingsearcher = archive.getSearcherManager().getSearcher("system/facedb","faceembedding");
+		Searcher faceembeddingsearcher = archive.getSearcherManager().getSearcher("system/facedb", "faceembedding");
 		HitTracker faces = faceembeddingsearcher.query().exact("entityperson", entityid).search();
 		if (!faces.isEmpty())
 		{
 			SearchQuery aquery = archive.getAssetSearcher().addStandardSearchTerms(inPageRequest);
-			
-			if(aquery == null) {
+
+			if (aquery == null)
+			{
 				aquery = archive.getAssetSearcher().createSearchQuery();
 			}
 			Collection allassets = faces.collectValues("assetid");
 			aquery.addOrsGroup("id", allassets);
-			
-			
-			
-			
+
 			String hitsname = inPageRequest.getRequestParameter("hitsname");
-			if(hitsname == null)
+			if (hitsname == null)
 			{
 				hitsname = inPageRequest.findValue("hitsname");
 			}
-			if(hitsname == null)
+			if (hitsname == null)
 			{
 				hitsname = "faceassets";
 			}
 			archive.getAssetSearcher().cachedSearch(inPageRequest, aquery);
 		}
-		//inPageRequest.putPageValue(hitsname, assets);
+		// inPageRequest.putPageValue(hitsname, assets);
 	}
-	
-	
 
-	
 }

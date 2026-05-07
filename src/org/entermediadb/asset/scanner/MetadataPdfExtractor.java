@@ -69,8 +69,6 @@ public class MetadataPdfExtractor extends MetadataExtractor
 						maxsize = Long.valueOf(sizeval);
 					}
 
-
-
 					in = inFile.getInputStream();
 					// try
 					// {
@@ -82,14 +80,11 @@ public class MetadataPdfExtractor extends MetadataExtractor
 					// }
 					// byte[] bytes = out.toByteArray();
 
-
 					Parse results = parser.parse(in); // Do we deal with encoding?
 					// We need to limit this size
 					if (inFile.getLength() > maxsize)
 					{
-						log.info(
-								"PDF was too large to extract metadata. Consider increasing max size: "
-										+ sizeval);
+						log.info("PDF was too large to extract metadata. Consider increasing max size: " + sizeval);
 						// Lets still get page numbers, this is fast enough.
 						// PDFParser np = new PDFParser(new RandomAccessFile(new
 						// File(inFile.getAbsolutePath()), "r"));
@@ -107,9 +102,7 @@ public class MetadataPdfExtractor extends MetadataExtractor
 						if (fulltext != null && fulltext.length() > 0)
 						{
 
-							ContentItem item = getPageManager().getRepository().getStub(
-									"/WEB-INF/data/" + inArchive.getCatalogId() + "/assets/"
-											+ inAsset.getSourcePath() + "/fulltext.txt");
+							ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId() + "/assets/" + inAsset.getSourcePath() + "/fulltext.txt");
 							if (item instanceof FileItem)
 							{
 								((FileItem) item).getFile().getParentFile().mkdirs();

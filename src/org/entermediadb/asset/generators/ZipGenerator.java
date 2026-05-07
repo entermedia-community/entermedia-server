@@ -21,6 +21,7 @@ public class ZipGenerator extends BaseGenerator
 	protected File fieldRoot;
 	protected PageManager pageManager;
 	private static final Log log = LogFactory.getLog(ZipGenerator.class);
+
 	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
 	{
 		String path = inReq.getRequestParameter("path");
@@ -28,27 +29,27 @@ public class ZipGenerator extends BaseGenerator
 		{
 			throw new OpenEditException("Illegal path name");
 		}
-		//TODO: Add more security checks
-		if( inReq.getUser() == null)
+		// TODO: Add more security checks
+		if (inReq.getUser() == null)
 		{
-			throw new OpenEditException("Illegal user");			
+			throw new OpenEditException("Illegal user");
 		}
-		path = PathUtilities.resolveRelativePath( path, "/");
+		path = PathUtilities.resolveRelativePath(path, "/");
 
-//		File root = new File( getRoot(), path);
+		// File root = new File( getRoot(), path);
 		try
 		{
 			log.info("Zip up:" + path);
 			PageZipUtil pageZipUtil = new PageZipUtil(getPageManager());
 			String strip = inReq.getRequestParameter("stripfolders");
-			if( strip != null)
+			if (strip != null)
 			{
 				pageZipUtil.setFolderToStripOnZip(strip);
 			}
 			pageZipUtil.setRoot(getRoot());
 			pageZipUtil.zipFile(path, inOut.getStream());
 		}
-		catch ( Exception ex)
+		catch (Exception ex)
 		{
 			log.error(ex);
 		}
@@ -63,6 +64,7 @@ public class ZipGenerator extends BaseGenerator
 	{
 		fieldRoot = inRoot;
 	}
+
 	public boolean canGenerate(WebPageRequest inReq)
 	{
 		return true;

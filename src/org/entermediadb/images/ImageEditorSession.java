@@ -15,9 +15,10 @@ import org.openedit.util.FileUtils;
 public class ImageEditorSession extends EditSession
 {
 	protected BufferedImage fieldEditImage;
+
 	public BufferedImage getEditImage()
 	{
-		if( fieldEditImage == null)
+		if (fieldEditImage == null)
 		{
 			InputStream in = null;
 			try
@@ -25,7 +26,7 @@ public class ImageEditorSession extends EditSession
 				in = getEditPage().getContentItem().getInputStream();
 				fieldEditImage = ImageIO.read(in);
 			}
-			catch ( Exception ex)
+			catch (Exception ex)
 			{
 				throw new OpenEditRuntimeException(ex);
 			}

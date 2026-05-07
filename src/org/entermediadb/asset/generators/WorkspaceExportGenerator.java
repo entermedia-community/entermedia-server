@@ -20,7 +20,7 @@ public class WorkspaceExportGenerator extends BaseGenerator
 	protected File fieldRoot;
 	protected PageManager pageManager;
 	protected WorkspaceManager fieldWorkspaceManager;
-	
+
 	public WorkspaceManager getWorkspaceManager()
 	{
 		return fieldWorkspaceManager;
@@ -32,6 +32,7 @@ public class WorkspaceExportGenerator extends BaseGenerator
 	}
 
 	private static final Log log = LogFactory.getLog(WorkspaceExportGenerator.class);
+
 	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
 	{
 		try
@@ -39,7 +40,7 @@ public class WorkspaceExportGenerator extends BaseGenerator
 			String apppath = inReq.getRequestParameter("apppath");
 			getWorkspaceManager().exportWorkspace(apppath, inOut.getStream());
 		}
-		catch ( Exception ex)
+		catch (Exception ex)
 		{
 			log.error(ex);
 		}
@@ -54,6 +55,7 @@ public class WorkspaceExportGenerator extends BaseGenerator
 	{
 		fieldRoot = inRoot;
 	}
+
 	public boolean canGenerate(WebPageRequest inReq)
 	{
 		return true;

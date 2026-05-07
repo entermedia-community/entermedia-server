@@ -47,9 +47,9 @@ public class CategoryZipGenerator extends BaseGenerator
 		MediaArchive archive = archiveModule.getMediaArchive(inReq);
 		String catid = inPage.getDirectoryName();
 		Category fromcategory = archive.getCategory(catid);
-		
-		zipAssets(inReq, archive,fromcategory , inOut);
-		
+
+		zipAssets(inReq, archive, fromcategory, inOut);
+
 	}
 
 	protected void zipAssets(WebPageRequest inReq, MediaArchive archive, Category inRootCat, Output inOut)
@@ -59,9 +59,9 @@ public class CategoryZipGenerator extends BaseGenerator
 		{
 			zos = new ZipOutputStream(inOut.getStream());
 			zos.setLevel(1); // for speed since these are jpegs
-				
-			addFolder(inReq,archive,inRootCat,"", zos);
-		
+
+			addFolder(inReq, archive, inRootCat, "", zos);
+
 		}
 		finally
 		{
@@ -75,18 +75,18 @@ public class CategoryZipGenerator extends BaseGenerator
 				// nothing
 			}
 		}
-		
+
 	}
 
-	protected void addFolder(WebPageRequest inReq,MediaArchive archive, Category inCat,String folderprefix, ZipOutputStream zos)
+	protected void addFolder(WebPageRequest inReq, MediaArchive archive, Category inCat, String folderprefix, ZipOutputStream zos)
 	{
-		Collection files = archive.query("asset").exact("category-exact",inCat).search(inReq);
-		
+		Collection files = archive.query("asset").exact("category-exact", inCat).search(inReq);
+
 		String thispath = folderprefix + inCat.getName() + "/";
 		for (Iterator iterator = files.iterator(); iterator.hasNext();)
 		{
 			Data asset = (Data) iterator.next();
-			
+
 			String filename = thispath + asset.getName("en");
 			ZipEntry entry = new ZipEntry(filename);
 			ContentItem inFile = archive.getOriginalContent(asset);
@@ -114,15 +114,15 @@ public class CategoryZipGenerator extends BaseGenerator
 		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
 		{
 			Category child = (Category) iterator.next();
-			addFolder(inReq,archive,child,thispath, zos);
+			addFolder(inReq, archive, child, thispath, zos);
 		}
-		
+
 	}
-	
+
 	public boolean canGenerate(WebPageRequest inReq)
 	{
-	
-		boolean ok =  inReq.getPage().getMimeType().equals("application/x-zip");
+
+		boolean ok = inReq.getPage().getMimeType().equals("application/x-zip");
 		return ok;
 	}
 

@@ -14,7 +14,7 @@ public class Content
 {
 	private static final Log log = LogFactory.getLog(Content.class);
 	protected Link fieldUrl;
-	
+
 	public Link getUrl()
 	{
 		return fieldUrl;
@@ -30,9 +30,9 @@ public class Content
 		URL url = new URL(getUrl().getPath());
 		URLConnection connect = url.openConnection();
 		connect.connect();
-		if( connect.getContentLength() > 10000 * 1024 )
+		if (connect.getContentLength() > 10000 * 1024)
 		{
-			log.error(getUrl() +" is over 10 megs");
+			log.error(getUrl() + " is over 10 megs");
 			return null;
 		}
 		ByteArrayOutputStream out = new ByteArrayOutputStream();

@@ -102,7 +102,8 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			long start = System.currentTimeMillis();
 			// --
 			// ExecResult result = getExec().runExec("exiftool", base, true);
-			// public ExecResult runExecStream(String inCommandKey, List<String> args, OutputStream inOutput,
+			// public ExecResult runExecStream(String inCommandKey, List<String> args,
+			// OutputStream inOutput,
 			// long inTimeout) throws OpenEditException
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
 
@@ -141,7 +142,8 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				{
 					String numberinfo = eachresult[i++];// result.getStandardOut();
 					parseNumericValues(inArchive, asset, details, numberinfo);
-					// log.debug("Exiftool found " + asset.getSourcePath() + " returned " + numberinfo.length());
+					// log.debug("Exiftool found " + asset.getSourcePath() + " returned " +
+					// numberinfo.length());
 				}
 			}
 		}
@@ -294,7 +296,8 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			// return false;
 			// }
 			// String textinfo = resulttext.getStandardOut();
-			// //parseTextValues(inAsset, details, textinfo); //TODO: Do we skip anything already set
+			// //parseTextValues(inAsset, details, textinfo); //TODO: Do we skip anything
+			// already set
 			// }
 		}
 		catch (Exception e1)
@@ -545,8 +548,10 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 																							if (property.isDate())
 																							{
 																								// Date dateValue = externalFormat.parse(value);
-																								// value = value + " -0000"; //added offset of 0 since that seems to be the default
-																								// TODO: Should we clean up dates on their way in? Right now it uses a close format but not the
+																								// value = value + " -0000"; //added offset of 0 since that seems to be the
+																								// default
+																								// TODO: Should we clean up dates on their way in? Right now it uses a close
+																								// format but not the
 																								// perfect format
 																								value = DateStorageUtil.getStorageUtil().checkFormat(value);
 																								inAsset.setProperty(property.getId(), value);
@@ -624,7 +629,8 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		}
 	}
 
-	// protected void parseTextValues(Asset inAsset, PropertyDetails details, String numberinfo)
+	// protected void parseTextValues(Asset inAsset, PropertyDetails details, String
+	// numberinfo)
 	// {
 	// Pattern p = Pattern.compile("(\\w+):\\s+(.+)"); //clean whitespace
 	// if (numberinfo != null)
@@ -695,7 +701,8 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		// {
 		// log.info("Extracting thumb from "+ inInputFile.getAbsolutePath());
 		//
-		// ContentItem custom = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() +
+		// ContentItem custom = inArchive.getContent( "/WEB-INF/data/" +
+		// inArchive.getCatalogId() +
 		// "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
 		//
 		// //if we have embdeded thumb
@@ -773,7 +780,8 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		// if (tokens.length > 0){
 		// for(String token:tokens)
 		// {
-		// if (token != null && token.trim().startsWith("Colorspace:")){//Colorspace: CMYK
+		// if (token != null && token.trim().startsWith("Colorspace:")){//Colorspace:
+		// CMYK
 		// boolean isCMYK = token.toLowerCase().contains("cmyk");
 		// return isCMYK;
 		// }

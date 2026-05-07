@@ -7,9 +7,9 @@ import org.openedit.data.BaseData;
 
 public class PostData extends BaseData
 {
-	protected Map<String,String> fieldParameters = new HashMap();
-	
-	public Map<String,String> getSiteParameters()
+	protected Map<String, String> fieldParameters = new HashMap();
+
+	public Map<String, String> getSiteParameters()
 	{
 		return fieldParameters;
 	}
@@ -18,10 +18,10 @@ public class PostData extends BaseData
 	{
 		getSiteParameters().put(inKey, inValue);
 	}
-	
+
 	public String findAppPath(String inRequestedPath)
 	{
-		if( inRequestedPath.startsWith("/manager"))
+		if (inRequestedPath.startsWith("/manager"))
 		{
 			return inRequestedPath;
 		}
@@ -31,7 +31,7 @@ public class PostData extends BaseData
 
 	public String getSiteParameter(String inName)
 	{
-		if( inName.equals("siteid"))
+		if (inName.equals("siteid"))
 		{
 			return getId();
 		}

@@ -18,9 +18,6 @@
 		{
 			"path": "../app-emshare",
 		},
-		{
-			"path": "../../Documents/pod",
-		},
 	],
 	"settings": {
 		"java.autobuild.enabled": true,
@@ -31,7 +28,7 @@
 			"editor.insertSpaces": false,
 			"editor.tabSize": 4,
 			"files.autoSave": "onFocusChange",
-			"editor.formatOnSave": false,
+			"editor.formatOnSave": true,
 		},
 	},
 }

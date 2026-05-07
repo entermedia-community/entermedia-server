@@ -5,20 +5,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Parse {
+public class Parse
+{
 
 	protected Map fieldData;
-	
-		  
-	public  String get(String inMetadata)
+
+	public String get(String inMetadata)
 	{
-		return (String)getData().get(inMetadata);
+		return (String) getData().get(inMetadata);
 	}
-	public void put( String inId, Object inVal)
+
+	public void put(String inId, Object inVal)
 	{
-		if ( inVal != null)
+		if (inVal != null)
 		{
-			getData().put( inId, inVal);
+			getData().put(inId, inVal);
 		}
 	}
 
@@ -32,35 +33,37 @@ public class Parse {
 		return fieldData;
 	}
 
-
 	public void setData(Map inData)
 	{
 		fieldData = inData;
 	}
 
-
 	public void setText(String inText)
 	{
-		put( "body", inText);
+		put("body", inText);
 	}
+
 	public String getText()
 	{
 		return get("body");
 	}
+
 	public List getList(String inString)
 	{
-		List list = (List)getData().get(inString);
-		if( list == null)
+		List list = (List) getData().get(inString);
+		if (list == null)
 		{
 			return Collections.EMPTY_LIST;
 		}
 		return list;
 	}
+
 	public void setTitle(String inTitle)
 	{
-		put( "title",inTitle);
-		
+		put("title", inTitle);
+
 	}
+
 	public String getTitle()
 	{
 		return get("title");
@@ -75,7 +78,7 @@ public class Parse {
 		}
 		return Integer.parseInt(get("pages"));
 	}
-	
+
 	public void setPages(int inPages)
 	{
 		put("pages", String.valueOf(inPages));

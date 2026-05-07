@@ -176,7 +176,8 @@ public class OauthModule extends BaseMediaModule
 				else
 				{
 					clientid = authinfo.get("clientid");
-					requestedpermissions = inReq.findValue("requestedpermissions"); // TODO: Move this to catalogsettings
+					requestedpermissions = inReq.findValue("requestedpermissions"); // TODO: Move this to
+																					// catalogsettings
 
 					if (requestedpermissions == null)
 					{
@@ -236,8 +237,10 @@ public class OauthModule extends BaseMediaModule
 					.setClientId(clientid) // Client ID from configuration
 					.setRedirectURI(redirect)
 					.setResponseType("code") // Response type for authorization code grant
-					.setScope(requestedpermissions) // Dropbox scopes configured at views/settings/modules/asset/hotfolders/types/dropbox/connect.xconf
-					.setParameter("token_access_type", "offline") // Ensure refresh_token is included in the response
+					.setScope(requestedpermissions) // Dropbox scopes configured at
+													// views/settings/modules/asset/hotfolders/types/dropbox/connect.xconf
+					.setParameter("token_access_type", "offline") // Ensure refresh_token is included in the
+																	// response
 
 					.setState("login") // State parameter for CSRF protection or custom state
 					.buildQueryMessage();
@@ -474,19 +477,25 @@ public class OauthModule extends BaseMediaModule
 				.buildBodyMessage();
 			// OAuthClientRequest refreshtoken =
 			// OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(siteroot
-			// + "/" + appid + authinfo.get("redirecturi")).setCode(code).buildBodyMessage();
+			// + "/" + appid +
+			// authinfo.get("redirecturi")).setCode(code).buildBodyMessage();
 
 			try
 			{
 
 				OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
-				// Facebook is not fully compatible with OAuth 2.0 draft 10, access token response is
-				// application/x-www-form-urlencded, not json encoded so we use dedicated response class for that
-				// Own response class is an easy way to deal with oauth providers that introduce modifications to
+				// Facebook is not fully compatible with OAuth 2.0 draft 10, access token
+				// response is
+				// application/x-www-form-urlencded, not json encoded so we use dedicated
+				// response class for that
+				// Own response class is an easy way to deal with oauth providers that introduce
+				// modifications to
 				// OAuth specification
 				EmTokenResponse oAuthResponse = oAuthClient.accessToken(request, EmTokenResponse.class);
-				// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request, "POST");
-				// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request);
+				// final OAuthAccessTokenResponse oAuthResponse =
+				// oAuthClient.accessToken(request, "POST");
+				// final OAuthAccessTokenResponse oAuthResponse =
+				// oAuthClient.accessToken(request);
 				String accessToken = oAuthResponse.getAccessToken();
 
 				String refresh = oAuthResponse.getRefreshToken();
@@ -651,19 +660,25 @@ public class OauthModule extends BaseMediaModule
 				.buildBodyMessage();
 			// OAuthClientRequest refreshtoken =
 			// OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(siteroot
-			// + "/" + appid + authinfo.get("redirecturi")).setCode(code).buildBodyMessage();
+			// + "/" + appid +
+			// authinfo.get("redirecturi")).setCode(code).buildBodyMessage();
 
 			try
 			{
 
 				OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
-				// Facebook is not fully compatible with OAuth 2.0 draft 10, access token response is
-				// application/x-www-form-urlencded, not json encoded so we use dedicated response class for that
-				// Own response class is an easy way to deal with oauth providers that introduce modifications to
+				// Facebook is not fully compatible with OAuth 2.0 draft 10, access token
+				// response is
+				// application/x-www-form-urlencded, not json encoded so we use dedicated
+				// response class for that
+				// Own response class is an easy way to deal with oauth providers that introduce
+				// modifications to
 				// OAuth specification
 				EmTokenResponse oAuthResponse = oAuthClient.accessToken(request, EmTokenResponse.class);
-				// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request, "POST");
-				// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request);
+				// final OAuthAccessTokenResponse oAuthResponse =
+				// oAuthClient.accessToken(request, "POST");
+				// final OAuthAccessTokenResponse oAuthResponse =
+				// oAuthClient.accessToken(request);
 				String accessToken = oAuthResponse.getAccessToken();
 				String refresh = oAuthResponse.getRefreshToken();
 				boolean systemwide = Boolean.parseBoolean(inReq.findValue("systemwide"));
@@ -736,8 +751,10 @@ public class OauthModule extends BaseMediaModule
 				.buildBodyMessage();
 			OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
 			EmTokenResponse oAuthResponse = oAuthClient.accessToken(request, EmTokenResponse.class);
-			// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request, "POST");
-			// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request);
+			// final OAuthAccessTokenResponse oAuthResponse =
+			// oAuthClient.accessToken(request, "POST");
+			// final OAuthAccessTokenResponse oAuthResponse =
+			// oAuthClient.accessToken(request);
 
 			String accessToken = oAuthResponse.getAccessToken();
 

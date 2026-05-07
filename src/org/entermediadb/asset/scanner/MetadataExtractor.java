@@ -19,15 +19,15 @@ public abstract class MetadataExtractor
 	{
 		boolean foundone = false;
 		Iterator<ContentItem> next = inContentitems.iterator();
-		for(Asset inAsset:inAssets)
+		for (Asset inAsset : inAssets)
 		{
 			ContentItem inputFile = next.next();
-			if( !inputFile.exists() )
+			if (!inputFile.exists())
 			{
 				log.error("Original asset missing " + inAsset.getSourcePath());
 				continue;
 			}
-			if( extractData(inMediaArchive, inputFile, inAsset) )
+			if (extractData(inMediaArchive, inputFile, inAsset))
 			{
 				foundone = true;
 			}

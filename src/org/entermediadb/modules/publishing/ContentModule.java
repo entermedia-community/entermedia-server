@@ -223,7 +223,8 @@ public class ContentModule extends BaseMediaModule
 	// }
 	// LlmConnection llm = (LlmConnection) archive.getBean(type);
 	//
-	// Data newdata = manager.createFromLLM(inReq, llm, model, entitymodule.getId(), entity.getId(),
+	// Data newdata = manager.createFromLLM(inReq, llm, model, entitymodule.getId(),
+	// entity.getId(),
 	// submodsearchtype);
 	// boolean createassets = Boolean.parseBoolean(inReq.findValue("createassets"));
 	// Searcher targetsearcher = archive.getSearcher("contentcreator");
@@ -243,9 +244,11 @@ public class ContentModule extends BaseMediaModule
 	// inReq.putPageValue("detail", detail);
 	// inReq.putPageValue("newdata", newdata);
 	//
-	// String template = llm.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() +
+	// String template = llm.loadInputFromTemplate(inReq, "/" +
+	// archive.getMediaDbId() +
 	// "/gpt/templates/createentityassets.html");
-	// Category rootcat = archive.getEntityManager().loadDefaultFolder(entitymodule, entity,
+	// Category rootcat = archive.getEntityManager().loadDefaultFolder(entitymodule,
+	// entity,
 	// inReq.getUser());
 	// String sourcepathroot = rootcat.getCategoryPath();
 	// Asset asset = manager.createAssetFromLLM(inReq, sourcepathroot, template);
@@ -287,7 +290,8 @@ public class ContentModule extends BaseMediaModule
 		String edithome = inReq.findPathValue("edithome");
 		String template = llm.loadInputFromTemplate(new AgentContext(), edithome + "/aitools/createnewasset.html");
 
-		// manager.createAssetFromLLM(inReq, entitymodule.getId(), entity.getId(), template);
+		// manager.createAssetFromLLM(inReq, entitymodule.getId(), entity.getId(),
+		// template);
 
 	}
 

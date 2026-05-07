@@ -16,7 +16,7 @@ public class BasicLlmResponse implements LlmResponse
 	protected JSONObject fieldFunctionArguments;
 	protected AiSearch fieldAiSearchParams;
 	Collection<RankedResult> fieldRankedSuggestions;
-	
+
 	public Collection<RankedResult> getRankedSuggestions()
 	{
 		return fieldRankedSuggestions;
@@ -26,7 +26,6 @@ public class BasicLlmResponse implements LlmResponse
 	{
 		fieldRankedSuggestions = inRankedSuggestions;
 	}
-	
 
 	public AiSearch getAiSearchParams()
 	{
@@ -38,26 +37,24 @@ public class BasicLlmResponse implements LlmResponse
 		fieldAiSearchParams = inAiSearchParams;
 	}
 
-		
 	@Override
 	public String getMessage()
 	{
 		return fieldMessage;
 	}
-	
+
 	public void setMessagePlain(String inMessage)
 	{
 		fieldMessagePlain = inMessage;
 	}
-	
+
 	@Override
 	public String getMessagePlain()
 	{
 		return fieldMessagePlain;
 	}
-	
+
 	protected Collection fieldRawCollection;
-	
 
 	public Collection getRawCollection()
 	{
@@ -71,13 +68,15 @@ public class BasicLlmResponse implements LlmResponse
 
 	protected JSONObject rawResponse;
 
-    public JSONObject getRawResponse() {
-        return rawResponse;
-    }
+	public JSONObject getRawResponse()
+	{
+		return rawResponse;
+	}
 
-    public void setRawResponse(JSONObject inRawResponse) {
-        rawResponse = inRawResponse;
-    }
+	public void setRawResponse(JSONObject inRawResponse)
+	{
+		rawResponse = inRawResponse;
+	}
 
 	@Override
 	public boolean isToolCall()
@@ -103,7 +102,6 @@ public class BasicLlmResponse implements LlmResponse
 		fieldFunctionName = inFunctionName;
 	}
 
-	
 	@Override
 	public boolean isSuccessful()
 	{
@@ -111,8 +109,8 @@ public class BasicLlmResponse implements LlmResponse
 		return false;
 	}
 
-	//Are these needed?
-	
+	// Are these needed?
+
 	@Override
 	public int getTokensUsed()
 	{
@@ -140,7 +138,7 @@ public class BasicLlmResponse implements LlmResponse
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public String getFileName()
 	{
@@ -161,19 +159,20 @@ public class BasicLlmResponse implements LlmResponse
 	}
 
 	@Override
-	public Collection getCollection(String inKey) {
+	public Collection getCollection(String inKey)
+	{
 		Object obj = getMessageStructured().get(inKey);
-		if( obj instanceof JSONArray || obj instanceof Collection)
+		if (obj instanceof JSONArray || obj instanceof Collection)
 		{
 			return (Collection) obj;
 		}
 		return null;
 	}
-	
+
 	@Override
 	public JSONObject getFunctionArguments()
 	{
-		if(fieldFunctionArguments != null)
+		if (fieldFunctionArguments != null)
 		{
 			return fieldFunctionArguments;
 		}

@@ -12,9 +12,8 @@ public class ProductVersion
 {
 	protected String fieldVersion;
 	protected String fieldJar;
-	
-	public ProductVersion( String inVersion )
-	{
+
+	public ProductVersion(String inVersion) {
 		fieldVersion = inVersion;
 	}
 
@@ -23,23 +22,25 @@ public class ProductVersion
 		return fieldVersion;
 	}
 
-	public void setVersion( String inString )
+	public void setVersion(String inString)
 	{
 		fieldVersion = inString;
 	}
 
 	public String toString()
 	{
-		if( fieldVersion == null)
+		if (fieldVersion == null)
 		{
 			return "dev";
 		}
 		return fieldVersion;
 	}
+
 	public String getJar()
 	{
 		return fieldJar;
 	}
+
 	public void setJar(String inJar)
 	{
 		fieldJar = inJar;

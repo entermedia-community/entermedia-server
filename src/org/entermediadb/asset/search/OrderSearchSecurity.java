@@ -26,18 +26,16 @@ public class OrderSearchSecurity extends BaseSearchSecurity
 		}
 
 		UserProfile profile = inPageRequest.getUserProfile();
-		
 
-		if (profile != null && profile.isInRole("administrator") )
+		if (profile != null && profile.isInRole("administrator"))
 		{
 			return inQuery;
 		}
-		
-		if (inPageRequest.hasPermission("viewallorders") )
+
+		if (inPageRequest.hasPermission("viewallorders"))
 		{
 			return inQuery;
 		}
-			
 
 		Collection groupids = new ArrayList();
 		UserProfile inUserprofile = inPageRequest.getUserProfile();
@@ -65,19 +63,14 @@ public class OrderSearchSecurity extends BaseSearchSecurity
 		}
 
 		String userid = inPageRequest.getUserName();
-		
-		
+
 		if (userid == null)
 		{
-		
+
 			userid = "null";
 		}
-		
 
-		QueryBuilder builder = inSearcher.query().or().orgroup("viewgroups", groupids)
-					.exact("viewroles", roleid)
-					.exact("viewusers", userid)
-					.exact("userid", userid);
+		QueryBuilder builder = inSearcher.query().or().orgroup("viewgroups", groupids).exact("viewroles", roleid).exact("viewusers", userid).exact("userid", userid);
 		builder.exact("securityenabled", "false");
 		SearchQuery securityfilter = builder.getQuery();
 

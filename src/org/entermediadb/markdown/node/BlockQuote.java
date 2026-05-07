@@ -2,6 +2,7 @@ package org.entermediadb.markdown.node;
 
 /**
  * A block quote, e.g.:
+ * 
  * <pre>
  * &gt; Some quoted text
  * </pre>
@@ -10,10 +11,12 @@ package org.entermediadb.markdown.node;
  *
  * @see <a href="https://spec.commonmark.org/0.31.2/#block-quotes">CommonMark Spec</a>
  */
-public class BlockQuote extends Block {
+public class BlockQuote extends Block
+{
 
     @Override
-    public void accept(Visitor visitor) {
+    public void accept(Visitor visitor)
+    {
         visitor.visit(this);
     }
 }

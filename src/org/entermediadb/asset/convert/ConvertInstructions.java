@@ -21,9 +21,8 @@ public class ConvertInstructions
 	protected MediaArchive fieldMediaArchive;
 	protected Data fieldConvertPreset;
 	protected Data fieldConversionTask;
-	
 
-	protected int fieldPageNumber = 1; //This is 1 based
+	protected int fieldPageNumber = 1; // This is 1 based
 	protected int fieldRotation = 360;
 	protected Map<String, String> fieldProperties;
 	protected Collection<Data> fieldPresetParameters;
@@ -35,9 +34,7 @@ public class ConvertInstructions
 	protected OutputStream fieldOutputStream;
 	protected Page fieldImageProfile;
 	protected boolean forceoutputfile = false;
-	
-	
-	
+
 	public Page getImageProfile()
 	{
 		return fieldImageProfile;
@@ -48,34 +45,38 @@ public class ConvertInstructions
 		fieldImageProfile = inImageProfile;
 	}
 
-	public OutputStream getOutputStream() {
+	public OutputStream getOutputStream()
+	{
 		return fieldOutputStream;
 	}
 
-	public void setOutputStream(OutputStream inOutputStream) {
+	public void setOutputStream(OutputStream inOutputStream)
+	{
 		fieldOutputStream = inOutputStream;
 	}
 
 	/**
 	 */
-	public boolean isStreaming() {
+	public boolean isStreaming()
+	{
 		String output = getProperty("streaming");
 		return Boolean.parseBoolean(output);
 	}
 
-	public void setStreaming(boolean inStreaming) {
-		setProperty("streaming",String.valueOf( inStreaming));
+	public void setStreaming(boolean inStreaming)
+	{
+		setProperty("streaming", String.valueOf(inStreaming));
 	}
 
 	public ConvertInstructions copy(Data inNewPreset)
 	{
 		ConvertInstructions copy = new ConvertInstructions(fieldMediaArchive);
 		copy.fieldPageNumber = fieldPageNumber;
-		//copy.fieldRotation = fieldRotation;
-		//copy.fieldProperties = fieldProperties;
-		//copy.fieldPresetParameters = fieldPresetParameters;
+		// copy.fieldRotation = fieldRotation;
+		// copy.fieldProperties = fieldProperties;
+		// copy.fieldPresetParameters = fieldPresetParameters;
 		copy.fieldAsset = fieldAsset;
-		//copy.fieldOutputFile = fieldOutputFile;
+		// copy.fieldOutputFile = fieldOutputFile;
 		copy.fieldInputFile = fieldInputFile;
 		copy.setAssetSourcePath(getAssetSourcePath());
 		copy.setAssetId(getAssetId());
@@ -83,7 +84,7 @@ public class ConvertInstructions
 		copy.setProperty("timeoffset", getTimeOffset());
 		return copy;
 	}
-	
+
 	public Collection<Data> getPresetParameters()
 	{
 		return fieldPresetParameters;
@@ -93,26 +94,27 @@ public class ConvertInstructions
 	{
 		fieldPresetParameters = inPresetParameters;
 	}
-	
+
 	public Data getConvertPreset()
 	{
-		if( fieldConvertPreset == null)
+		if (fieldConvertPreset == null)
 		{
 			String presetdataid = get("presetdataid");
-			if( presetdataid != null)
+			if (presetdataid != null)
 			{
-				fieldConvertPreset = getMediaArchive().getData("convertpreset",presetdataid);
+				fieldConvertPreset = getMediaArchive().getData("convertpreset", presetdataid);
 				loadPreset(fieldConvertPreset);
 			}
-//			if( fieldConvertPreset == null)
-//			{
-//				throw new OpenEditException("Convert preset not set");
-//			}
-//			else
-//			{
-//				String name = PathUtilities.extractFileName(getOutputPath()); 
-//				fieldConvertPreset = getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(),name);
-//			}
+			// if( fieldConvertPreset == null)
+			// {
+			// throw new OpenEditException("Convert preset not set");
+			// }
+			// else
+			// {
+			// String name = PathUtilities.extractFileName(getOutputPath());
+			// fieldConvertPreset =
+			// getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(),name);
+			// }
 		}
 		return fieldConvertPreset;
 	}
@@ -122,8 +124,7 @@ public class ConvertInstructions
 		fieldConvertPreset = inConvertPreset;
 	}
 
-	public ConvertInstructions(MediaArchive inArchive)
-	{
+	public ConvertInstructions(MediaArchive inArchive) {
 		setMediaArchive(inArchive);
 	}
 
@@ -140,9 +141,9 @@ public class ConvertInstructions
 	public ContentItem findOutputFile()
 	{
 		StringBuffer path = new StringBuffer();
-		//legacy for people who want to keep their images in the old location
+		// legacy for people who want to keep their images in the old location
 		String prefix = getProperty("pathprefix");
-		if( prefix != null)
+		if (prefix != null)
 		{
 			path.append(prefix);
 		}
@@ -154,82 +155,84 @@ public class ConvertInstructions
 		}
 		path.append(getAssetSourcePath());
 		path.append("/");
-	
+
 		String postfix = getProperty("pathpostfix");
-		if( postfix != null)
+		if (postfix != null)
 		{
 			path.append(postfix);
 		}
-			
+
 		String output = getProperty("outputfile");
-		if( output != null && !output.isEmpty())
+		if (output != null && !output.isEmpty())
 		{
-			path.append( output );
-		}
-		else if( !isStreaming())
-		{
-			String rendertype = getOutputRenderType();
-			path.append( rendertype );				
-			if( rendertype.equals("image") || rendertype.equals("document") || rendertype.equals("video"))
-			{
-				Dimension maxScaledSize = getMaxScaledSize();
-				if (maxScaledSize != null) // If either is set then
-				{
-					path.append(Math.round(maxScaledSize.getWidth()));
-					path.append("x");
-					path.append(Math.round(maxScaledSize.getHeight()));
-				}
-				if (getPageNumber() > 1)
-				{
-					path.append("page");
-					path.append(getPageNumber());
-				}
-			}
-			if(isWatermark())
-			{				
-				if( rendertype.equals("image") || rendertype.equals("document"))
-				{						
-					path.append("wm");
-				}
-			}
-			String frame = getProperty("frame");
-			if( frame != null)
-			{
-				path.append("frame" + frame );
-			}
-	
-			if(getProperty("colorspace") != null){
-				path.append(getProperty("colorspace"));
-			}
-			if(isCrop() || Boolean.parseBoolean( getProperty("extent") ) )
-			{
-				path.append("cropped");
-			}
-			if(getProperty("timeoffset") != null)
-			{
-				path.append("offset");
-				path.append(getProperty("timeoffset"));
-			}
-			if (getOutputExtension() != null)
-			{
-				path.append("." + getOutputExtension());
-			}
+			path.append(output);
 		}
 		else
-		{
-			String name = get("generatedoutputfile");
-			if( name == null)
+			if (!isStreaming())
 			{
-				name = "streaming.bin";
+				String rendertype = getOutputRenderType();
+				path.append(rendertype);
+				if (rendertype.equals("image") || rendertype.equals("document") || rendertype.equals("video"))
+				{
+					Dimension maxScaledSize = getMaxScaledSize();
+					if (maxScaledSize != null) // If either is set then
+					{
+						path.append(Math.round(maxScaledSize.getWidth()));
+						path.append("x");
+						path.append(Math.round(maxScaledSize.getHeight()));
+					}
+					if (getPageNumber() > 1)
+					{
+						path.append("page");
+						path.append(getPageNumber());
+					}
+				}
+				if (isWatermark())
+				{
+					if (rendertype.equals("image") || rendertype.equals("document"))
+					{
+						path.append("wm");
+					}
+				}
+				String frame = getProperty("frame");
+				if (frame != null)
+				{
+					path.append("frame" + frame);
+				}
+
+				if (getProperty("colorspace") != null)
+				{
+					path.append(getProperty("colorspace"));
+				}
+				if (isCrop() || Boolean.parseBoolean(getProperty("extent")))
+				{
+					path.append("cropped");
+				}
+				if (getProperty("timeoffset") != null)
+				{
+					path.append("offset");
+					path.append(getProperty("timeoffset"));
+				}
+				if (getOutputExtension() != null)
+				{
+					path.append("." + getOutputExtension());
+				}
 			}
-			path.append(name);
-		}
-		return getMediaArchive().getContent( path.toString() );
+			else
+			{
+				String name = get("generatedoutputfile");
+				if (name == null)
+				{
+					name = "streaming.bin";
+				}
+				path.append(name);
+			}
+		return getMediaArchive().getContent(path.toString());
 	}
-	
+
 	public ContentItem getOutputFile()
 	{
-		if( fieldOutputFile == null)
+		if (fieldOutputFile == null)
 		{
 			fieldOutputFile = findOutputFile();
 		}
@@ -238,12 +241,11 @@ public class ConvertInstructions
 
 	public void setOutputFile(ContentItem inOutputFile)
 	{
-		
+
 		fieldOutputFile = inOutputFile;
 	}
 
-
-	//Should this be a stack?
+	// Should this be a stack?
 	public ContentItem getInputFile()
 	{
 		return fieldInputFile;
@@ -276,15 +278,15 @@ public class ConvertInstructions
 		fieldAsset = inAsset;
 	}
 
-//	public Collection<Data> getParameters()
-//	{
-//		return fieldParameters;
-//	}
-//
-//	public void setParameters(Collection<Data> inParameters)
-//	{
-//		fieldParameters = inParameters;
-//	}
+	// public Collection<Data> getParameters()
+	// {
+	// return fieldParameters;
+	// }
+	//
+	// public void setParameters(Collection<Data> inParameters)
+	// {
+	// fieldParameters = inParameters;
+	// }
 
 	public boolean isForce()
 	{
@@ -293,7 +295,8 @@ public class ConvertInstructions
 
 	public void setProperty(String inName, String inValue)
 	{
-		if(inValue == null){
+		if (inValue == null)
+		{
 			inValue = NULL;
 
 		}
@@ -318,37 +321,36 @@ public class ConvertInstructions
 
 	public String getProperty(String inName)
 	{
-		
-		
-		
+
 		if (fieldProperties != null)
 		{
 			String value = getProperties().get(inName);
-			if(value == NULL){
+			if (value == NULL)
+			{
 				return null;
 			}
-			if( value != null)
+			if (value != null)
 			{
 				return value;
 			}
 		}
-		if( getPresetParameters() != null )
+		if (getPresetParameters() != null)
 		{
 			for (Iterator iterator = fieldPresetParameters.iterator(); iterator.hasNext();)
 			{
 				Data data = (Data) iterator.next();
-				String id = data.getName(); 
-				if( id.equals(inName))
+				String id = data.getName();
+				if (id.equals(inName))
 				{
 					String value = data.get("value");
-					if( value != null)
+					if (value != null)
 					{
 						return value;
 					}
 				}
 			}
 		}
-		if( fieldConvertPreset != null)
+		if (fieldConvertPreset != null)
 		{
 			return getConvertPreset().get(inName);
 		}
@@ -366,7 +368,7 @@ public class ConvertInstructions
 		String w = getProperty("prefwidth");
 		String h = getProperty("prefheight");
 
-		if (w != null && h != null) //both must be set
+		if (w != null && h != null) // both must be set
 		{
 			return new Dimension(Integer.parseInt(w), Integer.parseInt(h));
 		}
@@ -375,9 +377,10 @@ public class ConvertInstructions
 
 	public void setMaxScaledSize(Dimension inMaxScaledSize)
 	{
-		if(inMaxScaledSize != null){
-		setProperty("prefwidth", inMaxScaledSize.width);
-		setProperty("prefheight", inMaxScaledSize.height);
+		if (inMaxScaledSize != null)
+		{
+			setProperty("prefwidth", inMaxScaledSize.width);
+			setProperty("prefheight", inMaxScaledSize.height);
 		}
 	}
 
@@ -455,15 +458,15 @@ public class ConvertInstructions
 		return (getMaxScaledSize() != null || getPageNumber() > 1 || getOutputExtension() != null);
 	}
 
-	//	public String getInputExtension()
-	//	{
-	//		return getProperty("inputextension");
-	//	}
+	// public String getInputExtension()
+	// {
+	// return getProperty("inputextension");
+	// }
 	//
-	//	public void setInputExtension(String inInputExtension)
-	//	{
-	//		addProperty("inputextension", inInputExtension);
-	//	}
+	// public void setInputExtension(String inInputExtension)
+	// {
+	// addProperty("inputextension", inInputExtension);
+	// }
 
 	public String getWatermarkPlacement()
 	{
@@ -580,7 +583,7 @@ public class ConvertInstructions
 	{
 		setConvertPreset(inPreset);
 		setPresetParameters(null);
-		if( inPreset == null)
+		if (inPreset == null)
 		{
 			return;
 		}
@@ -601,14 +604,14 @@ public class ConvertInstructions
 				setPresetParameters(params);
 			}
 		}
-		String exportname = inPreset.get("generatedoutputfile");		
-		setProperty("cachefilename", exportname); //TODO: remove this
-		//setProperty("cachefilename", inPreset.get("outputfile")); //TODO: remove this
-		
-		if( getOutputExtension() == null)
+		String exportname = inPreset.get("generatedoutputfile");
+		setProperty("cachefilename", exportname); // TODO: remove this
+		// setProperty("cachefilename", inPreset.get("outputfile")); //TODO: remove this
+
+		if (getOutputExtension() == null)
 		{
 			setOutputExtension(PathUtilities.extractPageType(exportname));
-		}	
+		}
 	}
 
 	public void loadSettings(Map inSettings)
@@ -653,21 +656,22 @@ public class ConvertInstructions
 		{
 			setWatermark(Boolean.valueOf(watermark));
 		}
-        
+
 		watermark = getProperty("canshowunwatermarkedassets");
 		if (watermark != null)
 		{
-			
+
 			boolean showunwatermarked = Boolean.parseBoolean(watermark);
-			if(showunwatermarked) {
+			if (showunwatermarked)
+			{
 				setWatermark(false);
-			} 
-		} else {
-			//setWatermark(false);
+			}
+		}
+		else
+		{
+			// setWatermark(false);
 		}
 
-		
-		
 		String watermarkselected = getProperty("watermark");
 		if (watermarkselected != null)
 		{
@@ -689,14 +693,15 @@ public class ConvertInstructions
 				{
 					settings.put(key, String.valueOf(value));
 				}
-				else if( value instanceof String[] )
-				{
-					String[] vals = (String[])value;
-					if( vals.length > 0)
+				else
+					if (value instanceof String[])
 					{
-						settings.put(key, vals[0]);
+						String[] vals = (String[]) value;
+						if (vals.length > 0)
+						{
+							settings.put(key, vals[0]);
+						}
 					}
-				}
 			}
 			getProperties().putAll(settings);
 		}
@@ -719,7 +724,7 @@ public class ConvertInstructions
 					}
 					catch (Exception e)
 					{
-					} //not handled
+					} // not handled
 				}
 			}
 		}
@@ -749,13 +754,14 @@ public class ConvertInstructions
 
 	public String getOutputRenderType()
 	{
-		String type =  get("outputrendertype");
-		if( type == null)
+		String type = get("outputrendertype");
+		if (type == null)
 		{
 			type = getMediaArchive().getMediaRenderType(getOutputExtension());
-		}	
+		}
 		return type;
 	}
+
 	public void setOutputRenderType(String inType)
 	{
 		setProperty("outputrendertype", inType);
@@ -769,7 +775,6 @@ public class ConvertInstructions
 	public void setConversionTask(Data inConversionTask)
 	{
 		fieldConversionTask = inConversionTask;
-	}	
+	}
 
-	
 }

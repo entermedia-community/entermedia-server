@@ -84,15 +84,14 @@ public class UserMetadata
 	protected Collection sort(Collection messages)
 	{
 		ArrayList sorted = new ArrayList(messages);
-		sorted.sort(new Comparator<MultiValued>()
-		{
+		sorted.sort(new Comparator<MultiValued>() {
 			@Override
 			public int compare(MultiValued inO1, MultiValued inO2)
 			{
-				//sort by date
-				Date date1 = (Date)inO1.getDate("date");
-				Date date2 = (Date)inO2.getDate("date");
-				if( date1 != null && date2 != null)
+				// sort by date
+				Date date1 = (Date) inO1.getDate("date");
+				Date date2 = (Date) inO2.getDate("date");
+				if (date1 != null && date2 != null)
 				{
 					return date1.compareTo(date2);
 				}

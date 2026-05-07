@@ -2,7 +2,7 @@ package org.entermediadb.ai.llm;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.entermediadb.ai.Agent;
+import org.entermediadb.ai.Skill;
 import org.json.simple.JSONObject;
 import org.openedit.MultiValued;
 
@@ -65,17 +65,17 @@ public class AgentEnabled
 		fieldAutomationEnabledData = inAutomationEnabledData;
 	}
 
-	public Agent getAgent()
+	public Skill getAgent()
 	{
 		return fieldAgent;
 	}
 
-	public void setAgent(Agent inAgent)
+	public void setAgent(Skill inAgent)
 	{
 		fieldAgent = inAgent;
 	}
 
-	Agent fieldAgent;
+	Skill fieldAgent;
 
 	public String getParentAgent()
 	{

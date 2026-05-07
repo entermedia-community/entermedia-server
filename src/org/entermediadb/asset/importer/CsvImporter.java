@@ -1,5 +1,6 @@
 package org.entermediadb.asset.importer;
 
-public class CsvImporter extends BaseImporter {
+public class CsvImporter extends BaseImporter
+{
 
 }

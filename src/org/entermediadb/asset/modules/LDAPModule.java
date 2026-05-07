@@ -11,35 +11,35 @@ import org.openedit.modules.BaseModule;
 public class LDAPModule extends BaseModule
 {
 	protected Log log = LogFactory.getLog(getClass());
-	
+
 	public HitTracker searchUserAlias(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = getSearcherManager().getSearcher(inReq.findValue("applicationid"), "ldap");
 		String querystring = inReq.getRequestParameter("value");
-		if(querystring == null)
+		if (querystring == null)
 		{
 			return null;
 		}
 		SearchQuery query = searcher.createSearchQuery();
 		query.addMatches("uid", querystring);
-		
+
 		HitTracker results = searcher.search(query);
 		inReq.putPageValue("results", results);
-		
+
 		return results;
 	}
 
 	public HitTracker searchEmails(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = getSearcherManager().getSearcher(inReq.findValue("applicationid"), "ldap");
-		
+
 		String querystring = inReq.getRequestParameter("q");
-		//get what comes after the last semicolon
-		if(querystring == null)
+		// get what comes after the last semicolon
+		if (querystring == null)
 		{
 			return null;
 		}
-		
+
 		int semicolon = querystring.lastIndexOf(";");
 		if (semicolon > -1)
 		{
@@ -51,13 +51,13 @@ public class LDAPModule extends BaseModule
 		{
 			inReq.putPageValue("existingmail", "");
 		}
-		
+
 		SearchQuery query = searcher.createSearchQuery();
 		query.addMatches("mail", querystring);
-		
+
 		HitTracker results = searcher.search(query);
 		inReq.putPageValue("results", results);
-		
+
 		return results;
 	}
 }

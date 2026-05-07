@@ -48,8 +48,7 @@ public abstract class WebEmail
 	protected PostMail fieldPostMail;
 
 	ModuleManager fieldModuleManager;
-	
-	
+
 	public ModuleManager getModuleManager()
 	{
 		return fieldModuleManager;
@@ -70,7 +69,6 @@ public abstract class WebEmail
 		fieldBCCRecipients = inBCCRecipients;
 	}
 
-
 	public void setBCC(String inEmails)
 	{
 		ArrayList<InternetAddress> recipients = new ArrayList<InternetAddress>();
@@ -82,6 +80,7 @@ public abstract class WebEmail
 		}
 		setBCCRecipients(recipients);
 	}
+
 	public User getUser()
 	{
 		return fieldUser;
@@ -176,8 +175,7 @@ public abstract class WebEmail
 		this.fieldPostMail = postMail;
 	}
 
-	protected WebEmail()
-	{
+	protected WebEmail() {
 
 	}
 
@@ -206,9 +204,9 @@ public abstract class WebEmail
 		if (getFrom() == null)
 		{
 			String from = inContext.findValue("from");
-			if( from == null)
+			if (from == null)
 			{
-				from = (String)inContext.getPageValue("from");
+				from = (String) inContext.getPageValue("from");
 			}
 			setFrom(from);
 		}
@@ -226,7 +224,7 @@ public abstract class WebEmail
 				subject = (String) inContext.getPageValue("subject");
 			}
 			String prefix = (String) inContext.getPageValue("subjectprefix");
-			if( prefix != null)
+			if (prefix != null)
 			{
 				subject = prefix + " " + subject;
 			}
@@ -270,7 +268,7 @@ public abstract class WebEmail
 		{
 			return;
 		}
-		//load the template 
+		// load the template
 		Searcher emailtemplateSearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "emailtemplate");
 		Searcher emailrecipientSearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "emailrecipient");
 		Data template = (Data) emailtemplateSearcher.searchById(templateid);
@@ -354,10 +352,10 @@ public abstract class WebEmail
 
 	protected InternetAddress parseRecipient(String inValue)
 	{
-		//Recipient rec = new Recipient();
-		//inValue = inValue.trim();
-		//get the name out?
-		//rec.setEmailAddress(inValue);
+		// Recipient rec = new Recipient();
+		// inValue = inValue.trim();
+		// get the name out?
+		// rec.setEmailAddress(inValue);
 		return getPostMail().parseEmail(inValue);
 	}
 
@@ -404,19 +402,19 @@ public abstract class WebEmail
 	public List setRecipientsFromUnknown(String inAddresses)
 	{
 		String[] splitaddresses = null;
-		//check if the string contains a semicolon if so split on the semicolon
+		// check if the string contains a semicolon if so split on the semicolon
 		if (inAddresses.indexOf(";") > -1)
 		{
 			splitaddresses = inAddresses.split(";");
 		}
 
-		//no semicolons treat as all comma seperated list
+		// no semicolons treat as all comma seperated list
 		if (splitaddresses == null)
 		{
 			return setRecipientsFromCommas(inAddresses);
 		}
 		else
-		//check each split section for commas if so add split results to results
+		// check each split section for commas if so add split results to results
 		{
 			ArrayList<InternetAddress> results = new ArrayList<InternetAddress>();
 			for (int i = 0; i < splitaddresses.length; i++)
@@ -426,11 +424,12 @@ public abstract class WebEmail
 				{
 					results.addAll(createRecipientsFromSplit(addresses, ","));
 				}
-				else if (addresses.length() > 0)
-				{
-					InternetAddress one = parseRecipient(addresses);
-					results.add(one);
-				}
+				else
+					if (addresses.length() > 0)
+					{
+						InternetAddress one = parseRecipient(addresses);
+						results.add(one);
+					}
 			}
 			setRecipients(results);
 			return results;
@@ -484,6 +483,7 @@ public abstract class WebEmail
 		List tos = Arrays.asList(recipients);
 		setRecipients(tos);
 	}
+
 	/*
 	 * @deprecated use InternetAddress
 	 */
@@ -494,12 +494,14 @@ public abstract class WebEmail
 		one.add(inet);
 		setRecipients(one);
 	}
+
 	public void setRecipient(InternetAddress inRecipient)
 	{
 		List one = new ArrayList(1);
 		one.add(inRecipient);
 		setRecipients(one);
 	}
+
 	public String getMessage()
 	{
 		return fieldMessage;
@@ -523,10 +525,9 @@ public abstract class WebEmail
 	public abstract void send() throws OpenEditException, MessagingException;
 
 	public abstract void send(Map inObjects);
-	
+
 	public abstract void send(String body);
 
-	
 	public PostMailStatus sendAndCollectStatus()
 	{
 		PostMailStatus result = new PostMailStatus();

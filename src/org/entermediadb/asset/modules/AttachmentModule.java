@@ -37,48 +37,51 @@ public class AttachmentModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-		if (asset != null && asset.isFolder() )
+		if (asset != null && asset.isFolder())
 		{
 			getAttachmentManager().syncAttachments(inReq, archive, asset, false);
 		}
 	}
+
 	public void listChildren(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String parentsourcepath = inReq.getRequestParameter("parentsourcepath");
-		if( parentsourcepath == null ) 
+		if (parentsourcepath == null)
 		{
 			parentsourcepath = inReq.getRequestParameter("sourcepath");
 		}
-		if(parentsourcepath == null)
+		if (parentsourcepath == null)
 		{
 			Asset asset = getAsset(inReq);
-			if( asset == null)
+			if (asset == null)
 			{
 				return;
 			}
 			parentsourcepath = asset.getSourcePath();
-				
+
 		}
-		
+
 		HitTracker hits = getAttachmentManager().listChildren(inReq, archive, parentsourcepath);
-		inReq.putPageValue("attachments",hits);
+		inReq.putPageValue("attachments", hits);
 	}
+
 	public void countAttachments(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
 		int count = getAttachmentManager().countAttachments(inReq, archive, asset);
-		inReq.putPageValue("attachmentcount",new Integer(count));
+		inReq.putPageValue("attachmentcount", new Integer(count));
 	}
-	
+
 	public void reSyncAttachments(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
 		if (asset != null)
 		{
-			getAttachmentManager().clearAttachmentData(inReq, archive, asset, true); //this is bad since we will lose state
+			getAttachmentManager().clearAttachmentData(inReq, archive, asset, true); // this is bad since we will lose
+																						// state
 			getAttachmentManager().syncAttachments(inReq, archive, asset, true);
 		}
 	}
@@ -104,7 +107,7 @@ public class AttachmentModule extends BaseMediaModule
 			editor.makeFolderAsset(asset, inReq.getUser());
 		}
 
-		if( properties.getUploadItems() != null)
+		if (properties.getUploadItems() != null)
 		{
 			for (Iterator iterator = properties.getUploadItems().iterator(); iterator.hasNext();)
 			{
@@ -115,26 +118,26 @@ public class AttachmentModule extends BaseMediaModule
 				}
 				FileUploadItem item = (FileUploadItem) iterator.next();
 				String name = item.getName();
-	
+
 				if (firstfile == null)
 				{
 					firstfile = name;
 					String fieldname = item.getFieldName();
-					//remove file. 
+					// remove file.
 					fieldname = fieldname.replace("file.", "");
 					inReq.setRequestParameter(fieldname + ".value", firstfile);
-	
+
 				}
 				String finalpath = folder + name;
 				properties.saveFileAs(item, finalpath, inReq.getUser());
 			}
 		}
-		
-		String importpath = (String)inReq.getRequestParameter("importpath");
-		if( importpath != null)
+
+		String importpath = (String) inReq.getRequestParameter("importpath");
+		if (importpath != null)
 		{
 			File checkfile = new File(importpath);
-			if( !checkfile.exists())
+			if (!checkfile.exists())
 			{
 				throw new OpenEditException("Could not find or did not have access to " + importpath);
 			}
@@ -149,14 +152,14 @@ public class AttachmentModule extends BaseMediaModule
 
 			Page destitem = archive.getPageManager().getPage(destpath);
 			archive.getPageManager().getRepository().copy(item, destitem.getContentItem());
-			
+
 			firstfile = checkfile.getName();
-			
+
 		}
-		
+
 		getAttachmentManager().processAttachments(archive, asset, true);
 
-		//inReq.putPageValue("newattachments", newattachments);
+		// inReq.putPageValue("newattachments", newattachments);
 		inReq.putPageValue("first", firstfile);
 		inReq.setRequestParameter("filename", firstfile);
 		// inIn.delete();
@@ -165,6 +168,7 @@ public class AttachmentModule extends BaseMediaModule
 
 	/**
 	 * Creates sub folders in attachment area
+	 * 
 	 * @param inReq
 	 * @throws Exception
 	 */
@@ -178,7 +182,7 @@ public class AttachmentModule extends BaseMediaModule
 			String foldername = inReq.getRequestParameter("foldername");
 			getAttachmentManager().createFolder(inReq, archive, asset, parentid, foldername);
 		}
-		//reSyncAttachments(inReq);
+		// reSyncAttachments(inReq);
 	}
 
 	public void delete(WebPageRequest inReq) throws Exception
@@ -205,12 +209,13 @@ public class AttachmentModule extends BaseMediaModule
 		}
 		reSyncAttachments(inReq);
 	}
+
 	public void loadFile(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
 		String parentid = inReq.getRequestParameter("fileid");
-		Data file = (Data)getAttachmentManager().getAttachmentSearcher(archive.getCatalogId()).searchById(parentid);
+		Data file = (Data) getAttachmentManager().getAttachmentSearcher(archive.getCatalogId()).searchById(parentid);
 		inReq.putPageValue("file", file);
 	}
 

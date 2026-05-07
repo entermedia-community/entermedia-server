@@ -11,9 +11,10 @@ public class NullGenerator extends BaseGenerator
 
 	public void generate(WebPageRequest inContext, Page inPage, Output inOut) throws OpenEditException
 	{
-		//do nothing
+		// do nothing
 
 	}
+
 	public boolean canGenerate(WebPageRequest inReq)
 	{
 		return true;

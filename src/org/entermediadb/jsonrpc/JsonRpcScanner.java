@@ -18,8 +18,7 @@ public class JsonRpcScanner implements Closeable
 	protected final JSONParser fieldParser;
 	protected String fieldPendingLine;
 
-	public JsonRpcScanner(InputStream inInput, String inCharset)
-	{
+	public JsonRpcScanner(InputStream inInput, String inCharset) {
 		if (inInput == null)
 		{
 			throw new OpenEditException("Input stream cannot be null");

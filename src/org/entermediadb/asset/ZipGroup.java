@@ -83,7 +83,7 @@ public class ZipGroup
 	protected String buildMissingDocumentsText(List<Asset> inMissingDocumentItems)
 	{
 		StringBuffer missingAssetsStr = new StringBuffer("Original documents for the following could not be retrieved:\n\n");
-		for (Asset asset: inMissingDocumentItems)
+		for (Asset asset : inMissingDocumentItems)
 		{
 			missingAssetsStr.append("    - ");
 			missingAssetsStr.append(asset.getName());
@@ -111,7 +111,7 @@ public class ZipGroup
 
 		try
 		{
-			for (Asset asset: inAssets.keySet())
+			for (Asset asset : inAssets.keySet())
 			{
 				ContentItem documentFile = getMediaArchive().getOriginalContent(asset);
 				if (documentFile == null || !documentFile.exists())
@@ -147,7 +147,7 @@ public class ZipGroup
 							temp = new File(source.getParentFile(), asset.getSaveAsName());
 						}
 
-						if (!source.equals(temp)) //What is this for?
+						if (!source.equals(temp)) // What is this for?
 						{
 							new FileUtils().copyFiles(source, temp);
 							writeFileToZip(zos, temp.getName(), temp);
@@ -162,7 +162,7 @@ public class ZipGroup
 					catch (Exception ex)
 					{
 						missing.add(asset);
-						log.error("Error downloading",ex);
+						log.error("Error downloading", ex);
 						continue;
 					}
 				}
@@ -173,18 +173,18 @@ public class ZipGroup
 				String missingAssets = buildMissingDocumentsText(missing);
 
 				writeStringToZip(zos, missingAssets, "missing.txt");
-//				EmailErrorHandler handler = getEnterMedia().getEmailErrorHandler();
-//				if( handler != null )
-//				{
-//					handler.sendNotification("Missing File Report", missingAssets);
-//				}
-				for (Asset asset: missing)
+				// EmailErrorHandler handler = getEnterMedia().getEmailErrorHandler();
+				// if( handler != null )
+				// {
+				// handler.sendNotification("Missing File Report", missingAssets);
+				// }
+				for (Asset asset : missing)
 				{
 					getMediaArchive().logDownload(asset.getSourcePath(), "missing", getUser());
 				}
 
 			}
-			for (Asset asset: okAssets)
+			for (Asset asset : okAssets)
 			{
 				getMediaArchive().logDownload(asset.getSourcePath(), "success", getUser());
 			}
@@ -205,7 +205,6 @@ public class ZipGroup
 
 	}
 
-
 	public User getUser()
 	{
 		return fieldUser;
@@ -223,12 +222,12 @@ public class ZipGroup
 
 		try
 		{
-			
+
 			ContentItem item = getMediaArchive().getOriginalContent(inAsset);
-			File input = new File( item.getAbsolutePath() );
+			File input = new File(item.getAbsolutePath());
 			if (!input.exists())
 			{
-				writeStringToZip(zos, "Attachments missing "  + item.getAbsolutePath() , "missing.txt");
+				writeStringToZip(zos, "Attachments missing " + item.getAbsolutePath(), "missing.txt");
 			}
 			else
 			{
@@ -252,15 +251,15 @@ public class ZipGroup
 
 	protected void writeFolder(ZipOutputStream inZos, File inRoot, File inFile)
 	{
-		if( inFile.isDirectory() )
+		if (inFile.isDirectory())
 		{
-			//get the children
+			// get the children
 			File[] children = inFile.listFiles();
-			if( children != null )
+			if (children != null)
 			{
 				for (int i = 0; i < children.length; i++)
 				{
-					writeFolder(inZos, inRoot, children[i]);					
+					writeFolder(inZos, inRoot, children[i]);
 				}
 			}
 		}
@@ -268,8 +267,8 @@ public class ZipGroup
 		{
 			String fileName = inFile.getAbsolutePath().substring(inRoot.getAbsolutePath().length());
 			fileName = fileName.replace("\\", "/");
-			writeFileToZip(inZos,fileName, inFile);
+			writeFileToZip(inZos, fileName, inFile);
 		}
 	}
-	
+
 }

@@ -7,7 +7,8 @@ import java.util.Set;
 /**
  * Factory for instantiating new node renderers for rendering custom nodes.
  */
-public interface MarkdownNodeRendererFactory {
+public interface MarkdownNodeRendererFactory
+{
 
     /**
      * Create a new node renderer for the specified rendering context.
@@ -18,8 +19,8 @@ public interface MarkdownNodeRendererFactory {
     NodeRenderer create(MarkdownNodeRendererContext context);
 
     /**
-     * @return the additional special characters that this factory would like to have escaped in normal text; currently
-     * only ASCII characters are allowed
+     * @return the additional special characters that this factory would like to have escaped in normal
+     *         text; currently only ASCII characters are allowed
      */
     Set<Character> getSpecialCharacters();
 }

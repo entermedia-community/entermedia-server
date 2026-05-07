@@ -13,7 +13,7 @@ public class ImageEditModule extends BaseEditorModule
 	public ImageEditorSession getImageSession(WebPageRequest inReq) throws OpenEditException
 	{
 		ImageEditorSession session = new ImageEditorSession();
-		session.setParentName(inReq.getRequestParameter("parentName") );
+		session.setParentName(inReq.getRequestParameter("parentName"));
 		session.setOriginalUrl(inReq.getRequestParameter("origURL"));
 
 		String editPath = inReq.getRequestParameter("editPath");
@@ -22,9 +22,10 @@ public class ImageEditModule extends BaseEditorModule
 		inReq.putPageValue("imageeditsession", session);
 		return session;
 	}
-	public void resize(WebPageRequest inReq ) throws Exception
+
+	public void resize(WebPageRequest inReq) throws Exception
 	{
-		if( inReq.getUser() == null /*|| !inReq.getUser().hasPermission("oe.edit")*/)
+		if (inReq.getUser() == null /* || !inReq.getUser().hasPermission("oe.edit") */)
 		{
 			throw new OpenEditException("No edit permissions");
 		}
@@ -32,18 +33,19 @@ public class ImageEditModule extends BaseEditorModule
 		String height = inReq.getRequestParameter("height");
 		ImageEditorSession session = getImageSession(inReq);
 		String message = inReq.getRequestParameter("message");
-		if( "reason for edit".equals(message ) )
+		if ("reason for edit".equals(message))
 		{
 			message = "online resize";
 		}
 		ImageCrop crop = new ImageCrop();
-		crop.setRange("0","0",width,height);
+		crop.setRange("0", "0", width, height);
 		crop.setPageManager(getPageManager());
-		crop.resize(session.getEditPath(),inReq.getUser(),message);
+		crop.resize(session.getEditPath(), inReq.getUser(), message);
 	}
-	public void crop(WebPageRequest inReq ) throws Exception
+
+	public void crop(WebPageRequest inReq) throws Exception
 	{
-		if( inReq.getUser() == null /*|| !inReq.getUser().hasPermission("oe.edit")*/)
+		if (inReq.getUser() == null /* || !inReq.getUser().hasPermission("oe.edit") */)
 		{
 			throw new OpenEditException("No edit permissions");
 		}
@@ -53,14 +55,14 @@ public class ImageEditModule extends BaseEditorModule
 		String height = inReq.getRequestParameter("height");
 		ImageCrop crop = new ImageCrop();
 		crop.setPageManager(getPageManager());
-		crop.setRange(x,y,width,height);
+		crop.setRange(x, y, width, height);
 
 		ImageEditorSession session = getImageSession(inReq);
 		String message = inReq.getRequestParameter("message");
-		if( "reason for edit".equals(message ) )
+		if ("reason for edit".equals(message))
 		{
 			message = "online croping";
 		}
-		crop.crop(session.getEditPath(),inReq.getUser(),message);
+		crop.crop(session.getEditPath(), inReq.getUser(), message);
 	}
 }

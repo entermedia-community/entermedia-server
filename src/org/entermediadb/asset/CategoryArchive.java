@@ -19,13 +19,13 @@ public interface CategoryArchive extends CatalogEnabled
 
 	List listAllCategories();
 
-//public Category cacheCategory(Category inCatalog);
+	// public Category cacheCategory(Category inCatalog);
 
-//	public Category addChild(Category inCatalog);
+	// public Category addChild(Category inCatalog);
 
 	public void deleteCategory(Category inCatalog);
 
-	//void setRootCategory(Category inRoot);
+	// void setRootCategory(Category inRoot);
 
 	Category getRootCategory();
 
@@ -46,5 +46,5 @@ public interface CategoryArchive extends CatalogEnabled
 	void saveCategory(Category inCategory);
 
 	public Category createNewCategory(String inLabel);
-	
+
 }

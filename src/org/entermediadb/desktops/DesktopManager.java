@@ -13,33 +13,30 @@ import org.openedit.util.PathUtilities;
 public class DesktopManager implements CatalogEnabled
 {
 	protected Map<String, Desktop> fieldConnectedClients;
-	
+
 	protected ModuleManager fieldModuleManager;
 
 	protected String fieldCatalogId;
-	
-	
+
 	public String getCatalogId()
 	{
 		return fieldCatalogId;
 	}
-
 
 	public void setCatalogId(String inCatalogId)
 	{
 		fieldCatalogId = inCatalogId;
 	}
 
-
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-
-	public void setModuleManager(ModuleManager fieldModuleManager) {
+	public void setModuleManager(ModuleManager fieldModuleManager)
+	{
 		this.fieldModuleManager = fieldModuleManager;
 	}
-
 
 	public Map<String, Desktop> getConnectedClients()
 	{
@@ -53,18 +50,18 @@ public class DesktopManager implements CatalogEnabled
 
 	public MediaArchive getMediaArchive()
 	{
-		return (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
+		return (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 	}
-	
+
 	public void setDesktop(Desktop inDesktop)
 	{
-		Desktop oldesktop = (Desktop)getConnectedClients().get(inDesktop.getUserId());
-		if( oldesktop != null)
+		Desktop oldesktop = (Desktop) getConnectedClients().get(inDesktop.getUserId());
+		if (oldesktop != null)
 		{
 			oldesktop.replacedWithNewDesktop(inDesktop);
 		}
-		
-		getConnectedClients().put(inDesktop.getUserId(),inDesktop);
+
+		getConnectedClients().put(inDesktop.getUserId(), inDesktop);
 	}
 
 	public void removeDesktop(String inUserId)
@@ -76,38 +73,38 @@ public class DesktopManager implements CatalogEnabled
 	{
 		getConnectedClients().remove(inDesktop.getUserId());
 	}
+
 	public Collection getUsers()
 	{
 		return getConnectedClients().keySet();
 	}
 
-	public Desktop loadDesktop(User inUser, String userAgent) 
+	public Desktop loadDesktop(User inUser, String userAgent)
 	{
-		if(inUser == null) {
-			Desktop desktop = (Desktop) getModuleManager().getBean(getCatalogId(),"desktop");
+		if (inUser == null)
+		{
+			Desktop desktop = (Desktop) getModuleManager().getBean(getCatalogId(), "desktop");
 			return desktop;
 		}
 		String id = inUser.getId() + userAgent;
 		id = PathUtilities.extractId(id);
-		Desktop desktop = (Desktop)getConnectedClients().get(id);
+		Desktop desktop = (Desktop) getConnectedClients().get(id);
 
-		if( desktop == null)
+		if (desktop == null)
 		{
-			desktop = (Desktop) getModuleManager().getBean(getCatalogId(),"desktop");
+			desktop = (Desktop) getModuleManager().getBean(getCatalogId(), "desktop");
 			desktop.setId(id);
 			desktop.setUser(inUser);
-			
+
 			String version = getMediaArchive().getCatalogSettingValue("desktop_required_api_version");
-			if( version != null)
+			if (version != null)
 			{
 				desktop.setRequiredApiVersion(Integer.parseInt(version));
 			}
-			
-			getConnectedClients().put(id,desktop);
+
+			getConnectedClients().put(id, desktop);
 		}
 		return desktop;
 	}
 
-	
-	
 }

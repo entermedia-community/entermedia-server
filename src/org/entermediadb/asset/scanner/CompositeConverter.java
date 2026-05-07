@@ -12,33 +12,34 @@ import org.entermediadb.asset.CatalogConverter;
 import org.entermediadb.asset.ConvertStatus;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.ModuleManager;
-//TODO: Make it implement an Interface
+
+// TODO: Make it implement an Interface
 public class CompositeConverter extends CatalogConverter
 {
 	List fiedlCatalogImportConverters;
 	ModuleManager fieldModuleManager;
 	private static final Log log = LogFactory.getLog(CompositeConverter.class);
-	
+
 	public void importAssets(MediaArchive inStore, ConvertStatus inLog) throws Exception
 	{
-		//boolean converted = false;
+		// boolean converted = false;
 
-		//TODO: Check properties file
-		
-		for ( Iterator iter = getCatalogConverters().iterator(); iter.hasNext(); )
-		{			
-			String name = (String)iter.next();
-			
-			if( getModuleManager().contains( name ) )
+		// TODO: Check properties file
+
+		for (Iterator iter = getCatalogConverters().iterator(); iter.hasNext();)
+		{
+			String name = (String) iter.next();
+
+			if (getModuleManager().contains(name))
 			{
 				CatalogConverter converter = null;
 				try
 				{
-					inLog.add("Starting converter: " + name );
-					converter = (CatalogConverter)getModuleManager().getBean(name);
-					converter.setModuleManager(getModuleManager()); //TODO: Do in Spring
+					inLog.add("Starting converter: " + name);
+					converter = (CatalogConverter) getModuleManager().getBean(name);
+					converter.setModuleManager(getModuleManager()); // TODO: Do in Spring
 				}
-				catch ( Exception ex)
+				catch (Exception ex)
 				{
 					inLog.add("Could not load converter " + name + " " + ex);
 					log.info("Could not load converter " + name + " " + ex);
@@ -52,6 +53,7 @@ public class CompositeConverter extends CatalogConverter
 			}
 		}
 	}
+
 	public List getCatalogConverters()
 	{
 		return fiedlCatalogImportConverters;
@@ -61,10 +63,12 @@ public class CompositeConverter extends CatalogConverter
 	{
 		fiedlCatalogImportConverters = inFiedlCatalogImportConverters;
 	}
+
 	public ModuleManager getModuleManager()
 	{
 		return fieldModuleManager;
 	}
+
 	public void setModuleManager(ModuleManager inModuleManager)
 	{
 		fieldModuleManager = inModuleManager;

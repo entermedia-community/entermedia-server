@@ -34,7 +34,7 @@ public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnable
 	protected RequestUtils fieldRequestUtils;
 	protected String fieldRootId;
 	protected MediaArchive fieldMediaArchive;
-	
+
 	public MediaArchive getMediaArchive()
 	{
 		return fieldMediaArchive;
@@ -54,7 +54,6 @@ public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnable
 	{
 		fieldUserProfile = inUserProfile;
 	}
-
 
 	public CategorySearcher getCategorySearcher()
 	{
@@ -86,8 +85,7 @@ public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnable
 		fieldPageManager = inPageManager;
 	}
 
-	public CategoryWebTreeModel()
-	{
+	public CategoryWebTreeModel() {
 		setRoot(null);
 	}
 
@@ -123,58 +121,58 @@ public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnable
 	protected boolean okToAdd(Category inCat)
 	{
 
-		if( getUserProfile() == null)
+		if (getUserProfile() == null)
 		{
 			throw new OpenEditException("Must have a user profile");
 		}
-		
+
 		if (getUserProfile().isInRole("administrator"))
 		{
 			return true;
 		}
-			boolean hassecurity = false; 
-	    	Collection users = inCat.collectValues("viewuser");
-	    	if (users != null && !users.isEmpty())
-	    	{
-	    		hassecurity = true;
-	    		if( users.contains(getUserProfile().getUserId()))
-	    		{
-	    			return true;
-	    		}
-	    	}
-	    
-	    	Collection roles = inCat.collectValues("viewroles");
-	    	
-	    	if (roles != null&& !roles.isEmpty())
-	    	{
-	    		hassecurity = true;
-	    		if( roles.contains(getUserProfile().getSettingsGroup().getId() ))
-	    		{
-	    			return true;
-	    		}
-	    	}
+		boolean hassecurity = false;
+		Collection users = inCat.collectValues("viewuser");
+		if (users != null && !users.isEmpty())
+		{
+			hassecurity = true;
+			if (users.contains(getUserProfile().getUserId()))
+			{
+				return true;
+			}
+		}
 
-	    	Collection viewgroups = inCat.collectValues("viewgroups");
-	    	
-	    	if (viewgroups != null&& !viewgroups.isEmpty())
-	    	{
-	    		hassecurity = true;
-	    		for (Iterator iterator = getUserProfile().getUser().getGroups().iterator(); iterator.hasNext();)
+		Collection roles = inCat.collectValues("viewroles");
+
+		if (roles != null && !roles.isEmpty())
+		{
+			hassecurity = true;
+			if (roles.contains(getUserProfile().getSettingsGroup().getId()))
+			{
+				return true;
+			}
+		}
+
+		Collection viewgroups = inCat.collectValues("viewgroups");
+
+		if (viewgroups != null && !viewgroups.isEmpty())
+		{
+			hassecurity = true;
+			for (Iterator iterator = getUserProfile().getUser().getGroups().iterator(); iterator.hasNext();)
+			{
+				Group group = (Group) iterator.next();
+				if (viewgroups.contains(group.getId()))
 				{
-					Group group = (Group) iterator.next();
-		    		if( viewgroups.contains(group.getId()))
-		    		{
-		    			return true;
-		    		}
-					
+					return true;
 				}
-	    	}
-	    	if( hassecurity)
-	    	{
-	    		return false;
-	    	}
-	    	return true;
-	}	
+
+			}
+		}
+		if (hassecurity)
+		{
+			return false;
+		}
+		return true;
+	}
 
 	public Set getHiddenCatalogs()
 	{
@@ -199,35 +197,36 @@ public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnable
 		// look over this users permissions and see if there is a limit
 		fieldHiddenCatalogs = new HashSet();
 		fieldLimitToCatalogs = new HashSet();
-//		for (Iterator iterator = getSearchFilter().listAllFilters().iterator(); iterator.hasNext();)
-//		{
-//			String perm = (String) iterator.next();
-//			if (perm.startsWith("limittocategory:"))
-//			{
-//				String catid = perm.substring("limittocategory:".length());
-//				Category cat = getCategorySearcher().getCategory(catid);
-//				if (cat != null)
-//				{
-//					fieldLimitToCatalogs.add(cat);
-//				}
-//			}
-//			// This is old way to do it
-//			else if (perm.startsWith("hidecategory:")) // Aways exclude it
-//			{
-//				String catid = perm.substring("hidecategory:".length());
-//				fieldHiddenCatalogs.add(catid);
-//			}
-//			else if (perm.startsWith("hidecatalog:")) // Aways exclude it
-//			{
-//				String catid = perm.substring("hidecatalog:".length());
-//				fieldHiddenCatalogs.add(catid);
-//			}
-//			else if (perm.startsWith("backgroundcatalog:")) // Aways exclude it
-//			{
-//				String catid = perm.substring("backgroundcatalog:".length());
-//				fieldHiddenCatalogs.add(catid);
-//			}
-//		}
+		// for (Iterator iterator = getSearchFilter().listAllFilters().iterator();
+		// iterator.hasNext();)
+		// {
+		// String perm = (String) iterator.next();
+		// if (perm.startsWith("limittocategory:"))
+		// {
+		// String catid = perm.substring("limittocategory:".length());
+		// Category cat = getCategorySearcher().getCategory(catid);
+		// if (cat != null)
+		// {
+		// fieldLimitToCatalogs.add(cat);
+		// }
+		// }
+		// // This is old way to do it
+		// else if (perm.startsWith("hidecategory:")) // Aways exclude it
+		// {
+		// String catid = perm.substring("hidecategory:".length());
+		// fieldHiddenCatalogs.add(catid);
+		// }
+		// else if (perm.startsWith("hidecatalog:")) // Aways exclude it
+		// {
+		// String catid = perm.substring("hidecatalog:".length());
+		// fieldHiddenCatalogs.add(catid);
+		// }
+		// else if (perm.startsWith("backgroundcatalog:")) // Aways exclude it
+		// {
+		// String catid = perm.substring("backgroundcatalog:".length());
+		// fieldHiddenCatalogs.add(catid);
+		// }
+		// }
 	}
 
 	public List getChildren(Object inParent)
@@ -269,7 +268,7 @@ public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnable
 
 	public void setRoot(Category inCategory)
 	{
-		if( inCategory != null)
+		if (inCategory != null)
 		{
 			fieldRootId = inCategory.getId();
 		}
@@ -280,15 +279,15 @@ public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnable
 		if (fieldRootId == null)
 		{
 			return getCategorySearcher().getRootCategory();
-		}	
-//		else
-//		{
-//			return getCategorySearcher().getCategory(fieldRoot.getId());
-//		}
-		
-		//The children will be refreshed if needed based on the isDirty state
+		}
+		// else
+		// {
+		// return getCategorySearcher().getCategory(fieldRoot.getId());
+		// }
+
+		// The children will be refreshed if needed based on the isDirty state
 		Category cat = getCategorySearcher().getCategory(fieldRootId);
-		//log.info("returning" + cat.hashCode() + " " + cat.getName());
+		// log.info("returning" + cat.hashCode() + " " + cat.getName());
 
 		return cat;
 	}
@@ -308,7 +307,6 @@ public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnable
 		return child.getParentCategory();
 	}
 
-
 	public Category getRootCatalog()
 	{
 		return getCategorySearcher().getRootCategory();
@@ -321,21 +319,21 @@ public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnable
 
 	public Object findNodeById(Object inRoot, String inId)
 	{
-		//String test = getId(inRoot);
-//		if (test.equals(inId))
-//		{
-//			return inRoot;
-//		}
-//		//check one level deep
-//		for (Iterator iterator = getChildren(inRoot).iterator(); iterator.hasNext();)
-//		{
-//			Object child = iterator.next();
-//			String id = getId(child);
-//			if (id.equals(inId))
-//			{
-//				return child;
-//			}
-//		}
+		// String test = getId(inRoot);
+		// if (test.equals(inId))
+		// {
+		// return inRoot;
+		// }
+		// //check one level deep
+		// for (Iterator iterator = getChildren(inRoot).iterator(); iterator.hasNext();)
+		// {
+		// Object child = iterator.next();
+		// String id = getId(child);
+		// if (id.equals(inId))
+		// {
+		// return child;
+		// }
+		// }
 		return getCategorySearcher().getCategory(inId);
 	}
 

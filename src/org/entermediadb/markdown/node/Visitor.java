@@ -5,7 +5,8 @@ package org.entermediadb.markdown.node;
  * <p>
  * Implementations should subclass {@link AbstractVisitor} instead of implementing this directly.
  */
-public interface Visitor {
+public interface Visitor
+{
 
     void visit(BlockQuote blockQuote);
 

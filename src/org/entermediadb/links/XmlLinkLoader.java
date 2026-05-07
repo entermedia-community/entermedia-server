@@ -25,28 +25,31 @@ public class XmlLinkLoader
 {
 	protected XmlUtil fieldXmlUtil;
 
-	public XmlUtil getXmlUtil() {
-		if (fieldXmlUtil == null) {
+	public XmlUtil getXmlUtil()
+	{
+		if (fieldXmlUtil == null)
+		{
 			fieldXmlUtil = new XmlUtil();
-			
+
 		}
 
 		return fieldXmlUtil;
 	}
 
-	public void setXmlUtil(XmlUtil xmlUtil) {
+	public void setXmlUtil(XmlUtil xmlUtil)
+	{
 		fieldXmlUtil = xmlUtil;
 	}
 
 	public LinkTree loadLinks(Page inPage, LinkTree inTree) throws OpenEditException
 	{
-		//take in this XML file and use it to sync up to root node and below
-		if( inTree == null)
+		// take in this XML file and use it to sync up to root node and below
+		if (inTree == null)
 		{
 			inTree = new LinkTree();
 		}
 
-		Element root = getXmlUtil().getXml(inPage.getReader(),inPage.getCharacterEncoding());
+		Element root = getXmlUtil().getXml(inPage.getReader(), inPage.getCharacterEncoding());
 		readElementsInto(root, inTree, inPage);
 		return inTree;
 	}
@@ -54,7 +57,7 @@ public class XmlLinkLoader
 	/**
 	 * @param inRoot
 	 * @param inTree
-	 * @throws OpenEditException 
+	 * @throws OpenEditException
 	 */
 	protected void readElementsInto(Element element, LinkTree inTree, Page inPage) throws OpenEditException
 	{
@@ -63,12 +66,12 @@ public class XmlLinkLoader
 			Element child = (Element) iter.next();
 			String parentId = element.attributeValue("id");
 			Link link = readElement(child, inPage);
-			
-			inTree.addLink( parentId, link );
+
+			inTree.addLink(parentId, link);
 			readElementsInto(child, inTree, inPage);
 		}
 	}
-	
+
 	protected Link readElement(Element element, Page inPage) throws OpenEditException
 	{
 		String id = element.attributeValue("id");
@@ -77,7 +80,7 @@ public class XmlLinkLoader
 		link.setId(id);
 		link.setUserData(userdata);
 		link.setText(element.attributeValue("text"));
-		
+
 		String href = element.attributeValue("href");
 		href = inPage.getPageSettings().replaceProperty(href);
 		link.setPath(href);
@@ -92,16 +95,16 @@ public class XmlLinkLoader
 
 	protected void checkLink(Element inElement, Link inLink) throws OpenEditException
 	{
-		//may be overriden
+		// may be overriden
 	}
 
 	/**
 	 * Returns the link information as an XML string in the specified encoding.
 	 * 
-	 * @param inTree      The link tree
-	 * @param inEncoding  The encoding
+	 * @param inTree The link tree
+	 * @param inEncoding The encoding
 	 * 
-	 * @return  An XML document representing the link tree
+	 * @return An XML document representing the link tree
 	 * 
 	 * @throws Exception
 	 */
@@ -116,10 +119,10 @@ public class XmlLinkLoader
 	{
 		Document doc = DocumentHelper.createDocument();
 		Element root = DocumentHelper.createElement("linktree");
-//		root.addAttribute("textprefix", inTree.getTextPrefix());
-//		root.addAttribute("textpostfix", inTree.getTextPostfix());
-//		root.addAttribute("linkprefix", inTree.getLinkPrefix());
-//		root.addAttribute("linkpostfix", inTree.getLinkPostfix());
+		// root.addAttribute("textprefix", inTree.getTextPrefix());
+		// root.addAttribute("textpostfix", inTree.getTextPostfix());
+		// root.addAttribute("linkprefix", inTree.getLinkPrefix());
+		// root.addAttribute("linkpostfix", inTree.getLinkPostfix());
 		if (inTree.getRootLink() != null)
 		{
 			readLinkInto(inTree.getRootLink(), root);
@@ -153,10 +156,10 @@ public class XmlLinkLoader
 		element.addAttribute("userdata", inLink.getUserData());
 		element.addAttribute("id", inLink.getId());
 		element.addAttribute("text", inLink.getText());
-		element.addAttribute( "redirectpath", inLink.getRedirectPath());
-		if( inLink.isAutoLoadChildren())
+		element.addAttribute("redirectpath", inLink.getRedirectPath());
+		if (inLink.isAutoLoadChildren())
 		{
-			element.addAttribute( "autoloadchildren", "true");
+			element.addAttribute("autoloadchildren", "true");
 		}
 		if (inLink.hasChildren())
 		{

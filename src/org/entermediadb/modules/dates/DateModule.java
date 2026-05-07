@@ -25,27 +25,27 @@ public class DateModule extends BaseModule
 		TimeZone zone = inReq.getTimeZone();
 
 		Calendar now = null;
-		
-		if( zone == null)
+
+		if (zone == null)
 		{
-			now = Calendar.getInstance(); 
+			now = Calendar.getInstance();
 		}
 		else
 		{
-			now = Calendar.getInstance(zone); 
+			now = Calendar.getInstance(zone);
 		}
 		Date date = now.getTime();
-		inReq.putPageValue("now",date);
+		inReq.putPageValue("now", date);
 
-		inReq.putPageValue("storeddate",DateStorageUtil.getStorageUtil().formatForStorage(date));
+		inReq.putPageValue("storeddate", DateStorageUtil.getStorageUtil().formatForStorage(date));
 
 		String format = inReq.findValue("format");
-		
-		if ( format != null)
+
+		if (format != null)
 		{
 			SimpleDateFormat sformat = new SimpleDateFormat(format);
 			String fdate = sformat.format(date);
-			inReq.putPageValue("formatteddate",fdate);
+			inReq.putPageValue("formatteddate", fdate);
 		}
 	}
 }

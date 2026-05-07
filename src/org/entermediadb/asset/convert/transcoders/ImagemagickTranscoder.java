@@ -124,7 +124,8 @@ public class ImagemagickTranscoder extends BaseTranscoder
 
 			Collection needsDensity = Arrays.asList("pdf", "gddoc", "gdsheet", "gdslide", "gddraw", "eps", "ai");
 
-			// be aware ImageMagick writes to a tmp file with a larger version of the file before it
+			// be aware ImageMagick writes to a tmp file with a larger version of the file
+			// before it
 			// is finished
 			if (needsDensity.contains(ext))
 			{
@@ -340,7 +341,8 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			}
 			else
 			{
-				// com.add("-strip"); // This removes the extra profile info TODO: Get rid of this fix
+				// com.add("-strip"); // This removes the extra profile info TODO: Get rid of
+				// this fix
 				String profilepath = null;
 				if (inStructions.getImageProfile() != null)
 				{
@@ -413,7 +415,8 @@ public class ImagemagickTranscoder extends BaseTranscoder
 				log.info("Asset: " + asset.getId() + " Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
 				result.setOk(true);
 			}
-			// Added as PDF was throwing an error like this but the images generated were fine.
+			// Added as PDF was throwing an error like this but the images generated were
+			// fine.
 			if (output != null && output.contains("subimage specification returns no images"))
 			{
 				result.setComplete(true);

@@ -9,7 +9,7 @@ public class EMediaAIResponse extends BasicLlmResponse
 	{
 		return getFunctionName();
 	}
-	
+
 	protected boolean isToolCall;
 
 	public boolean isToolCall()
@@ -21,5 +21,5 @@ public class EMediaAIResponse extends BasicLlmResponse
 	{
 		isToolCall = inIsToolCall;
 	}
-	
+
 }

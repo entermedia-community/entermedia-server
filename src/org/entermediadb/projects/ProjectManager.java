@@ -669,12 +669,12 @@ public class ProjectManager implements CatalogEnabled
 	 * root.getId()); inArchive.getSearcher("librarycollection").saveData(collection);
 	 * 
 	 * FileUtils utils = new FileUtils(); String path =
-	 * inArchive.getPageManager().getPage(inImportPath).getContentItem().getAbsolutePath(); File fname =
-	 * new File(path); long totalbytes = utils.sizeOf(fname);
+	 * inArchive.getPageManager().getPage(inImportPath).getContentItem(). getAbsolutePath(); File fname
+	 * = new File(path); long totalbytes = utils.sizeOf(fname);
 	 * 
 	 * try { importAssets(inArchive, collection, inImportPath, root, ids); } catch (Exception e) {
 	 * inReq.putPageValue("errormsg",
-	 * "There was an error importing.  Your files have not been deleted but you should import again.");
+	 * "There was an error importing.  Your files have not been deleted but you should import again." );
 	 * inReq.putPageValue("exception", e); log.error("Failed importing Collection " + inCollectionid,
 	 * e); }
 	 * 
@@ -746,16 +746,16 @@ public class ProjectManager implements CatalogEnabled
 	 * if (asset == null) {
 	 * 
 	 * String savesourcepath =
-	 * inArchive.getAssetImporter().getAssetUtilities().createSourcePathFromMask(inArchive, null, null,
+	 * inArchive.getAssetImporter().getAssetUtilities().createSourcePathFromMask( inArchive, null, null,
 	 * item.getName(), sourcepathmask, vals);
 	 * 
 	 * String destpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + savesourcepath;
 	 * if (!destpath.endsWith("/")) { destpath = "/"; } destpath = destpath + item.getName();
 	 * ContentItem finalitem = inArchive.getPageManager().getRepository().getStub(destpath);
 	 * inArchive.getPageManager().getRepository().copy(item, finalitem); asset =
-	 * inArchive.getAssetImporter().getAssetUtilities().createAssetIfNeeded(finalitem, false, inArchive,
-	 * null); // asset.setCategories(null); asset.addCategory(inCurrentParent); asset.setValue("md5hex",
-	 * md5); inArchive.saveAsset(asset, null); // TODO: is this needed?
+	 * inArchive.getAssetImporter().getAssetUtilities().createAssetIfNeeded( finalitem, false,
+	 * inArchive, null); // asset.setCategories(null); asset.addCategory(inCurrentParent);
+	 * asset.setValue("md5hex", md5); inArchive.saveAsset(asset, null); // TODO: is this needed?
 	 * 
 	 * PresetCreator presets = inArchive.getPresetManager(); Searcher tasksearcher =
 	 * inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "conversiontask");
@@ -905,7 +905,8 @@ public class ProjectManager implements CatalogEnabled
 
 			usercollection.setValue("rootcategory", category.getId());
 			inArchive.saveData("librarycollection", usercollection);
-			// inProfile.getViewCategories().add(category); // Make sure I am in the list of users for the
+			// inProfile.getViewCategories().add(category); // Make sure I am in the list of
+			// users for the
 			// library
 		}
 		inProfile.addValue("opencollections", usercollection.getId());
@@ -945,7 +946,8 @@ public class ProjectManager implements CatalogEnabled
 	public LibraryCollection getLibraryCollection(MediaArchive inArchive, String inCollectionid)
 	{
 		// Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
-		// LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionid);
+		// LibraryCollection collection = (LibraryCollection)
+		// librarycolsearcher.searchById(inCollectionid);
 		LibraryCollection collection = (LibraryCollection) inArchive.getCachedData("librarycollection", inCollectionid);
 		return collection;
 	}
@@ -1248,7 +1250,7 @@ public class ProjectManager implements CatalogEnabled
 	 * if (profile != null) { if ("administrator".equals(profile.get("settingsgroup"))) { hits =
 	 * getMediaArchive().query("librarycollection").all().search(); } else { hits = new ArrayList();
 	 * HitTracker filtered =
-	 * getMediaArchive().query("librarycollection").all().enduser(true).search(inReq); int count = 0;
+	 * getMediaArchive().query("librarycollection").all().enduser(true).search(inReq ); int count = 0;
 	 * for (Iterator iterator = filtered.iterator(); iterator.hasNext();) { count++; if (count > 2000) {
 	 * break; } Data data = (Data) iterator.next(); LibraryCollection collection = (LibraryCollection)
 	 * getMediaArchive().getSearcher("librarycollection").loadData(data); if (canEditCollection(inReq,

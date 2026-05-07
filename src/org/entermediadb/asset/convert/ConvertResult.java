@@ -10,7 +10,7 @@ public class ConvertResult extends BaseData
 	protected String fieldError;
 	protected ContentItem fieldOutput;
 	protected ConvertInstructions fieldInstructions;
-	
+
 	public ConvertInstructions getInstructions()
 	{
 		return fieldInstructions;
@@ -31,34 +31,36 @@ public class ConvertResult extends BaseData
 		fieldOutput = inOutput;
 	}
 
-	public boolean isComplete() 
+	public boolean isComplete()
 	{
 		return fieldComplete;
 	}
-	
-	public void setComplete(boolean inComplete) 
+
+	public void setComplete(boolean inComplete)
 	{
 		fieldComplete = inComplete;
 	}
-	
+
 	public String getError()
 	{
 		return fieldError;
 	}
-	
+
 	public void setError(String inError)
 	{
 		fieldError = inError;
 	}
+
 	public boolean isError()
 	{
 		return fieldError != null;
 	}
-	
+
 	public boolean isOk()
 	{
 		return fieldOk;
 	}
+
 	public void setOk(boolean inOk)
 	{
 		fieldOk = inOk;

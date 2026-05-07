@@ -49,17 +49,17 @@ public class AssetImporter
 	private static final Log log = LogFactory.getLog(AssetImporter.class);
 	protected Boolean fieldLimitSize;
 	protected AssetUtilities fieldAssetUtilities;
-    protected List<UrlMetadataImporter> fieldUrlMetadataImporters;
-    protected boolean fieldUseFolders = false;
-//    
-//	protected List fieldIncludeExtensions;
-//	protected List fieldExcludeExtensions;
-//	protected List fieldExcludeFolderMatch;
-    
-    protected List<String> fieldExcludeMatches;
-    protected String fieldIncludeMatches;
-    protected Collection fieldAttachmentFilters;
-    
+	protected List<UrlMetadataImporter> fieldUrlMetadataImporters;
+	protected boolean fieldUseFolders = false;
+	//
+	// protected List fieldIncludeExtensions;
+	// protected List fieldExcludeExtensions;
+	// protected List fieldExcludeFolderMatch;
+
+	protected List<String> fieldExcludeMatches;
+	protected String fieldIncludeMatches;
+	protected Collection fieldAttachmentFilters;
+
 	public Collection getAttachmentFilters()
 	{
 		return fieldAttachmentFilters;
@@ -90,10 +90,9 @@ public class AssetImporter
 		fieldIncludeMatches = inIncludeFiles;
 	}
 
-
 	public AssetUtilities getAssetUtilities()
 	{
-			return fieldAssetUtilities;
+		return fieldAssetUtilities;
 	}
 
 	public void setAssetUtilities(AssetUtilities inAssetUtilities)
@@ -109,10 +108,11 @@ public class AssetImporter
 			Page topLevelPage = getPageManager().getPage(path);
 			if (topLevelPage.isFolder() && !topLevelPage.getPath().endsWith("/CVS") && !topLevelPage.getPath().endsWith(".versions"))
 			{
-				processOn(inRootPath, path,false,inArchive, inUser);
+				processOn(inRootPath, path, false, inArchive, inUser);
 			}
 		}
 	}
+
 	public void reImportAsset(MediaArchive mediaArchive, Asset inAsset)
 	{
 		ContentItem itemFile = mediaArchive.getOriginalContent(inAsset);
@@ -120,16 +120,16 @@ public class AssetImporter
 		inAsset.setProperty("previewstatus", "converting");
 		mediaArchive.saveAsset(inAsset);
 		mediaArchive.removeGeneratedImages(inAsset, true);
-		
+
 		PresetCreator presets = mediaArchive.getPresetManager();
 		Searcher tasksearcher = mediaArchive.getSearcher("conversiontask");
 		presets.queueConversions(mediaArchive, tasksearcher, inAsset);
 
 	}
-	
+
 	public List<String> processOn(String inRootPath, String inStartingPoint, boolean checkformod, final MediaArchive inArchive, User inUser)
 	{
-		//AssetPathProcessor finder = new AssetPathProcessor();
+		// AssetPathProcessor finder = new AssetPathProcessor();
 		AssetPathProcessor finder = new CachedAssetPathProcessor();
 		finder.setModificationCheck(checkformod);
 		finder.setMediaArchive(inArchive);
@@ -137,23 +137,22 @@ public class AssetImporter
 		finder.setPageManager(getPageManager());
 		finder.setRootPath(inRootPath);
 		finder.setAssetUtilities(getAssetUtilities());
-		finder.setExcludeMatches(getExcludeMatches()); //The rest should be filtered by the mount itself
+		finder.setExcludeMatches(getExcludeMatches()); // The rest should be filtered by the mount itself
 		finder.setIncludeMatches(getIncludeMatches());
 		finder.setAttachmentFilters(getAttachmentFilters());
 		String value = inArchive.getCatalogSettingValue("show_hotfolder_status");
-		if(Boolean.valueOf(value))
+		if (Boolean.valueOf(value))
 		{
 			finder.setShowLogs(true);
 		}
 		finder.processAssets(inStartingPoint, inUser);
-			
-		
+
 		// Windows, for instance, has an absolute file system path limit of 256
 		// characters
-//		if( isOnWindows() )
-//		{
-//			checkPathLengths(inArchive, assets);
-//		}
+		// if( isOnWindows() )
+		// {
+		// checkPathLengths(inArchive, assets);
+		// }
 		return finder.assetsids;
 	}
 
@@ -167,69 +166,70 @@ public class AssetImporter
 		fieldPageManager = inPageManager;
 	}
 
-
-	public Asset createAssetFromExistingFile( MediaArchive inArchive, User inUser, String inSourcepath)
+	public Asset createAssetFromExistingFile(MediaArchive inArchive, User inUser, String inSourcepath)
 	{
 		String catalogid = inArchive.getCatalogId();
-		
+
 		String originalspath = "/WEB-INF/data/" + catalogid + "/originals/";
-		Page page = getPageManager().getPage(originalspath + inSourcepath );
-		if( !page.exists() )
+		Page page = getPageManager().getPage(originalspath + inSourcepath);
+		if (!page.exists())
 		{
 			return null;
 		}
 
-		//String ext = PathUtilities.extractPageType(page.getName());
+		// String ext = PathUtilities.extractPageType(page.getName());
 		return createAssetFromPage(inArchive, inUser, page);
 	}
+
 	public Asset createAssetFromPage(MediaArchive inArchive, boolean infolderbased, User inUser, Page inAssetPage, String inAssetId)
 	{
-		Asset asset = createAssetFromPage(inArchive,infolderbased,inUser,inAssetPage.getContentItem(),inAssetId);
+		Asset asset = createAssetFromPage(inArchive, infolderbased, inUser, inAssetPage.getContentItem(), inAssetId);
 		return asset;
 	}
+
 	public Asset createAssetFromPage(MediaArchive inArchive, boolean infolderbased, User inUser, ContentItem inContent, String inAssetId)
 	{
-		Asset asset = getAssetUtilities().createAssetIfNeeded(inContent,infolderbased, inArchive, inUser);
+		Asset asset = getAssetUtilities().createAssetIfNeeded(inContent, infolderbased, inArchive, inUser);
 
-		if( asset == null)
+		if (asset == null)
 		{
-			//Should never call this
-			String originals = "/WEB-INF/data" +  inArchive.getCatalogHome() + "/originals/";
+			// Should never call this
+			String originals = "/WEB-INF/data" + inArchive.getCatalogHome() + "/originals/";
 			String sourcepath = inContent.getPath().substring(originals.length());
 			asset = inArchive.getAssetBySourcePath(sourcepath);
 			return asset;
 		}
-		if( asset.getId() == null) 
+		if (asset.getId() == null)
 		{
 			asset.setId(inAssetId);
 		}
-		//saveAsset(inArchive, inUser, asset);
-		
-		
+		// saveAsset(inArchive, inUser, asset);
+
 		return asset;
 	}
 
-	public void saveAsset(MediaArchive inArchive, User inUser, Asset asset) {
+	public void saveAsset(MediaArchive inArchive, User inUser, Asset asset)
+	{
 		boolean existing = true;
-		if( asset.get("recordmodificationdate") == null )
+		if (asset.get("recordmodificationdate") == null)
 		{
 			existing = false;
 		}
 
 		inArchive.saveAsset(asset, inUser);
-		if( existing )
+		if (existing)
 		{
-			inArchive.fireMediaEvent("originalmodified",inUser, asset);				
+			inArchive.fireMediaEvent("originalmodified", inUser, asset);
 		}
 		else
 		{
-			inArchive.fireMediaEvent("assetcreated",inUser, asset);
+			inArchive.fireMediaEvent("assetcreated", inUser, asset);
 		}
-		if( "needsdownload".equals( asset.get("importstatus") ) )
+		if ("needsdownload".equals(asset.get("importstatus")))
 		{
 			inArchive.fireSharedMediaEvent("importing/fetchdownloads");
 		}
-		else 
+		else
 		{
 			inArchive.fireSharedMediaEvent("importing/assetscreated");
 		}
@@ -239,13 +239,13 @@ public class AssetImporter
 	{
 		return createAssetFromPage(inArchive, false, inUser, inAssetPage, null);
 	}
-	
+
 	public List removeExpiredAssets(MediaArchive archive, String sourcepath, User inUser)
 	{
 		AssetSearcher searcher = archive.getAssetSearcher();
 		SearchQuery q = searcher.createSearchQuery();
 		HitTracker assets = null;
-		if(sourcepath == null)
+		if (sourcepath == null)
 		{
 			assets = searcher.getAllHits();
 		}
@@ -255,33 +255,33 @@ public class AssetImporter
 			assets = searcher.search(q);
 		}
 		List<String> removed = new ArrayList<String>();
-		List<String> sourcepaths= new ArrayList<String>();
-		
-		for(Object obj: assets)
+		List<String> sourcepaths = new ArrayList<String>();
+
+		for (Object obj : assets)
 		{
-			Data hit = (Data)obj;
-			sourcepaths.add(hit.get("sourcepath")); //TODO: Move to using page of hits
-			if( sourcepaths.size() > 250000)
+			Data hit = (Data) obj;
+			sourcepaths.add(hit.get("sourcepath")); // TODO: Move to using page of hits
+			if (sourcepaths.size() > 250000)
 			{
 				log.error("Should not load up so many paths");
 				break;
 			}
 		}
-		for(String path: sourcepaths)
+		for (String path : sourcepaths)
 		{
 			Asset asset = archive.getAssetBySourcePath(path);
-			if( asset == null)
+			if (asset == null)
 			{
 				continue;
 			}
 			String assetsource = asset.getSourcePath();
 			String pathToOriginal = "/WEB-INF/data" + archive.getCatalogHome() + "/originals/" + assetsource;
-			if(asset.isFolder() && asset.getPrimaryFile() != null)
+			if (asset.isFolder() && asset.getPrimaryFile() != null)
 			{
 				pathToOriginal = pathToOriginal + "/" + asset.getPrimaryFile();
 			}
 			Page page = getPageManager().getPage(pathToOriginal);
-			if(!page.exists())
+			if (!page.exists())
 			{
 				removed.add(asset.getSourcePath());
 				archive.removeGeneratedImages(asset);
@@ -293,20 +293,20 @@ public class AssetImporter
 
 	public Asset createAssetFromFetchUrl(MediaArchive inArchive, String inUrl, User inUser, String inSourcePath, String inFileName, String inId)
 	{
-		for(UrlMetadataImporter importer: getUrlMetadataImporters())
+		for (UrlMetadataImporter importer : getUrlMetadataImporters())
 		{
-			Asset asset = importer.importFromUrl(inArchive, inUrl, inUser,  inSourcePath,  inFileName, inId);
-			if( asset != null )
+			Asset asset = importer.importFromUrl(inArchive, inUrl, inUser, inSourcePath, inFileName, inId);
+			if (asset != null)
 			{
 				return asset;
 			}
 		}
 		return null;
 	}
-		
+
 	public List<UrlMetadataImporter> getUrlMetadataImporters()
 	{
-		if(fieldUrlMetadataImporters == null)
+		if (fieldUrlMetadataImporters == null)
 		{
 			return new ArrayList<UrlMetadataImporter>();
 		}
@@ -320,15 +320,15 @@ public class AssetImporter
 
 	public void fetchMediaForAsset(MediaArchive inArchive, Asset inAsset, User inUser)
 	{
-			for(UrlMetadataImporter importer: getUrlMetadataImporters())
-			{
-				importer.fetchMediaForAsset(inArchive, inAsset,inUser);
-			}
+		for (UrlMetadataImporter importer : getUrlMetadataImporters())
+		{
+			importer.fetchMediaForAsset(inArchive, inAsset, inUser);
+		}
 	}
-	
+
 	/**
-	 * For this to work, inSourcePath needs to have an extention, i.e.
-	 * newassets/admin/118/picture.jpg
+	 * For this to work, inSourcePath needs to have an extention, i.e. newassets/admin/118/picture.jpg
+	 * 
 	 * @param inStructions
 	 * @param inSourcePath
 	 * @return
@@ -338,13 +338,13 @@ public class AssetImporter
 		String extension = PathUtilities.extractPageType(inSourcePath);
 		if (extension != null)
 		{
-			Asset asset = new BaseAsset(inArchive); //throw away
-			//asset.setCatalogId(inArchive.getCatalogId());
-	//		asset.setId(inArchive.getAssetArchive().nextAssetNumber());
+			Asset asset = new BaseAsset(inArchive); // throw away
+			// asset.setCatalogId(inArchive.getCatalogId());
+			// asset.setId(inArchive.getAssetArchive().nextAssetNumber());
 			asset.setSourcePath(inSourcePath);
 			extension = extension.toLowerCase();
 			asset.setProperty("fileformat", extension);
-	//		inArchive.saveAsset(asset, null);
+			// inArchive.saveAsset(asset, null);
 			return asset;
 		}
 		return null;
@@ -352,21 +352,20 @@ public class AssetImporter
 
 	public void fireHotFolderEvent(MediaArchive inArchive, String operation, String inFunctionType, String inLog, User inUser)
 	{
-			WebEvent event = new WebEvent();
-			event.setOperation(operation);
-			event.setSearchType("hotfolder");
-			event.setCatalogId(inArchive.getCatalogId());
-			event.setUser(inUser);
-			event.setSource(this);
-			event.setProperty("functiontype", inFunctionType);
-			event.setProperty("log", inLog);
-			inArchive.getEventManager().fireEvent(event);
+		WebEvent event = new WebEvent();
+		event.setOperation(operation);
+		event.setSearchType("hotfolder");
+		event.setCatalogId(inArchive.getCatalogId());
+		event.setUser(inUser);
+		event.setSource(this);
+		event.setProperty("functiontype", inFunctionType);
+		event.setProperty("log", inLog);
+		inArchive.getEventManager().fireEvent(event);
 	}
-	
 
-	public Map<String, ContentItem> savePages(WebPageRequest inReq, MediaArchive inArchive,UploadRequest inUploadRequest)
+	public Map<String, ContentItem> savePages(WebPageRequest inReq, MediaArchive inArchive, UploadRequest inUploadRequest)
 	{
-		//if we are uploading into a collection?
+		// if we are uploading into a collection?
 		Boolean incollection = inReq.findValue("currentcollection") != null;
 
 		String inputsourcepath = inReq.findValue("sourcepath");
@@ -374,7 +373,7 @@ public class AssetImporter
 		{
 			inputsourcepath = (String) inReq.getPageValue("uploadsourcepath");
 		}
-		
+
 		Map pages = new HashMap();
 		for (Iterator iterator = inUploadRequest.getSavedContentItems().iterator(); iterator.hasNext();)
 		{
@@ -386,43 +385,42 @@ public class AssetImporter
 				filename = filename.substring(filename.indexOf('_') + 1);
 			}
 			String rootpath = inUploadRequest.getRootPath(contentitem.getPath());
-			String filepath = contentitem.getPath().substring(rootpath.length());					
+			String filepath = contentitem.getPath().substring(rootpath.length());
 
 			String assetsourcepath = null;
 			String basepath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/";
 			if (inputsourcepath == null)
 			{
 				assetsourcepath = inArchive.getAssetImporter().getAssetUtilities().createSourcePath(inReq, inArchive, filepath);
-				
+
 				if (assetsourcepath.endsWith("/"))
 				{
-					assetsourcepath = assetsourcepath + filepath;  
+					assetsourcepath = assetsourcepath + filepath;
 				}
 			}
-			else if (inputsourcepath.endsWith("/")) //EMBridge expects the filename to be added on
-			{
-				assetsourcepath = inputsourcepath + filepath;
-			}
 			else
-			{
-				assetsourcepath = inputsourcepath;
-			}
-			
-			
-			
-			//Create Entity, should be here? Test again
-			if( Boolean.parseBoolean(inReq.getRequestParameter("createentity")))
+				if (inputsourcepath.endsWith("/")) // EMBridge expects the filename to be added on
+				{
+					assetsourcepath = inputsourcepath + filepath;
+				}
+				else
+				{
+					assetsourcepath = inputsourcepath;
+				}
+
+			// Create Entity, should be here? Test again
+			if (Boolean.parseBoolean(inReq.getRequestParameter("createentity")))
 			{
 				String archivesourcepath = inReq.getRequestParameter("archivesourcepath");
 				String entitytype = inReq.getRequestParameter("entitytype");
-				Searcher s = inArchive.getSearcher(entitytype );
+				Searcher s = inArchive.getSearcher(entitytype);
 				Data newone = s.createNewData();
 				newone.setName(PathUtilities.extractPageName(filepath));
-				newone.setValue("archivesourcepath", archivesourcepath+'/'+filepath);
+				newone.setValue("archivesourcepath", archivesourcepath + '/' + filepath);
 				s.saveData(newone);
 			}
-			
-			//Disable unzip zip files
+
+			// Disable unzip zip files
 			if (false && incollection && filename.toLowerCase().endsWith(".zip"))
 			{
 				try
@@ -440,9 +438,9 @@ public class AssetImporter
 						String ending = one.getAbsolutePath().substring(folder.getAbsolutePath().length()).replace("\\", "/");
 						Page upload = getPageManager().getPage(unzipfolder + ending);
 
-						//Change source paths for each file and subfolders
+						// Change source paths for each file and subfolders
 						pages.put(collectionfolder + ending, upload);
-						//This will replace the assets
+						// This will replace the assets
 					}
 				}
 				catch (Exception ex)
@@ -453,24 +451,25 @@ public class AssetImporter
 			else
 			{
 				ContentItem dest = getPageManager().getContent(basepath + assetsourcepath);
-//				int i = 2;
-//				while (dest.exists())
-//				{
-//					String pagename = PathUtilities.extractPageName(assetsourcepath);
-//					String tmppath = assetsourcepath.replace(pagename, pagename + "_" + i);
-//					dest = getPageManager().getContent(basepath + tmppath);
-//					if (!dest.exists())
-//					{
-//						assetsourcepath = tmppath;
-//						break;
-//					}
-//					i++;
-//				}
+				// int i = 2;
+				// while (dest.exists())
+				// {
+				// String pagename = PathUtilities.extractPageName(assetsourcepath);
+				// String tmppath = assetsourcepath.replace(pagename, pagename + "_" + i);
+				// dest = getPageManager().getContent(basepath + tmppath);
+				// if (!dest.exists())
+				// {
+				// assetsourcepath = tmppath;
+				// break;
+				// }
+				// i++;
+				// }
 				pages.put(assetsourcepath, contentitem);
 			}
 		}
 		return pages;
 	}
+
 	protected void findUploadTeam(WebPageRequest inReq, MediaArchive archive, ListHitTracker tracker)
 	{
 		String groupid = inReq.getRequestParameter("viewgroup");
@@ -488,94 +487,73 @@ public class AssetImporter
 
 	public void createAssetsFromPages(MediaArchive inArchive, UploadRequest inUploadRequest, WebPageRequest inReq)
 	{
-		//final boolean createCategories = Boolean.parseBoolean( inReq.findValue("assetcreateuploadcategories"));
+		// final boolean createCategories = Boolean.parseBoolean(
+		// inReq.findValue("assetcreateuploadcategories"));
 
 		final Map metadata = readMetaData(inReq, inArchive, "");
-		
-		boolean assigncategory =  true;
-		
+
+		boolean assigncategory = true;
+
 		/*
-		String inputsourcepath = inReq.findValue("sourcepath");
-		if( inputsourcepath != null && Boolean.parseBoolean(inReq.getRequestParameter("createentityfolder")))
-		{
-			FileUploadItem item = inUploadRequest.getFirstItem();
-			String root = PathUtilities.extractRootDirectory(item.getName());
-			Category topcat = inArchive.createCategoryPath(inputsourcepath + root);
-			String entitytype = inReq.getRequestParameter("entitytype");
-			String entityid = inReq.getRequestParameter("selected"  + entitytype);
-			Collection vals = topcat.getValues(entitytype);
-			if(vals == null || !vals.contains(entityid))
-			{
-				topcat.addValue(entitytype, entityid);
-				inArchive.saveData("category", topcat);
-			}
-			metadata.put("field","category");
-			metadata.put("category.value", topcat.getId());
-			assigncategory = true;
-		}
-		if( inputsourcepath != null && Boolean.parseBoolean(inReq.getRequestParameter("createentityparent")))
-		{
-			FileUploadItem item = inUploadRequest.getFirstItem();
-			Category topcat = inArchive.createCategoryPath(inputsourcepath);
-			String entitytype = inReq.getRequestParameter("entitytype");
-			String entityid = inReq.getRequestParameter("selected"  + entitytype);
-			Collection vals = topcat.getValues(entitytype);
-			if(vals == null || !vals.contains(entityid))
-			{
-				topcat.addValue(entitytype, entityid);
-				inArchive.saveData("category", topcat);
-			}
-			metadata.put("field","category");
-			metadata.put("category.value", topcat.getId());
-			assigncategory = true;
-		}
-		*/
+		 * String inputsourcepath = inReq.findValue("sourcepath"); if (inputsourcepath != null &&
+		 * Boolean.parseBoolean(inReq.getRequestParameter("createentityfolder"))) { FileUploadItem item =
+		 * inUploadRequest.getFirstItem(); String root = PathUtilities.extractRootDirectory(item.getName());
+		 * Category topcat = inArchive.createCategoryPath(inputsourcepath + root); String entitytype =
+		 * inReq.getRequestParameter("entitytype"); String entityid = inReq.getRequestParameter("selected" +
+		 * entitytype); Collection vals = topcat.getValues(entitytype); if (vals == null ||
+		 * !vals.contains(entityid)) { topcat.addValue(entitytype, entityid); inArchive.saveData("category",
+		 * topcat); } metadata.put("field", "category"); metadata.put("category.value", topcat.getId());
+		 * assigncategory = true; } if (inputsourcepath != null &&
+		 * Boolean.parseBoolean(inReq.getRequestParameter("createentityparent"))) { FileUploadItem item =
+		 * inUploadRequest.getFirstItem(); Category topcat = inArchive.createCategoryPath(inputsourcepath);
+		 * String entitytype = inReq.getRequestParameter("entitytype"); String entityid =
+		 * inReq.getRequestParameter("selected" + entitytype); Collection vals =
+		 * topcat.getValues(entitytype); if (vals == null || !vals.contains(entityid)) {
+		 * topcat.addValue(entitytype, entityid); inArchive.saveData("category", topcat); }
+		 * metadata.put("field", "category"); metadata.put("category.value", topcat.getId()); assigncategory
+		 * = true; }
+		 */
 
-
-		
 		final Map<String, ContentItem> pages = savePages(inReq, inArchive, inUploadRequest);
 		final User user = inReq.getUser();
 		inArchive.getAssetSearcher();
 
-		//findUploadTeam(inReq, archive, tracker); TODO:Do this is assetsimportedcustom
+		// findUploadTeam(inReq, archive, tracker); TODO:Do this is assetsimportedcustom
 		if (pages.size() == 0)
 		{
 			log.error("No pages uploaded");
 			return;
 		}
-		
 
-//		String threaded = inReq.findValue("threadedupload");
-//		if (Boolean.valueOf(threaded) )
-//		{
-//			ExecutorManager manager = (ExecutorManager) getModuleManager().getBean(archive.getCatalogId(), "executorManager");
-//
-//			Runnable runthis = new Runnable()
-//			{
-//				public void run()
-//				{
-//					saveFilesAndImport(archive, currentcollection, assigncategory, metadata, pages, user);
-//				}
-//			};
-//			manager.execute("importing", runthis);
-//		}
-//		else
-//		{
-			//The uploader sends one at a time anyways
-			Collection tracker = saveFilesAndImport(inArchive, null, assigncategory, metadata, pages, user);
-			inReq.putPageValue("assets", tracker);
-//		}
+		// String threaded = inReq.findValue("threadedupload");
+		// if (Boolean.valueOf(threaded) )
+		// {
+		// ExecutorManager manager = (ExecutorManager) getModuleManager().getBean(archive.getCatalogId(),
+		// "executorManager");
+		//
+		// Runnable runthis = new Runnable()
+		// {
+		// public void run()
+		// {
+		// saveFilesAndImport(archive, currentcollection, assigncategory, metadata, pages, user);
+		// }
+		// };
+		// manager.execute("importing", runthis);
+		// }
+		// else
+		// {
+		// The uploader sends one at a time anyways
+		Collection tracker = saveFilesAndImport(inArchive, null, assigncategory, metadata, pages, user);
+		inReq.putPageValue("assets", tracker);
+		// }
 
 	}
-	
-	
+
 	public HitTracker saveFilesAndImport(final MediaArchive archive, final String currentcollection, final boolean createCategories, final Map metadata, final Map pages, final User user)
 	{
 		HitTracker tracker = archive.getAssetManager().saveFilesAndImport(currentcollection, createCategories, metadata, pages, user);
 		return tracker;
 	}
-
-	
 
 	public Map readMetaData(WebPageRequest inReq, MediaArchive archive, String prefix)
 	{
@@ -610,7 +588,7 @@ public class AssetImporter
 			}
 		}
 
-		//This is old dont use
+		// This is old dont use
 		categories = inReq.getRequestParameters(prefix + "categories");
 		if (categories != null)
 		{
@@ -643,16 +621,15 @@ public class AssetImporter
 			cats.add(cat);
 		}
 		vals.put("categories", cats);
-		
-		
+
 		if (fields != null)
 		{
 			for (int i = 0; i < fields.length; i++)
 			{
 				String afield = fields[i];
-				if( afield.equals("category"))
+				if (afield.equals("category"))
 				{
-					//already handled above
+					// already handled above
 					continue;
 				}
 				Object val = inReq.getRequestParameter(prefix + afield + "value");
@@ -663,7 +640,8 @@ public class AssetImporter
 				if (val == null)
 				{
 					String[] array = inReq.getRequestParameters(prefix + afield + ".values");
-					if (array == null) {
+					if (array == null)
+					{
 						array = inReq.getRequestParameters(prefix + afield + ".values");
 					}
 					if (array != null)
@@ -681,11 +659,11 @@ public class AssetImporter
 						String langval = inReq.getRequestParameter(prefix + afield + "." + lang + ".value");
 						if (langval == null)
 						{
-							langval = inReq.getRequestParameter(prefix + afield + "." + lang); //legacy
+							langval = inReq.getRequestParameter(prefix + afield + "." + lang); // legacy
 						}
 						if (langval == null)
 						{
-							langval = inReq.getRequestParameter(prefix + afield + ".language." + (j + 1)); //legacy
+							langval = inReq.getRequestParameter(prefix + afield + ".language." + (j + 1)); // legacy
 						}
 						if (langval != null)
 						{
@@ -719,7 +697,7 @@ public class AssetImporter
 		{
 			collectionid = null;
 		}
-		//Deal with library.value and create new collection
+		// Deal with library.value and create new collection
 		if (collectionid == null)
 		{
 			String newcollection = inReq.getRequestParameter("newcollection");
@@ -747,15 +725,13 @@ public class AssetImporter
 					 * Not needed
 					 * 
 					 * 
-					 * When we uploads we can just set sourcepath. Use Archiving
-					 * to move to a library. just add a category based on what
-					 * the user picked for collection
+					 * When we uploads we can just set sourcepath. Use Archiving to move to a library. just add a
+					 * category based on what the user picked for collection
 					 * 
 					 * For imports just set categories like we already do
 					 * 
-					 * Change Collections to be normal categories path s and
-					 * make createTree look at the folderpath not the ID's so we
-					 * can use weird ID's
+					 * Change Collections to be normal categories path s and make createTree look at the folderpath not
+					 * the ID's so we can use weird ID's
 					 * 
 					 */
 
@@ -783,7 +759,6 @@ public class AssetImporter
 		return page;
 	}
 
-
 	public void importAndSearch(WebPageRequest inReq, MediaArchive inArchive, String mountpath, String assetRoot)
 	{
 		List<String> created = processOn(assetRoot, assetRoot, false, inArchive, inReq.getUser());
@@ -803,7 +778,7 @@ public class AssetImporter
 		inReq.putPageValue("numrecords", new Integer(created.size()));
 
 	}
-	
+
 	public Data buildDataObject(WebPageRequest inReq, PropertyDetails inDetails)
 	{
 		Data data = new BaseData();
@@ -819,5 +794,4 @@ public class AssetImporter
 		return data;
 	}
 
-	
 }

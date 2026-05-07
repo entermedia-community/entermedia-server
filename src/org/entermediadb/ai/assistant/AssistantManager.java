@@ -77,7 +77,8 @@ public class AssistantManager extends BaseAiManager
 		Calendar now = DateStorageUtil.getStorageUtil().createCalendar();
 		now.add(Calendar.HOUR_OF_DAY, -1);
 
-		// TODO: Only process one "open" channel at a time. What ever the last one they clicked on
+		// TODO: Only process one "open" channel at a time. What ever the last one they
+		// clicked on
 
 		HitTracker allchannels = channels.query().orgroup("channeltype", "agentchat,agententitychat").after("refreshdate", now.getTime()).sort("refreshdateDown").search();
 
@@ -165,7 +166,9 @@ public class AssistantManager extends BaseAiManager
 		if (agentContext == null)
 		{
 			Searcher searcher = archive.getSearcher("agentcontext");
-			agentContext = (AgentContext) searcher.query().exact("channel", inChannelId).searchOne(); // TODO Look in DB or cache from hitory?
+			agentContext = (AgentContext) searcher.query().exact("channel", inChannelId).searchOne(); // TODO Look in DB
+																										// or cache from
+																										// hitory?
 			if (agentContext == null)
 			{
 				agentContext = (AgentContext) searcher.createNewData();
@@ -215,7 +218,8 @@ public class AssistantManager extends BaseAiManager
 
 		// if (!llmconnection.isReady())
 		// {
-		// inLog.error("LLM Manager is not ready, check key for: " + llmconnection.getModelName() + ".
+		// inLog.error("LLM Manager is not ready, check key for: " +
+		// llmconnection.getModelName() + ".
 		// Cannot process channel: " + inChannel);
 		// return;
 		// }
@@ -348,7 +352,8 @@ public class AssistantManager extends BaseAiManager
 		agentContext.addContext("usermessage", usermessage);
 		agentContext.addContext("agentmessage", agentmessage);
 
-		// agentContext.addContext("aisearchparams", agentContext.getAiSearchParams() ); // ??
+		// agentContext.addContext("aisearchparams", agentContext.getAiSearchParams() );
+		// // ??
 
 		String apphome = "/" + channel.get("chatapplicationid");
 		agentContext.addContext("apphome", apphome);
@@ -491,7 +496,8 @@ public class AssistantManager extends BaseAiManager
 	public void addMcpVars(WebPageRequest inReq, AiSearch searchArgs)
 	{
 		// Collection<String> keywords = searchArgs.getKeywords();
-		// inReq.putPageValue("keywordsstring", getResultsManager().joinWithAnd(keywords));
+		// inReq.putPageValue("keywordsstring",
+		// getResultsManager().joinWithAnd(keywords));
 		//
 		// Collection<Data> modules = searchArgs.getSelectedModules();
 		//
@@ -507,7 +513,8 @@ public class AssistantManager extends BaseAiManager
 		// }
 		// }
 		//
-		// inReq.putPageValue("modulenamestext", getResultsManager().joinWithAnd(moduleNames));
+		// inReq.putPageValue("modulenamestext",
+		// getResultsManager().joinWithAnd(moduleNames));
 
 	}
 
@@ -551,7 +558,8 @@ public class AssistantManager extends BaseAiManager
 	{
 		Collection<PropertyDetail> fields = new ArrayList();
 		PropertyDetail pd = getMediaArchive().getSearcher(inSearchtype).getPropertyDetails().createDetail("title");
-		// Collection<String> fieldids = Arrays.from("title","description","keywords","caption","date");
+		// Collection<String> fieldids =
+		// Arrays.from("title","description","keywords","caption","date");
 		fields.add(pd);
 
 		// fields.add("description");

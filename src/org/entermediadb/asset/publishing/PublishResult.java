@@ -8,7 +8,7 @@ public class PublishResult
 	protected boolean fieldPending;
 
 	protected boolean fieldReadyToPublish;
-	
+
 	public boolean isReadyToPublish()
 	{
 		return fieldReadyToPublish;
@@ -38,15 +38,16 @@ public class PublishResult
 	{
 		fieldComplete = inComplete;
 	}
-	
-	public void setCompleteMessage( String inCompleteMessage )
+
+	public void setCompleteMessage(String inCompleteMessage)
 	{
 		fieldCompletedMessage = inCompleteMessage;
 	}
-	
+
 	public String getCompleteMessage()
 	{
-		if (fieldCompletedMessage == null) {
+		if (fieldCompletedMessage == null)
+		{
 			fieldCompletedMessage = "";
 		}
 		return fieldCompletedMessage;
@@ -54,7 +55,8 @@ public class PublishResult
 
 	public String getErrorMessage()
 	{
-		if (fieldErrorMessage == null) {
+		if (fieldErrorMessage == null)
+		{
 			fieldErrorMessage = "";
 		}
 		return fieldErrorMessage;
@@ -64,25 +66,39 @@ public class PublishResult
 	{
 		fieldErrorMessage = inErrorMessage;
 	}
-	public void appendCompleteMessage(String inErrorMessage) {
-		if (fieldCompletedMessage != null) {
+
+	public void appendCompleteMessage(String inErrorMessage)
+	{
+		if (fieldCompletedMessage != null)
+		{
 			fieldCompletedMessage += inErrorMessage;
-		} else {
+		}
+		else
+		{
 			fieldCompletedMessage = inErrorMessage;
 		}
 	}
-	public void appendErrorMessage(String inErrorMessage) {
-		if (fieldErrorMessage != null) {
+
+	public void appendErrorMessage(String inErrorMessage)
+	{
+		if (fieldErrorMessage != null)
+		{
 			fieldErrorMessage += inErrorMessage;
-		} else {
+		}
+		else
+		{
 			fieldErrorMessage = inErrorMessage;
 		}
 	}
+
 	public boolean isError()
 	{
-		if (fieldErrorMessage != null) {
+		if (fieldErrorMessage != null)
+		{
 			return true;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 	}

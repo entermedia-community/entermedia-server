@@ -47,17 +47,17 @@ public class CMYKTranscoder extends BaseTranscoder
 	{
 		ConvertResult result = new ConvertResult();
 		result.setOutput(inStructions.getOutputFile());
-		//MediaArchive archive = inStructions.getMediaArchive();
+		// MediaArchive archive = inStructions.getMediaArchive();
 		Asset asset = inStructions.getAsset();
 		ContentItem inOutFile = inStructions.getOutputFile();
 		String outputpath = inOutFile.getAbsolutePath();
 
-		String tmpinput = PathUtilities.extractPageType(inStructions.getInputFile().getPath(),true);
+		String tmpinput = PathUtilities.extractPageType(inStructions.getInputFile().getPath(), true);
 
 		String ext = null;
-		if(asset != null)
+		if (asset != null)
 		{
-			if( tmpinput == null)
+			if (tmpinput == null)
 			{
 				tmpinput = asset.getFileFormat();
 			}
@@ -67,18 +67,19 @@ public class CMYKTranscoder extends BaseTranscoder
 				ext = tmpinput;
 			}
 		}
-		//File inputFile = new File(input.getContentItem().getAbsolutePath());
-		//		String newext = PathUtilities.extractPageType( input.getPath() );
-		//		if( newext != null && newext.length()> 1)
-		//		{
-		//			ext = newext.toLowerCase();
-		//		}
+		// File inputFile = new File(input.getContentItem().getAbsolutePath());
+		// String newext = PathUtilities.extractPageType( input.getPath() );
+		// if( newext != null && newext.length()> 1)
+		// {
+		// ext = newext.toLowerCase();
+		// }
 		List<String> com = createCommand(inStructions);
 
-		//be aware ImageMagick writes to a tmp file with a larger version of the file before it is finished
+		// be aware ImageMagick writes to a tmp file with a larger version of the file
+		// before it is finished
 		if ("eps".equalsIgnoreCase(ext) || "pdf".equalsIgnoreCase(ext) || "ai".equalsIgnoreCase(ext))
 		{
-			//check input width
+			// check input width
 			int width = asset.getInt("width");
 			if (width > 0)
 			{
@@ -104,7 +105,7 @@ public class CMYKTranscoder extends BaseTranscoder
 
 				if (width < outputw)
 				{
-					//for small input files we want to scale up the density
+					// for small input files we want to scale up the density
 					float density = ((float) outputw / (float) width) * 300f;
 					density = Math.max(density, 300);
 					density = Math.min(density, 900);
@@ -119,17 +120,17 @@ public class CMYKTranscoder extends BaseTranscoder
 				}
 			}
 		}
-			com.add("-resize");
-			String resizestring = "1500x1500";
+		com.add("-resize");
+		String resizestring = "1500x1500";
 
-			if (isOnWindows())
-			{
-				com.add("\"" + resizestring + "\"");
-			}
-			else
-			{
-				com.add(resizestring);
-			}
+		if (isOnWindows())
+		{
+			com.add("\"" + resizestring + "\"");
+		}
+		else
+		{
+			com.add(resizestring);
+		}
 
 		com.add("-background");
 		com.add("white");
@@ -138,7 +139,7 @@ public class CMYKTranscoder extends BaseTranscoder
 		setValue("quality", "89", inStructions, com);
 		if ("eps".equals(tmpinput) || "pdf".equals(tmpinput) || "ai".equals(tmpinput))
 		{
-			
+
 		}
 		else
 		{
@@ -169,10 +170,10 @@ public class CMYKTranscoder extends BaseTranscoder
 		{
 			result.setComplete(true);
 
-			log.info("Asset: "+ asset.getId()+" CMYK Convert complete in:" + (System.currentTimeMillis() - start) + " Preset:" + inStructions.getConvertPreset() + " " + inOutFile.getName());
+			log.info("Asset: " + asset.getId() + " CMYK Convert complete in:" + (System.currentTimeMillis() - start) + " Preset:" + inStructions.getConvertPreset() + " " + inOutFile.getName());
 			return result;
 		}
-		//problems
+		// problems
 		log.info("Could not exec CMYK Convert after: " + (System.currentTimeMillis() - start) + " - Error: " + execresult.getReturnValue() + " - " + execresult.getStandardOut());
 		if (execresult.getReturnValue() == 124)
 		{
@@ -188,37 +189,36 @@ public class CMYKTranscoder extends BaseTranscoder
 	protected boolean isCMYKProfile(ContentItem inOriginal)
 	{
 		List<String> command = new ArrayList<String>();
-		
+
 		command.add("-a");
 		command.add("-S");
 		command.add("-G0");
 		command.add("-ICC_Profile:ColorSpaceData");
 		command.add(inOriginal.getAbsolutePath());
-		ExecResult result = getExec().runExec("exiftool",command, true, 60000);
+		ExecResult result = getExec().runExec("exiftool", command, true, 60000);
 		String sout = result.getStandardOut();
-		if( sout.toLowerCase().contains("cmyk"))
+		if (sout.toLowerCase().contains("cmyk"))
 		{
 			return true;
 		}
 		return false;
 	}
-	
 
 	protected List<String> createCommand(ConvertInstructions inStructions)
 	{
 		ContentItem input = inStructions.getInputFile();
 		String tmpinput = PathUtilities.extractPageType(input.getPath());
-	//			ext = tmpinput;
-	
+		// ext = tmpinput;
+
 		List<String> com = new ArrayList<String>();
 
 		if ("eps".equals(tmpinput) || "pdf".equals(tmpinput) || "ai".equals(tmpinput))
 		{
 			setValue("colorspace", "sRGB", inStructions, com);
 		}
-		else //jpg
+		else // jpg
 		{
-			if( !isCMYKProfile(input) )
+			if (!isCMYKProfile(input))
 			{
 				com.add("-strip");
 				com.add("-profile");
@@ -232,7 +232,7 @@ public class CMYKTranscoder extends BaseTranscoder
 
 		String prefix = "";
 		String extension = "";
-		String filename = inStructions.getInputFile().getName(); //TODO: Remove this old crud?
+		String filename = inStructions.getInputFile().getName(); // TODO: Remove this old crud?
 		int dotIndex = filename.lastIndexOf('.');
 		if (dotIndex > 0)
 		{

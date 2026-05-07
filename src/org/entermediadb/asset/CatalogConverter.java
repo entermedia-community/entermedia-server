@@ -22,8 +22,7 @@ public abstract class CatalogConverter extends Scanner
 	/*
 	 * protected AssetArchive fieldAssetArchive;
 	 * 
-	 * public File assetDirectory() { return new File(
-	 * getStoreDirectory(),"assets"); }
+	 * public File assetDirectory() { return new File( getStoreDirectory(),"assets"); }
 	 */
 	/**
 	 * 

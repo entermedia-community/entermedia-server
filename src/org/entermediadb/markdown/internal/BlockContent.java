@@ -1,6 +1,7 @@
 package org.entermediadb.markdown.internal;
 
-class BlockContent {
+class BlockContent
+{
 
     private final StringBuilder sb;
 
@@ -14,15 +15,18 @@ class BlockContent {
         sb = new StringBuilder(content);
     }
 
-    public void add(CharSequence line) {
-        if (lineCount != 0) {
+    public void add(CharSequence line)
+    {
+        if (lineCount != 0)
+        {
             sb.append('\n');
         }
         sb.append(line);
         lineCount++;
     }
 
-    public String getString() {
+    public String getString()
+    {
         return sb.toString();
     }
 

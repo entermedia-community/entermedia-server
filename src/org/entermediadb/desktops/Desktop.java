@@ -30,7 +30,7 @@ public class Desktop
 	protected String fieldId;
 	protected int fieldRequiredApiVersion = 1;
 	protected int fieldDesktopApiVersion = 1;
-	
+
 	public int getDesktopApiVersion()
 	{
 		return fieldDesktopApiVersion;
@@ -51,24 +51,28 @@ public class Desktop
 		fieldRequiredApiVersion = inEMediaAPIVersion;
 	}
 
-	public String getId() {
+	public String getId()
+	{
 		return fieldId;
 	}
 
-	public void setId(String inId) {
+	public void setId(String inId)
+	{
 		fieldId = inId;
 	}
 
-	public String getComputerName() {
+	public String getComputerName()
+	{
 		return fieldComputerName;
 	}
 
-	public void setComputerName(String inComputerName) {
+	public void setComputerName(String inComputerName)
+	{
 		fieldComputerName = inComputerName;
 	}
 
 	CacheManager fieldLocalFileCache;
-	
+
 	public CacheManager getLocalFileCache()
 	{
 		return fieldLocalFileCache;
@@ -115,6 +119,7 @@ public class Desktop
 	{
 		return fieldUser;
 	}
+
 	public String getDesktopId()
 	{
 		return fieldDesktopId;
@@ -153,24 +158,26 @@ public class Desktop
 	protected String fieldServerName;
 	protected ModuleManager fieldModuleManager;
 	protected Set fieldEditedCollections;
-	
+
 	public boolean isEdited(String inCollectionName)
 	{
-	
-		if( getEditedCollections().contains(inCollectionName))
+
+		if (getEditedCollections().contains(inCollectionName))
 		{
 			return true;
 		}
 		return false;
 	}
+
 	public Set getEditedCollections()
 	{
-		if( fieldEditedCollections == null)
+		if (fieldEditedCollections == null)
 		{
 			fieldEditedCollections = new HashSet();
 		}
 		return fieldEditedCollections;
 	}
+
 	public String getServerName()
 	{
 		return fieldServerName;
@@ -213,62 +220,63 @@ public class Desktop
 
 	public void checkoutCollection(MediaArchive inArchive, LibraryCollection inCollection)
 	{
-	
+
 		setBusy(true);
 
 		Category cat = inCollection.getCategory();
-		//Build one tree. Have the client pull the data for each one till it's done
-		Map root = addChildren(cat.getParentCategory().getCategoryPath(),cat);
-		getDesktopListener().downloadFolders(inArchive,inCollection,root);
-	//	downloadCat(inArchive, inCollection, cat); //this checks out a ton of folders one chunck at a time
+		// Build one tree. Have the client pull the data for each one till it's done
+		Map root = addChildren(cat.getParentCategory().getCategoryPath(), cat);
+		getDesktopListener().downloadFolders(inArchive, inCollection, root);
+		// downloadCat(inArchive, inCollection, cat); //this checks out a ton of folders
+		// one chunck at a time
 
 	}
-	
+
 	protected Map addChildren(String inRootPath, Category inCat)
 	{
 		Map inParent = new HashMap();
-		inParent.put("name",inCat.getName());
-		//String remaining = inCat.getCategoryPath().substring(inRootPath.length());
-		inParent.put("categoryid",inCat.getId());
-		inParent.put("subpath",inCat.getCategoryPath());
-		
+		inParent.put("name", inCat.getName());
+		// String remaining = inCat.getCategoryPath().substring(inRootPath.length());
+		inParent.put("categoryid", inCat.getId());
+		inParent.put("subpath", inCat.getCategoryPath());
+
 		Collection inChildren = new ArrayList();
-		inParent.put("children",inChildren);
+		inParent.put("children", inChildren);
 		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
 		{
 			Category cat = (Category) iterator.next();
-			Map child = addChildren(inRootPath,cat);
+			Map child = addChildren(inRootPath, cat);
 			inChildren.add(child);
 		}
 		return inParent;
 	}
 
 	/*
-	 * 1. UI is clicked
-	 * 2. We tell the client to send us a list of files they have MediaBoatConnection.collectFileList
-	 * 3. Once we have the files we diff it in "handledesktopsync" that calls Desktop.checkinCollection
-	 * 4. 
+	 * 1. UI is clicked 2. We tell the client to send us a list of files they have
+	 * MediaBoatConnection.collectFileList 3. Once we have the files we diff it in "handledesktopsync"
+	 * that calls Desktop.checkinCollection 4.
 	 */
 	public void importCollection(MediaArchive inArchive, LibraryCollection inCollection)
 	{
-		//Category cat = inCollection.getCategory();
+		// Category cat = inCollection.getCategory();
 		setBusy(true);
 
 		String path = getHomeFolder() + "/EnterMedia/" + inCollection.getName();
 		getDesktopListener().importFiles(inArchive, inCollection, path);
 
 	}
+
 	public void openRemoteFolder(MediaArchive inArchive, LibraryCollection inCollection)
-	{	
+	{
 		String path = getHomeFolder() + "/EnterMedia/" + inCollection.getName();
 		getDesktopListener().openRemoteFolder(path);
 	}
-	
+
 	public void uploadFile(JSONObject inMap)
 	{
 		String path = (String) inMap.get("path");
-		getDesktopListener().uploadFile(path,inMap);
-		
+		getDesktopListener().uploadFile(path, inMap);
+
 	}
 
 	public void addEditedCollection(String inName)
@@ -285,42 +293,41 @@ public class Desktop
 	{
 		Asset asset = inArchive.getAsset(inAssetid);
 		getDesktopListener().openAsset(inArchive, asset);
-		
+
 	}
 
 	public void downloadAsset(MediaArchive inArchive, Data userdownload)
 	{
 		Asset asset = inArchive.getCachedAsset(userdownload.get("assetid"));
 		getDesktopListener().downloadAsset(inArchive, asset, userdownload);
-		
+
 	}
 
 	public void downloadCategory(MediaArchive inArchive, Data userdownload)
 	{
 		setBusy(true);
-		
+
 		Category category = inArchive.getCategory(userdownload.get("categoryid"));
-		//Build one tree. Have the client pull the data for each one till it's done
+		// Build one tree. Have the client pull the data for each one till it's done
 		Category top = category.getParentCategory();
-		if( top != null)
+		if (top != null)
 		{
-			Map children = addChildren(top.getCategoryPath(),category);
+			Map children = addChildren(top.getCategoryPath(), category);
 			getDesktopListener().downloadCategory(inArchive, category, userdownload, children);
-		}		
+		}
 	}
 
-	
 	public void sendCommand(MediaArchive inArchive, JSONObject inCommand)
 	{
 		getDesktopListener().sendCommand(inArchive, inCommand);
-		
+
 	}
-	
-	//Put this in a tree model. Have it reload the tree until its rendered entirely
+
+	// Put this in a tree model. Have it reload the tree until its rendered entirely
 	public Map listLocalFiles(MediaArchive inArchive, String inAbsPath)
-	{	
-		Map files = (Map) getLocalFileCache().get("desktopcache" + getUserId(),inAbsPath);
-		if( files == Collections.EMPTY_MAP)
+	{
+		Map files = (Map) getLocalFileCache().get("desktopcache" + getUserId(), inAbsPath);
+		if (files == Collections.EMPTY_MAP)
 		{
 			return null;
 		}
@@ -329,21 +336,23 @@ public class Desktop
 			return files;
 		}
 	}
+
 	public Map getLocalFiles(MediaArchive inArchive, String inAbsPath)
-	{	
-		//Map files = (Map) getLocalFileCache().get("desktopcache" + getUserId(),inAbsPath);
-			//put temporary list in the cache
-			JSONObject command = new JSONObject();
-			command.put("command", "addlocalfilestocache");
-			command.put("abspath", inAbsPath);
-			command.put("mediadbid", inArchive.getMediaDbId());
-			Map response = getDesktopListener().sendCommandAndWait(inArchive, command);
-			Map files = null;
-			if( response != null)
-			{
-				files  = (Map)response.get("folderdetails");
-			}	
-			return files;
+	{
+		// Map files = (Map) getLocalFileCache().get("desktopcache" +
+		// getUserId(),inAbsPath);
+		// put temporary list in the cache
+		JSONObject command = new JSONObject();
+		command.put("command", "addlocalfilestocache");
+		command.put("abspath", inAbsPath);
+		command.put("mediadbid", inArchive.getMediaDbId());
+		Map response = getDesktopListener().sendCommandAndWait(inArchive, command);
+		Map files = null;
+		if (response != null)
+		{
+			files = (Map) response.get("folderdetails");
+		}
+		return files;
 	}
 
 	public Map getTopLevelFolders(MediaArchive inMediaArchive)
@@ -352,24 +361,23 @@ public class Desktop
 		command.put("command", "gettoplevelfolders");
 		command.put("mediadbid", inMediaArchive.getMediaDbId());
 		Map response = getDesktopListener().sendCommandAndWait(inMediaArchive, command);
-//		Map files = null;
-//		if( response != null)
-//		{
-//			files  = (Map)response.get("childfolders");
-//		}	
+		// Map files = null;
+		// if( response != null)
+		// {
+		// files = (Map)response.get("childfolders");
+		// }
 		return response;
 	}
 
 	public void setUserDownloadComplete(MediaArchive inMediaArchive, String inId)
 	{
 		Data userdownload = inMediaArchive.query("userdownloads").id(inId).searchOne();
-		if( userdownload  != null)
+		if (userdownload != null)
 		{
-			userdownload.setValue("isdownloadcomplete",true);
-			inMediaArchive.saveData("userdownloads",userdownload);
-		}		
-		
-		
+			userdownload.setValue("isdownloadcomplete", true);
+			inMediaArchive.saveData("userdownloads", userdownload);
+		}
+
 	}
 
 	public void openCategory(MediaArchive inArchive, Category inCat)
@@ -378,14 +386,15 @@ public class Desktop
 
 	}
 
-//	public void addLocalFileCache(MediaArchive inArchive, String inUserId, String inAbsPath,Map inFiles)
-//	{	
-//		getLocalFileCache().put("desktopcache" + getUserId(),inAbsPath, inFiles);
-//
-////		JSONObject command = new JSONObject();
-////		command.put("command", "uireload");
-////		command.put("reloaddiv", "localfiles");
-////		inArchive.getUserNotifyManager().sentNotifications(inUserId, command);
-//		
-//	}	
+	// public void addLocalFileCache(MediaArchive inArchive, String inUserId, String
+	// inAbsPath,Map inFiles)
+	// {
+	// getLocalFileCache().put("desktopcache" + getUserId(),inAbsPath, inFiles);
+	//
+	//// JSONObject command = new JSONObject();
+	//// command.put("command", "uireload");
+	//// command.put("reloaddiv", "localfiles");
+	//// inArchive.getUserNotifyManager().sentNotifications(inUserId, command);
+	//
+	// }
 }

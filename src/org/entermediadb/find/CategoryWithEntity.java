@@ -9,35 +9,41 @@ public class CategoryWithEntity implements Comparable<CategoryWithEntity>
 	{
 		return fieldCategory;
 	}
+
 	public void setCategory(Category inCategory)
 	{
 		fieldCategory = inCategory;
 	}
+
 	public Data getEntity()
 	{
 		return fieldEntity;
 	}
+
 	public void setEntity(Data inEntity)
 	{
 		fieldEntity = inEntity;
 	}
+
 	public Data getEntityModule()
 	{
 		return fieldEntityModule;
 	}
+
 	public void setEntityModule(Data inEntityModule)
 	{
 		fieldEntityModule = inEntityModule;
 	}
+
 	protected Category fieldCategory;
 	protected Data fieldEntity;
 	protected Data fieldEntityModule;
-	
+
 	@Override
-	public int compareTo(CategoryWithEntity inArg0) {
+	public int compareTo(CategoryWithEntity inArg0)
+	{
 		// TODO Auto-generated method stub
 		return getCategory().getCategoryPath().compareTo(inArg0.getCategory().getCategoryPath());
 	}
 
 }
-

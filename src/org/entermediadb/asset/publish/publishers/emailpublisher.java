@@ -21,35 +21,35 @@ public class emailpublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(emailpublisher.class);
 
-	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
+	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
 	{
-		PublishResult result = 	checkOnConversion(mediaArchive,inOrderItem,inAsset,inPreset);
-		
-		if( !result.isReadyToPublish() )
+		PublishResult result = checkOnConversion(mediaArchive, inOrderItem, inAsset, inPreset);
+
+		if (!result.isReadyToPublish())
 		{
 			return result;
 		}
-		//Make sure all items are ready then send the email
-		
-		//Send the email and mark as complete
-		String emailto = inOrder.get("sharewithemail");
-		//String notes = inOrder.get("sharenote");
+		// Make sure all items are ready then send the email
 
-		if(emailto != null && inOrder.getInt("itemerrorcount") == 0)
+		// Send the email and mark as complete
+		String emailto = inOrder.get("sharewithemail");
+		// String notes = inOrder.get("sharenote");
+
+		if (emailto != null && inOrder.getInt("itemerrorcount") == 0)
 		{
-			String appid  = inOrder.get("applicationid");
-			if( appid == null)
+			String appid = inOrder.get("applicationid");
+			if (appid == null)
 			{
 				throw new OpenEditException("applicationid is required");
 			}
 			String userid = inOrderItem.get("userid");
-			if( userid == null)
+			if (userid == null)
 			{
 				throw new OpenEditException("userid is required");
 			}
 			String template = null;
-			
-			if( "checkout".equals( inOrder.get("ordertype")) )
+
+			if ("checkout".equals(inOrder.get("ordertype")))
 			{
 				template = "/" + appid + "/theme/emails/checkouttemplate.html";
 			}
@@ -58,10 +58,10 @@ public class emailpublisher extends BasePublisher implements Publisher
 				template = "/" + appid + "/theme/emails/sharetemplate.html";
 			}
 			Map params = new HashMap();
-			params.put("order",inOrder);
-			
+			params.put("order", inOrder);
+
 			String expireson = inOrder.get("expireson");
-			if ((expireson!=null) && (expireson.trim().length()>0))
+			if ((expireson != null) && (expireson.trim().length() > 0))
 			{
 				Date date = DateStorageUtil.getStorageUtil().parseFromStorage(expireson);
 				params.put("expiresondate", date);
@@ -69,7 +69,7 @@ public class emailpublisher extends BasePublisher implements Publisher
 			}
 			try
 			{
-				mediaArchive.sendEmail(userid,params,emailto,template);
+				mediaArchive.sendEmail(userid, params, emailto, template);
 			}
 			catch (Exception ex)
 			{
@@ -80,6 +80,5 @@ public class emailpublisher extends BasePublisher implements Publisher
 		}
 		return result;
 	}
-	
-}
 
+}

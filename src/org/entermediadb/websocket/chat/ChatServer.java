@@ -194,7 +194,8 @@ public class ChatServer
 		{
 			final ChatManager manager = getChatManager(catalogid);
 
-			// log.info("Sending " + inMap.toJSONString() +" to " + connections.size() + " Clients");
+			// log.info("Sending " + inMap.toJSONString() +" to " + connections.size() + "
+			// Clients");
 
 			String userid = null;
 			if (inMap.get("user") != null)
@@ -376,7 +377,8 @@ public class ChatServer
 		String userid = (String) inMap.get("user").toString();
 
 		// long now = System.currentTimeMillis() - 9*1000;
-		// Data lastOne = chats.query().exact("channel",channel.getId()).after("date",new
+		// Data lastOne =
+		// chats.query().exact("channel",channel.getId()).after("date",new
 		// Date(now)).sort("dateDown").searchOne();
 
 		ValuesMap values = new ValuesMap(inMap);
@@ -471,7 +473,8 @@ public class ChatServer
 		// If the icon is a file
 		Image image = Toolkit.getDefaultToolkit().createImage("\"https://entermediadb.org/entermediadb/mediadb/services/module/asset/downloads/preset/2019/12/f0/94a/image200x200.png\"");
 		// Alternative (if the icon is on the classpath):
-		// Image image = Toolkit.getDefaultToolkit().createImage(getClass().getResource("icon.png"));
+		// Image image =
+		// Toolkit.getDefaultToolkit().createImage(getClass().getResource("icon.png"));
 
 		TrayIcon trayIcon = new TrayIcon(image, "Tray Demo");
 		// Let the system resize the image if needed

@@ -16,32 +16,34 @@ public class asperapublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(asperapublisher.class);
 
-	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inPublishRequest,  Data inDestination, Data inPreset, Asset inAsset)
+	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inPublishRequest, Data inDestination, Data inPreset, Asset inAsset)
 	{
-		//log.info("Publish asset to aspera ${asset} for preset: ${presetid} on server: ${publishdestination}" );
+		// log.info("Publish asset to aspera ${asset} for preset: ${presetid} on server:
+		// ${publishdestination}" );
 		PublishResult result = new PublishResult();
-		
-		Page inputpage = findInputPage(mediaArchive,inAsset,inPreset);
+
+		Page inputpage = findInputPage(mediaArchive, inAsset, inPreset);
 		String exportname = inPublishRequest.get("itemexportname");
-		
-		if( !exportname.startsWith("/"))
+
+		if (!exportname.startsWith("/"))
 		{
-			exportname ="/" + exportname;
+			exportname = "/" + exportname;
 		}
 		StringItem item = new StringItem();
-		item.setPath(exportname); //Aspera repo is mounted in a sub folder already. So we just need to append the name
+		item.setPath(exportname); // Aspera repo is mounted in a sub folder already. So we just need to append the
+									// name
 		item.setAbsolutePath(inputpage.getContentItem().getAbsolutePath());
 
-//		AsperaManager manager = (AsperaManager)mediaArchive.getModuleManager().getBean("asperaManager");
-//
-//		AsperaRepository repo = manager.loadRepository(mediaArchive.getCatalogId(), inDestination );
-//		repo.put(item); //copy the file
+		// AsperaManager manager =
+		// (AsperaManager)mediaArchive.getModuleManager().getBean("asperaManager");
+		//
+		// AsperaRepository repo = manager.loadRepository(mediaArchive.getCatalogId(),
+		// inDestination );
+		// repo.put(item); //copy the file
 		log.info("publishished  ${inAsset.sourcepath} to aspera");
 
 		result.setComplete(true);
 		return result;
 	}
-	
-	
-}
 
+}

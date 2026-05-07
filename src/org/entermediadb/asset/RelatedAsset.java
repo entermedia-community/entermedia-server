@@ -7,27 +7,27 @@ import java.util.Set;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.ValuesMap;
+
 /**
  * What is this class used for?
  *
  */
 public class RelatedAsset implements Data
 {
-	
-	
-	
+
 	protected ValuesMap fieldProperties;
-	public String getName(String inLocale) {
+
+	public String getName(String inLocale)
+	{
 		return getName();
 	}
-	
+
 	public Collection getValues(String inField)
 	{
-		Collection values = (Collection)getValue(inField);
+		Collection values = (Collection) getValue(inField);
 		return values;
 	}
-	
-	
+
 	public String getType()
 	{
 		return get("type");
@@ -97,7 +97,7 @@ public class RelatedAsset implements Data
 	{
 		setProperty("id", inNewid);
 	}
-	
+
 	public void setName(String inName)
 	{
 		setType(inName);
@@ -143,11 +143,12 @@ public class RelatedAsset implements Data
 	{
 		setProperty("sourcepath", inSourcepath);
 	}
+
 	public void setProperties(Map inProperties)
 	{
 		getProperties().putAll(inProperties);
 	}
-	
+
 	public void setValues(String inKey, Collection<String> inValues)
 	{
 		getProperties().put(inKey, inValues);
@@ -159,17 +160,19 @@ public class RelatedAsset implements Data
 	{
 		return getProperties().getValue(inKey);
 	}
+
 	@Override
 	public void setValue(String inKey, Object inValue)
 	{
 		getProperties().put(inKey, inValue);
 	}
+
 	public String get(String inKey, String inLocale)
 	{
 		// TODO Auto-generated method stub
 		return get(inKey + "." + inLocale);
 	}
-	
+
 	@Override
 	public Set keySet()
 	{
@@ -177,11 +180,8 @@ public class RelatedAsset implements Data
 	}
 
 	public String toJsonString()
-	{		
+	{
 		throw new OpenEditException();
 	}
-	
-	
-	
-}
 
+}

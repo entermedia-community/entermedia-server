@@ -4,9 +4,9 @@ import java.io.File;
 
 public class ImportAsset
 {
-	protected String fieldSourcePath; // 
+	protected String fieldSourcePath; //
 	protected String fieldImportDirectoryRoot;
-	protected String fieldCategoryDirectoryRoot; //  
+	protected String fieldCategoryDirectoryRoot; //
 	protected File fieldFile;
 
 	public String getSourcePath()

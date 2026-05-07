@@ -6,11 +6,10 @@ import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
-
 public class CompositeHandler extends java.util.logging.Handler
 {
 	protected List fieldChildren;
-	
+
 	public List getChildren()
 	{
 		if (fieldChildren == null)
@@ -41,7 +40,7 @@ public class CompositeHandler extends java.util.logging.Handler
 			Handler handler = (Handler) iterator.next();
 			handler.flush();
 		}
-		
+
 	}
 
 	public void close() throws SecurityException
@@ -50,12 +49,12 @@ public class CompositeHandler extends java.util.logging.Handler
 		{
 			Handler handler = (Handler) iterator.next();
 			handler.close();
-		}		
+		}
 	}
 
 	public void addChild(Handler inScriptLogger)
 	{
-		//deal with Concurent Modification. Dont want getChildren() to fail mid way
+		// deal with Concurent Modification. Dont want getChildren() to fail mid way
 		synchronized (this)
 		{
 			List copy = new ArrayList(getChildren());

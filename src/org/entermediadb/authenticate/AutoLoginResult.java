@@ -15,5 +15,5 @@ public class AutoLoginResult
 	{
 		fieldUser = inUser;
 	}
-	
+
 }

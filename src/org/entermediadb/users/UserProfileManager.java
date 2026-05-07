@@ -139,7 +139,8 @@ public class UserProfileManager
 			}
 			userprofile = loadUserProfile(mediaArchive, appid, inUserName);
 			PermissionManager manager = (PermissionManager) mediaArchive.getBean("permissionManager");
-			// EntityPermissions permissions = manager.loadEntityPermissions(userprofile.getSettingsGroup());
+			// EntityPermissions permissions =
+			// manager.loadEntityPermissions(userprofile.getSettingsGroup());
 			// userprofile.setEntityPermissions(permissions);
 
 			if (inReq != null)
@@ -392,7 +393,8 @@ public class UserProfileManager
 	{
 		Set<Category> okcategories = findCategoriesForUser(inCatalogId, inUserprofile);
 
-		// Load all the collections they have rights to based okcategories + their parents
+		// Load all the collections they have rights to based okcategories + their
+		// parents
 		// categories+parents
 		// lava loop over every collection and mesh
 		// inUserprofile.setViewCategories(okcategories);
@@ -486,7 +488,8 @@ public class UserProfileManager
 				String visible = entity.get("recordvisibility");
 				if (visible == null || visible.equals("showbydefault"))
 				{
-					// TODO: Not Correct, need to check the entity type and load the correct category
+					// TODO: Not Correct, need to check the entity type and load the correct
+					// category
 					Category cat = inMediaArchive.getCategorySearcher().loadCategoryByPath(entity.getName());
 					if (cat != null)
 					{

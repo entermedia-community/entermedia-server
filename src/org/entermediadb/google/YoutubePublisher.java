@@ -14,19 +14,19 @@ import org.openedit.page.Page;
 public class YoutubePublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(YoutubePublisher.class);
-	
-	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inOrderItem,  Data inDestination, Data inPreset, Asset inAsset)
+
+	public PublishResult publish(MediaArchive mediaArchive, Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
 	{
-		
-		//https://github.com/youtube/api-samples/blob/master/java/src/main/java/com/google/api/services/samples/youtube/cmdline/data/UploadVideo.java
-		//Could be a better way - see above, would support resuming?
-		
-		//setup result object
+
+		// https://github.com/youtube/api-samples/blob/master/java/src/main/java/com/google/api/services/samples/youtube/cmdline/data/UploadVideo.java
+		// Could be a better way - see above, would support resuming?
+
+		// setup result object
 		PublishResult result = new PublishResult();
 		Page input = findInputPage(mediaArchive, inAsset, inPreset);
-		//get publishing service
+		// get publishing service
 		GoogleManager manager = (GoogleManager) mediaArchive.getBean("googleManager");
-		//manager.publishToYoutube(inAsset, input.getContentItem());
+		// manager.publishToYoutube(inAsset, input.getContentItem());
 		return result;
 	}
 }

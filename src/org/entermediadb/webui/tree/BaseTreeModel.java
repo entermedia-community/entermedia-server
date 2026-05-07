@@ -15,7 +15,7 @@ public abstract class BaseTreeModel implements WebTreeModel
 		HitTracker tracker = new ListHitTracker(getChildrenById(inId));
 		return tracker;
 	}
-	
+
 	public HitTracker getLeaves(String inId)
 	{
 		HitTracker tracker = new ListHitTracker();
@@ -29,7 +29,7 @@ public abstract class BaseTreeModel implements WebTreeModel
 		}
 		return tracker;
 	}
-	
+
 	public HitTracker getNonLeaves(String inId)
 	{
 		HitTracker tracker = new ListHitTracker();
@@ -47,25 +47,26 @@ public abstract class BaseTreeModel implements WebTreeModel
 	public List getChildrenById(String inId)
 	{
 		Object parent = findNodeById(getRoot(), inId);
-		if( parent == null)
+		if (parent == null)
 		{
 			return null;
 		}
 		return getChildren(parent);
 	}
+
 	public List getParentPaths(String inId, String inRootNodeId)
 	{
 		List parents = new ArrayList();
-		Object child =  findNodeById(getRoot(), inId); //last node
-		Object top =  null;
-		if( inRootNodeId != null )
+		Object child = findNodeById(getRoot(), inId); // last node
+		Object top = null;
+		if (inRootNodeId != null)
 		{
-			top = findNodeById(getRoot(), inRootNodeId); //last node
+			top = findNodeById(getRoot(), inRootNodeId); // last node
 		}
-		while( child != null )
+		while (child != null)
 		{
 			parents.add(child);
-			if( child == top)
+			if (child == top)
 			{
 				break;
 			}
@@ -74,33 +75,36 @@ public abstract class BaseTreeModel implements WebTreeModel
 		Collections.reverse(parents);
 		return parents;
 	}
+
 	public List getParentPaths(String inId)
 	{
-		return getParentPaths(inId,0);
+		return getParentPaths(inId, 0);
 	}
+
 	public List getParentPaths(String inId, int inDeepLevel)
 	{
 		List parents = new ArrayList();
-		Object child =  findNodeById(getRoot(), inId);
-		while( child != null )
+		Object child = findNodeById(getRoot(), inId);
+		while (child != null)
 		{
 			parents.add(child);
 			child = getParent(child);
 		}
 		Collections.reverse(parents);
-		if( inDeepLevel > 0 )
+		if (inDeepLevel > 0)
 		{
-			if( inDeepLevel > parents.size() )
+			if (inDeepLevel > parents.size())
 			{
 				parents = Collections.EMPTY_LIST;
 			}
 			else
 			{
-				parents  = parents.subList(inDeepLevel, parents.size());
+				parents = parents.subList(inDeepLevel, parents.size());
 			}
 		}
 		return parents;
 	}
+
 	public boolean hasChildren(Object inNode)
 	{
 		return getChildCount(inNode) > 0;
@@ -111,7 +115,7 @@ public abstract class BaseTreeModel implements WebTreeModel
 		for (Iterator iterator = getChildren(inNode).iterator(); iterator.hasNext();)
 		{
 			Object child = (Object) iterator.next();
-			if( !isLeaf(child))
+			if (!isLeaf(child))
 			{
 				return true;
 			}

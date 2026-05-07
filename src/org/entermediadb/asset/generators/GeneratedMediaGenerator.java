@@ -77,7 +77,8 @@ public class GeneratedMediaGenerator extends FileGenerator
 
 		// String sourcepath = archive.getSourcePathForPage(inPage);
 		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
-		// ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + catalogid +
+		// ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/"
+		// + catalogid +
 		// "/generated/" + sourcepath +"/" + outputfile);
 		Page output = null;
 		boolean existed = item.exists();
@@ -91,7 +92,12 @@ public class GeneratedMediaGenerator extends FileGenerator
 
 				String outputfile = PathUtilities.extractFileName(endingpath); // image1200x1200.jpg
 
-				ConvertResult result = transcodetools.createOutputIfNeeded(null, null, sourcepath, outputfile); // String inSourcePath, Data inPreset, String inOutputType);
+				ConvertResult result = transcodetools.createOutputIfNeeded(null, null, sourcepath, outputfile); // String
+																												// inSourcePath,
+																												// Data
+																												// inPreset,
+																												// String
+																												// inOutputType);
 				existed = result.isComplete();
 				item = result.getOutput();
 			}

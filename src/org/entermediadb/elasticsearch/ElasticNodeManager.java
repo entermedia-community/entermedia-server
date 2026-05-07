@@ -107,11 +107,11 @@ import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 
 import groovy.json.JsonOutput;
 
-//ES5 class MyNode extends Node {
-//    public MyNode(Settings preparedSettings, Collection<Class<? extends Plugin>> classpathPlugins) {
-//        super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins);
-//    }
-//}
+// ES5 class MyNode extends Node {
+// public MyNode(Settings preparedSettings, Collection<Class<? extends Plugin>> classpathPlugins) {
+// super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins);
+// }
+// }
 
 public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 {
@@ -127,7 +127,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	protected BulkProcessor fieldBulkProcessor;
 	protected ArrayList fieldBulkErrors = new ArrayList();
 
-	public static String[] synctypes = new String[] { "library","category", "asset", "librarycollection","convertpreset","presetparameter","settingsgroup","userprofile"};
+	public static String[] synctypes = new String[] {"library", "category", "asset", "librarycollection", "convertpreset", "presetparameter", "settingsgroup", "userprofile"};
 	public static Collection synctypesCol = Arrays.asList(synctypes);
 
 	public CacheManager getCacheManager()
@@ -143,13 +143,13 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	protected void loadSettings()
 	{
 		// TODO Auto-generated method stub
-		//TODO: Move node.xml to system
-		//TODO: add locking file for this node and remove it when done
+		// TODO: Move node.xml to system
+		// TODO: add locking file for this node and remove it when done
 
-		Page config = getPageManager().getPage("/WEB-INF/node.xml"); //Legacy DO Not use REMOVE sometime
+		Page config = getPageManager().getPage("/WEB-INF/node.xml"); // Legacy DO Not use REMOVE sometime
 		if (!config.exists())
 		{
-			//throw new OpenEditException("Missing " + config.getPath());
+			// throw new OpenEditException("Missing " + config.getPath());
 			config = getPageManager().getPage("/system/configuration/node.xml");
 		}
 
@@ -206,10 +206,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			Element ele = (Element) iterator.next();
 			String key = ele.attributeValue("id");
 			String val = ele.getTextTrim();
-			//if( val.startsWith("."))
-			//{
+			// if( val.startsWith("."))
+			// {
 			val = replace.replace(val, params);
-			//}
+			// }
 			getLocalNode().setValue(key, val);
 		}
 		getLocalNode().setValue("node.name", nodeid);
@@ -243,40 +243,43 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					return fieldClient;
 				}
 				NodeBuilder nb = NodeBuilder.nodeBuilder();
-				//ES5: Settings.Builder preparedsettings = Settings.builder();
+				// ES5: Settings.Builder preparedsettings = Settings.builder();
 
 				for (Iterator iterator = getLocalNode().getProperties().keySet().iterator(); iterator.hasNext();)
 				{
 					String key = (String) iterator.next();
-					if (!key.startsWith("index.") && !key.startsWith("entermedia.") && key.contains(".")) //Legacy
+					if (!key.startsWith("index.") && !key.startsWith("entermedia.") && key.contains(".")) // Legacy
 					{
 						String val = getLocalNode().getSetting(key);
-						//ES5: preparedsettings.put(key, val);
+						// ES5: preparedsettings.put(key, val);
 						nb.settings().put(key, val);
 					}
 				}
 				fieldNode = nb.node();
-				fieldClient = fieldNode.client(); //when this line executes, I get the error in the other node 
+				fieldClient = fieldNode.client(); // when this line executes, I get the error in the other node
 
-				//nb.settings().put("index.mapper.dynamic",false);
+				// nb.settings().put("index.mapper.dynamic",false);
 
-				//			     <property id="path.plugins">${webroot}/WEB-INF/base/entermedia/elasticplugins</property>
+				// <property
+				// id="path.plugins">${webroot}/WEB-INF/base/entermedia/elasticplugins</property>
 
-				//extras
-				//nb.settings().put("index.store.type", "mmapfs");
-				//nb.settings().put("index.store.fs.mmapfs.enabled", "true");
-				//nb.settings().put("index.merge.policy.merge_factor", "20");
+				// extras
+				// nb.settings().put("index.store.type", "mmapfs");
+				// nb.settings().put("index.store.fs.mmapfs.enabled", "true");
+				// nb.settings().put("index.merge.policy.merge_factor", "20");
 				// nb.settings().put("discovery.zen.ping.unicast.hosts", "localhost:9300");
-				// nb.settings().put("discovery.zen.ping.unicast.hosts", elasticSearchHostsList);
-				//fieldNode = nb.node();
-				//fieldClient = fieldNode.client(); //when this line executes, I get the error in the other node 
+				// nb.settings().put("discovery.zen.ping.unicast.hosts",
+				// elasticSearchHostsList);
+				// fieldNode = nb.node();
+				// fieldClient = fieldNode.client(); //when this line executes, I get the error
+				// in the other node
 
 			}
 		}
 		return fieldClient;
 	}
 
-	//called from the lock manager
+	// called from the lock manager
 	public void shutdown()
 	{
 		try
@@ -293,7 +296,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 							FlushRequest request = new FlushRequest(); // No index specified = all indices
 							request.force(true);
 							FlushResponse response = getClient().admin().indices().flush(request).actionGet();
-							//response.getSuccessfulShards()
+							// response.getSuccessfulShards()
 							fieldClient.close();
 						}
 						finally
@@ -350,24 +353,29 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	public String createSnapShot(String inCatalogId, Lock inLock, boolean wholecluster)
 	{
 		String indexid = toId(inCatalogId);
-		String path = getLocalNode().getSetting("path.repo") + "/" + indexid; //Store it someplace unique so we can be isolated?
+		String path = getLocalNode().getSetting("path.repo") + "/" + indexid; // Store it someplace unique so we can be
+																				// isolated?
 
-		//log.info("Deleted nodeid=" + id + " records database " + getSearchType() );
+		// log.info("Deleted nodeid=" + id + " records database " + getSearchType() );
 
 		Settings settings = Settings.builder().put("location", path).build();
 		PutRepositoryRequestBuilder putRepo = new PutRepositoryRequestBuilder(getClient().admin().cluster(), PutRepositoryAction.INSTANCE);
-		putRepo.setName(indexid).setType("fs").setSettings(settings) //With Unique location saved for each catalog
-				.execute().actionGet();
+		putRepo.setName(indexid)
+			.setType("fs")
+			.setSettings(settings) // With Unique location saved for each catalog
+			.execute()
+			.actionGet();
 
-		//	    PutRepositoryRequestBuilder putRepo = 
-		//	    		new PutRepositoryRequestBuilder(getClient().admin().cluster());
-		//	    putRepo.setName(indexid)
-		//	            .setType("fs")
-		//	            .setSettings(settings) //With Unique location saved for each catalog
-		//	            .execute().actionGet();
+		// PutRepositoryRequestBuilder putRepo =
+		// new PutRepositoryRequestBuilder(getClient().admin().cluster());
+		// putRepo.setName(indexid)
+		// .setType("fs")
+		// .setSettings(settings) //With Unique location saved for each catalog
+		// .execute().actionGet();
 
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-		//  CreateSnapshotRequestBuilder(elasticSearchClient, CreateSnapshotAction.INSTANCE)
+		// CreateSnapshotRequestBuilder(elasticSearchClient,
+		// CreateSnapshotAction.INSTANCE)
 
 		CreateSnapshotRequestBuilder builder = new CreateSnapshotRequestBuilder(getClient(), CreateSnapshotAction.INSTANCE);
 		String snapshotid = format.format(new Date());
@@ -396,7 +404,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		try
 		{
 			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
-			if( lock != null)
+			if (lock != null)
 			{
 				List list = listSnapShots(inCatalogId);
 				if (list.size() > 0)
@@ -404,16 +412,16 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					SnapshotInfo recent = (SnapshotInfo) list.iterator().next();
 					Date date = new Date(recent.startTime());
 					Calendar yesterday = new GregorianCalendar();
-					
+
 					MediaArchive archive = (MediaArchive) getSearcherManager().getModuleManager().getBean(inCatalogId, "mediaArchive");
 					int hours = 24;
-					String setting  = archive.getCatalogSettingValue("snapshot_max_period_hours");
-					if( setting != null )
+					String setting = archive.getCatalogSettingValue("snapshot_max_period_hours");
+					if (setting != null)
 					{
 						hours = Integer.parseInt(setting);
 					}
-					yesterday.add(Calendar.HOUR_OF_DAY, 0 - hours); 
-					yesterday.add(Calendar.MINUTE,15); //has it been 23 hours and 45 minutes
+					yesterday.add(Calendar.HOUR_OF_DAY, 0 - hours);
+					yesterday.add(Calendar.MINUTE, 15); // has it been 23 hours and 45 minutes
 					if (date.after(yesterday.getTime()))
 					{
 						return String.valueOf(recent.startTime());
@@ -446,8 +454,11 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		Settings settings = Settings.builder().put("location", path).build();
 
 		PutRepositoryRequestBuilder putRepo = new PutRepositoryRequestBuilder(getClient().admin().cluster(), PutRepositoryAction.INSTANCE);
-		putRepo.setName(indexid).setType("fs").setSettings(settings) //With Unique location saved for each catalog
-				.execute().actionGet();
+		putRepo.setName(indexid)
+			.setType("fs")
+			.setSettings(settings) // With Unique location saved for each catalog
+			.execute()
+			.actionGet();
 
 		GetSnapshotsRequestBuilder builder = new GetSnapshotsRequestBuilder(getClient(), GetSnapshotsAction.INSTANCE);
 		builder.setRepository(indexid);
@@ -455,12 +466,11 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		GetSnapshotsResponse getSnapshotsResponse = builder.execute().actionGet();
 		List results = new ArrayList(getSnapshotsResponse.getSnapshots());
 
-		Collections.sort(results, new Comparator<SnapshotInfo>()
-		{
+		Collections.sort(results, new Comparator<SnapshotInfo>() {
 			@Override
 			public int compare(SnapshotInfo inO1, SnapshotInfo inO2)
 			{
-				return String.valueOf(inO1.startTime()).compareTo( String.valueOf(inO2.startTime()));
+				return String.valueOf(inO1.startTime()).compareTo(String.valueOf(inO2.startTime()));
 			}
 		});
 		Collections.reverse(results);
@@ -502,7 +512,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		// Obtain the snapshot and check the indices that are in the snapshot
 		AdminClient admin = getClient().admin();
 
-		//TODO: Close index!!
+		// TODO: Close index!!
 
 		try
 		{
@@ -514,22 +524,22 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			throw new OpenEditException(ex);
 		}
 
-		String currentindex = getIndexNameFromAliasName(indexid); //This is the current index that the alias 
+		String currentindex = getIndexNameFromAliasName(indexid); // This is the current index that the alias
 		clearAlias(indexid);
 		boolean undo = false;
 		try
 		{
-			//Close it first
+			// Close it first
 			CloseIndexRequestBuilder closeIndexRequestBuilder = new CloseIndexRequestBuilder(getClient(), CloseIndexAction.INSTANCE);
 			closeIndexRequestBuilder.setIndices(currentindex);
 			closeIndexRequestBuilder.execute().actionGet();
 			// Now execute the actual restore action
-			//Sleep a little?
+			// Sleep a little?
 
 			RestoreSnapshotRequestBuilder restoreBuilder = new RestoreSnapshotRequestBuilder(getClient(), RestoreSnapshotAction.INSTANCE);
 			restoreBuilder.setRepository(indexid).setSnapshot(inSnapShotId).setWaitForCompletion(true);
 			RestoreSnapshotResponse response = restoreBuilder.execute().actionGet();
-			//Cant read index information on a closed index
+			// Cant read index information on a closed index
 			List<String> restored = response.getRestoreInfo().indices();
 			if (restored.isEmpty())
 			{
@@ -573,93 +583,108 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 	}
 
-	//	public void exportKnapsack(String inCatalogId)
-	//	{
-	//		Lock lock = null;
+	// public void exportKnapsack(String inCatalogId)
+	// {
+	// Lock lock = null;
 	//
-	//		try
-	//		{
-	//			String indexid = toId(inCatalogId);
+	// try
+	// {
+	// String indexid = toId(inCatalogId);
 	//
-	//			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
-	//			Client client = getClient();
-	//			Date date = new Date();
-	//			Page target = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/snapshots/knapsack-bulk-" + date.getTime() + ".bulk.gz");
-	//			Page folder = getPageManager().getPage(target.getParentPath());
-	//			File file = new File(folder.getContentItem().getAbsolutePath());
-	//			file.mkdirs();
-	//			Path exportPath = Paths.get(URI.create("file:" + target.getContentItem().getAbsolutePath()));
-	//			KnapsackExportRequestBuilder requestBuilder = new KnapsackExportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setOverwriteAllowed(true).setIndex(indexid);
-	//			KnapsackExportResponse knapsackExportResponse = requestBuilder.execute().actionGet();
+	// lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
+	// Client client = getClient();
+	// Date date = new Date();
+	// Page target = getPageManager().getPage("/WEB-INF/data/" + inCatalogId +
+	// "/snapshots/knapsack-bulk-" + date.getTime() + ".bulk.gz");
+	// Page folder = getPageManager().getPage(target.getParentPath());
+	// File file = new File(folder.getContentItem().getAbsolutePath());
+	// file.mkdirs();
+	// Path exportPath = Paths.get(URI.create("file:" +
+	// target.getContentItem().getAbsolutePath()));
+	// KnapsackExportRequestBuilder requestBuilder = new
+	// KnapsackExportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setOverwriteAllowed(true).setIndex(indexid);
+	// KnapsackExportResponse knapsackExportResponse =
+	// requestBuilder.execute().actionGet();
 	//
-	//			KnapsackStateRequestBuilder knapsackStateRequestBuilder = new KnapsackStateRequestBuilder(client.admin().indices());
-	//			KnapsackStateResponse knapsackStateResponse = knapsackStateRequestBuilder.execute().actionGet();
-	//			knapsackStateResponse.isExportActive(exportPath);
-	//			Thread.sleep(1000L);
-	//			// delete index
-	//			//		        client("1").admin().indices().delete(new DeleteIndexRequest("index1")).actionGet();
-	//			//		        KnapsackImportRequestBuilder knapsackImportRequestBuilder = new KnapsackImportRequestBuilder(client("1").admin().indices())
-	//			//		                .setPath(exportPath);
-	//			//		        KnapsackImportResponse knapsackImportResponse = knapsackImportRequestBuilder.execute().actionGet();
-	//			//		        if (!knapsackImportResponse.isRunning()) {
-	//			//		            logger.error(knapsackImportResponse.getReason());
-	//			//		        }
-	//			//		        assertTrue(knapsackImportResponse.isRunning());
-	//			//		        Thread.sleep(1000L);
-	//			//		        // count
-	//			//		        long count = client("1").prepareCount("index1").setQuery(QueryBuilders.matchAllQuery()).execute().actionGet().getCount();
-	//			//		        assertEquals(1L, count);
-	//		}
-	//		catch (Throwable ex)
-	//		{
-	//			throw new OpenEditException(ex);
-	//		}
-	//		finally
-	//		{
-	//			getLockManager(inCatalogId).release(lock);
-	//		}
-	//	}
+	// KnapsackStateRequestBuilder knapsackStateRequestBuilder = new
+	// KnapsackStateRequestBuilder(client.admin().indices());
+	// KnapsackStateResponse knapsackStateResponse =
+	// knapsackStateRequestBuilder.execute().actionGet();
+	// knapsackStateResponse.isExportActive(exportPath);
+	// Thread.sleep(1000L);
+	// // delete index
+	// // client("1").admin().indices().delete(new
+	// DeleteIndexRequest("index1")).actionGet();
+	// // KnapsackImportRequestBuilder knapsackImportRequestBuilder = new
+	// KnapsackImportRequestBuilder(client("1").admin().indices())
+	// // .setPath(exportPath);
+	// // KnapsackImportResponse knapsackImportResponse =
+	// knapsackImportRequestBuilder.execute().actionGet();
+	// // if (!knapsackImportResponse.isRunning()) {
+	// // logger.error(knapsackImportResponse.getReason());
+	// // }
+	// // assertTrue(knapsackImportResponse.isRunning());
+	// // Thread.sleep(1000L);
+	// // // count
+	// // long count =
+	// client("1").prepareCount("index1").setQuery(QueryBuilders.matchAllQuery()).execute().actionGet().getCount();
+	// // assertEquals(1L, count);
+	// }
+	// catch (Throwable ex)
+	// {
+	// throw new OpenEditException(ex);
+	// }
+	// finally
+	// {
+	// getLockManager(inCatalogId).release(lock);
+	// }
+	// }
 	//
-	//	public HitTracker listKnapsacks(String inCatalogId)
-	//	{
-	//		List snaps = getPageManager().getChildrenPathsSorted("/WEB-INF/data/" + inCatalogId + "/snapshots/");
-	//		ListHitTracker tracker = new ListHitTracker();
-	//		for (Iterator iterator = snaps.iterator(); iterator.hasNext();)
-	//		{
-	//			String path = (String) iterator.next();
-	//			Page page = getPageManager().getPage(path);
-	//			tracker.add(page);
-	//		}
-	//		return tracker;
-	//	}
+	// public HitTracker listKnapsacks(String inCatalogId)
+	// {
+	// List snaps = getPageManager().getChildrenPathsSorted("/WEB-INF/data/" +
+	// inCatalogId + "/snapshots/");
+	// ListHitTracker tracker = new ListHitTracker();
+	// for (Iterator iterator = snaps.iterator(); iterator.hasNext();)
+	// {
+	// String path = (String) iterator.next();
+	// Page page = getPageManager().getPage(path);
+	// tracker.add(page);
+	// }
+	// return tracker;
+	// }
 	//
-	//	public void importKnapsack(String inCatalogId, String inFile)
-	//	{
-	//		Lock lock = null;
+	// public void importKnapsack(String inCatalogId, String inFile)
+	// {
+	// Lock lock = null;
 	//
-	//		try
-	//		{
-	//			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
-	//			String indexid = toId(inCatalogId);
+	// try
+	// {
+	// lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
+	// String indexid = toId(inCatalogId);
 	//
-	//			Page target = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/snapshots/" + inFile);
+	// Page target = getPageManager().getPage("/WEB-INF/data/" + inCatalogId +
+	// "/snapshots/" + inFile);
 	//
-	//			Client client = getClient();
-	//			File exportFile = new File(target.getContentItem().getAbsolutePath());
-	//			Path exportPath = Paths.get(URI.create("file:" + exportFile.getAbsolutePath()));
-	//			KnapsackImportRequestBuilder knapsackImportRequestBuilder = new KnapsackImportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setIndex(indexid);
-	//			KnapsackImportResponse knapsackImportResponse = knapsackImportRequestBuilder.execute().actionGet();
+	// Client client = getClient();
+	// File exportFile = new File(target.getContentItem().getAbsolutePath());
+	// Path exportPath = Paths.get(URI.create("file:" +
+	// exportFile.getAbsolutePath()));
+	// KnapsackImportRequestBuilder knapsackImportRequestBuilder = new
+	// KnapsackImportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setIndex(indexid);
+	// KnapsackImportResponse knapsackImportResponse =
+	// knapsackImportRequestBuilder.execute().actionGet();
 	//
-	//		}
-	//		catch (Throwable ex)
-	//		{
-	//			throw new OpenEditException(ex);
-	//		}
-	//		finally
-	//		{
-	//			getLockManager(inCatalogId).release(lock);
-	//		}
-	//	}
+	// }
+	// catch (Throwable ex)
+	// {
+	// throw new OpenEditException(ex);
+	// }
+	// finally
+	// {
+	// getLockManager(inCatalogId).release(lock);
+	// }
+	// }
 
 	public void addMappingError(String inSearchType, String inMessage)
 	{
@@ -718,36 +743,44 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					{
 						throw new OpenEditException("Could not get yellow status for " + alias);
 					}
-					String index = getIndexNameFromAliasName(alias);//see if we already have an index
-					//see if an actual index exists
+					String index = getIndexNameFromAliasName(alias);// see if we already have an index
+					// see if an actual index exists
 
 					if (index == null)
 					{
 						index = alias + "-0";
 					}
-					IndicesExistsRequest existsreq = Requests.indicesExistsRequest(index); //see if 
+					IndicesExistsRequest existsreq = Requests.indicesExistsRequest(index); // see if
 					IndicesExistsResponse res = admin.indices().exists(existsreq).actionGet();
-					//			if (res.isExists() ){
-					//				index = alias;
-					//			}
+					// if (res.isExists() ){
+					// index = alias;
+					// }
 
 					boolean createdIndex = prepareIndex(health, index);
 					if (createdIndex)
 					{
 						if (!res.isExists())
 						{
-							admin.indices().prepareAliases().addAlias(index, alias).execute().actionGet();//This sets up an alias that the app uses so we can flip later.
+							admin.indices().prepareAliases().addAlias(index, alias).execute().actionGet();// This sets
+																											// up an
+																											// alias
+																											// that the
+																											// app uses
+																											// so we can
+																											// flip
+																											// later.
 						}
 					}
 					getConnectedCatalogIds().put(inCatalogId, index);
-					//			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
-					//			List sorted = archive.listSearchTypes();
-					//			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
-					//			{
-					//				String type = (String) iterator.next();
-					//				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
-					//				searcher.initialize();	
-					//			}
+					// PropertyDetailsArchive archive =
+					// getSearcherManager().getPropertyDetailsArchive(inCatalogId);
+					// List sorted = archive.listSearchTypes();
+					// for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
+					// {
+					// String type = (String) iterator.next();
+					// Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
+					// searcher.initialize();
+					// }
 
 					return true;
 				}
@@ -781,7 +814,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				for (Iterator iterator = getLocalNode().getProperties().keySet().iterator(); iterator.hasNext();)
 				{
 					String key = (String) iterator.next();
-					if (key.startsWith("index.")) //Legacy
+					if (key.startsWith("index.")) // Legacy
 					{
 						String val = getLocalNode().getSetting(key);
 						settingsBuilder.put(key, val);
@@ -791,18 +824,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				CreateIndexResponse newindexres = admin.indices().prepareCreate(index).setSettings(settingsBuilder).execute().actionGet();
 
 				/*
-				 * XContentBuilder settingsBuilder =
-				 * XContentFactory.jsonBuilder() .startObject()
+				 * XContentBuilder settingsBuilder = XContentFactory.jsonBuilder() .startObject()
 				 * .startObject("analysis") .startObject("analyzer")
 				 * .startObject("lowersnowball").field("tokenizer",
 				 * "standard").startArray("filter").value("standard").value(
-				 * "lowercase").value("stemfilter").endArray() .endObject()
-				 * .endObject() .startObject("analyzer")
-				 * .startObject("tags").field("type",
-				 * "custom").field("tokenizer",
-				 * "keyword").startArray("filter").value("lowercase").endArray()
-				 * .endObject() .endObject() .startObject("filter")
-				 * .startObject("stemfilter").field("type","snowball").field(
+				 * "lowercase").value("stemfilter").endArray() .endObject() .endObject() .startObject("analyzer")
+				 * .startObject("tags").field("type", "custom").field("tokenizer",
+				 * "keyword").startArray("filter").value("lowercase").endArray() .endObject() .endObject()
+				 * .startObject("filter") .startObject("stemfilter").field("type","snowball").field(
 				 * "language","English") .endObject() .endObject() .endObject();
 				 */
 
@@ -838,15 +867,17 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			{
 				log.error("Could not refresh shards");
 			}
-			//TODO: Make sure we are setting replicas and master nodes
-			//			if (health != null && health.getNumberOfNodes() > 1)
-			//			{
-			//				settingsBuilder.put(ElectMasterService.DISCOVERY_ZEN_MINIMUM_MASTER_NODES, "2");
-			//				settingsBuilder.put(ElectMasterService.DISCOVERY_ZEN_MINIMUM_MASTER_NODES, "2");
-			//			}
+			// TODO: Make sure we are setting replicas and master nodes
+			// if (health != null && health.getNumberOfNodes() > 1)
+			// {
+			// settingsBuilder.put(ElectMasterService.DISCOVERY_ZEN_MINIMUM_MASTER_NODES,
+			// "2");
+			// settingsBuilder.put(ElectMasterService.DISCOVERY_ZEN_MINIMUM_MASTER_NODES,
+			// "2");
+			// }
 		}
 
-		//Check the number of nodes
+		// Check the number of nodes
 
 		return createdIndex;
 	}
@@ -862,7 +893,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		if (indexToAliasesMap.isAlias() && indexToAliasesMap.getIndices().size() > 0)
 		{
-			//ES5 return indexToAliasesMap.getIndices().iterator().next().getIndex().getName();
+			// ES5 return
+			// indexToAliasesMap.getIndices().iterator().next().getIndex().getName();
 			return indexToAliasesMap.getIndices().iterator().next().getIndex();
 		}
 
@@ -887,7 +919,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		if (!indexToAliasesMap.isAlias())
 		{
-			//ES5 return indexToAliasesMap.getIndices().iterator().next().getIndex().getName();
+			// ES5 return
+			// indexToAliasesMap.getIndices().iterator().next().getIndex().getName();
 
 			IndexMetaData index = indexToAliasesMap.getIndices().iterator().next();
 			if (index.getAliases().size() > 0)
@@ -921,7 +954,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			for (Iterator iterator = indexToAliasesMap.getIndices().iterator(); iterator.hasNext();)
 			{
 				IndexMetaData metadata = (IndexMetaData) iterator.next();
-				//ES5 String indexid = metadata.getIndex().getName();
+				// ES5 String indexid = metadata.getIndex().getName();
 				String indexid = metadata.getIndex();
 				getClient().admin().indices().prepareAliases().removeAlias(indexid, aliasName).execute().actionGet();
 
@@ -962,15 +995,15 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			String id = toId(inCatalogId);
 
 			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
-			//List mappedtypes = archive.listSearchTypes();
+			// List mappedtypes = archive.listSearchTypes();
 
 			List searchers = new ArrayList();
 			archive.clearCache();
 			getPageManager().clearCache();
 			getSearcherManager().getCacheManager().clearAll();
 
-			//need to reset/create the mappings o
-			List mappedtypes = getMappedTypes(inCatalogId); //from existing elastic database
+			// need to reset/create the mappings o
+			List mappedtypes = getMappedTypes(inCatalogId); // from existing elastic database
 			for (Iterator iterator = mappedtypes.iterator(); iterator.hasNext();)
 			{
 				String searchtypeid = (String) iterator.next();
@@ -980,10 +1013,12 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				}
 				Searcher searcher = getSearcherManager().loadSearcher(inCatalogId, searchtypeid, false);
 				searchers.add(searcher);
-				//Make sure all the errors are done loading from initilize() putMappings on the old index
+				// Make sure all the errors are done loading from initilize() putMappings on the
+				// old index
 			}
 
-			newindex = prepareTemporaryIndex(inCatalogId, searchers); //TODO: Dont initilize/putMappings on all the searchers
+			newindex = prepareTemporaryIndex(inCatalogId, searchers); // TODO: Dont initilize/putMappings on all the
+																		// searchers
 
 			mappedtypes.remove("lock");
 
@@ -1001,16 +1036,16 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 				reindexlogs.saveData(reindexhistory);
 
-				//This calls initialize that calls putMappings...
+				// This calls initialize that calls putMappings...
 				if (searcher.getCatalogId().equals(inCatalogId))
 				{
-					searcher.setAlternativeIndex(newindex);//Should	not look at searchers from system etc
+					searcher.setAlternativeIndex(newindex);// Should not look at searchers from system etc
 				}
 				else
 				{
 					continue;
 				}
-				searcher.reindexInternal(); //This calls put mapping again
+				searcher.reindexInternal(); // This calls put mapping again
 				searcher.setAlternativeIndex(null);
 
 				reindexhistory = reindexlogs.createNewData();
@@ -1086,13 +1121,13 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				{
 					continue;
 				}
-				searcher.setAlternativeIndex(tempindex);//Should
+				searcher.setAlternativeIndex(tempindex);// Should
 
 				if (!searcher.putMappings())
 				{
 					ok = false;
-					//get this mapping and show all mapping info
-					if( searcher instanceof BaseElasticSearcher)
+					// get this mapping and show all mapping info
+					if (searcher instanceof BaseElasticSearcher)
 					{
 						BaseElasticSearcher elasticsearcher = (BaseElasticSearcher) searcher;
 						String error = "Could not map " + searcher.getSearchType();
@@ -1107,7 +1142,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 							log.error("Mapping ", e);
 						}
 						error = error + " existing mapping " + showAllExistingMapping(inCatalogId, tempindex);
-						throw new OpenEditException(error); //real error
+						throw new OpenEditException(error); // real error
 					}
 				}
 				searcher.setAlternativeIndex(null);
@@ -1188,30 +1223,32 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			}
 		}
 
-		//		for (ObjectCursor<String> mappingIndexName : resp.getMappings().keys()) 
-		//		{
-		//			ImmutableOpenMap<String, MappingMetaData> typeMappings = resp.getMappings().get(mappingIndexName.value);
-		//            for (ObjectCursor<String> typeName : typeMappings.keys()) 
-		//            {
-		//            	types.add(typeName.value);
-		//                MappingMetaData typeMapping = typeMappings.get(typeName.value);
-		//               // Map<String, Map<String, String>> properties = getPropertiesFromTypeMapping(typeMapping);
-		//            }
-		//		}
+		// for (ObjectCursor<String> mappingIndexName : resp.getMappings().keys())
+		// {
+		// ImmutableOpenMap<String, MappingMetaData> typeMappings =
+		// resp.getMappings().get(mappingIndexName.value);
+		// for (ObjectCursor<String> typeName : typeMappings.keys())
+		// {
+		// types.add(typeName.value);
+		// MappingMetaData typeMapping = typeMappings.get(typeName.value);
+		// // Map<String, Map<String, String>> properties =
+		// getPropertiesFromTypeMapping(typeMapping);
+		// }
+		// }
 
 		types.remove("modulesearch");
 		types.remove("category");
 		types.add(0, "category");
-		
-		//Skip these types
+
+		// Skip these types
 		Collection values = getSearcherManager().getList("system", "skiptables");
-		if( values != null)
+		if (values != null)
 		{
 			for (Iterator iterator = values.iterator(); iterator.hasNext();)
 			{
 				Data skip = (Data) iterator.next();
 				types.remove(skip.getName());
-				
+
 			}
 		}
 		return types;
@@ -1225,7 +1262,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		String tempindex = id + date.getTime();
 		prepareIndex(null, tempindex);
-		//need to reset/creat the mappings here!
+		// need to reset/creat the mappings here!
 		getMappingErrors().clear();
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 		List withparents = archive.findChildTablesNames();
@@ -1234,7 +1271,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		{
 			String searchtype = (String) iterator.next();
 			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
-			searcher.setAlternativeIndex(tempindex);//Should				
+			searcher.setAlternativeIndex(tempindex);// Should
 			searcher.putMappings();
 			searcher.setAlternativeIndex(null);
 
@@ -1250,7 +1287,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
 
-				searcher.setAlternativeIndex(tempindex);//Should				
+				searcher.setAlternativeIndex(tempindex);// Should
 				searcher.putMappings();
 				searcher.setAlternativeIndex(null);
 			}
@@ -1289,22 +1326,18 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 	private Listener createLoggingBulkProcessorListener()
 	{
-		return new BulkProcessor.Listener()
-		{
+		return new BulkProcessor.Listener() {
 			@Override
 			public void beforeBulk(long executionId, BulkRequest request)
-			{
-			}
+			{}
 
 			@Override
 			public void afterBulk(long executionId, BulkRequest request, BulkResponse response)
-			{
-			}
+			{}
 
 			@Override
 			public void afterBulk(long executionId, BulkRequest request, Throwable failure)
-			{
-			}
+			{}
 		};
 	}
 
@@ -1333,7 +1366,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 	public boolean tableExists(String indexid, String searchtype)
 	{
-		boolean used = getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { indexid }, searchtype)).actionGet().isExists();
+		boolean used = getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] {indexid}, searchtype)).actionGet().isExists();
 		return used;
 
 	}
@@ -1349,8 +1382,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		if (fieldBulkProcessor == null)
 		{
 
-			fieldBulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
-			{
+			fieldBulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener() {
 				@Override
 				public void beforeBulk(long executionId, BulkRequest request)
 				{
@@ -1373,7 +1405,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 						// Data toupdate = toversion.get(res.getId());
 
 					}
-					//	request.refresh(true);
+					// request.refresh(true);
 				}
 
 				@Override
@@ -1382,7 +1414,13 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					log.info(failure);
 					fieldBulkErrors.add(failure);
 				}
-			}).setBulkActions(-1).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueMinutes(4)).setConcurrentRequests(1).setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10)).build();
+			})
+				.setBulkActions(-1)
+				.setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB))
+				.setFlushInterval(TimeValue.timeValueMinutes(4))
+				.setConcurrentRequests(1)
+				.setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10))
+				.build();
 
 		}
 
@@ -1400,7 +1438,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			try
 			{
 				FileStore store = Files.getFileStore(root);
-				// System.out.println("available=" + nf.format(store.getUsableSpace()) + ", total=" + nf.format(store.getTotalSpace()));
+				// System.out.println("available=" + nf.format(store.getUsableSpace()) + ",
+				// total=" + nf.format(store.getTotalSpace()));
 			}
 			catch (IOException e)
 			{
@@ -1428,14 +1467,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				stats.getFs().getTotal().getAvailable();
 				stats.getFs().getTotal().getTotal();
 				stats.getFs().getTotal().getFree();
-				//log.info(response);
+				// log.info(response);
 
 				return stats;
 			}
 		}
 		// NodeStats stats = response.getNodesMap().get(getLocalNodeId());
 
-		//		 stats.getJvm().getMem().getHeapCommitted();
+		// stats.getJvm().getMem().getHeapCommitted();
 		return null;
 	}
 
@@ -1457,11 +1496,11 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 	public Collection getRemoteEditClusters(String inCatalog)
 	{
-		//Not cached
+		// Not cached
 		Collection nodes = getSearcherManager().getSearcher(inCatalog, "editingcluster").getAllHits();
 		Collection others = new ArrayList();
 
-		//TODO cache this
+		// TODO cache this
 		for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
 		{
 			MultiValued node = (MultiValued) iterator.next();
@@ -1483,20 +1522,20 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 		else
 		{
-			//across all?
+			// across all?
 			search = getClient().prepareSearch();
 		}
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
 
 		MediaArchive archive = (MediaArchive) getSearcherManager().getModuleManager().getBean(inCatalogId, "mediaArchive");
-		
-		//Setup this in the server you are pulling from
+
+		// Setup this in the server you are pulling from
 		Collection<String> types = archive.getCatalogSettingValues("sync_data_types");
-		
+
 		String[] defaulttypes = synctypes;
-		if( types != null)
+		if (types != null)
 		{
-			defaulttypes = (String[])types.toArray(new String[types.size()]);
+			defaulttypes = (String[]) types.toArray(new String[types.size()]);
 		}
 		search.setTypes(defaulttypes);
 
@@ -1507,30 +1546,30 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		RangeQueryBuilder date = QueryBuilders.rangeQuery("emrecordstatus.recordmodificationdate").from(inAfter);// .to(before);
 
 		search.setQuery(date);
-		search.setRequestCache(false);  //What does this do?
+		search.setRequestCache(false); // What does this do?
 
-		//search.toString()
-		
-		//log.info(search.toString());
-		
+		// search.toString()
+
+		// log.info(search.toString());
+
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, date, 1000);
 		hits.setSearcher(archive.getSearcher("modulesearch"));
 		hits.enableBulkOperations();
-		//hits.setHitsPerPage(100);
-		
-		
+		// hits.setHitsPerPage(100);
+
 		if (getSearcherManager().getShowSearchLogs(inCatalogId))
 		{
 			String json = search.toString();
 			log.info(toId(inCatalogId) + "/_search' -d '" + json + "' \n");
 		}
 		log.info("Data-Sync " + hits.size() + " edited documents since " + inAfter);
-		//hits.setSearcherManager(getSearcherManager());
-		//hits.setSearcher(this);
-		//hits.setSearchQuery(inQuery);
+		// hits.setSearcherManager(getSearcherManager());
+		// hits.setSearcher(this);
+		// hits.setSearchQuery(inQuery);
 		return hits;
 	}
-	public HitTracker getDocumentsByIds(String inCatalogId,Collection<String> inIds)
+
+	public HitTracker getDocumentsByIds(String inCatalogId, Collection<String> inIds)
 	{
 		SearchRequestBuilder search = getClient().prepareSearch(toId(inCatalogId));
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
@@ -1539,14 +1578,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		IdsQueryBuilder ids = QueryBuilders.idsQuery(synctypes);
 		ids.addIds(inIds);
 		search.setQuery(ids);
-		search.setRequestCache(true);  //What does this do?
+		search.setRequestCache(true); // What does this do?
 
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, ids, 1000);
 		hits.setSearcherManager(getSearcherManager());
 		hits.setCatalogId(inCatalogId);
 		hits.enableBulkOperations();
-		//hits.setSearcher(this);
-		//hits.setSearchQuery(inQuery);
+		// hits.setSearcher(this);
+		// hits.setSearchQuery(inQuery);
 		return hits;
 	}
 
@@ -1581,15 +1620,15 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		{
 			connectCatalog("system");
 		}
-		catch( Throwable ex)
+		catch (Throwable ex)
 		{
 			log.error("Connection not ready yet", ex);
 		}
-			
 
 		boolean yellowok = false;
-		
-		do {
+
+		do
+		{
 			try
 			{
 				AdminClient admin = getClient().admin();
@@ -1597,7 +1636,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 				if (health.isTimedOut())
 				{
-					log.info("Keep Waiting for yellow status" );
+					log.info("Keep Waiting for yellow status");
 				}
 				else
 				{
@@ -1605,12 +1644,12 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				}
 
 			}
-			catch( Throwable ex)
+			catch (Throwable ex)
 			{
-				log.error("Trying to init system catalog", ex); //Should never happen
+				log.error("Trying to init system catalog", ex); // Should never happen
 			}
-			
-			if( !yellowok )
+
+			if (!yellowok)
 			{
 				try
 				{
@@ -1618,17 +1657,16 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				}
 				catch (Exception ex)
 				{
-					//Ignore
+					// Ignore
 				}
 			}
-			
-		} while(!yellowok);
-		
+
+		} while (!yellowok);
+
 		log.info("Connected to system catalog");
-		
+
 	}
 
-	
 	public void flushDb()
 	{
 		FlushRequest request = new FlushRequest(); // No index specified = all indices

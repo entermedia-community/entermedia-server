@@ -14,34 +14,35 @@ public class QuestionArchive
 	XmlArchive fieldXmlArchive;
 	List fieldQuestions;
 	long lastModDate;
-	
+
 	public Question getRandomQuestion() throws OpenEditException
 	{
-		if( getQuestions().size() == 0)
+		if (getQuestions().size() == 0)
 		{
 			return null;
 		}
 		double d = Math.random();
-		d = d * ((double)getQuestions().size()-1D);
-		int hit = (int)Math.round(d);
-		
-		return (Question)getQuestions().get(hit);
+		d = d * ((double) getQuestions().size() - 1D);
+		int hit = (int) Math.round(d);
+
+		return (Question) getQuestions().get(hit);
 	}
+
 	public List getQuestions() throws OpenEditException
 	{
 		String xmlpath = "/system/questions.xml";
 		long now = getXmlArchive().getLastModified(xmlpath);
 		boolean reload = false;
-		if( now != lastModDate )
+		if (now != lastModDate)
 		{
 			reload = true;
 		}
-		
+
 		if (reload || fieldQuestions == null)
 		{
 			XmlFile file = getXmlArchive().getXml(xmlpath);
 			fieldQuestions = new ArrayList();
-			if( file.isExist() )
+			if (file.isExist())
 			{
 				for (Iterator iterator = file.getElements().iterator(); iterator.hasNext();)
 				{
@@ -57,22 +58,25 @@ public class QuestionArchive
 		}
 		return fieldQuestions;
 	}
+
 	public Question getQuestion(String inId) throws OpenEditException
 	{
 		for (Iterator iter = getQuestions().iterator(); iter.hasNext();)
 		{
 			Question q = (Question) iter.next();
-			if ( q.getId().equals(inId) )
+			if (q.getId().equals(inId))
 			{
 				return q;
 			}
 		}
 		return null;
 	}
+
 	public XmlArchive getXmlArchive()
 	{
 		return fieldXmlArchive;
 	}
+
 	public void setXmlArchive(XmlArchive inXmlArchive)
 	{
 		fieldXmlArchive = inXmlArchive;

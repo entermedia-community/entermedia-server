@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
-public class HtmlWriter {
+public class HtmlWriter
+{
 
     private static final Map<String, String> NO_ATTRIBUTES = Map.of();
 
@@ -18,57 +19,73 @@ public class HtmlWriter {
         this.buffer = out;
     }
 
-    public void raw(String s) {
+    public void raw(String s)
+    {
         append(s);
     }
 
-    public void text(String text) {
+    public void text(String text)
+    {
         append(Escaping.escapeHtml(text));
     }
 
-    public void tag(String name) {
+    public void tag(String name)
+    {
         tag(name, NO_ATTRIBUTES);
     }
 
-    public void tag(String name, Map<String, String> attrs) {
+    public void tag(String name, Map<String, String> attrs)
+    {
         tag(name, attrs, false);
     }
 
-    public void tag(String name, Map<String, String> attrs, boolean voidElement) {
+    public void tag(String name, Map<String, String> attrs, boolean voidElement)
+    {
         append("<");
         append(name);
-        if (attrs != null && !attrs.isEmpty()) {
-            for (var attr : attrs.entrySet()) {
+        if (attrs != null && !attrs.isEmpty())
+        {
+            for (var attr : attrs.entrySet())
+            {
                 append(" ");
                 append(Escaping.escapeHtml(attr.getKey()));
-                if (attr.getValue() != null) {
+                if (attr.getValue() != null)
+                {
                     append("=\"");
                     append(Escaping.escapeHtml(attr.getValue()));
                     append("\"");
                 }
             }
         }
-        if (voidElement) {
+        if (voidElement)
+        {
             append(" /");
         }
 
         append(">");
     }
 
-    public void line() {
-        if (lastChar != 0 && lastChar != '\n') {
+    public void line()
+    {
+        if (lastChar != 0 && lastChar != '\n')
+        {
             append("\n");
         }
     }
 
-    protected void append(String s) {
-        try {
+    protected void append(String s)
+    {
+        try
+        {
             buffer.append(s);
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             throw new RuntimeException(e);
         }
         int length = s.length();
-        if (length != 0) {
+        if (length != 0)
+        {
             lastChar = s.charAt(length - 1);
         }
     }

@@ -1,6 +1,7 @@
 package org.entermediadb.markdown.internal.renderer.text;
 
-public abstract class ListHolder {
+public abstract class ListHolder
+{
     private static final String INDENT_DEFAULT = "   ";
     private static final String INDENT_EMPTY = "";
 
@@ -10,18 +11,23 @@ public abstract class ListHolder {
     ListHolder(ListHolder parent) {
         this.parent = parent;
 
-        if (parent != null) {
+        if (parent != null)
+        {
             indent = parent.indent + INDENT_DEFAULT;
-        } else {
+        }
+        else
+        {
             indent = INDENT_EMPTY;
         }
     }
 
-    public ListHolder getParent() {
+    public ListHolder getParent()
+    {
         return parent;
     }
 
-    public String getIndent() {
+    public String getIndent()
+    {
         return indent;
     }
 }

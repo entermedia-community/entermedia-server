@@ -9,28 +9,34 @@ public class EventTrigger
 	{
 		return fieldPathEvent;
 	}
+
 	public void setPathEvent(PathEvent inPathEvent)
 	{
 		fieldPathEvent = inPathEvent;
 	}
+
 	public WebPageRequest getWebPageRequest()
 	{
 		return fieldWebPageRequest;
 	}
+
 	public void setWebPageRequest(WebPageRequest inWebPageRequest)
 	{
 		fieldWebPageRequest = inWebPageRequest;
 	}
+
 	public ScriptLogger getLogger()
 	{
 		return fieldLogger;
 	}
+
 	public void setLogger(ScriptLogger inLogger)
 	{
 		fieldLogger = inLogger;
 	}
+
 	PathEvent fieldPathEvent;
 	WebPageRequest fieldWebPageRequest;
 	ScriptLogger fieldLogger;
-	
+
 }

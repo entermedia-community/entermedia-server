@@ -1,14 +1,14 @@
 /*
-Copyright (c) 2003 eInnovation Inc. All rights reserved
-
-This library is free software; you can redistribute it and/or modify it under the terms
-of the GNU Lesser General Public License as published by the Free Software Foundation;
-either version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-*/
+ * Copyright (c) 2003 eInnovation Inc. All rights reserved
+ * 
+ * This library is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation; either version
+ * 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 
 package org.entermediadb.links;
 
@@ -24,7 +24,6 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.webui.tree.DefaultWebTreeNode;
 import org.openedit.util.PathUtilities;
 
-
 /**
  * This class represents a node in a {@link LinkTreeModel}.
  *
@@ -32,11 +31,13 @@ import org.openedit.util.PathUtilities;
  */
 public class LinkNode extends DefaultWebTreeNode implements Comparable
 {
-	//public static final DefaultWebTreeNode ERROR_NODE = new DefaultWebTreeNode( "Error accessing tree node." );
+	// public static final DefaultWebTreeNode ERROR_NODE = new DefaultWebTreeNode(
+	// "Error accessing tree node." );
 	protected Set fieldIgnoreTypes;
 	protected Link fieldLink;
 
 	private static final Log log = LogFactory.getLog(LinkNode.class);
+
 	/**
 	 * Create a new <code>PageTreeNode</code>.
 	 *
@@ -44,13 +45,12 @@ public class LinkNode extends DefaultWebTreeNode implements Comparable
 	 * @param inPath The path to the file, relative to the site context root
 	 * @throws LinkException
 	 */
-	public LinkNode( Link inLink )
-	{
-		super(  inLink.getId(), inLink.getText() );
+	public LinkNode(Link inLink) {
+		super(inLink.getId(), inLink.getText());
 		fieldLink = inLink;
 		setLeaf(!getLink().hasChildren());
 	}
-	
+
 	/**
 	 * Get the first child of this node with the given name.
 	 *
@@ -73,10 +73,12 @@ public class LinkNode extends DefaultWebTreeNode implements Comparable
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see DefaultWebTreeNode#getChildren()
 	 */
-	public List getChildren() 
+	public List getChildren()
 	{
 		if (fieldChildren == null)
 		{
@@ -87,7 +89,9 @@ public class LinkNode extends DefaultWebTreeNode implements Comparable
 		return fieldChildren;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Comparable#compareTo(Object)
 	 */
 	public int compareTo(Object o)
@@ -160,27 +164,27 @@ public class LinkNode extends DefaultWebTreeNode implements Comparable
 	/**
 	 * Reload the children of this page tree node.
 	 */
-	public void reloadChildren() 
+	public void reloadChildren()
 	{
 		getChildren().clear();
 
 		if (getLink().hasChildren())
 		{
 			List childItems = getLink().getChildren();
-			for ( Iterator iterator = childItems.iterator(); iterator.hasNext(); )
+			for (Iterator iterator = childItems.iterator(); iterator.hasNext();)
 			{
 				Link childItem = (Link) iterator.next();
 
 				String name = childItem.getPath();
 				boolean okToAdd = true;
 
-				if( getIgnoreTypes() != null)
+				if (getIgnoreTypes() != null)
 				{
-					//we want to ignore some files in this directory ie. CVS
+					// we want to ignore some files in this directory ie. CVS
 					for (Iterator iter = getIgnoreTypes().iterator(); iter.hasNext();)
 					{
 						String key = (String) iter.next();
-	
+
 						if (PathUtilities.match(name, key))
 						{
 							okToAdd = false;
@@ -191,7 +195,7 @@ public class LinkNode extends DefaultWebTreeNode implements Comparable
 				if (okToAdd)
 				{
 
-					LinkNode child = createNode( childItem );
+					LinkNode child = createNode(childItem);
 					child.setParent(this);
 
 					getChildren().add(child);
@@ -221,9 +225,9 @@ public class LinkNode extends DefaultWebTreeNode implements Comparable
 	 *
 	 * @return PageTreeNode
 	 */
-	protected LinkNode createNode(Link childItem) 
+	protected LinkNode createNode(Link childItem)
 	{
-		LinkNode node = new LinkNode( childItem);
+		LinkNode node = new LinkNode(childItem);
 		node.setIgnoreTypes(getIgnoreTypes());
 		return node;
 	}
@@ -232,14 +236,17 @@ public class LinkNode extends DefaultWebTreeNode implements Comparable
 	{
 		return fieldLink;
 	}
-	public void setLink( Link Link )
+
+	public void setLink(Link Link)
 	{
 		fieldLink = Link;
 	}
+
 	public String getURL()
 	{
 		return getLink().getId();
 	}
+
 	public boolean hasLoadedChildren()
 	{
 		return getLink().getChildren() != null;

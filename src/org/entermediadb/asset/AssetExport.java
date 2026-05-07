@@ -9,8 +9,8 @@ import org.openedit.OpenEditException;
 
 public interface AssetExport
 {
-	public void exportAllAssets (MediaArchive inStore, Writer inOut) throws OpenEditException;
+	public void exportAllAssets(MediaArchive inStore, Writer inOut) throws OpenEditException;
 
-	public void exportCatalogsWithAssets (MediaArchive inStore, Writer inOut) throws OpenEditException;
+	public void exportCatalogsWithAssets(MediaArchive inStore, Writer inOut) throws OpenEditException;
 
 }

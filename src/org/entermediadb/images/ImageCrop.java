@@ -28,7 +28,7 @@ public class ImageCrop
 	protected PageManager fieldPageManager;
 	protected float fieldScaleX;
 	protected float fieldScaleY;
-	
+
 	public Rectangle getRange()
 	{
 		return fieldRange;
@@ -37,15 +37,17 @@ public class ImageCrop
 	public void setRange(Rectangle inRange)
 	{
 		fieldRange = inRange;
-	} 
-	public void setRange( int inX, int inY, int inWidth, int inHeight)
+	}
+
+	public void setRange(int inX, int inY, int inWidth, int inHeight)
 	{
 		setRange(new Rectangle(inX, inY, inWidth, inHeight));
 	}
-	public void crop( String inPath, User inUser, String inMessage ) throws Exception
+
+	public void crop(String inPath, User inUser, String inMessage) throws Exception
 	{
 		Page input = getPageManager().getPage(inPath);
-		if ( input.exists() )
+		if (input.exists())
 		{
 			InputStream in = null;
 			OutputStream out = null;
@@ -56,8 +58,8 @@ public class ImageCrop
 				BufferedImage origImage = ImageIO.read(in);
 				BufferedImage done = crop(origImage);
 				String type = PathUtilities.extractPageType(inPath);
-				out = new FileOutputStream( tmp );
-				ImageIO.write(done, type,  out);
+				out = new FileOutputStream(tmp);
+				ImageIO.write(done, type, out);
 			}
 			finally
 			{
@@ -74,35 +76,36 @@ public class ImageCrop
 			tmp.delete();
 		}
 	}
+
 	public BufferedImage crop(BufferedImage inImage)
-	{	
-		//BufferedImage origImage = ImageIO.read( inInImageFile );
-		int scaledX = (int)getRange().getX();
-		int scaledY = (int)getRange().getY();
-		int scaledWidth = (int)getRange().getWidth(); 
-		int scaledHeight = (int)getRange().getHeight();
-		
-		if(getScaleX() > 0)
+	{
+		// BufferedImage origImage = ImageIO.read( inInImageFile );
+		int scaledX = (int) getRange().getX();
+		int scaledY = (int) getRange().getY();
+		int scaledWidth = (int) getRange().getWidth();
+		int scaledHeight = (int) getRange().getHeight();
+
+		if (getScaleX() > 0)
 		{
-			scaledX = (int)(scaledX * getScaleX());
-			scaledWidth = (int)(scaledWidth * getScaleX());
+			scaledX = (int) (scaledX * getScaleX());
+			scaledWidth = (int) (scaledWidth * getScaleX());
 		}
-		if(getScaleY() > 0)
+		if (getScaleY() > 0)
 		{
-			scaledY = (int)(scaledY * getScaleY());
-			scaledHeight = (int)(scaledHeight * getScaleY());
+			scaledY = (int) (scaledY * getScaleY());
+			scaledHeight = (int) (scaledHeight * getScaleY());
 		}
-		
+
 		int x = Math.max(0, scaledX);
 		int y = Math.max(0, scaledY);
-		
-		int w = Math.min(scaledWidth, inImage.getWidth() - x );
+
+		int w = Math.min(scaledWidth, inImage.getWidth() - x);
 		int h = Math.min(scaledHeight, inImage.getHeight() - y);
 
 		x = Math.min(inImage.getWidth(), x);
-		y = Math.min(inImage.getHeight(), y );
+		y = Math.min(inImage.getHeight(), y);
 
-		BufferedImage crop =  inImage.getSubimage(x,y,w, h);
+		BufferedImage crop = inImage.getSubimage(x, y, w, h);
 		return crop;
 	}
 
@@ -118,13 +121,13 @@ public class ImageCrop
 
 	public void setRange(String inX, String inY, String inWidth, String inHeight)
 	{
-		setRange(Integer.parseInt(inX),Integer.parseInt(inY),Integer.parseInt(inWidth),Integer.parseInt(inHeight) );
+		setRange(Integer.parseInt(inX), Integer.parseInt(inY), Integer.parseInt(inWidth), Integer.parseInt(inHeight));
 	}
 
 	public void resize(String inEditPath, User inUser, String inMessage) throws Exception
 	{
 		Page input = getPageManager().getPage(inEditPath);
-		if ( input.exists() )
+		if (input.exists())
 		{
 			InputStream in = null;
 			OutputStream out = null;
@@ -134,17 +137,14 @@ public class ImageCrop
 				in = input.getContentItem().getInputStream();
 				BufferedImage origImage = ImageIO.read(in);
 
-				BufferedImage scaledImage = new BufferedImage( getRange().width,
-					getRange().height, BufferedImage.TYPE_INT_RGB );
+				BufferedImage scaledImage = new BufferedImage(getRange().width, getRange().height, BufferedImage.TYPE_INT_RGB);
 				Graphics2D scaledGraphics = scaledImage.createGraphics();
-				scaledGraphics.setRenderingHint( RenderingHints.KEY_INTERPOLATION,
-					RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-				scaledGraphics.drawImage( origImage, 0, 0, getRange().width,
-					getRange().height, null );
+				scaledGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+				scaledGraphics.drawImage(origImage, 0, 0, getRange().width, getRange().height, null);
 
 				String type = PathUtilities.extractPageType(inEditPath);
-				out = new FileOutputStream( tmp );
-				ImageIO.write(scaledImage, type,  out);
+				out = new FileOutputStream(tmp);
+				ImageIO.write(scaledImage, type, out);
 			}
 			finally
 			{
@@ -160,7 +160,7 @@ public class ImageCrop
 			getPageManager().putPage(input);
 			tmp.delete();
 		}
-		
+
 	}
 
 	public float getScaleX()
@@ -172,7 +172,7 @@ public class ImageCrop
 	{
 		fieldScaleX = inScaleX;
 	}
-	
+
 	public void setScaleX(String inScaleX)
 	{
 		fieldScaleX = Float.parseFloat(inScaleX);
@@ -187,35 +187,35 @@ public class ImageCrop
 	{
 		fieldScaleY = inScaleY;
 	}
-	
+
 	public void setScaleY(String inScaleY)
 	{
 		fieldScaleY = Float.parseFloat(inScaleY);
 	}
-	
+
 	public int getScaledWidth()
 	{
 		float x = getScaleX();
-		if(x > 0)
+		if (x > 0)
 		{
-			return (int)(getRange().width * x);
+			return (int) (getRange().width * x);
 		}
 		else
 		{
-			return (int)getRange().width;
+			return (int) getRange().width;
 		}
 	}
-	
+
 	public int getScaledHeight()
 	{
 		float y = getScaleY();
-		if(y > 0)
+		if (y > 0)
 		{
-			return (int)(getRange().height * y);
+			return (int) (getRange().height * y);
 		}
 		else
 		{
-			return (int)getRange().height;
+			return (int) getRange().height;
 		}
 	}
 }

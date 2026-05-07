@@ -10,25 +10,26 @@ public class DefaultAssetSource extends OriginalsAssetSource
 	@Override
 	public int importAssets(String inSubChangePath)
 	{
-		//Do nothing
+		// Do nothing
 		return -1;
 	}
-	
+
 	@Override
 	public MultiValued getConfig()
 	{
-		if( fieldConfig == null)
+		if (fieldConfig == null)
 		{
 			fieldConfig = new BaseData();
 			fieldConfig.setId(getClass().getName());
 		}
 		return fieldConfig;
 	}
-	//This should never get called
+
+	// This should never get called
 	@Override
 	public boolean handles(Asset inAsset)
 	{
 		return true;
 	}
-	
+
 }

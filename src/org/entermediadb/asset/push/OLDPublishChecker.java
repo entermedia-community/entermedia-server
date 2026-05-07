@@ -14,7 +14,7 @@ public class OLDPublishChecker
 	protected Timer fieldTimer;
 	protected PushManager fieldPushManager;
 	protected ModuleManager fieldModuleManager;
-	
+
 	public ModuleManager getModuleManager()
 	{
 		return fieldModuleManager;
@@ -26,7 +26,7 @@ public class OLDPublishChecker
 	}
 
 	protected List<String> fieldCatalogIds;
-	
+
 	public PushManager getPushManager()
 	{
 		return fieldPushManager;
@@ -56,14 +56,14 @@ public class OLDPublishChecker
 	{
 		if (fieldTimer == null)
 		{
-			fieldTimer = new Timer("PublishChecker",true);
+			fieldTimer = new Timer("PublishChecker", true);
 		}
 		return fieldTimer;
 	}
 
 	public void reload()
 	{
-		if( fieldTimer != null )
+		if (fieldTimer != null)
 		{
 			fieldTimer.cancel();
 			fieldTimer = null;
@@ -74,6 +74,7 @@ public class OLDPublishChecker
 			addCatalogToMonitor(catalogid);
 		}
 	}
+
 	public MediaArchive getMediaArchive(String inCatalogid)
 	{
 		if (inCatalogid == null)
@@ -83,15 +84,14 @@ public class OLDPublishChecker
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(inCatalogid, "mediaArchive");
 		return archive;
 	}
-	
+
 	public void addCatalogToMonitor(final String inCatalogid)
 	{
-		if( !getCatalogIds().contains(inCatalogid))
+		if (!getCatalogIds().contains(inCatalogid))
 		{
 			getCatalogIds().add(inCatalogid);
-			
-			TimerTask task = new TimerTask()
-			{
+
+			TimerTask task = new TimerTask() {
 				@Override
 				public void run()
 				{
@@ -99,22 +99,23 @@ public class OLDPublishChecker
 					{
 						MediaArchive archive = getMediaArchive(inCatalogid);
 						getPushManager().pollRemotePublish(archive);
-					} catch ( Throwable ex )
+					}
+					catch (Throwable ex)
 					{
 						ex.printStackTrace();
 					}
 				}
 			};
-			
+
 			MediaArchive archive = getMediaArchive(inCatalogid);
 			String p = archive.getCatalogSettingValue("push_pollpublish_period");
 			int period = 5000;
-			if( p != null )
+			if (p != null)
 			{
 				period = Integer.parseInt(p);
 			}
-			getTimer().schedule(task, period,period);
+			getTimer().schedule(task, period, period);
 		}
 	}
-	
+
 }

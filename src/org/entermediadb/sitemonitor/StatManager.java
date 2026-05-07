@@ -18,7 +18,6 @@ public class StatManager implements CatalogEnabled
 	protected String fieldCatalogId;
 	private static final Log log = LogFactory.getLog(StatManager.class);
 
-
 	private Stat buildStat(Stat stat, String inName, Object inValue, String error)
 	{
 		stat.setName(inName);
@@ -30,8 +29,8 @@ public class StatManager implements CatalogEnabled
 		{
 			if (!inName.contains("Cpu"))
 			{
-				Long tmp = (Long)inValue / SiteMonitorModule.MEGABYTE;
-				stat.setValue((Object)tmp);
+				Long tmp = (Long) inValue / SiteMonitorModule.MEGABYTE;
+				stat.setValue((Object) tmp);
 			}
 			else
 			{
@@ -41,7 +40,8 @@ public class StatManager implements CatalogEnabled
 		return stat;
 	}
 
-	private Stat getTotalAssetsCount(MediaArchive archive) {
+	private Stat getTotalAssetsCount(MediaArchive archive)
+	{
 		Stat stat = new Stat();
 
 		stat.setName("totalassets");
@@ -50,12 +50,13 @@ public class StatManager implements CatalogEnabled
 		return stat;
 	}
 
-	private Stat getClusterStatusHealth(MediaArchive archive) {
+	private Stat getClusterStatusHealth(MediaArchive archive)
+	{
 		Stat stat = new Stat();
 
 		stat.setName("clusterhealth");
 		String health = archive.getNodeManager().getClusterHealth();
-		
+
 		if (health != null)
 		{
 			stat.setValue(health);
@@ -66,7 +67,7 @@ public class StatManager implements CatalogEnabled
 		}
 		return stat;
 	}
-	
+
 	public List<Stat> getStats(MediaArchive archive)
 	{
 		List<Stat> stats = new ArrayList<Stat>();

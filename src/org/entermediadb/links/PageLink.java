@@ -15,22 +15,22 @@ import org.openedit.util.PathUtilities;
 public class PageLink extends Link
 {
 	protected PageManager fieldPageManager;
-	
-	public List getChildren() 
+
+	public List getChildren()
 	{
 		try
 		{
-			if( fieldChildren == null)
+			if (fieldChildren == null)
 			{
 				List children = getPageManager().getChildrenNames(getPath());
 				fieldChildren = new ArrayList();
-				//String dir = PathUtilities.extractDirectoryPath( getUrl() );
+				// String dir = PathUtilities.extractDirectoryPath( getUrl() );
 				for (Iterator iterator = children.iterator(); iterator.hasNext();)
 				{
 					String path = (String) iterator.next();
 					PageLink child = new PageLink();
 					child.setPath(path);
-					
+
 					String id = child.getPath();
 					id = PathUtilities.makeId(id);
 
@@ -41,13 +41,13 @@ public class PageLink extends Link
 			}
 			return fieldChildren;
 		}
-		catch ( OpenEditException ex)
+		catch (OpenEditException ex)
 		{
 			throw new OpenEditRuntimeException(ex);
 		}
-		
+
 	}
-	//get the root link that searches for pages below it
+	// get the root link that searches for pages below it
 
 	public PageManager getPageManager()
 	{
@@ -59,6 +59,4 @@ public class PageLink extends Link
 		fieldPageManager = inPageManager;
 	}
 
-
-	
 }

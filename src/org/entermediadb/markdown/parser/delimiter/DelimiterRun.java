@@ -5,7 +5,8 @@ import org.entermediadb.markdown.node.Text;
 /**
  * A delimiter run is one or more of the same delimiter character, e.g. {@code ***}.
  */
-public interface DelimiterRun {
+public interface DelimiterRun
+{
 
     /**
      * @return whether this can open a delimiter
@@ -23,8 +24,8 @@ public interface DelimiterRun {
     int length();
 
     /**
-     * @return the number of characters originally in this delimiter run; at the start of processing, this is the same
-     * as {{@link #length()}}
+     * @return the number of characters originally in this delimiter run; at the start of processing,
+     *         this is the same as {{@link #length()}}
      */
     int originalLength();
 
@@ -39,20 +40,20 @@ public interface DelimiterRun {
     Text getCloser();
 
     /**
-     * Get the opening delimiter nodes for the specified length of delimiters. Length must be between 1 and
-     * {@link #length()}.
+     * Get the opening delimiter nodes for the specified length of delimiters. Length must be between 1
+     * and {@link #length()}.
      * <p>
-     * For example, for a delimiter run {@code ***}, calling this with 1 would return the last {@code *}.
-     * Calling it with 2 would return the second last {@code *} and the last {@code *}.
+     * For example, for a delimiter run {@code ***}, calling this with 1 would return the last
+     * {@code *}. Calling it with 2 would return the second last {@code *} and the last {@code *}.
      */
     Iterable<Text> getOpeners(int length);
 
     /**
-     * Get the closing delimiter nodes for the specified length of delimiters. Length must be between 1 and
-     * {@link #length()}.
+     * Get the closing delimiter nodes for the specified length of delimiters. Length must be between 1
+     * and {@link #length()}.
      * <p>
-     * For example, for a delimiter run {@code ***}, calling this with 1 would return the first {@code *}.
-     * Calling it with 2 would return the first {@code *} and the second {@code *}.
+     * For example, for a delimiter run {@code ***}, calling this with 1 would return the first
+     * {@code *}. Calling it with 2 would return the first {@code *} and the second {@code *}.
      */
     Iterable<Text> getClosers(int length);
 }

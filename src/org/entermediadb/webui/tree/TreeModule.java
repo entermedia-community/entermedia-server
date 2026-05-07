@@ -46,6 +46,7 @@ public class TreeModule extends BaseModule
 			}
 		}
 	}
+
 	public void setCutOffNode(WebPageRequest inRequest) throws OpenEditException
 	{
 		WebTree tree = (WebTree) getTree(inRequest);
@@ -54,8 +55,9 @@ public class TreeModule extends BaseModule
 			Object childNode = findNode(inRequest, tree);
 			tree.getTreeRenderer().setLastCutoffNode(childNode);
 		}
-		
+
 	}
+
 	public void expandTreeNode(WebPageRequest inRequest) throws OpenEditException
 	{
 		WebTree tree = (WebTree) getTree(inRequest);
@@ -118,10 +120,10 @@ public class TreeModule extends BaseModule
 	public void reloadTree(WebPageRequest inRequest) throws OpenEditException
 	{
 		WebTree webTree = getTree(inRequest);
-		if( webTree != null)
+		if (webTree != null)
 		{
 			inRequest.removeSessionValue(webTree.getId());
-			//inRequest.redirect(inRequest.getPath());
+			// inRequest.redirect(inRequest.getPath());
 		}
 		getTree(inRequest);
 	}
@@ -132,41 +134,41 @@ public class TreeModule extends BaseModule
 	 * @param inRequest
 	 * @throws OpenEditException
 	 */
-	public WebTree  getTree( WebPageRequest inRequest ) throws OpenEditException
+	public WebTree getTree(WebPageRequest inRequest) throws OpenEditException
 	{
 		String treeid = inRequest.getRequestParameter("treeid");
 		String name = null;
-		if( inRequest.getCurrentAction() != null)
+		if (inRequest.getCurrentAction() != null)
 		{
 			name = inRequest.getCurrentAction().getChildValue("tree-name");
 		}
-		if( name == null)
+		if (name == null)
 		{
 			name = inRequest.findValue("tree-name");
 		}
 
 		// The root is applicable to our model only
-		String root = inRequest.findValue("root"); 
+		String root = inRequest.findValue("root");
 		if ((root == null) || root.equals("/"))
 		{
 			root = "/";
 		}
-		
-		if( name == null)
+
+		if (name == null)
 		{
 			name = inRequest.findValue("WebTreeName"); // legacy
 		}
-		if( treeid == null)
+		if (treeid == null)
 		{
 			treeid = name + "_" + inRequest.getUserName() + root;
-		}				
+		}
 		WebTree webTree = (WebTree) inRequest.getSessionValue(treeid);
 
-		if ( (webTree == null && name != null) || !treeid.equals( webTree.getId() ) ) //might have been serialized
+		if ((webTree == null && name != null) || !treeid.equals(webTree.getId())) // might have been serialized
 		{
 			RepositoryTreeModel model = null;
-			
-			model = new RepositoryTreeModel(getPageManager().getRepository(), root );
+
+			model = new RepositoryTreeModel(getPageManager().getRepository(), root);
 			getPageManager().addPageAccessListener(model);
 
 			AndFilter and = new AndFilter();
@@ -178,20 +180,20 @@ public class TreeModule extends BaseModule
 				Filter[] not = new Filter[types.length];
 				for (int i = 0; i < types.length; i++)
 				{
-					not[i] = new NotFilter( new PathMatchesFilter(types[i].trim() ) );					
+					not[i] = new NotFilter(new PathMatchesFilter(types[i].trim()));
 				}
 				and.setFilters(not);
 			}
 			User user = inRequest.getUser();
-			if( user != null && user.hasPermission("oe.filemanager.editall") )
+			if (user != null && user.hasPermission("oe.filemanager.editall"))
 			{
-				
+
 			}
 			else
 			{
-				//Look for hidden paths at the top level tree
+				// Look for hidden paths at the top level tree
 				populateRestrictedPaths(and, inRequest);
-			}			
+			}
 			model.setPageManager(getPageManager());
 			model.setFilter(and);
 			webTree = new WebTree(model);
@@ -200,39 +202,39 @@ public class TreeModule extends BaseModule
 			// setup the renderer
 			WebTreeNodeTreeRenderer renderero = new WebTreeNodeTreeRenderer(webTree);
 			String renderleaves = inRequest.findValue("renderleaves");
-			if( renderleaves != null )
+			if (renderleaves != null)
 			{
 				renderero.setRenderLeaves(Boolean.parseBoolean(renderleaves));
 			}
-			String prefix = inRequest.findValue( "url-prefix" );
+			String prefix = inRequest.findValue("url-prefix");
 			if (prefix != null)
 			{
 				renderero.setUrlPrefix(prefix);
 			}
-			String friendly = inRequest.findValue( "friendlyNames" );
+			String friendly = inRequest.findValue("friendlyNames");
 			if (friendly != null)
 			{
 				renderero.setFriendlyNames(Boolean.valueOf(friendly).booleanValue());
 			}
-			String home = (String) inRequest.getPageValue( "home" );
+			String home = (String) inRequest.getPageValue("home");
 			renderero.setHome(home);
-			String iconhome = (String) inRequest.findValue( "iconhome" );
+			String iconhome = (String) inRequest.findValue("iconhome");
 			renderero.setIconHome(iconhome);
 
-			String iconwidth = (String) inRequest.getPageProperty( "iconwidth" ); //must be saved to page path
-			if( iconwidth != null)
+			String iconwidth = (String) inRequest.getPageProperty("iconwidth"); // must be saved to page path
+			if (iconwidth != null)
 			{
 				renderero.setIconWidth(Integer.parseInt(iconwidth));
 			}
 
 			webTree.setTreeRenderer(renderero);
-			
+
 			inRequest.putSessionValue(treeid, webTree);
 		}
-		if( webTree != null)
+		if (webTree != null)
 		{
-			inRequest.putPageValue("pageManager",getPageManager());
-			inRequest.putPageValue(name , webTree);
+			inRequest.putPageValue("pageManager", getPageManager());
+			inRequest.putPageValue(name, webTree);
 		}
 		return webTree;
 	}
@@ -240,8 +242,8 @@ public class TreeModule extends BaseModule
 	private void populateRestrictedPaths(AndFilter inAnd, WebPageRequest inRequest) throws OpenEditException
 	{
 		List not = new ArrayList();
-		
-		if( inAnd.getFilters() != null )
+
+		if (inAnd.getFilters() != null)
 		{
 			not.addAll(Arrays.asList(inAnd.getFilters()));
 		}
@@ -249,7 +251,7 @@ public class TreeModule extends BaseModule
 		pathfilter.setPageManager(getPageManager());
 		pathfilter.setLoadingWebPageRequest(inRequest);
 		not.add(pathfilter);
-		inAnd.setFilters((Filter[])not.toArray(new Filter[not.size()]));
+		inAnd.setFilters((Filter[]) not.toArray(new Filter[not.size()]));
 	}
 
 	/*
@@ -286,16 +288,16 @@ public class TreeModule extends BaseModule
 	{
 		fieldPageManager = pageManager;
 	}
-	
+
 	public void selectNodeByPath(WebPageRequest inReq)
 	{
 		String path = inReq.getRequestParameter("path");
-		
+
 		if (path != null)
 		{
 			WebTree tree = getTree(inReq);
 			Object node = tree.selectNodeByUrl(path);
-			
+
 			if (node == null && path.endsWith("/") && "true".equals(inReq.findValue("createfolders")))
 			{
 				Page page = getPageManager().getPage(path);
@@ -307,12 +309,12 @@ public class TreeModule extends BaseModule
 			if (node != null)
 			{
 				String id = tree.getModel().getId(node);
-				
+
 				inReq.setRequestParameter("tabid", id);
 				inReq.setRequestParameter("tabpath", path);
-	//			inReq.setRequestParameter("tabname", tree.get);
+				// inReq.setRequestParameter("tabname", tree.get);
 			}
 		}
-		
+
 	}
 }

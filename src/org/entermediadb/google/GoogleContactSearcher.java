@@ -15,29 +15,22 @@ import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.User;
 
-public class GoogleContactSearcher extends BaseSearcher implements NonExportable{
-	
-	
+public class GoogleContactSearcher extends BaseSearcher implements NonExportable
+{
+
 	private static final Log log = LogFactory.getLog(GoogleContactSearcher.class);
 
-
-	
-	
-	
-	
 	public GoogleManager getGoogleManager()
 	{
-	
+
 		return (GoogleManager) getModuleManager().getBean(getCatalogId(), "googleManager");
 	}
-
-	
 
 	@Override
 	public void reIndexAll() throws OpenEditException
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -65,82 +58,75 @@ public class GoogleContactSearcher extends BaseSearcher implements NonExportable
 	public void clearIndex()
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void deleteAll(User inUser)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void delete(Data inData, User inUser)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void saveAllData(Collection<Data> inAll, User inUser)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
-	
-	
+
 	@Override
 	public HitTracker getAllHits(WebPageRequest inReq)
 	{
-		if(inReq == null) {
+		if (inReq == null)
+		{
 			return new ListHitTracker();
 
 		}
-		if(inReq.getUser() == null) {
-			//some script
+		if (inReq.getUser() == null)
+		{
+			// some script
 			return new ListHitTracker();
 		}
 		ArrayList contacts = getGoogleManager().syncContacts(inReq.getUser());
-		
+
 		return new ListHitTracker(contacts);
-				
+
 	}
-  
-	
+
 	@Override
-	public void reindexInternal() throws OpenEditException {
-	return;
+	public void reindexInternal() throws OpenEditException
+	{
+		return;
 	}
-	
-	
-	
-//	@Override
-//	public HitTracker fieldSearch(WebPageRequest inReq) throws OpenEditException
-//	{
-//	ArrayList contacts = getGoogleManager().listContacts(inReq.getUser())	
-//	}
-//	
+
+	// @Override
+	// public HitTracker fieldSearch(WebPageRequest inReq) throws OpenEditException
+	// {
+	// ArrayList contacts = getGoogleManager().listContacts(inReq.getUser())
+	// }
+	//
 	@Override
 	public HitTracker fieldSearch(WebPageRequest inReq) throws OpenEditException
 	{
-	   try
-	{
-		   String query = inReq.findValue("name.value");
-		   log.info("Search Google Contacts for " + query);
-		ArrayList contacts = getGoogleManager().listContacts(inReq.getUser(), query);
-		return new ListHitTracker(contacts);
+		try
+		{
+			String query = inReq.findValue("name.value");
+			log.info("Search Google Contacts for " + query);
+			ArrayList contacts = getGoogleManager().listContacts(inReq.getUser(), query);
+			return new ListHitTracker(contacts);
+		}
+		catch (Exception e)
+		{
+			throw new OpenEditException(e);
+		}
 	}
-	catch (Exception e)
-	{
-		throw new OpenEditException(e);
-	}
-	}
-	
-	
-	
-	
-	
-	
-	
+
 }

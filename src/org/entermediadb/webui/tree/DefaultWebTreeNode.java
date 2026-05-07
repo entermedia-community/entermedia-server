@@ -1,14 +1,14 @@
 /*
-Copyright (c) 2003 eInnovation Inc. All rights reserved
-
-This library is free software; you can redistribute it and/or modify it under the terms
-of the GNU Lesser General Public License as published by the Free Software Foundation;
-either version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-*/
+ * Copyright (c) 2003 eInnovation Inc. All rights reserved
+ * 
+ * This library is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation; either version
+ * 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 
 package org.entermediadb.webui.tree;
 
@@ -18,10 +18,9 @@ import java.util.List;
 import org.openedit.data.BaseData;
 import org.openedit.util.strainer.Filter;
 
-
 /**
- * This class represents a node in a <code>{@link DefaultWebTreeModel}</code>. It has the
- * attributes most people will need: name, URL, and icon URL.  Most of the methods in
+ * This class represents a node in a <code>{@link DefaultWebTreeModel}</code>. It has the attributes
+ * most people will need: name, URL, and icon URL. Most of the methods in
  * <code>DefaultWebTreeModel</code> delegate to this class.
  *
  * @author Eric Galluzzo
@@ -35,20 +34,18 @@ public class DefaultWebTreeNode extends BaseData
 	protected Filter fieldFilter;
 	protected DefaultWebTreeNode fieldParent;
 	protected String fieldIconSet;
-	
+
 	/**
 	 * Create a tree node with the given name, without an icon or link.
 	 *
 	 * @param inName DOCUMENT ME!
 	 */
-	public DefaultWebTreeNode(String inName)
-	{
+	public DefaultWebTreeNode(String inName) {
 		setName(inName);
-		setId( String.valueOf(staticNextID++) );
+		setId(String.valueOf(staticNextID++));
 	}
 
-	public DefaultWebTreeNode(String inId, String inName)
-	{
+	public DefaultWebTreeNode(String inId, String inName) {
 		setName(inName);
 		setId(inId);
 	}
@@ -91,12 +88,11 @@ public class DefaultWebTreeNode extends BaseData
 	}
 
 	/**
-	 * Gets the ID of this node, which is unique within the VM for the life of the VM (unless you
-	 * do weird things with classloaders).
+	 * Gets the ID of this node, which is unique within the VM for the life of the VM (unless you do
+	 * weird things with classloaders).
 	 *
 	 * @return Returns an int
 	 */
-
 
 	/**
 	 * Sets the icon URL.
@@ -150,7 +146,6 @@ public class DefaultWebTreeNode extends BaseData
 		return fieldLeaf;
 	}
 
-
 	/**
 	 * Gets the URL.
 	 *
@@ -158,21 +153,21 @@ public class DefaultWebTreeNode extends BaseData
 	 */
 	public String getURL()
 	{
-		if ( getParent() != null)
+		if (getParent() != null)
 		{
-			String p =getParent().getURL();
-			if ( p.endsWith("/"))
+			String p = getParent().getURL();
+			if (p.endsWith("/"))
 			{
-				return  p + getName();
+				return p + getName();
 			}
 			else
 			{
-				return  p + "/" + getName();
+				return p + "/" + getName();
 			}
 		}
 		else
 		{
-			return getName(); //the root does not need a special URL since it is part of the base path
+			return getName(); // the root does not need a special URL since it is part of the base path
 		}
 	}
 
@@ -192,12 +187,14 @@ public class DefaultWebTreeNode extends BaseData
 	 */
 	public void reloadChildren()
 	{
-		//nothing to do?
+		// nothing to do?
 	}
+
 	public DefaultWebTreeNode getParent()
 	{
 		return fieldParent;
 	}
+
 	public void setParent(DefaultWebTreeNode inParent)
 	{
 		fieldParent = inParent;
@@ -212,6 +209,7 @@ public class DefaultWebTreeNode extends BaseData
 	{
 		fieldFilter = inFilter;
 	}
+
 	public boolean hasLoadedChildren()
 	{
 		return fieldChildren != null;
@@ -227,7 +225,8 @@ public class DefaultWebTreeNode extends BaseData
 		fieldIconSet = inIconSet;
 	}
 
-	public String getID() {
+	public String getID()
+	{
 		return getId();
 	}
 }

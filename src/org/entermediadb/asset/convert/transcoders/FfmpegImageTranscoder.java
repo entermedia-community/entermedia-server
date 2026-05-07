@@ -24,7 +24,6 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 	// -vframes 1 -f mjpeg
 	// $OUTPUT
 
-
 	public String getCommandName()
 	{
 		return fieldCommandName;
@@ -34,112 +33,118 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 	{
 		fieldCommandName = inCommandName;
 	}
+
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
 		result.setOutput(inStructions.getOutputFile());
 
 		ContentItem outputFile = result.getOutput();
-		if(!inStructions.isForce() && outputFile.getLength() > 0 )
+		if (!inStructions.isForce() && outputFile.getLength() > 0)
 		{
 			result.setOk(true);
 			result.setComplete(true);
 			return result;
 		}
 		result.setOk(true);
-		
-//		Page customthumb = getPageManager().getPage("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/customthumb.jpg");
-//		if( customthumb.exists() )
-//		{
-//			Page destination = getPageManager().getPage(inStructions.getOutputPath());
-//			getPageManager().copyPage(customthumb,destination);
-//			result.setComplete(true);
-//			return result;
-//		}
-		
+
+		// Page customthumb = getPageManager().getPage("/WEB-INF/data" +
+		// inStructions.getMediaArchive().getCatalogHome() + "/generated/" +
+		// inStructions.getAssetSourcePath() + "/customthumb.jpg");
+		// if( customthumb.exists() )
+		// {
+		// Page destination = getPageManager().getPage(inStructions.getOutputPath());
+		// getPageManager().copyPage(customthumb,destination);
+		// result.setComplete(true);
+		// return result;
+		// }
 
 		// We are going to take frames from the converted flv video
-//		ConvertInstructions ci = new ConvertInstructions();
-//		ci.setAssetSourcePath(inAsset.getSourcePath());
-//		ci.setOutputExtension("flv");
-//		inArchive.getCreatorManager().getMediaCreatorByOutputFormat("flv").populateOutputPath(inArchive, ci);
-		//ContentItem input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/video.mp4");
+		// ConvertInstructions ci = new ConvertInstructions();
+		// ci.setAssetSourcePath(inAsset.getSourcePath());
+		// ci.setOutputExtension("flv");
+		// inArchive.getCreatorManager().getMediaCreatorByOutputFormat("flv").populateOutputPath(inArchive,
+		// ci);
+		// ContentItem input = inStructions.getMediaArchive().getContent("/WEB-INF/data"
+		// + inStructions.getMediaArchive().getCatalogHome() + "/generated/" +
+		// inStructions.getAssetSourcePath() + "/video.mp4");
 		ContentItem input = inStructions.getInputFile();
-		
-//		Page input = getPageManager().getPage(ci.getOutputPath());
-		
+
+		// Page input = getPageManager().getPage(ci.getOutputPath());
+
 		// Or the original file, if the flv does not exist
-		if( !input.exists() || input.getLength() == 0)
+		if (!input.exists() || input.getLength() == 0)
 		{
 			result.setOk(false);
-            log.info("Input not ready yet" + input.getPath() );
+			log.info("Input not ready yet" + input.getPath());
 			return result;
 		}
-		
-		//get timeout
+
+		// get timeout
 		long timeout = inStructions.getConversionTimeout();
-				
-		Double videolength = (Double)inStructions.getAsset().getDouble("length");
+
+		Double videolength = (Double) inStructions.getAsset().getDouble("length");
 		String offset = inStructions.getProperty("timeoffset");
-		
-		if( offset == null)
+
+		if (offset == null)
 		{
 			offset = "2";
 		}
-		double jumpoff = Double.parseDouble(offset); //Jump to within 2 seconds to speed up / more accurate creation
-		if( videolength != null)
+		double jumpoff = Double.parseDouble(offset); // Jump to within 2 seconds to speed up / more accurate creation
+		if (videolength != null)
 		{
-			if( (int)jumpoff <= videolength.intValue())
+			if ((int) jumpoff <= videolength.intValue())
 			{
-				if(videolength.intValue() < 3) {  //fraction of seconds usually failing
+				if (videolength.intValue() < 3)
+				{ // fraction of seconds usually failing
 					jumpoff = 0;
 				}
 			}
 		}
-	
+
 		try
 		{
 			offset = String.valueOf(jumpoff);
 		}
-		catch( Exception e )
+		catch (Exception e)
 		{
 			log.error(e);
 			offset = "0";
 		}
-		
-		
-		if( videolength != null)
+
+		if (videolength != null)
 		{
-			if( jumpoff > videolength)
+			if (jumpoff > videolength)
 			{
 				log.info("Video not long enough " + jumpoff);
 				jumpoff = videolength;
 			}
 		}
-		else if( input.getLength() < 1000000 )  //too small of video.mp4
-		{
-			offset = "0";
-		}
-		
-		List<String> com = new ArrayList<String>();
-		
-		int framewindow = 1;
-		int seconds = (int)jumpoff;
-		
-		if(seconds>1) {  //only on custom offset
-			com.add("-ss");  
-				
-			
-			if( seconds > framewindow)
+		else
+			if (input.getLength() < 1000000) // too small of video.mp4
 			{
-				com.add(String.valueOf( seconds - framewindow) ); //This is the whole number minus 1
+				offset = "0";
+			}
+
+		List<String> com = new ArrayList<String>();
+
+		int framewindow = 1;
+		int seconds = (int) jumpoff;
+
+		if (seconds > 1)
+		{ // only on custom offset
+			com.add("-ss");
+
+			if (seconds > framewindow)
+			{
+				com.add(String.valueOf(seconds - framewindow)); // This is the whole number minus 1
 			}
 			else
 			{
-				com.add(String.valueOf( seconds)); //This is the whole number 		
+				com.add(String.valueOf(seconds)); // This is the whole number
 			}
 		}
-		//com.add("-deinterlace");
+		// com.add("-deinterlace");
 		com.add("-abort_on");
 		com.add("empty_output");
 		com.add("-i");
@@ -149,8 +154,8 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		com.add("-vframes");
 		com.add("1");
 		com.add("-f");
-		
-		if( inStructions.getOutputExtension().equals("webp") )
+
+		if (inStructions.getOutputExtension().equals("webp"))
 		{
 			com.add("webp");
 		}
@@ -159,11 +164,12 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 			com.add("mjpeg");
 		}
 
-		if( seconds > framewindow)
+		if (seconds > framewindow)
 		{
 			com.add("-ss");
-			//https://ffmpeg.org/ffmpeg-utils.html#time-duration-syntax
-			String jumpoffs = MathUtils.toString(jumpoff  - (double)seconds + (double)framewindow,3);  //Should be 2.1232
+			// https://ffmpeg.org/ffmpeg-utils.html#time-duration-syntax
+			String jumpoffs = MathUtils.toString(jumpoff - (double) seconds + (double) framewindow, 3); // Should be
+																										// 2.1232
 			com.add(jumpoffs);
 		}
 
@@ -171,7 +177,7 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		// com.add("-s");
 		// com.add( (int)inStructions.getMaxScaledSize().getWidth() + "x" +
 		// (int)inStructions.getMaxScaledSize().getHeight() + ">" );
-		
+
 		String outputpath = outputFile.getAbsolutePath();
 		new File(outputpath).getParentFile().mkdirs();
 		com.add(outputpath);
@@ -184,28 +190,26 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		}
 		else
 		{
-			if(!outputFile.exists() || outputFile.getLength() == 0)
+			if (!outputFile.exists() || outputFile.getLength() == 0)
 			{
 				log.info("Thumbnail creation failed " + outputpath);
 				result.setOk(false);
-				result.setError("creation failed" );
+				result.setError("creation failed");
 			}
 		}
 
 		return result;
 	}
-	
-//	public String createConvertPath(ConvertInstructions inStructions)
-//	{
-//		String frame = inStructions.getProperty("frame");
-//		if( frame == null )
-//		{
-//			frame="0";
-//		}
-//		String path = inStructions.getAssetSourcePath() + "frame" + frame + ".jpg";
-//		return path;
-//	}
 
-	
+	// public String createConvertPath(ConvertInstructions inStructions)
+	// {
+	// String frame = inStructions.getProperty("frame");
+	// if( frame == null )
+	// {
+	// frame="0";
+	// }
+	// String path = inStructions.getAssetSourcePath() + "frame" + frame + ".jpg";
+	// return path;
+	// }
+
 }
-

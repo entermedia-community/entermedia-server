@@ -20,25 +20,24 @@ import org.openedit.data.Searcher;
 
 import netscape.javascript.JSObject;
 
-public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData,SearchDataEnabled , org.openedit.data.SearchHitData
+public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData, SearchDataEnabled, org.openedit.data.SearchHitData
 {
 	private static final Log log = LogFactory.getLog(SearchHitData.class);
 
 	protected Searcher fieldSearcher;
 
-//	public SearchHitData()
-//	{
-//	}
-	public SearchHitData(SearchHit inHit, Searcher inSearcher) 
-	{
+	// public SearchHitData()
+	// {
+	// }
+	public SearchHitData(SearchHit inHit, Searcher inSearcher) {
 		setSearcher(inSearcher);
 		setSearchHit(inHit);
 	}
 
-	public SearchHitData(Searcher inSearcher)
-	{
+	public SearchHitData(Searcher inSearcher) {
 		setSearcher(inSearcher);
 	}
+
 	public Searcher getSearcher()
 	{
 		return fieldSearcher;
@@ -46,48 +45,52 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 
 	public void setSearcher(Searcher inSearcher)
 	{
-		if( inSearcher == null)
+		if (inSearcher == null)
 		{
 			throw new OpenEditException("Searcher cannot be null");
 		}
-		fieldSearcher = (Searcher)inSearcher;
+		fieldSearcher = (Searcher) inSearcher;
 	}
 
-	public SearchHit getSearchHit() {
+	public SearchHit getSearchHit()
+	{
 		return getProperties().getSearchHit();
 	}
 
-	public void setSearchHit(SearchHit inSearchHit) 
+	public void setSearchHit(SearchHit inSearchHit)
 	{
-		if( inSearchHit == null)
+		if (inSearchHit == null)
 		{
 			throw new OpenEditException("inSearchHit cannot be null");
 		}
-		getProperties().setSearchHit( inSearchHit );
+		getProperties().setSearchHit(inSearchHit);
 		setId(inSearchHit.getId());
 		setVersion(inSearchHit.getVersion());
 
 	}
+
 	@Override
 	public void setSearchData(Map inSearchHit)
 	{
 		getProperties().setSearchData(inSearchHit);
 	}
-	
-	public Long getVersion() 
+
+	public Long getVersion()
 	{
 		Long l = getProperties().getLong(".version");
 		return l;
 	}
 
-	public void setVersion(long inVersion) 
+	public void setVersion(long inVersion)
 	{
 		setValue(".version", inVersion);
 	}
-	
+
 	@Override
-	public Object getValue(String inId) {
-		if (inId == null) {
+	public Object getValue(String inId)
+	{
+		if (inId == null)
+		{
 			return null;
 		}
 
@@ -95,14 +98,14 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		{
 			if (getSearcher() != null)
 			{
-				if( getSearchHit() == null)
+				if (getSearchHit() == null)
 				{
 					log.info("Missing search hit");
-					return ((FullTextLoader)getSearcher()).getFulltext(this);
+					return ((FullTextLoader) getSearcher()).getFulltext(this);
 				}
 				else
 				{
-					return ((FullTextLoader)getSearcher()).getFulltext(this,getSearchHit().getType());
+					return ((FullTextLoader) getSearcher()).getFulltext(this, getSearchHit().getType());
 				}
 			}
 			else
@@ -112,13 +115,12 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		}
 
 		Object svalue = super.getValue(inId);
-		
+
 		return svalue;
 	}
 
-
-//
-	public ValuesMapWithSearchData getProperties() 
+	//
+	public ValuesMapWithSearchData getProperties()
 	{
 		if (fieldProperties == null)
 		{
@@ -126,58 +128,62 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 			getProperties().setPropertyDetails(getSearcher().getPropertyDetails());
 
 		}
-		return (ValuesMapWithSearchData)fieldProperties;
+		return (ValuesMapWithSearchData) fieldProperties;
 	}
-//		if (fieldProperties == null)
-//		{
-//			fieldProperties = new ValuesMap();
-//			Set set = keySet();
-//			for (Iterator iterator = set.iterator(); iterator.hasNext();) 
-//			{
-//				String key = (String) iterator.next();
-//				Object val = getValue(key);
-//				if( val != null)
-//				{
-//					fieldProperties.put(key, val);
-//				}
-//			}
-//		}
-//		return fieldProperties;
-//	}
+	// if (fieldProperties == null)
+	// {
+	// fieldProperties = new ValuesMap();
+	// Set set = keySet();
+	// for (Iterator iterator = set.iterator(); iterator.hasNext();)
+	// {
+	// String key = (String) iterator.next();
+	// Object val = getValue(key);
+	// if( val != null)
+	// {
+	// fieldProperties.put(key, val);
+	// }
+	// }
+	// }
+	// return fieldProperties;
+	// }
 
-	public String toString() 
+	public String toString()
 	{
 		String val = getName();
 		if (val != null)
 		{
 			return val;
-		} else {
+		}
+		else
+		{
 			return getId();
 		}
 	}
-	
+
 	public String toJsonString()
 	{
-		//StringBuffer output = new StringBuffer();
-		//output.append("{ \"_id\": \"" + getId() + "\",");
-		//output.append(" \"_source\" :");
+		// StringBuffer output = new StringBuffer();
+		// output.append("{ \"_id\": \"" + getId() + "\",");
+		// output.append(" \"_source\" :");
 		String source = getSearchHit().getSourceAsString();
-		//output.append(source);
-		//output.append(" \n}");
-		//return output.toString();
+		// output.append(source);
+		// output.append(" \n}");
+		// return output.toString();
 		return source;
 	}
-	
-	
-	public List getHighlights(String inField) {
+
+	public List getHighlights(String inField)
+	{
 		ArrayList highlights = new ArrayList();
 
-		if(getSearchHit() == null) {
+		if (getSearchHit() == null)
+		{
 			return highlights;
 		}
 		Map<String, HighlightField> highlightFields = getSearchHit().getHighlightFields();
 		HighlightField field = highlightFields.get(inField);
-		if(field == null) {
+		if (field == null)
+		{
 			return highlights;
 		}
 		Text[] fragments = field.getFragments();
@@ -188,15 +194,16 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		}
 		return highlights;
 	}
-	
+
 	public Map getEmRecordStatus()
 	{
-		return (Map)getProperties().getFromDb("emrecordstatus");
+		return (Map) getProperties().getFromDb("emrecordstatus");
 	}
+
 	@Override
 	public Map getSearchData()
 	{
 		return getProperties().getSearchData();
 	}
-	
+
 }

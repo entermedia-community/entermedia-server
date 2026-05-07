@@ -2,7 +2,8 @@ package org.entermediadb.markdown.internal.renderer.text;
 
 import org.entermediadb.markdown.node.OrderedList;
 
-public class OrderedListHolder extends ListHolder {
+public class OrderedListHolder extends ListHolder
+{
     private final String delimiter;
     private int counter;
 
@@ -12,15 +13,18 @@ public class OrderedListHolder extends ListHolder {
         counter = list.getMarkerStartNumber() != null ? list.getMarkerStartNumber() : 1;
     }
 
-    public String getDelimiter() {
+    public String getDelimiter()
+    {
         return delimiter;
     }
 
-    public int getCounter() {
+    public int getCounter()
+    {
         return counter;
     }
 
-    public void increaseCounter() {
+    public void increaseCounter()
+    {
         counter++;
     }
 }

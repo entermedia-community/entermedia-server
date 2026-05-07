@@ -10,7 +10,7 @@ public class McpGetHandlerManager
 {
 	protected final Map<String, McpGetHandler> fieldGetHandlers = new ConcurrentHashMap<>();
 
-	public Map<String,McpGetHandler> getGetHandlers()
+	public Map<String, McpGetHandler> getGetHandlers()
 	{
 		return fieldGetHandlers;
 	}
@@ -18,22 +18,22 @@ public class McpGetHandlerManager
 	public McpGetHandler loadGetHandler(WebPageRequest inReq)
 	{
 		String sessionid = inReq.getRequest().getHeader("mcp-session-id");
-		
+
 		McpGetHandler connection = getGetHandlers().get(sessionid);
-		
-		if(connection != null)
+
+		if (connection != null)
 		{
-			if(!connection.isActive())
+			if (!connection.isActive())
 			{
 				connection.setActive(true);
 			}
 		}
-		if( connection == null)
+		if (connection == null)
 		{
 			sessionid = UUID.randomUUID().toString();
 			connection = new McpGetHandler();
 			connection.setMcpSessionId(sessionid);
-			getGetHandlers().put(sessionid,connection);  //TODO: Make these expire? 
+			getGetHandlers().put(sessionid, connection); // TODO: Make these expire?
 		}
 		else
 		{

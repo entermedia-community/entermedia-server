@@ -1,21 +1,20 @@
 /*
-Copyright (c) 2003 eInnovation Inc. All rights reserved
-
-This library is free software; you can redistribute it and/or modify it under the terms
-of the GNU Lesser General Public License as published by the Free Software Foundation;
-either version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-*/
+ * Copyright (c) 2003 eInnovation Inc. All rights reserved
+ * 
+ * This library is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation; either version
+ * 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 
 package org.entermediadb.links;
 
 import java.util.List;
 
 import org.entermediadb.webui.tree.DefaultWebTreeModel;
-
 
 /**
  * This model represents a tree of site content.
@@ -33,25 +32,24 @@ public class LinkTreeModel extends DefaultWebTreeModel
 	 *
 	 * @param inSiteContext DOCUMENT ME!
 	 */
-	public LinkTreeModel(LinkTree inLinkTree)
-	{
-		this( inLinkTree, null);
+	public LinkTreeModel(LinkTree inLinkTree) {
+		this(inLinkTree, null);
 	}
 
-	public LinkTreeModel( LinkTree inLinkTree, String inRootPath )
-	{
+	public LinkTreeModel(LinkTree inLinkTree, String inRootPath) {
 		super();
 		fieldLinkTree = inLinkTree;
 		fieldRootPath = inRootPath;
 	}
 
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see TreeModel#getRoot()
 	 */
 	public Object getRoot()
 	{
-		if (fieldRoot == null )
+		if (fieldRoot == null)
 		{
 			reload();
 		}
@@ -61,21 +59,21 @@ public class LinkTreeModel extends DefaultWebTreeModel
 
 	public List getChildren(Object parent)
 	{
-//		if( getLinkTree().getLastModified() != lastMod )
-//		{
-//			reload();
-//		}
+		// if( getLinkTree().getLastModified() != lastMod )
+		// {
+		// reload();
+		// }
 		return super.getChildren(parent);
 	}
 
 	/**
-	 * Find the page tree node at the given path.  This method will not automatically expand any
-	 * node in the tree if it is not already expanded.
+	 * Find the page tree node at the given path. This method will not automatically expand any node in
+	 * the tree if it is not already expanded.
 	 *
 	 * @param inPath The path (e.g. "abc/def/ghi.html")
 	 *
-	 * @return The node at the given path, or <code>null</code> if no node could be found that
-	 * 		   matched the given path
+	 * @return The node at the given path, or <code>null</code> if no node could be found that matched
+	 *         the given path
 	 */
 	public LinkNode findNode(String inPath)
 	{
@@ -88,47 +86,52 @@ public class LinkTreeModel extends DefaultWebTreeModel
 	public void reload()
 	{
 		Link rootItem;
-		if( getRootPath() == null)
+		if (getRootPath() == null)
 		{
 			rootItem = getLinkTree().getRootLink();
 		}
 		else
 		{
-			rootItem = getLinkTree().getLink( getRootPath() );
+			rootItem = getLinkTree().getLink(getRootPath());
 		}
-		LinkNode newRoot = new LinkNode( rootItem);
+		LinkNode newRoot = new LinkNode(rootItem);
 		fieldRoot = newRoot;
 		lastMod = getLinkTree().getLastModified();
 	}
+
 	/**
 	 * @param inString
 	 */
 	public void ignore(String inString)
 	{
-		LinkNode node = (LinkNode)getRoot();
-		node.getIgnoreTypes().add( inString);
+		LinkNode node = (LinkNode) getRoot();
+		node.getIgnoreTypes().add(inString);
 	}
+
 	public LinkTree getLinkTree()
 	{
 		return fieldLinkTree;
 	}
-	public void setLinkTree( LinkTree LinkTree )
+
+	public void setLinkTree(LinkTree LinkTree)
 	{
 		fieldLinkTree = LinkTree;
 	}
+
 	public String getRootPath()
 	{
 		return fieldRootPath;
 	}
-	public void setRootPath( String rootPath )
+
+	public void setRootPath(String rootPath)
 	{
 		fieldRootPath = rootPath;
 	}
-	
+
 	protected boolean hasLoadedChildren(Object inRoot)
 	{
-		//Only look in nodes with already loaded children
-		LinkNode parent = (LinkNode)inRoot;
+		// Only look in nodes with already loaded children
+		LinkNode parent = (LinkNode) inRoot;
 		return parent.hasLoadedChildren();
 	}
 

@@ -44,7 +44,8 @@ public class FinderModule extends BaseMediaModule
 	// if (query == null) {
 	// return;
 	// }
-	// QueryBuilder dq = archive.query("modulesearch").freeform("description",query);
+	// QueryBuilder dq =
+	// archive.query("modulesearch").freeform("description",query);
 	// HitTracker unsorted = dq.search(inReq);
 	// //log.info(unsorted.size());
 	//
@@ -163,8 +164,10 @@ public class FinderModule extends BaseMediaModule
 			query.setHitsPerPage(1);
 			entityhits = searcher.cachedSearch(inReq, query);
 
-			// bytypes = getResultsManager(inReq).organizeHits(inReq,hits, hits.iterator(),targetsize);
-			// foundmodules = getResultsManager(inReq).processResults(hits, archive, targetsize, bytypes);
+			// bytypes = getResultsManager(inReq).organizeHits(inReq,hits,
+			// hits.iterator(),targetsize);
+			// foundmodules = getResultsManager(inReq).processResults(hits, archive,
+			// targetsize, bytypes);
 		}
 
 		// search Assets:assetvotes
@@ -384,7 +387,8 @@ public class FinderModule extends BaseMediaModule
 			inReq.putPageValue("assethits", assetunsorted);
 		}
 		// List finallist = new ArrayList();
-		// for (Iterator iterator = keywordsLower.keySet().iterator(); iterator.hasNext();)
+		// for (Iterator iterator = keywordsLower.keySet().iterator();
+		// iterator.hasNext();)
 		// {
 		// String keyword = (String) iterator.next();
 		// String keywordcase = keywordsLower.get(keyword);
@@ -506,8 +510,9 @@ public class FinderModule extends BaseMediaModule
 	 * 
 	 * //String selectedentitytype = inReq.getRequestParameter("entitytype"); if( topmodule != null) {
 	 * //Search for children data. Add to organizedModules Collection views =
-	 * archive.query("view").exact("moduleid",inModule).named("views").exact("rendertype","table").exact
-	 * ("systemdefined","false").exact("showonsearch","true").sort("orderingUp").search(inReq);
+	 * archive.query("view").exact("moduleid",inModule).named("views").exact(
+	 * "rendertype","table").exact
+	 * ("systemdefined","false").exact("showonsearch","true").sort("orderingUp"). search(inReq);
 	 * 
 	 * 
 	 * //String searchingfor = inReq.findActionValue("searchallchildren");
@@ -533,9 +538,10 @@ public class FinderModule extends BaseMediaModule
 	 * (Data) iterator.next();
 	 * 
 	 * //Search Third Level Collection views2 =
-	 * archive.query("view").exact("moduleid",amodule).named("views").exact("rendertype","table").exact(
-	 * "systemdefined","false").exact("showonsearch","true").sort("orderingUp").search(inReq); if(views2
-	 * != null) { //List organizedSubModules = new ArrayList();
+	 * archive.query("view").exact("moduleid",amodule).named("views").exact(
+	 * "rendertype","table").exact(
+	 * "systemdefined","false").exact("showonsearch","true").sort("orderingUp"). search(inReq);
+	 * if(views2 != null) { //List organizedSubModules = new ArrayList();
 	 * 
 	 * String entityid = inReq.getRequestParameter("entityid"); for (Iterator iterator2 =
 	 * views2.iterator(); iterator2.hasNext();) { Data view2 = (Data)iterator2.next(); String
@@ -544,11 +550,11 @@ public class FinderModule extends BaseMediaModule
 	 * 
 	 * QueryBuilder builder2 = archive.query(searchtype2).named(searchtype2 + "hits"); String
 	 * renderexternalid2 = view2.get("renderexternalid"); //Not needed? Boolean exists =
-	 * archive.getPropertyDetailsArchive().getPropertyDetailsCached(amodule2.getId()).getDetail(
+	 * archive.getPropertyDetailsArchive().getPropertyDetailsCached(amodule2.getId() ).getDetail(
 	 * renderexternalid2) != null; if( renderexternalid2 != null && entityid != null && exists) { if
 	 * (topentityid != null && entityid.equals(topentityid)) { builder2.orgroup(renderexternalid2,
 	 * organizedSubModulesIds); } else { builder2.exact(renderexternalid2, entityid); } Boolean exists2
-	 * = archive.getPropertyDetailsArchive().getPropertyDetailsCached(amodule2.getId()).getDetail(
+	 * = archive.getPropertyDetailsArchive().getPropertyDetailsCached(amodule2.getId() ).getDetail(
 	 * topmodule.getId()) != null; if (topentityid != null && exists2) {
 	 * builder2.exact(topmodule.getId(), topentityid); } } else { //if Parent Selected if (topentityid
 	 * != null) {
@@ -609,7 +615,8 @@ public class FinderModule extends BaseMediaModule
 		search.addSortBy("name");
 
 		HitTracker hits = modulesearcher.cachedSearch(inReq, search); // always skips asset
-		// log.info("Report ran " + hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:"
+		// log.info("Report ran " + hits.getSearchType() + ": " +
+		// hits.getSearchQuery().toQuery() + " size:"
 		// + hits.size() );
 		if (hits != null)
 		{
@@ -745,7 +752,8 @@ public class FinderModule extends BaseMediaModule
 			if (entityid != null)
 			{
 				Searcher searcher = archive.getSearcher("distributiongallery");
-				// Data publishing = (Data) searcher.searchByField("entityid", entityid); //What is this?
+				// Data publishing = (Data) searcher.searchByField("entityid", entityid); //What
+				// is this?
 				QueryBuilder query = searcher.query().exact("entityid", entityid);
 				if (distributiontype != null)
 				{

@@ -23,14 +23,17 @@ import org.openedit.util.ExecutorManager;
 public class QueueManager implements ConversionEventListener, CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(QueueManager.class);
-	// Runs every 5 minutes or when new uploads come in or when an asset finishes and we need the
+	// Runs every 5 minutes or when new uploads come in or when an asset finishes
+	// and we need the
 	// next one
 	// Synchnize the checking
 	// Search for all tasks that arfe not ones I am already working on
 	// Looks to see if there are any available runners, if so
 	// then Does a search on the queue sorted by assetid
-	// Locks the asset, Bundles an asset into a runnable and hands it off to a runner
-	// Each thread finishes, releases the lock and updates the tasks then fires shared event to run
+	// Locks the asset, Bundles an asset into a runnable and hands it off to a
+	// runner
+	// Each thread finishes, releases the lock and updates the tasks then fires
+	// shared event to run
 	// more conversions
 	protected AssetConversions ISLOCKED = new AssetConversions();
 	protected MediaArchive fieldMediaArchive;
@@ -144,7 +147,8 @@ public class QueueManager implements ConversionEventListener, CatalogEnabled
 			newtasks.setHitsPerPage(500); // Just enought to fill up the queue
 			// newtasks.enableBulkOperations();
 			// newtasks.setHitsPerPage(25); //We want to make sure scroll does not expire
-			// newtasks.setHitsPerPage(20000); //This is a problem. Since the data is being edited
+			// newtasks.setHitsPerPage(20000); //This is a problem. Since the data is being
+			// edited
 			// while we change pages we skip every other page. Only do one page at a time
 			setTotalPending(newtasks.size());
 			if (newtasks.size() > 0)

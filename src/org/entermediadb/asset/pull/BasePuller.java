@@ -25,8 +25,6 @@ public abstract class BasePuller
 	OutputFiller filler = new OutputFiller();
 	private static final Log log = LogFactory.getLog(BasePuller.class);
 
-	
-	
 	protected HitTracker removeRemotesMasterNodeEdits(String masterNodeId, HitTracker inLocalchanges)
 	{
 		HitTracker finallist = new ListHitTracker();
@@ -35,20 +33,20 @@ public abstract class BasePuller
 		{
 			SearchHitData hit = (SearchHitData) iterator.next();
 			Map localrecordstatus = (Map) hit.getSearchHit().getSource().get("emrecordstatus");
-			if( localrecordstatus == null)
+			if (localrecordstatus == null)
 			{
 				continue;
 			}
 			String remotemasterclusterid = (String) localrecordstatus.get("mastereditclusterid");
 			String remotelastmodifiedclusterid = (String) localrecordstatus.get("lastmodifiedclusterid");
-	
+
 			if (masterNodeId.equals(remotemasterclusterid) && remotemasterclusterid.equals(remotelastmodifiedclusterid))
 			{
-				continue; //This is an identical record to what we have						
+				continue; // This is an identical record to what we have
 			}
 			finallist.add(hit);
 		}
-	
+
 		return finallist;
 	}
 
@@ -63,15 +61,15 @@ public abstract class BasePuller
 	protected File getFile(Asset inAsset)
 	{
 		String path = "/WEB-INF/data" + inAsset.getMediaArchive().getCatalogHome() + "/originals/";
-		path = path + inAsset.getSourcePath(); //Check archived?
-	
+		path = path + inAsset.getSourcePath(); // Check archived?
+
 		String primaryname = inAsset.getPrimaryFile();
 		if (primaryname != null && inAsset.isFolder())
 		{
 			path = path + "/" + primaryname;
 		}
 		return new File(inAsset.getMediaArchive().getPageManager().getPage(path).getContentItem().getAbsolutePath());
-	
+
 	}
 
 	public String getCatalogId()
@@ -104,7 +102,7 @@ public abstract class BasePuller
 		Map emEditStatus = inAsset.getEmRecordStatus();
 		String clusterid = (String) emEditStatus.get("mastereditclusterid");
 		String localClusterId = inArchive.getNodeManager().getLocalClusterId();
-	
+
 		if (localClusterId.equals(clusterid))
 		{
 			log.info("This is our own asset, nothing to do");

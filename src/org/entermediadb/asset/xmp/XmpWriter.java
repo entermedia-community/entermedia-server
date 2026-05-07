@@ -85,7 +85,8 @@ public class XmpWriter
 
 			if (result.isRunOk())
 			{
-				inAsset.setValue("assetmodificationdate", item.lastModified()); // This needs to be set or it will keep thinking it's changed
+				inAsset.setValue("assetmodificationdate", item.lastModified()); // This needs to be set or it will keep
+																				// thinking it's changed
 				inAsset.setValue("xmperror", false); // This needs to be set or it will keep thinking it's changed
 				ok = confirmId(inArchive, inAsset, item);
 
@@ -184,7 +185,8 @@ public class XmpWriter
 
 			if (result.isRunOk())
 			{
-				inAsset.setValue("assetmodificationdate", inItem.lastModified()); // This needs to be set or it will keep thinking it's changed
+				inAsset.setValue("assetmodificationdate", inItem.lastModified()); // This needs to be set or it will
+																					// keep thinking it's changed
 				inAsset.setValue("xmperror", false); // This needs to be set or it will keep thinking it's changed
 
 				inArchive.saveAsset(inAsset);
@@ -318,7 +320,8 @@ public class XmpWriter
 			{
 				inExtraDetails.putAll(inAsset.getProperties());
 				val = inArchive.replaceFromMask(detail.get("xmpmask"), inAsset, detail.getSearchType(), inExtraDetails, null);
-				// val = inArchive.getSearcherManager().getValue(inArchive.getCatalogId(), detail.get("xmpmask"),
+				// val = inArchive.getSearcherManager().getValue(inArchive.getCatalogId(),
+				// detail.get("xmpmask"),
 				// inExtraDetails);
 				inExtraDetails.remove(detail.getId());
 			}

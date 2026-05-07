@@ -12,7 +12,7 @@ import org.openedit.data.BaseData;
 public class AiSmartCreatorSteps extends BaseData
 {
 	Collection<String> fieldEmbeddedParentIds;
-	
+
 	public Collection<String> getEmbeddedParentIds()
 	{
 		return fieldEmbeddedParentIds;
@@ -25,7 +25,7 @@ public class AiSmartCreatorSteps extends BaseData
 
 	protected Data fieldTargetModule;
 	protected Data fieldTargetEntity;
-	
+
 	public Data getTargetEntity()
 	{
 		return fieldTargetEntity;
@@ -37,7 +37,7 @@ public class AiSmartCreatorSteps extends BaseData
 	}
 
 	protected String fieldTitleName;
-	
+
 	public String getTitleName()
 	{
 		return fieldTitleName;
@@ -49,6 +49,7 @@ public class AiSmartCreatorSteps extends BaseData
 	}
 
 	protected Collection<String> fieldProposedSections;
+
 	public Collection<String> getProposedSections()
 	{
 		return fieldProposedSections;
@@ -58,8 +59,9 @@ public class AiSmartCreatorSteps extends BaseData
 	{
 		fieldProposedSections = inProposedSections;
 	}
-	
+
 	protected Collection<Data> fieldConfirmedSections;
+
 	public Collection<Data> getConfirmedSections()
 	{
 		return fieldConfirmedSections;
@@ -80,9 +82,9 @@ public class AiSmartCreatorSteps extends BaseData
 		fieldSectionComponents = inSectionComponents;
 	}
 
-	protected Map<Data,Collection<Data>> fieldSectionComponents;
-	
-	//Is the playbackentitymodule
+	protected Map<Data, Collection<Data>> fieldSectionComponents;
+
+	// Is the playbackentitymodule
 	public Data getTargetModule()
 	{
 		return fieldTargetModule;
@@ -122,80 +124,77 @@ public class AiSmartCreatorSteps extends BaseData
 	{
 		stepContentCreate = inStep2create;
 	}
-	
+
 	public String getStepOutlineStyle()
 	{
 		return stepOutlineStyle;
 	}
-	
+
 	public void setStepOutlineStyle(String inStepOutlineStyle)
 	{
 		stepOutlineStyle = inStepOutlineStyle;
 	}
-	
-	
+
 	public void setStepContentStyle(String inStepContentStyle)
 	{
 		stepContentStyle = inStepContentStyle;
 	}
 
 	protected Data fieldCreatedEntity;
-	
+
 	String stepOutlineCreate = null;
 	String stepOutlineStyle = null;
-	
+
 	String stepContentCreate = null;
 	String stepContentStyle = null;
 
-	
 	public void loadJsonParts(JSONObject inJson)
 	{
-//		{
-//			"topic": "Employee Code of Conduct",
-//			"outline_section": {
-//				"instruction": "Create an outline for Employee Code of Conduct."
-//			},
-//			"section_content": {
-//				"instruction": "Make short and concise 2 or 3 paragraph for each section.",
-//				"style": "short and concise, 2 or 3 paragraphs"
-//			}
-//		}
+		// {
+		// "topic": "Employee Code of Conduct",
+		// "outline_section": {
+		// "instruction": "Create an outline for Employee Code of Conduct."
+		// },
+		// "section_content": {
+		// "instruction": "Make short and concise 2 or 3 paragraph for each section.",
+		// "style": "short and concise, 2 or 3 paragraphs"
+		// }
+		// }
 
-	
 		String title = (String) inJson.get("topic");
 		setTitleName(title);
-		
+
 		JSONObject outline = (JSONObject) inJson.get("outline_section");
-		if( outline != null)
+		if (outline != null)
 		{
 			String instruction = (String) outline.get("instruction");
 			setStepOutlineCreate(instruction);
-			
-//			String style = (String) outline.get("style");
-//			setStepOutlineStyle(style);
+
+			// String style = (String) outline.get("style");
+			// setStepOutlineStyle(style);
 		}
-		
+
 		JSONObject content = (JSONObject) inJson.get("section_content");
-		if( content != null)
+		if (content != null)
 		{
 			String instruction = (String) content.get("instruction");
 			setStepContentCreate(instruction);
 		}
 	}
-	
+
 	public String getOutlineCreatePrompt()
 	{
 		String prompt = getStepOutlineCreate();
-//		if(getStepOutlineStyle() != null) 
-//		{
-//			prompt += " " + getStepOutlineStyle();
-//		}
+		// if(getStepOutlineStyle() != null)
+		// {
+		// prompt += " " + getStepOutlineStyle();
+		// }
 		return prompt;
 	}
-	
+
 	public String getContentCreatePrompt()
 	{
 		return getStepContentCreate();
 	}
-	
+
 }

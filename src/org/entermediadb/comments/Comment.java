@@ -17,22 +17,25 @@ public class Comment extends BaseData
 {
 	private final static String fieldFormat = "MM/dd/yyyy HH:mm:ss Z";
 	protected Date fieldDate;
-	//protected String fieldCreationDate;
+	// protected String fieldCreationDate;
 	protected String fieldComment;
 	protected User fieldUser;
 	protected LocaleManager fieldLocaleManager;
-	public Comment()
-	{
+
+	public Comment() {
 		// TODO Auto-generated constructor stub
 	}
-    public LocaleManager getLocaleManager()
+
+	public LocaleManager getLocaleManager()
 	{
 		return fieldLocaleManager;
 	}
+
 	public void setLocaleManager(LocaleManager inLocaleManager)
 	{
 		fieldLocaleManager = inLocaleManager;
 	}
+
 	/**
 	 * @deprecated Use a shared formater or an internationalized version
 	 * @return
@@ -41,33 +44,42 @@ public class Comment extends BaseData
 	{
 		return new SimpleDateFormat(fieldFormat).format(getDate());
 	}
+
 	public String getShortDate(String inLocale)
 	{
 		Locale loc = getLocaleManager().getLocale(inLocale);
-		DateFormat format = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT,loc);
+		DateFormat format = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, loc);
 		return format.format(getDate());
 	}
+
 	public String getShortDate(Locale inLocale)
 	{
-		DateFormat format = DateFormat.getTimeInstance(DateFormat.SHORT,inLocale);
+		DateFormat format = DateFormat.getTimeInstance(DateFormat.SHORT, inLocale);
 		return format.format(getDate());
 	}
+
 	public void setCreationDate(String inCreationDate)
 	{
-		try {
+		try
+		{
 			setDate(new SimpleDateFormat(fieldFormat).parse(inCreationDate));
-		} catch (ParseException e) {
-			//throw new OpenEditException(e);
+		}
+		catch (ParseException e)
+		{
+			// throw new OpenEditException(e);
 		}
 	}
-   //
-	public Date getDate() {
+
+	//
+	public Date getDate()
+	{
 		if (fieldDate == null)
 			fieldDate = new Date();
 		return fieldDate;
 	}
 
-	public void setDate(Date inDate) {
+	public void setDate(Date inDate)
+	{
 		fieldDate = inDate;
 	}
 
@@ -90,5 +102,5 @@ public class Comment extends BaseData
 	{
 		return fieldComment;
 	}
-	
+
 }

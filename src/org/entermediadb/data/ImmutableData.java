@@ -7,10 +7,10 @@ public class ImmutableData extends BaseData
 {
 	protected Data fieldTarget;
 
-	public ImmutableData(Data inTarget)
-	{
+	public ImmutableData(Data inTarget) {
 		setTarget(inTarget);
 	}
+
 	public Data getTarget()
 	{
 		return fieldTarget;
@@ -20,20 +20,20 @@ public class ImmutableData extends BaseData
 	{
 		fieldTarget = inTarget;
 	}
-	
+
 	@Override
 	public void setValue(String inKey, Object inValue)
 	{
-		if( inKey.equals("assetmodificationdate"))
+		if (inKey.equals("assetmodificationdate"))
 		{
 			getTarget().setValue(inKey, inValue);
 			return;
 		}
 		Object existing = getTarget().getValue(inKey);
-		if( existing == null || "".equals(existing))
+		if (existing == null || "".equals(existing))
 		{
 			getTarget().setValue(inKey, inValue);
 		}
 	}
-			
+
 }

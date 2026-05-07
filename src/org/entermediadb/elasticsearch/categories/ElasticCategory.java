@@ -9,15 +9,14 @@ import org.openedit.data.ValuesMap;
 
 public class ElasticCategory extends BaseCategory
 {
-	public ElasticCategory(CategorySearcher inSearcher)
-	{
+	public ElasticCategory(CategorySearcher inSearcher) {
 		super(inSearcher);
-		if(inSearcher != null) 
+		if (inSearcher != null)
 		{
 			setIndexId(inSearcher.getIndexId());
 		}
 	}
-	
+
 	public boolean hasChildren()
 	{
 		return getChildren().size() > 0;
@@ -25,7 +24,7 @@ public class ElasticCategory extends BaseCategory
 
 	public List getChildren()
 	{
-		if( isDirty() )
+		if (isDirty())
 		{
 			fieldChildren = null;
 		}
@@ -36,15 +35,15 @@ public class ElasticCategory extends BaseCategory
 		}
 		return fieldChildren;
 	}
-	public Category getParentCategory() 
+
+	public Category getParentCategory()
 	{
 		String parentid = get("parentid");
-		if( parentid != null && fieldParentCategory == null && !"index".equals(getId()) && !parentid.equals(getId()))
+		if (parentid != null && fieldParentCategory == null && !"index".equals(getId()) && !parentid.equals(getId()))
 		{
-			fieldParentCategory = (Category)getCategorySearcher().searchById(parentid);
+			fieldParentCategory = (Category) getCategorySearcher().searchById(parentid);
 		}
 		return fieldParentCategory;
 	}
 
-	
 }

@@ -1,14 +1,14 @@
 /*
-Copyright (c) 2003 eInnovation Inc. All rights reserved
-
-This library is free software; you can redistribute it and/or modify it under the terms
-of the GNU Lesser General Public License as published by the Free Software Foundation;
-either version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-*/
+ * Copyright (c) 2003 eInnovation Inc. All rights reserved
+ * 
+ * This library is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation; either version
+ * 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 
 package org.entermediadb.webui.tree;
 
@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 
 /**
  * This class is a Web tree, which can render a <code>{@link WebTreeModel}</code> to an XML
@@ -28,32 +27,29 @@ import org.apache.commons.logging.LogFactory;
 public class WebTree implements Serializable
 {
 	private static final Log log = LogFactory.getLog(WebTree.class);
-	
+
 	protected transient String fieldName;
 	protected transient String fieldId;
-	
+
 	public String getRootId()
 	{
-		String id = getModel().getId( getModel().getRoot() );
+		String id = getModel().getId(getModel().getRoot());
 		return id;
 	}
 
 	protected transient WebTreeModel fieldModel;
 	protected transient TreeRenderer fieldTreeRenderer;
 
-	public WebTree()
-	{
-	}
+	public WebTree() {}
 
 	/**
 	 * Create a new WebTree which listens to the given model.
 	 *
 	 * @param inModel DOCUMENT ME!
 	 */
-	public WebTree(WebTreeModel inModel)
-	{
+	public WebTree(WebTreeModel inModel) {
 		setModel(inModel);
-		//expandNode(getModel().getRoot());
+		// expandNode(getModel().getRoot());
 	}
 
 	public boolean isEmpty()
@@ -76,9 +72,9 @@ public class WebTree implements Serializable
 	public void setModel(WebTreeModel model)
 	{
 		fieldModel = model;
-		if ( fieldModel != null && fieldTreeRenderer != null)
+		if (fieldModel != null && fieldTreeRenderer != null)
 		{
-    		getTreeRenderer().expandNode( fieldModel.getRoot() );
+			getTreeRenderer().expandNode(fieldModel.getRoot());
 		}
 	}
 
@@ -99,17 +95,15 @@ public class WebTree implements Serializable
 
 	public Object getChildChildren(int inCount)
 	{
-		List children = getModel().getChildren(getModel().getRoot() );
-		if( children.size() < inCount)
+		List children = getModel().getChildren(getModel().getRoot());
+		if (children.size() < inCount)
 		{
 			Object parent = children.get(inCount);
 			return getModel().getChildren(parent);
 		}
 		return null;
 	}
-	
-	
-	
+
 	/**
 	 * DOCUMENT ME!
 	 *
@@ -141,17 +135,19 @@ public class WebTree implements Serializable
 	 * @return DOCME
 	 */
 	public String renderAsJavaScript()
-	{		
+	{
 		return render();
 	}
+
 	public String render()
 	{
 		TreeRenderer renderer = getTreeRenderer();
 		return renderer.renderAsString();
 	}
+
 	public String render(String inNodeId)
 	{
-		if( inNodeId == null)
+		if (inNodeId == null)
 		{
 			log.error(getName() + " was passed in a null node id ");
 			inNodeId = "_";
@@ -166,7 +162,7 @@ public class WebTree implements Serializable
 		{
 			fieldTreeRenderer = new WebTreeNodeTreeRenderer(this);
 		}
-		return fieldTreeRenderer;	
+		return fieldTreeRenderer;
 	}
 
 	public void setTreeRenderer(TreeRenderer inTreeRenderer)
@@ -188,13 +184,13 @@ public class WebTree implements Serializable
 	{
 		fieldId = inId;
 	}
-	
-	public boolean isChildSelected(Object inChild) 
+
+	public boolean isChildSelected(Object inChild)
 	{
 		Object check = getTreeRenderer().getSelectedNode();
-		while( check != null)
+		while (check != null)
 		{
-			if( check == inChild)
+			if (check == inChild)
 			{
 				return true;
 			}
@@ -202,16 +198,16 @@ public class WebTree implements Serializable
 		}
 		return false;
 	}
-	
+
 	public Object selectNodeByUrl(String inURL)
 	{
 		Object node = getTreeRenderer().setSelectedNodeByUrl(inURL);
 		return node;
 	}
-	
-	
-	public boolean isExpanded(Object inNode){
+
+	public boolean isExpanded(Object inNode)
+	{
 		return getTreeRenderer().hasBeenExpanded(inNode);
 	}
-	
+
 }

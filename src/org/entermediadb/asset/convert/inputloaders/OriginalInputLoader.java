@@ -13,6 +13,6 @@ public class OriginalInputLoader implements InputLoader
 	@Override
 	public ContentItem loadInput(ConvertInstructions inStructions)
 	{
-    	return inStructions.getOriginalDocument();
+		return inStructions.getOriginalDocument();
 	}
 }

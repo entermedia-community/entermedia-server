@@ -16,8 +16,8 @@ import org.openedit.generators.Output;
 import org.openedit.page.manage.PageManager;
 
 /**
- * Inserts a decoration header just after the opening "body" tag
- * and inserts a decoration footer just before the closing "body" tag.
+ * Inserts a decoration header just after the opening "body" tag and inserts a decoration footer
+ * just before the closing "body" tag.
  * 
  * @author Matthew Avery, mavery@einnovation.com
  */
@@ -29,21 +29,21 @@ public abstract class BaseToolBarGenerator extends BaseGenerator
 	protected PageManager fieldPageManager;
 	protected String fieldHeaderPath;
 	protected String fieldFooterPath;
-	
-	public BaseToolBarGenerator()
+
+	public BaseToolBarGenerator() {}
+
+	protected void debug(String inMessage)
 	{
+		// log.debug( inMessage );
 	}
-	protected void debug( String inMessage )
+
+	protected void writePage(String pageContent, Output inOut) throws OpenEditException
 	{
-		//log.debug( inMessage );
-	}
-	protected void writePage( String pageContent, Output inOut ) throws OpenEditException
-	{
-		//write it out to wout
+		// write it out to wout
 		Writer wout = inOut.getWriter();
 		try
 		{
-			wout.write(pageContent); //this content is actually just a string
+			wout.write(pageContent); // this content is actually just a string
 			wout.flush();
 		}
 		catch (IOException ex)
@@ -51,18 +51,22 @@ public abstract class BaseToolBarGenerator extends BaseGenerator
 			throw new OpenEditException(ex);
 		}
 	}
+
 	public String getHeaderPath()
 	{
 		return fieldHeaderPath;
 	}
+
 	public void setHeaderPath(String inHeaderPath)
 	{
 		fieldHeaderPath = inHeaderPath;
 	}
+
 	public PageManager getPageManager()
 	{
 		return fieldPageManager;
 	}
+
 	public void setPageManager(PageManager inPageManager)
 	{
 		fieldPageManager = inPageManager;
@@ -87,6 +91,7 @@ public abstract class BaseToolBarGenerator extends BaseGenerator
 	{
 		fieldFooterPath = inFooterPath;
 	}
+
 	public boolean canGenerate(WebPageRequest inReq)
 	{
 		return getWraps().canGenerate(inReq);

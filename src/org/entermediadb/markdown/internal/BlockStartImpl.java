@@ -3,7 +3,8 @@ package org.entermediadb.markdown.internal;
 import org.entermediadb.markdown.parser.block.BlockParser;
 import org.entermediadb.markdown.parser.block.BlockStart;
 
-public class BlockStartImpl extends BlockStart {
+public class BlockStartImpl extends BlockStart
+{
 
     private final BlockParser[] blockParsers;
     private int newIndex = -1;
@@ -15,47 +16,57 @@ public class BlockStartImpl extends BlockStart {
         this.blockParsers = blockParsers;
     }
 
-    public BlockParser[] getBlockParsers() {
+    public BlockParser[] getBlockParsers()
+    {
         return blockParsers;
     }
 
-    public int getNewIndex() {
+    public int getNewIndex()
+    {
         return newIndex;
     }
 
-    public int getNewColumn() {
+    public int getNewColumn()
+    {
         return newColumn;
     }
 
-    public boolean isReplaceActiveBlockParser() {
+    public boolean isReplaceActiveBlockParser()
+    {
         return replaceActiveBlockParser;
     }
 
-    int getReplaceParagraphLines() {
+    int getReplaceParagraphLines()
+    {
         return replaceParagraphLines;
     }
 
     @Override
-    public BlockStart atIndex(int newIndex) {
+    public BlockStart atIndex(int newIndex)
+    {
         this.newIndex = newIndex;
         return this;
     }
 
     @Override
-    public BlockStart atColumn(int newColumn) {
+    public BlockStart atColumn(int newColumn)
+    {
         this.newColumn = newColumn;
         return this;
     }
 
     @Override
-    public BlockStart replaceActiveBlockParser() {
+    public BlockStart replaceActiveBlockParser()
+    {
         this.replaceActiveBlockParser = true;
         return this;
     }
 
     @Override
-    public BlockStart replaceParagraphLines(int lines) {
-        if (!(lines >= 1)) {
+    public BlockStart replaceParagraphLines(int lines)
+    {
+        if (!(lines >= 1))
+        {
             throw new IllegalArgumentException("Lines must be >= 1");
         }
         this.replaceParagraphLines = lines;

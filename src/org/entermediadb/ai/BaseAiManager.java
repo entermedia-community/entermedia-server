@@ -37,12 +37,12 @@ import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
 import org.openedit.util.RequestUtils;
 
-public class BaseAiManager implements CatalogEnabled 
+public class BaseAiManager implements CatalogEnabled
 {
 
 	private static final Log log = LogFactory.getLog(BaseAiManager.class);
 
-    //Calls functions as he wants
+	// Calls functions as he wants
 	protected String fieldCatalogId;
 
 	public String getCatalogId()
@@ -54,6 +54,7 @@ public class BaseAiManager implements CatalogEnabled
 	{
 		fieldCatalogId = inCatalogId;
 	}
+
 	protected ModuleManager fieldModuleManager;
 
 	public ModuleManager getModuleManager()
@@ -65,56 +66,59 @@ public class BaseAiManager implements CatalogEnabled
 	{
 		fieldModuleManager = inModuleManager;
 	}
+
 	protected MediaArchive getMediaArchive()
 	{
-		return (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
+		return (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 	}
+
 	public LlmResponse handleError(AgentContext inAgentContext, String inError)
 	{
 		return handleError(inAgentContext, inError, 200);
 	}
+
 	public LlmResponse handleError(AgentContext inAgentContext, String inError, int inCode)
 	{
 		inAgentContext.addContext("error", inError);
 		inAgentContext.addContext("errorcode", inCode);
 		LlmConnection llmconnection = getMediaArchive().getLlmConnection("render_error");
 		LlmResponse response = llmconnection.renderLocalAction(inAgentContext, "render_error");
-		//inAgentContext.setFunctionName(null);
+		// inAgentContext.setFunctionName(null);
 		inAgentContext.setNextFunctionName(null);
 		return response;
 	}
-	
+
 	protected Schema loadSchema()
 	{
-		Schema schema = (Schema)getMediaArchive().getCacheManager().get("assitant","schema");
-		
-		if( schema == null)
+		Schema schema = (Schema) getMediaArchive().getCacheManager().get("assitant", "schema");
+
+		if (schema == null)
 		{
 			schema = new Schema();
-			HitTracker allmodules = getMediaArchive().query("module").exact("showonsearch",true).search();
+			HitTracker allmodules = getMediaArchive().query("module").exact("showonsearch", true).search();
 			Collection<Data> modules = new ArrayList();
 			Collection<String> moduleids = new ArrayList();
-			
+
 			for (Iterator iterator = allmodules.iterator(); iterator.hasNext();)
 			{
 				Data module = (Data) iterator.next();
 				Data record = getMediaArchive().query(module.getId()).all().searchOne();
-				
-				if(record != null)
+
+				if (record != null)
 				{
 					modules.add(module);
 					moduleids.add(module.getId());
-					
-					Collection detailsviews = getMediaArchive().query("view").exact("moduleid", module.getId()).exact("rendertype", "entitysubmodules").cachedSearch();  //Cache this
+
+					Collection detailsviews = getMediaArchive().query("view").exact("moduleid", module.getId()).exact("rendertype", "entitysubmodules").cachedSearch(); // Cache this
 
 					for (Iterator iterator2 = detailsviews.iterator(); iterator2.hasNext();)
 					{
 						Data view = (Data) iterator2.next();
 						String listid = view.get("rendertable");
-						if( moduleids.contains(listid) )
+						if (moduleids.contains(listid))
 						{
 							Data childmodule = getMediaArchive().getCachedData("module", listid);
-							schema.addChildOf(module.getId(),childmodule);
+							schema.addChildOf(module.getId(), childmodule);
 						}
 					}
 				}
@@ -122,28 +126,28 @@ public class BaseAiManager implements CatalogEnabled
 			schema.setModules(modules);
 			schema.setModuleIds(moduleids);
 			getMediaArchive().getCacheManager().put("assitant", "schema", schema);
-			
+
 		}
-		
+
 		return schema;
 	}
 
 	protected Collection<PropertyDetail> loadActiveDetails(String inModuleId)
 	{
-		java.util.Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inModuleId).exact("systemdefined", false).cachedSearch();  //Cache this
-	
-		if( detailsviews == null)
+		java.util.Collection detailsviews = getMediaArchive().query("view").exact("moduleid", inModuleId).exact("systemdefined", false).cachedSearch(); // Cache this
+
+		if (detailsviews == null)
 		{
 			return null;
 		}
-		
+
 		Collection<PropertyDetail> detailsfields = new ArrayList<PropertyDetail>();
-	
+
 		for (Iterator iterator = detailsviews.iterator(); iterator.hasNext();)
 		{
 			Data view = (Data) iterator.next();
 			java.util.Collection viewfields = getMediaArchive().getSearcher(inModuleId).getDetailsForView(view);
-			if( viewfields != null)
+			if (viewfields != null)
 			{
 				for (Iterator iterator2 = viewfields.iterator(); iterator2.hasNext();)
 				{
@@ -158,9 +162,9 @@ public class BaseAiManager implements CatalogEnabled
 	protected String loadBase64Png(Data inAsset, String imagesize)
 	{
 		ContentItem item = getMediaArchive().getGeneratedContent(inAsset, imagesize);
-		if(!item.exists())
+		if (!item.exists())
 		{
-			log.info("Missing " + imagesize + " generated image for asset ("+inAsset.getId()+") " + inAsset.getName());
+			log.info("Missing " + imagesize + " generated image for asset (" + inAsset.getId() + ") " + inAsset.getName());
 			return null;
 		}
 		return loadBase64Image(item);
@@ -168,7 +172,7 @@ public class BaseAiManager implements CatalogEnabled
 
 	protected String loadBase64Png(ContentItem item)
 	{
-		if(!item.exists())
+		if (!item.exists())
 		{
 			log.info("Missing generated image " + item.getAbsolutePath());
 			return null;
@@ -179,7 +183,7 @@ public class BaseAiManager implements CatalogEnabled
 		args.add("-density");
 		args.add("300");
 		args.add(item.getAbsolutePath());
-		args.add("-antialias"); 
+		args.add("-antialias");
 		args.add("-resize");
 		args.add("1500x1500>");
 		args.add("-background");
@@ -190,35 +194,34 @@ public class BaseAiManager implements CatalogEnabled
 		args.add("off");
 		args.add("-strip");
 		args.add("png:-");
-		
-		
-		//convert  -density 600  Ford.pdf[3] -antialias -background white -alpha remove  -strip  -resize 11% ford4.png 
-	
-		
-		Exec exec = (Exec)getMediaArchive().getBean("exec");
+
+		// convert -density 600 Ford.pdf[3] -antialias -background white -alpha remove
+		// -strip -resize 11% ford4.png
+
+		Exec exec = (Exec) getMediaArchive().getBean("exec");
 		exec.runExecStream("convert", args, output, 5000);
-		
-		byte[] bytes = output.toByteArray();  // Read InputStream as bytes
+
+		byte[] bytes = output.toByteArray(); // Read InputStream as bytes
 		String base64EncodedString = Base64.getEncoder().encodeToString(bytes); // Encode to Base64
-		
-		long duration = (System.currentTimeMillis() - starttime) ;
-		log.info("Loaded and encoded " + item.getName() + " in "+duration+"ms");
-		
-		if(base64EncodedString == null || base64EncodedString.length() < 100)
+
+		long duration = (System.currentTimeMillis() - starttime);
+		log.info("Loaded and encoded " + item.getName() + " in " + duration + "ms");
+
+		if (base64EncodedString == null || base64EncodedString.length() < 100)
 		{
 			return null;
 		}
-		
+
 		return "data:image/png;base64," + base64EncodedString;
-	
+
 	}
 
 	protected String loadBase64Image(Data inAsset, String imagesize)
 	{
 		ContentItem item = getMediaArchive().getGeneratedContent(inAsset, imagesize);
-		if(!item.exists())
+		if (!item.exists())
 		{
-			log.info("Missing " + imagesize + " generated image for asset ("+inAsset.getId()+") " + inAsset.getName());
+			log.info("Missing " + imagesize + " generated image for asset (" + inAsset.getId() + ") " + inAsset.getName());
 			return null;
 		}
 		return loadBase64Image(item);
@@ -226,7 +229,7 @@ public class BaseAiManager implements CatalogEnabled
 
 	protected String loadBase64Image(ContentItem item)
 	{
-		if(!item.exists())
+		if (!item.exists())
 		{
 			log.info("Missing generated image " + item.getAbsolutePath());
 			return null;
@@ -239,77 +242,78 @@ public class BaseAiManager implements CatalogEnabled
 		args.add("1024x1024>");
 		args.add("-quality");
 		args.add("70");
-		args.add("-strip"); //very important (!!)
+		args.add("-strip"); // very important (!!)
 		args.add("jpg:-");
-		Exec exec = (Exec)getMediaArchive().getBean("exec");
-	
+		Exec exec = (Exec) getMediaArchive().getBean("exec");
+
 		ExecResult result = exec.runExecStream("convert", args, output, 5000);
 		if (!result.isRunOk())
 		{
-			throw new OpenEditException("Error converting image: "+ result.getReturnValue());
+			throw new OpenEditException("Error converting image: " + result.getReturnValue());
 		}
-		long duration = (System.currentTimeMillis() - starttime) ;
-		log.info("Converted " + item.getName() + " in "+duration+"ms");
-	
+		long duration = (System.currentTimeMillis() - starttime);
+		log.info("Converted " + item.getName() + " in " + duration + "ms");
+
 		starttime = System.currentTimeMillis();
-		byte[] bytes = output.toByteArray();  // Read InputStream as bytes
+		byte[] bytes = output.toByteArray(); // Read InputStream as bytes
 		String base64EncodedString = Base64.getEncoder().encodeToString(bytes); // Encode to Base64
-		duration = (System.currentTimeMillis() - starttime) ;
-		log.info("Encoded " + item.getName() + " in "+duration+"ms" + " base64length:" + base64EncodedString.length());
-		
+		duration = (System.currentTimeMillis() - starttime);
+		log.info("Encoded " + item.getName() + " in " + duration + "ms" + " base64length:" + base64EncodedString.length());
+
 		return "data:image/jpeg;base64," + base64EncodedString;
-	
+
 	}
 
 	protected Collection<PropertyDetail> populateFields(String inModuleId, MultiValued inData, Collection<PropertyDetail> inExcludeFields)
 	{
 		Collection<PropertyDetail> detailsfields = loadActiveDetails(inModuleId);
-	
+
 		Collection<PropertyDetail> contextfields = new ArrayList<PropertyDetail>();
-		
+
 		Set<String> contextfieldids = new HashSet<String>();
-		
+
 		Set<String> excludeids = new HashSet<String>();
 		for (Iterator iterator = inExcludeFields.iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			excludeids.add(detail.getId());
 		}
-	
+
 		for (Iterator iter = detailsfields.iterator(); iter.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iter.next();
-			if(excludeids.contains(detail.getId()) || contextfieldids.contains(detail.getId()))
+			if (excludeids.contains(detail.getId()) || contextfieldids.contains(detail.getId()))
 			{
 				continue;
 			}
 			contextfields.add(detail);
 			contextfieldids.add(detail.getId());
 		}
-		
-		if(!inModuleId.equals("asset") && !contextfieldids.contains("fulltext") && inData.get("pagenum") == null  )
+
+		if (!inModuleId.equals("asset") && !contextfieldids.contains("fulltext") && inData.get("pagenum") == null)
 		{
 			addPrimaryMediaFulltext(inData, contextfields);
 		}
-		
+
 		return contextfields;
 	}
-	
-	protected void addPrimaryMediaFulltext(MultiValued inData, Collection<PropertyDetail> contextfields) {
+
+	protected void addPrimaryMediaFulltext(MultiValued inData, Collection<PropertyDetail> contextfields)
+	{
 		String primarymedia = inData.get("primarymedia");
-		if(primarymedia == null || primarymedia.isEmpty())
+		if (primarymedia == null || primarymedia.isEmpty())
 		{
 			primarymedia = inData.get("primaryimage");
 		}
-		if(primarymedia != null)
+		if (primarymedia != null)
 		{
 			MultiValued primaryasset = getMediaArchive().getAsset(primarymedia);
-			if(primaryasset != null)
+			if (primaryasset != null)
 			{
 				if (primaryasset.getBoolean("hasfulltext"))
 				{
 					String mediatype = getMediaArchive().getMediaRenderType(primaryasset);
-					if(mediatype.equals("document"))
+					if (mediatype.equals("document"))
 					{
 						String fulltext = primaryasset.get("fulltext");
 						if (fulltext != null)
@@ -319,10 +323,10 @@ public class BaseAiManager implements CatalogEnabled
 							PropertyDetail fieldMap = new PropertyDetail();
 							fieldMap.setName("Parsed Document Content");
 							fieldMap.setId("fulltext");
-							
+
 							JsonUtil jsonutils = new JsonUtil();
 							inData.setValue("fulltext", jsonutils.escape(fulltext));
-							
+
 							contextfields.add(fieldMap);
 						}
 					}
@@ -331,7 +335,6 @@ public class BaseAiManager implements CatalogEnabled
 		}
 	}
 
-
 	public Collection<MultiValued> loadUserSearchModules(UserProfile inProfile)
 	{
 		Collection<Data> modules = inProfile.getEntities();
@@ -339,18 +342,18 @@ public class BaseAiManager implements CatalogEnabled
 		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
 		{
 			MultiValued module = (MultiValued) iterator.next();
-			if(module.getBoolean("showonsearch"))
+			if (module.getBoolean("showonsearch"))
 			{
 				searchmodules.add(module);
 			}
 		}
 		return searchmodules;
-	} 
-	
+	}
+
 	protected String collectText(Collection inValues)
 	{
 		StringBuffer words = new StringBuffer();
-		if( inValues == null)
+		if (inValues == null)
 		{
 			return null;
 		}
@@ -362,43 +365,44 @@ public class BaseAiManager implements CatalogEnabled
 			{
 				words.append(", ");
 			}
-			
+
 		}
 		return words.toString();
 	}
 
 	protected void clearAllCaches()
 	{
-//		// TODO Auto-generated method stub
-//		getMediaArchive().getCacheManager().clear("aifacedetect"); //Standard cache for this fieldname
-//		getMediaArchive().getCacheManager().clear("faceboxes"); //All related boxes. TODO: Limit to this record
-//		//getMediaArchive().getCacheManager().clear("facepersonlookuprecord");
-//		//?
-////		getMediaArchive().getCacheManager().clear("aifacedetect");
-////		getMediaArchive().getCacheManager().clear("faceboxes");
-////		getMediaArchive().getCacheManager().clear("aifacedetect"); 
+		// // TODO Auto-generated method stub
+		// getMediaArchive().getCacheManager().clear("aifacedetect"); //Standard cache
+		// for this fieldname
+		// getMediaArchive().getCacheManager().clear("faceboxes"); //All related boxes.
+		// TODO: Limit to this record
+		// //getMediaArchive().getCacheManager().clear("facepersonlookuprecord");
+		// //?
+		//// getMediaArchive().getCacheManager().clear("aifacedetect");
+		//// getMediaArchive().getCacheManager().clear("faceboxes");
+		//// getMediaArchive().getCacheManager().clear("aifacedetect");
 
 	}
-	
-	
+
 	protected String loadTranscript(Data inAsset)
 	{
 		Searcher captionSearcher = getMediaArchive().getSearcher("videotrack");
 		Data inTrack = captionSearcher.query().exact("assetid", inAsset.getId()).searchOne();
-		if( inTrack != null)
+		if (inTrack != null)
 		{
 			String status = inTrack.get("transcribestatus");
-			if(status != null && status.equals("complete"))
+			if (status != null && status.equals("complete"))
 			{
 				Collection captions = (Collection) inTrack.getValue("captions");
-				if( captions != null)
+				if (captions != null)
 				{
 					StringBuffer fulltext = new StringBuffer();
 					for (Iterator iterator = captions.iterator(); iterator.hasNext();)
 					{
 						Map caption = (Map) iterator.next();
 						String text = (String) caption.get("cliplabel");
-						if( text != null)
+						if (text != null)
 						{
 							fulltext.append(text);
 							fulltext.append(" ");
@@ -411,46 +415,44 @@ public class BaseAiManager implements CatalogEnabled
 		return null;
 	}
 
-
 	public LlmResponse processMessage(AgentContext inAgentContext, MultiValued inMessage, MultiValued inAiFunction)
 	{
 		throw new OpenEditException("Not implemented");
 	}
 
-
 	public void populateVectors(SemanticTableManager manager, Collection<SemanticAction> inActions)
 	{
 		Collection<String> textonly = new ArrayList(inActions.size());
-		Map<String,SemanticAction> actions = new HashMap();
+		Map<String, SemanticAction> actions = new HashMap();
 		Integer count = 0;
 		for (Iterator iterator = inActions.iterator(); iterator.hasNext();)
 		{
 			SemanticAction action = (SemanticAction) iterator.next();
 			textonly.add(action.getSemanticText());
-			actions.put( String.valueOf(count) , action);
+			actions.put(String.valueOf(count), action);
 			count++;
 		}
-		
+
 		JSONObject response = manager.execMakeVector(textonly);
-		
-		JSONArray results = (JSONArray)response.get("results");
-		if( results == null)
+
+		JSONArray results = (JSONArray) response.get("results");
+		if (results == null)
 		{
 			return;
 		}
 		Collection<MultiValued> newrecords = new ArrayList(results.size());
 		for (int i = 0; i < results.size(); i++)
 		{
-			Map hit = (Map)results.get(i);
-			String countdone = (String)hit.get("id");
+			Map hit = (Map) results.get(i);
+			String countdone = (String) hit.get("id");
 			SemanticAction action = actions.get(countdone);
-			List vector = (List)hit.get("embedding");
+			List vector = (List) hit.get("embedding");
 			vector = manager.collectDoubles(vector);
 			action.setVectors(vector);
 		}
-		
+
 	}
-	
+
 	protected String findLocalActionName(AgentContext inAgentContext)
 	{
 		String agentFn = inAgentContext.getFunctionName();
@@ -458,36 +460,36 @@ public class BaseAiManager implements CatalogEnabled
 
 		String templatepath = apphome + "/views/agentresponses/" + agentFn + ".html";
 		boolean pageexists = getMediaArchive().getPageManager().getPage(templatepath).exists();
-		if(!pageexists)
+		if (!pageexists)
 		{
 			int lastone = agentFn.lastIndexOf("_");
-			agentFn = agentFn.substring(0,lastone);
+			agentFn = agentFn.substring(0, lastone);
 		}
 		return agentFn;
 	}
 
 	public SemanticTableManager loadSemanticTableManager(String inConfigId)
 	{
-		SemanticTableManager table = (SemanticTableManager)getMediaArchive().getCacheManager().get("semantictables",inConfigId);
-		if( table == null)
+		SemanticTableManager table = (SemanticTableManager) getMediaArchive().getCacheManager().get("semantictables", inConfigId);
+		if (table == null)
 		{
-			table = (SemanticTableManager)getModuleManager().getBean(getCatalogId(),"semanticTableManager",false);
+			table = (SemanticTableManager) getModuleManager().getBean(getCatalogId(), "semanticTableManager", false);
 			table.setConfigurationId(inConfigId);
-			getMediaArchive().getCacheManager().put("semantictables",inConfigId,table);
+			getMediaArchive().getCacheManager().put("semantictables", inConfigId, table);
 		}
-		
+
 		return table;
 	}
 
-	public RequestUtils getRequestUtils() 
+	public RequestUtils getRequestUtils()
 	{
 		RequestUtils rutil = (RequestUtils) getMediaArchive().getBean("requestUtils");
 		return rutil;
 	}
-	
-	public AutomationManager getAutomationManager() 
+
+	public AutomationManager getAutomationManager()
 	{
-		return (AutomationManager) getMediaArchive().getModuleManager().getBean(getCatalogId(),"automationManager",true);
+		return (AutomationManager) getMediaArchive().getModuleManager().getBean(getCatalogId(), "automationManager", true);
 	}
-	
-}   
+
+}

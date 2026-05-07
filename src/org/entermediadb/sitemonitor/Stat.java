@@ -4,10 +4,8 @@ public class Stat
 {
 	private String fieldName;
 	private Object fieldValue;
-	
-	public Stat()
-	{
-	}
+
+	public Stat() {}
 
 	public String getName()
 	{
@@ -29,5 +27,5 @@ public class Stat
 		fieldValue = inObject;
 
 	}
-	
+
 }

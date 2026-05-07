@@ -5,19 +5,21 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.util.JSONParser;
 
-public class LlamaOpenAiResponse extends OpenAiResponse {
-	
-	@Override
-    public boolean isToolCall() {
-        if (rawResponse == null) 
-    	{
-        	return false;
-    	}
+public class LlamaOpenAiResponse extends OpenAiResponse
+{
+
+    @Override
+    public boolean isToolCall()
+    {
+        if (rawResponse == null)
+        {
+            return false;
+        }
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
-        if (choices == null || choices.isEmpty()) 
+        if (choices == null || choices.isEmpty())
         {
-        	return false;
+            return false;
         }
 
         JSONObject choice = (JSONObject) choices.get(0);
@@ -25,63 +27,67 @@ public class LlamaOpenAiResponse extends OpenAiResponse {
 
         return message != null && message.get("tool_calls") != null;
     }
-	
+
     @Override
-    public JSONObject getMessageStructured() {
+    public JSONObject getMessageStructured()
+    {
 
         JSONArray choices = (JSONArray) rawResponse.get("choices");
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
-        
+
         String contentString = (String) message.get("content");
-        
+
         JSONParser parser = new JSONParser();
 
         JSONObject content = parser.parse(contentString);
 
         return content;
     }
-    
+
     protected String ocrResponse;
-    
-    public String getOcrResponse() {    	
-    	return ocrResponse;
+
+    public String getOcrResponse()
+    {
+        return ocrResponse;
     }
-    
-    public void setOcrResponse(JSONObject inRawResponse) {
-    	JSONArray choices = (JSONArray) inRawResponse.get("choices");
+
+    public void setOcrResponse(JSONObject inRawResponse)
+    {
+        JSONArray choices = (JSONArray) inRawResponse.get("choices");
         JSONObject choice = (JSONObject) choices.get(0);
         JSONObject message = (JSONObject) choice.get("message");
-        
+
         ocrResponse = (String) message.get("content");
-	}
-    
+    }
+
     @Override
-    public String getFunctionName() 
+    public String getFunctionName()
     {
-    	if( fieldFunctionName != null)
-    	{
-    		return fieldFunctionName;
-    	}
-    	
-        if (!isToolCall()) return null;
-        
+        if (fieldFunctionName != null)
+        {
+            return fieldFunctionName;
+        }
+
+        if (!isToolCall())
+            return null;
+
         try
         {
-        	
-        	JSONArray choices = (JSONArray) rawResponse.get("choices");
-        	JSONObject choice = (JSONObject) choices.get(0);
-        	JSONObject message = (JSONObject) choice.get("message");
-        	JSONArray functionCalls = (JSONArray) message.get("tool_calls");
-        	
-        	JSONObject functionCall = (JSONObject) functionCalls.get(0);
-        	JSONObject function = (JSONObject) functionCall.get("function");
-        	
-        	return function != null ? (String) function.get("name") : null;
+
+            JSONArray choices = (JSONArray) rawResponse.get("choices");
+            JSONObject choice = (JSONObject) choices.get(0);
+            JSONObject message = (JSONObject) choice.get("message");
+            JSONArray functionCalls = (JSONArray) message.get("tool_calls");
+
+            JSONObject functionCall = (JSONObject) functionCalls.get(0);
+            JSONObject function = (JSONObject) functionCall.get("function");
+
+            return function != null ? (String) function.get("name") : null;
         }
-        catch( Exception ex)
+        catch (Exception ex)
         {
-        	return null;
+            return null;
         }
 
     }

@@ -471,14 +471,17 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 
 	protected String renderChildren(Object inNode)
 	{
-		// Use null for our folder icon, and the JavaScript tree will substitute either folder.gif or
+		// Use null for our folder icon, and the JavaScript tree will substitute either
+		// folder.gif or
 		// folderopen.gif, depending on whether the node is open or closed.
 		StringBuffer js = new StringBuffer();
 
 		if (hasBeenExpanded(inNode))
 		{
-			// String collapseUrl = quotes("?" + "WebTreeName=" + getWebTree().getName() + "&oe-action=" +
-			// getCollapseNodeCommand() + "&nodeID=" + getWebTree().getModel().getId(inNode));
+			// String collapseUrl = quotes("?" + "WebTreeName=" + getWebTree().getName() +
+			// "&oe-action=" +
+			// getCollapseNodeCommand() + "&nodeID=" +
+			// getWebTree().getModel().getId(inNode));
 			// js.append(collapseUrl +", new Array(\n");
 
 			js.append(", new Array(\n");
@@ -498,7 +501,8 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 		}
 		else
 		{
-			// String expandUrl = quotes("?" + "WebTreeName=" + getWebTree().getName() + "&oe-action=" +
+			// String expandUrl = quotes("?" + "WebTreeName=" + getWebTree().getName() +
+			// "&oe-action=" +
 			// getExpandNodeCommand() + "&nodeID=" + getWebTree().getModel().getId(inNode));
 
 			// Might need to make this configurable later on.
@@ -507,7 +511,8 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 
 			// js.append(
 			// quotes("?" + "WebTreeName=" + getWebTree().getName() + "&oe-action=" +
-			// getExpandNodeCommand() + "&nodeID=" + getWebTree().getModel().getId(inNode)) + ", null, ");
+			// getExpandNodeCommand() + "&nodeID=" + getWebTree().getModel().getId(inNode))
+			// + ", null, ");
 
 		}
 
@@ -621,7 +626,8 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 		{
 			return false;
 		}
-		// See if we are below the cut off. If we are below or equal then show the node (return true)
+		// See if we are below the cut off. If we are below or equal then show the node
+		// (return true)
 		if (fieldLastCutoffNode != null)
 		{
 			Object parent = inNode;

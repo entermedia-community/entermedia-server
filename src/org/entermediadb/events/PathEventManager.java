@@ -35,8 +35,7 @@ import org.openedit.util.SynchronizedLinkedList;
 /**
  * Loads up the events for this one application i.e. /openedit/events
  * 
- * Then runs them on a timmer if needed. Also provides a UI to listing and
- * running the tasks
+ * Then runs them on a timmer if needed. Also provides a UI to listing and running the tasks
  * 
  * @author cburkey
  * 
@@ -60,9 +59,9 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 
 	public ExecutorManager getExecutorManager()
 	{
-		if( fieldExecutorManager == null)
+		if (fieldExecutorManager == null)
 		{
-			fieldExecutorManager = (ExecutorManager)getModuleManager().getBean("executorManager");
+			fieldExecutorManager = (ExecutorManager) getModuleManager().getBean("executorManager");
 		}
 		return fieldExecutorManager;
 	}
@@ -86,9 +85,7 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		fieldTimeCalculator = inTimeCalculator;
 	}
 
-	public PathEventManager()
-	{
-	}
+	public PathEventManager() {}
 
 	public LinkedList<TaskRunner> getRunningTasks()
 	{
@@ -98,27 +95,29 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		}
 		return fieldRunningTasks;
 	}
+
 	public List<TaskRunner> getRunningTasksSorted()
 	{
 		List<TaskRunner> copy = new ArrayList<TaskRunner>(getRunningTasks());
-		Collections.sort(copy, new Comparator<TaskRunner>()
-		{
+		Collections.sort(copy, new Comparator<TaskRunner>() {
 			public int compare(TaskRunner inT1, TaskRunner inT2)
 			{
-		       return inT1.getTimeToStart().compareTo(inT2.getTimeToStart());
+				return inT1.getTimeToStart().compareTo(inT2.getTimeToStart());
 			}
 		});
-		
+
 		return copy;
 	}
-	public boolean isLogEvents() {
+
+	public boolean isLogEvents()
+	{
 		return fieldLogEvents;
 	}
 
-	public void setLogEvents(boolean fieldLogEvent) {
+	public void setLogEvents(boolean fieldLogEvent)
+	{
 		this.fieldLogEvents = fieldLogEvent;
 	}
-
 
 	public String getCatalogId()
 	{
@@ -139,9 +138,11 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 	{
 		fieldSearcherManager = inSearcherManager;
 	}
-	
+
 	/**
-	 * This will only add the event if it is not already queued up. There is no reason to queue up multiple copies. Kind of like mouse events. 
+	 * This will only add the event if it is not already queued up. There is no reason to queue up
+	 * multiple copies. Kind of like mouse events.
+	 * 
 	 * @param runpath
 	 * @return
 	 */
@@ -153,7 +154,7 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		}
 		PathEvent event = getPathEvent(runpath);
 		if (event != null)
-		{ 
+		{
 			String name = event.getName();
 			synchronized (getRunningTasks())
 			{
@@ -162,23 +163,24 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 				for (Iterator iterator = copy.iterator(); iterator.hasNext();)
 				{
 					TaskRunner task = (TaskRunner) iterator.next();
-					if( name.equals( task.getPathEvent().getName() ) )
+					if (name.equals(task.getPathEvent().getName()))
 					{
-						if( task.isQueuedToRun() || task.getPathEvent().isRunning() )
+						if (task.isQueuedToRun() || task.getPathEvent().isRunning())
 						{
 							task.setRunAgainSoon(true);
-							return true;  //Already about to run
+							return true; // Already about to run
 						}
 						else
 						{
-							task.run();  //this is async
+							task.run(); // this is async
 						}
 						runner = task;
 						break;
-						//else this will add a duplicate. Since it is already running it will just return
+						// else this will add a duplicate. Since it is already running it will just
+						// return
 					}
 				}
-				if( runner == null)
+				if (runner == null)
 				{
 					runner = new TaskRunner(event, this);
 					getRunningTasks().push(runner);
@@ -189,116 +191,111 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		}
 		else
 		{
-			//I guess sometimes events fire that are not actually configured
-			if( !runpath.endsWith(".html"))
+			// I guess sometimes events fire that are not actually configured
+			if (!runpath.endsWith(".html"))
 			{
 				throw new OpenEditException("Event path must end with .html " + runpath);
-				
+
 			}
-			
-			if( log.isDebugEnabled() )
+
+			if (log.isDebugEnabled())
 			{
 				log.debug("No actions enabled for this event: " + runpath);
 			}
 			return false;
 		}
 
-		
 	}
-	
-	
-	public PathEvent execute(String runpath, WebPageRequest inReq )
+
+	public PathEvent execute(String runpath, WebPageRequest inReq)
 	{
 		if (runpath == null)
 		{
 			return null;
 		}
 		PathEvent event = getPathEvent(runpath);
-		//synchronized( event )
+		// synchronized( event )
 		inReq.putPageValue("ranevent", event);
-//		String force = inReq.getRequestParameter("forcerun");
-				
+		// String force = inReq.getRequestParameter("forcerun");
+
 		if (event != null)
-		{ 
-//			if( Boolean.parseBoolean(force) || event.getDelay() == 0 )
+		{
+			// if( Boolean.parseBoolean(force) || event.getDelay() == 0 )
 			TaskRunner runner = new TaskRunner(event, inReq.getParameterMap(), getRequestUtils().extractValueMap(inReq), this, getDefaultUser());
-//			{
-				getRunningTasks().push(runner);
-				runner.runBlocking(); //this will remove it again
-//			}
-//			else
-//			{
-//				schedule(event, runner);
-//			}
+			// {
+			getRunningTasks().push(runner);
+			runner.runBlocking(); // this will remove it again
+			// }
+			// else
+			// {
+			// schedule(event, runner);
+			// }
 			return event;
 		}
 		else
 		{
-			//I guess sometimes events fire that are not actually configured
-			if( !runpath.endsWith(".html"))
+			// I guess sometimes events fire that are not actually configured
+			if (!runpath.endsWith(".html"))
 			{
 				throw new OpenEditException("Event path must end with .html " + runpath);
-				
+
 			}
-			
-			//do nothingthrow new OpenEditException("Event not found " + runpath);
-			if( log.isDebugEnabled() )
+
+			// do nothingthrow new OpenEditException("Event not found " + runpath);
+			if (log.isDebugEnabled())
 			{
 				log.debug("No actions enabled for this event: " + runpath);
 			}
 			return event;
 		}
 	}
-	
-	
-	
+
 	/**
-	 * This is the public API that event listeners need to run to exec
-	 * /catalogid/events/* actions
+	 * This is the public API that event listeners need to run to exec /catalogid/events/* actions
 	 * 
 	 * @param runpath
 	 * @param inReq
 	 * @return
 	 */
-	public boolean runPathEvent(String runpath, WebPageRequest inReq )
+	public boolean runPathEvent(String runpath, WebPageRequest inReq)
 	{
 		if (runpath == null)
 		{
 			return false;
 		}
 		PathEvent event = getPathEvent(runpath);
-		//synchronized( event )
+		// synchronized( event )
 		inReq.putPageValue("ranevent", event);
-//		String force = inReq.getRequestParameter("forcerun");
-		
-		String applicationid = inReq.findValue("applicationid"); 
+		// String force = inReq.getRequestParameter("forcerun");
+
+		String applicationid = inReq.findValue("applicationid");
 		inReq.putPageValue("triggerapplicationid", applicationid);
-				
+
 		if (event != null)
-		{ 
-//			if( Boolean.parseBoolean(force) || event.getDelay() == 0 )
+		{
+			// if( Boolean.parseBoolean(force) || event.getDelay() == 0 )
 			TaskRunner runner = new TaskRunner(event, inReq.getParameterMap(), getRequestUtils().extractValueMap(inReq), this, getDefaultUser());
-//			{
-				getRunningTasks().push(runner);
-				runner.runBlocking(); //this will remove it again
-//			}
-//			else
-//			{
-//				schedule(event, runner);
-//			}
+			// {
+			getRunningTasks().push(runner);
+			runner.runBlocking(); // this will remove it again
+			// }
+			// else
+			// {
+			// schedule(event, runner);
+			// }
 			return true;
 		}
 		else
 		{
-			//I guess sometimes events fire that are not actually configured
-			if( !runpath.endsWith(".html"))
+			// I guess sometimes events fire that are not actually configured
+			if (!runpath.endsWith(".html"))
 			{
 				throw new OpenEditException("Event path must end with .html " + runpath);
-				
+
 			}
-			
-			//do nothingthrow new OpenEditException("Event not found " + runpath);
-			if( log.isDebugEnabled() )
+
+			// do nothingthrow new OpenEditException("Event not found " + runpath);
+			if (log.isDebugEnabled())
 			{
 				log.debug("No actions enabled for this event: " + runpath);
 			}
@@ -307,23 +304,11 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 	}
 
 	/*
-	protected void schedule(PathEvent event, TaskRunner runner)
-	{
-		//getRunningTasks().push(runner);
-		try
-		{
-			schedule(runner,event.getPeriod()); 
-		} 
-		catch (Exception e)
-		{
-			fieldTimer = null;
-			getRunningTasks().clear();
-			getRunningTasks().push(runner);
-			schedule(runner,event.getPeriod() );
-			//to fix  java.lang.IllegalStateException: Timer already cancelled.
-		}
-	}
-	*/
+	 * protected void schedule(PathEvent event, TaskRunner runner) { //getRunningTasks().push(runner);
+	 * try { schedule(runner,event.getPeriod()); } catch (Exception e) { fieldTimer = null;
+	 * getRunningTasks().clear(); getRunningTasks().push(runner); schedule(runner,event.getPeriod() );
+	 * //to fix java.lang.IllegalStateException: Timer already cancelled. } }
+	 */
 
 	public ModuleManager getModuleManager()
 	{
@@ -384,8 +369,6 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		fieldPathActions = inTaskList;
 	}
 
-
-
 	public ErrorHandler getErrorHandler()
 	{
 		return fieldErrorHandler;
@@ -404,19 +387,19 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 			{
 				getTimer().cancel();
 			}
-			catch ( Throwable ex)
+			catch (Throwable ex)
 			{
-				log.error("ignoring error",ex);
+				log.error("ignoring error", ex);
 			}
 			fieldTimer = null;
 		}
-		
+
 		getExecutorManager().shutdown();
 		fieldExecutorManager = null;
 		getRunningTasks().clear();
-		
+
 		clear();
-		fieldPathActions  = null;
+		fieldPathActions = null;
 		fieldRunningTasks = null;
 	}
 
@@ -429,29 +412,28 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 	public void loadTasks() throws OpenEditException
 	{
 		// TODO Auto-generated method stub
-//		String username = eventpage.get("eventuser");
-//		if( username == null)
-//		{
-//			username = "admin";
-//		}
-//		
-//		String catalogid = eventpage.getProperty("catalogid");
-//		if( catalogid == null)
-//		{
-//			catalogid = "system";
-//		}
+		// String username = eventpage.get("eventuser");
+		// if( username == null)
+		// {
+		// username = "admin";
+		// }
+		//
+		// String catalogid = eventpage.getProperty("catalogid");
+		// if( catalogid == null)
+		// {
+		// catalogid = "system";
+		// }
 
-		
 		for (Iterator iterator = getPathEvents().iterator(); iterator.hasNext();)
 		{
 			PathEvent event = (PathEvent) iterator.next();
-			
+
 			if (event.isEnabled())
 			{
 				if (event.getPeriod() > 0)
 				{
 					TaskRunner runner = new TaskRunner(event, this);
-					//runner.setRepeating(true);
+					// runner.setRepeating(true);
 					getRunningTasks().push(runner);
 				}
 			}
@@ -460,7 +442,7 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 
 	public void clear()
 	{
-		if( fieldPathActions != null)
+		if (fieldPathActions != null)
 		{
 			getPathEvents().clear();
 		}
@@ -469,7 +451,7 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 	protected void loadPathEvents()
 	{
 		clear();
-		//getPageManager().clearCache();
+		// getPageManager().clearCache();
 		String root = "/" + getCatalogId() + "/events";
 		Set duplicates = new HashSet();
 		loadPathEvents(root, duplicates);
@@ -482,11 +464,11 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		for (Iterator iterator = events.iterator(); iterator.hasNext();)
 		{
 			String path = (String) iterator.next();
-			Page page = getPageManager().getPage(path); 
+			Page page = getPageManager().getPage(path);
 			String vpath = inRoot + "/" + PathUtilities.extractFileName(path);
-			Page vchild = getPageManager().getPage(vpath); 
-			
-			if( page.isFolder() && !page.getName().startsWith(".versions") )
+			Page vchild = getPageManager().getPage(vpath);
+
+			if (page.isFolder() && !page.getName().startsWith(".versions"))
 			{
 				loadPathEvents(vchild.getPath(), inDuplicates);
 			}
@@ -495,30 +477,30 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 				loadByPath(vpath, inRoot, inDuplicates);
 			}
 		}
-		
+
 	}
 
-	protected void loadByPath(String path,String root, Set duplicates)
+	protected void loadByPath(String path, String root, Set duplicates)
 	{
-//		if( path.endsWith(".xconf"))
-//		{
-//			path = PathUtilities.extractPagePath(path) + ".xconf";
-//		}
-		if( !path.endsWith(".xconf") || path.endsWith("_site.xconf"))
+		// if( path.endsWith(".xconf"))
+		// {
+		// path = PathUtilities.extractPagePath(path) + ".xconf";
+		// }
+		if (!path.endsWith(".xconf") || path.endsWith("_site.xconf"))
 		{
 			return;
 		}
 		String htmlpage = PathUtilities.extractPagePath(path) + ".html";
-		if( duplicates.contains(htmlpage))
+		if (duplicates.contains(htmlpage))
 		{
 			return;
 		}
-		//path = PathUtilities.extractFileName(path);
+		// path = PathUtilities.extractFileName(path);
 		duplicates.add(htmlpage);
-		//make .xconf into .html
-		//ignore folders and html pages
-		//get rid of duplicates from base
-		
+		// make .xconf into .html
+		// ignore folders and html pages
+		// get rid of duplicates from base
+
 		loadPathEvent(htmlpage);
 	}
 
@@ -528,21 +510,22 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		PathEvent event = (PathEvent) getModuleManager().getBean("pathEvent");
 		event.setPage(eventpage);
 		String id = eventpage.getDirectoryName() + "." + eventpage.getPageName();
-		event.setId(  id );
-		//loadTask(event);
-//		User user = (User)getSearcherManager().getData(getCatalogId(), "user", "admin");
-//		event.setUser(user);
+		event.setId(id);
+		// loadTask(event);
+		// User user = (User)getSearcherManager().getData(getCatalogId(), "user",
+		// "admin");
+		// event.setUser(user);
 
 		getPathEvents().add(event);
 		return event;
 	}
-	
+
 	public PathEvent getPathEvent(String inPath)
 	{
 		for (Iterator iterator = getPathEvents().iterator(); iterator.hasNext();)
 		{
 			PathEvent event = (PathEvent) iterator.next();
-			String path =event.getPage().getPath(); 
+			String path = event.getPage().getPath();
 			if (path.equals(inPath))
 			{
 				return event;
@@ -554,25 +537,24 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 	public void addToRunQueue(Runnable inExecrun)
 	{
 		getExecutorManager().execute(inExecrun);
-		
+
 	}
 
 	public void reload(String inEventPath)
 	{
 		PathEvent event = getPathEvent(inEventPath);
-		
-		//Update the old one in place
+
+		// Update the old one in place
 		Page eventpage = getPageManager().getPage(inEventPath, true);
 		event.setPage(eventpage);
 
-		if( getPathEvents().contains(event) )
+		if (getPathEvents().contains(event))
 		{
 			log.info("hey");
 		}
-		
+
 		reloadScheduler();
-		
-		
+
 	}
 
 	protected void reloadScheduler()
@@ -583,41 +565,41 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 			{
 				getTimer().cancel();
 			}
-			catch ( Throwable ex)
+			catch (Throwable ex)
 			{
-				log.error("ignoring error",ex);
+				log.error("ignoring error", ex);
 			}
 			fieldTimer = null;
 		}
 		for (Iterator iterator = getPathEvents().iterator(); iterator.hasNext();)
 		{
 			PathEvent type = (PathEvent) iterator.next();
-			if( type.getPeriod() > 0)
+			if (type.getPeriod() > 0)
 			{
-				long startwhen = 0; //now
+				long startwhen = 0; // now
 				String startingfrommidnight = type.getStartingFromMidnight();
-				if( startingfrommidnight != null)
+				if (startingfrommidnight != null)
 				{
 					int milli = type.getStartingFromMidnightMilli();
 					GregorianCalendar cal = new GregorianCalendar();
 					cal.set(GregorianCalendar.HOUR_OF_DAY, 0);
 					cal.set(GregorianCalendar.MINUTE, 0);
 					cal.set(GregorianCalendar.SECOND, 0);
-					cal.add(GregorianCalendar.DAY_OF_MONTH, 1); //Tomorrow
+					cal.add(GregorianCalendar.DAY_OF_MONTH, 1); // Tomorrow
 					cal.add(GregorianCalendar.MILLISECOND, milli);
-					//How much to get to the next midnight?
+					// How much to get to the next midnight?
 					long now = System.currentTimeMillis();
 					long nextstart = cal.getTime().getTime();
-					startwhen = nextstart - now; //How much remaining?
+					startwhen = nextstart - now; // How much remaining?
 				}
 				else
 				{
 					startwhen = type.getPeriod();
 				}
-				
-				RunSharedEventPath runthing = new RunSharedEventPath(type.getPage().getPath() );
+
+				RunSharedEventPath runthing = new RunSharedEventPath(type.getPage().getPath());
 				getTimer().schedule(runthing, startwhen, type.getPeriod());
-				//getRunningTasks().push(runner);
+				// getRunningTasks().push(runner);
 
 			}
 		}
@@ -626,10 +608,11 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 	public class RunSharedEventPath extends TimerTask
 	{
 		protected String path;
-		public RunSharedEventPath(String inPath)
-		{
+
+		public RunSharedEventPath(String inPath) {
 			path = inPath;
 		}
+
 		public void run()
 		{
 			runSharedPathEvent(path);
@@ -645,34 +628,27 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 
 	public User getDefaultUser()
 	{
-		
-		
-			
-			UserSearcher searcher = (UserSearcher) getSearcherManager().getSearcher(getCatalogId(), "user");
-			
-			return searcher.getUser("admin", true);
-	
-		
-		
-		
+
+		UserSearcher searcher = (UserSearcher) getSearcherManager().getSearcher(getCatalogId(), "user");
+
+		return searcher.getUser("admin", true);
+
 	}
 
 	public void loadExtraEvents(String inRoot)
 	{
-	    // Collect existing event paths so we don’t reload them
-	    Set<String> duplicates = new HashSet<>();
-	    for (PathEvent existing : getPathEvents())
-	    {
-	        duplicates.add(existing.getPage().getPath());
-	    }
+		// Collect existing event paths so we don’t reload them
+		Set<String> duplicates = new HashSet<>();
+		for (PathEvent existing : getPathEvents())
+		{
+			duplicates.add(existing.getPage().getPath());
+		}
 
-	    // Load new ones from the extra root
-	    loadPathEvents(inRoot, duplicates);
+		// Load new ones from the extra root
+		loadPathEvents(inRoot, duplicates);
 
-	    // Keep a stable order
-	    Collections.sort(getPathEvents());
+		// Keep a stable order
+		Collections.sort(getPathEvents());
 	}
 
-	
-	
 }

@@ -5,10 +5,12 @@ package org.entermediadb.markdown.node;
  *
  * @see <a href="https://spec.commonmark.org/0.31.2/#paragraphs">CommonMark Spec</a>
  */
-public class Paragraph extends Block {
+public class Paragraph extends Block
+{
 
     @Override
-    public void accept(Visitor visitor) {
+    public void accept(Visitor visitor)
+    {
         visitor.visit(this);
     }
 }

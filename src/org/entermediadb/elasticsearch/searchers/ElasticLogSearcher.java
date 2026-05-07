@@ -5,9 +5,9 @@ import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramBuild
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
 import org.openedit.hittracker.SearchQuery;
 
-public class ElasticLogSearcher extends BaseElasticSearcher  {
+public class ElasticLogSearcher extends BaseElasticSearcher
+{
 
-	
 	/**
 	 * @override
 	 */
@@ -15,9 +15,7 @@ public class ElasticLogSearcher extends BaseElasticSearcher  {
 	{
 		return false;
 	}
-	
-	
-	
+
 	@Override
 	protected void addSearcherTerms(SearchQuery inQuery, SearchRequestBuilder inSearch)
 	{
@@ -25,25 +23,21 @@ public class ElasticLogSearcher extends BaseElasticSearcher  {
 		DateHistogramBuilder builder = new DateHistogramBuilder("event_breakdown_day");
 		builder.field("date");
 		builder.interval(DateHistogramInterval.DAY);
-		
-//		DateHistogramBuilder builder = new DateHistogramBuilder("event_breakdown");
-//		builder.interval(DateHistogramInterval.DAY);
-		
+
+		// DateHistogramBuilder builder = new DateHistogramBuilder("event_breakdown");
+		// builder.interval(DateHistogramInterval.DAY);
+
 		inSearch.addAggregation(builder);
-		
-		 builder = new DateHistogramBuilder("event_breakdown_week");
+
+		builder = new DateHistogramBuilder("event_breakdown_week");
 		builder.field("date");
 		builder.interval(DateHistogramInterval.WEEK);
-		
-//		DateHistogramBuilder builder = new DateHistogramBuilder("event_breakdown");
-//		builder.interval(DateHistogramInterval.DAY);
-		
+
+		// DateHistogramBuilder builder = new DateHistogramBuilder("event_breakdown");
+		// builder.interval(DateHistogramInterval.DAY);
+
 		inSearch.addAggregation(builder);
-		
-		
+
 	}
-	
-	
-	
 
 }

@@ -19,58 +19,66 @@ import org.openedit.WebPageRequest;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 
-public class McpManager implements CatalogEnabled {
+public class McpManager implements CatalogEnabled
+{
     private static final Log log = LogFactory.getLog(McpManager.class);
 
     protected ModuleManager fieldModuleManager;
     protected VelocityRenderUtil fieldRender;
     protected String fieldCatalogId;
     protected Map<String, McpConnection> connections = new ConcurrentHashMap<>();
-   
+
     protected McpGetHandlerManager fieldMcpGetHandlerManager;
 
-	public McpGetHandlerManager getMcpGetHandlerManager()
-	{
-		if (fieldMcpGetHandlerManager == null)
-		{
-			fieldMcpGetHandlerManager = new McpGetHandlerManager();
-		}
-		return fieldMcpGetHandlerManager;
-	}
+    public McpGetHandlerManager getMcpGetHandlerManager()
+    {
+        if (fieldMcpGetHandlerManager == null)
+        {
+            fieldMcpGetHandlerManager = new McpGetHandlerManager();
+        }
+        return fieldMcpGetHandlerManager;
+    }
 
-	public void setMcpGetHandlerManager(McpGetHandlerManager inMcpGetHandlerManager)
-	{
-		fieldMcpGetHandlerManager = inMcpGetHandlerManager;
-	}
+    public void setMcpGetHandlerManager(McpGetHandlerManager inMcpGetHandlerManager)
+    {
+        fieldMcpGetHandlerManager = inMcpGetHandlerManager;
+    }
 
-	public ModuleManager getModuleManager() {
+    public ModuleManager getModuleManager()
+    {
         return fieldModuleManager;
     }
 
-    public void setModuleManager(ModuleManager inModuleManager) {
+    public void setModuleManager(ModuleManager inModuleManager)
+    {
         fieldModuleManager = inModuleManager;
     }
 
-    public VelocityRenderUtil getRenderUtil() {
+    public VelocityRenderUtil getRenderUtil()
+    {
         return fieldRender;
     }
 
-    public void setRenderUtil(VelocityRenderUtil inRender) {
+    public void setRenderUtil(VelocityRenderUtil inRender)
+    {
         fieldRender = inRender;
     }
 
-    public String getCatalogId() {
+    public String getCatalogId()
+    {
         return fieldCatalogId;
     }
 
-    public void setCatalogId(String inCatalogId) {
+    public void setCatalogId(String inCatalogId)
+    {
         fieldCatalogId = inCatalogId;
     }
 
     /**
      * Opens a new SSE connection for the session in inReq if none exists.
      */
-    public McpConnection createConnection(MediaArchive inArchive,WebPageRequest inReq) {
+    public McpConnection createConnection(MediaArchive inArchive, WebPageRequest inReq)
+    {
         String requestedSessionId = inReq.getRequest().getHeader("mcp-session-id");
         if (requestedSessionId == null || requestedSessionId.isEmpty())
         {
@@ -79,7 +87,7 @@ public class McpManager implements CatalogEnabled {
 
         String sessionId = (requestedSessionId != null && !requestedSessionId.isEmpty()) ? requestedSessionId : createSessionId();
         String endpoint = inReq.findPathValue("mcp-endpoint");
-        //This is something like /sse/userkey
+        // This is something like /sse/userkey
         String key = inReq.getPage().getPageName();
         McpConnection stale = connections.remove(sessionId);
         if (stale != null)
@@ -95,13 +103,14 @@ public class McpManager implements CatalogEnabled {
         conn.openStream(endpoint);
 
         conn.setKey(key);
-        
+
         Data row = inArchive.query("appkeys").exact("key", key).searchOne();
-        if(row != null) {
-    		String userid = row.get("user");
-    		User user = inArchive.getUser(userid);	        	
-    		conn.setUser(user);
-    	}
+        if (row != null)
+        {
+            String userid = row.get("user");
+            User user = inArchive.getUser(userid);
+            conn.setUser(user);
+        }
 
         log.info("Created MCP connection for session: " + sessionId);
 
@@ -123,10 +132,11 @@ public class McpManager implements CatalogEnabled {
         }
 
         return conn;
-        
+
     }
 
-    public void handleCall(WebPageRequest inReq, McpConnection inConnection, String cmd, JSONObject payload) throws Exception{
+    public void handleCall(WebPageRequest inReq, McpConnection inConnection, String cmd, JSONObject payload) throws Exception
+    {
         if (inConnection == null)
         {
             throw new OpenEditException("No active MCP connection for command: " + cmd);
@@ -135,45 +145,39 @@ public class McpManager implements CatalogEnabled {
         Object id = payload != null ? payload.get("id") : null;
 
         inReq.putPageValue("id", id);
-       	String appid = inReq.findPathValue("applicationid");
+        String appid = inReq.findPathValue("applicationid");
         UserProfile profile = inReq.getUserProfile();
         JSONObject params = payload != null ? (JSONObject) payload.get("params") : null;
         String response;
 
         if ("logging/setLevel".equals(cmd))
         {
-            response = new JsonRpcResponseBuilder(id)
-                    .withServer("eMedia Live")
-                    .build();
+            response = new JsonRpcResponseBuilder(id).withServer("eMedia Live").build();
         }
-        else if ("tools/list".equals(cmd))
-        {
-                    if (profile == null)
-                    {
-                        response = new JsonRpcResponseBuilder(id)
-                                .withResponse("Authentication failed! User profile not found.", true)
-                                .build();
-                    }
-                    else
-                    {
-                        String fp = "/" + appid + "/ai/mcp/method/tools/list.json";
-                        inReq.putPageValue("modules", profile.getEntities());
+        else
+            if ("tools/list".equals(cmd))
+            {
+                if (profile == null)
+                {
+                    response = new JsonRpcResponseBuilder(id).withResponse("Authentication failed! User profile not found.", true).build();
+                }
+                else
+                {
+                    String fp = "/" + appid + "/ai/mcp/method/tools/list.json";
+                    inReq.putPageValue("modules", profile.getEntities());
 
-                        String toolsArrString = getRenderUtil().loadInputFromTemplate(inReq, fp);
+                    String toolsArrString = getRenderUtil().loadInputFromTemplate(inReq, fp);
 
-                        response = new JsonRpcResponseBuilder(id)
-                                .withToolsList(toolsArrString)
-                                .build();
-                    }
-        }
-        else if ("tools/call".equals(cmd))
-        {
+                    response = new JsonRpcResponseBuilder(id).withToolsList(toolsArrString).build();
+                }
+            }
+            else
+                if ("tools/call".equals(cmd))
+                {
                     String functionname = params != null ? (String) params.get("name") : null;
                     if (functionname == null || functionname.isEmpty())
                     {
-                        response = new JsonRpcResponseBuilder(id)
-                                .withResponse("Invalid tools/call request. Missing tool name.", true)
-                                .build();
+                        response = new JsonRpcResponseBuilder(id).withResponse("Invalid tools/call request. Missing tool name.", true).build();
                     }
                     else
                     {
@@ -186,24 +190,21 @@ public class McpManager implements CatalogEnabled {
                         text = text.replaceAll("(?m)^\\s*$\\n?", "");
                         text = text.replaceAll("(\\r?\\n){2,}", "\n");
 
-                        response = new JsonRpcResponseBuilder(id)
-                                .withResponse(text, false)
-                                .build();
+                        response = new JsonRpcResponseBuilder(id).withResponse(text, false).build();
                     }
-        }
-        else
-        {
-            log.info("Called " + cmd); //"notifications/initialized"
-            response = new JsonRpcResponseBuilder(id)
-                    .withResponse("CMD Received " + cmd, false)
-                    .build();
-        }
+                }
+                else
+                {
+                    log.info("Called " + cmd); // "notifications/initialized"
+                    response = new JsonRpcResponseBuilder(id).withResponse("CMD Received " + cmd, false).build();
+                }
 
         inConnection.sendMessage(response);
-		//inReq.getResponse().getOutputStream().write(response.getBytes());  //This should chunk it up
-		
-		//inReq.getPageStreamer().getOutput().getWriter().write(response);
-		//inReq.getResponse().flushBuffer();
+        // inReq.getResponse().getOutputStream().write(response.getBytes()); //This
+        // should chunk it up
+
+        // inReq.getPageStreamer().getOutput().getWriter().write(response);
+        // inReq.getResponse().flushBuffer();
     }
 
     public String createSessionId()
@@ -214,25 +215,27 @@ public class McpManager implements CatalogEnabled {
     /**
      * Retrieves the existing connection for the session in inReq, or null if none.
      */
-    public McpConnection getConnection(String sessionId) 
+    public McpConnection getConnection(String sessionId)
     {
-    	
-        //String sessionId = inReq.findValue("sessionId");
+
+        // String sessionId = inReq.findValue("sessionId");
         return connections.get(sessionId);
     }
 
-    public McpGetHandler loadGetHandler(WebPageRequest inReq) 
+    public McpGetHandler loadGetHandler(WebPageRequest inReq)
     {
-    	McpGetHandler handler = getMcpGetHandlerManager().loadGetHandler(inReq);
-    	return handler;
+        McpGetHandler handler = getMcpGetHandlerManager().loadGetHandler(inReq);
+        return handler;
     }
 
     /**
      * Removes and closes the connection for the given session ID.
      */
-    public void removeConnection(String inSessionId) {
+    public void removeConnection(String inSessionId)
+    {
         McpConnection conn = connections.remove(inSessionId);
-        if (conn != null) {
+        if (conn != null)
+        {
             conn.close();
             log.info("Removed MCP connection for session: " + inSessionId);
         }
@@ -241,11 +244,14 @@ public class McpManager implements CatalogEnabled {
     /**
      * Scans and removes any inactive or expired connections.
      */
-    public void cleanupExpiredConnections() {
+    public void cleanupExpiredConnections()
+    {
         Iterator<Map.Entry<String, McpConnection>> it = connections.entrySet().iterator();
-        while (it.hasNext()) {
+        while (it.hasNext())
+        {
             Map.Entry<String, McpConnection> entry = it.next();
-            if (!entry.getValue().isActive()) {
+            if (!entry.getValue().isActive())
+            {
                 it.remove();
                 log.info("Cleaned up expired MCP connection for session: " + entry.getKey());
             }

@@ -19,15 +19,14 @@ import org.openedit.util.LDAP;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
 
-public class LdapSearcher extends BaseSearcher 
+public class LdapSearcher extends BaseSearcher
 {
-	protected Log log = LogFactory.getLog(getClass()); 
+	protected Log log = LogFactory.getLog(getClass());
 	protected XmlArchive fieldXmlArchive;
 	protected String fieldDomain;
 	protected Map fieldServers;
 	protected UserManager fieldUserManager;
-	
-	
+
 	public UserManager getUserManager()
 	{
 		return fieldUserManager;
@@ -47,10 +46,10 @@ public class LdapSearcher extends BaseSearcher
 
 		return fieldServers;
 	}
-	
+
 	protected LDAP getServer()
 	{
-		LDAP server = (LDAP)getServers().get("default"); //TODO: Support named config
+		LDAP server = (LDAP) getServers().get("default"); // TODO: Support named config
 		if (server == null)
 		{
 			server = new LDAP();
@@ -58,34 +57,33 @@ public class LdapSearcher extends BaseSearcher
 			server.setDomain(ldapconfig.get("domain"));
 			server.setMaxLdapResults(Integer.parseInt(ldapconfig.get("maxldapresults")));
 			server.setServerName(ldapconfig.get("servername"));
-			
+
 			String username = ldapconfig.get("username");
-			if( username != null)
+			if (username != null)
 			{
 				User user = getUserManager().getUser(username);
 				String password = getUserManager().decryptPassword(user);
-				server.authenticate(user,password);
-				if( !server.connect() )
+				server.authenticate(user, password);
+				if (!server.connect())
 				{
 					throw new OpenEditException("Could not connect as user " + username);
 				}
-			}			
-			
+			}
+
 			getServers().put("default", server);
 		}
 		return server;
 	}
-	
+
 	public String getDomain()
 	{
 		return fieldDomain;
 	}
-	
 
 	public void clearIndex()
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public SearchQuery createSearchQuery()
@@ -97,7 +95,7 @@ public class LdapSearcher extends BaseSearcher
 	public void delete(Data inData, User inUser)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public HitTracker getAllHits(WebPageRequest inReq)
@@ -115,38 +113,37 @@ public class LdapSearcher extends BaseSearcher
 	public void reIndexAll() throws OpenEditException
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void saveAllData(Collection inAll, User inUser)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void saveData(Data inData, User inUser)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public HitTracker search(SearchQuery inQuery)
 	{
 		LDAP ldap = getServer();
-		
-		Term term = (Term)inQuery.getTerms().get(0);
+
+		Term term = (Term) inQuery.getTerms().get(0);
 		String value = term.getValue();
 		try
 		{
-			HitTracker results = ldap.search(term.getDetail().getId(), "substring", value); //TODO: lookup operation
+			HitTracker results = ldap.search(term.getDetail().getId(), "substring", value); // TODO: lookup operation
 			return results;
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
 			log.error("Could not run LDAP search", e);
 		}
 
-		
 		return null;
 	}
 
@@ -163,6 +160,6 @@ public class LdapSearcher extends BaseSearcher
 	public void deleteAll(User inUser)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 }

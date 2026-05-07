@@ -13,8 +13,8 @@ import org.openedit.data.SearcherManager;
 import org.openedit.util.PathUtilities;
 
 /**
- * Archive that does not cache and uses a database for storage This is not
- * specific to ElasticSearch. Can be used with any backing CategorySearcher
+ * Archive that does not cache and uses a database for storage This is not specific to
+ * ElasticSearch. Can be used with any backing CategorySearcher
  * 
  * @author cburkey
  */
@@ -25,7 +25,7 @@ public class ElasticCategoryArchive implements CategoryArchive
 	protected SearcherManager fieldSearcherManager;
 	protected ModuleManager fieldModuleManager;
 	protected CategorySearcher fieldCategorySearcher;
-	
+
 	public ModuleManager getModuleManager()
 	{
 		return fieldModuleManager;
@@ -60,37 +60,37 @@ public class ElasticCategoryArchive implements CategoryArchive
 	{
 		if (fieldCategorySearcher == null)
 		{
-			fieldCategorySearcher = (CategorySearcher)getSearcherManager().getSearcher(getCatalogId(), "category");
+			fieldCategorySearcher = (CategorySearcher) getSearcherManager().getSearcher(getCatalogId(), "category");
 		}
 		return fieldCategorySearcher;
 	}
 
 	@Override
-	//clears cache. Do nothing
+	// clears cache. Do nothing
 	public void clearCategories()
 	{
-		//reloadCategories();
+		// reloadCategories();
 	}
 
 	@Override
 	public void reloadCategories()
 	{
-//		getBackingArchive().reloadCategories();
-//		//Reload entire Index
-//		getCategorySearcher().deleteAll(null);
-//		List categories = getBackingArchive().listAllCategories();
-//		for (Iterator iterator = categories.iterator(); iterator.hasNext();)
-//		{
-//			Category cat = (Category) iterator.next();
-//			getCategorySearcher().saveData(cat, null);
-//		}
+		// getBackingArchive().reloadCategories();
+		// //Reload entire Index
+		// getCategorySearcher().deleteAll(null);
+		// List categories = getBackingArchive().listAllCategories();
+		// for (Iterator iterator = categories.iterator(); iterator.hasNext();)
+		// {
+		// Category cat = (Category) iterator.next();
+		// getCategorySearcher().saveData(cat, null);
+		// }
 	}
 
 	@Override
 	public void saveAll()
 	{
-		//getBackingArchive().setRootCategory(getRootCategory());
-		//getBackingArchive().saveAll();
+		// getBackingArchive().setRootCategory(getRootCategory());
+		// getBackingArchive().saveAll();
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public class ElasticCategoryArchive implements CategoryArchive
 	public void deleteCategory(Category inCategory)
 	{
 		getCategorySearcher().delete(inCategory, null);
-		//getBackingArchive().deleteCategory(inCategory);
+		// getBackingArchive().deleteCategory(inCategory);
 
 	}
 
@@ -137,9 +137,9 @@ public class ElasticCategoryArchive implements CategoryArchive
 
 	public Category createNewCategory(String inLabel)
 	{
-		//String id = createCategoryId(inLabel);
+		// String id = createCategoryId(inLabel);
 		Category cat = (Category) getCategorySearcher().createNewData();
-		//cat.setId(id);
+		// cat.setId(id);
 		cat.setName(inLabel);
 		return cat;
 	}
@@ -164,13 +164,13 @@ public class ElasticCategoryArchive implements CategoryArchive
 	public Category createCategoryTree(String inPath) throws OpenEditException
 	{
 		Category newcat = createCategoryTree(inPath, null);
-//		if( newcat != null && newcat.getParentCategory() != null)
-//		{
-//			newcat.getParentCategory().refresh();
-//		}
+		// if( newcat != null && newcat.getParentCategory() != null)
+		// {
+		// newcat.getParentCategory().refresh();
+		// }
 		return newcat;
 	}
-	
+
 	/**
 	 * @deprecated
 	 * @param inPath
@@ -211,13 +211,13 @@ public class ElasticCategoryArchive implements CategoryArchive
 			String parentPath = PathUtilities.extractDirectoryPath(inPath);
 			if (parentPath == null || parentPath == "/" || parentPath.length() == 0)
 			{
-				getRootCategory().addChild(child); //No parents left
+				getRootCategory().addChild(child); // No parents left
 				saveCategory(child);
 				return child;
 			}
 
 			Category inParentCategory = createCategoryTree(parentPath, inNames);
-			inParentCategory.addChild(child); //It is going to be saved to root 
+			inParentCategory.addChild(child); // It is going to be saved to root
 			saveCategory(child);
 		}
 		return child;
@@ -245,7 +245,5 @@ public class ElasticCategoryArchive implements CategoryArchive
 			addCategories(inAll, child);
 		}
 	}
-
-
 
 }

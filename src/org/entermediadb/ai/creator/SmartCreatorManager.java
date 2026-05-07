@@ -999,7 +999,8 @@ public class SmartCreatorManager extends BaseAiManager implements ChatMessageHan
 		ContentItem original = getMediaArchive().getOriginalContent(asset);
 		if (original.exists())
 		{
-			// ContentItem preview = getMediaArchive().getPresetManager().outPutForGenerated(archive, asset,
+			// ContentItem preview =
+			// getMediaArchive().getPresetManager().outPutForGenerated(archive, asset,
 			// "image3000x3000");
 			getMediaArchive().getAssetEditor().backUpFilesForLastVersion(asset, original, null);
 		}

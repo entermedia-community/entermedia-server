@@ -32,11 +32,11 @@ public class WindowsAuthenticator extends BaseAuthenticator
 		{
 			inDomainOrBlank = "";
 		}
-		//1433 
-		
+		// 1433
+
 		log.info("Authenticating server= " + inServer + " domain= " + inDomainOrBlank);
-		//I think 445 is the main port we need
-		
+		// I think 445 is the main port we need
+
 		NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(inDomainOrBlank, inAReq.getUser().getUserName(), inAReq.getPassword());
 		try
 		{
@@ -55,7 +55,7 @@ public class WindowsAuthenticator extends BaseAuthenticator
 			// }
 			UniAddress controller = new UniAddress(ip);
 
-			//445 is the default port
+			// 445 is the default port
 			String port = inAReq.get("authenticationserverport");
 			if (port != null)
 			{
@@ -65,9 +65,9 @@ public class WindowsAuthenticator extends BaseAuthenticator
 			{
 				SmbSession.logon(controller, auth);
 			}
-			//password may be different than what's in the xml we should set it
-			//it will get encrypted and saved after login
-			//Securrity issue inAReq.getUser().setPassword(inAReq.getPassword());
+			// password may be different than what's in the xml we should set it
+			// it will get encrypted and saved after login
+			// Securrity issue inAReq.getUser().setPassword(inAReq.getPassword());
 			inAReq.getUser().setEnabled(true);
 			return true;
 		}
@@ -77,28 +77,24 @@ public class WindowsAuthenticator extends BaseAuthenticator
 			return false;
 		}
 		/*
-		 * // Obtain a LoginContext, needed for authentication. Tell it // to
-		 * use the LoginModule implementation specified by the // entry named
-		 * "JaasSample" in the JAAS login configuration // file and to also use
-		 * the specified CallbackHandler. LoginContext lc = null; try { lc = new
+		 * // Obtain a LoginContext, needed for authentication. Tell it // to use the LoginModule
+		 * implementation specified by the // entry named "JaasSample" in the JAAS login configuration //
+		 * file and to also use the specified CallbackHandler. LoginContext lc = null; try { lc = new
 		 * LoginContext("JaasSample", new TextCallbackHandler());
 		 * 
-		 * LoginContext loginContext = new LoginContext( "Sample", new
-		 * UsernamePasswordCallbackHandler (username, password));
+		 * LoginContext loginContext = new LoginContext( "Sample", new UsernamePasswordCallbackHandler
+		 * (username, password));
 		 * 
-		 * loginContext.login(); // Now we're logged in, so we can get the
-		 * current subject. Subject subject = loginContext.getSubject(); //
-		 * Display the subject System.out.println(subject); } catch
-		 * (LoginException le) { System.err.println("Cannot create LoginContext. " +
-		 * le.getMessage()); System.exit(-1); } catch (SecurityException se) {
-		 * System.err.println("Cannot create LoginContext. " + se.getMessage());
+		 * loginContext.login(); // Now we're logged in, so we can get the current subject. Subject subject
+		 * = loginContext.getSubject(); // Display the subject System.out.println(subject); } catch
+		 * (LoginException le) { System.err.println("Cannot create LoginContext. " + le.getMessage());
+		 * System.exit(-1); } catch (SecurityException se) {
+		 * System.err.println("Cannot create LoginContext. " + se.getMessage()); System.exit(-1); }
+		 * 
+		 * try { // attempt authentication lc.login(); } catch (LoginException le) {
+		 * 
+		 * System.err.println("Authentication failed:"); System.err.println(" " + le.getMessage());
 		 * System.exit(-1); }
-		 * 
-		 * try { // attempt authentication lc.login(); } catch (LoginException
-		 * le) {
-		 * 
-		 * System.err.println("Authentication failed:"); System.err.println(" " +
-		 * le.getMessage()); System.exit(-1); }
 		 * 
 		 * System.out.println("Authentication succeeded!");
 		 */

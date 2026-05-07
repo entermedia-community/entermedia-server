@@ -2,7 +2,8 @@ package org.entermediadb.markdown.parser;
 
 import org.entermediadb.markdown.node.Node;
 
-public interface PostProcessor {
+public interface PostProcessor
+{
 
     /**
      * @param node the node to post-process

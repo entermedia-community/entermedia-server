@@ -17,7 +17,7 @@ import org.openedit.repository.InputStreamItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
 
-public class UrlRepository extends  BaseRepository
+public class UrlRepository extends BaseRepository
 {
 	protected HttpClient fieldHttpClient;
 
@@ -25,12 +25,8 @@ public class UrlRepository extends  BaseRepository
 	{
 		if (fieldHttpClient == null)
 		{
-			  RequestConfig globalConfig = RequestConfig.custom()
-		                .setCookieSpec(CookieSpecs.DEFAULT)
-		                .build();
-			  fieldHttpClient = HttpClients.custom()
-		                .setDefaultRequestConfig(globalConfig)
-		                .build();
+			RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
+			fieldHttpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
 		}
 
 		return fieldHttpClient;
@@ -41,18 +37,16 @@ public class UrlRepository extends  BaseRepository
 		fieldHttpClient = inHttpClient;
 	}
 
-
 	public ContentItem get(String inPath) throws RepositoryException
 	{
 		String path = inPath.substring(getPath().length());
 		String url = getExternalPath() + path;
-		UrlContentItem item = new UrlContentItem(); 
-			item.setPath(inPath);
-			item.setAbsolutePath(url);
+		UrlContentItem item = new UrlContentItem();
+		item.setPath(inPath);
+		item.setAbsolutePath(url);
 		return item;
 	}
 
-	
 	public void copy(ContentItem inSource, ContentItem inDestination) throws RepositoryException
 	{
 		// TODO Auto-generated method stub
@@ -120,13 +114,13 @@ public class UrlRepository extends  BaseRepository
 	class UrlContentItem extends InputStreamItem
 	{
 		protected Boolean existed = null;
-		
-		public InputStream getInputStream() throws RepositoryException 
+
+		public InputStream getInputStream() throws RepositoryException
 		{
 			try
 			{
 				String fullpath = getAbsolutePath().replace(" ", "%20");
-				//fullpath = fullpath.replace(";", "%3b");
+				// fullpath = fullpath.replace(";", "%3b");
 				HttpGet postMethod = new HttpGet(fullpath);
 				HttpResponse res = getHttpClient().execute(postMethod);
 				if (res.getStatusLine().getStatusCode() == 200)
@@ -134,21 +128,22 @@ public class UrlRepository extends  BaseRepository
 					fieldInputStream = res.getEntity().getContent();
 				}
 			}
-			catch ( IOException ex)
+			catch (IOException ex)
 			{
 				throw new RepositoryException(ex);
 			}
 			return fieldInputStream;
 		}
+
 		public boolean exists()
 		{
-			if( existed == null)
+			if (existed == null)
 			{
 				try
 				{
 					String fullpath = getAbsolutePath().replace(" ", "%20");
 					HttpHead postMethod = new HttpHead(fullpath);
-					//HeadMethod postMethod = new HeadMethod(fullpath);
+					// HeadMethod postMethod = new HeadMethod(fullpath);
 					HttpResponse res = getHttpClient().execute(postMethod);
 					if (res.getStatusLine().getStatusCode() == 200)
 					{
@@ -159,11 +154,11 @@ public class UrlRepository extends  BaseRepository
 						existed = Boolean.FALSE;
 					}
 				}
-				catch ( IOException ex)
+				catch (IOException ex)
 				{
 					throw new RepositoryException(ex);
 				}
-				
+
 			}
 			return existed.booleanValue();
 		}

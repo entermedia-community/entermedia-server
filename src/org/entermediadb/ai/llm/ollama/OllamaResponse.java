@@ -34,69 +34,58 @@ public class OllamaResponse extends BasicLlmResponse
 	public JSONObject getMessageStructured()
 	{
 		/*
-		JSONArray choices = (JSONArray) res.getRawResponse().get("choices");
-        JSONObject choice = (JSONObject) choices.get(0);
-        JSONObject message = (JSONObject) choice.get("message");
-        
-        String contentString = (String) message.get("content"); // Possibly a string
-                
-        if (contentString != null)
-        {
-        	JSONObject content = parser.parse(contentString);
-        	return content;
-        }
+		 * JSONArray choices = (JSONArray) res.getRawResponse().get("choices"); JSONObject choice =
+		 * (JSONObject) choices.get(0); JSONObject message = (JSONObject) choice.get("message");
+		 * 
+		 * String contentString = (String) message.get("content"); // Possibly a string
+		 * 
+		 * if (contentString != null) { JSONObject content = parser.parse(contentString); return content; }
 		 */
-		
+
 		JSONObject message = (JSONObject) rawResponse.get("message");
 		JSONArray toolCalls = (JSONArray) message.get("tool_calls");
 
 		/**
 		 * 
-		 
-		 
-		 
-		 		JSONObject results = new JSONObject();
-
-		JSONObject message = (JSONObject) res.getRawResponse().get("message");
-		if (message == null || !message.get("role").equals("assistant"))
-		{
-			log.info("No message found in GPT response");
-			return results;
-		}
-
-		String content = (String) message.get("content");
-			
-		if (content == null || content.isEmpty())
-		{
-			log.info("No structured data found in GPT response");
-			return results;
-		}
-		JSONParser parser = new JSONParser();
-		results = (JSONObject) parser.parse(new StringReader(content));
-
-	
+		 * 
+		 * 
+		 * 
+		 * JSONObject results = new JSONObject();
+		 * 
+		 * JSONObject message = (JSONObject) res.getRawResponse().get("message"); if (message == null ||
+		 * !message.get("role").equals("assistant")) { log.info("No message found in GPT response"); return
+		 * results; }
+		 * 
+		 * String content = (String) message.get("content");
+		 * 
+		 * if (content == null || content.isEmpty()) { log.info("No structured data found in GPT response");
+		 * return results; } JSONParser parser = new JSONParser(); results = (JSONObject) parser.parse(new
+		 * StringReader(content));
+		 * 
+		 * 
 		 */
-		
-		
+
 		if (toolCalls == null || toolCalls.isEmpty())
 		{
 			String content = (String) message.get("content");
 			JSONParser parser = new JSONParser();
-			try {
+			try
+			{
 				JSONObject contentargs = (JSONObject) parser.parse(content);
 				return contentargs;
 			}
-			catch (Exception e){
+			catch (Exception e)
+			{
 				return null;
 			}
 		}
-		else 
+		else
 		{
 			JSONObject firstToolCall = (JSONObject) toolCalls.get(0); // Assuming one function call at a time
 			JSONObject function = (JSONObject) firstToolCall.get("function");
 
 			return function.containsKey("arguments") ? (JSONObject) function.get("arguments") : null;
-	
+
 		}
 	}
 
@@ -167,10 +156,11 @@ public class OllamaResponse extends BasicLlmResponse
 		{
 			return ((Long) tokens).intValue();
 		}
-		else if (tokens instanceof Integer)
-		{
-			return (Integer) tokens;
-		}
+		else
+			if (tokens instanceof Integer)
+			{
+				return (Integer) tokens;
+			}
 
 		return 0; // Default if type is unexpected
 	}
@@ -190,7 +180,7 @@ public class OllamaResponse extends BasicLlmResponse
 	{
 		throw new OpenEditException("Ollama cannot create images");
 	}
-	
+
 	@Override
 	public ArrayList<String> getImageBase64s()
 	{

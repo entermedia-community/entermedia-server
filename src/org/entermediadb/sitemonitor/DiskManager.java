@@ -21,19 +21,19 @@ public class DiskManager implements CatalogEnabled
 		try
 		{
 			Collection<String> fileNames = archive.getCatalogSettingValues("diskpartitions");
-			if( fileNames == null )
+			if (fileNames == null)
 			{
 				fileNames = new ArrayList<String>();
 			}
 			fileNames.add("/");
-			fileNames.add( archive.getRootDirectory().getAbsolutePath() );
-			
+			fileNames.add(archive.getRootDirectory().getAbsolutePath());
+
 			Collection<Data> all = archive.getSearcher("hotfolder").getAllHits();
 			for (Iterator<Data> iterator = all.iterator(); iterator.hasNext();)
 			{
 				Data hotfolder = iterator.next();
 				String path = hotfolder.get("externalpath");
-				if( path != null)
+				if (path != null)
 				{
 					fileNames.add(path);
 				}
@@ -45,11 +45,11 @@ public class DiskManager implements CatalogEnabled
 				Long totalCapacity = (long) (partition.getTotalSpace() / SiteMonitorModule.MEGABYTE);
 				Long freePartitionSpace = (long) (partition.getFreeSpace() / SiteMonitorModule.MEGABYTE);
 				Long usablePartitionSpace = (long) (partition.getUsableSpace() / SiteMonitorModule.MEGABYTE);
-				
+
 				partitions.add(new DiskPartition(file, totalCapacity, freePartitionSpace, usablePartitionSpace));
 			}
 			return partitions;
-	
+
 		}
 		catch (Exception e)
 		{
@@ -68,6 +68,5 @@ public class DiskManager implements CatalogEnabled
 	{
 		this.fieldCatalogId = inId;
 	}
-
 
 }

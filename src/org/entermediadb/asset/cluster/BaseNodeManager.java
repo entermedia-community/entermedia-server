@@ -19,7 +19,7 @@ public abstract class BaseNodeManager implements NodeManager
 	protected WebServer fieldWebServer;
 	protected Map fieldConnectedCatalogIds;
 	protected boolean fieldForceSaveMasterCluster;
-	
+
 	public boolean isForceSaveMasterCluster()
 	{
 		return fieldForceSaveMasterCluster;
@@ -89,11 +89,13 @@ public abstract class BaseNodeManager implements NodeManager
 
 		return fieldLocalNode;
 	}
+
 	protected void loadSettings()
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	public String getLocalNodeId()
 	{
 		return getLocalNode().getId();
@@ -104,24 +106,24 @@ public abstract class BaseNodeManager implements NodeManager
 		return getLocalNode().get("cluster.name");
 	}
 
-	//	public String createDailySnapShot(String inCatalogId)
-//	{		
-//		throw new OpenEditException("Not implemented");
-//	}
-//	
-//	public String createSnapShot(String inCatalogId)
-//	{		
-//		throw new OpenEditException("Not implemented");
-//	}
-//	
-//	public List listSnapShots(String inCatalogId)
-//	{
-//		throw new OpenEditException("Not implemented");
-//	}
-//	public void restoreSnapShot(String inCatalogId, String inSnapShotId)
-//	{
-//		throw new OpenEditException("Not implemented");
-//	}
+	// public String createDailySnapShot(String inCatalogId)
+	// {
+	// throw new OpenEditException("Not implemented");
+	// }
+	//
+	// public String createSnapShot(String inCatalogId)
+	// {
+	// throw new OpenEditException("Not implemented");
+	// }
+	//
+	// public List listSnapShots(String inCatalogId)
+	// {
+	// throw new OpenEditException("Not implemented");
+	// }
+	// public void restoreSnapShot(String inCatalogId, String inSnapShotId)
+	// {
+	// throw new OpenEditException("Not implemented");
+	// }
 
 	@Override
 	public boolean connectCatalog(String inCatalogId)
@@ -129,6 +131,5 @@ public abstract class BaseNodeManager implements NodeManager
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 }

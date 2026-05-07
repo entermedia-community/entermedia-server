@@ -25,7 +25,6 @@ public class McpConnection implements Runnable
 	protected String fieldKey;
 	protected String fieldSessionId;
 
-
 	public String getKey()
 	{
 		return fieldKey;
@@ -56,8 +55,7 @@ public class McpConnection implements Runnable
 		fieldUser = inUser;
 	}
 
-	public McpConnection(WebPageRequest inReq)
-	{
+	public McpConnection(WebPageRequest inReq) {
 		this.req = inReq;
 	}
 
@@ -84,9 +82,9 @@ public class McpConnection implements Runnable
 		{
 			throw new OpenEditException("Failed to get SSE output stream", e);
 		}
-	
+
 	}
-	
+
 	public void openStream(String inEndpoint)
 	{
 		String sessionId = getSessionId();
@@ -145,7 +143,7 @@ public class McpConnection implements Runnable
 		{
 			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(data);
-			String cleanJson = ((JSONObject) obj).toJSONString();	
+			String cleanJson = ((JSONObject) obj).toJSONString();
 
 			log.info("Session ID Was: + " + getSessionId() + " DATA: " + cleanJson);
 
@@ -200,6 +198,5 @@ public class McpConnection implements Runnable
 	{
 		return active;
 	}
-
 
 }

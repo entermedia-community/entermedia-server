@@ -18,7 +18,6 @@ public class ViewData extends BaseData implements CatalogEnabled
 	protected Collection<ViewData> fieldChildren;
 
 	protected String fieldCatalogId;
-	
 
 	public String getCatalogId()
 	{
@@ -39,7 +38,7 @@ public class ViewData extends BaseData implements CatalogEnabled
 	{
 		fieldSearchManager = inSearchManager;
 	}
-	
+
 	public Collection<ViewData> getChildren()
 	{
 		if (fieldChildren == null)
@@ -50,43 +49,44 @@ public class ViewData extends BaseData implements CatalogEnabled
 			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 			{
 				Data view = (Data) iterator.next();
-				ViewData data = (ViewData)viewsearcher.loadData(view);
+				ViewData data = (ViewData) viewsearcher.loadData(view);
 				fieldChildren.add(data);
 			}
 		}
 		return fieldChildren;
 	}
-	
+
 	public Searcher getSearcher()
 	{
 		String moduleid = get("rendertable");
-		if( moduleid == null)
+		if (moduleid == null)
 		{
 			moduleid = get("moduleid");
 		}
 		Searcher fieldsearcher = getSearchManager().getSearcher(getCatalogId(), moduleid);
 		return fieldsearcher;
 	}
-	
+
 	public ViewFieldList getDetailsForView(UserProfile inProfile)
 	{
 		Searcher searcher = getSearcher();
-		if (searcher == null) {
-			
+		if (searcher == null)
+		{
+
 			return null;
 		}
-		if( inProfile != null)
+		if (inProfile != null)
 		{
 			String saveforall = inProfile.get("view_saveforallenabled");
-			if( Boolean.parseBoolean(saveforall) )
+			if (Boolean.parseBoolean(saveforall))
 			{
 				ViewFieldList fields = searcher.getPropertyDetailsArchive().getViewFields(searcher.getPropertyDetails(), this, null);
 				return fields;
 			}
 		}
-		
+
 		ViewFieldList fields = searcher.getPropertyDetailsArchive().getViewFields(searcher.getPropertyDetails(), this, inProfile);
 		return fields;
 	}
-	
+
 }

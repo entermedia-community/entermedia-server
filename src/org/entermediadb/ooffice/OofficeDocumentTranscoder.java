@@ -20,7 +20,8 @@ import org.openedit.util.PathUtilities;
 public class OofficeDocumentTranscoder extends BaseTranscoder
 {
 	// protected final def formats =
-	// ["doc","docx","rtf","ppt","pptx","wps","odt","html","xml","csv", "xls", "xlsx", "odp"];
+	// ["doc","docx","rtf","ppt","pptx","wps","odt","html","xml","csv", "xls",
+	// "xlsx", "odp"];
 	private static final Log log = LogFactory.getLog(OofficeDocumentTranscoder.class);
 
 	public synchronized ConvertResult convert(ConvertInstructions inStructions)
@@ -86,13 +87,13 @@ public class OofficeDocumentTranscoder extends BaseTranscoder
 		}
 		else
 		{
-			log.error("Error running command on : " + input.getName() + " output:"
-					+ done.getStandardOut() + " returned: " + done.getReturnValue());
+			log.error("Error running command on : " + input.getName() + " output:" + done.getStandardOut() + " returned: " + done.getReturnValue());
 		}
 		return result;
 	}
 
-	// public String populateOutputPath(MediaArchive inArchive, ConvertInstructions inStructions)
+	// public String populateOutputPath(MediaArchive inArchive, ConvertInstructions
+	// inStructions)
 	// {
 	// //we only generate PDF for now
 	// StringBuffer path = new StringBuffer();

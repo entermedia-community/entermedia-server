@@ -45,11 +45,13 @@ public class ImageConversionManager extends BaseConversionManager
 	 * public void setCMYKTranscoder(CMYKTranscoder inCMYKTranscoder) { fieldCMYKTranscoder =
 	 * inCMYKTranscoder; }
 	 */
-	// protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem input)
+	// protected ContentItem createCacheFile(ConvertInstructions inStructions,
+	// ContentItem input)
 	// {
 	//
 	//
-	// TranscodeTools creatorManager = inStructions.getMediaArchive().getTranscodeTools();
+	// TranscodeTools creatorManager =
+	// inStructions.getMediaArchive().getTranscodeTools();
 	// HashMap map = new HashMap();
 	// map.put("prefwidth", "1024");
 	// map.put("prefheight", "768");
@@ -57,10 +59,12 @@ public class ImageConversionManager extends BaseConversionManager
 	// Data preset =
 	// getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"image","image1024x768.jpg");
 	//
-	// ConvertInstructions proxyinstructions = createInstructions(inStructions.getAsset(), preset);
+	// ConvertInstructions proxyinstructions =
+	// createInstructions(inStructions.getAsset(), preset);
 	//
 	// proxyinstructions.setInputFile(inStructions.getOriginalDocument());
-	// ConvertResult result = findTranscoderByPreset(preset).convert(proxyinstructions);
+	// ConvertResult result =
+	// findTranscoderByPreset(preset).convert(proxyinstructions);
 	// return result.getOutput();
 	// }
 	//
@@ -98,11 +102,12 @@ public class ImageConversionManager extends BaseConversionManager
 	 * ContentItem originalDocument = inStructions.getOriginalDocument();
 	 * 
 	 * if (!custom.exists()) { // convert -size 376x254 tile:pattern:checkerboard //
-	 * /home/ian/git/testbench/webapp/WEB-INF/data/assets/catalog/originals/Collections/General/TEST/car
-	 * .png[0] // -compose over -composite //
-	 * /home/ian/git/testbench/webapp/WEB-INF/data/assets/catalog/generated/Collections/General/TEST/car
-	 * .png/image1024x768.jpg File file = new File(custom.getAbsolutePath());
-	 * file.getParentFile().mkdirs(); List<String> com = new ArrayList<String>();
+	 * /home/ian/git/testbench/webapp/WEB-INF/data/assets/catalog/originals/
+	 * Collections/General/TEST/car .png[0] // -compose over -composite //
+	 * /home/ian/git/testbench/webapp/WEB-INF/data/assets/catalog/generated/
+	 * Collections/General/TEST/car .png/image1024x768.jpg File file = new
+	 * File(custom.getAbsolutePath()); file.getParentFile().mkdirs(); List<String> com = new
+	 * ArrayList<String>();
 	 * 
 	 * int finalwidth = asset.getInt("width"); int finalheight = asset.getInt("height"); //
 	 * com.add("\\( -size " + finalwidth + "x" + finalheight + " tile:pattern:checkerboard \\)"); //

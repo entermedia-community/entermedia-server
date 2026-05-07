@@ -42,12 +42,11 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 	protected XmlUtil fieldXmlUtil;
 	protected CacheManager fieldCacheManager;
 	protected Category NULL = new BaseCategory();
-	
-	public XmlCategoryArchive()
-	{
+
+	public XmlCategoryArchive() {
 		log.info("created");
 	}
-	
+
 	public CacheManager getCacheManager()
 	{
 		return fieldCacheManager;
@@ -80,31 +79,31 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 		}
 	}
 
-
 	public Category getCategory(String inCategory)
 	{
 		try
 		{
-			if(inCategory == null){
+			if (inCategory == null)
+			{
 				return null;
 			}
-			Category cat = (Category) getCacheManager().get(cacheId(),inCategory);
-			if( cat == null)
+			Category cat = (Category) getCacheManager().get(cacheId(), inCategory);
+			if (cat == null)
 			{
-				//search twice. Once follow the id path
-				cat = findChildByPath(getRootCategory(), inCategory );
-				//second time search everyone
-				if( cat == null)
+				// search twice. Once follow the id path
+				cat = findChildByPath(getRootCategory(), inCategory);
+				// second time search everyone
+				if (cat == null)
 				{
-					cat = findChild(getRootCategory(),inCategory);
+					cat = findChild(getRootCategory(), inCategory);
 				}
-				if( cat == null)
+				if (cat == null)
 				{
 					cat = NULL;
 				}
 				getCacheManager().put(cacheId(), inCategory, cat);
 			}
-			if( cat == NULL)
+			if (cat == NULL)
 			{
 				return null;
 			}
@@ -115,6 +114,7 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 			throw new OpenEditRuntimeException(ex);
 		}
 	}
+
 	protected Category findChildByPath(Category inRoot, String inId)
 	{
 		String test = inRoot.getId();
@@ -124,8 +124,8 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 		}
 		for (Iterator iterator = inRoot.getChildren().iterator(); iterator.hasNext();)
 		{
-			Category child = (Category)iterator.next();
-			if( child.getId().startsWith(inId))
+			Category child = (Category) iterator.next();
+			if (child.getId().startsWith(inId))
 			{
 				child = findChild(child, inId);
 				if (child != null)
@@ -136,6 +136,7 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 		}
 		return null;
 	}
+
 	public Category findChild(Category inRoot, String inId)
 	{
 		String test = inRoot.getId();
@@ -145,7 +146,7 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 		}
 		for (Iterator iterator = inRoot.getChildren().iterator(); iterator.hasNext();)
 		{
-			Category child = (Category)iterator.next();
+			Category child = (Category) iterator.next();
 			child = findChild(child, inId);
 			if (child != null)
 			{
@@ -155,11 +156,11 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 		return null;
 	}
 
-
 	protected String cacheId()
 	{
 		return getCatalogId() + "categoryarchive";
 	}
+
 	public Category getCategoryByName(String inCategoryName)
 	{
 		List catalogs = listAllCategories();
@@ -176,11 +177,11 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 
 	public Category getRootCategory()
 	{
-		if (fieldRootCatalog == null )
+		if (fieldRootCatalog == null)
 		{
-			synchronized (this )
+			synchronized (this)
 			{
-				if (fieldRootCatalog == null )
+				if (fieldRootCatalog == null)
 				{
 					reloadCategories();
 				}
@@ -189,12 +190,11 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 		return fieldRootCatalog;
 	}
 
-
 	public void deleteCategory(Category inCategory)
 	{
 		if (getRootCategory().getId().equals(inCategory.getId()))
 		{
-			//setRootCategory(new BaseCategory("index", "Index"));
+			// setRootCategory(new BaseCategory("index", "Index"));
 			for (Iterator iterator = inCategory.getChildren().iterator(); iterator.hasNext();)
 			{
 				Category child = (Category) iterator.next();
@@ -209,7 +209,7 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 				inCategory.getParentCategory().removeChild(inCategory);
 			}
 		}
-		getCacheManager().remove(cacheId(),inCategory.getId());
+		getCacheManager().remove(cacheId(), inCategory.getId());
 		saveAll();
 	}
 
@@ -230,22 +230,23 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 		fieldRootCatalog = null;
 	}
 
-//	public void setRootCategory(Category inRootCatalog)
-//	{
-//		fieldRootCatalog = inRootCatalog;
-//
-//		if (fieldRootCatalog != null)
-//		{
-//			// This is not used much anymore
-//			String home = fieldRootCatalog.getProperty("categoryhome");
-//			if (home == null)
-//			{
-//				fieldRootCatalog.setProperty("categoryhome", "/" + getCatalogId() + "/categories/");
-//			}
-//			cacheCategory(fieldRootCatalog);
-//		}
-//
-//	}
+	// public void setRootCategory(Category inRootCatalog)
+	// {
+	// fieldRootCatalog = inRootCatalog;
+	//
+	// if (fieldRootCatalog != null)
+	// {
+	// // This is not used much anymore
+	// String home = fieldRootCatalog.getProperty("categoryhome");
+	// if (home == null)
+	// {
+	// fieldRootCatalog.setProperty("categoryhome", "/" + getCatalogId() +
+	// "/categories/");
+	// }
+	// cacheCategory(fieldRootCatalog);
+	// }
+	//
+	// }
 
 	protected String listCatalogXml()
 	{
@@ -265,8 +266,8 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 			Page tempfile = getPageManager().getPage("/WEB-INF/data/" + getCatalogId() + "/categories.tmp.xml");
 			Element root = createElement(getRootCategory());
 			// lets write to a stream
-			//TODO: Lock the path
-			
+			// TODO: Lock the path
+
 			OutputStream out = getPageManager().saveToStream(tempfile);
 			getXmlUtil().saveXml(root, out, catalogFile.getCharacterEncoding());
 			getPageManager().movePage(tempfile, catalogFile);
@@ -302,14 +303,17 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 			if (id != null && !"id".equals(id) && !"name".equals(id))
 			{
 				Element prop = child.addElement("property");
-				
-				String text = (String)inRootCatalog.getValue(id);
-				
+
+				String text = (String) inRootCatalog.getValue(id);
+
 				prop.addAttribute("id", id);
-				if(text != null){
-				prop.setText(text);
-				} else{
-					//prop.setText("missing");
+				if (text != null)
+				{
+					prop.setText(text);
+				}
+				else
+				{
+					// prop.setText("missing");
 				}
 			}
 		}
@@ -365,18 +369,18 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 					rootConfig.populate(rootE);
 
 					Category root = createCatalog(rootConfig);
-					if( fieldRootCatalog == null)
+					if (fieldRootCatalog == null)
 					{
-						fieldRootCatalog  = root;
+						fieldRootCatalog = root;
 					}
-					else					
+					else
 					{
-						//Just update the root object
+						// Just update the root object
 						fieldRootCatalog.setName(root.getName());
 						fieldRootCatalog.setProperties(root.getProperties());
 						fieldRootCatalog.setChildren(root.getChildren());
 					}
-					//fieldRootCatalog.setProperty("dirty", "false");
+					// fieldRootCatalog.setProperty("dirty", "false");
 				}
 				catch (Exception ex)
 				{
@@ -390,7 +394,7 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 				Category root = new BaseCategory();
 				root.setId("index");
 				root.setName("Index");
-				fieldRootCatalog  = root;//setRootCategory(root);
+				fieldRootCatalog = root;// setRootCategory(root);
 			}
 		}
 		catch (Exception ex)
@@ -439,7 +443,6 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 		return cat;
 	}
 
-
 	protected void loadRelatedCategoryIds(Category inCategory, Configuration inAssetConfig)
 	{
 		inCategory.clearRelatedCategoryIds();
@@ -487,7 +490,6 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 		}
 	}
 
-
 	public PageManager getPageManager()
 	{
 		return fieldPageManager;
@@ -514,7 +516,7 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 
 	public Category cacheCategory(Category inCat)
 	{
-		getCacheManager().put(cacheId(),inCat.getId(), inCat);
+		getCacheManager().put(cacheId(), inCat.getId(), inCat);
 		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
 		{
 			Category child = (Category) iterator.next();
@@ -593,13 +595,13 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 
 			Category inParentCategory = createCategoryTree(parentPath, inNames);
 			inParentCategory.addChild(child);
-			
+
 			List children = inParentCategory.getChildren();
 
-			Collections.sort(children, new Comparator() 
-			{
-				public int compare(Object o1, Object o2) {
-					Category c1 = (Category)o1, c2 = (Category)o2;
+			Collections.sort(children, new Comparator() {
+				public int compare(Object o1, Object o2)
+				{
+					Category c1 = (Category) o1, c2 = (Category) o2;
 					return c1.getName().compareTo(c2.getName());
 				}
 			});
@@ -628,18 +630,18 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 
 	/**
 	 * 
-	 * @param inCategoryIds space separated list of category lists 
+	 * @param inCategoryIds space separated list of category lists
 	 * @return
 	 */
 	public Collection getCategoriesByIds(String inCategoryIds)
 	{
-		if(inCategoryIds == null)
+		if (inCategoryIds == null)
 		{
 			return null;
 		}
 		String[] categoryids = inCategoryIds.split(" ");
 		List categories = new ArrayList();
-		
+
 		for (int i = 0; i < categoryids.length; i++)
 		{
 			Category cat = getCategory(categoryids[i]);
@@ -655,7 +657,7 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 	{
 		String id = createCategoryId(inLabel);
 		Category cat = new BaseCategory(id, inLabel);
-		
+
 		return cat;
 	}
 }

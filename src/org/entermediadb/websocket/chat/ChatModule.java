@@ -1,18 +1,16 @@
 /*
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for additional information regarding
+ * copyright ownership. The ASF licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.entermediadb.websocket.chat;
 
@@ -62,12 +60,11 @@ public class ChatModule extends BaseMediaModule
 		Data chat = archive.getCachedData("chatterbox", messageid);
 		inReq.putPageValue("chat", chat);
 	}
-	
-	
+
 	/*
 	 * For OI Collective Projects, uses collectiveproject table
 	 * 
-	 * */
+	 */
 
 	public void loadRecentChatsLibraryCollection(WebPageRequest inReq)
 	{
@@ -142,22 +139,22 @@ public class ChatModule extends BaseMediaModule
 			inReq.putPageValue(results.getHitsName(), results);
 		}
 
-		//loadPageOfChat(inReq);
+		// loadPageOfChat(inReq);
 
 	}
 
 	public void loadRecentChats(WebPageRequest inReq)
 	{
 
-		//OI Chats using -> loadRecentChatsLibraryCollection()
+		// OI Chats using -> loadRecentChatsLibraryCollection()
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Data channel = loadCurrentChannel(inReq);
-		if(channel == null) {
+		if (channel == null)
+		{
 			return;
 		}
-		
-		
+
 		String sortby = inReq.findActionValue("sortorder");
 		if (sortby == null)
 		{
@@ -188,19 +185,17 @@ public class ChatModule extends BaseMediaModule
 
 	/*
 	 * 
-	 * String entityid = inReq.getRequestParameter("entityid"); if(entityid ==
-	 * null) { entityid = inReq.findValue("entityid"); }
+	 * String entityid = inReq.getRequestParameter("entityid"); if(entityid == null) { entityid =
+	 * inReq.findValue("entityid"); }
 	 * 
-	 * String moduleid = inReq.findValue("module"); if(moduleid == null) {
-	 * moduleid = inReq.getRequestParameter("entitymoduleid"); } if(moduleid ==
-	 * null) { moduleid = "librarycollection"; } if (currenttopic == null) {
-	 * currenttopic =
+	 * String moduleid = inReq.findValue("module"); if(moduleid == null) { moduleid =
+	 * inReq.getRequestParameter("entitymoduleid"); } if(moduleid == null) { moduleid =
+	 * "librarycollection"; } if (currenttopic == null) { currenttopic =
 	 * topicsearcher.query().match("entityid",entityid).match("moduleid",
-	 * moduleid).sort("name").searchOne(); } if (currenttopic == null) {
-	 * currenttopic = topicsearcher.createNewData();
-	 * currenttopic.setValue("moduleid", moduleid);
-	 * currenttopic.setValue("entityid", entityid);
-	 * currenttopic.setName("General"); topicsearcher.saveData(currenttopic); }
+	 * moduleid).sort("name").searchOne(); } if (currenttopic == null) { currenttopic =
+	 * topicsearcher.createNewData(); currenttopic.setValue("moduleid", moduleid);
+	 * currenttopic.setValue("entityid", entityid); currenttopic.setName("General");
+	 * topicsearcher.saveData(currenttopic); }
 	 */
 
 	public Data loadCurrentChannel(WebPageRequest inReq)
@@ -232,14 +227,14 @@ public class ChatModule extends BaseMediaModule
 		if (results == null)
 		{
 			results = (HitTracker) inReq.getPageValue(name);
-			
+
 		}
 		if (results == null)
 		{
 			return;
 		}
 		inReq.putPageValue(name, results);
-		
+
 		Searcher chats = results.getSearcher();
 		Collection page = results.getPageOfHits();
 		ArrayList loaded = new ArrayList();
@@ -249,7 +244,7 @@ public class ChatModule extends BaseMediaModule
 		{
 			Data data = (Data) iterator.next();
 			Data message = chats.loadData(data);
-			if("system".equals(message.get("messagetype"))) 
+			if ("system".equals(message.get("messagetype")))
 			{
 				continue;
 			}
@@ -269,7 +264,7 @@ public class ChatModule extends BaseMediaModule
 		newtracker.setHitsPerPage(results.getHitsPerPage());
 
 		inReq.putPageValue("messages", newtracker);
-		
+
 		inReq.putPageValue("lastloaded", lastdateloaded);
 
 		String userid = null;
@@ -296,13 +291,13 @@ public class ChatModule extends BaseMediaModule
 		Data found = archive.query("chatterboxreaction").exact("messageid", messageid).exact("user", inReq.getUserName()).searchOne();
 		if (found != null && found.getName().equals(character))
 		{
-			//if its the same then delete it
+			// if its the same then delete it
 			archive.getSearcher("chatterboxreaction").delete(found, inReq.getUser());
 			return;
 		}
 		if (found == null)
 		{
-			//Make sure message is valid?
+			// Make sure message is valid?
 
 			found = archive.getSearcher("chatterboxreaction").createNewData();
 			found.setValue("messageid", messageid);
@@ -316,7 +311,7 @@ public class ChatModule extends BaseMediaModule
 		messageids.add(messageid);
 		inReq.putPageValue("messageids", messageids);
 		loadReactions(inReq);
-		//loadAttachments(inReq);
+		// loadAttachments(inReq);
 	}
 
 	public void loadReactions(WebPageRequest inReq)
@@ -349,7 +344,7 @@ public class ChatModule extends BaseMediaModule
 		Collection messageids = (Collection) inReq.getPageValue("messageids");
 		if (messageids == null || messageids.isEmpty())
 		{
-			//look into the request?
+			// look into the request?
 			String[] requestmessageids = inReq.getRequestParameters("messageids");
 			if (requestmessageids != null)
 			{
@@ -386,13 +381,14 @@ public class ChatModule extends BaseMediaModule
 		Date startdate = DateStorageUtil.getStorageUtil().parseFromStorage(lastloaded);
 		Searcher chats = archive.getSearcher("chatterbox");
 
-		//HitTracker recent = chats.query().match("channel", channel).sort("dateUp").search();
+		// HitTracker recent = chats.query().match("channel",
+		// channel).sort("dateUp").search();
 
-		//inReq.putPageValue("messages", recent);
+		// inReq.putPageValue("messages", recent);
 
 		HitTracker oldresults = chats.query().before("date", startdate).exact("channel", channel).sort("dateDown").search();
 		oldresults.setHitsPerPage(10);
-		//log.info(oldresults.getFriendlyQuery());
+		// log.info(oldresults.getFriendlyQuery());
 		String query = oldresults.getFriendlyQuery();
 		Collection page = oldresults.getPageOfHits();
 		ArrayList oldloaded = new ArrayList();
@@ -406,7 +402,7 @@ public class ChatModule extends BaseMediaModule
 		}
 		Collections.reverse(oldloaded);
 		inReq.putPageValue("oldmessages", oldloaded);
-		//inReq.putPageValue("lastloaded", lastdateloaded);
+		// inReq.putPageValue("lastloaded", lastdateloaded);
 	}
 
 	public void loadChatServer(WebPageRequest inReq)
@@ -433,7 +429,7 @@ public class ChatModule extends BaseMediaModule
 
 	public ChatManager getChatManager(WebPageRequest inReq)
 	{
-		//For a collection show all the channel mod times
+		// For a collection show all the channel mod times
 		String catalogid = inReq.findPathValue("catalogid");
 		ChatManager manager = (ChatManager) getModuleManager().getBean(catalogid, "chatManager");
 		inReq.putPageValue("chatManager", manager);
@@ -488,7 +484,7 @@ public class ChatModule extends BaseMediaModule
 			archive.saveData("chatterbox", chat);
 		}
 
-		//Now the other table
+		// Now the other table
 		for (Iterator iterator = savedassets.iterator(); iterator.hasNext();)
 		{
 			Asset asset = (Asset) iterator.next();
@@ -569,132 +565,133 @@ public class ChatModule extends BaseMediaModule
 			Data hit = (Data) iterator.next();
 			chats.delete(hit, null);
 		}
-	}	
-	
-//	//deprecated? not used?
-//	public LlmConnection loadManager(WebPageRequest inReq)
-//	{
-//		MediaArchive archive = getMediaArchive(inReq);
-//		AssistantManager assistantManager = (AssistantManager) archive.getBean("assistantManager");
-//
-////		String model = inReq.findValue("aimodel");
-////		if( model == null)
-////		{
-////			model = archive.getCatalogSettingValue("ai_default_chat_model");
-////		}
-//		LlmConnection llmconnection = assistantManager.getLlmConnection();//(LlmConnection) archive.getLlmConnection(model);
-//		inReq.putPageValue("gpt", llmconnection); //Deprecated
-//		inReq.putPageValue("llmconnection", llmconnection);
-//		inReq.putPageValue("assistantManager", assistantManager);
-//		
-//		return llmconnection;
-//	}
+	}
 
+	// //deprecated? not used?
+	// public LlmConnection loadManager(WebPageRequest inReq)
+	// {
+	// MediaArchive archive = getMediaArchive(inReq);
+	// AssistantManager assistantManager = (AssistantManager)
+	// archive.getBean("assistantManager");
+	//
+	//// String model = inReq.findValue("aimodel");
+	//// if( model == null)
+	//// {
+	//// model = archive.getCatalogSettingValue("ai_default_chat_model");
+	//// }
+	// LlmConnection llmconnection =
+	// assistantManager.getLlmConnection();//(LlmConnection)
+	// archive.getLlmConnection(model);
+	// inReq.putPageValue("gpt", llmconnection); //Deprecated
+	// inReq.putPageValue("llmconnection", llmconnection);
+	// inReq.putPageValue("assistantManager", assistantManager);
+	//
+	// return llmconnection;
+	// }
 
 	public void loadChatChannel(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher channelsearcher = archive.getSearcher("channel");
 		boolean createnew = Boolean.parseBoolean(inReq.getRequestParameter("createnew"));
-		
+
 		String channel = inReq.findValue("channel");
 		String module = inReq.findValue("module");
-		
+
 		MultiValued currentchannel = null;
-		
-		if(channel != null && !createnew)
+
+		if (channel != null && !createnew)
 		{
 			currentchannel = (MultiValued) archive.getCachedData("channel", channel);
-			if( currentchannel != null)
+			if (currentchannel != null)
 			{
 				inReq.putPageValue("currentchannel", currentchannel);
 				return;
 			}
 		}
-		
+
 		String channeltype = inReq.findValue("channeltype");
 		if (channeltype == null)
 		{
 			throw new IllegalArgumentException("channeltype is required");
 		}
-		String entityid =  inReq.findValue("entityid");
-		if( entityid == null)
+		String entityid = inReq.findValue("entityid");
+		if (entityid == null)
 		{
 			entityid = inReq.findValue("dataid");
 		}
 		String channelname = null;
-//		MultiValued entity  = (MultiValued) inReq.getPageValue("entity");
-//		switch(channeltype)  //TODO Remove this
-//		{
-//			case "agententitychat":
-//				dataid = entity.getId();
-//				channelname = "Guided Chat";
-//				break;
-//			case "entity":
-//				dataid = entity.getId();
-//				channelname = "Entity Chat";
-//				break;
-//			case "agentchat":
-//				dataid = inReq.getUserName();
-//				channelname = "AI Chat";
-//				break;
-//		}
-			
-		if( !createnew )
+		// MultiValued entity = (MultiValued) inReq.getPageValue("entity");
+		// switch(channeltype) //TODO Remove this
+		// {
+		// case "agententitychat":
+		// dataid = entity.getId();
+		// channelname = "Guided Chat";
+		// break;
+		// case "entity":
+		// dataid = entity.getId();
+		// channelname = "Entity Chat";
+		// break;
+		// case "agentchat":
+		// dataid = inReq.getUserName();
+		// channelname = "AI Chat";
+		// break;
+		// }
+
+		if (!createnew)
 		{
-			currentchannel =  (MultiValued)archive.getCachedData("channel", channel);
-			if (currentchannel == null )
+			currentchannel = (MultiValued) archive.getCachedData("channel", channel);
+			if (currentchannel == null)
 			{
 				Calendar now = DateStorageUtil.getStorageUtil().createCalendar();
-				now.add(Calendar.HOUR_OF_DAY,-1);
+				now.add(Calendar.HOUR_OF_DAY, -1);
 
-				//TODO: Add flag for multi user
-				if( entityid != null)
+				// TODO: Add flag for multi user
+				if (entityid != null)
 				{
-					//Shared chat. Like in OI 
-					currentchannel =  (MultiValued)channelsearcher.query().exact("dataid",entityid).exact("searchtype", module).after("refreshdate",now.getTime()).sort("refreshdateDown").searchOne();
+					// Shared chat. Like in OI
+					currentchannel =
+						(MultiValued) channelsearcher.query().exact("dataid", entityid).exact("searchtype", module).after("refreshdate", now.getTime()).sort("refreshdateDown").searchOne();
 				}
 				else
 				{
-					//By user
-					currentchannel =  (MultiValued)channelsearcher.query().exact("user",inReq.getUserName()).missing("dataid").after("refreshdate",now.getTime()).sort("refreshdateDown").searchOne();
+					// By user
+					currentchannel = (MultiValued) channelsearcher.query().exact("user", inReq.getUserName()).missing("dataid").after("refreshdate", now.getTime()).sort("refreshdateDown").searchOne();
 				}
 			}
 		}
-		
-		if (currentchannel == null) 
+
+		if (currentchannel == null)
 		{
-			currentchannel = (MultiValued)channelsearcher.createNewData();
+			currentchannel = (MultiValued) channelsearcher.createNewData();
 			currentchannel.setName(channelname);
 			currentchannel.setValue("searchtype", module);
 			if (!"agentchat".equals(channeltype))
 			{
-				currentchannel.setValue("dataid", entityid );
+				currentchannel.setValue("dataid", entityid);
 			}
-			currentchannel.setValue("user", inReq.getUser() );
+			currentchannel.setValue("user", inReq.getUser());
 			String applicationid = inReq.findValue("applicationid");
 			currentchannel.setValue("chatapplicationid", applicationid);
-			currentchannel.setValue("channeltype", channeltype );
+			currentchannel.setValue("channeltype", channeltype);
 		}
 		String toplevel = inReq.getRequestParameter("toplevelaifunctionid");
-		if( toplevel != null )
+		if (toplevel != null)
 		{
 			currentchannel.setValue("toplevelaifunctionid", toplevel);
 		}
-		
+
 		Calendar now = Calendar.getInstance();
-		now.add(Calendar.SECOND, -1);  
+		now.add(Calendar.SECOND, -1);
 		currentchannel.setValue("refreshdate", now.getTime());
-		
+
 		channelsearcher.saveData(currentchannel);
-		
+
 		inReq.setRequestParameter("channel", currentchannel.getId());
-		
+
 		inReq.putPageValue("currentchannel", currentchannel);
-		
+
 		inReq.putPageValue("createnew", false);
 	}
-	
-
 
 }

@@ -18,7 +18,7 @@ import org.openedit.WebPageRequest;
 public class Upgrader
 {
 	private static final Log log = LogFactory.getLog(Upgrader.class);
-	
+
 	protected ScriptModule fieldScriptModule;
 	protected File fieldRoot;
 	protected PlugInFinder fieldPlugInFinder;
@@ -26,17 +26,18 @@ public class Upgrader
 	protected Set fieldCompleted;
 	protected Set fieldInProgress;
 	protected boolean cancel = false;
-	
-	
+
 	public String[] getList()
 	{
 		return fieldToUpgrade;
 	}
+
 	public void setToUpgrade(String[] inList)
 	{
 		fieldToUpgrade = inList;
 	}
-	public List upgrade( String inPlugInId, WebPageRequest inContext )
+
+	public List upgrade(String inPlugInId, WebPageRequest inContext)
 	{
 		ScriptLogger logger = new ScriptLogger();
 		logger.startCapture();
@@ -50,54 +51,55 @@ public class Upgrader
 		}
 		return logger.listLogs();
 	}
-	
-	protected void doUpgrade( String inPlugInId, WebPageRequest inContext,ScriptLogger inLogger )
+
+	protected void doUpgrade(String inPlugInId, WebPageRequest inContext, ScriptLogger inLogger)
 	{
-		if( getInProgress().contains(inPlugInId))
+		if (getInProgress().contains(inPlugInId))
 		{
 			log.info(inPlugInId + " is in progress");
 			return;
 		}
-		if( cancel)
+		if (cancel)
 		{
 			log.info(inPlugInId + " is canceled");
 			return;
 		}
 		getInProgress().add(inPlugInId);
-		
+
 		String strOutputFile = "/WEB-INF/install.js";
 		File out = new File(getRoot(), strOutputFile);
-		PlugIn plugin = (PlugIn)getPlugInFinder().getPlugIn(inPlugInId);
-		if( plugin.getInstallScript() == null)
+		PlugIn plugin = (PlugIn) getPlugInFinder().getPlugIn(inPlugInId);
+		if (plugin.getInstallScript() == null)
 		{
 			log.info("No script configured");
 		}
 		else
 		{
-			try {
+			try
+			{
 				// *** connect to configured web site
 				new Downloader().download(plugin.getInstallScript(), out);
-		
+
 				Map variables = new HashMap();
 				variables.put("context", inContext);
 				variables.put("log", inLogger);
 				Script script = getScriptModule().getScriptManager().loadScript(strOutputFile);
 				getScriptModule().getScriptManager().execScript(variables, script);
-			} catch (Exception ex) 
+			}
+			catch (Exception ex)
 			{
 				log.error(ex);
 			}
 		}
 		getCompleted().add(inPlugInId);
 		getInProgress().remove(inPlugInId);
-		if( getCompleted().size() == getList().length)
+		if (getCompleted().size() == getList().length)
 		{
 			inContext.removeSessionValue("upgrader");
 		}
 		log.info(inPlugInId + " is complete");
 	}
-	
-	
+
 	public ScriptModule getScriptModule()
 	{
 		return fieldScriptModule;
@@ -107,7 +109,6 @@ public class Upgrader
 	{
 		fieldScriptModule = inScriptModule;
 	}
-
 
 	public File getRoot()
 	{
@@ -128,14 +129,16 @@ public class Upgrader
 	{
 		fieldPlugInFinder = inAllPluginS;
 	}
+
 	public Set getCompleted()
 	{
-		if( fieldCompleted == null)
+		if (fieldCompleted == null)
 		{
 			fieldCompleted = new HashSet();
 		}
 		return fieldCompleted;
 	}
+
 	public Set getInProgress()
 	{
 		if (fieldInProgress == null)
@@ -144,14 +147,17 @@ public class Upgrader
 		}
 		return fieldInProgress;
 	}
+
 	public void cancel()
 	{
 		cancel = true;
 	}
+
 	public boolean isCanceled()
 	{
 		return cancel;
 	}
+
 	public boolean isComplete()
 	{
 		return getCompleted().size() == getList().length;

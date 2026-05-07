@@ -1,10 +1,9 @@
 package org.entermediadb.asset;
 
 /**
- * An implementation of {@link AssetPathFinder} that places assets in
- * subdirectories based on segments of their ID. For example, a asset with ID
- * <tt>abcdefghij</tt> might become <tt>abc/def/abcdefghij</tt>, if the
- * segment length is 3 and the maximum number of segments is 2.
+ * An implementation of {@link AssetPathFinder} that places assets in subdirectories based on
+ * segments of their ID. For example, a asset with ID <tt>abcdefghij</tt> might become
+ * <tt>abc/def/abcdefghij</tt>, if the segment length is 3 and the maximum number of segments is 2.
  * 
  * @author Eric Galluzzo
  */
@@ -26,25 +25,18 @@ public class SegmentedAssetPathFinder implements AssetPathFinder
 	}
 
 	/**
-	 * Creates a segmented asset path finder that will never use
-	 * subdirectories.
+	 * Creates a segmented asset path finder that will never use subdirectories.
 	 */
-	public SegmentedAssetPathFinder()
-	{
-	}
+	public SegmentedAssetPathFinder() {}
 
 	/**
-	 * Creates a segmented asset path finder that will create segments of the
-	 * given length up to the given maximum.
+	 * Creates a segmented asset path finder that will create segments of the given length up to the
+	 * given maximum.
 	 * 
-	 * @param inSegmentLength
-	 *            The length of each path segment (e.g. 3 for
-	 *            <tt>abc/def/...</tt>)
-	 * @param inMaxSegments
-	 *            The maximum number of segments
+	 * @param inSegmentLength The length of each path segment (e.g. 3 for <tt>abc/def/...</tt>)
+	 * @param inMaxSegments The maximum number of segments
 	 */
-	public SegmentedAssetPathFinder(int inSegmentLength)
-	{
+	public SegmentedAssetPathFinder(int inSegmentLength) {
 		fSegmentLength = inSegmentLength;
 	}
 

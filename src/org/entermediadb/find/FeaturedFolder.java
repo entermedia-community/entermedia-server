@@ -15,13 +15,13 @@ public class FeaturedFolder extends BaseData implements Comparable
 	{
 		fieldCount = inCount;
 	}
-	
+
 	@Override
 	public int compareTo(Object inO)
 	{
-		FeaturedFolder folder = (FeaturedFolder)inO;
-		int ret = Integer.compare(folder.getCount(),getCount());
+		FeaturedFolder folder = (FeaturedFolder) inO;
+		int ret = Integer.compare(folder.getCount(), getCount());
 		return ret;
 	}
-	
+
 }

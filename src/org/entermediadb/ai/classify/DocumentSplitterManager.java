@@ -43,7 +43,8 @@ public class DocumentSplitterManager extends BaseAiManager
 
 			String moduleid = entity.get("entitysourcetype");
 
-			if (searchtypes == null || !searchtypes.contains(moduleid)) // Limits to the ones configured in the informatics db.
+			if (searchtypes == null || !searchtypes.contains(moduleid)) // Limits to the ones configured in the
+																		// informatics db.
 			{
 				continue;
 			}
@@ -84,7 +85,8 @@ public class DocumentSplitterManager extends BaseAiManager
 
 			if (pages > 0)
 			{
-				// informatic.info("Splitting " + pages + " pages in document " + asset.getName());
+				// informatic.info("Splitting " + pages + " pages in document " +
+				// asset.getName());
 				entity.setValue("totalpages", pages);
 				splitDocumentWithPages(informatic, inConfig, entity, asset);
 			}
@@ -142,7 +144,10 @@ public class DocumentSplitterManager extends BaseAiManager
 				if (fulltext != null)
 				{
 					// send to Lllamaindex another way
-					List<String> chunks = new OutputFiller().splitUtf8(fulltext, 18 * 1024); // 32766 Lucene hard coded max We do not overlap. We just need to see the text
+					List<String> chunks = new OutputFiller().splitUtf8(fulltext, 18 * 1024); // 32766 Lucene hard coded
+																								// max We do not
+																								// overlap. We just need
+																								// to see the text
 					entity.setValue("totalpages", chunks.size());
 					splitDocumentWithText(informatic, chunks, inConfig, entity, asset);
 				}
@@ -203,7 +208,8 @@ public class DocumentSplitterManager extends BaseAiManager
 				docpage.setValue("entity_date", new Date());
 			}
 
-			// if( docpage.get("markdowncontent") == null && inConfig.getBoolean("generatemarkdown"))
+			// if( docpage.get("markdowncontent") == null &&
+			// inConfig.getBoolean("generatemarkdown"))
 			if (docpage.get("markdowncontent") == null)
 			{
 				log.info("Generating markdown for page: " + docpage);

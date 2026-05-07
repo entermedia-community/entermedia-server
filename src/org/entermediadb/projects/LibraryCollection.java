@@ -27,60 +27,66 @@ public class LibraryCollection extends BaseDataEntity implements SaveableData, D
 	protected FilterReader fieldFilterReader;
 	protected List fieldPermissions;
 
-	public LibraryCollection()
-	{
-//		int i = 0;
-//		i++;
+	public LibraryCollection() {
+		// int i = 0;
+		// i++;
 	}
-	
+
 	@Override
 	public void setProperties(Map inProperties)
 	{
 		super.setProperties(inProperties);
 	}
+
 	public void setPermissions(List inPermissions)
 	{
 		fieldPermissions = inPermissions;
 	}
+
 	public String getCatalogId()
 	{
 		return fieldCatalogId;
 	}
+
 	public void setCatalogId(String inCatalogId)
 	{
 		fieldCatalogId = inCatalogId;
 	}
-	
+
 	public ModuleManager getModuleManager()
 	{
 		return fieldModuleManager;
 	}
+
 	public void setModuleManager(ModuleManager inModuleManager)
 	{
 		fieldModuleManager = inModuleManager;
 	}
+
 	protected MediaArchive getMediaArchive()
 	{
-		MediaArchive archive = (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
+		MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		return archive;
 	}
+
 	public Data getLibrary()
 	{
 		Collection all = getLibraries();
-		if(all == null ||  all.isEmpty() )
+		if (all == null || all.isEmpty())
 		{
 			return null;
 		}
-		return (Data)all.iterator().next();
+		return (Data) all.iterator().next();
 	}
+
 	public Collection getLibraries()
 	{
-		if( fieldLibraries == null)
+		if (fieldLibraries == null)
 		{
-			if( getMediaArchive() != null )
+			if (getMediaArchive() != null)
 			{
 				Collection ids = getValues("library");
-				if( ids != null && !ids.isEmpty() )
+				if (ids != null && !ids.isEmpty())
 				{
 					fieldLibraries = getMediaArchive().query("library").ids(ids).search();
 				}
@@ -88,6 +94,7 @@ public class LibraryCollection extends BaseDataEntity implements SaveableData, D
 		}
 		return fieldLibraries;
 	}
+
 	public void setLibrary(Data inLibrary)
 	{
 		fieldLibraries = Arrays.asList(inLibrary);
@@ -98,6 +105,7 @@ public class LibraryCollection extends BaseDataEntity implements SaveableData, D
 	{
 		return fieldAssetCount;
 	}
+
 	public void setAssetCount(int inCount)
 	{
 		fieldAssetCount = inCount;
@@ -106,19 +114,19 @@ public class LibraryCollection extends BaseDataEntity implements SaveableData, D
 	public long getCurentRevision()
 	{
 		Object obj = getValue("revisions");
-		if( obj == null)
+		if (obj == null)
 		{
 			obj = 0;
 		}
 
 		Long revisionnumber = null;
-		if( obj instanceof Integer)
+		if (obj instanceof Integer)
 		{
-			revisionnumber = (long)(Integer)obj;
+			revisionnumber = (long) (Integer) obj;
 		}
 		else
 		{
-			revisionnumber = (Long)obj;
+			revisionnumber = (Long) obj;
 		}
 
 		return revisionnumber;
@@ -127,90 +135,92 @@ public class LibraryCollection extends BaseDataEntity implements SaveableData, D
 	@Override
 	public Object getValue(String inKey)
 	{
-		if( inKey.equals("urlname") && super.getValue("urlname") == null)
+		if (inKey.equals("urlname") && super.getValue("urlname") == null)
 		{
-			if(getName() != null)
+			if (getName() != null)
 			{
-			String url = PathUtilities.dash(String.valueOf( getName() ) );
-			return url;
+				String url = PathUtilities.dash(String.valueOf(getName()));
+				return url;
 			}
 		}
 
-		if( inKey.equals("parentcategories"))
+		if (inKey.equals("parentcategories"))
 		{
-			if(getRootCategoryId() == null){
+			if (getRootCategoryId() == null)
+			{
 				return null;
 			}
 			Object values = super.getValues(inKey);
-//			if( values == null) //Must not be in the index yet
-//			{
-				Category root = getCategory();
-				if( root == null)
-				{
-					return null;
-				}
-				values = root.getParentCategories();
-//			}
+			// if( values == null) //Must not be in the index yet
+			// {
+			Category root = getCategory();
+			if (root == null)
+			{
+				return null;
+			}
+			values = root.getParentCategories();
+			// }
 			return values;
 		}
 		return super.getValue(inKey);
 	}
-	
-	
 
-	
 	public Category getCategory()
 	{
-		if(getRootCategoryId() == null){
+		if (getRootCategoryId() == null)
+		{
 			return null;
 		}
 		Category cat = getMediaArchive().getCategory(getRootCategoryId());
-		if( cat!= null &&  !cat.containsValue("librarycollection",getId()))
+		if (cat != null && !cat.containsValue("librarycollection", getId()))
 		{
 			cat.addValue("librarycollection", getId());
 			getMediaArchive().saveData("category", cat);
 		}
 		return cat;
 	}
+
 	public boolean isVisibility(String inCode)
 	{
 		String code = get("visibility");
-		if( code == null)
+		if (code == null)
 		{
 			return false;
 		}
 		return code.equals(inCode);
-	}	
+	}
+
 	public boolean hasPendingAssets()
 	{
 		Object found = getMediaArchive().getAssetSearcher().query().orgroup("editstatus", "1|rejected").exact("category", getRootCategoryId()).searchOne();
 		return found != null;
 	}
-	
-	
-//	public Permission getPermission(String inPermission) {
-//		Data target = getMediaArchive().getData("datapermissions", "librarycollection-" + getId() + "-"+ inPermission);
-//		if(target == null) {
-//			return null;
-//		}
-//		String xml = target.get("value");
-//		if(xml == null) {
-//			return null;
-//		}
-//		return getMediaArchive().getPermission(inPermission, xml);	
-//	
-//	}
-	
-	public List getPermissions() {
+
+	// public Permission getPermission(String inPermission) {
+	// Data target = getMediaArchive().getData("datapermissions",
+	// "librarycollection-" + getId() + "-"+ inPermission);
+	// if(target == null) {
+	// return null;
+	// }
+	// String xml = target.get("value");
+	// if(xml == null) {
+	// return null;
+	// }
+	// return getMediaArchive().getPermission(inPermission, xml);
+	//
+	// }
+
+	public List getPermissions()
+	{
 		if (fieldPermissions == null)
 		{
 			fieldPermissions = new ArrayList();
-			
+
 		}
 
 		return fieldPermissions;
 	}
-	
+
 	public String pickLabel(MultiValued inTopic)
 	{
 		TopicLabelPicker labels = new TopicLabelPicker();
@@ -219,16 +229,14 @@ public class LibraryCollection extends BaseDataEntity implements SaveableData, D
 		return labels.showLabel(inTopic);
 	}
 
-	
 	public String getWebName()
 	{
-		if( getName() ==  null)
+		if (getName() == null)
 		{
 			return "null";
 		}
 		String label = getName().replaceAll(" ", "-");
 		return label;
 	}
-	
 
 }

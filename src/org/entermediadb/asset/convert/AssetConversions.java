@@ -13,8 +13,9 @@ import org.openedit.users.User;
 public class AssetConversions implements Runnable
 {
 	private static final Log log = LogFactory.getLog(AssetConversions.class);
-	
+
 	Asset fieldAsset;
+
 	public Asset getAsset()
 	{
 		return fieldAsset;
@@ -67,12 +68,9 @@ public class AssetConversions implements Runnable
 		return fieldCompleted;
 	}
 
-	public AssetConversions()
-	{
-	}
+	public AssetConversions() {}
 
-	public AssetConversions(MediaArchive inArchive, Lock lock)
-	{
+	public AssetConversions(MediaArchive inArchive, Lock lock) {
 		fieldMediaArchive = inArchive;
 		fieldLock = lock;
 	}
@@ -88,19 +86,20 @@ public class AssetConversions implements Runnable
 				if (runner.isComplete())
 				{
 					fieldCompleted = true;
-					//Slow? fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
+					// Slow?
+					// fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
 				}
 				if (runner.isError())
 				{
 					fieldCompleted = true;
-					//fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
+					// fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
 					break;
 				}
 			}
 		}
 		catch (Exception e)
 		{
-			log.error("ERRORS converting: " + getAssetId() ,e);
+			log.error("ERRORS converting: " + getAssetId(), e);
 		}
 		finally
 		{
@@ -122,7 +121,8 @@ public class AssetConversions implements Runnable
 
 	public void addTask(ConversionTask task)
 	{
-		//log.info("Added assetid:" + task.hit.get("assetid") + " presetid:" + task.hit.get("presetid") + " status:" + task.hit.get("status"));
+		// log.info("Added assetid:" + task.hit.get("assetid") + " presetid:" +
+		// task.hit.get("presetid") + " status:" + task.hit.get("status"));
 		runners.add(task);
 	}
 }

@@ -21,8 +21,7 @@ import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
 
 /**
- * This generator generates original asset documents from an MediaArchive
- * based on paths of the form
+ * This generator generates original asset documents from an MediaArchive based on paths of the form
  * <tt>.../<var>assetid</var>/<var>filename.ext</var></tt>.
  * 
  * @author Eric Galluzzo
@@ -45,14 +44,14 @@ public class ConvertGenerator extends FileGenerator
 
 	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
 	{
-		//TODO: Revamp all API to use ContentItem instead of Page
+		// TODO: Revamp all API to use ContentItem instead of Page
 		String catalogid = inReq.findPathValue("catalogid");
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		String sourcePath = inReq.getRequestParameter("sourcepath");
-//		sourcePath = inReq.getRequest().getRequestURL().toString();
+		// sourcePath = inReq.getRequest().getRequestURL().toString();
 		if (sourcePath == null)
 		{
-			sourcePath = archive.getSourcePathForPage(inReq); //This already is decoded
+			sourcePath = archive.getSourcePathForPage(inReq); // This already is decoded
 		}
 		else
 		{
@@ -66,35 +65,36 @@ public class ConvertGenerator extends FileGenerator
 			}
 		}
 		String collectionid = inReq.findValue("collectionid");
-		if(collectionid != null) 
+		if (collectionid != null)
 		{
 			sourcePath = sourcePath.substring(collectionid.length() + 1);
-			if( log.isDebugEnabled() )
+			if (log.isDebugEnabled())
 			{
 				log.debug("Final Source Path: " + sourcePath);
 			}
 		}
-		
-//		outputype = outputype.toLowerCase();
-//		if(outputype.contains("?")){
-//			outputype = outputype.substring(0, outputype.indexOf("?"));
-//		}
-		
-		//TODO: Use hard coded path lookups for these based on media type?
-		
-		//We use the output extension so that we don't have look up the original input file to find the actual type
+
+		// outputype = outputype.toLowerCase();
+		// if(outputype.contains("?")){
+		// outputype = outputype.substring(0, outputype.indexOf("?"));
+		// }
+
+		// TODO: Use hard coded path lookups for these based on media type?
+
+		// We use the output extension so that we don't have look up the original input
+		// file to find the actual type
 		String label = org.openedit.util.PathUtilities.extractPageName(inPage.getName());
 		String ext = org.openedit.util.PathUtilities.extractPageType(inPage.getName());
-		String	name = label + "." + ext;
+		String name = label + "." + ext;
 
-		//Find random params?
-		Map all = new HashMap(); //TODO: Get parent ones as well
+		// Find random params?
+		Map all = new HashMap(); // TODO: Get parent ones as well
 		for (Iterator iterator = inReq.getContentPage().getPageSettings().getAllProperties().iterator(); iterator.hasNext();)
 		{
 			PageProperty type = (PageProperty) iterator.next();
 			all.put(type.getName(), type.getValue());
 		}
-		all.putAll( inReq.getPageMap()); //these could be objects, needed?
+		all.putAll(inReq.getPageMap()); // these could be objects, needed?
 		Map args = inReq.getParameterMap();
 		extracted(inReq, archive, sourcePath, inPage, name, all, args, inOut);
 	}
@@ -103,41 +103,49 @@ public class ConvertGenerator extends FileGenerator
 	{
 		String themeprefix = inReq.findValue("themeprefix");
 		all.put("themeprefix", themeprefix);
-	//	log.info("canshowunwatermarkedassets" + all.get("canshowunwatermarkedassets"));
-		//log.info("canforcewatermarks" + all.get("canforcewatermarks"));
+		// log.info("canshowunwatermarkedassets" +
+		// all.get("canshowunwatermarkedassets"));
+		// log.info("canforcewatermarks" + all.get("canforcewatermarks"));
 
 		TranscodeTools transcodetools = archive.getTranscodeTools();
-		ConvertResult result = transcodetools.createOutputIfNeeded(all,args,sourcePath, name); //String inSourcePath, Data inPreset, String inOutputType);
-		
-		if( result.isComplete() )
+		ConvertResult result = transcodetools.createOutputIfNeeded(all, args, sourcePath, name); // String inSourcePath,
+																									// Data inPreset,
+																									// String
+																									// inOutputType);
+
+		if (result.isComplete())
 		{
-			Page output = new Page() //SPEED UP
-					{
-						public boolean isHtml() { return false;}
-					};
-			output.setName(inPage.getName());					
+			Page output = new Page() // SPEED UP
+			{
+				public boolean isHtml()
+				{
+					return false;
+				}
+			};
+			output.setName(inPage.getName());
 			output.setPageSettings(inPage.getPageSettings());
 			output.setContentItem(result.getOutput());
 			WebPageRequest copy = inReq.copy(output);
-			copy.putProtectedPageValue("content",output);
+			copy.putProtectedPageValue("content", output);
 			super.generate(copy, output, inOut);
 			ConvertInstructions instructions = result.getInstructions();
-			//TODO: Find a better way to do this
+			// TODO: Find a better way to do this
 			if (instructions != null && instructions.getMaxScaledSize() == null && !instructions.isWatermark() && instructions.getOutputExtension() == null)
 			{
-				archive.logDownload(sourcePath, "success", inReq.getUser()); //does this work?
+				archive.logDownload(sourcePath, "success", inReq.getUser()); // does this work?
 			}
 		}
-		else 
+		else
 		{
 			log.info("Error " + result.getError());
 			String missingImage = inReq.getContentProperty("missingimagepath");
-			if(missingImage == null)
+			if (missingImage == null)
 			{
-				
-				missingImage =  "/mediadb/views/images/missing150.jpg"; //would a 404 be better?
+
+				missingImage = "/mediadb/views/images/missing150.jpg"; // would a 404 be better?
 			}
-			Page missing = archive.getPageManager().getPage(missingImage);			//File temp = new File(missing.getContentItem().getAbsolutePath());
+			Page missing = archive.getPageManager().getPage(missingImage); // File temp = new
+																			// File(missing.getContentItem().getAbsolutePath());
 			super.generate(inReq, missing, inOut);
 		}
 	}

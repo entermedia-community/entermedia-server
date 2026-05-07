@@ -32,16 +32,18 @@ public class BaseImporter extends EnterMediaObject
 	{
 		fieldSearcher = inSearcher;
 	}
+
 	protected Data fieldLastNonSkipData;
 	protected char fieldSeparator = ',';
 	protected String fieldNewdDetailPrefix = "";
-	
-	
-	public String getNewdDetailPrefix() {
+
+	public String getNewdDetailPrefix()
+	{
 		return fieldNewdDetailPrefix;
 	}
 
-	public void setNewdDetailPrefix(String inNewdDetailPrefix) {
+	public void setNewdDetailPrefix(String inNewdDetailPrefix)
+	{
 		fieldNewdDetailPrefix = inNewdDetailPrefix;
 	}
 
@@ -54,9 +56,10 @@ public class BaseImporter extends EnterMediaObject
 	{
 		fieldSeparator = inSeparator;
 	}
+
 	protected HashMap<String, Map> fieldLookUps;
 	protected HashMap<String, String[]> fieldLookUpFilters;
-	
+
 	protected HashMap<String, String[]> getLookUpFilters()
 	{
 		if (fieldLookUpFilters == null)
@@ -82,8 +85,9 @@ public class BaseImporter extends EnterMediaObject
 	{
 		fieldUpdateData = inUpdateData;
 	}
+
 	protected boolean fieldLookUpLists = true;
-	
+
 	protected boolean isLookUpLists()
 	{
 		return fieldLookUpLists;
@@ -95,6 +99,7 @@ public class BaseImporter extends EnterMediaObject
 	}
 
 	protected Set fieldDbLookUps = new HashSet();
+
 	public Set getDbLookUps()
 	{
 		return fieldDbLookUps;
@@ -109,14 +114,15 @@ public class BaseImporter extends EnterMediaObject
 	{
 		getDbLookUps().add(inLookUp);
 	}
-	public void addDbLookUpFilter(String inDetailId,String inKey, String inValue)
+
+	public void addDbLookUpFilter(String inDetailId, String inKey, String inValue)
 	{
-		String[] values = new String[]{inKey,inValue};
-		getLookUpFilters().put(inDetailId,values);
+		String[] values = new String[] {inKey, inValue};
+		getLookUpFilters().put(inDetailId, values);
 	}
+
 	protected boolean fieldAddNewData = true;
-	
-	
+
 	public boolean isAddNewData()
 	{
 		return fieldAddNewData;
@@ -127,19 +133,23 @@ public class BaseImporter extends EnterMediaObject
 		fieldAddNewData = inAddNewData;
 	}
 
-	public String getPrefix() {
+	public String getPrefix()
+	{
 		return fieldPrefix;
 	}
 
-	public void setPrefix(String inPrefix) {
+	public void setPrefix(String inPrefix)
+	{
 		fieldPrefix = inPrefix;
 	}
 
-	public boolean isStripPrefix() {
+	public boolean isStripPrefix()
+	{
 		return fieldStripPrefix;
 	}
 
-	public void setStripPrefix(boolean inStripPrefix) {
+	public void setStripPrefix(boolean inStripPrefix)
+	{
 		fieldStripPrefix = inStripPrefix;
 	}
 
@@ -147,14 +157,16 @@ public class BaseImporter extends EnterMediaObject
 	{
 		return fieldSearcher;
 	}
+
 	protected Page fieldImportPage;
-	
-	
-	public Page getImportPage() {
+
+	public Page getImportPage()
+	{
 		return fieldImportPage;
 	}
 
-	public void setImportPage(Page inImportPage) {
+	public void setImportPage(Page inImportPage)
+	{
 		fieldImportPage = inImportPage;
 	}
 
@@ -162,7 +174,7 @@ public class BaseImporter extends EnterMediaObject
 	{
 		fieldSearcher = loadSearcher(context);
 
-		if( fieldImportPage == null)
+		if (fieldImportPage == null)
 		{
 			String importpath = context.findValue("importpath");
 			fieldImportPage = getPageManager().getPage(importpath);
@@ -180,31 +192,32 @@ public class BaseImporter extends EnterMediaObject
 			while ((trow = file.getNextRow()) != null)
 			{
 				rowNum++;
-				
-				if( skipRow(trow))
+
+				if (skipRow(trow))
 				{
 					continue;
 				}
 				Data target = findExistingRecord(trow);
-				if( target != null && !isUpdateData() )
+				if (target != null && !isUpdateData())
 				{
 					continue;
 				}
-						
-				if( target == null)
+
+				if (target == null)
 				{
 					String idCell = trow.get("id");
-					if( idCell == null)
+					if (idCell == null)
 					{
 						idCell = trow.get("ID");
 					}
-					if(fieldStripPrefix){
-						if(idCell.startsWith(getPrefix()))
+					if (fieldStripPrefix)
+					{
+						if (idCell.startsWith(getPrefix()))
 						{
 							idCell = idCell.substring(getPrefix().length(), idCell.length());
 						}
 					}
-					
+
 					PropertyDetail parent = getSearcher().getDetail("_parent");
 					String parentid = null;
 					if (parent != null)
@@ -215,31 +228,32 @@ public class BaseImporter extends EnterMediaObject
 							target = findExistingData(idCell, parentid);
 						}
 					}
-	
+
 					if (target == null && idCell != null && idCell.trim().length() > 0)
 					{
 						target = findExistingData(idCell, null);
 					}
-	
+
 					if (isAddNewData() && target == null)
 					{
 						target = getSearcher().createNewData();
-						target.setId(idCell); //could be null
+						target.setId(idCell); // could be null
 						if (parent != null)
 						{
 							target.setProperty("_parent", parentid);
 						}
 					}
-					else if (isMakeId())
-					{
-						target = getSearcher().createNewData();
-						idCell = getSearcher().nextId();
-					}
+					else
+						if (isMakeId())
+						{
+							target = getSearcher().createNewData();
+							idCell = getSearcher().nextId();
+						}
 					if (target == null)
 					{
 						continue;
 					}
-					target.setId(idCell); 
+					target.setId(idCell);
 				}
 				if (target == null)
 				{
@@ -271,10 +285,10 @@ public class BaseImporter extends EnterMediaObject
 	{
 		return importTotal;
 	}
-	
+
 	public boolean skipRow(Row inTrow)
 	{
-		//Add fields to this string or two?
+		// Add fields to this string or two?
 		return false;
 	}
 
@@ -310,12 +324,11 @@ public class BaseImporter extends EnterMediaObject
 		if (fieldLookUps == null)
 		{
 			fieldLookUps = new HashMap<String, Map>();
-			//fieldLookUps.put("Division", "val_Archive_Division");
+			// fieldLookUps.put("Division", "val_Archive_Division");
 		}
 		return fieldLookUps;
 	}
 
-	
 	protected void createMultiSelect(MultiValued inRow, String inField, String inTable)
 	{
 		inField = PathUtilities.extractId(inField, true);
@@ -335,7 +348,7 @@ public class BaseImporter extends EnterMediaObject
 					data = findOrCreateById(inTable, id, val);
 					datavalues.put(id, data);
 				}
-				valueids.add(id); //save it
+				valueids.add(id); // save it
 			}
 			inRow.setValue(inField, valueids);
 		}
@@ -345,7 +358,7 @@ public class BaseImporter extends EnterMediaObject
 	protected HashMap loadValueList(String inField, String inTableName, boolean inMulti)
 	{
 		HashMap datavalues = (HashMap) getLookUps().get(inField);
-		//if (datavalues == null)
+		// if (datavalues == null)
 		if (datavalues == null || datavalues.isEmpty())
 		{
 			datavalues = new HashMap();
@@ -353,8 +366,8 @@ public class BaseImporter extends EnterMediaObject
 			String id = PathUtilities.extractId(inField, true);
 			PropertyDetails details = getSearcher().getPropertyDetails();
 			PropertyDetail detail = details.getDetail(id);
-			
-			if (detail.getDataType() == null ||  !detail.getDataType().equals("list"))
+
+			if (detail.getDataType() == null || !detail.getDataType().equals("list"))
 			{
 				detail.setDataType("list");
 				detail.setListId(inTableName);
@@ -369,21 +382,21 @@ public class BaseImporter extends EnterMediaObject
 		return datavalues;
 	}
 
-//	protected void createLookUp(Data inRow, String inField, String inTable)
-//	{
-//		inField = PathUtilities.extractId(inField, true);
-//		String value = inRow.get(inField);
-//		if (value != null)
-//		{
-//			int comma = value.indexOf(",");
-//			if (comma > 0)
-//			{
-//				value = value.substring(0, comma);
-//			}
-//			Data data = findOrCreateData(inTable, inField, value);
-//			inRow.setProperty(inField, data.get("id"));
-//		}
-//	}
+	// protected void createLookUp(Data inRow, String inField, String inTable)
+	// {
+	// inField = PathUtilities.extractId(inField, true);
+	// String value = inRow.get(inField);
+	// if (value != null)
+	// {
+	// int comma = value.indexOf(",");
+	// if (comma > 0)
+	// {
+	// value = value.substring(0, comma);
+	// }
+	// Data data = findOrCreateData(inTable, inField, value);
+	// inRow.setProperty(inField, data.get("id"));
+	// }
+	// }
 
 	protected Data findOrCreateData(PropertyDetail inDetail, String value)
 	{
@@ -393,33 +406,39 @@ public class BaseImporter extends EnterMediaObject
 		Data data = (Data) datavalues.get(value);
 		if (data == null)
 		{
-			//search by name
-			
+			// search by name
+
 			Searcher searcher = getSearcherManager().getSearcher(getSearcher().getCatalogId(), inTable);
-			
+
 			String[] filter = getLookUpFilters().get(inField);
-			if( filter != null)
+			if (filter != null)
 			{
-				data = (Data) searcher.query().exact(filter[0], filter[1]).match("name", value).searchOne(); //How do we include collectionid? Preload lookups?
+				data = (Data) searcher.query().exact(filter[0], filter[1]).match("name", value).searchOne(); // How do
+																												// we
+																												// include
+																												// collectionid?
+																												// Preload
+																												// lookups?
 			}
 			else
 			{
-				data = (Data) searcher.query().match("name", value).searchOne(); //How do we include collectionid? Preload lookups?				
+				data = (Data) searcher.query().match("name", value).searchOne(); // How do we include collectionid?
+																					// Preload lookups?
 			}
-			if(data == null) 
+			if (data == null)
 			{
 				data = (Data) searcher.searchById(value);
-				if(data == null) 
+				if (data == null)
 				{
-					//create it?
-					if( getDbLookUps().contains(inDetail.getId()))
+					// create it?
+					if (getDbLookUps().contains(inDetail.getId()))
 					{
 						String id = PathUtilities.extractId(value, true);
 						data = findOrCreateById(inTable, id, value);
 					}
 				}
 			}
-			if( data == null)
+			if (data == null)
 			{
 				data = new BaseData();
 				data.setId(value);
@@ -445,25 +464,28 @@ public class BaseImporter extends EnterMediaObject
 		return data;
 	}
 
-//	protected void createMetadata(Header inHeader)
-//	{
-//		PropertyDetails details = getSearcher().getPropertyDetails();
-//
-//		for (Iterator iterator = inHeader.getHeaderNames().iterator(); iterator.hasNext();)
-//		{
-//			String header = (String) iterator.next();
-//			if(header.contains(".")){  //TODO: What about english and spanish language imports?
-//				continue;
-//			}
-//			//String header = inHeaders[i];
-//			PropertyDetail detail = getDetailByColLabel(header);  //Creates em
-//		}
-//	}
+	// protected void createMetadata(Header inHeader)
+	// {
+	// PropertyDetails details = getSearcher().getPropertyDetails();
+	//
+	// for (Iterator iterator = inHeader.getHeaderNames().iterator();
+	// iterator.hasNext();)
+	// {
+	// String header = (String) iterator.next();
+	// if(header.contains(".")){ //TODO: What about english and spanish language
+	// imports?
+	// continue;
+	// }
+	// //String header = inHeaders[i];
+	// PropertyDetail detail = getDetailByColLabel(header); //Creates em
+	// }
+	// }
 
-	protected PropertyDetail getDetailByColLabel(String inHeader) {
-		
+	protected PropertyDetail getDetailByColLabel(String inHeader)
+	{
+
 		PropertyDetails details = getSearcher().getPropertyDetails();
-		PropertyDetail detail = details.getDetail(inHeader); 
+		PropertyDetail detail = details.getDetail(inHeader);
 		if (detail == null)
 		{
 			detail = details.getDetailByName(inHeader);
@@ -477,49 +499,52 @@ public class BaseImporter extends EnterMediaObject
 		{
 			id = PathUtilities.extractId(inHeader, true);
 		}
-				
-		if(detail == null){
+
+		if (detail == null)
+		{
 			detail = details.getDetail(id);
-		}			
-		if(detail == null){
+		}
+		if (detail == null)
+		{
 			id = getNewdDetailPrefix() + id;
 			detail = details.getDetail(id);
-		}			
+		}
 		if (detail == null && !inHeader.contains("."))
-		{				
+		{
 			detail = getSearcher().getPropertyDetailsArchive().createDetail(getSearcher().getSearchType(), id, inHeader);
-			
-			if( getDbLookUps().contains(id))
+
+			if (getDbLookUps().contains(id))
 			{
 				detail.setDataType("list");
 			}
 			getSearcher().getPropertyDetailsArchive().savePropertyDetail(detail, getSearcher().getSearchType(), context.getUser());
 			getSearcher().putMappings();
 		}
-		
+
 		return detail;
 	}
 
 	protected void addProperties(Row inRow, Data inData)
 	{
 		PropertyDetails details = getSearcher().getPropertyDetails();
-		int size = inRow.getHeader().getSize()-1;
+		int size = inRow.getHeader().getSize() - 1;
 
 		for (int i = 0; i < inRow.getData().length; i++)
 		{
 			String val = inRow.getData(i);
-			if(i > size){
+			if (i > size)
+			{
 				continue;
 			}
 			String header = inRow.getHeader().getColumn(i);
 			if (header.contains("."))
 			{
-				//Assume Language map import
+				// Assume Language map import
 				String splits[] = header.split("\\.");
 				if (splits.length > 1)
 				{
 					PropertyDetail detail = getDetailByColLabel(splits[0]);
-					
+
 					if (detail != null && detail.isMultiLanguage())
 					{
 						LanguageMap map = null;
@@ -537,7 +562,7 @@ public class BaseImporter extends EnterMediaObject
 						{
 							map = new LanguageMap();
 						}
-						if( val != null && !val.isEmpty() )
+						if (val != null && !val.isEmpty())
 						{
 							map.put(splits[1], val);
 						}
@@ -546,102 +571,105 @@ public class BaseImporter extends EnterMediaObject
 					}
 					else
 					{
-						header = splits[0]; //No . allowed
+						header = splits[0]; // No . allowed
 					}
 				}
 			}
-			
+
 			PropertyDetail detail = getDetailByColLabel(header);
-			
-			val = URLUtilities.escapeUtf8(val); //The XML parser will clean up the & and stuff when it saves it
-//			if ("sourcepath".equals(headerid))
-//			{
-//				inData.setSourcePath(val);
-//			}
+
+			val = URLUtilities.escapeUtf8(val); // The XML parser will clean up the & and stuff when it saves it
+			// if ("sourcepath".equals(headerid))
+			// {
+			// inData.setSourcePath(val);
+			// }
 			if (val != null && val.length() > 0)
 			{
-				val = val.trim(); 	//trim spaces and clean
+				val = val.trim(); // trim spaces and clean
 				Object fixedvalue = null;
-				if( detail.isMultiValue() )
+				if (detail.isMultiValue())
 				{
 					String[] values = MultiValued.VALUEDELMITER.split(val);
-					if( detail.isList() )
+					if (detail.isList())
 					{
 						Collection collection = new ArrayList(values.length);
 						for (int j = 0; j < values.length; j++)
 						{
 							String id = values[j];
-							Object value = lookUpListValIfNeeded(detail,val);
+							Object value = lookUpListValIfNeeded(detail, val);
 							collection.add(value);
 						}
 						fixedvalue = collection;
 					}
-					else if( detail.isNumber())
-					{
-						if( "double".equals( detail.getDataType() ) )
+					else
+						if (detail.isNumber())
 						{
-							Collection dvalues = MultiValued.collectDoubles(values);
-							fixedvalue =  dvalues;
-						}
-						else if("float".equals( detail.getDataType() ) )
-						{
-							Collection dvalues = MultiValued.collectFloats(values);
-							fixedvalue =  dvalues;
+							if ("double".equals(detail.getDataType()))
+							{
+								Collection dvalues = MultiValued.collectDoubles(values);
+								fixedvalue = dvalues;
+							}
+							else
+								if ("float".equals(detail.getDataType()))
+								{
+									Collection dvalues = MultiValued.collectFloats(values);
+									fixedvalue = dvalues;
+								}
+								else
+								{
+									fixedvalue = Arrays.asList(values);
+								}
 						}
 						else
 						{
-							fixedvalue = Arrays.asList( values );
+							fixedvalue = Arrays.asList(values);
 						}
-					}
-					else
-					{
-						fixedvalue = Arrays.asList( values );
-					}
 				}
 				else
 				{
-					fixedvalue = lookUpListValIfNeeded(detail,val);
+					fixedvalue = lookUpListValIfNeeded(detail, val);
 				}
 				inData.setValue(detail.getId(), fixedvalue);
 			}
 			else
 			{
-				inData.setValue(detail.getId(), null);  //This ok?
+				inData.setValue(detail.getId(), null); // This ok?
 			}
 		}
-		addCustomProperties(inRow,inData);
+		addCustomProperties(inRow, inData);
 	}
 
 	protected void addCustomProperties(Row inRow, Data inData)
 	{
-		//Uerride as needed
+		// Uerride as needed
 	}
+
 	protected Object lookUpListValIfNeeded(PropertyDetail inDetail, String inVal)
 	{
 		Object value = null;
-		if (inDetail.isViewType("category") )
+		if (inDetail.isViewType("category"))
 		{
 			return inVal;
 		}
-		if( inDetail.isList() && (isLookUpLists() || getDbLookUps().contains(inDetail.getId())))
+		if (inDetail.isList() && (isLookUpLists() || getDbLookUps().contains(inDetail.getId())))
 		{
-			value = findOrCreateData(inDetail,inVal);
+			value = findOrCreateData(inDetail, inVal);
 		}
 		else
 		{
 			value = getSearcher().createValue(inDetail.getId(), inVal);
 		}
-		Object finished = scrubValueIfNeeded(inDetail,value);
+		Object finished = scrubValueIfNeeded(inDetail, value);
 		return finished;
 	}
 
 	public Object scrubValueIfNeeded(PropertyDetail inDetail, Object inVal)
 	{
 		Object finalVal = inVal;
-		//TO be overrriden by scripts
+		// TO be overrriden by scripts
 		return finalVal;
 	}
-	
+
 	public boolean isMakeId()
 	{
 		return fieldMakeId;

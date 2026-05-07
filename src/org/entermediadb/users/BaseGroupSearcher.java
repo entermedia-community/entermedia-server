@@ -33,8 +33,9 @@ public class BaseGroupSearcher extends BaseSearcher implements GroupSearcher
 	public HitTracker getAllHits(WebPageRequest inReq)
 	{
 		return getUserManager().getGroups();
-		//return new ListHitTracker().setList(getCustomerArchive().)
+		// return new ListHitTracker().setList(getCustomerArchive().)
 	}
+
 	public HitTracker search(SearchQuery inQ)
 	{
 		String inQuery = inQ.toQuery();
@@ -43,34 +44,35 @@ public class BaseGroupSearcher extends BaseSearcher implements GroupSearcher
 		SearchQuery q = createSearchQuery();
 		q.addMatches(inQuery);
 		tracker.setSearchQuery(q);
-		
-		  if ( inQuery == null || inQuery.equalsIgnoreCase("all")  || inQuery.length() == 0)
-		  {
-			  return getAllHits();
-		  }
-		  inQuery = inQuery.toLowerCase();
-		  for (Iterator iter = getUserManager().getGroups().iterator(); iter.hasNext();)
-		  {
+
+		if (inQuery == null || inQuery.equalsIgnoreCase("all") || inQuery.length() == 0)
+		{
+			return getAllHits();
+		}
+		inQuery = inQuery.toLowerCase();
+		for (Iterator iter = getUserManager().getGroups().iterator(); iter.hasNext();)
+		{
 			Group group = (Group) iter.next();
-			if( matches(group.getName(),inQuery) ) 
+			if (matches(group.getName(), inQuery))
 			{
 				tracker.add(group);
 			}
-			if ( tracker.getTotal() >= maxNum)
+			if (tracker.getTotal() >= maxNum)
 			{
 				break;
 			}
-		  }
+		}
 		return tracker;
 	}
+
 	protected boolean matches(String inText, String inQuery)
 	{
-		if ( inText != null)
+		if (inText != null)
 		{
-			if (PathUtilities.match(inText, inQuery) )
+			if (PathUtilities.match(inText, inQuery))
 			{
-				return true;		
-			}				
+				return true;
+			}
 		}
 		return false;
 	}
@@ -86,57 +88,62 @@ public class BaseGroupSearcher extends BaseSearcher implements GroupSearcher
 	}
 
 	public void reIndexAll() throws OpenEditException
-	{
-	}
+	{}
+
 	public void clearIndex()
 	{
 		// TODO Auto-generated method stub
-	}		
+	}
+
 	public SearchQuery createSearchQuery()
 	{
 		return new SearchQuery();
 	}
+
 	public String getIndexId()
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	public Object searchById(String inId)
 	{
 		return getUserManager().getGroup(inId);
 	}
+
 	public void saveData(Data inData, User inUser)
 	{
-		getUserManager().saveGroup((Group)inData);
+		getUserManager().saveGroup((Group) inData);
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.openedit.users.GroupSearche#getGroup(java.lang.String)
 	 */
 	public Group getGroup(String inGroupId)
 	{
 		return getUserManager().getGroup(inGroupId);
 	}
-	
 
 	public void saveAllData(Collection inList, User inUser)
-	{
-	}
-	
+	{}
+
 	public void delete(Data inData, User inUser)
 	{
-		
+
 	}
-	
+
 	public void deleteAll(User inUser)
 	{
-		
+
 	}
-	
+
 	public void setCatalogId(String inCatalogId)
 	{
-		if( !"system".equals(inCatalogId) )
+		if (!"system".equals(inCatalogId))
 		{
-			throw new OpenEditException("group searcher should only be a system level not " + inCatalogId );
+			throw new OpenEditException("group searcher should only be a system level not " + inCatalogId);
 		}
 		super.setCatalogId(inCatalogId);
 	}

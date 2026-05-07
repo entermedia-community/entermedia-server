@@ -209,8 +209,7 @@ public class DvdImportConverter extends CatalogConverter
 
 	protected File[] findAssetXConfFiles(File inParent)
 	{
-		FileFilter filter = new FileFilter()
-		{
+		FileFilter filter = new FileFilter() {
 			public boolean accept(File inDir)
 			{
 				String inName = inDir.getName().toLowerCase();

@@ -21,10 +21,11 @@ import org.openedit.util.MathUtils;
 public class Timeline
 {
 	private static final Log log = LogFactory.getLog(Timeline.class);
-	
-	//20 chunks at 15 * 4 = 60px each
-	//20 * 60 = 1200px wide
+
+	// 20 chunks at 15 * 4 = 60px each
+	// 20 * 60 = 1200px wide
 	protected int fieldTotalTickCount = 20;
+
 	public int getTotalTickCount()
 	{
 		return fieldTotalTickCount;
@@ -42,7 +43,7 @@ public class Timeline
 	protected Collection fieldClips;
 	protected SearcherManager fieldSearcherManager;
 	protected MediaArchive fieldMediaArchive;
-	
+
 	public MediaArchive getMediaArchive()
 	{
 		return fieldMediaArchive;
@@ -77,24 +78,24 @@ public class Timeline
 	{
 		if (fieldTicks == null)
 		{
-			//divide into 60 blocks
+			// divide into 60 blocks
 			fieldTicks = new ArrayList();
-			
-			double chunck = (double)getLength() / (double)getTotalTickCount();
+
+			double chunck = (double) getLength() / (double) getTotalTickCount();
 			for (int i = 0; i < getTotalTickCount() + 1; i++)
 			{
 				Block block = new Block();
-				//block.setTime(i * chunck);
+				// block.setTime(i * chunck);
 				block.setCounter(i);
-				double offsetmili = chunck * (double)i;
-				block.setStartOffset(Math.round( offsetmili ));
-				if( i < 20)
+				double offsetmili = chunck * (double) i;
+				block.setStartOffset(Math.round(offsetmili));
+				if (i < 20)
 				{
 					block.setShowThumb((i % 2) == 0);
-				}	
+				}
 				fieldTicks.add(block);
 			}
-			
+
 		}
 		return fieldTicks;
 	}
@@ -127,11 +128,11 @@ public class Timeline
 	public Collection loadClips(MultiValued inParent, String inField)
 	{
 		fieldClips = new ArrayList();
-		if( inParent != null)
+		if (inParent != null)
 		{
 			Collection rows = inParent.getValues(inField);
 			Set existingfaceprofilegroups = new HashSet();
-			if( rows != null)
+			if (rows != null)
 			{
 				for (Iterator iterator = rows.iterator(); iterator.hasNext();)
 				{
@@ -139,142 +140,145 @@ public class Timeline
 
 					Clip clip = new Clip();
 					clip.setData(data);
-					
-					if( data.get("faceprofilegroup") != null)
+
+					if (data.get("faceprofilegroup") != null)
 					{
 						for (Iterator iterator2 = data.getValues("faceprofilegroup").iterator(); iterator2.hasNext();)
 						{
 							String faceprofilegroup = (String) iterator2.next();
-							existingfaceprofilegroups.add(faceprofilegroup + String.valueOf(clip.getStart() ) );
+							existingfaceprofilegroups.add(faceprofilegroup + String.valueOf(clip.getStart()));
 						}
 					}
-					
+
 					fieldClips.add(clip);
 				}
-				Collections.sort((ArrayList)fieldClips);
-	
+				Collections.sort((ArrayList) fieldClips);
+
 			}
-			//Now look for facial recognition stuff and create records if needed. Once they save its done
+			// Now look for facial recognition stuff and create records if needed. Once they
+			// save its done
 			Collection faceprofiles = inParent.getValues("faceprofiles");
-			if( faceprofiles != null)
+			if (faceprofiles != null)
 			{
 				for (Iterator iterator = faceprofiles.iterator(); iterator.hasNext();)
 				{
-					Map<String,Object> profile = (Map) iterator.next();
-					String faceprofilegroup = (String)profile.get("faceprofilegroup");
-					if( faceprofilegroup == null || faceprofilegroup.contains("|"))
+					Map<String, Object> profile = (Map) iterator.next();
+					String faceprofilegroup = (String) profile.get("faceprofilegroup");
+					if (faceprofilegroup == null || faceprofilegroup.contains("|"))
 					{
 						log.error("Must be a one to one groupid " + faceprofilegroup);
 						continue;
 					}
-					if( !existingfaceprofilegroups.contains(faceprofilegroup + String.valueOf(profile.get("timecodestart") ) ) )
+					if (!existingfaceprofilegroups.contains(faceprofilegroup + String.valueOf(profile.get("timecodestart"))))
 					{
-						//Add it
-						String groupid = (String)faceprofilegroup;
-						if( groupid == null)
+						// Add it
+						String groupid = (String) faceprofilegroup;
+						if (groupid == null)
 						{
 							log.error("Must have a groupid");
 							continue;
 						}
 						Map data = new HashMap();
-						data.put( "timecodestart",profile.get("timecodestart"));
-						data.put( "timecodelength",profile.get("timecodelength"));
-						
-						Data groupprofile = getMediaArchive().getCachedData("faceprofilegroup",groupid);
-						if(groupprofile != null)
+						data.put("timecodestart", profile.get("timecodestart"));
+						data.put("timecodelength", profile.get("timecodelength"));
+
+						Data groupprofile = getMediaArchive().getCachedData("faceprofilegroup", groupid);
+						if (groupprofile != null)
 						{
-							data.put( "verticaloffset", getFaceRow(groupprofile.get("facecounter")) );
-							data.put( "faceprofilegroup",groupid);
+							data.put("verticaloffset", getFaceRow(groupprofile.get("facecounter")));
+							data.put("faceprofilegroup", groupid);
 						}
-						
-						//TODO: Set the heights bassed on profilegroup. Like one row per each?
+
+						// TODO: Set the heights bassed on profilegroup. Like one row per each?
 						Clip clip = new Clip();
 						clip.setData(data);
 						fieldClips.add(clip);
 					}
 				}
 			}
-			
-			
+
 		}
 		return fieldClips;
 	}
+
 	public int getPxStart(Clip inClip)
 	{
-		double ratio = (double)inClip.getStart() / (double)getLength();
-		double px = (double)getPxWidth() * ratio;
-		return (int)Math.round(px);
+		double ratio = (double) inClip.getStart() / (double) getLength();
+		double px = (double) getPxWidth() * ratio;
+		return (int) Math.round(px);
 	}
+
 	public int getPxLength(Clip inClip)
 	{
-		double ratio = (double)inClip.getLength() / (double)getLength();
-		double px = (double)getPxWidth() * ratio;
-		if( px < 90)
+		double ratio = (double) inClip.getLength() / (double) getLength();
+		double px = (double) getPxWidth() * ratio;
+		if (px < 90)
 		{
 			px = 90;
 		}
-		int pxi = (int)Math.round(px);
+		int pxi = (int) Math.round(px);
 		return pxi;
 	}
-	
+
 	public int getPxFaceStart(Map inFace)
 	{
-		double ratio = toDouble(inFace.get("facedatastarttime")) / (double)getLength();
-		double px = (double)getPxWidth() * ratio;
-		return (int)Math.round(px);
+		double ratio = toDouble(inFace.get("facedatastarttime")) / (double) getLength();
+		double px = (double) getPxWidth() * ratio;
+		return (int) Math.round(px);
 	}
+
 	public int getPxFaceLength(Map inFace)
 	{
-		double ratio = toDouble(inFace.get("facedataendtime")) / (double)getLength();
-		double px = (double)getPxWidth() * ratio;
-		if( px < 90)
+		double ratio = toDouble(inFace.get("facedataendtime")) / (double) getLength();
+		double px = (double) getPxWidth() * ratio;
+		if (px < 90)
 		{
 			px = 90;
 		}
-		int pxi = (int)Math.round(px);
+		int pxi = (int) Math.round(px);
 		return pxi;
 	}
-	
+
 	public int getPxVertical(Clip inClip)
 	{
 		int vertical = inClip.getData().getInteger("verticaloffset");
 		return vertical;
 	}
 
-	
 	public double getPxToTimeRatio()
 	{
-		return (double)getPxWidth() / (double)getLength();
+		return (double) getPxWidth() / (double) getLength();
 	}
 
 	public void selectClip(String inSelected)
 	{
-		if( fieldClips == null)
+		if (fieldClips == null)
 		{
 			return;
 		}
 		for (Iterator iterator = getClips().iterator(); iterator.hasNext();)
 		{
 			Clip clip = (Clip) iterator.next();
-			//clip.getStart()
+			// clip.getStart()
 		}
 	}
+
 	private double toDouble(Object inString)
 	{
-		if( inString == null)
+		if (inString == null)
 		{
 			return 0;
 		}
-		
+
 		return Long.parseLong(inString.toString());
 	}
-	
+
 	public String toHourTime(Object inTime)
 	{
 		long milli = 0;
-		if( inTime instanceof Double)
+		if (inTime instanceof Double)
 		{
-			milli = Math.round( toDouble(inTime)*1000D);
+			milli = Math.round(toDouble(inTime) * 1000D);
 		}
 		else
 		{
@@ -285,16 +289,16 @@ public class Timeline
 
 	public int getFaceRow(String inFaceCounter)
 	{
-		String counter= inFaceCounter;
-		if( counter == null)
+		String counter = inFaceCounter;
+		if (counter == null)
 		{
 			counter = "uncounted";
 		}
-		Integer row = (Integer)facerows.get(counter);
-		if( row == null)
+		Integer row = (Integer) facerows.get(counter);
+		if (row == null)
 		{
-			row = facerows.size() * 30 + 200; //px
-			facerows.put(counter,row);
+			row = facerows.size() * 30 + 200; // px
+			facerows.put(counter, row);
 		}
 		return row;
 	}

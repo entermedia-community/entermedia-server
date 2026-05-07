@@ -688,7 +688,8 @@ public class EmbeddingManager extends BaseAiManager
 
 	public void queueMissingEmbeddings(Map<String, Collection<MultiValued>> missing)
 	{
-		// immediately set to pending so we don't have multiple processes trying to embed the same records
+		// immediately set to pending so we don't have multiple processes trying to
+		// embed the same records
 		for (Iterator<String> iterator = missing.keySet().iterator(); iterator.hasNext();)
 		{
 			String searchtype = iterator.next();
@@ -711,7 +712,8 @@ public class EmbeddingManager extends BaseAiManager
 			Collection<MultiValued> toEmbed = missing.get(searchtype);
 			BaseData config = new BaseData();
 			config.setValue("searchtype", searchtype);
-			// getAutomationManager().runScenario("rerun-missing-embedding",context); //TODO: Define this
+			// getAutomationManager().runScenario("rerun-missing-embedding",context);
+			// //TODO: Define this
 			processRecords(inLog, config, toEmbed); // TODO:Load up the configs and enabled things
 
 			getMediaArchive().saveData(searchtype, toEmbed);

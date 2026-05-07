@@ -30,7 +30,7 @@ public class FolderMonitor implements Runnable, WebEventListener
 	protected ExecutorManager fieldExecutorManager;
 	protected Map fieldPathChangedListeners = new HashMap();
 	protected CacheManager fieldTimedCache;
-	
+
 	public CacheManager getTimedCache()
 	{
 		return fieldTimedCache;
@@ -73,14 +73,12 @@ public class FolderMonitor implements Runnable, WebEventListener
 	}
 
 	/**
-	 * Register the given directory, and all its sub-directories, with the
-	 * WatchService.
+	 * Register the given directory, and all its sub-directories, with the WatchService.
 	 */
 	private void registerAll(final Path start) throws IOException
 	{
 		// register directory and sub-directories
-		Files.walkFileTree(start, new SimpleFileVisitor<Path>()
-		{
+		Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
 			@Override
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException
 			{
@@ -132,16 +130,16 @@ public class FolderMonitor implements Runnable, WebEventListener
 				Path child = dir.resolve(name);
 
 				// print out event
-				//System.out.format("%s: %s\n", event.kind().name(), child);
+				// System.out.format("%s: %s\n", event.kind().name(), child);
 				String absolutepath = child.toFile().getAbsolutePath();
-				if( getTimedCache().get("FolderMonitor", absolutepath) == null )
+				if (getTimedCache().get("FolderMonitor", absolutepath) == null)
 				{
 					for (Iterator iterator = fieldPathChangedListeners.keySet().iterator(); iterator.hasNext();)
 					{
 						String path = (String) iterator.next();
-						if( absolutepath.startsWith(path))
+						if (absolutepath.startsWith(path))
 						{
-							PathChangedListener listener = (PathChangedListener)fieldPathChangedListeners.get(path);
+							PathChangedListener listener = (PathChangedListener) fieldPathChangedListeners.get(path);
 							listener.pathChanged(event.kind().name(), absolutepath);
 						}
 					}
@@ -214,32 +212,32 @@ public class FolderMonitor implements Runnable, WebEventListener
 	@Override
 	public void eventFired(WebEvent inEvent)
 	{
-		if( "savingoriginal".equals( inEvent.getOperation() ))
+		if ("savingoriginal".equals(inEvent.getOperation()))
 		{
-			getTimedCache().put("FolderMonitor", inEvent.get("absolutepath"),true);
+			getTimedCache().put("FolderMonitor", inEvent.get("absolutepath"), true);
 		}
-//		else if( "savingoriginalcomplete".equals( inEvent.getOperation() ))
-//		{
-//			fieldIgnoreList.remove(inEvent.get("absolutepath"));
-//		}
-		
+		// else if( "savingoriginalcomplete".equals( inEvent.getOperation() ))
+		// {
+		// fieldIgnoreList.remove(inEvent.get("absolutepath"));
+		// }
+
 	}
 
-	//    public static void main(String[] args) throws IOException {
-	//        // parse arguments
-	//        if (args.length == 0 || args.length > 2)
-	//            usage();
-	//        boolean recursive = false;
-	//        int dirArg = 0;
-	//        if (args[0].equals("-r")) {
-	//            if (args.length < 2)
-	//                usage();
-	//            recursive = true;
-	//            dirArg++;
-	//        }
-	// 
-	//        // register directory and process its events
-	//        Path dir = Paths.get(args[dirArg]);
-	//        new WatchDir(dir, recursive).processEvents();
-	//    }
+	// public static void main(String[] args) throws IOException {
+	// // parse arguments
+	// if (args.length == 0 || args.length > 2)
+	// usage();
+	// boolean recursive = false;
+	// int dirArg = 0;
+	// if (args[0].equals("-r")) {
+	// if (args.length < 2)
+	// usage();
+	// recursive = true;
+	// dirArg++;
+	// }
+	//
+	// // register directory and process its events
+	// Path dir = Paths.get(args[dirArg]);
+	// new WatchDir(dir, recursive).processEvents();
+	// }
 }

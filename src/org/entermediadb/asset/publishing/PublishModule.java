@@ -6,10 +6,10 @@ import org.openedit.WebPageRequest;
 
 public class PublishModule extends BaseMediaModule
 {
-	public void checkQueue(WebPageRequest inRequest) 
+	public void checkQueue(WebPageRequest inRequest)
 	{
 		MediaArchive archive = getMediaArchive(inRequest);
-		PublishManager manager = (PublishManager)archive.getBean("publishManager");
+		PublishManager manager = (PublishManager) archive.getBean("publishManager");
 		manager.checkQueue(inRequest);
 	}
 }

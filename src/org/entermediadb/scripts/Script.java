@@ -1,14 +1,14 @@
 /*
-Copyright (c) 2003 eInnovation Inc. All rights reserved
-
-This library is free software; you can redistribute it and/or modify it under the terms
-of the GNU Lesser General Public License as published by the Free Software Foundation;
-either version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-*/
+ * Copyright (c) 2003 eInnovation Inc. All rights reserved
+ * 
+ * This library is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation; either version
+ * 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 
 package org.entermediadb.scripts;
 
@@ -21,10 +21,8 @@ import org.openedit.page.Page;
 import org.openedit.util.FileUtils;
 import org.openedit.util.OutputFiller;
 
-
 /**
- * This class represents a script.  It may be either a standalone JavaScript file or part of a
- * form.
+ * This class represents a script. It may be either a standalone JavaScript file or part of a form.
  *
  * @author Eric Galluzzo
  */
@@ -39,13 +37,14 @@ public class Script
 	protected String fieldMethod;
 	protected Configuration fieldConfiguration;
 	protected String fieldCatalogId;
-	
-	
-	public void setConfiguration(Configuration inConfiguration) {
+
+	public void setConfiguration(Configuration inConfiguration)
+	{
 		fieldConfiguration = inConfiguration;
 	}
 
-	public Configuration getConfiguration() {
+	public Configuration getConfiguration()
+	{
 		return fieldConfiguration;
 	}
 
@@ -82,24 +81,18 @@ public class Script
 	/**
 	 * Create a new script, with parameters to be filled in later.
 	 */
-	public Script()
-	{
-	}
-
-
+	public Script() {}
 
 	/**
-	 * Create a new script with the given script text, description, and starting position within
-	 * its file.
+	 * Create a new script with the given script text, description, and starting position within its
+	 * file.
 	 *
 	 * @param inScriptText DOCUMENT ME!
 	 * @param inDescription DOCUMENT ME!
 	 * @param inStartLineNumber DOCUMENT ME!
 	 * @param inStartCharNumber DOCUMENT ME!
 	 */
-	public Script(
-		String inScriptText, String inDescription, int inStartLineNumber, int inStartCharNumber)
-	{
+	public Script(String inScriptText, String inDescription, int inStartLineNumber, int inStartCharNumber) {
 		fieldScriptText = inScriptText;
 		fieldDescription = inDescription;
 		fieldStartLineNumber = inStartLineNumber;
@@ -143,14 +136,14 @@ public class Script
 	 */
 	public String getScriptText()
 	{
-		if( fieldScriptText == null)
+		if (fieldScriptText == null)
 		{
 			Reader in = getPage().getReader();
 			StringWriter out = new StringWriter();
-			
+
 			try
 			{
-				new OutputFiller().fill(in,out);
+				new OutputFiller().fill(in, out);
 			}
 			catch (IOException e)
 			{
@@ -164,8 +157,7 @@ public class Script
 	}
 
 	/**
-	 * Sets the character number within the file named in the description at which the script
-	 * started.
+	 * Sets the character number within the file named in the description at which the script started.
 	 *
 	 * @param startCharNumber The starting character number
 	 */
@@ -196,8 +188,7 @@ public class Script
 	}
 
 	/**
-	 * Returns the line number within the file named in the description at which the script
-	 * started.
+	 * Returns the line number within the file named in the description at which the script started.
 	 *
 	 * @return int
 	 */
@@ -206,5 +197,4 @@ public class Script
 		return fieldStartLineNumber;
 	}
 
-	
 }

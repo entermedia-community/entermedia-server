@@ -95,7 +95,8 @@ public class PublishManager implements CatalogEnabled
 		{
 			query.addExact("assetid", assetid);
 		}
-		query.addOrsGroup("publishstatus", "new readytopublish publishing retry"); // new readytopublish publishing publishingexternal complete
+		query.addOrsGroup("publishstatus", "new readytopublish publishing retry"); // new readytopublish publishing
+																					// publishingexternal complete
 		// query.addNot("remotepublish","true");
 
 		HitTracker<Data> publishtasks = queuesearcher.search(query);
@@ -175,11 +176,13 @@ public class PublishManager implements CatalogEnabled
 						log.info("asset already being published ${asset}");
 						continue;
 					}
-					// log.info("Lock Version (${asset}): Version: " + lock.get(".version") + "Thread: " +
+					// log.info("Lock Version (${asset}): Version: " + lock.get(".version") +
+					// "Thread: " +
 					// Thread.currentThread().getId() + "Lock ID" + lock.getId());
 					PublishResult presult = null;
 
-					// log.info("Publishing Version (${asset}): Version: " + lock.get(".version") + "Thread: " +
+					// log.info("Publishing Version (${asset}): Version: " + lock.get(".version") +
+					// "Thread: " +
 					// Thread.currentThread().getId() + "Lock ID" + lock.getId());
 
 					/*
@@ -261,7 +264,8 @@ public class PublishManager implements CatalogEnabled
 				{
 					if (lock != null)
 					{
-						// log.info("Release Lock Version (${asset}): Version: " + lock.get(".version") + " Thread: " +
+						// log.info("Release Lock Version (${asset}): Version: " + lock.get(".version")
+						// + " Thread: " +
 						// Thread.currentThread().getId() + "Lock ID" + lock.getId());
 						mediaArchive.releaseLock(lock);
 					}
@@ -289,7 +293,8 @@ public class PublishManager implements CatalogEnabled
 	protected Publisher getPublisher(MediaArchive inArchive, String inType)
 	{
 		// GroovyClassLoader loader = engine.getGroovyClassLoader();
-		// Class groovyClass = loader.loadClass("publishing.publishers.${inType}publisher");
+		// Class groovyClass =
+		// loader.loadClass("publishing.publishers.${inType}publisher");
 		// Publisher publisher = (Publisher) groovyClass.newInstance();
 		// return publisher;
 		return (Publisher) getModuleManager().getBean(inType + "publisher");

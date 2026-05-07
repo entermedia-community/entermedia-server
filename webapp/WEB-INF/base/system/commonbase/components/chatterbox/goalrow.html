@@ -3,27 +3,33 @@
 	class="goalstatus goalstatus$!{goal.projectstatus} goallevel$!{goal.ticketlevel} ${target}"  
 	style="position:relative"> 
 	#set( $goallink = "${communityhome}/project/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=chat&targetdiv=${target}")
-	<div class="mb-1">
-		#if($caneditcollection)
-		<a data-cancelsubmit="true" 
-			data-hidefooter="true" 
-			href="${goallink}"
-			title="[[Ticket]] #$!goal.ticketnumber" 
-			class="emdialog goalticket-level float-left" 
-			data-urlbar="${communityhome}/project/goals/priorities/index.html?collectionid=$goal.collectionid&opengoalid=${goal.id}" 
-			data-width="900" >
-				<i class="fas fa-flag"></i> 
-			##	#set( $level = $mediaarchive.getData("ticketlevel",$goal.ticketlevel))
-			##	#text($level) : #$!goal.ticketnumber  
+	#if($caneditcollection)
+		<div class="d-flex align-items-center justify-content-between py-2 px-3 border-bottom">
+			<a data-cancelsubmit="true" 
+				data-hidefooter="true" 
+				href="${goallink}"
+				title="[[Ticket]] #$!goal.ticketnumber" 
+				class="emdialog goalticket-level" 
+				data-urlbar="${communityhome}/project/goals/priorities/index.html?collectionid=$goal.collectionid&opengoalid=${goal.id}" 
+				data-width="900">
+				#if( $goal.ticketnumber ) 
+					<b class="me-1"style="font-family: monospace;">#${goal.ticketnumber}</b>
+				#else
+					<i class="fa fa-caret-right"></i>
+				#end
 				#set( $status  = $mediaarchive.getData("projectstatus", $goal.projectstatus) )
-				<span class="goalname">$goal.name</span>
-		</a>
-		#end
-		<div class="goalslike float-right">
-			$pages.include("${communityhome}/project/goals/like.html",$context)
+				<span>$goal.name</span>
+			</a>
+			<a href="${goallink}" 
+				title="[[Edit Goal]]"
+				class="emdialog goal-title text-primary"
+				style="width: 24px;"
+				data-hidefooter="true"
+				data-width="900">
+				<I class="bi bi-pencil-square"></I>
+			</a>
 		</div>
-		<div class="clearfix"></div>
-	</div>
+	#end
 	<div class="goaltasksout">
 		
 		$pages.include("${communityhome}/project/goals/search/goaltasks.html?indialog=true&onlyopen=false",$context)

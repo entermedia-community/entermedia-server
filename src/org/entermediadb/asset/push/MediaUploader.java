@@ -8,9 +8,8 @@ import org.openedit.users.User;
 public interface MediaUploader
 {
 
-	public boolean uploadOriginal(MediaArchive archive, Asset inAsset, Data inPublishDestination, User inUser );	
-	public boolean uploadGenerated(MediaArchive archive, Asset inAsset, Data inPublishDestination, User inUser );
-	
+	public boolean uploadOriginal(MediaArchive archive, Asset inAsset, Data inPublishDestination, User inUser);
 
-		
+	public boolean uploadGenerated(MediaArchive archive, Asset inAsset, Data inPublishDestination, User inUser);
+
 }

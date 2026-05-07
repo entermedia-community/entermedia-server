@@ -17,12 +17,12 @@ import org.openedit.util.PathUtilities;
 public class ScriptManager
 {
 	private static final Log log = LogFactory.getLog(ScriptManager.class);
-	
+
 	protected Map fieldScriptRunners;
 	protected ModuleManager fieldModuleManager;
 	protected PageManager fieldPageManager;
 	protected UserManager fieldUserManager;
-	
+
 	public PageManager getPageManager()
 	{
 		return fieldPageManager;
@@ -56,32 +56,32 @@ public class ScriptManager
 	{
 		fieldScriptRunners = inScriptRunners;
 	}
-	
+
 	public ScriptRunner getRunner(String inName)
 	{
-		ScriptRunner runner = (ScriptRunner)getScriptRunners().get(inName);
-		if( runner == null)
+		ScriptRunner runner = (ScriptRunner) getScriptRunners().get(inName);
+		if (runner == null)
 		{
-			runner = (ScriptRunner)getModuleManager().getBean(inName + "ScriptRunner");
-			getScriptRunners().put(inName,runner);
+			runner = (ScriptRunner) getModuleManager().getBean(inName + "ScriptRunner");
+			getScriptRunners().put(inName, runner);
 		}
 		return runner;
 	}
-	
+
 	public void clearCache()
 	{
-		if( fieldScriptRunners != null )
+		if (fieldScriptRunners != null)
 		{
 			fieldScriptRunners.clear();
 		}
 	}
-	
+
 	public Script loadScript(String code) throws OpenEditException
 	{
 		try
 		{
 
-			Page scriptPage = getPageManager().getPage( code );
+			Page scriptPage = getPageManager().getPage(code);
 
 			Script script = new Script();
 			script.setPage(scriptPage);
@@ -89,27 +89,30 @@ public class ScriptManager
 			{
 				script.setType("bsh");
 			}
-			else if( code.endsWith(".js"))
-			{
-				script.setType("rhino");
-			}
-			else if (code.endsWith(".groovy"))
-			{
-				script.setType("groovy");
-			}
-			else if (code.endsWith(".sh") || code.endsWith(".bat"))
-			{
-				script.setType("shell");
-			}
-			else if (code.endsWith(".py") )
-			{
-				script.setType("py");
-			}
 			else
-			{
-				script.setType("bsf");
-			}
-		
+				if (code.endsWith(".js"))
+				{
+					script.setType("rhino");
+				}
+				else
+					if (code.endsWith(".groovy"))
+					{
+						script.setType("groovy");
+					}
+					else
+						if (code.endsWith(".sh") || code.endsWith(".bat"))
+						{
+							script.setType("shell");
+						}
+						else
+							if (code.endsWith(".py"))
+							{
+								script.setType("py");
+							}
+							else
+							{
+								script.setType("bsf");
+							}
 
 			return script;
 		}
@@ -118,36 +121,37 @@ public class ScriptManager
 			throw new OpenEditException(ex);
 		}
 	}
-	
+
 	public Object execScript(Map variableMap, Script inScript) throws OpenEditException
 	{
 		ScriptRunner runner = getRunner(inScript.getType());
 
-		ScriptLogger logger = (ScriptLogger)variableMap.get("log");
-		if( logger == null)
+		ScriptLogger logger = (ScriptLogger) variableMap.get("log");
+		if (logger == null)
 		{
 			logger = new ScriptLogger();
 			logger.setPrefix(inScript.getPage().getName());
 		}
 		variableMap.put("log", logger);
-		//variableMap.put("userManager", getModuleManager().getBean( "userManager" ) ); //now catalogid based.
-		variableMap.put("moduleManager", getModuleManager() ); 
-		variableMap.put("beanFactory", getModuleManager() ); 
-		variableMap.put("pageManager", getPageManager() ); 
-		variableMap.put("root", getModuleManager().getBean( "root" ) ); 
-		
+		// variableMap.put("userManager", getModuleManager().getBean( "userManager" ) );
+		// //now catalogid based.
+		variableMap.put("moduleManager", getModuleManager());
+		variableMap.put("beanFactory", getModuleManager());
+		variableMap.put("pageManager", getPageManager());
+		variableMap.put("root", getModuleManager().getBean("root"));
+
 		Object returned = null;
 		long start = System.currentTimeMillis();
 		try
 		{
 			logger.startCapture();
-			logger.debug("Running "  +inScript.getPage() );
+			logger.debug("Running " + inScript.getPage());
 			returned = runner.exec(inScript, variableMap);
 		}
-		catch( Throwable ex)
+		catch (Throwable ex)
 		{
-			logger.error("Error running "  +inScript.getPage(), ex );
-			if( ex instanceof OpenEditException)
+			logger.error("Error running " + inScript.getPage(), ex);
+			if (ex instanceof OpenEditException)
 			{
 				throw ex;
 			}
@@ -156,30 +160,29 @@ public class ScriptManager
 				throw new OpenEditException(ex);
 			}
 		}
-		finally 
+		finally
 		{
 			long used = System.currentTimeMillis() - start;
-			logger.debug("Completed in "  + (used / 1000L) + " seconds" );
+			logger.debug("Completed in " + (used / 1000L) + " seconds");
 			logger.stopCapture();
 		}
 		return returned;
-		
+
 	}
 
 	public Script loadScript(WebPageRequest inContext, Configuration inScriptconfig, String inFilepath)
 	{
 		String code = inScriptconfig.getValue();
-		//log.info("Start value: " + code);
+		// log.info("Start value: " + code);
 		code = inContext.getPage().getPageSettings().replaceProperty(code);
-		//log.info("Replaced value: " + code);
+		// log.info("Replaced value: " + code);
 		code = PathUtilities.resolveRelativePath(code, inFilepath);
-		//log.info("Final script: " + code + " using " + inFilepath);
+		// log.info("Final script: " + code + " using " + inFilepath);
 		Script script = loadScript(code);
 		String method = inScriptconfig.getAttribute("method");
 		script.setMethod(method);
 		script.setConfiguration(inScriptconfig);
-		
-		
+
 		return script;
 	}
 

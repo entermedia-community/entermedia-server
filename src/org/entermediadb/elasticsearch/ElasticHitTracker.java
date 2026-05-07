@@ -47,7 +47,7 @@ public class ElasticHitTracker extends HitTracker
 	private static final Log log = LogFactory.getLog(ElasticHitTracker.class);
 	protected SearchRequestBuilder fieldSearcheRequestBuilder;
 	protected Map fieldChunks;
-	protected int SCROLL_CACHE_TIME = 900000; //15 minutes
+	protected int SCROLL_CACHE_TIME = 900000; // 15 minutes
 	protected long fieldLastPullTime = -1;
 	protected String fieldLastScrollId;
 	protected Client fieldElasticClient;
@@ -64,6 +64,7 @@ public class ElasticHitTracker extends HitTracker
 	{
 		fieldSearcherManager = inSearcherManager;
 	}
+
 	@Deprecated
 	public int getLastPageLoaded()
 	{
@@ -75,13 +76,11 @@ public class ElasticHitTracker extends HitTracker
 		fieldLastPageLoaded = inLastPageLoaded;
 	}
 
-	public ElasticHitTracker()
-	{
+	public ElasticHitTracker() {
 
 	}
-	
-	public ElasticHitTracker(Client inClient, SearchRequestBuilder builder, QueryBuilder inTerms, int inHitsPerPage)
-	{
+
+	public ElasticHitTracker(Client inClient, SearchRequestBuilder builder, QueryBuilder inTerms, int inHitsPerPage) {
 		setElasticClient(inClient);
 		setTerms(inTerms);
 		setSearcheRequestBuilder(builder);
@@ -109,7 +108,7 @@ public class ElasticHitTracker extends HitTracker
 	}
 
 	protected QueryBuilder terms;
-	//protected List fieldFilterOptions;
+	// protected List fieldFilterOptions;
 
 	public QueryBuilder getTerms()
 	{
@@ -140,7 +139,7 @@ public class ElasticHitTracker extends HitTracker
 	@Override
 	public void clear()
 	{
-		getChunks().clear(); //This is called form cachedSearch
+		getChunks().clear(); // This is called form cachedSearch
 		fieldLastPullTime = -1;
 		setLastPageLoaded(-100);
 		fieldCurrentPage = null;
@@ -151,13 +150,13 @@ public class ElasticHitTracker extends HitTracker
 	public void refresh()
 	{
 		super.refresh();
-		getChunks().clear(); //This is called form cachedSearch
+		getChunks().clear(); // This is called form cachedSearch
 		fieldLastPullTime = -1;
 		setLastPageLoaded(-100);
 		fieldCurrentPage = null;
-		//log.info(getSearcher().getSearchType() + hashCode() + " clear chunks");
+		// log.info(getSearcher().getSearchType() + hashCode() + " clear chunks");
 	}
-	
+
 	public SearchResponse getSearchResponse(int inChunk)
 	{
 		Integer chunk = Integer.valueOf(inChunk);
@@ -170,105 +169,112 @@ public class ElasticHitTracker extends HitTracker
 				if (response == null)
 				{
 					int start = (inChunk) * getHitsPerPage();
-					//int size = (inChunk + 1) * getHitsPerPage();
+					// int size = (inChunk + 1) * getHitsPerPage();
 					int size = getHitsPerPage();
 					long now = System.currentTimeMillis();
-					//If its not the next one in the list, or it has expired then run it again
+					// If its not the next one in the list, or it has expired then run it again
 					if (isUseServerCursor() && chunk > 1 && now > fieldLastPullTime + SCROLL_CACHE_TIME)
 					{
 						String error = getSearcher().getSearchType() + hashCode() + "expired " + now + ">" + fieldLastPullTime + "+SCROLL_CACHE_TIME";
 						log.info(error);
 						throw new OpenEditException(error);
 					}
-					
-//					ElasticUserFilters filters = getUserFilters();
-//					if(filters == null && (getSearchQuery().isFilter())) {
-//						filters = (ElasticUserFilters) getSearcher().getSearcherManager().getModuleManager().getBean(getCatalogId(), "userFilters");
-//						filters.addFacets(getSearchType(), getSearchQuery(), getSearcheRequestBuilder());
-//						added = true;
-//					
-//					}
-//					if(filters != null)
-//					{
-//						filters.addFacets(getSearchType(), getSearchQuery(), getSearcheRequestBuilder());
-//						added = true;
-//					}
+
+					// ElasticUserFilters filters = getUserFilters();
+					// if(filters == null && (getSearchQuery().isFilter())) {
+					// filters = (ElasticUserFilters)
+					// getSearcher().getSearcherManager().getModuleManager().getBean(getCatalogId(),
+					// "userFilters");
+					// filters.addFacets(getSearchType(), getSearchQuery(),
+					// getSearcheRequestBuilder());
+					// added = true;
+					//
+					// }
+					// if(filters != null)
+					// {
+					// filters.addFacets(getSearchType(), getSearchQuery(),
+					// getSearcheRequestBuilder());
+					// added = true;
+					// }
 					if (fieldLastPullTime == -1 && fieldActiveFilterValues == null)
 					{
-						applyFilters(); //this should only be done once
+						applyFilters(); // this should only be done once
 					}
-					if (!isUseServerCursor() || fieldLastScrollId == null || chunk == 0) //todo: Allow scrolling for iterators
+					if (!isUseServerCursor() || fieldLastScrollId == null || chunk == 0) // todo: Allow scrolling for
+																							// iterators
 					{
 						getSearcheRequestBuilder().setFrom(start).setSize(size);
-						
+
 						if (isUseServerCursor())
 						{
 							getSearcheRequestBuilder().setScroll(new TimeValue(SCROLL_CACHE_TIME));
 						}
 						response = getSearcheRequestBuilder().execute().actionGet();
 						setLastScrollId(response.getScrollId());
-						//log.info(getSearcher().getSearchType() + hashCode() + " search chunk: " + inChunk + " start from:" +  start );
+						// log.info(getSearcher().getSearchType() + hashCode() + " search chunk: " +
+						// inChunk + " start from:" + start );
 					}
 					else
 					{
-						//Only call this if we are moving forward in the scroll
-						//scroll to the right place if within timeout 
-						//log.info(getSearchType() + " hash:" + hashCode() + " scrolling to chunk " + inChunk + " " + getHitsPerPage());
+						// Only call this if we are moving forward in the scroll
+						// scroll to the right place if within timeout
+						// log.info(getSearchType() + " hash:" + hashCode() + " scrolling to chunk " +
+						// inChunk + " " + getHitsPerPage());
 						response = getElasticClient().prepareSearchScroll(getLastScrollId()).setScroll(new TimeValue(SCROLL_CACHE_TIME)).execute().actionGet();
 					}
 					setLastPageLoaded(inChunk);
 					fieldLastPullTime = now;
-					
-					if (getChunks().size() > 30)   //TODO: Keep the pages near us
+
+					if (getChunks().size() > 30) // TODO: Keep the pages near us
 					{
 						SearchResponse first = getChunks().get(0);
 						getChunks().clear();
 						getChunks().put(0, first);
 					}
 					getChunks().put(chunk, response);
-					
-					if(fieldActiveFilterValues == null && response.getAggregations() != null ) 
+
+					if (fieldActiveFilterValues == null && response.getAggregations() != null)
 					{
-						setActiveFilterValues( loadValuesFromResults(response) ); //This will load the values
-					    getSearcheRequestBuilder().setAggregations(new HashMap());  //this keeps is from loading the same values on page 2,3+ etc
+						setActiveFilterValues(loadValuesFromResults(response)); // This will load the values
+						getSearcheRequestBuilder().setAggregations(new HashMap()); // this keeps is from loading the
+																					// same values on page 2,3+ etc
 					}
 					else
 					{
-						if( fieldActiveFilterValues == null)
+						if (fieldActiveFilterValues == null)
 						{
 							fieldActiveFilterValues = Collections.EMPTY_MAP;
 						}
-					    getSearcheRequestBuilder().setAggregations(new HashMap());
+						getSearcheRequestBuilder().setAggregations(new HashMap());
 					}
 				}
 			}
 		}
 		return response;
 	}
-	
-	
-	public  Map<String,FilterNode> getActiveFilterValues()
+
+	public Map<String, FilterNode> getActiveFilterValues()
 	{
 		if (fieldActiveFilterValues == null)
 		{
-			getSearchResponse(0);//This will cause the aggregations to be loaded if possible
+			getSearchResponse(0);// This will cause the aggregations to be loaded if possible
 		}
-		if( fieldActiveFilterValues == Collections.EMPTY_MAP)
+		if (fieldActiveFilterValues == Collections.EMPTY_MAP)
 		{
 			return null;
 		}
-		
+
 		return fieldActiveFilterValues;
 	}
 
-	public  Map<String,FilterNode> loadValuesFromResults(SearchResponse response) //parse em
+	public Map<String, FilterNode> loadValuesFromResults(SearchResponse response) // parse em
 	{
-		Map<String,FilterNode> options = new HashMap();
-	
-		//TODO: Should save the response and only load it if someone needs the data
+		Map<String, FilterNode> options = new HashMap();
+
+		// TODO: Should save the response and only load it if someone needs the data
 		if (response.getAggregations() != null)
 		{
-			
+
 			Aggregations facets = response.getAggregations();
 			fieldAggregations = facets;
 			for (Iterator iterator = facets.iterator(); iterator.hasNext();)
@@ -278,8 +284,8 @@ public class ElasticHitTracker extends HitTracker
 				{
 					Terms f = (Terms) agg;
 
-					//				Collection<Terms.Bucket> buckets = terms.getBuckets();
-					//				assertThat(buckets.size(), equalTo(3));
+					// Collection<Terms.Bucket> buckets = terms.getBuckets();
+					// assertThat(buckets.size(), equalTo(3));
 
 					if (f.getBuckets().isEmpty())
 					{
@@ -288,9 +294,9 @@ public class ElasticHitTracker extends HitTracker
 					FilterNode parent = new FilterNode();
 					parent.setId(f.getName());
 					parent.setName(f.getName());
-					
+
 					PropertyDetail detail = getSearchQuery().findFacet(f.getName());
-					if( detail == null)
+					if (detail == null)
 					{
 						detail = getSearcher().getDetail(f.getName());
 					}
@@ -302,17 +308,19 @@ public class ElasticHitTracker extends HitTracker
 					}
 					else
 					{
-					//	log.info("No such detail for " + f);
+						// log.info("No such detail for " + f);
 						continue;
 					}
 					for (Iterator iterator2 = f.getBuckets().iterator(); iterator2.hasNext();)
 					{
-						//	org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket entry = (org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket) iterator2.next();
+						// org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket entry =
+						// (org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket)
+						// iterator2.next();
 						org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket entry = (org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket) iterator2.next();
 
 						long count = entry.getDocCount();
 						String term = entry.getKeyAsString();
-						//log.info("term " + parent.getName()  + " \\" + term);
+						// log.info("term " + parent.getName() + " \\" + term);
 						FilterNode child = new FilterNode();
 						child.setId(term);
 						child.setPropertyDetail(detail);
@@ -321,13 +329,13 @@ public class ElasticHitTracker extends HitTracker
 							Data data = getSearcherManager().getData(detail.getListCatalogId(), detail.getListId(), term);
 							if (data != null)
 							{
-								//child.setName(data.getName());
+								// child.setName(data.getName());
 
 								child.setProperties(data.getProperties());
 							}
 							else
 							{
-								//child.setName(term);
+								// child.setName(term);
 								continue;
 							}
 						}
@@ -345,29 +353,29 @@ public class ElasticHitTracker extends HitTracker
 		}
 		return options;
 	}
-	
+
 	@Override
 	public int indexOfId(String inId)
 	{
-		if( inId == null || inId.startsWith("multiedit:") || inId.trim().isEmpty() )
+		if (inId == null || inId.startsWith("multiedit:") || inId.trim().isEmpty())
 		{
 			return -1;
 		}
 		for (Iterator iterator = getChunks().keySet().iterator(); iterator.hasNext();)
 		{
 			Integer chunkindex = (Integer) iterator.next();
-			
-			int found = findIdOnPage(inId,chunkindex+1);
-			if( found > -1)
+
+			int found = findIdOnPage(inId, chunkindex + 1);
+			if (found > -1)
 			{
 				return found;
 			}
 		}
-	
+
 		return super.indexOfId(inId);
-		
+
 	}
-	
+
 	protected Map<Integer, SearchResponse> getChunks()
 	{
 		if (fieldChunks == null)
@@ -398,9 +406,9 @@ public class ElasticHitTracker extends HitTracker
 			throw new OpenEditException("row request falls beyond one page of results " + indexlocation + ">=" + hits.length);
 		}
 		SearchHit hit = hits[indexlocation];
-		
-		Searcher searcher = (Searcher)getSearcher();
-		if( hit.getType() != null && getSearcherManager() != null)
+
+		Searcher searcher = (Searcher) getSearcher();
+		if (hit.getType() != null && getSearcherManager() != null)
 		{
 			searcher = getSearcherManager().getSearcher(getCatalogId(), hit.getType());
 		}
@@ -435,37 +443,32 @@ public class ElasticHitTracker extends HitTracker
 	public double getSum(String inField, String inSummarizer)
 	{
 		double total = 0;
-//		Map map = getAggregations().asMap();
-//		map.get(inField);
-		Terms terms = (Terms)getAggregations().get(inField);
-		if( terms != null)
+		// Map map = getAggregations().asMap();
+		// map.get(inField);
+		Terms terms = (Terms) getAggregations().get(inField);
+		if (terms != null)
 		{
-			Collection<Terms.Bucket> buckets = terms.getBuckets(); 
-		
-			for(Terms.Bucket bucket : buckets)
+			Collection<Terms.Bucket> buckets = terms.getBuckets();
+
+			for (Terms.Bucket bucket : buckets)
 			{
 				Sum aggregation = bucket.getAggregations().get(inSummarizer);
-				double count = aggregation.getValue();				
+				double count = aggregation.getValue();
 				total = total + count;
 			}
 		}
 		return total;
 	}
-	
 
-//	public double getAggregation(String inId)
-//	{
-//		SearchResponse response = getSearchResponse(0);
-//		
-//		Terms a = response.getAggregations().get(inId);
-//		Collection <Terms.Bucket> a.getBuckets();
-//		
-//	}
+	// public double getAggregation(String inId)
+	// {
+	// SearchResponse response = getSearchResponse(0);
+	//
+	// Terms a = response.getAggregations().get(inId);
+	// Collection <Terms.Bucket> a.getBuckets();
+	//
+	// }
 
-	
-	
-	
-	
 	public double getAverage(String inField)
 	{
 		SearchResponse response = getSearchResponse(0);
@@ -474,117 +477,127 @@ public class ElasticHitTracker extends HitTracker
 		return aggregation.getValue();
 	}
 
-	
-	public List loadHistogram(String inField, boolean inReverse) //parse em
+	public List loadHistogram(String inField, boolean inReverse) // parse em
 	{
 		ArrayList topfacets = new ArrayList();
 		Aggregations facets = getAggregations();
-		
-		//log.info(getSearchQuery().getFacets());
-		//TODO: Should save the response and only load it if someone needs the data
+
+		// log.info(getSearchQuery().getFacets());
+		// TODO: Should save the response and only load it if someone needs the data
 		if (facets != null)
 		{
-			//log.info(response.toString());
-				Object agg = facets.get(inField);
-				if (agg instanceof Histogram)
+			// log.info(response.toString());
+			Object agg = facets.get(inField);
+			if (agg instanceof Histogram)
+			{
+				Histogram f = (Histogram) agg;
+
+				// Collection<Terms.Bucket> buckets = terms.getBuckets();
+				// assertThat(buckets.size(), equalTo(3));
+
+				if (f.getBuckets().size() > 0)
 				{
-					Histogram f = (Histogram) agg;
-
-					//				Collection<Terms.Bucket> buckets = terms.getBuckets();
-					//				assertThat(buckets.size(), equalTo(3));
-
-					if (f.getBuckets().size() > 0)
+					FilterNode parent = new FilterNode();
+					parent.setId(f.getName());
+					parent.setName(f.getName());
+					PropertyDetail detail = getSearcher().getDetail(f.getName());
+					if (detail != null)
 					{
-						FilterNode parent = new FilterNode();
-						parent.setId(f.getName());
-						parent.setName(f.getName());
-						PropertyDetail detail = getSearcher().getDetail(f.getName());
-						if (detail != null)
-						{
-							parent.setName(detail.getName());
-						}
-						for (Iterator iterator2 = f.getBuckets().iterator(); iterator2.hasNext();)
-						{
-
-							//	org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket entry = (org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket) iterator2.next();
-							org.elasticsearch.search.aggregations.bucket.histogram.Histogram.Bucket entry = (org.elasticsearch.search.aggregations.bucket.histogram.Histogram.Bucket) iterator2.next();
-
-							long count = entry.getDocCount();
-							String term = entry.getKeyAsString();
-							FilterNode child = new FilterNode();
-							child.setId(term);
-							child.setName(term);
-							child.setProperty("count", String.valueOf(count));
-							
-							if(inReverse){
-								parent.addChildToStart(child);
-							} else{
-								parent.addChild(child);
-							}
-						}
-						topfacets.add(parent);				
+						parent.setName(detail.getName());
 					}
+					for (Iterator iterator2 = f.getBuckets().iterator(); iterator2.hasNext();)
+					{
+
+						// org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket entry =
+						// (org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket)
+						// iterator2.next();
+						org.elasticsearch.search.aggregations.bucket.histogram.Histogram.Bucket entry = (org.elasticsearch.search.aggregations.bucket.histogram.Histogram.Bucket) iterator2.next();
+
+						long count = entry.getDocCount();
+						String term = entry.getKeyAsString();
+						FilterNode child = new FilterNode();
+						child.setId(term);
+						child.setName(term);
+						child.setProperty("count", String.valueOf(count));
+
+						if (inReverse)
+						{
+							parent.addChildToStart(child);
+						}
+						else
+						{
+							parent.addChild(child);
+						}
+					}
+					topfacets.add(parent);
 				}
-			
+			}
+
 		}
-		
+
 		return topfacets;
 
 	}
-	public List loadHistogram(String inField){
+
+	public List loadHistogram(String inField)
+	{
 		return loadHistogram(inField, false);
 	}
-	
+
 	/**
 	 * This is a low level custom map of values. Not related to DataProperty fields
+	 * 
 	 * @param inName
 	 * @return
 	 */
-	public Map<String,Object> getAggregationMap(String inName){
+	public Map<String, Object> getAggregationMap(String inName)
+	{
 
-		Map<String,Object> map = new HashMap();
-		
+		Map<String, Object> map = new HashMap();
+
 		Aggregations agregations = getAggregations();
-		if( agregations != null)
+		if (agregations != null)
 		{
 			org.elasticsearch.search.aggregations.bucket.terms.Terms terms = agregations.get(inName);
-			if( terms != null)
+			if (terms != null)
 			{
 				for (Iterator iterator = terms.getBuckets().iterator(); iterator.hasNext();)
 				{
 					InternalBucket bucket = (InternalBucket) iterator.next();
-					//bucket.getAggregations()
+					// bucket.getAggregations()
 					for (Iterator iterator2 = bucket.getAggregations().iterator(); iterator2.hasNext();)
 					{
 						Aggregation aggregation = (Aggregation) iterator2.next();
-						
-						//TODO: If there is one in there already, add a collection of values
-						if( aggregation instanceof InternalSum)
+
+						// TODO: If there is one in there already, add a collection of values
+						if (aggregation instanceof InternalSum)
 						{
-							map.put(bucket.getKeyAsString(),((InternalSum)aggregation).value());
+							map.put(bucket.getKeyAsString(), ((InternalSum) aggregation).value());
 						}
 						else
 						{
-							//map.put(bucket.getKeyAsString(),aggregation.value());
+							// map.put(bucket.getKeyAsString(),aggregation.value());
 						}
 					}
 				}
 			}
 		}
-		
+
 		return map;
 	}
+
 	public Aggregations getAggregations()
 	{
-		if( fieldAggregations == null)
+		if (fieldAggregations == null)
 		{
 			SearchResponse response = getSearchResponse(0);
 			fieldAggregations = response.getAggregations();
-		}		
+		}
 		return fieldAggregations;
 	}
-	
-	public JsonObject getAggregationJson() throws ParseException {
+
+	public JsonObject getAggregationJson() throws ParseException
+	{
 		String json = getSearchResponse(0).toString();
 		JsonParser parser = new JsonParser();
 		JsonObject results = (JsonObject) parser.parse(json);
@@ -592,8 +605,6 @@ public class ElasticHitTracker extends HitTracker
 		JsonObject aggs = (JsonObject) results.get("aggregations");
 		return aggs;
 	}
-	
-		
 
 	public void invalidate()
 	{
@@ -614,46 +625,50 @@ public class ElasticHitTracker extends HitTracker
 				FilterNode node = (FilterNode) iterator.next();
 				filterids.add(node.getId());
 			}
-			
+
 			for (Iterator iterator = filterids.iterator(); iterator.hasNext();)
 			{
 				String filterid = (String) iterator.next();
-				ArrayList <FilterNode> nodes = getSearchQuery().getNodesForType(filterid);
-				if(nodes.size() == 1) {
+				ArrayList<FilterNode> nodes = getSearchQuery().getNodesForType(filterid);
+				if (nodes.size() == 1)
+				{
 					FilterNode node = nodes.get(0);
 					QueryBuilder term = QueryBuilders.matchQuery(filterid, node.get("value"));
 					bool.must(term);
-				} else if(nodes.size() >1) {
-					List ids = new ArrayList();
-					for (Iterator iterator2 = nodes.iterator(); iterator2.hasNext();)
-					{
-						FilterNode node = (FilterNode) iterator2.next();
-						ids.add(node.get("value"));
-					}
-					QueryBuilder term =QueryBuilders.termsQuery(filterid, ids);
-					bool.must(term);
 				}
+				else
+					if (nodes.size() > 1)
+					{
+						List ids = new ArrayList();
+						for (Iterator iterator2 = nodes.iterator(); iterator2.hasNext();)
+						{
+							FilterNode node = (FilterNode) iterator2.next();
+							ids.add(node.get("value"));
+						}
+						QueryBuilder term = QueryBuilders.termsQuery(filterid, ids);
+						bool.must(term);
+					}
 			}
 			getSearcheRequestBuilder().setQuery(bool);
 		}
 		Collection<String> validids = new HashSet<String>();
-		
+
 		if (isShowOnlySelected() && fieldSelections != null && fieldSelections.size() > 0)
 		{
 			validids.addAll(fieldSelections);
-			validids = findCommonIds(validids,getSearchQuery().getSecurityIds());
+			validids = findCommonIds(validids, getSearchQuery().getSecurityIds());
 		}
 		else
 		{
 			validids = getSearchQuery().getSecurityIds();
 		}
-		
-		if ( validids != null && !validids.isEmpty())
+
+		if (validids != null && !validids.isEmpty())
 		{
 			QueryBuilder fids = QueryBuilders.termsQuery("_id", validids);
-			//			QueryBuilder built = QueryBuilders.idsQuery(fieldSelected);
-			//			FilterBuilder filter = ;//FilterBuilders.idsFilter().ids(fieldSelected);
-			//			andFilter.add(filter);
+			// QueryBuilder built = QueryBuilders.idsQuery(fieldSelected);
+			// FilterBuilder filter = ;//FilterBuilders.idsFilter().ids(fieldSelected);
+			// andFilter.add(filter);
 			getSearcheRequestBuilder().setPostFilter(fids);
 		}
 		else
@@ -665,68 +680,67 @@ public class ElasticHitTracker extends HitTracker
 
 	protected Collection<String> findCommonIds(Collection<String> validids, Collection<String> andids)
 	{
-		if( andids == null || andids.size() == 0)
+		if (andids == null || andids.size() == 0)
 		{
 			return validids;
 		}
 		Collection<String> both = new HashSet<String>();
-		for(String id : andids)
+		for (String id : andids)
 		{
-			if( validids.contains(id))
+			if (validids.contains(id))
 			{
 				both.add(id);
 			}
 		}
 		return both;
 	}
-	
-	
-	
+
 	@Override
-	protected void finalize() throws Throwable {
-		if(fieldLastScrollId != null){
+	protected void finalize() throws Throwable
+	{
+		if (fieldLastScrollId != null)
+		{
 			clearScroll(fieldLastScrollId);
 		}
 	}
-	
-	
-	protected void clearScroll(String inScrollId){
+
+	protected void clearScroll(String inScrollId)
+	{
 		ClearScrollRequest request = new ClearScrollRequest();
 		request.addScrollId(fieldLastScrollId);
-			
+
 		getElasticClient().clearScroll(request);
-		
-		
+
 	}
 
 	public HitTracker copy()
 	{
 		SearchQuery q = getSearchQuery().copy();
-		ElasticHitTracker selecteddata = (ElasticHitTracker)getSearcher().search(q);
-		//selecteddata.fieldChunks = fieldChunks;
-		selecteddata.setPage( fieldPage );
+		ElasticHitTracker selecteddata = (ElasticHitTracker) getSearcher().search(q);
+		// selecteddata.fieldChunks = fieldChunks;
+		selecteddata.setPage(fieldPage);
 		selecteddata.setHitsPerPage(getHitsPerPage());
 		return selecteddata;
 	}
 
-//	public String highlight(Object inHit, String inField, int size)
-//	{
-//		if( inHit instanceof SearchHitData )
-//		{
-//			StringBuffer out = new StringBuffer();
-//			SearchHitData data = (SearchHitData)inHit;
-//			List rows = data.getHighlights(inField);
-//			if( rows != null)
-//			{
-//				for (Iterator iterator = rows.iterator(); iterator.hasNext();)
-//				{
-//					String row = (String) iterator.next();
-//					out.append(row);
-//					out.append(" ");
-//				}
-//			}
-//			return out.toString(); //TODO: Clean up
-//		}
-//}
-	
+	// public String highlight(Object inHit, String inField, int size)
+	// {
+	// if( inHit instanceof SearchHitData )
+	// {
+	// StringBuffer out = new StringBuffer();
+	// SearchHitData data = (SearchHitData)inHit;
+	// List rows = data.getHighlights(inField);
+	// if( rows != null)
+	// {
+	// for (Iterator iterator = rows.iterator(); iterator.hasNext();)
+	// {
+	// String row = (String) iterator.next();
+	// out.append(row);
+	// out.append(" ");
+	// }
+	// }
+	// return out.toString(); //TODO: Clean up
+	// }
+	// }
+
 }

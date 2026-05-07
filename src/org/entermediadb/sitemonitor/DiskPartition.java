@@ -7,8 +7,7 @@ public class DiskPartition
 	private Long fieldFreePartitionSpace;
 	private Long fieldUsablePartitionSpace;
 
-	public DiskPartition(String inName, Long inTotalCapacity, Long inFreePartitionSpace, Long inUsablePartitionSpace)
-	{
+	public DiskPartition(String inName, Long inTotalCapacity, Long inFreePartitionSpace, Long inUsablePartitionSpace) {
 		fieldName = inName;
 		fieldTotalCapacity = inTotalCapacity;
 		fieldFreePartitionSpace = inFreePartitionSpace;

@@ -35,7 +35,7 @@ public class Downloader
 	private static final Log log = LogFactory.getLog(Downloader.class);
 
 	HttpSharedConnection fieldSharedConnections;
-	
+
 	public HttpSharedConnection getSharedConnections()
 	{
 		if (fieldSharedConnections == null)
@@ -56,7 +56,7 @@ public class Downloader
 		download(inUrl, new File(inAbsoluteFilePath));
 	}
 
-	public void ftpDownload(String inServer,String path,String filename, String downloadfilename, String inUsername, String inPassword)
+	public void ftpDownload(String inServer, String path, String filename, String downloadfilename, String inUsername, String inPassword)
 	{
 		FTPClient client = new FTPClient();
 		FileOutputStream fos = null;
@@ -64,27 +64,30 @@ public class Downloader
 		{
 
 			client.connect(inServer);
-			if(inUsername != null && inUsername.length() != 0) {
+			if (inUsername != null && inUsername.length() != 0)
+			{
 				client.login(inUsername, inPassword);
-			} else {
+			}
+			else
+			{
 				client.login("anonymous", "");
 
 			}
-            client.enterLocalPassiveMode();
+			client.enterLocalPassiveMode();
 
 			fos = new FileOutputStream(downloadfilename);
 			client.changeWorkingDirectory(path);
-			// Fetch file from server 
-			
+			// Fetch file from server
 
-			
-			boolean success = client.retrieveFile( filename, fos);
-			 if (success) {
-	               log.info("Ftp file successfully download.");
-	            }
-			 else {
-				 log.info("Download failed" + 				 client.getReplyString());
-			 }
+			boolean success = client.retrieveFile(filename, fos);
+			if (success)
+			{
+				log.info("Ftp file successfully download.");
+			}
+			else
+			{
+				log.info("Download failed" + client.getReplyString());
+			}
 
 		}
 		catch (Exception e)
@@ -112,8 +115,6 @@ public class Downloader
 
 		}
 
-	
-
 	}
 
 	public void download(String inStrUrl, File outputFile) throws OpenEditException
@@ -129,32 +130,34 @@ public class Downloader
 
 			method = new HttpGet(inStrUrl);
 
-			//  HttpRequestBuilder builder = new HttpRequestBuilder();
+			// HttpRequestBuilder builder = new HttpRequestBuilder();
 
 			// method.setEntity(builder.build());
 
 			HttpResponse response2 = client.execute(method);
 			StatusLine sl = response2.getStatusLine();
-			//int status = client.executeMethod(method);
+			// int status = client.executeMethod(method);
 			if (sl.getStatusCode() != 200)
 			{
 				throw new Exception(method + " Request failed: status code " + sl.getStatusCode());
 			}
 
-			//this helps prevent 403 errors.
-			//			con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB;     rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)");
+			// this helps prevent 403 errors.
+			// con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT
+			// 6.1; en-GB; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR
+			// 3.5.30729)");
 
-			//*** create new output file
-			//*** make a growable storage area to read into 
+			// *** create new output file
+			// *** make a growable storage area to read into
 			outputFile.getParentFile().mkdirs();
 			out = new FileOutputStream(outputFile);
-			//*** read in url connection stream into input stream
+			// *** read in url connection stream into input stream
 			HttpEntity httpentity = response2.getEntity();
 			in = httpentity.getContent();
-			//*** fill output stream
-			//log.info("downloading " + inStrUrl);
+			// *** fill output stream
+			// log.info("downloading " + inStrUrl);
 			new OutputFiller().fill(in, out);
-			//EntityUtils.consume(httpentity);
+			// EntityUtils.consume(httpentity);
 		}
 		catch (Throwable ex)
 		{
@@ -162,9 +165,9 @@ public class Downloader
 		}
 		finally
 		{
-			//*** close output stream
+			// *** close output stream
 			FileUtils.safeClose(out);
-			//*** close input stream
+			// *** close input stream
 			FileUtils.safeClose(in);
 			if (method != null)
 			{
@@ -175,48 +178,59 @@ public class Downloader
 
 	public String downloadToString(String inUrl)
 	{
-//		StringWriter out = null;
-//		InputStream in = null;
-//		try
-//		{
-			CloseableHttpResponse response = getSharedConnections().sharedGet(inUrl);
-			String text = getSharedConnections().parseText(response);
-			
-//			URL url = new URL(inUrl);
-//			URLConnection con = url.openConnection();
-//			con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB;     rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)");
-//
-//			con.setConnectTimeout(15 * 1000);
-//			con.setReadTimeout(15 * 1000);
-//			con.setUseCaches(false);
-//			con.connect();
+		// StringWriter out = null;
+		// InputStream in = null;
+		// try
+		// {
+		CloseableHttpResponse response = getSharedConnections().sharedGet(inUrl);
+		String text = getSharedConnections().parseText(response);
 
-			//*** create new output file
-			//*** make a growable storage area to read into 
-//			out = new StringWriter();
-//			//*** read in url connection stream into input stream
-//			in = con.getInputStream();
-//			//*** fill output stream
-//			new OutputFiller().fill(new InputStreamReader(in), out);
-			return text;
-//		}
-//		catch (Exception ex)
-//		{
-//			throw new OpenEditException(ex);
-//		}
-//		finally
-//		{
-//			//*** close output stream
-//			FileUtils.safeClose(out);
-//			//*** close input stream
-//			FileUtils.safeClose(in);
-//		}
+		// URL url = new URL(inUrl);
+		// URLConnection con = url.openConnection();
+		// con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT
+		// 6.1; en-GB; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR
+		// 3.5.30729)");
+		//
+		// con.setConnectTimeout(15 * 1000);
+		// con.setReadTimeout(15 * 1000);
+		// con.setUseCaches(false);
+		// con.connect();
+
+		// *** create new output file
+		// *** make a growable storage area to read into
+		// out = new StringWriter();
+		// //*** read in url connection stream into input stream
+		// in = con.getInputStream();
+		// //*** fill output stream
+		// new OutputFiller().fill(new InputStreamReader(in), out);
+		return text;
+		// }
+		// catch (Exception ex)
+		// {
+		// throw new OpenEditException(ex);
+		// }
+		// finally
+		// {
+		// //*** close output stream
+		// FileUtils.safeClose(out);
+		// //*** close input stream
+		// FileUtils.safeClose(in);
+		// }
 	}
 
 	public File download(URL url, File dstFile)
 	{
-		CloseableHttpClient httpclient = HttpClients.custom().setRedirectStrategy(new LaxRedirectStrategy()) // adds HTTP REDIRECT support to GET and POST methods 
-				.build();
+		CloseableHttpClient httpclient = HttpClients.custom()
+			.setRedirectStrategy(new LaxRedirectStrategy()) // adds
+															// HTTP
+															// REDIRECT
+															// support
+															// to
+															// GET
+															// and
+															// POST
+															// methods
+			.build();
 		try
 		{
 			HttpGet get = new HttpGet(url.toURI()); // we're using GET but it could be via POST as well
@@ -229,7 +243,7 @@ public class Downloader
 		}
 		finally
 		{
-			//IOUtils.closeQuietly(httpclient);
+			// IOUtils.closeQuietly(httpclient);
 		}
 	}
 
@@ -238,8 +252,7 @@ public class Downloader
 
 		private final File target;
 
-		public FileDownloadResponseHandler(File target)
-		{
+		public FileDownloadResponseHandler(File target) {
 			this.target = target;
 		}
 

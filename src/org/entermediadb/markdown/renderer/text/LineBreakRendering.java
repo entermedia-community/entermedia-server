@@ -5,7 +5,8 @@ package org.entermediadb.markdown.renderer.text;
  */
 public enum LineBreakRendering {
     /**
-     * Strip all line breaks within blocks and between blocks, resulting in all the text in a single line.
+     * Strip all line breaks within blocks and between blocks, resulting in all the text in a single
+     * line.
      */
     STRIP,
     /**

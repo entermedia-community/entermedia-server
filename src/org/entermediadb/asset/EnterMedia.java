@@ -9,7 +9,7 @@ public class EnterMedia
 	protected String fieldApplicationId;
 	protected ModuleManager fieldModuleManager;
 	protected EmailErrorHandler fieldEmailErrorHandler;
-	
+
 	protected SearcherManager fieldSearcherManager;
 
 	public EmailErrorHandler getEmailErrorHandler()
@@ -34,7 +34,7 @@ public class EnterMedia
 
 	public MediaArchive getMediaArchive(String inCatalogId)
 	{
-		if( inCatalogId == null)
+		if (inCatalogId == null)
 		{
 			return null;
 		}
@@ -71,5 +71,5 @@ public class EnterMedia
 	{
 		fieldSearcherManager = searcherManager;
 	}
-	
+
 }

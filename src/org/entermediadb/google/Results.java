@@ -7,59 +7,67 @@ import org.json.simple.JSONObject;
 
 public class Results
 {
-Collection fieldFolders;
-Collection fieldFiles;
-String fieldResultToken;
-String fieldParentId;
+	Collection fieldFolders;
+	Collection fieldFiles;
+	String fieldResultToken;
+	String fieldParentId;
 
-public String getParentId()
-{
-	return fieldParentId;
-}
-public void setParentId(String inParentId)
-{
-	fieldParentId = inParentId;
-}
-public Collection getFolders()
-{
-	return fieldFolders;
-}
-public void setFolders(Collection inFolders)
-{
-	fieldFolders = inFolders;
-}
-public Collection getFiles()
-{
-	return fieldFiles;
-}
-public void setFiles(Collection inFiles)
-{
-	fieldFiles = inFiles;
-}
-public String getResultToken()
-{
-	return fieldResultToken;
-}
-public void setResultToken(String inToken)
-{
-	fieldResultToken = inToken;
-}
+	public String getParentId()
+	{
+		return fieldParentId;
+	}
 
-public void addFolder(JSONObject inFolder)
-{
-	if( fieldFolders == null)
+	public void setParentId(String inParentId)
 	{
-		fieldFolders = new ArrayList();
+		fieldParentId = inParentId;
 	}
-	fieldFolders.add(inFolder);
-}
-public void addFile(JSONObject inFile)
-{
-	if( fieldFiles == null)
+
+	public Collection getFolders()
 	{
-		fieldFiles = new ArrayList();
+		return fieldFolders;
 	}
-	fieldFiles.add(inFile);
-}
+
+	public void setFolders(Collection inFolders)
+	{
+		fieldFolders = inFolders;
+	}
+
+	public Collection getFiles()
+	{
+		return fieldFiles;
+	}
+
+	public void setFiles(Collection inFiles)
+	{
+		fieldFiles = inFiles;
+	}
+
+	public String getResultToken()
+	{
+		return fieldResultToken;
+	}
+
+	public void setResultToken(String inToken)
+	{
+		fieldResultToken = inToken;
+	}
+
+	public void addFolder(JSONObject inFolder)
+	{
+		if (fieldFolders == null)
+		{
+			fieldFolders = new ArrayList();
+		}
+		fieldFolders.add(inFolder);
+	}
+
+	public void addFile(JSONObject inFile)
+	{
+		if (fieldFiles == null)
+		{
+			fieldFiles = new ArrayList();
+		}
+		fieldFiles.add(inFile);
+	}
 
 }

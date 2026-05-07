@@ -14,7 +14,7 @@ public class Order extends BaseData implements SaveableData, DataLoaded, Catalog
 {
 	protected OrderManager fieldOrderManager;
 	protected String fieldCatalogId;
-	
+
 	public String getCatalogId()
 	{
 		return fieldCatalogId;
@@ -25,16 +25,15 @@ public class Order extends BaseData implements SaveableData, DataLoaded, Catalog
 		fieldCatalogId = inCatalogId;
 	}
 
-	public OrderManager getOrderManager() 
+	public OrderManager getOrderManager()
 	{
 		return fieldOrderManager;
 	}
 
-	public void setOrderManager(OrderManager inOrderManager) {
+	public void setOrderManager(OrderManager inOrderManager)
+	{
 		this.fieldOrderManager = inOrderManager;
 	}
-
-
 
 	public String findValue(Data inChild, String inKey)
 	{
@@ -48,9 +47,9 @@ public class Order extends BaseData implements SaveableData, DataLoaded, Catalog
 
 	public String getOrderStatus()
 	{
-		return get("orderstatus");  //open/closed/error
+		return get("orderstatus"); // open/closed/error
 	}
-	
+
 	public void setOrderStatus(String inStatus, String inDetails)
 	{
 		setProperty("orderstatus", inStatus);
@@ -66,15 +65,14 @@ public class Order extends BaseData implements SaveableData, DataLoaded, Catalog
 	{
 		return getId();
 	}
-	
 
 	public boolean isExpired()
 	{
 		String expiration = get("expireson");
-		if( expiration != null )
+		if (expiration != null)
 		{
 			Date expires = DateStorageUtil.getStorageUtil().parseFromStorage(expiration);
-			if( expires.after(new Date() ) )
+			if (expires.after(new Date()))
 			{
 				return false;
 			}
@@ -91,5 +89,5 @@ public class Order extends BaseData implements SaveableData, DataLoaded, Catalog
 	{
 		return getOrderManager().findOrderAssets(getCatalogId(), getId());
 	}
-	
+
 }

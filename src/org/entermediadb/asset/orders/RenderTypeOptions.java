@@ -9,7 +9,7 @@ public class RenderTypeOptions
 {
 	protected Data fieldRenderType;
 	protected Collection fieldPresetOptions = new ArrayList();
-	
+
 	public Collection getPresetOptions()
 	{
 		return fieldPresetOptions;
@@ -29,9 +29,10 @@ public class RenderTypeOptions
 	{
 		fieldRenderType = inRenderType;
 	}
+
 	public String getRenderTypeId()
 	{
-		if( getRenderType() != null)
+		if (getRenderType() != null)
 		{
 			return getRenderType().getId();
 		}
@@ -42,6 +43,5 @@ public class RenderTypeOptions
 	{
 		getPresetOptions().add(inPresetoption);
 	}
-	
-	
+
 }

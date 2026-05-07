@@ -43,14 +43,15 @@ public interface AssetSearcher extends Searcher
 	public abstract void flush();
 
 	String nextAssetNumber();
-	
+
 	public HitTracker searchByIds(Collection<String> inIds);
+
 	public Asset getAssetBySourcePath(String inSourcepath, boolean autocreate);
+
 	public Asset getAssetBySourcePath(String inSourcepath);
 
 	public String getFulltext(Asset asset);
 
 	public void saveJson(Collection inJsonArray);
-
 
 }

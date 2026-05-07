@@ -14,10 +14,11 @@ public abstract class AssetProcessor extends PathProcessor
 		{
 			path = path.substring(0, path.length() - "/data.xml".length());
 		}
-		else if (path.endsWith(".xconf")) //take off xconf
-		{
-			path = path.substring(0, path.length() - ".xconf".length());			
-		}
+		else
+			if (path.endsWith(".xconf")) // take off xconf
+			{
+				path = path.substring(0, path.length() - ".xconf".length());
+			}
 		path = path.replace('\\', '/');
 		return path;
 	}

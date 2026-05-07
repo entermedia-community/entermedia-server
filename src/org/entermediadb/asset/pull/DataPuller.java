@@ -39,7 +39,8 @@ import org.openedit.util.URLUtilities;
 public class DataPuller extends BasePuller implements CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(DataPuller.class);
-	//Used by both pulls
+
+	// Used by both pulls
 	protected void downloadGeneratedFiles(MediaArchive inArchive, HttpSharedConnection inConnection, Data node, Map inParams, Map parsed, boolean skipgenerated)
 	{
 		String url = node.get("baseurl");
@@ -54,8 +55,8 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		{
 			Map changed = (Map) iterator2.next();
 			String sourcepath = (String) changed.get("sourcepath");
-			//List generated media and compare it
-							
+			// List generated media and compare it
+
 			if (!skipgenerated)
 			{
 				Collection files = (Collection) changed.get("files");
@@ -63,14 +64,14 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				{
 					if (files.isEmpty())
 					{
-						log.debug("No thumbs :" + sourcepath + " on " + parsed.toString());  //Maybe a deleted asset
+						log.debug("No thumbs :" + sourcepath + " on " + parsed.toString()); // Maybe a deleted asset
 						continue;
 					}
 					for (Iterator iterator3 = files.iterator(); iterator3.hasNext();)
 					{
 						Map filelisting = (Map) iterator3.next();
-						//Compare timestamps
-						//String lastmodified = (String) filelisting.get("lastmodified");
+						// Compare timestamps
+						// String lastmodified = (String) filelisting.get("lastmodified");
 						downloadOneGeneratedFile(inArchive, inConnection, inParams, url, response, filelisting);
 
 					}
@@ -78,6 +79,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 			}
 		}
 	}
+
 	protected void downloadOneGeneratedFile(MediaArchive inArchive, HttpSharedConnection inConnection, Map inParams, String url, Map response, Map filelisting)
 	{
 		long datetime = (long) filelisting.get("lastmodified");
@@ -90,13 +92,17 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 
 		if (!found.exists() || !FileUtils.isSameDate(found.getLastModified(), datetime))
 		{
-			//log.info("Found change: " + found.getLastModified() + " !=" + datetime + " on " + found.getAbsolutePath());
+			// log.info("Found change: " + found.getLastModified() + " !=" + datetime + " on
+			// " + found.getAbsolutePath());
 
-			//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
-			//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
+			// http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
+			// String fullURL = url + "/mediadb/services/module/asset/downloads/generated/"
+			// + sourcepath + "/" + filename + "/" + filename;
 			String tmpfilename = PathUtilities.extractFileName(endpath);
-			String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/generatedpreview" + endpath + "/" + tmpfilename); 
-			//String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/generatedpreview" + endpath);
+			String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/generatedpreview" + endpath + "/" + tmpfilename);
+			// String path = url +
+			// URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/generatedpreview"
+			// + endpath);
 			CloseableHttpResponse genfile = null;
 			try
 			{
@@ -104,29 +110,31 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				StatusLine filestatus = genfile.getStatusLine();
 				if (filestatus.getStatusCode() != 200)
 				{
-					//Cant PULL asset status
+					// Cant PULL asset status
 					log.error("Could not download generated " + filestatus + " " + path);
-					//throw new OpenEditException("Could not download generated " + filestatus + " " + path);
+					// throw new OpenEditException("Could not download generated " + filestatus + "
+					// " + path);
 					return;
 				}
-				//Save to local file
+				// Save to local file
 				log.info("Saving:" + endpath);
 				try
 				{
 					InputStream stream = genfile.getEntity().getContent();
-					//Change the timestamp to match
-					
-					File parentfile = new File(PathUtilities.extractDirectoryPath(found.getAbsolutePath()) ); 
-					if( parentfile.exists() && parentfile.isFile()) //TODO: Remove any old copies from previous syncs so that this is sure to work
-					{ 
+					// Change the timestamp to match
+
+					File parentfile = new File(PathUtilities.extractDirectoryPath(found.getAbsolutePath()));
+					if (parentfile.exists() && parentfile.isFile()) // TODO: Remove any old copies from previous syncs
+																	// so that this is sure to work
+					{
 						parentfile.delete();
-						parentfile.mkdirs(); 	
+						parentfile.mkdirs();
 					}
 					else
 					{
 						parentfile.mkdirs();
 					}
-					
+
 					File tosave = new File(found.getAbsolutePath());
 					FileOutputStream fos = new FileOutputStream(tosave);
 					filler.fill(stream, fos);
@@ -144,14 +152,16 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				inConnection.release(genfile);
 			}
 		}
-		else {
-			log.debug("Skiped: " + endpath + " Exists: " + found.exists() );
+		else
+		{
+			log.debug("Skiped: " + endpath + " Exists: " + found.exists());
 		}
 	}
+
 	public void pull(MediaArchive inArchive, ScriptLogger inLog)
 	{
 
-		Lock lock = inArchive.getLockManager().lockIfPossible("processPull", this.getClass().getCanonicalName() );
+		Lock lock = inArchive.getLockManager().lockIfPossible("processPull", this.getClass().getCanonicalName());
 		if (lock == null)
 		{
 			log.info("Pull is already running");
@@ -174,18 +184,18 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 
 		Collection nodes = getNodeManager().getRemoteEditClusters(inArchive.getCatalogId());
 		MultiValued node = null;
-		
+
 		inLog.info("Scanning " + nodes.size() + " nodes ");
 		for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
 		{
 			try
 			{
 				node = (MultiValued) iterator.next();
-				node.setValue("lasterrordate",null);
+				node.setValue("lasterrordate", null);
 				node.setValue("lasterrormessage", null);
 
 				String url = node.get("baseurl");
-				if (url == null || !Boolean.parseBoolean( node.get("enabled") ) )
+				if (url == null || !Boolean.parseBoolean(node.get("enabled")))
 				{
 					log.error("skipping " + node);
 					continue;
@@ -227,30 +237,30 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 
 				inLog.info(node.getName() + " checking since " + pulldate);
 
-				long totalcount = downloadAllData(inArchive, connection, node, params);  //Download is here
-				
+				long totalcount = downloadAllData(inArchive, connection, node, params); // Download is here
+
 				if (totalcount > 0)
 				{
 					inLog.info(node.getName() + " imported " + totalcount);
 				}
-				
-				//uploadChanges if not  pulldataonly flag
+
+				// uploadChanges if not pulldataonly flag
 				if (!node.getBoolean("pulldataonly"))
 				{
 					ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
 					HitTracker localchanges = manager.getEditedDocuments(getCatalogId(), pulldate);
-					
+
 					String remotemastereditid = node.get("clustername");
 					HitTracker trimmed = removeRemotesMasterNodeEdits(remotemastereditid, localchanges);
 					long totaluploadcount = 0;
-					if(!trimmed.isEmpty()) 
+					if (!trimmed.isEmpty())
 					{
 						totaluploadcount = trimmed.size();
-						syncUpLocalDataChanges(inArchive,node, pulldate, trimmed, connection);
+						syncUpLocalDataChanges(inArchive, node, pulldate, trimmed, connection);
 						inLog.info(node.getName() + " syncup local changes " + totaluploadcount);
-					}	
+					}
 				}
-			
+
 				node.setValue("lastpulldate", now);
 				getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
 
@@ -274,7 +284,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 	protected long downloadAllData(MediaArchive inArchive, HttpSharedConnection connection, Data node, Map<String, String> params)
 	{
 		String baseurl = node.get("baseurl");
-		//add origiginal support
+		// add origiginal support
 		String url = baseurl + "/mediadb/services/cluster/listalldocs.json";
 		StringBuffer debugurl = new StringBuffer();
 		debugurl.append("?");
@@ -297,9 +307,8 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		String encoded = url + debugurl;
 		log.info("Pull-Data Checking remote: " + URLUtilities.urlEscape(encoded));
 
-		
 		CloseableHttpResponse response2 = connection.sharedPost(url, params);
-		
+
 		StatusLine sl = response2.getStatusLine();
 		if (sl.getStatusCode() != 200)
 		{
@@ -310,7 +319,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 			log.error("Initial data server error " + sl);
 			return -1;
 		}
-		JSONObject	remotechanges = connection.parseMap(response2);
+		JSONObject remotechanges = connection.parseMap(response2);
 		long datacounted = 0;
 		Map response = (Map) remotechanges.get("response");
 		String ok = (String) response.get("status");
@@ -323,13 +332,13 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 			log.info("Downloading page " + response.get("page") + " of " + response.get("pages") + " pages.");
 			Collection saved = importDataChanges(inArchive, jsonarray);
 
-			//pull in generated 	
+			// pull in generated
 			downloadGeneratedFiles(inArchive, connection, node, params, remotechanges, skipgenerated);
 
 			datacounted = datacounted + saved.size();
 
 			int pages = Integer.parseInt(response.get("pages").toString());
-			//loop over pages
+			// loop over pages
 			String hitssessionid = (String) response.get("hitssessionid");
 			params.put("hitssessionid", hitssessionid);
 			for (int page = 2; page <= pages; page++)
@@ -339,9 +348,9 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				params.put("page", String.valueOf(page));
 
 				log.info("next page: " + encoded + "&page=" + page + "&hitssessionid=" + hitssessionid);
-				
+
 				response2 = connection.sharedPost(url, params);
-				
+
 				sl = response2.getStatusLine();
 				if (sl.getStatusCode() != 200)
 				{
@@ -355,25 +364,26 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 					throw new OpenEditException("Page could not be loaded " + remotechanges.toJSONString());
 				}
 				log.info("Pull-Data Downloading page " + page + " of " + pages + " pages. data count:" + datacounted);
-				JSONArray results = (JSONArray)remotechanges.get("results"); //records?
-				
+				JSONArray results = (JSONArray) remotechanges.get("results"); // records?
+
 				saved = importDataChanges(inArchive, results);
-				//pull in generated 	
+				// pull in generated
 				downloadGeneratedFiles(inArchive, connection, node, params, remotechanges, skipgenerated);
 
 				datacounted = datacounted + saved.size();
 			}
 			return datacounted;
 		}
-		else if (ok.equals("empty"))
-		{
-			log.info("Pull-Data No changes found in remote.");
-			return 0;
-		}
 		else
-		{
-			throw new OpenEditException("Initial data could not be loaded " +  remotechanges.toJSONString());
-		}
+			if (ok.equals("empty"))
+			{
+				log.info("Pull-Data No changes found in remote.");
+				return 0;
+			}
+			else
+			{
+				throw new OpenEditException("Initial data could not be loaded " + remotechanges.toJSONString());
+			}
 	}
 
 	protected Map buildLocalChanges(MediaArchive inArchive, Date sinceDate)
@@ -382,6 +392,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		HitTracker hits = manager.getEditedDocuments(getCatalogId(), sinceDate);
 		return map(hits);
 	}
+
 	protected Map<String, SearchHitData> buildLocalChangesByIds(MediaArchive inArchive, Collection inArray)
 	{
 		ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
@@ -389,13 +400,12 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		for (Iterator iterator = inArray.iterator(); iterator.hasNext();)
 		{
 			Map objt = (Map) iterator.next();
-			String id = (String)objt.get("id");
+			String id = (String) objt.get("id");
 			ids.add(id);
 		}
 		HitTracker hits = manager.getDocumentsByIds(getCatalogId(), ids);
 		return map(hits);
 	}
-
 
 	protected Map map(HitTracker hits)
 	{
@@ -404,21 +414,19 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			SearchHitData data = (SearchHitData) iterator.next();
-			//JSONObject indiHit = new JSONObject();
+			// JSONObject indiHit = new JSONObject();
 			String searchtype = data.getSearchHit().getType();
 			map.put(searchtype + data.getId(), data);
 		}
 		return map;
 	}
-	
 
-	
 	protected Collection importDataChanges(MediaArchive inArchive, Collection jsonarray)
 	{
 		Set searchers = new HashSet();
 		try
 		{
-			Map<String,SearchHitData> localchanges = buildLocalChangesByIds(inArchive, jsonarray);
+			Map<String, SearchHitData> localchanges = buildLocalChangesByIds(inArchive, jsonarray);
 			String localClusterId = inArchive.getNodeManager().getLocalClusterId();
 
 			for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();)
@@ -432,24 +440,25 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				JSONObject remotesource = (JSONObject) object.get("source");
 
 				SearchHitData localchange = localchanges.get(searchtype + id);
-				
+
 				boolean oktosave = false;
 
 				if (localchange != null && remotesource.get("emrecordstatus") != null)
 				{
-					JSONObject recordstatus = (JSONObject) remotesource.get("emrecordstatus");//What we got from the other server
+					JSONObject recordstatus = (JSONObject) remotesource.get("emrecordstatus");// What we got from the
+																								// other server
 
 					Map localrecordstatus = (Map) localchange.getSearchHit().getSource().get("emrecordstatus");
-					if( localrecordstatus != null)
+					if (localrecordstatus != null)
 					{
 						String remotemasterclusterid = (String) recordstatus.get("mastereditclusterid");
 						String remotelastmodifiedclusterid = (String) recordstatus.get("lastmodifiedclusterid");
-	
+
 						if (remotemasterclusterid.equals(remotelastmodifiedclusterid))
 						{
 							if (remotemasterclusterid.equals(localClusterId))
 							{
-								continue; //This is an identical record to what we have, coming back to us.						
+								continue; // This is an identical record to what we have, coming back to us.
 							}
 						}
 					}
@@ -457,8 +466,8 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 					{
 						oktosave = true;
 					}
-					//We have a conflict, has been modified on both.
-					if( !oktosave )
+					// We have a conflict, has been modified on both.
+					if (!oktosave)
 					{
 						Date localmastermod = DateStorageUtil.getStorageUtil().parseFromStorage((String) localrecordstatus.get("masterrecordmodificationdate"));
 						if (localmastermod == null)
@@ -468,20 +477,24 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 						else
 						{
 							Date remotemastermastermod = DateStorageUtil.getStorageUtil().parseFromStorage((String) recordstatus.get("masterrecordmodificationdate"));
-	
-							//log.info("Node " + localClusterId + " Pulled " + id + " Local Last Mod was " + localmastermod + " Remote last mod was " + remoterecordmod 
-							if (remotemastermastermod.equals(localmastermod) || remotemastermastermod.after(localmastermod)) //In order to save, it MUST be equal or after the master we started with
+
+							// log.info("Node " + localClusterId + " Pulled " + id + " Local Last Mod was "
+							// + localmastermod + " Remote last mod was " + remoterecordmod
+							if (remotemastermastermod.equals(localmastermod) || remotemastermastermod.after(localmastermod)) // In order to save, it MUST be
+																																// equal or after the master we
+																																// started with
 							{
 								Date remoterecordmod = DateStorageUtil.getStorageUtil().parseFromStorage((String) recordstatus.get("recordmodificationdate"));
 								Date localrecordmod = DateStorageUtil.getStorageUtil().parseFromStorage((String) localrecordstatus.get("recordmodificationdate"));
 								if (remoterecordmod.equals(localrecordmod))
 								{
-									continue; //we already have this change, it's just circling around	
+									continue; // we already have this change, it's just circling around
 								}
-	
+
 								if (remoterecordmod.after(localrecordmod))
 								{
-									//no conflict, remote was edited after local was edited.  We are taking the remote.
+									// no conflict, remote was edited after local was edited. We are taking the
+									// remote.
 									oktosave = true;
 								}
 							}
@@ -496,15 +509,15 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 						conflict.setValue("pulltime", new Date());
 						conflict.setValue("dataid", id);
 
-						if( recordstatus != null)
+						if (recordstatus != null)
 						{
 							String remotemasterclusterid = (String) recordstatus.get("mastereditclusterid");
 							String remotelastmodifiedclusterid = (String) recordstatus.get("lastmodifiedclusterid");
 							conflict.setValue("masternodeid", remotemasterclusterid);
 							conflict.setValue("remoterecordstatus", recordstatus.toJSONString());
 							conflict.setValue("remotesource", remotesource.toJSONString());
-						}	
-						if( localrecordstatus != null)
+						}
+						if (localrecordstatus != null)
 						{
 							conflict.setValue("localrecordstatus", localrecordstatus.toString());
 							conflict.setValue("localsource", localchange.getSearchHit().getSource().toString());
@@ -516,7 +529,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				{
 					oktosave = true;
 				}
-				if(oktosave)
+				if (oktosave)
 				{
 					searcher.saveJson(id, remotesource);
 				}
@@ -531,7 +544,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		{
 			Searcher searcher = (Searcher) iterator.next();
 			searcher.clearIndex();
-			//IF categorty clear cache
+			// IF categorty clear cache
 		}
 		return jsonarray;
 
@@ -552,7 +565,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		{
 			response.put("status", "ok");
 		}
-		//String sessionid = inReq.getRequestParameter("hitsses/sionid");
+		// String sessionid = inReq.getRequestParameter("hitsses/sionid");
 
 		response.put("totalhits", hits.size());
 		response.put("hitsperpage", hits.getHitsPerPage());
@@ -560,7 +573,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		response.put("pages", hits.getTotalPages());
 		response.put("hitssessionid", hits.getSessionId());
 		response.put("catalogid", archive.getCatalogId());
-		if( inSince != null)
+		if (inSince != null)
 		{
 			response.put("sincedate", DateStorageUtil.getStorageUtil().formatForStorage(inSince));
 		}
@@ -581,33 +594,34 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 			indiHit.put("id", data.getId());
 			results.add(indiHit);
 
-			if (searchtype.equals("asset")) ///Also add stuff to the generated list
+			if (searchtype.equals("asset")) /// Also add stuff to the generated list
 			{
 				JSONObject details = new JSONObject();
 				details.put("id", data.getId());
 				String sourcepath = (String) data.getSearchData().get("sourcepath");
 				details.put("sourcepath", sourcepath);
 				JSONArray files = new JSONArray();
-				
-				//Asset asset = archive.getAsset(data.getId());
-				//data.setPropertyDetails(archive.getPropertyDetailsArchive().getPropertyDetailsCached(searchtype));
+
+				// Asset asset = archive.getAsset(data.getId());
+				// data.setPropertyDetails(archive.getPropertyDetailsArchive().getPropertyDetailsCached(searchtype));
 				Map editstatus = data.getEmRecordStatus();
-				String mastereditclusterid = (String)editstatus.get("mastereditclusterid");
-				
+				String mastereditclusterid = (String) editstatus.get("mastereditclusterid");
+
 				String fullpath = "/WEB-INF/data/" + getCatalogId() + "/generated/" + sourcepath + "/";
-				
+
 				for (ContentItem item : archive.listGeneratedFiles(sourcepath))
 				{
 					JSONObject contentdetails = new JSONObject();
 					String localpath = item.getPath();
-					//contentdetails.put("filename", item.getName()); //use file path including subfolders
+					// contentdetails.put("filename", item.getName()); //use file path including
+					// subfolders
 					String fullfilename = localpath.substring(fullpath.length());
 					contentdetails.put("filename", fullfilename);
 					contentdetails.put("localpath", localpath);
-					contentdetails.put("size", String.valueOf( item.getLength()) );
+					contentdetails.put("size", String.valueOf(item.getLength()));
 					contentdetails.put("lastmodified", item.getLastModified());
 					contentdetails.put("mastereditclusterid", mastereditclusterid);
-					
+
 					files.add(contentdetails);
 				}
 				details.put("files", files);
@@ -616,75 +630,76 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		}
 		finaldata.put("results", results);
 		finaldata.put("generated", generated);
-		
+
 		return finaldata;
 	}
 
-	//Send in pages
-	
+	// Send in pages
+
 	public JSONArray receiveDataChanges(MediaArchive inArchive, Map inJsonRequest)
 	{
-		//sed by: java.lang.ClassCastException: class java.util.ArrayList cannot be cast to class org.json.simple.JSONArray (java.util.ArrayList is in module java.base of loader 'bootstrap'; 
-		//org.json.simple.JSONArray is in unnamed module of loader 'app')
+		// sed by: java.lang.ClassCastException: class java.util.ArrayList cannot be
+		// cast to class org.json.simple.JSONArray (java.util.ArrayList is in module
+		// java.base of loader 'bootstrap';
+		// org.json.simple.JSONArray is in unnamed module of loader 'app')
 
-		
-		//Look for any assets and compare all the thunbnails
-		Map response = (Map)inJsonRequest.get("response");
-		String removecatalogid = (String)response.get("catalogid");
+		// Look for any assets and compare all the thunbnails
+		Map response = (Map) inJsonRequest.get("response");
+		String removecatalogid = (String) response.get("catalogid");
 
-		Collection jsonarray = (Collection)inJsonRequest.get("results");
+		Collection jsonarray = (Collection) inJsonRequest.get("results");
 
-		importDataChanges(inArchive,jsonarray);
-		
+		importDataChanges(inArchive, jsonarray);
 
 		JSONArray toupload = new JSONArray();
-		
-		Collection generated = (Collection)inJsonRequest.get("generated");
+
+		Collection generated = (Collection) inJsonRequest.get("generated");
 		for (Iterator iterator = generated.iterator(); iterator.hasNext();)
 		{
 			JSONObject object = (JSONObject) iterator.next();
-			String assetsouercepath = (String)object.get("sourcepath");
-			
+			String assetsouercepath = (String) object.get("sourcepath");
+
 			String remotemasterclusterid = (String) object.get("mastereditclusterid");
-//			if( inArchive.getNodeManager().getLocalClusterId().equals(remotemasterclusterid))
-//			{
-//				log.info("Dont download non-master generated files?");
-//				continue;
-//			}
+			// if(
+			// inArchive.getNodeManager().getLocalClusterId().equals(remotemasterclusterid))
+			// {
+			// log.info("Dont download non-master generated files?");
+			// continue;
+			// }
 			String basepath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + assetsouercepath + "/";
-			Collection files = (Collection)object.get("files");
-			if( files != null)
+			Collection files = (Collection) object.get("files");
+			if (files != null)
 			{
 				for (Iterator iterator2 = files.iterator(); iterator2.hasNext();)
 				{
 					Map file = (Map) iterator2.next();
-					String filename = (String)file.get("filename");
+					String filename = (String) file.get("filename");
 					String fullpath = basepath + filename;
-					String size = (String)file.get("size");
-					
+					String size = (String) file.get("size");
+
 					ContentItem item = inArchive.getContent(fullpath);
-					if( item.getLength() != Long.parseLong(size))
+					if (item.getLength() != Long.parseLong(size))
 					{
-						//download it
+						// download it
 						JSONObject contentdetails = new JSONObject();
 						contentdetails.put("filename", item.getName());
 						contentdetails.put("localpath", item.getPath());
 						contentdetails.put("lastmodified", item.getLastModified());
 						toupload.add(contentdetails);
 					}
-					
+
 				}
 			}
 		}
 
-		//and send them back
+		// and send them back
 		return toupload;
 	}
 
 	protected void syncUpLocalDataChanges(MediaArchive inArchive, Data inRemoteNode, Date inSince, HitTracker inLocalchanges, HttpSharedConnection inConnection)
 	{
-		//Push up any and all data changes with details on the files it has.
-		
+		// Push up any and all data changes with details on the files it has.
+
 		if (inLocalchanges.isEmpty())
 		{
 			return;
@@ -697,7 +712,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				int pages = inLocalchanges.getTotalPages();
 				for (int i = 0; i < pages; i++)
 				{
-					inLocalchanges.setPage(i+1);
+					inLocalchanges.setPage(i + 1);
 					uploadData(inArchive, inRemoteNode, inSince, inLocalchanges, inConnection, url);
 				}
 			}
@@ -707,11 +722,12 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 			throw new OpenEditException(ex);
 		}
 	}
+
 	protected void uploadData(MediaArchive inArchive, Data inRemoteNode, Date inSince, HitTracker inLocalchanges, HttpSharedConnection inConnection, String url)
 	{
-		JSONObject params = createJsonFromHits(inArchive,inSince, inLocalchanges);
-		//to much log
-		log.debug("Sending data changes to server -> " + url + "/mediadb/services/cluster/receive/uploadchanges.json" + params.toJSONString() );
+		JSONObject params = createJsonFromHits(inArchive, inSince, inLocalchanges);
+		// to much log
+		log.debug("Sending data changes to server -> " + url + "/mediadb/services/cluster/receive/uploadchanges.json" + params.toJSONString());
 		CloseableHttpResponse response2 = inConnection.sharedPostWithJson(url + "/mediadb/services/cluster/receive/uploadchanges.json", params);
 		StatusLine sl = response2.getStatusLine();
 		if (sl.getStatusCode() != 200)
@@ -721,34 +737,36 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 			getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(inRemoteNode);
 			log.error("Could not save changes to remote server " + url + "/mediadb/services/cluster/receive/uploadchanges.json " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 			inConnection.release(response2);
-			throw new OpenEditException("Could not handle remote exception condition " + "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase()  );
+			throw new OpenEditException("Could not handle remote exception condition " + "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 		}
-		//log.info("Got back this " + sl.getStatusCode());
+		// log.info("Got back this " + sl.getStatusCode());
 
-		//The server will return a list of files it needs
+		// The server will return a list of files it needs
 		JSONObject json = inConnection.parseMap(response2);
-		//log.info("Data returned:" + params.toJSONString() );
-		
-		String remotecatalogid = (String)json.get("catalogid");
-		Collection toupload = (Collection)json.get("fileuploads");
-		if( toupload != null)
+		// log.info("Data returned:" + params.toJSONString() );
+
+		String remotecatalogid = (String) json.get("catalogid");
+		Collection toupload = (Collection) json.get("fileuploads");
+		if (toupload != null)
 		{
-			//TODO: Use pagination to do a few at a time
+			// TODO: Use pagination to do a few at a time
 			Integer uploadingtotal = toupload.size();
-			log.info("Data-Upload Uploading:" + uploadingtotal + " files to remote." );
+			log.info("Data-Upload Uploading:" + uploadingtotal + " files to remote.");
 			Integer count = 0;
 			for (Iterator iterator = toupload.iterator(); iterator.hasNext();)
 			{
 				count++;
 				JSONObject fileinfo = (JSONObject) iterator.next();
-				String urlpath = url + "/mediadb/services/module/asset/sync/uploadfile.json"; //TODO: This should also include asking for Originals
-				
-				String localpath = (String)fileinfo.get("localpath"); //On the remote machie
-				
+				String urlpath = url + "/mediadb/services/module/asset/sync/uploadfile.json"; // TODO: This should also
+																								// include asking for
+																								// Originals
+
+				String localpath = (String) fileinfo.get("localpath"); // On the remote machie
+
 				String reallocalpath = localpath.replace(remotecatalogid, inArchive.getCatalogId());
 				ContentItem item = inArchive.getContent(reallocalpath);
 				File tosend = new File(item.getAbsolutePath());
-				log.info("Data-Upload ("+count+"/"+uploadingtotal+") Sending file:" + tosend.length() + " " + tosend.getAbsolutePath() );
+				log.info("Data-Upload (" + count + "/" + uploadingtotal + ") Sending file:" + tosend.length() + " " + tosend.getAbsolutePath());
 
 				JSONObject tosendparams = new JSONObject(fileinfo);
 				tosendparams.put("catalogid", inArchive.getCatalogId());
@@ -757,22 +775,21 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				CloseableHttpResponse resp = null;
 				try
 				{
-					resp = inConnection.sharedMimePost(urlpath,tosendparams);
+					resp = inConnection.sharedMimePost(urlpath, tosendparams);
 
 					if (resp.getStatusLine().getStatusCode() != 200)
 					{
-						//error
-						//reportError();
-						throw new OpenEditException(resp.getStatusLine().getStatusCode() + " Could not upload: " + localpath + " Error: " + resp.getStatusLine().getReasonPhrase() );
+						// error
+						// reportError();
+						throw new OpenEditException(resp.getStatusLine().getStatusCode() + " Could not upload: " + localpath + " Error: " + resp.getStatusLine().getReasonPhrase());
 					}
 				}
 				finally
 				{
 					inConnection.release(resp);
 				}
-			}	
+			}
 		}
 	}
 
-	
 }

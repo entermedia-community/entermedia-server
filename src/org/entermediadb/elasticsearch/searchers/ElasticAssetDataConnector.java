@@ -46,10 +46,9 @@ import org.openedit.util.PathUtilities;
 
 public class ElasticAssetDataConnector extends BaseElasticSearcher implements DataConnector
 {
-	
+
 	static final Log log = LogFactory.getLog(ElasticAssetDataConnector.class);
 
-	
 	protected AssetSecurityArchive fieldAssetSecurityArchive;
 	protected MediaArchive fieldMediaArchive;
 	protected IntCounter fieldIntCounter;
@@ -92,67 +91,69 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 			setOptimizeReindex(true);
 		}
 	}
-	//	public void reIndexAll() throws OpenEditException
-	//	{
-	//		if (isReIndexing())
-	//		{
-	//			return; //TODO: Make a lock so that two servers startin up dont conflict?
-	//		}
-	//		setReIndexing(true);
-	//		try
-	//		{
-	//			getMediaArchive().getAssetArchive().clearAssets();
-	//			//For now just add things to the index. It never deletes
+	// public void reIndexAll() throws OpenEditException
+	// {
+	// if (isReIndexing())
+	// {
+	// return; //TODO: Make a lock so that two servers startin up dont conflict?
+	// }
+	// setReIndexing(true);
+	// try
+	// {
+	// getMediaArchive().getAssetArchive().clearAssets();
+	// //For now just add things to the index. It never deletes
 	//
-	//			//Someone is forcing a reindex
-	//			//deleteOldMapping();
-	//			putMappings();
+	// //Someone is forcing a reindex
+	// //deleteOldMapping();
+	// putMappings();
 	//
-	//			//this is for legacy support
-	//			final List tosave = new ArrayList(500);
+	// //this is for legacy support
+	// final List tosave = new ArrayList(500);
 	//
-	//			PathProcessor processor = new PathProcessor()
-	//			{
-	//				public void processFile(ContentItem inContent, User inUser)
-	//				{
-	//					if (!inContent.getName().equals(getDataFileName()))
-	//					{
-	//						return;
-	//					}
-	//					String sourcepath = inContent.getPath();
-	//					sourcepath = sourcepath.substring(getPathToData().length() + 1, sourcepath.length() - getDataFileName().length() - 1);
-	//					Asset asset = getMediaArchive().getAssetArchive().getAssetBySourcePath(sourcepath);
-	//					tosave.add(asset);
-	//					if (tosave.size() == 500)
-	//					{
-	//						updateIndex(tosave, null);
-	//						log.info("reindexed " + getExecCount());
-	//						tosave.clear();
-	//					}
-	//					incrementCount();
-	//				}
-	//			};
-	//			processor.setRecursive(true);
-	//			processor.setRootPath(getPathToData());
-	//			processor.setPageManager(getPageManager());
-	//			processor.setIncludeMatches("*.xml");
-	//			processor.process();
-	//			updateIndex(tosave, null);
-	//			log.info("reindexed " + processor.getExecCount());
-	//			flushChanges();
-	//			
-	//			//super.reIndexAll();//Old elastic data
-	//			
-	//		}
-	//		catch (Exception e)
-	//		{
-	//			throw new OpenEditException(e);
-	//		}
-	//		finally
-	//		{
-	//			setReIndexing(false);
-	//		}
-	//	}
+	// PathProcessor processor = new PathProcessor()
+	// {
+	// public void processFile(ContentItem inContent, User inUser)
+	// {
+	// if (!inContent.getName().equals(getDataFileName()))
+	// {
+	// return;
+	// }
+	// String sourcepath = inContent.getPath();
+	// sourcepath = sourcepath.substring(getPathToData().length() + 1,
+	// sourcepath.length() - getDataFileName().length() - 1);
+	// Asset asset =
+	// getMediaArchive().getAssetArchive().getAssetBySourcePath(sourcepath);
+	// tosave.add(asset);
+	// if (tosave.size() == 500)
+	// {
+	// updateIndex(tosave, null);
+	// log.info("reindexed " + getExecCount());
+	// tosave.clear();
+	// }
+	// incrementCount();
+	// }
+	// };
+	// processor.setRecursive(true);
+	// processor.setRootPath(getPathToData());
+	// processor.setPageManager(getPageManager());
+	// processor.setIncludeMatches("*.xml");
+	// processor.process();
+	// updateIndex(tosave, null);
+	// log.info("reindexed " + processor.getExecCount());
+	// flushChanges();
+	//
+	// //super.reIndexAll();//Old elastic data
+	//
+	// }
+	// catch (Exception e)
+	// {
+	// throw new OpenEditException(e);
+	// }
+	// finally
+	// {
+	// setReIndexing(false);
+	// }
+	// }
 
 	/**
 	 * @deprecated Need to simplify
@@ -178,7 +179,7 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 	{
 		try
 		{
-			if (isOptimizeReindex() && !(inData instanceof Asset)) //Low level performance fix
+			if (isOptimizeReindex() && !(inData instanceof Asset)) // Low level performance fix
 			{
 				MultiValued values = (MultiValued) inData;
 				saveArray(inContent, "category", values.getValues("category"));
@@ -203,11 +204,11 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 				ContentItem item = getMediaArchive().getAssetManager().getOriginalContent(asset);
 				asset.setFolder(item.isFolder());
 			}
-			//			if (asset.getCatalogId() == null)
-			//			{
-			//				asset.setCatalogId(getCatalogId());
-			//			}
-			//inContent.field("catalogid", asset.getCatalogId());
+			// if (asset.getCatalogId() == null)
+			// {
+			// asset.setCatalogId(getCatalogId());
+			// }
+			// inContent.field("catalogid", asset.getCatalogId());
 
 			Set categories = asset.buildCategorySet();
 			String desc = populateDescription(asset, inDetails, categories);
@@ -223,7 +224,7 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 				for (Iterator iterator2 = category.getParentCategories().iterator(); iterator2.hasNext();)
 				{
 					Category parent = (Category) iterator2.next();
-					if( parent.getBoolean("isfeatured") )
+					if (parent.getBoolean("isfeatured"))
 					{
 						featured.add(parent.getId());
 					}
@@ -238,7 +239,7 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 			// populateJoinData("album", doc, tracker, "albumid", true);
 
 			// populateSecurity(doc, asset, catalogs);
-			//	assignCategoryPermissions(categories, asset);
+			// assignCategoryPermissions(categories, asset);
 			super.updateIndex(inContent, inData, inDetails, inUser);
 			// for (Iterator iterator =
 			// inDetails.findIndexProperties().iterator(); iterator.hasNext();)
@@ -253,7 +254,7 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 			// }
 			// }
 
-			if( !featured.isEmpty() )
+			if (!featured.isEmpty())
 			{
 				String[] array = new String[featured.size()];
 				Object oa = featured.toArray(array);
@@ -264,10 +265,10 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 				inData.setValue("category-featured", null);
 				inContent.field("category-featured", new String[0]);
 			}
-			
-			//This is for saving and loading.
+
+			// This is for saving and loading.
 			saveArray(inContent, "category-exact", asset.getCategories());
-			//populatePermission(inContent, asset, "viewasset");
+			// populatePermission(inContent, asset, "viewasset");
 			setFolderPath(asset, inContent);
 
 		}
@@ -322,11 +323,9 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 	}
 
 	/*
-	 * protected void hydrateData(ContentItem inContent, String sourcepath, List
-	 * buffer) { Asset data =
-	 * getMediaArchive().getAssetBySourcePath(sourcepath); if (data == null) {
-	 * return; } buffer.add(data); if (buffer.size() > 99) { updateIndex(buffer,
-	 * null); } }
+	 * protected void hydrateData(ContentItem inContent, String sourcepath, List buffer) { Asset data =
+	 * getMediaArchive().getAssetBySourcePath(sourcepath); if (data == null) { return; }
+	 * buffer.add(data); if (buffer.size() > 99) { updateIndex(buffer, null); } }
 	 */
 	protected void populatePermission(XContentBuilder inContent, Asset inAsset, String inPermission) throws IOException
 	{
@@ -339,7 +338,7 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 
 	}
 
-	//TODO: Migrate this into populateKeywords
+	// TODO: Migrate this into populateKeywords
 	protected String populateDescription(Asset asset, PropertyDetails inDetails, Set inCategories)
 	{
 		// Low level reading in of text
@@ -359,12 +358,12 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 
 		populateKeywords(fullDesc, asset, inDetails);
 		// add a bunch of stuff to the full text field
-		//		for (Iterator iter = inCategories.iterator(); iter.hasNext();)
-		//		{
-		//			Category cat = (Category) iter.next();
-		//			fullDesc.append(cat.getName());
-		//			fullDesc.append(' ');
-		//		}
+		// for (Iterator iter = inCategories.iterator(); iter.hasNext();)
+		// {
+		// Category cat = (Category) iter.next();
+		// fullDesc.append(cat.getName());
+		// fullDesc.append(' ');
+		// }
 		if (asset.getSourcePath() != null)
 		{
 			String[] dirs = asset.getSourcePath().split("/");
@@ -376,12 +375,13 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 			}
 			populateFullText(asset, getSearchType(), fullDesc);
 		}
-		//		if (fullDesc.length() > getFullTextCap())
-		//		{
-		//			return fullDesc.substring(0, getFullTextCap());
-		//		}
+		// if (fullDesc.length() > getFullTextCap())
+		// {
+		// return fullDesc.substring(0, getFullTextCap());
+		// }
 
-		//String result = fullDesc.toString();// fixInvalidCharacters(fullDesc.toString());
+		// String result = fullDesc.toString();//
+		// fixInvalidCharacters(fullDesc.toString());
 		String result = fixSpecialCharacters(fullDesc);
 		return result;
 	}
@@ -401,13 +401,13 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 		return buffer.toString();
 	}
 
-	//	/**
-	//	 * @deprecated Need to simplify
-	//	 */
-	//	public void updateIndex(Collection<Data> all, boolean b)
-	//	{
-	//		updateIndex(all, null);
-	//	}
+	// /**
+	// * @deprecated Need to simplify
+	// */
+	// public void updateIndex(Collection<Data> all, boolean b)
+	// {
+	// updateIndex(all, null);
+	// }
 
 	public AssetSecurityArchive getAssetSecurityArchive()
 	{
@@ -430,12 +430,10 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 	}
 
 	public void flush()
-	{
-	}
+	{}
 
 	public void setRootDirectory(File inRoot)
-	{
-	}
+	{}
 
 	protected IntCounter getIntCounter()
 	{
@@ -517,7 +515,7 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 		return asset;
 	}
 
-	//TODO: Make an ElasticAsset bean type that can be searched and saved
+	// TODO: Make an ElasticAsset bean type that can be searched and saved
 	@Override
 	public Data loadData(Data inHit)
 	{
@@ -529,7 +527,7 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 		{
 			return inHit;
 		}
-		//Stuff might get out of date?
+		// Stuff might get out of date?
 		SearchHitData db = (SearchHitData) inHit;
 		return createAssetFromResponse(inHit.getId(), db.getSearchData());
 	}
@@ -604,11 +602,11 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 	protected void addSecurity(XContentBuilder inContent, Data inData) throws Exception
 	{
 
-		//Check for security
+		// Check for security
 		PropertyDetail detail = getDetail("securityenabled");
 
 		boolean securityenabled = false;
-		
+
 		Collection users = new HashSet(3);
 		Collection groups = new HashSet(3);
 		Collection roles = new HashSet(3);
@@ -624,9 +622,8 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 
 			PropertyDetail securefield = getDetail(securityfield);
 			String fieldid = securefield.getId();
-			String categorysearchertype = securefield.getListId();//category 
+			String categorysearchertype = securefield.getListId();// category
 			CategorySearcher searcher = (CategorySearcher) getSearcherManager().getSearcher(getCatalogId(), categorysearchertype);
-
 
 			Collection exact = inData.getValues("category-exact");
 			if (exact == null)
@@ -636,16 +633,17 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 			for (Iterator iterator = exact.iterator(); iterator.hasNext();)
 			{
 				Object something = iterator.next();
-				
+
 				Category cat = null;
 				if (something instanceof String)
 				{
 					cat = (Category) searcher.getCategory((String) something);
 				}
-				else if (something instanceof Category)
-				{
-					cat = (Category) something;
-				}
+				else
+					if (something instanceof Category)
+					{
+						cat = (Category) something;
+					}
 
 				if (cat == null)
 				{
@@ -669,7 +667,6 @@ public class ElasticAssetDataConnector extends BaseElasticSearcher implements Da
 				}
 			}
 		}
-
 
 		if (users != null && !users.isEmpty())
 		{

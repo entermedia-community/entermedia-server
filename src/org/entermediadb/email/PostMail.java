@@ -1,13 +1,13 @@
 /*
-Copyright (c) 2003 eInnovation Inc. All rights reserved
-
-This library is free software; you can redistribute it and/or modify it under the terms
-of the GNU Lesser General Public License as published by the Free Software Foundation;
-either version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
+ * Copyright (c) 2003 eInnovation Inc. All rights reserved
+ * 
+ * This library is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation; either version
+ * 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
  */
 
 package org.entermediadb.email;
@@ -47,11 +47,12 @@ public class PostMail
 	protected String fieldSmtpUsername = "noreply";
 	protected String fieldSmtpPassword = "whitelistip";
 	protected String fieldSmtpServer = "smtp.entermediadb.org";
-	//protected Integer fieldPort = 2525;
+	// protected Integer fieldPort = 2525;
 	protected Integer fieldPort = 587;
 	protected boolean fieldSmtpSecured = true;
 	protected boolean fieldEnableTls = true;
 	protected boolean fieldSslEnabled = true;
+
 	public boolean isEnableTls()
 	{
 		return fieldEnableTls;
@@ -117,7 +118,7 @@ public class PostMail
 
 	public void postMail(String recipient, String subject, String message, String from) throws MessagingException
 	{
-		postMail(new String[] { recipient }, subject, message, null, from);
+		postMail(new String[] {recipient}, subject, message, null, from);
 	}
 
 	// returns a new template web email instance preconfigured with spring
@@ -127,7 +128,7 @@ public class PostMail
 		TemplateWebEmail email = null;
 		if (getModuleManager() != null)
 		{
-			email = (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");//from spring
+			email = (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");// from spring
 		}
 		if (email == null)
 		{
@@ -144,26 +145,25 @@ public class PostMail
 		fromAddress.setAddress(from);
 		postMail(parseEmails(recipients), subject, inHtml, inText, fromAddress, null, null);
 	}
-	
-	public void postMail(String[] recipients, String subject, String inHtml, String inText,  String from,  String fromname) throws MessagingException
+
+	public void postMail(String[] recipients, String subject, String inHtml, String inText, String from, String fromname) throws MessagingException
 	{
 		try
 		{
 			InternetAddress fromAddress = new InternetAddress();
 			fromAddress.setAddress(from);
-			if( fromname != null)
+			if (fromname != null)
 			{
 				fromAddress.setPersonal(fromname);
 			}
 			postMail(parseEmails(recipients), subject, inHtml, inText, fromAddress, null, null);
 		}
-		catch ( Exception ex)
+		catch (Exception ex)
 		{
 			throw new OpenEditException(ex);
 		}
 	}
 
-	
 	public List<InternetAddress> parseEmails(String[] inEmails)
 	{
 		List emails = new ArrayList<InternetAddress>();
@@ -171,29 +171,31 @@ public class PostMail
 		{
 			try
 			{
-			InternetAddress[] inet = InternetAddress.parse(inEmails[i]);
-			for (int j = 0; j < inet.length; j++)
-			{
-				emails.add(inet[i]);
+				InternetAddress[] inet = InternetAddress.parse(inEmails[i]);
+				for (int j = 0; j < inet.length; j++)
+				{
+					emails.add(inet[i]);
+				}
 			}
-			}
-			catch( AddressException ex)
+			catch (AddressException ex)
 			{
-				//ignore
+				// ignore
 				log.error("Could not process email " + inEmails[i], ex);
 			}
 		}
 		return emails;
 	}
+
 	public void postMail(List<InternetAddress> recipients, String subject, String inHtml, String inText, InternetAddress inFrom, List inAttachments, Map inProperties) throws MessagingException
 	{
-		
-		//InternetAddress from = new InternetAddress();
-		//from.setAddress(inFrom);
+
+		// InternetAddress from = new InternetAddress();
+		// from.setAddress(inFrom);
 		postMail(recipients, null, subject, inHtml, inText, inFrom, inAttachments, inProperties);
 	}
 
-	public void postMail(List<InternetAddress> recipients, List<InternetAddress> blindrecipients, String subject, String inHtml, String inText, InternetAddress from, List inAttachments, Map inProperties) throws MessagingException
+	public void postMail(List<InternetAddress> recipients, List<InternetAddress> blindrecipients, String subject, String inHtml, String inText, InternetAddress from, List inAttachments, Map inProperties)
+		throws MessagingException
 	{
 		// Set the host smtp address
 		Properties props = new Properties();
@@ -207,25 +209,27 @@ public class PostMail
 			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		}
 		Session session = null;
-		if( isEnableTls())
+		if (isEnableTls())
 		{
 			props.put("mail.smtp.starttls.enable", "true");
 			session = Session.getInstance(props, new javax.mail.Authenticator() {
-				protected PasswordAuthentication getPasswordAuthentication() {
+				protected PasswordAuthentication getPasswordAuthentication()
+				{
 					return new PasswordAuthentication(getSmtpUsername(), getSmtpPassword());
 				}
-			  });
-		}
-		else if (fieldSmtpSecured)
-		{
-			SmtpAuthenticator auth = new SmtpAuthenticator();
-			session = Session.getInstance(props, auth);
+			});
 		}
 		else
-		{
-			session = Session.getInstance(props);
-		}
-		
+			if (fieldSmtpSecured)
+			{
+				SmtpAuthenticator auth = new SmtpAuthenticator();
+				session = Session.getInstance(props, auth);
+			}
+			else
+			{
+				session = Session.getInstance(props);
+			}
+
 		// session.setDebug(true);
 
 		// create a message
@@ -283,19 +287,20 @@ public class PostMail
 			msg.setContent(mp);
 
 		}
-		else if (inHtml != null)
-		{
-			msg.setContent(inHtml, "text/html; charset=UTF-8");
-		}
 		else
-		{
-			msg.setContent(inText, "text/plain; charset=UTF-8");
-		}
+			if (inHtml != null)
+			{
+				msg.setContent(inHtml, "text/html; charset=UTF-8");
+			}
+			else
+			{
+				msg.setContent(inText, "text/plain; charset=UTF-8");
+			}
 		// set the from and to address
 		msg.setFrom(from);
-		//msg.setRecipient(RecipientType.BCC, addressFrom);
+		// msg.setRecipient(RecipientType.BCC, addressFrom);
 		msg.setSentDate(new Date());
-		if (recipients == null || recipients.isEmpty() )
+		if (recipients == null || recipients.isEmpty())
 		{
 			throw new MessagingException("No recipients specified");
 		}
@@ -303,7 +308,7 @@ public class PostMail
 
 		msg.setRecipients(Message.RecipientType.TO, addressTo);
 
-		//add bcc
+		// add bcc
 		if (blindrecipients != null && !blindrecipients.isEmpty())
 		{
 			InternetAddress[] addressBcc = blindrecipients.toArray(new InternetAddress[blindrecipients.size()]);
@@ -323,7 +328,7 @@ public class PostMail
 		// tr.close();
 		// msg.setContent(msg, "text/plain");
 
-		log.info("Sending email from: " + Arrays.asList(msg.getFrom()) + " To: " + Arrays.asList(addressTo) + " Subject: "+ subject );
+		log.info("Sending email from: " + Arrays.asList(msg.getFrom()) + " To: " + Arrays.asList(addressTo) + " Subject: " + subject);
 		Transport.send(msg);
 	}
 
@@ -387,7 +392,7 @@ public class PostMail
 		}
 		catch (AddressException ex)
 		{
-			//ignore
+			// ignore
 			log.error("Could not process email " + inValue, ex);
 		}
 		return null;

@@ -31,24 +31,26 @@ public class RelatedKeywordModule extends BaseModule
 	{
 		String catalogid = inReq.findPathValue("catalogid");
 		String searchType = inReq.findPathValue("searchtype");
-		if( searchType == null)
+		if (searchType == null)
 		{
 			searchType = "asset";
 		}
 
-		String type = searchType  + "RelatedKeyword";
+		String type = searchType + "RelatedKeyword";
 		RelatedKeywordSearcher searcher = (RelatedKeywordSearcher) getSearcherManager().getSearcher(catalogid, type); // e.g.
 		// "assetThesaurusSearcher"
 		if (searcher == null)
 		{
 			log.warn("Could not find a searcher for type '" + type + "' in catalog " + catalogid);
 		}
-		else if (inPutPageValue)
-		{
-			inReq.putPageValue("searcher", searcher);
-		}
+		else
+			if (inPutPageValue)
+			{
+				inReq.putPageValue("searcher", searcher);
+			}
 		return searcher;
 	}
+
 	/**
 	 * @deprecated use facets
 	 * @param inReq
@@ -58,38 +60,34 @@ public class RelatedKeywordModule extends BaseModule
 	public Map<String, String> getSuggestions(WebPageRequest inReq) throws Exception
 	{
 		String searchType = inReq.findPathValue("searchtype");
-		if( !"asset".equals(searchType))
+		if (!"asset".equals(searchType))
 		{
 			return null;
 		}
 
-		
 		String catalogid = inReq.findPathValue("catalogid");
-		//searcher = (Searcher) inReq.getPageValue("searcher");
+		// searcher = (Searcher) inReq.getPageValue("searcher");
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchType);
-		
+
 		HitTracker tracker = searcher.loadHits(inReq);
 		if (tracker == null)
 		{
 			tracker = (HitTracker) inReq.getPageValue("hits");
 		}
-		//saves the values to the search
-		if( tracker != null)
+		// saves the values to the search
+		if (tracker != null)
 		{
 			inReq.putPageValue("query", tracker.getSearchQuery());
 			getSuggestionsSearcher(inReq).getSuggestions(tracker, searcher);
 		}
 		return null;
 	}
-/*
-	public HitTracker getSynonyms(WebPageRequest inReq) throws Exception
-	{
-
-		SearchQuery query = getSuggestionsSearcher(inReq).createSearchQuery();
-		String searchString = inReq.getRequestParameter("description.value");
-		query.addMatches("synonyms", searchString);
-		HitTracker wordsHits = getSuggestionsSearcher(inReq).cachedSearch(inReq, query);
-		return wordsHits;
-	}
-*/
+	/*
+	 * public HitTracker getSynonyms(WebPageRequest inReq) throws Exception {
+	 * 
+	 * SearchQuery query = getSuggestionsSearcher(inReq).createSearchQuery(); String searchString =
+	 * inReq.getRequestParameter("description.value"); query.addMatches("synonyms", searchString);
+	 * HitTracker wordsHits = getSuggestionsSearcher(inReq).cachedSearch(inReq, query); return
+	 * wordsHits; }
+	 */
 }

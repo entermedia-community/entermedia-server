@@ -133,7 +133,8 @@ public class GoogleManager implements CatalogEnabled
 		}
 		// https://developers.google.com/drive/v3/reference/files/list
 		// https://developers.google.com/drive/v3/web/search-parameters
-		String url = "https://www.googleapis.com/drive/v3/files?orderBy=modifiedTime desc,name&pageSize=1000&fields=*"; // escaped later
+		String url = "https://www.googleapis.com/drive/v3/files?orderBy=modifiedTime desc,name&pageSize=1000&fields=*"; // escaped
+																														// later
 		String search = "'root' in parents";
 		url = url + "&q=" + search;
 		// TODO: Add date query from the last time we imported
@@ -180,7 +181,8 @@ public class GoogleManager implements CatalogEnabled
 
 			// https://developers.google.com/drive/v3/reference/files/list
 			// https://developers.google.com/drive/v3/web/search-parameters
-			url = "https://www.googleapis.com/drive/v3/files?orderBy=modifiedTime desc,name&pageSize=1000&fields=*"; // escaped later
+			url = "https://www.googleapis.com/drive/v3/files?orderBy=modifiedTime desc,name&pageSize=1000&fields=*"; // escaped
+																														// later
 			String search = "'" + rootParent + "' in parents";
 			url = url + "&q=" + search;
 			// TODO: Add date query from the last time we imported
@@ -309,8 +311,8 @@ public class GoogleManager implements CatalogEnabled
 				// throw new OpenEditException("Could not save: " + inAsset.getName());
 
 				/*
-				 * https://developers.google.com/workspace/drive/api/reference/rest/v3/files/get?apix_params=%7B%
-				 * 22fileId%22%3A%2216LawVTbF9eiC7sGghSNwBxRJwQ36das%22%2C%22fields%22%3A%22*%22%7D
+				 * https://developers.google.com/workspace/drive/api/reference/rest/v3/files/get ?apix_params=%7B%
+				 * 22fileId%22%3A%2216LawVTbF9eiC7sGghSNwBxRJwQ36das%22%2C%22fields%22%3A%22*%22 %7D
 				 */
 
 			}
@@ -732,7 +734,8 @@ public class GoogleManager implements CatalogEnabled
 
 		HttpRequestBuilder builder = new HttpRequestBuilder();
 
-		// POST https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
+		// POST
+		// https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
 		builder.addPart("metadata", inMetadata.toJSONString(), "application/json"); // What should this be called?
 
 		builder.addPart("file", file);
@@ -764,7 +767,8 @@ public class GoogleManager implements CatalogEnabled
 		String url = "https://www.googleapis.com/storage/v1/b/" + bucket + "/o/";
 		// TODO: Use HttpRequestBuilder.addPart()
 
-		// POST https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
+		// POST
+		// https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
 
 		String accesstoken = getAccessToken(); // TODO: Cache this?
 
@@ -834,7 +838,8 @@ public class GoogleManager implements CatalogEnabled
 			JSONObject object = new JSONObject();
 			object.put("name", inAsset.getName());
 			String metadata = object.toString();
-			// POST https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
+			// POST
+			// https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
 			builder.addPart("file", metadata, "application/json"); // What should this be called?
 			// builder.addPart("file", "", "imagetype/jpeg");
 			Charset UTF8 = Charset.forName("UTF-8");
@@ -887,7 +892,8 @@ public class GoogleManager implements CatalogEnabled
 	// HttpResponse resp = httpclient.execute(method);
 	//
 	// if (resp.getStatusLine().getStatusCode() != 200) {
-	// log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":"
+	// log.info("Google Server error returned " +
+	// resp.getStatusLine().getStatusCode() + ":"
 	// + resp.getStatusLine().getReasonPhrase());
 	// String returned = EntityUtils.toString(resp.getEntity());
 	// log.error(returned);
