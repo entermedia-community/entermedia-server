@@ -3,7 +3,7 @@
 	class="goalstatus goalstatus$!{goal.projectstatus} goallevel$!{goal.ticketlevel} ${target}"  
 	style="position:relative"> 
 	#set( $goallink = "${communityhome}/project/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=chat&targetdiv=${target}")
-	<div class="mb-3 px-3 pt-3">
+	<div class="mb-3 px-3 pt-3 d-flex align-items-center justify-content-between">
 		#if($caneditcollection)
 		<a data-cancelsubmit="true" 
 			data-hidefooter="true" 
@@ -19,10 +19,9 @@
 				<span class="goalname">$goal.name</span>
 		</a>
 		#end
-		<div class="goalslike float-right">
+		<div class="goalslike">
 			$pages.include("${communityhome}/project/goals/like.html",$context)
 		</div>
-		<div class="clearfix"></div>
 	</div>
 	<div class="goaltasksout">
 		
