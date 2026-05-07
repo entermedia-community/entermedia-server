@@ -377,10 +377,8 @@
 	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 .msg-bubble .msg-body.me {
-	background: var(--themed-btn-acc);
-}
-.msg-bubble .msg-body.me {
-	color: var(--themed-btn-acc-text);
+	background: #eff1ff !important;
+	color: #000 !important;
 }
 .msg-body-content {
 	line-height: 1.5rem;
@@ -428,7 +426,7 @@
 .msg-citations a {
 	display: inline-block;
 	margin-left: 16px;
-	color: var(--text-link-color)!important;
+	color: var(--text-link-color) !important;
 }
 .chat-icon {
 	position: absolute;
@@ -457,10 +455,9 @@
 }
 .chat-msg-attachments-asset {
 	margin: 0.25rem;
-	
 }
 .chat-msg-attachments-asset img {
-	max-height:200px;
+	max-height: 200px;
 }
 .chatterbox-write .chatterboxreplyto {
 	width: calc(100% - 22px);
