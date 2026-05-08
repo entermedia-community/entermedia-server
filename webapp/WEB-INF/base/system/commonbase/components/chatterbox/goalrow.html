@@ -1,5 +1,5 @@
 #set( $target = "goalrow#eid(${goal.id})")
-<div id="${target}" class="goalstatus goalstatus$!{goal.projectstatus} goallevel$!{goal.ticketlevel} ${target}"  
+<div id="${target}" class="goalstatus goalstatus$!{goal.projectstatus} goallevel$!{goal.ticketlevel} ${target}"
 	style="position:relative"> 
 	#set( $goallink = "${communityhome}/project/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=chat&targetdiv=${target}")
 	#if($caneditcollection)
@@ -24,13 +24,14 @@
 			<div class="d-flex align-items-center justify-content-between" style="min-width: 42px;">
 				<a href="${goallink}" 
 					title="[[Edit Goal]]"
+					data-targetdiv="${target}"
 					class="emdialog goal-title text-primary"
 					data-hidefooter="true"
 					data-width="900">
 					<i class="bi bi-pencil-square"></i>
 				</a>
 				<a href="${communityhome}/project/goals/goaldelete.html?id=$goal.id" 
-					data-targetdiv="$target" 
+					data-targetdiv="${target}" 
 					data-confirm="Sure you want to delete?"
 					data-oemaxlevel="1"
 					data-goalid="$goal.id"
