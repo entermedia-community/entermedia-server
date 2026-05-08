@@ -121,10 +121,6 @@
 		height: calc(100% - 132px) !important;
 		min-height: 100px;
 	}
-	.chatterbox-messages .resultspositions {
-		line-height: 18px;
-		font-size: 0.85rem;
-	}
 	.emwidget-chatterbox .emwidget-header {
 		padding: 8px 0 0 15px;
 	}
