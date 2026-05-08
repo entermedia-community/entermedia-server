@@ -1,6 +1,5 @@
 #set( $target = "goalrow#eid(${goal.id})")
-<div id="${target}" 
-	class="goalstatus goalstatus$!{goal.projectstatus} goallevel$!{goal.ticketlevel} ${target}"  
+<div id="${target}" class="goalstatus goalstatus$!{goal.projectstatus} goallevel$!{goal.ticketlevel} ${target}"  
 	style="position:relative"> 
 	#set( $goallink = "${communityhome}/project/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=chat&targetdiv=${target}")
 	#if($caneditcollection)
@@ -41,8 +40,8 @@
 			</div>
 		</div>
 	#end
+	
 	<div class="goaltasksout">
-		
 		$pages.include("${communityhome}/project/goals/search/goaltasks.html?indialog=true&onlyopen=false",$context)
 	</div>
 
