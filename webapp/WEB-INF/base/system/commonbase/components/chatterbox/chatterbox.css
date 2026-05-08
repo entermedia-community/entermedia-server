@@ -66,9 +66,6 @@
 .msg-bubble .chat-author a:hover {
 	color: #000;
 }
-.msg-bubble .msg-body {
-	color: #444;
-}
 .chatterbox-write .chatterbox-media {
 	height: 24px;
 	background-color: #9cdc81;
@@ -365,15 +362,20 @@
 	border-radius: 6px;
 }
 .msg-bubble .msg-body {
+	color: #444;
 	flex: 1;
-	padding: 0.5rem 0.95rem;
+	padding: 0.75rem;
 	border-radius: 0.7rem;
 	position: relative;
+	background: #ffffff;
 	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 .msg-bubble .msg-body.me {
-	background: #eff1ff !important;
+	background: #eff1ff;
 	color: #000 !important;
+}
+.msg-bubble .msg-body.me:has(.goalrow) {
+	background: #ffffff;
 }
 .msg-body-content {
 	line-height: 1.5rem;
@@ -501,7 +503,6 @@
 @media screen and (max-width: 1199px) {
 	.msg-bubble .msg-body {
 		border-radius: 0.75rem;
-		padding: 0.35rem 0.75rem;
 	}
 }
 
