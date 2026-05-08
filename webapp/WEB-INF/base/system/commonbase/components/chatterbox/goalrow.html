@@ -5,29 +5,40 @@
 	#set( $goallink = "${communityhome}/project/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=chat&targetdiv=${target}")
 	#if($caneditcollection)
 		<div class="d-flex align-items-center justify-content-between py-2 px-3 border-bottom">
-			<a data-cancelsubmit="true" 
-				data-hidefooter="true" 
-				href="${goallink}"
-				title="[[Ticket]] #$!goal.ticketnumber" 
-				class="emdialog goalticket-level" 
-				data-urlbar="${communityhome}/project/goals/priorities/index.html?collectionid=$goal.collectionid&opengoalid=${goal.id}" 
-				data-width="900">
-				#if( $goal.ticketnumber ) 
-					<b class="me-1"style="font-family: monospace;">#${goal.ticketnumber}</b>
-				#else
-					<i class="fa fa-caret-right"></i>
-				#end
-				#set( $status  = $mediaarchive.getData("projectstatus", $goal.projectstatus) )
-				<span>$goal.name</span>
-			</a>
-			<a href="${goallink}" 
-				title="[[Edit Goal]]"
-				class="emdialog goal-title text-primary"
-				style="width: 24px;"
-				data-hidefooter="true"
-				data-width="900">
-				<I class="bi bi-pencil-square"></I>
-			</a>
+			<div class="flex-grow-1 me-2">
+				<a data-cancelsubmit="true" 
+					data-hidefooter="true" 
+					href="${goallink}"
+					title="[[Ticket]] #$!goal.ticketnumber" 
+					class="emdialog" 
+					data-urlbar="${communityhome}/project/goals/priorities/index.html?collectionid=$goal.collectionid&opengoalid=${goal.id}" 
+					data-width="900">
+					#if( $goal.ticketnumber ) 
+						<b class="me-1"style="font-family: monospace;">#${goal.ticketnumber}</b>
+					#else
+						<i class="fa fa-caret-right"></i>
+					#end
+					#set( $status  = $mediaarchive.getData("projectstatus", $goal.projectstatus) )
+					$goal.name
+				</a>
+			</div>
+			<div class="d-flex align-items-center justify-content-between" style="min-width: 42px;">
+				<a href="${goallink}" 
+					title="[[Edit Goal]]"
+					class="emdialog goal-title text-primary"
+					data-hidefooter="true"
+					data-width="900">
+					<i class="bi bi-pencil-square"></i>
+				</a>
+				<a href="${communityhome}/project/goals/goaldelete.html?id=$goal.id" 
+					data-targetdiv="$target" 
+					data-confirm="Sure you want to delete?"
+					data-oemaxlevel="1"
+					data-goalid="$goal.id"
+					class="ajax text-danger">
+					<i class="bi bi-trash"></i>
+				</a>
+			</div>
 		</div>
 	#end
 	<div class="goaltasksout">
