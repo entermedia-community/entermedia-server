@@ -118,7 +118,7 @@
 		font-size: 0.88rem;
 	}
 	.chatterbox-messages {
-		height: calc(100% - 132px) !important;
+		height: calc(100% - 118px) !important;
 		min-height: 100px;
 	}
 	.emwidget-chatterbox .emwidget-header {

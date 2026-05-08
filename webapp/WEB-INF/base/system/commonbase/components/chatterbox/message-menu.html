@@ -1,0 +1,59 @@
+#if($user)
+<div class="message-menu">
+  <div class="d-flex align-items-center">
+
+    #if($permissions.canModule($module, "chat_message_reactions"))
+      <div class="pickemoticon message-menu-link" 
+      data-messageid="$!chat.id"
+      data-channel="$!currentchannel.getId()"
+      data-toggleurl="${chatterboxhome}/smilessave.html">
+        <i class="fas fa-grin"></i>
+        $pages.include("${chatterboxhome}/smiles.html")
+      </div>
+    #end
+
+    #if(!$goal && $permissions.canModule($module, "chat_send_messages"))
+      <a class="message-menu-link ajax jumptofocus"
+        data-channel="$!currentchannel.getId()" 
+        onclick='$("#chatter-msg").focus()'
+        data-targetdiv="chatterbox-write"
+        href="${chatterboxhome}/replystart.html?replytoid=$!chat.id" 
+        title="[[Reply]]">
+        <i class="fas fa-quote-left"></i>
+      </a>
+    #end		
+
+    #if(!$goal && $chat.user == $user.id )
+      #if($permissions.canModule($module, "chat_edit_messages"))
+        <a class="message-menu-link ajax-edit-msg"   
+          data-targetdiv="chatter-message-$chat.id"
+          href="${chatterboxhome}/editmessage.html"
+          data-channel="$!currentchannel.getId()"  
+          data-messageid="$!chat.id"
+          title="[[Edit Message]]">
+          <i class="fas fa-pencil-alt"></i>
+        </a>
+      #end
+    #end
+
+    #if($goalsenabled && $caneditcollection)
+      #if(!$goal)		
+        <a class="message-menu-link ajax"   
+          data-targetdiv="chatter-message-$chat.id"
+          href="$!{projectlink}/chat/chatterbox/makegoal.html?collectionid=$!{librarycol.getId()}&messageid=$chat.id&taskstatus=0" 
+          title="[[Flag as Goal]]">
+          <i class="fas fa-flag"></i>
+        </a>
+        <a class="message-menu-link ajax"   
+          data-targetdiv="chatter-message-$chat.id"
+          href="$!{projectlink}/chat/chatterbox/makeagenda.html?collectionid=$!{librarycol.getId()}&messageid=$chat.id&taskstatus=6" 
+          title="[[Make Priority Actions]]">
+          <i class="fas fa-check-double"></i>
+        </a>
+      #end
+    #end
+                                    
+  </div>
+  <div id="attach-${chat.id}"></div>
+</div>
+#end
