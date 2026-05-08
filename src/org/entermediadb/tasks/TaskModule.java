@@ -1714,7 +1714,7 @@ public class TaskModule extends BaseMediaModule
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
 			Data record = (Data) iterator.next();
-			record.setValue("ticketlevel", "2");
+			record.setValue("ticketlevel", "1");
 			tosave.add(record);
 		}
 		searcher.saveAllData(tosave, inReq.getUser());
