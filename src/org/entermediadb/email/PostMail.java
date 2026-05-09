@@ -333,7 +333,33 @@ public class PostMail
 		// tr.sendMessage(msg, msg.getAllRecipients());
 		// tr.close();
 		// msg.setContent(msg, "text/plain");
+		System.out.println(
+			    javax.mail.Session.class
+			        .getProtectionDomain()
+			        .getCodeSource()
+			        .getLocation()
+			);
 
+			System.out.println(
+			    javax.mail.internet.MimeMessage.class
+			        .getProtectionDomain()
+			        .getCodeSource()
+			        .getLocation()
+			);
+			try
+			{
+			    Class c = Class.forName("com.sun.mail.util.SharedByteArrayInputStream");
+
+			    System.out.println(
+			        c.getProtectionDomain()
+			         .getCodeSource()
+			         .getLocation()
+			    );
+			}
+			catch(Exception e)
+			{
+			    e.printStackTrace();
+			}
 		Transport.send(msg);
 		log.info("sent email from: " + Arrays.asList(msg.getFrom()) + " to: " + Arrays.asList(addressTo) + " subject: "+ subject );
 	}
