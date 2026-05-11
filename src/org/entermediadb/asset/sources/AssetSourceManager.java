@@ -133,7 +133,7 @@ public class AssetSourceManager implements CatalogEnabled
 				name = name + " (" + typedata.getName() + ")";
 			}
 			agent.setName(name);
-			agent.setValue("bean", "hotFolderSourceAgent");
+			agent.setValue("bean", "hotFolderSourceSkill");
 			agent.setValue("folder", "hotfolder");
 
 			agent.setValue("agenttype", "hotfolder");

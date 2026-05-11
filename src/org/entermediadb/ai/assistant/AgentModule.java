@@ -324,7 +324,7 @@ public class AgentModule extends BaseMediaModule
 	// {
 	// MediaArchive archive = getMediaArchive(inReq);
 	// InformaticsProcessorAgent informaticsManager =
-	// (InformaticsProcessorAgent)archive.getBean("informaticsAgent");
+	// (InformaticsProcessorAgent)archive.getBean("informaticsSkill");
 	// ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
 	// informaticsManager.processAll(logger);
 	// }
