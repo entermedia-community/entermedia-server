@@ -1390,7 +1390,7 @@ public class EntityModule extends BaseMediaModule
 
 	}
 
-	public void saveSubModule(WebPageRequest inPageRequest) throws Exception
+	public void saveExistingSubModule(WebPageRequest inPageRequest) throws Exception
 	{
 
 		String moduleid = inPageRequest.findPathValue("module"); // Submodule
@@ -1441,6 +1441,35 @@ public class EntityModule extends BaseMediaModule
 			}
 			data.setValue("securityalwaysvisible", entity.getValue("securityalwaysvisible"));
 
+			searcher.saveData(data);
+		}
+
+	}
+
+	public void saveSubModule(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Data data = (MultiValued) inReq.getPageValue("data");
+
+		if (data != null)
+		{
+			String moduleid = inReq.findPathValue("entitymoduleid"); // Submodule
+			Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(), moduleid);
+			String fieldexternalid = inReq.findPathValue("fieldexternalid");
+			String fieldexternalvalue = inReq.findPathValue("fieldexternalvalue");
+			Data parententity = archive.getCachedData(fieldexternalid, fieldexternalvalue);
+			if (parententity == null)
+			{
+				log.error("Could not find parent entity with " + fieldexternalid + " = " + fieldexternalvalue);
+				return;
+			}
+			// Copy the custom permissions
+			String[] types = {"customusers", "customgroups", "customroles", "editorusers", "editorroles", "editorgroups"};
+			for (int i = 0; i < types.length; i++)
+			{
+				data.setValue(types[i], parententity.getValue(types[i]));
+			}
+			data.setValue("securityalwaysvisible", parententity.getValue("securityalwaysvisible"));
 			searcher.saveData(data);
 		}
 
