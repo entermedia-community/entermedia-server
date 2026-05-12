@@ -1,22 +1,12 @@
 package org.entermediadb.translator.agents;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+
 import org.entermediadb.ai.BaseSkill;
 import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.translator.TranslationManager;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.openedit.Data;
-import org.openedit.MultiValued;
-import org.openedit.data.PropertyDetail;
-import org.openedit.hittracker.HitTracker;
-import org.openedit.modules.translations.LanguageMap;
 
 public class TranslationSkill extends BaseSkill
 {

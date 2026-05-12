@@ -63,7 +63,7 @@ public class BaseLlmConnection implements LlmConnection
 
 	public void setAiServerData(Data fieldMainServerUrl)
 	{
-		this.fieldAiServerData = fieldMainServerUrl;
+		fieldAiServerData = fieldMainServerUrl;
 	}
 
 	public String getServerRoot()
