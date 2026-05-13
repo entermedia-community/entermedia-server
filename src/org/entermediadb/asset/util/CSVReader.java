@@ -32,6 +32,9 @@ import org.openedit.util.FileUtils;
  */
 public class CSVReader implements Parser {
 
+	/** 64K default buffer: faster line reads for large tabular imports than JRE default 8K. */
+	private static final int DEFAULT_IO_BUFFER = 1 << 16;
+
     private BufferedReader br;
 
     private boolean hasNext = true;
@@ -127,10 +130,13 @@ public class CSVReader implements Parser {
      *            the line number to skip for start reading 
      */
     public CSVReader(Reader reader, char separator, char quotechar, int line, boolean strictquotes) {
-    	if( reader != null)
-    	{
-    		this.br = new BufferedReader(reader);
-    	}
+		if (reader != null) {
+			if (reader instanceof BufferedReader) {
+				this.br = (BufferedReader) reader;
+			} else {
+				this.br = new BufferedReader(reader, DEFAULT_IO_BUFFER);
+			}
+		}
         this.separator = separator;
         this.quotechar = quotechar;
         this.skipLines = line;
@@ -220,8 +226,9 @@ public class CSVReader implements Parser {
             return null;
         }
 
-        List tokensOnThisLine = new ArrayList();
-        StringBuffer sb = new StringBuffer();
+        // typical CSV: ten or more columns; avoid repeated grow
+        List<String> tokensOnThisLine = new ArrayList<>(32);
+        StringBuilder sb = new StringBuilder(64);
         boolean inQuotes = false;
         do {
         	if (inQuotes) {
@@ -263,7 +270,7 @@ public class CSVReader implements Parser {
                 	}
                 } else if (c == separator && !inQuotes) {
                     tokensOnThisLine.add(sb.toString());
-                    sb = new StringBuffer(); // start work on next token
+                    sb = new StringBuilder(32); // start work on next token
                 } else {
                     sb.append(c);
                 }

@@ -83,7 +83,7 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 			String resample = inStructions.getProperty("resample");
 			if (resample == null)
 			{
-				resample = "22.05";
+				resample = "22050";
 			}
 			args.add("--resample");
 			args.add(resample);
