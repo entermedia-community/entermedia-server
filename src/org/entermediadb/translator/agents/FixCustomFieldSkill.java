@@ -2,11 +2,12 @@ package org.entermediadb.translator.agents;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.entermediadb.ai.BaseSkill;
 import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.llm.AgentContext;
@@ -24,11 +25,29 @@ public class FixCustomFieldSkill extends BaseSkill
 		{
 			fieldOrganizations = new ArrayList(getMediaArchive().getList("creditorg"));
 
+			// Longest should be sorted first.
+			Collections.sort((List) fieldOrganizations, new Comparator<MultiValued>() {
+				@Override
+				public int compare(MultiValued o1, MultiValued o2)
+				{
+					String name1 = o1.getLanguageMap("name").getText("en");
+					String name2 = o2.getLanguageMap("name").getText("en");
+					if (name1.length() > name2.length())
+					{
+						return -1;
+					}
+					else
+						if (name1.length() < name2.length())
+						{
+							return 1;
+						}
+					return 0;
+				}
+			});
 		}
+
 		return fieldOrganizations;
 	}
-
-	Pattern pattern = Pattern.compile("\\u00A9?(.*?)/"); // \\u00A9 is optional and matches the © symbol when present
 
 	@Override
 	public void process(AgentContext inContext)
@@ -53,6 +72,13 @@ public class FixCustomFieldSkill extends BaseSkill
 		}
 		else
 		{
+			String sourceLang = (String) inContext.getContextValue("sourceLang");
+			Collection<String> targetLangs = (Collection<String>) inContext.getContextValue("targetLangs");
+			for (Iterator iterator = targetLangs.iterator(); iterator.hasNext();)
+			{
+
+			}
+
 			Map<String, String> translations = (Map<String, String>) inContext.getContextValue("translations");
 			String sourceLang = (String) inContext.getContextValue("sourceLang");
 			String text = (String) inContext.getContextValue("text");
@@ -90,6 +116,52 @@ public class FixCustomFieldSkill extends BaseSkill
 		super.process(inContext);
 	}
 
+	private void preFixTranslation(AgentContext inContext, String inSourceLang, LanguageMap inField)
+	{
+		if (inField != null)
+		{
+			// Get source language
+			String sourceFieldValue = inField.getText(inSourceLang);
+			if (sourceFieldValue == null)
+			{
+				return;
+			}
+
+			LanguageMap orgMap = findOrgLanguageMap(inSourceLang, sourceFieldValue);
+
+			if (orgMap == null)
+			{
+				return;
+			}
+
+			Collection<String> targetLangs = (Collection<String>) inContext.getContextValue("targetLangs");
+
+			int count = 0;
+			for (Iterator iterator2 = targetLangs.iterator(); iterator2.hasNext();)
+			{
+				String lang = (String) iterator2.next();
+				String value = inField.getText(inSourceLang); //copy same 
+
+				String matchedName = orgMap.getText(inSourceLang);
+				String newOrgName = orgMap.getText(lang);
+
+				if (newOrgName != null)
+				{
+					// Not matching since value already was translated by AI: "Noticias de la ONU"
+					String fixedValue = value.replace(matchedName, newOrgName);
+					inField.setText(lang, fixedValue);
+					count++;
+				}
+
+			}
+			if (count > 0)
+			{
+				inContext.info("Fixed " + count + " translation(s) for custom field of " + sourceFieldValue);
+			}
+
+		}
+	}
+
 	private void fixTranslation(AgentContext inContext, String inSourceLang, LanguageMap inField)
 	{
 		if (inField != null)
@@ -101,37 +173,38 @@ public class FixCustomFieldSkill extends BaseSkill
 				return;
 			}
 
-			Matcher matcher = pattern.matcher(sourceFieldValue);
+			LanguageMap orgMap = findOrgLanguageMap(inSourceLang, sourceFieldValue);
 
-			if (matcher.find())
+			if (orgMap == null)
 			{
-				// matcher.group(1) gets the text inside the parentheses
-				String matchedText = matcher.group(1).trim();
-
-				LanguageMap orgMap = findOrgLanguageMap(inSourceLang, matchedText);
-				int count = 0;
-				for (Iterator iterator2 = inField.keySet().iterator(); iterator2.hasNext();)
+				return;
+			}
+			int count = 0;
+			for (Iterator iterator2 = inField.keySet().iterator(); iterator2.hasNext();)
+			{
+				String lang = (String) iterator2.next();
+				String value = inField.getText(lang);
+				if (value == null)
 				{
-					String lang = (String) iterator2.next();
-					String value = inField.getText(lang);
-					if (value == null)
-					{
-						continue;
-					}
-					String fixedValue = fixOrganization(value, lang, orgMap);
-
-					if (fixedValue != null)
-					{
-						inField.setText(lang, fixedValue);
-						count++;
-					}
+					continue;
 				}
-				if (count > 0)
+				String matchedName = orgMap.getText(inSourceLang);
+				String newOrgName = orgMap.getText(lang);
+
+				if (newOrgName != null)
 				{
-					inContext.info("Fixed " + count + " translation(s) for custom field of " + matchedText);
+					// Not matching since value already was translated by AI: "Noticias de la ONU"
+					String fixedValue = value.replace(matchedName, newOrgName);
+					inField.setText(lang, fixedValue);
+					count++;
 				}
 
 			}
+			if (count > 0)
+			{
+				inContext.info("Fixed " + count + " translation(s) for custom field of " + sourceFieldValue);
+			}
+
 		}
 	}
 
@@ -142,28 +215,17 @@ public class FixCustomFieldSkill extends BaseSkill
 			LanguageMap orgName = org.getLanguageMap("name");
 			if (orgName != null)
 			{
-				String foundName = orgName.getText(inSourceLang);
-				if (englishOrg.equals(foundName))
+				String dbName = orgName.getText(inSourceLang);
+				// Should we ignorecase?
+
+				// UN always win: UN News, UN Photo, UN Photo - John M.
+				if (englishOrg.contains(dbName))
 				{
 					return orgName;
 				}
 			}
 		}
 		return null;
-	}
-
-	public String fixOrganization(String value, String lang, LanguageMap orgMap)
-	{
-		if (orgMap != null)
-		{
-			String orgName = orgMap.getText(lang);
-			if (orgName != null)
-			{
-				String fixedValue = value.replaceAll("©(.*?)/", "©" + orgName + " /");
-				return fixedValue;
-			}
-		}
-		return value;
 	}
 
 }
