@@ -27,7 +27,7 @@ public class librarycollectionSearchSecurity implements SearchSecurity
 	public SearchQuery attachSecurity(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery)
 	{
 		boolean enabled = inQuery.isEndUserSearch();
-		// log.info( "security filer enabled " + enabled );
+		// log.info( "security filer enabled " + enabled )
 		if (!enabled)
 		{
 
@@ -123,6 +123,13 @@ public class librarycollectionSearchSecurity implements SearchSecurity
 		{
 			userid = "null";
 		}
+
+		SearchQuery child = inSearcher.query()
+			// .orgroup("parentcategories",allowedcats)
+			// .notgroup("parentcategories", catshidden)
+			.notgroup("collectiontype", onlytypes)
+			.getQuery();
+		inQuery.addChildQuery(child);
 
 		QueryBuilder builder = inSearcher.query().or().orgroup("viewgroups", groupids).match("viewroles", roleid).match("owner", userid).match("viewusers", userid);
 		builder.match("securityenabled", "false");
