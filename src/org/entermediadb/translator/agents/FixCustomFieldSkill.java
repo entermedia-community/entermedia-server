@@ -5,13 +5,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.entermediadb.ai.BaseSkill;
 import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.asset.Asset;
 import org.openedit.MultiValued;
+import org.openedit.data.BaseData;
 import org.openedit.modules.translations.LanguageMap;
 
 public class FixCustomFieldSkill extends BaseSkill
@@ -59,153 +60,80 @@ public class FixCustomFieldSkill extends BaseSkill
 		{
 			pageofhits = mycontext.getRecordsToProcess();
 		}
+		// Only process assets for now
 		if (pageofhits != null && !pageofhits.isEmpty())
 		{
-			// Process Assets or Records
-			for (Iterator iterator = pageofhits.iterator(); iterator.hasNext();)
-			{
-				MultiValued data = (MultiValued) iterator.next();
+			fixTranslation(mycontext, "en", pageofhits);
 
-				LanguageMap credit = data.getLanguageMap("credit");
-				fixTranslation(mycontext, "en", credit);
-			}
+			/*
+			 * String sourceLang = (String) inContext.getContextValue("sourceLang"); String text = (String)
+			 * inContext.getContextValue("text"); Asset dataCopy = (Asset) inContext.getCurrentEntity();
+			 * Collection<Asset> records = new ArrayList<>(); records.add(dataCopy);
+			 * assetonlycontext.setAssetsToProcess(records); fixTranslation(assetonlycontext, sourceLang,
+			 * records);
+			 */
 		}
 		else
 		{
-			String sourceLang = (String) inContext.getContextValue("sourceLang");
-			Collection<String> targetLangs = (Collection<String>) inContext.getContextValue("targetLangs");
-			for (Iterator iterator = targetLangs.iterator(); iterator.hasNext();)
-			{
-
-			}
-
-			Map<String, String> translations = (Map<String, String>) inContext.getContextValue("translations");
-			String sourceLang = (String) inContext.getContextValue("sourceLang");
-			String text = (String) inContext.getContextValue("text");
-			if (translations == null)
-			{
-				inContext.info("Nothing to Fix");
-				return; // Missing required context values
-			}
-
-			LanguageMap field = new LanguageMap();
-			field.setText(sourceLang, text);
-			for (Iterator iterator = translations.keySet().iterator(); iterator.hasNext();)
-			{
-				String lang = (String) iterator.next();
-				field.setText(lang, translations.get(lang));
-			}
-			fixTranslation(mycontext, sourceLang, field);
-			Map<String, String> fixedtranslations = new HashMap<>();
-			for (Iterator iterator2 = field.keySet().iterator(); iterator2.hasNext();)
-			{
-				String lang = (String) iterator2.next();
-				String value = field.getText(lang);
-				if (value == null)
-				{
-					continue;
-				}
-				fixedtranslations.put(lang, value);
-
-			}
-			inContext.getParentContext().addContext("translations", fixedtranslations);
-			// inContext.addContext("translations", fixedtranslations);
-
+			super.process(inContext);
 		}
 
-		super.process(inContext);
 	}
 
-	private void preFixTranslation(AgentContext inContext, String inSourceLang, LanguageMap inField)
+	private void fixTranslation(AgentContext inContext, String inSourceLang, Collection<MultiValued> inRecords)
 	{
-		if (inField != null)
+		for (MultiValued record : inRecords)
 		{
-			// Get source language
-			String sourceFieldValue = inField.getText(inSourceLang);
-			if (sourceFieldValue == null)
+			LanguageMap inField = record.getLanguageMap("credit");
+
+			if (inField != null)
 			{
-				return;
-			}
-
-			LanguageMap orgMap = findOrgLanguageMap(inSourceLang, sourceFieldValue);
-
-			if (orgMap == null)
-			{
-				return;
-			}
-
-			Collection<String> targetLangs = (Collection<String>) inContext.getContextValue("targetLangs");
-
-			int count = 0;
-			for (Iterator iterator2 = targetLangs.iterator(); iterator2.hasNext();)
-			{
-				String lang = (String) iterator2.next();
-				String value = inField.getText(inSourceLang); //copy same 
-
-				String matchedName = orgMap.getText(inSourceLang);
-				String newOrgName = orgMap.getText(lang);
-
-				if (newOrgName != null)
+				// Get source language
+				String sourceFieldValue = inField.getText(inSourceLang);
+				if (sourceFieldValue == null)
 				{
-					// Not matching since value already was translated by AI: "Noticias de la ONU"
-					String fixedValue = value.replace(matchedName, newOrgName);
-					inField.setText(lang, fixedValue);
-					count++;
+					return;
 				}
 
-			}
-			if (count > 0)
-			{
-				inContext.info("Fixed " + count + " translation(s) for custom field of " + sourceFieldValue);
-			}
+				LanguageMap orgMap = findOrgLanguageMap(inSourceLang, sourceFieldValue);
 
+				if (orgMap == null)
+				{
+					return;
+				}
+
+				Collection<String> targetLangs = (Collection<String>) inContext.getContextValue("targetLangs");
+
+				Map<String, LanguageMap> orgLookup = (Map<String, LanguageMap>) inContext.getContextValue("orgLookup");
+
+				int count = 0;
+				String inputValue = inField.getText(inSourceLang); // copy same
+				String matchedName = orgMap.getText(inSourceLang);
+
+				// Not matching since value already was translated by AI: "Noticias de la ONU"
+				String randomkey = createRandomKey();
+				String fixedValue = inputValue.replace(matchedName, randomkey);
+				orgLookup.put(randomkey, orgMap);
+				inField.setText(inSourceLang, fixedValue);
+				super.process(inContext);
+
+			}
 		}
 	}
 
-	private void fixTranslation(AgentContext inContext, String inSourceLang, LanguageMap inField)
+	// Generate a 10 character uppercase keys randomly for each org name to be replaced in the
+	// translation and then replaced back after translation is done. This is to avoid the issue of AI
+	// translating the org name which we want to keep as is.
+	String createRandomKey()
 	{
-		if (inField != null)
+		String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		StringBuilder key = new StringBuilder();
+		for (int i = 0; i < 10; i++)
 		{
-			// Get source language
-			String sourceFieldValue = inField.getText(inSourceLang);
-			if (sourceFieldValue == null)
-			{
-				return;
-			}
-
-			LanguageMap orgMap = findOrgLanguageMap(inSourceLang, sourceFieldValue);
-
-			if (orgMap == null)
-			{
-				return;
-			}
-			int count = 0;
-			for (Iterator iterator2 = inField.keySet().iterator(); iterator2.hasNext();)
-			{
-				String lang = (String) iterator2.next();
-				String value = inField.getText(lang);
-				if (value == null)
-				{
-					continue;
-				}
-				String matchedName = orgMap.getText(inSourceLang);
-				String newOrgName = orgMap.getText(lang);
-
-				if (newOrgName != null)
-				{
-					// Not matching since value already was translated by AI: "Noticias de la ONU"
-					String fixedValue = value.replace(matchedName, newOrgName);
-					inField.setText(lang, fixedValue);
-					count++;
-				}
-
-			}
-			if (count > 0)
-			{
-				inContext.info("Fixed " + count + " translation(s) for custom field of " + sourceFieldValue);
-			}
-
+			int randomIndex = (int) (Math.random() * chars.length());
+			key.append(chars.charAt(randomIndex));
 		}
+		return key.toString();
 	}
 
 	public LanguageMap findOrgLanguageMap(String inSourceLang, String englishOrg)
