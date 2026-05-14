@@ -28,7 +28,7 @@ public class FixCustomFieldSkill extends BaseSkill
 		return fieldOrganizations;
 	}
 
-	Pattern pattern = Pattern.compile("\\u00A9?(.*?)/"); // \\u00A9 is optional and matches the © symbol when present
+	Pattern pattern = Pattern.compile("\\u00A9(.*?)/"); // \\u00A9 is optional and matches the © symbol when present
 
 	@Override
 	public void process(AgentContext inContext)
