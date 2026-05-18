@@ -56,6 +56,8 @@ $!jsonUtil.toJsonArray($list)
 	"id":"$!value"
 	#end
 }
+#elseif( $detail.isDataType("nested"))
+	$!jsonUtil.toJson($value)
 #else
 	{ 	"id":"$value" }
 #end
@@ -131,4 +133,4 @@ $text
 #set($charsPerSide = ($maxLength - 3) / 2)
 $text.substring(0, $charsPerSide)...$text.substring($text.length() - $charsPerSide)
 #end
-#end
+#end 
