@@ -259,6 +259,7 @@ public class BaseJsonModule extends BaseMediaModule
 					for (Iterator iterator2 = values.iterator(); iterator2.hasNext();)
 					{
 						Object it = (Object) iterator2.next();
+						// Todo: Check if is nested and fix data types
 						if (it instanceof String)
 						{
 							ids.add(it);
@@ -269,7 +270,7 @@ public class BaseJsonModule extends BaseMediaModule
 							String val = (String) object.get("id");
 							if (val == null)
 							{
-								ids.add(it);
+								ids.add(it); // Doesn't seem correct.
 								continue;
 							}
 							// log.info("In VALUE: ${val}");

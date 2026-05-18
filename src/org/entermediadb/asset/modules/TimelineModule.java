@@ -303,9 +303,9 @@ public class TimelineModule extends BaseMediaModule
 		}
 		else
 		{
-			lasttrack = captionsearcher.loadData(lasttrack);
+			// lasttrack = captionsearcher.loadData(lasttrack);
 		}
-		Collection captions = (Collection) lasttrack.getValue("captions");
+		Collection captions = (Collection) lasttrack.getValues("captions");
 		if (captions == null)
 		{
 			captions = new ArrayList();

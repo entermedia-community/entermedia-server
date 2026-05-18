@@ -68,6 +68,10 @@ public class ValuesMapWithSearchData<K, V> extends ValuesMap
 		}
 		if (value == null && detail != null && getSearchData() != null)
 		{
+			if (key.equals("captions"))
+			{
+				System.out.println("Looking for captions in search data");
+			}
 			value = getSearchData().get(key);
 
 			if (value != null)
@@ -81,6 +85,15 @@ public class ValuesMapWithSearchData<K, V> extends ValuesMap
 					Position pos = new Position((Map) value);
 					value = pos;
 				}
+				else
+					if (detail.isDataType("nested"))
+					{
+						// Todo: Make sure to save the data with datatypes
+						/*
+						 * for (Iterator iterator = ((List) value).iterator(); iterator.hasNext();) { Map originalmap =
+						 * (Map) iterator.next(); fixMap(detail, originalmap); }
+						 */
+					}
 			}
 			if (value == null)
 			{
@@ -155,6 +168,47 @@ public class ValuesMapWithSearchData<K, V> extends ValuesMap
 				}
 		}
 		return value;
+	}
+
+	private void fixMap(PropertyDetail detail, Map originalmap)
+	{
+		ValuesMap map = new ValuesMap(originalmap);
+		for (Iterator iterator2 = originalmap.keySet().iterator(); iterator2.hasNext();)
+		{
+
+			String key1 = (String) iterator2.next();
+			PropertyDetail childdetail1 = detail.getChildDetail(key1);
+			if (childdetail1 != null)
+			{
+				if (childdetail1.isDataType("long") || childdetail1.isDataType("number"))
+				{
+					Object object = map.getLong(key1);
+					originalmap.put(key1, object);
+				}
+				else
+					if (childdetail1.isDataType("double"))
+					{
+						Object object = map.getDouble(key1);
+						originalmap.put(key1, object);
+					}
+					else
+						if (childdetail1.isDataType("date"))
+						{
+							Object object = map.getDate(key1);
+							originalmap.put(key1, object);
+						}
+						else
+						{
+							Object object = map.getObject(key1);
+							originalmap.put(key1, object);
+						}
+			}
+			else
+			{
+				Object object = map.getObject(key1);
+				originalmap.put(key1, object);
+			}
+		}
 	}
 
 	public Map getSearchData()
