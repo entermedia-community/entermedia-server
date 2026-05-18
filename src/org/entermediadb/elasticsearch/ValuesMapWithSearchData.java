@@ -68,10 +68,7 @@ public class ValuesMapWithSearchData<K, V> extends ValuesMap
 		}
 		if (value == null && detail != null && getSearchData() != null)
 		{
-			if (key.equals("captions"))
-			{
-				System.out.println("Looking for captions in search data");
-			}
+
 			value = getSearchData().get(key);
 
 			if (value != null)
