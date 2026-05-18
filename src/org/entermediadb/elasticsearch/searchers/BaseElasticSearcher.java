@@ -920,6 +920,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			log.info("Could not put mapping over existing mapping on catalog: " + getCatalogId() + " Searchtype: " + getSearchType(), ex);
 			getElasticNodeManager().addMappingError(getSearchType(), ex.getMessage());
 			// throw new OpenEditException("Mapping was not saved " + getSearchType(),ex);
+			if (isReIndexing())
+			{
+				throw new OpenEditException("Mapping was not saved " + getSearchType(), ex);
+			}
 			return false;
 			// you will need to export data");
 		}
@@ -960,6 +964,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		{
 			// log.info("mapping applied " + getSearchType());
 			// admin.cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+		}
+		else
+		{
+			log.error("mapping was not applied " + getSearchType());
+			throw new OpenEditException("Mapping was not applied " + getSearchType());
 		}
 
 	}
