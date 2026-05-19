@@ -643,12 +643,15 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 				System.out.println("Unprocessed property: " + fieldName);
 				jp.skipChildren();
 			}
+			if (count > 0 && count % 10000 == 0) {
+				log.info("Importing: " + count + " records for " + searchtype);
+			}
 		}
 	}
 	finally{
 
 		manager.flushBulk();
-		log.info("imported: " + searchtype + " "+count + " records");
+		log.info("Imported: " + searchtype + " "+count + " records");
 			//This is in memory only flush
 			//RefreshResponse actionGet = getClient().admin().indices().prepareRefresh(catid).execute().actionGet();
 
