@@ -65,6 +65,15 @@ public class AgentContext extends BaseData implements CatalogEnabled
 		fieldParentContext = inParentContext;
 	}
 
+	public AgentContext getRootContext()
+	{
+		if (getParentContext() != null)
+		{
+			return getParentContext().getRootContext();
+		}
+		return this;
+	}
+
 	protected String functionName;
 	protected String nextFunctionName;
 	protected Map<String, Object> context;
