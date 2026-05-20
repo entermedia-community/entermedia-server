@@ -237,6 +237,10 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 		{
 			Data locale = (Data) iterator.next();
 			String code = locale.getId();
+			if (inSourceLang == null)
+			{
+				inSourceLang = "en";
+			}
 			if (code == inSourceLang)
 			{
 				continue;
