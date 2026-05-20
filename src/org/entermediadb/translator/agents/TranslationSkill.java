@@ -37,24 +37,6 @@ public class TranslationSkill extends BaseSkill
 			long duration = System.currentTimeMillis() - startTime;
 			mycontext.info("Translated: " + pageofhits.size() + " items took " + (duration > 1000L ? duration / 1000L + "s" : duration + " ms"));
 		}
-		else
-		{
-			// nullchecks sourceLang , targetLangs , text
-			Collection<String> targetLangs = (Collection<String>) inContext.getContextValue("targetLangs");
-			String text = (String) inContext.getContextValue("text");
-
-			if (sourceLang == null || targetLangs == null || text == null)
-			{
-				inContext.info("Nothing to Translate");
-				return; // Missing required context values
-			}
-			Map<String, String> translations = getTranslationManager().translatePlainText(sourceLang, targetLangs, text);
-
-			mycontext.info("Translated text to: " + translations.keySet() + " languages.");
-
-			inContext.addContext("sourcelang", sourceLang);
-			inContext.addContext("translations", translations);
-		}
 
 		super.process(inContext);
 	}
