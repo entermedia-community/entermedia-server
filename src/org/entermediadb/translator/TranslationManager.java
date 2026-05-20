@@ -220,11 +220,11 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 
 	}
 
-	public void translateDataFields(Collection<MultiValued> inRecordsToTranslate, Collection<PropertyDetail> inDetailsfields)
+	public void translateDataFields(Collection<MultiValued> inRecordsToTranslate, Collection<PropertyDetail> inDetailsfields, String inSourceLang)
 	{
 		HitTracker locales = getMediaArchive().query("locale").exact("translatemetadata", true).cachedSearch();
 
-		if (locales.size() == 1 && "en".equals(locales.get(0).getId()))
+		if (locales.size() < 2)
 		{
 			return;
 		}
@@ -237,7 +237,7 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 		{
 			Data locale = (Data) iterator.next();
 			String code = locale.getId();
-			if (code == "en")
+			if (code == inSourceLang)
 			{
 				continue;
 			}
@@ -289,10 +289,10 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 				if (detail != null && detail.isMultiLanguage())
 				{
 					LanguageMap value = data.getLanguageMap(inKey);
-					if (value != null && value.getText("en") != null && !value.getText("en").isEmpty())
+					if (value != null && value.getText(inSourceLang) != null && !value.getText(inSourceLang).isEmpty())
 					{
 						// inLog.info("Translating field: " + inKey);
-						LanguageMap translated = translateField(inKey, value, "en", targetLangs);
+						LanguageMap translated = translateField(inKey, value, inSourceLang, targetLangs);
 						results.put(inKey, translated);
 					}
 				}

@@ -21,7 +21,7 @@ public class TranslationSkill extends BaseSkill
 	public void process(AgentContext inContext)
 	{
 		InformaticsContext mycontext = new InformaticsContext(inContext);
-
+		String sourceLang = (String) inContext.getContextValue("sourceLang");
 		// Process Assets
 		Collection pageofhits = mycontext.getAssetsToProcess();
 		if (pageofhits == null || pageofhits.isEmpty())
@@ -33,14 +33,13 @@ public class TranslationSkill extends BaseSkill
 			// Process Assets or Records
 			long startTime = System.currentTimeMillis();
 			Collection<PropertyDetail> detailstotranslate = (Collection<PropertyDetail>) mycontext.getContextValue("detailsToTranslate");
-			getTranslationManager().translateDataFields(pageofhits, detailstotranslate);
+			getTranslationManager().translateDataFields(pageofhits, detailstotranslate, sourceLang);
 			long duration = System.currentTimeMillis() - startTime;
 			mycontext.info("Translated: " + pageofhits.size() + " items took " + (duration > 1000L ? duration / 1000L + "s" : duration + " ms"));
 		}
 		else
 		{
 			// nullchecks sourceLang , targetLangs , text
-			String sourceLang = (String) inContext.getContextValue("sourceLang");
 			Collection<String> targetLangs = (Collection<String>) inContext.getContextValue("targetLangs");
 			String text = (String) inContext.getContextValue("text");
 
