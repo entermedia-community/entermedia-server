@@ -220,7 +220,7 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 
 	}
 
-	public void translateDataFields(Collection<MultiValued> inRecordsToTranslate)
+	public void translateDataFields(Collection<MultiValued> inRecordsToTranslate, Collection<PropertyDetail> inDetailsfields)
 	{
 		HitTracker locales = getMediaArchive().query("locale").exact("translatemetadata", true).cachedSearch();
 
@@ -274,11 +274,14 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 
 			long startTime = System.currentTimeMillis();
 
-			Collection<PropertyDetail> detailsfields = loadActiveDetails(moduleid);
+			if (inDetailsfields == null)
+			{
+				inDetailsfields = loadActiveDetails(moduleid);
+			}
 
 			Map<String, LanguageMap> results = new HashMap();
 
-			for (Iterator iterator2 = detailsfields.iterator(); iterator2.hasNext();)
+			for (Iterator iterator2 = inDetailsfields.iterator(); iterator2.hasNext();)
 			{
 				PropertyDetail detail = (PropertyDetail) iterator2.next();
 				String inKey = detail.getId();

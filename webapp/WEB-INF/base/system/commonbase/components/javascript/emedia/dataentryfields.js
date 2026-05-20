@@ -127,6 +127,7 @@ $(document).ready(function () {
 		var targetSelect = div.find(".targetlocale");
 		var source = sourceSelect.val();
 		var target = targetSelect.val();
+		var detailid = sourceSelect.data("detailid");
 
 		if (!source) {
 			customToast("Please select a source language!", {
@@ -201,6 +202,7 @@ $(document).ready(function () {
 				source: source,
 				targets: parsedTargets.join(","),
 				text: text,
+				detailid: detailid,
 			}),
 			contentType: "application/json",
 			success: function (data) {

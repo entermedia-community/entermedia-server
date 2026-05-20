@@ -7,6 +7,7 @@ import org.entermediadb.ai.BaseSkill;
 import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.ai.llm.AgentContext;
 import org.entermediadb.translator.TranslationManager;
+import org.openedit.data.PropertyDetail;
 
 public class TranslationSkill extends BaseSkill
 {
@@ -31,7 +32,8 @@ public class TranslationSkill extends BaseSkill
 		{
 			// Process Assets or Records
 			long startTime = System.currentTimeMillis();
-			getTranslationManager().translateDataFields(pageofhits);
+			Collection<PropertyDetail> detailstotranslate = (Collection<PropertyDetail>) mycontext.getContextValue("detailsToTranslate");
+			getTranslationManager().translateDataFields(pageofhits, detailstotranslate);
 			long duration = System.currentTimeMillis() - startTime;
 			mycontext.info("Translated: " + pageofhits.size() + " items took " + (duration > 1000L ? duration / 1000L + "s" : duration + " ms"));
 		}

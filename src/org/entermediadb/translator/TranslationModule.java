@@ -5,15 +5,18 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.automation.AutomationManager;
-import org.entermediadb.ai.llm.AgentContext;
+import org.entermediadb.ai.informatics.InformaticsContext;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
+import org.openedit.data.BaseData;
+import org.openedit.modules.translations.LanguageMap;
 
 public class TranslationModule extends BaseMediaModule
 {
@@ -71,6 +74,8 @@ public class TranslationModule extends BaseMediaModule
 		}
 		String sourceLang = (String) params.get("source");
 		String targetLangStr = (String) params.get("targets");
+		String detailid = (String) params.get("detailid");
+
 		Collection<String> targets = Arrays.asList(targetLangStr.split(","));
 		Collection<String> targetLangs = new ArrayList<String>();
 
@@ -93,15 +98,28 @@ public class TranslationModule extends BaseMediaModule
 		// targetLangs ,
 		// text);
 
-		AgentContext context = new AgentContext();
+		InformaticsContext context = new InformaticsContext();
 		context.put("sourceLang", sourceLang);
 		context.put("targetLangs", targetLangs);
 		context.put("text", text);
 
+		LanguageMap languagemap = new LanguageMap();
+		languagemap.setText(sourceLang, text);
+
+		MultiValued record = new BaseData();
+		record.setValue(detailid, languagemap);
+		Collection<MultiValued> pageofhits = Arrays.asList((MultiValued) record);
+		context.setRecordsToProcess(pageofhits);
+
 		getAutomationManager(inReq).runScenario("informatics_translate", context);
 
 		inReq.putPageValue("sourcelang", context.getContextValue("sourceLang"));
-		inReq.putPageValue("translations", context.getContextValue("translations"));
+
+		LanguageMap translationsmap = new LanguageMap();
+		MultiValued recordtranslated = pageofhits.iterator().next();
+		translationsmap = recordtranslated.getLanguageMap(detailid);
+
+		inReq.putPageValue("translations", translationsmap);
 	}
 }
 // [headline, assettitle, keywords, longcaption,
