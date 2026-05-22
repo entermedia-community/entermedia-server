@@ -128,7 +128,7 @@ public class FixCustomFieldSkill extends BaseSkill
 						{
 							String inputValue = inField.getText(inSourceLang); // copy same
 
-							String randomkey = "__ARGS" + (counter++) + "__";
+							String randomkey = "[__ARGS" + (counter++) + "__]";
 							String fixedValue = inputValue.replace(matchedName, randomkey);
 							orgLookup.put(randomkey, orgName);
 							inField.setText(inSourceLang, fixedValue);
