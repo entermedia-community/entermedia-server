@@ -2,6 +2,7 @@ package org.entermediadb.translator.agents;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -24,6 +25,24 @@ public class FixCustomFieldSkill extends BaseSkill
 		if (fieldOrganizations == null)
 		{
 			fieldOrganizations = new ArrayList(getMediaArchive().getList("creditorg"));
+			Collections.sort((ArrayList<MultiValued>) fieldOrganizations, (a, b) -> {
+				String nameA = a.getName();
+				String nameB = b.getName();
+				if (nameA.length() > nameB.length())
+				{
+					return -1;
+				}
+				else
+					if (nameA.length() < nameB.length())
+					{
+						return 1;
+					}
+					else
+					{
+						return 0;
+					}
+
+			});
 
 		}
 		return fieldOrganizations;
@@ -58,7 +77,7 @@ public class FixCustomFieldSkill extends BaseSkill
 		if (pageofhits != null && !pageofhits.isEmpty())
 		{
 
-			Boolean fixed = fixTranslation(mycontext, inSourceLang, pageofhits);
+			Boolean fixed = findKeywords(mycontext, inSourceLang, pageofhits);
 			if (fixed)
 			{
 				super.process(mycontext);
@@ -78,7 +97,7 @@ public class FixCustomFieldSkill extends BaseSkill
 
 	}
 
-	private Boolean fixTranslation(InformaticsContext inContext, String inSourceLang, Collection<MultiValued> inRecords)
+	private Boolean findKeywords(InformaticsContext inContext, String inSourceLang, Collection<MultiValued> inRecords)
 	{
 		boolean found = false;
 		for (MultiValued record : inRecords)
@@ -88,43 +107,41 @@ public class FixCustomFieldSkill extends BaseSkill
 			if (inField != null)
 			{
 				// Get source language
-				String sourceFieldValue = inField.getText(inSourceLang);
-				if (sourceFieldValue == null)
+				if (inField.getText(inSourceLang) == null)
 				{
 					continue;
 				}
 
-				Matcher matcher = pattern.matcher(sourceFieldValue);
-
-				if (!matcher.find())
-				{
-					continue;
-				}
-
-				String matchedSourceText = matcher.group(1).trim();
-
-				LanguageMap orgMap = findOrgLanguageMap(inSourceLang, matchedSourceText);
-
-				if (orgMap == null)
-				{
-					continue;
-				}
+				// Collection<LanguageMap> orgMap = findOrgLanguageMap(inSourceLang, sourceFieldValue);
 
 				// Collection<String> targetLangs = (Collection<String>) inContext.getContextValue("targetLangs");
 
 				Map<String, LanguageMap> orgLookup = new HashMap<>();
+				long counter = 0L;
+				for (MultiValued org : getOrganizations())
+				{
+					LanguageMap orgName = org.getLanguageMap("name");
+					if (orgName != null)
+					{
+						String matchedName = orgName.getText(inSourceLang);
+						if (inField.getText(inSourceLang).contains(matchedName))
+						{
+							String inputValue = inField.getText(inSourceLang); // copy same
+
+							String randomkey = "__ARGS" + (counter++) + "__";
+							String fixedValue = inputValue.replace(matchedName, randomkey);
+							orgLookup.put(randomkey, orgName);
+							inField.setText(inSourceLang, fixedValue);
+							record.setValue("credit", inField);
+
+							found = true;
+						}
+					}
+				}
+				inContext.put("orgLookup", orgLookup);
 
 				// int count = 0;
-				String inputValue = inField.getText(inSourceLang); // copy same
-				String matchedName = orgMap.getText(inSourceLang);
 
-				String randomkey = createRandomKey();
-				String fixedValue = inputValue.replace(matchedName, randomkey);
-				orgLookup.put(randomkey, orgMap);
-				inField.setText(inSourceLang, fixedValue);
-				record.setValue("credit", inField);
-				inContext.put("orgLookup", orgLookup);
-				found = true;
 			}
 		}
 
@@ -157,12 +174,21 @@ public class FixCustomFieldSkill extends BaseSkill
 						for (Iterator iterator2 = inField.keySet().iterator(); iterator2.hasNext();)
 						{
 							String lang = (String) iterator2.next();
-							String value = inField.getText(lang);
-							String fixedValue = fixOrganization(sourceFieldValue, lang, orgMap);
+							String translatedValue = inField.getText(lang);
+							String staticValue = orgMap.getText(lang);
+							String fixedValue = null;
+							if (staticValue == null)
+							{
+								staticValue = orgMap.getText("en");
+
+							}
+
+							fixedValue = translatedValue.replace(key, staticValue);
+
+							// String fixedValue = fixOrganization(translatedValue, lang, orgMap);
 							inField.setText(lang, fixedValue);
 						}
 
-						break;
 					}
 				}
 				// inContext.log(inField.toJson());
@@ -172,21 +198,17 @@ public class FixCustomFieldSkill extends BaseSkill
 		}
 	}
 
+	long counter = 0L;
+
 	// Generate a 10 character uppercase keys randomly for each org name
 	public String createRandomKey()
 	{
-		String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		StringBuilder key = new StringBuilder();
-		for (int i = 0; i < 10; i++)
-		{
-			int randomIndex = (int) (Math.random() * chars.length());
-			key.append(chars.charAt(randomIndex));
-		}
-		return key.toString();
+		return "__ARGS" + counter++ + "__";
 	}
 
-	public LanguageMap findOrgLanguageMap(String inSourceLang, String englishOrg)
+	public Collection<LanguageMap> findOrgLanguageMap(String inSourceLang, String englishOrg)
 	{
+
 		for (MultiValued org : getOrganizations())
 		{
 			LanguageMap orgName = org.getLanguageMap("name");
@@ -195,32 +217,32 @@ public class FixCustomFieldSkill extends BaseSkill
 				String foundName = orgName.getText(inSourceLang);
 				if (englishOrg.equals(foundName))
 				{
-					return orgName;
+					;
 				}
 			}
 		}
 		return null;
 	}
 
-	public String fixOrganization(String value, String lang, LanguageMap orgMap)
+	public String fixOrganization(String translatedValue, String lang, LanguageMap orgMap)
 	{
 		if (orgMap != null)
 		{
 			String orgName = orgMap.getText(lang);
 			if (orgName != null)
 			{
-				String fixedValue = value.replaceAll("©(.*?)/", "© " + orgName + "/");
+				String fixedValue = translatedValue.replaceAll("©(.*?)/", "© " + orgName + "/");
 				return fixedValue;
 			}
 			else
 			{
 				// default to english
 				orgName = orgMap.getText("en");
-				String fixedValue = value.replaceAll("©(.*?)/", "© " + orgName + "/");
+				String fixedValue = translatedValue.replaceAll("©(.*?)/", "© " + orgName + "/");
 				return fixedValue;
 			}
 		}
-		return value;
+		return translatedValue;
 	}
 
 }
