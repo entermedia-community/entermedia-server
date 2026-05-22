@@ -317,7 +317,8 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 					}
 				}
 				long duration = System.currentTimeMillis() - startTime;
-				log.info("Total translation took: " + duration + "ms");
+
+				log.info("Total translation took: " + duration + "ms " + results);
 			}
 			catch (Exception e)
 			{
