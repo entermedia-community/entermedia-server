@@ -84,7 +84,7 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 		JSONArray contents = new JSONArray();
 		contents.add(text);
 
-		Collection<Data> locales = getMediaArchive().query("locale").ids(targetLangs).search();
+		Collection<Data> locales = getMediaArchive().query("locale").ids(targetLangs).cachedSearch();
 
 		Collection<String> googleTargets = new ArrayList();
 		Collection<String> eMediaTargets = new ArrayList();
@@ -276,12 +276,13 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 			// moduleid + ", " + data.getName());
 			count++;
 
-			long startTime = System.currentTimeMillis();
-
 			if (inDetailsfields == null)
 			{
+				log.info("Loading active details for module: " + moduleid);
 				inDetailsfields = loadActiveDetails(moduleid);
 			}
+
+			long startTime = System.currentTimeMillis();
 
 			Map<String, LanguageMap> results = new HashMap();
 
@@ -316,7 +317,7 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 					}
 				}
 				long duration = System.currentTimeMillis() - startTime;
-				// inLog.info("Total translation took: " + duration + "ms");
+				log.info("Total translation took: " + duration + "ms");
 			}
 			catch (Exception e)
 			{
