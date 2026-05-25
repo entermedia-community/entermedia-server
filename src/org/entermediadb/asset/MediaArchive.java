@@ -1146,10 +1146,8 @@ public class MediaArchive implements CatalogEnabled
 			return null;
 		}
 		List assets = new ArrayList();
-		SearchQuery q = getAssetSearcher().createSearchQuery();
-		q.addMatches("category-exact", inCategory.getId());
+		HitTracker hits = getAssetSearcher().query().exact("category-exact", inCategory.getId()).not("editstatus", "7").search();
 
-		HitTracker hits = getAssetSearcher().search(q);
 		if (hits != null)
 		{
 			for (Iterator it = hits.iterator(); it.hasNext();)
