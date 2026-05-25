@@ -56,7 +56,6 @@ public class InformaticsProcessorManager extends BaseAiManager
 {
 	private static final Log log = LogFactory.getLog(InformaticsProcessorManager.class);
 
-	// TODO
 	public void processAsset(ScriptLogger inLog, Asset inAsset)
 	{
 		Collection<Asset> pageofhits = new ArrayList();
