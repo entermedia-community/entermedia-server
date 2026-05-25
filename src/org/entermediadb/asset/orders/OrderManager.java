@@ -97,7 +97,7 @@ public interface OrderManager
 
 	void toggleItemInOrder(MediaArchive inArchive, Order inBasket, Asset inAsset);
 
-	void sendEmailForApproval(String inCatalogId, MediaArchive inArchive, UserManager userManager, String inAppId, Order inOrder);
+	void sendEmailForApproval(String inCatalogId, MediaArchive inArchive, User inUser, String inAppId, Order inOrder);
 
 	Order findOrderFromAssets(String inCatalogId, User inUser, List inAssetids);
 

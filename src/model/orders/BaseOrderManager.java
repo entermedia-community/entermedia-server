@@ -1374,18 +1374,14 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled
 		inOrder.setValue("emailsent", true);
 	}
 
-	public void sendEmailForApproval(String inCatalogId, MediaArchive inArchive, UserManager userManager, String inAppId, Order inOrder)
+	public void sendEmailForApproval(String inCatalogId, MediaArchive inArchive, User approverUser, String inAppId, Order inOrder)
 	{
-		String email = inArchive.getCatalogSettingValue("requestapproveremail");
-		if (email == null || (email != null && email.isEmpty()))
-		{
-			throw new OpenEditException("No approver email provided (requestapproveremail), please contact your administrator");
-		}
 
-		User followerUser = (User) userManager.getUserByEmail(email);
-		if (followerUser == null)
+		if (approverUser == null)
 		{
-			throw new OpenEditException("The approver email (" + email + ") is not linked to any active account, please contact your administrator");
+			// log.error("No approver email provided (requestapproveremail)");
+			throw new OpenEditException("No approver email provided (requestapproveremail) or email address is not linked to an active account");
+
 		}
 
 		RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
@@ -1393,10 +1389,10 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled
 		UserProfile profile = (UserProfile) inArchive.getProfileManager().loadUserProfile(inArchive, inAppId, "admin");
 
 		String template = "/" + inAppId + "/theme/emails/checkoutrequesttemplate.html";
-		WebEmail templatemail = inArchive.createSystemEmail(followerUser, template);
+		WebEmail templatemail = inArchive.createSystemEmail(approverUser, template);
 
 		Map context = new HashMap();
-		BaseWebPageRequest newcontext = (BaseWebPageRequest) rutil.createVirtualPageRequest(template, followerUser, profile);
+		BaseWebPageRequest newcontext = (BaseWebPageRequest) rutil.createVirtualPageRequest(template, approverUser, profile);
 		newcontext.putPageValues(context);
 
 		templatemail.loadSettings(newcontext);
@@ -1405,7 +1401,7 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled
 		objects.put("mediaarchive", inArchive);
 		objects.put("order", inOrder);
 		templatemail.send(objects);
-		log.info("Sent approval request to " + email);
+		log.info("Sent approval request to " + approverUser.getEmail());
 	}
 
 	protected ModuleManager getModuleManager()

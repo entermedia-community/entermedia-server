@@ -442,7 +442,7 @@ public class OrderModule extends BaseMediaModule
 				items = getOrderManager(inReq).findOrderItems(inReq, catalogid, order);
 			}
 		}
-		if (items != null)
+		if (items != null && publishtype != null)
 		{
 			// get searchers
 			Searcher publishdestsearcher = getMediaArchive(inReq).getSearcherManager().getSearcher(catalogid, "publishdestination");
@@ -1277,12 +1277,29 @@ public class OrderModule extends BaseMediaModule
 		// order.setValue("emailsent", true);
 		getOrderManager(inReq).saveOrder(catalogid, inReq.getUser(), order);
 
-		UserManager userManager = getUserManager(inReq);
-
 		// Send an email
-		getOrderManager(inReq).sendEmailForApproval(catalogid, archive, userManager, applicationid, order);
+		User approverUser = getApproverUser(inReq);
+		getOrderManager(inReq).sendEmailForApproval(catalogid, archive, approverUser, applicationid, order);
 
 		return order;
+	}
+
+	public User getApproverUser(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String email = archive.getCatalogSettingValue("requestapproveremail");
+		if (email == null || (email != null && email.isEmpty()))
+		{
+			log.error("No approver email provided (requestapproveremail)");
+		}
+
+		User approverUser = (User) archive.getUserManager().getUserByEmail(email);
+		if (approverUser == null)
+		{
+			log.error("The approver email (" + email + ") is not linked to any active account");
+		}
+		inReq.putPageValue("approverUser", approverUser);
+		return approverUser;
 	}
 
 	public void loadPresetOptionsForOrder(WebPageRequest inReq)
