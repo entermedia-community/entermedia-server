@@ -12,3 +12,4 @@
 *.DS_Store
 
 webapp/WEB-INF/data/entermedia/catalogs/testcatalog/
+webapp/WEB-INF/data/system/users/*
