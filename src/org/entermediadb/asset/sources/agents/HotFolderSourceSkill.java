@@ -21,6 +21,7 @@ public class HotFolderSourceSkill extends BaseSkill
 	public void process(AgentContext inContext)
 	{
 		scanSource(inContext);
+		super.process(inContext);
 	}
 
 	public void scanSource(AgentContext inContext)
