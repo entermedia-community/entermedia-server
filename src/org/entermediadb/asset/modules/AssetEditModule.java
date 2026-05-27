@@ -1539,7 +1539,19 @@ public class AssetEditModule extends BaseMediaModule
 			String sourcepath = null;
 			String absolutesourcepath = null;
 			String categoryuploadpath = null;
-			if (target != null)
+
+			// Saving Theme Logo
+			if ("theme".equals(moduleid))
+			{
+				sourcepath = "System/";
+				if (target != null && target.getName() != null)
+				{
+					sourcepath += target.getName() + "/";
+				}
+				sourcepath += item.getName();
+			}
+
+			if (sourcepath == null && target != null)
 			{
 				Map variables = inReq.getParameterMap();
 				variables.put("userid", inReq.getUser().getId());
@@ -1548,11 +1560,14 @@ public class AssetEditModule extends BaseMediaModule
 				variables.put("data", target);
 
 				Data module = archive.getCachedData("module", moduleid);
-				Category cat = archive.getEntityManager().calculateUploadCategory(module, target, variables, inReq.getUser());
-				if (cat != null)
+				if (module != null)
 				{
-					categoryuploadpath = cat.getCategoryPath();
-					sourcepath = categoryuploadpath + "/" + item.getName();
+					Category cat = archive.getEntityManager().calculateUploadCategory(module, target, variables, inReq.getUser());
+					if (cat != null)
+					{
+						categoryuploadpath = cat.getCategoryPath();
+						sourcepath = categoryuploadpath + "/" + item.getName();
+					}
 				}
 
 			}
