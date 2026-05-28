@@ -304,4 +304,56 @@ $(document).ready(function () {
 		e.stopPropagation();
 		$(this).ajaxFormSubmit();
 	});
+
+	autosubmitformtriggers = function (form) {
+		if ($(form).hasClass("autosubmitform")) {
+			$("select", form).on("select2:select", function () {
+				form.trigger("submit");
+			});
+			$("select", form).on("select2:unselect", function () {
+				$("#filtersremoveterm", form).val($(this).data("searchfield"));
+				form.trigger("submit");
+			});
+			$("input[type=checkbox]", form).on("change", function () {
+				if ($(this).hasClass("filtercheck")) {
+					var fieldname = $(this).data("fieldname");
+
+					var boxes = $(".filtercheck" + fieldname + ":checkbox:checked");
+					if (boxes.length == 0) {
+						if ($("#filtersremoveterm").length) {
+							$("#filtersremoveterm").val(fieldname);
+						}
+					}
+				}
+				form.trigger("submit");
+			});
+			$("input[type=radio]", form).on("change", function () {
+				form.trigger("submit");
+			});
+
+			$("input[type=text]", form)
+				.not(".datepicker")
+				.on("change", function () {
+					form.trigger("submit");
+				});
+		}
+	};
+
+	lQuery(".autosubmitform").livequery(function () {
+		autosubmitformtriggers($(this));
+	});
+
+	$(".autosubmitform").on("submit", function () {
+		var form = $(this);
+		//Remove required from Filters Form
+		if (form.hasClass("filterform")) {
+			$(".required", form).each(function () {
+				$(this).removeClass("required");
+			});
+		}
+		if (form.valid()) {
+			return true;
+		}
+		return false;
+	});
 });
