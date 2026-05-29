@@ -165,7 +165,7 @@ public class TranscriberModule extends BaseMediaModule
 
 			String cliplabel = (String) caption.get("cliplabel");
 
-			Map translations = translationManager.translatePlainText(sourceLang, targetLangs, cliplabel);
+			Map translations = translationManager.translatePlainText(new HashMap<>(), sourceLang, targetLangs, cliplabel);
 
 			for (Iterator iterator = translations.keySet().iterator(); iterator.hasNext();)
 			{
