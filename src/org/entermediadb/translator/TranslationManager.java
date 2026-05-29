@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.ai.BaseAiManager;
@@ -14,7 +13,6 @@ import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.ai.llm.LlmResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.google.GoogleManager;
-import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
@@ -22,7 +20,6 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
-import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
@@ -201,6 +198,9 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 						translatedText = (String) translation.get("translatedText");
 					}
 				}
+
+				// decorde none UTF characters like "Photo de l&#39;ONU that come back from google
+				translatedText = org.apache.commons.lang3.StringEscapeUtils.unescapeHtml4(translatedText);
 
 				JSONArray existing = (JSONArray) allTranslatedTexts.get(targetLang);
 				if (existing == null)
