@@ -33,7 +33,12 @@ public class TranslationSkill extends BaseSkill
 			// Process Assets or Records
 			long startTime = System.currentTimeMillis();
 			Collection<PropertyDetail> detailstotranslate = (Collection<PropertyDetail>) mycontext.getContextValue("detailsToTranslate");
-			getTranslationManager().translateDataFields(pageofhits, detailstotranslate, sourceLang);
+			Collection<String> targetLangs = (Collection<String>) mycontext.getContextValue("targetLangs");
+
+			// Look for Glossary configurations
+			Map config = (Map) mycontext.getAllContext();
+
+			getTranslationManager().translateDataFields(config, pageofhits, detailstotranslate, sourceLang, targetLangs);
 			long duration = System.currentTimeMillis() - startTime;
 			mycontext.info("Translated: " + pageofhits.size() + " items took " + (duration > 1000L ? duration / 1000L + "s" : duration + " ms"));
 		}

@@ -2,6 +2,7 @@ package org.entermediadb.google;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -11,9 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import javax.net.ssl.SSLException;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -22,9 +21,11 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -36,20 +37,23 @@ import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.dom4j.Element;
+import org.entermediadb.ai.llm.LlmConnection;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.sources.GoogleDriveAssetSource;
 import org.entermediadb.location.GeoCoder;
 import org.entermediadb.location.Position;
-import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.util.EmTokenResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.BaseData;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.modules.translations.LanguageMap;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
@@ -59,6 +63,7 @@ import org.openedit.util.DateStorageUtil;
 import org.openedit.util.ExecutorManager;
 import org.openedit.util.HttpMimeBuilder;
 import org.openedit.util.HttpRequestBuilder;
+import org.openedit.util.HttpSharedConnection;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.URLUtilities;
 import org.openedit.util.XmlUtil;
@@ -974,6 +979,60 @@ public class GoogleManager implements CatalogEnabled
 		return null;
 	}
 
+	public JSONObject translate(Map<String, String> inConfig, LlmConnection iLlmConnection, String inText, String inSourceLanguage, String inTargetLanguage) throws Exception
+	{
+		String googleprojectid = inConfig.get("projectid");
+		String googleprojectlocationid = inConfig.get("locationid");
+		String googleglossaryid = inConfig.get("glossaryid");
+
+		String url = iLlmConnection.getServerRoot() + "/" + googleprojectid + "/locations/" + googleprojectlocationid + "/:translateText";
+		/*
+		 **
+		 * { "contents": [ string ], "mimeType": string, "sourceLanguageCode": string, "targetLanguageCode":
+		 * string, "model": string, "glossaryConfig": { object (TranslateTextGlossaryConfig) },
+		 * "transliterationConfig": { object (TransliterationConfig) }, "labels": { string: string, ... } }
+		 **
+		 */
+
+		JSONObject payload = new JSONObject();
+		JSONArray contents = new JSONArray();
+		contents.add(inText);
+		payload.put("contents", contents);
+		payload.put("sourceLanguageCode", inSourceLanguage);
+		payload.put("targetLanguageCode", inTargetLanguage);
+		JSONObject glossaryConfig = new JSONObject();
+		glossaryConfig.put("glossary", "projects/" + googleprojectid + "/locations/" + googleprojectlocationid + "/glossaries/" + googleglossaryid);
+		glossaryConfig.put("ignoreCase", true);
+		payload.put("glossaryConfig", glossaryConfig);
+
+		HttpSharedConnection connection = getConnection();
+		connection.putSharedHeader("authorization", "Bearer " + getAccessToken());
+
+		try
+		{
+			log.info("Translating " + inText + " from " + inSourceLanguage + " to " + inTargetLanguage);
+			// log.info("URL: " + url + " with Payload: " + payload.toJSONString());
+			CloseableHttpResponse response = connection.sharedPostWithJson(url, payload);
+			if (response.getStatusLine().getStatusCode() != 200)
+			{
+				log.error("Google Server error returned " + response.getStatusLine().getStatusCode() + ":" + response.getStatusLine().getReasonPhrase());
+				String returned = EntityUtils.toString(response.getEntity());
+				log.error(returned);
+				return null;
+			}
+
+			JSONObject jsonmap = connection.parseMap(response);
+
+			return jsonmap;
+		}
+		catch (Throwable ex)
+		{
+			log.error("Error response: " + ex);
+			// return null;
+			throw new OpenEditException(ex);
+		}
+	}
+
 	public User createUserIfNeeded(String email)
 	{
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
@@ -1174,6 +1233,7 @@ public class GoogleManager implements CatalogEnabled
 		Position pos = getGeoCoder().findFirstPosition(inAddress);
 		return pos;
 	}
+
 	/**
 	 * 
 	 * 
@@ -1227,4 +1287,273 @@ public class GoogleManager implements CatalogEnabled
 	 * google.maps.event.trigger(map, "resize"); } });
 	 * 
 	 **/
+
+	/**
+	 * gcloud beta auth application-default login
+	 * 
+	 * gcloud translate glossaries create \
+	 * --name=projects/YOUR_PROJECT_ID/locations/us-central1/glossaries/YOUR_GLOSSARY_ID \
+	 * --language-pair-source-reader-uri=gs://YOUR_BUCKET_NAME/YOUR_FILE.csv \ --source-language=en \
+	 * --target-language=es
+	 * 
+	 */
+	// Create a method to upload an Equivalent term sets that maches
+	public void createGlossary(Map<String, Object> inConfig)
+	{
+
+		String projectid = (String) inConfig.get("projectid");
+		String locationid = (String) inConfig.get("locationid");
+		String lookupid = (String) inConfig.get("lookupid");
+		String bucketid = (String) inConfig.get("bucketid");
+		String glossaryid = (String) inConfig.get("glossaryid");
+
+		String sourceLanguage = "en";
+
+		HitTracker locales = getMediaArchive().query("locale").exact("translatemetadata", true).cachedSearch();
+		ArrayList<String> targetLanguages = new ArrayList<String>();
+		for (Iterator iterator = locales.iterator(); iterator.hasNext();)
+		{
+			Data locale = (Data) iterator.next();
+			String localeid = locale.getId();
+			if (localeid == null)
+			{
+				continue;
+			}
+			if (!sourceLanguage.equals(localeid))
+			{
+				targetLanguages.add(localeid);
+			}
+		}
+		if (targetLanguages.isEmpty())
+		{
+			throw new OpenEditException("No target locales found. Enable translatemetadata on at least one locale different from " + sourceLanguage);
+		}
+
+		String objectname = "glossary/" + glossaryid + ".csv";
+		File tempfile = null;
+		try
+		{
+			tempfile = createGlossaryCsvFile(lookupid, sourceLanguage, targetLanguages);
+
+			HttpPost uploadmethod = new HttpPost("https://www.googleapis.com/upload/storage/v1/b/" + bucketid + "/o?uploadType=multipart");
+			uploadmethod.addHeader("authorization", "Bearer " + getAccessToken());
+
+			JSONObject metadata = new JSONObject();
+			metadata.put("name", objectname);
+
+			HttpRequestBuilder builder = new HttpRequestBuilder();
+			builder.addPart("metadata", metadata.toJSONString(), "application/json");
+			builder.addPart("file", tempfile);
+			uploadmethod.setEntity(builder.build());
+
+			String contenttype = uploadmethod.getEntity().getContentType().getValue();
+			String boundary = contenttype.substring(contenttype.indexOf("boundary=") + 9);
+			uploadmethod.setHeader("Content-Type", "multipart/related; boundary=" + boundary);
+
+			CloseableHttpResponse uploadresponse = getConnection().sharedPost(uploadmethod);
+			if (uploadresponse.getStatusLine().getStatusCode() != 200 && uploadresponse.getStatusLine().getStatusCode() != 201)
+			{
+				String returned = EntityUtils.toString(uploadresponse.getEntity());
+				throw new OpenEditException("Could not upload glossary file: " + returned);
+			}
+			getConnection().release(uploadresponse);
+
+			JSONObject glossary = new JSONObject();
+
+			String fullname = "projects/" + projectid + "/locations/" + locationid + "/glossaries/" + glossaryid;
+			glossary.put("name", fullname);
+			JSONObject languagecodeset = new JSONObject();
+			JSONArray languagecodes = new JSONArray();
+			languagecodes.add(normalizeLocaleCode(sourceLanguage));
+			for (Iterator langiterator = targetLanguages.iterator(); langiterator.hasNext();)
+			{
+				languagecodes.add(normalizeLocaleCode((String) langiterator.next()));
+			}
+			languagecodeset.put("languageCodes", languagecodes);
+			glossary.put("languageCodesSet", languagecodeset);
+
+			JSONObject inputconfig = new JSONObject();
+			JSONObject gcssource = new JSONObject();
+			gcssource.put("inputUri", "gs://" + bucketid + "/" + objectname);
+			inputconfig.put("gcsSource", gcssource);
+			glossary.put("inputConfig", inputconfig);
+
+			String createurl = "https://translate.googleapis.com/v3/projects/" + projectid + "/locations/" + locationid + "/glossaries";
+
+			HttpSharedConnection connection = getConnection();
+			connection.putSharedHeader("authorization", "Bearer " + getAccessToken());
+			log.info("Creating glossary with " + languagecodes.size() + " languages at " + createurl);
+			CloseableHttpResponse createresponse = connection.sharedPostWithJson(createurl, glossary);
+
+			if (createresponse.getStatusLine().getStatusCode() != 200 && createresponse.getStatusLine().getStatusCode() != 201)
+			{
+				String returned = EntityUtils.toString(createresponse.getEntity());
+				getConnection().release(createresponse);
+				if (isGlossaryAlreadyExists(createresponse.getStatusLine().getStatusCode(), returned))
+				{
+					updateExistingGlossary(projectid, locationid, glossaryid, glossary);
+					return;
+				}
+				log.error(returned);
+				throw new OpenEditException("Could not create glossary: " + returned);
+			}
+
+			JSONObject operation = connection.parseMap(createresponse);
+
+			log.info(operation);
+			return;
+
+			/*
+			 * Object operationname = operation.get("name"); if (operationname != null) { return
+			 * operationname.toString(); } return operation.toJSONString();
+			 */
+		}
+		catch (IOException e)
+		{
+			throw new OpenEditException(e);
+		}
+		finally
+		{
+			if (tempfile != null)
+			{
+				FileUtils.deleteQuietly(tempfile);
+			}
+		}
+	}
+
+	protected String updateExistingGlossary(String inProjectId, String inGlossaryLocation, String inGlossaryId, JSONObject inGlossary) throws IOException
+	{
+		String updateurl = "https://translate.googleapis.com/v3/projects/" + inProjectId + "/locations/" + inGlossaryLocation + "/glossaries/" + inGlossaryId
+			+ "?update_mask=input_config&update_mask=language_codes_set";
+		HttpPatch patch = new HttpPatch(updateurl);
+		patch.addHeader("Content-Type", "application/json");
+		patch.setEntity(new StringEntity(inGlossary.toString(), StandardCharsets.UTF_8));
+
+		HttpSharedConnection connection = getConnection();
+		CloseableHttpResponse updateresponse = connection.sharedExecute(patch);
+		int status = updateresponse.getStatusLine().getStatusCode();
+		if (status != 200 && status != 201)
+		{
+			String returned = EntityUtils.toString(updateresponse.getEntity());
+			getConnection().release(updateresponse);
+			log.error(returned);
+			throw new OpenEditException("Could not update existing glossary: " + returned);
+		}
+
+		JSONObject operation = connection.parseMap(updateresponse);
+
+		log.info(operation);
+
+		Object operationname = operation.get("name");
+		if (operationname != null)
+		{
+			return operationname.toString();
+		}
+		return operation.toJSONString();
+	}
+
+	protected boolean isGlossaryAlreadyExists(int inStatusCode, String inResponseBody)
+	{
+		if (inStatusCode == 409)
+		{
+			return true;
+		}
+		if (inResponseBody == null)
+		{
+			return false;
+		}
+		String lower = inResponseBody.toLowerCase();
+		return lower.contains("already exists") || lower.contains("glossary") && lower.contains("exists");
+	}
+
+	protected File createGlossaryCsvFile(String locallookup, String inSourceLanguage, Collection<String> inTargetLanguages) throws IOException
+	{
+		HitTracker equivalentterms = getMediaArchive().getSearcher(locallookup).query().all().search();
+		StringBuilder csv = new StringBuilder();
+		int rows = 0;
+
+		// Header row: one column per language in the same order as data rows.
+		csv.append(escapeCsv(inSourceLanguage));
+		for (Iterator langiterator = inTargetLanguages.iterator(); langiterator.hasNext();)
+		{
+			String localeid = (String) langiterator.next();
+			csv.append(",");
+			csv.append(escapeCsv(localeid));
+		}
+		csv.append("\n");
+
+		for (Iterator iterator = equivalentterms.iterator(); iterator.hasNext();)
+		{
+			MultiValued term = (MultiValued) iterator.next();
+			LanguageMap names = term.getLanguageMap("name");
+			if (names == null)
+			{
+				continue;
+			}
+			String source = names.getText(inSourceLanguage);
+			if (source == null)
+			{
+				continue;
+			}
+			source = source.trim();
+			if (source.isEmpty())
+			{
+				continue;
+			}
+
+			ArrayList<String> rowtargets = new ArrayList<String>();
+			for (Iterator langiterator = inTargetLanguages.iterator(); langiterator.hasNext();)
+			{
+				String localeid = (String) langiterator.next();
+				String target = names.getText(localeid);
+				if (target == null)
+				{
+					target = "";
+				}
+				target = target.trim();
+				rowtargets.add(target);
+			}
+
+			csv.append(escapeCsv(source));
+			for (Iterator targetiterator = rowtargets.iterator(); targetiterator.hasNext();)
+			{
+				String target = (String) targetiterator.next();
+				csv.append(",");
+				csv.append(escapeCsv(target));
+			}
+			csv.append("\n");
+			rows++;
+		}
+
+		if (rows == 0)
+		{
+			throw new OpenEditException("No complete glossary rows found for " + inSourceLanguage + " and selected locales");
+		}
+
+		log.info("Created glossary with " + rows + " rows for " + inSourceLanguage + " and selected locales");
+
+		File tempfile = File.createTempFile("google-glossary-", ".csv");
+		FileUtils.write(tempfile, csv.toString(), StandardCharsets.UTF_8);
+		return tempfile;
+	}
+
+	protected String escapeCsv(String inValue)
+	{
+		String escaped = inValue.replace("\"", "\"\"");
+		return "\"" + escaped + "\"";
+	}
+
+	protected String normalizeLocaleCode(String inLocaleId)
+	{
+		if (inLocaleId == null)
+		{
+			return null;
+		}
+		if ("zht".equalsIgnoreCase(inLocaleId) || "zh_TW".equalsIgnoreCase(inLocaleId))
+		{
+			return "zh-TW";
+		}
+		return inLocaleId.replace('_', '-');
+	}
+
 }

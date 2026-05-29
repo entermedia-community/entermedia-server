@@ -268,6 +268,17 @@ public class AgentContext extends BaseData implements CatalogEnabled
 		return context;
 	}
 
+	public Map<String, Object> getAllContext()
+	{
+		Map<String, Object> fullcontext = new HashMap();
+		if (getParentContext() != null)
+		{
+			fullcontext.putAll(getParentContext().getAllContext());
+		}
+		fullcontext.putAll(getContext());
+		return fullcontext;
+	}
+
 	public Data getChannel()
 	{
 		Data channel = (Data) getContextValue("channel");

@@ -2944,6 +2944,12 @@
 		</property>
 	</bean>
 
+	<bean id="googleGlossaryManagerSkill" class="org.entermediadb.translator.agents.GoogleGlossaryManagerSkill" lazy-init="default" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
 	<bean id="fixCustomFieldSkill" class="org.entermediadb.translator.agents.FixCustomFieldSkill" lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />

@@ -31,9 +31,9 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 {
 	private static final Log log = LogFactory.getLog(GoogleDriveAssetSource.class);
 
-	protected GoogleManager fieldGoogleManager;
-
 	protected int importCount;
+
+	protected GoogleManager fieldGoogleManager;
 
 	public GoogleManager getGoogleManager()
 	{
