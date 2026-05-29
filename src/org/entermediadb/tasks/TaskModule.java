@@ -1877,8 +1877,8 @@ public class TaskModule extends BaseMediaModule
 
 		Data task = (Data) archive.getData("goaltask", taskid);
 		inReq.putPageValue("task", task);
-		Data goal = (MultiValued) archive.getData("projectgoal", task.get("projectgoal"));
 
+		Data goal = (MultiValued) archive.getData("projectgoal", task.get("projectgoal"));
 		inReq.putPageValue("goal", goal);
 
 	}
@@ -1898,6 +1898,9 @@ public class TaskModule extends BaseMediaModule
 
 		Data task = (Data) archive.getData("goaltask", taskid);
 		inReq.putPageValue("task", task);
+
+		Data goal = (MultiValued) archive.getData("projectgoal", task.get("projectgoal"));
+		inReq.putPageValue("goal", goal);
 	}
 
 }

@@ -24,20 +24,6 @@ $context.putPageValue("convertpreset", $convertpreset)
 	
 	<div id="${entry.id}-preview" 
 		class="chat-msg-attachments-asset position-relative asset-rendertype-${rendertype}">
-		#if($chat.user == $user.id || $caneditcollection)
-		<a href="${chatterboxhome}/attachmentremove.html" 
-			class="removefieldassetvalue confirm ajax"
-			title="[[Remove This Asset]]" 
-			data-targetdiv="chatter-message-${chat.id}"
-			data-assetid="${entry.id}"
-			data-messageid="${chat.id}"
-			data-id="${chat.id}"
-			data-confirm="[[Remove the attachment?]]"
-			#ifnotnull($entity)data-entityid="$!entity.id"#end
-			#ifnotnull($collectionid)data-collectionid="$!collectionid"#end  
-			><i class="bi bi-x"></i></a>
-		#end
-		
 		$context.putPageValue("asset", $entry)
 		
 		
@@ -52,10 +38,25 @@ $context.putPageValue("convertpreset", $convertpreset)
 		#end
 		$context.putPageValue("apphome", $finderhome)
 		
-		
 		$pages.include("${searchhome}/thumbnails/${rendertype}.html?assetid=${entry.id}", $context)
-		
-		##$pages.include("${finderhome}/views/modules/asset/components/xml/types/assetpicker/preview.html?assetid=${entry.id}", $context)
+ 
+		#if($chat.user == $user.id || $caneditcollection)
+		<a href="${chatterboxhome}/attachmentremove.html" 
+			class="removefieldassetvalue confirm ajax"
+			title="[[Remove This Asset]]" 
+			data-targetdiv="chatter-message-${chat.id}"
+			data-assetid="${entry.id}"
+			data-messageid="${chat.id}"
+			data-id="${chat.id}"
+			data-confirm="[[Remove the attachment?]]"
+			#ifnotnull($entity)data-entityid="$!entity.id"#end
+			#ifnotnull($collectionid)data-collectionid="$!collectionid"#end  
+			><i class="bi bi-x-lg ns"></i></a>
+		#end
+
+		<a href="#" class="downloadfieldassetvalue">
+			<i class="bi bi-arrow-down ns"></i>
+		</a> 
 	</div>
 #end
 </div>

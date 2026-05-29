@@ -4,19 +4,19 @@
 			"path": ".",
 		},
 		{
-			"path": "../entermedia-core",
+			"path": "../app-emshare",
 		},
 		{
 			"path": "../extension-openinstitute",
 		},
 		{
-			"path": "../tomcat9",
+			"path": "../entermedia-core",
 		},
 		{
 			"path": "../extension-openedit",
 		},
 		{
-			"path": "../app-emshare",
+			"path": "../tomcat9",
 		},
 	],
 	"settings": {

@@ -591,13 +591,6 @@ jQuery(document).ready(function () {
 
 	/**Attachments */
 
-	lQuery(".chat-msg-attachments-asset .removefieldassetvalueZ").livequery(
-		"click",
-		function (e) {
-			$(this).runAjax();
-		},
-	);
-
 	lQuery("a.lightbox").livequery(function () {
 		const slb = $(this).simpleLightbox({
 			captionSelector: "self",

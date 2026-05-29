@@ -452,9 +452,61 @@
 }
 .chat-msg-attachments-asset {
 	margin: 0.25rem;
+	position: relative;
+}
+.chat-msg-attachments-asset .emthumbholder {
+	min-width: 100px;
+	min-height: 100px;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+}
+.chat-msg-attachments-asset .emthumbholder > .mimethumbcontainer {
+	width: 100px;
+	height: 120px;
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #ffffff;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+.chat-msg-attachments-asset .emthumbholder a {
+	display: block;
+}
+.downloadfieldassetvalue {
+	position: absolute;
+	bottom: 8px;
+	right: 8px;
+}
+.chat-msg-attachments-asset .removefieldassetvalue,
+.chat-msg-attachments-asset .downloadfieldassetvalue {
+	width: 28px;
+	height: 28px;
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 4px;
+	color: royalblue;
+	background: #fff;
+	z-index: 10;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+.chat-msg-attachments-asset .removefieldassetvalue {
+	color: #dc5c5c;
+	opacity: 0;
+	top: auto;
+	left: 8px;
+	bottom: 8px;
+}
+.chat-msg-attachments-asset:hover .removefieldassetvalue {
+	opacity: 1;
 }
 .chat-msg-attachments-asset img {
 	max-height: 200px;
+	border-radius: 4px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 .chatterbox-write .chatterboxreplyto {
 	width: calc(100% - 22px);
