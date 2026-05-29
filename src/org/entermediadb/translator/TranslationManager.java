@@ -222,45 +222,23 @@ public class TranslationManager extends BaseAiManager implements CatalogEnabled
 
 	}
 
-	public Map<String, String> translatePlainText(String sourceLang, Collection<String> targetLangs, String text)
-	{
-		JSONObject translations = translate(text, sourceLang, targetLangs);
-
-		Map<String, String> results = new HashMap<String, String>();
-		for (Iterator iterator = targetLangs.iterator(); iterator.hasNext();)
-		{
-			String lang = (String) iterator.next();
-
-			String altLang = null;
-			if (lang.equals("zh-Hans"))
-			{
-				altLang = "zh";
-			}
-			else
-				if (lang.equals("zh-Hant") || lang.equals("zh_TW"))
-				{
-					altLang = "zht";
-				}
-			JSONArray fieldTranslations = (JSONArray) translations.get(lang);
-			if (fieldTranslations == null)
-			{
-				if (altLang != null)
-				{
-					fieldTranslations = (JSONArray) translations.get(altLang);
-				}
-				if (fieldTranslations == null)
-				{
-					continue;
-				}
-			}
-			String tr = (String) fieldTranslations.get(0);
-			results.put(lang, tr);
-		}
-
-		return results;
-
-	}
-
+	/*
+	 * public Map<String, String> translatePlainText(String sourceLang, Collection<String> targetLangs,
+	 * String text) { JSONObject translations = translate(text, sourceLang, targetLangs);
+	 * 
+	 * Map<String, String> results = new HashMap<String, String>(); for (Iterator iterator =
+	 * targetLangs.iterator(); iterator.hasNext();) { String lang = (String) iterator.next();
+	 * 
+	 * String altLang = null; if (lang.equals("zh-Hans")) { altLang = "zh"; } else if
+	 * (lang.equals("zh-Hant") || lang.equals("zh_TW")) { altLang = "zht"; } JSONArray fieldTranslations
+	 * = (JSONArray) translations.get(lang); if (fieldTranslations == null) { if (altLang != null) {
+	 * fieldTranslations = (JSONArray) translations.get(altLang); } if (fieldTranslations == null) {
+	 * continue; } } String tr = (String) fieldTranslations.get(0); results.put(lang, tr); }
+	 * 
+	 * return results;
+	 * 
+	 * }
+	 */
 	public void translateDataFields(Map<String, String> inConfig, Collection<MultiValued> inRecordsToTranslate, Collection<PropertyDetail> inDetailsfields, String inSourceLang, Collection<String> targetLangs)
 	{
 		HitTracker locales = getMediaArchive().query("locale").exact("translatemetadata", true).cachedSearch();
