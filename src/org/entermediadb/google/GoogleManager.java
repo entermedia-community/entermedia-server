@@ -983,6 +983,10 @@ public class GoogleManager implements CatalogEnabled
 	{
 		String googleprojectid = inConfig.get("projectid");
 		String googleprojectlocationid = inConfig.get("locationid");
+		if (googleprojectlocationid == null)
+		{
+			googleprojectlocationid = "us-central1";
+		}
 		String googleglossaryid = inConfig.get("glossaryid");
 
 		String url = iLlmConnection.getServerRoot() + "/" + googleprojectid + "/locations/" + googleprojectlocationid + "/:translateText";
@@ -1001,9 +1005,14 @@ public class GoogleManager implements CatalogEnabled
 		payload.put("sourceLanguageCode", inSourceLanguage);
 		payload.put("targetLanguageCode", inTargetLanguage);
 		JSONObject glossaryConfig = new JSONObject();
-		glossaryConfig.put("glossary", "projects/" + googleprojectid + "/locations/" + googleprojectlocationid + "/glossaries/" + googleglossaryid);
-		glossaryConfig.put("ignoreCase", true);
-		payload.put("glossaryConfig", glossaryConfig);
+
+		if (googleglossaryid != null)
+		{
+			glossaryConfig.put("glossary", "projects/" + googleprojectid + "/locations/" + googleprojectlocationid + "/glossaries/" + googleglossaryid);
+			glossaryConfig.put("ignoreCase", true);
+			payload.put("glossaryConfig", glossaryConfig);
+			log.info("Translating Using glossary " + googleglossaryid);
+		}
 
 		HttpSharedConnection connection = getConnection();
 		connection.putSharedHeader("authorization", "Bearer " + getAccessToken());
@@ -1022,7 +1031,7 @@ public class GoogleManager implements CatalogEnabled
 			}
 
 			JSONObject jsonmap = connection.parseMap(response);
-
+			log.info("Translation result: " + jsonmap.toJSONString());
 			return jsonmap;
 		}
 		catch (Throwable ex)
