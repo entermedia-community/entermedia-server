@@ -194,6 +194,12 @@ public class BaseExporter
 						{
 							StringBuffer buf = new StringBuffer();
 							Collection values = hit.getValues(detail.getId());
+							if (values == null)
+							{
+								nextrow[fieldcount] = "";
+								fieldcount++;
+								continue;
+							}
 							for (Iterator iterator2 = values.iterator(); iterator2.hasNext();)
 							{
 								Object obj = iterator2.next();
