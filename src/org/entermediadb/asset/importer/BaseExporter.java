@@ -216,7 +216,7 @@ public class BaseExporter
 						{
 							value = toString(searcherManager, hit.getValue(detail.getId()), detail);
 						}
-						nextrow[fieldcount] = value.toString();
+						nextrow[fieldcount] = value;
 						fieldcount++;
 					}
 				}
