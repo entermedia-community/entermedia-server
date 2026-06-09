@@ -110,7 +110,7 @@ public class InformaticsProcessorManager extends BaseAiManager
 		{
 			date = DateStorageUtil.getStorageUtil().parseFromObject(startdate);
 		}
-		query.after("assetaddeddate", date);
+		// query.after("assetaddeddate", date);
 
 		// Assets got uploaded 60 minutes ago
 		String cooldownperiod = getMediaArchive().getCatalogSettingValue("ai_run_informatics_asset_cooldown");
@@ -126,6 +126,7 @@ public class InformaticsProcessorManager extends BaseAiManager
 		query.sort("filesize");
 
 		HitTracker pendingrecords = query.search();
+
 		pendingrecords.enableBulkOperations();
 		pendingrecords.setHitsPerPage(25);
 

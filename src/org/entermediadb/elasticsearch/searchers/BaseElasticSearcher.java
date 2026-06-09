@@ -1792,15 +1792,20 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 												if ("beforedate".equals(inTerm.getOperation()))
 												{
 													// Date after = new Date(0);
-													Date before = DateStorageUtil.getStorageUtil().parseFromStorage(valueof);
-													Calendar c = new GregorianCalendar();
+													Date before = (Date) inTerm.getValue("beforeDate");
+													if (before == null)
+													{
+														// Anything before tomorrow
+														before = DateStorageUtil.getStorageUtil().parseFromStorage(valueof);
+														Calendar c = new GregorianCalendar();
+														c.setTime(before);
+														c.set(Calendar.HOUR_OF_DAY, 23);
+														c.set(Calendar.MINUTE, 59);
+														c.set(Calendar.SECOND, 59);
+														c.set(Calendar.MILLISECOND, 999);
+														before = c.getTime();
 
-													c.setTime(before);
-													c.set(Calendar.HOUR_OF_DAY, 23);
-													c.set(Calendar.MINUTE, 59);
-													c.set(Calendar.SECOND, 59);
-													c.set(Calendar.MILLISECOND, 999);
-													before = c.getTime();
+													}
 
 													find = QueryBuilders.rangeQuery(inDetail.getId()).to(before);
 
