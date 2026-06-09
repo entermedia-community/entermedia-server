@@ -23,17 +23,14 @@ $!context.putPageValue("readonly", $readonly)
 	No details found for $viewid - Searchtype: $searcher.getSearchType() in $content.path
 #end
 
+
 #ifnull($multiedit)
 	#set( $multiedit = $context.getRequestParameter("multiedit"))
+	#ifnull($multiedit)
+		#set( $multiedit = "false")
+	#end
 #end
-#ifnull($multiedit)
-	#set( $multiedit = false)
-#end
-#if ( $multiedit == "true" )
-	#set( $multiedit = true)
-#elseif( $multiedit == "false")
-	#set( $multiedit = false)
-#end
+
 $context.putPageValue("multiedit",$multiedit)
 
 

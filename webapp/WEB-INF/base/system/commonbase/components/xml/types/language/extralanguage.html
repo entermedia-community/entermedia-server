@@ -1,15 +1,15 @@
 #set( $detailid = $context.getRequestParameter("detailid"))
 #set( $languagecode = $context.getRequestParameter("languagecode"))  
 #set( $locale = $context.getRequestParameter("locale") )
-
+#set( $isrequired = $context.getRequestParameter("isrequired") )
 #set( $map = $data.getValue($detailid))
 
 #set($languages = $mediaarchive.getList("locale"))
 
 
 <div class="languagesaddform d-flex flex-column">
-	<div class="languageselector mb-1 fw-bold" data-languagecode="$languagecode">
-		$locale
+	<div class="languageselector mb-1 fw-bold" data-languagecode="$!languagecode">
+		$!locale
 	</div>
 
 	<div class="languageinput m-0">
@@ -19,7 +19,7 @@
 			#set($language_textbox = ${detailid} + "." + ${languages[0].id}) 
 		#end
 
-		#set($textarearows = 3)
+		#set($textarearows = 1)
 		#set($value = $map.getText($languagecode))
 		
 		#if($value && $value.length() < 30)
@@ -33,15 +33,15 @@
 		#if(!$value && $searchform )
 			#set($textarearows = 1)
 		#end
-		
-		<input type="hidden" name="${detailid}.language" value="$languagecode" />
+
+		<input type="hidden" name="${detailid}.language" value="$!languagecode" />
 		<textarea
 			type="text"
 			id="value-${detailid}-${languagecode}"
-			class='form-control langvalue mb-2 #if($detail.isRequired() && !$multiedit) required #end'
-			data-locale="${locale}"
-			data-detailid="${detailid}"
-			data-languagecode="${languagecode}"
+			class='form-control langvalue mb-2 #if($isrequired == "true") required #end'
+			data-locale="$!{locale}"
+			data-detailid="$!{detailid}"
+			data-languagecode="$!{languagecode}"
 			name="${detailid}.${languagecode}.value"
 			cols="40"
 			rows="$textarearows">#esc($value)</textarea>

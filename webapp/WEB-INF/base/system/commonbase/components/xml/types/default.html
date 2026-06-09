@@ -2,6 +2,10 @@
 	#set($val = $value)
 #end
 
+#if($detail.isRequired() && $multiedit != "true")
+	#set($isrequired = "true")
+#end
+
 #if($detail.isMultiLanguage())
 	<div class="${detail.id}-languages languages-field #if( $searchform )insearchform#end">
 		
@@ -17,7 +21,8 @@
 				#set($localval = $languagemap.getText($locale.id))
 				#if($localval && $localval != "")
 					#set($language_count = $language_count+1)
-					$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&locale=$locale&languagecode=${locale.id}",$context)
+					$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&locale=$locale&languagecode=${locale.id}&isrequired=$!isrequired",$context)
+					#set($isrequired = "false")
 				#end
 				#set($localval = "")
 			#end
@@ -26,7 +31,7 @@
 				#set($language_count = 1)
 				#set($locale = $mediaarchive.query("locale").exact("id", $context.getLanguage()).searchOne() )
 				$context.putPageValue("addedlocale", $locale.id)
-				$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&locale=$locale&languagecode=${locale.id}",$context)
+				$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&locale=$locale&languagecode=${locale.id}&isrequired=$!isrequired",$context)
 			#end
 
 			#if($language_count == 1)
