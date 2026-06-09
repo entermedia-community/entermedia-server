@@ -195,7 +195,7 @@ public abstract class BaseAssetSource implements AssetSource
 	public Asset createAsset(Asset inAsset, ContentItem inUploaded, Map inMetadata, String inSourcepath, boolean inCreateCategories, User inUser)
 	{
 		ContentItem dest = checkLocation(inAsset, inUploaded, inUser);
-		log.info("Destination:" + dest);
+		// log.info("Destination:" + dest);
 		String sourcepath = inAsset.getSourcePath();
 		if (dest.exists())
 		{
