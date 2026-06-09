@@ -112,6 +112,16 @@ public class InformaticsProcessorManager extends BaseAiManager
 		}
 		query.after("assetaddeddate", date);
 
+		// Assets got uploaded 60 minutes ago
+		String cooldownperiod = getMediaArchive().getCatalogSettingValue("ai_run_informatics_asset_cooldown");
+		if (cooldownperiod != null)
+		{
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.MINUTE, -Integer.valueOf(cooldownperiod));
+			Date cooldowndate = cal.getTime();
+			query.before("assetaddeddate", cooldowndate);
+		}
+
 		// Process smaller files first
 		query.sort("filesize");
 
@@ -178,6 +188,15 @@ public class InformaticsProcessorManager extends BaseAiManager
 			date = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
 		}
 		query.after("emrecordstatus.recordmodificationdate", date);
+
+		String cooldownperiod = getMediaArchive().getCatalogSettingValue("ai_run_informatics_entity_cooldown");
+		if (cooldownperiod != null)
+		{
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.MINUTE, -Integer.valueOf(cooldownperiod));
+			Date cooldowndate = cal.getTime();
+			query.before("emrecordstatus.recordmodificationdate", cooldowndate);
+		}
 
 		// inLog.info("Running entity search query: " + query);
 
