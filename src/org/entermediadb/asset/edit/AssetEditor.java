@@ -712,7 +712,20 @@ public class AssetEditor
 
 					if (value == null || String.valueOf(value).trim().length() == 0)
 					{
-						missingrequiredfields.add(field);
+						// verify if this field is already in the missing required fields list, if not add it
+						boolean alreadyAdded = false;
+						for (PropertyDetail missingField : missingrequiredfields)
+						{
+							if (missingField.getId().equals(field.getId()))
+							{
+								alreadyAdded = true;
+								break;
+							}
+						}
+						if (!alreadyAdded)
+						{
+							missingrequiredfields.add(field);
+						}
 					}
 				}
 			}
