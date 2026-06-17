@@ -5,10 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
@@ -19,12 +17,16 @@ import org.entermediadb.asset.BaseAsset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.comments.CommentArchive;
+import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.OpenEditRuntimeException;
+import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetails;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
+import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.users.User;
@@ -688,6 +690,35 @@ public class AssetEditor
 		ContentItem item = getPageManager().getRepository().getStub(abspath);
 
 		return item;
+	}
+
+	public Collection<PropertyDetail> getMissingRequiredFieldsinViews(MediaArchive inArchive, Asset inAsset, UserProfile inUserProfile, String inLocale)
+	{
+		HitTracker views = inArchive.query("view").exact("moduleid", "asset").exact("systemdefined", "false").sort("orderingUp").named("view").search();
+
+		Collection<PropertyDetail> missingrequiredfields = new ArrayList<PropertyDetail>();
+		for (Iterator iterator = views.iterator(); iterator.hasNext();)
+		{
+			Data viewdata = (Data) iterator.next();
+
+			Collection detailsfields = inArchive.getSearcher("asset").getDetailsForView(viewdata, inUserProfile);
+
+			for (Iterator iterator2 = detailsfields.iterator(); iterator2.hasNext();)
+			{
+				PropertyDetail field = (PropertyDetail) iterator2.next();
+				if (field.isRequired())
+				{
+					Object value = inArchive.getSearcherManager().getValue(inAsset, field, inLocale);
+
+					if (value == null || String.valueOf(value).trim().length() == 0)
+					{
+						missingrequiredfields.add(field);
+					}
+				}
+			}
+
+		}
+		return missingrequiredfields;
 	}
 
 }
