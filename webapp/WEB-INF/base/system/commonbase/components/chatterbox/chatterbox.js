@@ -197,7 +197,7 @@ jQuery(document).ready(function () {
 			const channelId = message.channel;
 			const chatterbox = $(`div.chatterbox[data-channel="${channelId}"]`);
 
-			if (message && chatterbox.length === 1) {
+			if (message && chatterbox.length === 1 && document.hasFocus()) {
 				//Channel on the screen no need to notify
 
 				channelUpdateMessage(chatterbox, message);
@@ -208,49 +208,54 @@ jQuery(document).ready(function () {
 			registerServiceWorker();
 
 			/*Check if you are the sender, play sound and notify. "message.topic != message.user" checks for private chat*/
-			if (message.user !== userid && message.user !== "agent") {
+			if (message.user !== userid) {
 				console.log(`Got a message: ${document.hasFocus()}`);
-				if (!document.hasFocus()) {
-					function showNotification() {
-						console.log("Showing notification...");
-						let header = "New Message";
-						if (message.name !== undefined) {
-							header = message.name;
-						}
-						if (message.topic !== undefined) {
-							header += ` in ${message.topic}`;
-						}
-						let messagebody = message.message;
-						if (messagebody !== null && messagebody !== undefined) {
-							messagebody = "New message...";
-						}
-						const notification = new Notification(header, {
-							//TODO: URL?
-							body: message.message,
-							renotify: false,
-							tag: messagebody,
-							icon: `${appHome}/theme/images/logo.png`,
-						});
-						notification.addEventListener("click", function (event) {
-							//window.open('http://www.mozilla.org', '_blank');
-						});
+				function showNotification() {
+					console.log("Showing notification...");
+					let header = "New Message";
+					if (message.name !== undefined) {
+						header = message.name;
 					}
+					if (message.topic !== undefined) {
+						header += ` in ${message.topic}`;
+					}
+					let messagebody = message.message;
+					if (messagebody !== null && messagebody !== undefined) {
+						messagebody = "New message...";
+					}
+					const notification = new Notification(header, {
+						//TODO: URL?
+						body: message.message,
+						renotify: false,
+						tag: messagebody,
+						icon: `${appHome}/theme/images/logo.png`,
+					});
+					notification.addEventListener("click", function (event) {
+						//window.open('http://www.mozilla.org', '_blank');
+					});
 
 					/*Check para permissions and ask.*/
 					if (Notification.permission === "granted") {
 						showNotification();
 					} else if (Notification.permission !== "denied") {
+						console.log("Requesting notification permission...");
 						createNotificationSubscription();
 
 						Notification.requestPermission().then((permission) => {
 							if (permission === "granted") {
 								showNotification();
+							} else {
+								console.log("Notification permission denied.");
 							}
 						});
 					} else {
 						console.log(
 							`Notification Browser permission:${Notification.permission}`,
 						);
+						customToast(message.message, {
+							positive: true,
+							autohide: false,
+						});
 					}
 				}
 			}
