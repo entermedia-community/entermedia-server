@@ -1,6 +1,7 @@
 package org.entermediadb.asset.importer;
 
 import java.io.Writer;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
@@ -16,6 +17,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.data.ViewFieldList;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
+import org.openedit.util.DateStorageUtil;
 
 public class BaseExporter
 {
@@ -162,7 +164,21 @@ public class BaseExporter
 //									continue;
 //								}
 //							}
-								
+							if(detail.isDate())
+							{
+								Date val = hit.getDate(detail.getId());
+								if (val != null)
+								{
+									nextrow[fieldcount] =
+										    DateStorageUtil.getStorageUtil()
+										        .getCompactUTCFormat()
+										        .format(val);
+									fieldcount ++;
+
+									continue;
+
+								}
+							}
 							if(detail.isMultiLanguage())
 							{
 								Object vals = hit.getValue(detail.getId());
