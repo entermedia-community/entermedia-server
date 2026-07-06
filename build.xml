@@ -37,7 +37,7 @@
 	<property name="deployDir" value="deploy"/>
   	<property name="report" value="${deployDir}"/>
 	<property name="branch" value="main" />
-	<property name="remotehome" value="http://dev.entermediasoftware.com/jenkins/job" />
+	<property name="remotehome" value="https://dev.entermediadb.org/jenkins/job" />
 
 	
 	<!-- A convenience variable for documentation output -->
