@@ -11,6 +11,19 @@ jQuery(document).ready(function () {
 	}
 	const userid = app.data("user");
 
+	function lookupFunctionName(chatter) {
+		//loop chatterbox for messages in reverse order and get data-functionname of the first one that has it. This is the function we will run after the message is sent.
+		const messages = chatter.find(".msg-bubble").get().reverse();
+		for (let i = 0; i < messages.length; i++) {
+			var message = $(messages[i]);
+			const fn = message.data("nextfunctionname");
+			if (fn) {
+				return fn;
+			}
+		}
+		return null;
+	}
+
 	function initChatterbox() {
 		cancelKeepAlive();
 		connect();
@@ -23,6 +36,8 @@ jQuery(document).ready(function () {
 
 			data = $.extend({}, data); //So we can edit it
 			data.command = button.data("command");
+			data.functionname = lookupFunctionName(chatter);
+			console.log(data);
 
 			const input = $("#chatter-msg");
 			const replytoid = input.data("replytoid");
@@ -186,30 +201,29 @@ jQuery(document).ready(function () {
 			chatConnection = new WebSocket(`wss://${location.host}${url}`);
 		} else {
 			chatConnection = new WebSocket(`ws://${location.host}${url}`);
-			// console.log(new Date().toISOString(), "Chat initialized with ws");
 		}
 
 		chatConnection.addEventListener("message", function (event) {
-			// console.info(new Date().toISOString(), "Received message");
-
 			$(window).trigger("ajaxsocketautoreload");
 			const message = JSON.parse(event.data);
+			if (!message) return;
+
 			const channelId = message.channel;
 			const chatterbox = $(`div.chatterbox[data-channel="${channelId}"]`);
 
-			if (message && chatterbox.length === 1 && document.hasFocus()) {
-				//Channel on the screen no need to notify
-
+			if (chatterbox.length === 1) {
+				// Channel on the screen, update the UI with the new message
 				channelUpdateMessage(chatterbox, message);
 
-				return;
+				if (document.hasFocus()) {
+					// User in the same tab, no need to show notification
+					return;
+				}
 			}
 
-			registerServiceWorker();
+			// registerServiceWorker();
 
-			/*Check if you are the sender, play sound and notify. "message.topic != message.user" checks for private chat*/
 			if (message.user !== userid) {
-				console.log(`Got a message: ${document.hasFocus()}`);
 				function showNotification() {
 					console.log("Showing notification...");
 					let header = "New Message";
@@ -233,30 +247,30 @@ jQuery(document).ready(function () {
 					notification.addEventListener("click", function (event) {
 						//window.open('http://www.mozilla.org', '_blank');
 					});
+				}
 
-					/*Check para permissions and ask.*/
-					if (Notification.permission === "granted") {
-						showNotification();
-					} else if (Notification.permission !== "denied") {
-						console.log("Requesting notification permission...");
-						createNotificationSubscription();
+				/*Check para permissions and ask.*/
+				if (Notification.permission === "granted") {
+					showNotification();
+				} else if (Notification.permission !== "denied") {
+					console.log("Requesting notification permission...");
+					createNotificationSubscription();
 
-						Notification.requestPermission().then((permission) => {
-							if (permission === "granted") {
-								showNotification();
-							} else {
-								console.log("Notification permission denied.");
-							}
-						});
-					} else {
-						console.log(
-							`Notification Browser permission:${Notification.permission}`,
-						);
-						customToast(message.message, {
-							positive: true,
-							autohide: false,
-						});
-					}
+					Notification.requestPermission().then((permission) => {
+						if (permission === "granted") {
+							showNotification();
+						} else {
+							console.log("Notification permission denied.");
+						}
+					});
+				} else {
+					console.log(
+						`Notification Browser permission: ${Notification.permission}`,
+					);
+					// customToast(message.message, {
+					// 	positive: true,
+					// 	autohide: false,
+					// });
 				}
 			}
 		});
@@ -321,6 +335,9 @@ jQuery(document).ready(function () {
 					const chatMsg = $(existing).find(".chat-msg");
 					chatMsg.html(message.message);
 				}
+
+				$(existing).data("functionname", message.functionname);
+				$(existing).data("nextfunctionname", message.nextfunctionname);
 			}
 
 			scrollToChat();
