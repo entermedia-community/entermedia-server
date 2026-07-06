@@ -221,8 +221,6 @@ jQuery(document).ready(function () {
 				}
 			}
 
-			// registerServiceWorker();
-
 			if (message.user !== userid) {
 				function showNotification() {
 					console.log("Showing notification...");
@@ -242,10 +240,14 @@ jQuery(document).ready(function () {
 						body: message.message,
 						renotify: false,
 						tag: messagebody,
-						icon: `${appHome}/theme/images/logo.png`,
+						icon: `${appHome}/theme/images/logo-square.png`,
 					});
+					var chatUrl = $("#project-chat-link").attr("href");
+					if (chatUrl !== undefined && chatUrl.startsWith("/")) {
+						chatUrl = `${location.origin}${chatUrl}`;
+					}
 					notification.addEventListener("click", function (event) {
-						//window.open('http://www.mozilla.org', '_blank');
+						window.open(chatUrl, "_blank");
 					});
 				}
 
@@ -434,14 +436,6 @@ jQuery(document).ready(function () {
 	/*-------Start Push and Notification --------*/
 	const pushServerPublicKey =
 		"BIN2Jc5Vmkmy-S3AUrcMlpKxJpLeVRAfu9WBqUbJ70SJOCWGCGXKY-Xzyh7HDr6KbRDGYHjqZ06OcS3BjD7uAm8";
-
-	function registerServiceWorker() {
-		if (navigator.serviceWorker !== undefined) {
-			navigator.serviceWorker.register(
-				appHome + "/components/chatterbox/sw.js",
-			);
-		}
-	}
 
 	function createNotificationSubscription() {
 		//wait for service worker installation to be ready, and then
