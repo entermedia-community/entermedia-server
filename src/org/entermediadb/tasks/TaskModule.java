@@ -1109,6 +1109,13 @@ public class TaskModule extends BaseMediaModule
 			{
 				String goaltaskid = roleaction.get("goaltaskid");
 				Data task = archive.getCachedData("goaltask", goaltaskid);
+				if (!collectionid.equals("*"))
+				{
+					if (!task.get("collectionid").equals(collectionid)) 
+					{
+						continue;
+					}
+				}
 				String collectiverole = roleaction.get("collectiverole");
 				Map rolemap = goalm.findRole(task, collectiverole, userid);
 				if (rolemap != null)
